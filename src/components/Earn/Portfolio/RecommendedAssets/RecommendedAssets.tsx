@@ -68,6 +68,7 @@ const getRecommendedGlvs = ({
 };
 
 const MIN_LIQUIDITY_USD = expandDecimals(500_000, USD_DECIMALS);
+const GMX_APR_TOTAL_LABEL = "gmxAprTotal";
 
 const getRecommendedGms = ({
   hasGmxAssets,
@@ -182,7 +183,7 @@ export function RecommendedAssets({
           </RecommendedAssetSection>
         )}
         {glvsToShow.length > 0 && (
-          <RecommendedAssetSection title={<Trans>GLV Vaults</Trans>}>
+          <RecommendedAssetSection title={<Trans>GLV vaults</Trans>}>
             {glvsToShow.map((glv) => (
               <GlvGmxRecommendedAssetItem
                 key={glv.glvTokenAddress}
@@ -194,7 +195,7 @@ export function RecommendedAssets({
         )}
         {gmsToShow.length > 0 && (
           <RecommendedAssetSection
-            title={<Trans>GM Pools</Trans>}
+            title={<Trans>GM pools</Trans>}
             additionalLink={
               <Link
                 to="/pools"
@@ -263,7 +264,7 @@ function GmxRecommendedAssetItem({ chainId, openBuyGmxModal }: { chainId: AnyCha
     <BaseRecommendedAssetItem
       icon={<GmxIcon className="size-32" />}
       title={<Trans>GMX</Trans>}
-      metricValue={<APRLabel chainId={chainId} label="gmxAprTotal" />}
+      metricValue={<APRLabel chainId={chainId} label={GMX_APR_TOTAL_LABEL} />}
       metricLabel={<Trans>APR</Trans>}
       button={
         <Button variant="primary" onClick={handleClick}>

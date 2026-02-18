@@ -99,7 +99,7 @@ export function TPSLInputRow({
   );
 
   const isStopLoss = type === "stopLoss";
-  const priceLabel = isStopLoss ? t`SL Price` : t`TP Price`;
+  const priceLabel = isStopLoss ? t`SL price` : t`TP price`;
   const secondLabel = isStopLoss ? t`Loss` : t`Gain`;
 
   const effectiveLiquidationPrice = useMemo(() => {

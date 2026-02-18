@@ -96,11 +96,11 @@ export default function BuyGMX() {
                 <img className="Page-title-icon ml-5 inline-block" src={icons?.network} alt={chainName} />
               </div>
               <div className="Page-description">
-                <Trans>Choose to buy from decentralized or centralized exchanges.</Trans>
+                <Trans>Buy from decentralized or centralized exchanges</Trans>
                 <br />
                 <Trans>
-                  To purchase GMX on the {getChainName(OPPOSITE_CHAIN_ID[chainId])} blockchain, please{" "}
-                  <span onClick={() => onNetworkSelect(OPPOSITE_CHAIN_ID[chainId])}>change your network</span>.
+                  To buy GMX on {getChainName(OPPOSITE_CHAIN_ID[chainId])},{" "}
+                  <span onClick={() => onNetworkSelect(OPPOSITE_CHAIN_ID[chainId])}>change your network</span>
                 </Trans>
               </div>
             </div>
@@ -114,13 +114,13 @@ export default function BuyGMX() {
             <div className="section-title-content">
               <div className="Page-title">
                 <Trans>
-                  Buy or Transfer {nativeTokenSymbol} to {chainName}
+                  Buy or transfer {nativeTokenSymbol} to {chainName}
                 </Trans>
                 <img className="Page-title-icon ml-5 inline-block" src={icons?.network} alt={chainName} />
               </div>
               <div className="Page-description">
                 <Trans>
-                  Buy {nativeTokenSymbol} directly on {chainName} or transfer it there.
+                  Buy {nativeTokenSymbol} directly on {chainName} or transfer it there
                 </Trans>
               </div>
             </div>
@@ -132,8 +132,8 @@ export default function BuyGMX() {
                 <div className="App-card-content">
                   <div className="BuyGMXGLP-description">
                     <Trans>
-                      You can buy {nativeTokenSymbol} directly on{" "}
-                      <ExternalLink href={externalLinks.networkWebsite}>{chainName}</ExternalLink> using these options:
+                      Buy {nativeTokenSymbol} directly on{" "}
+                      <ExternalLink href={externalLinks.networkWebsite}>{chainName}</ExternalLink>
                     </Trans>
                   </div>
                   <div className="buttons-group">
@@ -159,7 +159,7 @@ export default function BuyGMX() {
               ) : (
                 <div className="App-card-content tracking-normal text-slate-100">
                   <Trans>
-                    No options available to buy {nativeTokenSymbol} directly on {chainName}.
+                    No options to buy {nativeTokenSymbol} on {chainName}
                   </Trans>
                 </div>
               )}
@@ -169,8 +169,7 @@ export default function BuyGMX() {
                 <div className="App-card-content">
                   <div className="BuyGMXGLP-description">
                     <Trans>
-                      You can transfer {nativeTokenSymbol} from other networks to {chainName} using any of the below
-                      options:
+                      Transfer {nativeTokenSymbol} from other networks to {chainName}
                     </Trans>
                   </div>
                   <div className="buttons-group">
@@ -196,7 +195,7 @@ export default function BuyGMX() {
               ) : (
                 <div className="App-card-content tracking-normal text-slate-100">
                   <Trans>
-                    No options available to transfer {nativeTokenSymbol} to {chainName}.
+                    No options to transfer {nativeTokenSymbol} to {chainName}
                   </Trans>
                 </div>
               )}
@@ -230,7 +229,7 @@ function DecentralisedExchanges({
     return (
       <Card title={t`Buy GMX from decentralized exchanges`}>
         <div className="App-card-content tracking-normal text-slate-100">
-          <Trans>No decentralized exchanges available for this network.</Trans>
+          <Trans>No decentralized exchanges available</Trans>
         </div>
       </Card>
     );
@@ -242,36 +241,36 @@ function DecentralisedExchanges({
         {isArbitrum ? (
           <div className="exchange-info-group">
             <div className="BuyGMXGLP-description">
-              <Trans>Buy GMX from Uniswap or directly on GMX (make sure to select Arbitrum):</Trans>
+              <Trans>Buy GMX from Uniswap or directly on GMX (select Arbitrum)</Trans>
             </div>
             <div className="buttons-group">
               <Button
                 variant="secondary"
                 textAlign="left"
                 imgSrc={uniswapArbitrumIcon}
-                imgAlt={"Uniswap"}
+                imgAlt={t`Uniswap`}
                 to={externalLinks.buyGmx.uniswap}
                 newTab
               >
-                Uniswap
+                <Trans>Uniswap</Trans>
               </Button>
               <Button
                 variant="secondary"
                 textAlign="left"
                 imgSrc={gmxArbitrumIcon}
-                imgAlt="GMX"
+                imgAlt={t`GMX`}
                 to={externalLinks.buyGmx.gmx}
                 showExternalLinkArrow={false}
                 newTab
               >
-                GMX
+                <Trans>GMX</Trans>
               </Button>
             </div>
           </div>
         ) : (
           <div className="exchange-info-group">
             <div className="BuyGMXGLP-description">
-              <Trans>Buy GMX from Traderjoe:</Trans>
+              <Trans>Buy GMX from TraderJoe</Trans>
             </div>
             <div className="buttons-group col-1">
               <Button
@@ -279,17 +278,17 @@ function DecentralisedExchanges({
                 textAlign="left"
                 to={externalLinks.buyGmx.traderjoe}
                 imgSrc={traderjoeIcon}
-                imgAlt="Traderjoe"
+                imgAlt={t`TraderJoe`}
                 newTab
               >
-                TraderJoe
+                <Trans>TraderJoe</Trans>
               </Button>
             </div>
           </div>
         )}
         <div className="exchange-info-group">
           <div className="BuyGMXGLP-description">
-            <Trans>Buy GMX using Decentralized Exchange Aggregators:</Trans>
+            <Trans>Buy GMX using decentralized exchange aggregators</Trans>
           </div>
           <div className="buttons-group">
             {DECENTRALISED_AGGRIGATORS.filter((e) => chainId in e.links).map((exchange) => {
@@ -313,7 +312,7 @@ function DecentralisedExchanges({
         </div>
         <div className="exchange-info-group">
           <div className="BuyGMXGLP-description">
-            <Trans>Buy GMX using any token from any network:</Trans>
+            <Trans>Buy GMX using any token from any network</Trans>
           </div>
           <div className="buttons-group">
             {GMX_FROM_ANY_NETWORKS.filter((e) => chainId in e.links).map((exchange) => {
@@ -338,7 +337,7 @@ function DecentralisedExchanges({
         {isArbitrum && (
           <div className="exchange-info-group">
             <div className="BuyGMXGLP-description">
-              <Trans>GMX bonds can be bought on Bond Protocol with a discount and a small vesting period:</Trans>
+              <Trans>Buy GMX bonds on Bond Protocol at a discount with a short vesting period</Trans>
             </div>
             <div className="buttons-group col-1">
               <Button
@@ -346,10 +345,10 @@ function DecentralisedExchanges({
                 textAlign="left"
                 to="https://app.bondprotocol.finance/#/tokens/42161/0xfc5a1a6eb076a2c7ad06ed22c90d7e710e35ad0a"
                 imgSrc={bondProtocolIcon}
-                imgAlt="Bond Protocol"
+                imgAlt={t`Bond Protocol`}
                 newTab
               >
-                Bond Protocol
+                <Trans>Bond Protocol</Trans>
               </Button>
             </div>
           </div>
@@ -366,7 +365,7 @@ function CentralisedExchanges({ chainId }) {
     return (
       <Card title={t`Buy GMX from centralized services`}>
         <div className="App-card-content tracking-normal text-slate-100">
-          <Trans>No centralized exchanges available for this network.</Trans>
+          <Trans>No centralized exchanges available</Trans>
         </div>
       </Card>
     );
@@ -377,7 +376,7 @@ function CentralisedExchanges({ chainId }) {
       <div className="App-card-content">
         <div className="exchange-info-group">
           <div className="BuyGMXGLP-description">
-            <Trans>Buy GMX from centralized exchanges:</Trans>
+            <Trans>Buy GMX on centralized exchanges</Trans>
           </div>
           <div className="buttons-group">
             {CENTRALISED_EXCHANGES.filter((e) => chainId in e.links).map((exchange) => {
@@ -402,7 +401,7 @@ function CentralisedExchanges({ chainId }) {
 
         <div className="exchange-info-group">
           <div className="BuyGMXGLP-description">
-            <Trans>Buy GMX using FIAT gateways:</Trans>
+            <Trans>Buy GMX using fiat gateways</Trans>
           </div>
           <div className="buttons-group col-2">
             {FIAT_GATEWAYS.filter((e) => chainId in e.links).map((exchange) => {

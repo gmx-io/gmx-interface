@@ -45,9 +45,8 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
     () =>
       isAdditionOrdersMsg && (
         <Trans>
-          Max Network Fee includes fees for additional orders. It will be sent back in full to your account if they
-          don't trigger and are cancelled.{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/trading#execution-fee">Read more</ExternalLink>.
+          Max network fee includes fees for additional orders. Refunded in full if they don't trigger and are canceled.{" "}
+          <ExternalLink href="https://docs.gmx.io/docs/trading/#execution-fee">Read more</ExternalLink>.
         </Trans>
       ),
     [isAdditionOrdersMsg]
@@ -180,7 +179,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
         content={
           <>
             <StatsTooltipRow
-              label={t`Max Network Fee`}
+              label={t`Max network fee`}
               showDollar={false}
               value={maxNetworkFeeText}
               valueClassName="numbers"
@@ -188,17 +187,15 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
             <div className="h-8" />
             <p>
               <Trans>
-                The max network fee is overestimated, including by the buffer set under settings. Upon execution, any
-                excess network fee is sent back to your account.
-              </Trans>{" "}
-              <ExternalLink className="inline" href="https://docs.gmx.io/docs/trading#execution-fee">
-                <Trans>Read more</Trans>
-              </ExternalLink>
-              .
+                Max network fee includes a buffer for gas spikes. Unused fees refunded on execution.{" "}
+                <ExternalLink className="inline" href="https://docs.gmx.io/docs/trading/#execution-fee">
+                  Read more
+                </ExternalLink>.
+              </Trans>
             </p>
             <br />
             <StatsTooltipRow
-              label={t`Estimated Fee Refund`}
+              label={t`Estimated fee refund`}
               showDollar={false}
               value={estimatedRefundText}
               valueClassName="numbers"
@@ -229,14 +226,9 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
           <TooltipWithPortal
             position="left-start"
             variant="iconStroke"
-            content={
-              <Trans>
-                The maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it
-                does not impact your collateral.
-              </Trans>
-            }
+            content={<Trans>Blockchain gas fee (not GMX-specific). Doesn't impact your collateral.</Trans>}
           >
-            <Trans>Network Fee</Trans>
+            <Trans>Network fee</Trans>
           </TooltipWithPortal>
         }
         value={value}
@@ -250,14 +242,9 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
         <TooltipWithPortal
           position="left-start"
           variant="iconStroke"
-          content={
-            <Trans>
-              The maximum network fee paid to the network. This fee is a blockchain cost not specific to GMX, and it
-              does not impact your collateral.
-            </Trans>
-          }
+          content={<Trans>Blockchain gas fee (not GMX-specific). Doesn't impact your collateral.</Trans>}
         >
-          <Trans>Network Fee</Trans>
+          <Trans>Network fee</Trans>
         </TooltipWithPortal>
       }
       value={value}

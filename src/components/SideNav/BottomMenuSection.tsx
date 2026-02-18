@@ -51,7 +51,7 @@ export function BottomMenuSection({
             />
             <IconActionButton
               icon={isDarkTheme ? <MoonIcon className="size-16" /> : <SunIcon className="size-16" />}
-              label={t`Dark Theme`}
+              label={t`Dark theme`}
               onClick={onThemeToggle}
             />
             <IconActionButton
@@ -148,7 +148,7 @@ function CollapsedMoreMenu({
               </ExternalLink>
               <DropdownActionRow
                 icon={isDarkTheme ? <MoonIcon className="size-16" /> : <SunIcon className="size-16" />}
-                label={t`Dark Theme`}
+                label={t`Dark theme`}
                 onClick={() => {
                   onThemeToggle();
                   close();

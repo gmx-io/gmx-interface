@@ -92,7 +92,7 @@ export function PositionItemOrdersLarge({
         content={
           <div className="flex max-h-[350px] cursor-auto flex-col gap-8 overflow-y-auto leading-base">
             <div className="font-medium">
-              <Trans>Active Orders</Trans>
+              <Trans>Active orders</Trans>
             </div>
             {ordersWithErrors.map((params) => (
               <PositionItemOrder key={params.order.key} onOrdersClick={onOrdersClick} {...params} />

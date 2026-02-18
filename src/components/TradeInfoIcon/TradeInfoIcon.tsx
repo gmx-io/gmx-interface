@@ -43,42 +43,39 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
         <li className={LI_CLASS_NAME}>
           <Trans>
             {typeString} Long Market: {getTradeTypeLabel(TradeMode.Market, tradePlace)} a long position at the current
-            price.
+            price
           </Trans>
         </li>
         {isTradeBox ? (
           <li className={LI_CLASS_NAME}>
             <Trans>
               {typeString} Long Limit: {getTradeTypeLabel(TradeMode.Limit, tradePlace)} a long position when the price
-              is below the trigger price.
+              is below the trigger price
             </Trans>{" "}
             <ExternalLink href="https://docs.gmx.io/docs/trading/#limit-orders">
               <Trans>Read more</Trans>
             </ExternalLink>
-            .
           </li>
         ) : null}
         {isTradeBox ? (
           <li className={LI_CLASS_NAME}>
             <Trans>
               {typeString} Long Stop Market: {getTradeTypeLabel(TradeMode.StopMarket, tradePlace)} a long position when
-              the price is below the trigger price.
+              the price is below the trigger price
             </Trans>{" "}
             <ExternalLink href="https://docs.gmx.io/docs/trading/#stop-market-orders">
               <Trans>Read more</Trans>
             </ExternalLink>
-            .
           </li>
         ) : null}
         <li className={LI_CLASS_NAME}>
           <Trans>
             {typeString} Long TWAP: {getTradeTypeLabel(TradeMode.Twap, tradePlace)} a long position in evenly
-            distributed parts over a specified time.
+            distributed parts over a specified time
           </Trans>{" "}
           <ExternalLink href="https://docs.gmx.io/docs/trading/#twap-orders">
             <Trans>Read more</Trans>
           </ExternalLink>
-          .
         </li>
       </ul>
     ),
@@ -87,55 +84,52 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
         <li className={LI_CLASS_NAME}>
           <Trans>
             {typeString} Short Market: {getTradeTypeLabel(TradeMode.Market, tradePlace)} a short position at the current
-            price.
+            price
           </Trans>
         </li>
         {isTradeBox ? (
           <li className={LI_CLASS_NAME}>
             <Trans>
               {typeString} Short Limit: {getTradeTypeLabel(TradeMode.Limit, tradePlace)} a short position when the price
-              is above the trigger price.
+              is above the trigger price
             </Trans>{" "}
             <ExternalLink href="https://docs.gmx.io/docs/trading/#limit-orders">
               <Trans>Read more</Trans>
             </ExternalLink>
-            .
           </li>
         ) : null}
         {isTradeBox ? (
           <li className={LI_CLASS_NAME}>
             <Trans>
               {typeString} Short Stop Market: {getTradeTypeLabel(TradeMode.StopMarket, tradePlace)} a short position
-              when the price is below the trigger price.
+              when the price is below the trigger price
             </Trans>{" "}
             <ExternalLink href="https://docs.gmx.io/docs/trading/#stop-market-orders">
               <Trans>Read more</Trans>
             </ExternalLink>
-            .
           </li>
         ) : null}
         <li className={LI_CLASS_NAME}>
           <Trans>
             {typeString} Short TWAP: {getTradeTypeLabel(TradeMode.Twap, tradePlace)} a short position in evenly
-            distributed parts over a specified time.
+            distributed parts over a specified time
           </Trans>{" "}
           <ExternalLink href="https://docs.gmx.io/docs/trading/#twap-orders">
             <Trans>Read more</Trans>
           </ExternalLink>
-          .
         </li>
       </ul>
     ),
     [TradeType.Swap]: (
       <ul className={UL_CLASS_NAME}>
         <li className={LI_CLASS_NAME}>
-          <Trans>Swap Market: Swap tokens at the current market price.</Trans>
+          <Trans>Swap Market: Swap tokens at the current market price</Trans>
         </li>
         <li className={LI_CLASS_NAME}>
-          <Trans>Swap Limit: Swap tokens when the trigger price is reached.</Trans>
+          <Trans>Swap Limit: Swap tokens when the trigger price is reached</Trans>
         </li>
         <li className={LI_CLASS_NAME}>
-          <Trans>Swap TWAP: Swap tokens in evenly distributed parts over a specified time.</Trans>
+          <Trans>Swap TWAP: Swap tokens in evenly distributed parts over a specified time</Trans>
         </li>
       </ul>
     ),

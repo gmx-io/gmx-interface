@@ -66,7 +66,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
     <div className="flex flex-col gap-8">
       <div className="grid grid-cols-3 max-lg:grid-cols-1">
         <ReferralInfoCard
-          label={t`Active Referral Code`}
+          label={t`Active referral code`}
           value={
             <div className="flex items-center gap-4">
               <span>{userReferralCodeString}</span>
@@ -88,14 +88,14 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                   iconClassName="text-typography-secondary ml-4"
                   renderContent={() => (
                     <p className="text-typography-primary">
-                      <Trans>You will receive a {currentTierDiscount}% discount on opening and closing fees.</Trans>
+                      <Trans>Your discount: {currentTierDiscount}% off trading fees.</Trans>
                       {((discountShare ?? 0) > 0 && (
                         <>
                           <br />
                           <br />
                           <Trans>
-                            The owner of this referral code has set a custom discount of {currentTierDiscount}% instead
-                            of the standard {tierDiscountInfo[traderTier]}% for Tier {getTierIdDisplay(traderTier)}.
+                            Code owner set a custom {currentTierDiscount}% discount instead of the standard{" "}
+                            {tierDiscountInfo[traderTier]}% for Tier {getTierIdDisplay(traderTier)}.
                           </Trans>
                         </>
                       )) ||
@@ -109,8 +109,8 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
         </ReferralInfoCard>
         <ReferralInfoCard
           value={formatBigUsd(currentReferralsData?.traderReferralTotalStats?.volume)}
-          label={t`Trading Volume`}
-          labelTooltipText={t`Volume traded by this account with an active referral code.`}
+          label={t`Trading volume`}
+          labelTooltipText={t`Your trading volume with referral discount`}
           tooltipContent={
             <>
               <StatsTooltipRow
@@ -155,7 +155,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
         <ReferralInfoCard
           value={formatBigUsd(currentReferralsData?.traderReferralTotalStats?.discountUsd)}
           label={t`Rebates`}
-          labelTooltipText={t`Rebates earned by this account as a trader.`}
+          labelTooltipText={t`Your fee savings from referral discounts`}
           tooltipContent={
             <>
               <StatsTooltipRow
@@ -201,7 +201,7 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
           className="Connect-wallet-modal"
           isVisible={isEditModalOpen}
           setIsVisible={close}
-          label={t`Edit Referral Code`}
+          label={t`Edit referral code`}
           onAfterOpen={() => editModalRef.current?.focus()}
         >
           <div className="edit-referral-modal">
@@ -215,8 +215,8 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
       </div>
       {currentDiscountDistributions.length > 0 ? (
         <Card
-          title={t`Rebates Distribution History`}
-          tooltipText={t`GMX V2 discounts are automatically applied on each trade and are not displayed on this table.`}
+          title={t`Rebates distribution history`}
+          tooltipText={t`V2 discounts apply automatically and aren't shown here`}
           bodyPadding={false}
           divider={true}
         >
@@ -225,16 +225,16 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
               <thead>
                 <TableTheadTr>
                   <TableTh scope="col">
-                    <Trans>Date</Trans>
+                    <Trans>DATE</Trans>
                   </TableTh>
                   <TableTh scope="col">
-                    <Trans>Type</Trans>
+                    <Trans>TYPE</Trans>
                   </TableTh>
                   <TableTh scope="col">
-                    <Trans>Amount</Trans>
+                    <Trans>AMOUNT</Trans>
                   </TableTh>
                   <TableTh scope="col">
-                    <Trans>Transaction</Trans>
+                    <Trans>TRANSACTION</Trans>
                   </TableTh>
                 </TableTheadTr>
               </thead>
@@ -267,9 +267,11 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                   const explorerURL = getExplorerUrl(chainId);
                   return (
                     <TableTr key={rebate.id}>
-                      <TableTd data-label="Date">{formatDate(rebate.timestamp)}</TableTd>
-                      <TableTd data-label="Type">V1 Airdrop</TableTd>
-                      <TableTd data-label="Amount" className="Rebate-amount">
+                      <TableTd data-label={t`Date`}>{formatDate(rebate.timestamp)}</TableTd>
+                      <TableTd data-label={t`Type`}>
+                        <Trans>V1 airdrop</Trans>
+                      </TableTd>
+                      <TableTd data-label={t`Amount`} className="Rebate-amount">
                         <Tooltip
                           position="bottom"
                           className="whitespace-nowrap"
@@ -289,8 +291,9 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                               {tokensWithoutPrices.length > 0 && (
                                 <>
                                   <Trans>
-                                    USD Value may not be accurate since the data does not contain prices for{" "}
+                                    USD value may not be accurate because prices are missing for{" "}
                                     {tokensWithoutPrices.map((address) => getToken(chainId, address).symbol).join(", ")}
+                                    .
                                   </Trans>
                                   <br />
                                   <br />
@@ -341,8 +344,8 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
         </Card>
       ) : (
         <EmptyMessage
-          tooltipText={t`GMX V2 Rebates are automatically applied as fee discounts on each trade and are not displayed on this table.`}
-          message={t`No rebates distribution history yet.`}
+          tooltipText={t`V2 rebates apply automatically as fee discounts and aren't shown here`}
+          message={t`No rebates distribution history yet`}
         />
       )}
     </div>

@@ -30,7 +30,7 @@ type Groups = Group[];
 
 const GROUPS: Groups = [
   {
-    groupName: msg`Market Orders`,
+    groupName: msg`Market orders`,
     items: [
       {
         orderType: [OrderType.MarketIncrease],
@@ -99,7 +99,7 @@ const GROUPS: Groups = [
     ],
   },
   {
-    groupName: msg`Trigger Orders`,
+    groupName: msg`Trigger orders`,
     items: [
       TradeActionType.OrderExecuted,
       TradeActionType.OrderCreated,
@@ -253,7 +253,7 @@ export function ActionFilter({ value, onChange }: Props) {
     <TableOptionsFilter<Props["value"][number]>
       multiple
       label={t`Action`}
-      placeholder={t`Search Action`}
+      placeholder={t`Search action`}
       value={value}
       options={localizedGroups}
       onChange={onChange}

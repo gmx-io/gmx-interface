@@ -120,7 +120,7 @@ const Toolbar = ({ account }: { account: string }) => {
   const handleCopyAddress = () => {
     if (account) {
       copyToClipboard(account);
-      helperToast.success(t`Address copied to your clipboard`);
+      helperToast.success(t`Address copied`);
     }
   };
 
@@ -164,14 +164,14 @@ const Toolbar = ({ account }: { account: string }) => {
         <CopyIcon className="size-16 max-[500px]:hidden" />
       </Button>
       <div className="flex items-center gap-8">
-        <TooltipWithPortal content={t`PnL Analysis`} position="bottom" tooltipClassName="!min-w-max" variant="none">
+        <TooltipWithPortal content={t`PnL analysis`} position="bottom" tooltipClassName="!min-w-max" variant="none">
           <Button variant="secondary" size="small" className={buttonClassName} onClick={handlePnlAnalysisClick}>
             <PnlAnalysisIcon className="size-16" />
           </Button>
         </TooltipWithPortal>
         <TooltipWithPortal
           shouldPreventDefault={false}
-          content={t`View in Explorer`}
+          content={t`View in explorer`}
           position="bottom"
           tooltipClassName="!min-w-max"
           variant="none"
@@ -214,7 +214,7 @@ function GmxAccountBalanceTooltipContent() {
   return (
     <Trans>
       Your GMX Account balance, usable for trading from any supported chain.{" "}
-      <ExternalLink href="https://docs.gmx.io/docs/trading#multichain-trading">Read more</ExternalLink>.
+      <ExternalLink href="https://docs.gmx.io/docs/trading/#multichain-trading">Read more</ExternalLink>.
     </Trans>
   );
 }
@@ -227,7 +227,7 @@ function SettlementChainBalance() {
     <div className="flex flex-col gap-12 rounded-8 bg-fill-surfaceElevated50 p-12">
       <div className="flex flex-col gap-8">
         <div className="text-body-small text-typography-secondary">
-          <Trans>Available to Trade</Trans>
+          <Trans>Available to trade</Trans>
         </div>
         <Balance usd={totalUsd} availableToTradeAssetSymbols={availableToTradeAssetSymbols} />
       </div>
@@ -241,7 +241,7 @@ function SettlementChainBalance() {
         <SyntheticsInfoRow
           label={
             <TooltipWithPortal content={<GmxAccountBalanceTooltipContent />} variant="iconStroke">
-              <Trans>GMX Account Balance</Trans>
+              <Trans>GMX Account balance</Trans>
             </TooltipWithPortal>
           }
           className="py-4"
@@ -360,9 +360,7 @@ const ActionButtons = () => {
     <div className="flex gap-12">
       {isAvalancheSettlement ? (
         <TooltipWithPortal
-          content={
-            <Trans>Depositing to Avalanche is disabled. Please trade directly from your Avalanche Wallet.</Trans>
-          }
+          content={<Trans>Depositing to Avalanche is disabled. Trade directly from your Avalanche wallet.</Trans>}
           as="div"
           position="bottom"
           variant="none"
@@ -424,7 +422,7 @@ const FundingHistorySection = () => {
     <div className="flex grow flex-col gap-12 overflow-y-hidden">
       <div className="flex items-center justify-between px-adaptive">
         <div className="text-body-large font-medium">
-          <Trans>Funding Activity</Trans>
+          <Trans>Funding activity</Trans>
         </div>
       </div>
       {Boolean(fundingHistory?.length) && (
@@ -474,7 +472,7 @@ const FundingHistorySection = () => {
         )}
         {!isLoading && filteredFundingHistory?.length === 0 && fundingHistory && fundingHistory.length > 0 && (
           <div className="flex h-full flex-col items-center justify-center gap-8 p-adaptive text-slate-100">
-            <Trans>No funding activity matching your search</Trans>
+            <Trans>No funding activity matching search</Trans>
           </div>
         )}
         {isLoading && (

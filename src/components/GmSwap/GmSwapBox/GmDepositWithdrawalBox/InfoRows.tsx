@@ -37,14 +37,14 @@ export function InfoRows({
       />
 
       <ExpandableRow
-        title={t`Execution Details`}
+        title={t`Execution details`}
         open={isExecutionDetailsOpen}
         onToggle={toggleExecutionDetails}
         wrapped
         contentClassName="flex flex-col gap-12"
       >
         <SyntheticsInfoRow
-          label={<Trans>Network Fee</Trans>}
+          label={<Trans>Network fee</Trans>}
           value={
             isLoading ? (
               <UsdValueWithSkeleton usd={undefined} />

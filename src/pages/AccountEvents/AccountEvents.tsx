@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { format } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
@@ -221,7 +222,7 @@ export function AccountEvents() {
   }, [eventsWithoutTimestamps, blockTimestampsMap]);
 
   const formatEventData = (eventData: unknown) => {
-    if (!eventData) return "N/A";
+    if (!eventData) return t`N/A`;
 
     try {
       const parsed = parseEventLogData(eventData as Parameters<typeof parseEventLogData>[0]);
@@ -265,9 +266,9 @@ export function AccountEvents() {
     return (
       <AppPageLayout>
         <div className="default-container page-layout">
-          <PageTitle title="Account Events" className="p-12" />
+          <PageTitle title={t`Account events`} className="p-12" />
           <div className="text-center text-red-500">
-            Please connect your wallet or provide an account address in the URL
+            <Trans>Connect wallet or provide an account address in the URL</Trans>
           </div>
         </div>
       </AppPageLayout>
@@ -278,16 +279,20 @@ export function AccountEvents() {
     <AppPageLayout>
       <div className="default-container page-layout">
         <PageTitle
-          title="Account Events"
+          title={t`Account events`}
           subtitle={
             <div className="text-body-medium mb-20">
               <div className="mb-8 flex items-center gap-4">
-                <span>Events for account:</span>
+                <span>
+                  <Trans>Events for account:</Trans>
+                </span>
                 <AddressView noLink address={account} size={20} />
               </div>
               {fromBlock !== null && fromTimestamp !== null && (
                 <div className="text-12 text-typography-secondary">
-                  From: Block {fromBlock.toString()} ({format(fromTimestamp * 1000, "dd MMM yyyy, HH:mm:ss")})
+                  <Trans>
+                    From: Block {fromBlock.toString()} ({format(fromTimestamp * 1000, "dd MMM yyyy, HH:mm:ss")})
+                  </Trans>
                 </div>
               )}
             </div>
@@ -297,10 +302,10 @@ export function AccountEvents() {
 
         {error && (
           <div className="mb-20 p-20 text-center text-red-500">
-            Error: {error instanceof Error ? error.message : String(error)}
+            <Trans>Error:</Trans> {error instanceof Error ? error.message : String(error)}
             <div className="mt-8">
               <Button variant="secondary" onClick={() => mutate()} disabled={isLoading}>
-                {isLoading ? "Loading..." : "Retry"}
+                {isLoading ? t`Loading...` : t`Retry`}
               </Button>
             </div>
           </div>
@@ -310,10 +315,12 @@ export function AccountEvents() {
           <>
             <div className="mb-20 flex items-center justify-between">
               <div className="text-body-medium">
-                Found {events.length} events in the past {DAYS_BACK} days
+                <Trans>
+                  Found {events.length} events in the past {DAYS_BACK} days
+                </Trans>
               </div>
               <Button variant="secondary" onClick={() => mutate()} disabled={isLoading}>
-                {isLoading ? "Loading..." : "Refresh"}
+                {isLoading ? t`Loading...` : t`Refresh`}
               </Button>
             </div>
             {isLoading && events.length === 0 && (
@@ -328,11 +335,21 @@ export function AccountEvents() {
           <Table>
             <thead>
               <TableTr>
-                <TableTh>Event Name</TableTh>
-                <TableTh>Type</TableTh>
-                <TableTh>Time</TableTh>
-                <TableTh>Transaction</TableTh>
-                <TableTh>Event Data</TableTh>
+                <TableTh>
+                  <Trans>EVENT NAME</Trans>
+                </TableTh>
+                <TableTh>
+                  <Trans>TYPE</Trans>
+                </TableTh>
+                <TableTh>
+                  <Trans>TIME</Trans>
+                </TableTh>
+                <TableTh>
+                  <Trans>TRANSACTION</Trans>
+                </TableTh>
+                <TableTh>
+                  <Trans>EVENT DATA</Trans>
+                </TableTh>
               </TableTr>
             </thead>
             <tbody>
@@ -388,7 +405,7 @@ export function AccountEvents() {
 
         {!isLoading && !error && events.length === 0 && (
           <div className="p-40 text-center text-typography-secondary">
-            No events found for this account in the past 7 days
+            <Trans>No events found for this account in the past {DAYS_BACK} days</Trans>
           </div>
         )}
       </div>

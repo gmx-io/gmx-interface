@@ -63,12 +63,12 @@ export function AddressDropdownWithoutMultichain({ account }: { account: string 
                 className="menu-item"
                 onClick={() => {
                   copyToClipboard(account);
-                  helperToast.success(t`Address copied to your clipboard.`);
+                  helperToast.success(t`Address copied`);
                 }}
               >
                 <CopyIcon className="size-20" />
                 <p>
-                  <Trans>Copy Address</Trans>
+                  <Trans>Copy address</Trans>
                 </p>
               </div>
             </Menu.Item>
@@ -76,7 +76,7 @@ export function AddressDropdownWithoutMultichain({ account }: { account: string 
               <Link className="menu-item" to={buildAccountDashboardUrl(account as Address, undefined, 2)}>
                 <PnlAnalysisIcon width={20} className="size-20" />
                 <p>
-                  <Trans>PnL Analysis</Trans>
+                  <Trans>PnL analysis</Trans>
                 </p>
               </Link>
             </Menu.Item>
@@ -84,7 +84,7 @@ export function AddressDropdownWithoutMultichain({ account }: { account: string 
               <ExternalLink href={accountUrl} className="menu-item !no-underline">
                 <ExplorerIcon width={20} className="size-20" />
                 <p>
-                  <Trans>View in Explorer</Trans>
+                  <Trans>View in explorer</Trans>
                 </p>
               </ExternalLink>
             </Menu.Item>

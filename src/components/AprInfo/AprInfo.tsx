@@ -72,11 +72,10 @@ export function AprInfo({
         {isIncentiveActive && (
           <div>
             <Trans>
-              The Bonus APR will be airdropped as {airdropTokenTitle} tokens.{" "}
+              Bonus APR paid as {airdropTokenTitle} airdrops.{" "}
               <ExternalLink href={isTbtcIncentive ? TBTC_INFORMATION_URL : getIncentivesV2Url(chainId)}>
                 Read more
-              </ExternalLink>
-              .
+              </ExternalLink>.
             </Trans>
           </div>
         )}
@@ -96,7 +95,7 @@ export function AprInfo({
       return (
         <div className="inline-flex flex-nowrap">
           {node}
-          <img className="relative -top-3 h-10" src={sparkleIcon} alt="sparkle" />
+          <img className="relative -top-3 h-10" src={sparkleIcon} alt={t`Sparkle`} />
         </div>
       );
     } else {

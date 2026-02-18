@@ -56,7 +56,7 @@ export default function DashboardV2() {
       <AppPageLayout header={<ChainContentHeader />}>
         <div className="default-container DashboardV2 page-layout flex flex-col gap-20">
           <PageTitle
-            title={t`Total Stats`}
+            title={t`Total stats`}
             qa="dashboard-page"
             subtitle={
               <div className="flex items-center gap-6 font-medium text-typography-secondary">
@@ -65,13 +65,13 @@ export default function DashboardV2() {
                   className="flex items-center gap-4 !no-underline hover:text-typography-primary"
                   href="https://dune.com/gmx-io/gmx-analytics"
                 >
-                  <V2Icon className="size-15" /> Analytics
+                  <V2Icon className="size-15" /> <Trans>Analytics</Trans>
                 </ExternalLink>
                 <Link
                   className="flex items-center gap-4 text-typography-secondary !no-underline hover:text-typography-primary"
                   to="/monitor"
                 >
-                  <V2Icon className="size-15" /> Pools Stats
+                  <V2Icon className="size-15" /> <Trans>Pools stats</Trans>
                 </Link>
               </div>
             }

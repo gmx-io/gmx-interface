@@ -145,8 +145,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         return false;
       }
 
-      helperToast.success(
-        <StatusNotification key="updateSubaccountSettings" title={t`Update 1CT (One-Click Trading) settings`}>
+      helperToast.info(
+        <StatusNotification key="updateSubaccountSettings" title={t`Update 1CT settings`}>
           <TransactionStatus status="loading" text={t`Updating settings...`} />
         </StatusNotification>
       );
@@ -165,8 +165,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         });
 
         helperToast.success(
-          <StatusNotification key="updateSubaccountSettingsSuccess" title={t`Update 1CT (One-Click Trading) settings`}>
-            <TransactionStatus status="success" text={t`Settings updated.`} />
+          <StatusNotification key="updateSubaccountSettingsSuccess" title={t`Update 1CT settings`}>
+            <TransactionStatus status="success" text={t`Settings updated`} />
           </StatusNotification>
         );
         setSignedApproval(signedSubaccountApproval);
@@ -177,8 +177,8 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         metrics.pushError(error, "subaccount.updateSubaccountSettings");
         toast.dismiss();
         helperToast.error(
-          <StatusNotification key="updateSubaccountSettingsError" title={t`Update 1CT (One-Click Trading) settings`}>
-            <TransactionStatus status="error" text={t`Failed to update settings.`} />
+          <StatusNotification key="updateSubaccountSettingsError" title={t`Update 1CT settings`}>
+            <TransactionStatus status="error" text={t`Settings update failed`} />
           </StatusNotification>
         );
         return false;
@@ -201,7 +201,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
     const toastId = Date.now();
 
-    helperToast.success(<SubaccountActivateNotification toastId={toastId} />, {
+    helperToast.info(<SubaccountActivateNotification toastId={toastId} />, {
       autoClose: false,
       toastId,
     });
@@ -280,7 +280,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
 
     const toastId = Date.now();
 
-    helperToast.success(<SubaccountDeactivateNotification toastId={toastId} />, {
+    helperToast.info(<SubaccountDeactivateNotification toastId={toastId} />, {
       autoClose: false,
       toastId,
     });
@@ -392,7 +392,7 @@ function SubaccountActivateNotification({ toastId }: { toastId: number }) {
 
     if (subaccountActivationState === SubaccountActivationState.GeneratingError) {
       status = "error";
-      text = t`Failed to generate session`;
+      text = t`Session generation failed`;
     } else if (subaccountActivationState && subaccountActivationState >= SubaccountActivationState.ApprovalSigning) {
       status = "success";
       text = t`Session generated`;
@@ -409,7 +409,7 @@ function SubaccountActivateNotification({ toastId }: { toastId: number }) {
       status = "loading";
     } else if (subaccountActivationState === SubaccountActivationState.ApprovalSigningError) {
       status = "error";
-      text = t`Failed to sign approval`;
+      text = t`Approval signing failed`;
     } else if (subaccountActivationState === SubaccountActivationState.Success) {
       status = "success";
       text = t`Approval signed`;
@@ -443,7 +443,7 @@ function SubaccountActivateNotification({ toastId }: { toastId: number }) {
   }, [hasError, toastId]);
 
   return (
-    <StatusNotification key="updateSubaccountSettingsSuccess" title={t`Activate 1CT (One-Click Trading)`}>
+    <StatusNotification key="updateSubaccountSettingsSuccess" title={t`Activate 1CT`}>
       {generatingStatus}
       {approvalSigningStatus}
     </StatusNotification>
@@ -466,7 +466,7 @@ function SubaccountDeactivateNotification({ toastId }: { toastId: number }) {
 
     if (subaccountDeactivationState === SubaccountDeactivationState.Error) {
       status = "error";
-      text = t`Failed to deactivate`;
+      text = t`Deactivation failed`;
     } else if (subaccountDeactivationState === SubaccountDeactivationState.Success) {
       status = "success";
       text = t`Deactivated`;
@@ -499,7 +499,7 @@ function SubaccountDeactivateNotification({ toastId }: { toastId: number }) {
     [isCompleted, subaccountDeactivationState, toastId]
   );
 
-  return <StatusNotification title={t`Deactivate 1CT (One-Click Trading)`}>{deactivatingStatus}</StatusNotification>;
+  return <StatusNotification title={t`Deactivate 1CT`}>{deactivatingStatus}</StatusNotification>;
 }
 
 function useStoredSubaccountData(chainId: number, account: string | undefined) {

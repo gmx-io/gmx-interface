@@ -14,37 +14,37 @@ import type { DataPoint } from "./DepthChart";
 
 const LEFT_OPAQUE_TOOLTIP = (
   <Trans>
-    Execution prices for increasing shorts and
+    Execution prices for increasing shorts
     <br />
-    decreasing longs.
+    and decreasing longs
   </Trans>
 );
 
 const RIGHT_OPAQUE_TOOLTIP = (
   <Trans>
-    Execution prices for increasing longs and
+    Execution prices for increasing longs
     <br />
-    decreasing shorts.
+    and decreasing shorts
   </Trans>
 );
 
 const LEFT_OPAQUE_NO_PRICE_IMPACT_TOOLTIP = (
   <Trans>
-    There is no price impact. There is a single
+    No price impact. Single execution price for
     <br />
-    execution price for increasing shorts or
+    increasing shorts or decreasing longs at
     <br />
-    decreasing longs for this size.
+    this size.
   </Trans>
 );
 
 const RIGHT_OPAQUE_NO_PRICE_IMPACT_TOOLTIP = (
   <Trans>
-    There is no price impact. There is a single
+    No price impact. Single execution price for
     <br />
-    execution price for increasing longs or
+    increasing longs or decreasing shorts at
     <br />
-    decreasing shorts for this size.
+    this size.
   </Trans>
 );
 
@@ -210,16 +210,14 @@ export const ChartTooltip = forwardRef<
   } else if (isZeroPriceImpact && isLogicallyLeft && !isOpaqueCloser) {
     tooltip = (
       <Trans>
-        No liquidity is available for increasing shorts for
+        No liquidity available for increasing shorts at
         <br />
         this size. Max short size: {formatUsd(stats.leftOpaqueSizeBigInt!)}
         <br />
         <br />
-        There is no price impact. There is a single
+        No price impact. Single execution price for
         <br />
-        execution price for decreasing longs for
-        <br />
-        this size.
+        decreasing longs at this size.
       </Trans>
     );
   } else if (isZeroPriceImpact && !isLogicallyLeft && isOpaqueCloser) {
@@ -227,16 +225,14 @@ export const ChartTooltip = forwardRef<
   } else if (isZeroPriceImpact && !isLogicallyLeft && !isOpaqueCloser) {
     tooltip = (
       <Trans>
-        No liquidity is available for increasing longs for
+        No liquidity available for increasing longs at
         <br />
         this size. Max long size: {formatUsd(stats.rightOpaqueSizeBigInt!)}
         <br />
         <br />
-        There is no price impact. There is a single
+        No price impact. Single execution price for
         <br />
-        execution price for decreasing shorts for
-        <br />
-        this size.
+        decreasing shorts at this size.
       </Trans>
     );
   } else if (stats.leftOpaqueSize !== null) {
@@ -246,7 +242,7 @@ export const ChartTooltip = forwardRef<
   } else if (stats.leftTransparentSize !== null) {
     tooltip = (
       <Trans>
-        No liquidity is available for increasing shorts for
+        No liquidity available for increasing shorts at
         <br />
         this size. Max short size: {formatUsd(leftMin)}
         <br />
@@ -257,7 +253,7 @@ export const ChartTooltip = forwardRef<
   } else if (stats.rightTransparentSize !== null) {
     tooltip = (
       <Trans>
-        No liquidity is available for increasing longs for
+        No liquidity available for increasing longs at
         <br />
         this size. Max long size: {formatUsd(rightMin)}
         <br />
@@ -274,13 +270,13 @@ export const ChartTooltip = forwardRef<
     >
       <p className="mb-8">{tooltip}</p>
       <StatsTooltipRow
-        label={t`Execution Price`}
+        label={t`Execution price`}
         value={formatUsdPrice(stats.executionPriceBigInt)}
         showDollar={false}
       />
       <StatsTooltipRow label={t`Total size`} value={formatUsd(size)} showDollar={false} />
       <StatsTooltipRow
-        label={t`Price Impact`}
+        label={t`Price impact`}
         textClassName={getPositiveOrNegativeClass(stats.priceImpactBigInt)}
         value={formatPercentage(priceImpactFeeItem?.precisePercentage, {
           signed: true,
