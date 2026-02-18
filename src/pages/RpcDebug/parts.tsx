@@ -1,3 +1,5 @@
+import { t, Trans } from "@lingui/macro";
+
 import { getChainName } from "config/chains";
 import { getProviderNameFromUrl } from "config/rpc";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
@@ -10,7 +12,6 @@ import { getMarkPrice } from "sdk/utils/prices";
 import Button from "components/Button/Button";
 import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import { t, Trans } from "@lingui/macro";
 
 export type RpcStats = {
   endpoint: string;

@@ -1,4 +1,5 @@
 /* eslint-disable no-console */
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { format } from "date-fns";
 import { useEffect, useMemo, useState } from "react";
@@ -24,7 +25,6 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import Loader from "components/Loader/Loader";
 import PageTitle from "components/PageTitle/PageTitle";
 import { Table, TableTd, TableTh, TableTr } from "components/Table/Table";
-import { t, Trans } from "@lingui/macro";
 
 type EventLogEntry = {
   eventName: string;

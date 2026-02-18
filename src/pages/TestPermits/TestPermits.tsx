@@ -1,3 +1,4 @@
+import { t, Trans } from "@lingui/macro";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { encodeFunctionData, withRetry } from "viem";
@@ -21,7 +22,6 @@ import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import TokenIcon from "components/TokenIcon/TokenIcon";
-import { t, Trans } from "@lingui/macro";
 
 export function TestPermits() {
   const { account } = useWallet();

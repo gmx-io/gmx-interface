@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/macro";
 import cx from "classnames";
 
 import { BOTANIX } from "config/chains";
@@ -17,7 +18,6 @@ import { GmList } from "components/GmList/GmList";
 
 import PoolsTimeRangeFilter from "./PoolsTimeRangeFilter";
 import { usePoolsIsMobilePage } from "./usePoolsIsMobilePage";
-import { Trans } from "@lingui/macro";
 
 export default function Pools() {
   const { timeRange, setTimeRange } = usePoolsTimeRange();

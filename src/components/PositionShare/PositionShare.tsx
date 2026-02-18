@@ -343,12 +343,14 @@ function PositionShare({
 
         {promptedToCreateReferralCode && !isCreateReferralCodeInfoMessageClosed && (
           <ColorfulBanner color="blue" icon={AlertIcon} onClose={() => setIsCreateReferralCodeInfoMessageClosed(true)}>
-            <span className="font-medium text-blue-300">
-              <Trans>Skip creating a referral code?</Trans>
-            </span>
-            <span className="text-blue-100">
-              <Trans>Earn rewards by sharing your referral code</Trans>
-            </span>
+            <div className="flex flex-col gap-4">
+              <span className="font-medium text-blue-300">
+                <Trans>Skip creating a referral code?</Trans>
+              </span>
+              <span className="text-blue-100">
+                <Trans>Earn rewards by sharing your referral code</Trans>
+              </span>
+            </div>
           </ColorfulBanner>
         )}
       </div>

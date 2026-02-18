@@ -1,3 +1,4 @@
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { format } from "date-fns";
 import { zeroAddress, zeroHash } from "viem";
@@ -40,7 +41,6 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import "./SyntheticsStats.scss";
-import { t, Trans } from "@lingui/macro";
 
 function pow(bn: bigint, exponent: bigint) {
   // this is just aproximation

@@ -1,3 +1,4 @@
+import { t, Trans } from "@lingui/macro";
 import { useMemo, useState } from "react";
 import { Abi, decodeErrorResult, getAbiItem } from "viem";
 
@@ -6,7 +7,6 @@ import { abis } from "sdk/abis";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import PageTitle from "components/PageTitle/PageTitle";
-import { t, Trans } from "@lingui/macro";
 
 type DecodedError = {
   errorName: string;

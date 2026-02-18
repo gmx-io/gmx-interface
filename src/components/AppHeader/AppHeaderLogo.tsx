@@ -1,8 +1,9 @@
+import { t } from "@lingui/macro";
+
 import ButtonLink from "components/Button/ButtonLink";
 
 import logoIcon from "img/logo-icon.svg";
 import LogoText from "img/logo-text.svg?react";
-import { t } from "@lingui/macro";
 
 export function AppHeaderLogo() {
   return (

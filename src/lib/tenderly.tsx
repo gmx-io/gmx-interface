@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/macro";
 import { Provider } from "ethers";
 import {
   Abi,
@@ -19,7 +20,6 @@ import { helperToast } from "./helperToast";
 import { getProvider } from "./rpc";
 import { ISigner } from "./transactions/iSigner";
 import { getPublicClientWithRpc } from "./wallets/rainbowKitConfig";
-import { Trans } from "@lingui/macro";
 
 export type TenderlyConfig = {
   accountSlug: string;

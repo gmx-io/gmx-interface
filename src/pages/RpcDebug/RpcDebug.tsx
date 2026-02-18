@@ -1,3 +1,4 @@
+import { t, Trans } from "@lingui/macro";
 import { useCallback, useEffect, useState } from "react";
 
 import { getProviderNameFromUrl } from "config/rpc";
@@ -25,7 +26,6 @@ import {
   type GroupedEvent,
   type RpcStats,
 } from "./parts";
-import { t, Trans } from "@lingui/macro";
 
 const GRID_STYLE = { minHeight: "600px", maxHeight: "calc(100vh - 250px)" };
 

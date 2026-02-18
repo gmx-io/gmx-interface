@@ -116,7 +116,7 @@ export function useCollateralWarnings() {
                 }}
               >
                 Switch to {collateralWithPosition.symbol} collateral
-              </ColorfulButtonLink>.
+              </ColorfulButtonLink>
             </Trans>
           </AlertInfoCard>
         );
@@ -132,7 +132,7 @@ export function useCollateralWarnings() {
                 }}
               >
                 Switch to {collateralWithPosition.symbol} collateral
-              </ColorfulButtonLink>.
+              </ColorfulButtonLink>
             </Trans>
           </AlertInfoCard>
         );
@@ -154,7 +154,7 @@ export function useCollateralWarnings() {
               }}
             >
               Switch to {symbol} collateral
-            </ColorfulButtonLink>.
+            </ColorfulButtonLink>
           </Trans>
         </AlertInfoCard>
       );

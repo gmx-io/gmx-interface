@@ -1,3 +1,5 @@
+import { t, Trans } from "@lingui/macro";
+
 import { emitReportEndpointFailure } from "lib/FallbackTracker/events";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import type { OracleKeeperDebugEvent, OracleKeeperDebugState } from "lib/oracleKeeperFetcher/_debug";
@@ -6,7 +8,6 @@ import { OracleKeeperDebugFlags } from "lib/oracleKeeperFetcher/_debug";
 import Button from "components/Button/Button";
 import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import { t, Trans } from "@lingui/macro";
 
 export type OracleEndpointStats = {
   endpoint: string;

@@ -57,6 +57,10 @@ msgstr "或透過 <0>chainlist.org</0> 更新您錢包的 RPC"
 msgid "REFERRAL CODE"
 msgstr "推薦代碼"
 
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
+msgid "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} collateral</0>"
+msgstr "現有限價單使用 {symbol} 抵押品。<0>切換至 {symbol} 抵押品</0>"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive value: traders receive funding"
 msgstr "正值：交易者收取資金費用"
@@ -279,6 +283,7 @@ msgid "Open app"
 msgstr "開啟應用"
 
 #: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "Try Express Trading"
 msgstr "試用 Express Trading"
 
@@ -361,7 +366,6 @@ msgid "Network fees increased. Additional fee required."
 msgstr "網路費用已上漲。需要額外費用。"
 
 #: src/components/OrderEditor/OrderEditor.tsx
-#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Fees"
@@ -435,6 +439,10 @@ msgstr "@username"
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Failed to claim affiliate rewards"
 msgstr "領取聯盟獎勵失敗"
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Insufficient liquidity in any BTC/USD pool"
+msgstr "所有 BTC/USD 池的流動性不足"
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Yes, GLV is fully liquid and permissionless. Sell via the GMX interface to redeem for underlying assets with low fees."
@@ -588,10 +596,6 @@ msgstr "倉位"
 msgid "Incentives, airdrops, and prizes will appear here"
 msgstr "獎勵、空投和獎品將顯示在這裡"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Limit / Take-Profit / Stop-Loss"
-msgstr "限價單 / 止盈 / 止損"
-
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max network fee includes fees for additional orders. Refunded in full if they don't trigger and are canceled. <0>Read more</0>."
 msgstr "最大網路費用包含附加訂單的費用。若未觸發並被取消，將全額退還。<0>了解更多</0>。"
@@ -668,6 +672,7 @@ msgstr "減倉規模無效。規模差額（{sizeDeltaUsdText}）超出倉位規
 
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "for lower net price impact"
 msgstr "以獲得更低的淨價格影響"
 
@@ -727,6 +732,7 @@ msgid "Accrued funding fees available for settlement"
 msgstr "可結算的累計資金費率費用"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "Convert esGMX to GMX tokens. Read the vesting details before using the vaults."
 msgstr "將 esGMX 轉換為 GMX 代幣。使用金庫前請先閱讀歸屬詳情。"
 
@@ -1039,6 +1045,10 @@ msgstr "已達池上限"
 msgid "Partnerships and integrations"
 msgstr "合作夥伴與整合"
 
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Insufficient gas balance. Deposit more ETH."
+msgstr "Gas 餘額不足。請存入更多 ETH。"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (negative PI)"
 msgstr "兌換手續費因子（負價格影響）"
@@ -1079,6 +1089,10 @@ msgstr "錯誤："
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Cross-chain one-click deposits into GM"
 msgstr "跨鏈一鍵存入 GM"
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "<0>Switch to TBTC-TBTC pool</0> for potentially lower price impact"
+msgstr "<0>切換至 TBTC-TBTC 池</0>以獲得可能更低的價格影響"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Transaction:"
@@ -1195,7 +1209,6 @@ msgstr "流動性僅在 {chainNames} 上可用。請切換網路以繼續。"
 #: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop-Loss"
 msgstr "止損"
@@ -1242,6 +1255,7 @@ msgid "Pending transfer approval..."
 msgstr "等待轉帳授權..."
 
 #: src/components/TVChart/Chart.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero impact. Net price impact applies only on closes (capped, usually at 0.5%). <0>Read more</0>."
 msgstr "GMX 流動性的模擬訂單簿視圖。開倉以標記價格執行，零價格影響。淨價格影響僅在平倉時適用（有上限，通常為 0.5%）。<0>了解更多</0>。"
 
@@ -1492,10 +1506,6 @@ msgstr "RPNL"
 msgid "FUNDING FEE"
 msgstr "FUNDING FEE"
 
-#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
-msgid "No price impact on increases — orders execute at mark price. <0>Read more</0>"
-msgstr "加倉無價格影響——訂單以標記價格成交。<0>了解更多</0>"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a pay token"
 msgstr "選擇支付代幣"
@@ -1683,6 +1693,10 @@ msgstr "TP/SL：{positionTitle}"
 msgid "Public"
 msgstr "公開"
 
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Change to Base"
+msgstr "切換至 Base"
+
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Hide error"
 msgstr "隱藏錯誤"
@@ -1845,6 +1859,7 @@ msgid "AVAIL. LIQ."
 msgstr "可用流動性"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "One-Click Trading is disabled. Action limit exceeded."
 msgstr "One-Click Trading 已停用。操作次數已超出限制。"
 
@@ -1881,10 +1896,6 @@ msgstr "市場資訊"
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Slippage must be less than 5%"
 msgstr "滑點必須小於 5%"
-
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "TP/SL orders have issues"
-msgstr "止盈/止損訂單存在問題"
 
 #: src/components/TPSLModal/TPSLInputRow.tsx
 msgid "Gain"
@@ -2090,6 +2101,10 @@ msgstr "GMX（中文）"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search"
 msgstr "搜尋"
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Existing position in WETH-USDC pool but lacks liquidity for this order"
+msgstr "WETH-USDC 池中有現有倉位，但此訂單的流動性不足"
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Fees for the past"
@@ -2463,6 +2478,10 @@ msgstr "未偵測到符合條件的持倉"
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr "幫助我們改善 GMX。為了安全，我們不會主動聯絡您。請發送「I have feedback」至我們的官方帳號："
 
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
+msgid "Existing position uses {0} collateral. This order won't apply to it. <0>Switch to {1} collateral</0>"
+msgstr "現有倉位使用 {0} 抵押品。此訂單將不會套用於該倉位。<0>切換至 {1} 抵押品</0>"
+
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliates"
 msgstr "推廣夥伴"
@@ -2557,6 +2576,7 @@ msgid "System"
 msgstr "系統"
 
 #: src/components/PositionShare/PositionShare.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "Earn rewards by sharing your referral code"
 msgstr "分享您的推薦碼即可賺取獎勵"
 
@@ -2751,7 +2771,6 @@ msgstr "所有未平倉倉位的待結算 PnL"
 msgid "Start unrealized PnL"
 msgstr "期初未實現盈虧"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Take-Profit / Stop-Loss"
 msgstr "止盈 / 止損"
@@ -3236,6 +3255,10 @@ msgstr "許可已簽署"
 msgid "Collapse"
 msgstr "收合"
 
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Banners"
+msgstr "橫幅"
+
 #: src/pages/UiPage/UiPage.tsx
 msgid "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam enim excepturi veritatis, architecto ab qui odio repudiandae vero accusantium dicta, eius similique a aspernatur, maxime iste ipsam facilis. Libero, et."
 msgstr "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam enim excepturi veritatis, architecto ab qui odio repudiandae vero accusantium dicta, eius similique a aspernatur, maxime iste ipsam facilis. Libero, et."
@@ -3260,6 +3283,10 @@ msgstr "存入進行中..."
 #: src/components/TPSLModal/AddTPSLModal.tsx
 msgid "Creating..."
 msgstr "建立中..."
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Existing position in WETH-USDC pool.<0>Switch to WETH-USDC pool</0>"
+msgstr "WETH-USDC 池中有現有倉位。<0>切換至 WETH-USDC 池</0>"
 
 #: src/pages/Jobs/Jobs.tsx
 msgid "GMX is not actively hiring. If you think you can contribute, email <0>jobs@gmx.io</0>."
@@ -3361,10 +3388,6 @@ msgstr "為什麼 GMX 比其他永續合約平台更具成本效益？"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized price impact"
 msgstr "已實現價格影響"
-
-#: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-msgid "Don't show this message again for 30 days"
-msgstr "30 天內不再顯示此訊息"
 
 #: src/config/bridging.tsx
 msgid "Mint tBTC using BTC with <0>Threshold</0>"
@@ -3565,7 +3588,6 @@ msgstr "Avalanche"
 msgid "Fee APR"
 msgstr "費用 APR"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
 msgstr "SL"
@@ -3839,6 +3861,10 @@ msgstr "V1"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Staked tokens reserved for vesting"
 msgstr "為歸屬鎖定保留的已質押代幣"
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Max 5 auto-cancel TP/SL orders allowed. Extra orders require manual cancellation. Existing orders still close with the position. <0>Read more</0>."
+msgstr "最多允許 5 個自動取消 TP/SL 訂單。額外的訂單需要手動取消。現有訂單仍會隨倉位一同平倉。<0>閱讀更多</0>。"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -4296,10 +4322,6 @@ msgstr "永續合約聚合器"
 msgid "Request Market Swap"
 msgstr "Request Market Swap"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "At {price}, {0} {percentage}%:"
-msgstr "於 {price}，{0} {percentage}%："
-
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
 msgstr "純 {indexSymbol} 做空。風險敞口僅來自倉位。"
@@ -4455,6 +4477,7 @@ msgstr "強制外部兌換失敗"
 #: src/components/PositionEditor/types.ts
 #: src/components/TradeHistory/keys.ts
 #: src/domain/multichain/useMultichainFundingToast.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "Withdraw"
 msgstr "提取"
 
@@ -4640,10 +4663,6 @@ msgstr "裝飾為 gray-400"
 msgid "Existing executable trigger orders"
 msgstr "現有可執行的觸發訂單"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Stop-Loss at 100%. Reduce existing orders to add more."
-msgstr "止損已達 100%。請減少現有訂單以新增更多。"
-
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/TermsAndConditions/TermsAndConditions.tsx
@@ -4730,6 +4749,10 @@ msgstr "買入 GLV"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buy {gmOrGlvLabel} failed."
 msgstr "買入 {gmOrGlvLabel} 失敗。"
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Existing limit order in WETH-USDC pool.<0>Switch to WETH-USDC pool</0>"
+msgstr "WETH-USDC 池中有現有限價單。<0>切換至 WETH-USDC 池</0>"
 
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "GM: {0}"
@@ -5238,7 +5261,6 @@ msgstr "提取手續費"
 msgid "Your fee savings from referral discounts"
 msgstr "您透過推薦折扣節省的手續費"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
 msgstr "止盈"
@@ -5288,6 +5310,10 @@ msgstr "leading-1"
 #: src/pages/UiPage/UiPage.tsx
 msgid "Base text it is. Nothing special."
 msgstr "這是基本文字。沒有什麼特別的。"
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Existing limit order in WETH-USDC pool but lacks liquidity for this order"
+msgstr "WETH-USDC 池中有現有限價單，但此訂單的流動性不足"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
@@ -5374,6 +5400,10 @@ msgstr "搜尋代幣"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "GLV (GMX Liquidity Vault) holds various GM tokens, giving you diversified exposure to GMX's markets. The vault auto-rebalances to high-demand markets, unlocking higher potential yield compared to isolated pools."
 msgstr "GLV（GMX Liquidity Vault）持有各種 GM 代幣，為您提供對 GMX 市場的多元化曝險。該金庫會自動再平衡至高需求市場，相較於獨立池可解鎖更高的潛在收益。"
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Settlement network changed to Arbitrum, but $12.50 remains in your Base GMX Account"
+msgstr "結算網路已切換至 Arbitrum，但您的 Base GMX Account 中仍有 $12.50"
 
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
@@ -5499,8 +5529,6 @@ msgstr "訂單失敗"
 msgid "Airdrop"
 msgstr "空投"
 
-#: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Launch app"
 msgstr "啟動應用程式"
@@ -5622,6 +5650,7 @@ msgid "Max funding factor"
 msgstr "最大資金費率因子"
 
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "High price impact"
 msgstr "價格影響過高"
 
@@ -5802,10 +5831,6 @@ msgstr "遠離<0/>清算風險"
 msgid "High net price impact"
 msgstr "淨價格影響過高"
 
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
-msgid "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} collateral</0>."
-msgstr "現有限價單使用 {symbol} 抵押品。<0>切換為 {symbol} 抵押品</0>。"
-
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Order not found. May have been canceled or already executed"
 msgstr "找不到訂單。可能已被取消或已執行"
@@ -5874,17 +5899,9 @@ msgstr "主要逾時"
 msgid "Increase size (Limit)"
 msgstr "加倉（限價）"
 
-#: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-msgid "Leaving GMX.io for a third-party, independent website"
-msgstr "即將離開 GMX.io 前往第三方獨立網站"
-
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "PnL relative to capital used (return on capital)"
 msgstr "PnL 相對於使用資本（資本回報率）"
-
-#: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-msgid "Alternative links are in the <0>docs</0>. By clicking Launch app you accept the <1>T&Cs</1> and <2>Referral T&Cs</2>."
-msgstr "替代連結請參閱<0>文件</0>。點擊 Launch app 即表示您接受<1>條款與細則</1>及<2>推薦條款與細則</2>。"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Create Stop Market"
@@ -6454,6 +6471,7 @@ msgid "GMX trading stats"
 msgstr "GMX 交易統計"
 
 #: src/components/LeverageField/LeverageField.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "High leverage increases liquidation risk"
 msgstr "高槓桿會增加清算風險"
 
@@ -6481,10 +6499,6 @@ msgstr "GMX 推薦統計儀表板"
 #: landing/src/pages/Home/LiqiuditySection/LiqiuditySection.tsx
 msgid "Join {0} users earning real yield"
 msgstr "加入 {0} 位用戶，賺取真實收益"
-
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
-msgid "Existing position uses {0} collateral. This action won't affect it. <0>Switch to {1} collateral</0>."
-msgstr "現有倉位使用 {0} 抵押品。此操作不會影響它。<0>切換至 {1} 抵押品</0>。"
 
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/TradeHistory/filters/ActionFilter.tsx
@@ -6631,6 +6645,7 @@ msgstr "合作夥伴"
 
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "Use a TWAP order"
 msgstr "使用 TWAP 訂單"
 
@@ -6844,10 +6859,6 @@ msgstr "查看交易"
 msgid "Project"
 msgstr "專案"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Stop-Loss PnL"
-msgstr "止損 PnL"
-
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "24h low"
@@ -6974,6 +6985,10 @@ msgstr "無事件"
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We'll schedule a chat with you. As thanks, you'll receive <0>100 <1/></0> for your feedback."
 msgstr "我們將與您安排一次交流。作為感謝，您將獲得 <0>100 <1/></0> 的回饋獎勵。"
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "GM bought successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or go to the ETH/USD pool to withdraw your GM tokens."
+msgstr "GM 購買成功，但跨鏈橋至 Base 失敗。您的資金安全存放在您的 GMX Account 中。請重試跨鏈橋或前往 ETH/USD 池提取您的 GM 代幣。"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "USD value may be inaccurate. Price data unavailable for {0}."
@@ -7182,6 +7197,7 @@ msgstr "強制失敗"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "Re-enable"
 msgstr "重新啟用"
 
@@ -7338,6 +7354,7 @@ msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders
 msgstr "倉位平倉時，止盈/止損訂單會自動取消。僅適用於啟用後建立的訂單。"
 
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "fees"
 msgstr "手續費"
 
@@ -7640,6 +7657,10 @@ msgstr "RWA"
 msgid "Fulfilling buy request..."
 msgstr "正在執行買入請求..."
 
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Buy GM failed"
+msgstr "購買 GM 失敗"
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
 msgstr "未知的 GM 轉換訂單"
@@ -7922,6 +7943,10 @@ msgstr "您沒有可分享的推薦碼。<0/>立即建立一個並開始賺取�
 #: src/components/AddressView/AddressView.tsx
 msgid "You"
 msgstr "您"
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Existing position uses USDC collateral. This action won't affect it. <0>Switch to USDC collateral</0>"
+msgstr "現有倉位使用 USDC 抵押品。此操作不會影響該倉位。<0>切換至 USDC 抵押品</0>"
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "with 100x leverage"
@@ -8237,6 +8262,10 @@ msgstr "新增端點"
 msgid "Insufficient {0} balance"
 msgstr "{0} 餘額不足"
 
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Express Trading is unavailable for wrapping or unwrapping native token ETH"
+msgstr "Express Trading 不支援原生代幣 ETH 的包裝或解除包裝"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Estimated rebate up to {0}% of open fee. Airdropped as {incentivesTokenTitle} tokens pro-rata. <0><1>Read more</1>.</0>"
 msgstr "預估返利最高可達開倉費用的 {0}%。以 {incentivesTokenTitle} 代幣按比例空投。<0><1>了解更多</1>。</0>"
@@ -8409,10 +8438,6 @@ msgstr "Layer 1"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
 msgstr "<0>以 75.5% 的多數票，GMX 選擇了 LayerZero 作為其多鏈擴展的訊息傳遞夥伴！此整合為 GMX 帶來：</0><1><2>擴展至 125+ 條鏈的能力</2><3>所有合約和安全性的完全所有權</3><4>快速、零滑點的轉帳</4><5>經過實戰檢驗的基礎設施，已獲數十億美元資產和數百個應用程式的信賴⋯⋯<6>查看更多</6></5></1>"
-
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Take-Profit PnL"
-msgstr "止盈 PnL"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Staking..."
@@ -8783,6 +8808,7 @@ msgid "Permit transaction sent for {0}!"
 msgstr "已發送 {0} 的許可交易！"
 
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "GMX Account support on Avalanche is ending. New positions and additional deposits are unavailable. Switch to Arbitrum as a settlement network."
 msgstr "Avalanche 上的 GMX Account 支援即將結束。無法建立新倉位或追加存款，請切換至 Arbitrum 作為結算網路。"
 
@@ -8818,6 +8844,10 @@ msgstr "POOL BALANCE"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show detailed price impact breakdown: stored impact (increase orders) and close impact (decrease orders) in tooltips and execution details. <0>Read more</0>"
 msgstr "顯示詳細的價格影響分析：工具提示和成交詳情中的儲存影響（加倉訂單）和平倉影響（減倉訂單）。<0>了解更多</0>"
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Insufficient liquidity in WETH-USDC pool. Choosing a different pool creates a new position."
+msgstr "WETH-USDC 池的流動性不足。選擇其他池將建立新的倉位。"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche LP incentives"
@@ -8967,6 +8997,10 @@ msgstr "領取價格影響回饋"
 msgid "Fulfilling shift request..."
 msgstr "正在處理轉換請求..."
 
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "No price impact on increases — orders execute at mark price. <0>Read more</0>."
+msgstr "加倉無價格影響——訂單以標記價格執行。<0>閱讀更多</0>。"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Convert {tokenSymbol} to {nativeTokenSymbol}"
 msgstr "將 {tokenSymbol} 轉換為 {nativeTokenSymbol}"
@@ -9000,10 +9034,6 @@ msgstr "Kudai AI agent"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No executed or cancelled transaction found yet"
 msgstr "尚未找到已執行或已取消的交易"
-
-#: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>"
-msgstr "本網站是由社群部署與維護的開源 <0>GMX 前端</0> 實例，託管並運行在分散式、點對點的 <1>IPFS 網路</1>上"
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
@@ -9102,12 +9132,17 @@ msgid "Completed"
 msgstr "已完成"
 
 #: src/components/PositionShare/PositionShare.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "Skip creating a referral code?"
 msgstr "跳過建立推薦碼？"
 
 #: src/domain/multichain/SettlementChainWarningContainer.tsx
 msgid "Settlement network changed to {0}, but {1} remains in your {2} GMX Account"
 msgstr "結算網路已變更為 {0}，但 {1} 仍保留在您的 {2} GMX Account 中"
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Deposit ETH"
+msgstr "存入 ETH"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
@@ -9317,13 +9352,17 @@ msgstr "提醒"
 msgid "C:"
 msgstr "C："
 
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
+msgid "Existing position uses {0} collateral. This action won't affect it. <0>Switch to {1} collateral</0>"
+msgstr "現有倉位使用 {0} 抵押品。此操作不會影響該倉位。<0>切換至 {1} 抵押品</0>"
+
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "<0>Positive funding fees accrued from your positions</0>"
 msgstr "<0>從您的倉位中累積的正向資金費用</0>"
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Take-Profit at 100%. Reduce existing orders to add more."
-msgstr "止盈已達 100%。請減少現有訂單以新增更多。"
+#: src/pages/UiPage/BannerTest.tsx
+msgid "0.0045 WETH remaining in old 1CT subaccount"
+msgstr "舊的 One-Click Trading 子帳戶中仍有 0.0045 WETH"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Topics"
@@ -9532,6 +9571,10 @@ msgstr "流動性僅在 {chainNames} 或 {lastChainName} 上可用。請切換�
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total trading volume from your referrals"
 msgstr "來自您推薦的總交易量"
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Insufficient liquidity in WETH-USDC pool. Select a different pool."
+msgstr "WETH-USDC 池的流動性不足。請選擇其他池。"
 
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Cancel order"
@@ -9771,6 +9814,7 @@ msgid "Claim parameters unavailable. Retry in a few seconds"
 msgstr "領取參數不可用。請幾秒後重試"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "Read details"
 msgstr "閱讀詳情"
 
@@ -10035,6 +10079,11 @@ msgstr "交易 ID"
 msgid "Frequency"
 msgstr "頻率"
 
+#: src/pages/UiPage/BannerTest.tsx
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Switch to WBTC-USDC pool"
+msgstr "切換至 WBTC-USDC 池"
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders referred"
 msgstr "推薦交易者"
@@ -10298,15 +10347,10 @@ msgstr "無目標代幣地址"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/components/TradeHistory/keys.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"
 msgstr "限價"
-
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
-msgid "Existing position uses {0} collateral. This order won't apply to it. <0>Switch to {1} collateral</0>."
-msgstr "現有倉位使用 {0} 抵押品。此訂單將不會套用至該倉位。<0>切換至 {1} 抵押品</0>。"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
@@ -10449,7 +10493,6 @@ msgstr "整體績效詳情"
 #: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"
 msgstr "止盈"

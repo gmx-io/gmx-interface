@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/macro";
 import { ReactNode } from "react";
 
 import { getExplorerUrl } from "config/chains";
@@ -6,7 +7,6 @@ import { useChainId } from "lib/chains";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
-import { Trans } from "@lingui/macro";
 
 export type TransactionStatusType = "muted" | "loading" | "success" | "error";
 

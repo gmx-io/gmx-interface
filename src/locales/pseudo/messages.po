@@ -57,6 +57,10 @@ msgstr ""
 msgid "REFERRAL CODE"
 msgstr ""
 
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
+msgid "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} collateral</0>"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive value: traders receive funding"
 msgstr ""
@@ -279,6 +283,7 @@ msgid "Open app"
 msgstr ""
 
 #: src/components/OneClickPromoBanner/OneClickPromoBanner.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "Try Express Trading"
 msgstr ""
 
@@ -361,7 +366,6 @@ msgid "Network fees increased. Additional fee required."
 msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
-#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Fees"
@@ -434,6 +438,10 @@ msgstr ""
 
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Failed to claim affiliate rewards"
+msgstr ""
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Insufficient liquidity in any BTC/USD pool"
 msgstr ""
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
@@ -588,10 +596,6 @@ msgstr ""
 msgid "Incentives, airdrops, and prizes will appear here"
 msgstr ""
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Limit / Take-Profit / Stop-Loss"
-msgstr ""
-
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max network fee includes fees for additional orders. Refunded in full if they don't trigger and are canceled. <0>Read more</0>."
 msgstr ""
@@ -668,6 +672,7 @@ msgstr ""
 
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "for lower net price impact"
 msgstr ""
 
@@ -727,6 +732,7 @@ msgid "Accrued funding fees available for settlement"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "Convert esGMX to GMX tokens. Read the vesting details before using the vaults."
 msgstr ""
 
@@ -1039,6 +1045,10 @@ msgstr ""
 msgid "Partnerships and integrations"
 msgstr ""
 
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Insufficient gas balance. Deposit more ETH."
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (negative PI)"
 msgstr ""
@@ -1078,6 +1088,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Cross-chain one-click deposits into GM"
+msgstr ""
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "<0>Switch to TBTC-TBTC pool</0> for potentially lower price impact"
 msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
@@ -1195,7 +1209,6 @@ msgstr ""
 #: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop-Loss"
 msgstr ""
@@ -1242,6 +1255,7 @@ msgid "Pending transfer approval..."
 msgstr ""
 
 #: src/components/TVChart/Chart.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero impact. Net price impact applies only on closes (capped, usually at 0.5%). <0>Read more</0>."
 msgstr ""
 
@@ -1492,10 +1506,6 @@ msgstr ""
 msgid "FUNDING FEE"
 msgstr ""
 
-#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
-msgid "No price impact on increases — orders execute at mark price. <0>Read more</0>"
-msgstr ""
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Select a pay token"
 msgstr ""
@@ -1683,6 +1693,10 @@ msgstr ""
 msgid "Public"
 msgstr ""
 
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Change to Base"
+msgstr ""
+
 #: src/components/ToastifyDebug/ToastifyDebug.tsx
 msgid "Hide error"
 msgstr ""
@@ -1845,6 +1859,7 @@ msgid "AVAIL. LIQ."
 msgstr ""
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "One-Click Trading is disabled. Action limit exceeded."
 msgstr ""
 
@@ -1880,10 +1895,6 @@ msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Slippage must be less than 5%"
-msgstr ""
-
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "TP/SL orders have issues"
 msgstr ""
 
 #: src/components/TPSLModal/TPSLInputRow.tsx
@@ -2089,6 +2100,10 @@ msgstr ""
 #: src/components/SearchInput/SearchInput.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search"
+msgstr ""
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Existing position in WETH-USDC pool but lacks liquidity for this order"
 msgstr ""
 
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -2463,6 +2478,10 @@ msgstr ""
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr ""
 
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
+msgid "Existing position uses {0} collateral. This order won't apply to it. <0>Switch to {1} collateral</0>"
+msgstr ""
+
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliates"
 msgstr ""
@@ -2557,6 +2576,7 @@ msgid "System"
 msgstr ""
 
 #: src/components/PositionShare/PositionShare.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "Earn rewards by sharing your referral code"
 msgstr ""
 
@@ -2751,7 +2771,6 @@ msgstr ""
 msgid "Start unrealized PnL"
 msgstr ""
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/components/TradeBox/TradeBoxRows/TPSLRows.tsx
 msgid "Take-Profit / Stop-Loss"
 msgstr ""
@@ -3236,6 +3255,10 @@ msgstr ""
 msgid "Collapse"
 msgstr ""
 
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Banners"
+msgstr ""
+
 #: src/pages/UiPage/UiPage.tsx
 msgid "Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam enim excepturi veritatis, architecto ab qui odio repudiandae vero accusantium dicta, eius similique a aspernatur, maxime iste ipsam facilis. Libero, et."
 msgstr ""
@@ -3259,6 +3282,10 @@ msgstr ""
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/TPSLModal/AddTPSLModal.tsx
 msgid "Creating..."
+msgstr ""
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Existing position in WETH-USDC pool.<0>Switch to WETH-USDC pool</0>"
 msgstr ""
 
 #: src/pages/Jobs/Jobs.tsx
@@ -3360,10 +3387,6 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized price impact"
-msgstr ""
-
-#: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-msgid "Don't show this message again for 30 days"
 msgstr ""
 
 #: src/config/bridging.tsx
@@ -3565,7 +3588,6 @@ msgstr ""
 msgid "Fee APR"
 msgstr ""
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
 msgstr ""
@@ -3838,6 +3860,10 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Staked tokens reserved for vesting"
+msgstr ""
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Max 5 auto-cancel TP/SL orders allowed. Extra orders require manual cancellation. Existing orders still close with the position. <0>Read more</0>."
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
@@ -4296,10 +4322,6 @@ msgstr ""
 msgid "Request Market Swap"
 msgstr ""
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "At {price}, {0} {percentage}%:"
-msgstr ""
-
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
 msgstr ""
@@ -4455,6 +4477,7 @@ msgstr ""
 #: src/components/PositionEditor/types.ts
 #: src/components/TradeHistory/keys.ts
 #: src/domain/multichain/useMultichainFundingToast.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "Withdraw"
 msgstr ""
 
@@ -4640,10 +4663,6 @@ msgstr ""
 msgid "Existing executable trigger orders"
 msgstr ""
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Stop-Loss at 100%. Reduce existing orders to add more."
-msgstr ""
-
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: landing/src/pages/TermsAndConditions/TermsAndConditions.tsx
@@ -4729,6 +4748,10 @@ msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buy {gmOrGlvLabel} failed."
+msgstr ""
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Existing limit order in WETH-USDC pool.<0>Switch to WETH-USDC pool</0>"
 msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
@@ -5238,7 +5261,6 @@ msgstr ""
 msgid "Your fee savings from referral discounts"
 msgstr ""
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
 msgstr ""
@@ -5287,6 +5309,10 @@ msgstr ""
 
 #: src/pages/UiPage/UiPage.tsx
 msgid "Base text it is. Nothing special."
+msgstr ""
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Existing limit order in WETH-USDC pool but lacks liquidity for this order"
 msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
@@ -5373,6 +5399,10 @@ msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "GLV (GMX Liquidity Vault) holds various GM tokens, giving you diversified exposure to GMX's markets. The vault auto-rebalances to high-demand markets, unlocking higher potential yield compared to isolated pools."
+msgstr ""
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Settlement network changed to Arbitrum, but $12.50 remains in your Base GMX Account"
 msgstr ""
 
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
@@ -5499,8 +5529,6 @@ msgstr ""
 msgid "Airdrop"
 msgstr ""
 
-#: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-#: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Launch app"
 msgstr ""
@@ -5622,6 +5650,7 @@ msgid "Max funding factor"
 msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "High price impact"
 msgstr ""
 
@@ -5802,10 +5831,6 @@ msgstr ""
 msgid "High net price impact"
 msgstr ""
 
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
-msgid "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} collateral</0>."
-msgstr ""
-
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Order not found. May have been canceled or already executed"
 msgstr ""
@@ -5874,16 +5899,8 @@ msgstr ""
 msgid "Increase size (Limit)"
 msgstr ""
 
-#: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-msgid "Leaving GMX.io for a third-party, independent website"
-msgstr ""
-
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "PnL relative to capital used (return on capital)"
-msgstr ""
-
-#: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-msgid "Alternative links are in the <0>docs</0>. By clicking Launch app you accept the <1>T&Cs</1> and <2>Referral T&Cs</2>."
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
@@ -6454,6 +6471,7 @@ msgid "GMX trading stats"
 msgstr ""
 
 #: src/components/LeverageField/LeverageField.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "High leverage increases liquidation risk"
 msgstr ""
 
@@ -6480,10 +6498,6 @@ msgstr ""
 
 #: landing/src/pages/Home/LiqiuditySection/LiqiuditySection.tsx
 msgid "Join {0} users earning real yield"
-msgstr ""
-
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
-msgid "Existing position uses {0} collateral. This action won't affect it. <0>Switch to {1} collateral</0>."
 msgstr ""
 
 #: src/components/Claims/filters/ActionFilter.tsx
@@ -6631,6 +6645,7 @@ msgstr ""
 
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "Use a TWAP order"
 msgstr ""
 
@@ -6844,10 +6859,6 @@ msgstr ""
 msgid "Project"
 msgstr ""
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Stop-Loss PnL"
-msgstr ""
-
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "24h low"
@@ -6973,6 +6984,10 @@ msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "We'll schedule a chat with you. As thanks, you'll receive <0>100 <1/></0> for your feedback."
+msgstr ""
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "GM bought successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or go to the ETH/USD pool to withdraw your GM tokens."
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -7182,6 +7197,7 @@ msgstr ""
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "Re-enable"
 msgstr ""
 
@@ -7338,6 +7354,7 @@ msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders
 msgstr ""
 
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "fees"
 msgstr ""
 
@@ -7640,6 +7657,10 @@ msgstr ""
 msgid "Fulfilling buy request..."
 msgstr ""
 
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Buy GM failed"
+msgstr ""
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
 msgstr ""
@@ -7921,6 +7942,10 @@ msgstr ""
 
 #: src/components/AddressView/AddressView.tsx
 msgid "You"
+msgstr ""
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Existing position uses USDC collateral. This action won't affect it. <0>Switch to USDC collateral</0>"
 msgstr ""
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
@@ -8237,6 +8262,10 @@ msgstr ""
 msgid "Insufficient {0} balance"
 msgstr ""
 
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Express Trading is unavailable for wrapping or unwrapping native token ETH"
+msgstr ""
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Estimated rebate up to {0}% of open fee. Airdropped as {incentivesTokenTitle} tokens pro-rata. <0><1>Read more</1>.</0>"
 msgstr ""
@@ -8408,10 +8437,6 @@ msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
-msgstr ""
-
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Take-Profit PnL"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -8783,6 +8808,7 @@ msgid "Permit transaction sent for {0}!"
 msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "GMX Account support on Avalanche is ending. New positions and additional deposits are unavailable. Switch to Arbitrum as a settlement network."
 msgstr ""
 
@@ -8817,6 +8843,10 @@ msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show detailed price impact breakdown: stored impact (increase orders) and close impact (decrease orders) in tooltips and execution details. <0>Read more</0>"
+msgstr ""
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Insufficient liquidity in WETH-USDC pool. Choosing a different pool creates a new position."
 msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
@@ -8967,6 +8997,10 @@ msgstr ""
 msgid "Fulfilling shift request..."
 msgstr ""
 
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "No price impact on increases — orders execute at mark price. <0>Read more</0>."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Convert {tokenSymbol} to {nativeTokenSymbol}"
 msgstr ""
@@ -8999,10 +9033,6 @@ msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No executed or cancelled transaction found yet"
-msgstr ""
-
-#: landing/src/pages/Home/LeaveHomepageRedirectModal/LeaveHompageRedirectModal.tsx
-msgid "The website is a community deployed and maintained instance of the open source <0>GMX front end</0>, hosted and served on the distributed, peer-to-peer <1>IPFS network</1>"
 msgstr ""
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
@@ -9102,11 +9132,16 @@ msgid "Completed"
 msgstr ""
 
 #: src/components/PositionShare/PositionShare.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "Skip creating a referral code?"
 msgstr ""
 
 #: src/domain/multichain/SettlementChainWarningContainer.tsx
 msgid "Settlement network changed to {0}, but {1} remains in your {2} GMX Account"
+msgstr ""
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Deposit ETH"
 msgstr ""
 
 #: src/components/PositionShare/CreateReferralCode.tsx
@@ -9317,12 +9352,16 @@ msgstr ""
 msgid "C:"
 msgstr ""
 
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
+msgid "Existing position uses {0} collateral. This action won't affect it. <0>Switch to {1} collateral</0>"
+msgstr ""
+
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "<0>Positive funding fees accrued from your positions</0>"
 msgstr ""
 
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
-msgid "Take-Profit at 100%. Reduce existing orders to add more."
+#: src/pages/UiPage/BannerTest.tsx
+msgid "0.0045 WETH remaining in old 1CT subaccount"
 msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
@@ -9531,6 +9570,10 @@ msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total trading volume from your referrals"
+msgstr ""
+
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Insufficient liquidity in WETH-USDC pool. Select a different pool."
 msgstr ""
 
 #: src/components/TVChartContainer/DynamicLine.tsx
@@ -9771,6 +9814,7 @@ msgid "Claim parameters unavailable. Retry in a few seconds"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/pages/UiPage/BannerTest.tsx
 msgid "Read details"
 msgstr ""
 
@@ -10033,6 +10077,11 @@ msgstr ""
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Frequency"
+msgstr ""
+
+#: src/pages/UiPage/BannerTest.tsx
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Switch to WBTC-USDC pool"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -10298,14 +10347,9 @@ msgstr ""
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/components/TradeHistory/keys.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"
-msgstr ""
-
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
-msgid "Existing position uses {0} collateral. This order won't apply to it. <0>Switch to {1} collateral</0>."
 msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
@@ -10449,7 +10493,6 @@ msgstr ""
 #: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
-#: src/components/TradeBox/TradeBoxRows/LimitAndTPSLRows.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"
 msgstr ""

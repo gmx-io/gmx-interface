@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/macro";
 import range from "lodash/range";
 import { useCallback, useState } from "react";
 
@@ -10,7 +11,6 @@ import Button from "components/Button/Button";
 import Select from "components/Select/Select";
 
 import "./ReferralsTier.scss";
-import { Trans } from "@lingui/macro";
 
 export default function ReferralsTier() {
   const { active, signer } = useWallet();

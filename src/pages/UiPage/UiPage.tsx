@@ -1,8 +1,10 @@
+import { t, Trans } from "@lingui/macro";
 import camelCase from "lodash/camelCase";
 import mapKeys from "lodash/mapKeys";
 import upperFirst from "lodash/upperFirst";
 import { memo, SVGProps, useState } from "react";
-import { t, Trans } from "@lingui/macro";
+
+import { BannerTest } from "./BannerTest";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
 import { colors } from "config/colors";
@@ -298,6 +300,8 @@ export default memo(function UiPage() {
           ))}
         </div>
       </main>
+
+      <BannerTest />
 
       <IconsAndImages />
     </AppPageLayout>

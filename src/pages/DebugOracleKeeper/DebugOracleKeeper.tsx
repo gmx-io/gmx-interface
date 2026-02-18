@@ -1,3 +1,4 @@
+import { t, Trans } from "@lingui/macro";
 import { useCallback, useEffect, useState } from "react";
 
 import { useTokenRecentPricesRequest } from "domain/synthetics/tokens/useTokenRecentPricesData";
@@ -21,7 +22,6 @@ import Card from "components/Card/Card";
 import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 
 import { DebugControlsPanel, EventsPanel, OracleEndpointsTable, type OracleEndpointStats } from "./parts";
-import { t, Trans } from "@lingui/macro";
 
 const GRID_STYLE = { minHeight: "600px", maxHeight: "calc(100vh - 250px)" };
 

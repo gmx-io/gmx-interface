@@ -2,12 +2,12 @@ import { Trans, msg } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { CSSProperties, useMemo } from "react";
 
+import { DOCS_LINKS } from "config/links";
 import {
   selectClaimsFundingFeesAccruedTotal,
   selectClaimsPriceImpactAccruedTotal,
 } from "context/SyntheticsStateContext/selectors/claimsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { DOCS_LINKS } from "config/links";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 

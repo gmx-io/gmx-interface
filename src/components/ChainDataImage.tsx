@@ -1,4 +1,5 @@
 import { t } from "@lingui/macro";
+
 import { ContractsChainId, getChainName } from "config/chains";
 import { getIcon } from "config/icons";
 import { useChainId } from "lib/chains";

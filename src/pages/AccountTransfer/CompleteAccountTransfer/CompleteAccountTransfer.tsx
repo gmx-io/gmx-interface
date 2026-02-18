@@ -1,4 +1,4 @@
-import { t, Trans } from "@lingui/macro";;
+import { t, Trans } from "@lingui/macro";
 import { ethers } from "ethers";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";

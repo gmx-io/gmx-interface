@@ -1,3 +1,4 @@
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import entries from "lodash/entries";
 import groupBy from "lodash/groupBy";
@@ -21,7 +22,6 @@ import { formatUsd } from "lib/numbers";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress, getTokensMap, getWrappedToken } from "sdk/configs/tokens";
 import { getMarketFullName } from "sdk/utils/markets";
 import { convertToUsd } from "sdk/utils/tokens";
-import { t, Trans } from "@lingui/macro";
 
 function DebugMarketGraph() {
   const chainId = useSelector(selectChainId);

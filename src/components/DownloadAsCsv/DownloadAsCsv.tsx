@@ -1,10 +1,10 @@
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback } from "react";
 
 import { downloadAsCsv } from "lib/csv";
 
 import downloadIcon from "img/ic_download.svg";
-import { t } from "@lingui/macro";
 
 type Props<T> = {
   data: T[];
