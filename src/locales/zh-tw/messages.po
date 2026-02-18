@@ -308,6 +308,10 @@ msgstr "顯示錯誤"
 msgid "settings"
 msgstr "設定"
 
+#: src/components/Claims/ClaimableCard.tsx
+msgid "Price impact rebates ready to claim. <0>Read more</0>."
+msgstr "價格影響回饋已可領取。<0>閱讀更多</0>。"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Market Swap"
 msgstr "執行 Market Swap"
@@ -860,6 +864,10 @@ msgstr "轉換建立失敗"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX alerts"
 msgstr "GMX 通知"
+
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "Net price impact and fees from your trade. <0>Read more</0>."
+msgstr "您交易的淨價格影響與費用。<0>閱讀更多</0>。"
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Prices are volatile. <0>Increase allowed slippage</0>"
@@ -1747,10 +1755,6 @@ msgstr "金鑰"
 msgid "Distributions"
 msgstr "分配"
 
-#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
-msgid "Net price impact and fees from your trade. <0>Read more</0>"
-msgstr "您的交易的淨價格影響和手續費。<0>了解更多</0>"
-
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Max profit limit reached. Current: {pnlToPoolFactorText}, max: {maxPnlFactorText}"
 msgstr "已達最大利潤限制。目前：{pnlToPoolFactorText}，上限：{maxPnlFactorText}"
@@ -2209,6 +2213,10 @@ msgstr "目前尚無足夠的資料"
 msgid "Your discount: {currentTierDiscount}% off trading fees."
 msgstr "您的折扣：交易手續費減免 {currentTierDiscount}%。"
 
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "Position exceeds max allowed leverage. <0>Read more</0>."
+msgstr "倉位超過最大允許槓桿。<0>閱讀更多</0>。"
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or transfer {nativeTokenSymbol} to {chainName}"
 msgstr "購買或轉帳 {nativeTokenSymbol} 至 {chainName}"
@@ -2287,10 +2295,6 @@ msgstr "最多可兌出 {0}"
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No assets available for deposit"
 msgstr "無可存入的資產"
-
-#: src/components/AprInfo/AprInfo.tsx
-msgid "Bonus APR paid as {airdropTokenTitle} airdrops. <0>Read more</0>"
-msgstr "額外 APR 以 {airdropTokenTitle} 空投形式發放。<0>了解更多</0>"
 
 #: src/components/Referrals/ReferralCodeWarnings.tsx
 msgid "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
@@ -2960,6 +2964,10 @@ msgstr "領取資金費用失敗"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "TVL"
 msgstr "TVL"
+
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Your GMX Account balance, usable for trading from any supported chain. <0>Read more</0>."
+msgstr "您的 GMX Account 餘額，可從任何支援的鏈進行交易。<0>閱讀更多</0>。"
 
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
@@ -4143,10 +4151,6 @@ msgstr "{longOrShort} 倉位不需支付資金費率或借貸費用"
 msgid "in {0}"
 msgstr "於 {0}"
 
-#: src/components/GmxAccountModal/MainView.tsx
-msgid "Your GMX Account balance, usable for trading from any supported chain. <0>Read more</0>"
-msgstr "您的 GMX Account 餘額，可從任何支援的鏈上用於交易。<0>閱讀更多</0>"
-
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} fees settled"
 msgstr "{positionName} 費用已結算"
@@ -4284,6 +4288,10 @@ msgstr "距清算價格變動"
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "possibilities in total"
 msgstr "種可能路徑"
+
+#: src/components/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
+msgid "Price impact is stored when you increase a position and applied when you decrease. <0>Read more</0>."
+msgstr "價格影響在您增加倉位時儲存，並在您減少倉位時套用。<0>閱讀更多</0>。"
 
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
@@ -4740,6 +4748,10 @@ msgstr "未設定大小的文字"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Page outdated. Refresh"
 msgstr "頁面已過期，請重新整理"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Show detailed price impact breakdown: stored impact (increase orders) and close impact (decrease orders) in tooltips and execution details. <0>Read more</0>."
+msgstr "顯示詳細的價格影響明細：工具提示和執行詳情中的儲存影響（增加訂單）與平倉影響（減少訂單）。<0>閱讀更多</0>。"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
@@ -7682,10 +7694,6 @@ msgstr "顯示槓桿滑桿"
 msgid "Opens GMTrade in a new tab"
 msgstr "在新分頁中開啟 GMTrade"
 
-#: src/components/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
-msgid "Price impact is stored when you increase a position and applied when you decrease. <0>Read more</0>"
-msgstr "加倉時記錄價格影響，減倉時套用。<0>了解更多</0>"
-
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7857,6 +7865,10 @@ msgstr "執行停損市價單"
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code submitted"
 msgstr "推薦碼已提交"
+
+#: src/components/AprInfo/AprInfo.tsx
+msgid "Bonus APR paid as {airdropTokenTitle} airdrops. <0>Read more</0>."
+msgstr "額外 APR 以 {airdropTokenTitle} 空投形式發放。<0>閱讀更多</0>。"
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "Execution price"
@@ -8694,10 +8706,6 @@ msgstr "/USD"
 msgid "Express + One-Click"
 msgstr "Express + One-Click"
 
-#: src/components/Claims/ClaimableCard.tsx
-msgid "Price impact rebates ready to claim. <0>Read more</0>"
-msgstr "價格影響回饋可領取。<0>了解更多</0>"
-
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "GM tokens represent shares in a liquidity pool for a single GMX market. Buy GM to provide liquidity and earn fees from leverage trading, swaps, and market-making activity on that specific market. All rewards are auto-compounded."
 msgstr "GM 代幣代表單一 GMX 市場流動性池的份額。購買 GM 以提供流動性，並從該特定市場的槓桿交易、兌換和做市活動中賺取手續費。所有獎勵均自動複投。"
@@ -8840,10 +8848,6 @@ msgstr "最快"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL BALANCE"
 msgstr "POOL BALANCE"
-
-#: src/components/SettingsModal/DisplaySettings.tsx
-msgid "Show detailed price impact breakdown: stored impact (increase orders) and close impact (decrease orders) in tooltips and execution details. <0>Read more</0>"
-msgstr "顯示詳細的價格影響分析：工具提示和成交詳情中的儲存影響（加倉訂單）和平倉影響（減倉訂單）。<0>了解更多</0>"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in WETH-USDC pool. Choosing a different pool creates a new position."
@@ -9490,6 +9494,10 @@ msgstr "所有資產"
 msgid "Hide breakdown"
 msgstr "隱藏明細"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "RPC error. Update your wallet's RPC via <0>chainlist.org</0>. <1>Read more</1>."
+msgstr "RPC 錯誤。請透過 <0>chainlist.org</0> 更新您錢包的 RPC。<1>閱讀更多</1>。"
+
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Order data unavailable yet"
 msgstr "訂單資料尚未可用"
@@ -9583,10 +9591,6 @@ msgstr "取消訂單"
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Current impact: {0}. Use -0.30% or more for better order execution."
 msgstr "目前影響：{0}。使用 -0.30% 或更高以獲得更好的訂單執行。"
-
-#: src/components/Errors/errorToasts.tsx
-msgid "RPC error. Update your wallet's RPC via <0>chainlist.org</0>. <1>Read more</1>"
-msgstr "RPC 錯誤。請透過 <0>chainlist.org</0> 更新您錢包的 RPC。<1>了解更多</1>"
 
 #: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
@@ -9775,10 +9779,6 @@ msgstr "可接受價格影響"
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Reduce withdrawal to match the max. <0>Read more</0>.<1/><2/><3>Set max withdrawal</3>"
 msgstr "減少提取金額以符合上限。<0>了解更多</0>。<1/><2/><3>設定最大提取金額</3>"
-
-#: src/components/PositionSeller/PositionSeller.tsx
-msgid "Position exceeds max allowed leverage. <0>Read more</0>"
-msgstr "倉位超過最大允許槓桿。<0>了解更多</0>"
 
 #: src/components/GmList/GmList.tsx
 #: src/components/GmList/GmList.tsx

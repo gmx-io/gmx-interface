@@ -308,6 +308,10 @@ msgstr "Показать ошибку"
 msgid "settings"
 msgstr "настройки"
 
+#: src/components/Claims/ClaimableCard.tsx
+msgid "Price impact rebates ready to claim. <0>Read more</0>."
+msgstr "Возврат за влияние на цену доступен для получения. <0>Подробнее</0>."
+
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Market Swap"
 msgstr "Исполнение рыночного обмена"
@@ -860,6 +864,10 @@ msgstr "Не удалось создать конвертацию"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX alerts"
 msgstr "Уведомления GMX"
+
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "Net price impact and fees from your trade. <0>Read more</0>."
+msgstr "Чистое влияние на цену и комиссии вашей сделки. <0>Подробнее</0>."
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Prices are volatile. <0>Increase allowed slippage</0>"
@@ -1747,10 +1755,6 @@ msgstr "Ключ"
 msgid "Distributions"
 msgstr "Распределения"
 
-#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
-msgid "Net price impact and fees from your trade. <0>Read more</0>"
-msgstr "Чистое влияние на цену и комиссии вашей сделки. <0>Подробнее</0>"
-
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Max profit limit reached. Current: {pnlToPoolFactorText}, max: {maxPnlFactorText}"
 msgstr "Достигнут лимит максимальной прибыли. Текущий: {pnlToPoolFactorText}, макс.: {maxPnlFactorText}"
@@ -2209,6 +2213,10 @@ msgstr "Пока недостаточно данных"
 msgid "Your discount: {currentTierDiscount}% off trading fees."
 msgstr "Ваша скидка: {currentTierDiscount}% на торговые комиссии."
 
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "Position exceeds max allowed leverage. <0>Read more</0>."
+msgstr "Позиция превышает максимально допустимое кредитное плечо. <0>Подробнее</0>."
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy or transfer {nativeTokenSymbol} to {chainName}"
 msgstr "Купить или перевести {nativeTokenSymbol} на {chainName}"
@@ -2287,10 +2295,6 @@ msgstr "Макс {0} выход"
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "No assets available for deposit"
 msgstr "Нет доступных активов для депозита"
-
-#: src/components/AprInfo/AprInfo.tsx
-msgid "Bonus APR paid as {airdropTokenTitle} airdrops. <0>Read more</0>"
-msgstr "Бонусный APR выплачивается в виде аирдропов {airdropTokenTitle}. <0>Подробнее</0>"
 
 #: src/components/Referrals/ReferralCodeWarnings.tsx
 msgid "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
@@ -2960,6 +2964,10 @@ msgstr "Клейм комиссий финансирования не удалс
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "TVL"
 msgstr "TVL"
+
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Your GMX Account balance, usable for trading from any supported chain. <0>Read more</0>."
+msgstr "Ваш баланс GMX Account, доступный для торговли из любой поддерживаемой сети. <0>Подробнее</0>."
 
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
@@ -4143,10 +4151,6 @@ msgstr "Позиции {longOrShort} не платят комиссию за ф�
 msgid "in {0}"
 msgstr "в {0}"
 
-#: src/components/GmxAccountModal/MainView.tsx
-msgid "Your GMX Account balance, usable for trading from any supported chain. <0>Read more</0>"
-msgstr "Баланс вашего GMX Account, доступный для торговли из любой поддерживаемой сети. <0>Подробнее</0>"
-
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} fees settled"
 msgstr "Комиссии {positionName} урегулированы"
@@ -4284,6 +4288,10 @@ msgstr "Изменение цены до ликвидации"
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "possibilities in total"
 msgstr "вариантов всего"
+
+#: src/components/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
+msgid "Price impact is stored when you increase a position and applied when you decrease. <0>Read more</0>."
+msgstr "Влияние на цену сохраняется при увеличении позиции и применяется при её уменьшении. <0>Подробнее</0>."
 
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
@@ -4740,6 +4748,10 @@ msgstr "Текст без заданного размера"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Page outdated. Refresh"
 msgstr "Страница устарела. Обновите"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Show detailed price impact breakdown: stored impact (increase orders) and close impact (decrease orders) in tooltips and execution details. <0>Read more</0>."
+msgstr "Показать детальную разбивку влияния на цену: сохранённое влияние (ордера на увеличение) и влияние при закрытии (ордера на уменьшение) в подсказках и деталях исполнения. <0>Подробнее</0>."
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
@@ -7682,10 +7694,6 @@ msgstr "Показать ползунок кредитного плеча"
 msgid "Opens GMTrade in a new tab"
 msgstr "Открывает GMTrade в новой вкладке"
 
-#: src/components/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
-msgid "Price impact is stored when you increase a position and applied when you decrease. <0>Read more</0>"
-msgstr "Влияние на цену сохраняется при увеличении позиции и применяется при её уменьшении. <0>Подробнее</0>"
-
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7857,6 +7865,10 @@ msgstr "Выполнить стоп-маркет"
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referral code submitted"
 msgstr "Реферальный код отправлен"
+
+#: src/components/AprInfo/AprInfo.tsx
+msgid "Bonus APR paid as {airdropTokenTitle} airdrops. <0>Read more</0>."
+msgstr "Бонусный APR выплачивается в виде {airdropTokenTitle} airdrops. <0>Подробнее</0>."
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "Execution price"
@@ -8694,10 +8706,6 @@ msgstr "/USD"
 msgid "Express + One-Click"
 msgstr "Express + One-Click"
 
-#: src/components/Claims/ClaimableCard.tsx
-msgid "Price impact rebates ready to claim. <0>Read more</0>"
-msgstr "Компенсации за влияние на цену готовы к получению. <0>Подробнее</0>"
-
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "GM tokens represent shares in a liquidity pool for a single GMX market. Buy GM to provide liquidity and earn fees from leverage trading, swaps, and market-making activity on that specific market. All rewards are auto-compounded."
 msgstr "Токены GM представляют собой доли в пуле ликвидности для отдельного рынка GMX. Покупайте GM, чтобы предоставлять ликвидность и получать комиссии от торговли с кредитным плечом, свопов и маркетмейкерской деятельности на этом рынке. Все вознаграждения реинвестируются автоматически."
@@ -8840,10 +8848,6 @@ msgstr "Самый быстрый"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL BALANCE"
 msgstr "БАЛАНС ПУЛА"
-
-#: src/components/SettingsModal/DisplaySettings.tsx
-msgid "Show detailed price impact breakdown: stored impact (increase orders) and close impact (decrease orders) in tooltips and execution details. <0>Read more</0>"
-msgstr "Показывать подробную разбивку влияния на цену: сохранённое влияние (ордера на увеличение) и влияние при закрытии (ордера на уменьшение) в подсказках и деталях исполнения. <0>Подробнее</0>"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in WETH-USDC pool. Choosing a different pool creates a new position."
@@ -9490,6 +9494,10 @@ msgstr "Все активы"
 msgid "Hide breakdown"
 msgstr "Скрыть детали"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "RPC error. Update your wallet's RPC via <0>chainlist.org</0>. <1>Read more</1>."
+msgstr "Ошибка RPC. Обновите RPC вашего кошелька через <0>chainlist.org</0>. <1>Подробнее</1>."
+
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Order data unavailable yet"
 msgstr "Данные ордера пока недоступны"
@@ -9583,10 +9591,6 @@ msgstr "Отменить ордер"
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Current impact: {0}. Use -0.30% or more for better order execution."
 msgstr "Текущее влияние: {0}. Используйте -0.30% или более для лучшего исполнения ордера."
-
-#: src/components/Errors/errorToasts.tsx
-msgid "RPC error. Update your wallet's RPC via <0>chainlist.org</0>. <1>Read more</1>"
-msgstr "Ошибка RPC. Обновите RPC вашего кошелька через <0>chainlist.org</0>. <1>Подробнее</1>"
 
 #: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
@@ -9775,10 +9779,6 @@ msgstr "Допустимое влияние на цену"
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Reduce withdrawal to match the max. <0>Read more</0>.<1/><2/><3>Set max withdrawal</3>"
 msgstr "Уменьшите вывод до максимума. <0>Подробнее</0>.<1/><2/><3>Установить макс. вывод</3>"
-
-#: src/components/PositionSeller/PositionSeller.tsx
-msgid "Position exceeds max allowed leverage. <0>Read more</0>"
-msgstr "Позиция превышает максимально допустимое кредитное плечо. <0>Подробнее</0>"
 
 #: src/components/GmList/GmList.tsx
 #: src/components/GmList/GmList.tsx
