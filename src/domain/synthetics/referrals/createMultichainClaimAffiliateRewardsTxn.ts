@@ -115,7 +115,6 @@ export async function createMultichainClaimAffiliateRewardsTxn({
 
   return await sendExpressTransaction({
     chainId,
-    isSponsoredCall: expressTxnParams.isSponsoredCall,
     txnData,
   });
 }
