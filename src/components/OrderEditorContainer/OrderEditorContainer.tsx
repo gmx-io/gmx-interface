@@ -12,9 +12,25 @@ export function OrderEditorContainer() {
 
   const handleClose = useMemo(() => () => setEditingOrderState(undefined), [setEditingOrderState]);
 
+  const handleBack = useMemo(
+    () => () => {
+      setEditingOrderState({ orderKey: undefined, source: "TPSLModal" });
+    },
+    [setEditingOrderState]
+  );
+
   if (!editingOrderState || !editingOrder) {
     return null;
   }
 
-  return <OrderEditor order={editingOrder} source={editingOrderState.source} onClose={handleClose} />;
+  const shouldShowBack = editingOrderState.source === "TPSLModal";
+
+  return (
+    <OrderEditor
+      order={editingOrder}
+      source={editingOrderState.source}
+      onClose={handleClose}
+      onBack={shouldShowBack ? handleBack : undefined}
+    />
+  );
 }

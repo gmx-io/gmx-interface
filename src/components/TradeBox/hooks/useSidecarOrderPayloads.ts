@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 
-import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { selectAccount, selectUserReferralInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxCollateralTokenAddress,
@@ -10,8 +9,9 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
+import { buildTpSlCreatePayloads } from "domain/tpsl/sidecar";
 import { useChainId } from "lib/chains";
-import { buildDecreaseOrderPayload, buildUpdateOrderPayload, CancelOrderTxnParams } from "sdk/utils/orderTransactions";
+import { buildUpdateOrderPayload, CancelOrderTxnParams } from "sdk/utils/orderTransactions";
 
 import { useRequiredActions } from "./useRequiredActions";
 import { useTPSLSummaryExecutionFee } from "./useTPSLSummaryExecutionFee";
@@ -34,35 +34,19 @@ export function useSidecarOrderPayloads() {
       return undefined;
     }
 
-    const createPayloads = createSltpEntries.map((entry, i) => {
-      const amounts = entry.decreaseAmounts;
-
-      return buildDecreaseOrderPayload({
-        chainId,
-        receiver: account,
-        collateralDeltaAmount: amounts.collateralDeltaAmount ?? 0n,
-        collateralTokenAddress: collateralAddress,
-        sizeDeltaUsd: amounts.sizeDeltaUsd,
-        sizeDeltaInTokens: amounts.sizeDeltaInTokens,
-        referralCode: userReferralInfo?.referralCodeForTxn,
-        uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT,
-        allowedSlippage: 0,
-        orderType: amounts.triggerOrderType!,
-        autoCancel: i < autoCancelOrdersLimit,
-        swapPath: [],
-        externalSwapQuote: undefined,
-        marketAddress: marketInfo.marketTokenAddress,
-        indexTokenAddress: marketInfo.indexTokenAddress,
-        isLong,
-        acceptablePrice: amounts.acceptablePrice,
-        triggerPrice: amounts.triggerPrice,
-        receiveTokenAddress: collateralAddress,
-        minOutputUsd: 0n,
-        decreasePositionSwapType: amounts.decreaseSwapType,
+    const createPayloads = buildTpSlCreatePayloads({
+      autoCancelOrdersLimit,
+      chainId,
+      account,
+      marketAddress: marketInfo.marketTokenAddress,
+      indexTokenAddress: marketInfo.indexTokenAddress,
+      collateralTokenAddress: collateralAddress,
+      isLong,
+      entries: createSltpEntries.map((entry) => ({
+        amounts: entry.decreaseAmounts,
         executionFeeAmount: getExecutionFeeAmountForEntry(entry) ?? 0n,
-        executionGasLimit: 0n, // Don't need for tp/sl entries
-        validFromTime: 0n,
-      });
+      })),
+      userReferralCode: userReferralInfo?.referralCodeForTxn,
     });
 
     const updatePayloads = updateSltpEntries.map((entry) => {

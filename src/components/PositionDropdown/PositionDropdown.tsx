@@ -11,6 +11,7 @@ import MenuDotsIcon from "img/ic_menu_dots.svg?react";
 import SelectIcon from "img/ic_select.svg?react";
 import ShareIcon from "img/ic_share.svg?react";
 import TriggerClose from "img/ic_triggerclose_16.svg?react";
+import IncreaseStopMarket from "img/tokens/ic_box_chevron_up.svg?react";
 
 import "./PositionDropdown.css";
 
@@ -21,7 +22,9 @@ type Props = {
   handleMarketIncreaseSize?: () => void;
   handleLimitIncreaseSize?: () => void;
   handleStopMarketIncreaseSize?: () => void;
+  handleTwapIncreaseSize?: () => void;
   handleTriggerClose?: () => void;
+  disabled?: boolean;
 };
 
 export default function PositionDropdown({
@@ -31,13 +34,23 @@ export default function PositionDropdown({
   handleMarketIncreaseSize,
   handleLimitIncreaseSize,
   handleStopMarketIncreaseSize,
+  handleTwapIncreaseSize,
   handleTriggerClose,
+  disabled,
 }: Props) {
   const { refs, floatingStyles } = useFloating({
     middleware: [offset({ mainAxis: 8 }), flip(), shift()],
     placement: "bottom-start",
     whileElementsMounted: autoUpdate,
   });
+
+  if (disabled) {
+    return (
+      <Button variant="ghost" disabled>
+        <MenuDotsIcon fontSize={14} fontWeight={500} className="text-typography-secondary" />
+      </Button>
+    );
+  }
 
   return (
     <Menu>
@@ -100,9 +113,19 @@ export default function PositionDropdown({
           {handleStopMarketIncreaseSize && (
             <Menu.Item>
               <div className="menu-item" onClick={handleStopMarketIncreaseSize}>
-                <IncreaseMarket className="size-16" />
+                <IncreaseStopMarket className="size-16" />
                 <p>
                   <Trans>Increase Size (Stop Market)</Trans>
+                </p>
+              </div>
+            </Menu.Item>
+          )}
+          {handleTwapIncreaseSize && (
+            <Menu.Item>
+              <div className="menu-item" onClick={handleTwapIncreaseSize}>
+                <IncreaseMarket className="size-16" />
+                <p>
+                  <Trans>Increase Size (TWAP)</Trans>
                 </p>
               </div>
             </Menu.Item>

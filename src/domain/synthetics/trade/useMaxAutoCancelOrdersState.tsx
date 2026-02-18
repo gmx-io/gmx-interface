@@ -6,7 +6,7 @@ import { selectMaxAutoCancelOrders } from "context/SyntheticsStateContext/select
 import { makeSelectOrdersByPositionKey } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import { selectTradeboxSelectedPositionKey } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
+import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -20,7 +20,7 @@ export function useMaxAutoCancelOrdersState({
 }) {
   const { isAutoCancelTPSL: isEnabledAutoCancel } = useSettings();
   const maxAutoCancelOrders = useSelector(selectMaxAutoCancelOrders);
-  const { stopLoss, takeProfit } = useSidecarOrders();
+  const sidecarEntries = useSidecarEntries();
   const positionOrders = useSelector(makeSelectOrdersByPositionKey(positionKey));
   const selectedPositionKey = useSelector(selectTradeboxSelectedPositionKey);
 
@@ -28,9 +28,7 @@ export function useMaxAutoCancelOrdersState({
 
   let draftOrdersCount = isCreatingNewAutoCancel ? 1 : 0;
   if (shouldCountDraftSidecarOrders) {
-    draftOrdersCount += [...stopLoss.entries, ...takeProfit.entries].filter(
-      (entry) => entry.txnType === "create"
-    ).length;
+    draftOrdersCount += sidecarEntries.filter((entry) => entry.txnType === "create").length;
   }
 
   const existingAutoCancelOrders = useMemo(() => {

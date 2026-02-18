@@ -135,7 +135,7 @@ function normalizeInteger(value: string) {
 export function bigintToNumber(value: bigint, decimals: number) {
   const negative = value < 0;
   if (negative) value *= -1n;
-  const precision = 10n ** BigInt(decimals);
+  const precision = expandDecimals(1, decimals);
   const int = value / precision;
   const frac = value % precision;
 
@@ -193,7 +193,7 @@ export function formatBigUsd(amount: bigint, opts: { displayDecimals?: number } 
 export function formatDeltaUsd(
   deltaUsd?: bigint,
   percentage?: bigint,
-  opts: { fallbackToZero?: boolean; showPlusForZero?: boolean } = {}
+  opts: { fallbackToZero?: boolean; showPlusForZero?: boolean; hidePercentage?: boolean } = {}
 ) {
   if (typeof deltaUsd !== "bigint") {
     if (opts.fallbackToZero) {
@@ -206,7 +206,8 @@ export function formatDeltaUsd(
   const sign = getPlusOrMinusSymbol(deltaUsd, { showPlusForZero: opts.showPlusForZero });
 
   const exceedingInfo = getLimitedDisplay(deltaUsd, USD_DECIMALS);
-  const percentageStr = percentage !== undefined ? ` (${sign}${formatPercentage(bigMath.abs(percentage))})` : "";
+  const percentageStr =
+    percentage !== undefined && !opts.hidePercentage ? ` (${sign}${formatPercentage(bigMath.abs(percentage))})` : "";
   const deltaUsdStr = formatAmount(exceedingInfo.value, USD_DECIMALS, 2, true);
   const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol} ` : "";
 
@@ -587,6 +588,14 @@ export function getLimitedDisplay(
 
 export const limitDecimals = (amount: BigNumberish, maxDecimals?: number) => {
   let amountStr = amount.toString();
+
+  if (amountStr.includes("e") || amountStr.includes("E")) {
+    const num = Number(amountStr);
+    if (!isNaN(num)) {
+      amountStr = num.toFixed(20).replace(/\.?0+$/, "");
+    }
+  }
+
   if (maxDecimals === undefined) {
     return amountStr;
   }
@@ -701,11 +710,19 @@ export function bigNumberify(n?: BigNumberish | null | undefined) {
 export const parseValue = (value: string, tokenDecimals: number) => {
   const pValue = parseFloat(value);
 
-  if (isNaN(pValue)) {
+  if (isNaN(pValue) || !isFinite(pValue)) {
     return undefined;
   }
+
   value = limitDecimals(value, tokenDecimals);
   const amount = parseUnits(value, tokenDecimals);
+
+  // Cap at a safe maximum to prevent downstream BigInt overflow errors
+  const MAX_ALLOWED = expandDecimals(1, 62);
+  if (amount > MAX_ALLOWED || amount < -MAX_ALLOWED) {
+    return undefined;
+  }
+
   return bigNumberify(amount);
 };
 

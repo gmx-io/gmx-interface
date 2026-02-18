@@ -128,6 +128,8 @@ async function calculateGmxAccountDepositTechnicalFees(
       castedParams.addresses.initialLongToken,
       castedParams.addresses.initialShortToken,
     ],
+    gasPrice: params.gasPrice,
+    gelatoRelayFeeMultiplierFactor: params.gasLimits.gelatoRelayFeeMultiplierFactor,
   });
 
   const relayFeeUsd = convertToUsd(
@@ -244,6 +246,8 @@ async function calculateGmxAccountWithdrawalTechnicalFees(
     gasPaymentParams: params.baseRelayFeeSwapParams.gasPaymentParams,
     subaccount: undefined,
     additionalBalanceOverrideTokens: [glvOrMarketTokenAddress],
+    gasPrice: params.gasPrice,
+    gelatoRelayFeeMultiplierFactor: params.gasLimits.gelatoRelayFeeMultiplierFactor,
   });
 
   const relayFeeUsd = convertToUsd(
