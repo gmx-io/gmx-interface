@@ -3,7 +3,10 @@ import { useEffect } from "react";
 import { ARBITRUM } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { selectIsGmxAccountBalancesLoaded, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectIsGmxAccountBalancesLoaded,
+  selectTokensData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { TokensData } from "domain/synthetics/tokens/types";
@@ -34,9 +37,8 @@ export function useInitCollateralCloseDestination() {
   const prevGmxAccountUsd = usePrevious(gmxAccountUsd);
 
   useEffect(() => {
-    if (settings.receiveToGmxAccount !== null) return;
-    if (chainId !== ARBITRUM) return;
-    if (!isGmxAccountBalancesLoaded || !tokensData) return;
+    if (settings.receiveToGmxAccount !== null || chainId !== ARBITRUM || !isGmxAccountBalancesLoaded || !tokensData)
+      return;
 
     const usd = getTotalGmxAccountUsd(tokensData);
 
