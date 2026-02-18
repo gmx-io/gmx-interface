@@ -1720,6 +1720,7 @@ msgstr "MARCHÉS"
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
+#: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Max {0}"
 msgstr "Max {0}"
 
