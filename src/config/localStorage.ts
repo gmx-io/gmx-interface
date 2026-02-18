@@ -61,9 +61,15 @@ export const INTERVIEW_INVITATION_SHOWN_TIME_KEY = "interview-invitation-shown-t
 export const NPS_SURVEY_SHOWN_TIME_KEY = "nps-survey-shown-time";
 export const TOKEN_FAVORITES_PREFERENCE_KEY = "token-favorites-preference";
 export const SETTINGS_WARNING_DOT_VISIBLE_KEY = "settings-warning-dot-visible";
+export const SUPPORT_CHAT_WAS_EVER_SHOWN_KEY = "support-chat-was-ever-shown";
+export const SUPPORT_CHAT_WAS_EVER_CLICKED_KEY = "support-chat-was-ever-clicked";
+export const SUPPORT_CHAT_USER_ID_KEY = "support-chat-user-id";
+export const SUPPORT_CHAT_LAST_CONNECTED_STATE_KEY = "support-chat-last-connected-state";
 
 export const METRICS_PENDING_EVENTS_KEY = "metrics-pending-events";
 export const METRICS_TIMERS_KEY = "metrics-timers-key";
+
+export const UI_FLAG_EVENTS_DISMISSED_KEY_PREFIX = "ui-flag-event-dismissed";
 
 const DEBUG_MULTICALL_BATCHING_KEY = "debug-multicall-batching";
 export const PERMITS_DISABLED_KEY = "permits-disabled";

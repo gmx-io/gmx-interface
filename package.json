@@ -43,6 +43,7 @@
     "@floating-ui/react": "0.26.19",
     "@gelatocloud/gasless": "0.0.10",
     "@headlessui/react": "1.7.19",
+    "@intercom/messenger-js-sdk": "^0.0.18",
     "@layerzerolabs/lz-v2-utilities": "3.0.85",
     "@lingui/core": "4.10.0",
     "@lingui/macro": "4.11.3",

@@ -2797,6 +2797,10 @@ msgstr "Показать значения отладки"
 msgid "Annualized data based on the past 7 days."
 msgstr "Годовые данные на основе последних 7 дней."
 
+#: src/config/uiFlagEvents.tsx
+msgid "Trading may be temporarily unavailable. Our team is working to resolve the issue"
+msgstr ""
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity is available for increasing shorts for<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 msgstr "Нет доступной ликвидности для увеличения шортов для<0/>этого размера. Макс. размер шорта: {0}<1/><2/>Цены выполнения для уменьшения лонгов."
@@ -4681,6 +4685,10 @@ msgstr "Не удалось отменить {ordersText}."
 msgid "Vesting"
 msgstr "Вестинг"
 
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "Support"
+msgstr "Поддержка"
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Cancel newly created orders"
 msgstr "Отменить недавно созданные ордера"
@@ -4798,6 +4806,10 @@ msgstr "Доходное фермерство"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "Одобрение…"
+
+#: src/config/uiFlagEvents.tsx
+msgid "Service Disruption"
+msgstr ""
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"
@@ -6200,6 +6212,10 @@ msgstr "Сдвиг {symbol}..."
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price above mark price"
 msgstr "Цена триггера выше маркированной цены"
+
+#: src/components/SideNav/SupportChatNavItem.tsx
+msgid "New"
+msgstr "Новое"
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Cross-Margin</0><1>Cross-Collateral</1>"
