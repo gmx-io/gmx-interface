@@ -66,11 +66,18 @@ export function CollateralDestinationDialog({
           content={
             <div>
               <Trans>
-                <span className="font-bold">GMX Account</span> keeps funds in your GMX Account for faster trading and
-                lower gas costs.
+                Because positions on Arbitrum can be funded from both your wallet and your GMX Account, we can't always
+                determine where to return the collateral automatically.
                 <br />
                 <br />
-                <span className="font-bold">Arbitrum wallet</span> sends funds directly to your connected wallet.
+                Choose:
+                <br />• <span className="font-bold">Wallet</span> if you mostly trade from your personal wallet on
+                Arbitrum
+                <br />• <span className="font-bold">GMX Account</span> if you plan to keep trading or reusing collateral
+                on GMX.
+                <br />
+                <br />
+                You can change this preference anytime in Settings or when closing a position.
               </Trans>
             </div>
           }

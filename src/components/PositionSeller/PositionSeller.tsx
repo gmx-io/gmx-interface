@@ -4,7 +4,7 @@ import cx from "classnames";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { useKey, useLatest } from "react-use";
 
-import { ARBITRUM } from "config/chains";
+import { ARBITRUM, GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { getCollateralCloseDestinationDialogHiddenKey } from "config/localStorage";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
@@ -90,6 +90,7 @@ import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
@@ -710,7 +711,15 @@ export function PositionSeller() {
             tokens={availableReceiveTokens}
             showTokenImgInDropdown={true}
             selectedTokenLabel={
-              <span className="PositionSelector-selected-receive-token">
+              <span className="PositionSelector-selected-receive-token inline-flex items-center">
+                {chainId === ARBITRUM && srcChainId === undefined && expressOrdersEnabled && (
+                  <TokenIcon
+                    className="mr-4"
+                    symbol={receiveToken.symbol}
+                    displaySize={20}
+                    chainIdBadge={effectiveIsReceiveToGmxAccount ? GMX_ACCOUNT_PSEUDO_CHAIN_ID : ARBITRUM}
+                  />
+                )}
                 <AmountWithUsdBalance
                   className={cx({
                     "*:!text-yellow-300 hover:!text-yellow-300": isNotEnoughReceiveTokenLiquidity,
@@ -720,6 +729,7 @@ export function PositionSeller() {
                   symbol={receiveToken.symbol}
                   usd={receiveUsd}
                   isStable={receiveToken.isStable}
+                  secondaryValueClassName="!text-14"
                 />
               </span>
             }

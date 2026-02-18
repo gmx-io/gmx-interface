@@ -5277,6 +5277,11 @@ msgstr "Проскальзывание — это разница между ож
 msgid "Buy {gmOrGlvLabel} operation failed. Your funds are safe and currently stored in your GMX account. You can switch to settlement chain and go to the {indexName} pool to manually buy your {gmOrGlvLabel} tokens."
 msgstr "Операция покупки {gmOrGlvLabel} не удалась. Ваши средства в безопасности и сейчас хранятся на вашем аккаунте GMX. Вы можете переключиться на расчётную сеть и перейти в пул {indexName}, чтобы вручную купить токены {gmOrGlvLabel}."
 
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Because positions on Arbitrum can be funded from both your wallet and your GMX Account, we can't always determine where to return the collateral automatically.<0/><1/>Choose:<2/>• <3>Wallet</3> if you mostly trade from your personal wallet on Arbitrum<4/>• <5>GMX Account</5> if you plan to keep trading or reusing collateral on GMX.<6/><7/>You can change this preference anytime in Settings or when closing a position."
+msgstr ""
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transferring"
 msgstr "Перевод в процессе"
@@ -5305,8 +5310,8 @@ msgstr "Общий циркулирующий запас токенов GMX."
 
 #: src/components/PositionSeller/CollateralDestinationDialog.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
-msgid "<0>GMX Account</0> keeps funds in your GMX Account for faster trading and lower gas costs.<1/><2/><3>Arbitrum wallet</3> sends funds directly to your connected wallet."
-msgstr ""
+#~ msgid "<0>GMX Account</0> keeps funds in your GMX Account for faster trading and lower gas costs.<1/><2/><3>Arbitrum wallet</3> sends funds directly to your connected wallet."
+#~ msgstr ""
 
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."

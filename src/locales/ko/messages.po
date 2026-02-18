@@ -5277,6 +5277,11 @@ msgstr "슬리피지는 가격 변동성으로 인해 예상 체결 가격과 �
 msgid "Buy {gmOrGlvLabel} operation failed. Your funds are safe and currently stored in your GMX account. You can switch to settlement chain and go to the {indexName} pool to manually buy your {gmOrGlvLabel} tokens."
 msgstr "{gmOrGlvLabel} 구매 작업이 실패했습니다. 자금은 안전하며 현재 GMX 계정에 보관되어 있습니다. 정산 체인으로 전환하고 {indexName} 풀로 이동하여 {gmOrGlvLabel} 토큰을 수동으로 구매할 수 있습니다."
 
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Because positions on Arbitrum can be funded from both your wallet and your GMX Account, we can't always determine where to return the collateral automatically.<0/><1/>Choose:<2/>• <3>Wallet</3> if you mostly trade from your personal wallet on Arbitrum<4/>• <5>GMX Account</5> if you plan to keep trading or reusing collateral on GMX.<6/><7/>You can change this preference anytime in Settings or when closing a position."
+msgstr ""
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transferring"
 msgstr "전송 중"
@@ -5305,8 +5310,8 @@ msgstr "GMX 토큰의 총 순환 공급량."
 
 #: src/components/PositionSeller/CollateralDestinationDialog.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
-msgid "<0>GMX Account</0> keeps funds in your GMX Account for faster trading and lower gas costs.<1/><2/><3>Arbitrum wallet</3> sends funds directly to your connected wallet."
-msgstr ""
+#~ msgid "<0>GMX Account</0> keeps funds in your GMX Account for faster trading and lower gas costs.<1/><2/><3>Arbitrum wallet</3> sends funds directly to your connected wallet."
+#~ msgstr ""
 
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
