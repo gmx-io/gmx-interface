@@ -17,6 +17,8 @@ import type { TokensData } from "sdk/utils/tokens/types";
 
 import { useOptimisticPositions } from "./useOptimisticPositions";
 
+export { getPendingMockPosition } from "./useOptimisticPositions";
+
 type PositionsResult = {
   positionsData?: PositionsData;
   allPossiblePositionsKeys?: string[];
