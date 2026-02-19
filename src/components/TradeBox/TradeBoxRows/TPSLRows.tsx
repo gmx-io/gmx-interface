@@ -84,7 +84,7 @@ export function TPSLGroup() {
       open={isTpSlVisible}
       title={
         <TooltipWithPortal
-          handle={<Trans>Take Profit / Stop Loss</Trans>}
+          handle={<Trans>Take-Profit / Stop-Loss</Trans>}
           variant="iconStroke"
           position="top"
           disableClickToggle

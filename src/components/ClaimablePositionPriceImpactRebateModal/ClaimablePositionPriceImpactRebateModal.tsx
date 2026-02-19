@@ -96,7 +96,7 @@ function ClaimablePositionPriceImpactRebateModalSettlementChain({
     onSubmit?: () => void;
   } = useMemo(() => {
     if (hasOutdatedUi) {
-      return { text: t`Page outdated, please refresh`, disabled: true };
+      return { text: t`Page outdated. Refresh`, disabled: true };
     }
     if (isSubmitting) {
       return { text: t`Claiming...`, disabled: true };
@@ -167,7 +167,7 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
 
   const handleSubmit = useCallback(async () => {
     const onMissingParams = () => {
-      helperToast.error(t`No necessary params to claim. Retry in a few seconds.`);
+      helperToast.error(t`Missing claim parameters. Retry in a few seconds`);
       metrics.pushError(new Error("No necessary params to claim"), "expressClaimPositionPriceImpactFees");
     };
 
@@ -203,10 +203,10 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
           txnData,
         });
 
-        helperToast.success(
+        helperToast.info(
           <div className="flex items-center justify-between">
             <div className="text-white/50">
-              <Trans>Claiming position price impact fees...</Trans>
+              <Trans>Claiming price impact rebates...</Trans>
             </div>
             <SpinnerIcon className="spin size-15 text-white" />
           </div>,
@@ -218,13 +218,13 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
         request.wait().then((res) => {
           if (res.status === "success") {
             toast.update("position-price-impact-fees", {
-              render: t`Success claiming position price impact fees`,
+              render: t`Price impact rebates claimed`,
               type: "success",
               autoClose: TOAST_AUTO_CLOSE_TIME,
             });
           } else if (res.status === "failed") {
             toast.update("position-price-impact-fees", {
-              render: t`Claiming position price impact fees failed`,
+              render: t`Failed to claim price impact rebates`,
               type: "error",
               autoClose: TOAST_AUTO_CLOSE_TIME,
             });
@@ -252,7 +252,7 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
     onSubmit?: () => void;
   } = useMemo(() => {
     if (hasOutdatedUi) {
-      return { text: t`Page outdated, please refresh`, disabled: true };
+      return { text: t`Page outdated. Refresh`, disabled: true };
     }
     if (isSubmitting) {
       return { text: t`Claiming...`, disabled: true };
@@ -288,7 +288,7 @@ function ClaimablePositionPriceImpactRebateModalComponent({
 
   return (
     <Modal
-      label={t`Confirm Claim`}
+      label={t`Confirm claim`}
       className="Confirmation-box ClaimableModal"
       setIsVisible={onClose}
       isVisible={isVisible}

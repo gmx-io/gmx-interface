@@ -88,7 +88,7 @@ export function SwapSlippageField({ disabled }: { disabled?: boolean }) {
   return (
     <div className="flex h-full items-center justify-between gap-8">
       <TooltipWithPortal
-        handle={<Trans>Allowed Slippage</Trans>}
+        handle={<Trans>Allowed slippage</Trans>}
         position="bottom-start"
         variant="iconStroke"
         disabled={disabled}
@@ -106,7 +106,7 @@ export function SwapSlippageField({ disabled }: { disabled?: boolean }) {
             <br />
             <br />
             Note: slippage is different from price impact, which is based on open interest imbalances.{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/v2#slippage">Read more</ExternalLink>.
+            <ExternalLink href="https://docs.gmx.io/docs/trading/#slippage">Read more</ExternalLink>.
           </Trans>
         }
       />

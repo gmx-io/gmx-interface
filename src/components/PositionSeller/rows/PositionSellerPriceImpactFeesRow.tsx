@@ -2,6 +2,7 @@ import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo } from "react";
 
+import { DOCS_LINKS } from "config/links";
 import { selectPositionSellerFees } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { formatPercentage } from "lib/numbers";
@@ -54,18 +55,18 @@ export function PositionSellerPriceImpactFeesRow() {
       label={
         <>
           <Tooltip
-            handle={t`Net Price Impact`}
+            handle={t`Net price impact`}
             content={
               <Trans>
-                Net price impact is the price impact for your position.{" "}
-                <ExternalLink href={"https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates"} newTab>
+                Price impact from closing. Positive values benefit you.{" "}
+                <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
                   Read more
                 </ExternalLink>
                 .
               </Trans>
             }
           />{" "}
-          / {t`Fees`}
+          / {t`fees`}
         </>
       }
       value={

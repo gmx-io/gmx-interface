@@ -58,7 +58,7 @@ export function PoolsDetails() {
       </BreadcrumbItem>
 
       <BreadcrumbItem active>
-        {isGlvInfo(glvOrMarketInfo) ? <Trans>GLV Vaults</Trans> : <Trans>GM Pools</Trans>}
+        {isGlvInfo(glvOrMarketInfo) ? <Trans>GLV vaults</Trans> : <Trans>GM pools</Trans>}
       </BreadcrumbItem>
     </Breadcrumbs>
   );
@@ -85,15 +85,15 @@ export function PoolsDetails() {
                   <div className={cx("grid gap-8", { "grid-cols-1": isMobile, "grid-cols-2": !isMobile })}>
                     <MarketComposition
                       type="backing"
-                      label={<Trans>Backing Composition</Trans>}
-                      title={<Trans>Exposure to Backing Tokens</Trans>}
+                      label={<Trans>Backing composition</Trans>}
+                      title={<Trans>Exposure to backing tokens</Trans>}
                       composition={backingComposition}
                     />
 
                     <MarketComposition
                       type="market"
-                      label={<Trans>Market Composition</Trans>}
-                      title={<Trans>Exposure to Market Traders' PnL</Trans>}
+                      label={<Trans>Market composition</Trans>}
+                      title={<Trans>Exposure to market traders' PnL</Trans>}
                       composition={marketComposition}
                     />
                   </div>

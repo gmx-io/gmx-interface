@@ -51,7 +51,7 @@ export const appEventsData: EventData[] = [
     bodyText: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
-        <span className="text-slate-100">[WBTC-USDC]</span>, or GLV <span className="text-slate-100">[WETH-USDC]</span>.
+        <span className="text-slate-100">[WBTC-USDC]</span>, or GLV <span className="text-slate-100">[WETH-USDC]</span>
       </>
     ),
   },
@@ -64,7 +64,7 @@ export const appEventsData: EventData[] = [
     bodyText: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
-        <span className="text-slate-100">[WBTC-USDC]</span> or GLV <span className="text-slate-100">[WETH-USDC]</span>.
+        <span className="text-slate-100">[WBTC-USDC]</span>, or GLV <span className="text-slate-100">[WETH-USDC]</span>
       </>
     ),
   },
@@ -77,7 +77,7 @@ export const appEventsData: EventData[] = [
     bodyText: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
-        <span className="text-slate-100">[WBTC-USDC]</span>, or GLV <span className="text-slate-100">[WETH-USDC]</span>.
+        <span className="text-slate-100">[WBTC-USDC]</span>, or GLV <span className="text-slate-100">[WETH-USDC]</span>
       </>
     ),
   },
@@ -89,8 +89,8 @@ export const appEventsData: EventData[] = [
     title: "Open Interest Calculation Update",
     bodyText: (
       <>
-        From 22nd December, the open interest will now be tracked in token amounts instead of USD values for improved
-        balance accuracy. <ExternalLink href="https://t.me/GMX_Announcements/1175">Read more</ExternalLink>.
+        From 22nd December, open interest will be tracked in token amounts instead of USD values for improved balance
+        accuracy. <ExternalLink href="https://t.me/GMX_Announcements/1175">Read more</ExternalLink>.
       </>
     ),
   },
@@ -120,7 +120,6 @@ export const appEventsData: EventData[] = [
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM{" "}
         <span className="text-slate-100">[XAUt0-XAUt0]</span> or GM <span className="text-slate-100">[XAUt0-USDT]</span>
-        .
       </>
     ),
   },
@@ -132,11 +131,11 @@ export const appEventsData: EventData[] = [
     title: "Morpho now supports GLV",
     bodyText: (
       <>
-        Lending and borrowing is now available for GLV assets:{" "}
+        Lending and borrowing are now available for GLV assets:{" "}
         <TokenIcon symbol="GLV" displaySize={16} className="mb-4" /> <span className="text-slate-100">[BTC-USDC]</span>{" "}
         and <TokenIcon symbol="GLV" displaySize={16} className="mb-4" />{" "}
         <span className="text-slate-100">[ETH-USDC]</span> on{" "}
-        <ExternalLink href="https://app.morpho.org/arbitrum/borrow?search=GLV">Morpho</ExternalLink>.
+        <ExternalLink href="https://app.morpho.org/arbitrum/borrow?search=GLV">Morpho</ExternalLink>
       </>
     ),
   },
@@ -149,7 +148,7 @@ export const appEventsData: EventData[] = [
     bodyText: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
-        <span className="text-slate-100">[WETH-USDC]</span>, or GLV <span className="text-slate-100">[WBTC-USDC]</span>.
+        <span className="text-slate-100">[WETH-USDC]</span>, or GLV <span className="text-slate-100">[WBTC-USDC]</span>
       </>
     ),
   },
@@ -162,7 +161,7 @@ export const appEventsData: EventData[] = [
     bodyText: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
-        <span className="text-slate-100">[WBTC-USDC]</span>.
+        <span className="text-slate-100">[WBTC-USDC]</span>
       </>
     ),
   },
@@ -175,7 +174,7 @@ export const appEventsData: EventData[] = [
     bodyText: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
-        <span className="text-slate-100">[WETH-USDC]</span>.
+        <span className="text-slate-100">[WETH-USDC]</span>
       </>
     ),
   },
@@ -201,7 +200,7 @@ export const appEventsData: EventData[] = [
     bodyText: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
-        <span className="text-slate-100">[WETH-USDC]</span>.
+        <span className="text-slate-100">[WETH-USDC]</span>
       </>
     ),
   },
@@ -215,7 +214,7 @@ export const appEventsData: EventData[] = [
       <>
         <Link to="/trade">Trade</Link> this market, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
         <span className="text-slate-100">[WAVAX-USDC]</span> for WLFI on Avalanche, and GM or GLV{" "}
-        <span className="text-slate-100">[WETH-USDC]</span> on Arbitrum.
+        <span className="text-slate-100">[WETH-USDC]</span> on Arbitrum
       </>
     ),
   },
@@ -229,7 +228,7 @@ export const appEventsData: EventData[] = [
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
         <span className="text-slate-100">[WETH-USDC]</span> for AERO and BRETT, or GM{" "}
-        <span className="text-slate-100">[PBTC]</span> for BTC.
+        <span className="text-slate-100">[PBTC]</span> for BTC
       </>
     ),
   },

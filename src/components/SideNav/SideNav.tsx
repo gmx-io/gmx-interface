@@ -73,7 +73,7 @@ function SideNav({ className }: { className?: string }) {
         className="language-popup"
         isVisible={isLanguageModalOpen}
         setIsVisible={setIsLanguageModalOpen}
-        label={t`Select Language`}
+        label={t`Select language`}
       >
         <LanguageModalContent currentLanguage={i18n.locale} onClose={handleCloseLanguageModal} />
       </ModalWithPortal>
@@ -93,7 +93,7 @@ export function LogoSection({ isCollapsed }: { isCollapsed: boolean | undefined 
         "pl-12 pr-20": !isCollapsed,
       })}
     >
-      <img src={logoIcon} alt="GMX Logo" />
+      <img src={logoIcon} alt={t`GMX logo`} />
       {!isCollapsed ? <LogoText /> : null}
     </Link>
   );

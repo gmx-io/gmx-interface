@@ -24,7 +24,7 @@ export function EntryPriceRow() {
 
   return (
     <SyntheticsInfoRow
-      label={t`Entry Price`}
+      label={t`Entry price`}
       value={
         nextPositionValues?.nextEntryPrice || selectedPosition?.entryPrice ? (
           <ValueTransition

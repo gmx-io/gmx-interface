@@ -44,14 +44,14 @@ function JoinReferralCode({ active }: { active: boolean }) {
         <Trans>Enter referral code</Trans>
       </h2>
       <p className="sub-title">
-        <Trans>Please input a referral code to benefit from fee discounts.</Trans>
+        <Trans>Enter a referral code to get fee discounts</Trans>
       </p>
       <div className="card-action">
         {active ? (
           <ReferralCodeEditFormContainer />
         ) : (
           <Button variant="primary-action" className="w-full" type="submit" onClick={openConnectModal}>
-            <Trans>Connect Wallet</Trans>
+            <Trans>Connect wallet</Trans>
           </Button>
         )}
       </div>
@@ -91,8 +91,8 @@ function ReferralCodeForm({
     try {
       const tx = await setTraderReferralCodeByUser(chainId, referralCode, signer, {
         account,
-        successMsg: isEdit ? t`Referral code updated.` : t`Referral code added.`,
-        failMsg: isEdit ? t`Referral code updated failed.` : t`Adding referral code failed.`,
+        successMsg: isEdit ? t`Referral code updated` : t`Referral code added`,
+        failMsg: isEdit ? t`Referral code update failed` : t`Failed to add referral code`,
         setPendingTxns,
         pendingTxns,
       });
@@ -142,12 +142,12 @@ function ReferralCodeForm({
     };
   } else if (isValidating) {
     buttonState = {
-      text: t`Checking code`,
+      text: t`Checking code...`,
       disabled: true,
     };
   } else if (!referralCodeExists) {
     buttonState = {
-      text: t`Referral code does not exist`,
+      text: t`Code not found`,
       disabled: true,
     };
   } else if (isEdit) {
@@ -318,7 +318,7 @@ function ReferralCodeFormMultichain({
           args: [sendParams, sendQuoteFromNative(quoteResult.data.nativeFee), account],
         }),
         value,
-        msg: t`Sent referral code transaction`,
+        msg: t`Sending referral code transaction`,
       });
 
       const receipt = await txnResult.wait();
@@ -333,10 +333,10 @@ function ReferralCodeFormMultichain({
 
       helperToast.success(
         <>
-          <Trans>Referral code added!</Trans>
+          <Trans>Referral code added</Trans>
           <br />
           <br />
-          <Trans>It will take a couple of minutes to be reflected. Please check back later.</Trans>
+          <Trans>Changes may take a few minutes to appear</Trans>
         </>
       );
     } catch (error) {
@@ -358,7 +358,7 @@ function ReferralCodeFormMultichain({
 
   if (hasOutdatedUi) {
     buttonState = {
-      text: t`Page outdated, please refresh`,
+      text: t`Page outdated. Refresh`,
       disabled: true,
     };
   } else if (isApproving) {
@@ -388,12 +388,12 @@ function ReferralCodeFormMultichain({
     };
   } else if (isValidating) {
     buttonState = {
-      text: t`Checking code`,
+      text: t`Checking code...`,
       disabled: true,
     };
   } else if (!referralCodeExists) {
     buttonState = {
-      text: t`Referral code does not exist`,
+      text: t`Code not found`,
       disabled: true,
     };
   } else if (quoteResult.isLoading || !quoteResult.data || !isAllowanceLoaded) {
@@ -466,7 +466,7 @@ function ReferralCodeFormMultichain({
       />
       {srcChainId && (
         <SyntheticsInfoRow
-          label={t`Network Fee`}
+          label={t`Network fee`}
           value={quoteResult.networkFeeUsd !== undefined ? formatUsd(quoteResult.networkFeeUsd) : "..."}
         />
       )}

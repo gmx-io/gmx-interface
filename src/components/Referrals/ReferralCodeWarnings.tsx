@@ -43,10 +43,7 @@ export function ReferralCodeWarnings({ allOwnersOnOtherChains }: Props) {
             renderContent={() => (
               <div>
                 <Trans>
-                  This code is not yet registered on {nonTakenNetworkNames}, you will not receive rebates there.
-                  <br />
-                  <br />
-                  Switch your network to create this code on {nonTakenNetworkNames}.
+                  Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates.
                 </Trans>
               </div>
             )}
@@ -62,10 +59,7 @@ export function ReferralCodeWarnings({ allOwnersOnOtherChains }: Props) {
             className="flex"
             renderContent={() => (
               <div>
-                <Trans>
-                  This code has been taken by someone else on {takenNetworkNames}, you will not receive rebates from
-                  traders using this code on {takenNetworkNames}.
-                </Trans>
+                <Trans>Code taken by another user on {takenNetworkNames}. No rebates from those networks.</Trans>
               </div>
             )}
           />

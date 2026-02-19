@@ -142,21 +142,21 @@ export const defaultChartProps = {
 } satisfies Partial<ChartingLibraryWidgetOptions>;
 
 export const orderTypeToTitle: Partial<Record<`${OrderType}-${"long" | "short"}`, MessageDescriptor>> = {
-  [`${OrderType.LimitIncrease}-short`]: msg`Limit - Short Inc.`,
-  [`${OrderType.LimitIncrease}-long`]: msg`Limit - Long Inc.`,
+  [`${OrderType.LimitIncrease}-short`]: msg`Limit - short inc.`,
+  [`${OrderType.LimitIncrease}-long`]: msg`Limit - long inc.`,
 
-  [`${OrderType.LimitDecrease}-short`]: msg`TP - Short Dec.`,
-  [`${OrderType.LimitDecrease}-long`]: msg`TP - Long Dec.`,
+  [`${OrderType.LimitDecrease}-short`]: msg`TP - short dec.`,
+  [`${OrderType.LimitDecrease}-long`]: msg`TP - long dec.`,
 
-  [`${OrderType.StopLossDecrease}-long`]: msg`SL - Long Dec.`,
-  [`${OrderType.StopLossDecrease}-short`]: msg`SL - Short Dec.`,
+  [`${OrderType.StopLossDecrease}-long`]: msg`SL - long dec.`,
+  [`${OrderType.StopLossDecrease}-short`]: msg`SL - short dec.`,
 
-  [`${OrderType.StopIncrease}-short`]: msg`Stop Market - Short Inc.`,
-  [`${OrderType.StopIncrease}-long`]: msg`Stop Market - Long Inc.`,
+  [`${OrderType.StopIncrease}-short`]: msg`Stop Market - short inc.`,
+  [`${OrderType.StopIncrease}-long`]: msg`Stop Market - long inc.`,
 
-  [`${OrderType.MarketIncrease}-long`]: msg`Market - Long Inc.`,
-  [`${OrderType.MarketIncrease}-short`]: msg`Market - Short Inc.`,
+  [`${OrderType.MarketIncrease}-long`]: msg`Market - long inc.`,
+  [`${OrderType.MarketIncrease}-short`]: msg`Market - short inc.`,
 
-  [`${OrderType.MarketDecrease}-long`]: msg`Market - Long Dec.`,
-  [`${OrderType.MarketDecrease}-short`]: msg`Market - Short Dec.`,
+  [`${OrderType.MarketDecrease}-long`]: msg`Market - long dec.`,
+  [`${OrderType.MarketDecrease}-short`]: msg`Market - short dec.`,
 };

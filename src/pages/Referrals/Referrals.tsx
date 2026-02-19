@@ -83,8 +83,8 @@ function Referrals() {
 
   function handleCreateReferralCode(referralCode: string) {
     return registerReferralCode(chainId, referralCode, signer, {
-      sentMsg: t`Referral code submitted.`,
-      failMsg: t`Referral code creation failed.`,
+      sentMsg: t`Referral code submitted`,
+      failMsg: t`Referral code creation failed`,
       pendingTxns,
     });
   }
@@ -160,9 +160,7 @@ function Referrals() {
           subtitle={
             !isBotanix ? (
               <Trans>
-                Get fee discounts and earn rebates through the GMX referral program.
-                <br />
-                For more information, please read the{" "}
+                Get fee discounts and earn rebates through the GMX referral program. Read the{" "}
                 <ExternalLink href="https://docs.gmx.io/docs/referrals">referral program details</ExternalLink>.
               </Trans>
             ) : undefined

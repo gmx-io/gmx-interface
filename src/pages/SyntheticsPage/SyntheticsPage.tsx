@@ -344,7 +344,7 @@ export function SyntheticsPage(p: Props) {
           leftContent={
             isTablet ? (
               <Link to="/" className="flex items-center gap-5 p-8 max-md:p-[4.5px]">
-                <img src={logoIcon} alt="GMX Logo" />
+                <img src={logoIcon} alt={t`GMX logo`} />
                 <LogoText className="max-md:hidden" />
               </Link>
             ) : (
@@ -550,7 +550,7 @@ function useOrdersControl() {
   const onCancelSelectedOrders = useCallback(
     async function cancelSelectedOrders() {
       if (hasOutdatedUi) {
-        helperToast.error(t`Page outdated, please refresh`);
+        helperToast.error(t`Page outdated. Refresh`);
         return;
       }
       if (!signer || !provider) return;
@@ -614,7 +614,7 @@ function useOrdersControl() {
   const onCancelOrder = useCallback(
     async function cancelOrder(key: string) {
       if (hasOutdatedUi) {
-        helperToast.error(t`Page outdated, please refresh`);
+        helperToast.error(t`Page outdated. Refresh`);
         return;
       }
       if (!signer || !provider) return;

@@ -14,7 +14,7 @@ export function SponsorsSection() {
             <Trans>Supported by</Trans>
           </h3>
           <h4 className="leading-body-sm text-18 font-medium -tracking-[0.576px]">
-            <Trans>over 100 protocols</Trans>
+            <Trans>Over 100 protocols</Trans>
           </h4>
         </div>
         <div className="grid w-full flex-1 grid-cols-2 grid-rows-2 flex-row flex-wrap items-center gap-16 sm:flex">

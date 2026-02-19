@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/macro";
 import range from "lodash/range";
 import { useCallback, useState } from "react";
 
@@ -34,7 +35,9 @@ export default function ReferralsTier() {
     return (
       <div className="ReferralsTier-form">
         <div className="ReferralsTier-row">
-          <label className="ReferralsTier-label">Affiliate Address:</label>
+          <label className="ReferralsTier-label">
+            <Trans>Affiliate address:</Trans>
+          </label>
           <input
             type="text"
             className="ReferralsTier-input"
@@ -45,11 +48,15 @@ export default function ReferralsTier() {
         {currentAffiliateTier !== undefined && (
           <>
             <div className="ReferralsTier-row">
-              <label className="ReferralsTier-label">Current Tier:</label>
+              <label className="ReferralsTier-label">
+                <Trans>Current tier:</Trans>
+              </label>
               <strong>{currentAffiliateTier === undefined ? undefined : String(currentAffiliateTier + 1n)}</strong>
             </div>
             <div className="ReferralsTier-row">
-              <label className="ReferralsTier-label">New Tier:</label>
+              <label className="ReferralsTier-label">
+                <Trans>New tier:</Trans>
+              </label>
               <Select
                 onChange={(evt) => setAffiliateTier(Number(evt.target.value))}
                 value={affiliateTier}
@@ -58,7 +65,7 @@ export default function ReferralsTier() {
             </div>
             <div className="ReferralsTier-row">
               <Button variant="primary" onClick={onConfirmation}>
-                Save tier
+                <Trans>Save tier</Trans>
               </Button>
             </div>
           </>
@@ -70,8 +77,14 @@ export default function ReferralsTier() {
   return (
     <AppPageLayout title="Referrals Tier">
       <div className="page-layout default-container">
-        <h1>Referrals Tier</h1>
-        {!active && <div>Wallet is not connected</div>}
+        <h1>
+          <Trans>Referrals tier</Trans>
+        </h1>
+        {!active && (
+          <div>
+            <Trans>Wallet not connected</Trans>
+          </div>
+        )}
         {renderForm()}
       </div>
     </AppPageLayout>
