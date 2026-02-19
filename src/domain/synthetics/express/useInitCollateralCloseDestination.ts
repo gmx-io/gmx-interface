@@ -15,7 +15,7 @@ import { TokensData } from "domain/synthetics/tokens/types";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useWallet from "lib/wallets/useWallet";
-import { expandDecimals, formatUsd } from "sdk/utils/numbers";
+import { expandDecimals } from "sdk/utils/numbers";
 
 function getTotalGmxAccountUsd(tokensData: TokensData): bigint {
   let totalUsd = 0n;
@@ -42,14 +42,12 @@ export function useInitCollateralCloseDestination() {
     false
   );
 
-  
   const gmxAccountUsd = tokensData && isGmxAccountBalancesLoaded ? getTotalGmxAccountUsd(tokensData) : undefined;
   const prevGmxAccountUsd = usePrevious(gmxAccountUsd);
 
   useEffect(() => {
     if (settings.receiveToGmxAccount !== null || chainId !== ARBITRUM || !isGmxAccountBalancesLoaded || !tokensData)
       return;
-    
 
     const usd = getTotalGmxAccountUsd(tokensData);
 
