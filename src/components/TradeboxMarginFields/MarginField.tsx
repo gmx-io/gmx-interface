@@ -54,7 +54,7 @@ export function MarginField({
   const { active, account } = useWallet();
   const { openConnectModal } = useConnectModal();
   const walletIconUrls = useWalletIconUrls();
-  const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
+  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
 
   const { tokenChainDataArray: multichainTokens } = useMultichainTradeTokensRequest(chainId, account);
 
