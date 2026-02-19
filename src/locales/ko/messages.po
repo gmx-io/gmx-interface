@@ -1731,6 +1731,7 @@ msgstr "Telegram 그룹"
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Complete account transfer"
 msgstr "계정 전송 완료"
 
@@ -3013,6 +3014,10 @@ msgstr "주문 비용을 지불하기 위한 자금이 부족합니다. 잔여: 
 msgid "Tenderly settings"
 msgstr "Tenderly 설정"
 
+#: src/components/ExitPriceRow/ExitPriceRow.tsx
+#~ msgid "Price you'll receive when closing, adjusted for capped price impact"
+#~ msgstr "포지션 종료 시 수령하게 될 가격이며, 가격 영향 상한이 적용됩니다"
+
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
 msgstr "규모 증가 (Market)"
@@ -3131,9 +3136,17 @@ msgstr "릴레이어 요청 실패"
 msgid "No matches for selected filters"
 msgstr "선택한 필터에 일치하는 항목이 없습니다"
 
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Transfer Account"
+msgstr ""
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
 msgstr "GMX 계정의 가스용 {wrappedNativeTokenSymbol}가 부족합니다."
+
+#: src/pages/Actions/ActionsRouter.tsx
+msgid "GMX V1 Actions"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -3564,6 +3577,7 @@ msgstr "네트워크 기본 토큰 {0}에서는 Express Trading을 사용할 수
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trade"
 msgstr "트레이드"
 
@@ -3984,6 +3998,7 @@ msgstr "제출 중..."
 msgid "Pools stats"
 msgstr "풀 통계"
 
+#: src/pages/UiPage/UiPage.tsx
 #: src/pages/UiPage/UiPage.tsx
 msgid "UI page"
 msgstr "UI 페이지"
@@ -4801,6 +4816,7 @@ msgstr "Body large"
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/Earn/EarnPageLayout.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Earn"
 msgstr "수익"
@@ -8143,6 +8159,7 @@ msgid "Order filled"
 msgstr "주문 체결됨"
 
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/Pools/Pools.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr "풀"
@@ -8256,6 +8273,7 @@ msgstr "세션 생성됨"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+#: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Buy GMX"
@@ -8752,6 +8770,10 @@ msgstr "GM 토큰은 단일 GMX 시장의 유동성 풀 지분을 나타냅니�
 msgid "Lend GLV or GM tokens, borrow against them, or use LP strategies to maximize yield"
 msgstr "GLV 또는 GM 토큰을 대출하거나, 이를 담보로 차입하거나, LP 전략을 활용하여 수익률을 극대화하십시오"
 
+#: src/pages/Actions/ActionsRouter.tsx
+msgid "GMX V2 Actions"
+msgstr ""
+
 #: src/components/LeverageField/LeverageField.tsx
 msgid "Adjust leverage"
 msgstr "레버리지 조정"
@@ -9125,6 +9147,8 @@ msgstr "베스팅 완료 수령 가능 GMX:"
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
@@ -9590,6 +9614,7 @@ msgid "Settling..."
 msgstr "정산 중..."
 
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
 msgstr "리더보드"
@@ -10573,6 +10598,10 @@ msgstr "GLV는 어떻게 수익을 벌며, 내 수익은 어디서 볼 수 있�
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
 msgstr "이 체인에는 아직 기회가 없습니다"
+
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+msgid "Complete Account Transfer"
+msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"

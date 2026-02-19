@@ -1731,6 +1731,7 @@ msgstr "Telegram 群组"
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Complete account transfer"
 msgstr "完成账户转账"
 
@@ -3013,6 +3014,10 @@ msgstr "资金不足以支付订单费用。剩余：{remainingCostUsdText}"
 msgid "Tenderly settings"
 msgstr "Tenderly 设置"
 
+#: src/components/ExitPriceRow/ExitPriceRow.tsx
+#~ msgid "Price you'll receive when closing, adjusted for capped price impact"
+#~ msgstr "平仓时您将收到的价格，已调整封顶价格影响"
+
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
 msgstr "增加仓位（Market）"
@@ -3131,9 +3136,17 @@ msgstr "中继器请求失败"
 msgid "No matches for selected filters"
 msgstr "所选筛选条件无匹配结果"
 
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Transfer Account"
+msgstr ""
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
 msgstr "您的 GMX 账户中用于 gas 的 {wrappedNativeTokenSymbol} 不足。"
+
+#: src/pages/Actions/ActionsRouter.tsx
+msgid "GMX V1 Actions"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -3564,6 +3577,7 @@ msgstr "Express Trading 不支持网络原生代币 {0}。请考虑使用 {1} �
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trade"
 msgstr "交易"
 
@@ -3984,6 +3998,7 @@ msgstr "提交中..."
 msgid "Pools stats"
 msgstr "池统计数据"
 
+#: src/pages/UiPage/UiPage.tsx
 #: src/pages/UiPage/UiPage.tsx
 msgid "UI page"
 msgstr "UI 页面"
@@ -4801,6 +4816,7 @@ msgstr "正文大号"
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/Earn/EarnPageLayout.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Earn"
 msgstr "赚取"
@@ -8143,6 +8159,7 @@ msgid "Order filled"
 msgstr "订单已成交"
 
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/Pools/Pools.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr "池"
@@ -8256,6 +8273,7 @@ msgstr "会话已生成"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+#: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Buy GMX"
@@ -8752,6 +8770,10 @@ msgstr "GM 代币代表单个 GMX 市场流动性池中的份额。购买 GM 以
 msgid "Lend GLV or GM tokens, borrow against them, or use LP strategies to maximize yield"
 msgstr "借出 GLV 或 GM 代币、以其作为抵押品借款，或使用 LP 策略最大化收益"
 
+#: src/pages/Actions/ActionsRouter.tsx
+msgid "GMX V2 Actions"
+msgstr ""
+
 #: src/components/LeverageField/LeverageField.tsx
 msgid "Adjust leverage"
 msgstr "调整杠杆"
@@ -9125,6 +9147,8 @@ msgstr "已归属可领取的 GMX："
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
@@ -9590,6 +9614,7 @@ msgid "Settling..."
 msgstr "结算中..."
 
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
 msgstr "排行榜"
@@ -10573,6 +10598,10 @@ msgstr "GLV 如何赚取收益率，我在哪里查看我的收益？"
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
 msgstr "此链上暂无机会"
+
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+msgid "Complete Account Transfer"
+msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"

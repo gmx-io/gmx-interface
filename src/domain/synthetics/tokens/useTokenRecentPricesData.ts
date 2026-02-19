@@ -45,6 +45,7 @@ export function useTokenRecentPricesRequest(
 
   const { data, error, isLoading } = useSequentialTimedSWR(key, {
     refreshInterval: refreshPricesInterval,
+    refreshWhenHidden: true,
 
     fetcher: async ([chainId]) => {
       const priceItems = await oracleKeeperFetcher.fetchTickers().catch(() => {

@@ -1731,6 +1731,7 @@ msgstr ""
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Complete account transfer"
 msgstr ""
 
@@ -3013,6 +3014,10 @@ msgstr ""
 msgid "Tenderly settings"
 msgstr ""
 
+#: src/components/ExitPriceRow/ExitPriceRow.tsx
+#~ msgid "Price you'll receive when closing, adjusted for capped price impact"
+#~ msgstr ""
+
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
 msgstr ""
@@ -3131,8 +3136,16 @@ msgstr ""
 msgid "No matches for selected filters"
 msgstr ""
 
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Transfer Account"
+msgstr ""
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
+msgstr ""
+
+#: src/pages/Actions/ActionsRouter.tsx
+msgid "GMX V1 Actions"
 msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -3564,6 +3577,7 @@ msgstr ""
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trade"
 msgstr ""
 
@@ -3984,6 +3998,7 @@ msgstr ""
 msgid "Pools stats"
 msgstr ""
 
+#: src/pages/UiPage/UiPage.tsx
 #: src/pages/UiPage/UiPage.tsx
 msgid "UI page"
 msgstr ""
@@ -4801,6 +4816,7 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/Earn/EarnPageLayout.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Earn"
 msgstr ""
@@ -8143,6 +8159,7 @@ msgid "Order filled"
 msgstr ""
 
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/Pools/Pools.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr ""
@@ -8256,6 +8273,7 @@ msgstr ""
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+#: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Buy GMX"
@@ -8752,6 +8770,10 @@ msgstr ""
 msgid "Lend GLV or GM tokens, borrow against them, or use LP strategies to maximize yield"
 msgstr ""
 
+#: src/pages/Actions/ActionsRouter.tsx
+msgid "GMX V2 Actions"
+msgstr ""
+
 #: src/components/LeverageField/LeverageField.tsx
 msgid "Adjust leverage"
 msgstr ""
@@ -9125,6 +9147,8 @@ msgstr ""
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
@@ -9590,6 +9614,7 @@ msgid "Settling..."
 msgstr ""
 
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
 msgstr ""
@@ -10572,6 +10597,10 @@ msgstr ""
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
+msgstr ""
+
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+msgid "Complete Account Transfer"
 msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx

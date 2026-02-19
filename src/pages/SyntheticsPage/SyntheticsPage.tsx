@@ -338,6 +338,7 @@ export function SyntheticsPage(p: Props) {
 
   return (
     <AppPageLayout
+      title={t`Trade`}
       header={
         <AppHeader
           leftContent={

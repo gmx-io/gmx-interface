@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 
 import { BOTANIX } from "config/chains";
@@ -48,7 +48,7 @@ export default function Pools() {
   const isBotanix = chainId === BOTANIX;
 
   return (
-    <AppPageLayout header={<ChainContentHeader />}>
+    <AppPageLayout title={t`Pools`} header={<ChainContentHeader />}>
       <div
         className={cx("mb-24 grid w-full flex-col", {
           "grid-cols-1": isMobile,

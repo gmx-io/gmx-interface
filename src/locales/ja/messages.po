@@ -1731,6 +1731,7 @@ msgstr "Telegramグループ"
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Complete account transfer"
 msgstr "アカウント送金の完了"
 
@@ -3013,6 +3014,10 @@ msgstr "注文コストの支払いに必要な資金が不足しています。
 msgid "Tenderly settings"
 msgstr "Tenderly設定"
 
+#: src/components/ExitPriceRow/ExitPriceRow.tsx
+#~ msgid "Price you'll receive when closing, adjusted for capped price impact"
+#~ msgstr "決済時の受取価格です。上限付き価格への影響が反映されています"
+
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
 msgstr "サイズを増加（Market）"
@@ -3131,9 +3136,17 @@ msgstr "リレヤーリクエストに失敗しました"
 msgid "No matches for selected filters"
 msgstr "選択したフィルターに一致するものがありません"
 
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Transfer Account"
+msgstr ""
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
 msgstr "GMXアカウント内のガス用の{wrappedNativeTokenSymbol}が不足しています。"
+
+#: src/pages/Actions/ActionsRouter.tsx
+msgid "GMX V1 Actions"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -3564,6 +3577,7 @@ msgstr "Express Trading はネットワークのネイティブトークン {0} 
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trade"
 msgstr "トレード"
 
@@ -3984,6 +3998,7 @@ msgstr "送信中..."
 msgid "Pools stats"
 msgstr "プール統計"
 
+#: src/pages/UiPage/UiPage.tsx
 #: src/pages/UiPage/UiPage.tsx
 msgid "UI page"
 msgstr "UIページ"
@@ -4801,6 +4816,7 @@ msgstr "本文 大"
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/Earn/EarnPageLayout.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Earn"
 msgstr "獲得"
@@ -8143,6 +8159,7 @@ msgid "Order filled"
 msgstr "注文が約定しました"
 
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/Pools/Pools.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr "プール"
@@ -8256,6 +8273,7 @@ msgstr "セッション生成済"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+#: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Buy GMX"
@@ -8752,6 +8770,10 @@ msgstr "GMトークンは、単一のGMXマーケットの流動性プールに�
 msgid "Lend GLV or GM tokens, borrow against them, or use LP strategies to maximize yield"
 msgstr "GLVまたはGMトークンの貸出、それらを担保にした借入、またはLP戦略を活用して利回りを最大化"
 
+#: src/pages/Actions/ActionsRouter.tsx
+msgid "GMX V2 Actions"
+msgstr ""
+
 #: src/components/LeverageField/LeverageField.tsx
 msgid "Adjust leverage"
 msgstr "レバレッジを調整"
@@ -9125,6 +9147,8 @@ msgstr "権利確定済みの受取可能GMX："
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
@@ -9590,6 +9614,7 @@ msgid "Settling..."
 msgstr "決済中..."
 
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
 msgstr "リーダーボード"
@@ -10573,6 +10598,10 @@ msgstr "GLVはどうやって利回りを稼ぎ、収益はどこで見られま
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
 msgstr "このチェーンにはまだ機会がありません"
+
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+msgid "Complete Account Transfer"
+msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"

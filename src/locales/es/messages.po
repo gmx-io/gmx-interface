@@ -1731,6 +1731,7 @@ msgstr "Grupos de Telegram"
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Complete account transfer"
 msgstr "Completar transferencia de cuenta"
 
@@ -3013,6 +3014,10 @@ msgstr "Fondos insuficientes para cubrir los costes de la orden. Restante: {rema
 msgid "Tenderly settings"
 msgstr "Configuración de Tenderly"
 
+#: src/components/ExitPriceRow/ExitPriceRow.tsx
+#~ msgid "Price you'll receive when closing, adjusted for capped price impact"
+#~ msgstr "Precio que recibirá al cerrar, ajustado por el impacto en el precio limitado"
+
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
 msgstr "Aumentar tamaño (Market)"
@@ -3131,9 +3136,17 @@ msgstr "Solicitud de relayer fallida"
 msgid "No matches for selected filters"
 msgstr "No hay coincidencias para los filtros seleccionados"
 
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Transfer Account"
+msgstr ""
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
 msgstr "Insuficiente {wrappedNativeTokenSymbol} para gas en tu Cuenta GMX."
+
+#: src/pages/Actions/ActionsRouter.tsx
+msgid "GMX V1 Actions"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -3564,6 +3577,7 @@ msgstr "Express Trading no está disponible con el token nativo de la red {0}. C
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trade"
 msgstr "Trading"
 
@@ -3984,6 +3998,7 @@ msgstr "Enviando..."
 msgid "Pools stats"
 msgstr "Estadísticas de pools"
 
+#: src/pages/UiPage/UiPage.tsx
 #: src/pages/UiPage/UiPage.tsx
 msgid "UI page"
 msgstr "Página de UI"
@@ -4801,6 +4816,7 @@ msgstr "Cuerpo grande"
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/Earn/EarnPageLayout.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Earn"
 msgstr "Ganar"
@@ -8143,6 +8159,7 @@ msgid "Order filled"
 msgstr "Orden ejecutada"
 
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/Pools/Pools.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr "Reservas"
@@ -8256,6 +8273,7 @@ msgstr "Sesión generada"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+#: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Buy GMX"
@@ -8752,6 +8770,10 @@ msgstr "Los tokens GM representan participaciones en un pool de liquidez para un
 msgid "Lend GLV or GM tokens, borrow against them, or use LP strategies to maximize yield"
 msgstr "Preste tokens GLV o GM, solicite préstamos contra ellos o utilice estrategias de LP para maximizar el rendimiento"
 
+#: src/pages/Actions/ActionsRouter.tsx
+msgid "GMX V2 Actions"
+msgstr ""
+
 #: src/components/LeverageField/LeverageField.tsx
 msgid "Adjust leverage"
 msgstr "Ajustar apalancamiento"
@@ -9125,6 +9147,8 @@ msgstr "GMX adquirido reclamable:"
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
@@ -9590,6 +9614,7 @@ msgid "Settling..."
 msgstr "Liquidando..."
 
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
 msgstr "Tabla de Clasificación"
@@ -10573,6 +10598,10 @@ msgstr "¿Cómo gana rendimiento GLV, y dónde veo mis ganancias?"
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
 msgstr "Aún no hay oportunidades en esta cadena"
+
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+msgid "Complete Account Transfer"
+msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"

@@ -5,7 +5,7 @@ import { ARBITRUM, AVALANCHE } from "config/chains";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useGmxPrice, useTotalGmxInLiquidity, useTotalGmxSupply } from "domain/legacy";
 import { useChainId } from "lib/chains";
-import { GMX_DECIMALS, getPageTitle } from "lib/legacy";
+import { GMX_DECIMALS } from "lib/legacy";
 import { expandDecimals } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
@@ -15,7 +15,6 @@ import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHe
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketsList } from "components/MarketsList/MarketsList";
 import PageTitle from "components/PageTitle/PageTitle";
-import SEO from "components/Seo/SEO";
 
 import V2Icon from "img/ic_v2.svg?react";
 
@@ -52,57 +51,55 @@ export default function DashboardV2() {
   let { total: totalGmxInLiquidity } = useTotalGmxInLiquidity();
 
   return (
-    <SEO title={getPageTitle(t`Stats`)}>
-      <AppPageLayout header={<ChainContentHeader />}>
-        <div className="default-container DashboardV2 page-layout flex flex-col gap-20">
-          <PageTitle
-            title={t`Total stats`}
-            qa="dashboard-page"
-            subtitle={
-              <div className="flex items-center gap-6 font-medium text-typography-secondary">
-                <Trans>For detailed stats</Trans>{" "}
-                <ExternalLink
-                  className="flex items-center gap-4 !no-underline hover:text-typography-primary"
-                  href="https://dune.com/gmx-io/gmx-analytics"
-                >
-                  <V2Icon className="size-15" /> <Trans>Analytics</Trans>
-                </ExternalLink>
-                <Link
-                  className="flex items-center gap-4 text-typography-secondary !no-underline hover:text-typography-primary"
-                  to="/monitor"
-                >
-                  <V2Icon className="size-15" /> <Trans>Pools stats</Trans>
-                </Link>
-              </div>
-            }
-          />
-          <div className="flex flex-col gap-20">
-            <div className="DashboardV2-cards">
-              <OverviewCard statsArbitrum={statsArbitrum} statsAvalanche={statsAvalanche} />
-              <StatsCard />
+    <AppPageLayout title={t`Stats`} header={<ChainContentHeader />}>
+      <div className="default-container DashboardV2 page-layout flex flex-col gap-20">
+        <PageTitle
+          title={t`Total stats`}
+          qa="dashboard-page"
+          subtitle={
+            <div className="flex items-center gap-6 font-medium text-typography-secondary">
+              <Trans>For detailed stats</Trans>{" "}
+              <ExternalLink
+                className="flex items-center gap-4 !no-underline hover:text-typography-primary"
+                href="https://dune.com/gmx-io/gmx-analytics"
+              >
+                <V2Icon className="size-15" /> <Trans>Analytics</Trans>
+              </ExternalLink>
+              <Link
+                className="flex items-center gap-4 text-typography-secondary !no-underline hover:text-typography-primary"
+                to="/monitor"
+              >
+                <V2Icon className="size-15" /> <Trans>Pools stats</Trans>
+              </Link>
             </div>
-            <h2 className="text-h2 px-12 font-medium">{t`Tokens`}</h2>
-            <div className="DashboardV2-token-cards">
-              <div className="stats-wrapper stats-wrapper--gmx">
-                <GmxCard
-                  chainId={chainId}
-                  gmxPrice={gmxPrice}
-                  gmxPriceFromArbitrum={gmxPriceFromArbitrum}
-                  gmxPriceFromAvalanche={gmxPriceFromAvalanche}
-                  totalGmxSupply={totalGmxSupply}
-                  gmxMarketCap={gmxMarketCap}
-                  totalGmxInLiquidity={totalGmxInLiquidity}
-                />
-                <GmCard />
-              </div>
+          }
+        />
+        <div className="flex flex-col gap-20">
+          <div className="DashboardV2-cards">
+            <OverviewCard statsArbitrum={statsArbitrum} statsAvalanche={statsAvalanche} />
+            <StatsCard />
+          </div>
+          <h2 className="text-h2 px-12 font-medium">{t`Tokens`}</h2>
+          <div className="DashboardV2-token-cards">
+            <div className="stats-wrapper stats-wrapper--gmx">
+              <GmxCard
+                chainId={chainId}
+                gmxPrice={gmxPrice}
+                gmxPriceFromArbitrum={gmxPriceFromArbitrum}
+                gmxPriceFromAvalanche={gmxPriceFromAvalanche}
+                totalGmxSupply={totalGmxSupply}
+                gmxMarketCap={gmxMarketCap}
+                totalGmxInLiquidity={totalGmxInLiquidity}
+              />
+              <GmCard />
+            </div>
 
-              <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
-                <MarketsList />
-              </SyntheticsStateContextProvider>
-            </div>
+            <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
+              <MarketsList />
+            </SyntheticsStateContextProvider>
           </div>
         </div>
-      </AppPageLayout>
-    </SEO>
+      </div>
+    </AppPageLayout>
   );
 }

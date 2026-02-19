@@ -75,7 +75,7 @@ export default function ReferralsTier() {
   }
 
   return (
-    <AppPageLayout>
+    <AppPageLayout title="Referrals Tier">
       <div className="page-layout default-container">
         <h1>
           <Trans>Referrals tier</Trans>

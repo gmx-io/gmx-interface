@@ -32,7 +32,7 @@ export const PriceImpactRebatesStatsPage = memo(() => {
   }, [reviewed]);
 
   return (
-    <AppPageLayout>
+    <AppPageLayout title="Price Impact Rebates Stats">
       <div className="default-container page-layout">
         <div className="flex">
           <Checkbox isChecked={reviewed} setIsChecked={setReviewed}>

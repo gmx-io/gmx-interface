@@ -102,7 +102,7 @@ function flattenColors(obj: ColorTree, prefix = ""): Array<{ name: string; light
 export default memo(function UiPage() {
   const { theme } = useTheme();
   return (
-    <AppPageLayout>
+    <AppPageLayout title={t`UI page`}>
       <main className="mx-auto max-w-prose p-20">
         <h1 className="text-34 font-medium">
           <Trans>UI page</Trans>
