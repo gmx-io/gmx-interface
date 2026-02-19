@@ -54,7 +54,7 @@ export function MarginField({
   const { active, account } = useWallet();
   const { openConnectModal } = useConnectModal();
   const walletIconUrls = useWalletIconUrls();
-  const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
+  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
 
   const { tokenChainDataArray: multichainTokens } = useMultichainTradeTokensRequest(chainId, account);
 
@@ -149,7 +149,7 @@ export function MarginField({
                   tokensData={tokensData}
                   multichainTokens={multichainTokens}
                   onDepositTokenAddress={onDepositTokenAddress}
-                  payChainId={isFromTokenGmxAccount ? GMX_ACCOUNT_PSEUDO_CHAIN_ID : undefined}
+                  payChainId={isFromTokenGmxAccount ? GMX_ACCOUNT_PSEUDO_CHAIN_ID : srcChainId ?? chainId}
                 />
               ))}
           </div>
