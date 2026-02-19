@@ -2,6 +2,7 @@ import { useEffect } from "react";
 
 import { ARBITRUM } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
+import { getHadGmxAccountBalanceKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
   selectIsGmxAccountBalancesLoaded,
@@ -11,7 +12,8 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { TokensData } from "domain/synthetics/tokens/types";
 import { useChainId } from "lib/chains";
-import { usePrevious } from "lib/usePrevious";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
+import useWallet from "lib/wallets/useWallet";
 import { expandDecimals } from "sdk/utils/numbers";
 
 function getTotalGmxAccountUsd(tokensData: TokensData): bigint {
@@ -29,12 +31,17 @@ const USD_THRESHOLD_FOR_ENABLE_GMX_ACCOUNT_CLOSE_DESTINATION = expandDecimals(20
 
 export function useInitCollateralCloseDestination() {
   const { chainId } = useChainId();
+  const { account } = useWallet();
   const settings = useSettings();
   const tokensData = useSelector(selectTokensData);
   const isGmxAccountBalancesLoaded = useSelector(selectIsGmxAccountBalancesLoaded);
 
-  const gmxAccountUsd = tokensData ? getTotalGmxAccountUsd(tokensData) : undefined;
-  const prevGmxAccountUsd = usePrevious(gmxAccountUsd);
+  const [hadGmxAccountBalance, setHadGmxAccountBalance] = useLocalStorageSerializeKey<boolean>(
+    getHadGmxAccountBalanceKey(chainId, account),
+    false
+  );
+
+  const gmxAccountUsd = tokensData && isGmxAccountBalancesLoaded ? getTotalGmxAccountUsd(tokensData) : undefined;
 
   useEffect(() => {
     if (settings.receiveToGmxAccount !== null || chainId !== ARBITRUM || !isGmxAccountBalancesLoaded || !tokensData)
@@ -50,11 +57,11 @@ export function useInitCollateralCloseDestination() {
   }, [settings, chainId, isGmxAccountBalancesLoaded, tokensData]);
 
   useEffect(() => {
-    if (chainId !== ARBITRUM) return;
-    if (prevGmxAccountUsd === undefined || gmxAccountUsd === undefined) return;
+    if (chainId !== ARBITRUM || gmxAccountUsd === undefined) return;
 
-    if (prevGmxAccountUsd === 0n && gmxAccountUsd > 0n) {
+    if (gmxAccountUsd > 0n && !hadGmxAccountBalance) {
+      setHadGmxAccountBalance(true);
       settings.setReceiveToGmxAccount(true);
     }
-  }, [chainId, prevGmxAccountUsd, gmxAccountUsd, settings]);
+  }, [chainId, gmxAccountUsd, hadGmxAccountBalance, setHadGmxAccountBalance, settings]);
 }

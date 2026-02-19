@@ -1899,11 +1899,6 @@ msgstr "レイヤー2"
 msgid "Rebates Distribution History"
 msgstr "リベート分配履歴"
 
-#: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#~ msgid "Collateral close destination"
-#~ msgstr ""
-
 #: src/components/Footer/constants.tsx
 msgid "V1 Interface"
 msgstr "V1インターフェース"
@@ -4765,10 +4760,6 @@ msgstr "リンクがクリップボードにコピーされました。"
 msgid "Max slippage precision is -0.01%"
 msgstr "最大スリッページ精度は-0.01%"
 
-#: src/components/PositionSeller/CollateralDestinationDialog.tsx
-#~ msgid "<0>GMX Balance</0> keeps funds in your GMX Account for faster trading and lower gas costs.<1/><2/><3>Wallet</3> sends funds directly to your connected wallet."
-#~ msgstr ""
-
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "TP price above mark price"
 msgstr ""
@@ -5307,11 +5298,6 @@ msgstr "支払い"
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total circulating supply of GMX tokens."
 msgstr "GMXトークンの総循環供給量。"
-
-#: src/components/PositionSeller/CollateralDestinationDialog.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#~ msgid "<0>GMX Account</0> keeps funds in your GMX Account for faster trading and lower gas costs.<1/><2/><3>Arbitrum wallet</3> sends funds directly to your connected wallet."
-#~ msgstr ""
 
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
@@ -7014,10 +7000,6 @@ msgstr "ベスティング済み請求可能GMX："
 msgid "Transaction failed."
 msgstr "取引に失敗しました。"
 
-#: src/components/PositionSeller/CollateralDestinationDialog.tsx
-#~ msgid "Yes, set {destinationLabel} as default"
-#~ msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized Yield Products"
 msgstr "分散型イールド製品"
@@ -8257,10 +8239,6 @@ msgstr "言語"
 msgid "Complete Transfer"
 msgstr "転送を完了"
 
-#: src/components/PositionSeller/CollateralDestinationDialog.tsx
-#~ msgid "No, keep current default"
-#~ msgstr ""
-
 #: src/components/Referrals/TradersStats.tsx
 msgid "GMX V2 discounts are automatically applied on each trade and are not displayed on this table."
 msgstr "GMX V2割引は各取引で自動適用され、このテーブルに表示されません。"
@@ -8377,10 +8355,6 @@ msgstr "7日"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"
 msgstr "Rage Trade"
-
-#: src/components/PositionSeller/CollateralDestinationDialog.tsx
-#~ msgid "You chose to send the remaining collateral to <0>{destinationLabel}</0>. Do you want to make <1>{destinationLabel}</1> your default destination when closing positions?"
-#~ msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Click on the position to select it, then use the trade box to increase it."

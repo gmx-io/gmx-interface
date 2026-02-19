@@ -1845,10 +1845,6 @@ msgstr "Keine Mittel zum Einlösen"
 msgid "Max deposit limit reached"
 msgstr ""
 
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "Min size per part: {0}"
-#~ msgstr "Min. Größe pro Teil: {0}"
-
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price above liq. price"
@@ -1902,11 +1898,6 @@ msgstr "Layer 2"
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates Distribution History"
 msgstr "Rabatte Verteilungs-Historie"
-
-#: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#~ msgid "Collateral close destination"
-#~ msgstr ""
 
 #: src/components/Footer/constants.tsx
 msgid "V1 Interface"
@@ -4769,10 +4760,6 @@ msgstr "Link in die Zwischenablage kopiert."
 msgid "Max slippage precision is -0.01%"
 msgstr "Maximale Slippage-Präzision beträgt -0,01 %"
 
-#: src/components/PositionSeller/CollateralDestinationDialog.tsx
-#~ msgid "<0>GMX Balance</0> keeps funds in your GMX Account for faster trading and lower gas costs.<1/><2/><3>Wallet</3> sends funds directly to your connected wallet."
-#~ msgstr ""
-
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "TP price above mark price"
 msgstr ""
@@ -5108,10 +5095,6 @@ msgstr "Spread"
 msgid "This position was liquidated as the max. leverage of {formattedMaxLeverage} was exceeded when taking into account fees."
 msgstr "Diese Position wurde liquidiert, da die maximale Hebelwirkung von {formattedMaxLeverage} überschritten wurde, wenn die Gebühren berücksichtigt werden."
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "Swap {0}"
-#~ msgstr "Swap {0}"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Buyable cap reached for GM: {0} in {1} [{2}]. Reduce size, pick different GM, or shift to another pool."
 msgstr ""
@@ -5316,11 +5299,6 @@ msgstr "zahlen"
 msgid "Total circulating supply of GMX tokens."
 msgstr "Gesamte umlaufende Versorgung von GMX-Token."
 
-#: src/components/PositionSeller/CollateralDestinationDialog.tsx
-#: src/components/SettingsModal/TradingSettings.tsx
-#~ msgid "<0>GMX Account</0> keeps funds in your GMX Account for faster trading and lower gas costs.<1/><2/><3>Arbitrum wallet</3> sends funds directly to your connected wallet."
-#~ msgstr ""
-
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "You can have up to {allowedAutoCancelOrdersNumber} active auto-cancelable TP/SL orders. Additional orders must be canceled manually, while existing ones will still close automatically with their related position."
 msgstr "Du kannst bis zu {allowedAutoCancelOrdersNumber} aktive auto-stornierbare TP/SL-Orders haben. Zusätzliche Orders müssen manuell storniert werden, während bestehende automatisch mit ihrer zugehörigen Position schließen."
@@ -5414,11 +5392,6 @@ msgstr "Bridge-TX-Hash"
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 msgid "Start unrealized pnl"
 msgstr "Start unrealisierter PnL"
-
-#: src/components/Errors/gasErrors.tsx
-#: src/components/Errors/gasErrors.tsx
-#~ msgid "Insufficient {nativeTokenSymbol} for gas in your wallet on {0}. <0>Buy {nativeTokenSymbol}</0>"
-#~ msgstr "Unzureichendes {nativeTokenSymbol} für Gas in Ihrer Wallet auf {0}. <0>Kaufe {nativeTokenSymbol}</0>"
 
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "Size (% of Position)"
@@ -7027,10 +7000,6 @@ msgstr "Vestetes, einlösbares GMX:"
 msgid "Transaction failed."
 msgstr "Transaktion fehlgeschlagen."
 
-#: src/components/PositionSeller/CollateralDestinationDialog.tsx
-#~ msgid "Yes, set {destinationLabel} as default"
-#~ msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized Yield Products"
 msgstr "Dezentralisierte Yield-Produkte"
@@ -8270,10 +8239,6 @@ msgstr "Sprache"
 msgid "Complete Transfer"
 msgstr "Übertragung abschließen"
 
-#: src/components/PositionSeller/CollateralDestinationDialog.tsx
-#~ msgid "No, keep current default"
-#~ msgstr ""
-
 #: src/components/Referrals/TradersStats.tsx
 msgid "GMX V2 discounts are automatically applied on each trade and are not displayed on this table."
 msgstr "GMX V2-Rabatte werden automatisch auf jeden Handel angewendet und nicht in dieser Tabelle angezeigt."
@@ -8390,10 +8355,6 @@ msgstr "7T"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Rage Trade"
 msgstr "Rage Trade"
-
-#: src/components/PositionSeller/CollateralDestinationDialog.tsx
-#~ msgid "You chose to send the remaining collateral to <0>{destinationLabel}</0>. Do you want to make <1>{destinationLabel}</1> your default destination when closing positions?"
-#~ msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Click on the position to select it, then use the trade box to increase it."
