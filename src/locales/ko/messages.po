@@ -885,6 +885,10 @@ msgstr "유동성 제공"
 msgid "Plutus"
 msgstr "Plutus"
 
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "Don't ask again"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No options to buy {nativeTokenSymbol} on {chainName}"
 msgstr "{chainName}에서 {nativeTokenSymbol}을(를) 구매할 수 있는 옵션이 없습니다"
@@ -2205,6 +2209,10 @@ msgstr "최소 분할: {MIN_TWAP_NUMBER_OF_PARTS}"
 msgid "Update Stop-Loss"
 msgstr "손절매 업데이트"
 
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "How do I choose?"
+msgstr ""
+
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Account"
@@ -3171,6 +3179,11 @@ msgstr "지갑에서 거래"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Deposit USD capacity"
 msgstr "입금 USD 한도"
+
+#: src/components/CollateralDestinationSelector/CollateralDestinationSelector.tsx
+#: src/components/CollateralDestinationSelector/CollateralDestinationSelector.tsx
+msgid "Arbitrum wallet"
+msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Smart wallets not supported on {0}</0><1/><2>Switch to a different network or use an EOA wallet</2>"
@@ -4696,6 +4709,10 @@ msgstr "이용약관"
 #: src/components/GmList/GmList.tsx
 msgid "TVL (SUPPLY)"
 msgstr "TVL (공급)"
+
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "Update Default Destination"
+msgstr ""
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
@@ -6296,6 +6313,11 @@ msgstr "{orderText} 업데이트 완료"
 msgid "Withdrawal sent"
 msgstr "출금 전송 완료"
 
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Because positions on Arbitrum can be funded from both your wallet and your GMX Account, we can't always determine where to return the collateral automatically.<0/><1/>Choose:<2/>• <3>Wallet</3> if you mostly trade from your personal wallet on Arbitrum<4/>• <5>GMX Account</5> if you plan to keep trading or reusing collateral on GMX.<6/><7/>You can change this preference anytime in Settings or when closing a position."
+msgstr ""
+
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "1m 40s"
@@ -6925,6 +6947,10 @@ msgstr "{tokenSymbol} 보상 스테이킹"
 msgid "Max amount exceeded"
 msgstr "최대 수량 초과"
 
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "You chose to send the remaining collateral to your <0>{chosenLabel}</0>. Do you want to make this the default destination when closing positions?"
+msgstr ""
+
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -6939,6 +6965,10 @@ msgstr "h1"
 #: src/pages/RpcDebug/parts.tsx
 msgid "RPC endpoints"
 msgstr "RPC endpoints"
+
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "No, keep {currentLabel} as default"
+msgstr ""
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Staking only available on {chainNames} or {lastChainName}. Switch networks to continue."
@@ -8688,6 +8718,11 @@ msgstr "기초 담보 토큰에 대한 익스포저"
 msgid "Search type"
 msgstr "유형 검색"
 
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Send remaining collateral to"
+msgstr ""
+
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "Long liq."
 msgstr "롱 유동성"
@@ -9104,6 +9139,8 @@ msgstr "풀에 사용 가능한 유동성 부족"
 msgid "Vested claimable GMX:"
 msgstr "베스팅 완료 수령 가능 GMX:"
 
+#: src/components/CollateralDestinationSelector/CollateralDestinationSelector.tsx
+#: src/components/CollateralDestinationSelector/CollateralDestinationSelector.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
@@ -9495,6 +9532,10 @@ msgstr "지정가 감소"
 #: src/components/GasPaymentTokenSelector/GasPaymentTokenSelector.tsx
 msgid "Gas payment token"
 msgstr "Gas 결제 토큰"
+
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "Yes, set {chosenLabel} as default"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Stabilize Protocol"

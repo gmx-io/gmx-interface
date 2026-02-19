@@ -4,7 +4,9 @@ import cx from "classnames";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { useKey, useLatest } from "react-use";
 
+import { ARBITRUM, GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
+import { getCollateralCloseDestinationDialogHiddenKey } from "config/localStorage";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
@@ -42,6 +44,7 @@ import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tok
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
+import { useInitCollateralCloseDestination } from "domain/synthetics/express/useInitCollateralCloseDestination";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
@@ -61,6 +64,7 @@ import { useChainId } from "lib/chains";
 import { useDebouncedInputValue } from "lib/debounce/useDebouncedInputValue";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidationErrorMetric } from "lib/metrics/utils";
 import { expandDecimals, formatAmountFree, formatDeltaUsd, formatPercentage, parseValue } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
@@ -81,10 +85,12 @@ import { getIsValidTwapParams } from "sdk/utils/twap";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
+import { CollateralDestinationSelector } from "components/CollateralDestinationSelector/CollateralDestinationSelector";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
@@ -93,6 +99,7 @@ import { ValueTransition } from "components/ValueTransition/ValueTransition";
 import InfoCircleIcon from "img/ic_info_circle_stroke.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
+import { CollateralDestinationDialog } from "./CollateralDestinationDialog";
 import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
@@ -125,7 +132,27 @@ export function PositionSeller() {
   const position = useSelector(selectPositionSellerPosition);
   const toToken = position?.indexToken;
   const submitButtonRef = useRef<HTMLButtonElement>(null);
-  const { shouldDisableValidationForTesting } = useSettings();
+  const settings = useSettings();
+  const { shouldDisableValidationForTesting, expressOrdersEnabled } = settings;
+  useInitCollateralCloseDestination();
+  const [isReceiveToGmxAccount, setIsReceiveToGmxAccount] = useState(settings.receiveToGmxAccount ?? false);
+  const effectiveIsReceiveToGmxAccount = isReceiveToGmxAccount && expressOrdersEnabled;
+  const [isDestinationDialogVisible, setIsDestinationDialogVisible] = useState(false);
+  const [dialogHidden, setDialogHidden] = useLocalStorageSerializeKey(
+    getCollateralCloseDestinationDialogHiddenKey(chainId, account),
+    false
+  );
+
+  const handleSetIsReceiveToGmxAccount = useCallback(
+    (value: boolean) => {
+      setIsReceiveToGmxAccount(value);
+      if (value !== (settings.receiveToGmxAccount ?? false) && !dialogHidden) {
+        setIsDestinationDialogVisible(true);
+      }
+    },
+    [settings.receiveToGmxAccount, dialogHidden]
+  );
+
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
   const blockTimestampData = useSelector(selectBlockTimestampData);
@@ -204,7 +231,14 @@ export function PositionSeller() {
   const receiveToken = useSelector(selectPositionSellerReceiveToken);
 
   useEffect(() => {
+    if (isVisible) {
+      setIsReceiveToGmxAccount(settings.receiveToGmxAccount ?? false);
+    }
+  }, [isVisible, settings.receiveToGmxAccount]);
+
+  useEffect(() => {
     if (!isVisible) {
+      setIsDestinationDialogVisible(false);
       // timeout to not disturb animation
       setTimeout(() => {
         resetPositionSeller();
@@ -362,7 +396,7 @@ export function PositionSeller() {
   } = useExpressOrdersParams({
     label: "Position Seller",
     orderParams: batchParams,
-    isGmxAccount: srcChainId !== undefined,
+    isGmxAccount: srcChainId !== undefined || effectiveIsReceiveToGmxAccount,
   });
 
   const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
@@ -543,7 +577,7 @@ export function PositionSeller() {
       signer,
       provider,
       batchParams,
-      isGmxAccount: srcChainId !== undefined,
+      isGmxAccount: srcChainId !== undefined || effectiveIsReceiveToGmxAccount,
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
       simulationParams: shouldDisableValidationForTesting
@@ -680,7 +714,15 @@ export function PositionSeller() {
             tokens={availableReceiveTokens}
             showTokenImgInDropdown={true}
             selectedTokenLabel={
-              <span className="PositionSelector-selected-receive-token">
+              <span className="PositionSelector-selected-receive-token inline-flex items-center">
+                {chainId === ARBITRUM && srcChainId === undefined && expressOrdersEnabled && (
+                  <TokenIcon
+                    className="mr-4"
+                    symbol={receiveToken.symbol}
+                    displaySize={20}
+                    chainIdBadge={effectiveIsReceiveToGmxAccount ? GMX_ACCOUNT_PSEUDO_CHAIN_ID : ARBITRUM}
+                  />
+                )}
                 <AmountWithUsdBalance
                   className={cx({
                     "*:!text-yellow-300 hover:!text-yellow-300": isNotEnoughReceiveTokenLiquidity,
@@ -690,10 +732,26 @@ export function PositionSeller() {
                   symbol={receiveToken.symbol}
                   usd={receiveUsd}
                   isStable={receiveToken.isStable}
+                  secondaryValueClassName="!text-14"
                 />
               </span>
             }
             extendedSortSequence={availableTokensOptions?.sortedLongAndShortTokens}
+            topContent={
+              chainId === ARBITRUM && srcChainId === undefined && expressOrdersEnabled ? (
+                <div className="mb-16">
+                  <div className="flex items-center justify-between gap-8">
+                    <span className="text-14 text-typography-secondary">
+                      <Trans>Send remaining collateral to</Trans>
+                    </span>
+                    <CollateralDestinationSelector
+                      isReceiveToGmxAccount={isReceiveToGmxAccount}
+                      onChangeDestination={handleSetIsReceiveToGmxAccount}
+                    />
+                  </div>
+                </div>
+              ) : undefined
+            }
           />
         )
       }
@@ -976,6 +1034,13 @@ export function PositionSeller() {
           )}
         </div>
       </Modal>
+
+      <CollateralDestinationDialog
+        isVisible={isDestinationDialogVisible}
+        setIsVisible={setIsDestinationDialogVisible}
+        chosenReceiveToGmxAccount={isReceiveToGmxAccount}
+        setDialogHidden={setDialogHidden}
+      />
     </div>
   );
 }

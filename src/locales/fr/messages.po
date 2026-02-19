@@ -885,6 +885,10 @@ msgstr "fournir de la liquidité"
 msgid "Plutus"
 msgstr "Plutus"
 
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "Don't ask again"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No options to buy {nativeTokenSymbol} on {chainName}"
 msgstr "Aucune option pour acheter des {nativeTokenSymbol} sur {chainName}"
@@ -2205,6 +2209,10 @@ msgstr "Minimum de parties : {MIN_TWAP_NUMBER_OF_PARTS}"
 msgid "Update Stop-Loss"
 msgstr "Mettre à jour le Stop-Loss"
 
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "How do I choose?"
+msgstr ""
+
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Account"
@@ -3171,6 +3179,11 @@ msgstr "Trader depuis votre portefeuille"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Deposit USD capacity"
 msgstr "Capacité de dépôt en USD"
+
+#: src/components/CollateralDestinationSelector/CollateralDestinationSelector.tsx
+#: src/components/CollateralDestinationSelector/CollateralDestinationSelector.tsx
+msgid "Arbitrum wallet"
+msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Smart wallets not supported on {0}</0><1/><2>Switch to a different network or use an EOA wallet</2>"
@@ -4696,6 +4709,10 @@ msgstr "Conditions générales d'utilisation"
 #: src/components/GmList/GmList.tsx
 msgid "TVL (SUPPLY)"
 msgstr "TVL (FOURNITURE)"
+
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "Update Default Destination"
+msgstr ""
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
@@ -6296,6 +6313,11 @@ msgstr "{orderText} mis à jour"
 msgid "Withdrawal sent"
 msgstr "Retrait envoyé"
 
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Because positions on Arbitrum can be funded from both your wallet and your GMX Account, we can't always determine where to return the collateral automatically.<0/><1/>Choose:<2/>• <3>Wallet</3> if you mostly trade from your personal wallet on Arbitrum<4/>• <5>GMX Account</5> if you plan to keep trading or reusing collateral on GMX.<6/><7/>You can change this preference anytime in Settings or when closing a position."
+msgstr ""
+
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "1m 40s"
@@ -6925,6 +6947,10 @@ msgstr "Staker les récompenses {tokenSymbol}"
 msgid "Max amount exceeded"
 msgstr "Montant maximal dépassé"
 
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "You chose to send the remaining collateral to your <0>{chosenLabel}</0>. Do you want to make this the default destination when closing positions?"
+msgstr ""
+
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -6939,6 +6965,10 @@ msgstr "h1"
 #: src/pages/RpcDebug/parts.tsx
 msgid "RPC endpoints"
 msgstr "Points de terminaison RPC"
+
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "No, keep {currentLabel} as default"
+msgstr ""
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Staking only available on {chainNames} or {lastChainName}. Switch networks to continue."
@@ -8688,6 +8718,11 @@ msgstr "Exposition aux tokens de garantie"
 msgid "Search type"
 msgstr "Rechercher un type"
 
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Send remaining collateral to"
+msgstr ""
+
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "Long liq."
 msgstr "Liq. long"
@@ -9104,6 +9139,8 @@ msgstr "Liquidité insuffisante disponible dans le pool"
 msgid "Vested claimable GMX:"
 msgstr "GMX acquis récupérables :"
 
+#: src/components/CollateralDestinationSelector/CollateralDestinationSelector.tsx
+#: src/components/CollateralDestinationSelector/CollateralDestinationSelector.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
@@ -9495,6 +9532,10 @@ msgstr "Diminution limite"
 #: src/components/GasPaymentTokenSelector/GasPaymentTokenSelector.tsx
 msgid "Gas payment token"
 msgstr "Jeton de paiement du Gas"
+
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "Yes, set {chosenLabel} as default"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Stabilize Protocol"

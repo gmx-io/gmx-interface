@@ -53,6 +53,7 @@ type Props = {
   marketsInfoData?: MarketsInfoData;
   qa?: string;
   chainIdBadge?: number;
+  topContent?: ReactNode;
 };
 
 export default function TokenSelector(props: Props) {
@@ -84,6 +85,7 @@ export default function TokenSelector(props: Props) {
     chainId,
     qa,
     chainIdBadge,
+    topContent,
   } = props;
 
   const visibleTokens = tokens.filter((t) => t && !t.isTempHidden);
@@ -206,7 +208,15 @@ export default function TokenSelector(props: Props) {
         footerContent={footerContent}
         contentPadding={false}
         headerContent={
-          <SearchInput className="mb-16" value={searchKeyword} setValue={setSearchKeyword} onKeyDown={_handleKeyDown} />
+          <>
+            <SearchInput
+              className="mb-16"
+              value={searchKeyword}
+              setValue={setSearchKeyword}
+              onKeyDown={_handleKeyDown}
+            />
+            {topContent}
+          </>
         }
       >
         {missedCoinsPlace && (

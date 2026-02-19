@@ -885,6 +885,10 @@ msgstr ""
 msgid "Plutus"
 msgstr ""
 
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "Don't ask again"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No options to buy {nativeTokenSymbol} on {chainName}"
 msgstr ""
@@ -2205,6 +2209,10 @@ msgstr ""
 msgid "Update Stop-Loss"
 msgstr ""
 
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "How do I choose?"
+msgstr ""
+
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Account"
@@ -3170,6 +3178,11 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Deposit USD capacity"
+msgstr ""
+
+#: src/components/CollateralDestinationSelector/CollateralDestinationSelector.tsx
+#: src/components/CollateralDestinationSelector/CollateralDestinationSelector.tsx
+msgid "Arbitrum wallet"
 msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
@@ -4695,6 +4708,10 @@ msgstr ""
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GmList.tsx
 msgid "TVL (SUPPLY)"
+msgstr ""
+
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "Update Default Destination"
 msgstr ""
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
@@ -6296,6 +6313,11 @@ msgstr ""
 msgid "Withdrawal sent"
 msgstr ""
 
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Because positions on Arbitrum can be funded from both your wallet and your GMX Account, we can't always determine where to return the collateral automatically.<0/><1/>Choose:<2/>• <3>Wallet</3> if you mostly trade from your personal wallet on Arbitrum<4/>• <5>GMX Account</5> if you plan to keep trading or reusing collateral on GMX.<6/><7/>You can change this preference anytime in Settings or when closing a position."
+msgstr ""
+
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "1m 40s"
@@ -6925,6 +6947,10 @@ msgstr ""
 msgid "Max amount exceeded"
 msgstr ""
 
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "You chose to send the remaining collateral to your <0>{chosenLabel}</0>. Do you want to make this the default destination when closing positions?"
+msgstr ""
+
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -6938,6 +6964,10 @@ msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "RPC endpoints"
+msgstr ""
+
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "No, keep {currentLabel} as default"
 msgstr ""
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
@@ -8688,6 +8718,11 @@ msgstr ""
 msgid "Search type"
 msgstr ""
 
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
+msgid "Send remaining collateral to"
+msgstr ""
+
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "Long liq."
 msgstr ""
@@ -9104,6 +9139,8 @@ msgstr ""
 msgid "Vested claimable GMX:"
 msgstr ""
 
+#: src/components/CollateralDestinationSelector/CollateralDestinationSelector.tsx
+#: src/components/CollateralDestinationSelector/CollateralDestinationSelector.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
@@ -9494,6 +9531,10 @@ msgstr ""
 #: src/components/GasPaymentTokenSelector/GasPaymentTokenSelector.tsx
 #: src/components/GasPaymentTokenSelector/GasPaymentTokenSelector.tsx
 msgid "Gas payment token"
+msgstr ""
+
+#: src/components/PositionSeller/CollateralDestinationDialog.tsx
+msgid "Yes, set {chosenLabel} as default"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx

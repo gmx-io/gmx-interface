@@ -2,7 +2,7 @@ import { Trans } from "@lingui/macro";
 import { useCallback } from "react";
 import { useAccount } from "wagmi";
 
-import { AVALANCHE, BOTANIX, getChainName } from "config/chains";
+import { ARBITRUM, AVALANCHE, BOTANIX, getChainName } from "config/chains";
 import { DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import { getIsExpressSupported } from "config/features";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
@@ -22,6 +22,7 @@ import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
 import { getNativeToken } from "sdk/configs/tokens";
 
+import { CollateralDestinationSelector } from "components/CollateralDestinationSelector/CollateralDestinationSelector";
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import { ExpressTradingOutOfGasBanner } from "components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -279,6 +280,39 @@ export function TradingSettings({
             maxValue={1000 * 100}
             suggestions={EMPTY_ARRAY}
           />
+        )}
+
+        {chainId === ARBITRUM && srcChainId === undefined && settings.expressOrdersEnabled && (
+          <div className="flex w-full items-center justify-between">
+            <TooltipWithPortal
+              className="font-medium"
+              variant="icon"
+              handle={<Trans>Send remaining collateral to</Trans>}
+              content={
+                <div>
+                  <Trans>
+                    Because positions on Arbitrum can be funded from both your wallet and your GMX Account, we can't
+                    always determine where to return the collateral automatically.
+                    <br />
+                    <br />
+                    Choose:
+                    <br />• <span className="font-bold">Wallet</span> if you mostly trade from your personal wallet on
+                    Arbitrum
+                    <br />• <span className="font-bold">GMX Account</span> if you plan to keep trading or reusing
+                    collateral on GMX.
+                    <br />
+                    <br />
+                    You can change this preference anytime in Settings or when closing a position.
+                  </Trans>
+                </div>
+              }
+            />
+            <CollateralDestinationSelector
+              isReceiveToGmxAccount={settings.receiveToGmxAccount ?? false}
+              onChangeDestination={settings.setReceiveToGmxAccount}
+              desktopPanelClassName="!z-[10000] w-[200px] !top-[10px]"
+            />
+          </div>
         )}
 
         <ToggleSwitch isChecked={settings.isAutoCancelTPSL} setIsChecked={settings.setIsAutoCancelTPSL}>
