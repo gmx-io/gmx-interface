@@ -149,7 +149,7 @@ export function MarginField({
                   tokensData={tokensData}
                   multichainTokens={multichainTokens}
                   onDepositTokenAddress={onDepositTokenAddress}
-                  payChainId={isFromTokenGmxAccount ? GMX_ACCOUNT_PSEUDO_CHAIN_ID : srcChainId ?? chainId}
+                  payChainId={isFromTokenGmxAccount ? GMX_ACCOUNT_PSEUDO_CHAIN_ID : chainId}
                 />
               ))}
           </div>
