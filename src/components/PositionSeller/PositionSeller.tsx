@@ -237,6 +237,7 @@ export function PositionSeller() {
 
   useEffect(() => {
     if (!isVisible) {
+      setIsDestinationDialogVisible(false);
       // timeout to not disturb animation
       setTimeout(() => {
         resetPositionSeller();
