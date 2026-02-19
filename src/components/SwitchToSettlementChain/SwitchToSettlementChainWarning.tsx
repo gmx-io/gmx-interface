@@ -31,60 +31,46 @@ export function SwitchToSettlementChainWarning({
   if (topic === "liquidity") {
     message = multipleChains ? (
       <Trans>
-        Liquidity providing for this market is only available on {chainNames} and {lastChainName}. Please switch to{" "}
-        {chainNames} or {lastChainName} to access earning opportunities.
+        Liquidity only available on {chainNames} or {lastChainName}. Switch networks to continue.
       </Trans>
     ) : (
-      <Trans>
-        Liquidity providing for this market is only available on {chainNames}. Please switch to {chainNames} to access
-        earning opportunities.
-      </Trans>
+      <Trans>Liquidity only available on {chainNames}. Switch networks to continue.</Trans>
     );
   } else if (topic === "shift") {
     message = multipleChains ? (
       <Trans>
-        Shifting is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName}{" "}
-        to access earning opportunities.
+        Shifting only available on {chainNames} or {lastChainName}. Switch networks to continue.
       </Trans>
     ) : (
-      <Trans>
-        Shifting is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities.
-      </Trans>
+      <Trans>Shifting only available on {chainNames}. Switch networks to continue.</Trans>
     );
   } else if (topic === "staking") {
     message = multipleChains ? (
       <Trans>
-        Staking is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName}{" "}
-        to access earning opportunities.
+        Staking only available on {chainNames} or {lastChainName}. Switch networks to continue.
       </Trans>
     ) : (
-      <Trans>
-        Staking is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities.
-      </Trans>
+      <Trans>Staking only available on {chainNames}. Switch networks to continue.</Trans>
     );
   } else if (topic === "vesting") {
     message = multipleChains ? (
       <Trans>
-        Vesting is only available on {chainNames} and {lastChainName}. Please switch to {chainNames} or {lastChainName}{" "}
-        to access earning opportunities.
+        Vesting only available on {chainNames} or {lastChainName}. Switch networks to continue.
       </Trans>
     ) : (
-      <Trans>
-        Vesting is only available on {chainNames}. Please switch to {chainNames} to access earning opportunities.
-      </Trans>
+      <Trans>Vesting only available on {chainNames}. Switch networks to continue.</Trans>
     );
   } else if (topic === "claimRewards" && settlementChainId && isSettlementChain(settlementChainId)) {
     const settlementChainName = getChainName(settlementChainId);
     message = (
       <Trans>
-        Claiming rewards is only available on {settlementChainName}. Please switch to {settlementChainName} to claim
-        your referral rewards.
+        Claiming rewards only available on {settlementChainName}. Switch networks to claim referral rewards.
       </Trans>
     );
   }
 
   return (
-    <AlertInfoCard type="warning" className="mb-12">
+    <AlertInfoCard type="error" className="mb-12" hideClose>
       {message}
     </AlertInfoCard>
   );

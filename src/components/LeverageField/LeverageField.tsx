@@ -172,7 +172,7 @@ export function LeverageField({ value, onChange, marks, disabled }: Props) {
             {...getFloatingProps()}
           >
             <div className="mb-4 flex items-center justify-between">
-              <span className="text-16 font-medium text-typography-primary">{t`Adjust Leverage`}</span>
+              <span className="text-16 font-medium text-typography-primary">{t`Adjust leverage`}</span>
               <button onClick={handleClose} className="text-typography-secondary hover:text-typography-primary">
                 <CloseIcon className="size-20" />
               </button>
@@ -191,8 +191,8 @@ export function LeverageField({ value, onChange, marks, disabled }: Props) {
                   className="!rounded-4 border border-slate-600 bg-slate-800 !py-6"
                 />
               </div>
-              <ColorfulBanner icon={AlertIcon}>
-                <Trans>High leverage increases liquidation risk.</Trans>
+              <ColorfulBanner color="yellow" icon={AlertIcon}>
+                <Trans>High leverage increases liquidation risk</Trans>
               </ColorfulBanner>
             </div>
           </div>

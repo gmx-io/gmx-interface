@@ -1,3 +1,4 @@
+import { t, Trans } from "@lingui/macro";
 import { useCallback, useEffect, useState } from "react";
 
 import { getProviderNameFromUrl } from "config/rpc";
@@ -284,7 +285,7 @@ export default function RpcDebug() {
   return (
     <AppPageLayout>
       <div className="default-container">
-        <Card title="RPC Debug">
+        <Card title={t`RPC debug`}>
           <div className="App-card-content">
             <div className="flex gap-8" style={GRID_STYLE}>
               <div className="flex min-w-0 flex-[2] flex-col">
@@ -378,16 +379,24 @@ function DataFreshnessSection({
   return (
     <div className="mt-8 flex min-h-0 flex-shrink-0 flex-col overflow-hidden">
       <div className="mb-6 flex h-8 flex-shrink-0 items-center justify-between px-8 py-16">
-        <h3 className="text-xl muted font-bold uppercase">Data Freshness</h3>
+        <h3 className="text-xl muted font-bold uppercase">
+          <Trans>Data freshness</Trans>
+        </h3>
       </div>
       <div className="flex-shrink-0">
         <div className="overflow-x-auto">
           <Table>
             <thead className="sticky top-0 z-10 bg-slate-900">
               <TableTheadTr>
-                <TableTh padding="compact">Data Type</TableTh>
-                <TableTh padding="compact">Current</TableTh>
-                <TableTh padding="compact">Previous</TableTh>
+                <TableTh padding="compact">
+                  <Trans>DATA TYPE</Trans>
+                </TableTh>
+                <TableTh padding="compact">
+                  <Trans>CURRENT</Trans>
+                </TableTh>
+                <TableTh padding="compact">
+                  <Trans>PREVIOUS</Trans>
+                </TableTh>
               </TableTheadTr>
             </thead>
             <tbody>

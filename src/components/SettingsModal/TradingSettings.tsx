@@ -88,16 +88,18 @@ export function TradingSettings({
         <>
           <SettingsSection>
             <div className="text-14 font-medium text-typography-primary">
-              <Trans>Trading Mode</Trans>
+              <Trans>Trading mode</Trans>
             </div>
             {!srcChainId && (
               <SettingButton
                 title={<Trans>Classic</Trans>}
-                description={<Trans>On-chain signing for every transaction.</Trans>}
+                description={<Trans>On-chain signing for every transaction</Trans>}
                 info={
                   <Trans>
-                    You sign each transaction on-chain using your own RPC, typically provided by your wallet. Gas
-                    payments in {nativeTokenSymbol}.
+                    Sign each transaction on-chain using your own RPC, typically provided by your wallet.
+                    <br />
+                    <br />
+                    Gas payments in {nativeTokenSymbol}.
                   </Trans>
                 }
                 icon={<HourGlassIcon className="size-28" />}
@@ -108,18 +110,20 @@ export function TradingSettings({
 
             <SettingButton
               title={<Trans>Express</Trans>}
-              description={<Trans>High execution reliability using premium RPCs.</Trans>}
+              description={<Trans>High execution reliability using premium RPCs</Trans>}
               info={
                 <Trans>
-                  You sign each transaction off-chain. Trades use GMX-sponsored premium RPCs for reliability, even
-                  during network congestion. Gas payments in {gasPaymentTokensText}.
+                  Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.
+                  <br />
+                  <br />
+                  Gas payments in {gasPaymentTokensText}.
                 </Trans>
               }
               icon={<ExpressIcon className="size-28" />}
               disabled={isExpressTradingDisabled}
               disabledTooltip={
                 isNonEoaAccountOnAnyChain || isGeminiWallet ? (
-                  <Trans>Smart wallets are not supported on Express or One-Click Trading.</Trans>
+                  <Trans>Smart wallets are not supported on Express Trading or One-Click Trading</Trans>
                 ) : undefined
               }
               chip={
@@ -133,19 +137,21 @@ export function TradingSettings({
 
             <SettingButton
               title={<Trans>Express + One-Click</Trans>}
-              description={<Trans>CEX-like experience with Express reliability.</Trans>}
+              description={<Trans>Seamless trading with Express reliability</Trans>}
               icon={<OneClickIcon className="size-28" />}
               disabled={isExpressTradingDisabled}
               disabledTooltip={
                 isNonEoaAccountOnAnyChain || isGeminiWallet ? (
-                  <Trans>Smart wallets are not supported on Express or One-Click Trading.</Trans>
+                  <Trans>Smart wallets are not supported on Express Trading or One-Click Trading</Trans>
                 ) : undefined
               }
               info={
                 <Trans>
-                  GMX executes transactions for you without individual signing, providing a seamless, CEX-like
-                  experience. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion. Gas
-                  payments in {gasPaymentTokensText}.
+                  GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for
+                  reliability, even during network congestion.
+                  <br />
+                  <br />
+                  Gas payments in {gasPaymentTokensText}.
                 </Trans>
               }
               chip={
@@ -185,11 +191,10 @@ export function TradingSettings({
               variant="icon"
               content={
                 <Trans>
-                  The settlement chain is the network used for your GMX Account and opening positions. GMX Account
-                  balances and positions are specific to the selected network.
+                  Network for your GMX Account and positions. Balances and positions don't transfer between networks.
                 </Trans>
               }
-              handle={<Trans>Settlement Chain</Trans>}
+              handle={<Trans>Settlement chain</Trans>}
             />
             <DropdownSelector
               slim
@@ -221,17 +226,17 @@ export function TradingSettings({
 
       <SettingsSection className="mt-2">
         <InputSetting
-          title={<Trans>Default Allowed Slippage</Trans>}
+          title={<Trans>Default allowed slippage</Trans>}
           description={
             <div>
               <Trans>
-                Slippage is the difference between your expected and actual execution price due to price volatility.
-                Orders won't execute if slippage exceeds your allowed maximum.
+                The difference between expected and actual execution price due to volatility. Orders won't execute if
+                slippage exceeds your maximum.
                 <br />
                 <br />
-                Note: slippage is different from price impact, which is based on open interest imbalances.
+                Slippage differs from price impact, which is based on open interest imbalances.
               </Trans>{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/trading/v2#slippage">
+              <ExternalLink href="https://docs.gmx.io/docs/trading/#slippage">
                 <Trans>Read more</Trans>
               </ExternalLink>
               .
@@ -244,10 +249,10 @@ export function TradingSettings({
         />
 
         <InputSetting
-          title={<Trans>TWAP Number of Parts</Trans>}
+          title={<Trans>TWAP number of parts</Trans>}
           description={
             <div>
-              <Trans>The default number of parts for Time-Weighted Average Price (TWAP) orders.</Trans>
+              <Trans>Default parts for TWAP orders</Trans>
             </div>
           }
           defaultValue={DEFAULT_TIME_WEIGHTED_NUMBER_OF_PARTS}
@@ -259,19 +264,14 @@ export function TradingSettings({
 
         {settings.shouldUseExecutionFeeBuffer && (
           <InputSetting
-            title={<Trans>Max Network Fee Buffer</Trans>}
+            title={<Trans>Max network fee buffer</Trans>}
             description={
               <div>
-                <Trans>
-                  The max network fee is set to a higher value to handle potential increases in gas price during order
-                  execution. Any excess network fee will be refunded to your account when the order is executed. Only
-                  applicable to GMX V2.
-                </Trans>
-                <br />
-                <br />
-                <ExternalLink href="https://docs.gmx.io/docs/trading/#network-fee-buffer">
+                <Trans>Max network fee includes a buffer for gas spikes. Unused fees refunded.</Trans>{" "}
+                <ExternalLink href="https://docs.gmx.io/docs/trading/#network-fee">
                   <Trans>Read more</Trans>
                 </ExternalLink>
+                .
               </div>
             }
             defaultValue={30}
@@ -320,18 +320,15 @@ export function TradingSettings({
             content={
               <div>
                 <Trans>
-                  TP/SL orders will be automatically cancelled when the associated position is completely closed. This
-                  will only affect newly created TP/SL orders since the setting was enabled.
-                </Trans>
-                <br />
-                <br />
+                  TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling.
+                </Trans>{" "}
                 <ExternalLink href="https://docs.gmx.io/docs/trading/#auto-cancel-tp--sl">
                   <Trans>Read more</Trans>
                 </ExternalLink>
                 .
               </div>
             }
-            handle={<Trans>Auto-Cancel TP/SL</Trans>}
+            handle={<Trans>Auto-cancel TP/SL</Trans>}
             variant="icon"
             className="font-medium"
           />
@@ -344,7 +341,7 @@ export function TradingSettings({
             setIsChecked={settings.setExternalSwapsEnabled}
             className="font-medium"
           >
-            <Trans>Enable External Swaps</Trans>
+            <Trans>Enable external swaps</Trans>
           </ToggleSwitch>
         )}
 
@@ -353,7 +350,7 @@ export function TradingSettings({
           setIsChecked={settings.setIsSetAcceptablePriceImpactEnabled}
           className="font-medium"
         >
-          <Trans>Set Acceptable Price Impact</Trans>
+          <Trans>Set acceptable price impact</Trans>
         </ToggleSwitch>
       </SettingsSection>
     </div>

@@ -798,7 +798,7 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
 
   const leverageValue: ReactNode = useMemo(() => {
     if (activeDecreaseAmounts?.isFullClose) {
-      return t`NA`;
+      return t`N/A`;
     }
 
     if (activeDecreaseAmounts?.sizeDeltaUsd === position.sizeInUsd) {
@@ -821,10 +821,10 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
   const tpSlOptions = useMemo(() => {
     const options: { value: "tp" | "sl"; label: React.ReactNode }[] = [];
     if (tpDecreaseAmounts) {
-      options.push({ value: "tp", label: <Trans>Take Profit</Trans> });
+      options.push({ value: "tp", label: <Trans>Take-Profit</Trans> });
     }
     if (slDecreaseAmounts) {
-      options.push({ value: "sl", label: <Trans>Stop Loss</Trans> });
+      options.push({ value: "sl", label: <Trans>Stop-Loss</Trans> });
     }
     return options;
   }, [tpDecreaseAmounts, slDecreaseAmounts]);
@@ -842,7 +842,7 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
     <Modal
       isVisible={isVisible}
       setIsVisible={setIsVisible}
-      label={<Trans>TP/SL: {positionTitle} Decrease</Trans>}
+      label={<Trans>TP/SL: {positionTitle} decrease</Trans>}
       onBack={onBack ? handleBack : undefined}
       withMobileBottomPosition
       contentPadding={false}
@@ -879,7 +879,7 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
             <Trans>Keep leverage at {currentLeverage}</Trans>
           </ToggleSwitch>
           <ToggleSwitch isChecked={editTPSLSize} setIsChecked={handleEditTPSLSizeToggle}>
-            <Trans>Edit TP/SL Size</Trans>
+            <Trans>Edit TP/SL size</Trans>
           </ToggleSwitch>
         </div>
 
@@ -934,7 +934,7 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
                   }
                 />
                 <SyntheticsInfoRow
-                  label={<Trans>Liquidation Price</Trans>}
+                  label={<Trans>Liquidation price</Trans>}
                   value={
                     <ValueTransition
                       from={formatLiquidationPrice(position.liquidationPrice, {
@@ -970,7 +970,7 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
                   }
                 />
                 <SyntheticsInfoRow
-                  label={<Trans>Net Price Impact / Fees</Trans>}
+                  label={<Trans>Net price impact / fees</Trans>}
                   value={
                     activeFees ? (
                       <>
@@ -1001,7 +1001,7 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
         )}
 
         <ExpandableRow
-          title={t`Execution Details`}
+          title={t`Execution details`}
           open={executionDetailsOpen}
           onToggle={setExecutionDetailsOpen}
           contentClassName="flex flex-col gap-10"
@@ -1012,7 +1012,7 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
           <NetworkFeeRow executionFee={totalExecutionFee} />
           {breakdownNetPriceImpactEnabled && (
             <SyntheticsInfoRow
-              label={t`Stored Price Impact`}
+              label={t`Stored price impact`}
               value={
                 activeNextPositionValues?.nextPendingImpactDeltaUsd !== undefined &&
                 position?.pendingImpactUsd !== undefined ? (
@@ -1041,7 +1041,7 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
             label={
               <TooltipWithPortal
                 handle={<Trans>Collateral ({collateralToken.symbol})</Trans>}
-                content={<Trans>Initial collateral (collateral excluding borrow and funding fee).</Trans>}
+                content={<Trans>Initial collateral, excluding borrow and funding fees</Trans>}
                 variant="icon"
               />
             }

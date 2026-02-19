@@ -30,9 +30,9 @@ if (isDevelopment()) {
 type SettingsTab = (typeof SETTINGS_TABS)[number];
 
 const TAB_LABELS = {
-  trading: msg`Trading Settings`,
-  display: msg`Display Settings`,
-  debug: msg`Debug Settings`,
+  trading: msg`Trading settings`,
+  display: msg`Display settings`,
+  debug: msg`Debug settings`,
 };
 
 export function SettingsModal({
@@ -75,13 +75,13 @@ export function SettingsModal({
       }
 
       if (slippage > 500) {
-        helperToast.error(t`Slippage should be less than -5%`);
+        helperToast.error(t`Slippage must be less than 5%`);
         return;
       }
 
       const basisPoints = roundToTwoDecimals(slippage);
       if (parseInt(String(basisPoints)) !== parseFloat(String(basisPoints))) {
-        helperToast.error(t`Max slippage precision is -0.01%`);
+        helperToast.error(t`Max slippage precision is 0.01%`);
         return;
       }
 

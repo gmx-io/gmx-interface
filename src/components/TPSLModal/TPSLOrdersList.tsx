@@ -95,19 +95,19 @@ export function TPSLOrdersList({ orders, position, marketDecimals, isMobile, act
       <thead className="text-body-small">
         <TableTheadTr>
           <TableTh className="w-[15%]">
-            <Trans>Type</Trans>
+            <Trans>TYPE</Trans>
           </TableTh>
           <TableTh className="w-[20%]">
-            <Trans>Size (% of Position)</Trans>
+            <Trans>SIZE (% OF POSITION)</Trans>
           </TableTh>
           <TableTh className="w-[15%]">
-            <Trans>Trigger Price</Trans>
+            <Trans>TRIGGER PRICE</Trans>
           </TableTh>
           <TableTh className="w-[18%]">
-            <Trans>Est. PnL</Trans>
+            <Trans>EST. PNL</Trans>
           </TableTh>
           <TableTh className="w-[20%]">
-            <Trans>Receive</Trans>
+            <Trans>RECEIVE</Trans>
           </TableTh>
           <TableTh className="w-[12%]"></TableTh>
         </TableTheadTr>
@@ -145,7 +145,7 @@ function useTPSLOrderViewModel({
   const [isCancelling, cancelOrder] = useCancelOrder(order);
 
   const orderType = useMemo(
-    () => (isLimitDecreaseOrderType(order.orderType) ? t`Take Profit` : t`Stop Loss`),
+    () => (isLimitDecreaseOrderType(order.orderType) ? t`Take-Profit` : t`Stop-Loss`),
     [order.orderType]
   );
 
@@ -162,7 +162,7 @@ function useTPSLOrderViewModel({
     const isFullClose = order.sizeDeltaUsd === position.sizeInUsd;
 
     if (isFullClose) {
-      return <Trans>Full Position Close</Trans>;
+      return <Trans>Full position close</Trans>;
     }
 
     const sizePercentage =
@@ -318,7 +318,7 @@ function TPSLOrderCard({
 
       <div className="flex items-center justify-between">
         <span className="text-14 font-medium text-typography-secondary">
-          <Trans>Est. PNL</Trans>
+          <Trans>Est. PnL</Trans>
         </span>
         <span className={cx("text-body-medium numbers", getPositiveOrNegativeClass(estimatedPnl.pnlUsd))}>
           {formatDeltaUsd(estimatedPnl.pnlUsd, estimatedPnl.pnlPercentage)}

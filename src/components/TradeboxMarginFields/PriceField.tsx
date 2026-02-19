@@ -28,7 +28,7 @@ export function PriceField({
   tradeMode,
   qa,
 }: Props) {
-  const priceLabel = tradeMode === TradeMode.Limit ? t`Limit Price` : t`Stop Price`;
+  const priceLabel = tradeMode === TradeMode.Limit ? t`Limit price` : t`Stop price`;
 
   const alternateValue = useMemo(() => {
     const formattedMarkPrice = formatUsdPrice(markPrice, {

@@ -39,10 +39,10 @@ export default function Ecosystem() {
 
   return (
     <AppPageLayout>
-      <SEO title={getPageTitle(t`Ecosystem Projects`)}>
+      <SEO title={getPageTitle(t`Ecosystem projects`)}>
         <div className="default-container page-layout">
           <div className="flex flex-col gap-20">
-            <PageTitle isTop title={t`GMX Pages`} subtitle={t`GMX ecosystem pages.`} qa="ecosystem-page" />
+            <PageTitle isTop title={t`GMX pages`} subtitle={t`GMX ecosystem pages`} qa="ecosystem-page" />
             <div className="Ecosystem-projects">
               {gmxPages.map((item) => {
                 const linkLabel = item.linkLabel ? item.linkLabel : item.link;
@@ -75,12 +75,11 @@ export default function Ecosystem() {
             </div>
 
             <PageTitle
-              title={t`Community Projects`}
+              title={t`Community projects`}
               subtitle={
                 <Trans>
                   Projects developed by the GMX community. <br />
-                  Please exercise caution when interacting with any app, apps are fully maintained by community
-                  developers.
+                  Exercise caution when interacting with any app, as apps are fully maintained by community developers.
                 </Trans>
               }
             />
@@ -132,7 +131,7 @@ export default function Ecosystem() {
                 );
               })}
             </div>
-            <PageTitle title={t`Dashboards`} subtitle={t`GMX dashboards and analytics.`} />
+            <PageTitle title={t`Dashboards`} subtitle={t`GMX dashboards and analytics`} />
             <div className="Ecosystem-projects">
               {dashboardProjects.map((item) => {
                 const linkLabel = item.linkLabel ? item.linkLabel : item.link;
@@ -172,7 +171,7 @@ export default function Ecosystem() {
                 );
               })}
             </div>
-            <PageTitle title={t`Partnerships and Integrations`} subtitle={t`Projects integrated with GMX.`} />
+            <PageTitle title={t`Partnerships and integrations`} subtitle={t`Projects integrated with GMX`} />
             <div className="Ecosystem-projects">
               {integrations.map((item) => {
                 const linkLabel = item.linkLabel ? item.linkLabel : item.link;
@@ -205,13 +204,12 @@ export default function Ecosystem() {
             </div>
             <div className="text-body-large mt-16">
               <Trans>
-                GMX uses TradingView to provide real-time cryptocurrency charts, so you can easily follow{" "}
-                <ExternalLink href="https://www.tradingview.com/symbols/BTCUSD/">BTCUSD</ExternalLink> price in
-                real-time, along with other currency pair rates. The interactive charts offer advanced tools and a
-                user-friendly interface for easier market analysis and decision-making.
+                GMX uses TradingView for real-time cryptocurrency charts. Track{" "}
+                <ExternalLink href="https://www.tradingview.com/symbols/BTCUSD/">BTCUSD</ExternalLink> and other pairs
+                with interactive charting tools.
               </Trans>
             </div>
-            <PageTitle title={t`Telegram Groups`} subtitle={t`Community-led Telegram groups.`} />
+            <PageTitle title={t`Telegram groups`} subtitle={t`Community-led Telegram groups`} />
             <div className="Ecosystem-projects">
               {telegramGroups.map((item) => {
                 const linkLabel = item.linkLabel ? item.linkLabel : item.link;

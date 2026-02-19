@@ -80,7 +80,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
   let leverageValue: React.ReactNode = "-";
 
   if (decreaseAmounts?.isFullClose) {
-    leverageValue = t`NA`;
+    leverageValue = t`N/A`;
   } else if (position) {
     if (decreaseAmounts?.sizeDeltaUsd === position.sizeInUsd) {
       leverageValue = "-";
@@ -100,7 +100,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
 
   return (
     <ExpandableRow
-      title={t`Execution Details`}
+      title={t`Execution details`}
       open={open}
       onToggle={setOpen}
       wrapped
@@ -126,7 +126,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
         <>
           {breakdownNetPriceImpactEnabled && (
             <SyntheticsInfoRow
-              label={t`Stored Price Impact`}
+              label={t`Stored price impact`}
               value={
                 nextPositionValues?.nextPendingImpactDeltaUsd !== undefined &&
                 position?.pendingImpactUsd !== undefined ? (
@@ -148,7 +148,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
               <Tooltip
                 handle={<Trans>Collateral ({position?.collateralToken?.symbol})</Trans>}
                 position="top-start"
-                content={<Trans>Initial collateral (collateral excluding borrow and funding fee).</Trans>}
+                content={<Trans>Initial collateral, excluding borrow and funding fees</Trans>}
                 variant="iconStroke"
               />
             }

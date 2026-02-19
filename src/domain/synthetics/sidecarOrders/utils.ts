@@ -159,7 +159,7 @@ export function handleEntryError<T extends SidecarOrderEntry>(
   }
 
   if (entry.percentage?.value === undefined || entry.percentage?.value === 0n) {
-    percentageError = t`A size percentage is required`;
+    percentageError = t`Size percentage required`;
   }
 
   return {

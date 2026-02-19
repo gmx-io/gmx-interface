@@ -1,3 +1,4 @@
+import { t, Trans } from "@lingui/macro";
 import camelCase from "lodash/camelCase";
 import mapKeys from "lodash/mapKeys";
 import upperFirst from "lodash/upperFirst";
@@ -15,6 +16,8 @@ import ExchangeInfoRow from "components/EventToast/ExchangeInfoRow";
 import SearchInput from "components/SearchInput/SearchInput";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
+
+import { BannerTest } from "./BannerTest";
 
 const iconsContext = mapKeys(
   import.meta.glob("img/ic_*.svg", {
@@ -101,11 +104,17 @@ export default memo(function UiPage() {
   return (
     <AppPageLayout>
       <main className="mx-auto max-w-prose p-20">
-        <h1 className="text-34 font-medium">UI Page</h1>
+        <h1 className="text-34 font-medium">
+          <Trans>UI page</Trans>
+        </h1>
 
-        <p>This page demonstrates the use of the UI components in the app.</p>
+        <p>
+          <Trans>This page demonstrates the UI components in the app</Trans>
+        </p>
 
-        <h2 className="mb-16 mt-24 text-24 font-medium">Fill colors</h2>
+        <h2 className="mb-16 mt-24 text-24 font-medium">
+          <Trans>Fill colors</Trans>
+        </h2>
         <div className="overflow-auto">
           {Object.entries(colors).map(([key, value]) => {
             const colors = isColor(value) ? flattenColors({ [key]: value }) : flattenColors(value, key);
@@ -122,98 +131,156 @@ export default memo(function UiPage() {
             );
           })}
         </div>
-        <h2 className="mb-16 mt-24 text-24 font-medium">Text colors</h2>
+        <h2 className="mb-16 mt-24 text-24 font-medium">
+          <Trans>Text colors</Trans>
+        </h2>
 
         <div className="flex flex-wrap gap-16">
-          <p className="text-blue-500">Blue 500</p>
-          <p className="text-yellow-300">Yellow 300</p>
-          <p className="text-red-500">Red 500</p>
-          <p className="text-green-500">Green 500</p>
-          <p className="text-typography-primary">Typography Primary</p>
-          <p className="text-typography-secondary">Typography Secondary</p>
+          <p className="text-blue-500">
+            <Trans>Blue 500</Trans>
+          </p>
+          <p className="text-yellow-300">
+            <Trans>Yellow 300</Trans>
+          </p>
+          <p className="text-red-500">
+            <Trans>Red 500</Trans>
+          </p>
+          <p className="text-green-500">
+            <Trans>Green 500</Trans>
+          </p>
+          <p className="text-typography-primary">
+            <Trans>Typography primary</Trans>
+          </p>
+          <p className="text-typography-secondary">
+            <Trans>Typography secondary</Trans>
+          </p>
         </div>
         <p className="mt-8 text-typography-primary underline decoration-gray-400 decoration-dashed decoration-8">
-          Decoration is gray-400
+          <Trans>Decoration is gray-400</Trans>
         </p>
 
-        <h2 className="mb-16 mt-24 text-24 font-medium">Font sizes</h2>
+        <h2 className="mb-16 mt-24 text-24 font-medium">
+          <Trans>Font sizes</Trans>
+        </h2>
         <div className="flex flex-col gap-16">
           <div className="flex items-baseline gap-8">
-            <div>h1</div>
-            <p className="text-h1">H1 Text Size</p>
+            <div>
+              <Trans>h1</Trans>
+            </div>
+            <p className="text-h1">
+              <Trans>H1 text size</Trans>
+            </p>
           </div>
           <div className="flex items-baseline gap-8">
-            <div>h2</div>
-            <p className="text-h2">H2 Text size</p>
+            <div>
+              <Trans>h2</Trans>
+            </div>
+            <p className="text-h2">
+              <Trans>H2 text size</Trans>
+            </p>
           </div>
           <div className="flex items-baseline gap-8">
-            <div>Body Large</div>
-            <p className="text-body-large">Some important text indeed</p>
+            <div>
+              <Trans>Body large</Trans>
+            </div>
+            <p className="text-body-large">
+              <Trans>Some important text indeed</Trans>
+            </p>
           </div>
           <div className="flex items-baseline gap-8">
-            <div>Medium</div>
-            <p className="text-body-medium">Base text it is. Nothing special</p>
+            <div>
+              <Trans>Medium</Trans>
+            </div>
+            <p className="text-body-medium">
+              <Trans>Base text it is. Nothing special.</Trans>
+            </p>
           </div>
           <div className="flex items-baseline gap-8">
-            <div>Small</div>
-            <p className="text-body-small">Somewhat unimportant text, but still readable</p>
+            <div>
+              <Trans>Small</Trans>
+            </div>
+            <p className="text-body-small">
+              <Trans>Somewhat unimportant text, but still readable</Trans>
+            </p>
           </div>
           <div className="flex items-baseline gap-8">
-            <div>Caption</div>
-            <p className="text-caption">Somewhat unimportant text, but still readable</p>
+            <div>
+              <Trans>Caption</Trans>
+            </div>
+            <p className="text-caption">
+              <Trans>Somewhat unimportant text, but still readable</Trans>
+            </p>
           </div>
 
           <div className="flex items-baseline gap-8">
-            <div>&lt;unset&gt;</div>
-            <p>Text with no size set</p>
+            <div>
+              <Trans>{"<unset>"}</Trans>
+            </div>
+            <p>
+              <Trans>Text with no size set</Trans>
+            </p>
           </div>
         </div>
 
-        <h2 className="mb-16 mt-24 text-24 font-medium">Line heights</h2>
+        <h2 className="mb-16 mt-24 text-24 font-medium">
+          <Trans>Line heights</Trans>
+        </h2>
         <div className="flex flex-col gap-16">
           <p className="leading-1">
-            leading-1
+            <Trans>leading-1</Trans>
             <br />
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus beatae atque eligendi sunt quasi et
-            porro nemo cumque nesciunt dolorum earum, minus fuga similique exercitationem ad. Eos omnis vitae suscipit
-            recusandae iste adipisci quasi rem odio, quidem qui modi impedit quibusdam culpa nemo distinctio rerum
-            tempora sequi facilis quaerat laudantium pariatur dicta ab. Pariatur mollitia magni consectetur praesentium
-            nulla nobis non voluptates laborum obcaecati enim unde, in tempore voluptas, expedita aut corrupti ipsum
-            sequi consequatur iste corporis quasi! Officia nihil pariatur, asperiores molestiae quia earum tempora, in
-            neque inventore quisquam dolore veniam minus beatae adipisci quod hic? Saepe, aperiam consequuntur!
+            <Trans>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus beatae atque eligendi sunt quasi et
+              porro nemo cumque nesciunt dolorum earum, minus fuga similique exercitationem ad. Eos omnis vitae suscipit
+              recusandae iste adipisci quasi rem odio, quidem qui modi impedit quibusdam culpa nemo distinctio rerum
+              tempora sequi facilis quaerat laudantium pariatur dicta ab. Pariatur mollitia magni consectetur
+              praesentium nulla nobis non voluptates laborum obcaecati enim unde, in tempore voluptas, expedita aut
+              corrupti ipsum sequi consequatur iste corporis quasi! Officia nihil pariatur, asperiores molestiae quia
+              earum tempora, in neque inventore quisquam dolore veniam minus beatae adipisci quod hic? Saepe, aperiam
+              consequuntur!
+            </Trans>
           </p>
           <p className="leading-base">
-            leading-base
+            <Trans>leading-base</Trans>
             <br />
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus beatae atque eligendi sunt quasi et
-            porro nemo cumque nesciunt dolorum earum, minus fuga similique exercitationem ad. Eos omnis vitae suscipit
-            recusandae iste adipisci quasi rem odio, quidem qui modi impedit quibusdam culpa nemo distinctio rerum
-            tempora sequi facilis quaerat laudantium pariatur dicta ab. Pariatur mollitia magni consectetur praesentium
-            nulla nobis non voluptates laborum obcaecati enim unde, in tempore voluptas, expedita aut corrupti ipsum
-            sequi consequatur iste corporis quasi! Officia nihil pariatur, asperiores molestiae quia earum tempora, in
-            neque inventore quisquam dolore veniam minus beatae adipisci quod hic? Saepe, aperiam consequuntur!
+            <Trans>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus beatae atque eligendi sunt quasi et
+              porro nemo cumque nesciunt dolorum earum, minus fuga similique exercitationem ad. Eos omnis vitae suscipit
+              recusandae iste adipisci quasi rem odio, quidem qui modi impedit quibusdam culpa nemo distinctio rerum
+              tempora sequi facilis quaerat laudantium pariatur dicta ab. Pariatur mollitia magni consectetur
+              praesentium nulla nobis non voluptates laborum obcaecati enim unde, in tempore voluptas, expedita aut
+              corrupti ipsum sequi consequatur iste corporis quasi! Officia nihil pariatur, asperiores molestiae quia
+              earum tempora, in neque inventore quisquam dolore veniam minus beatae adipisci quod hic? Saepe, aperiam
+              consequuntur!
+            </Trans>
           </p>
         </div>
 
-        <h2 className="mb-16 mt-24 text-24 font-medium">Tooltips</h2>
+        <h2 className="mb-16 mt-24 text-24 font-medium">
+          <Trans>Tooltips</Trans>
+        </h2>
 
         <Tooltip
           content={
             <>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam enim excepturi veritatis, architecto ab
-              qui odio repudiandae vero accusantium dicta, eius similique a aspernatur, maxime iste ipsam facilis.
-              Libero, et.
+              <Trans>
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam enim excepturi veritatis, architecto
+                ab qui odio repudiandae vero accusantium dicta, eius similique a aspernatur, maxime iste ipsam facilis.
+                Libero, et.
+              </Trans>
               <br />
               <br />
-              <ExchangeInfoRow label="Some label" value="Some value" />
-              <StatsTooltipRow label="Some other label" value="100" />
+              <ExchangeInfoRow label={t`Some label`} value={t`Some value`} />
+              <StatsTooltipRow label={t`Some other label`} value="100" />
             </>
           }
-          handle={"Lorem ipsum dolor."}
+          handle={t`Lorem ipsum dolor`}
           closeDelay={100000000000}
         />
 
-        <h2 className="mb-16 mt-24 text-24 font-medium">Token categories</h2>
+        <h2 className="mb-16 mt-24 text-24 font-medium">
+          <Trans>Token categories</Trans>
+        </h2>
 
         <div className="flex flex-col gap-16">
           {[ARBITRUM, AVALANCHE, AVALANCHE_FUJI].map((chainId) => (
@@ -233,6 +300,8 @@ export default memo(function UiPage() {
           ))}
         </div>
       </main>
+
+      <BannerTest />
 
       <IconsAndImages />
     </AppPageLayout>
@@ -257,12 +326,14 @@ function IconsAndImages() {
   return (
     <>
       <div className="mx-auto max-w-prose p-20">
-        <h2 className="mb-16 mt-24 text-24 font-medium">Icons & Images</h2>
+        <h2 className="mb-16 mt-24 text-24 font-medium">
+          <Trans>Icons & images</Trans>
+        </h2>
       </div>
 
       <div className="mb-16 px-20">
         <SearchInput
-          placeholder="Search icons and images..."
+          placeholder={t`Search icons and images...`}
           value={searchTerm}
           setValue={setSearchTerm}
           className="w-full"
@@ -270,7 +341,7 @@ function IconsAndImages() {
         />
       </div>
 
-      <h3 className="mb-16 px-20 text-20 font-medium">Icons ({filteredIcons.length})</h3>
+      <h3 className="mb-16 px-20 text-20 font-medium">{t`Icons (${filteredIcons.length})`}</h3>
       <style>{`.ImageTooltip .Tooltip-popup {max-width: unset !important;}`}</style>
       <div className="relative flex flex-wrap items-center gap-16 px-20">
         {filteredIcons.map((icon) => (
@@ -284,13 +355,13 @@ function IconsAndImages() {
               <div>
                 <pre>
                   <code>
-                    Name: {icon.name}
+                    {t`Name:`} {icon.name}
                     <br />
-                    Path: {icon.path}
+                    {t`Path:`} {icon.path}
                     <br />
-                    Import URL: {icon.importUrl}
+                    {t`Import URL:`} {icon.importUrl}
                     <br />
-                    Import SVG: {icon.importSvg}
+                    {t`Import SVG:`} {icon.importSvg}
                   </code>
                 </pre>
               </div>
@@ -303,7 +374,7 @@ function IconsAndImages() {
         ))}
       </div>
 
-      <h3 className="mb-16 mt-24 px-20 text-20 font-medium">Images ({filteredImages.length})</h3>
+      <h3 className="mb-16 mt-24 px-20 text-20 font-medium">{t`Images (${filteredImages.length})`}</h3>
       <div className="relative flex flex-wrap items-center gap-16 px-20">
         {filteredImages.map((src) => (
           <Tooltip
@@ -316,11 +387,11 @@ function IconsAndImages() {
               <div>
                 <pre>
                   <code>
-                    Name: {src.name}
+                    {t`Name:`} {src.name}
                     <br />
-                    Path: {src.path}
+                    {t`Path:`} {src.path}
                     <br />
-                    Import URL: {src.importUrl}
+                    {t`Import URL:`} {src.importUrl}
                   </code>
                 </pre>
               </div>
