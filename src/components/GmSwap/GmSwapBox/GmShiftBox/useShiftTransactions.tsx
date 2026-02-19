@@ -66,7 +66,7 @@ export function useShiftTransactions({
         !tokensData
       ) {
         sendTxnValidationErrorMetric(metricData.metricId);
-        helperToast.error(t`Error submitting order`);
+        helperToast.error(t`Order submission failed`);
         return Promise.resolve();
       }
 

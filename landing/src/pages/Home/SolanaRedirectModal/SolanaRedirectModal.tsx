@@ -19,11 +19,11 @@ export function SolanaRedirectModal({ onClose, onConfirm }: SolanaRedirectModalP
         <p>
           <Trans>
             GMTrade (previously GMX Solana) is hosted on another website and run by a different team, so the experience
-            may vary slightly.
+            may vary slightly
           </Trans>
         </p>
         <p>
-          <Trans>Clicking on the button below will open GMTrade in a new tab.</Trans>
+          <Trans>Opens GMTrade in a new tab</Trans>
         </p>
 
         <button

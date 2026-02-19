@@ -185,8 +185,8 @@ export function MultichainTokenSelector({
 
   const tabsOptions: TabOption<"pay" | "deposit">[] = useMemo(() => {
     return [
-      { value: "pay", label: <Trans>Available to Pay</Trans> },
-      { value: "deposit", label: <Trans>Available to Deposit</Trans> },
+      { value: "pay", label: <Trans>Available to pay</Trans> },
+      { value: "deposit", label: <Trans>Available to deposit</Trans> },
     ];
   }, []);
 
@@ -214,7 +214,7 @@ export function MultichainTokenSelector({
               />
               {isAvalancheSettlement ? null : isGmxAccountEmpty && srcChainId !== undefined ? (
                 <div className="text-body-medium text-typography-secondary">
-                  <Trans>To begin trading on GMX deposit assets into GMX account.</Trans>
+                  <Trans>To begin trading on GMX, deposit assets into your GMX Account</Trans>
                 </div>
               ) : (
                 <Tabs type="inline" options={tabsOptions} selectedValue={activeFilter} onChange={setActiveFilter} />
@@ -472,7 +472,7 @@ export function AvailableToTradeTokenList({
 
                   <div>
                     <div className="text-body-large">
-                      GM:{" "}
+                      <Trans>GM:</Trans>{" "}
                       {getMarketIndexName({
                         indexToken: getMarketIndexToken(chainId, token.address)!,
                         isSpotOnly: false,

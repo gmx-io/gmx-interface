@@ -10,6 +10,7 @@ import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { PositionInfo } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";
+import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { getByKey } from "lib/objects";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionClickEvent } from "lib/userAnalytics/types";
@@ -24,7 +25,7 @@ import { TableScrollFadeContainer } from "components/TableScrollFade/TableScroll
 
 type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode, showCurtain?: boolean) => void;
-  onClosePositionClick: (key: string) => void;
+  onClosePositionClick: (key: string, orderOption?: OrderOption) => void;
   onOrdersClick: (positionKey: string, orderKey: string | undefined) => void;
   onCancelOrder: (key: string) => void;
   openSettings: () => void;
@@ -88,33 +89,38 @@ export function PositionList(p: Props) {
           disableScrollFade={positions.length === 0}
           className="flex grow flex-col bg-slate-900"
         >
-          <Table className="!w-[max(100%,900px)] table-fixed">
+          <Table className="!w-[max(100%,1180px)] table-fixed">
             <thead className="text-body-medium">
               <TableTheadTr>
-                <TableTh className="w-[18%]">
-                  <Trans>Position</Trans>
+                <TableTh className="w-[13%]">
+                  <Trans>POSITION</Trans>
                 </TableTh>
                 <TableTh className="w-[10%]">
-                  <Trans>Size</Trans>
+                  <Trans>SIZE</Trans>
                 </TableTh>
-                <TableTh className="w-[14%]">
-                  <Trans>Net Value</Trans>
+                <TableTh className="w-[15%]">
+                  <Trans>NET VALUE</Trans>
                 </TableTh>
-                <TableTh className="w-[14%]">
-                  <Trans>Collateral</Trans>
+                <TableTh className="w-[11%]">
+                  <Trans>COLLATERAL</Trans>
                 </TableTh>
-                <TableTh className="w-[10%]">
-                  <Trans>Entry Price</Trans>
+                <TableTh className="w-[9%]">
+                  <Trans>ENTRY PRICE</Trans>
                 </TableTh>
-                <TableTh className="w-[10%]">
-                  <Trans>Mark Price</Trans>
+                <TableTh className="w-[9%]">
+                  <Trans>MARK PRICE</Trans>
                 </TableTh>
-                <TableTh className="w-[10%]">
-                  <Trans>Liq. Price</Trans>
+                <TableTh className="w-[9%]">
+                  <Trans>LIQUIDATION PRICE</Trans>
                 </TableTh>
+                {!hideActions && (
+                  <TableTh className="w-[8%] text-left">
+                    <Trans>TP/SL</Trans>
+                  </TableTh>
+                )}
                 {!isLoading && !p.hideActions && (
                   <>
-                    <TableTh className="w-[124px]"></TableTh>
+                    <TableTh className="w-[16%] pl-18 !text-left">Close</TableTh>
                   </>
                 )}
               </TableTheadTr>
@@ -182,7 +188,7 @@ const PositionItemWrapper = memo(
   }: {
     position: PositionInfo;
     onEditCollateralClick: (positionKey: string) => void;
-    onClosePositionClick: (positionKey: string) => void;
+    onClosePositionClick: (positionKey: string, orderOption?: OrderOption) => void;
     onOrdersClick: (positionKey: string, orderKey: string | undefined) => void;
     onSelectPositionClick: (positionKey: string, tradeMode: TradeMode | undefined, showCurtain?: boolean) => void;
     isLarge: boolean;
@@ -197,7 +203,7 @@ const PositionItemWrapper = memo(
       [onEditCollateralClick, position.key]
     );
     const handleClosePositionClick = useCallback(
-      () => onClosePositionClick(position.key),
+      (orderOption?: OrderOption) => onClosePositionClick(position.key, orderOption),
       [onClosePositionClick, position.key]
     );
 

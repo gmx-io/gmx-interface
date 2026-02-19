@@ -54,6 +54,7 @@
   position: absolute;
   top: calc(100% + 8px);
   left: -14px;
+  z-index: 10;
 
   display: flex;
   border-radius: var(--border-radius-sm);

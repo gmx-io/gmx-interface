@@ -457,7 +457,7 @@ export function GmSwapBoxDepositWithdrawal() {
     return btn;
   }, [submitState]);
 
-  const gmOrGlvSymbol = glvInfo ? "GLV" : "GM";
+  const gmOrGlvSymbol = glvInfo ? t`GLV` : t`GM`;
 
   return (
     <>
