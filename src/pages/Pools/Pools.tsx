@@ -8,7 +8,6 @@ import { usePerformanceSnapshots } from "domain/synthetics/markets/usePerformanc
 import { usePoolsTimeRange } from "domain/synthetics/markets/usePoolsTimeRange";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { useChainId } from "lib/chains";
-import { getPageTitle } from "lib/legacy";
 import { formatUsd } from "lib/numbers";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
@@ -16,7 +15,6 @@ import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHe
 import ErrorBoundary from "components/Errors/ErrorBoundary";
 import { GlvList } from "components/GmList/GlvList";
 import { GmList } from "components/GmList/GmList";
-import SEO from "components/Seo/SEO";
 
 import PoolsTimeRangeFilter from "./PoolsTimeRangeFilter";
 import { usePoolsIsMobilePage } from "./usePoolsIsMobilePage";
@@ -50,58 +48,56 @@ export default function Pools() {
   const isBotanix = chainId === BOTANIX;
 
   return (
-    <AppPageLayout header={<ChainContentHeader />}>
-      <SEO title={getPageTitle(t`Pools`)}>
+    <AppPageLayout title={t`Pools`} header={<ChainContentHeader />}>
+      <div
+        className={cx("mb-24 grid w-full flex-col", {
+          "grid-cols-1": isMobile,
+          "grid-cols-2": !isMobile,
+        })}
+      >
+        <PoolsTvl />
+
         <div
-          className={cx("mb-24 grid w-full flex-col", {
-            "grid-cols-1": isMobile,
-            "grid-cols-2": !isMobile,
+          className={cx("flex-end flex", {
+            "ml-0 mt-28": isMobile,
+            "ml-auto mt-auto": !isMobile,
           })}
         >
-          <PoolsTvl />
-
-          <div
-            className={cx("flex-end flex", {
-              "ml-0 mt-28": isMobile,
-              "ml-auto mt-auto": !isMobile,
-            })}
-          >
-            <PoolsTimeRangeFilter timeRange={timeRange} setTimeRange={setTimeRange} />
-          </div>
+          <PoolsTimeRangeFilter timeRange={timeRange} setTimeRange={setTimeRange} />
         </div>
+      </div>
 
-        <div className="flex grow flex-col gap-16 lg:overflow-hidden">
-          {!isBotanix && (
-            <ErrorBoundary id="Pools-GlvList" variant="block" wrapperClassName="rounded-t-8">
-              <GlvList
-                marketsTokensApyData={marketsTokensApyData}
-                marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
-                glvTokensIncentiveAprData={glvTokensIncentiveAprData}
-                marketsTokensLidoAprData={marketsTokensLidoAprData}
-                glvTokensApyData={glvApyInfoData}
-                apyLoading={apyLoading}
-                performance={performance}
-                performanceLoading={performanceLoading}
-                performanceSnapshots={performanceSnapshots}
-              />
-            </ErrorBoundary>
-          )}
-
-          <ErrorBoundary id="Pools-GmList" variant="block" wrapperClassName="rounded-t-8">
-            <GmList
-              glvTokensApyData={glvApyInfoData}
-              glvTokensIncentiveAprData={glvTokensIncentiveAprData}
+      <div className="flex grow flex-col gap-16 lg:overflow-hidden">
+        {!isBotanix && (
+          <ErrorBoundary id="Pools-GlvList" variant="block" wrapperClassName="rounded-t-8">
+            <GlvList
               marketsTokensApyData={marketsTokensApyData}
               marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
+              glvTokensIncentiveAprData={glvTokensIncentiveAprData}
               marketsTokensLidoAprData={marketsTokensLidoAprData}
+              glvTokensApyData={glvApyInfoData}
               apyLoading={apyLoading}
               performance={performance}
               performanceLoading={performanceLoading}
               performanceSnapshots={performanceSnapshots}
             />
           </ErrorBoundary>
-        </div>
-      </SEO>
+        )}
+
+        <ErrorBoundary id="Pools-GmList" variant="block" wrapperClassName="rounded-t-8">
+          <GmList
+            glvTokensApyData={glvApyInfoData}
+            glvTokensIncentiveAprData={glvTokensIncentiveAprData}
+            marketsTokensApyData={marketsTokensApyData}
+            marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
+            marketsTokensLidoAprData={marketsTokensLidoAprData}
+            apyLoading={apyLoading}
+            performance={performance}
+            performanceLoading={performanceLoading}
+            performanceSnapshots={performanceSnapshots}
+          />
+        </ErrorBoundary>
+      </div>
     </AppPageLayout>
   );
 }

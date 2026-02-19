@@ -1639,6 +1639,7 @@ msgid "Full market"
 msgstr "Полный рынок"
 
 #: src/pages/NftWallet/NftWallet.tsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "NFT Wallet"
 msgstr "NFT Кошелёк"
 
@@ -2595,6 +2596,7 @@ msgid "Relayer request failed"
 msgstr "Запрос релеера не удался"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer Account"
 msgstr "Перевести аккаунт"
 
@@ -2602,6 +2604,7 @@ msgstr "Перевести аккаунт"
 msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
 msgstr "Недостаточно {wrappedNativeTokenSymbol} для газа в вашем Счете GMX."
 
+#: src/pages/Actions/ActionsRouter.tsx
 #: src/pages/Actions/ActionsRouter.tsx
 msgid "GMX V1 Actions"
 msgstr "GMX V1 Действия"
@@ -2917,6 +2920,7 @@ msgstr "Нет доступной ликвидности для увеличен
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trade"
 msgstr "Торговля"
 
@@ -6908,6 +6912,7 @@ msgstr "Сессия сгенерирована"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+#: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Buy GMX"
@@ -7317,6 +7322,7 @@ msgstr "Доходные хранилища"
 msgid "Telegram Group (Portuguese)"
 msgstr "Группа в Telegram (португальский)"
 
+#: src/pages/Actions/ActionsRouter.tsx
 #: src/pages/Actions/SyntheticsActions.tsx
 msgid "GMX V2 Actions"
 msgstr "Действия GMX V2"
@@ -7612,6 +7618,8 @@ msgstr ""
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
 msgstr "Счет GMX"
@@ -8706,6 +8714,8 @@ msgstr "Обновить часть TWAP"
 msgid "How does GLV earn yield, and where do I see my earnings?"
 msgstr "Как GLV зарабатывает доходность, и где я вижу свои заработки?"
 
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Complete Account Transfer"

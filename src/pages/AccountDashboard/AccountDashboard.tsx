@@ -26,7 +26,7 @@ export function AccountDashboard() {
 
   if (!isAddress(account!)) {
     return (
-      <AppPageLayout header={header}>
+      <AppPageLayout title={t`GMX Account`} header={header}>
         <div className="default-container page-layout">
           <PageTitle title={t`GMX  Account`} className="p-12" />
           <div className="text-center text-red-500">
@@ -38,7 +38,7 @@ export function AccountDashboard() {
   }
 
   return (
-    <AppPageLayout header={header}>
+    <AppPageLayout title={t`GMX Account`} header={header}>
       <div className="default-container page-layout flex flex-col gap-8">
         <PageTitle
           title={t`GMX Account`}

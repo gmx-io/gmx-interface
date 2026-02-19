@@ -68,7 +68,7 @@ export default function ReferralsTier() {
   }
 
   return (
-    <AppPageLayout>
+    <AppPageLayout title="Referrals Tier">
       <div className="page-layout default-container">
         <h1>Referrals Tier</h1>
         {!active && <div>Wallet is not connected</div>}

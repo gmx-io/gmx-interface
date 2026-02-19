@@ -240,7 +240,7 @@ export function ParseTransactionPage() {
   }
 
   return (
-    <AppPageLayout>
+    <AppPageLayout title="Parse Transaction">
       <div className="mx-auto max-w-[1280px] pt-24">
         <h1 className="text-body-large mb-24">
           Transaction: <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[chainId](txHash)}>{txHash}</ExternalLink>

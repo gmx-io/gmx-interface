@@ -1639,6 +1639,7 @@ msgid "Full market"
 msgstr "完整市场"
 
 #: src/pages/NftWallet/NftWallet.tsx
+#: src/pages/NftWallet/NftWallet.tsx
 msgid "NFT Wallet"
 msgstr "NFT 钱包"
 
@@ -2595,6 +2596,7 @@ msgid "Relayer request failed"
 msgstr "中继器请求失败"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer Account"
 msgstr "转账账户"
 
@@ -2602,6 +2604,7 @@ msgstr "转账账户"
 msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
 msgstr "您的 GMX 账户中用于 gas 的 {wrappedNativeTokenSymbol} 不足。"
 
+#: src/pages/Actions/ActionsRouter.tsx
 #: src/pages/Actions/ActionsRouter.tsx
 msgid "GMX V1 Actions"
 msgstr "GMX V1 操作"
@@ -2917,6 +2920,7 @@ msgstr "没有流动性可用于增加此规模的做空。<0/>最大做空规�
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trade"
 msgstr "交易"
 
@@ -6908,6 +6912,7 @@ msgstr "会话已生成"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+#: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Buy GMX"
@@ -7317,6 +7322,7 @@ msgstr "收益金库"
 msgid "Telegram Group (Portuguese)"
 msgstr "Telegram 群组（葡萄牙语）"
 
+#: src/pages/Actions/ActionsRouter.tsx
 #: src/pages/Actions/SyntheticsActions.tsx
 msgid "GMX V2 Actions"
 msgstr "GMX V2 操作"
@@ -7612,6 +7618,8 @@ msgstr ""
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
 msgstr "GMX 账户"
@@ -8706,6 +8714,8 @@ msgstr "更新 TWAP 部分"
 msgid "How does GLV earn yield, and where do I see my earnings?"
 msgstr "GLV 如何赚取收益率，我在哪里查看我的收益？"
 
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Complete Account Transfer"

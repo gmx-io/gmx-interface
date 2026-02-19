@@ -310,7 +310,7 @@ export default function BeginAccountTransfer() {
   const pendingTransferLink = `/complete_account_transfer/${account}/${pendingReceiver}`;
 
   return (
-    <AppPageLayout>
+    <AppPageLayout title={t`Transfer Account`}>
       <Modal
         isVisible={isTransferSubmittedModalVisible}
         setIsVisible={setIsTransferSubmittedModalVisible}

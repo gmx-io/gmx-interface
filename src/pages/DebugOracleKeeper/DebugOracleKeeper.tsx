@@ -226,7 +226,7 @@ export default function DebugOracleKeeper() {
   }, [chainId]);
 
   return (
-    <AppPageLayout>
+    <AppPageLayout title="Oracle Keeper Debug">
       <div className="default-container">
         <Card title="Oracle Keeper Debug">
           <div className="App-card-content">
