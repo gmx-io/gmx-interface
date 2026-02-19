@@ -92,7 +92,7 @@ export function CreateAffiliateWizard({
               </div>
               <div className="flex flex-col items-center gap-16">
                 <Button variant="primary-action" className="w-full" type="submit" onClick={openConnectModal}>
-                  <Trans>Connect Wallet</Trans>
+                  <Trans>Connect wallet</Trans>
                 </Button>
                 <ExternalLink href="https://docs.gmx.io/docs/referrals" variant="icon" className="text-blue-300">
                   <Trans>Learn more</Trans>

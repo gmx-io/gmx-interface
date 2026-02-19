@@ -23,34 +23,34 @@ type Groups = Group[];
 
 const GROUPS: Groups = [
   {
-    groupName: msg`Funding Fees`,
+    groupName: msg`Funding fees`,
     items: [
       {
         data: ClaimType.SettleFundingFeeExecuted,
-        text: msg`Settled Funding Fees`,
+        text: msg`Settled funding fees`,
       },
       {
         data: ClaimType.ClaimFunding,
-        text: msg`Claim Funding Fees`,
+        text: msg`Claim funding fees`,
       },
       {
         data: ClaimType.SettleFundingFeeCancelled,
-        text: msg`Failed Settlement of Funding Fees`,
+        text: msg`Failed settlement of funding fees`,
       },
       {
         data: ClaimType.SettleFundingFeeCreated,
-        text: msg`Request Settlement of Funding Fees`,
+        text: msg`Request settlement of funding fees`,
         debug: true,
       },
     ],
   },
 
   {
-    groupName: msg`Price Impact`,
+    groupName: msg`Price impact`,
     items: [
       {
         data: ClaimType.ClaimPriceImpact,
-        text: msg`Claim Price Impact Rebates`,
+        text: msg`Claim price impact rebates`,
       },
     ],
   },
@@ -85,7 +85,7 @@ export function ActionFilter({ value, onChange }: Props) {
     <TableOptionsFilter<string>
       multiple
       label={t`Action`}
-      placeholder={t`Search Action`}
+      placeholder={t`Search action`}
       value={value}
       options={localizedGroups}
       onChange={onChange}

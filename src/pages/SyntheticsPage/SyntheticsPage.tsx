@@ -31,15 +31,16 @@ import {
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
+import { isTriggerDecreaseOrderType } from "domain/synthetics/orders";
 import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import type { OrderInfo } from "domain/synthetics/orders/types";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
 import { TradeMode } from "domain/synthetics/trade";
+import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
 import { useShareSuccessClosedPosition } from "domain/synthetics/tradeHistory/useShareSuccessClosedPosition";
-import { useInterviewNotification } from "domain/synthetics/userFeedback/useInterviewNotification";
 import { getMidPrice } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { defined } from "lib/guards";
@@ -64,7 +65,6 @@ import Badge, { BadgeIndicator } from "components/Badge/Badge";
 import Checkbox from "components/Checkbox/Checkbox";
 import { Claims } from "components/Claims/Claims";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
-import { InterviewModal } from "components/InterviewModal/InterviewModal";
 import { NpsModal } from "components/NpsModal/NpsModal";
 import { OneClickPromoBanner } from "components/OneClickPromoBanner/OneClickPromoBanner";
 import { OrderList } from "components/OrderList/OrderList";
@@ -123,7 +123,8 @@ export function SyntheticsPage(p: Props) {
 
   const [, setClosingPositionKeyRaw] = useClosingPositionKeyState();
   const setClosingPositionKey = useCallback(
-    (key: string | undefined) => requestAnimationFrame(() => setClosingPositionKeyRaw(key)),
+    (key: string | undefined, orderOption?: OrderOption) =>
+      requestAnimationFrame(() => setClosingPositionKeyRaw(key, orderOption)),
     [setClosingPositionKeyRaw]
   );
 
@@ -132,8 +133,6 @@ export function SyntheticsPage(p: Props) {
 
   useTradeParamsProcessor();
   useSetOrdersAutoCancelByQueryParams();
-
-  const { isInterviewModalVisible, setIsInterviewModalVisible } = useInterviewNotification();
 
   const { chartToken } = useSelector(selectChartToken);
 
@@ -223,6 +222,10 @@ export function SyntheticsPage(p: Props) {
       const order = getByKey(ordersInfoData, orderKey);
 
       if (!order) return;
+
+      if (isTriggerDecreaseOrderType(order.orderType)) {
+        return;
+      }
 
       setActiveOrder(order);
     },
@@ -335,12 +338,13 @@ export function SyntheticsPage(p: Props) {
 
   return (
     <AppPageLayout
+      title={t`Trade`}
       header={
         <AppHeader
           leftContent={
             isTablet ? (
               <Link to="/" className="flex items-center gap-5 p-8 max-md:p-[4.5px]">
-                <img src={logoIcon} alt="GMX Logo" />
+                <img src={logoIcon} alt={t`GMX logo`} />
                 <LogoText className="max-md:hidden" />
               </Link>
             ) : (
@@ -426,7 +430,7 @@ export function SyntheticsPage(p: Props) {
             )}
           </>
         ) : (
-          <div className="w-[40rem] shrink-0 max-xl:w-[36rem]">
+          <div className="w-[40rem] shrink-0">
             <TradeBoxResponsiveContainer />
 
             {isSwap && !isTwap && (
@@ -519,7 +523,6 @@ export function SyntheticsPage(p: Props) {
           shareSource="auto-prompt"
         />
       ) : null}
-      <InterviewModal type="trader" isVisible={isInterviewModalVisible} setIsVisible={setIsInterviewModalVisible} />
       <NpsModal />
     </AppPageLayout>
   );

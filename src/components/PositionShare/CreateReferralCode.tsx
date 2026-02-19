@@ -89,8 +89,8 @@ function CreateReferralCodeSettlement({ onSuccess }: Props) {
       }
 
       return registerReferralCode(chainId, referralCode, signer, {
-        sentMsg: t`Referral code submitted.`,
-        failMsg: t`Referral code creation failed.`,
+        sentMsg: t`Referral code submitted`,
+        failMsg: t`Referral code creation failed`,
         pendingTxns,
       });
     },
@@ -140,12 +140,12 @@ function CreateReferralCodeSettlement({ onSuccess }: Props) {
         const receipt = await tx.wait();
 
         if (receipt?.status === 1) {
-          helperToast.success(t`Referral code created.`);
+          helperToast.success(t`Referral code created`);
           onSuccess(referralCode);
           setReferralCode("");
         }
       } catch (err) {
-        setError(t`Referral code creation failed.`);
+        setError(t`Referral code creation failed`);
         metrics.pushError(err, "createReferralCode");
       } finally {
         setIsProcessing(false);
@@ -174,7 +174,7 @@ function CreateReferralCodeSettlement({ onSuccess }: Props) {
       };
     }
     if (isProcessing) {
-      return { text: t`Creating code`, disabled: true };
+      return { text: t`Creating code...`, disabled: true };
     }
     if (!referralCode) {
       return { text: t`Enter a code`, disabled: true };
@@ -320,7 +320,7 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
             args: [sendParams, sendQuoteFromNative(quoteResult.data.nativeFee), account],
           }),
           value,
-          msg: t`Creating referral code`,
+          msg: t`Creating referral code...`,
         });
 
         const receipt = await txnResult.wait();
@@ -330,10 +330,10 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
           onSuccess(trimmedCode);
           helperToast.success(
             <>
-              <Trans>Referral code created!</Trans>
+              <Trans>Referral code created</Trans>
               <br />
               <br />
-              <Trans>It will take a couple of minutes to be reflected. Please check back later.</Trans>
+              <Trans>May take a few minutes to appear. Check back later</Trans>
             </>
           );
         }
@@ -592,13 +592,13 @@ function CreateReferralCodeLayout({
         {networkFeeUsd !== undefined && (
           <div className="flex justify-between text-12 text-typography-secondary">
             <span>
-              <Trans>Network Fee</Trans>
+              <Trans>Network fee</Trans>
             </span>
             <span>{formatUsd(networkFeeUsd)}</span>
           </div>
         )}
         {rpcFailedChains && rpcFailedChains.length > 0 && referralCodeCheckStatus !== "taken" && (
-          <AlertInfoCard type="info" className="text-left">
+          <AlertInfoCard type="warning" hideClose className="text-left">
             {rpcFailedChains.length === 1 ? (
               <Trans>
                 Unable to verify code availability on {getChainName(rpcFailedChains[0])}. You can still create the code,
@@ -613,10 +613,10 @@ function CreateReferralCodeLayout({
           </AlertInfoCard>
         )}
         {hasNoTokensOnSourceChain && srcChainId && (
-          <AlertInfoCard type="warning" className="text-left" hideClose>
+          <AlertInfoCard type="error" className="text-left" hideClose>
             <Trans>
-              You need USDC or ETH on {getChainName(srcChainId)} to create a referral code via GMX Account. Please
-              deposit funds or switch to a different network.
+              You need USDC or ETH on {getChainName(srcChainId)} to create a referral code via GMX Account. Deposit
+              funds or switch to a different network.
             </Trans>
           </AlertInfoCard>
         )}

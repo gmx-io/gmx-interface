@@ -210,7 +210,7 @@ export const useWithdrawalTransactions = ({
       const metricData = getWithdrawalMetricData();
 
       if (!amounts || !signer || !params) {
-        helperToast.error(t`Error submitting order`);
+        helperToast.error(t`Order submission failed`);
         sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
       }
@@ -228,7 +228,7 @@ export const useWithdrawalTransactions = ({
             : undefined;
 
         if (!fees || !transferRequests) {
-          helperToast.error(t`Error submitting order`);
+          helperToast.error(t`Order submission failed`);
           sendTxnValidationErrorMetric(metricData.metricId);
           return;
         }
@@ -262,7 +262,7 @@ export const useWithdrawalTransactions = ({
       } else if (paySource === "gmxAccount") {
         const expressTxnParams = multichainWithdrawalExpressTxnParams.data;
         if (!transferRequests || !expressTxnParams) {
-          helperToast.error(t`Error submitting order`);
+          helperToast.error(t`Order submission failed`);
           sendTxnValidationErrorMetric(metricData.metricId);
           return;
         }
@@ -302,7 +302,7 @@ export const useWithdrawalTransactions = ({
         const fees = technicalFees?.kind === "settlementChain" ? technicalFees.fees : undefined;
 
         if (!fees || !tokensData) {
-          helperToast.error(t`Error submitting order`);
+          helperToast.error(t`Order submission failed`);
           sendTxnValidationErrorMetric(metricData.metricId);
           return;
         }
@@ -361,7 +361,7 @@ export const useWithdrawalTransactions = ({
       const metricData = getWithdrawalMetricData();
 
       if (!amounts || !signer || !params) {
-        helperToast.error(t`Error submitting order`);
+        helperToast.error(t`Order submission failed`);
         sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
       }
@@ -378,7 +378,7 @@ export const useWithdrawalTransactions = ({
             ? technicalFees.fees
             : undefined;
         if (!fees || !transferRequests) {
-          helperToast.error(t`Error submitting order`);
+          helperToast.error(t`Order submission failed`);
           sendTxnValidationErrorMetric(metricData.metricId);
           return;
         }
@@ -408,7 +408,7 @@ export const useWithdrawalTransactions = ({
       } else if (paySource === "gmxAccount") {
         const expressTxnParams = multichainWithdrawalExpressTxnParams.data;
         if (!transferRequests || !expressTxnParams) {
-          helperToast.error(t`Error submitting order`);
+          helperToast.error(t`Order submission failed`);
           sendTxnValidationErrorMetric(metricData.metricId);
           return;
         }
@@ -449,7 +449,7 @@ export const useWithdrawalTransactions = ({
         const fees = technicalFees?.kind === "settlementChain" ? technicalFees.fees : undefined;
 
         if (!fees || !tokensData) {
-          helperToast.error(t`Error submitting order`);
+          helperToast.error(t`Order submission failed`);
           sendTxnValidationErrorMetric(metricData.metricId);
           return;
         }

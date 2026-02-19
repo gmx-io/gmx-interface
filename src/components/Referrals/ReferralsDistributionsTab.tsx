@@ -131,10 +131,10 @@ function RebateDistributionRow({ rebate, chainId, isSelected, onClick }: RebateD
     if (rebate.tokens[0] === esGmxAddress) {
       rebateType = t`V1 esGMX`;
     } else {
-      rebateType = t`V1 Airdrop`;
+      rebateType = t`V1 airdrop`;
     }
   } else if (rebate.typeId === RebateDistributionType.Claim) {
-    rebateType = t`V2 Claim`;
+    rebateType = t`V2 claim`;
   }
 
   const amountsByTokens = rebate.tokens.reduce(
@@ -192,8 +192,8 @@ function RebateDistributionRow({ rebate, chainId, isSelected, onClick }: RebateD
               {tokensWithoutPrices.length > 0 && (
                 <>
                   <Trans>
-                    USD Value may not be accurate since the data does not contain prices for{" "}
-                    {tokensWithoutPrices.map((address) => getToken(chainId, address).symbol).join(", ")}
+                    USD value may not be accurate because prices are missing for{" "}
+                    {tokensWithoutPrices.map((address) => getToken(chainId, address).symbol).join(", ")}.
                   </Trans>
                   <br />
                   <br />
@@ -283,7 +283,7 @@ function RebateDistributionRowDetail({ rebate, chainId }: RebateDistributionRowD
       })}
 
       <div className="py-8 pl-20 text-typography-secondary">
-        <Trans>Transaction Hash</Trans>
+        <Trans>Transaction hash</Trans>
       </div>
       <div className="col-span-4 flex items-center gap-8 py-8 pr-20">
         {rebate.transactionHash}
@@ -423,8 +423,8 @@ export function ReferralsDistributionsTab({ loading, account, referralsData }: R
           />
         ) : (
           <EmptyMessage
-            tooltipText={t`Distribution history for claimed rebates and airdrops.`}
-            message={t`No rebates distribution history yet.`}
+            tooltipText={t`Distribution history for claimed rebates and airdrops`}
+            message={t`No rebates distribution history yet`}
           />
         )}
       </div>

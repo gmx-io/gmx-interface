@@ -111,13 +111,13 @@ function getButtonSubmitState({
   }
   if (isValidating) {
     return {
-      text: t`Checking code`,
+      text: t`Checking code...`,
       disabled: true,
     };
   }
   if (!referralCodeExists) {
     return {
-      text: t`Referral code does not exist`,
+      text: t`Code not found`,
       disabled: true,
     };
   }
@@ -263,10 +263,10 @@ export function ReferralCodeFormMultichain({
 
       helperToast.success(
         <>
-          <Trans>Referral code added!</Trans>
+          <Trans>Referral code added</Trans>
           <br />
           <br />
-          <Trans>It will take a couple of minutes to be reflected. Please check back later.</Trans>
+          <Trans>Changes may take a few minutes to appear</Trans>
         </>
       );
     } catch (error) {
@@ -327,7 +327,7 @@ export function ReferralCodeFormMultichain({
       <ReferralCodeInput ref={inputRef} disabled={isSubmitting} value={referralCode} onChange={setReferralCode} />
       {srcChainId && (
         <SyntheticsInfoRow
-          label={t`Network Fee`}
+          label={t`Network fee`}
           value={quoteResult.networkFeeUsd !== undefined ? formatUsd(quoteResult.networkFeeUsd) : "..."}
         />
       )}

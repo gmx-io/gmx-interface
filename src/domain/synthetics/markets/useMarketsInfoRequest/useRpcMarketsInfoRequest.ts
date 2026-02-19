@@ -31,7 +31,7 @@ export function useRpcMarketsInfoRequest({
   const { fastMarketInfoData } = useFastMarketsInfoRequest(chainId);
   const { marketsData, marketsAddresses } = useMarkets(chainId);
   const { data: marketsConstantsData } = useMarketsConstantsRequest(chainId);
-  const isDependenciesLoading = !marketsAddresses || !tokensData || !marketsConstantsData || !enabled;
+  const isDependenciesLoading = !marketsAddresses || !tokensData || !enabled;
 
   const { marketsValuesData } = useMarketsValuesRequest({
     chainId,

@@ -295,7 +295,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     sendOrderSubmittedMetric(metricData.metricId);
 
     if (!primaryCreateOrderParams || !signer || !provider || !tokensData || !account || !marketsInfoData) {
-      helperToast.error(t`Error submitting order`);
+      helperToast.error(t`Order submission failed`);
       sendTxnValidationErrorMetric(metricData.metricId);
       return Promise.reject();
     }

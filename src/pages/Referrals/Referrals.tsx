@@ -73,7 +73,7 @@ function Referrals() {
   }, [createReferralCodePrefill, activeTab, setActiveTab]);
 
   return (
-    <AppPageLayout header={<ChainContentHeader />}>
+    <AppPageLayout title={t`Referrals`} header={<ChainContentHeader />}>
       <SEO title={getPageTitle(t`Referrals`)}>
         <div className="default-container page-layout flex grow flex-col gap-20">
           <PageTitle

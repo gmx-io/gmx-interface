@@ -31,14 +31,18 @@ export function useTradeboxTPSLReset(setIsDismissed: (isDismissed: boolean) => v
     fromTokenAddress !== previouseFromTokenAddress ||
     toTokenAddress !== previousToTokenAddress ||
     isLong !== previousIsLong ||
-    marketAddress !== previousMarketAddress ||
-    collateralToken !== previousCollateralToken ||
     isIncrease !== previousIsIncrease;
 
+  const shouldResetPriceImpactWarning =
+    shouldResetLimitOrTPSL || marketAddress !== previousMarketAddress || collateralToken !== previousCollateralToken;
+
   useEffect(() => {
-    if (shouldResetLimitOrTPSL) {
+    if (shouldResetPriceImpactWarning) {
       setIsDismissed(false);
+    }
+
+    if (shouldResetLimitOrTPSL) {
       reset();
     }
-  }, [reset, shouldResetLimitOrTPSL, setIsDismissed]);
+  }, [reset, setIsDismissed, shouldResetLimitOrTPSL, shouldResetPriceImpactWarning]);
 }

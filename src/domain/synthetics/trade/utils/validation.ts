@@ -181,7 +181,11 @@ export function getSwapError(p: {
   }
 
   if (isLimit && (triggerRatio?.ratio === undefined || triggerRatio.ratio < 0)) {
-    return { buttonErrorMessage: t`Enter a  price` };
+    return { buttonErrorMessage: t`Enter a price` };
+  }
+
+  if ((!isLimit || isTwap) && (toUsd === undefined || swapLiquidity === undefined || swapLiquidity < toUsd)) {
+    return { buttonErrorMessage: t`Insufficient liquidity` };
   }
 
   if (fromTokenAmount > (fromToken.balance ?? 0n)) {
@@ -199,25 +203,20 @@ export function getSwapError(p: {
   if (fromToken.symbol === "STBTC" && toToken.symbol === "BTC") {
     return { buttonErrorMessage: t`No swap path found`, buttonTooltipName: ValidationButtonTooltipName.noSwapPath };
   }
-
-  if (!isLimit && (toUsd === undefined || swapLiquidity === undefined || swapLiquidity < toUsd)) {
-    return { buttonErrorMessage: t`Insufficient liquidity` };
-  }
-
   const noInternalSwap =
-    !swapPathStats?.swapPath || (!isLimit && swapPathStats.swapSteps.some((step) => step.isOutLiquidity));
+    !swapPathStats?.swapPath || ((!isLimit || isTwap) && swapPathStats.swapSteps.some((step) => step.isOutLiquidity));
 
   const noExternalSwap = !externalSwapQuote;
 
   if (noInternalSwap && noExternalSwap) {
-    return { buttonErrorMessage: t`Couldn't find a swap path with enough liquidity` };
+    return { buttonErrorMessage: t`No swap path found`, buttonTooltipName: ValidationButtonTooltipName.noSwapPath };
   }
 
   if (
     !fees?.payTotalFees ||
     (fees?.payTotalFees && fees.payTotalFees.deltaUsd < 0 && bigMath.abs(fees.payTotalFees.deltaUsd) > (fromUsd ?? 0))
   ) {
-    return { buttonErrorMessage: t`Fees exceed Pay amount` };
+    return { buttonErrorMessage: t`Fees exceed pay amount` };
   }
 
   if (isLimit && triggerRatio) {
@@ -241,7 +240,7 @@ export function getSwapError(p: {
   }
 
   if (isTwap && numberOfParts < MIN_TWAP_NUMBER_OF_PARTS) {
-    return { buttonErrorMessage: t`Min number of parts: ${MIN_TWAP_NUMBER_OF_PARTS}` };
+    return { buttonErrorMessage: t`Min parts: ${MIN_TWAP_NUMBER_OF_PARTS}` };
   }
 
   if (isTwap && numberOfParts > MAX_TWAP_NUMBER_OF_PARTS) {
@@ -313,7 +312,7 @@ export function getIncreaseError(p: {
   }
 
   if (!initialCollateralToken) {
-    return { buttonErrorMessage: t`Select a Pay token` };
+    return { buttonErrorMessage: t`Select a pay token` };
   }
 
   if (!targetCollateralToken) {
@@ -370,7 +369,7 @@ export function getIncreaseError(p: {
     numberOfParts > 0 &&
     (collateralUsd === undefined ? undefined : collateralUsd / BigInt(numberOfParts) < minTwapPartSize)
   ) {
-    return { buttonErrorMessage: t`Min size per part: ${formatUsd(minTwapPartSize)}` };
+    return { buttonErrorMessage: t`Min margin per part: ${formatUsd(minTwapPartSize)}` };
   }
 
   if (
@@ -379,7 +378,7 @@ export function getIncreaseError(p: {
       ? undefined
       : roundWithDecimals(initialCollateralUsd, { displayDecimals: 2, decimals: USD_DECIMALS }) < _minCollateralUsd)
   ) {
-    return { buttonErrorMessage: t`Min order: ${formatUsd(_minCollateralUsd)}` };
+    return { buttonErrorMessage: t`Min margin: ${formatUsd(_minCollateralUsd)}` };
   }
 
   const roundedNextCollateralUsd =
@@ -423,11 +422,11 @@ export function getIncreaseError(p: {
     }
 
     if (isLong && thresholdType === TriggerThresholdType.Above && triggerPrice < markPrice) {
-      return { buttonErrorMessage: t`Stop market price below mark price` };
+      return { buttonErrorMessage: t`Stop Market price below mark price` };
     }
 
     if (!isLong && thresholdType === TriggerThresholdType.Below && triggerPrice > markPrice) {
-      return { buttonErrorMessage: t`Stop market price above mark price` };
+      return { buttonErrorMessage: t`Stop Market price above mark price` };
     }
   }
 
@@ -442,7 +441,7 @@ export function getIncreaseError(p: {
 
     if (maxLeverageError) {
       return {
-        buttonErrorMessage: t`Max. Leverage exceeded`,
+        buttonErrorMessage: t`Max leverage exceeded`,
         buttonTooltipName: ValidationButtonTooltipName.maxLeverage,
       };
     }
@@ -459,21 +458,21 @@ export function getIncreaseError(p: {
   if (nextPositionValues?.nextLiqPrice !== undefined && markPrice !== undefined) {
     if (isLong && nextPositionValues.nextLiqPrice > markPrice) {
       return {
-        buttonErrorMessage: t`Invalid liq. price`,
+        buttonErrorMessage: t`Invalid liquidation price`,
         buttonTooltipName: ValidationButtonTooltipName.liqPriceGtMarkPrice,
       };
     }
 
     if (!isLong && nextPositionValues.nextLiqPrice < markPrice) {
       return {
-        buttonErrorMessage: t`Invalid liq. price`,
+        buttonErrorMessage: t`Invalid liquidation price`,
         buttonTooltipName: ValidationButtonTooltipName.liqPriceGtMarkPrice,
       };
     }
   }
 
   if (isTwap && numberOfParts < MIN_TWAP_NUMBER_OF_PARTS) {
-    return { buttonErrorMessage: t`Min number of parts: ${MIN_TWAP_NUMBER_OF_PARTS}` };
+    return { buttonErrorMessage: t`Min parts: ${MIN_TWAP_NUMBER_OF_PARTS}` };
   }
 
   if (isTwap && numberOfParts > MAX_TWAP_NUMBER_OF_PARTS) {
@@ -549,7 +548,7 @@ export function getDecreaseError(p: {
 
   if (isContractAccount && isAddressZero(receiveToken?.address)) {
     return {
-      buttonErrorMessage: t`${receiveToken?.symbol} can not be sent to smart contract addresses. Select another token.`,
+      buttonErrorMessage: t`${receiveToken?.symbol} cannot be sent to smart contract addresses. Select another token`,
     };
   }
 
@@ -568,11 +567,11 @@ export function getDecreaseError(p: {
 
     if (existingPosition?.liquidationPrice && existingPosition.liquidationPrice !== maxUint256) {
       if (isLong && triggerPrice <= existingPosition.liquidationPrice) {
-        return { buttonErrorMessage: t`Trigger price below liq. price` };
+        return { buttonErrorMessage: t`Trigger price below liquidation price` };
       }
 
       if (!isLong && triggerPrice >= existingPosition.liquidationPrice) {
-        return { buttonErrorMessage: t`Trigger price above liq. price` };
+        return { buttonErrorMessage: t`Trigger price above liquidation price` };
       }
     }
 
@@ -613,7 +612,7 @@ export function getDecreaseError(p: {
   }
 
   if (isTwap && numberOfParts < MIN_TWAP_NUMBER_OF_PARTS) {
-    return { buttonErrorMessage: t`Min number of parts: ${MIN_TWAP_NUMBER_OF_PARTS}` };
+    return { buttonErrorMessage: t`Min parts: ${MIN_TWAP_NUMBER_OF_PARTS}` };
   }
 
   if (isTwap && numberOfParts > MAX_TWAP_NUMBER_OF_PARTS) {
@@ -661,11 +660,11 @@ export function getEditCollateralError(p: {
 
   if (nextLiqPrice !== undefined && position?.markPrice !== undefined) {
     if (position?.isLong && nextLiqPrice < maxUint256 && position?.markPrice < nextLiqPrice) {
-      return { buttonErrorMessage: t`Invalid liq. price` };
+      return { buttonErrorMessage: t`Invalid liquidation price` };
     }
 
     if (!position.isLong && position.markPrice > nextLiqPrice) {
-      return { buttonErrorMessage: t`Invalid liq. price` };
+      return { buttonErrorMessage: t`Invalid liquidation price` };
     }
   }
 
@@ -686,7 +685,7 @@ export function getEditCollateralError(p: {
 
     if (!isPositionCollateralSufficient) {
       return {
-        buttonErrorMessage: t`Max. Leverage exceeded`,
+        buttonErrorMessage: t`Max leverage exceeded`,
         buttonTooltipName: ValidationButtonTooltipName.maxLeverage,
       };
     }
@@ -788,10 +787,12 @@ export function getGmSwapError(p: {
     return { buttonErrorMessage: t`Loading...` };
   }
 
-  const glvTooltipMessage = t`The buyable cap for the pool GM: ${marketInfo.name} using the pay token selected is reached. Please choose a different pool, reduce the buy size, or pick a different composition of tokens.`;
+  const glvTooltipMessage = glvInfo
+    ? t`GM: ${marketInfo.name} buyable cap reached in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}]. Choose a different pool, reduce size, or pick a different token composition.`
+    : undefined;
 
   if (isPair && isDeposit && paySource === "sourceChain") {
-    return { buttonErrorMessage: t`Deposit from source chain support only single token` };
+    return { buttonErrorMessage: t`Source chain supports single token only` };
   }
 
   if (isDeposit) {
@@ -802,7 +803,7 @@ export function getGmSwapError(p: {
       if (!getIsValidPoolAmount(marketInfo, newPoolAmount)) {
         return {
           buttonErrorMessage: t`Max pool amount exceeded`,
-          buttonTooltipMessage: glvInfo ? glvTooltipMessage : undefined,
+          buttonTooltipMessage: glvTooltipMessage,
         };
       }
     }
@@ -810,7 +811,7 @@ export function getGmSwapError(p: {
     if (!getIsValidPoolUsdForDeposit(marketInfo)) {
       return {
         buttonErrorMessage: t`Max pool USD exceeded`,
-        buttonTooltipMessage: glvInfo ? glvTooltipMessage : undefined,
+        buttonTooltipMessage: glvTooltipMessage,
       };
     }
 
@@ -820,7 +821,7 @@ export function getGmSwapError(p: {
       (fees?.totalFees?.deltaUsd === undefined ? undefined : fees?.totalFees?.deltaUsd < 0) &&
       bigMath.abs(fees?.totalFees?.deltaUsd ?? 0n) > totalCollateralUsd
     ) {
-      return { buttonErrorMessage: t`Fees exceed Pay amount` };
+      return { buttonErrorMessage: t`Fees exceed pay amount` };
     }
 
     if (glvInfo) {
@@ -855,11 +856,11 @@ export function getGmSwapError(p: {
     (fees?.totalFees?.deltaUsd ?? 0n) < 0 &&
     bigMath.abs(fees?.totalFees?.deltaUsd ?? 0n) > (marketTokenUsd ?? 0n)
   ) {
-    return { buttonErrorMessage: t`Fees exceed Pay amount` };
+    return { buttonErrorMessage: t`Fees exceed pay amount` };
   }
 
   if ((longTokenAmount ?? 0n) < 0 || (shortTokenAmount ?? 0n) < 0 || (marketTokenAmount ?? 0n) < 0) {
-    return { buttonErrorMessage: t`Amount should be greater than zero` };
+    return { buttonErrorMessage: t`Enter a valid amount` };
   }
 
   if (
@@ -910,10 +911,7 @@ export function getGmSwapError(p: {
       if (marketTokenUsd !== undefined && (mintableGmUsd < marketTokenUsd || maxMintableInMarketUsd < marketTokenUsd)) {
         return {
           buttonErrorMessage: t`Max pool amount reached`,
-          buttonTooltipMessage:
-            longToken?.symbol === "GM"
-              ? t`The buyable cap for the pool GM: ${marketInfo.name} in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}] has been reached. Please reduce the buy size, pick a different GM token, or shift the GM tokens to a different pool and try again.`
-              : t`The buyable cap for the pool GM: ${marketInfo.name} in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}] has been reached. Please choose a different pool or reduce the buy size.`,
+          buttonTooltipMessage: glvTooltipMessage,
         };
       }
     }
@@ -935,7 +933,7 @@ export function getGmSwapError(p: {
       if ((glvTokenAmount ?? 0n) > (sellableGlvInMarket.sellableAmount ?? 0n)) {
         return {
           buttonErrorMessage: t`Insufficient GLV liquidity`,
-          buttonTooltipMessage: t`There isn't enough GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] liquidity in GLV to fulfill your sell request. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools.`,
+          buttonTooltipMessage: t`Insufficient GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] liquidity in GLV. Choose a different pool, reduce the sell size, or split your withdrawal from multiple pools.`,
         };
       }
 
@@ -943,8 +941,8 @@ export function getGmSwapError(p: {
 
       if ((marketTokenUsd ?? 0n) > (sellableWithinMarket.totalUsd ?? 0n)) {
         return {
-          buttonErrorMessage: t`Insufficient liquidity in GM Pool`,
-          buttonTooltipMessage: t`The sellable cap for the pool GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}]  has been reached, as the tokens are reserved by traders. Please choose a different pool, reduce the sell size, or split your withdrawal from multiple pools.`,
+          buttonErrorMessage: t`Insufficient liquidity in GM pool`,
+          buttonTooltipMessage: t`Sellable cap for pool GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] reached, as tokens are reserved by traders. Choose a different pool, reduce the sell size, or split your withdrawal from multiple pools.`,
         };
       }
     }
@@ -1026,11 +1024,11 @@ export function getGmShiftError({
 
   const feesExistAndNegative = fees?.totalFees?.deltaUsd === undefined ? undefined : fees?.totalFees?.deltaUsd < 0;
   if (feesExistAndNegative && bigMath.abs(fees?.totalFees?.deltaUsd ?? 0n) > totalCollateralUsd) {
-    return { buttonErrorMessage: t`Fees exceed Pay amount` };
+    return { buttonErrorMessage: t`Fees exceed pay amount` };
   }
 
   if ((fromTokenAmount ?? 0n) < 0 || (toTokenAmount ?? 0n) < 0) {
-    return { buttonErrorMessage: t`Amount should be greater than zero` };
+    return { buttonErrorMessage: t`Enter a valid amount` };
   }
 
   if (fromTokenAmount === undefined || fromTokenAmount <= 0n || toTokenAmount === undefined || toTokenAmount <= 0n) {

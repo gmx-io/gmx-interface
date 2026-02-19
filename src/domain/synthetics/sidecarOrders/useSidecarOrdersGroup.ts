@@ -106,12 +106,8 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
       });
     }
 
-    if (canAddEntry) {
-      return [errorHandler(getDefaultEntry(prefix, { mode: enablePercentage ? "fitPercentage" : "keepSize" }))];
-    }
-
-    return [];
-  }, [initialEntries, prefix, canAddEntry, enablePercentage, errorHandler, recalculateEntryByField]);
+    return [errorHandler(getDefaultEntry(prefix, { mode: enablePercentage ? "fitPercentage" : "keepSize" }))];
+  }, [initialEntries, prefix, enablePercentage, errorHandler, recalculateEntryByField]);
 
   const ordersState = useSelector(makeSelectTradeboxSidecarOrdersState(prefix));
 

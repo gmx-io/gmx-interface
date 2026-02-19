@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useKey } from "react-use";
 import { zeroAddress } from "viem";
@@ -51,6 +51,7 @@ import {
   OrderInfo,
   PositionOrderInfo,
   SwapOrderInfo,
+  isLimitDecreaseOrderType,
   isLimitIncreaseOrderType,
   isLimitSwapOrderType,
   isStopIncreaseOrderType,
@@ -100,6 +101,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { AllowedSwapSlippageInputRow } from "../AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
@@ -112,6 +114,7 @@ type Props = {
   order: OrderInfo;
   source: EditingOrderSource;
   onClose: () => void;
+  onBack?: () => void;
 };
 
 export function OrderEditor(p: Props) {
@@ -297,7 +300,7 @@ export function OrderEditor(p: Props) {
     if (newSizeDeltaUsd !== undefined) {
       setSizeInputValue(formatAmountFree(substractMaxLeverageSlippage(newSizeDeltaUsd), USD_DECIMALS, 2));
     } else {
-      helperToast.error(t`No available leverage found`);
+      helperToast.error(t`No valid leverage available`);
     }
   }, [
     p.order,
@@ -525,15 +528,18 @@ export function OrderEditor(p: Props) {
 
     if (isMaxLeverageError) {
       return {
-        text: t`Max. Leverage Exceeded`,
+        text: t`Max leverage exceeded`,
         tooltip: (
           <>
-            <Trans>Decrease the size to match the max. allowed leverage:</Trans>{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
+            <Trans>Order exceeds max leverage. Click to auto-adjust.</Trans>{" "}
+            <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">
+              <Trans>Read more</Trans>
+            </ExternalLink>
+            .
             <br />
             <br />
             <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
-              <Trans>Set Max Leverage</Trans>
+              <Trans>Set max leverage</Trans>
             </span>
           </>
         ),
@@ -551,7 +557,7 @@ export function OrderEditor(p: Props) {
     const orderTypeName = getNameByOrderType(p.order.orderType, p.order.isTwap);
 
     return {
-      text: t`Update ${orderTypeName} Order`,
+      text: t`Update ${orderTypeName}`,
       disabled: false,
       onClick: onSubmit,
     };
@@ -648,15 +654,41 @@ export function OrderEditor(p: Props) {
     buttonContent
   );
 
-  const priceLabel = isTriggerDecreaseOrderType(p.order.orderType)
-    ? t`Trigger Price`
-    : isStopIncreaseOrderType(p.order.orderType)
-      ? t`Stop Price`
-      : t`Limit Price`;
+  const priceLabel = isLimitDecreaseOrderType(p.order.orderType)
+    ? t`Take profit price`
+    : isStopLossOrderType(p.order.orderType)
+      ? t`Stop loss price`
+      : isStopIncreaseOrderType(p.order.orderType)
+        ? t`Stop price`
+        : t`Limit price`;
 
   const positionSize = existingPosition?.sizeInUsd;
 
-  const sizeUsd = parseValue(sizeInputValue || "0", USD_DECIMALS)!;
+  const sizeUsd = parseValue(sizeInputValue || "0", USD_DECIMALS) ?? 0n;
+
+  const sizePercentage = useMemo(() => {
+    if (positionSize === undefined || positionSize === 0n) return 0;
+    const percentage = Number((sizeUsd * 100n) / positionSize);
+    return Math.min(100, Math.max(0, percentage));
+  }, [sizeUsd, positionSize]);
+
+  const handleSizePercentageChange = useCallback(
+    (percentage: number) => {
+      if (positionSize === undefined) return;
+      const formattedAmount = formatAmountFree((positionSize * BigInt(percentage)) / 100n, USD_DECIMALS, 2);
+      setSizeInputValue(formattedAmount);
+    },
+    [positionSize, setSizeInputValue]
+  );
+
+  const handleBack = () => {
+    if (p.onBack) {
+      p.onBack();
+      return;
+    }
+
+    p.onClose();
+  };
 
   return (
     <div className="PositionEditor">
@@ -665,8 +697,10 @@ export function OrderEditor(p: Props) {
         isVisible={true}
         setIsVisible={p.onClose}
         label={<Trans>Edit {p.order.title}</Trans>}
+        contentPadding={false}
+        onBack={p.onBack ? handleBack : undefined}
       >
-        <div className="mb-14 flex flex-col gap-2">
+        <div className="mt-12 flex flex-col gap-4 border-t-1/2 border-slate-600 px-20 py-16">
           {!isSwapOrderType(p.order.orderType) && (
             <>
               <BuyInputSection
@@ -690,7 +724,7 @@ export function OrderEditor(p: Props) {
                 }
                 maxDecimals={USD_DECIMALS}
               >
-                USD
+                {t`USD`}
               </BuyInputSection>
 
               <BuyInputSection
@@ -715,8 +749,12 @@ export function OrderEditor(p: Props) {
                 onInputValueChange={(e) => setTriggerPriceInputValue(e.target.value)}
                 maxDecimals={USD_DECIMALS}
               >
-                USD
+                {t`USD`}
               </BuyInputSection>
+
+              {isTriggerDecreaseOrderType(p.order.orderType) && positionSize !== undefined && positionSize > 0n && (
+                <MarginPercentageSlider value={sizePercentage} onChange={handleSizePercentageChange} />
+              )}
             </>
           )}
 
@@ -724,7 +762,7 @@ export function OrderEditor(p: Props) {
             <>
               {triggerRatio && (
                 <BuyInputSection
-                  topLeftLabel={t`Limit Price`}
+                  topLeftLabel={t`Limit price`}
                   topRightLabel={t`Mark`}
                   topRightValue={formatAmount(markRatio?.ratio, USD_DECIMALS, 4)}
                   onClickTopRightLabel={() => {
@@ -736,23 +774,16 @@ export function OrderEditor(p: Props) {
                   }}
                   maxDecimals={USD_DECIMALS}
                 >
-                  {`${triggerRatio.smallestToken.symbol} per ${triggerRatio.largestToken.symbol}`}
+                  <Trans>
+                    {triggerRatio.smallestToken.symbol} per {triggerRatio.largestToken.symbol}
+                  </Trans>
                 </BuyInputSection>
               )}
             </>
           )}
         </div>
 
-        <div className="flex flex-col gap-14">
-          {button}
-
-          <ExpressTradingWarningCard
-            expressParams={expressParams}
-            payTokenAddress={undefined}
-            isWrapOrUnwrap={false}
-            isGmxAccount={srcChainId !== undefined}
-          />
-
+        <div className="flex flex-col gap-14 px-20 pb-16">
           {(isLimitIncreaseOrderType(p.order.orderType) || isStopIncreaseOrderType(p.order.orderType)) && (
             <SyntheticsInfoRow
               label={t`Leverage`}
@@ -781,7 +812,7 @@ export function OrderEditor(p: Props) {
             <>
               {isSetAcceptablePriceImpactEnabled && (
                 <SyntheticsInfoRow
-                  label={t`Acceptable Price`}
+                  label={t`Acceptable price`}
                   value={formatAcceptablePrice(acceptablePrice, {
                     visualMultiplier: indexToken?.visualMultiplier,
                   })}
@@ -790,7 +821,7 @@ export function OrderEditor(p: Props) {
 
               {existingPosition && (
                 <SyntheticsInfoRow
-                  label={t`Liq. Price`}
+                  label={t`Liquidation price`}
                   value={formatLiquidationPrice(existingPosition.liquidationPrice, {
                     visualMultiplier: indexToken?.visualMultiplier,
                   })}
@@ -810,7 +841,7 @@ export function OrderEditor(p: Props) {
                   renderContent={() => (
                     <>
                       <StatsTooltipRow
-                        label={<div className="text-typography-primary">{t`Network Fee`}:</div>}
+                        label={<div className="text-typography-primary">{t`Network fee`}:</div>}
                         value={formatTokenAmountWithUsd(
                           networkFee.feeTokenAmount * -1n,
                           networkFee.feeUsd === undefined ? undefined : networkFee.feeUsd * -1n,
@@ -825,7 +856,7 @@ export function OrderEditor(p: Props) {
                       />
                       <br />
                       <div className="text-typography-primary">
-                        <Trans>As network fees have increased, an additional network fee is needed.</Trans>
+                        <Trans>Network fees increased. Additional fee required.</Trans>
                       </div>
                     </>
                   )}
@@ -845,7 +876,7 @@ export function OrderEditor(p: Props) {
               />
               <div className="h-1 bg-slate-600" />
               <SyntheticsInfoRow
-                label={t`Min. Receive`}
+                label={t`Min. receive`}
                 value={formatBalanceAmount(
                   minOutputAmount,
                   p.order.targetCollateralToken.decimals,
@@ -855,6 +886,15 @@ export function OrderEditor(p: Props) {
               />
             </>
           )}
+
+          <ExpressTradingWarningCard
+            expressParams={expressParams}
+            payTokenAddress={undefined}
+            isWrapOrUnwrap={false}
+            isGmxAccount={srcChainId !== undefined}
+          />
+
+          {button}
         </div>
       </Modal>
     </div>

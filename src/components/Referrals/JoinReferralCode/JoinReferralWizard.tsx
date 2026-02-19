@@ -81,7 +81,7 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
               </div>
               <div className="flex flex-col items-center gap-16">
                 <Button variant="primary-action" className="w-full" type="submit" onClick={openConnectModal}>
-                  <Trans>Connect Wallet</Trans>
+                  <Trans>Connect wallet</Trans>
                 </Button>
                 <ExternalLink href="https://www.google.com" variant="icon" className="text-blue-300">
                   <Trans>Learn more</Trans>

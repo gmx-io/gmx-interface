@@ -17,7 +17,7 @@ export function LaunchSection() {
           </h2>
           <p className="leading-body-md text-18 mb-36 font-normal -tracking-[0.036px] sm:mb-24">
             <Trans>
-              Operates on open, permissionless networks to ensure transparency, decentralisation, and unrestricted
+              Operates on open, permissionless networks to ensure transparency, decentralization, and unrestricted
               access
             </Trans>
           </p>
@@ -25,7 +25,7 @@ export function LaunchSection() {
             className="btn-landing mb-36 rounded-8 px-16 py-12 text-16 text-white sm:mb-0"
             onClick={goToTradeArbitrum}
           >
-            <Trans>Open App</Trans>
+            <Trans>Open app</Trans>
           </button>
         </div>
         <div className="grid w-full grid-flow-row grid-cols-1 gap-16 md:grid-cols-3 lg:w-auto lg:grid-cols-2">

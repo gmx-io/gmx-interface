@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { type TransactionResponse } from "ethers";
@@ -68,11 +68,11 @@ function AddAffiliateCode({
   return (
     <div className="referral-card section-center">
       <h2 className="title">
-        <Trans>Generate Referral Code</Trans>
+        <Trans>Generate referral code</Trans>
       </h2>
       <p className="sub-title">
         <Trans>
-          Looks like you don't have a referral code to share. <br /> Create one now and start earning rebates!
+          You don't have a referral code to share. <br /> Create one now and start earning rebates!
         </Trans>
       </p>
       <div className="card-action">
@@ -85,7 +85,7 @@ function AddAffiliateCode({
           />
         ) : (
           <Button variant="primary-action" className="w-full" onClick={openConnectModal}>
-            <Trans>Connect Wallet</Trans>
+            <Trans>Connect wallet</Trans>
           </Button>
         )}
       </div>
@@ -248,7 +248,7 @@ function AffiliateCodeFormMultichain({
           args: [sendParams, sendQuoteFromNative(quoteResult.data.nativeFee), account],
         }),
         value,
-        msg: t`Creating referral code`,
+        msg: t`Creating referral code...`,
       });
 
       const receipt = await txnResult.wait();
@@ -266,10 +266,10 @@ function AffiliateCodeFormMultichain({
 
         helperToast.success(
           <>
-            <Trans>Referral code created!</Trans>
+            <Trans>Referral code created</Trans>
             <br />
             <br />
-            <Trans>It will take a couple of minutes to be reflected. Please check back later.</Trans>
+            <Trans>May take a few minutes to reflect. Check back later</Trans>
           </>
         );
       }
@@ -421,12 +421,12 @@ function AffiliateCodeFormMultichain({
       {error && <p className="AffiliateCode-error">{error}</p>}
       {srcChainId && (
         <SyntheticsInfoRow
-          label="Network Fee"
+          label={t`Network fee`}
           value={quoteResult.networkFeeUsd !== undefined ? formatUsd(quoteResult.networkFeeUsd) : "..."}
         />
       )}
       {rpcFailedChains.length > 0 && referralCodeCheckStatus !== "taken" && (
-        <AlertInfoCard type="info" className="text-left">
+        <AlertInfoCard type="warning" className="text-left" hideClose>
           {rpcFailedChains.length === 1 ? (
             <Trans>
               Unable to verify code availability on {getChainName(rpcFailedChains[0])}. You can still create the code,
@@ -441,10 +441,10 @@ function AffiliateCodeFormMultichain({
         </AlertInfoCard>
       )}
       {hasNoTokensOnSourceChain && srcChainId && (
-        <AlertInfoCard type="warning" className="text-left" hideClose>
+        <AlertInfoCard type="error" className="text-left" hideClose>
           <Trans>
-            You need USDC or ETH on {getChainName(srcChainId)} to create a referral code via GMX Account. Please deposit
-            funds or switch to a different network.
+            You need USDC or ETH on {getChainName(srcChainId)} to create a referral code via GMX Account. Deposit funds
+            or switch to a different network.
           </Trans>
         </AlertInfoCard>
       )}
@@ -557,7 +557,7 @@ export function AffiliateCodeForm({
           recentlyAddedCodes.push(getSampleReferrarStat({ code: trimmedCode, takenInfo, account }));
           setRecentlyAddedCodes(recentlyAddedCodes);
         }
-        helperToast.success(t`Referral code created.`);
+        helperToast.success(t`Referral code created`);
         setReferralCode("");
       }
     } catch (err) {
@@ -633,7 +633,7 @@ export function AffiliateCodeForm({
       />
       {error && <p className="AffiliateCode-error">{error}</p>}
       {rpcFailedChains.length > 0 && referralCodeCheckStatus !== "taken" && (
-        <AlertInfoCard type="info" className="mb-15 text-left">
+        <AlertInfoCard type="warning" className="mb-15 text-left" hideClose>
           {rpcFailedChains.length === 1 ? (
             <Trans>
               Unable to verify code availability on {getChainName(rpcFailedChains[0])}. You can still create the code,

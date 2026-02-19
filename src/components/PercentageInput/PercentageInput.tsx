@@ -129,7 +129,7 @@ export default function PercentageInput({
         setValue={handleChange}
         placeholder={getValueText(defaultValue)}
         suggestionList={suggestions}
-        symbol="%"
+        suffix="%"
         onPanelVisibleChange={setIsPanelVisible}
         inputId={inputId}
         isError={!!error}

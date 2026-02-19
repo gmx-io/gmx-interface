@@ -120,9 +120,9 @@ export function ReferralsTradersContent({ account, referralsData }: ReferralsTra
                 <Tooltip
                   variant="iconStroke"
                   position="right"
-                  content={<Trans>Volume traded by this account with an active referral code.</Trans>}
+                  content={<Trans>Your trading volume with referral discount</Trans>}
                 >
-                  <Trans>Trading Volume</Trans>
+                  <Trans>Trading volume</Trans>
                 </Tooltip>
               </div>
               <div className="mb-24 flex items-center gap-4">
@@ -148,9 +148,9 @@ export function ReferralsTradersContent({ account, referralsData }: ReferralsTra
                 <Tooltip
                   variant="iconStroke"
                   position="right"
-                  content={<Trans>Discounts earned by this account as a trader.</Trans>}
+                  content={<Trans>Your fee savings from referral discounts</Trans>}
                 >
-                  <Trans>Your Savings</Trans>
+                  <Trans>Your savings</Trans>
                 </Tooltip>
               </div>
               <div className="mb-24 flex items-center gap-4">

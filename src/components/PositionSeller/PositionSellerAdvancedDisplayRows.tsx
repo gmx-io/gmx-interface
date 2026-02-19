@@ -6,7 +6,6 @@ import {
   selectPositionSellerFees,
   selectPositionSellerNextPositionValuesForDecrease,
   selectPositionSellerPosition,
-  selectPositionSellerTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import {
   selectBreakdownNetPriceImpactEnabled,
@@ -52,15 +51,12 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
     selectedTriggerAcceptablePriceImpactBps,
   } = usePositionSeller();
 
-  const isTrigger = orderOption === OrderOption.Trigger;
   const isTwap = orderOption === OrderOption.Twap;
   const decreaseAmounts = useSelector(selectPositionSellerDecreaseAmounts);
 
   const nextPositionValues = useSelector(selectPositionSellerNextPositionValuesForDecrease);
 
   const { fees, executionFee } = useSelector(selectPositionSellerFees);
-
-  const triggerPrice = useSelector(selectPositionSellerTriggerPrice);
 
   const isStopLoss = decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease;
 
@@ -84,7 +80,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
   let leverageValue: React.ReactNode = "-";
 
   if (decreaseAmounts?.isFullClose) {
-    leverageValue = t`NA`;
+    leverageValue = t`N/A`;
   } else if (position) {
     if (decreaseAmounts?.sizeDeltaUsd === position.sizeInUsd) {
       leverageValue = "-";
@@ -103,17 +99,18 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
   }
 
   return (
-    <ExpandableRow title={t`Execution Details`} open={open} onToggle={setOpen} contentClassName="flex flex-col gap-14">
-      <ExitPriceRow
-        isSwap={false}
-        fees={fees}
-        price={isTrigger ? triggerPrice : position.markPrice}
-        isLong={position.isLong}
-      />
+    <ExpandableRow
+      title={t`Execution details`}
+      open={open}
+      onToggle={setOpen}
+      wrapped
+      contentClassName="flex flex-col gap-14"
+    >
+      <ExitPriceRow isSwap={false} fees={fees} price={position.markPrice} isLong={position.isLong} />
       <TradeFeesRow {...fees} feesType="decrease" />
       <NetworkFeeRow executionFee={executionFee} gasPaymentParams={gasPaymentParams} />
 
-      {isTrigger || isTwap ? (
+      {isTwap ? (
         isSetAcceptablePriceImpactEnabled ? (
           acceptablePriceImpactInputRow
         ) : null
@@ -129,7 +126,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
         <>
           {breakdownNetPriceImpactEnabled && (
             <SyntheticsInfoRow
-              label={t`Stored Price Impact`}
+              label={t`Stored price impact`}
               value={
                 nextPositionValues?.nextPendingImpactDeltaUsd !== undefined &&
                 position?.pendingImpactUsd !== undefined ? (
@@ -151,8 +148,8 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
               <Tooltip
                 handle={<Trans>Collateral ({position?.collateralToken?.symbol})</Trans>}
                 position="top-start"
-                content={<Trans>Initial collateral (collateral excluding borrow and funding fee).</Trans>}
-                variant="icon"
+                content={<Trans>Initial collateral, excluding borrow and funding fees</Trans>}
+                variant="iconStroke"
               />
             }
             value={

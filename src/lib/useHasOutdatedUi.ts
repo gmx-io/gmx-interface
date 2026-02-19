@@ -42,5 +42,5 @@ export function useHasOutdatedUi() {
 }
 
 export function getPageOutdatedError() {
-  return t`Page outdated, please refresh`;
+  return t`Page outdated. Refresh`;
 }

@@ -158,7 +158,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
 
   const [buttonText, buttonDisabled] = useMemo(() => {
     if (hasOutdatedUi) return [getPageOutdatedError(), true];
-    if (isSubmitting) return [t`Settling`, true];
+    if (isSubmitting) return [t`Settling...`, true];
     if (positionKeys.length === 0) return [t`Select positions`, true];
     return [t`Settle`, false];
   }, [hasOutdatedUi, isSubmitting, positionKeys.length]);
@@ -205,7 +205,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   const renderTooltipContent = useCallback(
     () => (
       <span className="text-typography-primary">
-        <Trans>Accrued Funding Fee.</Trans>
+        <Trans>Accrued funding fees available for settlement</Trans>
       </span>
     ),
     []
@@ -216,19 +216,18 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
       className="Confirmation-box ClaimableModal"
       isVisible={isVisible}
       setIsVisible={handleOnClose}
-      label={t`Confirm Settle`}
+      label={t`Confirm settle`}
     >
       <div className="ConfirmationBox-main">
-        <div className="text-center">Settle {totalStr}</div>
+        <div className="text-center">
+          <Trans>Settle {totalStr}</Trans>
+        </div>
       </div>
       <div className="App-card-divider ClaimModal-divider FeeModal-divider ClaimSettleModal-divider" />
       <div className="ClaimModal-content ClaimSettleModal-modal-content">
         <div className="App-card-content">
-          <AlertInfo type="warning" compact>
-            <Trans>
-              Consider selecting only positions where the accrued funding fee exceeds the {formatUsd(feeUsd)} gas cost
-              to settle each position.
-            </Trans>
+          <AlertInfo type="info" compact>
+            <Trans>Select positions where accrued funding fee exceeds the {formatUsd(feeUsd)} gas cost to settle</Trans>
           </AlertInfo>
 
           <div className="App-card-divider" />

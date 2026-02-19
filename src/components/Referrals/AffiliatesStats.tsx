@@ -224,7 +224,7 @@ export function AffiliatesStats({
       <div className="flex w-full flex-col gap-8 rounded-8 bg-slate-900">
         <div className="flex items-center justify-between px-20 pt-20">
           <p className="title text-body-large">
-            <Trans>Referral Codes</Trans>{" "}
+            <Trans>Referral codes</Trans>{" "}
             <span className="rounded-full bg-cold-blue-900 px-8 py-4 text-12 font-medium leading-[1.25] text-blue-300">
               {affiliateTierInfo && t`Tier ${getTierIdDisplay(tierId)}: ${currentRebatePercentage}% rebate`}
             </span>
@@ -239,16 +239,16 @@ export function AffiliatesStats({
             <thead>
               <TableTheadTr>
                 <TableTh scope="col">
-                  <Trans>Referral Code</Trans>
+                  <Trans>REFERRAL CODE</Trans>
                 </TableTh>
                 <TableTh scope="col">
-                  <Trans>Total Volume</Trans>
+                  <Trans>TOTAL VOLUME</Trans>
                 </TableTh>
                 <TableTh scope="col">
-                  <Trans>Traders Referred</Trans>
+                  <Trans>TRADERS REFERRED</Trans>
                 </TableTh>
                 <TableTh scope="col">
-                  <Trans>Total Rebates</Trans>
+                  <Trans>TOTAL REBATES</Trans>
                 </TableTh>
                 <TableTh scope="col" className="w-0">
                   <span className="sr-only">
@@ -276,12 +276,12 @@ export function AffiliatesStats({
                         renderContent={() => (
                           <>
                             <StatsTooltipRow
-                              label={t`Volume on V1`}
+                              label={t`V1 volume`}
                               value={getUsdValue(stat?.v1Data.volume)}
                               valueClassName="numbers"
                             />
                             <StatsTooltipRow
-                              label={t`Volume on V2`}
+                              label={t`V2 volume`}
                               value={getUsdValue(stat?.v2Data.volume)}
                               valueClassName="numbers"
                             />
@@ -301,12 +301,12 @@ export function AffiliatesStats({
                         renderContent={() => (
                           <>
                             <StatsTooltipRow
-                              label={t`Rebates on V1`}
+                              label={t`V1 rebates`}
                               value={getUsdValue(stat.v1Data.affiliateRebateUsd)}
                               valueClassName="numbers"
                             />
                             <StatsTooltipRow
-                              label={t`Rebates on V2`}
+                              label={t`V2 rebates`}
                               value={getUsdValue(stat.v2Data.affiliateRebateUsd)}
                               valueClassName="numbers"
                             />
@@ -360,7 +360,7 @@ export function AffiliatesStats({
         className="Connect-wallet-modal"
         isVisible={isAddReferralCodeModalOpen}
         setIsVisible={close}
-        label={t`Create Referral Code`}
+        label={t`Create referral code`}
         onAfterOpen={() => addNewModalRef.current?.focus()}
       >
         <div className="edit-referral-modal">

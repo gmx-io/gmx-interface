@@ -6,10 +6,10 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 
 const DOCS_ITEMS = [
   { title: <Trans>How it works</Trans>, link: REFERRALS_DOCS_SECTION_LINKS.howItWorks },
-  { title: <Trans>Claiming Rewards</Trans>, link: REFERRALS_DOCS_SECTION_LINKS.claimingRewards },
+  { title: <Trans>Claiming rewards</Trans>, link: REFERRALS_DOCS_SECTION_LINKS.claimingRewards },
   { title: <Trans>Tiers</Trans>, link: REFERRALS_DOCS_SECTION_LINKS.tiers },
   {
-    title: <Trans>Transferring a Referral Code</Trans>,
+    title: <Trans>Transferring a referral code</Trans>,
     link: REFERRALS_DOCS_SECTION_LINKS.transferringReferralCode,
   },
 ];

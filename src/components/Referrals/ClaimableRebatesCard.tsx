@@ -33,14 +33,14 @@ export function ClaimableRebatesCard() {
     <>
       <div className="rounded-8 bg-slate-900 p-20">
         <div className="text-body-medium mb-8 font-medium text-typography-secondary">
-          <Trans>Claimable Rebates</Trans>
+          <Trans>Claimable rebates</Trans>
         </div>
         <div className="flex items-center justify-between gap-4">
           <div className="text-24 font-medium text-typography-primary numbers">
             {formatUsd(totalClaimableRewardsUsd)}
           </div>
           <Button variant="primary" onClick={() => setIsClaiming(true)} disabled={totalClaimableRewardsUsd <= 0n}>
-            <Trans>Claim Rebates</Trans>
+            <Trans>Claim rebates</Trans>
             <EarnIcon className="size-16" />
           </Button>
         </div>

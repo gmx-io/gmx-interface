@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { QRCodeSVG } from "qrcode.react";
 import { forwardRef, useMemo } from "react";
@@ -64,7 +64,7 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
           className="flex aspect-[460/240] w-full justify-between rounded-9 bg-contain bg-no-repeat p-20 pb-28 max-md:p-16"
           style={style}
         >
-          <img src={coinImg} alt="coin" className="z-1 absolute bottom-0 right-0 size-[100px] max-md:size-[70px]" />
+          <img src={coinImg} alt={t`Coin`} className="z-1 absolute bottom-0 right-0 size-[100px] max-md:size-[70px]" />
           <div className="z-3 relative flex flex-col justify-end gap-12 max-md:gap-4 max-smallMobile:gap-0">
             <div className="flex flex-col gap-4 max-md:gap-0">
               <div className="flex gap-8">
@@ -75,13 +75,14 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
                   )}
                 >
                   <VectorCircleIcon className={cx("size-14", { "rotate-180": !isLong })} />
-                  {isLong ? "Long" : "Short"} {formatAmount(leverage, 4, 2, true)}x
+                  {isLong ? t`Long` : t`Short`} {formatAmount(leverage, 4, 2, true)}
+                  <span className="ml-2">{t`x`}</span>
                 </div>
                 <div className="flex items-center gap-4 font-medium text-white">
                   <TokenIcon symbol={indexToken.symbol} displaySize={14} />
                   <span>
                     {getTokenVisualMultiplier(indexToken)}
-                    {indexToken.symbol} / USD
+                    {indexToken.symbol} {t`/ USD`}
                   </span>
                 </div>
               </div>
@@ -108,7 +109,9 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
             </div>
             <div className="flex gap-20 max-md:gap-10">
               <div className="flex flex-col gap-4">
-                <p className="text-11 font-medium uppercase tracking-[0.08em] text-[#A0A3C4]">Entry Price</p>
+                <p className="text-11 font-medium uppercase tracking-[0.08em] text-[#A0A3C4]">
+                  <Trans>Entry price</Trans>
+                </p>
                 <p className="whitespace-nowrap text-13 font-medium text-white">
                   {formatUsd(entryPrice, {
                     displayDecimals: priceDecimals,
@@ -117,7 +120,9 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
                 </p>
               </div>
               <div className="flex flex-col gap-4">
-                <p className="text-11 font-medium uppercase tracking-[0.08em] text-[#A0A3C4]">Mark Price</p>
+                <p className="text-11 font-medium uppercase tracking-[0.08em] text-[#A0A3C4]">
+                  <Trans>Mark price</Trans>
+                </p>
                 <p className="whitespace-nowrap text-13 font-medium text-white">
                   {formatUsd(markPrice, {
                     displayDecimals: priceDecimals,
@@ -129,7 +134,11 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
               {referralCodeOwnerKind && code && (
                 <div className="flex flex-col gap-4">
                   <p className="text-11 font-medium uppercase tracking-[0.08em] text-[#A0A3C4]">
-                    {referralCodeOwnerKind === "created" ? t`Referral Code` : t`Used Referral Code`}
+                    {referralCodeOwnerKind === "created" ? (
+                      <Trans>Referral code</Trans>
+                    ) : (
+                      <Trans>Used Referral Code</Trans>
+                    )}
                   </p>
                   <p className="whitespace-nowrap text-13 font-medium text-white">{code}</p>
                 </div>

@@ -76,8 +76,8 @@ export function TradingVolumeChartCard({ periodStart, periodEnd, timeRangeInfo }
   return (
     <>
       <OverviewCard
-        label={<Trans>Trading Volume</Trans>}
-        tooltipContent={<Trans>Total volume traded by your referred traders.</Trans>}
+        label={<Trans>Trading volume</Trans>}
+        tooltipContent={<Trans>Total trading volume from your referrals</Trans>}
         value={formatUsd(numberToBigint(124567.89, USD_DECIMALS))}
         valueChange={formatUsd(numberToBigint(3421.5, USD_DECIMALS), { displayPlus: true })}
         isValueChangePositive={true}
@@ -91,11 +91,7 @@ export function TradingVolumeChartCard({ periodStart, periodEnd, timeRangeInfo }
           </button>
         }
       >
-        <TradersVolumeChartContainer
-          periodStart={periodStart}
-          periodEnd={periodEnd}
-          timeRangeInfo={timeRangeInfo}
-        />
+        <TradersVolumeChartContainer periodStart={periodStart} periodEnd={periodEnd} timeRangeInfo={timeRangeInfo} />
       </OverviewCard>
       <ShareReferralCardModal
         isVisible={isShareModalVisible}
@@ -115,11 +111,7 @@ export function NumberOfTradesChartCard({ periodStart, periodEnd, timeRangeInfo 
       valueChange="+89"
       isValueChangePositive={true}
     >
-      <TradersVolumeChartContainer
-        periodStart={periodStart}
-        periodEnd={periodEnd}
-        timeRangeInfo={timeRangeInfo}
-      />
+      <TradersVolumeChartContainer periodStart={periodStart} periodEnd={periodEnd} timeRangeInfo={timeRangeInfo} />
     </OverviewCard>
   );
 }
@@ -127,13 +119,13 @@ export function NumberOfTradesChartCard({ periodStart, periodEnd, timeRangeInfo 
 export function TradersReferredChartCard({ periodStart, periodEnd, timeRangeInfo }: ChartCardProps) {
   return (
     <OverviewCard
-      label={<Trans>Traders Referred</Trans>}
-      tooltipContent={<Trans>Amount of traders you referred.</Trans>}
+      label={<Trans>Traders referred</Trans>}
+      tooltipContent={<Trans>Traders referred</Trans>}
       value="42"
       valueChange="+5"
       isValueChangePositive={true}
       topRightContent={
-        <div className="flex items-center gap-[13px] text-body-small font-medium text-typography-secondary">
+        <div className="text-body-small flex items-center gap-[13px] font-medium text-typography-secondary">
           <span className="flex items-center gap-[9px]">
             <span className="size-[6px] shrink-0 rounded-full bg-green-500" />
             <Trans>Gained</Trans>
@@ -145,11 +137,7 @@ export function TradersReferredChartCard({ periodStart, periodEnd, timeRangeInfo
         </div>
       }
     >
-      <TradersVolumeChartContainer
-        periodStart={periodStart}
-        periodEnd={periodEnd}
-        timeRangeInfo={timeRangeInfo}
-      />
+      <TradersVolumeChartContainer periodStart={periodStart} periodEnd={periodEnd} timeRangeInfo={timeRangeInfo} />
     </OverviewCard>
   );
 }
@@ -158,16 +146,12 @@ export function RebatesChartCard({ periodStart, periodEnd, timeRangeInfo }: Char
   return (
     <OverviewCard
       label={<Trans>Rebates</Trans>}
-      tooltipContent={<Trans>Rebates earned as an affiliate.</Trans>}
+      tooltipContent={<Trans>Your affiliate earnings from referrals</Trans>}
       value={formatUsd(numberToBigint(2847.32, USD_DECIMALS))}
       valueChange={formatUsd(numberToBigint(156.4, USD_DECIMALS), { displayPlus: true })}
       isValueChangePositive={true}
     >
-      <TradersVolumeChartContainer
-        periodStart={periodStart}
-        periodEnd={periodEnd}
-        timeRangeInfo={timeRangeInfo}
-      />
+      <TradersVolumeChartContainer periodStart={periodStart} periodEnd={periodEnd} timeRangeInfo={timeRangeInfo} />
     </OverviewCard>
   );
 }

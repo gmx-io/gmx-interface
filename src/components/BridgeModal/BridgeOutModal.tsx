@@ -236,15 +236,20 @@ export function BridgeOutModal({
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (!account || !bridgeOutChain || !bridgeOutParams) {
-      helperToast.error(t`Error submitting withdrawal`);
+    if (!account) {
+      helperToast.error(t`Wallet disconnected. Reconnect and retry`);
+      return;
+    }
+
+    if (!bridgeOutChain || !bridgeOutParams) {
+      helperToast.error(t`Missing parameters. Refresh and retry`);
       return;
     }
 
     const expressTxnParams = await expressTxnParamsAsyncResult.promise;
 
     if (expressTxnParams === undefined) {
-      helperToast.error(t`Missing required parameters`);
+      helperToast.error(t`Missing parameters. Refresh and retry`);
       return;
     }
 
@@ -263,7 +268,7 @@ export function BridgeOutModal({
         });
       });
     } catch (error) {
-      const toastParams = getTxnErrorToast(chainId, error, { defaultMessage: t`Error submitting withdrawal` });
+      const toastParams = getTxnErrorToast(chainId, error, { defaultMessage: t`Withdrawal failed` });
       helperToast.error(toastParams.errorContent, {
         autoClose: toastParams.autoCloseToast,
       });
@@ -298,7 +303,7 @@ export function BridgeOutModal({
       return {
         text: (
           <>
-            {t`Withdrawing`}
+            {t`Withdrawing...`}
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
@@ -359,7 +364,7 @@ export function BridgeOutModal({
       return {
         text: (
           <>
-            {t`Loading`}
+            {t`Loading...`}
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
@@ -470,10 +475,10 @@ export function BridgeOutModal({
           {buttonState.text}
         </Button>
 
-        <SyntheticsInfoRow label={t`Network Fee`} value={formatUsd(networkFeeUsd)} />
+        <SyntheticsInfoRow label={t`Network fee`} value={formatUsd(networkFeeUsd)} />
 
         <SyntheticsInfoRow
-          label={t`GMX Account Balance`}
+          label={t`GMX Account balance`}
           value={
             <ValueTransition
               from={

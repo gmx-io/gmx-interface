@@ -62,12 +62,12 @@ function getButtonSubmitState({
     };
   } else if (isValidating) {
     return {
-      text: t`Checking code`,
+      text: t`Checking code...`,
       disabled: true,
     };
   } else if (!referralCodeExists) {
     return {
-      text: t`Referral code does not exist`,
+      text: t`Code not found`,
       disabled: true,
     };
   } else if (isEdit) {
@@ -119,8 +119,8 @@ export function ReferralCodeFormSettlementChain({
     try {
       const tx = await setTraderReferralCodeByUser(chainId, referralCode, signer, {
         account,
-        successMsg: isEdit ? t`Referral code updated.` : t`Referral code added.`,
-        failMsg: isEdit ? t`Referral code updated failed.` : t`Adding referral code failed.`,
+        successMsg: isEdit ? t`Referral code updated` : t`Referral code added`,
+        failMsg: isEdit ? t`Referral code update failed` : t`Failed to add referral code`,
         setPendingTxns,
         pendingTxns,
       });

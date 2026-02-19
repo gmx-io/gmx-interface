@@ -411,7 +411,7 @@ export function usePositionEditorButtonState(operation: Operation): {
 
     return (
       <Trans>
-        Decrease the withdraw size to match the max.{" "}
+        Reduce withdrawal to match the max.{" "}
         <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
         <br />
         <br />
@@ -466,7 +466,7 @@ export function usePositionEditorButtonState(operation: Operation): {
     sendOrderSubmittedMetric(metricData.metricId);
 
     if (!batchParams || !tokensData || !signer || !provider) {
-      helperToast.error(t`Error submitting order`);
+      helperToast.error(t`Order failed`);
       sendTxnValidationErrorMetric(metricData.metricId);
       return;
     }
@@ -515,7 +515,7 @@ export function usePositionEditorButtonState(operation: Operation): {
     return {
       text: (
         <>
-          {t`Allow ${getToken(chainId, tokenToApprove.tokenAddress).symbol} to be spent`}{" "}
+          {t`Approve ${getToken(chainId, tokenToApprove.tokenAddress).symbol}`}{" "}
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
@@ -529,7 +529,7 @@ export function usePositionEditorButtonState(operation: Operation): {
     return {
       text: (
         <>
-          {t`Loading Express params`}
+          {t`Loading Express Trading params...`}
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
@@ -556,7 +556,7 @@ export function usePositionEditorButtonState(operation: Operation): {
   if (isAllowanceLoaded && tokensToApprove.length && selectedCollateralToken) {
     const tokenToApprove = tokensToApprove[0];
     return {
-      text: t`Allow ${getToken(chainId, tokenToApprove.tokenAddress).symbol} to be spent`,
+      text: t`Approve ${getToken(chainId, tokenToApprove.tokenAddress).symbol}`,
       tooltipContent: errorTooltipContent,
       disabled: false,
       ...commonParams,

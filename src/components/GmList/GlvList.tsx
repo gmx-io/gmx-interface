@@ -77,14 +77,9 @@ export function GlvList({
 
   return (
     <PoolsCard
-      title={t`GLV Vaults`}
+      title={t`GLV vaults`}
       className="shrink-0"
-      description={
-        <Trans>
-          Yield-optimized vaults supplying liquidity across multiple GMX
-          <br /> markets.
-        </Trans>
-      }
+      description={<Trans>Yield-optimized vaults supplying liquidity across multiple GMX markets</Trans>}
     >
       {isMobile ? (
         <div className="flex flex-col gap-4">
@@ -118,7 +113,7 @@ export function GlvList({
                       handle={t`SNAPSHOT`}
                       className="normal-case"
                       position="bottom-end"
-                      content={<Trans>Graph showing performance vs benchmark over the selected period.</Trans>}
+                      content={<Trans>Performance vs benchmark over selected period</Trans>}
                       variant="iconStroke"
                     />
                   </TableTh>
