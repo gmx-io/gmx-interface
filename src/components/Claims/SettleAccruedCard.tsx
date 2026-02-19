@@ -52,7 +52,8 @@ export function SettleAccruedCard({ onAccruedPositionPriceImpactRebateClick, onS
               Price impact rebates accrued. Claimable after 5 days.{" "}
               <ExternalLink newTab href={DOCS_LINKS.priceImpact}>
                 Read more
-              </ExternalLink>.
+              </ExternalLink>
+              .
             </Trans>
           ),
           onButtonClick: onAccruedPositionPriceImpactRebateClick,

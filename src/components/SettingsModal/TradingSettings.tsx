@@ -237,7 +237,8 @@ export function TradingSettings({
               </Trans>{" "}
               <ExternalLink href="https://docs.gmx.io/docs/trading/#slippage">
                 <Trans>Read more</Trans>
-              </ExternalLink>.
+              </ExternalLink>
+              .
             </div>
           }
           defaultValue={DEFAULT_SLIPPAGE_AMOUNT}
@@ -268,7 +269,8 @@ export function TradingSettings({
                 <Trans>Max network fee includes a buffer for gas spikes. Unused fees refunded.</Trans>{" "}
                 <ExternalLink href="https://docs.gmx.io/docs/trading/#network-fee">
                   <Trans>Read more</Trans>
-                </ExternalLink>.
+                </ExternalLink>
+                .
               </div>
             }
             defaultValue={30}
@@ -288,7 +290,8 @@ export function TradingSettings({
                 </Trans>{" "}
                 <ExternalLink href="https://docs.gmx.io/docs/trading/#auto-cancel-tp--sl">
                   <Trans>Read more</Trans>
-                </ExternalLink>.
+                </ExternalLink>
+                .
               </div>
             }
             handle={<Trans>Auto-cancel TP/SL</Trans>}

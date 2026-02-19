@@ -46,18 +46,8 @@ function TenderlySettings({ isSettingsVisible }: { isSettingsVisible: boolean })
       contentClassName="flex flex-col gap-16 pt-8"
       scrollIntoViewOnMobile
     >
-      <TenderlyInput
-        name={t`Account`}
-        placeholder={t`account`}
-        value={accountSlug}
-        onChange={setTenderlyAccountSlug}
-      />
-      <TenderlyInput
-        name={t`Project`}
-        placeholder={t`project`}
-        value={projectSlug}
-        onChange={setTenderlyProjectSlug}
-      />
+      <TenderlyInput name={t`Account`} placeholder={t`account`} value={accountSlug} onChange={setTenderlyAccountSlug} />
+      <TenderlyInput name={t`Project`} placeholder={t`project`} value={projectSlug} onChange={setTenderlyProjectSlug} />
       <TenderlyInput
         name={t`Access key`}
         placeholder={t`xxxx-xxxx-xxxx`}

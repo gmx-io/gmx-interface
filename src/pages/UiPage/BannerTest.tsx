@@ -31,10 +31,8 @@ export function BannerTest() {
         <Section title="Inline span + text">
           <AlertInfoCard>
             <Trans>
-              <span className="cursor-pointer font-medium text-blue-300 underline">
-                Switch to TBTC-TBTC pool
-              </span>{" "}
-              for potentially lower price impact
+              <span className="cursor-pointer font-medium text-blue-300 underline">Switch to TBTC-TBTC pool</span> for
+              potentially lower price impact
             </Trans>
           </AlertInfoCard>
         </Section>
@@ -48,9 +46,7 @@ export function BannerTest() {
           </ColorfulBanner>
 
           <ColorfulBanner color="yellow" icon={WarnIcon} className="text-body-small">
-            <Trans>
-              Settlement network changed to Arbitrum, but $12.50 remains in your Base GMX Account
-            </Trans>
+            <Trans>Settlement network changed to Arbitrum, but $12.50 remains in your Base GMX Account</Trans>
             <ColorfulButtonLink color="yellow" onClick={noop}>
               <Trans>Change to Base</Trans>
             </ColorfulButtonLink>
@@ -64,18 +60,14 @@ export function BannerTest() {
           </ColorfulBanner>
 
           <AlertInfoCard type="error" hideClose>
-            <Trans>
-              Insufficient liquidity in WETH-USDC pool. Select a different pool.
-            </Trans>
+            <Trans>Insufficient liquidity in WETH-USDC pool. Select a different pool.</Trans>
             <ColorfulButtonLink color="blue" onClick={noop}>
               <Trans>Switch to WBTC-USDC pool</Trans>
             </ColorfulButtonLink>
           </AlertInfoCard>
 
           <AlertInfoCard type="error" hideClose>
-            <Trans>
-              Insufficient liquidity in WETH-USDC pool. Choosing a different pool creates a new position.
-            </Trans>
+            <Trans>Insufficient liquidity in WETH-USDC pool. Choosing a different pool creates a new position.</Trans>
             <ColorfulButtonLink color="blue" onClick={noop}>
               <Trans>Switch to WBTC-USDC pool</Trans>
             </ColorfulButtonLink>
@@ -108,9 +100,7 @@ export function BannerTest() {
           <AlertInfoCard type="warning" hideClose>
             <Trans>
               Existing limit order in WETH-USDC pool.
-              <ColorfulButtonLink onClick={noop}>
-                Switch to WETH-USDC pool
-              </ColorfulButtonLink>
+              <ColorfulButtonLink onClick={noop}>Switch to WETH-USDC pool</ColorfulButtonLink>
             </Trans>
           </AlertInfoCard>
 
@@ -147,15 +137,13 @@ export function BannerTest() {
 
           <AlertInfoCard type="error" hideClose>
             <Trans>
-              GMX Account support on Avalanche is ending. New positions and additional deposits are
-              unavailable. Switch to Arbitrum as a settlement network.
+              GMX Account support on Avalanche is ending. New positions and additional deposits are unavailable. Switch
+              to Arbitrum as a settlement network.
             </Trans>
           </AlertInfoCard>
 
           <AlertInfoCard type="warning" hideClose>
-            <Trans>
-              Existing limit order in WETH-USDC pool but lacks liquidity for this order
-            </Trans>
+            <Trans>Existing limit order in WETH-USDC pool but lacks liquidity for this order</Trans>
           </AlertInfoCard>
         </Section>
 
@@ -201,8 +189,8 @@ export function BannerTest() {
           <ColorfulBanner color="blue" onClose={noop}>
             <span>
               <Trans>
-                Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero impact. Net
-                price impact applies only on closes (capped, usually at 0.5%).{" "}
+                Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero impact. Net price
+                impact applies only on closes (capped, usually at 0.5%).{" "}
                 <ExternalLink href="https://docs.gmx.io" newTab>
                   Read more
                 </ExternalLink>
@@ -213,9 +201,8 @@ export function BannerTest() {
 
           <AlertInfoCard type="warning" hideClose>
             <Trans>
-              Max 5 auto-cancel TP/SL orders allowed. Extra orders require manual cancellation. Existing orders
-              still close with the position.{" "}
-              <ExternalLink href="https://docs.gmx.io">Read more</ExternalLink>.
+              Max 5 auto-cancel TP/SL orders allowed. Extra orders require manual cancellation. Existing orders still
+              close with the position. <ExternalLink href="https://docs.gmx.io">Read more</ExternalLink>.
             </Trans>
           </AlertInfoCard>
         </Section>
@@ -238,8 +225,8 @@ export function BannerTest() {
         <Section title="Error messages">
           <ColorfulBanner color="red" className="text-red-100">
             <Trans>
-              GM bought successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry
-              the bridge or go to the ETH/USD pool to withdraw your GM tokens.
+              GM bought successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the
+              bridge or go to the ETH/USD pool to withdraw your GM tokens.
             </Trans>
           </ColorfulBanner>
 

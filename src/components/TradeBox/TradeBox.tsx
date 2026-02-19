@@ -918,12 +918,12 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         qa="trigger-price"
         maxDecimals={USD_DECIMALS}
       >
-          {markRatio && (
-            <>
-              <TokenWithIcon symbol={markRatio.smallestToken.symbol} displaySize={20} /> <Trans>per</Trans>{" "}
-              <TokenWithIcon symbol={markRatio.largestToken.symbol} displaySize={20} />
-            </>
-          )}
+        {markRatio && (
+          <>
+            <TokenWithIcon symbol={markRatio.smallestToken.symbol} displaySize={20} /> <Trans>per</Trans>{" "}
+            <TokenWithIcon symbol={markRatio.largestToken.symbol} displaySize={20} />
+          </>
+        )}
       </BuyInputSection>
     );
   }
@@ -1127,29 +1127,30 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             isGmxAccount={isFromTokenGmxAccount}
           />
           {twapRecommendation && (
-              <AlertInfoCard>
-                <span>
-                  <span
-                    className="cursor-pointer font-medium text-blue-300"
-                    onClick={() => onSelectTradeMode(TradeMode.Twap)}
-                  >
-                    <Trans>Use a TWAP order</Trans>
-                  </span>{" "}
-                  <Trans> for lower net price impact</Trans>
-                </span>
-              </AlertInfoCard>
-            )}
-            {isSwap && isLimit && !isTwap && !limitPriceWarningHidden && (
-              <AlertInfoCard onClose={() => setLimitPriceWarningHidden(true)}>
-                <Trans>
-                  Execution price may differ from limit price due to fees and price impact. You'll receive at least the
-                  minimum amount shown.{" "}
-                  <ExternalLink href="https://docs.gmx.io/docs/trading/#limit-orders" newTab>
-                    Read more
-                  </ExternalLink>.
-                </Trans>
-              </AlertInfoCard>
-            )}
+            <AlertInfoCard>
+              <span>
+                <span
+                  className="cursor-pointer font-medium text-blue-300"
+                  onClick={() => onSelectTradeMode(TradeMode.Twap)}
+                >
+                  <Trans>Use a TWAP order</Trans>
+                </span>{" "}
+                <Trans> for lower net price impact</Trans>
+              </span>
+            </AlertInfoCard>
+          )}
+          {isSwap && isLimit && !isTwap && !limitPriceWarningHidden && (
+            <AlertInfoCard onClose={() => setLimitPriceWarningHidden(true)}>
+              <Trans>
+                Execution price may differ from limit price due to fees and price impact. You'll receive at least the
+                minimum amount shown.{" "}
+                <ExternalLink href="https://docs.gmx.io/docs/trading/#limit-orders" newTab>
+                  Read more
+                </ExternalLink>
+                .
+              </Trans>
+            </AlertInfoCard>
+          )}
           <div>{button}</div>
         </div>
       </div>

@@ -41,8 +41,8 @@ export function HighPriceImpactOrFeesWarningCard({
         tooltipContent: formattedCap ? (
           <Trans>
             High potential net price impact (capped at {formattedCap} for this market) may significantly affect your
-            collateral. Consider reducing leverage.{" "}
-            <ExternalLink href={DOCS_LINKS.priceImpact}>Read more</ExternalLink>.
+            collateral. Consider reducing leverage. <ExternalLink href={DOCS_LINKS.priceImpact}>Read more</ExternalLink>
+            .
           </Trans>
         ) : undefined,
       });

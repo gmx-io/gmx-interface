@@ -102,7 +102,7 @@ function flattenColors(obj: ColorTree, prefix = ""): Array<{ name: string; light
 export default memo(function UiPage() {
   const { theme } = useTheme();
   return (
-        <AppPageLayout>
+    <AppPageLayout title={t`UI page`}>
       <main className="mx-auto max-w-prose p-20">
         <h1 className="text-34 font-medium">
           <Trans>UI page</Trans>
@@ -231,9 +231,9 @@ export default memo(function UiPage() {
             <br />
             <Trans>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus beatae atque eligendi sunt quasi et
-              porro nemo cumque nesciunt dolorum earum, minus fuga similique exercitationem ad. Eos omnis vitae
-              suscipit recusandae iste adipisci quasi rem odio, quidem qui modi impedit quibusdam culpa nemo distinctio
-              rerum tempora sequi facilis quaerat laudantium pariatur dicta ab. Pariatur mollitia magni consectetur
+              porro nemo cumque nesciunt dolorum earum, minus fuga similique exercitationem ad. Eos omnis vitae suscipit
+              recusandae iste adipisci quasi rem odio, quidem qui modi impedit quibusdam culpa nemo distinctio rerum
+              tempora sequi facilis quaerat laudantium pariatur dicta ab. Pariatur mollitia magni consectetur
               praesentium nulla nobis non voluptates laborum obcaecati enim unde, in tempore voluptas, expedita aut
               corrupti ipsum sequi consequatur iste corporis quasi! Officia nihil pariatur, asperiores molestiae quia
               earum tempora, in neque inventore quisquam dolore veniam minus beatae adipisci quod hic? Saepe, aperiam
@@ -245,9 +245,9 @@ export default memo(function UiPage() {
             <br />
             <Trans>
               Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus beatae atque eligendi sunt quasi et
-              porro nemo cumque nesciunt dolorum earum, minus fuga similique exercitationem ad. Eos omnis vitae
-              suscipit recusandae iste adipisci quasi rem odio, quidem qui modi impedit quibusdam culpa nemo distinctio
-              rerum tempora sequi facilis quaerat laudantium pariatur dicta ab. Pariatur mollitia magni consectetur
+              porro nemo cumque nesciunt dolorum earum, minus fuga similique exercitationem ad. Eos omnis vitae suscipit
+              recusandae iste adipisci quasi rem odio, quidem qui modi impedit quibusdam culpa nemo distinctio rerum
+              tempora sequi facilis quaerat laudantium pariatur dicta ab. Pariatur mollitia magni consectetur
               praesentium nulla nobis non voluptates laborum obcaecati enim unde, in tempore voluptas, expedita aut
               corrupti ipsum sequi consequatur iste corporis quasi! Officia nihil pariatur, asperiores molestiae quia
               earum tempora, in neque inventore quisquam dolore veniam minus beatae adipisci quod hic? Saepe, aperiam
@@ -264,9 +264,9 @@ export default memo(function UiPage() {
           content={
             <>
               <Trans>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam enim excepturi veritatis,
-                architecto ab qui odio repudiandae vero accusantium dicta, eius similique a aspernatur, maxime iste
-                ipsam facilis. Libero, et.
+                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam enim excepturi veritatis, architecto
+                ab qui odio repudiandae vero accusantium dicta, eius similique a aspernatur, maxime iste ipsam facilis.
+                Libero, et.
               </Trans>
               <br />
               <br />

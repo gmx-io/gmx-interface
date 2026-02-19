@@ -83,7 +83,7 @@ export default function CompleteAccountTransfer() {
 
   if (!isSenderAndReceiverValid) {
     return (
-      <AppPageLayout>
+      <AppPageLayout title={t`Complete account transfer`}>
         <PageTitle title={t`Complete account transfer`} />
 
         <ColorfulBanner color="red">
@@ -94,7 +94,7 @@ export default function CompleteAccountTransfer() {
   }
 
   return (
-    <AppPageLayout>
+    <AppPageLayout title={t`Complete Account Transfer`}>
       <Modal
         isVisible={isTransferSubmittedModalVisible}
         setIsVisible={setIsTransferSubmittedModalVisible}

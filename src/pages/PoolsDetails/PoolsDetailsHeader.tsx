@@ -82,9 +82,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
   }, []);
 
   const glvOrGm = isGlv ? t`GLV` : t`GM`;
-  const marketTitle = isGlv
-    ? glvOrGm
-    : t`GM: ${glvOrMarketInfo ? getMarketIndexName(glvOrMarketInfo) : ""}`;
+  const marketTitle = isGlv ? glvOrGm : t`GM: ${glvOrMarketInfo ? getMarketIndexName(glvOrMarketInfo) : ""}`;
   const marketPoolTitle = glvOrMarketInfo ? t`[${getMarketPoolName(glvOrMarketInfo)}]` : "";
 
   return (

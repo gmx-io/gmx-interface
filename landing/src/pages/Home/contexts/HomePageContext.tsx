@@ -60,10 +60,9 @@ export function HomePageContextProvider({ children }: { children: React.ReactNod
   return (
     <HomePageContext.Provider value={value}>
       {children}
-      {redirectModalTo &&
-        redirectChainId === RedirectChainIds.Solana && (
-          <SolanaRedirectModal onClose={handleCloseModal} onConfirm={handleSolanaConfirm} />
-        )}
+      {redirectModalTo && redirectChainId === RedirectChainIds.Solana && (
+        <SolanaRedirectModal onClose={handleCloseModal} onConfirm={handleSolanaConfirm} />
+      )}
     </HomePageContext.Provider>
   );
 }

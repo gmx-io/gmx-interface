@@ -18,7 +18,7 @@ import {
 } from "domain/referrals";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
-import { getPageTitle, isHashZero } from "lib/legacy";
+import { isHashZero } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { serializeBigIntsInObject } from "lib/numbers";
 import useRouteQuery from "lib/useRouteQuery";
@@ -39,7 +39,6 @@ import {
   isRecentReferralCodeNotExpired,
 } from "components/Referrals/referralsHelper";
 import TradersStats from "components/Referrals/TradersStats";
-import SEO from "components/Seo/SEO";
 import Tabs from "components/Tabs/Tabs";
 
 import "./Referrals.css";
@@ -153,39 +152,37 @@ function Referrals() {
   }
 
   return (
-    <AppPageLayout header={<ChainContentHeader />}>
-      <SEO title={getPageTitle(t`Referrals`)}>
-        <div className="default-container page-layout flex flex-col gap-20">
-          <PageTitle
-            isTop
-            title={t`Referrals`}
-            subtitle={
-              !isBotanix ? (
-                <Trans>
-                  Get fee discounts and earn rebates through the GMX referral program. Read the{" "}
-                  <ExternalLink href="https://docs.gmx.io/docs/referrals">referral program details</ExternalLink>.
-                </Trans>
-              ) : undefined
-            }
-            qa="referrals-page"
-          />
-          {isBotanix ? (
-            <BotanixBanner />
-          ) : (
-            <div>
-              <Tabs
-                type="inline-primary"
-                className="mb-16"
-                options={tabsOptions}
-                selectedValue={activeTab}
-                onChange={setActiveTab}
-              />
+    <AppPageLayout title={t`Referrals`} header={<ChainContentHeader />}>
+      <div className="default-container page-layout flex flex-col gap-20">
+        <PageTitle
+          isTop
+          title={t`Referrals`}
+          subtitle={
+            !isBotanix ? (
+              <Trans>
+                Get fee discounts and earn rebates through the GMX referral program. Read the{" "}
+                <ExternalLink href="https://docs.gmx.io/docs/referrals">referral program details</ExternalLink>.
+              </Trans>
+            ) : undefined
+          }
+          qa="referrals-page"
+        />
+        {isBotanix ? (
+          <BotanixBanner />
+        ) : (
+          <div>
+            <Tabs
+              type="inline-primary"
+              className="mb-16"
+              options={tabsOptions}
+              selectedValue={activeTab}
+              onChange={setActiveTab}
+            />
 
-              {activeTab === AFFILIATES ? renderAffiliatesTab() : renderTradersTab()}
-            </div>
-          )}
-        </div>
-      </SEO>
+            {activeTab === AFFILIATES ? renderAffiliatesTab() : renderTradersTab()}
+          </div>
+        )}
+      </div>
     </AppPageLayout>
   );
 }

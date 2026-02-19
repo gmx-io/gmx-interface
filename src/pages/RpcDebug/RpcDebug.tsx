@@ -283,7 +283,7 @@ export default function RpcDebug() {
   }, [chainId]);
 
   return (
-    <AppPageLayout>
+    <AppPageLayout title="RPC Debug">
       <div className="default-container">
         <Card title={t`RPC debug`}>
           <div className="App-card-content">

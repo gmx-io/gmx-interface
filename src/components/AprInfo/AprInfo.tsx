@@ -75,7 +75,8 @@ export function AprInfo({
               Bonus APR paid as {airdropTokenTitle} airdrops.{" "}
               <ExternalLink href={isTbtcIncentive ? TBTC_INFORMATION_URL : getIncentivesV2Url(chainId)}>
                 Read more
-              </ExternalLink>.
+              </ExternalLink>
+              .
             </Trans>
           </div>
         )}

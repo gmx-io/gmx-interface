@@ -46,11 +46,12 @@ export function ClaimableCard({ onClaimClick, style, onClaimablePositionPriceImp
         {
           buttonText: _(buttonText),
           tooltipText: (
-              <Trans>
-                Price impact rebates ready to claim.{" "}
+            <Trans>
+              Price impact rebates ready to claim.{" "}
               <ExternalLink newTab href={DOCS_LINKS.priceImpact}>
                 Read more
-              </ExternalLink>.
+              </ExternalLink>
+              .
             </Trans>
           ),
           onButtonClick: onClaimablePositionPriceImpactFeesClick,

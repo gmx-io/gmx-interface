@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { useEffect } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -38,7 +38,7 @@ const LeaderboardBreadcrumbs = () => {
 
 export function LeaderboardPage() {
   return (
-    <AppPageLayout header={<ChainContentHeader breadcrumbs={<LeaderboardBreadcrumbs />} />}>
+    <AppPageLayout title={t`Leaderboard`} header={<ChainContentHeader breadcrumbs={<LeaderboardBreadcrumbs />} />}>
       <div className="page-layout">
         <LeaderboardContainer />
       </div>

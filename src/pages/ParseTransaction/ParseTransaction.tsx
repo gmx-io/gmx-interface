@@ -246,7 +246,7 @@ export function ParseTransactionPage() {
   }
 
   return (
-    <AppPageLayout>
+    <AppPageLayout title="Parse Transaction">
       <div className="mx-auto max-w-[1280px] pt-24">
         <h1 className="text-body-large mb-24">
           <Trans>Transaction:</Trans>{" "}

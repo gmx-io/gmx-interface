@@ -444,6 +444,10 @@ msgstr "@ユーザー名"
 msgid "Failed to claim affiliate rewards"
 msgstr "アフィリエイト報酬の受け取りに失敗しました"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "decrease"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in any BTC/USD pool"
 msgstr "すべてのBTC/USDプールで流動性不足です"
@@ -1721,6 +1725,7 @@ msgstr "パッシブ運用"
 msgid "Telegram groups"
 msgstr "Telegramグループ"
 
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Complete account transfer"
@@ -3002,8 +3007,8 @@ msgid "Tenderly settings"
 msgstr "Tenderly設定"
 
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
-msgid "Price you'll receive when closing, adjusted for capped price impact"
-msgstr "決済時の受取価格です。上限付き価格への影響が反映されています"
+#~ msgid "Price you'll receive when closing, adjusted for capped price impact"
+#~ msgstr "決済時の受取価格です。上限付き価格への影響が反映されています"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
@@ -3123,9 +3128,17 @@ msgstr "リレヤーリクエストに失敗しました"
 msgid "No matches for selected filters"
 msgstr "選択したフィルターに一致するものがありません"
 
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Transfer Account"
+msgstr ""
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
 msgstr "GMXアカウント内のガス用の{wrappedNativeTokenSymbol}が不足しています。"
+
+#: src/pages/Actions/ActionsRouter.tsx
+msgid "GMX V1 Actions"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -3551,6 +3564,7 @@ msgstr "Express Trading はネットワークのネイティブトークン {0} 
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trade"
 msgstr "トレード"
 
@@ -3971,6 +3985,7 @@ msgstr "送信中..."
 msgid "Pools stats"
 msgstr "プール統計"
 
+#: src/pages/UiPage/UiPage.tsx
 #: src/pages/UiPage/UiPage.tsx
 msgid "UI page"
 msgstr "UIページ"
@@ -4784,6 +4799,7 @@ msgstr "本文 大"
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/Earn/EarnPageLayout.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Earn"
 msgstr "獲得"
@@ -5697,7 +5713,6 @@ msgid "Recommended"
 msgstr "おすすめ"
 
 #: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Decrease"
@@ -6591,6 +6606,10 @@ msgstr "選択期間におけるベンチマークとの比較パフォーマン
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dune Analytics dashboard"
 msgstr "Dune Analyticsダッシュボード"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "increase"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: max leverage exceeded. Edit to reduce size. <0>Read more</0>."
@@ -8110,6 +8129,7 @@ msgid "Order filled"
 msgstr "注文が約定しました"
 
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/Pools/Pools.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr "プール"
@@ -8223,6 +8243,7 @@ msgstr "セッション生成済"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+#: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Buy GMX"
@@ -8714,6 +8735,10 @@ msgstr "GMトークンは、単一のGMXマーケットの流動性プールに�
 msgid "Lend GLV or GM tokens, borrow against them, or use LP strategies to maximize yield"
 msgstr "GLVまたはGMトークンの貸出、それらを担保にした借入、またはLP戦略を活用して利回りを最大化"
 
+#: src/pages/Actions/ActionsRouter.tsx
+msgid "GMX V2 Actions"
+msgstr ""
+
 #: src/components/LeverageField/LeverageField.tsx
 msgid "Adjust leverage"
 msgstr "レバレッジを調整"
@@ -8978,7 +9003,6 @@ msgstr "入金済み："
 msgid "ACTION"
 msgstr "ACTION"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Increase"
@@ -9086,6 +9110,8 @@ msgstr "権利確定済みの受取可能GMX："
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
@@ -9230,6 +9256,10 @@ msgstr "ブリッジ入金に失敗しました"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Nonce:"
 msgstr "Nonce:"
+
+#: src/components/ExitPriceRow/ExitPriceRow.tsx
+msgid "Price you'll receive when closing, adjusted for capped price impact. <0>Read more</0>."
+msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "RESPONSE"
@@ -9543,6 +9573,7 @@ msgid "Settling..."
 msgstr "決済中..."
 
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
 msgstr "リーダーボード"
@@ -10526,6 +10557,10 @@ msgstr "GLVはどうやって利回りを稼ぎ、収益はどこで見られま
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
 msgstr "このチェーンにはまだ機会がありません"
+
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+msgid "Complete Account Transfer"
+msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"

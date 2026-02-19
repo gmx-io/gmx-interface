@@ -444,6 +444,10 @@ msgstr "@Benutzername"
 msgid "Failed to claim affiliate rewards"
 msgstr "Affiliate-Belohnungen konnten nicht beansprucht werden"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "decrease"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in any BTC/USD pool"
 msgstr "Unzureichende Liquidität in allen BTC/USD Pools"
@@ -1721,6 +1725,7 @@ msgstr "Passives Management"
 msgid "Telegram groups"
 msgstr "Telegram-Gruppen"
 
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Complete account transfer"
@@ -3002,8 +3007,8 @@ msgid "Tenderly settings"
 msgstr "Tenderly-Einstellungen"
 
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
-msgid "Price you'll receive when closing, adjusted for capped price impact"
-msgstr "Preis, den Sie beim Schließen erhalten, bereinigt um den begrenzten Preiseinfluss"
+#~ msgid "Price you'll receive when closing, adjusted for capped price impact"
+#~ msgstr "Preis, den Sie beim Schließen erhalten, bereinigt um den begrenzten Preiseinfluss"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
@@ -3123,9 +3128,17 @@ msgstr "Relayer-Anfrage fehlgeschlagen"
 msgid "No matches for selected filters"
 msgstr "Keine Treffer für die ausgewählten Filter"
 
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Transfer Account"
+msgstr ""
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
 msgstr "Unzureichendes {wrappedNativeTokenSymbol} für Gas in Ihrem GMX-Konto."
+
+#: src/pages/Actions/ActionsRouter.tsx
+msgid "GMX V1 Actions"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -3551,6 +3564,7 @@ msgstr "Express Trading ist mit dem nativen Token des Netzwerks {0} nicht verfü
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trade"
 msgstr "Handeln"
 
@@ -3971,6 +3985,7 @@ msgstr "Einreichen..."
 msgid "Pools stats"
 msgstr "Poolstatistiken"
 
+#: src/pages/UiPage/UiPage.tsx
 #: src/pages/UiPage/UiPage.tsx
 msgid "UI page"
 msgstr "UI-Seite"
@@ -4784,6 +4799,7 @@ msgstr "Body large"
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/Earn/EarnPageLayout.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Earn"
 msgstr "Verdienen"
@@ -5697,7 +5713,6 @@ msgid "Recommended"
 msgstr "Empfohlen"
 
 #: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Decrease"
@@ -6591,6 +6606,10 @@ msgstr "Performance im Vergleich zur Benchmark über den gewählten Zeitraum"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dune Analytics dashboard"
 msgstr "Dune Analytics Dashboard"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "increase"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: max leverage exceeded. Edit to reduce size. <0>Read more</0>."
@@ -8110,6 +8129,7 @@ msgid "Order filled"
 msgstr "Order ausgeführt"
 
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/Pools/Pools.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr "Pools"
@@ -8223,6 +8243,7 @@ msgstr "Sitzung generiert"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+#: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Buy GMX"
@@ -8714,6 +8735,10 @@ msgstr "GM Token repräsentieren Anteile an einem Liquiditätspool für einen ei
 msgid "Lend GLV or GM tokens, borrow against them, or use LP strategies to maximize yield"
 msgstr "Verleihen Sie GLV oder GM Token, nehmen Sie Kredite dagegen auf oder nutzen Sie LP-Strategien, um die Rendite zu maximieren"
 
+#: src/pages/Actions/ActionsRouter.tsx
+msgid "GMX V2 Actions"
+msgstr ""
+
 #: src/components/LeverageField/LeverageField.tsx
 msgid "Adjust leverage"
 msgstr "Hebel anpassen"
@@ -8978,7 +9003,6 @@ msgstr "Eingezahlt:"
 msgid "ACTION"
 msgstr "AKTION"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Increase"
@@ -9086,6 +9110,8 @@ msgstr "Unverfallbare beanspruchbare GMX:"
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
@@ -9230,6 +9256,10 @@ msgstr "Bridge-Eingang fehlgeschlagen"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Nonce:"
 msgstr "Nonce:"
+
+#: src/components/ExitPriceRow/ExitPriceRow.tsx
+msgid "Price you'll receive when closing, adjusted for capped price impact. <0>Read more</0>."
+msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "RESPONSE"
@@ -9543,6 +9573,7 @@ msgid "Settling..."
 msgstr "Abrechnung..."
 
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
 msgstr "Bestenliste"
@@ -10526,6 +10557,10 @@ msgstr "Wie verdient GLV Rendite, und wo sehe ich meine Einnahmen?"
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
 msgstr "Noch keine Möglichkeiten auf dieser Chain"
+
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+msgid "Complete Account Transfer"
+msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"

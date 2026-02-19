@@ -76,7 +76,7 @@ export default function EarnPageLayout({ children }: EarnPageLayoutProps) {
   }, [analyticsTab]);
 
   return (
-    <AppPageLayout header={<ChainContentHeader />}>
+    <AppPageLayout title={t`Earn`} header={<ChainContentHeader />}>
       <PageTitle title={t`Earn`} subtitle={t`Stake GMX and buy GLV or GM to earn rewards`} isTop />
 
       <div className="mt-12 flex grow flex-col gap-8">

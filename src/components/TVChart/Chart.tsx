@@ -110,7 +110,8 @@ function DepthChartContainer() {
               applies only on closes (capped, usually at 0.5%).{" "}
               <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
                 Read more
-              </ExternalLink>.
+              </ExternalLink>
+              .
             </Trans>
           </span>
         </ColorfulBanner>

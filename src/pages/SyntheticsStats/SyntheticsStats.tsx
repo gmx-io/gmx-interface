@@ -77,7 +77,7 @@ export function SyntheticsStats() {
   });
 
   return (
-    <AppPageLayout>
+    <AppPageLayout title="Synthetics Stats">
       <div className="SyntheticsStats mt-20">
         <div className="SyntheticsStats-table-wrap">
           <table>
@@ -336,7 +336,10 @@ export function SyntheticsStats() {
                               label={t`Swap impact amount ${market.shortToken.symbol}`}
                               value={formatAmount(swapImpactUsdShort, 30, 0, true)}
                             />
-                            <StatsTooltipRow label={t`Position impact amount`} value={formatAmount(positionImpactUsd, 30, 0, true)} />
+                            <StatsTooltipRow
+                              label={t`Position impact amount`}
+                              value={formatAmount(positionImpactUsd, 30, 0, true)}
+                            />
                           </>
                         )}
                       />

@@ -551,8 +551,8 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                   content={
                     <span>
                       <Trans>
-                        {formatGmxAmount(claimSum)} tokens converted to GMX from the{" "}
-                        {formatGmxAmount(vestedAmount)} esGMX deposited for vesting.
+                        {formatGmxAmount(claimSum)} tokens converted to GMX from the {formatGmxAmount(vestedAmount)}{" "}
+                        esGMX deposited for vesting.
                       </Trans>
                     </span>
                   }

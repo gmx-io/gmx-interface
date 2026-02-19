@@ -34,7 +34,8 @@ export function NextStoredImpactRows() {
                 Price impact is stored when you increase a position and applied when you decrease.{" "}
                 <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
                   Read more
-                </ExternalLink>.
+                </ExternalLink>
+                .
               </Trans>
             }
           />

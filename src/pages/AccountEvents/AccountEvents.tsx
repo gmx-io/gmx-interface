@@ -264,7 +264,7 @@ export function AccountEvents() {
 
   if (!account) {
     return (
-      <AppPageLayout>
+      <AppPageLayout title="Account Events">
         <div className="default-container page-layout">
           <PageTitle title={t`Account events`} className="p-12" />
           <div className="text-center text-red-500">
@@ -276,7 +276,7 @@ export function AccountEvents() {
   }
 
   return (
-    <AppPageLayout>
+    <AppPageLayout title="Account Events">
       <div className="default-container page-layout">
         <PageTitle
           title={t`Account events`}

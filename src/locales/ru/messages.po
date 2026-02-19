@@ -444,6 +444,10 @@ msgstr "@имяпользователя"
 msgid "Failed to claim affiliate rewards"
 msgstr "Не удалось получить партнёрские вознаграждения"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "decrease"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in any BTC/USD pool"
 msgstr "Недостаточная ликвидность во всех пулах BTC/USD"
@@ -1721,6 +1725,7 @@ msgstr "Пассивное управление"
 msgid "Telegram groups"
 msgstr "Группы в Telegram"
 
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Complete account transfer"
@@ -3002,8 +3007,8 @@ msgid "Tenderly settings"
 msgstr "Настройки Tenderly"
 
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
-msgid "Price you'll receive when closing, adjusted for capped price impact"
-msgstr "Цена, которую вы получите при закрытии, с учётом ограниченного влияния на цену"
+#~ msgid "Price you'll receive when closing, adjusted for capped price impact"
+#~ msgstr "Цена, которую вы получите при закрытии, с учётом ограниченного влияния на цену"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
@@ -3123,9 +3128,17 @@ msgstr "Запрос релеера не удался"
 msgid "No matches for selected filters"
 msgstr "Нет совпадений для выбранных фильтров"
 
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "Transfer Account"
+msgstr ""
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
 msgstr "Недостаточно {wrappedNativeTokenSymbol} для газа в вашем Счете GMX."
+
+#: src/pages/Actions/ActionsRouter.tsx
+msgid "GMX V1 Actions"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -3551,6 +3564,7 @@ msgstr "Express Trading недоступен с нативным токеном 
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trade"
 msgstr "Торговля"
 
@@ -3971,6 +3985,7 @@ msgstr "Отправка..."
 msgid "Pools stats"
 msgstr "Статистика пулов"
 
+#: src/pages/UiPage/UiPage.tsx
 #: src/pages/UiPage/UiPage.tsx
 msgid "UI page"
 msgstr "Страница UI"
@@ -4784,6 +4799,7 @@ msgstr "Крупный основной"
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/Earn/EarnPageLayout.tsx
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Earn"
 msgstr "Заработок"
@@ -5697,7 +5713,6 @@ msgid "Recommended"
 msgstr "Рекомендуемые"
 
 #: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Decrease"
@@ -6591,6 +6606,10 @@ msgstr "Результативность по сравнению с эталон
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dune Analytics dashboard"
 msgstr "Панель управления Dune Analytics"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "increase"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: max leverage exceeded. Edit to reduce size. <0>Read more</0>."
@@ -8110,6 +8129,7 @@ msgid "Order filled"
 msgstr "Ордер исполнен"
 
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/Pools/Pools.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Pools"
 msgstr "Пулы"
@@ -8223,6 +8243,7 @@ msgstr "Сессия сгенерирована"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+#: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Buy GMX"
@@ -8714,6 +8735,10 @@ msgstr "Токены GM представляют собой доли в пуле
 msgid "Lend GLV or GM tokens, borrow against them, or use LP strategies to maximize yield"
 msgstr "Предоставляйте GLV или GM токены в кредит, заимствуйте под их залог или используйте LP-стратегии для максимизации доходности"
 
+#: src/pages/Actions/ActionsRouter.tsx
+msgid "GMX V2 Actions"
+msgstr ""
+
 #: src/components/LeverageField/LeverageField.tsx
 msgid "Adjust leverage"
 msgstr "Настройка кредитного плеча"
@@ -8978,7 +9003,6 @@ msgstr "Внесено:"
 msgid "ACTION"
 msgstr "ДЕЙСТВИЕ"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Increase"
@@ -9086,6 +9110,8 @@ msgstr "GMX, доступные из вестинга:"
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
+#: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
@@ -9230,6 +9256,10 @@ msgstr "Ошибка входящего моста"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Nonce:"
 msgstr "Nonce:"
+
+#: src/components/ExitPriceRow/ExitPriceRow.tsx
+msgid "Price you'll receive when closing, adjusted for capped price impact. <0>Read more</0>."
+msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "RESPONSE"
@@ -9543,6 +9573,7 @@ msgid "Settling..."
 msgstr "Расчёт..."
 
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/LeaderboardPage/LeaderboardPage.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 msgid "Leaderboard"
 msgstr "Таблица лидеров"
@@ -10526,6 +10557,10 @@ msgstr "Как GLV зарабатывает доходность, и где я �
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
 msgstr "На этой сети пока нет возможностей"
+
+#: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
+msgid "Complete Account Transfer"
+msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"

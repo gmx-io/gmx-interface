@@ -61,7 +61,8 @@ export function PositionSellerPriceImpactFeesRow() {
                 Price impact from closing. Positive values benefit you.{" "}
                 <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
                   Read more
-                </ExternalLink>.
+                </ExternalLink>
+                .
               </Trans>
             }
           />{" "}

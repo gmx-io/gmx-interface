@@ -274,7 +274,8 @@ export function useTradeboxButtonState({
               )}{" "}
               <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">
                 <Trans>Read more</Trans>
-              </ExternalLink>.
+              </ExternalLink>
+              .
               <br />
               <br />
               <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
@@ -821,7 +822,8 @@ function NoSwapPathTooltipContent({
         <br />
         <ExternalLink href={get1InchSwapUrlFromAddresses(chainId, fromToken?.address, collateralToken?.address)}>
           Buy {collateralToken?.assetSymbol ?? collateralToken?.symbol} on 1inch
-        </ExternalLink>.
+        </ExternalLink>
+        .
       </Trans>
       {getBridgingOptionsForToken(collateralToken?.symbol) && (
         <>

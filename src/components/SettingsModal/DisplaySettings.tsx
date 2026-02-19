@@ -48,7 +48,8 @@ export function DisplaySettings() {
                     orders) in tooltips and execution details.{" "}
                     <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
                       Read more
-                    </ExternalLink>.
+                    </ExternalLink>
+                    .
                   </Trans>
                 </div>
               )}
