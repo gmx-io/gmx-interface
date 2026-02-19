@@ -53,9 +53,12 @@ msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "또는 <0>chainlist.org</0>를 통해 지갑의 RPC를 업데이트하십시오"
 
 #: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
 msgid "REFERRAL CODE"
 msgstr "추천 코드"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Total Discounts shows how much you've saved in fees since applying your referral code."
+msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} collateral</0>"
@@ -143,6 +146,10 @@ msgstr "BonsaiDAO"
 msgid "Approval signed"
 msgstr "승인 서명 완료"
 
+#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+msgid "Do I need to create codes on each network?"
+msgstr ""
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Multichain</0><1>MegaETH support</1><2>Just-in-time liquidity</2>"
 msgstr "<0>Multichain</0><1>MegaETH 지원</1><2>적시 유동성 공급</2>"
@@ -189,8 +196,7 @@ msgid "Price impact from closing. Positive values benefit you. <0>Read more</0>.
 msgstr "포지션 종료 시 가격 영향입니다. 양수 값은 유리합니다. <0>자세히 보기</0>."
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/ReferralsDistributionsTab.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Type"
@@ -257,13 +263,6 @@ msgstr "총 수익"
 msgid "May take a few minutes"
 msgstr "몇 분 정도 소요될 수 있습니다"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-msgid "V2 Arbitrum"
-msgstr "V2 Arbitrum"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Other"
 msgstr "기타"
@@ -290,10 +289,6 @@ msgstr "익스프레스 트레이딩 시도"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
 msgstr "포지션에 대한 가상 재고"
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "Dynamically allocates liquidity to highest-utilized markets, maximizing capital efficiency and yield"
-msgstr "가장 활발한 시장에 유동성을 동적으로 배분하여 자본 효율성과 수익률을 극대화합니다"
 
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
@@ -356,10 +351,23 @@ msgstr "받는 사람"
 msgid "Can I sell my GLV, and where?"
 msgstr "GLV를 판매할 수 있습니까? 어디서 판매합니까?"
 
+#: src/components/Referrals/CreateAffiliateCode/CreateAffiliateWizard.tsx
+msgid "Go to Affiliate Dashboard"
+msgstr ""
+
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 #: src/components/Earn/Discovery/EarnFaq.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/ReferralsAffiliatesTab.tsx
+#: src/components/Referrals/ReferralsTradersContent.tsx
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+#: src/components/Referrals/ReferralsTradersTab.tsx
 msgid "FAQ"
 msgstr "자주 묻는 질문"
+
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
+msgid "Approve {depositTokenSymbol}"
+msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit details"
@@ -401,6 +409,10 @@ msgstr "스왑 UI 수수료"
 msgid "No TP orders"
 msgstr "익절매 주문 없음"
 
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+msgid "Go to Trader Dashboard"
+msgstr ""
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "position size"
 msgstr "포지션 규모"
@@ -413,6 +425,10 @@ msgstr "출금 확인"
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Settled funding fees"
 msgstr "정산된 펀딩 수수료"
+
+#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+msgid "Rebates are paid in the collateral tokens used by your referrals. For example, if a referral trades with USDC collateral, your rebate portion will be in USDC."
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Returned collateral"
@@ -440,7 +456,7 @@ msgstr "최적 스왑 경로"
 msgid "@username"
 msgstr "@username"
 
-#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "Failed to claim affiliate rewards"
 msgstr "제휴 보상 수령에 실패했습니다"
 
@@ -465,10 +481,6 @@ msgstr "미실현 기본 PnL"
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "GM"
 msgstr "GM"
-
-#: src/components/Referrals/JoinReferralCode.tsx
-msgid "Sending referral code transaction"
-msgstr "추천 코드 트랜잭션 전송 중"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding exponent"
@@ -497,6 +509,10 @@ msgstr "언스테이킹 중..."
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From network"
 msgstr "출발 네트워크"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Which fees does my discount apply to?"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral factor for liquidation"
@@ -565,10 +581,6 @@ msgstr "지정가 가격이 마크 가격 미만"
 msgid "Long OI"
 msgstr "롱 OI"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "Traders referred on Avalanche"
-msgstr "Avalanche에서 추천된 트레이더"
-
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "sell"
 msgstr "판매"
@@ -600,6 +612,15 @@ msgstr "추가 기회"
 msgid "Positions"
 msgstr "포지션"
 
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/ReferralsTradersContent.tsx
+#: src/components/Referrals/ReferralsTradersContent.tsx
+#: src/components/Referrals/ReferralsTradersContent.tsx
+msgid "{0}d"
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Incentives, airdrops, and prizes will appear here"
 msgstr "인센티브, 에어드롭 및 상금이 여기에 표시됩니다"
@@ -620,8 +641,7 @@ msgstr "확장"
 msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution </2><3> Low size caps, but fun to do some degen gambling with </3>"
 msgstr "<0>처음으로 <1>@GMX_IO</1>를 시도했습니다. </0><2> 꽤 인상적인 경험 - 슬리피지 없음, 빠른 실행 </2><3> 낮은 크기 상한, 하지만 재미있는 디젠 도박에 좋음 </3>"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/ReferralsDistributionsTab.tsx
 msgid "V1 airdrop"
 msgstr "V1 에어드롭"
 
@@ -757,6 +777,10 @@ msgstr "다른 네트워크에서 {chainName}으로 {nativeTokenSymbol}을 전�
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Stats"
 msgstr "통계"
+
+#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+msgid "Can I create multiple referral codes?"
+msgstr ""
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Unknown error"
@@ -897,6 +921,10 @@ msgstr "{chainName}에서 {nativeTokenSymbol}을(를) 구매할 수 있는 옵�
 msgid "Fee values calculated when earned. Excludes incentives."
 msgstr "수수료 값은 수익 발생 시점에 계산됩니다. 인센티브는 제외됩니다."
 
+#: src/components/Referrals/AffiliatesStats.tsx
+msgid "Enter the referral code and save up to 10% on fees"
+msgstr ""
+
 #: src/pages/Pools/Pools.tsx
 msgid "TVL in vaults and pools"
 msgstr "금고 및 풀의 TVL"
@@ -992,6 +1020,10 @@ msgstr "{totalUsd} 수령"
 msgid "Insufficient {0} for gas on {networkName}<0/><1/><2>Buy or transfer {1} to {networkName}</2>"
 msgstr "{networkName}에서 Gas에 필요한 {0}이 부족합니다<0/><1/><2>{networkName}으로 {1}을(를) 구매하거나 전송하십시오</2>"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Referral discounts apply to opening and closing fees for leverage trading (perpetuals). Swap fees are not included. <0>View fee structure →</0>"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
 msgstr "Yield Yak 스왑"
@@ -1018,7 +1050,7 @@ msgstr "연간 매수 압력 (BB&D):"
 msgid "MARKET"
 msgstr "마켓"
 
-#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/ReferralsTradersContent.tsx
 msgid "Active referral code"
 msgstr "활성 추천 코드"
 
@@ -1065,6 +1097,10 @@ msgstr "파트너십 및 통합"
 msgid "Insufficient gas balance. Deposit more ETH."
 msgstr "Gas 잔액이 부족합니다. ETH를 추가로 입금하십시오."
 
+#: src/components/Referrals/ReferralsDocsCard.tsx
+msgid "Tiers"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (negative PI)"
 msgstr "스왑 수수료 계수 (음의 PI)"
@@ -1072,6 +1108,10 @@ msgstr "스왑 수수료 계수 (음의 PI)"
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claimable balance"
 msgstr "청구 가능 잔액"
+
+#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+msgid "Yes! You can create as many codes as you want. This is useful for tracking different campaigns, communities, or platforms separately."
+msgstr ""
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "xxxx-xxxx-xxxx"
@@ -1113,10 +1153,6 @@ msgstr "<0>TBTC-TBTC 풀로 전환</0>하면 가격 영향이 줄어들 수 있�
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Transaction:"
 msgstr "트랜잭션:"
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "Auto-compounds yield (no manual claiming needed, unlike GLP)"
-msgstr "수익률이 자동 복리됩니다 (GLP와 달리 수동 청구가 필요하지 않습니다)"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake {tokenSymbol}"
@@ -1195,8 +1231,6 @@ msgid "Creating referral code..."
 msgstr "추천 코드 생성 중..."
 
 #: src/components/Claims/ClaimsHistory.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -1261,8 +1295,8 @@ msgstr "{symbol} 판매 중..."
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum.<0/><1/>Slippage differs from price impact, which is based on open interest imbalances."
 msgstr "변동성으로 인한 예상 체결가와 실제 체결가의 차이입니다. 슬리피지가 최대 허용치를 초과하면 주문이 체결되지 않습니다.<0/><1/>슬리피지는 미결제약정 불균형에 기반한 가격 영향과는 다릅니다."
 
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormSettlementChain.tsx
 msgid "Adding..."
 msgstr "추가 중…"
 
@@ -1384,6 +1418,7 @@ msgstr "프로토콜"
 msgid "High network fees"
 msgstr "높은 네트워크 수수료"
 
+#: src/components/Referrals/AffiliatesStats.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Overview"
 msgstr "개요"
@@ -1406,6 +1441,10 @@ msgstr "지정가 실행"
 #: src/components/AprInfo/AprInfo.tsx
 msgid "Base APY"
 msgstr "기본 APY"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Referral codes are shared by affiliates (content creators, community members, and traders). You can:<0><1>Ask in the <2>GMX Discord</2> community</1><3>Check social media for GMX creators and traders</3></0>"
+msgstr ""
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour"
@@ -1431,6 +1470,10 @@ msgstr "Permit 전송"
 #: src/components/Footer/constants.tsx
 msgid "V1 interface"
 msgstr "V1 인터페이스"
+
+#: src/components/Referrals/ReferralsTradersContent.tsx
+msgid "Generate your own referral code and earn rebates whenever users trade with it. Rewards scale <0/> with your tier and the activity of your referred traders. Learn more"
+msgstr ""
 
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
@@ -1487,6 +1530,10 @@ msgstr "대상 네트워크"
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Deposit to GMX Account"
 msgstr "GMX 계정에 입금"
+
+#: src/components/Referrals/CreateAffiliateCode/CreateAffiliateWizard.tsx
+msgid "Your referral code {createdReferralCode} is now active. Share it with friends or your community."
+msgstr ""
 
 #: src/domain/synthetics/markets/createDepositTxn.ts
 #: src/domain/synthetics/markets/createGlvDepositTxn.ts
@@ -1600,10 +1647,7 @@ msgstr "추천인 주소:"
 
 #: src/components/MarketStats/MarketGraphs.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/ReferralsTradersContent.tsx
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -1648,6 +1692,10 @@ msgstr "실패"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "No fee"
 msgstr "수수료 없음"
+
+#: src/components/Referrals/AffiliatesStats.tsx
+msgid "Actions"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Swap liquidity may be insufficient when order triggers"
@@ -1761,8 +1809,13 @@ msgid "Key"
 msgstr "키"
 
 #: src/pages/Earn/EarnPageLayout.tsx
+#: src/pages/Referrals/Referrals.tsx
 msgid "Distributions"
 msgstr "분배"
+
+#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+msgid "Your code is immediately active! Share it with traders and you'll earn rebates when they execute trades."
+msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Max profit limit reached. Current: {pnlToPoolFactorText}, max: {maxPnlFactorText}"
@@ -1776,9 +1829,17 @@ msgstr "{glvOrGm} 출금"
 msgid "Receive voting power and participate in governance"
 msgstr "투표권 획득 및 거버넌스 참여"
 
+#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+msgid "You'll get a shareable link like: {PRODUCTION_HOST}/#/trade/?ref=YOURCODE. Share on social media, in your content, or directly with friends."
+msgstr ""
+
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "RECEIVE"
 msgstr "수령"
+
+#: src/components/Referrals/ShareReferralCardModal.tsx
+msgid "<0>Save up to 10%</0> on every<1/> trade on GMX."
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "VI POSITIONS"
@@ -1811,6 +1872,10 @@ msgstr "탈중앙화 거래 프로토콜"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Symbiosis"
 msgstr "Symbiosis"
+
+#: src/components/Referrals/ReferralsDocsCard.tsx
+msgid "How it works"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Sellable cap for pool GM: {0} [{1}] reached, as tokens are reserved by traders. Choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
@@ -1886,6 +1951,7 @@ msgstr "GLP 보상"
 msgid "Shift GM"
 msgstr "GM 이동"
 
+#: src/components/Referrals/ReferralsDistributionsTab.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Timestamp"
 msgstr "타임스탬프"
@@ -1897,6 +1963,10 @@ msgstr "실행을 위한 Gas가 부족합니다"
 #: src/components/TradeBox/SwapSlippageField.tsx
 msgid "Custom"
 msgstr "사용자 지정"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "You can still trade without a code, but you'll get no discounts when trading. So we recommend finding a code to save up to 10% on every trade!"
+msgstr ""
 
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer"
@@ -1940,6 +2010,10 @@ msgstr "차트 포지션"
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Claiming price impact rebates..."
 msgstr "가격 영향 리베이트를 청구하는 중…"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "What does \"Total Discounts\" mean?"
+msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityCard.tsx
 msgid "Explore"
@@ -1986,6 +2060,10 @@ msgstr "수취 토큰 유동성 부족"
 msgid "Size percentage required"
 msgstr "규모 비율을 입력해야 합니다"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "No problem! You can change your referral code at any time by entering a new one. Your new code will apply to all future trades."
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -2030,13 +2108,6 @@ msgstr "기본 허용 슬리피지"
 msgid "Max network fee buffer"
 msgstr "최대 네트워크 수수료 버퍼"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-msgid "V2 Avalanche Fuji"
-msgstr "V2 Avalanche Fuji"
-
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Shift order cancelled"
 msgstr "시프트 주문이 취소되었습니다"
@@ -2058,13 +2129,6 @@ msgstr "거래 가능 자산"
 msgid "Failed withdraw"
 msgstr "출금 실패"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-msgid "V2 Avalanche"
-msgstr "V2 Avalanche"
-
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Decrease"
 msgstr "마켓 감소 실패"
@@ -2076,6 +2140,10 @@ msgstr "DefiLlama"
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily and cumulative PnL"
 msgstr "일별 및 누적 PnL"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Discounts are applied automatically at the time of trade execution. You'll see the reduced fee amount in your trade confirmation before submitting."
+msgstr ""
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour"
@@ -2221,10 +2289,6 @@ msgstr "계정"
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Not enough data available yet"
 msgstr "아직 충분한 데이터가 없습니다"
-
-#: src/components/Referrals/TradersStats.tsx
-msgid "Your discount: {currentTierDiscount}% off trading fees."
-msgstr "할인율: 거래 수수료 {currentTierDiscount}% 할인."
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Position exceeds max allowed leverage. <0>Read more</0>."
@@ -2433,10 +2497,6 @@ msgstr "최대 레버리지 설정"
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr "{0, plural, one {주문 취소} other {# 주문 취소}}"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
-msgid "Refresh page"
-msgstr "페이지 새로고침"
-
 #: src/components/StatusNotification/GmStatusNotification.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
@@ -2482,8 +2542,8 @@ msgstr "GMX 기술 공지사항"
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormSettlementChain.tsx
 msgid "Checking code..."
 msgstr "코드 확인 중…"
 
@@ -2511,7 +2571,7 @@ msgstr "글로벌 네트워크"
 msgid "Try Express"
 msgstr "익스프레스 시도"
 
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 msgid "Changes may take a few minutes to appear"
 msgstr "변경 사항이 반영되기까지 몇 분이 소요될 수 있습니다"
 
@@ -2530,6 +2590,10 @@ msgstr "{symbol} 구매 중..."
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Show PnL amounts"
 msgstr "PnL 금액 표시"
+
+#: src/components/Referrals/ReferralsDistributionsTab.tsx
+msgid "Transaction hash"
+msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Est. time: ~5 min"
@@ -2691,6 +2755,10 @@ msgstr "CURRENT"
 msgid "Long positions"
 msgstr "롱 포지션"
 
+#: src/components/Referrals/CreateAffiliateCode/CreateAffiliateWizard.tsx
+msgid "Share your code"
+msgstr ""
+
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Buy fee"
 msgstr "구매 수수료"
@@ -2698,6 +2766,10 @@ msgstr "구매 수수료"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Claimable collateral reduction factor"
 msgstr "청구 가능 담보 감소 비율"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "What if I don't have a code?"
+msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
@@ -2724,6 +2796,10 @@ msgstr "스왑 경로 없음. {1}을 담보로 사용하려면 <0>{0}을 STBTC�
 msgid "Data freshness"
 msgstr "데이터 최신성"
 
+#: src/components/Referrals/CreateAffiliateCode/CreateAffiliateWizard.tsx
+msgid "Done!"
+msgstr ""
+
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High potential net price impact (capped at {formattedCap} for this market) may significantly affect your collateral. Consider reducing leverage. <0>Read more</0>."
 msgstr "높은 잠재적 순 가격 영향({formattedCap}으로 제한됨)이 담보에 큰 영향을 미칠 수 있습니다. 레버리지를 줄이는 것을 고려하십시오. <0>자세히 보기</0>."
@@ -2731,6 +2807,10 @@ msgstr "높은 잠재적 순 가격 영향({formattedCap}으로 제한됨)이 �
 #: src/components/TradeHistory/keys.ts
 msgid "Update Take-Profit"
 msgstr "익절매 업데이트"
+
+#: src/pages/Referrals/Referrals.tsx
+msgid "Get fee discounts and earn up to 20% commission through the GMX <0/> referral programs."
+msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Deposit from {sourceChainName} failed"
@@ -2745,6 +2825,7 @@ msgid "Projected yearly return vs. a Uniswap V2-style benchmark.<0/><1/>Note: Sh
 msgstr "Uniswap V2 스타일 벤치마크 대비 예상 연간 수익률입니다.<0/><1/>참고: 단기간의 데이터는 장기 성과를 반영하지 못할 수 있습니다.<2/><3/><4>Dune에서 상세 통계 보기</4>."
 
 #: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/CreateAffiliateCode/CreateAffiliateWizard.tsx
 msgid "Create referral code"
 msgstr "추천 코드 생성"
 
@@ -2881,8 +2962,8 @@ msgstr "소중한 의견을 남겨주십시오"
 msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
 msgstr "<0>입금</0> 또는 <1>구매</1> {wrappedNativeTokenSymbol}."
 
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormSettlementChain.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Update"
@@ -2968,6 +3049,10 @@ msgstr "테마"
 msgid "Max leverage exceeded"
 msgstr "최대 레버리지 초과"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Can I change my code later?"
+msgstr ""
+
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claiming funding fees failed"
 msgstr "펀딩 수수료 청구 실패"
@@ -3013,10 +3098,6 @@ msgstr "주문 비용을 지불하기 위한 자금이 부족합니다. 잔여: 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Tenderly settings"
 msgstr "Tenderly 설정"
-
-#: src/components/ExitPriceRow/ExitPriceRow.tsx
-#~ msgid "Price you'll receive when closing, adjusted for capped price impact"
-#~ msgstr "포지션 종료 시 수령하게 될 가격이며, 가격 영향 상한이 적용됩니다"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
@@ -3148,8 +3229,6 @@ msgstr "GMX 계정의 가스용 {wrappedNativeTokenSymbol}가 부족합니다."
 msgid "GMX V1 Actions"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
@@ -3388,6 +3467,10 @@ msgstr "수령 확인"
 msgid "Wallet-only"
 msgstr "지갑 전용"
 
+#: src/components/PositionShare/PositionShareCard.tsx
+msgid "Used Referral Code"
+msgstr ""
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing approval..."
 msgstr "승인 서명 중..."
@@ -3415,6 +3498,10 @@ msgstr "발동 시 이 주문의 일부에 대해 유동성이 부족할 수 있
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
 msgstr "GMX가 다른 영구 플랫폼보다 비용 효율적인 이유는 무엇인가요?"
+
+#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+msgid "How much can I earn as an affiliate?"
+msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -3455,10 +3542,6 @@ msgstr "주문 업데이트에 실패했습니다"
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net price impact / fees"
 msgstr "순 가격 영향 / 수수료"
-
-#: src/components/Referrals/TradersStats.tsx
-msgid "V2 discounts apply automatically and aren't shown here"
-msgstr "V2 할인은 자동으로 적용되며 여기에 표시되지 않습니다"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order canceled"
@@ -3593,6 +3676,10 @@ msgstr "거래 에어드롭"
 msgid "Found {0} events in the past {DAYS_BACK} days"
 msgstr "최근 {DAYS_BACK}일간 {0}개의 이벤트가 발견되었습니다"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "How is the discount applied to my trades?"
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} bridging to..."
 msgstr "{gmOrGlvLabel} 브리징 대상..."
@@ -3605,19 +3692,16 @@ msgstr "마감 기한:"
 msgid "Execution fee validation failed.<0/><1/>{suggestText}<2/><3/><4>View status</4>"
 msgstr "실행 수수료 검증에 실패했습니다.<0/><1/>{suggestText}<2/><3/><4>상태 보기</4>"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-msgid "V1 Arbitrum"
-msgstr "V1 Arbitrum"
-
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Avalanche"
 msgstr "Avalanche"
+
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+msgid "Your 15% discount is now active!"
+msgstr ""
 
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Fee APR"
@@ -3924,11 +4008,10 @@ msgid "Withdrawal from subaccount"
 msgstr "서브 계정에서 출금"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormSettlementChain.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeInput.tsx
 msgid "Enter referral code"
 msgstr "추천 코드 입력"
 
@@ -3975,6 +4058,10 @@ msgstr "언제든지 언스테이킹할 수 있나요?"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Max profit limit reached"
 msgstr "최대 수익 한도에 도달했습니다"
+
+#: src/components/Referrals/JoinReferralCode/ApplyReferralCodeButtonContent.tsx
+msgid "Apply referal code"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for swaps (long / short)"
@@ -4159,11 +4246,11 @@ msgstr "페어 트레이딩"
 msgid "<0>Delegate your undelegated {0} GMX DAO</0> voting power before staking."
 msgstr "<0>스테이킹 전에 위임되지 않은 {0} GMX DAO</0> 투표 권한을 위임하세요."
 
-#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/ReferralsDistributionsTab.tsx
 msgid "USD value may not be accurate because prices are missing for {0}."
 msgstr "{0}의 가격이 누락되어 USD 가치가 정확하지 않을 수 있습니다."
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/ReferralsDistributionsTab.tsx
 msgid "V1 esGMX"
 msgstr "V1 esGMX"
 
@@ -4199,8 +4286,6 @@ msgstr "스탑 마켓"
 msgid "Pending GMX approval..."
 msgstr "GMX 승인 대기 중..."
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "AMOUNT"
@@ -4267,6 +4352,11 @@ msgstr "최소 영향 풀 수량"
 msgid "Price impact too high"
 msgstr "가격 영향이 너무 큽니다"
 
+#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/ReferralsTradersContent.tsx
+msgid "{0}h"
+msgstr ""
+
 #: src/components/TVChartContainer/constants.ts
 msgid "SL - long dec."
 msgstr "SL - 롱 감소"
@@ -4274,11 +4364,6 @@ msgstr "SL - 롱 감소"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Enter withdrawal amount"
 msgstr "출금 금액 입력"
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-msgid "Rebates distribution history"
-msgstr "리베이트 배분 내역"
 
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active orders"
@@ -4321,8 +4406,8 @@ msgstr "총 경우의 수"
 msgid "Price impact is stored when you increase a position and applied when you decrease. <0>Read more</0>."
 msgstr "포지션을 증가시킬 때 가격 영향이 저장되며, 감소시킬 때 적용됩니다. <0>자세히 보기</0>."
 
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormSettlementChain.tsx
 msgid "Code not found"
 msgstr "코드를 찾을 수 없습니다"
 
@@ -4395,6 +4480,10 @@ msgstr "서명:"
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Processing claim..."
 msgstr "수령 처리 중..."
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Where do I get a referral code?"
+msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Failed to load order data:"
@@ -4588,6 +4677,10 @@ msgstr "GM 풀:"
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "가격 영향 없음. 이 규모에서<0/>숏 증가 또는 롱 감소 시<1/>단일 체결가가 적용됩니다."
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Immediately! Your very next trade will have the discount applied automatically."
+msgstr ""
+
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing limit order in {0} pool.<0>Switch to {1} pool</0>"
 msgstr "{0} 풀에 기존 지정가 주문이 있습니다.<0>{1} 풀로 전환</0>"
@@ -4642,6 +4735,10 @@ msgstr "수수료"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Vault capacity"
 msgstr "볼트 용량"
+
+#: src/components/Referrals/ReferralsDistributionsTab.tsx
+msgid "{0} Amount"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Open interest {directionLabel}"
@@ -4739,10 +4836,6 @@ msgstr "자금이 곧 GMX Account에 입금됩니다"
 msgid "Join an anonymous one-on-one chat to share your GMX liquidity provider experience"
 msgstr "GMX 유동성 공급자 경험을 공유할 익명 일대일 채팅에 참여하십시오"
 
-#: src/components/Referrals/TradersStats.tsx
-msgid "Code owner set a custom {currentTierDiscount}% discount instead of the standard {0}% for Tier {1}."
-msgstr "코드 소유자가 Tier {1}의 표준 {0}% 대신 맞춤 {currentTierDiscount}% 할인을 설정했습니다."
-
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawn from subaccount"
 msgstr "서브계정에서 출금 완료"
@@ -4755,29 +4848,7 @@ msgstr "알 수 없는 GM 구매 주문"
 msgid "Text with no size set"
 msgstr "크기 미설정 텍스트"
 
-#: src/components/BridgeModal/BridgeInModal.tsx
-#: src/components/BridgeModal/BridgeOutModal.tsx
-#: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
-#: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
-#: src/components/ClaimModal/ClaimModal.tsx
-#: src/components/ClaimModal/ClaimModal.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/components/OrderEditor/OrderEditor.tsx
-#: src/components/OrderList/OrderList.tsx
-#: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-#: src/components/TVChartContainer/DynamicLines.tsx
-#: src/context/SyntheticsStateContext/hooks/orderHooks.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
+#: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"
 msgstr "페이지가 만료되었습니다. 새로고침"
 
@@ -4841,8 +4912,8 @@ msgstr "토큰 기준 총 미결제약정 및 USD 기준 명목 가치"
 msgid "Distribution rate, {0}"
 msgstr "분배 비율, {0}"
 
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormSettlementChain.tsx
 msgid "Referral code added"
 msgstr "추천 코드가 추가되었습니다"
 
@@ -4977,6 +5048,10 @@ msgstr "더 탐색하기"
 msgid "Settings updated"
 msgstr "설정이 업데이트되었습니다"
 
+#: src/components/Referrals/ReferralsDistributionsTab.tsx
+msgid "Connect wallet to view distributions"
+msgstr ""
+
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimsHistory.tsx
@@ -5028,8 +5103,8 @@ msgstr "가져오기 URL:"
 msgid "Enter a price"
 msgstr "가격 입력"
 
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormSettlementChain.tsx
 msgid "Updating..."
 msgstr "업데이트 중…"
 
@@ -5181,6 +5256,10 @@ msgstr "자금 청구 실패"
 msgid "Shifting only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "시프팅은 {chainNames} 또는 {lastChainName}에서만 가능합니다. 계속하려면 네트워크를 전환하십시오."
 
+#: src/components/Referrals/ReferralsDocsCard.tsx
+msgid "Transferring a referral code"
+msgstr ""
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
 msgstr "스왑 경로 없음. <0>{0}을 {swapToTokenSymbol}로 스왑</0>, 그 다음 {1}로."
@@ -5194,7 +5273,7 @@ msgstr "NFT, 거래 및 교육 이니셔티브를 포함한 GMX 커뮤니티"
 msgid "Longs"
 msgstr "롱"
 
-#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "Affiliate rewards claimed"
 msgstr "제휴 보상이 수령되었습니다"
 
@@ -5226,6 +5305,10 @@ msgstr "{chainName}(으)로 {nativeTokenSymbol}을 전송할 수 있는 옵션�
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 msgstr "<0>알림은 Notifi에서 제공되며 GMX와 무관합니다. 구독 시 Notifi에 제공한 정보가 </0><1>개인정보 정책</1><2> 및 </2><3>이용 약관</3>에 따라 관리됨에 동의합니다."
 
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
+msgid "<0>GLV (GMX Liquidity Vaults) is GMX V2's improved version of GLP. It's a yield-optimizing crypto-index token that:</0><1><2>Earns fees from liquidity provision across GMX V2 markets</2><3>Dynamically allocates liquidity to highest-utilized markets, maximizing capital efficiency and yield</3><4>Auto-compounds yield (no manual claiming needed, unlike GLP)</4></1>"
+msgstr "<0>GLV (GMX Liquidity Vaults)는 GMX V2의 개선된 GLP 버전입니다. 수익률을 최적화하는 암호화폐 인덱스 토큰으로:</0><1><2>GMX V2 마켓 전반의 유동성 제공을 통해 수수료를 획득합니다</2><3>가장 활발한 시장에 유동성을 동적으로 배분하여 자본 효율성과 수익률을 극대화합니다</3><4>수익률이 자동 복리됩니다 (GLP와 달리 수동 청구가 필요하지 않습니다)</4></1>"
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
 msgstr "Avalanche Fuji에서는 수령이 불가합니다"
@@ -5252,6 +5335,10 @@ msgstr "토큰 선택"
 msgid "Main thread"
 msgstr "메인 스레드"
 
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+msgid "Trade smarter with up<0/> to 10% fee savings"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Difference"
 msgstr "차이"
@@ -5272,10 +5359,6 @@ msgstr "최적"
 msgid "{updateOrdersCount} TP/SL orders updated"
 msgstr "{updateOrdersCount}개의 TP/SL 주문이 업데이트되었습니다"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "Available to claim now"
-msgstr "현재 수령 가능"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Current reserved:"
 msgstr "현재 예약분:"
@@ -5294,7 +5377,7 @@ msgstr "마켓 선택"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/pages/Referrals/Referrals.tsx
+#: src/components/Referrals/ReferralsAffiliatesTab.tsx
 msgid "Referral code creation failed"
 msgstr "추천 코드 생성에 실패했습니다"
 
@@ -5302,7 +5385,7 @@ msgstr "추천 코드 생성에 실패했습니다"
 msgid "Withdraw fee"
 msgstr "출금 수수료"
 
-#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/ReferralsTradersContent.tsx
 msgid "Your fee savings from referral discounts"
 msgstr "추천 할인을 통한 수수료 절감액"
 
@@ -5368,6 +5451,10 @@ msgstr "WETH-USDC 풀에 기존 지정가 주문이 있으나 이 주문에 대�
 msgid "({0} of swap amount)"
 msgstr "({0} 스왑 금액 대비)"
 
+#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+msgid "How do I upgrade to a higher tier?"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} liquidity"
@@ -5397,6 +5484,10 @@ msgstr "정산 요청 전송 중..."
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Creator"
 msgstr "제작자"
+
+#: src/components/Referrals/ReferralsTradersContent.tsx
+msgid "<0>You're now receiving a {currentTierDiscount}% discount on your trades!</0><1>The reduced rate applies to every open and close fee.</1>"
+msgstr ""
 
 #: src/components/InterviewToast/InterviewToast.tsx
 #: src/components/InterviewToast/InterviewToast.tsx
@@ -5510,6 +5601,10 @@ msgstr "s:"
 msgid "RPC error.<0/><1/>Enable <2>Express Trading</2> in settings for better reliability"
 msgstr "RPC 오류.<0/><1/>안정성 향상을 위해 설정에서 <2>Express Trading</2>을 활성화하십시오"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Yes. If you trade on both Arbitrum and Avalanche, you'll need to apply a referral code on each network separately."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "UniDex Leverage"
 msgstr "UniDex 레버리지"
@@ -5598,7 +5693,10 @@ msgstr "포지션 선택"
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/CreateAffiliateCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/CreateAffiliateCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5612,6 +5710,10 @@ msgstr "반복적인 지갑 확인 없음"
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "{gasPaymentTokensText} 입금"
+
+#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
@@ -5721,13 +5823,13 @@ msgstr "선택한 필터와 일치하는 거래가 없습니다"
 msgid "Decreased"
 msgstr "감소 완료"
 
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "Earns fees from liquidity provision across GMX V2 markets"
-msgstr "GMX V2 마켓 전반의 유동성 제공을 통해 수수료를 획득합니다"
-
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Recommended"
 msgstr "추천"
+
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+msgid "Start trading"
+msgstr ""
 
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
@@ -5739,13 +5841,15 @@ msgstr "감소"
 msgid "Loading Express Trading..."
 msgstr "Express Trading 로딩 중..."
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "What if I entered the wrong code?"
+msgstr ""
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price below liquidation price"
 msgstr "조건가가 청산가 미만"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -5875,6 +5979,10 @@ msgstr "청산으로부터 <0/> 안전하게 보호"
 msgid "High net price impact"
 msgstr "높은 순 가격 영향"
 
+#: src/components/Referrals/ReferralsDocsCard.tsx
+msgid "Claiming rewards"
+msgstr ""
+
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Order not found. May have been canceled or already executed"
 msgstr "주문을 찾을 수 없습니다. 취소되었거나 이미 체결되었을 수 있습니다"
@@ -5891,6 +5999,10 @@ msgstr "구매 주문 취소됨"
 msgid "Support"
 msgstr "지원"
 
+#: src/components/Referrals/AffiliatesOverviewChartCards.tsx
+msgid "Lost"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Delegate"
 msgstr "위임"
@@ -5898,6 +6010,10 @@ msgstr "위임"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Harmonix"
 msgstr "Harmonix"
+
+#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+msgid "Tier upgrades are reviewed manually by the GMX team based on your weekly performance. If you meet the requirements consistently, you can apply for an upgrade via the <0>GMX Partner Account: Telegram</0>."
+msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Less info"
@@ -5976,13 +6092,6 @@ msgstr "담보 부족. 추가 담보가 필요합니다"
 msgid "Access key"
 msgstr "액세스 키"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-msgid "V1 Avalanche"
-msgstr "V1 Avalanche"
-
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 #: src/components/TPSLModal/AddTPSLModal.tsx
@@ -5997,6 +6106,10 @@ msgstr "GMX 거래에 대한 실시간 논평"
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Mixed exposure: Short {indexSymbol} + long {collateralSymbol} collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr "혼합 노출: 숏 {indexSymbol} + 롱 {collateralSymbol} 담보. 청산가는 {collateralSymbol} 가격에 따라 변동합니다."
+
+#: src/components/Referrals/ShareReferralCardModal.tsx
+msgid "Share your referral card"
+msgstr ""
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "You must be on this page to accept the transfer. <0>Copy link</0>"
@@ -6029,10 +6142,14 @@ msgstr "담보를 출금할 수 없습니다. 잔여 담보가 최소 기준 미
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "승인 중..."
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Yes! You can change your active referral code at any time. Simply enter a new code in the Traders tab and it will replace your current one. Your new discount will apply to all future trades. <0>Read more →</0>"
+msgstr ""
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"
@@ -6042,7 +6159,12 @@ msgstr "이용률"
 msgid "No liquidity available for increasing longs at<0/>this size. Max long size: {0}<1/><2/>No price impact. Single execution price for<3/>decreasing shorts at this size."
 msgstr "이 규모에서 롱 증가를 위한 유동성이 없습니다.<0/>최대 롱 규모: {0}<1/><2/>가격 영향 없음. 이 규모에서 숏 감소 시<3/>단일 체결가가 적용됩니다."
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Yes! You can change your referral code at any time. If you want to switch to a different code, just enter the new one in the Traders tab."
+msgstr ""
+
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/Referrals/Referrals.tsx
 #: src/pages/Referrals/Referrals.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
@@ -6111,7 +6233,7 @@ msgstr "TP 가격"
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6128,6 +6250,8 @@ msgstr "로딩 중..."
 msgid "Trade now"
 msgstr "지금 거래하기"
 
+#: src/components/Referrals/AffiliatesOverviewChartCards.tsx
+#: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Share"
 msgstr "공유"
@@ -6143,6 +6267,10 @@ msgstr "Multicall 이벤트"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execute"
 msgstr "실행"
+
+#: src/components/Referrals/AffiliatesOverviewChartCards.tsx
+msgid "Total number of trades executed by your referred traders."
+msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "No funding activity matching search"
@@ -6165,10 +6293,6 @@ msgstr "거래"
 msgid "Trading may be temporarily unavailable. Our team is working to resolve the issue."
 msgstr "거래가 일시적으로 불가할 수 있습니다. 팀에서 문제 해결을 위해 작업 중입니다."
 
-#: src/pages/Referrals/Referrals.tsx
-msgid "Get fee discounts and earn rebates through the GMX referral program. Read the <0>referral program details</0>."
-msgstr "GMX 추천 프로그램을 통해 수수료 할인 및 리베이트를 받으십시오. <0>추천 프로그램 세부사항</0>을 확인하십시오."
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6188,6 +6312,10 @@ msgstr "{updateOrdersCount}개 TP/SL 주문 업데이트 중..."
 msgid "Execution price didn't meet acceptable price"
 msgstr "체결가가 허용 가격을 충족하지 못했습니다"
 
+#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+msgid "In which tokens will I receive my rebates?"
+msgstr ""
+
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Position would be liquidatable"
 msgstr "포지션이 청산 대상이 됩니다"
@@ -6201,6 +6329,10 @@ msgstr "미디어 키트"
 msgid "$ 0.00"
 msgstr ""
 
+#: src/components/Referrals/ReferralsTradersContent.tsx
+msgid "Create your referral code and earn rebates from your referrals"
+msgstr ""
+
 #: src/components/GmList/GlvList.tsx
 msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets"
 msgstr "여러 GMX 마켓에 유동성을 공급하는 수익률 최적화 볼트"
@@ -6208,6 +6340,10 @@ msgstr "여러 GMX 마켓에 유동성을 공급하는 수익률 최적화 볼�
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Analytics"
 msgstr "Analytics"
+
+#: src/components/Referrals/ReferralsTradersContent.tsx
+msgid "Referral code copied to clipboard"
+msgstr ""
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
@@ -6318,6 +6454,10 @@ msgstr "출금 전송 완료"
 msgid "Because positions on Arbitrum can be funded from both your wallet and your GMX Account, we can't always determine where to return the collateral automatically.<0/><1/>Choose:<2/>• <3>Wallet</3> if you mostly trade from your personal wallet on Arbitrum<4/>• <5>GMX Account</5> if you plan to keep trading or reusing collateral on GMX.<6/><7/>You can change this preference anytime in Settings or when closing a position."
 msgstr ""
 
+#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+msgid "How do I share my code?"
+msgstr ""
+
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "1m 40s"
@@ -6326,6 +6466,10 @@ msgstr "1분 40초"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP autocompounding vaults"
 msgstr "GLP 자동 복리 볼트"
+
+#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+msgid "Yes. To earn rebates on both Arbitrum and Avalanche, create your code on both networks. You can use the same code name on each."
+msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "TP/SL orders exceed the position"
@@ -6399,6 +6543,7 @@ msgstr "경고: 조건가에서 유동성 부족으로 체결되지 않을 수 �
 msgid "Cancel TWAP Swap"
 msgstr "TWAP 스왑 취소"
 
+#: src/components/Referrals/ReferralsDistributionsTab.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Transaction"
 msgstr "거래"
@@ -6432,8 +6577,7 @@ msgstr "사용 가능 유동성"
 msgid "Current endpoints ({0})"
 msgstr "현재 엔드포인트 ({0})"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/ReferralsDistributionsTab.tsx
 msgid "No rebates distribution history yet"
 msgstr "아직 리베이트 배분 내역이 없습니다"
 
@@ -6449,7 +6593,7 @@ msgstr "선택 사항: 후속 질문을 위해 공유하십시오"
 msgid "Permit signed for {0}"
 msgstr "{0}에 대한 허가가 서명되었습니다"
 
-#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/ReferralsTradersContent.tsx
 msgid "Your trading volume with referral discount"
 msgstr "추천 할인이 적용된 거래량"
 
@@ -6565,6 +6709,10 @@ msgstr "LONG LIQ."
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Select an asset to deposit"
 msgstr "입금할 자산을 선택하십시오"
+
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
+msgstr ""
 
 #: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
@@ -6799,6 +6947,10 @@ msgstr "취소"
 msgid "Telegram group"
 msgstr "Telegram 그룹"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "How do I know it's working?"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Tradao"
 msgstr "Tradao"
@@ -6821,11 +6973,19 @@ msgstr "STATUS"
 msgid "<0>every</0> {seconds} seconds"
 msgstr "<0>매</0> {seconds} 초"
 
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+msgid "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
+msgstr ""
+
 #. Filter option for tokens favorites
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "All markets"
 msgstr "모든 마켓"
+
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+msgid "Hide assets with small value"
+msgstr ""
 
 #: src/components/GmList/GmListItem.tsx
 msgid "TVL (supply)"
@@ -6899,9 +7059,17 @@ msgstr "TP/SL 추가"
 msgid "Receiver has not staked GLP tokens before"
 msgstr "수신자가 이전에 GLP 토큰을 스테이킹한 적이 없습니다"
 
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+msgid "You can find referral code in <0>X</0> or on other social media platforms."
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min collateral: {0}"
 msgstr "최소 담보: {0}"
+
+#: src/components/Referrals/ClaimableRebatesCard.tsx
+msgid "Claim rebates"
+msgstr ""
 
 #: src/lib/tenderly.tsx
 #: src/lib/tenderly.tsx
@@ -6979,6 +7147,7 @@ msgid "Claiming rewards only available on {settlementChainName}. Switch networks
 msgstr "보상 수령은 {settlementChainName}에서만 가능합니다. 추천 보상을 수령하려면 네트워크를 전환하십시오."
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/Referrals/ReferralsTradersContent.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "Edit"
 msgstr "수정"
@@ -7022,6 +7191,10 @@ msgstr "링크 복사됨"
 msgid "Rewards funded by protocol fees used for GMX buybacks"
 msgstr "프로토콜 수수료로 자금 조달되는 GMX 바이백용 보상"
 
+#: src/components/Referrals/ReferralsDistributionsTab.tsx
+msgid "Connect your wallet to view your rebates distribution history."
+msgstr ""
+
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/OrderList/OrderList.tsx
@@ -7050,10 +7223,6 @@ msgstr "채팅 일정을 잡아드리겠습니다. 감사의 표시로 피드백
 #: src/pages/UiPage/BannerTest.tsx
 msgid "GM bought successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or go to the ETH/USD pool to withdraw your GM tokens."
 msgstr "GM 구매에 성공하였으나 Base로의 브릿지가 실패하였습니다. 자금은 GMX Account에 안전하게 보관되어 있습니다. 브릿지를 재시도하거나 ETH/USD 풀로 이동하여 GM 토큰을 출금하십시오."
-
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "USD value may be inaccurate. Price data unavailable for {0}."
-msgstr "USD 가치가 부정확할 수 있습니다. {0}에 대한 가격 데이터를 사용할 수 없습니다."
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
@@ -7167,7 +7336,11 @@ msgstr "Limit - 숏 증가"
 msgid "Proof of reserves"
 msgstr "지급준비금 증명"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+msgid "When will I start earning?"
+msgstr ""
+
+#: src/components/Referrals/ReferralsDistributionsTab.tsx
 msgid "V2 claim"
 msgstr "V2 수령"
 
@@ -7191,7 +7364,6 @@ msgstr "입금 금액 입력"
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
 msgid "Approve {0}"
 msgstr "{0} 승인"
 
@@ -7299,11 +7471,14 @@ msgstr "구매 주문이 체결되었습니다"
 msgid "No opportunities match your search"
 msgstr "검색 결과와 일치하는 기회가 없습니다"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "After applying a code, you'll see: your active referral code displayed on the Traders tab, the discount percentage you're receiving, and fee discounts reflected in your trade confirmations."
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Leaderboard for traders on GMX V2"
 msgstr "GMX V2 트레이더 리더보드"
 
-#: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "TOTAL REBATES"
 msgstr "총 리베이트"
@@ -7367,8 +7542,8 @@ msgstr "전송 시작"
 msgid "market"
 msgstr "시장"
 
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormSettlementChain.tsx
 msgid "Same as current active code"
 msgstr "현재 활성 코드와 동일"
 
@@ -7423,7 +7598,7 @@ msgstr "수수료"
 msgid "What could we improve?"
 msgstr "어떤 점을 개선할 수 있을까요?"
 
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormSettlementChain.tsx
 msgid "Referral code update failed"
 msgstr "추천 코드 업데이트에 실패했습니다"
 
@@ -7495,8 +7670,6 @@ msgid "TP price below limit price"
 msgstr "TP 가격이 지정가보다 낮음"
 
 #: src/components/NpsModal/NpsModal.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submit"
 msgstr "제출"
@@ -7529,8 +7702,12 @@ msgstr "더 많은 정보"
 msgid "Create"
 msgstr "생성"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/CreateAffiliateCode/CreateAffiliateWizard.tsx
+msgid "Your code is ready. Share it!"
+msgstr ""
+
+#: src/components/Referrals/AffiliatesOverviewChartCards.tsx
+#: src/components/Referrals/ReferralsTradersContent.tsx
 msgid "Trading volume"
 msgstr "거래량"
 
@@ -7556,10 +7733,13 @@ msgstr "전송 주소가 유효하지 않습니다. URL을 확인하십시오."
 msgid "Swap {fromAmount} for {toAmount}"
 msgstr "{fromAmount}을 {toAmount}으로 스왑"
 
+#: src/components/Referrals/AffiliatesStats.tsx
+msgid "Copy"
+msgstr ""
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/OrderItem/OrderItem.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/ReferralsDistributionsTab.tsx
 msgid "Amount"
 msgstr "수량"
 
@@ -7580,7 +7760,6 @@ msgstr "{increaseOrDecreaseText}: {0} {longShortText}"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "Claim"
 msgstr "수령"
@@ -7687,13 +7866,6 @@ msgstr "SL 가격이 지정가보다 높습니다"
 msgid "for {comment}"
 msgstr "{comment}에 대해"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-msgid "V1 Avalanche Fuji"
-msgstr "V1 Avalanche Fuji"
-
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Performance APY"
 msgstr "성과 APY"
@@ -7721,6 +7893,10 @@ msgstr "매수 요청을 실행하는 중…"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Buy GM failed"
 msgstr "GM 구매 실패"
+
+#: src/components/Referrals/AffiliatesStats.tsx
+msgid "Activate someone's referral code to receive a permanent discount on all opening and closing <0/> fees. Your savings apply automatically on every trade. <1>Learn more</1>"
+msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
@@ -7832,10 +8008,6 @@ msgstr "One-Click Trading 및 Express Trading으로 원활한 거래 경험을 �
 msgid "Top positions"
 msgstr "상위 포지션"
 
-#: src/components/Referrals/TradersStats.tsx
-msgid "V2 rebates apply automatically as fee discounts and aren't shown here"
-msgstr "V2 리베이트는 수수료 할인으로 자동 적용되며 여기에는 표시되지 않습니다"
-
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Buy GM with {0} up to the caps below"
 msgstr "아래 한도까지 {0}(으)로 GM을 구매할 수 있습니다"
@@ -7847,6 +8019,10 @@ msgstr "V2 거래"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
 msgstr "프로토콜 분석"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "What does \"Trading Volume\" mean?"
+msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show positions on chart"
@@ -7911,7 +8087,7 @@ msgid "Execute Stop Market"
 msgstr "스톱 마켓 실행"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/pages/Referrals/Referrals.tsx
+#: src/components/Referrals/ReferralsAffiliatesTab.tsx
 msgid "Referral code submitted"
 msgstr "추천 코드가 제출되었습니다"
 
@@ -7948,6 +8124,10 @@ msgstr "순 비율 / 1시간"
 #: src/components/SideNav/SideNav.tsx
 msgid "Select language"
 msgstr "언어 선택"
+
+#: src/components/Referrals/ShareReferralCardModal.tsx
+msgid "So far, my referrals have saved {totalDiscounts} total in discounts with my code: {referralCode}"
+msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Unknown value"
@@ -8064,10 +8244,6 @@ msgstr "청구할 보상 선택"
 msgid "Open fee"
 msgstr "개시 수수료"
 
-#: src/components/Referrals/TradersStats.tsx
-msgid "Edit referral code"
-msgstr "추천 코드 편집"
-
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell request sent"
 msgstr "판매 요청이 전송되었습니다"
@@ -8085,7 +8261,6 @@ msgstr "GMX에서 거래를 시작하려면 GMX Account에 자산을 입금하�
 msgid "Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021"
 msgstr "2021년부터 운영되는 깊은 유동성과 저비용의 탈중앙화 퍼미션리스 온체인 거래소"
 
-#: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "TOTAL VOLUME"
 msgstr "총 거래량"
@@ -8118,10 +8293,6 @@ msgstr "규모 증가 (TWAP)"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Refresh"
 msgstr "새로고침"
-
-#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
-msgid "Claiming affiliate rewards..."
-msgstr "제휴 보상 수령 중..."
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "deep liquid markets"
@@ -8176,10 +8347,6 @@ msgstr "볼트"
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Looping"
 msgstr "루핑"
-
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "Number of traders using your referral code"
-msgstr "추천 코드를 사용 중인 트레이더 수"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max reserved {directionLabel}"
@@ -8240,7 +8407,7 @@ msgstr "토큰 브릿지 및 스왑"
 msgid "Backing composition"
 msgstr "담보 구성"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/ClaimableRebatesCard.tsx
 msgid "Claimable rebates"
 msgstr "청구 가능한 리베이트"
 
@@ -8359,8 +8526,7 @@ msgstr "{0}에서 코드 사용 가능 여부를 확인할 수 없습니다. 코
 msgid "Stop Market - short inc."
 msgstr "Stop Market - 숏 증가"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/AffiliatesOverviewChartCards.tsx
 msgid "Rebates"
 msgstr "리베이트"
 
@@ -8407,8 +8573,7 @@ msgid "Claims"
 msgstr "청구"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/ReferralsDistributionsTab.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Date"
 msgstr "일자"
@@ -8479,6 +8644,7 @@ msgid "What is GLV exactly?"
 msgstr "GLV는 정확히 무엇인가요?"
 
 #: src/components/PositionShare/PositionShare.tsx
+#: src/components/Referrals/ShareReferralCardModal.tsx
 msgid "Download"
 msgstr "다운로드"
 
@@ -8505,6 +8671,10 @@ msgstr "<0>75.5% 다수 투표로 GMX는 멀티체인 확장을 위한 메시징
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Staking..."
 msgstr "스테이킹 중..."
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Do I need to do this on each network?"
+msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Buy request sent"
@@ -8543,6 +8713,10 @@ msgstr "외부 스왑 강제"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Onchain data error"
 msgstr "온체인 데이터 오류"
+
+#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+msgid "Show assets with small value ({0})"
+msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Fulfilling order request..."
@@ -8921,8 +9095,7 @@ msgstr "Avalanche LP 인센티브"
 msgid "Markets monitoring"
 msgstr "시장 모니터링"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/ReferralsDistributionsTab.tsx
 msgid "Distribution history for claimed rebates and airdrops"
 msgstr "수령된 리베이트 및 에어드롭 배분 내역"
 
@@ -8945,6 +9118,10 @@ msgstr "최대 풀 용량에 도달했습니다. 현재: {poolAmountText}, 최�
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} APR"
 msgstr "{nativeTokenSymbol} APR"
+
+#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+msgid "What happens after I create my code?"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Option-based vaults"
@@ -8992,10 +9169,6 @@ msgstr "레버리지 거래 터미널"
 msgid "Receiver address"
 msgstr "수신자 주소"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "Traders referred on Avalanche Fuji"
-msgstr "Avalanche Fuji에서 추천된 트레이더"
-
 #: src/components/Claims/SettleAccruedCard.tsx
 msgid "Positive funding fees accrued in positions, not yet claimable.<0/><1/>Available after changing position size, adjusting collateral, or clicking \"Settle\"."
 msgstr "포지션에 발생한 양(+)의 펀딩 수수료이며, 아직 수령할 수 없습니다.<0/><1/>포지션 크기 변경, 담보 조정, 또는 \"Settle\" 클릭 후 수령 가능합니다."
@@ -9042,6 +9215,10 @@ msgstr "거래 유형"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Increase"
 msgstr "증가"
+
+#: src/components/Referrals/AffiliatesStats.tsx
+msgid "Last Updated:"
+msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap price impact"
@@ -9319,10 +9496,6 @@ msgstr "모든 수익이 자동으로 재투자됩니다"
 msgid "Use the TP/SL button to set TP/SL orders."
 msgstr "TP/SL 버튼을 사용하여 TP/SL 주문을 설정하십시오."
 
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "Traders referred on Arbitrum"
-msgstr "Arbitrum에서 추천된 트레이더"
-
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GM?"
 msgstr "GM이란 무엇인가요?"
@@ -9356,10 +9529,6 @@ msgstr "GMX에서 알림 및 공지를 받아 거래, 청산 위험 등을 관�
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} bought successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or go to the {indexName} pool to withdraw your GM tokens."
 msgstr "{gmOrGlvLabel} 구매에 성공했으나 Base로의 브릿지가 실패했습니다. 자금은 GMX Account에 안전하게 보관되어 있습니다. 브릿지를 재시도하거나 {indexName} 풀로 이동하여 GM 토큰을 출금하십시오."
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "GLV (GMX Liquidity Vaults) is GMX V2's improved version of GLP. It's a yield-optimizing crypto-index token that:"
-msgstr "GLV (GMX Liquidity Vaults)는 GMX V2의 개선된 GLP 버전입니다. 수익률을 최적화하는 암호화폐 인덱스 토큰으로:"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "{0} tokens converted to GMX from the {1} esGMX deposited for vesting."
@@ -9438,6 +9607,10 @@ msgstr "이전 One-Click Trading 보조 계정에 0.0045 WETH가 남아 있습�
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Topics"
 msgstr "토픽"
+
+#: src/components/Referrals/AffiliatesOverviewChartCards.tsx
+msgid "Gained"
+msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."
@@ -9523,6 +9696,10 @@ msgstr "마켓 메이커 되기"
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "STIP.b LP incentives"
 msgstr "STIP.b LP 인센티브"
+
+#: src/components/Referrals/CreateAffiliateCode/CreateAffiliateWizard.tsx
+msgid "Share your referral code with friends or your community —<0/> every trade made with your code earns you $-rewards."
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Decrease"
@@ -9620,7 +9797,6 @@ msgid "Leaderboard"
 msgstr "리더보드"
 
 #: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
 msgid "TRADERS REFERRED"
 msgstr "TRADERS REFERRED"
 
@@ -9648,7 +9824,7 @@ msgstr "GMX Account 및 포지션을 위한 네트워크입니다. 잔액과 포
 msgid "Liquidity only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "유동성은 {chainNames} 또는 {lastChainName}에서만 이용 가능합니다. 계속하려면 네트워크를 전환하십시오."
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/AffiliatesOverviewChartCards.tsx
 msgid "Total trading volume from your referrals"
 msgstr "추천인의 총 거래량"
 
@@ -9716,7 +9892,7 @@ msgstr "추천 코드"
 msgid "Performance vs benchmark over selected period"
 msgstr "선택한 기간의 벤치마크 대비 성과"
 
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormSettlementChain.tsx
 msgid "Referral code updated"
 msgstr "추천 코드가 업데이트되었습니다"
 
@@ -9753,6 +9929,7 @@ msgstr "<0>Camelot</0>을 통해 Arbitrum에서 APE를 구매하십시오"
 msgid "Depositing..."
 msgstr "입금 중…"
 
+#: src/components/Referrals/ReferralsDistributionsTab.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
 msgstr "상태"
@@ -9778,10 +9955,6 @@ msgstr "최종 가격"
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Cancelling {orderText}..."
 msgstr "{orderText} 취소 중…"
-
-#: src/components/Referrals/TradersStats.tsx
-msgid "Tier {0}: {currentTierDiscount}% discount"
-msgstr "티어 {0}: {currentTierDiscount}% 할인"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
@@ -9827,7 +10000,7 @@ msgstr "기준가"
 msgid "Increase the max network fee buffer to {0} in {settingsLink}"
 msgstr "{settingsLink}에서 최대 네트워크 수수료 버퍼를 {0}(으)로 높이십시오"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/AffiliatesOverviewChartCards.tsx
 msgid "Your affiliate earnings from referrals"
 msgstr "추천을 통한 제휴 수익"
 
@@ -10041,6 +10214,10 @@ msgstr "{column}"
 msgid "No trackers registered"
 msgstr "등록된 트래커가 없습니다"
 
+#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+msgid "You earn rebates the moment a referred trader executes their first trade. Rebates appear in your \"Claimable Rebates\" balance immediately."
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Request withdraw"
 msgstr "출금 요청"
@@ -10156,7 +10333,8 @@ msgstr "빈도"
 msgid "Switch to WBTC-USDC pool"
 msgstr "WBTC-USDC 풀로 전환"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/AffiliatesOverviewChartCards.tsx
+#: src/components/Referrals/AffiliatesOverviewChartCards.tsx
 msgid "Traders referred"
 msgstr "추천된 트레이더"
 
@@ -10230,6 +10408,10 @@ msgstr "포지션 영향 풀 대출 금액"
 msgid "short"
 msgstr "숏"
 
+#: src/components/Referrals/ReferralsDistributionsTab.tsx
+msgid "Transaction hash copied to clipboard"
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "This year"
 msgstr "올해"
@@ -10302,6 +10484,10 @@ msgstr "이 규모에서 숏 포지션을 늘릴 수 있는 유동성이 없습�
 msgid "<0>Switch to {0} pool</0> for potentially lower price impact"
 msgstr "<0>{0} 풀로 전환</0>하면 가격 영향을 줄일 수 있습니다"
 
+#: src/components/Referrals/CreateAffiliateCode/CreateAffiliateWizard.tsx
+msgid "Earn up to 20% in<0/> rebates as an Affiliate"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 msgid "Buy on other platforms"
 msgstr "다른 플랫폼에서 구매"
@@ -10332,6 +10518,7 @@ msgid "No distributions to claim"
 msgstr "수령할 수 있는 배분 내역이 없습니다"
 
 #: src/components/PositionShare/PositionShare.tsx
+#: src/components/Referrals/ShareReferralCardModal.tsx
 msgid "Copy link"
 msgstr "링크 복사"
 
@@ -10358,9 +10545,13 @@ msgstr "자금 브릿징 중..."
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
 msgid "Network fee"
 msgstr "네트워크 수수료"
+
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Trading Volume is the total USD value of all your leveraged trades (opens + closes) since you applied your referral code."
+msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivated"
@@ -10383,7 +10574,7 @@ msgstr "GMX 스테이킹 보상:"
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee"
 msgstr "{longOrShort} 포지션은 시간당 {fundingRate}의 펀딩 수수료를 {fundingAction} 차입 수수료는 부과되지 않습니다"
 
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/JoinReferralCode/ReferralCodeFormSettlementChain.tsx
 msgid "Failed to add referral code"
 msgstr "추천 코드 추가에 실패했습니다"
 
@@ -10474,6 +10665,10 @@ msgstr "지정가"
 msgid "Execute TWAP Swap part"
 msgstr "TWAP 스왑 부분 체결"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "Can I change my referral code to a different one?"
+msgstr ""
+
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Reload the page or report the issue if the <0/> problem persists"
 msgstr "문제가 지속되면 페이지를 새로고침하거나 <0/> 문제를 보고해 주십시오"
@@ -10504,6 +10699,7 @@ msgid "Order may not execute at {priceText}: acceptable impact ({formattedOrderA
 msgstr "주문이 {priceText}에 체결되지 않을 수 있습니다: 허용 가격 영향({formattedOrderAcceptablePriceImpact})이 시장 수준({formattedCurrentAcceptablePriceImpact})보다 낮습니다. \"Edit\"을 클릭하십시오."
 
 #: src/components/PositionShare/PositionShare.tsx
+#: src/components/Referrals/ShareReferralCardModal.tsx
 msgid "Share on"
 msgstr "공유 위치"
 
@@ -10553,13 +10749,17 @@ msgstr "링크"
 msgid "Available to deposit"
 msgstr "입금 가능"
 
-#: src/components/Referrals/JoinReferralCode.tsx
-msgid "Enter a referral code to get fee discounts"
-msgstr "추천 코드를 입력하면 수수료 할인을 받으실 수 있습니다"
+#: src/components/Referrals/ReferralsTradersContent.tsx
+msgid "Your savings"
+msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "General performance details"
 msgstr "일반 성과 상세"
+
+#: src/components/Referrals/AffiliatesOverviewChartCards.tsx
+msgid "Number of Trades from Referrals"
+msgstr ""
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TPSLModal/AddTPSLModal.tsx
@@ -10652,6 +10852,10 @@ msgstr "잔액 부족"
 msgid "Collateral delta"
 msgstr "담보 변동"
 
+#: src/components/Referrals/ReferralsTradersFaq.tsx
+msgid "When does the discount start?"
+msgstr ""
+
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Insufficient collateral. Need {amountText} more collateral"
 msgstr "담보가 부족합니다. {amountText}만큼의 담보가 추가로 필요합니다"
@@ -10668,6 +10872,12 @@ msgstr "수수료 및 가격 영향으로 인해 체결가가 지정가와 다�
 msgid "Private"
 msgstr "비공개"
 
+#: src/components/Referrals/CreateAffiliateCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/CreateAffiliateCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+msgid "Learn more"
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Min. required collateral"
 msgstr "최소 필수 담보"
@@ -10676,6 +10886,8 @@ msgstr "최소 필수 담보"
 msgid "{orderText} update failed"
 msgstr "{orderText} 업데이트에 실패했습니다"
 
+#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+#: src/components/Referrals/ReferralsDistributionsTab.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Success"
 msgstr "성공"

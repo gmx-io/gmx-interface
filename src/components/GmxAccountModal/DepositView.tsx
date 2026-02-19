@@ -63,7 +63,7 @@ import {
 import { USD_DECIMALS, adjustForDecimals, bigintToNumber, formatAmountFree, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useThrottledAsync } from "lib/useThrottledAsync";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
@@ -884,7 +884,7 @@ export const DepositView = () => {
     };
   } else if (hasOutdatedUi) {
     buttonState = {
-      text: t`Page outdated. Refresh`,
+      text: getPageOutdatedError(),
       disabled: true,
     };
   } else if (isApproving) {

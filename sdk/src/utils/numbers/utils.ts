@@ -366,17 +366,7 @@ export function formatPercentageDisplay(percentage: number, hideThreshold?: numb
   return `${percentage}%`;
 }
 
-export function formatAmountHuman(
-  amount: BigNumberish | undefined,
-  tokenDecimals: number,
-  showDollar = false,
-  displayDecimals = 1
-) {
-  if (amount === undefined) {
-    return "...";
-  }
-
-  let n = Number(formatAmount(amount, tokenDecimals));
+export function formatNumberHuman(n: number, showDollar = false, displayDecimals = 1) {
   // For large numbers, we can neglect the decimals to avoid decimals in cases like 9999999.99999
   if (n >= 1_000_000) {
     n = Math.round(n);
@@ -398,6 +388,21 @@ export function formatAmountHuman(
   }
 
   return `${isNegative ? "-" : ""}${sign}${absN.toFixed(displayDecimals)}`;
+}
+
+export function formatAmountHuman(
+  amount: BigNumberish | undefined,
+  tokenDecimals: number,
+  showDollar = false,
+  displayDecimals = 1
+) {
+  if (amount === undefined) {
+    return "...";
+  }
+
+  let n = Number(formatAmount(amount, tokenDecimals));
+
+  return formatNumberHuman(n, showDollar, displayDecimals);
 }
 
 export function formatBalanceAmount(

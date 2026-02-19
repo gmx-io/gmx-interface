@@ -22,6 +22,7 @@ export default function RegularTab<V extends string | number>({
   type,
 }: Props<V>) {
   const isActive = option.value === selectedValue;
+  const isDisabled = option.disabled;
   const label = option.label || option.value;
   const optionClassName = isActive ? option.className?.active : option.className?.regular;
 
@@ -53,12 +54,15 @@ export default function RegularTab<V extends string | number>({
       <Button
         type="button"
         variant={isActive ? "primary" : "secondary"}
-        onClick={() => onOptionClick?.(option.value)}
+        onClick={() => !isDisabled && onOptionClick?.(option.value)}
         key={option.value}
         data-qa={qa ? `${qa}-tab-${option.value}` : undefined}
-        className={cx(optionClassName, regularOptionClassname)}
+        className={cx(optionClassName, regularOptionClassname, {
+          "cursor-not-allowed opacity-50": isDisabled,
+        })}
+        disabled={isDisabled}
       >
-        {option.icon && <span className="mt-2 scale-75 opacity-70">{option.icon}</span>}
+        {option.icon}
         {label}
       </Button>
     );
@@ -69,14 +73,16 @@ export default function RegularTab<V extends string | number>({
       <Button
         type="button"
         variant={isActive ? "secondary" : "ghost"}
-        onClick={() => onOptionClick?.(option.value)}
+        onClick={() => !isDisabled && onOptionClick?.(option.value)}
         key={option.value}
         data-qa={qa ? `${qa}-tab-${option.value}` : undefined}
         className={cx(optionClassName, regularOptionClassname, {
           "!text-typography-primary": isActive,
+          "cursor-not-allowed opacity-50": isDisabled,
         })}
+        disabled={isDisabled}
       >
-        {option.icon && <span className="mt-2 scale-75 opacity-70">{option.icon}</span>}
+        {option.icon}
         {label}
       </Button>
     );
@@ -91,15 +97,17 @@ export default function RegularTab<V extends string | number>({
         optionClassName,
         regularOptionClassname,
         {
-          "border-b-blue-300 text-typography-primary": isActive,
+          "border-b-blue-300 !text-typography-primary": isActive,
           "text-typography-secondary": !isActive,
+          "cursor-not-allowed opacity-50": isDisabled,
         }
       )}
-      onClick={() => onOptionClick?.(option.value)}
+      onClick={() => !isDisabled && onOptionClick?.(option.value)}
       key={option.value}
       data-qa={qa ? `${qa}-tab-${option.value}` : undefined}
+      disabled={isDisabled}
     >
-      {option.icon && <span className="mt-2 scale-75 opacity-70">{option.icon}</span>}
+      {option.icon}
       {label}
     </button>
   );

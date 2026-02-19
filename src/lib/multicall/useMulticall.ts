@@ -204,7 +204,7 @@ export function useMulticall<
   return {
     data,
     mutate: handleMutate,
-    isLoading: Boolean(swrFullKey) && !data,
+    isLoading: Boolean(swrFullKey) && data === undefined,
     error: error as Error | undefined,
   };
 }

@@ -35,7 +35,7 @@ import { convertToUsd, getMidPrice, getTokenData, TokenBalanceType } from "domai
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
 import { formatBalanceAmount, formatUsd, parseValue } from "sdk/utils/numbers";
@@ -294,7 +294,7 @@ export function BridgeOutModal({
   } => {
     if (hasOutdatedUi) {
       return {
-        text: t`Page outdated. Refresh`,
+        text: getPageOutdatedError(),
         disabled: true,
       };
     }

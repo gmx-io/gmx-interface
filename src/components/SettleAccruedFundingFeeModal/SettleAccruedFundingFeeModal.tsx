@@ -21,7 +21,7 @@ import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallba
 import { useChainId } from "lib/chains";
 import { formatDeltaUsd, formatUsd } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { buildDecreaseOrderPayload } from "sdk/utils/orderTransactions";
@@ -157,7 +157,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
   }, [isVisible]);
 
   const [buttonText, buttonDisabled] = useMemo(() => {
-    if (hasOutdatedUi) return [t`Page outdated. Refresh`, true];
+    if (hasOutdatedUi) return [getPageOutdatedError(), true];
     if (isSubmitting) return [t`Settling...`, true];
     if (positionKeys.length === 0) return [t`Select positions`, true];
     return [t`Settle`, false];

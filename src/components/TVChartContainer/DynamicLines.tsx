@@ -1,4 +1,3 @@
-import { t } from "@lingui/macro";
 import { useCallback } from "react";
 
 import { USD_DECIMALS } from "config/factors";
@@ -30,7 +29,7 @@ import { helperToast } from "lib/helperToast";
 import { calculateDisplayDecimals, formatAmount, numberToBigint } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
 import { getOrderKeys } from "sdk/utils/orders";
@@ -68,7 +67,7 @@ export function DynamicLines({
       if (!signer || !provider) return;
 
       if (hasOutdatedUi) {
-        helperToast.error(t`Page outdated. Refresh`);
+        helperToast.error(getPageOutdatedError());
         return;
       }
 

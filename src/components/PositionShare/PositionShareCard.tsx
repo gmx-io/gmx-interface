@@ -25,7 +25,8 @@ type Props = {
   markPrice: bigint;
   pnlAfterFeesPercentage: bigint;
   sharePositionBgImg: string | null;
-  userAffiliateCode: any;
+  referralCodeOwnerKind: "created" | "used" | null;
+  code: string | null;
   showPnlAmounts: boolean;
   pnlAfterFeesUsd: bigint;
 };
@@ -41,18 +42,20 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
       markPrice,
       pnlAfterFeesPercentage,
       sharePositionBgImg,
-      userAffiliateCode,
+      referralCodeOwnerKind,
+      code,
       showPnlAmounts,
       pnlAfterFeesUsd,
     },
     ref
   ) => {
     const { isMobile } = useBreakpoints();
-    const { code, success } = userAffiliateCode;
     const homeURL = getHomeUrl();
     const style = useMemo(() => ({ backgroundImage: `url(${sharePositionBgImg})` }), [sharePositionBgImg]);
 
     const priceDecimals = calculateDisplayDecimals(markPrice, undefined, indexToken.visualMultiplier);
+
+    const qrCodeUrl = code ? `${homeURL}/#/?ref=${code}` : `${homeURL}`;
 
     return (
       <div className="relative max-w-[460px] grow overflow-hidden rounded-9">
@@ -109,7 +112,7 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
                 <p className="text-11 font-medium uppercase tracking-[0.08em] text-[#A0A3C4]">
                   <Trans>Entry price</Trans>
                 </p>
-                <p className="text-13 font-medium text-white">
+                <p className="whitespace-nowrap text-13 font-medium text-white">
                   {formatUsd(entryPrice, {
                     displayDecimals: priceDecimals,
                     visualMultiplier: indexToken.visualMultiplier,
@@ -120,7 +123,7 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
                 <p className="text-11 font-medium uppercase tracking-[0.08em] text-[#A0A3C4]">
                   <Trans>Mark price</Trans>
                 </p>
-                <p className="text-13 font-medium text-white">
+                <p className="whitespace-nowrap text-13 font-medium text-white">
                   {formatUsd(markPrice, {
                     displayDecimals: priceDecimals,
                     visualMultiplier: indexToken.visualMultiplier,
@@ -128,25 +131,23 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
                 </p>
               </div>
 
-              <div className="flex flex-col gap-4">
-                <p className="text-11 font-medium uppercase tracking-[0.08em] text-[#A0A3C4]">
-                  <Trans>Referral code</Trans>
-                </p>
-                {success && code ? (
-                  <p className="text-13 font-medium text-white">{code}</p>
-                ) : (
-                  <p className="text-13 font-medium text-[#A0A3C4]">-</p>
-                )}
-              </div>
+              {referralCodeOwnerKind && code && (
+                <div className="flex flex-col gap-4">
+                  <p className="text-11 font-medium uppercase tracking-[0.08em] text-[#A0A3C4]">
+                    {referralCodeOwnerKind === "created" ? (
+                      <Trans>Referral code</Trans>
+                    ) : (
+                      <Trans>Used Referral Code</Trans>
+                    )}
+                  </p>
+                  <p className="whitespace-nowrap text-13 font-medium text-white">{code}</p>
+                </div>
+              )}
             </div>
           </div>
 
           <div className="flex flex-col items-end justify-between">
-            <QRCodeSVG
-              size={isMobile ? 40 : 52}
-              value={success && code ? `${homeURL}/#/?ref=${code}` : `${homeURL}`}
-              className="rounded-4 bg-white p-4"
-            />
+            <QRCodeSVG size={isMobile ? 40 : 52} value={qrCodeUrl} className="rounded-4 bg-white p-4" />
             <div className="size-80 max-md:size-50"></div>
           </div>
         </div>

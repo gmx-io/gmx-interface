@@ -14,7 +14,7 @@ import { callContract } from "lib/contracts";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount } from "lib/numbers";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
@@ -128,7 +128,7 @@ export function ClaimModal(props: {
 
   const primaryText = useMemo(() => {
     if (hasOutdatedUi) {
-      return t`Page outdated. Refresh`;
+      return getPageOutdatedError();
     }
     if (!hasAnyPendingRewards) {
       return <Trans>No rewards</Trans>;

@@ -31,7 +31,7 @@ import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
 import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 import { encodeReferralCode } from "sdk/utils/referrals";
@@ -136,7 +136,7 @@ function AffiliateCodeFormMultichain({
 }: {
   recentlyAddedCodes: ReferralCodeStats[] | undefined;
   setRecentlyAddedCodes: (code: ReferralCodeStats[]) => void;
-  callAfterSuccess?: () => void;
+  callAfterSuccess?: (code: string) => void;
   initialReferralCode?: string;
 }) {
   const { chainId, srcChainId } = useChainId();
@@ -261,7 +261,7 @@ function AffiliateCodeFormMultichain({
         setReferralCode("");
 
         if (callAfterSuccess) {
-          callAfterSuccess();
+          callAfterSuccess(trimmedCode);
         }
 
         helperToast.success(
@@ -292,7 +292,7 @@ function AffiliateCodeFormMultichain({
 
   if (hasOutdatedUi) {
     buttonState = {
-      text: t`Page outdated. Refresh`,
+      text: getPageOutdatedError(),
       disabled: true,
     };
   } else if (isApproving) {
@@ -475,7 +475,7 @@ export function AffiliateCodeForm({
   handleCreateReferralCode: (code: string) => Promise<unknown>;
   recentlyAddedCodes: ReferralCodeStats[] | undefined;
   setRecentlyAddedCodes: (code: ReferralCodeStats[]) => void;
-  callAfterSuccess?: () => void;
+  callAfterSuccess?: (code: string) => void;
   initialReferralCode?: string;
 }) {
   const [referralCode, setReferralCode] = useState(initialReferralCode?.trim() ?? "");
@@ -547,7 +547,7 @@ export function AffiliateCodeForm({
       const tx = (await handleCreateReferralCode(trimmedCode)) as TransactionResponse;
 
       if (callAfterSuccess) {
-        callAfterSuccess();
+        callAfterSuccess(trimmedCode);
       }
 
       const receipt = await tx.wait();
@@ -580,7 +580,7 @@ export function AffiliateCodeForm({
 
   if (hasOutdatedUi) {
     buttonState = {
-      text: t`Page outdated. Refresh`,
+      text: getPageOutdatedError(),
       disabled: true,
     };
   } else if (!debouncedReferralCode) {
@@ -664,7 +664,7 @@ export function AffiliateCodeFormContainer({
   handleCreateReferralCode: (code: string) => Promise<unknown>;
   recentlyAddedCodes: ReferralCodeStats[] | undefined;
   setRecentlyAddedCodes: (code: ReferralCodeStats[]) => void;
-  callAfterSuccess?: () => void;
+  callAfterSuccess?: (code: string) => void;
   initialReferralCode?: string;
 }) {
   const { srcChainId } = useChainId();

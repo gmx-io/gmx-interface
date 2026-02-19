@@ -2,7 +2,7 @@ import { UseWalletClientReturnType, useAccount, useConnectorClient, useWalletCli
 
 import { useEthersSigner } from "./useEthersSigner";
 
-export type WalletClient = UseWalletClientReturnType["data"];
+export type WalletClient = Exclude<UseWalletClientReturnType["data"], undefined>;
 
 export default function useWallet() {
   const { address, isConnected, status, connector, chainId } = useAccount();

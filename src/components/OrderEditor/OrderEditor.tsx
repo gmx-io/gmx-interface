@@ -88,7 +88,7 @@ import {
 } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendEditOrderEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
@@ -521,7 +521,7 @@ export function OrderEditor(p: Props) {
   const submitButtonState = useMemo(() => {
     if (hasOutdatedUi) {
       return {
-        text: t`Page outdated. Refresh`,
+        text: getPageOutdatedError(),
         disabled: true,
       };
     }

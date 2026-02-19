@@ -1,26 +1,22 @@
-import { t, Trans } from "@lingui/macro";
+import { msg, t, Trans } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, ContractsChainId, getExplorerUrl, SourceChainId } from "config/chains";
-import { isDevelopment } from "config/env";
-import { RebateDistributionType, ReferralCodeStats, TotalReferralsStats, useTiers } from "domain/referrals";
-import { useMarketsInfoRequest } from "domain/synthetics/markets";
-import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRewards";
-import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referrals/utils";
-import { useTokensDataRequest } from "domain/synthetics/tokens";
-import { formatDate } from "lib/dates";
+import { ReferralCodeStats, TotalReferralsStats, useTiers } from "domain/referrals";
+import { TimeRangeInfo, useTimeRange } from "domain/synthetics/markets/useTimeRange";
+import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
-import { shortenAddress } from "lib/legacy";
-import { formatBalanceAmount, formatBigUsd, formatUsd } from "lib/numbers";
+import { formatBigUsd } from "lib/numbers";
 import { userAnalytics } from "lib/userAnalytics";
 import { ReferralCreateCodeEvent, ReferralShareEvent } from "lib/userAnalytics/types";
-import useWallet from "lib/wallets/useWallet";
-import { getNativeToken, getToken, getTokenBySymbol } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { Faq } from "components/Faq/Faq";
+import ModalWithPortal from "components/Modal/ModalWithPortal";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
+import { PoolsTabs } from "components/PoolsTabs/PoolsTabs";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
@@ -29,14 +25,21 @@ import { TrackingLink } from "components/TrackingLink/TrackingLink";
 
 import CopyIcon from "img/ic_copy.svg?react";
 import PlusIcon from "img/ic_plus.svg?react";
-import WarnIcon from "img/ic_warn.svg?react";
-import TwitterIcon from "img/ic_x.svg?react";
+import ShareIcon from "img/ic_share.svg?react";
+import referralCodePromoFg from "img/referral_code_promo_fg.png";
 
 import { AffiliateCodeFormContainer } from "./AddAffiliateCode";
-import { ClaimAffiliatesModal } from "./ClaimAffiliatesModal/ClaimAffiliatesModal";
-import EmptyMessage from "./EmptyMessage";
+import {
+  NumberOfTradesChartCard,
+  RebatesChartCard,
+  TradersReferredChartCard,
+  TradingVolumeChartCard,
+} from "./AffiliatesOverviewChartCards";
+import { ClaimableRebatesCard } from "./ClaimableRebatesCard";
+import { PromoCard } from "./PromoCard";
 import { ReferralCodeWarnings } from "./ReferralCodeWarnings";
-import ReferralInfoCard from "./ReferralInfoCard";
+import { AFFILIATE_POST_WIZARD_FAQS } from "./ReferralsAffiliatesFaq";
+import { ReferralsDocsCard } from "./ReferralsDocsCard";
 import {
   getReferralCodeTradeUrl,
   getSharePercentage,
@@ -45,40 +48,64 @@ import {
   getUsdValue,
   isRecentReferralCodeNotExpired,
 } from "./referralsHelper";
-import usePagination, { DEFAULT_PAGE_SIZE } from "./usePagination";
-import Card from "../Card/Card";
-import Modal from "../Modal/Modal";
+import usePagination from "./usePagination";
 
 import "./AffiliatesStats.scss";
 
+const TIME_RANGE_INFOS: TimeRangeInfo[] = [
+  { slug: "24h", days: 1, title: msg`${24}h` },
+  { slug: "7d", days: 7, title: msg`${7}d` },
+  { slug: "30d", days: 30, title: msg`${30}d` },
+  { slug: "90d", days: 90, title: msg`${90}d` },
+  { slug: "total", days: 0, title: msg`Total` },
+];
+
+function PoolsTimeRangeFilter({
+  setTimeRange,
+  timeRange,
+  timeRangeInfos,
+}: {
+  setTimeRange: (timeRange: string) => void;
+  timeRange: string;
+  timeRangeInfos: TimeRangeInfo[];
+}) {
+  const { _ } = useLingui();
+  const tabs = useMemo(
+    () =>
+      timeRangeInfos.map((item) => ({
+        label: _(item.title),
+        value: item.slug,
+      })),
+    [_, timeRangeInfos]
+  );
+
+  return (
+    <PoolsTabs<string>
+      tabs={tabs}
+      selected={timeRange}
+      setSelected={setTimeRange}
+      itemClassName="bg-slate-700 text-typography-secondary"
+    />
+  );
+}
+
 type Props = {
-  chainId: ContractsChainId;
-  srcChainId: SourceChainId | undefined;
   referralsData?: TotalReferralsStats;
   handleCreateReferralCode: (code: string) => Promise<unknown>;
   setRecentlyAddedCodes: (codes: ReferralCodeStats[]) => void;
   recentlyAddedCodes?: ReferralCodeStats[];
 };
 
-function AffiliatesStats({
-  chainId,
-  srcChainId,
+export function AffiliatesStats({
   referralsData,
   recentlyAddedCodes,
   handleCreateReferralCode,
   setRecentlyAddedCodes,
 }: Props) {
-  const { signer } = useWallet();
+  const { chainId } = useChainId();
   const [isAddReferralCodeModalOpen, setIsAddReferralCodeModalOpen] = useState(false);
   const addNewModalRef = useRef<HTMLDivElement>(null);
 
-  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
-  const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
-  const { affiliateRewardsData } = useAffiliateRewards(chainId);
-
-  const esGmxAddress = getTokenBySymbol(chainId, "esGMX").address;
-
-  const [isClaiming, setIsClaiming] = useState(false);
   const [, copyToClipboard] = useCopyToClipboard();
   const open = useCallback(() => {
     userAnalytics.pushEvent<ReferralCreateCodeEvent>({
@@ -91,24 +118,10 @@ function AffiliatesStats({
   }, []);
   const close = useCallback(() => setIsAddReferralCodeModalOpen(false), []);
 
-  const { total, chains } = referralsData || {};
-  const {
-    [chainId]: currentReferralsData,
-    [ARBITRUM]: arbitrumData,
-    [AVALANCHE]: avalancheData,
-    [AVALANCHE_FUJI]: fujiData,
-  } = chains || {};
+  const { chains } = referralsData || {};
+  const { [chainId]: currentReferralsData } = chains || {};
 
-  const { affiliateDistributions, affiliateTierInfo, affiliateReferralCodesStats } = currentReferralsData || {};
-
-  const {
-    currentPage: currentRebatePage,
-    getCurrentData: getCurrentRebateData,
-    setCurrentPage: setCurrentRebatePage,
-    pageCount: rebatePageCount,
-  } = usePagination("Rebates", affiliateDistributions);
-
-  const currentRebateData = getCurrentRebateData();
+  const { affiliateTierInfo, affiliateReferralCodesStats } = currentReferralsData || {};
   const allReferralCodes = affiliateReferralCodesStats?.map((c) => c.referralCode.trim());
   const finalAffiliatesTotalStats = useMemo(
     () =>
@@ -131,16 +144,8 @@ function AffiliatesStats({
   const currentAffiliatesData = getCurrentAffiliatesData();
   const tierId = affiliateTierInfo?.tierId;
   const discountShare = affiliateTierInfo?.discountShare;
-  const { totalRebate } = useTiers(signer, chainId, tierId);
+  const { totalRebate } = useTiers(chainId, tierId);
   const currentRebatePercentage = getSharePercentage(tierId, BigInt(discountShare ?? 0n), totalRebate, true);
-
-  const totalClaimableRewardsUsd = useMemo(() => {
-    if (!affiliateRewardsData || !marketsInfoData) {
-      return 0n;
-    }
-
-    return getTotalClaimableAffiliateRewardsUsd(marketsInfoData, affiliateRewardsData);
-  }, [affiliateRewardsData, marketsInfoData]);
 
   const trackCopyCode = useCallback(() => {
     userAnalytics.pushEvent<ReferralShareEvent>(
@@ -166,454 +171,218 @@ function AffiliatesStats({
     );
   }, []);
 
-  return (
+  const { timeRangeInfo, periodStart, periodEnd, setTimeRange } = useTimeRange(
+    "referrals-affiliates-time-range",
+    TIME_RANGE_INFOS
+  );
+
+  const mainContent = (
     <div className="flex flex-col gap-8">
-      <div className="grid grid-cols-4 max-lg:grid-cols-1">
-        <ReferralInfoCard
-          value={String(currentReferralsData?.affiliateTotalStats.registeredReferralsCount || 0)}
-          label={t`Traders referred`}
-          labelTooltipText={t`Number of traders using your referral code`}
-          tooltipContent={
-            <>
-              <StatsTooltipRow
-                label={t`Traders referred on Arbitrum`}
-                value={arbitrumData.affiliateTotalStats.registeredReferralsCount}
-                showDollar={false}
-              />
-              <StatsTooltipRow
-                label={t`Traders referred on Avalanche`}
-                value={avalancheData.affiliateTotalStats.registeredReferralsCount}
-                showDollar={false}
-              />
-              {isDevelopment() && (
-                <StatsTooltipRow
-                  label={t`Traders referred on Avalanche Fuji`}
-                  value={fujiData.affiliateTotalStats.registeredReferralsCount}
-                  showDollar={false}
-                />
-              )}
-              <div className="Tooltip-divider" />
-              <StatsTooltipRow label={t`Total`} value={total?.registeredReferralsCount} showDollar={false} />
-            </>
-          }
-        />
-        <ReferralInfoCard
-          value={formatBigUsd(currentReferralsData?.affiliateTotalStats?.volume)}
-          label={t`Trading volume`}
-          labelTooltipText={t`Total trading volume from your referrals`}
-          tooltipContent={
-            <>
-              <StatsTooltipRow
-                label={t`V1 Arbitrum`}
-                value={getUsdValue(arbitrumData?.affiliateTotalStats.v1Data.volume)}
-                valueClassName="numbers"
-              />
-              <StatsTooltipRow
-                label={t`V1 Avalanche`}
-                value={getUsdValue(avalancheData?.affiliateTotalStats.v1Data.volume)}
-                valueClassName="numbers"
-              />
-              {isDevelopment() && (
-                <StatsTooltipRow
-                  label={t`V1 Avalanche Fuji`}
-                  value={getUsdValue(fujiData?.affiliateTotalStats.v1Data.volume)}
-                  valueClassName="numbers"
-                />
-              )}
-              <StatsTooltipRow
-                label={t`V2 Arbitrum`}
-                value={getUsdValue(arbitrumData?.affiliateTotalStats.v2Data.volume)}
-                valueClassName="numbers"
-              />
-              <StatsTooltipRow
-                label={t`V2 Avalanche`}
-                value={getUsdValue(avalancheData?.affiliateTotalStats.v2Data.volume)}
-                valueClassName="numbers"
-              />
-              {isDevelopment() && (
-                <StatsTooltipRow
-                  label={t`V2 Avalanche Fuji`}
-                  value={getUsdValue(fujiData?.affiliateTotalStats.v2Data.volume)}
-                  valueClassName="numbers"
-                />
-              )}
-              <div className="Tooltip-divider" />
-              <StatsTooltipRow label={t`Total`} value={getUsdValue(total?.affiliateVolume)} valueClassName="numbers" />
-            </>
-          }
-        />
-        <ReferralInfoCard
-          value={formatBigUsd(currentReferralsData?.affiliateTotalStats?.affiliateRebateUsd)}
-          label={t`Rebates`}
-          labelTooltipText={t`Your affiliate earnings from referrals`}
-          tooltipContent={
-            <>
-              <StatsTooltipRow
-                label={t`V1 Arbitrum`}
-                value={getUsdValue(arbitrumData?.affiliateTotalStats.v1Data.affiliateRebateUsd)}
-                valueClassName="numbers"
-              />
-              <StatsTooltipRow
-                label={t`V1 Avalanche`}
-                value={getUsdValue(avalancheData?.affiliateTotalStats.v1Data.affiliateRebateUsd)}
-                valueClassName="numbers"
-              />
-              {isDevelopment() && (
-                <StatsTooltipRow
-                  label={t`V1 Avalanche Fuji`}
-                  value={getUsdValue(fujiData?.affiliateTotalStats.v1Data.affiliateRebateUsd)}
-                  valueClassName="numbers"
-                />
-              )}
-              <StatsTooltipRow
-                label={t`V2 Arbitrum`}
-                value={getUsdValue(arbitrumData?.affiliateTotalStats.v2Data.affiliateRebateUsd)}
-                valueClassName="numbers"
-              />
-              <StatsTooltipRow
-                label={t`V2 Avalanche`}
-                value={getUsdValue(avalancheData?.affiliateTotalStats.v2Data.affiliateRebateUsd)}
-                valueClassName="numbers"
-              />
-              {isDevelopment() && (
-                <StatsTooltipRow
-                  label={t`V2 Avalanche Fuji`}
-                  value={getUsdValue(fujiData?.affiliateTotalStats.v2Data.affiliateRebateUsd)}
-                  valueClassName="numbers"
-                />
-              )}
-              <div className="Tooltip-divider" />
-              <StatsTooltipRow
-                label={t`Total`}
-                value={getUsdValue(total?.affiliateRebateUsd)}
-                valueClassName="numbers"
-              />
-            </>
-          }
-        />
-        <ReferralInfoCard
-          label={t`Claimable rebates`}
-          value={<span className="numbers">{formatUsd(totalClaimableRewardsUsd, { displayDecimals: 4 })}</span>}
-          labelTooltipText={t`Available to claim now`}
-          className="AffiliateStats-claimable-rewards-card"
-        >
-          <div className="AffiliateStats-claimable-rewards-container flex flex-col gap-6">
-            {(totalClaimableRewardsUsd > 0 && (
-              <Button variant="secondary" onClick={() => setIsClaiming(true)}>
-                <Trans>Claim</Trans>
-              </Button>
-            )) ||
-              null}
+      <div className="flex flex-col gap-12 rounded-8 bg-slate-900 p-20">
+        <div className="flex items-center justify-between">
+          <div className="text-body-large font-medium text-typography-primary">
+            <Trans>Overview</Trans>
           </div>
-        </ReferralInfoCard>
-      </div>
-      <div className="list">
-        <Modal
-          className="Connect-wallet-modal"
-          isVisible={isAddReferralCodeModalOpen}
-          setIsVisible={close}
-          label={t`Create referral code`}
-          onAfterOpen={() => addNewModalRef.current?.focus()}
-        >
-          <div className="edit-referral-modal">
-            <AffiliateCodeFormContainer
-              handleCreateReferralCode={handleCreateReferralCode}
-              recentlyAddedCodes={recentlyAddedCodes}
-              setRecentlyAddedCodes={setRecentlyAddedCodes}
-              callAfterSuccess={close}
+          <div className="flex items-center gap-8">
+            <PoolsTimeRangeFilter
+              timeRange={timeRangeInfo.slug}
+              setTimeRange={setTimeRange}
+              timeRangeInfos={TIME_RANGE_INFOS}
             />
           </div>
-        </Modal>
-        <Card
-          slimHeader
-          title={
-            <div className="referral-table-header">
-              <p className="title text-body-large">
-                <Trans>Referral codes</Trans>{" "}
-                <span className="rounded-full bg-cold-blue-900 px-8 py-4 text-12 font-medium leading-[1.25] text-typography-secondary">
-                  {affiliateTierInfo && t`Tier ${getTierIdDisplay(tierId)}: ${currentRebatePercentage}% rebate`}
-                </span>
-              </p>
-              <Button variant="secondary" onClick={open} size="small">
-                <Trans>Create new code</Trans>
-                <PlusIcon />
-              </Button>
-            </div>
+        </div>
+        <PromoCard
+          title={<Trans>Enter the referral code and save up to 10% on fees</Trans>}
+          subtitle={
+            <Trans>
+              Activate someone's referral code to receive a permanent discount on all opening and closing <br /> fees.
+              Your savings apply automatically on every trade.{" "}
+              <ExternalLink href="https://docs.gmx.io/docs/referrals" variant="icon" className="text-blue-300">
+                <Trans>Learn more</Trans>
+              </ExternalLink>
+            </Trans>
           }
-          divider={true}
-          bodyPadding={false}
         >
-          <TableScrollFadeContainer>
-            <table className="w-full">
-              <thead>
-                <TableTheadTr>
-                  <TableTh scope="col">
-                    <Trans>REFERRAL CODE</Trans>
-                  </TableTh>
-                  <TableTh scope="col">
-                    <Trans>TOTAL VOLUME</Trans>
-                  </TableTh>
-                  <TableTh scope="col">
-                    <Trans>TRADERS REFERRED</Trans>
-                  </TableTh>
-                  <TableTh scope="col">
-                    <Trans>TOTAL REBATES</Trans>
-                  </TableTh>
-                </TableTheadTr>
-              </thead>
-              <tbody>
-                {currentAffiliatesData.map((stat, index) => {
-                  return (
-                    <TableTr key={index}>
-                      <TableTd data-label={t`REFERRAL CODE`}>
-                        <div className="flex items-center gap-8">
-                          <span className="referral-text ">{stat.referralCode}</span>
-                          <div
-                            onClick={() => {
-                              trackCopyCode();
-                              copyToClipboard(getReferralCodeTradeUrl(stat.referralCode));
-                              helperToast.success("Referral link copied to your clipboard");
-                            }}
-                            className="referral-code-icon size-14 text-typography-secondary hover:text-typography-primary"
-                          >
-                            <CopyIcon className="size-14" />
-                          </div>
-                          <TrackingLink onClick={trackShareTwitter}>
-                            <a
-                              href={getTwitterShareUrl(stat.referralCode)}
-                              target="_blank"
-                              rel="noopener noreferrer"
-                              className="referral-code-icon size-14 text-typography-secondary hover:text-typography-primary"
-                            >
-                              <TwitterIcon />
-                            </a>
-                          </TrackingLink>
-                          <ReferralCodeWarnings allOwnersOnOtherChains={stat?.allOwnersOnOtherChains} />
-                        </div>
-                      </TableTd>
-                      <TableTd data-label={t`TOTAL VOLUME`}>
-                        <Tooltip
-                          handle={formatBigUsd(stat.volume)}
-                          handleClassName="numbers"
-                          position="bottom-start"
-                          className="whitespace-nowrap"
-                          renderContent={() => (
-                            <>
-                              <StatsTooltipRow
-                                label={t`V1 volume`}
-                                value={getUsdValue(stat?.v1Data.volume)}
-                                valueClassName="numbers"
-                              />
-                              <StatsTooltipRow
-                                label={t`V2 volume`}
-                                value={getUsdValue(stat?.v2Data.volume)}
-                                valueClassName="numbers"
-                              />
-                            </>
-                          )}
-                        />
-                      </TableTd>
-                      <TableTd data-label={t`TRADERS REFERRED`} className="numbers">
-                        {stat.registeredReferralsCount}
-                      </TableTd>
-                      <TableTd data-label={t`TOTAL REBATES`}>
-                        <Tooltip
-                          handle={formatBigUsd(stat.affiliateRebateUsd)}
-                          handleClassName="numbers"
-                          position="bottom-start"
-                          className="whitespace-nowrap"
-                          renderContent={() => (
-                            <>
-                              <StatsTooltipRow
-                                label={t`V1 rebates`}
-                                value={getUsdValue(stat.v1Data.affiliateRebateUsd)}
-                                valueClassName="numbers"
-                              />
-                              <StatsTooltipRow
-                                label={t`V2 rebates`}
-                                value={getUsdValue(stat.v2Data.affiliateRebateUsd)}
-                                valueClassName="numbers"
-                              />
-                            </>
-                          )}
-                        />
-                      </TableTd>
-                    </TableTr>
-                  );
-                })}
-                {currentAffiliatesData.length > 0 && currentAffiliatesData.length < DEFAULT_PAGE_SIZE && (
-                  // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                  <tr style={{ height: 43 * (DEFAULT_PAGE_SIZE - currentAffiliatesData.length) }}></tr>
-                )}
-              </tbody>
-            </table>
-          </TableScrollFadeContainer>
-          <BottomTablePagination
-            page={currentAffiliatesPage}
-            pageCount={affiliatesPageCount}
-            onPageChange={setCurrentAffiliatesPage}
-          />
-        </Card>
+          <img src={referralCodePromoFg} className="user-select-none absolute -bottom-22 right-28 z-10 w-[104px]" />
+        </PromoCard>
+        <div className="flex flex-col gap-12">
+          <div className="grid grid-cols-2 gap-12 max-lg:grid-cols-1">
+            <TradingVolumeChartCard periodStart={periodStart} periodEnd={periodEnd} timeRangeInfo={timeRangeInfo} />
+            <NumberOfTradesChartCard periodStart={periodStart} periodEnd={periodEnd} timeRangeInfo={timeRangeInfo} />
+            <TradersReferredChartCard periodStart={periodStart} periodEnd={periodEnd} timeRangeInfo={timeRangeInfo} />
+            <RebatesChartCard periodStart={periodStart} periodEnd={periodEnd} timeRangeInfo={timeRangeInfo} />
+          </div>
+        </div>
+        <div className="text-body-small font-medium text-typography-secondary">
+          <span className="text-slate-500">
+            <Trans>Last Updated:</Trans>
+          </span>{" "}
+          2025-08-18 15:04:04 UTC
+        </div>
       </div>
-      {currentRebateData.length > 0 ? (
-        <Card
-          title={
-            <span className="text-body-large">
-              <Trans>Rebates distribution history</Trans>
+
+      <div className="flex w-full flex-col gap-8 rounded-8 bg-slate-900">
+        <div className="flex items-center justify-between px-20 pt-20">
+          <p className="title text-body-large">
+            <Trans>Referral codes</Trans>{" "}
+            <span className="rounded-full bg-cold-blue-900 px-8 py-4 text-12 font-medium leading-[1.25] text-blue-300">
+              {affiliateTierInfo && t`Tier ${getTierIdDisplay(tierId)}: ${currentRebatePercentage}% rebate`}
             </span>
-          }
-          tooltipText={t`Distribution history for claimed rebates and airdrops`}
-          bodyPadding={false}
-          divider={true}
-        >
-          <TableScrollFadeContainer>
-            <table className="w-full min-w-max">
-              <thead>
-                <TableTheadTr>
-                  <TableTh scope="col">
-                    <Trans>DATE</Trans>
-                  </TableTh>
-                  <TableTh scope="col">
-                    <Trans>TYPE</Trans>
-                  </TableTh>
-                  <TableTh scope="col">
-                    <Trans>AMOUNT</Trans>
-                  </TableTh>
-                  <TableTh scope="col">
-                    <Trans>TRANSACTION</Trans>
-                  </TableTh>
-                </TableTheadTr>
-              </thead>
-              <tbody>
-                {currentRebateData.map((rebate, index) => {
-                  let rebateType = "-";
-
-                  if (rebate.typeId === RebateDistributionType.Rebate) {
-                    if (rebate.tokens[0] === esGmxAddress) {
-                      rebateType = t`V1 esGMX`;
-                    } else {
-                      rebateType = t`V1 airdrop`;
-                    }
-                  } else if (rebate.typeId === RebateDistributionType.Claim) {
-                    rebateType = t`V2 claim`;
-                  }
-
-                  const amountsByTokens = rebate.tokens.reduce(
-                    (acc, tokenAddress, i) => {
-                      let token;
-                      try {
-                        token = getToken(chainId, tokenAddress);
-                      } catch (error) {
-                        token = getNativeToken(chainId);
-                      }
-                      acc[token.address] = acc[token.address] ?? 0n;
-                      acc[token.address] = acc[token.address] + rebate.amounts[i];
-                      return acc;
-                    },
-                    {} as { [address: string]: bigint }
-                  );
-
-                  const tokensWithoutPrices: string[] = [];
-
-                  const totalUsd = rebate.amountsInUsd.reduce((acc, usdAmount, i) => {
-                    if (usdAmount == 0n && rebate.amounts[i] != 0n) {
-                      tokensWithoutPrices.push(rebate.tokens[i]);
-                    }
-
-                    return acc + usdAmount;
-                  }, 0n);
-
-                  const explorerURL = getExplorerUrl(chainId);
-                  return (
-                    <TableTr key={index}>
-                      <TableTd data-label={t`Date`}>{formatDate(rebate.timestamp)}</TableTd>
-                      <TableTd data-label={t`Type`}>{rebateType}</TableTd>
-                      <TableTd data-label={t`Amount`}>
-                        <Tooltip
-                          className="whitespace-nowrap"
-                          handle={
-                            <div className="Rebate-amount-value numbers">
-                              {tokensWithoutPrices.length > 0 && (
-                                <>
-                                  <WarnIcon className="size-20 text-yellow-300" />
-                                  &nbsp;
-                                </>
-                              )}
-                              {formatBigUsd(totalUsd)}
-                            </div>
-                          }
-                          renderContent={() => (
-                            <>
-                              {tokensWithoutPrices.length > 0 && (
-                                <>
-                                  <Trans>
-                                    USD value may be inaccurate. Price data unavailable for{" "}
-                                    {tokensWithoutPrices.map((address) => getToken(chainId, address).symbol).join(", ")}
-                                    .
-                                  </Trans>
-                                  <br />
-                                  <br />
-                                </>
-                              )}
-                              {Object.keys(amountsByTokens).map((tokenAddress) => {
-                                const token = getToken(chainId, tokenAddress);
-
-                                return (
-                                  <>
-                                    <StatsTooltipRow
-                                      key={tokenAddress}
-                                      showDollar={false}
-                                      label={token.symbol}
-                                      value={formatBalanceAmount(
-                                        amountsByTokens[tokenAddress],
-                                        token.decimals,
-                                        undefined,
-                                        { isStable: token.isStable }
-                                      )}
-                                      valueClassName="numbers"
-                                    />
-                                  </>
-                                );
-                              })}
-                            </>
-                          )}
-                        />
-                      </TableTd>
-                      <TableTd data-label="Transaction">
-                        <ExternalLink
-                          className="text-typography-secondary hover:text-typography-primary"
-                          variant="icon"
-                          href={explorerURL + `tx/${rebate.transactionHash}`}
+          </p>
+          <Button variant="ghost" onClick={open} size="small">
+            <Trans>Create new code</Trans>
+            <PlusIcon />
+          </Button>
+        </div>
+        <TableScrollFadeContainer>
+          <table className="w-full min-w-full">
+            <thead>
+              <TableTheadTr>
+                <TableTh scope="col">
+                  <Trans>REFERRAL CODE</Trans>
+                </TableTh>
+                <TableTh scope="col">
+                  <Trans>TOTAL VOLUME</Trans>
+                </TableTh>
+                <TableTh scope="col">
+                  <Trans>TRADERS REFERRED</Trans>
+                </TableTh>
+                <TableTh scope="col">
+                  <Trans>TOTAL REBATES</Trans>
+                </TableTh>
+                <TableTh scope="col" className="w-0">
+                  <span className="sr-only">
+                    <Trans>Actions</Trans>
+                  </span>
+                </TableTh>
+              </TableTheadTr>
+            </thead>
+            <tbody>
+              {currentAffiliatesData.map((stat, index) => {
+                return (
+                  <TableTr key={index}>
+                    <TableTd data-label="Referral Code">
+                      <div className="flex items-center gap-8">
+                        <span className="referral-text">{stat.referralCode}</span>
+                        <ReferralCodeWarnings allOwnersOnOtherChains={stat?.allOwnersOnOtherChains} />
+                      </div>
+                    </TableTd>
+                    <TableTd data-label="Total Volume">
+                      <Tooltip
+                        handle={formatBigUsd(stat.volume)}
+                        handleClassName="numbers"
+                        position="bottom-start"
+                        className="whitespace-nowrap"
+                        renderContent={() => (
+                          <>
+                            <StatsTooltipRow
+                              label={t`V1 volume`}
+                              value={getUsdValue(stat?.v1Data.volume)}
+                              valueClassName="numbers"
+                            />
+                            <StatsTooltipRow
+                              label={t`V2 volume`}
+                              value={getUsdValue(stat?.v2Data.volume)}
+                              valueClassName="numbers"
+                            />
+                          </>
+                        )}
+                      />
+                    </TableTd>
+                    <TableTd data-label="Traders Referred" className="numbers">
+                      {stat.registeredReferralsCount}
+                    </TableTd>
+                    <TableTd data-label="Total Rebates">
+                      <Tooltip
+                        handle={formatBigUsd(stat.affiliateRebateUsd)}
+                        handleClassName="numbers"
+                        position="bottom-start"
+                        className="whitespace-nowrap"
+                        renderContent={() => (
+                          <>
+                            <StatsTooltipRow
+                              label={t`V1 rebates`}
+                              value={getUsdValue(stat.v1Data.affiliateRebateUsd)}
+                              valueClassName="numbers"
+                            />
+                            <StatsTooltipRow
+                              label={t`V2 rebates`}
+                              value={getUsdValue(stat.v2Data.affiliateRebateUsd)}
+                              valueClassName="numbers"
+                            />
+                          </>
+                        )}
+                      />
+                    </TableTd>
+                    <TableTd data-label="Actions" className="whitespace-nowrap">
+                      <div className="flex items-center justify-end gap-4">
+                        <Button
+                          variant="ghost"
+                          size="small"
+                          onClick={() => {
+                            trackCopyCode();
+                            copyToClipboard(getReferralCodeTradeUrl(stat.referralCode));
+                            helperToast.success("Referral link copied to your clipboard");
+                          }}
+                          className="gap-4"
                         >
-                          {shortenAddress(rebate.transactionHash, 13)}
-                        </ExternalLink>
-                      </TableTd>
-                    </TableTr>
-                  );
-                })}
-                {currentRebateData.length < DEFAULT_PAGE_SIZE && (
-                  // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
-                  <tr style={{ height: 42.5 * (DEFAULT_PAGE_SIZE - currentRebateData.length) }}></tr>
-                )}
-              </tbody>
-            </table>
-          </TableScrollFadeContainer>
-          <BottomTablePagination
-            page={currentRebatePage}
-            pageCount={rebatePageCount}
-            onPageChange={setCurrentRebatePage}
-          />
-        </Card>
-      ) : (
-        <EmptyMessage
-          tooltipText={t`Distribution history for claimed rebates and airdrops`}
-          message={t`No rebates distribution history yet`}
+                          <Trans>Copy</Trans>
+                          <CopyIcon className="size-16" />
+                        </Button>
+                        <TrackingLink onClick={trackShareTwitter}>
+                          <Button
+                            variant="ghost"
+                            size="small"
+                            to={getTwitterShareUrl(stat.referralCode)}
+                            newTab
+                            className="gap-4"
+                          >
+                            <Trans>Share</Trans>
+                            <ShareIcon className="size-16" />
+                          </Button>
+                        </TrackingLink>
+                      </div>
+                    </TableTd>
+                  </TableTr>
+                );
+              })}
+            </tbody>
+          </table>
+        </TableScrollFadeContainer>
+        <BottomTablePagination
+          page={currentAffiliatesPage}
+          pageCount={affiliatesPageCount}
+          onPageChange={setCurrentAffiliatesPage}
         />
-      )}
+      </div>
 
-      {isClaiming && <ClaimAffiliatesModal onClose={() => setIsClaiming(false)} />}
+      <ModalWithPortal
+        className="Connect-wallet-modal"
+        isVisible={isAddReferralCodeModalOpen}
+        setIsVisible={close}
+        label={t`Create referral code`}
+        onAfterOpen={() => addNewModalRef.current?.focus()}
+      >
+        <div className="edit-referral-modal">
+          <AffiliateCodeFormContainer
+            handleCreateReferralCode={handleCreateReferralCode}
+            recentlyAddedCodes={recentlyAddedCodes}
+            setRecentlyAddedCodes={setRecentlyAddedCodes}
+            callAfterSuccess={close}
+          />
+        </div>
+      </ModalWithPortal>
+    </div>
+  );
+
+  return (
+    <div className="flex gap-8 max-md:flex-col">
+      <div className="flex grow flex-col gap-8">{mainContent}</div>
+      <div className="flex w-[400px] shrink-0 flex-col gap-8 max-md:w-full">
+        <ClaimableRebatesCard />
+        <ReferralsDocsCard />
+        <Faq items={AFFILIATE_POST_WIZARD_FAQS} title={<Trans>FAQ</Trans>} />
+      </div>
     </div>
   );
 }
-
-export default AffiliatesStats;
