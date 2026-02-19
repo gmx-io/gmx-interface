@@ -1,13 +1,16 @@
 import { t } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import cx from "classnames";
-import { ReactNode, useCallback } from "react";
+import { ReactNode, useCallback, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
+import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import ModalWithPortal from "components/Modal/ModalWithPortal";
+import LanguageModalContent from "components/NetworkDropdown/LanguageModalContent";
 
-import CollapseIcon from "img/collapse.svg?react";
 import DashboardIcon from "img/dashboard.svg?react";
 import DatabaseIcon from "img/database.svg?react";
 import DocsIcon from "img/docs.svg?react";
@@ -19,42 +22,62 @@ import LogoText from "img/logo-text.svg?react";
 import ReferralsIcon from "img/referrals.svg?react";
 import TradeIcon from "img/trade.svg?react";
 
-import { LanguageNavItem } from "./LanguageNavItem";
-import { SettingsNavItem } from "./SettingsNavItem";
+import { BottomMenuSection } from "./BottomMenuSection";
 
 function SideNav({ className }: { className?: string }) {
   const [isCollapsed, setIsCollapsed] = useLocalStorageSerializeKey("is-side-nav-collapsed", false);
+  const [isLanguageModalOpen, setIsLanguageModalOpen] = useState(false);
+  const { theme, setThemeMode } = useTheme();
+  const { i18n } = useLingui();
 
   const handleCollapseToggle = useCallback(() => {
     setIsCollapsed(!isCollapsed);
   }, [isCollapsed, setIsCollapsed]);
 
+  const handleOpenLanguageModal = useCallback(() => {
+    setIsLanguageModalOpen(true);
+  }, []);
+
+  const handleCloseLanguageModal = useCallback(() => {
+    setIsLanguageModalOpen(false);
+  }, []);
+
+  const handleThemeToggle = useCallback(() => {
+    setThemeMode(theme === "dark" ? "light" : "dark");
+  }, [setThemeMode, theme]);
+
   return (
-    <nav
-      className={cx("flex h-full shrink-0 flex-col bg-slate-950", className, {
-        "w-[172px] max-xl:w-[144px]": !isCollapsed,
-      })}
-    >
-      <div className={cx("flex w-full", { "justify-center": isCollapsed })}>
-        <LogoSection isCollapsed={isCollapsed} />
-      </div>
+    <>
+      <nav
+        className={cx("flex h-full shrink-0 flex-col bg-slate-950", className, {
+          "w-[172px] max-xl:w-[144px]": !isCollapsed,
+        })}
+      >
+        <div className={cx("flex w-full", { "justify-center": isCollapsed })}>
+          <LogoSection isCollapsed={isCollapsed} />
+        </div>
 
-      <div className="flex flex-1 flex-col justify-between">
-        <MenuSection isCollapsed={isCollapsed} />
+        <div className="flex flex-1 flex-col justify-between">
+          <MenuSection isCollapsed={isCollapsed} />
 
-        <ul className="flex list-none flex-col px-0">
-          <SettingsNavItem isCollapsed={isCollapsed} />
-          <LanguageNavItem isCollapsed={isCollapsed} />
-          <DocsNavItem isCollapsed={isCollapsed} />
-          <NavItem
-            icon={<CollapseIcon />}
-            label={isCollapsed ? t`Expand` : t`Collapse`}
+          <BottomMenuSection
             isCollapsed={isCollapsed}
-            onClick={handleCollapseToggle}
+            isDarkTheme={theme === "dark"}
+            onCollapseToggle={handleCollapseToggle}
+            onLanguageClick={handleOpenLanguageModal}
+            onThemeToggle={handleThemeToggle}
           />
-        </ul>
-      </div>
-    </nav>
+        </div>
+      </nav>
+      <ModalWithPortal
+        className="language-popup"
+        isVisible={isLanguageModalOpen}
+        setIsVisible={setIsLanguageModalOpen}
+        label={t`Select language`}
+      >
+        <LanguageModalContent currentLanguage={i18n.locale} onClose={handleCloseLanguageModal} />
+      </ModalWithPortal>
+    </>
   );
 }
 
@@ -70,7 +93,7 @@ export function LogoSection({ isCollapsed }: { isCollapsed: boolean | undefined 
         "pl-12 pr-20": !isCollapsed,
       })}
     >
-      <img src={logoIcon} alt="GMX Logo" />
+      <img src={logoIcon} alt={t`GMX logo`} />
       {!isCollapsed ? <LogoText /> : null}
     </Link>
   );
@@ -100,7 +123,7 @@ export function NavItem({ icon, label, isActive = false, isCollapsed = false, on
           }
         )}
       >
-        <div className="flex size-24 shrink-0 items-center justify-center [&>svg]:w-full">{icon}</div>
+        <div className="flex size-20 shrink-0 items-center justify-center [&>svg]:w-full">{icon}</div>
         <span className={cx("text-body-medium font-medium tracking-[-1.2%]", { hidden: isCollapsed })}>{label}</span>
 
         <div
@@ -111,8 +134,8 @@ export function NavItem({ icon, label, isActive = false, isCollapsed = false, on
           )}
         >
           <div className="flex items-center gap-8 rounded-8 bg-blue-400/20 px-12 py-10 dark:bg-slate-700">
-            <div className="flex size-24 shrink-0 items-center justify-center">{icon}</div>
-            <span className={cx("text-body-medium font-medium tracking-[-1.2%]")}>{label}</span>
+            <div className="flex size-20 shrink-0 items-center justify-center">{icon}</div>
+            <span className={cx("text-body-medium whitespace-nowrap font-medium tracking-[-1.2%]")}>{label}</span>
           </div>
         </div>
       </div>
@@ -142,13 +165,13 @@ export function MenuSection({
   onMenuItemClick?: () => void;
 }) {
   const mainNavItems = [
-    { icon: <TradeIcon className="size-24" />, label: t`Trade`, key: "trade", to: "/trade" },
-    { icon: <EarnIcon className="size-24" />, label: t`Earn`, key: "earn", to: "/earn" },
-    { icon: <DatabaseIcon className="size-24" />, label: t`Pools`, key: "pools", to: "/pools" },
-    { icon: <DashboardIcon className="size-24" />, label: t`Stats`, key: "stats", to: "/stats" },
-    { icon: <ReferralsIcon className="size-24" />, label: t`Referrals`, key: "referrals", to: "/referrals" },
-    { icon: <LeaderboardIcon className="size-24" />, label: t`Leaderboard`, key: "leaderboard", to: "/leaderboard" },
-    { icon: <EcosystemIcon className="size-24" />, label: t`Ecosystem`, key: "ecosystem", to: "/ecosystem" },
+    { icon: <TradeIcon className="size-20" />, label: t`Trade`, key: "trade", to: "/trade" },
+    { icon: <EarnIcon className="size-20" />, label: t`Earn`, key: "earn", to: "/earn" },
+    { icon: <DatabaseIcon className="size-20" />, label: t`Pools`, key: "pools", to: "/pools" },
+    { icon: <DashboardIcon className="size-20" />, label: t`Stats`, key: "stats", to: "/stats" },
+    { icon: <ReferralsIcon className="size-20" />, label: t`Referrals`, key: "referrals", to: "/referrals" },
+    { icon: <LeaderboardIcon className="size-20" />, label: t`Leaderboard`, key: "leaderboard", to: "/leaderboard" },
+    { icon: <EcosystemIcon className="size-20" />, label: t`Ecosystem`, key: "ecosystem", to: "/ecosystem" },
   ];
 
   const { pathname } = useLocation();

@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/macro";
+import Skeleton from "react-loading-skeleton";
 
 import { PLATFORM_TOKEN_DECIMALS } from "context/PoolsDetailsContext/selectors";
 import { MultichainMarketTokenBalances } from "domain/multichain/types";
@@ -33,12 +34,18 @@ import { BaseAssetCard } from "./BaseAssetCard";
 type Props = {
   marketInfo: GlvOrMarketInfo;
   chainId: ContractsChainId;
-  totalFeeApy: bigint | undefined;
-  feeApy30d: bigint | undefined;
+  totalPerformanceApy: bigint | undefined;
+  performanceApy30d: bigint | undefined;
   multichainMarketTokenBalances: MultichainMarketTokenBalances | undefined;
 };
 
-export function GmGlvAssetCard({ marketInfo, chainId, totalFeeApy, feeApy30d, multichainMarketTokenBalances }: Props) {
+export function GmGlvAssetCard({
+  marketInfo,
+  chainId,
+  totalPerformanceApy,
+  performanceApy30d,
+  multichainMarketTokenBalances,
+}: Props) {
   const marketAddress = getGlvOrMarketAddress(marketInfo);
 
   const isGlv = isGlvInfo(marketInfo);
@@ -110,10 +117,8 @@ export function GmGlvAssetCard({ marketInfo, chainId, totalFeeApy, feeApy30d, mu
       }
     >
       <div className="flex flex-col gap-12">
-        <SyntheticsInfoRow label={<Trans>Total Fee APY</Trans>} value={formatPercentage(totalFeeApy, { bps: false })} />
-        <SyntheticsInfoRow label={<Trans>30d Fee APY</Trans>} value={formatPercentage(feeApy30d, { bps: false })} />
         <SyntheticsInfoRow
-          label={<Trans>Balance</Trans>}
+          label={<Trans>Wallet</Trans>}
           value={
             balance !== 0n ? (
               tooltipContent ? (
@@ -139,6 +144,26 @@ export function GmGlvAssetCard({ marketInfo, chainId, totalFeeApy, feeApy30d, mu
               )
             ) : (
               <span>-</span>
+            )
+          }
+        />
+        <SyntheticsInfoRow
+          label={<Trans>Total performance APY</Trans>}
+          value={
+            totalPerformanceApy === undefined ? (
+              <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={50} className="leading-base" />
+            ) : (
+              formatPercentage(totalPerformanceApy, { bps: false })
+            )
+          }
+        />
+        <SyntheticsInfoRow
+          label={<Trans>30d performance APY</Trans>}
+          value={
+            performanceApy30d === undefined ? (
+              <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={50} className="leading-base" />
+            ) : (
+              formatPercentage(performanceApy30d, { bps: false })
             )
           }
         />

@@ -40,8 +40,10 @@ const REDIRECT_MAP: Record<RedirectChainIds, string> = {
 };
 
 export function useGoToTrade({ buttonPosition, chainId }: Props) {
-  const { shouldShowRedirectModal, redirectWithWarning } = useHomePageContext();
+  const { redirectWithWarning } = useHomePageContext();
   return useCallback(() => {
+    const shouldSeeConfirmationDialog = chainId === RedirectChainIds.Solana;
+
     userAnalytics.pushEvent<LandingPageLaunchAppEvent>(
       {
         event: "LandingPageAction",
@@ -50,12 +52,12 @@ export function useGoToTrade({ buttonPosition, chainId }: Props) {
             ? {
                 action: "SolanaNavigation",
                 buttonPosition: buttonPosition,
-                shouldSeeConfirmationDialog: shouldShowRedirectModal(),
+                shouldSeeConfirmationDialog,
               }
             : {
                 action: "LaunchApp",
                 buttonPosition: buttonPosition,
-                shouldSeeConfirmationDialog: shouldShowRedirectModal(),
+                shouldSeeConfirmationDialog,
                 chain: getChainName(chainId),
               },
       },
@@ -66,7 +68,7 @@ export function useGoToTrade({ buttonPosition, chainId }: Props) {
     if (redirectUrl) {
       redirectWithWarning(redirectUrl, chainId);
     }
-  }, [redirectWithWarning, shouldShowRedirectModal, buttonPosition, chainId]);
+  }, [redirectWithWarning, buttonPosition, chainId]);
 }
 
 function makeLink(chainId: number) {

@@ -62,7 +62,7 @@ export function TradeInputField({
       <div
         className={cx(
           `text-body-small flex cursor-text flex-col justify-between gap-2
-          rounded-8 border border-slate-800 bg-slate-800 p-12`,
+          rounded-8 border border-slate-800 bg-slate-800 px-12 py-8`,
           "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover active:border-blue-300"
         )}
         onClick={handleBoxClick}
@@ -91,8 +91,8 @@ export function TradeInputField({
                 label={displayModeLabel}
                 modalLabel="Display Mode"
                 qa={qa ? `${qa}-display-mode` : "display-mode"}
-                handleClassName="text-14 text-typography-primary"
-                chevronClassName="w-12"
+                handleClassName="text-14"
+                chevronClassName="w-16"
               >
                 {isMobile ? (
                   <DisplayModeSelectorMobile

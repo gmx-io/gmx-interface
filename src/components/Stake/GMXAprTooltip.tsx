@@ -29,7 +29,7 @@ export default function GMXAprTooltip({ processedData, nativeTokenSymbol, isUser
 
   const shouldShowNativeTokenApr = processedData?.gmxAprForNativeToken && processedData.gmxAprForNativeToken > 0;
 
-  const aprUpdateMsg = t`APRs are updated weekly on Wednesday and will depend on the fees collected for the week.`;
+  const aprUpdateMsg = t`APRs update weekly on Wednesday based on fees collected`;
 
   return (
     <>

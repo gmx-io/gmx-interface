@@ -8,7 +8,7 @@ import { useEmptyAvalancheGmxAccount } from "./useEmptyGmxAccounts";
 export function useGmxAccountShowDepositButton() {
   const { srcChainId } = useChainId();
   const { gmxAccountUsd, isGmxAccountLoading } = useAvailableToTradeAssetSettlementChain();
-  const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
+  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
   const { isEmptyAvalancheGmxAccountOrNotConnected } = useEmptyAvalancheGmxAccount();
 
   const shouldShowDepositButton =

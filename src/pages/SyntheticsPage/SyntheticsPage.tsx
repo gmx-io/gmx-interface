@@ -41,7 +41,6 @@ import { TradeMode } from "domain/synthetics/trade";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
 import { useShareSuccessClosedPosition } from "domain/synthetics/tradeHistory/useShareSuccessClosedPosition";
-import { useInterviewNotification } from "domain/synthetics/userFeedback/useInterviewNotification";
 import { getMidPrice } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { defined } from "lib/guards";
@@ -66,7 +65,6 @@ import Badge, { BadgeIndicator } from "components/Badge/Badge";
 import Checkbox from "components/Checkbox/Checkbox";
 import { Claims } from "components/Claims/Claims";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
-import { InterviewModal } from "components/InterviewModal/InterviewModal";
 import { NpsModal } from "components/NpsModal/NpsModal";
 import { OneClickPromoBanner } from "components/OneClickPromoBanner/OneClickPromoBanner";
 import { OrderList } from "components/OrderList/OrderList";
@@ -135,8 +133,6 @@ export function SyntheticsPage(p: Props) {
 
   useTradeParamsProcessor();
   useSetOrdersAutoCancelByQueryParams();
-
-  const { isInterviewModalVisible, setIsInterviewModalVisible } = useInterviewNotification();
 
   const { chartToken } = useSelector(selectChartToken);
 
@@ -342,12 +338,13 @@ export function SyntheticsPage(p: Props) {
 
   return (
     <AppPageLayout
+      title={t`Trade`}
       header={
         <AppHeader
           leftContent={
             isTablet ? (
               <Link to="/" className="flex items-center gap-5 p-8 max-md:p-[4.5px]">
-                <img src={logoIcon} alt="GMX Logo" />
+                <img src={logoIcon} alt={t`GMX logo`} />
                 <LogoText className="max-md:hidden" />
               </Link>
             ) : (
@@ -526,7 +523,6 @@ export function SyntheticsPage(p: Props) {
           shareSource="auto-prompt"
         />
       ) : null}
-      <InterviewModal type="trader" isVisible={isInterviewModalVisible} setIsVisible={setIsInterviewModalVisible} />
       <NpsModal />
     </AppPageLayout>
   );
@@ -554,7 +550,7 @@ function useOrdersControl() {
   const onCancelSelectedOrders = useCallback(
     async function cancelSelectedOrders() {
       if (hasOutdatedUi) {
-        helperToast.error(t`Page outdated, please refresh`);
+        helperToast.error(t`Page outdated. Refresh`);
         return;
       }
       if (!signer || !provider) return;
@@ -618,7 +614,7 @@ function useOrdersControl() {
   const onCancelOrder = useCallback(
     async function cancelOrder(key: string) {
       if (hasOutdatedUi) {
-        helperToast.error(t`Page outdated, please refresh`);
+        helperToast.error(t`Page outdated. Refresh`);
         return;
       }
       if (!signer || !provider) return;

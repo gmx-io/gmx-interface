@@ -68,7 +68,7 @@ export function GmList({
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
 
   const { active } = useWallet();
-  const userEarnings = useUserEarnings(chainId, srcChainId);
+  const { userEarnings } = useUserEarnings(chainId, srcChainId);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("gm-list");
   const [searchText, setSearchText] = useState("");
   const { tab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites("gm-list");
@@ -125,19 +125,19 @@ export function GmList({
 
   return (
     <PoolsCard
-      title={t`GM Pools`}
+      title={t`GM pools`}
       className="grow"
       description={
         <div className="flex flex-col gap-16">
           <Trans>
-            Pools providing liquidity to specific GMX markets, supporting <br /> single-asset and native asset options.
+            Pools that provide liquidity to specific GMX markets. Supports single-asset and native asset options.
           </Trans>
           <div className="flex flex-wrap items-center justify-between gap-12 py-8">
             <SearchInput
               className="w-full *:!text-body-medium md:max-w-[260px]"
               value={searchText}
               setValue={setSearchText}
-              placeholder={t`Search Pools`}
+              placeholder={t`Search pools`}
               autoFocus={false}
             />
             <div className="max-w-full">
@@ -207,7 +207,7 @@ export function GmList({
                         handle={t`SNAPSHOT`}
                         className="normal-case"
                         position="bottom-end"
-                        content={<Trans>Graph showing performance vs benchmark over the selected period.</Trans>}
+                        content={<Trans>Performance vs benchmark over the selected period</Trans>}
                         variant="iconStroke"
                       />
                     </TableTh>

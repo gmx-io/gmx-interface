@@ -27,7 +27,7 @@ export function InsufficientNativeTokenBalanceMessage({ chainId }: { chainId: Co
   return (
     <div>
       <Trans>
-        Insufficient {nativeTokenSymbol} for gas in your wallet on {getChainName(chainId)}.{" "}
+        Insufficient {nativeTokenSymbol} for gas on {getChainName(chainId)}.{" "}
         <ExternalLink href={matchaBuyTokenUrl}>Buy {nativeTokenSymbol}</ExternalLink>
       </Trans>
     </div>
@@ -43,7 +43,7 @@ export function InsufficientWalletGasTokenBalanceMessage({ chainId }: { chainId:
   return (
     <div>
       <Trans>
-        Insufficient {localizedList} for gas in your wallet on {chainName}.{" "}
+        Insufficient {localizedList} for gas on {chainName}.{" "}
         <ExternalLink href={getMatchaBuyTokenUrl(chainId, firstGasPaymentToken)}>Buy {localizedList}</ExternalLink>
       </Trans>
     </div>
@@ -53,9 +53,11 @@ export function InsufficientWalletGasTokenBalanceMessage({ chainId }: { chainId:
 export function InsufficientGmxAccountGasTokenBalanceMessage({
   chainId,
   gasPaymentTokenAddress,
+  onBeforeNavigation,
 }: {
   chainId: ContractsChainId;
   gasPaymentTokenAddress?: string;
+  onBeforeNavigation?: () => void;
 }) {
   const { gasPaymentTokensText } = useGasPaymentTokensText(chainId);
   const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
@@ -64,17 +66,24 @@ export function InsufficientGmxAccountGasTokenBalanceMessage({
   let tokensText = gasPaymentTokenAddress ? getToken(chainId, gasPaymentTokenAddress).symbol : gasPaymentTokensText;
 
   const handleDeposit = useCallback(() => {
+    onBeforeNavigation?.();
     if (gasPaymentTokenAddress) {
       setGmxAccountDepositViewTokenAddress(convertTokenAddress(chainId, gasPaymentTokenAddress, "native"));
     }
     setGmxAccountModalOpen("deposit");
-  }, [chainId, gasPaymentTokenAddress, setGmxAccountDepositViewTokenAddress, setGmxAccountModalOpen]);
+  }, [
+    chainId,
+    gasPaymentTokenAddress,
+    onBeforeNavigation,
+    setGmxAccountDepositViewTokenAddress,
+    setGmxAccountModalOpen,
+  ]);
 
   return (
     <div>
       <Trans>
         Insufficient {tokensText} for gas in your GMX Account.{" "}
-        <button className="cursor-pointer underline underline-offset-2" onClick={handleDeposit}>
+        <button className="cursor-pointer underline underline-offset-2" type="button" onClick={handleDeposit}>
           Deposit {tokensText}
         </button>
       </Trans>
@@ -95,7 +104,7 @@ export function InsufficientSourceChainNativeTokenBalanceMessage({ srcChainId }:
   return (
     <div>
       <Trans>
-        Insufficient {nativeTokenSymbol} for gas in your wallet on {getChainName(srcChainId)}.{" "}
+        Insufficient {nativeTokenSymbol} for gas on {getChainName(srcChainId)}.{" "}
         <ExternalLink href={matchaBuyTokenUrl}>Buy {nativeTokenSymbol}</ExternalLink>
       </Trans>
     </div>
@@ -107,11 +116,13 @@ export function ValidationBannerErrorContent({
   chainId,
   srcChainId,
   gasPaymentTokenAddress,
+  onBeforeNavigation,
 }: {
   validationBannerErrorName: ValidationBannerErrorName;
   chainId: ContractsChainId;
   srcChainId?: SourceChainId;
   gasPaymentTokenAddress?: string;
+  onBeforeNavigation?: () => void;
 }) {
   switch (validationBannerErrorName) {
     case ValidationBannerErrorName.insufficientNativeTokenBalance: {
@@ -121,7 +132,7 @@ export function ValidationBannerErrorContent({
       return <InsufficientWalletGasTokenBalanceMessage chainId={chainId} />;
     }
     case ValidationBannerErrorName.insufficientGmxAccountSomeGasTokenBalance: {
-      return <InsufficientGmxAccountGasTokenBalanceMessage chainId={chainId} />;
+      return <InsufficientGmxAccountGasTokenBalanceMessage chainId={chainId} onBeforeNavigation={onBeforeNavigation} />;
     }
     case ValidationBannerErrorName.insufficientSourceChainNativeTokenBalance: {
       if (!srcChainId) {
@@ -131,13 +142,14 @@ export function ValidationBannerErrorContent({
       return <InsufficientSourceChainNativeTokenBalanceMessage srcChainId={srcChainId} />;
     }
     case ValidationBannerErrorName.insufficientGmxAccountWntBalance: {
-      return <InsufficientWntBanner chainId={chainId} />;
+      return <InsufficientWntBanner chainId={chainId} onBeforeNavigation={onBeforeNavigation} />;
     }
     case ValidationBannerErrorName.insufficientGmxAccountCurrentGasTokenBalance: {
       return (
         <InsufficientGmxAccountGasTokenBalanceMessage
           chainId={chainId}
           gasPaymentTokenAddress={gasPaymentTokenAddress}
+          onBeforeNavigation={onBeforeNavigation}
         />
       );
     }

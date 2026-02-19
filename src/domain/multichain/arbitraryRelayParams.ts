@@ -51,7 +51,6 @@ import { usePrevious } from "lib/usePrevious";
 import { AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { bigMath } from "sdk/utils/bigmath";
-import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import { getEmptyExternalCallsPayload, type ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
 import { fallbackCustomError } from "./fallbackCustomError";
@@ -267,20 +266,10 @@ export async function estimateArbitraryRelayFee({
     additionalBalanceOverrideTokens,
   });
 
-  let relayerFeeAmount: bigint;
-  if (globalExpressParams.isSponsoredCall) {
-    relayerFeeAmount = applyFactor(
-      gasLimit * globalExpressParams.gasPrice,
-      globalExpressParams.gasLimits.gelatoRelayFeeMultiplierFactor
-    );
-  } else {
-    relayerFeeAmount = await gelatoRelay.getEstimatedFee(
-      BigInt(chainId),
-      gasPaymentParams.relayerFeeTokenAddress,
-      gasLimit,
-      false
-    );
-  }
+  let relayerFeeAmount = applyFactor(
+    gasLimit * globalExpressParams.gasPrice,
+    globalExpressParams.gasLimits.gelatoRelayFeeMultiplierFactor
+  );
 
   const buffer = bigMath.mulDiv(relayerFeeAmount, BigInt(globalExpressParams.bufferBps), BASIS_POINTS_DIVISOR_BIGINT);
   relayerFeeAmount += buffer;

@@ -97,7 +97,6 @@ export function handleEntryError<T extends SidecarOrderEntry>(
   entry: T,
   type: "sl" | "tp",
   {
-    entryPrice,
     triggerPrice,
     markPrice,
     isLong,
@@ -120,21 +119,7 @@ export function handleEntryError<T extends SidecarOrderEntry>(
   const inputPrice = entry.price.value;
 
   if (inputPrice !== undefined && inputPrice !== null && inputPrice > 0) {
-    const shouldUseEntryPriceForTp =
-      type === "tp" &&
-      isExistingPosition &&
-      !isLimit &&
-      entryPrice !== undefined &&
-      entryPrice > 0n &&
-      isLong !== undefined;
-
-    if (shouldUseEntryPriceForTp) {
-      const isProfitPrice = isLong ? inputPrice > entryPrice : inputPrice < entryPrice;
-
-      if (!isProfitPrice) {
-        priceError = isLong ? t`TP price below mark price` : t`TP price above mark price`;
-      }
-    } else if (isExistingPosition || !isLimit) {
+    if (isExistingPosition || !isLimit) {
       if (markPrice !== undefined && markPrice !== null) {
         if (type === "tp") {
           const nextError = isLong
@@ -174,7 +159,7 @@ export function handleEntryError<T extends SidecarOrderEntry>(
   }
 
   if (entry.percentage?.value === undefined || entry.percentage?.value === 0n) {
-    percentageError = t`A size percentage is required`;
+    percentageError = t`Size percentage required`;
   }
 
   return {

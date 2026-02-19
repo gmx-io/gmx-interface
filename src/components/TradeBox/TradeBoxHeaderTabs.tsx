@@ -35,7 +35,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
     setCollateralAddress: onSelectCollateralAddress,
   } = useSelector(selectTradeboxState);
   const leverageSliderMarks = useSelector(selectTradeboxLeverageSliderMarks);
-  const { isIncrease, isPosition, isMarket } = useSelector(selectTradeboxTradeFlags);
+  const { isIncrease, isPosition, isMarket, isLimit, isTwap } = useSelector(selectTradeboxTradeFlags);
   const isLeverageSliderEnabled = useSelector(selectIsLeverageSliderEnabled);
 
   const onTradeTypeChange = useCallback(
@@ -98,10 +98,10 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
     </div>
   );
 
-  const swapFields = <SwapSlippageField />;
+  const swapFields = <SwapSlippageField disabled={isLimit || isTwap} />;
 
   const fieldsRow = (
-    <div className="h-40 rounded-t-8 border-b-1/2 border-b-slate-600 bg-slate-900 px-12 py-6">
+    <div className="h-40 rounded-t-8 border-b-1/2 border-b-slate-600 bg-slate-900 px-12 py-8">
       {isSwap ? swapFields : isPosition ? positionFields : null}
     </div>
   );

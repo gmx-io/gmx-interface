@@ -462,7 +462,14 @@ export function GmSwapBoxDepositWithdrawal() {
 
     if (submitState.errorDescription) {
       return (
-        <TooltipWithPortal content={submitState.errorDescription} variant="none">
+        <TooltipWithPortal
+          content={submitState.errorDescription}
+          variant="none"
+          position="bottom"
+          className="w-full"
+          handleClassName="w-full"
+          contentClassName="w-full justify-center"
+        >
           {btn}
         </TooltipWithPortal>
       );
@@ -471,7 +478,7 @@ export function GmSwapBoxDepositWithdrawal() {
     return btn;
   }, [submitState]);
 
-  const gmOrGlvSymbol = glvInfo ? "GLV" : "GM";
+  const gmOrGlvSymbol = glvInfo ? t`GLV` : t`GM`;
 
   return (
     <>
@@ -490,6 +497,7 @@ export function GmSwapBoxDepositWithdrawal() {
                   onInputValueChange={handleFirstTokenInputValueChange}
                   onClickMax={firstTokenShowMaxButton ? onMaxClickFirstToken : undefined}
                   className={isPair ? "rounded-b-0" : undefined}
+                  maxDecimals={firstToken?.decimals}
                 >
                   {firstTokenAddress && isSingle && isDeposit ? (
                     <MultichainTokenSelectorForLp
@@ -557,6 +565,7 @@ export function GmSwapBoxDepositWithdrawal() {
                       onClickTopRightLabel={onMaxClickSecondToken}
                       onClickMax={secondTokenShowMaxButton ? onMaxClickSecondToken : undefined}
                       className={isPair ? "rounded-t-0" : undefined}
+                      maxDecimals={secondToken?.decimals}
                     >
                       <div className="selected-token">
                         <TokenWithIcon
@@ -586,6 +595,7 @@ export function GmSwapBoxDepositWithdrawal() {
                   onInputValueChange={marketOrGlvTokenInputValueChange}
                   onClickTopRightLabel={marketTokenInputClickTopRightLabel}
                   onClickMax={marketTokenInputShowMaxButton ? marketTokenInputClickMax : undefined}
+                  maxDecimals={glvInfo ? glvInfo.glvToken.decimals : marketToken?.decimals ?? glvToken?.decimals}
                 >
                   {selectedGlvOrMarketAddress && isWithdrawal ? (
                     <MultichainMarketTokenSelector

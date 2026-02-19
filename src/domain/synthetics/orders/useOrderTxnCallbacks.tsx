@@ -22,6 +22,7 @@ import { getPositionKey } from "domain/synthetics/positions/utils";
 import { getRemainingSubaccountActions, Subaccount } from "domain/synthetics/subaccount";
 import { TokenBalanceType } from "domain/tokens";
 import { validateTokenPermitSignature } from "domain/tokens/permitUtils";
+import { sendAddressablePixelEventForOrder } from "lib/addressablePixel";
 import { useChainId } from "lib/chains";
 import { parseError } from "lib/errors";
 import {
@@ -80,7 +81,7 @@ export function useOrderTxnCallbacks() {
     setPendingExpressTxn,
     setPendingFundingFeeSettlement,
   } = useSyntheticsEvents();
-  const { chainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { showDebugValues, setIsSettingsVisible } = useSettings();
   const ordersInfoData = useSelector(selectOrdersInfoData);
   const { addOptimisticTokensBalancesUpdates } = useTokensBalancesUpdates();
@@ -198,7 +199,6 @@ export function useOrderTxnCallbacks() {
           setPendingExpressTxn({
             key: getExpressParamsKey(expressParams),
             subaccountApproval: expressParams.subaccount?.signedApproval,
-            isSponsoredCall: expressParams.isSponsoredCall,
             tokenPermits: expressParams.relayParamsPayload.tokenPermits,
             payTokenAddresses: Object.keys(optimisticBatchPayAmounts),
             pendingOrdersKeys: pendingOrders.map(getPendingOrderKey),
@@ -247,6 +247,17 @@ export function useOrderTxnCallbacks() {
         case TxnEventName.Sent: {
           if (ctx.metricId) {
             sendTxnSentMetric(ctx.metricId);
+
+            if (mainActionType === "create" && batchParams.createOrderParams.length > 0) {
+              const firstOrder = batchParams.createOrderParams[0];
+              const orderType = firstOrder.orderPayload.orderType;
+              sendAddressablePixelEventForOrder({
+                metricId: ctx.metricId,
+                orderType,
+                chainId,
+                srcChainId,
+              });
+            }
           }
 
           if (!expressParams) {
@@ -345,6 +356,13 @@ export function useOrderTxnCallbacks() {
             resetTokenPermits();
           }
 
+          if (expressParams) {
+            updatePendingExpressTxn({
+              key: getExpressParamsKey(expressParams),
+              sendFailed: true,
+            });
+          }
+
           if (pendingOrderUpdate) {
             setPendingOrderUpdate(pendingOrderUpdate, "remove");
           }
@@ -357,6 +375,7 @@ export function useOrderTxnCallbacks() {
       addOptimisticTokensBalancesUpdates,
       blockNumber,
       chainId,
+      srcChainId,
       ordersInfoData,
       resetTokenPermits,
       setIsPermitsDisabled,
@@ -599,11 +618,11 @@ function getOperationMessage(
 
   const lastActionsMsg = isLastAction ? (
     <Trans>
-      Max Action Count Reached.{" "}
+      Max action count reached.{" "}
       <span onClick={() => setIsSettingsVisible(true)} className="link-underline">
         Click here
       </span>{" "}
-      to update.
+      to update
     </Trans>
   ) : undefined;
 
@@ -627,11 +646,11 @@ function getOperationMessage(
       }
 
       case "success": {
-        return t`${orderText} updated.`;
+        return t`${orderText} updated`;
       }
 
       case "failed": {
-        return t`${orderText} update failed.`;
+        return t`${orderText} update failed`;
       }
 
       default: {
@@ -651,11 +670,11 @@ function getOperationMessage(
       }
 
       case "success": {
-        return t`${orderText} cancelled.`;
+        return t`${orderText} cancelled`;
       }
 
       case "failed": {
-        return t`${orderText} cancel failed.`;
+        return t`${orderText} cancellation failed`;
       }
 
       default: {

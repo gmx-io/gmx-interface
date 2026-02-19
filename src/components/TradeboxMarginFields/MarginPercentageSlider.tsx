@@ -48,7 +48,7 @@ export function MarginPercentageSlider({ value, onChange, className }: Props) {
 
   return (
     <div className={cx("flex items-center gap-16", className)}>
-      <div className="h-28 flex-1 px-4">
+      <div className="h-32 flex-1 px-4">
         <Slider min={0} max={100} step={1} onChange={handleChange} value={sliderValue} marks={marks} />
       </div>
     </div>

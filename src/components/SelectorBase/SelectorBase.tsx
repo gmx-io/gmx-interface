@@ -3,7 +3,16 @@ import { FloatingPortal, Placement, autoUpdate, flip, offset, shift, useFloating
 import { Popover } from "@headlessui/react";
 import cx from "classnames";
 import noop from "lodash/noop";
-import React, { PropsWithChildren, ReactNode, useCallback, useContext, useMemo, useRef, useState } from "react";
+import React, {
+  PropsWithChildren,
+  ReactNode,
+  useCallback,
+  useContext,
+  useLayoutEffect,
+  useMemo,
+  useRef,
+  useState,
+} from "react";
 import { createPortal } from "react-dom";
 import { useMedia } from "react-use";
 
@@ -171,9 +180,6 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
     ],
     placement: props.popoverPlacement ?? "bottom-end",
     whileElementsMounted: autoUpdate,
-    elements: {
-      reference: props.popoverReferenceRef?.current ?? buttonRef.current,
-    },
   });
 
   const suppressPointerDown = useCallback((e: React.MouseEvent) => {
@@ -190,6 +196,12 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
     },
     [props.popoverReferenceRef, refs]
   );
+
+  useLayoutEffect(() => {
+    if (props.popoverReferenceRef?.current) {
+      refs.setReference(props.popoverReferenceRef.current);
+    }
+  }, [props.popoverReferenceRef, refs]);
 
   const setPopoverButtonRef = useCallback(
     (node: HTMLButtonElement | null) => {
@@ -224,7 +236,7 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
             ref={setPopoverButtonRef}
             data-qa={props.qa ? props.qa + "-button" : undefined}
           >
-            <span className="grow overflow-hidden text-ellipsis leading-[24px]">{props.label}</span>
+            <span className="grow overflow-hidden text-ellipsis leading-[20px]">{props.label}</span>
             <ChevronDownIcon
               className={cx(
                 "inline-block size-16 group-gmx-hover/selector-base:text-blue-300",

@@ -85,12 +85,12 @@ import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
 import { TradeMode } from "sdk/utils/trade/types";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketSelector } from "components/MarketSelector/MarketSelector";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
@@ -106,7 +106,6 @@ import { TradeboxPoolWarnings } from "components/TradeboxPoolWarnings/TradeboxPo
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import ArrowDownIcon from "img/ic_arrow_down.svg?react";
-import InfoCircleIcon from "img/ic_info_circle_stroke.svg?react";
 
 import { useIsCurtainOpen } from "./Curtain";
 import { ExpressTradingWarningCard } from "./ExpressTradingWarningCard";
@@ -211,11 +210,11 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const fromToken = useSelector(selectTradeboxFromToken);
   const toToken = getByKey(tokensData, toTokenAddress);
-  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
+  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals) ?? 0n : 0n;
   const fromTokenPrice = fromToken?.prices.minPrice;
   const fromUsd = convertToUsd(fromTokenAmount, fromToken?.decimals, fromTokenPrice);
 
-  const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS)!;
+  const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS) ?? 0n;
 
   const markPrice = useSelector(selectTradeboxMarkPrice);
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
@@ -598,11 +597,11 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     },
     [setFocusedInput, setToTokenInputValue]
   );
-  const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
+  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
   const handleSelectFromTokenAddress = useCallback(
     (tokenAddress: string, isGmxAccount: boolean) => {
       if (isGmxAccount && isNonEoaAccountOnAnyChain) {
-        helperToast.error(t`Smart wallets are not supported on Express or One-Click Trading.`);
+        helperToast.error(t`Smart wallets are not supported on Express Trading or One-Click Trading`);
         return;
       }
 
@@ -714,6 +713,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           onInputValueChange={handleFromInputTokenChange}
           onClickMax={showClickMax ? onMaxClick : undefined}
           qa="pay"
+          maxDecimals={fromToken?.decimals}
         >
           {fromTokenAddress &&
             (!isSettlementChain(chainId) || isNonEoaAccountOnAnyChain ? (
@@ -774,7 +774,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 </button>
               )}
               <BuyInputSection
-                topLeftLabel={isTwap ? t`Receive (Approximate)` : t`Receive`}
+                topLeftLabel={isTwap ? t`Receive (approximate)` : t`Receive`}
                 bottomLeftValue={
                   !isTwap && swapAmounts?.usdOut !== undefined ? formatUsd(swapAmounts?.usdOut) : undefined
                 }
@@ -789,6 +789,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 onInputValueChange={handleToInputTokenChange}
                 qa="swap-receive"
                 isDisabled={isTwap}
+                maxDecimals={toToken?.decimals}
               >
                 {toTokenAddress && (
                   <TokenSelector
@@ -825,6 +826,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             inputValue={toTokenInputValue}
             onInputValueChange={handleToInputTokenChange}
             qa="buy"
+            maxDecimals={toToken?.decimals}
           >
             {toTokenAddress && (
               <MarketSelector
@@ -868,14 +870,15 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         showPercentSelector={selectedPosition?.sizeInUsd ? selectedPosition.sizeInUsd > 0 : false}
         onPercentChange={handleClosePercentageChange}
         qa="close"
+        maxDecimals={USD_DECIMALS}
       >
-        USD
+        {t`USD`}
       </BuyInputSection>
     );
   }
 
   function renderTriggerPriceInput() {
-    const priceLabel = isLimit ? (tradeMode === TradeMode.Limit ? t`Limit Price` : t`Stop Price`) : t`Trigger Price`;
+    const priceLabel = isLimit ? (tradeMode === TradeMode.Limit ? t`Limit price` : t`Stop price`) : t`Trigger price`;
 
     return (
       <BuyInputSection
@@ -888,8 +891,9 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         inputValue={triggerPriceInputValue}
         onInputValueChange={handleTriggerPriceInputChange}
         qa="trigger-price"
+        maxDecimals={USD_DECIMALS}
       >
-        USD
+        {t`USD`}
       </BuyInputSection>
     );
   }
@@ -897,17 +901,18 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   function renderTriggerRatioInput() {
     return (
       <BuyInputSection
-        topLeftLabel={t`Limit Price`}
+        topLeftLabel={t`Limit price`}
         topRightLabel={t`Mark`}
         topRightValue={formatAmount(markRatio?.ratio, USD_DECIMALS, 4)}
         onClickTopRightLabel={handleTriggerMarkPriceClick}
         inputValue={triggerRatioInputValue}
         onInputValueChange={handleTriggerRatioInputChange}
         qa="trigger-price"
+        maxDecimals={USD_DECIMALS}
       >
         {markRatio && (
           <>
-            <TokenWithIcon symbol={markRatio.smallestToken.symbol} displaySize={20} /> per{" "}
+            <TokenWithIcon symbol={markRatio.smallestToken.symbol} displaySize={20} /> <Trans>per</Trans>{" "}
             <TokenWithIcon symbol={markRatio.largestToken.symbol} displaySize={20} />
           </>
         )}
@@ -1002,7 +1007,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   return (
     <form className="flex flex-col gap-8" onSubmit={handleFormSubmit} ref={formRef}>
-      <div className="flex flex-col gap-12 rounded-b-8 bg-slate-900 pb-16 max-lg:pt-12">
+      <div className="flex flex-col gap-12 rounded-b-8 bg-slate-900 pb-16">
         <div className="flex flex-col gap-12 px-12">
           <div className="flex items-center justify-between">
             <Tabs
@@ -1031,6 +1036,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                   triggerPriceInputValue={triggerPriceInputValue}
                   onTriggerPriceInputChange={handleTriggerPriceInputChange}
                   maxAvailableAmount={maxAvailableAmount}
+                  onMarkPriceClick={setMarkPriceAsTriggerPrice}
                 />
               )}
               {isTrigger && renderDecreaseSizeInput()}
@@ -1038,37 +1044,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               {isTrigger && renderTriggerPriceInput()}
             </div>
 
-            {twapRecommendation && (
-              <ColorfulBanner color="blue" icon={InfoCircleIcon}>
-                <div className="flex flex-col gap-8">
-                  <span>
-                    <span
-                      className="cursor-pointer font-medium text-blue-300"
-                      onClick={() => onSelectTradeMode(TradeMode.Twap)}
-                    >
-                      <Trans>Use a TWAP order</Trans>
-                    </span>{" "}
-                    <Trans> for lower net price impact.</Trans>
-                  </span>
-                </div>
-              </ColorfulBanner>
-            )}
-
             {maxAutoCancelOrdersWarning}
-            {isSwap && isLimit && !isTwap && !limitPriceWarningHidden && (
-              <AlertInfoCard onClose={() => setLimitPriceWarningHidden(true)}>
-                <div>
-                  <Trans>
-                    The execution price may vary from your set limit price due to fees and price impact, ensuring you
-                    receive the displayed minimum receive amount.{" "}
-                    <ExternalLink href="https://docs.gmx.io/docs/trading/v2/#limit-orders" newTab>
-                      Read more
-                    </ExternalLink>
-                    .
-                  </Trans>
-                </div>
-              </AlertInfoCard>
-            )}
 
             {isTrigger && (
               <SyntheticsInfoRow
@@ -1132,16 +1108,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               swapProfitFee={fees?.swapProfitFee}
               executionFeeUsd={executionFee?.feeUsd}
               externalSwapFeeItem={fees?.externalSwapFee}
+              maxNegativeImpactBps={marketInfo ? getMaxNegativeImpactBps(marketInfo) : undefined}
             />
           )}
 
-          {gasPaymentTokenWarningContent && (
-            <AlertInfoCard hideClose type="warning">
-              {gasPaymentTokenWarningContent}
-            </AlertInfoCard>
-          )}
-
-          <div>{button}</div>
           <ExpressTradingWarningCard
             expressParams={submitButtonState.expressParams}
             payTokenAddress={!tradeFlags.isTrigger ? fromTokenAddress : undefined}
@@ -1149,10 +1119,42 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             disabled={shouldShowDepositButton}
             isGmxAccount={isFromTokenGmxAccount}
           />
+          {twapRecommendation && (
+            <AlertInfoCard>
+              <span>
+                <span
+                  className="cursor-pointer font-medium text-blue-300"
+                  onClick={() => onSelectTradeMode(TradeMode.Twap)}
+                >
+                  <Trans>Use a TWAP order</Trans>
+                </span>{" "}
+                <Trans> for lower net price impact</Trans>
+              </span>
+            </AlertInfoCard>
+          )}
+          {isSwap && isLimit && !isTwap && !limitPriceWarningHidden && (
+            <AlertInfoCard onClose={() => setLimitPriceWarningHidden(true)}>
+              <Trans>
+                Execution price may differ from limit price due to fees and price impact. You'll receive at least the
+                minimum amount shown.{" "}
+                <ExternalLink href="https://docs.gmx.io/docs/trading/#limit-orders" newTab>
+                  Read more
+                </ExternalLink>
+                .
+              </Trans>
+            </AlertInfoCard>
+          )}
+          {gasPaymentTokenWarningContent && (
+            <AlertInfoCard hideClose type="warning">
+              {gasPaymentTokenWarningContent}
+            </AlertInfoCard>
+          )}
+
+          <div>{button}</div>
         </div>
       </div>
 
-      <div className="flex flex-col gap-14 rounded-8 bg-slate-900 p-12 pb-16">
+      <div className={cx("flex flex-col gap-14 rounded-8 bg-slate-900", isTwap ? "p-4" : "p-12 pb-16")}>
         {isSwap && !isTwap && <MinReceiveRow allowedSlippage={allowedSlippage} />}
         {isTrigger && selectedPosition && decreaseAmounts?.receiveUsd !== undefined && (
           <SyntheticsInfoRow
@@ -1192,7 +1194,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         )}
         {!(isTrigger && !selectedPosition) && !isSwap && !isTwap && (
           <SyntheticsInfoRow
-            label={t`Liquidation Price`}
+            label={t`Liquidation price`}
             value={
               <ValueTransition
                 from={

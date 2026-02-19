@@ -72,9 +72,11 @@ import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
 import {
   BatchOrderTxnParams,
   buildDecreaseOrderPayload,
+  buildTwapOrdersPayloads,
   CreateOrderTxnParams,
   DecreasePositionOrderParams,
 } from "sdk/utils/orderTransactions";
+import { getIsValidTwapParams } from "sdk/utils/twap";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
@@ -96,15 +98,12 @@ import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarnin
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
 import { tradeModeLabels, tradeTypeLabels } from "../TradeBox/tradeboxConstants";
+import TwapRows from "../TwapRows/TwapRows";
 import { PositionSellerPriceImpactFeesRow } from "./rows/PositionSellerPriceImpactFeesRow";
 
 import "./PositionSeller.scss";
 
 const PNL_TOOLTIP_THRESHOLD = expandDecimals(10000, USD_DECIMALS);
-
-export type Props = {
-  setPendingTxns: (txns: any) => void;
-};
 
 export function PositionSeller() {
   const [, setClosingPositionKey] = useClosingPositionKeyState();
@@ -162,6 +161,8 @@ export function PositionSeller() {
     setKeepLeverage,
     duration,
     numberOfParts,
+    setDuration,
+    setNumberOfParts,
   } = usePositionSeller();
   const tradeMode = ORDER_OPTION_TO_TRADE_MODE[orderOption];
   const tradeType = position ? (position.isLong ? TradeType.Long : TradeType.Short) : undefined;
@@ -172,9 +173,10 @@ export function PositionSeller() {
   );
 
   const [isWaitingForDebounceBeforeSubmit, setIsWaitingForDebounceBeforeSubmit] = useState(false);
+  const [isTwapBannerDismissed, setIsTwapBannerDismissed] = useState(false);
 
   const isMarket = orderOption === OrderOption.Market;
-  const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS)!;
+  const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS) ?? 0n;
   const maxCloseSize = position?.sizeInUsd || 0n;
 
   const closePercentage = useMemo(() => {
@@ -258,11 +260,12 @@ export function PositionSeller() {
   useEffect(() => {
     if (isVisible) {
       setIsDismissedLatestRef.current(false);
+      setIsTwapBannerDismissed(false);
     }
   }, [setIsDismissedLatestRef, isVisible, orderOption]);
 
   const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
-    const orderType = OrderType.MarketDecrease;
+    const orderType = isTwap ? OrderType.LimitDecrease : OrderType.MarketDecrease;
 
     // TODO findSwapPath considering decreasePositionSwapType?
     const swapPath =
@@ -314,7 +317,11 @@ export function PositionSeller() {
 
     let createOrderParams: CreateOrderTxnParams<DecreasePositionOrderParams>[] = [];
 
-    createOrderParams = [buildDecreaseOrderPayload(decreaseOrderParams)];
+    if (isTwap && getIsValidTwapParams(duration, numberOfParts)) {
+      createOrderParams = buildTwapOrdersPayloads(decreaseOrderParams, { duration, numberOfParts });
+    } else {
+      createOrderParams = [buildDecreaseOrderPayload(decreaseOrderParams)];
+    }
 
     return {
       createOrderParams,
@@ -330,10 +337,13 @@ export function PositionSeller() {
     decreaseAmounts?.decreaseSwapType,
     decreaseAmounts?.sizeDeltaInTokens,
     decreaseAmounts?.sizeDeltaUsd,
+    duration,
     executionFee?.feeTokenAmount,
     executionFee?.gasLimit,
     isMarket,
+    isTwap,
     marketsInfoData,
+    numberOfParts,
     position,
     receiveToken?.address,
     receiveUsd,
@@ -425,8 +435,8 @@ export function PositionSeller() {
       numberOfParts,
     });
 
-    if (commonError[0] || decreaseError[0] || expressError[0]) {
-      return commonError[0] || decreaseError[0] || expressError[0];
+    if (commonError.buttonErrorMessage || decreaseError.buttonErrorMessage || expressError.buttonErrorMessage) {
+      return commonError.buttonErrorMessage || decreaseError.buttonErrorMessage || expressError.buttonErrorMessage;
     }
 
     if (isSubmitting) {
@@ -519,7 +529,7 @@ export function PositionSeller() {
       !signer ||
       !provider
     ) {
-      helperToast.error(t`Error submitting order`);
+      helperToast.error(t`Order submission failed`);
       sendTxnValidationErrorMetric(metricData.metricId);
       return;
     }
@@ -628,7 +638,7 @@ export function PositionSeller() {
 
   const liqPriceRow = position && (
     <SyntheticsInfoRow
-      label={t`Liquidation Price`}
+      label={t`Liquidation price`}
       value={
         <ValueTransition
           from={
@@ -706,7 +716,7 @@ export function PositionSeller() {
       handle={keepLeverageText}
       content={
         <Trans>
-          Keep leverage is not available as Position exceeds max. allowed leverage.{" "}
+          Position exceeds max allowed leverage.{" "}
           <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
         </Trans>
       }
@@ -794,7 +804,7 @@ export function PositionSeller() {
       return {
         text: (
           <>
-            {t`Allow ${getToken(chainId, tokenToApprove.tokenAddress).symbol} to be spent`}{" "}
+            {t`Approve ${getToken(chainId, tokenToApprove.tokenAddress).symbol}`}{" "}
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
@@ -805,7 +815,7 @@ export function PositionSeller() {
     if (isAllowanceLoaded && tokensToApprove.length) {
       const tokenToApprove = tokensToApprove[0];
       return {
-        text: t`Allow ${getToken(chainId, tokenToApprove.tokenAddress).symbol} to be spent`,
+        text: t`Approve ${getToken(chainId, tokenToApprove.tokenAddress).symbol}`,
         disabled: false,
       };
     }
@@ -852,23 +862,6 @@ export function PositionSeller() {
           {position && (
             <>
               <div className="mt-12 flex flex-col gap-4 border-t-1/2 border-slate-600 px-20 py-16">
-                {twapRecommendation && (
-                  <ColorfulBanner color="blue" icon={InfoCircleIcon}>
-                    <div className="flex flex-col gap-8">
-                      <span>
-                        <span
-                          className="cursor-pointer font-medium text-blue-300"
-                          onClick={() => {
-                            handleSetOrderOption(OrderOption.Twap);
-                          }}
-                        >
-                          <Trans>Use a TWAP order</Trans>
-                        </span>{" "}
-                        <Trans> for lower net price impact.</Trans>
-                      </span>
-                    </div>
-                  </ColorfulBanner>
-                )}
                 <div className="flex flex-col gap-8">
                   <BuyInputSection
                     topLeftLabel={t`Close`}
@@ -884,12 +877,28 @@ export function PositionSeller() {
                       setCloseUsdInputValueRaw(formattedAmount);
                     }}
                     qa="amount-input"
+                    maxDecimals={USD_DECIMALS}
                   >
-                    USD
+                    {t`USD`}
                   </BuyInputSection>
                   <MarginPercentageSlider value={closePercentage} onChange={handleClosePercentageChange} />
                 </div>
               </div>
+
+              {isTwap && (
+                <div className="px-20 py-14">
+                  <TwapRows
+                    duration={duration}
+                    numberOfParts={numberOfParts}
+                    setNumberOfParts={setNumberOfParts}
+                    setDuration={setDuration}
+                    isLong={position.isLong}
+                    sizeUsd={decreaseAmounts?.sizeDeltaUsd}
+                    marketInfo={position.marketInfo}
+                    type="decrease"
+                  />
+                </div>
+              )}
 
               <div className="flex w-full flex-col gap-14 px-20 pb-14">
                 <HighPriceImpactOrFeesWarningCard
@@ -900,14 +909,41 @@ export function PositionSeller() {
                   maxNegativeImpactBps={position.marketInfo ? getMaxNegativeImpactBps(position.marketInfo) : undefined}
                 />
 
-                <ToggleSwitch
-                  textClassName="text-typography-secondary"
-                  isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
-                  setIsChecked={setKeepLeverage}
-                  disabled={leverageCheckboxDisabledByCollateral || decreaseAmounts?.isFullClose}
-                >
-                  {keepLeverageTextElem}
-                </ToggleSwitch>
+                {!isTwap && (
+                  <ToggleSwitch
+                    textClassName="text-typography-secondary"
+                    isChecked={leverageCheckboxDisabledByCollateral ? false : keepLeverageChecked}
+                    setIsChecked={setKeepLeverage}
+                    disabled={leverageCheckboxDisabledByCollateral || decreaseAmounts?.isFullClose}
+                  >
+                    {keepLeverageTextElem}
+                  </ToggleSwitch>
+                )}
+
+                <ExpressTradingWarningCard
+                  expressParams={expressParams}
+                  payTokenAddress={undefined}
+                  isWrapOrUnwrap={false}
+                  isGmxAccount={srcChainId !== undefined}
+                />
+
+                {twapRecommendation && !isTwapBannerDismissed && (
+                  <ColorfulBanner color="blue" icon={InfoCircleIcon} onClose={() => setIsTwapBannerDismissed(true)}>
+                    <div className="flex flex-col gap-8">
+                      <span>
+                        <span
+                          className="cursor-pointer font-medium text-blue-300"
+                          onClick={() => {
+                            handleSetOrderOption(OrderOption.Twap);
+                          }}
+                        >
+                          <Trans>Use a TWAP order</Trans>
+                        </span>{" "}
+                        <Trans>for lower net price impact</Trans>
+                      </span>
+                    </div>
+                  </ColorfulBanner>
+                )}
 
                 <Button
                   className="w-full"
@@ -920,16 +956,13 @@ export function PositionSeller() {
                   {buttonState.text}
                 </Button>
 
-                <ExpressTradingWarningCard
-                  expressParams={expressParams}
-                  payTokenAddress={undefined}
-                  isWrapOrUnwrap={false}
-                  isGmxAccount={srcChainId !== undefined}
-                />
-
-                {receiveTokenRow}
-                {liqPriceRow}
-                {pnlRow}
+                {!isTwap && (
+                  <>
+                    {receiveTokenRow}
+                    {liqPriceRow}
+                    {pnlRow}
+                  </>
+                )}
 
                 <PositionSellerPriceImpactFeesRow />
 

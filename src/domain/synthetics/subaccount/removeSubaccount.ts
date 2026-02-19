@@ -152,7 +152,6 @@ export async function removeSubaccountExpressTxn({
   signer,
   subaccount,
   globalExpressParams,
-  isSponsoredCallAvailable,
 }: {
   chainId: ContractsChainId;
   provider: Provider;
@@ -161,7 +160,6 @@ export async function removeSubaccountExpressTxn({
   signer: WalletSigner;
   subaccount: Subaccount;
   globalExpressParams: GlobalExpressParams;
-  isSponsoredCallAvailable: boolean;
 }) {
   if (!provider || !account) {
     throw new Error("No provider or account");
@@ -247,7 +245,6 @@ export async function removeSubaccountExpressTxn({
 
   await sendExpressTransaction({
     chainId,
-    isSponsoredCall: isSponsoredCallAvailable,
     txnData,
   });
 }

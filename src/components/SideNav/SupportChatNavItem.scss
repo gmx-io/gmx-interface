@@ -1,0 +1,34 @@
+@property --gradient-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 160.6deg;
+}
+
+.support-chat-new-badge {
+  --gradient-angle: 160.6deg;
+  background: linear-gradient(var(--gradient-angle), var(--color-blue-100) 0%, var(--color-blue-400) 100%);
+  background-size: 100% 86px;
+  background-position: 0 -15px;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: gradient-rotate 4s linear infinite;
+}
+
+.support-chat-icon-gradient-defs {
+  position: absolute;
+  width: 0;
+  height: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.support-chat-icon-collapsed path {
+  fill: url(#support-chat-icon-collapsed-gradient);
+}
+
+@keyframes gradient-rotate {
+  to {
+    --gradient-angle: 520.6deg;
+  }
+}

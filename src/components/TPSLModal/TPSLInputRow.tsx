@@ -2,7 +2,7 @@ import { FloatingPortal, autoUpdate, flip, offset, shift, useFloating } from "@f
 import { Popover } from "@headlessui/react";
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { ChangeEvent, RefObject, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEvent, RefObject, useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { USD_DECIMALS } from "config/factors";
 import {
@@ -99,7 +99,7 @@ export function TPSLInputRow({
   );
 
   const isStopLoss = type === "stopLoss";
-  const priceLabel = isStopLoss ? t`SL Price` : t`TP Price`;
+  const priceLabel = isStopLoss ? t`SL price` : t`TP price`;
   const secondLabel = isStopLoss ? t`Loss` : t`Gain`;
 
   const effectiveLiquidationPrice = useMemo(() => {
@@ -348,6 +348,11 @@ export function TPSLInputRow({
     return formatUsdPrice(referencePrice, { visualMultiplier });
   }, [referencePrice, visualMultiplier]);
 
+  const handleMarkPriceClick = useCallback(() => {
+    if (referencePrice === undefined || referencePrice === 0n) return;
+    onPriceChange(formatPrice(referencePrice));
+  }, [referencePrice, formatPrice, onPriceChange]);
+
   const estimatedPnlRow = (
     <div className="text-body-small flex justify-end">
       <span className="text-typography-secondary">
@@ -369,8 +374,8 @@ export function TPSLInputRow({
       <div className="flex flex-col gap-4">
         <div className="flex gap-8">
           <TooltipWithPortal
-            className="flex-1"
-            handleClassName="w-full"
+            className="flex grow"
+            handleClassName="grow"
             variant="none"
             disabled={!priceError}
             content={priceError}
@@ -400,7 +405,7 @@ export function TPSLInputRow({
 
           <div
             className={cx(
-              "text-body-small relative flex flex-1 cursor-text flex-col justify-between gap-2 rounded-4 border bg-slate-800 px-8 py-3",
+              "text-body-small relative flex grow cursor-text flex-col justify-between gap-2 rounded-4 border bg-slate-800 px-8 py-3",
               "border-slate-800",
               "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover active:border-blue-300"
             )}
@@ -452,7 +457,10 @@ export function TPSLInputRow({
             <div className="flex items-center justify-between">
               <div className="text-body-small text-typography-secondary">{priceLabel}</div>
               {formattedMarkPrice !== undefined && (
-                <div className="text-12 text-typography-secondary numbers">
+                <div
+                  className="cursor-pointer text-12 text-typography-secondary numbers"
+                  onClick={handleMarkPriceClick}
+                >
                   <Trans>Mark:</Trans> <span className="text-typography-primary">{formattedMarkPrice}</span>
                 </div>
               )}
@@ -521,9 +529,6 @@ function DisplayModeSelector({
     middleware: [offset(4), flip(), shift()],
     placement: "bottom-end",
     whileElementsMounted: autoUpdate,
-    elements: {
-      reference: popoverReferenceRef?.current ?? buttonRef.current,
-    },
   });
 
   const setButtonRef = useCallback(
@@ -536,6 +541,12 @@ function DisplayModeSelector({
     },
     [popoverReferenceRef, refs]
   );
+
+  useLayoutEffect(() => {
+    if (popoverReferenceRef?.current) {
+      refs.setReference(popoverReferenceRef.current);
+    }
+  }, [popoverReferenceRef, refs]);
 
   const setPopoverButtonRef = useCallback(
     (node: HTMLButtonElement | null) => {

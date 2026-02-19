@@ -25,7 +25,7 @@ import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
-import { ApproveTokenButton } from "components/ApproveTokenButton/ApproveTokenButton";
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -183,8 +183,8 @@ export function StakeModal(props: {
     const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
 
     callContract(chainId, contract, stakeMethodName, [stakeAmount], {
-      sentMsg: t`Stake submitted.`,
-      failMsg: t`Stake failed.`,
+      sentMsg: t`Stake submitted`,
+      failMsg: t`Stake failed`,
       setPendingTxns,
     })
       .then(() => {
@@ -211,9 +211,9 @@ export function StakeModal(props: {
     const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
 
     callContract(chainId, contract, unstakeMethodName, [unstakeAmount], {
-      sentMsg: t`Unstake submitted.`,
-      failMsg: t`Unstake failed.`,
-      successMsg: t`Unstake completed.`,
+      sentMsg: t`Unstake submitted`,
+      failMsg: t`Unstake failed`,
+      successMsg: t`Unstake completed`,
       setPendingTxns,
     })
       .then(() => {
@@ -240,7 +240,7 @@ export function StakeModal(props: {
 
   const primaryText = useMemo(() => {
     if (hasOutdatedUi) {
-      return t`Page outdated, please refresh`;
+      return t`Page outdated. Refresh`;
     }
 
     if (activeTab === "stake") {
@@ -249,13 +249,13 @@ export function StakeModal(props: {
       }
       if (isApproving || needApproval) {
         if (isApproving) {
-          return <Trans>Pending {tokenSymbol} approval</Trans>;
+          return <Trans>Approving {tokenSymbol}...</Trans>;
         }
 
-        return <Trans>Approve {tokenSymbol} to be spent</Trans>;
+        return <Trans>Approve {tokenSymbol}</Trans>;
       }
       if (isStaking) {
-        return <Trans>Staking</Trans>;
+        return <Trans>Staking...</Trans>;
       }
       return <Trans>Stake</Trans>;
     }
@@ -264,7 +264,7 @@ export function StakeModal(props: {
       return unstakeError;
     }
     if (isUnstaking) {
-      return <Trans>Unstaking</Trans>;
+      return <Trans>Unstaking...</Trans>;
     }
     return <Trans>Unstake</Trans>;
   }, [
@@ -367,6 +367,7 @@ export function StakeModal(props: {
             onInputValueChange={(e) =>
               activeTab === "stake" ? setStakeValue(e.target.value) : setUnstakeValue(e.target.value)
             }
+            maxDecimals={18}
           >
             <div className="flex items-center gap-4 py-8">
               <img
@@ -380,37 +381,26 @@ export function StakeModal(props: {
           </BuyInputSection>
         </div>
 
-        {activeTab === "stake" && (needApproval || isApproving) && (
-          <div className="mb-12">
-            <ApproveTokenButton
-              tokenAddress={stakeTokenAddress}
-              spenderAddress={stakeFarmAddress}
-              tokenSymbol={tokenSymbol}
-              isApproved={!needApproval}
-            />
-          </div>
-        )}
-
         {showStakeBonus && (
           <AlertInfo type="info">
-            <Trans>You will earn {formatAmount(stakeBonusPercentage, 2, 2)}% more rewards with this action.</Trans>
+            <Trans>Earn {formatAmount(stakeBonusPercentage, 2, 2)}% more rewards with this action</Trans>
           </AlertInfo>
         )}
 
         {activeTab === "stake" && isUndelegatedGovToken ? (
-          <AlertInfo type="warning" className={cx("DelegateGMXAlertInfo")} textColor="text-yellow-300">
+          <AlertInfoCard type="error" className={cx("DelegateGMXAlertInfo")} hideClose>
             <Trans>
               <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
                 Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
               </ExternalLink>{" "}
               voting power before staking.
             </Trans>
-          </AlertInfo>
+          </AlertInfoCard>
         ) : null}
 
         {activeTab === "unstake" && reservedAmount !== undefined && reservedAmount > 0 && (
           <AlertInfo type="info">
-            <Trans>You have {formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting.</Trans>
+            <Trans>{formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting</Trans>
           </AlertInfo>
         )}
 
@@ -420,9 +410,7 @@ export function StakeModal(props: {
               {chainId === ARBITRUM ? (
                 <span>Unstaking will burn {formatAmount(unstakeAmount, 18, 2, true)} voting power.&nbsp;</span>
               ) : null}
-              <span>
-                You will earn {formatAmount(unstakeBonusLostPercentage, 2, 2)}% less rewards with this action.
-              </span>
+              <span>You will earn {formatAmount(unstakeBonusLostPercentage, 2, 2)}% less rewards.</span>
             </Trans>
           </AlertInfo>
         )}

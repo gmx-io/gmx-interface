@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import uniq from "lodash/uniq";
 import { ReactNode, useMemo, useState } from "react";
@@ -88,7 +88,7 @@ function YieldMetric({
   disabled?: boolean;
 }) {
   const metricNode = (
-    <div className="flex items-center gap-6 text-13">
+    <div className="text-body-medium flex items-center gap-6">
       <span className={cx("text-typography-primary", { "group-hover:text-blue-300": !disabled })}>{value}</span>
       {!disabled && (
         <span className={cx("uppercase text-typography-secondary", { "group-hover:text-blue-300": !disabled })}>
@@ -134,8 +134,8 @@ function NetworkYieldCard({
   return (
     <div className="flex flex-col gap-8 rounded-8 bg-slate-900 p-16 max-xl:p-0">
       {showTitle && (
-        <div className="flex items-center gap-8 pl-12 text-16 font-medium text-typography-primary">
-          <img src={getIcon(chainId, "network")} alt="network" className="h-20 w-20" />
+        <div className="text-body-large flex items-center gap-8 pl-12 font-medium text-typography-primary">
+          <img src={getIcon(chainId, "network")} alt={t`Network`} className="h-20 w-20" />
           {title}
         </div>
       )}
@@ -177,6 +177,7 @@ function YieldRow({ token, metric, to, disabled, chainId: targetChainId, onClick
     "group flex items-center justify-between gap-8 border-b-1/2 border-slate-600 px-12 py-8 last:border-b-0",
     {
       "cursor-default": disabled,
+      "cursor-pointer": !disabled && !to && onClick,
     }
   );
 
@@ -184,7 +185,11 @@ function YieldRow({ token, metric, to, disabled, chainId: targetChainId, onClick
     <>
       <div className="flex items-center gap-8">
         <img className="size-20" src={ASSET_ICONS[token]} alt={token} />
-        <span className={cx("text-13 font-medium text-typography-primary", { "group-hover:text-blue-300": !disabled })}>
+        <span
+          className={cx("text-body-medium font-medium text-typography-primary", {
+            "group-hover:text-blue-300": !disabled,
+          })}
+        >
           {token}
         </span>
       </div>
@@ -257,6 +262,7 @@ export default function EarnYieldOverview() {
   const avaxMaxGm = useMemo(() => calculateMaxApr(avaxGmApy), [avaxGmApy]);
 
   const botanixMaxGm = useMemo(() => calculateMaxApr(botanixGmApy), [botanixGmApy]);
+  const avgGmxAprTotalLabel = "avgGMXAprTotal";
 
   const networkCards = useMemo(
     () => ({
@@ -270,7 +276,7 @@ export default function EarnYieldOverview() {
             onClick={!showGmxLink ? () => setIsBuyGmxModalVisible(true) : undefined}
             to={showGmxLink ? "/earn/portfolio" : undefined}
             chainId={ARBITRUM}
-            metric={<YieldMetric value={<APRLabel chainId={ARBITRUM} label="avgGMXAprTotal" />} suffix="APR" />}
+            metric={<YieldMetric value={<APRLabel chainId={ARBITRUM} label={avgGmxAprTotalLabel} />} suffix="APR" />}
           />,
           <YieldRow
             key="arb-glv"
@@ -298,7 +304,7 @@ export default function EarnYieldOverview() {
             to={showGmxLink ? "/earn/portfolio" : undefined}
             onClick={!showGmxLink ? () => setIsBuyGmxModalVisible(true) : undefined}
             chainId={AVALANCHE}
-            metric={<YieldMetric value={<APRLabel chainId={AVALANCHE} label="avgGMXAprTotal" />} suffix="APR" />}
+            metric={<YieldMetric value={<APRLabel chainId={AVALANCHE} label={avgGmxAprTotalLabel} />} suffix="APR" />}
           />,
           <YieldRow
             key="avax-glv"
@@ -329,12 +335,7 @@ export default function EarnYieldOverview() {
               <YieldMetric
                 value={<Trans>N/A</Trans>}
                 suffix=""
-                tooltip={
-                  <Trans>
-                    Staking GMX is currently not supported on Botanix. For access to these features, please visit the
-                    Arbitrum and Avalanche deployments.
-                  </Trans>
-                }
+                tooltip={<Trans>GMX staking unavailable on Botanix. Use Arbitrum or Avalanche.</Trans>}
                 disabled
               />
             }
@@ -350,11 +351,11 @@ export default function EarnYieldOverview() {
                 suffix=""
                 tooltip={
                   <Trans>
-                    Botanix currently has no GLV vault(s) active. You can provide liquidity by{" "}
+                    No GLV vaults on Botanix. Provide liquidity via{" "}
                     <Link to="/pools" className="underline hover:text-blue-300">
-                      purchasing
+                      GM tokens
                     </Link>{" "}
-                    GM tokens.
+                    instead.
                   </Trans>
                 }
                 disabled
@@ -395,8 +396,8 @@ export default function EarnYieldOverview() {
   return (
     <div className="flex flex-col max-xl:rounded-8 max-xl:bg-slate-900 max-xl:p-16">
       <BuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
-      <h4 className="py-20 text-20 font-medium text-typography-primary max-xl:pb-12 max-xl:pt-0 max-xl:text-16">
-        <Trans>Current Yield Landscape</Trans>
+      <h4 className="text-h3 py-20 text-typography-primary max-xl:text-body-large max-xl:pb-12 max-xl:pt-0">
+        <Trans>Current yield landscape</Trans>
       </h4>
 
       {isTabsMode ? (

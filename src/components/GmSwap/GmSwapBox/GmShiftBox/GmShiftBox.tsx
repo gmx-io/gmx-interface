@@ -264,6 +264,7 @@ export function GmShiftBox({
                 inputValue={selectedMarketText}
                 onInputValueChange={handleSelectedTokenInputValueChange}
                 onFocus={handleSelectedTokenFocus}
+                maxDecimals={selectedToken?.decimals}
               >
                 <SelectedPool
                   selectedGlvOrMarketAddress={selectedGlvOrMarketAddress}
@@ -283,6 +284,7 @@ export function GmShiftBox({
                   inputValue={toMarketText}
                   onInputValueChange={handleToTokenInputValueChange}
                   onFocus={handleToTokenFocus}
+                  maxDecimals={toToken?.decimals}
                 >
                   <PoolSelector
                     chainId={chainId}
@@ -330,7 +332,7 @@ export function GmShiftBox({
           />
 
           <ExpandableRow
-            title={t`Execution Details`}
+            title={t`Execution details`}
             open={isExecutionDetailsOpen}
             onToggle={toggleExecutionDetails}
             contentClassName="flex flex-col gap-12"

@@ -22,7 +22,7 @@ export function OneClickPromoBanner({ openSettings, isShort }: { openSettings: (
   );
 
   const isGeminiWallet = useIsGeminiWallet();
-  const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
+  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
   const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
 
   const shouldShow = !isOneClickPromoHidden && !expressOrdersEnabled && !isGeminiWallet && !isNonEoaAccountOnAnyChain;

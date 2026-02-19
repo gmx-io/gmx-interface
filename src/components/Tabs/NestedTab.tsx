@@ -59,6 +59,7 @@ export default function NestedTab<V extends string | number>({
           </button>
         ) : (
           <Button
+            type="button"
             variant="ghost"
             className={cx({ "!bg-button-secondary !text-typography-primary": selectedSubOption })}
           >

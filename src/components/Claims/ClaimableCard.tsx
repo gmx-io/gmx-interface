@@ -2,6 +2,7 @@ import { Trans, msg } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { CSSProperties, useMemo } from "react";
 
+import { DOCS_LINKS } from "config/links";
 import {
   selectClaimsFundingFeesClaimableTotal,
   selectClaimsPriceImpactClaimableTotal,
@@ -33,11 +34,10 @@ export function ClaimableCard({ onClaimClick, style, onClaimablePositionPriceImp
           buttonText: _(buttonText),
           tooltipText: (
             <Trans>
-              Claimable positive funding fees.
+              Positive funding fees ready to claim.
               <br />
               <br />
-              They become available after modifying the position by increasing or decreasing it, depositing or
-              withdrawing collateral, or settling the fees using the "Settle" button.
+              Available after changing position size, adjusting collateral, or clicking "Settle".
             </Trans>
           ),
           onButtonClick: onClaimClick,
@@ -47,10 +47,8 @@ export function ClaimableCard({ onClaimClick, style, onClaimablePositionPriceImp
           buttonText: _(buttonText),
           tooltipText: (
             <Trans>
-              Claimable price impact rebates.
-              <br />
-              <br />
-              <ExternalLink newTab href="https://docs.gmx.io/docs/trading/#price-impact-rebates">
+              Price impact rebates ready to claim.{" "}
+              <ExternalLink newTab href={DOCS_LINKS.priceImpact}>
                 Read more
               </ExternalLink>
               .

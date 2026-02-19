@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/macro";
 import { useEffect, useMemo, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useHistory, useParams } from "react-router-dom";
 
 import { BOTANIX } from "config/chains";
 import {
@@ -13,9 +13,9 @@ import { GlvAndGmMarketsInfoData, useMarketTokensData } from "domain/synthetics/
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { useChainId } from "lib/chains";
 import { defined } from "lib/guards";
+import useWallet from "lib/wallets/useWallet";
 import { TokensData } from "sdk/utils/tokens/types";
 
-import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import OpportunityCard from "components/Earn/AdditionalOpportunities/OpportunityCard";
 import OpportunityFilters, {
   AVAILABLE_FILTERS,
@@ -29,6 +29,7 @@ import {
   useOpportunities,
   useOpportunityTagLabels,
 } from "components/Earn/AdditionalOpportunities/useOpportunities";
+import Loader from "components/Loader/Loader";
 
 import EarnPageLayout from "./EarnPageLayout";
 
@@ -67,25 +68,31 @@ const collectUserTokenAssets = (tokensData: TokensData | undefined): Opportunity
 };
 
 export default function EarnAdditionalOpportunitiesPage() {
+  const history = useHistory();
   const { chainId, srcChainId } = useChainId();
+  const { account } = useWallet();
   const { data: processedData } = useStakingProcessedData();
   const tokensData = useSelector(selectTokensData);
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true });
 
-  const [activeFilter, setActiveFilter] = useState<OpportunityFilterValue>("all");
   const [searchQuery, setSearchQuery] = useState("");
 
   const { filter: filterParam } = useParams<{ filter: string | undefined }>();
 
-  useEffect(() => {
-    if (filterParam) {
-      const filter = AVAILABLE_FILTERS.find((tag) => tag === filterParam);
-      if (filter) {
-        setActiveFilter(filter);
-      }
+  const isUserDataLoaded = useMemo(() => {
+    if (!account) return true;
+
+    return !!marketsInfoData && !!tokensData && !!marketTokensData;
+  }, [account, marketsInfoData, tokensData, marketTokensData]);
+
+  const activeFilter = useMemo<OpportunityFilterValue>(() => {
+    if (filterParam && AVAILABLE_FILTERS.includes(filterParam as OpportunityFilterValue)) {
+      return filterParam as OpportunityFilterValue;
     }
-  }, [filterParam]);
+
+    return account ? "for-me" : "all";
+  }, [filterParam, account]);
 
   const userAssets = useMemo(() => {
     const userAssetKeys = new Set<string>();
@@ -108,6 +115,19 @@ export default function EarnAdditionalOpportunitiesPage() {
   const allOpportunities = useOpportunities();
 
   const opportunityTagLabels = useOpportunityTagLabels();
+
+  const hasForMeOpportunities = useMemo(() => {
+    return allOpportunities.some((opportunity) =>
+      opportunity.assets.some((asset) => userAssets.has(getOpportunityAssetKey(asset)))
+    );
+  }, [allOpportunities, userAssets]);
+
+  useEffect(() => {
+    if (!filterParam && isUserDataLoaded) {
+      const defaultFilter = hasForMeOpportunities ? "for-me" : "all";
+      history.replace(`/earn/additional_opportunities/${defaultFilter}`);
+    }
+  }, [filterParam, hasForMeOpportunities, isUserDataLoaded, history]);
 
   const filteredOpportunities = useMemo(() => {
     let list = allOpportunities;
@@ -149,47 +169,36 @@ export default function EarnAdditionalOpportunitiesPage() {
 
   const emptyStateMessage = useMemo(() => {
     if (chainId === BOTANIX) {
-      return (
-        <Trans>No additional opportunities at this time on Botanix. Change to Arbitrum or Avalanche to see more.</Trans>
-      );
+      return <Trans>No opportunities on Botanix yet</Trans>;
     }
 
     if (allOpportunities.length === 0) {
-      return <Trans>No additional opportunities are available on this chain yet.</Trans>;
+      return <Trans>No opportunities on this chain yet</Trans>;
     }
 
     if (activeFilter === "for-me") {
       if (userAssets.size === 0) {
-        return (
-          <Trans>
-            No eligible holdings detected. Acquire or stake GMX, GLV, or GM tokens to unlock personalized opportunities.
-          </Trans>
-        );
+        return <Trans>No eligible holdings detected</Trans>;
       }
 
-      return <Trans>No opportunities currently match your holdings. Try another filter or check back soon.</Trans>;
+      return <Trans>No opportunities match your holdings</Trans>;
     }
 
     if (searchQuery.trim().length > 0) {
-      return <Trans>No opportunities match your search.</Trans>;
+      return <Trans>No opportunities match your search</Trans>;
     }
 
-    return <Trans>No opportunities match the selected filters.</Trans>;
+    return <Trans>No matches for selected filters</Trans>;
   }, [activeFilter, allOpportunities.length, chainId, searchQuery, userAssets.size]);
 
   return (
     <EarnPageLayout>
-      <ColorfulBanner>
-        <Trans>
-          Maximize your earnings on your ecosystem tokens (GMX, GLV and GM) with the following integrated partner
-          protocols.
-        </Trans>
-      </ColorfulBanner>
-
       <div className="flex flex-col gap-8">
         <OpportunityFilters activeFilter={activeFilter} search={searchQuery} onSearchChange={setSearchQuery} />
 
-        {filteredOpportunities.length > 0 ? (
+        {activeFilter === "for-me" && !isUserDataLoaded ? (
+          <Loader />
+        ) : filteredOpportunities.length > 0 ? (
           <div className="grid grid-cols-2 gap-8 max-lg:grid-cols-1">
             {filteredOpportunities.map((opportunity) => (
               <OpportunityCard
@@ -201,7 +210,9 @@ export default function EarnAdditionalOpportunitiesPage() {
             ))}
           </div>
         ) : (
-          <div className="rounded-12 bg-slate-900 p-20 text-13 text-typography-secondary">{emptyStateMessage}</div>
+          <div className="text-body-medium rounded-12 bg-slate-900 p-20 text-typography-secondary">
+            {emptyStateMessage}
+          </div>
         )}
       </div>
     </EarnPageLayout>

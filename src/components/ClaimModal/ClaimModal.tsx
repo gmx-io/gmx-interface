@@ -103,7 +103,7 @@ function ClaimModalSettlementChain(p: Props) {
   const buttonState = useMemo(() => {
     if (hasOutdatedUi) {
       return {
-        text: t`Page outdated, please refresh`,
+        text: t`Page outdated. Refresh`,
         disabled: true,
       };
     }
@@ -199,7 +199,7 @@ function ClaimModalMultichain(p: Props) {
 
   const onSubmit = useCallback(() => {
     const onMissingParams = () => {
-      helperToast.error(t`No necessary params to claim. Retry in a few seconds.`);
+      helperToast.error(t`Missing claim params. Retry in a few seconds`);
       metrics.pushError(new Error("No necessary params to claim"), "expressClaimFundingFees");
     };
 
@@ -234,14 +234,13 @@ function ClaimModalMultichain(p: Props) {
 
         const request = await sendExpressTransaction({
           chainId,
-          isSponsoredCall: expressTxnParams.isSponsoredCall,
           txnData,
         });
 
-        helperToast.success(
+        helperToast.info(
           <div className="flex items-center justify-between">
             <div className="text-white/50">
-              <Trans>Claiming funding fees...</Trans>
+              <Trans>Claiming...</Trans>
             </div>
             <SpinnerIcon className="spin size-15 text-white" />
           </div>,
@@ -250,7 +249,7 @@ function ClaimModalMultichain(p: Props) {
         request.wait().then((res) => {
           if (res.status === "success") {
             toast.update("funding-claimed", {
-              render: t`Success claiming funding fees`,
+              render: t`Funding fees claimed`,
               type: "success",
               autoClose: TOAST_AUTO_CLOSE_TIME,
             });
@@ -282,7 +281,7 @@ function ClaimModalMultichain(p: Props) {
   const buttonState = useMemo(() => {
     if (hasOutdatedUi) {
       return {
-        text: t`Page outdated, please refresh`,
+        text: t`Page outdated. Refresh`,
         disabled: true,
       };
     }
@@ -393,7 +392,7 @@ function ClaimModalComponent(p: {
       className="Confirmation-box ClaimableModal"
       isVisible={p.isVisible}
       setIsVisible={onClose}
-      label={t`Confirm Claim`}
+      label={t`Confirm claim`}
     >
       <div className="ConfirmationBox-main">
         <div className="text-center">
@@ -415,10 +414,10 @@ function ClaimModalComponent(p: {
           <Tooltip
             className="ClaimSettleModal-tooltip-text-gray"
             position="top-end"
-            handle={t`FUNDING FEE`}
+            handle={t`Funding fee`}
             renderContent={() => (
               <Trans>
-                <span className="text-typography-primary">Claimable Funding Fee.</span>
+                <span className="text-typography-primary">Positive funding fees accrued from your positions</span>
               </Trans>
             )}
           />

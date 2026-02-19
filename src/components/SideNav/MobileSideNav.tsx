@@ -10,6 +10,7 @@ import CloseIcon from "img/ic_close.svg?react";
 import { LanguageNavItem } from "./LanguageNavItem";
 import { SettingsNavItem } from "./SettingsNavItem";
 import { DocsNavItem, LogoSection, MenuSection } from "./SideNav";
+import { SupportChatNavItem } from "./SupportChatNavItem";
 
 export function MobileSideNav() {
   const [isOpen, setIsOpen] = useState(false);
@@ -44,6 +45,7 @@ export function MobileSideNav() {
 
               <div className="border-b-1/2 border-slate-600 p-8">
                 <ul className="flex list-none flex-col px-0">
+                  <SupportChatNavItem isCollapsed={false} onClick={handleToggle} />
                   <SettingsNavItem isCollapsed={false} onClick={handleToggle} />
                   <LanguageNavItem isCollapsed={false} />
                   <DocsNavItem isCollapsed={false} />

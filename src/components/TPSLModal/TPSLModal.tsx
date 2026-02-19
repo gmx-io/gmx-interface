@@ -38,7 +38,7 @@ import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import Tabs from "components/Tabs/Tabs";
 
-import PlusIcon from "img/ic_buy.svg?react";
+import PlusIcon from "img/ic_plus.svg?react";
 
 import { AddTPSLModal } from "./AddTPSLModal";
 import { TPSLOrdersList } from "./TPSLOrdersList";
@@ -49,14 +49,17 @@ type Props = {
   isVisible: boolean;
   setIsVisible: (visible: boolean) => void;
   position: PositionInfo;
+  /**
+   * When "add", the modal opens directly into the AddTPSLModal form.
+   * When "list" (default), it shows the TP/SL orders list.
+   */
+  initialView?: "list" | "add";
 };
 
-export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
+export function TPSLModal({ isVisible, setIsVisible, position, initialView = "list" }: Props) {
   const [activeTab, setActiveTab] = useState<TabType>("all");
   const [isCancellingAll, setIsCancellingAll] = useState(false);
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
-  const [shouldReopenOnAddClose, setShouldReopenOnAddClose] = useState(false);
-  const [shouldReopenOnEditClose, setShouldReopenOnEditClose] = useState(false);
 
   const { isTablet } = useBreakpoints();
   const isMobile = isTablet;
@@ -117,7 +120,7 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
         value: "takeProfit" as TabType,
         label: (
           <>
-            <Trans>Take Profit</Trans> {tpOrders.length > 0 ? <Badge>{tpOrders.length}</Badge> : null}
+            <Trans>Take-Profit</Trans> {tpOrders.length > 0 ? <Badge>{tpOrders.length}</Badge> : null}
           </>
         ),
       },
@@ -125,7 +128,7 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
         value: "stopLoss" as TabType,
         label: (
           <>
-            <Trans>Stop Loss</Trans> {slOrders.length > 0 ? <Badge>{slOrders.length}</Badge> : null}
+            <Trans>Stop-Loss</Trans> {slOrders.length > 0 ? <Badge>{slOrders.length}</Badge> : null}
           </>
         ),
       },
@@ -188,58 +191,65 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
     setCancellingOrdersKeys,
   ]);
 
+  // When the modal opens, sync the view to initialView.
+  // When it closes, reset the add form state.
+  useEffect(() => {
+    if (isVisible) {
+      setIsAddFormVisible(initialView === "add");
+    } else {
+      setIsAddFormVisible(false);
+    }
+  }, [isVisible, initialView]);
+
   const handleAddTPSLOpen = useCallback(() => {
-    setShouldReopenOnAddClose(false);
-    setIsVisible(false);
     setIsAddFormVisible(true);
-  }, [setIsAddFormVisible, setIsVisible, setShouldReopenOnAddClose]);
+  }, []);
+
+  /**
+   * Wrapper for AddTPSLModal's setIsVisible.
+   * When AddTPSLModal closes for ANY reason (X button, backdrop, Escape, back, success),
+   * this fires with visible=false and always reopens the TPSLModal list view.
+   */
+  const handleAddFormVisibilityChange = useCallback(
+    (visible: boolean) => {
+      setIsAddFormVisible(visible);
+      if (!visible) {
+        // Always reopen TPSLModal when AddTPSLModal closes
+        setIsVisible(true);
+      }
+    },
+    [setIsVisible]
+  );
 
   const handleAddTPSLBack = useCallback(() => {
-    setShouldReopenOnAddClose(true);
     setIsAddFormVisible(false);
-  }, [setIsAddFormVisible, setShouldReopenOnAddClose]);
+  }, []);
 
-  const handleAddTPSLSuccess = useCallback(() => {
-    setShouldReopenOnAddClose(true);
-  }, [setShouldReopenOnAddClose]);
+  // Reactively hide TPSLModal when OrderEditor is open from this modal.
+  // This avoids timing issues from trying to coordinate setIsVisible + setEditingOrderState.
+  const isEditingFromTPSL = !!editingOrderState?.orderKey && editingOrderState.source === "TPSLModal";
+
+  // Clean up intermediate state left by OrderEditor's "Back" action
+  // (sets orderKey=undefined but keeps source="TPSLModal")
+  useEffect(() => {
+    if (editingOrderState && editingOrderState.source === "TPSLModal" && !editingOrderState.orderKey) {
+      setEditingOrderState(undefined);
+    }
+  }, [editingOrderState, setEditingOrderState]);
 
   const handleEditOrder = useCallback(
     (orderKey: string) => {
-      setIsVisible(false);
-      setShouldReopenOnEditClose(true);
       setEditingOrderState({ orderKey, source: "TPSLModal" });
     },
-    [setEditingOrderState, setIsVisible]
+    [setEditingOrderState]
   );
-
-  useEffect(() => {
-    if (!isAddFormVisible && shouldReopenOnAddClose) {
-      setIsVisible(true);
-      setShouldReopenOnAddClose(false);
-    }
-  }, [isAddFormVisible, shouldReopenOnAddClose, setIsVisible]);
-
-  useEffect(() => {
-    if (shouldReopenOnEditClose && editingOrderState?.source === "TPSLModal" && !editingOrderState.orderKey) {
-      setIsVisible(true);
-      setEditingOrderState(undefined);
-      setShouldReopenOnEditClose(false);
-    }
-  }, [editingOrderState, setEditingOrderState, setIsVisible, shouldReopenOnEditClose]);
-
-  useEffect(() => {
-    if (!shouldReopenOnEditClose) return;
-    if (!editingOrderState || editingOrderState.source !== "TPSLModal") {
-      setShouldReopenOnEditClose(false);
-    }
-  }, [editingOrderState, shouldReopenOnEditClose]);
 
   const positionTitle = `${position.isLong ? t`Long` : t`Short`} ${getMarketIndexName({ indexToken: position.indexToken, isSpotOnly: false })} `;
 
   return (
     <>
       <Modal
-        isVisible={isVisible}
+        isVisible={isVisible && !isAddFormVisible && !isEditingFromTPSL}
         setIsVisible={setIsVisible}
         label={<Trans>TP/SL: {positionTitle}</Trans>}
         className="max-lg:!w-full max-lg:!items-end"
@@ -251,7 +261,7 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
         <div className="mt-16 flex gap-32 border-t-1/2 border-slate-600 px-20 py-12 max-md:gap-16 max-md:px-16">
           <div className="flex flex-col">
             <span className="text-body-small text-typography-secondary">
-              <Trans>Entry Price</Trans>
+              <Trans>Entry price</Trans>
             </span>
             <span className="text-body-medium numbers">
               {formatUsd(position.entryPrice, {
@@ -262,7 +272,7 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
           </div>
           <div className="flex flex-col">
             <span className="text-body-small text-typography-secondary">
-              <Trans>Mark Price</Trans>
+              <Trans>Mark price</Trans>
             </span>
             <span className="text-body-medium numbers">
               {formatUsd(position.markPrice, {
@@ -273,7 +283,7 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
           </div>
           <div className="flex flex-col">
             <span className="text-body-small text-typography-secondary">
-              <Trans>Liquidation Price</Trans>
+              <Trans>Liquidation price</Trans>
             </span>
             <span
               className={cx("text-body-medium numbers", {
@@ -335,10 +345,9 @@ export function TPSLModal({ isVisible, setIsVisible, position }: Props) {
 
       <AddTPSLModal
         isVisible={isAddFormVisible}
-        setIsVisible={setIsAddFormVisible}
+        setIsVisible={handleAddFormVisibilityChange}
         position={position}
         onBack={handleAddTPSLBack}
-        onSuccess={handleAddTPSLSuccess}
       />
     </>
   );

@@ -22,7 +22,7 @@ export function BaseAssetCard({
           {icon}
           <div className="flex flex-col">
             <span className="text-body-large font-medium text-typography-primary">{title}</span>
-            {subtitle ? <span className="text-12 text-typography-secondary">{subtitle}</span> : null}
+            {subtitle ? <span className="text-body-small text-typography-secondary">{subtitle}</span> : null}
           </div>
         </div>
 

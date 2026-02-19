@@ -10,7 +10,6 @@ import {
   zeroHash,
 } from "viem";
 
-import { BOTANIX } from "config/chains";
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN, multichainBalanceKey } from "config/dataStore";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
@@ -56,7 +55,6 @@ import { AnyChainId, ContractsChainId, SettlementChainId, SourceChainId } from "
 import { ContractName } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { bigMath } from "sdk/utils/bigmath";
-import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import {
   BatchOrderTxnParams,
   CreateOrderPayload,
@@ -256,7 +254,6 @@ export async function estimateExpressParams({
     l1Reference,
     tokenPermits: rawTokenPermits,
     gasPrice,
-    isSponsoredCall,
     bufferBps,
     gasPaymentAllowanceData,
   } = globalExpressParams;
@@ -435,11 +432,7 @@ export async function estimateExpressParams({
   }
 
   let relayerFeeAmount: bigint;
-  if (isSponsoredCall) {
-    relayerFeeAmount = applyFactor(gasLimit * gasPrice, gasLimits.gelatoRelayFeeMultiplierFactor);
-  } else {
-    relayerFeeAmount = await gelatoRelay.getEstimatedFee(BigInt(chainId), relayerFeeToken.address, gasLimit, false);
-  }
+  relayerFeeAmount = applyFactor(gasLimit * gasPrice, gasLimits.gelatoRelayFeeMultiplierFactor);
 
   const buffer = bigMath.mulDiv(relayerFeeAmount, BigInt(bufferBps), BASIS_POINTS_DIVISOR_BIGINT);
   relayerFeeAmount += buffer;
@@ -484,7 +477,7 @@ export async function estimateExpressParams({
     tokenPermits,
   });
 
-  if (requireValidations && !getIsValidExpressParams({ chainId, gasPaymentValidations, isSponsoredCall })) {
+  if (requireValidations && !getIsValidExpressParams({ chainId, gasPaymentValidations })) {
     if (throwOnInvalid) {
       throw new ExpressEstimationInsufficientGasPaymentTokenBalanceError({
         balance: isGmxAccount ? gasPaymentToken.gmxAccountBalance : gasPaymentToken.walletBalance,
@@ -498,7 +491,6 @@ export async function estimateExpressParams({
     chainId,
     subaccount,
     relayParamsPayload: finalRelayParams,
-    isSponsoredCall,
     gasPaymentParams: finalRelayFeeParams.gasPaymentParams,
     executionFeeAmount,
     executionGasLimit,
@@ -513,18 +505,11 @@ export async function estimateExpressParams({
 }
 
 export function getIsValidExpressParams({
-  chainId,
   gasPaymentValidations,
-  isSponsoredCall,
 }: {
-  chainId: number;
-  isSponsoredCall: boolean;
   gasPaymentValidations: GasPaymentValidations;
+  [key: string]: unknown;
 }): boolean {
-  if (chainId === BOTANIX && !isSponsoredCall) {
-    return false;
-  }
-
   return gasPaymentValidations.isValid;
 }
 

@@ -82,7 +82,7 @@ export function GmListItem({
   const srcChainId = useSelector(selectSrcChainId);
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
   const tokensData = useTokensData();
-  const userEarnings = useUserEarnings(chainId, srcChainId);
+  const { userEarnings } = useUserEarnings(chainId, srcChainId);
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { showDebugValues } = useSettings();
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
@@ -190,7 +190,7 @@ export function GmListItem({
 
         <div className="flex flex-col gap-10 border-t border-slate-600 pt-8">
           <SyntheticsInfoRow
-            label={<Trans>TVL (Supply)</Trans>}
+            label={<Trans>TVL (supply)</Trans>}
             value={
               <AmountWithUsdHuman
                 amount={totalSupply}
@@ -232,7 +232,7 @@ export function GmListItem({
         </div>
 
         <Button variant="secondary" className="mt-12" to={`/pools/details?market=${marketOrGlvTokenAddress}`}>
-          <Trans>View Details</Trans>
+          <Trans>View details</Trans>
         </Button>
       </div>
     );

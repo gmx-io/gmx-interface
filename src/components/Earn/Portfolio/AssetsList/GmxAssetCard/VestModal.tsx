@@ -227,9 +227,9 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
 
     setIsDepositing(true);
     callContract(chainId, contract, "deposit", [depositAmount], {
-      sentMsg: t`Deposit submitted.`,
-      failMsg: t`Deposit failed.`,
-      successMsg: t`Deposited.`,
+      sentMsg: t`Deposit submitted`,
+      failMsg: t`Deposit failed`,
+      successMsg: t`Deposited`,
       setPendingTxns,
     })
       .then(() => {
@@ -252,9 +252,9 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
 
     setIsWithdrawing(true);
     callContract(chainId, contract, "withdraw", [], {
-      sentMsg: t`Withdraw submitted.`,
-      failMsg: t`Withdraw failed.`,
-      successMsg: t`Withdrawn.`,
+      sentMsg: t`Withdraw submitted`,
+      failMsg: t`Withdraw failed`,
+      successMsg: t`Withdrawn`,
       setPendingTxns,
     })
       .then(() => {
@@ -275,9 +275,9 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
 
     setIsClaiming(true);
     callContract(chainId, contract, "claim", [], {
-      sentMsg: t`Claim submitted.`,
-      failMsg: t`Claim failed.`,
-      successMsg: t`Claim completed!`,
+      sentMsg: t`Claim submitted`,
+      failMsg: t`Claim failed`,
+      successMsg: t`Claimed`,
       setPendingTxns,
     })
       .then(() => {
@@ -292,8 +292,8 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
 
   const vaultTabs = useMemo(
     () => [
-      { value: "gmx", label: <Trans>GMX Vault</Trans> },
-      { value: "affiliate", label: <Trans>Affiliate Vault</Trans> },
+      { value: "gmx", label: <Trans>GMX vault</Trans> },
+      { value: "affiliate", label: <Trans>Affiliate vault</Trans> },
     ],
     []
   );
@@ -323,20 +323,23 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
 
   const actionPrimaryText = useMemo(() => {
     if (hasOutdatedUi) {
-      return t`Page outdated, please refresh`;
+      return t`Page outdated. Refresh`;
     }
 
     if (activeAction === "deposit") {
       if (depositError) {
         return depositError;
       }
-      return isDepositing ? <Trans>Depositing</Trans> : <Trans>Deposit</Trans>;
+      return isDepositing ? <Trans>Depositing...</Trans> : <Trans>Deposit</Trans>;
     }
     if (activeAction === "withdraw") {
       if (vestedAmount === undefined || vestedAmount === 0n) {
         return <Trans>No funds to withdraw</Trans>;
       }
-      return isWithdrawing ? <Trans>Confirming...</Trans> : <Trans>Confirm Withdraw</Trans>;
+      if (selectedVault === "gmx") {
+        return isWithdrawing ? <Trans>Confirming...</Trans> : <Trans>Withdraw and unreserve GMX</Trans>;
+      }
+      return isWithdrawing ? <Trans>Confirming...</Trans> : <Trans>Confirm withdraw</Trans>;
     }
 
     if (claimableAmount === undefined || claimableAmount === 0n) {
@@ -353,6 +356,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
     isWithdrawing,
     vestedAmount,
     claimableAmount,
+    selectedVault,
   ]);
 
   const isPrimaryDisabled = useMemo(() => {
@@ -418,7 +422,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
       onClick={() => openConnectModal?.()}
       disabled={!openConnectModal}
     >
-      <Trans>Connect Wallet</Trans>
+      <Trans>Connect wallet</Trans>
     </Button>
   );
 
@@ -445,16 +449,14 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
           regularOptionClassname="grow"
         />
 
-        <div className="flex flex-col gap-8 px-20">
+        <div className="flex flex-col gap-8 px-20 pb-20">
           {!isReadVestingDetailsBannerClosed && (
             <AlertInfoCard type="info" onClose={() => setIsReadVestingDetailsBannerClosed(true)}>
               <div>
-                <Trans>
-                  Convert esGMX tokens to GMX tokens. Please read the vesting details before using the vaults.
-                </Trans>
+                <Trans>Convert esGMX to GMX tokens. Read the vesting details before using the vaults.</Trans>
 
                 <ColorfulButtonLink to="https://docs.gmx.io/docs/tokenomics/rewards#vesting" newTab>
-                  Read details
+                  <Trans>Read details</Trans>
                 </ColorfulButtonLink>
               </div>
             </AlertInfoCard>
@@ -478,10 +480,11 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                 }
                 inputValue={depositValues[selectedVault]}
                 onInputValueChange={(e) => handleSetDepositValue(e.target.value)}
+                maxDecimals={18}
               >
                 <div className="flex items-center gap-4">
                   <EsGmxIcon />
-                  esGMX
+                  {t`esGMX`}
                 </div>
               </BuyInputSection>
               <SwitchToSettlementChainWarning topic="vesting" />
@@ -497,10 +500,11 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                 topLeftLabel={t`Withdraw`}
                 inputValue={formatGmxAmount((vestedAmount ?? 0n) - (claimSum ?? 0n))}
                 isDisabled
+                maxDecimals={18}
               >
                 <div className="flex items-center gap-4">
                   <EsGmxIcon />
-                  esGMX
+                  {t`esGMX`}
                 </div>
               </BuyInputSection>
               <SwitchToSettlementChainWarning topic="vesting" />
@@ -512,10 +516,15 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
 
           {activeAction === "claim" && (
             <>
-              <BuyInputSection topLeftLabel={t`Claim`} inputValue={formatGmxAmount(claimableAmount)} isDisabled>
+              <BuyInputSection
+                topLeftLabel={t`Claim`}
+                inputValue={formatGmxAmount(claimableAmount)}
+                isDisabled
+                maxDecimals={18}
+              >
                 <div className="flex items-center gap-4">
                   <GmxIcon className="size-20" />
-                  GMX
+                  {t`GMX`}
                 </div>
               </BuyInputSection>
               <SwitchToSettlementChainWarning topic="staking" />
@@ -528,12 +537,12 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
           <div className="mt-8 flex flex-col gap-12">
             <ProgressRow
               label={<Trans>Claimable</Trans>}
-              value={`${formatGmxAmount(claimableAmount)} GMX`}
+              value={t`${formatGmxAmount(claimableAmount)} GMX`}
               currentValue={claimableAmount}
               totalValue={vestedAmount}
             />
             <ProgressRow
-              label={<Trans>Vesting Status</Trans>}
+              label={<Trans>Vesting status</Trans>}
               value={
                 <TooltipWithPortal
                   handle={`${formatGmxAmount(claimSum)} / ${formatGmxAmount(vestedAmount)}`}
@@ -541,8 +550,10 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                   handleClassName="whitespace-nowrap"
                   content={
                     <span>
-                      {formatGmxAmount(claimSum)} tokens have been converted to GMX from the{" "}
-                      {formatGmxAmount(vestedAmount)} esGMX deposited for vesting.
+                      <Trans>
+                        {formatGmxAmount(claimSum)} tokens converted to GMX from the {formatGmxAmount(vestedAmount)}{" "}
+                        esGMX deposited for vesting.
+                      </Trans>
                     </span>
                   }
                 />
@@ -563,7 +574,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                     content={
                       <div>
                         <StatsTooltipRow
-                          label={<Trans>Current Reserved:</Trans>}
+                          label={<Trans>Current reserved:</Trans>}
                           value={formatGmxAmount(gmxDepositConfig.reserveAmount)}
                           showDollar={false}
                         />
@@ -581,7 +592,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
               />
             )}
             <ProgressRow
-              label={<Trans>Vault Capacity</Trans>}
+              label={<Trans>Vault capacity</Trans>}
               value={
                 <TooltipWithPortal
                   handle={`${formatGmxAmount(
@@ -596,7 +607,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                         showDollar={false}
                       />
                       <StatsTooltipRow
-                        label={<Trans>Max Capacity:</Trans>}
+                        label={<Trans>Max capacity:</Trans>}
                         value={formatGmxAmount(depositConfig.maxVestableAmount)}
                         showDollar={false}
                       />

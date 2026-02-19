@@ -54,6 +54,7 @@ import {
 import { ValidationBannerErrorName, getDefaultInsufficientGasMessage } from "domain/synthetics/trade/utils/validation";
 import { NativeTokenSupportedAddress, approveTokens } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
+import { AddressablePixelEventName, sendAddressablePixelEvent } from "lib/addressablePixel";
 import { useChainId } from "lib/chains";
 import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
 import { helperToast } from "lib/helperToast";
@@ -66,7 +67,7 @@ import {
   sendTxnErrorMetric,
   sendTxnSentMetric,
 } from "lib/metrics";
-import { USD_DECIMALS, adjustForDecimals, expandDecimals, formatUsd } from "lib/numbers";
+import { USD_DECIMALS, adjustForDecimals, bigintToNumber, expandDecimals, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -560,7 +561,7 @@ export const DepositView = () => {
   const subaccountState = useSubaccountContext();
 
   const isGeminiWallet = useIsGeminiWallet();
-  const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
+  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
   const isExpressTradingDisabled = isNonEoaAccountOnAnyChain || isGeminiWallet;
   const hasOutdatedUi = useHasOutdatedUi();
 
@@ -574,6 +575,16 @@ export const DepositView = () => {
         helperToast.success("Deposit sent", { toastId: "same-chain-gmx-account-deposit" });
         setIsVisibleOrView("main");
         setIsSubmitting(false);
+
+        const sizeInUsdValue = latestInputAmountUsd.current;
+        if (sizeInUsdValue !== undefined && sizeInUsdValue > 0n) {
+          sendAddressablePixelEvent({
+            eventName: AddressablePixelEventName.DepositSuccess,
+            sizeInUsd: bigintToNumber(sizeInUsdValue, USD_DECIMALS),
+            chainId: depositViewChain ?? settlementChainId,
+          });
+        }
+
         if (txnEvent.data.type === "wallet" && depositViewTokenAddress && inputAmount !== undefined) {
           const txnHash = txnEvent.data.transactionHash;
           const mockId = setMultichainSubmittedDeposit({
@@ -621,8 +632,10 @@ export const DepositView = () => {
     },
     [
       account,
+      depositViewChain,
       depositViewTokenAddress,
       inputAmount,
+      latestInputAmountUsd,
       setIsVisibleOrView,
       setMultichainFundingPendingId,
       setMultichainSubmittedDeposit,
@@ -700,6 +713,14 @@ export const DepositView = () => {
 
           sendTxnSentMetric(params.metricId);
 
+          if (latestInputAmountUsd.current !== undefined) {
+            sendAddressablePixelEvent({
+              eventName: AddressablePixelEventName.DepositSuccess,
+              sizeInUsd: bigintToNumber(latestInputAmountUsd.current, USD_DECIMALS),
+              chainId: params.depositViewChain ?? settlementChainId,
+            });
+          }
+
           let submittedDepositGuid: string | undefined;
 
           if (txnEvent.data.type === "wallet") {
@@ -742,12 +763,13 @@ export const DepositView = () => {
         }
       },
     [
-      setIsVisibleOrView,
+      latestInputAmountUsd,
+      settlementChainId,
       setMultichainSubmittedDeposit,
       setSelectedTransferGuid,
-      settlementChainId,
       subaccountState.subaccount,
       isExpressTradingDisabled,
+      setIsVisibleOrView,
     ]
   );
 
@@ -951,7 +973,7 @@ export const DepositView = () => {
     };
   } else if (hasOutdatedUi) {
     buttonState = {
-      text: t`Page outdated, please refresh`,
+      text: t`Page outdated. Refresh`,
       disabled: true,
     };
   } else if (isApproving) {
@@ -974,7 +996,7 @@ export const DepositView = () => {
     };
   } else if (needTokenApprove) {
     buttonState = {
-      text: t`Allow ${selectedToken?.symbol} to be spent`,
+      text: t`Allow ${selectedToken?.symbol} spending`,
       onClick: handleApprove,
     };
   } else if (isSubmitting) {
@@ -1150,7 +1172,7 @@ export const DepositView = () => {
                   </>
                 ) : (
                   <span className="text-typography-secondary">
-                    <Trans>Pick an asset to deposit</Trans>
+                    <Trans>Select an asset to deposit</Trans>
                   </span>
                 )}
               </div>
@@ -1171,7 +1193,7 @@ export const DepositView = () => {
         {depositViewChain !== undefined && (
           <div className="flex flex-col gap-6">
             <div className="text-body-medium text-typography-secondary">
-              <Trans>From Network</Trans>
+              <Trans>From network</Trans>
             </div>
             <div className="flex items-center gap-8 rounded-8 border border-slate-600 px-14 py-13">
               <img src={getChainIcon(depositViewChain)} alt={getChainName(depositViewChain)} className="size-20" />
@@ -1199,6 +1221,7 @@ export const DepositView = () => {
               className="w-full rounded-8 border border-slate-800 bg-slate-800 py-13 pl-12 pr-96 text-16 leading-base
                          focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
               placeholder="0.00"
+              maxDecimals={selectedTokenSourceChainDecimals}
             />
             <div className="pointer-events-none absolute right-14 top-1/2 flex -translate-y-1/2 items-center gap-8">
               <span className="text-typography-secondary">{selectedToken?.symbol}</span>
@@ -1221,25 +1244,25 @@ export const DepositView = () => {
       {isAvalancheSettlement && (
         <AlertInfoCard type="error" className="mt-8" hideClose>
           <div>
-            <Trans>Depositing is not supported on Avalanche anymore.</Trans>
+            <Trans>Deposits are not supported on Avalanche.</Trans>
           </div>
         </AlertInfoCard>
       )}
       {isAboveLimit && (
-        <AlertInfoCard type="warning" className="mt-8">
+        <AlertInfoCard type="warning" className="mt-8" hideClose>
           <div>
             <Trans>
-              The amount you are trying to deposit exceeds the limit. Please try an amount smaller than{" "}
+              Amount exceeds the deposit limit. Try an amount smaller than{" "}
               <span className="numbers">{upperLimitFormatted}</span>.
             </Trans>
           </div>
         </AlertInfoCard>
       )}
       {isBelowLimit && (
-        <AlertInfoCard type="warning" className="mt-8">
+        <AlertInfoCard type="warning" className="mt-8" hideClose>
           <div>
             <Trans>
-              The amount you are trying to deposit is below the limit. Please try an amount larger than{" "}
+              Amount is below the deposit limit. Try an amount larger than{" "}
               <span className="numbers">{lowerLimitFormatted}</span>.
             </Trans>
           </div>
@@ -1263,17 +1286,17 @@ export const DepositView = () => {
 
       {depositViewTokenAddress && (
         <div className="mb-16 flex flex-col gap-10">
-          <SyntheticsInfoRow label={<Trans>Estimated Time</Trans>} value={estimatedTimeValue} />
+          <SyntheticsInfoRow label={<Trans>Estimated time</Trans>} value={estimatedTimeValue} />
           <SyntheticsInfoRow
-            label={<Trans>Network Fee</Trans>}
+            label={<Trans>Network fee</Trans>}
             value={isNetworkFeeLoading ? valueSkeleton : networkFeeValue}
           />
           <SyntheticsInfoRow
-            label={<Trans>Deposit Fee</Trans>}
+            label={<Trans>Deposit fee</Trans>}
             value={isDepositFeeLoading ? valueSkeleton : depositFeeValue}
           />
           <SyntheticsInfoRow
-            label={<Trans>GMX Balance</Trans>}
+            label={<Trans>GMX balance</Trans>}
             value={
               isGmxBalanceLoading ? (
                 valueSkeleton

@@ -354,7 +354,7 @@ export function PositionEditor() {
         setIsVisible={onClose}
         label={
           <Trans>
-            Edit Collateral: {position?.isLong ? t`Long` : t`Short`}{" "}
+            Edit collateral: {position?.isLong ? t`Long` : t`Short`}{" "}
             {position?.indexToken && getTokenVisualMultiplier(position.indexToken)}
             {position?.indexToken?.symbol}/USD
           </Trans>
@@ -387,6 +387,7 @@ export function PositionEditor() {
               inputValue={collateralInputValue}
               onInputValueChange={(e) => setCollateralInputValue(e.target.value)}
               qa="amount-input"
+              maxDecimals={collateralToken?.decimals ?? position?.collateralToken?.decimals ?? 0}
             >
               {hasMultipleTokens ? (
                 <PositionEditorCollateralSelector
@@ -429,14 +430,14 @@ export function PositionEditor() {
                 </AlertInfoCard>
               )}
 
-              <div>{button}</div>
-
               <ExpressTradingWarningCard
                 expressParams={submitButtonState.expressParams}
                 payTokenAddress={undefined}
                 isWrapOrUnwrap={false}
                 isGmxAccount={isCollateralTokenFromGmxAccount}
               />
+
+              <div>{button}</div>
 
               {!isDeposit && (
                 <SyntheticsInfoRow
@@ -452,7 +453,7 @@ export function PositionEditor() {
               )}
 
               <SyntheticsInfoRow
-                label={t`Liquidation Price`}
+                label={t`Liquidation price`}
                 value={
                   <ValueTransition
                     from={formatLiquidationPrice(position.liquidationPrice, {

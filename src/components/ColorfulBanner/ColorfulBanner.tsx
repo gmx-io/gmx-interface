@@ -64,17 +64,17 @@ export function ColorfulBanner({
       )}
       onClick={onClick}
     >
-      <div className="flex gap-8">
+      <div className="flex min-w-0 grow items-center gap-8">
         {Icon && (
           <div className={cx("shrink-0 text-20", colorSchemas[color].icon)}>
             <Icon className="size-20 p-[1.25px]" />
           </div>
         )}
-        <div className="flex flex-col justify-center">{children}</div>
+        <div className="min-w-0 grow">{children}</div>
       </div>
       {onClose && (
         <button
-          className={cx("h-fit p-2 text-typography-secondary hover:text-typography-primary")}
+          className={cx("h-fit shrink-0 p-2 text-typography-secondary hover:text-typography-primary")}
           onClick={handleClose}
         >
           <CloseIcon className="size-16" />

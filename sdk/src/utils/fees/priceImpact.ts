@@ -518,7 +518,13 @@ export function applyImpactFactor(diff: bigint, factor: bigint, exponent: bigint
   const _exponent = Number(exponent) / 10 ** 30;
 
   // Pow and convert back to BigInt with 30 decimals
-  let result = bigNumberify(BigInt(Math.round(_diff ** _exponent * 10 ** 30)))!;
+  const powered = _diff ** _exponent * 10 ** 30;
+
+  if (!isFinite(powered) || isNaN(powered)) {
+    return 0n;
+  }
+
+  let result = bigNumberify(BigInt(Math.round(powered)))!;
 
   result = (result * factor) / expandDecimals(1, 30);
 

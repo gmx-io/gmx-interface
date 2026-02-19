@@ -19,8 +19,8 @@ import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import AlertIcon from "img/ic_alert.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
 
-const defaultMarks = [0.1, 25, 50];
-const DEFAULT_LEVERAGE = 20;
+export const DEFAULT_LEVERAGE_MARKS = [0.1, 25, 50];
+export const DEFAULT_LEVERAGE = 20;
 
 type Props = {
   value: number | null;
@@ -39,7 +39,7 @@ function formatLeverage(value: number) {
 }
 
 export function LeverageField({ value, onChange, marks, disabled }: Props) {
-  const finalMarks = useMemo(() => (marks?.length ? marks : defaultMarks), [marks]);
+  const finalMarks = useMemo(() => (marks?.length ? marks : DEFAULT_LEVERAGE_MARKS), [marks]);
   const minMark = finalMarks[0] ?? DEFAULT_LEVERAGE;
   const maxMark = finalMarks.at(-1) ?? DEFAULT_LEVERAGE;
 
@@ -56,7 +56,7 @@ export function LeverageField({ value, onChange, marks, disabled }: Props) {
   const { refs, floatingStyles, context } = useFloating({
     open: isOpen,
     onOpenChange: setIsOpen,
-    middleware: [offset(8), flip(), shift()],
+    middleware: [offset(4), flip(), shift()],
     placement: "bottom-start",
     whileElementsMounted: autoUpdate,
   });
@@ -137,15 +137,29 @@ export function LeverageField({ value, onChange, marks, disabled }: Props) {
         ref={refs.setReference}
         data-qa="leverage-slider"
         className={cx(
-          "user-select-none flex w-48 items-center justify-between gap-10 rounded-4 bg-slate-800 px-8",
-          disabled ? "pointer-events-none cursor-default opacity-50" : "group cursor-pointer"
+          "user-select-none flex w-48 items-center justify-between gap-10 rounded-4 px-8",
+          disabled
+            ? "pointer-events-none cursor-default bg-slate-800 opacity-50"
+            : isOpen
+              ? "cursor-pointer bg-slate-700"
+              : "group cursor-pointer bg-slate-800"
         )}
         onClick={handleFieldClick}
         {...getReferenceProps()}
       >
-        <span className={cx("text-13 text-typography-primary", { "group-hover:text-blue-300": !disabled })}>
+        <span
+          className={cx("text-13", isOpen ? "text-blue-300" : "text-typography-primary", {
+            "group-hover:text-blue-300": !disabled && !isOpen,
+          })}
+        >
           {displayValue}
-          <span className={cx("ml-4 text-typography-secondary", { "group-hover:text-blue-300": !disabled })}>x</span>
+          <span
+            className={cx("ml-4", isOpen ? "text-blue-300" : "text-typography-secondary", {
+              "group-hover:text-blue-300": !disabled && !isOpen,
+            })}
+          >
+            x
+          </span>
         </span>
       </div>
 
@@ -154,11 +168,11 @@ export function LeverageField({ value, onChange, marks, disabled }: Props) {
           <div
             ref={refs.setFloating}
             style={floatingStyles}
-            className="z-[1000] w-[376px] rounded-4 border border-slate-600 bg-slate-900 p-16 max-md:max-w-[100vw] max-md:px-12 md:max-w-[90vw]"
+            className="z-[1000] w-[376px] max-w-[calc(100vw-24px)] rounded-8 border-1/2 border-slate-600 bg-slate-900 p-16 max-md:px-12"
             {...getFloatingProps()}
           >
-            <div className="mb-16 flex items-center justify-between">
-              <span className="text-16 font-medium text-typography-primary">{t`Adjust Leverage`}</span>
+            <div className="mb-4 flex items-center justify-between">
+              <span className="text-16 font-medium text-typography-primary">{t`Adjust leverage`}</span>
               <button onClick={handleClose} className="text-typography-secondary hover:text-typography-primary">
                 <CloseIcon className="size-20" />
               </button>
@@ -177,8 +191,8 @@ export function LeverageField({ value, onChange, marks, disabled }: Props) {
                   className="!rounded-4 border border-slate-600 bg-slate-800 !py-6"
                 />
               </div>
-              <ColorfulBanner icon={AlertIcon}>
-                <Trans>High leverage increases liquidation risk.</Trans>
+              <ColorfulBanner color="yellow" icon={AlertIcon}>
+                <Trans>High leverage increases liquidation risk</Trans>
               </ColorfulBanner>
             </div>
           </div>

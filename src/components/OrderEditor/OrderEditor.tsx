@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { useKey } from "react-use";
 import { zeroAddress } from "viem";
@@ -300,7 +300,7 @@ export function OrderEditor(p: Props) {
     if (newSizeDeltaUsd !== undefined) {
       setSizeInputValue(formatAmountFree(substractMaxLeverageSlippage(newSizeDeltaUsd), USD_DECIMALS, 2));
     } else {
-      helperToast.error(t`No available leverage found`);
+      helperToast.error(t`No valid leverage available`);
     }
   }, [
     p.order,
@@ -441,8 +441,8 @@ export function OrderEditor(p: Props) {
         tokensData,
       });
 
-      if (expressError[0]) {
-        return expressError[0];
+      if (expressError.buttonErrorMessage) {
+        return expressError.buttonErrorMessage;
       }
 
       return;
@@ -521,22 +521,25 @@ export function OrderEditor(p: Props) {
   const submitButtonState = useMemo(() => {
     if (hasOutdatedUi) {
       return {
-        text: t`Page outdated, please refresh`,
+        text: t`Page outdated. Refresh`,
         disabled: true,
       };
     }
 
     if (isMaxLeverageError) {
       return {
-        text: t`Max. Leverage Exceeded`,
+        text: t`Max leverage exceeded`,
         tooltip: (
           <>
-            <Trans>Decrease the size to match the max. allowed leverage:</Trans>{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
+            <Trans>Order exceeds max leverage. Click to auto-adjust.</Trans>{" "}
+            <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">
+              <Trans>Read more</Trans>
+            </ExternalLink>
+            .
             <br />
             <br />
             <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
-              <Trans>Set Max Leverage</Trans>
+              <Trans>Set max leverage</Trans>
             </span>
           </>
         ),
@@ -554,7 +557,7 @@ export function OrderEditor(p: Props) {
     const orderTypeName = getNameByOrderType(p.order.orderType, p.order.isTwap);
 
     return {
-      text: t`Update ${orderTypeName} Order`,
+      text: t`Update ${orderTypeName}`,
       disabled: false,
       onClick: onSubmit,
     };
@@ -652,16 +655,16 @@ export function OrderEditor(p: Props) {
   );
 
   const priceLabel = isLimitDecreaseOrderType(p.order.orderType)
-    ? t`Take Profit Price`
+    ? t`Take profit price`
     : isStopLossOrderType(p.order.orderType)
-      ? t`Stop Loss Price`
+      ? t`Stop loss price`
       : isStopIncreaseOrderType(p.order.orderType)
-        ? t`Stop Price`
-        : t`Limit Price`;
+        ? t`Stop price`
+        : t`Limit price`;
 
   const positionSize = existingPosition?.sizeInUsd;
 
-  const sizeUsd = parseValue(sizeInputValue || "0", USD_DECIMALS)!;
+  const sizeUsd = parseValue(sizeInputValue || "0", USD_DECIMALS) ?? 0n;
 
   const sizePercentage = useMemo(() => {
     if (positionSize === undefined || positionSize === 0n) return 0;
@@ -719,8 +722,9 @@ export function OrderEditor(p: Props) {
                     ? () => setSizeInputValue(formatAmountFree(positionSize, USD_DECIMALS))
                     : undefined
                 }
+                maxDecimals={USD_DECIMALS}
               >
-                USD
+                {t`USD`}
               </BuyInputSection>
 
               <BuyInputSection
@@ -743,8 +747,9 @@ export function OrderEditor(p: Props) {
                 }
                 inputValue={triggerPriceInputValue}
                 onInputValueChange={(e) => setTriggerPriceInputValue(e.target.value)}
+                maxDecimals={USD_DECIMALS}
               >
-                USD
+                {t`USD`}
               </BuyInputSection>
 
               {isTriggerDecreaseOrderType(p.order.orderType) && positionSize !== undefined && positionSize > 0n && (
@@ -757,7 +762,7 @@ export function OrderEditor(p: Props) {
             <>
               {triggerRatio && (
                 <BuyInputSection
-                  topLeftLabel={t`Limit Price`}
+                  topLeftLabel={t`Limit price`}
                   topRightLabel={t`Mark`}
                   topRightValue={formatAmount(markRatio?.ratio, USD_DECIMALS, 4)}
                   onClickTopRightLabel={() => {
@@ -767,8 +772,11 @@ export function OrderEditor(p: Props) {
                   onInputValueChange={(e) => {
                     setTriggerRatioInputValue(e.target.value);
                   }}
+                  maxDecimals={USD_DECIMALS}
                 >
-                  {`${triggerRatio.smallestToken.symbol} per ${triggerRatio.largestToken.symbol}`}
+                  <Trans>
+                    {triggerRatio.smallestToken.symbol} per {triggerRatio.largestToken.symbol}
+                  </Trans>
                 </BuyInputSection>
               )}
             </>
@@ -776,15 +784,6 @@ export function OrderEditor(p: Props) {
         </div>
 
         <div className="flex flex-col gap-14 px-20 pb-16">
-          {button}
-
-          <ExpressTradingWarningCard
-            expressParams={expressParams}
-            payTokenAddress={undefined}
-            isWrapOrUnwrap={false}
-            isGmxAccount={srcChainId !== undefined}
-          />
-
           {(isLimitIncreaseOrderType(p.order.orderType) || isStopIncreaseOrderType(p.order.orderType)) && (
             <SyntheticsInfoRow
               label={t`Leverage`}
@@ -813,7 +812,7 @@ export function OrderEditor(p: Props) {
             <>
               {isSetAcceptablePriceImpactEnabled && (
                 <SyntheticsInfoRow
-                  label={t`Acceptable Price`}
+                  label={t`Acceptable price`}
                   value={formatAcceptablePrice(acceptablePrice, {
                     visualMultiplier: indexToken?.visualMultiplier,
                   })}
@@ -822,7 +821,7 @@ export function OrderEditor(p: Props) {
 
               {existingPosition && (
                 <SyntheticsInfoRow
-                  label={t`Liq. Price`}
+                  label={t`Liquidation price`}
                   value={formatLiquidationPrice(existingPosition.liquidationPrice, {
                     visualMultiplier: indexToken?.visualMultiplier,
                   })}
@@ -842,7 +841,7 @@ export function OrderEditor(p: Props) {
                   renderContent={() => (
                     <>
                       <StatsTooltipRow
-                        label={<div className="text-typography-primary">{t`Network Fee`}:</div>}
+                        label={<div className="text-typography-primary">{t`Network fee`}:</div>}
                         value={formatTokenAmountWithUsd(
                           networkFee.feeTokenAmount * -1n,
                           networkFee.feeUsd === undefined ? undefined : networkFee.feeUsd * -1n,
@@ -857,7 +856,7 @@ export function OrderEditor(p: Props) {
                       />
                       <br />
                       <div className="text-typography-primary">
-                        <Trans>As network fees have increased, an additional network fee is needed.</Trans>
+                        <Trans>Network fees increased. Additional fee required.</Trans>
                       </div>
                     </>
                   )}
@@ -877,7 +876,7 @@ export function OrderEditor(p: Props) {
               />
               <div className="h-1 bg-slate-600" />
               <SyntheticsInfoRow
-                label={t`Min. Receive`}
+                label={t`Min. receive`}
                 value={formatBalanceAmount(
                   minOutputAmount,
                   p.order.targetCollateralToken.decimals,
@@ -887,6 +886,15 @@ export function OrderEditor(p: Props) {
               />
             </>
           )}
+
+          <ExpressTradingWarningCard
+            expressParams={expressParams}
+            payTokenAddress={undefined}
+            isWrapOrUnwrap={false}
+            isGmxAccount={srcChainId !== undefined}
+          />
+
+          {button}
         </div>
       </Modal>
     </div>

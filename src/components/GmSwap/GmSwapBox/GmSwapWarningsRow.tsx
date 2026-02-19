@@ -1,5 +1,4 @@
 import { Trans } from "@lingui/macro";
-import noop from "lodash/noop";
 import { ReactNode } from "react";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
@@ -27,9 +26,8 @@ export function GmSwapWarningsRow({
     warnings.push(
       <AlertInfoCard type="error" key="avalancheGmxAccountWarning" hideClose>
         <Trans>
-          Support for GMX accounts on Avalanche will be discontinued soon. Opening new positions from and depositing
-          additional funds to Avalanche GMX accounts is no longer available. We recommend switching to Arbitrum as a
-          settlement network.
+          GMX Account support on Avalanche is ending. New positions and additional deposits are unavailable. Switch to
+          Arbitrum as a settlement network.
         </Trans>
       </AlertInfoCard>
     );
@@ -37,7 +35,7 @@ export function GmSwapWarningsRow({
 
   if (shouldShowWarningForPosition) {
     warnings.push(
-      <AlertInfoCard type="warning" key="swapBoxHighPriceImpactWarning" onClose={noop}>
+      <AlertInfoCard type="warning" key="swapBoxHighPriceImpactWarning" hideClose>
         <Trans>High price impact</Trans>
       </AlertInfoCard>
     );
@@ -45,7 +43,7 @@ export function GmSwapWarningsRow({
 
   if (shouldShowWarningForExecutionFee) {
     warnings.push(
-      <AlertInfoCard type="warning" key="swapBoxHighNetworkFeeWarning" onClose={noop}>
+      <AlertInfoCard type="warning" key="swapBoxHighNetworkFeeWarning" hideClose>
         <Trans>High network fees</Trans>
       </AlertInfoCard>
     );

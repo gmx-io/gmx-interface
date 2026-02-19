@@ -119,7 +119,7 @@ export function ExpandableRow({
   );
 
   const label = useMemo(() => {
-    return hasError && disableCollapseOnError ? (
+    return hasError && disableCollapseOnError && errorMessage ? (
       <TooltipWithPortal handle={title} handleClassName={handleClassName} content={errorMessage} />
     ) : (
       <span className={handleClassName}>{title}</span>
@@ -143,12 +143,7 @@ export function ExpandableRow({
       })}
     >
       <AnimatePresence initial={false}>
-        <div
-          key="handle"
-          className={cx({
-            "mb-14": open,
-          })}
-        >
+        <div key="handle" className={cx("transition-[margin] duration-200", { "mb-14": open })}>
           <SyntheticsInfoRow
             className={cx("group relative !items-center gmx-hover:text-blue-300", {
               "cursor-not-allowed": disabled,

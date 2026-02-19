@@ -21,7 +21,7 @@ import { sendEarnRecommendationClickedEvent } from "lib/userAnalytics/earnEvents
 import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 import { AnyChainId, BOTANIX } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
-import { MarketInfo, MarketTokensAPRData } from "sdk/utils/markets/types";
+import { MarketInfo } from "sdk/utils/markets/types";
 import { getByKey } from "sdk/utils/objects";
 
 import APRLabel from "components/APRLabel/APRLabel";
@@ -35,33 +35,51 @@ import GmxIcon from "img/tokens/ic_gmx.svg?react";
 const getRecommendedGlvs = ({
   hasGmxAssets,
   marketsInfoData,
+  performance,
 }: {
   hasGmxAssets: boolean;
   marketsInfoData: { [marketAddress: string]: GlvOrMarketInfo };
+  performance: PerformanceData;
 }) => {
   const maxCount = !hasGmxAssets ? 1 : 2;
 
-  const glvs = Object.values(marketsInfoData).filter((info): info is GlvInfo => {
-    return isGlvInfo(info) && (typeof info.glvToken.balance === "undefined" || info.glvToken.balance <= 0n);
-  });
+  const glvs = Object.values(marketsInfoData)
+    .filter((info): info is GlvInfo => {
+      if (!isGlvInfo(info)) {
+        return false;
+      }
 
-  return glvs.slice(0, maxCount);
+      if (typeof info.glvToken.balance !== "undefined" && info.glvToken.balance > 0n) {
+        return false;
+      }
+
+      const glvPerformance = getByKey(performance, info.glvTokenAddress);
+
+      return typeof glvPerformance !== "undefined" && glvPerformance > 0n;
+    })
+    .sort((a, b) => {
+      return (getByKey(performance, b.glvTokenAddress) ?? 0n) > (getByKey(performance, a.glvTokenAddress) ?? 0n)
+        ? 1
+        : -1;
+    })
+    .slice(0, maxCount);
+
+  return glvs;
 };
 
 const MIN_LIQUIDITY_USD = expandDecimals(500_000, USD_DECIMALS);
+const GMX_APR_TOTAL_LABEL = "gmxAprTotal";
 
 const getRecommendedGms = ({
   hasGmxAssets,
   marketsInfoData,
   glvsToShow,
-  marketsApyInfo,
   marketTokensData,
   performance,
 }: {
   hasGmxAssets: boolean;
   marketsInfoData: { [marketAddress: string]: GlvOrMarketInfo };
   glvsToShow: GlvInfo[];
-  marketsApyInfo: MarketTokensAPRData;
   marketTokensData: TokensData;
   performance: PerformanceData;
 }) => {
@@ -101,8 +119,7 @@ const getRecommendedGms = ({
       );
     })
     .sort((a, b) => {
-      return (getByKey(marketsApyInfo, b.marketTokenAddress) ?? 0n) >
-        (getByKey(marketsApyInfo, a.marketTokenAddress) ?? 0n)
+      return (getByKey(performance, b.marketTokenAddress) ?? 0n) > (getByKey(performance, a.marketTokenAddress) ?? 0n)
         ? 1
         : -1;
     })
@@ -112,15 +129,11 @@ const getRecommendedGms = ({
 export function RecommendedAssets({
   hasGmxAssets,
   marketsInfoData,
-  marketsApyInfo,
-  glvsApyInfo,
   marketTokensData,
   performance,
 }: {
   hasGmxAssets: boolean;
   marketsInfoData: { [marketAddress: string]: GlvOrMarketInfo };
-  marketsApyInfo: MarketTokensAPRData;
-  glvsApyInfo: MarketTokensAPRData;
   marketTokensData: TokensData;
   performance: PerformanceData;
 }) {
@@ -129,26 +142,26 @@ export function RecommendedAssets({
     return getRecommendedGlvs({
       hasGmxAssets,
       marketsInfoData: marketsInfoData,
+      performance,
     });
-  }, [hasGmxAssets, marketsInfoData]);
+  }, [hasGmxAssets, marketsInfoData, performance]);
 
   const gmsToShow = useMemo(() => {
     return getRecommendedGms({
       hasGmxAssets,
       marketsInfoData: marketsInfoData,
       glvsToShow,
-      marketsApyInfo,
       marketTokensData,
       performance,
     });
-  }, [hasGmxAssets, marketsInfoData, glvsToShow, marketsApyInfo, marketTokensData, performance]);
+  }, [hasGmxAssets, marketsInfoData, glvsToShow, marketTokensData, performance]);
 
   const [isBuyGmxModalVisible, setIsBuyGmxModalVisible] = useState(false);
 
   return (
     <section className="flex flex-col gap-8">
       <BuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
-      <h2 className="flex items-center gap-4 pb-12 pt-20 text-24 font-medium text-typography-primary">
+      <h2 className="text-h2 flex items-center gap-4 pb-12 pt-20 text-typography-primary">
         <BoltGradientIcon className="inline-block size-20" />
         <Trans>Recommended</Trans>
       </h2>
@@ -170,19 +183,19 @@ export function RecommendedAssets({
           </RecommendedAssetSection>
         )}
         {glvsToShow.length > 0 && (
-          <RecommendedAssetSection title={<Trans>GLV Vaults</Trans>}>
+          <RecommendedAssetSection title={<Trans>GLV vaults</Trans>}>
             {glvsToShow.map((glv) => (
               <GlvGmxRecommendedAssetItem
                 key={glv.glvTokenAddress}
                 glvOrMarketInfo={glv}
-                feeApy={getByKey(glvsApyInfo, glv.glvTokenAddress)}
+                performanceApy={getByKey(performance, glv.glvTokenAddress)}
               />
             ))}
           </RecommendedAssetSection>
         )}
         {gmsToShow.length > 0 && (
           <RecommendedAssetSection
-            title={<Trans>GM Pools</Trans>}
+            title={<Trans>GM pools</Trans>}
             additionalLink={
               <Link
                 to="/pools"
@@ -197,7 +210,7 @@ export function RecommendedAssets({
               <GlvGmxRecommendedAssetItem
                 key={gm.marketTokenAddress}
                 glvOrMarketInfo={gm}
-                feeApy={getByKey(marketsApyInfo, gm.marketTokenAddress)}
+                performanceApy={getByKey(performance, gm.marketTokenAddress)}
               />
             ))}
           </RecommendedAssetSection>
@@ -251,7 +264,7 @@ function GmxRecommendedAssetItem({ chainId, openBuyGmxModal }: { chainId: AnyCha
     <BaseRecommendedAssetItem
       icon={<GmxIcon className="size-32" />}
       title={<Trans>GMX</Trans>}
-      metricValue={<APRLabel chainId={chainId} label="gmxAprTotal" />}
+      metricValue={<APRLabel chainId={chainId} label={GMX_APR_TOTAL_LABEL} />}
       metricLabel={<Trans>APR</Trans>}
       button={
         <Button variant="primary" onClick={handleClick}>
@@ -264,10 +277,10 @@ function GmxRecommendedAssetItem({ chainId, openBuyGmxModal }: { chainId: AnyCha
 
 function GlvGmxRecommendedAssetItem({
   glvOrMarketInfo,
-  feeApy,
+  performanceApy,
 }: {
   glvOrMarketInfo: GlvOrMarketInfo;
-  feeApy: bigint | undefined;
+  performanceApy: bigint | undefined;
 }) {
   const iconTokenSymbol = isGlvInfo(glvOrMarketInfo)
     ? "GLV"
@@ -297,8 +310,8 @@ function GlvGmxRecommendedAssetItem({
       }
       title={isGlvInfo(glvOrMarketInfo) ? "GLV" : getMarketIndexName(glvOrMarketInfo)}
       subtitle={`[${getMarketPoolName(glvOrMarketInfo)}]`}
-      metricValue={formatPercentage(feeApy, { bps: false })}
-      metricLabel={<Trans>Fee APY</Trans>}
+      metricValue={formatPercentage(performanceApy, { bps: false })}
+      metricLabel={<Trans>Performance APY</Trans>}
       button={
         <Button
           variant="primary"

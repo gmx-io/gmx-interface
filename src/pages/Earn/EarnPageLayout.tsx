@@ -39,9 +39,9 @@ export default function EarnPageLayout({ children }: EarnPageLayoutProps) {
 
   const tabOptions = useMemo(
     () => [
-      { value: EarnTab.Discover, label: <Trans>Discover</Trans> },
       { value: EarnTab.Portfolio, label: <Trans>Portfolio</Trans> },
-      { value: EarnTab.AdditionalOpportunities, label: <Trans>Additional Opportunities</Trans> },
+      { value: EarnTab.Discover, label: <Trans>Discover</Trans> },
+      { value: EarnTab.AdditionalOpportunities, label: <Trans>Additional opportunities</Trans> },
       { value: EarnTab.Distributions, label: <Trans>Distributions</Trans> },
     ],
     []
@@ -76,8 +76,8 @@ export default function EarnPageLayout({ children }: EarnPageLayoutProps) {
   }, [analyticsTab]);
 
   return (
-    <AppPageLayout header={<ChainContentHeader />}>
-      <PageTitle title={t`Earn`} subtitle={t`Stake GMX and buy GLV or GM to earn rewards.`} isTop />
+    <AppPageLayout title={t`Earn`} header={<ChainContentHeader />}>
+      <PageTitle title={t`Earn`} subtitle={t`Stake GMX and buy GLV or GM to earn rewards`} isTop />
 
       <div className="mt-12 flex grow flex-col gap-8">
         <div className="overflow-x-auto scrollbar-hide">

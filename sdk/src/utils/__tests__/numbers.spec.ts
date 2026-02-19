@@ -21,6 +21,7 @@ import {
   PERCENT_PRECISION_DECIMALS,
   PRECISION,
   PRECISION_DECIMALS,
+  trimZeroDecimals,
   roundWithDecimals,
   roundUpMagnitudeDivision,
   toBigNumberWithDecimals,
@@ -116,6 +117,30 @@ describe("numbers utils", () => {
     expect(numberToBigint(1.12345678, 6)).toEqual(1123456n);
     expect(numberToBigint(1.123456789, 6)).toEqual(1123456n);
     expect(numberToBigint(-1.123456789, 6)).toEqual(-1123456n);
+  });
+});
+
+describe("trimZeroDecimals", () => {
+  it("large integer stays as plain string (no scientific)", () => {
+    const large = "1" + "0".repeat(31);
+    expect(trimZeroDecimals(large)).toBe(large);
+  });
+
+  it("negative large integer", () => {
+    const largeNeg = "-" + "1" + "0".repeat(31);
+    expect(trimZeroDecimals(largeNeg)).toBe(largeNeg);
+  });
+
+  it("fraction with only zero decimals trims to int", () => {
+    expect(trimZeroDecimals("123.000")).toBe("123");
+  });
+
+  it("leading zeros on integer are removed", () => {
+    expect(trimZeroDecimals("0000123")).toBe("123");
+  });
+
+  it("leading zeros with trailing zero decimals trims to int", () => {
+    expect(trimZeroDecimals("0000123.000")).toBe("123");
   });
 });
 

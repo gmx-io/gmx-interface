@@ -118,7 +118,6 @@ export async function createMultichainDepositTxn({
 
   return await sendExpressTransaction({
     chainId,
-    isSponsoredCall: expressTxnParams.isSponsoredCall,
     txnData,
   });
 }

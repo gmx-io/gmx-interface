@@ -18,7 +18,7 @@ import { useTradeboxChanges } from "./hooks/useTradeboxChanges";
 
 const SLIPPAGE_OPTIONS = [30, 50, 100, 150]; // basis points
 
-export function SwapSlippageField() {
+export function SwapSlippageField({ disabled }: { disabled?: boolean }) {
   const { savedAllowedSlippage } = useSettings();
   const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
   const setAllowedSlippage = useSelector(selectSetTradeboxAllowedSlippage);
@@ -88,10 +88,14 @@ export function SwapSlippageField() {
   return (
     <div className="flex h-full items-center justify-between gap-8">
       <TooltipWithPortal
-        handle={<Trans>Allowed Slippage</Trans>}
+        handle={<Trans>Allowed slippage</Trans>}
         position="bottom-start"
         variant="iconStroke"
-        handleClassName="whitespace-nowrap text-12 font-medium text-typography-secondary"
+        disabled={disabled}
+        handleClassName={cx(
+          "whitespace-nowrap text-12 font-medium",
+          disabled ? "text-slate-500" : "text-typography-secondary"
+        )}
         content={
           <Trans>
             Slippage is the difference between your expected and actual execution price due to price volatility. Orders
@@ -102,7 +106,7 @@ export function SwapSlippageField() {
             <br />
             <br />
             Note: slippage is different from price impact, which is based on open interest imbalances.{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/v2#slippage">Read more</ExternalLink>.
+            <ExternalLink href="https://docs.gmx.io/docs/trading/#slippage">Read more</ExternalLink>.
           </Trans>
         }
       />
@@ -113,12 +117,15 @@ export function SwapSlippageField() {
           return (
             <button
               key={option}
+              disabled={disabled}
               onClick={() => handlePresetClick(option)}
               className={cx(
                 "text-body-small rounded-4 px-6 py-4 transition-colors",
-                isSelected
-                  ? "bg-blue-500 text-typography-primary"
-                  : "bg-slate-700 text-typography-secondary hover:bg-slate-600"
+                disabled
+                  ? "cursor-default bg-slate-700 text-slate-500"
+                  : isSelected
+                    ? "bg-blue-500 text-typography-primary"
+                    : "bg-slate-700 text-typography-secondary hover:bg-slate-600"
               )}
             >
               {(option / 100).toFixed(1)}%
@@ -127,12 +134,14 @@ export function SwapSlippageField() {
         })}
 
         <div
-          onClick={!isCustom ? handleCustomClick : undefined}
+          onClick={!disabled && !isCustom ? handleCustomClick : undefined}
           className={cx(
             "text-body-small flex w-54 items-center justify-center rounded-4 px-6 py-4 transition-colors",
-            isCustom || (!isPresetValue && allowedSlippage > 0)
-              ? "bg-blue-500 text-typography-primary"
-              : "cursor-pointer bg-slate-700 text-typography-secondary hover:bg-slate-600"
+            disabled
+              ? "cursor-default bg-slate-700 text-slate-500"
+              : isCustom || (!isPresetValue && allowedSlippage > 0)
+                ? "bg-blue-500 text-typography-primary"
+                : "cursor-pointer bg-slate-700 text-typography-secondary hover:bg-slate-600"
           )}
         >
           {isCustom ? (

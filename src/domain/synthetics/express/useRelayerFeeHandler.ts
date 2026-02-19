@@ -124,7 +124,7 @@ export function useExpressOrdersParams({
             }
           : undefined,
       forceRecalculate,
-      throttleMs: globalExpressParams?.isSponsoredCall ? 200 : 5000,
+      throttleMs: 200,
       leading: true,
       trailing: false,
       withLoading: true,

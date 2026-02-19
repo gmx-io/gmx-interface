@@ -1,13 +1,13 @@
-import { getPublicClient } from "@wagmi/core";
 import uniq from "lodash/uniq";
 import useSWR from "swr";
 import { Hex, PublicClient } from "viem";
 import { useAccount } from "wagmi";
 
-import { AnyChainId, CONTRACTS_CHAIN_IDS, SOURCE_CHAIN_IDS } from "config/chains";
+import { AnyChainId, CONTRACTS_CHAIN_IDS, isTestnetChain, SOURCE_CHAIN_IDS } from "config/chains";
+import { useChainId } from "lib/chains";
 import { getIsNonEoaAccountError, nonEoaAccountError } from "lib/errors/customErrors";
 
-import { getRainbowKitConfig } from "./rainbowKitConfig";
+import { getPublicClientWithRpc } from "./rainbowKitConfig";
 
 enum AccountType {
   Safe,
@@ -75,22 +75,29 @@ async function getAccountType(
   return AccountType.SmartAccount;
 }
 
-export function useIsNonEoaAccountOnAnyChain(): boolean {
+export function useIsNonEoaAccountOnAnyChain(): {
+  isNonEoaAccountOnAnyChain: boolean;
+  isLoading: boolean;
+} {
   const { address } = useAccount();
+  const { chainId: currentChainId } = useChainId();
+  const isCurrentChainTestnet = isTestnetChain(currentChainId);
 
-  const { data: isNonEoaAccountOnAnyChain = false } = useSWR<boolean | undefined>(
-    address && [address, "detectIsNonEoaAccountOnAnyChain"],
+  const { data: isNonEoaAccountOnAnyChain = false, isLoading } = useSWR<boolean | undefined>(
+    address && [address, isCurrentChainTestnet, "detectIsNonEoaAccountOnAnyChain"],
     {
       fetcher: async (): Promise<boolean | undefined> => {
         if (!address) {
           return undefined;
         }
 
-        const chainIds = uniq((CONTRACTS_CHAIN_IDS as AnyChainId[]).concat(SOURCE_CHAIN_IDS));
+        const chainIds = uniq([...CONTRACTS_CHAIN_IDS, ...SOURCE_CHAIN_IDS] as AnyChainId[]).filter(
+          (chainId) => isTestnetChain(chainId) === isCurrentChainTestnet
+        );
 
         return Promise.all(
           chainIds.map(async (chainId) => {
-            const publicClient = getPublicClient(getRainbowKitConfig(), { chainId });
+            const publicClient = getPublicClientWithRpc(chainId);
 
             if (!publicClient) {
               return undefined;
@@ -123,5 +130,5 @@ export function useIsNonEoaAccountOnAnyChain(): boolean {
     }
   );
 
-  return isNonEoaAccountOnAnyChain;
+  return { isNonEoaAccountOnAnyChain, isLoading };
 }

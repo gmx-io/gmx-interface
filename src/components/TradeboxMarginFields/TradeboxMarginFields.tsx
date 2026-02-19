@@ -33,6 +33,7 @@ type Props = {
   setToTokenInputValue: (value: string, resetPriceImpact: boolean) => void;
   triggerPriceInputValue?: string;
   onTriggerPriceInputChange?: (e: ChangeEvent<HTMLInputElement>) => void;
+  onMarkPriceClick?: () => void;
 };
 
 export function TradeboxMarginFields({
@@ -46,6 +47,7 @@ export function TradeboxMarginFields({
   setToTokenInputValue,
   triggerPriceInputValue,
   onTriggerPriceInputChange,
+  onMarkPriceClick,
 }: Props) {
   const tokensData = useTokensData();
 
@@ -126,8 +128,13 @@ export function TradeboxMarginFields({
       if (fromToken?.decimals === undefined || maxAvailableAmount === 0n) return;
 
       const amount = (maxAvailableAmount * BigInt(percentage)) / 100n;
-      const displayDecimals = calculateDisplayDecimals(amount, fromToken.decimals, 1, fromToken.isStable);
-      const formatted = limitDecimals(formatAmountFree(amount, fromToken.decimals), displayDecimals);
+      const formatted =
+        percentage === 100
+          ? formatAmountFree(amount, fromToken.decimals)
+          : limitDecimals(
+              formatAmountFree(amount, fromToken.decimals),
+              calculateDisplayDecimals(amount, fromToken.decimals, 1, fromToken.isStable)
+            );
       setFocusedInput("from");
       setFromTokenInputValue(formatted, true);
     },
@@ -198,6 +205,7 @@ export function TradeboxMarginFields({
             markPrice={markPrice}
             inputValue={triggerPriceInputValue}
             onInputValueChange={onTriggerPriceInputChange}
+            onMarkPriceClick={onMarkPriceClick}
             tradeMode={tradeMode}
             qa="trigger-price"
           />

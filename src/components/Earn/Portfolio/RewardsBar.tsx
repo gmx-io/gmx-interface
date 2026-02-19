@@ -1,5 +1,6 @@
 import { Trans } from "@lingui/macro";
 import { ReactNode, useMemo } from "react";
+import Skeleton from "react-loading-skeleton";
 
 import { BOTANIX, ContractsChainId, getChainNativeTokenSymbol } from "config/chains";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
@@ -32,7 +33,7 @@ function RewardsBar({
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true });
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
 
-  const userEarnings = useUserEarnings(chainId, srcChainId);
+  const { userEarnings, isLoading: isUserEarningsLoading } = useUserEarnings(chainId, srcChainId);
 
   const totalGmInfo = useMemo(
     () => getTotalGmInfo({ tokensData: marketTokensData, multichainMarketTokensBalances }),
@@ -46,26 +47,36 @@ function RewardsBar({
   const stakedGmxUsd = (processedData?.gmxInStakedGmxUsd ?? 0n) + (processedData?.esGmxInStakedGmxUsd ?? 0n);
   const totalInvestmentUsd = stakedGmxUsd + totalGmInfo.balanceUsd + totalGlvInfo.balanceUsd;
 
+  const isInvestmentValueLoading =
+    processedData === undefined || marketTokensData === undefined || multichainMarketTokensBalances === undefined;
+
   return (
     <div className="rounded-8 bg-slate-900 p-20 text-typography-primary">
       <div className="flex flex-col gap-16 lg:flex-row lg:items-start lg:justify-between">
         <div className="flex gap-28 max-lg:flex-col max-lg:gap-16">
           <div className="flex shrink-0 gap-28 max-lg:grid max-lg:grid-cols-2 max-lg:gap-12">
             <div className="flex flex-col gap-2">
-              <span className="text-12 font-medium text-typography-secondary">
-                <Trans>Total Investment Value</Trans>
+              <span className="text-body-small font-medium text-typography-secondary">
+                <Trans>Total investment value</Trans>
               </span>
-              <span className="text-body-large font-medium numbers">{formatUsd(totalInvestmentUsd)}</span>
+              <span className="text-body-large font-medium numbers">
+                {isInvestmentValueLoading ? (
+                  <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={80} className="leading-base" />
+                ) : (
+                  formatUsd(totalInvestmentUsd)
+                )}
+              </span>
             </div>
 
             <div className="flex flex-col gap-2">
-              <span className="text-12 font-medium text-typography-secondary">
-                <Trans>Total Earned</Trans>
+              <span className="text-body-small font-medium text-typography-secondary">
+                <Trans>Total earned</Trans>
               </span>
               <TotalEarned
                 processedData={processedData}
                 nativeTokenSymbol={nativeTokenSymbol}
                 userEarnings={userEarnings}
+                isUserEarningsLoading={isUserEarningsLoading}
                 chainId={chainId}
               />
             </div>
@@ -75,8 +86,8 @@ function RewardsBar({
 
           <div className="flex gap-28 max-lg:flex-col max-lg:gap-12">
             <div className="flex flex-col gap-2">
-              <span className="text-12 font-medium text-typography-secondary">
-                <Trans>Total Pending Rewards</Trans>
+              <span className="text-body-small font-medium text-typography-secondary">
+                <Trans>Total pending rewards</Trans>
               </span>
               <TotalPendingRewards
                 processedData={processedData}
@@ -101,11 +112,13 @@ function TotalEarned({
   processedData,
   nativeTokenSymbol,
   userEarnings,
+  isUserEarningsLoading,
   chainId,
 }: {
   processedData: StakingProcessedData | undefined;
   nativeTokenSymbol: string;
   userEarnings: UserEarningsData | null;
+  isUserEarningsLoading: boolean;
   chainId: ContractsChainId;
 }) {
   const earnedTooltipContent = useMemo(() => {
@@ -115,7 +128,7 @@ function TotalEarned({
 
     const stakingRows: ReactNode[] = [];
 
-    if (chainId !== BOTANIX) {
+    if (chainId !== BOTANIX && (processedData.cumulativeGmxRewards ?? 0n) > 0n) {
       stakingRows.push(
         <StatsTooltipRow
           key="gmx"
@@ -174,8 +187,8 @@ function TotalEarned({
     if (stakingRows.length > 0) {
       tooltipSections.push(
         <div key="staking" className="flex flex-col gap-8">
-          <span className="text-14 font-medium text-typography-secondary">
-            <Trans>Lifetime staking rewards:</Trans>
+          <span className="text-body-medium font-medium text-typography-secondary">
+            <Trans>Lifetime staking rewards</Trans>
           </span>
           <div className="flex flex-col">{stakingRows}</div>
         </div>
@@ -185,32 +198,54 @@ function TotalEarned({
     if (userEarnings && userEarnings.allMarkets.total > 0n) {
       tooltipSections.push(
         <div key="lp" className="flex flex-col gap-8">
-          <span className="text-14 font-medium text-typography-secondary">
-            <Trans>Lifetime LP rewards:</Trans>
+          <span className="text-body-medium font-medium text-typography-secondary">
+            <Trans>Lifetime LP rewards</Trans>
           </span>
           <div className="flex flex-col">
             <StatsTooltipRow
-              label={<Trans>GM Pools:</Trans>}
+              label={<Trans>GM pools:</Trans>}
               showDollar={false}
               value={<span className="text-body-medium numbers">{formatUsd(userEarnings.allMarkets.total)}</span>}
+            />
+            <StatsTooltipRow
+              label={<Trans>GLV vaults:</Trans>}
+              showDollar={false}
+              value={
+                <span className="text-body-medium text-typography-secondary">
+                  <Trans>Coming soon</Trans>
+                </span>
+              }
             />
           </div>
         </div>
       );
     }
 
+    if (tooltipSections.length === 0) {
+      return null;
+    }
+
     return <div className="flex flex-col gap-8">{tooltipSections}</div>;
   }, [nativeTokenSymbol, processedData, userEarnings, chainId]);
 
   const totalEarnedUsd = (processedData?.cumulativeTotalRewardsUsd ?? 0n) + (userEarnings?.allMarkets.total ?? 0n);
+  const isLoading = processedData === undefined || isUserEarningsLoading;
 
-  return (
-    <Tooltip
-      disabled={!earnedTooltipContent}
-      content={earnedTooltipContent}
-      handle={<span className="text-body-large font-medium numbers">{formatUsd(totalEarnedUsd)}</span>}
-    />
+  const valueElement = (
+    <span className="text-body-large font-medium numbers">
+      {isLoading ? (
+        <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={65} className="leading-base" />
+      ) : (
+        formatUsd(totalEarnedUsd)
+      )}
+    </span>
   );
+
+  if (!earnedTooltipContent) {
+    return valueElement;
+  }
+
+  return <Tooltip content={earnedTooltipContent} handle={valueElement} />;
 }
 
 function TotalPendingRewards({
@@ -223,22 +258,31 @@ function TotalPendingRewards({
   chainId: ContractsChainId;
 }) {
   const totalPendingRewardsUsd = processedData?.totalRewardsUsd ?? 0n;
+  const isLoading = processedData === undefined;
 
   const hasNativeRewards = (processedData?.totalNativeTokenRewards ?? 0n) > 0n;
   const hasEsGmxRewards = (processedData?.totalEsGmxRewards ?? 0n) > 0n;
 
+  const skeletonElement = (
+    <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={80} className="leading-base" />
+  );
+
   if (chainId === BOTANIX) {
-    return <span className="text-body-large font-medium numbers">{formatUsd(totalPendingRewardsUsd)}</span>;
+    return (
+      <span className="text-body-large font-medium numbers">
+        {isLoading ? skeletonElement : formatUsd(totalPendingRewardsUsd)}
+      </span>
+    );
   }
 
   return (
     <TooltipWithPortal
-      handle={formatUsd(totalPendingRewardsUsd)}
+      handle={isLoading ? skeletonElement : formatUsd(totalPendingRewardsUsd)}
       handleClassName="text-body-large font-medium numbers"
       content={
         <div className="flex flex-col">
           <StatsTooltipRow
-            label={<Trans>GMX Staked Rewards:</Trans>}
+            label={<Trans>GMX staked rewards:</Trans>}
             showDollar={false}
             value={
               <AmountWithUsdBalance
@@ -251,7 +295,7 @@ function TotalPendingRewards({
           />
 
           <StatsTooltipRow
-            label={<Trans>Vested Claimable GMX:</Trans>}
+            label={<Trans>Vested claimable GMX:</Trans>}
             showDollar={false}
             value={
               <AmountWithUsdBalance
@@ -265,7 +309,7 @@ function TotalPendingRewards({
 
           {hasEsGmxRewards && (
             <StatsTooltipRow
-              label={<Trans>esGMX Rewards:</Trans>}
+              label={<Trans>esGMX rewards:</Trans>}
               showDollar={false}
               value={
                 <AmountWithUsdBalance
@@ -280,7 +324,7 @@ function TotalPendingRewards({
 
           {hasNativeRewards && (
             <StatsTooltipRow
-              label={<Trans>{nativeTokenSymbol} Rewards:</Trans>}
+              label={<Trans>{nativeTokenSymbol} rewards:</Trans>}
               showDollar={false}
               value={
                 <AmountWithUsdBalance

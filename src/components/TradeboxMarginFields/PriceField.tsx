@@ -12,13 +12,23 @@ type Props = {
   markPrice: bigint | undefined;
   inputValue: string;
   onInputValueChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onMarkPriceClick?: () => void;
   onFocus?: () => void;
   tradeMode: TradeMode;
   qa?: string;
 };
 
-export function PriceField({ indexToken, markPrice, inputValue, onInputValueChange, onFocus, tradeMode, qa }: Props) {
-  const priceLabel = tradeMode === TradeMode.Limit ? t`Limit Price` : t`Stop Price`;
+export function PriceField({
+  indexToken,
+  markPrice,
+  inputValue,
+  onInputValueChange,
+  onMarkPriceClick,
+  onFocus,
+  tradeMode,
+  qa,
+}: Props) {
+  const priceLabel = tradeMode === TradeMode.Limit ? t`Limit price` : t`Stop price`;
 
   const alternateValue = useMemo(() => {
     const formattedMarkPrice = formatUsdPrice(markPrice, {
@@ -26,11 +36,11 @@ export function PriceField({ indexToken, markPrice, inputValue, onInputValueChan
     });
 
     return (
-      <>
+      <span className={onMarkPriceClick ? "cursor-pointer" : undefined} onClick={onMarkPriceClick}>
         {t`Mark:`} <span className="text-typography-primary">{formattedMarkPrice}</span>
-      </>
+      </span>
     );
-  }, [indexToken?.visualMultiplier, markPrice]);
+  }, [indexToken?.visualMultiplier, markPrice, onMarkPriceClick]);
 
   return (
     <TradeInputField

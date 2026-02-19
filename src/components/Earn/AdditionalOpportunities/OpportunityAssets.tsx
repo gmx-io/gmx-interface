@@ -1,3 +1,4 @@
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 
 import { getMarketIndexName, getMarketPoolName, GlvAndGmMarketsInfoData } from "domain/synthetics/markets";
@@ -63,7 +64,7 @@ export function OpportunityAssets({
         </div>
       }
       content={
-        <div className="flex flex-col gap-6 text-12">
+        <div className="text-body-small flex flex-col gap-6">
           {assets.map((token) => (
             <span key={getOpportunityAssetKey(token)} className="flex items-center gap-6">
               <OpportunityTokenIcon asset={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
@@ -143,7 +144,7 @@ const OpportunityTokenLabel = ({
 }) => {
   switch (asset.type) {
     case "stGmx": {
-      return "Staked GMX";
+      return t`Staked GMX`;
     }
     case "token": {
       const token = tokensData?.[asset.address];
@@ -155,7 +156,9 @@ const OpportunityTokenLabel = ({
         const poolName = getMarketPoolName(glvInfo);
         return (
           <span>
-            <span className="font-medium text-typography-primary">{`GLV `}</span>
+            <span className="font-medium text-typography-primary">
+              <Trans>GLV</Trans>{" "}
+            </span>
             <span className="text-typography-secondary">[{poolName}]</span>
           </span>
         );
@@ -169,7 +172,9 @@ const OpportunityTokenLabel = ({
         const poolName = getMarketPoolName(marketInfo);
         return (
           <span>
-            <span className="font-medium text-typography-primary">{`GM: ${indexName} `}</span>
+            <span className="font-medium text-typography-primary">
+              <Trans>GM: {indexName}</Trans>{" "}
+            </span>
             <span className="text-typography-secondary">[{poolName}]</span>
           </span>
         );

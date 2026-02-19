@@ -1,5 +1,5 @@
 import { Menu } from "@headlessui/react";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useState } from "react";
 
@@ -61,7 +61,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
   const marketTotalSupply = marketToken?.totalSupply;
   const marketTotalSupplyUsd = convertToUsd(marketTotalSupply, marketToken?.decimals, marketPrice);
 
-  const userEarnings = useUserEarnings(chainId, srcChainId);
+  const { userEarnings } = useUserEarnings(chainId, srcChainId);
   const marketEarnings = getByKey(userEarnings?.byMarketAddress, marketToken?.address);
 
   const { isMobile } = useBreakpoints();
@@ -81,7 +81,9 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
     setIsOpen((isOpen) => !isOpen);
   }, []);
 
-  const glvOrGm = isGlv ? "GLV" : "GM";
+  const glvOrGm = isGlv ? t`GLV` : t`GM`;
+  const marketTitle = isGlv ? glvOrGm : t`GM: ${glvOrMarketInfo ? getMarketIndexName(glvOrMarketInfo) : ""}`;
+  const marketPoolTitle = glvOrMarketInfo ? t`[${getMarketPoolName(glvOrMarketInfo)}]` : "";
 
   return (
     <div
@@ -109,8 +111,8 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
                   <TokenIcon symbol={iconName} displaySize={40} badge={getMarketBadge(chainId, glvOrMarketInfo)} />
                 )}
                 <div className={cx("flex flex-col gap-4 pr-20 font-medium")}>
-                  <div className="text-body-large">{isGlv ? "GLV" : `GM: ${getMarketIndexName(glvOrMarketInfo)}`}</div>
-                  <div className="text-body-small text-typography-secondary">{`[${getMarketPoolName(glvOrMarketInfo)}]`}</div>
+                  <div className="text-body-large">{marketTitle}</div>
+                  <div className="text-body-small text-typography-secondary">{marketPoolTitle}</div>
                 </div>
               </div>
               {isMobile && (
@@ -200,7 +202,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
                 )}
                 {marketEarnings && (
                   <PoolsDetailsMarketAmount
-                    label={<Trans>Total Earned Fees</Trans>}
+                    label={<Trans>Total earned fees</Trans>}
                     value={formatUsd(marketEarnings?.total)}
                   />
                 )}
