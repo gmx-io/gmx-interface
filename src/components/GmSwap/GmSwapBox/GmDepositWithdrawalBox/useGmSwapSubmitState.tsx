@@ -23,6 +23,7 @@ import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/sele
 import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
+  selectGasPrice,
   selectSrcChainId,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -112,6 +113,7 @@ export const useGmSwapSubmitState = ({
   const amounts = useSelector(selectDepositWithdrawalAmounts);
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
+  const gasPrice = useSelector(selectGasPrice);
   const tokensData = useSelector(selectTokensData);
   const gasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
   const gasPaymentToken = useSelector(selectGasPaymentToken);
@@ -191,16 +193,37 @@ export const useGmSwapSubmitState = ({
     isDeposit,
   });
 
+  const settlementChainNativeTokenAmount = useMemo(() => {
+    if (paySource !== "settlementChain" || !isDeposit) {
+      return 0n;
+    }
+
+    let amount = 0n;
+
+    if (payLongToken?.address === zeroAddress) {
+      amount += longTokenAmount;
+    }
+
+    if (payShortToken?.address === zeroAddress) {
+      amount += shortTokenAmount;
+    }
+
+    return amount;
+  }, [isDeposit, longTokenAmount, payLongToken, payShortToken, paySource, shortTokenAmount]);
+
   const nativeGasError = useMemo((): ValidationResult | undefined => {
     if (technicalFees?.kind !== "settlementChain") {
       return undefined;
     }
 
+    const walletTxGasAmount = gasPrice !== undefined ? technicalFees.fees.gasLimit * gasPrice : 0n;
+    const requiredAmount = technicalFees.fees.feeTokenAmount + settlementChainNativeTokenAmount + walletTxGasAmount;
+
     return getNativeGasError({
-      networkFee: technicalFees.fees.feeTokenAmount,
+      networkFee: requiredAmount,
       nativeBalance: getByKey(tokensData, zeroAddress)?.walletBalance,
     });
-  }, [technicalFees, tokensData]);
+  }, [gasPrice, settlementChainNativeTokenAmount, technicalFees, tokensData]);
 
   const paySourceChainNativeTokenAmount = useMemo(() => {
     if (srcChainId === undefined || !isDeposit) {
