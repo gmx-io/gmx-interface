@@ -1,4 +1,5 @@
 import { useEffect } from "react";
+import { usePrevious } from "react-use";
 
 import { ARBITRUM } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
@@ -14,7 +15,7 @@ import { TokensData } from "domain/synthetics/tokens/types";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useWallet from "lib/wallets/useWallet";
-import { expandDecimals } from "sdk/utils/numbers";
+import { expandDecimals, formatUsd } from "sdk/utils/numbers";
 
 function getTotalGmxAccountUsd(tokensData: TokensData): bigint {
   let totalUsd = 0n;
@@ -41,27 +42,26 @@ export function useInitCollateralCloseDestination() {
     false
   );
 
+  
   const gmxAccountUsd = tokensData && isGmxAccountBalancesLoaded ? getTotalGmxAccountUsd(tokensData) : undefined;
+  const prevGmxAccountUsd = usePrevious(gmxAccountUsd);
 
   useEffect(() => {
     if (settings.receiveToGmxAccount !== null || chainId !== ARBITRUM || !isGmxAccountBalancesLoaded || !tokensData)
       return;
+    
 
     const usd = getTotalGmxAccountUsd(tokensData);
 
-    if (usd > USD_THRESHOLD_FOR_ENABLE_GMX_ACCOUNT_CLOSE_DESTINATION) {
-      settings.setReceiveToGmxAccount(true);
-    } else {
-      settings.setReceiveToGmxAccount(false);
-    }
+    settings.setReceiveToGmxAccount(usd > USD_THRESHOLD_FOR_ENABLE_GMX_ACCOUNT_CLOSE_DESTINATION);
   }, [settings, chainId, isGmxAccountBalancesLoaded, tokensData]);
 
   useEffect(() => {
     if (chainId !== ARBITRUM || gmxAccountUsd === undefined) return;
 
-    if (gmxAccountUsd > 0n && !hadGmxAccountBalance) {
+    if (gmxAccountUsd > 0n && !hadGmxAccountBalance && prevGmxAccountUsd === 0n) {
       setHadGmxAccountBalance(true);
       settings.setReceiveToGmxAccount(true);
     }
-  }, [chainId, gmxAccountUsd, hadGmxAccountBalance, setHadGmxAccountBalance, settings]);
+  }, [chainId, gmxAccountUsd, hadGmxAccountBalance, setHadGmxAccountBalance, settings, prevGmxAccountUsd]);
 }
