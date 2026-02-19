@@ -24,7 +24,7 @@ type ApiPositionsInfoResponse = {
 
 export function useApiPositionsInfoRequest(
   chainId: ContractsChainId,
-  { account, enabled = true }: { account: string | null | undefined; includeRelatedOrders?: boolean; enabled?: boolean }
+  { account, enabled = true }: { account: string | null | undefined; enabled?: boolean }
 ) {
   const sdk = useGmxSdk(chainId);
   const mountedAtRef = useRef<number | undefined>(mountedAtCache.get(chainId));
