@@ -133,12 +133,19 @@ export function TradeboxMarginFields({
           ? formatAmountFree(amount, fromToken.decimals)
           : limitDecimals(
               formatAmountFree(amount, fromToken.decimals),
-              calculateDisplayDecimals(amount, fromToken.decimals, 1, fromToken.isStable)
+              calculateDisplayDecimals(amount, fromToken.decimals, fromToken.visualMultiplier, fromToken.isStable)
             );
       setFocusedInput("from");
       setFromTokenInputValue(formatted, true);
     },
-    [fromToken?.decimals, fromToken?.isStable, maxAvailableAmount, setFocusedInput, setFromTokenInputValue]
+    [
+      fromToken?.decimals,
+      fromToken?.isStable,
+      fromToken?.visualMultiplier,
+      maxAvailableAmount,
+      setFocusedInput,
+      setFromTokenInputValue,
+    ]
   );
 
   const handleSizeInputChange = useCallback(
