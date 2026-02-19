@@ -80,6 +80,7 @@ export function useExpressOrdersParams({
 
   const forceRecalculate = estimationKey !== prevEstimationKey;
 
+  const isFastEnabled = isAvailable && globalExpressParams && signer && orderParams && provider;
   const {
     data: fastExpressParams,
     promise: fastExpressPromise,
@@ -111,18 +112,17 @@ export function useExpressOrdersParams({
       }
     },
     {
-      params:
-        isAvailable && globalExpressParams && signer && orderParams && provider
-          ? {
-              chainId,
-              signer,
-              provider,
-              orderParams,
-              globalExpressParams,
-              isGmxAccount,
-              subaccount,
-            }
-          : undefined,
+      params: isFastEnabled
+        ? {
+            chainId,
+            signer,
+            provider,
+            orderParams,
+            globalExpressParams,
+            isGmxAccount,
+            subaccount,
+          }
+        : undefined,
       forceRecalculate,
       throttleMs: 200,
       leading: true,
@@ -131,6 +131,8 @@ export function useExpressOrdersParams({
     }
   );
 
+  const isAsyncEnabled =
+    isAvailable && globalExpressParams && fastExpressParams && provider && signer && !getIsEmptyBatch(orderParams);
   const { data: asyncExpressParams, promise: asyncExpressPromise } = useThrottledAsync(
     async ({ params: p }) => {
       const expressParams = estimateBatchExpressParams({
@@ -148,18 +150,17 @@ export function useExpressOrdersParams({
       return expressParams;
     },
     {
-      params:
-        isAvailable && globalExpressParams && fastExpressParams && provider && signer && !getIsEmptyBatch(orderParams)
-          ? {
-              chainId,
-              signer,
-              provider,
-              orderParams,
-              globalExpressParams,
-              isGmxAccount,
-              subaccount,
-            }
-          : undefined,
+      params: isAsyncEnabled
+        ? {
+            chainId,
+            signer,
+            provider,
+            orderParams,
+            globalExpressParams,
+            isGmxAccount,
+            subaccount,
+          }
+        : undefined,
       forceRecalculate,
       throttleMs: 5000,
       leading: true,
@@ -180,7 +181,7 @@ export function useExpressOrdersParams({
       };
     }
 
-    const expressParams = asyncExpressParams || fastExpressParams;
+    const expressParams = isAsyncEnabled ? asyncExpressParams ?? fastExpressParams : fastExpressParams;
 
     const expressParamsPromise = Promise.race([fastExpressPromise, asyncExpressPromise])
       .then((result) => {
@@ -198,6 +199,7 @@ export function useExpressOrdersParams({
     };
   }, [
     isAvailable,
+    isAsyncEnabled,
     asyncExpressParams,
     fastExpressParams,
     fastExpressPromise,
