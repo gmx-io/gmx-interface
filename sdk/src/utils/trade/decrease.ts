@@ -108,6 +108,7 @@ export function getDecreasePositionAmounts(p: {
     fundingFeeUsd: 0n,
     feeDiscountUsd: 0n,
     swapProfitFeeUsd: 0n,
+    swapProfitUsdIn: 0n,
     payedOutputUsd: 0n,
     payedRemainingCollateralUsd: 0n,
     payedRemainingCollateralAmount: 0n,
@@ -298,9 +299,11 @@ export function getDecreasePositionAmounts(p: {
     });
 
     values.swapProfitFeeUsd = swapProfitStats.swapFeeUsd - swapProfitStats.priceImpactDeltaUsd;
+    values.swapProfitUsdIn = swapProfitStats.usdIn;
     values.swapUiFeeUsd = applyFactor(swapProfitStats.usdIn, uiFeeFactor);
   } else {
     values.swapProfitFeeUsd = 0n;
+    values.swapProfitUsdIn = 0n;
   }
 
   const totalFeesUsd = getTotalFeesUsdForDecrease({

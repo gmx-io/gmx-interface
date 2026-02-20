@@ -112,6 +112,7 @@ export type DecreasePositionAmounts = {
   borrowingFeeUsd: bigint;
   fundingFeeUsd: bigint;
   swapProfitFeeUsd: bigint;
+  swapProfitUsdIn: bigint;
   proportionalPendingImpactDeltaUsd: bigint;
   closePriceImpactDeltaUsd: bigint;
   totalPendingImpactDeltaUsd: bigint;

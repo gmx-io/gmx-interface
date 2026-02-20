@@ -57,6 +57,7 @@ export function getTradeFees(p: {
   fundingFeeUsd: bigint;
   feeDiscountUsd: bigint;
   swapProfitFeeUsd: bigint;
+  swapProfitUsdIn: bigint;
   uiFeeFactor: bigint;
   type: "increase" | "decrease" | "swap";
 }): TradeFees {
@@ -76,6 +77,7 @@ export function getTradeFees(p: {
     fundingFeeUsd,
     feeDiscountUsd,
     swapProfitFeeUsd,
+    swapProfitUsdIn,
     proportionalPendingImpactDeltaUsd,
     decreasePositionPriceImpactDeltaUsd,
     uiFeeFactor,
@@ -121,9 +123,9 @@ export function getTradeFees(p: {
   });
   const uiFee = getFeeItem(uiFeeUsd * -1n, sizeDeltaUsd, { shouldRoundUp: true });
 
-  const swapProfitFee = getFeeItem(swapProfitFeeUsd * -1n, initialCollateralUsd);
+  const swapProfitFee = getFeeItem(swapProfitFeeUsd * -1n, swapProfitUsdIn);
 
-  const swapPriceImpact = !externalSwapQuote ? getFeeItem(swapPriceImpactDeltaUsd, initialCollateralUsd) : undefined;
+  const swapPriceImpact = !externalSwapQuote ? getFeeItem(swapPriceImpactDeltaUsd, totalSwapVolumeUsd) : undefined;
 
   const positionFeeBeforeDiscount = getFeeItem((positionFeeUsd + feeDiscountUsd) * -1n, sizeDeltaUsd);
   const positionFeeAfterDiscount = getFeeItem(positionFeeUsd * -1n, sizeDeltaUsd);
