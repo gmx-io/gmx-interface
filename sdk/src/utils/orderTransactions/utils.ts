@@ -502,6 +502,10 @@ export function getBatchTotalExecutionFee({
   tokensData: TokensData;
   chainId: number;
 }): ExecutionFee | undefined {
+  if (createOrderParams.length === 0 && updateOrderParams.length === 0) {
+    return undefined;
+  }
+
   let feeTokenAmount = 0n;
   let gasLimit = 0n;
 

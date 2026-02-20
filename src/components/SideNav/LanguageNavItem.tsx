@@ -29,7 +29,7 @@ export function LanguageNavItem({ isCollapsed, onClick }: LanguageNavItemProps) 
   return (
     <>
       <NavItem
-        icon={<LanguageIcon className="size-24" />}
+        icon={<LanguageIcon className="size-20" />}
         label={t`Language`}
         isCollapsed={isCollapsed}
         onClick={handleOpen}
@@ -38,7 +38,7 @@ export function LanguageNavItem({ isCollapsed, onClick }: LanguageNavItemProps) 
         className="language-popup"
         isVisible={isModalOpen}
         setIsVisible={setIsModalOpen}
-        label={t`Select Language`}
+        label={t`Select language`}
       >
         <LanguageModalContent currentLanguage={currentLanguage} onClose={handleClose} />
       </ModalWithPortal>

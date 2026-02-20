@@ -110,17 +110,17 @@ export function DailyAndCumulativePnL({ chainId, account }: { chainId: number; a
     <div className="flex flex-col rounded-8 bg-slate-900" ref={cardRef}>
       <div className="flex items-center justify-between px-20 py-15">
         <div className="text-20 font-medium">
-          <Trans>Daily and Cumulative PnL</Trans>
+          <Trans>Daily and cumulative PnL</Trans>
         </div>
         {isMobile ? null : <div className="flex flex-wrap items-stretch justify-end gap-8 py-8">{buttons}</div>}
       </div>
 
       <div className="flex flex-wrap gap-24 px-16 pt-16 text-typography-secondary">
         <div className="flex items-center gap-8 text-13 font-medium">
-          <div className="inline-block size-4 rounded-full bg-green-500" /> <Trans>Daily Profit</Trans>
+          <div className="inline-block size-4 rounded-full bg-green-500" /> <Trans>Daily profit</Trans>
         </div>
         <div className="flex items-center gap-8 text-13 font-medium">
-          <div className="inline-block size-4 rounded-full bg-red-500" /> <Trans>Daily Loss</Trans>
+          <div className="inline-block size-4 rounded-full bg-red-500" /> <Trans>Daily loss</Trans>
         </div>
         <div className="flex items-center gap-8 text-13 font-medium">
           <div className="inline-block size-4 rounded-full bg-blue-300" />{" "}

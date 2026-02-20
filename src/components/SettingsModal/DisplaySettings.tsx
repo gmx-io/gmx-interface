@@ -1,5 +1,6 @@
 import { Trans } from "@lingui/macro";
 
+import { DOCS_LINKS } from "config/links";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -16,19 +17,19 @@ export function DisplaySettings() {
     <div className="flex flex-col gap-16 font-medium">
       <SettingsSection>
         <ToggleSwitch isChecked={settings.isLeverageSliderEnabled} setIsChecked={settings.setIsLeverageSliderEnabled}>
-          <Trans>Show Leverage Slider</Trans>
+          <Trans>Show leverage slider</Trans>
         </ToggleSwitch>
 
         <ToggleSwitch isChecked={settings.showPnlAfterFees} setIsChecked={settings.setShowPnlAfterFees}>
-          <Trans>Display PnL After Fees</Trans>
+          <Trans>Display PnL after fees</Trans>
         </ToggleSwitch>
 
         <ToggleSwitch isChecked={settings.isPnlInLeverage} setIsChecked={settings.setIsPnlInLeverage}>
-          <Trans>Include PnL in Leverage Display</Trans>
+          <Trans>Include PnL in leverage display</Trans>
         </ToggleSwitch>
 
         <ToggleSwitch isChecked={settings.shouldShowPositionLines} setIsChecked={settings.setShouldShowPositionLines}>
-          <Trans>Show Positions on Chart</Trans>
+          <Trans>Show positions on chart</Trans>
         </ToggleSwitch>
 
         <div className="flex items-center gap-8">
@@ -37,16 +38,15 @@ export function DisplaySettings() {
             setIsChecked={settings.setBreakdownNetPriceImpactEnabled}
           >
             <TooltipWithPortal
-              handle={<Trans>Breakdown Net Price Impact</Trans>}
+              handle={<Trans>Break down net price impact</Trans>}
               position="top"
               variant="icon"
               renderContent={() => (
                 <div>
                   <Trans>
-                    Technically, net price impact breaks down into stored price impact (for increase orders) and close
-                    price impact (for decrease orders). This setting shows both in the net value tooltip and close modal
-                    execution details, plus the stored price impact for increase orders.{" "}
-                    <ExternalLink href="https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates" newTab>
+                    Show detailed price impact breakdown: stored impact (increase orders) and close impact (decrease
+                    orders) in tooltips and execution details.{" "}
+                    <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
                       Read more
                     </ExternalLink>
                     .

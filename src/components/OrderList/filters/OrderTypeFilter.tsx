@@ -22,7 +22,7 @@ type Groups = Group[];
 
 const GROUPS: Groups = [
   {
-    groupName: msg`Trigger Orders`,
+    groupName: msg`Trigger orders`,
     items: [
       {
         data: "trigger-limit",
@@ -30,11 +30,11 @@ const GROUPS: Groups = [
       },
       {
         data: "trigger-take-profit",
-        text: msg`Take Profit`,
+        text: msg`Take-Profit`,
       },
       {
         data: "trigger-stop-loss",
-        text: msg`Stop Loss`,
+        text: msg`Stop-Loss`,
       },
     ],
   },
@@ -90,7 +90,7 @@ export function OrderTypeFilter({ value, onChange, asButton }: Props) {
     <TableOptionsFilter<OrderTypeFilterValue>
       multiple
       label={t`Type`}
-      placeholder={t`Search Type`}
+      placeholder={t`Search type`}
       value={value}
       options={localizedGroups}
       onChange={onChange}

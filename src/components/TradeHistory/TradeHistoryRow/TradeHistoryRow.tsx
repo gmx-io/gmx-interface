@@ -249,7 +249,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
                   to={`/parsetx/${getChainSlug(chainId)}/${tradeAction.transaction.hash}`}
                   className="text-body-small ml-5 text-typography-secondary hover:text-typography-primary"
                 >
-                  Events
+                  <Trans>Events</Trans>
                 </Link>
               )}
             </div>
@@ -338,7 +338,9 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
       {showDebugValues && (
         <TableTr>
           <TableTd colSpan={42}>
-            <div className="muted">Order Key: {tradeAction.orderKey}</div>
+            <div className="muted">
+              <Trans>Order key:</Trans> {tradeAction.orderKey}
+            </div>
           </TableTd>
         </TableTr>
       )}

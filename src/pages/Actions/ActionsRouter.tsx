@@ -23,15 +23,15 @@ export function AccountsRouter() {
     const chainName = getChainName(chainId! as ContractsChainId);
 
     return (
-      <AppPageLayout>
+      <AppPageLayout title={t`GMX V1 Actions`}>
         <div className="default-container page-layout">
           <PageTitle
             isTop
-            title={t`GMX V1 Actions`}
+            title={t`GMX V1 actions`}
             subtitle={<VersionNetworkSwitcherRow chainId={chainId} version={1} />}
           />
           <div className="text-center text-yellow-300">
-            <Trans>V1 is not supported on {chainName}. Please switch to Arbitrum to use V1.</Trans>
+            <Trans>V1 unsupported on {chainName}. Switch to Arbitrum to use V1.</Trans>
           </div>
         </div>
       </AppPageLayout>
@@ -40,7 +40,7 @@ export function AccountsRouter() {
 
   return (
     <SyntheticsStateContextProvider overrideChainId={chainId} pageType="accounts" skipLocalReferralCode>
-      <AppPageLayout>
+      <AppPageLayout title={t`GMX V2 Actions`}>
         <SyntheticsActions />
       </AppPageLayout>
     </SyntheticsStateContextProvider>
