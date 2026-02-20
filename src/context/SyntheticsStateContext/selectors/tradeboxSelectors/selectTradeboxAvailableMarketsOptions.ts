@@ -101,11 +101,11 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
 
   const { isIncrease, isPosition, isLong } = flags;
 
-  if (!isPosition || !indexToken || isLong === undefined) {
+  if (!isPosition || !indexToken || isLong === undefined || !marketsInfoData) {
     return {};
   }
 
-  const allMarkets = Object.values(marketsInfoData || {}).filter((market) => !market.isSpotOnly && !market.isDisabled);
+  const allMarkets = Object.values(marketsInfoData).filter((market) => !market.isSpotOnly && !market.isDisabled);
 
   const availableMarkets = q(selectTradeboxAvailableMarkets);
 
@@ -128,7 +128,7 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
     availableMarketsOpenFees: {},
   };
 
-  if (isIncrease && liquidMarkets.length === 0 && marketsInfoData) {
+  if (isIncrease && liquidMarkets.length === 0) {
     result.isNoSufficientLiquidityInAnyMarket = true;
 
     return result;
