@@ -377,7 +377,7 @@ export function PositionEditor() {
               topRightLabel={isDeposit ? t`Balance` : t`Max`}
               topRightValue={
                 isDeposit
-                  ? formatBalanceAmount(collateralToken?.balance ?? 0n, collateralToken?.decimals ?? 0, undefined, {
+                  ? formatBalanceAmount(collateralTokenBalance ?? 0n, collateralToken?.decimals ?? 0, undefined, {
                       isStable: collateralToken?.isStable,
                     })
                   : formatBalanceAmount(maxWithdrawAmount ?? 0n, position?.collateralToken?.decimals ?? 0, undefined, {
