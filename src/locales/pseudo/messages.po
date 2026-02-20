@@ -3014,10 +3014,6 @@ msgstr ""
 msgid "Tenderly settings"
 msgstr ""
 
-#: src/components/ExitPriceRow/ExitPriceRow.tsx
-#~ msgid "Price you'll receive when closing, adjusted for capped price impact"
-#~ msgstr ""
-
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
 msgstr ""
