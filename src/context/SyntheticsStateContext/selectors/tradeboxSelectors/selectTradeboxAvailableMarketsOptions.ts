@@ -101,11 +101,11 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
 
   const { isIncrease, isPosition, isLong } = flags;
 
-  if (!isPosition || !indexToken || isLong === undefined) {
+  if (!isPosition || !indexToken || isLong === undefined || !marketsInfoData) {
     return {};
   }
 
-  const allMarkets = Object.values(marketsInfoData || {}).filter((market) => !market.isSpotOnly && !market.isDisabled);
+  const allMarkets = Object.values(marketsInfoData).filter((market) => !market.isSpotOnly && !market.isDisabled);
 
   const availableMarkets = q(selectTradeboxAvailableMarkets);
 
