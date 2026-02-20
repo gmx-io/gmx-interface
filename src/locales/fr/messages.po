@@ -3014,10 +3014,6 @@ msgstr "Fonds insuffisants pour couvrir les frais d'ordre. Restant : {remainingC
 msgid "Tenderly settings"
 msgstr "Paramètres Tenderly"
 
-#: src/components/ExitPriceRow/ExitPriceRow.tsx
-#~ msgid "Price you'll receive when closing, adjusted for capped price impact"
-#~ msgstr "Prix que vous recevrez à la clôture, ajusté en fonction de l'impact sur le prix plafonné"
-
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
 msgstr "Augmenter la taille (Market)"

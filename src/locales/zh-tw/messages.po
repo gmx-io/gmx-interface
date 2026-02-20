@@ -3014,10 +3014,6 @@ msgstr "資金不足以支付訂單費用。剩餘：{remainingCostUsdText}"
 msgid "Tenderly settings"
 msgstr "Tenderly 設定"
 
-#: src/components/ExitPriceRow/ExitPriceRow.tsx
-#~ msgid "Price you'll receive when closing, adjusted for capped price impact"
-#~ msgstr "平倉時您將收到的價格，已根據上限價格影響進行調整"
-
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
 msgstr "加倉（市價）"

@@ -3014,10 +3014,6 @@ msgstr "注文コストの支払いに必要な資金が不足しています。
 msgid "Tenderly settings"
 msgstr "Tenderly設定"
 
-#: src/components/ExitPriceRow/ExitPriceRow.tsx
-#~ msgid "Price you'll receive when closing, adjusted for capped price impact"
-#~ msgstr "決済時の受取価格です。上限付き価格への影響が反映されています"
-
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
 msgstr "サイズを増加（Market）"

@@ -3014,10 +3014,6 @@ msgstr "Insufficient funds to pay for order costs. Remaining: {remainingCostUsdT
 msgid "Tenderly settings"
 msgstr "Tenderly settings"
 
-#: src/components/ExitPriceRow/ExitPriceRow.tsx
-#~ msgid "Price you'll receive when closing, adjusted for capped price impact"
-#~ msgstr "Price you'll receive when closing, adjusted for capped price impact"
-
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
 msgstr "Increase size (Market)"
