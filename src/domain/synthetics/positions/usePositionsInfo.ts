@@ -131,11 +131,12 @@ export function usePositionsInfoRequest(
     return Object.entries(apiPositionsInfoData).reduce((acc: PositionsInfoData, [key, apiPosition]) => {
       const positionInfo = composeApiPositionInfo(apiPosition, marketsInfoData);
       if (positionInfo) {
+        positionInfo.leverage = showPnlInLeverage ? positionInfo.leverageWithPnl : positionInfo.leverageWithoutPnl;
         acc[key] = positionInfo;
       }
       return acc;
     }, {} as PositionsInfoData);
-  }, [apiPositionsInfoData, marketsInfoData]);
+  }, [apiPositionsInfoData, marketsInfoData, showPnlInLeverage]);
 
   const allPossiblePositionsKeys = useMemo(
     () => getAllPossiblePositionsKeys(account, marketsInfoData),
