@@ -40,7 +40,8 @@ export const appEventsData: EventData[] = [
     variant: "warning",
     bodyText: (
       <>
-        OM is migrating to the MANTRA token. Close your OM position immediately to avoid forced liquidation (0.30% fee).
+        ⚠️ OM (Mantra) is migrating to the MANTRA token. Please close your position on the OM/USD market by [08:00 UTC]
+        21 February to avoid auto-closure or forced liquidation.
       </>
     ),
   },
