@@ -6,6 +6,7 @@ import { abis } from "sdk/abis";
 import { ErrorData, ErrorLike, extendError, parseError } from ".";
 
 export const INVALID_PERMIT_SIGNATURE_ERROR = "Invalid permit signature";
+export const EXPIRED_PERMIT_DEADLINE_ERROR = "Expired permit deadline";
 export const FAST_EXPRESS_PARAMS_TIMEOUT_ERROR = "fastExpressParams timeout";
 const NON_EOA_ACCOUNT_DETECTED_ERROR = "Non-EOA account detected";
 
@@ -114,6 +115,16 @@ export function getInvalidPermitSignatureError({
         version: permit.onchainParams.version,
         nonce: permit.onchainParams.nonce,
       },
+    },
+  });
+}
+
+export function getExpiredPermitDeadlineError({ permit }: { permit: SignedTokenPermit }) {
+  return extendError(new Error(EXPIRED_PERMIT_DEADLINE_ERROR), {
+    data: {
+      spender: permit.spender,
+      value: permit.value,
+      deadline: permit.deadline,
     },
   });
 }

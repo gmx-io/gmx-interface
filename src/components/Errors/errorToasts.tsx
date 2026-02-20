@@ -18,12 +18,14 @@ import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
+export type PermitIssueType = "invalidSignature" | "expiredDeadline";
+
 export type AdditionalErrorParams = {
   additionalContent?: ReactNode;
   slippageInputId?: string;
   defaultMessage?: ReactNode;
   isInternalSwapFallback?: boolean;
-  isPermitIssue?: boolean;
+  permitIssueType?: PermitIssueType;
   setIsSettingsVisible?: (isVisible: boolean) => void;
 };
 
@@ -35,7 +37,7 @@ export function getTxnErrorToast(
     slippageInputId,
     defaultMessage = getDefaultErrorMessage(errorData),
     isInternalSwapFallback,
-    isPermitIssue,
+    permitIssueType,
     setIsSettingsVisible,
   }: AdditionalErrorParams
 ) {
@@ -93,8 +95,10 @@ export function getTxnErrorToast(
     return toastParams;
   }
 
-  if (isPermitIssue) {
+  if (permitIssueType === "invalidSignature") {
     toastParams.errorContent = getInvalidPermitSignatureToastContent();
+  } else if (permitIssueType === "expiredDeadline") {
+    toastParams.errorContent = getExpiredPermitDeadlineToastContent();
   }
 
   if (
@@ -402,6 +406,14 @@ export function getInvalidPermitSignatureToastContent() {
   return (
     <Trans>
       <div>Permit signature is invalid. Please try again.</div>
+    </Trans>
+  );
+}
+
+export function getExpiredPermitDeadlineToastContent() {
+  return (
+    <Trans>
+      <div>Permit has expired. Please try again.</div>
     </Trans>
   );
 }

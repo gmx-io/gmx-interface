@@ -26,6 +26,7 @@ import { sendAddressablePixelEventForOrder } from "lib/addressablePixel";
 import { useChainId } from "lib/chains";
 import { parseError } from "lib/errors";
 import {
+  getExpiredPermitDeadlineError,
   getInvalidPermitSignatureError,
   getIsPermitExpiredDeadlineOnSimulation,
   getIsPermitSignatureErrorOnSimulation,
@@ -59,7 +60,7 @@ import {
   UpdateOrderTxnParams,
 } from "sdk/utils/orderTransactions";
 
-import { getTxnErrorToast } from "components/Errors/errorToasts";
+import { getTxnErrorToast, PermitIssueType } from "components/Errors/errorToasts";
 
 import { BatchOrderTxnCtx } from "./sendBatchOrderTxn";
 import { ExpressTxnParams } from "../express/types";
@@ -319,16 +320,22 @@ export function useOrderTxnCallbacks() {
               ? ctx.onInternalSwapFallback
               : undefined;
 
-          const isPermitIssue =
-            Boolean(expressParams?.relayParamsPayload.tokenPermits?.length) &&
-            (getIsPermitSignatureErrorOnSimulation(error) || getIsPermitExpiredDeadlineOnSimulation(error));
+          let permitIssueType: PermitIssueType | undefined;
+
+          if (expressParams?.relayParamsPayload.tokenPermits?.length) {
+            if (getIsPermitExpiredDeadlineOnSimulation(error)) {
+              permitIssueType = "expiredDeadline";
+            } else if (getIsPermitSignatureErrorOnSimulation(error)) {
+              permitIssueType = "invalidSignature";
+            }
+          }
 
           const toastParams = getTxnErrorToast(chainId, errorData, {
             defaultMessage: operationMessage,
             slippageInputId: ctx.slippageInputId,
             additionalContent: ctx.additionalErrorContent,
             isInternalSwapFallback: Boolean(fallbackToInternalSwap),
-            isPermitIssue: isPermitIssue,
+            permitIssueType,
             setIsSettingsVisible,
           });
 
@@ -340,7 +347,13 @@ export function useOrderTxnCallbacks() {
             fallbackToInternalSwap();
           }
 
-          if (isPermitIssue) {
+          if (permitIssueType === "expiredDeadline") {
+            expressParams?.relayParamsPayload.tokenPermits.forEach((permit) => {
+              metrics.pushError(getExpiredPermitDeadlineError({ permit }), "simulation.permitExpiredDeadline");
+            });
+
+            resetTokenPermits();
+          } else if (permitIssueType === "invalidSignature") {
             expressParams?.relayParamsPayload.tokenPermits.forEach((permit) => {
               validateTokenPermitSignature(chainId, permit).then((validationResult) => {
                 metrics.pushError(
