@@ -141,7 +141,9 @@ export function useOrderTxnCallbacks() {
         }
 
         const pendingPositions = e.data.batchParams.createOrderParams
-          .filter((cp) => isMarketOrderType(cp.orderPayload.orderType))
+          .filter((cp): cp is CreateOrderTxnParams<IncreasePositionOrderParams | DecreasePositionOrderParams> =>
+            isMarketOrderType(cp.orderPayload.orderType)
+          )
           .map((cp) =>
             getPendingPositionFromParams({
               createOrderParams: cp,
