@@ -13,6 +13,7 @@ export type EventData = {
   startDate?: string;
   endDate: string;
   bodyText: ReactNode;
+  variant?: "info" | "warning";
   chains?: number[];
   link?: {
     text: string;
@@ -27,8 +28,22 @@ export type EventData = {
 export const homeEventsData: EventData[] = [];
 
 export const AL16Z_DELISTING_EVENT_ID = "al16z-delisting";
+export const OM_MANTRA_MIGRATION_EVENT_ID = "om-mantra-migration";
 
 export const appEventsData: EventData[] = [
+  {
+    id: OM_MANTRA_MIGRATION_EVENT_ID,
+    isActive: true,
+    startDate: "20 Feb 2026, 0:00",
+    endDate: "27 Feb 2026, 0:00",
+    title: "OM to MANTRA migration",
+    variant: "warning",
+    bodyText: (
+      <>
+        OM is migrating to the MANTRA token. Close your OM position immediately to avoid forced liquidation (0.30% fee).
+      </>
+    ),
+  },
   {
     id: "cc-met-arbitrum-listing",
     isActive: true,
