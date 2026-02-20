@@ -7,6 +7,7 @@ import {
   recoverTypedDataAddress,
 } from "viem";
 
+import { getIsFlagEnabled } from "config/ab";
 import { parseError } from "lib/errors";
 import { defined } from "lib/guards";
 import { WalletSigner } from "lib/wallets";
@@ -19,6 +20,8 @@ import { DEFAULT_PERMIT_DEADLINE_DURATION } from "sdk/configs/express";
 import { getToken } from "sdk/configs/tokens";
 import { nowInSeconds } from "sdk/utils/time";
 import { SignedTokenPermit } from "sdk/utils/tokens/types";
+
+const SHORT_PERMIT_DEADLINE_DURATION = 10;
 
 export async function createAndSignTokenPermit(
   chainId: ContractsChainId,
@@ -53,7 +56,10 @@ export async function createAndSignTokenPermit(
     spender,
     value,
     nonce: onchainParams.nonce,
-    deadline: BigInt(nowInSeconds() + DEFAULT_PERMIT_DEADLINE_DURATION),
+    deadline: BigInt(
+      nowInSeconds() +
+        (getIsFlagEnabled("testShortPermitDeadline") ? SHORT_PERMIT_DEADLINE_DURATION : DEFAULT_PERMIT_DEADLINE_DURATION)
+    ),
   };
 
   const signature = await signTypedData({ signer, domain, types, typedData: permitData, minified: false });

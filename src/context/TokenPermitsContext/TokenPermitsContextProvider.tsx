@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useMemo } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo } from "react";
 
 import { getTokenPermitsKey, PERMITS_DISABLED_KEY } from "config/localStorage";
 import { createAndSignTokenPermit, getIsPermitExpired, validateTokenPermitSignature } from "domain/tokens/permitUtils";
@@ -7,6 +7,8 @@ import { getInvalidPermitSignatureError } from "lib/errors/customErrors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useWallet from "lib/wallets/useWallet";
 import { SignedTokenPermit } from "sdk/utils/tokens/types";
+
+const PERMIT_CLEANUP_POLL_MS = 5_000;
 
 export type TokenPermitsState = {
   tokenPermits: SignedTokenPermit[];
@@ -92,11 +94,44 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
     setTokenPermits([]);
   }, [setTokenPermits]);
 
+  useEffect(
+    function revalidatePermits() {
+      if (!tokenPermits?.length) return;
+
+      let timeoutId: ReturnType<typeof setTimeout> | undefined;
+
+      const cleanExpired = () => {
+        const valid = tokenPermits.filter((permit) => !getIsPermitExpired(permit));
+        if (valid.length !== tokenPermits.length) {
+          setTokenPermits(valid);
+        } else {
+          timeoutId = setTimeout(cleanExpired, PERMIT_CLEANUP_POLL_MS);
+        }
+      };
+
+      cleanExpired();
+
+      const onVisibilityChange = () => {
+        if (document.visibilityState === "visible") {
+          cleanExpired();
+        }
+      };
+
+      document.addEventListener("visibilitychange", onVisibilityChange);
+
+      return () => {
+        clearTimeout(timeoutId);
+        document.removeEventListener("visibilitychange", onVisibilityChange);
+      };
+    },
+    [tokenPermits, setTokenPermits]
+  );
+
   const state = useMemo(
     () => ({
       isPermitsDisabled: Boolean(isPermitsDisabled),
       setIsPermitsDisabled,
-      tokenPermits: tokenPermits?.filter((permit) => !getIsPermitExpired(permit)) ?? [],
+      tokenPermits: tokenPermits ?? [],
       addTokenPermit,
       resetTokenPermits,
     }),
