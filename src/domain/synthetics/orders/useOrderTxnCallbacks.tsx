@@ -27,6 +27,7 @@ import { useChainId } from "lib/chains";
 import { parseError } from "lib/errors";
 import {
   getInvalidPermitSignatureError,
+  getIsPermitExpiredDeadlineOnSimulation,
   getIsPermitSignatureErrorOnSimulation,
   getIsPossibleExternalSwapError,
 } from "lib/errors/customErrors";
@@ -320,7 +321,7 @@ export function useOrderTxnCallbacks() {
 
           const isPermitIssue =
             Boolean(expressParams?.relayParamsPayload.tokenPermits?.length) &&
-            getIsPermitSignatureErrorOnSimulation(error);
+            (getIsPermitSignatureErrorOnSimulation(error) || getIsPermitExpiredDeadlineOnSimulation(error));
 
           const toastParams = getTxnErrorToast(chainId, errorData, {
             defaultMessage: operationMessage,

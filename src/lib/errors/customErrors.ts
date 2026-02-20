@@ -65,20 +65,32 @@ export function getIsInvalidSignatureError(error: ErrorLike) {
 }
 
 export function getIsPermitSignatureErrorOnSimulation(error: ErrorLike) {
+  return isPermitExternalCallFailedOnSimulation(error, "invalid signature");
+}
+
+export function getIsPermitExpiredDeadlineOnSimulation(error: ErrorLike) {
+  return isPermitExternalCallFailedOnSimulation(error, "expired deadline");
+}
+
+function isPermitExternalCallFailedOnSimulation(error: ErrorLike, errorSubstring: string) {
   const parsedError = parseError(error);
 
   if (!parsedError || parsedError.errorContext !== "simulation" || parsedError.contractError !== "ExternalCallFailed") {
     return false;
   }
 
-  const decodedExternalCallFailed = decodeErrorResult({
-    abi: abis.CustomErrors,
-    data: parsedError.contractErrorArgs[0],
-  });
+  try {
+    const decodedExternalCallFailed = decodeErrorResult({
+      abi: abis.CustomErrors,
+      data: parsedError.contractErrorArgs[0],
+    });
 
-  const errorArg = decodedExternalCallFailed?.args?.[0];
+    const errorArg = decodedExternalCallFailed?.args?.[0];
 
-  return typeof errorArg === "string" && errorArg.includes("invalid signature");
+    return typeof errorArg === "string" && errorArg.includes(errorSubstring);
+  } catch {
+    return false;
+  }
 }
 
 export function getInvalidPermitSignatureError({
