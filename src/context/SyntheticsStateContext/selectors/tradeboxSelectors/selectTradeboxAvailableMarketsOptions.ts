@@ -128,7 +128,7 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
     availableMarketsOpenFees: {},
   };
 
-  if (isIncrease && liquidMarkets.length === 0) {
+  if (isIncrease && liquidMarkets.length === 0 && marketsInfoData) {
     result.isNoSufficientLiquidityInAnyMarket = true;
 
     return result;
