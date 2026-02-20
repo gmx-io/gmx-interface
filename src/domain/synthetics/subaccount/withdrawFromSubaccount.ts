@@ -1,8 +1,8 @@
 import { Provider } from "ethers";
 import useSWR from "swr";
 
+import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { useJsonRpcProvider } from "lib/rpc";
-import { bigMath } from "sdk/utils/bigmath";
 
 import { SubaccountSerializedConfig } from "./types";
 import { getSubaccountSigner } from "./utils";
@@ -35,15 +35,12 @@ async function getEstimatedWithdrawalAmount(provider: Provider, subaccountAddres
     estimatedGas: 0n,
   };
 
-  // TODO apply gas limit buffer
-  result.estimatedGas = bigMath.mulDiv(
-    (await provider.estimateGas({
+  result.estimatedGas = await provider
+    .estimateGas({
       to: subaccountAddress,
       value,
-    })) as bigint,
-    13n,
-    10n
-  );
+    })
+    .then(applyGasLimitBuffer);
 
   result.amountToSend = value - gasPrice * result.estimatedGas;
 
