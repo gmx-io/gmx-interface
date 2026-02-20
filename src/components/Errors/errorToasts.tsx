@@ -18,8 +18,9 @@ import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
-export type PermitIssueType = "invalidSignature" | "expiredDeadline";
 import { getContractErrorToastContent } from "./getContractErrorToastContent";
+
+export type PermitIssueType = "invalidSignature" | "expiredDeadline";
 
 export type AdditionalErrorParams = {
   additionalContent?: ReactNode;
