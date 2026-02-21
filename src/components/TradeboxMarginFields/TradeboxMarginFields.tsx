@@ -94,7 +94,6 @@ export function TradeboxMarginFields({
     canConvert,
     tokensToUsd,
     setSizeInputValue,
-    setFocusedInput,
     setToTokenInputValue,
   });
 
