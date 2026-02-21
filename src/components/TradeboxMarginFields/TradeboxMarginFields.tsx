@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { SourceChainId } from "config/chains";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -57,7 +57,10 @@ export function TradeboxMarginFields({
   const markPrice = useSelector(selectTradeboxMarkPrice);
   const focusedInput = useSelector(selectTradeboxFocusedInput);
 
-  const { toTokenAddress } = useSelector(selectTradeboxState);
+  const { toTokenAddress, marketAddress } = useSelector(selectTradeboxState);
+
+  const prevSizeSyncContextRef = useRef<string>();
+  const shouldForceSizeUsdSyncRef = useRef(false);
 
   const toToken = getByKey(tokensData, toTokenAddress);
 
@@ -97,23 +100,35 @@ export function TradeboxMarginFields({
     setToTokenInputValue,
   });
 
+  // Sync size input value to USD when market/token context changes
+  // USD value calculated separately from increase/decrease amounts
+  // so we need to force a sync when the context changes
   useEffect(() => {
-    if (sizeDisplayMode !== "usd" || !canConvert || focusedInput === "to") return;
+    const nextContext = `${marketAddress ?? ""}:${toTokenAddress ?? ""}`;
+
+    if (prevSizeSyncContextRef.current === undefined) {
+      prevSizeSyncContextRef.current = nextContext;
+      return;
+    }
+
+    if (prevSizeSyncContextRef.current !== nextContext) {
+      shouldForceSizeUsdSyncRef.current = true;
+      prevSizeSyncContextRef.current = nextContext;
+    }
+  }, [marketAddress, toTokenAddress]);
+
+  useEffect(() => {
+    if (sizeDisplayMode !== "usd" || !canConvert) return;
+
+    if (focusedInput === "to" && !shouldForceSizeUsdSyncRef.current) return;
 
     const usdValue = tokensToUsd(toTokenInputValue);
     if (usdValue !== sizeInputValue) {
       setSizeInputValue(usdValue);
     }
-  }, [
-    focusedInput,
-    sizeDisplayMode,
-    sizeInputValue,
-    toTokenInputValue,
-    canConvert,
-    tokensToUsd,
-    usdToTokens,
-    setToTokenInputValue,
-  ]);
+
+    shouldForceSizeUsdSyncRef.current = false;
+  }, [focusedInput, sizeDisplayMode, sizeInputValue, toTokenInputValue, canConvert, tokensToUsd]);
 
   const handleFromInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
