@@ -99,18 +99,11 @@ export function TradeboxMarginFields({
   });
 
   useEffect(() => {
-    if (sizeDisplayMode !== "usd" || !canConvert) return;
+    if (sizeDisplayMode !== "usd" || !canConvert || focusedInput === "to") return;
 
-    if (focusedInput === "to") {
-      const tokensValue = usdToTokens(sizeInputValue);
-      if (tokensValue !== toTokenInputValue) {
-        setToTokenInputValue(tokensValue, false);
-      }
-    } else {
-      const usdValue = tokensToUsd(toTokenInputValue);
-      if (usdValue !== sizeInputValue) {
-        setSizeInputValue(usdValue);
-      }
+    const usdValue = tokensToUsd(toTokenInputValue);
+    if (usdValue !== sizeInputValue) {
+      setSizeInputValue(usdValue);
     }
   }, [
     focusedInput,
@@ -176,9 +169,15 @@ export function TradeboxMarginFields({
         setToTokenInputValue(nextValue, true);
       } else {
         setSizeInputValue(nextValue);
+        if (canConvert) {
+          const tokensValue = usdToTokens(nextValue);
+          if (tokensValue !== toTokenInputValue) {
+            setToTokenInputValue(tokensValue, false);
+          }
+        }
       }
     },
-    [sizeDisplayMode, setFocusedInput, setToTokenInputValue]
+    [canConvert, sizeDisplayMode, setFocusedInput, setToTokenInputValue, toTokenInputValue, usdToTokens]
   );
 
   const handleSizeDisplayModeChange = useCallback(
