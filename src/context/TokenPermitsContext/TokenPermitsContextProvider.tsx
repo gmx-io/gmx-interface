@@ -7,8 +7,9 @@ import { getInvalidPermitSignatureError } from "lib/errors/customErrors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useWallet from "lib/wallets/useWallet";
 import { SignedTokenPermit } from "sdk/utils/tokens/types";
+import { nowInSeconds } from "sdk/utils/time";
 
-const PERMIT_CLEANUP_POLL_MS = 5_000;
+const PERMIT_EXPIRY_BUFFER_MS = 500;
 
 export type TokenPermitsState = {
   tokenPermits: SignedTokenPermit[];
@@ -98,22 +99,27 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
     function revalidatePermits() {
       if (!tokenPermits?.length) return;
 
-      let timeoutId: ReturnType<typeof setTimeout> | undefined;
+      const now = nowInSeconds();
+      const valid = tokenPermits.filter((permit) => !getIsPermitExpired(permit));
 
-      const cleanExpired = () => {
-        const valid = tokenPermits.filter((permit) => !getIsPermitExpired(permit));
-        if (valid.length !== tokenPermits.length) {
-          setTokenPermits(valid);
-        } else {
-          timeoutId = setTimeout(cleanExpired, PERMIT_CLEANUP_POLL_MS);
-        }
-      };
+      if (valid.length !== tokenPermits.length) {
+        setTokenPermits(valid);
+        return;
+      }
 
-      cleanExpired();
+      const nearestDeadline = Math.min(...tokenPermits.map((p) => Number(p.deadline)));
+      const msUntilExpiry = (nearestDeadline - now + 1) * 1000 + PERMIT_EXPIRY_BUFFER_MS;
+
+      const timeoutId = setTimeout(() => {
+        setTokenPermits(tokenPermits.filter((p) => !getIsPermitExpired(p)));
+      }, Math.max(0, msUntilExpiry));
 
       const onVisibilityChange = () => {
         if (document.visibilityState === "visible") {
-          cleanExpired();
+          const stillValid = tokenPermits.filter((permit) => !getIsPermitExpired(permit));
+          if (stillValid.length !== tokenPermits.length) {
+            setTokenPermits(stillValid);
+          }
         }
       };
 
@@ -127,15 +133,20 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
     [tokenPermits, setTokenPermits]
   );
 
+  const activeTokenPermits = useMemo(
+    () => (tokenPermits ?? []).filter((permit) => !getIsPermitExpired(permit)),
+    [tokenPermits]
+  );
+
   const state = useMemo(
     () => ({
       isPermitsDisabled: Boolean(isPermitsDisabled),
       setIsPermitsDisabled,
-      tokenPermits: tokenPermits ?? [],
+      tokenPermits: activeTokenPermits,
       addTokenPermit,
       resetTokenPermits,
     }),
-    [isPermitsDisabled, setIsPermitsDisabled, tokenPermits, addTokenPermit, resetTokenPermits]
+    [isPermitsDisabled, setIsPermitsDisabled, activeTokenPermits, addTokenPermit, resetTokenPermits]
   );
 
   return <TokenPermitsContext.Provider value={state}>{children}</TokenPermitsContext.Provider>;
