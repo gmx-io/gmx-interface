@@ -456,6 +456,22 @@ export const selectTradeboxLeverage = createSelector((q) => {
   return BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
 });
 
+export const selectTradeboxLeverageFieldValue = createSelector((q) => {
+  const isLeverageSliderEnabled = q(selectIsLeverageSliderEnabled);
+
+  if (isLeverageSliderEnabled) {
+    return q(selectTradeboxLeverageOption) ?? null;
+  }
+
+  const estimatedLeverage = q(selectTradeboxIncreasePositionAmounts)?.estimatedLeverage;
+
+  if (estimatedLeverage === undefined || estimatedLeverage <= 0n) {
+    return null;
+  }
+
+  return Number(estimatedLeverage) / BASIS_POINTS_DIVISOR;
+});
+
 const selectTradeboxLeverageStrategy = createSelector((q) => {
   const isLeverageEnabled = q(selectIsLeverageSliderEnabled);
   const focusedInput = q(selectTradeboxFocusedInput);

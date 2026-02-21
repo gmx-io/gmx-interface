@@ -5,11 +5,9 @@ import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks
 import {
   selectTradeboxFocusedInput,
   selectTradeboxFromToken,
-  selectTradeboxFromTokenAmount,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxMarkPrice,
   selectTradeboxState,
-  selectTradeboxToTokenAmount,
   selectTradeboxTradeFlags,
   selectTradeboxTradeMode,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -53,8 +51,6 @@ export function TradeboxMarginFields({
   const tokensData = useTokensData();
 
   const fromToken = useSelector(selectTradeboxFromToken);
-  const fromTokenAmount = useSelector(selectTradeboxFromTokenAmount);
-  const toTokenAmount = useSelector(selectTradeboxToTokenAmount);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const tradeMode = useSelector(selectTradeboxTradeMode);
@@ -94,14 +90,6 @@ export function TradeboxMarginFields({
   }, [fromTokenInputValue, fromToken?.balance, fromToken?.decimals]);
 
   const { isLeverageSliderEnabled, sizePercentage, handleSizePercentageChange } = useTradeboxManualLeverageSizeSlider({
-    fromToken,
-    toToken,
-    tradeFlags,
-    tradeMode,
-    markPrice,
-    fromTokenAmount,
-    toTokenAmount,
-    increaseInitialCollateralUsd: increaseAmounts?.initialCollateralUsd,
     sizeDisplayMode,
     canConvert,
     tokensToUsd,

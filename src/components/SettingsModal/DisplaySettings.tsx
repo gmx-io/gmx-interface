@@ -22,11 +22,11 @@ export function DisplaySettings() {
               handle={<Trans>Manual leverage</Trans>}
               position="top"
               variant="icon"
-              renderContent={() => (
+              content={
                 <div>
                   <Trans>When off, leverage is automatically calculated from your margin and position size.</Trans>
                 </div>
-              )}
+              }
             />
           </ToggleSwitch>
         </div>
@@ -52,7 +52,7 @@ export function DisplaySettings() {
               handle={<Trans>Break down net price impact</Trans>}
               position="top"
               variant="icon"
-              renderContent={() => (
+              content={
                 <div>
                   <Trans>
                     Show detailed price impact breakdown: stored impact (increase orders) and close impact (decrease
@@ -63,7 +63,7 @@ export function DisplaySettings() {
                     .
                   </Trans>
                 </div>
-              )}
+              }
             />
           </ToggleSwitch>
         </div>

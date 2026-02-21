@@ -17,17 +17,23 @@ import {
   selectExternalSwapQuote,
   selectTradeboxCollateralToken,
   selectTradeboxFindSwapPath,
+  selectTradeboxFromToken,
+  selectTradeboxFromTokenAmount,
+  selectTradeboxIncreasePositionAmounts,
+  selectTradeboxLiquidity,
+  selectTradeboxMarkPrice,
   selectTradeboxMaxLiquidityPath,
   selectTradeboxSelectedPosition,
   selectTradeboxState,
+  selectTradeboxToToken,
+  selectTradeboxToTokenAmount,
+  selectTradeboxTradeFlags,
+  selectTradeboxTradeMode,
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectExternalSwapQuoteParams } from "context/SyntheticsStateContext/selectors/tradeSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import {
-  getAvailableUsdLiquidityForPosition,
-  getMaxAllowedLeverageByMinCollateralFactor,
-} from "domain/synthetics/markets";
+import { getMaxAllowedLeverageByMinCollateralFactor } from "domain/synthetics/markets";
 import { OrderType } from "domain/synthetics/orders";
 import { getTradeFees } from "domain/synthetics/trade";
 import { getIncreasePositionAmounts } from "domain/synthetics/trade/utils/increase";
@@ -36,26 +42,12 @@ import { bigNumberBinarySearch } from "lib/binarySearch";
 import { formatAmountFree } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 import { convertToTokenAmount } from "sdk/utils/tokens";
-import { TokenData } from "sdk/utils/tokens/types";
 import { TradeMode } from "sdk/utils/trade";
 import { getNextPositionValuesForIncreaseTrade } from "sdk/utils/trade/increase";
 
 import { SizeDisplayMode } from "./SizeField";
 
 type Params = {
-  fromToken: TokenData | undefined;
-  toToken: TokenData | undefined;
-  tradeFlags: {
-    isIncrease: boolean;
-    isLong: boolean;
-    isLimit: boolean;
-    isTwap: boolean;
-  };
-  tradeMode: TradeMode;
-  markPrice: bigint | undefined;
-  fromTokenAmount: bigint;
-  toTokenAmount: bigint;
-  increaseInitialCollateralUsd: bigint | undefined;
   sizeDisplayMode: SizeDisplayMode;
   canConvert: boolean;
   tokensToUsd: (tokensValue: string) => string;
@@ -65,14 +57,6 @@ type Params = {
 };
 
 export function useTradeboxManualLeverageSizeSlider({
-  fromToken,
-  toToken,
-  tradeFlags,
-  tradeMode,
-  markPrice,
-  fromTokenAmount,
-  toTokenAmount,
-  increaseInitialCollateralUsd,
   sizeDisplayMode,
   canConvert,
   tokensToUsd,
@@ -80,6 +64,15 @@ export function useTradeboxManualLeverageSizeSlider({
   setFocusedInput,
   setToTokenInputValue,
 }: Params) {
+  const fromToken = useSelector(selectTradeboxFromToken);
+  const toToken = useSelector(selectTradeboxToToken);
+  const tradeFlags = useSelector(selectTradeboxTradeFlags);
+  const tradeMode = useSelector(selectTradeboxTradeMode);
+  const markPrice = useSelector(selectTradeboxMarkPrice);
+  const fromTokenAmount = useSelector(selectTradeboxFromTokenAmount);
+  const toTokenAmount = useSelector(selectTradeboxToTokenAmount);
+  const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
+  const increaseInitialCollateralUsd = increaseAmounts?.initialCollateralUsd;
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
   const maxLiquidityPath = useSelector(selectTradeboxMaxLiquidityPath);
@@ -97,6 +90,7 @@ export function useTradeboxManualLeverageSizeSlider({
   const userReferralInfo = useUserReferralInfo();
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
   const { selectedTriggerAcceptablePriceImpactBps, numberOfParts, marketInfo } = useSelector(selectTradeboxState);
+  const { longLiquidity, shortLiquidity } = useSelector(selectTradeboxLiquidity);
 
   const limitOrderType = useMemo(() => {
     if (!tradeFlags.isLimit) return undefined;
@@ -111,20 +105,6 @@ export function useTradeboxManualLeverageSizeSlider({
 
     return undefined;
   }, [tradeFlags.isLimit, tradeMode]);
-
-  const { longLiquidity, shortLiquidity } = useMemo(() => {
-    if (!marketInfo) {
-      return {
-        longLiquidity: undefined,
-        shortLiquidity: undefined,
-      };
-    }
-
-    return {
-      longLiquidity: getAvailableUsdLiquidityForPosition(marketInfo, true),
-      shortLiquidity: getAvailableUsdLiquidityForPosition(marketInfo, false),
-    };
-  }, [marketInfo]);
 
   const applySizeByIndexTokenAmount = useCallback(
     (indexTokenAmount: bigint) => {
@@ -301,9 +281,15 @@ export function useTradeboxManualLeverageSizeSlider({
     };
 
     let upperBound = 1n;
-    if (leverageBound > upperBound) upperBound = leverageBound;
-    if (liquidityBound !== undefined && liquidityBound > upperBound) upperBound = liquidityBound;
-    if (upperBound < 1n) upperBound = 1n;
+    if (leverageBound > upperBound) {
+      upperBound = leverageBound;
+    }
+    if (liquidityBound !== undefined && liquidityBound > upperBound) {
+      upperBound = liquidityBound;
+    }
+    if (upperBound < 1n) {
+      upperBound = 1n;
+    }
 
     let hasInvalidUpper = !validateSize(upperBound);
     for (let i = 0; i < 20 && !hasInvalidUpper; i++) {
@@ -360,7 +346,7 @@ export function useTradeboxManualLeverageSizeSlider({
       return 0;
     }
 
-    const raw = Number(bigMath.mulDiv(toTokenAmount, 10000n, maxSizeByMarginInTokens));
+    const raw = Number(bigMath.mulDiv(toTokenAmount, BASIS_POINTS_DIVISOR_BIGINT, maxSizeByMarginInTokens));
 
     return Math.min(100, Math.max(0, raw / 100));
   }, [maxSizeByMarginInTokens, toTokenAmount]);
