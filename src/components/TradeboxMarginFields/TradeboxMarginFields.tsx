@@ -12,9 +12,9 @@ import {
   selectTradeboxTradeMode,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { calculateDisplayDecimals, formatAmountFree, limitDecimals, parseValue, USD_DECIMALS } from "lib/numbers";
+import { calcMarginAmountByPercentage, calcMarginPercentage } from "domain/synthetics/trade";
+import { calculateDisplayDecimals, USD_DECIMALS } from "lib/numbers";
 import { getByKey } from "lib/objects";
-import { bigMath } from "sdk/utils/bigmath";
 
 import { MarginField } from "./MarginField";
 import { MarginPercentageSlider } from "./MarginPercentageSlider";
@@ -82,15 +82,10 @@ export function TradeboxMarginFields({
     sizeUsdDisplayDecimals,
   });
 
-  const marginPercentage = useMemo(() => {
-    if (fromToken?.balance === undefined || fromToken.balance === 0n) return 0;
-
-    const inputAmount = parseValue(fromTokenInputValue || "0", fromToken.decimals) ?? 0n;
-    if (inputAmount === 0n) return 0;
-
-    const percentage = Number(bigMath.divRound(inputAmount * 100n, fromToken.balance));
-    return Math.min(100, Math.max(0, percentage));
-  }, [fromTokenInputValue, fromToken?.balance, fromToken?.decimals]);
+  const marginPercentage = useMemo(
+    () => calcMarginPercentage(fromTokenInputValue, fromToken?.balance, fromToken?.decimals ?? 0),
+    [fromTokenInputValue, fromToken?.balance, fromToken?.decimals]
+  );
 
   const { isLeverageSliderEnabled, sizePercentage, handleSizePercentageChange } = useTradeboxManualLeverageSizeSlider({
     sizeDisplayMode,
@@ -142,14 +137,13 @@ export function TradeboxMarginFields({
     (percentage: number) => {
       if (fromToken?.balance === undefined || fromToken.balance === 0n) return;
 
-      const amount = (fromToken.balance * BigInt(percentage)) / 100n;
-      const formatted =
-        percentage === 100
-          ? formatAmountFree(amount, fromToken.decimals)
-          : limitDecimals(
-              formatAmountFree(amount, fromToken.decimals),
-              calculateDisplayDecimals(amount, fromToken.decimals, fromToken.visualMultiplier, fromToken.isStable)
-            );
+      const formatted = calcMarginAmountByPercentage(
+        percentage,
+        fromToken.balance,
+        fromToken.decimals,
+        fromToken.visualMultiplier,
+        fromToken.isStable
+      );
       setFocusedInput("from");
       setFromTokenInputValue(formatted, true);
     },

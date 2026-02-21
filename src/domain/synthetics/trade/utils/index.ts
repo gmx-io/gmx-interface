@@ -3,6 +3,7 @@ export * from "sdk/utils/swap/swapStats";
 export * from "sdk/utils/trade/decrease";
 export * from "./common";
 export * from "./increase";
+export * from "./marginFields";
 export * from "./prices";
 export * from "./swap";
 
