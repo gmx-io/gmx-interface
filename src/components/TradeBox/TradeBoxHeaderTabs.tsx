@@ -2,9 +2,11 @@ import cx from "classnames";
 import { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
+import { BASIS_POINTS_DIVISOR } from "config/factors";
 import { selectIsLeverageSliderEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectTradeboxState } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import {
+  selectTradeboxIncreasePositionAmounts,
   selectTradeboxLeverageSliderMarks,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -35,6 +37,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
     setCollateralAddress: onSelectCollateralAddress,
   } = useSelector(selectTradeboxState);
   const leverageSliderMarks = useSelector(selectTradeboxLeverageSliderMarks);
+  const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const { isIncrease, isPosition, isMarket, isLimit, isTwap } = useSelector(selectTradeboxTradeFlags);
   const isLeverageSliderEnabled = useSelector(selectIsLeverageSliderEnabled);
 
@@ -71,15 +74,26 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
 
   const isSwap = tradeType === TradeType.Swap;
   const leverageFieldVisible = isIncrease;
+  const leverageFieldValue = useMemo(() => {
+    if (isLeverageSliderEnabled) {
+      return leverageOption ?? null;
+    }
+
+    if (increaseAmounts?.estimatedLeverage === undefined || increaseAmounts.estimatedLeverage <= 0n) {
+      return null;
+    }
+
+    return Number(increaseAmounts.estimatedLeverage) / BASIS_POINTS_DIVISOR;
+  }, [increaseAmounts?.estimatedLeverage, isLeverageSliderEnabled, leverageOption]);
 
   const positionFields = (
-    <div className="grid grid-cols-[minmax(48px,auto)_1fr_1fr] gap-8">
+    <div className="grid grid-cols-[minmax(56px,auto)_1fr_1fr] gap-8">
       {leverageFieldVisible ? (
         <LeverageField
           marks={leverageSliderMarks}
-          value={isLeverageSliderEnabled ? leverageOption ?? null : null}
+          value={leverageFieldValue}
           onChange={setLeverageOption}
-          disabled={false}
+          disabled={!isLeverageSliderEnabled}
         />
       ) : null}
 

@@ -16,9 +16,20 @@ export function DisplaySettings() {
   return (
     <div className="flex flex-col gap-16 font-medium">
       <SettingsSection>
-        <ToggleSwitch isChecked={settings.isLeverageSliderEnabled} setIsChecked={settings.setIsLeverageSliderEnabled}>
-          <Trans>Show leverage slider</Trans>
-        </ToggleSwitch>
+        <div className="flex items-center gap-8">
+          <ToggleSwitch isChecked={settings.isLeverageSliderEnabled} setIsChecked={settings.setIsLeverageSliderEnabled}>
+            <TooltipWithPortal
+              handle={<Trans>Manual leverage</Trans>}
+              position="top"
+              variant="icon"
+              renderContent={() => (
+                <div>
+                  <Trans>When off, leverage is automatically calculated from your margin and position size.</Trans>
+                </div>
+              )}
+            />
+          </ToggleSwitch>
+        </div>
 
         <ToggleSwitch isChecked={settings.showPnlAfterFees} setIsChecked={settings.setShowPnlAfterFees}>
           <Trans>Display PnL after fees</Trans>

@@ -1631,6 +1631,10 @@ msgstr "Historique des réclamations"
 msgid "No SL orders"
 msgstr "Aucun ordre SL"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Manual leverage"
+msgstr ""
+
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX alerts"
 msgstr "Découvrir les alertes GMX"
@@ -3013,10 +3017,6 @@ msgstr "Fonds insuffisants pour couvrir les frais d'ordre. Restant : {remainingC
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Tenderly settings"
 msgstr "Paramètres Tenderly"
-
-#: src/components/ExitPriceRow/ExitPriceRow.tsx
-#~ msgid "Price you'll receive when closing, adjusted for capped price impact"
-#~ msgstr "Prix que vous recevrez à la clôture, ajusté en fonction de l'impact sur le prix plafonné"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
@@ -6461,6 +6461,10 @@ msgstr "Transaction échouée : fournisseur indisponible"
 msgid "Disable validation for testing"
 msgstr "Désactiver la validation pour les tests"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "When off, leverage is automatically calculated from your margin and position size."
+msgstr ""
+
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "GMX icon"
@@ -7734,10 +7738,6 @@ msgstr "Déplacement de {symbol}..."
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close price impact"
 msgstr "Impact sur le prix de clôture"
-
-#: src/components/SettingsModal/DisplaySettings.tsx
-msgid "Show leverage slider"
-msgstr "Afficher le curseur d'effet de levier"
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 msgid "Opens GMTrade in a new tab"

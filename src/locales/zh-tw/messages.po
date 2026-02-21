@@ -1631,6 +1631,10 @@ msgstr "領取歷史"
 msgid "No SL orders"
 msgstr "無 SL 訂單"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Manual leverage"
+msgstr ""
+
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX alerts"
 msgstr "探索 GMX 提醒"
@@ -3013,10 +3017,6 @@ msgstr "資金不足以支付訂單費用。剩餘：{remainingCostUsdText}"
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Tenderly settings"
 msgstr "Tenderly 設定"
-
-#: src/components/ExitPriceRow/ExitPriceRow.tsx
-#~ msgid "Price you'll receive when closing, adjusted for capped price impact"
-#~ msgstr "平倉時您將收到的價格，已根據上限價格影響進行調整"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
@@ -6461,6 +6461,10 @@ msgstr "交易失敗：提供者不可用"
 msgid "Disable validation for testing"
 msgstr "停用驗證以進行測試"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "When off, leverage is automatically calculated from your margin and position size."
+msgstr ""
+
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "GMX icon"
@@ -7734,10 +7738,6 @@ msgstr "正在轉換 {symbol}..."
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close price impact"
 msgstr "平倉價格影響"
-
-#: src/components/SettingsModal/DisplaySettings.tsx
-msgid "Show leverage slider"
-msgstr "顯示槓桿滑桿"
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 msgid "Opens GMTrade in a new tab"

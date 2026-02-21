@@ -3,11 +3,13 @@ import { ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
 import { SourceChainId } from "config/chains";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
-  selectTradeboxFromToken,
   selectTradeboxFocusedInput,
+  selectTradeboxFromToken,
+  selectTradeboxFromTokenAmount,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxMarkPrice,
   selectTradeboxState,
+  selectTradeboxToTokenAmount,
   selectTradeboxTradeFlags,
   selectTradeboxTradeMode,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -21,6 +23,7 @@ import { MarginPercentageSlider } from "./MarginPercentageSlider";
 import { PriceField } from "./PriceField";
 import { SizeField, SizeDisplayMode } from "./SizeField";
 import { useSizeConversion } from "./useSizeConversion";
+import { useTradeboxManualLeverageSizeSlider } from "./useTradeboxManualLeverageSizeSlider";
 
 type Props = {
   onSelectFromTokenAddress: (tokenAddress: string, isGmxAccount: boolean) => void;
@@ -50,6 +53,8 @@ export function TradeboxMarginFields({
   const tokensData = useTokensData();
 
   const fromToken = useSelector(selectTradeboxFromToken);
+  const fromTokenAmount = useSelector(selectTradeboxFromTokenAmount);
+  const toTokenAmount = useSelector(selectTradeboxToTokenAmount);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const tradeMode = useSelector(selectTradeboxTradeMode);
@@ -88,6 +93,23 @@ export function TradeboxMarginFields({
     return Math.min(100, Math.max(0, percentage));
   }, [fromTokenInputValue, fromToken?.balance, fromToken?.decimals]);
 
+  const { isLeverageSliderEnabled, sizePercentage, handleSizePercentageChange } = useTradeboxManualLeverageSizeSlider({
+    fromToken,
+    toToken,
+    tradeFlags,
+    tradeMode,
+    markPrice,
+    fromTokenAmount,
+    toTokenAmount,
+    increaseInitialCollateralUsd: increaseAmounts?.initialCollateralUsd,
+    sizeDisplayMode,
+    canConvert,
+    tokensToUsd,
+    setSizeInputValue,
+    setFocusedInput,
+    setToTokenInputValue,
+  });
+
   useEffect(() => {
     if (sizeDisplayMode !== "usd" || !canConvert) return;
 
@@ -121,7 +143,7 @@ export function TradeboxMarginFields({
     [setFocusedInput, setFromTokenInputValue]
   );
 
-  const handlePercentageChange = useCallback(
+  const handleMarginPercentageChange = useCallback(
     (percentage: number) => {
       if (fromToken?.balance === undefined || fromToken.balance === 0n) return;
 
@@ -136,7 +158,25 @@ export function TradeboxMarginFields({
       setFocusedInput("from");
       setFromTokenInputValue(formatted, true);
     },
-    [fromToken?.balance, fromToken?.decimals, fromToken?.isStable, fromToken?.visualMultiplier, setFocusedInput, setFromTokenInputValue]
+    [
+      fromToken?.balance,
+      fromToken?.decimals,
+      fromToken?.isStable,
+      fromToken?.visualMultiplier,
+      setFocusedInput,
+      setFromTokenInputValue,
+    ]
+  );
+
+  const handlePercentageChange = useCallback(
+    (percentage: number) => {
+      if (isLeverageSliderEnabled) {
+        handleMarginPercentageChange(percentage);
+      } else {
+        handleSizePercentageChange(percentage);
+      }
+    },
+    [handleMarginPercentageChange, handleSizePercentageChange, isLeverageSliderEnabled]
   );
 
   const handleSizeInputChange = useCallback(
@@ -173,6 +213,8 @@ export function TradeboxMarginFields({
     [sizeDisplayMode, canConvert, sizeInputValue, toTokenInputValue, tokensToUsd, usdToTokens, setToTokenInputValue]
   );
 
+  const percentageSliderValue = isLeverageSliderEnabled ? marginPercentage : sizePercentage;
+
   return (
     <div className="flex flex-col gap-8">
       <MarginField
@@ -180,7 +222,7 @@ export function TradeboxMarginFields({
         onInputValueChange={handleFromInputChange}
         onSelectFromTokenAddress={onSelectFromTokenAddress}
         onDepositTokenAddress={onDepositTokenAddress}
-        onMaxClick={() => handlePercentageChange(100)}
+        onMaxClick={() => handleMarginPercentageChange(100)}
         onFocus={() => setFocusedInput("from")}
       />
 
@@ -209,7 +251,7 @@ export function TradeboxMarginFields({
           />
         )}
       </div>
-      <MarginPercentageSlider value={marginPercentage} onChange={handlePercentageChange} />
+      <MarginPercentageSlider value={percentageSliderValue} onChange={handlePercentageChange} />
     </div>
   );
 }

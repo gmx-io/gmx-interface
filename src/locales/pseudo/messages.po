@@ -1631,6 +1631,10 @@ msgstr ""
 msgid "No SL orders"
 msgstr ""
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Manual leverage"
+msgstr ""
+
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX alerts"
 msgstr ""
@@ -3013,10 +3017,6 @@ msgstr ""
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Tenderly settings"
 msgstr ""
-
-#: src/components/ExitPriceRow/ExitPriceRow.tsx
-#~ msgid "Price you'll receive when closing, adjusted for capped price impact"
-#~ msgstr ""
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
@@ -6461,6 +6461,10 @@ msgstr ""
 msgid "Disable validation for testing"
 msgstr ""
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "When off, leverage is automatically calculated from your margin and position size."
+msgstr ""
+
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "GMX icon"
@@ -7733,10 +7737,6 @@ msgstr ""
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close price impact"
-msgstr ""
-
-#: src/components/SettingsModal/DisplaySettings.tsx
-msgid "Show leverage slider"
 msgstr ""
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
