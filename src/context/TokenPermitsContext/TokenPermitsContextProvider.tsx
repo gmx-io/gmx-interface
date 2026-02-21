@@ -6,8 +6,8 @@ import { useChainId } from "lib/chains";
 import { getInvalidPermitSignatureError } from "lib/errors/customErrors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useWallet from "lib/wallets/useWallet";
-import { SignedTokenPermit } from "sdk/utils/tokens/types";
 import { nowInSeconds } from "sdk/utils/time";
+import { SignedTokenPermit } from "sdk/utils/tokens/types";
 
 const PERMIT_EXPIRY_BUFFER_MS = 500;
 
