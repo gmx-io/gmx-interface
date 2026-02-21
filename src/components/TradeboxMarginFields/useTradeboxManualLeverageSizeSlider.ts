@@ -15,8 +15,9 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getMaxAllowedLeverageByMinCollateralFactor } from "domain/synthetics/markets";
-import { formatAmountFree } from "lib/numbers";
+import { formatAmountFree, PRECISION } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
+import { getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
 import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens";
 
 import { SizeDisplayMode } from "./SizeField";
@@ -98,10 +99,23 @@ export function useTradeboxManualLeverageSizeSlider({
       return undefined;
     }
 
+    const leverageBigInt = BigInt(maxAllowedLeverage);
+
+    const conservativeBound = bigMath.mulDiv(
+      initialCollateralUsd,
+      leverageBigInt * PRECISION,
+      BASIS_POINTS_DIVISOR_BIGINT * PRECISION + leverageBigInt * marketInfo.positionFeeFactorForBalanceWasNotImproved
+    );
+
+    const { balanceWasImproved } = getPriceImpactForPosition(marketInfo, conservativeBound, tradeFlags.isLong);
+    const positionFeeFactor = balanceWasImproved
+      ? marketInfo.positionFeeFactorForBalanceWasImproved
+      : marketInfo.positionFeeFactorForBalanceWasNotImproved;
+
     const leverageBoundUsd = bigMath.mulDiv(
       initialCollateralUsd,
-      BigInt(maxAllowedLeverage),
-      BASIS_POINTS_DIVISOR_BIGINT
+      leverageBigInt * PRECISION,
+      BASIS_POINTS_DIVISOR_BIGINT * PRECISION + leverageBigInt * positionFeeFactor
     );
     const toIndexTokenAmount = (amountUsd: bigint | undefined) => {
       if (amountUsd === undefined || amountUsd <= 0n) {
