@@ -97,8 +97,10 @@ export function getTxnErrorToast(
 
   if (permitIssueType === "invalidSignature") {
     toastParams.errorContent = getInvalidPermitSignatureToastContent();
+    return toastParams;
   } else if (permitIssueType === "expiredDeadline") {
     toastParams.errorContent = getExpiredPermitDeadlineToastContent();
+    return toastParams;
   }
 
   const contractErrorMessage = getContractErrorToastContent({ chainId, errorData, slippageInputId });
