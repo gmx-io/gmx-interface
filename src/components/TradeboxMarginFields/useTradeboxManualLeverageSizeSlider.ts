@@ -8,6 +8,7 @@ import {
   selectTradeboxFromTokenAmount,
   selectTradeboxLiquidity,
   selectTradeboxMarkPrice,
+  selectTradeboxSelectedPosition,
   selectTradeboxToToken,
   selectTradeboxToTokenAmount,
   selectTradeboxTradeFlags,
@@ -55,6 +56,7 @@ export function useTradeboxManualLeverageSizeSlider({
   const isLeverageSliderEnabled = useSelector(selectIsLeverageSliderEnabled);
   const { marketInfo } = useSelector(selectTradeboxState);
   const { longLiquidity, shortLiquidity } = useSelector(selectTradeboxLiquidity);
+  const existingPosition = useSelector(selectTradeboxSelectedPosition);
 
   const applySizeByIndexTokenAmount = useCallback(
     (indexTokenAmount: bigint) => {
@@ -101,9 +103,23 @@ export function useTradeboxManualLeverageSizeSlider({
 
     const leverageBigInt = BigInt(maxAllowedLeverage);
 
+    const existingSizeUsd = existingPosition?.sizeInUsd ?? 0n;
+    const existingCollateralUsd = existingPosition?.collateralUsd ?? 0n;
+    const pendingFeesUsd =
+      (existingPosition?.pendingBorrowingFeesUsd ?? 0n) + (existingPosition?.pendingFundingFeesUsd ?? 0n);
+
+    const totalCollateralUsd = existingCollateralUsd + initialCollateralUsd - pendingFeesUsd;
+
+    // Check if there's room to increase at all
+    const baseNumerator = leverageBigInt * totalCollateralUsd - existingSizeUsd * BASIS_POINTS_DIVISOR_BIGINT;
+
+    if (baseNumerator <= 0n) {
+      return undefined;
+    }
+
     const conservativeBound = bigMath.mulDiv(
-      initialCollateralUsd,
-      leverageBigInt * PRECISION,
+      baseNumerator,
+      PRECISION,
       BASIS_POINTS_DIVISOR_BIGINT * PRECISION + leverageBigInt * marketInfo.positionFeeFactorForBalanceWasNotImproved
     );
 
@@ -113,8 +129,8 @@ export function useTradeboxManualLeverageSizeSlider({
       : marketInfo.positionFeeFactorForBalanceWasNotImproved;
 
     const leverageBoundUsd = bigMath.mulDiv(
-      initialCollateralUsd,
-      leverageBigInt * PRECISION,
+      baseNumerator,
+      PRECISION,
       BASIS_POINTS_DIVISOR_BIGINT * PRECISION + leverageBigInt * positionFeeFactor
     );
     const toIndexTokenAmount = (amountUsd: bigint | undefined) => {
@@ -143,6 +159,7 @@ export function useTradeboxManualLeverageSizeSlider({
 
     return leverageBound < liquidityBound ? leverageBound : liquidityBound;
   }, [
+    existingPosition,
     fromToken,
     fromTokenAmount,
     isLeverageSliderEnabled,
