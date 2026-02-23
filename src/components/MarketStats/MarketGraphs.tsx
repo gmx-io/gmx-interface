@@ -359,6 +359,7 @@ const GraphChart = ({
             axisLine={false}
             tick={AXIS_TICK_PROPS}
             minTickGap={isMobile ? 16 : 32}
+            interval="equidistantPreserveStart"
             tickMargin={8}
           />
           <YAxis
