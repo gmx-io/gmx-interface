@@ -2,8 +2,9 @@ import { useCallback, useMemo } from "react";
 
 import { TokenData } from "domain/synthetics/tokens";
 import { formatAmount, formatAmountFree, parseValue, USD_DECIMALS } from "lib/numbers";
+import { convertToTokenAmount } from "sdk/utils/tokens";
 
-const TOKEN_INPUT_DISPLAY_DECIMALS = 8;
+export const TOKEN_INPUT_DISPLAY_DECIMALS = 8;
 const USD_DISPLAY_DECIMALS = 2;
 
 type UseSizeConversionParams = {
@@ -36,10 +37,12 @@ export function useSizeConversion({ toToken, markPrice }: UseSizeConversionParam
       const parsedUsd = parseValue(usdValue || "0", USD_DECIMALS);
       if (parsedUsd === undefined) return "";
 
-      const sizeInTokens = (parsedUsd * 10n ** BigInt(decimals)) / markPrice;
-      return formatAmountFree(sizeInTokens / visualMultiplier, decimals, TOKEN_INPUT_DISPLAY_DECIMALS);
+      const sizeInTokens = convertToTokenAmount(parsedUsd, decimals, markPrice);
+      if (sizeInTokens === undefined) return "";
+
+      return formatAmountFree(sizeInTokens, decimals, TOKEN_INPUT_DISPLAY_DECIMALS, toToken?.visualMultiplier);
     },
-    [canConvert, decimals, markPrice, visualMultiplier]
+    [canConvert, decimals, markPrice, toToken?.visualMultiplier]
   );
 
   return useMemo(

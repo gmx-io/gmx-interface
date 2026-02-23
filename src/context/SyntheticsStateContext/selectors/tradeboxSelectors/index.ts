@@ -454,7 +454,7 @@ export const selectTradeboxFromTokenAmount = createSelector((q) => {
 export const selectTradeboxLeverage = createSelector((q) => {
   const leverageOption = q(selectTradeboxLeverageOption);
   if (leverageOption == null || !Number.isFinite(leverageOption)) return undefined;
-  return BigInt(parseInt(String(leverageOption * BASIS_POINTS_DIVISOR)));
+  return BigInt(Math.trunc(leverageOption * BASIS_POINTS_DIVISOR));
 });
 
 export const selectTradeboxLeverageFieldValue = createSelector((q) => {

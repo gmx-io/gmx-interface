@@ -138,14 +138,14 @@ export function LeverageField({ value, onChange, marks, disabled }: Props) {
     setIsOpen(false);
   }, []);
 
-  const displayValue =
-    value !== null
-      ? formatLeverage(disabled ? value : clampLeverage(value, minMark, maxMark), {
-          integer: disabled && value > maxMark,
-        })
-      : disabled
-        ? "-"
-        : formatLeverage(minMark);
+  const displayValue = useMemo(() => {
+    if (value === null) {
+      return disabled ? "-" : formatLeverage(minMark);
+    }
+
+    const clampedValue = disabled ? value : clampLeverage(value, minMark, maxMark);
+    return formatLeverage(clampedValue, { integer: disabled && value > maxMark });
+  }, [value, disabled, minMark, maxMark]);
 
   return (
     <>

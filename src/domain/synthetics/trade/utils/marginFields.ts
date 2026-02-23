@@ -131,7 +131,7 @@ export function calcMarginPercentage(inputAmountStr: string, balance: bigint | u
   const inputAmount = parseValue(inputAmountStr || "0", decimals) ?? 0n;
   if (inputAmount === 0n) return 0;
   const percentage = Number(bigMath.divRound(inputAmount * 100n, balance));
-  return Math.min(100, Math.max(0, percentage));
+  return clampPercentage(percentage);
 }
 
 /**
