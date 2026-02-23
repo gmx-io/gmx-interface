@@ -61,6 +61,7 @@ export type PositionDecreaseEvent = {
   longTokenFundingAmountPerSize: bigint;
   shortTokenFundingAmountPerSize: bigint;
   pnlUsd: bigint;
+  executionPrice?: bigint;
   isLong: boolean;
   orderType: OrderType;
   orderKey: string;

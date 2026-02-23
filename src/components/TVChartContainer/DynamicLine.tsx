@@ -3,19 +3,15 @@ import { useLingui } from "@lingui/react";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useLatest, usePrevious } from "react-use";
 
-import { colors } from "config/colors";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { OrderType } from "domain/synthetics/orders";
 import { helperToast } from "lib/helperToast";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 
-import { orderTypeToTitle } from "./constants";
+import { chartLabelColors, orderTypeToTitle } from "./constants";
 import { DynamicChartLine, LineStyle } from "./types";
 import type { IChartingLibraryWidget, IOrderLineAdapter } from "../../charting_library";
 
-const BUTTON_BACKGROUND_COLOR = "#121421";
-const BORDER_COLOR = "#9295ad";
-const BODY_ERROR_BACKGROUND_COLOR = "#831e2d";
 const LOADER_ANIMATION_STEP_MS = 1000;
 
 export function DynamicLine({
@@ -32,6 +28,7 @@ export function DynamicLine({
   getError,
   marketName,
   lineLength,
+  bodyFontSizePt = 12,
 }: {
   isMobile: boolean;
   isEdited: boolean;
@@ -41,6 +38,7 @@ export function DynamicLine({
   onCancel: (id: string) => void;
   getError: (id: string, price: number) => string | undefined;
   lineLength: number;
+  bodyFontSizePt?: number;
 } & Omit<DynamicChartLine, "updatedAtTime">) {
   const { _ } = useLingui();
   const { theme } = useTheme();
@@ -54,23 +52,20 @@ export function DynamicLine({
 
   const [error, setError] = useState<string | undefined>(undefined);
 
-  const orderLineColor =
-    orderType === OrderType.LimitDecrease || orderType === OrderType.StopLossDecrease
-      ? colors.red[500][theme]
-      : isLong
-        ? colors.green[500][theme]
-        : colors.red[500][theme];
+  const isGreen = orderType !== OrderType.LimitDecrease && orderType !== OrderType.StopLossDecrease && isLong;
 
-  const orderLineBorderColor =
-    orderType !== OrderType.LimitDecrease && orderType !== OrderType.StopLossDecrease && isLong
-      ? colors.green[800][theme]
-      : colors.red[700][theme];
+  const palette = isGreen ? chartLabelColors.green : chartLabelColors.red;
+
+  const orderLineColor = palette.text[theme];
+  const orderBodyBgBorderColor = palette.bg[theme];
+  const orderBodyTextColor = palette.text[theme];
 
   const title = useMemo(() => {
-    const predefinedKey = orderTypeToTitle[`${orderType}-${isLong ? "long" : "short"}`];
-    const title = predefinedKey ? _(predefinedKey) : t`Unknown Order`;
-    return `${title} - ${marketName}`;
-  }, [_, isLong, orderType, marketName]);
+    const directionText = isLong ? t`Long` : t`Short`;
+    const orderTypeTitle = orderTypeToTitle[orderType];
+    const orderTitleText = orderTypeTitle ? _(orderTypeTitle) : t`Unknown Order`;
+    return `${directionText} ${marketName} · ${orderTitleText}`;
+  }, [_, isLong, marketName, orderType]);
 
   useEffect(() => {
     const chart = tvWidgetRef.current?.activeChart();
@@ -100,22 +95,23 @@ export function DynamicLine({
         .onCancel(() => {
           latestOnCancel.current(id);
         })
+        .setExtendLeft(false)
         .setEditable(true)
         .setLineStyle(LineStyle.Dashed)
         .setLineColor(orderLineColor)
 
-        .setBodyFont(`normal 12pt "Relative", sans-serif`)
-        .setBodyTextColor("#fff")
-        .setBodyBackgroundColor(orderLineColor)
-        .setBodyBorderColor(orderLineBorderColor)
+        .setBodyFont(`normal ${bodyFontSizePt}pt "Relative", sans-serif`)
+        .setBodyTextColor(orderBodyTextColor)
+        .setBodyBackgroundColor(orderBodyBgBorderColor)
+        .setBodyBorderColor(orderBodyBgBorderColor)
 
-        .setQuantityBackgroundColor(BUTTON_BACKGROUND_COLOR)
-        .setQuantityFont(`normal 16pt "Relative", sans-serif`)
-        .setQuantityBorderColor(orderLineColor)
+        .setQuantityBackgroundColor(chartLabelColors.button.bg[theme])
+        .setQuantityFont(`normal ${bodyFontSizePt + 4}pt "Relative", sans-serif`)
+        .setQuantityBorderColor(orderBodyBgBorderColor)
 
-        .setCancelButtonBackgroundColor(BUTTON_BACKGROUND_COLOR)
-        .setCancelButtonBorderColor(BORDER_COLOR)
-        .setCancelButtonIconColor("#fff");
+        .setCancelButtonBackgroundColor(chartLabelColors.button.bg[theme])
+        .setCancelButtonBorderColor(orderBodyBgBorderColor)
+        .setCancelButtonIconColor(chartLabelColors.button.icon[theme]);
 
       if (!isMobile) {
         lineApi.current
@@ -139,8 +135,8 @@ export function DynamicLine({
                 </>
               );
               lineApi.current!.setPrice(latestPrice.current);
-              lineApi.current!.setBodyBackgroundColor(orderLineColor);
-              lineApi.current!.setBodyBorderColor(orderLineBorderColor);
+              lineApi.current!.setBodyBackgroundColor(orderBodyBgBorderColor);
+              lineApi.current!.setBodyBorderColor(orderBodyBgBorderColor);
               lineApi.current!.setText(title);
               return;
             }
@@ -185,10 +181,13 @@ export function DynamicLine({
     lineLengthRef,
     orderType,
     orderLineColor,
-    orderLineBorderColor,
+    orderBodyBgBorderColor,
+    orderBodyTextColor,
     price,
     title,
     tvWidgetRef,
+    bodyFontSizePt,
+    theme,
   ]);
 
   useEffect(() => {
@@ -215,12 +214,12 @@ export function DynamicLine({
 
       if (prevIsEdited && !isEdited && !(isPending || prevIsPending)) {
         lineApi.current.setPrice(price);
-        lineApi.current?.setBodyBackgroundColor(orderLineColor);
-        lineApi.current?.setBodyBorderColor(orderLineBorderColor);
+        lineApi.current?.setBodyBackgroundColor(orderBodyBgBorderColor);
+        lineApi.current?.setBodyBorderColor(orderBodyBgBorderColor);
         lineApi.current?.setText(title);
       }
     },
-    [isEdited, isPending, orderLineBorderColor, orderLineColor, prevIsEdited, prevIsPending, price, title]
+    [isEdited, isPending, orderBodyBgBorderColor, prevIsEdited, prevIsPending, price, title]
   );
 
   useEffect(
@@ -241,26 +240,26 @@ export function DynamicLine({
           clearInterval(interval);
           lineApi.current?.setQuantity("\u270E");
           lineApi.current?.setPrice(latestPrice.current);
-          lineApi.current?.setBodyBackgroundColor(orderLineColor);
-          lineApi.current?.setBodyBorderColor(orderLineBorderColor);
+          lineApi.current?.setBodyBackgroundColor(orderBodyBgBorderColor);
+          lineApi.current?.setBodyBorderColor(orderBodyBgBorderColor);
           lineApi.current?.setText(title);
         }, FREQUENT_UPDATE_INTERVAL);
       }
     },
-    [isPending, latestPrice, orderLineBorderColor, orderLineColor, prevIsPending, title]
+    [isPending, latestPrice, orderBodyBgBorderColor, prevIsPending, title]
   );
 
   useEffect(() => {
     if (error) {
-      lineApi.current?.setBodyBackgroundColor(BODY_ERROR_BACKGROUND_COLOR);
-      lineApi.current?.setBodyBorderColor(BODY_ERROR_BACKGROUND_COLOR);
+      lineApi.current?.setBodyBackgroundColor(chartLabelColors.error.bg[theme]);
+      lineApi.current?.setBodyBorderColor(chartLabelColors.error.bg[theme]);
       lineApi.current?.setText(error);
     } else {
-      lineApi.current?.setBodyBackgroundColor(orderLineColor);
-      lineApi.current?.setBodyBorderColor(orderLineBorderColor);
+      lineApi.current?.setBodyBackgroundColor(orderBodyBgBorderColor);
+      lineApi.current?.setBodyBorderColor(orderBodyBgBorderColor);
       lineApi.current?.setText(title);
     }
-  }, [error, orderLineBorderColor, orderLineColor, title]);
+  }, [error, orderBodyBgBorderColor, title, theme]);
 
   return null;
 }

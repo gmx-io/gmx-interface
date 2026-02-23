@@ -43,10 +43,12 @@ export function DynamicLines({
   tvWidgetRef,
   isMobile,
   lines,
+  bodyFontSizePt,
 }: {
   tvWidgetRef: React.RefObject<IChartingLibraryWidget>;
   isMobile: boolean;
   lines: Array<DynamicChartLine & { lineLength: number }>;
+  bodyFontSizePt: number;
 }) {
   const { signer } = useWallet();
   const chainId = useSelector(selectChainId);
@@ -187,6 +189,7 @@ export function DynamicLines({
       getError={getError}
       tvWidgetRef={tvWidgetRef}
       isMobile={isMobile}
+      bodyFontSizePt={bodyFontSizePt}
       isEdited={editingOrderState?.orderKey === line.id}
       isPending={(isSubmitting && editingOrderState?.orderKey === line.id) || line.id in pendingOrdersUpdates}
     />

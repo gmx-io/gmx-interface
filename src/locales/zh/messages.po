@@ -365,10 +365,6 @@ msgstr "输入 NFT 地址"
 msgid "@username"
 msgstr "@用户名"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Stop Market - Short Inc."
-msgstr "止损市场 - 空头增加"
-
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Take Profit"
 msgstr "止盈失败"
@@ -824,10 +820,6 @@ msgstr "查看明细"
 msgid "Paraswap"
 msgstr "Paraswap"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "TP - Long Dec."
-msgstr "止盈 - 多头减少"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claimable Rebates"
 msgstr "可领取返利"
@@ -925,10 +917,6 @@ msgstr "禁用分享弹窗盈亏检查"
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Code already taken"
 msgstr "代码已被使用"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "SL - Short Dec."
-msgstr "止损 - 空头减少"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Slippage should be less than -5%"
@@ -1325,10 +1313,6 @@ msgstr "失败"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "No fee"
 msgstr "无费用"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - Long Inc."
-msgstr "市场 - 多头增加"
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Funds are now in your GMX Account."
@@ -2065,10 +2049,6 @@ msgstr "我们重视您的经验和见解，并邀请您参与匿名一对一聊
 msgid "Loading Express params..."
 msgstr "正在加载 Express 参数…"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - Short Inc."
-msgstr "市场 - 空头增加"
-
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Deposit in progress"
 msgstr "存款进行中"
@@ -2099,10 +2079,6 @@ msgstr "立即"
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
 msgstr "未平仓位"
-
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Liq. {longOrShortText} {marketIndexName}{extraLabel}"
-msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order cancelled."
@@ -2740,10 +2716,6 @@ msgstr "返回抵押品"
 msgid "There are issues in the TP/SL orders."
 msgstr "TP/SL 订单存在问题。"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Stop Market - Long Inc."
-msgstr "止损市价 - 做多增加"
-
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Enter your feedback here."
 msgstr "在此输入您的反馈。"
@@ -2896,6 +2868,7 @@ msgstr ""
 msgid "Fee APR"
 msgstr "费用年化收益率"
 
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
 msgstr "SL"
@@ -3330,10 +3303,6 @@ msgstr "止损市价"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Unrealized PnL"
 msgstr "起始未实现 PnL"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Limit - Short Inc."
-msgstr "限价 - 做空增加"
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Sending settle request"
@@ -3822,10 +3791,6 @@ msgstr "购买 GLV"
 msgid "Failed TWAP Part"
 msgstr "TWAP 部分失败"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "TP - Short Dec."
-msgstr "TP - 做空减少"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Compass Labs GM Token Dashboard"
 msgstr "Compass Labs GM 代币仪表板"
@@ -4007,6 +3972,7 @@ msgstr "订单的触发价格。"
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TVChartContainer/DynamicLine.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -4244,6 +4210,7 @@ msgstr "无效的转账地址：请检查 URL。"
 msgid "No distribution history yet"
 msgstr "尚无分配历史"
 
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
 msgstr "TP"
@@ -4407,10 +4374,6 @@ msgstr "输入代码"
 msgid "Details"
 msgstr "详情"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - Short Dec."
-msgstr "市场 - 空头减少"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Umami DAO"
 msgstr "Umami DAO"
@@ -4468,10 +4431,6 @@ msgstr "止盈 / 止损"
 #: src/domain/tokens/approveTokens.tsx
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
 msgstr "您的 {networkName} 账户中没有足够的 {0} 来发送此交易。<0/><1/><2>购买或转移 {1} 到 {networkName}</2>"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "SL - Long Dec."
-msgstr "SL - 做多减少"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Airdrop"
@@ -5518,6 +5477,10 @@ msgstr "流动性不足"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram Bot"
 msgstr "Telegram 机器人"
+
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+msgid "Liq."
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute TWAP Swap Part"
@@ -7099,6 +7062,7 @@ msgid "Min margin: {0}"
 msgstr ""
 
 #: src/components/TradeBox/tradeboxConstants.tsx
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Market"
 msgstr "止损市价"
@@ -7221,6 +7185,7 @@ msgstr "转移错误。"
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TVChartContainer/DynamicLine.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -7586,10 +7551,6 @@ msgstr ""
 msgid "What is GM?"
 msgstr "什么是 GM？"
 
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Open {longOrShortText} {marketIndexName}{extraLabel}"
-msgstr ""
-
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "staked"
 msgstr "已质押"
@@ -7791,10 +7752,6 @@ msgstr "将 esGMX 代币转换为 GMX 代币。请在使用金库前仔细阅读
 msgid "You have an existing position in the {0} market pool.<0>Switch to {1} market pool</0>"
 msgstr "您在 {0} 市场资金池中有现有仓位。<0>切换到 {1} 市场资金池</0>"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - Long Dec."
-msgstr "市场 - 多头减少"
-
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Reload page"
 msgstr ""
@@ -7917,10 +7874,6 @@ msgstr "质押 GMX 并购买 GLV 或 GM 以赚取奖励。"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
 msgstr "重新签名"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Limit - Long Inc."
-msgstr "限价 - 多头增加"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming."
@@ -8436,6 +8389,7 @@ msgstr "加载中"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/keys.ts
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"
 msgstr "限价"

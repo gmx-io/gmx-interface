@@ -365,10 +365,6 @@ msgstr ""
 msgid "@username"
 msgstr ""
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Stop Market - Short Inc."
-msgstr ""
-
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Take Profit"
 msgstr ""
@@ -824,10 +820,6 @@ msgstr ""
 msgid "Paraswap"
 msgstr ""
 
-#: src/components/TVChartContainer/constants.ts
-msgid "TP - Long Dec."
-msgstr ""
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claimable Rebates"
 msgstr ""
@@ -924,10 +916,6 @@ msgstr ""
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Code already taken"
-msgstr ""
-
-#: src/components/TVChartContainer/constants.ts
-msgid "SL - Short Dec."
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -1324,10 +1312,6 @@ msgstr ""
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "No fee"
-msgstr ""
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - Long Inc."
 msgstr ""
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
@@ -2065,10 +2049,6 @@ msgstr ""
 msgid "Loading Express params..."
 msgstr ""
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - Short Inc."
-msgstr ""
-
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Deposit in progress"
 msgstr ""
@@ -2098,10 +2078,6 @@ msgstr ""
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
-msgstr ""
-
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Liq. {longOrShortText} {marketIndexName}{extraLabel}"
 msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
@@ -2740,10 +2716,6 @@ msgstr ""
 msgid "There are issues in the TP/SL orders."
 msgstr ""
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Stop Market - Long Inc."
-msgstr ""
-
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Enter your feedback here."
 msgstr ""
@@ -2896,6 +2868,7 @@ msgstr ""
 msgid "Fee APR"
 msgstr ""
 
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
 msgstr ""
@@ -3329,10 +3302,6 @@ msgstr ""
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Unrealized PnL"
-msgstr ""
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Limit - Short Inc."
 msgstr ""
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
@@ -3822,10 +3791,6 @@ msgstr ""
 msgid "Failed TWAP Part"
 msgstr ""
 
-#: src/components/TVChartContainer/constants.ts
-msgid "TP - Short Dec."
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Compass Labs GM Token Dashboard"
 msgstr ""
@@ -4007,6 +3972,7 @@ msgstr ""
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TVChartContainer/DynamicLine.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -4244,6 +4210,7 @@ msgstr ""
 msgid "No distribution history yet"
 msgstr ""
 
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
 msgstr ""
@@ -4407,10 +4374,6 @@ msgstr ""
 msgid "Details"
 msgstr ""
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - Short Dec."
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Umami DAO"
 msgstr ""
@@ -4467,10 +4430,6 @@ msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
-msgstr ""
-
-#: src/components/TVChartContainer/constants.ts
-msgid "SL - Long Dec."
 msgstr ""
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -5517,6 +5476,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram Bot"
+msgstr ""
+
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+msgid "Liq."
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
@@ -7099,6 +7062,7 @@ msgid "Min margin: {0}"
 msgstr ""
 
 #: src/components/TradeBox/tradeboxConstants.tsx
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Market"
 msgstr ""
@@ -7221,6 +7185,7 @@ msgstr ""
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TVChartContainer/DynamicLine.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -7586,10 +7551,6 @@ msgstr ""
 msgid "What is GM?"
 msgstr ""
 
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Open {longOrShortText} {marketIndexName}{extraLabel}"
-msgstr ""
-
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "staked"
 msgstr ""
@@ -7791,10 +7752,6 @@ msgstr ""
 msgid "You have an existing position in the {0} market pool.<0>Switch to {1} market pool</0>"
 msgstr ""
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - Long Dec."
-msgstr ""
-
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Reload page"
 msgstr ""
@@ -7916,10 +7873,6 @@ msgstr ""
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
-msgstr ""
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Limit - Long Inc."
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
@@ -8436,6 +8389,7 @@ msgstr ""
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/keys.ts
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"
 msgstr ""

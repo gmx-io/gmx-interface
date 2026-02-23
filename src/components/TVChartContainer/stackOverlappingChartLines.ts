@@ -3,16 +3,16 @@ import { formatTokenAmount, formatUsd } from "lib/numbers";
 import type { DynamicChartLine, StaticChartLine } from "./types";
 
 const BASE_LINE_LENGTH_PX = -40;
+const BASE_FONT_SIZE_PT = 12;
 const ORDER_LABEL_WIDTH_PX = 190;
 const POSITION_LABEL_MIN_WIDTH_PX = 220;
 const POSITION_LABEL_MAX_WIDTH_PX = 470;
 const POSITION_LABEL_EXTRA_WIDTH_PX = 30;
 const POSITION_LABEL_COLLISION_SCALE = 0.61;
-const POSITION_LABEL_FONT = `normal 12pt "Relative", sans-serif`;
 const POSITION_LABEL_FALLBACK_CHAR_WIDTH_PX = 6.5;
 const OVERLAP_THRESHOLD_PX = 20;
 const MIXED_OVERLAP_THRESHOLD_PX = 18;
-const COLUMN_GAP_PX = 12;
+const COLUMN_GAP_PX = 6;
 const MIN_COLUMN_REVEAL_PX = 16;
 const HARD_MIN_COLUMN_REVEAL_PX = 8;
 const RIGHT_BOUND_GAP_PX = 8;
@@ -21,7 +21,6 @@ type StackedStaticChartLine = StaticChartLine & { lineLength: number };
 type StackedDynamicChartLine = DynamicChartLine & { lineLength: number };
 type StackableLineKind = "position" | "order";
 let labelMeasureContext: CanvasRenderingContext2D | null | undefined;
-const measuredTextWidthByValue = new Map<string, number>();
 
 type StackableItem =
   | {
@@ -41,34 +40,40 @@ type StackableItem =
       line: StaticChartLine;
     };
 
-function getStaticLabelWidthPx(line: StaticChartLine) {
+function fontScale(fontSizePt: number) {
+  return fontSizePt / BASE_FONT_SIZE_PT;
+}
+
+function makeLabelFont(fontSizePt: number) {
+  return `normal ${fontSizePt}pt "Relative", sans-serif`;
+}
+
+function getStaticLabelWidthPx(line: StaticChartLine, fontSizePt: number) {
+  const scale = fontScale(fontSizePt);
+
   if (!line.positionData) {
-    return ORDER_LABEL_WIDTH_PX;
+    return Math.round(ORDER_LABEL_WIDTH_PX * scale);
   }
 
-  // Position (PnL) labels can be significantly wider due to "PNL ... - ... - {title}".
-  // Approximate width based on the full display text (including PnL/size), not only the base title.
   const pnlFormatted = formatUsd(line.positionData.pnl, { displayPlus: true }) ?? "$0.00";
   const sizeUsdFormatted = formatUsd(line.positionData.sizeInUsd) ?? "$0.00";
   const sizeTokenFormatted = formatTokenAmount(line.positionData.sizeInTokens, line.positionData.tokenDecimals) ?? "0";
 
-  // The UI can toggle between showing size in USD or tokens, so use the longer estimate.
-  const prefix = `PNL ${pnlFormatted} - `;
-  const displayTextUsd = `${prefix}${sizeUsdFormatted} - ${line.title}`;
-  const displayTextToken = `${prefix}${sizeTokenFormatted} - ${line.title}`;
-  const textWidthPx = Math.max(measureTextWidthPx(displayTextUsd), measureTextWidthPx(displayTextToken));
-  const estimated = POSITION_LABEL_EXTRA_WIDTH_PX + textWidthPx * POSITION_LABEL_COLLISION_SCALE;
+  const prefix = `${line.title} · PnL ${pnlFormatted} · `;
+  const displayTextUsd = `${prefix}${sizeUsdFormatted}`;
+  const displayTextToken = `${prefix}${sizeTokenFormatted} ${line.positionData.tokenSymbol}`;
+  const textWidthPx = Math.max(
+    measureTextWidthPx(displayTextUsd, fontSizePt),
+    measureTextWidthPx(displayTextToken, fontSizePt)
+  );
+  const estimated = POSITION_LABEL_EXTRA_WIDTH_PX * scale + textWidthPx * POSITION_LABEL_COLLISION_SCALE;
 
-  return Math.max(POSITION_LABEL_MIN_WIDTH_PX, Math.min(POSITION_LABEL_MAX_WIDTH_PX, estimated));
+  return Math.max(POSITION_LABEL_MIN_WIDTH_PX * scale, Math.min(POSITION_LABEL_MAX_WIDTH_PX * scale, estimated));
 }
 
-function measureTextWidthPx(text: string) {
-  const cached = measuredTextWidthByValue.get(text);
-  if (cached !== undefined) {
-    return cached;
-  }
-
-  let width = Math.ceil(text.length * POSITION_LABEL_FALLBACK_CHAR_WIDTH_PX);
+function measureTextWidthPx(text: string, fontSizePt: number) {
+  const fallbackCharWidth = POSITION_LABEL_FALLBACK_CHAR_WIDTH_PX * fontScale(fontSizePt);
+  let width = Math.ceil(text.length * fallbackCharWidth);
 
   if (typeof document !== "undefined") {
     if (labelMeasureContext === undefined) {
@@ -76,12 +81,10 @@ function measureTextWidthPx(text: string) {
     }
 
     if (labelMeasureContext) {
-      labelMeasureContext.font = POSITION_LABEL_FONT;
+      labelMeasureContext.font = makeLabelFont(fontSizePt);
       width = Math.ceil(labelMeasureContext.measureText(text).width);
     }
   }
-
-  measuredTextWidthByValue.set(text, width);
 
   return width;
 }
@@ -105,11 +108,12 @@ export function stackOverlappingChartLines(p: {
   pricePerPixel: number;
   isMobile: boolean;
   plotWidthPx?: number;
+  bodyFontSizePt?: number;
 }): {
   staticLines: StackedStaticChartLine[];
   dynamicLines: StackedDynamicChartLine[];
 } {
-  const { staticLines, dynamicLines, pricePerPixel, isMobile, plotWidthPx } = p;
+  const { staticLines, dynamicLines, pricePerPixel, isMobile, plotWidthPx, bodyFontSizePt = BASE_FONT_SIZE_PT } = p;
 
   if (isMobile) {
     return {
@@ -118,12 +122,14 @@ export function stackOverlappingChartLines(p: {
     };
   }
 
+  const scaledOrderLabelWidth = Math.round(ORDER_LABEL_WIDTH_PX * fontScale(bodyFontSizePt));
+
   const items: StackableItem[] = [
     ...dynamicLines.map(
       (line): StackableItem => ({
         kind: "dynamic",
         price: line.price,
-        widthPx: ORDER_LABEL_WIDTH_PX,
+        widthPx: scaledOrderLabelWidth,
         line,
       })
     ),
@@ -131,7 +137,7 @@ export function stackOverlappingChartLines(p: {
       (line): StackableItem => ({
         kind: "static",
         price: line.price,
-        widthPx: getStaticLabelWidthPx(line),
+        widthPx: getStaticLabelWidthPx(line, bodyFontSizePt),
         line,
       })
     ),

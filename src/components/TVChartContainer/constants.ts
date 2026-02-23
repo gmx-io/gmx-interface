@@ -32,7 +32,7 @@ export const chartOverridesDark: Partial<WidgetOverrides> = {
   "paneProperties.horzGridProperties.color": "#363A5960",
   "paneProperties.horzGridProperties.style": 2,
   "mainSeriesProperties.priceLineColor": "#8B94B6AA",
-  "mainSeriesProperties.highLowAvgPrice.highLowPriceLinesVisible": true,
+  "mainSeriesProperties.highLowAvgPrice.highLowPriceLinesVisible": false,
   "mainSeriesProperties.highLowAvgPrice.highLowPriceLabelsVisible": true,
   "scalesProperties.textColor": colors.typography["secondary"].dark,
   "mainSeriesProperties.statusViewStyle.showExchange": false,
@@ -49,7 +49,7 @@ export const chartOverridesLight: Partial<WidgetOverrides> = {
   "paneProperties.horzGridProperties.color": "#E0E0E0",
   "paneProperties.horzGridProperties.style": 2,
   "mainSeriesProperties.priceLineColor": "#6B7280AA",
-  "mainSeriesProperties.highLowAvgPrice.highLowPriceLinesVisible": true,
+  "mainSeriesProperties.highLowAvgPrice.highLowPriceLinesVisible": false,
   "mainSeriesProperties.highLowAvgPrice.highLowPriceLabelsVisible": true,
   "scalesProperties.textColor": colors.typography["secondary"].light,
   "mainSeriesProperties.statusViewStyle.showExchange": false,
@@ -146,22 +146,34 @@ export const defaultChartProps = {
   },
 } satisfies Partial<ChartingLibraryWidgetOptions>;
 
-export const orderTypeToTitle: Partial<Record<`${OrderType}-${"long" | "short"}`, MessageDescriptor>> = {
-  [`${OrderType.LimitIncrease}-short`]: msg`Limit - Short Inc.`,
-  [`${OrderType.LimitIncrease}-long`]: msg`Limit - Long Inc.`,
+export const orderTypeToTitle: Partial<Record<OrderType, MessageDescriptor>> = {
+  [OrderType.LimitIncrease]: msg`Limit`,
+  [OrderType.StopIncrease]: msg`Stop Market`,
+  [OrderType.LimitDecrease]: msg`TP`,
+  [OrderType.StopLossDecrease]: msg`SL`,
+};
 
-  [`${OrderType.LimitDecrease}-short`]: msg`TP - Short Dec.`,
-  [`${OrderType.LimitDecrease}-long`]: msg`TP - Long Dec.`,
-
-  [`${OrderType.StopLossDecrease}-long`]: msg`SL - Long Dec.`,
-  [`${OrderType.StopLossDecrease}-short`]: msg`SL - Short Dec.`,
-
-  [`${OrderType.StopIncrease}-short`]: msg`Stop Market - Short Inc.`,
-  [`${OrderType.StopIncrease}-long`]: msg`Stop Market - Long Inc.`,
-
-  [`${OrderType.MarketIncrease}-long`]: msg`Market - Long Inc.`,
-  [`${OrderType.MarketIncrease}-short`]: msg`Market - Short Inc.`,
-
-  [`${OrderType.MarketDecrease}-long`]: msg`Market - Long Dec.`,
-  [`${OrderType.MarketDecrease}-short`]: msg`Market - Short Dec.`,
+export const chartLabelColors = {
+  green: {
+    line: { light: "#109375", dark: "#0FDE8D" },
+    text: { light: "#109375", dark: "#0FDE8D" },
+    bg: { light: "#DFEFEB", dark: "#192E38" },
+  },
+  red: {
+    line: { light: "#EA2A46", dark: "#FF506A" },
+    text: { light: "#EA2A46", dark: "#FF506A" },
+    bg: { light: "#F9E2E5", dark: "#2D192D" },
+  },
+  neutral: {
+    line: { light: "#9FA3BC", dark: "#3a3e5e" },
+    text: { light: "#696D96", dark: "#a0a3c4" },
+    bg: { light: "#EDEDF2", dark: "#1E2033" },
+  },
+  button: {
+    bg: { light: "#FFFFFF", dark: "#121421" },
+    icon: { light: "#696D96", dark: "#FFFFFF" },
+  },
+  error: {
+    bg: { light: "#831e2d", dark: "#831e2d" },
+  },
 };

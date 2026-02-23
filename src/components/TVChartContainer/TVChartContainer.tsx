@@ -192,7 +192,7 @@ export default function TVChartContainer({
           ? calculateDisplayDecimals(indexToken.prices.minPrice, undefined, tokenVm)
           : undefined;
         const priceText = p.executionPrice
-          ? ` at ${formatUsd(p.executionPrice, { displayDecimals: marketPriceDecimals, visualMultiplier: tokenVm })}`
+          ? ` · Exec. ${formatUsd(p.executionPrice, { displayDecimals: marketPriceDecimals, visualMultiplier: tokenVm })}`
           : "";
 
         return {
@@ -209,6 +209,7 @@ export default function TVChartContainer({
       const combinations = [
         {
           eventName: TradeActionType.OrderExecuted,
+          isTwap: false,
           orderType: [
             OrderType.MarketIncrease,
             OrderType.LimitIncrease,
@@ -219,13 +220,19 @@ export default function TVChartContainer({
             OrderType.Liquidation,
           ],
         },
+        {
+          eventName: TradeActionType.OrderExecuted,
+          isTwap: true,
+          orderType: [OrderType.LimitIncrease, OrderType.LimitDecrease],
+        },
       ];
 
       let raw;
       let marketAddresses: string[] = [];
       try {
-        const now = Math.floor(Date.now() / 1000 / 60) * 60;
+        const now = Math.floor(Date.now() / 1000);
         const toClamped = Math.min(to, now);
+        const toBucketed = Math.ceil(toClamped / 60) * 60;
 
         marketAddresses = Object.values(markets)
           .filter((m) =>
@@ -242,7 +249,7 @@ export default function TVChartContainer({
         }));
 
         const marketAddressesKey = marketAddresses.slice().sort().join(",");
-        const cacheKey = `${cid}:${acc}:${wrappedSelected}:${resolution}:${from}:${toClamped}:${marketAddressesKey}`;
+        const cacheKey = `${cid}:${acc}:${wrappedSelected}:${resolution}:${from}:${toBucketed}:${marketAddressesKey}`;
         const cached = marksHistoryCacheRef.current;
 
         if (
@@ -261,17 +268,28 @@ export default function TVChartContainer({
             forAllAccounts: false,
             account: acc,
             fromTxTimestamp: from,
-            toTxTimestamp: toClamped,
+            toTxTimestamp: toBucketed,
             orderEventCombinations: combinations,
             showDebugValues: false,
           });
           marksHistoryCacheRef.current = { key: cacheKey, raw, fetchedAt: Date.now() };
         }
-      } catch {
-        return [];
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error("Error fetching trade history marks:", err);
+        raw = undefined;
       }
 
       const marks: Mark[] = [];
+      const addedMarkIds = new Set<string>();
+
+      const addMark = (mark: Mark | null) => {
+        if (!mark) return;
+        const id = String(mark.id);
+        if (addedMarkIds.has(id)) return;
+        addedMarkIds.add(id);
+        marks.push(mark);
+      };
 
       if (raw && markets && tokensData) {
         const processed = processRawTradeActions({
@@ -288,52 +306,59 @@ export default function TVChartContainer({
           const isIncrease = isIncreaseOrderType(ot);
           const isDecrease = isDecreaseOrderType(ot) || ot === OrderType.Liquidation;
           if (!isIncrease && !isDecrease) return;
-          const m = makeMark({
-            id: pa.orderKey || pa.id,
-            isIncrease,
-            isLong: pa.isLong,
-            ts: Number(pa.timestamp),
-            marketAddress: pa.marketAddress,
-            executionPrice: pa.executionPrice,
-          });
-          if (m) marks.push(m);
+          addMark(
+            makeMark({
+              id: String(pa.orderKey || pa.id),
+              isIncrease,
+              isLong: pa.isLong,
+              ts: Number(pa.timestamp),
+              marketAddress: pa.marketAddress,
+              executionPrice: pa.executionPrice,
+            })
+          );
         });
       }
 
-      if (marks.length === 0) {
-        const incMarks = (inc || [])
-          .map((e) => {
-            const marketForEvent = markets?.[e.marketAddress];
-            const tokenDecimals: number | undefined = marketForEvent?.indexToken?.decimals;
-            const execPrice =
-              e.executionPrice !== undefined && e.executionPrice !== null && tokenDecimals !== undefined
-                ? parseContractPrice(BigInt(e.executionPrice), tokenDecimals)
-                : undefined;
-            return makeMark({
-              id: e.orderKey,
-              isIncrease: true,
-              isLong: e.isLong,
-              ts: Number(e.increasedAtTime),
-              marketAddress: e.marketAddress,
-              executionPrice: execPrice,
-            });
+      (inc || []).forEach((e) => {
+        if (e.sizeDeltaUsd === 0n) return;
+        const marketForEvent = markets?.[e.marketAddress];
+        const tokenDecimals: number | undefined = marketForEvent?.indexToken?.decimals;
+        const execPrice =
+          e.executionPrice !== undefined && e.executionPrice !== null && tokenDecimals !== undefined
+            ? parseContractPrice(BigInt(e.executionPrice), tokenDecimals)
+            : undefined;
+
+        addMark(
+          makeMark({
+            id: String(e.orderKey),
+            isIncrease: true,
+            isLong: e.isLong,
+            ts: Number(e.increasedAtTime),
+            marketAddress: e.marketAddress,
+            executionPrice: execPrice,
           })
-          .filter((m): m is Mark => Boolean(m));
+        );
+      });
 
-        const decMarks = (dec || [])
-          .map((e) =>
-            makeMark({
-              id: e.orderKey,
-              isIncrease: false,
-              isLong: e.isLong,
-              ts: Number(e.decreasedAtTime),
-              marketAddress: e.marketAddress,
-            })
-          )
-          .filter((m): m is Mark => Boolean(m));
-
-        marks.push(...incMarks, ...decMarks);
-      }
+      (dec || []).forEach((e) => {
+        if (e.sizeDeltaUsd === 0n) return;
+        const marketForEvent = markets?.[e.marketAddress];
+        const tokenDecimals: number | undefined = marketForEvent?.indexToken?.decimals;
+        const execPrice =
+          e.executionPrice !== undefined && e.executionPrice !== null && tokenDecimals !== undefined
+            ? parseContractPrice(BigInt(e.executionPrice), tokenDecimals)
+            : undefined;
+        addMark(
+          makeMark({
+            id: String(e.orderKey),
+            isIncrease: false,
+            isLong: e.isLong,
+            ts: Number(e.decreasedAtTime),
+            marketAddress: e.marketAddress,
+            executionPrice: execPrice,
+          })
+        );
+      });
 
       marks.sort((a, b) => (a.time !== b.time ? a.time - b.time : String(a.id).localeCompare(String(b.id))));
       return marks;
@@ -425,6 +450,13 @@ export default function TVChartContainer({
     };
   }, [chartReady]);
 
+  const bodyFontSizePt = useMemo(() => {
+    if (plotWidthPx <= 0) return 12;
+    if (plotWidthPx >= 700) return 12;
+    if (plotWidthPx >= 550) return 11;
+    return 10;
+  }, [plotWidthPx]);
+
   const { staticLines: stackedStaticLines, dynamicLines: stackedDynamicLines } = useMemo(
     () =>
       stackOverlappingChartLines({
@@ -433,8 +465,9 @@ export default function TVChartContainer({
         pricePerPixel,
         isMobile,
         plotWidthPx,
+        bodyFontSizePt,
       }),
-    [chartLines, dynamicChartLines, isMobile, plotWidthPx, pricePerPixel]
+    [chartLines, dynamicChartLines, isMobile, plotWidthPx, pricePerPixel, bodyFontSizePt]
   );
 
   const { menuState, closeMenu, handlePlusClick, getContextMenuItems } = useChartContextMenu(
@@ -488,10 +521,10 @@ export default function TVChartContainer({
     const isStable = token?.isStable ?? false;
 
     tvWidgetRef.current.applyOverrides({
-      "mainSeriesProperties.highLowAvgPrice.highLowPriceLinesVisible": !isStable,
+      "mainSeriesProperties.highLowAvgPrice.highLowPriceLinesVisible": false,
       "mainSeriesProperties.highLowAvgPrice.highLowPriceLabelsVisible": !isStable,
     });
-  }, [chainId, chartReady, chartToken.symbol]);
+  }, [chainId, chartReady, chartToken.symbol, theme]);
 
   const lastPeriod = useLatest(period);
   const lastSupportedResolutions = useLatest(supportedResolutions);
@@ -708,8 +741,13 @@ export default function TVChartContainer({
       </div>
       {shouldShowPositionLines && chartReady && !isChartChangingSymbol && (
         <>
-          <StaticLines tvWidgetRef={tvWidgetRef} chartLines={stackedStaticLines} />
-          <DynamicLines isMobile={isMobile} tvWidgetRef={tvWidgetRef} lines={stackedDynamicLines} />
+          <StaticLines tvWidgetRef={tvWidgetRef} chartLines={stackedStaticLines} bodyFontSizePt={bodyFontSizePt} />
+          <DynamicLines
+            isMobile={isMobile}
+            tvWidgetRef={tvWidgetRef}
+            lines={stackedDynamicLines}
+            bodyFontSizePt={bodyFontSizePt}
+          />
         </>
       )}
       <ChartContextMenu menuState={menuState} onClose={closeMenu} />

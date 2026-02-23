@@ -365,10 +365,6 @@ msgstr "Введите Адрес NFT"
 msgid "@username"
 msgstr "@имяпользователя"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Stop Market - Short Inc."
-msgstr "Стоп-рынок - Увеличение шорта"
-
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Take Profit"
 msgstr "Тейк-профит не удался"
@@ -824,10 +820,6 @@ msgstr "Посмотреть детали"
 msgid "Paraswap"
 msgstr "Paraswap"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "TP - Long Dec."
-msgstr "TP - Уменьшение лонга"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Claimable Rebates"
 msgstr "Доступные ребейты"
@@ -925,10 +917,6 @@ msgstr "Отключить проверку PnL в модальном окне �
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Code already taken"
 msgstr "Код уже занят"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "SL - Short Dec."
-msgstr "SL - Уменьшение шорта"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Slippage should be less than -5%"
@@ -1325,10 +1313,6 @@ msgstr "Ошибка"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "No fee"
 msgstr "Без комиссии"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - Long Inc."
-msgstr "Рынок - Лонг Увеличение"
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Funds are now in your GMX Account."
@@ -2065,10 +2049,6 @@ msgstr "Мы ценим ваш опыт и insights и приглашаем ва
 msgid "Loading Express params..."
 msgstr "Загрузка параметров Express…"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - Short Inc."
-msgstr "Рынок - Шорт Увеличение"
-
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Deposit in progress"
 msgstr "Депозит в обработке"
@@ -2099,10 +2079,6 @@ msgstr "Мгновенно"
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
 msgstr "Открытые позиции"
-
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Liq. {longOrShortText} {marketIndexName}{extraLabel}"
-msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order cancelled."
@@ -2740,10 +2716,6 @@ msgstr "Возвращённый Залог"
 msgid "There are issues in the TP/SL orders."
 msgstr "Есть проблемы в ордерах TP/SL."
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Stop Market - Long Inc."
-msgstr "Стоп-Маркет - Лонг Увелич."
-
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Enter your feedback here."
 msgstr "Введите ваш отзыв здесь."
@@ -2896,6 +2868,7 @@ msgstr ""
 msgid "Fee APR"
 msgstr "Годовая Процентная Ставка Комиссии"
 
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
 msgstr "SL"
@@ -3330,10 +3303,6 @@ msgstr "стоп-маркет"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start Unrealized PnL"
 msgstr "Начальный Нереализованный PnL"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Limit - Short Inc."
-msgstr "Лимит - Шорт Увелич."
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Sending settle request"
@@ -3822,10 +3791,6 @@ msgstr "Купить GLV"
 msgid "Failed TWAP Part"
 msgstr "Неудачная Часть TWAP"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "TP - Short Dec."
-msgstr "TP - Шорт Уменьш."
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Compass Labs GM Token Dashboard"
 msgstr "Compass Labs Дашборд Токенов GM"
@@ -4007,6 +3972,7 @@ msgstr "Триггерная цена для ордера."
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TVChartContainer/DynamicLine.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -4244,6 +4210,7 @@ msgstr "Некорректные адреса перевода: проверьт
 msgid "No distribution history yet"
 msgstr "Нет истории распределений пока"
 
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
 msgstr "TP"
@@ -4407,10 +4374,6 @@ msgstr "Введите код"
 msgid "Details"
 msgstr "Детали"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - Short Dec."
-msgstr "Рынок - Шорт Уменьшение"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Umami DAO"
 msgstr "Umami DAO"
@@ -4468,10 +4431,6 @@ msgstr "Take Profit / Stop Loss"
 #: src/domain/tokens/approveTokens.tsx
 msgid "There is not enough {0} in your account on {networkName} to send this transaction.<0/><1/><2>Buy or Transfer {1} to {networkName}</2>"
 msgstr "Недостаточно {0} на вашем аккаунте в {networkName} для отправки этой транзакции.<0/><1/><2>Купить или Перевести {1} в {networkName}</2>"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "SL - Long Dec."
-msgstr "SL - Лонг Уменьш."
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Airdrop"
@@ -5518,6 +5477,10 @@ msgstr "Недостаточная ликвидность"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram Bot"
 msgstr "Telegram бот"
+
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+msgid "Liq."
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute TWAP Swap Part"
@@ -7099,6 +7062,7 @@ msgid "Min margin: {0}"
 msgstr ""
 
 #: src/components/TradeBox/tradeboxConstants.tsx
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Market"
 msgstr "Стоп-рынок"
@@ -7221,6 +7185,7 @@ msgstr "Ошибка сдвига."
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TVChartContainer/DynamicLine.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -7586,10 +7551,6 @@ msgstr ""
 msgid "What is GM?"
 msgstr "Что такое GM?"
 
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Open {longOrShortText} {marketIndexName}{extraLabel}"
-msgstr ""
-
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "staked"
 msgstr "в стейкинге"
@@ -7791,10 +7752,6 @@ msgstr "Конвертировать токены esGMX в GMX. Пожалуйс
 msgid "You have an existing position in the {0} market pool.<0>Switch to {1} market pool</0>"
 msgstr "У вас есть существующая позиция в пуле рынка {0}.<0>Переключиться на пул рынка {1}</0>"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - Long Dec."
-msgstr "Рынок - Лонг Уменьшение"
-
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Reload page"
 msgstr ""
@@ -7917,10 +7874,6 @@ msgstr "Стейкайте GMX и покупайте GLV или GM, чтобы �
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Re-sign"
 msgstr "Переподписать"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Limit - Long Inc."
-msgstr "Лимит - Увеличение лонга"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "<0>Delegate your undelegated {0} GMX DAO</0>voting power before claiming."
@@ -8436,6 +8389,7 @@ msgstr "Загрузка"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/keys.ts
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"
 msgstr "Лимит"
