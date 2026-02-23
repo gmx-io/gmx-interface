@@ -234,11 +234,11 @@ export function getCodeError(value) {
   if (!trimmedValue) return "";
 
   if (trimmedValue.length > MAX_REFERRAL_CODE_LENGTH) {
-    return t`The referral code can't be more than ${MAX_REFERRAL_CODE_LENGTH} characters.`;
+    return t`Max ${MAX_REFERRAL_CODE_LENGTH} characters`;
   }
 
   if (!REFERRAL_CODE_REGEX.test(trimmedValue)) {
-    return t`Only letters, numbers and underscores are allowed.`;
+    return t`Only letters, numbers, and underscores allowed`;
   }
   return "";
 }

@@ -12,18 +12,22 @@ import { helperToast } from "lib/helperToast";
 import { formatPercentage } from "lib/numbers";
 import { switchNetwork } from "lib/wallets";
 import { getNativeToken } from "sdk/configs/tokens";
-import { CustomErrorName, extractTxnError, TxError, TxErrorType } from "sdk/utils/errors/transactionsErrors";
+import { extractTxnError, TxError, TxErrorType } from "sdk/utils/errors/transactionsErrors";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
+
+import { getContractErrorToastContent } from "./getContractErrorToastContent";
+
+export type PermitIssueType = "invalidSignature" | "expiredDeadline";
 
 export type AdditionalErrorParams = {
   additionalContent?: ReactNode;
   slippageInputId?: string;
   defaultMessage?: ReactNode;
   isInternalSwapFallback?: boolean;
-  isPermitIssue?: boolean;
+  permitIssueType?: PermitIssueType;
   setIsSettingsVisible?: (isVisible: boolean) => void;
 };
 
@@ -35,7 +39,7 @@ export function getTxnErrorToast(
     slippageInputId,
     defaultMessage = getDefaultErrorMessage(errorData),
     isInternalSwapFallback,
-    isPermitIssue,
+    permitIssueType,
     setIsSettingsVisible,
   }: AdditionalErrorParams
 ) {
@@ -66,11 +70,9 @@ export function getTxnErrorToast(
   if (errorData.errorMessage === signerAddressError) {
     toastParams.errorContent = (
       <Trans>
-        <div>Error submitting order.</div>
+        <div>Order failed: wallet address mismatch</div>
         <br />
-        <div>Signer address does not match receiver address.</div>
-        <br />
-        <div>Please reload the page and try again.</div>
+        <div>Refresh and retry</div>
       </Trans>
     );
 
@@ -83,7 +85,7 @@ export function getTxnErrorToast(
         {defaultMessage}
         <br />
         <br />
-        <Trans>External swap is temporarily disabled. Please try again.</Trans>
+        <Trans>External swap temporarily disabled. Try again</Trans>
         <br />
         <br />
         {debugErrorMessage && <ToastifyDebug error={debugErrorMessage} />}
@@ -93,31 +95,17 @@ export function getTxnErrorToast(
     return toastParams;
   }
 
-  if (isPermitIssue) {
+  if (permitIssueType === "invalidSignature") {
     toastParams.errorContent = getInvalidPermitSignatureToastContent();
+    return toastParams;
+  } else if (permitIssueType === "expiredDeadline") {
+    toastParams.errorContent = getExpiredPermitDeadlineToastContent();
+    return toastParams;
   }
 
-  if (
-    errorData.contractError === CustomErrorName.OrderNotFulfillableAtAcceptablePrice ||
-    errorData.contractError === CustomErrorName.InsufficientSwapOutputAmount
-  ) {
-    toastParams.errorContent = (
-      <Trans>
-        Order error. Prices are currently volatile for this market, try again by{" "}
-        <span
-          onClick={() => {
-            if (slippageInputId) {
-              document.getElementById(slippageInputId)?.focus();
-            }
-          }}
-          className={slippageInputId ? "cursor-pointer underline" : undefined}
-        >
-          <Trans>increasing the allowed slippage</Trans>
-        </span>{" "}
-        under the execution details section.
-      </Trans>
-    );
-
+  const contractErrorMessage = getContractErrorToastContent({ chainId, errorData, slippageInputId });
+  if (contractErrorMessage) {
+    toastParams.errorContent = contractErrorMessage;
     return toastParams;
   }
 
@@ -125,11 +113,11 @@ export function getTxnErrorToast(
     case TxErrorType.NotEnoughFunds:
       toastParams.errorContent = (
         <Trans>
-          There is not enough {nativeToken.symbol} in your account on {getChainName(chainId)} to send this transaction.
+          Insufficient {nativeToken.symbol} for gas on {getChainName(chainId)}
           <br />
           <br />
           <Link className="underline" to="/buy_gmx#bridge">
-            Buy or Transfer {nativeToken.symbol} to {getChainName(chainId)}
+            Buy or transfer {nativeToken.symbol} to {getChainName(chainId)}
           </Link>
         </Trans>
       );
@@ -138,10 +126,10 @@ export function getTxnErrorToast(
       toastParams.errorContent = getInvalidNetworkToastContent(chainId);
       break;
     case TxErrorType.UserDenied:
-      toastParams.errorContent = t`Transaction was cancelled.`;
+      toastParams.errorContent = t`Transaction canceled`;
       break;
     case TxErrorType.Slippage:
-      toastParams.errorContent = t`The mark price has changed, consider increasing your allowed slippage by clicking on the "..." icon next to your address.`;
+      toastParams.errorContent = t`Mark price changed. Increase allowed slippage`;
       break;
     case TxErrorType.RpcError: {
       toastParams.autoCloseToast = false;
@@ -149,20 +137,19 @@ export function getTxnErrorToast(
       toastParams.errorContent = (
         <div>
           <Trans>
-            Transaction failed due to RPC error.
+            RPC error.
             <br />
             <br />
-            Please enable{" "}
+            Enable{" "}
             <Button variant="link" className="link-underline" onClick={() => setIsSettingsVisible?.(true)}>
-              Express trading
+              Express Trading
             </Button>{" "}
-            under settings, which should offer a better experience.
+            in settings for better reliability
           </Trans>
           <br />
           <br />
           <Trans>
-            Otherwise, try changing the RPC url in your wallet settings with the help of{" "}
-            <ExternalLink href="https://chainlist.org">chainlist.org</ExternalLink>.
+            Or update your wallet's RPC via <ExternalLink href="https://chainlist.org">chainlist.org</ExternalLink>
           </Trans>
           <br />
           <br />
@@ -180,7 +167,7 @@ export function getTxnErrorToast(
 
 function getDefaultErrorMessage(errorData: ErrorData | undefined) {
   if (errorData?.errorContext === "simulation") {
-    return t`Execute order simulation failed.`;
+    return t`Order simulation failed`;
   }
 
   return t`Transaction failed`;
@@ -213,11 +200,11 @@ export function getErrorMessage(
     case TxErrorType.NotEnoughFunds:
       failMsg = (
         <Trans>
-          There is not enough {nativeToken.symbol} in your account on {getChainName(chainId)} to send this transaction.
+          Insufficient {nativeToken.symbol} for gas on {getChainName(chainId)}
           <br />
           <br />
           <Link className="underline" to="/buy_gmx#bridge">
-            Buy or Transfer {nativeToken.symbol} to {getChainName(chainId)}
+            Buy or transfer {nativeToken.symbol} to {getChainName(chainId)}
           </Link>
         </Trans>
       );
@@ -226,10 +213,10 @@ export function getErrorMessage(
       failMsg = getInvalidNetworkToastContent(chainId);
       break;
     case TxErrorType.UserDenied:
-      failMsg = t`Transaction was cancelled.`;
+      failMsg = t`Transaction canceled`;
       break;
     case TxErrorType.Slippage:
-      failMsg = t`The mark price has changed, consider increasing your allowed slippage.`;
+      failMsg = t`Mark price changed. Increase allowed slippage`;
       break;
     case TxErrorType.RpcError: {
       autoCloseToast = false;
@@ -239,14 +226,9 @@ export function getErrorMessage(
       failMsg = (
         <div>
           <Trans>
-            Transaction failed due to RPC error.
-            <br />
-            <br />
-            Please try changing the RPC url in your wallet settings with the help of{" "}
-            <ExternalLink href="https://chainlist.org">chainlist.org</ExternalLink>.
-            <br />
-            <br />
-            <ExternalLink href="https://docs.gmx.io/docs/trading#rpc-urls">Read more</ExternalLink>.
+            RPC error. Update your wallet's RPC via{" "}
+            <ExternalLink href="https://chainlist.org">chainlist.org</ExternalLink>.{" "}
+            <ExternalLink href="https://docs.gmx.io/docs/trading/#rpc-urls">Read more</ExternalLink>.
           </Trans>
           <br />
           <br />
@@ -260,7 +242,7 @@ export function getErrorMessage(
 
       failMsg = (
         <div>
-          {txnMessage || t`Transaction failed.`}
+          {txnMessage || t`Transaction failed`}
           {additionalContent}
           <br />
           <br />
@@ -278,7 +260,7 @@ export const NON_EOA_ACCOUNT_CHAIN_WARNING_TOAST_ID = "non-eoa-account-chain-war
 export function getInvalidNetworkToastContent(chainId: number) {
   return (
     <Trans>
-      <div>Your wallet is not connected to {getChainName(chainId)}.</div>
+      <div>Wallet not connected to {getChainName(chainId)}</div>
       <br />
       <div className="clickable underline" onClick={() => switchNetwork(chainId, true)}>
         Switch to {getChainName(chainId)}
@@ -290,9 +272,9 @@ export function getInvalidNetworkToastContent(chainId: number) {
 export function getNonEoaAccountChainWarningToastContent(chainId: number) {
   return (
     <Trans>
-      <div>Smart wallets are not supported on {getChainName(chainId)}.</div>
+      <div>Smart wallets not supported on {getChainName(chainId)}</div>
       <br />
-      <div>Please switch to a different network or use a EOA wallet.</div>
+      <div>Switch to a different network or use an EOA wallet</div>
     </Trans>
   );
 }
@@ -303,18 +285,18 @@ export function InvalidSignatureToastContent() {
   return (
     <div>
       <Trans>
-        Transaction failed due to invalid signature.
+        Invalid signature.
         <br />
         <br />
-        Please try a different wallet provider, or switch to Classic or One-Click Trading mode within the{" "}
+        Try a different wallet provider or switch to Classic or One-Click Trading in{" "}
         <span className="clickable underline" onClick={() => setIsSettingsVisible(true)}>
-          Settings.
+          settings
         </span>
       </Trans>
       <br />
       <br />
       <div className="clickable underline" onClick={() => setFeedbackModalVisible(true)}>
-        Report Issue.
+        <Trans>Report issue</Trans>
       </div>
     </div>
   );
@@ -352,42 +334,40 @@ export function getInsufficientExecutionFeeToastContent({
   const bufferText =
     requiredBufferBps !== undefined ? t`to ${formatPercentage(requiredBufferBps, { displayDecimals: 0 })} ` : t``;
 
+  const settingsLink = (
+    <div className="inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
+      <Trans>settings</Trans>
+    </div>
+  );
+
   const suggestText = shouldOfferExpress ? (
-    <>
-      Please{" "}
-      <div className=" inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
-        enable Express trading
-      </div>{" "}
-      under settings, which should offer a better experience.
+    <Trans>
+      Enable{" "}
+      <span className="inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
+        Express Trading
+      </span>{" "}
+      in settings for better reliability.
       <br />
       <br />
-      Otherwise, try increasing the max network fee buffer {bufferText}in{" "}
-      <div className=" inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
-        settings
-      </div>
-      .
-    </>
+      Or increase the max network fee buffer {bufferText} in {settingsLink}
+    </Trans>
   ) : (
-    <>
-      Please try increasing the max network fee buffer to {formatPercentage(requiredBufferBps, { displayDecimals: 0 })}{" "}
-      in{" "}
-      <div className=" inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
-        settings
-      </div>
-      .
-    </>
+    <Trans>
+      Increase the max network fee buffer to {formatPercentage(requiredBufferBps, { displayDecimals: 0 })} in{" "}
+      {settingsLink}
+    </Trans>
   );
 
   return (
     <div>
       <Trans>
-        Transaction failed due to execution fee validation.
+        Execution fee validation failed.
         <br />
         <br />
         {suggestText}
         <br />
         <br />
-        <ExternalLink href={txUrl}>View transaction details.</ExternalLink>
+        <ExternalLink href={txUrl}>View status</ExternalLink>
       </Trans>
       <br />
       <br />
@@ -401,7 +381,15 @@ export const signerAddressError = "Signer address does not match account address
 export function getInvalidPermitSignatureToastContent() {
   return (
     <Trans>
-      <div>Permit signature is invalid. Please try again.</div>
+      <div>Invalid permit signature. Try again</div>
+    </Trans>
+  );
+}
+
+export function getExpiredPermitDeadlineToastContent() {
+  return (
+    <Trans>
+      <div>Permit has expired. Please try again.</div>
     </Trans>
   );
 }
@@ -416,11 +404,9 @@ export async function validateSignerAddress(signer: Signer, receiverAddress: str
     if (!skipToast) {
       helperToast.error(
         <Trans>
-          <div>Error submitting order.</div>
+          <div>Order failed: wallet address mismatch</div>
           <br />
-          <div>Signer address does not match receiver address.</div>
-          <br />
-          <div>Please reload the page and try again.</div>
+          <div>Refresh and retry</div>
         </Trans>
       );
     }

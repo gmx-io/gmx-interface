@@ -40,7 +40,6 @@ export function BridgingInfo(props: Props) {
         <ExternalLink key={i} href={bridgeLink}>
           {option?.name}
         </ExternalLink>
-        .
       </p>
     );
   });

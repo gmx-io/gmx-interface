@@ -26,7 +26,9 @@ import { sendAddressablePixelEventForOrder } from "lib/addressablePixel";
 import { useChainId } from "lib/chains";
 import { parseError } from "lib/errors";
 import {
+  getExpiredPermitDeadlineError,
   getInvalidPermitSignatureError,
+  getIsPermitExpiredDeadlineOnSimulation,
   getIsPermitSignatureErrorOnSimulation,
   getIsPossibleExternalSwapError,
 } from "lib/errors/customErrors";
@@ -42,7 +44,7 @@ import {
 import { getByKey } from "lib/objects";
 import { TxnEvent, TxnEventName } from "lib/transactions";
 import { useBlockNumber } from "lib/useBlockNumber";
-import { isIncreaseOrderType, isMarketOrderType } from "sdk/utils/orders";
+import { isIncreaseOrderType, isMarketOrderType, isSwapOrderType } from "sdk/utils/orders";
 import { OrderInfo, OrdersInfoData } from "sdk/utils/orders/types";
 import {
   BatchOrderTxnParams,
@@ -58,7 +60,7 @@ import {
   UpdateOrderTxnParams,
 } from "sdk/utils/orderTransactions";
 
-import { getTxnErrorToast } from "components/Errors/errorToasts";
+import { getTxnErrorToast, PermitIssueType } from "components/Errors/errorToasts";
 
 import { BatchOrderTxnCtx } from "./sendBatchOrderTxn";
 import { ExpressTxnParams } from "../express/types";
@@ -139,7 +141,9 @@ export function useOrderTxnCallbacks() {
         }
 
         const pendingPositions = e.data.batchParams.createOrderParams
-          .filter((cp) => isMarketOrderType(cp.orderPayload.orderType))
+          .filter((cp): cp is CreateOrderTxnParams<IncreasePositionOrderParams | DecreasePositionOrderParams> =>
+            isMarketOrderType(cp.orderPayload.orderType) && !isSwapOrderType(cp.orderPayload.orderType)
+          )
           .map((cp) =>
             getPendingPositionFromParams({
               createOrderParams: cp,
@@ -199,7 +203,6 @@ export function useOrderTxnCallbacks() {
           setPendingExpressTxn({
             key: getExpressParamsKey(expressParams),
             subaccountApproval: expressParams.subaccount?.signedApproval,
-            isSponsoredCall: expressParams.isSponsoredCall,
             tokenPermits: expressParams.relayParamsPayload.tokenPermits,
             payTokenAddresses: Object.keys(optimisticBatchPayAmounts),
             pendingOrdersKeys: pendingOrders.map(getPendingOrderKey),
@@ -318,16 +321,22 @@ export function useOrderTxnCallbacks() {
               ? ctx.onInternalSwapFallback
               : undefined;
 
-          const isPermitIssue =
-            Boolean(expressParams?.relayParamsPayload.tokenPermits?.length) &&
-            getIsPermitSignatureErrorOnSimulation(error);
+          let permitIssueType: PermitIssueType | undefined;
+
+          if (expressParams?.relayParamsPayload.tokenPermits?.length) {
+            if (getIsPermitExpiredDeadlineOnSimulation(error)) {
+              permitIssueType = "expiredDeadline";
+            } else if (getIsPermitSignatureErrorOnSimulation(error)) {
+              permitIssueType = "invalidSignature";
+            }
+          }
 
           const toastParams = getTxnErrorToast(chainId, errorData, {
             defaultMessage: operationMessage,
             slippageInputId: ctx.slippageInputId,
             additionalContent: ctx.additionalErrorContent,
             isInternalSwapFallback: Boolean(fallbackToInternalSwap),
-            isPermitIssue: isPermitIssue,
+            permitIssueType,
             setIsSettingsVisible,
           });
 
@@ -339,7 +348,13 @@ export function useOrderTxnCallbacks() {
             fallbackToInternalSwap();
           }
 
-          if (isPermitIssue) {
+          if (permitIssueType === "expiredDeadline") {
+            expressParams?.relayParamsPayload.tokenPermits.forEach((permit) => {
+              metrics.pushError(getExpiredPermitDeadlineError({ permit }), "simulation.permitExpiredDeadline");
+            });
+
+            resetTokenPermits();
+          } else if (permitIssueType === "invalidSignature") {
             expressParams?.relayParamsPayload.tokenPermits.forEach((permit) => {
               validateTokenPermitSignature(chainId, permit).then((validationResult) => {
                 metrics.pushError(
@@ -355,6 +370,13 @@ export function useOrderTxnCallbacks() {
 
             setIsPermitsDisabled(true);
             resetTokenPermits();
+          }
+
+          if (expressParams) {
+            updatePendingExpressTxn({
+              key: getExpressParamsKey(expressParams),
+              sendFailed: true,
+            });
           }
 
           if (pendingOrderUpdate) {
@@ -612,11 +634,11 @@ function getOperationMessage(
 
   const lastActionsMsg = isLastAction ? (
     <Trans>
-      Max Action Count Reached.{" "}
+      Max action count reached.{" "}
       <span onClick={() => setIsSettingsVisible(true)} className="link-underline">
         Click here
       </span>{" "}
-      to update.
+      to update
     </Trans>
   ) : undefined;
 
@@ -640,11 +662,11 @@ function getOperationMessage(
       }
 
       case "success": {
-        return t`${orderText} updated.`;
+        return t`${orderText} updated`;
       }
 
       case "failed": {
-        return t`${orderText} update failed.`;
+        return t`${orderText} update failed`;
       }
 
       default: {
@@ -664,11 +686,11 @@ function getOperationMessage(
       }
 
       case "success": {
-        return t`${orderText} cancelled.`;
+        return t`${orderText} cancelled`;
       }
 
       case "failed": {
-        return t`${orderText} cancel failed.`;
+        return t`${orderText} cancellation failed`;
       }
 
       default: {

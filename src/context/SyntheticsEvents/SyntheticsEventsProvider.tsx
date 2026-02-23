@@ -1,4 +1,4 @@
-import { TaskState } from "@gelatonetwork/relay-sdk";
+import { TransactionRevertedError, TransactionRejectedError } from "@gelatocloud/gasless";
 import { t } from "@lingui/macro";
 import { createContext, ReactNode, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 import { toast } from "react-toastify";
@@ -51,13 +51,13 @@ import { deleteByKey, getByKey, setByKey, updateByKey } from "lib/objects";
 import { getProvider } from "lib/rpc";
 import { sleep } from "lib/sleep";
 import { getTenderlyAccountParams } from "lib/tenderly";
-import { getGelatoTaskDebugInfo } from "lib/transactions/sendExpressTransaction";
+import { getGelatoRelayerForChain, getGelatoTaskDebugInfo } from "lib/transactions/sendExpressTransaction";
 import { useHasLostFocus } from "lib/useHasPageLostFocus";
 import { sendUserAnalyticsOrderResultEvent, userAnalytics } from "lib/userAnalytics";
 import { TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
-import { gelatoRelay } from "sdk/utils/gelatoRelay";
+import { StatusCode } from "sdk/utils/gelatoRelay";
 import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
 
 import { getInsufficientExecutionFeeToastContent, InvalidSignatureToastContent } from "components/Errors/errorToasts";
@@ -152,6 +152,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     [key: string]: Partial<PendingExpressTxnParams>;
   }>({});
   const latestPendingExpressTxnParams = useLatest(pendingExpressTxnParams);
+  const latestGelatoTaskStatuses = useLatest(gelatoTaskStatuses);
   const pendingOrderToastIdRef = useRef<number>();
   const eventLogHandlers = useRef({});
 
@@ -1005,55 +1006,127 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     [chainId, currentAccount]
   );
 
+  const pollingTaskIdsRef = useRef<Set<string>>(new Set());
+  const taskChainIdRef = useRef<Map<string, number>>(new Map());
+
   useEffect(() => {
-    const handler = async (taskStatus) => {
-      if (isDevelopment()) {
-        const { accountSlug, projectSlug } = getTenderlyAccountParams();
-        getGelatoTaskDebugInfo(taskStatus.taskId, accountSlug, projectSlug).then((debugInfo) =>
-          // eslint-disable-next-line no-console
-          console.log("gelatoDebugData", taskStatus, debugInfo)
-        );
+    const taskIds = Object.values(pendingExpressTxnParams)
+      .map((p) => p.taskId)
+      .filter(
+        (id): id is string =>
+          Boolean(id) && !latestGelatoTaskStatuses.current[id!] && !pollingTaskIdsRef.current.has(id!)
+      );
+
+    if (taskIds.length === 0) return;
+
+    for (const taskId of taskIds) {
+      if (!taskChainIdRef.current.has(taskId)) {
+        taskChainIdRef.current.set(taskId, chainId);
       }
 
-      switch (taskStatus.taskState) {
-        case TaskState.ExecSuccess:
-        case TaskState.ExecReverted:
-        case TaskState.Cancelled: {
-          gelatoRelay.unsubscribeTaskStatusUpdate(taskStatus.taskId);
+      const taskChainId = taskChainIdRef.current.get(taskId)!;
+      const relayer = getGelatoRelayerForChain(taskChainId);
+
+      if (!relayer) continue;
+
+      pollingTaskIdsRef.current.add(taskId);
+
+      (async () => {
+        try {
+          const receipt = await relayer.waitForReceipt({
+            id: taskId,
+            timeout: 120_000,
+            pollingInterval: 1_000,
+            throwOnReverted: true,
+          });
+
+          if (isDevelopment()) {
+            const { accountSlug, projectSlug } = getTenderlyAccountParams();
+            getGelatoTaskDebugInfo(taskId, accountSlug, projectSlug).then((debugInfo) =>
+              // eslint-disable-next-line no-console
+              console.log("gelatoDebugData", receipt, debugInfo)
+            );
+          }
+
           setGelatoTaskStatuses((old) =>
-            setByKey(old, taskStatus.taskId, {
-              taskId: taskStatus.taskId,
-              taskState: taskStatus.taskState,
-              lastCheckMessage: taskStatus.lastCheckMessage,
-              transactionHash: taskStatus.transactionHash,
+            setByKey(old, taskId, {
+              taskId,
+              statusCode: StatusCode.Success,
+              transactionHash: receipt.transactionHash,
             })
           );
-          break;
+        } catch (e) {
+          if (e instanceof TransactionRevertedError) {
+            if (isDevelopment()) {
+              const { accountSlug, projectSlug } = getTenderlyAccountParams();
+              getGelatoTaskDebugInfo(taskId, accountSlug, projectSlug).then((debugInfo) =>
+                // eslint-disable-next-line no-console
+                console.log("gelatoDebugData reverted", e, debugInfo)
+              );
+            }
+
+            setGelatoTaskStatuses((old) =>
+              setByKey(old, taskId, {
+                taskId,
+                statusCode: StatusCode.Reverted,
+                message: e.errorMessage,
+                transactionHash: e.receipt.transactionHash,
+                revertData: typeof e.errorData === "string" ? e.errorData : undefined,
+              })
+            );
+          } else if (e instanceof TransactionRejectedError) {
+            setGelatoTaskStatuses((old) =>
+              setByKey(old, taskId, {
+                taskId,
+                statusCode: StatusCode.Rejected,
+                message: e.errorMessage,
+              })
+            );
+          } else {
+            // eslint-disable-next-line no-console
+            console.error(e);
+
+            setGelatoTaskStatuses((old) =>
+              setByKey(old, taskId, {
+                taskId,
+                statusCode: StatusCode.Rejected,
+                message: e instanceof Error ? e.message : "Task status polling failed",
+              })
+            );
+          }
+        } finally {
+          pollingTaskIdsRef.current.delete(taskId);
+          taskChainIdRef.current.delete(taskId);
         }
-        default:
-          break;
-      }
-    };
-
-    gelatoRelay.onTaskStatusUpdate(handler);
-
-    return () => {
-      gelatoRelay.offTaskStatusUpdate(handler);
-    };
-  }, []);
+      })();
+    }
+  }, [pendingExpressTxnParams, latestGelatoTaskStatuses, chainId]);
 
   useEffect(
     function notifyPendingExpressTxn() {
       Object.values(pendingExpressTxnParams).forEach((pendingExpressTxn) => {
-        if (pendingExpressTxn.taskId && pendingExpressTxn.key && gelatoTaskStatuses[pendingExpressTxn.taskId]) {
-          const status = gelatoTaskStatuses[pendingExpressTxn.taskId].taskState;
+        if (pendingExpressTxn.sendFailed && pendingExpressTxn.key && !pendingExpressTxn.isViewed) {
+          setPendingExpressTxnParams((old) => updateByKey(old, pendingExpressTxn.key!, { isViewed: true }));
+          setOptimisticTokensBalancesUpdates((old) => {
+            const newState = { ...old };
+            pendingExpressTxn.payTokenAddresses?.forEach((tokenAddress) => {
+              delete newState[tokenAddress];
+            });
+            return newState;
+          });
+          setPendingPositionsUpdates({});
+          return;
+        }
 
-          if (status === TaskState.ExecSuccess && pendingExpressTxn.successMessage && !pendingExpressTxn.isViewed) {
+        if (pendingExpressTxn.taskId && pendingExpressTxn.key && gelatoTaskStatuses[pendingExpressTxn.taskId]) {
+          const status = gelatoTaskStatuses[pendingExpressTxn.taskId].statusCode;
+
+          if (status === StatusCode.Success && pendingExpressTxn.successMessage && !pendingExpressTxn.isViewed) {
             helperToast.success(pendingExpressTxn.successMessage);
             setPendingExpressTxnParams((old) => updateByKey(old, pendingExpressTxn.key!, { isViewed: true }));
           }
 
-          if (status === TaskState.ExecReverted || status === TaskState.Cancelled) {
+          if (status === StatusCode.Reverted || status === StatusCode.Rejected) {
             let isRelayerMetricSent = false;
             let isViewed = false;
 

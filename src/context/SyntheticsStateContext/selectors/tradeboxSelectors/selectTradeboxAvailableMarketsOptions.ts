@@ -101,11 +101,11 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
 
   const { isIncrease, isPosition, isLong } = flags;
 
-  if (!isPosition || !indexToken || isLong === undefined) {
+  if (!isPosition || !indexToken || isLong === undefined || !marketsInfoData) {
     return {};
   }
 
-  const allMarkets = Object.values(marketsInfoData || {}).filter((market) => !market.isSpotOnly && !market.isDisabled);
+  const allMarkets = Object.values(marketsInfoData).filter((market) => !market.isSpotOnly && !market.isDisabled);
 
   const availableMarkets = q(selectTradeboxAvailableMarkets);
 
@@ -261,7 +261,7 @@ export function getMarketIncreasePositionAmounts(q: QueryFunction<SyntheticsStat
 
   const tradeFlags = createTradeFlags(tradeType, tradeMode);
   const fromToken = q(selectTradeboxFromToken);
-  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals)! : 0n;
+  const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals) ?? 0n : 0n;
   const toTokenAmount = q(selectTradeboxToTokenAmount);
   const leverage = BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
   const positionKey = q(selectTradeboxSelectedPositionKey);

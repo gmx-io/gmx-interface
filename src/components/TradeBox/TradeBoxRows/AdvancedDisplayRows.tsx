@@ -71,7 +71,7 @@ function LeverageInfoRows() {
     let leverageValue: ReactNode = "-";
 
     if (decreaseAmounts?.isFullClose) {
-      leverageValue = t`NA`;
+      leverageValue = t`N/A`;
     } else if (selectedPosition.sizeInUsd === (decreaseAmounts?.sizeDeltaUsd || 0n)) {
       leverageValue = "-";
     } else {
@@ -191,12 +191,13 @@ export function TradeBoxAdvancedGroups({
   return (
     <ExpandableRow
       open={isVisible}
-      title={t`Execution Details`}
+      title={t`Execution details`}
       onToggle={toggleAdvancedDisplay}
       disableCollapseOnError={false}
       hasError={hasError}
       contentClassName="flex flex-col gap-14"
       scrollIntoViewOnMobile
+      wrapped
     >
       {isTrigger ? (
         <ExitPriceRow isSwap={isSwap} fees={fees} price={isTrigger ? limitPrice : markPrice} isLong={isLong} />
@@ -223,7 +224,7 @@ export function TradeBoxAdvancedGroups({
       <NetworkFeeRow executionFee={totalExecutionFee} gasPaymentParams={gasPaymentParams} />
 
       {isTwap && isSwap ? (
-        <SyntheticsInfoRow label={<Trans>Acceptable Swap Impact</Trans>} value={<Trans>N/A</Trans>} />
+        <SyntheticsInfoRow label={<Trans>Acceptable swap impact</Trans>} value={<Trans>N/A</Trans>} />
       ) : null}
 
       {/* only when isSwap */}
@@ -233,7 +234,7 @@ export function TradeBoxAdvancedGroups({
       {!isTwap && (
         <>
           {isMarket && !isSwap && <CollateralSpreadRow />}
-          {isMarket && <AllowedSlippageRow slippageInputId={slippageInputId} />}
+          {isMarket && !isSwap && <AllowedSlippageRow slippageInputId={slippageInputId} />}
           {!isSwap && <NextStoredImpactRows />}
           <LeverageInfoRows />
           <EntryPriceRow />

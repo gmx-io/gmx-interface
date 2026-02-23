@@ -356,7 +356,6 @@ export type ExpressOrderMetricData = {
   isSubbaccountExpired: boolean | undefined;
   isSubaccountActionsExceeded: boolean | undefined;
   isSubaccountNonceExpired: boolean | undefined;
-  isSponsoredCall: boolean;
   approximateGasLimit: number;
   approximateL1GasLimit: number;
   gasPrice: number;

@@ -31,12 +31,11 @@ import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateC
 import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import {
   selectExternalSwapQuote,
-  selectTradeboxDecreasePositionAmounts,
   selectTradeboxFindSwapPath,
   selectTradeboxFromToken,
   selectTradeboxFromTokenAmount,
-  selectTradeboxIncreasePositionAmounts,
   selectTradeboxIsFromTokenGmxAccount,
+  selectTradeboxIsTPSLEnabled,
   selectTradeboxIsStakeOrUnstake,
   selectTradeboxIsWrapOrUnwrap,
   selectTradeboxMaxLeverage,
@@ -47,6 +46,7 @@ import {
   selectTradeboxToToken,
   selectTradeboxToTokenAmount,
   selectTradeboxTradeFlags,
+  selectTradeboxTradeMode,
   selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
@@ -54,7 +54,7 @@ import { selectExternalSwapQuoteParams } from "context/SyntheticsStateContext/se
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
 import { ExpressTxnParams } from "domain/synthetics/express";
-import { getNameByOrderType, substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
+import { substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
 import { getApprovalRequirements } from "domain/synthetics/tokens/utils";
@@ -78,12 +78,12 @@ import { sleep } from "lib/sleep";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
-import { getToken, getTokenBySymbol, getTokenVisualMultiplier } from "sdk/configs/tokens";
+import { getToken, getTokenBySymbol } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/utils/fees/types";
 import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
 import { TokenData } from "sdk/utils/tokens/types";
+import { TradeMode, TradeType } from "sdk/utils/trade";
 import { getNextPositionValuesForIncreaseTrade } from "sdk/utils/trade/increase";
-import { TradeMode, TradeType } from "sdk/utils/trade/types";
 import { mustNeverExist } from "sdk/utils/types";
 
 import { BridgingInfo } from "components/BridgingInfo/BridgingInfo";
@@ -92,7 +92,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
-import { tradeTypeLabels } from "../tradeboxConstants";
+import { tradeModeLabels, tradeTypeLabels } from "../tradeboxConstants";
 import { useTradeboxTransactions } from "./useTradeboxTransactions";
 
 interface TradeboxButtonStateOptions {
@@ -121,11 +121,14 @@ export function useTradeboxButtonState({
   const signer = useEthersSigner();
 
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
-  const { isSwap, isIncrease, isLimit, isMarket, isTwap } = tradeFlags;
+  const { isSwap, isIncrease } = tradeFlags;
   const { stopLoss, takeProfit } = useSidecarOrders();
   const sidecarEntries = useSidecarEntries();
+  const isTpSlEnabled = useSelector(selectTradeboxIsTPSLEnabled);
   const hasOutdatedUi = useHasOutdatedUi();
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
+  const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
+  const tradeMode = useSelector(selectTradeboxTradeMode);
   const { stage, collateralToken, tradeType, setStage } = useSelector(selectTradeboxState);
   const { isLeverageSliderEnabled } = useSettings();
   const { shouldShowDepositButton } = useGmxAccountShowDepositButton();
@@ -136,8 +139,6 @@ export function useTradeboxButtonState({
   const fromToken = useSelector(selectTradeboxFromToken);
   const toToken = useSelector(selectTradeboxToToken);
   const gasPaymentToken = useSelector(selectGasPaymentToken);
-  const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
-  const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const tokensData = useSelector(selectTokensData);
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
   const isStakeOrUnstake = useSelector(selectTradeboxIsStakeOrUnstake);
@@ -267,15 +268,18 @@ export function useTradeboxButtonState({
           tooltipContent = (
             <>
               {isLeverageSliderEnabled ? (
-                <Trans>Decrease the leverage to match the max. allowed leverage.</Trans>
+                <Trans>Decrease leverage to match the max allowed leverage.</Trans>
               ) : (
-                <Trans>Decrease the size to match the max. allowed leverage:</Trans>
+                <Trans>Decrease size to match the max allowed leverage.</Trans>
               )}{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
+              <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">
+                <Trans>Read more</Trans>
+              </ExternalLink>
+              .
               <br />
               <br />
               <span onClick={detectAndSetAvailableMaxLeverage} className="Tradebox-handle">
-                <Trans>Set Max Leverage</Trans>
+                <Trans>Set max leverage</Trans>
               </span>
             </>
           );
@@ -284,7 +288,7 @@ export function useTradeboxButtonState({
         }
         case ValidationButtonTooltipName.liqPriceGtMarkPrice: {
           tooltipContent = (
-            <Trans>The position would be immediately liquidated upon order execution. Try reducing the size.</Trans>
+            <Trans>Position would be immediately liquidated upon execution. Try reducing the size.</Trans>
           );
           break;
         }
@@ -486,7 +490,7 @@ export function useTradeboxButtonState({
       };
     }
 
-    if (stopLoss.error?.percentage || takeProfit.error?.percentage) {
+    if (isTpSlEnabled && (stopLoss.error?.percentage || takeProfit.error?.percentage)) {
       return {
         ...commonState,
         text: t`TP/SL orders exceed the position`,
@@ -499,7 +503,7 @@ export function useTradeboxButtonState({
         ...commonState,
         text: (
           <>
-            {t`Loading Express params...`}
+            {t`Loading Express Trading...`}
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
@@ -531,7 +535,7 @@ export function useTradeboxButtonState({
     if (stage === "processing") {
       return {
         ...commonState,
-        text: t`Creating order`,
+        text: t`Creating order...`,
         disabled: true,
       };
     }
@@ -540,25 +544,15 @@ export function useTradeboxButtonState({
     {
       if (buttonErrorText) {
         submitButtonText = buttonErrorText;
-      }
-
-      if (isMarket) {
-        if (isSwap) {
-          submitButtonText = t`Swap ${fromToken?.symbol}`;
-        } else {
-          if (!toToken?.symbol) {
-            submitButtonText = `${localizedTradeTypeLabels[tradeType!]} ...`;
-          }
-          const prefix = toToken ? getTokenVisualMultiplier(toToken) : "";
-
-          submitButtonText = `${localizedTradeTypeLabels[tradeType!]} ${prefix}${toToken?.symbol}`;
-        }
-      } else if (isLimit) {
-        submitButtonText = t`Create ${getNameByOrderType(increaseAmounts?.limitOrderType, false)} order`;
-      } else if (isTwap) {
-        submitButtonText = t`Create TWAP ${isSwap ? "Swap" : "Increase"} order`;
       } else {
-        submitButtonText = t`Create ${getNameByOrderType(decreaseAmounts?.triggerOrderType, false)} order`;
+        const modeLabel = localizedTradeModeLabels[tradeMode];
+
+        if (isSwap) {
+          submitButtonText = `${modeLabel}: ${t`Swap`} ${fromToken?.symbol}`;
+        } else {
+          const actionLabel = isIncrease ? t`increase` : t`decrease`;
+          submitButtonText = `${modeLabel}: ${localizedTradeTypeLabels[tradeType!]} ${actionLabel}`;
+        }
       }
     }
 
@@ -601,17 +595,14 @@ export function useTradeboxButtonState({
     stage,
     isIncrease,
     sidecarEntries,
+    isTpSlEnabled,
     chainId,
-    isMarket,
-    isLimit,
-    isTwap,
     isSwap,
     fromToken?.symbol,
-    toToken,
     localizedTradeTypeLabels,
+    localizedTradeModeLabels,
+    tradeMode,
     tradeType,
-    increaseAmounts?.limitOrderType,
-    decreaseAmounts?.triggerOrderType,
     isFromTokenGmxAccount,
   ]);
 }
@@ -791,7 +782,7 @@ function NoSwapPathTooltipContent({
   );
 
   if (!fromToken) {
-    return <Trans>No swap path available.</Trans>;
+    return <Trans>No swap path available</Trans>;
   }
 
   if (chainId === BOTANIX) {
@@ -825,13 +816,14 @@ function NoSwapPathTooltipContent({
         {collateralToken?.assetSymbol ?? collateralToken?.symbol} is required for collateral.
         <br />
         <br />
-        There is no swap path found for {fromToken?.assetSymbol ?? fromToken?.symbol} to{" "}
+        No swap path found for {fromToken?.assetSymbol ?? fromToken?.symbol} to{" "}
         {collateralToken?.assetSymbol ?? collateralToken?.symbol} within GMX.
         <br />
         <br />
         <ExternalLink href={get1InchSwapUrlFromAddresses(chainId, fromToken?.address, collateralToken?.address)}>
-          You can buy {collateralToken?.assetSymbol ?? collateralToken?.symbol} on 1inch.
+          Buy {collateralToken?.assetSymbol ?? collateralToken?.symbol} on 1inch
         </ExternalLink>
+        .
       </Trans>
       {getBridgingOptionsForToken(collateralToken?.symbol) && (
         <>
