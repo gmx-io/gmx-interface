@@ -6461,10 +6461,6 @@ msgstr "거래 실패: 공급자를 사용할 수 없습니다"
 msgid "Disable validation for testing"
 msgstr "테스트를 위한 유효성 검사 비활성화"
 
-#: src/components/SettingsModal/DisplaySettings.tsx
-msgid "When off, leverage is automatically calculated from your margin and position size."
-msgstr ""
-
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "GMX icon"
@@ -8609,6 +8605,10 @@ msgstr "실적 및 차트 데이터는 UTC 시간 기준입니다"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "{operationTokenSymbol} 판매"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
+msgstr ""
 
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx

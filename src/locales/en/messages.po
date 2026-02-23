@@ -6461,10 +6461,6 @@ msgstr "Transaction failed: provider unavailable"
 msgid "Disable validation for testing"
 msgstr "Disable validation for testing"
 
-#: src/components/SettingsModal/DisplaySettings.tsx
-msgid "When off, leverage is automatically calculated from your margin and position size."
-msgstr "When off, leverage is automatically calculated from your margin and position size."
-
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "GMX icon"
@@ -8609,6 +8605,10 @@ msgstr "Performance and chart data are based on UTC times"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "Sell {operationTokenSymbol}"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
+msgstr "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
 
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx

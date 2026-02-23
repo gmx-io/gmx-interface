@@ -6461,10 +6461,6 @@ msgstr "トランザクション失敗：プロバイダーが利用できませ
 msgid "Disable validation for testing"
 msgstr "テスト用にバリデーションを無効化"
 
-#: src/components/SettingsModal/DisplaySettings.tsx
-msgid "When off, leverage is automatically calculated from your margin and position size."
-msgstr ""
-
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "GMX icon"
@@ -8609,6 +8605,10 @@ msgstr "パフォーマンスおよびチャートデータはUTC時間に基づ
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "{operationTokenSymbol}を売却"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
+msgstr ""
 
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx

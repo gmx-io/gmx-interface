@@ -24,7 +24,10 @@ export function DisplaySettings() {
               variant="icon"
               content={
                 <div>
-                  <Trans>When off, leverage is automatically calculated from your margin and position size.</Trans>
+                  <Trans>
+                    When on, leverage is set manually and determines margin and position size. When off, margin and size
+                    are set freely, and leverage is derived.
+                  </Trans>
                 </div>
               }
             />

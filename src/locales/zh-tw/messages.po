@@ -6461,10 +6461,6 @@ msgstr "交易失敗：提供者不可用"
 msgid "Disable validation for testing"
 msgstr "停用驗證以進行測試"
 
-#: src/components/SettingsModal/DisplaySettings.tsx
-msgid "When off, leverage is automatically calculated from your margin and position size."
-msgstr ""
-
 #: src/pages/Dashboard/GmCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "GMX icon"
@@ -8609,6 +8605,10 @@ msgstr "績效和圖表數據均以 UTC 時間為基準"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "賣出 {operationTokenSymbol}"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
+msgstr ""
 
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx
