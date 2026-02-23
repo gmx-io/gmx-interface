@@ -150,15 +150,63 @@ export function usePositionsInfoRequest(
     marketsInfoData,
   });
 
-  const positionsInfoData = useMemo(() => {
-    if (optimisticApiPositionsInfoData && !isApiStale && !apiError) {
+  const recomputedApiPositionsInfoData = useMemo(() => {
+    if (!optimisticApiPositionsInfoData || !marketsInfoData || minCollateralUsd === undefined) {
       return optimisticApiPositionsInfoData;
     }
+
+    let hasRecomputed = false;
+    const result: PositionsInfoData = {};
+
+    for (const [key, position] of Object.entries(optimisticApiPositionsInfoData)) {
+      const original = composedApiPositionsInfoData?.[key];
+
+      const wasModifiedByEvent =
+        !original ||
+        original.sizeInUsd !== position.sizeInUsd ||
+        original.collateralAmount !== position.collateralAmount ||
+        original.sizeInTokens !== position.sizeInTokens;
+
+      if (wasModifiedByEvent) {
+        const marketInfo = getByKey(marketsInfoData, position.marketAddress);
+
+        if (marketInfo) {
+          result[key] = getPositionInfo({
+            position,
+            marketInfo,
+            minCollateralUsd,
+            userReferralInfo: userReferralInfo ?? undefined,
+            showPnlInLeverage,
+            uiFeeFactor,
+          });
+          hasRecomputed = true;
+          continue;
+        }
+      }
+
+      result[key] = position;
+    }
+
+    return hasRecomputed ? result : optimisticApiPositionsInfoData;
+  }, [
+    optimisticApiPositionsInfoData,
+    composedApiPositionsInfoData,
+    marketsInfoData,
+    minCollateralUsd,
+    userReferralInfo,
+    showPnlInLeverage,
+    uiFeeFactor,
+  ]);
+
+  const positionsInfoData = useMemo(() => {
+    if (recomputedApiPositionsInfoData && !isApiStale && !apiError) {
+      return recomputedApiPositionsInfoData;
+    }
     return rpcPositionsInfoData;
-  }, [optimisticApiPositionsInfoData, isApiStale, apiError, rpcPositionsInfoData]);
+  }, [recomputedApiPositionsInfoData, isApiStale, apiError, rpcPositionsInfoData]);
 
   const isLoading =
-    !positionsInfoData && (shouldFallbackToRpc ? !rpcPositionsInfoData : !optimisticApiPositionsInfoData);
+    !positionsInfoData && (shouldFallbackToRpc ? !rpcPositionsInfoData : !recomputedApiPositionsInfoData);
 
   return {
     positionsInfoData,
