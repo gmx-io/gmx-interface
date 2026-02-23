@@ -13,7 +13,6 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { calcMarginAmountByPercentage, calcMarginPercentage } from "domain/synthetics/trade";
-import { calculateDisplayDecimals, USD_DECIMALS } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
 import { MarginField } from "./MarginField";
@@ -71,15 +70,9 @@ export function TradeboxMarginFields({
   const showPriceField = isLimit && triggerPriceInputValue !== undefined;
   const sizeFieldInputValue = sizeDisplayMode === "usd" ? sizeInputValue : toTokenInputValue;
 
-  const sizeUsdDisplayDecimals = useMemo(
-    () => calculateDisplayDecimals(markPrice, USD_DECIMALS, toToken?.visualMultiplier),
-    [markPrice, toToken?.visualMultiplier]
-  );
-
   const { tokensToUsd, usdToTokens, canConvert } = useSizeConversion({
     toToken,
     markPrice,
-    sizeUsdDisplayDecimals,
   });
 
   const marginPercentage = useMemo(
@@ -114,14 +107,22 @@ export function TradeboxMarginFields({
 
   useEffect(() => {
     if (sizeDisplayMode !== "usd" || !canConvert) return;
-    if (focusedInput === "to" && !shouldForceSizeUsdSyncRef.current) return;
 
-    const tokensValue = usdToTokens(sizeInputValue);
-    if (tokensValue !== toTokenInputValue) {
-      setToTokenInputValue(tokensValue, false);
+    if (shouldForceSizeUsdSyncRef.current) {
+      shouldForceSizeUsdSyncRef.current = false;
+      const tokensValue = usdToTokens(sizeInputValue);
+      if (tokensValue !== toTokenInputValue) {
+        setToTokenInputValue(tokensValue, false);
+      }
+      return;
     }
 
-    shouldForceSizeUsdSyncRef.current = false;
+    if (focusedInput === "to") return;
+
+    const usdValue = tokensToUsd(toTokenInputValue);
+    if (usdValue !== sizeInputValue) {
+      setSizeInputValue(usdValue);
+    }
   }, [
     focusedInput,
     sizeDisplayMode,

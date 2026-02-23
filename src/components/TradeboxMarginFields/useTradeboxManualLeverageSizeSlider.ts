@@ -24,6 +24,8 @@ import { convertToUsd } from "sdk/utils/tokens";
 
 import { SizeDisplayMode } from "./SizeField";
 
+const TOKEN_INPUT_DISPLAY_DECIMALS = 8;
+
 type Params = {
   sizeDisplayMode: SizeDisplayMode;
   canConvert: boolean;
@@ -57,7 +59,7 @@ export function useTradeboxManualLeverageSizeSlider({
 
       const visualMultiplier = BigInt(marketVisualMultiplier ?? 1);
       const normalizedAmount = indexTokenAmount / visualMultiplier;
-      const formatted = formatAmountFree(normalizedAmount, toToken.decimals);
+      const formatted = formatAmountFree(normalizedAmount, toToken.decimals, TOKEN_INPUT_DISPLAY_DECIMALS);
 
       setToTokenInputValue(formatted, true);
 
