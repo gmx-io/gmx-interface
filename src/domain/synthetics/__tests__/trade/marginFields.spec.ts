@@ -45,8 +45,6 @@ function tokenAmountToUsd(tokenAmount: bigint, decimals: number, price: bigint):
   return convertToUsd(tokenAmount, decimals, price)!;
 }
 
-// ── clampPercentage ─────────────────────────────────────────────────
-
 describe("clampPercentage", () => {
   it("returns 0 for NaN", () => {
     expect(clampPercentage(NaN)).toBe(0);
@@ -73,8 +71,6 @@ describe("clampPercentage", () => {
   });
 });
 
-// ── calcMaxSizeDeltaInUsdByLeverage ─────────────────────────────────
-
 describe("calcMaxSizeDeltaInUsdByLeverage", () => {
   it("returns undefined for zero initialCollateralUsd", () => {
     const marketInfo = makeMarketInfo();
@@ -85,7 +81,6 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
         initialCollateralUsd: 0n,
         markPrice: ETH_PRICE,
         toTokenDecimals: 18,
-
         isLong: true,
         longLiquidity: undefined,
         shortLiquidity: undefined,
@@ -102,7 +97,6 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
       initialCollateralUsd: collateralUsd,
       markPrice: ETH_PRICE,
       toTokenDecimals: 18,
-
       isLong: true,
       longLiquidity: undefined,
       shortLiquidity: undefined,
@@ -128,7 +122,6 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
       initialCollateralUsd: collateralUsd,
       markPrice: ETH_PRICE,
       toTokenDecimals: 18,
-
       isLong: true,
       longLiquidity: undefined,
       shortLiquidity: undefined,
@@ -179,7 +172,6 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
       initialCollateralUsd: collateralUsd,
       markPrice: ETH_PRICE,
       toTokenDecimals: 18,
-
       isLong: true,
       longLiquidity: undefined,
       shortLiquidity: undefined,
@@ -223,7 +215,6 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
       initialCollateralUsd: collateralUsd,
       markPrice: ETH_PRICE,
       toTokenDecimals: 18,
-
       isLong: true,
       longLiquidity: undefined,
       shortLiquidity: undefined,
@@ -261,7 +252,6 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
       initialCollateralUsd: collateralUsd,
       markPrice: ETH_PRICE,
       toTokenDecimals: 18,
-
       isLong: true,
       longLiquidity: undefined,
       shortLiquidity: undefined,
@@ -295,7 +285,6 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
       initialCollateralUsd: collateralUsd,
       markPrice: ETH_PRICE,
       toTokenDecimals: 18,
-
       isLong: true,
       longLiquidity: undefined,
       shortLiquidity: undefined,
@@ -329,7 +318,6 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
       initialCollateralUsd: collateralUsd,
       markPrice: ETH_PRICE,
       toTokenDecimals: 18,
-
       isLong: true,
       longLiquidity: undefined,
       shortLiquidity: undefined,
@@ -362,7 +350,6 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
       initialCollateralUsd: collateralUsd,
       markPrice: ETH_PRICE,
       toTokenDecimals: 18,
-
       isLong: true,
       longLiquidity: smallLiquidity,
       shortLiquidity: undefined,
@@ -383,7 +370,6 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
       initialCollateralUsd: collateralUsd,
       markPrice: ETH_PRICE,
       toTokenDecimals: 18,
-
       isLong: true,
       longLiquidity: undefined,
       shortLiquidity: undefined,
@@ -403,7 +389,6 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
       initialCollateralUsd: collateralUsd,
       markPrice: ETH_PRICE,
       toTokenDecimals: 18,
-
       isLong: false,
       longLiquidity: expandDecimals(999999, USD_DECIMALS), // large, should be ignored
       shortLiquidity: smallLiquidity,
@@ -451,7 +436,6 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
       initialCollateralUsd: collateralUsd,
       markPrice: ETH_PRICE,
       toTokenDecimals: 18,
-
       isLong: true,
       longLiquidity: undefined,
       shortLiquidity: undefined,
@@ -465,8 +449,6 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
     expect(sizeDeltaUsd).toBeGreaterThan(expandDecimals(45000, USD_DECIMALS));
   });
 });
-
-// ── calcSizePercentage ──────────────────────────────────────────────
 
 describe("calcSizePercentage", () => {
   it("returns 0 when maxSize is undefined", () => {
@@ -500,8 +482,6 @@ describe("calcSizePercentage", () => {
     expect(calcSizePercentage(current, max)).toBe(25);
   });
 });
-
-// ── calcSizeAmountByPercentage ──────────────────────────────────────
 
 describe("calcSizeAmountByPercentage", () => {
   it("returns undefined when maxSize is undefined", () => {
@@ -542,8 +522,6 @@ describe("calcSizeAmountByPercentage", () => {
   });
 });
 
-// ── calcMarginPercentage ────────────────────────────────────────────
-
 describe("calcMarginPercentage", () => {
   it("returns 0 when balance is undefined", () => {
     expect(calcMarginPercentage("100", undefined, 6)).toBe(0);
@@ -583,8 +561,6 @@ describe("calcMarginPercentage", () => {
     expect(calcMarginPercentage("5", balance, 18)).toBe(50);
   });
 });
-
-// ── calcMarginAmountByPercentage ────────────────────────────────────
 
 describe("calcMarginAmountByPercentage", () => {
   it("returns full balance at 100% (no decimal truncation)", () => {
