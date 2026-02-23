@@ -19,12 +19,12 @@ function calculateLogicalNetworkFeeUsd({
 }: {
   technicalFees: TechnicalGmFees;
   wrappedTokenData: TokenData | undefined;
-  gasPrice: bigint;
+  gasPrice: bigint | undefined;
   sourceChainEstimatedNativeFeeUsd: bigint | undefined;
   sourceChainTxnEstimatedGasUsd: bigint | undefined;
 }): bigint | undefined {
   if (technicalFees.kind === "settlementChain") {
-    if (!wrappedTokenData) {
+    if (!wrappedTokenData || gasPrice === undefined) {
       return undefined;
     }
 
@@ -116,7 +116,7 @@ export const useDepositWithdrawalFees = ({
   });
 
   return useMemo(() => {
-    if (!gasLimits || gasPrice === undefined || !tokensData || !amounts || !technicalFees) {
+    if (!gasLimits || !tokensData || !amounts || !technicalFees) {
       return undefined;
     }
 
