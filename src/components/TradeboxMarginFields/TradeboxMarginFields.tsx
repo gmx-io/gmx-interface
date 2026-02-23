@@ -80,13 +80,14 @@ export function TradeboxMarginFields({
     [fromTokenInputValue, fromToken?.balance, fromToken?.decimals]
   );
 
-  const { isLeverageSliderEnabled, sizePercentage, handleSizePercentageChange } = useTradeboxManualLeverageSizeSlider({
-    sizeDisplayMode,
-    canConvert,
-    tokensToUsd,
-    setSizeInputValue,
-    setToTokenInputValue,
-  });
+  const { isLeverageSliderEnabled, sizePercentage, handleSizePercentageChange, markFieldInteraction } =
+    useTradeboxManualLeverageSizeSlider({
+      sizeDisplayMode,
+      canConvert,
+      tokensToUsd,
+      setSizeInputValue,
+      setToTokenInputValue,
+    });
 
   // Sync size input value to USD when market/token context changes
   // USD value calculated separately from increase/decrease amounts
@@ -179,6 +180,7 @@ export function TradeboxMarginFields({
 
   const handleSizeInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
+      markFieldInteraction();
       setFocusedInput("to");
       const nextValue = e.target.value;
 
@@ -194,7 +196,15 @@ export function TradeboxMarginFields({
         }
       }
     },
-    [canConvert, sizeDisplayMode, setFocusedInput, setToTokenInputValue, toTokenInputValue, usdToTokens]
+    [
+      canConvert,
+      markFieldInteraction,
+      sizeDisplayMode,
+      setFocusedInput,
+      setToTokenInputValue,
+      toTokenInputValue,
+      usdToTokens,
+    ]
   );
 
   const handleSizeDisplayModeChange = useCallback(

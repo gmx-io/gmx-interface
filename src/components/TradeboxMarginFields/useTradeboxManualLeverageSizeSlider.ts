@@ -1,4 +1,4 @@
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
 import { selectIsLeverageSliderEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectSelectedMarketVisualMultiplier } from "context/SyntheticsStateContext/selectors/statsSelectors";
@@ -52,6 +52,13 @@ export function useTradeboxManualLeverageSizeSlider({
   const { marketInfo } = useSelector(selectTradeboxState);
   const { longLiquidity, shortLiquidity } = useSelector(selectTradeboxLiquidity);
   const existingPosition = useSelector(selectTradeboxSelectedPosition);
+
+  const lastInteractionRef = useRef<"slider" | "field">("field");
+  const fixedPercentageRef = useRef<number>(0);
+
+  const markFieldInteraction = useCallback(() => {
+    lastInteractionRef.current = "field";
+  }, []);
 
   const applySizeByIndexTokenAmount = useCallback(
     (indexTokenAmount: bigint) => {
@@ -118,6 +125,9 @@ export function useTradeboxManualLeverageSizeSlider({
 
   const handleSizePercentageChange = useCallback(
     (percentage: number) => {
+      lastInteractionRef.current = "slider";
+      fixedPercentageRef.current = percentage;
+
       const indexTokenAmount = calcSizeAmountByPercentage(percentage, maxSizeByMarginInTokens);
       if (indexTokenAmount === undefined) return;
       applySizeByIndexTokenAmount(indexTokenAmount);
@@ -125,9 +135,21 @@ export function useTradeboxManualLeverageSizeSlider({
     [applySizeByIndexTokenAmount, maxSizeByMarginInTokens]
   );
 
+  // When slider was last used, keep the size field in sync with the fixed percentage
+  useEffect(() => {
+    if (isLeverageSliderEnabled) return;
+    if (lastInteractionRef.current !== "slider") return;
+
+    const indexTokenAmount = calcSizeAmountByPercentage(fixedPercentageRef.current, maxSizeByMarginInTokens);
+    if (indexTokenAmount === undefined) return;
+
+    applySizeByIndexTokenAmount(indexTokenAmount);
+  }, [isLeverageSliderEnabled, maxSizeByMarginInTokens, applySizeByIndexTokenAmount]);
+
   return {
     isLeverageSliderEnabled,
     sizePercentage,
     handleSizePercentageChange,
+    markFieldInteraction,
   };
 }
