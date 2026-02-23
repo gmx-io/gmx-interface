@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import uniq from "lodash/uniq";
 import { ReactNode, useMemo, useState } from "react";
@@ -139,7 +139,7 @@ function NetworkYieldCard({
     <div className="flex flex-col gap-8 rounded-8 bg-slate-900 p-16 max-xl:p-0">
       {showTitle && (
         <div className="text-body-large flex items-center gap-8 pl-12 font-medium text-typography-primary">
-          <img src={getIcon(chainId, "network")} alt="network" className="h-20 w-20" />
+          <img src={getIcon(chainId, "network")} alt={t`Network`} className="h-20 w-20" />
           {title}
         </div>
       )}
@@ -269,6 +269,7 @@ export default function EarnYieldOverview() {
 
   const megaethMaxGlv = useMemo(() => calculateMaxApr(megaethGlvApy), [megaethGlvApy]);
   const megaethMaxGm = useMemo(() => calculateMaxApr(megaethGmApy), [megaethGmApy]);
+  const avgGmxAprTotalLabel = "avgGMXAprTotal";
 
   const networkCards = useMemo(
     () => ({
@@ -282,7 +283,7 @@ export default function EarnYieldOverview() {
             onClick={!showGmxLink ? () => setIsBuyGmxModalVisible(true) : undefined}
             to={showGmxLink ? "/earn/portfolio" : undefined}
             chainId={ARBITRUM}
-            metric={<YieldMetric value={<APRLabel chainId={ARBITRUM} label="avgGMXAprTotal" />} suffix="APR" />}
+            metric={<YieldMetric value={<APRLabel chainId={ARBITRUM} label={avgGmxAprTotalLabel} />} suffix="APR" />}
           />,
           <YieldRow
             key="arb-glv"
@@ -310,7 +311,7 @@ export default function EarnYieldOverview() {
             to={showGmxLink ? "/earn/portfolio" : undefined}
             onClick={!showGmxLink ? () => setIsBuyGmxModalVisible(true) : undefined}
             chainId={AVALANCHE}
-            metric={<YieldMetric value={<APRLabel chainId={AVALANCHE} label="avgGMXAprTotal" />} suffix="APR" />}
+            metric={<YieldMetric value={<APRLabel chainId={AVALANCHE} label={avgGmxAprTotalLabel} />} suffix="APR" />}
           />,
           <YieldRow
             key="avax-glv"
@@ -341,12 +342,7 @@ export default function EarnYieldOverview() {
               <YieldMetric
                 value={<Trans>N/A</Trans>}
                 suffix=""
-                tooltip={
-                  <Trans>
-                    Staking GMX is currently not supported on MegaETH. For access to these features, please visit the
-                    Arbitrum and Avalanche deployments.
-                  </Trans>
-                }
+                tooltip={<Trans>GMX staking unavailable on MegaETH. Use Arbitrum or Avalanche.</Trans>}
                 disabled
               />
             }
@@ -393,7 +389,7 @@ export default function EarnYieldOverview() {
     <div className="flex flex-col max-xl:rounded-8 max-xl:bg-slate-900 max-xl:p-16">
       <BuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
       <h4 className="text-h3 py-20 text-typography-primary max-xl:text-body-large max-xl:pb-12 max-xl:pt-0">
-        <Trans>Current Yield Landscape</Trans>
+        <Trans>Current yield landscape</Trans>
       </h4>
 
       {isTabsMode ? (

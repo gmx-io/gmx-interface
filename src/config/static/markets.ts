@@ -525,6 +525,14 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0x5ff52BE1968107D7886a8E9A64874A45c8F5D96a": {
       enabled: true,
     },
+    // CC/USD [WBTC-USDC]
+    "0x45F0331a6e175B556Bc7d28E0A1c349525006d4E": {
+      enabled: true,
+    },
+    // MET/USD [WBTC-USDC]
+    "0xbA30e198CFFeBEf0A84D6943cC8B2e356E324112": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

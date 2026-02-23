@@ -221,11 +221,11 @@ export function StatsCard() {
               content={
                 <div>
                   <StatsTooltipRow
-                    label={<Trans>In other tokens:</Trans>}
+                    label={<Trans>In other tokens</Trans>}
                     value={formatAmountHuman(treasuryWithoutGmxUsd, USD_DECIMALS, false, 2)}
                   />
                   <StatsTooltipRow
-                    label={<Trans>In GMX:</Trans>}
+                    label={<Trans>In GMX</Trans>}
                     value={formatAmountHuman(gmxInTreasuryUsd, USD_DECIMALS, false, 2)}
                   />
                 </div>

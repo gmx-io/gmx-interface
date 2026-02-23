@@ -20,6 +20,7 @@ import {
   SHOW_PNL_AFTER_FEES_KEY,
   TWAP_NUMBER_OF_PARTS_KEY,
   getAllowedSlippageKey,
+  getCollateralCloseDestinationKey,
   getExecutionFeeBufferBpsKey,
   getExpressOrdersEnabledKey,
   getGasPaymentTokenAddressKey,
@@ -105,6 +106,9 @@ export type SettingsContextType = {
 
   isSetAcceptablePriceImpactEnabled: boolean;
   setIsSetAcceptablePriceImpactEnabled: (val: boolean) => void;
+
+  receiveToGmxAccount: boolean | null;
+  setReceiveToGmxAccount: (val: boolean) => void;
 };
 
 const SettingsContext = createContext({});
@@ -190,6 +194,11 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   const [expressOrdersEnabled, setExpressOrdersEnabled] = useLocalStorageSerializeKey(
     getExpressOrdersEnabledKey(chainId, account),
     false
+  );
+
+  const [receiveToGmxAccount, setReceiveToGmxAccount] = useLocalStorageSerializeKey<boolean | null>(
+    getCollateralCloseDestinationKey(chainId, account),
+    null
   );
 
   const [savedBreakdownNetPriceImpactEnabled, setSavedBreakdownNetPriceImpactEnabled] = useLocalStorageSerializeKey(
@@ -339,6 +348,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       savedTwapNumberOfParts: savedTwapNumberOfParts!,
       setSavedTWAPNumberOfParts,
 
+      receiveToGmxAccount: receiveToGmxAccount ?? null,
+      setReceiveToGmxAccount,
+
       feedbackModalVisible,
       setFeedbackModalVisible,
     };
@@ -394,6 +406,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setSettingsWarningDotVisible,
     savedTwapNumberOfParts,
     setSavedTWAPNumberOfParts,
+    receiveToGmxAccount,
+    setReceiveToGmxAccount,
     feedbackModalVisible,
   ]);
 

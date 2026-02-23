@@ -76,12 +76,12 @@ export function setAutoCancelOrdersTxn(
 
   return callContract(chainId, router, "multicall", [encodedPayload], {
     value: ps.reduce((acc, p) => acc + (p.executionFee ?? 0n), 0n),
-    sentMsg: t`Updating ${updateOrdersCount} TP/SL order(s)...`,
+    sentMsg: t`Updating ${updateOrdersCount} TP/SL orders...`,
     successMsg:
       updateOrdersCount < totalUpdatableOrdersCount
-        ? t`${totalUpdatableOrdersCount - updateOrdersCount} orders were not updated as max order limit reached`
-        : t`${updateOrdersCount} TP/SL order(s) updated`,
-    failMsg: t`Failed to update order(s)`,
+        ? t`${totalUpdatableOrdersCount - updateOrdersCount} orders not updated, limit reached`
+        : t`${updateOrdersCount} TP/SL orders updated`,
+    failMsg: t`Failed to update orders`,
     setPendingTxns,
   });
 }

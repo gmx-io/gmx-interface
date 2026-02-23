@@ -27,7 +27,7 @@ export function InsufficientNativeTokenBalanceMessage({ chainId }: { chainId: Co
   return (
     <div>
       <Trans>
-        Insufficient {nativeTokenSymbol} for gas in your wallet on {getChainName(chainId)}.{" "}
+        Insufficient {nativeTokenSymbol} for gas on {getChainName(chainId)}.{" "}
         <ExternalLink href={externalAggregatorBuyTokenUrl}>Buy {nativeTokenSymbol}</ExternalLink>
       </Trans>
     </div>
@@ -43,7 +43,7 @@ export function InsufficientWalletGasTokenBalanceMessage({ chainId }: { chainId:
   return (
     <div>
       <Trans>
-        Insufficient {localizedList} for gas in your wallet on {chainName}.{" "}
+        Insufficient {localizedList} for gas on {chainName}.{" "}
         <ExternalLink href={getExternalAggregatorBuyTokenUrl(chainId, firstGasPaymentToken)}>
           Buy {localizedList}
         </ExternalLink>
@@ -106,7 +106,7 @@ export function InsufficientSourceChainNativeTokenBalanceMessage({ srcChainId }:
   return (
     <div>
       <Trans>
-        Insufficient {nativeTokenSymbol} for gas in your wallet on {getChainName(srcChainId)}.{" "}
+        Insufficient {nativeTokenSymbol} for gas on {getChainName(srcChainId)}.{" "}
         <ExternalLink href={externalAggregatorBuyTokenUrl}>Buy {nativeTokenSymbol}</ExternalLink>
       </Trans>
     </div>

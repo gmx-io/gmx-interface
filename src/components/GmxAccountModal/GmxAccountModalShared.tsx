@@ -50,7 +50,7 @@ export function AvailableToTradeAssetsTitle() {
 
   return (
     <TitleWithBack backTo="main">
-      {srcChainId !== undefined ? <Trans>GMX Account Balance</Trans> : <Trans>Available to Trade Assets</Trans>}
+      {srcChainId !== undefined ? <Trans>GMX Account balance</Trans> : <Trans>Available to trade assets</Trans>}
     </TitleWithBack>
   );
 }

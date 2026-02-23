@@ -155,17 +155,17 @@ function AssetsList({
           <span className="text-body-small text-center font-medium text-typography-secondary">
             {account ? (
               <>
-                <Trans>It seems you currently don't own any assets.</Trans>
+                <Trans>No assets yet</Trans>
                 <br />
-                <Trans>Please check the recommended section above to start earning yield!</Trans>
+                <Trans>See recommended section above to start</Trans>
               </>
             ) : (
-              <Trans>Please connect your wallet to see your assets.</Trans>
+              <Trans>Connect wallet to see your assets</Trans>
             )}
           </span>
           {!account && openConnectModal && (
             <ConnectWalletButton onClick={openConnectModal}>
-              <Trans>Connect Wallet</Trans>
+              <Trans>Connect wallet</Trans>
             </ConnectWalletButton>
           )}
         </div>

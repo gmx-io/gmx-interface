@@ -901,6 +901,20 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
       longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // CC/USD [WBTC-USDC]
+    "0x45F0331a6e175B556Bc7d28E0A1c349525006d4E": {
+      marketTokenAddress: "0x45F0331a6e175B556Bc7d28E0A1c349525006d4E",
+      indexTokenAddress: "0x7F2A3967bd0999A860E13Ab8DC34aF98675CC208",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // MET/USD [WBTC-USDC]
+    "0xbA30e198CFFeBEf0A84D6943cC8B2e356E324112": {
+      marketTokenAddress: "0xbA30e198CFFeBEf0A84D6943cC8B2e356E324112",
+      indexTokenAddress: "0x84D523493Aac127025AC770981a54C9601326A41",
+      longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

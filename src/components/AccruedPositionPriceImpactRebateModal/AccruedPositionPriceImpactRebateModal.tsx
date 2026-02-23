@@ -24,13 +24,15 @@ export const AccruedPositionPriceImpactRebateModal = memo(
 
     return (
       <Modal
-        label={t`Accrued Price Impact Rebates`}
+        label={t`Accrued price impact rebates`}
         className="Confirmation-box ClaimableModal"
         setIsVisible={onClose}
         isVisible={isVisible}
       >
         <div className="ConfirmationBox-main">
-          <div className="text-center">Total {formatDeltaUsd(totalUsd)}</div>
+          <div className="text-center">
+            <Trans>Total {formatDeltaUsd(totalUsd)}</Trans>
+          </div>
         </div>
         <div>
           <div className="App-card-content">

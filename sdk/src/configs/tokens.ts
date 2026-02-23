@@ -1259,6 +1259,28 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/54035/standard/Transparent_bg.png?1738075331",
     },
+    {
+      name: "Canton",
+      symbol: "CC",
+      address: "0x7F2A3967bd0999A860E13Ab8DC34aF98675CC208",
+      isSynthetic: true,
+      decimals: 18,
+      priceDecimals: 5,
+      categories: ["layer1"],
+      imageUrl: "https://assets.coingecko.com/coins/images/70468/standard/Canton-Ticker_%281%29.png?1762826299",
+      explorerUrl: "https://arbiscan.io/token/0x7F2A3967bd0999A860E13Ab8DC34aF98675CC208",
+    },
+    {
+      name: "Meteora",
+      symbol: "MET",
+      address: "0x84D523493Aac127025AC770981a54C9601326A41",
+      isSynthetic: true,
+      decimals: 18,
+      priceDecimals: 5,
+      categories: ["defi"],
+      imageUrl: "https://assets.coingecko.com/coins/images/69110/standard/meteora.png?1757517561",
+      explorerUrl: "https://arbiscan.io/token/0x84D523493Aac127025AC770981a54C9601326A41",
+    },
   ],
   [AVALANCHE]: [
     {

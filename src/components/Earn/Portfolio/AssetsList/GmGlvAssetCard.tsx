@@ -150,7 +150,7 @@ export function GmGlvAssetCard({
           }
         />
         <SyntheticsInfoRow
-          label={<Trans>Total Performance APY</Trans>}
+          label={<Trans>Total performance APY</Trans>}
           value={
             totalPerformanceApy !== undefined ? (
               formatPercentage(totalPerformanceApy, { bps: false })
@@ -162,7 +162,7 @@ export function GmGlvAssetCard({
           }
         />
         <SyntheticsInfoRow
-          label={<Trans>30d Performance APY</Trans>}
+          label={<Trans>30d performance APY</Trans>}
           value={
             performanceApy30d !== undefined ? (
               formatPercentage(performanceApy30d, { bps: false })

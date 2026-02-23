@@ -50,7 +50,7 @@ export function DynamicLine({
 
   const title = useMemo(() => {
     const predefinedKey = orderTypeToTitle[`${orderType}-${isLong ? "long" : "short"}`];
-    const title = predefinedKey ? _(predefinedKey) : t`Unknown Order`;
+    const title = predefinedKey ? _(predefinedKey) : t`Unknown order`;
     return `${title} - ${marketName}`;
   }, [_, isLong, orderType, marketName]);
 
@@ -76,11 +76,11 @@ export function DynamicLine({
         .setText(title)
         .setPrice(price)
         .setQuantity("\u270E")
-        .setModifyTooltip(t`Edit Order`)
+        .setModifyTooltip(t`Edit order`)
         .onModify(() => {
           latestOnEdit.current(id);
         })
-        .setCancelTooltip(t`Cancel Order`)
+        .setCancelTooltip(t`Cancel order`)
         .onCancel(() => {
           latestOnCancel.current(id);
         })
@@ -115,7 +115,7 @@ export function DynamicLine({
               helperToast.error(
                 <>
                   <span className="text-body-large font-medium">
-                    <Trans>The order could not be updated</Trans>
+                    <Trans>Order could not be updated</Trans>
                   </span>
                   <br />
                   <br />

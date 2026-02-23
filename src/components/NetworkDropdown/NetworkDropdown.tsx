@@ -78,7 +78,7 @@ function isValidVisualSourceChain(chainId: number) {
 }
 
 function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: NetworkOption[]; chainId: number }) {
-  const isNonEoaAccountOnAnyChain = useIsNonEoaAccountOnAnyChain();
+  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
 
   const [disabledNetworks, enabledNetworks] = partition(
     networkOptions,
@@ -111,8 +111,7 @@ function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: Network
               className="flex"
               content={
                 <Trans>
-                  These networks share liquidity with Arbitrum and allow trading through a GMX Account. On Arbitrum,
-                  trading is also available directly from the wallet.
+                  Trade via GMX Account using Arbitrum liquidity. Wallet trading also available on Arbitrum.
                 </Trans>
               }
             />
@@ -134,7 +133,7 @@ function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: Network
               position="top"
               variant="none"
               className="flex"
-              content={<Trans>These networks support only trading directly from wallet.</Trans>}
+              content={<Trans>Wallet trading only on these networks</Trans>}
             />
           </div>
           {walletOnlyNetworks.map((network) => (
@@ -167,7 +166,7 @@ function NetworkMenuItem({
   return (
     <Menu.Item key={network.value} disabled={disabled}>
       {({ close }) => (
-        <Wrapper variant="none" as="div" content={<Trans>Smart wallets are not supported on this network.</Trans>}>
+        <Wrapper variant="none" as="div" content={<Trans>Smart wallets not supported on this network</Trans>}>
           <div
             className={cx("network-dropdown-menu-item menu-item", {
               "disabled !cursor-not-allowed opacity-50": disabled,
@@ -199,7 +198,7 @@ function NetworkMenuItem({
                   position="top"
                   variant="none"
                   className="flex"
-                  content={<Trans>Trade directly from wallet or use GMX Account.</Trans>}
+                  content={<Trans>Trade from wallet or GMX Account</Trans>}
                 />
               )}
             </div>

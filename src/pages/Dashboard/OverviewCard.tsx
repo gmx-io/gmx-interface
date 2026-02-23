@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
@@ -380,12 +380,12 @@ export function OverviewCard({
         </p>
         <p className="Tooltip-row">
           <span className="label">
-            <Trans>Annualized Buy Pressure (BB&D):</Trans>
+            <Trans>Annualized buy pressure (BB&D):</Trans>
           </span>
           <span className="numbers">{formatAmountHuman(annualizedTotalBuyingPressure, USD_DECIMALS, true, 2)}</span>
         </p>
         <p className="Tooltip-row !mt-16">
-          <Trans>Annualized data based on the past 7 days.</Trans>
+          <Trans>Annualized data based on the past 7 days</Trans>
         </p>
       </>
     );
@@ -434,26 +434,21 @@ export function OverviewCard({
                   position="bottom-end"
                   content={
                     <>
-                      <Trans>Total value locked takes into account:</Trans>
+                      <Trans>TVL includes GMX staked, GLP pool, GM pools, and position collateral</Trans>
                       <br />
-                      <ul className="my-8 list-disc">
-                        <li className="p-2">GMX Staked</li>
-                        <li className="p-2">GLP Pool</li>
-                        <li className="p-2">GM Pools</li>
-                        <li className="p-2">Positions' Collateral</li>
-                      </ul>
+                      <br />
                       <StatsTooltipRow
-                        label="Arbitrum"
+                        label={t`Arbitrum`}
                         showDollar={false}
                         value={formatAmountHuman(displayTvlArbitrum, USD_DECIMALS, true, 2)}
                       />
                       <StatsTooltipRow
-                        label="Avalanche"
+                        label={t`Avalanche`}
                         showDollar={false}
                         value={formatAmountHuman(displayTvlAvalanche, USD_DECIMALS, true, 2)}
                       />
                       <StatsTooltipRow
-                        label="Botanix"
+                        label={t`Botanix`}
                         showDollar={false}
                         value={formatAmountHuman(displayTvlBotanix, USD_DECIMALS, true, 2)}
                       />
@@ -464,7 +459,7 @@ export function OverviewCard({
                       />
                       <div className="!my-8 h-1 bg-gray-800" />
                       <StatsTooltipRow
-                        label="Total"
+                        label={t`Total`}
                         showDollar={false}
                         value={formatAmountHuman(displayTvl, USD_DECIMALS, true, 2)}
                       />
@@ -475,7 +470,7 @@ export function OverviewCard({
             </div>
             <div className="App-card-row">
               <div className="label">
-                <Trans>GLP Pool</Trans>
+                <Trans>GLP pool</Trans>
               </div>
               <div>
                 <TooltipComponent
@@ -484,30 +479,27 @@ export function OverviewCard({
                   position="bottom-end"
                   content={
                     <>
-                      <Trans>Total value of tokens in the GLP pools.</Trans>
+                      <Trans>Total value of tokens in the GLP pool</Trans>
                       <br />
                       <br />
                       <StatsTooltipRow
-                        label="Arbitrum"
+                        label={t`Arbitrum`}
                         showDollar={false}
                         value={formatAmountHuman(glpTvlArbitrum, USD_DECIMALS, true, 2)}
                       />
                       <StatsTooltipRow
-                        label="Avalanche"
+                        label={t`Avalanche`}
                         showDollar={false}
                         value={formatAmountHuman(glpTvlAvalanche, USD_DECIMALS, true, 2)}
                       />
                       <div className="my-8 h-1 bg-gray-800" />
                       <StatsTooltipRow
-                        label="Total"
+                        label={t`Total`}
                         showDollar={false}
                         value={formatAmountHuman(totalGlpTvl, USD_DECIMALS, true, 2)}
                       />
                       <br />
-                      <Trans>
-                        This value may be higher on other websites due to the collateral of positions being included in
-                        the calculation.
-                      </Trans>
+                      <Trans>May be higher on other sites that include position collateral</Trans>
                     </>
                   }
                 />
@@ -515,7 +507,7 @@ export function OverviewCard({
             </div>
             <div className="App-card-row">
               <div className="label">
-                <Trans>GM Pools</Trans>
+                <Trans>GM pools</Trans>
               </div>
               <div>
                 <TooltipComponent
@@ -524,21 +516,21 @@ export function OverviewCard({
                   position="bottom-end"
                   content={
                     <>
-                      <Trans>Total value of tokens in GM Pools.</Trans>
+                      <Trans>Total value of tokens in GM pools</Trans>
                       <br />
                       <br />
                       <StatsTooltipRow
-                        label="Arbitrum"
+                        label={t`Arbitrum`}
                         showDollar={false}
                         value={formatAmountHuman(gmTvlArbitrum, USD_DECIMALS, true, 2)}
                       />
                       <StatsTooltipRow
-                        label="Avalanche"
+                        label={t`Avalanche`}
                         showDollar={false}
                         value={formatAmountHuman(gmTvlAvalanche, USD_DECIMALS, true, 2)}
                       />
                       <StatsTooltipRow
-                        label="Botanix"
+                        label={t`Botanix`}
                         showDollar={false}
                         value={formatAmountHuman(gmTvlBotanix, USD_DECIMALS, true, 2)}
                       />
@@ -549,7 +541,7 @@ export function OverviewCard({
                       />
                       <div className="!my-8 h-1 bg-gray-800" />
                       <StatsTooltipRow
-                        label="Total"
+                        label={t`Total`}
                         showDollar={false}
                         value={formatAmountHuman(totalGmTvl, USD_DECIMALS, true, 2)}
                       />
@@ -564,7 +556,7 @@ export function OverviewCard({
           <AppCardSection className="pb-24">
             <div className="App-card-row">
               <div className="label">
-                <Trans>24h Volume</Trans>
+                <Trans>24h volume</Trans>
               </div>
               <div>
                 <TooltipComponent
@@ -578,7 +570,7 @@ export function OverviewCard({
             </div>
             <div className="App-card-row">
               <div className="label">
-                <Trans>Open Interest</Trans>
+                <Trans>Open interest</Trans>
               </div>
               <div>
                 <TooltipComponent
@@ -592,7 +584,7 @@ export function OverviewCard({
             </div>
             <div className="App-card-row">
               <div className="label">
-                <Trans>Long Positions</Trans>
+                <Trans>Long positions</Trans>
               </div>
               <div>
                 <TooltipComponent
@@ -606,7 +598,7 @@ export function OverviewCard({
             </div>
             <div className="App-card-row">
               <div className="label">
-                <Trans>Short Positions</Trans>
+                <Trans>Short positions</Trans>
               </div>
               <div>
                 <TooltipComponent

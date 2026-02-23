@@ -152,8 +152,8 @@ function Slides() {
         <div className="flex h-full grow flex-col justify-between">
           <Trans>
             <p>
-              <span className="text-blue-100">@GMX_IO</span> enters into a Data Partnership with Token TerminalGMX is a
-              leading permissionless perpetual exchange built on <span className="text-blue-100">@Arbitrum</span> and{" "}
+              <span className="text-blue-100">@GMX_IO</span> enters into a Data Partnership with Token Terminal. GMX is
+              a leading permissionless perpetual exchange built on <span className="text-blue-100">@Arbitrum</span> and{" "}
               <span className="text-blue-100">@Avax</span>.
             </p>
             <p>The protocol serves as a foundational liquidity baselayer for multichain DeFi.</p>

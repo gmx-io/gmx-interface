@@ -1059,6 +1059,22 @@
       "baseBorrowingFactorShort": "0x80c5b6569f8349524228859090ee98f0031070e6ea22026627ad923e0f65c180",
       "aboveOptimalUsageBorrowingFactorLong": "0x869d8c2c73b3ab76092d6448b49b444009f165a6b99bf09b98bbb5506eea6db6",
       "aboveOptimalUsageBorrowingFactorShort": "0xe8f2eac941593eddfd6a2b0501b308d3c654a363c8b2a249cdd23173373f40ec"
+    },
+    "0x45F0331a6e175B556Bc7d28E0A1c349525006d4E": {
+      "optimalUsageFactorLong": "0x764a7e2625efb0068fbdbe0efbc021ccb3ba42c58967d055a7d29373f3397e91",
+      "optimalUsageFactorShort": "0xedddd25d7297e9dc726acc56dcf5c9d2440a10ac50c159c2c2a7cc77917c919f",
+      "baseBorrowingFactorLong": "0x997f0c4e2eca001e18075cfae298e5974c17b034df00c2596f8b83b044964104",
+      "baseBorrowingFactorShort": "0xcd73ef074e51a9e31b144444e5ed3f858e7de787d0307c69f6ce84f571479269",
+      "aboveOptimalUsageBorrowingFactorLong": "0x1d93934324dc393ec58d270b30a32186c4756679d1f8c12f56c3e359b646bc1e",
+      "aboveOptimalUsageBorrowingFactorShort": "0x9415dccd2a032dccc476878c3a492b82d4ff32808690150cce7555a18ae2a139"
+    },
+    "0xbA30e198CFFeBEf0A84D6943cC8B2e356E324112": {
+      "optimalUsageFactorLong": "0xb6ea04b62370d24c360684fc1815e8cc88060f27018c93d1a297afa9cfda3610",
+      "optimalUsageFactorShort": "0x8628635ba75c1cb8acff4d805935aa44c1869806eaa8e9f25afc9f70e7e8d5a5",
+      "baseBorrowingFactorLong": "0xf3b119413ad74a4ae7d4853dcec2a088bff5aaf74ad161a185e9ada20590c718",
+      "baseBorrowingFactorShort": "0x05f6181842373ef95a7346f0ff1a84248e546efe9c552d21052f3d381d57e453",
+      "aboveOptimalUsageBorrowingFactorLong": "0x31034a12ffde6c5e8e1f27c102afd598f9bd87ae9e358b8d5889adda8f1cd820",
+      "aboveOptimalUsageBorrowingFactorShort": "0x024c16d394e9de1af35347e616cfe8c3725d5ba100a6d162c420c457c407ad6a"
     }
   },
   "43113": {

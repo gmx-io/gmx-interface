@@ -7,28 +7,28 @@ export function Quareters() {
     <div className="flex flex-row gap-0 overflow-x-scroll pt-8 scrollbar-hide">
       <Quarter lastCompleted>
         <Trans>
-          <p>Solana Support</p>
-          <p>Botanix Support</p>
+          <p>Solana support</p>
+          <p>Botanix support</p>
           <p>GMX Express</p>
         </Trans>
       </Quarter>
       <Quarter>
         <Trans>
           <p className="text-slate-600">Multichain</p>
-          <p className="text-slate-600">MegaETH Support</p>
-          <p>Just in Time Liquidity</p>
+          <p className="text-slate-600">MegaETH support</p>
+          <p>Just-in-time liquidity</p>
         </Trans>
       </Quarter>
       <Quarter>
         <Trans>
-          <p>Cross-Margin</p>
-          <p>Cross-Collateral</p>
+          <p>Cross-margin</p>
+          <p>Cross-collateral</p>
         </Trans>
       </Quarter>
       <Quarter>
         <Trans>
-          <p>Market Groups</p>
-          <p>Net Open Interest</p>
+          <p>Market groups</p>
+          <p>Net open interest</p>
         </Trans>
       </Quarter>
     </div>

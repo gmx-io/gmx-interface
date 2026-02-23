@@ -94,18 +94,23 @@ export function getPendingShiftKey(data: PendingShiftData) {
 const BYTECODE_REGEXP = /0x[a-fA-F0-9]+/;
 
 export function extractGelatoError(gelatoTaskStatus: GelatoTaskStatus) {
-  const bytecodeMatch = gelatoTaskStatus.lastCheckMessage?.match(BYTECODE_REGEXP);
+  if (gelatoTaskStatus.revertData) {
+    return extendError(new Error(`data="${gelatoTaskStatus.revertData}"`), {
+      data: { taskId: gelatoTaskStatus.taskId, message: gelatoTaskStatus.message },
+    });
+  }
+
+  const bytecodeMatch = gelatoTaskStatus.message?.match(BYTECODE_REGEXP);
 
   if (bytecodeMatch) {
     const bytecode = bytecodeMatch[0];
-    const error = extendError(new Error(`data="${bytecode}"`), {
-      data: { taskId: gelatoTaskStatus.taskId, lastCheckMessage: gelatoTaskStatus.lastCheckMessage },
+    return extendError(new Error(`data="${bytecode}"`), {
+      data: { taskId: gelatoTaskStatus.taskId, message: gelatoTaskStatus.message },
     });
-    return error;
   }
 
   return extendError(new Error(`Gelato task cancelled, unknown reason`), {
-    data: { taskId: gelatoTaskStatus.taskId, lastCheckMessage: gelatoTaskStatus.lastCheckMessage },
+    data: { taskId: gelatoTaskStatus.taskId, message: gelatoTaskStatus.message },
   });
 }
 

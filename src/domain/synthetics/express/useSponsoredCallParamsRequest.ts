@@ -2,23 +2,21 @@ import { useMemo } from "react";
 import useSWR from "swr";
 
 import { getIsFlagEnabled } from "config/ab";
-import { ARBITRUM_SEPOLIA, BOTANIX, MEGAETH } from "config/chains";
-import { convertToUsd, TokensData } from "domain/tokens";
+import { ARBITRUM_SEPOLIA } from "config/chains";
 import { metrics } from "lib/metrics";
-import { getByKey } from "lib/objects";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
-import { MIN_GELATO_USD_BALANCE_FOR_SPONSORED_CALL } from "sdk/configs/express";
-import { getTokenBySymbol } from "sdk/configs/tokens";
+
+import { fetchGelatoGasTankBalance } from "./fetchGelatoGasTankBalance";
+
+// $100 threshold in 6-decimal USD (as returned by gelato_getBalance)
+const MIN_GELATO_USD_BALANCE = 100_000_000n;
 
 export type SponsoredCallBalanceData = {
   isSponsoredCallAllowed: boolean;
 };
 
-export function useIsSponsoredCallBalanceAvailable(
-  chainId: number,
-  { tokensData }: { tokensData: TokensData | undefined }
-): SponsoredCallBalanceData {
-  const { data: isSponsoredCallAllowed } = useSWR<boolean>(tokensData ? [chainId, "isSponsoredCallAllowed"] : null, {
+export function useIsSponsoredCallBalanceAvailable(chainId: number): SponsoredCallBalanceData {
+  const { data: isSponsoredCallAllowed } = useSWR<boolean>([chainId, "isSponsoredCallAllowed"], {
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
     fetcher: async () => {
       if (chainId === ARBITRUM_SEPOLIA) {
@@ -30,25 +28,13 @@ export function useIsSponsoredCallBalanceAvailable(
           return false;
         }
 
-        const gelatoBalance = await fetch(
-          "https://api.gelato.digital/1balance/networks/mainnets/sponsors/0x88FcCAC36031949001Df4bB0b68CBbd07f033161"
-        );
+        const gasTankBalance = await fetchGelatoGasTankBalance(chainId);
 
-        const gelatoBalanceData = await gelatoBalance.json();
+        if (!gasTankBalance) {
+          return false;
+        }
 
-        const mainBalance = gelatoBalanceData.sponsor.mainBalance;
-        const mainBalanceToken = mainBalance.token;
-        const remainingBalance = BigInt(mainBalance.remainingBalance);
-        const amountInExecution = BigInt(mainBalance.amountInExecution);
-
-        const balanceLeft = remainingBalance - amountInExecution;
-        const mainTokenSymbol = chainId === BOTANIX ? "USDC.E" : chainId === MEGAETH ? "USDM" : mainBalanceToken.symbol;
-
-        const mainBalanceTokenData = getByKey(tokensData, getTokenBySymbol(chainId, mainTokenSymbol).address);
-
-        const usdBalance = convertToUsd(balanceLeft, mainBalanceToken.decimals, mainBalanceTokenData?.prices.minPrice);
-
-        return usdBalance !== undefined && usdBalance > MIN_GELATO_USD_BALANCE_FOR_SPONSORED_CALL;
+        return gasTankBalance.balance > MIN_GELATO_USD_BALANCE;
       } catch (error) {
         metrics.pushError(error, "expressOrders.useIsSponsoredCallBalanceAvailable");
         return false;

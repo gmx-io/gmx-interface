@@ -16,4 +16,8 @@
 
 .PositionDropdown-menu-items {
   width: max-content !important;
+
+  .menu-item {
+    cursor: pointer;
+  }
 }

@@ -236,4 +236,8 @@ export class OracleKeeperFetcher implements OracleFetcher {
   fetchPerformanceSnapshots(period: PerformancePeriod, address?: string): Promise<PerformanceSnapshotsResponse> {
     return this.request("/performance/snapshots", { query: { period, address } });
   }
+
+  fetchUiFlags(): Promise<Record<string, boolean>> {
+    return this.request("/ui-flags", {});
+  }
 }

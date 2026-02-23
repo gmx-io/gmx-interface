@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode } from "react";
 
@@ -43,7 +44,7 @@ export function AlertInfo({
       onClick={onClick}
     >
       <div className="pr-6 pt-2">
-        <Icon aria-label="Alert Icon" className="block" />
+        <Icon aria-label={t`Alert icon`} className="block" />
       </div>
       <div className="text-body-small">{children}</div>
     </div>

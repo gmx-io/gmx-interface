@@ -107,7 +107,8 @@ export default function ChartTokenSelector(props: Props) {
                   >
                     <span className="text-start text-[13px] font-medium text-typography-primary">
                       {!isSwap && <>{getTokenVisualMultiplier(selectedToken)}</>}
-                      {selectedToken.symbol}/USD
+                      {selectedToken.symbol}
+                      {t`/USD`}
                     </span>
                     {poolName && (
                       <span
@@ -270,10 +271,10 @@ function MarketsList() {
 
   const placeholder = useMemo(() => {
     if (isSwap) {
-      return t`Search Token`;
+      return t`Search token`;
     }
 
-    return t`Search Market`;
+    return t`Search market`;
   }, [isSwap]);
 
   const availableLiquidityLabel = isMobile ? (isSmallMobile ? t`LIQ.` : t`AVAIL. LIQ.`) : t`AVAILABLE LIQ.`;
@@ -323,7 +324,7 @@ function MarketsList() {
           <thead>
             <tr>
               <th className={cx(thClassName, isMobile ? "min-w-[18ch]" : "min-w-[28ch]")} colSpan={2}>
-                <Trans>Market</Trans>
+                <Trans>MARKET</Trans>
               </th>
               {isSwap ? (
                 <>
@@ -402,7 +403,7 @@ function MarketsList() {
           </tbody>
         </table>
         {options && options.length > 0 && !sortedTokens?.length && (
-          <EmptyTableContent isLoading={false} isEmpty={true} emptyText={<Trans>No markets matched</Trans>} />
+          <EmptyTableContent isLoading={false} isEmpty={true} emptyText={<Trans>No matching markets</Trans>} />
         )}
       </div>
     </>
@@ -504,7 +505,7 @@ const MarketLabel = ({ token }: { token: Token }) => {
   return (
     <span className="text-typography-secondary">
       <span className="text-typography-primary">{getMarketBaseName({ indexToken: token, isSpotOnly: false })}</span>
-      /USD
+      {t`/USD`}
     </span>
   );
 };

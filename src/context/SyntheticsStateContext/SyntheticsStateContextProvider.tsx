@@ -53,9 +53,14 @@ import {
 } from "domain/synthetics/tokens";
 import { ConfirmationBoxState, useConfirmationBoxState } from "domain/synthetics/trade/useConfirmationBoxState";
 import { PositionEditorState, usePositionEditorState } from "domain/synthetics/trade/usePositionEditorState";
-import { PositionSellerState, usePositionSellerState } from "domain/synthetics/trade/usePositionSellerState";
+import {
+  OrderOption,
+  PositionSellerState,
+  usePositionSellerState,
+} from "domain/synthetics/trade/usePositionSellerState";
 import { TradeboxState, useTradeboxState } from "domain/synthetics/trade/useTradeboxState";
 import useIsFirstOrder from "domain/synthetics/tradeHistory/useIsFirstOrder";
+import { UiFlags, useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { ProgressiveTokensData } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -110,7 +115,8 @@ export type SyntheticsState = {
     botanixStakingAssetsPerShare: bigint | undefined;
 
     closingPositionKey: string | undefined;
-    setClosingPositionKey: (key: string | undefined) => void;
+    setClosingPositionKey: (key: string | undefined, orderOption?: OrderOption) => void;
+    closingPositionOrderOption: OrderOption | undefined;
 
     keepLeverage: boolean | undefined;
     setKeepLeverage: (value: boolean) => void;
@@ -148,6 +154,7 @@ export type SyntheticsState = {
   confirmationBox: ConfirmationBoxState;
   poolsDetails: PoolsDetailsState | undefined;
   features: FeaturesSettings | undefined;
+  uiFlags: UiFlags | undefined;
   gasPaymentTokenAllowance: TokenAllowanceResult | undefined;
   sponsoredCallBalanceData: SponsoredCallBalanceData | undefined;
   l1ExpressOrderGasReference: L1ExpressOrderGasReference | undefined;
@@ -232,7 +239,17 @@ export function SyntheticsStateContextProvider({
   const { positionsConstants } = usePositionsConstantsRequest(chainId);
   const { uiFeeFactor } = useUiFeeFactorRequest(chainId);
   const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
-  const [closingPositionKey, setClosingPositionKey] = useState<string>();
+  const [closingPositionKeyRaw, setClosingPositionKeyRaw] = useState<string>();
+  const [closingPositionOrderOption, setClosingPositionOrderOption] = useState<OrderOption>();
+
+  const closingPositionKey = closingPositionKeyRaw;
+  const setClosingPositionKey = useMemo(
+    () => (key: string | undefined, orderOption?: OrderOption) => {
+      setClosingPositionKeyRaw(key);
+      setClosingPositionOrderOption(orderOption);
+    },
+    []
+  );
   const [isCandlesLoaded, setIsCandlesLoaded] = useState(false);
   const { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees } = useRebatesInfoRequest(chainId, {
     enabled: isTradePage,
@@ -246,6 +263,7 @@ export function SyntheticsStateContextProvider({
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
   const { features } = useEnabledFeaturesRequest(chainId);
+  const { uiFlags } = useUiFlagsRequest();
 
   const {
     isLoading,
@@ -304,8 +322,11 @@ export function SyntheticsStateContextProvider({
 
   const { blockTimestampData } = useBlockTimestampRequest(chainId, { skip: !["trade", "pools"].includes(pageType) });
 
-  // TODO move closingPositionKey to positionSellerState
-  const positionSellerState = usePositionSellerState(chainId, positionsInfoData?.[closingPositionKey ?? ""]);
+  const positionSellerState = usePositionSellerState(
+    chainId,
+    positionsInfoData?.[closingPositionKey ?? ""],
+    closingPositionOrderOption
+  );
   const positionEditorState = usePositionEditorState(chainId, srcChainId);
   const confirmationBoxState = useConfirmationBoxState();
 
@@ -336,9 +357,7 @@ export function SyntheticsStateContextProvider({
 
   const externalSwapState = useInitExternalSwapState();
   const tokenPermitsState = useTokenPermitsContext();
-  const sponsoredCallBalanceData = useIsSponsoredCallBalanceAvailable(chainId, {
-    tokensData: tokensDataResult.tokensData,
-  });
+  const sponsoredCallBalanceData = useIsSponsoredCallBalanceAvailable(chainId);
 
   const gasPaymentTokenAllowance = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
@@ -375,6 +394,8 @@ export function SyntheticsStateContextProvider({
         closingPositionKey,
         setClosingPositionKey,
 
+        closingPositionOrderOption,
+
         missedCoinsModalPlace,
         setMissedCoinsModalPlace,
 
@@ -407,6 +428,7 @@ export function SyntheticsStateContextProvider({
       confirmationBox: confirmationBoxState,
       poolsDetails: poolsDetailsState,
       features,
+      uiFlags,
       sponsoredCallBalanceData,
       gasPaymentTokenAllowance,
       l1ExpressOrderGasReference,
@@ -416,6 +438,26 @@ export function SyntheticsStateContextProvider({
   }, [
     pageType,
     chainId,
+    claimablePositionPriceImpactFees,
+    closingPositionKey,
+    closingPositionOrderOption,
+    confirmationBoxState,
+    depositMarketTokensData,
+    externalSwapState,
+    features,
+    gasLimits,
+    gasPaymentTokenAllowance,
+    gasPrice,
+    glvInfo,
+    isCandlesLoaded,
+    isFirstOrder,
+    isLargeAccount,
+    isLoading,
+    keepLeverage,
+    l1ExpressOrderGasReference,
+    lastMonthAccountStats,
+    lastWeekAccountStats,
+    leaderboard,
     srcChainId,
     account,
     signer,
@@ -423,47 +465,30 @@ export function SyntheticsStateContextProvider({
     marketsInfo,
     ordersInfo,
     positionsConstants,
-    glvInfo,
     botanixStakingAssetsPerShare,
-    isLoading,
     positionsInfoData,
+    progressiveDepositMarketTokensData,
+    setClosingPositionKey,
+    setKeepLeverage,
+    settings,
+    sponsoredCallBalanceData,
+    subaccountState,
+    tokenPermitsState,
     tokensDataResult,
     uiFeeFactor,
     userReferralInfo,
-    depositMarketTokensData,
-    progressiveDepositMarketTokensData,
     multichainMarketTokensBalancesResult,
-    closingPositionKey,
     missedCoinsModalPlace,
-    gasLimits,
-    gasPrice,
-    keepLeverage,
-    setKeepLeverage,
-    lastWeekAccountStats,
-    lastMonthAccountStats,
     accountStats,
-    isCandlesLoaded,
-    isLargeAccount,
-    isFirstOrder,
     blockTimestampData,
     oracleSettings,
     accruedPositionPriceImpactFees,
-    claimablePositionPriceImpactFees,
-    leaderboard,
-    settings,
-    subaccountState,
     tradeboxState,
-    externalSwapState,
-    tokenPermitsState,
     orderEditor,
     positionSellerState,
     positionEditorState,
-    confirmationBoxState,
     poolsDetailsState,
-    features,
-    sponsoredCallBalanceData,
-    gasPaymentTokenAllowance,
-    l1ExpressOrderGasReference,
+    uiFlags,
   ]);
 
   latestStateRef.current = state;
