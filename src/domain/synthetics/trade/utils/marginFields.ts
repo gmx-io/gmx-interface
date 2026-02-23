@@ -20,7 +20,6 @@ export type CalcMaxSizeDeltaParams = {
   initialCollateralUsd: bigint;
   markPrice: bigint;
   toTokenDecimals: number;
-  visualMultiplier: bigint;
   isLong: boolean;
   longLiquidity: bigint | undefined;
   shortLiquidity: bigint | undefined;
@@ -33,9 +32,9 @@ export type CalcMaxSizeDeltaParams = {
 };
 
 /**
- * Computes the maximum size delta (in index tokens, with visual multiplier) so
- * that the resulting position leverage does not exceed the market's max allowed
- * leverage, accounting for position fees and existing position.
+ * Computes the maximum size delta in real index tokens so that the resulting
+ * position leverage does not exceed the market's max allowed leverage,
+ * accounting for position fees and existing position.
  *
  * Formula (solving `(E_s + S) / (E_c + C - S·f/P - B) ≤ L/BP`):
  *   S_max = (L·(E_c + C − B) − E_s·BP) · P / (BP·P + L·f)
@@ -48,7 +47,6 @@ export function calcMaxSizeDeltaInUsdByLeverage(params: CalcMaxSizeDeltaParams):
     initialCollateralUsd,
     markPrice,
     toTokenDecimals,
-    visualMultiplier,
     isLong,
     longLiquidity,
     shortLiquidity,
@@ -91,12 +89,12 @@ export function calcMaxSizeDeltaInUsdByLeverage(params: CalcMaxSizeDeltaParams):
     BASIS_POINTS_DIVISOR_BIGINT * PRECISION + leverageBigInt * positionFeeFactor
   );
 
-  // Convert USD bound to index token amount
+  // Convert USD bound to real index token amount
   const toIndexTokenAmount = (amountUsd: bigint | undefined): bigint | undefined => {
     if (amountUsd === undefined || amountUsd <= 0n) return undefined;
     const tokenAmount = convertToTokenAmount(amountUsd, toTokenDecimals, markPrice);
     if (tokenAmount === undefined || tokenAmount <= 0n) return undefined;
-    return tokenAmount * visualMultiplier;
+    return tokenAmount;
   };
 
   const leverageBound = toIndexTokenAmount(leverageBoundUsd);

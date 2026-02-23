@@ -85,7 +85,7 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
         initialCollateralUsd: 0n,
         markPrice: ETH_PRICE,
         toTokenDecimals: 18,
-        visualMultiplier: 1n,
+
         isLong: true,
         longLiquidity: undefined,
         shortLiquidity: undefined,
@@ -102,7 +102,7 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
       initialCollateralUsd: collateralUsd,
       markPrice: ETH_PRICE,
       toTokenDecimals: 18,
-      visualMultiplier: 1n,
+
       isLong: true,
       longLiquidity: undefined,
       shortLiquidity: undefined,
@@ -128,7 +128,7 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
       initialCollateralUsd: collateralUsd,
       markPrice: ETH_PRICE,
       toTokenDecimals: 18,
-      visualMultiplier: 1n,
+
       isLong: true,
       longLiquidity: undefined,
       shortLiquidity: undefined,
@@ -179,7 +179,7 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
       initialCollateralUsd: collateralUsd,
       markPrice: ETH_PRICE,
       toTokenDecimals: 18,
-      visualMultiplier: 1n,
+
       isLong: true,
       longLiquidity: undefined,
       shortLiquidity: undefined,
@@ -223,7 +223,7 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
       initialCollateralUsd: collateralUsd,
       markPrice: ETH_PRICE,
       toTokenDecimals: 18,
-      visualMultiplier: 1n,
+
       isLong: true,
       longLiquidity: undefined,
       shortLiquidity: undefined,
@@ -261,7 +261,7 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
       initialCollateralUsd: collateralUsd,
       markPrice: ETH_PRICE,
       toTokenDecimals: 18,
-      visualMultiplier: 1n,
+
       isLong: true,
       longLiquidity: undefined,
       shortLiquidity: undefined,
@@ -295,7 +295,7 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
       initialCollateralUsd: collateralUsd,
       markPrice: ETH_PRICE,
       toTokenDecimals: 18,
-      visualMultiplier: 1n,
+
       isLong: true,
       longLiquidity: undefined,
       shortLiquidity: undefined,
@@ -329,7 +329,7 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
       initialCollateralUsd: collateralUsd,
       markPrice: ETH_PRICE,
       toTokenDecimals: 18,
-      visualMultiplier: 1n,
+
       isLong: true,
       longLiquidity: undefined,
       shortLiquidity: undefined,
@@ -362,7 +362,7 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
       initialCollateralUsd: collateralUsd,
       markPrice: ETH_PRICE,
       toTokenDecimals: 18,
-      visualMultiplier: 1n,
+
       isLong: true,
       longLiquidity: smallLiquidity,
       shortLiquidity: undefined,
@@ -383,7 +383,7 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
       initialCollateralUsd: collateralUsd,
       markPrice: ETH_PRICE,
       toTokenDecimals: 18,
-      visualMultiplier: 1n,
+
       isLong: true,
       longLiquidity: undefined,
       shortLiquidity: undefined,
@@ -403,7 +403,7 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
       initialCollateralUsd: collateralUsd,
       markPrice: ETH_PRICE,
       toTokenDecimals: 18,
-      visualMultiplier: 1n,
+
       isLong: false,
       longLiquidity: expandDecimals(999999, USD_DECIMALS), // large, should be ignored
       shortLiquidity: smallLiquidity,
@@ -414,7 +414,7 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
     expect(result!).toBe(expectedTokens);
   });
 
-  it("applies visualMultiplier to the result", () => {
+  it("returns real token amount (no visual multiplier scaling)", () => {
     const feeFactor = FEE_FACTOR_005;
     const marketInfo = makeMarketInfo({
       positionFeeFactorForBalanceWasImproved: feeFactor,
@@ -422,7 +422,7 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
     });
 
     const collateralUsd = expandDecimals(1000, USD_DECIMALS);
-    const baseParams = {
+    const result = calcMaxSizeDeltaInUsdByLeverage({
       marketInfo,
       initialCollateralUsd: collateralUsd,
       markPrice: ETH_PRICE,
@@ -430,14 +430,16 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
       isLong: true,
       longLiquidity: undefined,
       shortLiquidity: undefined,
-    } as const;
+    });
 
-    const resultMult1 = calcMaxSizeDeltaInUsdByLeverage({ ...baseParams, visualMultiplier: 1n });
-    const resultMult10 = calcMaxSizeDeltaInUsdByLeverage({ ...baseParams, visualMultiplier: 10n });
+    expect(result).toBeDefined();
 
-    expect(resultMult1).toBeDefined();
-    expect(resultMult10).toBeDefined();
-    expect(resultMult10!).toBe(resultMult1! * 10n);
+    // Result should be in real token units (same as convertToTokenAmount output).
+    // For $1000 collateral at 100x max leverage, max size ~$100k → ~83.3 ETH at $1200.
+    // Verify the result is in real token scale (not multiplied by any visual multiplier).
+    const sizeUsd = tokenAmountToUsd(result!, 18, ETH_PRICE);
+    expect(sizeUsd).toBeLessThan(expandDecimals(100000, USD_DECIMALS));
+    expect(sizeUsd).toBeGreaterThan(expandDecimals(90000, USD_DECIMALS));
   });
 
   it("handles zero minCollateralFactor (default 50x max)", () => {
@@ -449,7 +451,7 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
       initialCollateralUsd: collateralUsd,
       markPrice: ETH_PRICE,
       toTokenDecimals: 18,
-      visualMultiplier: 1n,
+
       isLong: true,
       longLiquidity: undefined,
       shortLiquidity: undefined,
