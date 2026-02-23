@@ -114,16 +114,24 @@ export function TradeboxMarginFields({
 
   useEffect(() => {
     if (sizeDisplayMode !== "usd" || !canConvert) return;
-
     if (focusedInput === "to" && !shouldForceSizeUsdSyncRef.current) return;
 
-    const usdValue = tokensToUsd(toTokenInputValue);
-    if (usdValue !== sizeInputValue) {
-      setSizeInputValue(usdValue);
+    const tokensValue = usdToTokens(sizeInputValue);
+    if (tokensValue !== toTokenInputValue) {
+      setToTokenInputValue(tokensValue, false);
     }
 
     shouldForceSizeUsdSyncRef.current = false;
-  }, [focusedInput, sizeDisplayMode, sizeInputValue, toTokenInputValue, canConvert, tokensToUsd]);
+  }, [
+    focusedInput,
+    sizeDisplayMode,
+    sizeInputValue,
+    toTokenInputValue,
+    canConvert,
+    tokensToUsd,
+    usdToTokens,
+    setToTokenInputValue,
+  ]);
 
   const handleFromInputChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {

@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 import { selectIsLeverageSliderEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectSelectedMarketVisualMultiplier } from "context/SyntheticsStateContext/selectors/statsSelectors";
@@ -124,14 +124,6 @@ export function useTradeboxManualLeverageSizeSlider({
     },
     [applySizeByIndexTokenAmount, maxSizeByMarginInTokens]
   );
-
-  useEffect(() => {
-    if (isLeverageSliderEnabled || maxSizeByMarginInTokens === undefined) return;
-
-    if (toTokenAmount > maxSizeByMarginInTokens) {
-      applySizeByIndexTokenAmount(maxSizeByMarginInTokens);
-    }
-  }, [applySizeByIndexTokenAmount, isLeverageSliderEnabled, maxSizeByMarginInTokens, toTokenAmount]);
 
   return {
     isLeverageSliderEnabled,
