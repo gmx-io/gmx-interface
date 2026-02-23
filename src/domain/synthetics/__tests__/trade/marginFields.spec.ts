@@ -595,4 +595,33 @@ describe("calcMarginAmountByPercentage", () => {
     // 33% of 1000 USDC = 330 USDC
     expect(result).toBe("330");
   });
+
+  it("does not throw on NaN percentage", () => {
+    const balance = 1000000000n;
+    expect(() => calcMarginAmountByPercentage(NaN, balance, 6, undefined, true)).not.toThrow();
+    expect(calcMarginAmountByPercentage(NaN, balance, 6, undefined, true)).toBe("0");
+  });
+
+  it("does not throw on Infinity percentage", () => {
+    const balance = 1000000000n;
+    expect(() => calcMarginAmountByPercentage(Infinity, balance, 6, undefined, true)).not.toThrow();
+  });
+
+  it("does not throw on fractional percentage", () => {
+    const balance = 1000000000n;
+    expect(() => calcMarginAmountByPercentage(33.7, balance, 6, undefined, true)).not.toThrow();
+    // 33.7 rounds to 34 → 34% of 1000 = 340
+    expect(calcMarginAmountByPercentage(33.7, balance, 6, undefined, true)).toBe("340");
+  });
+
+  it("clamps negative percentage to 0", () => {
+    const balance = 1000000000n;
+    expect(calcMarginAmountByPercentage(-10, balance, 6, undefined, true)).toBe("0");
+  });
+
+  it("clamps percentage above 100 to full balance", () => {
+    const balance = 1000000000n;
+    const result = calcMarginAmountByPercentage(150, balance, 6, undefined, true);
+    expect(result).toBe("1000");
+  });
 });

@@ -153,9 +153,10 @@ export function calcMarginAmountByPercentage(
   visualMultiplier: number | undefined,
   isStable: boolean | undefined
 ): string {
-  const amount = (balance * BigInt(percentage)) / 100n;
+  const normalizedPercentage = Math.round(clampPercentage(percentage));
+  const amount = (balance * BigInt(normalizedPercentage)) / 100n;
 
-  if (percentage === 100) {
+  if (normalizedPercentage === 100) {
     return formatAmountFree(amount, decimals);
   }
 
