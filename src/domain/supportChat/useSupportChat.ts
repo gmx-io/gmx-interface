@@ -4,11 +4,9 @@ import { useAccount } from "wagmi";
 
 import { getChainName } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
-import { SUPPORT_CHAT_WAS_EVER_SHOWN_KEY } from "config/localStorage";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { usePeriodAccountStats } from "domain/synthetics/accountStats/usePeriodAccountStats";
 import { useChainId } from "lib/chains";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmountForMetrics } from "lib/metrics";
 
 import { useAvailableToTradeAssetMultichain } from "components/GmxAccountModal/hooks";
@@ -29,7 +27,6 @@ export function useSupportChat() {
     isWalletPortfolioUsdLoading,
   } = useShowSupportChat();
   const { address: account } = useAccount();
-  const [, setSupportChatWasEverShown] = useLocalStorageSerializeKey<boolean>(SUPPORT_CHAT_WAS_EVER_SHOWN_KEY, false);
   const { themeMode } = useTheme();
   const { chainId, srcChainId } = useChainId();
   const initializedAddress = useRef<string | undefined>(undefined);
@@ -107,12 +104,10 @@ export function useSupportChat() {
       setSupportChatUnreadCount(unreadCount);
     });
 
-    setSupportChatWasEverShown(true);
-
     return () => {
       shutdown();
     };
-  }, [shouldShowSupportChat, setSupportChatUnreadCount, setSupportChatWasEverShown]);
+  }, [shouldShowSupportChat, setSupportChatUnreadCount]);
 
   useEffect(() => {
     if (!shouldShowSupportChat) {
