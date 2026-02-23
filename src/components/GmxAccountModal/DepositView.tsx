@@ -469,9 +469,10 @@ export const DepositView = () => {
               settlementChainId,
             }
           : undefined,
-      withLoading: true,
+      withLoading: false,
     }
   );
+  const isSameChainNetworkFeeLoading = sameChainNetworkFeeAsyncResult.data === undefined;
 
   const sameChainNetworkFeeDetails = useMemo(
     () =>
@@ -956,6 +957,21 @@ export const DepositView = () => {
 
   const isAvalancheSettlement = settlementChainId === AVALANCHE;
 
+  const shouldShowInfoRowPlaceholder = inputAmount !== undefined && inputAmount > 0n;
+
+  const areMultichainFeesLoading = isComposeGasLoading || isQuoteOftLoading || isQuoteSendNativeFeeLoading;
+
+  const isNetworkFeeLoading =
+    shouldShowInfoRowPlaceholder &&
+    (depositViewChain === settlementChainId ? isSameChainNetworkFeeLoading : areMultichainFeesLoading);
+
+  const isInsufficientSourceChainNativeBalance =
+    nativeTokenSourceChainBalance !== undefined &&
+    quoteSendNativeFee !== undefined &&
+    depositViewChain !== undefined &&
+    quoteSendNativeFee + (unwrappedSelectedTokenAddress === zeroAddress ? amountLD ?? 0n : 0n) >
+      nativeTokenSourceChainBalance;
+
   let buttonState: {
     text: React.ReactNode;
     bannerErrorName?: ValidationBannerErrorName;
@@ -1019,17 +1035,22 @@ export const DepositView = () => {
       text: t`Insufficient balance`,
       disabled: true,
     };
-  } else if (nativeTokenSourceChainBalance !== undefined && quoteSendNativeFee !== undefined) {
-    const isNative = unwrappedSelectedTokenAddress === zeroAddress;
-    const value = isNative ? amountLD : 0n;
-
-    if (depositViewChain !== undefined && quoteSendNativeFee + value > nativeTokenSourceChainBalance) {
-      buttonState = {
-        text: getDefaultInsufficientGasMessage(),
-        bannerErrorName: ValidationBannerErrorName.insufficientSourceChainNativeTokenBalance,
-        disabled: true,
-      };
-    }
+  } else if (isInsufficientSourceChainNativeBalance) {
+    buttonState = {
+      text: getDefaultInsufficientGasMessage(),
+      bannerErrorName: ValidationBannerErrorName.insufficientSourceChainNativeTokenBalance,
+      disabled: true,
+    };
+  } else if (isNetworkFeeLoading) {
+    buttonState = {
+      text: (
+        <>
+          <Trans>Loading network fees…</Trans>
+          <SpinnerIcon className="ml-4 animate-spin" />
+        </>
+      ),
+      disabled: true,
+    };
   }
 
   const onClick = buttonState.onClick;
@@ -1124,14 +1145,6 @@ export const DepositView = () => {
     networkFeeUsd,
     sameChainNetworkFeeDetails,
   ]);
-
-  const shouldShowInfoRowPlaceholder = inputAmount !== undefined && inputAmount > 0n;
-
-  const areMultichainFeesLoading = isComposeGasLoading || isQuoteOftLoading || isQuoteSendNativeFeeLoading;
-
-  const isNetworkFeeLoading =
-    shouldShowInfoRowPlaceholder &&
-    (depositViewChain === settlementChainId ? sameChainNetworkFeeAsyncResult.isLoading : areMultichainFeesLoading);
 
   const isDepositFeeLoading = shouldShowInfoRowPlaceholder && areMultichainFeesLoading;
 

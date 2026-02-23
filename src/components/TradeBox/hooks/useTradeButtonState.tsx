@@ -503,7 +503,7 @@ export function useTradeboxButtonState({
         ...commonState,
         text: (
           <>
-            {t`Loading Express Trading...`}
+            <Trans>Loading network fees…</Trans>
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),

@@ -1061,6 +1061,16 @@ export const WithdrawalView = () => {
     inputAmount !== undefined &&
     inputAmount > selectedToken.gmxAccountBalance;
 
+  const shouldShowInfoRowPlaceholder = inputAmount !== undefined && inputAmount > 0n;
+
+  const areMultichainFeesLoading = isQuoteOftLoading || isBaseNativeFeeLoading;
+
+  const isNetworkFeeLoading =
+    shouldShowInfoRowPlaceholder &&
+    (isSameChain
+      ? sameChainNetworkFeeAsyncResult.isLoading
+      : areMultichainFeesLoading || !expressTxnParamsAsyncResult.data);
+
   let buttonState: {
     text: React.ReactNode;
     bannerErrorName?: ValidationBannerErrorName;
@@ -1096,6 +1106,16 @@ export const WithdrawalView = () => {
       text: t`Insufficient balance`,
       disabled: true,
     };
+  } else if (isNetworkFeeLoading) {
+    buttonState = {
+      text: (
+        <>
+          <Trans>Loading network fees…</Trans>
+          <SpinnerIcon className="ml-4 animate-spin" />
+        </>
+      ),
+      disabled: true,
+    };
   } else if ((withdrawalViewChain as SourceChainId | ContractsChainId | undefined) !== chainId) {
     if (
       expressTxnParamsAsyncResult.data?.gasPaymentValidations.isOutGasTokenBalance ||
@@ -1120,16 +1140,6 @@ export const WithdrawalView = () => {
     } else if (expressTxnParamsAsyncResult.error) {
       buttonState = {
         text: expressTxnParamsAsyncResult.error.name.slice(0, 32) ?? t`Error simulating withdrawal`,
-        disabled: true,
-      };
-    } else if (!expressTxnParamsAsyncResult.data) {
-      buttonState = {
-        text: (
-          <>
-            <Trans>Loading...</Trans>
-            <SpinnerIcon className="ml-4 animate-spin" />
-          </>
-        ),
         disabled: true,
       };
     }
@@ -1294,16 +1304,6 @@ export const WithdrawalView = () => {
       />
     );
   }, [isSameChain, protocolFeeUsd, selectedTokenSettlementChainTokenId, protocolFeeAmount, selectedToken?.symbol]);
-
-  const shouldShowInfoRowPlaceholder = inputAmount !== undefined && inputAmount > 0n;
-
-  const areMultichainFeesLoading = isQuoteOftLoading || isBaseNativeFeeLoading;
-
-  const isNetworkFeeLoading =
-    shouldShowInfoRowPlaceholder &&
-    (isSameChain
-      ? sameChainNetworkFeeAsyncResult.isLoading
-      : areMultichainFeesLoading || !expressTxnParamsAsyncResult.data);
 
   const isWithdrawFeeLoading = shouldShowInfoRowPlaceholder && areMultichainFeesLoading;
 
