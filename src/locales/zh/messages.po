@@ -1631,6 +1631,10 @@ msgstr "领取历史"
 msgid "No SL orders"
 msgstr "无止损订单"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Manual leverage"
+msgstr ""
+
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX alerts"
 msgstr "发现 GMX 提醒"
@@ -7731,10 +7735,6 @@ msgstr "正在转移 {symbol}..."
 msgid "Close price impact"
 msgstr "平仓价格影响"
 
-#: src/components/SettingsModal/DisplaySettings.tsx
-msgid "Show leverage slider"
-msgstr "显示杠杆滑块"
-
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 msgid "Opens GMTrade in a new tab"
 msgstr "将在新标签页中打开 GMTrade"
@@ -8605,6 +8605,10 @@ msgstr "绩效和图表数据基于 UTC 时间"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "出售 {operationTokenSymbol}"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
+msgstr ""
 
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx

@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 import { selectIsLeverageSliderEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { selectTradeboxState } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import {
+  selectTradeboxLeverageFieldValue,
   selectTradeboxLeverageSliderMarks,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -29,12 +30,12 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
   const {
     setTradeType: onSelectTradeType,
     tradeType,
-    leverageOption,
     setLeverageOption,
     marketInfo,
     setCollateralAddress: onSelectCollateralAddress,
   } = useSelector(selectTradeboxState);
   const leverageSliderMarks = useSelector(selectTradeboxLeverageSliderMarks);
+  const leverageFieldValue = useSelector(selectTradeboxLeverageFieldValue);
   const { isIncrease, isPosition, isMarket, isLimit, isTwap } = useSelector(selectTradeboxTradeFlags);
   const isLeverageSliderEnabled = useSelector(selectIsLeverageSliderEnabled);
 
@@ -73,13 +74,13 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
   const leverageFieldVisible = isIncrease;
 
   const positionFields = (
-    <div className="grid grid-cols-[minmax(48px,auto)_1fr_1fr] gap-8">
+    <div className="grid grid-cols-[minmax(56px,auto)_1fr_1fr] gap-8">
       {leverageFieldVisible ? (
         <LeverageField
           marks={leverageSliderMarks}
-          value={isLeverageSliderEnabled ? leverageOption ?? null : null}
+          value={leverageFieldValue}
           onChange={setLeverageOption}
-          disabled={false}
+          disabled={!isLeverageSliderEnabled}
         />
       ) : null}
 

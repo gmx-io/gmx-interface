@@ -1631,6 +1631,10 @@ msgstr "Historial de reclamaciones"
 msgid "No SL orders"
 msgstr "No hay órdenes SL"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Manual leverage"
+msgstr ""
+
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX alerts"
 msgstr "Descubrir alertas de GMX"
@@ -7731,10 +7735,6 @@ msgstr "Cambiando {symbol}..."
 msgid "Close price impact"
 msgstr "Impacto en el precio de cierre"
 
-#: src/components/SettingsModal/DisplaySettings.tsx
-msgid "Show leverage slider"
-msgstr "Mostrar control de apalancamiento"
-
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 msgid "Opens GMTrade in a new tab"
 msgstr "Abre GMTrade en una nueva pestaña"
@@ -8605,6 +8605,10 @@ msgstr "Los datos de rendimiento y gráficos se basan en la hora UTC"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "Vender {operationTokenSymbol}"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
+msgstr ""
 
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx
