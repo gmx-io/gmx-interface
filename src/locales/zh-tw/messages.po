@@ -1635,6 +1635,10 @@ msgstr "領取歷史"
 msgid "No SL orders"
 msgstr "無 SL 訂單"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Manual leverage"
+msgstr ""
+
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX alerts"
 msgstr "探索 GMX 提醒"
@@ -6354,6 +6358,10 @@ msgstr "分鐘"
 msgid "What makes GMX one of the best places to earn yield on my crypto?"
 msgstr "為什麼 GMX 是用加密貨幣賺取收益的最佳平台之一？"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Permit has expired. Please try again.</0>"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Approving {tokenSymbol}..."
 msgstr "正在授權 {tokenSymbol}..."
@@ -7721,10 +7729,6 @@ msgstr "正在轉換 {symbol}..."
 msgid "Close price impact"
 msgstr "平倉價格影響"
 
-#: src/components/SettingsModal/DisplaySettings.tsx
-msgid "Show leverage slider"
-msgstr "顯示槓桿滑桿"
-
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 msgid "Opens GMTrade in a new tab"
 msgstr "在新分頁中開啟 GMTrade"
@@ -8595,6 +8599,10 @@ msgstr "績效和圖表數據均以 UTC 時間為基準"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "賣出 {operationTokenSymbol}"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
+msgstr ""
 
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx

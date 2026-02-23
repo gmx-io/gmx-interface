@@ -26,7 +26,9 @@ export type ExchangeRouterCall = {
 };
 
 export type BatchOrderTxnParams = {
-  createOrderParams: CreateOrderTxnParams<any>[];
+  createOrderParams: CreateOrderTxnParams<
+    SwapOrderParams | IncreasePositionOrderParams | DecreasePositionOrderParams
+  >[];
   updateOrderParams: UpdateOrderTxnParams[];
   cancelOrderParams: CancelOrderTxnParams[];
 };
@@ -494,7 +496,7 @@ export function buildUpdateOrderPayload(p: UpdateOrderParams): UpdateOrderTxnPar
 }
 
 export function getBatchTotalExecutionFee({
-  batchParams: { createOrderParams, updateOrderParams },
+  batchParams,
   tokensData,
   chainId,
 }: {
@@ -502,7 +504,7 @@ export function getBatchTotalExecutionFee({
   tokensData: TokensData;
   chainId: number;
 }): ExecutionFee | undefined {
-  if (createOrderParams.length === 0 && updateOrderParams.length === 0) {
+  if (getIsEmptyBatch(batchParams)) {
     return undefined;
   }
 
@@ -515,12 +517,12 @@ export function getBatchTotalExecutionFee({
     return undefined;
   }
 
-  for (const co of createOrderParams) {
+  for (const co of batchParams.createOrderParams) {
     feeTokenAmount += co.orderPayload.numbers.executionFee;
     gasLimit += co.params.executionGasLimit;
   }
 
-  for (const uo of updateOrderParams) {
+  for (const uo of batchParams.updateOrderParams) {
     feeTokenAmount += uo.updatePayload.executionFeeTopUp;
   }
 

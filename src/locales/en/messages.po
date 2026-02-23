@@ -1635,6 +1635,10 @@ msgstr "Claims history"
 msgid "No SL orders"
 msgstr "No SL orders"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Manual leverage"
+msgstr "Manual leverage"
+
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX alerts"
 msgstr "Discover GMX alerts"
@@ -6354,6 +6358,10 @@ msgstr "Minutes"
 msgid "What makes GMX one of the best places to earn yield on my crypto?"
 msgstr "What makes GMX one of the best places to earn yield on my crypto?"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Permit has expired. Please try again.</0>"
+msgstr "<0>Permit has expired. Please try again.</0>"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Approving {tokenSymbol}..."
 msgstr "Approving {tokenSymbol}..."
@@ -7721,10 +7729,6 @@ msgstr "Shifting {symbol}..."
 msgid "Close price impact"
 msgstr "Close price impact"
 
-#: src/components/SettingsModal/DisplaySettings.tsx
-msgid "Show leverage slider"
-msgstr "Show leverage slider"
-
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 msgid "Opens GMTrade in a new tab"
 msgstr "Opens GMTrade in a new tab"
@@ -8595,6 +8599,10 @@ msgstr "Performance and chart data are based on UTC times"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "Sell {operationTokenSymbol}"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
+msgstr "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
 
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx
