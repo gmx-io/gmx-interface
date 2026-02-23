@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import groupBy from "lodash/groupBy";
 import { useMemo } from "react";
 
@@ -76,21 +76,25 @@ export function GmCard() {
               <div className="flex flex-wrap items-center justify-between gap-8">
                 <div className="flex items-center gap-8">
                   <div className="App-card-title-mark-icon">
-                    <img src={currentIcons.gm} width="40" alt="GM Icon" />
+                    <img src={currentIcons.gm} width="40" alt={t`GM icon`} />
                   </div>
                   <div>
-                    <div className="text-body-medium font-medium">GM</div>
+                    <div className="text-body-medium font-medium">
+                      <Trans>GM</Trans>
+                    </div>
                   </div>
                 </div>
                 <div className="h-32">
                   <Button size="small" variant="secondary" to="/pools">
-                    <img src={currentIcons.gm} width="16" alt="GMX Icon" />
+                    <img src={currentIcons.gm} width="16" alt={t`GMX icon`} />
                     <Trans>Buy GM</Trans>
                   </Button>
                 </div>
               </div>
               <div className="text-13 text-typography-secondary">
-                GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees.
+                <Trans>
+                  GM is the liquidity provider token for GMX V2 markets. Accrues 63% of the V2 markets generated fees.
+                </Trans>
               </div>
             </AppCardSection>
             <AppCardSection>
@@ -104,7 +108,7 @@ export function GmCard() {
               </div>
               <div className="App-card-row">
                 <div className="label">
-                  <Trans>Market Cap</Trans>
+                  <Trans>Market cap</Trans>
                 </div>
                 <div>
                   <span className="numbers">{formatAmountHuman(totalGMSupply?.usd, USD_DECIMALS, true, 2)}</span>
@@ -115,7 +119,7 @@ export function GmCard() {
         }
         right={
           <AppCardSection>
-            <InteractivePieChart data={chartData} label={t`GM Markets`} />
+            <InteractivePieChart data={chartData} label={t`GM markets`} />
           </AppCardSection>
         }
       />

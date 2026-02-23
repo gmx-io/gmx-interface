@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/macro";
 import find from "lodash/find";
 import { Address, isAddressEqual } from "viem";
 
@@ -30,7 +31,9 @@ export function useLpAirdroppedTokenTitle(): string | JSX.Element {
 
     const title = (
       <span className="inline-flex items-center">
-        <span>GM: {indexName}</span>
+        <span>
+          <Trans>GM: {indexName}</Trans>
+        </span>
         <span className="ml-2 text-12 leading-1 text-typography-secondary">[{poolName}]</span>
       </span>
     );
@@ -71,7 +74,9 @@ export function useTradingAirdroppedTokenTitle(): string | JSX.Element {
 
     const title = (
       <span className="inline-flex items-center">
-        <span>GM: {indexName}</span>
+        <span>
+          <Trans>GM: {indexName}</Trans>
+        </span>
         <span className="ml-2 text-12 leading-1 text-typography-secondary">[{poolName}]</span>
       </span>
     );

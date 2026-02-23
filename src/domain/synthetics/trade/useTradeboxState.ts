@@ -294,14 +294,13 @@ export function useTradeboxState(
 
   const [leverageOption, setLeverageOption] = useLocalStorageSerializeKey(getLeverageKey(chainId), 2);
   const [keepLeverage, setKeepLeverage] = useLocalStorageSerializeKey(getKeepLeverageKey(chainId), true);
-
-  const tradeFlags = useMemo(() => createTradeFlags(tradeType, tradeMode), [tradeType, tradeMode]);
-  const { isSwap } = tradeFlags;
-
   const [limitPriceWarningHidden, setLimitPriceWarningHidden] = useLocalStorageSerializeKey(
     "limit-price-warning-hidden",
     false
   );
+
+  const tradeFlags = useMemo(() => createTradeFlags(tradeType, tradeMode), [tradeType, tradeMode]);
+  const { isSwap } = tradeFlags;
 
   const fromTokenAddress = storedOptions?.tokens.fromTokenAddress;
   const isFromTokenGmxAccount = Boolean(storedOptions?.isFromTokenGmxAccount);
@@ -766,6 +765,8 @@ export function useTradeboxState(
     setLeverageOption,
     keepLeverage,
     setKeepLeverage,
+    limitPriceWarningHidden,
+    setLimitPriceWarningHidden,
     advancedOptions,
     setAdvancedOptions,
     allowedSlippage,
@@ -776,8 +777,6 @@ export function useTradeboxState(
     setNumberOfParts,
     duration,
     setDuration,
-    limitPriceWarningHidden,
-    setLimitPriceWarningHidden,
   };
 }
 

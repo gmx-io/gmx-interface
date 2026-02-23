@@ -1,4 +1,3 @@
-import type { TaskState } from "@gelatonetwork/relay-sdk";
 import type { ReactNode } from "react";
 
 import type { MultichainTransferProgress } from "domain/multichain/progress/MultichainTransferProgress";
@@ -6,6 +5,7 @@ import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import type { OrderTxnType, OrderType } from "domain/synthetics/orders";
 import type { SignedSubacсountApproval } from "domain/synthetics/subaccount";
 import type { OrderMetricId } from "lib/metrics/types";
+import type { StatusCode } from "sdk/utils/gelatoRelay";
 import type { SignedTokenPermit } from "sdk/utils/tokens/types";
 import type { ExternalSwapQuote } from "sdk/utils/trade/types";
 
@@ -81,7 +81,6 @@ export type PendingPositionUpdate = {
 export type PendingExpressTxnParams = {
   key: string;
   taskId: string | undefined;
-  isSponsoredCall: boolean;
   isGmxAccount: boolean;
   subaccountApproval?: SignedSubacсountApproval;
   tokenPermits?: SignedTokenPermit[];
@@ -96,13 +95,15 @@ export type PendingExpressTxnParams = {
   errorMessage?: ReactNode;
   isViewed?: boolean;
   isRelayerMetricSent?: boolean;
+  sendFailed?: boolean;
 };
 
 export type GelatoTaskStatus = {
   taskId: string;
-  taskState: TaskState;
-  lastCheckMessage?: string;
+  statusCode: StatusCode;
+  message?: string;
   transactionHash?: string;
+  revertData?: string;
 };
 
 export type PendingPositionsUpdates = {

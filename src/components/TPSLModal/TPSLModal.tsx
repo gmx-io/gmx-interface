@@ -129,7 +129,7 @@ export function TPSLModal({
         value: "takeProfit" as TabType,
         label: (
           <>
-            <Trans>Take Profit</Trans> {tpOrders.length > 0 ? <Badge>{tpOrders.length}</Badge> : null}
+            <Trans>Take-Profit</Trans> {tpOrders.length > 0 ? <Badge>{tpOrders.length}</Badge> : null}
           </>
         ),
       },
@@ -137,7 +137,7 @@ export function TPSLModal({
         value: "stopLoss" as TabType,
         label: (
           <>
-            <Trans>Stop Loss</Trans> {slOrders.length > 0 ? <Badge>{slOrders.length}</Badge> : null}
+            <Trans>Stop-Loss</Trans> {slOrders.length > 0 ? <Badge>{slOrders.length}</Badge> : null}
           </>
         ),
       },
@@ -270,7 +270,7 @@ export function TPSLModal({
         <div className="mt-16 flex gap-32 border-t-1/2 border-slate-600 px-20 py-12 max-md:gap-16 max-md:px-16">
           <div className="flex flex-col">
             <span className="text-body-small text-typography-secondary">
-              <Trans>Entry Price</Trans>
+              <Trans>Entry price</Trans>
             </span>
             <span className="text-body-medium numbers">
               {formatUsd(position.entryPrice, {
@@ -281,7 +281,7 @@ export function TPSLModal({
           </div>
           <div className="flex flex-col">
             <span className="text-body-small text-typography-secondary">
-              <Trans>Mark Price</Trans>
+              <Trans>Mark price</Trans>
             </span>
             <span className="text-body-medium numbers">
               {formatUsd(position.markPrice, {
@@ -292,7 +292,7 @@ export function TPSLModal({
           </div>
           <div className="flex flex-col">
             <span className="text-body-small text-typography-secondary">
-              <Trans>Liquidation Price</Trans>
+              <Trans>Liquidation price</Trans>
             </span>
             <span
               className={cx("text-body-medium numbers", {

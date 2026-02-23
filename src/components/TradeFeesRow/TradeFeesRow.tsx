@@ -3,7 +3,7 @@ import cx from "classnames";
 import { ReactNode, useMemo } from "react";
 
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { getIncentivesV2Url } from "config/links";
+import { DOCS_LINKS, getIncentivesV2Url } from "config/links";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { useTradingIncentives } from "domain/synthetics/common/useIncentiveStats";
@@ -60,14 +60,16 @@ export function TradeFeesRow(p: Props) {
           id: "swapPriceImpact",
           label: (
             <>
-              <div className="text-typography-primary">{t`Swap Price Impact`}:</div>
+              <div className="text-typography-primary">{t`Swap price impact`}:</div>
               <div>
-                (
-                {formatPercentage(bigMath.abs(p.swapPriceImpact!.precisePercentage), {
-                  displayDecimals: 3,
-                  bps: false,
-                })}{" "}
-                of swap amount)
+                <Trans>
+                  (
+                  {formatPercentage(bigMath.abs(p.swapPriceImpact!.precisePercentage), {
+                    displayDecimals: 3,
+                    bps: false,
+                  })}{" "}
+                  of swap amount)
+                </Trans>
               </div>
             </>
           ),
@@ -83,18 +85,20 @@ export function TradeFeesRow(p: Props) {
             label: (
               <>
                 <div className="text-typography-primary">
-                  {t`External Swap ${getToken(chainId, p.externalSwapFee.tokenInAddress).symbol} to ${
+                  {t`External swap ${getToken(chainId, p.externalSwapFee.tokenInAddress).symbol} to ${
                     getToken(chainId, p.externalSwapFee.tokenOutAddress).symbol
                   }`}
                   :
                 </div>
                 <div>
-                  (
-                  {formatPercentage(bigMath.abs(p.externalSwapFee.precisePercentage), {
-                    displayDecimals: 3,
-                    bps: false,
-                  })}{" "}
-                  of swap amount)
+                  <Trans>
+                    (
+                    {formatPercentage(bigMath.abs(p.externalSwapFee.precisePercentage), {
+                      displayDecimals: 3,
+                      bps: false,
+                    })}{" "}
+                    of swap amount)
+                  </Trans>
                 </div>
               </>
             ),
@@ -114,19 +118,20 @@ export function TradeFeesRow(p: Props) {
               </Trans>
               {showDebugValues && (
                 <span className="text-typography-secondary">
-                  {" "}
-                  in {getToken(chainId, MARKETS[chainId][swap.marketAddress].indexTokenAddress).symbol}
+                  <Trans>in {getToken(chainId, MARKETS[chainId][swap.marketAddress].indexTokenAddress).symbol}</Trans>
                 </span>
               )}
               :
             </div>
             <div>
-              (
-              {formatPercentage(bigMath.abs(swap.precisePercentage), {
-                displayDecimals: 3,
-                bps: false,
-              })}{" "}
-              of swap amount)
+              <Trans>
+                (
+                {formatPercentage(bigMath.abs(swap.precisePercentage), {
+                  displayDecimals: 3,
+                  bps: false,
+                })}{" "}
+                of swap amount)
+              </Trans>
             </div>
           </>
         ),
@@ -140,19 +145,21 @@ export function TradeFeesRow(p: Props) {
             id: "swapProfitFee",
             label: (
               <>
-                <div className="text-typography-primary">{t`Swap Profit Fee`}:</div>
+                <div className="text-typography-primary">{t`Swap profit fee`}:</div>
                 <div>
-                  (
-                  {formatPercentage(
-                    p.swapProfitFee?.precisePercentage === undefined
-                      ? undefined
-                      : bigMath.abs(p.swapProfitFee.precisePercentage),
-                    {
-                      displayDecimals: 3,
-                      bps: false,
-                    }
-                  )}{" "}
-                  of swap amount)
+                  <Trans>
+                    (
+                    {formatPercentage(
+                      p.swapProfitFee?.precisePercentage === undefined
+                        ? undefined
+                        : bigMath.abs(p.swapProfitFee.precisePercentage),
+                      {
+                        displayDecimals: 3,
+                        bps: false,
+                      }
+                    )}{" "}
+                    of swap amount)
+                  </Trans>
                 </div>
               </>
             ),
@@ -161,7 +168,7 @@ export function TradeFeesRow(p: Props) {
           }
         : undefined;
 
-    const feesTypeName = p.feesType === "increase" ? t`Open Fee` : t`Close Fee`;
+    const feesTypeName = p.feesType === "increase" ? t`Open fee` : t`Close fee`;
     const positionFeeRow = (p.positionFee?.deltaUsd === undefined ? undefined : p.positionFee?.deltaUsd !== 0n)
       ? {
           id: "positionFee",
@@ -169,12 +176,14 @@ export function TradeFeesRow(p: Props) {
             <>
               <div className="text-typography-primary">{feesTypeName}:</div>
               <div>
-                (
-                {formatPercentage(bigMath.abs(p.positionFee!.precisePercentage), {
-                  displayDecimals: 3,
-                  bps: false,
-                })}{" "}
-                of position size)
+                <Trans>
+                  (
+                  {formatPercentage(bigMath.abs(p.positionFee!.precisePercentage), {
+                    displayDecimals: 3,
+                    bps: false,
+                  })}{" "}
+                  of position size)
+                </Trans>
               </div>
             </>
           ),
@@ -188,14 +197,16 @@ export function TradeFeesRow(p: Props) {
           id: "uiFee",
           label: (
             <>
-              <div className="text-typography-primary">{t`UI Fee`}:</div>
+              <div className="text-typography-primary">{t`UI fee`}:</div>
               <div>
-                (
-                {formatPercentage(bigMath.abs(p!.uiFee!.precisePercentage), {
-                  displayDecimals: 3,
-                  bps: false,
-                })}{" "}
-                of {p.feesType === "swap" ? "swap amount" : "position size"})
+                <Trans>
+                  (
+                  {formatPercentage(bigMath.abs(p!.uiFee!.precisePercentage), {
+                    displayDecimals: 3,
+                    bps: false,
+                  })}{" "}
+                  of {p.feesType === "swap" ? t`swap amount` : t`position size`})
+                </Trans>
               </div>
             </>
           ),
@@ -210,14 +221,16 @@ export function TradeFeesRow(p: Props) {
             id: "swapUiFee",
             label: (
               <>
-                <div className="text-typography-primary">{p.feesType === "swap" ? t`UI Fee` : t`Swap UI Fee`}:</div>
+                <div className="text-typography-primary">{p.feesType === "swap" ? t`UI fee` : t`Swap UI fee`}:</div>
                 <div>
-                  (
-                  {formatPercentage(bigMath.abs(p.uiSwapFee.precisePercentage), {
-                    displayDecimals: 3,
-                    bps: false,
-                  })}{" "}
-                  of swap amount)
+                  <Trans>
+                    (
+                    {formatPercentage(bigMath.abs(p.uiSwapFee.precisePercentage), {
+                      displayDecimals: 3,
+                      bps: false,
+                    })}{" "}
+                    of swap amount)
+                  </Trans>
                 </div>
               </>
             ),
@@ -231,7 +244,7 @@ export function TradeFeesRow(p: Props) {
           id: "feeDiscount",
           label: (
             <div className="text-typography-primary">
-              <Trans>Referral Discount</Trans>:
+              <Trans>Referral discount</Trans>:
             </div>
           ),
           value: formatDeltaUsd(p.feeDiscountUsd),
@@ -243,7 +256,7 @@ export function TradeFeesRow(p: Props) {
       p.borrowFee && (p.borrowFee?.deltaUsd === undefined ? undefined : p.borrowFee.deltaUsd !== 0n)
         ? {
             id: "borrowFee",
-            label: <div className="text-typography-primary">{t`Borrow Fee`}:</div>,
+            label: <div className="text-typography-primary">{t`Borrow fee`}:</div>,
             value: formatDeltaUsd(p.borrowFee.deltaUsd),
             className: getPositiveOrNegativeClass(p.borrowFee.deltaUsd, "text-green-500"),
           }
@@ -253,7 +266,7 @@ export function TradeFeesRow(p: Props) {
       p.fundingFee && (p.fundingFee?.deltaUsd === undefined ? undefined : bigMath.abs(p.fundingFee.deltaUsd) > 0)
         ? {
             id: "fundingFee",
-            label: <div className="text-typography-primary">{t`Funding Fee`}:</div>,
+            label: <div className="text-typography-primary">{t`Funding fee`}:</div>,
             value: formatDeltaUsd(p.fundingFee.deltaUsd),
             className: getPositiveOrNegativeClass(p.fundingFee.deltaUsd, "text-green-500"),
           }
@@ -267,15 +280,17 @@ export function TradeFeesRow(p: Props) {
             label: (
               <>
                 <div className="text-typography-primary">
-                  <Trans>Proportional Stored Impact</Trans>:
+                  <Trans>Proportional stored impact</Trans>:
                 </div>
                 <div>
-                  (
-                  {formatPercentage(bigMath.abs(p.proportionalPendingImpact.precisePercentage), {
-                    displayDecimals: 3,
-                    bps: false,
-                  })}{" "}
-                  of position size)
+                  <Trans>
+                    (
+                    {formatPercentage(bigMath.abs(p.proportionalPendingImpact.precisePercentage), {
+                      displayDecimals: 3,
+                      bps: false,
+                    })}{" "}
+                    of position size)
+                  </Trans>
                 </div>
               </>
             ),
@@ -291,14 +306,16 @@ export function TradeFeesRow(p: Props) {
             id: "closePriceImpactDeltaUsd",
             label: (
               <>
-                <div className="text-typography-primary">{t`Close Price Impact`}:</div>
+                <div className="text-typography-primary">{t`Close price impact`}:</div>
                 <div>
-                  (
-                  {formatPercentage(bigMath.abs(p.decreasePositionPriceImpact.precisePercentage), {
-                    displayDecimals: 3,
-                    bps: false,
-                  })}{" "}
-                  of position size)
+                  <Trans>
+                    (
+                    {formatPercentage(bigMath.abs(p.decreasePositionPriceImpact.precisePercentage), {
+                      displayDecimals: 3,
+                      bps: false,
+                    })}{" "}
+                    of position size)
+                  </Trans>
                 </div>
               </>
             ),
@@ -313,14 +330,16 @@ export function TradeFeesRow(p: Props) {
             id: "netPriceImpact",
             label: (
               <>
-                <div className="text-typography-primary">{t`Net Price Impact`}:</div>
+                <div className="text-typography-primary">{t`Net price impact`}:</div>
                 <div>
-                  (
-                  {formatPercentage(bigMath.abs(p.totalPendingImpact.precisePercentage), {
-                    displayDecimals: 3,
-                    bps: false,
-                  })}{" "}
-                  of position size)
+                  <Trans>
+                    (
+                    {formatPercentage(bigMath.abs(p.totalPendingImpact.precisePercentage), {
+                      displayDecimals: 3,
+                      bps: false,
+                    })}{" "}
+                    of position size)
+                  </Trans>
                 </div>
               </>
             ),
@@ -335,14 +354,16 @@ export function TradeFeesRow(p: Props) {
             id: "priceImpactDiff",
             label: (
               <>
-                <div className="text-typography-primary">{t`Price Impact Rebates`}:</div>
+                <div className="text-typography-primary">{t`Price impact rebates`}:</div>
                 <div>
-                  (
-                  {formatPercentage(bigMath.abs(p.priceImpactDiff.precisePercentage), {
-                    displayDecimals: 3,
-                    bps: false,
-                  })}{" "}
-                  of position size)
+                  <Trans>
+                    (
+                    {formatPercentage(bigMath.abs(p.priceImpactDiff.precisePercentage), {
+                      displayDecimals: 3,
+                      bps: false,
+                    })}{" "}
+                    of position size)
+                  </Trans>
                 </div>
               </>
             ),
@@ -358,8 +379,8 @@ export function TradeFeesRow(p: Props) {
               <>
                 <div className="text-typography-primary">
                   <span className="relative">
-                    <Trans>Bonus Rebate</Trans>
-                    <img className="absolute -right-11 -top-1 h-7" src={sparkleIcon} alt="sparkle" />
+                    <Trans>Bonus rebate</Trans>
+                    <img className="absolute -right-11 -top-1 h-7" src={sparkleIcon} alt={t`Sparkle`} />
                   </span>
                   :
                 </div>
@@ -447,14 +468,14 @@ export function TradeFeesRow(p: Props) {
     let text = t`Fees`;
 
     if (p.feesType !== "swap" && p.swapFees && p.swapFees.length > 0) {
-      text = t`Fees (Incl. Swap)`;
+      text = t`Fees (including swap)`;
     }
 
     if (p.feesType !== "swap" && shouldShowRebate && tradingIncentives) {
       const rebatedTextWithSparkle = (
         <span className="relative">
-          <Trans>(Rebated)</Trans>
-          <img className="absolute -right-6 -top-1 h-7" src={sparkleIcon} alt="sparkle" />
+          <Trans>(rebated)</Trans>
+          <img className="absolute -right-6 -top-1 h-7" src={sparkleIcon} alt={t`Sparkle`} />
         </span>
       );
 
@@ -475,8 +496,8 @@ export function TradeFeesRow(p: Props) {
 
     return (
       <Trans>
-        The bonus rebate is an estimate and can be up to {formatAmount(tradingIncentives?.maxRebatePercent, 2, 0)}% of
-        the open fee. It will be airdropped as {incentivesTokenTitle} tokens on a pro-rata basis.{" "}
+        Estimated rebate up to {formatAmount(tradingIncentives?.maxRebatePercent, 2, 0)}% of open fee. Airdropped as{" "}
+        {incentivesTokenTitle} tokens pro-rata.{" "}
         <span className="whitespace-nowrap">
           <ExternalLink href={getIncentivesV2Url(chainId)} newTab>
             Read more
@@ -494,10 +515,11 @@ export function TradeFeesRow(p: Props) {
 
     return (
       <Trans>
-        Price impact rebates for closing trades are claimable under the claims tab.{" "}
-        <ExternalLink href={"https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates"} newTab>
+        Price impact rebates from closing are claimable in the Claims tab.{" "}
+        <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
           Read more
         </ExternalLink>
+        .
       </Trans>
     );
   }, [p.priceImpactDiff?.deltaUsd]);
@@ -510,7 +532,7 @@ export function TradeFeesRow(p: Props) {
     return (
       <>
         <br />
-        <Trans>This swap is routed through several GM pools for the lowest possible fees and price impact.</Trans>
+        <Trans>Swap routed through multiple GM pools for lowest fees and price impact.</Trans>
       </>
     );
   }, [p.swapFees]);

@@ -61,6 +61,10 @@ export const INTERVIEW_INVITATION_SHOWN_TIME_KEY = "interview-invitation-shown-t
 export const NPS_SURVEY_SHOWN_TIME_KEY = "nps-survey-shown-time";
 export const TOKEN_FAVORITES_PREFERENCE_KEY = "token-favorites-preference";
 export const SETTINGS_WARNING_DOT_VISIBLE_KEY = "settings-warning-dot-visible";
+export const SUPPORT_CHAT_WAS_EVER_SHOWN_KEY = "support-chat-was-ever-shown";
+export const SUPPORT_CHAT_WAS_EVER_CLICKED_KEY = "support-chat-was-ever-clicked";
+export const SUPPORT_CHAT_USER_ID_KEY = "support-chat-user-id";
+export const SUPPORT_CHAT_LAST_CONNECTED_STATE_KEY = "support-chat-last-connected-state";
 
 export const METRICS_PENDING_EVENTS_KEY = "metrics-pending-events";
 export const METRICS_TIMERS_KEY = "metrics-timers-key";
@@ -75,6 +79,10 @@ export const AB_FLAG_STORAGE_KEY = "ab-flags";
 export const IS_LARGE_ACCOUNT_KEY = "is-large-account-2";
 
 const FALLBACK_TRACKER_PREFIX = "fallback-tracker";
+
+const COLLATERAL_CLOSE_DESTINATION_KEY = "collateral-close-destination";
+const COLLATERAL_CLOSE_DESTINATION_DIALOG_HIDDEN_KEY = "collateral-close-destination-dialog-hidden";
+const HAD_GMX_ACCOUNT_BALANCE_KEY = "had-gmx-account-balance";
 
 const EXPRESS_ORDERS_ENABLED_KEY = "express-orders-enabled";
 const GAS_PAYMENT_TOKEN_ADDRESS_KEY = "gas-payment-token-address";
@@ -173,6 +181,18 @@ export function getMulticallBatchingLoggingEnabledKey() {
 
 export function getSortedMarketsAddressesKey(chainId: number) {
   return [SORTED_MARKETS_KEY, chainId].join(":");
+}
+
+export function getCollateralCloseDestinationKey(chainId: number, account: string | undefined) {
+  return [chainId, account, COLLATERAL_CLOSE_DESTINATION_KEY];
+}
+
+export function getCollateralCloseDestinationDialogHiddenKey(chainId: number, account: string | undefined) {
+  return [chainId, account, COLLATERAL_CLOSE_DESTINATION_DIALOG_HIDDEN_KEY];
+}
+
+export function getHadGmxAccountBalanceKey(chainId: number, account: string | undefined) {
+  return [chainId, account, HAD_GMX_ACCOUNT_BALANCE_KEY];
 }
 
 export function getExpressOrdersEnabledKey(chainId: number, account: string | undefined) {

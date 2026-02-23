@@ -64,8 +64,8 @@ function AcceptablePriceImpactInputRowImpl({
 
   if (notAvailable || recommendedValue === undefined || initialValue === undefined || priceImpactFeeBps === undefined) {
     return (
-      <SyntheticsInfoRow label={t`Acceptable Price Impact`}>
-        <Trans>NA</Trans>
+      <SyntheticsInfoRow label={t`Acceptable price impact`}>
+        <Trans>N/A</Trans>
       </SyntheticsInfoRow>
     );
   }
@@ -73,7 +73,7 @@ function AcceptablePriceImpactInputRowImpl({
   const recommendedHandle = (
     <Trans>
       <span className="AcceptablePriceImpactInputRow-handle" onClick={handleRecommendedValueClick}>
-        Set Recommended Impact: {formatPercentage(BigInt(recommendedValue) * -1n, { signed: true })}
+        Set recommended impact: {formatPercentage(BigInt(recommendedValue) * -1n, { signed: true })}
       </span>
       .
     </Trans>
@@ -83,8 +83,8 @@ function AcceptablePriceImpactInputRowImpl({
     priceImpactFeeBps >= 0 ? (
       <p>
         <Trans>
-          The current price impact is {formatPercentage(priceImpactFeeBps, { signed: true })}. Consider using -0.30%
-          acceptable price impact so the order is more likely to be processed.
+          Current impact: {formatPercentage(priceImpactFeeBps, { signed: true })}. Use -0.30% or more for better order
+          execution.
         </Trans>
         <br />
         <br />
@@ -93,8 +93,8 @@ function AcceptablePriceImpactInputRowImpl({
     ) : (
       <p>
         <Trans>
-          The current price impact is {formatPercentage(priceImpactFeeBps, { signed: true })}. Consider adding a buffer
-          of 0.30% to it so the order is more likely to be processed.
+          Current impact: {formatPercentage(priceImpactFeeBps, { signed: true })}. Add 0.30% buffer for better order
+          execution.
         </Trans>
         <br />
         <br />
@@ -105,8 +105,7 @@ function AcceptablePriceImpactInputRowImpl({
   const highValueWarningText = (
     <p>
       <Trans>
-        You have set a high acceptable price impact. The current price impact is{" "}
-        {formatPercentage(priceImpactFeeBps, { signed: true })}.
+        High acceptable price impact set. Current impact: {formatPercentage(priceImpactFeeBps, { signed: true })}.
       </Trans>
       <br />
       <br />
@@ -115,7 +114,7 @@ function AcceptablePriceImpactInputRowImpl({
   );
 
   return (
-    <SyntheticsInfoRow className={className} label={t`Acceptable Price Impact`} valueClassName="-my-5">
+    <SyntheticsInfoRow className={className} label={t`Acceptable price impact`} valueClassName="-my-5">
       <PercentageInput
         onChange={setValue}
         defaultValue={initialValue}

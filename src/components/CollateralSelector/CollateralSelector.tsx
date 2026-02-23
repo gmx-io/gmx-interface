@@ -45,7 +45,7 @@ export function CollateralSelector(props: Props) {
   return (
     <SelectorBase
       label={props.selectedTokenSymbol}
-      modalLabel={t`Collateral In`}
+      modalLabel={t`Collateral in`}
       qa="collateral-in-selector"
       chevronClassName="w-12 text-typography-secondary max-lg:ml-4 group-gmx-hover/selector-field:text-blue-300"
       handleClassName="text-13 group-gmx-hover/selector-field:text-blue-300"
@@ -107,7 +107,7 @@ function CollateralListItemDesktop({
     return (
       <SelectorBaseDesktopRow
         disabled
-        disabledMessage={<Trans>Select a pool containing {tokenData.symbol} to use it as collateral.</Trans>}
+        disabledMessage={<Trans>Select a pool containing {tokenData.symbol} to use it as collateral</Trans>}
       >
         <TableTd padding="compact-one-column" data-qa={`collateral-in-selector-row-${tokenData.symbol}`}>
           {tokenData.symbol}
@@ -167,7 +167,7 @@ function CollateralListItemMobile({
 }) {
   const handleSelect = useCallback(() => {
     if (disabled) {
-      helperToast.error(<Trans>Select a pool containing {tokenData.symbol} to use it as collateral.</Trans>, {
+      helperToast.error(<Trans>Select a pool containing {tokenData.symbol} to use it as collateral</Trans>, {
         toastId: `error-collateral-${tokenData.symbol}`,
       });
       return;

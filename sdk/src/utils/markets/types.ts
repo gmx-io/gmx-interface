@@ -291,6 +291,8 @@ export type ClaimableFundingData = {
 export type MarketTicker = {
   symbol: string;
   marketTokenAddress: string;
+  minPrice: bigint;
+  maxPrice: bigint;
   markPrice: bigint;
   high24h: bigint;
   low24h: bigint;
@@ -298,8 +300,12 @@ export type MarketTicker = {
   close24h: bigint;
   priceChange24h: bigint;
   priceChangePercent24hBps: bigint;
-  openInterestLong: bigint;
-  openInterestShort: bigint;
+  longInterestInTokens: bigint;
+  shortInterestInTokens: bigint;
+  longInterestUsd: bigint;
+  shortInterestUsd: bigint;
+  longInterestUsdMark: bigint;
+  shortInterestUsdMark: bigint;
   availableLiquidityLong: bigint;
   availableLiquidityShort: bigint;
   poolAmountLongUsd: bigint;

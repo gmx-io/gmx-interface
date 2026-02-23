@@ -24,7 +24,7 @@ export function NpsModal() {
 
     if (error) {
       return {
-        text: t`Error occurred. Please try again.`,
+        text: t`Error occurred. Try again`,
         disabled: true,
       };
     }
@@ -76,16 +76,13 @@ export function NpsModal() {
             <Textarea
               value={question.answer}
               onChange={(val) => onChangeAnswer(index, val)}
-              placeholder={t`Enter your answer here.`}
+              placeholder={t`Enter your answer`}
             />
           </div>
         ))}
 
         <div className="mb-15 flex flex-col">
-          <TooltipWithPortal
-            position="top-start"
-            content={<Trans>Leave your Telegram if you’re okay with being contacted for a quick follow-up.</Trans>}
-          >
+          <TooltipWithPortal position="top-start" content={<Trans>Share for follow-up questions</Trans>}>
             <Trans>Telegram contact (optional)</Trans>
           </TooltipWithPortal>
           <input
