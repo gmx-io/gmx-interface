@@ -11,7 +11,7 @@ const API_URLS: Record<ContractsChainId, string> = {
 
   [ARBITRUM_SEPOLIA]: "",
 
-  [MEGAETH]: "",
+  [MEGAETH]: undefined,
 };
 
 export function getApiUrl(chainId: number) {
