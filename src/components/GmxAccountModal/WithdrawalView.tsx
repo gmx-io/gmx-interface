@@ -1010,6 +1010,9 @@ export const WithdrawalView = () => {
     gasPaymentTokenAmount: gasPaymentTokenAmountForMax,
   });
 
+  const showMaxButton =
+    withdrawalMaxDetails.showClickMax && !(showWntWarning && !isSameChain && !selectedToken?.isWrapped);
+
   const handlePickToken = useCallback(
     (tokenAddress: string) => {
       setSelectedTokenAddress(tokenAddress);
@@ -1413,7 +1416,7 @@ export const WithdrawalView = () => {
             />
             <div className="pointer-events-none absolute right-14 top-1/2 flex -translate-y-1/2 items-center gap-8">
               <span className="text-typography-secondary">{selectedToken?.symbol}</span>
-              {withdrawalMaxDetails.showClickMax && (
+              {showMaxButton && (
                 <button
                   className="text-body-small pointer-events-auto rounded-full bg-slate-600 px-8 py-2 font-medium
                            hover:bg-slate-500 focus-visible:bg-slate-500 active:bg-slate-500/70"
@@ -1498,17 +1501,6 @@ export const WithdrawalView = () => {
             }
           />
         </div>
-      )}
-
-      {buttonState.bannerErrorName && (
-        <AlertInfoCard type="error" className="mb-8" hideClose>
-          <ValidationBannerErrorContent
-            validationBannerErrorName={buttonState.bannerErrorName}
-            chainId={chainId}
-            srcChainId={withdrawalViewChain}
-            gasPaymentTokenAddress={gasPaymentToken?.address}
-          />
-        </AlertInfoCard>
       )}
 
       <Button
