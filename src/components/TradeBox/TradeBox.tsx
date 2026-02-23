@@ -748,7 +748,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       <>
         <BuyInputSection
           topLeftLabel={t`Pay`}
-          bottomLeftValue={payUsd !== undefined ? formatUsd(payUsd) : ""}
+          bottomLeftValue={payUsd !== undefined ? formatUsd(payUsd, { roundMode: "floor" }) : ""}
           bottomRightValue={
             fromToken && fromToken.balance !== undefined && fromToken.balance > 0n ? (
               <>
