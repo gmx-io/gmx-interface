@@ -44,7 +44,7 @@ import {
 import { getByKey } from "lib/objects";
 import { TxnEvent, TxnEventName } from "lib/transactions";
 import { useBlockNumber } from "lib/useBlockNumber";
-import { isIncreaseOrderType, isMarketOrderType } from "sdk/utils/orders";
+import { isIncreaseOrderType, isMarketOrderType, isSwapOrderType } from "sdk/utils/orders";
 import { OrderInfo, OrdersInfoData } from "sdk/utils/orders/types";
 import {
   BatchOrderTxnParams,
@@ -141,7 +141,9 @@ export function useOrderTxnCallbacks() {
         }
 
         const pendingPositions = e.data.batchParams.createOrderParams
-          .filter((cp) => isMarketOrderType(cp.orderPayload.orderType))
+          .filter((cp): cp is CreateOrderTxnParams<IncreasePositionOrderParams | DecreasePositionOrderParams> =>
+            isMarketOrderType(cp.orderPayload.orderType) && !isSwapOrderType(cp.orderPayload.orderType)
+          )
           .map((cp) =>
             getPendingPositionFromParams({
               createOrderParams: cp,

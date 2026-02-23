@@ -3014,10 +3014,6 @@ msgstr "Недостаточно средств для оплаты расход
 msgid "Tenderly settings"
 msgstr "Настройки Tenderly"
 
-#: src/components/ExitPriceRow/ExitPriceRow.tsx
-#~ msgid "Price you'll receive when closing, adjusted for capped price impact"
-#~ msgstr "Цена, которую вы получите при закрытии, с учётом ограниченного влияния на цену"
-
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
 msgstr "Увеличить размер (Market)"
