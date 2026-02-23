@@ -6,14 +6,10 @@ import { getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
 import type { MarketInfo } from "sdk/utils/markets/types";
 import { convertToTokenAmount } from "sdk/utils/tokens";
 
-// ── Percentage helpers ──────────────────────────────────────────────
-
 export function clampPercentage(value: number): number {
   if (!Number.isFinite(value)) return 0;
   return Math.min(100, Math.max(0, value));
 }
-
-// ── Size / leverage calculations ────────────────────────────────────
 
 export type CalcMaxSizeDeltaParams = {
   marketInfo: MarketInfo;
@@ -71,7 +67,6 @@ export function calcMaxSizeDeltaInUsdByLeverage(params: CalcMaxSizeDeltaParams):
 
   if (baseNumerator <= 0n) return undefined;
 
-  // First pass: conservative estimate (higher fee) to determine balanceWasImproved
   const conservativeBound = bigMath.mulDiv(
     baseNumerator,
     PRECISION,
@@ -89,7 +84,6 @@ export function calcMaxSizeDeltaInUsdByLeverage(params: CalcMaxSizeDeltaParams):
     BASIS_POINTS_DIVISOR_BIGINT * PRECISION + leverageBigInt * positionFeeFactor
   );
 
-  // Convert USD bound to real index token amount
   const toIndexTokenAmount = (amountUsd: bigint | undefined): bigint | undefined => {
     if (amountUsd === undefined || amountUsd <= 0n) return undefined;
     const tokenAmount = convertToTokenAmount(amountUsd, toTokenDecimals, markPrice);
@@ -128,8 +122,6 @@ export function calcSizeAmountByPercentage(
   if (normalizedPercentage === 100) return maxSizeInTokens;
   return bigMath.mulDiv(maxSizeInTokens, BigInt(normalizedPercentage), 100n);
 }
-
-// ── Margin (collateral) calculations ────────────────────────────────
 
 /**
  * Returns the margin input amount as a percentage (0–100) of the token balance.
