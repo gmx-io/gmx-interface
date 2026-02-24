@@ -13,7 +13,6 @@ BUILD_PID=$!
 wait $BUILD_PID
 
 # Step 3: Start dependent tasks in parallel
-# tscheck first so tsc reads files before lint-staged stashes
 yarn tscheck &
 TSCHECK_PID=$!
 
