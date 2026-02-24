@@ -40,7 +40,7 @@ export function PositionEditorAdvancedRows({ operation, gasPaymentParams }: Opti
 
   return (
     <ExpandableRow
-      title={t`Execution Details`}
+      title={t`Execution details`}
       open={open}
       onToggle={setOpen}
       wrapped
@@ -63,7 +63,7 @@ export function PositionEditorAdvancedRows({ operation, gasPaymentParams }: Opti
               </span>
             }
             position="left-start"
-            content={<Trans>Initial collateral (collateral excluding borrow and funding fee).</Trans>}
+            content={<Trans>Initial collateral, excluding borrow and funding fees</Trans>}
           />
         }
         value={

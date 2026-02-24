@@ -118,7 +118,7 @@ export async function createGlvDepositTxn({
         tokensData,
         createMulticallPayload: encodedPayload,
         method: "simulateExecuteLatestGlvDeposit",
-        errorTitle: t`Deposit error.`,
+        errorTitle: t`Deposit error`,
         value: wntAmount,
         metricId,
         blockTimestampData,

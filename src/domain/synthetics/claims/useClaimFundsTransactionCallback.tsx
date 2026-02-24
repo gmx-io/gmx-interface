@@ -16,13 +16,13 @@ export function useClaimFundsTransactionCallback(data: { selectedDistributionIds
     async (event: TxnEvent<WalletTxnCtx>) => {
       switch (event.event) {
         case TxnEventName.Submitted:
-          helperToast.success(
+          helperToast.info(
             <div className="flex flex-col gap-10">
               <div className="text-body-medium font-medium">
-                <Trans>Processing your claim…</Trans>
+                <Trans>Processing claim...</Trans>
               </div>
               <div className="flex flex-row gap-10 text-gray-200">
-                <Trans>This may take a few minutes.</Trans>
+                <Trans>May take a few minutes</Trans>
                 <SpinnerIcon className="spin size-15 text-typography-primary" />
               </div>
             </div>
@@ -47,10 +47,7 @@ export function useClaimFundsTransactionCallback(data: { selectedDistributionIds
                 <Trans>Funds claimed</Trans>
               </div>
               <div>
-                <Trans>
-                  {selectedDistributionIds.map(getDistributionTitle).join(", ")} distributions have been claimed
-                  successfully.
-                </Trans>
+                <Trans>{selectedDistributionIds.map(getDistributionTitle).join(", ")} claimed</Trans>
               </div>
             </div>
           );

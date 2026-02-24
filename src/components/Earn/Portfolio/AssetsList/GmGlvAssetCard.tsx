@@ -148,7 +148,7 @@ export function GmGlvAssetCard({
           }
         />
         <SyntheticsInfoRow
-          label={<Trans>Total Performance APY</Trans>}
+          label={<Trans>Total performance APY</Trans>}
           value={
             totalPerformanceApy === undefined ? (
               <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={50} className="leading-base" />
@@ -158,7 +158,7 @@ export function GmGlvAssetCard({
           }
         />
         <SyntheticsInfoRow
-          label={<Trans>30d Performance APY</Trans>}
+          label={<Trans>30d performance APY</Trans>}
           value={
             performanceApy30d === undefined ? (
               <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={50} className="leading-base" />

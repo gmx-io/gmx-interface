@@ -102,7 +102,7 @@ export function TradeHistory(p: Props) {
       <Button variant="ghost" to={url}>
         <PieChartIcon className="size-16" />
 
-        <Trans>PnL Analysis</Trans>
+        <Trans>PnL analysis</Trans>
       </Button>
     );
   }, [account, chainId, hideDashboardLink]);
@@ -138,7 +138,7 @@ export function TradeHistory(p: Props) {
 
       <Button variant="ghost" onClick={handleCsvDownload} className="flex items-center gap-4">
         {isLoadingCsv ? <SpinnerIcon className="mr-4 animate-spin" /> : <DownloadIcon className="size-16" />}
-        CSV
+        <Trans>CSV</Trans>
       </Button>
     </>
   );
@@ -150,7 +150,7 @@ export function TradeHistory(p: Props) {
       <div className="flex items-center justify-between gap-8 pl-20 pr-8 pt-8">
         {!isMobile ? (
           <span className="text-body-medium font-medium">
-            <Trans>Trade History</Trans>
+            <Trans>Trade history</Trans>
           </span>
         ) : null}
 
@@ -178,17 +178,17 @@ export function TradeHistory(p: Props) {
                 />
               </TableTh>
               <TableTh className="w-[26%]">
-                <Trans>Size</Trans>
+                <Trans>SIZE</Trans>
               </TableTh>
               <TableTh className="w-[22%]">
-                <Trans>Price</Trans>
+                <Trans>PRICE</Trans>
               </TableTh>
               <TableTh className="w-[12%]">
                 <TooltipWithPortal
                   variant="iconStroke"
-                  content={<Trans>Realized PnL after fees and net price impact.</Trans>}
+                  content={<Trans>Realized PnL after fees and net price impact</Trans>}
                 >
-                  <Trans>RPnL</Trans>
+                  <Trans>RPNL</Trans>
                 </TooltipWithPortal>
               </TableTh>
               <TableTh className="w-[100px]" />

@@ -18,7 +18,7 @@ type Props = {
 
 export function AlertInfoCard({ children, type = "info", onClose, className, hideClose }: Props) {
   const [closed, setClosed] = useState(false);
-  const Icon = type === "warning" ? WarnIconComponent : InfoIconComponent;
+  const Icon = type === "info" ? InfoIconComponent : WarnIconComponent;
 
   const handleClose = useCallback(() => {
     setClosed(true);

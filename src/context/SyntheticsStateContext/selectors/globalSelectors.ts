@@ -14,6 +14,8 @@ export const selectPositionsInfoData = (s: SyntheticsState) => s.globals.positio
 export const selectIsPositionsLoading = (s: SyntheticsState) => s.globals.positionsInfo.isLoading;
 export const selectMarketsInfoData = (s: SyntheticsState) => s.globals.marketsInfo.marketsInfoData;
 export const selectTokensData = (s: SyntheticsState) => s.globals.tokensDataResult.tokensData;
+export const selectIsGmxAccountBalancesLoaded = (s: SyntheticsState) =>
+  s.globals.tokensDataResult.isGmxAccountBalancesLoaded;
 export const selectGmMarkets = (s: SyntheticsState) => s.globals.markets.marketsData;
 export const selectUiFeeFactor = (s: SyntheticsState) => s.globals.uiFeeFactor;
 export const selectUserReferralInfo = (s: SyntheticsState) => s.globals.userReferralInfo;

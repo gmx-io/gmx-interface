@@ -23,28 +23,28 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
     <div className="font-medium">
       <SettingsSection className="gap-16">
         <ToggleSwitch isChecked={settings.showDebugValues} setIsChecked={settings.setShowDebugValues}>
-          <Trans>Show Debug Values</Trans>
+          <Trans>Show debug values</Trans>
         </ToggleSwitch>
 
         <ToggleSwitch
           isChecked={settings.isErrorBoundaryDebugEnabled}
           setIsChecked={settings.setIsErrorBoundaryDebugEnabled}
         >
-          <Trans>Show Error Boundary Debug Trigger</Trans>
+          <Trans>Show error boundary debug trigger</Trans>
         </ToggleSwitch>
 
         <ToggleSwitch
           isChecked={settings.shouldDisableValidationForTesting}
           setIsChecked={settings.setShouldDisableValidationForTesting}
         >
-          <Trans>Disable Validation for Testing</Trans>
+          <Trans>Disable validation for testing</Trans>
         </ToggleSwitch>
 
         <ToggleSwitch
           isChecked={settings.shouldDisableShareModalPnlCheck}
           setIsChecked={settings.setShouldDisableShareModalPnlCheck}
         >
-          <Trans>Disable Share Modal PnL Check</Trans>
+          <Trans>Disable share modal PnL check</Trans>
         </ToggleSwitch>
 
         <AbFlagSettings />
@@ -68,7 +68,7 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
             e.stopPropagation();
           }}
         >
-          <Trans>Markets Monitoring</Trans>
+          <Trans>Markets monitoring</Trans>
         </Link>
         <Link
           to="/rpc-debug"
@@ -77,7 +77,7 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
             e.stopPropagation();
           }}
         >
-          <Trans>RPC Monitoring</Trans>
+          <Trans>RPC monitoring</Trans>
         </Link>
         <Link
           to="/oracle-keeper-debug"
@@ -86,7 +86,7 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
             e.stopPropagation();
           }}
         >
-          <Trans>Oracle Keeper Monitoring</Trans>
+          <Trans>Oracle keeper monitoring</Trans>
         </Link>
         <Link
           to="/permits"
@@ -95,7 +95,7 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
             e.stopPropagation();
           }}
         >
-          <Trans>Permits Testing</Trans>
+          <Trans>Permits testing</Trans>
         </Link>
       </SettingsSection>
     </div>
