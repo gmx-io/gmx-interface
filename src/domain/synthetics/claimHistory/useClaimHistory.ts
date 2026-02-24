@@ -121,7 +121,7 @@ export function useClaimCollateralHistory(
         claimActions(
             offset: ${offset},
             limit: ${limit},
-            orderBy: transaction_timestamp_DESC,
+            orderBy: timestamp_DESC,
             ${whereClause}
         ) {
             id
@@ -133,9 +133,7 @@ export function useClaimCollateralHistory(
             tokenPrices
             isLongOrders
             timestamp
-            transaction {
-                hash
-            }
+            transactionHash
         }
       }`);
 
