@@ -2123,6 +2123,10 @@ msgstr ""
 msgid "Instant"
 msgstr "Instantané"
 
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Insufficient pool balance to claim this funding fee."
+msgstr ""
+
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
 msgstr "Positions ouvertes"
@@ -3983,6 +3987,10 @@ msgstr "Tous les Réseaux"
 msgid "Net Rate / 1h"
 msgstr "Taux net / 1h"
 
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Insufficient Pool Balance"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "from your wallet"
 msgstr "depuis votre portefeuille"
@@ -5652,6 +5660,10 @@ msgstr "Entrez un nouveau montant ou prix"
 msgid "Wins and losses for fully closed positions."
 msgstr "Gains et pertes pour les positions entièrement fermées."
 
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Claim <0>{0}</0> of <1>{1}</1>"
+msgstr ""
+
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer here."
 msgstr "Entrez votre réponse ici."
@@ -7094,6 +7106,10 @@ msgstr "Page périmée, veuillez rafraîchir"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals"
 msgstr "Propositions GMX"
+
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Some markets have insufficient pool balance to claim funding fees. These markets are excluded from this claim."
+msgstr ""
 
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLV Bonus Incentive (test)"

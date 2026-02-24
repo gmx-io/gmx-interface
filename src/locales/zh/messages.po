@@ -2123,6 +2123,10 @@ msgstr ""
 msgid "Instant"
 msgstr "立即"
 
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Insufficient pool balance to claim this funding fee."
+msgstr ""
+
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
 msgstr "未平仓位"
@@ -3983,6 +3987,10 @@ msgstr "所有网络"
 msgid "Net Rate / 1h"
 msgstr "净率 / 1 小时"
 
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Insufficient Pool Balance"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "from your wallet"
 msgstr "从您的钱包"
@@ -5652,6 +5660,10 @@ msgstr "输入新金额或价格"
 msgid "Wins and losses for fully closed positions."
 msgstr "完全平仓头寸的胜负。"
 
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Claim <0>{0}</0> of <1>{1}</1>"
+msgstr ""
+
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer here."
 msgstr "在此输入您的答案。"
@@ -7094,6 +7106,10 @@ msgstr "页面已过期，请刷新"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals"
 msgstr "GMX 提案"
+
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Some markets have insufficient pool balance to claim funding fees. These markets are excluded from this claim."
+msgstr ""
 
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLV Bonus Incentive (test)"

@@ -2123,6 +2123,10 @@ msgstr ""
 msgid "Instant"
 msgstr "즉시"
 
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Insufficient pool balance to claim this funding fee."
+msgstr ""
+
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
 msgstr "오픈 포지션"
@@ -3983,6 +3987,10 @@ msgstr "모든 네트워크"
 msgid "Net Rate / 1h"
 msgstr "1시간 당 순 수수료율"
 
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Insufficient Pool Balance"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "from your wallet"
 msgstr "지갑에서"
@@ -5652,6 +5660,10 @@ msgstr "새 금액 또는 가격 입력"
 msgid "Wins and losses for fully closed positions."
 msgstr "완전히 종료된 포지션의 승패."
 
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Claim <0>{0}</0> of <1>{1}</1>"
+msgstr ""
+
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer here."
 msgstr "여기에 답변을 입력하세요."
@@ -7094,6 +7106,10 @@ msgstr "페이지가 오래되었습니다. 새로고침해주세요."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Proposals"
 msgstr "GMX 제안"
+
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Some markets have insufficient pool balance to claim funding fees. These markets are excluded from this claim."
+msgstr ""
 
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLV Bonus Incentive (test)"
