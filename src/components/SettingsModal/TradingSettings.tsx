@@ -18,8 +18,7 @@ import { getIsSubaccountActive } from "domain/synthetics/subaccount";
 import { useChainId } from "lib/chains";
 import { useGasPaymentTokensText } from "lib/gas/useGasPaymentTokensText";
 import { EMPTY_ARRAY } from "lib/objects";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
-import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
+import { useNonSingingAccount } from "lib/wallets/useAccountType";
 import { getNativeToken } from "sdk/configs/tokens";
 
 import { CollateralDestinationSelector } from "components/CollateralDestinationSelector/CollateralDestinationSelector";
@@ -64,13 +63,11 @@ export function TradingSettings({
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
   const isOutOfGasPaymentBalance = useIsOutOfGasPaymentBalance();
-  const isGeminiWallet = useIsGeminiWallet();
   const [settlementChainId, setSettlementChainId] = useGmxAccountSettlementChainId();
-  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
+  const { isNonEoaAccountOnAnyChain } = useNonSingingAccount();
   const { emptyGmxAccounts } = useEmptyGmxAccounts([AVALANCHE]);
   const isAvalancheEmpty = emptyGmxAccounts?.[AVALANCHE] === true;
-  const isExpressTradingDisabled =
-    (isOutOfGasPaymentBalance && srcChainId === undefined) || isNonEoaAccountOnAnyChain || isGeminiWallet;
+  const isExpressTradingDisabled = (isOutOfGasPaymentBalance && srcChainId === undefined) || isNonEoaAccountOnAnyChain;
   const nativeTokenSymbol = getNativeToken(chainId).symbol;
   const { gasPaymentTokensText } = useGasPaymentTokensText(chainId);
 
@@ -122,7 +119,7 @@ export function TradingSettings({
               icon={<ExpressIcon className="size-28" />}
               disabled={isExpressTradingDisabled}
               disabledTooltip={
-                isNonEoaAccountOnAnyChain || isGeminiWallet ? (
+                isNonEoaAccountOnAnyChain ? (
                   <Trans>Smart wallets are not supported on Express Trading or One-Click Trading</Trans>
                 ) : undefined
               }
@@ -141,7 +138,7 @@ export function TradingSettings({
               icon={<OneClickIcon className="size-28" />}
               disabled={isExpressTradingDisabled}
               disabledTooltip={
-                isNonEoaAccountOnAnyChain || isGeminiWallet ? (
+                isNonEoaAccountOnAnyChain ? (
                   <Trans>Smart wallets are not supported on Express Trading or One-Click Trading</Trans>
                 ) : undefined
               }
@@ -163,7 +160,7 @@ export function TradingSettings({
               onClick={() => handleTradingModeChange(TradingMode.Express1CT)}
             />
 
-            {isOutOfGasPaymentBalance && !(isNonEoaAccountOnAnyChain || isGeminiWallet) && (
+            {isOutOfGasPaymentBalance && !isNonEoaAccountOnAnyChain && (
               <ExpressTradingOutOfGasBanner onClose={onClose} />
             )}
 

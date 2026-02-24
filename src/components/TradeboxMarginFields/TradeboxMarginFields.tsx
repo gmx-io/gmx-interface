@@ -136,7 +136,14 @@ export function TradeboxMarginFields({
       setFocusedInput("from");
       setFromTokenInputValue(formatted, true);
     },
-    [fromToken?.balance, fromToken?.decimals, fromToken?.isStable, fromToken?.visualMultiplier, setFocusedInput, setFromTokenInputValue]
+    [
+      fromToken?.balance,
+      fromToken?.decimals,
+      fromToken?.isStable,
+      fromToken?.visualMultiplier,
+      setFocusedInput,
+      setFromTokenInputValue,
+    ]
   );
 
   const handleSizeInputChange = useCallback(

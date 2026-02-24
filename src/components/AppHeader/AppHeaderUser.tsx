@@ -27,21 +27,17 @@ export function AppHeaderUser({ openSettings, menuToggle }: Props) {
   if (!active || !account) {
     return (
       <div className="flex items-center gap-8">
-        {openConnectModal ? (
-          <>
-            <ConnectWalletButton
-              onClick={() => {
-                sendUserAnalyticsConnectWalletClickEvent("Header");
-                openConnectModal();
-              }}
-            >
-              <Trans>Connect wallet</Trans>
-            </ConnectWalletButton>
-            <OneClickButton openSettings={openSettings} />
-            <NetworkDropdown chainId={visualChainId} networkOptions={NETWORK_OPTIONS} />
-            {menuToggle ? menuToggle : null}
-          </>
-        ) : null}
+        <ConnectWalletButton
+          onClick={() => {
+            sendUserAnalyticsConnectWalletClickEvent("Header");
+            openConnectModal?.();
+          }}
+        >
+          <Trans>Connect wallet</Trans>
+        </ConnectWalletButton>
+        <OneClickButton openSettings={openSettings} />
+        <NetworkDropdown chainId={visualChainId} networkOptions={NETWORK_OPTIONS} />
+        {menuToggle ? menuToggle : null}
       </div>
     );
   }

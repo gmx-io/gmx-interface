@@ -4,7 +4,7 @@ import { useAccount } from "wagmi";
 import { SUPPORT_CHAT_LAST_CONNECTED_STATE_KEY, SUPPORT_CHAT_WAS_EVER_SHOWN_KEY } from "config/localStorage";
 import { useIsLargeAccountVolumeStats } from "domain/synthetics/accountStats/useIsLargeAccountData";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
+import { useNonSingingAccount } from "lib/wallets/useAccountType";
 
 import {
   SUPPORT_CHAT_MIN_AGG_30_DAYS_VOLUME,
@@ -14,7 +14,7 @@ import {
 import { useWalletPortfolioUsd } from "./useWalletPortfolioUsd";
 
 export function useShowSupportChat() {
-  const { isNonEoaAccountOnAnyChain, isLoading: isAccountTypeLoading } = useIsNonEoaAccountOnAnyChain();
+  const { isNonEoaAccountOnAnyChain, isLoading: isAccountTypeLoading } = useNonSingingAccount();
   const { isConnected, address: account, isConnecting, isReconnecting } = useAccount();
   const { data: largeAccountVolumeStatsData, isLoading: isLargeAccountVolumeStatsLoading } =
     useIsLargeAccountVolumeStats({ account });

@@ -82,7 +82,7 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useCursorInside } from "lib/useCursorInside";
 import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
+import { useNonSingingAccount } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
 import { EXPRESS_DEFAULT_MIN_RESIDUAL_USD_NUMBER } from "sdk/configs/express";
 import { getToken, isUsdBasedStableToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -605,7 +605,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     },
     [setFocusedInput, setToTokenInputValue]
   );
-  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
+  const { isNonEoaAccountOnAnyChain } = useNonSingingAccount();
   const handleSelectFromTokenAddress = useCallback(
     (tokenAddress: string, isGmxAccount: boolean) => {
       if (isGmxAccount && isNonEoaAccountOnAnyChain) {
