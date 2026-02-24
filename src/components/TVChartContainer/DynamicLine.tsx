@@ -28,7 +28,7 @@ export function DynamicLine({
   getError,
   marketName,
   lineLength,
-  bodyFontSizePt = 12,
+  bodyFontSizePt = 14,
 }: {
   isMobile: boolean;
   isEdited: boolean;

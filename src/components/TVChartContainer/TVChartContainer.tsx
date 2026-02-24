@@ -451,10 +451,10 @@ export default function TVChartContainer({
   }, [chartReady]);
 
   const bodyFontSizePt = useMemo(() => {
-    if (plotWidthPx <= 0) return 12;
-    if (plotWidthPx >= 700) return 12;
-    if (plotWidthPx >= 550) return 11;
-    return 10;
+    if (plotWidthPx <= 0) return 14;
+    if (plotWidthPx >= 700) return 14;
+    if (plotWidthPx >= 550) return 13;
+    return 12;
   }, [plotWidthPx]);
 
   const { staticLines: stackedStaticLines, dynamicLines: stackedDynamicLines } = useMemo(

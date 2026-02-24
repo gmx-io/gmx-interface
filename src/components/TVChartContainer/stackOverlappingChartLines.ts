@@ -3,7 +3,7 @@ import { formatTokenAmount, formatUsd } from "lib/numbers";
 import type { DynamicChartLine, StaticChartLine } from "./types";
 
 const BASE_LINE_LENGTH_PX = -40;
-const BASE_FONT_SIZE_PT = 12;
+const BASE_FONT_SIZE_PT = 14;
 const ORDER_LABEL_WIDTH_PX = 190;
 const POSITION_LABEL_MIN_WIDTH_PX = 220;
 const POSITION_LABEL_MAX_WIDTH_PX = 470;

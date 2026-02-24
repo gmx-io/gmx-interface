@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import { useEffect, useRef, useState } from "react";
 import { useLatest } from "react-use";
 
@@ -15,7 +16,7 @@ export function StaticLine({
   lineType,
   tvWidgetRef,
   lineLength = -40,
-  bodyFontSizePt = 12,
+  bodyFontSizePt = 14,
 }: {
   tvWidgetRef: React.RefObject<IChartingLibraryWidget>;
   lineLength?: number;
@@ -95,10 +96,12 @@ export function StaticLine({
           .setQuantityBackgroundColor(chartLabelColors.button.bg[theme])
           .setQuantityBorderColor(bodyBorderColor)
           .setQuantityTextColor(chartLabelColors.button.icon[theme])
+          .setProtectTooltip(showSizeInUsdRef.current ? t`Show size in tokens` : t`Show size in USD`)
           .onModify(() => {
             setShowSizeInUsd((prev) => {
               const newValue = !prev;
               lineApi.current?.setText(getDisplayTextRef.current(newValue));
+              lineApi.current?.setProtectTooltip(newValue ? t`Show size in tokens` : t`Show size in USD`);
               return newValue;
             });
           });

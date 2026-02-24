@@ -6612,6 +6612,11 @@ msgstr "Übertragung fehlgeschlagen"
 msgid "Last 90d"
 msgstr "Letzte 90T"
 
+#: src/components/TVChartContainer/StaticLine.tsx
+#: src/components/TVChartContainer/StaticLine.tsx
+msgid "Show size in tokens"
+msgstr ""
+
 #: src/components/GmList/GmList.tsx
 msgid "Performance vs benchmark over the selected period"
 msgstr "Performance im Vergleich zur Benchmark über den gewählten Zeitraum"
@@ -8743,6 +8748,11 @@ msgstr "Order-Schlüssel:"
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Why is the claim in GLV tokens?"
 msgstr "Warum erfolgt der Anspruch in GLV-Tokens?"
+
+#: src/components/TVChartContainer/StaticLine.tsx
+#: src/components/TVChartContainer/StaticLine.tsx
+msgid "Show size in USD"
+msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx

@@ -6612,6 +6612,11 @@ msgstr ""
 msgid "Last 90d"
 msgstr ""
 
+#: src/components/TVChartContainer/StaticLine.tsx
+#: src/components/TVChartContainer/StaticLine.tsx
+msgid "Show size in tokens"
+msgstr ""
+
 #: src/components/GmList/GmList.tsx
 msgid "Performance vs benchmark over the selected period"
 msgstr ""
@@ -8742,6 +8747,11 @@ msgstr ""
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Why is the claim in GLV tokens?"
+msgstr ""
+
+#: src/components/TVChartContainer/StaticLine.tsx
+#: src/components/TVChartContainer/StaticLine.tsx
+msgid "Show size in USD"
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
