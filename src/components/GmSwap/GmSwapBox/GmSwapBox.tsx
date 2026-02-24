@@ -56,7 +56,7 @@ export function GmSwapBox() {
         selectedValue={mode}
         onChange={setMode}
         className="bg-slate-900 p-12 pb-0"
-        type="inline"
+        type="pills"
       />
 
       {operation === Operation.Deposit || operation === Operation.Withdrawal ? (

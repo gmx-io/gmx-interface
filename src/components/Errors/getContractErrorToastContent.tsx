@@ -39,7 +39,6 @@ export function getContractErrorToastContent({
           >
             <Trans>increasing the allowed slippage</Trans>
           </span>
-          .
         </Trans>
       );
 

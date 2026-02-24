@@ -1,6 +1,6 @@
 import cx from "classnames";
 import throttle from "lodash/throttle";
-import { CSSProperties, PropsWithChildren, useCallback, useEffect, useRef, useState } from "react";
+import { CSSProperties, PropsWithChildren, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { RemoveScroll } from "react-remove-scroll";
 import { createGlobalState } from "react-use";
 
@@ -11,11 +11,13 @@ const DECELERATION = 0.01;
 const DIRECTION_THRESHOLD = 2;
 const MOVEMENT_THRESHOLD = 10;
 
-const CURTAIN_STYLE: CSSProperties = {
-  bottom: `0`,
-  transform: `translateY(calc(100% - ${HEADER_HEIGHT}px))`,
-  height: `calc(100dvh - ${HEADER_HEIGHT}px)`,
-};
+function getCurtainStyle(headerHeight: number): CSSProperties {
+  return {
+    bottom: `0`,
+    transform: `translateY(calc(100% - ${headerHeight}px))`,
+    height: `calc(100dvh - ${headerHeight}px)`,
+  };
+}
 
 export const useIsCurtainOpen = createGlobalState(false);
 
@@ -23,9 +25,13 @@ export function Curtain({
   children,
   header,
   dataQa,
+  hideChevron,
+  headerHeight = HEADER_HEIGHT,
 }: PropsWithChildren<{
   header: React.ReactNode;
   dataQa?: string;
+  hideChevron?: boolean;
+  headerHeight?: number;
 }>) {
   const curtainRef = useRef<HTMLDivElement>(null);
   const isPointerDownRef = useRef(false);
@@ -50,29 +56,32 @@ export function Curtain({
   const [isOpen, setIsOpen] = useState(false);
   const [externalIsCurtainOpen, setExternalIsCurtainOpen] = useIsCurtainOpen();
 
-  const handleAnimate = useCallback((newIsOpen: boolean) => {
-    if (!curtainRef.current) return;
+  const handleAnimate = useCallback(
+    (newIsOpen: boolean) => {
+      if (!curtainRef.current) return;
 
-    const oldTransition = curtainRef.current.style.transition;
-    const animation = curtainRef.current.animate(
-      {
-        transform: `translateY(${newIsOpen ? 0 : `calc(100% - ${HEADER_HEIGHT}px)`})`,
-      },
-      {
-        duration: 150,
-        easing: "ease-out",
-        fill: "both",
-      }
-    );
-    animation.addEventListener("finish", () => {
-      animation.commitStyles();
-      animation.cancel();
-      if (curtainRef.current) {
-        curtainRef.current.style.transform = `translateY(${newIsOpen ? 0 : `calc(100% - ${HEADER_HEIGHT}px)`})`;
-        curtainRef.current.style.transition = oldTransition;
-      }
-    });
-  }, []);
+      const oldTransition = curtainRef.current.style.transition;
+      const animation = curtainRef.current.animate(
+        {
+          transform: `translateY(${newIsOpen ? 0 : `calc(100% - ${headerHeight}px)`})`,
+        },
+        {
+          duration: 150,
+          easing: "ease-out",
+          fill: "both",
+        }
+      );
+      animation.addEventListener("finish", () => {
+        animation.commitStyles();
+        animation.cancel();
+        if (curtainRef.current) {
+          curtainRef.current.style.transform = `translateY(${newIsOpen ? 0 : `calc(100% - ${headerHeight}px)`})`;
+          curtainRef.current.style.transition = oldTransition;
+        }
+      });
+    },
+    [headerHeight]
+  );
 
   const headerClick = useCallback(() => {
     setIsOpen(true);
@@ -119,48 +128,51 @@ export function Curtain({
     prevScreenX.current = e.screenX;
   }, []);
 
-  const handlePointerMove = useCallback((e: React.PointerEvent<HTMLDivElement>) => {
-    if (!isPointerDownRef.current) return;
+  const handlePointerMove = useCallback(
+    (e: React.PointerEvent<HTMLDivElement>) => {
+      if (!isPointerDownRef.current) return;
 
-    const offsetX = e.screenX - startX.current;
-    const offsetY = e.screenY - startY.current;
+      const offsetX = e.screenX - startX.current;
+      const offsetY = e.screenY - startY.current;
 
-    if (!isDirectionLocked.current) {
-      const isVertical = Math.abs(offsetY) > Math.abs(offsetX) * DIRECTION_THRESHOLD;
-      if (Math.abs(offsetX) > MOVEMENT_THRESHOLD || Math.abs(offsetY) > MOVEMENT_THRESHOLD) {
-        isDirectionLocked.current = true;
-        isDraggingRef.current = isVertical;
-        if (!isVertical) return;
+      if (!isDirectionLocked.current) {
+        const isVertical = Math.abs(offsetY) > Math.abs(offsetX) * DIRECTION_THRESHOLD;
+        if (Math.abs(offsetX) > MOVEMENT_THRESHOLD || Math.abs(offsetY) > MOVEMENT_THRESHOLD) {
+          isDirectionLocked.current = true;
+          isDraggingRef.current = isVertical;
+          if (!isVertical) return;
+        }
       }
-    }
 
-    if (!isDraggingRef.current || !curtainRef.current) return;
+      if (!isDraggingRef.current || !curtainRef.current) return;
 
-    const deltaY = e.screenY - prevScreenY.current;
+      const deltaY = e.screenY - prevScreenY.current;
 
-    curtainRef.current.style.willChange = "transform";
+      curtainRef.current.style.willChange = "transform";
 
-    const time = e.timeStamp - prevTime.current;
-    const velocity = deltaY / time;
+      const time = e.timeStamp - prevTime.current;
+      const velocity = deltaY / time;
 
-    let newY = currentRelativeY.current + deltaY;
-    const heightWithBorder = curtainRef.current.clientHeight + 1;
+      let newY = currentRelativeY.current + deltaY;
+      const heightWithBorder = curtainRef.current.clientHeight + 1;
 
-    if (newY < 0) {
-      newY = 0;
-    } else if (newY > heightWithBorder - HEADER_HEIGHT) {
-      newY = heightWithBorder - HEADER_HEIGHT;
-    }
+      if (newY < 0) {
+        newY = 0;
+      } else if (newY > heightWithBorder - headerHeight) {
+        newY = heightWithBorder - headerHeight;
+      }
 
-    curtainRef.current.style.transform = `translateY(${newY}px)`;
+      curtainRef.current.style.transform = `translateY(${newY}px)`;
 
-    currentRelativeY.current = newY;
-    prevTime.current = e.timeStamp;
-    currentVelocity.current = velocity;
+      currentRelativeY.current = newY;
+      prevTime.current = e.timeStamp;
+      currentVelocity.current = velocity;
 
-    prevScreenX.current = e.screenX;
-    prevScreenY.current = e.screenY;
-  }, []);
+      prevScreenX.current = e.screenX;
+      prevScreenY.current = e.screenY;
+    },
+    [headerHeight]
+  );
 
   const handlePointerUp = useCallback(() => {
     isPointerDownRef.current = false;
@@ -223,6 +235,8 @@ export function Curtain({
     }
   }, [externalIsCurtainOpen, isOpen, handleAnimate]);
 
+  const curtainStyle = useMemo(() => getCurtainStyle(headerHeight), [headerHeight]);
+
   return (
     <>
       <div
@@ -237,30 +251,34 @@ export function Curtain({
           data-qa={dataQa}
           ref={curtainRef}
           className="text-body-medium fixed left-0 right-0 z-[901] flex flex-col rounded-t-4"
-          style={CURTAIN_STYLE}
+          style={curtainStyle}
         >
           <div
             className={cx(
-              "flex touch-none select-none items-stretch justify-between gap-4 border-slate-600 bg-slate-800 pr-8 shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)]",
+              "flex touch-none select-none items-stretch justify-between gap-4 border-slate-600",
+              "translate-y-2 bg-slate-800 shadow-[0px_-24px_48px_-8px_rgba(0,0,0,0.35)]",
               {
-                "border-b-1/2 border-t-1/2 bg-slate-900": isOpen,
+                "mb-2 border-t-1/2 bg-slate-900": isOpen,
+                "pr-8": !hideChevron,
               }
             )}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
           >
-            <div className="grow" onClick={headerClick}>
+            <div className="grow overflow-hidden" onClick={headerClick}>
               {header}
             </div>
-            <button onClick={handleToggle} className="group p-10">
-              <ChevronDownIcon
-                className={cx(
-                  "size-16 text-typography-secondary transition-transform duration-500 ease-out group-hover:text-typography-primary",
-                  isOpen ? undefined : "rotate-180"
-                )}
-              />
-            </button>
+            {!hideChevron && (
+              <button onClick={handleToggle} className="group p-10">
+                <ChevronDownIcon
+                  className={cx(
+                    "size-16 text-typography-secondary transition-transform duration-500 ease-out group-hover:text-typography-primary",
+                    isOpen ? undefined : "rotate-180"
+                  )}
+                />
+              </button>
+            )}
           </div>
 
           <div

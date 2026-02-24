@@ -125,8 +125,8 @@ export const TransferDetailsView = () => {
   return (
     <div className="text-body-medium flex grow flex-col gap-8 p-adaptive">
       {selectedTransfer?.isExecutionError ? (
-        <AlertInfoCard type="error">
-          <Trans>Your deposit of from {sourceChainName} was not executed due to an error.</Trans>
+        <AlertInfoCard type="error" hideClose>
+          <Trans>Deposit from {sourceChainName} failed</Trans>
         </AlertInfoCard>
       ) : null}
       <SyntheticsInfoRow
@@ -159,7 +159,7 @@ export const TransferDetailsView = () => {
       )}
       {selectedTransfer?.sentTxn && selectedTransfer.sourceChainId !== 0 && (
         <SyntheticsInfoRow
-          label={isTestnet ? <Trans>Testnet LayerZero Scan</Trans> : <Trans>LayerZero Scan</Trans>}
+          label={isTestnet ? <Trans>Testnet LayerZero scan</Trans> : <Trans>LayerZero scan</Trans>}
           value={
             <ExternalLink
               className="!no-underline"
@@ -212,7 +212,7 @@ export const TransferDetailsView = () => {
 
       <div className="grow" />
       <Button variant="secondary" onClick={handleRepeatTransaction}>
-        <Trans>Repeat Transaction</Trans>
+        <Trans>Repeat transaction</Trans>
       </Button>
     </div>
   );

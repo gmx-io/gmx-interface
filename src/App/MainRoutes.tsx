@@ -20,7 +20,6 @@ import EarnPortfolioPage from "pages/Earn/EarnPortfolioPage";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import Jobs from "pages/Jobs/Jobs";
 import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
-import NftWallet from "pages/NftWallet/NftWallet";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import { ParseTransactionPage } from "pages/ParseTransaction/ParseTransaction";
 import Pools from "pages/Pools/Pools";
@@ -193,9 +192,6 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="referrals">
           <Referrals />
         </SyntheticsStateContextProvider>
-      </Route>
-      <Route exact path="/nft_wallet">
-        <NftWallet />
       </Route>
       <Route exact path="/actions/:v/:account">
         {({ match }) => (

@@ -40,8 +40,8 @@ const SLIDE_MODAL_LABELS: Record<MainView, ReactNode> = {
 const OVERLAY_MODAL_LABELS: Record<OverlayView, ReactNode> = {
   deposit: <Trans>Deposit to GMX Account</Trans>,
   withdraw: <Trans>Withdraw from GMX Account</Trans>,
-  depositStatus: <Trans>Your deposit is in progress</Trans>,
-  selectAssetToDeposit: <Trans>Select Asset to Deposit</Trans>,
+  depositStatus: <Trans>Deposit in progress...</Trans>,
+  selectAssetToDeposit: <Trans>Select asset to deposit</Trans>,
 };
 
 function OverlayContent({ view }: { view: OverlayView }) {

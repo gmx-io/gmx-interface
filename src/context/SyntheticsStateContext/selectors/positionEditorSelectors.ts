@@ -77,11 +77,11 @@ export const selectPositionEditorSelectedCollateralToken = createSelector((q) =>
     return;
   }
 
-  if (isCollateralTokenFromGmxAccount && token.balanceType !== TokenBalanceType.GmxAccount) {
+  if (isCollateralTokenFromGmxAccount) {
     return { ...token, balanceType: TokenBalanceType.GmxAccount, balance: token.gmxAccountBalance };
   }
 
-  return token;
+  return { ...token, balanceType: TokenBalanceType.Wallet, balance: token.walletBalance };
 });
 
 export const selectPositionEditorCollateralInputAmountAndUsd = createSelector((q) => {

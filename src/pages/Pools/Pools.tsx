@@ -1,3 +1,4 @@
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 
 import { BOTANIX } from "config/chains";
@@ -47,7 +48,7 @@ export default function Pools() {
   const isBotanix = chainId === BOTANIX;
 
   return (
-    <AppPageLayout header={<ChainContentHeader />}>
+    <AppPageLayout title={t`Pools`} header={<ChainContentHeader />}>
       <div
         className={cx("mb-24 grid w-full flex-col", {
           "grid-cols-1": isMobile,
@@ -110,7 +111,9 @@ function PoolsTvl() {
   return (
     <div className="flex flex-col gap-8">
       <span className="text-h1 normal-nums">{formatUsd(tvl, { displayDecimals: 0 })}</span>
-      <span className="text-body-medium font-medium text-typography-secondary">TVL in vaults and pools.</span>
+      <span className="text-body-medium font-medium text-typography-secondary">
+        <Trans>TVL in vaults and pools</Trans>
+      </span>
     </div>
   );
 }

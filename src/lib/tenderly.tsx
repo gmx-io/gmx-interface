@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/macro";
 import { Provider } from "ethers";
 import {
   Abi,
@@ -237,11 +238,14 @@ async function processSimulation({
     const url = `https://dashboard.tenderly.co/${config.accountSlug}/${config.projectSlug}/simulator/${json.simulation.id}`;
     sentReports.push({ url, comment: comment ?? "" });
     success = json.simulation.status;
-    helperToast.info(
+    helperToast.success(
       <>
         {sentReports.map(({ url, comment }) => (
           <div key={url}>
-            <ExternalLink href={url}>View Tx</ExternalLink> for {comment}
+            <ExternalLink href={url}>
+              <Trans>View transaction</Trans>
+            </ExternalLink>{" "}
+            <Trans>for {comment}</Trans>
           </div>
         ))}
       </>,
@@ -257,7 +261,10 @@ async function processSimulation({
         <br />
         {sentReports.map(({ url, comment }) => (
           <div key={url}>
-            <ExternalLink href={url}>View Tx</ExternalLink> for {comment}
+            <ExternalLink href={url}>
+              <Trans>View transaction</Trans>
+            </ExternalLink>{" "}
+            <Trans>for {comment}</Trans>
           </div>
         ))}
       </>

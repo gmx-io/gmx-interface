@@ -32,13 +32,13 @@ export function Features({ goToTradeArbitrum }: Props) {
                 <Trans>Trade with confidence</Trans>
               </p>
               <p className="text-heading-4">
-                <Trans>Guaranteed Liquidity</Trans>
+                <Trans>Guaranteed liquidity</Trans>
               </p>
             </div>
           </div>
           <p className="text-description">
             <Trans>
-              Benefit from up to 100x leverage, and guaranteed on-chain liquidity that's not dependent on order book
+              Benefit from up to 100x leverage and guaranteed on-chain liquidity that's not dependent on order book
               depth
             </Trans>
           </p>
@@ -49,11 +49,11 @@ export function Features({ goToTradeArbitrum }: Props) {
           <div className="relative flex h-full w-full flex-col justify-end">
             <p className="text-heading-4 md:text-heading-3 mb-12">
               <Trans>
-                Stay Safe from <br /> Liquidations
+                Stay safe from <br /> liquidations
               </Trans>
             </p>
             <p className="text-description text-white">
-              Avoid price wicks with transparent, sub-second Chainlink price feeds tailor-made for GMX{" "}
+              <Trans>Avoid price wicks with transparent, sub-second Chainlink price feeds tailor-made for GMX</Trans>
             </p>
           </div>
         </div>
@@ -65,10 +65,10 @@ export function Features({ goToTradeArbitrum }: Props) {
         <div className="h-full w-full overflow-hidden">
           <div className="relative flex flex-col p-20 pb-0 lg:p-28">
             <p className="text-heading-4 md:text-heading-3 mb-11">
-              <Trans>Support for</Trans> <br className="hidden lg:block" /> <Trans>Numerous Assets</Trans>
+              <Trans>Support for</Trans> <br className="hidden lg:block" /> <Trans>numerous assets</Trans>
             </p>
             <p className="text-description">
-              <Trans>Use your preferred token to pay and collateralize your positions</Trans>
+              <Trans>Use your preferred token to pay and collateralize positions</Trans>
             </p>
           </div>
           <div className="relative mt-20 w-full grow lg:mt-36">
@@ -83,19 +83,21 @@ export function Features({ goToTradeArbitrum }: Props) {
           <IconBox iconComponent={IcProtection} />
           <div className="flex flex-col gap-4">
             <p className="text-12 uppercase tracking-[0.864px] text-slate-400">
-              <Trans>keep more of what you earn</Trans>
+              <Trans>Keep more of what you earn</Trans>
             </p>
             <p className="text-heading-4">
-              <Trans>Save on Costs </Trans>
+              <Trans>Save on costs</Trans>
             </p>
           </div>
         </div>
-        <p className="text-description">Trade at scale without worrying about thin order books or slippage</p>
+        <p className="text-description">
+          <Trans>Trade at scale without worrying about thin order books or slippage</Trans>
+        </p>
       </div>
       <div className="h-full rounded-20 bg-slate-800 p-20 lg:col-start-3 lg:col-end-4 lg:row-start-2 lg:row-end-3 lg:min-h-[180px]">
         <div className="flex h-full w-full flex-col justify-between">
           <p className="text-heading-4 mb-20 lg:mb-0">
-            <Trans>Secure & Permissionless</Trans>
+            <Trans>Secure & permissionless</Trans>
           </p>
           <div className="flex flex-row flex-wrap gap-12 text-[13px]">
             <div className="flex flex-1 flex-col items-stretch gap-8 lg:flex-row lg:flex-wrap lg:items-start">
@@ -127,15 +129,17 @@ export function Features({ goToTradeArbitrum }: Props) {
         <div className="relative flex h-full flex-col items-stretch justify-between gap-20 lg:flex-row lg:items-end">
           <div className="w-full lg:w-[360px]">
             <p className="text-heading-4 md:text-heading-3 mb-12">
-              <Trans>Seamless Trading</Trans>
+              <Trans>Seamless trading</Trans>
             </p>
             <p className="text-description">
-              Enjoy a frictionless trading experience and sidestep blockchain congestion with One-Click Trading and GMX
-              Express
+              <Trans>
+                Enjoy a frictionless trading experience and sidestep blockchain congestion with One-Click Trading and
+                Express Trading
+              </Trans>
             </p>
           </div>
           <button className="btn-landing rounded-6 px-16 py-10 text-16 font-medium" onClick={goToTradeArbitrum}>
-            <Trans>Trade Now</Trans>
+            <Trans>Trade now</Trans>
           </button>
         </div>
       </div>
