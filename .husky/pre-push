@@ -2,7 +2,10 @@
 . "$(dirname "$0")/_/husky.sh"
 
 yarn test:ci &
+PID1=$!
 
 cd sdk && yarn test:ci &
+PID2=$!
 
-wait
+wait $PID1
+wait $PID2
