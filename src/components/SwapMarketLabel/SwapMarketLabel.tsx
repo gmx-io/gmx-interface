@@ -12,10 +12,12 @@ export function SwapMarketLabel({
   bordered?: boolean;
 }) {
   return (
-    <span className={cx({ "cursor-help border-b border-dashed border-b-gray-400 font-medium": bordered })}>
+    <span className={cx("inline-flex items-center", { "cursor-help": bordered })}>
       {fromSymbol ? <TokenIcon symbol={fromSymbol} displaySize={20} className="relative z-10" /> : "..."}
       {toSymbol ? <TokenIcon symbol={toSymbol} displaySize={20} className="-ml-10 mr-5" /> : "..."}
-      {fromSymbol}/{toSymbol}
+      <span className={cx({ "border-b border-dashed border-b-gray-400 font-medium": bordered })}>
+        {fromSymbol}/{toSymbol}
+      </span>
     </span>
   );
 }

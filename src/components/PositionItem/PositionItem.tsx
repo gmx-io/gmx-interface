@@ -436,55 +436,51 @@ export function PositionItem(p: Props) {
           {/* title */}
           <div className={cx("Position-item-info relative")}>
             <div className="Exchange-list-title">
-              <TooltipWithPortal
-                handle={
-                  <>
-                    <TokenIcon
-                      className="PositionList-token-icon"
-                      symbol={p.position.indexToken.symbol}
-                      displaySize={20}
-                    />
+              <div className="inline-flex items-center gap-4">
+                <TokenIcon className="PositionList-token-icon" symbol={p.position.indexToken.symbol} displaySize={20} />
+                <TooltipWithPortal
+                  handle={
                     <span className="font-medium">
                       {getMarketIndexName({ indexToken: p.position.indexToken, isSpotOnly: false })}
                     </span>
-                  </>
-                }
-                position="bottom-start"
-                renderContent={() => (
-                  <div>
-                    <StatsTooltipRow
-                      label={t`Pool`}
-                      value={
-                        <div className="flex items-center">
-                          <span>{indexName && indexName}</span>
-                          <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
-                        </div>
-                      }
-                      showDollar={false}
-                    />
-
-                    <br />
-
+                  }
+                  position="bottom-start"
+                  renderContent={() => (
                     <div>
-                      <Trans>Click on the position to select it, then use the trade box to increase it.</Trans>
-                      <br />
-                      <br />
-                      <Trans>Use the "Close" button to reduce your position via market, TP/SL, or TWAP orders.</Trans>
-                    </div>
+                      <StatsTooltipRow
+                        label={t`Pool`}
+                        value={
+                          <div className="flex items-center">
+                            <span>{indexName && indexName}</span>
+                            <span className="subtext leading-1">{poolName && `[${poolName}]`}</span>
+                          </div>
+                        }
+                        showDollar={false}
+                      />
 
-                    {showDebugValues && (
-                      <>
+                      <br />
+
+                      <div>
+                        <Trans>Click on the position to select it, then use the trade box to increase it.</Trans>
                         <br />
-                        <StatsTooltipRow
-                          label={"Key"}
-                          value={<div className="debug-key muted">{p.position.contractKey}</div>}
-                          showDollar={false}
-                        />
-                      </>
-                    )}
-                  </div>
-                )}
-              />
+                        <br />
+                        <Trans>Use the "Close" button to reduce your position via market, TP/SL, or TWAP orders.</Trans>
+                      </div>
+
+                      {showDebugValues && (
+                        <>
+                          <br />
+                          <StatsTooltipRow
+                            label={"Key"}
+                            value={<div className="debug-key muted">{p.position.contractKey}</div>}
+                            showDollar={false}
+                          />
+                        </>
+                      )}
+                    </div>
+                  )}
+                />
+              </div>
               {p.position.pendingUpdate && (
                 <SpinnerIcon data-qa="position-loading" className="spin position-loading-icon" />
               )}
