@@ -1,3 +1,4 @@
+import noop from "lodash/noop";
 import { useCallback } from "react";
 
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
@@ -26,6 +27,8 @@ export function useApproveToken() {
       allowPermit: boolean;
       setIsApproving: (isApproving: boolean) => void;
     }) => {
+      setIsApproving(true);
+
       userAnalytics.pushEvent<TokenApproveClickEvent>({
         event: "TokenApproveAction",
         data: {
@@ -34,7 +37,7 @@ export function useApproveToken() {
       });
 
       approveTokensFn({
-        setIsApproving,
+        setIsApproving: noop,
         signer,
         tokenAddress,
         spender: getContract(chainId, "SyntheticsRouter"),
@@ -51,6 +54,7 @@ export function useApproveToken() {
           : undefined,
         approveAmount: undefined,
         onApproveFail: () => {
+          setIsApproving(false);
           userAnalytics.pushEvent<TokenApproveResultEvent>({
             event: "TokenApproveAction",
             data: {
