@@ -367,7 +367,7 @@ export function getIncreaseError(p: {
     !existingPosition &&
     isTwap &&
     numberOfParts > 0 &&
-    (collateralUsd === undefined ? undefined : collateralUsd / BigInt(numberOfParts) < minTwapPartSize)
+    (sizeDeltaUsd === undefined ? undefined : sizeDeltaUsd / BigInt(numberOfParts) < minTwapPartSize)
   ) {
     return { buttonErrorMessage: t`Min size per part: ${formatUsd(minTwapPartSize)}` };
   }
