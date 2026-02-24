@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { percentFormat } from "landing/pages/Home/utils/formatters";
 import React from "react";
 
@@ -6,12 +6,15 @@ import bgPoolsGradient from "img/bg_pools_gradient.png";
 import BgPoolsLines from "img/bg_pools_lines.svg?react";
 import IcLinkArrow from "img/ic_link_arrow.svg?react";
 
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
 import { IconBox } from "../IconBox/IconBox";
 
 type Props = {
   name: string;
   description: string;
   apr: number | undefined;
+  isRewardsSuspended?: boolean;
   onClick: () => void;
   coinImage: string;
   iconComponent: React.FunctionComponent<React.SVGProps<SVGSVGElement>>;
@@ -22,8 +25,8 @@ const style: React.CSSProperties = {
   backgroundSize: "cover",
 };
 
-export function PoolCard({ name, apr, description, iconComponent, coinImage, onClick }: Props) {
-  const aprText = apr ? percentFormat(apr) : "-";
+export function PoolCard({ name, apr, description, iconComponent, coinImage, onClick, isRewardsSuspended }: Props) {
+  const aprText = isRewardsSuspended ? t`Accumulating` : apr ? percentFormat(apr) : "-";
   return (
     <div
       onClick={onClick}
@@ -44,17 +47,28 @@ export function PoolCard({ name, apr, description, iconComponent, coinImage, onC
             <h5 className="leading-body-sm text-14 font-normal tracking-[0.168px]">{description}</h5>
           </div>
         </div>
-        <div className="flex flex-row items-end justify-between">
+          <div className="flex flex-row items-end justify-between">
           <div className="flex flex-col gap-4">
             <p className="leading-body-sm text-12 font-medium tracking-wide text-slate-400 sm:text-14">
               <Trans>Annually</Trans>
             </p>
-            <p className="leading-heading-lg text-[28px] font-medium sm:text-[50px] sm:-tracking-[2px]">
-              {aprText}{" "}
-              <span className="leading-body-sm text-12 font-medium tracking-wide text-slate-400 sm:text-14">
-                <Trans>APR</Trans>
-              </span>
-            </p>
+            {isRewardsSuspended ? (
+              <TooltipWithPortal
+                handle={
+                  <p className="leading-heading-lg text-[28px] font-medium sm:text-[40px] sm:-tracking-[2px]">
+                    {aprText}
+                  </p>
+                }
+                content={t`27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your share is based on staking power (duration × amount staked).`}
+              />
+            ) : (
+              <p className="leading-heading-lg text-[28px] font-medium sm:text-[50px] sm:-tracking-[2px]">
+                {aprText}{" "}
+                <span className="leading-body-sm text-12 font-medium tracking-wide text-slate-400 sm:text-14">
+                  <Trans>APR</Trans>
+                </span>
+              </p>
+            )}
           </div>
           <div className="flex size-36 rounded-8 bg-slate-700 text-slate-500 group-hover:bg-blue-400 group-hover:text-white">
             <IcLinkArrow className="m-auto size-8 rotate-90" />

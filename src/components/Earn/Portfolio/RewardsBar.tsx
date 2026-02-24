@@ -2,6 +2,8 @@ import { Trans } from "@lingui/macro";
 import { ReactNode, useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+
 import { BOTANIX, ContractsChainId, getChainNativeTokenSymbol } from "config/chains";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -51,59 +53,69 @@ function RewardsBar({
     processedData === undefined || marketTokensData === undefined || multichainMarketTokensBalances === undefined;
 
   return (
-    <div className="rounded-8 bg-slate-900 p-20 text-typography-primary">
-      <div className="flex flex-col gap-16 lg:flex-row lg:items-start lg:justify-between">
-        <div className="flex gap-28 max-lg:flex-col max-lg:gap-16">
-          <div className="flex shrink-0 gap-28 max-lg:grid max-lg:grid-cols-2 max-lg:gap-12">
-            <div className="flex flex-col gap-2">
-              <span className="text-body-small font-medium text-typography-secondary">
-                <Trans>Total investment value</Trans>
-              </span>
-              <span className="text-body-large font-medium numbers">
-                {isInvestmentValueLoading ? (
-                  <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={80} className="leading-base" />
-                ) : (
-                  formatUsd(totalInvestmentUsd)
-                )}
-              </span>
+    <div className="flex flex-col gap-12">
+      <div className="rounded-8 bg-slate-900 p-20 text-typography-primary">
+        <div className="flex flex-col gap-16 lg:flex-row lg:items-start lg:justify-between">
+          <div className="flex gap-28 max-lg:flex-col max-lg:gap-16">
+            <div className="flex shrink-0 gap-28 max-lg:grid max-lg:grid-cols-2 max-lg:gap-12">
+              <div className="flex flex-col gap-2">
+                <span className="text-body-small font-medium text-typography-secondary">
+                  <Trans>Total investment value</Trans>
+                </span>
+                <span className="text-body-large font-medium numbers">
+                  {isInvestmentValueLoading ? (
+                    <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={80} className="leading-base" />
+                  ) : (
+                    formatUsd(totalInvestmentUsd)
+                  )}
+                </span>
+              </div>
+
+              <div className="flex flex-col gap-2">
+                <span className="text-body-small font-medium text-typography-secondary">
+                  <Trans>Total earned</Trans>
+                </span>
+                <TotalEarned
+                  processedData={processedData}
+                  nativeTokenSymbol={nativeTokenSymbol}
+                  userEarnings={userEarnings}
+                  isUserEarningsLoading={isUserEarningsLoading}
+                  chainId={chainId}
+                />
+              </div>
             </div>
 
-            <div className="flex flex-col gap-2">
-              <span className="text-body-small font-medium text-typography-secondary">
-                <Trans>Total earned</Trans>
-              </span>
-              <TotalEarned
-                processedData={processedData}
-                nativeTokenSymbol={nativeTokenSymbol}
-                userEarnings={userEarnings}
-                isUserEarningsLoading={isUserEarningsLoading}
-                chainId={chainId}
-              />
+            <div className="border-r-1/2 border-slate-600 max-lg:border-b-1/2 max-lg:border-r-0" />
+
+            <div className="flex gap-28 max-lg:flex-col max-lg:gap-12">
+              <div className="flex flex-col gap-2">
+                <span className="text-body-small font-medium text-typography-secondary">
+                  <Trans>Total pending rewards</Trans>
+                </span>
+                <TotalPendingRewards
+                  processedData={processedData}
+                  nativeTokenSymbol={nativeTokenSymbol}
+                  chainId={chainId}
+                />
+              </div>
             </div>
           </div>
 
-          <div className="border-r-1/2 border-slate-600 max-lg:border-b-1/2 max-lg:border-r-0" />
-
-          <div className="flex gap-28 max-lg:flex-col max-lg:gap-12">
-            <div className="flex flex-col gap-2">
-              <span className="text-body-small font-medium text-typography-secondary">
-                <Trans>Total pending rewards</Trans>
-              </span>
-              <TotalPendingRewards
-                processedData={processedData}
-                nativeTokenSymbol={nativeTokenSymbol}
-                chainId={chainId}
-              />
-            </div>
-          </div>
+          <ClaimRewardsButton
+            className="shrink-0 xl:self-center"
+            processedData={processedData}
+            mutateProcessedData={mutateProcessedData}
+          />
         </div>
-
-        <ClaimRewardsButton
-          className="shrink-0 xl:self-center"
-          processedData={processedData}
-          mutateProcessedData={mutateProcessedData}
-        />
       </div>
+      {processedData?.isRewardsSuspended && (
+        <AlertInfoCard type="info" hideClose>
+          <Trans>
+            27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to
+            stakers when GMX reaches $90, proportional to staking power (duration × amount staked).
+          </Trans>
+        </AlertInfoCard>
+      )}
     </div>
   );
 }

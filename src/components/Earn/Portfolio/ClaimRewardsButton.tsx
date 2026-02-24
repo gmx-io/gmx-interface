@@ -101,6 +101,7 @@ export function ClaimRewardsButton({ processedData, mutateProcessedData, classNa
         wrappedTokenSymbol={wrappedTokenSymbol}
         isNativeTokenToClaim={hasNativeRewards}
         onClaimSuccess={handleClaimSuccess}
+        isRewardsSuspended={processedData?.isRewardsSuspended}
       />
     </div>
   );

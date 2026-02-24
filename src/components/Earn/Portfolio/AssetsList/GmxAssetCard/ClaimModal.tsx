@@ -44,6 +44,7 @@ export function ClaimModal(props: {
   isNativeTokenToClaim?: boolean;
   gmxUsageOptionsMsg?: React.ReactNode;
   onClaimSuccess?: () => void;
+  isRewardsSuspended?: boolean;
 }) {
   const {
     isVisible,
@@ -60,6 +61,7 @@ export function ClaimModal(props: {
     isNativeTokenToClaim,
     gmxUsageOptionsMsg,
     onClaimSuccess,
+    isRewardsSuspended,
   } = props;
   const [isClaiming, setIsClaiming] = useState(false);
   const hasOutdatedUi = useHasOutdatedUi();
@@ -250,6 +252,14 @@ export function ClaimModal(props: {
       label={t`Claim rewards`}
       withMobileBottomPosition
     >
+      {isRewardsSuspended && (
+        <AlertInfoCard type="info" hideClose className="mb-12">
+          <Trans>
+            New reward accrual is suspended. 27% of protocol fees are accumulating in the Treasury and will be
+            distributed when GMX reaches $90.
+          </Trans>
+        </AlertInfoCard>
+      )}
       <div className="flex flex-col gap-12 pb-20 ">
         <ClaimRewardOption
           tokenSymbol="GMX"
