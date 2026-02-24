@@ -32,10 +32,9 @@ import {
 } from "domain/synthetics/orders";
 import { useDisabledCancelMarketOrderMessage } from "domain/synthetics/orders/useDisabledCancelMarketOrderMessage";
 import { PositionsInfoData, getNameByOrderType } from "domain/synthetics/positions";
-import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
+import { convertToTokenAmount, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
 import { TokensRatioAndSlippage } from "domain/tokens";
-import { getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
 import { calculateDisplayDecimals, formatAmount, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getWrappedToken } from "sdk/configs/tokens";
 
@@ -859,14 +858,16 @@ function getSwapRatioText(order: OrderInfo) {
   const fromToken = order.initialCollateralToken;
   const toToken = order.targetCollateralToken;
 
-  const fromTokenInfo = fromToken ? adaptToV1TokenInfo(fromToken) : undefined;
-  const toTokenInfo = toToken ? adaptToV1TokenInfo(toToken) : undefined;
-
   const triggerRatio = (order as SwapOrderInfo).triggerRatio as TokensRatioAndSlippage;
 
-  const markExchangeRate =
+  const markRatio =
     fromToken && toToken
-      ? getExchangeRate(adaptToV1TokenInfo(fromToken), adaptToV1TokenInfo(toToken), false)
+      ? getTokensRatioByPrice({
+          fromToken,
+          toToken,
+          fromPrice: fromToken.prices.minPrice,
+          toPrice: toToken.prices.minPrice,
+        })
       : undefined;
 
   const ratioDecimals = calculateDisplayDecimals(triggerRatio?.ratio);
@@ -880,7 +881,10 @@ function getSwapRatioText(order: OrderInfo) {
     true
   )} ${triggerRatio?.smallestToken.symbol} per ${triggerRatio?.largestToken.symbol}`;
 
-  const markSwapRatioText = getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo);
+  const markRatioDecimals = calculateDisplayDecimals(markRatio?.ratio);
+  const markSwapRatioText = markRatio
+    ? `${formatAmount(markRatio.ratio, USD_DECIMALS, markRatioDecimals, true)} ${markRatio.smallestToken.symbol} per ${markRatio.largestToken.symbol}`
+    : "...";
 
   const acceptablePriceText = `${sign} ${formatAmount(triggerRatio?.acceptablePrice, USD_DECIMALS, 2, true)} ${triggerRatio?.smallestToken.symbol} / ${triggerRatio?.largestToken.symbol}`;
 
