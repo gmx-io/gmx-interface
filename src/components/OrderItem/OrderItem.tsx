@@ -662,15 +662,19 @@ function OrderItemLarge({
         <OrderSize order={order} showDebugValues={showDebugValues} />
       </TableTd>
 
-      <TableTd>
-        <TriggerPrice
-          order={order}
-          hideActions={hideActions}
-          isSetAcceptablePriceImpactEnabled={isSetAcceptablePriceImpactEnabled}
-        />
+      <TableTd className="overflow-hidden">
+        <div className="overflow-hidden text-ellipsis whitespace-nowrap">
+          <TriggerPrice
+            order={order}
+            hideActions={hideActions}
+            isSetAcceptablePriceImpactEnabled={isSetAcceptablePriceImpactEnabled}
+          />
+        </div>
       </TableTd>
-      <TableTd>
-        <MarkPrice order={order} />
+      <TableTd className="overflow-hidden">
+        <div className="overflow-hidden text-ellipsis whitespace-nowrap">
+          <MarkPrice order={order} />
+        </div>
       </TableTd>
       {!hideActions && (
         <TableTd>
