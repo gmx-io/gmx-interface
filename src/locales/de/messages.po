@@ -1181,6 +1181,10 @@ msgstr "{0} wird bei Ausführung in {1} getauscht"
 msgid "Unrealized PnL"
 msgstr "Nicht realisierter Gewinn/Verlust"
 
+#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
+msgid "Rewards"
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -3963,8 +3967,8 @@ msgid "Source chain supports single token only"
 msgstr "Quellchain unterstützt nur einzelne Token"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-msgid "Annually"
-msgstr "Jährlich"
+#~ msgid "Annually"
+#~ msgstr "Jährlich"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -5188,10 +5192,6 @@ msgstr "Einlösen von Mitteln fehlgeschlagen"
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "Verschiebung nur verfügbar auf {chainNames} oder {lastChainName}. Wechseln Sie das Netzwerk, um fortzufahren."
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
-#~ msgid "New reward accrual is suspended. 27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90."
-#~ msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."

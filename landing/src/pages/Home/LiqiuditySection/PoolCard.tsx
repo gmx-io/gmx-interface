@@ -50,7 +50,7 @@ export function PoolCard({ name, apr, description, iconComponent, coinImage, onC
         <div className="flex flex-row items-end justify-between">
           <div className="flex flex-col gap-4">
             <p className="leading-body-sm text-12 font-medium tracking-wide text-slate-400 sm:text-14">
-              <Trans>Annually</Trans>
+              <Trans>Rewards</Trans>
             </p>
             {isRewardsSuspended ? (
               <TooltipWithPortal

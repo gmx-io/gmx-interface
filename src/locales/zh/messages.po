@@ -1181,6 +1181,10 @@ msgstr "执行时 {0} 将兑换为 {1}"
 msgid "Unrealized PnL"
 msgstr "未实现盈亏"
 
+#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
+msgid "Rewards"
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -3963,8 +3967,8 @@ msgid "Source chain supports single token only"
 msgstr "来源链仅支持单一代币"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-msgid "Annually"
-msgstr "每年"
+#~ msgid "Annually"
+#~ msgstr "每年"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -5188,10 +5192,6 @@ msgstr "申领资金失败"
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "转换仅在 {chainNames} 或 {lastChainName} 上可用。请切换网络以继续。"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
-#~ msgid "New reward accrual is suspended. 27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90."
-#~ msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
