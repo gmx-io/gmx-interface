@@ -2,7 +2,6 @@ import { Trans } from "@lingui/macro";
 import { ReactNode, useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
 
-import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 
 import { BOTANIX, ContractsChainId, getChainNativeTokenSymbol } from "config/chains";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
@@ -15,6 +14,7 @@ import { useChainId } from "lib/chains";
 import { StakingProcessedData } from "lib/legacy";
 import { formatUsd } from "lib/numbers";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";

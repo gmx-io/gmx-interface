@@ -4,11 +4,11 @@ import { zeroAddress, zeroHash } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { useEnsName } from "wagmi";
 
+import { getIsFlagEnabled } from "config/ab";
 import { SOURCE_ETHEREUM_MAINNET, getExplorerUrl } from "config/chains";
 import { isLocal } from "config/env";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { PRODUCTION_HOST } from "config/links";
-import { getIsFlagEnabled } from "config/ab";
 
 import { isValidTimestamp } from "./dates";
 import { PRECISION, bigNumberify, calculateDisplayDecimals, expandDecimals, formatAmount } from "./numbers";
