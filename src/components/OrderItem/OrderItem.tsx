@@ -344,14 +344,16 @@ function MarkPrice({ order, className }: { order: OrderInfo; className?: string 
     const { markSwapRatioText } = getSwapRatioText(order);
 
     return (
-      <span className={className}>{isSwapOrderType(order.orderType) ? markSwapRatioText : markPriceFormatted}</span>
+      <span className={className} title={isSwapOrderType(order.orderType) ? markSwapRatioText : markPriceFormatted}>
+        {isSwapOrderType(order.orderType) ? markSwapRatioText : markPriceFormatted}
+      </span>
     );
   }
 
   if (isSwapOrderType(order.orderType)) {
     const { markSwapRatioText } = getSwapRatioText(order);
 
-    return <span>{markSwapRatioText}</span>;
+    return <span title={markSwapRatioText}>{markSwapRatioText}</span>;
   } else {
     const positionOrder = order as PositionOrderInfo;
 
@@ -459,7 +461,7 @@ function TriggerPrice({
             )}
           />
         ) : (
-          swapRatioText
+          <span title={swapRatioText}>{swapRatioText}</span>
         )}
       </>
     );
@@ -473,15 +475,12 @@ function TriggerPrice({
 
     const isBoundary = isBoundaryAcceptablePrice(positionOrder.acceptablePrice);
 
-    const handle = (
-      <span>
-        {positionOrder.triggerThresholdType}{" "}
-        {formatUsd(positionOrder.triggerPrice, {
-          displayDecimals: priceDecimals,
-          visualMultiplier: positionOrder.indexToken?.visualMultiplier,
-        })}
-      </span>
-    );
+    const triggerPriceText = `${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice, {
+      displayDecimals: priceDecimals,
+      visualMultiplier: positionOrder.indexToken?.visualMultiplier,
+    })}`;
+
+    const handle = <span title={triggerPriceText}>{triggerPriceText}</span>;
     return !isSetAcceptablePriceImpactEnabled || isBoundary ? (
       handle
     ) : (
