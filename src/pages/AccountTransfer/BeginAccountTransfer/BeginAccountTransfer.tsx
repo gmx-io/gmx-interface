@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { ethers } from "ethers";
-import noop from "lodash/noop";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
 import { isAddress, zeroAddress } from "viem";
@@ -165,12 +164,6 @@ export default function BeginAccountTransfer() {
 
   const needApproval = gmxAllowance !== undefined && gmxStaked && gmxStaked > gmxAllowance;
 
-  useEffect(() => {
-    if (!needApproval && !needFeeGmxTrackerApproval && isApproving) {
-      setIsApproving(false);
-    }
-  }, [isApproving, needApproval, needFeeGmxTrackerApproval]);
-
   const hasVestedGmx = gmxVesterBalance > 0;
   const hasVestedGlp = glpVesterBalance > 0;
   const hasVestedAffiliate = affiliateVesterBalance > 0;
@@ -272,35 +265,27 @@ export default function BeginAccountTransfer() {
 
   const onClickPrimary = () => {
     if (needApproval) {
-      setIsApproving(true);
       approveTokens({
-        setIsApproving: noop,
+        setIsApproving,
         signer,
         tokenAddress: gmxAddress,
         spender: stakedGmxTrackerAddress,
         chainId,
         permitParams: undefined,
         approveAmount: undefined,
-        onApproveFail: () => {
-          setIsApproving(false);
-        },
       });
       return;
     }
 
     if (needFeeGmxTrackerApproval && isReadyForSbfGmxTokenApproval) {
-      setIsApproving(true);
       approveTokens({
-        setIsApproving: noop,
+        setIsApproving,
         signer,
         tokenAddress: feeGmxTrackerAddress,
         spender: parsedReceiver,
         chainId,
         permitParams: undefined,
         approveAmount: feeGmxTrackerBalance,
-        onApproveFail: () => {
-          setIsApproving(false);
-        },
       });
       return;
     }
