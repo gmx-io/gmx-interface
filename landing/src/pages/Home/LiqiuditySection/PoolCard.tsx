@@ -2,11 +2,11 @@ import { t, Trans } from "@lingui/macro";
 import { percentFormat } from "landing/pages/Home/utils/formatters";
 import React from "react";
 
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
 import bgPoolsGradient from "img/bg_pools_gradient.png";
 import BgPoolsLines from "img/bg_pools_lines.svg?react";
 import IcLinkArrow from "img/ic_link_arrow.svg?react";
-
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { IconBox } from "../IconBox/IconBox";
 
@@ -47,13 +47,15 @@ export function PoolCard({ name, apr, description, iconComponent, coinImage, onC
             <h5 className="leading-body-sm text-14 font-normal tracking-[0.168px]">{description}</h5>
           </div>
         </div>
-          <div className="flex flex-row items-end justify-between">
+        <div className="flex flex-row items-end justify-between">
           <div className="flex flex-col gap-4">
             <p className="leading-body-sm text-12 font-medium tracking-wide text-slate-400 sm:text-14">
               <Trans>Annually</Trans>
             </p>
             {isRewardsSuspended ? (
               <TooltipWithPortal
+                variant="none"
+                tooltipClassName="!text-white"
                 handle={
                   <p className="leading-heading-lg text-[28px] font-medium sm:text-[40px] sm:-tracking-[2px]">
                     {aprText}
