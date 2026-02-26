@@ -261,7 +261,13 @@ export class Multicall {
 
             return Promise.reject(new Error("multicall timeout"));
           }),
-          client.multicall({ contracts: encodedPayload as any }),
+          client.multicall({
+            contracts: encodedPayload as any,
+            batchSize:
+              typeof BATCH_CONFIGS[this.chainId]?.client?.multicall === "object"
+                ? (BATCH_CONFIGS[this.chainId].client!.multicall as { batchSize?: number }).batchSize
+                : undefined,
+          }),
         ])
           .then((response) => {
             timeoutController.abort();

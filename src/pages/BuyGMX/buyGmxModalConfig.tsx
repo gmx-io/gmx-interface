@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 
-import { ARBITRUM, AVALANCHE, ContractsChainId } from "config/chains";
+import { ARBITRUM, AVALANCHE, ContractsChainId, MEGAETH } from "config/chains";
+import { JUMPER_EXCHANGE_URL } from "config/links";
 
 import OneInchIcon from "img/ic_1inch.svg?react";
 import BanxaIcon from "img/ic_banxa.svg?react";
@@ -22,6 +23,15 @@ const createGetLink =
     return links[chainId] ?? fallback;
   };
 
+const createGetSwapLink =
+  (links: Partial<Record<ContractsChainId, string>>, fallback: string) => (chainId: ContractsChainId) => {
+    if (MEGAETH === chainId) {
+      return JUMPER_EXCHANGE_URL;
+    }
+
+    return links[chainId] ?? fallback;
+  };
+
 export const BUY_GMX_MODAL_LINKS: BuyGmxModalButtonConfig[] = [
   {
     id: "uniswap",
@@ -39,7 +49,7 @@ export const BUY_GMX_MODAL_LINKS: BuyGmxModalButtonConfig[] = [
     id: "1inch",
     icon: <OneInchIcon className="size-20" />,
     label: "1inch",
-    getLink: createGetLink(
+    getLink: createGetSwapLink(
       {
         [ARBITRUM]: "https://app.1inch.io/#/42161/unified/swap/ETH/GMX",
         [AVALANCHE]: "https://app.1inch.io/#/43114/unified/swap/AVAX/GMX",
@@ -51,7 +61,7 @@ export const BUY_GMX_MODAL_LINKS: BuyGmxModalButtonConfig[] = [
     id: "matcha",
     icon: <MatchaIcon className="size-20" />,
     label: "Matcha",
-    getLink: createGetLink(
+    getLink: createGetSwapLink(
       {
         [ARBITRUM]: "https://www.matcha.xyz/markets/42161/0xfc5A1A6EB076a2C7aD06eD22C90d7E710E35ad0a",
         [AVALANCHE]: "https://www.matcha.xyz/markets/43114/0x62edc0692BD897D2295872a9FFCac5425011c661",

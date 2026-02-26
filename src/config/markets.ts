@@ -5,7 +5,15 @@ import { SETTLEMENT_CHAINS } from "config/multichain";
 import { fixTokenSymbolFromMarketLabel } from "sdk/configs/markets";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, ContractsChainId, SettlementChainId } from "./chains";
+import {
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  MEGAETH,
+  ContractsChainId,
+  SettlementChainId,
+} from "./chains";
 import { MARKETS } from "./static/markets";
 
 export * from "./static/markets";
@@ -84,6 +92,17 @@ export const GLV_MARKETS: {
       glvTokenAddress: "0xAb3567e55c205c62B141967145F37b7695a9F854",
       longTokenAddress: "0x980B62Da83eFf3D4576C647993b0c1D7faf17c73",
       shortTokenAddress: "0x3253a335E7bFfB4790Aa4C25C4250d206E9b9773",
+    },
+  },
+  [MEGAETH]: {
+    // GLV [WETH-USDM]
+    "0x3782d91C5888dE31F627495e6aAAC3f09499fe72": {
+      name: undefined,
+      subtitle: "GMX Liquidity Vault",
+      shortening: "GLV",
+      glvTokenAddress: "0x3782d91C5888dE31F627495e6aAAC3f09499fe72",
+      longTokenAddress: "0xFAfDdbb3FC7688494971a79cc65DCa3EF82079E7",
+      shortTokenAddress: "0xFAfDdbb3FC7688494971a79cc65DCa3EF82079E7",
     },
   },
 };

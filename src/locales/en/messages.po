@@ -827,6 +827,10 @@ msgstr "STIP.b retroactive bonus"
 msgid "in liquidity"
 msgstr "in liquidity"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "{0} is required for collateral.<0/><1/>No swap path found for {1} to {2} within GMX.<2/><3/><4>Buy {3} on {4}</4>."
+msgstr "{0} is required for collateral.<0/><1/>No swap path found for {1} to {2} within GMX.<2/><3/><4>Buy {3} on {4}</4>."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized money market"
 msgstr "Decentralized money market"
@@ -4206,10 +4210,6 @@ msgstr "Pending GMX approval..."
 msgid "AMOUNT"
 msgstr "AMOUNT"
 
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "GMX staking unavailable on Botanix. Use Arbitrum or Avalanche."
-msgstr "GMX staking unavailable on Botanix. Use Arbitrum or Avalanche."
-
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
@@ -5099,10 +5099,6 @@ msgstr "Invalid transaction"
 msgid "Insufficient liquidity in {0} pool. Select a different pool."
 msgstr "Insufficient liquidity in {0} pool. Select a different pool."
 
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "No GLV vaults on Botanix. Provide liquidity via <0>GM tokens</0> instead."
-msgstr "No GLV vaults on Botanix. Provide liquidity via <0>GM tokens</0> instead."
-
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
@@ -5543,7 +5539,6 @@ msgstr "Insufficient liquidity. Available: {availableLiquidityText}"
 msgid "Unstake submitted"
 msgstr "Unstake submitted"
 
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Botanix"
@@ -6363,6 +6358,10 @@ msgstr "Minutes"
 msgid "What makes GMX one of the best places to earn yield on my crypto?"
 msgstr "What makes GMX one of the best places to earn yield on my crypto?"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Permit has expired. Please try again.</0>"
+msgstr "<0>Permit has expired. Please try again.</0>"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Approving {tokenSymbol}..."
 msgstr "Approving {tokenSymbol}..."
@@ -6933,10 +6932,6 @@ msgstr "Clear debug overrides"
 msgid "Cancel Stop-Loss"
 msgstr "Cancel Stop-Loss"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "{0} is required for collateral.<0/><1/>No swap path found for {1} to {2} within GMX.<2/><3/><4>Buy {3} on 1inch</4>."
-msgstr "{0} is required for collateral.<0/><1/>No swap path found for {1} to {2} within GMX.<2/><3/><4>Buy {3} on 1inch</4>."
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Stake {tokenSymbol} rewards"
 msgstr "Stake {tokenSymbol} rewards"
@@ -7211,7 +7206,6 @@ msgstr "Max {0} long exceeded"
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -8860,6 +8854,10 @@ msgstr "What is GMX?"
 msgid "Deposit submitted"
 msgstr "Deposit submitted"
 
+#: src/components/Earn/Discovery/EarnYieldOverview.tsx
+msgid "GMX staking unavailable on MegaETH. Use Arbitrum or Avalanche."
+msgstr "GMX staking unavailable on MegaETH. Use Arbitrum or Avalanche."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -9647,6 +9645,10 @@ msgstr "Network for your GMX Account and positions. Balances and positions don't
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "Liquidity only available on {chainNames} or {lastChainName}. Switch networks to continue."
+
+#: src/components/Earn/Discovery/EarnYieldOverview.tsx
+msgid "MegaETH"
+msgstr "MegaETH"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total trading volume from your referrals"

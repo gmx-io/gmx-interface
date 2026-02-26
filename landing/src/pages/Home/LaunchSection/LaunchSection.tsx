@@ -50,6 +50,9 @@ export function LaunchSection() {
           <div className="lg:col-start-1 lg:row-start-4">
             <LaunchButtonContainer chainId={RedirectChainIds.Botanix} />
           </div>
+          <div className="lg:col-start-2 lg:row-start-4">
+            <LaunchButtonContainer chainId={RedirectChainIds.MegaETH} />
+          </div>
         </div>
       </div>
     </section>

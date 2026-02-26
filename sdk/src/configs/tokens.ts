@@ -2,7 +2,7 @@ import { zeroAddress } from "viem";
 
 import type { Token, TokenAddressTypesMap, TokenCategory } from "utils/tokens/types";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH } from "./chains";
 import { getContract } from "./contracts";
 
 export const NATIVE_TOKEN_ADDRESS = zeroAddress;
@@ -1970,6 +1970,94 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       isPlatformToken: true,
     },
   ],
+  [MEGAETH]: [
+    {
+      name: "Ethereum",
+      symbol: "ETH",
+      address: NATIVE_TOKEN_ADDRESS,
+      decimals: 18,
+      isNative: true,
+      isShortable: true,
+      categories: ["layer1"],
+      imageUrl: "https://assets.coingecko.com/coins/images/279/small/ethereum.png?1595348880",
+    },
+    {
+      name: "Wrapped Ethereum",
+      symbol: "WETH",
+      address: "0x4200000000000000000000000000000000000006",
+      decimals: 18,
+      isWrapped: true,
+      baseSymbol: "ETH",
+      imageUrl: "https://assets.coingecko.com/coins/images/2518/thumb/weth.png?1628852295",
+    },
+    {
+      name: "Bitcoin",
+      symbol: "BTC",
+      address: "0xc258141Ad80cafF9ab82a04bEb1c10F4B5bCb8F4",
+      isSynthetic: true,
+      decimals: 8,
+      categories: ["layer1"],
+      imageUrl: "https://assets.coingecko.com/coins/images/7598/thumb/wrapped_bitcoin_wbtc.png?1548822744",
+    },
+    {
+      name: "Solana",
+      symbol: "SOL",
+      address: "0x30998706b1e5C95e9d3645D2e9E0EB1466819962",
+      isSynthetic: true,
+      priceDecimals: 3,
+      decimals: 9,
+      categories: ["layer1"],
+      imageUrl: "https://assets.coingecko.com/coins/images/4128/small/solana.png?1640133422",
+    },
+    {
+      name: "USDM",
+      symbol: "USDM",
+      address: "0xFAfDdbb3FC7688494971a79cc65DCa3EF82079E7",
+      decimals: 18,
+      isStable: true,
+      imageUrl: "https://assets.coingecko.com/coins/images/69955/standard/USDm.png?1760170136",
+    },
+    {
+      name: "GMX",
+      symbol: "GMX",
+      address: GMX_STUB_ADDRESS,
+      decimals: 18,
+      imageUrl: "https://assets.coingecko.com/coins/images/18323/small/arbit.png?1631532468",
+      isPlatformToken: true,
+    },
+    {
+      name: "Escrowed GMX",
+      symbol: "ESGMX",
+      address: ESGMX_STUB_ADDRESS,
+      decimals: 18,
+      isPlatformToken: true,
+    },
+    {
+      name: "GMX LP",
+      symbol: "GLP",
+      address: GLP_STUB_ADDRESS,
+      decimals: 18,
+      imageUrl: "https://github.com/gmx-io/gmx-assets/blob/main/GMX-Assets/PNG/GLP_LOGO%20ONLY.png?raw=true",
+      isPlatformToken: true,
+    },
+    /** Placeholder tokens */
+    {
+      name: "GMX Market tokens",
+      symbol: "GM",
+      address: GM_STUB_ADDRESS,
+      decimals: 18,
+      imageUrl: "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GM_LOGO.png",
+      isPlatformToken: true,
+    },
+    {
+      name: "GLV Market tokens",
+      symbol: "GLV",
+      address: GLV_STUB_ADDRESS,
+      decimals: 18,
+      imageUrl: "https://raw.githubusercontent.com/gmx-io/gmx-assets/main/GMX-Assets/PNG/GLV_LOGO.png",
+      isPlatformToken: true,
+    },
+  ],
 };
 
 export const TOKEN_COLOR_MAP = {
@@ -2016,7 +2104,7 @@ export const TOKENS_BY_SYMBOL_MAP: { [chainId: number]: { [symbol: string]: Toke
 export const WRAPPED_TOKENS_MAP: { [chainId: number]: Token } = {};
 export const NATIVE_TOKENS_MAP: { [chainId: number]: Token } = {};
 
-const CHAIN_IDS = [ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ARBITRUM_SEPOLIA];
+const CHAIN_IDS = [ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ARBITRUM_SEPOLIA, MEGAETH];
 
 for (let j = 0; j < CHAIN_IDS.length; j++) {
   const chainId = CHAIN_IDS[j];

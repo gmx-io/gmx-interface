@@ -10,6 +10,7 @@ import {
   SOURCE_OPTIMISM_SEPOLIA,
   SOURCE_SEPOLIA,
   getChainName,
+  MEGAETH,
 } from "config/chains";
 import { isDevelopment } from "config/env";
 import { getChainIcon } from "config/icons";
@@ -27,6 +28,12 @@ export const NETWORK_OPTIONS: NetworkOption[] = [
     value: ARBITRUM,
     icon: getChainIcon(ARBITRUM),
     color: "#264f79",
+  },
+  {
+    label: getChainName(MEGAETH),
+    value: MEGAETH,
+    icon: getChainIcon(MEGAETH),
+    color: "#F7931A",
   },
   {
     label: getChainName(AVALANCHE),

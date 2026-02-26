@@ -1,0 +1,29 @@
+<svg width="105" height="105" viewBox="0 0 105 105" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <circle cx="52.5" cy="52.5" r="52.5" fill="white"/>
+  <circle cx="52.5" cy="52.5" r="48" fill="#C6CCCA"/>
+  <circle cx="52.5" cy="52.5" r="43.5" fill="#236646"/>
+  <text
+    x="52.5"
+    y="62.25"
+    text-anchor="middle"
+    fill="#E7EEEA"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="56"
+    font-weight="700"
+    letter-spacing="1"
+  >
+    M
+  </text>
+  <text
+    x="52.5"
+    y="86.25"
+    text-anchor="middle"
+    fill="#E7EEEA"
+    font-family="Arial, Helvetica, sans-serif"
+    font-size="24"
+    font-weight="700"
+    letter-spacing="1"
+  >
+    $$
+  </text>
+</svg>

@@ -1,4 +1,4 @@
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH, ContractsChainId } from "./chains";
 
 export const ORACLE_FALLBACK_TRACKER_CONFIG = {
   trackInterval: 10 * 1000, // 10 secs
@@ -23,6 +23,8 @@ const ORACLE_KEEPER_URLS: Record<ContractsChainId, string> = {
 
   [BOTANIX]: "https://botanix-api.gmxinfra.io",
 
+  [MEGAETH]: "https://megaeth-api.gmxinfra.io",
+
   [ARBITRUM_SEPOLIA]: "https://dolphin-app-a2dup.ondigitalocean.app",
 };
 
@@ -34,6 +36,8 @@ const ORACLE_KEEPER_FALLBACK_URLS: Record<ContractsChainId, string[]> = {
   [AVALANCHE_FUJI]: ["https://synthetics-api-avax-fuji.gmxinfra.io"],
 
   [BOTANIX]: ["https://botanix-api-fallback.gmxinfra.io", "https://botanix-api-fallback.gmxinfra2.io"],
+
+  [MEGAETH]: ["https://megaeth-api-fallback.gmxinfra.io"],
 
   [ARBITRUM_SEPOLIA]: ["https://dolphin-app-a2dup.ondigitalocean.app"],
 };

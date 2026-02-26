@@ -827,6 +827,10 @@ msgstr "STIP.b遡及ボーナス"
 msgid "in liquidity"
 msgstr "流動性で"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "{0} is required for collateral.<0/><1/>No swap path found for {1} to {2} within GMX.<2/><3/><4>Buy {3} on {4}</4>."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized money market"
 msgstr "分散型マネーマーケット"
@@ -4206,10 +4210,6 @@ msgstr "GMX の承認待ち..."
 msgid "AMOUNT"
 msgstr "金額"
 
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "GMX staking unavailable on Botanix. Use Arbitrum or Avalanche."
-msgstr "Botanix では GMX のステーキングはご利用いただけません。Arbitrum または Avalanche をご利用ください。"
-
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
@@ -5099,10 +5099,6 @@ msgstr "無効なトランザクション"
 msgid "Insufficient liquidity in {0} pool. Select a different pool."
 msgstr "{0} プールの流動性不足です。別のプールを選択してください。"
 
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "No GLV vaults on Botanix. Provide liquidity via <0>GM tokens</0> instead."
-msgstr "Botanix には GLV ボールトがありません。代わりに <0>GM トークン</0>で流動性を提供してください。"
-
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
@@ -5543,7 +5539,6 @@ msgstr "流動性不足。利用可能: {availableLiquidityText}"
 msgid "Unstake submitted"
 msgstr "アンステーク送信済み"
 
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Botanix"
@@ -6363,6 +6358,10 @@ msgstr "分"
 msgid "What makes GMX one of the best places to earn yield on my crypto?"
 msgstr "GMXが暗号資産の利回りを得るのに最適な場所の一つである理由は何ですか？"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Permit has expired. Please try again.</0>"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Approving {tokenSymbol}..."
 msgstr "{tokenSymbol}を承認中..."
@@ -6933,10 +6932,6 @@ msgstr "デバッグ設定をリセット"
 msgid "Cancel Stop-Loss"
 msgstr "ストップロスをキャンセル"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "{0} is required for collateral.<0/><1/>No swap path found for {1} to {2} within GMX.<2/><3/><4>Buy {3} on 1inch</4>."
-msgstr "{0}が担保として必要です。<0/><1/>GMX内で{1}から{2}へのスワップ経路が見つかりません。<2/><3/><4>1inchで{3}を購入</4>。"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Stake {tokenSymbol} rewards"
 msgstr "{tokenSymbol}報酬をステーク"
@@ -7211,7 +7206,6 @@ msgstr "{0}の最大ロング値を超過しています"
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -8860,6 +8854,10 @@ msgstr "GMXとは？"
 msgid "Deposit submitted"
 msgstr "入金が送信されました"
 
+#: src/components/Earn/Discovery/EarnYieldOverview.tsx
+msgid "GMX staking unavailable on MegaETH. Use Arbitrum or Avalanche."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -9647,6 +9645,10 @@ msgstr "GMX Accountとポジションのためのネットワークです。残�
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "流動性は{chainNames}または{lastChainName}でのみ利用可能です。続行するにはネットワークを切り替えてください。"
+
+#: src/components/Earn/Discovery/EarnYieldOverview.tsx
+msgid "MegaETH"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total trading volume from your referrals"

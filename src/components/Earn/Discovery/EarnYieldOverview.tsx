@@ -5,7 +5,7 @@ import { ReactNode, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useAccount } from "wagmi";
 
-import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
+import { ARBITRUM, AVALANCHE, MEGAETH } from "config/chains";
 import { getChainIcon, getIcon } from "config/icons";
 import type { MarketTokensAPRData } from "domain/synthetics/markets/types";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
@@ -71,6 +71,10 @@ function calculateMaxApr(
 function formatAprValue(value: bigint | undefined) {
   if (value === undefined) {
     return "...%";
+  }
+
+  if (value === 0n) {
+    return "N/A";
   }
 
   return formatPercentage(value, { bps: false });
@@ -220,7 +224,7 @@ function YieldRow({ token, metric, to, disabled, chainId: targetChainId, onClick
   );
 }
 
-const CHAINS_ORDER = [ARBITRUM, AVALANCHE, BOTANIX];
+const CHAINS_ORDER = [ARBITRUM, AVALANCHE, MEGAETH];
 
 export default function EarnYieldOverview() {
   const { address: account } = useAccount();
@@ -228,7 +232,7 @@ export default function EarnYieldOverview() {
 
   const arbitrumTokens = useTokensDataRequest(ARBITRUM);
   const avalancheTokens = useTokensDataRequest(AVALANCHE);
-  const botanixTokens = useTokensDataRequest(BOTANIX);
+  const megaethTokens = useTokensDataRequest(MEGAETH);
 
   const [mobileChainId, setMobileChainId] = useState<number>(ARBITRUM);
 
@@ -236,8 +240,8 @@ export default function EarnYieldOverview() {
     () =>
       hasTokenBalance(arbitrumTokens.tokensData, "GMX") ||
       hasTokenBalance(avalancheTokens.tokensData, "GMX") ||
-      hasTokenBalance(botanixTokens.tokensData, "GMX"),
-    [arbitrumTokens.tokensData, avalancheTokens.tokensData, botanixTokens.tokensData]
+      hasTokenBalance(megaethTokens.tokensData, "GMX"),
+    [arbitrumTokens.tokensData, avalancheTokens.tokensData, megaethTokens.tokensData]
   );
 
   const [isBuyGmxModalVisible, setIsBuyGmxModalVisible] = useState(false);
@@ -253,7 +257,9 @@ export default function EarnYieldOverview() {
     period: PERIOD,
   });
 
-  const { marketsTokensApyData: botanixGmApy } = useGmMarketsApy(BOTANIX, undefined, { period: PERIOD });
+  const { glvApyInfoData: megaethGlvApy, marketsTokensApyData: megaethGmApy } = useGmMarketsApy(MEGAETH, undefined, {
+    period: PERIOD,
+  });
 
   const arbMaxGlv = useMemo(() => calculateMaxApr(arbGlvApy), [arbGlvApy]);
   const arbMaxGm = useMemo(() => calculateMaxApr(arbGmApy), [arbGmApy]);
@@ -261,7 +267,8 @@ export default function EarnYieldOverview() {
   const avaxMaxGlv = useMemo(() => calculateMaxApr(avaxGlvApy), [avaxGlvApy]);
   const avaxMaxGm = useMemo(() => calculateMaxApr(avaxGmApy), [avaxGmApy]);
 
-  const botanixMaxGm = useMemo(() => calculateMaxApr(botanixGmApy), [botanixGmApy]);
+  const megaethMaxGlv = useMemo(() => calculateMaxApr(megaethGlvApy), [megaethGlvApy]);
+  const megaethMaxGm = useMemo(() => calculateMaxApr(megaethGmApy), [megaethGmApy]);
   const avgGmxAprTotalLabel = "avgGMXAprTotal";
 
   const networkCards = useMemo(
@@ -322,57 +329,42 @@ export default function EarnYieldOverview() {
           />,
         ],
       },
-      [BOTANIX]: {
-        chainId: BOTANIX,
-        title: <Trans>Botanix</Trans>,
+      [MEGAETH]: {
+        chainId: MEGAETH,
+        title: <Trans>MegaETH</Trans>,
         rows: [
           <YieldRow
-            key="botanix-gmx"
+            key="megaeth-gmx"
             token="GMX"
             disabled
-            chainId={BOTANIX}
+            chainId={MEGAETH}
             metric={
               <YieldMetric
                 value={<Trans>N/A</Trans>}
                 suffix=""
-                tooltip={<Trans>GMX staking unavailable on Botanix. Use Arbitrum or Avalanche.</Trans>}
+                tooltip={<Trans>GMX staking unavailable on MegaETH. Use Arbitrum or Avalanche.</Trans>}
                 disabled
               />
             }
           />,
           <YieldRow
-            key="botanix-glv"
+            key="megaeth-glv"
             token="GLV"
-            disabled
-            chainId={BOTANIX}
-            metric={
-              <YieldMetric
-                value={<Trans>N/A</Trans>}
-                suffix=""
-                tooltip={
-                  <Trans>
-                    No GLV vaults on Botanix. Provide liquidity via{" "}
-                    <Link to="/pools" className="underline hover:text-blue-300">
-                      GM tokens
-                    </Link>{" "}
-                    instead.
-                  </Trans>
-                }
-                disabled
-              />
-            }
+            to={poolsLink}
+            chainId={MEGAETH}
+            metric={<YieldMetric value={formatAprValue(megaethMaxGlv)} suffix="APY" />}
           />,
           <YieldRow
-            key="botanix-gm"
+            key="megaeth-gm"
             token="GM"
             to={poolsLink}
-            chainId={BOTANIX}
-            metric={<YieldMetric value={formatAprValue(botanixMaxGm)} suffix="APY" />}
+            chainId={MEGAETH}
+            metric={<YieldMetric value={formatAprValue(megaethMaxGm)} suffix="APY" />}
           />,
         ],
       },
     }),
-    [arbMaxGlv, arbMaxGm, avaxMaxGlv, avaxMaxGm, botanixMaxGm, showGmxLink, poolsLink]
+    [arbMaxGlv, arbMaxGm, avaxMaxGlv, avaxMaxGm, megaethMaxGlv, megaethMaxGm, showGmxLink, poolsLink]
   );
 
   const tabs = useMemo(
