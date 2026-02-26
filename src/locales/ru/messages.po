@@ -865,6 +865,10 @@ msgstr "Контакт в Telegram (опционально)"
 msgid "Conversion creation failed"
 msgstr "Не удалось создать конвертацию"
 
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "27% of protocol fees fund Treasury buybacks — rewards distributed at $90"
+msgstr ""
+
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX alerts"
 msgstr "Уведомления GMX"
@@ -1176,6 +1180,10 @@ msgstr "{0} будет обменено на {1} при исполнении"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Unrealized PnL"
 msgstr "Нереализованная PnL"
+
+#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
+msgid "Rewards"
+msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -1543,10 +1551,6 @@ msgstr "Рынки"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "Повторить"
-
-#: src/components/Earn/Discovery/EarnFaq.tsx
-msgid "GMX staking rewards come from a buyback-and-distribute model: protocol revenue purchases GMX on the open market, which is then distributed to stakers. No new GMX tokens are minted."
-msgstr "Вознаграждения за стейкинг GMX основаны на модели выкупа и распределения: доход протокола используется для покупки GMX на открытом рынке, после чего токены распределяются среди стейкеров. Новые токены GMX не выпускаются."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Available liquidity {directionLabel}"
@@ -1969,10 +1973,6 @@ msgstr "Вывод через мост не выполнен"
 msgid "Sending sell request..."
 msgstr "Отправка запроса на продажу…"
 
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "GMX is the utility and governance token. It also accrues 27% of the protocol fees via a buyback and distribution mechanism."
-msgstr "GMX — это служебный токен и токен управления. Он также аккумулирует 27% комиссий протокола через механизм обратного выкупа и распределения."
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "PURPOSE"
 msgstr "НАЗНАЧЕНИЕ"
@@ -2374,6 +2374,10 @@ msgstr "FUNDING APR"
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 msgid "Search action"
 msgstr "Поиск действия"
+
+#: src/pages/Dashboard/GmxCard.tsx
+msgid "GMX is the utility and governance token. 27% of protocol fees accumulate in the Treasury for GMX buybacks and will be distributed to stakers when GMX reaches $90."
+msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have a <0>pending transfer</0> to {pendingReceiver}"
@@ -2912,6 +2916,10 @@ msgstr "DODO"
 msgid "Impact pool amount"
 msgstr "Объём пула влияния на цену"
 
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "The GMX token serves as the governance token of the GMX protocol. 27% of platform revenue accumulates in the Treasury for GMX buybacks. Stakers earn rewards based on staking power (duration × amount), distributed when GMX reaches $90."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "AI agent for GMX Blueberry Club"
 msgstr "AI-агент для GMX Blueberry Club"
@@ -3107,6 +3115,10 @@ msgstr "Нет AB-флагов"
 #: src/pages/UiPage/UiPage.tsx
 msgid "Line heights"
 msgstr "Межстрочные интервалы"
+
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "27% of protocol revenue is used to buy back GMX on the open market. Bought-back GMX accumulates in the Treasury and will be distributed to stakers when GMX reaches $90, proportional to staking power. No new GMX tokens are minted."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX V2 Telegram & Discord analytics"
@@ -3964,8 +3976,8 @@ msgid "Source chain supports single token only"
 msgstr "Исходная сеть поддерживает только один токен"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-msgid "Annually"
-msgstr "Годовой"
+#~ msgid "Annually"
+#~ msgstr "Годовой"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -5938,6 +5950,12 @@ msgstr "Таймаут основного потока"
 msgid "Increase size (Limit)"
 msgstr "Увеличить размер (Limit)"
 
+#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
+#: src/components/APRLabel/APRLabel.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Accumulating"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "PnL relative to capital used (return on capital)"
 msgstr "PnL относительно задействованного капитала (доходность на капитал)"
@@ -6949,6 +6967,10 @@ msgstr "Отмена стоп-лосса"
 msgid "{0} is required for collateral.<0/><1/>No swap path found for {1} to {2} within GMX.<2/><3/><4>Buy {3} on 1inch</4>."
 msgstr "{0} требуется в качестве обеспечения.<0/><1/>Не найден путь обмена {1} на {2} в GMX.<2/><3/><4>Купить {3} на 1inch</4>."
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Stake {tokenSymbol} rewards"
 msgstr "Стейкать вознаграждения {tokenSymbol}"
@@ -7029,10 +7051,6 @@ msgstr "Сегодня"
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Link copied"
 msgstr "Ссылка скопирована"
-
-#: src/components/Earn/Discovery/EarnProductCard.tsx
-msgid "Rewards funded by protocol fees used for GMX buybacks"
-msgstr "Вознаграждения, финансируемые за счёт комиссий протокола, используемых для выкупа GMX"
 
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/Claims/ClaimsHistory.tsx
@@ -7387,6 +7405,13 @@ msgstr "Торговля с кошелька или GMX Account"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min position size: {0}"
 msgstr "Мин размер позиции: {0}"
+
+#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
+#: src/components/APRLabel/APRLabel.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your share is based on staking power (duration × amount staked)."
+msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Down"
@@ -8209,6 +8234,10 @@ msgstr "Мем"
 msgid "Transaction failed.<0/><1/><2>View status</2>"
 msgstr "Транзакция не выполнена.<0/><1/><2>Посмотреть статус</2>"
 
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "Accumulate GMX rewards by staking"
+msgstr ""
+
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
@@ -8580,10 +8609,6 @@ msgstr "Реферальная скидка"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Threshold for decrease funding"
 msgstr "Порог для снижения финансирования"
-
-#: src/components/Earn/Discovery/EarnProductCard.tsx
-msgid "Earn GMX rewards by staking"
-msgstr "Получайте вознаграждения GMX за стейкинг"
 
 #: src/domain/synthetics/fees/utils/index.ts
 msgid "Network fees are very high due to increased {chainName} network activity"
@@ -9522,10 +9547,6 @@ msgstr "Вестинговый GLP не выведен"
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>every</0> {minutes} minutes{0}"
 msgstr "<0>каждые</0> {minutes} минут{0}"
-
-#: src/components/Earn/Discovery/EarnProductCard.tsx
-msgid "The GMX token serves as the governance token of the GMX protocol. By staking GMX, you earn 27% of the revenue generated by the trading platform."
-msgstr "Токен GMX служит токеном управления протокола GMX. Стейкая GMX, вы получаете 27% дохода, генерируемого торговой платформой."
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "r:"
