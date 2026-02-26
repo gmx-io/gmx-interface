@@ -3,12 +3,8 @@ import { ARBITRUM, AVALANCHE, MEGAETH } from "config/chains";
 export const PRODUCTION_HOST = "https://app.gmx.io";
 export const JUMPER_EXCHANGE_URL = "https://jumper.exchange/";
 
-export function isMegaEthChain(chainId: number): boolean {
-  return chainId === MEGAETH;
-}
-
 export function getExternalAggregatorSwapUrlFromAddresses(chainId: number, fromAddress?: string, toAddress?: string) {
-  if (isMegaEthChain(chainId)) {
+  if (MEGAETH === chainId) {
     return JUMPER_EXCHANGE_URL;
   }
 

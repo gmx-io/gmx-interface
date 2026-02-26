@@ -4,9 +4,9 @@ import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { zeroAddress } from "viem";
 
 import { getBridgingOptionsForToken } from "config/bridging";
-import { AVALANCHE, BOTANIX, SettlementChainId } from "config/chains";
+import { AVALANCHE, BOTANIX, MEGAETH, SettlementChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
-import { getExternalAggregatorSwapUrlFromAddresses, isMegaEthChain } from "config/links";
+import { getExternalAggregatorSwapUrlFromAddresses } from "config/links";
 import { MULTI_CHAIN_DEPOSIT_TRADE_TOKENS } from "config/multichain";
 import {
   useGmxAccountDepositViewTokenAddress,
@@ -769,7 +769,7 @@ function NoSwapPathTooltipContent({
   chainId: number;
   toToken: TokenData | undefined;
 }) {
-  const isMegaEth = isMegaEthChain(chainId);
+  const isMegaEth = MEGAETH === chainId;
   const { setFromTokenAddress, setToTokenAddress, setTradeType, setTradeMode } = useSelector(selectTradeboxState);
 
   const makeHandleSwapClick = useCallback(

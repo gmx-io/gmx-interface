@@ -4,7 +4,7 @@ import cx from "classnames";
 import { ChangeEvent, useCallback, useEffect, useMemo, useRef } from "react";
 import { useKey, useLatest, usePrevious } from "react-use";
 
-import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, MEGAETH } from "config/chains";
+import { GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
 import { isSettlementChain } from "config/multichain";
 import { useOpenMultichainDepositModal } from "context/GmxAccountContext/useOpenMultichainDepositModal";
@@ -46,6 +46,7 @@ import {
   selectTradeboxSetSelectedAllowedSwapSlippageBps,
   selectTradeboxState,
   selectTradeboxSwapAmounts,
+  selectTradeboxSwapTokens,
   selectTradeboxTradeFlags,
   selectTradeboxTradeRatios,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -142,7 +143,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
 
-  const { swapTokens: rawSwapTokens, infoTokens, sortedLongAndShortTokens, sortedAllMarkets } = availableTokenOptions;
+  const { infoTokens, sortedLongAndShortTokens, sortedAllMarkets } = availableTokenOptions;
+  const swapTokens = useSelector(selectTradeboxSwapTokens);
   const tokensData = useTokensData();
   const { tokenChainDataArray: multichainTokens } = useMultichainTokens();
   const marketsInfoData = useSelector(selectMarketsInfoData);
@@ -151,16 +153,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
 
   const chainId = useSelector(selectChainId);
-
-  const swapTokens = useMemo(() => {
-    if (isSwap || chainId !== MEGAETH) {
-      return rawSwapTokens;
-    }
-
-    // Temporary filter out native and wrapped tokens for MegaETH because they can
-    // not be used for open positions
-    return rawSwapTokens.filter((token) => !token.isNative && !token.isWrapped);
-  }, [rawSwapTokens, isSwap, chainId]);
 
   const srcChainId = useSelector(selectSrcChainId);
   const { account, active } = useWallet();

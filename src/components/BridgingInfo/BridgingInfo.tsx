@@ -1,8 +1,8 @@
 import { Trans } from "@lingui/macro";
 
 import { getBridgingOptionsForToken } from "config/bridging";
-import { getChainName } from "config/chains";
-import { isMegaEthChain, JUMPER_EXCHANGE_URL } from "config/links";
+import { getChainName, MEGAETH } from "config/chains";
+import { JUMPER_EXCHANGE_URL } from "config/links";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
@@ -15,7 +15,7 @@ type Props = {
 export function BridgingInfo(props: Props) {
   const { chainId, tokenSymbol, textOpaque } = props;
   const chainName = getChainName(chainId);
-  const isMegaEth = isMegaEthChain(chainId);
+  const isMegaEth = MEGAETH === chainId;
   const bridgingOptions = getBridgingOptionsForToken(tokenSymbol);
 
   if (!tokenSymbol || !bridgingOptions) return null;

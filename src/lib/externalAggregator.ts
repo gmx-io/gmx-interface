@@ -8,8 +8,9 @@ import {
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
   SOURCE_ETHEREUM_MAINNET,
+  MEGAETH,
 } from "config/chains";
-import { isMegaEthChain, JUMPER_EXCHANGE_URL } from "config/links";
+import { JUMPER_EXCHANGE_URL } from "config/links";
 
 const EXTERNAL_AGGREGATOR_NETWORK_NAMES: Partial<Record<AnyChainId, string>> = {
   [ARBITRUM]: "arbitrum",
@@ -20,7 +21,7 @@ const EXTERNAL_AGGREGATOR_NETWORK_NAMES: Partial<Record<AnyChainId, string>> = {
 };
 
 export function getExternalAggregatorBuyTokenUrl(chainId: AnyChainId, tokenAddress: string): string {
-  if (isMegaEthChain(chainId)) {
+  if (MEGAETH === chainId) {
     return JUMPER_EXCHANGE_URL;
   }
 

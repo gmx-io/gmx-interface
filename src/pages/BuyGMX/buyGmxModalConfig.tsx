@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 
-import { ARBITRUM, AVALANCHE, ContractsChainId } from "config/chains";
-import { isMegaEthChain, JUMPER_EXCHANGE_URL } from "config/links";
+import { ARBITRUM, AVALANCHE, ContractsChainId, MEGAETH } from "config/chains";
+import { JUMPER_EXCHANGE_URL } from "config/links";
 
 import OneInchIcon from "img/ic_1inch.svg?react";
 import BanxaIcon from "img/ic_banxa.svg?react";
@@ -25,7 +25,7 @@ const createGetLink =
 
 const createGetSwapLink =
   (links: Partial<Record<ContractsChainId, string>>, fallback: string) => (chainId: ContractsChainId) => {
-    if (isMegaEthChain(chainId)) {
+    if (MEGAETH === chainId) {
       return JUMPER_EXCHANGE_URL;
     }
 
