@@ -308,6 +308,10 @@ msgstr "エラーを表示"
 msgid "settings"
 msgstr "設定"
 
+#: src/components/TVChartContainer/TVChartContainer.tsx
+msgid "Open Short"
+msgstr ""
+
 #: src/components/Claims/ClaimableCard.tsx
 msgid "Price impact rebates ready to claim. <0>Read more</0>."
 msgstr "価格への影響のリベートを受け取る準備ができました。<0>詳細はこちら</0>。"
@@ -509,10 +513,6 @@ msgstr "{0}の最大ショート値を超過しています"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GM balance"
 msgstr "GM残高不足"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Stop Market - long inc."
-msgstr "Stop Market - long inc."
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Slippage exceeded. Expected min: {minOutputAmountText}, actual: {outputAmountText}"
@@ -1635,6 +1635,10 @@ msgstr "クレーム履歴"
 msgid "No SL orders"
 msgstr "SL 注文はありません"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Manual leverage"
+msgstr ""
+
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX alerts"
 msgstr "GMX アラートを確認する"
@@ -1940,6 +1944,10 @@ msgstr "Avalanche上の価格"
 msgid "Chart positions"
 msgstr "ポジションをチャートに"
 
+#: src/components/TVChartContainer/DynamicLine.tsx
+msgid "Unknown Order"
+msgstr ""
+
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Claiming price impact rebates..."
@@ -1972,10 +1980,6 @@ msgstr "GMXはユーティリティおよびガバナンストークンです。
 #: src/pages/RpcDebug/parts.tsx
 msgid "PURPOSE"
 msgstr "PURPOSE"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - long dec."
-msgstr "Market - ロング決済"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/components/Earn/Portfolio/RewardsBar.tsx
@@ -2313,6 +2317,10 @@ msgstr "最大 {0} out"
 msgid "No assets available for deposit"
 msgstr "入金可能な資産がありません"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Stop Loss @ {0}"
+msgstr ""
+
 #: src/components/Referrals/ReferralCodeWarnings.tsx
 msgid "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
 msgstr "コードが{nonTakenNetworkNames}で登録されていません。ネットワークを切り替えて登録し、リベートを獲得してください。"
@@ -2357,6 +2365,10 @@ msgstr "GMを購入"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "of close fee"
 msgstr "クローズ手数料の"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Limit @ {0}"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "FUNDING APR"
@@ -2715,6 +2727,10 @@ msgstr "担保を編集: {0} {1}{2}/USD"
 msgid "Insufficient gas balance. Express Trading and One-Click Trading unavailable."
 msgstr "Gasの残高が不足しています。Express TradingとOne-Click Tradingは利用できません。"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Stop Market @ {0}"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search address"
 msgstr "アドレスを検索"
@@ -3040,6 +3056,10 @@ msgstr "GLVボールト"
 msgid "Buy GMX from centralized services"
 msgstr "中央集権型サービスからGMXを購入"
 
+#: src/components/TVChartContainer/TVChartContainer.tsx
+msgid "Close Short"
+msgstr ""
+
 #: src/pages/RpcDebug/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Primary failed"
@@ -3106,6 +3126,10 @@ msgstr "GMXのDuneアナリティクス"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
 msgstr "すべてのオープンポジションからの未払い借入手数料"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Take Profit @ {0}"
+msgstr ""
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Shorts net rate / 1h"
@@ -3353,10 +3377,6 @@ msgstr "<0>Solana サポート</0><1>Botanix サポート</1><2>GMX Express</2>"
 msgid "Funds are now in your GMX Account"
 msgstr "資金が GMX Account に入金されました"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "TP - long dec."
-msgstr "TP - ロング dec."
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient liquidity. Order will fill when liquidity is available."
 msgstr "流動性不足です。流動性が確保され次第、注文が約定されます。"
@@ -3541,10 +3561,6 @@ msgstr "GMX を出金してリザーブを解除する"
 msgid "Copin"
 msgstr "Copin"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "TP - short dec."
-msgstr "TP - ショート dec."
-
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -3565,10 +3581,6 @@ msgstr "清算価格は手数料および担保価値に応じて変動します
 #: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
 msgid "Low {symbol} balance. This amount leaves little for future fees on {0}"
 msgstr ""
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - short dec."
-msgstr "Market - ショート dec."
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
@@ -3626,6 +3638,7 @@ msgstr "Avalanche"
 msgid "Fee APR"
 msgstr "手数料APR"
 
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
 msgstr "SL"
@@ -4150,10 +4163,6 @@ msgstr "部分ティッカーをトリガー"
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
 msgstr "<0>{0}{1}の購入<1>{poolName}</1></0> <2>{tokensText}で</2>"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - long inc."
-msgstr "マーケット - ロング増加"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Pairs trading"
 msgstr "ペアトレーディング"
@@ -4269,10 +4278,6 @@ msgstr "最小インパクトプール量"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Price impact too high"
 msgstr "価格への影響が大きすぎます"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "SL - long dec."
-msgstr "SL - ロング減少"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Enter withdrawal amount"
@@ -4608,10 +4613,6 @@ msgstr "GMX Accountでリファラルコードを作成するには、{0}上のU
 msgid "Current tier:"
 msgstr "現在のティア:"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - short inc."
-msgstr "Market - ショート増"
-
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Lend GLV or GM tokens and borrow against them"
@@ -4624,6 +4625,10 @@ msgstr "{orderTypeName}を更新"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing position in {0} pool.<0>Switch to {1} pool</0>"
 msgstr "{0}プールに既存のポジションがあります。<0>{1}プールに切り替える</0>"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Take Profit @ {0}"
+msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -4853,10 +4858,6 @@ msgstr "リファラルコードが追加されました"
 msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
 msgstr "Bond ProtocolでGMXボンドを短いベスティング期間で割引購入します"
 
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Open {longOrShortText} - {marketIndexName}"
-msgstr "{longOrShortText}を開く - {marketIndexName}"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer account"
@@ -4998,6 +4999,7 @@ msgstr "設定が更新されました"
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TVChartContainer/DynamicLine.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -5077,10 +5079,6 @@ msgstr "リンク"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact factor for withdrawals"
 msgstr "出金の最大貸出可能インパクトファクター"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Limit - long inc."
-msgstr "Limit - ロング増加"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Claim completed"
@@ -5309,6 +5307,7 @@ msgstr "出金手数料"
 msgid "Your fee savings from referral discounts"
 msgstr "リファラル割引による手数料の節約額"
 
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
 msgstr "TP"
@@ -6360,6 +6359,10 @@ msgstr "分"
 msgid "What makes GMX one of the best places to earn yield on my crypto?"
 msgstr "GMXが暗号資産の利回りを得るのに最適な場所の一つである理由は何ですか？"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Permit has expired. Please try again.</0>"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Approving {tokenSymbol}..."
 msgstr "{tokenSymbol}を承認中..."
@@ -6618,6 +6621,11 @@ msgstr "送金失敗"
 msgid "Last 90d"
 msgstr "過去90日"
 
+#: src/components/TVChartContainer/StaticLine.tsx
+#: src/components/TVChartContainer/StaticLine.tsx
+msgid "Show size in tokens"
+msgstr ""
+
 #: src/components/GmList/GmList.tsx
 msgid "Performance vs benchmark over the selected period"
 msgstr "選択期間におけるベンチマークとの比較パフォーマンス"
@@ -6746,6 +6754,10 @@ msgstr "マーケットが見つかりません。削除された可能性があ
 msgid "Insufficient liquidity to swap collateral"
 msgstr "担保スワップのための流動性不足"
 
+#: src/components/TVChartContainer/TVChartContainer.tsx
+msgid "Open Long"
+msgstr ""
+
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Swap price impact for external swap threshold"
 msgstr "外部スワップしきい値のスワップ価格への影響"
@@ -6807,6 +6819,10 @@ msgstr "Tradao"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity"
 msgstr "流動性不足"
+
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+msgid "Liq."
+msgstr ""
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -7154,10 +7170,6 @@ msgstr "GMXリスクモニタリング"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Minimum capital used of {0} required to qualify for rankings"
 msgstr "ランキングに参加するには、最低{0}の使用資金が必要です"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Limit - short inc."
-msgstr "Limit - ショート増加"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
@@ -7731,10 +7743,6 @@ msgstr "{symbol} をシフト中..."
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close price impact"
 msgstr "決済時の価格への影響"
-
-#: src/components/SettingsModal/DisplaySettings.tsx
-msgid "Show leverage slider"
-msgstr "レバレッジスライダーを表示"
 
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 msgid "Opens GMTrade in a new tab"
@@ -8352,10 +8360,6 @@ msgstr "無効なEthereumアドレスです"
 msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on that network."
 msgstr "{0}でのコードの利用可否を確認できませんでした。コードの作成は可能ですが、そのネットワークでは既に使用されている可能性があります。"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Stop Market - short inc."
-msgstr "Stop Market - ショート増加"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates"
@@ -8607,6 +8611,10 @@ msgstr "パフォーマンスおよびチャートデータはUTC時間に基づ
 msgid "Sell {operationTokenSymbol}"
 msgstr "{operationTokenSymbol}を売却"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
+msgstr ""
+
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx
@@ -8682,6 +8690,7 @@ msgid "Min margin: {0}"
 msgstr "最小証拠金：{0}"
 
 #: src/components/TradeBox/tradeboxConstants.tsx
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Market"
 msgstr "ストップマーケット"
@@ -8749,6 +8758,11 @@ msgstr "注文キー："
 msgid "Why is the claim in GLV tokens?"
 msgstr "なぜGLVトークンで請求なのですか？"
 
+#: src/components/TVChartContainer/StaticLine.tsx
+#: src/components/TVChartContainer/StaticLine.tsx
+msgid "Show size in USD"
+msgstr ""
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
@@ -8813,6 +8827,7 @@ msgstr "{gmOrGlvLabel}の売却は成功しましたが、Baseへのブリッジ
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TVChartContainer/DynamicLine.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -9323,6 +9338,10 @@ msgstr "すべての収益が自動的に複利運用されます"
 msgid "Use the TP/SL button to set TP/SL orders."
 msgstr "TP/SLボタンを使用してTP/SL注文を設定してください。"
 
+#: src/components/TVChartContainer/TVChartContainer.tsx
+msgid "Close Long"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders referred on Arbitrum"
 msgstr "Arbitrumで紹介されたトレーダー"
@@ -9544,6 +9563,10 @@ msgstr ""
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Stabilize Protocol"
 msgstr "Stabilizeプロトコル"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Limit @ {0}"
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Auto-cancel TP/SL"
@@ -9987,6 +10010,10 @@ msgstr "GLV ボールト:"
 msgid "Download as CSV"
 msgstr "CSV としてダウンロード"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Stop Market @ {0}"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Benefit from up to 100x leverage and guaranteed on-chain liquidity that's not dependent on order book depth"
 msgstr "最大100倍のレバレッジと、オーダーブックの厚みに依存しないオンチェーン流動性の保証を活用できます"
@@ -10014,7 +10041,6 @@ msgid "Max pool amount exceeded"
 msgstr "最大プール額を超えました"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Unknown order"
 msgstr "不明な注文"
 
@@ -10214,6 +10240,10 @@ msgstr "利回りを獲得する"
 msgid "{orderText} cancellation failed"
 msgstr "{orderText} のキャンセルに失敗しました"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Stop Loss @ {0}"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Sell"
 msgstr "売却"
@@ -10257,10 +10287,6 @@ msgstr "{count, plural, one {注文} other {# 注文}}"
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche trading incentives"
 msgstr "Avalancheトレーディングインセンティブ"
-
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Liquidation {longOrShortText} - {marketIndexName}"
-msgstr "清算 {longOrShortText} - {marketIndexName}"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
@@ -10424,6 +10450,7 @@ msgstr "送信先トークンアドレスがありません"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/keys.ts
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"
 msgstr "リミット"
@@ -10444,10 +10471,6 @@ msgstr "最小ポジションサイズ"
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Hours"
 msgstr "時間"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "SL - short dec."
-msgstr "SL - ショート減少"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Invalid receiver address"

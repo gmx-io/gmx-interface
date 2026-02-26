@@ -548,14 +548,23 @@ export const formatArrayAmount = (
   return formatAmount(arr[index], tokenDecimals, displayDecimals, useCommas);
 };
 
-export const formatAmountFree = (amount: BigNumberish, tokenDecimals: number, displayDecimals?: number) => {
+export const formatAmountFree = (
+  amount: BigNumberish,
+  tokenDecimals: number,
+  displayDecimals?: number,
+  visualMultiplier?: number
+) => {
   if (amount === undefined || amount === null) {
     return "...";
   }
 
-  amount = BigInt(amount);
+  let amountBigInt = BigInt(amount);
 
-  let amountStr = formatUnits(amount, tokenDecimals);
+  if (visualMultiplier) {
+    amountBigInt = amountBigInt / BigInt(visualMultiplier);
+  }
+
+  let amountStr = formatUnits(amountBigInt, tokenDecimals);
   amountStr = limitDecimals(amountStr, displayDecimals);
   return trimZeroDecimals(amountStr);
 };

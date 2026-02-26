@@ -7,8 +7,19 @@ export enum LineStyle {
 }
 
 export type StaticChartLine = {
+  id: string;
   price: number;
   title: string;
+  lineType?: "liquidation";
+  positionData?: {
+    pnl: bigint;
+    sizeInUsd: bigint;
+    sizeInTokens: bigint;
+    isLong: boolean;
+    marketIndexName: string;
+    tokenSymbol: string;
+    tokenDecimals: number;
+  };
 };
 
 export type DynamicChartLine = {
@@ -17,4 +28,5 @@ export type DynamicChartLine = {
   orderType: OrderType;
   isLong: boolean;
   marketName: string;
+  updatedAtTime: bigint;
 };
