@@ -236,7 +236,7 @@ export function TradingSettings({
                 <br />
                 Slippage differs from price impact, which is based on open interest imbalances.
               </Trans>{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/trading/#slippage">
+              <ExternalLink href="https://docs.gmx.io/docs/trading/fees/#slippage">
                 <Trans>Read more</Trans>
               </ExternalLink>
               .
@@ -268,7 +268,7 @@ export function TradingSettings({
             description={
               <div>
                 <Trans>Max network fee includes a buffer for gas spikes. Unused fees refunded.</Trans>{" "}
-                <ExternalLink href="https://docs.gmx.io/docs/trading/#network-fee">
+                <ExternalLink href="https://docs.gmx.io/docs/trading/fees/#network-fee">
                   <Trans>Read more</Trans>
                 </ExternalLink>
                 .
@@ -322,7 +322,7 @@ export function TradingSettings({
                 <Trans>
                   TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling.
                 </Trans>{" "}
-                <ExternalLink href="https://docs.gmx.io/docs/trading/#auto-cancel-tp--sl">
+                <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#auto-cancel-tpsl">
                   <Trans>Read more</Trans>
                 </ExternalLink>
                 .

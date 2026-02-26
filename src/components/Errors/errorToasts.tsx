@@ -228,7 +228,7 @@ export function getErrorMessage(
           <Trans>
             RPC error. Update your wallet's RPC via{" "}
             <ExternalLink href="https://chainlist.org">chainlist.org</ExternalLink>.{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/#rpc-urls">Read more</ExternalLink>.
+            <ExternalLink href="https://docs.gmx.io/docs/trading/overview/#rpc-urls">Read more</ExternalLink>.
           </Trans>
           <br />
           <br />

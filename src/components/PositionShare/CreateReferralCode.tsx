@@ -51,7 +51,7 @@ type Props = {
   onSuccess: (code: string) => void;
 };
 
-const REFERRAL_DOCS_LINK = "https://docs.gmx.io/docs/referrals";
+const REFERRAL_DOCS_LINK = "https://docs.gmx.io/docs/referrals/";
 
 export function CreateReferralCode({ onSuccess }: Props) {
   const { srcChainId } = useChainId();
