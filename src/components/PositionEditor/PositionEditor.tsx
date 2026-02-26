@@ -225,6 +225,11 @@ export function PositionEditor() {
       ? submitButtonState.expressParams?.gasPaymentParams?.gasPaymentTokenAmount
       : executionFee?.feeTokenAmount;
 
+  const expressEnabledForMax = expressOrdersEnabled && !collateralToken?.isNative;
+  const isMaxAmountLoading = expressEnabledForMax
+    ? submitButtonState.isExpressLoading || gasPaymentTokenAmountForMax === undefined
+    : executionFee?.feeTokenAmount === undefined;
+
   const depositBalanceType = isCollateralTokenFromGmxAccount ? TokenBalanceType.GmxAccount : TokenBalanceType.Wallet;
   const collateralTokenBalance = getBalanceByBalanceType(collateralToken, depositBalanceType);
   const gasPaymentTokenBalanceForMax = getBalanceByBalanceType(gasPaymentTokenForMax, depositBalanceType);
@@ -234,6 +239,7 @@ export function PositionEditor() {
     fromTokenBalance: collateralTokenBalance,
     fromTokenAmount: collateralDeltaAmount,
     fromTokenInputValue: collateralInputValue,
+    isLoading: isMaxAmountLoading,
     gasPaymentToken: isDeposit ? gasPaymentTokenForMax : undefined,
     gasPaymentTokenBalance: isDeposit ? gasPaymentTokenBalanceForMax : undefined,
     gasPaymentTokenAmount: isDeposit ? gasPaymentTokenAmountForMax : undefined,
