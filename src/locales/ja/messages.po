@@ -1631,6 +1631,10 @@ msgstr "クレーム履歴"
 msgid "No SL orders"
 msgstr "SL 注文はありません"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Manual leverage"
+msgstr ""
+
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX alerts"
 msgstr "GMX アラートを確認する"
@@ -6354,6 +6358,10 @@ msgstr "分"
 msgid "What makes GMX one of the best places to earn yield on my crypto?"
 msgstr "GMXが暗号資産の利回りを得るのに最適な場所の一つである理由は何ですか？"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Permit has expired. Please try again.</0>"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Approving {tokenSymbol}..."
 msgstr "{tokenSymbol}を承認中..."
@@ -7735,10 +7743,6 @@ msgstr "{symbol} をシフト中..."
 msgid "Close price impact"
 msgstr "決済時の価格への影響"
 
-#: src/components/SettingsModal/DisplaySettings.tsx
-msgid "Show leverage slider"
-msgstr "レバレッジスライダーを表示"
-
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 msgid "Opens GMTrade in a new tab"
 msgstr "GMTradeを新しいタブで開きます"
@@ -8605,6 +8609,10 @@ msgstr "パフォーマンスおよびチャートデータはUTC時間に基づ
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "{operationTokenSymbol}を売却"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
+msgstr ""
 
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx

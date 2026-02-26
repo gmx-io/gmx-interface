@@ -12,6 +12,7 @@ import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import { getOrderKeys } from "sdk/utils/orders";
 import { OrderInfo } from "sdk/utils/orders/types";
 
+import { useCancellingOrdersKeysState } from "./orderEditorHooks";
 import { selectExpressGlobalParams } from "../selectors/expressSelectors";
 import { selectChainId, selectSrcChainId, selectSubaccountForChainAction } from "../selectors/globalSelectors";
 import {
@@ -20,7 +21,6 @@ import {
   selectOrderErrorsCount,
 } from "../selectors/orderSelectors";
 import { useSelector } from "../utils";
-import { useCancellingOrdersKeysState } from "./orderEditorHooks";
 
 export const useOrderErrors = (orderKey: string) => {
   const selector = useMemo(() => makeSelectOrderErrorByOrderKey(orderKey), [orderKey]);

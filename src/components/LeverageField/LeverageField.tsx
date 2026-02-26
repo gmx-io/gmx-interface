@@ -34,7 +34,11 @@ function clampLeverage(value: number, min: number, max: number) {
   return Math.min(Math.max(value, safeMin), max);
 }
 
-function formatLeverage(value: number) {
+function formatLeverage(value: number, options?: { integer?: boolean }) {
+  if (options?.integer) {
+    return Math.round(value).toString();
+  }
+
   return parseFloat(value.toFixed(2)).toString();
 }
 
@@ -69,6 +73,12 @@ export function LeverageField({ value, onChange, marks, disabled }: Props) {
       setInputValue(formatLeverage(clampLeverage(value, minMark, maxMark)));
     }
   }, [value, minMark, maxMark]);
+
+  useEffect(() => {
+    if (disabled) {
+      setIsOpen(false);
+    }
+  }, [disabled]);
 
   const parseAndClampValue = useCallback(
     (rawValue: string) => {
@@ -128,8 +138,14 @@ export function LeverageField({ value, onChange, marks, disabled }: Props) {
     setIsOpen(false);
   }, []);
 
-  const displayValue =
-    value !== null ? formatLeverage(clampLeverage(value, minMark, maxMark)) : formatLeverage(minMark);
+  const displayValue = useMemo(() => {
+    if (value === null) {
+      return disabled ? "-" : formatLeverage(minMark);
+    }
+
+    const clampedValue = disabled ? value : clampLeverage(value, minMark, maxMark);
+    return formatLeverage(clampedValue, { integer: disabled && value > maxMark });
+  }, [value, disabled, minMark, maxMark]);
 
   return (
     <>
@@ -137,9 +153,9 @@ export function LeverageField({ value, onChange, marks, disabled }: Props) {
         ref={refs.setReference}
         data-qa="leverage-slider"
         className={cx(
-          "user-select-none flex w-48 items-center justify-between gap-10 rounded-4 px-8",
+          "user-select-none flex w-56 items-center justify-between gap-10 rounded-4 px-8",
           disabled
-            ? "pointer-events-none cursor-default bg-slate-800 opacity-50"
+            ? "cursor-default bg-slate-800"
             : isOpen
               ? "cursor-pointer bg-slate-700"
               : "group cursor-pointer bg-slate-800"
