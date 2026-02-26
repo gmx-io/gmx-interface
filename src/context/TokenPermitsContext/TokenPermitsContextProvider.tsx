@@ -110,9 +110,12 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
       const nearestDeadline = Math.min(...tokenPermits.map((p) => Number(p.deadline)));
       const msUntilExpiry = (nearestDeadline - now + 1) * 1000 + PERMIT_EXPIRY_BUFFER_MS;
 
-      const timeoutId = setTimeout(() => {
-        setTokenPermits(tokenPermits.filter((p) => !getIsPermitExpired(p)));
-      }, Math.max(0, msUntilExpiry));
+      const timeoutId = setTimeout(
+        () => {
+          setTokenPermits(tokenPermits.filter((p) => !getIsPermitExpired(p)));
+        },
+        Math.max(0, msUntilExpiry)
+      );
 
       const onVisibilityChange = () => {
         if (document.visibilityState === "visible") {

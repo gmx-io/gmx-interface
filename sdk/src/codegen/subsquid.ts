@@ -367,6 +367,7 @@ export interface AccountVolumeStatObject {
   __typename?: "AccountVolumeStatObject";
   last7DaysVolume: Scalars["BigInt"]["output"];
   last14DaysVolume: Scalars["BigInt"]["output"];
+  last30DaysVolume: Scalars["BigInt"]["output"];
   maxDailyVolume: Scalars["BigInt"]["output"];
 }
 
@@ -2275,6 +2276,127 @@ export enum EntityType {
   Market = "Market",
 }
 
+export interface FundingRateSnapshot {
+  __typename?: "FundingRateSnapshot";
+  fundingFactorPerSecondLong: Scalars["BigInt"]["output"];
+  fundingFactorPerSecondShort: Scalars["BigInt"]["output"];
+  id: Scalars["String"]["output"];
+  marketAddress: Scalars["String"]["output"];
+  snapshotTimestamp: Scalars["Int"]["output"];
+}
+
+export interface FundingRateSnapshotEdge {
+  __typename?: "FundingRateSnapshotEdge";
+  cursor: Scalars["String"]["output"];
+  node: FundingRateSnapshot;
+}
+
+export enum FundingRateSnapshotOrderByInput {
+  fundingFactorPerSecondLong_ASC = "fundingFactorPerSecondLong_ASC",
+  fundingFactorPerSecondLong_ASC_NULLS_FIRST = "fundingFactorPerSecondLong_ASC_NULLS_FIRST",
+  fundingFactorPerSecondLong_ASC_NULLS_LAST = "fundingFactorPerSecondLong_ASC_NULLS_LAST",
+  fundingFactorPerSecondLong_DESC = "fundingFactorPerSecondLong_DESC",
+  fundingFactorPerSecondLong_DESC_NULLS_FIRST = "fundingFactorPerSecondLong_DESC_NULLS_FIRST",
+  fundingFactorPerSecondLong_DESC_NULLS_LAST = "fundingFactorPerSecondLong_DESC_NULLS_LAST",
+  fundingFactorPerSecondShort_ASC = "fundingFactorPerSecondShort_ASC",
+  fundingFactorPerSecondShort_ASC_NULLS_FIRST = "fundingFactorPerSecondShort_ASC_NULLS_FIRST",
+  fundingFactorPerSecondShort_ASC_NULLS_LAST = "fundingFactorPerSecondShort_ASC_NULLS_LAST",
+  fundingFactorPerSecondShort_DESC = "fundingFactorPerSecondShort_DESC",
+  fundingFactorPerSecondShort_DESC_NULLS_FIRST = "fundingFactorPerSecondShort_DESC_NULLS_FIRST",
+  fundingFactorPerSecondShort_DESC_NULLS_LAST = "fundingFactorPerSecondShort_DESC_NULLS_LAST",
+  id_ASC = "id_ASC",
+  id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
+  id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
+  id_DESC = "id_DESC",
+  id_DESC_NULLS_FIRST = "id_DESC_NULLS_FIRST",
+  id_DESC_NULLS_LAST = "id_DESC_NULLS_LAST",
+  marketAddress_ASC = "marketAddress_ASC",
+  marketAddress_ASC_NULLS_FIRST = "marketAddress_ASC_NULLS_FIRST",
+  marketAddress_ASC_NULLS_LAST = "marketAddress_ASC_NULLS_LAST",
+  marketAddress_DESC = "marketAddress_DESC",
+  marketAddress_DESC_NULLS_FIRST = "marketAddress_DESC_NULLS_FIRST",
+  marketAddress_DESC_NULLS_LAST = "marketAddress_DESC_NULLS_LAST",
+  snapshotTimestamp_ASC = "snapshotTimestamp_ASC",
+  snapshotTimestamp_ASC_NULLS_FIRST = "snapshotTimestamp_ASC_NULLS_FIRST",
+  snapshotTimestamp_ASC_NULLS_LAST = "snapshotTimestamp_ASC_NULLS_LAST",
+  snapshotTimestamp_DESC = "snapshotTimestamp_DESC",
+  snapshotTimestamp_DESC_NULLS_FIRST = "snapshotTimestamp_DESC_NULLS_FIRST",
+  snapshotTimestamp_DESC_NULLS_LAST = "snapshotTimestamp_DESC_NULLS_LAST",
+}
+
+export interface FundingRateSnapshotWhereInput {
+  AND?: InputMaybe<Array<FundingRateSnapshotWhereInput>>;
+  OR?: InputMaybe<Array<FundingRateSnapshotWhereInput>>;
+  fundingFactorPerSecondLong_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  fundingFactorPerSecondLong_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  fundingFactorPerSecondLong_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  fundingFactorPerSecondLong_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  fundingFactorPerSecondLong_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  fundingFactorPerSecondLong_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  fundingFactorPerSecondLong_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  fundingFactorPerSecondLong_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  fundingFactorPerSecondLong_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  fundingFactorPerSecondShort_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  fundingFactorPerSecondShort_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  fundingFactorPerSecondShort_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  fundingFactorPerSecondShort_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  fundingFactorPerSecondShort_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  fundingFactorPerSecondShort_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  fundingFactorPerSecondShort_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  fundingFactorPerSecondShort_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  fundingFactorPerSecondShort_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  id_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_gt?: InputMaybe<Scalars["String"]["input"]>;
+  id_gte?: InputMaybe<Scalars["String"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id_lt?: InputMaybe<Scalars["String"]["input"]>;
+  id_lte?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_contains?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_eq?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_gt?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_gte?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  marketAddress_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  marketAddress_lt?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_lte?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  marketAddress_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  snapshotTimestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  snapshotTimestamp_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  snapshotTimestamp_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+}
+
+export interface FundingRateSnapshotsConnection {
+  __typename?: "FundingRateSnapshotsConnection";
+  edges: Array<FundingRateSnapshotEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"]["output"];
+}
+
 export interface Glv {
   __typename?: "Glv";
   glvTokenAddress: Scalars["String"]["output"];
@@ -4060,6 +4182,30 @@ export interface MarketInfosConnection {
   edges: Array<MarketInfoEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars["Int"]["output"];
+}
+
+export interface MarketNetRates {
+  __typename?: "MarketNetRates";
+  borrowingRateLong: Scalars["BigInt"]["output"];
+  borrowingRateShort: Scalars["BigInt"]["output"];
+  fundingRateLong: Scalars["BigInt"]["output"];
+  fundingRateShort: Scalars["BigInt"]["output"];
+  netRateLong: Scalars["BigInt"]["output"];
+  netRateShort: Scalars["BigInt"]["output"];
+  timestamp: Scalars["Float"]["output"];
+}
+
+export interface MarketNetRatesResponse {
+  __typename?: "MarketNetRatesResponse";
+  marketAddress: Scalars["String"]["output"];
+  ratesSnapshots: Array<MarketNetRates>;
+}
+
+export interface MarketNetRatesWhereInput {
+  averageBy?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddresses?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  periodEnd: Scalars["Float"]["input"];
+  periodStart: Scalars["Float"]["input"];
 }
 
 export enum MarketOrderByInput {
@@ -7971,6 +8117,9 @@ export interface Query {
   distributionById?: Maybe<Distribution>;
   distributions: Array<Distribution>;
   distributionsConnection: DistributionsConnection;
+  fundingRateSnapshotById?: Maybe<FundingRateSnapshot>;
+  fundingRateSnapshots: Array<FundingRateSnapshot>;
+  fundingRateSnapshotsConnection: FundingRateSnapshotsConnection;
   glvById?: Maybe<Glv>;
   glvs: Array<Glv>;
   glvsAprByPeriod: Array<GlvApr>;
@@ -7983,6 +8132,7 @@ export interface Query {
   markets: Array<Market>;
   marketsAprByPeriod: Array<MarketApr>;
   marketsConnection: MarketsConnection;
+  marketsNetRatesByPeriod: Array<MarketNetRatesResponse>;
   marketsPnlAprByPeriod: Array<MarketPnlApr>;
   multichainFunding: Array<MultichainFundingInfo>;
   multichainFundingReceiveEventById?: Maybe<MultichainFundingReceiveEvent>;
@@ -8304,6 +8454,24 @@ export interface QuerydistributionsConnectionArgs {
   where?: InputMaybe<DistributionWhereInput>;
 }
 
+export interface QueryfundingRateSnapshotByIdArgs {
+  id: Scalars["String"]["input"];
+}
+
+export interface QueryfundingRateSnapshotsArgs {
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<Array<FundingRateSnapshotOrderByInput>>;
+  where?: InputMaybe<FundingRateSnapshotWhereInput>;
+}
+
+export interface QueryfundingRateSnapshotsConnectionArgs {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy: Array<FundingRateSnapshotOrderByInput>;
+  where?: InputMaybe<FundingRateSnapshotWhereInput>;
+}
+
 export interface QueryglvByIdArgs {
   id: Scalars["String"]["input"];
 }
@@ -8368,6 +8536,10 @@ export interface QuerymarketsConnectionArgs {
   first?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy: Array<MarketOrderByInput>;
   where?: InputMaybe<MarketWhereInput>;
+}
+
+export interface QuerymarketsNetRatesByPeriodArgs {
+  where?: InputMaybe<MarketNetRatesWhereInput>;
 }
 
 export interface QuerymarketsPnlAprByPeriodArgs {
