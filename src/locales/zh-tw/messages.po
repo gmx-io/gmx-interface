@@ -308,6 +308,10 @@ msgstr "顯示錯誤"
 msgid "settings"
 msgstr "設定"
 
+#: src/components/TVChartContainer/TVChartContainer.tsx
+msgid "Open Short"
+msgstr ""
+
 #: src/components/Claims/ClaimableCard.tsx
 msgid "Price impact rebates ready to claim. <0>Read more</0>."
 msgstr "價格影響回饋已可領取。<0>閱讀更多</0>。"
@@ -509,10 +513,6 @@ msgstr "超過 {0} 做空上限"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GM balance"
 msgstr "GM 餘額不足"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Stop Market - long inc."
-msgstr "Stop Market - 做多加倉"
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Slippage exceeded. Expected min: {minOutputAmountText}, actual: {outputAmountText}"
@@ -1936,6 +1936,10 @@ msgstr "Avalanche 上的價格"
 msgid "Chart positions"
 msgstr "圖表倉位"
 
+#: src/components/TVChartContainer/DynamicLine.tsx
+msgid "Unknown Order"
+msgstr ""
+
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Claiming price impact rebates..."
@@ -1968,10 +1972,6 @@ msgstr "GMX 是實用型治理代幣。透過回購與分配機制，亦可累�
 #: src/pages/RpcDebug/parts.tsx
 msgid "PURPOSE"
 msgstr "用途"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - long dec."
-msgstr "Market - 做多減倉"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/components/Earn/Portfolio/RewardsBar.tsx
@@ -2309,6 +2309,10 @@ msgstr "最多可兌出 {0}"
 msgid "No assets available for deposit"
 msgstr "無可存入的資產"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Stop Loss @ {0}"
+msgstr ""
+
 #: src/components/Referrals/ReferralCodeWarnings.tsx
 msgid "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
 msgstr "推薦碼尚未在 {nonTakenNetworkNames} 上註冊。請切換網路以完成註冊並賺取返傭。"
@@ -2353,6 +2357,10 @@ msgstr "買入 GM"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "of close fee"
 msgstr "平倉手續費的"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Limit @ {0}"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "FUNDING APR"
@@ -2711,6 +2719,10 @@ msgstr "編輯抵押品：{0} {1}{2}/USD"
 msgid "Insufficient gas balance. Express Trading and One-Click Trading unavailable."
 msgstr "Gas 餘額不足。Express Trading 和 One-Click Trading 無法使用。"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Stop Market @ {0}"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search address"
 msgstr "搜尋地址"
@@ -3014,10 +3026,6 @@ msgstr "資金不足以支付訂單費用。剩餘：{remainingCostUsdText}"
 msgid "Tenderly settings"
 msgstr "Tenderly 設定"
 
-#: src/components/ExitPriceRow/ExitPriceRow.tsx
-#~ msgid "Price you'll receive when closing, adjusted for capped price impact"
-#~ msgstr "平倉時您將收到的價格，已根據上限價格影響進行調整"
-
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
 msgstr "加倉（市價）"
@@ -3040,6 +3048,10 @@ msgstr "GLV 金庫"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from centralized services"
 msgstr "從中心化服務購買 GMX"
+
+#: src/components/TVChartContainer/TVChartContainer.tsx
+msgid "Close Short"
+msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -3107,6 +3119,10 @@ msgstr "Dune Analytics for GMX"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
 msgstr "所有未平倉倉位的待結算借貸費用"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Take Profit @ {0}"
+msgstr ""
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Shorts net rate / 1h"
@@ -3354,10 +3370,6 @@ msgstr "<0>Solana 支援</0><1>Botanix 支援</1><2>GMX Express</2>"
 msgid "Funds are now in your GMX Account"
 msgstr "資金已存入您的 GMX Account"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "TP - long dec."
-msgstr "TP - 做多減倉"
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient liquidity. Order will fill when liquidity is available."
 msgstr "流動性不足。當流動性可用時將執行訂單。"
@@ -3542,10 +3554,6 @@ msgstr "提取並解除 GMX 預留"
 msgid "Copin"
 msgstr "Copin"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "TP - short dec."
-msgstr "TP - 做空減倉"
-
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -3562,10 +3570,6 @@ msgstr "{0}"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Liquidation price changes with fees and collateral value."
 msgstr "清算價格會隨費用和抵押品價值變動。"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - short dec."
-msgstr "Market - 做空減倉"
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
@@ -3623,6 +3627,7 @@ msgstr "Avalanche"
 msgid "Fee APR"
 msgstr "費用 APR"
 
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
 msgstr "SL"
@@ -4147,10 +4152,6 @@ msgstr "觸發部分報價"
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
 msgstr "<0>買入 {0}{1}<1>{poolName}</1></0> <2>使用 {tokensText}</2>"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - long inc."
-msgstr "Market - 做多加倉"
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Pairs trading"
 msgstr "配對交易"
@@ -4266,10 +4267,6 @@ msgstr "最小影響池數量"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Price impact too high"
 msgstr "價格影響過高"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "SL - long dec."
-msgstr "SL - 做多減倉"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Enter withdrawal amount"
@@ -4605,10 +4602,6 @@ msgstr "您需要在 {0} 上持有 USDC 或 ETH 才能透過 GMX Account 建立�
 msgid "Current tier:"
 msgstr "目前等級："
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - short inc."
-msgstr "Market - 做空增加"
-
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Lend GLV or GM tokens and borrow against them"
@@ -4621,6 +4614,10 @@ msgstr "更新{orderTypeName}"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing position in {0} pool.<0>Switch to {1} pool</0>"
 msgstr "在 {0} 池中已有倉位。<0>切換至 {1} 池</0>"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Take Profit @ {0}"
+msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -4850,10 +4847,6 @@ msgstr "推薦碼已新增"
 msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
 msgstr "在 Bond Protocol 上以折扣價購買 GMX 債券，享有短期歸屬期"
 
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Open {longOrShortText} - {marketIndexName}"
-msgstr "開倉 {longOrShortText} - {marketIndexName}"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer account"
@@ -4995,6 +4988,7 @@ msgstr "設定已更新"
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TVChartContainer/DynamicLine.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -5074,10 +5068,6 @@ msgstr "連結"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact factor for withdrawals"
 msgstr "提取最大可借出影響因子"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Limit - long inc."
-msgstr "Limit - 做多增加"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Claim completed"
@@ -5306,6 +5296,7 @@ msgstr "提取手續費"
 msgid "Your fee savings from referral discounts"
 msgstr "您透過推薦折扣節省的手續費"
 
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
 msgstr "止盈"
@@ -6621,6 +6612,11 @@ msgstr "轉帳失敗"
 msgid "Last 90d"
 msgstr "過去 90 天"
 
+#: src/components/TVChartContainer/StaticLine.tsx
+#: src/components/TVChartContainer/StaticLine.tsx
+msgid "Show size in tokens"
+msgstr ""
+
 #: src/components/GmList/GmList.tsx
 msgid "Performance vs benchmark over the selected period"
 msgstr "所選期間相對於基準的績效表現"
@@ -6749,6 +6745,10 @@ msgstr "找不到市場，可能已被移除"
 msgid "Insufficient liquidity to swap collateral"
 msgstr "流動性不足，無法兌換抵押品"
 
+#: src/components/TVChartContainer/TVChartContainer.tsx
+msgid "Open Long"
+msgstr ""
+
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Swap price impact for external swap threshold"
 msgstr "外部兌換閾值的兌換價格影響"
@@ -6810,6 +6810,10 @@ msgstr "Tradao"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity"
 msgstr "流動性不足"
+
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+msgid "Liq."
+msgstr ""
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -7157,10 +7161,6 @@ msgstr "GMX 風險監控"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Minimum capital used of {0} required to qualify for rankings"
 msgstr "需要使用最低 {0} 的資金才能參與排名"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Limit - short inc."
-msgstr "Limit - 做空加倉"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
@@ -8355,10 +8355,6 @@ msgstr "無效的 Ethereum 地址"
 msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on that network."
 msgstr "無法在 {0} 上驗證代碼的可用性。您仍然可以建立該代碼，但它可能已在該網路上被使用。"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Stop Market - short inc."
-msgstr "Stop Market - 做空加倉"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates"
@@ -8685,6 +8681,7 @@ msgid "Min margin: {0}"
 msgstr "最低保證金：{0}"
 
 #: src/components/TradeBox/tradeboxConstants.tsx
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Market"
 msgstr "Stop Market"
@@ -8752,6 +8749,11 @@ msgstr "訂單鍵值："
 msgid "Why is the claim in GLV tokens?"
 msgstr "為什麼以 GLV 代幣領取？"
 
+#: src/components/TVChartContainer/StaticLine.tsx
+#: src/components/TVChartContainer/StaticLine.tsx
+msgid "Show size in USD"
+msgstr ""
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
@@ -8816,6 +8818,7 @@ msgstr "{gmOrGlvLabel} 賣出成功，但跨鏈橋接至 Base 失敗。您的資
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TVChartContainer/DynamicLine.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -9319,6 +9322,10 @@ msgstr "所有收益自動複利"
 msgid "Use the TP/SL button to set TP/SL orders."
 msgstr "使用 TP/SL 按鈕設定 TP/SL 訂單。"
 
+#: src/components/TVChartContainer/TVChartContainer.tsx
+msgid "Close Long"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders referred on Arbitrum"
 msgstr "在 Arbitrum 上推薦的交易者"
@@ -9540,6 +9547,10 @@ msgstr ""
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Stabilize Protocol"
 msgstr "Stabilize Protocol"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Limit @ {0}"
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Auto-cancel TP/SL"
@@ -9983,6 +9994,10 @@ msgstr "GLV 金庫："
 msgid "Download as CSV"
 msgstr "下載為 CSV"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Stop Market @ {0}"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Benefit from up to 100x leverage and guaranteed on-chain liquidity that's not dependent on order book depth"
 msgstr "享受最高 100 倍槓桿以及不依賴訂單簿深度的鏈上保證流動性"
@@ -10010,7 +10025,6 @@ msgid "Max pool amount exceeded"
 msgstr "超過池最大金額"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Unknown order"
 msgstr "未知訂單"
 
@@ -10210,6 +10224,10 @@ msgstr "開始賺取收益"
 msgid "{orderText} cancellation failed"
 msgstr "{orderText} 取消失敗"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Stop Loss @ {0}"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Sell"
 msgstr "賣出"
@@ -10253,10 +10271,6 @@ msgstr "{count, plural, one {訂單} other {# 筆訂單}}"
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche trading incentives"
 msgstr "Avalanche 交易獎勵"
-
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Liquidation {longOrShortText} - {marketIndexName}"
-msgstr "清算 {longOrShortText} - {marketIndexName}"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
@@ -10420,6 +10434,7 @@ msgstr "無目標代幣地址"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/keys.ts
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"
 msgstr "限價"
@@ -10440,10 +10455,6 @@ msgstr "最小倉位大小"
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Hours"
 msgstr "小時"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "SL - short dec."
-msgstr "SL - 做空減倉"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Invalid receiver address"

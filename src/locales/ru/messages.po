@@ -308,6 +308,10 @@ msgstr "Показать ошибку"
 msgid "settings"
 msgstr "настройки"
 
+#: src/components/TVChartContainer/TVChartContainer.tsx
+msgid "Open Short"
+msgstr ""
+
 #: src/components/Claims/ClaimableCard.tsx
 msgid "Price impact rebates ready to claim. <0>Read more</0>."
 msgstr "Возврат за влияние на цену доступен для получения. <0>Подробнее</0>."
@@ -509,10 +513,6 @@ msgstr "Максимальное {0} превышение шорта"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GM balance"
 msgstr "Недостаточный баланс GM"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Stop Market - long inc."
-msgstr "Stop Market - увеличение лонга"
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Slippage exceeded. Expected min: {minOutputAmountText}, actual: {outputAmountText}"
@@ -1936,6 +1936,10 @@ msgstr "Цена на Avalanche"
 msgid "Chart positions"
 msgstr "Позиции на графике"
 
+#: src/components/TVChartContainer/DynamicLine.tsx
+msgid "Unknown Order"
+msgstr ""
+
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Claiming price impact rebates..."
@@ -1968,10 +1972,6 @@ msgstr "GMX — это служебный токен и токен управл�
 #: src/pages/RpcDebug/parts.tsx
 msgid "PURPOSE"
 msgstr "НАЗНАЧЕНИЕ"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - long dec."
-msgstr "Market - закр. лонг"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/components/Earn/Portfolio/RewardsBar.tsx
@@ -2309,6 +2309,10 @@ msgstr "Макс {0} выход"
 msgid "No assets available for deposit"
 msgstr "Нет доступных активов для депозита"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Stop Loss @ {0}"
+msgstr ""
+
 #: src/components/Referrals/ReferralCodeWarnings.tsx
 msgid "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
 msgstr "Код не зарегистрирован в {nonTakenNetworkNames}. Переключите сеть для регистрации и получения скидок."
@@ -2353,6 +2357,10 @@ msgstr "Купить GM"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "of close fee"
 msgstr "от комиссии закрытия"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Limit @ {0}"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "FUNDING APR"
@@ -2711,6 +2719,10 @@ msgstr "Редактировать обеспечение: {0} {1}{2}/USD"
 msgid "Insufficient gas balance. Express Trading and One-Click Trading unavailable."
 msgstr "Недостаточный баланс для газа. Express Trading и One-Click Trading недоступны."
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Stop Market @ {0}"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search address"
 msgstr "Поиск адреса"
@@ -3014,10 +3026,6 @@ msgstr "Недостаточно средств для оплаты расход
 msgid "Tenderly settings"
 msgstr "Настройки Tenderly"
 
-#: src/components/ExitPriceRow/ExitPriceRow.tsx
-#~ msgid "Price you'll receive when closing, adjusted for capped price impact"
-#~ msgstr "Цена, которую вы получите при закрытии, с учётом ограниченного влияния на цену"
-
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
 msgstr "Увеличить размер (Market)"
@@ -3040,6 +3048,10 @@ msgstr "Хранилища GLV"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from centralized services"
 msgstr "Купить GMX на централизованных сервисах"
+
+#: src/components/TVChartContainer/TVChartContainer.tsx
+msgid "Close Short"
+msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -3107,6 +3119,10 @@ msgstr "Dune Analytics для GMX"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
 msgstr "Незафиксированные комиссии за заимствование по всем открытым позициям"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Take Profit @ {0}"
+msgstr ""
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Shorts net rate / 1h"
@@ -3354,10 +3370,6 @@ msgstr "<0>Поддержка Solana</0><1>Поддержка Botanix</1><2>GMX 
 msgid "Funds are now in your GMX Account"
 msgstr "Средства поступили на ваш GMX Account"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "TP - long dec."
-msgstr "TP - лонг умен."
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient liquidity. Order will fill when liquidity is available."
 msgstr "Недостаточная ликвидность. Ордер будет исполнен, когда появится ликвидность."
@@ -3542,10 +3554,6 @@ msgstr "Вывести и снять резервирование GMX"
 msgid "Copin"
 msgstr "Copin"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "TP - short dec."
-msgstr "TP - шорт умен."
-
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -3562,10 +3570,6 @@ msgstr "{0}"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Liquidation price changes with fees and collateral value."
 msgstr "Цена ликвидации меняется в зависимости от комиссий и стоимости обеспечения."
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - short dec."
-msgstr "Market - шорт умен."
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
@@ -3623,6 +3627,7 @@ msgstr "Avalanche"
 msgid "Fee APR"
 msgstr "Годовая Процентная Ставка Комиссии"
 
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
 msgstr "SL"
@@ -4147,10 +4152,6 @@ msgstr "Частичные тикеры по триггеру"
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
 msgstr "<0>Покупка {0}{1}<1>{poolName}</1></0> <2>с {tokensText}</2>"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - long inc."
-msgstr "Market - лонг увел."
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Pairs trading"
 msgstr "Парный трейдинг"
@@ -4266,10 +4267,6 @@ msgstr "Мин. сумма пула влияния"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Price impact too high"
 msgstr "Влияние на цену слишком велико"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "SL - long dec."
-msgstr "SL - лонг умен."
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Enter withdrawal amount"
@@ -4605,10 +4602,6 @@ msgstr "Для создания реферального кода через GMX
 msgid "Current tier:"
 msgstr "Текущий уровень:"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - short inc."
-msgstr "Market - увел. шорта"
-
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Lend GLV or GM tokens and borrow against them"
@@ -4621,6 +4614,10 @@ msgstr "Обновить {orderTypeName}"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing position in {0} pool.<0>Switch to {1} pool</0>"
 msgstr "Существующая позиция в пуле {0}.<0>Переключиться на пул {1}</0>"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Take Profit @ {0}"
+msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -4850,10 +4847,6 @@ msgstr "Реферальный код добавлен"
 msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
 msgstr "Покупайте облигации GMX на Bond Protocol со скидкой и коротким периодом вестинга"
 
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Open {longOrShortText} - {marketIndexName}"
-msgstr "Открыть {longOrShortText} - {marketIndexName}"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer account"
@@ -4995,6 +4988,7 @@ msgstr "Настройки обновлены"
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TVChartContainer/DynamicLine.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -5074,10 +5068,6 @@ msgstr "Ссылки"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact factor for withdrawals"
 msgstr "Макс. фактор влияния заёмных средств для выводов"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Limit - long inc."
-msgstr "Limit — увеличение лонга"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Claim completed"
@@ -5306,6 +5296,7 @@ msgstr "Комиссия за вывод"
 msgid "Your fee savings from referral discounts"
 msgstr "Ваша экономия на комиссиях от реферальных скидок"
 
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
 msgstr "TP"
@@ -6621,6 +6612,11 @@ msgstr "Перевод не выполнен"
 msgid "Last 90d"
 msgstr "Последние 90д"
 
+#: src/components/TVChartContainer/StaticLine.tsx
+#: src/components/TVChartContainer/StaticLine.tsx
+msgid "Show size in tokens"
+msgstr ""
+
 #: src/components/GmList/GmList.tsx
 msgid "Performance vs benchmark over the selected period"
 msgstr "Результативность по сравнению с эталоном за выбранный период"
@@ -6749,6 +6745,10 @@ msgstr "Рынок не найден. Возможно, он был удалён
 msgid "Insufficient liquidity to swap collateral"
 msgstr "Недостаточная ликвидность для обмена залога"
 
+#: src/components/TVChartContainer/TVChartContainer.tsx
+msgid "Open Long"
+msgstr ""
+
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Swap price impact for external swap threshold"
 msgstr "Порог влияния на цену для внешних обменов"
@@ -6810,6 +6810,10 @@ msgstr "Tradao"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity"
 msgstr "Недостаточная ликвидность"
+
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+msgid "Liq."
+msgstr ""
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -7157,10 +7161,6 @@ msgstr "Мониторинг рисков GMX"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Minimum capital used of {0} required to qualify for rankings"
 msgstr "Для участия в рейтинге необходимо использовать капитал не менее {0}"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Limit - short inc."
-msgstr "Limit - увеличение шорта"
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
@@ -8355,10 +8355,6 @@ msgstr "Недействительный адрес Ethereum"
 msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on that network."
 msgstr "Не удалось проверить доступность кода в сети {0}. Вы всё равно можете создать код, но он может быть уже занят в этой сети."
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Stop Market - short inc."
-msgstr "Stop Market - увеличение шорт"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates"
@@ -8685,6 +8681,7 @@ msgid "Min margin: {0}"
 msgstr "Мин. маржа: {0}"
 
 #: src/components/TradeBox/tradeboxConstants.tsx
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Market"
 msgstr "Стоп-рынок"
@@ -8752,6 +8749,11 @@ msgstr "Ключ ордера:"
 msgid "Why is the claim in GLV tokens?"
 msgstr "Почему клейм в токенах GLV?"
 
+#: src/components/TVChartContainer/StaticLine.tsx
+#: src/components/TVChartContainer/StaticLine.tsx
+msgid "Show size in USD"
+msgstr ""
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
@@ -8816,6 +8818,7 @@ msgstr "{gmOrGlvLabel} успешно продан, но мост на Base не
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TVChartContainer/DynamicLine.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -9319,6 +9322,10 @@ msgstr "Вся доходность реинвестируется автома�
 msgid "Use the TP/SL button to set TP/SL orders."
 msgstr "Используйте кнопку TP/SL для установки TP/SL ордеров."
 
+#: src/components/TVChartContainer/TVChartContainer.tsx
+msgid "Close Long"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders referred on Arbitrum"
 msgstr "Привлечённые трейдеры на Arbitrum"
@@ -9540,6 +9547,10 @@ msgstr ""
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Stabilize Protocol"
 msgstr "Протокол Stabilize"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Limit @ {0}"
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Auto-cancel TP/SL"
@@ -9983,6 +9994,10 @@ msgstr "GLV хранилища:"
 msgid "Download as CSV"
 msgstr "Скачать как CSV"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Stop Market @ {0}"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Benefit from up to 100x leverage and guaranteed on-chain liquidity that's not dependent on order book depth"
 msgstr "Воспользуйтесь кредитным плечом до 100x и гарантированной ликвидностью на блокчейне, не зависящей от глубины книги ордеров"
@@ -10010,7 +10025,6 @@ msgid "Max pool amount exceeded"
 msgstr "Превышена максимальная сумма пула"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Unknown order"
 msgstr "Неизвестный ордер"
 
@@ -10210,6 +10224,10 @@ msgstr "Начать зарабатывать"
 msgid "{orderText} cancellation failed"
 msgstr "Отмена {orderText} не удалась"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Stop Loss @ {0}"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Sell"
 msgstr "Продать"
@@ -10253,10 +10271,6 @@ msgstr "{count, plural, one {Ордер} other {# Ордеров}}"
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche trading incentives"
 msgstr "Торговые поощрения Avalanche"
-
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Liquidation {longOrShortText} - {marketIndexName}"
-msgstr "Ликвидация {longOrShortText} - {marketIndexName}"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
@@ -10420,6 +10434,7 @@ msgstr "Адрес целевого токена не указан"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/keys.ts
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"
 msgstr "Лимит"
@@ -10440,10 +10455,6 @@ msgstr "Мин. размер позиции"
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Hours"
 msgstr "Часы"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "SL - short dec."
-msgstr "SL - шорт умен."
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Invalid receiver address"
