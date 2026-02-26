@@ -152,7 +152,7 @@ export function usePositionsInfoRequest(
 
   const recomputedApiPositionsInfoData = useMemo(() => {
     if (!optimisticApiPositionsInfoData || !marketsInfoData || minCollateralUsd === undefined) {
-      return optimisticApiPositionsInfoData;
+      return undefined;
     }
 
     let hasRecomputed = false;
@@ -211,6 +211,6 @@ export function usePositionsInfoRequest(
   return {
     positionsInfoData,
     isLoading,
-    error: apiError || rpcError,
+    error: shouldFallbackToRpc ? rpcError : apiError,
   };
 }
