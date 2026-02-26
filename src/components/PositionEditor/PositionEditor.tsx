@@ -435,6 +435,7 @@ export function PositionEditor() {
                 payTokenAddress={undefined}
                 isWrapOrUnwrap={false}
                 isGmxAccount={isCollateralTokenFromGmxAccount}
+                onAfterAction={onClose}
               />
 
               <div>{button}</div>

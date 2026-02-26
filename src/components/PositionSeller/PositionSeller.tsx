@@ -983,6 +983,7 @@ export function PositionSeller() {
                   payTokenAddress={undefined}
                   isWrapOrUnwrap={false}
                   isGmxAccount={srcChainId !== undefined}
+                  onAfterAction={onClose}
                 />
 
                 {twapRecommendation && !isTwapBannerDismissed && (
