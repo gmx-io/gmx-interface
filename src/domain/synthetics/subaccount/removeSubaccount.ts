@@ -206,8 +206,7 @@ export async function removeSubaccountExpressTxn({
     expressTransactionBuilder: getTxnData,
     gasPaymentParams: baseRelayFeeSwapParams.gasPaymentParams,
     subaccount: subaccount,
-    gasPrice: globalExpressParams.gasPrice,
-    gelatoRelayFeeMultiplierFactor: globalExpressParams.gasLimits.gelatoRelayFeeMultiplierFactor,
+    globalExpressParams: globalExpressParams,
   });
 
   if (relayerFeeAmount === undefined) {

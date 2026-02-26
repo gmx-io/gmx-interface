@@ -499,12 +499,14 @@ export function getBatchTotalExecutionFee({
   batchParams,
   tokensData,
   chainId,
+  allowEmptyBatch = false,
 }: {
   batchParams: BatchOrderTxnParams;
   tokensData: TokensData;
   chainId: number;
+  allowEmptyBatch?: boolean;
 }): ExecutionFee | undefined {
-  if (getIsEmptyBatch(batchParams)) {
+  if (getIsEmptyBatch(batchParams) && !allowEmptyBatch) {
     return undefined;
   }
 

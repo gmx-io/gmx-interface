@@ -126,8 +126,12 @@ export function calcSizeAmountByPercentage(
 /**
  * Returns the margin input amount as a percentage (0–100) of the token balance.
  */
-export function calcMarginPercentage(inputAmountStr: string, balance: bigint | undefined, decimals: number): number {
-  if (balance === undefined || balance === 0n) return 0;
+export function calcMarginPercentage(
+  inputAmountStr: string,
+  balance: bigint | undefined,
+  decimals: number | undefined
+): number {
+  if (balance === undefined || balance === 0n || decimals === undefined) return 0;
   const inputAmount = parseValue(inputAmountStr || "0", decimals) ?? 0n;
   if (inputAmount === 0n) return 0;
   const percentage = Number(bigMath.divRound(inputAmount * 100n, balance));
@@ -140,13 +144,13 @@ export function calcMarginPercentage(inputAmountStr: string, balance: bigint | u
  */
 export function calcMarginAmountByPercentage(
   percentage: number,
-  balance: bigint,
+  maxAvailableAmount: bigint,
   decimals: number,
   visualMultiplier: number | undefined,
   isStable: boolean | undefined
 ): string {
   const normalizedPercentage = Math.round(clampPercentage(percentage));
-  const amount = (balance * BigInt(normalizedPercentage)) / 100n;
+  const amount = (maxAvailableAmount * BigInt(normalizedPercentage)) / 100n;
 
   if (normalizedPercentage === 100) {
     return formatAmountFree(amount, decimals);

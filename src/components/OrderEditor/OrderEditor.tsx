@@ -892,6 +892,7 @@ export function OrderEditor(p: Props) {
             payTokenAddress={undefined}
             isWrapOrUnwrap={false}
             isGmxAccount={srcChainId !== undefined}
+            onAfterAction={p.onClose}
           />
 
           {button}

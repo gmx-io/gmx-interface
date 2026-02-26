@@ -38,17 +38,17 @@ import {
   getIsPositionInfoLoaded,
 } from "domain/synthetics/positions";
 import {
-  getDefaultEntryField,
-  handleEntryError,
   MAX_PERCENTAGE,
   PERCENTAGE_DECIMALS,
+  getDefaultEntryField,
+  handleEntryError,
 } from "domain/synthetics/sidecarOrders/utils";
 import {
+  DecreasePositionAmounts,
   getMarkPrice,
   getNextPositionValuesForDecreaseTrade,
   getTradeFees,
   getTriggerDecreaseOrderType,
-  DecreasePositionAmounts,
 } from "domain/synthetics/trade";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { buildTpSlCreatePayloads, buildTpSlInputPositionData, getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
@@ -72,7 +72,7 @@ import {
   DecreasePositionOrderParams,
   getBatchTotalExecutionFee,
 } from "sdk/utils/orderTransactions";
-import { SidecarSlTpOrderEntry } from "sdk/utils/sidecarOrders";
+import { SidecarSlTpOrderEntry } from "sdk/utils/sidecarOrders/types";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";
 
 import Button from "components/Button/Button";
