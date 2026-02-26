@@ -34,7 +34,7 @@ const getCardContent = (type: EarnProductType) => {
       badge: t`Governance`,
       title: t`What is GMX?`,
       description: t`The GMX token serves as the governance token of the GMX protocol. 27% of platform revenue accumulates in the Treasury for GMX buybacks. Stakers earn rewards based on staking power (duration × amount), distributed when GMX reaches $90.`,
-      readMoreUrl: "https://docs.gmx.io/docs/tokenomics/gmx-token",
+      readMoreUrl: "https://docs.gmx.io/docs/tokenomics/gmx-token/",
       bullets: [
         t`Accumulate GMX rewards by staking`,
         t`27% of protocol fees fund Treasury buybacks — rewards distributed at $90`,
@@ -50,7 +50,7 @@ const getCardContent = (type: EarnProductType) => {
       badge: t`Passive management`,
       title: t`What is GLV?`,
       description: t`GLV (GMX Liquidity Vault) holds various GM tokens, giving you diversified exposure to GMX's markets. The vault auto-rebalances to high-demand markets, unlocking higher potential yield compared to isolated pools.`,
-      readMoreUrl: "https://docs.gmx.io/docs/providing-liquidity#glv-pools",
+      readMoreUrl: "https://docs.gmx.io/docs/providing-liquidity/#glv-pools",
       bullets: [
         t`Get optimized exposure to the highest-utilized pools`,
         t`No active management required`,
@@ -68,7 +68,7 @@ const getCardContent = (type: EarnProductType) => {
       badge: t`Active management`,
       title: t`What is GM?`,
       description: t`GM tokens represent shares in a liquidity pool for a single GMX market. Buy GM to provide liquidity and earn fees from leverage trading, swaps, and market-making activity on that specific market. All rewards are auto-compounded.`,
-      readMoreUrl: "https://docs.gmx.io/docs/providing-liquidity#gm-pools",
+      readMoreUrl: "https://docs.gmx.io/docs/providing-liquidity/#gm-pools",
       bullets: [
         t`Provide isolated liquidity per market`,
         t`Become a market maker`,

@@ -31,7 +31,7 @@ export const getFooterLinks = (): Link[] => [
     link: "https://v1.app.gmx.io/#/v1",
     external: true,
   },
-  { label: t`Media kit`, link: "https://docs.gmx.io/docs/community/media-kit", external: true },
+  { label: t`Media kit`, link: "https://docs.gmx.io/docs/community/#media-kit", external: true },
   { label: t`Charts by TradingView`, link: "https://www.tradingview.com/", external: true },
   // { label: "Jobs", link: "/jobs" },
 ];

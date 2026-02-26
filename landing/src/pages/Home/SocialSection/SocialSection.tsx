@@ -100,7 +100,7 @@ export function SocialSection() {
               <Trans>Referral terms</Trans>
             </a>
             <a
-              href="https://docs.gmx.io/docs/community/media-kit/"
+              href="https://docs.gmx.io/docs/community/#media-kit"
               target="_blank"
               rel="noopener noreferrer"
               className="duration-180 transition-colors hover:text-white active:text-white/80"

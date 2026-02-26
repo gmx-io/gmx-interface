@@ -310,7 +310,7 @@ export function getOrderErrors(p: {
           msg: (
             <Trans>
               Order may not execute: max leverage exceeded. Edit to reduce size.{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
+              <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">Read more</ExternalLink>.
             </Trans>
           ),
           key: "maxLeverage",

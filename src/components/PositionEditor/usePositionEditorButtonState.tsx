@@ -412,7 +412,7 @@ export function usePositionEditorButtonState(operation: Operation): {
     return (
       <Trans>
         Reduce withdrawal to match the max.{" "}
-        <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
+        <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">Read more</ExternalLink>.
         <br />
         <br />
         <span onClick={detectAndSetMaxSize} className="Tradebox-handle">

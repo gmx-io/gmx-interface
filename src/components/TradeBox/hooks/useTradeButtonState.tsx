@@ -272,7 +272,7 @@ export function useTradeboxButtonState({
               ) : (
                 <Trans>Decrease size to match the max allowed leverage.</Trans>
               )}{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">
+              <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">
                 <Trans>Read more</Trans>
               </ExternalLink>
               .

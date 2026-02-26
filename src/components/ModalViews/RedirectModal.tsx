@@ -50,7 +50,8 @@ export function RedirectPopupModal({
       <br />
       <br />
       <Trans>
-        Alternative links are in the <ExternalLink href="https://docs.gmx.io/docs/frontends">docs</ExternalLink>.
+        Alternative links are in the{" "}
+        <ExternalLink href="https://docs.gmx.io/docs/api/frontend-integration/">docs</ExternalLink>.
         <br />
         <br />
         By clicking Agree, you accept the <ExternalLink href="https://gmx.io/#/terms-and-conditions">
