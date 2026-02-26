@@ -134,3 +134,31 @@ type TwapOrderParams<T extends SingleOrderParams = SingleOrderParams> = {
 };
 
 export type OrderParams = SingleOrderParams | TwapOrderParams;
+
+export type ApiOrderInfo = {
+  key: string;
+  account: string;
+  receiver: string;
+  cancellationReceiver: string;
+  callbackContract: string;
+  uiFeeReceiver: string;
+  marketAddress: string;
+  initialCollateralTokenAddress: string;
+  swapPath: string[];
+  orderType: number;
+  decreasePositionSwapType: number;
+  sizeDeltaUsd: bigint;
+  initialCollateralDeltaAmount: bigint;
+  triggerPrice: bigint;
+  acceptablePrice: bigint;
+  executionFee: bigint;
+  callbackGasLimit: bigint;
+  minOutputAmount: bigint;
+  updatedAtTime: bigint;
+  validFromTime: bigint;
+  srcChainId: bigint;
+  isLong: boolean;
+  shouldUnwrapNativeToken: boolean;
+  isFrozen: boolean;
+  autoCancel: boolean;
+};

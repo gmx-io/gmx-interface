@@ -32,6 +32,8 @@ export const chartOverridesDark: Partial<WidgetOverrides> = {
   "paneProperties.horzGridProperties.color": "#363A5960",
   "paneProperties.horzGridProperties.style": 2,
   "mainSeriesProperties.priceLineColor": "#8B94B6AA",
+  "mainSeriesProperties.highLowAvgPrice.highLowPriceLinesVisible": false,
+  "mainSeriesProperties.highLowAvgPrice.highLowPriceLabelsVisible": true,
   "scalesProperties.textColor": colors.typography["secondary"].dark,
   "mainSeriesProperties.statusViewStyle.showExchange": false,
   ...createChartStyleOverrides(colors.green[500].dark, colors.red[500].dark),
@@ -47,6 +49,8 @@ export const chartOverridesLight: Partial<WidgetOverrides> = {
   "paneProperties.horzGridProperties.color": "#E0E0E0",
   "paneProperties.horzGridProperties.style": 2,
   "mainSeriesProperties.priceLineColor": "#6B7280AA",
+  "mainSeriesProperties.highLowAvgPrice.highLowPriceLinesVisible": false,
+  "mainSeriesProperties.highLowAvgPrice.highLowPriceLabelsVisible": true,
   "scalesProperties.textColor": colors.typography["secondary"].light,
   "mainSeriesProperties.statusViewStyle.showExchange": false,
   ...createChartStyleOverrides(colors.green[500].light, colors.red[500].light),
@@ -80,6 +84,7 @@ const enabledFeatures: ChartingLibraryFeatureset[] = [
   "items_favoriting",
   "hide_left_toolbar_by_default",
   "iframe_loading_same_origin",
+  "chart_crosshair_menu" as ChartingLibraryFeatureset, // TradingTerminalFeatureset but works in Charting Library
 ];
 
 export const defaultChartProps = {
@@ -141,22 +146,34 @@ export const defaultChartProps = {
   },
 } satisfies Partial<ChartingLibraryWidgetOptions>;
 
-export const orderTypeToTitle: Partial<Record<`${OrderType}-${"long" | "short"}`, MessageDescriptor>> = {
-  [`${OrderType.LimitIncrease}-short`]: msg`Limit - short inc.`,
-  [`${OrderType.LimitIncrease}-long`]: msg`Limit - long inc.`,
+export const orderTypeToTitle: Partial<Record<OrderType, MessageDescriptor>> = {
+  [OrderType.LimitIncrease]: msg`Limit`,
+  [OrderType.StopIncrease]: msg`Stop Market`,
+  [OrderType.LimitDecrease]: msg`TP`,
+  [OrderType.StopLossDecrease]: msg`SL`,
+};
 
-  [`${OrderType.LimitDecrease}-short`]: msg`TP - short dec.`,
-  [`${OrderType.LimitDecrease}-long`]: msg`TP - long dec.`,
-
-  [`${OrderType.StopLossDecrease}-long`]: msg`SL - long dec.`,
-  [`${OrderType.StopLossDecrease}-short`]: msg`SL - short dec.`,
-
-  [`${OrderType.StopIncrease}-short`]: msg`Stop Market - short inc.`,
-  [`${OrderType.StopIncrease}-long`]: msg`Stop Market - long inc.`,
-
-  [`${OrderType.MarketIncrease}-long`]: msg`Market - long inc.`,
-  [`${OrderType.MarketIncrease}-short`]: msg`Market - short inc.`,
-
-  [`${OrderType.MarketDecrease}-long`]: msg`Market - long dec.`,
-  [`${OrderType.MarketDecrease}-short`]: msg`Market - short dec.`,
+export const chartLabelColors = {
+  green: {
+    line: { light: "#109375", dark: "#0FDE8D" },
+    text: { light: "#109375", dark: "#0FDE8D" },
+    bg: { light: "#DFEFEB", dark: "#192E38" },
+  },
+  red: {
+    line: { light: "#EA2A46", dark: "#FF506A" },
+    text: { light: "#EA2A46", dark: "#FF506A" },
+    bg: { light: "#F9E2E5", dark: "#2D192D" },
+  },
+  neutral: {
+    line: { light: "#9FA3BC", dark: "#3a3e5e" },
+    text: { light: "#696D96", dark: "#a0a3c4" },
+    bg: { light: "#EDEDF2", dark: "#1E2033" },
+  },
+  button: {
+    bg: { light: "#FFFFFF", dark: "#121421" },
+    icon: { light: "#696D96", dark: "#FFFFFF" },
+  },
+  error: {
+    bg: { light: "#831e2d", dark: "#831e2d" },
+  },
 };

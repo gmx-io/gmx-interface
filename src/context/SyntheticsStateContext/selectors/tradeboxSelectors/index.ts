@@ -317,8 +317,10 @@ export const selectTradeboxSelectedAllowedSwapSlippageBps = (s: SyntheticsState)
   s.tradebox.selectedAllowedSwapSlippageBps;
 export const selectTradeboxSetSelectedAllowedSwapSlippageBps = (s: SyntheticsState) =>
   s.tradebox.setSelectedAllowedSwapSlippageBps;
-const selectTradeboxCloseSizeInputValue = (s: SyntheticsState) => s.tradebox.closeSizeInputValue;
-const selectTradeboxTriggerPriceInputValue = (s: SyntheticsState) => s.tradebox.triggerPriceInputValue;
+export const selectTradeboxCloseSizeInputValue = (s: SyntheticsState) => s.tradebox.closeSizeInputValue;
+export const selectTradeboxSetCloseSizeInputValue = (s: SyntheticsState) => s.tradebox.setCloseSizeInputValue;
+export const selectTradeboxTriggerPriceInputValue = (s: SyntheticsState) => s.tradebox.triggerPriceInputValue;
+export const selectTradeboxSetTriggerPriceInputValue = (s: SyntheticsState) => s.tradebox.setTriggerPriceInputValue;
 const selectTradeboxTriggerRatioInputValue = (s: SyntheticsState) => s.tradebox.triggerRatioInputValue;
 export const selectTradeboxLeverageOption = (s: SyntheticsState) => s.tradebox.leverageOption;
 export const selectTradeboxKeepLeverage = (s: SyntheticsState) => s.tradebox.keepLeverage;
