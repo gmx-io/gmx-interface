@@ -2,7 +2,6 @@ import { Trans } from "@lingui/macro";
 import { ReactNode, useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
 
-
 import { BOTANIX, ContractsChainId, getChainNativeTokenSymbol } from "config/chains";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { useSelector } from "context/SyntheticsStateContext/utils";

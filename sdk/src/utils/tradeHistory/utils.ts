@@ -60,7 +60,7 @@ export function createRawTradeActionTransformer(
         targetCollateralToken,
         initialCollateralToken,
         timestamp: rawAction.timestamp,
-        transaction: rawAction.transaction,
+        transactionHash: rawAction.transactionHash,
         reason: rawAction.reason ?? undefined,
         reasonBytes: rawAction.reasonBytes ?? undefined,
         twapParams:
@@ -151,7 +151,7 @@ export function createRawTradeActionTransformer(
         reason: rawAction.reason ?? undefined,
         reasonBytes: rawAction.reasonBytes ?? undefined,
 
-        transaction: rawAction.transaction,
+        transactionHash: rawAction.transactionHash,
         timestamp: rawAction.timestamp,
         shouldUnwrapNativeToken: rawAction.shouldUnwrapNativeToken!,
         twapParams:

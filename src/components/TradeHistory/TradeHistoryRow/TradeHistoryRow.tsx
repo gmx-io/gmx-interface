@@ -238,7 +238,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
               )}
               <ExternalLink
                 className="TradeHistoryRow-external-link size-12"
-                href={`${getExplorerUrl(chainId)}tx/${tradeAction.transaction.hash}`}
+                href={`${getExplorerUrl(chainId)}tx/${tradeAction.transactionHash}`}
               >
                 <NewLinkIconThin />
               </ExternalLink>
@@ -246,7 +246,7 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
             <div className="flex flex-row items-center">
               {showDebugValues && (
                 <Link
-                  to={`/parsetx/${getChainSlug(chainId)}/${tradeAction.transaction.hash}`}
+                  to={`/parsetx/${getChainSlug(chainId)}/${tradeAction.transactionHash}`}
                   className="text-body-small ml-5 text-typography-secondary hover:text-typography-primary"
                 >
                   <Trans>Events</Trans>
