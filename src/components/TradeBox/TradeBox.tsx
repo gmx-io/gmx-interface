@@ -313,7 +313,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     }
   }, [submitButtonState, isMobile, setExternalIsCurtainOpen]);
 
-  const expressOrdersEnabledForMax = expressOrdersEnabled && fromTokenAddress !== zeroAddress;
+  const expressOrdersEnabledForMax = expressOrdersEnabled && fromTokenAddress !== zeroAddress && !isWrapOrUnwrap;
 
   const expressGasPaymentTokenAmount = useMemo((): bigint | undefined => {
     if (!expressOrdersEnabledForMax) {
