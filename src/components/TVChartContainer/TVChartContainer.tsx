@@ -393,7 +393,7 @@ export default function TVChartContainer({
   const [plotWidthPx, setPlotWidthPx] = useState<number>(0);
 
   useEffect(() => {
-    if (!chartReady || !tvWidgetRef.current) return;
+    if (!chartReady || chartDataLoading || !tvWidgetRef.current) return;
 
     let chart;
     try {
@@ -409,7 +409,12 @@ export default function TVChartContainer({
       const priceScale = pane.getMainSourcePriceScale();
       if (!priceScale) return;
 
-      const range = priceScale.getVisiblePriceRange();
+      let range;
+      try {
+        range = priceScale.getVisiblePriceRange();
+      } catch {
+        return;
+      }
       if (!range) return;
 
       const height = pane.getHeight();
@@ -455,7 +460,7 @@ export default function TVChartContainer({
       chart.onVisibleRangeChanged().unsubscribe(null, update);
       resizeObserver?.disconnect();
     };
-  }, [chartReady]);
+  }, [chartReady, chartDataLoading]);
 
   const bodyFontSizePt = useMemo(() => {
     if (plotWidthPx <= 0) return 14;
