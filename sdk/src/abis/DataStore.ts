@@ -1,21 +1,43 @@
 export default [
   {
-    inputs: [{ internalType: "contract RoleStore", name: "_roleStore", type: "address" }],
+    inputs: [
+      {
+        internalType: "contract RoleStore",
+        name: "_roleStore",
+        type: "address",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "constructor",
   },
   {
     inputs: [
-      { internalType: "address", name: "msgSender", type: "address" },
-      { internalType: "string", name: "role", type: "string" },
+      {
+        internalType: "address",
+        name: "msgSender",
+        type: "address",
+      },
+      {
+        internalType: "string",
+        name: "role",
+        type: "string",
+      },
     ],
     name: "Unauthorized",
     type: "error",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "setKey", type: "bytes32" },
-      { internalType: "address", name: "value", type: "address" },
+      {
+        internalType: "bytes32",
+        name: "setKey",
+        type: "bytes32",
+      },
+      {
+        internalType: "address",
+        name: "value",
+        type: "address",
+      },
     ],
     name: "addAddress",
     outputs: [],
@@ -24,8 +46,16 @@ export default [
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "setKey", type: "bytes32" },
-      { internalType: "bytes32", name: "value", type: "bytes32" },
+      {
+        internalType: "bytes32",
+        name: "setKey",
+        type: "bytes32",
+      },
+      {
+        internalType: "bytes32",
+        name: "value",
+        type: "bytes32",
+      },
     ],
     name: "addBytes32",
     outputs: [],
@@ -34,8 +64,16 @@ export default [
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "setKey", type: "bytes32" },
-      { internalType: "uint256", name: "value", type: "uint256" },
+      {
+        internalType: "bytes32",
+        name: "setKey",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "value",
+        type: "uint256",
+      },
     ],
     name: "addUint",
     outputs: [],
@@ -44,325 +82,829 @@ export default [
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "", type: "bytes32" },
-      { internalType: "uint256", name: "", type: "uint256" },
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
     ],
     name: "addressArrayValues",
-    outputs: [{ internalType: "address", name: "", type: "address" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
-    name: "addressValues",
-    outputs: [{ internalType: "address", name: "", type: "address" }],
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "key", type: "bytes32" },
-      { internalType: "int256", name: "value", type: "int256" },
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    name: "addressValues",
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+      {
+        internalType: "int256",
+        name: "value",
+        type: "int256",
+      },
     ],
     name: "applyBoundedDeltaToUint",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "key", type: "bytes32" },
-      { internalType: "int256", name: "value", type: "int256" },
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+      {
+        internalType: "int256",
+        name: "value",
+        type: "int256",
+      },
     ],
     name: "applyDeltaToInt",
-    outputs: [{ internalType: "int256", name: "", type: "int256" }],
+    outputs: [
+      {
+        internalType: "int256",
+        name: "",
+        type: "int256",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "key", type: "bytes32" },
-      { internalType: "int256", name: "value", type: "int256" },
-      { internalType: "string", name: "errorMessage", type: "string" },
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+      {
+        internalType: "int256",
+        name: "value",
+        type: "int256",
+      },
+      {
+        internalType: "string",
+        name: "errorMessage",
+        type: "string",
+      },
     ],
     name: "applyDeltaToUint",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "key", type: "bytes32" },
-      { internalType: "uint256", name: "value", type: "uint256" },
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "value",
+        type: "uint256",
+      },
     ],
     name: "applyDeltaToUint",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "", type: "bytes32" },
-      { internalType: "uint256", name: "", type: "uint256" },
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
     ],
     name: "boolArrayValues",
-    outputs: [{ internalType: "bool", name: "", type: "bool" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
-    name: "boolValues",
-    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "", type: "bytes32" },
-      { internalType: "uint256", name: "", type: "uint256" },
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    name: "boolValues",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
     ],
     name: "bytes32ArrayValues",
-    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
-    name: "bytes32Values",
-    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "setKey", type: "bytes32" },
-      { internalType: "address", name: "value", type: "address" },
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    name: "bytes32Values",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "setKey",
+        type: "bytes32",
+      },
+      {
+        internalType: "address",
+        name: "value",
+        type: "address",
+      },
     ],
     name: "containsAddress",
-    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "setKey", type: "bytes32" },
-      { internalType: "bytes32", name: "value", type: "bytes32" },
+      {
+        internalType: "bytes32",
+        name: "setKey",
+        type: "bytes32",
+      },
+      {
+        internalType: "bytes32",
+        name: "value",
+        type: "bytes32",
+      },
     ],
     name: "containsBytes32",
-    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "setKey", type: "bytes32" },
-      { internalType: "uint256", name: "value", type: "uint256" },
+      {
+        internalType: "bytes32",
+        name: "setKey",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "value",
+        type: "uint256",
+      },
     ],
     name: "containsUint",
-    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "key", type: "bytes32" },
-      { internalType: "int256", name: "value", type: "int256" },
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+      {
+        internalType: "int256",
+        name: "value",
+        type: "int256",
+      },
     ],
     name: "decrementInt",
-    outputs: [{ internalType: "int256", name: "", type: "int256" }],
+    outputs: [
+      {
+        internalType: "int256",
+        name: "",
+        type: "int256",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "key", type: "bytes32" },
-      { internalType: "uint256", name: "value", type: "uint256" },
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "value",
+        type: "uint256",
+      },
     ],
     name: "decrementUint",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
-    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+    ],
     name: "getAddress",
-    outputs: [{ internalType: "address", name: "", type: "address" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
-    name: "getAddressArray",
-    outputs: [{ internalType: "address[]", name: "", type: "address[]" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "bytes32", name: "setKey", type: "bytes32" }],
-    name: "getAddressCount",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "setKey", type: "bytes32" },
-      { internalType: "uint256", name: "start", type: "uint256" },
-      { internalType: "uint256", name: "end", type: "uint256" },
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+    ],
+    name: "getAddressArray",
+    outputs: [
+      {
+        internalType: "address[]",
+        name: "",
+        type: "address[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "setKey",
+        type: "bytes32",
+      },
+    ],
+    name: "getAddressCount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "setKey",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "start",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "end",
+        type: "uint256",
+      },
     ],
     name: "getAddressValuesAt",
-    outputs: [{ internalType: "address[]", name: "", type: "address[]" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
-    name: "getBool",
-    outputs: [{ internalType: "bool", name: "", type: "bool" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
-    name: "getBoolArray",
-    outputs: [{ internalType: "bool[]", name: "", type: "bool[]" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
-    name: "getBytes32",
-    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
-    name: "getBytes32Array",
-    outputs: [{ internalType: "bytes32[]", name: "", type: "bytes32[]" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "bytes32", name: "setKey", type: "bytes32" }],
-    name: "getBytes32Count",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    outputs: [
+      {
+        internalType: "address[]",
+        name: "",
+        type: "address[]",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "setKey", type: "bytes32" },
-      { internalType: "uint256", name: "start", type: "uint256" },
-      { internalType: "uint256", name: "end", type: "uint256" },
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+    ],
+    name: "getBool",
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+    ],
+    name: "getBoolArray",
+    outputs: [
+      {
+        internalType: "bool[]",
+        name: "",
+        type: "bool[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+    ],
+    name: "getBytes32",
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+    ],
+    name: "getBytes32Array",
+    outputs: [
+      {
+        internalType: "bytes32[]",
+        name: "",
+        type: "bytes32[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "setKey",
+        type: "bytes32",
+      },
+    ],
+    name: "getBytes32Count",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "setKey",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "start",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "end",
+        type: "uint256",
+      },
     ],
     name: "getBytes32ValuesAt",
-    outputs: [{ internalType: "bytes32[]", name: "", type: "bytes32[]" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
-    name: "getInt",
-    outputs: [{ internalType: "int256", name: "", type: "int256" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
-    name: "getIntArray",
-    outputs: [{ internalType: "int256[]", name: "", type: "int256[]" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
-    name: "getString",
-    outputs: [{ internalType: "string", name: "", type: "string" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
-    name: "getStringArray",
-    outputs: [{ internalType: "string[]", name: "", type: "string[]" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
-    name: "getUint",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
-    name: "getUintArray",
-    outputs: [{ internalType: "uint256[]", name: "", type: "uint256[]" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "bytes32", name: "setKey", type: "bytes32" }],
-    name: "getUintCount",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    outputs: [
+      {
+        internalType: "bytes32[]",
+        name: "",
+        type: "bytes32[]",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "setKey", type: "bytes32" },
-      { internalType: "uint256", name: "start", type: "uint256" },
-      { internalType: "uint256", name: "end", type: "uint256" },
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+    ],
+    name: "getInt",
+    outputs: [
+      {
+        internalType: "int256",
+        name: "",
+        type: "int256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+    ],
+    name: "getIntArray",
+    outputs: [
+      {
+        internalType: "int256[]",
+        name: "",
+        type: "int256[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+    ],
+    name: "getString",
+    outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+    ],
+    name: "getStringArray",
+    outputs: [
+      {
+        internalType: "string[]",
+        name: "",
+        type: "string[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+    ],
+    name: "getUint",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+    ],
+    name: "getUintArray",
+    outputs: [
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "setKey",
+        type: "bytes32",
+      },
+    ],
+    name: "getUintCount",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "setKey",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "start",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "end",
+        type: "uint256",
+      },
     ],
     name: "getUintValuesAt",
-    outputs: [{ internalType: "uint256[]", name: "", type: "uint256[]" }],
+    outputs: [
+      {
+        internalType: "uint256[]",
+        name: "",
+        type: "uint256[]",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "key", type: "bytes32" },
-      { internalType: "int256", name: "value", type: "int256" },
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+      {
+        internalType: "int256",
+        name: "value",
+        type: "int256",
+      },
     ],
     name: "incrementInt",
-    outputs: [{ internalType: "int256", name: "", type: "int256" }],
+    outputs: [
+      {
+        internalType: "int256",
+        name: "",
+        type: "int256",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "key", type: "bytes32" },
-      { internalType: "uint256", name: "value", type: "uint256" },
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "value",
+        type: "uint256",
+      },
     ],
     name: "incrementUint",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "", type: "bytes32" },
-      { internalType: "uint256", name: "", type: "uint256" },
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
     ],
     name: "intArrayValues",
-    outputs: [{ internalType: "int256", name: "", type: "int256" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
-    name: "intValues",
-    outputs: [{ internalType: "int256", name: "", type: "int256" }],
+    outputs: [
+      {
+        internalType: "int256",
+        name: "",
+        type: "int256",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "setKey", type: "bytes32" },
-      { internalType: "address", name: "value", type: "address" },
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
+    name: "intValues",
+    outputs: [
+      {
+        internalType: "int256",
+        name: "",
+        type: "int256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "setKey",
+        type: "bytes32",
+      },
+      {
+        internalType: "address",
+        name: "value",
+        type: "address",
+      },
     ],
     name: "removeAddress",
     outputs: [],
@@ -370,28 +912,52 @@ export default [
     type: "function",
   },
   {
-    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+    ],
     name: "removeAddress",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
-    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+    ],
     name: "removeAddressArray",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
-    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+    ],
     name: "removeBool",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
-    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+    ],
     name: "removeBoolArray",
     outputs: [],
     stateMutability: "nonpayable",
@@ -399,8 +965,16 @@ export default [
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "setKey", type: "bytes32" },
-      { internalType: "bytes32", name: "value", type: "bytes32" },
+      {
+        internalType: "bytes32",
+        name: "setKey",
+        type: "bytes32",
+      },
+      {
+        internalType: "bytes32",
+        name: "value",
+        type: "bytes32",
+      },
     ],
     name: "removeBytes32",
     outputs: [],
@@ -408,49 +982,91 @@ export default [
     type: "function",
   },
   {
-    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+    ],
     name: "removeBytes32",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
-    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+    ],
     name: "removeBytes32Array",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
-    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+    ],
     name: "removeInt",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
-    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+    ],
     name: "removeIntArray",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
-    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+    ],
     name: "removeString",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
-    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+    ],
     name: "removeStringArray",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
-    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+    ],
     name: "removeUint",
     outputs: [],
     stateMutability: "nonpayable",
@@ -458,8 +1074,16 @@ export default [
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "setKey", type: "bytes32" },
-      { internalType: "uint256", name: "value", type: "uint256" },
+      {
+        internalType: "bytes32",
+        name: "setKey",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "value",
+        type: "uint256",
+      },
     ],
     name: "removeUint",
     outputs: [],
@@ -467,7 +1091,13 @@ export default [
     type: "function",
   },
   {
-    inputs: [{ internalType: "bytes32", name: "key", type: "bytes32" }],
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+    ],
     name: "removeUintArray",
     outputs: [],
     stateMutability: "nonpayable",
@@ -476,24 +1106,52 @@ export default [
   {
     inputs: [],
     name: "roleStore",
-    outputs: [{ internalType: "contract RoleStore", name: "", type: "address" }],
+    outputs: [
+      {
+        internalType: "contract RoleStore",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "key", type: "bytes32" },
-      { internalType: "address", name: "value", type: "address" },
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+      {
+        internalType: "address",
+        name: "value",
+        type: "address",
+      },
     ],
     name: "setAddress",
-    outputs: [{ internalType: "address", name: "", type: "address" }],
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "key", type: "bytes32" },
-      { internalType: "address[]", name: "value", type: "address[]" },
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+      {
+        internalType: "address[]",
+        name: "value",
+        type: "address[]",
+      },
     ],
     name: "setAddressArray",
     outputs: [],
@@ -502,18 +1160,40 @@ export default [
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "key", type: "bytes32" },
-      { internalType: "bool", name: "value", type: "bool" },
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+      {
+        internalType: "bool",
+        name: "value",
+        type: "bool",
+      },
     ],
     name: "setBool",
-    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "key", type: "bytes32" },
-      { internalType: "bool[]", name: "value", type: "bool[]" },
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+      {
+        internalType: "bool[]",
+        name: "value",
+        type: "bool[]",
+      },
     ],
     name: "setBoolArray",
     outputs: [],
@@ -522,18 +1202,40 @@ export default [
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "key", type: "bytes32" },
-      { internalType: "bytes32", name: "value", type: "bytes32" },
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+      {
+        internalType: "bytes32",
+        name: "value",
+        type: "bytes32",
+      },
     ],
     name: "setBytes32",
-    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "key", type: "bytes32" },
-      { internalType: "bytes32[]", name: "value", type: "bytes32[]" },
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+      {
+        internalType: "bytes32[]",
+        name: "value",
+        type: "bytes32[]",
+      },
     ],
     name: "setBytes32Array",
     outputs: [],
@@ -542,18 +1244,40 @@ export default [
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "key", type: "bytes32" },
-      { internalType: "int256", name: "value", type: "int256" },
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+      {
+        internalType: "int256",
+        name: "value",
+        type: "int256",
+      },
     ],
     name: "setInt",
-    outputs: [{ internalType: "int256", name: "", type: "int256" }],
+    outputs: [
+      {
+        internalType: "int256",
+        name: "",
+        type: "int256",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "key", type: "bytes32" },
-      { internalType: "int256[]", name: "value", type: "int256[]" },
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+      {
+        internalType: "int256[]",
+        name: "value",
+        type: "int256[]",
+      },
     ],
     name: "setIntArray",
     outputs: [],
@@ -562,18 +1286,40 @@ export default [
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "key", type: "bytes32" },
-      { internalType: "string", name: "value", type: "string" },
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+      {
+        internalType: "string",
+        name: "value",
+        type: "string",
+      },
     ],
     name: "setString",
-    outputs: [{ internalType: "string", name: "", type: "string" }],
+    outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "key", type: "bytes32" },
-      { internalType: "string[]", name: "value", type: "string[]" },
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+      {
+        internalType: "string[]",
+        name: "value",
+        type: "string[]",
+      },
     ],
     name: "setStringArray",
     outputs: [],
@@ -582,18 +1328,40 @@ export default [
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "key", type: "bytes32" },
-      { internalType: "uint256", name: "value", type: "uint256" },
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "value",
+        type: "uint256",
+      },
     ],
     name: "setUint",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "key", type: "bytes32" },
-      { internalType: "uint256[]", name: "value", type: "uint256[]" },
+      {
+        internalType: "bytes32",
+        name: "key",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256[]",
+        name: "value",
+        type: "uint256[]",
+      },
     ],
     name: "setUintArray",
     outputs: [],
@@ -602,35 +1370,87 @@ export default [
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "", type: "bytes32" },
-      { internalType: "uint256", name: "", type: "uint256" },
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
     ],
     name: "stringArrayValues",
-    outputs: [{ internalType: "string", name: "", type: "string" }],
-    stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
-    name: "stringValues",
-    outputs: [{ internalType: "string", name: "", type: "string" }],
+    outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "", type: "bytes32" },
-      { internalType: "uint256", name: "", type: "uint256" },
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
     ],
-    name: "uintArrayValues",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    name: "stringValues",
+    outputs: [
+      {
+        internalType: "string",
+        name: "",
+        type: "string",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
-    inputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    name: "uintArrayValues",
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
+    stateMutability: "view",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
     name: "uintValues",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },

@@ -8,7 +8,7 @@ import { getChainIcon } from "config/icons";
 import { isSettlementChain, isSourceChainForAnySettlementChain } from "config/multichain";
 import type { NetworkOption } from "config/networkOptions";
 import { switchNetwork } from "lib/wallets";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
+import { useNonSingingAccount } from "lib/wallets/useAccountType";
 import { AVALANCHE, getChainName, isContractsChain } from "sdk/configs/chains";
 
 import Button from "components/Button/Button";
@@ -78,7 +78,7 @@ function isValidVisualSourceChain(chainId: number) {
 }
 
 function NetworkMenuItems({ networkOptions, chainId }: { networkOptions: NetworkOption[]; chainId: number }) {
-  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
+  const { isNonEoaAccountOnAnyChain } = useNonSingingAccount();
 
   const [disabledNetworks, enabledNetworks] = partition(
     networkOptions,

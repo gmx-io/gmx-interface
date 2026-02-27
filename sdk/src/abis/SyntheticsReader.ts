@@ -714,6 +714,11 @@ export default [
             name: "pnlAfterPriceImpactUsd",
             type: "int256",
           },
+          {
+            internalType: "int256",
+            name: "positionValueInUsd",
+            type: "int256",
+          },
         ],
         internalType: "struct ReaderPositionUtils.PositionInfo[]",
         name: "",
@@ -3501,6 +3506,11 @@ export default [
             name: "pnlAfterPriceImpactUsd",
             type: "int256",
           },
+          {
+            internalType: "int256",
+            name: "positionValueInUsd",
+            type: "int256",
+          },
         ],
         internalType: "struct ReaderPositionUtils.PositionInfo",
         name: "",
@@ -4014,6 +4024,11 @@ export default [
           {
             internalType: "int256",
             name: "pnlAfterPriceImpactUsd",
+            type: "int256",
+          },
+          {
+            internalType: "int256",
+            name: "positionValueInUsd",
             type: "int256",
           },
         ],

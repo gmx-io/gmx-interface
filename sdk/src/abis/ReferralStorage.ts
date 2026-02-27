@@ -1,8 +1,16 @@
 export default [
   {
     inputs: [
-      { internalType: "address", name: "msgSender", type: "address" },
-      { internalType: "string", name: "role", type: "string" },
+      {
+        internalType: "address",
+        name: "msgSender",
+        type: "address",
+      },
+      {
+        internalType: "string",
+        name: "role",
+        type: "string",
+      },
     ],
     name: "Unauthorized",
     type: "error",
@@ -10,8 +18,18 @@ export default [
   {
     anonymous: false,
     inputs: [
-      { indexed: false, internalType: "bytes32", name: "code", type: "bytes32" },
-      { indexed: false, internalType: "address", name: "newAccount", type: "address" },
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "code",
+        type: "bytes32",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "newAccount",
+        type: "address",
+      },
     ],
     name: "GovSetCodeOwner",
     type: "event",
@@ -19,8 +37,18 @@ export default [
   {
     anonymous: false,
     inputs: [
-      { indexed: false, internalType: "address", name: "account", type: "address" },
-      { indexed: false, internalType: "bytes32", name: "code", type: "bytes32" },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "code",
+        type: "bytes32",
+      },
     ],
     name: "RegisterCode",
     type: "event",
@@ -28,9 +56,24 @@ export default [
   {
     anonymous: false,
     inputs: [
-      { indexed: false, internalType: "address", name: "account", type: "address" },
-      { indexed: false, internalType: "address", name: "newAccount", type: "address" },
-      { indexed: false, internalType: "bytes32", name: "code", type: "bytes32" },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "newAccount",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "code",
+        type: "bytes32",
+      },
     ],
     name: "SetCodeOwner",
     type: "event",
@@ -38,8 +81,18 @@ export default [
   {
     anonymous: false,
     inputs: [
-      { indexed: false, internalType: "address", name: "prevGov", type: "address" },
-      { indexed: false, internalType: "address", name: "nextGov", type: "address" },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "prevGov",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "nextGov",
+        type: "address",
+      },
     ],
     name: "SetGov",
     type: "event",
@@ -47,8 +100,18 @@ export default [
   {
     anonymous: false,
     inputs: [
-      { indexed: false, internalType: "address", name: "handler", type: "address" },
-      { indexed: false, internalType: "bool", name: "isActive", type: "bool" },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "handler",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "bool",
+        name: "isActive",
+        type: "bool",
+      },
     ],
     name: "SetHandler",
     type: "event",
@@ -56,8 +119,18 @@ export default [
   {
     anonymous: false,
     inputs: [
-      { indexed: false, internalType: "address", name: "referrer", type: "address" },
-      { indexed: false, internalType: "uint256", name: "discountShare", type: "uint256" },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "referrer",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "discountShare",
+        type: "uint256",
+      },
     ],
     name: "SetReferrerDiscountShare",
     type: "event",
@@ -65,8 +138,18 @@ export default [
   {
     anonymous: false,
     inputs: [
-      { indexed: false, internalType: "address", name: "referrer", type: "address" },
-      { indexed: false, internalType: "uint256", name: "tierId", type: "uint256" },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "referrer",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "tierId",
+        type: "uint256",
+      },
     ],
     name: "SetReferrerTier",
     type: "event",
@@ -74,9 +157,24 @@ export default [
   {
     anonymous: false,
     inputs: [
-      { indexed: false, internalType: "uint256", name: "tierId", type: "uint256" },
-      { indexed: false, internalType: "uint256", name: "totalRebate", type: "uint256" },
-      { indexed: false, internalType: "uint256", name: "discountShare", type: "uint256" },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "tierId",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "totalRebate",
+        type: "uint256",
+      },
+      {
+        indexed: false,
+        internalType: "uint256",
+        name: "discountShare",
+        type: "uint256",
+      },
     ],
     name: "SetTier",
     type: "event",
@@ -84,8 +182,18 @@ export default [
   {
     anonymous: false,
     inputs: [
-      { indexed: false, internalType: "address", name: "account", type: "address" },
-      { indexed: false, internalType: "bytes32", name: "code", type: "bytes32" },
+      {
+        indexed: false,
+        internalType: "address",
+        name: "account",
+        type: "address",
+      },
+      {
+        indexed: false,
+        internalType: "bytes32",
+        name: "code",
+        type: "bytes32",
+      },
     ],
     name: "SetTraderReferralCode",
     type: "event",
@@ -93,24 +201,62 @@ export default [
   {
     inputs: [],
     name: "BASIS_POINTS",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
-  { inputs: [], name: "acceptOwnership", outputs: [], stateMutability: "nonpayable", type: "function" },
   {
-    inputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    inputs: [],
+    name: "acceptOwnership",
+    outputs: [],
+    stateMutability: "nonpayable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
     name: "codeOwners",
-    outputs: [{ internalType: "address", name: "", type: "address" }],
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
-    inputs: [{ internalType: "address", name: "_account", type: "address" }],
+    inputs: [
+      {
+        internalType: "address",
+        name: "_account",
+        type: "address",
+      },
+    ],
     name: "getTraderReferralInfo",
     outputs: [
-      { internalType: "bytes32", name: "", type: "bytes32" },
-      { internalType: "address", name: "", type: "address" },
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
     ],
     stateMutability: "view",
     type: "function",
@@ -118,14 +264,28 @@ export default [
   {
     inputs: [],
     name: "gov",
-    outputs: [{ internalType: "address", name: "", type: "address" }],
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "_code", type: "bytes32" },
-      { internalType: "address", name: "_newAccount", type: "address" },
+      {
+        internalType: "bytes32",
+        name: "_code",
+        type: "bytes32",
+      },
+      {
+        internalType: "address",
+        name: "_newAccount",
+        type: "address",
+      },
     ],
     name: "govSetCodeOwner",
     outputs: [],
@@ -133,35 +293,83 @@ export default [
     type: "function",
   },
   {
-    inputs: [{ internalType: "address", name: "", type: "address" }],
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
     name: "isHandler",
-    outputs: [{ internalType: "bool", name: "", type: "bool" }],
+    outputs: [
+      {
+        internalType: "bool",
+        name: "",
+        type: "bool",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
     inputs: [],
     name: "pendingGov",
-    outputs: [{ internalType: "address", name: "", type: "address" }],
+    outputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
-    inputs: [{ internalType: "address", name: "", type: "address" }],
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
     name: "referrerDiscountShares",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
-    inputs: [{ internalType: "address", name: "", type: "address" }],
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
     name: "referrerTiers",
-    outputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    outputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
-    inputs: [{ internalType: "bytes32", name: "_code", type: "bytes32" }],
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "_code",
+        type: "bytes32",
+      },
+    ],
     name: "registerCode",
     outputs: [],
     stateMutability: "nonpayable",
@@ -169,8 +377,16 @@ export default [
   },
   {
     inputs: [
-      { internalType: "bytes32", name: "_code", type: "bytes32" },
-      { internalType: "address", name: "_newAccount", type: "address" },
+      {
+        internalType: "bytes32",
+        name: "_code",
+        type: "bytes32",
+      },
+      {
+        internalType: "address",
+        name: "_newAccount",
+        type: "address",
+      },
     ],
     name: "setCodeOwner",
     outputs: [],
@@ -179,8 +395,16 @@ export default [
   },
   {
     inputs: [
-      { internalType: "address", name: "_handler", type: "address" },
-      { internalType: "bool", name: "_isActive", type: "bool" },
+      {
+        internalType: "address",
+        name: "_handler",
+        type: "address",
+      },
+      {
+        internalType: "bool",
+        name: "_isActive",
+        type: "bool",
+      },
     ],
     name: "setHandler",
     outputs: [],
@@ -188,7 +412,13 @@ export default [
     type: "function",
   },
   {
-    inputs: [{ internalType: "uint256", name: "_discountShare", type: "uint256" }],
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "_discountShare",
+        type: "uint256",
+      },
+    ],
     name: "setReferrerDiscountShare",
     outputs: [],
     stateMutability: "nonpayable",
@@ -196,8 +426,16 @@ export default [
   },
   {
     inputs: [
-      { internalType: "address", name: "_referrer", type: "address" },
-      { internalType: "uint256", name: "_tierId", type: "uint256" },
+      {
+        internalType: "address",
+        name: "_referrer",
+        type: "address",
+      },
+      {
+        internalType: "uint256",
+        name: "_tierId",
+        type: "uint256",
+      },
     ],
     name: "setReferrerTier",
     outputs: [],
@@ -206,9 +444,21 @@ export default [
   },
   {
     inputs: [
-      { internalType: "uint256", name: "_tierId", type: "uint256" },
-      { internalType: "uint256", name: "_totalRebate", type: "uint256" },
-      { internalType: "uint256", name: "_discountShare", type: "uint256" },
+      {
+        internalType: "uint256",
+        name: "_tierId",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_totalRebate",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "_discountShare",
+        type: "uint256",
+      },
     ],
     name: "setTier",
     outputs: [],
@@ -217,8 +467,16 @@ export default [
   },
   {
     inputs: [
-      { internalType: "address", name: "_account", type: "address" },
-      { internalType: "bytes32", name: "_code", type: "bytes32" },
+      {
+        internalType: "address",
+        name: "_account",
+        type: "address",
+      },
+      {
+        internalType: "bytes32",
+        name: "_code",
+        type: "bytes32",
+      },
     ],
     name: "setTraderReferralCode",
     outputs: [],
@@ -226,31 +484,69 @@ export default [
     type: "function",
   },
   {
-    inputs: [{ internalType: "bytes32", name: "_code", type: "bytes32" }],
+    inputs: [
+      {
+        internalType: "bytes32",
+        name: "_code",
+        type: "bytes32",
+      },
+    ],
     name: "setTraderReferralCodeByUser",
     outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   },
   {
-    inputs: [{ internalType: "uint256", name: "", type: "uint256" }],
+    inputs: [
+      {
+        internalType: "uint256",
+        name: "",
+        type: "uint256",
+      },
+    ],
     name: "tiers",
     outputs: [
-      { internalType: "uint256", name: "totalRebate", type: "uint256" },
-      { internalType: "uint256", name: "discountShare", type: "uint256" },
+      {
+        internalType: "uint256",
+        name: "totalRebate",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "discountShare",
+        type: "uint256",
+      },
     ],
     stateMutability: "view",
     type: "function",
   },
   {
-    inputs: [{ internalType: "address", name: "", type: "address" }],
+    inputs: [
+      {
+        internalType: "address",
+        name: "",
+        type: "address",
+      },
+    ],
     name: "traderReferralCodes",
-    outputs: [{ internalType: "bytes32", name: "", type: "bytes32" }],
+    outputs: [
+      {
+        internalType: "bytes32",
+        name: "",
+        type: "bytes32",
+      },
+    ],
     stateMutability: "view",
     type: "function",
   },
   {
-    inputs: [{ internalType: "address", name: "_newGov", type: "address" }],
+    inputs: [
+      {
+        internalType: "address",
+        name: "_newGov",
+        type: "address",
+      },
+    ],
     name: "transferOwnership",
     outputs: [],
     stateMutability: "nonpayable",

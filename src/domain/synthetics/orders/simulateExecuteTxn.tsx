@@ -15,7 +15,8 @@ import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { CustomErrorName } from "sdk/utils/errors";
+import { CustomErrorName, tryDecodeCustomError } from "sdk/utils/errors";
+import { ExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { ExternalSwapQuote } from "sdk/utils/trade/types";
 
 import { getErrorMessage } from "components/Errors/errorToasts";
@@ -87,47 +88,76 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
     minTimestamp: priceTimestamp,
     maxTimestamp: priceTimestamp,
   } satisfies ContractFunctionParameters<
-    typeof abis.ExchangeRouter,
+    typeof abis.SimulationRouter,
     "payable",
     "simulateExecuteLatestWithdrawal"
   >["args"][0];
 
   let simulationPayloadData = [...p.createMulticallPayload];
 
-  if (method === "simulateExecuteLatestWithdrawal") {
-    if (p.swapPricingType === undefined) {
+  if (
+    method === "simulateExecuteLatestWithdrawal" ||
+    method === "simulateExecuteLatestDeposit" ||
+    method === "simulateExecuteLatestOrder" ||
+    method === "simulateExecuteLatestShift"
+  ) {
+    if (method === "simulateExecuteLatestWithdrawal" && p.swapPricingType === undefined) {
       throw new Error("swapPricingType is required for simulateExecuteLatestWithdrawal");
+    }
+
+    const externalCalls: ExternalCallsPayload = {
+      sendTokens: [],
+      sendAmounts: [],
+      externalCallTargets: [getContract(chainId, "SimulationRouter")],
+      externalCallDataList: [],
+      refundTokens: [],
+      refundReceivers: [],
+    };
+
+    if (method === "simulateExecuteLatestWithdrawal") {
+      externalCalls.externalCallDataList = [
+        encodeFunctionData({
+          abi: abis.SimulationRouter,
+          functionName: "simulateExecuteLatestWithdrawal",
+          args: [simulationPriceParams, p.swapPricingType!],
+        }),
+      ];
+    } else if (method === "simulateExecuteLatestDeposit") {
+      externalCalls.externalCallDataList = [
+        encodeFunctionData({
+          abi: abis.SimulationRouter,
+          functionName: "simulateExecuteLatestDeposit",
+          args: [simulationPriceParams],
+        }),
+      ];
+    } else if (method === "simulateExecuteLatestOrder") {
+      externalCalls.externalCallDataList = [
+        encodeFunctionData({
+          abi: abis.SimulationRouter,
+          functionName: "simulateExecuteLatestOrder",
+          args: [simulationPriceParams],
+        }),
+      ];
+    } else if (method === "simulateExecuteLatestShift") {
+      externalCalls.externalCallDataList = [
+        encodeFunctionData({
+          abi: abis.SimulationRouter,
+          functionName: "simulateExecuteLatestShift",
+          args: [simulationPriceParams],
+        }),
+      ];
     }
 
     simulationPayloadData.push(
       encodeFunctionData({
         abi: abis.ExchangeRouter,
-        functionName: "simulateExecuteLatestWithdrawal",
-        args: [simulationPriceParams, p.swapPricingType],
-      })
-    );
-  } else if (method === "simulateExecuteLatestDeposit") {
-    simulationPayloadData.push(
-      encodeFunctionData({
-        abi: abis.ExchangeRouter,
-        functionName: "simulateExecuteLatestDeposit",
-        args: [simulationPriceParams],
-      })
-    );
-  } else if (method === "simulateExecuteLatestOrder") {
-    simulationPayloadData.push(
-      encodeFunctionData({
-        abi: abis.ExchangeRouter,
-        functionName: "simulateExecuteLatestOrder",
-        args: [simulationPriceParams],
-      })
-    );
-  } else if (method === "simulateExecuteLatestShift") {
-    simulationPayloadData.push(
-      encodeFunctionData({
-        abi: abis.ExchangeRouter,
-        functionName: "simulateExecuteLatestShift",
-        args: [simulationPriceParams],
+        functionName: "makeExternalCalls",
+        args: [
+          externalCalls.externalCallTargets,
+          externalCalls.externalCallDataList,
+          externalCalls.refundTokens,
+          externalCalls.refundReceivers,
+        ],
       })
     );
   } else if (method === "simulateExecuteLatestGlvDeposit") {
@@ -194,16 +224,20 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
     let msg: React.ReactNode = undefined;
 
     try {
-      const parsedError = decodeErrorFromViemError(txnError);
+      let parsedError = decodeErrorFromViemError(txnError);
+      parsedError =
+        parsedError?.name === CustomErrorName.ExternalCallFailed
+          ? tryDecodeCustomError(parsedError.args!.data)
+          : parsedError;
       if (!parsedError) {
         const error = new Error("No data found in error.");
         error.cause = txnError;
         throw error;
       }
 
-      const isSimulationPassed = parsedError.name === CustomErrorName.EndOfOracleSimulation;
+      const isPassed = parsedError.name === CustomErrorName.EndOfOracleSimulation;
 
-      if (isSimulationPassed) {
+      if (isPassed) {
         if (p.metricId) {
           sendOrderSimulatedMetric(p.metricId);
         }
