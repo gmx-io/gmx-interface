@@ -112,6 +112,7 @@ export default function TVChartContainer({
     visualMultiplier,
     chainId,
     account,
+    shouldShowPositionLines,
   });
   const marksHistoryCacheRef = useRef<{
     key?: string;
@@ -140,7 +141,11 @@ export default function TVChartContainer({
         visualMultiplier: vm,
         chainId: cid,
         account: acc,
+        shouldShowPositionLines: showLines,
       } = marksStateRef.current;
+      if (!showLines) {
+        return [];
+      }
       if (!selToken?.address) {
         return [];
       }
@@ -321,6 +326,7 @@ export default function TVChartContainer({
 
       (inc || []).forEach((e) => {
         if (e.sizeDeltaUsd === 0n) return;
+        if (acc && e.account && !isAddressEqual(e.account as Address, acc as Address)) return;
         const marketForEvent = markets?.[e.marketAddress];
         const tokenDecimals: number | undefined = marketForEvent?.indexToken?.decimals;
         const execPrice =
@@ -342,6 +348,7 @@ export default function TVChartContainer({
 
       (dec || []).forEach((e) => {
         if (e.sizeDeltaUsd === 0n) return;
+        if (acc && e.account && !isAddressEqual(e.account as Address, acc as Address)) return;
         const marketForEvent = markets?.[e.marketAddress];
         const tokenDecimals: number | undefined = marketForEvent?.indexToken?.decimals;
         const execPrice =
@@ -585,6 +592,7 @@ export default function TVChartContainer({
 
   useEffect(() => {
     if (chartReady) {
+      tvWidgetRef.current?.activeChart().clearMarks();
       tvWidgetRef.current?.activeChart().refreshMarks();
     }
   }, [
@@ -596,6 +604,7 @@ export default function TVChartContainer({
     hasMarketsInfo,
     hasTokensData,
     visualMultiplier,
+    shouldShowPositionLines,
   ]);
 
   useEffect(() => {
