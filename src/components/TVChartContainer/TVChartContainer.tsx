@@ -409,7 +409,12 @@ export default function TVChartContainer({
       const priceScale = pane.getMainSourcePriceScale();
       if (!priceScale) return;
 
-      const range = priceScale.getVisiblePriceRange();
+      let range;
+      try {
+        range = priceScale.getVisiblePriceRange();
+      } catch {
+        return;
+      }
       if (!range) return;
 
       const height = pane.getHeight();
