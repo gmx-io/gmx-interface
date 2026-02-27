@@ -181,18 +181,18 @@
   },
   "lint-staged": {
     "sdk/**/*.{js,ts,jsx,tsx}": [
-      "eslint --fix --max-warnings=0 ./sdk",
+      "eslint --fix --max-warnings=0",
       "prettier --write"
     ],
     "src/**/*.{js,ts,jsx,tsx}": [
-      "eslint --fix --max-warnings=0 ./src",
+      "eslint --fix --max-warnings=0",
       "prettier --write"
     ],
     "src/**/*.{css,scss}": [
       "prettier --write"
     ],
     "landing/**/*.{js,ts,jsx,tsx}": [
-      "eslint --fix --max-warnings=0 ./landing",
+      "eslint --fix --max-warnings=0",
       "prettier --write"
     ],
     "landing/**/*.{css,scss}": [
