@@ -108,7 +108,8 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName 
   const { _, i18n } = useLingui();
   const localeStr = i18n.locale;
 
-  const locale: DateLocale = LOCALE_DATE_LOCALE_MAP[localeStr] ?? LOCALE_DATE_LOCALE_MAP.en;
+  const locale: DateLocale =
+    LOCALE_DATE_LOCALE_MAP[localeStr as keyof typeof LOCALE_DATE_LOCALE_MAP] ?? LOCALE_DATE_LOCALE_MAP.en;
 
   const buttonText = useMemo(() => {
     if (!startDate || !endDate) {
@@ -222,7 +223,8 @@ export function DateSelect({
   const { i18n, _ } = useLingui();
   const localeStr = i18n.locale;
 
-  const locale: DateLocale = LOCALE_DATE_LOCALE_MAP[localeStr] ?? LOCALE_DATE_LOCALE_MAP.en;
+  const locale: DateLocale =
+    LOCALE_DATE_LOCALE_MAP[localeStr as keyof typeof LOCALE_DATE_LOCALE_MAP] ?? LOCALE_DATE_LOCALE_MAP.en;
 
   const buttonText = useMemo(() => {
     if (!date) {

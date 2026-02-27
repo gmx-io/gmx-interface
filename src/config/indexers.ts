@@ -65,8 +65,8 @@ export function getIndexerUrl(
   }
 
   if (chainId === SOURCE_ETHEREUM_MAINNET) {
-    return INDEXER_URLS.common[SOURCE_ETHEREUM_MAINNET]?.[indexer];
+    return (INDEXER_URLS.common as any)[SOURCE_ETHEREUM_MAINNET]?.[indexer];
   }
 
-  return INDEXER_URLS?.[chainId]?.[indexer];
+  return (INDEXER_URLS as any)?.[chainId]?.[indexer];
 }

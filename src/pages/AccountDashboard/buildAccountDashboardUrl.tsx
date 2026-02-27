@@ -14,7 +14,7 @@ export function buildAccountDashboardUrl(
   const qs = new URLSearchParams();
 
   if (chainId) {
-    qs.set(NETWORK_QUERY_PARAM, NETWORK_ID_SLUGS_MAP[chainId]);
+    qs.set(NETWORK_QUERY_PARAM, (NETWORK_ID_SLUGS_MAP as any)[chainId]);
   }
 
   qs.set(VERSION_QUERY_PARAM, version.toString());

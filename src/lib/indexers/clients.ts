@@ -85,7 +85,7 @@ export function getGmxGraphClient(chainId: number) {
   throw new Error(`Unsupported chain ${chainId}`);
 }
 
-export function getReferralsGraphClient(chainId) {
+export function getReferralsGraphClient(chainId: any) {
   if (chainId === ARBITRUM) {
     return arbitrumReferralsGraphClient;
   } else if (chainId === AVALANCHE) {

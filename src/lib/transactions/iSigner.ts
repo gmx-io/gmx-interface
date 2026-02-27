@@ -63,11 +63,11 @@ interface ISignerInterface {
 }
 
 export class ISigner implements ISignerInterface {
-  private readonly type: "ethers" | "viem" | "viemPublicClient" | "privateKeyAccount";
-  private readonly signer: EthersSigner | ViemSigner | ViemPublicClient | PrivateKeyAccount;
+  private readonly type!: "ethers" | "viem" | "viemPublicClient" | "privateKeyAccount";
+  private readonly signer!: EthersSigner | ViemSigner | ViemPublicClient | PrivateKeyAccount;
 
-  private _address: string;
-  private _initializationLock: Promise<void>;
+  private _address!: string;
+  private _initializationLock!: Promise<void>;
 
   get address() {
     return this._address;

@@ -5,7 +5,7 @@ import { importImage } from "lib/legacy";
 
 import "./TokenIcon.scss";
 
-function getIconUrlPath(symbol) {
+function getIconUrlPath(symbol: string | undefined) {
   if (!symbol) return;
 
   return `ic_${symbol.toLowerCase()}.svg`;
@@ -51,14 +51,14 @@ function TokenIcon({ className, symbol, displaySize, badge, badgeClassName, chai
         >
           <img
             className="z-20 -mr-10 rounded-[100%] border-2 border-slate-900 bg-slate-900"
-            src={importImage(getIconUrlPath(badge[0]))}
+            src={importImage(getIconUrlPath(badge[0]) as string)}
             alt={badge[0]}
             width={20}
             height={20}
           />
           <img
             className="z-10 rounded-[100%] border-2 border-slate-900 bg-slate-900"
-            src={importImage(getIconUrlPath(badge[1]))}
+            src={importImage(getIconUrlPath(badge[1]) as string)}
             alt={badge[0]}
             width={20}
             height={20}
@@ -81,7 +81,7 @@ function TokenIcon({ className, symbol, displaySize, badge, badgeClassName, chai
     }
     sub = (
       <img
-        src={CHAIN_ID_TO_NETWORK_ICON[chainIdBadge]}
+        src={(CHAIN_ID_TO_NETWORK_ICON as any)[chainIdBadge]}
         width={size}
         height={size}
         className={cx("absolute z-10 box-content rounded-full bg-slate-900", offset)}

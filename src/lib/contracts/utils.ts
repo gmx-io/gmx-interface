@@ -5,7 +5,7 @@ import { BaseContract, Contract } from "ethers";
  */
 export async function getGasLimit(
   contract: Contract | BaseContract,
-  method,
+  method: any,
   params: any[] = [],
   value?: bigint | number,
   from?: string
@@ -18,10 +18,10 @@ export async function getGasLimit(
 
   let gasLimit = 0n;
   try {
-    gasLimit = await contract[method].estimateGas(...params, { value, from });
+    gasLimit = await (contract as any)[method].estimateGas(...params, { value, from });
   } catch (error) {
     // this call should throw another error instead of the `error`
-    await contract[method].staticCall(...params, { value, from });
+    await (contract as any)[method].staticCall(...params, { value, from });
 
     // if not we throw estimateGas error
     throw error;

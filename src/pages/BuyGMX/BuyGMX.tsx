@@ -358,7 +358,7 @@ function DecentralisedExchanges({
   );
 }
 
-function CentralisedExchanges({ chainId }) {
+function CentralisedExchanges({ chainId }: { chainId: any }) {
   const isEmpty = CENTRALISED_EXCHANGES.filter((e) => chainId in e.links).length === 0;
 
   if (isEmpty) {

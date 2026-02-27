@@ -11,6 +11,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
+import type { ErrorLike } from "lib/errors";
 import { FAST_EXPRESS_PARAMS_TIMEOUT_ERROR } from "lib/errors/customErrors";
 import { throttleLog } from "lib/logging";
 import { metrics } from "lib/metrics";
@@ -108,7 +109,7 @@ export function useExpressOrdersParams({
 
         return nextApproximateParams;
       } catch (error) {
-        metrics.pushError(error, `fastExpressParams.error.${label}`);
+        metrics.pushError(error as string | ErrorLike, `fastExpressParams.error.${label}`);
         throw error;
       }
     },

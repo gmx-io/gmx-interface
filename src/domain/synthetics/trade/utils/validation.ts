@@ -545,7 +545,7 @@ export function getDecreaseError(p: {
     numberOfParts,
   } = p;
 
-  if (isContractAccount && isAddressZero(receiveToken?.address)) {
+  if (isContractAccount && receiveToken && isAddressZero(receiveToken.address)) {
     return {
       buttonErrorMessage: t`${receiveToken?.symbol} cannot be sent to smart contract addresses. Select another token`,
     };

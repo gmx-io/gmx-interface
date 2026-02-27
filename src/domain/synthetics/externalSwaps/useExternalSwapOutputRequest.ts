@@ -7,6 +7,7 @@ import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks
 import { selectBotanixStakingAssetsPerShare } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useDebounce } from "lib/debounce/useDebounce";
+import type { ErrorLike } from "lib/errors";
 import { metrics, OpenOceanQuoteTiming } from "lib/metrics";
 import { ContractsChainId } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
@@ -97,7 +98,7 @@ export function useExternalSwapOutputRequest({
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error("Error fetching external swap quote", error);
-        metrics.pushError(error, "externalSwap.useExternalSwapOutputRequest");
+        metrics.pushError(error as string | ErrorLike, "externalSwap.useExternalSwapOutputRequest");
         throw error;
       }
     },

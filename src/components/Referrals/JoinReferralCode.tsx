@@ -89,7 +89,7 @@ function ReferralCodeForm({
     setIsSubmitting(true);
 
     try {
-      const tx = await setTraderReferralCodeByUser(chainId, referralCode, signer, {
+      const tx = await setTraderReferralCodeByUser(chainId, referralCode, signer!, {
         account,
         successMsg: isEdit ? t`Referral code updated` : t`Referral code added`,
         failMsg: isEdit ? t`Referral code update failed` : t`Failed to add referral code`,
@@ -104,7 +104,7 @@ function ReferralCodeForm({
         setReferralCode("");
       }
     } catch (error) {
-      toastCustomOrStargateError(chainId, error);
+      toastCustomOrStargateError(chainId, error as Error);
     } finally {
       setIsSubmitting(false);
       setIsValidating(false);
@@ -340,7 +340,7 @@ function ReferralCodeFormMultichain({
         </>
       );
     } catch (error) {
-      toastCustomOrStargateError(chainId, error);
+      toastCustomOrStargateError(chainId, error as Error);
     } finally {
       setIsSubmitting(false);
       setIsValidating(false);

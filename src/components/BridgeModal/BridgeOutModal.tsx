@@ -34,6 +34,7 @@ import { getDefaultInsufficientGasMessage, ValidationBannerErrorName } from "dom
 import { convertToUsd, getMidPrice, getTokenData, TokenBalanceType } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
+import type { ErrorData } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { getWrappedToken } from "sdk/configs/tokens";
@@ -268,7 +269,9 @@ export function BridgeOutModal({
         });
       });
     } catch (error) {
-      const toastParams = getTxnErrorToast(chainId, error, { defaultMessage: t`Withdrawal failed` });
+      const toastParams = getTxnErrorToast(chainId, error as ErrorData | undefined, {
+        defaultMessage: t`Withdrawal failed`,
+      });
       helperToast.error(toastParams.errorContent, {
         autoClose: toastParams.autoCloseToast,
       });

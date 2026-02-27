@@ -123,9 +123,9 @@ export function useTreasuryVenus({
       return undefined;
     }
 
-    const map = {};
+    const map: Record<string, any> = {};
 
-    Object.entries(gmPriceResponse).forEach(([address, result]) => {
+    Object.entries(gmPriceResponse as any).forEach(([address, result]: [string, any]) => {
       const minPrice = result?.minPrice?.returnValues?.[0];
       const maxPrice = result?.maxPrice?.returnValues?.[0];
 
@@ -155,7 +155,7 @@ export function useTreasuryVenus({
     let totalUsd = 0n;
 
     deployment.vTokens.forEach((config) => {
-      const tokenResult = data[config.vTokenAddress];
+      const tokenResult = (data as any)[config.vTokenAddress];
 
       if (!tokenResult) {
         return;
@@ -216,7 +216,7 @@ export function useTreasuryVenus({
 }
 
 function buildVenusRequest({ addresses, deployment }: { addresses: string[]; deployment: VenusDeployment }) {
-  const request = {};
+  const request: Record<string, any> = {};
 
   deployment.vTokens.forEach((vToken) => {
     const calls: Record<string, ContractCallConfig> = {};

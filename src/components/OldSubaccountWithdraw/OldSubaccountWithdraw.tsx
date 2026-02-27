@@ -8,6 +8,7 @@ import {
   withdrawFromSubaccount,
 } from "domain/synthetics/subaccount/withdrawFromSubaccount";
 import { useChainId } from "lib/chains";
+import type { ErrorLike } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { formatTokenAmount } from "lib/numbers";
@@ -75,7 +76,7 @@ export function OldSubaccountWithdraw() {
 
       setIsVisible(false);
     } catch (error) {
-      metrics.pushError(error, "subaccount.withdrawOldBalance");
+      metrics.pushError(error as string | ErrorLike, "subaccount.withdrawOldBalance");
       helperToast.error(
         <StatusNotification title={t`Withdrawal from subaccount`}>
           {t`Withdrawal of ${balanceFormatted} failed`}

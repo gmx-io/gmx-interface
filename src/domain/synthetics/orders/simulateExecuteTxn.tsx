@@ -5,7 +5,7 @@ import { ContractFunctionParameters, encodeFunctionData, withRetry } from "viem"
 import { getContract } from "config/contracts";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
-import { decodeErrorFromViemError } from "lib/errors";
+import { decodeErrorFromViemError, type ErrorLike, type TxError } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId } from "lib/metrics/types";
 import { sendOrderSimulatedMetric, sendTxnErrorMetric } from "lib/metrics/utils";
@@ -211,7 +211,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
       }
 
       if (p.metricId) {
-        sendTxnErrorMetric(p.metricId, txnError, "simulation");
+        sendTxnErrorMetric(p.metricId, txnError as ErrorLike | undefined, "simulation");
       }
 
       const parsedArgs = parsedError.args;
@@ -244,14 +244,16 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
           {p.additionalErrorParams?.content}
           <br />
           <br />
-          <ToastifyDebug error={`${parsedError.name ?? txnError?.message} ${JSON.stringify(parsedArgs, null, 2)}`} />
+          <ToastifyDebug
+            error={`${parsedError.name ?? (txnError as Error)?.message} ${JSON.stringify(parsedArgs, null, 2)}`}
+          />
         </div>
       );
     } catch (parsingError) {
       // eslint-disable-next-line no-console
       console.error(parsingError);
 
-      const commonError = getErrorMessage(chainId, txnError, errorTitle, p.additionalErrorParams?.content);
+      const commonError = getErrorMessage(chainId, txnError as TxError, errorTitle, p.additionalErrorParams?.content);
       msg = commonError.failMsg;
     }
 

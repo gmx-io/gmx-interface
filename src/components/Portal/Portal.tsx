@@ -1,7 +1,7 @@
-import { useEffect, useMemo } from "react";
+import { useEffect, useMemo, type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
-export default function Portal({ children }) {
+export default function Portal({ children }: { children: ReactNode }) {
   const root = document.body;
 
   const el = useMemo(() => document.createElement("div"), []);

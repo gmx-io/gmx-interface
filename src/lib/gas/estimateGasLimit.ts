@@ -1,6 +1,6 @@
 import type { Provider } from "ethers";
 
-import { extendError } from "lib/errors";
+import { extendError, type ErrorLike } from "lib/errors";
 import { ISigner } from "lib/transactions/iSigner";
 
 const MIN_GAS_LIMIT = 22000n;
@@ -25,7 +25,7 @@ export async function estimateGasLimit(
       // if not we throw estimateGas error
       throw error;
     } catch (error) {
-      throw extendError(error, {
+      throw extendError(error as ErrorLike, {
         errorContext: "gasLimit",
       });
     }

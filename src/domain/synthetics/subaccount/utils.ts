@@ -644,7 +644,7 @@ async function getSubaccountOnchainData({
       return acc;
     }
 
-    acc[key] = decodeFunctionResult({
+    (acc as any)[key] = decodeFunctionResult({
       abi: call.abi,
       functionName: call.functionName,
       data: decodedMulticallResults[index] as Hex,

@@ -3,6 +3,7 @@ import { decodeFunctionResult, encodeFunctionData, size } from "viem";
 
 import { ARBITRUM, ARBITRUM_SEPOLIA } from "config/chains";
 import { useChainId } from "lib/chains";
+import type { ErrorLike } from "lib/errors";
 import { metrics } from "lib/metrics";
 import { useJsonRpcProvider } from "lib/rpc";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
@@ -46,7 +47,7 @@ export function useL1ExpressOrderGasReference() {
           sizeOfData: BigInt(size(referenceData)),
         };
       } catch (error) {
-        metrics.pushError(error, "l1ExpressOrderGasReference");
+        metrics.pushError(error as string | ErrorLike, "l1ExpressOrderGasReference");
         return undefined;
       }
     },

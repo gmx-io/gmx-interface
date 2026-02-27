@@ -181,7 +181,11 @@ export function StatsCard() {
               )}
               handleClassName="numbers"
               content={
-                <ChainsStatsTooltipRow showDollar={false} entries={uniqueUsersEntries} decimalsForConversion={0} />
+                <ChainsStatsTooltipRow
+                  showDollar={false}
+                  entries={uniqueUsersEntries as any}
+                  decimalsForConversion={0}
+                />
               }
             />
           </div>

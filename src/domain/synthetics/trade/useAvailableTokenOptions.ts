@@ -31,7 +31,7 @@ function getCachedSortedMarketAddresses(chainId: number): string[] {
     return JSON.parse(cached);
   }
 
-  return SORTED_MARKETS[chainId];
+  return (SORTED_MARKETS as any)[chainId];
 }
 
 function saveCachedSortedMarketAddresses(chainId: number, sortedMarketsInfo: MarketInfo[]) {
@@ -209,7 +209,7 @@ export function useAvailableTokenOptions(
 
     const collateralAddresses = new Set(Array.from(collaterals).map((c) => c.address));
 
-    FORCE_ALLOWED_COLLATERAL_TOKENS[chainId].forEach((tokenAddress) => {
+    (FORCE_ALLOWED_COLLATERAL_TOKENS as any)[chainId].forEach((tokenAddress: string) => {
       if (!collateralAddresses.has(tokenAddress)) {
         collateralAddresses.add(tokenAddress);
         const tokenData = tokensData?.[tokenAddress];

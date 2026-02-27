@@ -562,14 +562,14 @@ function LogEntryComponent(props: LogEntryComponentProps) {
     );
   }
 
-  const field = fieldFormatters[props.item];
+  const field = (fieldFormatters as any)[props.item];
 
   if (typeof props.value === "bigint") {
     if (field) {
       try {
         value = field(props.value, props);
       } catch (e) {
-        value = e.message;
+        value = (e as Error).message;
         withError = true;
       }
     } else {
@@ -587,7 +587,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
     try {
       value = field(props.value, props);
     } catch (e) {
-      value = e.message;
+      value = (e as Error).message;
       withError = true;
     }
   }
@@ -603,7 +603,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
       try {
         value = field(props.value, props);
       } catch (e) {
-        value = e.message;
+        value = (e as Error).message;
         withError = true;
       }
     }
@@ -730,7 +730,7 @@ const ParseTransactionEvents = ({
           <LogEntryComponent
             name={event.name}
             key={`${keyPrefix}-${event.key}-${value.item}`}
-            {...value}
+            {...(value as any)}
             network={network}
             chainId={chainId}
             entries={event.values}

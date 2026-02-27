@@ -51,7 +51,7 @@ export class SaveLoadAdapter implements IExternalSaveLoadAdapter {
     return Promise.resolve();
   }
 
-  saveChart(chartData) {
+  saveChart(chartData: any) {
     if (!chartData.id) {
       chartData.id = V2_CHART_ID;
     }

@@ -31,7 +31,7 @@ export function useClaimableFundingDataRequest(chainId: ContractsChainId) {
         return {};
       }
 
-      return marketsAddresses.reduce((request, marketAddress) => {
+      return marketsAddresses.reduce((request: Record<string, any>, marketAddress) => {
         const market = getByKey(marketsData, marketAddress);
 
         if (!market) {

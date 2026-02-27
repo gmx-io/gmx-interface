@@ -7,6 +7,7 @@ import { colors } from "config/colors";
 import { USD_DECIMALS } from "config/factors";
 import { OrderType } from "domain/synthetics/orders";
 import { formatTVDate, formatTVTime } from "lib/dates";
+import type { ColorValue } from "lib/generateColorConfig";
 import { calculateDisplayDecimals, numberToBigint } from "lib/numbers";
 
 const createChartStyleOverrides = (upColor: string, downColor: string): Partial<WidgetOverrides> =>
@@ -20,7 +21,7 @@ const createChartStyleOverrides = (upColor: string, downColor: string): Partial<
     acc[`mainSeriesProperties.${cv}.borderUpColor`] = upColor;
     acc[`mainSeriesProperties.${cv}.borderDownColor`] = downColor;
     return acc;
-  }, {});
+  }, {} as Partial<WidgetOverrides>);
 
 export const chartOverridesDark: Partial<WidgetOverrides> = {
   "paneProperties.background": "#121421",
@@ -34,9 +35,12 @@ export const chartOverridesDark: Partial<WidgetOverrides> = {
   "mainSeriesProperties.priceLineColor": "#8B94B6AA",
   "mainSeriesProperties.highLowAvgPrice.highLowPriceLinesVisible": false,
   "mainSeriesProperties.highLowAvgPrice.highLowPriceLabelsVisible": true,
-  "scalesProperties.textColor": colors.typography["secondary"].dark,
+  "scalesProperties.textColor": (colors.typography as Record<string, ColorValue>)["secondary"].dark,
   "mainSeriesProperties.statusViewStyle.showExchange": false,
-  ...createChartStyleOverrides(colors.green[500].dark, colors.red[500].dark),
+  ...createChartStyleOverrides(
+    (colors.green as Record<number, ColorValue>)[500].dark,
+    (colors.red as Record<number, ColorValue>)[500].dark
+  ),
 };
 
 export const chartOverridesLight: Partial<WidgetOverrides> = {
@@ -51,9 +55,12 @@ export const chartOverridesLight: Partial<WidgetOverrides> = {
   "mainSeriesProperties.priceLineColor": "#6B7280AA",
   "mainSeriesProperties.highLowAvgPrice.highLowPriceLinesVisible": false,
   "mainSeriesProperties.highLowAvgPrice.highLowPriceLabelsVisible": true,
-  "scalesProperties.textColor": colors.typography["secondary"].light,
+  "scalesProperties.textColor": (colors.typography as Record<string, ColorValue>)["secondary"].light,
   "mainSeriesProperties.statusViewStyle.showExchange": false,
-  ...createChartStyleOverrides(colors.green[500].light, colors.red[500].light),
+  ...createChartStyleOverrides(
+    (colors.green as Record<number, ColorValue>)[500].light,
+    (colors.red as Record<number, ColorValue>)[500].light
+  ),
 };
 
 export const disabledFeaturesOnMobile: ChartingLibraryFeatureset[] = ["header_saveload", "header_fullscreen_button"];

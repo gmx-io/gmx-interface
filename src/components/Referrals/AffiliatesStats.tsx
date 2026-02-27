@@ -112,12 +112,14 @@ function AffiliatesStats({
   const allReferralCodes = affiliateReferralCodesStats?.map((c) => c.referralCode.trim());
   const finalAffiliatesTotalStats = useMemo(
     () =>
-      recentlyAddedCodes?.filter(isRecentReferralCodeNotExpired).reduce((acc, cv) => {
-        if (!allReferralCodes?.includes(cv.referralCode)) {
-          acc = acc.concat(cv);
-        }
-        return acc;
-      }, affiliateReferralCodesStats || []),
+      recentlyAddedCodes
+        ?.filter((code) => isRecentReferralCodeNotExpired(code))
+        .reduce((acc: ReferralCodeStats[], cv) => {
+          if (!allReferralCodes?.includes(cv.referralCode)) {
+            acc = acc.concat(cv);
+          }
+          return acc;
+        }, affiliateReferralCodesStats || []),
     [allReferralCodes, affiliateReferralCodesStats, recentlyAddedCodes]
   );
 

@@ -67,7 +67,7 @@ export function useTreasuryGm({
     let totalUsd = 0n;
 
     marketsAddresses.forEach((marketAddress) => {
-      const balancesConfig = marketBalancesResponse[`${marketAddress}-balances`];
+      const balancesConfig = (marketBalancesResponse as any)[`${marketAddress}-balances`];
       const balance = sumBalancesFromCalls(balancesConfig, addresses.length);
 
       if (balance === 0n) {
@@ -78,7 +78,7 @@ export function useTreasuryGm({
       const decimals = decimalsRaw !== undefined ? Number(decimalsRaw) : 18;
 
       let usdValue = 0n;
-      const pricesConfig = marketBalancesResponse[`${marketAddress}-prices`];
+      const pricesConfig = (marketBalancesResponse as any)[`${marketAddress}-prices`];
       const minPrice = pricesConfig?.minPrice?.returnValues?.[0];
       const maxPrice = pricesConfig?.maxPrice?.returnValues?.[0];
 
@@ -122,7 +122,7 @@ function buildTreasuryMarketsRequest({
   const dataStoreAddress = getContract(chainId, "DataStore");
   const syntheticsReaderAddress = getContract(chainId, "SyntheticsReader");
 
-  return marketsAddresses.reduce((acc, marketAddress) => {
+  return marketsAddresses.reduce((acc: Record<string, any>, marketAddress) => {
     const market = marketsData[marketAddress];
 
     acc[`${marketAddress}-balances`] = {

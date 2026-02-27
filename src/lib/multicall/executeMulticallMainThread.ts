@@ -12,5 +12,5 @@ export async function executeMulticallMainThread(chainId: number, request: Multi
   const isLargeAccount = getIsLargeAccount();
   const debugState = _debugMulticall?.getDebugState();
 
-  return multicall?.call(providerUrls, request, isLargeAccount, debugState);
+  return multicall?.call(providerUrls as any, request, isLargeAccount, debugState);
 }

@@ -35,13 +35,13 @@ export async function signTypedData({
   // filter inputs
   for (const [key, value] of Object.entries(domain)) {
     if (value === undefined) {
-      delete domain[key];
+      delete (domain as any)[key];
     }
   }
 
   for (const [key, value] of Object.entries(types)) {
     if (value === undefined) {
-      delete types[key];
+      delete (types as any)[key];
     }
   }
 
@@ -68,7 +68,7 @@ export async function signTypedData({
   if (shouldUseSignerMethod && signer.signTypedData) {
     try {
       return await signer.signTypedData(domain, typesToSign, messageToSign);
-    } catch (e) {
+    } catch (e: any) {
       if (e.message.includes("requires a provider")) {
         // ignore and try to send request directly to provider
       } else {

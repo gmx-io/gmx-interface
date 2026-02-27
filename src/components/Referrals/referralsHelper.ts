@@ -27,7 +27,7 @@ export function getReferralsPageUrlForCreateCode(referralCode: string) {
   return `${baseUrl}?${CREATE_REFERRAL_CODE_QUERY_PARAM}=${encodedCode}`;
 }
 
-export function isRecentReferralCodeNotExpired(referralCodeInfo) {
+export function isRecentReferralCodeNotExpired(referralCodeInfo: { time?: number; [key: string]: any }) {
   const REFERRAL_DATA_MAX_TIME = 60000 * 5; // 5 minutes
   if (referralCodeInfo.time) {
     return referralCodeInfo.time + REFERRAL_DATA_MAX_TIME > Date.now();
@@ -67,7 +67,7 @@ export async function getReferralCodeTakenStatus(
     CONTRACTS_CHAIN_IDS.map(async (otherChainId) => {
       try {
         const res = await getReferralCodeOwner(otherChainId as ContractsChainId, referralCodeBytes32);
-        ownerMap[otherChainId] = res;
+        ownerMap[otherChainId as ContractsChainId] = res;
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(`Failed to check referral code owner on chain ${otherChainId}:`, error);
@@ -83,11 +83,11 @@ export async function getReferralCodeTakenStatus(
       continue;
     }
 
-    const owner = ownerMap[otherChainId];
+    const owner = ownerMap[otherChainId as ContractsChainId];
     const takenOnOtherChain =
-      !isAddressZero(owner) && (owner !== account || (owner === account && chainId === otherChainId));
+      !isAddressZero(owner!) && (owner !== account || (owner === account && chainId === otherChainId));
 
-    takenMap[otherChainId] = takenOnOtherChain;
+    takenMap[otherChainId as ContractsChainId] = takenOnOtherChain;
   }
 
   const checkedChains = CONTRACTS_CHAIN_IDS.filter(
@@ -101,9 +101,9 @@ export async function getReferralCodeTakenStatus(
   };
 
   for (const otherChainId of CONTRACTS_CHAIN_IDS) {
-    referralCodeTakenInfo[otherChainId] = {
-      taken: takenMap[otherChainId] ?? false,
-      owner: ownerMap[otherChainId] ?? zeroAddress,
+    referralCodeTakenInfo[otherChainId as ContractsChainId] = {
+      taken: takenMap[otherChainId as ContractsChainId] ?? false,
+      owner: ownerMap[otherChainId as ContractsChainId] ?? zeroAddress,
     };
   }
 
@@ -121,7 +121,7 @@ export async function getReferralCodeTakenStatus(
   return { takenStatus: "none", info: referralCodeTakenInfo, failedChains };
 }
 
-export function getTierIdDisplay(tierId) {
+export function getTierIdDisplay(tierId: bigint | number) {
   return Number(tierId) + 1;
 }
 
@@ -145,7 +145,9 @@ export function getSharePercentage(
 ) {
   if (tierId === undefined || totalRebate === undefined) return;
   if (discountShare === undefined || discountShare === 0n)
-    return isRebate ? tierRebateInfo[tierId] : tierDiscountInfo[tierId];
+    return isRebate
+      ? tierRebateInfo[tierId as keyof typeof tierRebateInfo]
+      : tierDiscountInfo[tierId as keyof typeof tierDiscountInfo];
   const decimals = 4;
 
   const discount = bigMath.mulDiv(
@@ -158,11 +160,11 @@ export function getSharePercentage(
   return removeTrailingZeros(formatAmount(discountPercentage, decimals, 3, true));
 }
 
-function areObjectsWithSameKeys(obj1, obj2) {
+function areObjectsWithSameKeys(obj1: Record<string, unknown>, obj2: Record<string, unknown>) {
   return Object.keys(obj1).every((key) => key in obj2);
 }
 
-export function deserializeSampleStats(input) {
+export function deserializeSampleStats(input: string) {
   const parsedData = JSON.parse(input);
   if (!Array.isArray(parsedData)) return [];
   return parsedData
@@ -206,7 +208,7 @@ export const getSampleReferrarStat = ({
     allOwnersOnOtherChains: takenInfo
       ? Object.fromEntries(
           CONTRACTS_CHAIN_IDS.map((chainId): [ContractsChainId, CodeOwnershipInfo] | undefined => {
-            const taken = takenInfo[chainId];
+            const taken = takenInfo[chainId as ContractsChainId];
             if (!taken) return undefined;
 
             return [
@@ -229,7 +231,7 @@ export function getUsdValue(value: bigint | undefined, decimals = 2) {
   return formatAmount(value, USD_DECIMALS, decimals, true, "0.00");
 }
 
-export function getCodeError(value) {
+export function getCodeError(value: string) {
   const trimmedValue = value.trim();
   if (!trimmedValue) return "";
 
@@ -243,11 +245,11 @@ export function getCodeError(value) {
   return "";
 }
 
-export function getReferralCodeTradeUrl(referralCode) {
+export function getReferralCodeTradeUrl(referralCode: string) {
   return `${getRootUrl()}/#/trade/?${REFERRAL_CODE_QUERY_PARAM}=${referralCode}`;
 }
 
-export function getTwitterShareUrl(referralCode) {
+export function getTwitterShareUrl(referralCode: string) {
   const message = ["Trying out trading on @GMX_IO, up to 100x leverage on $BTC, $ETH 📈", "For fee discounts use:"];
   const shareURL = getReferralCodeTradeUrl(referralCode);
 

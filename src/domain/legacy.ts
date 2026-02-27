@@ -13,7 +13,7 @@ import { bigMath } from "sdk/utils/bigmath";
 
 export * from "./prices";
 
-export function useGmxPrice(chainId, libraries, active) {
+export function useGmxPrice(chainId: number, libraries: any, active: boolean) {
   const arbitrumLibrary = libraries && libraries.arbitrum ? libraries.arbitrum : undefined;
   const { data: gmxPriceFromArbitrum, mutate: mutateFromArbitrum } = useGmxPriceFromArbitrum(arbitrumLibrary, active);
   const { data: gmxPriceFromAvalanche, mutate: mutateFromAvalanche } = useGmxPriceFromAvalanche();
@@ -159,7 +159,7 @@ function useGmxPriceFromAvalanche() {
   return { data: gmxPrice, mutate };
 }
 
-function useGmxPriceFromArbitrum(signer, active) {
+function useGmxPriceFromArbitrum(signer: any, active: boolean) {
   const poolAddress = getContract(ARBITRUM, "UniswapGmxEthPool");
   const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR<any>(
     [`StakeV2:uniPoolSlot0:${active}`, ARBITRUM, poolAddress, "slot0"],

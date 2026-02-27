@@ -27,7 +27,7 @@ export async function getCodeOwnersData(
     ?.query({ query: CODE_OWNERS_GQL, variables: { codes } })
     .then(({ data }) => {
       const { referralCodes } = data;
-      const codeOwners = referralCodes.reduce((acc, cv) => {
+      const codeOwners = referralCodes.reduce((acc: any, cv: any) => {
         acc[cv.id] = cv.owner;
         return acc;
       }, {});

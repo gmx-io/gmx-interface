@@ -72,7 +72,7 @@ export function useTreasuryTokens({
         return;
       }
 
-      const balance = sumBalancesFromCalls(tokenBalancesResponse[tokenAddress], addresses.length);
+      const balance = sumBalancesFromCalls((tokenBalancesResponse as any)[tokenAddress], addresses.length);
 
       if (balance === 0n) {
         return;
@@ -111,7 +111,7 @@ function buildTreasuryTokensRequest({
 }) {
   const multicallAddress = getContract(chainId, "Multicall");
 
-  return tokenAddresses.reduce((acc, tokenAddress) => {
+  return tokenAddresses.reduce((acc: Record<string, any>, tokenAddress) => {
     const token = getToken(chainId, tokenAddress);
     const isNativeToken = token.address === NATIVE_TOKEN_ADDRESS;
 

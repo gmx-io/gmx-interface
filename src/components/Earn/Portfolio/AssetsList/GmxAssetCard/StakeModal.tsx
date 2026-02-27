@@ -373,7 +373,7 @@ export function StakeModal(props: {
               <img
                 className="icon h-24"
                 height="24"
-                src={icons?.[activeTokenSymbol.toLowerCase()]}
+                src={(icons as any)?.[activeTokenSymbol.toLowerCase()]}
                 alt={activeTokenSymbol}
               />
               {activeTokenSymbol}

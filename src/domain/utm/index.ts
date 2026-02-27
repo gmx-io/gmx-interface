@@ -24,7 +24,7 @@ export function useUtmParams() {
     const utmParams = ["source", "medium", "campaign", "term", "content"].reduce((acc, param) => {
       const value = query.get(`utm_${param}`);
       if (value && value.length < 50) {
-        acc[param] = value;
+        (acc as any)[param] = value;
       }
       return acc;
     }, {} as UtmParams);

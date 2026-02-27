@@ -35,9 +35,10 @@ export async function callRelayTransaction({
       ),
     });
   } catch (ex) {
-    if (ex.error) {
+    const err = ex as Record<string, unknown>;
+    if (err.error) {
       // this gives much more readable error in the console with a stacktrace
-      throw ex.error;
+      throw err.error;
     }
     throw ex;
   }

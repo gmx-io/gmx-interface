@@ -23,7 +23,7 @@ import SolanaNetworkItem from "./SolanaNetworkItem";
 
 import "./NetworkDropdown.scss";
 
-function NavIcons({ chainId, open }) {
+function NavIcons({ chainId, open }: { chainId: number; open: boolean }) {
   const icon = getChainIcon(chainId);
   const chainName = getChainName(chainId);
 

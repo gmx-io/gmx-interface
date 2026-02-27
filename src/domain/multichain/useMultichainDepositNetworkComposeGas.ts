@@ -23,7 +23,7 @@ export function useMultichainDepositNetworkComposeGas(opts?: {
   const { chainId } = useChainId();
   const [depositViewChain] = useGmxAccountDepositViewChain();
 
-  const tokenAddress: string | undefined = opts?.tokenAddress ?? CHAIN_ID_PREFERRED_DEPOSIT_TOKEN[chainId];
+  const tokenAddress: string | undefined = opts?.tokenAddress ?? (CHAIN_ID_PREFERRED_DEPOSIT_TOKEN as any)[chainId];
 
   const { address: account } = useAccount();
   const settlementChainPublicClient = usePublicClient({ chainId });

@@ -91,7 +91,7 @@ export function CompositionTable<T extends CompositionType>({ composition, compo
 
 const CompositionTableRow = ({ item, sum }: { item: CompositionItem; sum: bigint }) => {
   const tokenColor =
-    TOKEN_COLOR_MAP[item.type === "market" ? item.market.indexToken.symbol : item.token.symbol] ??
+    (TOKEN_COLOR_MAP as any)[item.type === "market" ? item.market.indexToken.symbol : item.token.symbol] ??
     TOKEN_COLOR_MAP.default;
 
   const tokenCircleStyles = useMemo(() => {

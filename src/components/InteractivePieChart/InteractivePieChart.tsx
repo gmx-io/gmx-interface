@@ -27,7 +27,7 @@ export default function InteractivePieChart({ data, label }: Props) {
     [activeIndex, sortedData]
   );
 
-  const onChartEnter = (_, index) => {
+  const onChartEnter = (_: unknown, index: number) => {
     setActiveIndex(index);
   };
 
@@ -74,14 +74,20 @@ export default function InteractivePieChart({ data, label }: Props) {
           >
             {label}
           </text>
-          <Tooltip content={(props) => <CustomTooltip active={props.active} payload={props.payload} />} />
+          <Tooltip content={(props) => <CustomTooltip active={props.active} payload={props.payload as any} />} />
         </PieChart>
       )}
     </div>
   );
 }
 
-function CustomTooltip({ active, payload }) {
+function CustomTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: { color: string; value: number; name: string }[];
+}) {
   const customTooltipStyle = useMemo(
     () => (payload && payload.length ? { backgroundColor: payload[0].color } : undefined),
     [payload]

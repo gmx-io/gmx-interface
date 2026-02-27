@@ -30,12 +30,12 @@ function getErrorString(error: { name: string; args: any[] }) {
   });
 }
 
-function parseError(reasonBytes, shouldThrow = true) {
+function parseError(reasonBytes: any, shouldThrow = true) {
   if (reasonBytes.startsWith(PANIC_SIGNATURE4)) {
     const [panicCode] = defaultAbiCoder.decode(["uint256"], "0x" + reasonBytes.slice(10));
     return {
       name: "Panic",
-      args: [panicCode.toString(), PANIC_MAP[panicCode.toString()]],
+      args: [panicCode.toString(), (PANIC_MAP as any)[panicCode.toString()]],
     } as any;
   }
 

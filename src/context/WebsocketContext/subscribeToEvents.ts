@@ -463,7 +463,7 @@ export function parseEventLogData(eventData: RawEventLogData): EventLogData {
     for (const listKey of ["items", "arrayItems"]) {
       ret[typeKey][listKey] = {};
 
-      for (const item of eventData[typeKey][listKey]) {
+      for (const item of (eventData as any)[typeKey][listKey]) {
         ret[typeKey][listKey][item.key] = item.value;
       }
     }

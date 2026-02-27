@@ -8,7 +8,7 @@ export function useNativeTokenBalance(chainId: AnyChainId | undefined, account: 
     request: {
       balance: {
         abiId: "Multicall",
-        contractAddress: MULTICALLS_MAP[chainId!],
+        contractAddress: (MULTICALLS_MAP as any)[chainId!],
         calls: {
           balance: {
             methodName: "getEthBalance",

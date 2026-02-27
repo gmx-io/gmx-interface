@@ -186,7 +186,7 @@ export function GmPoolsSelectorForGlvMarket({
   );
 
   const handleKeyDown = useCallback(
-    (e) => {
+    (e: React.KeyboardEvent) => {
       if (e.key === "Enter") {
         e.preventDefault();
         e.stopPropagation();

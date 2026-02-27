@@ -40,7 +40,7 @@ import {
   Subaccount,
 } from "domain/synthetics/subaccount";
 import { SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
-import { extendError } from "lib/errors";
+import { extendError, type ErrorLike } from "lib/errors";
 import { applyGasLimitBuffer, estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { metrics } from "lib/metrics";
 import { applyFactor } from "lib/numbers";
@@ -397,7 +397,7 @@ export async function estimateExpressParams({
         );
       }
     } catch (error) {
-      const extendedError = extendError(error, {
+      const extendedError = extendError(error as ErrorLike, {
         data: {
           estimationMethod,
         },
@@ -1057,13 +1057,13 @@ async function validateSignature({
       });
     }
   } catch (error) {
-    metrics.pushError(error, errorSource);
+    metrics.pushError(error as string | ErrorLike, errorSource);
 
     if (silent) {
       return;
     }
 
-    throw extendError(error, {
+    throw extendError(error as ErrorLike, {
       data: {
         signature,
         expectedAccount,

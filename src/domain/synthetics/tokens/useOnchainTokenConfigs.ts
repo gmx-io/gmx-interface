@@ -16,7 +16,7 @@ export function useOnchainTokenConfigs(chainId: ContractsChainId, params?: { ena
     refreshInterval: null,
 
     request: () =>
-      tokens.reduce((acc, token) => {
+      tokens.reduce((acc: Record<string, any>, token) => {
         acc[`${token.address}-priceFeed`] = {
           contractAddress: getContract(chainId, "DataStore"),
           abiId: "DataStore",
@@ -37,7 +37,8 @@ export function useOnchainTokenConfigs(chainId: ContractsChainId, params?: { ena
       const result: { [tokenAddress: string]: { hasPriceFeedProvider: boolean } } = {};
 
       for (const token of tokens) {
-        const priceFeedAddress = response.data[`${token.address}-priceFeed`].chainlinkPriceFeedAddress.returnValues[0];
+        const priceFeedAddress = (response.data as any)[`${token.address}-priceFeed`].chainlinkPriceFeedAddress
+          .returnValues[0];
 
         result[token.address] = {
           hasPriceFeedProvider: priceFeedAddress !== zeroAddress,

@@ -21,7 +21,7 @@ export function getPositionStats(
       acc.totalShortPositionSizes += BigInt(cv.totalShortPositionSizes);
       acc.totalOpenInterest += cv.openInterest;
 
-      acc[ACTIVE_CHAIN_IDS[i]] = cv;
+      (acc as any)[ACTIVE_CHAIN_IDS[i]] = cv;
       return acc;
     },
     {

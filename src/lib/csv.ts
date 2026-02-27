@@ -15,7 +15,7 @@ function convertToCSV<T>(data: Partial<T>[], customHeaders?: Partial<Record<keyo
     .map((object) =>
       keys
         .map((key) => {
-          const value = object[key];
+          const value = (object as any)[key];
           const cell = value === undefined ? "" : String(value);
           return cell.includes(CSV_SEPARATOR) ? `"${cell}"` : cell;
         })

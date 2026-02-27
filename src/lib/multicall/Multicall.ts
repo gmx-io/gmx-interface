@@ -45,16 +45,16 @@ export class Multicall {
         // retries works strangely in viem, so we disable them
         retryCount: 0,
         retryDelay: 10000000,
-        batch: BATCH_CONFIGS[chainId].http,
+        batch: BATCH_CONFIGS[chainId as keyof typeof BATCH_CONFIGS].http,
         timeout: MAX_PRIMARY_TIMEOUT,
       }),
       pollingInterval: undefined,
-      batch: BATCH_CONFIGS[chainId].client,
+      batch: BATCH_CONFIGS[chainId as keyof typeof BATCH_CONFIGS].client,
       chain: getViemChain(chainId) as Chain,
     });
   }
 
-  getClient: (options?: { forceFallback?: boolean }) => ReturnType<typeof Multicall.getViemClient>;
+  getClient!: (options?: { forceFallback?: boolean }) => ReturnType<typeof Multicall.getViemClient>;
 
   constructor(
     public chainId: number,
@@ -172,7 +172,7 @@ export class Multicall {
         data: {},
       };
 
-      response.forEach(({ result, status, error }, i) => {
+      response.forEach(({ result, status, error }: { result: any; status: string; error: any }, i: number) => {
         const { contractKey, callKey } = originalKeys[i];
 
         if (status === "success") {

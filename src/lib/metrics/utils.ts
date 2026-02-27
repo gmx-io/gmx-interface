@@ -1007,7 +1007,7 @@ function getOrderStepTimings(metricId: OrderMetricId, step: OrderStage) {
     timeFromCreated: metrics.getTime(timingIds[OrderStage.Created], clear) ?? 0,
   };
 
-  const timerToStart = timingIds[step];
+  const timerToStart = (timingIds as any)[step];
 
   if (timerToStart) {
     metrics.startTimer(timerToStart);

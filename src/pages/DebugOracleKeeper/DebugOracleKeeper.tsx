@@ -93,8 +93,8 @@ export default function DebugOracleKeeper() {
       const fallbacks = fallbackTracker.state.fallbacks;
 
       const allStats = fallbackTracker.getEndpointsStats();
-      const statsWithDetails = endpoints.map((endpoint) => {
-        const endpointStats = allStats.find((s) => s.endpoint === endpoint);
+      const statsWithDetails = endpoints.map((endpoint: any) => {
+        const endpointStats = allStats.find((s: any) => s.endpoint === endpoint);
         // Get latest checkResult (first in checkResults array, which is sorted from newest to oldest)
         const latestCheckResult = endpointStats?.checkResults?.[0];
         return {

@@ -11,7 +11,7 @@ type Props = {
   isUserConnected?: boolean;
 };
 
-function renderEscrowedGMXApr(processedData) {
+function renderEscrowedGMXApr(processedData: any) {
   if (!processedData?.gmxAprForEsGmx || processedData.gmxAprForEsGmx <= 0) return;
   return (
     <StatsTooltipRow

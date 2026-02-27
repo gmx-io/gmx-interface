@@ -113,7 +113,7 @@ export function getActionTitle(orderType: OrderType, eventName: TradeActionType,
   const key = isTwap
     ? `Twap${isSwapOrderType(orderType) ? "Swap" : ""}-${eventName}`
     : `${orderTypeToKey(orderType)}-${eventName}`;
-  const title = actionTextMap[key];
+  const title = (actionTextMap as any)[key];
 
   if (title) {
     return i18n._(title);

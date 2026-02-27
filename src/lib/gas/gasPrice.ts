@@ -9,7 +9,7 @@ import {
   getMaxPriorityFeePerGas,
 } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { extendError } from "lib/errors";
+import { extendError, type ErrorLike } from "lib/errors";
 import { GetFeeDataBlockError } from "lib/metrics";
 import { emitMetricCounter } from "lib/metrics/emitMetricEvent";
 import { bigMath } from "sdk/utils/bigmath";
@@ -76,7 +76,7 @@ export async function getGasPrice(provider: Provider, chainId: number): Promise<
       gasPrice: gasPrice + buffer + premium,
     };
   } catch (error) {
-    throw extendError(error, {
+    throw extendError(error as ErrorLike, {
       errorContext: "gasPrice",
     });
   }

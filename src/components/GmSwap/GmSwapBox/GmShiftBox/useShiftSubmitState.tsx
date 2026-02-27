@@ -127,25 +127,29 @@ export function useShiftSubmitState({
       };
     }
 
-    const commonError = getCommonError({
-      chainId,
-      isConnected: true,
-      hasOutdatedUi,
-    })[0];
+    const commonError = (
+      getCommonError({
+        chainId,
+        isConnected: true,
+        hasOutdatedUi,
+      }) as any
+    )[0];
 
-    const shiftError = getGmShiftError({
-      fromMarketInfo: selectedMarketInfo,
-      fromToken: selectedToken,
-      fromTokenAmount: amounts?.fromTokenAmount,
-      fromTokenUsd: amounts?.fromTokenUsd,
-      fromLongTokenAmount: amounts?.fromLongTokenAmount,
-      fromShortTokenAmount: amounts?.fromShortTokenAmount,
-      toMarketInfo: toMarketInfo,
-      toToken: toToken,
-      toTokenAmount: amounts?.toTokenAmount,
-      fees,
-      priceImpactUsd: amounts?.swapPriceImpactDeltaUsd,
-    })[0];
+    const shiftError = (
+      getGmShiftError({
+        fromMarketInfo: selectedMarketInfo,
+        fromToken: selectedToken,
+        fromTokenAmount: amounts?.fromTokenAmount,
+        fromTokenUsd: amounts?.fromTokenUsd,
+        fromLongTokenAmount: amounts?.fromLongTokenAmount,
+        fromShortTokenAmount: amounts?.fromShortTokenAmount,
+        toMarketInfo: toMarketInfo,
+        toToken: toToken,
+        toTokenAmount: amounts?.toTokenAmount,
+        fees,
+        priceImpactUsd: amounts?.swapPriceImpactDeltaUsd,
+      }) as any
+    )[0];
 
     const error = commonError || shiftError;
 

@@ -100,7 +100,7 @@ export function useTreasuryGlv({
     let totalUsd = 0n;
 
     glvAssets.forEach((asset) => {
-      const balancesConfig = glvBalancesResponse[`${asset.glvToken}-balances`];
+      const balancesConfig = (glvBalancesResponse as any)[`${asset.glvToken}-balances`];
       const balance = sumBalancesFromCalls(balancesConfig, addresses.length);
 
       if (balance === 0n) {
@@ -111,7 +111,7 @@ export function useTreasuryGlv({
       const decimals = decimalsValue !== undefined ? Number(decimalsValue) : 18;
 
       let usdValue = 0n;
-      const pricesConfig = glvBalancesResponse[`${asset.glvToken}-prices`];
+      const pricesConfig = (glvBalancesResponse as any)[`${asset.glvToken}-prices`];
       const minPrice = pricesConfig?.glvTokenPriceMin?.returnValues?.[0];
       const maxPrice = pricesConfig?.glvTokenPriceMax?.returnValues?.[0];
 
@@ -193,7 +193,7 @@ function buildTreasuryGlvRequest({
   const dataStoreAddress = getContract(chainId, "DataStore");
   const glvReaderAddress = getContract(chainId, "GlvReader");
 
-  const request = {};
+  const request: Record<string, any> = {};
   const assets: GlvAsset[] = [];
 
   glvList.forEach(({ glv, markets }) => {

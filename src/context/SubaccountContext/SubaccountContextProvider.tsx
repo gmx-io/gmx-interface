@@ -28,6 +28,7 @@ import { metrics } from "lib/metrics";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
+import { ErrorLike } from "sdk/utils/errors";
 
 import { StatusNotification } from "components/StatusNotification/StatusNotification";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
@@ -174,7 +175,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(error);
-        metrics.pushError(error, "subaccount.updateSubaccountSettings");
+        metrics.pushError(error as ErrorLike, "subaccount.updateSubaccountSettings");
         toast.dismiss();
         helperToast.error(
           <StatusNotification key="updateSubaccountSettingsError" title={t`Update 1CT settings`}>
@@ -217,7 +218,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
         console.error(error);
 
         setSubaccountActivationState(SubaccountActivationState.GeneratingError);
-        metrics.pushError(error, "subaccount.generateSubaccount");
+        metrics.pushError(error as ErrorLike, "subaccount.generateSubaccount");
         return false;
       }
     }
@@ -259,7 +260,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
       setSubaccountActivationState(SubaccountActivationState.ApprovalSigningError);
       // eslint-disable-next-line no-console
       console.error(error);
-      metrics.pushError(error, "subaccount.signDefaultApproval");
+      metrics.pushError(error as ErrorLike, "subaccount.signDefaultApproval");
       return false;
     }
   }, [
@@ -322,7 +323,7 @@ export function SubaccountContextProvider({ children }: { children: React.ReactN
     } catch (error) {
       // eslint-disable-next-line no-console
       console.error(error);
-      metrics.pushError(error, "subaccount.tryDisableSubaccount");
+      metrics.pushError(error as ErrorLike, "subaccount.tryDisableSubaccount");
       setSubaccountDeactivationState(SubaccountDeactivationState.Error);
       return false;
     }

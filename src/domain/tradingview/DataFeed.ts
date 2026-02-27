@@ -169,7 +169,9 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
       if (!isStable) {
         bars = await this.fetchCandles(symbolInfo.name, resolution, countBack + offset);
       } else {
-        const currentCandleTime = getCurrentCandleTime(SUPPORTED_RESOLUTIONS_V2[resolution]);
+        const currentCandleTime = getCurrentCandleTime(
+          (SUPPORTED_RESOLUTIONS_V2 as Record<string, string>)[resolution]
+        );
         bars = this.getStableCandles(currentCandleTime, resolution, countBack + offset);
       }
     } catch (e) {
@@ -237,7 +239,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     const interval = new PauseableInterval<Bar | undefined>(async ({ lastReturnedValue }) => {
       let candlesToFetch = 1;
 
-      const currentCandleTime = getCurrentCandleTime(SUPPORTED_RESOLUTIONS_V2[resolution]);
+      const currentCandleTime = getCurrentCandleTime((SUPPORTED_RESOLUTIONS_V2 as Record<string, string>)[resolution]);
 
       if (lastReturnedValue) {
         const periodSeconds = RESOLUTION_TO_SECONDS[resolution];
@@ -402,7 +404,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
     result = await Promise.race([
       this.oracleFetcher
-        .fetchOracleCandles(symbol, SUPPORTED_RESOLUTIONS_V2[resolution], count)
+        .fetchOracleCandles(symbol, (SUPPORTED_RESOLUTIONS_V2 as Record<string, string>)[resolution], count)
         .then((bars) => bars.slice().reverse()),
       sleep(5000).then(() => Promise.reject("Oracle candles timeout")),
     ])
@@ -410,7 +412,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
         // eslint-disable-next-line no-console
         console.warn(ex, "Switching to graph chainlink data");
         return Promise.race([
-          getChainlinkChartPricesFromGraph(symbol, SUPPORTED_RESOLUTIONS_V2[resolution]),
+          getChainlinkChartPricesFromGraph(symbol, (SUPPORTED_RESOLUTIONS_V2 as Record<string, string>)[resolution]),
           sleep(5000).then(() => Promise.reject("Chainlink candles timeout")),
         ]);
       })

@@ -26,7 +26,7 @@ async function executeMulticall(
 
 self.addEventListener("message", run);
 
-async function run(event) {
+async function run(event: MessageEvent) {
   const { PRODUCTION_PREVIEW_KEY, chainId, providerUrls, request, id, abFlags, isLargeAccount, debugState } =
     event.data;
   // @ts-ignore
@@ -40,12 +40,13 @@ async function run(event) {
       result,
     });
   } catch (error) {
+    const err = error as Error;
     postMessage({
       id,
       error: {
-        name: error.name,
-        message: error.message,
-        stack: error.stack,
+        name: err.name,
+        message: err.message,
+        stack: err.stack,
       },
     });
   }

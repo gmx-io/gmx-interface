@@ -60,7 +60,8 @@ export function GmCard() {
         fullName: marketInfo.name,
         name: marketInfo.isSpotOnly ? getMarketPoolName(marketInfo) : getMarketIndexName(marketInfo),
         value: marketSupplyPercentage,
-        color: TOKEN_COLOR_MAP[indexToken.baseSymbol ?? indexToken.symbol ?? "default"] ?? TOKEN_COLOR_MAP.default,
+        color:
+          (TOKEN_COLOR_MAP as any)[indexToken.baseSymbol ?? indexToken.symbol ?? "default"] ?? TOKEN_COLOR_MAP.default,
       };
     });
   }, [marketsInfoData, totalGMSupply]);

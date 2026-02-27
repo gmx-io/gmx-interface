@@ -191,7 +191,7 @@ class Metrics {
     this.pushEvent(event);
   };
 
-  _processQueue = async (retryNumber = 0) => {
+  _processQueue = async (retryNumber = 0): Promise<void> => {
     this.isProcessing = true;
 
     // Calculate delay with exponential backoff
@@ -297,14 +297,14 @@ class Metrics {
             }
           });
         } catch (error) {
-          this.pushError(error, "subscribeToLongTasks");
+          this.pushError(error as ErrorLike, "subscribeToLongTasks");
           this.performanceObserver?.disconnect();
         }
       });
 
       this.performanceObserver.observe({ entryTypes: ["longtask"], buffered: true });
     } catch (error) {
-      this.pushError(error, "subscribeToLongTasks");
+      this.pushError(error as ErrorLike, "subscribeToLongTasks");
       this.performanceObserver?.disconnect();
     }
   };
@@ -324,7 +324,7 @@ class Metrics {
     this.pushTiming<any>(detail.event, detail.time, detail.data);
   };
 
-  handleError = (event) => {
+  handleError = (event: any) => {
     const error = event.error;
 
     if (error) {
@@ -332,7 +332,7 @@ class Metrics {
     }
   };
 
-  handleUnhandledRejection = (event) => {
+  handleUnhandledRejection = (event: any) => {
     const error = event.reason;
 
     if (error) {
@@ -465,24 +465,27 @@ class Metrics {
   };
 
   serializeCustomFields = (fields: object) => {
-    return Object.entries(fields).reduce((acc, [key, value]) => {
-      if (BANNED_CUSTOM_FIELDS.includes(key)) {
+    return Object.entries(fields).reduce(
+      (acc, [key, value]) => {
+        if (BANNED_CUSTOM_FIELDS.includes(key)) {
+          return acc;
+        }
+
+        if (typeof value === "bigint") {
+          value = value.toString();
+        }
+
+        const charLimit = key === "errorStack" ? 2000 : 500;
+        if (typeof value === "string" && value.length > charLimit) {
+          value = value.slice(0, charLimit);
+        }
+
+        (acc as Record<string, unknown>)[key] = value;
+
         return acc;
-      }
-
-      if (typeof value === "bigint") {
-        value = value.toString();
-      }
-
-      const charLimit = key === "errorStack" ? 2000 : 500;
-      if (typeof value === "string" && value.length > charLimit) {
-        value = value.slice(0, charLimit);
-      }
-
-      acc[key] = value;
-
-      return acc;
-    }, {});
+      },
+      {} as Record<string, unknown>
+    );
   };
 }
 

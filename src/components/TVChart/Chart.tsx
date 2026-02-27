@@ -45,7 +45,7 @@ const TABS = isDevelopment() ? ["PRICE", "DEPTH", "MARKET_GRAPH"] : ["PRICE", "D
 
 const TABS_OPTIONS = TABS.map((tab) => ({
   value: tab,
-  label: TAB_LABELS[tab],
+  label: (TAB_LABELS as any)[tab],
 }));
 
 type Props = {

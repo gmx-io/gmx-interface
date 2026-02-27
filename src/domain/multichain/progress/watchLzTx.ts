@@ -135,7 +135,7 @@ export async function watchLzTxRpc({
   debugLog("[watchLzTxRpc] got guid", guid);
 
   debugLog("[watchLzTxRpc] getting destination chain id");
-  const destinationChainId = ENDPOINT_ID_TO_CHAIN_ID[oftSentEvent.args.dstEid];
+  const destinationChainId = (ENDPOINT_ID_TO_CHAIN_ID as any)[oftSentEvent.args.dstEid];
   debugLog("[watchLzTxRpc] got destination chain id", destinationChainId);
   if (!destinationChainId) {
     debugLog("[watchLzTxRpc] no destination chain id found");
@@ -652,7 +652,9 @@ function getLzStatusFromApiResponse(operation: LzApiOperation): LzStatus {
     }
   }
 
-  const destinationChainId = operation.pathway?.dstEid ? ENDPOINT_ID_TO_CHAIN_ID[operation.pathway.dstEid] : undefined;
+  const destinationChainId = operation.pathway?.dstEid
+    ? (ENDPOINT_ID_TO_CHAIN_ID as any)[operation.pathway.dstEid]
+    : undefined;
 
   const lzTx =
     operation.destination && "lzCompose" in operation.destination && operation.destination.lzCompose?.txs?.[0]?.txHash;

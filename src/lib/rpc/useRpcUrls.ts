@@ -124,8 +124,8 @@ export function useCurrentRpcUrls(chainId: number): { primary: string; fallbacks
   }>(() => {
     const result = getCurrentRpcUrls(chainId);
     return {
-      primary: result.primary,
-      fallbacks: result.fallbacks,
+      primary: result.primary!,
+      fallbacks: result.fallbacks as string[],
     };
   });
 
@@ -134,8 +134,8 @@ export function useCurrentRpcUrls(chainId: number): { primary: string; fallbacks
 
     const result = getCurrentRpcUrls(chainId);
     setBestRpcUrls({
-      primary: result.primary,
-      fallbacks: result.fallbacks,
+      primary: result.primary!,
+      fallbacks: result.fallbacks as string[],
     });
     const tracker = getRpcTrackerByChainId(chainId);
 

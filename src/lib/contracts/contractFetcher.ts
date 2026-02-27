@@ -58,7 +58,7 @@ export const contractFetcher =
 
     let shouldCallFallback = true;
 
-    const handleFallback = async (resolve, reject, error) => {
+    const handleFallback = async (resolve: any, reject: any, error: any) => {
       if (!shouldCallFallback) {
         return;
       }
@@ -210,7 +210,7 @@ async function fetchContractData({
     return;
   }
 
-  return provider[method](arg1, ...params);
+  return (provider as any)[method](arg1, ...params);
 }
 
 function isProvider(signerOrProvider: Provider | Signer | undefined): signerOrProvider is Provider {

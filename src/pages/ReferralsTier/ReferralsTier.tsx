@@ -22,7 +22,7 @@ export default function ReferralsTier() {
 
   const onConfirmation = useCallback(() => {
     if (affiliate) {
-      contractSetAffiliateTier(chainId, affiliate, affiliateTier, signer, {
+      contractSetAffiliateTier(chainId, affiliate, affiliateTier, signer!, {
         sentMsg: "Transaction sent!",
         failMsg: "Transaction failed.",
       });

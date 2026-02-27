@@ -8,6 +8,7 @@ import { selectTradeboxSetTradeConfig } from "context/SyntheticsStateContext/sel
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { StoredTradeOptions } from "domain/synthetics/trade/useTradeboxState";
 import { useChainId } from "lib/chains";
+import type { ErrorLike } from "lib/errors";
 import { metrics } from "lib/metrics";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
@@ -93,7 +94,7 @@ export function BuyGmxModal({
         history.push(DIRECT_BUY_PATH);
       }
     } catch (e) {
-      metrics.pushError(e, "buyGmxModal.switchNetworkError");
+      metrics.pushError(e as string | ErrorLike, "buyGmxModal.switchNetworkError");
     }
 
     setIsSwitching(false);

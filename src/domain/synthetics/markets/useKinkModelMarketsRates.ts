@@ -32,8 +32,8 @@ export function useKinkModelMarketsRates(chainId: ContractsChainId): KinkModelMa
     refreshInterval: CONFIG_UPDATE_INTERVAL,
 
     request: () =>
-      marketsAddresses.reduce((acc, marketAddress) => {
-        const prebuiltHashedKeys = HASHED_KINK_MODEL_MARKET_RATES_KEYS[chainId]?.[marketAddress];
+      marketsAddresses.reduce((acc: Record<string, any>, marketAddress) => {
+        const prebuiltHashedKeys = (HASHED_KINK_MODEL_MARKET_RATES_KEYS[chainId] as any)?.[marketAddress];
 
         if (!prebuiltHashedKeys) {
           throw new Error(
@@ -77,9 +77,9 @@ export function useKinkModelMarketsRates(chainId: ContractsChainId): KinkModelMa
     parseResponse: (res) => {
       const result = marketsAddresses!.reduce(
         (acc, marketAddress) => {
-          const dataStoreErrors = res.errors[`${marketAddress}-dataStore`];
+          const dataStoreErrors = (res.errors as any)[`${marketAddress}-dataStore`];
 
-          const dataStoreValues = res.data[`${marketAddress}-dataStore`];
+          const dataStoreValues = (res.data as any)[`${marketAddress}-dataStore`];
 
           // Skip invalid market
           if (!dataStoreValues || dataStoreErrors) {

@@ -35,7 +35,7 @@ export function useLocalStorageByChainId<T>(
   let value;
 
   if (internalValue && chainId in internalValue) {
-    value = internalValue[chainId];
+    value = (internalValue as any)[chainId];
   } else {
     value = defaultValue;
   }

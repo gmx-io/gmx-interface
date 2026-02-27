@@ -732,12 +732,12 @@ export const MARKETS = Object.keys(MARKETS_UI_CONFIGS).reduce(
   (acc, network) => {
     return {
       ...acc,
-      [network]: Object.keys(MARKETS_UI_CONFIGS[network]).reduce((acc, address) => {
+      [network]: Object.keys((MARKETS_UI_CONFIGS as any)[network]).reduce((acc, address) => {
         return {
           ...acc,
           [address]: {
-            ...SDK_MARKETS[network][address],
-            ...MARKETS_UI_CONFIGS[network][address],
+            ...(SDK_MARKETS as any)[network][address],
+            ...(MARKETS_UI_CONFIGS as any)[network][address],
           },
         };
       }, {}),

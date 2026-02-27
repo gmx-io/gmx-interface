@@ -47,7 +47,7 @@ export abstract class LongCrossChainTask<
     public readonly sourceChainId: number,
     public readonly settlementChainId: number
   ) {
-    this.resolversRegistry["finished"] = Promise.withResolvers<void>();
+    (this.resolversRegistry as any)["finished"] = Promise.withResolvers<void>();
     // TODO MLTCH add steps when managers say to show steps
     // Defer initialization to next tick to allow subclass properties (steps, groups, etc.)
     // to be initialized before we access them

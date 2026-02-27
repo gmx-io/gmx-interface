@@ -156,24 +156,25 @@ export function useMulticall<
 
         return result as TResult;
       } catch (e) {
+        const err = e as Error;
         // eslint-disable-next-line no-console
-        console.error(`Multicall request failed: ${name}`, e);
-        e.message = `Multicall request failed: ${name} ${e.message}`;
+        console.error(`Multicall request failed: ${name}`, err);
+        err.message = `Multicall request failed: ${name} ${err.message}`;
 
         emitMetricEvent<ErrorEvent>({
           event: "error",
           isError: true,
           data: {
-            errorName: e.name,
-            errorMessage: e.message,
-            errorStack: e.stack,
-            errorStackHash: cryptoJs.SHA256(e.stack).toString(cryptoJs.enc.Hex),
+            errorName: err.name,
+            errorMessage: err.message,
+            errorStack: err.stack,
+            errorStackHash: cryptoJs.SHA256(err.stack).toString(cryptoJs.enc.Hex),
             isUserError: false,
             isUserRejectedError: false,
           },
         });
 
-        throw e;
+        throw err;
       } finally {
         performance.mark(`multicall-${name}-end`);
         performance.measure(`multicall-${name}`, `multicall-${name}-start`, `multicall-${name}-end`);

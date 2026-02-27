@@ -1,7 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
-import { ChangeEvent, useCallback, useEffect, useMemo, useRef } from "react";
+import { ChangeEvent, FormEvent, useCallback, useEffect, useMemo, useRef } from "react";
 import { useKey, useLatest, usePrevious } from "react-use";
 
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
@@ -635,7 +635,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     (token: Token) => onSelectToTokenAddress(token.address),
     [onSelectToTokenAddress]
   );
-  const handleCloseInputChange = useCallback((e) => setCloseSizeInputValue(e.target.value), [setCloseSizeInputValue]);
+  const handleCloseInputChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => setCloseSizeInputValue(e.target.value),
+    [setCloseSizeInputValue]
+  );
 
   const formattedMaxCloseSize = formatAmount(selectedPosition?.sizeInUsd, USD_DECIMALS, 2);
 
@@ -652,7 +655,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   );
 
   const handleTriggerPriceInputChange = useCallback(
-    (e) => setTriggerPriceInputValue(e.target.value),
+    (e: ChangeEvent<HTMLInputElement>) => setTriggerPriceInputValue(e.target.value),
     [setTriggerPriceInputValue]
   );
 
@@ -690,7 +693,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   );
 
   const handleFormSubmit = useCallback(
-    (e) => {
+    (e: FormEvent) => {
       e.preventDefault();
       if (!isCursorInside && (!submitButtonState.disabled || shouldDisableValidation)) {
         wrappedOnSubmit();
@@ -1005,9 +1008,9 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       Array.isArray(mode)
         ? {
             label: t`More`,
-            options: mode.map(modeToOptions),
+            options: (mode as TradeMode[]).map(modeToOptions),
           }
-        : modeToOptions(mode)
+        : modeToOptions(mode as TradeMode)
     );
   }, [availableTradeModes, localizedTradeModeLabels]);
 

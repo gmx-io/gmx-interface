@@ -191,7 +191,7 @@ const TableHeaderCell = memo(
           }
         : undefined;
 
-    const stopPropagation = useCallback((e) => e.stopPropagation(), []);
+    const stopPropagation = useCallback((e: any) => e.stopPropagation(), []);
 
     const isSortable = onChange !== undefined;
 

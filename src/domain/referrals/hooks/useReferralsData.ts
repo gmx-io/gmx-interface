@@ -117,14 +117,14 @@ export function useReferralsData(account?: string | null) {
           const affiliateDistributions: RebateDistribution[] = [];
           const traderDistributions: RebateDistribution[] = [];
 
-          res.data.distributions.forEach((d) => {
+          res.data.distributions.forEach((d: any) => {
             const item = {
               typeId: d.typeId,
               receiver: getAddress(d.receiver),
-              markets: d.markets.map((market) => getAddress(market)),
-              tokens: d.tokens.map((token) => getAddress(token)),
-              amounts: d.amounts.map((a) => BigInt(a)),
-              amountsInUsd: d.amountsInUsd.map((a) => BigInt(a)),
+              markets: d.markets.map((market: any) => getAddress(market)),
+              tokens: d.tokens.map((token: any) => getAddress(token)),
+              amounts: d.amounts.map((a: any) => BigInt(a)),
+              amountsInUsd: d.amountsInUsd.map((a: any) => BigInt(a)),
               timestamp: parseInt(d.timestamp),
               transactionHash: d.transactionHash,
               id: d.id,
@@ -143,7 +143,7 @@ export function useReferralsData(account?: string | null) {
           //#region Code Ownership Info
           // Getting all owners of the referral codes on other chains
 
-          const referralCodes = res.data.referralCodes.map((e) => e.code);
+          const referralCodes = res.data.referralCodes.map((e: any) => e.code);
           const allCodesOwnersOnOtherChains = await Promise.allSettled(
             CONTRACTS_CHAIN_IDS.filter((otherChainId) => otherChainId !== chainId).map(async (otherChainId) => ({
               chainId: otherChainId,
@@ -179,11 +179,11 @@ export function useReferralsData(account?: string | null) {
           //#endregion
 
           const affiliateReferralCodesStats: ReferralCodeStats[] = res.data.affiliateStats
-            .filter((e) => {
-              return res.data.referralCodes.some((c) => c.code === e.referralCode);
+            .filter((e: any) => {
+              return res.data.referralCodes.some((c: any) => c.code === e.referralCode);
             })
             .map(
-              (e): ReferralCodeStats => ({
+              (e: any): ReferralCodeStats => ({
                 referralCode: decodeReferralCode(e.referralCode),
                 trades: parseInt(e.trades),
                 tradedReferralsCount: parseInt(e.tradedReferralsCount),
@@ -209,7 +209,7 @@ export function useReferralsData(account?: string | null) {
             );
 
           const affiliateTotalStats: AffiliateTotalStats = res.data.affiliateStats.reduce(
-            (acc: AffiliateTotalStats, cv) => {
+            (acc: AffiliateTotalStats, cv: any) => {
               acc.trades = acc.trades + parseInt(cv.trades);
               acc.tradedReferralsCount = acc.tradedReferralsCount + parseInt(cv.tradedReferralsCount);
               acc.registeredReferralsCount = acc.registeredReferralsCount + parseInt(cv.registeredReferralsCount);
@@ -287,7 +287,7 @@ export function useReferralsData(account?: string | null) {
             affiliateTierInfo: res.data.affiliateTierInfo,
             affiliateTotalStats,
             traderReferralTotalStats,
-            codes: res.data.referralCodes.map((e) => decodeReferralCode(e.code)),
+            codes: res.data.referralCodes.map((e: any) => decodeReferralCode(e.code)),
           } as ReferralsStats;
         });
     }

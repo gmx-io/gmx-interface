@@ -377,7 +377,7 @@ export default function EarnYieldOverview() {
 
   const tabs = useMemo(
     () =>
-      CHAINS_ORDER.map((chainId) => networkCards[chainId]).map((card) => ({
+      CHAINS_ORDER.map((chainId) => (networkCards as any)[chainId]).map((card) => ({
         value: card.chainId,
         label: (
           <>
@@ -389,7 +389,7 @@ export default function EarnYieldOverview() {
   );
 
   const selectedCard = useMemo(
-    () => networkCards[mobileChainId] ?? networkCards[ARBITRUM],
+    () => (networkCards as any)[mobileChainId] ?? networkCards[ARBITRUM],
     [mobileChainId, networkCards]
   );
 
@@ -416,7 +416,7 @@ export default function EarnYieldOverview() {
         </div>
       ) : (
         <div className="grid gap-12 lg:grid-cols-3">
-          {CHAINS_ORDER.map((chainId) => networkCards[chainId]).map((card) => (
+          {CHAINS_ORDER.map((chainId) => (networkCards as any)[chainId]).map((card) => (
             <NetworkYieldCard key={card.chainId} chainId={card.chainId} title={card.title} showTitle={true}>
               {card.rows}
             </NetworkYieldCard>

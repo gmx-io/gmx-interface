@@ -33,7 +33,7 @@ export default function useUsers(chainId: number) {
     }
   }
 
-  async function fetcher([, chainId]) {
+  async function fetcher([, chainId]: [any, any]) {
     try {
       const { totalUsers } = await fetchUsersInfo(chainId);
       return {

@@ -2,7 +2,7 @@ import { CHART_PERIODS } from "lib/legacy";
 
 import type { Bar } from "./types";
 
-export function getObjectKeyFromValue(value, object) {
+export function getObjectKeyFromValue(value: any, object: any) {
   return Object.keys(object).find((key) => object[key] === value);
 }
 
@@ -18,7 +18,7 @@ export function formatTimeInBarToMs(bar: Bar) {
  */
 export function getCurrentCandleTime(period: string) {
   // Converts current time to seconds, rounds down to nearest period, adds timezone offset
-  const periodSeconds = CHART_PERIODS[period];
+  const periodSeconds = (CHART_PERIODS as any)[period];
   return Math.floor(Date.now() / 1000 / periodSeconds) * periodSeconds;
 }
 

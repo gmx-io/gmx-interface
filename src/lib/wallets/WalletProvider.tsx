@@ -3,7 +3,7 @@ import { darkTheme, lightTheme, RainbowKitProvider, type Theme, type Locale } fr
 import "@rainbow-me/rainbowkit/styles.css";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import merge from "lodash/merge";
-import { useMemo } from "react";
+import { type ReactNode, useMemo } from "react";
 import { WagmiProvider } from "wagmi";
 
 import { useTheme } from "context/ThemeContext/ThemeContext";
@@ -48,7 +48,7 @@ const appLocale2RainbowLocaleMap: Record<string, Locale> = {
   pseudo: "en",
 };
 
-export default function WalletProvider({ children }) {
+export default function WalletProvider({ children }: { children: ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <WagmiProvider config={getRainbowKitConfig()}>{children}</WagmiProvider>
@@ -56,7 +56,7 @@ export default function WalletProvider({ children }) {
   );
 }
 
-export function RainbowKitProviderWrapper({ children }) {
+export function RainbowKitProviderWrapper({ children }: { children: ReactNode }) {
   const { i18n } = useLingui();
   const { theme } = useTheme();
   const locale = useMemo(() => appLocale2RainbowLocaleMap[i18n.locale] ?? "en", [i18n.locale]);

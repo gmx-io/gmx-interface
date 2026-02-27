@@ -51,7 +51,7 @@ const TAB_OPTION_LABELS = { [TRADERS]: msg`Traders`, [AFFILIATES]: msg`Affiliate
 function Referrals() {
   const { active, account: walletAccount, signer } = useWallet();
   const { account: queryAccount } = useParams<{ account?: string }>();
-  let account;
+  let account: string | undefined;
   if (queryAccount && isAddress(queryAccount, { strict: false })) {
     account = getAddress(queryAccount);
   } else {
@@ -72,7 +72,7 @@ function Referrals() {
   );
   const { data: referralsData, loading } = useReferralsData(account);
   const { userReferralCode, userReferralCodeString } = useUserReferralCode(signer, chainId, account);
-  const { codeOwner } = useCodeOwner(signer, chainId, account, userReferralCode);
+  const { codeOwner } = useCodeOwner(signer, chainId, account, userReferralCode!);
   const { affiliateTier: traderTier } = useAffiliateTier(signer, chainId, codeOwner);
   const { discountShare } = useReferrerDiscountShare(signer, chainId, codeOwner);
   const { pendingTxns } = usePendingTxns();
@@ -82,7 +82,7 @@ function Referrals() {
   const createReferralCodePrefill = routeQuery.get(CREATE_REFERRAL_CODE_QUERY_PARAM) ?? undefined;
 
   function handleCreateReferralCode(referralCode: string) {
-    return registerReferralCode(chainId, referralCode, signer, {
+    return registerReferralCode(chainId, referralCode, signer!, {
       sentMsg: t`Referral code submitted`,
       failMsg: t`Referral code creation failed`,
       pendingTxns,
@@ -94,7 +94,7 @@ function Referrals() {
   function renderAffiliatesTab() {
     const ownsSomeChainCode = Boolean(referralsData?.chains?.[chainId]?.codes?.length);
 
-    const hasRecentCode = recentlyAddedCodes?.some(isRecentReferralCodeNotExpired);
+    const hasRecentCode = recentlyAddedCodes?.some((code) => isRecentReferralCodeNotExpired(code));
     const isSomeReferralCodeAvailable = ownsSomeChainCode || hasRecentCode;
 
     if (loading) return <Loader />;
@@ -125,7 +125,7 @@ function Referrals() {
   const tabsOptions = useMemo(() => {
     return TAB_OPTIONS.map((option) => ({
       value: option,
-      label: localizedTabOptionLabels[option],
+      label: (localizedTabOptionLabels as any)[option],
     }));
   }, [localizedTabOptionLabels]);
 
@@ -137,7 +137,7 @@ function Referrals() {
 
   function renderTradersTab() {
     if (loading) return <Loader />;
-    if (isHashZero(userReferralCode) || !account || !userReferralCode) {
+    if (!userReferralCode || isHashZero(userReferralCode) || !account) {
       return <JoinReferralCode active={active} />;
     }
     return (

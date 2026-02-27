@@ -1,7 +1,8 @@
 import { t } from "@lingui/macro";
+import React from "react";
 import { Helmet } from "react-helmet";
 
-function SEO(props) {
+function SEO(props: { children?: React.ReactNode; [key: string]: any }) {
   const { children, ...customMeta } = props;
   const meta = {
     title: t`GMX | Decentralized perpetual exchange`,

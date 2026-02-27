@@ -1219,10 +1219,13 @@ export const selectTradeboxLeverageSliderMarks = createSelector((q) => {
 export const selectTradeboxMarketsSortMap = createSelector((q) => {
   const { sortedMarketConfigs } = q(selectTradeboxAvailableTokensOptions);
 
-  return sortedMarketConfigs.reduce((acc, market, idx) => {
-    acc[market.indexTokenAddress] = idx;
-    return acc;
-  }, {});
+  return sortedMarketConfigs.reduce(
+    (acc, market, idx) => {
+      acc[market.indexTokenAddress] = idx;
+      return acc;
+    },
+    {} as Record<string, number>
+  );
 });
 
 export const selectTradeboxToToken = createSelector((q) => {

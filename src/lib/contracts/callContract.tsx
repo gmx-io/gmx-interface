@@ -8,6 +8,7 @@ import {
   PendingTransactionData,
   SetPendingTransactions,
 } from "context/PendingTxnsContext/PendingTxnsContext";
+import type { TxError } from "lib/errors";
 import { makeTransactionErrorHandler } from "lib/errors/additionalValidation";
 import { GasPriceData, getGasPrice } from "lib/gas/gasPrice";
 import { OrderMetricId } from "lib/metrics/types";
@@ -189,7 +190,7 @@ export async function callContract(
     return res;
   } catch (e) {
     if (!opts.hideErrorMsg) {
-      const { failMsg, autoCloseToast } = getErrorMessage(chainId, e, opts?.failMsg);
+      const { failMsg, autoCloseToast } = getErrorMessage(chainId, e as TxError, opts?.failMsg);
       helperToast.error(failMsg, { autoClose: autoCloseToast });
     }
 

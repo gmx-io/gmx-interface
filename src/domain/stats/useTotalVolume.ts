@@ -22,7 +22,7 @@ export function useTotalVolume() {
         acc.total = acc.total + sum;
         return acc;
       },
-      { total: 0n }
+      { total: 0n } as Record<number, bigint> & { total: bigint }
     );
   }
 }

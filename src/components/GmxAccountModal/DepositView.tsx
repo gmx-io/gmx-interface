@@ -809,7 +809,7 @@ export const DepositView = () => {
         const preferredToken = multichainTokens.find(
           (sourceChainToken) =>
             sourceChainToken.sourceChainId === depositViewChain &&
-            sourceChainToken.address === CHAIN_ID_PREFERRED_DEPOSIT_TOKEN[settlementChainId]
+            sourceChainToken.address === (CHAIN_ID_PREFERRED_DEPOSIT_TOKEN as any)[settlementChainId]
         );
 
         if (

@@ -222,7 +222,7 @@ export default function useUserClaimableAmounts(chainId: ContractsChainId, accou
       const market = marketsInfo?.[token];
       const tokenData = tokensData?.[token];
 
-      let title, usd;
+      let title: string | undefined, usd: bigint | undefined;
 
       if (glv) {
         title = `GLV [${getMarketPoolName({
@@ -248,11 +248,11 @@ export default function useUserClaimableAmounts(chainId: ContractsChainId, accou
       result[distributionId].amounts.push({
         amount: BigInt(amount),
         token: tokensData[token] ?? marketTokensData[token],
-        usd,
-        title,
+        usd: usd!,
+        title: title!,
       });
 
-      result[distributionId].totalUsd += usd;
+      result[distributionId].totalUsd += usd!;
     });
     return result;
   }, [

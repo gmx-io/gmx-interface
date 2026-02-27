@@ -23,7 +23,7 @@ import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
 import { type ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { CustomError, CustomErrorName, extendError } from "sdk/utils/errors";
+import { CustomError, CustomErrorName, extendError, type ErrorLike } from "sdk/utils/errors";
 import { CreateOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
 import { isGlvEnabled } from "../markets/glv";
@@ -352,7 +352,7 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
               message: JSON.stringify(decodedError, null, 2),
               args: decodedError.args,
             })
-          : txnError,
+          : (txnError as ErrorLike),
         {
           errorContext: "simulation",
         }

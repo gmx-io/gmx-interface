@@ -71,7 +71,7 @@ function useEventToast() {
       .filter((event) => isFuture(parse(event.endDate + ", +00", "d MMM yyyy, H:mm, x", new Date())))
       .filter((event) => Array.isArray(visited) && !visited.includes(event.id))
       .filter((event) => !event.chains || event.chains.includes(chainId))
-      .filter((event) => !(event.id in validationParams) || validationParams[event.id])
+      .filter((event) => !(event.id in validationParams) || (validationParams as any)[event.id])
       .forEach((event) => {
         toast.custom(
           (t) => (

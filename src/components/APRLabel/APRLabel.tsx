@@ -2,6 +2,7 @@
 import useSWR from "swr";
 
 import { getServerUrl } from "config/backend";
+import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { useGmxPrice } from "domain/legacy";
 import useVestingData from "domain/vesting/useVestingData";
@@ -16,7 +17,7 @@ import {
 import { formatKeyAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
-export default function APRLabel({ chainId, label }) {
+export default function APRLabel({ chainId, label }: { chainId: ContractsChainId; label: string }) {
   const { active, account } = useWallet();
   const vestingData = useVestingData(account, chainId);
   const rewardReaderAddress = getContract(chainId, "RewardReader");
@@ -132,5 +133,5 @@ export default function APRLabel({ chainId, label }) {
     gmxSupply
   );
 
-  return <>{`${formatKeyAmount(processedData, label, 2, 2, true)}%`}</>;
+  return <>{`${formatKeyAmount(processedData, label as any, 2, 2, true)}%`}</>;
 }

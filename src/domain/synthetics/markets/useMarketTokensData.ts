@@ -76,7 +76,7 @@ export function useMarketTokensDataRequest(
     keepPreviousData: true,
 
     request: () =>
-      marketsAddresses!.reduce((requests, marketAddress) => {
+      marketsAddresses!.reduce((requests: Record<string, any>, marketAddress) => {
         const market = getByKey(marketsData, marketAddress)!;
         const marketPrices = getContractMarketPrices(tokensData!, market);
 

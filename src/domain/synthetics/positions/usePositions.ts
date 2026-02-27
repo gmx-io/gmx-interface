@@ -98,7 +98,7 @@ export function usePositions(
 
       freshnessMetrics.reportThrottled(chainId, FreshnessMetricId.Positions);
 
-      return positions.reduce((positionsMap: PositionsData, positionInfo) => {
+      return positions.reduce((positionsMap: PositionsData, positionInfo: any) => {
         const { position, fees, basePnlUsd } = positionInfo;
         const { addresses, numbers, flags } = position;
         const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;

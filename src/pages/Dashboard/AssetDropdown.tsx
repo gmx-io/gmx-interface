@@ -79,7 +79,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right", mar
           >
             <Menu.Item as="div">
               {token.isPlatformToken && (
-                <Link to={PLATFORM_TOKEN_ROUTES[token.symbol]} className="asset-item">
+                <Link to={(PLATFORM_TOKEN_ROUTES as any)[token.symbol]} className="asset-item">
                   <img className="asset-item-icon" width={16} height={16} src={token.imageUrl} alt={token.symbol} />
                   <p>
                     <Trans>Buy {token.symbol}</Trans>
@@ -115,7 +115,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right", mar
   );
 }
 
-const AssetDropdownMarketItem = ({ marketStat, chainId }: { marketStat: MarketStat; chainId }) => {
+const AssetDropdownMarketItem = ({ marketStat, chainId }: { marketStat: MarketStat; chainId: any }) => {
   const tokenIconName = marketStat.marketInfo.isSpotOnly
     ? getNormalizedTokenSymbol(marketStat.marketInfo.longToken.symbol) +
       getNormalizedTokenSymbol(marketStat.marketInfo.shortToken.symbol)

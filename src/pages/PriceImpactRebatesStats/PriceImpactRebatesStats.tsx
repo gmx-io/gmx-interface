@@ -1,5 +1,5 @@
 import { t, Trans } from "@lingui/macro";
-import { memo, useCallback, useEffect, useMemo, useState } from "react";
+import React, { memo, useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
 import type { Address } from "viem";
@@ -99,17 +99,18 @@ const RebateGroupRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) => {
   const [, copyToClipboard] = useCopyToClipboard();
   const { chainId } = useChainId();
   const handleCopyCommandClick = useCallback(
-    (e) => {
+    (e: React.MouseEvent) => {
       e.stopPropagation();
-      const networkStr = {
+      const networkStr: Record<number, string> = {
         [ARBITRUM]: "arbitrum",
         [AVALANCHE]: "avalanche",
         [AVALANCHE_FUJI]: "avalancheFuji",
-      }[chainId];
+      };
+      const networkName = networkStr[chainId];
       copyToClipboard(
         `MARKET=${rebateGroup.marketInfo?.marketTokenAddress} TOKEN=${rebateGroup.tokenData?.address} TIME_KEY=${
           rebateGroup.timeKey
-        } FACTOR=${rebateGroup.factor.toString()} npx hardhat --network ${networkStr} run scripts/updateClaimableCollateralFactor.ts`
+        } FACTOR=${rebateGroup.factor.toString()} npx hardhat --network ${networkName} run scripts/updateClaimableCollateralFactor.ts`
       );
     },
     [
@@ -122,7 +123,7 @@ const RebateGroupRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) => {
     ]
   );
   const handleCopyAccountsClick = useCallback(
-    (e) => {
+    (e: React.MouseEvent) => {
       e.stopPropagation();
 
       copyToClipboard(rebateGroup.userRebates.map((rebateItem) => rebateItem.account).join(","));

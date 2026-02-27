@@ -217,7 +217,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   const explorerURL = getExplorerUrl(chainId);
   const { _ } = useLingui();
   const typeStr = getTypeStr(_, typeId);
-  const tooltipData = INCENTIVE_TOOLTIP_MAP[String(typeId)];
+  const tooltipData = (INCENTIVE_TOOLTIP_MAP as any)[String(typeId)];
 
   const renderTotalTooltipContent = useCallback(() => {
     return tokenIncentiveDetails.map((tokenInfo) => {

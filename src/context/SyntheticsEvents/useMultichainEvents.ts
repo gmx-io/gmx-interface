@@ -189,7 +189,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         continue;
       }
 
-      const settlementChainId = ENDPOINT_ID_TO_CHAIN_ID[info.dstEid];
+      const settlementChainId = (ENDPOINT_ID_TO_CHAIN_ID as any)[info.dstEid];
       if (settlementChainId !== chainId) {
         continue;
       }
@@ -479,7 +479,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         continue;
       }
 
-      const sourceChainId = ENDPOINT_ID_TO_CHAIN_ID[info.dstEid];
+      const sourceChainId = (ENDPOINT_ID_TO_CHAIN_ID as any)[info.dstEid];
 
       debugLog("withdrawal got OFTSent event for", sourceChainId, info.txnHash);
 
@@ -721,8 +721,8 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 
       for (const chainIdString of Object.keys(sourceChainApprovalActiveListeners)) {
         if (
-          !sourceChainApprovalActiveListeners[chainIdString] ||
-          sourceChainApprovalActiveListeners[chainIdString].length === 0
+          !(sourceChainApprovalActiveListeners as any)[chainIdString] ||
+          (sourceChainApprovalActiveListeners as any)[chainIdString].length === 0
         ) {
           continue;
         }

@@ -334,7 +334,7 @@ export function GmSwapBoxDepositWithdrawal() {
   ]);
 
   const handleFirstTokenInputValueChange = useCallback(
-    (e) => {
+    (e: React.ChangeEvent<HTMLInputElement>) => {
       if (firstTokenAddress) {
         setFirstTokenInputValue(e.target.value);
         onFocusedCollateralInputChange(firstTokenAddress);

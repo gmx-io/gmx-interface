@@ -33,8 +33,8 @@ export function CompositionDiagram({ data, label }: Props) {
           : bigintToNumber(item.amount, USD_DECIMALS);
       const color =
         (item.type === "market"
-          ? TOKEN_COLOR_MAP[item.market.indexToken.symbol]
-          : TOKEN_COLOR_MAP[item.token.symbol]) ?? TOKEN_COLOR_MAP.default;
+          ? (TOKEN_COLOR_MAP as any)[item.market.indexToken.symbol]
+          : (TOKEN_COLOR_MAP as any)[item.token.symbol]) ?? TOKEN_COLOR_MAP.default;
       return {
         key: item.type === "market" ? item.market.marketTokenAddress : `${item.token.address}-${item.side}`,
         color,

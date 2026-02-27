@@ -112,6 +112,6 @@ export async function createBridgeInTxn({
 
     await txnResult.wait();
   } catch (error) {
-    toastCustomOrStargateError(chainId, error);
+    toastCustomOrStargateError(chainId, error as Error);
   }
 }

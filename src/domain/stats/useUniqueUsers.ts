@@ -48,6 +48,6 @@ export default function useUniqueUsers() {
     },
     {
       total: 0,
-    }
+    } as Record<number, number> & { total: number }
   );
 }

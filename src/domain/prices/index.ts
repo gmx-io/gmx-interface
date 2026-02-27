@@ -8,8 +8,8 @@ import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { FEED_ID_MAP } from "./constants";
 import type { Bar, FromOldToNewArray } from "../tradingview/types";
 
-function getCandlesFromPrices(prices, period) {
-  const periodTime = CHART_PERIODS[period];
+function getCandlesFromPrices(prices: any[], period: string) {
+  const periodTime = CHART_PERIODS[period as keyof typeof CHART_PERIODS];
 
   if (prices.length < 2) {
     return [];
@@ -50,7 +50,7 @@ function getCandlesFromPrices(prices, period) {
 export function getChainlinkChartPricesFromGraph(tokenSymbol: string, period: string): Promise<FromOldToNewArray<Bar>> {
   tokenSymbol = getNormalizedTokenSymbol(tokenSymbol);
   const marketName = tokenSymbol + "_USD";
-  const feedId = FEED_ID_MAP[marketName];
+  const feedId = FEED_ID_MAP[marketName as keyof typeof FEED_ID_MAP];
   if (!feedId) {
     throw new Error(`undefined marketName ${marketName}`);
   }
@@ -79,7 +79,7 @@ export function getChainlinkChartPricesFromGraph(tokenSymbol: string, period: st
       let prices: any[] = [];
       const uniqTs = new Set();
       chunks.forEach((chunk) => {
-        chunk.data.rounds.forEach((item) => {
+        chunk.data.rounds.forEach((item: any) => {
           if (uniqTs.has(item.unixTimestamp)) {
             return;
           }

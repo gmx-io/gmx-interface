@@ -28,6 +28,7 @@ import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRew
 import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referrals/utils";
 import { convertToUsd, useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
+import type { ErrorLike } from "lib/errors";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
@@ -276,7 +277,7 @@ export function ClaimAffiliatesModal(p: Props) {
         onClose();
       }
     } catch (error) {
-      metrics.pushError(error, "expressClaimAffiliateRewards");
+      metrics.pushError(error as string | ErrorLike, "expressClaimAffiliateRewards");
     } finally {
       setIsSubmitting(false);
     }
@@ -330,7 +331,7 @@ export function ClaimAffiliatesModal(p: Props) {
       onClose();
     } catch (error) {
       helperToast.error(t`Claiming affiliate rewards failed`);
-      metrics.pushError(error, "expressClaimAffiliateRewards");
+      metrics.pushError(error as string | ErrorLike, "expressClaimAffiliateRewards");
     } finally {
       setIsSubmitting(false);
     }

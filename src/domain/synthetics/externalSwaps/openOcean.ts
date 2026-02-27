@@ -72,7 +72,7 @@ export async function getOpenOceanTxnData({
   gasPrice: bigint;
   slippage: number;
 }): Promise<OpenOceanQuote | undefined> {
-  const disabledDexIds = DISABLED_OPEN_OCEAN_DEXES[chainId] ?? [];
+  const disabledDexIds = (DISABLED_OPEN_OCEAN_DEXES as unknown as Record<number, string[]>)[chainId] ?? [];
   const tokenIn = getToken(chainId, tokenInAddress);
 
   const gweiGasPrice = formatTokenAmount(gasPrice, 18 - 9, undefined, { displayDecimals: 8 });
@@ -124,8 +124,9 @@ export async function getOpenOceanTxnData({
       outputAmount: BigInt(parsed.data.minOutAmount),
     };
   } catch (e) {
-    e.message += ` URL: ${url.replace(receiverAddress, "...")}`;
-    metrics.pushError(e, "externalSwap.getOpenOceanTxnData");
+    const err = e as Error;
+    err.message += ` URL: ${url.replace(receiverAddress, "...")}`;
+    metrics.pushError(err, "externalSwap.getOpenOceanTxnData");
     return undefined;
   }
 }

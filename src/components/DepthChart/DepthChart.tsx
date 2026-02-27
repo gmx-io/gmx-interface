@@ -115,8 +115,8 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
 
   const theme = useTheme();
 
-  const redColor = colors.red[500][theme.theme];
-  const greenColor = colors.green[500][theme.theme];
+  const redColor = (colors.red as any)[500][theme.theme];
+  const greenColor = (colors.green as any)[500][theme.theme];
 
   const { ticks, marketPriceIndex, xAxisDomain, setTickCount } = useXAxis(marketInfo, {
     leftExecutionPrice: leftMaxExecutionPrice,

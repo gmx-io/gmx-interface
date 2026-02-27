@@ -132,7 +132,7 @@ export default function RpcDebug() {
           responseTime: latestCheckResult?.success ? latestCheckResult.stats?.responseTime : undefined,
           blockNumber: latestCheckResult?.success ? latestCheckResult.stats?.blockNumber : undefined,
           isPrimary: stats.endpoint === primaryRpc,
-          isSecondary: fallbacks.includes(stats.endpoint),
+          isSecondary: (fallbacks as string[]).includes(stats.endpoint),
         };
       });
       setAllRpcStats(statsWithDetails);

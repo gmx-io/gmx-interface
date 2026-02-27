@@ -253,7 +253,7 @@ async function processSimulation({
         autoClose: false,
       }
     );
-  } catch (e) {
+  } catch (e: any) {
     helperToast.error(
       <>
         {e.message}
@@ -276,7 +276,7 @@ async function processSimulation({
 
 // https://docs.tenderly.co/reference/api#/operations/simulateTransaction
 function buildSimulationRequest(
-  chainId,
+  chainId: any,
   params: {
     from: string;
     to: string;
@@ -310,7 +310,7 @@ function buildSimulationRequest(
     save_if_fails: import.meta.env.TENDERLY_TEST === "true" ? false : true,
     simulation_type: "quick",
     block_number: blockNumber,
-    state_objects: params.stateOverride?.reduce((acc, curr) => {
+    state_objects: params.stateOverride?.reduce((acc: Record<string, any>, curr) => {
       acc[curr.address] = {
         code: curr.code,
         balance: curr.balance ? numberToHex(curr.balance) : undefined,

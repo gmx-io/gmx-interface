@@ -12,6 +12,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useLoadImage from "lib/useLoadImage";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionActionEvent, SharePositionActionSource } from "lib/userAnalytics/types";
+import type { ContractsChainId } from "sdk/configs/chains";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
@@ -34,7 +35,7 @@ const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
 const UPLOAD_SHARE = ROOT_SHARE_URL + "/api/s";
 const config = { quality: 0.95, canvasWidth: 460, canvasHeight: 240, type: "image/jpeg" };
 
-function getShareURL(imageInfo, ref) {
+function getShareURL(imageInfo: any, ref: any) {
   if (!imageInfo) return;
   let url = `${UPLOAD_SHARE}?id=${imageInfo.id}`;
   if (ref.success && ref.code) {
@@ -82,7 +83,7 @@ function PositionShare({
   shareSource,
   isRpnl = false,
 }: Props) {
-  const userAffiliateCode = useAffiliateCodes(chainId, account);
+  const userAffiliateCode = useAffiliateCodes(chainId as ContractsChainId, account);
   const [uploadedImageInfo, setUploadedImageInfo] = useState<any>();
   const [uploadedImageError, setUploadedImageError] = useState<string | null>(null);
   const [showPnlAmounts, setShowPnlAmounts] = useState(false);

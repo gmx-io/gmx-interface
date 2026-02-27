@@ -18,7 +18,7 @@ export function useAffiliateRewards(chainId: ContractsChainId) {
         dataStore: {
           contractAddress: getContract(chainId, "DataStore"),
           abiId: "DataStore",
-          calls: marketsAddresses!.reduce((acc, marketAddress) => {
+          calls: marketsAddresses!.reduce((acc: Record<string, any>, marketAddress) => {
             const market = marketsData![marketAddress];
 
             acc[`${marketAddress}-${market.longTokenAddress}`] = {
@@ -41,8 +41,10 @@ export function useAffiliateRewards(chainId: ContractsChainId) {
 
       marketsAddresses!.forEach((marketAddress) => {
         const market = marketsData![marketAddress];
-        const longTokenAmount = res.data.dataStore[`${marketAddress}-${market.longTokenAddress}`].returnValues[0];
-        const shortTokenAmount = res.data.dataStore[`${marketAddress}-${market.shortTokenAddress}`].returnValues[0];
+        const longTokenAmount = (res.data.dataStore as any)[`${marketAddress}-${market.longTokenAddress}`]
+          .returnValues[0];
+        const shortTokenAmount = (res.data.dataStore as any)[`${marketAddress}-${market.shortTokenAddress}`]
+          .returnValues[0];
 
         result[marketAddress] = {
           marketAddress,
