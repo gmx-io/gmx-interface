@@ -7,6 +7,7 @@ import { accountOrderListKey } from "config/dataStore";
 import type { MarketsInfoData } from "domain/synthetics/markets/types";
 import { OrderTypeFilterValue, convertOrderTypeFilterValues } from "domain/synthetics/orders/ordersFilters";
 import { DecreasePositionSwapType, Order, OrderType, OrdersData } from "domain/synthetics/orders/types";
+import { useApiOrdersRequest } from "domain/synthetics/orders/useApiOrdersRequest";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { FreshnessMetricId } from "lib/metrics";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
@@ -23,6 +24,7 @@ import {
   isTriggerDecreaseOrderType,
   isVisibleOrder,
 } from "sdk/utils/orders";
+import type { ApiOrderInfo } from "sdk/utils/orders/types";
 import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
 
 import type {
@@ -95,9 +97,17 @@ export function useOrders(
     [account, marketsDirectionsFilter, orderTypesFilter]
   );
 
-  const { data } = useMulticall(chainId, `useOrdersData-${chainId}`, {
+  const apiEnabled = false;
+  const {
+    ordersData: apiOrdersData,
+    isStale: isApiStale,
+    error: apiError,
+  } = useApiOrdersRequest(chainId, { account, enabled: apiEnabled });
+
+  const rpcEnabled = !apiEnabled || isApiStale || Boolean(apiError);
+  const { data: rpcData } = useMulticall(chainId, `useOrdersData-${chainId}`, {
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
-    key: key,
+    key: rpcEnabled ? key : null,
     request: buildUseOrdersMulticall,
     parseResponse: (res, chainId) => {
       const result = parseResponse(res, chainId);
@@ -112,7 +122,19 @@ export function useOrders(
   }, [key, chainId]);
 
   const ordersData: OrdersData | undefined = useMemo(() => {
-    const filteredOrders = data?.orders.filter((order) => {
+    let orders: Order[] | undefined;
+
+    if (apiEnabled && apiOrdersData && !isApiStale && !apiError) {
+      orders = Object.values(apiOrdersData).map(convertApiOrderToOrder);
+    } else if (rpcData?.orders) {
+      orders = rpcData.orders;
+    }
+
+    if (!orders) {
+      return undefined;
+    }
+
+    const filteredOrders = orders.filter((order) => {
       if (isMarketOrderType(order.orderType)) {
         const is15SecondsPassedSinceOrderCreation = Date.now() - Number(order.updatedAtTime * 1000n) > 15_000;
         if (!is15SecondsPassedSinceOrderCreation) {
@@ -149,13 +171,17 @@ export function useOrders(
       return matchByMarketResult && matchByOrderType;
     });
 
-    return filteredOrders?.reduce((acc, order) => {
+    return filteredOrders.reduce((acc, order) => {
       acc[order.key] = order;
       return acc;
     }, {} as OrdersData);
   }, [
+    apiEnabled,
+    apiOrdersData,
+    isApiStale,
+    apiError,
+    rpcData?.orders,
     chainId,
-    data?.orders,
     hasNonSwapRelevantDefinedMarkets,
     hasPureDirectionFilters,
     hasSwapRelevantDefinedMarkets,
@@ -166,9 +192,29 @@ export function useOrders(
     swapRelevantDefinedMarketsLowercased,
   ]);
 
+  const count =
+    apiEnabled && apiOrdersData && !isApiStale && !apiError ? Object.keys(apiOrdersData).length : rpcData?.count;
+
   return {
     ordersData: ordersData,
-    count: data?.count,
+    count,
+  };
+}
+
+function convertApiOrderToOrder({
+  triggerPrice,
+  acceptablePrice,
+  cancellationReceiver: _cancellationReceiver,
+  srcChainId: _srcChainId,
+  ...rest
+}: ApiOrderInfo): Order {
+  return {
+    ...rest,
+    orderType: rest.orderType as OrderType,
+    decreasePositionSwapType: rest.decreasePositionSwapType as DecreasePositionSwapType,
+    contractTriggerPrice: triggerPrice,
+    contractAcceptablePrice: acceptablePrice,
+    data: [],
   };
 }
 
@@ -262,7 +308,7 @@ function matchByMarket({
   marketsInfoData,
   chainId,
 }: {
-  order: ReturnType<typeof parseResponse>["orders"][number];
+  order: Order;
   nonSwapRelevantDefinedFiltersLowercased: MarketFilterLongShortItemData[];
   hasNonSwapRelevantDefinedMarkets: boolean;
   pureDirectionFilters: MarketFilterLongShortDirection[];

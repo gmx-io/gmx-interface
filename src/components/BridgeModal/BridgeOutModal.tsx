@@ -31,7 +31,7 @@ import { getGlvOrMarketAddress, GlvOrMarketInfo } from "domain/synthetics/market
 import { createBridgeOutTxn } from "domain/synthetics/markets/createBridgeOutTxn";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import { getDefaultInsufficientGasMessage, ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
-import { convertToUsd, getMidPrice, getTokenData, TokenBalanceType } from "domain/tokens";
+import { convertToUsd, getMidPrice, getTokenData } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
@@ -120,13 +120,10 @@ export function BridgeOutModal({
 
   const { formattedBalance, formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
     fromToken: marketToken,
-    fromTokenAmount: bridgeOutAmount ?? 0n,
+    fromTokenBalance: gmxAccountMarketTokenBalance,
+    fromTokenAmount: bridgeOutAmount,
     fromTokenInputValue: bridgeOutInputValue,
-    nativeToken: undefined,
-    minResidualAmount: undefined,
-    isLoading: false,
-    srcChainId: undefined,
-    tokenBalanceType: TokenBalanceType.GmxAccount,
+    ignoreGasPaymentToken: true,
   });
 
   const bridgeOutParams = useBridgeOutParams({

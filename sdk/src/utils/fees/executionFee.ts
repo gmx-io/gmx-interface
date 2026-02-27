@@ -8,6 +8,14 @@ import { DecreasePositionSwapType } from "utils/orders/types";
 import { convertBetweenTokens, convertToTokenAmount, convertToUsd, getTokenData } from "utils/tokens";
 import { TokenData, TokensData } from "utils/tokens/types";
 
+export function getIsExecutionFeeHigh(chainId: number, feeUsd: bigint) {
+  return feeUsd > expandDecimals(getHighExecutionFee(chainId as ContractsChainId), USD_DECIMALS);
+}
+
+export function getIsExecutionFeeVeryHigh(chainId: number, feeUsd: bigint) {
+  return feeUsd > expandDecimals(getExcessiveExecutionFee(chainId as ContractsChainId), USD_DECIMALS);
+}
+
 export function getExecutionFee(
   chainId: number,
   gasLimits: GasLimitsConfig,
@@ -43,8 +51,8 @@ export function getExecutionFee(
 
   const feeUsd = convertToUsd(feeTokenAmount, nativeToken.decimals, nativeToken.prices.minPrice)!;
 
-  const isFeeHigh = feeUsd > expandDecimals(getHighExecutionFee(chainId as ContractsChainId), USD_DECIMALS);
-  const isFeeVeryHigh = feeUsd > expandDecimals(getExcessiveExecutionFee(chainId as ContractsChainId), USD_DECIMALS);
+  const isFeeHigh = getIsExecutionFeeHigh(chainId, feeUsd);
+  const isFeeVeryHigh = getIsExecutionFeeVeryHigh(chainId, feeUsd);
 
   return {
     feeUsd,

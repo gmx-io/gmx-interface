@@ -32,9 +32,7 @@ type RawClaimAction = {
   amounts: string[];
   tokenPrices: string[];
   isLongOrders?: boolean[];
-  transaction: {
-    hash: string;
-  };
+  transactionHash: string;
   timestamp: number;
 };
 
@@ -121,7 +119,7 @@ export function useClaimCollateralHistory(
         claimActions(
             offset: ${offset},
             limit: ${limit},
-            orderBy: transaction_timestamp_DESC,
+            orderBy: timestamp_DESC,
             ${whereClause}
         ) {
             id
@@ -133,9 +131,7 @@ export function useClaimCollateralHistory(
             tokenPrices
             isLongOrders
             timestamp
-            transaction {
-                hash
-            }
+            transactionHash
         }
       }`);
 
@@ -199,7 +195,7 @@ function createClaimCollateralAction(
     account: rawAction.account,
     claimItems: [],
     timestamp: rawAction.timestamp,
-    transaction: rawAction.transaction,
+    transactionHash: rawAction.transactionHash,
     tokens,
     amounts: rawAction.amounts.map((amount) => bigNumberify(amount)!),
     tokenPrices: rawAction.tokenPrices.map((price) => bigNumberify(price)!),
@@ -308,7 +304,7 @@ function createSettleFundingFeeAction(
     markets,
     tokens,
     isLongOrders: rawAction.isLongOrders ?? [],
-    transaction: rawAction.transaction,
+    transactionHash: rawAction.transactionHash,
     eventName,
     timestamp: rawAction.timestamp,
     claimItems: Object.values(claimItemsMap),

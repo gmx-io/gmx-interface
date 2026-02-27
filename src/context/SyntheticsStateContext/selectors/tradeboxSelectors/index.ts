@@ -261,7 +261,7 @@ const selectExternalSwapInputsByLeverageSize = createSelector((q) => {
 
   const findSwapPath = q(selectTradeboxFindSwapPath);
 
-  if (!tokenIn || !collateralToken || !marketInfo) {
+  if (!tokenIn || !collateralToken || !marketInfo || leverage === undefined) {
     return undefined;
   }
 
@@ -317,8 +317,10 @@ export const selectTradeboxSelectedAllowedSwapSlippageBps = (s: SyntheticsState)
   s.tradebox.selectedAllowedSwapSlippageBps;
 export const selectTradeboxSetSelectedAllowedSwapSlippageBps = (s: SyntheticsState) =>
   s.tradebox.setSelectedAllowedSwapSlippageBps;
-const selectTradeboxCloseSizeInputValue = (s: SyntheticsState) => s.tradebox.closeSizeInputValue;
-const selectTradeboxTriggerPriceInputValue = (s: SyntheticsState) => s.tradebox.triggerPriceInputValue;
+export const selectTradeboxCloseSizeInputValue = (s: SyntheticsState) => s.tradebox.closeSizeInputValue;
+export const selectTradeboxSetCloseSizeInputValue = (s: SyntheticsState) => s.tradebox.setCloseSizeInputValue;
+export const selectTradeboxTriggerPriceInputValue = (s: SyntheticsState) => s.tradebox.triggerPriceInputValue;
+export const selectTradeboxSetTriggerPriceInputValue = (s: SyntheticsState) => s.tradebox.setTriggerPriceInputValue;
 const selectTradeboxTriggerRatioInputValue = (s: SyntheticsState) => s.tradebox.triggerRatioInputValue;
 export const selectTradeboxLeverageOption = (s: SyntheticsState) => s.tradebox.leverageOption;
 export const selectTradeboxKeepLeverage = (s: SyntheticsState) => s.tradebox.keepLeverage;
@@ -453,7 +455,24 @@ export const selectTradeboxFromTokenAmount = createSelector((q) => {
 
 export const selectTradeboxLeverage = createSelector((q) => {
   const leverageOption = q(selectTradeboxLeverageOption);
-  return BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
+  if (leverageOption == null || !Number.isFinite(leverageOption)) return undefined;
+  return BigInt(Math.trunc(leverageOption * BASIS_POINTS_DIVISOR));
+});
+
+export const selectTradeboxLeverageFieldValue = createSelector((q) => {
+  const isLeverageSliderEnabled = q(selectIsLeverageSliderEnabled);
+
+  if (isLeverageSliderEnabled) {
+    return q(selectTradeboxLeverageOption) ?? null;
+  }
+
+  const estimatedLeverage = q(selectTradeboxIncreasePositionAmounts)?.estimatedLeverage;
+
+  if (estimatedLeverage === undefined || estimatedLeverage <= 0n) {
+    return null;
+  }
+
+  return Number(estimatedLeverage) / BASIS_POINTS_DIVISOR;
 });
 
 const selectTradeboxLeverageStrategy = createSelector((q) => {
@@ -874,7 +893,6 @@ const selectNextValuesForIncrease = createSelector(
     const toTokenAddress = q(selectTradeboxToTokenAddress);
     const toTokenAmount = q(selectTradeboxToTokenAmount);
     const marketAddress = q(selectTradeboxMarketAddress);
-    const leverageOption = q(selectTradeboxLeverageOption);
     const isLeverageSliderEnabled = q(selectIsLeverageSliderEnabled);
     const focusedInput = q(selectTradeboxFocusedInput);
     const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
@@ -885,7 +903,7 @@ const selectNextValuesForIncrease = createSelector(
     const tradeFlags = createTradeFlags(tradeType, tradeMode);
     const fromToken = q(selectTradeboxFromToken);
     const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals) ?? 0n : 0n;
-    const leverage = BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
+    const leverage = q(selectTradeboxLeverage);
     const isPnlInLeverage = q(selectIsPnlInLeverage);
     const isFromTokenGmxAccount = q(selectTradeboxIsFromTokenGmxAccount);
 

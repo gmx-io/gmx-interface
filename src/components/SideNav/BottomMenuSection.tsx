@@ -35,8 +35,8 @@ export function BottomMenuSection({
   return (
     <div>
       <ul className="flex list-none flex-col px-0">
-        <SettingsNavItem isCollapsed={isCollapsed} />
         <SupportChatNavItem isCollapsed={isCollapsed} />
+        <SettingsNavItem isCollapsed={isCollapsed} />
       </ul>
 
       <div className={cx("mt-4 border-t-1/2 border-slate-600", { "mx-12": isCollapsed })} />

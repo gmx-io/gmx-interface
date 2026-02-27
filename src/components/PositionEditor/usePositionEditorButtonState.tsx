@@ -43,7 +43,15 @@ import {
 } from "domain/synthetics/positions";
 import { convertToTokenAmount, getApprovalRequirements, useTokensAllowanceData } from "domain/synthetics/tokens";
 import { getMarkPrice, getMinCollateralUsdForLeverage } from "domain/synthetics/trade";
-import { getCommonError, getEditCollateralError, getExpressError } from "domain/synthetics/trade/utils/validation";
+import {
+  getCommonError,
+  getEditCollateralError,
+  getExpressError,
+  takeValidationResult,
+  ValidationBannerErrorName,
+  ValidationButtonTooltipName,
+  ValidationResult,
+} from "domain/synthetics/trade/utils/validation";
 import { useApproveToken } from "domain/tokens/useApproveTokens";
 import { bigNumberBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
@@ -76,14 +84,17 @@ import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
 import { OPERATION_LABELS, Operation } from "./types";
 
-export function usePositionEditorButtonState(operation: Operation): {
+type PositionEditorButtonState = {
   text: ReactNode;
   tooltipContent: ReactNode | null;
   disabled: boolean;
   onSubmit: () => void;
   expressParams: ExpressTxnParams | undefined;
   isExpressLoading: boolean;
-} {
+  bannerErrorName: ValidationBannerErrorName | undefined;
+};
+
+export function usePositionEditorButtonState(operation: Operation): PositionEditorButtonState {
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const allowedSlippage = useSavedAllowedSlippage();
   const { chainId, srcChainId } = useChainId();
@@ -351,7 +362,7 @@ export function usePositionEditorButtonState(operation: Operation): {
     );
   }, [selectedCollateralToken, maxWithdrawAmount, minCollateralFactor, position, setCollateralInputValue]);
 
-  const [error, tooltipName] = useMemo(() => {
+  const validationResult: ValidationResult = useMemo(() => {
     const commonError = getCommonError({
       chainId,
       isConnected: Boolean(account),
@@ -375,20 +386,7 @@ export function usePositionEditorButtonState(operation: Operation): {
       minCollateralFactor,
     });
 
-    const error =
-      commonError.buttonErrorMessage || editCollateralError.buttonErrorMessage || expressError.buttonErrorMessage;
-    const tooltipName =
-      commonError.buttonTooltipName || editCollateralError.buttonTooltipName || expressError.buttonTooltipName;
-
-    if (error) {
-      return [error, tooltipName];
-    }
-
-    if (isSubmitting) {
-      return [t`Creating order...`];
-    }
-
-    return [];
+    return takeValidationResult(commonError, editCollateralError, expressError);
   }, [
     chainId,
     account,
@@ -403,11 +401,12 @@ export function usePositionEditorButtonState(operation: Operation): {
     position,
     selectedCollateralToken,
     minCollateralFactor,
-    isSubmitting,
   ]);
 
   const errorTooltipContent = useMemo(() => {
-    if (tooltipName !== "maxLeverage") return null;
+    if (validationResult.buttonTooltipName !== ValidationButtonTooltipName.maxLeverage) {
+      return null;
+    }
 
     return (
       <Trans>
@@ -420,7 +419,7 @@ export function usePositionEditorButtonState(operation: Operation): {
         </span>
       </Trans>
     );
-  }, [detectAndSetMaxSize, tooltipName]);
+  }, [detectAndSetMaxSize, validationResult.buttonTooltipName]);
 
   const { approveToken } = useApproveToken();
 
@@ -504,10 +503,15 @@ export function usePositionEditorButtonState(operation: Operation): {
     });
   }
 
-  const commonParams = {
+  const commonParams: Pick<
+    PositionEditorButtonState,
+    "expressParams" | "isExpressLoading" | "onSubmit" | "tooltipContent" | "bannerErrorName"
+  > = {
     expressParams,
     isExpressLoading,
     onSubmit,
+    tooltipContent: errorTooltipContent,
+    bannerErrorName: validationResult.bannerErrorName,
   };
 
   if (isApproving && tokensToApprove.length) {
@@ -519,7 +523,6 @@ export function usePositionEditorButtonState(operation: Operation): {
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
-      tooltipContent: errorTooltipContent,
       disabled: true,
       ...commonParams,
     };
@@ -533,7 +536,19 @@ export function usePositionEditorButtonState(operation: Operation): {
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
-      tooltipContent: errorTooltipContent,
+      disabled: true,
+      ...commonParams,
+    };
+  }
+
+  if (isSubmitting) {
+    return {
+      text: (
+        <>
+          <Trans>Creating order</Trans>
+          <SpinnerIcon className="ml-4 animate-spin" />
+        </>
+      ),
       disabled: true,
       ...commonParams,
     };
@@ -547,7 +562,6 @@ export function usePositionEditorButtonState(operation: Operation): {
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
-      tooltipContent: errorTooltipContent,
       disabled: true,
       ...commonParams,
     };
@@ -557,16 +571,14 @@ export function usePositionEditorButtonState(operation: Operation): {
     const tokenToApprove = tokensToApprove[0];
     return {
       text: t`Approve ${getToken(chainId, tokenToApprove.tokenAddress).symbol}`,
-      tooltipContent: errorTooltipContent,
       disabled: false,
       ...commonParams,
     };
   }
 
   return {
-    text: error || localizedOperationLabels[operation],
-    tooltipContent: errorTooltipContent,
-    disabled: Boolean(error) && !shouldDisableValidationForTesting,
+    text: validationResult.buttonErrorMessage || localizedOperationLabels[operation],
+    disabled: Boolean(validationResult.buttonErrorMessage) && !shouldDisableValidationForTesting,
     ...commonParams,
   };
 }

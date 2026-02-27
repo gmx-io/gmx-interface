@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 
 import { StakingProcessedData } from "lib/legacy";
 import { formatKeyAmount } from "lib/numbers";
@@ -23,6 +23,15 @@ function renderEscrowedGMXApr(processedData) {
 }
 
 export default function GMXAprTooltip({ processedData, nativeTokenSymbol, isUserConnected = false }: Props) {
+  if (processedData?.isRewardsSuspended) {
+    return (
+      <Trans>
+        27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your share
+        is based on staking power (duration × amount staked).
+      </Trans>
+    );
+  }
+
   const escrowedGMXApr = renderEscrowedGMXApr(processedData);
   const gmxAprForNativeTokenPercentage = formatKeyAmount(processedData, "gmxAprForNativeToken", 2, 2, true);
   const gmxAprForGmxPercentage = formatKeyAmount(processedData, "gmxAprForGmx", 2, 2, true);

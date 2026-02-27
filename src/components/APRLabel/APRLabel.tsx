@@ -1,4 +1,5 @@
 // @ts-check
+import { Trans } from "@lingui/macro";
 import useSWR from "swr";
 
 import { getServerUrl } from "config/backend";
@@ -15,6 +16,8 @@ import {
 } from "lib/legacy";
 import { formatKeyAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
+
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export default function APRLabel({ chainId, label }) {
   const { active, account } = useWallet();
@@ -131,6 +134,20 @@ export default function APRLabel({ chainId, label }) {
     gmxPrice,
     gmxSupply
   );
+
+  if (processedData?.isRewardsSuspended) {
+    return (
+      <TooltipWithPortal
+        handle={<Trans>Accumulating</Trans>}
+        content={
+          <Trans>
+            27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your
+            share is based on staking power (duration × amount staked).
+          </Trans>
+        }
+      />
+    );
+  }
 
   return <>{`${formatKeyAmount(processedData, label, 2, 2, true)}%`}</>;
 }
