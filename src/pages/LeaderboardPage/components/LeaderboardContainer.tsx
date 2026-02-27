@@ -55,7 +55,7 @@ export function LeaderboardContainer() {
   const page = LEADERBOARD_PAGES[leaderboardPageKey];
 
   const [, setLeaderboardTimeframeType] = useLeaderboardTimeframeTypeState();
-  const [, setLeaderboardDataType] = useLeaderboardDataTypeState();
+  const [leaderboardDataType, setLeaderboardDataType] = useLeaderboardDataTypeState();
 
   const competitionLabels = useMemo(() => [t`Top PnL ($)`, t`Top PnL (%)`], []);
   const leaderboardTimeframeLabels = useMemo(() => [t`Total`, t`Last 30d`, t`Last 7d`], []);
@@ -225,7 +225,7 @@ export function LeaderboardContainer() {
               value={searchAddress}
               setValue={setSearchAddress}
             />
-            {!isCompetition && (
+            {!isCompetition && leaderboardDataType === "accounts" && (
               <Tabs
                 selectedValue={activeLeaderboardTimeframeIndex}
                 onChange={handleLeaderboardTimeframeTabChange}
