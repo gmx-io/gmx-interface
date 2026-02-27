@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { Address, ContractFunctionReturnType, isAddressEqual } from "viem";
 
-import { getIsFlagEnabled } from "config/ab";
 import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { accountOrderListKey } from "config/dataStore";
@@ -98,7 +97,7 @@ export function useOrders(
     [account, marketsDirectionsFilter, orderTypesFilter]
   );
 
-  const apiEnabled = getIsFlagEnabled("apiSdk2");
+  const apiEnabled = false;
   const {
     ordersData: apiOrdersData,
     isStale: isApiStale,
