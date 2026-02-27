@@ -1,7 +1,11 @@
 #!/bin/sh
 . "$(dirname "$0")/_/husky.sh"
 
-yarn test:ci
+yarn test:ci &
+PID1=$!
 
-cd sdk
-yarn test:ci
+cd sdk && yarn test:ci &
+PID2=$!
+
+wait $PID1
+wait $PID2
