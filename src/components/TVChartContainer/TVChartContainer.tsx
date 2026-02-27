@@ -403,43 +403,47 @@ export default function TVChartContainer({
     }
 
     const update = () => {
-      const pane = chart.getPanes()?.[0];
-      if (!pane) return;
+      try {
+        const pane = chart.getPanes()?.[0];
+        if (!pane) return;
 
-      const priceScale = pane.getMainSourcePriceScale();
-      if (!priceScale) return;
+        const priceScale = pane.getMainSourcePriceScale();
+        if (!priceScale) return;
 
-      const range = priceScale.getVisiblePriceRange();
-      if (!range) return;
+        const range = priceScale.getVisiblePriceRange();
+        if (!range) return;
 
-      const height = pane.getHeight();
-      if (height <= 0) return;
+        const height = pane.getHeight();
+        if (height <= 0) return;
 
-      setPricePerPixel((range.to - range.from) / height);
+        setPricePerPixel((range.to - range.from) / height);
 
-      const container = chartContainerRef.current;
-      const iframe = container?.querySelector("iframe");
-      if (!container || !iframe?.contentDocument) return;
+        const container = chartContainerRef.current;
+        const iframe = container?.querySelector("iframe");
+        if (!container || !iframe?.contentDocument) return;
 
-      const priceAxes = Array.from(iframe.contentDocument.querySelectorAll(".price-axis"));
-      if (priceAxes.length === 0) return;
+        const priceAxes = Array.from(iframe.contentDocument.querySelectorAll(".price-axis"));
+        if (priceAxes.length === 0) return;
 
-      let rightmostPriceAxisRect: DOMRect | null = null;
-      for (const el of priceAxes) {
-        const rect = el.getBoundingClientRect();
-        if (rightmostPriceAxisRect === null || rect.left > rightmostPriceAxisRect.left) {
-          rightmostPriceAxisRect = rect;
+        let rightmostPriceAxisRect: DOMRect | null = null;
+        for (const el of priceAxes) {
+          const rect = el.getBoundingClientRect();
+          if (rightmostPriceAxisRect === null || rect.left > rightmostPriceAxisRect.left) {
+            rightmostPriceAxisRect = rect;
+          }
         }
-      }
 
-      if (!rightmostPriceAxisRect) return;
+        if (!rightmostPriceAxisRect) return;
 
-      const containerRect = container.getBoundingClientRect();
-      const iframeRect = iframe.getBoundingClientRect();
-      const axisLeftInContainer = iframeRect.left - containerRect.left + rightmostPriceAxisRect.left;
+        const containerRect = container.getBoundingClientRect();
+        const iframeRect = iframe.getBoundingClientRect();
+        const axisLeftInContainer = iframeRect.left - containerRect.left + rightmostPriceAxisRect.left;
 
-      if (Number.isFinite(axisLeftInContainer) && axisLeftInContainer > 0) {
-        setPlotWidthPx(axisLeftInContainer);
+        if (Number.isFinite(axisLeftInContainer) && axisLeftInContainer > 0) {
+          setPlotWidthPx(axisLeftInContainer);
+        }
+      } catch {
+        // getVisiblePriceRange() throws "Value is null" when chart has no price data yet
       }
     };
 
