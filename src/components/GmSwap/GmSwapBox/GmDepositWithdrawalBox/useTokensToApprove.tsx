@@ -149,8 +149,10 @@ const useSettlementChainTokensToApprove = (): TokensToApproveResult => {
       },
     });
 
+    setIsApproving(true);
+
     approveTokens({
-      setIsApproving,
+      setIsApproving: noop,
       signer,
       tokenAddress,
       spender: routerAddress,
@@ -160,6 +162,7 @@ const useSettlementChainTokensToApprove = (): TokensToApproveResult => {
       chainId,
       approveAmount: undefined,
       onApproveFail: () => {
+        setIsApproving(false);
         userAnalytics.pushEvent<TokenApproveResultEvent>({
           event: "TokenApproveAction",
           data: {

@@ -2158,6 +2158,7 @@ msgstr "MARKETS"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
+#: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Max {0}"
 msgstr "Max {0}"
 
@@ -2646,6 +2647,10 @@ msgstr "High slippage set. Current swap impact: {0}."
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Instant"
 msgstr "Instant"
+
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Insufficient pool balance to claim this funding fee."
+msgstr "Insufficient pool balance to claim this funding fee."
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
@@ -4981,6 +4986,10 @@ msgstr "Use open interest in tokens for balance"
 msgid "Seamless trading"
 msgstr "Seamless trading"
 
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Insufficient Pool Balance"
+msgstr "Insufficient Pool Balance"
+
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "from your wallet"
 msgstr "from your wallet"
@@ -6948,6 +6957,10 @@ msgstr "Project"
 msgid "24h low"
 msgstr "24h low"
 
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Claim <0>{0}</0> of <1>{1}</1>"
+msgstr "Claim <0>{0}</0> of <1>{1}</1>"
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from TraderJoe"
 msgstr "Buy GMX from TraderJoe"
@@ -8614,6 +8627,10 @@ msgstr "Threshold for decrease funding"
 #: src/domain/synthetics/fees/utils/index.ts
 msgid "Network fees are very high due to increased {chainName} network activity"
 msgstr "Network fees are very high due to increased {chainName} network activity"
+
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Some markets have insufficient pool balance to claim funding fees. These markets are excluded from this claim."
+msgstr "Some markets have insufficient pool balance to claim funding fees. These markets are excluded from this claim."
 
 #: src/components/InterviewModal/InterviewModal.tsx
 #: src/components/InterviewModal/InterviewModal.tsx

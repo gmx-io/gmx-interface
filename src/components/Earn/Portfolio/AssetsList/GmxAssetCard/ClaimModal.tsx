@@ -1,7 +1,8 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ethers } from "ethers";
-import React, { useCallback, useMemo, useState } from "react";
+import noop from "lodash/noop";
+import React, { useCallback, useEffect, useMemo, useState } from "react";
 
 import { ARBITRUM, type ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
@@ -111,6 +112,12 @@ export function ClaimModal(props: {
     ((gmxTokenAllowance !== undefined && totalGmxRewards > gmxTokenAllowance) ||
       (totalGmxRewards > 0n && gmxTokenAllowance === undefined));
 
+  useEffect(() => {
+    if (!needApproval && isApproving) {
+      setIsApproving(false);
+    }
+  }, [isApproving, needApproval]);
+
   const isAnySelectedToClaim = shouldClaimGmx || shouldClaimEsGmx || shouldClaimWeth;
 
   const hasAnyPendingRewards =
@@ -150,14 +157,18 @@ export function ClaimModal(props: {
 
   const onClickPrimary = useCallback(() => {
     if (needApproval) {
+      setIsApproving(true);
       approveTokens({
-        setIsApproving,
+        setIsApproving: noop,
         signer,
         tokenAddress: gmxAddress,
         spender: stakedGmxTrackerAddress,
         chainId,
         permitParams: undefined,
         approveAmount: undefined,
+        onApproveFail: () => {
+          setIsApproving(false);
+        },
       });
       return;
     }

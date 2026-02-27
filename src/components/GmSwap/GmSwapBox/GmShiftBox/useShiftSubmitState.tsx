@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
+import noop from "lodash/noop";
 import uniq from "lodash/uniq";
 import { useMemo, useState, useEffect } from "react";
 
@@ -185,8 +186,10 @@ export function useShiftSubmitState({
           },
         });
 
+        setIsApproving(true);
+
         approveTokens({
-          setIsApproving,
+          setIsApproving: noop,
           signer,
           tokenAddress,
           spender: getContract(chainId, "SyntheticsRouter"),
@@ -196,6 +199,7 @@ export function useShiftSubmitState({
           chainId,
           approveAmount: undefined,
           onApproveFail: () => {
+            setIsApproving(false);
             userAnalytics.pushEvent<TokenApproveResultEvent>({
               event: "TokenApproveAction",
               data: {

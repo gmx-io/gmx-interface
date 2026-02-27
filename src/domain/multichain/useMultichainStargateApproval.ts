@@ -1,4 +1,5 @@
-import { useCallback, useMemo, useState } from "react";
+import noop from "lodash/noop";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { zeroAddress } from "viem";
 
 import type { SettlementChainId, SourceChainId } from "config/chains";
@@ -61,16 +62,27 @@ export function useMultichainStargateApproval({
       return;
     }
 
+    setIsApproving(true);
+
     await approveTokens({
-      setIsApproving,
+      setIsApproving: noop,
       signer,
       tokenAddress: sourceChainTokenAddress,
       spender: stargateSpenderAddress,
       chainId: srcChainId,
       permitParams: undefined,
       approveAmount: amountToApprove,
+      onApproveFail: () => {
+        setIsApproving(false);
+      },
     });
   }, [sourceChainTokenAddress, stargateSpenderAddress, srcChainId, signer, amountToApprove]);
+
+  useEffect(() => {
+    if (!needsApproval && isApproving) {
+      setIsApproving(false);
+    }
+  }, [isApproving, needsApproval]);
 
   return {
     needsApproval,

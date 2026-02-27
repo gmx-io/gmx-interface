@@ -127,7 +127,7 @@ export function Features({ goToTradeArbitrum }: Props) {
       <div className="relative h-full overflow-hidden rounded-20 bg-slate-800 p-20 lg:col-start-2 lg:col-end-4 lg:row-start-3 lg:row-end-4 lg:min-h-[180px] lg:p-28">
         <SeamlessBackground />
         <div className="relative flex h-full flex-col items-stretch justify-between gap-20 lg:flex-row lg:items-end">
-          <div className="w-[360px]">
+          <div className="w-full lg:w-[360px]">
             <p className="text-heading-4 md:text-heading-3 mb-12">
               <Trans>Seamless trading</Trans>
             </p>

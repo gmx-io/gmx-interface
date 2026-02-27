@@ -51,6 +51,7 @@ import {
   OrderInfo,
   PositionOrderInfo,
   SwapOrderInfo,
+  isIncreaseOrderType,
   isLimitDecreaseOrderType,
   isLimitIncreaseOrderType,
   isLimitSwapOrderType,
@@ -69,7 +70,11 @@ import {
   substractMaxLeverageSlippage,
 } from "domain/synthetics/positions";
 import { convertToTokenAmount, convertToUsd, getTokenData } from "domain/synthetics/tokens";
-import { getIncreasePositionAmounts, getNextPositionValuesForIncreaseTrade } from "domain/synthetics/trade";
+import {
+  getIncreasePositionAmounts,
+  getMarkPrice,
+  getNextPositionValuesForIncreaseTrade,
+} from "domain/synthetics/trade";
 import { getExpressError, getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
 import { TokensRatioAndSlippage } from "domain/tokens";
 import { numericBinarySearch } from "lib/binarySearch";
@@ -144,7 +149,13 @@ export function OrderEditor(p: Props) {
 
   const market = useMarketInfo(p.order.marketAddress);
   const indexToken = getTokenData(tokensData, market?.indexTokenAddress);
-  const markPrice = p.order.isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
+  const markPrice = indexToken?.prices
+    ? getMarkPrice({
+        prices: indexToken.prices,
+        isIncrease: isIncreaseOrderType(p.order.orderType),
+        isLong: p.order.isLong,
+      })
+    : undefined;
   const existingPosition = useSelector(selectOrderEditorExistingPosition);
 
   const executionFee = useSelector(selectOrderEditorExecutionFee);
