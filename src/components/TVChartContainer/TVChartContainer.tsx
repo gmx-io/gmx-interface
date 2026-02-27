@@ -112,6 +112,7 @@ export default function TVChartContainer({
     visualMultiplier,
     chainId,
     account,
+    shouldShowPositionLines,
   });
   const marksHistoryCacheRef = useRef<{
     key?: string;
@@ -140,7 +141,11 @@ export default function TVChartContainer({
         visualMultiplier: vm,
         chainId: cid,
         account: acc,
+        shouldShowPositionLines: showLines,
       } = marksStateRef.current;
+      if (!showLines) {
+        return [];
+      }
       if (!selToken?.address) {
         return [];
       }
@@ -321,6 +326,7 @@ export default function TVChartContainer({
 
       (inc || []).forEach((e) => {
         if (e.sizeDeltaUsd === 0n) return;
+        if (acc && e.account && !isAddressEqual(e.account as Address, acc as Address)) return;
         const marketForEvent = markets?.[e.marketAddress];
         const tokenDecimals: number | undefined = marketForEvent?.indexToken?.decimals;
         const execPrice =
@@ -342,6 +348,7 @@ export default function TVChartContainer({
 
       (dec || []).forEach((e) => {
         if (e.sizeDeltaUsd === 0n) return;
+        if (acc && e.account && !isAddressEqual(e.account as Address, acc as Address)) return;
         const marketForEvent = markets?.[e.marketAddress];
         const tokenDecimals: number | undefined = marketForEvent?.indexToken?.decimals;
         const execPrice =
@@ -386,7 +393,7 @@ export default function TVChartContainer({
   const [plotWidthPx, setPlotWidthPx] = useState<number>(0);
 
   useEffect(() => {
-    if (!chartReady || !tvWidgetRef.current) return;
+    if (!chartReady || chartDataLoading || !tvWidgetRef.current) return;
 
     let chart;
     try {
@@ -402,7 +409,12 @@ export default function TVChartContainer({
       const priceScale = pane.getMainSourcePriceScale();
       if (!priceScale) return;
 
-      const range = priceScale.getVisiblePriceRange();
+      let range;
+      try {
+        range = priceScale.getVisiblePriceRange();
+      } catch {
+        return;
+      }
       if (!range) return;
 
       const height = pane.getHeight();
@@ -448,7 +460,7 @@ export default function TVChartContainer({
       chart.onVisibleRangeChanged().unsubscribe(null, update);
       resizeObserver?.disconnect();
     };
-  }, [chartReady]);
+  }, [chartReady, chartDataLoading]);
 
   const bodyFontSizePt = useMemo(() => {
     if (plotWidthPx <= 0) return 14;
@@ -585,6 +597,7 @@ export default function TVChartContainer({
 
   useEffect(() => {
     if (chartReady) {
+      tvWidgetRef.current?.activeChart().clearMarks();
       tvWidgetRef.current?.activeChart().refreshMarks();
     }
   }, [
@@ -596,6 +609,7 @@ export default function TVChartContainer({
     hasMarketsInfo,
     hasTokensData,
     visualMultiplier,
+    shouldShowPositionLines,
   ]);
 
   useEffect(() => {
