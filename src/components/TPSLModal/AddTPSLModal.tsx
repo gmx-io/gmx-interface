@@ -38,17 +38,17 @@ import {
   getIsPositionInfoLoaded,
 } from "domain/synthetics/positions";
 import {
-  getDefaultEntryField,
-  handleEntryError,
   MAX_PERCENTAGE,
   PERCENTAGE_DECIMALS,
+  getDefaultEntryField,
+  handleEntryError,
 } from "domain/synthetics/sidecarOrders/utils";
 import {
+  DecreasePositionAmounts,
   getMarkPrice,
   getNextPositionValuesForDecreaseTrade,
   getTradeFees,
   getTriggerDecreaseOrderType,
-  DecreasePositionAmounts,
 } from "domain/synthetics/trade";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { buildTpSlCreatePayloads, buildTpSlInputPositionData, getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
@@ -72,7 +72,7 @@ import {
   DecreasePositionOrderParams,
   getBatchTotalExecutionFee,
 } from "sdk/utils/orderTransactions";
-import { SidecarSlTpOrderEntry } from "sdk/utils/sidecarOrders";
+import { SidecarSlTpOrderEntry } from "sdk/utils/sidecarOrders/types";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";
 
 import Button from "components/Button/Button";
@@ -97,9 +97,19 @@ type Props = {
   position: PositionInfo;
   onSuccess?: () => void;
   onBack?: () => void;
+  initialTpPriceInput?: string;
+  initialSlPriceInput?: string;
 };
 
-export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onBack }: Props) {
+export function AddTPSLModal({
+  isVisible,
+  setIsVisible,
+  position,
+  onSuccess,
+  onBack,
+  initialTpPriceInput,
+  initialSlPriceInput,
+}: Props) {
   const [tpPriceInput, setTpPriceInput] = useState("");
   const [slPriceInput, setSlPriceInput] = useState("");
   const [keepLeverage, setKeepLeverage] = useState(true);
@@ -773,7 +783,10 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
   ]);
 
   useEffect(() => {
-    if (!isVisible) {
+    if (isVisible) {
+      setTpPriceInput(initialTpPriceInput ?? "");
+      setSlPriceInput(initialSlPriceInput ?? "");
+    } else {
       setTpPriceInput("");
       setSlPriceInput("");
       setCloseSizeInput("");
@@ -781,7 +794,7 @@ export function AddTPSLModal({ isVisible, setIsVisible, position, onSuccess, onB
       setClosePercentage(100);
       setPreviewTab("tp");
     }
-  }, [isVisible]);
+  }, [isVisible, initialTpPriceInput, initialSlPriceInput]);
 
   useEffect(() => {
     if (tpDecreaseAmounts && !slDecreaseAmounts) {

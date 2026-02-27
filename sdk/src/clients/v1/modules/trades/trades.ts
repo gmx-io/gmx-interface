@@ -237,7 +237,7 @@ export async function fetchTradeActions({
         tradeActions(
             offset: ${offset},
             limit: ${limit},
-            orderBy: transaction_timestamp_DESC,
+            orderBy: timestamp_DESC,
             ${whereClause}
         ) {
             id
@@ -279,10 +279,7 @@ export async function fetchTradeActions({
             reasonBytes
             timestamp
 
-            transaction {
-                timestamp
-                hash
-            }
+            transactionHash
         }
       }`;
 

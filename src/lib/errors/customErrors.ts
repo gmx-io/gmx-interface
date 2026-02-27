@@ -6,6 +6,7 @@ import { abis } from "sdk/abis";
 import { ErrorData, ErrorLike, extendError, parseError } from ".";
 
 export const INVALID_PERMIT_SIGNATURE_ERROR = "Invalid permit signature";
+export const EXPIRED_PERMIT_DEADLINE_ERROR = "Expired permit deadline";
 export const FAST_EXPRESS_PARAMS_TIMEOUT_ERROR = "fastExpressParams timeout";
 export const NON_SIGNING_ACCOUNT_DETECTED_ERROR = "Non-signing account detected";
 
@@ -65,20 +66,32 @@ export function getIsInvalidSignatureError(error: ErrorLike) {
 }
 
 export function getIsPermitSignatureErrorOnSimulation(error: ErrorLike) {
+  return isPermitExternalCallFailedOnSimulation(error, "invalid signature");
+}
+
+export function getIsPermitExpiredDeadlineOnSimulation(error: ErrorLike) {
+  return isPermitExternalCallFailedOnSimulation(error, "expired deadline");
+}
+
+function isPermitExternalCallFailedOnSimulation(error: ErrorLike, errorSubstring: string) {
   const parsedError = parseError(error);
 
   if (!parsedError || parsedError.errorContext !== "simulation" || parsedError.contractError !== "ExternalCallFailed") {
     return false;
   }
 
-  const decodedExternalCallFailed = decodeErrorResult({
-    abi: abis.CustomErrors,
-    data: parsedError.contractErrorArgs[0],
-  });
+  try {
+    const decodedExternalCallFailed = decodeErrorResult({
+      abi: abis.CustomErrors,
+      data: parsedError.contractErrorArgs[0],
+    });
 
-  const errorArg = decodedExternalCallFailed?.args?.[0];
+    const errorArg = decodedExternalCallFailed?.args?.[0];
 
-  return typeof errorArg === "string" && errorArg.includes("invalid signature");
+    return typeof errorArg === "string" && errorArg.includes(errorSubstring);
+  } catch {
+    return false;
+  }
 }
 
 export function getInvalidPermitSignatureError({
@@ -102,6 +115,16 @@ export function getInvalidPermitSignatureError({
         version: permit.onchainParams.version,
         nonce: permit.onchainParams.nonce,
       },
+    },
+  });
+}
+
+export function getExpiredPermitDeadlineError({ permit }: { permit: SignedTokenPermit }) {
+  return extendError(new Error(EXPIRED_PERMIT_DEADLINE_ERROR), {
+    data: {
+      spender: permit.spender,
+      value: permit.value,
+      deadline: permit.deadline,
     },
   });
 }

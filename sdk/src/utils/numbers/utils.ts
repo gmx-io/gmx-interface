@@ -14,6 +14,9 @@ export const BASIS_POINTS_DECIMALS = 4;
 export const PRECISION_DECIMALS = 30;
 export const PRECISION = expandDecimals(1, PRECISION_DECIMALS);
 
+export const FLOAT_PRECISION_SQRT_DECIMALS = 15;
+export const FLOAT_PRECISION_SQRT = expandDecimals(1, FLOAT_PRECISION_SQRT_DECIMALS);
+
 export const BN_ZERO = 0n;
 export const BN_ONE = 1n;
 export const BN_NEGATIVE_ONE = -1n;
@@ -548,14 +551,23 @@ export const formatArrayAmount = (
   return formatAmount(arr[index], tokenDecimals, displayDecimals, useCommas);
 };
 
-export const formatAmountFree = (amount: BigNumberish, tokenDecimals: number, displayDecimals?: number) => {
+export const formatAmountFree = (
+  amount: BigNumberish,
+  tokenDecimals: number,
+  displayDecimals?: number,
+  visualMultiplier?: number
+) => {
   if (amount === undefined || amount === null) {
     return "...";
   }
 
-  amount = BigInt(amount);
+  let amountBigInt = BigInt(amount);
 
-  let amountStr = formatUnits(amount, tokenDecimals);
+  if (visualMultiplier) {
+    amountBigInt = amountBigInt / BigInt(visualMultiplier);
+  }
+
+  let amountStr = formatUnits(amountBigInt, tokenDecimals);
   amountStr = limitDecimals(amountStr, displayDecimals);
   return trimZeroDecimals(amountStr);
 };

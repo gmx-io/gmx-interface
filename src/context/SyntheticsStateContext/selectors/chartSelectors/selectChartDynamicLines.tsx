@@ -66,6 +66,7 @@ export const selectChartDynamicLines = createSelector<DynamicChartLine[]>((q) =>
             tokenVisualMultiplier
           )
         ),
+        updatedAtTime: order.updatedAtTime,
       };
     });
 

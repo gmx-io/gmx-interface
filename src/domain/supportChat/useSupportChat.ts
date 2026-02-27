@@ -4,32 +4,28 @@ import { useAccount } from "wagmi";
 
 import { getChainName } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
-import { SUPPORT_CHAT_WAS_EVER_SHOWN_KEY } from "config/localStorage";
 import { useTheme } from "context/ThemeContext/ThemeContext";
+import { useIsLargeAccountVolumeStats } from "domain/synthetics/accountStats/useIsLargeAccountData";
 import { usePeriodAccountStats } from "domain/synthetics/accountStats/usePeriodAccountStats";
 import { useChainId } from "lib/chains";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmountForMetrics } from "lib/metrics";
+import { useNonSingingAccount } from "lib/wallets/useAccountType";
 
 import { useAvailableToTradeAssetMultichain } from "components/GmxAccountModal/hooks";
 
 import { INTERCOM_APP_ID, TIME_PERIODS } from "./constants";
 import { useShowSupportChat } from "./useShowSupportChat";
 import { useSupportChatUnreadCount } from "./useSupportChatUnreadCount";
+import { useWalletPortfolioUsd } from "./useWalletPortfolioUsd";
 import { getOrCreateSupportChatUserId, themeToIntercomTheme } from "./utils";
 
 export function useSupportChat() {
-  const {
-    shouldShowSupportChat,
-    isNonEoaAccountOnAnyChain,
-    isNonEoaAccountOnAnyChainLoading,
-    largeAccountVolumeStatsData,
-    isLargeAccountVolumeStatsLoading,
-    walletPortfolioUsd,
-    isWalletPortfolioUsdLoading,
-  } = useShowSupportChat();
+  const { shouldShowSupportChat } = useShowSupportChat();
   const { address: account } = useAccount();
-  const [, setSupportChatWasEverShown] = useLocalStorageSerializeKey<boolean>(SUPPORT_CHAT_WAS_EVER_SHOWN_KEY, false);
+  const { isNonEoaAccountOnAnyChain, isLoading: isNonEoaAccountOnAnyChainLoading } = useNonSingingAccount();
+  const { data: largeAccountVolumeStatsData, isLoading: isLargeAccountVolumeStatsLoading } =
+    useIsLargeAccountVolumeStats({ account });
+  const { walletPortfolioUsd, isWalletPortfolioUsdLoading } = useWalletPortfolioUsd();
   const { themeMode } = useTheme();
   const { chainId, srcChainId } = useChainId();
   const initializedAddress = useRef<string | undefined>(undefined);
@@ -107,12 +103,10 @@ export function useSupportChat() {
       setSupportChatUnreadCount(unreadCount);
     });
 
-    setSupportChatWasEverShown(true);
-
     return () => {
       shutdown();
     };
-  }, [shouldShowSupportChat, setSupportChatUnreadCount, setSupportChatWasEverShown]);
+  }, [shouldShowSupportChat, setSupportChatUnreadCount]);
 
   useEffect(() => {
     if (!shouldShowSupportChat) {

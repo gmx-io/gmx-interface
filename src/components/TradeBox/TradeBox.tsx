@@ -3,6 +3,7 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { ChangeEvent, useCallback, useEffect, useMemo, useRef } from "react";
 import { useKey, useLatest, usePrevious } from "react-use";
+import { zeroAddress } from "viem";
 
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID } from "config/chains";
 import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
@@ -52,10 +53,9 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
-import { getMinResidualGasPaymentTokenAmount } from "domain/synthetics/express/getMinResidualGasPaymentTokenAmount";
 import { getMarketIndexName, MarketInfo } from "domain/synthetics/markets";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
-import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
+import { convertToUsd, getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
 import { getTwapRecommendation } from "domain/synthetics/trade/twapRecommendation";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
@@ -67,7 +67,6 @@ import { useLocalizedMap } from "lib/i18n";
 import { throttleLog } from "lib/logging";
 import {
   calculateDisplayDecimals,
-  expandDecimals,
   formatAmount,
   formatAmountFree,
   formatBalanceAmount,
@@ -84,8 +83,8 @@ import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
 import { useNonSingingAccount } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
-import { EXPRESS_DEFAULT_MIN_RESIDUAL_USD_NUMBER } from "sdk/configs/express";
-import { getToken, isUsdBasedStableToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { getGasPaymentTokens } from "sdk/configs/express";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
 import { TradeMode } from "sdk/utils/trade/types";
 
@@ -314,68 +313,61 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     }
   }, [submitButtonState, isMobile, setExternalIsCurtainOpen]);
 
-  const { gasPaymentTokenAmountForMax, isGasPaymentTokenAmountForMaxApproximate } = useMemo(() => {
-    if (!expressOrdersEnabled) {
-      return {};
-    }
-    if (
-      submitButtonState.expressParams?.gasPaymentParams.gasPaymentTokenAmount !== undefined &&
-      // Submit button state may store previous gas payment token address, so we need to check if it matches the current gas payment token address
-      submitButtonState.expressParams.gasPaymentParams.gasPaymentTokenAddress === gasPaymentTokenAddress
-    ) {
-      return {
-        gasPaymentTokenAmountForMax: submitButtonState.expressParams.gasPaymentParams.gasPaymentTokenAmount,
-        isGasPaymentTokenAmountForMaxApproximate: false,
-      };
-    }
-    if (executionFee && gasPaymentTokenData) {
-      const gasPaymentTokenAmountForMax = convertToTokenAmount(
-        executionFee.feeUsd,
-        gasPaymentTokenData.decimals,
-        gasPaymentTokenData.prices.maxPrice
-      )!;
-      return {
-        gasPaymentTokenAmountForMax,
-        isGasPaymentTokenAmountForMaxApproximate: true,
-      };
-    }
-    const gasPaymentToken = getToken(chainId, gasPaymentTokenAddress);
-    if (isUsdBasedStableToken(gasPaymentToken)) {
-      const gasPaymentTokenAmountForMax = expandDecimals(
-        EXPRESS_DEFAULT_MIN_RESIDUAL_USD_NUMBER,
-        gasPaymentToken.decimals
-      );
-      return {
-        gasPaymentTokenAmountForMax,
-        isGasPaymentTokenAmountForMaxApproximate: true,
-      };
-    }
-    return {};
-  }, [
-    expressOrdersEnabled,
-    submitButtonState.expressParams?.gasPaymentParams.gasPaymentTokenAmount,
-    submitButtonState.expressParams?.gasPaymentParams.gasPaymentTokenAddress,
-    gasPaymentTokenAddress,
-    executionFee,
-    gasPaymentTokenData,
-    chainId,
-  ]);
+  const expressOrdersEnabledForMax = expressOrdersEnabled && fromTokenAddress !== zeroAddress && !isWrapOrUnwrap;
 
-  const { formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
+  const expressGasPaymentTokenAmount = useMemo((): bigint | undefined => {
+    if (!expressOrdersEnabledForMax) {
+      return undefined;
+    }
+
+    const storedGasPaymentParams = submitButtonState.expressParams?.gasPaymentParams;
+    if (
+      storedGasPaymentParams === undefined ||
+      storedGasPaymentParams.gasPaymentTokenAddress !== gasPaymentTokenAddress
+    ) {
+      return undefined;
+    }
+
+    return storedGasPaymentParams.gasPaymentTokenAmount;
+  }, [expressOrdersEnabledForMax, submitButtonState.expressParams?.gasPaymentParams, gasPaymentTokenAddress]);
+
+  const treatMinimalBufferAsEnough =
+    isSwap &&
+    toToken &&
+    (expressOrdersEnabledForMax
+      ? getGasPaymentTokens(chainId).includes(toToken.address)
+      : toToken.address === zeroAddress);
+
+  const gasPaymentTokenForMax = expressOrdersEnabledForMax ? gasPaymentTokenData : nativeToken;
+  const gasPaymentTokenAmountForMax = expressOrdersEnabledForMax
+    ? expressGasPaymentTokenAmount
+    : submitButtonState.totalExecutionFee?.feeTokenAmount;
+
+  const isMaxAmountLoading = expressOrdersEnabledForMax
+    ? submitButtonState.isExpressLoading || expressGasPaymentTokenAmount === undefined
+    : submitButtonState.totalExecutionFee?.feeTokenAmount === undefined;
+
+  const fromTokenBalance = getBalanceByBalanceType(
     fromToken,
-    nativeToken,
-    fromTokenAmount,
-    fromTokenInputValue,
-    tokenBalanceType: fromToken?.balanceType,
-    minResidualAmount: getMinResidualGasPaymentTokenAmount({
-      gasPaymentToken: gasPaymentTokenData,
+    isFromTokenGmxAccount ? TokenBalanceType.GmxAccount : TokenBalanceType.Wallet
+  );
+  const gasPaymentTokenBalanceForMax = getBalanceByBalanceType(
+    gasPaymentTokenForMax,
+    isFromTokenGmxAccount ? TokenBalanceType.GmxAccount : TokenBalanceType.Wallet
+  );
+
+  const { maxAvailableAmount, formattedMaxAvailableAmount, showClickMax, gasPaymentTokenWarningContent } =
+    useMaxAvailableAmount({
+      fromToken,
+      fromTokenBalance,
+      fromTokenAmount,
+      fromTokenInputValue,
+      isLoading: isMaxAmountLoading,
+      gasPaymentToken: gasPaymentTokenForMax,
+      gasPaymentTokenBalance: gasPaymentTokenBalanceForMax,
       gasPaymentTokenAmount: gasPaymentTokenAmountForMax,
-      payTokenAddress: fromTokenAddress,
-      applyBuffer: !isGasPaymentTokenAmountForMaxApproximate,
-    }),
-    isLoading:
-      expressOrdersEnabled && (submitButtonState.isExpressLoading || gasPaymentTokenAmountForMax === undefined),
-  });
+      useMinimalBuffer: treatMinimalBufferAsEnough,
+    });
 
   const onMaxClick = useCallback(() => {
     if (formattedMaxAvailableAmount) {
@@ -1043,6 +1035,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                   setToTokenInputValue={setToTokenInputValue}
                   triggerPriceInputValue={triggerPriceInputValue}
                   onTriggerPriceInputChange={handleTriggerPriceInputChange}
+                  maxAvailableAmount={maxAvailableAmount}
                   onMarkPriceClick={setMarkPriceAsTriggerPrice}
                 />
               )}
@@ -1151,6 +1144,12 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               </Trans>
             </AlertInfoCard>
           )}
+          {gasPaymentTokenWarningContent && (
+            <AlertInfoCard hideClose type="warning">
+              {gasPaymentTokenWarningContent}
+            </AlertInfoCard>
+          )}
+
           <div>{button}</div>
         </div>
       </div>

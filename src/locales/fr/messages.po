@@ -84,6 +84,7 @@ msgstr "Compose automatiquement vos récompenses GMX sans récupération manuell
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
 msgid "Disconnect"
 msgstr "Déconnecter"
 
@@ -97,6 +98,10 @@ msgstr "Oui, le staking et la fourniture de liquidité sont entièrement sans pe
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Order simulation failed"
 msgstr "La simulation d'ordre a échoué"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Target chain"
+msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
@@ -308,6 +313,10 @@ msgstr "Afficher l'erreur"
 msgid "settings"
 msgstr "paramètres"
 
+#: src/components/TVChartContainer/TVChartContainer.tsx
+msgid "Open Short"
+msgstr ""
+
 #: src/components/Claims/ClaimableCard.tsx
 msgid "Price impact rebates ready to claim. <0>Read more</0>."
 msgstr "Remises sur l'impact sur le prix prêtes à récupérer. <0>En savoir plus</0>."
@@ -400,6 +409,10 @@ msgstr "Frais d'interface de swap"
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "No TP orders"
 msgstr "Aucun ordre Take-Profit"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Create Safe on Arbitrum Sepolia"
+msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "position size"
@@ -509,10 +522,6 @@ msgstr "Max {0} short dépassé"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GM balance"
 msgstr "Solde GM insuffisant"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Stop Market - long inc."
-msgstr "Stop Market - long inc."
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Slippage exceeded. Expected min: {minOutputAmountText}, actual: {outputAmountText}"
@@ -688,6 +697,10 @@ msgstr "pour un impact net sur le prix plus faible"
 msgid "NET RATE"
 msgstr "TAUX NET"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Active WalletConnect Sessions"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "No rewards"
 msgstr "Aucune récompense"
@@ -800,6 +813,10 @@ msgstr "Acheter des GMX sur des plateformes centralisées"
 msgid "Share for follow-up questions"
 msgstr "Partager pour les questions de suivi"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Salt nonce"
+msgstr ""
+
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -826,6 +843,10 @@ msgstr "Bonus rétroactif STIP.b"
 #: landing/src/pages/Home/LiqiuditySection/LiqiuditySection.tsx
 msgid "in liquidity"
 msgstr "en liquidité"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Signature (hex)"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized money market"
@@ -864,6 +885,10 @@ msgstr "Contact Telegram (optionnel)"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Conversion creation failed"
 msgstr "Échec de la création de la conversion"
+
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "27% of protocol fees fund Treasury buybacks — rewards distributed at $90"
+msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX alerts"
@@ -957,6 +982,10 @@ msgstr "Facteur de frais de position (PI positif)"
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap price impact"
 msgstr "Impact de prix d'échange élevé"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Deploy Safe"
+msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Failed to parse related transaction:"
@@ -1064,6 +1093,14 @@ msgstr "Partenariats et intégrations"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient gas balance. Deposit more ETH."
 msgstr "Solde de Gas insuffisant. Déposez davantage d'ETH."
+
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+msgid "Creating order"
+msgstr ""
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "bytes32 overload"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (negative PI)"
@@ -1176,6 +1213,10 @@ msgstr "{0} échangé contre {1} lors de l'exécution"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Unrealized PnL"
 msgstr "PnL non réalisé"
+
+#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
+msgid "Rewards"
+msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -1306,6 +1347,10 @@ msgstr "Acheter {operationTokenSymbol}"
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Buy GM: {0}"
 msgstr "Acheter GM : {0}"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Pairing..."
+msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "TVL (Supply)"
@@ -1544,10 +1589,6 @@ msgstr "Marchés"
 msgid "Retry"
 msgstr "Réessayer"
 
-#: src/components/Earn/Discovery/EarnFaq.tsx
-msgid "GMX staking rewards come from a buyback-and-distribute model: protocol revenue purchases GMX on the open market, which is then distributed to stakers. No new GMX tokens are minted."
-msgstr "Les récompenses de staking GMX proviennent d'un modèle de rachat et distribution : les revenus du protocole servent à acheter du GMX sur le marché libre, qui est ensuite distribué aux stakers. Aucun nouveau jeton GMX n'est créé."
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Available liquidity {directionLabel}"
 msgstr "Liquidité disponible {directionLabel}"
@@ -1583,6 +1624,10 @@ msgstr "Index du log :"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pool max short amount"
 msgstr "Montant short maximum du pool"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Last Deployment Result"
+msgstr ""
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
@@ -1631,6 +1676,10 @@ msgstr "Historique des réclamations"
 msgid "No SL orders"
 msgstr "Aucun ordre SL"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Manual leverage"
+msgstr ""
+
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX alerts"
 msgstr "Découvrir les alertes GMX"
@@ -1648,6 +1697,10 @@ msgstr "Échec"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "No fee"
 msgstr "Aucun frais"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Paste a WalletConnect URI from /trade"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Swap liquidity may be insufficient when order triggers"
@@ -1936,6 +1989,10 @@ msgstr "Prix sur Avalanche"
 msgid "Chart positions"
 msgstr "Positions sur graphiques"
 
+#: src/components/TVChartContainer/DynamicLine.tsx
+msgid "Unknown Order"
+msgstr ""
+
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Claiming price impact rebates..."
@@ -1961,17 +2018,9 @@ msgstr "Transfert sortant échoué"
 msgid "Sending sell request..."
 msgstr "Envoi de la demande de vente…"
 
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "GMX is the utility and governance token. It also accrues 27% of the protocol fees via a buyback and distribution mechanism."
-msgstr "GMX est le jeton utilitaire et de gouvernance. Il accumule également 27 % des frais du protocole via un mécanisme de rachat et de distribution."
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "PURPOSE"
 msgstr "FONCTION"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - long dec."
-msgstr "Market - long dec."
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/components/Earn/Portfolio/RewardsBar.tsx
@@ -2101,6 +2150,10 @@ msgstr "Dépôt échoué"
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "2nd place"
 msgstr "2e place"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "SignatureUtils-style 1271 path"
+msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Number of parts must be between {MIN_TWAP_NUMBER_OF_PARTS} and {MAX_TWAP_NUMBER_OF_PARTS}"
@@ -2309,9 +2362,17 @@ msgstr "Sortir max {0}"
 msgid "No assets available for deposit"
 msgstr "Aucun actif disponible pour le dépôt"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Stop Loss @ {0}"
+msgstr ""
+
 #: src/components/Referrals/ReferralCodeWarnings.tsx
 msgid "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
 msgstr "Code non enregistré sur {nonTakenNetworkNames}. Changez de réseau pour vous enregistrer et obtenir des remises."
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Safe address to expose over WalletConnect"
+msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Decrease leverage to match the max allowed leverage."
@@ -2354,6 +2415,10 @@ msgstr "Acheter GM"
 msgid "of close fee"
 msgstr "des frais de fermeture"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Limit @ {0}"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "FUNDING APR"
 msgstr "FUNDING APR"
@@ -2362,6 +2427,10 @@ msgstr "FUNDING APR"
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 msgid "Search action"
 msgstr "Rechercher une action"
+
+#: src/pages/Dashboard/GmxCard.tsx
+msgid "GMX is the utility and governance token. 27% of protocol fees accumulate in the Treasury for GMX buybacks and will be distributed to stakers when GMX reaches $90."
+msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have a <0>pending transfer</0> to {pendingReceiver}"
@@ -2410,6 +2479,10 @@ msgstr "Liquidité du pool insuffisante. Montant disponible : {availableAmountTe
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Buy {0}"
 msgstr "Acheter {0}"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "WalletConnect pairing failed: {message}"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Blueberry Club"
@@ -2499,6 +2572,14 @@ msgstr "Aidez-nous à améliorer GMX. Pour des raisons de sécurité, nous ne vo
 msgid "Existing position uses {0} collateral. This order won't apply to it. <0>Switch to {1} collateral</0>"
 msgstr "La position existante utilise la garantie {0}. Cet ordre ne s'y appliquera pas. <0>Passer à la garantie {1}</0>"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "WalletConnect wallet not initialized yet"
+msgstr ""
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "WalletConnect pairing started"
+msgstr ""
+
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliates"
 msgstr "Affiliés"
@@ -2519,6 +2600,10 @@ msgstr "Les modifications peuvent prendre quelques minutes avant d'apparaître"
 msgid "Excludes incentives"
 msgstr "Hors incentives"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Owners"
+msgstr ""
+
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {localizedList} for gas on {chainName}. <0>Buy {localizedList}</0>"
 msgstr "Solde insuffisant de {localizedList} pour le gas sur {chainName}. <0>Acheter {localizedList}</0>"
@@ -2530,6 +2615,10 @@ msgstr "Achat de {symbol}..."
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Show PnL amounts"
 msgstr "Afficher les montants PnL"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Transaction hash"
+msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Est. time: ~5 min"
@@ -2609,10 +2698,18 @@ msgstr "Marchés GM"
 msgid "Tickers simulation"
 msgstr "Simulation des tickers"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Safe Proxy Factory"
+msgstr ""
+
 #: src/components/Errors/getContractErrorToastContent.tsx
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Position size exceeds available open interest"
 msgstr "La taille de la position dépasse les positions ouvertes disponibles"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "SignatureUtils 1271 on minifiedDigest"
+msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "STIP.b trading incentives"
@@ -2691,6 +2788,14 @@ msgstr "ACTUEL"
 msgid "Long positions"
 msgstr "Positions long"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Check ERC-1271 Validity"
+msgstr ""
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "bytes overload"
+msgstr ""
+
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Buy fee"
 msgstr "Frais d'achat"
@@ -2710,6 +2815,10 @@ msgstr "Modifier la garantie : {0} {1}{2}/USD"
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Insufficient gas balance. Express Trading and One-Click Trading unavailable."
 msgstr "Solde de gas insuffisant. Express Trading et One-Click Trading indisponibles."
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Stop Market @ {0}"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search address"
@@ -2808,11 +2917,6 @@ msgstr "Montant vendable max {0} dépassé"
 msgid "TOKEN"
 msgstr "TOKEN"
 
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "No eligible tokens available for deposit"
-msgstr "Aucun jeton éligible disponible pour dépôt"
-
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "What is the bonus incentive for holding your GLV?"
 msgstr "Quelle est l'incitation bonus pour détenir votre GLV ?"
@@ -2848,7 +2952,6 @@ msgstr "LIQUIDITÉ"
 msgid "Swaps"
 msgstr "Swaps"
 
-#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Creating order..."
@@ -2895,6 +2998,10 @@ msgstr "DODO"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact pool amount"
 msgstr "Montant du pool d'impact"
+
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "The GMX token serves as the governance token of the GMX protocol. 27% of platform revenue accumulates in the Treasury for GMX buybacks. Stakers earn rewards based on staking power (duration × amount), distributed when GMX reaches $90."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "AI agent for GMX Blueberry Club"
@@ -3014,13 +3121,13 @@ msgstr "Fonds insuffisants pour couvrir les frais d'ordre. Restant : {remainingC
 msgid "Tenderly settings"
 msgstr "Paramètres Tenderly"
 
-#: src/components/ExitPriceRow/ExitPriceRow.tsx
-#~ msgid "Price you'll receive when closing, adjusted for capped price impact"
-#~ msgstr "Prix que vous recevrez à la clôture, ajusté en fonction de l'impact sur le prix plafonné"
-
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
 msgstr "Augmenter la taille (Market)"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Safe Singleton (SafeL2)"
+msgstr ""
 
 #: src/domain/synthetics/markets/createBridgeInTxn.ts
 msgid "Bridge transfer sent"
@@ -3041,6 +3148,10 @@ msgstr "GLV vaults"
 msgid "Buy GMX from centralized services"
 msgstr "Acheter GMX sur des services centralisés"
 
+#: src/components/TVChartContainer/TVChartContainer.tsx
+msgid "Close Short"
+msgstr ""
+
 #: src/pages/RpcDebug/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Primary failed"
@@ -3049,6 +3160,10 @@ msgstr "Primaire échoué"
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Edit collateral"
 msgstr "Modifier la garantie"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Failed to switch network: {0}"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -3092,6 +3207,10 @@ msgstr "Aucun AB flag"
 msgid "Line heights"
 msgstr "Hauteurs de ligne"
 
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "27% of protocol revenue is used to buy back GMX on the open market. Bought-back GMX accumulates in the Treasury and will be distributed to stakers when GMX reaches $90, proportional to staking power. No new GMX tokens are minted."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX V2 Telegram & Discord analytics"
 msgstr "GMX V2 Telegram & Discord analytics"
@@ -3107,6 +3226,10 @@ msgstr "Analyses Dune pour GMX"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
 msgstr "Frais d'emprunt en attente de toutes les positions ouvertes"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Take Profit @ {0}"
+msgstr ""
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Shorts net rate / 1h"
@@ -3354,10 +3477,6 @@ msgstr "<0>Support Solana</0><1>Support Botanix</1><2>GMX Express</2>"
 msgid "Funds are now in your GMX Account"
 msgstr "Les fonds sont maintenant dans votre GMX Account"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "TP - long dec."
-msgstr "TP - long déc."
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient liquidity. Order will fill when liquidity is available."
 msgstr "Liquidité insuffisante. L'ordre sera exécuté lorsque la liquidité sera disponible."
@@ -3542,10 +3661,6 @@ msgstr "Retirer et libérer les GMX"
 msgid "Copin"
 msgstr "Copin"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "TP - short dec."
-msgstr "TP - short déc."
-
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -3563,9 +3678,9 @@ msgstr "{0}"
 msgid "Liquidation price changes with fees and collateral value."
 msgstr "Le prix de liquidation varie en fonction des frais et de la valeur de la garantie."
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - short dec."
-msgstr "Market - short déc."
+#: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
+msgid "Low {symbol} balance. This amount leaves little for future fees on {0}"
+msgstr ""
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
@@ -3574,6 +3689,10 @@ msgstr "Compte incorrect"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "Express Trading is unavailable with the network's native token {0}. Consider using {1} instead."
 msgstr "Express Trading n'est pas disponible avec le jeton natif du réseau {0}. Envisagez d'utiliser {1} à la place."
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Invalid"
+msgstr ""
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/SideNav/SideNav.tsx
@@ -3623,6 +3742,7 @@ msgstr "Avalanche"
 msgid "Fee APR"
 msgstr "Taux de rendement annualisé des frais"
 
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
 msgstr "SL"
@@ -3679,11 +3799,6 @@ msgstr "Envoi de la demande d'ordre…"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr "<0>Vente de {0}{1}<1>{poolName}</1></0>"
-
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "No eligible tokens available on {0} for deposit"
-msgstr "Aucun jeton éligible disponible sur {0} pour dépôt"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop-Loss Decrease"
@@ -3804,6 +3919,10 @@ msgstr "Comment commencer sur GMX ?"
 msgid "Acceptable price"
 msgstr "Prix acceptable"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Created Safe address"
+msgstr ""
+
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing from subaccount..."
 msgstr "Retrait du sous-compte…"
@@ -3822,6 +3941,10 @@ msgstr "esGMX"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL VALUE"
 msgstr "VALEUR DU POOL"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Tests <0>isValidSignature(bytes32,bytes)</0> on the Safe contract on Arbitrum Sepolia and shows the returned magic value."
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake completed"
@@ -3856,6 +3979,10 @@ msgstr "label de marché"
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "Total volume"
 msgstr "Volume total"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "WalletConnect Wallet Provider (MVP)"
+msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Sign permit"
@@ -3953,10 +4080,6 @@ msgstr "Lire les règles"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Source chain supports single token only"
 msgstr "La chaîne source ne prend en charge qu'un seul jeton"
-
-#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-msgid "Annually"
-msgstr "Annuellement"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -4147,10 +4270,6 @@ msgstr "Déclencher des tickers partiels"
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
 msgstr "<0>Achat de {0}{1}<1>{poolName}</1></0> <2>avec {tokensText}</2>"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - long inc."
-msgstr "Market - long inc."
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Pairs trading"
 msgstr "Trading de paires"
@@ -4267,10 +4386,6 @@ msgstr "Montant minimum du pool d'impact"
 msgid "Price impact too high"
 msgstr "Impact sur le prix trop élevé"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "SL - long dec."
-msgstr "SL - long dec."
-
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Enter withdrawal amount"
 msgstr "Entrez le montant de retrait"
@@ -4287,6 +4402,10 @@ msgstr "Ordres actifs"
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Depositing to Avalanche is disabled. Trade directly from your Avalanche wallet."
 msgstr "Les dépôts vers Avalanche sont désactivés. Effectuez vos transactions directement depuis votre portefeuille Avalanche."
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Use last created Safe"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Limit"
@@ -4312,6 +4431,10 @@ msgstr "Pas encore d'échanges"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Price change to liquidation"
 msgstr "Variation de prix jusqu'à la liquidation"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Use provider Safe address"
+msgstr ""
 
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "possibilities in total"
@@ -4350,6 +4473,10 @@ msgstr "Swap Market : Échangez des tokens au prix du marché actuel"
 msgid "Per 1h"
 msgstr "Par heure"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Connect a wallet first"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perpetuals aggregator"
 msgstr "Agrégateur de perpétuels"
@@ -4365,6 +4492,10 @@ msgstr "Short pur sur {indexSymbol}. L'exposition provient uniquement de la posi
 #: src/components/TPSLModal/TPSLInputRow.tsx
 msgid "Loss"
 msgstr "Perte"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "WalletConnect URI (paste from /trade)"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "App disabled, pending {0} upgrade"
@@ -4605,10 +4736,6 @@ msgstr "Vous avez besoin de USDC ou d'ETH sur {0} pour créer un code de parrain
 msgid "Current tier:"
 msgstr "Niveau actuel :"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - short inc."
-msgstr "Market - short inc."
-
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Lend GLV or GM tokens and borrow against them"
@@ -4621,6 +4748,10 @@ msgstr "Mettre à jour {orderTypeName}"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing position in {0} pool.<0>Switch to {1} pool</0>"
 msgstr "Position existante dans le pool {0}.<0>Basculer vers le pool {1}</0>"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Take Profit @ {0}"
+msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -4642,6 +4773,10 @@ msgstr "Frais"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Vault capacity"
 msgstr "Capacité du vault"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Safe wallet created"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Open interest {directionLabel}"
@@ -4850,10 +4985,6 @@ msgstr "Code de parrainage ajouté"
 msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
 msgstr "Achetez des obligations GMX sur Bond Protocol avec une décote et une courte période d'acquisition progressive"
 
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Open {longOrShortText} - {marketIndexName}"
-msgstr "Ouvrir {longOrShortText} - {marketIndexName}"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer account"
@@ -4922,6 +5053,10 @@ msgstr "Tradez des perpétuels avec un effet de levier jusqu'à 100x, ainsi que 
 msgid "Sell fee"
 msgstr "Frais de vente"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Wallet client unavailable. Reconnect wallet and retry"
+msgstr ""
+
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Invalid oracle price"
 msgstr "Prix Oracle invalide"
@@ -4961,6 +5096,10 @@ msgstr "Fournir de la liquidité isolée par marché"
 msgid "Use open interest in tokens for balance"
 msgstr "Utiliser les positions ouvertes en tokens pour le solde"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Result"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Seamless trading"
 msgstr "Trading fluide"
@@ -4995,6 +5134,7 @@ msgstr "Paramètres mis à jour"
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TVChartContainer/DynamicLine.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -5071,13 +5211,13 @@ msgstr "Le staking est uniquement disponible sur {chainNames}. Changez de résea
 msgid "Links"
 msgstr "Liens"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "SignatureUtils minifiedDigest"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact factor for withdrawals"
 msgstr "Facteur d'impact prêtable max pour les retraits"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Limit - long inc."
-msgstr "Limit - long inc."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Claim completed"
@@ -5110,6 +5250,10 @@ msgstr "Pas de vaults GLV sur Botanix. Fournissez de la liquidité via les <0>to
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "GLV"
 msgstr "GLV"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Not connected"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity in GM pool"
@@ -5210,6 +5354,10 @@ msgstr "PRIX D'EXÉCUTION"
 msgid "spinner"
 msgstr "indicateur de chargement"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Domain separator (optional, for SignatureUtils-style minified check)"
+msgstr ""
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
 msgstr "Ordre de vente GM inconnu"
@@ -5306,9 +5454,14 @@ msgstr "Frais de retrait"
 msgid "Your fee savings from referral discounts"
 msgstr "Vos économies de frais grâce aux remises de parrainage"
 
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
 msgstr "TP"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "1271 validation failed: {message}"
+msgstr ""
 
 #: src/components/Claims/ClaimableCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -5326,6 +5479,10 @@ msgstr "Exécute {numberOfParts} ordres {type} {0} de {1} chacun sur les prochai
 msgid "Docs"
 msgstr "Documents"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Switch owner to Arbitrum Sepolia"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} cannot be sent to smart contract addresses. Select another token"
 msgstr "{0} ne peut pas être envoyé aux adresses de smart contract. Sélectionnez un autre token"
@@ -5341,6 +5498,10 @@ msgstr "Stop Market échoué"
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price"
 msgstr "{typeString} Short Stop Market : {0} une position short lorsque le prix est inférieur au prix de déclenchement"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Owner chain"
+msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -5735,10 +5896,6 @@ msgstr "Recommandé"
 msgid "Decrease"
 msgstr "Diminuer"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Loading Express Trading..."
-msgstr "Chargement d'Express Trading..."
-
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price below liquidation price"
@@ -5943,9 +6100,19 @@ msgstr "Délai d'attente principal"
 msgid "Increase size (Limit)"
 msgstr "Augmenter la taille (Limit)"
 
+#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
+#: src/components/APRLabel/APRLabel.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Accumulating"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "PnL relative to capital used (return on capital)"
 msgstr "PnL relatif au capital utilisé (rendement sur capital)"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Threshold-1 Safe only. Exposes the Safe address over WalletConnect and executes dapp transactions through Safe Protocol Kit using the connected owner EOA in this browser."
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Create Stop Market"
@@ -6073,6 +6240,10 @@ msgstr "Échec de la récupération des remises d'impact sur le prix"
 msgid "Paste hex error data to decode"
 msgstr "Collez les données d'erreur hexadécimales à décoder"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Safe address (validator target)"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral"
 msgstr "Garantie minimale"
@@ -6099,14 +6270,13 @@ msgstr "Prix TP"
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
+#: src/App/MainRoutes.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Claims/Claims.tsx
 #: src/components/EmptyTableContent/EmptyTableContent.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
-#: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
@@ -6327,6 +6497,10 @@ msgstr "1m 40s"
 msgid "GLP autocompounding vaults"
 msgstr "Vaults d'auto-composition GLP"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "No activity yet"
+msgstr ""
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "TP/SL orders exceed the position"
 msgstr "Les ordres TP/SL dépassent la position"
@@ -6362,6 +6536,10 @@ msgstr "Minutes"
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "What makes GMX one of the best places to earn yield on my crypto?"
 msgstr "Qu'est-ce qui fait de GMX l'un des meilleurs endroits pour obtenir du rendement sur mes cryptomonnaies ?"
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Permit has expired. Please try again.</0>"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Approving {tokenSymbol}..."
@@ -6415,9 +6593,17 @@ msgstr "par"
 msgid "Reserve factor longs"
 msgstr "Facteur de réserve longs"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "No active sessions"
+msgstr ""
+
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "buy"
 msgstr "acheter"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Safe creation failed: {message}"
+msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -6469,6 +6655,10 @@ msgstr "Icône GMX"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Price impact exceeds order size"
 msgstr "L'impact sur le prix dépasse la taille de l'ordre"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Accounts"
+msgstr ""
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Want to trade faster with One-Click Trading?"
@@ -6621,6 +6811,11 @@ msgstr "Transfert échoué"
 msgid "Last 90d"
 msgstr "Derniers 90j"
 
+#: src/components/TVChartContainer/StaticLine.tsx
+#: src/components/TVChartContainer/StaticLine.tsx
+msgid "Show size in tokens"
+msgstr ""
+
 #: src/components/GmList/GmList.tsx
 msgid "Performance vs benchmark over the selected period"
 msgstr "Performance par rapport à l'indice de référence sur la période sélectionnée"
@@ -6749,6 +6944,10 @@ msgstr "Marché introuvable. Il a peut-être été supprimé"
 msgid "Insufficient liquidity to swap collateral"
 msgstr "Liquidité insuffisante pour échanger le collatéral"
 
+#: src/components/TVChartContainer/TVChartContainer.tsx
+msgid "Open Long"
+msgstr ""
+
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Swap price impact for external swap threshold"
 msgstr "Seuil d'impact sur le prix d'échange pour les échanges externes"
@@ -6810,6 +7009,14 @@ msgstr "Tradao"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity"
 msgstr "Liquidité insuffisante"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Use this page as a Safe deployer and a WalletConnect wallet-provider MVP. Keep /trade open in another browser tab/window and pair it here by pasting the WalletConnect URI."
+msgstr ""
+
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+msgid "Liq."
+msgstr ""
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -6937,6 +7144,10 @@ msgstr "Annuler le Stop-Loss"
 msgid "{0} is required for collateral.<0/><1/>No swap path found for {1} to {2} within GMX.<2/><3/><4>Buy {3} on 1inch</4>."
 msgstr "{0} est requis comme garantie.<0/><1/>Aucun chemin d'échange trouvé de {1} à {2} dans GMX.<2/><3/><4>Acheter {3} sur 1inch</4>."
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Stake {tokenSymbol} rewards"
 msgstr "Staker les récompenses {tokenSymbol}"
@@ -6951,6 +7162,7 @@ msgstr "Montant maximal dépassé"
 msgid "You chose to send the remaining collateral to your <0>{chosenLabel}</0>. Do you want to make this the default destination when closing positions?"
 msgstr ""
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -6961,6 +7173,10 @@ msgstr "-"
 #: src/pages/UiPage/UiPage.tsx
 msgid "h1"
 msgstr "h1"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Owner wallet"
+msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "RPC endpoints"
@@ -6977,6 +7193,10 @@ msgstr "Le staking est disponible uniquement sur {chainNames} ou {lastChainName}
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Claiming rewards only available on {settlementChainName}. Switch networks to claim referral rewards."
 msgstr "La récupération des récompenses est disponible uniquement sur {settlementChainName}. Changez de réseau pour récupérer les récompenses de parrainage."
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "1271 validation failed ({safeHint})"
+msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
@@ -7018,10 +7238,6 @@ msgstr "Aujourd'hui"
 msgid "Link copied"
 msgstr "Lien copié"
 
-#: src/components/Earn/Discovery/EarnProductCard.tsx
-msgid "Rewards funded by protocol fees used for GMX buybacks"
-msgstr "Récompenses financées par les frais du protocole utilisés pour les rachats de GMX"
-
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/OrderList/OrderList.tsx
@@ -7031,6 +7247,14 @@ msgstr "Récompenses financées par les frais du protocole utilisés pour les ra
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "SIZE"
 msgstr "TAILLE"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Transaction submitted. Waiting for confirmation..."
+msgstr ""
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Parsed owners"
+msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
@@ -7138,6 +7362,10 @@ msgstr "Échec de la signature du permis"
 msgid "Order uses {collateralSymbol}, but existing {longText} position uses {symbol} as collateral"
 msgstr "L'ordre utilise {collateralSymbol}, mais la position {longText} existante utilise {symbol} comme garantie"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Dev Smart Wallet (Safe on Arbitrum Sepolia)"
+msgstr ""
+
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "Show more"
 msgstr "Afficher plus"
@@ -7157,10 +7385,6 @@ msgstr "Surveillance des risques GMX"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Minimum capital used of {0} required to qualify for rankings"
 msgstr "Un capital utilisé minimum de {0} est requis pour être éligible au classement"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Limit - short inc."
-msgstr "Limit - short inc."
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
@@ -7225,6 +7449,7 @@ msgstr "Long {0} maximal dépassé"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/pages/AccountEvents/AccountEvents.tsx
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -7316,6 +7541,10 @@ msgstr "Coffres de liquidité unilatéraux avec couverture active et rééquilib
 msgid "GMX V2 actions"
 msgstr "Actions GMX V2"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Connect owner wallet"
+msgstr ""
+
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade errors"
 msgstr "Erreurs de trading"
@@ -7380,9 +7609,20 @@ msgstr "Négociez depuis le portefeuille ou le GMX Account"
 msgid "Min position size: {0}"
 msgstr "Taille de position minimale : {0}"
 
+#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
+#: src/components/APRLabel/APRLabel.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your share is based on staking power (duration × amount staked)."
+msgstr ""
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Down"
 msgstr "Hors service"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Expected bytes32 magic"
+msgstr ""
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -7735,10 +7975,6 @@ msgstr "Déplacement de {symbol}..."
 msgid "Close price impact"
 msgstr "Impact sur le prix de clôture"
 
-#: src/components/SettingsModal/DisplaySettings.tsx
-msgid "Show leverage slider"
-msgstr "Afficher le curseur d'effet de levier"
-
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 msgid "Opens GMTrade in a new tab"
 msgstr "Ouvre GMTrade dans un nouvel onglet"
@@ -7793,6 +8029,10 @@ msgstr "Passer au pool {0}"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Explore, analyze, and copy on-chain traders"
 msgstr "Explorer, analyser et copier des traders on-chain"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Creating Safe..."
+msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "{addressLabel} on {networkLabel}"
@@ -7972,6 +8212,10 @@ msgstr "Positions short"
 #: src/components/Errors/errorToasts.tsx
 msgid "Report issue"
 msgstr "Signaler un problème"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Wallet Activity"
+msgstr ""
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "Claim {0}"
@@ -8158,6 +8402,10 @@ msgstr "Paramètres d'affichage"
 msgid "Order filled"
 msgstr "Ordre exécuté"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "1271 signature is invalid (magic mismatch)"
+msgstr ""
+
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Pools/Pools.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
@@ -8204,6 +8452,10 @@ msgstr "Meme"
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 msgid "Transaction failed.<0/><1/><2>View status</2>"
 msgstr "Transaction échouée.<0/><1/><2>Voir le statut</2>"
+
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "Accumulate GMX rewards by staking"
+msgstr ""
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
@@ -8355,10 +8607,6 @@ msgstr "Adresse Ethereum invalide"
 msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on that network."
 msgstr "Impossible de vérifier la disponibilité du code sur {0}. Vous pouvez tout de même créer le code, mais il est possible qu'il soit déjà pris sur ce réseau."
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Stop Market - short inc."
-msgstr "Stop Market - inc. short"
-
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates"
@@ -8372,6 +8620,10 @@ msgstr "Événements du compte :"
 #: src/pages/UiPage/UiPage.tsx
 msgid "Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus beatae atque eligendi sunt quasi et porro nemo cumque nesciunt dolorum earum, minus fuga similique exercitationem ad. Eos omnis vitae suscipit recusandae iste adipisci quasi rem odio, quidem qui modi impedit quibusdam culpa nemo distinctio rerum tempora sequi facilis quaerat laudantium pariatur dicta ab. Pariatur mollitia magni consectetur praesentium nulla nobis non voluptates laborum obcaecati enim unde, in tempore voluptas, expedita aut corrupti ipsum sequi consequatur iste corporis quasi! Officia nihil pariatur, asperiores molestiae quia earum tempora, in neque inventore quisquam dolore veniam minus beatae adipisci quod hic? Saepe, aperiam consequuntur!"
 msgstr "Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus beatae atque eligendi sunt quasi et porro nemo cumque nesciunt dolorum earum, minus fuga similique exercitationem ad. Eos omnis vitae suscipit recusandae iste adipisci quasi rem odio, quidem qui modi impedit quibusdam culpa nemo distinctio rerum tempora sequi facilis quaerat laudantium pariatur dicta ab. Pariatur mollitia magni consectetur praesentium nulla nobis non voluptates laborum obcaecati enim unde, in tempore voluptas, expedita aut corrupti ipsum sequi consequatur iste corporis quasi! Officia nihil pariatur, asperiores molestiae quia earum tempora, in neque inventore quisquam dolore veniam minus beatae adipisci quod hic? Saepe, aperiam consequuntur!"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "ERC-1271 Signature Validator"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "AVG. SIZE"
@@ -8581,10 +8833,6 @@ msgstr "Remise de parrainage"
 msgid "Threshold for decrease funding"
 msgstr "Seuil de diminution du financement"
 
-#: src/components/Earn/Discovery/EarnProductCard.tsx
-msgid "Earn GMX rewards by staking"
-msgstr "Gagnez des récompenses GMX en stakant"
-
 #: src/domain/synthetics/fees/utils/index.ts
 msgid "Network fees are very high due to increased {chainName} network activity"
 msgstr "Les frais de réseau sont très élevés en raison de l'activité accrue du réseau {chainName}"
@@ -8609,6 +8857,14 @@ msgstr "Les données de performance et de graphiques sont basées sur les horair
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "Vendre {operationTokenSymbol}"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Valid"
+msgstr ""
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
+msgstr ""
 
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx
@@ -8685,9 +8941,14 @@ msgid "Min margin: {0}"
 msgstr "Marge min. : {0}"
 
 #: src/components/TradeBox/tradeboxConstants.tsx
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Market"
 msgstr "Stop Marché"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Compatibility Fallback Handler"
+msgstr ""
 
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "How can we keep meeting your expectations?"
@@ -8751,6 +9012,11 @@ msgstr "Clé de l'ordre :"
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Why is the claim in GLV tokens?"
 msgstr "Pourquoi la réclamation est en jetons GLV ?"
+
+#: src/components/TVChartContainer/StaticLine.tsx
+#: src/components/TVChartContainer/StaticLine.tsx
+msgid "Show size in USD"
+msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
@@ -8816,6 +9082,7 @@ msgstr "{gmOrGlvLabel} vendu avec succès, mais le pont vers Base a échoué. Vo
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TVChartContainer/DynamicLine.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -8953,6 +9220,10 @@ msgstr "Coffres basés sur les options"
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Time limit"
 msgstr "Limite de temps"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Checking..."
+msgstr ""
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "DeFi"
@@ -9119,6 +9390,10 @@ msgstr "Créer un échange limité"
 msgid "A $500,000 GLV pool (DAO-funded) rewards long-term holders. Keep your GLV for at least 3 months without selling or transferring to receive a pro rata share."
 msgstr "Un pool GLV de 500 000 $ (financé par le DAO) récompense les détenteurs à long terme. Conservez vos GLV pendant au moins 3 mois sans vendre ni transférer pour recevoir une part au prorata."
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "1271 signature is valid"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "esGMX OTC market"
 msgstr "Marché OTC esGMX"
@@ -9126,6 +9401,10 @@ msgstr "Marché OTC esGMX"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group (Portuguese)"
 msgstr "Groupe Telegram (portugais)"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Threshold"
+msgstr ""
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} long. Exposure is only from the position."
@@ -9153,6 +9432,10 @@ msgstr "GMX acquis récupérables :"
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
 msgstr "Compte GMX"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Fail"
+msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
@@ -9273,6 +9556,10 @@ msgstr "Puis-je construire sur GMX ou l'intégrer dans mon app DeFi ?"
 msgid "Avoid price wicks with transparent, sub-second Chainlink price feeds tailor-made for GMX"
 msgstr "Évitez les mèches de prix grâce à des flux de prix Chainlink transparents et inférieurs à la seconde, conçus sur mesure pour GMX"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Connection flow: open /trade in Chrome, choose WalletConnect, copy the wc: URI from the modal, paste it here in Firefox, then approve the session on this page."
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe and remain in your wallet."
 msgstr "Vos fonds sont en sécurité et restent dans votre portefeuille."
@@ -9310,6 +9597,13 @@ msgstr "Frais de réseau TWAP élevé"
 msgid "Position would be liquidatable. Current: {remainingCollateralUsdText}, required: {minCollateralUsdText}"
 msgstr "La position serait liquidable. Actuel : {remainingCollateralUsdText}, requis : {minCollateralUsdText}"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Loading network fees…"
+msgstr "Chargement des frais de réseau…"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "All earnings auto-compound"
@@ -9318,6 +9612,10 @@ msgstr "Tous les gains se réinvestissent automatiquement"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Use the TP/SL button to set TP/SL orders."
 msgstr "Utilisez le bouton TP/SL pour définir des ordres TP/SL."
+
+#: src/components/TVChartContainer/TVChartContainer.tsx
+msgid "Close Long"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Traders referred on Arbitrum"
@@ -9464,6 +9762,10 @@ msgstr "Récompenses esGMX :"
 msgid "Optimal usage factor long"
 msgstr "Facteur d'utilisation optimal long"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Hash (bytes32)"
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -9508,10 +9810,6 @@ msgstr "GLP en vesting non retiré"
 msgid "<0>every</0> {minutes} minutes{0}"
 msgstr "<0>toutes les</0> {minutes} minutes{0}"
 
-#: src/components/Earn/Discovery/EarnProductCard.tsx
-msgid "The GMX token serves as the governance token of the GMX protocol. By staking GMX, you earn 27% of the revenue generated by the trading platform."
-msgstr "Le token GMX sert de token de gouvernance du protocole GMX. En stakant du GMX, vous gagnez 27 % des revenus générés par la plateforme de trading."
-
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "r:"
 msgstr "r :"
@@ -9540,6 +9838,10 @@ msgstr ""
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Stabilize Protocol"
 msgstr "Protocole Stabilize"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Limit @ {0}"
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Auto-cancel TP/SL"
@@ -9584,6 +9886,10 @@ msgstr "Temps écoulé"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
 msgstr "Signez les transactions hors chaîne. Les RPC premium garantissent la fiabilité en cas de congestion du réseau.<0/><1/>Paiements de Gas en {gasPaymentTokensText}."
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "WC Wallet status"
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Uniswap or directly on GMX (select Arbitrum)"
@@ -9691,6 +9997,10 @@ msgstr "Erreur, réessayez"
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Available to trade"
 msgstr "Disponible pour le trading"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Pair WalletConnect Session"
+msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Multicall simulation"
@@ -9839,6 +10149,10 @@ msgstr "L'approbation One-Click Trading n'est plus valide. Cela peut se produire
 msgid "GLP to GM airdrop"
 msgstr "Airdrop GLP vers GM"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Expected bytes magic"
+msgstr ""
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order cancelled"
 msgstr "Ordre de vente annulé"
@@ -9983,6 +10297,10 @@ msgstr "Coffres GLV :"
 msgid "Download as CSV"
 msgstr "Télécharger en CSV"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Stop Market @ {0}"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Benefit from up to 100x leverage and guaranteed on-chain liquidity that's not dependent on order book depth"
 msgstr "Bénéficiez d'un effet de levier jusqu'à 100x et d'une liquidité on-chain garantie, indépendante de la profondeur du carnet d'ordres"
@@ -10010,7 +10328,6 @@ msgid "Max pool amount exceeded"
 msgstr "Montant max. du pool dépassé"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Unknown order"
 msgstr "Ordre inconnu"
 
@@ -10070,6 +10387,14 @@ msgstr "déclenchement"
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Failed to decode error. Make sure the hex data is valid and starts with \"0x\"."
 msgstr "Échec du décodage de l'erreur. Assurez-vous que les données hexadécimales sont valides et commencent par \"0x\"."
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "WalletConnect URI should start with wc:"
+msgstr ""
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Pass"
+msgstr ""
 
 #: src/pages/UiPage/UiPage.tsx
 msgid "Text colors"
@@ -10177,6 +10502,10 @@ msgstr "Échange limité"
 msgid "Claim {tokenSymbol} rewards"
 msgstr "Récupérer les récompenses {tokenSymbol}"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "SignatureUtils 1271 on digest"
+msgstr ""
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H VOL."
 msgstr "VOL. 24H"
@@ -10209,6 +10538,10 @@ msgstr "Commencer à gagner"
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} cancellation failed"
 msgstr "Échec de l'annulation de {orderText}"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Stop Loss @ {0}"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Sell"
@@ -10253,10 +10586,6 @@ msgstr "{count, plural, one {Ordre} other {# Ordres}}"
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche trading incentives"
 msgstr "Incitations au trading sur Avalanche"
-
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Liquidation {longOrShortText} - {marketIndexName}"
-msgstr "Liquidation {longOrShortText} - {marketIndexName}"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
@@ -10383,6 +10712,10 @@ msgstr "Récompenses de staking GMX :"
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee"
 msgstr "Les positions {longOrShort} {fundingAction} des frais de financement de {fundingRate} par heure et ne paient pas de frais d'emprunt"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Switch wallet to Arbitrum Sepolia"
+msgstr ""
+
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Failed to add referral code"
 msgstr "Échec de l'ajout du code de parrainage"
@@ -10420,6 +10753,7 @@ msgstr "Aucune adresse de jeton de destination"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/keys.ts
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"
 msgstr "Limite"
@@ -10440,10 +10774,6 @@ msgstr "Taille de position minimale"
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Hours"
 msgstr "Heures"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "SL - short dec."
-msgstr "SL - short déc."
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Invalid receiver address"
@@ -10618,6 +10948,13 @@ msgstr "Activez <0>Express Trading</0> dans les paramètres pour une meilleure f
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Enter a ratio"
 msgstr "Saisir un ratio"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "No result"
+msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "OK"

@@ -6,16 +6,14 @@ import { Distribution } from "sdk/codegen/subsquid";
 
 const USER_INCENTIVE_QUERY = gql`
   query userIncentiveData($account: String!) {
-    distributions(orderBy: transaction_timestamp_DESC, where: { receiver_eq: $account }, limit: 1000) {
+    distributions(orderBy: timestamp_DESC, where: { receiver_eq: $account }, limit: 1000) {
       id
       typeId
       amounts
       amountsInUsd
       tokens
-      transaction {
-        timestamp
-        hash
-      }
+      timestamp
+      transactionHash
     }
   }
 `;

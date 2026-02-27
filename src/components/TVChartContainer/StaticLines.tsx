@@ -5,9 +5,13 @@ import type { IChartingLibraryWidget } from "../../charting_library";
 export function StaticLines({
   chartLines,
   tvWidgetRef,
+  bodyFontSizePt,
 }: {
-  chartLines: StaticChartLine[];
+  chartLines: Array<StaticChartLine & { lineLength: number }>;
   tvWidgetRef: React.RefObject<IChartingLibraryWidget>;
+  bodyFontSizePt: number;
 }) {
-  return chartLines.map((line, index) => <StaticLine key={`line-${index}`} tvWidgetRef={tvWidgetRef} {...line} />);
+  return chartLines.map((line) => (
+    <StaticLine key={line.id} tvWidgetRef={tvWidgetRef} bodyFontSizePt={bodyFontSizePt} {...line} />
+  ));
 }
