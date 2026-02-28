@@ -460,7 +460,9 @@ export function getContractPositionDynamicFees({
     sizeInUsd
   );
 
-  const { balanceWasImproved } = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong);
+  const { balanceWasImproved } = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, {
+    fallbackToZero: true,
+  });
   const { positionFeeUsd, discountUsd, uiFeeUsd } = getPositionFee(
     marketInfo,
     sizeInUsd,
