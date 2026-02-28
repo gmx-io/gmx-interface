@@ -57,7 +57,7 @@ export function BottomMenuSection({
             <IconActionButton
               icon={<DocsIcon className="size-16" />}
               label={t`Docs`}
-              to="https://docs.gmx.io"
+              to="https://docs.gmx.io/"
               external
             />
             <IconActionButton
@@ -143,7 +143,7 @@ function CollapsedMoreMenu({
                   close();
                 }}
               />
-              <ExternalLink className="!block !no-underline" href="https://docs.gmx.io">
+              <ExternalLink className="!block !no-underline" href="https://docs.gmx.io/">
                 <DropdownActionRow icon={<DocsIcon className="size-16" />} label={t`Docs`} />
               </ExternalLink>
               <DropdownActionRow

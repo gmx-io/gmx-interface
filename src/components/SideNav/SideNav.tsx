@@ -82,7 +82,7 @@ function SideNav({ className }: { className?: string }) {
 }
 
 export const DocsNavItem = ({ isCollapsed }: { isCollapsed: boolean | undefined }) => (
-  <NavItem icon={<DocsIcon />} label={t`Docs`} isCollapsed={isCollapsed} to="https://docs.gmx.io" external />
+  <NavItem icon={<DocsIcon />} label={t`Docs`} isCollapsed={isCollapsed} to="https://docs.gmx.io/" external />
 );
 
 export function LogoSection({ isCollapsed }: { isCollapsed: boolean | undefined }) {

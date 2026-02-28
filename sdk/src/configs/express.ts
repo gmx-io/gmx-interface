@@ -7,7 +7,7 @@ import { getTokenBySymbol, getWrappedToken } from "./tokens";
 
 export const SUBACCOUNT_MESSAGE =
   "Generate a GMX 1CT (One-Click Trading) session. Only sign this message on a trusted website.";
-export const SUBACCOUNT_DOCS_URL = "https://docs.gmx.io/docs/trading/#one-click-trading";
+export const SUBACCOUNT_DOCS_URL = "https://docs.gmx.io/docs/trading/overview/#express-trading-and-one-click-trading";
 
 export const DEFAULT_SUBACCOUNT_EXPIRY_DURATION = periodToSeconds(7, "1d"); // 1 week
 export const DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT = 90;
