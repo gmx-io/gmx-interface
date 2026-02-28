@@ -3975,10 +3975,6 @@ msgstr "규칙 읽기"
 msgid "Source chain supports single token only"
 msgstr "소스 체인은 단일 토큰만 지원합니다"
 
-#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-#~ msgid "Annually"
-#~ msgstr "연간"
-
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx

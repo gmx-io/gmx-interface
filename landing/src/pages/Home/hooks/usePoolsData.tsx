@@ -25,7 +25,6 @@ export function usePoolsData(): Partial<PoolsData> {
   const { data: avalancheApys } = useApysByChainId(AVALANCHE);
   const { data: positionStats } = usePositionStats();
   const { data: marketInfos } = useMarketInfos();
-
   const { sortedAggregatedMarketInfos, totalLiquidity, openInterest } = marketInfos ?? {};
 
   const glvApy = useMemo(() => {
@@ -154,10 +153,10 @@ function useMarketInfos() {
     const arbitrumReq = arbitrumClient?.query(marketInfoQuery);
     const avalancheReq = avalancheClient?.query(marketInfoQuery);
     const [arbitrumRes, avalancheRes] = await Promise.all([arbitrumReq, avalancheReq]);
-    const arbitrumMarketInfos = arbitrumRes.data?.marketInfos;
-    const avalancheMarketInfos = avalancheRes.data?.marketInfos;
-    const arbitrumPlatformStats = arbitrumRes.data?.platformStats[0];
-    const avalanchePlatformStats = avalancheRes.data?.platformStats[0];
+    const arbitrumMarketInfos = arbitrumRes.data?.marketInfos ?? [];
+    const avalancheMarketInfos = avalancheRes.data?.marketInfos ?? [];
+    const arbitrumPlatformStats = arbitrumRes.data?.platformStats?.[0];
+    const avalanchePlatformStats = avalancheRes.data?.platformStats?.[0];
     let totalLiquidity = 0n;
     let openInterest = 0n;
     const sortedAggregatedMarketInfos: (MarketInfo & { chainId: number })[] = [];
@@ -168,17 +167,22 @@ function useMarketInfos() {
       const avaxMarketInfo = avalancheMarketInfos[avaxIndex];
       const arbPoolValue = arbMarketInfo ? BigInt(arbMarketInfo.poolValue) : null;
       const avaxPoolValue = avaxMarketInfo ? BigInt(avaxMarketInfo.poolValue) : null;
+
       if ((arbPoolValue ?? -1n) > (avaxPoolValue ?? -1n)) {
-        sortedAggregatedMarketInfos.push({ ...arbMarketInfo, chainId: ARBITRUM });
-        openInterest +=
-          BigInt(arbMarketInfo.longOpenInterestUsd ?? 0n) + BigInt(arbMarketInfo.shortOpenInterestUsd ?? 0n);
-        totalLiquidity += BigInt(arbMarketInfo.poolValue);
+        if (arbMarketInfo) {
+          sortedAggregatedMarketInfos.push({ ...arbMarketInfo, chainId: ARBITRUM });
+          openInterest +=
+            BigInt(arbMarketInfo.longOpenInterestUsd ?? 0n) + BigInt(arbMarketInfo.shortOpenInterestUsd ?? 0n);
+          totalLiquidity += BigInt(arbMarketInfo.poolValue);
+        }
         arbIndex++;
       } else {
-        sortedAggregatedMarketInfos.push({ ...avaxMarketInfo, chainId: AVALANCHE });
-        openInterest +=
-          BigInt(avaxMarketInfo.longOpenInterestUsd ?? 0n) + BigInt(avaxMarketInfo.shortOpenInterestUsd ?? 0n);
-        totalLiquidity += BigInt(avaxMarketInfo.poolValue);
+        if (avaxMarketInfo) {
+          sortedAggregatedMarketInfos.push({ ...avaxMarketInfo, chainId: AVALANCHE });
+          openInterest +=
+            BigInt(avaxMarketInfo.longOpenInterestUsd ?? 0n) + BigInt(avaxMarketInfo.shortOpenInterestUsd ?? 0n);
+          totalLiquidity += BigInt(avaxMarketInfo.poolValue);
+        }
         avaxIndex++;
       }
     }
@@ -186,7 +190,7 @@ function useMarketInfos() {
       sortedAggregatedMarketInfos,
       totalLiquidity,
       openInterest,
-      totalDepositedUsers: arbitrumPlatformStats.depositedUsers + avalanchePlatformStats.depositedUsers,
+      totalDepositedUsers: (arbitrumPlatformStats?.depositedUsers ?? 0) + (avalanchePlatformStats?.depositedUsers ?? 0),
     };
   });
 }
