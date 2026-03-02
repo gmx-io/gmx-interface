@@ -2,6 +2,16 @@ import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { WalletKit } from "@reown/walletkit";
 import Safe, { generateTypedData } from "@safe-global/protocol-kit";
+import {
+  getCompatibilityFallbackHandlerDeployment,
+  getCreateCallDeployment,
+  getMultiSendCallOnlyDeployment,
+  getMultiSendDeployment,
+  getProxyFactoryDeployment,
+  getSafeL2SingletonDeployment,
+  getSignMessageLibDeployment,
+  getSimulateTxAccessorDeployment,
+} from "@safe-global/safe-deployments";
 import { Core } from "@walletconnect/core";
 import { buildApprovedNamespaces, getSdkError } from "@walletconnect/utils";
 import { FormEvent, useEffect, useMemo, useRef, useState } from "react";
@@ -23,7 +33,7 @@ import {
   zeroAddress,
 } from "viem";
 
-import { ARBITRUM_SEPOLIA, getChainName, getExplorerUrl } from "config/chains";
+import { ARBITRUM_SEPOLIA, SOURCE_SEPOLIA, getChainName, getExplorerUrl } from "config/chains";
 import { helperToast } from "lib/helperToast";
 import { switchNetwork } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
@@ -47,9 +57,11 @@ const SAFE_1271_BYTES32_ABI = parseAbi([
 const SAFE_1271_BYTES_ABI = parseAbi([
   "function isValidSignature(bytes _data, bytes _signature) view returns (bytes4)",
 ]);
+const SAFE_VERSION_ABI = parseAbi(["function VERSION() view returns (string)"]);
 const EIP1271_MAGIC_VALUE = "0x1626ba7e";
 const EIP1271_BYTES_MAGIC_VALUE = "0x20c13b0b";
 const MINIFIED_TYPEHASH = keccak256("0x4d696e696669656428627974657333322064696765737429"); // "Minified(bytes32 digest)"
+const SAFE_TARGET_VERSION = "1.4.1";
 // Derived from Safe Wallet monorepo ContractErrorCodes.ts (pinned commit referenced in user request)
 const SAFE_CONTRACT_ERROR_CODE_MESSAGES: Record<string, string> = {
   GS000: "Could not finish initialization",
@@ -82,14 +94,38 @@ const SAFE_CONTRACT_ERROR_CODE_MESSAGES: Record<string, string> = {
 };
 
 const WC_PROJECT_ID = "de24cddbaf2a68f027eae30d9bb5df58";
-const EIP155_ARB_SEPOLIA = `eip155:${ARBITRUM_SEPOLIA}`;
-const ARBITRUM_SEPOLIA_HEX = numberToHex(ARBITRUM_SEPOLIA);
 const DEV_SMART_WALLET_PROVIDER_SAFE_LS_KEY = "devSmartWallet.providerSafeAddress";
+const DEV_SMART_WALLET_PROVIDER_CHAIN_LS_KEY = "devSmartWallet.providerChainId";
+const DEV_SMART_WALLET_SAVED_PROFILES_LS_KEY = "devSmartWallet.savedProfiles";
 
-const SAFE_DEFAULTS = {
-  proxyFactoryAddress: "0x4e1DCf7AD4e460CfD30791CCC4F9c8a4f820ec67" as Address,
-  singletonAddress: "0x29fcB43b46531BcA003ddC8FCB67FFE91900C762" as Address,
-  fallbackHandlerAddress: "0xfd0732Dc9E303f09fCEf3a7388Ad10A83459Ec99" as Address,
+const DEPLOY_SUPPORTED_CHAINS = [ARBITRUM_SEPOLIA, SOURCE_SEPOLIA] as const;
+type DeploySupportedChainId = (typeof DEPLOY_SUPPORTED_CHAINS)[number];
+
+type SavedSmartWalletProfile = {
+  safeAddress: Address;
+  chainId: DeploySupportedChainId;
+  owners: Address[];
+  createdAt: number;
+  updatedAt: number;
+};
+
+const DEPLOY_SAFE_DEFAULTS_FALLBACK: Record<
+  DeploySupportedChainId,
+  { proxyFactoryAddress: Address; singletonAddress: Address; fallbackHandlerAddress: Address }
+> = {
+  [ARBITRUM_SEPOLIA]: {
+    proxyFactoryAddress: "0x4e1DCf7AD4e460CfD30791CCC4F9c8a4f820ec67" as Address,
+    singletonAddress: "0x29fcB43b46531BcA003ddC8FCB67FFE91900C762" as Address,
+    fallbackHandlerAddress: "0xfd0732Dc9E303f09fCEf3a7388Ad10A83459Ec99" as Address,
+  },
+  [SOURCE_SEPOLIA]: {
+    proxyFactoryAddress: "0x4e1DCf7AD4e460CfD30791CCC4F9c8a4f820ec67" as Address,
+    singletonAddress: "0x29fcB43b46531BcA003ddC8FCB67FFE91900C762" as Address,
+    fallbackHandlerAddress: "0xfd0732Dc9E303f09fCEf3a7388Ad10A83459Ec99" as Address,
+  },
+};
+
+const SAFE_SHARED_DEFAULTS_FALLBACK = {
   multiSendAddress: "0x38869bf66a61cF6bDB996A6aE40D5853Fd43B526" as Address,
   multiSendCallOnlyAddress: "0x9641d764fc13c8B624c04430C7356C1C7C8102e2" as Address,
   signMessageLibAddress: "0xd53cd0aB83D845Ac265BE939c57F53AD838012c9" as Address,
@@ -97,16 +133,164 @@ const SAFE_DEFAULTS = {
   simulateTxAccessorAddress: "0x3d4BA2E0884aa488718476ca2FB8Efc291A46199" as Address,
 };
 
+function parseSavedSmartWalletProfiles(raw: string | null): SavedSmartWalletProfile[] {
+  if (!raw) return [];
+
+  try {
+    const parsed = JSON.parse(raw);
+    if (!Array.isArray(parsed)) return [];
+
+    return parsed
+      .map((item) => {
+        if (!item || typeof item !== "object") return undefined;
+
+        const safeAddressValue = (item as any).safeAddress;
+        const chainIdValue = Number((item as any).chainId);
+        const ownersValue = Array.isArray((item as any).owners) ? (item as any).owners : [];
+
+        if (!isAddress(safeAddressValue) || !DEPLOY_SUPPORTED_CHAINS.includes(chainIdValue as DeploySupportedChainId)) {
+          return undefined;
+        }
+
+        const owners = ownersValue
+          .filter((owner: unknown) => typeof owner === "string" && isAddress(owner))
+          .map((owner: string) => getAddress(owner));
+
+        const createdAt = Number((item as any).createdAt);
+        const updatedAt = Number((item as any).updatedAt);
+
+        return {
+          safeAddress: getAddress(safeAddressValue),
+          chainId: chainIdValue as DeploySupportedChainId,
+          owners,
+          createdAt: Number.isFinite(createdAt) ? createdAt : Date.now(),
+          updatedAt: Number.isFinite(updatedAt) ? updatedAt : Date.now(),
+        } satisfies SavedSmartWalletProfile;
+      })
+      .filter(Boolean)
+      .sort((a, b) => b!.updatedAt - a!.updatedAt) as SavedSmartWalletProfile[];
+  } catch {
+    return [];
+  }
+}
+
+function parseSupportedChainId(value: unknown): DeploySupportedChainId | undefined {
+  const chainId = Number(value);
+  return DEPLOY_SUPPORTED_CHAINS.includes(chainId as DeploySupportedChainId)
+    ? (chainId as DeploySupportedChainId)
+    : undefined;
+}
+
+function getSafeDeployDefaultsForChain(chainId: DeploySupportedChainId) {
+  const fallback = DEPLOY_SAFE_DEFAULTS_FALLBACK[chainId];
+
+  try {
+    const network = String(chainId);
+    const deploymentFilter = { network, version: SAFE_TARGET_VERSION };
+    const proxyFactory = getProxyFactoryDeployment(deploymentFilter);
+    const singleton = getSafeL2SingletonDeployment(deploymentFilter);
+    const fallbackHandler = getCompatibilityFallbackHandlerDeployment(deploymentFilter);
+
+    const proxyFactoryAddress = proxyFactory?.networkAddresses?.[network];
+    const singletonAddress = singleton?.networkAddresses?.[network];
+    const fallbackHandlerAddress = fallbackHandler?.networkAddresses?.[network];
+
+    if (proxyFactoryAddress && singletonAddress && fallbackHandlerAddress) {
+      return {
+        proxyFactoryAddress: getAddress(proxyFactoryAddress),
+        singletonAddress: getAddress(singletonAddress),
+        fallbackHandlerAddress: getAddress(fallbackHandlerAddress),
+      };
+    }
+  } catch {
+    // Fall back to known addresses if package lookups fail for this chain/runtime.
+  }
+
+  return fallback;
+}
+
+function getSafeSharedDefaultsForChain(chainId: DeploySupportedChainId) {
+  const fallback = SAFE_SHARED_DEFAULTS_FALLBACK;
+
+  try {
+    const network = String(chainId);
+    const deploymentFilter = { network, version: SAFE_TARGET_VERSION };
+    const multiSend = getMultiSendDeployment(deploymentFilter);
+    const multiSendCallOnly = getMultiSendCallOnlyDeployment(deploymentFilter);
+    const signMessageLib = getSignMessageLibDeployment(deploymentFilter);
+    const createCall = getCreateCallDeployment(deploymentFilter);
+    const simulateTxAccessor = getSimulateTxAccessorDeployment(deploymentFilter);
+
+    const multiSendAddress = multiSend?.networkAddresses?.[network];
+    const multiSendCallOnlyAddress = multiSendCallOnly?.networkAddresses?.[network];
+    const signMessageLibAddress = signMessageLib?.networkAddresses?.[network];
+    const createCallAddress = createCall?.networkAddresses?.[network];
+    const simulateTxAccessorAddress = simulateTxAccessor?.networkAddresses?.[network];
+
+    if (
+      multiSendAddress &&
+      multiSendCallOnlyAddress &&
+      signMessageLibAddress &&
+      createCallAddress &&
+      simulateTxAccessorAddress
+    ) {
+      return {
+        multiSendAddress: getAddress(multiSendAddress),
+        multiSendCallOnlyAddress: getAddress(multiSendCallOnlyAddress),
+        signMessageLibAddress: getAddress(signMessageLibAddress),
+        createCallAddress: getAddress(createCallAddress),
+        simulateTxAccessorAddress: getAddress(simulateTxAccessorAddress),
+      };
+    }
+  } catch {
+    // Fall back to known addresses if package lookups fail for this chain/runtime.
+  }
+
+  return fallback;
+}
+
+const DEPLOY_SAFE_DEFAULTS_BY_CHAIN: Record<
+  DeploySupportedChainId,
+  { proxyFactoryAddress: Address; singletonAddress: Address; fallbackHandlerAddress: Address }
+> = {
+  [ARBITRUM_SEPOLIA]: getSafeDeployDefaultsForChain(ARBITRUM_SEPOLIA),
+  [SOURCE_SEPOLIA]: getSafeDeployDefaultsForChain(SOURCE_SEPOLIA),
+};
+
+const SAFE_SHARED_DEFAULTS_BY_CHAIN: Record<
+  DeploySupportedChainId,
+  {
+    multiSendAddress: Address;
+    multiSendCallOnlyAddress: Address;
+    signMessageLibAddress: Address;
+    createCallAddress: Address;
+    simulateTxAccessorAddress: Address;
+  }
+> = {
+  [ARBITRUM_SEPOLIA]: getSafeSharedDefaultsForChain(ARBITRUM_SEPOLIA),
+  [SOURCE_SEPOLIA]: getSafeSharedDefaultsForChain(SOURCE_SEPOLIA),
+};
+
 const SAFE_CONTRACT_NETWORKS = {
   [ARBITRUM_SEPOLIA]: {
-    safeSingletonAddress: SAFE_DEFAULTS.singletonAddress,
-    safeProxyFactoryAddress: SAFE_DEFAULTS.proxyFactoryAddress,
-    multiSendAddress: SAFE_DEFAULTS.multiSendAddress,
-    multiSendCallOnlyAddress: SAFE_DEFAULTS.multiSendCallOnlyAddress,
-    fallbackHandlerAddress: SAFE_DEFAULTS.fallbackHandlerAddress,
-    signMessageLibAddress: SAFE_DEFAULTS.signMessageLibAddress,
-    createCallAddress: SAFE_DEFAULTS.createCallAddress,
-    simulateTxAccessorAddress: SAFE_DEFAULTS.simulateTxAccessorAddress,
+    safeSingletonAddress: DEPLOY_SAFE_DEFAULTS_BY_CHAIN[ARBITRUM_SEPOLIA].singletonAddress,
+    safeProxyFactoryAddress: DEPLOY_SAFE_DEFAULTS_BY_CHAIN[ARBITRUM_SEPOLIA].proxyFactoryAddress,
+    multiSendAddress: SAFE_SHARED_DEFAULTS_BY_CHAIN[ARBITRUM_SEPOLIA].multiSendAddress,
+    multiSendCallOnlyAddress: SAFE_SHARED_DEFAULTS_BY_CHAIN[ARBITRUM_SEPOLIA].multiSendCallOnlyAddress,
+    fallbackHandlerAddress: DEPLOY_SAFE_DEFAULTS_BY_CHAIN[ARBITRUM_SEPOLIA].fallbackHandlerAddress,
+    signMessageLibAddress: SAFE_SHARED_DEFAULTS_BY_CHAIN[ARBITRUM_SEPOLIA].signMessageLibAddress,
+    createCallAddress: SAFE_SHARED_DEFAULTS_BY_CHAIN[ARBITRUM_SEPOLIA].createCallAddress,
+    simulateTxAccessorAddress: SAFE_SHARED_DEFAULTS_BY_CHAIN[ARBITRUM_SEPOLIA].simulateTxAccessorAddress,
+  },
+  [SOURCE_SEPOLIA]: {
+    safeSingletonAddress: DEPLOY_SAFE_DEFAULTS_BY_CHAIN[SOURCE_SEPOLIA].singletonAddress,
+    safeProxyFactoryAddress: DEPLOY_SAFE_DEFAULTS_BY_CHAIN[SOURCE_SEPOLIA].proxyFactoryAddress,
+    multiSendAddress: SAFE_SHARED_DEFAULTS_BY_CHAIN[SOURCE_SEPOLIA].multiSendAddress,
+    multiSendCallOnlyAddress: SAFE_SHARED_DEFAULTS_BY_CHAIN[SOURCE_SEPOLIA].multiSendCallOnlyAddress,
+    fallbackHandlerAddress: DEPLOY_SAFE_DEFAULTS_BY_CHAIN[SOURCE_SEPOLIA].fallbackHandlerAddress,
+    signMessageLibAddress: SAFE_SHARED_DEFAULTS_BY_CHAIN[SOURCE_SEPOLIA].signMessageLibAddress,
+    createCallAddress: SAFE_SHARED_DEFAULTS_BY_CHAIN[SOURCE_SEPOLIA].createCallAddress,
+    simulateTxAccessorAddress: SAFE_SHARED_DEFAULTS_BY_CHAIN[SOURCE_SEPOLIA].simulateTxAccessorAddress,
   },
 };
 
@@ -314,6 +498,14 @@ function formatLogLine(message: string) {
   return `${new Date().toLocaleTimeString()} ${message}`;
 }
 
+function isStaleWcRequestError(message: string) {
+  const normalized = message.toLowerCase();
+  return (
+    normalized.includes("record was recently deleted") ||
+    (normalized.includes("no matching key") && normalized.includes("history"))
+  );
+}
+
 function summarizeSession(session: any) {
   const peer = session?.peer?.metadata;
   const name = peer?.name || "Unknown dapp";
@@ -321,27 +513,85 @@ function summarizeSession(session: any) {
   return url ? `${name} (${url})` : name;
 }
 
+function getSessionDeduplicationKey(session: any) {
+  const peer = session?.peer?.metadata;
+  const peerName = peer?.name || "";
+  const peerUrl = peer?.url || "";
+  const accounts = Array.isArray(session?.namespaces?.eip155?.accounts)
+    ? [...session.namespaces.eip155.accounts].sort().join("|")
+    : "";
+
+  return `${peerName}|${peerUrl}|${accounts}`;
+}
+
+function toEip155Chain(chainId: number) {
+  return `eip155:${chainId}`;
+}
+
+function parseSessionChainId(chainId: unknown): number | undefined {
+  if (typeof chainId !== "string" || !chainId) return undefined;
+
+  if (chainId.startsWith("eip155:")) {
+    const parsed = Number(chainId.slice("eip155:".length));
+    return Number.isFinite(parsed) ? parsed : undefined;
+  }
+
+  if (chainId.startsWith("0x")) {
+    try {
+      const parsed = Number(BigInt(chainId));
+      return Number.isFinite(parsed) ? parsed : undefined;
+    } catch {
+      return undefined;
+    }
+  }
+
+  const parsed = Number(chainId);
+  return Number.isFinite(parsed) ? parsed : undefined;
+}
+
 export default function DevSmartWallet() {
   const { openConnectModal } = useConnectModal();
   const { account, active, chainId: walletChainId, walletClient } = useWallet();
 
+  const [deployChainId, setDeployChainId] = useState<DeploySupportedChainId>(ARBITRUM_SEPOLIA);
   const [ownersInput, setOwnersInput] = useState("");
   const [thresholdInput, setThresholdInput] = useState("1");
   const [saltNonceInput, setSaltNonceInput] = useState(() => String(Date.now()));
-  const [proxyFactoryAddress, setProxyFactoryAddress] = useState<string>(SAFE_DEFAULTS.proxyFactoryAddress);
-  const [singletonAddress, setSingletonAddress] = useState<string>(SAFE_DEFAULTS.singletonAddress);
-  const [fallbackHandlerAddress, setFallbackHandlerAddress] = useState<string>(SAFE_DEFAULTS.fallbackHandlerAddress);
+  const [proxyFactoryAddress, setProxyFactoryAddress] = useState<string>(
+    DEPLOY_SAFE_DEFAULTS_BY_CHAIN[ARBITRUM_SEPOLIA].proxyFactoryAddress
+  );
+  const [singletonAddress, setSingletonAddress] = useState<string>(
+    DEPLOY_SAFE_DEFAULTS_BY_CHAIN[ARBITRUM_SEPOLIA].singletonAddress
+  );
+  const [fallbackHandlerAddress, setFallbackHandlerAddress] = useState<string>(
+    DEPLOY_SAFE_DEFAULTS_BY_CHAIN[ARBITRUM_SEPOLIA].fallbackHandlerAddress
+  );
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitError, setSubmitError] = useState<string | undefined>();
   const [txHash, setTxHash] = useState<Hex | undefined>();
   const [safeAddress, setSafeAddress] = useState<Address | undefined>();
+  const [lastDeploymentChainId, setLastDeploymentChainId] = useState<DeploySupportedChainId | undefined>();
+  const [savedWalletProfiles, setSavedWalletProfiles] = useState<SavedSmartWalletProfile[]>(() => {
+    try {
+      return parseSavedSmartWalletProfiles(localStorage.getItem(DEV_SMART_WALLET_SAVED_PROFILES_LS_KEY));
+    } catch {
+      return [];
+    }
+  });
 
   const [providerSafeAddressInput, setProviderSafeAddressInput] = useState(() => {
     try {
       return localStorage.getItem(DEV_SMART_WALLET_PROVIDER_SAFE_LS_KEY) ?? "";
     } catch {
       return "";
+    }
+  });
+  const [providerChainId, setProviderChainId] = useState<DeploySupportedChainId>(() => {
+    try {
+      return parseSupportedChainId(localStorage.getItem(DEV_SMART_WALLET_PROVIDER_CHAIN_LS_KEY)) ?? ARBITRUM_SEPOLIA;
+    } catch {
+      return ARBITRUM_SEPOLIA;
     }
   });
   const [pairUriInput, setPairUriInput] = useState("");
@@ -387,12 +637,14 @@ export default function DevSmartWallet() {
     walletChainId?: number;
     walletClient: typeof walletClient;
     providerSafeAddress?: Address;
+    providerChainId: DeploySupportedChainId;
   }>({
     account: undefined,
     active: false,
     walletChainId: undefined,
     walletClient: undefined,
     providerSafeAddress: undefined,
+    providerChainId: ARBITRUM_SEPOLIA,
   });
 
   useEffect(() => {
@@ -414,6 +666,13 @@ export default function DevSmartWallet() {
   }, [providerSafeAddressInput, validatorSafeAddressInput]);
 
   useEffect(() => {
+    const defaults = DEPLOY_SAFE_DEFAULTS_BY_CHAIN[deployChainId];
+    setProxyFactoryAddress(defaults.proxyFactoryAddress);
+    setSingletonAddress(defaults.singletonAddress);
+    setFallbackHandlerAddress(defaults.fallbackHandlerAddress);
+  }, [deployChainId]);
+
+  useEffect(() => {
     try {
       if (providerSafeAddressInput.trim()) {
         localStorage.setItem(DEV_SMART_WALLET_PROVIDER_SAFE_LS_KEY, providerSafeAddressInput.trim());
@@ -425,13 +684,83 @@ export default function DevSmartWallet() {
     }
   }, [providerSafeAddressInput]);
 
+  useEffect(() => {
+    try {
+      localStorage.setItem(DEV_SMART_WALLET_PROVIDER_CHAIN_LS_KEY, String(providerChainId));
+    } catch {
+      // Ignore localStorage failures in restrictive browser contexts.
+    }
+  }, [providerChainId]);
+
+  useEffect(() => {
+    if (!isAddress(providerSafeAddressInput)) return;
+    const normalizedProviderSafeAddress = getAddress(providerSafeAddressInput);
+
+    const matchingProfiles = savedWalletProfiles.filter((profile) =>
+      isSameAddress(profile.safeAddress, normalizedProviderSafeAddress)
+    );
+    if (matchingProfiles.length === 1 && matchingProfiles[0].chainId !== providerChainId) {
+      setProviderChainId(matchingProfiles[0].chainId);
+    }
+  }, [providerChainId, providerSafeAddressInput, savedWalletProfiles]);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(DEV_SMART_WALLET_SAVED_PROFILES_LS_KEY, JSON.stringify(savedWalletProfiles));
+    } catch {
+      // Ignore localStorage failures in restrictive browser contexts.
+    }
+  }, [savedWalletProfiles]);
+
   const ownersState = useMemo(() => parseOwnersInput(ownersInput), [ownersInput]);
   const threshold = Number(thresholdInput);
   const isThresholdInteger = Number.isInteger(threshold);
-  const isOnTargetNetwork = walletChainId === ARBITRUM_SEPOLIA;
-  const explorerUrl = getExplorerUrl(ARBITRUM_SEPOLIA);
+  const isOnDeployNetwork = walletChainId === deployChainId;
+  const lastDeploymentExplorerUrl = getExplorerUrl(lastDeploymentChainId ?? deployChainId);
   const providerSafeAddress = isAddress(providerSafeAddressInput) ? getAddress(providerSafeAddressInput) : undefined;
   const validatorSafeAddress = isAddress(validatorSafeAddressInput) ? getAddress(validatorSafeAddressInput) : undefined;
+
+  function upsertSavedWalletProfile(input: {
+    safeAddress: Address;
+    chainId: DeploySupportedChainId;
+    owners: Address[];
+  }) {
+    const safeAddressNormalized = getAddress(input.safeAddress);
+    const owners = input.owners.map((owner) => getAddress(owner));
+    const now = Date.now();
+
+    setSavedWalletProfiles((prev) => {
+      const next = [...prev];
+      const index = next.findIndex(
+        (profile) => profile.chainId === input.chainId && isSameAddress(profile.safeAddress, safeAddressNormalized)
+      );
+
+      if (index >= 0) {
+        const prevProfile = next[index];
+        next[index] = {
+          ...prevProfile,
+          owners: owners.length > 0 ? owners : prevProfile.owners,
+          updatedAt: now,
+        };
+      } else {
+        next.unshift({
+          safeAddress: safeAddressNormalized,
+          chainId: input.chainId,
+          owners,
+          createdAt: now,
+          updatedAt: now,
+        });
+      }
+
+      return next.sort((a, b) => b.updatedAt - a.updatedAt);
+    });
+  }
+
+  function removeSavedWalletProfile(profile: SavedSmartWalletProfile) {
+    setSavedWalletProfiles((prev) =>
+      prev.filter((item) => !(item.chainId === profile.chainId && isSameAddress(item.safeAddress, profile.safeAddress)))
+    );
+  }
 
   latestStateRef.current = {
     account: account as Address | undefined,
@@ -439,6 +768,7 @@ export default function DevSmartWallet() {
     walletChainId,
     walletClient,
     providerSafeAddress,
+    providerChainId,
   };
 
   const formErrors: string[] = [];
@@ -486,9 +816,53 @@ export default function DevSmartWallet() {
     setSessionMap(walletKit.getActiveSessions() as WalletKitSessionMap);
   }
 
+  async function pruneDuplicateSessions(keepTopic?: string) {
+    const walletKit = walletKitRef.current;
+    if (!walletKit) return;
+
+    const sessions = walletKit.getActiveSessions() as WalletKitSessionMap;
+    const topicsByKey = new Map<string, string[]>();
+
+    for (const [topic, session] of Object.entries(sessions)) {
+      const key = getSessionDeduplicationKey(session);
+      const current = topicsByKey.get(key) ?? [];
+      current.push(topic);
+      topicsByKey.set(key, current);
+    }
+
+    const topicsToDisconnect: string[] = [];
+
+    for (const topics of topicsByKey.values()) {
+      if (topics.length < 2) continue;
+
+      const topicToKeep = keepTopic && topics.includes(keepTopic) ? keepTopic : topics[topics.length - 1];
+      for (const topic of topics) {
+        if (topic !== topicToKeep) {
+          topicsToDisconnect.push(topic);
+        }
+      }
+    }
+
+    if (topicsToDisconnect.length === 0) return;
+
+    for (const topic of topicsToDisconnect) {
+      try {
+        await walletKit.disconnectSession({
+          topic,
+          reason: getSdkError("USER_DISCONNECTED"),
+        });
+        pushActivity(`Closed duplicate WC session: ${topic}`);
+      } catch (error) {
+        pushActivity(`Failed to close duplicate WC session ${topic}: ${getErrorMessage(error)}`);
+      }
+    }
+
+    refreshSessions();
+  }
+
   async function handleSwitchNetwork() {
     try {
-      await switchNetwork(ARBITRUM_SEPOLIA, Boolean(active));
+      await switchNetwork(deployChainId, Boolean(active));
     } catch (error) {
       helperToast.error(t`Failed to switch network: ${getErrorMessage(error)}`);
     }
@@ -500,6 +874,7 @@ export default function DevSmartWallet() {
     setSubmitError(undefined);
     setTxHash(undefined);
     setSafeAddress(undefined);
+    setLastDeploymentChainId(undefined);
 
     if (!account || !active) {
       const message = t`Connect a wallet first`;
@@ -515,8 +890,8 @@ export default function DevSmartWallet() {
       return;
     }
 
-    if (!isOnTargetNetwork) {
-      const message = t`Switch wallet to Arbitrum Sepolia`;
+    if (!isOnDeployNetwork) {
+      const message = t`Switch wallet to selected deploy chain`;
       setSubmitError(message);
       helperToast.error(message);
       return;
@@ -564,9 +939,10 @@ export default function DevSmartWallet() {
       });
 
       setTxHash(hash);
+      setLastDeploymentChainId(deployChainId);
       helperToast.info(t`Transaction submitted. Waiting for confirmation...`);
 
-      const publicClient = getPublicClientWithRpc(ARBITRUM_SEPOLIA);
+      const publicClient = getPublicClientWithRpc(deployChainId);
       const receipt = await publicClient.waitForTransactionReceipt({ hash });
 
       for (const log of receipt.logs) {
@@ -580,7 +956,12 @@ export default function DevSmartWallet() {
           if (decoded.eventName === "ProxyCreation") {
             const proxy = decoded.args.proxy as Address;
             setSafeAddress(getAddress(proxy));
-            pushActivity(`Created Safe ${getAddress(proxy)}`);
+            upsertSavedWalletProfile({
+              safeAddress: getAddress(proxy),
+              chainId: deployChainId,
+              owners: ownersState.owners,
+            });
+            pushActivity(`Created Safe ${getAddress(proxy)} on ${getChainName(deployChainId)}`);
             break;
           }
         } catch {
@@ -604,23 +985,41 @@ export default function DevSmartWallet() {
       walletClient: currentWalletClient,
       walletChainId: currentChainId,
       providerSafeAddress,
+      providerChainId: currentProviderChainId,
     } = latestStateRef.current;
 
     if (!ownerAccount || !currentWalletClient) {
       throw new Error("Owner wallet is not connected");
     }
 
-    if (currentChainId !== ARBITRUM_SEPOLIA) {
-      throw new Error("Owner wallet must be on Arbitrum Sepolia");
+    if (!currentProviderChainId) {
+      throw new Error("Provider chain is not configured");
+    }
+
+    if (currentChainId !== currentProviderChainId) {
+      throw new Error(`Owner wallet must be on ${getChainName(currentProviderChainId)}`);
     }
 
     if (!providerSafeAddress) {
       throw new Error("Set a valid Safe address for the WalletConnect provider");
     }
 
-    const cacheKey = `${ownerAccount}:${providerSafeAddress}`;
+    const cacheKey = `${ownerAccount}:${providerSafeAddress}:${currentProviderChainId}`;
     if (protocolKitCacheRef.current?.key === cacheKey) {
       return protocolKitCacheRef.current.safeSdk;
+    }
+
+    const publicClient = getPublicClientWithRpc(currentProviderChainId);
+    const detectedSafeVersion = (await publicClient.readContract({
+      address: providerSafeAddress,
+      abi: SAFE_VERSION_ABI,
+      functionName: "VERSION",
+    })) as string;
+
+    if (detectedSafeVersion !== SAFE_TARGET_VERSION) {
+      throw new Error(
+        `Unsupported Safe version ${detectedSafeVersion}. This dev wallet is pinned to Safe ${SAFE_TARGET_VERSION}.`
+      );
     }
 
     const eip1193Provider = {
@@ -694,23 +1093,24 @@ export default function DevSmartWallet() {
   async function emitWcAccountAndChainChanged(topic: string) {
     const walletKit = walletKitRef.current;
     const safeAddr = latestStateRef.current.providerSafeAddress;
-    if (!walletKit || !safeAddr) return;
+    const selectedChainId = latestStateRef.current.providerChainId;
+    if (!walletKit || !safeAddr || !selectedChainId) return;
 
     await walletKit.emitSessionEvent({
       topic,
-      chainId: EIP155_ARB_SEPOLIA,
-      event: { name: "chainChanged", data: ARBITRUM_SEPOLIA_HEX },
+      chainId: toEip155Chain(selectedChainId),
+      event: { name: "chainChanged", data: numberToHex(selectedChainId) },
     });
 
     await walletKit.emitSessionEvent({
       topic,
-      chainId: EIP155_ARB_SEPOLIA,
+      chainId: toEip155Chain(selectedChainId),
       event: { name: "accountsChanged", data: [safeAddr] },
     });
   }
 
-  async function proxyReadRpc(method: string, params: unknown) {
-    const publicClient = getPublicClientWithRpc(ARBITRUM_SEPOLIA);
+  async function proxyReadRpc(chainId: DeploySupportedChainId, method: string, params: unknown) {
+    const publicClient = getPublicClientWithRpc(chainId);
     return publicClient.request({
       method: method as any,
       params: asArrayParams(params) as any,
@@ -722,6 +1122,8 @@ export default function DevSmartWallet() {
     const method = params.request.method;
     const requestParams = params.request.params;
     const safeAddr = latestStateRef.current.providerSafeAddress;
+    const selectedChainId = latestStateRef.current.providerChainId ?? ARBITRUM_SEPOLIA;
+    const selectedChainHex = numberToHex(selectedChainId);
     const requestKey = `${topic}:${id}`;
     const now = Date.now();
 
@@ -750,18 +1152,24 @@ export default function DevSmartWallet() {
         throw new Error("No Safe address configured for provider");
       }
 
-      if (params.chainId && params.chainId !== EIP155_ARB_SEPOLIA && method !== "wallet_switchEthereumChain") {
+      const requestedSessionChainId = parseSessionChainId(params.chainId);
+      if (
+        requestedSessionChainId !== undefined &&
+        requestedSessionChainId !== selectedChainId &&
+        method !== "wallet_switchEthereumChain" &&
+        method !== "wallet_addEthereumChain"
+      ) {
         await respondWcRequestError(topic, id, 4901, `Unsupported chain ${params.chainId}`);
         return;
       }
 
       if (method === "eth_chainId") {
-        await respondWcRequestSuccess(topic, id, ARBITRUM_SEPOLIA_HEX);
+        await respondWcRequestSuccess(topic, id, selectedChainHex);
         return;
       }
 
       if (method === "net_version") {
-        await respondWcRequestSuccess(topic, id, String(ARBITRUM_SEPOLIA));
+        await respondWcRequestSuccess(topic, id, String(selectedChainId));
         return;
       }
 
@@ -773,12 +1181,17 @@ export default function DevSmartWallet() {
       if (method === "wallet_switchEthereumChain") {
         const requestedChainId = parseWalletSwitchChainId(requestParams);
 
-        if (requestedChainId !== ARBITRUM_SEPOLIA) {
-          await respondWcRequestError(topic, id, 4902, `Only Arbitrum Sepolia (${ARBITRUM_SEPOLIA}) is supported`);
+        if (requestedChainId !== selectedChainId) {
+          await respondWcRequestError(
+            topic,
+            id,
+            4902,
+            `Only selected provider chain ${getChainName(selectedChainId)} (${selectedChainId}) is supported`
+          );
           return;
         }
 
-        await switchNetwork(ARBITRUM_SEPOLIA, Boolean(latestStateRef.current.active));
+        await switchNetwork(selectedChainId, Boolean(latestStateRef.current.active));
         await respondWcRequestSuccess(topic, id, null);
         await emitWcAccountAndChainChanged(topic);
         return;
@@ -787,12 +1200,17 @@ export default function DevSmartWallet() {
       if (method === "wallet_addEthereumChain") {
         const requestedChainId = parseWalletSwitchChainId(requestParams);
 
-        if (requestedChainId !== ARBITRUM_SEPOLIA) {
-          await respondWcRequestError(topic, id, 4902, `Only Arbitrum Sepolia (${ARBITRUM_SEPOLIA}) is supported`);
+        if (requestedChainId !== selectedChainId) {
+          await respondWcRequestError(
+            topic,
+            id,
+            4902,
+            `Only selected provider chain ${getChainName(selectedChainId)} (${selectedChainId}) is supported`
+          );
           return;
         }
 
-        await switchNetwork(ARBITRUM_SEPOLIA, Boolean(latestStateRef.current.active));
+        await switchNetwork(selectedChainId, Boolean(latestStateRef.current.active));
         await respondWcRequestSuccess(topic, id, null);
         await emitWcAccountAndChainChanged(topic);
         return;
@@ -887,8 +1305,9 @@ export default function DevSmartWallet() {
           ],
         });
 
-        const signedTx = await safeSdk.signTransaction(safeTransaction, undefined, safeAddr);
-        const executionResult = await safeSdk.executeTransaction(signedTx);
+        // For threshold=1 owner signer, Protocol Kit adds a prevalidated signature in executeTransaction,
+        // so we avoid an extra explicit sign step and keep WalletConnect flow to one approval popup.
+        const executionResult = await safeSdk.executeTransaction(safeTransaction);
         const hash = await Promise.resolve(executionResult.hash);
 
         await respondWcRequestSuccess(topic, id, hash);
@@ -897,7 +1316,7 @@ export default function DevSmartWallet() {
       }
 
       if (method.startsWith("eth_") || method === "web3_clientVersion") {
-        const result = await proxyReadRpc(method, requestParams);
+        const result = await proxyReadRpc(selectedChainId, method, requestParams);
         await respondWcRequestSuccess(topic, id, result);
         return;
       }
@@ -906,7 +1325,7 @@ export default function DevSmartWallet() {
     } catch (error) {
       const message = getNonEmptyErrorMessage(error);
       pushActivity(`WC error (${method}): ${message}`);
-      if (!message.toLowerCase().includes("record was recently deleted")) {
+      if (!isStaleWcRequestError(message)) {
         await respondWcRequestError(topic, id, -32000, message);
       }
     } finally {
@@ -918,6 +1337,8 @@ export default function DevSmartWallet() {
   async function handleWcSessionProposal(event: any) {
     const walletKit = walletKitRef.current;
     const safeAddr = latestStateRef.current.providerSafeAddress;
+    const selectedChainId = latestStateRef.current.providerChainId ?? ARBITRUM_SEPOLIA;
+    const selectedChainEip155 = toEip155Chain(selectedChainId);
 
     if (!walletKit) return;
 
@@ -932,10 +1353,10 @@ export default function DevSmartWallet() {
         proposal: event.params,
         supportedNamespaces: {
           eip155: {
-            chains: [EIP155_ARB_SEPOLIA],
+            chains: [selectedChainEip155],
             methods: [...WC_SUPPORTED_METHODS],
             events: [...WC_SUPPORTED_EVENTS],
-            accounts: [`${EIP155_ARB_SEPOLIA}:${safeAddr}`],
+            accounts: [`${selectedChainEip155}:${safeAddr}`],
           },
         },
       });
@@ -946,6 +1367,7 @@ export default function DevSmartWallet() {
       });
 
       refreshSessions();
+      await pruneDuplicateSessions(session.topic);
       pushActivity(`WC session approved: ${summarizeSession(session)}`);
       setWalletKitStatus("WalletConnect wallet ready");
     } catch (error) {
@@ -976,7 +1398,7 @@ export default function DevSmartWallet() {
           core,
           metadata: {
             name: "GMX Dev Smart Wallet",
-            description: "Dev Safe wallet provider for Arbitrum Sepolia",
+            description: "Dev Safe wallet provider for Arbitrum Sepolia and Sepolia",
             url: "https://gmx.io",
             icons: ["https://gmx.io/favicon.ico"],
           },
@@ -1007,6 +1429,7 @@ export default function DevSmartWallet() {
         setIsWalletKitReady(true);
         setWalletKitStatus("WalletConnect wallet ready");
         refreshSessions();
+        await pruneDuplicateSessions();
         pushActivity("WalletConnect wallet initialized");
       } catch (error) {
         if (disposed) return;
@@ -1080,6 +1503,25 @@ export default function DevSmartWallet() {
     }
   }
 
+  function handleSaveCurrentProviderProfile() {
+    if (!providerSafeAddress) {
+      helperToast.error(t`Set a valid provider Safe address first`);
+      return;
+    }
+
+    const chainId = providerChainId;
+    const owners = account ? [account as Address] : [];
+
+    upsertSavedWalletProfile({
+      safeAddress: providerSafeAddress,
+      chainId,
+      owners,
+    });
+
+    pushActivity(`Saved wallet profile: ${providerSafeAddress} on ${getChainName(chainId)}`);
+    helperToast.success(t`Saved smart wallet profile`);
+  }
+
   const providerErrors = useMemo(() => {
     const errors: string[] = [];
 
@@ -1093,8 +1535,8 @@ export default function DevSmartWallet() {
       errors.push("Connect owner EOA in this browser");
     }
 
-    if (walletChainId !== ARBITRUM_SEPOLIA) {
-      errors.push("Owner EOA must be on Arbitrum Sepolia");
+    if (walletChainId !== providerChainId) {
+      errors.push(`Owner EOA must be on ${getChainName(providerChainId)}`);
     }
 
     if (!walletClient) {
@@ -1102,7 +1544,7 @@ export default function DevSmartWallet() {
     }
 
     return errors;
-  }, [account, active, providerSafeAddress, providerSafeAddressInput, walletChainId, walletClient]);
+  }, [account, active, providerChainId, providerSafeAddress, providerSafeAddressInput, walletChainId, walletClient]);
 
   const validatorFormError = useMemo(() => {
     if (!validatorSafeAddressInput.trim()) {
@@ -1291,7 +1733,7 @@ export default function DevSmartWallet() {
       <div className="mx-auto flex w-full max-w-[1100px] flex-col gap-16">
         <div className="rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-16">
           <h1 className="text-24 font-medium">
-            <Trans>Dev Smart Wallet (Safe on Arbitrum Sepolia)</Trans>
+            <Trans>Dev Smart Wallet (Safe)</Trans>
           </h1>
           <p className="mt-8 text-13 text-typography-secondary">
             <Trans>
@@ -1302,7 +1744,10 @@ export default function DevSmartWallet() {
 
           <div className="mt-12 flex flex-wrap items-center gap-8 text-13">
             <div className="rounded-8 border border-slate-700 px-10 py-6">
-              <Trans>Target chain</Trans>: {getChainName(ARBITRUM_SEPOLIA)} ({ARBITRUM_SEPOLIA})
+              <Trans>Deploy chain</Trans>: {getChainName(deployChainId)} ({deployChainId})
+            </div>
+            <div className="rounded-8 border border-slate-700 px-10 py-6">
+              <Trans>WC chain</Trans>: {getChainName(providerChainId)} ({providerChainId})
             </div>
             <div className="rounded-8 border border-slate-700 px-10 py-6">
               <Trans>Owner wallet</Trans>: {active && account ? account : t`Not connected`}
@@ -1312,6 +1757,9 @@ export default function DevSmartWallet() {
             </div>
             <div className="rounded-8 border border-slate-700 px-10 py-6">
               <Trans>WC Wallet status</Trans>: {walletKitStatus}
+            </div>
+            <div className="rounded-8 border border-slate-700 px-10 py-6">
+              <Trans>Safe version</Trans>: {SAFE_TARGET_VERSION}
             </div>
           </div>
 
@@ -1323,7 +1771,7 @@ export default function DevSmartWallet() {
             ) : null}
 
             <Button variant="secondary" onClick={handleSwitchNetwork}>
-              <Trans>Switch owner to Arbitrum Sepolia</Trans>
+              <Trans>Switch owner to deploy chain</Trans>
             </Button>
           </div>
 
@@ -1344,8 +1792,29 @@ export default function DevSmartWallet() {
               Safe Protocol Kit using the connected owner EOA in this browser.
             </Trans>
           </p>
+          <p className="mt-4 text-12 text-typography-secondary">
+            <Trans>This dev wallet is pinned to Safe version {SAFE_TARGET_VERSION}.</Trans>
+          </p>
 
           <div className="mt-12 grid gap-16">
+            <div>
+              <label className="mb-6 block text-13 font-medium text-typography-primary" htmlFor="providerChain">
+                <Trans>Provider chain (WalletConnect account chain)</Trans>
+              </label>
+              <select
+                id="providerChain"
+                value={providerChainId}
+                onChange={(e) => setProviderChainId(Number(e.target.value) as DeploySupportedChainId)}
+                className="w-full rounded-8 border border-slate-800 bg-slate-800 px-12 py-10 text-14 outline-none focus:border-blue-400"
+              >
+                {DEPLOY_SUPPORTED_CHAINS.map((chainId) => (
+                  <option key={chainId} value={chainId}>
+                    {getChainName(chainId)} ({chainId})
+                  </option>
+                ))}
+              </select>
+            </div>
+
             <AddressInput
               id="providerSafeAddress"
               label={t`Safe address to expose over WalletConnect`}
@@ -1359,10 +1828,14 @@ export default function DevSmartWallet() {
                 onClick={() => {
                   if (!safeAddress) return;
                   setProviderSafeAddressInput(safeAddress);
+                  setProviderChainId(deployChainId);
                 }}
                 disabled={!safeAddress}
               >
                 <Trans>Use last created Safe</Trans>
+              </Button>
+              <Button variant="secondary" onClick={handleSaveCurrentProviderProfile} disabled={!providerSafeAddress}>
+                <Trans>Save current provider wallet</Trans>
               </Button>
             </div>
 
@@ -1402,6 +1875,82 @@ export default function DevSmartWallet() {
                 here in Firefox, then approve the session on this page.
               </Trans>
             </div>
+          </div>
+        </div>
+
+        <div className="rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-16">
+          <h2 className="text-18 font-medium">
+            <Trans>Saved Smart Wallets</Trans>
+          </h2>
+          <p className="mt-8 text-13 text-typography-secondary">
+            <Trans>
+              Persisted in this browser: Safe address, chain, and owners. Use saved entries to quickly switch provider
+              wallet, validator target, or deploy form owners.
+            </Trans>
+          </p>
+
+          <div className="mt-12 flex flex-col gap-10">
+            {savedWalletProfiles.length === 0 && (
+              <div className="text-13 text-typography-secondary">
+                <Trans>No saved smart wallets yet</Trans>
+              </div>
+            )}
+
+            {savedWalletProfiles.map((profile) => (
+              <div
+                key={`${profile.chainId}:${profile.safeAddress}`}
+                className="rounded-8 border border-slate-700 bg-slate-900/40 p-12"
+              >
+                <div className="flex flex-wrap items-center gap-8 text-13">
+                  <span className="rounded-8 border border-slate-700 px-8 py-4 text-12">
+                    {getChainName(profile.chainId)} ({profile.chainId})
+                  </span>
+                  <span className="text-typography-secondary">
+                    <Trans>Owners</Trans>: {profile.owners.length}
+                  </span>
+                </div>
+                <div className="mt-8 break-all text-13 text-typography-primary">{profile.safeAddress}</div>
+                {profile.owners.length > 0 && (
+                  <div className="mt-6 break-all text-12 text-typography-secondary">{profile.owners.join(", ")}</div>
+                )}
+                <div className="mt-10 flex flex-wrap gap-8">
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      setProviderSafeAddressInput(profile.safeAddress);
+                      setProviderChainId(profile.chainId);
+                      upsertSavedWalletProfile(profile);
+                    }}
+                  >
+                    <Trans>Use for provider</Trans>
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      setValidatorSafeAddressInput(profile.safeAddress);
+                      upsertSavedWalletProfile(profile);
+                    }}
+                  >
+                    <Trans>Use for validator</Trans>
+                  </Button>
+                  <Button
+                    variant="secondary"
+                    onClick={() => {
+                      setDeployChainId(profile.chainId);
+                      if (profile.owners.length > 0) {
+                        setOwnersInput(profile.owners.join("\n"));
+                      }
+                      upsertSavedWalletProfile(profile);
+                    }}
+                  >
+                    <Trans>Use for deploy form</Trans>
+                  </Button>
+                  <Button variant="secondary" onClick={() => removeSavedWalletProfile(profile)}>
+                    <Trans>Remove</Trans>
+                  </Button>
+                </div>
+              </div>
+            ))}
           </div>
         </div>
 
@@ -1453,6 +2002,27 @@ export default function DevSmartWallet() {
           </h2>
 
           <div className="mt-16 grid gap-16">
+            <div>
+              <label className="mb-6 block text-13 font-medium text-typography-primary" htmlFor="deployChain">
+                <Trans>Deploy chain</Trans>
+              </label>
+              <select
+                id="deployChain"
+                value={deployChainId}
+                onChange={(e) => setDeployChainId(Number(e.target.value) as DeploySupportedChainId)}
+                className="w-full rounded-8 border border-slate-800 bg-slate-800 px-12 py-10 text-14 outline-none focus:border-blue-400"
+              >
+                {DEPLOY_SUPPORTED_CHAINS.map((chainId) => (
+                  <option key={chainId} value={chainId}>
+                    {getChainName(chainId)} ({chainId})
+                  </option>
+                ))}
+              </select>
+              <div className="mt-6 text-12 text-typography-secondary">
+                <Trans>Switch owner wallet to this chain before submitting.</Trans>
+              </div>
+            </div>
+
             <div>
               <label className="mb-6 block text-13 font-medium text-typography-primary" htmlFor="owners">
                 <Trans>Owners</Trans>
@@ -1540,9 +2110,9 @@ export default function DevSmartWallet() {
               <Button
                 variant="primary-action"
                 type="submit"
-                disabled={!active || !walletClient || !isOnTargetNetwork || isSubmitting || formErrors.length > 0}
+                disabled={!active || !walletClient || !isOnDeployNetwork || isSubmitting || formErrors.length > 0}
               >
-                {isSubmitting ? t`Creating Safe...` : t`Create Safe on Arbitrum Sepolia`}
+                {isSubmitting ? t`Creating Safe...` : t`Create Safe on selected chain`}
               </Button>
             </div>
           </div>
@@ -1560,7 +2130,7 @@ export default function DevSmartWallet() {
                   <Trans>Transaction hash</Trans>
                 </div>
                 <a
-                  href={`${explorerUrl}tx/${txHash}`}
+                  href={`${lastDeploymentExplorerUrl}tx/${txHash}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="break-all text-blue-400 underline"
@@ -1576,7 +2146,7 @@ export default function DevSmartWallet() {
                   <Trans>Created Safe address</Trans>
                 </div>
                 <a
-                  href={`${explorerUrl}address/${safeAddress}`}
+                  href={`${lastDeploymentExplorerUrl}address/${safeAddress}`}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="break-all text-blue-400 underline"
