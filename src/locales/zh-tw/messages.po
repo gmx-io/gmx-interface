@@ -3975,10 +3975,6 @@ msgstr "閱讀規則"
 msgid "Source chain supports single token only"
 msgstr "來源鏈僅支援單一代幣"
 
-#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-#~ msgid "Annually"
-#~ msgstr "年化"
-
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
