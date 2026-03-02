@@ -23,6 +23,7 @@ export function usePoolsData(): Partial<PoolsData> {
   const { data: avalanchePerformance } = usePerformanceByChainId(AVALANCHE);
   const { data: arbitrumApys } = useApysByChainId(ARBITRUM);
   const { data: avalancheApys } = useApysByChainId(AVALANCHE);
+
   const { data: positionStats } = usePositionStats();
   const { data: marketInfos } = useMarketInfos();
 
@@ -168,7 +169,7 @@ function useMarketInfos() {
       const avaxMarketInfo = avalancheMarketInfos[avaxIndex];
       const arbPoolValue = arbMarketInfo ? BigInt(arbMarketInfo.poolValue) : null;
       const avaxPoolValue = avaxMarketInfo ? BigInt(avaxMarketInfo.poolValue) : null;
-      if ((arbPoolValue ?? -1n) > (avaxPoolValue ?? -1n)) {
+      if (avaxPoolValue === null || (arbPoolValue !== null && arbPoolValue > avaxPoolValue)) {
         sortedAggregatedMarketInfos.push({ ...arbMarketInfo, chainId: ARBITRUM });
         openInterest +=
           BigInt(arbMarketInfo.longOpenInterestUsd ?? 0n) + BigInt(arbMarketInfo.shortOpenInterestUsd ?? 0n);
