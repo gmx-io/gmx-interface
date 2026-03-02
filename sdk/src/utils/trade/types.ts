@@ -86,6 +86,12 @@ export type IncreasePositionAmounts = {
   potentialPriceImpactDiffUsd: bigint;
 };
 
+export type DecreasePositionOutput = {
+  tokenAddress?: string;
+  amount: bigint;
+  usd: bigint;
+};
+
 export type DecreasePositionAmounts = {
   isFullClose: boolean;
   sizeDeltaUsd: bigint;
@@ -122,6 +128,9 @@ export type DecreasePositionAmounts = {
 
   payedOutputUsd: bigint;
   payedRemainingCollateralUsd: bigint;
+
+  primaryOutput: DecreasePositionOutput;
+  secondaryOutput: DecreasePositionOutput;
 
   receiveTokenAmount: bigint;
   receiveUsd: bigint;

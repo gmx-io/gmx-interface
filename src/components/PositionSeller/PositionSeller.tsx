@@ -236,6 +236,76 @@ export function PositionSeller() {
 
   const receiveUsd = swapAmounts?.usdOut || decreaseAmounts?.receiveUsd;
   const receiveTokenAmount = swapAmounts?.amountOut || decreaseAmounts?.receiveTokenAmount;
+  const receiveOutputBreakdownItems = useMemo(() => {
+    if (!decreaseAmounts) {
+      return [];
+    }
+
+    const findOutputToken = (tokenAddress?: string) => {
+      if (!tokenAddress) {
+        return undefined;
+      }
+
+      const tokenAddressLower = tokenAddress.toLowerCase();
+      const tokenFromData = tokensData
+        ? Object.values(tokensData).find((token) => token.address.toLowerCase() === tokenAddressLower)
+        : undefined;
+
+      if (tokenFromData) {
+        return tokenFromData;
+      }
+
+      try {
+        return getToken(chainId, tokenAddress);
+      } catch {
+        return undefined;
+      }
+    };
+
+    const items: {
+      tokenAddress: string;
+      amount: bigint;
+      usd: bigint;
+      decimals: number;
+      symbol: string;
+      isStable: boolean;
+    }[] = [];
+
+    const primaryToken = findOutputToken(decreaseAmounts.primaryOutput.tokenAddress);
+    if (primaryToken && decreaseAmounts.primaryOutput.amount > 0n && decreaseAmounts.primaryOutput.usd > 0n) {
+      items.push({
+        tokenAddress: primaryToken.address,
+        amount: decreaseAmounts.primaryOutput.amount,
+        usd: decreaseAmounts.primaryOutput.usd,
+        decimals: primaryToken.decimals,
+        symbol: primaryToken.symbol,
+        isStable: primaryToken.isStable ?? false,
+      });
+    }
+
+    const secondaryToken = findOutputToken(decreaseAmounts.secondaryOutput.tokenAddress);
+    if (secondaryToken && decreaseAmounts.secondaryOutput.amount > 0n && decreaseAmounts.secondaryOutput.usd > 0n) {
+      items.push({
+        tokenAddress: secondaryToken.address,
+        amount: decreaseAmounts.secondaryOutput.amount,
+        usd: decreaseAmounts.secondaryOutput.usd,
+        decimals: secondaryToken.decimals,
+        symbol: secondaryToken.symbol,
+        isStable: secondaryToken.isStable ?? false,
+      });
+    }
+
+    return items;
+  }, [chainId, decreaseAmounts, tokensData]);
+  const shouldShowReceiveBreakdown = useMemo(() => {
+    if (receiveOutputBreakdownItems.length < 2) {
+      return false;
+    }
+
+    const uniqueTokenAddresses = new Set(receiveOutputBreakdownItems.map((item) => item.tokenAddress.toLowerCase()));
+
+    return uniqueTokenAddresses.size > 1;
+  }, [receiveOutputBreakdownItems]);
 
   const nextPositionValues = useSelector(selectPositionSellerNextPositionValuesForDecrease);
 
@@ -744,6 +814,25 @@ export function PositionSeller() {
       }
     />
   );
+  const receiveBreakdownRow = shouldShowReceiveBreakdown ? (
+    <SyntheticsInfoRow
+      label={t`Receive Breakdown`}
+      value={
+        <div className="flex flex-col items-end gap-4">
+          {receiveOutputBreakdownItems.map((item) => (
+            <AmountWithUsdBalance
+              key={`${item.tokenAddress}-${item.amount.toString()}-${item.usd.toString()}`}
+              amount={item.amount}
+              decimals={item.decimals}
+              symbol={item.symbol}
+              usd={item.usd}
+              isStable={item.isStable}
+            />
+          ))}
+        </div>
+      }
+    />
+  ) : undefined;
 
   const { warning: maxAutoCancelOrdersWarning } = useMaxAutoCancelOrdersState({
     positionKey: position?.key,
@@ -1050,6 +1139,7 @@ export function PositionSeller() {
                 {!isTwap && (
                   <>
                     {receiveTokenRow}
+                    {receiveBreakdownRow}
                     {liqPriceRow}
                     {pnlRow}
                   </>

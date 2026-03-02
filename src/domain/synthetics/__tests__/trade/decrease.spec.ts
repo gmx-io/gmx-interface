@@ -250,4 +250,30 @@ describe("getDecreasePositionAmounts DecreasePositionSwapType", () => {
     });
     expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.SwapCollateralTokenToPnlToken);
   });
+
+  it("models split outputs for full close with pnl receive token", () => {
+    const amounts = getDecreasePositionAmounts({
+      closeSizeUsd: position.sizeInUsd,
+      collateralToken: usdcToken,
+      receiveToken: ethToken,
+      position,
+      keepLeverage,
+      isLong,
+      marketInfo,
+      minCollateralUsd,
+      minPositionSizeUsd,
+      uiFeeFactor,
+      acceptablePriceImpactBuffer: 30,
+      userReferralInfo: undefined,
+      isSetAcceptablePriceImpactEnabled: true,
+    });
+
+    expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.SwapCollateralTokenToPnlToken);
+    expect(amounts.primaryOutput.tokenAddress).toBeDefined();
+    expect(amounts.primaryOutput.amount).toBeGreaterThan(0n);
+    expect(amounts.secondaryOutput.tokenAddress).toBeDefined();
+    expect(amounts.secondaryOutput.amount).toBeGreaterThan(0n);
+    expect(amounts.primaryOutput.tokenAddress).not.toEqual(amounts.secondaryOutput.tokenAddress);
+    expect(amounts.swapProfitUsdIn).toEqual(amounts.secondaryOutput.usd);
+  });
 });
