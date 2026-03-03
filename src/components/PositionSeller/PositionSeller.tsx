@@ -46,7 +46,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useInitCollateralCloseDestination } from "domain/synthetics/express/useInitCollateralCloseDestination";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
-import { OrderType } from "domain/synthetics/orders";
+import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
@@ -300,7 +300,9 @@ export function PositionSeller() {
   const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
     const orderType = isTwap ? OrderType.LimitDecrease : OrderType.MarketDecrease;
 
-    const swapPath = swapAmounts?.swapStrategy.swapPathStats?.swapPath || [];
+    const isDirectPnlReceive =
+      decreaseAmounts?.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken && !shouldSwap;
+    const swapPath = isDirectPnlReceive ? [] : swapAmounts?.swapStrategy.swapPathStats?.swapPath || [];
 
     if (
       !account ||
@@ -376,6 +378,7 @@ export function PositionSeller() {
     position,
     receiveToken?.address,
     receiveUsd,
+    shouldSwap,
     signer,
     swapAmounts?.swapStrategy.swapPathStats?.swapPath,
     tokensData,
