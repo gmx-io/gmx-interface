@@ -32,6 +32,8 @@ import Tooltip from "components/Tooltip/Tooltip";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
+import { useClaimableFunding } from "./useClaimableFunding";
+
 import "./ClaimModal.scss";
 
 type Props = {
@@ -344,64 +346,10 @@ function ClaimModalComponent(p: {
 
   const markets = useMemo(() => (isVisible ? Object.values(marketsInfoData || {}) : []), [isVisible, marketsInfoData]);
 
-  const { totalClaimableFundingUsd, claimableFundingUsd, hasInsufficientBalance, allInsufficient } = useMemo(() => {
-    let totalClaimableFundingUsd = 0n;
-    let claimableFundingUsd = 0n;
-    let hasInsufficientBalance = false;
-    let hasClaimable = false;
+  const { totalClaimableFundingUsd, claimableFundingUsd, hasInsufficientBalance, allInsufficient } =
+    useClaimableFunding(markets);
 
-    for (const market of markets) {
-      const { longToken, shortToken } = market;
-
-      const fundingLongUsd = convertToUsd(
-        market.claimableFundingAmountLong,
-        longToken.decimals,
-        longToken.prices.minPrice
-      );
-      const fundingShortUsd = convertToUsd(
-        market.claimableFundingAmountShort,
-        shortToken.decimals,
-        shortToken.prices.minPrice
-      );
-
-      const marketTotal = (fundingLongUsd ?? 0n) + (fundingShortUsd ?? 0n);
-      totalClaimableFundingUsd += marketTotal;
-
-      const longInsufficient = getIsFundingClaimInsufficientBalance(market, true);
-      const shortInsufficient = getIsFundingClaimInsufficientBalance(market, false);
-
-      if (longInsufficient || shortInsufficient) {
-        hasInsufficientBalance = true;
-      }
-
-      if (!longInsufficient) {
-        claimableFundingUsd += fundingLongUsd ?? 0n;
-      }
-      if (!shortInsufficient) {
-        claimableFundingUsd += fundingShortUsd ?? 0n;
-      }
-      if ((!longInsufficient && (fundingLongUsd ?? 0n) > 0n) || (!shortInsufficient && (fundingShortUsd ?? 0n) > 0n)) {
-        hasClaimable = true;
-      }
-    }
-
-    return {
-      totalClaimableFundingUsd,
-      claimableFundingUsd,
-      hasInsufficientBalance,
-      allInsufficient: hasInsufficientBalance && !hasClaimable,
-    };
-  }, [markets]);
-
-  const effectiveButtonState = useMemo(() => {
-    if (allInsufficient) {
-      return {
-        text: t`Insufficient Pool Balance`,
-        disabled: true,
-      };
-    }
-    return buttonState;
-  }, [allInsufficient, buttonState]);
+  const effectiveButtonState = allInsufficient ? { text: t`Insufficient Pool Balance`, disabled: true } : buttonState;
 
   function renderMarketSection(market: MarketInfo) {
     const indexName = getMarketIndexName(market);
