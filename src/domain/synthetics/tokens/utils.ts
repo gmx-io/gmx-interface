@@ -42,11 +42,9 @@ export function getApprovalRequirements({
   tokensToApprove: TokenToSpendParams[];
   isAllowanceLoaded: boolean;
 } {
-  const initialTokensToApprove = payTokenParamsList;
-
-  if (gasPaymentTokenParams) {
-    initialTokensToApprove.push(gasPaymentTokenParams);
-  }
+  const initialTokensToApprove = gasPaymentTokenParams
+    ? [...payTokenParamsList, gasPaymentTokenParams]
+    : payTokenParamsList;
 
   const combinedTokensToSpendMap = initialTokensToApprove.reduce(
     (acc, curr) => {

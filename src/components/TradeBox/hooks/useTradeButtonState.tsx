@@ -57,7 +57,7 @@ import { ExpressTxnParams } from "domain/synthetics/express";
 import { substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
-import { getApprovalRequirements } from "domain/synthetics/tokens/utils";
+import type { TokenToSpendParams } from "domain/synthetics/tokens/types";
 import { getIncreasePositionAmounts } from "domain/synthetics/trade/utils/increase";
 import {
   getCommonError,
@@ -166,33 +166,24 @@ export function useTradeboxButtonState({
     setPendingTxns,
   });
 
-  // TODO move this to a separate hook
-  const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
-    if (isFromTokenGmxAccount) {
-      return { tokensToApprove: [], isAllowanceLoaded: true };
-    }
+  const payTokenParamsList = useMemo<TokenToSpendParams[]>(
+    () =>
+      fromToken && payAmount !== undefined && payTokenAllowance.tokensAllowanceData
+        ? [
+            {
+              tokenAddress: fromToken.address,
+              amount: payAmount,
+              allowanceData: payTokenAllowance.tokensAllowanceData,
+              isAllowanceLoaded: payTokenAllowance.isLoaded,
+            },
+          ]
+        : [],
+    [fromToken, payAmount, payTokenAllowance.tokensAllowanceData, payTokenAllowance.isLoaded]
+  );
 
-    if (
-      !fromToken ||
-      payAmount === undefined ||
-      !payTokenAllowance.tokensAllowanceData ||
-      !payTokenAllowance.spenderAddress ||
-      !gasPaymentToken
-    ) {
-      return { tokensToApprove: [], isAllowanceLoaded: false };
-    }
-
-    const approvalRequirements = getApprovalRequirements({
-      chainId,
-      payTokenParamsList: [
-        {
-          tokenAddress: fromToken.address,
-          amount: payAmount,
-          allowanceData: payTokenAllowance.tokensAllowanceData,
-          isAllowanceLoaded: payTokenAllowance.isLoaded,
-        },
-      ],
-      gasPaymentTokenParams: expressParams?.gasPaymentParams
+  const gasPaymentTokenParams = useMemo<TokenToSpendParams | undefined>(
+    () =>
+      expressParams?.gasPaymentParams && gasPaymentToken
         ? {
             tokenAddress: gasPaymentToken.address,
             amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
@@ -200,26 +191,31 @@ export function useTradeboxButtonState({
             isAllowanceLoaded: gasPaymentTokenAllowance?.isLoaded,
           }
         : undefined,
-      permits: expressParams && tokenPermits ? tokenPermits : [],
-    });
+    [
+      expressParams?.gasPaymentParams,
+      gasPaymentToken,
+      gasPaymentTokenAllowance?.tokensAllowanceData,
+      gasPaymentTokenAllowance?.isLoaded,
+    ]
+  );
 
-    return approvalRequirements;
-  }, [
+  const permits = useMemo(() => (expressParams && tokenPermits ? tokenPermits : []), [expressParams, tokenPermits]);
+
+  const { tokensToApprove, isAllowanceLoaded, isApproving, handleApprove } = useApprovalState({
     chainId,
-    expressParams,
-    fromToken,
-    gasPaymentToken,
-    gasPaymentTokenAllowance?.isLoaded,
-    gasPaymentTokenAllowance?.tokensAllowanceData,
-    isFromTokenGmxAccount,
-    payAmount,
-    payTokenAllowance.isLoaded,
-    payTokenAllowance.spenderAddress,
-    payTokenAllowance.tokensAllowanceData,
-    tokenPermits,
-  ]);
-
-  const { isApproving, handleApprove } = useApprovalState({ tokensToApprove });
+    signer,
+    allowPermit: Boolean(expressParams),
+    payTokenParamsList,
+    gasPaymentTokenParams,
+    permits,
+    skip: isFromTokenGmxAccount,
+    isLoading:
+      !fromToken ||
+      payAmount === undefined ||
+      !payTokenAllowance.tokensAllowanceData ||
+      !payTokenAllowance.spenderAddress ||
+      !gasPaymentToken,
+  });
 
   const detectAndSetAvailableMaxLeverage = useDetectAndSetAvailableMaxLeverage({ setToTokenInputValue });
 
@@ -364,7 +360,7 @@ export function useTradeboxButtonState({
     if (!isFromTokenGmxAccount && isAllowanceLoaded && tokensToApprove.length) {
       if (!chainId || isApproving || !tokensToApprove[0]) return;
 
-      handleApprove({ chainId, signer, allowPermit: Boolean(expressParams) });
+      handleApprove();
 
       return;
     }

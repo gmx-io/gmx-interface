@@ -41,7 +41,8 @@ import {
   substractMaxLeverageSlippage,
   willPositionCollateralBeSufficientForPosition,
 } from "domain/synthetics/positions";
-import { convertToTokenAmount, getApprovalRequirements, useTokensAllowanceData } from "domain/synthetics/tokens";
+import { convertToTokenAmount, useTokensAllowanceData } from "domain/synthetics/tokens";
+import type { TokenToSpendParams } from "domain/synthetics/tokens/types";
 import { getMarkPrice, getMinCollateralUsdForLeverage } from "domain/synthetics/trade";
 import {
   getCommonError,
@@ -259,26 +260,29 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     isGmxAccount: isCollateralTokenFromGmxAccount,
   });
 
-  const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
-    if (isCollateralTokenFromGmxAccount) {
-      return { tokensToApprove: [], isAllowanceLoaded: true };
-    }
+  const payTokenParamsList = useMemo<TokenToSpendParams[]>(
+    () =>
+      selectedCollateralAddress && collateralDeltaAmount !== undefined
+        ? [
+            {
+              tokenAddress: selectedCollateralAddress,
+              amount: collateralDeltaAmount,
+              allowanceData: collateralTokenAllowance.tokensAllowanceData,
+              isAllowanceLoaded: collateralTokenAllowance.isLoaded,
+            },
+          ]
+        : [],
+    [
+      selectedCollateralAddress,
+      collateralDeltaAmount,
+      collateralTokenAllowance.tokensAllowanceData,
+      collateralTokenAllowance.isLoaded,
+    ]
+  );
 
-    if (!selectedCollateralAddress || collateralDeltaAmount === undefined) {
-      return { tokensToApprove: [], isAllowanceLoaded: false };
-    }
-
-    const approvalRequirements = getApprovalRequirements({
-      chainId,
-      payTokenParamsList: [
-        {
-          tokenAddress: selectedCollateralAddress,
-          amount: collateralDeltaAmount,
-          allowanceData: collateralTokenAllowance.tokensAllowanceData,
-          isAllowanceLoaded: collateralTokenAllowance.isLoaded,
-        },
-      ],
-      gasPaymentTokenParams: expressParams?.gasPaymentParams
+  const gasPaymentTokenParams = useMemo<TokenToSpendParams | undefined>(
+    () =>
+      expressParams?.gasPaymentParams
         ? {
             tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
             amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
@@ -286,24 +290,21 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
             isAllowanceLoaded: gasPaymentTokenAllowance?.isLoaded,
           }
         : undefined,
-      permits: expressParams && tokenPermits ? tokenPermits : [],
-    });
+    [expressParams?.gasPaymentParams, gasPaymentTokenAllowance?.tokensAllowanceData, gasPaymentTokenAllowance?.isLoaded]
+  );
 
-    return approvalRequirements;
-  }, [
-    isCollateralTokenFromGmxAccount,
-    selectedCollateralAddress,
-    collateralDeltaAmount,
+  const permits = useMemo(() => (expressParams && tokenPermits ? tokenPermits : []), [expressParams, tokenPermits]);
+
+  const { tokensToApprove, isAllowanceLoaded, isApproving, handleApprove } = useApprovalState({
     chainId,
-    collateralTokenAllowance.tokensAllowanceData,
-    collateralTokenAllowance.isLoaded,
-    expressParams,
-    gasPaymentTokenAllowance?.tokensAllowanceData,
-    gasPaymentTokenAllowance?.isLoaded,
-    tokenPermits,
-  ]);
-
-  const { isApproving, handleApprove } = useApprovalState({ tokensToApprove });
+    signer,
+    allowPermit: Boolean(expressParams),
+    payTokenParamsList,
+    gasPaymentTokenParams,
+    permits,
+    skip: isCollateralTokenFromGmxAccount,
+    isLoading: !selectedCollateralAddress || collateralDeltaAmount === undefined,
+  });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -424,7 +425,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     if (isAllowanceLoaded && tokensToApprove.length && selectedCollateralToken) {
       if (!chainId || isApproving) return;
 
-      handleApprove({ chainId, signer, allowPermit: Boolean(expressParams) });
+      handleApprove();
 
       return;
     }

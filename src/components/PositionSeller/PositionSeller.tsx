@@ -50,7 +50,7 @@ import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
-import { getApprovalRequirements } from "domain/synthetics/tokens";
+import type { TokenToSpendParams } from "domain/synthetics/tokens/types";
 import { getPositionSellerTradeFlags } from "domain/synthetics/trade";
 import { getTwapRecommendation } from "domain/synthetics/trade/twapRecommendation";
 import { TradeType } from "domain/synthetics/trade/types";
@@ -111,6 +111,7 @@ import { PositionSellerPriceImpactFeesRow } from "./rows/PositionSellerPriceImpa
 import "./PositionSeller.scss";
 
 const PNL_TOOLTIP_THRESHOLD = expandDecimals(10000, USD_DECIMALS);
+const EMPTY_PAY_TOKEN_PARAMS: TokenToSpendParams[] = [];
 
 export function PositionSeller() {
   const [, setClosingPositionKey] = useClosingPositionKeyState();
@@ -397,19 +398,9 @@ export function PositionSeller() {
     isGmxAccount: srcChainId !== undefined || effectiveIsReceiveToGmxAccount,
   });
 
-  const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
-    if (srcChainId) {
-      return { tokensToApprove: [], isAllowanceLoaded: true };
-    }
-
-    if (!batchParams) {
-      return { tokensToApprove: [], isAllowanceLoaded: false };
-    }
-
-    const approvalRequirements = getApprovalRequirements({
-      chainId,
-      payTokenParamsList: [],
-      gasPaymentTokenParams: expressParams?.gasPaymentParams
+  const gasPaymentTokenParams = useMemo<TokenToSpendParams | undefined>(
+    () =>
+      expressParams?.gasPaymentParams
         ? {
             tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
             amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
@@ -417,21 +408,21 @@ export function PositionSeller() {
             isAllowanceLoaded: gasPaymentTokenAllowance?.isLoaded,
           }
         : undefined,
-      permits: expressParams && tokenPermits ? tokenPermits : [],
-    });
+    [expressParams?.gasPaymentParams, gasPaymentTokenAllowance?.tokensAllowanceData, gasPaymentTokenAllowance?.isLoaded]
+  );
 
-    return approvalRequirements;
-  }, [
-    batchParams,
+  const permits = useMemo(() => (expressParams && tokenPermits ? tokenPermits : []), [expressParams, tokenPermits]);
+
+  const { tokensToApprove, isAllowanceLoaded, isApproving, handleApprove } = useApprovalState({
     chainId,
-    expressParams,
-    gasPaymentTokenAllowance?.isLoaded,
-    gasPaymentTokenAllowance?.tokensAllowanceData,
-    srcChainId,
-    tokenPermits,
-  ]);
-
-  const { isApproving, handleApprove } = useApprovalState({ tokensToApprove });
+    signer,
+    allowPermit: Boolean(expressParams),
+    payTokenParamsList: EMPTY_PAY_TOKEN_PARAMS,
+    gasPaymentTokenParams,
+    permits,
+    skip: Boolean(srcChainId),
+    isLoading: !batchParams,
+  });
 
   const error = useMemo(() => {
     if (!position) {
@@ -505,7 +496,7 @@ export function PositionSeller() {
     if (isAllowanceLoaded && tokensToApprove.length) {
       if (!chainId || isApproving) return;
 
-      handleApprove({ chainId, signer, allowPermit: Boolean(expressParams) });
+      handleApprove();
 
       return;
     }
