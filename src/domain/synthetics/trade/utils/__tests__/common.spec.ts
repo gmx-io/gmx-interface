@@ -1,26 +1,7 @@
 import { describe, expect, it } from "vitest";
 
-import type { SwapStats } from "sdk/utils/trade/types";
-
-import { getTradeFees } from "./common";
-
-function makeSwapStep(usdIn: bigint): SwapStats {
-  return {
-    marketAddress: "0xmarket",
-    tokenInAddress: "0xin",
-    tokenOutAddress: "0xout",
-    isWrap: false,
-    isUnwrap: false,
-    swapFeeAmount: 0n,
-    swapFeeUsd: 0n,
-    priceImpactDeltaUsd: 0n,
-    amountIn: 0n,
-    amountInAfterFees: 0n,
-    usdIn,
-    amountOut: 0n,
-    usdOut: 0n,
-  };
-}
+import { getTradeFees } from "../common";
+import { makeSwapStep } from "./fixtures";
 
 describe("getTradeFees", () => {
   it("calculates swap profit fee percentage based on swap amount", () => {
