@@ -119,6 +119,9 @@ export function getDecreasePositionAmounts(p: {
     receiveTokenAmount: 0n,
     receiveUsd: 0n,
 
+    primaryOutput: { tokenAddress: "", amount: 0n, usd: 0n },
+    secondaryOutput: { tokenAddress: "", amount: 0n, usd: 0n },
+
     triggerOrderType: orderType,
     triggerThresholdType: undefined,
     decreaseSwapType: DecreasePositionSwapType.NoSwap,
@@ -395,6 +398,40 @@ export function getDecreasePositionAmounts(p: {
   }
 
   values.receiveUsd = convertToUsd(values.receiveTokenAmount, collateralToken.decimals, values.collateralPrice)!;
+
+  // Primary output (profit portion) and secondary output (collateral portion)
+  const profitOutputAmount = payedInfo.outputAmount;
+  const profitOutputUsd = convertToUsd(profitOutputAmount, collateralToken.decimals, values.collateralPrice) ?? 0n;
+
+  const collateralOutputAmount = values.receiveTokenAmount - profitOutputAmount;
+  const collateralOutputUsd =
+    convertToUsd(collateralOutputAmount, collateralToken.decimals, values.collateralPrice) ?? 0n;
+
+  if (values.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken) {
+    const pnlTokenPrice = pnlToken.prices.minPrice;
+
+    values.primaryOutput = {
+      tokenAddress: pnlToken.address,
+      amount: convertToTokenAmount(profitOutputUsd, pnlToken.decimals, pnlTokenPrice) ?? 0n,
+      usd: profitOutputUsd,
+    };
+    values.secondaryOutput = {
+      tokenAddress: pnlToken.address,
+      amount: convertToTokenAmount(collateralOutputUsd, pnlToken.decimals, pnlTokenPrice) ?? 0n,
+      usd: collateralOutputUsd,
+    };
+  } else {
+    values.primaryOutput = {
+      tokenAddress: collateralToken.address,
+      amount: profitOutputAmount,
+      usd: profitOutputUsd,
+    };
+    values.secondaryOutput = {
+      tokenAddress: collateralToken.address,
+      amount: collateralOutputAmount,
+      usd: collateralOutputUsd,
+    };
+  }
 
   return values;
 }
@@ -929,6 +966,26 @@ export function getOptimalDecreaseAndSwapAmounts(p: {
   const winner = selectBetterDecreaseSwapType({
     pathAUsdOut: pathASwap?.usdOut ?? 0n,
     pathBUsdOut: pathBSwap.usdOut,
+  });
+
+  // eslint-disable-next-line no-console
+  console.debug("[OptimalDecrease]", {
+    pathA: {
+      decreaseSwapType: pathADecrease.decreaseSwapType,
+      receiveUsd: pathADecrease.receiveUsd.toString(),
+      swapUsdOut: (pathASwap?.usdOut ?? 0n).toString(),
+    },
+    pathB: {
+      decreaseSwapType: pathBDecrease.decreaseSwapType,
+      receiveUsd: pathBDecrease.receiveUsd.toString(),
+      internalSwapAmountOut: internalSwapStats.amountOut.toString(),
+      externalSwapUsdOut: pathBSwap.usdOut.toString(),
+    },
+    winner,
+    isThirdToken,
+    receiveToken: receiveToken.symbol,
+    collateralToken: collateralToken.symbol,
+    pnlToken: pnlToken.symbol,
   });
 
   if (winner === "pathB") {

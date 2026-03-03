@@ -293,3 +293,71 @@ describe("getDecreasePositionAmounts DecreasePositionSwapType", () => {
     expect(amounts.swapProfitFeeUsd).not.toEqual(0n);
   });
 });
+
+describe("getDecreasePositionAmounts primaryOutput/secondaryOutput", () => {
+  it("sets collateral token for outputs when SwapPnlTokenToCollateralToken", () => {
+    const amounts = getDecreasePositionAmounts({
+      closeSizeUsd: position.sizeInUsd,
+      collateralToken: usdcToken,
+      position,
+      keepLeverage,
+      isLong,
+      marketInfo,
+      minCollateralUsd,
+      minPositionSizeUsd,
+      uiFeeFactor,
+      acceptablePriceImpactBuffer: 30,
+      userReferralInfo: undefined,
+      isSetAcceptablePriceImpactEnabled: true,
+    });
+
+    expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.SwapPnlTokenToCollateralToken);
+    expect(amounts.primaryOutput.tokenAddress).toEqual(usdcToken.address);
+    expect(amounts.secondaryOutput.tokenAddress).toEqual(usdcToken.address);
+    expect(amounts.primaryOutput.usd + amounts.secondaryOutput.usd).toEqual(amounts.receiveUsd);
+  });
+
+  it("sets pnl token for outputs when SwapCollateralTokenToPnlToken", () => {
+    const amounts = getDecreasePositionAmounts({
+      closeSizeUsd: position.sizeInUsd,
+      collateralToken: usdcToken,
+      receiveToken: ethToken,
+      position,
+      keepLeverage,
+      isLong,
+      marketInfo,
+      minCollateralUsd,
+      minPositionSizeUsd,
+      uiFeeFactor,
+      acceptablePriceImpactBuffer: 30,
+      userReferralInfo: undefined,
+      isSetAcceptablePriceImpactEnabled: true,
+    });
+
+    expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.SwapCollateralTokenToPnlToken);
+    expect(amounts.primaryOutput.tokenAddress).toEqual(wethToken.address);
+    expect(amounts.secondaryOutput.tokenAddress).toEqual(wethToken.address);
+    expect(amounts.primaryOutput.amount).toBeGreaterThan(0n);
+  });
+
+  it("has zero secondary output for partial close without collateral delta", () => {
+    const amounts = getDecreasePositionAmounts({
+      closeSizeUsd,
+      collateralToken: usdcToken,
+      position,
+      keepLeverage: false,
+      isLong,
+      marketInfo,
+      minCollateralUsd,
+      minPositionSizeUsd,
+      uiFeeFactor,
+      acceptablePriceImpactBuffer: 30,
+      userReferralInfo: undefined,
+      isSetAcceptablePriceImpactEnabled: true,
+    });
+
+    expect(amounts.isFullClose).toBe(false);
+    expect(amounts.secondaryOutput.amount).toEqual(0n);
+    expect(amounts.secondaryOutput.usd).toEqual(0n);
+  });
+});

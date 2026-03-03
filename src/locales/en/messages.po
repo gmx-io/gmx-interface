@@ -3982,10 +3982,6 @@ msgstr "Read the rules"
 msgid "Source chain supports single token only"
 msgstr "Source chain supports single token only"
 
-#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-#~ msgid "Annually"
-#~ msgstr "Annually"
-
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -5243,10 +5239,6 @@ msgstr "<0>Notifications are provided by Notifi and not affiliated with GMX. By
 #~ msgid "Receive Breakdown"
 #~ msgstr "Receive Breakdown"
 
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-#~ msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
-#~ msgstr "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
-
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
 msgstr "Claims unavailable on Avalanche Fuji"
@@ -5254,10 +5246,6 @@ msgstr "Claims unavailable on Avalanche Fuji"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buy failed"
 msgstr "Buy failed"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "{0} is required for collateral.<0/><1/>There is no swap path found for {1} to {2} within GMX.<2/><3/><4>You can buy {3} on 1inch.</4>"
-#~ msgstr "{0} is required for collateral.<0/><1/>There is no swap path found for {1} to {2} within GMX.<2/><3/><4>You can buy {3} on 1inch.</4>======="
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Users"

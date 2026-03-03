@@ -3982,10 +3982,6 @@ msgstr "阅读规则"
 msgid "Source chain supports single token only"
 msgstr "来源链仅支持单一代币"
 
-#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-#~ msgid "Annually"
-#~ msgstr "每年"
-
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -5243,10 +5239,6 @@ msgstr "<0>通知由 Notifi 提供，与 GMX 无关。通过订阅，您同意�
 #~ msgid "Receive Breakdown"
 #~ msgstr ""
 
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-#~ msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
-#~ msgstr "{typeString} 做多限价：当价格低于触发价格时 {0} 一个做多仓位。"
-
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
 msgstr "Avalanche Fuji 上无法领取>>>>>>> origin/release"
@@ -5254,10 +5246,6 @@ msgstr "Avalanche Fuji 上无法领取>>>>>>> origin/release"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buy failed"
 msgstr "买入失败"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "{0} is required for collateral.<0/><1/>There is no swap path found for {1} to {2} within GMX.<2/><3/><4>You can buy {3} on 1inch.</4>"
-#~ msgstr "{0} 需要作为抵押品。<0/><1/>在 GMX 内未找到 {1} 到 {2} 的交换路径。<2/><3/><4>您可以在 1inch 上购买 {3}。</4>======="
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Users"

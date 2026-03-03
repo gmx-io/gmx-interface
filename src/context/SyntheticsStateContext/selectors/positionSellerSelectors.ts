@@ -387,7 +387,7 @@ const selectPositionSellerOptimalDecrease = createSelector((q) => {
   const findSwapPath = q(selectPositionSellerFindSwapPath);
   const findSwapPathFromPnl = q(selectPositionSellerFindSwapPathFromPnl);
 
-  return getOptimalDecreaseAndSwapAmounts({
+  const result = getOptimalDecreaseAndSwapAmounts({
     marketInfo,
     collateralToken,
     isLong: tradeFlags.isLong,
@@ -409,6 +409,18 @@ const selectPositionSellerOptimalDecrease = createSelector((q) => {
     marketsInfoData,
     chainId,
   });
+
+  // eslint-disable-next-line no-console
+  console.debug("[PositionSeller] optimal path:", {
+    decreaseSwapType: result.decreaseAmounts.decreaseSwapType,
+    receiveUsd: result.decreaseAmounts.receiveUsd.toString(),
+    hasExternalSwap: result.swapAmounts !== undefined,
+    externalSwapUsdOut: result.swapAmounts?.usdOut?.toString(),
+    collateral: collateralToken.symbol,
+    receive: receiveToken.symbol,
+  });
+
+  return result;
 });
 
 export const selectPositionSellerAvailableReceiveTokens = createSelector((q) => {

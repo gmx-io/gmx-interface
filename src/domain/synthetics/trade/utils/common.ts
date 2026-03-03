@@ -125,6 +125,15 @@ export function getTradeFees(p: {
 
   const swapProfitFee = getFeeItem(swapProfitFeeUsd * -1n, swapProfitUsdIn);
 
+  if (type === "decrease" && swapProfitFeeUsd !== 0n) {
+    // eslint-disable-next-line no-console
+    console.debug("[TradeFees] swap profit fee basis:", {
+      swapProfitFeeUsd: swapProfitFeeUsd.toString(),
+      swapProfitUsdIn: swapProfitUsdIn.toString(),
+      resultBps: swapProfitFee?.bps?.toString(),
+    });
+  }
+
   const swapPriceImpact = !externalSwapQuote ? getFeeItem(swapPriceImpactDeltaUsd, totalSwapVolumeUsd) : undefined;
 
   const positionFeeBeforeDiscount = getFeeItem((positionFeeUsd + feeDiscountUsd) * -1n, sizeDeltaUsd);
