@@ -301,11 +301,9 @@ export function PositionSeller() {
   const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
     const orderType = isTwap ? OrderType.LimitDecrease : OrderType.MarketDecrease;
 
-    // TODO findSwapPath considering decreasePositionSwapType?
-    const swapPath =
-      decreaseAmounts?.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken
-        ? []
-        : swapAmounts?.swapStrategy.swapPathStats?.swapPath || [];
+    const isDirectPnlReceive =
+      decreaseAmounts?.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken && !shouldSwap;
+    const swapPath = isDirectPnlReceive ? [] : swapAmounts?.swapStrategy.swapPathStats?.swapPath || [];
 
     if (
       !account ||
@@ -381,6 +379,7 @@ export function PositionSeller() {
     position,
     receiveToken?.address,
     receiveUsd,
+    shouldSwap,
     signer,
     swapAmounts?.swapStrategy.swapPathStats?.swapPath,
     tokensData,
