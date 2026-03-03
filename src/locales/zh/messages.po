@@ -5233,15 +5233,11 @@ msgstr "没有将 {nativeTokenSymbol} 转账至 {chainName} 的选项"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
-msgstr "<0>通知由 Notifi 提供，与 GMX 无关。通过订阅，您同意您提供给 Notifi 的信息受其 </0><1>隐私政策</1><2> 和 </2><3>使用条款</3> 约束。<<<<<<< HEAD"
-
-#: src/components/PositionSeller/PositionSeller.tsx
-#~ msgid "Receive Breakdown"
-#~ msgstr ""
+msgstr "<0>通知由 Notifi 提供，与 GMX 无关。通过订阅，您同意您提供给 Notifi 的信息受其 </0><1>隐私政策</1><2> 和 </2><3>使用条款</3> 约束。"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
-msgstr "Avalanche Fuji 上无法领取>>>>>>> origin/release"
+msgstr "Avalanche Fuji 上无法领取"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buy failed"

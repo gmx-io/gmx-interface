@@ -271,10 +271,14 @@ export const selectPositionSellerShouldSwap = createSelector((q) => {
     return false;
   }
 
-  // The contract handles collateral→PnL conversion internally via decreaseSwapType,
-  // so no post-decrease swap path is needed
+  // The contract handles collateral→PnL conversion internally via decreaseSwapType.
+  // No post-decrease swap is needed only when receive token IS the pnl token.
+  // For third-token path B (collateral→PnL internal, PnL→receive external), we still need a swap.
   if (decreaseAmounts?.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken) {
-    return false;
+    const pnlToken = q(selectPositionSellerPnlToken);
+    if (pnlToken && getIsEquivalentTokens(receiveToken, pnlToken)) {
+      return false;
+    }
   }
 
   return true;

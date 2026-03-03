@@ -5233,15 +5233,11 @@ msgstr "Aucune option pour transférer {nativeTokenSymbol} vers {chainName}"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
-msgstr "<0>Les notifications sont fournies par Notifi et non affiliées à GMX. En vous abonnant, vous acceptez que les informations que vous fournissez à Notifi soient régies par sa </0><1>Politique de confidentialité</1><2> et </2><3>Conditions d'utilisation</3>.<<<<<<< HEAD"
-
-#: src/components/PositionSeller/PositionSeller.tsx
-#~ msgid "Receive Breakdown"
-#~ msgstr ""
+msgstr "<0>Les notifications sont fournies par Notifi et non affiliées à GMX. En vous abonnant, vous acceptez que les informations que vous fournissez à Notifi soient régies par sa </0><1>Politique de confidentialité</1><2> et </2><3>Conditions d'utilisation</3>."
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
-msgstr "Récupérations indisponibles sur Avalanche Fuji>>>>>>> origin/release"
+msgstr "Récupérations indisponibles sur Avalanche Fuji"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buy failed"

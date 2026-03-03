@@ -5233,15 +5233,11 @@ msgstr "{chainName} への {nativeTokenSymbol} の送金オプションがあり
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
-msgstr "<0>Notifiが提供する通知はGMXと提携していません。購読することで、Notifiに提供した情報がその</0><1>プライバシーポリシー</1><2>および</2><3>利用規約</3>に従うことに同意します。<<<<<<< HEAD"
-
-#: src/components/PositionSeller/PositionSeller.tsx
-#~ msgid "Receive Breakdown"
-#~ msgstr ""
+msgstr "<0>Notifiが提供する通知はGMXと提携していません。購読することで、Notifiに提供した情報がその</0><1>プライバシーポリシー</1><2>および</2><3>利用規約</3>に従うことに同意します。"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
-msgstr "Avalanche Fuji では受け取りをご利用いただけません>>>>>>> origin/release"
+msgstr "Avalanche Fuji では受け取りをご利用いただけません"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buy failed"
