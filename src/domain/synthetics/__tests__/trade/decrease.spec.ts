@@ -271,4 +271,26 @@ describe("getDecreasePositionAmounts DecreasePositionSwapType", () => {
     expect(amounts.swapProfitUsdIn).toBeGreaterThan(0n);
     expect(amounts.swapProfitFeeUsd).toBeGreaterThan(0n);
   });
+
+  it("estimates internal swap fee for SwapCollateralTokenToPnlToken", () => {
+    const amounts = getDecreasePositionAmounts({
+      closeSizeUsd: position.sizeInUsd,
+      collateralToken: usdcToken,
+      receiveToken: ethToken,
+      position,
+      keepLeverage,
+      isLong,
+      marketInfo,
+      minCollateralUsd,
+      minPositionSizeUsd,
+      uiFeeFactor,
+      acceptablePriceImpactBuffer: 30,
+      userReferralInfo: undefined,
+      isSetAcceptablePriceImpactEnabled: true,
+    });
+
+    expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.SwapCollateralTokenToPnlToken);
+    expect(amounts.swapProfitUsdIn).toBeGreaterThan(0n);
+    expect(amounts.swapProfitFeeUsd).not.toEqual(0n);
+  });
 });

@@ -1,5 +1,6 @@
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { estimateExecuteDecreaseOrderGasLimit, estimateOrderOraclePriceCount } from "domain/synthetics/fees";
+import { DecreasePositionSwapType } from "domain/synthetics/orders";
 import {
   getIsPositionInfoLoaded,
   getMinCollateralFactorForPosition,
@@ -251,8 +252,19 @@ export const selectPositionSellerReceiveToken = createSelector((q) => {
 export const selectPositionSellerShouldSwap = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
   const receiveToken = q(selectPositionSellerReceiveToken);
+  const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
 
-  return position && receiveToken && !getIsEquivalentTokens(position.collateralToken, receiveToken);
+  if (!position || !receiveToken || getIsEquivalentTokens(position.collateralToken, receiveToken)) {
+    return false;
+  }
+
+  // The contract handles collateral→PnL conversion internally via decreaseSwapType,
+  // so no post-decrease swap path is needed
+  if (decreaseAmounts?.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken) {
+    return false;
+  }
+
+  return true;
 });
 
 export const selectPositionSellerMaxLiquidityPath = createSelector((q) => {

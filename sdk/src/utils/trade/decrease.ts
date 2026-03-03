@@ -301,6 +301,19 @@ export function getDecreasePositionAmounts(p: {
     values.swapProfitFeeUsd = swapProfitStats.swapFeeUsd - swapProfitStats.priceImpactDeltaUsd;
     values.swapProfitUsdIn = swapProfitStats.usdIn;
     values.swapUiFeeUsd = applyFactor(swapProfitStats.usdIn, uiFeeFactor);
+  } else if (profitUsd > 0 && values.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken) {
+    const swapProfitStats = getSwapStats({
+      marketInfo,
+      tokenInAddress: collateralToken.address,
+      tokenOutAddress: pnlToken.address,
+      usdIn: profitUsd,
+      shouldApplyPriceImpact: true,
+      swapPricingType: SwapPricingType.Swap,
+    });
+
+    values.swapProfitFeeUsd = swapProfitStats.swapFeeUsd - swapProfitStats.priceImpactDeltaUsd;
+    values.swapProfitUsdIn = swapProfitStats.usdIn;
+    values.swapUiFeeUsd = applyFactor(swapProfitStats.usdIn, uiFeeFactor);
   } else {
     values.swapProfitFeeUsd = 0n;
     values.swapProfitUsdIn = 0n;
