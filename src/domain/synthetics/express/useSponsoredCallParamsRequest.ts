@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import useSWR from "swr";
 
 import { getIsFlagEnabled } from "config/ab";
-import { ARBITRUM_SEPOLIA } from "config/chains";
 import { metrics } from "lib/metrics";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 
@@ -19,10 +18,6 @@ export function useIsSponsoredCallBalanceAvailable(chainId: number): SponsoredCa
   const { data: isSponsoredCallAllowed } = useSWR<boolean>([chainId, "isSponsoredCallAllowed"], {
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
     fetcher: async () => {
-      if (chainId === ARBITRUM_SEPOLIA) {
-        return false;
-      }
-
       try {
         if (!getIsFlagEnabled("testSponsoredCall")) {
           return false;

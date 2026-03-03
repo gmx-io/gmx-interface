@@ -21,7 +21,7 @@ export const GELATO_API_KEYS: Partial<Record<ContractsChainId, string>> = {
   [ARBITRUM]: "6dE6kOa9pc1ap4dQQC2iaK9i6nBFp8eYxQlm00VreWc_",
   [AVALANCHE]: "FalsQh9loL6V0rwPy4gWgnQPR6uTHfWjSVT2qlTzUq4_",
   [BOTANIX]: "s5GgkfX7dvd_2uYqsRSCjzMekUrXh0dibUvfLab1Anc_",
-  [ARBITRUM_SEPOLIA]: "nx5nyAg4h2kI_64YtOuPt7LSPDEXo4u8eJY_idF9xDw_",
+  [ARBITRUM_SEPOLIA]: "test_XXlYFJm_1xyl5LTm6t2NcxR0Oyikc4m1xPd4k6hXXhY_",
 };
 
 export const EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS = 1000;

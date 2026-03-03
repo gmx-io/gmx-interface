@@ -40,6 +40,13 @@ const UiPage = () => (
   </Suspense>
 );
 
+const LazyDevSmartWalletPage = lazy(() => import("pages/DevSmartWallet/DevSmartWallet"));
+const DevSmartWalletPage = () => (
+  <Suspense fallback={<Trans>Loading...</Trans>}>
+    <LazyDevSmartWalletPage />
+  </Suspense>
+);
+
 const LazyRpcDebug = lazy(() => import("pages/RpcDebug/RpcDebug"));
 const RpcDebugPage = () => (
   <Suspense fallback={<Trans>Loading...</Trans>}>
@@ -229,6 +236,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       {isDevelopment() && [
         <Route exact path="/ui" key="ui">
           <UiPage />
+        </Route>,
+        <Route exact path="/dev-smart-wallet" key="dev-smart-wallet">
+          <DevSmartWalletPage />
         </Route>,
         <Route exact path="/permits" key="permits">
           <TestPermitsPage />

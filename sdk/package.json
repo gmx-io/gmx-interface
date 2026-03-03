@@ -343,6 +343,7 @@
     "@types/lodash": "4.14.198",
     "@types/node": "18.7.13",
     "lint-staged": "12.3.4",
+    "prettier": "3.2.5",
     "ts-patch": "3.2.1",
     "tsx": "4.19.0",
     "typescript-transform-paths": "3.5.1",
