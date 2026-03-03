@@ -12,7 +12,7 @@ import { getChainName, SettlementChainId } from "sdk/configs/chains";
 import { ColorfulBanner, ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import { useAvailableToTradeAssetMultichainRequest } from "components/GmxAccountModal/hooks";
 
-import InfoIcon from "img/ic_info.svg?react";
+import WarnIcon from "img/ic_warn.svg?react";
 
 export function SettlementChainWarningContainer() {
   const { chainId: fallbackChainId, srcChainId } = useChainId();
@@ -48,13 +48,13 @@ export function SettlementChainWarningContainer() {
   }
 
   return (
-    <ColorfulBanner color="blue" icon={InfoIcon} className="text-body-small">
+    <ColorfulBanner color="yellow" icon={WarnIcon} className="text-body-small">
       <Trans>
-        You switched your settlement network to {getChainName(settlementChainId)}, but you still have{" "}
-        {formatUsd(gmxAccountUsd)} remaining in your {getChainName(anyNonEmptyGmxAccountChainId)} GMX Account.
+        Settlement network changed to {getChainName(settlementChainId)}, but {formatUsd(gmxAccountUsd)} remains in your{" "}
+        {getChainName(anyNonEmptyGmxAccountChainId)} GMX Account
       </Trans>
 
-      <ColorfulButtonLink color="blue" onClick={handleNetworkSwitch}>
+      <ColorfulButtonLink color="yellow" onClick={handleNetworkSwitch}>
         <Trans>Change to {getChainName(anyNonEmptyGmxAccountChainId)}</Trans>
       </ColorfulButtonLink>
     </ColorfulBanner>

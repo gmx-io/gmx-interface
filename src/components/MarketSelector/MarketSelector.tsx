@@ -181,7 +181,7 @@ export function MarketSelector({
               className="mb-16"
               value={searchKeyword}
               setValue={setSearchKeyword}
-              placeholder={t`Search Market`}
+              placeholder={t`Search market`}
               onKeyDown={_handleKeyDown}
             />
             <ButtonRowScrollFadeContainer>
@@ -206,7 +206,7 @@ export function MarketSelector({
         </div>
         {filteredOptions.length === 0 && (
           <div className="px-20 text-14 text-typography-secondary">
-            <Trans>No markets matched</Trans>
+            <Trans>No markets found</Trans>
           </div>
         )}
       </SlideModal>

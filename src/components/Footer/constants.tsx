@@ -25,13 +25,13 @@ export const getFooterLinks = (): Link[] => [
     label: (
       <>
         <V1Icon />
-        {t`V1 Interface`}
+        {t`V1 interface`}
       </>
     ),
     link: "https://v1.app.gmx.io/#/v1",
     external: true,
   },
-  { label: t`Media Kit`, link: "https://docs.gmx.io/docs/community/media-kit", external: true },
+  { label: t`Media kit`, link: "https://docs.gmx.io/docs/community/media-kit", external: true },
   { label: t`Charts by TradingView`, link: "https://www.tradingview.com/", external: true },
   // { label: "Jobs", link: "/jobs" },
 ];
@@ -47,7 +47,7 @@ export const SOCIAL_LINKS: SocialLink[] = [
 function V1Icon() {
   return (
     <div className="rounded-2 bg-typography-secondary px-3 py-2 text-[8px] font-medium text-white dark:text-black">
-      V1
+      {t`V1`}
     </div>
   );
 }

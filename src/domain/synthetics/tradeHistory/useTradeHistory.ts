@@ -366,9 +366,7 @@ export async function fetchRawTradeActions({
             reason
             reasonBytes
             timestamp
-            transaction {
-                hash
-            }
+            transactionHash
         }
       }`);
 

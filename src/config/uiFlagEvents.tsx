@@ -18,8 +18,8 @@ export const uiFlagEventsData: UiFlagEventData[] = [
   {
     id: "service-disruption",
     flagName: "showServiceDisruptionBanner",
-    title: <Trans>Service Disruption</Trans>,
-    content: <Trans>Trading may be temporarily unavailable. Our team is working to resolve the issue</Trans>,
+    title: <Trans>Service disruption</Trans>,
+    content: <Trans>Trading may be temporarily unavailable. Our team is working to resolve the issue.</Trans>,
     variant: "warning",
   },
 ];

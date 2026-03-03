@@ -250,11 +250,10 @@ describe("getDecreasePositionAmounts DecreasePositionSwapType", () => {
     expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.SwapCollateralTokenToPnlToken);
   });
 
-  it("models split outputs for full close with pnl receive token", () => {
+  it("exposes swapProfitUsdIn for SwapPnlTokenToCollateralToken", () => {
     const amounts = getDecreasePositionAmounts({
       closeSizeUsd: position.sizeInUsd,
       collateralToken: usdcToken,
-      receiveToken: ethToken,
       position,
       keepLeverage,
       isLong,
@@ -267,12 +266,8 @@ describe("getDecreasePositionAmounts DecreasePositionSwapType", () => {
       isSetAcceptablePriceImpactEnabled: true,
     });
 
-    expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.SwapCollateralTokenToPnlToken);
-    expect(amounts.primaryOutput.tokenAddress).toBeDefined();
-    expect(amounts.primaryOutput.amount).toBeGreaterThan(0n);
-    expect(amounts.secondaryOutput.tokenAddress).toBeDefined();
-    expect(amounts.secondaryOutput.amount).toBeGreaterThan(0n);
-    expect(amounts.primaryOutput.tokenAddress).not.toEqual(amounts.secondaryOutput.tokenAddress);
-    expect(amounts.swapProfitUsdIn).toEqual(amounts.secondaryOutput.usd);
+    expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.SwapPnlTokenToCollateralToken);
+    expect(amounts.swapProfitUsdIn).toBeGreaterThan(0n);
+    expect(amounts.swapProfitFeeUsd).toBeGreaterThan(0n);
   });
 });

@@ -10,21 +10,21 @@ export function renderNetFeeHeaderTooltipContent() {
   return (
     <div className="NetFeeHeaderTooltipContent-netfee-header-tooltip">
       <Trans>
-        Net rate combines funding and borrowing fees but excludes open, swap or impact fees.
+        Net rate = funding + borrowing fees.
         <br />
         <br />
-        Funding fees help to balance longs and shorts and are exchanged between both sides.{" "}
+        Funding: Balances longs vs shorts, paid between traders.{" "}
         <ExternalLink newTab href={DOCS_LINKS.fundingFees}>
           Read more
         </ExternalLink>
-        .
+        {"."}
         <br />
         <br />
-        Borrowing fees help ensure available liquidity.{" "}
+        Borrowing: Ensures available liquidity.{" "}
         <ExternalLink newTab href={DOCS_LINKS.borrowingFees}>
           Read more
         </ExternalLink>
-        .
+        {"."}
       </Trans>
     </div>
   );

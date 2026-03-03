@@ -116,7 +116,7 @@ export function BuyGmxModal({
           isLoading={isSwitching}
           disabled={isSwitching}
         >
-          <Trans>Buy on GMX directly</Trans>
+          <Trans>Buy GMX directly</Trans>
         </BuyGmxModalButton>
         <div className="flex flex-col gap-8">
           <span className="text-14 font-medium text-typography-secondary">

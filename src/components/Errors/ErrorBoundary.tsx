@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { Component, ErrorInfo, ReactNode, useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
@@ -90,7 +90,7 @@ function ErrorBoundaryDebugWrapper({ children }: { children: ReactNode }) {
     return createPortal(
       <button
         type="button"
-        aria-label="Trigger error boundary"
+        aria-label={t`Trigger error boundary`}
         className="absolute z-[11000] size-8 rounded-full bg-red-700 hover:bg-red-500"
         style={debugButtonStyle}
         onClick={() => setShouldThrow(true)}
@@ -134,11 +134,11 @@ function ErrorFallback({ variant = "page", onReload, wrapperClassName: wrapperCl
     <div className={wrapperClassName}>
       <div className="flex max-w-[420px] flex-col items-center gap-12">
         <div className="text-20 font-medium text-typography-primary">
-          <Trans>Something Went Wrong</Trans>
+          <Trans>Something went wrong</Trans>
         </div>
         <div className="text-body-medium text-typography-secondary">
           <Trans>
-            Reload the page or report the issue if the <br /> problem persists.
+            Reload the page or report the issue if the <br /> problem persists
           </Trans>
         </div>
         <div className="mt-8 flex flex-col items-center gap-8">

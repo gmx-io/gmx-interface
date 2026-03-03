@@ -2,6 +2,7 @@ import { Trans, msg } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { CSSProperties, useMemo } from "react";
 
+import { DOCS_LINKS } from "config/links";
 import {
   selectClaimsFundingFeesAccruedTotal,
   selectClaimsPriceImpactAccruedTotal,
@@ -35,11 +36,10 @@ export function SettleAccruedCard({ onAccruedPositionPriceImpactRebateClick, onS
           buttonText: _(buttonText),
           tooltipText: (
             <Trans>
-              Accrued positive funding fees in positions not yet claimable.
+              Positive funding fees accrued in positions, not yet claimable.
               <br />
               <br />
-              They become available after modifying the position by increasing or decreasing it, depositing or
-              withdrawing collateral, or settling the fees using the "Settle" button.
+              Available after changing position size, adjusting collateral, or clicking "Settle".
             </Trans>
           ),
           onButtonClick: onSettleClick,
@@ -49,10 +49,8 @@ export function SettleAccruedCard({ onAccruedPositionPriceImpactRebateClick, onS
           buttonText: _(button2Text),
           tooltipText: (
             <Trans>
-              Accrued price impact rebates. They will become claimable after 5 days.
-              <br />
-              <br />
-              <ExternalLink newTab href="https://docs.gmx.io/docs/trading/#price-impact-rebates">
+              Price impact rebates accrued. Claimable after 5 days.{" "}
+              <ExternalLink newTab href={DOCS_LINKS.priceImpact}>
                 Read more
               </ExternalLink>
               .

@@ -1,6 +1,6 @@
 import { autoUpdate, flip, FloatingPortal, shift, useFloating } from "@floating-ui/react";
 import { Menu } from "@headlessui/react";
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useCallback } from "react";
 import { Link } from "react-router-dom";
 
@@ -95,10 +95,10 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right", mar
                     width={16}
                     height={16}
                     src={nansenPortfolioIcon}
-                    alt="Proof of Reserves"
+                    alt={t`Proof of reserves`}
                   />
                   <p>
-                    <Trans>Proof of Reserves</Trans>
+                    <Trans>Proof of reserves</Trans>
                   </p>
                 </ExternalLink>
               )}

@@ -124,7 +124,7 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
 
   const graphTitleLabelMap = {
     performance: <PerformanceLabel short={false} variant="none" />,
-    price: t`Current Price`,
+    price: t`Current price`,
     feeApr: <FeeApyLabel variant="none" />,
   };
 

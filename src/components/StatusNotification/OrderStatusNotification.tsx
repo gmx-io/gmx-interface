@@ -40,7 +40,7 @@ import { TransactionStatus, TransactionStatusType } from "components/Transaction
 import { useToastAutoClose } from "./useToastAutoClose";
 
 // eslint-disable-next-line import/order
-import { TaskState } from "@gelatonetwork/relay-sdk";
+import { StatusCode } from "sdk/utils/gelatoRelay";
 import "./StatusNotification.scss";
 
 type Props = {
@@ -74,10 +74,14 @@ function OrderStatusNotification({
   const pendingExpressTxn = getByKey(pendingExpressTxns, pendingExpressTxnKey);
 
   const isGelatoTaskFailed = useMemo(() => {
+    if (pendingExpressTxn?.sendFailed) {
+      return true;
+    }
+
     const gelatoTaskStatus = getByKey(gelatoTaskStatuses, pendingExpressTxn?.taskId);
 
-    return gelatoTaskStatus && [TaskState.Cancelled, TaskState.ExecReverted].includes(gelatoTaskStatus.taskState);
-  }, [gelatoTaskStatuses, pendingExpressTxn?.taskId]);
+    return gelatoTaskStatus && [StatusCode.Rejected, StatusCode.Reverted].includes(gelatoTaskStatus.statusCode);
+  }, [gelatoTaskStatuses, pendingExpressTxn?.taskId, pendingExpressTxn?.sendFailed]);
 
   const hasError =
     isGelatoTaskFailed || (Boolean(orderStatus?.cancelledTxnHash) && pendingOrderData.txnType !== "cancel");
@@ -169,20 +173,20 @@ function OrderStatusNotification({
             initialCollateralToken?.decimals,
             symbol,
             { isStable: initialCollateralToken?.isStable }
-          )} to ${positionText}`;
+          )} to ${positionText}...`;
         } else {
           return t`Withdrawing ${formatTokenAmount(
             initialCollateralDeltaAmount,
             initialCollateralToken?.decimals,
             symbol,
             { isStable: initialCollateralToken?.isStable }
-          )} from ${positionText}`;
+          )} from ${positionText}...`;
         }
       } else {
         let orderTypeText = "";
 
         if (isMarketOrderType(orderType)) {
-          orderTypeText = isIncreaseOrderType(orderType) ? t`Increasing` : t`Decreasing`;
+          orderTypeText = isIncreaseOrderType(orderType) ? t`Increasing...` : t`Decreasing...`;
         } else {
           const txnTypeText = {
             create: t`Create`,
@@ -291,13 +295,13 @@ function OrderStatusNotification({
     }
 
     if (orderStatus?.executedTxnHash) {
-      text = t`Order executed`;
+      text = t`Order filled`;
       status = "success";
       txnHash = orderStatus?.executedTxnHash;
     }
 
     if (orderStatus?.cancelledTxnHash) {
-      text = t`Order cancelled`;
+      text = t`Order canceled`;
       txnHash = orderStatus?.cancelledTxnHash;
 
       if (orderData?.txnType !== "cancel") {
@@ -550,7 +554,7 @@ export function OrdersStatusNotificiation({
                 onClick={onCancelOrdersClick}
                 className="StatusNotification-cancel-all"
               >
-                {t`Cancel newly created orders`}
+                {t`Cancel new orders`}
               </button>
             )}
           </div>

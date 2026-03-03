@@ -168,17 +168,17 @@ export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>
 
 export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean) {
   if (errorName === CustomErrorName.OrderNotFulfillableAtAcceptablePrice && !isMarketOrder) {
-    return t`The execution price didn't meet acceptable price. The order will fill when the condition is met.`;
+    return t`Execution price didn't meet acceptable price. Order will fill when the condition is met.`;
   } else if (errorName === CustomErrorName.OrderNotFulfillableAtAcceptablePrice && isMarketOrder) {
-    return t`The execution price didn't meet the acceptable price.`;
+    return t`Execution price didn't meet acceptable price`;
   } else if (errorName === CustomErrorName.InsufficientReserveForOpenInterest && !isMarketOrder) {
-    return t`Insufficient available liquidity. The order will fill when there is liquidity available.`;
+    return t`Insufficient liquidity. Order will fill when liquidity is available.`;
   } else if (errorName === CustomErrorName.InsufficientReserveForOpenInterest && isMarketOrder) {
-    return t`Insufficient available liquidity.`;
+    return t`Insufficient liquidity`;
   } else if (errorName === CustomErrorName.InsufficientSwapOutputAmount && !isMarketOrder) {
-    return t`Insufficient available liquidity.`;
+    return t`Insufficient liquidity`;
   } else if (errorName === CustomErrorName.InsufficientSwapOutputAmount && isMarketOrder) {
-    return t`Insufficient available liquidity.`;
+    return t`Insufficient liquidity`;
   }
 
   return t`Reason: ${words(errorName).join(" ").toLowerCase()}`;

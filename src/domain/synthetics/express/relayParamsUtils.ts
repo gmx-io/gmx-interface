@@ -18,6 +18,7 @@ import { ExternalSwapQuote, FindSwapPath, SwapAmounts } from "sdk/utils/trade/ty
 
 import { getOracleParamsForRelayParams } from "./oracleParamsUtils";
 import type { GasPaymentParams, RawRelayParamsPayload, RelayFeePayload, RelayParamsPayload } from "./types";
+import { SwapPricingType } from "../orders";
 
 export function getExpressContractAddress(
   chainId: ContractsChainId,
@@ -152,6 +153,7 @@ export function getRelayerFeeParams({
         chainId,
         externalSwapQuoteParams: undefined,
         allowSameTokenSwap: false,
+        swapPricingType: SwapPricingType.AtomicSwap,
       });
     }
 

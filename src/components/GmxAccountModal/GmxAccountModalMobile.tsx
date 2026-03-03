@@ -42,7 +42,7 @@ function WithdrawTitle() {
 function DepositStatusTitle() {
   return (
     <TitleRow>
-      <Trans>Your deposit is in progress</Trans>
+      <Trans>Deposit in progress...</Trans>
     </TitleRow>
   );
 }
@@ -50,7 +50,7 @@ function DepositStatusTitle() {
 function SelectAssetToDepositTitle() {
   return (
     <TitleWithBack backTo="deposit">
-      <Trans>Select Asset to Deposit</Trans>
+      <Trans>Select asset to deposit</Trans>
     </TitleWithBack>
   );
 }

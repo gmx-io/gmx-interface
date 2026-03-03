@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
 
@@ -134,12 +134,12 @@ function OrderSize({
           content={
             <>
               <StatsTooltipRow
-                label={"Key"}
+                label={t`Key`}
                 value={<div className="debug-key muted">{order.key}</div>}
                 showDollar={false}
               />
               <StatsTooltipRow
-                label={"Amount"}
+                label={t`Amount`}
                 value={<div className="debug-key muted">{order.minOutputAmount.toString()}</div>}
                 showDollar={false}
               />
@@ -161,7 +161,7 @@ function OrderSize({
 
   function getCollateralLabel() {
     if (isDecreaseOrderType(positionOrder.orderType)) {
-      return t`Collateral Delta`;
+      return t`Collateral delta`;
     }
     return t`Collateral`;
   }
@@ -218,11 +218,11 @@ function OrderSize({
                     ],
                     { isStable: positionOrder.initialCollateralToken.isStable }
                   )}{" "}
-                  will be swapped to{" "}
+                  swapped to{" "}
                   {positionOrder.targetCollateralToken.isNative
                     ? wrappedToken.symbol
                     : positionOrder.targetCollateralToken.symbol}{" "}
-                  on order execution.
+                  when executed
                 </Trans>
               </div>
             )}
@@ -230,7 +230,7 @@ function OrderSize({
             {showDebugValues && (
               <div className="OrderItem-tooltip-row">
                 <StatsTooltipRow
-                  label={"Key"}
+                  label={t`Key`}
                   value={<div className="debug-key muted">{positionOrder.key}</div>}
                   showDollar={false}
                 />
@@ -345,18 +345,7 @@ function MarkPrice({ order, className }: { order: OrderInfo; className?: string 
     const { markSwapRatioText } = getSwapRatioText(order);
 
     return (
-      <TooltipWithPortal
-        handle={
-          <span className={className}>{isSwapOrderType(order.orderType) ? markSwapRatioText : markPriceFormatted}</span>
-        }
-        position="bottom-end"
-        content={
-          <Trans>
-            Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and
-            no oracle reports are produced or if there is not enough available liquidity.
-          </Trans>
-        }
-      />
+      <span className={className}>{isSwapOrderType(order.orderType) ? markSwapRatioText : markPriceFormatted}</span>
     );
   }
 
@@ -375,19 +364,11 @@ function MarkPrice({ order, className }: { order: OrderInfo; className?: string 
         renderContent={() => {
           return (
             <Trans>
-              <p>
-                The order will be executed when the oracle price is {positionOrder.triggerThresholdType}{" "}
-                {formatUsd(positionOrder.triggerPrice, {
-                  displayDecimals: priceDecimals,
-                  visualMultiplier: positionOrder.indexToken?.visualMultiplier,
-                })}
-                .
-              </p>
-              <br />
-              <p>
-                Note that there may be rare cases where the order cannot be executed, for example, if the chain is down
-                and no oracle reports are produced or if the price impact exceeds your acceptable price.
-              </p>
+              Executes when oracle price is {positionOrder.triggerThresholdType}{" "}
+              {formatUsd(positionOrder.triggerPrice, {
+                displayDecimals: priceDecimals,
+                visualMultiplier: positionOrder.indexToken?.visualMultiplier,
+              })}
             </Trans>
           );
         }}
@@ -439,7 +420,7 @@ function TriggerPrice({
         handle={handle}
         content={
           <StatsTooltipRow
-            label={t`Acceptable Price`}
+            label={t`Acceptable price`}
             value={formatUsd(positionOrder.acceptablePrice, {
               displayDecimals: priceDecimals,
               visualMultiplier: positionOrder.indexToken?.visualMultiplier,
@@ -471,10 +452,10 @@ function TriggerPrice({
               <>
                 {isSetAcceptablePriceImpactEnabled && (
                   <div className="pb-8">
-                    <StatsTooltipRow label={t`Acceptable Price`} value={acceptablePriceText} showDollar={false} />
+                    <StatsTooltipRow label={t`Acceptable price`} value={acceptablePriceText} showDollar={false} />
                   </div>
                 )}
-                {t`You will receive at least ${toAmountText} if this order is executed. This price is being updated in real time based on swap fees and price impact.`}
+                {t`Receive at least ${toAmountText} if executed. Price updates based on fees and price impact.`}
               </>
             )}
           />
@@ -510,10 +491,10 @@ function TriggerPrice({
         position="bottom-end"
         renderContent={() => (
           <StatsTooltipRow
-            label={t`Acceptable Price`}
+            label={t`Acceptable price`}
             value={
               isStopLossOrderType(positionOrder.orderType) || isStopIncreaseOrderType(positionOrder.orderType)
-                ? "NA"
+                ? "N/A"
                 : `${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.acceptablePrice, {
                     displayDecimals: priceDecimals,
                     visualMultiplier: positionOrder.indexToken?.visualMultiplier,
@@ -790,13 +771,15 @@ function OrderItemSmall({
       <AppCardSection>
         {showDebugValues && (
           <div className="App-card-row">
-            <div className="font-medium text-typography-secondary">Key</div>
+            <div className="font-medium text-typography-secondary">
+              <Trans>Key</Trans>
+            </div>
             <div className="debug-key muted">{order.key}</div>
           </div>
         )}
         <div className="App-card-row">
           <div className="font-medium text-typography-secondary">
-            <Trans>Order Type</Trans>
+            <Trans>Order type</Trans>
           </div>
           <div>
             <OrderItemTypeLabel order={order} />
@@ -810,7 +793,7 @@ function OrderItemSmall({
         </div>
         <div className="App-card-row">
           <div className="font-medium text-typography-secondary">
-            <Trans>Trigger Price</Trans>
+            <Trans>Trigger price</Trans>
           </div>
           <div>
             <TriggerPrice
@@ -823,7 +806,7 @@ function OrderItemSmall({
 
         <div className="App-card-row">
           <div className="font-medium text-typography-secondary">
-            <Trans>Mark Price</Trans>
+            <Trans>Mark price</Trans>
           </div>
           <div>
             <MarkPrice order={order} />

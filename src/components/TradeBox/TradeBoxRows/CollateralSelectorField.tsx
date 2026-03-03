@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import React, { useMemo } from "react";
+import React, { useMemo, useRef } from "react";
 
 import {
   selectTradeboxAvailableMarketsOptions,
@@ -15,8 +15,8 @@ import { selectTradeboxAvailableAndDisabledTokensForCollateral } from "context/S
 import { useSelector } from "context/SyntheticsStateContext/utils";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
+import { BlockField } from "components/BlockField/BlockField";
 import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
-import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import { CollateralSelector } from "../../CollateralSelector/CollateralSelector";
@@ -26,40 +26,55 @@ export type Props = {
   selectedMarketAddress?: string;
   onSelectCollateralAddress: (address?: string) => void;
   isMarket: boolean;
+  disabled?: boolean;
 };
 
-export function CollateralSelectorRow(p: Props) {
-  const { onSelectCollateralAddress } = p;
+export function CollateralSelectorField(p: Props) {
+  const { onSelectCollateralAddress, disabled } = p;
   const selectedTokenName = useSelector(selectTradeboxSelectedCollateralTokenSymbol);
+  const popoverReferenceRef = useRef<HTMLDivElement | null>(null);
 
   const { availableTokens, disabledTokens } = useSelector(selectTradeboxAvailableAndDisabledTokensForCollateral);
 
-  const warnings = useCollateralWarnings();
   const collateralInTooltipContent = useCollateralInTooltipContent();
 
   return (
-    <>
-      <SyntheticsInfoRow
-        label={
-          <TooltipWithPortal position="left-start" content={collateralInTooltipContent} variant="icon">
-            <Trans>Collateral In</Trans>
-          </TooltipWithPortal>
-        }
-        value={
-          <CollateralSelector
-            onSelect={onSelectCollateralAddress}
-            options={availableTokens}
-            disabledOptions={disabledTokens}
-            selectedTokenSymbol={selectedTokenName}
-          />
-        }
-      />
-      {warnings}
-    </>
+    <BlockField
+      containerRef={popoverReferenceRef}
+      forwardClickToSelector
+      disabled={disabled}
+      label={
+        <TooltipWithPortal
+          position="bottom-end"
+          content={collateralInTooltipContent}
+          variant="none"
+          className="overflow-hidden"
+          handleClassName="!flex overflow-hidden"
+          contentClassName="overflow-hidden"
+        >
+          <span className="overflow-hidden text-ellipsis">
+            <Trans>Collateral</Trans>
+          </span>
+        </TooltipWithPortal>
+      }
+      labelClassName="overflow-hidden shrink-1 grow-0 flex"
+      contentClassName="shrink-0 min-w-[unset]"
+      className="group/selector-field overflow-hidden"
+      content={
+        <CollateralSelector
+          onSelect={onSelectCollateralAddress}
+          options={availableTokens}
+          disabledOptions={disabledTokens}
+          selectedTokenSymbol={selectedTokenName}
+          popoverReferenceRef={popoverReferenceRef}
+          disabled={disabled}
+        />
+      }
+    />
   );
 }
 
-function useCollateralWarnings() {
+export function useCollateralWarnings() {
   const selectedMarketAddress = useSelector(selectTradeboxMarketAddress);
   const selectedCollateralAddress = useSelector(selectTradeboxCollateralTokenAddress);
   const { isMarket } = useSelector(selectTradeboxTradeFlags);
@@ -93,8 +108,7 @@ function useCollateralWarnings() {
         messages.push(
           <AlertInfoCard key="showHasExistingPositionWithDifferentCollateral_1">
             <Trans>
-              You have an existing position with {collateralWithPosition.symbol} as collateral. This action will not
-              apply for that position.{" "}
+              Existing position uses {collateralWithPosition.symbol} collateral. This action won't affect it.{" "}
               <ColorfulButtonLink
                 color="blue"
                 onClick={() => {
@@ -110,8 +124,7 @@ function useCollateralWarnings() {
         messages.push(
           <AlertInfoCard key="showHasExistingPositionWithDifferentCollateral_2">
             <Trans>
-              You have an existing position with {collateralWithPosition.symbol} as collateral. This order will not be
-              valid for that position.{" "}
+              Existing position uses {collateralWithPosition.symbol} collateral. This order won't apply to it.{" "}
               <ColorfulButtonLink
                 color="blue"
                 onClick={() => {
@@ -133,7 +146,7 @@ function useCollateralWarnings() {
       messages.push(
         <AlertInfoCard key="showHasExistingOrderWithDifferentCollateral">
           <Trans>
-            You have an existing limit order with {symbol} as collateral.{" "}
+            Existing limit order uses {symbol} collateral.{" "}
             <ColorfulButtonLink
               color="blue"
               onClick={() => {

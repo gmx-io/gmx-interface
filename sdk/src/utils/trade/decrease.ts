@@ -113,17 +113,6 @@ export function getDecreasePositionAmounts(p: {
     payedRemainingCollateralUsd: 0n,
     payedRemainingCollateralAmount: 0n,
 
-    primaryOutput: {
-      tokenAddress: undefined,
-      amount: 0n,
-      usd: 0n,
-    },
-    secondaryOutput: {
-      tokenAddress: undefined,
-      amount: 0n,
-      usd: 0n,
-    },
-
     receiveTokenAmount: 0n,
     receiveUsd: 0n,
 
@@ -344,16 +333,11 @@ export function getDecreasePositionAmounts(p: {
     values.collateralPrice
   )!;
 
-  const profitOutputUsd = convertToUsd(payedInfo.outputAmount, collateralToken.decimals, values.collateralPrice)!;
-  let collateralOutputAmount = 0n;
-  let collateralOutputUsd = 0n;
-
   // Collateral delta
   if (values.isFullClose) {
     values.collateralDeltaUsd = estimatedCollateralUsd;
     values.collateralDeltaAmount = position.collateralAmount;
-    collateralOutputAmount = payedInfo.remainingCollateralAmount;
-    collateralOutputUsd = convertToUsd(collateralOutputAmount, collateralToken.decimals, values.collateralPrice)!;
+    values.receiveTokenAmount = payedInfo.outputAmount + payedInfo.remainingCollateralAmount;
   } else if (
     keepLeverage &&
     position.sizeInUsd > 0 &&
@@ -387,57 +371,14 @@ export function getDecreasePositionAmounts(p: {
       collateralToken.decimals,
       values.collateralPrice
     )!;
-    collateralOutputAmount = values.collateralDeltaAmount;
-    collateralOutputUsd = values.collateralDeltaUsd;
+    values.receiveTokenAmount = payedInfo.outputAmount + values.collateralDeltaAmount;
   } else {
     values.collateralDeltaUsd = 0n;
     values.collateralDeltaAmount = 0n;
-    collateralOutputAmount = 0n;
-    collateralOutputUsd = 0n;
+    values.receiveTokenAmount = payedInfo.outputAmount;
   }
 
-  values.primaryOutput = {
-    tokenAddress: collateralToken.address,
-    amount: payedInfo.outputAmount,
-    usd: profitOutputUsd,
-  };
-  values.secondaryOutput = {
-    tokenAddress: collateralToken.address,
-    amount: collateralOutputAmount,
-    usd: collateralOutputUsd,
-  };
-
-  if (values.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken) {
-    values.primaryOutput = {
-      tokenAddress: pnlToken.address,
-      amount: convertToTokenAmount(values.primaryOutput.usd, pnlToken.decimals, pnlToken.prices.minPrice)!,
-      usd: values.primaryOutput.usd,
-    };
-
-    if (values.secondaryOutput.usd > 0n) {
-      const collateralToPnlSwapStats = getSwapStats({
-        marketInfo,
-        tokenInAddress: collateralToken.address,
-        tokenOutAddress: pnlToken.address,
-        usdIn: values.secondaryOutput.usd,
-        shouldApplyPriceImpact: true,
-        swapPricingType: SwapPricingType.Swap,
-      });
-
-      values.swapProfitFeeUsd = collateralToPnlSwapStats.swapFeeUsd - collateralToPnlSwapStats.priceImpactDeltaUsd;
-      values.swapProfitUsdIn = collateralToPnlSwapStats.usdIn;
-      values.receiveTokenAmount = values.primaryOutput.amount + collateralToPnlSwapStats.amountOut;
-      values.receiveUsd = values.primaryOutput.usd + collateralToPnlSwapStats.usdOut;
-    } else {
-      values.swapProfitFeeUsd = 0n;
-      values.swapProfitUsdIn = 0n;
-      values.receiveTokenAmount = values.primaryOutput.amount;
-      values.receiveUsd = values.primaryOutput.usd;
-    }
-  } else {
-    values.receiveTokenAmount = values.primaryOutput.amount + values.secondaryOutput.amount;
-    values.receiveUsd = values.primaryOutput.usd + values.secondaryOutput.usd;
-  }
+  values.receiveUsd = convertToUsd(values.receiveTokenAmount, collateralToken.decimals, values.collateralPrice)!;
 
   return values;
 }

@@ -4,7 +4,7 @@ import toast from "react-hot-toast";
 import { useLocalStorage } from "react-use";
 
 import { ARBITRUM } from "config/chains";
-import { AL16Z_DELISTING_EVENT_ID, appEventsData, homeEventsData } from "config/events";
+import { AL16Z_DELISTING_EVENT_ID, OM_MANTRA_MIGRATION_EVENT_ID, appEventsData, homeEventsData } from "config/events";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
 import { usePositions } from "domain/synthetics/positions";
@@ -16,6 +16,7 @@ import useWallet from "lib/wallets/useWallet";
 import EventToast from "./EventToast";
 
 const AL16Z_MARKET_ADDRESS = "0xD60f1BA6a76979eFfE706BF090372Ebc0A5bF169";
+const OM_MARKET_ADDRESS = "0x89EB78679921499632fF16B1be3ee48295cfCD91";
 
 function useEventToast() {
   const isHome = isHomeSite();
@@ -51,6 +52,12 @@ function useEventToast() {
     );
   }, [positions.positionsData]);
 
+  const hasOmPosition = useMemo(() => {
+    return Object.values(positions.positionsData ?? {}).some(
+      (position) => position.marketAddress === OM_MARKET_ADDRESS
+    );
+  }, [positions.positionsData]);
+
   useEffect(() => {
     const someIncentivesOn = Boolean(arbIncentiveStats?.lp?.isActive || arbIncentiveStats?.trading?.isActive);
     const validationParams = {
@@ -64,6 +71,7 @@ function useEventToast() {
 
     eventsData
       .filter((event) => event.id !== AL16Z_DELISTING_EVENT_ID || hasAl16ZPosition)
+      .filter((event) => event.id !== OM_MANTRA_MIGRATION_EVENT_ID || hasOmPosition)
       .filter((event) => event.isActive)
       .filter(
         (event) => !event.startDate || !isFuture(parse(event.startDate + ", +00", "d MMM yyyy, H:mm, x", new Date()))
@@ -79,6 +87,7 @@ function useEventToast() {
               event={event}
               id={event.id}
               toast={t}
+              variant={event.variant}
               onClick={() => {
                 toast.dismiss(event.id);
                 const newVisited = visited ? [...visited, event.id] : [event.id];
@@ -101,6 +110,7 @@ function useEventToast() {
     isAdaptiveFundingActiveAllMarkets,
     arbIncentiveStats,
     hasAl16ZPosition,
+    hasOmPosition,
   ]);
 }
 

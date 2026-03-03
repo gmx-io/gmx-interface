@@ -145,7 +145,7 @@ const selectTradeboxDecreaseTradeError = createSelector((q) => {
     receiveToken: selectedPosition?.collateralToken,
     nextPositionValues: nextPositionValues,
     isLong,
-    isTrigger: true,
+    isTrigger: stage !== "trade",
     minCollateralUsd,
     isNotEnoughReceiveTokenLiquidity: false,
     triggerThresholdType: stage !== "trade" ? decreaseAmounts?.triggerThresholdType : undefined,

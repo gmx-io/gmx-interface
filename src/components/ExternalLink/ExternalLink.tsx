@@ -16,6 +16,7 @@ type Props = {
 function ExternalLink({ href, children, className, newTab = true, variant = "underline" }: Props) {
   const classNames = cx("link-underline hover:text-blue-300", className, {
     "!no-underline": variant !== "underline",
+    "inline-flex": variant === "icon",
   });
   const props = {
     href,
@@ -29,7 +30,7 @@ function ExternalLink({ href, children, className, newTab = true, variant = "und
   };
   return (
     <a {...props}>
-      {children}{" "}
+      {children}
       {variant === "icon" && <NewLinkIcon className="ml-4 mt-3 size-12 shrink-0 self-baseline align-baseline" />}
     </a>
   );

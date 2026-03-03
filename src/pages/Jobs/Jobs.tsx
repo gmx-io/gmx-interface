@@ -1,48 +1,43 @@
 import { t, Trans } from "@lingui/macro";
 import React from "react";
 
-import { getPageTitle } from "lib/legacy";
-
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import Card from "components/Card/Card";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import SEO from "components/Seo/SEO";
 
 import "./Jobs.css";
 
 function Jobs() {
   return (
-    <SEO title={getPageTitle(t`Job Openings`)}>
-      <AppPageLayout>
-        <div className="default-container page-layout Referrals">
-          <div className="section-title-block">
-            <div className="section-title-icon" />
-            <div className="section-title-content">
-              <div className="Page-title">
-                <Trans>Jobs</Trans>
-              </div>
-              <div className="Page-description">
-                <Trans>Job openings at GMX.</Trans>
-              </div>
+    <AppPageLayout title={t`Job openings`}>
+      <div className="default-container page-layout Referrals">
+        <div className="section-title-block">
+          <div className="section-title-icon" />
+          <div className="section-title-content">
+            <div className="Page-title">
+              <Trans>Jobs</Trans>
+            </div>
+            <div className="Page-description">
+              <Trans>Job openings at GMX</Trans>
             </div>
           </div>
-          <div className="jobs-page-body">
-            <NoJob />
-          </div>
         </div>
-      </AppPageLayout>
-    </SEO>
+        <div className="jobs-page-body">
+          <NoJob />
+        </div>
+      </div>
+    </AppPageLayout>
   );
 }
 
 function NoJob() {
   return (
-    <Card title={t`No open positions at GMX currently`}>
+    <Card title={t`No open positions`}>
       <div className="body-para">
         <p className="subheading">
           <Trans>
-            GMX is not actively looking for new hires at the moment. However, if you think you can contribute to the
-            project, please email <ExternalLink href="mailto:jobs@gmx.io">jobs@gmx.io</ExternalLink>.
+            GMX is not actively hiring. If you think you can contribute, email{" "}
+            <ExternalLink href="mailto:jobs@gmx.io">jobs@gmx.io</ExternalLink>.
           </Trans>
         </p>
       </div>

@@ -112,7 +112,7 @@ export async function createDepositTxn({
         tokensData,
         createMulticallPayload: encodedPayload,
         method: "simulateExecuteLatestDeposit",
-        errorTitle: t`Deposit error.`,
+        errorTitle: t`Deposit error`,
         value: wntAmount,
         metricId,
         blockTimestampData,

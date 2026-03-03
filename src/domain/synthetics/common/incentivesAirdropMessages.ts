@@ -10,15 +10,15 @@ import {
 } from "../claims/constants";
 
 export const INCENTIVE_TYPE_MAP = {
-  1001: t`GM Airdrop`,
-  1002: t`GLP to GM Airdrop`,
-  1003: t`TRADING Airdrop`,
+  1001: t`GM airdrop`,
+  1002: t`GLP to GM airdrop`,
+  1003: t`Trading airdrop`,
   1004: t`STIP.b LP incentives`,
-  1005: t`STIP.b Trading Incentives`,
-  1006: t`STIP.b Retroactive Bonus`,
-  1100: t`Avalanche LP Incentives`,
-  1101: t`Avalanche Trading Incentives`,
-  1200: t`tBTC LP Incentives`,
+  1005: t`STIP.b trading incentives`,
+  1006: t`STIP.b retroactive bonus`,
+  1100: t`Avalanche LP incentives`,
+  1101: t`Avalanche trading incentives`,
+  1200: t`tBTC LP incentives`,
   [GLV_BONUS_INCENTIVE_DISTRIBUTION_ID.toString()]: getDistributionTitle(
     GLV_BONUS_INCENTIVE_DISTRIBUTION_ID.toString()
   ),

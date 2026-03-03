@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback } from "react";
 
@@ -21,5 +22,5 @@ export function DownloadAsCsv<T>({ data, excludedFields, fileName, className }: 
     return null;
   }
 
-  return <img className={cx("clickable", className)} src={downloadIcon} alt="Download as CSV" onClick={onClick} />;
+  return <img className={cx("clickable", className)} src={downloadIcon} alt={t`Download as CSV`} onClick={onClick} />;
 }

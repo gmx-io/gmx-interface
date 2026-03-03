@@ -24,16 +24,16 @@ const actionTextMapBase: Partial<
   "LimitSwap-OrderFrozen": msg`Failed Limit Swap`,
 
   "Twap-OrderCreated": msg`Create TWAP`,
-  "Twap-OrderExecuted": msg`Execute TWAP Part`,
+  "Twap-OrderExecuted": msg`Execute TWAP part`,
   "Twap-OrderCancelled": msg`Cancel TWAP`,
-  "Twap-OrderUpdated": msg`Update TWAP Part`,
-  "Twap-OrderFrozen": msg`Failed TWAP Part`,
+  "Twap-OrderUpdated": msg`Update TWAP part`,
+  "Twap-OrderFrozen": msg`Failed TWAP part`,
 
   "TwapSwap-OrderCreated": msg`Create TWAP Swap`,
-  "TwapSwap-OrderExecuted": msg`Execute TWAP Swap Part`,
+  "TwapSwap-OrderExecuted": msg`Execute TWAP Swap part`,
   "TwapSwap-OrderCancelled": msg`Cancel TWAP Swap`,
-  "TwapSwap-OrderUpdated": msg`Update TWAP Swap Part`,
-  "TwapSwap-OrderFrozen": msg`Failed TWAP Swap Part`,
+  "TwapSwap-OrderUpdated": msg`Update TWAP Swap part`,
+  "TwapSwap-OrderFrozen": msg`Failed TWAP Swap part`,
 
   "MarketIncrease-OrderCreated": msg`Request Market Increase`,
   "MarketIncrease-OrderExecuted": msg`Market Increase`,
@@ -55,17 +55,17 @@ const actionTextMapBase: Partial<
   "MarketDecrease-OrderExecuted": msg`Market Decrease`,
   "MarketDecrease-OrderCancelled": msg`Failed Market Decrease`,
 
-  "LimitDecrease-OrderCreated": msg`Create Take Profit`,
-  "LimitDecrease-OrderExecuted": msg`Execute Take Profit`,
-  "LimitDecrease-OrderCancelled": msg`Cancel Take Profit`,
-  "LimitDecrease-OrderUpdated": msg`Update Take Profit`,
-  "LimitDecrease-OrderFrozen": msg`Failed Take Profit`,
+  "LimitDecrease-OrderCreated": msg`Create Take-Profit`,
+  "LimitDecrease-OrderExecuted": msg`Execute Take-Profit`,
+  "LimitDecrease-OrderCancelled": msg`Cancel Take-Profit`,
+  "LimitDecrease-OrderUpdated": msg`Update Take-Profit`,
+  "LimitDecrease-OrderFrozen": msg`Failed Take-Profit`,
 
-  "StopLossDecrease-OrderCreated": msg`Create Stop Loss`,
-  "StopLossDecrease-OrderExecuted": msg`Execute Stop Loss`,
-  "StopLossDecrease-OrderCancelled": msg`Cancel Stop Loss`,
-  "StopLossDecrease-OrderUpdated": msg`Update Stop Loss`,
-  "StopLossDecrease-OrderFrozen": msg`Failed Stop Loss`,
+  "StopLossDecrease-OrderCreated": msg`Create Stop-Loss`,
+  "StopLossDecrease-OrderExecuted": msg`Execute Stop-Loss`,
+  "StopLossDecrease-OrderCancelled": msg`Cancel Stop-Loss`,
+  "StopLossDecrease-OrderUpdated": msg`Update Stop-Loss`,
+  "StopLossDecrease-OrderFrozen": msg`Failed Stop-Loss`,
 
   "Liquidation-OrderExecuted": msg`Liquidated`,
 };
@@ -75,13 +75,13 @@ export const actionTextMap: Partial<
 > = {
   ...actionTextMapBase,
 
-  "Deposit-OrderCreated": msg`Request Deposit`,
+  "Deposit-OrderCreated": msg`Request deposit`,
   "Deposit-OrderExecuted": msg`Deposit`,
-  "Deposit-OrderCancelled": msg`Failed Deposit`,
+  "Deposit-OrderCancelled": msg`Failed deposit`,
 
-  "Withdraw-OrderCreated": msg`Request Withdraw`,
+  "Withdraw-OrderCreated": msg`Request withdraw`,
   "Withdraw-OrderExecuted": msg`Withdraw`,
-  "Withdraw-OrderCancelled": msg`Failed Withdraw`,
+  "Withdraw-OrderCancelled": msg`Failed withdraw`,
 };
 
 function orderTypeToKey(orderType: OrderType): keyof typeof OrderType {

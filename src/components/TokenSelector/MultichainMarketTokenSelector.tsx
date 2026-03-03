@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
 
@@ -141,7 +141,7 @@ export function MultichainMarketTokenSelector({
       value: "wallet",
       label: (
         <span className="whitespace-nowrap">
-          <Trans>Wallet Balance</Trans>
+          <Trans>Wallet</Trans>
         </span>
       ),
     };
@@ -150,7 +150,7 @@ export function MultichainMarketTokenSelector({
       value: "gmxAccount",
       label: (
         <span className="whitespace-nowrap">
-          <Trans>GMX Account Balance</Trans>
+          <Trans>GMX Account</Trans>
         </span>
       ),
     };
@@ -258,11 +258,11 @@ function AvailableToTradeTokenList({
               <div>
                 <div>
                   {isGlvAddress(chainId, token.address) ? (
-                    "GLV"
+                    t`GLV`
                   ) : (
                     <>
                       {getTokenSymbolByMarket(chainId, token.address, "index")}
-                      <span className="text-slate-100">/USD</span>
+                      <span className="text-slate-100">{t`/USD`}</span>
                     </>
                   )}
                 </div>

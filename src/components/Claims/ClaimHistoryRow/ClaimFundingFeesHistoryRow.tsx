@@ -28,9 +28,9 @@ export type ClaimFundingFeesHistoryRowProps = {
 };
 
 export const claimFundingFeeEventTitles: Record<ClaimFundingFeeAction["eventName"], MessageDescriptor> = {
-  [ClaimType.SettleFundingFeeCancelled]: msg`Failed Settlement of Funding Fees`,
-  [ClaimType.SettleFundingFeeCreated]: msg`Request Settlement of Funding Fees`,
-  [ClaimType.SettleFundingFeeExecuted]: msg`Settled Funding Fees`,
+  [ClaimType.SettleFundingFeeCancelled]: msg`Failed settlement of funding fees`,
+  [ClaimType.SettleFundingFeeCreated]: msg`Request settlement of funding fees`,
+  [ClaimType.SettleFundingFeeExecuted]: msg`Settled funding fees`,
 };
 
 export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHistoryRowProps) {
@@ -208,7 +208,7 @@ export function ClaimFundingFeesHistoryRow({ claimAction }: ClaimFundingFeesHist
           <div className="ClaimHistoryRow-action-handle font-medium">{_(eventTitleDescriptor)}</div>
           <ExternalLink
             className="ClaimHistoryRow-external-link ml-5"
-            href={`${getExplorerUrl(chainId)}tx/${claimAction.transaction.hash}`}
+            href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}
           >
             <NewLink20ReactComponent />
           </ExternalLink>

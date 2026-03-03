@@ -122,7 +122,7 @@ export async function createSourceChainGlvDepositTxn({
       args: [sendParams, sendQuoteFromNative(ensuredFees.txnEstimatedNativeFee), params.addresses.receiver],
     }),
     value,
-    msg: t`Sent deposit transaction`,
+    msg: t`Deposit sent`,
     gasLimit: ensuredFees.txnEstimatedGasLimit,
   });
 

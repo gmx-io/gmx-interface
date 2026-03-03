@@ -95,7 +95,7 @@ export function MarketFilterBase({
       beforeContent={beforeContent}
       multiple
       label={t`Market`}
-      placeholder={t`Search Market`}
+      placeholder={t`Search market`}
       onChange={onChange}
       options={marketsOptions}
       ItemComponent={ItemComponent}

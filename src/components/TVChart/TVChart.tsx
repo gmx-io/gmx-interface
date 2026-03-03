@@ -11,12 +11,17 @@ import { CHART_PERIODS } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 import TVChartContainer from "components/TVChartContainer/TVChartContainer";
+import type { OpenChartTPSLModalParams } from "components/TVChartContainer/useChartContextMenu";
 
 import "./TVChart.scss";
 
 const DEFAULT_PERIOD = "5m";
 
-export function TVChart() {
+type Props = {
+  onOpenTPSLModal?: (params: OpenChartTPSLModalParams) => void;
+};
+
+export function TVChart({ onOpenTPSLModal }: Props) {
   const { chainId } = useChainId();
   const { chartToken, symbol: chartTokenSymbol } = useSelector(selectChartToken);
   const visualMultiplier = useSelector(selectSelectedMarketVisualMultiplier);
@@ -69,6 +74,7 @@ export function TVChart() {
         setPeriod={setPeriod}
         chartToken={chartTokenProp}
         supportedResolutions={SUPPORTED_RESOLUTIONS_V2}
+        onOpenTPSLModal={onOpenTPSLModal}
       />
     </div>
   );

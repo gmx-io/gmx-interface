@@ -76,7 +76,7 @@ export async function approveTokens({
         onApproveSubmitted?.({ isPermit: true });
         helperToast.success(
           <div>
-            <Trans>Permit signed!</Trans>
+            <Trans>Permit signed</Trans>
             <br />
           </div>
         );
@@ -88,7 +88,7 @@ export async function approveTokens({
 
         if (e.message.includes("user rejected")) {
           isUserError = true;
-          failMsg = t`Permit signing was cancelled`;
+          failMsg = t`Permit signing cancelled`;
         } else if (e.message.includes(INVALID_PERMIT_SIGNATURE_ERROR)) {
           permitParams.setIsPermitsDisabled(true);
           failMsg = getInvalidPermitSignatureToastContent();
@@ -123,9 +123,11 @@ export async function approveTokens({
       helperToast.success(
         <div>
           <Trans>
-            Approval submitted! <ExternalLink href={txUrl}>View status.</ExternalLink>
+            Approval submitted
+            <br />
+            <br />
+            <ExternalLink href={txUrl}>View status</ExternalLink>
           </Trans>
-          <br />
         </div>
       );
 
@@ -136,7 +138,7 @@ export async function approveTokens({
         const token = getTokenInfo(infoTokens, tokenAddress);
         const pendingTxn = {
           hash: res.hash,
-          message: includeMessage ? t`${token.symbol} Approved!` : false,
+          message: includeMessage ? t`${token.symbol} approved` : false,
         };
         setPendingTxns([...pendingTxns, pendingTxn]);
       }
@@ -154,21 +156,21 @@ export async function approveTokens({
         failMsg = (
           <div>
             <Trans>
-              There is not enough {nativeToken.symbol} in your account on {networkName} to send this transaction.
+              Insufficient {nativeToken.symbol} for gas on {networkName}
               <br />
               <br />
               <Link to="/buy_gmx#bridge">
-                Buy or Transfer {nativeToken.symbol} to {networkName}
+                Buy or transfer {nativeToken.symbol} to {networkName}
               </Link>
             </Trans>
           </div>
         );
       } else if (e.message?.includes("User denied transaction signature")) {
-        failMsg = t`Approval was cancelled.`;
+        failMsg = t`Approval cancelled`;
       } else {
         failMsg = (
           <>
-            <Trans>Approval failed.</Trans>
+            <Trans>Approval failed</Trans>
             <br />
             <br />
             <ToastifyDebug error={String(e)} />

@@ -204,7 +204,7 @@ function PositionShare({
           setUploadedImageInfo(imageInfo);
         } catch (error) {
           setUploadedImageInfo(null);
-          setUploadedImageError(t`Image generation error, please refresh and try again.`);
+          setUploadedImageError(t`Image generation failed. Refresh and try again.`);
         }
       }
     })();
@@ -260,7 +260,7 @@ function PositionShare({
 
     const url = getShareURL(uploadedImageInfo, shareAffiliateCode);
     copyToClipboard(url as string);
-    helperToast.success(t`Link copied to clipboard.`);
+    helperToast.success(t`Link copied to clipboard`);
   }
 
   const trackShareTwitter = useCallback(() => {
@@ -298,7 +298,7 @@ function PositionShare({
       contentClassName="md:!max-w-[500px]"
       isVisible={isPositionShareModalOpen}
       setIsVisible={setIsPositionShareModalOpen}
-      label={t`Share your successful GMX trade on X`}
+      label={t`Share your GMX trade on X`}
       contentPadding={false}
       withMobileBottomPosition
     >
@@ -322,29 +322,35 @@ function PositionShare({
           )}
         </div>
         {shouldShowCreateReferralCard && <CreateReferralCode onSuccess={handleReferralCodeSuccess} />}
-        {uploadedImageError && <AlertInfoCard type="error">{uploadedImageError}</AlertInfoCard>}
+        {uploadedImageError && (
+          <AlertInfoCard type="error" hideClose>
+            {uploadedImageError}
+          </AlertInfoCard>
+        )}
       </div>
       <div className="flex flex-col gap-12 p-20 pb-0">
         <ToggleSwitch isChecked={showPnlAmounts} setIsChecked={setShowPnlAmounts}>
           <span className="text-14 font-medium text-typography-secondary">
-            {isRpnl ? <Trans>Show rPnL Amounts</Trans> : <Trans>Show PnL Amounts</Trans>}
+            {isRpnl ? <Trans>Show rPnL amounts</Trans> : <Trans>Show PnL amounts</Trans>}
           </span>
         </ToggleSwitch>
 
         <ToggleSwitch isChecked={isPnlInLeverage} setIsChecked={setIsPnlInLeverage}>
           <span className="text-14 font-medium text-typography-secondary">
-            {isRpnl ? <Trans>Include rPnL in Leverage Display</Trans> : <Trans>Include PnL in Leverage Display</Trans>}
+            {isRpnl ? <Trans>Include rPnL in leverage display</Trans> : <Trans>Include PnL in leverage display</Trans>}
           </span>
         </ToggleSwitch>
 
         {promptedToCreateReferralCode && !isCreateReferralCodeInfoMessageClosed && (
           <ColorfulBanner color="blue" icon={AlertIcon} onClose={() => setIsCreateReferralCodeInfoMessageClosed(true)}>
-            <span className="font-medium text-blue-300">
-              <Trans>Are you sure you want to skip creating a referral code?</Trans>
-            </span>
-            <span className="text-blue-100">
-              <Trans>It allows you to earn rewards.</Trans>
-            </span>
+            <div className="flex flex-col gap-4">
+              <span className="font-medium text-blue-300">
+                <Trans>Skip creating a referral code?</Trans>
+              </span>
+              <span className="text-blue-100">
+                <Trans>Earn rewards by sharing your referral code</Trans>
+              </span>
+            </div>
           </ColorfulBanner>
         )}
       </div>

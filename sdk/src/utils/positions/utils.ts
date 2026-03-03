@@ -8,14 +8,23 @@ import {
   getPriceImpactForPosition,
   getProportionalPendingImpactValues,
 } from "utils/fees";
-import { getCappedPoolPnl, getMarketPnl, getOpenInterestUsd, getPoolUsdWithoutPnl } from "utils/markets";
-import { MarketInfo } from "utils/markets/types";
-import { applyFactor, expandDecimals, PRECISION } from "utils/numbers";
+import {
+  getCappedPoolPnl,
+  getMarketIndexName,
+  getMarketPnl,
+  getMarketPoolName,
+  getMaxAllowedLeverageByMinCollateralFactor,
+  getOpenInterestUsd,
+  getPoolUsdWithoutPnl,
+} from "utils/markets";
+import { Market, MarketInfo } from "utils/markets/types";
+import { applyFactor, expandDecimals, FLOAT_PRECISION_SQRT, getBasisPoints, PRECISION } from "utils/numbers";
+import { getAcceptablePriceInfo, getMarkPrice } from "utils/prices";
 import { UserReferralInfo } from "utils/referrals/types";
-import { convertToUsd, getIsEquivalentTokens } from "utils/tokens";
+import { convertToTokenAmount, convertToUsd, getIsEquivalentTokens } from "utils/tokens";
 import { Token, TokenData } from "utils/tokens/types";
 
-import { PositionInfoLoaded } from "./types";
+import { Position, PositionInfo, PositionInfoLoaded } from "./types";
 
 export function getPositionKey(account: string, marketAddress: string, collateralAddress: string, isLong: boolean) {
   return `${account}:${marketAddress}:${collateralAddress}:${isLong}`;
@@ -360,4 +369,324 @@ export function getMinCollateralFactorForPosition(position: PositionInfoLoaded, 
   }
 
   return minCollateralFactor;
+}
+
+function getFundingAmount(
+  latestFundingAmountPerSize: bigint,
+  positionFundingAmountPerSize: bigint,
+  positionSizeInUsd: bigint
+): bigint {
+  const fundingDiffFactor = latestFundingAmountPerSize - positionFundingAmountPerSize;
+  // fundingAmountPerSize values are stored with FLOAT_PRECISION_SQRT precision
+  return bigMath.mulDiv(positionSizeInUsd, fundingDiffFactor, PRECISION * FLOAT_PRECISION_SQRT);
+}
+
+export function getContractPositionDynamicFees({
+  position,
+  marketInfo,
+  marketFeeState,
+  referralInfo,
+}: {
+  position: {
+    sizeInUsd: bigint;
+    collateralTokenAddress: string;
+    isLong: boolean;
+    borrowingFactor: bigint;
+    fundingFeeAmountPerSize: bigint;
+    longTokenClaimableFundingAmountPerSize: bigint;
+    shortTokenClaimableFundingAmountPerSize: bigint;
+  };
+  marketInfo: MarketInfo;
+  marketFeeState: {
+    cumulativeBorrowingFactorLong: bigint;
+    cumulativeBorrowingFactorShort: bigint;
+    fundingFeeAmountPerSizeLongLong: bigint;
+    fundingFeeAmountPerSizeLongShort: bigint;
+    fundingFeeAmountPerSizeShortLong: bigint;
+    fundingFeeAmountPerSizeShortShort: bigint;
+    claimableFundingAmountPerSizeLongLong: bigint;
+    claimableFundingAmountPerSizeLongShort: bigint;
+    claimableFundingAmountPerSizeShortLong: bigint;
+    claimableFundingAmountPerSizeShortShort: bigint;
+  };
+  referralInfo?: UserReferralInfo;
+}) {
+  const { sizeInUsd, isLong, borrowingFactor } = position;
+  const isCollateralLongToken = position.collateralTokenAddress === marketInfo.longToken.address;
+  const collateralToken = isCollateralLongToken ? marketInfo.longToken : marketInfo.shortToken;
+  const collateralMinPrice = collateralToken.prices.minPrice;
+
+  const cumulativeBorrowingFactor = isLong
+    ? marketFeeState.cumulativeBorrowingFactorLong
+    : marketFeeState.cumulativeBorrowingFactorShort;
+
+  const borrowingDiffFactor =
+    cumulativeBorrowingFactor > borrowingFactor ? cumulativeBorrowingFactor - borrowingFactor : 0n;
+  const pendingBorrowingFeesUsd = applyFactor(sizeInUsd, borrowingDiffFactor);
+
+  let latestFundingFeeAmountPerSize: bigint;
+  if (isLong) {
+    latestFundingFeeAmountPerSize = isCollateralLongToken
+      ? marketFeeState.fundingFeeAmountPerSizeLongLong
+      : marketFeeState.fundingFeeAmountPerSizeLongShort;
+  } else {
+    latestFundingFeeAmountPerSize = isCollateralLongToken
+      ? marketFeeState.fundingFeeAmountPerSizeShortLong
+      : marketFeeState.fundingFeeAmountPerSizeShortShort;
+  }
+
+  const fundingFeeAmount = getFundingAmount(latestFundingFeeAmountPerSize, position.fundingFeeAmountPerSize, sizeInUsd);
+
+  let latestLongTokenClaimableFundingAmountPerSize: bigint;
+  let latestShortTokenClaimableFundingAmountPerSize: bigint;
+
+  if (isLong) {
+    latestLongTokenClaimableFundingAmountPerSize = marketFeeState.claimableFundingAmountPerSizeLongLong;
+    latestShortTokenClaimableFundingAmountPerSize = marketFeeState.claimableFundingAmountPerSizeLongShort;
+  } else {
+    latestLongTokenClaimableFundingAmountPerSize = marketFeeState.claimableFundingAmountPerSizeShortLong;
+    latestShortTokenClaimableFundingAmountPerSize = marketFeeState.claimableFundingAmountPerSizeShortShort;
+  }
+
+  const claimableLongTokenAmount = getFundingAmount(
+    latestLongTokenClaimableFundingAmountPerSize,
+    position.longTokenClaimableFundingAmountPerSize,
+    sizeInUsd
+  );
+
+  const claimableShortTokenAmount = getFundingAmount(
+    latestShortTokenClaimableFundingAmountPerSize,
+    position.shortTokenClaimableFundingAmountPerSize,
+    sizeInUsd
+  );
+
+  const { balanceWasImproved } = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong);
+  const { positionFeeUsd, discountUsd, uiFeeUsd } = getPositionFee(
+    marketInfo,
+    sizeInUsd,
+    balanceWasImproved,
+    referralInfo
+  );
+
+  const positionFeeAmount = convertToTokenAmount(positionFeeUsd, collateralToken.decimals, collateralMinPrice) ?? 0n;
+  const traderDiscountAmount = convertToTokenAmount(discountUsd, collateralToken.decimals, collateralMinPrice) ?? 0n;
+  const uiFeeAmount = convertToTokenAmount(uiFeeUsd, collateralToken.decimals, collateralMinPrice) ?? 0n;
+
+  return {
+    pendingBorrowingFeesUsd,
+    fundingFeeAmount,
+    claimableLongTokenAmount,
+    claimableShortTokenAmount,
+    positionFeeAmount,
+    traderDiscountAmount,
+    uiFeeAmount,
+  };
+}
+
+export function getPositionInfo(p: {
+  position: Position;
+  marketInfo: MarketInfo;
+  minCollateralUsd: bigint;
+  userReferralInfo?: UserReferralInfo;
+  showPnlInLeverage?: boolean;
+  uiFeeFactor?: bigint;
+}): PositionInfo {
+  const { position, marketInfo, minCollateralUsd, userReferralInfo, showPnlInLeverage = true, uiFeeFactor } = p;
+
+  const { indexToken, longToken, shortToken } = marketInfo;
+  const isCollateralLongToken = position.collateralTokenAddress === longToken.address;
+  const collateralToken = isCollateralLongToken ? longToken : shortToken;
+  const pnlToken = position.isLong ? longToken : shortToken;
+  const collateralMinPrice = collateralToken.prices.minPrice;
+
+  const markPrice = getMarkPrice({ prices: indexToken.prices, isLong: position.isLong, isIncrease: false });
+
+  const entryPrice = getEntryPrice({
+    sizeInTokens: position.sizeInTokens,
+    sizeInUsd: position.sizeInUsd,
+    indexToken,
+  });
+
+  const pendingFundingFeesUsd = convertToUsd(position.fundingFeeAmount, collateralToken.decimals, collateralMinPrice)!;
+
+  const pendingClaimableFundingFeesLongUsd = convertToUsd(
+    position.claimableLongTokenAmount,
+    longToken.decimals,
+    longToken.prices.minPrice
+  )!;
+
+  const pendingClaimableFundingFeesShortUsd = convertToUsd(
+    position.claimableShortTokenAmount,
+    shortToken.decimals,
+    shortToken.prices.minPrice
+  )!;
+
+  const pendingClaimableFundingFeesUsd = pendingClaimableFundingFeesLongUsd + pendingClaimableFundingFeesShortUsd;
+
+  const totalPendingFeesUsd = getPositionPendingFeesUsd({
+    pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
+    pendingFundingFeesUsd,
+  });
+
+  const collateralUsd = convertToUsd(position.collateralAmount, collateralToken.decimals, collateralMinPrice)!;
+  const remainingCollateralUsd = collateralUsd - totalPendingFeesUsd;
+  const remainingCollateralAmount = convertToTokenAmount(
+    remainingCollateralUsd,
+    collateralToken.decimals,
+    collateralMinPrice
+  )!;
+
+  const pnl = getPositionPnlUsd({
+    marketInfo,
+    sizeInUsd: position.sizeInUsd,
+    sizeInTokens: position.sizeInTokens,
+    markPrice,
+    isLong: position.isLong,
+  });
+
+  const pnlPercentage = collateralUsd !== 0n ? getBasisPoints(pnl, collateralUsd) : 0n;
+
+  const closeAcceptablePriceInfo = getAcceptablePriceInfo({
+    marketInfo,
+    isIncrease: false,
+    isLimit: false,
+    isLong: position.isLong,
+    indexPrice: markPrice,
+    sizeDeltaUsd: position.sizeInUsd,
+  });
+
+  const positionFeeInfo = getPositionFee(
+    marketInfo,
+    position.sizeInUsd,
+    closeAcceptablePriceInfo.balanceWasImproved,
+    userReferralInfo,
+    uiFeeFactor
+  );
+
+  const closingFeeUsd = positionFeeInfo.positionFeeUsd;
+  const uiFeeUsd = positionFeeInfo.uiFeeUsd ?? 0n;
+
+  const netPriceImpactValues = getNetPriceImpactDeltaUsdForDecrease({
+    marketInfo,
+    sizeInUsd: position.sizeInUsd,
+    pendingImpactAmount: position.pendingImpactAmount,
+    sizeDeltaUsd: position.sizeInUsd,
+    priceImpactDeltaUsd: closeAcceptablePriceInfo.priceImpactDeltaUsd,
+  });
+
+  const netValue = getPositionNetValue({
+    collateralUsd,
+    pnl,
+    pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
+    pendingFundingFeesUsd,
+    closingFeeUsd,
+    uiFeeUsd,
+    totalPendingImpactDeltaUsd: netPriceImpactValues.totalImpactDeltaUsd,
+    priceImpactDiffUsd: netPriceImpactValues.priceImpactDiffUsd,
+  });
+
+  const pnlAfterFees = getPositionPnlAfterFees({
+    pnl,
+    pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
+    pendingFundingFeesUsd,
+    closingFeeUsd,
+    uiFeeUsd,
+    totalPendingImpactDeltaUsd: netPriceImpactValues.totalImpactDeltaUsd,
+    priceImpactDiffUsd: netPriceImpactValues.priceImpactDiffUsd,
+  });
+
+  const pnlAfterFeesPercentage =
+    collateralUsd !== 0n ? getBasisPoints(pnlAfterFees, collateralUsd + closingFeeUsd) : 0n;
+
+  const leverage = getLeverage({
+    sizeInUsd: position.sizeInUsd,
+    collateralUsd,
+    pnl: showPnlInLeverage ? pnl : undefined,
+    pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
+    pendingFundingFeesUsd,
+  });
+
+  const leverageWithPnl = getLeverage({
+    sizeInUsd: position.sizeInUsd,
+    collateralUsd,
+    pnl,
+    pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
+    pendingFundingFeesUsd,
+  });
+
+  const leverageWithoutPnl = getLeverage({
+    sizeInUsd: position.sizeInUsd,
+    collateralUsd,
+    pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
+    pendingFundingFeesUsd,
+    pnl: undefined,
+  });
+
+  const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(marketInfo.minCollateralFactor);
+  const hasLowCollateral = (leverage !== undefined && leverage > maxAllowedLeverage) || false;
+
+  const liquidationPrice = getLiquidationPrice({
+    marketInfo,
+    collateralToken,
+    sizeInUsd: position.sizeInUsd,
+    sizeInTokens: position.sizeInTokens,
+    collateralUsd,
+    collateralAmount: position.collateralAmount,
+    pendingImpactAmount: position.pendingImpactAmount,
+    userReferralInfo,
+    minCollateralUsd,
+    pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
+    pendingFundingFeesUsd,
+    isLong: position.isLong,
+  });
+
+  const indexName = getMarketIndexName({ indexToken, isSpotOnly: false });
+  const poolName = getMarketPoolName({ longToken, shortToken });
+
+  const market: Market = {
+    marketTokenAddress: marketInfo.marketTokenAddress,
+    indexTokenAddress: marketInfo.indexTokenAddress,
+    longTokenAddress: marketInfo.longTokenAddress,
+    shortTokenAddress: marketInfo.shortTokenAddress,
+    isSameCollaterals: marketInfo.isSameCollaterals,
+    isSpotOnly: marketInfo.isSpotOnly,
+    name: marketInfo.name,
+    data: marketInfo.data,
+  };
+
+  return {
+    ...position,
+    market,
+    marketInfo,
+    indexName,
+    poolName,
+    indexToken,
+    collateralToken,
+    pnlToken,
+    longToken,
+    shortToken,
+    markPrice,
+    entryPrice,
+    liquidationPrice,
+    collateralUsd,
+    remainingCollateralUsd,
+    remainingCollateralAmount,
+    hasLowCollateral,
+    leverage,
+    leverageWithPnl,
+    leverageWithoutPnl,
+    pnl,
+    pnlPercentage,
+    pnlAfterFees,
+    pnlAfterFeesPercentage,
+    netValue,
+    netPriceImapctDeltaUsd: netPriceImpactValues.totalImpactDeltaUsd,
+    priceImpactDiffUsd: netPriceImpactValues.priceImpactDiffUsd,
+    pendingImpactUsd: netPriceImpactValues.proportionalPendingImpactDeltaUsd,
+    closePriceImpactDeltaUsd: closeAcceptablePriceInfo.priceImpactDeltaUsd,
+    closingFeeUsd,
+    uiFeeUsd,
+    pendingFundingFeesUsd,
+    pendingClaimableFundingFeesUsd,
+  };
 }

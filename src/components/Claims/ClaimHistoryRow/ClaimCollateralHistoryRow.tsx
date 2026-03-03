@@ -28,8 +28,8 @@ export type ClaimCollateralHistoryRowProps = {
 };
 
 export const claimCollateralEventTitles: Record<ClaimCollateralAction["eventName"], MessageDescriptor> = {
-  [ClaimType.ClaimFunding]: msg`Claim Funding Fees`,
-  [ClaimType.ClaimPriceImpact]: msg`Claim Price Impact Rebates`,
+  [ClaimType.ClaimFunding]: msg`Claim funding fees`,
+  [ClaimType.ClaimPriceImpact]: msg`Claim price impact rebates`,
 };
 
 export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
@@ -81,7 +81,7 @@ export function ClaimCollateralHistoryRow(p: ClaimCollateralHistoryRowProps) {
           <div className="ClaimHistoryRow-action-handle font-medium">{eventTitle}</div>
           <ExternalLink
             className="ClaimHistoryRow-external-link ml-5"
-            href={`${getExplorerUrl(chainId)}tx/${claimAction.transaction.hash}`}
+            href={`${getExplorerUrl(chainId)}tx/${claimAction.transactionHash}`}
           >
             <NewLink20ReactComponent />
           </ExternalLink>

@@ -3,6 +3,7 @@ import cx from "classnames";
 import { ReactNode, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
+import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
 import {
   getGlvOrMarketAddress,
   getMarketIndexName,
@@ -68,6 +69,7 @@ const getRecommendedGlvs = ({
 };
 
 const MIN_LIQUIDITY_USD = expandDecimals(500_000, USD_DECIMALS);
+const GMX_APR_TOTAL_LABEL = "gmxAprTotal";
 
 const getRecommendedGms = ({
   hasGmxAssets,
@@ -182,7 +184,7 @@ export function RecommendedAssets({
           </RecommendedAssetSection>
         )}
         {glvsToShow.length > 0 && (
-          <RecommendedAssetSection title={<Trans>GLV Vaults</Trans>}>
+          <RecommendedAssetSection title={<Trans>GLV vaults</Trans>}>
             {glvsToShow.map((glv) => (
               <GlvGmxRecommendedAssetItem
                 key={glv.glvTokenAddress}
@@ -194,7 +196,7 @@ export function RecommendedAssets({
         )}
         {gmsToShow.length > 0 && (
           <RecommendedAssetSection
-            title={<Trans>GM Pools</Trans>}
+            title={<Trans>GM pools</Trans>}
             additionalLink={
               <Link
                 to="/pools"
@@ -249,6 +251,9 @@ function RecommendedAssetSection({
 }
 
 function GmxRecommendedAssetItem({ chainId, openBuyGmxModal }: { chainId: AnyChainId; openBuyGmxModal: () => void }) {
+  const { data: stakingData } = useStakingProcessedData(chainId as any);
+  const isGmxSuspended = stakingData?.isRewardsSuspended;
+
   const handleClick = () => {
     sendEarnRecommendationClickedEvent({
       activeTab: "portfolio",
@@ -263,8 +268,8 @@ function GmxRecommendedAssetItem({ chainId, openBuyGmxModal }: { chainId: AnyCha
     <BaseRecommendedAssetItem
       icon={<GmxIcon className="size-32" />}
       title={<Trans>GMX</Trans>}
-      metricValue={<APRLabel chainId={chainId} label="gmxAprTotal" />}
-      metricLabel={<Trans>APR</Trans>}
+      metricValue={<APRLabel chainId={chainId} label={GMX_APR_TOTAL_LABEL} />}
+      metricLabel={isGmxSuspended ? undefined : <Trans>APR</Trans>}
       button={
         <Button variant="primary" onClick={handleClick}>
           <Trans>Buy GMX</Trans>

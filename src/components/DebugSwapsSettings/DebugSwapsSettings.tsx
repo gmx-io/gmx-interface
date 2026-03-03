@@ -31,7 +31,7 @@ export function DebugSwapsSettings() {
   return (
     <ExpandableRow
       open={isShown}
-      title={t`Debug Swaps`}
+      title={t`Debug swaps`}
       onToggle={toggleDebugSwaps}
       disableCollapseOnError={false}
       contentClassName="flex flex-col gap-16 pt-8"
@@ -45,7 +45,7 @@ export function DebugSwapsSettings() {
             updateDebugSettings();
           }}
         >
-          <Trans>Force External Swaps</Trans>
+          <Trans>Force external swaps</Trans>
         </ToggleSwitch>
         <ToggleSwitch
           isChecked={debugSettings.failExternalSwaps}
@@ -54,11 +54,11 @@ export function DebugSwapsSettings() {
             updateDebugSettings();
           }}
         >
-          <Trans>Fail External Swaps</Trans>
+          <Trans>Fail external swaps</Trans>
         </ToggleSwitch>
         <div>
           <div className="mb-8">
-            <Trans>Swap Price Impact for External Swap Threshold</Trans>
+            <Trans>Swap price impact for external swap threshold</Trans>
           </div>
           <div className="relative">
             <div className="absolute left-11 top-1/2 -translate-y-1/2 text-typography-secondary">-</div>
@@ -73,7 +73,9 @@ export function DebugSwapsSettings() {
               placeholder={SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS.toString()}
               maxDecimals={0}
             />
-            <div className="absolute right-11 top-1/2 -translate-y-1/2 text-right text-typography-secondary">bps</div>
+            <div className="absolute right-11 top-1/2 -translate-y-1/2 text-right text-typography-secondary">
+              {t`bps`}
+            </div>
           </div>
         </div>
       </div>

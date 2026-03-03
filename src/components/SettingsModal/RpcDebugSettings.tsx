@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { ChangeEvent, useCallback, useState } from "react";
 
 import { getChainName } from "config/chains";
@@ -51,7 +51,7 @@ export function RpcDebugSettings() {
   const debugEndpoints = _debugRpcTracker.getDebugRpcEndpoints(chainId);
 
   return (
-    <ExpandableRow title={<Trans>RPC Debug</Trans>} open={open} onToggle={setOpen}>
+    <ExpandableRow title={<Trans>RPC debug</Trans>} open={open} onToggle={setOpen}>
       <div className="flex flex-col gap-16 rounded-8 bg-slate-800 p-12 pr-16">
         {Object.keys(FLAG_LABELS).map((flag) => (
           <ToggleSwitch
@@ -64,7 +64,7 @@ export function RpcDebugSettings() {
         ))}
 
         <ExpandableRow
-          title={<Trans>Debug RPC Endpoints ({getChainName(chainId)})</Trans>}
+          title={<Trans>Debug RPC endpoints ({getChainName(chainId)})</Trans>}
           open={debugEndpointsOpen}
           onToggle={setDebugEndpointsOpen}
         >
@@ -73,7 +73,7 @@ export function RpcDebugSettings() {
             {debugEndpoints.length > 0 && (
               <div className="flex flex-col gap-8">
                 <div className="text-sm font-semibold text-white">
-                  <Trans>Current Endpoints ({debugEndpoints.length})</Trans>
+                  <Trans>Current endpoints ({debugEndpoints.length})</Trans>
                 </div>
                 {debugEndpoints.map((endpoint, index) => (
                   <div
@@ -83,13 +83,15 @@ export function RpcDebugSettings() {
                     <div className="flex flex-col gap-4">
                       <div className="text-xs text-white">{endpoint.url}</div>
                       <div className="text-xs text-slate-400">
-                        Purpose: {endpoint.purpose} | Public: {endpoint.isPublic ? "Yes" : "No"}
+                        <Trans>
+                          Purpose: {endpoint.purpose} | public: {endpoint.isPublic ? t`Yes` : t`No`}
+                        </Trans>
                       </div>
                     </div>
                     <button
                       className="absolute right-8 top-8 flex h-20 w-20 items-center justify-center rounded-4 text-slate-400 hover:bg-slate-500 hover:text-white"
                       onClick={() => handleRemoveEndpoint(endpoint.url)}
-                      aria-label="Remove endpoint"
+                      aria-label={t`Remove endpoint`}
                     >
                       <CloseIcon className="size-16" />
                     </button>
@@ -168,7 +170,7 @@ function DebugRpcEndpointForm({ chainId, onUpdate }: { chainId: number; onUpdate
         </div>
         <div className="flex justify-end">
           <Button variant="primary" onClick={handleSubmit} disabled={!url.trim()}>
-            <Trans>Add Endpoint</Trans>
+            <Trans>Add endpoint</Trans>
           </Button>
         </div>
       </div>

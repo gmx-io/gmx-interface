@@ -33,13 +33,25 @@ type Props = {
   options: TokenData[] | undefined;
   disabledOptions?: TokenData[];
   onSelect: (tokenAddress: string) => void;
+  // eslint-disable-next-line react/no-unused-prop-types
+  popoverReferenceRef?: React.RefObject<HTMLElement | null>;
+  // eslint-disable-next-line react/no-unused-prop-types
+  disabled?: boolean;
 };
 
 export function CollateralSelector(props: Props) {
   const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
 
   return (
-    <SelectorBase label={props.selectedTokenSymbol} modalLabel={t`Collateral In`} qa="collateral-in-selector">
+    <SelectorBase
+      label={props.selectedTokenSymbol}
+      modalLabel={t`Collateral in`}
+      qa="collateral-in-selector"
+      chevronClassName="w-12 text-typography-secondary max-lg:ml-4 group-gmx-hover/selector-field:text-blue-300"
+      handleClassName="text-13 group-gmx-hover/selector-field:text-blue-300"
+      popoverReferenceRef={props.popoverReferenceRef}
+      disabled={props.disabled}
+    >
       {isMobile ? <CollateralSelectorMobile {...props} /> : <CollateralSelectorDesktop {...props} />}
     </SelectorBase>
   );
@@ -95,7 +107,7 @@ function CollateralListItemDesktop({
     return (
       <SelectorBaseDesktopRow
         disabled
-        disabledMessage={<Trans>Select a pool containing {tokenData.symbol} to use it as collateral.</Trans>}
+        disabledMessage={<Trans>Select a pool containing {tokenData.symbol} to use it as collateral</Trans>}
       >
         <TableTd padding="compact-one-column" data-qa={`collateral-in-selector-row-${tokenData.symbol}`}>
           {tokenData.symbol}
@@ -155,7 +167,7 @@ function CollateralListItemMobile({
 }) {
   const handleSelect = useCallback(() => {
     if (disabled) {
-      helperToast.error(<Trans>Select a pool containing {tokenData.symbol} to use it as collateral.</Trans>, {
+      helperToast.error(<Trans>Select a pool containing {tokenData.symbol} to use it as collateral</Trans>, {
         toastId: `error-collateral-${tokenData.symbol}`,
       });
       return;

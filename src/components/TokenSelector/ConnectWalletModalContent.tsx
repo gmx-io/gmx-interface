@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { memo } from "react";
 
 import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletButton";
@@ -17,7 +17,7 @@ export const ConnectWalletModalContent = memo(function ConnectWalletModalContent
           {walletIconUrls.map((url, index) => (
             <img
               src={url}
-              alt="Wallet Icon"
+              alt={t`Wallet icon`}
               className="relative -ml-8 size-24 rounded-full border-2 border-slate-800 first-of-type:ml-0"
               // Safety: walletIconUrls is not changing, memo prevents parent caused re-renders
               // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
@@ -31,13 +31,13 @@ export const ConnectWalletModalContent = memo(function ConnectWalletModalContent
       )}
       <div className="text-body-medium text-center text-typography-secondary">
         <Trans>
-          Please connect your wallet to view
+          Connect wallet to view
           <br />
-          all available payment options
+          payment options
         </Trans>
       </div>
       <ConnectWalletButton onClick={openConnectModal}>
-        <Trans>Connect Wallet</Trans>
+        <Trans>Connect wallet</Trans>
       </ConnectWalletButton>
     </div>
   );

@@ -22,7 +22,7 @@ export function SettingsNavItem({ isCollapsed, onClick }: SettingsNavItemProps) 
 
   return (
     <NavItem
-      icon={<SettingsIcon className="size-24" />}
+      icon={<SettingsIcon className="size-20" />}
       label={t`Settings`}
       isCollapsed={isCollapsed}
       onClick={handleClick}

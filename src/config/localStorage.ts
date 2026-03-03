@@ -80,6 +80,10 @@ export const IS_LARGE_ACCOUNT_KEY = "is-large-account-2";
 
 const FALLBACK_TRACKER_PREFIX = "fallback-tracker";
 
+const COLLATERAL_CLOSE_DESTINATION_KEY = "collateral-close-destination";
+const COLLATERAL_CLOSE_DESTINATION_DIALOG_HIDDEN_KEY = "collateral-close-destination-dialog-hidden";
+const HAD_GMX_ACCOUNT_BALANCE_KEY = "had-gmx-account-balance";
+
 const EXPRESS_ORDERS_ENABLED_KEY = "express-orders-enabled";
 const GAS_PAYMENT_TOKEN_ADDRESS_KEY = "gas-payment-token-address";
 
@@ -177,6 +181,18 @@ export function getMulticallBatchingLoggingEnabledKey() {
 
 export function getSortedMarketsAddressesKey(chainId: number) {
   return [SORTED_MARKETS_KEY, chainId].join(":");
+}
+
+export function getCollateralCloseDestinationKey(chainId: number, account: string | undefined) {
+  return [chainId, account, COLLATERAL_CLOSE_DESTINATION_KEY];
+}
+
+export function getCollateralCloseDestinationDialogHiddenKey(chainId: number, account: string | undefined) {
+  return [chainId, account, COLLATERAL_CLOSE_DESTINATION_DIALOG_HIDDEN_KEY];
+}
+
+export function getHadGmxAccountBalanceKey(chainId: number, account: string | undefined) {
+  return [chainId, account, HAD_GMX_ACCOUNT_BALANCE_KEY];
 }
 
 export function getExpressOrdersEnabledKey(chainId: number, account: string | undefined) {

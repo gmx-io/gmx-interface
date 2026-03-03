@@ -10,51 +10,51 @@ export function GeneralPerformanceDetailsDebugTooltip({ row }: { row: PnlSummary
   return (
     <>
       <StatsTooltipRow
-        label={t`Realized Base PnL`}
+        label={t`Realized base PnL`}
         showDollar={false}
         textClassName={getPositiveOrNegativeClass(row.realizedBasePnlUsd)}
         value={formatUsd(row.realizedBasePnlUsd)}
       />
       <StatsTooltipRow
-        label={t`Unrealized Base PnL`}
+        label={t`Unrealized base PnL`}
         showDollar={false}
         textClassName={getPositiveOrNegativeClass(row.unrealizedBasePnlUsd)}
         value={formatUsd(row.unrealizedBasePnlUsd)}
       />
       <StatsTooltipRow
-        label={t`Start Unrealized PnL`}
+        label={t`Start unrealized PnL`}
         showDollar={false}
         textClassName={getPositiveOrNegativeClass(row.startUnrealizedBasePnlUsd)}
         value={formatUsd(row.startUnrealizedBasePnlUsd)}
       />
       <br />
       <StatsTooltipRow
-        label={t`Realized Fees`}
+        label={t`Realized fees`}
         showDollar={false}
         textClassName={getPositiveOrNegativeClass(-row.realizedFeesUsd)}
         value={formatUsd(-row.realizedFeesUsd)}
       />
       <StatsTooltipRow
-        label={t`Unrealized Fees`}
+        label={t`Unrealized fees`}
         showDollar={false}
         textClassName={getPositiveOrNegativeClass(-row.unrealizedFeesUsd)}
         value={formatUsd(-row.unrealizedFeesUsd)}
       />
       <StatsTooltipRow
-        label={t`Start Unrealized Fees`}
+        label={t`Start unrealized fees`}
         showDollar={false}
         textClassName={getPositiveOrNegativeClass(-row.startUnrealizedFeesUsd)}
         value={formatUsd(-row.startUnrealizedFeesUsd)}
       />
       <br />
       <StatsTooltipRow
-        label={t`Realized Price Impact`}
+        label={t`Realized price impact`}
         showDollar={false}
         textClassName={getPositiveOrNegativeClass(row.realizedPriceImpactUsd)}
         value={formatUsd(row.realizedPriceImpactUsd)}
       />
       <StatsTooltipRow
-        label={t`Realized Swap Impact`}
+        label={t`Realized swap impact`}
         showDollar={false}
         textClassName={getPositiveOrNegativeClass(row.realizedSwapImpactUsd)}
         value={formatUsd(row.realizedSwapImpactUsd)}

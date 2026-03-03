@@ -97,7 +97,7 @@ export function SocialSection() {
               rel="noopener noreferrer"
               className="duration-180 transition-colors hover:text-white active:text-white/80"
             >
-              <Trans>Referral Terms</Trans>
+              <Trans>Referral terms</Trans>
             </a>
             <a
               href="https://docs.gmx.io/docs/community/media-kit/"
@@ -105,14 +105,16 @@ export function SocialSection() {
               rel="noopener noreferrer"
               className="duration-180 transition-colors hover:text-white active:text-white/80"
             >
-              <Trans>Media Kit</Trans>
+              <Trans>Media kit</Trans>
             </a>
             <a className="inline sm:hidden" href="/#/terms-and-conditions" target="_blank" rel="noopener noreferrer">
-              <Trans>Terms and Conditions</Trans>
+              <Trans>Terms and conditions</Trans>
             </a>
             <div className="mx-0 flex flex-row items-center gap-8 text-white sm:mx-auto">
               <TradingViewIcon className="size-20" />
-              <span>Charts by TradingView</span>
+              <span>
+                <Trans>Charts by TradingView</Trans>
+              </span>
             </div>
             <a
               className="duration-180 hidden transition-colors hover:text-white active:text-white/80 sm:inline"
@@ -120,7 +122,7 @@ export function SocialSection() {
               target="_blank"
               rel="noopener noreferrer"
             >
-              <Trans>Terms and Conditions</Trans>
+              <Trans>Terms and conditions</Trans>
             </a>
           </div>
         </div>

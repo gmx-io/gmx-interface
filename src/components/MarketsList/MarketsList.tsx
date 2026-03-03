@@ -58,7 +58,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
     <div className="my-15 rounded-4 bg-slate-900 text-left">
       <div className="flex flex-col gap-16 p-20 text-16">
         <span className="text-h2">
-          <Trans>GM Pools</Trans>
+          <Trans>GM pools</Trans>
         </span>
 
         <div className="max-w-[260px]">
@@ -66,7 +66,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
             value={searchText}
             setValue={setSearchText}
             className="*:!text-body-medium"
-            placeholder={t`Search Market`}
+            placeholder={t`Search market`}
             autoFocus={false}
           />
         </div>
@@ -95,7 +95,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
               </TableTh>
               <TableTh>
                 <TooltipWithPortal
-                  handle={<Trans>NET RATE / 1 H</Trans>}
+                  handle={<Trans>NET RATE / 1H</Trans>}
                   renderContent={renderNetFeeHeaderTooltipContent}
                 />
               </TableTh>
@@ -114,7 +114,7 @@ function MarketsListDesktop({ chainId, indexTokensStats }: { chainId: number; in
             {indexTokensStats.length > 0 && !currentData.length && (
               <TableTr className="h-[64.5px]">
                 <TableTd colSpan={6} className="text-body-medium align-top text-typography-secondary">
-                  <Trans>No markets found.</Trans>
+                  <Trans>No markets found</Trans>
                 </TableTd>
               </TableTr>
             )}

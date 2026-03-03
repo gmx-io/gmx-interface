@@ -6,7 +6,7 @@ import SEO from "components/Seo/SEO";
 
 export default function ReferralTerms() {
   return (
-    <SEO title={getPageTitle(t`Referral Terms`)}>
+    <SEO title={getPageTitle(t`Referral terms`)}>
       <div className="bg-slate-800 p-16 sm:p-40">
         <div>
           <div className="text-center">

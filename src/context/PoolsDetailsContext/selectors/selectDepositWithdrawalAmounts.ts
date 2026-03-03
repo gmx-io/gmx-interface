@@ -85,30 +85,15 @@ export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts
       : firstTokenAddress !== undefined &&
         convertTokenAddress(chainId, firstTokenAddress, "wrapped") === shortTokenAddress;
 
+    let adjustedLongTokenAmount = longTokenAmount;
+    let adjustedShortTokenAmount = shortTokenAmount;
+
     // adjust for same collateral
     if (marketInfo.isSameCollaterals) {
       const positiveAmount = bigMath.max(longTokenAmount, shortTokenAmount);
 
-      const adjustedLongTokenAmount = positiveAmount / 2n;
-      const adjustedShortTokenAmount = positiveAmount - adjustedLongTokenAmount;
-
-      return getDepositAmounts({
-        marketInfo,
-        marketToken,
-        longToken: marketInfo.longToken,
-        shortToken: marketInfo.shortToken,
-        longTokenAmount: adjustedLongTokenAmount,
-        shortTokenAmount: adjustedShortTokenAmount,
-        marketTokenAmount,
-        glvTokenAmount,
-        includeLongToken,
-        includeShortToken,
-        uiFeeFactor,
-        strategy: focusedInput === "market" ? "byMarketToken" : "byCollaterals",
-        isMarketTokenDeposit,
-        glvInfo,
-        glvToken: glvToken!,
-      });
+      adjustedLongTokenAmount = positiveAmount / 2n;
+      adjustedShortTokenAmount = positiveAmount - adjustedLongTokenAmount;
     }
 
     return getDepositAmounts({
@@ -116,8 +101,8 @@ export const selectDepositWithdrawalAmounts = createSelector((q): DepositAmounts
       marketToken,
       longToken: marketInfo.longToken,
       shortToken: marketInfo.shortToken,
-      longTokenAmount,
-      shortTokenAmount,
+      longTokenAmount: adjustedLongTokenAmount,
+      shortTokenAmount: adjustedShortTokenAmount,
       marketTokenAmount,
       glvTokenAmount,
       includeLongToken,
