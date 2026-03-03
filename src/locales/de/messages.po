@@ -4293,6 +4293,11 @@ msgstr "Rückvergütungsverteilungsverlauf"
 msgid "Active orders"
 msgstr "Aktive Orders"
 
+#: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This market has been disabled. Please contact support to claim your remaining funding fees."
+msgstr "Dieser Markt wurde deaktiviert. Bitte kontaktieren Sie den Support, um Ihre verbleibenden Finanzierungsgebühren abzuholen."
+
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Depositing to Avalanche is disabled. Trade directly from your Avalanche wallet."
 msgstr "Einzahlungen auf Avalanche sind deaktiviert. Handeln Sie direkt über Ihr Avalanche-Wallet."

@@ -4293,6 +4293,11 @@ msgstr "Rebates distribution history"
 msgid "Active orders"
 msgstr "Active orders"
 
+#: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This market has been disabled. Please contact support to claim your remaining funding fees."
+msgstr "This market has been disabled. Please contact support to claim your remaining funding fees."
+
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Depositing to Avalanche is disabled. Trade directly from your Avalanche wallet."
 msgstr "Depositing to Avalanche is disabled. Trade directly from your Avalanche wallet."
