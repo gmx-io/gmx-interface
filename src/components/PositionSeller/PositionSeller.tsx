@@ -59,7 +59,7 @@ import { ORDER_OPTION_TO_TRADE_MODE, OrderOption } from "domain/synthetics/trade
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getCommonError, getDecreaseError, getExpressError } from "domain/synthetics/trade/utils/validation";
 import { Token } from "domain/tokens";
-import { useApproveToken } from "domain/tokens/useApproveTokens";
+import { useApprovalState } from "domain/tokens/useApprovalState";
 import { useChainId } from "lib/chains";
 import { useDebouncedInputValue } from "lib/debounce/useDebouncedInputValue";
 import { helperToast } from "lib/helperToast";
@@ -114,7 +114,6 @@ const PNL_TOOLTIP_THRESHOLD = expandDecimals(10000, USD_DECIMALS);
 
 export function PositionSeller() {
   const [, setClosingPositionKey] = useClosingPositionKeyState();
-  const [isApproving, setIsApproving] = useState(false);
 
   const onClose = useCallback(() => {
     setClosingPositionKey(undefined);
@@ -159,7 +158,6 @@ export function PositionSeller() {
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
   const tokenPermits = useSelector(selectTokenPermits);
-  const { approveToken } = useApproveToken();
   const executionFeeBufferBps = useSelector(selectExecutionFeeBufferBps);
 
   const isVisible = Boolean(position);
@@ -433,6 +431,8 @@ export function PositionSeller() {
     tokenPermits,
   ]);
 
+  const { isApproving, handleApprove } = useApprovalState({ tokensToApprove });
+
   const error = useMemo(() => {
     if (!position) {
       return undefined;
@@ -505,13 +505,7 @@ export function PositionSeller() {
     if (isAllowanceLoaded && tokensToApprove.length) {
       if (!chainId || isApproving) return;
 
-      approveToken({
-        signer,
-        tokenAddress: tokensToApprove[0].tokenAddress,
-        chainId,
-        allowPermit: Boolean(expressParams),
-        setIsApproving,
-      });
+      handleApprove({ chainId, signer, allowPermit: Boolean(expressParams) });
 
       return;
     }
@@ -622,12 +616,6 @@ export function PositionSeller() {
     {},
     [isVisible, error, closeUsdInputValue, closeUsdInputValueRaw, latestOnSubmit]
   );
-
-  useEffect(() => {
-    if (!tokensToApprove.length && isApproving) {
-      setIsApproving(false);
-    }
-  }, [isApproving, tokensToApprove.length]);
 
   useEffect(() => {
     if (isWaitingForDebounceBeforeSubmit && closeUsdInputValue === closeUsdInputValueRaw) {

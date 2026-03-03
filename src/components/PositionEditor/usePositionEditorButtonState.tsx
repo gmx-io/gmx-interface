@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
@@ -52,7 +52,7 @@ import {
   ValidationButtonTooltipName,
   ValidationResult,
 } from "domain/synthetics/trade/utils/validation";
-import { useApproveToken } from "domain/tokens/useApproveTokens";
+import { useApprovalState } from "domain/tokens/useApprovalState";
 import { bigNumberBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
@@ -303,13 +303,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     tokenPermits,
   ]);
 
-  const [isApproving, setIsApproving] = useState(false);
-
-  useEffect(() => {
-    if (!tokensToApprove.length && isApproving) {
-      setIsApproving(false);
-    }
-  }, [isApproving, tokensToApprove.length]);
+  const { isApproving, handleApprove } = useApprovalState({ tokensToApprove });
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -421,8 +415,6 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     );
   }, [detectAndSetMaxSize, validationResult.buttonTooltipName]);
 
-  const { approveToken } = useApproveToken();
-
   async function onSubmit() {
     if (!account || !signer) {
       openConnectModal?.();
@@ -432,13 +424,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     if (isAllowanceLoaded && tokensToApprove.length && selectedCollateralToken) {
       if (!chainId || isApproving) return;
 
-      approveToken({
-        setIsApproving,
-        tokenAddress: tokensToApprove[0].tokenAddress,
-        chainId,
-        signer,
-        allowPermit: Boolean(expressParams),
-      });
+      handleApprove({ chainId, signer, allowPermit: Boolean(expressParams) });
 
       return;
     }

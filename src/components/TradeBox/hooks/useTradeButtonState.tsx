@@ -1,6 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useMemo } from "react";
 import { zeroAddress } from "viem";
 
 import { getBridgingOptionsForToken } from "config/bridging";
@@ -68,7 +68,7 @@ import {
   ValidationButtonTooltipName,
   ValidationResult,
 } from "domain/synthetics/trade/utils/validation";
-import { useApproveToken } from "domain/tokens/useApproveTokens";
+import { useApprovalState } from "domain/tokens/useApprovalState";
 import { numericBinarySearch } from "lib/binarySearch";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
@@ -151,8 +151,6 @@ export function useTradeboxButtonState({
   const { setPendingTxns } = usePendingTxns();
   const { openConnectModal } = useConnectModal();
 
-  const { approveToken } = useApproveToken();
-
   const {
     onSubmitWrapOrUnwrap,
     onSubmitStakeOrUnstake,
@@ -221,7 +219,7 @@ export function useTradeboxButtonState({
     tokenPermits,
   ]);
 
-  const [isApproving, setIsApproving] = useState(false);
+  const { isApproving, handleApprove } = useApprovalState({ tokensToApprove });
 
   const detectAndSetAvailableMaxLeverage = useDetectAndSetAvailableMaxLeverage({ setToTokenInputValue });
 
@@ -364,17 +362,9 @@ export function useTradeboxButtonState({
     }
 
     if (!isFromTokenGmxAccount && isAllowanceLoaded && tokensToApprove.length) {
-      const tokenToApprove = tokensToApprove[0];
+      if (!chainId || isApproving || !tokensToApprove[0]) return;
 
-      if (!chainId || isApproving || !tokenToApprove) return;
-
-      approveToken({
-        tokenAddress: tokenToApprove.tokenAddress,
-        chainId,
-        signer,
-        allowPermit: Boolean(expressParams),
-        setIsApproving,
-      });
+      handleApprove({ chainId, signer, allowPermit: Boolean(expressParams) });
 
       return;
     }
@@ -411,7 +401,7 @@ export function useTradeboxButtonState({
     });
   }, [
     account,
-    approveToken,
+    handleApprove,
     chainId,
     expressParams,
     fromToken,
@@ -437,12 +427,6 @@ export function useTradeboxButtonState({
     signer,
     tokensToApprove,
   ]);
-
-  useEffect(() => {
-    if (!tokensToApprove.length && isApproving) {
-      setIsApproving(false);
-    }
-  }, [isApproving, tokensToApprove]);
 
   return useMemo((): TradeboxButtonState => {
     const commonState = {
