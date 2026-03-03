@@ -4293,6 +4293,11 @@ msgstr "Historial de distribución de reembolsos"
 msgid "Active orders"
 msgstr "Órdenes activas"
 
+#: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This market has been disabled. Please contact support to claim your remaining funding fees."
+msgstr "Este mercado ha sido deshabilitado. Por favor contacte a soporte para reclamar sus comisiones de financiación restantes."
+
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Depositing to Avalanche is disabled. Trade directly from your Avalanche wallet."
 msgstr "Los depósitos en Avalanche están desactivados. Opere directamente desde su monedero de Avalanche."

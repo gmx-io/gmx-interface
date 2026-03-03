@@ -4293,6 +4293,11 @@ msgstr "리베이트 배분 내역"
 msgid "Active orders"
 msgstr "활성 주문"
 
+#: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This market has been disabled. Please contact support to claim your remaining funding fees."
+msgstr "이 마켓이 비활성화되었습니다. 남은 펀딩 수수료를 청구하려면 지원팀에 문의해 주세요."
+
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Depositing to Avalanche is disabled. Trade directly from your Avalanche wallet."
 msgstr "Avalanche 입금이 비활성화되어 있습니다. Avalanche 지갑에서 직접 거래하십시오."

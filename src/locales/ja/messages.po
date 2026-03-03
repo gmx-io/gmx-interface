@@ -4293,6 +4293,11 @@ msgstr "リベート配布履歴"
 msgid "Active orders"
 msgstr "有効な注文"
 
+#: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This market has been disabled. Please contact support to claim your remaining funding fees."
+msgstr "このマーケットは無効になりました。残りのファンディング手数料を受け取るにはサポートにお問い合わせください。"
+
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Depositing to Avalanche is disabled. Trade directly from your Avalanche wallet."
 msgstr "Avalanche への入金は無効です。Avalanche ウォレットから直接取引してください。"

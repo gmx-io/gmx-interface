@@ -4293,6 +4293,11 @@ msgstr "回饋分配歷史"
 msgid "Active orders"
 msgstr "進行中的訂單"
 
+#: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This market has been disabled. Please contact support to claim your remaining funding fees."
+msgstr "此市場已停用。請聯繫客服以領取您剩餘的資金費率。"
+
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Depositing to Avalanche is disabled. Trade directly from your Avalanche wallet."
 msgstr "已停用存入 Avalanche 功能。請直接從您的 Avalanche 錢包進行交易。"
