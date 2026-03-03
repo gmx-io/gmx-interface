@@ -305,16 +305,6 @@ export function PositionSeller() {
       decreaseAmounts?.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken && !shouldSwap;
     const swapPath = isDirectPnlReceive ? [] : swapAmounts?.swapStrategy.swapPathStats?.swapPath || [];
 
-    // eslint-disable-next-line no-console
-    console.debug("[PositionSeller] batchParams:", {
-      decreaseSwapType: decreaseAmounts?.decreaseSwapType,
-      shouldSwap,
-      isDirectPnlReceive,
-      swapPath,
-      receiveToken: receiveToken?.symbol,
-      receiveUsd: receiveUsd?.toString(),
-    });
-
     if (
       !account ||
       !tokensData ||
@@ -388,7 +378,6 @@ export function PositionSeller() {
     numberOfParts,
     position,
     receiveToken?.address,
-    receiveToken?.symbol,
     receiveUsd,
     shouldSwap,
     signer,

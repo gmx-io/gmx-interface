@@ -410,16 +410,6 @@ const selectPositionSellerOptimalDecrease = createSelector((q) => {
     chainId,
   });
 
-  // eslint-disable-next-line no-console
-  console.debug("[PositionSeller] optimal path:", {
-    decreaseSwapType: result.decreaseAmounts.decreaseSwapType,
-    receiveUsd: result.decreaseAmounts.receiveUsd.toString(),
-    hasExternalSwap: result.swapAmounts !== undefined,
-    externalSwapUsdOut: result.swapAmounts?.usdOut?.toString(),
-    collateral: collateralToken.symbol,
-    receive: receiveToken.symbol,
-  });
-
   return result;
 });
 

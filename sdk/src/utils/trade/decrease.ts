@@ -968,26 +968,6 @@ export function getOptimalDecreaseAndSwapAmounts(p: {
     pathBUsdOut: pathBSwap.usdOut,
   });
 
-  // eslint-disable-next-line no-console
-  console.debug("[OptimalDecrease]", {
-    pathA: {
-      decreaseSwapType: pathADecrease.decreaseSwapType,
-      receiveUsd: pathADecrease.receiveUsd.toString(),
-      swapUsdOut: (pathASwap?.usdOut ?? 0n).toString(),
-    },
-    pathB: {
-      decreaseSwapType: pathBDecrease.decreaseSwapType,
-      receiveUsd: pathBDecrease.receiveUsd.toString(),
-      internalSwapAmountOut: internalSwapStats.amountOut.toString(),
-      externalSwapUsdOut: pathBSwap.usdOut.toString(),
-    },
-    winner,
-    isThirdToken,
-    receiveToken: receiveToken.symbol,
-    collateralToken: collateralToken.symbol,
-    pnlToken: pnlToken.symbol,
-  });
-
   if (winner === "pathB") {
     return { decreaseAmounts: pathBDecrease, swapAmounts: pathBSwap };
   }
