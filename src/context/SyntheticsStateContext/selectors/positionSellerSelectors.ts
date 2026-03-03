@@ -455,6 +455,9 @@ export const selectPositionSellerDecreaseAmounts = createSelector((q) => {
 });
 
 export const selectPositionSellerSwapAmounts = createSelector((q) => {
+  const shouldSwap = q(selectPositionSellerShouldSwap);
+  if (!shouldSwap) return undefined;
+
   return q(selectPositionSellerOptimalDecrease)?.swapAmounts;
 });
 
