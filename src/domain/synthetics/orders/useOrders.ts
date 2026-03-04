@@ -1,7 +1,6 @@
 import { useEffect, useMemo } from "react";
 import { Address, ContractFunctionReturnType, isAddressEqual } from "viem";
 
-import { getIsFlagEnabled } from "config/ab";
 import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { accountOrderListKey } from "config/dataStore";
@@ -193,7 +192,8 @@ export function useOrders(
     swapRelevantDefinedMarketsLowercased,
   ]);
 
-  const count = apiEnabled && apiOrdersData && !isApiStale && !apiError ? Object.keys(apiOrdersData).length : rpcData?.count;
+  const count =
+    apiEnabled && apiOrdersData && !isApiStale && !apiError ? Object.keys(apiOrdersData).length : rpcData?.count;
 
   return {
     ordersData: ordersData,
