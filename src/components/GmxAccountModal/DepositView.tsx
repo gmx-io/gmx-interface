@@ -967,22 +967,18 @@ export const DepositView = () => {
   const shouldShowInfoRowPlaceholder = inputAmount !== undefined && inputAmount > 0n;
 
   const areMultichainFeesLoading = isComposeGasLoading || isQuoteOftLoading || isQuoteSendNativeFeeLoading;
-  const isCrossChainDeposit = depositViewChain !== undefined && depositViewChain !== settlementChainId;
-  const isSourceChainGasValidationLoading =
-    shouldShowInfoRowPlaceholder &&
-    isCrossChainDeposit &&
-    (areMultichainFeesLoading || quoteSendNativeFee === undefined || nativeTokenSourceChainBalance === undefined);
 
   const isNetworkFeeLoading =
     shouldShowInfoRowPlaceholder &&
-    (depositViewChain === settlementChainId ? isSameChainNetworkFeeLoading : isSourceChainGasValidationLoading);
+    (depositViewChain === settlementChainId
+      ? isSameChainNetworkFeeLoading
+      : areMultichainFeesLoading || networkFee === undefined);
 
   const isInsufficientSourceChainNativeBalance =
     nativeTokenSourceChainBalance !== undefined &&
-    quoteSendNativeFee !== undefined &&
+    networkFee !== undefined &&
     depositViewChain !== undefined &&
-    quoteSendNativeFee + (unwrappedSelectedTokenAddress === zeroAddress ? amountLD ?? 0n : 0n) >
-      nativeTokenSourceChainBalance;
+    networkFee + (unwrappedSelectedTokenAddress === zeroAddress ? amountLD ?? 0n : 0n) > nativeTokenSourceChainBalance;
 
   let buttonState: {
     text: React.ReactNode;
