@@ -263,7 +263,11 @@ export function PositionSeller() {
   const swapAmounts = useSelector(selectPositionSellerSwapAmounts);
 
   const receiveUsd = swapAmounts?.usdOut || decreaseAmounts?.receiveUsd;
-  const receiveTokenAmount = swapAmounts?.amountOut || decreaseAmounts?.receiveTokenAmount;
+  // primaryOutput + secondaryOutput are always denominated in the actual output token,
+  // unlike receiveTokenAmount which is always in collateral token denomination.
+  const receiveTokenAmount =
+    swapAmounts?.amountOut ??
+    (decreaseAmounts ? decreaseAmounts.primaryOutput.amount + decreaseAmounts.secondaryOutput.amount : undefined);
 
   const nextPositionValues = useSelector(selectPositionSellerNextPositionValuesForDecrease);
 

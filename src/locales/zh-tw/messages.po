@@ -5235,10 +5235,6 @@ msgstr "無法將 {nativeTokenSymbol} 轉帳至 {chainName}"
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 msgstr ""
 
-#: src/components/PositionSeller/PositionSeller.tsx
-#~ msgid "Receive Breakdown"
-#~ msgstr ""
-
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
 msgstr "Avalanche Fuji 上無法領取"
