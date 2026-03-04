@@ -52,7 +52,6 @@ export async function sendWalletTransaction({
       await simulateCallDataWithTenderly({
         chainId,
         tenderlyConfig,
-        provider: signer.provider!,
         to,
         data: callData,
         from,
@@ -108,7 +107,7 @@ export async function sendWalletTransaction({
     };
 
     const res = await signer.sendTransaction(txnData).catch((error) => {
-      additionalTxnErrorValidation(error, chainId, signer.provider!, txnData);
+      additionalTxnErrorValidation(error, chainId, getProvider(undefined, chainId), txnData);
 
       throw extendError(error, {
         errorContext: "sending",

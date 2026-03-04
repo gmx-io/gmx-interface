@@ -120,8 +120,7 @@ export async function callContract(
       async function retrieveGasLimit() {
         return customGasLimits[i] !== undefined
           ? (customGasLimits[i] as bigint | number)
-          : // here
-            await getGasLimit(cntrct, method, params, opts.value);
+          : getGasLimit({ chainId, contract: cntrct, method, params, value: opts.value, from: wallet.address });
       }
 
       async function retrieveGasPrice() {

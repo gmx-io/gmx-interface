@@ -26,8 +26,9 @@ export async function prepareOrderTxn(
   }
 
   const provider = getProvider(undefined, chainId);
+  const account = await (contract.runner as ethers.Signer).getAddress();
   const [gasLimit, gasPriceData] = await Promise.all([
-    getGasLimit(contract, method, params, value).catch(
+    getGasLimit({ chainId, contract, method, params, value, from: account }).catch(
       makeCatchTransactionError(chainId, metricId, "gasLimit", additinalErrorContent)
     ),
     getGasPrice(provider, chainId).catch(

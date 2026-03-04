@@ -960,10 +960,15 @@ export const DepositView = () => {
   const shouldShowInfoRowPlaceholder = inputAmount !== undefined && inputAmount > 0n;
 
   const areMultichainFeesLoading = isComposeGasLoading || isQuoteOftLoading || isQuoteSendNativeFeeLoading;
+  const isCrossChainDeposit = depositViewChain !== undefined && depositViewChain !== settlementChainId;
+  const isSourceChainGasValidationLoading =
+    shouldShowInfoRowPlaceholder &&
+    isCrossChainDeposit &&
+    (areMultichainFeesLoading || quoteSendNativeFee === undefined || nativeTokenSourceChainBalance === undefined);
 
   const isNetworkFeeLoading =
     shouldShowInfoRowPlaceholder &&
-    (depositViewChain === settlementChainId ? isSameChainNetworkFeeLoading : areMultichainFeesLoading);
+    (depositViewChain === settlementChainId ? isSameChainNetworkFeeLoading : isSourceChainGasValidationLoading);
 
   const isInsufficientSourceChainNativeBalance =
     nativeTokenSourceChainBalance !== undefined &&

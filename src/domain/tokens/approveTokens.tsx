@@ -6,8 +6,10 @@ import { maxUint256 } from "viem";
 import { getChainName, getExplorerUrl } from "config/chains";
 import { AddTokenPermitFn } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { INVALID_PERMIT_SIGNATURE_ERROR } from "lib/errors/customErrors";
+import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
+import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import TokenAbi from "sdk/abis/Token";
 import { getNativeToken, getToken } from "sdk/configs/tokens";
 import { InfoTokens, TokenInfo } from "sdk/utils/tokens/types";
@@ -116,8 +118,19 @@ export async function approveTokens({
   const contract = new ethers.Contract(tokenAddress, TokenAbi, signer);
   const nativeToken = getNativeToken(chainId);
   const networkName = getChainName(chainId);
+
+  const finalApproveAmount = approveAmount ?? maxUint256;
+
+  const gasLimit: bigint = await getPublicClientWithRpc(chainId)
+    .estimateGas({
+      account: await signer!.getAddress(),
+      to: tokenAddress,
+      data: contract.interface.encodeFunctionData("approve", [spender, finalApproveAmount]),
+    })
+    .then(applyGasLimitBuffer);
+
   return await contract
-    .approve(spender, approveAmount ?? maxUint256)
+    .approve(spender, finalApproveAmount, { gasLimit })
     .then(async (res) => {
       const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
       helperToast.success(

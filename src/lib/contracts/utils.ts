@@ -1,35 +1,34 @@
 import { BaseContract, Contract } from "ethers";
 
+import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
+import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+
 /**
  * @deprecated use estimateGasLimit instead
  */
-export async function getGasLimit(
-  contract: Contract | BaseContract,
+export async function getGasLimit({
+  chainId,
+  contract,
   method,
-  params: any[] = [],
-  value?: bigint | number,
-  from?: string
-) {
-  const defaultValue = 0n;
-
-  if (!value) {
-    value = defaultValue;
-  }
-
-  let gasLimit = 0n;
-  try {
-    gasLimit = await contract[method].estimateGas(...params, { value, from });
-  } catch (error) {
-    // this call should throw another error instead of the `error`
-    await contract[method].staticCall(...params, { value, from });
-
-    // if not we throw estimateGas error
-    throw error;
-  }
-
-  if (gasLimit < 22000) {
-    gasLimit = 22_000n;
-  }
-
-  return (gasLimit * 11n) / 10n; // add a 10% buffer
+  params = [],
+  value,
+  from,
+}: {
+  chainId: number;
+  contract: Contract | BaseContract;
+  method: string;
+  params?: any[];
+  value?: bigint | number;
+  from?: string;
+}): Promise<bigint> {
+  const publicClient = getPublicClientWithRpc(chainId);
+  const to = await contract.getAddress();
+  const data = contract.interface.encodeFunctionData(method, params);
+  const gasLimit = await publicClient.estimateGas({
+    account: from!,
+    to,
+    data,
+    value: value !== undefined ? BigInt(value) : undefined,
+  });
+  return applyGasLimitBuffer(gasLimit);
 }
