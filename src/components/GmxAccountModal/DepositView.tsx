@@ -408,20 +408,25 @@ export const DepositView = () => {
     return newSendParams;
   }, [sendParamsWithoutSlippage, quoteOft]);
 
-  const { data: quoteSendNativeFee, isLoading: isQuoteSendNativeFeeLoading } = useQuoteSendNativeFee({
+  const { data: quoteSendData, isLoading: isQuoteSendNativeFeeLoading } = useQuoteSendNativeFee({
     sendParams: sendParamsWithSlippage,
     fromStargateAddress: selectedTokenSourceChainTokenId?.stargate,
     fromChainId: depositViewChain,
     toChainId: settlementChainId,
+    fromTokenAddress: selectedTokenSourceChainTokenId?.address,
     composeGas,
   });
 
-  const { data: baseQuoteSendNativeFee, isLoading: isBaseQuoteSendNativeFeeLoading } = useQuoteSendNativeFee({
+  const { data: baseQuoteSendData, isLoading: isBaseQuoteSendNativeFeeLoading } = useQuoteSendNativeFee({
     sendParams: baseSendParams,
     fromStargateAddress: selectedTokenSourceChainTokenId?.stargate,
     fromChainId: depositViewChain,
     toChainId: settlementChainId,
+    fromTokenAddress: selectedTokenSourceChainTokenId?.address,
   });
+
+  const quoteSendNativeFee = quoteSendData?.nativeFee;
+  const baseQuoteSendNativeFee = baseQuoteSendData?.nativeFee;
 
   const { networkFee, networkFeeUsd, protocolFeeAmount, protocolFeeUsd } = useMultichainQuoteFeeUsd({
     quoteSendNativeFee: quoteSendNativeFee ?? baseQuoteSendNativeFee,
@@ -429,6 +434,8 @@ export const DepositView = () => {
     unwrappedTokenAddress: unwrappedSelectedTokenAddress,
     sourceChainId: depositViewChain,
     targetChainId: settlementChainId,
+    initialTxGasLimit: quoteSendData?.gasLimit ?? baseQuoteSendData?.gasLimit,
+    waitForTxGasLimit: true,
   });
 
   const gasPrice = useGasPrice(settlementChainId);

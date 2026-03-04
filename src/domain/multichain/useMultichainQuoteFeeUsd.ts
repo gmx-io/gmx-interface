@@ -3,6 +3,7 @@ import { zeroAddress } from "viem";
 
 import { AnyChainId, getViemChain, type SettlementChainId, type SourceChainId } from "config/chains";
 import { getMappedTokenId } from "config/multichain";
+import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { getMidPrice, useTokenRecentPricesRequest } from "domain/synthetics/tokens";
 import { convertToUsd } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -148,12 +149,16 @@ export function useMultichainQuoteFeeUsd({
   unwrappedTokenAddress,
   sourceChainId,
   targetChainId,
+  initialTxGasLimit,
+  waitForTxGasLimit = false,
 }: {
   quoteSendNativeFee: bigint | undefined;
   quoteOft: QuoteOft | undefined;
   unwrappedTokenAddress: string | undefined;
   sourceChainId: AnyChainId | undefined;
   targetChainId: AnyChainId | undefined;
+  initialTxGasLimit?: bigint | undefined;
+  waitForTxGasLimit?: boolean;
 }): {
   networkFee: bigint | undefined;
   networkFeeUsd: bigint | undefined;
@@ -166,9 +171,20 @@ export function useMultichainQuoteFeeUsd({
 
   const amountReceivedLD = quoteOft?.receipt.amountReceivedLD as bigint;
 
-  const nativeFeeUsd = useNativeTokenMultichainUsd({
+  const sourceChainGasPrice = useGasPrice(sourceChainId);
+  const initialTxGasCostNative =
+    initialTxGasLimit !== undefined && sourceChainGasPrice !== undefined
+      ? initialTxGasLimit * sourceChainGasPrice
+      : undefined;
+
+  const finalNetworkFee =
+    quoteSendNativeFee !== undefined && (initialTxGasCostNative !== undefined || !waitForTxGasLimit)
+      ? quoteSendNativeFee + (initialTxGasCostNative ?? 0n)
+      : undefined;
+
+  const finalNetworkFeeUsd = useNativeTokenMultichainUsd({
     sourceChainId,
-    sourceChainTokenAmount: quoteSendNativeFee,
+    sourceChainTokenAmount: finalNetworkFee,
     targetChainId,
   });
 
@@ -176,7 +192,7 @@ export function useMultichainQuoteFeeUsd({
     !unwrappedTokenAddress ||
     sourceChainId === undefined ||
     targetChainId === undefined ||
-    nativeFeeUsd === undefined
+    finalNetworkFee === undefined
   ) {
     return {
       networkFee: undefined,
@@ -210,8 +226,8 @@ export function useMultichainQuoteFeeUsd({
   }
 
   return {
-    networkFee: quoteSendNativeFee,
-    networkFeeUsd: nativeFeeUsd,
+    networkFee: finalNetworkFee,
+    networkFeeUsd: finalNetworkFeeUsd,
     protocolFeeAmount,
     protocolFeeUsd,
     amountReceivedLD,
