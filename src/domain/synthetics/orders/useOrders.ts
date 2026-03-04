@@ -98,7 +98,7 @@ export function useOrders(
     [account, marketsDirectionsFilter, orderTypesFilter]
   );
 
-  const apiEnabled = getIsFlagEnabled("apiSdk2");
+  const apiEnabled = false;
   const {
     ordersData: apiOrdersData,
     isStale: isApiStale,
