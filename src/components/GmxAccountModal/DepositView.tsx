@@ -43,7 +43,7 @@ import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFe
 import { useNativeTokenBalance } from "domain/multichain/useNativeTokenBalance";
 import { useQuoteOft } from "domain/multichain/useQuoteOft";
 import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
-import { useQuoteSendNativeFee } from "domain/multichain/useQuoteSend";
+import { useQuoteSendNativeFeeWithGasLimit } from "domain/multichain/useQuoteSend";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import {
   getBalanceByBalanceType,
@@ -408,7 +408,7 @@ export const DepositView = () => {
     return newSendParams;
   }, [sendParamsWithoutSlippage, quoteOft]);
 
-  const { data: quoteSendData, isLoading: isQuoteSendNativeFeeLoading } = useQuoteSendNativeFee({
+  const { data: quoteSendData, isLoading: isQuoteSendNativeFeeLoading } = useQuoteSendNativeFeeWithGasLimit({
     sendParams: sendParamsWithSlippage,
     fromStargateAddress: selectedTokenSourceChainTokenId?.stargate,
     fromChainId: depositViewChain,
@@ -417,7 +417,7 @@ export const DepositView = () => {
     composeGas,
   });
 
-  const { data: baseQuoteSendData, isLoading: isBaseQuoteSendNativeFeeLoading } = useQuoteSendNativeFee({
+  const { data: baseQuoteSendData, isLoading: isBaseQuoteSendNativeFeeLoading } = useQuoteSendNativeFeeWithGasLimit({
     sendParams: baseSendParams,
     fromStargateAddress: selectedTokenSourceChainTokenId?.stargate,
     fromChainId: depositViewChain,

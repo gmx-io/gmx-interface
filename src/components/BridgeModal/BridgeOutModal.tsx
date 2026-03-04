@@ -179,16 +179,12 @@ export function BridgeOutModal({
     });
   }, [bridgeOutChain, account, bridgeOutAmount, chainId]);
 
-  const { data: quoteSendData } = useQuoteSendNativeFee({
+  const { data: transferNativeFee } = useQuoteSendNativeFee({
     fromChainId: chainId,
     toChainId: bridgeOutChain,
     sendParams,
     fromStargateAddress: bridgeOutParams?.provider,
-    fromTokenAddress: glvOrMarketAddress,
-    isPlatformToken: true,
   });
-
-  const transferNativeFee = quoteSendData?.nativeFee;
 
   const networkFeeUsd = useMemo(() => {
     if (

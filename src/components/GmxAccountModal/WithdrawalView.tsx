@@ -605,15 +605,12 @@ export const WithdrawalView = () => {
     withdrawalViewChain,
   ]);
 
-  const { data: baseQuoteSendData, isLoading: isBaseNativeFeeLoading } = useQuoteSendNativeFee({
+  const { data: baseNativeFee, isLoading: isBaseNativeFeeLoading } = useQuoteSendNativeFee({
     sendParams: baseSendParams,
     fromStargateAddress: selectedTokenSettlementChainTokenId?.stargate,
     fromChainId: chainId,
     toChainId: withdrawalViewChain,
-    fromTokenAddress: selectedTokenSettlementChainTokenId?.address,
   });
-
-  const baseNativeFee = baseQuoteSendData?.nativeFee;
 
   const {
     networkFeeUsd: bridgeNetworkFeeUsd,

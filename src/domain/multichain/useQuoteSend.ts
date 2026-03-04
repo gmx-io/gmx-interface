@@ -2,22 +2,71 @@ import useSWR from "swr";
 
 import type { AnyChainId, SettlementChainId, SourceChainId } from "config/chains";
 import { SendParam } from "domain/multichain/types";
-import { stargateTransferFees } from "domain/synthetics/markets/feeEstimation/stargateTransferFees";
+import {
+  fetchLayerZeroNativeFee,
+  stargateTransferFees,
+} from "domain/synthetics/markets/feeEstimation/stargateTransferFees";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
-
-export type QuoteSendResult = {
-  nativeFee: bigint;
-  gasLimit: bigint;
-};
 
 export function useQuoteSendNativeFee({
   sendParams,
   fromStargateAddress,
   fromChainId,
   toChainId,
+  composeGas,
+}: {
+  sendParams: SendParam | undefined;
+  fromStargateAddress: string | undefined;
+  fromChainId: AnyChainId | undefined;
+  toChainId: AnyChainId | undefined;
+  composeGas?: bigint;
+}): {
+  data: bigint | undefined;
+  isLoading: boolean;
+} {
+  const quoteSendCondition =
+    sendParams !== undefined &&
+    fromStargateAddress !== undefined &&
+    toChainId !== undefined &&
+    fromChainId !== undefined &&
+    fromChainId !== toChainId;
+
+  const quoteSendQuery = useSWR<bigint | undefined>(
+    quoteSendCondition ? ["quoteSend", sendParams!.dstEid, sendParams!.to, fromStargateAddress, composeGas] : null,
+    {
+      fetcher: async () => {
+        if (!quoteSendCondition) {
+          return;
+        }
+
+        return fetchLayerZeroNativeFee({
+          chainId: fromChainId!,
+          stargateAddress: fromStargateAddress!,
+          sendParams: sendParams!,
+        });
+      },
+      refreshInterval: FREQUENT_UPDATE_INTERVAL,
+    }
+  );
+
+  return {
+    data: quoteSendQuery.data,
+    isLoading: quoteSendQuery.isLoading,
+  };
+}
+
+export type QuoteSendResult = {
+  nativeFee: bigint;
+  gasLimit: bigint;
+};
+
+export function useQuoteSendNativeFeeWithGasLimit({
+  sendParams,
+  fromStargateAddress,
+  fromChainId,
+  toChainId,
   fromTokenAddress,
   composeGas,
-  isPlatformToken = false,
 }: {
   sendParams: SendParam | undefined;
   fromStargateAddress: string | undefined;
@@ -25,7 +74,6 @@ export function useQuoteSendNativeFee({
   toChainId: AnyChainId | undefined;
   fromTokenAddress: string | undefined;
   composeGas?: bigint;
-  isPlatformToken?: boolean;
 }): {
   data: QuoteSendResult | undefined;
   isLoading: boolean;
@@ -53,7 +101,6 @@ export function useQuoteSendNativeFee({
           stargateAddress: fromStargateAddress,
           sendParams,
           tokenAddress: fromTokenAddress,
-          isPlatformToken,
         });
 
         return { nativeFee, gasLimit: transferGasLimit };
