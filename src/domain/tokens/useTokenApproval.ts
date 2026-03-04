@@ -1,6 +1,7 @@
 import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
 import type { WalletSigner } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
@@ -20,6 +21,7 @@ interface UseTokenApprovalParams {
   skip?: boolean;
   approveAmount?: bigint;
   wrapApprove?: (fn: (signer: WalletSigner) => Promise<void>) => Promise<void>;
+  allowPermit?: boolean;
 }
 
 export interface HandleApproveOptions {
@@ -42,55 +44,82 @@ export function useTokenApproval({
   skip,
   approveAmount,
   wrapApprove,
+  allowPermit = false,
 }: UseTokenApprovalParams): UseTokenApprovalReturn {
   const { signer } = useWallet();
-  const [isApproving, setIsApproving] = useState(false);
+  const [approvingToken, setApprovingToken] = useState<string | undefined>();
+  const { tokenPermits, addTokenPermit, isPermitsDisabled, setIsPermitsDisabled } = useTokenPermitsContext();
 
-  const tokenAddresses = useMemo(() => tokens.map((t) => t.tokenAddress).filter(Boolean), [tokens]);
+  const mergedTokens = useMemo(() => {
+    const map = new Map<string, bigint>();
+    for (const token of tokens) {
+      if (!token.tokenAddress) continue;
+      const prev = map.get(token.tokenAddress) ?? 0n;
+      map.set(token.tokenAddress, prev + (token.amount ?? 0n));
+    }
+    return Array.from(map, ([tokenAddress, amount]) => ({ tokenAddress, amount }));
+  }, [tokens]);
+
+  const tokenAddresses = useMemo(() => mergedTokens.map((t) => t.tokenAddress), [mergedTokens]);
+
+  const nothingToCheck = skip || tokenAddresses.length === 0;
 
   const {
     tokensAllowanceData,
-    isLoading: isAllowanceLoading,
-    isLoaded: isAllowanceLoaded,
+    isLoading: isAllowanceLoadingRaw,
+    isLoaded: isAllowanceLoadedRaw,
   } = useTokensAllowanceData(chainId, {
     spenderAddress,
     tokenAddresses,
     skip,
   });
 
+  const isAllowanceLoading = nothingToCheck ? false : isAllowanceLoadingRaw;
+  const isAllowanceLoaded = nothingToCheck ? true : isAllowanceLoadedRaw;
+
+  const permitsOrEmpty = allowPermit && tokenPermits ? tokenPermits : EMPTY_PERMITS;
+
   const tokensToApprove = useMemo(
     () =>
-      tokens
-        .filter((token) => getNeedTokenApprove(tokensAllowanceData, token.tokenAddress, token.amount, []))
-        .map((token) => token.tokenAddress),
-    [tokens, tokensAllowanceData]
+      skip
+        ? EMPTY_STRING_ARRAY
+        : mergedTokens
+            .filter((token) =>
+              getNeedTokenApprove(tokensAllowanceData, token.tokenAddress, token.amount, permitsOrEmpty)
+            )
+            .map((token) => token.tokenAddress),
+    [skip, mergedTokens, tokensAllowanceData, permitsOrEmpty]
   );
 
   const needsApproval = tokensToApprove.length > 0;
+  const isApproving = approvingToken !== undefined && tokensToApprove[0] === approvingToken;
 
   useEffect(() => {
-    if (!needsApproval && isApproving) {
-      setIsApproving(false);
+    if (approvingToken !== undefined && !tokensToApprove.includes(approvingToken)) {
+      setApprovingToken(undefined);
     }
-  }, [isApproving, needsApproval]);
+  }, [approvingToken, tokensToApprove]);
 
   const handleApprove = useCallback(
     async (options?: HandleApproveOptions) => {
       const tokenAddress = tokensToApprove[0];
       if (!chainId || isApproving || !tokenAddress || !spenderAddress) return;
 
+      const permitParams =
+        allowPermit && !wrapApprove ? { addTokenPermit, setIsPermitsDisabled, isPermitsDisabled } : undefined;
+
       const doApprove = async (signerToUse: WalletSigner) => {
+        setApprovingToken(tokenAddress);
         await approveTokens({
           setIsApproving: noop,
           signer: signerToUse,
           tokenAddress,
           spender: spenderAddress,
           chainId,
-          permitParams: undefined,
+          permitParams,
           approveAmount,
-          onApproveSubmitted: () => setIsApproving(true),
           onApproveFail: () => {
-            setIsApproving(false);
+            setApprovingToken(undefined);
             options?.onApproveFail?.();
           },
         });
@@ -99,11 +128,22 @@ export function useTokenApproval({
       if (wrapApprove) {
         await wrapApprove(doApprove);
       } else if (signer) {
-        setIsApproving(true);
         await doApprove(signer);
       }
     },
-    [tokensToApprove, chainId, isApproving, spenderAddress, signer, approveAmount, wrapApprove]
+    [
+      tokensToApprove,
+      chainId,
+      isApproving,
+      spenderAddress,
+      signer,
+      approveAmount,
+      wrapApprove,
+      allowPermit,
+      addTokenPermit,
+      isPermitsDisabled,
+      setIsPermitsDisabled,
+    ]
   );
 
   return {
@@ -115,3 +155,6 @@ export function useTokenApproval({
     handleApprove,
   };
 }
+
+const EMPTY_PERMITS: NonNullable<ReturnType<typeof useTokenPermitsContext>["tokenPermits"]> = [];
+const EMPTY_STRING_ARRAY: string[] = [];

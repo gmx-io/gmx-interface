@@ -22,7 +22,6 @@ import {
 } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
 import {
   selectBlockTimestampData,
-  selectGasPaymentTokenAllowance,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
@@ -40,7 +39,6 @@ import {
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import { selectExecutionFeeBufferBps } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
-import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
@@ -50,7 +48,6 @@ import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
-import type { TokenToSpendParams } from "domain/synthetics/tokens/types";
 import { getPositionSellerTradeFlags } from "domain/synthetics/trade";
 import { getTwapRecommendation } from "domain/synthetics/trade/twapRecommendation";
 import { TradeType } from "domain/synthetics/trade/types";
@@ -59,7 +56,7 @@ import { ORDER_OPTION_TO_TRADE_MODE, OrderOption } from "domain/synthetics/trade
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getCommonError, getDecreaseError, getExpressError } from "domain/synthetics/trade/utils/validation";
 import { Token } from "domain/tokens";
-import { useApprovalState } from "domain/tokens/useApprovalState";
+import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useChainId } from "lib/chains";
 import { useDebouncedInputValue } from "lib/debounce/useDebouncedInputValue";
 import { helperToast } from "lib/helperToast";
@@ -69,7 +66,10 @@ import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidatio
 import { expandDecimals, formatAmountFree, formatDeltaUsd, formatPercentage, parseValue } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { userAnalytics } from "lib/userAnalytics";
+import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
+import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
@@ -111,7 +111,6 @@ import { PositionSellerPriceImpactFeesRow } from "./rows/PositionSellerPriceImpa
 import "./PositionSeller.scss";
 
 const PNL_TOOLTIP_THRESHOLD = expandDecimals(10000, USD_DECIMALS);
-const EMPTY_PAY_TOKEN_PARAMS: TokenToSpendParams[] = [];
 
 export function PositionSeller() {
   const [, setClosingPositionKey] = useClosingPositionKeyState();
@@ -157,8 +156,6 @@ export function PositionSeller() {
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
   const blockTimestampData = useSelector(selectBlockTimestampData);
   const marketsInfoData = useSelector(selectMarketsInfoData);
-  const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
-  const tokenPermits = useSelector(selectTokenPermits);
   const executionFeeBufferBps = useSelector(selectExecutionFeeBufferBps);
 
   const isVisible = Boolean(position);
@@ -398,31 +395,30 @@ export function PositionSeller() {
     isGmxAccount: srcChainId !== undefined || effectiveIsReceiveToGmxAccount,
   });
 
-  const gasPaymentTokenParams = useMemo<TokenToSpendParams | undefined>(
-    () =>
-      expressParams?.gasPaymentParams
-        ? {
-            tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
-            amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
-            allowanceData: gasPaymentTokenAllowance?.tokensAllowanceData,
-            isAllowanceLoaded: gasPaymentTokenAllowance?.isLoaded,
-          }
-        : undefined,
-    [expressParams?.gasPaymentParams, gasPaymentTokenAllowance?.tokensAllowanceData, gasPaymentTokenAllowance?.isLoaded]
-  );
+  const approvalTokens = useMemo(() => {
+    if (!expressParams?.gasPaymentParams) return [];
+    return [
+      {
+        tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
+        amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
+      },
+    ];
+  }, [expressParams?.gasPaymentParams]);
 
-  const permits = useMemo(() => (expressParams && tokenPermits ? tokenPermits : []), [expressParams, tokenPermits]);
-
-  const { tokensToApprove, isAllowanceLoaded, isApproving, handleApprove } = useApprovalState({
+  const {
+    tokensToApprove,
+    isAllowanceLoaded: isAllowanceLoadedRaw,
+    isApproving,
+    handleApprove,
+  } = useTokenApproval({
     chainId,
-    signer,
+    spenderAddress: getContract(chainId, "SyntheticsRouter"),
+    tokens: approvalTokens,
     allowPermit: Boolean(expressParams),
-    payTokenParamsList: EMPTY_PAY_TOKEN_PARAMS,
-    gasPaymentTokenParams,
-    permits,
     skip: Boolean(srcChainId),
-    isLoading: !batchParams,
   });
+
+  const isAllowanceLoaded = Boolean(batchParams) && isAllowanceLoadedRaw;
 
   const error = useMemo(() => {
     if (!position) {
@@ -496,7 +492,17 @@ export function PositionSeller() {
     if (isAllowanceLoaded && tokensToApprove.length) {
       if (!chainId || isApproving) return;
 
-      handleApprove();
+      userAnalytics.pushEvent<TokenApproveClickEvent>({
+        event: "TokenApproveAction",
+        data: { action: "ApproveClick" },
+      });
+      handleApprove({
+        onApproveFail: () =>
+          userAnalytics.pushEvent<TokenApproveResultEvent>({
+            event: "TokenApproveAction",
+            data: { action: "ApproveFail" },
+          }),
+      });
 
       return;
     }
@@ -841,8 +847,7 @@ export function PositionSeller() {
       return {
         text: (
           <>
-            {t`Approve ${getToken(chainId, tokenToApprove.tokenAddress).symbol}`}{" "}
-            <SpinnerIcon className="ml-4 animate-spin" />
+            {t`Approve ${getToken(chainId, tokenToApprove).symbol}`} <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
         disabled: true,
@@ -852,7 +857,7 @@ export function PositionSeller() {
     if (isAllowanceLoaded && tokensToApprove.length) {
       const tokenToApprove = tokensToApprove[0];
       return {
-        text: t`Approve ${getToken(chainId, tokenToApprove.tokenAddress).symbol}`,
+        text: t`Approve ${getToken(chainId, tokenToApprove).symbol}`,
         disabled: false,
       };
     }

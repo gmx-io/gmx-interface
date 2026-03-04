@@ -18,7 +18,6 @@ import {
 import { useSavedAllowedSlippage } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import {
   selectBlockTimestampData,
-  selectGasPaymentTokenAllowance,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
@@ -28,7 +27,6 @@ import {
   selectPositionEditorSelectedCollateralToken,
   selectPositionEditorSetCollateralInputValue,
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
-import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
@@ -41,8 +39,7 @@ import {
   substractMaxLeverageSlippage,
   willPositionCollateralBeSufficientForPosition,
 } from "domain/synthetics/positions";
-import { convertToTokenAmount, useTokensAllowanceData } from "domain/synthetics/tokens";
-import type { TokenToSpendParams } from "domain/synthetics/tokens/types";
+import { convertToTokenAmount } from "domain/synthetics/tokens";
 import { getMarkPrice, getMinCollateralUsdForLeverage } from "domain/synthetics/trade";
 import {
   getCommonError,
@@ -53,7 +50,7 @@ import {
   ValidationButtonTooltipName,
   ValidationResult,
 } from "domain/synthetics/trade/utils/validation";
-import { useApprovalState } from "domain/tokens/useApprovalState";
+import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { bigNumberBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
@@ -66,6 +63,8 @@ import {
 import { expandDecimals, formatAmountFree } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { userAnalytics } from "lib/userAnalytics";
+import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
 import {
@@ -118,14 +117,6 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
   const { collateralDeltaAmount, collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const marketsInfoData = useSelector(selectMarketsInfoData);
-
-  const collateralTokenAllowance = useTokensAllowanceData(chainId, {
-    spenderAddress: routerAddress,
-    tokenAddresses: position ? [position.collateralTokenAddress] : [],
-  });
-
-  const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
-  const tokenPermits = useSelector(selectTokenPermits);
 
   const isDeposit = operation === Operation.Deposit;
 
@@ -260,51 +251,38 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     isGmxAccount: isCollateralTokenFromGmxAccount,
   });
 
-  const payTokenParamsList = useMemo<TokenToSpendParams[]>(
-    () =>
-      selectedCollateralAddress && collateralDeltaAmount !== undefined
-        ? [
-            {
-              tokenAddress: selectedCollateralAddress,
-              amount: collateralDeltaAmount,
-              allowanceData: collateralTokenAllowance.tokensAllowanceData,
-              isAllowanceLoaded: collateralTokenAllowance.isLoaded,
-            },
-          ]
-        : [],
-    [
-      selectedCollateralAddress,
-      collateralDeltaAmount,
-      collateralTokenAllowance.tokensAllowanceData,
-      collateralTokenAllowance.isLoaded,
-    ]
-  );
+  const approvalTokens = useMemo(() => {
+    const list: { tokenAddress: string; amount: bigint | undefined }[] = [];
 
-  const gasPaymentTokenParams = useMemo<TokenToSpendParams | undefined>(
-    () =>
-      expressParams?.gasPaymentParams
-        ? {
-            tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
-            amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
-            allowanceData: gasPaymentTokenAllowance?.tokensAllowanceData,
-            isAllowanceLoaded: gasPaymentTokenAllowance?.isLoaded,
-          }
-        : undefined,
-    [expressParams?.gasPaymentParams, gasPaymentTokenAllowance?.tokensAllowanceData, gasPaymentTokenAllowance?.isLoaded]
-  );
+    if (selectedCollateralAddress && collateralDeltaAmount !== undefined) {
+      list.push({ tokenAddress: selectedCollateralAddress, amount: collateralDeltaAmount });
+    }
 
-  const permits = useMemo(() => (expressParams && tokenPermits ? tokenPermits : []), [expressParams, tokenPermits]);
+    if (expressParams?.gasPaymentParams) {
+      list.push({
+        tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
+        amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
+      });
+    }
 
-  const { tokensToApprove, isAllowanceLoaded, isApproving, handleApprove } = useApprovalState({
+    return list;
+  }, [selectedCollateralAddress, collateralDeltaAmount, expressParams?.gasPaymentParams]);
+
+  const {
+    tokensToApprove,
+    isAllowanceLoaded: isAllowanceLoadedRaw,
+    isApproving,
+    handleApprove,
+  } = useTokenApproval({
     chainId,
-    signer,
+    spenderAddress: routerAddress,
+    tokens: approvalTokens,
     allowPermit: Boolean(expressParams),
-    payTokenParamsList,
-    gasPaymentTokenParams,
-    permits,
     skip: isCollateralTokenFromGmxAccount,
-    isLoading: !selectedCollateralAddress || collateralDeltaAmount === undefined,
   });
+
+  const isAllowanceLoaded =
+    Boolean(selectedCollateralAddress && collateralDeltaAmount !== undefined) && isAllowanceLoadedRaw;
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -425,7 +403,17 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     if (isAllowanceLoaded && tokensToApprove.length && selectedCollateralToken) {
       if (!chainId || isApproving) return;
 
-      handleApprove();
+      userAnalytics.pushEvent<TokenApproveClickEvent>({
+        event: "TokenApproveAction",
+        data: { action: "ApproveClick" },
+      });
+      handleApprove({
+        onApproveFail: () =>
+          userAnalytics.pushEvent<TokenApproveResultEvent>({
+            event: "TokenApproveAction",
+            data: { action: "ApproveFail" },
+          }),
+      });
 
       return;
     }
@@ -506,8 +494,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     return {
       text: (
         <>
-          {t`Approve ${getToken(chainId, tokenToApprove.tokenAddress).symbol}`}{" "}
-          <SpinnerIcon className="ml-4 animate-spin" />
+          {t`Approve ${getToken(chainId, tokenToApprove).symbol}`} <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
       disabled: true,
@@ -557,7 +544,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
   if (isAllowanceLoaded && tokensToApprove.length && selectedCollateralToken) {
     const tokenToApprove = tokensToApprove[0];
     return {
-      text: t`Approve ${getToken(chainId, tokenToApprove.tokenAddress).symbol}`,
+      text: t`Approve ${getToken(chainId, tokenToApprove).symbol}`,
       disabled: false,
       ...commonParams,
     };
