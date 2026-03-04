@@ -6,10 +6,10 @@ import { maxUint256 } from "viem";
 import { getChainName, getExplorerUrl } from "config/chains";
 import { AddTokenPermitFn } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { INVALID_PERMIT_SIGNATURE_ERROR } from "lib/errors/customErrors";
-import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
+import { estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getProvider } from "lib/rpc";
 import TokenAbi from "sdk/abis/Token";
 import { getNativeToken, getToken } from "sdk/configs/tokens";
 import { InfoTokens, TokenInfo } from "sdk/utils/tokens/types";
@@ -121,78 +121,75 @@ export async function approveTokens({
 
   const finalApproveAmount = approveAmount ?? maxUint256;
 
-  const gasLimit: bigint = await getPublicClientWithRpc(chainId)
-    .estimateGas({
-      account: await signer!.getAddress(),
+  try {
+    const gasLimit = await estimateGasLimit(getProvider(undefined, chainId), {
       to: tokenAddress,
       data: contract.interface.encodeFunctionData("approve", [spender, finalApproveAmount]),
-    })
-    .then(applyGasLimitBuffer);
+      from: await signer!.getAddress(),
+      value: undefined,
+    });
 
-  return await contract
-    .approve(spender, finalApproveAmount, { gasLimit })
-    .then(async (res) => {
-      const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
-      helperToast.success(
+    const res = await contract.approve(spender, finalApproveAmount, { gasLimit });
+
+    const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
+    helperToast.success(
+      <div>
+        <Trans>
+          Approval submitted
+          <br />
+          <br />
+          <ExternalLink href={txUrl}>View status</ExternalLink>
+        </Trans>
+      </div>
+    );
+
+    if (onApproveSubmitted) {
+      onApproveSubmitted({ isPermit: false });
+    }
+    if (getTokenInfo && infoTokens && pendingTxns && setPendingTxns) {
+      const token = getTokenInfo(infoTokens, tokenAddress);
+      const pendingTxn = {
+        hash: res.hash,
+        message: includeMessage ? t`${token.symbol} approved` : false,
+      };
+      setPendingTxns([...pendingTxns, pendingTxn]);
+    }
+  } catch (e) {
+    onApproveFail?.(e, { isPermit: false });
+    // eslint-disable-next-line no-console
+    console.error(e);
+    let failMsg;
+    if (
+      ["not enough funds for gas", "failed to execute call with revert code InsufficientGasFunds"].includes(
+        e.data?.message
+      )
+    ) {
+      failMsg = (
         <div>
           <Trans>
-            Approval submitted
+            Insufficient {nativeToken.symbol} for gas on {networkName}
             <br />
             <br />
-            <ExternalLink href={txUrl}>View status</ExternalLink>
+            <Link to="/buy_gmx#bridge">
+              Buy or transfer {nativeToken.symbol} to {networkName}
+            </Link>
           </Trans>
         </div>
       );
-
-      if (onApproveSubmitted) {
-        onApproveSubmitted({ isPermit: false });
-      }
-      if (getTokenInfo && infoTokens && pendingTxns && setPendingTxns) {
-        const token = getTokenInfo(infoTokens, tokenAddress);
-        const pendingTxn = {
-          hash: res.hash,
-          message: includeMessage ? t`${token.symbol} approved` : false,
-        };
-        setPendingTxns([...pendingTxns, pendingTxn]);
-      }
-    })
-    .catch((e) => {
-      onApproveFail?.(e, { isPermit: false });
-      // eslint-disable-next-line no-console
-      console.error(e);
-      let failMsg;
-      if (
-        ["not enough funds for gas", "failed to execute call with revert code InsufficientGasFunds"].includes(
-          e.data?.message
-        )
-      ) {
-        failMsg = (
-          <div>
-            <Trans>
-              Insufficient {nativeToken.symbol} for gas on {networkName}
-              <br />
-              <br />
-              <Link to="/buy_gmx#bridge">
-                Buy or transfer {nativeToken.symbol} to {networkName}
-              </Link>
-            </Trans>
-          </div>
-        );
-      } else if (e.message?.includes("User denied transaction signature")) {
-        failMsg = t`Approval cancelled`;
-      } else {
-        failMsg = (
-          <>
-            <Trans>Approval failed</Trans>
-            <br />
-            <br />
-            <ToastifyDebug error={String(e)} />
-          </>
-        );
-      }
-      helperToast.error(failMsg);
-    })
-    .finally(() => {
-      setIsApproving(false);
-    });
+    } else if (e.message?.includes("User denied transaction signature")) {
+      failMsg = t`Approval cancelled`;
+    } else {
+      failMsg = (
+        <>
+          <Trans>Approval failed</Trans>
+          <br />
+          <br />
+          <ToastifyDebug error={String(e)} />
+        </>
+      );
+    }
+    helperToast.error(failMsg);
+  } finally {
+    setIsApproving(false);
+  }
 }
