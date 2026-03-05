@@ -84,10 +84,7 @@ export function ReferralsTradersContent({ account, referralsData }: ReferralsTra
   const { discountShare } = useReferrerDiscountShare(chainId, codeOwner);
   const [, copyToClipboard] = useCopyToClipboard();
   const { totalRebate } = useTiers(chainId, traderTier);
-  const { timeRangeInfo, periodStart, periodEnd, setTimeRange } = useTimeRange(
-    "referrals-traders-time-range",
-    TIME_RANGE_INFOS
-  );
+  const { timeRangeInfo, setTimeRange } = useTimeRange("referrals-traders-time-range", TIME_RANGE_INFOS);
 
   const currentTierDiscount = getSharePercentage(traderTier, discountShare ?? 0n, totalRebate);
 
@@ -96,7 +93,9 @@ export function ReferralsTradersContent({ account, referralsData }: ReferralsTra
       <div className="flex grow flex-col gap-8">
         <div className="flex flex-col gap-12 rounded-8 bg-slate-900 p-20">
           <div className="flex items-center justify-between">
-            <div className="text-body-large font-medium text-typography-primary">Overview</div>
+            <div className="text-body-large font-medium text-typography-primary">
+              <Trans>Overview</Trans>
+            </div>
             <PoolsTimeRangeFilter
               timeRange={timeRangeInfo.slug}
               setTimeRange={setTimeRange}
@@ -138,8 +137,9 @@ export function ReferralsTradersContent({ account, referralsData }: ReferralsTra
                 </div>
               </div>
               <TradersVolumeChartContainer
-                periodStart={periodStart}
-                periodEnd={periodEnd}
+                chartType="volume"
+                stats={undefined}
+                isLoading={undefined}
                 timeRangeInfo={timeRangeInfo}
               />
             </Card>
@@ -166,14 +166,18 @@ export function ReferralsTradersContent({ account, referralsData }: ReferralsTra
                 </div>
               </div>
               <TradersVolumeChartContainer
-                periodStart={periodStart}
-                periodEnd={periodEnd}
+                chartType="volume"
+                stats={undefined}
+                isLoading={undefined}
                 timeRangeInfo={timeRangeInfo}
               />
             </Card>
           </div>
           <div className="text-body-small font-medium text-typography-secondary">
-            <span className="text-slate-500">Last Updated:</span> 2025-08-18 15:04:04 UTC
+            <span className="text-slate-500">
+              <Trans>Last Updated:</Trans>
+            </span>{" "}
+            2025-08-18 15:04:04 UTC
           </div>
         </div>
       </div>

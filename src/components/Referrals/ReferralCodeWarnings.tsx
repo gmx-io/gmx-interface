@@ -40,13 +40,13 @@ export function ReferralCodeWarnings({ allOwnersOnOtherChains }: Props) {
             handle={<AlertIcon className="size-16 text-yellow-300" />}
             variant="none"
             className="flex"
-            renderContent={() => (
+            content={
               <div>
                 <Trans>
                   Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates.
                 </Trans>
               </div>
-            )}
+            }
           />
         </div>
       )}
@@ -57,11 +57,11 @@ export function ReferralCodeWarnings({ allOwnersOnOtherChains }: Props) {
             handle={<InfoIcon className="size-16 text-red-500" />}
             variant="none"
             className="flex"
-            renderContent={() => (
+            content={
               <div>
                 <Trans>Code taken by another user on {takenNetworkNames}. No rebates from those networks.</Trans>
               </div>
-            )}
+            }
           />
         </div>
       )}

@@ -1,9 +1,11 @@
 import { msg, t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
+import { lightFormat } from "date-fns";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 
 import { ReferralCodeStats, TotalReferralsStats, useTiers } from "domain/referrals";
+import { useAffiliateReferralStats } from "domain/referrals/hooks/useAffiliateReferralStats";
 import { TimeRangeInfo, useTimeRange } from "domain/synthetics/markets/useTimeRange";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
@@ -90,6 +92,7 @@ function PoolsTimeRangeFilter({
 }
 
 type Props = {
+  account?: string;
   referralsData?: TotalReferralsStats;
   handleCreateReferralCode: (code: string) => Promise<unknown>;
   setRecentlyAddedCodes: (codes: ReferralCodeStats[]) => void;
@@ -97,6 +100,7 @@ type Props = {
 };
 
 export function AffiliatesStats({
+  account,
   referralsData,
   recentlyAddedCodes,
   handleCreateReferralCode,
@@ -175,6 +179,16 @@ export function AffiliatesStats({
     "referrals-affiliates-time-range",
     TIME_RANGE_INFOS
   );
+  const { data: referralStats, isLoading: isReferralStatsLoading } = useAffiliateReferralStats({
+    chainId,
+    affiliate: account,
+    from: periodStart,
+    to: periodEnd,
+  });
+
+  const lastUpdated = referralStats?.to
+    ? `${lightFormat(referralStats.to * 1000, "yyyy-MM-dd HH:mm:ss")} UTC`
+    : undefined;
 
   const mainContent = (
     <div className="flex flex-col gap-8">
@@ -207,17 +221,29 @@ export function AffiliatesStats({
         </PromoCard>
         <div className="flex flex-col gap-12">
           <div className="grid grid-cols-2 gap-12 max-lg:grid-cols-1">
-            <TradingVolumeChartCard periodStart={periodStart} periodEnd={periodEnd} timeRangeInfo={timeRangeInfo} />
-            <NumberOfTradesChartCard periodStart={periodStart} periodEnd={periodEnd} timeRangeInfo={timeRangeInfo} />
-            <TradersReferredChartCard periodStart={periodStart} periodEnd={periodEnd} timeRangeInfo={timeRangeInfo} />
-            <RebatesChartCard periodStart={periodStart} periodEnd={periodEnd} timeRangeInfo={timeRangeInfo} />
+            <TradingVolumeChartCard
+              stats={referralStats}
+              isLoading={isReferralStatsLoading}
+              timeRangeInfo={timeRangeInfo}
+            />
+            <NumberOfTradesChartCard
+              stats={referralStats}
+              isLoading={isReferralStatsLoading}
+              timeRangeInfo={timeRangeInfo}
+            />
+            <TradersReferredChartCard
+              stats={referralStats}
+              isLoading={isReferralStatsLoading}
+              timeRangeInfo={timeRangeInfo}
+            />
+            <RebatesChartCard stats={referralStats} isLoading={isReferralStatsLoading} timeRangeInfo={timeRangeInfo} />
           </div>
         </div>
         <div className="text-body-small font-medium text-typography-secondary">
           <span className="text-slate-500">
             <Trans>Last Updated:</Trans>
           </span>{" "}
-          2025-08-18 15:04:04 UTC
+          {lastUpdated ?? "—"}
         </div>
       </div>
 
@@ -261,19 +287,19 @@ export function AffiliatesStats({
               {currentAffiliatesData.map((stat, index) => {
                 return (
                   <TableTr key={index}>
-                    <TableTd data-label="Referral Code">
+                    <TableTd>
                       <div className="flex items-center gap-8">
                         <span className="referral-text">{stat.referralCode}</span>
                         <ReferralCodeWarnings allOwnersOnOtherChains={stat?.allOwnersOnOtherChains} />
                       </div>
                     </TableTd>
-                    <TableTd data-label="Total Volume">
+                    <TableTd>
                       <Tooltip
                         handle={formatBigUsd(stat.volume)}
                         handleClassName="numbers"
                         position="bottom-start"
                         className="whitespace-nowrap"
-                        renderContent={() => (
+                        content={
                           <>
                             <StatsTooltipRow
                               label={t`V1 volume`}
@@ -286,19 +312,17 @@ export function AffiliatesStats({
                               valueClassName="numbers"
                             />
                           </>
-                        )}
+                        }
                       />
                     </TableTd>
-                    <TableTd data-label="Traders Referred" className="numbers">
-                      {stat.registeredReferralsCount}
-                    </TableTd>
-                    <TableTd data-label="Total Rebates">
+                    <TableTd className="numbers">{stat.registeredReferralsCount}</TableTd>
+                    <TableTd>
                       <Tooltip
                         handle={formatBigUsd(stat.affiliateRebateUsd)}
                         handleClassName="numbers"
                         position="bottom-start"
                         className="whitespace-nowrap"
-                        renderContent={() => (
+                        content={
                           <>
                             <StatsTooltipRow
                               label={t`V1 rebates`}
@@ -311,10 +335,10 @@ export function AffiliatesStats({
                               valueClassName="numbers"
                             />
                           </>
-                        )}
+                        }
                       />
                     </TableTd>
-                    <TableTd data-label="Actions" className="whitespace-nowrap">
+                    <TableTd className="whitespace-nowrap">
                       <div className="flex items-center justify-end gap-4">
                         <Button
                           variant="ghost"
@@ -322,7 +346,7 @@ export function AffiliatesStats({
                           onClick={() => {
                             trackCopyCode();
                             copyToClipboard(getReferralCodeTradeUrl(stat.referralCode));
-                            helperToast.success("Referral link copied to your clipboard");
+                            helperToast.success(t`Referral link copied to your clipboard`);
                           }}
                           className="gap-4"
                         >

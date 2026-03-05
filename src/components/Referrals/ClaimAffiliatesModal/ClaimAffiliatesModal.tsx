@@ -584,13 +584,13 @@ function ClaimRewardRow({
           className="ClaimModal-row-tooltip"
           handle={formatUsd(totalReward)}
           position="top-end"
-          renderContent={() => (
+          content={
             <>
               {claimableAmountsItems.map((item) => (
                 <div key={item}>{item}</div>
               ))}
             </>
-          )}
+          }
         />
       </TableTd>
     </tr>

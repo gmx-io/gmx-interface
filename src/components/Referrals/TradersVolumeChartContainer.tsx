@@ -1,62 +1,99 @@
+import { Trans } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import { lightFormat } from "date-fns";
 import { useMemo } from "react";
-import useSWR from "swr";
 
 import { USD_DECIMALS } from "config/factors";
+import { AffiliateReferralStats } from "domain/referrals";
 import { TimeRangeInfo } from "domain/synthetics/markets/useTimeRange";
 import { bigintToNumber } from "lib/numbers";
-import { sleep } from "lib/sleep";
-import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
-import { STUB_DATA, STUB_HOUR_DATA } from "./DEV";
-import { TradersVolumeChart } from "./GmxBarChart";
+import { RebatesChart, TradersReferredChart, TradesCountChart, TradersVolumeChart } from "./GmxBarChart";
 
-async function fetchTradersVolumeData(periodStart: number, periodEnd: number, isSmall: boolean) {
-  await sleep(1000);
+type ChartType = "volume" | "trades" | "tradersReferred" | "rebates";
 
-  if (isSmall) {
-    return STUB_HOUR_DATA.filter(({ timestamp }) => timestamp >= periodStart && timestamp <= periodEnd);
-  }
+const ONE_YEAR_SECONDS = 365 * 24 * 60 * 60;
+const ONE_DAY_SECONDS = 24 * 60 * 60;
 
-  return STUB_DATA.filter(({ timestamp }) => timestamp >= periodStart && timestamp <= periodEnd);
+function getDateFormat(timestamps: number[], isSmall: boolean): "HH:mm" | "dd/MM" | "yyyy" {
+  if (isSmall) return "HH:mm";
+  if (timestamps.length < 2) return "dd/MM";
+  const spanSeconds = timestamps[timestamps.length - 1] - timestamps[0];
+  return spanSeconds > ONE_YEAR_SECONDS ? "yyyy" : "dd/MM";
 }
 
-function toChartData(raw: { timestamp: number; volume: bigint; profit: number; loss: number }[], isSmall: boolean) {
-  return raw.map(({ timestamp, volume }) => ({
-    timestamp,
-    dateCompact: isSmall ? lightFormat(timestamp * 1000, "HH:mm") : lightFormat(timestamp * 1000, "dd/MM"),
-    volumeFloat: bigintToNumber(volume, USD_DECIMALS),
-  }));
+function formatTooltipDate(timestamp: number, bucketSizeSeconds: number, locale: string): string {
+  if (bucketSizeSeconds > ONE_DAY_SECONDS) {
+    const start = new Date(timestamp * 1000);
+    const end = new Date((timestamp + bucketSizeSeconds) * 1000);
+    const startStr = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short" }).format(start);
+    const endStr = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short", year: "numeric" }).format(end);
+    return `${startStr} - ${endStr}`;
+  }
+
+  return new Intl.DateTimeFormat(locale, {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+    ...(bucketSizeSeconds < ONE_DAY_SECONDS && { hour: "numeric", minute: "2-digit" }),
+  }).format(new Date(timestamp * 1000));
 }
 
 export function TradersVolumeChartContainer({
-  periodStart,
-  periodEnd,
+  chartType,
+  stats,
+  isLoading,
   timeRangeInfo,
 }: {
-  periodStart: number;
-  periodEnd: number;
+  chartType: ChartType;
+  stats: AffiliateReferralStats | undefined;
+  isLoading: boolean | undefined;
   timeRangeInfo: TimeRangeInfo;
 }) {
+  const { i18n } = useLingui();
   const isSmall = timeRangeInfo.days === 1;
+  const chartData = useMemo(() => {
+    if (!stats?.points) return [];
 
-  const { data: rawData, isLoading } = useSWR(
-    ["referrals-traders-volume-chart", timeRangeInfo.slug],
-    () => fetchTradersVolumeData(periodStart, periodEnd, isSmall),
-    {
-      refreshInterval: CONFIG_UPDATE_INTERVAL,
-      revalidateOnFocus: false,
-    }
-  );
+    const timestamps = stats.points.map((p) => p.timestamp);
+    const fmt = getDateFormat(timestamps, isSmall);
+    const bucketSizeSeconds = stats.bucketSizeSeconds;
 
-  const chartData = useMemo(() => (rawData ? toChartData(rawData, isSmall) : []), [rawData, isSmall]);
+    return stats.points.map((point) => ({
+      timestamp: point.timestamp,
+      dateCompact: lightFormat(point.timestamp * 1000, fmt),
+      dateTooltip: formatTooltipDate(point.timestamp, bucketSizeSeconds, i18n.locale),
+      volumeUsd: point.volumeUsd,
+      volumeFloat: bigintToNumber(point.volumeUsd, USD_DECIMALS),
+      tradesCount: point.tradesCount,
+      tradesCountFloat: point.tradesCount,
+      rebatesUsd: point.rebatesUsd,
+      rebatesUsdFloat: bigintToNumber(point.rebatesUsd, USD_DECIMALS),
+      tradersGained: point.tradersGained,
+      tradersLost: point.tradersLost,
+      tradersGainedFloat: point.tradersGained,
+      tradersLostFloat: point.tradersLost,
+    }));
+  }, [stats?.points, stats?.bucketSizeSeconds, isSmall, i18n.locale]);
 
   if (isLoading) {
     return (
       <div className="text-body-small flex h-[256px] w-full items-center justify-center text-typography-secondary">
-        Loading…
+        <Trans>Loading…</Trans>
       </div>
     );
+  }
+
+  if (chartType === "trades") {
+    return <TradesCountChart chartData={chartData} />;
+  }
+
+  if (chartType === "tradersReferred") {
+    return <TradersReferredChart chartData={chartData} />;
+  }
+
+  if (chartType === "rebates") {
+    return <RebatesChart chartData={chartData} />;
   }
 
   return <TradersVolumeChart chartData={chartData} />;

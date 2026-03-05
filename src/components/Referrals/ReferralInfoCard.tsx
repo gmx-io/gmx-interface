@@ -39,14 +39,14 @@ function ReferralInfoCard({
             className="whitespace-nowrap"
             handle={value}
             handleClassName="text-20 font-medium text-typography-primary"
-            renderContent={() => tooltipContent}
+            content={tooltipContent}
           />
         ) : (
           <div className="text-20 font-medium text-typography-primary">{value}</div>
         )}
         <span className="text-body-small font-medium text-typography-secondary">
           {labelTooltipText ? (
-            <Tooltip handle={label} position={tooltipPosition} renderContent={() => labelTooltipText} variant="icon" />
+            <Tooltip handle={label} position={tooltipPosition} content={labelTooltipText} variant="icon" />
           ) : (
             label
           )}

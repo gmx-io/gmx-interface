@@ -367,6 +367,7 @@ export interface AccountVolumeStatObject {
   __typename?: "AccountVolumeStatObject";
   last7DaysVolume: Scalars["BigInt"]["output"];
   last14DaysVolume: Scalars["BigInt"]["output"];
+  last30DaysVolume: Scalars["BigInt"]["output"];
   maxDailyVolume: Scalars["BigInt"]["output"];
 }
 
@@ -676,7 +677,7 @@ export interface ClaimAction {
   timestamp: Scalars["Int"]["output"];
   tokenAddresses: Array<Scalars["String"]["output"]>;
   tokenPrices: Array<Scalars["String"]["output"]>;
-  transaction: Transaction;
+  transactionHash: Scalars["String"]["output"];
 }
 
 export interface ClaimActionEdge {
@@ -710,48 +711,12 @@ export enum ClaimActionOrderByInput {
   timestamp_DESC = "timestamp_DESC",
   timestamp_DESC_NULLS_FIRST = "timestamp_DESC_NULLS_FIRST",
   timestamp_DESC_NULLS_LAST = "timestamp_DESC_NULLS_LAST",
-  transaction_blockNumber_ASC = "transaction_blockNumber_ASC",
-  transaction_blockNumber_ASC_NULLS_FIRST = "transaction_blockNumber_ASC_NULLS_FIRST",
-  transaction_blockNumber_ASC_NULLS_LAST = "transaction_blockNumber_ASC_NULLS_LAST",
-  transaction_blockNumber_DESC = "transaction_blockNumber_DESC",
-  transaction_blockNumber_DESC_NULLS_FIRST = "transaction_blockNumber_DESC_NULLS_FIRST",
-  transaction_blockNumber_DESC_NULLS_LAST = "transaction_blockNumber_DESC_NULLS_LAST",
-  transaction_from_ASC = "transaction_from_ASC",
-  transaction_from_ASC_NULLS_FIRST = "transaction_from_ASC_NULLS_FIRST",
-  transaction_from_ASC_NULLS_LAST = "transaction_from_ASC_NULLS_LAST",
-  transaction_from_DESC = "transaction_from_DESC",
-  transaction_from_DESC_NULLS_FIRST = "transaction_from_DESC_NULLS_FIRST",
-  transaction_from_DESC_NULLS_LAST = "transaction_from_DESC_NULLS_LAST",
-  transaction_hash_ASC = "transaction_hash_ASC",
-  transaction_hash_ASC_NULLS_FIRST = "transaction_hash_ASC_NULLS_FIRST",
-  transaction_hash_ASC_NULLS_LAST = "transaction_hash_ASC_NULLS_LAST",
-  transaction_hash_DESC = "transaction_hash_DESC",
-  transaction_hash_DESC_NULLS_FIRST = "transaction_hash_DESC_NULLS_FIRST",
-  transaction_hash_DESC_NULLS_LAST = "transaction_hash_DESC_NULLS_LAST",
-  transaction_id_ASC = "transaction_id_ASC",
-  transaction_id_ASC_NULLS_FIRST = "transaction_id_ASC_NULLS_FIRST",
-  transaction_id_ASC_NULLS_LAST = "transaction_id_ASC_NULLS_LAST",
-  transaction_id_DESC = "transaction_id_DESC",
-  transaction_id_DESC_NULLS_FIRST = "transaction_id_DESC_NULLS_FIRST",
-  transaction_id_DESC_NULLS_LAST = "transaction_id_DESC_NULLS_LAST",
-  transaction_timestamp_ASC = "transaction_timestamp_ASC",
-  transaction_timestamp_ASC_NULLS_FIRST = "transaction_timestamp_ASC_NULLS_FIRST",
-  transaction_timestamp_ASC_NULLS_LAST = "transaction_timestamp_ASC_NULLS_LAST",
-  transaction_timestamp_DESC = "transaction_timestamp_DESC",
-  transaction_timestamp_DESC_NULLS_FIRST = "transaction_timestamp_DESC_NULLS_FIRST",
-  transaction_timestamp_DESC_NULLS_LAST = "transaction_timestamp_DESC_NULLS_LAST",
-  transaction_to_ASC = "transaction_to_ASC",
-  transaction_to_ASC_NULLS_FIRST = "transaction_to_ASC_NULLS_FIRST",
-  transaction_to_ASC_NULLS_LAST = "transaction_to_ASC_NULLS_LAST",
-  transaction_to_DESC = "transaction_to_DESC",
-  transaction_to_DESC_NULLS_FIRST = "transaction_to_DESC_NULLS_FIRST",
-  transaction_to_DESC_NULLS_LAST = "transaction_to_DESC_NULLS_LAST",
-  transaction_transactionIndex_ASC = "transaction_transactionIndex_ASC",
-  transaction_transactionIndex_ASC_NULLS_FIRST = "transaction_transactionIndex_ASC_NULLS_FIRST",
-  transaction_transactionIndex_ASC_NULLS_LAST = "transaction_transactionIndex_ASC_NULLS_LAST",
-  transaction_transactionIndex_DESC = "transaction_transactionIndex_DESC",
-  transaction_transactionIndex_DESC_NULLS_FIRST = "transaction_transactionIndex_DESC_NULLS_FIRST",
-  transaction_transactionIndex_DESC_NULLS_LAST = "transaction_transactionIndex_DESC_NULLS_LAST",
+  transactionHash_ASC = "transactionHash_ASC",
+  transactionHash_ASC_NULLS_FIRST = "transactionHash_ASC_NULLS_FIRST",
+  transactionHash_ASC_NULLS_LAST = "transactionHash_ASC_NULLS_LAST",
+  transactionHash_DESC = "transactionHash_DESC",
+  transactionHash_DESC_NULLS_FIRST = "transactionHash_DESC_NULLS_FIRST",
+  transactionHash_DESC_NULLS_LAST = "transactionHash_DESC_NULLS_LAST",
 }
 
 export enum ClaimActionType {
@@ -833,8 +798,23 @@ export interface ClaimActionWhereInput {
   tokenPrices_containsAny?: InputMaybe<Array<Scalars["String"]["input"]>>;
   tokenPrices_containsNone?: InputMaybe<Array<Scalars["String"]["input"]>>;
   tokenPrices_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  transaction?: InputMaybe<TransactionWhereInput>;
-  transaction_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  transactionHash_contains?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_eq?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_gt?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_gte?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  transactionHash_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  transactionHash_lt?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_lte?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  transactionHash_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_startsWith?: InputMaybe<Scalars["String"]["input"]>;
 }
 
 export interface ClaimActionsConnection {
@@ -2127,8 +2107,9 @@ export interface Distribution {
   amountsInUsd: Array<Scalars["String"]["output"]>;
   id: Scalars["String"]["output"];
   receiver: Scalars["String"]["output"];
+  timestamp: Scalars["Int"]["output"];
   tokens: Array<Scalars["String"]["output"]>;
-  transaction: Transaction;
+  transactionHash: Scalars["String"]["output"];
   typeId: Scalars["BigInt"]["output"];
 }
 
@@ -2151,48 +2132,18 @@ export enum DistributionOrderByInput {
   receiver_DESC = "receiver_DESC",
   receiver_DESC_NULLS_FIRST = "receiver_DESC_NULLS_FIRST",
   receiver_DESC_NULLS_LAST = "receiver_DESC_NULLS_LAST",
-  transaction_blockNumber_ASC = "transaction_blockNumber_ASC",
-  transaction_blockNumber_ASC_NULLS_FIRST = "transaction_blockNumber_ASC_NULLS_FIRST",
-  transaction_blockNumber_ASC_NULLS_LAST = "transaction_blockNumber_ASC_NULLS_LAST",
-  transaction_blockNumber_DESC = "transaction_blockNumber_DESC",
-  transaction_blockNumber_DESC_NULLS_FIRST = "transaction_blockNumber_DESC_NULLS_FIRST",
-  transaction_blockNumber_DESC_NULLS_LAST = "transaction_blockNumber_DESC_NULLS_LAST",
-  transaction_from_ASC = "transaction_from_ASC",
-  transaction_from_ASC_NULLS_FIRST = "transaction_from_ASC_NULLS_FIRST",
-  transaction_from_ASC_NULLS_LAST = "transaction_from_ASC_NULLS_LAST",
-  transaction_from_DESC = "transaction_from_DESC",
-  transaction_from_DESC_NULLS_FIRST = "transaction_from_DESC_NULLS_FIRST",
-  transaction_from_DESC_NULLS_LAST = "transaction_from_DESC_NULLS_LAST",
-  transaction_hash_ASC = "transaction_hash_ASC",
-  transaction_hash_ASC_NULLS_FIRST = "transaction_hash_ASC_NULLS_FIRST",
-  transaction_hash_ASC_NULLS_LAST = "transaction_hash_ASC_NULLS_LAST",
-  transaction_hash_DESC = "transaction_hash_DESC",
-  transaction_hash_DESC_NULLS_FIRST = "transaction_hash_DESC_NULLS_FIRST",
-  transaction_hash_DESC_NULLS_LAST = "transaction_hash_DESC_NULLS_LAST",
-  transaction_id_ASC = "transaction_id_ASC",
-  transaction_id_ASC_NULLS_FIRST = "transaction_id_ASC_NULLS_FIRST",
-  transaction_id_ASC_NULLS_LAST = "transaction_id_ASC_NULLS_LAST",
-  transaction_id_DESC = "transaction_id_DESC",
-  transaction_id_DESC_NULLS_FIRST = "transaction_id_DESC_NULLS_FIRST",
-  transaction_id_DESC_NULLS_LAST = "transaction_id_DESC_NULLS_LAST",
-  transaction_timestamp_ASC = "transaction_timestamp_ASC",
-  transaction_timestamp_ASC_NULLS_FIRST = "transaction_timestamp_ASC_NULLS_FIRST",
-  transaction_timestamp_ASC_NULLS_LAST = "transaction_timestamp_ASC_NULLS_LAST",
-  transaction_timestamp_DESC = "transaction_timestamp_DESC",
-  transaction_timestamp_DESC_NULLS_FIRST = "transaction_timestamp_DESC_NULLS_FIRST",
-  transaction_timestamp_DESC_NULLS_LAST = "transaction_timestamp_DESC_NULLS_LAST",
-  transaction_to_ASC = "transaction_to_ASC",
-  transaction_to_ASC_NULLS_FIRST = "transaction_to_ASC_NULLS_FIRST",
-  transaction_to_ASC_NULLS_LAST = "transaction_to_ASC_NULLS_LAST",
-  transaction_to_DESC = "transaction_to_DESC",
-  transaction_to_DESC_NULLS_FIRST = "transaction_to_DESC_NULLS_FIRST",
-  transaction_to_DESC_NULLS_LAST = "transaction_to_DESC_NULLS_LAST",
-  transaction_transactionIndex_ASC = "transaction_transactionIndex_ASC",
-  transaction_transactionIndex_ASC_NULLS_FIRST = "transaction_transactionIndex_ASC_NULLS_FIRST",
-  transaction_transactionIndex_ASC_NULLS_LAST = "transaction_transactionIndex_ASC_NULLS_LAST",
-  transaction_transactionIndex_DESC = "transaction_transactionIndex_DESC",
-  transaction_transactionIndex_DESC_NULLS_FIRST = "transaction_transactionIndex_DESC_NULLS_FIRST",
-  transaction_transactionIndex_DESC_NULLS_LAST = "transaction_transactionIndex_DESC_NULLS_LAST",
+  timestamp_ASC = "timestamp_ASC",
+  timestamp_ASC_NULLS_FIRST = "timestamp_ASC_NULLS_FIRST",
+  timestamp_ASC_NULLS_LAST = "timestamp_ASC_NULLS_LAST",
+  timestamp_DESC = "timestamp_DESC",
+  timestamp_DESC_NULLS_FIRST = "timestamp_DESC_NULLS_FIRST",
+  timestamp_DESC_NULLS_LAST = "timestamp_DESC_NULLS_LAST",
+  transactionHash_ASC = "transactionHash_ASC",
+  transactionHash_ASC_NULLS_FIRST = "transactionHash_ASC_NULLS_FIRST",
+  transactionHash_ASC_NULLS_LAST = "transactionHash_ASC_NULLS_LAST",
+  transactionHash_DESC = "transactionHash_DESC",
+  transactionHash_DESC_NULLS_FIRST = "transactionHash_DESC_NULLS_FIRST",
+  transactionHash_DESC_NULLS_LAST = "transactionHash_DESC_NULLS_LAST",
   typeId_ASC = "typeId_ASC",
   typeId_ASC_NULLS_FIRST = "typeId_ASC_NULLS_FIRST",
   typeId_ASC_NULLS_LAST = "typeId_ASC_NULLS_LAST",
@@ -2246,12 +2197,36 @@ export interface DistributionWhereInput {
   receiver_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
   receiver_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
   receiver_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  timestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  timestamp_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  timestamp_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
   tokens_containsAll?: InputMaybe<Array<Scalars["String"]["input"]>>;
   tokens_containsAny?: InputMaybe<Array<Scalars["String"]["input"]>>;
   tokens_containsNone?: InputMaybe<Array<Scalars["String"]["input"]>>;
   tokens_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  transaction?: InputMaybe<TransactionWhereInput>;
-  transaction_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  transactionHash_contains?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_eq?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_gt?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_gte?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  transactionHash_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  transactionHash_lt?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_lte?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  transactionHash_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_startsWith?: InputMaybe<Scalars["String"]["input"]>;
   typeId_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   typeId_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
   typeId_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
@@ -2273,6 +2248,127 @@ export interface DistributionsConnection {
 export enum EntityType {
   Glv = "Glv",
   Market = "Market",
+}
+
+export interface FundingRateSnapshot {
+  __typename?: "FundingRateSnapshot";
+  fundingFactorPerSecondLong: Scalars["BigInt"]["output"];
+  fundingFactorPerSecondShort: Scalars["BigInt"]["output"];
+  id: Scalars["String"]["output"];
+  marketAddress: Scalars["String"]["output"];
+  snapshotTimestamp: Scalars["Int"]["output"];
+}
+
+export interface FundingRateSnapshotEdge {
+  __typename?: "FundingRateSnapshotEdge";
+  cursor: Scalars["String"]["output"];
+  node: FundingRateSnapshot;
+}
+
+export enum FundingRateSnapshotOrderByInput {
+  fundingFactorPerSecondLong_ASC = "fundingFactorPerSecondLong_ASC",
+  fundingFactorPerSecondLong_ASC_NULLS_FIRST = "fundingFactorPerSecondLong_ASC_NULLS_FIRST",
+  fundingFactorPerSecondLong_ASC_NULLS_LAST = "fundingFactorPerSecondLong_ASC_NULLS_LAST",
+  fundingFactorPerSecondLong_DESC = "fundingFactorPerSecondLong_DESC",
+  fundingFactorPerSecondLong_DESC_NULLS_FIRST = "fundingFactorPerSecondLong_DESC_NULLS_FIRST",
+  fundingFactorPerSecondLong_DESC_NULLS_LAST = "fundingFactorPerSecondLong_DESC_NULLS_LAST",
+  fundingFactorPerSecondShort_ASC = "fundingFactorPerSecondShort_ASC",
+  fundingFactorPerSecondShort_ASC_NULLS_FIRST = "fundingFactorPerSecondShort_ASC_NULLS_FIRST",
+  fundingFactorPerSecondShort_ASC_NULLS_LAST = "fundingFactorPerSecondShort_ASC_NULLS_LAST",
+  fundingFactorPerSecondShort_DESC = "fundingFactorPerSecondShort_DESC",
+  fundingFactorPerSecondShort_DESC_NULLS_FIRST = "fundingFactorPerSecondShort_DESC_NULLS_FIRST",
+  fundingFactorPerSecondShort_DESC_NULLS_LAST = "fundingFactorPerSecondShort_DESC_NULLS_LAST",
+  id_ASC = "id_ASC",
+  id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
+  id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
+  id_DESC = "id_DESC",
+  id_DESC_NULLS_FIRST = "id_DESC_NULLS_FIRST",
+  id_DESC_NULLS_LAST = "id_DESC_NULLS_LAST",
+  marketAddress_ASC = "marketAddress_ASC",
+  marketAddress_ASC_NULLS_FIRST = "marketAddress_ASC_NULLS_FIRST",
+  marketAddress_ASC_NULLS_LAST = "marketAddress_ASC_NULLS_LAST",
+  marketAddress_DESC = "marketAddress_DESC",
+  marketAddress_DESC_NULLS_FIRST = "marketAddress_DESC_NULLS_FIRST",
+  marketAddress_DESC_NULLS_LAST = "marketAddress_DESC_NULLS_LAST",
+  snapshotTimestamp_ASC = "snapshotTimestamp_ASC",
+  snapshotTimestamp_ASC_NULLS_FIRST = "snapshotTimestamp_ASC_NULLS_FIRST",
+  snapshotTimestamp_ASC_NULLS_LAST = "snapshotTimestamp_ASC_NULLS_LAST",
+  snapshotTimestamp_DESC = "snapshotTimestamp_DESC",
+  snapshotTimestamp_DESC_NULLS_FIRST = "snapshotTimestamp_DESC_NULLS_FIRST",
+  snapshotTimestamp_DESC_NULLS_LAST = "snapshotTimestamp_DESC_NULLS_LAST",
+}
+
+export interface FundingRateSnapshotWhereInput {
+  AND?: InputMaybe<Array<FundingRateSnapshotWhereInput>>;
+  OR?: InputMaybe<Array<FundingRateSnapshotWhereInput>>;
+  fundingFactorPerSecondLong_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  fundingFactorPerSecondLong_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  fundingFactorPerSecondLong_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  fundingFactorPerSecondLong_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  fundingFactorPerSecondLong_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  fundingFactorPerSecondLong_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  fundingFactorPerSecondLong_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  fundingFactorPerSecondLong_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  fundingFactorPerSecondLong_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  fundingFactorPerSecondShort_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  fundingFactorPerSecondShort_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  fundingFactorPerSecondShort_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  fundingFactorPerSecondShort_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  fundingFactorPerSecondShort_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  fundingFactorPerSecondShort_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  fundingFactorPerSecondShort_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  fundingFactorPerSecondShort_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  fundingFactorPerSecondShort_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  id_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_gt?: InputMaybe<Scalars["String"]["input"]>;
+  id_gte?: InputMaybe<Scalars["String"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id_lt?: InputMaybe<Scalars["String"]["input"]>;
+  id_lte?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_contains?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_eq?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_gt?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_gte?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  marketAddress_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  marketAddress_lt?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_lte?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  marketAddress_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddress_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  snapshotTimestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  snapshotTimestamp_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  snapshotTimestamp_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  snapshotTimestamp_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+}
+
+export interface FundingRateSnapshotsConnection {
+  __typename?: "FundingRateSnapshotsConnection";
+  edges: Array<FundingRateSnapshotEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"]["output"];
 }
 
 export interface Glv {
@@ -4062,6 +4158,30 @@ export interface MarketInfosConnection {
   totalCount: Scalars["Int"]["output"];
 }
 
+export interface MarketNetRates {
+  __typename?: "MarketNetRates";
+  borrowingRateLong: Scalars["BigInt"]["output"];
+  borrowingRateShort: Scalars["BigInt"]["output"];
+  fundingRateLong: Scalars["BigInt"]["output"];
+  fundingRateShort: Scalars["BigInt"]["output"];
+  netRateLong: Scalars["BigInt"]["output"];
+  netRateShort: Scalars["BigInt"]["output"];
+  timestamp: Scalars["Float"]["output"];
+}
+
+export interface MarketNetRatesResponse {
+  __typename?: "MarketNetRatesResponse";
+  marketAddress: Scalars["String"]["output"];
+  ratesSnapshots: Array<MarketNetRates>;
+}
+
+export interface MarketNetRatesWhereInput {
+  averageBy?: InputMaybe<Scalars["String"]["input"]>;
+  marketAddresses?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  periodEnd: Scalars["Float"]["input"];
+  periodStart: Scalars["Float"]["input"];
+}
+
 export enum MarketOrderByInput {
   id_ASC = "id_ASC",
   id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
@@ -4913,10 +5033,10 @@ export interface Order {
   callbackGasLimit: Scalars["BigInt"]["output"];
   cancelledReason?: Maybe<Scalars["String"]["output"]>;
   cancelledReasonBytes?: Maybe<Scalars["String"]["output"]>;
-  cancelledTxn?: Maybe<Transaction>;
-  createdTxn: Transaction;
+  cancelledTxnHash?: Maybe<Scalars["String"]["output"]>;
+  createdTxnHash: Scalars["String"]["output"];
   decreasePositionSwapType: Scalars["Int"]["output"];
-  executedTxn?: Maybe<Transaction>;
+  executedTxnHash?: Maybe<Scalars["String"]["output"]>;
   executionFee: Scalars["BigInt"]["output"];
   frozenReason?: Maybe<Scalars["String"]["output"]>;
   frozenReasonBytes?: Maybe<Scalars["String"]["output"]>;
@@ -4983,138 +5103,30 @@ export enum OrderOrderByInput {
   cancelledReason_DESC = "cancelledReason_DESC",
   cancelledReason_DESC_NULLS_FIRST = "cancelledReason_DESC_NULLS_FIRST",
   cancelledReason_DESC_NULLS_LAST = "cancelledReason_DESC_NULLS_LAST",
-  cancelledTxn_blockNumber_ASC = "cancelledTxn_blockNumber_ASC",
-  cancelledTxn_blockNumber_ASC_NULLS_FIRST = "cancelledTxn_blockNumber_ASC_NULLS_FIRST",
-  cancelledTxn_blockNumber_ASC_NULLS_LAST = "cancelledTxn_blockNumber_ASC_NULLS_LAST",
-  cancelledTxn_blockNumber_DESC = "cancelledTxn_blockNumber_DESC",
-  cancelledTxn_blockNumber_DESC_NULLS_FIRST = "cancelledTxn_blockNumber_DESC_NULLS_FIRST",
-  cancelledTxn_blockNumber_DESC_NULLS_LAST = "cancelledTxn_blockNumber_DESC_NULLS_LAST",
-  cancelledTxn_from_ASC = "cancelledTxn_from_ASC",
-  cancelledTxn_from_ASC_NULLS_FIRST = "cancelledTxn_from_ASC_NULLS_FIRST",
-  cancelledTxn_from_ASC_NULLS_LAST = "cancelledTxn_from_ASC_NULLS_LAST",
-  cancelledTxn_from_DESC = "cancelledTxn_from_DESC",
-  cancelledTxn_from_DESC_NULLS_FIRST = "cancelledTxn_from_DESC_NULLS_FIRST",
-  cancelledTxn_from_DESC_NULLS_LAST = "cancelledTxn_from_DESC_NULLS_LAST",
-  cancelledTxn_hash_ASC = "cancelledTxn_hash_ASC",
-  cancelledTxn_hash_ASC_NULLS_FIRST = "cancelledTxn_hash_ASC_NULLS_FIRST",
-  cancelledTxn_hash_ASC_NULLS_LAST = "cancelledTxn_hash_ASC_NULLS_LAST",
-  cancelledTxn_hash_DESC = "cancelledTxn_hash_DESC",
-  cancelledTxn_hash_DESC_NULLS_FIRST = "cancelledTxn_hash_DESC_NULLS_FIRST",
-  cancelledTxn_hash_DESC_NULLS_LAST = "cancelledTxn_hash_DESC_NULLS_LAST",
-  cancelledTxn_id_ASC = "cancelledTxn_id_ASC",
-  cancelledTxn_id_ASC_NULLS_FIRST = "cancelledTxn_id_ASC_NULLS_FIRST",
-  cancelledTxn_id_ASC_NULLS_LAST = "cancelledTxn_id_ASC_NULLS_LAST",
-  cancelledTxn_id_DESC = "cancelledTxn_id_DESC",
-  cancelledTxn_id_DESC_NULLS_FIRST = "cancelledTxn_id_DESC_NULLS_FIRST",
-  cancelledTxn_id_DESC_NULLS_LAST = "cancelledTxn_id_DESC_NULLS_LAST",
-  cancelledTxn_timestamp_ASC = "cancelledTxn_timestamp_ASC",
-  cancelledTxn_timestamp_ASC_NULLS_FIRST = "cancelledTxn_timestamp_ASC_NULLS_FIRST",
-  cancelledTxn_timestamp_ASC_NULLS_LAST = "cancelledTxn_timestamp_ASC_NULLS_LAST",
-  cancelledTxn_timestamp_DESC = "cancelledTxn_timestamp_DESC",
-  cancelledTxn_timestamp_DESC_NULLS_FIRST = "cancelledTxn_timestamp_DESC_NULLS_FIRST",
-  cancelledTxn_timestamp_DESC_NULLS_LAST = "cancelledTxn_timestamp_DESC_NULLS_LAST",
-  cancelledTxn_to_ASC = "cancelledTxn_to_ASC",
-  cancelledTxn_to_ASC_NULLS_FIRST = "cancelledTxn_to_ASC_NULLS_FIRST",
-  cancelledTxn_to_ASC_NULLS_LAST = "cancelledTxn_to_ASC_NULLS_LAST",
-  cancelledTxn_to_DESC = "cancelledTxn_to_DESC",
-  cancelledTxn_to_DESC_NULLS_FIRST = "cancelledTxn_to_DESC_NULLS_FIRST",
-  cancelledTxn_to_DESC_NULLS_LAST = "cancelledTxn_to_DESC_NULLS_LAST",
-  cancelledTxn_transactionIndex_ASC = "cancelledTxn_transactionIndex_ASC",
-  cancelledTxn_transactionIndex_ASC_NULLS_FIRST = "cancelledTxn_transactionIndex_ASC_NULLS_FIRST",
-  cancelledTxn_transactionIndex_ASC_NULLS_LAST = "cancelledTxn_transactionIndex_ASC_NULLS_LAST",
-  cancelledTxn_transactionIndex_DESC = "cancelledTxn_transactionIndex_DESC",
-  cancelledTxn_transactionIndex_DESC_NULLS_FIRST = "cancelledTxn_transactionIndex_DESC_NULLS_FIRST",
-  cancelledTxn_transactionIndex_DESC_NULLS_LAST = "cancelledTxn_transactionIndex_DESC_NULLS_LAST",
-  createdTxn_blockNumber_ASC = "createdTxn_blockNumber_ASC",
-  createdTxn_blockNumber_ASC_NULLS_FIRST = "createdTxn_blockNumber_ASC_NULLS_FIRST",
-  createdTxn_blockNumber_ASC_NULLS_LAST = "createdTxn_blockNumber_ASC_NULLS_LAST",
-  createdTxn_blockNumber_DESC = "createdTxn_blockNumber_DESC",
-  createdTxn_blockNumber_DESC_NULLS_FIRST = "createdTxn_blockNumber_DESC_NULLS_FIRST",
-  createdTxn_blockNumber_DESC_NULLS_LAST = "createdTxn_blockNumber_DESC_NULLS_LAST",
-  createdTxn_from_ASC = "createdTxn_from_ASC",
-  createdTxn_from_ASC_NULLS_FIRST = "createdTxn_from_ASC_NULLS_FIRST",
-  createdTxn_from_ASC_NULLS_LAST = "createdTxn_from_ASC_NULLS_LAST",
-  createdTxn_from_DESC = "createdTxn_from_DESC",
-  createdTxn_from_DESC_NULLS_FIRST = "createdTxn_from_DESC_NULLS_FIRST",
-  createdTxn_from_DESC_NULLS_LAST = "createdTxn_from_DESC_NULLS_LAST",
-  createdTxn_hash_ASC = "createdTxn_hash_ASC",
-  createdTxn_hash_ASC_NULLS_FIRST = "createdTxn_hash_ASC_NULLS_FIRST",
-  createdTxn_hash_ASC_NULLS_LAST = "createdTxn_hash_ASC_NULLS_LAST",
-  createdTxn_hash_DESC = "createdTxn_hash_DESC",
-  createdTxn_hash_DESC_NULLS_FIRST = "createdTxn_hash_DESC_NULLS_FIRST",
-  createdTxn_hash_DESC_NULLS_LAST = "createdTxn_hash_DESC_NULLS_LAST",
-  createdTxn_id_ASC = "createdTxn_id_ASC",
-  createdTxn_id_ASC_NULLS_FIRST = "createdTxn_id_ASC_NULLS_FIRST",
-  createdTxn_id_ASC_NULLS_LAST = "createdTxn_id_ASC_NULLS_LAST",
-  createdTxn_id_DESC = "createdTxn_id_DESC",
-  createdTxn_id_DESC_NULLS_FIRST = "createdTxn_id_DESC_NULLS_FIRST",
-  createdTxn_id_DESC_NULLS_LAST = "createdTxn_id_DESC_NULLS_LAST",
-  createdTxn_timestamp_ASC = "createdTxn_timestamp_ASC",
-  createdTxn_timestamp_ASC_NULLS_FIRST = "createdTxn_timestamp_ASC_NULLS_FIRST",
-  createdTxn_timestamp_ASC_NULLS_LAST = "createdTxn_timestamp_ASC_NULLS_LAST",
-  createdTxn_timestamp_DESC = "createdTxn_timestamp_DESC",
-  createdTxn_timestamp_DESC_NULLS_FIRST = "createdTxn_timestamp_DESC_NULLS_FIRST",
-  createdTxn_timestamp_DESC_NULLS_LAST = "createdTxn_timestamp_DESC_NULLS_LAST",
-  createdTxn_to_ASC = "createdTxn_to_ASC",
-  createdTxn_to_ASC_NULLS_FIRST = "createdTxn_to_ASC_NULLS_FIRST",
-  createdTxn_to_ASC_NULLS_LAST = "createdTxn_to_ASC_NULLS_LAST",
-  createdTxn_to_DESC = "createdTxn_to_DESC",
-  createdTxn_to_DESC_NULLS_FIRST = "createdTxn_to_DESC_NULLS_FIRST",
-  createdTxn_to_DESC_NULLS_LAST = "createdTxn_to_DESC_NULLS_LAST",
-  createdTxn_transactionIndex_ASC = "createdTxn_transactionIndex_ASC",
-  createdTxn_transactionIndex_ASC_NULLS_FIRST = "createdTxn_transactionIndex_ASC_NULLS_FIRST",
-  createdTxn_transactionIndex_ASC_NULLS_LAST = "createdTxn_transactionIndex_ASC_NULLS_LAST",
-  createdTxn_transactionIndex_DESC = "createdTxn_transactionIndex_DESC",
-  createdTxn_transactionIndex_DESC_NULLS_FIRST = "createdTxn_transactionIndex_DESC_NULLS_FIRST",
-  createdTxn_transactionIndex_DESC_NULLS_LAST = "createdTxn_transactionIndex_DESC_NULLS_LAST",
+  cancelledTxnHash_ASC = "cancelledTxnHash_ASC",
+  cancelledTxnHash_ASC_NULLS_FIRST = "cancelledTxnHash_ASC_NULLS_FIRST",
+  cancelledTxnHash_ASC_NULLS_LAST = "cancelledTxnHash_ASC_NULLS_LAST",
+  cancelledTxnHash_DESC = "cancelledTxnHash_DESC",
+  cancelledTxnHash_DESC_NULLS_FIRST = "cancelledTxnHash_DESC_NULLS_FIRST",
+  cancelledTxnHash_DESC_NULLS_LAST = "cancelledTxnHash_DESC_NULLS_LAST",
+  createdTxnHash_ASC = "createdTxnHash_ASC",
+  createdTxnHash_ASC_NULLS_FIRST = "createdTxnHash_ASC_NULLS_FIRST",
+  createdTxnHash_ASC_NULLS_LAST = "createdTxnHash_ASC_NULLS_LAST",
+  createdTxnHash_DESC = "createdTxnHash_DESC",
+  createdTxnHash_DESC_NULLS_FIRST = "createdTxnHash_DESC_NULLS_FIRST",
+  createdTxnHash_DESC_NULLS_LAST = "createdTxnHash_DESC_NULLS_LAST",
   decreasePositionSwapType_ASC = "decreasePositionSwapType_ASC",
   decreasePositionSwapType_ASC_NULLS_FIRST = "decreasePositionSwapType_ASC_NULLS_FIRST",
   decreasePositionSwapType_ASC_NULLS_LAST = "decreasePositionSwapType_ASC_NULLS_LAST",
   decreasePositionSwapType_DESC = "decreasePositionSwapType_DESC",
   decreasePositionSwapType_DESC_NULLS_FIRST = "decreasePositionSwapType_DESC_NULLS_FIRST",
   decreasePositionSwapType_DESC_NULLS_LAST = "decreasePositionSwapType_DESC_NULLS_LAST",
-  executedTxn_blockNumber_ASC = "executedTxn_blockNumber_ASC",
-  executedTxn_blockNumber_ASC_NULLS_FIRST = "executedTxn_blockNumber_ASC_NULLS_FIRST",
-  executedTxn_blockNumber_ASC_NULLS_LAST = "executedTxn_blockNumber_ASC_NULLS_LAST",
-  executedTxn_blockNumber_DESC = "executedTxn_blockNumber_DESC",
-  executedTxn_blockNumber_DESC_NULLS_FIRST = "executedTxn_blockNumber_DESC_NULLS_FIRST",
-  executedTxn_blockNumber_DESC_NULLS_LAST = "executedTxn_blockNumber_DESC_NULLS_LAST",
-  executedTxn_from_ASC = "executedTxn_from_ASC",
-  executedTxn_from_ASC_NULLS_FIRST = "executedTxn_from_ASC_NULLS_FIRST",
-  executedTxn_from_ASC_NULLS_LAST = "executedTxn_from_ASC_NULLS_LAST",
-  executedTxn_from_DESC = "executedTxn_from_DESC",
-  executedTxn_from_DESC_NULLS_FIRST = "executedTxn_from_DESC_NULLS_FIRST",
-  executedTxn_from_DESC_NULLS_LAST = "executedTxn_from_DESC_NULLS_LAST",
-  executedTxn_hash_ASC = "executedTxn_hash_ASC",
-  executedTxn_hash_ASC_NULLS_FIRST = "executedTxn_hash_ASC_NULLS_FIRST",
-  executedTxn_hash_ASC_NULLS_LAST = "executedTxn_hash_ASC_NULLS_LAST",
-  executedTxn_hash_DESC = "executedTxn_hash_DESC",
-  executedTxn_hash_DESC_NULLS_FIRST = "executedTxn_hash_DESC_NULLS_FIRST",
-  executedTxn_hash_DESC_NULLS_LAST = "executedTxn_hash_DESC_NULLS_LAST",
-  executedTxn_id_ASC = "executedTxn_id_ASC",
-  executedTxn_id_ASC_NULLS_FIRST = "executedTxn_id_ASC_NULLS_FIRST",
-  executedTxn_id_ASC_NULLS_LAST = "executedTxn_id_ASC_NULLS_LAST",
-  executedTxn_id_DESC = "executedTxn_id_DESC",
-  executedTxn_id_DESC_NULLS_FIRST = "executedTxn_id_DESC_NULLS_FIRST",
-  executedTxn_id_DESC_NULLS_LAST = "executedTxn_id_DESC_NULLS_LAST",
-  executedTxn_timestamp_ASC = "executedTxn_timestamp_ASC",
-  executedTxn_timestamp_ASC_NULLS_FIRST = "executedTxn_timestamp_ASC_NULLS_FIRST",
-  executedTxn_timestamp_ASC_NULLS_LAST = "executedTxn_timestamp_ASC_NULLS_LAST",
-  executedTxn_timestamp_DESC = "executedTxn_timestamp_DESC",
-  executedTxn_timestamp_DESC_NULLS_FIRST = "executedTxn_timestamp_DESC_NULLS_FIRST",
-  executedTxn_timestamp_DESC_NULLS_LAST = "executedTxn_timestamp_DESC_NULLS_LAST",
-  executedTxn_to_ASC = "executedTxn_to_ASC",
-  executedTxn_to_ASC_NULLS_FIRST = "executedTxn_to_ASC_NULLS_FIRST",
-  executedTxn_to_ASC_NULLS_LAST = "executedTxn_to_ASC_NULLS_LAST",
-  executedTxn_to_DESC = "executedTxn_to_DESC",
-  executedTxn_to_DESC_NULLS_FIRST = "executedTxn_to_DESC_NULLS_FIRST",
-  executedTxn_to_DESC_NULLS_LAST = "executedTxn_to_DESC_NULLS_LAST",
-  executedTxn_transactionIndex_ASC = "executedTxn_transactionIndex_ASC",
-  executedTxn_transactionIndex_ASC_NULLS_FIRST = "executedTxn_transactionIndex_ASC_NULLS_FIRST",
-  executedTxn_transactionIndex_ASC_NULLS_LAST = "executedTxn_transactionIndex_ASC_NULLS_LAST",
-  executedTxn_transactionIndex_DESC = "executedTxn_transactionIndex_DESC",
-  executedTxn_transactionIndex_DESC_NULLS_FIRST = "executedTxn_transactionIndex_DESC_NULLS_FIRST",
-  executedTxn_transactionIndex_DESC_NULLS_LAST = "executedTxn_transactionIndex_DESC_NULLS_LAST",
+  executedTxnHash_ASC = "executedTxnHash_ASC",
+  executedTxnHash_ASC_NULLS_FIRST = "executedTxnHash_ASC_NULLS_FIRST",
+  executedTxnHash_ASC_NULLS_LAST = "executedTxnHash_ASC_NULLS_LAST",
+  executedTxnHash_DESC = "executedTxnHash_DESC",
+  executedTxnHash_DESC_NULLS_FIRST = "executedTxnHash_DESC_NULLS_FIRST",
+  executedTxnHash_DESC_NULLS_LAST = "executedTxnHash_DESC_NULLS_LAST",
   executionFee_ASC = "executionFee_ASC",
   executionFee_ASC_NULLS_FIRST = "executionFee_ASC_NULLS_FIRST",
   executionFee_ASC_NULLS_LAST = "executionFee_ASC_NULLS_LAST",
@@ -5333,10 +5345,40 @@ export interface OrderWhereInput {
   cancelledReason_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
   cancelledReason_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
   cancelledReason_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  cancelledTxn?: InputMaybe<TransactionWhereInput>;
-  cancelledTxn_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  createdTxn?: InputMaybe<TransactionWhereInput>;
-  createdTxn_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  cancelledTxnHash_contains?: InputMaybe<Scalars["String"]["input"]>;
+  cancelledTxnHash_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  cancelledTxnHash_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  cancelledTxnHash_eq?: InputMaybe<Scalars["String"]["input"]>;
+  cancelledTxnHash_gt?: InputMaybe<Scalars["String"]["input"]>;
+  cancelledTxnHash_gte?: InputMaybe<Scalars["String"]["input"]>;
+  cancelledTxnHash_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  cancelledTxnHash_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  cancelledTxnHash_lt?: InputMaybe<Scalars["String"]["input"]>;
+  cancelledTxnHash_lte?: InputMaybe<Scalars["String"]["input"]>;
+  cancelledTxnHash_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  cancelledTxnHash_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  cancelledTxnHash_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  cancelledTxnHash_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  cancelledTxnHash_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  cancelledTxnHash_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  cancelledTxnHash_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  createdTxnHash_contains?: InputMaybe<Scalars["String"]["input"]>;
+  createdTxnHash_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  createdTxnHash_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  createdTxnHash_eq?: InputMaybe<Scalars["String"]["input"]>;
+  createdTxnHash_gt?: InputMaybe<Scalars["String"]["input"]>;
+  createdTxnHash_gte?: InputMaybe<Scalars["String"]["input"]>;
+  createdTxnHash_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  createdTxnHash_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  createdTxnHash_lt?: InputMaybe<Scalars["String"]["input"]>;
+  createdTxnHash_lte?: InputMaybe<Scalars["String"]["input"]>;
+  createdTxnHash_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  createdTxnHash_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  createdTxnHash_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  createdTxnHash_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  createdTxnHash_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  createdTxnHash_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  createdTxnHash_startsWith?: InputMaybe<Scalars["String"]["input"]>;
   decreasePositionSwapType_eq?: InputMaybe<Scalars["Int"]["input"]>;
   decreasePositionSwapType_gt?: InputMaybe<Scalars["Int"]["input"]>;
   decreasePositionSwapType_gte?: InputMaybe<Scalars["Int"]["input"]>;
@@ -5346,8 +5388,23 @@ export interface OrderWhereInput {
   decreasePositionSwapType_lte?: InputMaybe<Scalars["Int"]["input"]>;
   decreasePositionSwapType_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
   decreasePositionSwapType_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
-  executedTxn?: InputMaybe<TransactionWhereInput>;
-  executedTxn_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  executedTxnHash_contains?: InputMaybe<Scalars["String"]["input"]>;
+  executedTxnHash_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  executedTxnHash_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  executedTxnHash_eq?: InputMaybe<Scalars["String"]["input"]>;
+  executedTxnHash_gt?: InputMaybe<Scalars["String"]["input"]>;
+  executedTxnHash_gte?: InputMaybe<Scalars["String"]["input"]>;
+  executedTxnHash_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  executedTxnHash_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  executedTxnHash_lt?: InputMaybe<Scalars["String"]["input"]>;
+  executedTxnHash_lte?: InputMaybe<Scalars["String"]["input"]>;
+  executedTxnHash_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  executedTxnHash_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  executedTxnHash_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  executedTxnHash_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  executedTxnHash_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  executedTxnHash_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  executedTxnHash_startsWith?: InputMaybe<Scalars["String"]["input"]>;
   executionFee_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   executionFee_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
   executionFee_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
@@ -6420,7 +6477,7 @@ export interface PositionFeesEntity {
   totalRebateFactor: Scalars["BigInt"]["output"];
   trader: Scalars["String"]["output"];
   traderDiscountAmount: Scalars["BigInt"]["output"];
-  transaction: Transaction;
+  transactionHash: Scalars["String"]["output"];
   type: PositionFeesEntityType;
 }
 
@@ -6539,48 +6596,12 @@ export enum PositionFeesEntityOrderByInput {
   trader_DESC = "trader_DESC",
   trader_DESC_NULLS_FIRST = "trader_DESC_NULLS_FIRST",
   trader_DESC_NULLS_LAST = "trader_DESC_NULLS_LAST",
-  transaction_blockNumber_ASC = "transaction_blockNumber_ASC",
-  transaction_blockNumber_ASC_NULLS_FIRST = "transaction_blockNumber_ASC_NULLS_FIRST",
-  transaction_blockNumber_ASC_NULLS_LAST = "transaction_blockNumber_ASC_NULLS_LAST",
-  transaction_blockNumber_DESC = "transaction_blockNumber_DESC",
-  transaction_blockNumber_DESC_NULLS_FIRST = "transaction_blockNumber_DESC_NULLS_FIRST",
-  transaction_blockNumber_DESC_NULLS_LAST = "transaction_blockNumber_DESC_NULLS_LAST",
-  transaction_from_ASC = "transaction_from_ASC",
-  transaction_from_ASC_NULLS_FIRST = "transaction_from_ASC_NULLS_FIRST",
-  transaction_from_ASC_NULLS_LAST = "transaction_from_ASC_NULLS_LAST",
-  transaction_from_DESC = "transaction_from_DESC",
-  transaction_from_DESC_NULLS_FIRST = "transaction_from_DESC_NULLS_FIRST",
-  transaction_from_DESC_NULLS_LAST = "transaction_from_DESC_NULLS_LAST",
-  transaction_hash_ASC = "transaction_hash_ASC",
-  transaction_hash_ASC_NULLS_FIRST = "transaction_hash_ASC_NULLS_FIRST",
-  transaction_hash_ASC_NULLS_LAST = "transaction_hash_ASC_NULLS_LAST",
-  transaction_hash_DESC = "transaction_hash_DESC",
-  transaction_hash_DESC_NULLS_FIRST = "transaction_hash_DESC_NULLS_FIRST",
-  transaction_hash_DESC_NULLS_LAST = "transaction_hash_DESC_NULLS_LAST",
-  transaction_id_ASC = "transaction_id_ASC",
-  transaction_id_ASC_NULLS_FIRST = "transaction_id_ASC_NULLS_FIRST",
-  transaction_id_ASC_NULLS_LAST = "transaction_id_ASC_NULLS_LAST",
-  transaction_id_DESC = "transaction_id_DESC",
-  transaction_id_DESC_NULLS_FIRST = "transaction_id_DESC_NULLS_FIRST",
-  transaction_id_DESC_NULLS_LAST = "transaction_id_DESC_NULLS_LAST",
-  transaction_timestamp_ASC = "transaction_timestamp_ASC",
-  transaction_timestamp_ASC_NULLS_FIRST = "transaction_timestamp_ASC_NULLS_FIRST",
-  transaction_timestamp_ASC_NULLS_LAST = "transaction_timestamp_ASC_NULLS_LAST",
-  transaction_timestamp_DESC = "transaction_timestamp_DESC",
-  transaction_timestamp_DESC_NULLS_FIRST = "transaction_timestamp_DESC_NULLS_FIRST",
-  transaction_timestamp_DESC_NULLS_LAST = "transaction_timestamp_DESC_NULLS_LAST",
-  transaction_to_ASC = "transaction_to_ASC",
-  transaction_to_ASC_NULLS_FIRST = "transaction_to_ASC_NULLS_FIRST",
-  transaction_to_ASC_NULLS_LAST = "transaction_to_ASC_NULLS_LAST",
-  transaction_to_DESC = "transaction_to_DESC",
-  transaction_to_DESC_NULLS_FIRST = "transaction_to_DESC_NULLS_FIRST",
-  transaction_to_DESC_NULLS_LAST = "transaction_to_DESC_NULLS_LAST",
-  transaction_transactionIndex_ASC = "transaction_transactionIndex_ASC",
-  transaction_transactionIndex_ASC_NULLS_FIRST = "transaction_transactionIndex_ASC_NULLS_FIRST",
-  transaction_transactionIndex_ASC_NULLS_LAST = "transaction_transactionIndex_ASC_NULLS_LAST",
-  transaction_transactionIndex_DESC = "transaction_transactionIndex_DESC",
-  transaction_transactionIndex_DESC_NULLS_FIRST = "transaction_transactionIndex_DESC_NULLS_FIRST",
-  transaction_transactionIndex_DESC_NULLS_LAST = "transaction_transactionIndex_DESC_NULLS_LAST",
+  transactionHash_ASC = "transactionHash_ASC",
+  transactionHash_ASC_NULLS_FIRST = "transactionHash_ASC_NULLS_FIRST",
+  transactionHash_ASC_NULLS_LAST = "transactionHash_ASC_NULLS_LAST",
+  transactionHash_DESC = "transactionHash_DESC",
+  transactionHash_DESC_NULLS_FIRST = "transactionHash_DESC_NULLS_FIRST",
+  transactionHash_DESC_NULLS_LAST = "transactionHash_DESC_NULLS_LAST",
   type_ASC = "type_ASC",
   type_ASC_NULLS_FIRST = "type_ASC_NULLS_FIRST",
   type_ASC_NULLS_LAST = "type_ASC_NULLS_LAST",
@@ -6815,8 +6836,23 @@ export interface PositionFeesEntityWhereInput {
   trader_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
   trader_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
   trader_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  transaction?: InputMaybe<TransactionWhereInput>;
-  transaction_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  transactionHash_contains?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_eq?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_gt?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_gte?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  transactionHash_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  transactionHash_lt?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_lte?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  transactionHash_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_startsWith?: InputMaybe<Scalars["String"]["input"]>;
   type_eq?: InputMaybe<PositionFeesEntityType>;
   type_in?: InputMaybe<Array<PositionFeesEntityType>>;
   type_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
@@ -7971,6 +8007,9 @@ export interface Query {
   distributionById?: Maybe<Distribution>;
   distributions: Array<Distribution>;
   distributionsConnection: DistributionsConnection;
+  fundingRateSnapshotById?: Maybe<FundingRateSnapshot>;
+  fundingRateSnapshots: Array<FundingRateSnapshot>;
+  fundingRateSnapshotsConnection: FundingRateSnapshotsConnection;
   glvById?: Maybe<Glv>;
   glvs: Array<Glv>;
   glvsAprByPeriod: Array<GlvApr>;
@@ -7983,6 +8022,7 @@ export interface Query {
   markets: Array<Market>;
   marketsAprByPeriod: Array<MarketApr>;
   marketsConnection: MarketsConnection;
+  marketsNetRatesByPeriod: Array<MarketNetRatesResponse>;
   marketsPnlAprByPeriod: Array<MarketPnlApr>;
   multichainFunding: Array<MultichainFundingInfo>;
   multichainFundingReceiveEventById?: Maybe<MultichainFundingReceiveEvent>;
@@ -8032,6 +8072,13 @@ export interface Query {
   processorStatusById?: Maybe<ProcessorStatus>;
   processorStatuses: Array<ProcessorStatus>;
   processorStatusesConnection: ProcessorStatusesConnection;
+  referralCodeOwnerById?: Maybe<ReferralCodeOwner>;
+  referralCodeOwners: Array<ReferralCodeOwner>;
+  referralCodeOwnersConnection: ReferralCodeOwnersConnection;
+  referralStats: ReferralStatsResponse;
+  referralTradeStatsByHourById?: Maybe<ReferralTradeStatsByHour>;
+  referralTradeStatsByHours: Array<ReferralTradeStatsByHour>;
+  referralTradeStatsByHoursConnection: ReferralTradeStatsByHoursConnection;
   squidStatus: SquidStatus;
   swapFeesInfoById?: Maybe<SwapFeesInfo>;
   swapFeesInfoWithPeriodById?: Maybe<SwapFeesInfoWithPeriod>;
@@ -8049,9 +8096,12 @@ export interface Query {
   tradeActionById?: Maybe<TradeAction>;
   tradeActions: Array<TradeAction>;
   tradeActionsConnection: TradeActionsConnection;
-  transactionById?: Maybe<Transaction>;
-  transactions: Array<Transaction>;
-  transactionsConnection: TransactionsConnection;
+  traderReferralById?: Maybe<TraderReferral>;
+  traderReferralChangeById?: Maybe<TraderReferralChange>;
+  traderReferralChanges: Array<TraderReferralChange>;
+  traderReferralChangesConnection: TraderReferralChangesConnection;
+  traderReferrals: Array<TraderReferral>;
+  traderReferralsConnection: TraderReferralsConnection;
   volumeInfoById?: Maybe<VolumeInfo>;
   volumeInfos: Array<VolumeInfo>;
   volumeInfosConnection: VolumeInfosConnection;
@@ -8304,6 +8354,24 @@ export interface QuerydistributionsConnectionArgs {
   where?: InputMaybe<DistributionWhereInput>;
 }
 
+export interface QueryfundingRateSnapshotByIdArgs {
+  id: Scalars["String"]["input"];
+}
+
+export interface QueryfundingRateSnapshotsArgs {
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<Array<FundingRateSnapshotOrderByInput>>;
+  where?: InputMaybe<FundingRateSnapshotWhereInput>;
+}
+
+export interface QueryfundingRateSnapshotsConnectionArgs {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy: Array<FundingRateSnapshotOrderByInput>;
+  where?: InputMaybe<FundingRateSnapshotWhereInput>;
+}
+
 export interface QueryglvByIdArgs {
   id: Scalars["String"]["input"];
 }
@@ -8368,6 +8436,10 @@ export interface QuerymarketsConnectionArgs {
   first?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy: Array<MarketOrderByInput>;
   where?: InputMaybe<MarketWhereInput>;
+}
+
+export interface QuerymarketsNetRatesByPeriodArgs {
+  where?: InputMaybe<MarketNetRatesWhereInput>;
 }
 
 export interface QuerymarketsPnlAprByPeriodArgs {
@@ -8652,6 +8724,46 @@ export interface QueryprocessorStatusesConnectionArgs {
   where?: InputMaybe<ProcessorStatusWhereInput>;
 }
 
+export interface QueryreferralCodeOwnerByIdArgs {
+  id: Scalars["String"]["input"];
+}
+
+export interface QueryreferralCodeOwnersArgs {
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<Array<ReferralCodeOwnerOrderByInput>>;
+  where?: InputMaybe<ReferralCodeOwnerWhereInput>;
+}
+
+export interface QueryreferralCodeOwnersConnectionArgs {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy: Array<ReferralCodeOwnerOrderByInput>;
+  where?: InputMaybe<ReferralCodeOwnerWhereInput>;
+}
+
+export interface QueryreferralStatsArgs {
+  where?: InputMaybe<ReferralStatsWhereInput>;
+}
+
+export interface QueryreferralTradeStatsByHourByIdArgs {
+  id: Scalars["String"]["input"];
+}
+
+export interface QueryreferralTradeStatsByHoursArgs {
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<Array<ReferralTradeStatsByHourOrderByInput>>;
+  where?: InputMaybe<ReferralTradeStatsByHourWhereInput>;
+}
+
+export interface QueryreferralTradeStatsByHoursConnectionArgs {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy: Array<ReferralTradeStatsByHourOrderByInput>;
+  where?: InputMaybe<ReferralTradeStatsByHourWhereInput>;
+}
+
 export interface QueryswapFeesInfoByIdArgs {
   id: Scalars["String"]["input"];
 }
@@ -8742,22 +8854,40 @@ export interface QuerytradeActionsConnectionArgs {
   where?: InputMaybe<TradeActionWhereInput>;
 }
 
-export interface QuerytransactionByIdArgs {
+export interface QuerytraderReferralByIdArgs {
   id: Scalars["String"]["input"];
 }
 
-export interface QuerytransactionsArgs {
-  limit?: InputMaybe<Scalars["Int"]["input"]>;
-  offset?: InputMaybe<Scalars["Int"]["input"]>;
-  orderBy?: InputMaybe<Array<TransactionOrderByInput>>;
-  where?: InputMaybe<TransactionWhereInput>;
+export interface QuerytraderReferralChangeByIdArgs {
+  id: Scalars["String"]["input"];
 }
 
-export interface QuerytransactionsConnectionArgs {
+export interface QuerytraderReferralChangesArgs {
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<Array<TraderReferralChangeOrderByInput>>;
+  where?: InputMaybe<TraderReferralChangeWhereInput>;
+}
+
+export interface QuerytraderReferralChangesConnectionArgs {
   after?: InputMaybe<Scalars["String"]["input"]>;
   first?: InputMaybe<Scalars["Int"]["input"]>;
-  orderBy: Array<TransactionOrderByInput>;
-  where?: InputMaybe<TransactionWhereInput>;
+  orderBy: Array<TraderReferralChangeOrderByInput>;
+  where?: InputMaybe<TraderReferralChangeWhereInput>;
+}
+
+export interface QuerytraderReferralsArgs {
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<Array<TraderReferralOrderByInput>>;
+  where?: InputMaybe<TraderReferralWhereInput>;
+}
+
+export interface QuerytraderReferralsConnectionArgs {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy: Array<TraderReferralOrderByInput>;
+  where?: InputMaybe<TraderReferralWhereInput>;
 }
 
 export interface QueryvolumeInfoByIdArgs {
@@ -8778,6 +8908,320 @@ export interface QueryvolumeInfosConnectionArgs {
   where?: InputMaybe<VolumeInfoWhereInput>;
 }
 
+export interface ReferralCodeOwner {
+  __typename?: "ReferralCodeOwner";
+  id: Scalars["String"]["output"];
+  owner: Scalars["String"]["output"];
+  updatedAtBlock: Scalars["Int"]["output"];
+  updatedAtTimestamp: Scalars["Int"]["output"];
+  updatedTxnHash: Scalars["String"]["output"];
+}
+
+export interface ReferralCodeOwnerEdge {
+  __typename?: "ReferralCodeOwnerEdge";
+  cursor: Scalars["String"]["output"];
+  node: ReferralCodeOwner;
+}
+
+export enum ReferralCodeOwnerOrderByInput {
+  id_ASC = "id_ASC",
+  id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
+  id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
+  id_DESC = "id_DESC",
+  id_DESC_NULLS_FIRST = "id_DESC_NULLS_FIRST",
+  id_DESC_NULLS_LAST = "id_DESC_NULLS_LAST",
+  owner_ASC = "owner_ASC",
+  owner_ASC_NULLS_FIRST = "owner_ASC_NULLS_FIRST",
+  owner_ASC_NULLS_LAST = "owner_ASC_NULLS_LAST",
+  owner_DESC = "owner_DESC",
+  owner_DESC_NULLS_FIRST = "owner_DESC_NULLS_FIRST",
+  owner_DESC_NULLS_LAST = "owner_DESC_NULLS_LAST",
+  updatedAtBlock_ASC = "updatedAtBlock_ASC",
+  updatedAtBlock_ASC_NULLS_FIRST = "updatedAtBlock_ASC_NULLS_FIRST",
+  updatedAtBlock_ASC_NULLS_LAST = "updatedAtBlock_ASC_NULLS_LAST",
+  updatedAtBlock_DESC = "updatedAtBlock_DESC",
+  updatedAtBlock_DESC_NULLS_FIRST = "updatedAtBlock_DESC_NULLS_FIRST",
+  updatedAtBlock_DESC_NULLS_LAST = "updatedAtBlock_DESC_NULLS_LAST",
+  updatedAtTimestamp_ASC = "updatedAtTimestamp_ASC",
+  updatedAtTimestamp_ASC_NULLS_FIRST = "updatedAtTimestamp_ASC_NULLS_FIRST",
+  updatedAtTimestamp_ASC_NULLS_LAST = "updatedAtTimestamp_ASC_NULLS_LAST",
+  updatedAtTimestamp_DESC = "updatedAtTimestamp_DESC",
+  updatedAtTimestamp_DESC_NULLS_FIRST = "updatedAtTimestamp_DESC_NULLS_FIRST",
+  updatedAtTimestamp_DESC_NULLS_LAST = "updatedAtTimestamp_DESC_NULLS_LAST",
+  updatedTxnHash_ASC = "updatedTxnHash_ASC",
+  updatedTxnHash_ASC_NULLS_FIRST = "updatedTxnHash_ASC_NULLS_FIRST",
+  updatedTxnHash_ASC_NULLS_LAST = "updatedTxnHash_ASC_NULLS_LAST",
+  updatedTxnHash_DESC = "updatedTxnHash_DESC",
+  updatedTxnHash_DESC_NULLS_FIRST = "updatedTxnHash_DESC_NULLS_FIRST",
+  updatedTxnHash_DESC_NULLS_LAST = "updatedTxnHash_DESC_NULLS_LAST",
+}
+
+export interface ReferralCodeOwnerWhereInput {
+  AND?: InputMaybe<Array<ReferralCodeOwnerWhereInput>>;
+  OR?: InputMaybe<Array<ReferralCodeOwnerWhereInput>>;
+  id_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_gt?: InputMaybe<Scalars["String"]["input"]>;
+  id_gte?: InputMaybe<Scalars["String"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id_lt?: InputMaybe<Scalars["String"]["input"]>;
+  id_lte?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  owner_contains?: InputMaybe<Scalars["String"]["input"]>;
+  owner_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  owner_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  owner_eq?: InputMaybe<Scalars["String"]["input"]>;
+  owner_gt?: InputMaybe<Scalars["String"]["input"]>;
+  owner_gte?: InputMaybe<Scalars["String"]["input"]>;
+  owner_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  owner_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  owner_lt?: InputMaybe<Scalars["String"]["input"]>;
+  owner_lte?: InputMaybe<Scalars["String"]["input"]>;
+  owner_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  owner_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  owner_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  owner_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  owner_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  owner_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  owner_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  updatedAtBlock_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtBlock_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtBlock_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtBlock_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  updatedAtBlock_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  updatedAtBlock_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtBlock_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtBlock_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtBlock_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  updatedAtTimestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtTimestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtTimestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtTimestamp_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  updatedAtTimestamp_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  updatedAtTimestamp_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtTimestamp_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtTimestamp_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtTimestamp_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  updatedTxnHash_contains?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_eq?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_gt?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_gte?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  updatedTxnHash_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  updatedTxnHash_lt?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_lte?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  updatedTxnHash_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+}
+
+export interface ReferralCodeOwnersConnection {
+  __typename?: "ReferralCodeOwnersConnection";
+  edges: Array<ReferralCodeOwnerEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"]["output"];
+}
+
+export interface ReferralStatsPoint {
+  __typename?: "ReferralStatsPoint";
+  rebatesUsd: Scalars["BigInt"]["output"];
+  timestamp: Scalars["Float"]["output"];
+  tradersGained: Scalars["Float"]["output"];
+  tradersLost: Scalars["Float"]["output"];
+  tradersNet: Scalars["Float"]["output"];
+  tradesCount: Scalars["Float"]["output"];
+  volumeUsd: Scalars["BigInt"]["output"];
+}
+
+export interface ReferralStatsResponse {
+  __typename?: "ReferralStatsResponse";
+  affiliate: Scalars["String"]["output"];
+  bucketSizeSeconds: Scalars["Float"]["output"];
+  compareFrom?: Maybe<Scalars["Float"]["output"]>;
+  compareTo?: Maybe<Scalars["Float"]["output"]>;
+  from: Scalars["Float"]["output"];
+  hasComparison: Scalars["Boolean"]["output"];
+  points: Array<ReferralStatsPoint>;
+  summary: ReferralStatsSummary;
+  to: Scalars["Float"]["output"];
+}
+
+export interface ReferralStatsSummary {
+  __typename?: "ReferralStatsSummary";
+  rebatesUsd: Scalars["BigInt"]["output"];
+  rebatesUsdDelta?: Maybe<Scalars["BigInt"]["output"]>;
+  tradersCount: Scalars["Float"]["output"];
+  tradersCountDelta?: Maybe<Scalars["Float"]["output"]>;
+  tradersGained?: Maybe<Scalars["Float"]["output"]>;
+  tradersGainedDelta?: Maybe<Scalars["Float"]["output"]>;
+  tradersLost?: Maybe<Scalars["Float"]["output"]>;
+  tradersLostDelta?: Maybe<Scalars["Float"]["output"]>;
+  tradersNet?: Maybe<Scalars["Float"]["output"]>;
+  tradersNetDelta?: Maybe<Scalars["Float"]["output"]>;
+  tradesCount: Scalars["Float"]["output"];
+  tradesCountDelta?: Maybe<Scalars["Float"]["output"]>;
+  volumeUsd: Scalars["BigInt"]["output"];
+  volumeUsdDelta?: Maybe<Scalars["BigInt"]["output"]>;
+}
+
+export interface ReferralStatsWhereInput {
+  affiliate: Scalars["String"]["input"];
+  from?: InputMaybe<Scalars["Float"]["input"]>;
+  to?: InputMaybe<Scalars["Float"]["input"]>;
+}
+
+export interface ReferralTradeStatsByHour {
+  __typename?: "ReferralTradeStatsByHour";
+  affiliate: Scalars["String"]["output"];
+  id: Scalars["String"]["output"];
+  rebatesUsd: Scalars["BigInt"]["output"];
+  timestamp: Scalars["Int"]["output"];
+  tradesCount: Scalars["Int"]["output"];
+  volumeUsd: Scalars["BigInt"]["output"];
+}
+
+export interface ReferralTradeStatsByHourEdge {
+  __typename?: "ReferralTradeStatsByHourEdge";
+  cursor: Scalars["String"]["output"];
+  node: ReferralTradeStatsByHour;
+}
+
+export enum ReferralTradeStatsByHourOrderByInput {
+  affiliate_ASC = "affiliate_ASC",
+  affiliate_ASC_NULLS_FIRST = "affiliate_ASC_NULLS_FIRST",
+  affiliate_ASC_NULLS_LAST = "affiliate_ASC_NULLS_LAST",
+  affiliate_DESC = "affiliate_DESC",
+  affiliate_DESC_NULLS_FIRST = "affiliate_DESC_NULLS_FIRST",
+  affiliate_DESC_NULLS_LAST = "affiliate_DESC_NULLS_LAST",
+  id_ASC = "id_ASC",
+  id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
+  id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
+  id_DESC = "id_DESC",
+  id_DESC_NULLS_FIRST = "id_DESC_NULLS_FIRST",
+  id_DESC_NULLS_LAST = "id_DESC_NULLS_LAST",
+  rebatesUsd_ASC = "rebatesUsd_ASC",
+  rebatesUsd_ASC_NULLS_FIRST = "rebatesUsd_ASC_NULLS_FIRST",
+  rebatesUsd_ASC_NULLS_LAST = "rebatesUsd_ASC_NULLS_LAST",
+  rebatesUsd_DESC = "rebatesUsd_DESC",
+  rebatesUsd_DESC_NULLS_FIRST = "rebatesUsd_DESC_NULLS_FIRST",
+  rebatesUsd_DESC_NULLS_LAST = "rebatesUsd_DESC_NULLS_LAST",
+  timestamp_ASC = "timestamp_ASC",
+  timestamp_ASC_NULLS_FIRST = "timestamp_ASC_NULLS_FIRST",
+  timestamp_ASC_NULLS_LAST = "timestamp_ASC_NULLS_LAST",
+  timestamp_DESC = "timestamp_DESC",
+  timestamp_DESC_NULLS_FIRST = "timestamp_DESC_NULLS_FIRST",
+  timestamp_DESC_NULLS_LAST = "timestamp_DESC_NULLS_LAST",
+  tradesCount_ASC = "tradesCount_ASC",
+  tradesCount_ASC_NULLS_FIRST = "tradesCount_ASC_NULLS_FIRST",
+  tradesCount_ASC_NULLS_LAST = "tradesCount_ASC_NULLS_LAST",
+  tradesCount_DESC = "tradesCount_DESC",
+  tradesCount_DESC_NULLS_FIRST = "tradesCount_DESC_NULLS_FIRST",
+  tradesCount_DESC_NULLS_LAST = "tradesCount_DESC_NULLS_LAST",
+  volumeUsd_ASC = "volumeUsd_ASC",
+  volumeUsd_ASC_NULLS_FIRST = "volumeUsd_ASC_NULLS_FIRST",
+  volumeUsd_ASC_NULLS_LAST = "volumeUsd_ASC_NULLS_LAST",
+  volumeUsd_DESC = "volumeUsd_DESC",
+  volumeUsd_DESC_NULLS_FIRST = "volumeUsd_DESC_NULLS_FIRST",
+  volumeUsd_DESC_NULLS_LAST = "volumeUsd_DESC_NULLS_LAST",
+}
+
+export interface ReferralTradeStatsByHourWhereInput {
+  AND?: InputMaybe<Array<ReferralTradeStatsByHourWhereInput>>;
+  OR?: InputMaybe<Array<ReferralTradeStatsByHourWhereInput>>;
+  affiliate_contains?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_eq?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_gt?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_gte?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  affiliate_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  affiliate_lt?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_lte?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  affiliate_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_gt?: InputMaybe<Scalars["String"]["input"]>;
+  id_gte?: InputMaybe<Scalars["String"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id_lt?: InputMaybe<Scalars["String"]["input"]>;
+  id_lte?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  rebatesUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  rebatesUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  rebatesUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  rebatesUsd_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  rebatesUsd_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  rebatesUsd_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  rebatesUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  rebatesUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  rebatesUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  timestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  timestamp_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  timestamp_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  tradesCount_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  tradesCount_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  tradesCount_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  tradesCount_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  tradesCount_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  tradesCount_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  tradesCount_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  tradesCount_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  tradesCount_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  volumeUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  volumeUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  volumeUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  volumeUsd_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  volumeUsd_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  volumeUsd_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  volumeUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  volumeUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  volumeUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+}
+
+export interface ReferralTradeStatsByHoursConnection {
+  __typename?: "ReferralTradeStatsByHoursConnection";
+  edges: Array<ReferralTradeStatsByHourEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"]["output"];
+}
+
 export interface SquidStatus {
   __typename?: "SquidStatus";
   finalizedHeight: Scalars["Float"]["output"];
@@ -8793,7 +9237,7 @@ export interface SwapFeesInfo {
   swapFeeType: Scalars["String"]["output"];
   tokenAddress: Scalars["String"]["output"];
   tokenPrice: Scalars["BigInt"]["output"];
-  transaction: Transaction;
+  transactionHash: Scalars["String"]["output"];
 }
 
 export interface SwapFeesInfoEdge {
@@ -8845,48 +9289,12 @@ export enum SwapFeesInfoOrderByInput {
   tokenPrice_DESC = "tokenPrice_DESC",
   tokenPrice_DESC_NULLS_FIRST = "tokenPrice_DESC_NULLS_FIRST",
   tokenPrice_DESC_NULLS_LAST = "tokenPrice_DESC_NULLS_LAST",
-  transaction_blockNumber_ASC = "transaction_blockNumber_ASC",
-  transaction_blockNumber_ASC_NULLS_FIRST = "transaction_blockNumber_ASC_NULLS_FIRST",
-  transaction_blockNumber_ASC_NULLS_LAST = "transaction_blockNumber_ASC_NULLS_LAST",
-  transaction_blockNumber_DESC = "transaction_blockNumber_DESC",
-  transaction_blockNumber_DESC_NULLS_FIRST = "transaction_blockNumber_DESC_NULLS_FIRST",
-  transaction_blockNumber_DESC_NULLS_LAST = "transaction_blockNumber_DESC_NULLS_LAST",
-  transaction_from_ASC = "transaction_from_ASC",
-  transaction_from_ASC_NULLS_FIRST = "transaction_from_ASC_NULLS_FIRST",
-  transaction_from_ASC_NULLS_LAST = "transaction_from_ASC_NULLS_LAST",
-  transaction_from_DESC = "transaction_from_DESC",
-  transaction_from_DESC_NULLS_FIRST = "transaction_from_DESC_NULLS_FIRST",
-  transaction_from_DESC_NULLS_LAST = "transaction_from_DESC_NULLS_LAST",
-  transaction_hash_ASC = "transaction_hash_ASC",
-  transaction_hash_ASC_NULLS_FIRST = "transaction_hash_ASC_NULLS_FIRST",
-  transaction_hash_ASC_NULLS_LAST = "transaction_hash_ASC_NULLS_LAST",
-  transaction_hash_DESC = "transaction_hash_DESC",
-  transaction_hash_DESC_NULLS_FIRST = "transaction_hash_DESC_NULLS_FIRST",
-  transaction_hash_DESC_NULLS_LAST = "transaction_hash_DESC_NULLS_LAST",
-  transaction_id_ASC = "transaction_id_ASC",
-  transaction_id_ASC_NULLS_FIRST = "transaction_id_ASC_NULLS_FIRST",
-  transaction_id_ASC_NULLS_LAST = "transaction_id_ASC_NULLS_LAST",
-  transaction_id_DESC = "transaction_id_DESC",
-  transaction_id_DESC_NULLS_FIRST = "transaction_id_DESC_NULLS_FIRST",
-  transaction_id_DESC_NULLS_LAST = "transaction_id_DESC_NULLS_LAST",
-  transaction_timestamp_ASC = "transaction_timestamp_ASC",
-  transaction_timestamp_ASC_NULLS_FIRST = "transaction_timestamp_ASC_NULLS_FIRST",
-  transaction_timestamp_ASC_NULLS_LAST = "transaction_timestamp_ASC_NULLS_LAST",
-  transaction_timestamp_DESC = "transaction_timestamp_DESC",
-  transaction_timestamp_DESC_NULLS_FIRST = "transaction_timestamp_DESC_NULLS_FIRST",
-  transaction_timestamp_DESC_NULLS_LAST = "transaction_timestamp_DESC_NULLS_LAST",
-  transaction_to_ASC = "transaction_to_ASC",
-  transaction_to_ASC_NULLS_FIRST = "transaction_to_ASC_NULLS_FIRST",
-  transaction_to_ASC_NULLS_LAST = "transaction_to_ASC_NULLS_LAST",
-  transaction_to_DESC = "transaction_to_DESC",
-  transaction_to_DESC_NULLS_FIRST = "transaction_to_DESC_NULLS_FIRST",
-  transaction_to_DESC_NULLS_LAST = "transaction_to_DESC_NULLS_LAST",
-  transaction_transactionIndex_ASC = "transaction_transactionIndex_ASC",
-  transaction_transactionIndex_ASC_NULLS_FIRST = "transaction_transactionIndex_ASC_NULLS_FIRST",
-  transaction_transactionIndex_ASC_NULLS_LAST = "transaction_transactionIndex_ASC_NULLS_LAST",
-  transaction_transactionIndex_DESC = "transaction_transactionIndex_DESC",
-  transaction_transactionIndex_DESC_NULLS_FIRST = "transaction_transactionIndex_DESC_NULLS_FIRST",
-  transaction_transactionIndex_DESC_NULLS_LAST = "transaction_transactionIndex_DESC_NULLS_LAST",
+  transactionHash_ASC = "transactionHash_ASC",
+  transactionHash_ASC_NULLS_FIRST = "transactionHash_ASC_NULLS_FIRST",
+  transactionHash_ASC_NULLS_LAST = "transactionHash_ASC_NULLS_LAST",
+  transactionHash_DESC = "transactionHash_DESC",
+  transactionHash_DESC_NULLS_FIRST = "transactionHash_DESC_NULLS_FIRST",
+  transactionHash_DESC_NULLS_LAST = "transactionHash_DESC_NULLS_LAST",
 }
 
 export interface SwapFeesInfoWhereInput {
@@ -8987,8 +9395,23 @@ export interface SwapFeesInfoWhereInput {
   tokenPrice_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   tokenPrice_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   tokenPrice_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
-  transaction?: InputMaybe<TransactionWhereInput>;
-  transaction_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  transactionHash_contains?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_eq?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_gt?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_gte?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  transactionHash_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  transactionHash_lt?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_lte?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  transactionHash_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_startsWith?: InputMaybe<Scalars["String"]["input"]>;
 }
 
 export interface SwapFeesInfoWithPeriod {
@@ -9133,7 +9556,7 @@ export interface SwapInfo {
   tokenInPrice: Scalars["BigInt"]["output"];
   tokenOutAddress: Scalars["String"]["output"];
   tokenOutPrice: Scalars["BigInt"]["output"];
-  transaction: Transaction;
+  transactionHash: Scalars["String"]["output"];
 }
 
 export interface SwapInfoEdge {
@@ -9215,48 +9638,12 @@ export enum SwapInfoOrderByInput {
   tokenOutPrice_DESC = "tokenOutPrice_DESC",
   tokenOutPrice_DESC_NULLS_FIRST = "tokenOutPrice_DESC_NULLS_FIRST",
   tokenOutPrice_DESC_NULLS_LAST = "tokenOutPrice_DESC_NULLS_LAST",
-  transaction_blockNumber_ASC = "transaction_blockNumber_ASC",
-  transaction_blockNumber_ASC_NULLS_FIRST = "transaction_blockNumber_ASC_NULLS_FIRST",
-  transaction_blockNumber_ASC_NULLS_LAST = "transaction_blockNumber_ASC_NULLS_LAST",
-  transaction_blockNumber_DESC = "transaction_blockNumber_DESC",
-  transaction_blockNumber_DESC_NULLS_FIRST = "transaction_blockNumber_DESC_NULLS_FIRST",
-  transaction_blockNumber_DESC_NULLS_LAST = "transaction_blockNumber_DESC_NULLS_LAST",
-  transaction_from_ASC = "transaction_from_ASC",
-  transaction_from_ASC_NULLS_FIRST = "transaction_from_ASC_NULLS_FIRST",
-  transaction_from_ASC_NULLS_LAST = "transaction_from_ASC_NULLS_LAST",
-  transaction_from_DESC = "transaction_from_DESC",
-  transaction_from_DESC_NULLS_FIRST = "transaction_from_DESC_NULLS_FIRST",
-  transaction_from_DESC_NULLS_LAST = "transaction_from_DESC_NULLS_LAST",
-  transaction_hash_ASC = "transaction_hash_ASC",
-  transaction_hash_ASC_NULLS_FIRST = "transaction_hash_ASC_NULLS_FIRST",
-  transaction_hash_ASC_NULLS_LAST = "transaction_hash_ASC_NULLS_LAST",
-  transaction_hash_DESC = "transaction_hash_DESC",
-  transaction_hash_DESC_NULLS_FIRST = "transaction_hash_DESC_NULLS_FIRST",
-  transaction_hash_DESC_NULLS_LAST = "transaction_hash_DESC_NULLS_LAST",
-  transaction_id_ASC = "transaction_id_ASC",
-  transaction_id_ASC_NULLS_FIRST = "transaction_id_ASC_NULLS_FIRST",
-  transaction_id_ASC_NULLS_LAST = "transaction_id_ASC_NULLS_LAST",
-  transaction_id_DESC = "transaction_id_DESC",
-  transaction_id_DESC_NULLS_FIRST = "transaction_id_DESC_NULLS_FIRST",
-  transaction_id_DESC_NULLS_LAST = "transaction_id_DESC_NULLS_LAST",
-  transaction_timestamp_ASC = "transaction_timestamp_ASC",
-  transaction_timestamp_ASC_NULLS_FIRST = "transaction_timestamp_ASC_NULLS_FIRST",
-  transaction_timestamp_ASC_NULLS_LAST = "transaction_timestamp_ASC_NULLS_LAST",
-  transaction_timestamp_DESC = "transaction_timestamp_DESC",
-  transaction_timestamp_DESC_NULLS_FIRST = "transaction_timestamp_DESC_NULLS_FIRST",
-  transaction_timestamp_DESC_NULLS_LAST = "transaction_timestamp_DESC_NULLS_LAST",
-  transaction_to_ASC = "transaction_to_ASC",
-  transaction_to_ASC_NULLS_FIRST = "transaction_to_ASC_NULLS_FIRST",
-  transaction_to_ASC_NULLS_LAST = "transaction_to_ASC_NULLS_LAST",
-  transaction_to_DESC = "transaction_to_DESC",
-  transaction_to_DESC_NULLS_FIRST = "transaction_to_DESC_NULLS_FIRST",
-  transaction_to_DESC_NULLS_LAST = "transaction_to_DESC_NULLS_LAST",
-  transaction_transactionIndex_ASC = "transaction_transactionIndex_ASC",
-  transaction_transactionIndex_ASC_NULLS_FIRST = "transaction_transactionIndex_ASC_NULLS_FIRST",
-  transaction_transactionIndex_ASC_NULLS_LAST = "transaction_transactionIndex_ASC_NULLS_LAST",
-  transaction_transactionIndex_DESC = "transaction_transactionIndex_DESC",
-  transaction_transactionIndex_DESC_NULLS_FIRST = "transaction_transactionIndex_DESC_NULLS_FIRST",
-  transaction_transactionIndex_DESC_NULLS_LAST = "transaction_transactionIndex_DESC_NULLS_LAST",
+  transactionHash_ASC = "transactionHash_ASC",
+  transactionHash_ASC_NULLS_FIRST = "transactionHash_ASC_NULLS_FIRST",
+  transactionHash_ASC_NULLS_LAST = "transactionHash_ASC_NULLS_LAST",
+  transactionHash_DESC = "transactionHash_DESC",
+  transactionHash_DESC_NULLS_FIRST = "transactionHash_DESC_NULLS_FIRST",
+  transactionHash_DESC_NULLS_LAST = "transactionHash_DESC_NULLS_LAST",
 }
 
 export interface SwapInfoWhereInput {
@@ -9418,8 +9805,23 @@ export interface SwapInfoWhereInput {
   tokenOutPrice_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   tokenOutPrice_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   tokenOutPrice_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
-  transaction?: InputMaybe<TransactionWhereInput>;
-  transaction_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  transactionHash_contains?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_eq?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_gt?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_gte?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  transactionHash_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  transactionHash_lt?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_lte?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  transactionHash_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_startsWith?: InputMaybe<Scalars["String"]["input"]>;
 }
 
 export interface SwapInfosConnection {
@@ -9625,7 +10027,7 @@ export interface TradeAction {
   swapPath: Array<Scalars["String"]["output"]>;
   timestamp: Scalars["Int"]["output"];
   totalImpactUsd?: Maybe<Scalars["BigInt"]["output"]>;
-  transaction: Transaction;
+  transactionHash: Scalars["String"]["output"];
   triggerPrice?: Maybe<Scalars["BigInt"]["output"]>;
   twapGroupId?: Maybe<Scalars["String"]["output"]>;
   uiFeeReceiver: Scalars["String"]["output"];
@@ -9878,48 +10280,12 @@ export enum TradeActionOrderByInput {
   totalImpactUsd_DESC = "totalImpactUsd_DESC",
   totalImpactUsd_DESC_NULLS_FIRST = "totalImpactUsd_DESC_NULLS_FIRST",
   totalImpactUsd_DESC_NULLS_LAST = "totalImpactUsd_DESC_NULLS_LAST",
-  transaction_blockNumber_ASC = "transaction_blockNumber_ASC",
-  transaction_blockNumber_ASC_NULLS_FIRST = "transaction_blockNumber_ASC_NULLS_FIRST",
-  transaction_blockNumber_ASC_NULLS_LAST = "transaction_blockNumber_ASC_NULLS_LAST",
-  transaction_blockNumber_DESC = "transaction_blockNumber_DESC",
-  transaction_blockNumber_DESC_NULLS_FIRST = "transaction_blockNumber_DESC_NULLS_FIRST",
-  transaction_blockNumber_DESC_NULLS_LAST = "transaction_blockNumber_DESC_NULLS_LAST",
-  transaction_from_ASC = "transaction_from_ASC",
-  transaction_from_ASC_NULLS_FIRST = "transaction_from_ASC_NULLS_FIRST",
-  transaction_from_ASC_NULLS_LAST = "transaction_from_ASC_NULLS_LAST",
-  transaction_from_DESC = "transaction_from_DESC",
-  transaction_from_DESC_NULLS_FIRST = "transaction_from_DESC_NULLS_FIRST",
-  transaction_from_DESC_NULLS_LAST = "transaction_from_DESC_NULLS_LAST",
-  transaction_hash_ASC = "transaction_hash_ASC",
-  transaction_hash_ASC_NULLS_FIRST = "transaction_hash_ASC_NULLS_FIRST",
-  transaction_hash_ASC_NULLS_LAST = "transaction_hash_ASC_NULLS_LAST",
-  transaction_hash_DESC = "transaction_hash_DESC",
-  transaction_hash_DESC_NULLS_FIRST = "transaction_hash_DESC_NULLS_FIRST",
-  transaction_hash_DESC_NULLS_LAST = "transaction_hash_DESC_NULLS_LAST",
-  transaction_id_ASC = "transaction_id_ASC",
-  transaction_id_ASC_NULLS_FIRST = "transaction_id_ASC_NULLS_FIRST",
-  transaction_id_ASC_NULLS_LAST = "transaction_id_ASC_NULLS_LAST",
-  transaction_id_DESC = "transaction_id_DESC",
-  transaction_id_DESC_NULLS_FIRST = "transaction_id_DESC_NULLS_FIRST",
-  transaction_id_DESC_NULLS_LAST = "transaction_id_DESC_NULLS_LAST",
-  transaction_timestamp_ASC = "transaction_timestamp_ASC",
-  transaction_timestamp_ASC_NULLS_FIRST = "transaction_timestamp_ASC_NULLS_FIRST",
-  transaction_timestamp_ASC_NULLS_LAST = "transaction_timestamp_ASC_NULLS_LAST",
-  transaction_timestamp_DESC = "transaction_timestamp_DESC",
-  transaction_timestamp_DESC_NULLS_FIRST = "transaction_timestamp_DESC_NULLS_FIRST",
-  transaction_timestamp_DESC_NULLS_LAST = "transaction_timestamp_DESC_NULLS_LAST",
-  transaction_to_ASC = "transaction_to_ASC",
-  transaction_to_ASC_NULLS_FIRST = "transaction_to_ASC_NULLS_FIRST",
-  transaction_to_ASC_NULLS_LAST = "transaction_to_ASC_NULLS_LAST",
-  transaction_to_DESC = "transaction_to_DESC",
-  transaction_to_DESC_NULLS_FIRST = "transaction_to_DESC_NULLS_FIRST",
-  transaction_to_DESC_NULLS_LAST = "transaction_to_DESC_NULLS_LAST",
-  transaction_transactionIndex_ASC = "transaction_transactionIndex_ASC",
-  transaction_transactionIndex_ASC_NULLS_FIRST = "transaction_transactionIndex_ASC_NULLS_FIRST",
-  transaction_transactionIndex_ASC_NULLS_LAST = "transaction_transactionIndex_ASC_NULLS_LAST",
-  transaction_transactionIndex_DESC = "transaction_transactionIndex_DESC",
-  transaction_transactionIndex_DESC_NULLS_FIRST = "transaction_transactionIndex_DESC_NULLS_FIRST",
-  transaction_transactionIndex_DESC_NULLS_LAST = "transaction_transactionIndex_DESC_NULLS_LAST",
+  transactionHash_ASC = "transactionHash_ASC",
+  transactionHash_ASC_NULLS_FIRST = "transactionHash_ASC_NULLS_FIRST",
+  transactionHash_ASC_NULLS_LAST = "transactionHash_ASC_NULLS_LAST",
+  transactionHash_DESC = "transactionHash_DESC",
+  transactionHash_DESC_NULLS_FIRST = "transactionHash_DESC_NULLS_FIRST",
+  transactionHash_DESC_NULLS_LAST = "transactionHash_DESC_NULLS_LAST",
   triggerPrice_ASC = "triggerPrice_ASC",
   triggerPrice_ASC_NULLS_FIRST = "triggerPrice_ASC_NULLS_FIRST",
   triggerPrice_ASC_NULLS_LAST = "triggerPrice_ASC_NULLS_LAST",
@@ -10359,8 +10725,23 @@ export interface TradeActionWhereInput {
   totalImpactUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   totalImpactUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   totalImpactUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
-  transaction?: InputMaybe<TransactionWhereInput>;
-  transaction_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  transactionHash_contains?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_eq?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_gt?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_gte?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  transactionHash_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  transactionHash_lt?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_lte?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  transactionHash_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_startsWith?: InputMaybe<Scalars["String"]["input"]>;
   triggerPrice_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   triggerPrice_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
   triggerPrice_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
@@ -10413,114 +10794,104 @@ export interface TradeActionsConnection {
   totalCount: Scalars["Int"]["output"];
 }
 
-export interface Transaction {
-  __typename?: "Transaction";
-  blockNumber: Scalars["Int"]["output"];
-  from: Scalars["String"]["output"];
-  hash: Scalars["String"]["output"];
+export interface TraderReferral {
+  __typename?: "TraderReferral";
+  affiliate?: Maybe<Scalars["String"]["output"]>;
   id: Scalars["String"]["output"];
+  referralCode?: Maybe<Scalars["String"]["output"]>;
+  updatedAtBlock: Scalars["Int"]["output"];
+  updatedAtTimestamp: Scalars["Int"]["output"];
+  updatedTxnHash: Scalars["String"]["output"];
+}
+
+export interface TraderReferralChange {
+  __typename?: "TraderReferralChange";
+  block: Scalars["Int"]["output"];
+  id: Scalars["String"]["output"];
+  nextAffiliate?: Maybe<Scalars["String"]["output"]>;
+  nextReferralCode?: Maybe<Scalars["String"]["output"]>;
+  previousAffiliate?: Maybe<Scalars["String"]["output"]>;
+  previousReferralCode?: Maybe<Scalars["String"]["output"]>;
   timestamp: Scalars["Int"]["output"];
-  to: Scalars["String"]["output"];
-  transactionIndex: Scalars["Int"]["output"];
+  trader: Scalars["String"]["output"];
+  transactionHash: Scalars["String"]["output"];
 }
 
-export interface TransactionEdge {
-  __typename?: "TransactionEdge";
+export interface TraderReferralChangeEdge {
+  __typename?: "TraderReferralChangeEdge";
   cursor: Scalars["String"]["output"];
-  node: Transaction;
+  node: TraderReferralChange;
 }
 
-export enum TransactionOrderByInput {
-  blockNumber_ASC = "blockNumber_ASC",
-  blockNumber_ASC_NULLS_FIRST = "blockNumber_ASC_NULLS_FIRST",
-  blockNumber_ASC_NULLS_LAST = "blockNumber_ASC_NULLS_LAST",
-  blockNumber_DESC = "blockNumber_DESC",
-  blockNumber_DESC_NULLS_FIRST = "blockNumber_DESC_NULLS_FIRST",
-  blockNumber_DESC_NULLS_LAST = "blockNumber_DESC_NULLS_LAST",
-  from_ASC = "from_ASC",
-  from_ASC_NULLS_FIRST = "from_ASC_NULLS_FIRST",
-  from_ASC_NULLS_LAST = "from_ASC_NULLS_LAST",
-  from_DESC = "from_DESC",
-  from_DESC_NULLS_FIRST = "from_DESC_NULLS_FIRST",
-  from_DESC_NULLS_LAST = "from_DESC_NULLS_LAST",
-  hash_ASC = "hash_ASC",
-  hash_ASC_NULLS_FIRST = "hash_ASC_NULLS_FIRST",
-  hash_ASC_NULLS_LAST = "hash_ASC_NULLS_LAST",
-  hash_DESC = "hash_DESC",
-  hash_DESC_NULLS_FIRST = "hash_DESC_NULLS_FIRST",
-  hash_DESC_NULLS_LAST = "hash_DESC_NULLS_LAST",
+export enum TraderReferralChangeOrderByInput {
+  block_ASC = "block_ASC",
+  block_ASC_NULLS_FIRST = "block_ASC_NULLS_FIRST",
+  block_ASC_NULLS_LAST = "block_ASC_NULLS_LAST",
+  block_DESC = "block_DESC",
+  block_DESC_NULLS_FIRST = "block_DESC_NULLS_FIRST",
+  block_DESC_NULLS_LAST = "block_DESC_NULLS_LAST",
   id_ASC = "id_ASC",
   id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
   id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
   id_DESC = "id_DESC",
   id_DESC_NULLS_FIRST = "id_DESC_NULLS_FIRST",
   id_DESC_NULLS_LAST = "id_DESC_NULLS_LAST",
+  nextAffiliate_ASC = "nextAffiliate_ASC",
+  nextAffiliate_ASC_NULLS_FIRST = "nextAffiliate_ASC_NULLS_FIRST",
+  nextAffiliate_ASC_NULLS_LAST = "nextAffiliate_ASC_NULLS_LAST",
+  nextAffiliate_DESC = "nextAffiliate_DESC",
+  nextAffiliate_DESC_NULLS_FIRST = "nextAffiliate_DESC_NULLS_FIRST",
+  nextAffiliate_DESC_NULLS_LAST = "nextAffiliate_DESC_NULLS_LAST",
+  nextReferralCode_ASC = "nextReferralCode_ASC",
+  nextReferralCode_ASC_NULLS_FIRST = "nextReferralCode_ASC_NULLS_FIRST",
+  nextReferralCode_ASC_NULLS_LAST = "nextReferralCode_ASC_NULLS_LAST",
+  nextReferralCode_DESC = "nextReferralCode_DESC",
+  nextReferralCode_DESC_NULLS_FIRST = "nextReferralCode_DESC_NULLS_FIRST",
+  nextReferralCode_DESC_NULLS_LAST = "nextReferralCode_DESC_NULLS_LAST",
+  previousAffiliate_ASC = "previousAffiliate_ASC",
+  previousAffiliate_ASC_NULLS_FIRST = "previousAffiliate_ASC_NULLS_FIRST",
+  previousAffiliate_ASC_NULLS_LAST = "previousAffiliate_ASC_NULLS_LAST",
+  previousAffiliate_DESC = "previousAffiliate_DESC",
+  previousAffiliate_DESC_NULLS_FIRST = "previousAffiliate_DESC_NULLS_FIRST",
+  previousAffiliate_DESC_NULLS_LAST = "previousAffiliate_DESC_NULLS_LAST",
+  previousReferralCode_ASC = "previousReferralCode_ASC",
+  previousReferralCode_ASC_NULLS_FIRST = "previousReferralCode_ASC_NULLS_FIRST",
+  previousReferralCode_ASC_NULLS_LAST = "previousReferralCode_ASC_NULLS_LAST",
+  previousReferralCode_DESC = "previousReferralCode_DESC",
+  previousReferralCode_DESC_NULLS_FIRST = "previousReferralCode_DESC_NULLS_FIRST",
+  previousReferralCode_DESC_NULLS_LAST = "previousReferralCode_DESC_NULLS_LAST",
   timestamp_ASC = "timestamp_ASC",
   timestamp_ASC_NULLS_FIRST = "timestamp_ASC_NULLS_FIRST",
   timestamp_ASC_NULLS_LAST = "timestamp_ASC_NULLS_LAST",
   timestamp_DESC = "timestamp_DESC",
   timestamp_DESC_NULLS_FIRST = "timestamp_DESC_NULLS_FIRST",
   timestamp_DESC_NULLS_LAST = "timestamp_DESC_NULLS_LAST",
-  to_ASC = "to_ASC",
-  to_ASC_NULLS_FIRST = "to_ASC_NULLS_FIRST",
-  to_ASC_NULLS_LAST = "to_ASC_NULLS_LAST",
-  to_DESC = "to_DESC",
-  to_DESC_NULLS_FIRST = "to_DESC_NULLS_FIRST",
-  to_DESC_NULLS_LAST = "to_DESC_NULLS_LAST",
-  transactionIndex_ASC = "transactionIndex_ASC",
-  transactionIndex_ASC_NULLS_FIRST = "transactionIndex_ASC_NULLS_FIRST",
-  transactionIndex_ASC_NULLS_LAST = "transactionIndex_ASC_NULLS_LAST",
-  transactionIndex_DESC = "transactionIndex_DESC",
-  transactionIndex_DESC_NULLS_FIRST = "transactionIndex_DESC_NULLS_FIRST",
-  transactionIndex_DESC_NULLS_LAST = "transactionIndex_DESC_NULLS_LAST",
+  trader_ASC = "trader_ASC",
+  trader_ASC_NULLS_FIRST = "trader_ASC_NULLS_FIRST",
+  trader_ASC_NULLS_LAST = "trader_ASC_NULLS_LAST",
+  trader_DESC = "trader_DESC",
+  trader_DESC_NULLS_FIRST = "trader_DESC_NULLS_FIRST",
+  trader_DESC_NULLS_LAST = "trader_DESC_NULLS_LAST",
+  transactionHash_ASC = "transactionHash_ASC",
+  transactionHash_ASC_NULLS_FIRST = "transactionHash_ASC_NULLS_FIRST",
+  transactionHash_ASC_NULLS_LAST = "transactionHash_ASC_NULLS_LAST",
+  transactionHash_DESC = "transactionHash_DESC",
+  transactionHash_DESC_NULLS_FIRST = "transactionHash_DESC_NULLS_FIRST",
+  transactionHash_DESC_NULLS_LAST = "transactionHash_DESC_NULLS_LAST",
 }
 
-export interface TransactionWhereInput {
-  AND?: InputMaybe<Array<TransactionWhereInput>>;
-  OR?: InputMaybe<Array<TransactionWhereInput>>;
-  blockNumber_eq?: InputMaybe<Scalars["Int"]["input"]>;
-  blockNumber_gt?: InputMaybe<Scalars["Int"]["input"]>;
-  blockNumber_gte?: InputMaybe<Scalars["Int"]["input"]>;
-  blockNumber_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
-  blockNumber_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  blockNumber_lt?: InputMaybe<Scalars["Int"]["input"]>;
-  blockNumber_lte?: InputMaybe<Scalars["Int"]["input"]>;
-  blockNumber_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
-  blockNumber_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
-  from_contains?: InputMaybe<Scalars["String"]["input"]>;
-  from_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  from_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  from_eq?: InputMaybe<Scalars["String"]["input"]>;
-  from_gt?: InputMaybe<Scalars["String"]["input"]>;
-  from_gte?: InputMaybe<Scalars["String"]["input"]>;
-  from_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  from_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  from_lt?: InputMaybe<Scalars["String"]["input"]>;
-  from_lte?: InputMaybe<Scalars["String"]["input"]>;
-  from_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  from_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  from_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  from_not_eq?: InputMaybe<Scalars["String"]["input"]>;
-  from_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  from_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  from_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  hash_contains?: InputMaybe<Scalars["String"]["input"]>;
-  hash_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  hash_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  hash_eq?: InputMaybe<Scalars["String"]["input"]>;
-  hash_gt?: InputMaybe<Scalars["String"]["input"]>;
-  hash_gte?: InputMaybe<Scalars["String"]["input"]>;
-  hash_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  hash_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  hash_lt?: InputMaybe<Scalars["String"]["input"]>;
-  hash_lte?: InputMaybe<Scalars["String"]["input"]>;
-  hash_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  hash_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  hash_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  hash_not_eq?: InputMaybe<Scalars["String"]["input"]>;
-  hash_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  hash_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  hash_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+export interface TraderReferralChangeWhereInput {
+  AND?: InputMaybe<Array<TraderReferralChangeWhereInput>>;
+  OR?: InputMaybe<Array<TraderReferralChangeWhereInput>>;
+  block_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  block_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  block_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  block_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  block_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  block_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  block_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  block_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  block_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
   id_contains?: InputMaybe<Scalars["String"]["input"]>;
   id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
   id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
@@ -10538,6 +10909,74 @@ export interface TransactionWhereInput {
   id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
   id_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
   id_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  nextAffiliate_contains?: InputMaybe<Scalars["String"]["input"]>;
+  nextAffiliate_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  nextAffiliate_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  nextAffiliate_eq?: InputMaybe<Scalars["String"]["input"]>;
+  nextAffiliate_gt?: InputMaybe<Scalars["String"]["input"]>;
+  nextAffiliate_gte?: InputMaybe<Scalars["String"]["input"]>;
+  nextAffiliate_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  nextAffiliate_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  nextAffiliate_lt?: InputMaybe<Scalars["String"]["input"]>;
+  nextAffiliate_lte?: InputMaybe<Scalars["String"]["input"]>;
+  nextAffiliate_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  nextAffiliate_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  nextAffiliate_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  nextAffiliate_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  nextAffiliate_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  nextAffiliate_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  nextAffiliate_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  nextReferralCode_contains?: InputMaybe<Scalars["String"]["input"]>;
+  nextReferralCode_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  nextReferralCode_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  nextReferralCode_eq?: InputMaybe<Scalars["String"]["input"]>;
+  nextReferralCode_gt?: InputMaybe<Scalars["String"]["input"]>;
+  nextReferralCode_gte?: InputMaybe<Scalars["String"]["input"]>;
+  nextReferralCode_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  nextReferralCode_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  nextReferralCode_lt?: InputMaybe<Scalars["String"]["input"]>;
+  nextReferralCode_lte?: InputMaybe<Scalars["String"]["input"]>;
+  nextReferralCode_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  nextReferralCode_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  nextReferralCode_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  nextReferralCode_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  nextReferralCode_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  nextReferralCode_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  nextReferralCode_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  previousAffiliate_contains?: InputMaybe<Scalars["String"]["input"]>;
+  previousAffiliate_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  previousAffiliate_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  previousAffiliate_eq?: InputMaybe<Scalars["String"]["input"]>;
+  previousAffiliate_gt?: InputMaybe<Scalars["String"]["input"]>;
+  previousAffiliate_gte?: InputMaybe<Scalars["String"]["input"]>;
+  previousAffiliate_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  previousAffiliate_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  previousAffiliate_lt?: InputMaybe<Scalars["String"]["input"]>;
+  previousAffiliate_lte?: InputMaybe<Scalars["String"]["input"]>;
+  previousAffiliate_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  previousAffiliate_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  previousAffiliate_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  previousAffiliate_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  previousAffiliate_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  previousAffiliate_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  previousAffiliate_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  previousReferralCode_contains?: InputMaybe<Scalars["String"]["input"]>;
+  previousReferralCode_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  previousReferralCode_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  previousReferralCode_eq?: InputMaybe<Scalars["String"]["input"]>;
+  previousReferralCode_gt?: InputMaybe<Scalars["String"]["input"]>;
+  previousReferralCode_gte?: InputMaybe<Scalars["String"]["input"]>;
+  previousReferralCode_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  previousReferralCode_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  previousReferralCode_lt?: InputMaybe<Scalars["String"]["input"]>;
+  previousReferralCode_lte?: InputMaybe<Scalars["String"]["input"]>;
+  previousReferralCode_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  previousReferralCode_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  previousReferralCode_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  previousReferralCode_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  previousReferralCode_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  previousReferralCode_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  previousReferralCode_startsWith?: InputMaybe<Scalars["String"]["input"]>;
   timestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
   timestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
   timestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
@@ -10547,37 +10986,188 @@ export interface TransactionWhereInput {
   timestamp_lte?: InputMaybe<Scalars["Int"]["input"]>;
   timestamp_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
   timestamp_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
-  to_contains?: InputMaybe<Scalars["String"]["input"]>;
-  to_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  to_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  to_eq?: InputMaybe<Scalars["String"]["input"]>;
-  to_gt?: InputMaybe<Scalars["String"]["input"]>;
-  to_gte?: InputMaybe<Scalars["String"]["input"]>;
-  to_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  to_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  to_lt?: InputMaybe<Scalars["String"]["input"]>;
-  to_lte?: InputMaybe<Scalars["String"]["input"]>;
-  to_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  to_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  to_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  to_not_eq?: InputMaybe<Scalars["String"]["input"]>;
-  to_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  to_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  to_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  transactionIndex_eq?: InputMaybe<Scalars["Int"]["input"]>;
-  transactionIndex_gt?: InputMaybe<Scalars["Int"]["input"]>;
-  transactionIndex_gte?: InputMaybe<Scalars["Int"]["input"]>;
-  transactionIndex_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
-  transactionIndex_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  transactionIndex_lt?: InputMaybe<Scalars["Int"]["input"]>;
-  transactionIndex_lte?: InputMaybe<Scalars["Int"]["input"]>;
-  transactionIndex_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
-  transactionIndex_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  trader_contains?: InputMaybe<Scalars["String"]["input"]>;
+  trader_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  trader_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  trader_eq?: InputMaybe<Scalars["String"]["input"]>;
+  trader_gt?: InputMaybe<Scalars["String"]["input"]>;
+  trader_gte?: InputMaybe<Scalars["String"]["input"]>;
+  trader_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  trader_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  trader_lt?: InputMaybe<Scalars["String"]["input"]>;
+  trader_lte?: InputMaybe<Scalars["String"]["input"]>;
+  trader_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  trader_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  trader_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  trader_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  trader_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  trader_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  trader_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_contains?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_eq?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_gt?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_gte?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  transactionHash_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  transactionHash_lt?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_lte?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  transactionHash_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  transactionHash_startsWith?: InputMaybe<Scalars["String"]["input"]>;
 }
 
-export interface TransactionsConnection {
-  __typename?: "TransactionsConnection";
-  edges: Array<TransactionEdge>;
+export interface TraderReferralChangesConnection {
+  __typename?: "TraderReferralChangesConnection";
+  edges: Array<TraderReferralChangeEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"]["output"];
+}
+
+export interface TraderReferralEdge {
+  __typename?: "TraderReferralEdge";
+  cursor: Scalars["String"]["output"];
+  node: TraderReferral;
+}
+
+export enum TraderReferralOrderByInput {
+  affiliate_ASC = "affiliate_ASC",
+  affiliate_ASC_NULLS_FIRST = "affiliate_ASC_NULLS_FIRST",
+  affiliate_ASC_NULLS_LAST = "affiliate_ASC_NULLS_LAST",
+  affiliate_DESC = "affiliate_DESC",
+  affiliate_DESC_NULLS_FIRST = "affiliate_DESC_NULLS_FIRST",
+  affiliate_DESC_NULLS_LAST = "affiliate_DESC_NULLS_LAST",
+  id_ASC = "id_ASC",
+  id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
+  id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
+  id_DESC = "id_DESC",
+  id_DESC_NULLS_FIRST = "id_DESC_NULLS_FIRST",
+  id_DESC_NULLS_LAST = "id_DESC_NULLS_LAST",
+  referralCode_ASC = "referralCode_ASC",
+  referralCode_ASC_NULLS_FIRST = "referralCode_ASC_NULLS_FIRST",
+  referralCode_ASC_NULLS_LAST = "referralCode_ASC_NULLS_LAST",
+  referralCode_DESC = "referralCode_DESC",
+  referralCode_DESC_NULLS_FIRST = "referralCode_DESC_NULLS_FIRST",
+  referralCode_DESC_NULLS_LAST = "referralCode_DESC_NULLS_LAST",
+  updatedAtBlock_ASC = "updatedAtBlock_ASC",
+  updatedAtBlock_ASC_NULLS_FIRST = "updatedAtBlock_ASC_NULLS_FIRST",
+  updatedAtBlock_ASC_NULLS_LAST = "updatedAtBlock_ASC_NULLS_LAST",
+  updatedAtBlock_DESC = "updatedAtBlock_DESC",
+  updatedAtBlock_DESC_NULLS_FIRST = "updatedAtBlock_DESC_NULLS_FIRST",
+  updatedAtBlock_DESC_NULLS_LAST = "updatedAtBlock_DESC_NULLS_LAST",
+  updatedAtTimestamp_ASC = "updatedAtTimestamp_ASC",
+  updatedAtTimestamp_ASC_NULLS_FIRST = "updatedAtTimestamp_ASC_NULLS_FIRST",
+  updatedAtTimestamp_ASC_NULLS_LAST = "updatedAtTimestamp_ASC_NULLS_LAST",
+  updatedAtTimestamp_DESC = "updatedAtTimestamp_DESC",
+  updatedAtTimestamp_DESC_NULLS_FIRST = "updatedAtTimestamp_DESC_NULLS_FIRST",
+  updatedAtTimestamp_DESC_NULLS_LAST = "updatedAtTimestamp_DESC_NULLS_LAST",
+  updatedTxnHash_ASC = "updatedTxnHash_ASC",
+  updatedTxnHash_ASC_NULLS_FIRST = "updatedTxnHash_ASC_NULLS_FIRST",
+  updatedTxnHash_ASC_NULLS_LAST = "updatedTxnHash_ASC_NULLS_LAST",
+  updatedTxnHash_DESC = "updatedTxnHash_DESC",
+  updatedTxnHash_DESC_NULLS_FIRST = "updatedTxnHash_DESC_NULLS_FIRST",
+  updatedTxnHash_DESC_NULLS_LAST = "updatedTxnHash_DESC_NULLS_LAST",
+}
+
+export interface TraderReferralWhereInput {
+  AND?: InputMaybe<Array<TraderReferralWhereInput>>;
+  OR?: InputMaybe<Array<TraderReferralWhereInput>>;
+  affiliate_contains?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_eq?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_gt?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_gte?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  affiliate_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  affiliate_lt?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_lte?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  affiliate_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_gt?: InputMaybe<Scalars["String"]["input"]>;
+  id_gte?: InputMaybe<Scalars["String"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id_lt?: InputMaybe<Scalars["String"]["input"]>;
+  id_lte?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_contains?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_eq?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_gt?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_gte?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  referralCode_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  referralCode_lt?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_lte?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  referralCode_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  referralCode_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  updatedAtBlock_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtBlock_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtBlock_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtBlock_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  updatedAtBlock_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  updatedAtBlock_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtBlock_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtBlock_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtBlock_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  updatedAtTimestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtTimestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtTimestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtTimestamp_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  updatedAtTimestamp_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  updatedAtTimestamp_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtTimestamp_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtTimestamp_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  updatedAtTimestamp_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  updatedTxnHash_contains?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_eq?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_gt?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_gte?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  updatedTxnHash_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  updatedTxnHash_lt?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_lte?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  updatedTxnHash_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  updatedTxnHash_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+}
+
+export interface TraderReferralsConnection {
+  __typename?: "TraderReferralsConnection";
+  edges: Array<TraderReferralEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars["Int"]["output"];
 }

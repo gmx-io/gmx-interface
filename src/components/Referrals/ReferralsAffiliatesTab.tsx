@@ -60,6 +60,7 @@ export function ReferralsAffiliatesTab({
   if (!isWizard) {
     return (
       <AffiliatesStats
+        account={account}
         referralsData={referralsData}
         handleCreateReferralCode={handleCreateReferralCode}
         setRecentlyAddedCodes={setRecentlyAddedCodes}

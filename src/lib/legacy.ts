@@ -10,7 +10,7 @@ import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { PRODUCTION_HOST } from "config/links";
 
 import { isValidTimestamp } from "./dates";
-import { PRECISION, bigNumberify, calculateDisplayDecimals, expandDecimals, formatAmount } from "./numbers";
+import { PRECISION, calculateDisplayDecimals, expandDecimals, formatAmount, toBigInt } from "./numbers";
 
 // use a random placeholder account instead of the zero address as the zero address might have tokens
 export const PLACEHOLDER_ACCOUNT = privateKeyToAccount(generatePrivateKey()).address;
@@ -458,7 +458,7 @@ export function getStakingProcessedData(
   data.gmxBalance = balanceData.gmx;
   data.gmxBalanceUsd = mulDiv(balanceData.gmx, gmxPrice, expandDecimals(1, 18));
 
-  data.gmxSupply = bigNumberify(gmxSupply);
+  data.gmxSupply = toBigInt(gmxSupply);
 
   data.gmxSupplyUsd = mulDiv(data.gmxSupply, gmxPrice, expandDecimals(1, 18));
   data.stakedGmxSupply = stakedGmxSupply;
