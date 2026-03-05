@@ -3982,10 +3982,6 @@ msgstr "阅读规则"
 msgid "Source chain supports single token only"
 msgstr "来源链仅支持单一代币"
 
-#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-#~ msgid "Annually"
-#~ msgstr "每年"
-
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -4303,6 +4299,11 @@ msgstr "返利分配历史记录"
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active orders"
 msgstr "活跃订单"
+
+#: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This market has been disabled. Please contact support to claim your remaining funding fees."
+msgstr "此市场已禁用。请联系客服以领取您剩余的资金费率。"
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Depositing to Avalanche is disabled. Trade directly from your Avalanche wallet."

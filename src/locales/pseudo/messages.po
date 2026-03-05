@@ -3982,10 +3982,6 @@ msgstr ""
 msgid "Source chain supports single token only"
 msgstr ""
 
-#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-#~ msgid "Annually"
-#~ msgstr ""
-
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -4302,6 +4298,11 @@ msgstr ""
 
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active orders"
+msgstr ""
+
+#: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This market has been disabled. Please contact support to claim your remaining funding fees."
 msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx

@@ -3982,10 +3982,6 @@ msgstr "Прочитайте правила"
 msgid "Source chain supports single token only"
 msgstr "Исходная сеть поддерживает только один токен"
 
-#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-#~ msgid "Annually"
-#~ msgstr "Годовой"
-
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -4303,6 +4299,11 @@ msgstr "История распределения возвратов"
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active orders"
 msgstr "Активные ордера"
+
+#: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This market has been disabled. Please contact support to claim your remaining funding fees."
+msgstr "Этот рынок отключён. Пожалуйста, свяжитесь со службой поддержки, чтобы получить оставшиеся комиссии за финансирование."
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Depositing to Avalanche is disabled. Trade directly from your Avalanche wallet."

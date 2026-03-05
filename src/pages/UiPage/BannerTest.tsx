@@ -161,7 +161,7 @@ export function BannerTest() {
           <AlertInfoCard type="info" onClose={noop}>
             <div>
               <Trans>Convert esGMX to GMX tokens. Read the vesting details before using the vaults.</Trans>
-              <ColorfulButtonLink to="https://docs.gmx.io" newTab>
+              <ColorfulButtonLink to="https://docs.gmx.io/" newTab>
                 <Trans>Read details</Trans>
               </ColorfulButtonLink>
             </div>
@@ -191,7 +191,7 @@ export function BannerTest() {
               <Trans>
                 Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero impact. Net price
                 impact applies only on closes (capped, usually at 0.5%).{" "}
-                <ExternalLink href="https://docs.gmx.io" newTab>
+                <ExternalLink href="https://docs.gmx.io/" newTab>
                   Read more
                 </ExternalLink>
                 .
@@ -202,7 +202,7 @@ export function BannerTest() {
           <AlertInfoCard type="warning" hideClose>
             <Trans>
               Max 5 auto-cancel TP/SL orders allowed. Extra orders require manual cancellation. Existing orders still
-              close with the position. <ExternalLink href="https://docs.gmx.io">Read more</ExternalLink>.
+              close with the position. <ExternalLink href="https://docs.gmx.io/">Read more</ExternalLink>.
             </Trans>
           </AlertInfoCard>
         </Section>

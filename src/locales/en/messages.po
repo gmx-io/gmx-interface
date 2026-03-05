@@ -3982,10 +3982,6 @@ msgstr "Read the rules"
 msgid "Source chain supports single token only"
 msgstr "Source chain supports single token only"
 
-#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-#~ msgid "Annually"
-#~ msgstr "Annually"
-
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/TVChart/ChartHeader.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -4303,6 +4299,11 @@ msgstr "Rebates distribution history"
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active orders"
 msgstr "Active orders"
+
+#: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This market has been disabled. Please contact support to claim your remaining funding fees."
+msgstr "This market has been disabled. Please contact support to claim your remaining funding fees."
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Depositing to Avalanche is disabled. Trade directly from your Avalanche wallet."

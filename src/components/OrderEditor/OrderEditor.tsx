@@ -532,7 +532,7 @@ export function OrderEditor(p: Props) {
         tooltip: (
           <>
             <Trans>Order exceeds max leverage. Click to auto-adjust.</Trans>{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">
+            <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">
               <Trans>Read more</Trans>
             </ExternalLink>
             .

@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useCallback } from "react";
 
 import { PositionInfo } from "domain/synthetics/positions";
@@ -7,23 +7,36 @@ import { formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 
 import Checkbox from "components/Checkbox/Checkbox";
 import Tooltip from "components/Tooltip/Tooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 type Props = {
   position: PositionInfo;
+  isMarketDisabled: boolean;
   isSelected: boolean;
   onCheckboxChange: (value: boolean, positionKey: string) => void;
 };
 
-export const SettleAccruedFundingFeeRow = ({ position, isSelected, onCheckboxChange }: Props) => {
+export const SettleAccruedFundingFeeRow = ({ position, isMarketDisabled, isSelected, onCheckboxChange }: Props) => {
   const { indexName, poolName } = position;
 
-  const label = (
+  const labelContent = (
     <div key={position.key} className="flex items-start">
       <span className="ClaimSettleModal-row-text">
         {position.isLong ? t`Long` : t`Short`} {indexName}
       </span>{" "}
       <span className="subtext">[{poolName}]</span>
     </div>
+  );
+  const label = isMarketDisabled ? (
+    <TooltipWithPortal
+      position="top-start"
+      handle={labelContent}
+      content={
+        <Trans>This market has been disabled. Please contact support to claim your remaining funding fees.</Trans>
+      }
+    />
+  ) : (
+    labelContent
   );
   const handleCheckboxChange = useCallback(
     (value: boolean) => onCheckboxChange(value, position.key),
@@ -55,6 +68,7 @@ export const SettleAccruedFundingFeeRow = ({ position, isSelected, onCheckboxCha
       <Checkbox
         isChecked={isSelected}
         setIsChecked={handleCheckboxChange}
+        disabled={isMarketDisabled}
         className="ClaimSettleModal-checkbox flex self-center"
       >
         <div className="Exchange-info-label ClaimSettleModal-checkbox-label">{label}</div>

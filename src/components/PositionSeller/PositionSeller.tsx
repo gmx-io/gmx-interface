@@ -775,7 +775,7 @@ export function PositionSeller() {
       content={
         <Trans>
           Position exceeds max allowed leverage.{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
+          <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">Read more</ExternalLink>.
         </Trans>
       }
     />
