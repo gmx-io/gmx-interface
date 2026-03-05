@@ -1,10 +1,11 @@
 import { extendError } from "lib/errors";
 import { additionalTxnErrorValidation } from "lib/errors/additionalValidation";
-import { estimateGasLimit } from "lib/gas/estimateGasLimit";
+import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { GasPriceData, getGasPrice } from "lib/gas/gasPrice";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateCallDataWithTenderly } from "lib/tenderly";
 import { WalletSigner } from "lib/wallets";
+import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 
 import { ISigner, ISignerSendTransactionParams, ISignerSendTransactionResult } from "./iSigner";
 import { TransactionWaiterResult, TxnCallback, TxnEventBuilder } from "./types";
@@ -51,7 +52,6 @@ export async function sendWalletTransaction({
       await simulateCallDataWithTenderly({
         chainId,
         tenderlyConfig,
-        provider: signer.provider!,
         to,
         data: callData,
         from,
@@ -73,12 +73,15 @@ export async function sendWalletTransaction({
 
     const gasLimitPromise = gasLimit
       ? Promise.resolve(gasLimit)
-      : estimateGasLimit(signer.provider!, {
-          to,
-          from,
-          data: callData,
-          value,
-        }).catch(() => undefined);
+      : getPublicClientWithRpc(chainId)
+          .estimateGas({
+            account: from,
+            to,
+            data: callData,
+            value,
+          })
+          .then(applyGasLimitBuffer)
+          .catch(() => undefined);
 
     const provider = getProvider(undefined, chainId);
     const gasPriceDataPromise = gasPriceData
@@ -104,7 +107,7 @@ export async function sendWalletTransaction({
     };
 
     const res = await signer.sendTransaction(txnData).catch((error) => {
-      additionalTxnErrorValidation(error, chainId, signer.provider!, txnData);
+      additionalTxnErrorValidation(error, chainId, getProvider(undefined, chainId), txnData);
 
       throw extendError(error, {
         errorContext: "sending",

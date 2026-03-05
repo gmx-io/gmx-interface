@@ -7,43 +7,51 @@ import { EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS } from "sdk/configs/express";
 
 import { estimateExecutionGasPrice, getExecutionFeeBufferBps, getMaxPriorityFeePerGas } from "./utils/executionFee";
 
-export function useGasPrice(chainId: number) {
+export function useGasPrice(chainId: number | undefined) {
   const settings = useSettings();
 
-  const { data: gasPrice } = useSWR<bigint | undefined>(["gasPrice", chainId, settings.executionFeeBufferBps], {
-    refreshInterval: 2000,
-    fetcher: () => {
-      return new Promise<bigint | undefined>(async (resolve, reject) => {
-        const provider = getProvider(undefined, chainId);
-
-        if (!provider) {
-          resolve(undefined);
-          return;
+  const queryCondition = chainId !== undefined;
+  const { data: gasPrice } = useSWR<bigint | undefined>(
+    queryCondition ? ["gasPrice", chainId, settings.executionFeeBufferBps] : null,
+    {
+      refreshInterval: 2000,
+      fetcher: () => {
+        if (!queryCondition) {
+          return undefined;
         }
 
-        try {
-          const feeData = await provider.getFeeData();
+        return new Promise<bigint | undefined>(async (resolve, reject) => {
+          const provider = getProvider(undefined, chainId);
 
-          const bufferBps =
-            (settings.executionFeeBufferBps ?? 0) +
-            (settings.expressOrdersEnabled ? EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS : 0);
+          if (!provider) {
+            resolve(undefined);
+            return;
+          }
 
-          const gasPrice = estimateExecutionGasPrice({
-            rawGasPrice: feeData.gasPrice ?? 0n,
-            maxPriorityFeePerGas: getMaxPriorityFeePerGas(chainId, feeData?.maxPriorityFeePerGas),
-            bufferBps: getExecutionFeeBufferBps(chainId, bufferBps),
-            premium: getGasPricePremium(chainId as ContractsChainId) || 0n,
-          });
+          try {
+            const feeData = await provider.getFeeData();
 
-          resolve(gasPrice);
-        } catch (e) {
-          // eslint-disable-next-line no-console
-          console.error(e);
-          reject(e);
-        }
-      });
-    },
-  });
+            const bufferBps =
+              (settings.executionFeeBufferBps ?? 0) +
+              (settings.expressOrdersEnabled ? EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS : 0);
+
+            const gasPrice = estimateExecutionGasPrice({
+              rawGasPrice: feeData.gasPrice ?? 0n,
+              maxPriorityFeePerGas: getMaxPriorityFeePerGas(chainId, feeData?.maxPriorityFeePerGas),
+              bufferBps: getExecutionFeeBufferBps(chainId, bufferBps),
+              premium: getGasPricePremium(chainId as ContractsChainId) || 0n,
+            });
+
+            resolve(gasPrice);
+          } catch (e) {
+            // eslint-disable-next-line no-console
+            console.error(e);
+            reject(e);
+          }
+        });
+      },
+    }
+  );
 
   return gasPrice === undefined ? undefined : BigInt(gasPrice);
 }

@@ -1,4 +1,4 @@
-import { maxUint256, StateOverride, zeroHash } from "viem";
+import { maxUint256, StateOverride, zeroAddress, zeroHash } from "viem";
 
 import type { AnyChainId, SettlementChainId, SourceChainId } from "config/chains";
 import { OVERRIDE_ERC20_BYTECODE, RANDOM_SLOT, RANDOM_WALLET } from "config/multichain";
@@ -43,7 +43,6 @@ export async function stargateTransferFees({
   tokenAddress,
   isPlatformToken = false,
   forceFullOverride = false,
-  additionalValue = 0n,
   account = RANDOM_WALLET.address,
 }: {
   chainId: SettlementChainId | SourceChainId;
@@ -59,13 +58,9 @@ export async function stargateTransferFees({
   isPlatformToken?: boolean;
   /**
    * For platform tokens this can only be turned on if we transfer from settlement chain. Because on settlement chains stargate != token address, so we can safely override token code.
-   * For trade tokens does changes nothing.
+   * For trade tokens changes nothing.
    */
   forceFullOverride?: boolean;
-  /**
-   * Additional value to add to nativeFee (e.g., for native token transfers)
-   */
-  additionalValue?: bigint;
   /**
    * Always pass account if platform token is used, because we dont override account balance for platform tokens.
    */
@@ -95,7 +90,8 @@ export async function stargateTransferFees({
           .then((result) => result[2].amountReceivedLD),
   ]);
 
-  const value = nativeFee + additionalValue;
+  const isNativeToken = tokenAddress === zeroAddress;
+  const value = nativeFee + (isNativeToken ? sendParams.amountLD : 0n);
 
   const transferGasLimit = await client
     .estimateContractGas({
