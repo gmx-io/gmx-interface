@@ -46,7 +46,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
       isAdditionOrdersMsg && (
         <Trans>
           Max network fee includes fees for additional orders. Refunded in full if they don't trigger and are canceled.{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/trading/#execution-fee">Read more</ExternalLink>.
+          <ExternalLink href="https://docs.gmx.io/docs/trading/fees/#network-fee">Read more</ExternalLink>.
         </Trans>
       ),
     [isAdditionOrdersMsg]
@@ -188,7 +188,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
             <p>
               <Trans>
                 Max network fee includes a buffer for gas spikes. Unused fees refunded on execution.{" "}
-                <ExternalLink className="inline" href="https://docs.gmx.io/docs/trading/#execution-fee">
+                <ExternalLink className="inline" href="https://docs.gmx.io/docs/trading/fees/#network-fee">
                   Read more
                 </ExternalLink>
                 .
