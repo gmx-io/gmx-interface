@@ -3,8 +3,6 @@ import { describe, expect, it } from "vitest";
 
 import { ARBITRUM } from "config/chains";
 import { simulateCallDataWithTenderly, TenderlyConfig } from "lib/tenderly";
-import { ISigner } from "lib/transactions/iSigner";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { ERC20Address } from "sdk/utils/tokens/types";
 
 import {
@@ -184,7 +182,6 @@ describe
       const { success, raw } = await simulateCallDataWithTenderly({
         chainId: ARBITRUM,
         tenderlyConfig,
-        provider: await ISigner.from({ viemPublicClient: getPublicClientWithRpc(ARBITRUM) }),
         to: parameters.address,
         data: encodeFunctionData(parameters),
         from: parameters.account as string,
@@ -212,7 +209,6 @@ describe
       const { success, raw } = await simulateCallDataWithTenderly({
         chainId: ARBITRUM,
         tenderlyConfig,
-        provider: await ISigner.from({ viemPublicClient: getPublicClientWithRpc(ARBITRUM) }),
         to: parameters.address,
         data: encodeFunctionData(parameters),
         from: parameters.account as string,

@@ -43,7 +43,7 @@ import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFe
 import { useNativeTokenBalance } from "domain/multichain/useNativeTokenBalance";
 import { useQuoteOft } from "domain/multichain/useQuoteOft";
 import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
-import { useQuoteSendNativeFee } from "domain/multichain/useQuoteSend";
+import { useQuoteSendNativeFeeWithGasLimit } from "domain/multichain/useQuoteSend";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import {
   getBalanceByBalanceType,
@@ -408,20 +408,25 @@ export const DepositView = () => {
     return newSendParams;
   }, [sendParamsWithoutSlippage, quoteOft]);
 
-  const { data: quoteSendNativeFee, isLoading: isQuoteSendNativeFeeLoading } = useQuoteSendNativeFee({
+  const { data: quoteSendData, isLoading: isQuoteSendNativeFeeLoading } = useQuoteSendNativeFeeWithGasLimit({
     sendParams: sendParamsWithSlippage,
     fromStargateAddress: selectedTokenSourceChainTokenId?.stargate,
     fromChainId: depositViewChain,
     toChainId: settlementChainId,
+    fromTokenAddress: selectedTokenSourceChainTokenId?.address,
     composeGas,
   });
 
-  const { data: baseQuoteSendNativeFee, isLoading: isBaseQuoteSendNativeFeeLoading } = useQuoteSendNativeFee({
+  const { data: baseQuoteSendData, isLoading: isBaseQuoteSendNativeFeeLoading } = useQuoteSendNativeFeeWithGasLimit({
     sendParams: baseSendParams,
     fromStargateAddress: selectedTokenSourceChainTokenId?.stargate,
     fromChainId: depositViewChain,
     toChainId: settlementChainId,
+    fromTokenAddress: selectedTokenSourceChainTokenId?.address,
   });
+
+  const quoteSendNativeFee = quoteSendData?.nativeFee;
+  const baseQuoteSendNativeFee = baseQuoteSendData?.nativeFee;
 
   const { networkFee, networkFeeUsd, protocolFeeAmount, protocolFeeUsd } = useMultichainQuoteFeeUsd({
     quoteSendNativeFee: quoteSendNativeFee ?? baseQuoteSendNativeFee,
@@ -429,6 +434,8 @@ export const DepositView = () => {
     unwrappedTokenAddress: unwrappedSelectedTokenAddress,
     sourceChainId: depositViewChain,
     targetChainId: settlementChainId,
+    initialTxGasLimit: quoteSendData?.gasLimit ?? baseQuoteSendData?.gasLimit,
+    waitForTxGasLimit: true,
   });
 
   const gasPrice = useGasPrice(settlementChainId);
@@ -963,14 +970,15 @@ export const DepositView = () => {
 
   const isNetworkFeeLoading =
     shouldShowInfoRowPlaceholder &&
-    (depositViewChain === settlementChainId ? isSameChainNetworkFeeLoading : areMultichainFeesLoading);
+    (depositViewChain === settlementChainId
+      ? isSameChainNetworkFeeLoading
+      : areMultichainFeesLoading || networkFee === undefined);
 
   const isInsufficientSourceChainNativeBalance =
     nativeTokenSourceChainBalance !== undefined &&
-    quoteSendNativeFee !== undefined &&
+    networkFee !== undefined &&
     depositViewChain !== undefined &&
-    quoteSendNativeFee + (unwrappedSelectedTokenAddress === zeroAddress ? amountLD ?? 0n : 0n) >
-      nativeTokenSourceChainBalance;
+    networkFee + (unwrappedSelectedTokenAddress === zeroAddress ? amountLD ?? 0n : 0n) > nativeTokenSourceChainBalance;
 
   let buttonState: {
     text: React.ReactNode;

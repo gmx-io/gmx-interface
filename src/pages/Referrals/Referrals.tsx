@@ -161,7 +161,7 @@ function Referrals() {
             !isBotanix ? (
               <Trans>
                 Get fee discounts and earn rebates through the GMX referral program. Read the{" "}
-                <ExternalLink href="https://docs.gmx.io/docs/referrals">referral program details</ExternalLink>.
+                <ExternalLink href="https://docs.gmx.io/docs/referrals/">referral program details</ExternalLink>.
               </Trans>
             ) : undefined
           }

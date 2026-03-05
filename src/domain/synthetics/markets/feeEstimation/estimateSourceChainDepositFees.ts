@@ -1,5 +1,3 @@
-import { zeroAddress } from "viem";
-
 import { SettlementChainId, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { getMappedTokenId, getMultichainTokenId, RANDOM_WALLET } from "config/multichain";
@@ -263,8 +261,6 @@ async function estimateSourceChainDepositInitialTxFees({
     nativeDropAmount: fullWntFee,
   });
 
-  const additionalValue = unwrappedPayTokenAddress === zeroAddress ? amountLD : 0n;
-
   const {
     nativeFee: initialTxNativeFee,
     amountReceivedLD: initialAmountReceivedLD,
@@ -274,7 +270,6 @@ async function estimateSourceChainDepositInitialTxFees({
     stargateAddress: sourceChainTokenId.stargate,
     sendParams,
     tokenAddress: sourceChainTokenId.address,
-    additionalValue,
   });
 
   const estimatedReceivedAmount = adjustForDecimals(

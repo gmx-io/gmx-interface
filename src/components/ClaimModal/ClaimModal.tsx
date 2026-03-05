@@ -81,6 +81,7 @@ function ClaimModalSettlementChain(p: Props) {
     const markets = isVisible ? Object.values(marketsInfoData || {}) : [];
     for (const market of markets) {
       if (
+        !market.isDisabled &&
         market.claimableFundingAmountLong !== undefined &&
         market.claimableFundingAmountLong !== 0n &&
         !getIsFundingClaimInsufficientBalance(market, true)
@@ -89,6 +90,7 @@ function ClaimModalSettlementChain(p: Props) {
       }
 
       if (
+        !market.isDisabled &&
         market.claimableFundingAmountShort !== undefined &&
         market.claimableFundingAmountShort !== 0n &&
         !getIsFundingClaimInsufficientBalance(market, false)
@@ -163,6 +165,7 @@ function ClaimModalMultichain(p: Props) {
     const markets = isVisible ? Object.values(marketsInfoData || {}) : [];
     for (const market of markets) {
       if (
+        !market.isDisabled &&
         market.claimableFundingAmountLong !== undefined &&
         market.claimableFundingAmountLong !== 0n &&
         !getIsFundingClaimInsufficientBalance(market, true)
@@ -171,6 +174,7 @@ function ClaimModalMultichain(p: Props) {
       }
 
       if (
+        !market.isDisabled &&
         market.claimableFundingAmountShort !== undefined &&
         market.claimableFundingAmountShort !== 0n &&
         !getIsFundingClaimInsufficientBalance(market, false)
@@ -366,6 +370,7 @@ function ClaimModalComponent(p: {
     const totalFundingUsd = (fundingLongUsd ?? 0n) + (fundingShortUsd ?? 0n);
 
     if (totalFundingUsd <= 0) return null;
+    const isDisabledMarket = market.isDisabled;
 
     const longInsufficient = getIsFundingClaimInsufficientBalance(market, true);
     const shortInsufficient = getIsFundingClaimInsufficientBalance(market, false);
@@ -398,8 +403,27 @@ function ClaimModalComponent(p: {
         <div className="flex">
           <div className="Exchange-info-label ClaimSettleModal-checkbox-label">
             <div className="ClaimSettleModal-row-text flex items-start">
-              <span>{indexName}</span>
-              {poolName ? <span className="subtext">[{poolName}]</span> : null}
+              {isDisabledMarket ? (
+                <Tooltip
+                  position="top-start"
+                  handle={
+                    <>
+                      <span>{indexName}</span>
+                      {poolName ? <span className="subtext">[{poolName}]</span> : null}
+                    </>
+                  }
+                  content={
+                    <Trans>
+                      This market has been disabled. Please contact support to claim your remaining funding fees.
+                    </Trans>
+                  }
+                />
+              ) : (
+                <>
+                  <span>{indexName}</span>
+                  {poolName ? <span className="subtext">[{poolName}]</span> : null}
+                </>
+              )}
             </div>
           </div>
         </div>

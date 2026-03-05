@@ -52,7 +52,7 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
               {typeString} Long Limit: {getTradeTypeLabel(TradeMode.Limit, tradePlace)} a long position when the price
               is below the trigger price
             </Trans>{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/#limit-orders">
+            <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#limit-orders">
               <Trans>Read more</Trans>
             </ExternalLink>
           </li>
@@ -63,7 +63,7 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
               {typeString} Long Stop Market: {getTradeTypeLabel(TradeMode.StopMarket, tradePlace)} a long position when
               the price is below the trigger price
             </Trans>{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/#stop-market-orders">
+            <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#stop-market-orders">
               <Trans>Read more</Trans>
             </ExternalLink>
           </li>
@@ -73,7 +73,7 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
             {typeString} Long TWAP: {getTradeTypeLabel(TradeMode.Twap, tradePlace)} a long position in evenly
             distributed parts over a specified time
           </Trans>{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/trading/#twap-orders">
+          <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#twap-orders">
             <Trans>Read more</Trans>
           </ExternalLink>
         </li>
@@ -93,7 +93,7 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
               {typeString} Short Limit: {getTradeTypeLabel(TradeMode.Limit, tradePlace)} a short position when the price
               is above the trigger price
             </Trans>{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/#limit-orders">
+            <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#limit-orders">
               <Trans>Read more</Trans>
             </ExternalLink>
           </li>
@@ -104,7 +104,7 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
               {typeString} Short Stop Market: {getTradeTypeLabel(TradeMode.StopMarket, tradePlace)} a short position
               when the price is below the trigger price
             </Trans>{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/#stop-market-orders">
+            <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#stop-market-orders">
               <Trans>Read more</Trans>
             </ExternalLink>
           </li>
@@ -114,7 +114,7 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
             {typeString} Short TWAP: {getTradeTypeLabel(TradeMode.Twap, tradePlace)} a short position in evenly
             distributed parts over a specified time
           </Trans>{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/trading/#twap-orders">
+          <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#twap-orders">
             <Trans>Read more</Trans>
           </ExternalLink>
         </li>
