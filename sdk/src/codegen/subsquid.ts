@@ -2609,6 +2609,8 @@ export interface MarketInfo {
   marketTokenAddress: Scalars["String"]["output"];
   marketTokenSupply: Scalars["BigInt"]["output"];
   maxFundingFactorPerSecond: Scalars["BigInt"]["output"];
+  maxFundingFactorPerSecondLong: Scalars["BigInt"]["output"];
+  maxFundingFactorPerSecondShort: Scalars["BigInt"]["output"];
   maxLendableImpactFactor: Scalars["BigInt"]["output"];
   maxLendableImpactFactorForWithdrawals: Scalars["BigInt"]["output"];
   maxLendableImpactUsd: Scalars["BigInt"]["output"];
@@ -2628,6 +2630,8 @@ export interface MarketInfo {
   minCollateralFactorForOpenInterestLong: Scalars["BigInt"]["output"];
   minCollateralFactorForOpenInterestShort: Scalars["BigInt"]["output"];
   minFundingFactorPerSecond: Scalars["BigInt"]["output"];
+  minFundingFactorPerSecondLong: Scalars["BigInt"]["output"];
+  minFundingFactorPerSecondShort: Scalars["BigInt"]["output"];
   minPositionImpactPoolAmount: Scalars["BigInt"]["output"];
   openInterestReserveFactorLong: Scalars["BigInt"]["output"];
   openInterestReserveFactorShort: Scalars["BigInt"]["output"];

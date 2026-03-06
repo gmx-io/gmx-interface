@@ -62,8 +62,10 @@ export type MarketInfo = Market &
     fundingDecreaseFactorPerSecond: bigint;
     thresholdForStableFunding: bigint;
     thresholdForDecreaseFunding: bigint;
-    minFundingFactorPerSecond: bigint;
-    maxFundingFactorPerSecond: bigint;
+    minFundingFactorPerSecondLong: bigint;
+    minFundingFactorPerSecondShort: bigint;
+    maxFundingFactorPerSecondLong: bigint;
+    maxFundingFactorPerSecondShort: bigint;
 
     totalBorrowingFees: bigint;
 
@@ -194,8 +196,10 @@ export type MarketConfig = Pick<
   | "fundingDecreaseFactorPerSecond"
   | "thresholdForDecreaseFunding"
   | "thresholdForStableFunding"
-  | "minFundingFactorPerSecond"
-  | "maxFundingFactorPerSecond"
+  | "minFundingFactorPerSecondLong"
+  | "minFundingFactorPerSecondShort"
+  | "maxFundingFactorPerSecondLong"
+  | "maxFundingFactorPerSecondShort"
   | "maxPnlFactorForTradersLong"
   | "maxPnlFactorForTradersShort"
   | "minCollateralFactor"

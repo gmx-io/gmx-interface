@@ -175,13 +175,21 @@ export function hashMarketConfigKeys(market: MarketConfigInput): MarketConfigKey
       ["bytes32", "address"],
       [THRESHOLD_FOR_DECREASE_FUNDING, marketAddress],
     ],
-    minFundingFactorPerSecond: [
-      ["bytes32", "address"],
-      [MIN_FUNDING_FACTOR_PER_SECOND, marketAddress],
+    minFundingFactorPerSecondLong: [
+      ["bytes32", "address", "bool"],
+      [MIN_FUNDING_FACTOR_PER_SECOND, marketAddress, true],
     ],
-    maxFundingFactorPerSecond: [
-      ["bytes32", "address"],
-      [MAX_FUNDING_FACTOR_PER_SECOND, marketAddress],
+    minFundingFactorPerSecondShort: [
+      ["bytes32", "address", "bool"],
+      [MIN_FUNDING_FACTOR_PER_SECOND, marketAddress, false],
+    ],
+    maxFundingFactorPerSecondLong: [
+      ["bytes32", "address", "bool"],
+      [MAX_FUNDING_FACTOR_PER_SECOND, marketAddress, true],
+    ],
+    maxFundingFactorPerSecondShort: [
+      ["bytes32", "address", "bool"],
+      [MAX_FUNDING_FACTOR_PER_SECOND, marketAddress, false],
     ],
     maxPnlFactorForTradersLong: [
       ["bytes32", "bytes32", "address", "bool"],

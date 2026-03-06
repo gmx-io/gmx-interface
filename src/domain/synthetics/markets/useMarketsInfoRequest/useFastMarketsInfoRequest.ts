@@ -47,8 +47,10 @@ const MARKETS_INFO_QUERY = gql`
       fundingDecreaseFactorPerSecond
       thresholdForStableFunding
       thresholdForDecreaseFunding
-      minFundingFactorPerSecond
-      maxFundingFactorPerSecond
+      minFundingFactorPerSecondLong
+      minFundingFactorPerSecondShort
+      maxFundingFactorPerSecondLong
+      maxFundingFactorPerSecondShort
 
       totalBorrowingFees
 
@@ -191,8 +193,10 @@ export function useFastMarketsInfoRequest(chainId: number) {
             fundingDecreaseFactorPerSecond: BigInt(mInfo.fundingDecreaseFactorPerSecond),
             thresholdForStableFunding: BigInt(mInfo.thresholdForStableFunding),
             thresholdForDecreaseFunding: BigInt(mInfo.thresholdForDecreaseFunding),
-            minFundingFactorPerSecond: BigInt(mInfo.minFundingFactorPerSecond),
-            maxFundingFactorPerSecond: BigInt(mInfo.maxFundingFactorPerSecond),
+            minFundingFactorPerSecondLong: BigInt(mInfo.minFundingFactorPerSecondLong),
+            minFundingFactorPerSecondShort: BigInt(mInfo.minFundingFactorPerSecondShort),
+            maxFundingFactorPerSecondLong: BigInt(mInfo.maxFundingFactorPerSecondLong),
+            maxFundingFactorPerSecondShort: BigInt(mInfo.maxFundingFactorPerSecondShort),
 
             totalBorrowingFees: BigInt(mInfo.totalBorrowingFees),
 

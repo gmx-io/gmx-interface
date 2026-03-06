@@ -605,13 +605,23 @@ export function SyntheticsStats() {
                                   showDollar={false}
                                 />
                                 <StatsTooltipRow
-                                  label={t`Max funding factor`}
-                                  value={formatFactor(market.maxFundingFactorPerSecond)}
+                                  label={t`Max funding factor (long)`}
+                                  value={formatFactor(market.maxFundingFactorPerSecondLong)}
                                   showDollar={false}
                                 />
                                 <StatsTooltipRow
-                                  label={t`Min funding factor`}
-                                  value={formatFactor(market.minFundingFactorPerSecond)}
+                                  label={t`Max funding factor (short)`}
+                                  value={formatFactor(market.maxFundingFactorPerSecondShort)}
+                                  showDollar={false}
+                                />
+                                <StatsTooltipRow
+                                  label={t`Min funding factor (long)`}
+                                  value={formatFactor(market.minFundingFactorPerSecondLong)}
+                                  showDollar={false}
+                                />
+                                <StatsTooltipRow
+                                  label={t`Min funding factor (short)`}
+                                  value={formatFactor(market.minFundingFactorPerSecondShort)}
                                   showDollar={false}
                                 />
                                 <StatsTooltipRow

@@ -422,13 +422,21 @@ export async function buildMarketsConfigsRequest(
           methodName: "getUint",
           params: [prebuiltHashedKeys.thresholdForDecreaseFunding],
         },
-        minFundingFactorPerSecond: {
+        minFundingFactorPerSecondLong: {
           methodName: "getUint",
-          params: [prebuiltHashedKeys.minFundingFactorPerSecond],
+          params: [prebuiltHashedKeys.minFundingFactorPerSecondLong],
         },
-        maxFundingFactorPerSecond: {
+        minFundingFactorPerSecondShort: {
           methodName: "getUint",
-          params: [prebuiltHashedKeys.maxFundingFactorPerSecond],
+          params: [prebuiltHashedKeys.minFundingFactorPerSecondShort],
+        },
+        maxFundingFactorPerSecondLong: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxFundingFactorPerSecondLong],
+        },
+        maxFundingFactorPerSecondShort: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxFundingFactorPerSecondShort],
         },
         maxPnlFactorForTradersLong: {
           methodName: "getUint",
@@ -594,8 +602,10 @@ export function parseMarketsConfigsResponse(
         fundingDecreaseFactorPerSecond: dataStoreValues.fundingDecreaseFactorPerSecond.returnValues[0],
         thresholdForDecreaseFunding: dataStoreValues.thresholdForDecreaseFunding.returnValues[0],
         thresholdForStableFunding: dataStoreValues.thresholdForStableFunding.returnValues[0],
-        minFundingFactorPerSecond: dataStoreValues.minFundingFactorPerSecond.returnValues[0],
-        maxFundingFactorPerSecond: dataStoreValues.maxFundingFactorPerSecond.returnValues[0],
+        minFundingFactorPerSecondLong: dataStoreValues.minFundingFactorPerSecondLong.returnValues[0],
+        minFundingFactorPerSecondShort: dataStoreValues.minFundingFactorPerSecondShort.returnValues[0],
+        maxFundingFactorPerSecondLong: dataStoreValues.maxFundingFactorPerSecondLong.returnValues[0],
+        maxFundingFactorPerSecondShort: dataStoreValues.maxFundingFactorPerSecondShort.returnValues[0],
         maxPnlFactorForTradersLong: dataStoreValues.maxPnlFactorForTradersLong.returnValues[0],
         maxPnlFactorForTradersShort: dataStoreValues.maxPnlFactorForTradersShort.returnValues[0],
         minCollateralFactor: dataStoreValues.minCollateralFactor.returnValues[0],

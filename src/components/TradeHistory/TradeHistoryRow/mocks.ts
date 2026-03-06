@@ -234,11 +234,19 @@ export const requestIncreasePosition = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -708,11 +716,19 @@ export const withdraw1Usd = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -1175,11 +1191,19 @@ export const deposit1Usd = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -1777,11 +1801,19 @@ export const createOrderDecreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -2211,11 +2243,19 @@ export const cancelOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -2677,11 +2717,19 @@ export const createOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -3147,11 +3195,19 @@ export const executeOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -3631,11 +3687,19 @@ export const frozenOrderIncreaseShort = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -4099,11 +4163,19 @@ export const undefinedOrder = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -4572,11 +4644,19 @@ export const liquidated = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -5108,11 +5188,19 @@ export const increaseLongETH = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -5605,8 +5693,10 @@ export const createOrderStopMarketLong = prepare({
     fundingDecreaseFactorPerSecond: { type: "bigint", value: "128034593335435961" },
     thresholdForDecreaseFunding: { type: "bigint", value: "0" },
     thresholdForStableFunding: { type: "bigint", value: "40000000000000000000000000000" },
-    minFundingFactorPerSecond: { type: "bigint", value: "317097919837645865043" },
-    maxFundingFactorPerSecond: { type: "bigint", value: "22124377728363333333333" },
+    minFundingFactorPerSecondLong: { type: "bigint", value: "317097919837645865043" },
+    minFundingFactorPerSecondShort: { type: "bigint", value: "317097919837645865043" },
+    maxFundingFactorPerSecondLong: { type: "bigint", value: "22124377728363333333333" },
+    maxFundingFactorPerSecondShort: { type: "bigint", value: "22124377728363333333333" },
     maxPnlFactorForTradersLong: { type: "bigint", value: "900000000000000000000000000000" },
     maxPnlFactorForTradersShort: { type: "bigint", value: "900000000000000000000000000000" },
     minCollateralFactor: { type: "bigint", value: "5000000000000000000000000000" },
@@ -5825,8 +5915,10 @@ export const executeOrderStopMarketLong = prepare({
     fundingDecreaseFactorPerSecond: { type: "bigint", value: "128034593335435961" },
     thresholdForDecreaseFunding: { type: "bigint", value: "0" },
     thresholdForStableFunding: { type: "bigint", value: "40000000000000000000000000000" },
-    minFundingFactorPerSecond: { type: "bigint", value: "317097919837645865043" },
-    maxFundingFactorPerSecond: { type: "bigint", value: "22124377728363333333333" },
+    minFundingFactorPerSecondLong: { type: "bigint", value: "317097919837645865043" },
+    minFundingFactorPerSecondShort: { type: "bigint", value: "317097919837645865043" },
+    maxFundingFactorPerSecondLong: { type: "bigint", value: "22124377728363333333333" },
+    maxFundingFactorPerSecondShort: { type: "bigint", value: "22124377728363333333333" },
     maxPnlFactorForTradersLong: { type: "bigint", value: "900000000000000000000000000000" },
     maxPnlFactorForTradersShort: { type: "bigint", value: "900000000000000000000000000000" },
     minCollateralFactor: { type: "bigint", value: "5000000000000000000000000000" },
