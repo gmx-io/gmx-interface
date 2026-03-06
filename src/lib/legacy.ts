@@ -673,7 +673,7 @@ export function importImage(name) {
   throw new Error(`Image ${name} not found`);
 }
 
-export function getTwitterIntentURL(text, url = "", hashtag = "") {
+export function getTwitterIntentURL(text: string | string[], url = "", hashtag = ""): string {
   let finalURL = "https://twitter.com/intent/tweet?text=";
   if (text.length > 0) {
     finalURL += Array.isArray(text) ? text.map((t) => encodeURIComponent(t)).join("%0a%0a") : encodeURIComponent(text);

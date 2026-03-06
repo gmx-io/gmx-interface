@@ -8,7 +8,7 @@ import { useChainId } from "lib/chains";
 import Loader from "components/Loader/Loader";
 import usePagination from "components/Pagination/usePagination";
 import { ClaimableRebatesCard } from "components/Referrals/shared/cards/ClaimableRebatesCard";
-import EmptyMessage from "components/Referrals/shared/cards/EmptyMessage";
+import { EmptyMessage } from "components/Referrals/shared/cards/EmptyMessage";
 import { ReferralsDocsCard } from "components/Referrals/shared/cards/ReferralsDocsCard";
 
 import { RebatesDistributionTable } from "./table/RebatesDistributionTable";

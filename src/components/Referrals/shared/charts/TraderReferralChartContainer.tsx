@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import { lightFormat } from "date-fns";
 import { useMemo } from "react";
@@ -71,7 +72,7 @@ export function TraderReferralChartContainer({
   if (isLoading) {
     return (
       <div className="text-body-small flex h-[256px] w-full items-center justify-center text-typography-secondary">
-        Loading…
+        <Trans>Loading…</Trans>
       </div>
     );
   }

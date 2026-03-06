@@ -3,7 +3,6 @@ import { useChainId } from "lib/chains";
 
 import { ReferralCodeFormMultichain } from "./ReferralCodeFormMultichain";
 import { ReferralCodeFormSettlementChain } from "./ReferralCodeFormSettlementChain";
-import type { ReferralCodeActionType } from "./types";
 
 export function ReferralCodeEditFormContainer({
   callAfterSuccess,
@@ -12,7 +11,7 @@ export function ReferralCodeEditFormContainer({
 }: {
   callAfterSuccess?: (code: string) => void;
   userReferralCodeString?: string;
-  type?: ReferralCodeActionType;
+  type?: "join" | "edit";
 }) {
   const { srcChainId } = useChainId();
 

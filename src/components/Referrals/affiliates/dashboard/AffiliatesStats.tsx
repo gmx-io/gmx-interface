@@ -4,12 +4,13 @@ import { lightFormat } from "date-fns";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 
-import { ReferralCodeStats, TotalReferralsStats, useReferralPromoClosed, useTiers } from "domain/referrals";
+import { TotalReferralsStats, useReferralPromoClosed, useTiers } from "domain/referrals";
 import { useAffiliateReferralStats } from "domain/referrals/hooks/useAffiliateReferralStats";
 import { TimeRangeInfo, useTimeRange } from "domain/synthetics/markets/useTimeRange";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
-import { formatBigUsd } from "lib/numbers";
+import { getTwitterIntentURL } from "lib/legacy";
+import { formatBigUsd, formatUsd } from "lib/numbers";
 import { userAnalytics } from "lib/userAnalytics";
 import { ReferralCreateCodeEvent, ReferralShareEvent } from "lib/userAnalytics/types";
 
@@ -18,6 +19,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Faq } from "components/Faq/Faq";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
+import usePagination from "components/Pagination/usePagination";
 import { PoolsTabs } from "components/PoolsTabs/PoolsTabs";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
@@ -30,29 +32,19 @@ import PlusIcon from "img/ic_plus.svg?react";
 import ShareIcon from "img/ic_share.svg?react";
 import referralCodePromoFg from "img/referral_code_promo_fg.png";
 
+import { ClaimableRebatesCard } from "../../shared/cards/ClaimableRebatesCard";
+import { PromoCard } from "../../shared/cards/PromoCard";
+import { ReferralsDocsCard } from "../../shared/cards/ReferralsDocsCard";
+import { getReferralCodeTradeUrl, getSharePercentage, getTierIdDisplay } from "../../shared/utils/referralsHelper";
 import { AffiliateCodeFormContainer } from "../createCode/AddAffiliateCode";
+import { AFFILIATE_POST_WIZARD_FAQS } from "../faq";
 import {
   NumberOfTradesChartCard,
   RebatesChartCard,
   TradersReferredChartCard,
   TradingVolumeChartCard,
 } from "./AffiliatesOverviewChartCards";
-import { ClaimableRebatesCard } from "../../shared/cards/ClaimableRebatesCard";
-import { PromoCard } from "../../shared/cards/PromoCard";
 import { ReferralCodeWarnings } from "./ReferralCodeWarnings";
-import { AFFILIATE_POST_WIZARD_FAQS } from "../faq";
-import { ReferralsDocsCard } from "../../shared/cards/ReferralsDocsCard";
-import {
-  getReferralCodeTradeUrl,
-  getSharePercentage,
-  getTierIdDisplay,
-  getTwitterShareUrl,
-  getUsdValue,
-  isRecentReferralCodeNotExpired,
-} from "../../shared/utils/referralsHelper";
-import usePagination from "components/Pagination/usePagination";
-
-import "./AffiliatesStats.scss";
 
 const TIME_RANGE_INFOS: TimeRangeInfo[] = [
   { slug: "24h", days: 1, title: msg`${24}h` },
@@ -95,17 +87,9 @@ type Props = {
   account?: string;
   referralsData?: TotalReferralsStats;
   handleCreateReferralCode: (code: string) => Promise<unknown>;
-  setRecentlyAddedCodes: (codes: ReferralCodeStats[]) => void;
-  recentlyAddedCodes?: ReferralCodeStats[];
 };
 
-export function AffiliatesStats({
-  account,
-  referralsData,
-  recentlyAddedCodes,
-  handleCreateReferralCode,
-  setRecentlyAddedCodes,
-}: Props) {
+export function AffiliatesStats({ account, referralsData, handleCreateReferralCode }: Props) {
   const { chainId } = useChainId();
   const [isAddReferralCodeModalOpen, setIsAddReferralCodeModalOpen] = useState(false);
   const addNewModalRef = useRef<HTMLDivElement>(null);
@@ -122,28 +106,15 @@ export function AffiliatesStats({
   }, []);
   const close = useCallback(() => setIsAddReferralCodeModalOpen(false), []);
 
-  const { chains } = referralsData || {};
-  const { [chainId]: currentReferralsData } = chains || {};
-
-  const { affiliateTierInfo, affiliateReferralCodesStats } = currentReferralsData || {};
-  const allReferralCodes = affiliateReferralCodesStats?.map((c) => c.referralCode.trim());
-  const finalAffiliatesTotalStats = useMemo(
-    () =>
-      recentlyAddedCodes?.filter(isRecentReferralCodeNotExpired).reduce((acc, cv) => {
-        if (!allReferralCodes?.includes(cv.referralCode)) {
-          acc = acc.concat(cv);
-        }
-        return acc;
-      }, affiliateReferralCodesStats || []),
-    [allReferralCodes, affiliateReferralCodesStats, recentlyAddedCodes]
-  );
+  const affiliateTierInfo = referralsData?.chains[chainId]?.affiliateTierInfo;
+  const affiliateReferralCodesStats = referralsData?.chains[chainId]?.affiliateReferralCodesStats;
 
   const {
     currentPage: currentAffiliatesPage,
     getCurrentData: getCurrentAffiliatesData,
     setCurrentPage: setCurrentAffiliatesPage,
     pageCount: affiliatesPageCount,
-  } = usePagination("Affiliates", finalAffiliatesTotalStats);
+  } = usePagination("Affiliates", affiliateReferralCodesStats);
 
   const currentAffiliatesData = getCurrentAffiliatesData();
   const tierId = affiliateTierInfo?.tierId;
@@ -229,6 +200,8 @@ export function AffiliatesStats({
               stats={referralStats}
               isLoading={isReferralStatsLoading}
               timeRangeInfo={timeRangeInfo}
+              referralCode={affiliateReferralCodesStats?.[0]?.referralCode}
+              totalDiscountsUsd={referralsData?.chains?.[chainId]?.affiliateTotalStats?.discountUsd}
             />
             <NumberOfTradesChartCard
               stats={referralStats}
@@ -251,18 +224,23 @@ export function AffiliatesStats({
         </div>
       </div>
 
-      <div className="flex w-full flex-col gap-8 rounded-8 bg-slate-900">
+      <div className="flex w-full flex-col gap-8 rounded-8 bg-slate-900 pb-4">
         <div className="flex items-center justify-between px-20 pt-20">
-          <p className="title text-body-large">
-            <Trans>Referral codes</Trans>{" "}
-            <span className="rounded-full bg-cold-blue-900 px-8 py-4 text-12 font-medium leading-[1.25] text-blue-300">
-              {affiliateTierInfo && t`Tier ${getTierIdDisplay(tierId)}: ${currentRebatePercentage}% rebate`}
-            </span>
+          <p className="title text-body-large flex items-center gap-8">
+            <Trans>Referral codes</Trans>
+            {affiliateTierInfo && tierId !== undefined && (
+              <span className="rounded-full bg-cold-blue-900 px-8 py-4 text-12 font-medium leading-[1.25] text-blue-300">
+                {t`Tier ${getTierIdDisplay(tierId)}: ${currentRebatePercentage}% rebate`}
+              </span>
+            )}
           </p>
-          <Button variant="ghost" onClick={open} size="small">
+          <button
+            className="text-body-medium flex items-center gap-4 font-medium text-blue-300 transition-colors hover:text-typography-primary"
+            onClick={open}
+          >
             <Trans>Create new code</Trans>
-            <PlusIcon />
-          </Button>
+            <PlusIcon className="size-16" />
+          </button>
         </div>
         <TableScrollFadeContainer>
           <table className="w-full min-w-full">
@@ -292,8 +270,8 @@ export function AffiliatesStats({
                 return (
                   <TableTr key={index}>
                     <TableTd>
-                      <div className="flex items-center gap-8">
-                        <span className="referral-text">{stat.referralCode}</span>
+                      <div className="flex items-center gap-4">
+                        <span className="font-mono">{stat.referralCode}</span>
                         <ReferralCodeWarnings allOwnersOnOtherChains={stat?.allOwnersOnOtherChains} />
                       </div>
                     </TableTd>
@@ -307,12 +285,12 @@ export function AffiliatesStats({
                           <>
                             <StatsTooltipRow
                               label={t`V1 volume`}
-                              value={getUsdValue(stat?.v1Data.volume)}
+                              value={formatUsd(stat?.v1Data.volume, { fallbackToZero: true })}
                               valueClassName="numbers"
                             />
                             <StatsTooltipRow
                               label={t`V2 volume`}
-                              value={getUsdValue(stat?.v2Data.volume)}
+                              value={formatUsd(stat?.v2Data.volume, { fallbackToZero: true })}
                               valueClassName="numbers"
                             />
                           </>
@@ -330,12 +308,12 @@ export function AffiliatesStats({
                           <>
                             <StatsTooltipRow
                               label={t`V1 rebates`}
-                              value={getUsdValue(stat.v1Data.affiliateRebateUsd)}
+                              value={formatUsd(stat.v1Data.affiliateRebateUsd, { fallbackToZero: true })}
                               valueClassName="numbers"
                             />
                             <StatsTooltipRow
                               label={t`V2 rebates`}
-                              value={getUsdValue(stat.v2Data.affiliateRebateUsd)}
+                              value={formatUsd(stat.v2Data.affiliateRebateUsd, { fallbackToZero: true })}
                               valueClassName="numbers"
                             />
                           </>
@@ -361,7 +339,13 @@ export function AffiliatesStats({
                           <Button
                             variant="ghost"
                             size="small"
-                            to={getTwitterShareUrl(stat.referralCode)}
+                            to={getTwitterIntentURL(
+                              [
+                                "Trying out trading on @GMX_IO, up to 100x leverage on $BTC, $ETH 📈",
+                                "For fee discounts use:",
+                              ],
+                              getReferralCodeTradeUrl(stat.referralCode)
+                            )}
                             newTab
                             className="gap-4"
                           >
@@ -391,13 +375,8 @@ export function AffiliatesStats({
         label={t`Create referral code`}
         onAfterOpen={() => addNewModalRef.current?.focus()}
       >
-        <div className="edit-referral-modal">
-          <AffiliateCodeFormContainer
-            handleCreateReferralCode={handleCreateReferralCode}
-            recentlyAddedCodes={recentlyAddedCodes}
-            setRecentlyAddedCodes={setRecentlyAddedCodes}
-            callAfterSuccess={close}
-          />
+        <div className="w-[31rem]">
+          <AffiliateCodeFormContainer handleCreateReferralCode={handleCreateReferralCode} callAfterSuccess={close} />
         </div>
       </ModalWithPortal>
     </div>

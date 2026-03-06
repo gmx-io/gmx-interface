@@ -1,21 +1,20 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
-import type { ReferralCodeStats } from "domain/referrals/types";
-
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { useRecentReferralCodes } from "components/Referrals/shared/hooks/useRecentReferralCodes";
+import { getReferralCodeTradeUrl } from "components/Referrals/shared/utils/referralsHelper";
+import { StepProgress } from "components/Referrals/shared/wizard/StepProgress";
+import { LabelWithIcon } from "components/Referrals/traders/joinCode/LabelWithIcon";
 
 import CheckIcon from "img/ic_check_circle.svg?react";
 import ReferralsFilledIcon from "img/ic_referrals_filled.svg?react";
-import ShareIcon from "img/ic_share.svg?react";
+import ShareArrowOutlineIcon from "img/ic_share_arrow_outline.svg?react";
 import WalletIcon from "img/ic_wallet.svg?react";
 import referralWizardBg from "img/referral_wizard_bg.png";
-
-import { LabelWithIcon } from "components/Referrals/traders/joinCode/LabelWithIcon";
-import { StepProgress } from "components/Referrals/shared/wizard/StepProgress";
 
 import { AffiliateCodeFormContainer } from "./AddAffiliateCode";
 
@@ -47,21 +46,18 @@ function AffiliatePromos() {
 export function CreateAffiliateWizard({
   onGoToAffiliateDashboard,
   handleCreateReferralCode,
-  recentlyAddedCodes,
-  setRecentlyAddedCodes,
   initialReferralCode,
 }: {
   onGoToAffiliateDashboard: () => void;
   handleCreateReferralCode: (code: string) => Promise<unknown>;
-  recentlyAddedCodes: ReferralCodeStats[] | undefined;
-  setRecentlyAddedCodes: (code: ReferralCodeStats[]) => void;
   initialReferralCode: string | undefined;
 }) {
   const { openConnectModal } = useConnectModal();
   const { isConnected } = useAccount();
 
   const [wizardStep, setWizardStep] = useState(CreateAffiliateWizardStep.ConnectWallet);
-  const [createdReferralCode, setCreatedReferralCode] = useState("");
+  const { recentCodes, addRecentCode } = useRecentReferralCodes();
+  const createdReferralCode = recentCodes.at(-1) ?? "";
 
   useEffect(
     function advanceStep() {
@@ -110,11 +106,9 @@ export function CreateAffiliateWizard({
               <div className="flex flex-col gap-12">
                 <AffiliateCodeFormContainer
                   handleCreateReferralCode={handleCreateReferralCode}
-                  recentlyAddedCodes={recentlyAddedCodes}
-                  setRecentlyAddedCodes={setRecentlyAddedCodes}
                   initialReferralCode={initialReferralCode}
                   callAfterSuccess={(code: string) => {
-                    setCreatedReferralCode(code);
+                    addRecentCode(code);
                     setWizardStep(CreateAffiliateWizardStep.Success);
                   }}
                 />
@@ -147,11 +141,11 @@ export function CreateAffiliateWizard({
                   className="w-full"
                   type="button"
                   onClick={() => {
-                    const shareUrl = `https://app.gmx.io/#/trade/?ref=${createdReferralCode}`;
+                    const shareUrl = getReferralCodeTradeUrl(createdReferralCode);
                     if (navigator.share) {
                       navigator.share({
-                        title: "GMX Referral",
-                        text: `Trade on GMX with my referral code ${createdReferralCode} and save on fees!`,
+                        title: t`GMX Referral`,
+                        text: t`Trade on GMX with my referral code ${createdReferralCode} and save on fees!`,
                         url: shareUrl,
                       });
                     } else {
@@ -159,12 +153,14 @@ export function CreateAffiliateWizard({
                     }
                   }}
                 >
-                  <Trans>Share your code</Trans>
-                  <ShareIcon className="size-24" />
+                  <div className="flex items-center gap-8">
+                    <Trans>Share your code</Trans>
+                    <ShareArrowOutlineIcon className="size-24" />
+                  </div>
                 </Button>
                 <button
                   type="button"
-                  className="text-body-small font-medium text-blue-300"
+                  className="text-body-small font-medium text-blue-300 transition-colors hover:text-typography-primary"
                   onClick={onGoToAffiliateDashboard}
                 >
                   <Trans>Go to Affiliate Dashboard</Trans>

@@ -2,11 +2,10 @@ import { msg, t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import cx from "classnames";
 import { lightFormat } from "date-fns";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 
 import {
-  TotalReferralsStats,
   useAffiliateTier,
   useCodeOwner,
   useReferralPromoClosed,
@@ -23,22 +22,22 @@ import { formatUsd } from "lib/numbers";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Faq } from "components/Faq/Faq";
+import ModalWithPortal from "components/Modal/ModalWithPortal";
 import { PoolsTabs } from "components/PoolsTabs/PoolsTabs";
 import { PromoCard } from "components/Referrals/shared/cards/PromoCard";
 import { ReferralsDocsCard } from "components/Referrals/shared/cards/ReferralsDocsCard";
 import { OverviewChartCard } from "components/Referrals/shared/cards/ReferralsOverviewChartCard";
-import { POST_WIZARD_FAQS } from "components/Referrals/traders/faq";
 import { TraderReferralChartContainer } from "components/Referrals/shared/charts/TraderReferralChartContainer";
+import { getSharePercentage } from "components/Referrals/shared/utils/referralsHelper";
+import { POST_WIZARD_FAQS } from "components/Referrals/traders/faq";
+import { ReferralCodeEditFormContainer } from "components/Referrals/traders/joinCode/ReferralCodeEditFormContainer";
 
 import affiliateCodePromoFg from "img/affiliate_code_promo_fg.png";
 import CopyStrokeIcon from "img/ic_copy_stroke.svg?react";
 import EditIcon from "img/ic_edit.svg?react";
 
-import { getSharePercentage } from "components/Referrals/shared/utils/referralsHelper";
-
 type ReferralsTradersContentProps = {
   account: string | undefined;
-  referralsData: TotalReferralsStats | undefined;
 };
 
 const TIME_RANGE_INFOS: TimeRangeInfo[] = [
@@ -78,14 +77,14 @@ function PoolsTimeRangeFilter({
   );
 }
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-export function ReferralsTradersContent({ account, referralsData }: ReferralsTradersContentProps) {
+export function ReferralsTradersContent({ account }: ReferralsTradersContentProps) {
   const { chainId } = useChainId();
   const { userReferralCode, userReferralCodeString } = useUserReferralCode(chainId, account);
   const { codeOwner } = useCodeOwner(chainId, account, userReferralCode);
   const { affiliateTier: traderTier } = useAffiliateTier(chainId, codeOwner);
   const { discountShare } = useReferrerDiscountShare(chainId, codeOwner);
   const [, copyToClipboard] = useCopyToClipboard();
+  const [isEditReferralCodeModalVisible, setIsEditReferralCodeModalVisible] = useState(false);
   const { totalRebate } = useTiers(chainId, traderTier);
   const { timeRangeInfo, setTimeRange, periodStart, periodEnd } = useTimeRange(
     "referrals-traders-time-range",
@@ -208,7 +207,7 @@ export function ReferralsTradersContent({ account, referralsData }: ReferralsTra
             >
               {userReferralCodeString} <CopyStrokeIcon className="size-20 text-typography-secondary" />
             </div>
-            <Button variant="secondary">
+            <Button variant="secondary" onClick={() => setIsEditReferralCodeModalVisible(true)}>
               <Trans>Edit</Trans> <EditIcon className="size-16" />
             </Button>
           </div>
@@ -226,6 +225,20 @@ export function ReferralsTradersContent({ account, referralsData }: ReferralsTra
         <ReferralsDocsCard />
         <Faq items={POST_WIZARD_FAQS} title={<Trans>FAQ</Trans>} />
       </div>
+      <ModalWithPortal
+        className="Connect-wallet-modal"
+        isVisible={isEditReferralCodeModalVisible}
+        setIsVisible={setIsEditReferralCodeModalVisible}
+        label={t`Edit referral code`}
+      >
+        <div className="w-[31rem]">
+          <ReferralCodeEditFormContainer
+            type="edit"
+            userReferralCodeString={userReferralCodeString}
+            callAfterSuccess={() => setIsEditReferralCodeModalVisible(false)}
+          />
+        </div>
+      </ModalWithPortal>
     </>
   );
 }

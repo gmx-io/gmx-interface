@@ -23,8 +23,6 @@ import SEO from "components/Seo/SEO";
 import Tabs from "components/Tabs/Tabs";
 import { Option } from "components/Tabs/types";
 
-import "./Referrals.css";
-
 enum ReferralsTab {
   Traders = "traders",
   Affiliates = "affiliates",
@@ -80,10 +78,10 @@ function Referrals() {
 
   const setActiveTab = useCallback(
     (newTab: ReferralsTab) => {
-      const basePath = account ? `/referrals/${newTab}/${account}` : `/referrals/${newTab}`;
+      const basePath = hasAddressInUrl && account ? `/referrals/${newTab}/${account}` : `/referrals/${newTab}`;
       history.replace(basePath + (routeQuery.toString() ? `?${routeQuery.toString()}` : ""));
     },
-    [account, history, routeQuery]
+    [account, hasAddressInUrl, history, routeQuery]
   );
 
   useEffect(() => {
@@ -130,7 +128,6 @@ function Referrals() {
                 <ReferralsTradersTab
                   isLoading={isLoading}
                   account={account}
-                  referralsData={referralsData}
                   hasAddressInUrl={hasAddressInUrl}
                 />
               )}

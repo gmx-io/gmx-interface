@@ -1,19 +1,15 @@
 import { Trans, t } from "@lingui/macro";
+import { useCallback, useState } from "react";
 
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import { ReferralCodeStats, registerReferralCode, TotalReferralsStats } from "domain/referrals";
+import { registerReferralCode, TotalReferralsStats } from "domain/referrals";
 import { useChainId } from "lib/chains";
-import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { serializeBigIntsInObject } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
 import { Faq } from "components/Faq/Faq";
 import Loader from "components/Loader/Loader";
 import { AffiliatesStats } from "components/Referrals/affiliates/dashboard/AffiliatesStats";
-import {
-  deserializeSampleStats,
-  isRecentReferralCodeNotExpired,
-} from "components/Referrals/shared/utils/referralsHelper";
+import { useRecentReferralCodes } from "components/Referrals/shared/hooks/useRecentReferralCodes";
 
 import { CreateAffiliateWizard } from "./createCode/CreateAffiliateWizard";
 import { AFFILIATE_WIZARD_FAQS } from "./faq";
@@ -33,18 +29,11 @@ export function ReferralsAffiliatesTab({
   initialReferralCode,
   hasAddressInUrl = false,
 }: ReferralsAffiliatesTabProps) {
+  const [forceDashboard, setForceDashboard] = useState(false);
   const { signer } = useWallet();
   const { chainId } = useChainId();
   const { pendingTxns } = usePendingTxns();
-  const [recentlyAddedCodes, setRecentlyAddedCodes] = useLocalStorageSerializeKey<ReferralCodeStats[]>(
-    [chainId, "REFERRAL", account],
-    [],
-    {
-      raw: false,
-      deserializer: deserializeSampleStats as any,
-      serializer: (value) => JSON.stringify(serializeBigIntsInObject(value)),
-    }
-  );
+  const { recentCodes } = useRecentReferralCodes();
 
   function handleCreateReferralCode(referralCode: string) {
     return registerReferralCode(chainId, referralCode, signer, {
@@ -55,12 +44,13 @@ export function ReferralsAffiliatesTab({
   }
 
   const ownsSomeChainCode = Boolean(referralsData?.chains?.[chainId]?.codes?.length);
-  const hasRecentCode = recentlyAddedCodes?.some(isRecentReferralCodeNotExpired);
+  const hasRecentCode = recentCodes.length > 0;
   const isSomeReferralCodeAvailable = ownsSomeChainCode || hasRecentCode;
+  const handleGoToAffiliateDashboard = useCallback(() => setForceDashboard(true), []);
 
   if (loading) return <Loader />;
 
-  const isWizard = !hasAddressInUrl && (!account || !isSomeReferralCodeAvailable);
+  const isWizard = !forceDashboard && !hasAddressInUrl && (!account || !isSomeReferralCodeAvailable);
 
   if (!isWizard) {
     return (
@@ -68,8 +58,6 @@ export function ReferralsAffiliatesTab({
         account={account}
         referralsData={referralsData}
         handleCreateReferralCode={handleCreateReferralCode}
-        setRecentlyAddedCodes={setRecentlyAddedCodes}
-        recentlyAddedCodes={recentlyAddedCodes}
       />
     );
   }
@@ -78,10 +66,8 @@ export function ReferralsAffiliatesTab({
     <div className="flex gap-8 max-md:flex-col">
       <div className="flex grow flex-col gap-8">
         <CreateAffiliateWizard
-          onGoToAffiliateDashboard={() => undefined}
+          onGoToAffiliateDashboard={handleGoToAffiliateDashboard}
           handleCreateReferralCode={handleCreateReferralCode}
-          recentlyAddedCodes={recentlyAddedCodes}
-          setRecentlyAddedCodes={setRecentlyAddedCodes}
           initialReferralCode={initialReferralCode}
         />
       </div>

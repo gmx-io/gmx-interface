@@ -5,16 +5,21 @@ import { AffiliateReferralStats } from "domain/referrals";
 import { TimeRangeInfo } from "domain/synthetics/markets/useTimeRange";
 import { formatUsd } from "lib/numbers";
 
-import ShareArrowFilledIcon from "img/ic_share_arrow_filled.svg?react";
-
 import { OverviewChartCard } from "components/Referrals/shared/cards/ReferralsOverviewChartCard";
 import { ShareReferralCardModal } from "components/Referrals/shared/cards/ShareReferralCardModal";
 import { TradersVolumeChartContainer } from "components/Referrals/shared/charts/TradersVolumeChartContainer";
 
-type ChartCardProps = {
+import ShareArrowFilledIcon from "img/ic_share_arrow_filled.svg?react";
+
+type BaseChartCardProps = {
   stats?: AffiliateReferralStats;
   isLoading?: boolean;
   timeRangeInfo: TimeRangeInfo;
+};
+
+type TradingVolumeChartCardProps = BaseChartCardProps & {
+  referralCode?: string;
+  totalDiscountsUsd?: bigint;
 };
 
 function formatCountDelta(value?: number): string | undefined {
@@ -27,7 +32,13 @@ function formatCountDelta(value?: number): string | undefined {
   return `${prefix}${abs}`;
 }
 
-export function TradingVolumeChartCard({ stats, isLoading, timeRangeInfo }: ChartCardProps) {
+export function TradingVolumeChartCard({
+  stats,
+  isLoading,
+  timeRangeInfo,
+  referralCode,
+  totalDiscountsUsd,
+}: TradingVolumeChartCardProps) {
   const [isShareModalVisible, setIsShareModalVisible] = useState(false);
 
   return (
@@ -58,13 +69,14 @@ export function TradingVolumeChartCard({ stats, isLoading, timeRangeInfo }: Char
       <ShareReferralCardModal
         isVisible={isShareModalVisible}
         setIsVisible={setIsShareModalVisible}
-        referralCode="GMX2026"
+        referralCode={referralCode ?? ""}
+        totalDiscountsUsd={totalDiscountsUsd}
       />
     </>
   );
 }
 
-export function NumberOfTradesChartCard({ stats, isLoading, timeRangeInfo }: ChartCardProps) {
+export function NumberOfTradesChartCard({ stats, isLoading, timeRangeInfo }: BaseChartCardProps) {
   return (
     <OverviewChartCard
       label={<Trans>Number of Trades from Referrals</Trans>}
@@ -83,7 +95,7 @@ export function NumberOfTradesChartCard({ stats, isLoading, timeRangeInfo }: Cha
   );
 }
 
-export function TradersReferredChartCard({ stats, isLoading, timeRangeInfo }: ChartCardProps) {
+export function TradersReferredChartCard({ stats, isLoading, timeRangeInfo }: BaseChartCardProps) {
   return (
     <OverviewChartCard
       label={<Trans>Traders referred</Trans>}
@@ -114,7 +126,7 @@ export function TradersReferredChartCard({ stats, isLoading, timeRangeInfo }: Ch
   );
 }
 
-export function RebatesChartCard({ stats, isLoading, timeRangeInfo }: ChartCardProps) {
+export function RebatesChartCard({ stats, isLoading, timeRangeInfo }: BaseChartCardProps) {
   return (
     <OverviewChartCard
       label={<Trans>Rebates</Trans>}

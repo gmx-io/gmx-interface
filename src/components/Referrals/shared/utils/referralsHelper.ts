@@ -1,13 +1,12 @@
 import { t } from "@lingui/macro";
 import identity from "lodash/identity";
-import { zeroAddress } from "viem";
 
 import { CONTRACTS_CHAIN_IDS, ContractsChainId } from "config/chains";
-import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
-import { CodeOwnershipInfo, getReferralCodeOwner, ReferralCodeStats } from "domain/referrals";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
+import { getReferralCodeOwner } from "domain/referrals";
 import { REFERRAL_CODE_REGEX } from "domain/referrals/utils/referralCode";
-import { getTwitterIntentURL, isAddressZero, MAX_REFERRAL_CODE_LENGTH, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
-import { deserializeBigIntsInObject, formatAmount, removeTrailingZeros } from "lib/numbers";
+import { isAddressZero, MAX_REFERRAL_CODE_LENGTH, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
+import { formatAmount, removeTrailingZeros } from "lib/numbers";
 import { getRootUrl } from "lib/url";
 import { bigMath } from "sdk/utils/bigmath";
 import { encodeReferralCode } from "sdk/utils/referrals";
@@ -15,49 +14,13 @@ import { encodeReferralCode } from "sdk/utils/referrals";
 export const CREATE_REFERRAL_CODE_QUERY_PARAM = "createReferralCode";
 export { REFERRAL_CODE_REGEX, REGEX_VERIFY_BYTES32 } from "domain/referrals/utils/referralCode";
 
-export function getReferralsPageUrlForCreateCode(referralCode: string) {
-  const trimmedCode = referralCode.trim();
-  const baseUrl = `${getRootUrl()}/#/referrals/affiliates`;
-
-  if (!trimmedCode) {
-    return baseUrl;
-  }
-
-  const encodedCode = encodeURIComponent(trimmedCode);
-  return `${baseUrl}?${CREATE_REFERRAL_CODE_QUERY_PARAM}=${encodedCode}`;
-}
-
-export function isRecentReferralCodeNotExpired(referralCodeInfo) {
-  const REFERRAL_DATA_MAX_TIME = 60000 * 5; // 5 minutes
-  if (referralCodeInfo.time) {
-    return referralCodeInfo.time + REFERRAL_DATA_MAX_TIME > Date.now();
-  }
-}
-
-type TakenStatus = "all" | "current" | "other" | "none";
-type TakenInfo = Partial<
-  Record<
-    ContractsChainId,
-    {
-      taken: boolean;
-      owner: string;
-    }
-  >
-> & {
-  all: boolean;
-};
-
-export type ReferralCodeTakenStatusResult = {
-  takenStatus: TakenStatus;
-  info: TakenInfo;
-  failedChains: ContractsChainId[];
-};
+export type ReferralCodeTakenStatus = "all" | "current" | "other" | "none";
 
 export async function getReferralCodeTakenStatus(
   account: string | undefined,
   referralCode: string,
   chainId: ContractsChainId
-): Promise<ReferralCodeTakenStatusResult> {
+): Promise<{ takenStatus: ReferralCodeTakenStatus; failedChains: ContractsChainId[] }> {
   const referralCodeBytes32 = encodeReferralCode(referralCode);
 
   const ownerMap: Partial<Record<ContractsChainId, string>> = {};
@@ -96,32 +59,20 @@ export async function getReferralCodeTakenStatus(
   const allTaken = checkedChains.length > 0 && checkedChains.every((id) => takenMap[id]);
   const someTaken = Object.values(takenMap).some(identity);
 
-  const referralCodeTakenInfo: TakenInfo = {
-    all: allTaken,
-  };
-
-  for (const otherChainId of CONTRACTS_CHAIN_IDS) {
-    referralCodeTakenInfo[otherChainId] = {
-      taken: takenMap[otherChainId] ?? false,
-      owner: ownerMap[otherChainId] ?? zeroAddress,
-    };
+  if (allTaken) {
+    return { takenStatus: "all", failedChains };
+  }
+  if (takenMap[chainId]) {
+    return { takenStatus: "current", failedChains };
+  }
+  if (!takenMap[chainId] && someTaken) {
+    return { takenStatus: "other", failedChains };
   }
 
-  if (referralCodeTakenInfo.all) {
-    return { takenStatus: "all", info: referralCodeTakenInfo, failedChains };
-  }
-  if (referralCodeTakenInfo[chainId]?.taken) {
-    return { takenStatus: "current", info: referralCodeTakenInfo, failedChains };
-  }
-
-  if (!referralCodeTakenInfo[chainId]?.taken && someTaken) {
-    return { takenStatus: "other", info: referralCodeTakenInfo, failedChains };
-  }
-
-  return { takenStatus: "none", info: referralCodeTakenInfo, failedChains };
+  return { takenStatus: "none", failedChains };
 }
 
-export function getTierIdDisplay(tierId) {
+export function getTierIdDisplay(tierId: number | bigint | string): number {
   return Number(tierId) + 1;
 }
 
@@ -131,7 +82,7 @@ const tierRebateInfo = {
   2: 15,
 };
 
-export const tierDiscountInfo = {
+const tierDiscountInfo = {
   0: 5,
   1: 10,
   2: 10,
@@ -142,7 +93,7 @@ export function getSharePercentage(
   discountShare: bigint | undefined,
   totalRebate: bigint | undefined,
   isRebate?: boolean
-) {
+): string | number | undefined {
   if (tierId === undefined || totalRebate === undefined) return;
   if (discountShare === undefined || discountShare === 0n)
     return isRebate ? tierRebateInfo[tierId] : tierDiscountInfo[tierId];
@@ -158,78 +109,7 @@ export function getSharePercentage(
   return removeTrailingZeros(formatAmount(discountPercentage, decimals, 3, true));
 }
 
-function areObjectsWithSameKeys(obj1, obj2) {
-  return Object.keys(obj1).every((key) => key in obj2);
-}
-
-export function deserializeSampleStats(input) {
-  const parsedData = JSON.parse(input);
-  if (!Array.isArray(parsedData)) return [];
-  return parsedData
-    .map((data) => {
-      if (!areObjectsWithSameKeys(getSampleReferrarStat(), data)) return null;
-      return deserializeBigIntsInObject(data);
-    })
-    .filter(Boolean);
-}
-
-export const getSampleReferrarStat = ({
-  code = "",
-  account = "",
-  takenInfo,
-}: {
-  code?: string;
-  takenInfo?: TakenInfo;
-  account?: string;
-} = {}): ReferralCodeStats => {
-  return {
-    discountUsd: 0n,
-    referralCode: code,
-    totalRebateUsd: 0n,
-    tradedReferralsCount: 0,
-    registeredReferralsCount: 0,
-    trades: 0,
-    volume: 0n,
-    v1Data: {
-      volume: 0n,
-      totalRebateUsd: 0n,
-      discountUsd: 0n,
-      affiliateRebateUsd: 0n,
-    },
-    v2Data: {
-      volume: 0n,
-      totalRebateUsd: 0n,
-      discountUsd: 0n,
-      affiliateRebateUsd: 0n,
-    },
-    affiliateRebateUsd: 0n,
-    allOwnersOnOtherChains: takenInfo
-      ? Object.fromEntries(
-          CONTRACTS_CHAIN_IDS.map((chainId): [ContractsChainId, CodeOwnershipInfo] | undefined => {
-            const taken = takenInfo[chainId];
-            if (!taken) return undefined;
-
-            return [
-              chainId as ContractsChainId,
-              {
-                code: encodeReferralCode(code),
-                codeString: code,
-                owner: taken.owner,
-                isTaken: taken.taken,
-                isTakenByCurrentUser: taken.owner.toLowerCase() === account.toLowerCase(),
-              },
-            ];
-          }).filter(Boolean) as [ContractsChainId, CodeOwnershipInfo][]
-        )
-      : undefined,
-  };
-};
-
-export function getUsdValue(value: bigint | undefined, decimals = 2) {
-  return formatAmount(value, USD_DECIMALS, decimals, true, "0.00");
-}
-
-export function getCodeError(value) {
+export function getCodeError(value: string): string {
   const trimmedValue = value.trim();
   if (!trimmedValue) return "";
 
@@ -243,13 +123,6 @@ export function getCodeError(value) {
   return "";
 }
 
-export function getReferralCodeTradeUrl(referralCode) {
+export function getReferralCodeTradeUrl(referralCode: string): string {
   return `${getRootUrl()}/#/trade/?${REFERRAL_CODE_QUERY_PARAM}=${referralCode}`;
-}
-
-export function getTwitterShareUrl(referralCode) {
-  const message = ["Trying out trading on @GMX_IO, up to 100x leverage on $BTC, $ETH 📈", "For fee discounts use:"];
-  const shareURL = getReferralCodeTradeUrl(referralCode);
-
-  return getTwitterIntentURL(message, shareURL);
 }

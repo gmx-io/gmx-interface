@@ -23,130 +23,17 @@ import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
 import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
-import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 import { encodeReferralCode } from "sdk/utils/referrals";
 
 import Button from "components/Button/Button";
+import { REFERRAL_CODE_REGEX } from "components/Referrals/shared/utils/referralsHelper";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 
-import { REFERRAL_CODE_REGEX } from "components/Referrals/shared/utils/referralsHelper";
-import { ApplyReferralCodeButtonContent } from "./ApplyReferralCodeButtonContent";
+import { getReferralCodeButtonState } from "./getReferralCodeButtonState";
 import { ReferralCodeInput } from "./ReferralCodeInput";
-import type { ReferralCodeActionType } from "./types";
-
-type ReferralCodeButtonState = {
-  text: React.ReactNode;
-  disabled?: boolean;
-  onSubmit?: (event: React.FormEvent) => void;
-};
-
-function getButtonSubmitState({
-  type,
-  referralCode,
-  userReferralCodeString,
-  hasOutdatedUi,
-  isApproving,
-  isSubmitting,
-  isValidating,
-  referralCodeExists,
-  isLoadingQuote,
-  needsApproval,
-  depositTokenSymbol,
-  onSubmit,
-  onApprove,
-}: {
-  type: ReferralCodeActionType;
-  referralCode: string;
-  userReferralCodeString: string;
-  hasOutdatedUi: boolean;
-  isApproving: boolean;
-  isSubmitting: boolean;
-  isValidating: boolean;
-  referralCodeExists: boolean;
-  isLoadingQuote: boolean;
-  needsApproval: boolean;
-  depositTokenSymbol: string | undefined;
-  onSubmit: (event: React.FormEvent) => void;
-  onApprove: (event: React.FormEvent) => void;
-}): ReferralCodeButtonState {
-  const isEdit = type === "edit";
-
-  if (hasOutdatedUi) {
-    return {
-      text: getPageOutdatedError(),
-      disabled: true,
-    };
-  }
-  if (isApproving) {
-    return {
-      text: t`Approving...`,
-      disabled: true,
-    };
-  }
-  if (isEdit && referralCode === userReferralCodeString) {
-    return {
-      text: t`Same as current active code`,
-      disabled: true,
-    };
-  }
-  if (isEdit && isSubmitting) {
-    return {
-      text: t`Updating...`,
-      disabled: true,
-    };
-  }
-  if (isSubmitting) {
-    return {
-      text: t`Adding...`,
-      disabled: true,
-    };
-  }
-  if (referralCode === "") {
-    return {
-      text: t`Enter referral code`,
-      disabled: true,
-    };
-  }
-  if (isValidating) {
-    return {
-      text: t`Checking code...`,
-      disabled: true,
-    };
-  }
-  if (!referralCodeExists) {
-    return {
-      text: t`Code not found`,
-      disabled: true,
-    };
-  }
-  if (isLoadingQuote) {
-    return {
-      text: t`Loading...`,
-      disabled: true,
-    };
-  }
-  if (needsApproval) {
-    return {
-      text: t`Approve ${depositTokenSymbol}`,
-      disabled: false,
-      onSubmit: onApprove,
-    };
-  }
-  if (isEdit) {
-    return {
-      text: t`Update`,
-      disabled: false,
-      onSubmit,
-    };
-  }
-  return {
-    text: <ApplyReferralCodeButtonContent />,
-    disabled: false,
-    onSubmit,
-  };
-}
 
 export function ReferralCodeFormMultichain({
   userReferralCodeString = "",
@@ -155,7 +42,7 @@ export function ReferralCodeFormMultichain({
 }: {
   callAfterSuccess?: (code: string) => void;
   userReferralCodeString?: string;
-  type?: ReferralCodeActionType;
+  type?: "join" | "edit";
 }) {
   const { chainId, srcChainId } = useChainId();
   const { account, signer } = useWallet();
@@ -277,7 +164,7 @@ export function ReferralCodeFormMultichain({
     }
   }
 
-  const buttonState = getButtonSubmitState({
+  const buttonState = getReferralCodeButtonState({
     type,
     referralCode,
     userReferralCodeString,

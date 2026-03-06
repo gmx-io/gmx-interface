@@ -40,7 +40,7 @@ export function PromoCard({ title, subtitle, children, onClose }: PromoCardProps
       )}
       <img
         src={affiliateCodePromoBg}
-        className="user-select-none absolute -right-8 -top-8 z-0 h-[calc(100%+16px)] blur-[8px]"
+        className="user-select-none absolute -right-8 -top-8 z-0 h-[calc(100%+16px)] blur-[8px] invert hue-rotate-180 dark:invert-0 dark:hue-rotate-0"
       />
       {children}
     </div>

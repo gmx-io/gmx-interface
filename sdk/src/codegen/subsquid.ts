@@ -375,6 +375,143 @@ export interface AccountVolumeWhereInput {
   account: Scalars["String"]["input"];
 }
 
+export interface AffiliateReferralTradeStatsByHour {
+  __typename?: "AffiliateReferralTradeStatsByHour";
+  affiliate: Scalars["String"]["output"];
+  id: Scalars["String"]["output"];
+  rebatesUsd: Scalars["BigInt"]["output"];
+  timestamp: Scalars["Int"]["output"];
+  tradesCount: Scalars["Int"]["output"];
+  volumeUsd: Scalars["BigInt"]["output"];
+}
+
+export interface AffiliateReferralTradeStatsByHourEdge {
+  __typename?: "AffiliateReferralTradeStatsByHourEdge";
+  cursor: Scalars["String"]["output"];
+  node: AffiliateReferralTradeStatsByHour;
+}
+
+export enum AffiliateReferralTradeStatsByHourOrderByInput {
+  affiliate_ASC = "affiliate_ASC",
+  affiliate_ASC_NULLS_FIRST = "affiliate_ASC_NULLS_FIRST",
+  affiliate_ASC_NULLS_LAST = "affiliate_ASC_NULLS_LAST",
+  affiliate_DESC = "affiliate_DESC",
+  affiliate_DESC_NULLS_FIRST = "affiliate_DESC_NULLS_FIRST",
+  affiliate_DESC_NULLS_LAST = "affiliate_DESC_NULLS_LAST",
+  id_ASC = "id_ASC",
+  id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
+  id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
+  id_DESC = "id_DESC",
+  id_DESC_NULLS_FIRST = "id_DESC_NULLS_FIRST",
+  id_DESC_NULLS_LAST = "id_DESC_NULLS_LAST",
+  rebatesUsd_ASC = "rebatesUsd_ASC",
+  rebatesUsd_ASC_NULLS_FIRST = "rebatesUsd_ASC_NULLS_FIRST",
+  rebatesUsd_ASC_NULLS_LAST = "rebatesUsd_ASC_NULLS_LAST",
+  rebatesUsd_DESC = "rebatesUsd_DESC",
+  rebatesUsd_DESC_NULLS_FIRST = "rebatesUsd_DESC_NULLS_FIRST",
+  rebatesUsd_DESC_NULLS_LAST = "rebatesUsd_DESC_NULLS_LAST",
+  timestamp_ASC = "timestamp_ASC",
+  timestamp_ASC_NULLS_FIRST = "timestamp_ASC_NULLS_FIRST",
+  timestamp_ASC_NULLS_LAST = "timestamp_ASC_NULLS_LAST",
+  timestamp_DESC = "timestamp_DESC",
+  timestamp_DESC_NULLS_FIRST = "timestamp_DESC_NULLS_FIRST",
+  timestamp_DESC_NULLS_LAST = "timestamp_DESC_NULLS_LAST",
+  tradesCount_ASC = "tradesCount_ASC",
+  tradesCount_ASC_NULLS_FIRST = "tradesCount_ASC_NULLS_FIRST",
+  tradesCount_ASC_NULLS_LAST = "tradesCount_ASC_NULLS_LAST",
+  tradesCount_DESC = "tradesCount_DESC",
+  tradesCount_DESC_NULLS_FIRST = "tradesCount_DESC_NULLS_FIRST",
+  tradesCount_DESC_NULLS_LAST = "tradesCount_DESC_NULLS_LAST",
+  volumeUsd_ASC = "volumeUsd_ASC",
+  volumeUsd_ASC_NULLS_FIRST = "volumeUsd_ASC_NULLS_FIRST",
+  volumeUsd_ASC_NULLS_LAST = "volumeUsd_ASC_NULLS_LAST",
+  volumeUsd_DESC = "volumeUsd_DESC",
+  volumeUsd_DESC_NULLS_FIRST = "volumeUsd_DESC_NULLS_FIRST",
+  volumeUsd_DESC_NULLS_LAST = "volumeUsd_DESC_NULLS_LAST",
+}
+
+export interface AffiliateReferralTradeStatsByHourWhereInput {
+  AND?: InputMaybe<Array<AffiliateReferralTradeStatsByHourWhereInput>>;
+  OR?: InputMaybe<Array<AffiliateReferralTradeStatsByHourWhereInput>>;
+  affiliate_contains?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_eq?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_gt?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_gte?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  affiliate_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  affiliate_lt?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_lte?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  affiliate_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_gt?: InputMaybe<Scalars["String"]["input"]>;
+  id_gte?: InputMaybe<Scalars["String"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id_lt?: InputMaybe<Scalars["String"]["input"]>;
+  id_lte?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  rebatesUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  rebatesUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  rebatesUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  rebatesUsd_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  rebatesUsd_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  rebatesUsd_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  rebatesUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  rebatesUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  rebatesUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  timestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  timestamp_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  timestamp_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  tradesCount_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  tradesCount_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  tradesCount_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  tradesCount_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  tradesCount_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  tradesCount_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  tradesCount_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  tradesCount_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  tradesCount_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  volumeUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  volumeUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  volumeUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  volumeUsd_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  volumeUsd_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  volumeUsd_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  volumeUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  volumeUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  volumeUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+}
+
+export interface AffiliateReferralTradeStatsByHoursConnection {
+  __typename?: "AffiliateReferralTradeStatsByHoursConnection";
+  edges: Array<AffiliateReferralTradeStatsByHourEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"]["output"];
+}
+
 export interface AffiliateStatsPoint {
   __typename?: "AffiliateStatsPoint";
   rebatesUsd: Scalars["BigInt"]["output"];
@@ -8018,6 +8155,10 @@ export interface Query {
   accountStatById?: Maybe<AccountStat>;
   accountStats: Array<AccountStat>;
   accountStatsConnection: AccountStatsConnection;
+  affiliateReferralTradeStatsByHourById?: Maybe<AffiliateReferralTradeStatsByHour>;
+  affiliateReferralTradeStatsByHours: Array<AffiliateReferralTradeStatsByHour>;
+  affiliateReferralTradeStatsByHoursConnection: AffiliateReferralTradeStatsByHoursConnection;
+  affiliateStats: AffiliateStatsResponse;
   annualizedPerformance: Array<AnnualizedPerformanceObject>;
   aprSnapshotById?: Maybe<AprSnapshot>;
   aprSnapshots: Array<AprSnapshot>;
@@ -8123,10 +8264,6 @@ export interface Query {
   referralCodeOwnerById?: Maybe<ReferralCodeOwner>;
   referralCodeOwners: Array<ReferralCodeOwner>;
   referralCodeOwnersConnection: ReferralCodeOwnersConnection;
-  referralStats: AffiliateStatsResponse;
-  referralTradeStatsByHourById?: Maybe<ReferralTradeStatsByHour>;
-  referralTradeStatsByHours: Array<ReferralTradeStatsByHour>;
-  referralTradeStatsByHoursConnection: ReferralTradeStatsByHoursConnection;
   squidStatus: SquidStatus;
   swapFeesInfoById?: Maybe<SwapFeesInfo>;
   swapFeesInfoWithPeriodById?: Maybe<SwapFeesInfoWithPeriod>;
@@ -8184,6 +8321,28 @@ export interface QueryaccountStatsConnectionArgs {
   first?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy: Array<AccountStatOrderByInput>;
   where?: InputMaybe<AccountStatWhereInput>;
+}
+
+export interface QueryaffiliateReferralTradeStatsByHourByIdArgs {
+  id: Scalars["String"]["input"];
+}
+
+export interface QueryaffiliateReferralTradeStatsByHoursArgs {
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<Array<AffiliateReferralTradeStatsByHourOrderByInput>>;
+  where?: InputMaybe<AffiliateReferralTradeStatsByHourWhereInput>;
+}
+
+export interface QueryaffiliateReferralTradeStatsByHoursConnectionArgs {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy: Array<AffiliateReferralTradeStatsByHourOrderByInput>;
+  where?: InputMaybe<AffiliateReferralTradeStatsByHourWhereInput>;
+}
+
+export interface QueryaffiliateStatsArgs {
+  where?: InputMaybe<AffiliateStatsWhereInput>;
 }
 
 export interface QueryannualizedPerformanceArgs {
@@ -8794,28 +8953,6 @@ export interface QueryreferralCodeOwnersConnectionArgs {
   where?: InputMaybe<ReferralCodeOwnerWhereInput>;
 }
 
-export interface QueryreferralStatsArgs {
-  where?: InputMaybe<AffiliateStatsWhereInput>;
-}
-
-export interface QueryreferralTradeStatsByHourByIdArgs {
-  id: Scalars["String"]["input"];
-}
-
-export interface QueryreferralTradeStatsByHoursArgs {
-  limit?: InputMaybe<Scalars["Int"]["input"]>;
-  offset?: InputMaybe<Scalars["Int"]["input"]>;
-  orderBy?: InputMaybe<Array<ReferralTradeStatsByHourOrderByInput>>;
-  where?: InputMaybe<ReferralTradeStatsByHourWhereInput>;
-}
-
-export interface QueryreferralTradeStatsByHoursConnectionArgs {
-  after?: InputMaybe<Scalars["String"]["input"]>;
-  first?: InputMaybe<Scalars["Int"]["input"]>;
-  orderBy: Array<ReferralTradeStatsByHourOrderByInput>;
-  where?: InputMaybe<ReferralTradeStatsByHourWhereInput>;
-}
-
 export interface QueryswapFeesInfoByIdArgs {
   id: Scalars["String"]["input"];
 }
@@ -9107,143 +9244,6 @@ export interface ReferralCodeOwnerWhereInput {
 export interface ReferralCodeOwnersConnection {
   __typename?: "ReferralCodeOwnersConnection";
   edges: Array<ReferralCodeOwnerEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars["Int"]["output"];
-}
-
-export interface ReferralTradeStatsByHour {
-  __typename?: "ReferralTradeStatsByHour";
-  affiliate: Scalars["String"]["output"];
-  id: Scalars["String"]["output"];
-  rebatesUsd: Scalars["BigInt"]["output"];
-  timestamp: Scalars["Int"]["output"];
-  tradesCount: Scalars["Int"]["output"];
-  volumeUsd: Scalars["BigInt"]["output"];
-}
-
-export interface ReferralTradeStatsByHourEdge {
-  __typename?: "ReferralTradeStatsByHourEdge";
-  cursor: Scalars["String"]["output"];
-  node: ReferralTradeStatsByHour;
-}
-
-export enum ReferralTradeStatsByHourOrderByInput {
-  affiliate_ASC = "affiliate_ASC",
-  affiliate_ASC_NULLS_FIRST = "affiliate_ASC_NULLS_FIRST",
-  affiliate_ASC_NULLS_LAST = "affiliate_ASC_NULLS_LAST",
-  affiliate_DESC = "affiliate_DESC",
-  affiliate_DESC_NULLS_FIRST = "affiliate_DESC_NULLS_FIRST",
-  affiliate_DESC_NULLS_LAST = "affiliate_DESC_NULLS_LAST",
-  id_ASC = "id_ASC",
-  id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
-  id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
-  id_DESC = "id_DESC",
-  id_DESC_NULLS_FIRST = "id_DESC_NULLS_FIRST",
-  id_DESC_NULLS_LAST = "id_DESC_NULLS_LAST",
-  rebatesUsd_ASC = "rebatesUsd_ASC",
-  rebatesUsd_ASC_NULLS_FIRST = "rebatesUsd_ASC_NULLS_FIRST",
-  rebatesUsd_ASC_NULLS_LAST = "rebatesUsd_ASC_NULLS_LAST",
-  rebatesUsd_DESC = "rebatesUsd_DESC",
-  rebatesUsd_DESC_NULLS_FIRST = "rebatesUsd_DESC_NULLS_FIRST",
-  rebatesUsd_DESC_NULLS_LAST = "rebatesUsd_DESC_NULLS_LAST",
-  timestamp_ASC = "timestamp_ASC",
-  timestamp_ASC_NULLS_FIRST = "timestamp_ASC_NULLS_FIRST",
-  timestamp_ASC_NULLS_LAST = "timestamp_ASC_NULLS_LAST",
-  timestamp_DESC = "timestamp_DESC",
-  timestamp_DESC_NULLS_FIRST = "timestamp_DESC_NULLS_FIRST",
-  timestamp_DESC_NULLS_LAST = "timestamp_DESC_NULLS_LAST",
-  tradesCount_ASC = "tradesCount_ASC",
-  tradesCount_ASC_NULLS_FIRST = "tradesCount_ASC_NULLS_FIRST",
-  tradesCount_ASC_NULLS_LAST = "tradesCount_ASC_NULLS_LAST",
-  tradesCount_DESC = "tradesCount_DESC",
-  tradesCount_DESC_NULLS_FIRST = "tradesCount_DESC_NULLS_FIRST",
-  tradesCount_DESC_NULLS_LAST = "tradesCount_DESC_NULLS_LAST",
-  volumeUsd_ASC = "volumeUsd_ASC",
-  volumeUsd_ASC_NULLS_FIRST = "volumeUsd_ASC_NULLS_FIRST",
-  volumeUsd_ASC_NULLS_LAST = "volumeUsd_ASC_NULLS_LAST",
-  volumeUsd_DESC = "volumeUsd_DESC",
-  volumeUsd_DESC_NULLS_FIRST = "volumeUsd_DESC_NULLS_FIRST",
-  volumeUsd_DESC_NULLS_LAST = "volumeUsd_DESC_NULLS_LAST",
-}
-
-export interface ReferralTradeStatsByHourWhereInput {
-  AND?: InputMaybe<Array<ReferralTradeStatsByHourWhereInput>>;
-  OR?: InputMaybe<Array<ReferralTradeStatsByHourWhereInput>>;
-  affiliate_contains?: InputMaybe<Scalars["String"]["input"]>;
-  affiliate_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  affiliate_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  affiliate_eq?: InputMaybe<Scalars["String"]["input"]>;
-  affiliate_gt?: InputMaybe<Scalars["String"]["input"]>;
-  affiliate_gte?: InputMaybe<Scalars["String"]["input"]>;
-  affiliate_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  affiliate_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  affiliate_lt?: InputMaybe<Scalars["String"]["input"]>;
-  affiliate_lte?: InputMaybe<Scalars["String"]["input"]>;
-  affiliate_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  affiliate_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  affiliate_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  affiliate_not_eq?: InputMaybe<Scalars["String"]["input"]>;
-  affiliate_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  affiliate_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  affiliate_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  id_contains?: InputMaybe<Scalars["String"]["input"]>;
-  id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  id_eq?: InputMaybe<Scalars["String"]["input"]>;
-  id_gt?: InputMaybe<Scalars["String"]["input"]>;
-  id_gte?: InputMaybe<Scalars["String"]["input"]>;
-  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  id_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  id_lt?: InputMaybe<Scalars["String"]["input"]>;
-  id_lte?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_eq?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  id_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  id_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  rebatesUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
-  rebatesUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
-  rebatesUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
-  rebatesUsd_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
-  rebatesUsd_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  rebatesUsd_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
-  rebatesUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
-  rebatesUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
-  rebatesUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
-  timestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
-  timestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
-  timestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
-  timestamp_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
-  timestamp_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  timestamp_lt?: InputMaybe<Scalars["Int"]["input"]>;
-  timestamp_lte?: InputMaybe<Scalars["Int"]["input"]>;
-  timestamp_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
-  timestamp_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
-  tradesCount_eq?: InputMaybe<Scalars["Int"]["input"]>;
-  tradesCount_gt?: InputMaybe<Scalars["Int"]["input"]>;
-  tradesCount_gte?: InputMaybe<Scalars["Int"]["input"]>;
-  tradesCount_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
-  tradesCount_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  tradesCount_lt?: InputMaybe<Scalars["Int"]["input"]>;
-  tradesCount_lte?: InputMaybe<Scalars["Int"]["input"]>;
-  tradesCount_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
-  tradesCount_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
-  volumeUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
-  volumeUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
-  volumeUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
-  volumeUsd_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
-  volumeUsd_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  volumeUsd_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
-  volumeUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
-  volumeUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
-  volumeUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
-}
-
-export interface ReferralTradeStatsByHoursConnection {
-  __typename?: "ReferralTradeStatsByHoursConnection";
-  edges: Array<ReferralTradeStatsByHourEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars["Int"]["output"];
 }

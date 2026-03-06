@@ -1,4 +1,5 @@
 import { t, Trans } from "@lingui/macro";
+import { motion } from "framer-motion";
 import { Fragment, useCallback } from "react";
 import { useCopyToClipboard } from "react-use";
 
@@ -13,6 +14,13 @@ import NewCheckedIcon from "img/ic_new_checked.svg?react";
 
 import { DistributionTimestamp } from "./DistributionTimestamp";
 import { type AmountsByTokens } from "./RebateDistributionRow";
+
+const DETAIL_ROW_VARIANTS = {
+  collapsed: { height: 0, opacity: 0 },
+  expanded: { height: "auto", opacity: 1 },
+} as const;
+
+const DETAIL_ROW_TRANSITION = { duration: 0.22, ease: "easeInOut" } as const;
 
 type RebateDistributionRowDetailProps = {
   rebate: RebateDistribution;
@@ -32,7 +40,14 @@ export function RebateDistributionRowDetail({ rebate, chainId, amountsByTokens }
   );
 
   return (
-    <div className="col-span-full grid grid-cols-subgrid rounded-b-8 text-[13px]">
+    <motion.div
+      className="col-span-full grid grid-cols-subgrid overflow-hidden rounded-b-8 text-[13px]"
+      variants={DETAIL_ROW_VARIANTS}
+      initial="collapsed"
+      animate="expanded"
+      exit="collapsed"
+      transition={DETAIL_ROW_TRANSITION}
+    >
       <div className="py-8 pl-20 text-typography-secondary">
         <Trans>Status</Trans>
       </div>
@@ -86,6 +101,6 @@ export function RebateDistributionRowDetail({ rebate, chainId, amountsByTokens }
       <div className="col-span-4 py-8 pr-20">
         <DistributionTimestamp timestamp={rebate.timestamp} />
       </div>
-    </div>
+    </motion.div>
   );
 }

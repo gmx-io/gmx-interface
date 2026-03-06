@@ -9,86 +9,15 @@ import { useDebounce } from "lib/debounce/useDebounce";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
-
 import { REFERRAL_CODE_REGEX } from "components/Referrals/shared/utils/referralsHelper";
-import { ApplyReferralCodeButtonContent } from "./ApplyReferralCodeButtonContent";
+
+import { getReferralCodeButtonState } from "./getReferralCodeButtonState";
 import { ReferralCodeInput } from "./ReferralCodeInput";
-import type { ReferralCodeActionType } from "./types";
-
-type ReferralCodeButtonState = {
-  text: React.ReactNode;
-  disabled?: boolean;
-  onSubmit?: (event: React.FormEvent) => void;
-};
-
-function getButtonSubmitState({
-  type,
-  referralCode,
-  userReferralCodeString,
-  isSubmitting,
-  isValidating,
-  referralCodeExists,
-  onSubmit,
-}: {
-  type: ReferralCodeActionType;
-  referralCode: string;
-  userReferralCodeString: string;
-  isSubmitting: boolean;
-  isValidating: boolean;
-  referralCodeExists: boolean;
-  onSubmit: (event: React.FormEvent) => void;
-}): ReferralCodeButtonState {
-  const isEdit = type === "edit";
-
-  if (isEdit && referralCode === userReferralCodeString) {
-    return {
-      text: t`Same as current active code`,
-      disabled: true,
-    };
-  } else if (isEdit && isSubmitting) {
-    return {
-      text: t`Updating...`,
-      disabled: true,
-    };
-  } else if (isSubmitting) {
-    return {
-      text: t`Adding...`,
-      disabled: true,
-    };
-  } else if (referralCode === "") {
-    return {
-      text: t`Enter referral code`,
-      disabled: true,
-    };
-  } else if (isValidating) {
-    return {
-      text: t`Checking code...`,
-      disabled: true,
-    };
-  } else if (!referralCodeExists) {
-    return {
-      text: t`Code not found`,
-      disabled: true,
-    };
-  } else if (isEdit) {
-    return {
-      text: t`Update`,
-      disabled: false,
-      onSubmit,
-    };
-  }
-
-  return {
-    text: <ApplyReferralCodeButtonContent />,
-    disabled: false,
-    onSubmit,
-  };
-}
 
 type ReferralCodeFormSettlementChainProps = {
   callAfterSuccess?: (code: string) => void;
   userReferralCodeString?: string;
-  type?: ReferralCodeActionType;
+  type?: "join" | "edit";
 };
 
 export function ReferralCodeFormSettlementChain({
@@ -139,7 +68,7 @@ export function ReferralCodeFormSettlementChain({
     }
   }
 
-  const buttonState = getButtonSubmitState({
+  const buttonState = getReferralCodeButtonState({
     type,
     referralCode,
     userReferralCodeString,

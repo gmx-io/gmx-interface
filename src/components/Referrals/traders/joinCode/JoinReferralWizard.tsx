@@ -4,15 +4,17 @@ import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAccount } from "wagmi";
 
+import { REFERRALS_DOCS_URL } from "config/links";
+
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { StepProgress } from "components/Referrals/shared/wizard/StepProgress";
 
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 import ReferralsFilledIcon from "img/ic_referrals_filled.svg?react";
 import WalletIcon from "img/ic_wallet.svg?react";
 import referralWizardBg from "img/referral_wizard_bg.png";
 
-import { StepProgress } from "components/Referrals/shared/wizard/StepProgress";
 import { LabelWithIcon } from "./LabelWithIcon";
 import { ReferralCodeEditFormContainer } from "./ReferralCodeEditFormContainer";
 
@@ -48,7 +50,6 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
   const history = useHistory();
 
   const [joinReferralWizardStep, setJoinReferralWizardStep] = useState(JoinReferralWizardStep.ConnectWallet);
-  // TODO: maybe instead of creating a string we use real hook
   const [userReferralCodeString, setUserReferralCodeString] = useState("");
 
   useEffect(
@@ -83,7 +84,7 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
                 <Button variant="primary-action" className="w-full" type="submit" onClick={openConnectModal}>
                   <Trans>Connect wallet</Trans>
                 </Button>
-                <ExternalLink href="https://www.google.com" variant="icon" className="text-blue-300">
+                <ExternalLink href={REFERRALS_DOCS_URL} variant="icon" className="text-blue-300">
                   <Trans>Learn more</Trans>
                 </ExternalLink>
               </div>
@@ -102,14 +103,6 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
                     setJoinReferralWizardStep(JoinReferralWizardStep.Success);
                   }}
                 />
-                <div
-                  onClick={() => {
-                    setUserReferralCodeString("MIDAS");
-                    setJoinReferralWizardStep(JoinReferralWizardStep.Success);
-                  }}
-                >
-                  test
-                </div>
                 <p className="text-body-small text-typography-secondary">
                   <Trans>
                     You can find referral code in{" "}
@@ -127,7 +120,7 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
               <div className="flex flex-col items-center gap-12">
                 <LabelWithIcon icon={ReferralsFilledIcon} label={<Trans>Success</Trans>} />
                 <h2 className="text-[40px] font-medium">
-                  <Trans>Your 15% discount is now active!</Trans>
+                  <Trans>Your 10% discount is now active!</Trans>
                 </h2>
                 <p className="text-body-medium text-typography-secondary">
                   <Trans>
@@ -145,8 +138,10 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
                     history.push("/trade");
                   }}
                 >
-                  <Trans>Start trading</Trans>
-                  <ArrowRightIcon className="size-24" />
+                  <div className="flex items-center gap-8">
+                    <Trans>Start trading</Trans>
+                    <ArrowRightIcon className="size-24" />
+                  </div>
                 </Button>
                 <button
                   type="button"

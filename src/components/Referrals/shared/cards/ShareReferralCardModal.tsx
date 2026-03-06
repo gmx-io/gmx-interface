@@ -1,10 +1,11 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { QRCodeSVG } from "qrcode.react";
-import { useCallback, useRef } from "react";
+import { useCallback, useMemo, useRef } from "react";
 import { useCopyToClipboard } from "react-use";
 
 import { helperToast } from "lib/helperToast";
-import { getHomeUrl } from "lib/legacy";
+import { getHomeUrl, getTwitterIntentURL } from "lib/legacy";
+import { formatUsd } from "lib/numbers";
 
 import Button from "components/Button/Button";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
@@ -20,27 +21,31 @@ type ShareReferralCardModalProps = {
   isVisible: boolean;
   setIsVisible: (visible: boolean) => void;
   referralCode: string;
-  totalDiscounts?: string;
+  totalDiscountsUsd?: bigint;
 };
 
 export function ShareReferralCardModal({
   isVisible,
   setIsVisible,
   referralCode,
-  totalDiscounts = "$3,089.28",
+  totalDiscountsUsd,
 }: ShareReferralCardModalProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [, copyToClipboard] = useCopyToClipboard();
   const homeURL = getHomeUrl();
   const referralLink = `${homeURL}/#/trade/?ref=${referralCode}`;
-  const tweetText = encodeURIComponent(
-    `Save up to 10% on every trade on GMX.\n\nSo far, my referrals have saved ${totalDiscounts} total in discounts with my code: ${referralCode}\n\n${referralLink}`
+  const totalDiscountsFormatted = useMemo(
+    () => formatUsd(totalDiscountsUsd, { fallbackToZero: true }),
+    [totalDiscountsUsd]
   );
-  const tweetLink = `https://twitter.com/intent/tweet?text=${tweetText}`;
+  const tweetLink = useMemo(() => {
+    const text = `Save up to 10% on every trade on GMX.\n\nSo far, my referrals have saved ${totalDiscountsFormatted} total in discounts with my code: ${referralCode}\n\n${referralLink}`;
+    return getTwitterIntentURL(text, referralLink);
+  }, [referralCode, totalDiscountsFormatted, referralLink]);
 
   const handleCopyLink = useCallback(() => {
     copyToClipboard(referralLink);
-    helperToast.success("Referral link copied to clipboard");
+    helperToast.success(t`Referral link copied to clipboard`);
   }, [copyToClipboard, referralLink]);
 
   const handleDownload = useCallback(async () => {
@@ -61,7 +66,7 @@ export function ShareReferralCardModal({
         URL.revokeObjectURL(url);
       }
     } catch {
-      helperToast.error("Failed to download image");
+      helperToast.error(t`Failed to download image`);
     }
   }, [referralCode]);
 
@@ -98,7 +103,8 @@ export function ShareReferralCardModal({
               </h3>
               <p className="text-body-medium font-medium text-typography-secondary">
                 <Trans>
-                  So far, my referrals have saved {totalDiscounts} total in discounts with my code: {referralCode}
+                  So far, my referrals have saved {totalDiscountsFormatted} total in discounts with my code:{" "}
+                  {referralCode}
                 </Trans>
               </p>
             </div>

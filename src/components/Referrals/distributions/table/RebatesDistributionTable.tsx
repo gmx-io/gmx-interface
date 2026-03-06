@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/macro";
+import { AnimatePresence } from "framer-motion";
 import { Fragment } from "react";
 
 import { RebateDistribution } from "domain/referrals";
@@ -30,7 +31,7 @@ export function RebatesDistributionTable({
   toggleSelectedRebateId,
 }: RebatesDistributionTableProps) {
   return (
-    <div className="flex w-full grow flex-col gap-8 rounded-8 bg-slate-900 px-8 pb-8">
+    <div className="flex w-full grow flex-col justify-between gap-8 rounded-8 bg-slate-900 px-8 pb-8">
       <TableScrollFadeContainer>
         <div role="table" className="grid min-w-max grid-cols-[1fr_1fr_1fr_1fr_auto] gap-y-4">
           <GridRow>
@@ -61,15 +62,27 @@ export function RebatesDistributionTable({
                   onClick={toggleSelectedRebateId}
                 />
 
-                {selectedRebateId === rebate.id && (
-                  <RebateDistributionRowDetail rebate={rebate} chainId={chainId} amountsByTokens={amountsByTokens} />
-                )}
+                <AnimatePresence initial={false}>
+                  {selectedRebateId === rebate.id && (
+                    <RebateDistributionRowDetail
+                      key={`rebate-detail-${rebate.id}`}
+                      rebate={rebate}
+                      chainId={chainId}
+                      amountsByTokens={amountsByTokens}
+                    />
+                  )}
+                </AnimatePresence>
               </Fragment>
             );
           })}
         </div>
       </TableScrollFadeContainer>
-      <BottomTablePagination page={currentRebatePage} pageCount={rebatePageCount} onPageChange={setCurrentRebatePage} />
+      <BottomTablePagination
+        className="!p-0"
+        page={currentRebatePage}
+        pageCount={rebatePageCount}
+        onPageChange={setCurrentRebatePage}
+      />
     </div>
   );
 }

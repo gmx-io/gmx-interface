@@ -88,7 +88,7 @@ export function RebateDistributionRow({
         <TooltipWithPortal
           className="whitespace-nowrap"
           handle={
-            <div className="Rebate-amount-value numbers">
+            <div className="flex items-center numbers">
               {tokensWithoutPrices.length > 0 && (
                 <>
                   <WarnIcon className="size-20 text-yellow-300" />

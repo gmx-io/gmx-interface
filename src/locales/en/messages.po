@@ -27,7 +27,7 @@ msgstr "Slippage exceeded"
 msgid "Wallet not connected"
 msgstr "Wallet not connected"
 
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "No rewards selected"
 msgstr "No rewards selected"
 
@@ -52,11 +52,11 @@ msgstr "Not likely"
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "Or update your wallet's RPC via <0>chainlist.org</0>"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "REFERRAL CODE"
 msgstr "REFERRAL CODE"
 
-#: src/components/Referrals/ReferralsTradersFaq.tsx
+#: src/components/Referrals/traders/faq.tsx
 msgid "Total Discounts shows how much you've saved in fees since applying your referral code."
 msgstr "Total Discounts shows how much you've saved in fees since applying your referral code."
 
@@ -146,7 +146,7 @@ msgstr "BonsaiDAO"
 msgid "Approval signed"
 msgstr "Approval signed"
 
-#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+#: src/components/Referrals/affiliates/faq.tsx
 msgid "Do I need to create codes on each network?"
 msgstr "Do I need to create codes on each network?"
 
@@ -179,6 +179,10 @@ msgstr "Arbitrum"
 msgid "Orders ({0})"
 msgstr "Orders ({0})"
 
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+msgid "GMX Referral"
+msgstr "GMX Referral"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram bot for GMX swap monitoring"
 msgstr "Telegram bot for GMX swap monitoring"
@@ -196,7 +200,7 @@ msgid "Price impact from closing. Positive values benefit you. <0>Read more</0>.
 msgstr "Price impact from closing. Positive values benefit you. <0>Read more</0>."
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
-#: src/components/Referrals/ReferralsDistributionsTab.tsx
+#: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Type"
@@ -351,21 +355,21 @@ msgstr "To"
 msgid "Can I sell my GLV, and where?"
 msgstr "Can I sell my GLV, and where?"
 
-#: src/components/Referrals/CreateAffiliateCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Go to Affiliate Dashboard"
 msgstr "Go to Affiliate Dashboard"
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 #: src/components/Earn/Discovery/EarnFaq.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/ReferralsAffiliatesTab.tsx
-#: src/components/Referrals/ReferralsTradersContent.tsx
-#: src/components/Referrals/ReferralsTradersFaq.tsx
-#: src/components/Referrals/ReferralsTradersTab.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/ReferralsAffiliatesTab.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+#: src/components/Referrals/traders/faq.tsx
+#: src/components/Referrals/traders/ReferralsTradersTab.tsx
 msgid "FAQ"
 msgstr "FAQ"
 
-#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
+#: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Approve {depositTokenSymbol}"
 msgstr "Approve {depositTokenSymbol}"
 
@@ -409,7 +413,7 @@ msgstr "Swap UI fee"
 msgid "No TP orders"
 msgstr "No TP orders"
 
-#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Go to Trader Dashboard"
 msgstr "Go to Trader Dashboard"
 
@@ -426,7 +430,7 @@ msgstr "Confirm withdraw"
 msgid "Settled funding fees"
 msgstr "Settled funding fees"
 
-#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+#: src/components/Referrals/affiliates/faq.tsx
 msgid "Rebates are paid in the collateral tokens used by your referrals. For example, if a referral trades with USDC collateral, your rebate portion will be in USDC."
 msgstr "Rebates are paid in the collateral tokens used by your referrals. For example, if a referral trades with USDC collateral, your rebate portion will be in USDC."
 
@@ -456,7 +460,7 @@ msgstr "Best swap path"
 msgid "@username"
 msgstr "@username"
 
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Failed to claim affiliate rewards"
 msgstr "Failed to claim affiliate rewards"
 
@@ -510,7 +514,7 @@ msgstr "Unstaking..."
 msgid "From network"
 msgstr "From network"
 
-#: src/components/Referrals/ReferralsTradersFaq.tsx
+#: src/components/Referrals/traders/faq.tsx
 msgid "Which fees does my discount apply to?"
 msgstr "Which fees does my discount apply to?"
 
@@ -612,12 +616,12 @@ msgstr "Additional opportunities"
 msgid "Positions"
 msgstr "Positions"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/ReferralsTradersContent.tsx
-#: src/components/Referrals/ReferralsTradersContent.tsx
-#: src/components/Referrals/ReferralsTradersContent.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "{0}d"
 msgstr "{0}d"
 
@@ -641,7 +645,7 @@ msgstr "Expand"
 msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution </2><3> Low size caps, but fun to do some degen gambling with </3>"
 msgstr "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution </2><3> Low size caps, but fun to do some degen gambling with </3>"
 
-#: src/components/Referrals/ReferralsDistributionsTab.tsx
+#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "V1 airdrop"
 msgstr "V1 airdrop"
 
@@ -778,7 +782,7 @@ msgstr "Transfer {nativeTokenSymbol} from other networks to {chainName}"
 msgid "Stats"
 msgstr "Stats"
 
-#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+#: src/components/Referrals/affiliates/faq.tsx
 msgid "Can I create multiple referral codes?"
 msgstr "Can I create multiple referral codes?"
 
@@ -921,7 +925,7 @@ msgstr "No options to buy {nativeTokenSymbol} on {chainName}"
 msgid "Fee values calculated when earned. Excludes incentives."
 msgstr "Fee values calculated when earned. Excludes incentives."
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Enter the referral code and save up to 10% on fees"
 msgstr "Enter the referral code and save up to 10% on fees"
 
@@ -1003,8 +1007,8 @@ msgid "{0} <0/><1> to </1>{1} <2/>"
 msgstr "{0} <0/><1> to </1>{1} <2/>"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on those networks."
 msgstr "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on those networks."
 
@@ -1020,7 +1024,7 @@ msgstr "Claim {totalUsd}"
 msgid "Insufficient {0} for gas on {networkName}<0/><1/><2>Buy or transfer {1} to {networkName}</2>"
 msgstr "Insufficient {0} for gas on {networkName}<0/><1/><2>Buy or transfer {1} to {networkName}</2>"
 
-#: src/components/Referrals/ReferralsTradersFaq.tsx
+#: src/components/Referrals/traders/faq.tsx
 msgid "Referral discounts apply to opening and closing fees for leverage trading (perpetuals). Swap fees are not included. <0>View fee structure →</0>"
 msgstr "Referral discounts apply to opening and closing fees for leverage trading (perpetuals). Swap fees are not included. <0>View fee structure →</0>"
 
@@ -1042,7 +1046,7 @@ msgstr "Annualized buy pressure (BB&D):"
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -1050,7 +1054,7 @@ msgstr "Annualized buy pressure (BB&D):"
 msgid "MARKET"
 msgstr "MARKET"
 
-#: src/components/Referrals/ReferralsTradersContent.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Active referral code"
 msgstr "Active referral code"
 
@@ -1097,7 +1101,7 @@ msgstr "Partnerships and integrations"
 msgid "Insufficient gas balance. Deposit more ETH."
 msgstr "Insufficient gas balance. Deposit more ETH."
 
-#: src/components/Referrals/ReferralsDocsCard.tsx
+#: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Tiers"
 msgstr "Tiers"
 
@@ -1109,7 +1113,7 @@ msgstr "Swap fee factor (negative PI)"
 msgid "Claimable balance"
 msgstr "Claimable balance"
 
-#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+#: src/components/Referrals/affiliates/faq.tsx
 msgid "Yes! You can create as many codes as you want. This is useful for tracking different campaigns, communities, or platforms separately."
 msgstr "Yes! You can create as many codes as you want. This is useful for tracking different campaigns, communities, or platforms separately."
 
@@ -1197,8 +1201,8 @@ msgstr "Small"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "Code already taken"
 msgstr "Code already taken"
 
@@ -1226,7 +1230,7 @@ msgid "Pay"
 msgstr "Pay"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "Creating referral code..."
 msgstr "Creating referral code..."
 
@@ -1295,8 +1299,7 @@ msgstr "Selling {symbol}..."
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum.<0/><1/>Slippage differs from price impact, which is based on open interest imbalances."
 msgstr "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum.<0/><1/>Slippage differs from price impact, which is based on open interest imbalances."
 
-#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
-#: src/components/Referrals/JoinReferralCode/ReferralCodeFormSettlementChain.tsx
+#: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Adding..."
 msgstr "Adding..."
 
@@ -1345,7 +1348,7 @@ msgstr "Buy GM: {0}"
 msgid "TVL (Supply)"
 msgstr "TVL (Supply)"
 
-#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "May take a few minutes to reflect. Check back later"
 msgstr "May take a few minutes to reflect. Check back later"
 
@@ -1418,7 +1421,8 @@ msgstr "Protocol"
 msgid "High network fees"
 msgstr "High network fees"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Overview"
 msgstr "Overview"
@@ -1442,7 +1446,7 @@ msgstr "Execute Limit"
 msgid "Base APY"
 msgstr "Base APY"
 
-#: src/components/Referrals/ReferralsTradersFaq.tsx
+#: src/components/Referrals/traders/faq.tsx
 msgid "Referral codes are shared by affiliates (content creators, community members, and traders). You can:<0><1>Ask in the <2>GMX Discord</2> community</1><3>Check social media for GMX creators and traders</3></0>"
 msgstr "Referral codes are shared by affiliates (content creators, community members, and traders). You can:<0><1>Ask in the <2>GMX Discord</2> community</1><3>Check social media for GMX creators and traders</3></0>"
 
@@ -1470,10 +1474,6 @@ msgstr "Send permit"
 #: src/components/Footer/constants.tsx
 msgid "V1 interface"
 msgstr "V1 interface"
-
-#: src/components/Referrals/ReferralsTradersContent.tsx
-msgid "Generate your own referral code and earn rebates whenever users trade with it. Rewards scale <0/> with your tier and the activity of your referred traders. Learn more"
-msgstr "Generate your own referral code and earn rebates whenever users trade with it. Rewards scale <0/> with your tier and the activity of your referred traders. Learn more"
 
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
@@ -1531,7 +1531,7 @@ msgstr "To network"
 msgid "Deposit to GMX Account"
 msgstr "Deposit to GMX Account"
 
-#: src/components/Referrals/CreateAffiliateCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Your referral code {createdReferralCode} is now active. Share it with friends or your community."
 msgstr "Your referral code {createdReferralCode} is now active. Share it with friends or your community."
 
@@ -1646,8 +1646,8 @@ msgid "Affiliate address:"
 msgstr "Affiliate address:"
 
 #: src/components/MarketStats/MarketGraphs.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/ReferralsTradersContent.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -1693,7 +1693,7 @@ msgstr "Failed"
 msgid "No fee"
 msgstr "No fee"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Actions"
 msgstr "Actions"
 
@@ -1787,6 +1787,10 @@ msgstr "Complete account transfer"
 msgid "Icons & images"
 msgstr "Icons & images"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Discounts"
+msgstr "Discounts"
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Borrow fee / day"
 msgstr "Borrow fee / day"
@@ -1813,7 +1817,7 @@ msgstr "Key"
 msgid "Distributions"
 msgstr "Distributions"
 
-#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+#: src/components/Referrals/affiliates/faq.tsx
 msgid "Your code is immediately active! Share it with traders and you'll earn rebates when they execute trades."
 msgstr "Your code is immediately active! Share it with traders and you'll earn rebates when they execute trades."
 
@@ -1829,7 +1833,7 @@ msgstr "Withdraw {glvOrGm}"
 msgid "Receive voting power and participate in governance"
 msgstr "Receive voting power and participate in governance"
 
-#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+#: src/components/Referrals/affiliates/faq.tsx
 msgid "You'll get a shareable link like: {PRODUCTION_HOST}/#/trade/?ref=YOURCODE. Share on social media, in your content, or directly with friends."
 msgstr "You'll get a shareable link like: {PRODUCTION_HOST}/#/trade/?ref=YOURCODE. Share on social media, in your content, or directly with friends."
 
@@ -1837,7 +1841,7 @@ msgstr "You'll get a shareable link like: {PRODUCTION_HOST}/#/trade/?ref=YOURCOD
 msgid "RECEIVE"
 msgstr "RECEIVE"
 
-#: src/components/Referrals/ShareReferralCardModal.tsx
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "<0>Save up to 10%</0> on every<1/> trade on GMX."
 msgstr "<0>Save up to 10%</0> on every<1/> trade on GMX."
 
@@ -1873,7 +1877,7 @@ msgstr "Decentralized trading protocol"
 msgid "Symbiosis"
 msgstr "Symbiosis"
 
-#: src/components/Referrals/ReferralsDocsCard.tsx
+#: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "How it works"
 msgstr "How it works"
 
@@ -1898,6 +1902,10 @@ msgstr "{orderTypeLabel} {positionText}, -{0}"
 #: src/pages/PageNotFound/PageNotFound.tsx
 msgid "Page not found"
 msgstr "Page not found"
+
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+msgid "Your 10% discount is now active!"
+msgstr "Your 10% discount is now active!"
 
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Estimated fee refund"
@@ -1951,7 +1959,7 @@ msgstr "GLP reimbursement"
 msgid "Shift GM"
 msgstr "Shift GM"
 
-#: src/components/Referrals/ReferralsDistributionsTab.tsx
+#: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Timestamp"
 msgstr "Timestamp"
@@ -1964,7 +1972,7 @@ msgstr "Insufficient gas for execution"
 msgid "Custom"
 msgstr "Custom"
 
-#: src/components/Referrals/ReferralsTradersFaq.tsx
+#: src/components/Referrals/traders/faq.tsx
 msgid "You can still trade without a code, but you'll get no discounts when trading. So we recommend finding a code to save up to 10% on every trade!"
 msgstr "You can still trade without a code, but you'll get no discounts when trading. So we recommend finding a code to save up to 10% on every trade!"
 
@@ -2011,7 +2019,7 @@ msgstr "Chart positions"
 msgid "Claiming price impact rebates..."
 msgstr "Claiming price impact rebates..."
 
-#: src/components/Referrals/ReferralsTradersFaq.tsx
+#: src/components/Referrals/traders/faq.tsx
 msgid "What does \"Total Discounts\" mean?"
 msgstr "What does \"Total Discounts\" mean?"
 
@@ -2060,7 +2068,7 @@ msgstr "Insufficient receive token liquidity"
 msgid "Size percentage required"
 msgstr "Size percentage required"
 
-#: src/components/Referrals/ReferralsTradersFaq.tsx
+#: src/components/Referrals/traders/faq.tsx
 msgid "No problem! You can change your referral code at any time by entering a new one. Your new code will apply to all future trades."
 msgstr "No problem! You can change your referral code at any time by entering a new one. Your new code will apply to all future trades."
 
@@ -2141,7 +2149,7 @@ msgstr "DefiLlama"
 msgid "Daily and cumulative PnL"
 msgstr "Daily and cumulative PnL"
 
-#: src/components/Referrals/ReferralsTradersFaq.tsx
+#: src/components/Referrals/traders/faq.tsx
 msgid "Discounts are applied automatically at the time of trade execution. You'll see the reduced fee amount in your trade confirmation before submitting."
 msgstr "Discounts are applied automatically at the time of trade execution. You'll see the reduced fee amount in your trade confirmation before submitting."
 
@@ -2169,6 +2177,10 @@ msgstr "Failed deposit"
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "2nd place"
 msgstr "2nd place"
+
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+msgid "Number of referred traders gained/lost."
+msgstr "Number of referred traders gained/lost."
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Number of parts must be between {MIN_TWAP_NUMBER_OF_PARTS} and {MAX_TWAP_NUMBER_OF_PARTS}"
@@ -2199,7 +2211,7 @@ msgstr "Max open interest {directionLabel}"
 msgid "{ordersText} cancellation failed"
 msgstr "{ordersText} cancellation failed"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Tier {0}: {currentRebatePercentage}% rebate"
 msgstr "Tier {0}: {currentRebatePercentage}% rebate"
 
@@ -2373,7 +2385,7 @@ msgstr "Max {0} out"
 msgid "No assets available for deposit"
 msgstr "No assets available for deposit"
 
-#: src/components/Referrals/ReferralCodeWarnings.tsx
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
 msgid "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
 msgstr "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
 
@@ -2540,10 +2552,9 @@ msgstr "GMX technical announcements"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
-#: src/components/Referrals/JoinReferralCode/ReferralCodeFormSettlementChain.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Checking code..."
 msgstr "Checking code..."
 
@@ -2571,7 +2582,7 @@ msgstr "Global network"
 msgid "Try Express"
 msgstr "Try Express"
 
-#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
+#: src/components/Referrals/traders/joinCode/ReferralCodeFormMultichain.tsx
 msgid "Changes may take a few minutes to appear"
 msgstr "Changes may take a few minutes to appear"
 
@@ -2591,7 +2602,7 @@ msgstr "Buying {symbol}..."
 msgid "Show PnL amounts"
 msgstr "Show PnL amounts"
 
-#: src/components/Referrals/ReferralsDistributionsTab.tsx
+#: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 msgid "Transaction hash"
 msgstr "Transaction hash"
 
@@ -2699,6 +2710,10 @@ msgstr "Open positions"
 msgid "Coin"
 msgstr "Coin"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Discounts earned by this account as a trader."
+msgstr "Discounts earned by this account as a trader."
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to settlement chain and go to the {indexName} pool to sell your {gmOrGlvLabel} tokens."
 msgstr "Sell {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to settlement chain and go to the {indexName} pool to sell your {gmOrGlvLabel} tokens."
@@ -2755,7 +2770,7 @@ msgstr "CURRENT"
 msgid "Long positions"
 msgstr "Long positions"
 
-#: src/components/Referrals/CreateAffiliateCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Share your code"
 msgstr "Share your code"
 
@@ -2767,7 +2782,7 @@ msgstr "Buy fee"
 msgid "Claimable collateral reduction factor"
 msgstr "Claimable collateral reduction factor"
 
-#: src/components/Referrals/ReferralsTradersFaq.tsx
+#: src/components/Referrals/traders/faq.tsx
 msgid "What if I don't have a code?"
 msgstr "What if I don't have a code?"
 
@@ -2796,7 +2811,7 @@ msgstr "No swap path available. <0>Swap {0} to STBTC</0> to use {1} as collatera
 msgid "Data freshness"
 msgstr "Data freshness"
 
-#: src/components/Referrals/CreateAffiliateCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Done!"
 msgstr "Done!"
 
@@ -2824,8 +2839,8 @@ msgstr "Copy address"
 msgid "Projected yearly return vs. a Uniswap V2-style benchmark.<0/><1/>Note: Short timeframes may not reflect long-term performance.<2/><3/><4>View detailed stats on Dune</4>."
 msgstr "Projected yearly return vs. a Uniswap V2-style benchmark.<0/><1/>Note: Short timeframes may not reflect long-term performance.<2/><3/><4>View detailed stats on Dune</4>."
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/CreateAffiliateCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Create referral code"
 msgstr "Create referral code"
 
@@ -2944,6 +2959,10 @@ msgstr "Allow {0} to be spent"
 msgid "Stake submitted"
 msgstr "Stake submitted"
 
+#: src/components/Referrals/shared/charts/GmxBarChart.tsx
+msgid "Net"
+msgstr "Net"
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
@@ -2962,8 +2981,7 @@ msgstr "We value your feedback"
 msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
 msgstr "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
 
-#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
-#: src/components/Referrals/JoinReferralCode/ReferralCodeFormSettlementChain.tsx
+#: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Update"
@@ -3049,7 +3067,7 @@ msgstr "Theme"
 msgid "Max leverage exceeded"
 msgstr "Max leverage exceeded"
 
-#: src/components/Referrals/ReferralsTradersFaq.tsx
+#: src/components/Referrals/traders/faq.tsx
 msgid "Can I change my code later?"
 msgstr "Can I change my code later?"
 
@@ -3142,7 +3160,7 @@ msgstr "Max number of parts: {MAX_TWAP_NUMBER_OF_PARTS}"
 msgid "<0>Set recommended impact: {0}</0>."
 msgstr "<0>Set recommended impact: {0}</0>."
 
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Claiming affiliate rewards failed"
 msgstr "Claiming affiliate rewards failed"
 
@@ -3247,7 +3265,7 @@ msgstr "Autocompound"
 msgid "Market graph"
 msgstr "Market graph"
 
-#: src/components/Referrals/referralsHelper.ts
+#: src/components/Referrals/shared/utils/referralsHelper.ts
 msgid "Only letters, numbers, and underscores allowed"
 msgstr "Only letters, numbers, and underscores allowed"
 
@@ -3391,8 +3409,8 @@ msgid "Deposit in progress..."
 msgstr "Deposit in progress..."
 
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/TPSLModal/AddTPSLModal.tsx
 msgid "Creating..."
 msgstr "Creating..."
@@ -3459,7 +3477,7 @@ msgstr "Insufficient GLV liquidity"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Confirm claim"
 msgstr "Confirm claim"
 
@@ -3499,7 +3517,7 @@ msgstr "May lack liquidity for parts of this order when triggered"
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
 msgstr "What makes GMX more cost-efficient than other perpetual platforms?"
 
-#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+#: src/components/Referrals/affiliates/faq.tsx
 msgid "How much can I earn as an affiliate?"
 msgstr "How much can I earn as an affiliate?"
 
@@ -3585,7 +3603,7 @@ msgstr "{fromText} to"
 msgid "Decreasing..."
 msgstr "Decreasing..."
 
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Claim successful"
 msgstr "Claim successful"
 
@@ -3676,7 +3694,7 @@ msgstr "Trading airdrop"
 msgid "Found {0} events in the past {DAYS_BACK} days"
 msgstr "Found {0} events in the past {DAYS_BACK} days"
 
-#: src/components/Referrals/ReferralsTradersFaq.tsx
+#: src/components/Referrals/traders/faq.tsx
 msgid "How is the discount applied to my trades?"
 msgstr "How is the discount applied to my trades?"
 
@@ -3698,10 +3716,6 @@ msgstr "Execution fee validation failed.<0/><1/>{suggestText}<2/><3/><4>View sta
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Avalanche"
 msgstr "Avalanche"
-
-#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
-msgid "Your 15% discount is now active!"
-msgstr "Your 15% discount is now active!"
 
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Fee APR"
@@ -3735,7 +3749,7 @@ msgstr "Claim rewards"
 msgid "Multicall idle"
 msgstr "Multicall idle"
 
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Claiming requires <0/> while you have <1/>. <2>Swap</2> or <3>deposit</3> more {0} to your GMX Account."
 msgstr "Claiming requires <0/> while you have <1/>. <2>Swap</2> or <3>deposit</3> more {0} to your GMX Account."
 
@@ -3752,7 +3766,7 @@ msgstr "4-18 places"
 msgid "Set acceptable price impact"
 msgstr "Set acceptable price impact"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V1 volume"
 msgstr "V1 volume"
 
@@ -3791,7 +3805,7 @@ msgstr "Pool max short USD for deposit"
 msgid "One-Click"
 msgstr "One-Click"
 
-#: src/components/Referrals/ReferralCodeWarnings.tsx
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
 msgid "Code taken by another user on {takenNetworkNames}. No rebates from those networks."
 msgstr "Code taken by another user on {takenNetworkNames}. No rebates from those networks."
 
@@ -3830,6 +3844,10 @@ msgstr "Share GMX feedback"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw failed"
 msgstr "Withdraw failed"
+
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+msgid "Failed to download image"
+msgstr "Failed to download image"
 
 #. chainname balance
 #: src/components/MultichainBalanceTooltip/MultichainBalanceTooltip.tsx
@@ -4008,12 +4026,15 @@ msgid "Withdrawal from subaccount"
 msgstr "Withdrawal from subaccount"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
-#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
-#: src/components/Referrals/JoinReferralCode/ReferralCodeFormSettlementChain.tsx
-#: src/components/Referrals/JoinReferralCode/ReferralCodeInput.tsx
+#: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+#: src/components/Referrals/traders/joinCode/ReferralCodeInput.tsx
 msgid "Enter referral code"
 msgstr "Enter referral code"
+
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+msgid "Referral link copied to clipboard"
+msgstr "Referral link copied to clipboard"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -4025,7 +4046,7 @@ msgstr "Smart wallets are not supported on Express Trading or One-Click Trading"
 msgid "Executed"
 msgstr "Executed"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V2 volume"
 msgstr "V2 volume"
 
@@ -4058,10 +4079,6 @@ msgstr "Can I unstake anytime?"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Max profit limit reached"
 msgstr "Max profit limit reached"
-
-#: src/components/Referrals/JoinReferralCode/ApplyReferralCodeButtonContent.tsx
-msgid "Apply referal code"
-msgstr "Apply referal code"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for swaps (long / short)"
@@ -4246,11 +4263,11 @@ msgstr "Pairs trading"
 msgid "<0>Delegate your undelegated {0} GMX DAO</0> voting power before staking."
 msgstr "<0>Delegate your undelegated {0} GMX DAO</0> voting power before staking."
 
-#: src/components/Referrals/ReferralsDistributionsTab.tsx
+#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "USD value may not be accurate because prices are missing for {0}."
 msgstr "USD value may not be accurate because prices are missing for {0}."
 
-#: src/components/Referrals/ReferralsDistributionsTab.tsx
+#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "V1 esGMX"
 msgstr "V1 esGMX"
 
@@ -4302,7 +4319,7 @@ msgstr "GMX staking unavailable on Botanix. Use Arbitrum or Avalanche."
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Claiming..."
 msgstr "Claiming..."
@@ -4352,8 +4369,8 @@ msgstr "Min impact pool amount"
 msgid "Price impact too high"
 msgstr "Price impact too high"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/ReferralsTradersContent.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "{0}h"
 msgstr "{0}h"
 
@@ -4406,8 +4423,7 @@ msgstr "possibilities in total"
 msgid "Price impact is stored when you increase a position and applied when you decrease. <0>Read more</0>."
 msgstr "Price impact is stored when you increase a position and applied when you decrease. <0>Read more</0>."
 
-#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
-#: src/components/Referrals/JoinReferralCode/ReferralCodeFormSettlementChain.tsx
+#: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Code not found"
 msgstr "Code not found"
 
@@ -4481,7 +4497,7 @@ msgstr "Signature:"
 msgid "Processing claim..."
 msgstr "Processing claim..."
 
-#: src/components/Referrals/ReferralsTradersFaq.tsx
+#: src/components/Referrals/traders/faq.tsx
 msgid "Where do I get a referral code?"
 msgstr "Where do I get a referral code?"
 
@@ -4677,7 +4693,7 @@ msgstr "GM pools:"
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 
-#: src/components/Referrals/ReferralsTradersFaq.tsx
+#: src/components/Referrals/traders/faq.tsx
 msgid "Immediately! Your very next trade will have the discount applied automatically."
 msgstr "Immediately! Your very next trade will have the discount applied automatically."
 
@@ -4690,7 +4706,7 @@ msgid "Some other label"
 msgstr "Some other label"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "You need USDC or ETH on {0} to create a referral code via GMX Account. Deposit funds or switch to a different network."
 msgstr "You need USDC or ETH on {0} to create a referral code via GMX Account. Deposit funds or switch to a different network."
 
@@ -4736,7 +4752,7 @@ msgstr "Fee"
 msgid "Vault capacity"
 msgstr "Vault capacity"
 
-#: src/components/Referrals/ReferralsDistributionsTab.tsx
+#: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 msgid "{0} Amount"
 msgstr "{0} Amount"
 
@@ -4828,6 +4844,11 @@ msgstr "Last 180d"
 msgid "Positive funding fees"
 msgstr "Positive funding fees"
 
+#: src/components/Referrals/shared/charts/TraderReferralChartContainer.tsx
+#: src/components/Referrals/shared/charts/TradersVolumeChartContainer.tsx
+msgid "Loading…"
+msgstr "Loading…"
+
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Funds will appear in your GMX Account soon"
 msgstr "Funds will appear in your GMX Account soon"
@@ -4912,8 +4933,8 @@ msgstr "Total open interest in tokens and notional value in USD"
 msgid "Distribution rate, {0}"
 msgstr "Distribution rate, {0}"
 
-#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
-#: src/components/Referrals/JoinReferralCode/ReferralCodeFormSettlementChain.tsx
+#: src/components/Referrals/traders/joinCode/ReferralCodeFormMultichain.tsx
+#: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Referral code added"
 msgstr "Referral code added"
 
@@ -5001,7 +5022,7 @@ msgstr "Invalid oracle price"
 msgid "Permit validation error: {0}"
 msgstr "Permit validation error: {0}"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Create new code"
 msgstr "Create new code"
 
@@ -5020,7 +5041,7 @@ msgstr "Why do I receive two different GLV tokens?"
 msgid "Set TP/SL"
 msgstr "Set TP/SL"
 
-#: src/components/Referrals/referralsHelper.ts
+#: src/components/Referrals/shared/utils/referralsHelper.ts
 msgid "Max {MAX_REFERRAL_CODE_LENGTH} characters"
 msgstr "Max {MAX_REFERRAL_CODE_LENGTH} characters"
 
@@ -5048,7 +5069,7 @@ msgstr "Explore more"
 msgid "Settings updated"
 msgstr "Settings updated"
 
-#: src/components/Referrals/ReferralsDistributionsTab.tsx
+#: src/components/Referrals/distributions/ReferralsDistributionsTab.tsx
 msgid "Connect wallet to view distributions"
 msgstr "Connect wallet to view distributions"
 
@@ -5103,8 +5124,7 @@ msgstr "Import URL:"
 msgid "Enter a price"
 msgstr "Enter a price"
 
-#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
-#: src/components/Referrals/JoinReferralCode/ReferralCodeFormSettlementChain.tsx
+#: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Updating..."
 msgstr "Updating..."
 
@@ -5218,7 +5238,7 @@ msgstr "Over 100 protocols"
 msgid "Funding fees"
 msgstr "Funding fees"
 
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "REWARDS"
 msgstr "REWARDS"
 
@@ -5256,7 +5276,7 @@ msgstr "Failed to claim funds"
 msgid "Shifting only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "Shifting only available on {chainNames} or {lastChainName}. Switch networks to continue."
 
-#: src/components/Referrals/ReferralsDocsCard.tsx
+#: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
 msgstr "Transferring a referral code"
 
@@ -5273,7 +5293,7 @@ msgstr "GMX community with NFTs, trading, and education initiatives"
 msgid "Longs"
 msgstr "Longs"
 
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Affiliate rewards claimed"
 msgstr "Affiliate rewards claimed"
 
@@ -5335,7 +5355,7 @@ msgstr "Select a token"
 msgid "Main thread"
 msgstr "Main thread"
 
-#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Trade smarter with up<0/> to 10% fee savings"
 msgstr "Trade smarter with up<0/> to 10% fee savings"
 
@@ -5377,17 +5397,13 @@ msgstr "Select market"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/ReferralsAffiliatesTab.tsx
+#: src/components/Referrals/affiliates/ReferralsAffiliatesTab.tsx
 msgid "Referral code creation failed"
 msgstr "Referral code creation failed"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdraw fee"
 msgstr "Withdraw fee"
-
-#: src/components/Referrals/ReferralsTradersContent.tsx
-msgid "Your fee savings from referral discounts"
-msgstr "Your fee savings from referral discounts"
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
@@ -5451,7 +5467,7 @@ msgstr "Existing limit order in WETH-USDC pool but lacks liquidity for this orde
 msgid "({0} of swap amount)"
 msgstr "({0} of swap amount)"
 
-#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+#: src/components/Referrals/affiliates/faq.tsx
 msgid "How do I upgrade to a higher tier?"
 msgstr "How do I upgrade to a higher tier?"
 
@@ -5485,7 +5501,7 @@ msgstr "Sending settle request..."
 msgid "Creator"
 msgstr "Creator"
 
-#: src/components/Referrals/ReferralsTradersContent.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "<0>You're now receiving a {currentTierDiscount}% discount on your trades!</0><1>The reduced rate applies to every open and close fee.</1>"
 msgstr "<0>You're now receiving a {currentTierDiscount}% discount on your trades!</0><1>The reduced rate applies to every open and close fee.</1>"
 
@@ -5549,10 +5565,10 @@ msgstr "Initial collateral, excluding borrow and funding fees"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "Enter a code"
 msgstr "Enter a code"
 
@@ -5601,7 +5617,7 @@ msgstr "s:"
 msgid "RPC error.<0/><1/>Enable <2>Express Trading</2> in settings for better reliability"
 msgstr "RPC error.<0/><1/>Enable <2>Express Trading</2> in settings for better reliability"
 
-#: src/components/Referrals/ReferralsTradersFaq.tsx
+#: src/components/Referrals/traders/faq.tsx
 msgid "Yes. If you trade on both Arbitrum and Avalanche, you'll need to apply a referral code on each network separately."
 msgstr "Yes. If you trade on both Arbitrum and Avalanche, you'll need to apply a referral code on each network separately."
 
@@ -5692,11 +5708,10 @@ msgstr "Select positions"
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/CreateAffiliateCode/CreateAffiliateWizard.tsx
-#: src/components/Referrals/CreateAffiliateCode/CreateAffiliateWizard.tsx
-#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
-#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5711,7 +5726,7 @@ msgstr "No repeated wallet confirmations"
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "Deposit {gasPaymentTokensText}"
 
-#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+#: src/components/Referrals/affiliates/faq.tsx
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."
 msgstr "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."
 
@@ -5827,7 +5842,7 @@ msgstr "Decreased"
 msgid "Recommended"
 msgstr "Recommended"
 
-#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Start trading"
 msgstr "Start trading"
 
@@ -5841,7 +5856,7 @@ msgstr "Decrease"
 msgid "Loading Express Trading..."
 msgstr "Loading Express Trading..."
 
-#: src/components/Referrals/ReferralsTradersFaq.tsx
+#: src/components/Referrals/traders/faq.tsx
 msgid "What if I entered the wrong code?"
 msgstr "What if I entered the wrong code?"
 
@@ -5979,7 +5994,7 @@ msgstr "Stay safe from <0/> liquidations"
 msgid "High net price impact"
 msgstr "High net price impact"
 
-#: src/components/Referrals/ReferralsDocsCard.tsx
+#: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Claiming rewards"
 msgstr "Claiming rewards"
 
@@ -5999,7 +6014,8 @@ msgstr "Buy order cancelled"
 msgid "Support"
 msgstr "Support"
 
-#: src/components/Referrals/AffiliatesOverviewChartCards.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+#: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Lost"
 msgstr "Lost"
 
@@ -6011,7 +6027,7 @@ msgstr "Delegate"
 msgid "Harmonix"
 msgstr "Harmonix"
 
-#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+#: src/components/Referrals/affiliates/faq.tsx
 msgid "Tier upgrades are reviewed manually by the GMX team based on your weekly performance. If you meet the requirements consistently, you can apply for an upgrade via the <0>GMX Partner Account: Telegram</0>."
 msgstr "Tier upgrades are reviewed manually by the GMX team based on your weekly performance. If you meet the requirements consistently, you can apply for an upgrade via the <0>GMX Partner Account: Telegram</0>."
 
@@ -6107,7 +6123,7 @@ msgstr "Real-time rants about GMX trades"
 msgid "Mixed exposure: Short {indexSymbol} + long {collateralSymbol} collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr "Mixed exposure: Short {indexSymbol} + long {collateralSymbol} collateral. Liquidation price varies with {collateralSymbol} price."
 
-#: src/components/Referrals/ShareReferralCardModal.tsx
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "Share your referral card"
 msgstr "Share your referral card"
 
@@ -6131,6 +6147,10 @@ msgstr "Connect wallet to see your assets"
 msgid "Position size exceeds pool value"
 msgstr "Position size exceeds pool value"
 
+#: src/components/Referrals/traders/joinCode/ApplyReferralCodeButtonContent.tsx
+msgid "Apply referral code"
+msgstr "Apply referral code"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (positive)"
 msgstr "Impact exponent (positive)"
@@ -6141,13 +6161,13 @@ msgstr "Can't withdraw collateral. Remaining collateral would be below minimum"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "Approving..."
 
-#: src/components/Referrals/ReferralsTradersFaq.tsx
+#: src/components/Referrals/traders/faq.tsx
 msgid "Yes! You can change your active referral code at any time. Simply enter a new code in the Traders tab and it will replace your current one. Your new discount will apply to all future trades. <0>Read more →</0>"
 msgstr "Yes! You can change your active referral code at any time. Simply enter a new code in the Traders tab and it will replace your current one. Your new discount will apply to all future trades. <0>Read more →</0>"
 
@@ -6159,7 +6179,7 @@ msgstr "UTILIZATION"
 msgid "No liquidity available for increasing longs at<0/>this size. Max long size: {0}<1/><2/>No price impact. Single execution price for<3/>decreasing shorts at this size."
 msgstr "No liquidity available for increasing longs at<0/>this size. Max long size: {0}<1/><2/>No price impact. Single execution price for<3/>decreasing shorts at this size."
 
-#: src/components/Referrals/ReferralsTradersFaq.tsx
+#: src/components/Referrals/traders/faq.tsx
 msgid "Yes! You can change your referral code at any time. If you want to switch to a different code, just enter the new one in the Traders tab."
 msgstr "Yes! You can change your referral code at any time. If you want to switch to a different code, just enter the new one in the Traders tab."
 
@@ -6232,8 +6252,8 @@ msgstr "TP price"
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6250,8 +6270,8 @@ msgstr "Loading..."
 msgid "Trade now"
 msgstr "Trade now"
 
-#: src/components/Referrals/AffiliatesOverviewChartCards.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Share"
 msgstr "Share"
@@ -6267,10 +6287,6 @@ msgstr "Multicall events"
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execute"
 msgstr "Execute"
-
-#: src/components/Referrals/AffiliatesOverviewChartCards.tsx
-msgid "Total number of trades executed by your referred traders."
-msgstr "Total number of trades executed by your referred traders."
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "No funding activity matching search"
@@ -6312,7 +6328,7 @@ msgstr "Updating {updateOrdersCount} TP/SL orders..."
 msgid "Execution price didn't meet acceptable price"
 msgstr "Execution price didn't meet acceptable price"
 
-#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+#: src/components/Referrals/affiliates/faq.tsx
 msgid "In which tokens will I receive my rebates?"
 msgstr "In which tokens will I receive my rebates?"
 
@@ -6329,7 +6345,7 @@ msgstr "Media kit"
 msgid "$ 0.00"
 msgstr "$ 0.00"
 
-#: src/components/Referrals/ReferralsTradersContent.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Create your referral code and earn rebates from your referrals"
 msgstr "Create your referral code and earn rebates from your referrals"
 
@@ -6341,7 +6357,7 @@ msgstr "Yield-optimized vaults supplying liquidity across multiple GMX markets"
 msgid "Analytics"
 msgstr "Analytics"
 
-#: src/components/Referrals/ReferralsTradersContent.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Referral code copied to clipboard"
 msgstr "Referral code copied to clipboard"
 
@@ -6454,7 +6470,7 @@ msgstr "Withdrawal sent"
 msgid "Because positions on Arbitrum can be funded from both your wallet and your GMX Account, we can't always determine where to return the collateral automatically.<0/><1/>Choose:<2/>• <3>Wallet</3> if you mostly trade from your personal wallet on Arbitrum<4/>• <5>GMX Account</5> if you plan to keep trading or reusing collateral on GMX.<6/><7/>You can change this preference anytime in Settings or when closing a position."
 msgstr "Because positions on Arbitrum can be funded from both your wallet and your GMX Account, we can't always determine where to return the collateral automatically.<0/><1/>Choose:<2/>• <3>Wallet</3> if you mostly trade from your personal wallet on Arbitrum<4/>• <5>GMX Account</5> if you plan to keep trading or reusing collateral on GMX.<6/><7/>You can change this preference anytime in Settings or when closing a position."
 
-#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+#: src/components/Referrals/affiliates/faq.tsx
 msgid "How do I share my code?"
 msgstr "How do I share my code?"
 
@@ -6467,7 +6483,7 @@ msgstr "1m 40s"
 msgid "GLP autocompounding vaults"
 msgstr "GLP autocompounding vaults"
 
-#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+#: src/components/Referrals/affiliates/faq.tsx
 msgid "Yes. To earn rebates on both Arbitrum and Avalanche, create your code on both networks. You can use the same code name on each."
 msgstr "Yes. To earn rebates on both Arbitrum and Avalanche, create your code on both networks. You can use the same code name on each."
 
@@ -6543,7 +6559,7 @@ msgstr "Warning: May not execute due to low liquidity at your trigger price"
 msgid "Cancel TWAP Swap"
 msgstr "Cancel TWAP Swap"
 
-#: src/components/Referrals/ReferralsDistributionsTab.tsx
+#: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Transaction"
 msgstr "Transaction"
@@ -6551,6 +6567,10 @@ msgstr "Transaction"
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "Last year"
 msgstr "Last year"
+
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+msgid "Rebates earned as an affiliate."
+msgstr "Rebates earned as an affiliate."
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "per"
@@ -6577,7 +6597,7 @@ msgstr "AVAILABLE LIQ."
 msgid "Current endpoints ({0})"
 msgstr "Current endpoints ({0})"
 
-#: src/components/Referrals/ReferralsDistributionsTab.tsx
+#: src/components/Referrals/distributions/ReferralsDistributionsTab.tsx
 msgid "No rebates distribution history yet"
 msgstr "No rebates distribution history yet"
 
@@ -6592,10 +6612,6 @@ msgstr "Optional: share for follow-up questions"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit signed for {0}"
 msgstr "Permit signed for {0}"
-
-#: src/components/Referrals/ReferralsTradersContent.tsx
-msgid "Your trading volume with referral discount"
-msgstr "Your trading volume with referral discount"
 
 #: src/domain/synthetics/orders/prepareOrderTxn.ts
 msgid "Transaction failed: provider unavailable"
@@ -6710,7 +6726,7 @@ msgstr "LONG LIQ."
 msgid "Select an asset to deposit"
 msgstr "Select an asset to deposit"
 
-#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
 msgstr "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
 
@@ -6736,7 +6752,7 @@ msgstr "Guaranteed liquidity"
 msgid "Insufficient gas balance"
 msgstr "Insufficient gas balance"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V1 rebates"
 msgstr "V1 rebates"
 
@@ -6826,6 +6842,10 @@ msgstr "Order submission failed"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Total realized and unrealized PnL for the period. Includes price impact and fees. Excludes swap fees."
 msgstr "Total realized and unrealized PnL for the period. Includes price impact and fees. Excludes swap fees."
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Generate your own referral code and earn rebates whenever users trade with it. Rewards scale <0/> with your tier and the activity of your referred traders. <1>Learn more</1>"
+msgstr "Generate your own referral code and earn rebates whenever users trade with it. Rewards scale <0/> with your tier and the activity of your referred traders. <1>Learn more</1>"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
@@ -6947,7 +6967,7 @@ msgstr "Cancel"
 msgid "Telegram group"
 msgstr "Telegram group"
 
-#: src/components/Referrals/ReferralsTradersFaq.tsx
+#: src/components/Referrals/traders/faq.tsx
 msgid "How do I know it's working?"
 msgstr "How do I know it's working?"
 
@@ -6973,7 +6993,7 @@ msgstr "STATUS"
 msgid "<0>every</0> {seconds} seconds"
 msgstr "<0>every</0> {seconds} seconds"
 
-#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
 msgstr "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
 
@@ -6983,7 +7003,7 @@ msgstr "You have activated the referral code {userReferralCodeString}. Every pos
 msgid "All markets"
 msgstr "All markets"
 
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Hide assets with small value"
 msgstr "Hide assets with small value"
 
@@ -7059,7 +7079,7 @@ msgstr "Add TP/SL"
 msgid "Receiver has not staked GLP tokens before"
 msgstr "Receiver has not staked GLP tokens before"
 
-#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "You can find referral code in <0>X</0> or on other social media platforms."
 msgstr "You can find referral code in <0>X</0> or on other social media platforms."
 
@@ -7067,7 +7087,7 @@ msgstr "You can find referral code in <0>X</0> or on other social media platform
 msgid "Min collateral: {0}"
 msgstr "Min collateral: {0}"
 
-#: src/components/Referrals/ClaimableRebatesCard.tsx
+#: src/components/Referrals/shared/cards/ClaimableRebatesCard.tsx
 msgid "Claim rebates"
 msgstr "Claim rebates"
 
@@ -7147,7 +7167,7 @@ msgid "Claiming rewards only available on {settlementChainName}. Switch networks
 msgstr "Claiming rewards only available on {settlementChainName}. Switch networks to claim referral rewards."
 
 #: src/components/OrderItem/OrderItem.tsx
-#: src/components/Referrals/ReferralsTradersContent.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "Edit"
 msgstr "Edit"
@@ -7191,7 +7211,7 @@ msgstr "Link copied"
 msgid "Rewards funded by protocol fees used for GMX buybacks"
 msgstr "Rewards funded by protocol fees used for GMX buybacks"
 
-#: src/components/Referrals/ReferralsDistributionsTab.tsx
+#: src/components/Referrals/distributions/ReferralsDistributionsTab.tsx
 msgid "Connect your wallet to view your rebates distribution history."
 msgstr "Connect your wallet to view your rebates distribution history."
 
@@ -7232,9 +7252,17 @@ msgstr "Limit Increase"
 msgid "Transferring..."
 msgstr "Transferring..."
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+msgid "Volume traded by your referred traders."
+msgstr "Volume traded by your referred traders."
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed."
 msgstr "Sell {gmOrGlvLabel} failed."
+
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+msgid "Number of trades done by your referred traders."
+msgstr "Number of trades done by your referred traders."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX weekly updates"
@@ -7336,11 +7364,11 @@ msgstr "Limit - short inc."
 msgid "Proof of reserves"
 msgstr "Proof of reserves"
 
-#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+#: src/components/Referrals/affiliates/faq.tsx
 msgid "When will I start earning?"
 msgstr "When will I start earning?"
 
-#: src/components/Referrals/ReferralsDistributionsTab.tsx
+#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "V2 claim"
 msgstr "V2 claim"
 
@@ -7363,7 +7391,7 @@ msgstr "Enter deposit amount"
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "Approve {0}"
 msgstr "Approve {0}"
 
@@ -7471,7 +7499,7 @@ msgstr "Buy order executed"
 msgid "No opportunities match your search"
 msgstr "No opportunities match your search"
 
-#: src/components/Referrals/ReferralsTradersFaq.tsx
+#: src/components/Referrals/traders/faq.tsx
 msgid "After applying a code, you'll see: your active referral code displayed on the Traders tab, the discount percentage you're receiving, and fee discounts reflected in your trade confirmations."
 msgstr "After applying a code, you'll see: your active referral code displayed on the Traders tab, the discount percentage you're receiving, and fee discounts reflected in your trade confirmations."
 
@@ -7479,7 +7507,7 @@ msgstr "After applying a code, you'll see: your active referral code displayed o
 msgid "Leaderboard for traders on GMX V2"
 msgstr "Leaderboard for traders on GMX V2"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "TOTAL REBATES"
 msgstr "TOTAL REBATES"
 
@@ -7542,8 +7570,7 @@ msgstr "Begin transfer"
 msgid "market"
 msgstr "market"
 
-#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
-#: src/components/Referrals/JoinReferralCode/ReferralCodeFormSettlementChain.tsx
+#: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Same as current active code"
 msgstr "Same as current active code"
 
@@ -7598,7 +7625,7 @@ msgstr "fees"
 msgid "What could we improve?"
 msgstr "What could we improve?"
 
-#: src/components/Referrals/JoinReferralCode/ReferralCodeFormSettlementChain.tsx
+#: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Referral code update failed"
 msgstr "Referral code update failed"
 
@@ -7627,6 +7654,10 @@ msgstr "Only use this for full account transfers.<0/>This will transfer all your
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Net price impact"
 msgstr "Net price impact"
+
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+msgid "Trade on GMX with my referral code {createdReferralCode} and save on fees!"
+msgstr "Trade on GMX with my referral code {createdReferralCode} and save on fees!"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -7694,20 +7725,20 @@ msgstr "Next"
 msgid "More info"
 msgstr "More info"
 
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Create"
 msgstr "Create"
 
-#: src/components/Referrals/CreateAffiliateCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Your code is ready. Share it!"
 msgstr "Your code is ready. Share it!"
 
-#: src/components/Referrals/AffiliatesOverviewChartCards.tsx
-#: src/components/Referrals/ReferralsTradersContent.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Trading volume"
 msgstr "Trading volume"
 
@@ -7733,13 +7764,13 @@ msgstr "Invalid transfer addresses. Check the URL."
 msgid "Swap {fromAmount} for {toAmount}"
 msgstr "Swap {fromAmount} for {toAmount}"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Copy"
 msgstr "Copy"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/OrderItem/OrderItem.tsx
-#: src/components/Referrals/ReferralsDistributionsTab.tsx
+#: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
 msgid "Amount"
 msgstr "Amount"
 
@@ -7760,7 +7791,7 @@ msgstr "{increaseOrDecreaseText}: {0} {longShortText}"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Claim"
 msgstr "Claim"
 
@@ -7894,7 +7925,7 @@ msgstr "Fulfilling buy request..."
 msgid "Buy GM failed"
 msgstr "Buy GM failed"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Activate someone's referral code to receive a permanent discount on all opening and closing <0/> fees. Your savings apply automatically on every trade. <1>Learn more</1>"
 msgstr "Activate someone's referral code to receive a permanent discount on all opening and closing <0/> fees. Your savings apply automatically on every trade. <1>Learn more</1>"
 
@@ -8000,6 +8031,10 @@ msgstr "Failed to download trade history CSV"
 msgid "Liquidation price"
 msgstr "Liquidation price"
 
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+msgid "So far, my referrals have saved {totalDiscountsFormatted} total in discounts with my code: {referralCode}"
+msgstr "So far, my referrals have saved {totalDiscountsFormatted} total in discounts with my code: {referralCode}"
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Enjoy a frictionless trading experience and sidestep blockchain congestion with One-Click Trading and Express Trading"
 msgstr "Enjoy a frictionless trading experience and sidestep blockchain congestion with One-Click Trading and Express Trading"
@@ -8020,7 +8055,7 @@ msgstr "V2 trading"
 msgid "Protocol analytics"
 msgstr "Protocol analytics"
 
-#: src/components/Referrals/ReferralsTradersFaq.tsx
+#: src/components/Referrals/traders/faq.tsx
 msgid "What does \"Trading Volume\" mean?"
 msgstr "What does \"Trading Volume\" mean?"
 
@@ -8086,8 +8121,12 @@ msgstr "View"
 msgid "Execute Stop Market"
 msgstr "Execute Stop Market"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Volume traded by this account with an active referral code."
+msgstr "Volume traded by this account with an active referral code."
+
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/ReferralsAffiliatesTab.tsx
+#: src/components/Referrals/affiliates/ReferralsAffiliatesTab.tsx
 msgid "Referral code submitted"
 msgstr "Referral code submitted"
 
@@ -8125,10 +8164,6 @@ msgstr "Net rate / 1h"
 msgid "Select language"
 msgstr "Select language"
 
-#: src/components/Referrals/ShareReferralCardModal.tsx
-msgid "So far, my referrals have saved {totalDiscounts} total in discounts with my code: {referralCode}"
-msgstr "So far, my referrals have saved {totalDiscounts} total in discounts with my code: {referralCode}"
-
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Unknown value"
 msgstr "Unknown value"
@@ -8153,7 +8188,7 @@ msgstr "Short positions"
 msgid "Report issue"
 msgstr "Report issue"
 
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Claim {0}"
 msgstr "Claim {0}"
 
@@ -8176,10 +8211,6 @@ msgstr "Borrowing exponent short"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Price impact"
 msgstr "Price impact"
-
-#: src/components/Referrals/AddAffiliateCode.tsx
-msgid "You don't have a referral code to share. <0/> Create one now and start earning rebates!"
-msgstr "You don't have a referral code to share. <0/> Create one now and start earning rebates!"
 
 #: src/components/AddressView/AddressView.tsx
 msgid "You"
@@ -8244,6 +8275,10 @@ msgstr "Select rewards to claim"
 msgid "Open fee"
 msgstr "Open fee"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Edit referral code"
+msgstr "Edit referral code"
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell request sent"
 msgstr "Sell request sent"
@@ -8261,7 +8296,7 @@ msgstr "To begin trading on GMX, deposit assets into your GMX Account"
 msgid "Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021"
 msgstr "Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "TOTAL VOLUME"
 msgstr "TOTAL VOLUME"
 
@@ -8407,7 +8442,7 @@ msgstr "Bridge and swap tokens"
 msgid "Backing composition"
 msgstr "Backing composition"
 
-#: src/components/Referrals/ClaimableRebatesCard.tsx
+#: src/components/Referrals/shared/cards/ClaimableRebatesCard.tsx
 msgid "Claimable rebates"
 msgstr "Claimable rebates"
 
@@ -8420,7 +8455,7 @@ msgstr "Secondary"
 msgid "Permit signing cancelled"
 msgstr "Permit signing cancelled"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V2 rebates"
 msgstr "V2 rebates"
 
@@ -8479,7 +8514,7 @@ msgid "Add endpoint"
 msgstr "Add endpoint"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -8517,8 +8552,8 @@ msgid "Invalid Ethereum address"
 msgstr "Invalid Ethereum address"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on that network."
 msgstr "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on that network."
 
@@ -8526,7 +8561,7 @@ msgstr "Unable to verify code availability on {0}. You can still create the code
 msgid "Stop Market - short inc."
 msgstr "Stop Market - short inc."
 
-#: src/components/Referrals/AffiliatesOverviewChartCards.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Rebates"
 msgstr "Rebates"
 
@@ -8573,7 +8608,7 @@ msgid "Claims"
 msgstr "Claims"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
-#: src/components/Referrals/ReferralsDistributionsTab.tsx
+#: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Date"
 msgstr "Date"
@@ -8644,7 +8679,7 @@ msgid "What is GLV exactly?"
 msgstr "What is GLV exactly?"
 
 #: src/components/PositionShare/PositionShare.tsx
-#: src/components/Referrals/ShareReferralCardModal.tsx
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "Download"
 msgstr "Download"
 
@@ -8672,7 +8707,7 @@ msgstr "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messagi
 msgid "Staking..."
 msgstr "Staking..."
 
-#: src/components/Referrals/ReferralsTradersFaq.tsx
+#: src/components/Referrals/traders/faq.tsx
 msgid "Do I need to do this on each network?"
 msgstr "Do I need to do this on each network?"
 
@@ -8714,7 +8749,7 @@ msgstr "Force external swaps"
 msgid "Onchain data error"
 msgstr "Onchain data error"
 
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Show assets with small value ({0})"
 msgstr "Show assets with small value ({0})"
 
@@ -9067,6 +9102,10 @@ msgstr "Permit disabled:"
 msgid "Pool amount capacity"
 msgstr "Pool amount capacity"
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+msgid "Referral link copied to your clipboard"
+msgstr "Referral link copied to your clipboard"
+
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "L:"
 msgstr "L:"
@@ -9095,7 +9134,7 @@ msgstr "Avalanche LP incentives"
 msgid "Markets monitoring"
 msgstr "Markets monitoring"
 
-#: src/components/Referrals/ReferralsDistributionsTab.tsx
+#: src/components/Referrals/distributions/ReferralsDistributionsTab.tsx
 msgid "Distribution history for claimed rebates and airdrops"
 msgstr "Distribution history for claimed rebates and airdrops"
 
@@ -9119,7 +9158,7 @@ msgstr "Max pool capacity reached. Current: {poolAmountText}, max: {maxPoolAmoun
 msgid "{nativeTokenSymbol} APR"
 msgstr "{nativeTokenSymbol} APR"
 
-#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+#: src/components/Referrals/affiliates/faq.tsx
 msgid "What happens after I create my code?"
 msgstr "What happens after I create my code?"
 
@@ -9216,7 +9255,8 @@ msgstr "ACTION"
 msgid "Increase"
 msgstr "Increase"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Last Updated:"
 msgstr "Last Updated:"
 
@@ -9389,7 +9429,7 @@ msgid "Deposit ETH"
 msgstr "Deposit ETH"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "No tokens on source chain"
 msgstr "No tokens on source chain"
 
@@ -9608,7 +9648,8 @@ msgstr "0.0045 WETH remaining in old 1CT subaccount"
 msgid "Topics"
 msgstr "Topics"
 
-#: src/components/Referrals/AffiliatesOverviewChartCards.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+#: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Gained"
 msgstr "Gained"
 
@@ -9697,7 +9738,7 @@ msgstr "Become a market maker"
 msgid "STIP.b LP incentives"
 msgstr "STIP.b LP incentives"
 
-#: src/components/Referrals/CreateAffiliateCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Share your referral code with friends or your community —<0/> every trade made with your code earns you $-rewards."
 msgstr "Share your referral code with friends or your community —<0/> every trade made with your code earns you $-rewards."
 
@@ -9796,7 +9837,7 @@ msgstr "Settling..."
 msgid "Leaderboard"
 msgstr "Leaderboard"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "TRADERS REFERRED"
 msgstr "TRADERS REFERRED"
 
@@ -9823,10 +9864,6 @@ msgstr "Network for your GMX Account and positions. Balances and positions don't
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "Liquidity only available on {chainNames} or {lastChainName}. Switch networks to continue."
-
-#: src/components/Referrals/AffiliatesOverviewChartCards.tsx
-msgid "Total trading volume from your referrals"
-msgstr "Total trading volume from your referrals"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in WETH-USDC pool. Select a different pool."
@@ -9884,7 +9921,7 @@ msgstr "Events"
 msgid "No disabled markets"
 msgstr "No disabled markets"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Referral codes"
 msgstr "Referral codes"
 
@@ -9892,7 +9929,7 @@ msgstr "Referral codes"
 msgid "Performance vs benchmark over selected period"
 msgstr "Performance vs benchmark over selected period"
 
-#: src/components/Referrals/JoinReferralCode/ReferralCodeFormSettlementChain.tsx
+#: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Referral code updated"
 msgstr "Referral code updated"
 
@@ -9929,7 +9966,7 @@ msgstr "Buy APE on Arbitrum with <0>Camelot</0>"
 msgid "Depositing..."
 msgstr "Depositing..."
 
-#: src/components/Referrals/ReferralsDistributionsTab.tsx
+#: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
 msgstr "Status"
@@ -9982,10 +10019,6 @@ msgstr "Claim funds"
 msgid "Your funds are safe. Contact support for help."
 msgstr "Your funds are safe. Contact support for help."
 
-#: src/components/Referrals/AddAffiliateCode.tsx
-msgid "Generate referral code"
-msgstr "Generate referral code"
-
 #: src/components/PositionList/PositionList.tsx
 msgid "NET VALUE"
 msgstr "NET VALUE"
@@ -9999,10 +10032,6 @@ msgstr "MARK PRICE"
 #: src/components/Errors/errorToasts.tsx
 msgid "Increase the max network fee buffer to {0} in {settingsLink}"
 msgstr "Increase the max network fee buffer to {0} in {settingsLink}"
-
-#: src/components/Referrals/AffiliatesOverviewChartCards.tsx
-msgid "Your affiliate earnings from referrals"
-msgstr "Your affiliate earnings from referrals"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Re-sign to continue."
@@ -10054,7 +10083,7 @@ msgstr "24h high"
 msgid "FACTOR"
 msgstr "FACTOR"
 
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Claim parameters unavailable. Retry in a few seconds"
 msgstr "Claim parameters unavailable. Retry in a few seconds"
 
@@ -10214,7 +10243,7 @@ msgstr "{column}"
 msgid "No trackers registered"
 msgstr "No trackers registered"
 
-#: src/components/Referrals/ReferralsAffiliatesFaq.tsx
+#: src/components/Referrals/affiliates/faq.tsx
 msgid "You earn rebates the moment a referred trader executes their first trade. Rebates appear in your \"Claimable Rebates\" balance immediately."
 msgstr "You earn rebates the moment a referred trader executes their first trade. Rebates appear in your \"Claimable Rebates\" balance immediately."
 
@@ -10333,8 +10362,7 @@ msgstr "Frequency"
 msgid "Switch to WBTC-USDC pool"
 msgstr "Switch to WBTC-USDC pool"
 
-#: src/components/Referrals/AffiliatesOverviewChartCards.tsx
-#: src/components/Referrals/AffiliatesOverviewChartCards.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Traders referred"
 msgstr "Traders referred"
 
@@ -10408,7 +10436,7 @@ msgstr "Lent position impact pool amount"
 msgid "short"
 msgstr "short"
 
-#: src/components/Referrals/ReferralsDistributionsTab.tsx
+#: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 msgid "Transaction hash copied to clipboard"
 msgstr "Transaction hash copied to clipboard"
 
@@ -10484,7 +10512,7 @@ msgstr "No liquidity available for increasing shorts at<0/>this size. Max short 
 msgid "<0>Switch to {0} pool</0> for potentially lower price impact"
 msgstr "<0>Switch to {0} pool</0> for potentially lower price impact"
 
-#: src/components/Referrals/CreateAffiliateCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Earn up to 20% in<0/> rebates as an Affiliate"
 msgstr "Earn up to 20% in<0/> rebates as an Affiliate"
 
@@ -10518,14 +10546,14 @@ msgid "No distributions to claim"
 msgstr "No distributions to claim"
 
 #: src/components/PositionShare/PositionShare.tsx
-#: src/components/Referrals/ShareReferralCardModal.tsx
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "Copy link"
 msgstr "Copy link"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "Referral code created"
 msgstr "Referral code created"
 
@@ -10543,13 +10571,13 @@ msgstr "Funds bridging to..."
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
-#: src/components/Referrals/JoinReferralCode/ReferralCodeFormMultichain.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/traders/joinCode/ReferralCodeFormMultichain.tsx
 msgid "Network fee"
 msgstr "Network fee"
 
-#: src/components/Referrals/ReferralsTradersFaq.tsx
+#: src/components/Referrals/traders/faq.tsx
 msgid "Trading Volume is the total USD value of all your leveraged trades (opens + closes) since you applied your referral code."
 msgstr "Trading Volume is the total USD value of all your leveraged trades (opens + closes) since you applied your referral code."
 
@@ -10574,7 +10602,7 @@ msgstr "GMX staked rewards:"
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee"
 msgstr "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee"
 
-#: src/components/Referrals/JoinReferralCode/ReferralCodeFormSettlementChain.tsx
+#: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Failed to add referral code"
 msgstr "Failed to add referral code"
 
@@ -10665,7 +10693,7 @@ msgstr "limit"
 msgid "Execute TWAP Swap part"
 msgstr "Execute TWAP Swap part"
 
-#: src/components/Referrals/ReferralsTradersFaq.tsx
+#: src/components/Referrals/traders/faq.tsx
 msgid "Can I change my referral code to a different one?"
 msgstr "Can I change my referral code to a different one?"
 
@@ -10699,7 +10727,7 @@ msgid "Order may not execute at {priceText}: acceptable impact ({formattedOrderA
 msgstr "Order may not execute at {priceText}: acceptable impact ({formattedOrderAcceptablePriceImpact}) below market ({formattedCurrentAcceptablePriceImpact}). Click \"Edit\"."
 
 #: src/components/PositionShare/PositionShare.tsx
-#: src/components/Referrals/ShareReferralCardModal.tsx
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "Share on"
 msgstr "Share on"
 
@@ -10749,15 +10777,11 @@ msgstr "Link"
 msgid "Available to deposit"
 msgstr "Available to deposit"
 
-#: src/components/Referrals/ReferralsTradersContent.tsx
-msgid "Your savings"
-msgstr "Your savings"
-
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "General performance details"
 msgstr "General performance details"
 
-#: src/components/Referrals/AffiliatesOverviewChartCards.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Number of Trades from Referrals"
 msgstr "Number of Trades from Referrals"
 
@@ -10852,7 +10876,7 @@ msgstr "Insufficient balance"
 msgid "Collateral delta"
 msgstr "Collateral delta"
 
-#: src/components/Referrals/ReferralsTradersFaq.tsx
+#: src/components/Referrals/traders/faq.tsx
 msgid "When does the discount start?"
 msgstr "When does the discount start?"
 
@@ -10872,9 +10896,9 @@ msgstr "Execution price may differ from limit price due to fees and price impact
 msgid "Private"
 msgstr "Private"
 
-#: src/components/Referrals/CreateAffiliateCode/CreateAffiliateWizard.tsx
-#: src/components/Referrals/CreateAffiliateCode/CreateAffiliateWizard.tsx
-#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Learn more"
 msgstr "Learn more"
 
@@ -10886,8 +10910,8 @@ msgstr "Min. required collateral"
 msgid "{orderText} update failed"
 msgstr "{orderText} update failed"
 
-#: src/components/Referrals/JoinReferralCode/JoinReferralWizard.tsx
-#: src/components/Referrals/ReferralsDistributionsTab.tsx
+#: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Success"
 msgstr "Success"

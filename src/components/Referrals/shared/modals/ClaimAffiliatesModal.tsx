@@ -46,7 +46,7 @@ import { Amount } from "components/Amount/Amount";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
-import Modal from "components/Modal/Modal";
+import ModalWithPortal from "components/Modal/ModalWithPortal";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { Table, TableTd, TableTh, TableTheadTr } from "components/Table/Table";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -436,7 +436,7 @@ export function ClaimAffiliatesModal(p: Props) {
   }, [chainId, errors?.isOutOfTokenError, hasOutdatedUi, isSubmitting, selectedMarketAddresses.length]);
 
   return (
-    <Modal
+    <ModalWithPortal
       contentClassName="w-[400px] overflow-y-auto"
       isVisible={true}
       setIsVisible={onClose}
@@ -519,7 +519,7 @@ export function ClaimAffiliatesModal(p: Props) {
 
         <NetworkFee errors={errors} expressTxnParamsAsyncResult={expressTxnParamsAsyncResult} />
       </div>
-    </Modal>
+    </ModalWithPortal>
   );
 }
 

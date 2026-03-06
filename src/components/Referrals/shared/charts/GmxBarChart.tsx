@@ -109,7 +109,7 @@ export function GmxBarChart({
   chartData: any[];
 }) {
   return (
-    <div className="h-[256px] w-full">
+    <div className="h-[250px] w-full">
       <ResponsiveContainer width="100%" height="100%" debounce={500}>
         <BarChart data={chartData} margin={CHART_MARGIN} barSize={2} stackOffset="sign">
           <CartesianGrid
@@ -143,7 +143,13 @@ export function GmxBarChart({
   );
 }
 
-function TradersVolumeChartTooltip({ active, payload }: any) {
+function TradersVolumeChartTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: Array<{ payload: { dateTooltip: string; volumeUsd: bigint } }>;
+}) {
   if (!active || !payload?.length) return null;
   const item = payload[0].payload as { dateTooltip: string; volumeUsd: bigint };
 
@@ -173,7 +179,13 @@ export function TradersVolumeChart({
   );
 }
 
-function TradesCountChartTooltip({ active, payload }: any) {
+function TradesCountChartTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: Array<{ payload: { dateTooltip: string; tradesCount: number } }>;
+}) {
   if (!active || !payload?.length) return null;
   const item = payload[0].payload as { dateTooltip: string; tradesCount: number };
 
@@ -203,7 +215,13 @@ export function TradesCountChart({
   );
 }
 
-function RebatesChartTooltip({ active, payload }: any) {
+function RebatesChartTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: Array<{ payload: { dateTooltip: string; rebatesUsd: bigint } }>;
+}) {
   if (!active || !payload?.length) return null;
   const item = payload[0].payload as { dateTooltip: string; rebatesUsd: bigint };
 
@@ -235,7 +253,15 @@ export function RebatesChart({
 
 const orderedDataKeys = ["tradersLostFloat", "tradersGainedFloat"];
 
-function TradersReferredChartTooltip({ active, payload }: any) {
+function TradersReferredChartTooltip({
+  active,
+  payload,
+}: {
+  active?: boolean;
+  payload?: Array<{
+    payload: { dateTooltip: string; tradersGained: number; tradersLost: number };
+  }>;
+}) {
   if (!active || !payload?.length) return null;
   const item = payload[0].payload as {
     dateTooltip: string;
