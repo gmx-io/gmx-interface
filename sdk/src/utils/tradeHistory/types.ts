@@ -10,6 +10,16 @@ export enum TradeActionType {
   OrderFrozen = "OrderFrozen",
 }
 
+/**
+ * The cancel reason string emitted by contracts when an order is explicitly cancelled
+ * via cancelOrder, as opposed to cancellation due to execution failure.
+ *
+ * - For market orders, keepers can only cancel via this path after `requestExpirationTime`
+ *   has elapsed, so this reason effectively means the order expired.
+ * - For limit/trigger orders, users can cancel immediately via this path at any time.
+ */
+export const USER_INITIATED_CANCEL = "USER_INITIATED_CANCEL";
+
 export type PositionTradeAction = {
   type: "position";
   id: string;
