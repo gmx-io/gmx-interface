@@ -3,7 +3,11 @@ import { ReactNode, useCallback, useEffect } from "react";
 
 import { getChainName } from "config/chains";
 import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectAccountStats, selectSubaccountState } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectAccountStats,
+  selectJitLiquidityMap,
+  selectSubaccountState,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectExpressOrdersEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxAvailableMarketsOptions,
@@ -18,6 +22,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getFeeItem } from "domain/synthetics/fees";
 import { Market, MarketInfo } from "domain/synthetics/markets/types";
+import { getJitLiquidityInfo } from "domain/synthetics/markets/useJitLiquidity";
 import { getAvailableUsdLiquidityForPosition, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { formatLeverage } from "domain/synthetics/positions/utils";
 import { useChainId } from "lib/chains";
@@ -51,6 +56,8 @@ const useTradeboxPoolWarnings = () => {
   const isExpressEnabled = useSelector(selectExpressOrdersEnabled);
   const { subaccount } = useSelector(selectSubaccountState);
 
+  const jitLiquidityMap = useSelector(selectJitLiquidityMap);
+
   const isSelectedMarket = useCallback(
     (market: Market) => {
       return marketInfo && market.marketTokenAddress === marketInfo.marketTokenAddress;
@@ -60,14 +67,15 @@ const useTradeboxPoolWarnings = () => {
 
   const hasEnoughLiquidity = useCallback(
     (marketInfo: MarketInfo) => {
-      const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true);
-      const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false);
+      const jitInfo = getJitLiquidityInfo(jitLiquidityMap, marketInfo.marketTokenAddress);
+      const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true, jitInfo?.jitLiquidityLongUsd);
+      const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false, jitInfo?.jitLiquidityShortUsd);
 
       return isLong
         ? longLiquidity >= (increaseAmounts?.sizeDeltaUsd || 0)
         : shortLiquidity >= (increaseAmounts?.sizeDeltaUsd || 0);
     },
-    [increaseAmounts, isLong]
+    [increaseAmounts, isLong, jitLiquidityMap]
   );
 
   const indexToken = marketInfo?.indexToken;

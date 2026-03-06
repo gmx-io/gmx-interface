@@ -16,6 +16,7 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { createGetMaxLongShortLiquidityPool } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useEmptyGmxAccounts } from "domain/multichain/useEmptyGmxAccounts";
 import { MarketInfo } from "domain/synthetics/markets";
+import { JitLiquidityInfo } from "domain/synthetics/markets/useJitLiquidity";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { EMPTY_OBJECT, getByKey } from "lib/objects";
 import { useSafeState } from "lib/useSafeState";
@@ -109,13 +110,15 @@ export function useTradeboxState(
     ordersInfoData?: OrdersInfoData;
     tokensData?: TokensData;
     srcChainId: SourceChainId | undefined;
+    jitLiquidityMap?: Map<string, JitLiquidityInfo>;
   }
 ) {
   const history = useHistory();
   const latestHistory = useLatest(history);
   const latestEnabled = useLatest(enabled);
 
-  const { marketsInfoData, marketsData, tokensData, positionsInfoData, ordersInfoData, srcChainId } = p;
+  const { marketsInfoData, marketsData, tokensData, positionsInfoData, ordersInfoData, srcChainId, jitLiquidityMap } =
+    p;
 
   const availableTokensOptions = useAvailableTokenOptions(chainId, {
     marketsInfoData,
@@ -329,8 +332,8 @@ export function useTradeboxState(
   }, [chainId, tradeType, fromTokenAddress, toTokenAddress]);
 
   const getMaxLongShortLiquidityPool = useMemo(
-    () => createGetMaxLongShortLiquidityPool(availableTokensOptions.sortedAllMarkets || []),
-    [availableTokensOptions.sortedAllMarkets]
+    () => createGetMaxLongShortLiquidityPool(availableTokensOptions.sortedAllMarkets || [], jitLiquidityMap),
+    [availableTokensOptions.sortedAllMarkets, jitLiquidityMap]
   );
   const setTradeType = useCallback(
     (tradeType: TradeType) => {

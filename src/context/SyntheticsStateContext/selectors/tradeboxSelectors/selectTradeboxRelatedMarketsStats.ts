@@ -2,7 +2,7 @@ import fromPairs from "lodash/fromPairs";
 import keyBy from "lodash/keyBy";
 import values from "lodash/values";
 
-import { selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectJitLiquidityMap, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   getMarketIncreasePositionAmounts,
   selectTradeboxIncreasePositionAmounts,
@@ -11,6 +11,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
+import { getJitLiquidityUsd } from "domain/synthetics/markets/useJitLiquidity";
 import {
   MarketStat,
   marketsInfoData2IndexTokenStatsMap,
@@ -50,6 +51,7 @@ export const selectTradeboxRelatedMarketsStats = createSelector((q) => {
   }
 
   const availableMarkets = q(selectTradeboxAvailableMarkets);
+  const jitLiquidityMap = q(selectJitLiquidityMap);
 
   const relatedMarketStats =
     values(marketsInfoData2IndexTokenStatsMap(keyBy(availableMarkets, "marketTokenAddress")).indexMap)[0]
@@ -57,7 +59,11 @@ export const selectTradeboxRelatedMarketsStats = createSelector((q) => {
 
   const defaultMarketsEnoughLiquidity = fromPairs(
     availableMarkets.map((market) => {
-      const liquidity = getAvailableUsdLiquidityForPosition(market, isLong);
+      const liquidity = getAvailableUsdLiquidityForPosition(
+        market,
+        isLong,
+        getJitLiquidityUsd(jitLiquidityMap, market.marketTokenAddress, isLong)
+      );
       return [market.marketTokenAddress, { isEnoughLiquidity: liquidity > 0, liquidity, openFees: undefined }];
     })
   );
