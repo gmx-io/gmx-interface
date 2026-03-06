@@ -787,27 +787,17 @@ export function isThirdTokenDecreaseSwap(
   );
 }
 
-export function getCollateralToPnlInternalSwapStats(p: {
-  marketInfo: MarketInfo;
-  collateralToken: TokenData;
-  pnlToken: TokenData;
-  receiveUsd: bigint;
-}): { amountOut: bigint; usdOut: bigint } {
-  const { marketInfo, collateralToken, pnlToken, receiveUsd } = p;
+export function getCollateralToPnlInternalSwapStats(p: { pnlToken: TokenData; receiveUsd: bigint }): {
+  amountOut: bigint;
+} {
+  const { pnlToken, receiveUsd } = p;
 
-  const swapStats = getSwapStats({
-    marketInfo,
-    tokenInAddress: collateralToken.address,
-    tokenOutAddress: pnlToken.address,
-    usdIn: receiveUsd,
-    shouldApplyPriceImpact: true,
-    swapPricingType: SwapPricingType.Swap,
-  });
+  // Swap fees and price impact for the internal collateral→pnl swap are already
+  // deducted in getDecreasePositionAmounts (swapProfitFeeUsd). Convert the
+  // residual USD to pnl-token amount at oracle price to avoid double-counting.
+  const amountOut = convertToTokenAmount(receiveUsd, pnlToken.decimals, pnlToken.prices.minPrice) ?? 0n;
 
-  return {
-    amountOut: swapStats.amountOut,
-    usdOut: swapStats.usdOut,
-  };
+  return { amountOut };
 }
 
 export function selectBetterDecreaseSwapType(p: { pathAUsdOut: bigint; pathBUsdOut: bigint }): "pathA" | "pathB" {
@@ -926,10 +916,8 @@ export function getOptimalDecreaseAndSwapAmounts(p: {
     return { decreaseAmounts: pathADecrease, swapAmounts: pathASwap };
   }
 
-  // Estimate internal swap: collateral → pnlToken (conservative: uses entire receiveUsd)
+  // Estimate internal swap: collateral → pnlToken at oracle price
   const internalSwapStats = getCollateralToPnlInternalSwapStats({
-    marketInfo,
-    collateralToken,
     pnlToken,
     receiveUsd: pathBDecrease.receiveUsd,
   });

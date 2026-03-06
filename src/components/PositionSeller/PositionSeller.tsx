@@ -81,6 +81,7 @@ import useWallet from "lib/wallets/useWallet";
 import { convertTokenAddress, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
+import { DecreasePositionSwapType } from "sdk/utils/orders/types";
 import {
   BatchOrderTxnParams,
   buildDecreaseOrderPayload,
@@ -276,6 +277,11 @@ export function PositionSeller() {
   // Split receive: pre-formatted "X PnlToken + Y CollateralToken" when the position produces two distinct token outputs
   const splitReceiveLabel = useMemo(() => {
     if (shouldSwap || !decreaseAmounts || !position?.marketInfo) return undefined;
+
+    // Split receive only applies for SwapCollateralTokenToPnlToken where the user genuinely
+    // receives two tokens (profit in pnl + collateral delta in collateral). For SwapPnlTokenToCollateralToken
+    // the contract converts everything to collateral — user receives a single token.
+    if (decreaseAmounts.decreaseSwapType !== DecreasePositionSwapType.SwapCollateralTokenToPnlToken) return undefined;
 
     const { primaryOutput, secondaryOutput } = decreaseAmounts;
 
