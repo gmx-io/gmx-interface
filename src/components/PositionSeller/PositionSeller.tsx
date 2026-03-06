@@ -66,7 +66,15 @@ import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidationErrorMetric } from "lib/metrics/utils";
-import { expandDecimals, formatAmountFree, formatDeltaUsd, formatPercentage, parseValue } from "lib/numbers";
+import {
+  expandDecimals,
+  formatAmountFree,
+  formatBalanceAmount,
+  formatDeltaUsd,
+  formatPercentage,
+  formatUsd,
+  parseValue,
+} from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
@@ -263,11 +271,29 @@ export function PositionSeller() {
   const swapAmounts = useSelector(selectPositionSellerSwapAmounts);
 
   const receiveUsd = swapAmounts?.usdOut || decreaseAmounts?.receiveUsd;
-  // primaryOutput + secondaryOutput are always denominated in the actual output token,
-  // unlike receiveTokenAmount which is always in collateral token denomination.
-  const receiveTokenAmount =
-    swapAmounts?.amountOut ??
-    (decreaseAmounts ? decreaseAmounts.primaryOutput.amount + decreaseAmounts.secondaryOutput.amount : undefined);
+  const receiveTokenAmount = swapAmounts?.amountOut || decreaseAmounts?.receiveTokenAmount;
+
+  // Split receive: pre-formatted "X PnlToken + Y CollateralToken" when the position produces two distinct token outputs
+  const splitReceiveLabel = useMemo(() => {
+    if (shouldSwap || !decreaseAmounts || !position?.marketInfo) return undefined;
+
+    const { primaryOutput, secondaryOutput } = decreaseAmounts;
+
+    if (primaryOutput.tokenAddress === secondaryOutput.tokenAddress) return undefined;
+    if (primaryOutput.amount <= 0n || secondaryOutput.amount <= 0n) return undefined;
+
+    const pnlToken = position.isLong ? position.marketInfo.longToken : position.marketInfo.shortToken;
+    const collateralToken = position.collateralToken;
+
+    return [
+      formatBalanceAmount(primaryOutput.amount, pnlToken.decimals, pnlToken.symbol, {
+        isStable: pnlToken.isStable,
+      }),
+      formatBalanceAmount(secondaryOutput.amount, collateralToken.decimals, collateralToken.symbol, {
+        isStable: collateralToken.isStable,
+      }),
+    ].join(" + ");
+  }, [shouldSwap, decreaseAmounts, position]);
 
   const nextPositionValues = useSelector(selectPositionSellerNextPositionValuesForDecrease);
 
@@ -305,9 +331,7 @@ export function PositionSeller() {
   const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
     const orderType = isTwap ? OrderType.LimitDecrease : OrderType.MarketDecrease;
 
-    const isDirectPnlReceive =
-      decreaseAmounts?.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken && !shouldSwap;
-    const swapPath = isDirectPnlReceive ? [] : swapAmounts?.swapStrategy.swapPathStats?.swapPath || [];
+    const swapPath = swapAmounts?.swapStrategy.swapPathStats?.swapPath || [];
 
     if (
       !account ||
@@ -383,7 +407,6 @@ export function PositionSeller() {
     position,
     receiveToken?.address,
     receiveUsd,
-    shouldSwap,
     signer,
     swapAmounts?.swapStrategy.swapPathStats?.swapPath,
     tokensData,
@@ -726,17 +749,24 @@ export function PositionSeller() {
                     chainIdBadge={effectiveIsReceiveToGmxAccount ? GMX_ACCOUNT_PSEUDO_CHAIN_ID : ARBITRUM}
                   />
                 )}
-                <AmountWithUsdBalance
-                  className={cx({
-                    "*:!text-yellow-300 hover:!text-yellow-300": isNotEnoughReceiveTokenLiquidity,
-                  })}
-                  amount={receiveTokenAmount}
-                  decimals={receiveToken.decimals}
-                  symbol={receiveToken.symbol}
-                  usd={receiveUsd}
-                  isStable={receiveToken.isStable}
-                  secondaryValueClassName="!text-14"
-                />
+                {splitReceiveLabel ? (
+                  <span>
+                    <span className="numbers">{splitReceiveLabel}</span>{" "}
+                    <span className="text-typography-secondary numbers !text-14">({formatUsd(receiveUsd)})</span>
+                  </span>
+                ) : (
+                  <AmountWithUsdBalance
+                    className={cx({
+                      "*:!text-yellow-300 hover:!text-yellow-300": isNotEnoughReceiveTokenLiquidity,
+                    })}
+                    amount={receiveTokenAmount}
+                    decimals={receiveToken.decimals}
+                    symbol={receiveToken.symbol}
+                    usd={receiveUsd}
+                    isStable={receiveToken.isStable}
+                    secondaryValueClassName="!text-14"
+                  />
+                )}
               </span>
             }
             extendedSortSequence={availableTokensOptions?.sortedLongAndShortTokens}
