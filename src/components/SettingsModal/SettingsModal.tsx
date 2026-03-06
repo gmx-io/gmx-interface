@@ -246,7 +246,13 @@ export function SettingsModal({
       desktopClassName="!items-start !justify-end !pt-[56px] !pr-8"
     >
       <div className="flex flex-col gap-8">
-        <Tabs options={tabOptions} selectedValue={activeTab} onChange={setActiveTab} type="inline" className="[&>div]:justify-between" />
+        <Tabs
+          options={tabOptions}
+          selectedValue={activeTab}
+          onChange={setActiveTab}
+          type="inline"
+          tabsWrapperClassName="justify-between"
+        />
         <div className="flex max-w-[380px] flex-row items-start overflow-x-hidden max-md:max-w-none">
           <TabWrapper tab="trading" activeTab={activeTab}>
             <TradingSettings
