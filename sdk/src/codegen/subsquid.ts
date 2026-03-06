@@ -2624,6 +2624,7 @@ export interface MarketInfo {
   maxShortPoolAmount: Scalars["BigInt"]["output"];
   maxShortPoolUsdForDeposit: Scalars["BigInt"]["output"];
   minCollateralFactor: Scalars["BigInt"]["output"];
+  minCollateralFactorForLiquidation: Scalars["BigInt"]["output"];
   minCollateralFactorForOpenInterestLong: Scalars["BigInt"]["output"];
   minCollateralFactorForOpenInterestShort: Scalars["BigInt"]["output"];
   minFundingFactorPerSecond: Scalars["BigInt"]["output"];
@@ -2956,6 +2957,12 @@ export enum MarketInfoOrderByInput {
   maxShortPoolUsdForDeposit_DESC = "maxShortPoolUsdForDeposit_DESC",
   maxShortPoolUsdForDeposit_DESC_NULLS_FIRST = "maxShortPoolUsdForDeposit_DESC_NULLS_FIRST",
   maxShortPoolUsdForDeposit_DESC_NULLS_LAST = "maxShortPoolUsdForDeposit_DESC_NULLS_LAST",
+  minCollateralFactorForLiquidation_ASC = "minCollateralFactorForLiquidation_ASC",
+  minCollateralFactorForLiquidation_ASC_NULLS_FIRST = "minCollateralFactorForLiquidation_ASC_NULLS_FIRST",
+  minCollateralFactorForLiquidation_ASC_NULLS_LAST = "minCollateralFactorForLiquidation_ASC_NULLS_LAST",
+  minCollateralFactorForLiquidation_DESC = "minCollateralFactorForLiquidation_DESC",
+  minCollateralFactorForLiquidation_DESC_NULLS_FIRST = "minCollateralFactorForLiquidation_DESC_NULLS_FIRST",
+  minCollateralFactorForLiquidation_DESC_NULLS_LAST = "minCollateralFactorForLiquidation_DESC_NULLS_LAST",
   minCollateralFactorForOpenInterestLong_ASC = "minCollateralFactorForOpenInterestLong_ASC",
   minCollateralFactorForOpenInterestLong_ASC_NULLS_FIRST = "minCollateralFactorForOpenInterestLong_ASC_NULLS_FIRST",
   minCollateralFactorForOpenInterestLong_ASC_NULLS_LAST = "minCollateralFactorForOpenInterestLong_ASC_NULLS_LAST",
@@ -3683,6 +3690,15 @@ export interface MarketInfoWhereInput {
   maxShortPoolUsdForDeposit_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   maxShortPoolUsdForDeposit_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   maxShortPoolUsdForDeposit_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  minCollateralFactorForLiquidation_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minCollateralFactorForLiquidation_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minCollateralFactorForLiquidation_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minCollateralFactorForLiquidation_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  minCollateralFactorForLiquidation_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  minCollateralFactorForLiquidation_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minCollateralFactorForLiquidation_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minCollateralFactorForLiquidation_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minCollateralFactorForLiquidation_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   minCollateralFactorForOpenInterestLong_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   minCollateralFactorForOpenInterestLong_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
   minCollateralFactorForOpenInterestLong_gte?: InputMaybe<Scalars["BigInt"]["input"]>;

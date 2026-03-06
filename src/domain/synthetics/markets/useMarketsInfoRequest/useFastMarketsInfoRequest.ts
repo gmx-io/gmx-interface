@@ -57,6 +57,7 @@ const MARKETS_INFO_QUERY = gql`
       positionImpactPoolDistributionRate
 
       minCollateralFactor
+      minCollateralFactorForLiquidation
       minCollateralFactorForOpenInterestLong
       minCollateralFactorForOpenInterestShort
 
@@ -200,7 +201,7 @@ export function useFastMarketsInfoRequest(chainId: number) {
             positionImpactPoolDistributionRate: BigInt(mInfo.positionImpactPoolDistributionRate),
 
             minCollateralFactor: BigInt(mInfo.minCollateralFactor),
-            minCollateralFactorForLiquidation: BigInt(mInfo.minCollateralFactor),
+            minCollateralFactorForLiquidation: BigInt(mInfo.minCollateralFactorForLiquidation),
             minCollateralFactorForOpenInterestLong: BigInt(mInfo.minCollateralFactorForOpenInterestLong),
             minCollateralFactorForOpenInterestShort: BigInt(mInfo.minCollateralFactorForOpenInterestShort),
 
