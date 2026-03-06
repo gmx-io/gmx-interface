@@ -751,6 +751,161 @@ export default [
               },
               {
                 internalType: "address",
+                name: "cancellationReceiver",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "callbackContract",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "uiFeeReceiver",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "market",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "initialCollateralToken",
+                type: "address",
+              },
+              {
+                internalType: "address[]",
+                name: "swapPath",
+                type: "address[]",
+              },
+            ],
+            internalType: "struct IBaseOrderUtils.CreateOrderParamsAddresses",
+            name: "addresses",
+            type: "tuple",
+          },
+          {
+            components: [
+              {
+                internalType: "uint256",
+                name: "sizeDeltaUsd",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "initialCollateralDeltaAmount",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "triggerPrice",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "acceptablePrice",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "executionFee",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "callbackGasLimit",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "minOutputAmount",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "validFromTime",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct IBaseOrderUtils.CreateOrderParamsNumbers",
+            name: "numbers",
+            type: "tuple",
+          },
+          {
+            internalType: "enum Order.OrderType",
+            name: "orderType",
+            type: "uint8",
+          },
+          {
+            internalType: "enum Order.DecreasePositionSwapType",
+            name: "decreasePositionSwapType",
+            type: "uint8",
+          },
+          {
+            internalType: "bool",
+            name: "isLong",
+            type: "bool",
+          },
+          {
+            internalType: "bool",
+            name: "shouldUnwrapNativeToken",
+            type: "bool",
+          },
+          {
+            internalType: "bool",
+            name: "autoCancel",
+            type: "bool",
+          },
+          {
+            internalType: "bytes32",
+            name: "referralCode",
+            type: "bytes32",
+          },
+          {
+            internalType: "bytes32[]",
+            name: "dataList",
+            type: "bytes32[]",
+          },
+        ],
+        internalType: "struct IBaseOrderUtils.CreateOrderParams",
+        name: "params",
+        type: "tuple",
+      },
+      {
+        internalType: "uint256",
+        name: "twapCount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "interval",
+        type: "uint256",
+      },
+    ],
+    name: "createTwapOrder",
+    outputs: [
+      {
+        internalType: "bytes32[]",
+        name: "orderKeys",
+        type: "bytes32[]",
+      },
+    ],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            components: [
+              {
+                internalType: "address",
+                name: "receiver",
+                type: "address",
+              },
+              {
+                internalType: "address",
                 name: "callbackContract",
                 type: "address",
               },

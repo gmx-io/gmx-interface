@@ -76,8 +76,7 @@ import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
 import {
   BatchOrderTxnParams,
   buildDecreaseOrderPayload,
-  buildTwapOrdersPayloads,
-  CreateOrderTxnParams,
+  buildNativeTwapOrderPayload,
   DecreasePositionOrderParams,
 } from "sdk/utils/orderTransactions";
 import { getIsValidTwapParams } from "sdk/utils/twap";
@@ -349,16 +348,19 @@ export function PositionSeller() {
       validFromTime: 0n,
     };
 
-    let createOrderParams: CreateOrderTxnParams<DecreasePositionOrderParams>[] = [];
-
     if (isTwap && getIsValidTwapParams(duration, numberOfParts)) {
-      createOrderParams = buildTwapOrdersPayloads(decreaseOrderParams, { duration, numberOfParts });
-    } else {
-      createOrderParams = [buildDecreaseOrderPayload(decreaseOrderParams)];
+      const nativeTwapParams = buildNativeTwapOrderPayload(decreaseOrderParams, { duration, numberOfParts });
+
+      return {
+        createOrderParams: [],
+        updateOrderParams: [],
+        cancelOrderParams: [],
+        nativeTwapParams,
+      };
     }
 
     return {
-      createOrderParams,
+      createOrderParams: [buildDecreaseOrderPayload(decreaseOrderParams)],
       updateOrderParams: [],
       cancelOrderParams: [],
     };

@@ -104,7 +104,7 @@ export function useOrderTxnCallbacks() {
       const actionsCount = getBatchRequiredActions(batchParams);
 
       let mainActionType: "create" | "update" | "cancel";
-      if (batchParams.createOrderParams.length > 0) {
+      if (batchParams.createOrderParams.length > 0 || batchParams.nativeTwapParams) {
         mainActionType = "create";
       } else if (batchParams.updateOrderParams.length > 0) {
         mainActionType = "update";
@@ -428,6 +428,19 @@ function getBatchPendingOrders(
     .map((cp) => getPendingCreateOrder(cp, false, createdAt));
 
   const twapPendingOrders = getPendingCreateTwapOrders(txnParams.createOrderParams, createdAt);
+
+  // Handle native TWAP order as a single pending order with total amounts
+  if (txnParams.nativeTwapParams) {
+    const { createOrderTxnParams, twapCount } = txnParams.nativeTwapParams;
+    const pendingOrder = getPendingCreateOrder(createOrderTxnParams, true, createdAt);
+    // Scale per-order values to totals for the pending display
+    twapPendingOrders.push({
+      ...pendingOrder,
+      sizeDeltaUsd: pendingOrder.sizeDeltaUsd * BigInt(twapCount),
+      initialCollateralDeltaAmount: pendingOrder.initialCollateralDeltaAmount * BigInt(twapCount),
+      minOutputAmount: pendingOrder.minOutputAmount * BigInt(twapCount),
+    });
+  }
 
   const updatePendingOrders = txnParams.updateOrderParams
     .map((updateOrderParams) => {
