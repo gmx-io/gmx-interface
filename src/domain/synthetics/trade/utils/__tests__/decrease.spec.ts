@@ -119,7 +119,7 @@ describe("getDecreasePositionAmounts DecreasePositionSwapType", () => {
 });
 
 describe("getDecreasePositionAmounts primaryOutput/secondaryOutput", () => {
-  it("sets collateral token for outputs when SwapPnlTokenToCollateralToken", () => {
+  it("primary in pnl token, secondary in collateral token for SwapPnlTokenToCollateralToken", () => {
     const amounts = getDecreasePositionAmounts({
       closeSizeUsd: POSITION_FIXTURE.sizeInUsd,
       collateralToken: USDC_TOKEN_FIXTURE,
@@ -136,12 +136,12 @@ describe("getDecreasePositionAmounts primaryOutput/secondaryOutput", () => {
     });
 
     expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.SwapPnlTokenToCollateralToken);
-    expect(amounts.primaryOutput.tokenAddress).toEqual(USDC_TOKEN_FIXTURE.address);
+    expect(amounts.primaryOutput.tokenAddress).toEqual(WETH_TOKEN_FIXTURE.address);
     expect(amounts.secondaryOutput.tokenAddress).toEqual(USDC_TOKEN_FIXTURE.address);
     expect(amounts.primaryOutput.usd + amounts.secondaryOutput.usd).toEqual(amounts.receiveUsd);
   });
 
-  it("sets pnl token for outputs when SwapCollateralTokenToPnlToken", () => {
+  it("primary in pnl token, secondary in collateral token for SwapCollateralTokenToPnlToken", () => {
     const amounts = getDecreasePositionAmounts({
       closeSizeUsd: POSITION_FIXTURE.sizeInUsd,
       collateralToken: USDC_TOKEN_FIXTURE,
@@ -160,8 +160,9 @@ describe("getDecreasePositionAmounts primaryOutput/secondaryOutput", () => {
 
     expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.SwapCollateralTokenToPnlToken);
     expect(amounts.primaryOutput.tokenAddress).toEqual(WETH_TOKEN_FIXTURE.address);
-    expect(amounts.secondaryOutput.tokenAddress).toEqual(WETH_TOKEN_FIXTURE.address);
+    expect(amounts.secondaryOutput.tokenAddress).toEqual(USDC_TOKEN_FIXTURE.address);
     expect(amounts.primaryOutput.amount).toBeGreaterThan(0n);
+    expect(amounts.primaryOutput.usd + amounts.secondaryOutput.usd).toEqual(amounts.receiveUsd);
   });
 
   it("has zero secondary output for partial close without collateral delta", () => {

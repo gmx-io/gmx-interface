@@ -399,7 +399,8 @@ export function getDecreasePositionAmounts(p: {
 
   values.receiveUsd = convertToUsd(values.receiveTokenAmount, collateralToken.decimals, values.collateralPrice)!;
 
-  // Primary output (profit portion) and secondary output (collateral portion)
+  // Primary output (profit portion) always in pnl token, secondary output (collateral portion) always in collateral token.
+  // This enables the UI to show a split receive breakdown (e.g. "X ETH + Y USDC") when the two tokens differ.
   const profitOutputAmount = payedInfo.outputAmount;
   const profitOutputUsd = convertToUsd(profitOutputAmount, collateralToken.decimals, values.collateralPrice) ?? 0n;
 
@@ -407,31 +408,19 @@ export function getDecreasePositionAmounts(p: {
   const collateralOutputUsd =
     convertToUsd(collateralOutputAmount, collateralToken.decimals, values.collateralPrice) ?? 0n;
 
-  if (values.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken) {
-    const pnlTokenPrice = pnlToken.prices.minPrice;
+  const pnlTokenPrice = pnlToken.prices.minPrice;
 
-    values.primaryOutput = {
-      tokenAddress: pnlToken.address,
-      amount: convertToTokenAmount(profitOutputUsd, pnlToken.decimals, pnlTokenPrice) ?? 0n,
-      usd: profitOutputUsd,
-    };
-    values.secondaryOutput = {
-      tokenAddress: pnlToken.address,
-      amount: convertToTokenAmount(collateralOutputUsd, pnlToken.decimals, pnlTokenPrice) ?? 0n,
-      usd: collateralOutputUsd,
-    };
-  } else {
-    values.primaryOutput = {
-      tokenAddress: collateralToken.address,
-      amount: profitOutputAmount,
-      usd: profitOutputUsd,
-    };
-    values.secondaryOutput = {
-      tokenAddress: collateralToken.address,
-      amount: collateralOutputAmount,
-      usd: collateralOutputUsd,
-    };
-  }
+  // primaryOutput.amount is a USD-based estimate; the actual contract swap may differ due to fees/slippage.
+  values.primaryOutput = {
+    tokenAddress: pnlToken.address,
+    amount: convertToTokenAmount(profitOutputUsd, pnlToken.decimals, pnlTokenPrice) ?? 0n,
+    usd: profitOutputUsd,
+  };
+  values.secondaryOutput = {
+    tokenAddress: collateralToken.address,
+    amount: collateralOutputAmount,
+    usd: collateralOutputUsd,
+  };
 
   return values;
 }
