@@ -1,4 +1,4 @@
-import { useMemo, useRef, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 
 import { buildUrl } from "lib/buildUrl";
@@ -76,13 +76,19 @@ export function getJitLiquidityUsd(
   return isLong ? info?.jitLiquidityLongUsd : info?.jitLiquidityShortUsd;
 }
 
-export function useJitLiquidity(chainId: ContractsChainId): JitLiquidityData {
+function safeParseBigInt(value: string): bigint {
+  const parsed = BigInt(value);
+  return parsed < 0n ? 0n : parsed;
+}
+
+export function useJitLiquidity(chainId: ContractsChainId, options?: { enabled?: boolean }): JitLiquidityData {
+  const enabled = options?.enabled !== false;
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
   const staleMarketsRef = useRef<Map<string, number>>(new Map());
   const [staleVersion, setStaleVersion] = useState(0);
 
   const { data, mutate } = useSWR<Map<string, JitLiquidityInfo> | undefined>(
-    ["jitLiquidity", chainId],
+    enabled ? ["jitLiquidity", chainId] : null,
     async () => {
       try {
         const url = buildUrl(oracleKeeperFetcher.url, "/jit/liquidity_info");
@@ -104,14 +110,14 @@ export function useJitLiquidity(chainId: ContractsChainId): JitLiquidityData {
           const marketKey = info.market.toLowerCase();
 
           map.set(marketKey, {
-            jitLiquidityLongUsd: BigInt(info.liquidityUsdForLongs),
-            jitLiquidityShortUsd: BigInt(info.liquidityUsdForShorts),
+            jitLiquidityLongUsd: safeParseBigInt(info.liquidityUsdForLongs),
+            jitLiquidityShortUsd: safeParseBigInt(info.liquidityUsdForShorts),
             glvShiftParams: (info.glvShiftParams ?? []).map((param) => ({
               glv: param.glv,
               fromMarket: param.fromMarket,
               toMarket: param.toMarket,
-              marketTokenAmount: BigInt(param.marketTokenAmount),
-              minMarketTokens: BigInt(param.minMarketTokens),
+              marketTokenAmount: safeParseBigInt(param.marketTokenAmount),
+              minMarketTokens: safeParseBigInt(param.minMarketTokens),
             })),
             glv: info.glv,
           });
@@ -129,10 +135,10 @@ export function useJitLiquidity(chainId: ContractsChainId): JitLiquidityData {
     }
   );
 
-  const markJitStale = (marketAddress: string) => {
+  const markJitStale = useCallback((marketAddress: string) => {
     staleMarketsRef.current.set(marketAddress.toLowerCase(), Date.now());
     setStaleVersion((v) => v + 1);
-  };
+  }, []);
 
   const jitLiquidityMap = useMemo(() => {
     if (!data) {
@@ -157,9 +163,12 @@ export function useJitLiquidity(chainId: ContractsChainId): JitLiquidityData {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, staleVersion]);
 
-  return {
-    jitLiquidityMap,
-    markJitStale,
-    refreshJitData: mutate,
-  };
+  return useMemo(
+    () => ({
+      jitLiquidityMap,
+      markJitStale,
+      refreshJitData: mutate,
+    }),
+    [jitLiquidityMap, markJitStale, mutate]
+  );
 }

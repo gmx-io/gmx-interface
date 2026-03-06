@@ -334,6 +334,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
             jitShiftParamsList: marketInfo
               ? getJitLiquidityInfo(jitLiquidityMap, marketInfo.marketTokenAddress)?.glvShiftParams
               : undefined,
+            // Intentionally excludes JIT — used to determine whether JIT simulation is needed
             nativeReserveLiquidity: marketInfo ? getAvailableUsdLiquidityForPosition(marketInfo, isLong) : undefined,
             markJitStale,
             refreshJitData,

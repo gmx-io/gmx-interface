@@ -342,8 +342,8 @@ const JIT_SHIFT_ERROR_NAMES = new Set([
 ]);
 
 function isJitShiftError(error: unknown): boolean {
-  if (isCustomError(error as Error | undefined)) {
-    return JIT_SHIFT_ERROR_NAMES.has((error as Error).name);
+  if (error instanceof Error && isCustomError(error)) {
+    return JIT_SHIFT_ERROR_NAMES.has(error.name);
   }
 
   const decoded = decodeErrorFromViemError(error);

@@ -260,7 +260,7 @@ export function SyntheticsStateContextProvider({
   });
 
   const oracleSettings = useOracleSettingsData();
-  const jitLiquidityData = useJitLiquidity(chainId);
+  const jitLiquidityData = useJitLiquidity(chainId, { enabled: isTradePage });
 
   const [missedCoinsModalPlace, setMissedCoinsModalPlace] = useState<MissedCoinsPlace>();
 
