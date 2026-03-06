@@ -14,9 +14,10 @@ import ShareIcon from "img/ic_share.svg?react";
 import WalletIcon from "img/ic_wallet.svg?react";
 import referralWizardBg from "img/referral_wizard_bg.png";
 
-import { AffiliateCodeFormContainer } from "../AddAffiliateCode";
-import { LabelWithIcon } from "../JoinReferralCode/LabelWithIcon";
-import { StepProgress } from "../StepProgress";
+import { LabelWithIcon } from "components/Referrals/traders/joinCode/LabelWithIcon";
+import { StepProgress } from "components/Referrals/shared/wizard/StepProgress";
+
+import { AffiliateCodeFormContainer } from "./AddAffiliateCode";
 
 enum CreateAffiliateWizardStep {
   ConnectWallet = 0,

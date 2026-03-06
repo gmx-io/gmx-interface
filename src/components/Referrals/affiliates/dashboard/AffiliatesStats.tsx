@@ -4,7 +4,7 @@ import { lightFormat } from "date-fns";
 import { useCallback, useMemo, useRef, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 
-import { ReferralCodeStats, TotalReferralsStats, useTiers } from "domain/referrals";
+import { ReferralCodeStats, TotalReferralsStats, useReferralPromoClosed, useTiers } from "domain/referrals";
 import { useAffiliateReferralStats } from "domain/referrals/hooks/useAffiliateReferralStats";
 import { TimeRangeInfo, useTimeRange } from "domain/synthetics/markets/useTimeRange";
 import { useChainId } from "lib/chains";
@@ -30,18 +30,18 @@ import PlusIcon from "img/ic_plus.svg?react";
 import ShareIcon from "img/ic_share.svg?react";
 import referralCodePromoFg from "img/referral_code_promo_fg.png";
 
-import { AffiliateCodeFormContainer } from "./AddAffiliateCode";
+import { AffiliateCodeFormContainer } from "../createCode/AddAffiliateCode";
 import {
   NumberOfTradesChartCard,
   RebatesChartCard,
   TradersReferredChartCard,
   TradingVolumeChartCard,
 } from "./AffiliatesOverviewChartCards";
-import { ClaimableRebatesCard } from "./ClaimableRebatesCard";
-import { PromoCard } from "./PromoCard";
+import { ClaimableRebatesCard } from "../../shared/cards/ClaimableRebatesCard";
+import { PromoCard } from "../../shared/cards/PromoCard";
 import { ReferralCodeWarnings } from "./ReferralCodeWarnings";
-import { AFFILIATE_POST_WIZARD_FAQS } from "./ReferralsAffiliatesFaq";
-import { ReferralsDocsCard } from "./ReferralsDocsCard";
+import { AFFILIATE_POST_WIZARD_FAQS } from "../faq";
+import { ReferralsDocsCard } from "../../shared/cards/ReferralsDocsCard";
 import {
   getReferralCodeTradeUrl,
   getSharePercentage,
@@ -49,8 +49,8 @@ import {
   getTwitterShareUrl,
   getUsdValue,
   isRecentReferralCodeNotExpired,
-} from "./referralsHelper";
-import usePagination from "./usePagination";
+} from "../../shared/utils/referralsHelper";
+import usePagination from "components/Pagination/usePagination";
 
 import "./AffiliatesStats.scss";
 
@@ -185,6 +185,7 @@ export function AffiliatesStats({
     from: periodStart,
     to: periodEnd,
   });
+  const { isClosed: isAffiliatePromoClosed, close: closeAffiliatePromo } = useReferralPromoClosed("affiliate", account);
 
   const lastUpdated = referralStats?.to
     ? `${lightFormat(referralStats.to * 1000, "yyyy-MM-dd HH:mm:ss")} UTC`
@@ -205,20 +206,23 @@ export function AffiliatesStats({
             />
           </div>
         </div>
-        <PromoCard
-          title={<Trans>Enter the referral code and save up to 10% on fees</Trans>}
-          subtitle={
-            <Trans>
-              Activate someone's referral code to receive a permanent discount on all opening and closing <br /> fees.
-              Your savings apply automatically on every trade.{" "}
-              <ExternalLink href="https://docs.gmx.io/docs/referrals" variant="icon" className="text-blue-300">
-                <Trans>Learn more</Trans>
-              </ExternalLink>
-            </Trans>
-          }
-        >
-          <img src={referralCodePromoFg} className="user-select-none absolute -bottom-22 right-28 z-10 w-[104px]" />
-        </PromoCard>
+        {!isAffiliatePromoClosed && (
+          <PromoCard
+            title={<Trans>Enter the referral code and save up to 10% on fees</Trans>}
+            subtitle={
+              <Trans>
+                Activate someone's referral code to receive a permanent discount on all opening and closing <br /> fees.
+                Your savings apply automatically on every trade.{" "}
+                <ExternalLink href="https://docs.gmx.io/docs/referrals" variant="icon-arrow" className="text-blue-300">
+                  <Trans>Learn more</Trans>
+                </ExternalLink>
+              </Trans>
+            }
+            onClose={closeAffiliatePromo}
+          >
+            <img src={referralCodePromoFg} className="user-select-none absolute -bottom-22 right-28 z-10 w-[104px]" />
+          </PromoCard>
+        )}
         <div className="flex flex-col gap-12">
           <div className="grid grid-cols-2 gap-12 max-lg:grid-cols-1">
             <TradingVolumeChartCard

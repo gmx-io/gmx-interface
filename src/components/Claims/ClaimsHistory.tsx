@@ -19,7 +19,7 @@ import Button from "components/Button/Button";
 import { DateRangeSelect } from "components/DateRangeSelect/DateRangeSelect";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
-import usePagination from "components/Referrals/usePagination";
+import usePagination from "components/Pagination/usePagination";
 import { ClaimsHistorySkeleton } from "components/Skeleton/Skeleton";
 import { TableTh, TableTheadTr } from "components/Table/Table";
 import { MarketFilter } from "components/TableMarketFilter/MarketFilter";

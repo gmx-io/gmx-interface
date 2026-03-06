@@ -375,6 +375,54 @@ export interface AccountVolumeWhereInput {
   account: Scalars["String"]["input"];
 }
 
+export interface AffiliateStatsPoint {
+  __typename?: "AffiliateStatsPoint";
+  rebatesUsd: Scalars["BigInt"]["output"];
+  timestamp: Scalars["Float"]["output"];
+  tradersGained: Scalars["Float"]["output"];
+  tradersLost: Scalars["Float"]["output"];
+  tradersNet: Scalars["Float"]["output"];
+  tradesCount: Scalars["Float"]["output"];
+  volumeUsd: Scalars["BigInt"]["output"];
+}
+
+export interface AffiliateStatsResponse {
+  __typename?: "AffiliateStatsResponse";
+  affiliate: Scalars["String"]["output"];
+  bucketSizeSeconds: Scalars["Float"]["output"];
+  compareFrom?: Maybe<Scalars["Float"]["output"]>;
+  compareTo?: Maybe<Scalars["Float"]["output"]>;
+  from: Scalars["Float"]["output"];
+  hasComparison: Scalars["Boolean"]["output"];
+  points: Array<AffiliateStatsPoint>;
+  summary: AffiliateStatsSummary;
+  to: Scalars["Float"]["output"];
+}
+
+export interface AffiliateStatsSummary {
+  __typename?: "AffiliateStatsSummary";
+  rebatesUsd: Scalars["BigInt"]["output"];
+  rebatesUsdDelta?: Maybe<Scalars["BigInt"]["output"]>;
+  tradersCount: Scalars["Float"]["output"];
+  tradersCountDelta?: Maybe<Scalars["Float"]["output"]>;
+  tradersGained?: Maybe<Scalars["Float"]["output"]>;
+  tradersGainedDelta?: Maybe<Scalars["Float"]["output"]>;
+  tradersLost?: Maybe<Scalars["Float"]["output"]>;
+  tradersLostDelta?: Maybe<Scalars["Float"]["output"]>;
+  tradersNet?: Maybe<Scalars["Float"]["output"]>;
+  tradersNetDelta?: Maybe<Scalars["Float"]["output"]>;
+  tradesCount: Scalars["Float"]["output"];
+  tradesCountDelta?: Maybe<Scalars["Float"]["output"]>;
+  volumeUsd: Scalars["BigInt"]["output"];
+  volumeUsdDelta?: Maybe<Scalars["BigInt"]["output"]>;
+}
+
+export interface AffiliateStatsWhereInput {
+  affiliate: Scalars["String"]["input"];
+  from?: InputMaybe<Scalars["Float"]["input"]>;
+  to?: InputMaybe<Scalars["Float"]["input"]>;
+}
+
 export interface AnnualizedPerformanceObject {
   __typename?: "AnnualizedPerformanceObject";
   address: Scalars["String"]["output"];
@@ -8075,7 +8123,7 @@ export interface Query {
   referralCodeOwnerById?: Maybe<ReferralCodeOwner>;
   referralCodeOwners: Array<ReferralCodeOwner>;
   referralCodeOwnersConnection: ReferralCodeOwnersConnection;
-  referralStats: ReferralStatsResponse;
+  referralStats: AffiliateStatsResponse;
   referralTradeStatsByHourById?: Maybe<ReferralTradeStatsByHour>;
   referralTradeStatsByHours: Array<ReferralTradeStatsByHour>;
   referralTradeStatsByHoursConnection: ReferralTradeStatsByHoursConnection;
@@ -8100,6 +8148,10 @@ export interface Query {
   traderReferralChangeById?: Maybe<TraderReferralChange>;
   traderReferralChanges: Array<TraderReferralChange>;
   traderReferralChangesConnection: TraderReferralChangesConnection;
+  traderReferralStats: TraderReferralStatsResponse;
+  traderReferralTradeStatsByHourById?: Maybe<TraderReferralTradeStatsByHour>;
+  traderReferralTradeStatsByHours: Array<TraderReferralTradeStatsByHour>;
+  traderReferralTradeStatsByHoursConnection: TraderReferralTradeStatsByHoursConnection;
   traderReferrals: Array<TraderReferral>;
   traderReferralsConnection: TraderReferralsConnection;
   volumeInfoById?: Maybe<VolumeInfo>;
@@ -8743,7 +8795,7 @@ export interface QueryreferralCodeOwnersConnectionArgs {
 }
 
 export interface QueryreferralStatsArgs {
-  where?: InputMaybe<ReferralStatsWhereInput>;
+  where?: InputMaybe<AffiliateStatsWhereInput>;
 }
 
 export interface QueryreferralTradeStatsByHourByIdArgs {
@@ -8874,6 +8926,28 @@ export interface QuerytraderReferralChangesConnectionArgs {
   first?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy: Array<TraderReferralChangeOrderByInput>;
   where?: InputMaybe<TraderReferralChangeWhereInput>;
+}
+
+export interface QuerytraderReferralStatsArgs {
+  where?: InputMaybe<TraderReferralStatsWhereInput>;
+}
+
+export interface QuerytraderReferralTradeStatsByHourByIdArgs {
+  id: Scalars["String"]["input"];
+}
+
+export interface QuerytraderReferralTradeStatsByHoursArgs {
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<Array<TraderReferralTradeStatsByHourOrderByInput>>;
+  where?: InputMaybe<TraderReferralTradeStatsByHourWhereInput>;
+}
+
+export interface QuerytraderReferralTradeStatsByHoursConnectionArgs {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy: Array<TraderReferralTradeStatsByHourOrderByInput>;
+  where?: InputMaybe<TraderReferralTradeStatsByHourWhereInput>;
 }
 
 export interface QuerytraderReferralsArgs {
@@ -9035,54 +9109,6 @@ export interface ReferralCodeOwnersConnection {
   edges: Array<ReferralCodeOwnerEdge>;
   pageInfo: PageInfo;
   totalCount: Scalars["Int"]["output"];
-}
-
-export interface ReferralStatsPoint {
-  __typename?: "ReferralStatsPoint";
-  rebatesUsd: Scalars["BigInt"]["output"];
-  timestamp: Scalars["Float"]["output"];
-  tradersGained: Scalars["Float"]["output"];
-  tradersLost: Scalars["Float"]["output"];
-  tradersNet: Scalars["Float"]["output"];
-  tradesCount: Scalars["Float"]["output"];
-  volumeUsd: Scalars["BigInt"]["output"];
-}
-
-export interface ReferralStatsResponse {
-  __typename?: "ReferralStatsResponse";
-  affiliate: Scalars["String"]["output"];
-  bucketSizeSeconds: Scalars["Float"]["output"];
-  compareFrom?: Maybe<Scalars["Float"]["output"]>;
-  compareTo?: Maybe<Scalars["Float"]["output"]>;
-  from: Scalars["Float"]["output"];
-  hasComparison: Scalars["Boolean"]["output"];
-  points: Array<ReferralStatsPoint>;
-  summary: ReferralStatsSummary;
-  to: Scalars["Float"]["output"];
-}
-
-export interface ReferralStatsSummary {
-  __typename?: "ReferralStatsSummary";
-  rebatesUsd: Scalars["BigInt"]["output"];
-  rebatesUsdDelta?: Maybe<Scalars["BigInt"]["output"]>;
-  tradersCount: Scalars["Float"]["output"];
-  tradersCountDelta?: Maybe<Scalars["Float"]["output"]>;
-  tradersGained?: Maybe<Scalars["Float"]["output"]>;
-  tradersGainedDelta?: Maybe<Scalars["Float"]["output"]>;
-  tradersLost?: Maybe<Scalars["Float"]["output"]>;
-  tradersLostDelta?: Maybe<Scalars["Float"]["output"]>;
-  tradersNet?: Maybe<Scalars["Float"]["output"]>;
-  tradersNetDelta?: Maybe<Scalars["Float"]["output"]>;
-  tradesCount: Scalars["Float"]["output"];
-  tradesCountDelta?: Maybe<Scalars["Float"]["output"]>;
-  volumeUsd: Scalars["BigInt"]["output"];
-  volumeUsdDelta?: Maybe<Scalars["BigInt"]["output"]>;
-}
-
-export interface ReferralStatsWhereInput {
-  affiliate: Scalars["String"]["input"];
-  from?: InputMaybe<Scalars["Float"]["input"]>;
-  to?: InputMaybe<Scalars["Float"]["input"]>;
 }
 
 export interface ReferralTradeStatsByHour {
@@ -11072,6 +11098,161 @@ export enum TraderReferralOrderByInput {
   updatedTxnHash_DESC = "updatedTxnHash_DESC",
   updatedTxnHash_DESC_NULLS_FIRST = "updatedTxnHash_DESC_NULLS_FIRST",
   updatedTxnHash_DESC_NULLS_LAST = "updatedTxnHash_DESC_NULLS_LAST",
+}
+
+export interface TraderReferralStatsPoint {
+  __typename?: "TraderReferralStatsPoint";
+  discountsUsd: Scalars["BigInt"]["output"];
+  timestamp: Scalars["Float"]["output"];
+  volumeUsd: Scalars["BigInt"]["output"];
+}
+
+export interface TraderReferralStatsResponse {
+  __typename?: "TraderReferralStatsResponse";
+  bucketSizeSeconds: Scalars["Float"]["output"];
+  compareFrom?: Maybe<Scalars["Float"]["output"]>;
+  compareTo?: Maybe<Scalars["Float"]["output"]>;
+  from: Scalars["Float"]["output"];
+  hasComparison: Scalars["Boolean"]["output"];
+  points: Array<TraderReferralStatsPoint>;
+  summary: TraderReferralStatsSummary;
+  to: Scalars["Float"]["output"];
+  trader: Scalars["String"]["output"];
+}
+
+export interface TraderReferralStatsSummary {
+  __typename?: "TraderReferralStatsSummary";
+  discountsUsd: Scalars["BigInt"]["output"];
+  discountsUsdDelta?: Maybe<Scalars["BigInt"]["output"]>;
+  volumeUsd: Scalars["BigInt"]["output"];
+  volumeUsdDelta?: Maybe<Scalars["BigInt"]["output"]>;
+}
+
+export interface TraderReferralStatsWhereInput {
+  from?: InputMaybe<Scalars["Float"]["input"]>;
+  to?: InputMaybe<Scalars["Float"]["input"]>;
+  trader: Scalars["String"]["input"];
+}
+
+export interface TraderReferralTradeStatsByHour {
+  __typename?: "TraderReferralTradeStatsByHour";
+  discountsUsd: Scalars["BigInt"]["output"];
+  id: Scalars["String"]["output"];
+  timestamp: Scalars["Int"]["output"];
+  trader: Scalars["String"]["output"];
+  volumeUsd: Scalars["BigInt"]["output"];
+}
+
+export interface TraderReferralTradeStatsByHourEdge {
+  __typename?: "TraderReferralTradeStatsByHourEdge";
+  cursor: Scalars["String"]["output"];
+  node: TraderReferralTradeStatsByHour;
+}
+
+export enum TraderReferralTradeStatsByHourOrderByInput {
+  discountsUsd_ASC = "discountsUsd_ASC",
+  discountsUsd_ASC_NULLS_FIRST = "discountsUsd_ASC_NULLS_FIRST",
+  discountsUsd_ASC_NULLS_LAST = "discountsUsd_ASC_NULLS_LAST",
+  discountsUsd_DESC = "discountsUsd_DESC",
+  discountsUsd_DESC_NULLS_FIRST = "discountsUsd_DESC_NULLS_FIRST",
+  discountsUsd_DESC_NULLS_LAST = "discountsUsd_DESC_NULLS_LAST",
+  id_ASC = "id_ASC",
+  id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
+  id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
+  id_DESC = "id_DESC",
+  id_DESC_NULLS_FIRST = "id_DESC_NULLS_FIRST",
+  id_DESC_NULLS_LAST = "id_DESC_NULLS_LAST",
+  timestamp_ASC = "timestamp_ASC",
+  timestamp_ASC_NULLS_FIRST = "timestamp_ASC_NULLS_FIRST",
+  timestamp_ASC_NULLS_LAST = "timestamp_ASC_NULLS_LAST",
+  timestamp_DESC = "timestamp_DESC",
+  timestamp_DESC_NULLS_FIRST = "timestamp_DESC_NULLS_FIRST",
+  timestamp_DESC_NULLS_LAST = "timestamp_DESC_NULLS_LAST",
+  trader_ASC = "trader_ASC",
+  trader_ASC_NULLS_FIRST = "trader_ASC_NULLS_FIRST",
+  trader_ASC_NULLS_LAST = "trader_ASC_NULLS_LAST",
+  trader_DESC = "trader_DESC",
+  trader_DESC_NULLS_FIRST = "trader_DESC_NULLS_FIRST",
+  trader_DESC_NULLS_LAST = "trader_DESC_NULLS_LAST",
+  volumeUsd_ASC = "volumeUsd_ASC",
+  volumeUsd_ASC_NULLS_FIRST = "volumeUsd_ASC_NULLS_FIRST",
+  volumeUsd_ASC_NULLS_LAST = "volumeUsd_ASC_NULLS_LAST",
+  volumeUsd_DESC = "volumeUsd_DESC",
+  volumeUsd_DESC_NULLS_FIRST = "volumeUsd_DESC_NULLS_FIRST",
+  volumeUsd_DESC_NULLS_LAST = "volumeUsd_DESC_NULLS_LAST",
+}
+
+export interface TraderReferralTradeStatsByHourWhereInput {
+  AND?: InputMaybe<Array<TraderReferralTradeStatsByHourWhereInput>>;
+  OR?: InputMaybe<Array<TraderReferralTradeStatsByHourWhereInput>>;
+  discountsUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  discountsUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  discountsUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  discountsUsd_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  discountsUsd_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  discountsUsd_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  discountsUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  discountsUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  discountsUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  id_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_gt?: InputMaybe<Scalars["String"]["input"]>;
+  id_gte?: InputMaybe<Scalars["String"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id_lt?: InputMaybe<Scalars["String"]["input"]>;
+  id_lte?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  timestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  timestamp_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  timestamp_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  trader_contains?: InputMaybe<Scalars["String"]["input"]>;
+  trader_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  trader_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  trader_eq?: InputMaybe<Scalars["String"]["input"]>;
+  trader_gt?: InputMaybe<Scalars["String"]["input"]>;
+  trader_gte?: InputMaybe<Scalars["String"]["input"]>;
+  trader_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  trader_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  trader_lt?: InputMaybe<Scalars["String"]["input"]>;
+  trader_lte?: InputMaybe<Scalars["String"]["input"]>;
+  trader_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  trader_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  trader_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  trader_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  trader_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  trader_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  trader_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  volumeUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  volumeUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  volumeUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  volumeUsd_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  volumeUsd_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  volumeUsd_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  volumeUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  volumeUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  volumeUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+}
+
+export interface TraderReferralTradeStatsByHoursConnection {
+  __typename?: "TraderReferralTradeStatsByHoursConnection";
+  edges: Array<TraderReferralTradeStatsByHourEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"]["output"];
 }
 
 export interface TraderReferralWhereInput {

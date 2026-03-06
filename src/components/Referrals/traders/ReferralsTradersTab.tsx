@@ -6,17 +6,23 @@ import { isHashZero } from "lib/legacy";
 
 import { Faq } from "components/Faq/Faq";
 import Loader from "components/Loader/Loader";
-import { JoinReferralWizard } from "components/Referrals/JoinReferralCode/JoinReferralWizard";
-import { ReferralsTradersContent } from "components/Referrals/ReferralsTradersContent";
-import { WIZARD_FAQS } from "components/Referrals/ReferralsTradersFaq";
+import { JoinReferralWizard } from "components/Referrals/traders/joinCode/JoinReferralWizard";
+import { ReferralsTradersContent } from "components/Referrals/traders/dashboard/ReferralsTradersContent";
+import { WIZARD_FAQS } from "components/Referrals/traders/faq";
 
 type ReferralsTradersTabProps = {
   account: string | undefined;
   isLoading: boolean;
   referralsData: TotalReferralsStats | undefined;
+  hasAddressInUrl?: boolean;
 };
 
-export function ReferralsTradersTab({ isLoading, account, referralsData }: ReferralsTradersTabProps) {
+export function ReferralsTradersTab({
+  isLoading,
+  account,
+  referralsData,
+  hasAddressInUrl = false,
+}: ReferralsTradersTabProps) {
   const { chainId } = useChainId();
   const { userReferralCode } = useUserReferralCode(chainId, account);
 
@@ -24,7 +30,7 @@ export function ReferralsTradersTab({ isLoading, account, referralsData }: Refer
     return <Loader />;
   }
 
-  const isWizard = isHashZero(userReferralCode) || !account || !userReferralCode;
+  const isWizard = !hasAddressInUrl && (isHashZero(userReferralCode) || !account || !userReferralCode);
 
   return (
     <div className="flex gap-8 max-md:flex-col">

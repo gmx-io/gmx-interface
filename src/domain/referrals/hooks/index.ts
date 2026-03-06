@@ -17,11 +17,14 @@ import { abis } from "sdk/abis";
 import { ContractsChainId } from "sdk/configs/chains";
 import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
 
-import { REGEX_VERIFY_BYTES32 } from "components/Referrals/referralsHelper";
+import { REGEX_VERIFY_BYTES32 } from "domain/referrals/utils/referralCode";
 
 import { UserReferralInfo } from "../types";
 
 export * from "./useReferralsData";
+export * from "./useAffiliateReferralStats";
+export * from "./useReferralPromoClosed";
+export * from "./useTraderReferralStats";
 export * from "./useUserCodesOnAllChain";
 
 export function useUserReferralInfoRequest(

@@ -9,17 +9,21 @@ import useWallet from "lib/wallets/useWallet";
 
 import { Faq } from "components/Faq/Faq";
 import Loader from "components/Loader/Loader";
-import { AffiliatesStats } from "components/Referrals/AffiliatesStats";
-import { deserializeSampleStats, isRecentReferralCodeNotExpired } from "components/Referrals/referralsHelper";
+import { AffiliatesStats } from "components/Referrals/affiliates/dashboard/AffiliatesStats";
+import {
+  deserializeSampleStats,
+  isRecentReferralCodeNotExpired,
+} from "components/Referrals/shared/utils/referralsHelper";
 
-import { CreateAffiliateWizard } from "./CreateAffiliateCode/CreateAffiliateWizard";
-import { AFFILIATE_WIZARD_FAQS } from "./ReferralsAffiliatesFaq";
+import { CreateAffiliateWizard } from "./createCode/CreateAffiliateWizard";
+import { AFFILIATE_WIZARD_FAQS } from "./faq";
 
 type ReferralsAffiliatesTabProps = {
   loading: boolean;
   account: string | undefined;
   referralsData: TotalReferralsStats | undefined;
   initialReferralCode: string | undefined;
+  hasAddressInUrl?: boolean;
 };
 
 export function ReferralsAffiliatesTab({
@@ -27,6 +31,7 @@ export function ReferralsAffiliatesTab({
   account,
   referralsData,
   initialReferralCode,
+  hasAddressInUrl = false,
 }: ReferralsAffiliatesTabProps) {
   const { signer } = useWallet();
   const { chainId } = useChainId();
@@ -55,7 +60,7 @@ export function ReferralsAffiliatesTab({
 
   if (loading) return <Loader />;
 
-  const isWizard = !account || !isSomeReferralCodeAvailable;
+  const isWizard = !hasAddressInUrl && (!account || !isSomeReferralCodeAvailable);
 
   if (!isWizard) {
     return (

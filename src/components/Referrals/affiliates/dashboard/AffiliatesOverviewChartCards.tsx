@@ -1,68 +1,15 @@
 import { Trans } from "@lingui/macro";
-import cx from "classnames";
 import { useState } from "react";
 
 import { AffiliateReferralStats } from "domain/referrals";
 import { TimeRangeInfo } from "domain/synthetics/markets/useTimeRange";
 import { formatUsd } from "lib/numbers";
 
-import Tooltip from "components/Tooltip/Tooltip";
-
 import ShareArrowFilledIcon from "img/ic_share_arrow_filled.svg?react";
 
-import { ShareReferralCardModal } from "./ShareReferralCardModal";
-import { TradersVolumeChartContainer } from "./TradersVolumeChartContainer";
-
-function OverviewCard({
-  label,
-  tooltipContent,
-  value,
-  valueChange,
-  isValueChangePositive,
-  topRightContent,
-  children,
-}: {
-  label: React.ReactNode;
-  tooltipContent?: React.ReactNode;
-  value: React.ReactNode;
-  valueChange?: React.ReactNode;
-  isValueChangePositive?: boolean;
-  topRightContent?: React.ReactNode;
-  children: React.ReactNode;
-}) {
-  return (
-    <div className={cx("rounded-8 border-1/2 border-stroke-primary bg-slate-950/50 px-20 pb-10 pt-20")}>
-      <div className="mb-24 flex items-start justify-between">
-        <div>
-          <div className="text-body-small mb-4 font-medium text-typography-secondary">
-            {tooltipContent ? (
-              <Tooltip variant="iconStroke" position="right" content={tooltipContent}>
-                {label}
-              </Tooltip>
-            ) : (
-              label
-            )}
-          </div>
-          <div className="flex items-center gap-4">
-            <div className="text-24 font-medium text-typography-primary numbers">{value}</div>
-            {valueChange && (
-              <div
-                className={cx("rounded-full px-6 py-2 text-12 font-medium numbers", {
-                  "bg-green-900 text-green-500": isValueChangePositive !== false,
-                  "bg-red-900 text-red-500": isValueChangePositive === false,
-                })}
-              >
-                {valueChange}
-              </div>
-            )}
-          </div>
-        </div>
-        {topRightContent}
-      </div>
-      {children}
-    </div>
-  );
-}
+import { OverviewChartCard } from "components/Referrals/shared/cards/ReferralsOverviewChartCard";
+import { ShareReferralCardModal } from "components/Referrals/shared/cards/ShareReferralCardModal";
+import { TradersVolumeChartContainer } from "components/Referrals/shared/charts/TradersVolumeChartContainer";
 
 type ChartCardProps = {
   stats?: AffiliateReferralStats;
@@ -85,7 +32,7 @@ export function TradingVolumeChartCard({ stats, isLoading, timeRangeInfo }: Char
 
   return (
     <>
-      <OverviewCard
+      <OverviewChartCard
         label={<Trans>Trading volume</Trans>}
         tooltipContent={<Trans>Volume traded by your referred traders.</Trans>}
         value={formatUsd(stats?.summary.volumeUsd ?? 0n)}
@@ -107,7 +54,7 @@ export function TradingVolumeChartCard({ stats, isLoading, timeRangeInfo }: Char
           isLoading={isLoading}
           timeRangeInfo={timeRangeInfo}
         />
-      </OverviewCard>
+      </OverviewChartCard>
       <ShareReferralCardModal
         isVisible={isShareModalVisible}
         setIsVisible={setIsShareModalVisible}
@@ -119,7 +66,7 @@ export function TradingVolumeChartCard({ stats, isLoading, timeRangeInfo }: Char
 
 export function NumberOfTradesChartCard({ stats, isLoading, timeRangeInfo }: ChartCardProps) {
   return (
-    <OverviewCard
+    <OverviewChartCard
       label={<Trans>Number of Trades from Referrals</Trans>}
       tooltipContent={<Trans>Number of trades done by your referred traders.</Trans>}
       value={stats?.summary.tradesCount ?? 0}
@@ -132,13 +79,13 @@ export function NumberOfTradesChartCard({ stats, isLoading, timeRangeInfo }: Cha
         isLoading={isLoading}
         timeRangeInfo={timeRangeInfo}
       />
-    </OverviewCard>
+    </OverviewChartCard>
   );
 }
 
 export function TradersReferredChartCard({ stats, isLoading, timeRangeInfo }: ChartCardProps) {
   return (
-    <OverviewCard
+    <OverviewChartCard
       label={<Trans>Traders referred</Trans>}
       tooltipContent={<Trans>Number of referred traders gained/lost.</Trans>}
       value={stats?.summary.tradersCount ?? 0}
@@ -163,13 +110,13 @@ export function TradersReferredChartCard({ stats, isLoading, timeRangeInfo }: Ch
         isLoading={isLoading}
         timeRangeInfo={timeRangeInfo}
       />
-    </OverviewCard>
+    </OverviewChartCard>
   );
 }
 
 export function RebatesChartCard({ stats, isLoading, timeRangeInfo }: ChartCardProps) {
   return (
-    <OverviewCard
+    <OverviewChartCard
       label={<Trans>Rebates</Trans>}
       tooltipContent={<Trans>Rebates earned as an affiliate.</Trans>}
       value={formatUsd(stats?.summary.rebatesUsd ?? 0n)}
@@ -184,6 +131,6 @@ export function RebatesChartCard({ stats, isLoading, timeRangeInfo }: ChartCardP
         isLoading={isLoading}
         timeRangeInfo={timeRangeInfo}
       />
-    </OverviewCard>
+    </OverviewChartCard>
   );
 }

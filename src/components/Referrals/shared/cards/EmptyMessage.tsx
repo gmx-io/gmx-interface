@@ -1,7 +1,7 @@
 import cx from "classnames";
 import { ReactNode } from "react";
 
-import Tooltip from "../Tooltip/Tooltip";
+import Tooltip from "components/Tooltip/Tooltip";
 
 type Props = {
   message?: string;

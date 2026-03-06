@@ -12,7 +12,7 @@ import Button from "components/Button/Button";
 
 import EarnIcon from "img/ic_earn.svg?react";
 
-import { ClaimAffiliatesModal } from "./ClaimAffiliatesModal/ClaimAffiliatesModal";
+import { ClaimAffiliatesModal } from "../modals/ClaimAffiliatesModal";
 
 export function ClaimableRebatesCard() {
   const { chainId, srcChainId } = useChainId();

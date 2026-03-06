@@ -31,7 +31,7 @@ import { encodeReferralCode } from "sdk/utils/referrals";
 import Button from "components/Button/Button";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 
-import { REFERRAL_CODE_REGEX } from "../referralsHelper";
+import { REFERRAL_CODE_REGEX } from "components/Referrals/shared/utils/referralsHelper";
 import { ApplyReferralCodeButtonContent } from "./ApplyReferralCodeButtonContent";
 import { ReferralCodeInput } from "./ReferralCodeInput";
 import type { ReferralCodeActionType } from "./types";

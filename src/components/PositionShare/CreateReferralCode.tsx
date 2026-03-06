@@ -42,7 +42,11 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { getCodeError, getReferralCodeTakenStatus, REFERRAL_CODE_REGEX } from "components/Referrals/referralsHelper";
+import {
+  getCodeError,
+  getReferralCodeTakenStatus,
+  REFERRAL_CODE_REGEX,
+} from "components/Referrals/shared/utils/referralsHelper";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ReferralsIcon from "img/ic_referrals.svg?react";

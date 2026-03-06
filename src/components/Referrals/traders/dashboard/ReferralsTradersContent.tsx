@@ -1,37 +1,40 @@
 import { msg, t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import cx from "classnames";
+import { lightFormat } from "date-fns";
 import { useMemo } from "react";
 import { useCopyToClipboard } from "react-use";
 
-import { USD_DECIMALS } from "config/factors";
 import {
   TotalReferralsStats,
   useAffiliateTier,
   useCodeOwner,
+  useReferralPromoClosed,
   useReferrerDiscountShare,
+  useTraderReferralStats,
   useTiers,
   useUserReferralCode,
 } from "domain/referrals";
 import { TimeRangeInfo, useTimeRange } from "domain/synthetics/markets/useTimeRange";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
-import { formatUsd, numberToBigint } from "lib/numbers";
+import { formatUsd } from "lib/numbers";
 
 import Button from "components/Button/Button";
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import { Faq } from "components/Faq/Faq";
 import { PoolsTabs } from "components/PoolsTabs/PoolsTabs";
-import { PromoCard } from "components/Referrals/PromoCard";
-import { ReferralsDocsCard } from "components/Referrals/ReferralsDocsCard";
-import { POST_WIZARD_FAQS } from "components/Referrals/ReferralsTradersFaq";
-import { TradersVolumeChartContainer } from "components/Referrals/TradersVolumeChartContainer";
-import Tooltip from "components/Tooltip/Tooltip";
+import { PromoCard } from "components/Referrals/shared/cards/PromoCard";
+import { ReferralsDocsCard } from "components/Referrals/shared/cards/ReferralsDocsCard";
+import { OverviewChartCard } from "components/Referrals/shared/cards/ReferralsOverviewChartCard";
+import { POST_WIZARD_FAQS } from "components/Referrals/traders/faq";
+import { TraderReferralChartContainer } from "components/Referrals/shared/charts/TraderReferralChartContainer";
 
 import affiliateCodePromoFg from "img/affiliate_code_promo_fg.png";
 import CopyStrokeIcon from "img/ic_copy_stroke.svg?react";
 import EditIcon from "img/ic_edit.svg?react";
 
-import { getSharePercentage } from "./referralsHelper";
+import { getSharePercentage } from "components/Referrals/shared/utils/referralsHelper";
 
 type ReferralsTradersContentProps = {
   account: string | undefined;
@@ -84,9 +87,20 @@ export function ReferralsTradersContent({ account, referralsData }: ReferralsTra
   const { discountShare } = useReferrerDiscountShare(chainId, codeOwner);
   const [, copyToClipboard] = useCopyToClipboard();
   const { totalRebate } = useTiers(chainId, traderTier);
-  const { timeRangeInfo, setTimeRange } = useTimeRange("referrals-traders-time-range", TIME_RANGE_INFOS);
+  const { timeRangeInfo, setTimeRange, periodStart, periodEnd } = useTimeRange(
+    "referrals-traders-time-range",
+    TIME_RANGE_INFOS
+  );
+  const { data: traderStats, isLoading: isTraderStatsLoading } = useTraderReferralStats({
+    chainId,
+    trader: account,
+    from: periodStart,
+    to: periodEnd,
+  });
+  const { isClosed: isTraderPromoClosed, close: closeTraderPromo } = useReferralPromoClosed("trader", account);
 
   const currentTierDiscount = getSharePercentage(traderTier, discountShare ?? 0n, totalRebate);
+  const lastUpdated = traderStats?.to ? `${lightFormat(traderStats.to * 1000, "yyyy-MM-dd HH:mm:ss")} UTC` : "--";
 
   return (
     <>
@@ -102,82 +116,79 @@ export function ReferralsTradersContent({ account, referralsData }: ReferralsTra
               timeRangeInfos={TIME_RANGE_INFOS}
             />
           </div>
-          <PromoCard
-            title={<Trans>Create your referral code and earn rebates from your referrals</Trans>}
-            subtitle={
-              <Trans>
-                Generate your own referral code and earn rebates whenever users trade with it. Rewards scale <br /> with
-                your tier and the activity of your referred traders. Learn more
-              </Trans>
-            }
-          >
-            <img src={affiliateCodePromoFg} className="user-select-none absolute -bottom-34 right-28 z-10 w-[104px]" />
-          </PromoCard>
-          <div className="flex gap-12">
-            <Card className="flex-1">
-              <div className="text-body-small mb-4 font-medium text-typography-secondary">
-                <Tooltip
-                  variant="iconStroke"
-                  position="right"
-                  content={<Trans>Your trading volume with referral discount</Trans>}
-                >
-                  <Trans>Trading volume</Trans>
-                </Tooltip>
-              </div>
-              <div className="mb-24 flex items-center gap-4">
-                <div className="text-24 font-medium text-typography-primary numbers">
-                  {formatUsd(numberToBigint(3089.28, USD_DECIMALS))}
-                </div>
-                <div
-                  className={cx("rounded-full px-4 py-2 text-12 font-medium numbers", {
-                    "bg-green-900 text-green-500": true,
-                  })}
-                >
-                  {formatUsd(numberToBigint(97.06, USD_DECIMALS), { displayPlus: true })}
-                </div>
-              </div>
-              <TradersVolumeChartContainer
+          {!isTraderPromoClosed && (
+            <PromoCard
+              title={<Trans>Create your referral code and earn rebates from your referrals</Trans>}
+              subtitle={
+                <Trans>
+                  Generate your own referral code and earn rebates whenever users trade with it. Rewards scale <br />{" "}
+                  with your tier and the activity of your referred traders.{" "}
+                  <ExternalLink
+                    href="https://docs.gmx.io/docs/referrals"
+                    variant="icon-arrow"
+                    className="text-blue-300"
+                  >
+                    <Trans>Learn more</Trans>
+                  </ExternalLink>
+                </Trans>
+              }
+              onClose={closeTraderPromo}
+            >
+              <img
+                src={affiliateCodePromoFg}
+                className="user-select-none absolute -bottom-34 right-28 z-10 w-[104px]"
+              />
+            </PromoCard>
+          )}
+          <div className="grid grid-cols-2 gap-12 max-lg:grid-cols-1">
+            <OverviewChartCard
+              label={<Trans>Trading volume</Trans>}
+              tooltipContent={<Trans>Volume traded by this account with an active referral code.</Trans>}
+              value={formatUsd(traderStats?.summary.volumeUsd ?? 0n)}
+              valueChange={
+                traderStats?.summary.volumeUsdDelta !== undefined
+                  ? formatUsdDelta(traderStats.summary.volumeUsdDelta)
+                  : undefined
+              }
+              isValueChangePositive={
+                traderStats?.summary.volumeUsdDelta !== undefined ? traderStats.summary.volumeUsdDelta >= 0n : undefined
+              }
+            >
+              <TraderReferralChartContainer
                 chartType="volume"
-                stats={undefined}
-                isLoading={undefined}
+                stats={traderStats}
+                isLoading={isTraderStatsLoading}
                 timeRangeInfo={timeRangeInfo}
               />
-            </Card>
-            <Card className="flex-1">
-              <div className="text-body-small mb-4 font-medium text-typography-secondary">
-                <Tooltip
-                  variant="iconStroke"
-                  position="right"
-                  content={<Trans>Your fee savings from referral discounts</Trans>}
-                >
-                  <Trans>Your savings</Trans>
-                </Tooltip>
-              </div>
-              <div className="mb-24 flex items-center gap-4">
-                <div className="text-24 font-medium text-typography-primary numbers">
-                  {formatUsd(numberToBigint(3089.28, USD_DECIMALS))}
-                </div>
-                <div
-                  className={cx("rounded-full px-4 py-2 text-12 font-medium numbers", {
-                    "bg-green-900 text-green-500": true,
-                  })}
-                >
-                  {formatUsd(numberToBigint(97.06, USD_DECIMALS), { displayPlus: true })}
-                </div>
-              </div>
-              <TradersVolumeChartContainer
-                chartType="volume"
-                stats={undefined}
-                isLoading={undefined}
+            </OverviewChartCard>
+            <OverviewChartCard
+              label={<Trans>Discounts</Trans>}
+              tooltipContent={<Trans>Discounts earned by this account as a trader.</Trans>}
+              value={formatUsd(traderStats?.summary.discountsUsd ?? 0n)}
+              valueChange={
+                traderStats?.summary.discountsUsdDelta !== undefined
+                  ? formatUsdDelta(traderStats.summary.discountsUsdDelta)
+                  : undefined
+              }
+              isValueChangePositive={
+                traderStats?.summary.discountsUsdDelta !== undefined
+                  ? traderStats.summary.discountsUsdDelta >= 0n
+                  : undefined
+              }
+            >
+              <TraderReferralChartContainer
+                chartType="discounts"
+                stats={traderStats}
+                isLoading={isTraderStatsLoading}
                 timeRangeInfo={timeRangeInfo}
               />
-            </Card>
+            </OverviewChartCard>
           </div>
           <div className="text-body-small font-medium text-typography-secondary">
             <span className="text-slate-500">
               <Trans>Last Updated:</Trans>
             </span>{" "}
-            2025-08-18 15:04:04 UTC
+            {lastUpdated}
           </div>
         </div>
       </div>
@@ -223,4 +234,8 @@ function Card({ children, className }: { children: React.ReactNode; className?: 
   return (
     <div className={cx("rounded-8 border-1/2 border-stroke-primary bg-slate-950/50 p-12", className)}>{children}</div>
   );
+}
+
+function formatUsdDelta(value: bigint): string {
+  return formatUsd(value, { displayPlus: value >= 0n }) ?? "";
 }

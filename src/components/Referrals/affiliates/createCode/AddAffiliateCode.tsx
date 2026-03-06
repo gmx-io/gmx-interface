@@ -46,7 +46,7 @@ import {
   getReferralCodeTakenStatus,
   getSampleReferrarStat,
   REFERRAL_CODE_REGEX,
-} from "./referralsHelper";
+} from "../../shared/utils/referralsHelper";
 
 type AddAffiliateCodeProps = {
   handleCreateReferralCode: (code: string) => Promise<unknown>;

@@ -12,7 +12,7 @@ import ReferralsFilledIcon from "img/ic_referrals_filled.svg?react";
 import WalletIcon from "img/ic_wallet.svg?react";
 import referralWizardBg from "img/referral_wizard_bg.png";
 
-import { StepProgress } from "../StepProgress";
+import { StepProgress } from "components/Referrals/shared/wizard/StepProgress";
 import { LabelWithIcon } from "./LabelWithIcon";
 import { ReferralCodeEditFormContainer } from "./ReferralCodeEditFormContainer";
 

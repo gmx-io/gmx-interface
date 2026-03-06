@@ -5,6 +5,7 @@ import { zeroAddress } from "viem";
 import { CONTRACTS_CHAIN_IDS, ContractsChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { CodeOwnershipInfo, getReferralCodeOwner, ReferralCodeStats } from "domain/referrals";
+import { REFERRAL_CODE_REGEX } from "domain/referrals/utils/referralCode";
 import { getTwitterIntentURL, isAddressZero, MAX_REFERRAL_CODE_LENGTH, REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 import { deserializeBigIntsInObject, formatAmount, removeTrailingZeros } from "lib/numbers";
 import { getRootUrl } from "lib/url";
@@ -12,12 +13,11 @@ import { bigMath } from "sdk/utils/bigmath";
 import { encodeReferralCode } from "sdk/utils/referrals";
 
 export const CREATE_REFERRAL_CODE_QUERY_PARAM = "createReferralCode";
-export const REFERRAL_CODE_REGEX = /^\w+$/; // only number, string and underscore is allowed
-export const REGEX_VERIFY_BYTES32 = /^0x[0-9a-f]{64}$/;
+export { REFERRAL_CODE_REGEX, REGEX_VERIFY_BYTES32 } from "domain/referrals/utils/referralCode";
 
 export function getReferralsPageUrlForCreateCode(referralCode: string) {
   const trimmedCode = referralCode.trim();
-  const baseUrl = `${getRootUrl()}/#/referrals`;
+  const baseUrl = `${getRootUrl()}/#/referrals/affiliates`;
 
   if (!trimmedCode) {
     return baseUrl;

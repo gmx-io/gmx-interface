@@ -41,9 +41,19 @@ export type AffiliateReferralStats = {
   }[];
 };
 
-const REFERRAL_STATS_QUERY = /* GraphQL */ `
-  query ReferralStats($where: ReferralStatsWhereInput) {
-    referralStats(where: $where) {
+function toNumber(value: unknown): number {
+  const parsed = Number(value);
+  return Number.isFinite(parsed) ? parsed : 0;
+}
+
+function toOptionalNumber(value: unknown): number | undefined {
+  if (value === undefined || value === null) return undefined;
+  return toNumber(value);
+}
+
+const AFFILIATE_STATS_QUERY = /* GraphQL */ `
+  query AffiliateStats($where: AffiliateStatsWhereInput) {
+    affiliateStats(where: $where) {
       affiliate
       from
       to
@@ -86,7 +96,7 @@ async function fetchAffiliateReferralStats(params: {
   from: number;
   to: number;
 }): Promise<AffiliateReferralStats> {
-  const res = await graphqlFetcher<Pick<Query, "referralStats">>(params.endpoint, REFERRAL_STATS_QUERY, {
+  const res = await graphqlFetcher<Pick<Query, "affiliateStats">>(params.endpoint, AFFILIATE_STATS_QUERY, {
     where: {
       affiliate: params.affiliate,
       from: params.from,
@@ -94,44 +104,44 @@ async function fetchAffiliateReferralStats(params: {
     },
   });
 
-  if (!res?.referralStats) {
-    throw new Error("Failed to fetch referral stats");
+  if (!res?.affiliateStats) {
+    throw new Error("Failed to fetch affiliate stats");
   }
 
-  const summary = res.referralStats.summary;
+  const summary = res.affiliateStats.summary;
 
   return {
-    affiliate: res.referralStats.affiliate,
-    from: res.referralStats.from,
-    to: res.referralStats.to,
-    compareFrom: res.referralStats.compareFrom ?? undefined,
-    compareTo: res.referralStats.compareTo ?? undefined,
-    hasComparison: res.referralStats.hasComparison,
-    bucketSizeSeconds: res.referralStats.bucketSizeSeconds,
+    affiliate: res.affiliateStats.affiliate,
+    from: res.affiliateStats.from,
+    to: res.affiliateStats.to,
+    compareFrom: res.affiliateStats.compareFrom ?? undefined,
+    compareTo: res.affiliateStats.compareTo ?? undefined,
+    hasComparison: res.affiliateStats.hasComparison,
+    bucketSizeSeconds: res.affiliateStats.bucketSizeSeconds,
     summary: {
       volumeUsd: BigInt(summary.volumeUsd),
       volumeUsdDelta: toBigInt(summary.volumeUsdDelta),
-      tradesCount: summary.tradesCount,
-      tradesCountDelta: summary.tradesCountDelta ?? undefined,
+      tradesCount: toNumber(summary.tradesCount),
+      tradesCountDelta: toOptionalNumber(summary.tradesCountDelta),
       rebatesUsd: BigInt(summary.rebatesUsd),
       rebatesUsdDelta: toBigInt(summary.rebatesUsdDelta),
-      tradersCount: summary.tradersCount,
-      tradersCountDelta: summary.tradersCountDelta ?? undefined,
-      tradersGained: summary.tradersGained ?? undefined,
-      tradersGainedDelta: summary.tradersGainedDelta ?? undefined,
-      tradersLost: summary.tradersLost ?? undefined,
-      tradersLostDelta: summary.tradersLostDelta ?? undefined,
-      tradersNet: summary.tradersNet ?? undefined,
-      tradersNetDelta: summary.tradersNetDelta ?? undefined,
+      tradersCount: toNumber(summary.tradersCount),
+      tradersCountDelta: toOptionalNumber(summary.tradersCountDelta),
+      tradersGained: toOptionalNumber(summary.tradersGained),
+      tradersGainedDelta: toOptionalNumber(summary.tradersGainedDelta),
+      tradersLost: toOptionalNumber(summary.tradersLost),
+      tradersLostDelta: toOptionalNumber(summary.tradersLostDelta),
+      tradersNet: toOptionalNumber(summary.tradersNet),
+      tradersNetDelta: toOptionalNumber(summary.tradersNetDelta),
     },
-    points: res.referralStats.points.map((point) => ({
+    points: res.affiliateStats.points.map((point) => ({
       timestamp: point.timestamp,
       volumeUsd: BigInt(point.volumeUsd),
-      tradesCount: point.tradesCount,
+      tradesCount: toNumber(point.tradesCount),
       rebatesUsd: BigInt(point.rebatesUsd),
-      tradersGained: point.tradersGained,
-      tradersLost: point.tradersLost,
-      tradersNet: point.tradersNet,
+      tradersGained: toNumber(point.tradersGained),
+      tradersLost: toNumber(point.tradersLost),
+      tradersNet: toNumber(point.tradersNet),
     })),
   };
 }

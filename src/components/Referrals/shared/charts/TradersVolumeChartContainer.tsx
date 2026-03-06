@@ -6,14 +6,12 @@ import { useMemo } from "react";
 import { USD_DECIMALS } from "config/factors";
 import { AffiliateReferralStats } from "domain/referrals";
 import { TimeRangeInfo } from "domain/synthetics/markets/useTimeRange";
+import { ONE_YEAR_SECONDS, SECONDS_IN_DAY } from "lib/dates";
 import { bigintToNumber } from "lib/numbers";
 
 import { RebatesChart, TradersReferredChart, TradesCountChart, TradersVolumeChart } from "./GmxBarChart";
 
 type ChartType = "volume" | "trades" | "tradersReferred" | "rebates";
-
-const ONE_YEAR_SECONDS = 365 * 24 * 60 * 60;
-const ONE_DAY_SECONDS = 24 * 60 * 60;
 
 function getDateFormat(timestamps: number[], isSmall: boolean): "HH:mm" | "dd/MM" | "yyyy" {
   if (isSmall) return "HH:mm";
@@ -23,7 +21,7 @@ function getDateFormat(timestamps: number[], isSmall: boolean): "HH:mm" | "dd/MM
 }
 
 function formatTooltipDate(timestamp: number, bucketSizeSeconds: number, locale: string): string {
-  if (bucketSizeSeconds > ONE_DAY_SECONDS) {
+  if (bucketSizeSeconds > SECONDS_IN_DAY) {
     const start = new Date(timestamp * 1000);
     const end = new Date((timestamp + bucketSizeSeconds) * 1000);
     const startStr = new Intl.DateTimeFormat(locale, { day: "numeric", month: "short" }).format(start);
@@ -35,7 +33,7 @@ function formatTooltipDate(timestamp: number, bucketSizeSeconds: number, locale:
     month: "short",
     day: "numeric",
     year: "numeric",
-    ...(bucketSizeSeconds < ONE_DAY_SECONDS && { hour: "numeric", minute: "2-digit" }),
+    ...(bucketSizeSeconds < SECONDS_IN_DAY && { hour: "numeric", minute: "2-digit" }),
   }).format(new Date(timestamp * 1000));
 }
 
