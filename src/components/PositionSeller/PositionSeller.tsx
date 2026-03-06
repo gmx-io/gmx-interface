@@ -46,7 +46,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useInitCollateralCloseDestination } from "domain/synthetics/express/useInitCollateralCloseDestination";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
-import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import { OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
@@ -66,13 +66,22 @@ import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidationErrorMetric } from "lib/metrics/utils";
-import { expandDecimals, formatAmountFree, formatDeltaUsd, formatPercentage, parseValue } from "lib/numbers";
+import {
+  expandDecimals,
+  formatAmountFree,
+  formatBalanceAmount,
+  formatDeltaUsd,
+  formatPercentage,
+  formatUsd,
+  parseValue,
+} from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { convertTokenAddress, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
+import { DecreasePositionSwapType } from "sdk/utils/orders/types";
 import {
   BatchOrderTxnParams,
   buildDecreaseOrderPayload,
@@ -265,6 +274,37 @@ export function PositionSeller() {
   const receiveUsd = swapAmounts?.usdOut || decreaseAmounts?.receiveUsd;
   const receiveTokenAmount = swapAmounts?.amountOut || decreaseAmounts?.receiveTokenAmount;
 
+  // Split receive: pre-formatted "X PnlToken + Y CollateralToken" when the position produces two distinct token outputs
+  const splitReceiveLabel = useMemo(() => {
+    if (shouldSwap || !decreaseAmounts || !position?.marketInfo) return undefined;
+
+    // Split receive only applies for SwapCollateralTokenToPnlToken where the user genuinely
+    // receives two tokens (profit in pnl + collateral delta in collateral). For SwapPnlTokenToCollateralToken
+    // the contract converts everything to collateral — user receives a single token.
+    if (decreaseAmounts.decreaseSwapType !== DecreasePositionSwapType.SwapCollateralTokenToPnlToken) return undefined;
+
+    const { primaryOutput, secondaryOutput } = decreaseAmounts;
+
+    if (primaryOutput.tokenAddress === secondaryOutput.tokenAddress) return undefined;
+    if (primaryOutput.amount <= 0n || secondaryOutput.amount <= 0n) return undefined;
+
+    const pnlToken = position.isLong ? position.marketInfo.longToken : position.marketInfo.shortToken;
+    const collateralToken = position.collateralToken;
+
+    if (primaryOutput.tokenAddress !== pnlToken.address || secondaryOutput.tokenAddress !== collateralToken.address) {
+      return undefined;
+    }
+
+    return [
+      formatBalanceAmount(primaryOutput.amount, pnlToken.decimals, pnlToken.symbol, {
+        isStable: pnlToken.isStable,
+      }),
+      formatBalanceAmount(secondaryOutput.amount, collateralToken.decimals, collateralToken.symbol, {
+        isStable: collateralToken.isStable,
+      }),
+    ].join(" + ");
+  }, [shouldSwap, decreaseAmounts, position]);
+
   const nextPositionValues = useSelector(selectPositionSellerNextPositionValuesForDecrease);
 
   const { fees, executionFee } = useSelector(selectPositionSellerFees);
@@ -301,11 +341,7 @@ export function PositionSeller() {
   const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
     const orderType = isTwap ? OrderType.LimitDecrease : OrderType.MarketDecrease;
 
-    // TODO findSwapPath considering decreasePositionSwapType?
-    const swapPath =
-      decreaseAmounts?.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken
-        ? []
-        : swapAmounts?.swapStrategy.swapPathStats?.swapPath || [];
+    const swapPath = swapAmounts?.swapStrategy.swapPathStats?.swapPath || [];
 
     if (
       !account ||
@@ -723,17 +759,24 @@ export function PositionSeller() {
                     chainIdBadge={effectiveIsReceiveToGmxAccount ? GMX_ACCOUNT_PSEUDO_CHAIN_ID : ARBITRUM}
                   />
                 )}
-                <AmountWithUsdBalance
-                  className={cx({
-                    "*:!text-yellow-300 hover:!text-yellow-300": isNotEnoughReceiveTokenLiquidity,
-                  })}
-                  amount={receiveTokenAmount}
-                  decimals={receiveToken.decimals}
-                  symbol={receiveToken.symbol}
-                  usd={receiveUsd}
-                  isStable={receiveToken.isStable}
-                  secondaryValueClassName="!text-14"
-                />
+                {splitReceiveLabel ? (
+                  <span>
+                    <span className="numbers">{splitReceiveLabel}</span>{" "}
+                    <span className="!text-14 text-typography-secondary numbers">({formatUsd(receiveUsd)})</span>
+                  </span>
+                ) : (
+                  <AmountWithUsdBalance
+                    className={cx({
+                      "*:!text-yellow-300 hover:!text-yellow-300": isNotEnoughReceiveTokenLiquidity,
+                    })}
+                    amount={receiveTokenAmount}
+                    decimals={receiveToken.decimals}
+                    symbol={receiveToken.symbol}
+                    usd={receiveUsd}
+                    isStable={receiveToken.isStable}
+                    secondaryValueClassName="!text-14"
+                  />
+                )}
               </span>
             }
             extendedSortSequence={availableTokensOptions?.sortedLongAndShortTokens}
