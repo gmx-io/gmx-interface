@@ -1,8 +1,7 @@
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER } from "configs/factors";
 import { bigMath } from "utils/bigmath";
 import { getPositionFee } from "utils/fees";
-import { MarketInfo } from "utils/markets/types";
-import { MarketsInfoData } from "utils/markets/types";
+import { MarketInfo, MarketsInfoData } from "utils/markets/types";
 import {
   applyFactor,
   BASIS_POINTS_DIVISOR_BIGINT,
@@ -399,8 +398,11 @@ export function getDecreasePositionAmounts(p: {
 
   values.receiveUsd = convertToUsd(values.receiveTokenAmount, collateralToken.decimals, values.collateralPrice)!;
 
-  // Primary output (profit portion) always in pnl token, secondary output (collateral portion) always in collateral token.
-  // This enables the UI to show a split receive breakdown (e.g. "X ETH + Y USDC") when the two tokens differ.
+  // primaryOutput models the profit portion that the contract will swap from collateralToken to pnlToken.
+  // secondaryOutput is the collateral portion (keepLeverage delta or remaining collateral on full close).
+  // The .usd values are exact: primaryOutput.usd + secondaryOutput.usd === receiveUsd.
+  // primaryOutput.amount is an estimate using pnlToken.prices.minPrice (conservative);
+  // the actual on-chain swap may differ due to fees/slippage.
   const profitOutputAmount = payedInfo.outputAmount;
   const profitOutputUsd = convertToUsd(profitOutputAmount, collateralToken.decimals, values.collateralPrice) ?? 0n;
 
@@ -410,7 +412,6 @@ export function getDecreasePositionAmounts(p: {
 
   const pnlTokenPrice = pnlToken.prices.minPrice;
 
-  // primaryOutput.amount is a USD-based estimate; the actual contract swap may differ due to fees/slippage.
   values.primaryOutput = {
     tokenAddress: pnlToken.address,
     amount: convertToTokenAmount(profitOutputUsd, pnlToken.decimals, pnlTokenPrice) ?? 0n,
@@ -786,7 +787,7 @@ export function isThirdTokenDecreaseSwap(
   );
 }
 
-export function getInternalSwapStatsForDecrease(p: {
+export function getCollateralToPnlInternalSwapStats(p: {
   marketInfo: MarketInfo;
   collateralToken: TokenData;
   pnlToken: TokenData;
@@ -926,7 +927,7 @@ export function getOptimalDecreaseAndSwapAmounts(p: {
   }
 
   // Estimate internal swap: collateral → pnlToken (conservative: uses entire receiveUsd)
-  const internalSwapStats = getInternalSwapStatsForDecrease({
+  const internalSwapStats = getCollateralToPnlInternalSwapStats({
     marketInfo,
     collateralToken,
     pnlToken,

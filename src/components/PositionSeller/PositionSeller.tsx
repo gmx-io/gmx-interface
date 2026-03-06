@@ -46,7 +46,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useInitCollateralCloseDestination } from "domain/synthetics/express/useInitCollateralCloseDestination";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
-import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import { OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
@@ -284,6 +284,10 @@ export function PositionSeller() {
 
     const pnlToken = position.isLong ? position.marketInfo.longToken : position.marketInfo.shortToken;
     const collateralToken = position.collateralToken;
+
+    if (primaryOutput.tokenAddress !== pnlToken.address || secondaryOutput.tokenAddress !== collateralToken.address) {
+      return undefined;
+    }
 
     return [
       formatBalanceAmount(primaryOutput.amount, pnlToken.decimals, pnlToken.symbol, {
@@ -752,7 +756,7 @@ export function PositionSeller() {
                 {splitReceiveLabel ? (
                   <span>
                     <span className="numbers">{splitReceiveLabel}</span>{" "}
-                    <span className="text-typography-secondary numbers !text-14">({formatUsd(receiveUsd)})</span>
+                    <span className="!text-14 text-typography-secondary numbers">({formatUsd(receiveUsd)})</span>
                   </span>
                 ) : (
                   <AmountWithUsdBalance

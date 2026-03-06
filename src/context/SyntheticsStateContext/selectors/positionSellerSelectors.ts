@@ -291,11 +291,12 @@ export const selectPositionSellerMaxLiquidityPath = createSelector((q) => {
   // External swap starts from different token depending on the chosen path:
   // Path A: collateral → receive, Path B: pnl → receive (after internal collateral→pnl swap)
   const shouldSwap = q(selectPositionSellerShouldSwap);
-  const optimal = q(selectPositionSellerOptimalDecrease);
+  const decreaseAmounts = q(selectPositionSellerDecreaseAmounts);
+  const swapAmounts = q(selectPositionSellerSwapAmounts);
   const isPathBWithSwap =
     shouldSwap &&
-    optimal?.decreaseAmounts.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken &&
-    optimal.swapAmounts !== undefined;
+    decreaseAmounts?.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken &&
+    swapAmounts !== undefined;
 
   let fromTokenAddress: string | undefined;
   if (isPathBWithSwap) {
