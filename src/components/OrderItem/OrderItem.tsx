@@ -609,7 +609,12 @@ function OrderItemLarge({
   const [markPriceTruncRef, isMarkPriceTruncated] = useIsTruncated();
 
   const cancelButton = (
-    <Button variant="ghost" disabled={isCanceling || Boolean(disabledCancelMarketOrderMessage)} onClick={onCancelOrder}>
+    <Button
+      variant="ghost"
+      className="max-2xl:px-4"
+      disabled={isCanceling || Boolean(disabledCancelMarketOrderMessage)}
+      onClick={onCancelOrder}
+    >
       <CloseIcon className="size-14" />
     </Button>
   );
@@ -702,7 +707,7 @@ function OrderItemLarge({
         <TableTd>
           <div className="inline-flex w-full items-center justify-end">
             {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
-              <Button variant="ghost" onClick={setEditingOrderKey}>
+              <Button variant="ghost" onClick={setEditingOrderKey} className="max-2xl:px-4">
                 <EditIcon title={t`Edit order`} className="size-16" />
               </Button>
             )}
