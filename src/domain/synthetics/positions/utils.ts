@@ -100,6 +100,7 @@ export function getEstimatedLiquidationTimeInHours(
   const maxNegativePriceImpactUsd = -1n * applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations);
   let { priceImpactDeltaUsd } = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, {
     fallbackToZero: true,
+    sizeDeltaInTokens: position.sizeInTokens,
   });
 
   if (priceImpactDeltaUsd > 0) {

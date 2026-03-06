@@ -78,7 +78,7 @@ export function getCappedPositionImpactUsd(
   sizeDeltaUsd: bigint,
   isLong: boolean,
   isIncrease: boolean,
-  opts: { fallbackToZero?: boolean; shouldCapNegativeImpact?: boolean } = {}
+  opts: { fallbackToZero?: boolean; shouldCapNegativeImpact?: boolean; sizeDeltaInTokens?: bigint } = {}
 ) {
   sizeDeltaUsd = isIncrease ? sizeDeltaUsd : sizeDeltaUsd * -1n;
 
@@ -149,15 +149,36 @@ export function getPriceImpactForPosition(
   marketInfo: MarketInfo,
   sizeDeltaUsd: bigint,
   isLong: boolean,
-  opts: { fallbackToZero?: boolean } = {}
+  opts: { fallbackToZero?: boolean; sizeDeltaInTokens?: bigint } = {}
 ) {
   const longInterestUsd = getOpenInterestForBalance(marketInfo, true);
   const shortInterestUsd = getOpenInterestForBalance(marketInfo, false);
 
+  // When useOpenInterestInTokensForBalance is enabled, the contract uses
+  // tokenDelta * midPrice as the usdDelta for OI balance calculations.
+  // This aligns the FE with the v2.2c contract behavior in
+  // PositionPricingUtils.getNextOpenInterest.
+  let effectiveUsdDelta = sizeDeltaUsd;
+  if (marketInfo.useOpenInterestInTokensForBalance) {
+    const midPrice = getMidPrice(marketInfo.indexToken.prices);
+    if (opts.sizeDeltaInTokens !== undefined && midPrice > 0n) {
+      // For decreases, sizeDeltaInTokens is derived from position proportions.
+      // For increases, it's derived from sizeDeltaUsd / executionPrice.
+      // The contract overrides: usdDelta = tokenDelta * midPrice
+      effectiveUsdDelta = convertToUsd(opts.sizeDeltaInTokens, marketInfo.indexToken.decimals, midPrice)!;
+      // Preserve the sign of the original sizeDeltaUsd
+      if (sizeDeltaUsd < 0n && effectiveUsdDelta > 0n) {
+        effectiveUsdDelta = -effectiveUsdDelta;
+      } else if (sizeDeltaUsd > 0n && effectiveUsdDelta < 0n) {
+        effectiveUsdDelta = -effectiveUsdDelta;
+      }
+    }
+  }
+
   const { currentLongUsd, currentShortUsd, nextLongUsd, nextShortUsd } = getNextOpenInterestParams({
     currentLongUsd: longInterestUsd,
     currentShortUsd: shortInterestUsd,
-    usdDelta: sizeDeltaUsd,
+    usdDelta: effectiveUsdDelta,
     isLong: isLong!,
   });
 
@@ -189,7 +210,7 @@ export function getPriceImpactForPosition(
 
   const virtualInventoryParams = getNextOpenInterestForVirtualInventory({
     virtualInventory: marketInfo.virtualInventoryForPositions,
-    usdDelta: sizeDeltaUsd,
+    usdDelta: effectiveUsdDelta,
     isLong: isLong!,
   });
 
