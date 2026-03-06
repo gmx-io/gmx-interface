@@ -226,6 +226,15 @@ export function getMinPriceImpactMarket(
   };
 }
 
+export function getIsFundingClaimInsufficientBalance(market: MarketInfo, isLong: boolean): boolean {
+  const claimable = isLong ? market.claimableFundingAmountLong : market.claimableFundingAmountShort;
+  const poolAmount = isLong ? market.longPoolAmount : market.shortPoolAmount;
+
+  if (claimable === undefined || claimable === 0n) return false;
+
+  return claimable > poolAmount;
+}
+
 export function getTotalClaimableFundingUsd(markets: MarketInfo[]) {
   return markets.reduce((acc, market) => {
     const { longToken, shortToken } = market;

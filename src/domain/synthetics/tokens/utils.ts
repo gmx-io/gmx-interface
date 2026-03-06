@@ -1,9 +1,9 @@
 import { InfoTokens, SignedTokenPermit, TokenBalanceType, TokenInfo } from "domain/tokens";
-import { convertTokenAddress, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { nowInSeconds } from "sdk/utils/time";
 import { getTokenData, TokensAllowanceData } from "sdk/utils/tokens";
 
-import { TokenData, TokensData, TokenToSpendParams } from "./types";
+import { TokenData, TokensData } from "./types";
 
 export function getNeedTokenApprove(
   tokenAllowanceData: TokensAllowanceData | undefined,
@@ -26,55 +26,6 @@ export function getNeedTokenApprove(
   );
 
   return shouldApprove && !signedPermit;
-}
-
-export function getApprovalRequirements({
-  chainId,
-  payTokenParamsList,
-  gasPaymentTokenParams,
-  permits,
-}: {
-  chainId: number;
-  payTokenParamsList: TokenToSpendParams[];
-  gasPaymentTokenParams: TokenToSpendParams | undefined;
-  permits: SignedTokenPermit[];
-}): {
-  tokensToApprove: TokenToSpendParams[];
-  isAllowanceLoaded: boolean;
-} {
-  const initialTokensToApprove = payTokenParamsList;
-
-  if (gasPaymentTokenParams) {
-    initialTokensToApprove.push(gasPaymentTokenParams);
-  }
-
-  const combinedTokensToSpendMap = initialTokensToApprove.reduce(
-    (acc, curr) => {
-      const tokenAddress = convertTokenAddress(chainId, curr.tokenAddress, "wrapped");
-
-      if (acc[tokenAddress] !== undefined) {
-        acc[tokenAddress].amount = acc[tokenAddress].amount + curr.amount;
-      } else {
-        acc[tokenAddress] = {
-          ...curr,
-        };
-      }
-
-      return acc;
-    },
-    {} as Record<string, TokenToSpendParams>
-  );
-
-  const tokensToApprove = Object.values(combinedTokensToSpendMap).filter((tokenToSpend) => {
-    return getNeedTokenApprove(tokenToSpend.allowanceData, tokenToSpend.tokenAddress, tokenToSpend.amount, permits);
-  });
-
-  const isAllowanceLoaded = tokensToApprove.every((tokenToSpend) => tokenToSpend.isAllowanceLoaded);
-
-  return {
-    tokensToApprove,
-    isAllowanceLoaded,
-  };
 }
 
 /**

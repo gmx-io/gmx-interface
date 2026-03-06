@@ -1,6 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useMemo } from "react";
 import { zeroAddress } from "viem";
 
 import { getBridgingOptionsForToken } from "config/bridging";
@@ -23,12 +23,10 @@ import {
 import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
-  selectGasPaymentTokenAllowance,
   selectMarketsInfoData,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
-import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import {
   selectExternalSwapQuote,
   selectTradeboxFindSwapPath,
@@ -42,7 +40,6 @@ import {
   selectTradeboxPayAmount,
   selectTradeboxSelectedPosition,
   selectTradeboxState,
-  selectTradeboxTokensAllowance,
   selectTradeboxToToken,
   selectTradeboxToTokenAmount,
   selectTradeboxTradeFlags,
@@ -57,7 +54,6 @@ import { ExpressTxnParams } from "domain/synthetics/express";
 import { substractMaxLeverageSlippage } from "domain/synthetics/positions/utils";
 import { useSidecarEntries } from "domain/synthetics/sidecarOrders/useSidecarEntries";
 import { useSidecarOrders } from "domain/synthetics/sidecarOrders/useSidecarOrders";
-import { getApprovalRequirements } from "domain/synthetics/tokens/utils";
 import { getIncreasePositionAmounts } from "domain/synthetics/trade/utils/increase";
 import {
   getCommonError,
@@ -68,7 +64,7 @@ import {
   ValidationButtonTooltipName,
   ValidationResult,
 } from "domain/synthetics/trade/utils/validation";
-import { useApproveToken } from "domain/tokens/useApproveTokens";
+import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { numericBinarySearch } from "lib/binarySearch";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
@@ -76,8 +72,10 @@ import { formatAmountFree } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { sleep } from "lib/sleep";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import { sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
+import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
+import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
+import { getContract } from "sdk/configs/contracts";
 import { getToken, getTokenBySymbol } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/utils/fees/types";
 import { BatchOrderTxnParams } from "sdk/utils/orderTransactions";
@@ -143,15 +141,10 @@ export function useTradeboxButtonState({
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
   const isStakeOrUnstake = useSelector(selectTradeboxIsStakeOrUnstake);
   const payAmount = useSelector(selectTradeboxPayAmount);
-  const payTokenAllowance = useSelector(selectTradeboxTokensAllowance);
-  const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
-  const tokenPermits = useSelector(selectTokenPermits);
   const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
 
   const { setPendingTxns } = usePendingTxns();
   const { openConnectModal } = useConnectModal();
-
-  const { approveToken } = useApproveToken();
 
   const {
     onSubmitWrapOrUnwrap,
@@ -168,60 +161,38 @@ export function useTradeboxButtonState({
     setPendingTxns,
   });
 
-  // TODO move this to a separate hook
-  const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
-    if (isFromTokenGmxAccount) {
-      return { tokensToApprove: [], isAllowanceLoaded: true };
+  const approvalTokens = useMemo(() => {
+    const list: { tokenAddress: string; amount: bigint | undefined }[] = [];
+
+    if (fromToken && payAmount !== undefined) {
+      list.push({ tokenAddress: fromToken.address, amount: payAmount });
     }
 
-    if (
-      !fromToken ||
-      payAmount === undefined ||
-      !payTokenAllowance.tokensAllowanceData ||
-      !payTokenAllowance.spenderAddress ||
-      !gasPaymentToken
-    ) {
-      return { tokensToApprove: [], isAllowanceLoaded: false };
+    if (expressParams?.gasPaymentParams && gasPaymentToken) {
+      list.push({
+        tokenAddress: gasPaymentToken.address,
+        amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
+      });
     }
 
-    const approvalRequirements = getApprovalRequirements({
-      chainId,
-      payTokenParamsList: [
-        {
-          tokenAddress: fromToken.address,
-          amount: payAmount,
-          allowanceData: payTokenAllowance.tokensAllowanceData,
-          isAllowanceLoaded: payTokenAllowance.isLoaded,
-        },
-      ],
-      gasPaymentTokenParams: expressParams?.gasPaymentParams
-        ? {
-            tokenAddress: gasPaymentToken.address,
-            amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
-            allowanceData: gasPaymentTokenAllowance?.tokensAllowanceData,
-            isAllowanceLoaded: gasPaymentTokenAllowance?.isLoaded,
-          }
-        : undefined,
-      permits: expressParams && tokenPermits ? tokenPermits : [],
-    });
+    return list;
+  }, [fromToken, payAmount, expressParams?.gasPaymentParams, gasPaymentToken]);
 
-    return approvalRequirements;
-  }, [
+  const {
+    tokensToApprove,
+    isAllowanceLoaded: isAllowanceLoadedRaw,
+    isApproving,
+    handleApprove,
+  } = useTokenApproval({
     chainId,
-    expressParams,
-    fromToken,
-    gasPaymentToken,
-    gasPaymentTokenAllowance?.isLoaded,
-    gasPaymentTokenAllowance?.tokensAllowanceData,
-    isFromTokenGmxAccount,
-    payAmount,
-    payTokenAllowance.isLoaded,
-    payTokenAllowance.spenderAddress,
-    payTokenAllowance.tokensAllowanceData,
-    tokenPermits,
-  ]);
+    spenderAddress: getContract(chainId, "SyntheticsRouter"),
+    tokens: approvalTokens,
+    allowPermit: Boolean(expressParams),
+    skip: isFromTokenGmxAccount,
+  });
 
-  const [isApproving, setIsApproving] = useState(false);
+  const isDataReady = Boolean(fromToken && payAmount !== undefined && gasPaymentToken);
+  const isAllowanceLoaded = isDataReady && isAllowanceLoadedRaw;
 
   const detectAndSetAvailableMaxLeverage = useDetectAndSetAvailableMaxLeverage({ setToTokenInputValue });
 
@@ -364,16 +335,18 @@ export function useTradeboxButtonState({
     }
 
     if (!isFromTokenGmxAccount && isAllowanceLoaded && tokensToApprove.length) {
-      const tokenToApprove = tokensToApprove[0];
+      if (!chainId || isApproving || !tokensToApprove[0]) return;
 
-      if (!chainId || isApproving || !tokenToApprove) return;
-
-      approveToken({
-        tokenAddress: tokenToApprove.tokenAddress,
-        chainId,
-        signer,
-        allowPermit: Boolean(expressParams),
-        setIsApproving,
+      userAnalytics.pushEvent<TokenApproveClickEvent>({
+        event: "TokenApproveAction",
+        data: { action: "ApproveClick" },
+      });
+      handleApprove({
+        onApproveFail: () =>
+          userAnalytics.pushEvent<TokenApproveResultEvent>({
+            event: "TokenApproveAction",
+            data: { action: "ApproveFail" },
+          }),
       });
 
       return;
@@ -411,7 +384,7 @@ export function useTradeboxButtonState({
     });
   }, [
     account,
-    approveToken,
+    handleApprove,
     chainId,
     expressParams,
     fromToken,
@@ -437,12 +410,6 @@ export function useTradeboxButtonState({
     signer,
     tokensToApprove,
   ]);
-
-  useEffect(() => {
-    if (!tokensToApprove.length && isApproving) {
-      setIsApproving(false);
-    }
-  }, [isApproving, tokensToApprove]);
 
   return useMemo((): TradeboxButtonState => {
     const commonState = {
@@ -516,7 +483,7 @@ export function useTradeboxButtonState({
         ...commonState,
         text: (
           <>
-            {t`Allow ${getToken(chainId, tokensToApprove[0].tokenAddress).symbol} to be spent`}{" "}
+            {t`Allow ${getToken(chainId, tokensToApprove[0]).symbol} to be spent`}{" "}
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
@@ -527,7 +494,7 @@ export function useTradeboxButtonState({
     if (isAllowanceLoaded && tokensToApprove.length) {
       return {
         ...commonState,
-        text: t`Allow ${getToken(chainId, tokensToApprove[0].tokenAddress).symbol} to be spent`,
+        text: t`Allow ${getToken(chainId, tokensToApprove[0]).symbol} to be spent`,
         disabled: false,
       };
     }
