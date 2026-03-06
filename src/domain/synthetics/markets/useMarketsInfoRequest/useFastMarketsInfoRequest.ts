@@ -44,6 +44,7 @@ const MARKETS_INFO_QUERY = gql`
       fundingFactor
       fundingExponentFactor
       fundingIncreaseFactorPerSecond
+      minFundingIncreaseRatePerSecond
       fundingDecreaseFactorPerSecond
       thresholdForStableFunding
       thresholdForDecreaseFunding
@@ -190,6 +191,7 @@ export function useFastMarketsInfoRequest(chainId: number) {
             fundingFactor: BigInt(mInfo.fundingFactor),
             fundingExponentFactor: BigInt(mInfo.fundingExponentFactor),
             fundingIncreaseFactorPerSecond: BigInt(mInfo.fundingIncreaseFactorPerSecond),
+            minFundingIncreaseRatePerSecond: BigInt(mInfo.minFundingIncreaseRatePerSecond),
             fundingDecreaseFactorPerSecond: BigInt(mInfo.fundingDecreaseFactorPerSecond),
             thresholdForStableFunding: BigInt(mInfo.thresholdForStableFunding),
             thresholdForDecreaseFunding: BigInt(mInfo.thresholdForDecreaseFunding),

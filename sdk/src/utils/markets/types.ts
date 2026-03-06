@@ -59,6 +59,7 @@ export type MarketInfo = Market &
     fundingFactor: bigint;
     fundingExponentFactor: bigint;
     fundingIncreaseFactorPerSecond: bigint;
+    minFundingIncreaseRatePerSecond: bigint;
     fundingDecreaseFactorPerSecond: bigint;
     thresholdForStableFunding: bigint;
     thresholdForDecreaseFunding: bigint;
@@ -193,6 +194,7 @@ export type MarketConfig = Pick<
   | "fundingFactor"
   | "fundingExponentFactor"
   | "fundingIncreaseFactorPerSecond"
+  | "minFundingIncreaseRatePerSecond"
   | "fundingDecreaseFactorPerSecond"
   | "thresholdForDecreaseFunding"
   | "thresholdForStableFunding"

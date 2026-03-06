@@ -89,6 +89,7 @@ const marketInfo: MarketInfo = {
   fundingFactor: BigInt("0x043c33c1937564800000"),
   fundingExponentFactor: BigInt("0x0c9f2c9cd04674edea40000000"),
   fundingIncreaseFactorPerSecond: BigInt("0x0af6a4d07c8f0000"),
+  minFundingIncreaseRatePerSecond: 0n,
   fundingDecreaseFactorPerSecond: BigInt("0x00"),
   thresholdForDecreaseFunding: BigInt("0x00"),
   thresholdForStableFunding: BigInt("0xa18f07d736b90be550000000"),

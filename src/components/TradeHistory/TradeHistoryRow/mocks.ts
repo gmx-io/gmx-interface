@@ -222,6 +222,10 @@ export const requestIncreasePosition = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    minFundingIncreaseRatePerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingDecreaseFactorPerSecond: {
       type: "bigint",
       hex: "0x00",
@@ -704,6 +708,10 @@ export const withdraw1Usd = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    minFundingIncreaseRatePerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingDecreaseFactorPerSecond: {
       type: "bigint",
       hex: "0x00",
@@ -1176,6 +1184,10 @@ export const deposit1Usd = prepare({
       hex: "0x0c9f2c9cd04674edea40000000",
     },
     fundingIncreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minFundingIncreaseRatePerSecond: {
       type: "bigint",
       hex: "0x00",
     },
@@ -1789,6 +1801,10 @@ export const createOrderDecreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    minFundingIncreaseRatePerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingDecreaseFactorPerSecond: {
       type: "bigint",
       hex: "0x00",
@@ -2228,6 +2244,10 @@ export const cancelOrderIncreaseLong = prepare({
       hex: "0x00",
     },
     fundingIncreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minFundingIncreaseRatePerSecond: {
       type: "bigint",
       hex: "0x00",
     },
@@ -2702,6 +2722,10 @@ export const createOrderIncreaseLong = prepare({
       hex: "0x00",
     },
     fundingIncreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minFundingIncreaseRatePerSecond: {
       type: "bigint",
       hex: "0x00",
     },
@@ -3180,6 +3204,10 @@ export const executeOrderIncreaseLong = prepare({
       hex: "0x00",
     },
     fundingIncreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minFundingIncreaseRatePerSecond: {
       type: "bigint",
       hex: "0x00",
     },
@@ -3675,6 +3703,10 @@ export const frozenOrderIncreaseShort = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    minFundingIncreaseRatePerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingDecreaseFactorPerSecond: {
       type: "bigint",
       hex: "0x00",
@@ -4148,6 +4180,10 @@ export const undefinedOrder = prepare({
       hex: "0x00",
     },
     fundingIncreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minFundingIncreaseRatePerSecond: {
       type: "bigint",
       hex: "0x00",
     },
@@ -4629,6 +4665,10 @@ export const liquidated = prepare({
       hex: "0x00",
     },
     fundingIncreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minFundingIncreaseRatePerSecond: {
       type: "bigint",
       hex: "0x00",
     },
@@ -5176,6 +5216,10 @@ export const increaseLongETH = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    minFundingIncreaseRatePerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingDecreaseFactorPerSecond: {
       type: "bigint",
       hex: "0x00",
@@ -5690,6 +5734,7 @@ export const createOrderStopMarketLong = prepare({
     fundingFactor: { type: "bigint", value: "20000000000000000000000" },
     fundingExponentFactor: { type: "bigint", value: "1000000000000000000000000000000" },
     fundingIncreaseFactorPerSecond: { type: "bigint", value: "2048553493366975277" },
+    minFundingIncreaseRatePerSecond: { type: "bigint", value: "0" },
     fundingDecreaseFactorPerSecond: { type: "bigint", value: "128034593335435961" },
     thresholdForDecreaseFunding: { type: "bigint", value: "0" },
     thresholdForStableFunding: { type: "bigint", value: "40000000000000000000000000000" },
@@ -5912,6 +5957,7 @@ export const executeOrderStopMarketLong = prepare({
     fundingFactor: { type: "bigint", value: "20000000000000000000000" },
     fundingExponentFactor: { type: "bigint", value: "1000000000000000000000000000000" },
     fundingIncreaseFactorPerSecond: { type: "bigint", value: "2048553493366975277" },
+    minFundingIncreaseRatePerSecond: { type: "bigint", value: "0" },
     fundingDecreaseFactorPerSecond: { type: "bigint", value: "128034593335435961" },
     thresholdForDecreaseFunding: { type: "bigint", value: "0" },
     thresholdForStableFunding: { type: "bigint", value: "40000000000000000000000000000" },

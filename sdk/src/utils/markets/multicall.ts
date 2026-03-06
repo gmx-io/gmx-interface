@@ -410,6 +410,10 @@ export async function buildMarketsConfigsRequest(
           methodName: "getUint",
           params: [prebuiltHashedKeys.fundingIncreaseFactorPerSecond],
         },
+        minFundingIncreaseRatePerSecond: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.minFundingIncreaseRatePerSecond],
+        },
         fundingDecreaseFactorPerSecond: {
           methodName: "getUint",
           params: [prebuiltHashedKeys.fundingDecreaseFactorPerSecond],
@@ -599,6 +603,7 @@ export function parseMarketsConfigsResponse(
         fundingFactor: dataStoreValues.fundingFactor.returnValues[0],
         fundingExponentFactor: dataStoreValues.fundingExponentFactor.returnValues[0],
         fundingIncreaseFactorPerSecond: dataStoreValues.fundingIncreaseFactorPerSecond.returnValues[0],
+        minFundingIncreaseRatePerSecond: dataStoreValues.minFundingIncreaseRatePerSecond.returnValues[0],
         fundingDecreaseFactorPerSecond: dataStoreValues.fundingDecreaseFactorPerSecond.returnValues[0],
         thresholdForDecreaseFunding: dataStoreValues.thresholdForDecreaseFunding.returnValues[0],
         thresholdForStableFunding: dataStoreValues.thresholdForStableFunding.returnValues[0],

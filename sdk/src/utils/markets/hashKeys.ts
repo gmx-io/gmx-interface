@@ -8,6 +8,7 @@ import {
   FUNDING_EXPONENT_FACTOR_KEY,
   FUNDING_FACTOR_KEY,
   FUNDING_INCREASE_FACTOR_PER_SECOND,
+  MIN_FUNDING_INCREASE_RATE_PER_SECOND,
   IS_MARKET_DISABLED_KEY,
   LENT_POSITION_IMPACT_POOL_AMOUNT_KEY,
   MAX_FUNDING_FACTOR_PER_SECOND,
@@ -162,6 +163,10 @@ export function hashMarketConfigKeys(market: MarketConfigInput): MarketConfigKey
     fundingIncreaseFactorPerSecond: [
       ["bytes32", "address"],
       [FUNDING_INCREASE_FACTOR_PER_SECOND, marketAddress],
+    ],
+    minFundingIncreaseRatePerSecond: [
+      ["bytes32", "address"],
+      [MIN_FUNDING_INCREASE_RATE_PER_SECOND, marketAddress],
     ],
     fundingDecreaseFactorPerSecond: [
       ["bytes32", "address"],

@@ -123,6 +123,7 @@ export function mockMarketsInfoData(
       fundingFactor: 0n,
       fundingExponentFactor: 0n,
       fundingIncreaseFactorPerSecond: 0n,
+      minFundingIncreaseRatePerSecond: 0n,
       fundingDecreaseFactorPerSecond: 0n,
       maxFundingFactorPerSecondLong: 0n,
       maxFundingFactorPerSecondShort: 0n,
