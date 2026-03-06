@@ -7,7 +7,10 @@ import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/
 import {
   selectBlockTimestampData,
   selectIsFirstOrder,
+  selectJitLiquidityMap,
+  selectMarkJitStale,
   selectMarketsInfoData,
+  selectRefreshJitData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectExecutionFeeBufferBps,
@@ -40,6 +43,8 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useUserReferralCode } from "domain/referrals";
 import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
+import { getJitLiquidityInfo } from "domain/synthetics/markets/useJitLiquidity";
+import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets/utils";
 import { OrderType } from "domain/synthetics/orders";
 import { createStakeOrUnstakeTxn } from "domain/synthetics/orders/createStakeOrUnStakeTxn";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
@@ -96,6 +101,9 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const fees = useSelector(selectTradeboxFees);
   const chartHeaderInfo = useSelector(selectChartHeaderInfo);
   const marketsInfoData = useSelector(selectMarketsInfoData);
+  const jitLiquidityMap = useSelector(selectJitLiquidityMap);
+  const markJitStale = useSelector(selectMarkJitStale);
+  const refreshJitData = useSelector(selectRefreshJitData);
   const executionFeeBufferBps = useSelector(selectExecutionFeeBufferBps);
   const duration = useSelector(selectTradeboxTwapDuration);
   const numberOfParts = useSelector(selectTradeboxTwapNumberOfParts);
@@ -323,6 +331,12 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         : {
             tokensData,
             blockTimestampData,
+            jitShiftParamsList: marketInfo
+              ? getJitLiquidityInfo(jitLiquidityMap, marketInfo.marketTokenAddress)?.glvShiftParams
+              : undefined,
+            nativeReserveLiquidity: marketInfo ? getAvailableUsdLiquidityForPosition(marketInfo, isLong) : undefined,
+            markJitStale,
+            refreshJitData,
           },
       callback: makeOrderTxnCallback({
         metricId: metricData.metricId,
@@ -341,10 +355,15 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     expressParamsPromise,
     initOrderMetricData,
     isFromTokenGmxAccount,
+    isLong,
+    jitLiquidityMap,
     makeOrderTxnCallback,
+    markJitStale,
+    marketInfo,
     marketsInfoData,
     primaryCreateOrderParams,
     provider,
+    refreshJitData,
     setShouldFallbackToInternalSwap,
     shouldDisableValidationForTesting,
     signer,
