@@ -322,6 +322,8 @@ export const CONTRACTS = {
     SyntheticsReader: "0x4750376b9378294138Cf7B7D69a2d243f4940f71",
     SyntheticsRouter: "0x72F13a44C8ba16a678CAD549F17bc9e06d2B8bD2",
 
+    SimulationRouter: "0xf1DF325e408B3C4c06Ca6871aa385aAc52122BEC",
+
     GlvReader: "0x9B7D08AB020D9c180E4bAc370fB545317124Cf22",
     GlvRouter: "0x21b044Bb4a2Ba667723aA3d15ba7b4bCc628084D",
     GlvVault: "0x40bD50de0977c68ecB958ED4A065E14E1091ce64",
@@ -396,4 +398,12 @@ export function getContract(chainId: ContractsChainId, name: ContractName): Addr
   }
 
   return CONTRACTS[chainId][name];
+}
+
+export function tryGetContract(chainId: ContractsChainId, name: ContractName): Address | undefined {
+  try {
+    return getContract(chainId, name);
+  } catch (e) {
+    return undefined;
+  }
 }
