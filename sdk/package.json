@@ -1,6 +1,6 @@
 {
   "name": "@gmx-io/sdk",
-  "version": "1.5.0-alpha-5",
+  "version": "1.5.0-alpha-6",
   "type": "module",
   "repository": {
     "type": "git",
@@ -76,6 +76,12 @@
       "import": "./build/esm/src/utils/prices/index.js",
       "require": "./build/cjs/src/utils/prices/index.js",
       "default": "./build/cjs/src/utils/prices/index.js"
+    },
+    "./types/prices": {
+      "types": "./build/types/src/utils/prices/types.d.ts",
+      "import": "./build/esm/src/utils/prices/types.js",
+      "require": "./build/cjs/src/utils/prices/types.js",
+      "default": "./build/cjs/src/utils/prices/types.js"
     },
     "./types/24h": {
       "types": "./build/types/src/utils/24h/types.d.ts",
