@@ -70,15 +70,7 @@ export function useJitLiquidity(chainId: ContractsChainId, options?: { enabled?:
     enabled ? ["jitLiquidity", chainId] : null,
     async () => {
       try {
-        const response = await oracleKeeperFetcher.request("/jit/liquidity_info", {
-          validate: (res) => {
-            if (!Array.isArray(res?.liquidityInfos)) {
-              return new Error("Invalid JIT liquidity response");
-            }
-
-            return undefined;
-          },
-        });
+        const response = await oracleKeeperFetcher.fetchJitLiquidity();
 
         const map = new Map<string, JitLiquidityInfo>();
 
