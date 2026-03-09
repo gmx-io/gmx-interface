@@ -4,7 +4,7 @@ import { t, Trans } from "@lingui/macro";
 import { useCallback } from "react";
 import { Link } from "react-router-dom";
 
-import { getMarketBadge } from "domain/synthetics/markets";
+import { Operation, getMarketBadge } from "domain/synthetics/markets";
 import { MarketStat } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
@@ -124,7 +124,10 @@ const AssetDropdownMarketItem = ({ marketStat, chainId }: { marketStat: MarketSt
   const tokenIconBadge = getMarketBadge(chainId, marketStat.marketInfo);
 
   return (
-    <Link to={`/pools/?market=${marketStat.marketInfo.marketTokenAddress}&operation=buy`} className="asset-item">
+    <Link
+      to={`/pools/details?market=${marketStat.marketInfo.marketTokenAddress}&operation=${Operation.Deposit}`}
+      className="asset-item"
+    >
       <div className="mr-12">
         <TokenIcon symbol={tokenIconName} badge={tokenIconBadge} displaySize={32} />
       </div>

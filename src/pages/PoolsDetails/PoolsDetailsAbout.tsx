@@ -155,31 +155,46 @@ const SellableTooltipContent = ({
       )}
       <br />
       <br />
-      <StatsTooltipRow
-        label={t`Max ${marketInfo?.longToken.symbol}`}
-        value={
-          <AmountWithUsdHuman
-            amount={maxLongSellableTokenAmount}
-            usd={sellableInfo?.maxLongSellableUsd}
-            decimals={marketInfo?.longToken?.decimals}
-            symbol={marketInfo?.longToken?.symbol}
-          />
-        }
-        showDollar={false}
-      />
-      {!marketInfo?.isSameCollaterals && (
+      {marketInfo?.isSameCollaterals ? (
         <StatsTooltipRow
-          label={t`Max ${marketInfo?.shortToken.symbol}`}
+          label={t`Max ${marketInfo?.longToken.symbol}`}
           value={
             <AmountWithUsdHuman
-              amount={maxShortSellableTokenAmount}
-              usd={sellableInfo?.maxShortSellableUsd}
-              decimals={marketInfo?.shortToken?.decimals}
-              symbol={marketInfo?.shortToken?.symbol}
+              amount={(maxLongSellableTokenAmount ?? 0n) + (maxShortSellableTokenAmount ?? 0n)}
+              usd={(sellableInfo?.maxLongSellableUsd ?? 0n) + (sellableInfo?.maxShortSellableUsd ?? 0n)}
+              decimals={marketInfo?.longToken?.decimals}
+              symbol={marketInfo?.longToken?.symbol}
             />
           }
           showDollar={false}
         />
+      ) : (
+        <>
+          <StatsTooltipRow
+            label={t`Max ${marketInfo?.longToken.symbol}`}
+            value={
+              <AmountWithUsdHuman
+                amount={maxLongSellableTokenAmount}
+                usd={sellableInfo?.maxLongSellableUsd}
+                decimals={marketInfo?.longToken?.decimals}
+                symbol={marketInfo?.longToken?.symbol}
+              />
+            }
+            showDollar={false}
+          />
+          <StatsTooltipRow
+            label={t`Max ${marketInfo?.shortToken.symbol}`}
+            value={
+              <AmountWithUsdHuman
+                amount={maxShortSellableTokenAmount}
+                usd={sellableInfo?.maxShortSellableUsd}
+                decimals={marketInfo?.shortToken?.decimals}
+                symbol={marketInfo?.shortToken?.symbol}
+              />
+            }
+            showDollar={false}
+          />
+        </>
       )}
     </div>
   );
