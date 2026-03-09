@@ -325,12 +325,14 @@ export function SyntheticsStateContextProvider({
     }
 
     if (jitMarkets.length > 0) {
+      // TODO: remove this after JIT testing
       // eslint-disable-next-line no-console
       console.log(`%c[JIT] Markets WITH JIT liquidity (${jitMarkets.length})`, "color: #00ff88; font-weight: bold");
       // eslint-disable-next-line no-console
       console.table(jitMarkets);
     }
 
+    // TODO: remove this after JIT testing
     // eslint-disable-next-line no-console
     console.log(`%c[JIT] Markets WITHOUT JIT liquidity (${nonJitMarkets.length})`, "color: #ff8800; font-weight: bold");
     // eslint-disable-next-line no-console

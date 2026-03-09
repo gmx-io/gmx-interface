@@ -13,7 +13,7 @@ export const ORACLE_FALLBACK_TRACKER_CONFIG = {
   setEndpointsThrottle: 5 * 1000, // 5 secs
   delay: 5000, // 5 secs
 };
-
+// TODO: fix arbitrum url after JIT is deployed
 const ORACLE_KEEPER_URLS: Record<ContractsChainId, string> = {
   [ARBITRUM]: "https://arbitrum-api-fallback.gmxinfra2.io",
 

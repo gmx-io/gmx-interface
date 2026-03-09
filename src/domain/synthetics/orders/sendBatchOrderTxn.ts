@@ -301,29 +301,6 @@ const makeBatchOrderSimulation = async ({
 
       const simulationMethod = needsJit ? "simulateExecuteLatestJitOrder" : "simulateExecuteLatestOrder";
 
-      // eslint-disable-next-line no-console
-      console.log(
-        `%c[JIT Simulation] ${simulationMethod}`,
-        needsJit ? "color: #00ff88; font-weight: bold" : "color: #888",
-        needsJit
-          ? {
-              market: orderPayload.addresses.market,
-              sizeDeltaUsd: orderPayload.numbers.sizeDeltaUsd.toString(),
-              nativeReserveLiquidity: nativeReserveLiquidity?.toString(),
-              shiftParams: jitShiftParamsList?.length,
-            }
-          : {
-              market: orderPayload.addresses.market,
-              sizeDeltaUsd: orderPayload.numbers.sizeDeltaUsd.toString(),
-              nativeReserveLiquidity: nativeReserveLiquidity?.toString(),
-              reason: !isIncreaseOrder
-                ? "not MarketIncrease"
-                : !jitShiftParamsList?.length
-                  ? "no shift params for this market"
-                  : "size fits native reserve",
-            }
-      );
-
       try {
         await simulateExecution(chainId, {
           account: signer.address,
@@ -342,11 +319,6 @@ const makeBatchOrderSimulation = async ({
         });
       } catch (error) {
         if (needsJit && isJitShiftError(error)) {
-          // eslint-disable-next-line no-console
-          console.log("%c[JIT Simulation] Shift error → marking stale for 60s", "color: #ff4444; font-weight: bold", {
-            market: orderPayload.addresses.market,
-            error: String(error),
-          });
           markJitStale?.(orderPayload.addresses.market);
           refreshJitData?.();
           throw new Error("Insufficient liquidity");
