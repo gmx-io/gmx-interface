@@ -6,9 +6,9 @@ import { fetchApiMarketsInfo, fetchApiTokensData } from "utils/markets/api";
 import { fetchApiOrders } from "utils/orders/api";
 import { fetchApiPositionsInfo } from "utils/positions/api";
 import { fetchApiOhlcv } from "utils/prices/api";
+import type { OhlcvParams } from "utils/prices/types";
 
 export type { OhlcvCandle, OhlcvParams } from "utils/prices/types";
-import type { OhlcvParams } from "utils/prices/types";
 
 export class GmxApiSdk {
   ctx: { chainId: ContractsChainId; api: IHttp };
