@@ -276,7 +276,7 @@ export const DepositView = () => {
   );
 
   const handleApprove = useCallback(async () => {
-    if (!depositViewTokenAddress || amountLD === undefined || !spenderAddress || !depositViewChain) {
+    if (!depositViewTokenAddress || !spenderAddress || !depositViewChain) {
       helperToast.error(t`Approval failed`);
       return;
     }
@@ -302,16 +302,15 @@ export const DepositView = () => {
         onApproveSubmitted: () => setIsApproving(true),
         setIsApproving: noop,
         permitParams: undefined,
-        approveAmount: amountLD,
+        approveAmount: undefined,
       });
     });
   }, [
-    depositViewTokenAddress,
-    amountLD,
-    spenderAddress,
     depositViewChain,
-    sourceChainTokenToApproveAddress,
+    depositViewTokenAddress,
     setSettlementChainId,
+    sourceChainTokenToApproveAddress,
+    spenderAddress,
   ]);
 
   useEffect(() => {
