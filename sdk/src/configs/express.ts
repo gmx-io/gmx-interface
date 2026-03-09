@@ -1,4 +1,4 @@
-import { expandDecimals, USD_DECIMALS } from "utils/numbers";
+import { USD_DECIMALS } from "utils/numbers";
 import { periodToSeconds } from "utils/time";
 import { Token } from "utils/tokens/types";
 
@@ -25,12 +25,6 @@ export const GELATO_API_KEYS: Partial<Record<ContractsChainId, string>> = {
 };
 
 export const EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS = 1000;
-
-export const EXPRESS_DEFAULT_MIN_RESIDUAL_USD_NUMBER = 20;
-export const EXPRESS_DEFAULT_MIN_RESIDUAL_USD = expandDecimals(EXPRESS_DEFAULT_MIN_RESIDUAL_USD_NUMBER, USD_DECIMALS);
-const EXPRESS_DEFAULT_MAX_RESIDUAL_USD_NUMBER = 40;
-export const EXPRESS_DEFAULT_MAX_RESIDUAL_USD = expandDecimals(EXPRESS_DEFAULT_MAX_RESIDUAL_USD_NUMBER, USD_DECIMALS);
-export const EXPRESS_RESIDUAL_AMOUNT_MULTIPLIER = 20n;
 
 const GAS_PAYMENT_TOKENS: Record<ContractsChainId, string[]> = {
   [ARBITRUM]: [

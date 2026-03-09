@@ -29,12 +29,14 @@ export function ExpressTradingWarningCard({
   isWrapOrUnwrap,
   disabled,
   isGmxAccount,
+  onAfterAction,
 }: {
   expressParams: ExpressTxnParams | undefined;
   payTokenAddress: string | undefined;
   isWrapOrUnwrap: boolean;
   disabled?: boolean;
   isGmxAccount: boolean;
+  onAfterAction?: () => void;
 }) {
   const [isVisible, setIsVisible] = useState(true);
   const updateSubaccountSettings = useSelector(selectUpdateSubaccountSettings);
@@ -69,10 +71,11 @@ export function ExpressTradingWarningCard({
       nextIsGmxAccount: isGmxAccount,
     }).then((success) => {
       if (success) {
+        onAfterAction?.();
         setIsVisible(false);
       }
     });
-  }, [updateSubaccountSettings, isGmxAccount]);
+  }, [updateSubaccountSettings, isGmxAccount, onAfterAction]);
 
   const {
     shouldShowAllowedActionsWarning,
@@ -146,6 +149,7 @@ export function ExpressTradingWarningCard({
     buttonText = <Trans>Buy {gasPaymentTokensText}</Trans>;
     onClick = () => {
       history.push(`/trade/swap?to=${gasPaymentTokenSymbols[0]}`);
+      onAfterAction?.();
     };
   } else if (shouldShowSubaccountApprovalInvalidWarning) {
     icon = OneClickIcon;

@@ -3,6 +3,7 @@ import { BaseContract, Overrides, Provider, TransactionRequest } from "ethers";
 import { ErrorLike, parseError } from "lib/errors";
 import { ErrorEvent } from "lib/metrics";
 import { emitMetricEvent } from "lib/metrics/emitMetricEvent";
+import { getProvider } from "lib/rpc";
 import { ISigner, ISignerSendTransactionParams } from "lib/transactions/iSigner";
 import { ErrorPattern } from "sdk/utils/errors/transactionsErrors";
 import { mustNeverExist } from "sdk/utils/types";
@@ -164,7 +165,7 @@ export function makeTransactionErrorHandler(
   return async (error) => {
     const data = contract.interface.encodeFunctionData(method, params);
     const to = await contract.getAddress();
-    const provider = contract.runner!.provider!;
+    const provider = getProvider(undefined, chainId);
     const txnData = {
       data,
       to,

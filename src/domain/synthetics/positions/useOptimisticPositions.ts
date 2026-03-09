@@ -56,57 +56,60 @@ function applyOptimisticUpdates<T extends Position>({
   pendingPositionsUpdates: Record<string, PendingPositionUpdate | undefined>;
   createMockPosition: (pendingUpdate: PendingPositionUpdate) => T | null;
 }): Record<string, T> {
-  return allPositionsKeys.reduce((acc, key) => {
-    const now = Date.now();
+  return allPositionsKeys.reduce(
+    (acc, key) => {
+      const now = Date.now();
 
-    const lastIncreaseEvent = positionIncreaseEvents?.filter((e) => e.positionKey === key).pop();
-    const lastDecreaseEvent = positionDecreaseEvents?.filter((e) => e.positionKey === key).pop();
+      const lastIncreaseEvent = positionIncreaseEvents?.filter((e) => e.positionKey === key).pop();
+      const lastDecreaseEvent = positionDecreaseEvents?.filter((e) => e.positionKey === key).pop();
 
-    const pendingUpdate =
-      pendingPositionsUpdates?.[key] && (pendingPositionsUpdates[key]?.updatedAt ?? 0) + MAX_PENDING_UPDATE_AGE > now
-        ? pendingPositionsUpdates[key]
-        : undefined;
+      const pendingUpdate =
+        pendingPositionsUpdates?.[key] && (pendingPositionsUpdates[key]?.updatedAt ?? 0) + MAX_PENDING_UPDATE_AGE > now
+          ? pendingPositionsUpdates[key]
+          : undefined;
 
-    let position: T;
+      let position: T;
 
-    if (getByKey(positionsData, key)) {
-      position = { ...getByKey(positionsData, key)! };
-    } else if (pendingUpdate && pendingUpdate.isIncrease) {
-      const mock = createMockPosition(pendingUpdate);
-      if (!mock) return acc;
-      position = mock;
-    } else {
+      if (getByKey(positionsData, key)) {
+        position = { ...getByKey(positionsData, key)! };
+      } else if (pendingUpdate && pendingUpdate.isIncrease) {
+        const mock = createMockPosition(pendingUpdate);
+        if (!mock) return acc;
+        position = mock;
+      } else {
+        return acc;
+      }
+
+      if (
+        lastIncreaseEvent &&
+        lastIncreaseEvent.increasedAtTime > position.increasedAtTime &&
+        lastIncreaseEvent.increasedAtTime > (lastDecreaseEvent?.decreasedAtTime || 0)
+      ) {
+        position = applyEventChanges(position, lastIncreaseEvent);
+      } else if (
+        lastDecreaseEvent &&
+        lastDecreaseEvent.decreasedAtTime > position.decreasedAtTime &&
+        lastDecreaseEvent.decreasedAtTime > (lastIncreaseEvent?.increasedAtTime || 0)
+      ) {
+        position = applyEventChanges(position, lastDecreaseEvent);
+      }
+
+      if (
+        pendingUpdate &&
+        ((pendingUpdate.isIncrease && pendingUpdate.updatedAtBlock > position.increasedAtTime) ||
+          (!pendingUpdate.isIncrease && pendingUpdate.updatedAtBlock > position.decreasedAtTime))
+      ) {
+        position.pendingUpdate = pendingUpdate;
+      }
+
+      if (position.sizeInUsd > 0) {
+        acc[key] = position;
+      }
+
       return acc;
-    }
-
-    if (
-      lastIncreaseEvent &&
-      lastIncreaseEvent.increasedAtTime > position.increasedAtTime &&
-      lastIncreaseEvent.increasedAtTime > (lastDecreaseEvent?.decreasedAtTime || 0)
-    ) {
-      position = applyEventChanges(position, lastIncreaseEvent);
-    } else if (
-      lastDecreaseEvent &&
-      lastDecreaseEvent.decreasedAtTime > position.decreasedAtTime &&
-      lastDecreaseEvent.decreasedAtTime > (lastIncreaseEvent?.increasedAtTime || 0)
-    ) {
-      position = applyEventChanges(position, lastDecreaseEvent);
-    }
-
-    if (
-      pendingUpdate &&
-      ((pendingUpdate.isIncrease && pendingUpdate.updatedAtBlock > position.increasedAtTime) ||
-        (!pendingUpdate.isIncrease && pendingUpdate.updatedAtBlock > position.decreasedAtTime))
-    ) {
-      position.pendingUpdate = pendingUpdate;
-    }
-
-    if (position.sizeInUsd > 0) {
-      acc[key] = position;
-    }
-
-    return acc;
-  }, {} as Record<string, T>);
+    },
+    {} as Record<string, T>
+  );
 }
 
 export function getPendingMockPosition(pendingUpdate: PendingPositionUpdate): Position {
@@ -235,7 +238,14 @@ export function useOptimisticPositions(p: {
       pendingPositionsUpdates,
       createMockPosition: getPendingMockPosition,
     });
-  }, [allPositionsKeys, isLoading, pendingPositionsUpdates, positionDecreaseEvents, positionIncreaseEvents, positionsData]);
+  }, [
+    allPositionsKeys,
+    isLoading,
+    pendingPositionsUpdates,
+    positionDecreaseEvents,
+    positionIncreaseEvents,
+    positionsData,
+  ]);
 }
 
 export function useOptimisticPositionsInfo(p: {

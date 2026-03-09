@@ -18,11 +18,12 @@ import { getByKey } from "lib/objects";
 import { MarginField } from "./MarginField";
 import { MarginPercentageSlider } from "./MarginPercentageSlider";
 import { PriceField } from "./PriceField";
-import { SizeField, SizeDisplayMode } from "./SizeField";
+import { SizeDisplayMode, SizeField } from "./SizeField";
 import { useSizeConversion } from "./useSizeConversion";
 import { useTradeboxManualLeverageSizeSlider } from "./useTradeboxManualLeverageSizeSlider";
 
 type Props = {
+  maxAvailableAmount: bigint;
   onSelectFromTokenAddress: (tokenAddress: string, isGmxAccount: boolean) => void;
   onDepositTokenAddress: (tokenAddress: string, chainId: SourceChainId) => void;
   fromTokenInputValue: string;
@@ -36,6 +37,7 @@ type Props = {
 };
 
 export function TradeboxMarginFields({
+  maxAvailableAmount,
   onSelectFromTokenAddress,
   onDepositTokenAddress,
   fromTokenInputValue,
@@ -76,8 +78,8 @@ export function TradeboxMarginFields({
   });
 
   const marginPercentage = useMemo(
-    () => calcMarginPercentage(fromTokenInputValue, fromToken?.balance, fromToken?.decimals ?? 0),
-    [fromTokenInputValue, fromToken?.balance, fromToken?.decimals]
+    () => calcMarginPercentage(fromTokenInputValue, maxAvailableAmount, fromToken?.decimals),
+    [fromTokenInputValue, maxAvailableAmount, fromToken?.decimals]
   );
 
   const { isLeverageSliderEnabled, sizePercentage, handleSizePercentageChange, markFieldInteraction } =
@@ -145,11 +147,11 @@ export function TradeboxMarginFields({
 
   const handleMarginPercentageChange = useCallback(
     (percentage: number) => {
-      if (fromToken?.balance === undefined || fromToken.balance === 0n) return;
+      if (fromToken?.decimals === undefined || maxAvailableAmount === 0n) return;
 
       const formatted = calcMarginAmountByPercentage(
         percentage,
-        fromToken.balance,
+        maxAvailableAmount,
         fromToken.decimals,
         fromToken.visualMultiplier,
         fromToken.isStable
@@ -158,10 +160,10 @@ export function TradeboxMarginFields({
       setFromTokenInputValue(formatted, true);
     },
     [
-      fromToken?.balance,
       fromToken?.decimals,
       fromToken?.isStable,
       fromToken?.visualMultiplier,
+      maxAvailableAmount,
       setFocusedInput,
       setFromTokenInputValue,
     ]

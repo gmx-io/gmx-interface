@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
@@ -18,7 +18,6 @@ import {
 import { useSavedAllowedSlippage } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import {
   selectBlockTimestampData,
-  selectGasPaymentTokenAllowance,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
@@ -28,7 +27,6 @@ import {
   selectPositionEditorSelectedCollateralToken,
   selectPositionEditorSetCollateralInputValue,
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
-import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
@@ -41,10 +39,18 @@ import {
   substractMaxLeverageSlippage,
   willPositionCollateralBeSufficientForPosition,
 } from "domain/synthetics/positions";
-import { convertToTokenAmount, getApprovalRequirements, useTokensAllowanceData } from "domain/synthetics/tokens";
+import { convertToTokenAmount } from "domain/synthetics/tokens";
 import { getMarkPrice, getMinCollateralUsdForLeverage } from "domain/synthetics/trade";
-import { getCommonError, getEditCollateralError, getExpressError } from "domain/synthetics/trade/utils/validation";
-import { useApproveToken } from "domain/tokens/useApproveTokens";
+import {
+  getCommonError,
+  getEditCollateralError,
+  getExpressError,
+  takeValidationResult,
+  ValidationBannerErrorName,
+  ValidationButtonTooltipName,
+  ValidationResult,
+} from "domain/synthetics/trade/utils/validation";
+import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { bigNumberBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
@@ -57,6 +63,8 @@ import {
 import { expandDecimals, formatAmountFree } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { userAnalytics } from "lib/userAnalytics";
+import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
 import {
@@ -76,14 +84,17 @@ import { usePositionEditorData } from "./hooks/usePositionEditorData";
 import { usePositionEditorFees } from "./hooks/usePositionEditorFees";
 import { OPERATION_LABELS, Operation } from "./types";
 
-export function usePositionEditorButtonState(operation: Operation): {
+type PositionEditorButtonState = {
   text: ReactNode;
   tooltipContent: ReactNode | null;
   disabled: boolean;
   onSubmit: () => void;
   expressParams: ExpressTxnParams | undefined;
   isExpressLoading: boolean;
-} {
+  bannerErrorName: ValidationBannerErrorName | undefined;
+};
+
+export function usePositionEditorButtonState(operation: Operation): PositionEditorButtonState {
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const allowedSlippage = useSavedAllowedSlippage();
   const { chainId, srcChainId } = useChainId();
@@ -106,14 +117,6 @@ export function usePositionEditorButtonState(operation: Operation): {
   const { collateralDeltaAmount, collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const marketsInfoData = useSelector(selectMarketsInfoData);
-
-  const collateralTokenAllowance = useTokensAllowanceData(chainId, {
-    spenderAddress: routerAddress,
-    tokenAddresses: position ? [position.collateralTokenAddress] : [],
-  });
-
-  const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
-  const tokenPermits = useSelector(selectTokenPermits);
 
   const isDeposit = operation === Operation.Deposit;
 
@@ -248,57 +251,38 @@ export function usePositionEditorButtonState(operation: Operation): {
     isGmxAccount: isCollateralTokenFromGmxAccount,
   });
 
-  const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
-    if (isCollateralTokenFromGmxAccount) {
-      return { tokensToApprove: [], isAllowanceLoaded: true };
+  const approvalTokens = useMemo(() => {
+    const list: { tokenAddress: string; amount: bigint | undefined }[] = [];
+
+    if (selectedCollateralAddress && collateralDeltaAmount !== undefined) {
+      list.push({ tokenAddress: selectedCollateralAddress, amount: collateralDeltaAmount });
     }
 
-    if (!selectedCollateralAddress || collateralDeltaAmount === undefined) {
-      return { tokensToApprove: [], isAllowanceLoaded: false };
+    if (expressParams?.gasPaymentParams) {
+      list.push({
+        tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
+        amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
+      });
     }
 
-    const approvalRequirements = getApprovalRequirements({
-      chainId,
-      payTokenParamsList: [
-        {
-          tokenAddress: selectedCollateralAddress,
-          amount: collateralDeltaAmount,
-          allowanceData: collateralTokenAllowance.tokensAllowanceData,
-          isAllowanceLoaded: collateralTokenAllowance.isLoaded,
-        },
-      ],
-      gasPaymentTokenParams: expressParams?.gasPaymentParams
-        ? {
-            tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
-            amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
-            allowanceData: gasPaymentTokenAllowance?.tokensAllowanceData,
-            isAllowanceLoaded: gasPaymentTokenAllowance?.isLoaded,
-          }
-        : undefined,
-      permits: expressParams && tokenPermits ? tokenPermits : [],
-    });
+    return list;
+  }, [selectedCollateralAddress, collateralDeltaAmount, expressParams?.gasPaymentParams]);
 
-    return approvalRequirements;
-  }, [
-    isCollateralTokenFromGmxAccount,
-    selectedCollateralAddress,
-    collateralDeltaAmount,
+  const {
+    tokensToApprove,
+    isAllowanceLoaded: isAllowanceLoadedRaw,
+    isApproving,
+    handleApprove,
+  } = useTokenApproval({
     chainId,
-    collateralTokenAllowance.tokensAllowanceData,
-    collateralTokenAllowance.isLoaded,
-    expressParams,
-    gasPaymentTokenAllowance?.tokensAllowanceData,
-    gasPaymentTokenAllowance?.isLoaded,
-    tokenPermits,
-  ]);
+    spenderAddress: routerAddress,
+    tokens: approvalTokens,
+    allowPermit: Boolean(expressParams),
+    skip: isCollateralTokenFromGmxAccount,
+  });
 
-  const [isApproving, setIsApproving] = useState(false);
-
-  useEffect(() => {
-    if (!tokensToApprove.length && isApproving) {
-      setIsApproving(false);
-    }
-  }, [isApproving, tokensToApprove.length]);
+  const isAllowanceLoaded =
+    Boolean(selectedCollateralAddress && collateralDeltaAmount !== undefined) && isAllowanceLoadedRaw;
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -351,7 +335,7 @@ export function usePositionEditorButtonState(operation: Operation): {
     );
   }, [selectedCollateralToken, maxWithdrawAmount, minCollateralFactor, position, setCollateralInputValue]);
 
-  const [error, tooltipName] = useMemo(() => {
+  const validationResult: ValidationResult = useMemo(() => {
     const commonError = getCommonError({
       chainId,
       isConnected: Boolean(account),
@@ -375,20 +359,7 @@ export function usePositionEditorButtonState(operation: Operation): {
       minCollateralFactor,
     });
 
-    const error =
-      commonError.buttonErrorMessage || editCollateralError.buttonErrorMessage || expressError.buttonErrorMessage;
-    const tooltipName =
-      commonError.buttonTooltipName || editCollateralError.buttonTooltipName || expressError.buttonTooltipName;
-
-    if (error) {
-      return [error, tooltipName];
-    }
-
-    if (isSubmitting) {
-      return [t`Creating order...`];
-    }
-
-    return [];
+    return takeValidationResult(commonError, editCollateralError, expressError);
   }, [
     chainId,
     account,
@@ -403,11 +374,12 @@ export function usePositionEditorButtonState(operation: Operation): {
     position,
     selectedCollateralToken,
     minCollateralFactor,
-    isSubmitting,
   ]);
 
   const errorTooltipContent = useMemo(() => {
-    if (tooltipName !== "maxLeverage") return null;
+    if (validationResult.buttonTooltipName !== ValidationButtonTooltipName.maxLeverage) {
+      return null;
+    }
 
     return (
       <Trans>
@@ -420,9 +392,7 @@ export function usePositionEditorButtonState(operation: Operation): {
         </span>
       </Trans>
     );
-  }, [detectAndSetMaxSize, tooltipName]);
-
-  const { approveToken } = useApproveToken();
+  }, [detectAndSetMaxSize, validationResult.buttonTooltipName]);
 
   async function onSubmit() {
     if (!account || !signer) {
@@ -433,12 +403,16 @@ export function usePositionEditorButtonState(operation: Operation): {
     if (isAllowanceLoaded && tokensToApprove.length && selectedCollateralToken) {
       if (!chainId || isApproving) return;
 
-      approveToken({
-        setIsApproving,
-        tokenAddress: tokensToApprove[0].tokenAddress,
-        chainId,
-        signer,
-        allowPermit: Boolean(expressParams),
+      userAnalytics.pushEvent<TokenApproveClickEvent>({
+        event: "TokenApproveAction",
+        data: { action: "ApproveClick" },
+      });
+      handleApprove({
+        onApproveFail: () =>
+          userAnalytics.pushEvent<TokenApproveResultEvent>({
+            event: "TokenApproveAction",
+            data: { action: "ApproveFail" },
+          }),
       });
 
       return;
@@ -504,10 +478,15 @@ export function usePositionEditorButtonState(operation: Operation): {
     });
   }
 
-  const commonParams = {
+  const commonParams: Pick<
+    PositionEditorButtonState,
+    "expressParams" | "isExpressLoading" | "onSubmit" | "tooltipContent" | "bannerErrorName"
+  > = {
     expressParams,
     isExpressLoading,
     onSubmit,
+    tooltipContent: errorTooltipContent,
+    bannerErrorName: validationResult.bannerErrorName,
   };
 
   if (isApproving && tokensToApprove.length) {
@@ -515,11 +494,9 @@ export function usePositionEditorButtonState(operation: Operation): {
     return {
       text: (
         <>
-          {t`Approve ${getToken(chainId, tokenToApprove.tokenAddress).symbol}`}{" "}
-          <SpinnerIcon className="ml-4 animate-spin" />
+          {t`Approve ${getToken(chainId, tokenToApprove).symbol}`} <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
-      tooltipContent: errorTooltipContent,
       disabled: true,
       ...commonParams,
     };
@@ -533,7 +510,19 @@ export function usePositionEditorButtonState(operation: Operation): {
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
-      tooltipContent: errorTooltipContent,
+      disabled: true,
+      ...commonParams,
+    };
+  }
+
+  if (isSubmitting) {
+    return {
+      text: (
+        <>
+          <Trans>Creating order</Trans>
+          <SpinnerIcon className="ml-4 animate-spin" />
+        </>
+      ),
       disabled: true,
       ...commonParams,
     };
@@ -547,7 +536,6 @@ export function usePositionEditorButtonState(operation: Operation): {
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
-      tooltipContent: errorTooltipContent,
       disabled: true,
       ...commonParams,
     };
@@ -556,17 +544,15 @@ export function usePositionEditorButtonState(operation: Operation): {
   if (isAllowanceLoaded && tokensToApprove.length && selectedCollateralToken) {
     const tokenToApprove = tokensToApprove[0];
     return {
-      text: t`Approve ${getToken(chainId, tokenToApprove.tokenAddress).symbol}`,
-      tooltipContent: errorTooltipContent,
+      text: t`Approve ${getToken(chainId, tokenToApprove).symbol}`,
       disabled: false,
       ...commonParams,
     };
   }
 
   return {
-    text: error || localizedOperationLabels[operation],
-    tooltipContent: errorTooltipContent,
-    disabled: Boolean(error) && !shouldDisableValidationForTesting,
+    text: validationResult.buttonErrorMessage || localizedOperationLabels[operation],
+    disabled: Boolean(validationResult.buttonErrorMessage) && !shouldDisableValidationForTesting,
     ...commonParams,
   };
 }

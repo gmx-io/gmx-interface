@@ -1069,6 +1069,10 @@ msgstr "Asociaciones e integraciones"
 msgid "Insufficient gas balance. Deposit more ETH."
 msgstr "Saldo de Gas insuficiente. Deposite más ETH."
 
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+msgid "Creating order"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (negative PI)"
 msgstr "Factor de comisión de intercambio (PI negativo)"
@@ -2154,6 +2158,7 @@ msgstr "MERCADOS"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
+#: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Max {0}"
 msgstr "Máx. {0}"
 
@@ -2643,6 +2648,10 @@ msgstr "Deslizamiento alto establecido. Impacto actual del intercambio: {0}."
 msgid "Instant"
 msgstr "Instantáneo"
 
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Insufficient pool balance to claim this funding fee."
+msgstr ""
+
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
 msgstr "Posiciones abiertas"
@@ -2868,7 +2877,6 @@ msgstr "LIQUIDEZ"
 msgid "Swaps"
 msgstr "Intercambios"
 
-#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Creating order..."
@@ -3586,6 +3594,10 @@ msgstr "{0}"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Liquidation price changes with fees and collateral value."
 msgstr "El precio de liquidación varía con las comisiones y el valor de la garantía."
+
+#: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
+msgid "Low {symbol} balance. This amount leaves little for future fees on {0}"
+msgstr ""
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
@@ -4663,6 +4675,7 @@ msgstr "Interés abierto {directionLabel}"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/domain/tokens/approveTokens.tsx
@@ -4974,6 +4987,10 @@ msgstr "Usar interés abierto en tokens para el saldo"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Seamless trading"
 msgstr "Trading sin interrupciones"
+
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Insufficient Pool Balance"
+msgstr ""
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "from your wallet"
@@ -5743,10 +5760,6 @@ msgstr "Recomendado"
 msgid "Decrease"
 msgstr "Reducir"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Loading Express Trading..."
-msgstr "Cargando Express Trading..."
-
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price below liquidation price"
@@ -6118,9 +6131,7 @@ msgstr "Precio TP"
 #: src/components/Claims/Claims.tsx
 #: src/components/EmptyTableContent/EmptyTableContent.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
-#: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
@@ -6947,6 +6958,10 @@ msgstr "Proyecto"
 #: src/components/TVChart/ChartHeader.tsx
 msgid "24h low"
 msgstr "Mínimo 24h"
+
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Claim <0>{0}</0> of <1>{1}</1>"
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from TraderJoe"
@@ -8615,6 +8630,10 @@ msgstr "Umbral para reducción de financiación"
 msgid "Network fees are very high due to increased {chainName} network activity"
 msgstr "Las comisiones de red son muy elevadas debido a la alta actividad en la red de {chainName}"
 
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Some markets have insufficient pool balance to claim funding fees. These markets are excluded from this claim."
+msgstr ""
+
 #: src/components/InterviewModal/InterviewModal.tsx
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Telegram account"
@@ -9346,6 +9365,13 @@ msgstr "Alta tarifa de red TWAP"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Position would be liquidatable. Current: {remainingCollateralUsdText}, required: {minCollateralUsdText}"
 msgstr "La posición sería liquidable. Actual: {remainingCollateralUsdText}, requerido: {minCollateralUsdText}"
+
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Loading network fees…"
+msgstr "Cargando tarifas de red…"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx

@@ -23,6 +23,7 @@ import {
   selectTradeboxFromToken,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxIsFromTokenGmxAccount,
+  selectTradeboxIsWrapOrUnwrap,
   selectTradeboxMarketInfo,
   selectTradeboxPayTokenAllowance,
   selectTradeboxSelectedPosition,
@@ -42,6 +43,7 @@ import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeH
 import { OrderType } from "domain/synthetics/orders";
 import { createStakeOrUnstakeTxn } from "domain/synthetics/orders/createStakeOrUnStakeTxn";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
+import { useWrapOrUnwrapExecutionFee } from "domain/synthetics/orders/estimateWrapOrUnwrapExecutionFee";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { formatLeverage } from "domain/synthetics/positions/utils";
@@ -97,6 +99,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const executionFeeBufferBps = useSelector(selectExecutionFeeBufferBps);
   const duration = useSelector(selectTradeboxTwapDuration);
   const numberOfParts = useSelector(selectTradeboxTwapNumberOfParts);
+  const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
 
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
 
@@ -130,9 +133,14 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     };
   }, [primaryCreateOrderParams, sidecarOrderPayloads]);
 
+  const { data: wrapOrUnwrapExecutionFee } = useWrapOrUnwrapExecutionFee();
+
   const totalExecutionFee = useMemo(() => {
+    if (isWrapOrUnwrap) {
+      return wrapOrUnwrapExecutionFee;
+    }
     return tokensData ? getBatchTotalExecutionFee({ batchParams, chainId, tokensData }) : undefined;
-  }, [batchParams, chainId, tokensData]);
+  }, [batchParams, chainId, isWrapOrUnwrap, tokensData, wrapOrUnwrapExecutionFee]);
 
   const {
     expressParams,

@@ -1,21 +1,20 @@
-import { type ContractsChainId, SourceChainId } from "config/chains";
+import { SourceChainId, type ContractsChainId } from "config/chains";
 import type { GlobalExpressParams } from "domain/synthetics/express";
 import {
   RawCreateDepositParams,
   RawCreateGlvDepositParams,
-  RawCreateWithdrawalParams,
   RawCreateGlvWithdrawalParams,
+  RawCreateWithdrawalParams,
   type GlvInfo,
 } from "domain/synthetics/markets";
 import type { SourceChainDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainDepositFees";
 import type { SourceChainGlvDepositFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvDepositFees";
 import type { SourceChainGlvWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainGlvWithdrawalFees";
 import type { SourceChainWithdrawalFees } from "domain/synthetics/markets/feeEstimation/estimateSourceChainWithdrawalFees";
-import type { NativeTokenSupportedAddress, ERC20Address, TokensData } from "domain/tokens";
+import type { ERC20Address, NativeTokenSupportedAddress, TokensData } from "domain/tokens";
 import type { ExecutionFee, GasLimitsConfig } from "sdk/utils/fees/types";
-import { type DepositAmounts, WithdrawalAmounts } from "sdk/utils/trade/types";
 
-import { Operation } from "../types";
+import { GmPaySource, Operation } from "../types";
 
 type SameChainGmFees = {
   kind: "settlementChain";
@@ -71,15 +70,16 @@ export type CalculateTechnicalFeesParams = {
     | RawCreateGlvWithdrawalParams;
   isGlv: boolean;
   glvInfo: GlvInfo | undefined;
-  paySource: "settlementChain" | "gmxAccount" | "sourceChain";
+  paySource: GmPaySource;
   srcChainId: SourceChainId | undefined;
   firstTokenAddress: NativeTokenSupportedAddress | ERC20Address | undefined;
   firstTokenAmount: bigint;
-  longTokenAmount: bigint;
-  shortTokenAmount: bigint;
   marketTokenAmount: bigint;
   operation: Operation;
-  amounts: DepositAmounts | WithdrawalAmounts | undefined;
+  longTokenAmount: bigint;
+  shortTokenAmount: bigint;
+  outputLongTokenAddress: string | undefined;
+  outputShortTokenAddress: string | undefined;
   gasLimits: GasLimitsConfig;
   tokensData: TokensData;
   gasPrice: bigint;
