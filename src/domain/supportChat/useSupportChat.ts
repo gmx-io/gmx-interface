@@ -14,6 +14,7 @@ import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import { useAvailableToTradeAssetMultichain } from "components/GmxAccountModal/hooks";
 
 import { INTERCOM_APP_ID, TIME_PERIODS } from "./constants";
+import { getTraderTier } from "./getTraderTier";
 import { useShowSupportChat } from "./useShowSupportChat";
 import { useSupportChatUnreadCount } from "./useSupportChatUnreadCount";
 import { useWalletPortfolioUsd } from "./useWalletPortfolioUsd";
@@ -64,6 +65,12 @@ export function useSupportChat() {
       "Last 30d Volume": formatAmountForMetrics(lastMonthAccountStats?.volume, USD_DECIMALS, "toSecondOrderInt"),
       "Wallet Portfolio USD": formatAmountForMetrics(walletPortfolioUsd, USD_DECIMALS, "toSecondOrderInt"),
       "GMX Account Portfolio USD": formatAmountForMetrics(gmxAccountUsd, USD_DECIMALS, "toSecondOrderInt"),
+      Tier: getTraderTier({
+        volume30d: lastMonthAccountStats?.volume,
+        volumeLifetime: largeAccountVolumeStatsData?.totalVolume,
+        walletPortfolio: walletPortfolioUsd,
+        gmxAccount: gmxAccountUsd,
+      }),
       "Active Network": getChainName(srcChainId ?? chainId),
       "Wallet Type": isNonEoaAccountOnAnyChain ? "Smart Wallet" : "EOA",
     };
