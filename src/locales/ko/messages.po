@@ -1902,6 +1902,10 @@ msgstr "GM 이동"
 msgid "Timestamp"
 msgstr "타임스탬프"
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "KyberSwap"
+msgstr ""
+
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Insufficient gas for execution"
 msgstr "실행을 위한 Gas가 부족합니다"
@@ -5142,10 +5146,6 @@ msgstr "GM 풀의 유동성 부족"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Additional reserve required:"
 msgstr "추가 예약 필요:"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Open Ocean"
-msgstr "Open Ocean"
 
 #: src/components/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Single"

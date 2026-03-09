@@ -604,8 +604,8 @@ export type MulticallBatchedErrorCounter = {
   };
 };
 
-export type OpenOceanQuoteTiming = {
-  event: "openOcean.quote.timing";
+export type KyberSwapQuoteTiming = {
+  event: "kyberSwap.quote.timing";
 };
 
 export type MulticallRequestCounter = {

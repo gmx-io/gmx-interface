@@ -1902,6 +1902,10 @@ msgstr ""
 msgid "Timestamp"
 msgstr ""
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "KyberSwap"
+msgstr ""
+
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Insufficient gas for execution"
 msgstr ""
@@ -5141,10 +5145,6 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Additional reserve required:"
-msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Open Ocean"
 msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmSwapBox.tsx

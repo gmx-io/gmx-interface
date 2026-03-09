@@ -265,7 +265,7 @@ export type FindSwapPath = (usdIn: bigint, opts?: { order?: SwapOptimizationOrde
 export type TradeFeesType = "swap" | "increase" | "decrease" | "edit";
 
 export enum ExternalSwapAggregator {
-  OpenOcean = "openOcean",
+  KyberSwap = "kyberSwap",
   BotanixStaking = "botanixStaking",
 }
 
