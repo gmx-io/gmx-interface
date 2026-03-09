@@ -1,7 +1,6 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 
-import { buildUrl } from "lib/buildUrl";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import type { ContractsChainId } from "sdk/configs/chains";
 
@@ -27,26 +26,6 @@ export type JitLiquidityData = {
   jitLiquidityMap: Map<string, JitLiquidityInfo> | undefined;
   markJitStale: (marketAddress: string) => void;
   refreshJitData: () => void;
-};
-
-type RawGlvShiftParam = {
-  glv: string;
-  fromMarket: string;
-  toMarket: string;
-  marketTokenAmount: string;
-  minMarketTokens: string;
-};
-
-type RawLiquidityInfo = {
-  glv: string;
-  market: string;
-  liquidityUsdForLongs: string;
-  liquidityUsdForShorts: string;
-  glvShiftParams: RawGlvShiftParam[];
-};
-
-type RawJitLiquidityResponse = {
-  liquidityInfos: RawLiquidityInfo[];
 };
 
 /**
@@ -91,18 +70,15 @@ export function useJitLiquidity(chainId: ContractsChainId, options?: { enabled?:
     enabled ? ["jitLiquidity", chainId] : null,
     async () => {
       try {
-        const url = buildUrl(oracleKeeperFetcher.url, "/jit/liquidity_info");
-        const res = await fetch(url);
+        const response = await oracleKeeperFetcher.request("/jit/liquidity_info", {
+          validate: (res) => {
+            if (!Array.isArray(res?.liquidityInfos)) {
+              return new Error("Invalid JIT liquidity response");
+            }
 
-        if (!res.ok) {
-          throw new Error(`JIT liquidity fetch failed: ${res.status} ${res.statusText}`);
-        }
-
-        const response: RawJitLiquidityResponse = await res.json();
-
-        if (!response?.liquidityInfos) {
-          return undefined;
-        }
+            return undefined;
+          },
+        });
 
         const map = new Map<string, JitLiquidityInfo>();
 

@@ -64,6 +64,7 @@ import {
 } from "lib/metrics/utils";
 import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
+import { TxnEventName } from "lib/transactions/types";
 import { getTradeInteractionKey, sendUserAnalyticsOrderConfirmClickEvent, userAnalytics } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { BatchOrderTxnParams, getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
@@ -318,6 +319,25 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
     sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
 
+    const primaryOrder = primaryCreateOrderParams[0].orderPayload;
+    const jitLiquidityInfo = marketInfo
+      ? getJitLiquidityInfo(jitLiquidityMap, marketInfo.marketTokenAddress)
+      : undefined;
+    const nativeReserveLiquidity = marketInfo ? getAvailableUsdLiquidityForPosition(marketInfo, isLong) : undefined;
+    const shouldInvalidateJitLiquidityOnSent =
+      primaryOrder.orderType === OrderType.MarketIncrease &&
+      (jitLiquidityInfo?.glvShiftParams.length ?? 0) > 0 &&
+      nativeReserveLiquidity !== undefined &&
+      primaryOrder.numbers.sizeDeltaUsd > nativeReserveLiquidity;
+    const orderTxnCallback = makeOrderTxnCallback({
+      metricId: metricData.metricId,
+      slippageInputId,
+      additionalErrorContent: undefined,
+      onInternalSwapFallback: () => {
+        setShouldFallbackToInternalSwap(true);
+      },
+    });
+
     return sendBatchOrderTxn({
       chainId,
       signer,
@@ -331,22 +351,20 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         : {
             tokensData,
             blockTimestampData,
-            jitShiftParamsList: marketInfo
-              ? getJitLiquidityInfo(jitLiquidityMap, marketInfo.marketTokenAddress)?.glvShiftParams
-              : undefined,
+            jitShiftParamsList: jitLiquidityInfo?.glvShiftParams,
             // Intentionally excludes JIT — used to determine whether JIT simulation is needed
-            nativeReserveLiquidity: marketInfo ? getAvailableUsdLiquidityForPosition(marketInfo, isLong) : undefined,
+            nativeReserveLiquidity,
             markJitStale,
             refreshJitData,
           },
-      callback: makeOrderTxnCallback({
-        metricId: metricData.metricId,
-        slippageInputId,
-        additionalErrorContent: undefined,
-        onInternalSwapFallback: () => {
-          setShouldFallbackToInternalSwap(true);
-        },
-      }),
+      callback: (event) => {
+        if (event.event === TxnEventName.Sent && shouldInvalidateJitLiquidityOnSent && marketInfo) {
+          markJitStale(marketInfo.marketTokenAddress);
+          refreshJitData();
+        }
+
+        orderTxnCallback(event);
+      },
     });
   }, [
     account,

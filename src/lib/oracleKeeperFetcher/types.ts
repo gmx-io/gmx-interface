@@ -115,6 +115,14 @@ export type PerformanceSnapshotsResponse = {
 
 export interface OracleFetcher {
   readonly url: string;
+  request(
+    path: `/${string}`,
+    opts: {
+      query?: Record<string, string | number | undefined | boolean>;
+      validate?: (res: any) => Error | undefined;
+      debugId?: "tickers";
+    }
+  ): Promise<any>;
   fetchTickers(): Promise<TickersResponse>;
   fetch24hPrices(): Promise<DayPriceCandle[]>;
   fetchOracleCandles(tokenSymbol: string, period: string, limit: number): Promise<FromNewToOldArray<Bar>>;
