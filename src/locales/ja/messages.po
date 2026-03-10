@@ -2167,6 +2167,7 @@ msgstr "マーケット"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
+#: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Max {0}"
 msgstr "最大 {0}"
 
@@ -2655,6 +2656,10 @@ msgstr "高いスリッページが設定されています。現在のスワッ
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Instant"
 msgstr "即時"
+
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Insufficient pool balance to claim this funding fee."
+msgstr ""
 
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
@@ -4688,6 +4693,7 @@ msgstr "建玉 {directionLabel}"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/domain/tokens/approveTokens.tsx
@@ -5003,6 +5009,10 @@ msgstr "残高に建玉をトークン単位で使用"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Seamless trading"
 msgstr "シームレスな取引"
+
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Insufficient Pool Balance"
+msgstr ""
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "from your wallet"
@@ -6963,6 +6973,10 @@ msgstr "プロジェクト"
 msgid "24h low"
 msgstr "24時間安値"
 
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Claim <0>{0}</0> of <1>{1}</1>"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from TraderJoe"
 msgstr "TraderJoeでGMXを購入"
@@ -8637,6 +8651,10 @@ msgstr "ファンディングレート低減の閾値"
 #: src/domain/synthetics/fees/utils/index.ts
 msgid "Network fees are very high due to increased {chainName} network activity"
 msgstr "{chainName}ネットワークの活動増加により、ネットワーク手数料が非常に高くなっています"
+
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Some markets have insufficient pool balance to claim funding fees. These markets are excluded from this claim."
+msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx
 #: src/components/InterviewModal/InterviewModal.tsx

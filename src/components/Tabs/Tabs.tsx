@@ -13,6 +13,7 @@ type Props<V extends BaseOptionValue> = {
   onChange?: (value: V) => void;
   type?: "inline" | "block" | "inline-primary" | "pills";
   className?: string;
+  tabsWrapperClassName?: string;
   regularOptionClassname?: string;
   qa?: string;
   rightContent?: ReactNode;
@@ -24,6 +25,7 @@ export default function Tabs<V extends string | number>({
   onChange,
   type = "block",
   className,
+  tabsWrapperClassName,
   regularOptionClassname,
   qa,
   rightContent,
@@ -40,9 +42,13 @@ export default function Tabs<V extends string | number>({
       )}
     >
       <div
-        className={cx("flex w-full", {
-          "gap-8": type === "inline" || type === "inline-primary" || type === "pills",
-        })}
+        className={cx(
+          "flex w-full",
+          {
+            "gap-8": type === "inline" || type === "inline-primary" || type === "pills",
+          },
+          tabsWrapperClassName
+        )}
       >
         {options.map((opt) =>
           isNestedOption(opt) ? (

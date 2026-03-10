@@ -8,9 +8,9 @@ import { useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRe
 import { ExpressTransactionBuilder, RawRelayParamsPayload } from "domain/synthetics/express";
 import {
   MarketInfo,
+  getIsFundingClaimInsufficientBalance,
   getMarketIndexName,
   getMarketPoolName,
-  getTotalClaimableFundingUsd,
 } from "domain/synthetics/markets";
 import { buildAndSignClaimFundingFeesTxn, claimFundingFeesTxn } from "domain/synthetics/markets/claimFundingFeesTxn";
 import { convertToUsd } from "domain/synthetics/tokens";
@@ -25,11 +25,14 @@ import useWallet from "lib/wallets/useWallet";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
 
+import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import Tooltip from "components/Tooltip/Tooltip";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
+
+import { useClaimableFunding } from "./useClaimableFunding";
 
 import "./ClaimModal.scss";
 
@@ -80,7 +83,8 @@ function ClaimModalSettlementChain(p: Props) {
       if (
         !market.isDisabled &&
         market.claimableFundingAmountLong !== undefined &&
-        market.claimableFundingAmountLong !== 0n
+        market.claimableFundingAmountLong !== 0n &&
+        !getIsFundingClaimInsufficientBalance(market, true)
       ) {
         pushPair(market.marketTokenAddress, market.longTokenAddress);
       }
@@ -88,11 +92,14 @@ function ClaimModalSettlementChain(p: Props) {
       if (
         !market.isDisabled &&
         market.claimableFundingAmountShort !== undefined &&
-        market.claimableFundingAmountShort !== 0n
+        market.claimableFundingAmountShort !== 0n &&
+        !getIsFundingClaimInsufficientBalance(market, false)
       ) {
         pushPair(market.marketTokenAddress, market.shortTokenAddress);
       }
     }
+
+    if (fundingMarketAddresses.length === 0) return;
 
     setIsSubmitting(true);
 
@@ -160,7 +167,8 @@ function ClaimModalMultichain(p: Props) {
       if (
         !market.isDisabled &&
         market.claimableFundingAmountLong !== undefined &&
-        market.claimableFundingAmountLong !== 0n
+        market.claimableFundingAmountLong !== 0n &&
+        !getIsFundingClaimInsufficientBalance(market, true)
       ) {
         pushPair(market.marketTokenAddress, market.longTokenAddress);
       }
@@ -168,7 +176,8 @@ function ClaimModalMultichain(p: Props) {
       if (
         !market.isDisabled &&
         market.claimableFundingAmountShort !== undefined &&
-        market.claimableFundingAmountShort !== 0n
+        market.claimableFundingAmountShort !== 0n &&
+        !getIsFundingClaimInsufficientBalance(market, false)
       ) {
         pushPair(market.marketTokenAddress, market.shortTokenAddress);
       }
@@ -339,9 +348,12 @@ function ClaimModalComponent(p: {
 
   const marketsInfoData = useMarketsInfoData();
 
-  const markets = isVisible ? Object.values(marketsInfoData || {}) : [];
+  const markets = useMemo(() => (isVisible ? Object.values(marketsInfoData || {}) : []), [isVisible, marketsInfoData]);
 
-  const totalClaimableFundingUsd = getTotalClaimableFundingUsd(markets);
+  const { totalClaimableFundingUsd, claimableFundingUsd, hasInsufficientBalance, allInsufficient } =
+    useClaimableFunding(markets);
+
+  const effectiveButtonState = allInsufficient ? { text: t`Insufficient Pool Balance`, disabled: true } : buttonState;
 
   function renderMarketSection(market: MarketInfo) {
     const indexName = getMarketIndexName(market);
@@ -360,6 +372,13 @@ function ClaimModalComponent(p: {
     if (totalFundingUsd <= 0) return null;
     const isDisabledMarket = market.isDisabled;
 
+    const longInsufficient = getIsFundingClaimInsufficientBalance(market, true);
+    const shortInsufficient = getIsFundingClaimInsufficientBalance(market, false);
+    const isMarketInsufficient =
+      (longInsufficient && shortInsufficient) ||
+      (longInsufficient && (fundingShortUsd ?? 0n) === 0n) ||
+      (shortInsufficient && (fundingLongUsd ?? 0n) === 0n);
+
     const claimableAmountsItems: string[] = [];
 
     if (fundingLongAmount !== undefined) {
@@ -377,7 +396,10 @@ function ClaimModalComponent(p: {
     }
 
     return (
-      <div key={market.marketTokenAddress} className="ClaimSettleModal-info-row">
+      <div
+        key={market.marketTokenAddress}
+        className={`ClaimSettleModal-info-row ${isMarketInsufficient ? "opacity-50" : ""}`}
+      >
         <div className="flex">
           <div className="Exchange-info-label ClaimSettleModal-checkbox-label">
             <div className="ClaimSettleModal-row-text flex items-start">
@@ -409,12 +431,21 @@ function ClaimModalComponent(p: {
           <Tooltip
             className="ClaimSettleModal-tooltip"
             position="top-end"
-            handle={formatDeltaUsd(totalFundingUsd)}
+            handle={
+              <span className={isMarketInsufficient ? "text-yellow-500" : undefined}>
+                {formatDeltaUsd(totalFundingUsd)}
+              </span>
+            }
             renderContent={() => (
               <>
                 {claimableAmountsItems.map((item) => (
                   <div key={item}>{item}</div>
                 ))}
+                {isMarketInsufficient && (
+                  <div className="mt-5 text-yellow-500">
+                    <Trans>Insufficient pool balance to claim this funding fee.</Trans>
+                  </div>
+                )}
               </>
             )}
           />
@@ -432,9 +463,16 @@ function ClaimModalComponent(p: {
     >
       <div className="ConfirmationBox-main">
         <div className="text-center">
-          <Trans>
-            Claim <span>{formatDeltaUsd(totalClaimableFundingUsd)}</span>
-          </Trans>
+          {hasInsufficientBalance ? (
+            <Trans>
+              Claim <span>{formatDeltaUsd(claimableFundingUsd)}</span> of{" "}
+              <span>{formatDeltaUsd(totalClaimableFundingUsd)}</span>
+            </Trans>
+          ) : (
+            <Trans>
+              Claim <span>{formatDeltaUsd(totalClaimableFundingUsd)}</span>
+            </Trans>
+          )}
         </div>
       </div>
       <div className="mb-20 mt-15 h-1 bg-slate-700" />
@@ -460,8 +498,21 @@ function ClaimModalComponent(p: {
         </div>
       </div>
       <div className="ClaimModal-content">{markets.map(renderMarketSection)}</div>
-      <Button className="w-full" variant="primary-action" onClick={buttonState.onClick} disabled={buttonState.disabled}>
-        {buttonState.text}
+      {hasInsufficientBalance && (
+        <AlertInfo type="warning" compact className="mb-15">
+          <Trans>
+            Some markets have insufficient pool balance to claim funding fees. These markets are excluded from this
+            claim.
+          </Trans>
+        </AlertInfo>
+      )}
+      <Button
+        className="w-full"
+        variant="primary-action"
+        onClick={effectiveButtonState.onClick}
+        disabled={effectiveButtonState.disabled}
+      >
+        {effectiveButtonState.text}
       </Button>
     </Modal>
   );

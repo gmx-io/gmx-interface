@@ -159,6 +159,7 @@ export function formatUsd(
     minThreshold?: string;
     displayPlus?: boolean;
     visualMultiplier?: number;
+    roundMode?: "round" | "floor";
   } = {}
 ) {
   const { fallbackToZero = false, displayDecimals = 2 } = opts;
@@ -173,6 +174,11 @@ export function formatUsd(
 
   if (opts.visualMultiplier) {
     usd *= BigInt(opts.visualMultiplier);
+  }
+
+  if (opts.roundMode === "floor" && displayDecimals < USD_DECIMALS) {
+    const factor = expandDecimals(1, USD_DECIMALS - displayDecimals);
+    usd = usd >= 0n ? (usd / factor) * factor : ((usd - factor + 1n) / factor) * factor;
   }
 
   const defaultMinThreshold = displayDecimals > 1 ? "0." + "0".repeat(displayDecimals - 1) + "1" : undefined;

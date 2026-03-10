@@ -144,7 +144,6 @@ export function GmShiftBox({
     marketTokenUsd: amounts?.fromTokenUsd,
     executionFee,
     routerAddress,
-    payTokenAddresses: [selectedToken?.address ?? ""],
     glvOrMarketInfoData: glvAndMarketsInfoData,
   });
 
