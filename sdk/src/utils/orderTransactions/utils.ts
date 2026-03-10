@@ -27,7 +27,9 @@ export type ExchangeRouterCall = {
 
 export type NativeTwapOrderParams = {
   /** The single order payload with PER-ORDER amounts (the contract divides collateral internally) */
-  createOrderTxnParams: CreateOrderTxnParams<SwapOrderParams | IncreasePositionOrderParams | DecreasePositionOrderParams>;
+  createOrderTxnParams: CreateOrderTxnParams<
+    SwapOrderParams | IncreasePositionOrderParams | DecreasePositionOrderParams
+  >;
   /** Number of TWAP sub-orders */
   twapCount: number;
   /** Interval in seconds between sub-orders */
@@ -1065,6 +1067,17 @@ export function buildCreateTwapOrderMulticall(nativeTwapParams: NativeTwapOrderP
 
   const perOrderExecutionFee = orderPayload.numbers.executionFee;
   const additionalExecutionFee = perOrderExecutionFee * BigInt(twapCount - 1);
+
+  // eslint-disable-next-line no-console
+  console.debug("[v2.2c native TWAP] buildCreateTwapOrderMulticall:", {
+    twapCount,
+    intervalSeconds,
+    perOrderExecutionFee: perOrderExecutionFee.toString(),
+    totalExecutionFee: (perOrderExecutionFee * BigInt(twapCount)).toString(),
+    additionalExecutionFee: additionalExecutionFee.toString(),
+    tokenTransfers: tokenTransfers.length,
+    sizeDeltaUsd: orderPayload.numbers.sizeDeltaUsd.toString(),
+  });
 
   const multicall: ExchangeRouterCall[] = [];
   let adjustedValue = value;

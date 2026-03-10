@@ -393,6 +393,10 @@ msgstr ""
 msgid "What is GLV?"
 msgstr ""
 
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Increase"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Percentage"
 msgstr ""
@@ -875,6 +879,10 @@ msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net price impact and fees from your trade. <0>Read more</0>."
+msgstr ""
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Decrease"
 msgstr ""
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
@@ -1699,6 +1707,7 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Acceptable price for the order"
@@ -3234,6 +3243,7 @@ msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toMinText}"
 msgstr ""
 
@@ -3441,6 +3451,10 @@ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "May lack liquidity for parts of this order when triggered"
+msgstr ""
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min funding factor (long)"
 msgstr ""
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
@@ -4071,6 +4085,10 @@ msgstr ""
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Missing claim parameters. Retry in a few seconds"
+msgstr ""
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max funding factor (short)"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4878,6 +4896,10 @@ msgstr ""
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "LONGS NET RATE / 1H"
+msgstr ""
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired withdraw"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -5705,10 +5727,6 @@ msgstr ""
 msgid "Pools that provide liquidity to specific GMX markets. Supports single-asset and native asset options."
 msgstr ""
 
-#: src/pages/SyntheticsStats/SyntheticsStats.tsx
-msgid "Max funding factor"
-msgstr ""
-
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "High price impact"
@@ -6271,10 +6289,6 @@ msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Requires more active management than GLV"
-msgstr ""
-
-#: src/pages/SyntheticsStats/SyntheticsStats.tsx
-msgid "Min funding factor"
 msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
@@ -7391,6 +7405,10 @@ msgstr ""
 msgid "Begin transfer"
 msgstr ""
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min funding factor (short)"
+msgstr ""
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "market"
 msgstr ""
@@ -7755,6 +7773,10 @@ msgstr ""
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Buy GM failed"
+msgstr ""
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max funding factor (long)"
 msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
@@ -10331,6 +10353,12 @@ msgstr ""
 msgid "Sending shift request..."
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
+msgid "Order expired before it could be executed"
+msgstr ""
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"
 msgstr ""
@@ -10598,6 +10626,10 @@ msgstr ""
 msgid "Link"
 msgstr ""
 
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Swap"
+msgstr ""
+
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to deposit"
 msgstr ""
@@ -10608,6 +10640,10 @@ msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "General performance details"
+msgstr ""
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired deposit"
 msgstr ""
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx

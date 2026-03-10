@@ -9,7 +9,7 @@ const API_URLS: Record<ContractsChainId, string | undefined> = {
 
   [BOTANIX]: undefined,
 
-  [ARBITRUM_SEPOLIA]: "https://gmx-api-arbitrum-sepolia-yp6pp.ondigitalocean.app/api/v1",
+  [ARBITRUM_SEPOLIA]: "https://dolphin-app-a2dup.ondigitalocean.app/api/v1",
 };
 
 export function getApiUrl(chainId: number) {

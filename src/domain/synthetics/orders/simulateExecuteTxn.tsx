@@ -144,6 +144,14 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
 
   const simulationRouterAddress = !isGlv ? tryGetContract(chainId, "SimulationRouter") : undefined;
 
+  // eslint-disable-next-line no-console
+  console.debug("[v2.2c simulateExecuteTxn]", {
+    method,
+    isGlv,
+    path: isGlv ? "GlvRouter" : simulationRouterAddress ? "SimulationRouter (v2.2c)" : "ExchangeRouter (legacy)",
+    simulationRouterAddress: simulationRouterAddress ?? "N/A",
+  });
+
   let errorTitle = p.errorTitle || t`Order simulation failed`;
 
   const tenderlyConfig = getTenderlyConfig();
@@ -175,29 +183,26 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
     }
 
     try {
-      await withRetry(
-        () => {
-          return client.simulateContract({
-            address: routerAddress,
-            abi: routerAbi,
-            functionName: "multicall",
-            args: [simulationPayloadData],
-            value: p.value,
-            account: p.account,
-            blockNumber: blockNumber,
-          });
-        },
-        retryConfig
-      );
+      await withRetry(() => {
+        return client.simulateContract({
+          address: routerAddress,
+          abi: routerAbi,
+          functionName: "multicall",
+          args: [simulationPayloadData],
+          value: p.value,
+          account: p.account,
+          blockNumber: blockNumber,
+        });
+      }, retryConfig);
     } catch (txnError) {
       handleSimulationTxnError(txnError, chainId, p, errorTitle);
     }
   } else if (simulationRouterAddress) {
-    // v2.2c: SimulationRouter is available.
-    // Create calls go to ExchangeRouter, simulate call goes to SimulationRouter.
+    // v2.2c: SimulationRouter uses NonceUtils.getCurrentKey — requires order to exist on-chain.
+    // Can't run create + simulate atomically across two contracts (delegatecall multicall).
+    // Only validate the create payload. Execution relies on Reader/SDK calculations.
     const exchangeRouterAddress = getContract(chainId, "ExchangeRouter");
 
-    // Step 1: Simulate the create payload on ExchangeRouter to validate it
     if (tenderlyConfig) {
       await simulateTxWithTenderly({
         chainId,
@@ -207,61 +212,24 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
         method: "multicall",
         params: [simulationPayloadData.slice(0, -1)],
         value: p.value,
-        comment: `calling create for ${method}`,
+        comment: `v2.2c create-only validation for ${method}`,
       });
     }
 
     try {
-      await withRetry(
-        () => {
-          return client.simulateContract({
-            address: exchangeRouterAddress,
-            abi: abis.ExchangeRouter,
-            functionName: "multicall",
-            args: [simulationPayloadData.slice(0, -1)],
-            value: p.value,
-            account: p.account,
-            blockNumber: blockNumber,
-          });
-        },
-        retryConfig
-      );
+      await withRetry(() => {
+        return client.simulateContract({
+          address: exchangeRouterAddress,
+          abi: abis.ExchangeRouter,
+          functionName: "multicall",
+          args: [simulationPayloadData.slice(0, -1)],
+          value: p.value,
+          account: p.account,
+          blockNumber: blockNumber,
+        });
+      }, retryConfig);
     } catch (createError) {
-      // For create-only simulation, any revert is an actual error
       handleSimulationTxnError(createError, chainId, p, errorTitle);
-    }
-
-    // Step 2: Simulate execution on SimulationRouter
-    if (tenderlyConfig) {
-      await simulateTxWithTenderly({
-        chainId,
-        address: simulationRouterAddress,
-        abi: abis.SimulationRouter,
-        account: p.account,
-        method: "multicall",
-        params: [[simulateExecuteData]],
-        value: 0n,
-        comment: `calling ${method}`,
-      });
-    }
-
-    try {
-      await withRetry(
-        () => {
-          return client.simulateContract({
-            address: simulationRouterAddress,
-            abi: abis.SimulationRouter,
-            functionName: "multicall",
-            args: [[simulateExecuteData]],
-            value: 0n,
-            account: p.account,
-            blockNumber: blockNumber,
-          });
-        },
-        retryConfig
-      );
-    } catch (txnError) {
-      handleSimulationTxnError(txnError, chainId, p, errorTitle);
     }
   } else {
     // Legacy: ExchangeRouter still has simulation methods
@@ -282,20 +250,17 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
     }
 
     try {
-      await withRetry(
-        () => {
-          return client.simulateContract({
-            address: routerAddress,
-            abi: routerAbi,
-            functionName: "multicall",
-            args: [simulationPayloadData],
-            value: p.value,
-            account: p.account,
-            blockNumber: blockNumber,
-          });
-        },
-        retryConfig
-      );
+      await withRetry(() => {
+        return client.simulateContract({
+          address: routerAddress,
+          abi: routerAbi,
+          functionName: "multicall",
+          args: [simulationPayloadData],
+          value: p.value,
+          account: p.account,
+          blockNumber: blockNumber,
+        });
+      }, retryConfig);
     } catch (txnError) {
       handleSimulationTxnError(txnError, chainId, p, errorTitle);
     }

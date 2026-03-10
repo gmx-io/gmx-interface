@@ -242,6 +242,14 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
 
   const simulationRouterAddress = !isGlv ? tryGetContract(chainId, "SimulationRouter") : undefined;
 
+  // eslint-disable-next-line no-console
+  console.debug("[v2.2c simulation]", {
+    method,
+    isGlv,
+    simulationRouterAddress: simulationRouterAddress ?? "N/A (legacy path)",
+    chainId,
+  });
+
   let simulateExecuteData: string;
 
   if (method === "simulateExecuteLatestWithdrawal") {
@@ -320,11 +328,20 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
       isExpress: p.isExpress,
     });
   } else if (simulationRouterAddress) {
-    // v2.2c: SimulationRouter is available.
-    // Create calls go to ExchangeRouter, simulate call goes to SimulationRouter.
+    // v2.2c: SimulationRouter is deployed, but simulateExecuteLatest* uses
+    // NonceUtils.getCurrentKey(dataStore) which requires the order to exist on-chain.
+    // Since create + simulate can't run atomically across two contracts (each uses
+    // delegatecall-based multicall), we only validate the create payload here.
+    // Execution validation relies on Reader-based price/impact calculations in the UI.
     const exchangeRouterAddress = getContract(chainId, "ExchangeRouter");
 
-    // Step 1: Simulate the create payload on ExchangeRouter to validate it
+    // eslint-disable-next-line no-console
+    console.debug("[v2.2c simulation] Create-only validation:", {
+      router: `ExchangeRouter (${exchangeRouterAddress})`,
+      method,
+      payloadCalls: simulationPayloadData.length - 1,
+    });
+
     if (tenderlyConfig) {
       await simulateTxWithTenderly({
         chainId,
@@ -348,31 +365,6 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
       blockNumber,
       isExpress: p.isExpress,
       expectRevert: false,
-    });
-
-    // Step 2: Simulate execution on SimulationRouter
-    if (tenderlyConfig) {
-      await simulateTxWithTenderly({
-        chainId,
-        address: simulationRouterAddress,
-        abi: abis.SimulationRouter,
-        account: p.account,
-        method: "multicall",
-        params: [[simulateExecuteData]],
-        value: 0n,
-        comment: `calling ${method}`,
-      });
-    }
-
-    await simulateContractWithRetry({
-      client,
-      address: simulationRouterAddress,
-      abi: abis.SimulationRouter,
-      args: [[simulateExecuteData]],
-      value: 0n,
-      account: p.account,
-      blockNumber,
-      isExpress: p.isExpress,
     });
   } else {
     // Legacy: ExchangeRouter still has simulation methods

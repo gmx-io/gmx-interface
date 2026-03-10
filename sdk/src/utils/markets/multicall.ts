@@ -646,6 +646,20 @@ export function parseMarketsConfigsResponse(
         virtualShortTokenId: dataStoreValues.virtualShortTokenId.returnValues[0],
       };
 
+      if (Object.keys(acc).length === 1) {
+        const cfg = acc[marketAddress];
+        // eslint-disable-next-line no-console
+        console.debug("[v2.2c market config] Sample market:", marketAddress, {
+          minFundingFactorPerSecondLong: cfg.minFundingFactorPerSecondLong?.toString(),
+          minFundingFactorPerSecondShort: cfg.minFundingFactorPerSecondShort?.toString(),
+          maxFundingFactorPerSecondLong: cfg.maxFundingFactorPerSecondLong?.toString(),
+          maxFundingFactorPerSecondShort: cfg.maxFundingFactorPerSecondShort?.toString(),
+          minFundingIncreaseRatePerSecond: cfg.minFundingIncreaseRatePerSecond?.toString(),
+          minCollateralFactorForLiquidation: cfg.minCollateralFactorForLiquidation?.toString(),
+          minCollateralFactor: cfg.minCollateralFactor?.toString(),
+        });
+      }
+
       return acc;
     },
     {} as Record<string, MarketConfig>
