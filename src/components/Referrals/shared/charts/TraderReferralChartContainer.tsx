@@ -13,11 +13,11 @@ import { RebatesChart, TradersVolumeChart } from "./GmxBarChart";
 
 type ChartType = "volume" | "discounts";
 
-function getDateFormat(timestamps: number[], isSmall: boolean): "HH:mm" | "dd/MM" | "yyyy" {
+function getDateFormat(timestamps: number[], isSmall: boolean): "HH:mm" | "dd/MM" | "MM/yyyy" {
   if (isSmall) return "HH:mm";
   if (timestamps.length < 2) return "dd/MM";
   const spanSeconds = timestamps[timestamps.length - 1] - timestamps[0];
-  return spanSeconds > ONE_YEAR_SECONDS ? "yyyy" : "dd/MM";
+  return spanSeconds > ONE_YEAR_SECONDS ? "MM/yyyy" : "dd/MM";
 }
 
 function formatTooltipDate(timestamp: number, bucketSizeSeconds: number, locale: string): string {

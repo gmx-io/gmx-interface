@@ -13,11 +13,11 @@ import { RebatesChart, TradersReferredChart, TradesCountChart, TradersVolumeChar
 
 type ChartType = "volume" | "trades" | "tradersReferred" | "rebates";
 
-function getDateFormat(timestamps: number[], isSmall: boolean): "HH:mm" | "dd/MM" | "yyyy" {
+function getDateFormat(timestamps: number[], isSmall: boolean): "HH:mm" | "dd/MM" | "MM/yyyy" {
   if (isSmall) return "HH:mm";
   if (timestamps.length < 2) return "dd/MM";
   const spanSeconds = timestamps[timestamps.length - 1] - timestamps[0];
-  return spanSeconds > ONE_YEAR_SECONDS ? "yyyy" : "dd/MM";
+  return spanSeconds > ONE_YEAR_SECONDS ? "MM/yyyy" : "dd/MM";
 }
 
 function formatTooltipDate(timestamp: number, bucketSizeSeconds: number, locale: string): string {
@@ -64,13 +64,12 @@ export function TradersVolumeChartContainer({
       volumeUsd: point.volumeUsd,
       volumeFloat: bigintToNumber(point.volumeUsd, USD_DECIMALS),
       tradesCount: point.tradesCount,
-      tradesCountFloat: point.tradesCount,
       rebatesUsd: point.rebatesUsd,
       rebatesUsdFloat: bigintToNumber(point.rebatesUsd, USD_DECIMALS),
       tradersGained: point.tradersGained,
-      tradersLost: point.tradersLost,
-      tradersGainedFloat: point.tradersGained,
-      tradersLostFloat: point.tradersLost,
+      tradersLost: -point.tradersLost,
+      tradersNet: point.tradersNet,
+      tradersSumGainedLost: point.tradersGained + point.tradersLost,
     }));
   }, [stats?.points, stats?.bucketSizeSeconds, isSmall, i18n.locale]);
 

@@ -21,8 +21,6 @@ export type AffiliateReferralStats = {
     tradesCountDelta?: number;
     rebatesUsd: bigint;
     rebatesUsdDelta?: bigint;
-    tradersCount: number;
-    tradersCountDelta?: number;
     tradersGained?: number;
     tradersGainedDelta?: number;
     tradersLost?: number;
@@ -68,8 +66,6 @@ const AFFILIATE_STATS_QUERY = /* GraphQL */ `
         tradesCountDelta
         rebatesUsd
         rebatesUsdDelta
-        tradersCount
-        tradersCountDelta
         tradersGained
         tradersGainedDelta
         tradersLost
@@ -119,14 +115,12 @@ async function fetchAffiliateReferralStats(params: {
     hasComparison: res.affiliateStats.hasComparison,
     bucketSizeSeconds: res.affiliateStats.bucketSizeSeconds,
     summary: {
-      volumeUsd: BigInt(summary.volumeUsd),
+      volumeUsd: toBigInt(summary.volumeUsd) ?? 0n,
       volumeUsdDelta: toBigInt(summary.volumeUsdDelta),
       tradesCount: toNumber(summary.tradesCount),
       tradesCountDelta: toOptionalNumber(summary.tradesCountDelta),
-      rebatesUsd: BigInt(summary.rebatesUsd),
+      rebatesUsd: toBigInt(summary.rebatesUsd) ?? 0n,
       rebatesUsdDelta: toBigInt(summary.rebatesUsdDelta),
-      tradersCount: toNumber(summary.tradersCount),
-      tradersCountDelta: toOptionalNumber(summary.tradersCountDelta),
       tradersGained: toOptionalNumber(summary.tradersGained),
       tradersGainedDelta: toOptionalNumber(summary.tradersGainedDelta),
       tradersLost: toOptionalNumber(summary.tradersLost),
@@ -136,9 +130,9 @@ async function fetchAffiliateReferralStats(params: {
     },
     points: res.affiliateStats.points.map((point) => ({
       timestamp: point.timestamp,
-      volumeUsd: BigInt(point.volumeUsd),
+      volumeUsd: toBigInt(point.volumeUsd) ?? 0n,
       tradesCount: toNumber(point.tradesCount),
-      rebatesUsd: BigInt(point.rebatesUsd),
+      rebatesUsd: toBigInt(point.rebatesUsd) ?? 0n,
       tradersGained: toNumber(point.tradersGained),
       tradersLost: toNumber(point.tradersLost),
       tradersNet: toNumber(point.tradersNet),

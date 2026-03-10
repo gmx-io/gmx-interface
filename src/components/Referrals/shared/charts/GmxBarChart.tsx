@@ -1,14 +1,5 @@
 import { Trans } from "@lingui/macro";
-import {
-  Bar,
-  BarChart,
-  BarProps,
-  CartesianGrid,
-  ResponsiveContainer,
-  Tooltip as RechartsTooltip,
-  XAxis,
-  YAxis,
-} from "recharts";
+import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip as RechartsTooltip, XAxis, YAxis } from "recharts";
 
 import { formatUsd } from "lib/numbers";
 
@@ -49,52 +40,10 @@ function formatCompactNumber(value: number, maximumFractionDigits: number) {
   }).format(value);
 }
 
-const HALF_STACK_GAP = 1;
+const MIN_POINT_SIZE_PX = 3;
 
-const getPath = (x: number, y: number, width: number, height: number, dataHeight: number, dataHeightIndex: number) => {
-  if (height === 0) return "";
-
-  let isFirst = dataHeightIndex === 0;
-  let isLast = dataHeightIndex === dataHeight - 1;
-
-  // From bottom to top
-  const x1 = x + width / 2;
-  const y1 = y + height - width / 2 + (isFirst ? 0 : -HALF_STACK_GAP);
-  const x2 = x + width / 2;
-  const y2 = y + width / 2 + (isLast ? 0 : HALF_STACK_GAP);
-
-  return `M${x1},${y1}
-  L${x2},${y2}`;
-};
-
-type TriangleBarProps = {
-  orderedDataKeys: string[];
-};
-
-function BarWithGap(props: TriangleBarProps) {
-  const { x, y, width, height, stroke, dataKey, orderedDataKeys } = props as BarProps & TriangleBarProps;
-  const payload = (props as any).payload;
-
-  let realDataHeight = 0;
-  let realDataHeightIndex = 0;
-
-  for (const key of orderedDataKeys) {
-    if (payload[key] !== 0) {
-      realDataHeight++;
-      if (dataKey === key) {
-        realDataHeightIndex = realDataHeight - 1;
-      }
-    }
-  }
-
-  return (
-    <path
-      d={getPath(x as number, y as number, width as number, height as number, realDataHeight, realDataHeightIndex)}
-      stroke={stroke}
-      strokeWidth={width}
-      strokeLinecap="round"
-    />
-  );
+function minPointSizeForNonZero(value: number): number {
+  return value === 0 ? 0 : MIN_POINT_SIZE_PX;
 }
 
 export function GmxBarChart({
@@ -204,12 +153,11 @@ export function TradesCountChart({
     timestamp: number;
     dateCompact: string;
     tradesCount: number;
-    tradesCountFloat: number;
   }[];
 }) {
   return (
     <GmxBarChart chartData={chartData} yAxisTickFormatter={integerYAxisTickFormatter} allowDecimals={false}>
-      <Bar dataKey="tradesCountFloat" fill="var(--color-blue-300)" radius={1} />
+      <Bar dataKey="tradesCount" fill="var(--color-blue-300)" radius={1} />
       <RechartsTooltip cursor={false} content={<TradesCountChartTooltip />} />
     </GmxBarChart>
   );
@@ -251,15 +199,13 @@ export function RebatesChart({
   );
 }
 
-const orderedDataKeys = ["tradersLostFloat", "tradersGainedFloat"];
-
 function TradersReferredChartTooltip({
   active,
   payload,
 }: {
   active?: boolean;
   payload?: Array<{
-    payload: { dateTooltip: string; tradersGained: number; tradersLost: number };
+    payload: { dateTooltip: string; tradersGained: number; tradersLost: number; tradersNet: number };
   }>;
 }) {
   if (!active || !payload?.length) return null;
@@ -267,8 +213,8 @@ function TradersReferredChartTooltip({
     dateTooltip: string;
     tradersGained: number;
     tradersLost: number;
+    tradersNet: number;
   };
-  const tradersNet = item.tradersGained - item.tradersLost;
 
   return (
     <div className="rounded-8 border border-stroke-primary bg-slate-900 p-10">
@@ -289,7 +235,7 @@ function TradersReferredChartTooltip({
         <span>
           <Trans>Net</Trans>
         </span>
-        <span className="numbers">{tradersNet}</span>
+        <span className="numbers">{item.tradersNet}</span>
       </div>
     </div>
   );
@@ -303,23 +249,24 @@ export function TradersReferredChart({
     dateCompact: string;
     tradersGained: number;
     tradersLost: number;
-    tradersGainedFloat: number;
-    tradersLostFloat: number;
+    tradersNet: number;
   }[];
 }) {
   return (
     <GmxBarChart chartData={chartData} yAxisTickFormatter={integerYAxisTickFormatter} allowDecimals={false}>
       <Bar
-        dataKey="tradersLostFloat"
+        dataKey="tradersLost"
         stackId="stack"
-        stroke="var(--color-red-500)"
-        shape={<BarWithGap orderedDataKeys={orderedDataKeys} />}
+        fill="var(--color-red-500)"
+        radius={2}
+        minPointSize={minPointSizeForNonZero}
       />
       <Bar
-        dataKey="tradersGainedFloat"
+        dataKey="tradersGained"
         stackId="stack"
-        stroke="var(--color-green-500)"
-        shape={<BarWithGap orderedDataKeys={orderedDataKeys} />}
+        fill="var(--color-green-500)"
+        radius={2}
+        minPointSize={minPointSizeForNonZero}
       />
       <RechartsTooltip cursor={false} content={<TradersReferredChartTooltip />} />
     </GmxBarChart>

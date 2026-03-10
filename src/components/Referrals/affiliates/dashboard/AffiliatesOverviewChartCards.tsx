@@ -3,7 +3,7 @@ import { useState } from "react";
 
 import { AffiliateReferralStats } from "domain/referrals";
 import { TimeRangeInfo } from "domain/synthetics/markets/useTimeRange";
-import { formatUsd } from "lib/numbers";
+import { formatBigUsd, formatUsd } from "lib/numbers";
 
 import { OverviewChartCard } from "components/Referrals/shared/cards/ReferralsOverviewChartCard";
 import { ShareReferralCardModal } from "components/Referrals/shared/cards/ShareReferralCardModal";
@@ -46,7 +46,7 @@ export function TradingVolumeChartCard({
       <OverviewChartCard
         label={<Trans>Trading volume</Trans>}
         tooltipContent={<Trans>Volume traded by your referred traders.</Trans>}
-        value={formatUsd(stats?.summary.volumeUsd ?? 0n)}
+        value={formatBigUsd(stats?.summary.volumeUsd ?? 0n)}
         valueChange={formatUsd(stats?.summary.volumeUsdDelta, { displayPlus: true })}
         isValueChangePositive={(stats?.summary.volumeUsdDelta ?? 0n) >= 0n}
         topRightContent={
@@ -99,10 +99,10 @@ export function TradersReferredChartCard({ stats, isLoading, timeRangeInfo }: Ba
   return (
     <OverviewChartCard
       label={<Trans>Traders referred</Trans>}
-      tooltipContent={<Trans>Number of referred traders gained/lost.</Trans>}
-      value={stats?.summary.tradersCount ?? 0}
-      valueChange={formatCountDelta(stats?.summary.tradersCountDelta)}
-      isValueChangePositive={(stats?.summary.tradersCountDelta ?? 0) >= 0}
+      tooltipContent={<Trans>Net referred traders in the selected period (gained - lost).</Trans>}
+      value={stats?.summary.tradersNet ?? 0}
+      valueChange={formatCountDelta(stats?.summary.tradersNetDelta)}
+      isValueChangePositive={(stats?.summary.tradersNetDelta ?? 0) >= 0}
       topRightContent={
         <div className="text-body-small flex items-center gap-[13px] font-medium text-typography-secondary">
           <span className="flex items-center gap-[9px]">

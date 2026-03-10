@@ -285,13 +285,15 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
                           <>
                             <StatsTooltipRow
                               label={t`V1 volume`}
-                              value={formatUsd(stat?.v1Data.volume, { fallbackToZero: true })}
+                              value={formatBigUsd(stat?.v1Data.volume ?? 0n)}
                               valueClassName="numbers"
+                              showDollar={false}
                             />
                             <StatsTooltipRow
                               label={t`V2 volume`}
-                              value={formatUsd(stat?.v2Data.volume, { fallbackToZero: true })}
+                              value={formatBigUsd(stat?.v2Data.volume ?? 0n)}
                               valueClassName="numbers"
+                              showDollar={false}
                             />
                           </>
                         }
@@ -310,11 +312,13 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
                               label={t`V1 rebates`}
                               value={formatUsd(stat.v1Data.affiliateRebateUsd, { fallbackToZero: true })}
                               valueClassName="numbers"
+                              showDollar={false}
                             />
                             <StatsTooltipRow
                               label={t`V2 rebates`}
                               value={formatUsd(stat.v2Data.affiliateRebateUsd, { fallbackToZero: true })}
                               valueClassName="numbers"
+                              showDollar={false}
                             />
                           </>
                         }

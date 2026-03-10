@@ -540,8 +540,6 @@ export interface AffiliateStatsSummary {
   __typename?: "AffiliateStatsSummary";
   rebatesUsd: Scalars["BigInt"]["output"];
   rebatesUsdDelta?: Maybe<Scalars["BigInt"]["output"]>;
-  tradersCount: Scalars["Float"]["output"];
-  tradersCountDelta?: Maybe<Scalars["Float"]["output"]>;
   tradersGained?: Maybe<Scalars["Float"]["output"]>;
   tradersGainedDelta?: Maybe<Scalars["Float"]["output"]>;
   tradersLost?: Maybe<Scalars["Float"]["output"]>;
@@ -558,6 +556,143 @@ export interface AffiliateStatsWhereInput {
   affiliate: Scalars["String"]["input"];
   from?: InputMaybe<Scalars["Float"]["input"]>;
   to?: InputMaybe<Scalars["Float"]["input"]>;
+}
+
+export interface AffiliateTraderStatsByHour {
+  __typename?: "AffiliateTraderStatsByHour";
+  affiliate: Scalars["String"]["output"];
+  id: Scalars["String"]["output"];
+  timestamp: Scalars["Int"]["output"];
+  tradersGained: Scalars["Int"]["output"];
+  tradersLost: Scalars["Int"]["output"];
+  tradersNet: Scalars["Int"]["output"];
+}
+
+export interface AffiliateTraderStatsByHourEdge {
+  __typename?: "AffiliateTraderStatsByHourEdge";
+  cursor: Scalars["String"]["output"];
+  node: AffiliateTraderStatsByHour;
+}
+
+export enum AffiliateTraderStatsByHourOrderByInput {
+  affiliate_ASC = "affiliate_ASC",
+  affiliate_ASC_NULLS_FIRST = "affiliate_ASC_NULLS_FIRST",
+  affiliate_ASC_NULLS_LAST = "affiliate_ASC_NULLS_LAST",
+  affiliate_DESC = "affiliate_DESC",
+  affiliate_DESC_NULLS_FIRST = "affiliate_DESC_NULLS_FIRST",
+  affiliate_DESC_NULLS_LAST = "affiliate_DESC_NULLS_LAST",
+  id_ASC = "id_ASC",
+  id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
+  id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
+  id_DESC = "id_DESC",
+  id_DESC_NULLS_FIRST = "id_DESC_NULLS_FIRST",
+  id_DESC_NULLS_LAST = "id_DESC_NULLS_LAST",
+  timestamp_ASC = "timestamp_ASC",
+  timestamp_ASC_NULLS_FIRST = "timestamp_ASC_NULLS_FIRST",
+  timestamp_ASC_NULLS_LAST = "timestamp_ASC_NULLS_LAST",
+  timestamp_DESC = "timestamp_DESC",
+  timestamp_DESC_NULLS_FIRST = "timestamp_DESC_NULLS_FIRST",
+  timestamp_DESC_NULLS_LAST = "timestamp_DESC_NULLS_LAST",
+  tradersGained_ASC = "tradersGained_ASC",
+  tradersGained_ASC_NULLS_FIRST = "tradersGained_ASC_NULLS_FIRST",
+  tradersGained_ASC_NULLS_LAST = "tradersGained_ASC_NULLS_LAST",
+  tradersGained_DESC = "tradersGained_DESC",
+  tradersGained_DESC_NULLS_FIRST = "tradersGained_DESC_NULLS_FIRST",
+  tradersGained_DESC_NULLS_LAST = "tradersGained_DESC_NULLS_LAST",
+  tradersLost_ASC = "tradersLost_ASC",
+  tradersLost_ASC_NULLS_FIRST = "tradersLost_ASC_NULLS_FIRST",
+  tradersLost_ASC_NULLS_LAST = "tradersLost_ASC_NULLS_LAST",
+  tradersLost_DESC = "tradersLost_DESC",
+  tradersLost_DESC_NULLS_FIRST = "tradersLost_DESC_NULLS_FIRST",
+  tradersLost_DESC_NULLS_LAST = "tradersLost_DESC_NULLS_LAST",
+  tradersNet_ASC = "tradersNet_ASC",
+  tradersNet_ASC_NULLS_FIRST = "tradersNet_ASC_NULLS_FIRST",
+  tradersNet_ASC_NULLS_LAST = "tradersNet_ASC_NULLS_LAST",
+  tradersNet_DESC = "tradersNet_DESC",
+  tradersNet_DESC_NULLS_FIRST = "tradersNet_DESC_NULLS_FIRST",
+  tradersNet_DESC_NULLS_LAST = "tradersNet_DESC_NULLS_LAST",
+}
+
+export interface AffiliateTraderStatsByHourWhereInput {
+  AND?: InputMaybe<Array<AffiliateTraderStatsByHourWhereInput>>;
+  OR?: InputMaybe<Array<AffiliateTraderStatsByHourWhereInput>>;
+  affiliate_contains?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_eq?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_gt?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_gte?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  affiliate_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  affiliate_lt?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_lte?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  affiliate_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  affiliate_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_gt?: InputMaybe<Scalars["String"]["input"]>;
+  id_gte?: InputMaybe<Scalars["String"]["input"]>;
+  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id_lt?: InputMaybe<Scalars["String"]["input"]>;
+  id_lte?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_eq?: InputMaybe<Scalars["String"]["input"]>;
+  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  id_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  id_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  timestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  timestamp_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  timestamp_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  timestamp_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  tradersGained_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  tradersGained_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  tradersGained_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  tradersGained_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  tradersGained_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  tradersGained_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  tradersGained_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  tradersGained_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  tradersGained_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  tradersLost_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  tradersLost_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  tradersLost_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  tradersLost_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  tradersLost_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  tradersLost_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  tradersLost_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  tradersLost_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  tradersLost_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  tradersNet_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  tradersNet_gt?: InputMaybe<Scalars["Int"]["input"]>;
+  tradersNet_gte?: InputMaybe<Scalars["Int"]["input"]>;
+  tradersNet_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  tradersNet_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  tradersNet_lt?: InputMaybe<Scalars["Int"]["input"]>;
+  tradersNet_lte?: InputMaybe<Scalars["Int"]["input"]>;
+  tradersNet_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
+  tradersNet_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+}
+
+export interface AffiliateTraderStatsByHoursConnection {
+  __typename?: "AffiliateTraderStatsByHoursConnection";
+  edges: Array<AffiliateTraderStatsByHourEdge>;
+  pageInfo: PageInfo;
+  totalCount: Scalars["Int"]["output"];
 }
 
 export interface AnnualizedPerformanceObject {
@@ -8159,6 +8294,9 @@ export interface Query {
   affiliateReferralTradeStatsByHours: Array<AffiliateReferralTradeStatsByHour>;
   affiliateReferralTradeStatsByHoursConnection: AffiliateReferralTradeStatsByHoursConnection;
   affiliateStats: AffiliateStatsResponse;
+  affiliateTraderStatsByHourById?: Maybe<AffiliateTraderStatsByHour>;
+  affiliateTraderStatsByHours: Array<AffiliateTraderStatsByHour>;
+  affiliateTraderStatsByHoursConnection: AffiliateTraderStatsByHoursConnection;
   annualizedPerformance: Array<AnnualizedPerformanceObject>;
   aprSnapshotById?: Maybe<AprSnapshot>;
   aprSnapshots: Array<AprSnapshot>;
@@ -8282,9 +8420,6 @@ export interface Query {
   tradeActions: Array<TradeAction>;
   tradeActionsConnection: TradeActionsConnection;
   traderReferralById?: Maybe<TraderReferral>;
-  traderReferralChangeById?: Maybe<TraderReferralChange>;
-  traderReferralChanges: Array<TraderReferralChange>;
-  traderReferralChangesConnection: TraderReferralChangesConnection;
   traderReferralStats: TraderReferralStatsResponse;
   traderReferralTradeStatsByHourById?: Maybe<TraderReferralTradeStatsByHour>;
   traderReferralTradeStatsByHours: Array<TraderReferralTradeStatsByHour>;
@@ -8343,6 +8478,24 @@ export interface QueryaffiliateReferralTradeStatsByHoursConnectionArgs {
 
 export interface QueryaffiliateStatsArgs {
   where?: InputMaybe<AffiliateStatsWhereInput>;
+}
+
+export interface QueryaffiliateTraderStatsByHourByIdArgs {
+  id: Scalars["String"]["input"];
+}
+
+export interface QueryaffiliateTraderStatsByHoursArgs {
+  limit?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy?: InputMaybe<Array<AffiliateTraderStatsByHourOrderByInput>>;
+  where?: InputMaybe<AffiliateTraderStatsByHourWhereInput>;
+}
+
+export interface QueryaffiliateTraderStatsByHoursConnectionArgs {
+  after?: InputMaybe<Scalars["String"]["input"]>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  orderBy: Array<AffiliateTraderStatsByHourOrderByInput>;
+  where?: InputMaybe<AffiliateTraderStatsByHourWhereInput>;
 }
 
 export interface QueryannualizedPerformanceArgs {
@@ -9045,24 +9198,6 @@ export interface QuerytradeActionsConnectionArgs {
 
 export interface QuerytraderReferralByIdArgs {
   id: Scalars["String"]["input"];
-}
-
-export interface QuerytraderReferralChangeByIdArgs {
-  id: Scalars["String"]["input"];
-}
-
-export interface QuerytraderReferralChangesArgs {
-  limit?: InputMaybe<Scalars["Int"]["input"]>;
-  offset?: InputMaybe<Scalars["Int"]["input"]>;
-  orderBy?: InputMaybe<Array<TraderReferralChangeOrderByInput>>;
-  where?: InputMaybe<TraderReferralChangeWhereInput>;
-}
-
-export interface QuerytraderReferralChangesConnectionArgs {
-  after?: InputMaybe<Scalars["String"]["input"]>;
-  first?: InputMaybe<Scalars["Int"]["input"]>;
-  orderBy: Array<TraderReferralChangeOrderByInput>;
-  where?: InputMaybe<TraderReferralChangeWhereInput>;
 }
 
 export interface QuerytraderReferralStatsArgs {
@@ -10828,231 +10963,6 @@ export interface TraderReferral {
   updatedAtBlock: Scalars["Int"]["output"];
   updatedAtTimestamp: Scalars["Int"]["output"];
   updatedTxnHash: Scalars["String"]["output"];
-}
-
-export interface TraderReferralChange {
-  __typename?: "TraderReferralChange";
-  block: Scalars["Int"]["output"];
-  id: Scalars["String"]["output"];
-  nextAffiliate?: Maybe<Scalars["String"]["output"]>;
-  nextReferralCode?: Maybe<Scalars["String"]["output"]>;
-  previousAffiliate?: Maybe<Scalars["String"]["output"]>;
-  previousReferralCode?: Maybe<Scalars["String"]["output"]>;
-  timestamp: Scalars["Int"]["output"];
-  trader: Scalars["String"]["output"];
-  transactionHash: Scalars["String"]["output"];
-}
-
-export interface TraderReferralChangeEdge {
-  __typename?: "TraderReferralChangeEdge";
-  cursor: Scalars["String"]["output"];
-  node: TraderReferralChange;
-}
-
-export enum TraderReferralChangeOrderByInput {
-  block_ASC = "block_ASC",
-  block_ASC_NULLS_FIRST = "block_ASC_NULLS_FIRST",
-  block_ASC_NULLS_LAST = "block_ASC_NULLS_LAST",
-  block_DESC = "block_DESC",
-  block_DESC_NULLS_FIRST = "block_DESC_NULLS_FIRST",
-  block_DESC_NULLS_LAST = "block_DESC_NULLS_LAST",
-  id_ASC = "id_ASC",
-  id_ASC_NULLS_FIRST = "id_ASC_NULLS_FIRST",
-  id_ASC_NULLS_LAST = "id_ASC_NULLS_LAST",
-  id_DESC = "id_DESC",
-  id_DESC_NULLS_FIRST = "id_DESC_NULLS_FIRST",
-  id_DESC_NULLS_LAST = "id_DESC_NULLS_LAST",
-  nextAffiliate_ASC = "nextAffiliate_ASC",
-  nextAffiliate_ASC_NULLS_FIRST = "nextAffiliate_ASC_NULLS_FIRST",
-  nextAffiliate_ASC_NULLS_LAST = "nextAffiliate_ASC_NULLS_LAST",
-  nextAffiliate_DESC = "nextAffiliate_DESC",
-  nextAffiliate_DESC_NULLS_FIRST = "nextAffiliate_DESC_NULLS_FIRST",
-  nextAffiliate_DESC_NULLS_LAST = "nextAffiliate_DESC_NULLS_LAST",
-  nextReferralCode_ASC = "nextReferralCode_ASC",
-  nextReferralCode_ASC_NULLS_FIRST = "nextReferralCode_ASC_NULLS_FIRST",
-  nextReferralCode_ASC_NULLS_LAST = "nextReferralCode_ASC_NULLS_LAST",
-  nextReferralCode_DESC = "nextReferralCode_DESC",
-  nextReferralCode_DESC_NULLS_FIRST = "nextReferralCode_DESC_NULLS_FIRST",
-  nextReferralCode_DESC_NULLS_LAST = "nextReferralCode_DESC_NULLS_LAST",
-  previousAffiliate_ASC = "previousAffiliate_ASC",
-  previousAffiliate_ASC_NULLS_FIRST = "previousAffiliate_ASC_NULLS_FIRST",
-  previousAffiliate_ASC_NULLS_LAST = "previousAffiliate_ASC_NULLS_LAST",
-  previousAffiliate_DESC = "previousAffiliate_DESC",
-  previousAffiliate_DESC_NULLS_FIRST = "previousAffiliate_DESC_NULLS_FIRST",
-  previousAffiliate_DESC_NULLS_LAST = "previousAffiliate_DESC_NULLS_LAST",
-  previousReferralCode_ASC = "previousReferralCode_ASC",
-  previousReferralCode_ASC_NULLS_FIRST = "previousReferralCode_ASC_NULLS_FIRST",
-  previousReferralCode_ASC_NULLS_LAST = "previousReferralCode_ASC_NULLS_LAST",
-  previousReferralCode_DESC = "previousReferralCode_DESC",
-  previousReferralCode_DESC_NULLS_FIRST = "previousReferralCode_DESC_NULLS_FIRST",
-  previousReferralCode_DESC_NULLS_LAST = "previousReferralCode_DESC_NULLS_LAST",
-  timestamp_ASC = "timestamp_ASC",
-  timestamp_ASC_NULLS_FIRST = "timestamp_ASC_NULLS_FIRST",
-  timestamp_ASC_NULLS_LAST = "timestamp_ASC_NULLS_LAST",
-  timestamp_DESC = "timestamp_DESC",
-  timestamp_DESC_NULLS_FIRST = "timestamp_DESC_NULLS_FIRST",
-  timestamp_DESC_NULLS_LAST = "timestamp_DESC_NULLS_LAST",
-  trader_ASC = "trader_ASC",
-  trader_ASC_NULLS_FIRST = "trader_ASC_NULLS_FIRST",
-  trader_ASC_NULLS_LAST = "trader_ASC_NULLS_LAST",
-  trader_DESC = "trader_DESC",
-  trader_DESC_NULLS_FIRST = "trader_DESC_NULLS_FIRST",
-  trader_DESC_NULLS_LAST = "trader_DESC_NULLS_LAST",
-  transactionHash_ASC = "transactionHash_ASC",
-  transactionHash_ASC_NULLS_FIRST = "transactionHash_ASC_NULLS_FIRST",
-  transactionHash_ASC_NULLS_LAST = "transactionHash_ASC_NULLS_LAST",
-  transactionHash_DESC = "transactionHash_DESC",
-  transactionHash_DESC_NULLS_FIRST = "transactionHash_DESC_NULLS_FIRST",
-  transactionHash_DESC_NULLS_LAST = "transactionHash_DESC_NULLS_LAST",
-}
-
-export interface TraderReferralChangeWhereInput {
-  AND?: InputMaybe<Array<TraderReferralChangeWhereInput>>;
-  OR?: InputMaybe<Array<TraderReferralChangeWhereInput>>;
-  block_eq?: InputMaybe<Scalars["Int"]["input"]>;
-  block_gt?: InputMaybe<Scalars["Int"]["input"]>;
-  block_gte?: InputMaybe<Scalars["Int"]["input"]>;
-  block_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
-  block_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  block_lt?: InputMaybe<Scalars["Int"]["input"]>;
-  block_lte?: InputMaybe<Scalars["Int"]["input"]>;
-  block_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
-  block_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
-  id_contains?: InputMaybe<Scalars["String"]["input"]>;
-  id_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  id_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  id_eq?: InputMaybe<Scalars["String"]["input"]>;
-  id_gt?: InputMaybe<Scalars["String"]["input"]>;
-  id_gte?: InputMaybe<Scalars["String"]["input"]>;
-  id_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  id_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  id_lt?: InputMaybe<Scalars["String"]["input"]>;
-  id_lte?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_eq?: InputMaybe<Scalars["String"]["input"]>;
-  id_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  id_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  id_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  nextAffiliate_contains?: InputMaybe<Scalars["String"]["input"]>;
-  nextAffiliate_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  nextAffiliate_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  nextAffiliate_eq?: InputMaybe<Scalars["String"]["input"]>;
-  nextAffiliate_gt?: InputMaybe<Scalars["String"]["input"]>;
-  nextAffiliate_gte?: InputMaybe<Scalars["String"]["input"]>;
-  nextAffiliate_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  nextAffiliate_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  nextAffiliate_lt?: InputMaybe<Scalars["String"]["input"]>;
-  nextAffiliate_lte?: InputMaybe<Scalars["String"]["input"]>;
-  nextAffiliate_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  nextAffiliate_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  nextAffiliate_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  nextAffiliate_not_eq?: InputMaybe<Scalars["String"]["input"]>;
-  nextAffiliate_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  nextAffiliate_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  nextAffiliate_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  nextReferralCode_contains?: InputMaybe<Scalars["String"]["input"]>;
-  nextReferralCode_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  nextReferralCode_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  nextReferralCode_eq?: InputMaybe<Scalars["String"]["input"]>;
-  nextReferralCode_gt?: InputMaybe<Scalars["String"]["input"]>;
-  nextReferralCode_gte?: InputMaybe<Scalars["String"]["input"]>;
-  nextReferralCode_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  nextReferralCode_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  nextReferralCode_lt?: InputMaybe<Scalars["String"]["input"]>;
-  nextReferralCode_lte?: InputMaybe<Scalars["String"]["input"]>;
-  nextReferralCode_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  nextReferralCode_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  nextReferralCode_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  nextReferralCode_not_eq?: InputMaybe<Scalars["String"]["input"]>;
-  nextReferralCode_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  nextReferralCode_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  nextReferralCode_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  previousAffiliate_contains?: InputMaybe<Scalars["String"]["input"]>;
-  previousAffiliate_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  previousAffiliate_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  previousAffiliate_eq?: InputMaybe<Scalars["String"]["input"]>;
-  previousAffiliate_gt?: InputMaybe<Scalars["String"]["input"]>;
-  previousAffiliate_gte?: InputMaybe<Scalars["String"]["input"]>;
-  previousAffiliate_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  previousAffiliate_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  previousAffiliate_lt?: InputMaybe<Scalars["String"]["input"]>;
-  previousAffiliate_lte?: InputMaybe<Scalars["String"]["input"]>;
-  previousAffiliate_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  previousAffiliate_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  previousAffiliate_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  previousAffiliate_not_eq?: InputMaybe<Scalars["String"]["input"]>;
-  previousAffiliate_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  previousAffiliate_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  previousAffiliate_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  previousReferralCode_contains?: InputMaybe<Scalars["String"]["input"]>;
-  previousReferralCode_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  previousReferralCode_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  previousReferralCode_eq?: InputMaybe<Scalars["String"]["input"]>;
-  previousReferralCode_gt?: InputMaybe<Scalars["String"]["input"]>;
-  previousReferralCode_gte?: InputMaybe<Scalars["String"]["input"]>;
-  previousReferralCode_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  previousReferralCode_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  previousReferralCode_lt?: InputMaybe<Scalars["String"]["input"]>;
-  previousReferralCode_lte?: InputMaybe<Scalars["String"]["input"]>;
-  previousReferralCode_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  previousReferralCode_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  previousReferralCode_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  previousReferralCode_not_eq?: InputMaybe<Scalars["String"]["input"]>;
-  previousReferralCode_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  previousReferralCode_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  previousReferralCode_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  timestamp_eq?: InputMaybe<Scalars["Int"]["input"]>;
-  timestamp_gt?: InputMaybe<Scalars["Int"]["input"]>;
-  timestamp_gte?: InputMaybe<Scalars["Int"]["input"]>;
-  timestamp_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
-  timestamp_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  timestamp_lt?: InputMaybe<Scalars["Int"]["input"]>;
-  timestamp_lte?: InputMaybe<Scalars["Int"]["input"]>;
-  timestamp_not_eq?: InputMaybe<Scalars["Int"]["input"]>;
-  timestamp_not_in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
-  trader_contains?: InputMaybe<Scalars["String"]["input"]>;
-  trader_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  trader_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  trader_eq?: InputMaybe<Scalars["String"]["input"]>;
-  trader_gt?: InputMaybe<Scalars["String"]["input"]>;
-  trader_gte?: InputMaybe<Scalars["String"]["input"]>;
-  trader_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  trader_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  trader_lt?: InputMaybe<Scalars["String"]["input"]>;
-  trader_lte?: InputMaybe<Scalars["String"]["input"]>;
-  trader_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  trader_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  trader_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  trader_not_eq?: InputMaybe<Scalars["String"]["input"]>;
-  trader_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  trader_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  trader_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  transactionHash_contains?: InputMaybe<Scalars["String"]["input"]>;
-  transactionHash_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  transactionHash_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  transactionHash_eq?: InputMaybe<Scalars["String"]["input"]>;
-  transactionHash_gt?: InputMaybe<Scalars["String"]["input"]>;
-  transactionHash_gte?: InputMaybe<Scalars["String"]["input"]>;
-  transactionHash_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  transactionHash_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
-  transactionHash_lt?: InputMaybe<Scalars["String"]["input"]>;
-  transactionHash_lte?: InputMaybe<Scalars["String"]["input"]>;
-  transactionHash_not_contains?: InputMaybe<Scalars["String"]["input"]>;
-  transactionHash_not_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
-  transactionHash_not_endsWith?: InputMaybe<Scalars["String"]["input"]>;
-  transactionHash_not_eq?: InputMaybe<Scalars["String"]["input"]>;
-  transactionHash_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
-  transactionHash_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-  transactionHash_startsWith?: InputMaybe<Scalars["String"]["input"]>;
-}
-
-export interface TraderReferralChangesConnection {
-  __typename?: "TraderReferralChangesConnection";
-  edges: Array<TraderReferralChangeEdge>;
-  pageInfo: PageInfo;
-  totalCount: Scalars["Int"]["output"];
 }
 
 export interface TraderReferralEdge {
