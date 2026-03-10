@@ -21,7 +21,7 @@ import { CREATE_REFERRAL_CODE_QUERY_PARAM } from "components/Referrals/shared/ut
 import { ReferralsTradersTab } from "components/Referrals/traders/ReferralsTradersTab";
 import SEO from "components/Seo/SEO";
 import Tabs from "components/Tabs/Tabs";
-import { Option } from "components/Tabs/types";
+import { Option, RegularOption } from "components/Tabs/types";
 
 enum ReferralsTab {
   Traders = "traders",
@@ -69,12 +69,22 @@ function Referrals() {
 
   const isBotanix = chainId === BOTANIX;
 
+  const hasAffiliateCode = useMemo(() => {
+    const chains = referralsData?.chains ?? {};
+    return Object.values(chains).some((c) => c.codes?.length > 0);
+  }, [referralsData]);
+
   const tabsOptions = useMemo((): Option<ReferralsTab>[] => {
-    return TAB_OPTIONS.map((option) => ({
-      value: option,
-      label: localizedTabOptionLabels[option],
-    }));
-  }, [localizedTabOptionLabels]);
+    return TAB_OPTIONS.map((option): RegularOption<ReferralsTab> => {
+      const isDistributionsLocked = option === ReferralsTab.Distributions && !hasAffiliateCode;
+      return {
+        value: option,
+        label: localizedTabOptionLabels[option],
+        disabled: isDistributionsLocked,
+        disabledMessage: isDistributionsLocked ? t`Register an affiliate code to access distributions` : undefined,
+      };
+    });
+  }, [localizedTabOptionLabels, hasAffiliateCode]);
 
   const setActiveTab = useCallback(
     (newTab: ReferralsTab) => {
@@ -89,6 +99,12 @@ function Referrals() {
       setActiveTab(ReferralsTab.Traders);
     }
   }, [isTabValidInUrl, setActiveTab]);
+
+  useEffect(() => {
+    if (activeTab === ReferralsTab.Distributions && !hasAffiliateCode && !isLoading) {
+      setActiveTab(ReferralsTab.Affiliates);
+    }
+  }, [activeTab, hasAffiliateCode, isLoading, setActiveTab]);
 
   useEffect(() => {
     if (createReferralCodePrefill && activeTab !== ReferralsTab.Affiliates) {
@@ -125,11 +141,7 @@ function Referrals() {
               />
 
               {activeTab === ReferralsTab.Traders && (
-                <ReferralsTradersTab
-                  isLoading={isLoading}
-                  account={account}
-                  hasAddressInUrl={hasAddressInUrl}
-                />
+                <ReferralsTradersTab isLoading={isLoading} account={account} hasAddressInUrl={hasAddressInUrl} />
               )}
               {activeTab === ReferralsTab.Affiliates && (
                 <ReferralsAffiliatesTab

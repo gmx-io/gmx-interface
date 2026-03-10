@@ -7,7 +7,7 @@ import { getExplorerUrl } from "config/chains";
 import { RebateDistribution, RebateDistributionType } from "domain/referrals";
 import { shortenAddress } from "lib/legacy";
 import { formatBalanceAmount, formatBigUsd } from "lib/numbers";
-import { getNativeToken, getToken, getTokenBySymbol } from "sdk/configs/tokens";
+import { getNativeToken, getToken, getTokenBySymbol, isValidTokenSafe } from "sdk/configs/tokens";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
@@ -64,9 +64,9 @@ export function RebateDistributionRow({
   let rebateType = "-";
 
   if (rebate.typeId === RebateDistributionType.Rebate) {
-    rebateType = rebate.tokens[0] === esGmxAddress ? t`V1 esGMX` : t`V1 airdrop`;
+    rebateType = rebate.tokens[0] === esGmxAddress ? t`Referrals esGMX` : t`Referrals V1 WETH`;
   } else if (rebate.typeId === RebateDistributionType.Claim) {
-    rebateType = t`V2 claim`;
+    rebateType = t`Rebate Claim`;
   }
 
   const tokensWithoutPrices: string[] = [];
@@ -74,7 +74,6 @@ export function RebateDistributionRow({
     if (usdAmount === 0n && rebate.amounts[i] !== 0n) {
       tokensWithoutPrices.push(rebate.tokens[i]);
     }
-
     return acc + usdAmount;
   }, 0n);
 
@@ -104,7 +103,12 @@ export function RebateDistributionRow({
                 <>
                   <Trans>
                     USD value may not be accurate because prices are missing for{" "}
-                    {tokensWithoutPrices.map((address) => getToken(chainId, address).symbol).join(", ")}.
+                    {tokensWithoutPrices
+                      .map((address) =>
+                        isValidTokenSafe(chainId, address) ? getToken(chainId, address).symbol : address
+                      )
+                      .join(", ")}
+                    .
                   </Trans>
                   <br />
                   <br />

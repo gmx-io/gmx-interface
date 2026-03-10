@@ -633,10 +633,6 @@ msgstr "展開"
 msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution </2><3> Low size caps, but fun to do some degen gambling with </3>"
 msgstr "<0>初めて<1>@GMX_IO</1> を試しました。</0><2> かなり印象的な体験 - スリッページなし、高速実行 </2><3> サイズ上限が低いですが、デジェンギャンブルをするのに楽しい </3>"
 
-#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
-msgid "V1 airdrop"
-msgstr "V1 エアドロップ"
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -1055,6 +1051,10 @@ msgstr "内訳を表示"
 msgid "Borrowing factor short"
 msgstr "ショート借入係数"
 
+#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
+msgid "Referrals esGMX"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (positive PI)"
 msgstr "スワップ手数料係数（プラスPI）"
@@ -1216,6 +1216,10 @@ msgstr "未実現PnL"
 #: src/components/TradeboxMarginFields/MarginField.tsx
 msgid "Pay"
 msgstr "支払い"
+
+#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
+msgid "Rebate Claim"
+msgstr ""
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -2099,6 +2103,10 @@ msgstr "シフト注文がキャンセルされました"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Secure & permissionless"
 msgstr "安全かつパーミッションレス"
+
+#: src/pages/Referrals/Referrals.tsx
+msgid "Register an affiliate code to access distributions"
+msgstr ""
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
@@ -4246,10 +4254,6 @@ msgstr "<0>ステーク前に未委任の{0} GMX DAO</0>投票権を委任して
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "USD value may not be accurate because prices are missing for {0}."
 msgstr "{0} の価格が取得できないため、USD値が正確でない場合があります。"
-
-#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
-msgid "V1 esGMX"
-msgstr "V1 esGMX"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Loading markets data..."
@@ -6842,6 +6846,10 @@ msgstr "サポート"
 msgid "Use a TWAP order"
 msgstr "TWAP注文を使用"
 
+#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
+msgid "Referrals V1 WETH"
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Enable external swaps"
 msgstr "外部スワップを有効化"
@@ -7335,10 +7343,6 @@ msgstr "準備金証明"
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "When will I start earning?"
 msgstr ""
-
-#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
-msgid "V2 claim"
-msgstr "V2受け取り"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No topics"

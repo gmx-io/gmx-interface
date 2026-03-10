@@ -633,10 +633,6 @@ msgstr "展开"
 msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution </2><3> Low size caps, but fun to do some degen gambling with </3>"
 msgstr "<0>第一次尝试 <1>@GMX_IO</1>。</0><2> 非常令人印象深刻的体验 - 无滑点，执行快速 </2><3> 规模上限较低，但进行一些高风险赌博很有趣 </3>"
 
-#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
-msgid "V1 airdrop"
-msgstr "V1 空投"
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -1055,6 +1051,10 @@ msgstr "查看明细"
 msgid "Borrowing factor short"
 msgstr "做空借贷因子"
 
+#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
+msgid "Referrals esGMX"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (positive PI)"
 msgstr "兑换手续费因子（正价格影响）"
@@ -1216,6 +1216,10 @@ msgstr "未实现盈亏"
 #: src/components/TradeboxMarginFields/MarginField.tsx
 msgid "Pay"
 msgstr "支付"
+
+#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
+msgid "Rebate Claim"
+msgstr ""
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -2099,6 +2103,10 @@ msgstr "Shift 订单已取消"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Secure & permissionless"
 msgstr "安全且无需许可"
+
+#: src/pages/Referrals/Referrals.tsx
+msgid "Register an affiliate code to access distributions"
+msgstr ""
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
@@ -4246,10 +4254,6 @@ msgstr "<0>在质押前委托您的未委托 {0} GMX DAO</0> 投票权。"
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "USD value may not be accurate because prices are missing for {0}."
 msgstr "由于缺少 {0} 的价格数据，USD 价值可能不准确。"
-
-#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
-msgid "V1 esGMX"
-msgstr "V1 esGMX"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Loading markets data..."
@@ -6842,6 +6846,10 @@ msgstr "支持者"
 msgid "Use a TWAP order"
 msgstr "使用 TWAP 订单"
 
+#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
+msgid "Referrals V1 WETH"
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Enable external swaps"
 msgstr "启用外部兑换"
@@ -7335,10 +7343,6 @@ msgstr "储备证明"
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "When will I start earning?"
 msgstr ""
-
-#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
-msgid "V2 claim"
-msgstr "V2 领取"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No topics"

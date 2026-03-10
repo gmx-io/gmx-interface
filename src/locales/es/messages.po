@@ -633,10 +633,6 @@ msgstr "Expandir"
 msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution </2><3> Low size caps, but fun to do some degen gambling with </3>"
 msgstr "<0>Probé <1>@GMX_IO</1> por primera vez. </0><2> Experiencia bastante impresionante - sin slippage, ejecución rápida </2><3> Límites de tamaño bajos, pero divertido para hacer apuestas degen </3>"
 
-#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
-msgid "V1 airdrop"
-msgstr "V1 airdrop"
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -1055,6 +1051,10 @@ msgstr "Ver desglose"
 msgid "Borrowing factor short"
 msgstr "Factor de préstamo en corto"
 
+#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
+msgid "Referrals esGMX"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (positive PI)"
 msgstr "Factor de comisión de intercambio (PI positivo)"
@@ -1216,6 +1216,10 @@ msgstr "PnL No Realizado"
 #: src/components/TradeboxMarginFields/MarginField.tsx
 msgid "Pay"
 msgstr "Pagar"
+
+#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
+msgid "Rebate Claim"
+msgstr ""
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -2099,6 +2103,10 @@ msgstr "Orden de cambio cancelada"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Secure & permissionless"
 msgstr "Seguro y sin permisos"
+
+#: src/pages/Referrals/Referrals.tsx
+msgid "Register an affiliate code to access distributions"
+msgstr ""
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
@@ -4246,10 +4254,6 @@ msgstr "<0>Delega tu poder de voto {0} GMX DAO no delegado</0> antes de stakear.
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "USD value may not be accurate because prices are missing for {0}."
 msgstr "El valor en USD puede no ser preciso porque faltan precios para {0}."
-
-#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
-msgid "V1 esGMX"
-msgstr "V1 esGMX"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Loading markets data..."
@@ -6842,6 +6846,10 @@ msgstr "Soportado por"
 msgid "Use a TWAP order"
 msgstr "Usar una orden TWAP"
 
+#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
+msgid "Referrals V1 WETH"
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Enable external swaps"
 msgstr "Activar intercambios externos"
@@ -7335,10 +7343,6 @@ msgstr "Prueba de reservas"
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "When will I start earning?"
 msgstr ""
-
-#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
-msgid "V2 claim"
-msgstr "Reclamación V2"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No topics"

@@ -633,10 +633,6 @@ msgstr "확장"
 msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution </2><3> Low size caps, but fun to do some degen gambling with </3>"
 msgstr "<0>처음으로 <1>@GMX_IO</1>를 시도했습니다. </0><2> 꽤 인상적인 경험 - 슬리피지 없음, 빠른 실행 </2><3> 낮은 크기 상한, 하지만 재미있는 디젠 도박에 좋음 </3>"
 
-#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
-msgid "V1 airdrop"
-msgstr "V1 에어드롭"
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -1055,6 +1051,10 @@ msgstr "내역 보기"
 msgid "Borrowing factor short"
 msgstr "차입 계수 숏"
 
+#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
+msgid "Referrals esGMX"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (positive PI)"
 msgstr "스왑 수수료 계수 (양의 PI)"
@@ -1216,6 +1216,10 @@ msgstr "미실현 PnL"
 #: src/components/TradeboxMarginFields/MarginField.tsx
 msgid "Pay"
 msgstr "지불"
+
+#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
+msgid "Rebate Claim"
+msgstr ""
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -2099,6 +2103,10 @@ msgstr "시프트 주문이 취소되었습니다"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Secure & permissionless"
 msgstr "안전하고 무허가"
+
+#: src/pages/Referrals/Referrals.tsx
+msgid "Register an affiliate code to access distributions"
+msgstr ""
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
@@ -4246,10 +4254,6 @@ msgstr "<0>스테이킹 전에 위임되지 않은 {0} GMX DAO</0> 투표 권한
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "USD value may not be accurate because prices are missing for {0}."
 msgstr "{0}의 가격이 누락되어 USD 가치가 정확하지 않을 수 있습니다."
-
-#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
-msgid "V1 esGMX"
-msgstr "V1 esGMX"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Loading markets data..."
@@ -6842,6 +6846,10 @@ msgstr "지원"
 msgid "Use a TWAP order"
 msgstr "TWAP 주문 사용"
 
+#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
+msgid "Referrals V1 WETH"
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Enable external swaps"
 msgstr "외부 스왑 활성화"
@@ -7335,10 +7343,6 @@ msgstr "지급준비금 증명"
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "When will I start earning?"
 msgstr ""
-
-#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
-msgid "V2 claim"
-msgstr "V2 수령"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No topics"
