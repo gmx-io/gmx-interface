@@ -179,10 +179,6 @@ msgstr "Arbitrum"
 msgid "Orders ({0})"
 msgstr "Órdenes ({0})"
 
-#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
-msgid "GMX Referral"
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram bot for GMX swap monitoring"
 msgstr "Bot de Telegram para monitorización de intercambios en GMX"
@@ -1841,10 +1837,6 @@ msgstr ""
 msgid "RECEIVE"
 msgstr "RECIBIR"
 
-#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
-msgid "<0>Save up to 10%</0> on every<1/> trade on GMX."
-msgstr ""
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "VI POSITIONS"
 msgstr "VI POSITIONS"
@@ -2177,10 +2169,6 @@ msgstr "Depósito fallido"
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "2nd place"
 msgstr "2.º puesto"
-
-#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
-msgid "Number of referred traders gained/lost."
-msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Number of parts must be between {MIN_TWAP_NUMBER_OF_PARTS} and {MAX_TWAP_NUMBER_OF_PARTS}"
@@ -4179,6 +4167,10 @@ msgstr "Posición existente en el pool {0}, pero carece de liquidez para esta or
 #: src/components/ChainDataImage.tsx
 msgid "{chainName} data"
 msgstr "Datos de {chainName}"
+
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+msgid "Net referred traders in the selected period (gained - lost)."
+msgstr "Comerciantes referidos netos en el período seleccionado (ganados - perdidos)."
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No liquidation price. Collateral covers any losses."
@@ -7655,10 +7647,6 @@ msgstr "Utilice esta opción únicamente para transferencias completas de cuenta
 msgid "Net price impact"
 msgstr "Impacto neto en el precio"
 
-#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
-msgid "Trade on GMX with my referral code {createdReferralCode} and save on fees!"
-msgstr ""
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
@@ -9199,6 +9187,10 @@ msgstr "Take-Profit"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL ($)"
 msgstr "PnL Máximo ($)"
+
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+msgid "<0>Save up to {traderDiscountPercentageLabel}</0> on every<1/> trade on GMX."
+msgstr "<0>Ahorra hasta {traderDiscountPercentageLabel}</0> en cada<1/> operación en GMX."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Leverage trading terminal"

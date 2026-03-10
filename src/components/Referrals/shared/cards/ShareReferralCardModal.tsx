@@ -21,14 +21,18 @@ type ShareReferralCardModalProps = {
   isVisible: boolean;
   setIsVisible: (visible: boolean) => void;
   referralCode: string;
+  traderDiscountPercentage?: string | number;
   totalDiscountsUsd?: bigint;
+  hasReferredUsers?: boolean;
 };
 
 export function ShareReferralCardModal({
   isVisible,
   setIsVisible,
   referralCode,
+  traderDiscountPercentage,
   totalDiscountsUsd,
+  hasReferredUsers = true,
 }: ShareReferralCardModalProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [, copyToClipboard] = useCopyToClipboard();
@@ -38,10 +42,17 @@ export function ShareReferralCardModal({
     () => formatUsd(totalDiscountsUsd, { fallbackToZero: true }),
     [totalDiscountsUsd]
   );
+  const traderDiscountPercentageLabel = useMemo(
+    () => (traderDiscountPercentage !== undefined ? `${String(traderDiscountPercentage)}%` : "10%"),
+    [traderDiscountPercentage]
+  );
   const tweetLink = useMemo(() => {
-    const text = `Save up to 10% on every trade on GMX.\n\nSo far, my referrals have saved ${totalDiscountsFormatted} total in discounts with my code: ${referralCode}\n\n${referralLink}`;
+    const discountsText = hasReferredUsers
+      ? `\n\nSo far, my referrals have saved ${totalDiscountsFormatted} total in discounts with my code: ${referralCode}`
+      : "";
+    const text = `Save up to ${traderDiscountPercentageLabel} on every trade on GMX.${discountsText}`;
     return getTwitterIntentURL(text, referralLink);
-  }, [referralCode, totalDiscountsFormatted, referralLink]);
+  }, [traderDiscountPercentageLabel, hasReferredUsers, totalDiscountsFormatted, referralCode, referralLink]);
 
   const handleCopyLink = useCallback(() => {
     copyToClipboard(referralLink);
@@ -95,18 +106,20 @@ export function ShareReferralCardModal({
               <div className="mb-8 inline-block rounded-full bg-blue-300/20 px-6 py-2 text-16 font-medium text-blue-300">
                 <div className="support-chat-new-badge">{referralCode}</div>
               </div>
-              <h3 className="mb-12 text-32 font-medium leading-1 text-white">
+              <h3 className="text-32 font-medium leading-1 text-white">
                 <Trans>
-                  <span className="support-chat-new-badge">Save up to 10%</span> on every
+                  <span className="support-chat-new-badge">Save up to {traderDiscountPercentageLabel}</span> on every
                   <br /> trade on GMX.
                 </Trans>
               </h3>
-              <p className="text-body-medium font-medium text-typography-secondary">
-                <Trans>
-                  So far, my referrals have saved {totalDiscountsFormatted} total in discounts with my code:{" "}
-                  {referralCode}
-                </Trans>
-              </p>
+              {hasReferredUsers && (
+                <p className="text-body-medium mt-12 font-medium text-typography-secondary">
+                  <Trans>
+                    So far, my referrals have saved {totalDiscountsFormatted} total in discounts with my code:{" "}
+                    {referralCode}
+                  </Trans>
+                </p>
+              )}
             </div>
           </div>
         </div>

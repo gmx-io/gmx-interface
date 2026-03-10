@@ -179,10 +179,6 @@ msgstr ""
 msgid "Orders ({0})"
 msgstr ""
 
-#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
-msgid "GMX Referral"
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram bot for GMX swap monitoring"
 msgstr ""
@@ -1841,10 +1837,6 @@ msgstr ""
 msgid "RECEIVE"
 msgstr ""
 
-#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
-msgid "<0>Save up to 10%</0> on every<1/> trade on GMX."
-msgstr ""
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "VI POSITIONS"
 msgstr ""
@@ -2176,10 +2168,6 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "2nd place"
-msgstr ""
-
-#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
-msgid "Number of referred traders gained/lost."
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -4178,6 +4166,10 @@ msgstr ""
 #: src/components/ChainDataImage.tsx
 #: src/components/ChainDataImage.tsx
 msgid "{chainName} data"
+msgstr ""
+
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+msgid "Net referred traders in the selected period (gained - lost)."
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -7655,10 +7647,6 @@ msgstr ""
 msgid "Net price impact"
 msgstr ""
 
-#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
-msgid "Trade on GMX with my referral code {createdReferralCode} and save on fees!"
-msgstr ""
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approve GMX"
@@ -9198,6 +9186,10 @@ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top PnL ($)"
+msgstr ""
+
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+msgid "<0>Save up to {traderDiscountPercentageLabel}</0> on every<1/> trade on GMX."
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx

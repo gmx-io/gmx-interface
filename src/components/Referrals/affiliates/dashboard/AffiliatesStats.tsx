@@ -9,7 +9,6 @@ import { useAffiliateReferralStats } from "domain/referrals/hooks/useAffiliateRe
 import { TimeRangeInfo, useTimeRange } from "domain/synthetics/markets/useTimeRange";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
-import { getTwitterIntentURL } from "lib/legacy";
 import { formatBigUsd, formatUsd } from "lib/numbers";
 import { userAnalytics } from "lib/userAnalytics";
 import { ReferralCreateCodeEvent, ReferralShareEvent } from "lib/userAnalytics/types";
@@ -25,7 +24,6 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import Tooltip from "components/Tooltip/Tooltip";
-import { TrackingLink } from "components/TrackingLink/TrackingLink";
 
 import CopyIcon from "img/ic_copy.svg?react";
 import PlusIcon from "img/ic_plus.svg?react";
@@ -35,6 +33,7 @@ import referralCodePromoFg from "img/referral_code_promo_fg.png";
 import { ClaimableRebatesCard } from "../../shared/cards/ClaimableRebatesCard";
 import { PromoCard } from "../../shared/cards/PromoCard";
 import { ReferralsDocsCard } from "../../shared/cards/ReferralsDocsCard";
+import { ShareReferralCardModal } from "../../shared/cards/ShareReferralCardModal";
 import { getReferralCodeTradeUrl, getSharePercentage, getTierIdDisplay } from "../../shared/utils/referralsHelper";
 import { AffiliateCodeFormContainer } from "../createCode/AddAffiliateCode";
 import { AFFILIATE_POST_WIZARD_FAQS } from "../faq";
@@ -92,6 +91,15 @@ type Props = {
 export function AffiliatesStats({ account, referralsData, handleCreateReferralCode }: Props) {
   const { chainId } = useChainId();
   const [isAddReferralCodeModalOpen, setIsAddReferralCodeModalOpen] = useState(false);
+  const [shareModalState, setShareModalState] = useState<{
+    isVisible: boolean;
+    referralCode: string;
+    totalDiscountsUsd?: bigint;
+    hasReferredUsers?: boolean;
+  }>({
+    isVisible: false,
+    referralCode: "",
+  });
   const addNewModalRef = useRef<HTMLDivElement>(null);
 
   const [, copyToClipboard] = useCopyToClipboard();
@@ -121,6 +129,7 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
   const discountShare = affiliateTierInfo?.discountShare;
   const { totalRebate } = useTiers(chainId, tierId);
   const currentRebatePercentage = getSharePercentage(tierId, BigInt(discountShare ?? 0n), totalRebate, true);
+  const currentTraderDiscountPercentage = getSharePercentage(tierId, BigInt(discountShare ?? 0n), totalRebate);
 
   const trackCopyCode = useCallback(() => {
     userAnalytics.pushEvent<ReferralShareEvent>(
@@ -134,7 +143,7 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
     );
   }, []);
 
-  const trackShareTwitter = useCallback(() => {
+  const trackShare = useCallback(() => {
     userAnalytics.pushEvent<ReferralShareEvent>(
       {
         event: "ReferralCodeAction",
@@ -201,7 +210,9 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
               isLoading={isReferralStatsLoading}
               timeRangeInfo={timeRangeInfo}
               referralCode={affiliateReferralCodesStats?.[0]?.referralCode}
+              traderDiscountPercentage={currentTraderDiscountPercentage}
               totalDiscountsUsd={referralsData?.chains?.[chainId]?.affiliateTotalStats?.discountUsd}
+              hasReferredUsers={(referralsData?.chains?.[chainId]?.affiliateTotalStats?.registeredReferralsCount ?? 0) > 0}
             />
             <NumberOfTradesChartCard
               stats={referralStats}
@@ -339,24 +350,23 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
                           <Trans>Copy</Trans>
                           <CopyIcon className="size-16" />
                         </Button>
-                        <TrackingLink onClick={trackShareTwitter}>
-                          <Button
-                            variant="ghost"
-                            size="small"
-                            to={getTwitterIntentURL(
-                              [
-                                "Trying out trading on @GMX_IO, up to 100x leverage on $BTC, $ETH 📈",
-                                "For fee discounts use:",
-                              ],
-                              getReferralCodeTradeUrl(stat.referralCode)
-                            )}
-                            newTab
-                            className="gap-4"
-                          >
-                            <Trans>Share</Trans>
-                            <ShareIcon className="size-16" />
-                          </Button>
-                        </TrackingLink>
+                        <Button
+                          variant="ghost"
+                          size="small"
+                          className="gap-4"
+                          onClick={() => {
+                            trackShare();
+                            setShareModalState({
+                              isVisible: true,
+                              referralCode: stat.referralCode,
+                              totalDiscountsUsd: stat.discountUsd,
+                              hasReferredUsers: stat.registeredReferralsCount > 0,
+                            });
+                          }}
+                        >
+                          <Trans>Share</Trans>
+                          <ShareIcon className="size-16" />
+                        </Button>
                       </div>
                     </TableTd>
                   </TableTr>
@@ -383,6 +393,14 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
           <AffiliateCodeFormContainer handleCreateReferralCode={handleCreateReferralCode} callAfterSuccess={close} />
         </div>
       </ModalWithPortal>
+      <ShareReferralCardModal
+        isVisible={shareModalState.isVisible}
+        setIsVisible={(isVisible) => setShareModalState((prev) => ({ ...prev, isVisible }))}
+        referralCode={shareModalState.referralCode}
+        traderDiscountPercentage={currentTraderDiscountPercentage}
+        totalDiscountsUsd={shareModalState.totalDiscountsUsd}
+        hasReferredUsers={shareModalState.hasReferredUsers}
+      />
     </div>
   );
 

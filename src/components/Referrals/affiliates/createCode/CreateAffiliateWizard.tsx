@@ -1,12 +1,12 @@
-import { t, Trans } from "@lingui/macro";
+import { Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { ShareReferralCardModal } from "components/Referrals/shared/cards/ShareReferralCardModal";
 import { useRecentReferralCodes } from "components/Referrals/shared/hooks/useRecentReferralCodes";
-import { getReferralCodeTradeUrl } from "components/Referrals/shared/utils/referralsHelper";
 import { StepProgress } from "components/Referrals/shared/wizard/StepProgress";
 import { LabelWithIcon } from "components/Referrals/traders/joinCode/LabelWithIcon";
 
@@ -47,15 +47,18 @@ export function CreateAffiliateWizard({
   onGoToAffiliateDashboard,
   handleCreateReferralCode,
   initialReferralCode,
+  traderDiscountPercentage,
 }: {
   onGoToAffiliateDashboard: () => void;
   handleCreateReferralCode: (code: string) => Promise<unknown>;
   initialReferralCode: string | undefined;
+  traderDiscountPercentage?: string | number;
 }) {
   const { openConnectModal } = useConnectModal();
   const { isConnected } = useAccount();
 
   const [wizardStep, setWizardStep] = useState(CreateAffiliateWizardStep.ConnectWallet);
+  const [isShareModalVisible, setIsShareModalVisible] = useState(false);
   const { recentCodes, addRecentCode } = useRecentReferralCodes();
   const createdReferralCode = recentCodes.at(-1) ?? "";
 
@@ -140,18 +143,7 @@ export function CreateAffiliateWizard({
                   variant="primary-action"
                   className="w-full"
                   type="button"
-                  onClick={() => {
-                    const shareUrl = getReferralCodeTradeUrl(createdReferralCode);
-                    if (navigator.share) {
-                      navigator.share({
-                        title: t`GMX Referral`,
-                        text: t`Trade on GMX with my referral code ${createdReferralCode} and save on fees!`,
-                        url: shareUrl,
-                      });
-                    } else {
-                      navigator.clipboard.writeText(shareUrl);
-                    }
-                  }}
+                  onClick={() => setIsShareModalVisible(true)}
                 >
                   <div className="flex items-center gap-8">
                     <Trans>Share your code</Trans>
@@ -170,6 +162,13 @@ export function CreateAffiliateWizard({
           )}
         </div>
       </div>
+      <ShareReferralCardModal
+        isVisible={isShareModalVisible}
+        setIsVisible={setIsShareModalVisible}
+        referralCode={createdReferralCode}
+        traderDiscountPercentage={traderDiscountPercentage}
+        hasReferredUsers={false}
+      />
     </div>
   );
 }

@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import { useCallback, useState } from "react";
 
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import { registerReferralCode, TotalReferralsStats } from "domain/referrals";
+import { registerReferralCode, TotalReferralsStats, useTiers } from "domain/referrals";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 
@@ -10,6 +10,7 @@ import { Faq } from "components/Faq/Faq";
 import Loader from "components/Loader/Loader";
 import { AffiliatesStats } from "components/Referrals/affiliates/dashboard/AffiliatesStats";
 import { useRecentReferralCodes } from "components/Referrals/shared/hooks/useRecentReferralCodes";
+import { getSharePercentage } from "components/Referrals/shared/utils/referralsHelper";
 
 import { CreateAffiliateWizard } from "./createCode/CreateAffiliateWizard";
 import { AFFILIATE_WIZARD_FAQS } from "./faq";
@@ -34,6 +35,11 @@ export function ReferralsAffiliatesTab({
   const { chainId } = useChainId();
   const { pendingTxns } = usePendingTxns();
   const { recentCodes } = useRecentReferralCodes();
+  const affiliateTierInfo = referralsData?.chains?.[chainId]?.affiliateTierInfo;
+  const tierId = affiliateTierInfo?.tierId;
+  const discountShare = affiliateTierInfo?.discountShare;
+  const { totalRebate } = useTiers(chainId, tierId);
+  const currentTraderDiscountPercentage = getSharePercentage(tierId, BigInt(discountShare ?? 0n), totalRebate);
 
   function handleCreateReferralCode(referralCode: string) {
     return registerReferralCode(chainId, referralCode, signer, {
@@ -69,6 +75,7 @@ export function ReferralsAffiliatesTab({
           onGoToAffiliateDashboard={handleGoToAffiliateDashboard}
           handleCreateReferralCode={handleCreateReferralCode}
           initialReferralCode={initialReferralCode}
+          traderDiscountPercentage={currentTraderDiscountPercentage}
         />
       </div>
       <div className="flex w-[400px] shrink-0 flex-col gap-8 max-md:w-full">

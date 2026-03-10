@@ -19,7 +19,9 @@ type BaseChartCardProps = {
 
 type TradingVolumeChartCardProps = BaseChartCardProps & {
   referralCode?: string;
+  traderDiscountPercentage?: string | number;
   totalDiscountsUsd?: bigint;
+  hasReferredUsers?: boolean;
 };
 
 function formatCountDelta(value?: number): string | undefined {
@@ -37,7 +39,9 @@ export function TradingVolumeChartCard({
   isLoading,
   timeRangeInfo,
   referralCode,
+  traderDiscountPercentage,
   totalDiscountsUsd,
+  hasReferredUsers,
 }: TradingVolumeChartCardProps) {
   const [isShareModalVisible, setIsShareModalVisible] = useState(false);
 
@@ -70,7 +74,9 @@ export function TradingVolumeChartCard({
         isVisible={isShareModalVisible}
         setIsVisible={setIsShareModalVisible}
         referralCode={referralCode ?? ""}
+        traderDiscountPercentage={traderDiscountPercentage}
         totalDiscountsUsd={totalDiscountsUsd}
+        hasReferredUsers={hasReferredUsers}
       />
     </>
   );
