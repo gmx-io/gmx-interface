@@ -57,7 +57,6 @@ type KyberSwapBuildResponse = {
 
 export type KyberSwapQuote = {
   to: string;
-  data: string;
   value: bigint;
   estimatedGas: bigint;
   usdIn: bigint;
@@ -69,7 +68,20 @@ export type KyberSwapQuote = {
   outputAmount: bigint;
 };
 
-export async function getKyberSwapTxnData({
+export type KyberSwapBuildContext = {
+  routeSummary: KyberSwapRouteSummary;
+  senderAddress: string;
+  receiverAddress: string;
+  slippage: number;
+  chainId: ContractsChainId;
+};
+
+export type KyberSwapRouteResult = {
+  quote: KyberSwapQuote;
+  buildContext: KyberSwapBuildContext;
+};
+
+export async function getKyberSwapRoute({
   chainId,
   tokenInAddress,
   tokenOutAddress,
@@ -87,7 +99,7 @@ export async function getKyberSwapTxnData({
   amountIn: bigint;
   gasPrice: bigint;
   slippage: number;
-}): Promise<KyberSwapQuote | undefined> {
+}): Promise<KyberSwapRouteResult | undefined> {
   const baseUrl = getKyberSwapUrl(chainId);
   const tokenIn = getToken(chainId, tokenInAddress);
   const tokenOut = getToken(chainId, tokenOutAddress);
@@ -97,7 +109,6 @@ export async function getKyberSwapTxnData({
 
   const excludedSources = EXCLUDED_KYBER_SWAP_SOURCES[chainId]?.join(",");
 
-  // Step 1: Get route
   const routeUrl = buildUrl(baseUrl, "/api/v1/routes", {
     tokenIn: wrappedTokenIn,
     tokenOut: wrappedTokenOut,
@@ -127,42 +138,18 @@ export async function getKyberSwapTxnData({
       throw new Error(`Invalid KyberSwapRouter address: ${routerAddress}`);
     }
 
-    // Step 2: Build transaction
-    const buildUrl_ = buildUrl(baseUrl, "/api/v1/route/build");
-
-    const buildRes = await fetch(buildUrl_, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "x-client-id": KYBER_SWAP_CLIENT_ID,
-      },
-      body: JSON.stringify({
-        routeSummary,
-        sender: senderAddress,
-        recipient: receiverAddress,
-        slippageTolerance: slippage,
-      }),
-    });
-
-    const buildData = (await buildRes.json()) as KyberSwapBuildResponse;
-
-    if (!buildData.data || buildData.code !== 0) {
-      throw new Error(`Failed to build transaction: ${buildData.code} ${buildData.message}`);
-    }
-
-    if (buildData.data.routerAddress !== getContract(chainId, "KyberSwapRouter")) {
-      throw new Error(`Invalid KyberSwapRouter address in build response: ${buildData.data.routerAddress}`);
-    }
-
     const amountInBigint = BigInt(routeSummary.amountIn);
-    const amountOutBigint = BigInt(buildData.data.amountOut);
-    const usdIn = numberToBigint(parseFloat(buildData.data.amountInUsd), USD_DECIMALS);
-    const usdOut = numberToBigint(parseFloat(buildData.data.amountOutUsd), USD_DECIMALS);
+    // Note: outputAmount is from route phase. Actual on-chain execution amount
+    // may differ slightly as it's determined by the build phase calldata.
+    // Slippage tolerance protects against significant deviations.
+    const amountOutBigint = BigInt(routeSummary.amountOut);
+    const usdIn = numberToBigint(parseFloat(routeSummary.amountInUsd), USD_DECIMALS);
+    const usdOut = numberToBigint(parseFloat(routeSummary.amountOutUsd), USD_DECIMALS);
 
     const priceIn =
       amountInBigint > 0n
         ? numberToBigint(
-            parseFloat(buildData.data.amountInUsd) /
+            parseFloat(routeSummary.amountInUsd) /
               parseFloat(
                 formatTokenAmount(amountInBigint, tokenIn.decimals, undefined, { showAllSignificant: true }) ?? "0"
               ),
@@ -173,7 +160,7 @@ export async function getKyberSwapTxnData({
     const priceOut =
       amountOutBigint > 0n
         ? numberToBigint(
-            parseFloat(buildData.data.amountOutUsd) /
+            parseFloat(routeSummary.amountOutUsd) /
               parseFloat(
                 formatTokenAmount(amountOutBigint, tokenOut.decimals, undefined, { showAllSignificant: true }) ?? "0"
               ),
@@ -182,21 +169,65 @@ export async function getKyberSwapTxnData({
         : 0n;
 
     return {
-      to: buildData.data.routerAddress,
-      data: buildData.data.data,
-      value: 0n,
-      estimatedGas: BigInt(buildData.data.gas),
-      usdIn,
-      usdOut,
-      priceIn,
-      priceOut,
-      gasPrice,
-      amountIn: amountInBigint,
-      outputAmount: amountOutBigint,
+      quote: {
+        to: routerAddress,
+        value: 0n,
+        estimatedGas: BigInt(routeSummary.gas),
+        usdIn,
+        usdOut,
+        priceIn,
+        priceOut,
+        gasPrice,
+        amountIn: amountInBigint,
+        outputAmount: amountOutBigint,
+      },
+      // Note: routeSummary may become stale if the user delays submission.
+      // KyberSwap's /route/build endpoint may reject expired route summaries.
+      buildContext: { routeSummary, senderAddress, receiverAddress, slippage, chainId },
     };
   } catch (e) {
     (e as Error).message += ` URL: ${routeUrl.replace(receiverAddress, "...")}`;
-    metrics.pushError(e, "externalSwap.getKyberSwapTxnData");
+    metrics.pushError(e, "externalSwap.getKyberSwapRoute");
     return undefined;
   }
+}
+
+/**
+ * Calls KyberSwap /route/build API to get executable calldata.
+ * Should be called right before order submission.
+ */
+export async function buildKyberSwapTxn(ctx: KyberSwapBuildContext): Promise<{ to: string; data: string }> {
+  const { routeSummary, senderAddress, receiverAddress, slippage, chainId } = ctx;
+  const baseUrl = getKyberSwapUrl(chainId);
+
+  const buildUrl_ = buildUrl(baseUrl, "/api/v1/route/build");
+
+  const buildRes = await fetch(buildUrl_, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-client-id": KYBER_SWAP_CLIENT_ID,
+    },
+    body: JSON.stringify({
+      routeSummary,
+      sender: senderAddress,
+      recipient: receiverAddress,
+      slippageTolerance: slippage,
+    }),
+  });
+
+  const buildData = (await buildRes.json()) as KyberSwapBuildResponse;
+
+  if (!buildData.data || buildData.code !== 0) {
+    throw new Error(`Failed to build transaction: ${buildData.code} ${buildData.message}`);
+  }
+
+  if (buildData.data.routerAddress !== getContract(chainId, "KyberSwapRouter")) {
+    throw new Error(`Invalid KyberSwapRouter address in build response: ${buildData.data.routerAddress}`);
+  }
+
+  return {
+    to: buildData.data.routerAddress,
+    data: buildData.data.data,
+  };
 }

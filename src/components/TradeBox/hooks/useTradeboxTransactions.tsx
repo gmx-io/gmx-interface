@@ -14,6 +14,7 @@ import {
   selectIsLeverageSliderEnabled,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
+  selectBuildExternalSwapCalldataRef,
   selectSetShouldFallbackToInternalSwap,
   selectTradeboxAllowedSlippage,
   selectTradeboxCollateralToken,
@@ -102,6 +103,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
 
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
+  const buildExternalSwapCalldataRef = useSelector(selectBuildExternalSwapCalldataRef);
 
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
   const executionFee = useSelector(selectTradeboxExecutionFee);
@@ -324,6 +326,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
             tokensData,
             blockTimestampData,
           },
+      buildExternalSwapCalldata: buildExternalSwapCalldataRef.current,
       callback: makeOrderTxnCallback({
         metricId: metricData.metricId,
         slippageInputId,

@@ -47,6 +47,7 @@ export async function sendBatchOrderTxn({
   expressParams,
   simulationParams,
   callback,
+  buildExternalSwapCalldata,
 }: {
   chainId: ContractsChainId;
   signer: WalletSigner;
@@ -56,6 +57,7 @@ export async function sendBatchOrderTxn({
   expressParams: ExpressTxnParams | undefined;
   simulationParams: BatchSimulationParams | undefined;
   callback: TxnCallback<BatchOrderTxnCtx> | undefined;
+  buildExternalSwapCalldata?: () => Promise<{ to: string; data: string } | undefined>;
 }) {
   const eventBuilder = new TxnEventBuilder<BatchOrderTxnCtx>({ expressParams, batchParams, signer });
 
@@ -68,6 +70,33 @@ export async function sendBatchOrderTxn({
       throw new Error("provider is required for multichain txns");
     }
     callback?.(eventBuilder.Submitted());
+
+    // Build external swap calldata right before execution
+    if (buildExternalSwapCalldata) {
+      const hasExternalCalls = batchParams.createOrderParams.some(
+        (p) => p.tokenTransfersParams?.externalCalls?.externalCallDataList.length
+      );
+
+      if (hasExternalCalls) {
+        const calldata = await buildExternalSwapCalldata();
+
+        if (!calldata) {
+          throw new Error("Failed to build external swap calldata");
+        }
+
+        // TODO: Currently assumes a single external swap per batch — the same calldata
+        // is applied to all order params. If batch behavior changes to support multiple
+        // independent external swaps, this needs per-order calldata resolution.
+        for (const param of batchParams.createOrderParams) {
+          const externalCalls = param.tokenTransfersParams?.externalCalls;
+          if (externalCalls && externalCalls.externalCallDataList.length > 0) {
+            const lastIdx = externalCalls.externalCallDataList.length - 1;
+            externalCalls.externalCallTargets[lastIdx] = calldata.to;
+            externalCalls.externalCallDataList[lastIdx] = calldata.data;
+          }
+        }
+      }
+    }
 
     let runSimulation: () => Promise<void> = DEFAULT_RUN_SIMULATION;
 
