@@ -56,10 +56,6 @@ msgstr "或透過 <0>chainlist.org</0> 更新您錢包的 RPC"
 msgid "REFERRAL CODE"
 msgstr "推薦代碼"
 
-#: src/components/Referrals/traders/faq.tsx
-msgid "Total Discounts shows how much you've saved in fees since applying your referral code."
-msgstr ""
-
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} collateral</0>"
 msgstr "現有限價單使用 {symbol} 抵押品。<0>切換至 {symbol} 抵押品</0>"
@@ -510,10 +506,6 @@ msgstr "解除質押中..."
 msgid "From network"
 msgstr "來源網路"
 
-#: src/components/Referrals/traders/faq.tsx
-msgid "Which fees does my discount apply to?"
-msgstr ""
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral factor for liquidation"
 msgstr "清算最低抵押品因子"
@@ -652,6 +644,10 @@ msgstr "V1 空投"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order execution price"
 msgstr "訂單成交價格"
+
+#: src/components/Referrals/traders/faq.tsx
+msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
+msgstr "是的。若您在 Arbitrum 與 Avalanche 皆有交易，請在各自網路分別套用推薦代碼。"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in any {0}/USD pool"
@@ -1019,10 +1015,6 @@ msgstr "領取 {totalUsd}"
 #: src/domain/tokens/approveTokens.tsx
 msgid "Insufficient {0} for gas on {networkName}<0/><1/><2>Buy or transfer {1} to {networkName}</2>"
 msgstr "在 {networkName} 上 {0} 不足以支付 Gas 費用<0/><1/><2>購買或轉帳 {1} 至 {networkName}</2>"
-
-#: src/components/Referrals/traders/faq.tsx
-msgid "Referral discounts apply to opening and closing fees for leverage trading (perpetuals). Swap fees are not included. <0>View fee structure →</0>"
-msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -1442,10 +1434,6 @@ msgstr "執行限價單"
 msgid "Base APY"
 msgstr "基礎 APY"
 
-#: src/components/Referrals/traders/faq.tsx
-msgid "Referral codes are shared by affiliates (content creators, community members, and traders). You can:<0><1>Ask in the <2>GMX Discord</2> community</1><3>Check social media for GMX creators and traders</3></0>"
-msgstr ""
-
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and {borrowAction} a borrow fee of {borrowRate} per hour"
 msgstr "{longOrShort} 倉位每小時{fundingAction}資金費用 {fundingRate}，並每小時{borrowAction}借貸費用 {borrowRate}"
@@ -1471,6 +1459,14 @@ msgstr "發送許可"
 msgid "V1 interface"
 msgstr "V1 介面"
 
+#: src/components/Referrals/traders/faq.tsx
+msgid "How do I know if a code is good?"
+msgstr "如何知道代碼是否好用？"
+
+#: src/components/Referrals/traders/faq.tsx
+msgid "Your discount is applied automatically when you execute a trade. You'll see the referral discount in your fee tooltip before opening a trade."
+msgstr "執行交易時會自動套用您的折扣。開倉前可在手續費提示中看到推薦折扣。"
+
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "CSV"
@@ -1479,6 +1475,10 @@ msgstr "CSV"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading is disabled. Time limit expired."
 msgstr "One-Click Trading 已停用。時間限制已到期。"
+
+#: src/components/Referrals/traders/faq.tsx
+msgid "How is my fee discount applied?"
+msgstr "手續費折扣如何套用？"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Session generation failed"
@@ -1895,10 +1895,6 @@ msgstr "{orderTypeLabel} {positionText}，-{0}"
 msgid "Page not found"
 msgstr "找不到頁面"
 
-#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
-msgid "Your 10% discount is now active!"
-msgstr ""
-
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Estimated fee refund"
 msgstr "預估費用退款"
@@ -1964,10 +1960,6 @@ msgstr "Gas 不足以執行"
 msgid "Custom"
 msgstr "自訂"
 
-#: src/components/Referrals/traders/faq.tsx
-msgid "You can still trade without a code, but you'll get no discounts when trading. So we recommend finding a code to save up to 10% on every trade!"
-msgstr ""
-
 #: src/components/NpsModal/NpsModal.tsx
 msgid "Enter your answer"
 msgstr "輸入您的回答"
@@ -2010,10 +2002,6 @@ msgstr "圖表倉位"
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Claiming price impact rebates..."
 msgstr "正在領取價格影響回饋..."
-
-#: src/components/Referrals/traders/faq.tsx
-msgid "What does \"Total Discounts\" mean?"
-msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityCard.tsx
 msgid "Explore"
@@ -2059,10 +2047,6 @@ msgstr "接收代幣流動性不足"
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Size percentage required"
 msgstr "需要輸入倉位百分比"
-
-#: src/components/Referrals/traders/faq.tsx
-msgid "No problem! You can change your referral code at any time by entering a new one. Your new code will apply to all future trades."
-msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
@@ -2141,10 +2125,6 @@ msgstr "DefiLlama"
 msgid "Daily and cumulative PnL"
 msgstr "每日與累計 PnL"
 
-#: src/components/Referrals/traders/faq.tsx
-msgid "Discounts are applied automatically at the time of trade execution. You'll see the reduced fee amount in your trade confirmation before submitting."
-msgstr ""
-
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions do not pay a funding fee and pay a borrow fee of {borrowRate} per hour"
 msgstr "{longOrShort} 倉位不需支付資金費用，每小時支付借貸費用 {borrowRate}"
@@ -2209,6 +2189,10 @@ msgstr "等級 {0}：{currentRebatePercentage}% 回饋"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
 msgstr "未找到兌換路徑"
+
+#: src/components/Referrals/traders/faq.tsx
+msgid "Can I change my referral code?"
+msgstr "可以更換推薦代碼嗎？"
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "MARKETS"
@@ -2403,6 +2387,10 @@ msgstr "做多未平倉量儲備因子"
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Layer 2"
 msgstr "Layer 2"
+
+#: src/components/Referrals/traders/faq.tsx
+msgid "All valid codes give you at least a 5% discount. Premium affiliates (Tier 2/3) offer 10% discount. You'll see the exact discount percentage after the code has been applied."
+msgstr "所有有效代碼至少提供 5% 折扣。進階合作方（Tier 2/3）提供 10% 折扣。代碼套用後會顯示確切折扣比例。"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Allow {0} spending"
@@ -2770,10 +2758,6 @@ msgstr "買入手續費"
 msgid "Claimable collateral reduction factor"
 msgstr "可領取抵押品削減因子"
 
-#: src/components/Referrals/traders/faq.tsx
-msgid "What if I don't have a code?"
-msgstr ""
-
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
 msgstr "自動再平衡的 GM 代幣金庫，從槓桿交易和兌換中累積手續費。由 {0} 和 {1} 支持。"
@@ -2921,6 +2905,10 @@ msgstr "TP 價格低於標記價格"
 msgid "Receiver has not staked GMX tokens before"
 msgstr "接收者此前未質押過 GMX 代幣"
 
+#: src/components/Referrals/traders/faq.tsx
+msgid "Referral codes are shared by content creators and community members. You can find codes on Twitter, or from any GMX-related content on social media."
+msgstr "推薦代碼由內容創作者與社群成員分享。可在 Twitter 或任何 GMX 相關社群內容中找到代碼。"
+
 #: src/components/MarketsList/MarketsList.tsx
 msgid "LIQUIDITY"
 msgstr "流動性"
@@ -3054,10 +3042,6 @@ msgstr "主題"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
 msgstr "超過最大槓桿"
-
-#: src/components/Referrals/traders/faq.tsx
-msgid "Can I change my code later?"
-msgstr ""
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claiming funding fees failed"
@@ -3439,6 +3423,10 @@ msgstr "<0>Solana 支援</0><1>Botanix 支援</1><2>GMX Express</2>"
 msgid "Funds are now in your GMX Account"
 msgstr "資金已存入您的 GMX Account"
 
+#: src/components/Referrals/traders/faq.tsx
+msgid "Why should I enter a referral code?"
+msgstr "為什麼要輸入推薦代碼？"
+
 #: src/components/TVChartContainer/constants.ts
 msgid "TP - long dec."
 msgstr "TP - 做多減倉"
@@ -3681,10 +3669,6 @@ msgstr "交易空投"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Found {0} events in the past {DAYS_BACK} days"
 msgstr "在過去 {DAYS_BACK} 天內找到 {0} 個事件"
-
-#: src/components/Referrals/traders/faq.tsx
-msgid "How is the discount applied to my trades?"
-msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} bridging to..."
@@ -4045,6 +4029,10 @@ msgstr "閱讀規則"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Source chain supports single token only"
 msgstr "來源鏈僅支援單一代幣"
+
+#: src/components/Referrals/traders/faq.tsx
+msgid "Referral discounts apply to opening and closing fees for leverage trading. Swap fees are not included."
+msgstr "推薦折扣適用於槓桿交易的開倉與平倉手續費，不包含兌換手續費。"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 msgid "Annually"
@@ -4489,10 +4477,6 @@ msgstr "簽名："
 msgid "Processing claim..."
 msgstr "領取處理中..."
 
-#: src/components/Referrals/traders/faq.tsx
-msgid "Where do I get a referral code?"
-msgstr ""
-
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Failed to load order data:"
 msgstr "無法載入訂單資料："
@@ -4684,10 +4668,6 @@ msgstr "GM 池："
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "無價格影響。以此規模<0/>加倉做空或減倉做多時<1/>採用單一成交價格。"
-
-#: src/components/Referrals/traders/faq.tsx
-msgid "Immediately! Your very next trade will have the discount applied automatically."
-msgstr ""
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing limit order in {0} pool.<0>Switch to {1} pool</0>"
@@ -5264,6 +5244,10 @@ msgstr "PnL 分析"
 msgid "Failed to claim funds"
 msgstr "領取資金失敗"
 
+#: src/components/Referrals/traders/faq.tsx
+msgid "Which fees get discounted?"
+msgstr "哪些手續費有折扣？"
+
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "Shifting 僅適用於 {chainNames} 或 {lastChainName}。請切換網路以繼續。"
@@ -5300,6 +5284,10 @@ msgstr "成交價格"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "spinner"
 msgstr "載入中"
+
+#: src/components/Referrals/traders/faq.tsx
+msgid "Yes! You can switch to a different code at any time from the Traders tab. Your new discount will apply to all future trades."
+msgstr "可以！您可隨時在「交易者」分頁切換至其他代碼，新折扣將套用於之後所有交易。"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
@@ -5609,10 +5597,6 @@ msgstr "s："
 msgid "RPC error.<0/><1/>Enable <2>Express Trading</2> in settings for better reliability"
 msgstr "RPC 錯誤。<0/><1/>在設定中啟用 <2>Express Trading</2> 以獲得更好的可靠性"
 
-#: src/components/Referrals/traders/faq.tsx
-msgid "Yes. If you trade on both Arbitrum and Avalanche, you'll need to apply a referral code on each network separately."
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "UniDex Leverage"
 msgstr "UniDex Leverage"
@@ -5803,6 +5787,10 @@ msgstr "為特定 GMX 市場提供流動性的池。支援單一資產和原生�
 msgid "Max funding factor"
 msgstr "最大資金費率因子"
 
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+msgid "Your discount is now active!"
+msgstr "您的折扣已啟用！"
+
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "High price impact"
@@ -5847,10 +5835,6 @@ msgstr "減倉"
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Loading Express Trading..."
 msgstr "正在載入 Express Trading..."
-
-#: src/components/Referrals/traders/faq.tsx
-msgid "What if I entered the wrong code?"
-msgstr ""
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6159,10 +6143,6 @@ msgstr "無法提取抵押品。剩餘抵押品將低於最低要求"
 msgid "Approving..."
 msgstr "授權中..."
 
-#: src/components/Referrals/traders/faq.tsx
-msgid "Yes! You can change your active referral code at any time. Simply enter a new code in the Traders tab and it will replace your current one. Your new discount will apply to all future trades. <0>Read more →</0>"
-msgstr ""
-
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"
 msgstr "使用率"
@@ -6170,10 +6150,6 @@ msgstr "使用率"
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity available for increasing longs at<0/>this size. Max long size: {0}<1/><2/>No price impact. Single execution price for<3/>decreasing shorts at this size."
 msgstr "此規模無可用流動性來加倉做多。<0/>最大做多規模：{0}<1/><2/>無價格影響。此規模減倉做空<3/>為單一成交價格。"
-
-#: src/components/Referrals/traders/faq.tsx
-msgid "Yes! You can change your referral code at any time. If you want to switch to a different code, just enter the new one in the Traders tab."
-msgstr ""
 
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Referrals/Referrals.tsx
@@ -6593,6 +6569,10 @@ msgstr "目前端點 ({0})"
 msgid "No rebates distribution history yet"
 msgstr "尚無返佣分配記錄"
 
+#: src/components/Referrals/traders/faq.tsx
+msgid "You can skip this step and trade without a code, but you'll pay full fees. You can always add a code later from the Traders tab if you've found a code."
+msgstr "可略過此步驟、不輸入代碼即交易，但將支付全額手續費。若之後找到代碼，可隨時在「交易者」分頁新增。"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "THREAD"
 msgstr "執行緒"
@@ -6958,10 +6938,6 @@ msgstr "取消"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group"
 msgstr "Telegram 群組"
-
-#: src/components/Referrals/traders/faq.tsx
-msgid "How do I know it's working?"
-msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Tradao"
@@ -7491,10 +7467,6 @@ msgstr "買入訂單已成交"
 msgid "No opportunities match your search"
 msgstr "沒有符合搜尋條件的機會"
 
-#: src/components/Referrals/traders/faq.tsx
-msgid "After applying a code, you'll see: your active referral code displayed on the Traders tab, the discount percentage you're receiving, and fee discounts reflected in your trade confirmations."
-msgstr ""
-
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Leaderboard for traders on GMX V2"
 msgstr "GMX V2 交易者排行榜"
@@ -7811,6 +7783,10 @@ msgstr "存入失敗"
 msgid "EST. PNL"
 msgstr "預估 PNL"
 
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+msgid "Your {currentTierDiscount}% discount is now active!"
+msgstr "您的 {currentTierDiscount}% 折扣已啟用！"
+
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Total performance APY"
 msgstr "總績效 APY"
@@ -8039,13 +8015,13 @@ msgstr "使用 {0} 購買 GM，上限如下"
 msgid "V2 trading"
 msgstr "V2 交易"
 
+#: src/components/Referrals/traders/faq.tsx
+msgid "Visit the <0>Referrals Documentation</0> or ask in the <1>GMX Telegram</1>."
+msgstr "請造訪<0>推薦計畫說明</0>或在<1>GMX Telegram</1>詢問。"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
 msgstr "協議分析"
-
-#: src/components/Referrals/traders/faq.tsx
-msgid "What does \"Trading Volume\" mean?"
-msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show positions on chart"
@@ -8695,10 +8671,6 @@ msgstr "<0>以 75.5% 的多數票，GMX 選擇了 LayerZero 作為其多鏈擴�
 msgid "Staking..."
 msgstr "質押中..."
 
-#: src/components/Referrals/traders/faq.tsx
-msgid "Do I need to do this on each network?"
-msgstr ""
-
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Buy request sent"
 msgstr "買入請求已發送"
@@ -9064,9 +9036,17 @@ msgstr "存入已提交"
 msgid "Yield vaults"
 msgstr "收益金庫"
 
+#: src/components/Referrals/traders/faq.tsx
+msgid "Using a referral code gives you a 5-10% discount on trading fees for every trade you make. It costs you nothing and the savings add up quickly."
+msgstr "使用推薦代碼可讓每筆交易的手續費享有 5–10% 折扣，無額外成本，節省會快速累積。"
+
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
 msgstr "{title}"
+
+#: src/components/Referrals/traders/faq.tsx
+msgid "What if I don't have a code right now?"
+msgstr "如果目前沒有代碼怎麼辦？"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit transaction sent for {0}!"
@@ -9199,6 +9179,10 @@ msgstr "槓桿交易終端"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver address"
 msgstr "接收地址"
+
+#: src/components/Referrals/traders/faq.tsx
+msgid "Where can I learn more?"
+msgstr "哪裡可以了解更多？"
 
 #: src/components/Claims/SettleAccruedCard.tsx
 msgid "Positive funding fees accrued in positions, not yet claimable.<0/><1/>Available after changing position size, adjusting collateral, or clicking \"Settle\"."
@@ -10324,6 +10308,10 @@ msgstr "扣除費用後抵押品過低。存入更多資金以降低清算風險
 msgid "No markets found"
 msgstr "未找到市場"
 
+#: src/components/Referrals/traders/faq.tsx
+msgid "Do I need to enter a code on each network?"
+msgstr "每個網路都要輸入代碼嗎？"
+
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Insufficient collateral. Need more"
 msgstr "抵押品不足。需要更多"
@@ -10569,10 +10557,6 @@ msgstr "資金正在跨鏈至..."
 msgid "Network fee"
 msgstr "網路費用"
 
-#: src/components/Referrals/traders/faq.tsx
-msgid "Trading Volume is the total USD value of all your leveraged trades (opens + closes) since you applied your referral code."
-msgstr ""
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivated"
 msgstr "已停用"
@@ -10684,10 +10668,6 @@ msgstr "限價"
 #: src/components/TradeHistory/keys.ts
 msgid "Execute TWAP Swap part"
 msgstr "執行 TWAP Swap 部分"
-
-#: src/components/Referrals/traders/faq.tsx
-msgid "Can I change my referral code to a different one?"
-msgstr ""
 
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Reload the page or report the issue if the <0/> problem persists"
@@ -10827,6 +10807,10 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> 至 </1>{0}{toTokenIcon}{1}"
 msgid "No decentralized exchanges available"
 msgstr "無可用的去中心化交易所"
 
+#: src/components/Referrals/traders/faq.tsx
+msgid "Where do I find a referral code?"
+msgstr "哪裡可以找到推薦代碼？"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Enable <0>Express Trading</0> in settings for better reliability.<1/><2/>Or increase the max network fee buffer {bufferText} in {settingsLink}"
 msgstr "在設定中啟用 <0>Express Trading</0> 以提升可靠性。<1/><2/>或在 {settingsLink} 中增加最大網路費用緩衝 {bufferText}"
@@ -10867,10 +10851,6 @@ msgstr "餘額不足"
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Collateral delta"
 msgstr "抵押品變動"
-
-#: src/components/Referrals/traders/faq.tsx
-msgid "When does the discount start?"
-msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Insufficient collateral. Need {amountText} more collateral"

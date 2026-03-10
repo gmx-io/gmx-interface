@@ -98,7 +98,7 @@ export function ReferralsTradersContent({ account }: ReferralsTradersContentProp
   });
   const { isClosed: isTraderPromoClosed, close: closeTraderPromo } = useReferralPromoClosed("trader", account);
 
-  const currentTierDiscount = getSharePercentage(traderTier, discountShare ?? 0n, totalRebate);
+  const currentTierDiscount = getSharePercentage(traderTier, discountShare, totalRebate);
   const lastUpdated = traderStats?.to ? `${lightFormat(traderStats.to * 1000, "yyyy-MM-dd HH:mm:ss")} UTC` : "--";
 
   return (

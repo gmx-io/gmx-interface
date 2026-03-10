@@ -5,9 +5,18 @@ import { useHistory } from "react-router-dom";
 import { useAccount } from "wagmi";
 
 import { REFERRALS_DOCS_URL } from "config/links";
+import {
+  useAffiliateTier,
+  useCodeOwner,
+  useReferrerDiscountShare,
+  useTiers,
+  useUserReferralCode,
+} from "domain/referrals";
+import { useChainId } from "lib/chains";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { getSharePercentage } from "components/Referrals/shared/utils/referralsHelper";
 import { StepProgress } from "components/Referrals/shared/wizard/StepProgress";
 
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
@@ -46,8 +55,15 @@ function DiscountPromos() {
 
 export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDashboard: () => void }) {
   const { openConnectModal } = useConnectModal();
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
+  const { chainId } = useChainId();
   const history = useHistory();
+  const { userReferralCode } = useUserReferralCode(chainId, address);
+  const { codeOwner } = useCodeOwner(chainId, address, userReferralCode);
+  const { affiliateTier: traderTier } = useAffiliateTier(chainId, codeOwner);
+  const { discountShare } = useReferrerDiscountShare(chainId, codeOwner);
+  const { totalRebate } = useTiers(chainId, traderTier);
+  const currentTierDiscount = getSharePercentage(traderTier, discountShare, totalRebate);
 
   const [joinReferralWizardStep, setJoinReferralWizardStep] = useState(JoinReferralWizardStep.ConnectWallet);
   const [userReferralCodeString, setUserReferralCodeString] = useState("");
@@ -120,7 +136,11 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
               <div className="flex flex-col items-center gap-12">
                 <LabelWithIcon icon={ReferralsFilledIcon} label={<Trans>Success</Trans>} />
                 <h2 className="text-[40px] font-medium">
-                  <Trans>Your 10% discount is now active!</Trans>
+                  {currentTierDiscount !== undefined ? (
+                    <Trans>Your {currentTierDiscount}% discount is now active!</Trans>
+                  ) : (
+                    <Trans>Your discount is now active!</Trans>
+                  )}
                 </h2>
                 <p className="text-body-medium text-typography-secondary">
                   <Trans>

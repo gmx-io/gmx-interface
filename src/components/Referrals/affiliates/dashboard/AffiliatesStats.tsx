@@ -128,8 +128,8 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
   const tierId = affiliateTierInfo?.tierId;
   const discountShare = affiliateTierInfo?.discountShare;
   const { totalRebate } = useTiers(chainId, tierId);
-  const currentRebatePercentage = getSharePercentage(tierId, BigInt(discountShare ?? 0n), totalRebate, true);
-  const currentTraderDiscountPercentage = getSharePercentage(tierId, BigInt(discountShare ?? 0n), totalRebate);
+  const currentRebatePercentage = getSharePercentage(tierId, discountShare, totalRebate, true);
+  const currentTraderDiscountPercentage = getSharePercentage(tierId, discountShare, totalRebate);
 
   const trackCopyCode = useCallback(() => {
     userAnalytics.pushEvent<ReferralShareEvent>(
@@ -212,7 +212,9 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
               referralCode={affiliateReferralCodesStats?.[0]?.referralCode}
               traderDiscountPercentage={currentTraderDiscountPercentage}
               totalDiscountsUsd={referralsData?.chains?.[chainId]?.affiliateTotalStats?.discountUsd}
-              hasReferredUsers={(referralsData?.chains?.[chainId]?.affiliateTotalStats?.registeredReferralsCount ?? 0) > 0}
+              hasReferredUsers={
+                (referralsData?.chains?.[chainId]?.affiliateTotalStats?.registeredReferralsCount ?? 0) > 0
+              }
             />
             <NumberOfTradesChartCard
               stats={referralStats}

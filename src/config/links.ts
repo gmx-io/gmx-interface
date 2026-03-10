@@ -46,4 +46,4 @@ export const REFERRALS_DOCS_SECTION_LINKS = {
   transferringReferralCode: "https://docs.gmx.io/docs/referrals#transferring-a-referral-code",
 } as const;
 
-export const GMX_PARTNER_TELEGRAM_URL = "https://t.me/GMX_Announcements";
+export const GMX_PARTNER_TELEGRAM_URL = "https://t.me/GMXPartners";

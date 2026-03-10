@@ -39,7 +39,7 @@ export function ReferralsAffiliatesTab({
   const tierId = affiliateTierInfo?.tierId;
   const discountShare = affiliateTierInfo?.discountShare;
   const { totalRebate } = useTiers(chainId, tierId);
-  const currentTraderDiscountPercentage = getSharePercentage(tierId, BigInt(discountShare ?? 0n), totalRebate);
+  const currentTraderDiscountPercentage = getSharePercentage(tierId, discountShare, totalRebate);
 
   function handleCreateReferralCode(referralCode: string) {
     return registerReferralCode(chainId, referralCode, signer, {
