@@ -1419,6 +1419,10 @@ msgstr "Altas tarifas de red"
 msgid "Overview"
 msgstr "Resumen"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Fetching swap route..."
+msgstr "Obteniendo ruta de intercambio..."
+
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
@@ -3098,6 +3102,10 @@ msgstr "Fondos insuficientes para cubrir los costes de la orden. Restante: {rema
 msgid "Tenderly settings"
 msgstr "Configuración de Tenderly"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Swap all rewards into one asset"
+msgstr "Intercambiar todas las recompensas por un activo"
+
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
 msgstr "Aumentar tamaño (Market)"
@@ -3627,6 +3635,10 @@ msgstr "Retirar y liberar la reserva de GMX"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Copin"
 msgstr "Copin"
+
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Swap route unavailable for: {failedSwapTokenSymbols}"
+msgstr "Ruta de intercambio no disponible para: {failedSwapTokenSymbols}"
 
 #: src/components/TVChartContainer/constants.ts
 msgid "TP - short dec."
@@ -4331,6 +4343,10 @@ msgstr "Acciones de GMX {VERSION_NAME} en {networkName} para todas las cuentas"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit {0}"
 msgstr "Editar {0}"
+
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Swap to"
+msgstr "Intercambiar a"
 
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
@@ -5278,6 +5294,10 @@ msgstr "Largos"
 msgid "Affiliate rewards claimed"
 msgstr "Recompensas de afiliado reclamadas"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Total value of assets being swapped"
+msgstr "Valor total de los activos intercambiados"
+
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "transaction:"
 msgstr "transacción:"
@@ -5711,6 +5731,10 @@ msgstr "Depositar {gasPaymentTokensText}"
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."
 msgstr ""
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Swap token unavailable"
+msgstr "Token de intercambio no disponible"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
 msgstr "GMX (Portugués)"
@@ -5913,6 +5937,10 @@ msgstr "{balanceFormatted} restante en la subcuenta 1CT antigua"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 msgstr "Cambiando de <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> a <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
+
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Claim & swap"
+msgstr "Reclamar e intercambiar"
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
@@ -6188,6 +6216,10 @@ msgstr "Error al reclamar las devoluciones por impacto en el precio"
 msgid "Paste hex error data to decode"
 msgstr "Pegue los datos de error en hexadecimal para decodificar"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "You'll receive"
+msgstr "Recibirás"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral"
 msgstr "Garantía mínima"
@@ -6226,6 +6258,9 @@ msgstr "Precio TP"
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -8972,6 +9007,10 @@ msgstr "La orden no puede actualizarse. El tipo no admite modificaciones"
 msgid "{gmOrGlvLabel} sold successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to withdraw your tokens."
 msgstr "{gmOrGlvLabel} vendido correctamente, pero el puente a Base falló. Sus fondos están seguros en su GMX Account. Reintente el puente o abra GMX Account para retirar sus tokens."
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Unable to fetch swap route. Please try again."
+msgstr "No se pudo obtener la ruta de intercambio. Por favor, inténtelo de nuevo."
+
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimsHistory.tsx
@@ -9384,6 +9423,10 @@ msgstr "TRACKER"
 msgid "Select network"
 msgstr "Seleccionar red"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Error simulating claim"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "No loss of fund ownership"
 msgstr "Sin pérdida de propiedad de fondos"
@@ -9612,6 +9655,12 @@ msgstr "Alertas"
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "C:"
 msgstr "C:"
+
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Swap route unavailable"
+msgstr "Ruta de intercambio no disponible"
 
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. This action won't affect it. <0>Switch to {1} collateral</0>"
@@ -10557,6 +10606,7 @@ msgstr "Fondos transfiriéndose a..."
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormMultichain.tsx
 msgid "Network fee"

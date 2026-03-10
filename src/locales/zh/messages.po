@@ -1419,6 +1419,10 @@ msgstr "高网络费用"
 msgid "Overview"
 msgstr "概述"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Fetching swap route..."
+msgstr "正在获取兑换路径..."
+
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
@@ -3098,6 +3102,10 @@ msgstr "资金不足以支付订单费用。剩余：{remainingCostUsdText}"
 msgid "Tenderly settings"
 msgstr "Tenderly 设置"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Swap all rewards into one asset"
+msgstr "将所有奖励兑换为单一资产"
+
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
 msgstr "增加仓位（Market）"
@@ -3627,6 +3635,10 @@ msgstr "提取并解除 GMX 锁定"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Copin"
 msgstr "Copin"
+
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Swap route unavailable for: {failedSwapTokenSymbols}"
+msgstr "兑换路径不可用：{failedSwapTokenSymbols}"
 
 #: src/components/TVChartContainer/constants.ts
 msgid "TP - short dec."
@@ -4331,6 +4343,10 @@ msgstr "GMX {VERSION_NAME} {networkName} 所有账户的操作"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit {0}"
 msgstr "编辑 {0}"
+
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Swap to"
+msgstr "兑换至"
 
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
@@ -5278,6 +5294,10 @@ msgstr "做多"
 msgid "Affiliate rewards claimed"
 msgstr "联盟奖励已领取"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Total value of assets being swapped"
+msgstr "正在兑换的资产总价值"
+
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "transaction:"
 msgstr "交易："
@@ -5711,6 +5731,10 @@ msgstr "存入 {gasPaymentTokensText}"
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."
 msgstr ""
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Swap token unavailable"
+msgstr "兑换代币不可用"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
 msgstr "GMX (葡萄牙语)"
@@ -5913,6 +5937,10 @@ msgstr "旧 One-Click Trading 子账户中剩余 {balanceFormatted}"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 msgstr "从 <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> 转移到 <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
+
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Claim & swap"
+msgstr "领取并兑换"
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
@@ -6188,6 +6216,10 @@ msgstr "领取价格影响返还失败"
 msgid "Paste hex error data to decode"
 msgstr "粘贴十六进制错误数据以解码"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "You'll receive"
+msgstr "您将收到"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral"
 msgstr "最低抵押品"
@@ -6226,6 +6258,9 @@ msgstr "止盈价格"
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -8972,6 +9007,10 @@ msgstr "订单无法更新。该类型不支持修改"
 msgid "{gmOrGlvLabel} sold successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to withdraw your tokens."
 msgstr "{gmOrGlvLabel} 已成功卖出，但跨链桥至 Base 失败。您的资金在 GMX Account 中是安全的。请重试跨链桥或打开 GMX Account 提取您的代币。"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Unable to fetch swap route. Please try again."
+msgstr "无法获取兑换路径。请重试。"
+
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimsHistory.tsx
@@ -9384,6 +9423,10 @@ msgstr "追踪器"
 msgid "Select network"
 msgstr "选择网络"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Error simulating claim"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "No loss of fund ownership"
 msgstr "无资金所有权损失"
@@ -9612,6 +9655,12 @@ msgstr "警报"
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "C:"
 msgstr "C："
+
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Swap route unavailable"
+msgstr "兑换路径不可用"
 
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. This action won't affect it. <0>Switch to {1} collateral</0>"
@@ -10557,6 +10606,7 @@ msgstr "资金正在跨链转移至..."
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormMultichain.tsx
 msgid "Network fee"
