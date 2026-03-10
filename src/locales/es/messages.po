@@ -1683,6 +1683,7 @@ msgstr "Descubrir alertas de GMX"
 msgid "Failed Limit Swap"
 msgstr "Intercambio Límite Fallido"
 
+#: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Failed"

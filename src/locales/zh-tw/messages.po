@@ -1683,6 +1683,7 @@ msgstr "探索 GMX 提醒"
 msgid "Failed Limit Swap"
 msgstr "Limit Swap 失敗"
 
+#: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Failed"

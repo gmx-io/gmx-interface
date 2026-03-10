@@ -1683,6 +1683,7 @@ msgstr "GMX 알림 살펴보기"
 msgid "Failed Limit Swap"
 msgstr "지정가 스왑 실패"
 
+#: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Failed"

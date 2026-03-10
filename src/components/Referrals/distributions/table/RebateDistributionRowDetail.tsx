@@ -2,13 +2,16 @@ import { t, Trans } from "@lingui/macro";
 import { motion } from "framer-motion";
 import { Fragment, useCallback } from "react";
 import { useCopyToClipboard } from "react-use";
+import useSWR from "swr";
 
 import { RebateDistribution } from "domain/referrals";
 import { helperToast } from "lib/helperToast";
+import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { getToken } from "sdk/configs/tokens";
 
 import { Amount } from "components/Amount/Amount";
 
+import CloseIcon from "img/ic_close.svg?react";
 import CopyStrokeIcon from "img/ic_copy_stroke.svg?react";
 import NewCheckedIcon from "img/ic_new_checked.svg?react";
 
@@ -39,6 +42,16 @@ export function RebateDistributionRowDetail({ rebate, chainId, amountsByTokens }
     [copyToClipboard]
   );
 
+  const { data: status } = useSWR<"success" | "failed" | null>(
+    ["tx-receipt", chainId, rebate.transactionHash],
+    async () => {
+      const receipt = await getPublicClientWithRpc(chainId).getTransactionReceipt({
+        hash: rebate.transactionHash,
+      });
+      return receipt?.status === "success" ? "success" : "failed";
+    }
+  );
+
   return (
     <motion.div
       className="col-span-full grid grid-cols-subgrid overflow-hidden rounded-b-8 text-[13px]"
@@ -51,11 +64,20 @@ export function RebateDistributionRowDetail({ rebate, chainId, amountsByTokens }
       <div className="py-8 pl-20 text-typography-secondary">
         <Trans>Status</Trans>
       </div>
-      <div className="col-span-4 py-8 pr-20">
-        <span className="inline-flex items-center gap-2 rounded-full bg-green-900 py-2 pl-4 pr-6 text-green-500">
-          <NewCheckedIcon className="size-16 text-green-500" />
-          <Trans>Success</Trans>
-        </span>
+      <div className="col-span-4 flex h-38 items-center py-8 pr-20">
+        {status === "success" && (
+          <span className="inline-flex items-center gap-2 rounded-full bg-green-900 py-2 pl-4 pr-6 text-green-500">
+            <NewCheckedIcon className="size-16 text-green-500" />
+            <Trans>Success</Trans>
+          </span>
+        )}
+        {status === "failed" && (
+          <span className="inline-flex items-center gap-2 rounded-full bg-red-900 py-2 pl-4 pr-6 text-red-500">
+            <CloseIcon className="size-16 text-red-500" />
+            <Trans>Failed</Trans>
+          </span>
+        )}
+        {!status && <div>...</div>}
       </div>
 
       {Object.keys(amountsByTokens).map((tokenAddress) => {
