@@ -21,7 +21,7 @@ import { PositionInfo } from "../positions";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens";
 import { isGlvAddress, isGlvInfo } from "./glv";
 import { GlvInfo, GlvOrMarketInfo, MarketInfo } from "./types";
-import { JitLiquidityInfo, getJitLiquidityUsd } from "./useJitLiquidity";
+import { JitLiquidityInfo, getJitMaxReservedUsd } from "./useJitLiquidity";
 import { TokenData, TokensData } from "../tokens/types";
 
 export * from "sdk/utils/markets";
@@ -103,18 +103,22 @@ export function getMaxReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
   return (poolUsd * reserveFactor) / PRECISION;
 }
 
-export function getAvailableUsdLiquidityForPosition(marketInfo: MarketInfo, isLong: boolean, jitLiquidityUsd = 0n) {
+export function getAvailableUsdLiquidityForPosition(
+  marketInfo: MarketInfo,
+  isLong: boolean,
+  maxReservedUsdWithJit?: bigint
+) {
   if (marketInfo.isSpotOnly) {
     return 0n;
   }
 
-  const maxReservedUsd = getMaxReservedUsd(marketInfo, isLong);
+  const maxReservedUsd = maxReservedUsdWithJit ?? getMaxReservedUsd(marketInfo, isLong);
   const reservedUsd = getReservedUsd(marketInfo, isLong);
 
   const maxOpenInterest = getMaxOpenInterestUsd(marketInfo, isLong);
   const currentOpenInterest = getOpenInterestUsd(marketInfo, isLong);
 
-  const availableLiquidityBasedOnMaxReserve = maxReservedUsd - reservedUsd + jitLiquidityUsd;
+  const availableLiquidityBasedOnMaxReserve = maxReservedUsd - reservedUsd;
   const availableLiquidityBasedOnMaxOpenInterest = maxOpenInterest - currentOpenInterest;
 
   const result =
@@ -187,7 +191,7 @@ export function getMostLiquidMarketForPosition(
       const liquidity = getAvailableUsdLiquidityForPosition(
         marketInfo,
         isLong,
-        getJitLiquidityUsd(jitLiquidityMap, marketInfo.marketTokenAddress, isLong)
+        getJitMaxReservedUsd(jitLiquidityMap, marketInfo.marketTokenAddress, isLong)
       );
 
       if (liquidity !== undefined && liquidity > (bestLiquidity ?? 0)) {
@@ -216,7 +220,7 @@ export function getMinPriceImpactMarket(
     const liquidity = getAvailableUsdLiquidityForPosition(
       marketInfo,
       isLong,
-      getJitLiquidityUsd(jitLiquidityMap, marketInfo.marketTokenAddress, isLong)
+      getJitMaxReservedUsd(jitLiquidityMap, marketInfo.marketTokenAddress, isLong)
     );
 
     if (isMarketIndexToken(marketInfo, indexTokenAddress) && liquidity > sizeDeltaUsd) {

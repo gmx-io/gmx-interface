@@ -37,8 +37,12 @@ export function createGetMaxLongShortLiquidityPool(
 ) {
   const marketsWithMaxReservedUsd = sortedAllMarkets.map((marketInfo) => {
     const jitInfo = getJitLiquidityInfo(jitLiquidityMap, marketInfo.marketTokenAddress);
-    const maxLongLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true, jitInfo?.jitLiquidityLongUsd);
-    const maxShortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false, jitInfo?.jitLiquidityShortUsd);
+    const maxLongLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true, jitInfo?.maxReservedUsdWithJitLong);
+    const maxShortLiquidity = getAvailableUsdLiquidityForPosition(
+      marketInfo,
+      false,
+      jitInfo?.maxReservedUsdWithJitShort
+    );
 
     return {
       maxLongLiquidity: bnClampMin(maxLongLiquidity, BN_ZERO),

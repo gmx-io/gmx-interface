@@ -68,8 +68,12 @@ const useTradeboxPoolWarnings = () => {
   const hasEnoughLiquidity = useCallback(
     (marketInfo: MarketInfo) => {
       const jitInfo = getJitLiquidityInfo(jitLiquidityMap, marketInfo.marketTokenAddress);
-      const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true, jitInfo?.jitLiquidityLongUsd);
-      const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false, jitInfo?.jitLiquidityShortUsd);
+      const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true, jitInfo?.maxReservedUsdWithJitLong);
+      const shortLiquidity = getAvailableUsdLiquidityForPosition(
+        marketInfo,
+        false,
+        jitInfo?.maxReservedUsdWithJitShort
+      );
 
       return isLong
         ? longLiquidity >= (increaseAmounts?.sizeDeltaUsd || 0)

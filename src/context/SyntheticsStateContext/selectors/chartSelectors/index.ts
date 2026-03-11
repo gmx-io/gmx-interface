@@ -75,8 +75,8 @@ export const selectChartHeaderInfo = createSelector((q) => {
     totalInterest === 0n ? 0 : longOpenInterestPercentage !== undefined ? 100 - longOpenInterestPercentage : undefined;
 
   return {
-    liquidityLong: getAvailableUsdLiquidityForPosition(marketInfo, true, jitInfo?.jitLiquidityLongUsd),
-    liquidityShort: getAvailableUsdLiquidityForPosition(marketInfo, false, jitInfo?.jitLiquidityShortUsd),
+    liquidityLong: getAvailableUsdLiquidityForPosition(marketInfo, true, jitInfo?.maxReservedUsdWithJitLong),
+    liquidityShort: getAvailableUsdLiquidityForPosition(marketInfo, false, jitInfo?.maxReservedUsdWithJitShort),
     netRateHourlyLong,
     netRateHourlyShort,
     borrowingRateLong,

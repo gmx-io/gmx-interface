@@ -11,7 +11,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
-import { getJitLiquidityUsd } from "domain/synthetics/markets/useJitLiquidity";
+import { getJitMaxReservedUsd } from "domain/synthetics/markets/useJitLiquidity";
 import {
   MarketStat,
   marketsInfoData2IndexTokenStatsMap,
@@ -62,7 +62,7 @@ export const selectTradeboxRelatedMarketsStats = createSelector((q) => {
       const liquidity = getAvailableUsdLiquidityForPosition(
         market,
         isLong,
-        getJitLiquidityUsd(jitLiquidityMap, market.marketTokenAddress, isLong)
+        getJitMaxReservedUsd(jitLiquidityMap, market.marketTokenAddress, isLong)
       );
       return [market.marketTokenAddress, { isEnoughLiquidity: liquidity > 0, liquidity, openFees: undefined }];
     })

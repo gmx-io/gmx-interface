@@ -40,7 +40,7 @@ import {
   MarketInfo,
 } from "domain/synthetics/markets";
 import { getLargestRelatedExistingPositionOrOrder } from "domain/synthetics/markets/chooseSuitableMarket";
-import { getJitLiquidityUsd } from "domain/synthetics/markets/useJitLiquidity";
+import { getJitMaxReservedUsd } from "domain/synthetics/markets/useJitLiquidity";
 import { isIncreaseOrderType, PositionOrderInfo } from "domain/synthetics/orders";
 import {
   IndexTokenStat,
@@ -118,7 +118,7 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
         const liquidity = getAvailableUsdLiquidityForPosition(
           marketInfo,
           isLong,
-          getJitLiquidityUsd(jitLiquidityMap, marketInfo.marketTokenAddress, isLong)
+          getJitMaxReservedUsd(jitLiquidityMap, marketInfo.marketTokenAddress, isLong)
         );
 
         return liquidity > increaseSizeUsd;
@@ -168,7 +168,7 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
               getAvailableUsdLiquidityForPosition(
                 result.marketWithPosition!,
                 isLong,
-                getJitLiquidityUsd(jitLiquidityMap, result.marketWithPosition!.marketTokenAddress, isLong)
+                getJitMaxReservedUsd(jitLiquidityMap, result.marketWithPosition!.marketTokenAddress, isLong)
               ) <= increaseSizeUsd;
           }
         } else {

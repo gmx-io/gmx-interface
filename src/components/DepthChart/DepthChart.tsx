@@ -1223,8 +1223,16 @@ function useEdgePoints(
   isLeftEmpty: boolean;
   isRightEmpty: boolean;
 } {
-  const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true, jitLiquidityInfo?.jitLiquidityLongUsd);
-  const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false, jitLiquidityInfo?.jitLiquidityShortUsd);
+  const longLiquidity = getAvailableUsdLiquidityForPosition(
+    marketInfo,
+    true,
+    jitLiquidityInfo?.maxReservedUsdWithJitLong
+  );
+  const shortLiquidity = getAvailableUsdLiquidityForPosition(
+    marketInfo,
+    false,
+    jitLiquidityInfo?.maxReservedUsdWithJitShort
+  );
 
   const longInterestUsd = getOpenInterestForBalance(marketInfo, true);
   const shortInterestUsd = getOpenInterestForBalance(marketInfo, false);

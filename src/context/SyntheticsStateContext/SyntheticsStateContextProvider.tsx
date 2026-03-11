@@ -290,8 +290,8 @@ export function SyntheticsStateContextProvider({
       const jitInfo = getJitLiquidityInfo(jitMap, m.marketTokenAddress);
       const nativeLong = getAvailableUsdLiquidityForPosition(m, true);
       const nativeShort = getAvailableUsdLiquidityForPosition(m, false);
-      const combinedLong = getAvailableUsdLiquidityForPosition(m, true, jitInfo?.jitLiquidityLongUsd);
-      const combinedShort = getAvailableUsdLiquidityForPosition(m, false, jitInfo?.jitLiquidityShortUsd);
+      const combinedLong = getAvailableUsdLiquidityForPosition(m, true, jitInfo?.maxReservedUsdWithJitLong);
+      const combinedShort = getAvailableUsdLiquidityForPosition(m, false, jitInfo?.maxReservedUsdWithJitShort);
       const maxOiLong = getMaxOpenInterestUsd(m, true);
       const oiLong = getOpenInterestUsd(m, true);
       const maxOiShort = getMaxOpenInterestUsd(m, false);
@@ -305,8 +305,8 @@ export function SyntheticsStateContextProvider({
         Market: m.name,
         "Native Long": fmt(nativeLong),
         "Native Short": fmt(nativeShort),
-        "JIT Long": jitInfo ? fmt(jitInfo.jitLiquidityLongUsd) : "-",
-        "JIT Short": jitInfo ? fmt(jitInfo.jitLiquidityShortUsd) : "-",
+        "MaxRes+JIT Long": jitInfo ? fmt(jitInfo.maxReservedUsdWithJitLong) : "-",
+        "MaxRes+JIT Short": jitInfo ? fmt(jitInfo.maxReservedUsdWithJitShort) : "-",
         "Combined Long": fmt(combinedLong),
         "Combined Short": fmt(combinedShort),
         "OI Cap Long": fmt(maxOiLong - oiLong),

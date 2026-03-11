@@ -16,8 +16,8 @@ export type GlvShiftParam = {
 };
 
 export type JitLiquidityInfo = {
-  jitLiquidityLongUsd: bigint;
-  jitLiquidityShortUsd: bigint;
+  maxReservedUsdWithJitLong: bigint;
+  maxReservedUsdWithJitShort: bigint;
   glvShiftParams: GlvShiftParam[];
   glv: string;
 };
@@ -40,19 +40,19 @@ export function getJitLiquidityInfo(
 }
 
 /**
- * Convenience helper that resolves the JIT liquidity USD for a single direction
- * (long or short) in one call, avoiding the repeated 2-line lookup pattern:
+ * Convenience helper that resolves the JIT-adjusted maxReservedUsd for a single
+ * direction (long or short) in one call.
  *
- *   const jitInfo = jitLiquidityMap?.get(addr.toLowerCase());
- *   const jitUsd = isLong ? jitInfo?.jitLiquidityLongUsd : jitInfo?.jitLiquidityShortUsd;
+ * Returns `undefined` when there is no JIT data for this market, so the caller
+ * can fall back to the on-chain maxReservedUsd.
  */
-export function getJitLiquidityUsd(
+export function getJitMaxReservedUsd(
   jitLiquidityMap: Map<string, JitLiquidityInfo> | undefined,
   marketTokenAddress: string,
   isLong: boolean
 ): bigint | undefined {
   const info = getJitLiquidityInfo(jitLiquidityMap, marketTokenAddress);
-  return isLong ? info?.jitLiquidityLongUsd : info?.jitLiquidityShortUsd;
+  return isLong ? info?.maxReservedUsdWithJitLong : info?.maxReservedUsdWithJitShort;
 }
 
 function safeParseBigInt(value: string): bigint {
@@ -78,8 +78,8 @@ export function useJitLiquidity(chainId: ContractsChainId, options?: { enabled?:
           const marketKey = info.market.toLowerCase();
 
           map.set(marketKey, {
-            jitLiquidityLongUsd: safeParseBigInt(info.liquidityUsdForLongs),
-            jitLiquidityShortUsd: safeParseBigInt(info.liquidityUsdForShorts),
+            maxReservedUsdWithJitLong: safeParseBigInt(info.maxReservedUsdWithJitLong),
+            maxReservedUsdWithJitShort: safeParseBigInt(info.maxReservedUsdWithJitShort),
             glvShiftParams: (info.glvShiftParams ?? []).map((param) => ({
               glv: param.glv,
               fromMarket: param.fromMarket,

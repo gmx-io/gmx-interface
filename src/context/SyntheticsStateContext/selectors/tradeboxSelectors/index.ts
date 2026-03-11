@@ -1204,8 +1204,8 @@ export const selectTradeboxLiquidity = createSelector(function selectTradeboxLiq
   const jitLiquidityMap = q(selectJitLiquidityMap);
   const jitInfo = getJitLiquidityInfo(jitLiquidityMap, marketInfo.marketTokenAddress);
 
-  const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true, jitInfo?.jitLiquidityLongUsd);
-  const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false, jitInfo?.jitLiquidityShortUsd);
+  const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true, jitInfo?.maxReservedUsdWithJitLong);
+  const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false, jitInfo?.maxReservedUsdWithJitShort);
 
   const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
 

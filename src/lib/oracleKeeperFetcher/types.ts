@@ -117,8 +117,8 @@ export type JitLiquidityResponse = {
   liquidityInfos: {
     glv: string;
     market: string;
-    liquidityUsdForLongs: string;
-    liquidityUsdForShorts: string;
+    maxReservedUsdWithJitLong: string;
+    maxReservedUsdWithJitShort: string;
     glvShiftParams: {
       glv: string;
       fromMarket: string;

@@ -18,7 +18,7 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import { getFeeItem, getIsHighPriceImpact, getPriceImpactByAcceptablePrice } from "../fees";
 import { MarketsInfoData, getAvailableUsdLiquidityForPosition } from "../markets";
-import { JitLiquidityInfo, getJitLiquidityUsd } from "../markets/useJitLiquidity";
+import { JitLiquidityInfo, getJitMaxReservedUsd } from "../markets/useJitLiquidity";
 import { PositionInfo, PositionsInfoData, getLeverage } from "../positions";
 import { convertToTokenAmount, convertToUsd } from "../tokens";
 import { FindSwapPath, getAcceptablePriceInfo, getMaxSwapPathLiquidity, getSwapAmountsByFromValue } from "../trade";
@@ -102,7 +102,7 @@ export function getOrderErrors(p: {
         : getAvailableUsdLiquidityForPosition(
             positionOrder.marketInfo,
             positionOrder.isLong,
-            getJitLiquidityUsd(jitLiquidityMap, positionOrder.marketInfo.marketTokenAddress, positionOrder.isLong)
+            getJitMaxReservedUsd(jitLiquidityMap, positionOrder.marketInfo.marketTokenAddress, positionOrder.isLong)
           );
 
       const orderWithValidFromTimeExceeded = order.orders.find(
@@ -212,7 +212,7 @@ export function getOrderErrors(p: {
       const currentLiquidity = getAvailableUsdLiquidityForPosition(
         positionOrder.marketInfo,
         positionOrder.isLong,
-        getJitLiquidityUsd(jitLiquidityMap, positionOrder.marketInfo.marketTokenAddress, positionOrder.isLong)
+        getJitMaxReservedUsd(jitLiquidityMap, positionOrder.marketInfo.marketTokenAddress, positionOrder.isLong)
       );
 
       if (currentLiquidity < positionOrder.sizeDeltaUsd) {
