@@ -1,4 +1,4 @@
-import { useCallback, useMemo, useRef } from "react";
+import { useMemo } from "react";
 import { usePrevious } from "react-use";
 import useSWR from "swr";
 
@@ -15,8 +15,7 @@ import { getBotanixStakingExternalSwapQuote } from "sdk/utils/swap/botanixStakin
 import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/utils/trade/types";
 
 import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
-import { getKyberSwapRoute, buildKyberSwapTxn, KyberSwapQuote, KyberSwapBuildContext } from "./kyberSwap";
-import { BuildExternalSwapCalldataFn } from "./types";
+import { getKyberSwapTxnData, KyberSwapQuote } from "./kyberSwap";
 
 export function useExternalSwapOutputRequest({
   chainId,
@@ -55,7 +54,6 @@ export function useExternalSwapOutputRequest({
   const prevTokensKey = usePrevious(tokensKey);
   const prevAmountIn = usePrevious(amountIn);
   const botanixAssetsPerShare = useSelector(selectBotanixStakingAssetsPerShare);
-  const buildContextRef = useRef<KyberSwapBuildContext | null>(null);
 
   const { data } = useSWR<KyberSwapQuote | undefined>(debouncedKey, {
     keepPreviousData: enabled && prevTokensKey === tokensKey && prevAmountIn === amountIn,
@@ -75,11 +73,10 @@ export function useExternalSwapOutputRequest({
         const startTime = Date.now();
 
         if (chainId === BOTANIX) {
-          buildContextRef.current = null;
           return undefined;
         }
 
-        const result = await getKyberSwapRoute({
+        const result = await getKyberSwapTxnData({
           chainId,
           senderAddress: getContract(chainId, "ExternalHandler"),
           receiverAddress,
@@ -93,13 +90,10 @@ export function useExternalSwapOutputRequest({
         metrics.pushTiming<KyberSwapQuoteTiming>("kyberSwap.quote.timing", Date.now() - startTime);
 
         if (!result) {
-          buildContextRef.current = null;
           throw new Error("Failed to fetch KyberSwap txn data");
         }
 
-        buildContextRef.current = result.buildContext;
-
-        return result.quote;
+        return result;
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error("Error fetching external swap quote", error);
@@ -108,11 +102,6 @@ export function useExternalSwapOutputRequest({
       }
     },
   });
-
-  const buildExternalSwapCalldata: BuildExternalSwapCalldataFn = useCallback(async () => {
-    if (!buildContextRef.current) return undefined;
-    return buildKyberSwapTxn(buildContextRef.current);
-  }, []);
 
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
     spenderAddress: data?.to,
@@ -123,7 +112,7 @@ export function useExternalSwapOutputRequest({
 
   return useMemo(() => {
     if (amountIn === undefined || !tokenInAddress || !tokenOutAddress || gasPrice === undefined || !receiverAddress) {
-      return { buildExternalSwapCalldata };
+      return {};
     }
 
     const botanixStakingQuote =
@@ -142,12 +131,11 @@ export function useExternalSwapOutputRequest({
     if (botanixStakingQuote) {
       return {
         quote: botanixStakingQuote,
-        buildExternalSwapCalldata,
       };
     }
 
     if (!data) {
-      return { buildExternalSwapCalldata };
+      return {};
     }
 
     const needSpenderApproval = getNeedTokenApprove(
@@ -172,7 +160,7 @@ export function useExternalSwapOutputRequest({
       needSpenderApproval,
       txnData: {
         to: data.to,
-        data: "",
+        data: data.data,
         value: data.value,
         estimatedGas: data.estimatedGas,
         estimatedExecutionFee: data.estimatedGas * gasPrice,
@@ -181,7 +169,6 @@ export function useExternalSwapOutputRequest({
 
     return {
       quote,
-      buildExternalSwapCalldata,
     };
   }, [
     amountIn,
@@ -194,6 +181,5 @@ export function useExternalSwapOutputRequest({
     chainId,
     data,
     tokensAllowanceData,
-    buildExternalSwapCalldata,
   ]);
 }

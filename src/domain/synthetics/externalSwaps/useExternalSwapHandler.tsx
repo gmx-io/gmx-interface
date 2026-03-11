@@ -5,7 +5,6 @@ import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/setting
 import { selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectBaseExternalSwapOutput,
-  selectBuildExternalSwapCalldataRef,
   selectExternalSwapInputs,
   selectExternalSwapQuote,
   selectSetBaseExternalSwapOutput,
@@ -30,7 +29,6 @@ export function useExternalSwapHandler() {
   const slippage = useSelector(selectTradeboxAllowedSlippage);
   const setBaseExternalSwapOutput = useSelector(selectSetBaseExternalSwapOutput);
   const storedBaseExternalSwapOutput = useSelector(selectBaseExternalSwapOutput);
-  const buildCalldataRef = useSelector(selectBuildExternalSwapCalldataRef);
   const gasPrice = useSelector(selectGasPrice);
 
   const swapToToken = useSelector(selectTradeboxSelectSwapToToken);
@@ -44,7 +42,7 @@ export function useExternalSwapHandler() {
 
   const enabled = useExternalSwapsEnabled();
 
-  const { quote, buildExternalSwapCalldata } = useExternalSwapOutputRequest({
+  const { quote } = useExternalSwapOutputRequest({
     chainId,
     tokenInAddress: fromTokenAddress,
     tokenOutAddress: swapToToken?.address,
@@ -54,9 +52,6 @@ export function useExternalSwapHandler() {
     gasPrice,
     enabled,
   });
-
-  // Keep the build callback ref in sync
-  buildCalldataRef.current = buildExternalSwapCalldata;
 
   if (shouldDebugValues) {
     throttleLog("external swaps", {
@@ -68,8 +63,8 @@ export function useExternalSwapHandler() {
 
   useEffect(
     function setBaseExternalSwapOutputEff() {
-      // Update quote only if route output has changed
-      if (storedBaseExternalSwapOutput?.amountOut !== quote?.amountOut) {
+      // Update quote only if actual txn data has changed
+      if (storedBaseExternalSwapOutput?.txnData?.data !== quote?.txnData.data) {
         setBaseExternalSwapOutput(quote);
       }
     },

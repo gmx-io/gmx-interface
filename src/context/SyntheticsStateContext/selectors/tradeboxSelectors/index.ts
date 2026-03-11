@@ -118,7 +118,6 @@ export const selectExternalSwapInputs = createSelector((q) => {
 
 export const selectBaseExternalSwapOutput = (s: SyntheticsState) => s.externalSwap.baseOutput;
 export const selectSetBaseExternalSwapOutput = (s: SyntheticsState) => s.externalSwap.setBaseOutput;
-export const selectBuildExternalSwapCalldataRef = (s: SyntheticsState) => s.externalSwap.buildCalldataRef;
 
 export const selectShouldFallbackToInternalSwap = (s: SyntheticsState) => s.externalSwap.shouldFallbackToInternalSwap;
 export const selectSetShouldFallbackToInternalSwap = (s: SyntheticsState) =>

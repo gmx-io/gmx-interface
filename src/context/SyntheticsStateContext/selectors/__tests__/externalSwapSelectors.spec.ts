@@ -96,7 +96,6 @@ describe("externalSwapSelectors", () => {
         setBaseOutput: () => undefined,
         shouldFallbackToInternalSwap: false,
         setShouldFallbackToInternalSwap: () => undefined,
-        buildCalldataRef: { current: undefined },
       },
       settings: {
         showDebugValues: false,

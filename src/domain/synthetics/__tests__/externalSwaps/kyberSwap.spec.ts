@@ -3,7 +3,7 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import { ARBITRUM } from "config/chains";
 import { suppressConsole } from "lib/__testUtils__/_utils";
 
-import { getKyberSwapRoute, buildKyberSwapTxn } from "../../externalSwaps/kyberSwap";
+import { getKyberSwapTxnData } from "../../externalSwaps/kyberSwap";
 
 const KYBER_SWAP_ROUTER = "0x6131B5fae19EA4f9D964eAc0408E4408b66337b5";
 const WETH = "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1";
@@ -67,7 +67,7 @@ const defaultParams = {
   slippage: 50,
 };
 
-describe("getKyberSwapRoute", () => {
+describe("getKyberSwapTxnData", () => {
   suppressConsole();
 
   let fetchMock: ReturnType<typeof vi.fn>;
@@ -81,52 +81,45 @@ describe("getKyberSwapRoute", () => {
     vi.restoreAllMocks();
   });
 
-  it("returns quote and buildContext on successful route", async () => {
-    fetchMock.mockResolvedValueOnce({
-      status: 200,
-      json: () => Promise.resolve(createRouteResponse()),
-    });
+  it("returns quote on successful route + build", async () => {
+    fetchMock
+      .mockResolvedValueOnce({
+        status: 200,
+        json: () => Promise.resolve(createRouteResponse()),
+      })
+      .mockResolvedValueOnce({
+        status: 200,
+        json: () => Promise.resolve(createBuildResponse()),
+      });
 
-    const result = await getKyberSwapRoute(defaultParams);
+    const result = await getKyberSwapTxnData(defaultParams);
 
     expect(result).toBeDefined();
-    expect(result!.quote.to).toBe(KYBER_SWAP_ROUTER);
-    expect(result!.quote.value).toBe(0n);
-    expect(result!.quote.amountIn).toBe(1000000000000000000n);
-    expect(result!.quote.outputAmount).toBe(2495000000n);
-    expect(result!.quote.estimatedGas).toBe(200000n);
-    expect(result!.quote.gasPrice).toBe(100000000n);
-    expect(result!.quote.usdIn).toBeGreaterThan(0n);
-    expect(result!.quote.usdOut).toBeGreaterThan(0n);
-    expect(result!.quote.priceIn).toBeGreaterThan(0n);
-    expect(result!.quote.priceOut).toBeGreaterThan(0n);
-
-    expect(result!.buildContext.routeSummary).toEqual(mockRouteSummary);
-    expect(result!.buildContext.senderAddress).toBe(SENDER);
-    expect(result!.buildContext.receiverAddress).toBe(RECEIVER);
-    expect(result!.buildContext.slippage).toBe(50);
-  });
-
-  it("only calls route API (not build)", async () => {
-    fetchMock.mockResolvedValueOnce({
-      status: 200,
-      json: () => Promise.resolve(createRouteResponse()),
-    });
-
-    await getKyberSwapRoute(defaultParams);
-
-    expect(fetchMock).toHaveBeenCalledTimes(1);
-    const routeUrl = fetchMock.mock.calls[0][0] as string;
-    expect(routeUrl).toContain("/api/v1/routes");
+    expect(result!.to).toBe(KYBER_SWAP_ROUTER);
+    expect(result!.data).toBe("0xabcdef");
+    expect(result!.value).toBe(0n);
+    expect(result!.amountIn).toBe(1000000000000000000n);
+    expect(result!.outputAmount).toBe(2495000000n);
+    expect(result!.estimatedGas).toBe(200000n);
+    expect(result!.gasPrice).toBe(100000000n);
+    expect(result!.usdIn).toBeGreaterThan(0n);
+    expect(result!.usdOut).toBeGreaterThan(0n);
+    expect(result!.priceIn).toBeGreaterThan(0n);
+    expect(result!.priceOut).toBeGreaterThan(0n);
   });
 
   it("sends correct headers and params to route API", async () => {
-    fetchMock.mockResolvedValueOnce({
-      status: 200,
-      json: () => Promise.resolve(createRouteResponse()),
-    });
+    fetchMock
+      .mockResolvedValueOnce({
+        status: 200,
+        json: () => Promise.resolve(createRouteResponse()),
+      })
+      .mockResolvedValueOnce({
+        status: 200,
+        json: () => Promise.resolve(createBuildResponse()),
+      });
 
-    await getKyberSwapRoute(defaultParams);
+    await getKyberSwapTxnData(defaultParams);
 
     const routeCall = fetchMock.mock.calls[0];
     const routeUrl = routeCall[0] as string;
@@ -139,110 +132,18 @@ describe("getKyberSwapRoute", () => {
     expect(routeOptions.headers["x-client-id"]).toBe("gmx5326");
   });
 
-  it("returns undefined on 403 (IP banned)", async () => {
-    fetchMock.mockResolvedValueOnce({
-      status: 403,
-      text: () => Promise.resolve("Forbidden"),
-    });
-
-    const result = await getKyberSwapRoute(defaultParams);
-
-    expect(result).toBeUndefined();
-  });
-
-  it("returns undefined when route response has no data", async () => {
-    fetchMock.mockResolvedValueOnce({
-      status: 200,
-      json: () => Promise.resolve({ code: 0, message: "no route", data: undefined }),
-    });
-
-    const result = await getKyberSwapRoute(defaultParams);
-
-    expect(result).toBeUndefined();
-  });
-
-  it("returns undefined when route response code is not 0", async () => {
-    fetchMock.mockResolvedValueOnce({
-      status: 200,
-      json: () => Promise.resolve(createRouteResponse({ code: 4000, message: "invalid token" })),
-    });
-
-    const result = await getKyberSwapRoute(defaultParams);
-
-    expect(result).toBeUndefined();
-  });
-
-  it("returns undefined when route returns wrong router address", async () => {
-    fetchMock.mockResolvedValueOnce({
-      status: 200,
-      json: () => Promise.resolve(createRouteResponse({ routerAddress: "0xdeadbeef" })),
-    });
-
-    const result = await getKyberSwapRoute(defaultParams);
-
-    expect(result).toBeUndefined();
-  });
-
-  it("returns undefined when fetch throws", async () => {
-    fetchMock.mockRejectedValueOnce(new Error("Network error"));
-
-    const result = await getKyberSwapRoute(defaultParams);
-
-    expect(result).toBeUndefined();
-  });
-});
-
-describe("buildKyberSwapTxn", () => {
-  suppressConsole();
-
-  let fetchMock: ReturnType<typeof vi.fn>;
-
-  beforeEach(() => {
-    fetchMock = vi.fn();
-    vi.stubGlobal("fetch", fetchMock);
-  });
-
-  afterEach(() => {
-    vi.restoreAllMocks();
-  });
-
-  it("builds transaction using provided build context", async () => {
-    // First, fetch a route to get the buildContext
-    fetchMock.mockResolvedValueOnce({
-      status: 200,
-      json: () => Promise.resolve(createRouteResponse()),
-    });
-
-    const routeResult = await getKyberSwapRoute(defaultParams);
-
-    // Now build the transaction using the context
-    fetchMock.mockResolvedValueOnce({
-      status: 200,
-      json: () => Promise.resolve(createBuildResponse()),
-    });
-
-    const result = await buildKyberSwapTxn(routeResult!.buildContext);
-
-    expect(result.to).toBe(KYBER_SWAP_ROUTER);
-    expect(result.data).toBe("0xabcdef");
-  });
-
   it("sends correct body to build API", async () => {
-    // Fetch route first
-    fetchMock.mockResolvedValueOnce({
-      status: 200,
-      json: () => Promise.resolve(createRouteResponse()),
-    });
+    fetchMock
+      .mockResolvedValueOnce({
+        status: 200,
+        json: () => Promise.resolve(createRouteResponse()),
+      })
+      .mockResolvedValueOnce({
+        status: 200,
+        json: () => Promise.resolve(createBuildResponse()),
+      });
 
-    const routeResult = await getKyberSwapRoute(defaultParams);
-
-    // Build transaction
-    fetchMock.mockResolvedValueOnce({
-      status: 200,
-      json: () => Promise.resolve(createBuildResponse()),
-    });
-
-    await buildKyberSwapTxn(routeResult!.buildContext);
+    await getKyberSwapTxnData(defaultParams);
 
     const buildCall = fetchMock.mock.calls[1];
     const buildUrl = buildCall[0] as string;
@@ -260,35 +161,87 @@ describe("buildKyberSwapTxn", () => {
     expect(body.routeSummary).toEqual(mockRouteSummary);
   });
 
-  it("throws when build response code is not 0", async () => {
+  it("returns undefined on 403 (IP banned)", async () => {
     fetchMock.mockResolvedValueOnce({
-      status: 200,
-      json: () => Promise.resolve(createRouteResponse()),
+      status: 403,
+      text: () => Promise.resolve("Forbidden"),
     });
 
-    const routeResult = await getKyberSwapRoute(defaultParams);
+    const result = await getKyberSwapTxnData(defaultParams);
 
-    fetchMock.mockResolvedValueOnce({
-      status: 200,
-      json: () => Promise.resolve({ code: 4000, message: "build failed", data: undefined }),
-    });
-
-    await expect(buildKyberSwapTxn(routeResult!.buildContext)).rejects.toThrow("Failed to build transaction");
+    expect(result).toBeUndefined();
   });
 
-  it("throws when build returns wrong router address", async () => {
+  it("returns undefined when route response has no data", async () => {
     fetchMock.mockResolvedValueOnce({
       status: 200,
-      json: () => Promise.resolve(createRouteResponse()),
+      json: () => Promise.resolve({ code: 0, message: "no route", data: undefined }),
     });
 
-    const routeResult = await getKyberSwapRoute(defaultParams);
+    const result = await getKyberSwapTxnData(defaultParams);
 
+    expect(result).toBeUndefined();
+  });
+
+  it("returns undefined when route response code is not 0", async () => {
     fetchMock.mockResolvedValueOnce({
       status: 200,
-      json: () => Promise.resolve(createBuildResponse({ routerAddress: "0xdeadbeef" })),
+      json: () => Promise.resolve(createRouteResponse({ code: 4000, message: "invalid token" })),
     });
 
-    await expect(buildKyberSwapTxn(routeResult!.buildContext)).rejects.toThrow("Invalid KyberSwapRouter address");
+    const result = await getKyberSwapTxnData(defaultParams);
+
+    expect(result).toBeUndefined();
+  });
+
+  it("returns undefined when route returns wrong router address", async () => {
+    fetchMock.mockResolvedValueOnce({
+      status: 200,
+      json: () => Promise.resolve(createRouteResponse({ routerAddress: "0xdeadbeef" })),
+    });
+
+    const result = await getKyberSwapTxnData(defaultParams);
+
+    expect(result).toBeUndefined();
+  });
+
+  it("returns undefined when build response code is not 0", async () => {
+    fetchMock
+      .mockResolvedValueOnce({
+        status: 200,
+        json: () => Promise.resolve(createRouteResponse()),
+      })
+      .mockResolvedValueOnce({
+        status: 200,
+        json: () => Promise.resolve({ code: 4000, message: "build failed", data: undefined }),
+      });
+
+    const result = await getKyberSwapTxnData(defaultParams);
+
+    expect(result).toBeUndefined();
+  });
+
+  it("returns undefined when build returns wrong router address", async () => {
+    fetchMock
+      .mockResolvedValueOnce({
+        status: 200,
+        json: () => Promise.resolve(createRouteResponse()),
+      })
+      .mockResolvedValueOnce({
+        status: 200,
+        json: () => Promise.resolve(createBuildResponse({ routerAddress: "0xdeadbeef" })),
+      });
+
+    const result = await getKyberSwapTxnData(defaultParams);
+
+    expect(result).toBeUndefined();
+  });
+
+  it("returns undefined when fetch throws", async () => {
+    fetchMock.mockRejectedValueOnce(new Error("Network error"));
+
+    const result = await getKyberSwapTxnData(defaultParams);
+
+    expect(result).toBeUndefined();
   });
 });
