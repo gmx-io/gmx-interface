@@ -1,7 +1,8 @@
 import { t, Trans } from "@lingui/macro";
 import { AnimatePresence, motion } from "framer-motion";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useHistory } from "react-router-dom";
+import { useMedia } from "react-use";
 import { useAccount } from "wagmi";
 
 import { useGmxAccountDepositViewTokenAddress, useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
@@ -48,8 +49,15 @@ import { Amount } from "components/Amount/Amount";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
-import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
+import {
+  SELECTOR_BASE_MOBILE_THRESHOLD,
+  SelectorBase,
+  SelectorBaseDesktopRow,
+  SelectorBaseMobileButton,
+  SelectorBaseMobileList,
+  useSelectorClose,
+} from "components/SelectorBase/SelectorBase";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { Table, TableTd, TableTh, TableTheadTr } from "components/Table/Table";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
@@ -66,6 +74,14 @@ import {
 import { type SwapTargetTokenOption, useClaimAffiliateSwapRoutes } from "./useClaimAffiliateSwapRoutes";
 
 const SWAP_OPTIONS_ANIMATION = {
+  initial: { opacity: 0, height: 0 },
+  animate: { opacity: 1, height: "auto" },
+  exit: { opacity: 0, height: 0 },
+  transition: { duration: 0.2 },
+} as const;
+
+const MAIN_REWARDS_PREVIEW_COUNT = 5;
+const EXPANDABLE_REWARDS_ANIMATION = {
   initial: { opacity: 0, height: 0 },
   animate: { opacity: 1, height: "auto" },
   exit: { opacity: 0, height: 0 },
@@ -224,6 +240,7 @@ export function ClaimAffiliatesModal(p: Props) {
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const { affiliateRewardsData } = useAffiliateRewards(chainId);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showOtherMainRewards, setShowOtherMainRewards] = useState(false);
 
   const rewards = useMemo(() => Object.values(affiliateRewardsData || {}), [affiliateRewardsData]);
 
@@ -250,6 +267,15 @@ export function ClaimAffiliatesModal(p: Props) {
     marketsInfoData && affiliateRewardsData
       ? getTotalClaimableAffiliateRewardsUsd(marketsInfoData, affiliateRewardsData)
       : 0n;
+  const previewMainRewards = useMemo(() => mainRewards.slice(0, MAIN_REWARDS_PREVIEW_COUNT), [mainRewards]);
+  const hiddenMainRewards = useMemo(() => mainRewards.slice(MAIN_REWARDS_PREVIEW_COUNT), [mainRewards]);
+  const shouldShowSmallRewardsToggle = hiddenMainRewards.length === 0 || showOtherMainRewards;
+
+  useEffect(() => {
+    if (!shouldShowSmallRewardsToggle && showSmallRewards) {
+      setShowSmallRewards(false);
+    }
+  }, [setShowSmallRewards, shouldShowSmallRewardsToggle, showSmallRewards]);
 
   const {
     swapTargetTokenOptions,
@@ -515,7 +541,7 @@ export function ClaimAffiliatesModal(p: Props) {
             </TableTheadTr>
           </thead>
           <tbody>
-            {mainRewards.map((reward) => (
+            {previewMainRewards.map((reward) => (
               <ClaimRewardRow
                 key={reward.marketAddress}
                 reward={reward}
@@ -524,37 +550,56 @@ export function ClaimAffiliatesModal(p: Props) {
                 onToggleSelect={handleToggleSelect}
               />
             ))}
-            {smallRewards.length > 0 && (
-              <>
-                <tr>
-                  <TableTd colSpan={3} className="!p-0 !pt-8">
-                    <Button
-                      variant="ghost"
-                      className="w-full text-13 text-typography-secondary"
-                      onClick={() => setShowSmallRewards((v) => !v)}
-                    >
-                      {showSmallRewards ? (
-                        <Trans>Hide assets with small value</Trans>
-                      ) : (
-                        <Trans>Show assets with small value ({smallRewards.length})</Trans>
-                      )}
-                    </Button>
-                  </TableTd>
-                </tr>
-                {showSmallRewards &&
-                  smallRewards.map((reward) => (
-                    <ClaimRewardRow
-                      key={reward.marketAddress}
-                      reward={reward}
-                      marketsInfoData={marketsInfoData}
-                      isSelected={selectedMarketAddresses.includes(reward.marketAddress)}
-                      onToggleSelect={handleToggleSelect}
-                    />
-                  ))}
-              </>
-            )}
           </tbody>
         </Table>
+
+        {hiddenMainRewards.length > 0 && (
+          <Button
+            variant="ghost"
+            className="w-full text-13 text-typography-secondary"
+            onClick={() => setShowOtherMainRewards((v) => !v)}
+          >
+            {showOtherMainRewards ? (
+              <Trans>Hide other assets</Trans>
+            ) : (
+              <Trans>Show other assets ({hiddenMainRewards.length})</Trans>
+            )}
+          </Button>
+        )}
+
+        {hiddenMainRewards.length > 0 && (
+          <AnimatedRewardsTable
+            isVisible={showOtherMainRewards}
+            rewards={hiddenMainRewards}
+            marketsInfoData={marketsInfoData}
+            selectedMarketAddresses={selectedMarketAddresses}
+            onToggleSelect={handleToggleSelect}
+          />
+        )}
+
+        {smallRewards.length > 0 && shouldShowSmallRewardsToggle && (
+          <Button
+            variant="ghost"
+            className="w-full text-13 text-typography-secondary"
+            onClick={() => setShowSmallRewards((v) => !v)}
+          >
+            {showSmallRewards ? (
+              <Trans>Hide assets with small value</Trans>
+            ) : (
+              <Trans>Show assets with small value ({smallRewards.length})</Trans>
+            )}
+          </Button>
+        )}
+
+        {smallRewards.length > 0 && shouldShowSmallRewardsToggle && (
+          <AnimatedRewardsTable
+            isVisible={showSmallRewards}
+            rewards={smallRewards}
+            marketsInfoData={marketsInfoData}
+            selectedMarketAddresses={selectedMarketAddresses}
+            onToggleSelect={handleToggleSelect}
+          />
+        )}
 
         {swapTargetTokenOptions.length > 0 && (
           <div>
@@ -589,7 +634,7 @@ export function ClaimAffiliatesModal(p: Props) {
                       tokensToSwap.length === 0 ? (
                         "-"
                       ) : isSwapRouteLoading ? (
-                        <Trans>Loading...</Trans>
+                        "..."
                       ) : wrappedToken && swapEstimatedNetworkFeeAmount > 0n ? (
                         <AmountWithUsdBalance
                           amount={swapEstimatedNetworkFeeAmount}
@@ -609,7 +654,7 @@ export function ClaimAffiliatesModal(p: Props) {
                       !swapTargetToken || toReceiveAmount === 0n ? (
                         "-"
                       ) : isSwapRouteLoading && tokensToSwap.length > 0 ? (
-                        <Trans>Loading...</Trans>
+                        "..."
                       ) : (
                         <AmountWithUsdBalance
                           amount={toReceiveAmount}
@@ -654,6 +699,42 @@ export function ClaimAffiliatesModal(p: Props) {
   );
 }
 
+function AnimatedRewardsTable({
+  isVisible,
+  rewards,
+  marketsInfoData,
+  selectedMarketAddresses,
+  onToggleSelect,
+}: {
+  isVisible: boolean;
+  rewards: AffiliateReward[];
+  marketsInfoData: MarketsInfoData | undefined;
+  selectedMarketAddresses: string[];
+  onToggleSelect: (marketAddress: string) => void;
+}) {
+  return (
+    <AnimatePresence initial={false}>
+      {isVisible && (
+        <motion.div className="overflow-hidden" {...EXPANDABLE_REWARDS_ANIMATION}>
+          <Table className="!bg-transparent">
+            <tbody>
+              {rewards.map((reward) => (
+                <ClaimRewardRow
+                  key={reward.marketAddress}
+                  reward={reward}
+                  marketsInfoData={marketsInfoData}
+                  isSelected={selectedMarketAddresses.includes(reward.marketAddress)}
+                  onToggleSelect={onToggleSelect}
+                />
+              ))}
+            </tbody>
+          </Table>
+        </motion.div>
+      )}
+    </AnimatePresence>
+  );
+}
+
 function ClaimSwapTargetTokenSelector({
   options,
   value,
@@ -664,38 +745,93 @@ function ClaimSwapTargetTokenSelector({
   onSelect: (tokenAddress: string) => void;
 }) {
   const selectedOption = options.find((option) => option.token.address === value);
+  const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
 
   if (!selectedOption) {
     return "-";
   }
 
   return (
-    <DropdownSelector
-      value={value}
-      onChange={onSelect}
-      slim
-      variant="ghost"
-      button={
-        <div className="flex items-center justify-end gap-4">
+    <SelectorBase
+      label={
+        <div className="flex items-center gap-4">
           <TokenIcon symbol={selectedOption.token.symbol} displaySize={18} />
           <span>{selectedOption.token.symbol}</span>
         </div>
       }
-      options={options}
-      item={ClaimSwapTargetTokenOption}
-      itemKey={swapTargetTokenOptionKey}
-    />
+      modalLabel={t`Swap to`}
+      qa="claim-swap-target-token-selector"
+    >
+      {isMobile ? (
+        <ClaimSwapTargetTokenSelectorMobile options={options} onSelect={onSelect} />
+      ) : (
+        <ClaimSwapTargetTokenSelectorDesktop options={options} onSelect={onSelect} />
+      )}
+    </SelectorBase>
   );
 }
 
-const swapTargetTokenOptionKey = (option: SwapTargetTokenOption) => option.token.address;
+function ClaimSwapTargetTokenSelectorDesktop({
+  options,
+  onSelect,
+}: {
+  options: SwapTargetTokenOption[];
+  onSelect: (tokenAddress: string) => void;
+}) {
+  const close = useSelectorClose();
 
-function ClaimSwapTargetTokenOption({ option }: { option: SwapTargetTokenOption }) {
   return (
-    <div className="flex items-center gap-4">
-      <TokenIcon symbol={option.token.symbol} displaySize={18} />
-      <div className="text-typography-secondary">{option.token.symbol}</div>
-    </div>
+    <table className="w-full">
+      <tbody>
+        {options.map((option) => (
+          <SelectorBaseDesktopRow
+            key={option.token.address}
+            onClick={(e) => {
+              e.stopPropagation();
+              e.preventDefault();
+              onSelect(option.token.address);
+              close();
+            }}
+          >
+            <TableTd padding="compact-one-column">
+              <div className="flex items-center gap-8">
+                <TokenIcon symbol={option.token.symbol} displaySize={18} />
+                <div>{option.token.symbol}</div>
+              </div>
+            </TableTd>
+          </SelectorBaseDesktopRow>
+        ))}
+      </tbody>
+    </table>
+  );
+}
+
+function ClaimSwapTargetTokenSelectorMobile({
+  options,
+  onSelect,
+}: {
+  options: SwapTargetTokenOption[];
+  onSelect: (tokenAddress: string) => void;
+}) {
+  const close = useSelectorClose();
+
+  return (
+    <SelectorBaseMobileList>
+      {options.map((option) => (
+        <SelectorBaseMobileButton
+          key={option.token.address}
+          onSelect={() => {
+            onSelect(option.token.address);
+            close();
+          }}
+        >
+          <div className="flex items-center gap-8">
+            <TokenIcon symbol={option.token.symbol} displaySize={18} />
+            <div>{option.token.symbol}</div>
+          </div>
+        </SelectorBaseMobileButton>
+      ))}
+    </SelectorBaseMobileList>
   );
 }
 

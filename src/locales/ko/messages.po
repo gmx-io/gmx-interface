@@ -223,6 +223,10 @@ msgstr "(리베이트 적용)"
 msgid "Show rPnL amounts"
 msgstr "실현 PnL 금액 표시"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Show other assets ({0})"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max factor for liquidations"
 msgstr "청산 최대 계수"
@@ -4345,6 +4349,7 @@ msgid "Edit {0}"
 msgstr "{0} 편집"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Swap to"
 msgstr "스왑 대상"
 
@@ -6259,8 +6264,6 @@ msgstr "TP 가격"
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -7595,6 +7598,10 @@ msgstr "중단"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price below mark price"
 msgstr "트리거 가격이 마크 가격 미만"
+
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Hide other assets"
+msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 msgid "Staked GMX"

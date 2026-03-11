@@ -223,6 +223,10 @@ msgstr ""
 msgid "Show rPnL amounts"
 msgstr ""
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Show other assets ({0})"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max factor for liquidations"
 msgstr ""
@@ -4345,6 +4349,7 @@ msgid "Edit {0}"
 msgstr ""
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Swap to"
 msgstr ""
 
@@ -6259,8 +6264,6 @@ msgstr ""
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -7594,6 +7597,10 @@ msgstr ""
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price below mark price"
+msgstr ""
+
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Hide other assets"
 msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx

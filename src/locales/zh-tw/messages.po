@@ -223,6 +223,10 @@ msgstr "（已返還）"
 msgid "Show rPnL amounts"
 msgstr "顯示已實現盈虧金額"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Show other assets ({0})"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max factor for liquidations"
 msgstr "清算最大因子"
@@ -4345,6 +4349,7 @@ msgid "Edit {0}"
 msgstr "編輯 {0}"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Swap to"
 msgstr "兌換至"
 
@@ -6259,8 +6264,6 @@ msgstr "TP 價格"
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -7595,6 +7598,10 @@ msgstr "離線"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price below mark price"
 msgstr "觸發價格低於標記價格"
+
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Hide other assets"
+msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 msgid "Staked GMX"
