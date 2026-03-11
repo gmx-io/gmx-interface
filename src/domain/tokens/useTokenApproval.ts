@@ -78,7 +78,7 @@ export function useTokenApproval({
   const isAllowanceLoading = nothingToCheck ? false : isAllowanceLoadingRaw;
   const isAllowanceLoaded = nothingToCheck ? true : isAllowanceLoadedRaw;
 
-  const permitsOrEmpty = allowPermit && tokenPermits ? tokenPermits : EMPTY_PERMITS;
+  const permitsOrEmpty = allowPermit && tokenPermits ? tokenPermits : EMPTY_ARRAY;
 
   const tokensToApprove = useMemo(
     () =>
@@ -133,16 +133,16 @@ export function useTokenApproval({
       }
     },
     [
-      tokensToApprove,
+      addTokenPermit,
+      allowPermit,
+      approveAmount,
       chainId,
       isApproving,
-      spenderAddress,
-      approveAmount,
-      allowPermit,
-      addTokenPermit,
       isPermitsDisabled,
       setIsPermitsDisabled,
       setSettlementChainId,
+      spenderAddress,
+      tokensToApprove,
     ]
   );
 
@@ -155,5 +155,3 @@ export function useTokenApproval({
     handleApprove,
   };
 }
-
-const EMPTY_PERMITS: NonNullable<ReturnType<typeof useTokenPermitsContext>["tokenPermits"]> = [];

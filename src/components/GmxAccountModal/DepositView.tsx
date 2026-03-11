@@ -257,10 +257,10 @@ export const DepositView = () => {
 
   const approvalTokens = useMemo(
     () =>
-      sourceChainTokenToApproveAddress
-        ? [{ tokenAddress: sourceChainTokenToApproveAddress, amount: undefined }]
+      sourceChainTokenToApproveAddress && amountLD !== undefined
+        ? [{ tokenAddress: sourceChainTokenToApproveAddress, amount: amountLD }]
         : EMPTY_ARRAY,
-    [sourceChainTokenToApproveAddress]
+    [sourceChainTokenToApproveAddress, amountLD]
   );
 
   const {
