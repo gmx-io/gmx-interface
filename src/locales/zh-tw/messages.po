@@ -84,6 +84,7 @@ msgstr "自動複投您的 GMX 獎勵，無需手動領取"
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
 msgid "Disconnect"
 msgstr "斷開連接"
 
@@ -97,6 +98,10 @@ msgstr "是的，質押和提供流動性完全無需許可。GMX、GLV 和 GM �
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Order simulation failed"
 msgstr "訂單模擬失敗"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Target chain"
+msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
@@ -405,6 +410,10 @@ msgstr "兌換介面費用"
 msgid "No TP orders"
 msgstr "無 TP 訂單"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Create Safe on Arbitrum Sepolia"
+msgstr ""
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "position size"
 msgstr "倉位規模"
@@ -688,6 +697,10 @@ msgstr "以獲得更低的淨價格影響"
 msgid "NET RATE"
 msgstr "淨費率"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Active WalletConnect Sessions"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "No rewards"
 msgstr "無獎勵"
@@ -800,6 +813,10 @@ msgstr "在中心化交易所購買 GMX"
 msgid "Share for follow-up questions"
 msgstr "分享以便後續問題聯繫"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Salt nonce"
+msgstr ""
+
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -826,6 +843,10 @@ msgstr "STIP.b 追溯獎勵"
 #: landing/src/pages/Home/LiqiuditySection/LiqiuditySection.tsx
 msgid "in liquidity"
 msgstr "流動性"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Signature (hex)"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized money market"
@@ -962,6 +983,10 @@ msgstr "倉位手續費因子（正價格影響）"
 msgid "High swap price impact"
 msgstr "兌換價格影響過高"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Deploy Safe"
+msgstr ""
+
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Failed to parse related transaction:"
 msgstr "解析相關交易失敗："
@@ -1071,6 +1096,10 @@ msgstr "Gas 餘額不足。請存入更多 ETH。"
 
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Creating order"
+msgstr ""
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "bytes32 overload"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -1318,6 +1347,10 @@ msgstr "購買 {operationTokenSymbol}"
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Buy GM: {0}"
 msgstr "購買 GM：{0}"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Pairing..."
+msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "TVL (Supply)"
@@ -1592,6 +1625,10 @@ msgstr "Log index："
 msgid "Pool max short amount"
 msgstr "池最大做空數量"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Last Deployment Result"
+msgstr ""
+
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
@@ -1660,6 +1697,10 @@ msgstr "失敗"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "No fee"
 msgstr "無手續費"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Paste a WalletConnect URI from /trade"
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Swap liquidity may be insufficient when order triggers"
@@ -2110,6 +2151,10 @@ msgstr "存入失敗"
 msgid "2nd place"
 msgstr "第二名"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "SignatureUtils-style 1271 path"
+msgstr ""
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Number of parts must be between {MIN_TWAP_NUMBER_OF_PARTS} and {MAX_TWAP_NUMBER_OF_PARTS}"
 msgstr "分割數量必須介於 {MIN_TWAP_NUMBER_OF_PARTS} 到 {MAX_TWAP_NUMBER_OF_PARTS} 之間"
@@ -2326,6 +2371,10 @@ msgstr ""
 msgid "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
 msgstr "推薦碼尚未在 {nonTakenNetworkNames} 上註冊。請切換網路以完成註冊並賺取返傭。"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Safe address to expose over WalletConnect"
+msgstr ""
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Decrease leverage to match the max allowed leverage."
 msgstr "降低槓桿以符合最大允許槓桿。"
@@ -2432,6 +2481,10 @@ msgstr "池流動性不足。可用數量：{availableAmountText}"
 msgid "Buy {0}"
 msgstr "買入 {0}"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "WalletConnect pairing failed: {message}"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX Blueberry Club"
 msgstr "GMX Blueberry Club"
@@ -2520,6 +2573,14 @@ msgstr "幫助我們改善 GMX。為了安全，我們不會主動聯絡您。�
 msgid "Existing position uses {0} collateral. This order won't apply to it. <0>Switch to {1} collateral</0>"
 msgstr "現有倉位使用 {0} 抵押品。此訂單將不會套用於該倉位。<0>切換至 {1} 抵押品</0>"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "WalletConnect wallet not initialized yet"
+msgstr ""
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "WalletConnect pairing started"
+msgstr ""
+
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliates"
 msgstr "推廣夥伴"
@@ -2540,6 +2601,10 @@ msgstr "變更可能需要幾分鐘才會顯示"
 msgid "Excludes incentives"
 msgstr "不含激勵獎勵"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Owners"
+msgstr ""
+
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {localizedList} for gas on {chainName}. <0>Buy {localizedList}</0>"
 msgstr "{chainName} 上的 {localizedList} Gas 餘額不足。<0>購買 {localizedList}</0>"
@@ -2551,6 +2616,10 @@ msgstr "正在買入 {symbol}..."
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Show PnL amounts"
 msgstr "顯示 PnL 金額"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Transaction hash"
+msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Est. time: ~5 min"
@@ -2630,10 +2699,18 @@ msgstr "GM 市場"
 msgid "Tickers simulation"
 msgstr "行情模擬"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Safe Proxy Factory"
+msgstr ""
+
 #: src/components/Errors/getContractErrorToastContent.tsx
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Position size exceeds available open interest"
 msgstr "倉位規模超過可用未平倉量"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "SignatureUtils 1271 on minifiedDigest"
+msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "STIP.b trading incentives"
@@ -2715,6 +2792,14 @@ msgstr "目前"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Long positions"
 msgstr "做多倉位"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Check ERC-1271 Validity"
+msgstr ""
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "bytes overload"
+msgstr ""
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Buy fee"
@@ -2836,11 +2921,6 @@ msgstr "超過 {0} 最大可賣出數量"
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "TOKEN"
 msgstr "代幣"
-
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "No eligible tokens available for deposit"
-msgstr "沒有符合條件的代幣可供存入"
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "What is the bonus incentive for holding your GLV?"
@@ -3050,6 +3130,10 @@ msgstr "Tenderly 設定"
 msgid "Increase size (Market)"
 msgstr "加倉（市價）"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Safe Singleton (SafeL2)"
+msgstr ""
+
 #: src/domain/synthetics/markets/createBridgeInTxn.ts
 msgid "Bridge transfer sent"
 msgstr "跨鏈轉帳已發送"
@@ -3081,6 +3165,10 @@ msgstr "主要失敗"
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Edit collateral"
 msgstr "編輯抵押品"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Failed to switch network: {0}"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -3607,6 +3695,10 @@ msgstr "帳戶不正確"
 msgid "Express Trading is unavailable with the network's native token {0}. Consider using {1} instead."
 msgstr "Express Trading 不支援網路原生代幣 {0}。請考慮改用 {1}。"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Invalid"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -3712,11 +3804,6 @@ msgstr "正在提交訂單請求..."
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Selling {0}{1}<1>{poolName}</1></0>"
 msgstr "<0>賣出 {0}{1}<1>{poolName}</1></0>"
-
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-msgid "No eligible tokens available on {0} for deposit"
-msgstr "{0} 上沒有可存入的合格代幣"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Stop-Loss Decrease"
@@ -3837,6 +3924,10 @@ msgstr "如何在 GMX 上開始使用？"
 msgid "Acceptable price"
 msgstr "可接受價格"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Created Safe address"
+msgstr ""
+
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing from subaccount..."
 msgstr "正在從子帳戶提取..."
@@ -3855,6 +3946,10 @@ msgstr "esGMX"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL VALUE"
 msgstr "池價值"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Tests <0>isValidSignature(bytes32,bytes)</0> on the Safe contract on Arbitrum Sepolia and shows the returned magic value."
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake completed"
@@ -3889,6 +3984,10 @@ msgstr "市場標籤"
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "Total volume"
 msgstr "總交易量"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "WalletConnect Wallet Provider (MVP)"
+msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Sign permit"
@@ -4314,6 +4413,10 @@ msgstr "此市場已停用。請聯繫客服以領取您剩餘的資金費率。
 msgid "Depositing to Avalanche is disabled. Trade directly from your Avalanche wallet."
 msgstr "已停用存入 Avalanche 功能。請直接從您的 Avalanche 錢包進行交易。"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Use last created Safe"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Limit"
 msgstr "取消限價單"
@@ -4338,6 +4441,10 @@ msgstr "尚無交易記錄"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Price change to liquidation"
 msgstr "距清算價格變動"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Use provider Safe address"
+msgstr ""
 
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "possibilities in total"
@@ -4376,6 +4483,10 @@ msgstr "Market Swap：以當前市場價格兌換代幣"
 msgid "Per 1h"
 msgstr "每 1 小時"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Connect a wallet first"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perpetuals aggregator"
 msgstr "永續合約聚合器"
@@ -4391,6 +4502,10 @@ msgstr "純 {indexSymbol} 做空。風險敞口僅來自倉位。"
 #: src/components/TPSLModal/TPSLInputRow.tsx
 msgid "Loss"
 msgstr "損失"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "WalletConnect URI (paste from /trade)"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "App disabled, pending {0} upgrade"
@@ -4669,6 +4784,10 @@ msgstr "費用"
 msgid "Vault capacity"
 msgstr "金庫容量"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Safe wallet created"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Open interest {directionLabel}"
 msgstr "未平倉量 {directionLabel}"
@@ -4945,6 +5064,10 @@ msgstr "在 Arbitrum、Ethereum 及其他網路上，直接從您的錢包進行
 msgid "Sell fee"
 msgstr "賣出手續費"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Wallet client unavailable. Reconnect wallet and retry"
+msgstr ""
+
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Invalid oracle price"
 msgstr "無效的預言機價格"
@@ -4983,6 +5106,10 @@ msgstr "為每個市場提供逐倉流動性"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Use open interest in tokens for balance"
 msgstr "使用代幣未平倉量計算餘額"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Result"
+msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Seamless trading"
@@ -5099,6 +5226,10 @@ msgstr "質押僅適用於 {chainNames}。請切換網路以繼續。"
 msgid "Links"
 msgstr "連結"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "SignatureUtils minifiedDigest"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact factor for withdrawals"
 msgstr "提取最大可借出影響因子"
@@ -5134,6 +5265,10 @@ msgstr "Botanix 上沒有 GLV 金庫。請改透過 <0>GM 代幣</0>提供流動
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "GLV"
 msgstr "GLV"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Not connected"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity in GM pool"
@@ -5233,6 +5368,10 @@ msgstr "成交價格"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "spinner"
 msgstr "載入中"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Domain separator (optional, for SignatureUtils-style minified check)"
+msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
@@ -5335,6 +5474,10 @@ msgstr "您透過推薦折扣節省的手續費"
 msgid "TP"
 msgstr "止盈"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "1271 validation failed: {message}"
+msgstr ""
+
 #: src/components/Claims/ClaimableCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claimable"
@@ -5351,6 +5494,10 @@ msgstr "在接下來的 {2} 內，為 {3} 執行 {numberOfParts} 筆 {0} {type} 
 msgid "Docs"
 msgstr "文件"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Switch owner to Arbitrum Sepolia"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} cannot be sent to smart contract addresses. Select another token"
 msgstr "{0} 無法發送至智能合約地址。請選擇其他代幣"
@@ -5366,6 +5513,10 @@ msgstr "止損市價單失敗"
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price"
 msgstr "{typeString} Short Stop Market：當價格低於觸發價格時{0}做空倉位"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Owner chain"
+msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -5974,6 +6125,10 @@ msgstr ""
 msgid "PnL relative to capital used (return on capital)"
 msgstr "PnL 相對於使用資本（資本回報率）"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Threshold-1 Safe only. Exposes the Safe address over WalletConnect and executes dapp transactions through Safe Protocol Kit using the connected owner EOA in this browser."
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Create Stop Market"
 msgstr "建立 Stop Market"
@@ -6100,6 +6255,10 @@ msgstr "領取價格影響回饋失敗"
 msgid "Paste hex error data to decode"
 msgstr "貼上十六進位錯誤資料以進行解碼"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Safe address (validator target)"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral"
 msgstr "最低抵押品"
@@ -6120,6 +6279,7 @@ msgstr "GMX 電子報與長篇更新"
 msgid "TP price"
 msgstr "TP 價格"
 
+#: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
 #: src/App/MainRoutes.tsx
@@ -6352,6 +6512,10 @@ msgstr "1分40秒"
 msgid "GLP autocompounding vaults"
 msgstr "GLP 自動複利金庫"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "No activity yet"
+msgstr ""
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "TP/SL orders exceed the position"
 msgstr "TP/SL 訂單超過倉位"
@@ -6444,9 +6608,17 @@ msgstr "每"
 msgid "Reserve factor longs"
 msgstr "做多儲備因子"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "No active sessions"
+msgstr ""
+
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "buy"
 msgstr "買入"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Safe creation failed: {message}"
+msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -6498,6 +6670,10 @@ msgstr "GMX 圖示"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Price impact exceeds order size"
 msgstr "價格影響超過訂單規模"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Accounts"
+msgstr ""
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Want to trade faster with One-Click Trading?"
@@ -6849,6 +7025,10 @@ msgstr "Tradao"
 msgid "Insufficient liquidity"
 msgstr "流動性不足"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Use this page as a Safe deployer and a WalletConnect wallet-provider MVP. Keep /trade open in another browser tab/window and pair it here by pasting the WalletConnect URI."
+msgstr ""
+
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq."
 msgstr ""
@@ -7001,6 +7181,7 @@ msgstr "超過最大數量"
 msgid "You chose to send the remaining collateral to your <0>{chosenLabel}</0>. Do you want to make this the default destination when closing positions?"
 msgstr ""
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -7011,6 +7192,10 @@ msgstr "-"
 #: src/pages/UiPage/UiPage.tsx
 msgid "h1"
 msgstr "h1"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Owner wallet"
+msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "RPC endpoints"
@@ -7027,6 +7212,10 @@ msgstr "質押僅在 {chainNames} 或 {lastChainName} 上可用。請切換網�
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Claiming rewards only available on {settlementChainName}. Switch networks to claim referral rewards."
 msgstr "領取獎勵僅在 {settlementChainName} 上可用。請切換網路以領取推薦獎勵。"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "1271 validation failed ({safeHint})"
+msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
@@ -7077,6 +7266,14 @@ msgstr "連結已複製"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "SIZE"
 msgstr "規模"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Transaction submitted. Waiting for confirmation..."
+msgstr ""
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Parsed owners"
+msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
@@ -7184,6 +7381,10 @@ msgstr "許可簽名失敗"
 msgid "Order uses {collateralSymbol}, but existing {longText} position uses {symbol} as collateral"
 msgstr "訂單使用 {collateralSymbol}，但現有的{longText}倉位使用 {symbol} 作為抵押品"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Dev Smart Wallet (Safe on Arbitrum Sepolia)"
+msgstr ""
+
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "Show more"
 msgstr "顯示更多"
@@ -7267,6 +7468,7 @@ msgstr "超過 {0} 最大做多量"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/pages/AccountEvents/AccountEvents.tsx
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -7358,6 +7560,10 @@ msgstr "單邊流動性金庫，透過主動對沖與再平衡來最小化無常
 msgid "GMX V2 actions"
 msgstr "GMX V2 操作"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Connect owner wallet"
+msgstr ""
+
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade errors"
 msgstr "交易錯誤"
@@ -7432,6 +7638,10 @@ msgstr ""
 #: src/pages/RpcDebug/parts.tsx
 msgid "Down"
 msgstr "離線"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Expected bytes32 magic"
+msgstr ""
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
@@ -7839,6 +8049,10 @@ msgstr "切換至 {0} 池"
 msgid "Explore, analyze, and copy on-chain traders"
 msgstr "探索、分析並複製鏈上交易者"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Creating Safe..."
+msgstr ""
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "{addressLabel} on {networkLabel}"
 msgstr "{addressLabel} 於 {networkLabel}"
@@ -8017,6 +8231,10 @@ msgstr "做空倉位"
 #: src/components/Errors/errorToasts.tsx
 msgid "Report issue"
 msgstr "回報問題"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Wallet Activity"
+msgstr ""
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "Claim {0}"
@@ -8202,6 +8420,10 @@ msgstr "顯示設定"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order filled"
 msgstr "訂單已成交"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "1271 signature is invalid (magic mismatch)"
+msgstr ""
 
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Pools/Pools.tsx
@@ -8417,6 +8639,10 @@ msgstr "帳戶事件："
 #: src/pages/UiPage/UiPage.tsx
 msgid "Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus beatae atque eligendi sunt quasi et porro nemo cumque nesciunt dolorum earum, minus fuga similique exercitationem ad. Eos omnis vitae suscipit recusandae iste adipisci quasi rem odio, quidem qui modi impedit quibusdam culpa nemo distinctio rerum tempora sequi facilis quaerat laudantium pariatur dicta ab. Pariatur mollitia magni consectetur praesentium nulla nobis non voluptates laborum obcaecati enim unde, in tempore voluptas, expedita aut corrupti ipsum sequi consequatur iste corporis quasi! Officia nihil pariatur, asperiores molestiae quia earum tempora, in neque inventore quisquam dolore veniam minus beatae adipisci quod hic? Saepe, aperiam consequuntur!"
 msgstr "Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus beatae atque eligendi sunt quasi et porro nemo cumque nesciunt dolorum earum, minus fuga similique exercitationem ad. Eos omnis vitae suscipit recusandae iste adipisci quasi rem odio, quidem qui modi impedit quibusdam culpa nemo distinctio rerum tempora sequi facilis quaerat laudantium pariatur dicta ab. Pariatur mollitia magni consectetur praesentium nulla nobis non voluptates laborum obcaecati enim unde, in tempore voluptas, expedita aut corrupti ipsum sequi consequatur iste corporis quasi! Officia nihil pariatur, asperiores molestiae quia earum tempora, in neque inventore quisquam dolore veniam minus beatae adipisci quod hic? Saepe, aperiam consequuntur!"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "ERC-1271 Signature Validator"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "AVG. SIZE"
@@ -8655,6 +8881,10 @@ msgstr "績效和圖表數據均以 UTC 時間為基準"
 msgid "Sell {operationTokenSymbol}"
 msgstr "賣出 {operationTokenSymbol}"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Valid"
+msgstr ""
+
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
 msgstr ""
@@ -8738,6 +8968,10 @@ msgstr "最低保證金：{0}"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Market"
 msgstr "Stop Market"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Compatibility Fallback Handler"
+msgstr ""
 
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "How can we keep meeting your expectations?"
@@ -9010,6 +9244,10 @@ msgstr "期權策略金庫"
 msgid "Time limit"
 msgstr "時間限制"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Checking..."
+msgstr ""
+
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "DeFi"
 msgstr "DeFi"
@@ -9175,6 +9413,10 @@ msgstr "建立 Limit Swap"
 msgid "A $500,000 GLV pool (DAO-funded) rewards long-term holders. Keep your GLV for at least 3 months without selling or transferring to receive a pro rata share."
 msgstr "一個價值 $500,000 的 GLV 池（由 DAO 資助）獎勵長期持有者。持有您的 GLV 至少 3 個月，期間不進行賣出或轉帳，即可按比例獲得分配。"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "1271 signature is valid"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "esGMX OTC market"
 msgstr "esGMX 場外交易市場"
@@ -9182,6 +9424,10 @@ msgstr "esGMX 場外交易市場"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group (Portuguese)"
 msgstr "Telegram 群組（葡萄牙語）"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Threshold"
+msgstr ""
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} long. Exposure is only from the position."
@@ -9209,6 +9455,10 @@ msgstr "已歸屬可領取的 GMX："
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "GMX Account"
 msgstr "GMX Account"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Fail"
+msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
@@ -9328,6 +9578,10 @@ msgstr "我可以在 GMX 上構建或將其整合到我的 DeFi 應用程式中�
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Avoid price wicks with transparent, sub-second Chainlink price feeds tailor-made for GMX"
 msgstr "透過 Chainlink 為 GMX 量身打造的透明、亞秒級價格饋送，避免價格插針"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Connection flow: open /trade in Chrome, choose WalletConnect, copy the wc: URI from the modal, paste it here in Firefox, then approve the session on this page."
+msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe and remain in your wallet."
@@ -9531,6 +9785,10 @@ msgstr "esGMX 獎勵："
 msgid "Optimal usage factor long"
 msgstr "最佳做多使用率因子"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Hash (bytes32)"
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -9652,6 +9910,10 @@ msgstr "已經過時間"
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
 msgstr "鏈下簽署交易。優質 RPC 確保在網路擁塞時的可靠性。<0/><1/>以 {gasPaymentTokensText} 支付 Gas 費用。"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "WC Wallet status"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Uniswap or directly on GMX (select Arbitrum)"
 msgstr "從 Uniswap 購買 GMX 或直接在 GMX 上購買（選擇 Arbitrum）"
@@ -9758,6 +10020,10 @@ msgstr "錯誤，請重試"
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Available to trade"
 msgstr "可用於交易"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Pair WalletConnect Session"
+msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Multicall simulation"
@@ -9905,6 +10171,10 @@ msgstr "One-Click Trading 授權無效。這可能在切換鏈或更改支付代
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM airdrop"
 msgstr "GLP 轉 GM 空投"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Expected bytes magic"
+msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order cancelled"
@@ -10141,6 +10411,14 @@ msgstr "觸發"
 msgid "Failed to decode error. Make sure the hex data is valid and starts with \"0x\"."
 msgstr "解碼錯誤失敗。請確認十六進位資料有效且以「0x」開頭。"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "WalletConnect URI should start with wc:"
+msgstr ""
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Pass"
+msgstr ""
+
 #: src/pages/UiPage/UiPage.tsx
 msgid "Text colors"
 msgstr "文字顏色"
@@ -10246,6 +10524,10 @@ msgstr "Limit Swap"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Claim {tokenSymbol} rewards"
 msgstr "領取 {tokenSymbol} 獎勵"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "SignatureUtils 1271 on digest"
+msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H VOL."
@@ -10452,6 +10734,10 @@ msgstr "GMX 質押獎勵："
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee"
 msgstr "{longOrShort}倉位{fundingAction}每小時 {fundingRate} 的資金費用，且不支付借貸費用"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Switch wallet to Arbitrum Sepolia"
+msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Failed to add referral code"
@@ -10685,6 +10971,13 @@ msgstr "在設定中啟用 <0>Express Trading</0> 以提升可靠性。<1/><2/>�
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Enter a ratio"
 msgstr "請輸入比率"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "No result"
+msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "OK"

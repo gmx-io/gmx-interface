@@ -1,5 +1,5 @@
-import { AbstractSigner, TypedDataEncoder, type Wallet } from "ethers";
-import { withRetry } from "viem";
+import { AbstractSigner, type Wallet } from "ethers";
+import { hashTypedData, withRetry, type Hex } from "viem";
 
 import { parseError } from "lib/errors";
 import { ISigner } from "lib/transactions/iSigner";
@@ -23,6 +23,30 @@ export type SignTypedDataParams = {
   shouldUseSignerMethod?: boolean;
   minified?: boolean;
 };
+
+// TODO: it this needed or we can just use [0] as primaryType?
+function hashTypedDataWithViem({
+  domain,
+  types,
+  message,
+}: {
+  domain: SignatureDomain;
+  types: SignatureTypes;
+  message: Record<string, any>;
+}): Hex {
+  const primaryType = Object.keys(types).find((t) => t !== "EIP712Domain");
+
+  if (!primaryType) {
+    throw new Error("Unable to determine EIP-712 primary type");
+  }
+
+  return hashTypedData({
+    domain,
+    types,
+    primaryType,
+    message,
+  });
+}
 
 export async function signTypedData({
   signer,
@@ -55,7 +79,11 @@ export async function signTypedData({
   let messageToSign = typedData;
 
   if (minified) {
-    const digest = TypedDataEncoder.hash(domain, types, typedData);
+    const digest = hashTypedDataWithViem({
+      domain,
+      types,
+      message: typedData,
+    });
     const minifiedTypes = {
       Minified: [{ name: "digest", type: "bytes32" }],
     };

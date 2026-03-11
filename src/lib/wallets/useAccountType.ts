@@ -1,11 +1,12 @@
 import uniq from "lodash/uniq";
 import useSWR from "swr";
-import { Hex, PublicClient } from "viem";
+import { ContractFunctionExecutionError, ContractFunctionZeroDataError, Hex, PublicClient } from "viem";
 import { useAccount } from "wagmi";
 
 import { AnyChainId, CONTRACTS_CHAIN_IDS, isTestnetChain, SOURCE_CHAIN_IDS } from "config/chains";
 import { useChainId } from "lib/chains";
-import { getIsNonEoaAccountError, nonEoaAccountError } from "lib/errors/customErrors";
+import { getIsNonSigningAccountError, nonSigningAccountError } from "lib/errors/customErrors";
+import { abis } from "sdk/abis";
 
 import { getPublicClientWithRpc } from "./rainbowKitConfig";
 
@@ -13,6 +14,7 @@ enum AccountType {
   Safe,
   SmartAccount, // ERC-4337 compatible smart account
   PostEip7702EOA, // Post-EIP-7702 EOA (delegated EOA)
+  ERC1271, // ERC-1271 compatible smart account
   EOA,
 }
 
@@ -56,13 +58,18 @@ async function getAccountType(
   client: PublicClient,
   safeSingletonAddresses: Set<string>
 ): Promise<AccountType> {
-  const bytecode = await client.getBytecode({ address });
+  const bytecode = await client.getCode({ address });
   if (!bytecode || bytecode === "0x") {
     return AccountType.EOA;
   }
 
   if (bytecode.startsWith("0xef0100") && bytecode.length === 48) {
     return AccountType.PostEip7702EOA;
+  }
+
+  const isErc1271 = await fetchIsErc1271(client, address);
+  if (isErc1271) {
+    return AccountType.ERC1271;
   }
 
   if (safeSingletonAddresses.size > 0) {
@@ -75,7 +82,7 @@ async function getAccountType(
   return AccountType.SmartAccount;
 }
 
-export function useIsNonEoaAccountOnAnyChain(): {
+export function useNonSingingAccount(): {
   isNonEoaAccountOnAnyChain: boolean;
   isLoading: boolean;
 } {
@@ -95,7 +102,7 @@ export function useIsNonEoaAccountOnAnyChain(): {
           (chainId) => isTestnetChain(chainId) === isCurrentChainTestnet
         );
 
-        return Promise.all(
+        const isNonSigningAccountOnAnyChain = await Promise.all(
           chainIds.map(async (chainId) => {
             const publicClient = getPublicClientWithRpc(chainId);
 
@@ -105,10 +112,13 @@ export function useIsNonEoaAccountOnAnyChain(): {
 
             const accountType = await getAccountType(address, publicClient, new Set<string>());
 
-            const isSomeEoaAccount = accountType === AccountType.EOA || accountType === AccountType.PostEip7702EOA;
+            const canSign =
+              accountType === AccountType.EOA ||
+              accountType === AccountType.PostEip7702EOA ||
+              accountType === AccountType.ERC1271;
 
-            if (!isSomeEoaAccount) {
-              return Promise.reject(nonEoaAccountError(chainId));
+            if (!canSign) {
+              return Promise.reject(nonSigningAccountError(chainId));
             }
           })
         )
@@ -116,12 +126,14 @@ export function useIsNonEoaAccountOnAnyChain(): {
             return false;
           })
           .catch((error) => {
-            if (getIsNonEoaAccountError(error)) {
+            if (getIsNonSigningAccountError(error)) {
               return true;
             }
 
             return false;
           });
+
+        return isNonSigningAccountOnAnyChain;
       },
       refreshInterval: 0,
       revalidateOnFocus: false,
@@ -131,4 +143,26 @@ export function useIsNonEoaAccountOnAnyChain(): {
   );
 
   return { isNonEoaAccountOnAnyChain, isLoading };
+}
+
+export async function fetchIsErc1271(client: PublicClient, address: string): Promise<boolean> {
+  try {
+    await client.readContract({
+      address,
+      abi: abis.SmartAccount,
+      functionName: "isValidSignature",
+      args: ["0x0000000000000000000000000000000000000000000000000000000000000000", "0x"],
+    });
+    return true;
+  } catch (error) {
+    const contractDoesNotImplement = error instanceof ContractFunctionZeroDataError;
+    const isEoa =
+      error instanceof ContractFunctionExecutionError &&
+      error.shortMessage === `The contract function "isValidSignature" returned no data ("0x").`;
+    if (contractDoesNotImplement || isEoa) {
+      return false;
+    }
+
+    return true;
+  }
 }

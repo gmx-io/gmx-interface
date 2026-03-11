@@ -2,7 +2,7 @@ import { useEffect, useSyncExternalStore } from "react";
 import { toast } from "react-toastify";
 
 import { useChainId } from "lib/chains";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
+import { useNonSingingAccount } from "lib/wallets/useAccountType";
 
 import {
   NON_EOA_ACCOUNT_CHAIN_WARNING_TOAST_ID,
@@ -23,7 +23,7 @@ const toastGetSnapshot = () => toast.isActive(NON_EOA_ACCOUNT_CHAIN_WARNING_TOAS
 
 export function useNonEoaAccountChainWarning() {
   const { srcChainId } = useChainId();
-  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
+  const { isNonEoaAccountOnAnyChain } = useNonSingingAccount();
 
   const isActive = useSyncExternalStore(toastSubscribe, toastGetSnapshot);
 
