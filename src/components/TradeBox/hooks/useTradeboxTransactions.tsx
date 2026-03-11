@@ -15,6 +15,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectSetShouldFallbackToInternalSwap,
+  selectSetShouldForceExternalSwap,
   selectTradeboxAllowedSlippage,
   selectTradeboxCollateralToken,
   selectTradeboxDecreasePositionAmounts,
@@ -102,6 +103,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
 
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
+  const setShouldForceExternalSwap = useSelector(selectSetShouldForceExternalSwap);
 
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
   const executionFee = useSelector(selectTradeboxExecutionFee);
@@ -330,6 +332,11 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         additionalErrorContent: undefined,
         onInternalSwapFallback: () => {
           setShouldFallbackToInternalSwap(true);
+          setShouldForceExternalSwap(false);
+        },
+        onExternalSwapFallback: () => {
+          setShouldForceExternalSwap(true);
+          setShouldFallbackToInternalSwap(false);
         },
       }),
     });
@@ -346,6 +353,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     primaryCreateOrderParams,
     provider,
     setShouldFallbackToInternalSwap,
+    setShouldForceExternalSwap,
     shouldDisableValidationForTesting,
     signer,
     slippageInputId,

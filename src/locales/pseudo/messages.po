@@ -2222,6 +2222,10 @@ msgstr ""
 msgid "How do I choose?"
 msgstr ""
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Switching to external swap route. Try again"
+msgstr ""
+
 #: src/components/TenderlySettings/TenderlySettings.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
 msgid "Account"

@@ -96,7 +96,7 @@ export const selectExternalSwapInputs = createSelector((q) => {
     return undefined;
   }
 
-  if (!tradeFlags.isIncrease && !tradeFlags.isSwap) {
+  if (!tradeFlags.isIncrease) {
     return undefined;
   }
 
@@ -123,12 +123,16 @@ export const selectShouldFallbackToInternalSwap = (s: SyntheticsState) => s.exte
 export const selectSetShouldFallbackToInternalSwap = (s: SyntheticsState) =>
   s.externalSwap.setShouldFallbackToInternalSwap;
 
+export const selectShouldForceExternalSwap = (s: SyntheticsState) => s.externalSwap.shouldForceExternalSwap;
+export const selectSetShouldForceExternalSwap = (s: SyntheticsState) => s.externalSwap.setShouldForceExternalSwap;
+
 export const selectExternalSwapQuote = createSelector((q) => {
   const inputs = q(selectExternalSwapInputs);
   const baseOutput = q(selectBaseExternalSwapOutput);
 
   const debugForceExternalSwaps = q(selectDebugForceExternalSwaps);
   const shouldFallbackToInternalSwap = q(selectShouldFallbackToInternalSwap);
+  const shouldForceExternalSwap = q(selectShouldForceExternalSwap);
 
   const tokenIn = q(selectTradeboxFromToken);
   const tokenOut = q(selectTradeboxSelectSwapToToken);
@@ -140,7 +144,7 @@ export const selectExternalSwapQuote = createSelector((q) => {
     !tokenOut ||
     tokenIn.address !== baseOutput.inTokenAddress ||
     tokenOut.address !== baseOutput.outTokenAddress ||
-    shouldFallbackToInternalSwap ||
+    (shouldFallbackToInternalSwap && !shouldForceExternalSwap) ||
     baseOutput.amountIn === 0n
   ) {
     return undefined;
@@ -177,7 +181,7 @@ export const selectExternalSwapQuote = createSelector((q) => {
     inputs?.internalSwapTotalFeesDeltaUsd !== undefined &&
     inputs.internalSwapTotalFeesDeltaUsd > -quote.feesUsd;
 
-  if (isInternalSwapBetter && !debugForceExternalSwaps) {
+  if (isInternalSwapBetter && !debugForceExternalSwaps && !shouldForceExternalSwap) {
     return undefined;
   }
 
@@ -211,8 +215,9 @@ export const selectShouldRequestExternalSwapQuote = createSelector((q) => {
   const isExternalSwapConditionMet = thereIsNoInternalSwap || internalSwapFeesConditionMet;
 
   const debugForceExternalSwaps = q(selectDebugForceExternalSwaps);
+  const shouldForceExternalSwap = q(selectShouldForceExternalSwap);
 
-  return debugForceExternalSwaps || (isExternalSwapsEnabled && isExternalSwapConditionMet);
+  return shouldForceExternalSwap || debugForceExternalSwaps || (isExternalSwapsEnabled && isExternalSwapConditionMet);
 });
 
 const selectExternalSwapInputsByFromValue = createSelector((q) => {
