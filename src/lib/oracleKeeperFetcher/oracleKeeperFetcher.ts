@@ -23,7 +23,6 @@ import {
   PerformanceAnnualizedResponse,
   PerformancePeriod,
   PerformanceSnapshotsResponse,
-  JitLiquidityResponse,
   RawIncentivesStats,
   TickersResponse,
   UserFeedbackBody,
@@ -186,18 +185,6 @@ export class OracleKeeperFetcher implements OracleFetcher {
         if (!res?.length) {
           return new Error("Invalid 24h prices response");
         }
-        return undefined;
-      },
-    });
-  }
-
-  fetchJitLiquidity(): Promise<JitLiquidityResponse> {
-    return this.request("/jit/liquidity_info", {
-      validate: (res) => {
-        if (!Array.isArray(res?.liquidityInfos)) {
-          return new Error("Invalid JIT liquidity response");
-        }
-
         return undefined;
       },
     });

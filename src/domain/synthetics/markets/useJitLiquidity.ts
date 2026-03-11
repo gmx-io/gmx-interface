@@ -1,7 +1,7 @@
 import { useCallback, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 
-import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
+import { getApiUrl } from "sdk/configs/api";
 import type { ContractsChainId } from "sdk/configs/chains";
 
 const JIT_LIQUIDITY_UPDATE_INTERVAL = 30 * 1000;
@@ -62,7 +62,6 @@ function safeParseBigInt(value: string): bigint {
 
 export function useJitLiquidity(chainId: ContractsChainId, options?: { enabled?: boolean }): JitLiquidityData {
   const enabled = options?.enabled !== false;
-  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
   const staleMarketsRef = useRef<Map<string, number>>(new Map());
   const [staleVersion, setStaleVersion] = useState(0);
 
@@ -70,7 +69,14 @@ export function useJitLiquidity(chainId: ContractsChainId, options?: { enabled?:
     enabled ? ["jitLiquidity", chainId] : null,
     async () => {
       try {
-        const response = await oracleKeeperFetcher.fetchJitLiquidity();
+        const apiUrl = getApiUrl(chainId);
+
+        if (!apiUrl) {
+          return undefined;
+        }
+
+        const res = await fetch(`${apiUrl}/jit/liquidity_info`);
+        const response = await res.json();
 
         const map = new Map<string, JitLiquidityInfo>();
 

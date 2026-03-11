@@ -113,25 +113,8 @@ export type PerformanceSnapshotsResponse = {
   }[];
 }[];
 
-export type JitLiquidityResponse = {
-  liquidityInfos: {
-    glv: string;
-    market: string;
-    maxReservedUsdWithJitLong: string;
-    maxReservedUsdWithJitShort: string;
-    glvShiftParams: {
-      glv: string;
-      fromMarket: string;
-      toMarket: string;
-      marketTokenAmount: string;
-      minMarketTokens: string;
-    }[];
-  }[];
-};
-
 export interface OracleFetcher {
   readonly url: string;
-  fetchJitLiquidity(): Promise<JitLiquidityResponse>;
   fetchTickers(): Promise<TickersResponse>;
   fetch24hPrices(): Promise<DayPriceCandle[]>;
   fetchOracleCandles(tokenSymbol: string, period: string, limit: number): Promise<FromNewToOldArray<Bar>>;
