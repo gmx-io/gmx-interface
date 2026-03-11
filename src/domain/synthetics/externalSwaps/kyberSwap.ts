@@ -159,27 +159,8 @@ export async function getKyberSwapTxnData({
     const usdIn = numberToBigint(parseFloat(buildData.data.amountInUsd), USD_DECIMALS);
     const usdOut = numberToBigint(parseFloat(buildData.data.amountOutUsd), USD_DECIMALS);
 
-    const priceIn =
-      amountInBigint > 0n
-        ? numberToBigint(
-            parseFloat(buildData.data.amountInUsd) /
-              parseFloat(
-                formatTokenAmount(amountInBigint, tokenIn.decimals, undefined, { showAllSignificant: true }) ?? "0"
-              ),
-            USD_DECIMALS
-          )
-        : 0n;
-
-    const priceOut =
-      amountOutBigint > 0n
-        ? numberToBigint(
-            parseFloat(buildData.data.amountOutUsd) /
-              parseFloat(
-                formatTokenAmount(amountOutBigint, tokenOut.decimals, undefined, { showAllSignificant: true }) ?? "0"
-              ),
-            USD_DECIMALS
-          )
-        : 0n;
+    const priceIn = calcTokenPrice(amountInBigint, buildData.data.amountInUsd, tokenIn.decimals);
+    const priceOut = calcTokenPrice(amountOutBigint, buildData.data.amountOutUsd, tokenOut.decimals);
 
     return {
       to: buildData.data.routerAddress,
@@ -199,4 +180,12 @@ export async function getKyberSwapTxnData({
     metrics.pushError(e, "externalSwap.getKyberSwapTxnData");
     return undefined;
   }
+}
+
+function calcTokenPrice(amount: bigint, usdValue: string, decimals: number): bigint {
+  if (amount <= 0n) return 0n;
+
+  const formattedAmount = formatTokenAmount(amount, decimals, undefined, { showAllSignificant: true }) ?? "0";
+
+  return numberToBigint(parseFloat(usdValue) / parseFloat(formattedAmount), USD_DECIMALS);
 }
