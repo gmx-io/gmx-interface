@@ -26,6 +26,7 @@ import {
 } from "sdk/utils/orders";
 import type { ApiOrderInfo } from "sdk/utils/orders/types";
 import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
+import { getIsFlagEnabled } from "config/ab";
 
 import type {
   MarketFilterLongShortDirection,
@@ -97,7 +98,7 @@ export function useOrders(
     [account, marketsDirectionsFilter, orderTypesFilter]
   );
 
-  const apiEnabled = false;
+  const apiEnabled = getIsFlagEnabled("apiSdk2");
   const {
     ordersData: apiOrdersData,
     isStale: isApiStale,

@@ -9,6 +9,7 @@ import { ApiPositionInfo, getPositionInfo, PositionInfo } from "sdk/utils/positi
 import useUiFeeFactorRequest from "../fees/utils/useUiFeeFactor";
 import { MarketsInfoData } from "../markets";
 import { TokensData } from "../tokens";
+import { getIsFlagEnabled } from "config/ab";
 import { PositionsData, PositionsInfoData } from "./types";
 import { useApiPositionsInfoRequest } from "./useApiPositionsInfoRequest";
 import { getAllPossiblePositionsKeys, useOptimisticPositionsInfo } from "./useOptimisticPositions";
@@ -65,7 +66,7 @@ export function usePositionsInfoRequest(
     positionsError,
   } = p;
 
-  const isApiSdkEnabled = false;
+  const isApiSdkEnabled = getIsFlagEnabled("apiSdk2");
 
   const {
     positionsInfoData: apiPositionsInfoData,

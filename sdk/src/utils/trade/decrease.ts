@@ -550,7 +550,7 @@ function applyAcceptablePrice(p: {
         indexPrice: values.indexPrice,
         sizeDeltaUsd: values.sizeDeltaUsd,
         priceImpactDeltaUsd: values.closePriceImpactDeltaUsd,
-        acceptablePriceImapctBuffer: acceptablePriceImpactBuffer || DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER,
+        acceptablePriceImpactBuffer: acceptablePriceImpactBuffer || DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER,
       });
 
       if (maxNegativePriceImpactBps === undefined) {
