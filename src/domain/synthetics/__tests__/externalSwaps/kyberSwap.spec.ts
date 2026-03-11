@@ -1,11 +1,12 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ARBITRUM } from "config/chains";
+import { getContract } from "config/contracts";
 import { suppressConsole } from "lib/__testUtils__/_utils";
 
 import { getKyberSwapTxnData } from "../../externalSwaps/kyberSwap";
 
-const KYBER_SWAP_ROUTER = "0x6131B5fae19EA4f9D964eAc0408E4408b66337b5";
+const KYBER_SWAP_ROUTER = getContract(ARBITRUM, "KyberSwapRouter");
 const WETH = "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1";
 const USDC = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
 const SENDER = "0x1111111111111111111111111111111111111111";
