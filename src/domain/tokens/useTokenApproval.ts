@@ -1,11 +1,14 @@
 import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { useTokenPermitsContext } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
+import { EMPTY_ARRAY } from "lib/objects";
 import type { WalletSigner } from "lib/wallets";
-import useWallet from "lib/wallets/useWallet";
 import type { AnyChainId } from "sdk/configs/chains";
+
+import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 
 import { approveTokens } from "./approveTokens";
 
@@ -20,7 +23,6 @@ interface UseTokenApprovalParams {
   tokens: TokenToApprove[];
   skip?: boolean;
   approveAmount?: bigint;
-  wrapApprove?: (fn: (signer: WalletSigner) => Promise<void>) => Promise<void>;
   allowPermit?: boolean;
 }
 
@@ -43,12 +45,11 @@ export function useTokenApproval({
   tokens,
   skip,
   approveAmount,
-  wrapApprove,
   allowPermit = false,
 }: UseTokenApprovalParams): UseTokenApprovalReturn {
-  const { signer } = useWallet();
   const [approvingToken, setApprovingToken] = useState<string | undefined>();
   const { tokenPermits, addTokenPermit, isPermitsDisabled, setIsPermitsDisabled } = useTokenPermitsContext();
+  const [, setSettlementChainId] = useGmxAccountSettlementChainId();
 
   const mergedTokens = useMemo(() => {
     const map = new Map<string, bigint>();
@@ -82,7 +83,7 @@ export function useTokenApproval({
   const tokensToApprove = useMemo(
     () =>
       skip
-        ? EMPTY_STRING_ARRAY
+        ? EMPTY_ARRAY
         : mergedTokens
             .filter((token) =>
               getNeedTokenApprove(tokensAllowanceData, token.tokenAddress, token.amount, permitsOrEmpty)
@@ -105,8 +106,7 @@ export function useTokenApproval({
       const tokenAddress = tokensToApprove[0];
       if (!chainId || isApproving || !tokenAddress || !spenderAddress) return;
 
-      const permitParams =
-        allowPermit && !wrapApprove ? { addTokenPermit, setIsPermitsDisabled, isPermitsDisabled } : undefined;
+      const permitParams = allowPermit ? { addTokenPermit, setIsPermitsDisabled, isPermitsDisabled } : undefined;
 
       const doApprove = async (signerToUse: WalletSigner) => {
         setApprovingToken(tokenAddress);
@@ -125,10 +125,11 @@ export function useTokenApproval({
         });
       };
 
-      if (wrapApprove) {
-        await wrapApprove(doApprove);
-      } else if (signer) {
-        await doApprove(signer);
+      try {
+        await wrapChainAction(chainId, setSettlementChainId, doApprove);
+      } catch {
+        setApprovingToken(undefined);
+        options?.onApproveFail?.();
       }
     },
     [
@@ -136,13 +137,12 @@ export function useTokenApproval({
       chainId,
       isApproving,
       spenderAddress,
-      signer,
       approveAmount,
-      wrapApprove,
       allowPermit,
       addTokenPermit,
       isPermitsDisabled,
       setIsPermitsDisabled,
+      setSettlementChainId,
     ]
   );
 
@@ -157,4 +157,3 @@ export function useTokenApproval({
 }
 
 const EMPTY_PERMITS: NonNullable<ReturnType<typeof useTokenPermitsContext>["tokenPermits"]> = [];
-const EMPTY_STRING_ARRAY: string[] = [];
