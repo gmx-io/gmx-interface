@@ -248,22 +248,22 @@ export const useGmSwapSubmitState = ({
       return undefined;
     }
 
-    const enoughWithLongCollateral =
+    const insufficientWithLongCollateral =
       payLongToken &&
       nativeToken &&
       payLongToken.address === nativeToken.address &&
-      nativeTokenWalletBalance > settlementChainFeeTokenAmount + longTokenAmount;
+      nativeTokenWalletBalance < settlementChainFeeTokenAmount + longTokenAmount;
 
-    const enoughWithShortCollateral =
+    const insufficientWithShortCollateral =
       payShortToken &&
       nativeToken &&
       payShortToken.address === nativeToken.address &&
-      nativeTokenWalletBalance > settlementChainFeeTokenAmount + shortTokenAmount;
+      nativeTokenWalletBalance < settlementChainFeeTokenAmount + shortTokenAmount;
 
     if (
       nativeTokenWalletBalance < settlementChainFeeTokenAmount ||
-      !enoughWithLongCollateral ||
-      !enoughWithShortCollateral
+      insufficientWithLongCollateral ||
+      insufficientWithShortCollateral
     ) {
       return {
         buttonErrorMessage: getDefaultInsufficientGasMessage(),
