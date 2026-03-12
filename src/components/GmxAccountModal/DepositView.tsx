@@ -1,7 +1,6 @@
 import { addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useLatest } from "react-use";
@@ -45,15 +44,11 @@ import { useQuoteOft } from "domain/multichain/useQuoteOft";
 import { useQuoteOftLimits } from "domain/multichain/useQuoteOftLimits";
 import { useQuoteSendNativeFeeWithGasLimit } from "domain/multichain/useQuoteSend";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
-import {
-  getBalanceByBalanceType,
-  getNeedTokenApprove,
-  useTokensAllowanceData,
-  useTokensDataRequest,
-} from "domain/synthetics/tokens";
+import { getBalanceByBalanceType, useTokensDataRequest } from "domain/synthetics/tokens";
 import { ValidationBannerErrorName, getDefaultInsufficientGasMessage } from "domain/synthetics/trade/utils/validation";
-import { NativeTokenSupportedAddress, approveTokens } from "domain/tokens";
+import { NativeTokenSupportedAddress } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
+import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { AddressablePixelEventName, sendAddressablePixelEvent } from "lib/addressablePixel";
 import { useChainId } from "lib/chains";
 import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
@@ -151,7 +146,6 @@ export const DepositView = () => {
     isBalanceDataLoading,
   } = useMultichainTradeTokensRequest(settlementChainId, account);
   const { tokensData: settlementChainTokensData } = useTokensDataRequest(settlementChainId, depositViewChain);
-  const [isApproving, setIsApproving] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [shouldSendCrossChainDepositWhenLoaded, setShouldSendCrossChainDepositWhenLoaded] = useState(false);
 
@@ -261,22 +255,30 @@ export const DepositView = () => {
     return selectedTokenSourceChainTokenId?.address;
   }, [depositViewChain, depositViewTokenAddress, selectedTokenSourceChainTokenId?.address, settlementChainId]);
 
-  const tokensAllowanceResult = useTokensAllowanceData(depositViewChain, {
-    spenderAddress,
-    tokenAddresses: sourceChainTokenToApproveAddress ? [sourceChainTokenToApproveAddress] : [],
-    skip: depositViewChain === undefined,
-  });
-  const tokensAllowanceData = depositViewChain !== undefined ? tokensAllowanceResult.tokensAllowanceData : undefined;
-
-  const needTokenApprove = getNeedTokenApprove(
-    tokensAllowanceData,
-    sourceChainTokenToApproveAddress,
-    amountLD,
-    EMPTY_ARRAY
+  const approvalTokens = useMemo(
+    () =>
+      sourceChainTokenToApproveAddress && amountLD !== undefined
+        ? [{ tokenAddress: sourceChainTokenToApproveAddress, amount: amountLD }]
+        : EMPTY_ARRAY,
+    [sourceChainTokenToApproveAddress, amountLD]
   );
 
-  const handleApprove = useCallback(async () => {
-    if (!depositViewTokenAddress || amountLD === undefined || !spenderAddress || !depositViewChain) {
+  const {
+    needsApproval: needTokenApprove,
+    isApproving,
+    handleApprove,
+  } = useTokenApproval({
+    chainId: depositViewChain,
+    spenderAddress,
+    tokens: approvalTokens,
+    skip:
+      depositViewChain === undefined ||
+      !sourceChainTokenToApproveAddress ||
+      sourceChainTokenToApproveAddress === zeroAddress,
+  });
+
+  const handleApproveClick = useCallback(() => {
+    if (!depositViewTokenAddress || !spenderAddress || !depositViewChain) {
       helperToast.error(t`Approval failed`);
       return;
     }
@@ -293,32 +295,8 @@ export const DepositView = () => {
       return;
     }
 
-    await wrapChainAction(depositViewChain, setSettlementChainId, async (signer) => {
-      await approveTokens({
-        chainId: depositViewChain,
-        tokenAddress: sourceChainTokenToApproveAddress,
-        signer: signer,
-        spender: spenderAddress,
-        onApproveSubmitted: () => setIsApproving(true),
-        setIsApproving: noop,
-        permitParams: undefined,
-        approveAmount: amountLD,
-      });
-    });
-  }, [
-    depositViewTokenAddress,
-    amountLD,
-    spenderAddress,
-    depositViewChain,
-    sourceChainTokenToApproveAddress,
-    setSettlementChainId,
-  ]);
-
-  useEffect(() => {
-    if (!needTokenApprove && isApproving) {
-      setIsApproving(false);
-    }
-  }, [isApproving, needTokenApprove]);
+    handleApprove();
+  }, [depositViewChain, depositViewTokenAddress, handleApprove, sourceChainTokenToApproveAddress, spenderAddress]);
 
   const isInputEmpty = inputAmount === undefined || inputAmount <= 0n || amountLD === undefined || amountLD <= 0n;
 
@@ -1021,7 +999,7 @@ export const DepositView = () => {
   } else if (needTokenApprove) {
     buttonState = {
       text: t`Allow ${selectedToken?.symbol} spending`,
-      onClick: handleApprove,
+      onClick: handleApproveClick,
     };
   } else if (isSubmitting) {
     buttonState = {

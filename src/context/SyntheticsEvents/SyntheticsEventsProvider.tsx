@@ -983,12 +983,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       const unsubscribeApproval = subscribeToApprovalEvents({
         chainId,
         account: currentAccount,
-        onApprove: (tokenAddress, spender, value) => {
+        onApprove: (tokenAddress, spender, value, blockNumber) => {
           setApprovalStatuses((old) => ({
             ...old,
             [tokenAddress]: {
               ...old[tokenAddress],
-              [spender]: { value, createdAt: Date.now() },
+              [spender]: { value, blockNumber },
             },
           }));
           userAnalytics.pushEvent<TokenApproveResultEvent>({
