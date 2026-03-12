@@ -1,6 +1,7 @@
 import { useEffect, useMemo } from "react";
 import { Address, ContractFunctionReturnType, isAddressEqual } from "viem";
 
+import { getIsFlagEnabled } from "config/ab";
 import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { accountOrderListKey } from "config/dataStore";
@@ -26,7 +27,6 @@ import {
 } from "sdk/utils/orders";
 import type { ApiOrderInfo } from "sdk/utils/orders/types";
 import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
-import { getIsFlagEnabled } from "config/ab";
 
 import type {
   MarketFilterLongShortDirection,

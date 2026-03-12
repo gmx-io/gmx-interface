@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { getIsFlagEnabled } from "config/ab";
 import { useUserReferralInfoRequest } from "domain/referrals";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
@@ -9,7 +10,6 @@ import { ApiPositionInfo, getPositionInfo, PositionInfo } from "sdk/utils/positi
 import useUiFeeFactorRequest from "../fees/utils/useUiFeeFactor";
 import { MarketsInfoData } from "../markets";
 import { TokensData } from "../tokens";
-import { getIsFlagEnabled } from "config/ab";
 import { PositionsData, PositionsInfoData } from "./types";
 import { useApiPositionsInfoRequest } from "./useApiPositionsInfoRequest";
 import { getAllPossiblePositionsKeys, useOptimisticPositionsInfo } from "./useOptimisticPositions";
