@@ -4,7 +4,7 @@ import { OrderType } from "sdk/utils/orders/types";
 import {
   buildDecreaseOrderPayload,
   buildIncreaseOrderPayload,
-  buildNativeTwapOrderPayload,
+  buildTwapOrderPayload,
   buildSwapOrderPayload,
   DecreasePositionOrderParams,
   IncreasePositionOrderParams,
@@ -42,7 +42,7 @@ import {
 export const selectTradeBoxCreateOrderParams = createSelector((q) => {
   const { isSwap, isIncrease, isTwap } = q(selectTradeboxTradeFlags);
 
-  // For TWAP orders, the primary params go through nativeTwapParams, not createOrderParams
+  // For TWAP orders, the primary params go through twapParams, not createOrderParams
   if (isTwap) {
     return undefined;
   }
@@ -59,10 +59,10 @@ export const selectTradeBoxCreateOrderParams = createSelector((q) => {
 });
 
 /**
- * Selector for native TWAP order params.
- * Returns NativeTwapOrderParams when in TWAP mode, undefined otherwise.
+ * Selector for TWAP order params.
+ * Returns CreateTwapTxnParams when in TWAP mode, undefined otherwise.
  */
-export const selectTradeBoxNativeTwapParams = createSelector((q) => {
+export const selectTradeBoxTwapParams = createSelector((q) => {
   const { isSwap, isIncrease, isTwap } = q(selectTradeboxTradeFlags);
 
   if (!isTwap) {
@@ -137,7 +137,7 @@ const selectTradeboxSwapOrderPayload = createSelector((q) => {
   };
 
   if (isTwap) {
-    // TWAP orders are handled by selectTradeBoxNativeTwapParams
+    // TWAP orders are handled by selectTradeBoxTwapParams
     return undefined;
   }
 
@@ -190,7 +190,7 @@ const selectTradeboxIncreaseOrderParams = createSelector((q) => {
   };
 
   if (isTwap) {
-    // TWAP orders are handled by selectTradeBoxNativeTwapParams
+    // TWAP orders are handled by selectTradeBoxTwapParams
     return undefined;
   }
 
@@ -219,7 +219,7 @@ const selectTradeboxDecreaseOrderParams = createSelector((q) => {
   }
 
   if (isTwap) {
-    // TWAP orders are handled by selectTradeBoxNativeTwapParams
+    // TWAP orders are handled by selectTradeBoxTwapParams
     return undefined;
   }
 
@@ -290,7 +290,7 @@ const selectTradeboxSwapTwapParams = createSelector((q) => {
     uiFeeReceiver: commonParams.uiFeeReceiver,
   };
 
-  return buildNativeTwapOrderPayload(swapOrderParams, {
+  return buildTwapOrderPayload(swapOrderParams, {
     duration,
     numberOfParts,
   });
@@ -347,7 +347,7 @@ const selectTradeboxIncreaseTwapParams = createSelector((q) => {
     uiFeeReceiver: commonParams.uiFeeReceiver,
   };
 
-  return buildNativeTwapOrderPayload(increaseOrderParams, {
+  return buildTwapOrderPayload(increaseOrderParams, {
     duration,
     numberOfParts,
   });
@@ -399,7 +399,7 @@ const selectTradeboxDecreaseTwapParams = createSelector((q) => {
     autoCancel: false,
   };
 
-  return buildNativeTwapOrderPayload(decreaseOrderParams, {
+  return buildTwapOrderPayload(decreaseOrderParams, {
     duration,
     numberOfParts,
   });

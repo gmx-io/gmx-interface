@@ -37,7 +37,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import {
   selectTradeBoxCreateOrderParams,
-  selectTradeBoxNativeTwapParams,
+  selectTradeBoxTwapParams,
 } from "context/SyntheticsStateContext/selectors/transactionsSelectors/tradeBoxOrdersSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useUserReferralCode } from "domain/referrals";
@@ -117,12 +117,12 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const sidecarOrderPayloads = useSidecarOrderPayloads();
 
   const primaryCreateOrderParams = useSelector(selectTradeBoxCreateOrderParams);
-  const nativeTwapParams = useSelector(selectTradeBoxNativeTwapParams);
+  const twapParams = useSelector(selectTradeBoxTwapParams);
 
   const slippageInputId = useId();
 
   const batchParams: BatchOrderTxnParams = useMemo(() => {
-    if (!primaryCreateOrderParams && !nativeTwapParams) {
+    if (!primaryCreateOrderParams && !twapParams) {
       return {
         createOrderParams: [],
         updateOrderParams: [],
@@ -134,9 +134,9 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       createOrderParams: [...(primaryCreateOrderParams ?? []), ...(sidecarOrderPayloads?.createPayloads ?? [])],
       updateOrderParams: sidecarOrderPayloads?.updatePayloads ?? [],
       cancelOrderParams: sidecarOrderPayloads?.cancelPayloads ?? [],
-      nativeTwapParams: nativeTwapParams ?? undefined,
+      twapParams: twapParams ?? undefined,
     };
-  }, [primaryCreateOrderParams, nativeTwapParams, sidecarOrderPayloads]);
+  }, [primaryCreateOrderParams, twapParams, sidecarOrderPayloads]);
 
   const { data: wrapOrUnwrapExecutionFee } = useWrapOrUnwrapExecutionFee();
 
@@ -307,7 +307,14 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
     sendOrderSubmittedMetric(metricData.metricId);
 
-    if ((!primaryCreateOrderParams && !nativeTwapParams) || !signer || !provider || !tokensData || !account || !marketsInfoData) {
+    if (
+      (!primaryCreateOrderParams && !twapParams) ||
+      !signer ||
+      !provider ||
+      !tokensData ||
+      !account ||
+      !marketsInfoData
+    ) {
       helperToast.error(t`Order submission failed`);
       sendTxnValidationErrorMetric(metricData.metricId);
       return Promise.reject();
@@ -348,7 +355,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     isFromTokenGmxAccount,
     makeOrderTxnCallback,
     marketsInfoData,
-    nativeTwapParams,
+    twapParams,
     primaryCreateOrderParams,
     provider,
     setShouldFallbackToInternalSwap,

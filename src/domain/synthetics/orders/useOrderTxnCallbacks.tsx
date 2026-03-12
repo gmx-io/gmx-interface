@@ -104,7 +104,7 @@ export function useOrderTxnCallbacks() {
       const actionsCount = getBatchRequiredActions(batchParams);
 
       let mainActionType: "create" | "update" | "cancel";
-      if (batchParams.createOrderParams.length > 0 || batchParams.nativeTwapParams) {
+      if (batchParams.createOrderParams.length > 0 || batchParams.twapParams) {
         mainActionType = "create";
       } else if (batchParams.updateOrderParams.length > 0) {
         mainActionType = "update";
@@ -429,9 +429,9 @@ function getBatchPendingOrders(
 
   const twapPendingOrders = getPendingCreateTwapOrders(txnParams.createOrderParams, createdAt);
 
-  // Handle native TWAP order as a single pending order with total amounts
-  if (txnParams.nativeTwapParams) {
-    const { createOrderTxnParams, twapCount } = txnParams.nativeTwapParams;
+  // Handle TWAP order as a single pending order with total amounts
+  if (txnParams.twapParams) {
+    const { createOrderTxnParams, twapCount } = txnParams.twapParams;
     const pendingOrder = getPendingCreateOrder(createOrderTxnParams, true, createdAt);
     // Scale per-order values to totals for the pending display
     twapPendingOrders.push({

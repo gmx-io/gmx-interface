@@ -60,9 +60,9 @@ export function useExpressOrdersParams({
   );
   const isExpressAvailable = useSelector(selectIsExpressTransactionAvailable);
 
-  // Native TWAP orders use the direct createTwapOrder endpoint which relay routers don't support yet
+  // TWAP orders use the direct createTwapOrder endpoint which relay routers don't support yet
   const isAvailable =
-    isExpressAvailable && orderParams && !getBatchIsNativePayment(orderParams) && !orderParams.nativeTwapParams;
+    isExpressAvailable && orderParams && !getBatchIsNativePayment(orderParams) && !orderParams.twapParams;
 
   const { signer } = useWallet();
   const { provider } = useJsonRpcProvider(chainId, { isExpress: isExpressAvailable });

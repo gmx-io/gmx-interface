@@ -25,7 +25,7 @@ export type ExchangeRouterCall = {
   params: any[];
 };
 
-export type NativeTwapOrderParams = {
+export type CreateTwapTxnParams = {
   /** The single order payload with PER-ORDER amounts (the contract divides collateral internally) */
   createOrderTxnParams: CreateOrderTxnParams<
     SwapOrderParams | IncreasePositionOrderParams | DecreasePositionOrderParams
@@ -42,8 +42,8 @@ export type BatchOrderTxnParams = {
   >[];
   updateOrderParams: UpdateOrderTxnParams[];
   cancelOrderParams: CancelOrderTxnParams[];
-  /** When set, uses the native createTwapOrder endpoint instead of N separate createOrder calls */
-  nativeTwapParams?: NativeTwapOrderParams;
+  /** When set, uses the createTwapOrder endpoint */
+  twapParams?: CreateTwapTxnParams;
 };
 
 export type CreateOrderTxnParams<
@@ -494,9 +494,9 @@ export function buildTwapOrdersPayloads<
  * per-order execution fee amounts. The `buildCreateTwapOrderMulticall` function is responsible
  * for scaling up the WNT transfer to the total execution fee before sending to the vault.
  */
-export function buildNativeTwapOrderPayload<
+export function buildTwapOrderPayload<
   T extends SwapOrderParams | IncreasePositionOrderParams | DecreasePositionOrderParams,
->(p: T, twapParams: TwapOrderParams): NativeTwapOrderParams {
+>(p: T, twapParams: TwapOrderParams): CreateTwapTxnParams {
   const uiFeeReceiver = createTwapUiFeeReceiver({ numberOfParts: twapParams.numberOfParts });
   const numberOfParts = BigInt(twapParams.numberOfParts);
   const intervalSeconds = getTwapIntervalSeconds(twapParams);
@@ -679,9 +679,9 @@ export function getBatchTotalExecutionFee({
     return undefined;
   }
 
-  // Account for native TWAP order: per-order fee * twapCount
-  if (batchParams.nativeTwapParams) {
-    const { createOrderTxnParams, twapCount } = batchParams.nativeTwapParams;
+  // Account for TWAP order: per-order fee * twapCount
+  if (batchParams.twapParams) {
+    const { createOrderTxnParams, twapCount } = batchParams.twapParams;
     feeTokenAmount += createOrderTxnParams.orderPayload.numbers.executionFee * BigInt(twapCount);
     gasLimit += createOrderTxnParams.params.executionGasLimit * BigInt(twapCount);
   }
@@ -712,9 +712,9 @@ export function getBatchTotalExecutionFee({
 export function getBatchTotalPayCollateralAmount(batchParams: BatchOrderTxnParams) {
   const payAmounts: { [tokenAddress: string]: bigint } = {};
 
-  // Account for native TWAP order collateral
-  if (batchParams.nativeTwapParams) {
-    const { createOrderTxnParams } = batchParams.nativeTwapParams;
+  // Account for TWAP order collateral
+  if (batchParams.twapParams) {
+    const { createOrderTxnParams } = batchParams.twapParams;
     const payTokenAddress = createOrderTxnParams.tokenTransfersParams?.payTokenAddress;
     const payTokenAmount = createOrderTxnParams.tokenTransfersParams?.payTokenAmount;
 
@@ -979,14 +979,14 @@ function combineTransfers(tokenTransfers: TokenTransfer[]) {
 }
 
 export function getBatchOrderMulticallPayload({ params }: { params: BatchOrderTxnParams }) {
-  const { createOrderParams, updateOrderParams, cancelOrderParams, nativeTwapParams } = params;
+  const { createOrderParams, updateOrderParams, cancelOrderParams, twapParams } = params;
 
   const multicall: ExchangeRouterCall[] = [];
   let value = 0n;
 
-  // If native TWAP params are set, use the createTwapOrder endpoint
-  if (nativeTwapParams) {
-    const { multicall: twapMulticall, value: twapValue } = buildCreateTwapOrderMulticall(nativeTwapParams);
+  // If TWAP params are set, use the createTwapOrder endpoint
+  if (twapParams) {
+    const { multicall: twapMulticall, value: twapValue } = buildCreateTwapOrderMulticall(twapParams);
     multicall.push(...twapMulticall);
     value += twapValue;
   }
@@ -1060,8 +1060,8 @@ export function buildCreateOrderMulticall(params: CreateOrderTxnParams<any>) {
  * transfer to the total execution fee. Collateral transfers are already the total amount
  * (the contract divides them by twapCount internally).
  */
-export function buildCreateTwapOrderMulticall(nativeTwapParams: NativeTwapOrderParams) {
-  const { createOrderTxnParams, twapCount, intervalSeconds } = nativeTwapParams;
+export function buildCreateTwapOrderMulticall(twapParams: CreateTwapTxnParams) {
+  const { createOrderTxnParams, twapCount, intervalSeconds } = twapParams;
   const { tokenTransfersParams, orderPayload } = createOrderTxnParams;
   const { tokenTransfers = [], value = 0n } = tokenTransfersParams ?? {};
 
@@ -1069,7 +1069,7 @@ export function buildCreateTwapOrderMulticall(nativeTwapParams: NativeTwapOrderP
   const additionalExecutionFee = perOrderExecutionFee * BigInt(twapCount - 1);
 
   // eslint-disable-next-line no-console
-  console.debug("[v2.2c native TWAP] buildCreateTwapOrderMulticall:", {
+  console.debug("[v2.2c TWAP] buildCreateTwapOrderMulticall:", {
     twapCount,
     intervalSeconds,
     perOrderExecutionFee: perOrderExecutionFee.toString(),
@@ -1181,10 +1181,10 @@ export function getBatchRequiredActions(orderParams: BatchOrderTxnParams | undef
     return 0;
   }
 
-  const nativeTwapActions = orderParams.nativeTwapParams ? 1 : 0;
+  const twapActions = orderParams.twapParams ? 1 : 0;
 
   return (
-    nativeTwapActions +
+    twapActions +
     orderParams.createOrderParams.length +
     orderParams.updateOrderParams.length +
     orderParams.cancelOrderParams.length
@@ -1200,10 +1200,10 @@ export function getBatchSwapsCount(orderParams: BatchOrderTxnParams | undefined)
     return acc + co.orderPayload.addresses.swapPath.length;
   }, 0);
 
-  if (orderParams.nativeTwapParams) {
+  if (orderParams.twapParams) {
     count +=
-      orderParams.nativeTwapParams.createOrderTxnParams.orderPayload.addresses.swapPath.length *
-      orderParams.nativeTwapParams.twapCount;
+      orderParams.twapParams.createOrderTxnParams.orderPayload.addresses.swapPath.length *
+      orderParams.twapParams.twapCount;
   }
 
   return count;
@@ -1226,7 +1226,7 @@ export function getIsEmptyBatch(orderParams: BatchOrderTxnParams | undefined) {
 }
 
 export function getBatchIsNativePayment(orderParams: BatchOrderTxnParams) {
-  if (orderParams.nativeTwapParams?.createOrderTxnParams.tokenTransfersParams?.isNativePayment) {
+  if (orderParams.twapParams?.createOrderTxnParams.tokenTransfersParams?.isNativePayment) {
     return true;
   }
 
@@ -1235,8 +1235,8 @@ export function getBatchIsNativePayment(orderParams: BatchOrderTxnParams) {
 
 export function getIsInvalidBatchReceiver(batchParams: BatchOrderTxnParams, signerAddress: string) {
   if (
-    batchParams.nativeTwapParams &&
-    batchParams.nativeTwapParams.createOrderTxnParams.orderPayload.addresses.receiver !== signerAddress
+    batchParams.twapParams &&
+    batchParams.twapParams.createOrderTxnParams.orderPayload.addresses.receiver !== signerAddress
   ) {
     return true;
   }
