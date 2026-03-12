@@ -4,8 +4,12 @@
 yarn test:ci &
 PID1=$!
 
-cd sdk && yarn test:ci &
+yarn test:ct &
 PID2=$!
+
+cd sdk && yarn test:ci &
+PID3=$!
 
 wait $PID1
 wait $PID2
+wait $PID3

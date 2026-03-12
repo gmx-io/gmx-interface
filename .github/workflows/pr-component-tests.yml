@@ -1,0 +1,41 @@
+name: Component Tests
+
+on:
+  pull_request:
+    branches:
+      - master
+      - release
+      - "release-*"
+    types: [opened, edited, synchronize, reopened]
+  workflow_dispatch:
+
+jobs:
+  component-tests:
+    name: Playwright Component Tests
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "22"
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install --frozen-lockfile
+
+      - name: Install Playwright browsers
+        run: npx playwright install --with-deps chromium
+
+      - name: Run component tests
+        run: yarn test:ct
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: playwright-ct-report
+          path: playwright-report/
+          retention-days: 30
