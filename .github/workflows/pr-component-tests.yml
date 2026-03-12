@@ -6,7 +6,7 @@ on:
       - master
       - release
       - "release-*"
-    types: [opened, edited, synchronize, reopened]
+    types: [opened, synchronize, reopened]
   workflow_dispatch:
 
 jobs:
