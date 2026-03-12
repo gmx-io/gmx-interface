@@ -374,6 +374,22 @@ export async function buildMarketsConfigsRequest(
           methodName: "getUint",
           params: [prebuiltHashedKeys.maxOpenInterestShort],
         },
+        maxCollateralSumLongTokenLong: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxCollateralSumLongTokenLong],
+        },
+        maxCollateralSumLongTokenShort: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxCollateralSumLongTokenShort],
+        },
+        maxCollateralSumShortTokenLong: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxCollateralSumShortTokenLong],
+        },
+        maxCollateralSumShortTokenShort: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxCollateralSumShortTokenShort],
+        },
         minPositionImpactPoolAmount: {
           methodName: "getUint",
           params: [prebuiltHashedKeys.minPositionImpactPoolAmount],
@@ -573,6 +589,7 @@ export function parseMarketsConfigsResponse(
   res: MulticallResponse,
   marketsAddresses: string[]
 ): Record<string, MarketConfig> {
+  let debugLogged = false;
   return marketsAddresses.reduce(
     (acc, marketAddress) => {
       const dataStoreErrors = res.errors[`${marketAddress}-dataStore`];
@@ -594,6 +611,10 @@ export function parseMarketsConfigsResponse(
         openInterestReserveFactorShort: dataStoreValues.openInterestReserveFactorShort.returnValues[0],
         maxOpenInterestLong: dataStoreValues.maxOpenInterestLong.returnValues[0],
         maxOpenInterestShort: dataStoreValues.maxOpenInterestShort.returnValues[0],
+        maxCollateralSumLongTokenLong: dataStoreValues.maxCollateralSumLongTokenLong.returnValues[0],
+        maxCollateralSumLongTokenShort: dataStoreValues.maxCollateralSumLongTokenShort.returnValues[0],
+        maxCollateralSumShortTokenLong: dataStoreValues.maxCollateralSumShortTokenLong.returnValues[0],
+        maxCollateralSumShortTokenShort: dataStoreValues.maxCollateralSumShortTokenShort.returnValues[0],
         minPositionImpactPoolAmount: dataStoreValues.minPositionImpactPoolAmount.returnValues[0],
         positionImpactPoolDistributionRate: dataStoreValues.positionImpactPoolDistributionRate.returnValues[0],
         borrowingFactorLong: dataStoreValues.borrowingFactorLong.returnValues[0],
@@ -646,7 +667,8 @@ export function parseMarketsConfigsResponse(
         virtualShortTokenId: dataStoreValues.virtualShortTokenId.returnValues[0],
       };
 
-      if (Object.keys(acc).length === 1) {
+      if (!debugLogged && acc[marketAddress].maxLongPoolAmount > 0n) {
+        debugLogged = true;
         const cfg = acc[marketAddress];
         // eslint-disable-next-line no-console
         console.debug("[v2.2c market config] Sample market:", marketAddress, {

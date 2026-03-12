@@ -32,7 +32,7 @@ const INDEXER_URLS = {
   },
 
   [ARBITRUM_SEPOLIA]: {
-    subsquid: "https://gmx.squids.live/gmx-synthetics-arb-sepolia@648c88/api/graphql",
+    subsquid: "https://gmx-test.squids.live/gmx-synthetics-arb-sepolia@230blq/api/graphql",
   },
 
   [BOTANIX]: {

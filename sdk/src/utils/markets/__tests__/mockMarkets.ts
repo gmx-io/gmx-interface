@@ -81,6 +81,11 @@ export function mockMarketsInfoData(
       maxOpenInterestLong: expandDecimals(5, 29),
       maxOpenInterestShort: expandDecimals(5, 29),
 
+      maxCollateralSumLongTokenLong: 0n,
+      maxCollateralSumLongTokenShort: 0n,
+      maxCollateralSumShortTokenLong: 0n,
+      maxCollateralSumShortTokenShort: 0n,
+
       positionImpactPoolAmount: usdToToken(1000, indexToken),
       positionImpactPoolDistributionRate: 0n,
       minPositionImpactPoolAmount: 0n,

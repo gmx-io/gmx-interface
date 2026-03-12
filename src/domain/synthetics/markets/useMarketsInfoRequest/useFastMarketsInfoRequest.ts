@@ -183,6 +183,11 @@ export function useFastMarketsInfoRequest(chainId: number) {
             maxOpenInterestLong: BigInt(mInfo.maxOpenInterestLong),
             maxOpenInterestShort: BigInt(mInfo.maxOpenInterestShort),
 
+            maxCollateralSumLongTokenLong: 0n,
+            maxCollateralSumLongTokenShort: 0n,
+            maxCollateralSumShortTokenLong: 0n,
+            maxCollateralSumShortTokenShort: 0n,
+
             borrowingFactorLong: 0n,
             borrowingFactorShort: 0n,
             borrowingExponentFactorLong: 0n,

@@ -12,6 +12,7 @@ import {
   IS_MARKET_DISABLED_KEY,
   LENT_POSITION_IMPACT_POOL_AMOUNT_KEY,
   MAX_FUNDING_FACTOR_PER_SECOND,
+  MAX_COLLATERAL_SUM_KEY,
   MAX_LENDABLE_IMPACT_FACTOR_FOR_WITHDRAWALS_KEY,
   MAX_LENDABLE_IMPACT_FACTOR_KEY,
   MAX_LENDABLE_IMPACT_USD_KEY,
@@ -127,6 +128,22 @@ export function hashMarketConfigKeys(market: MarketConfigInput): MarketConfigKey
     maxOpenInterestShort: [
       ["bytes32", "address", "bool"],
       [MAX_OPEN_INTEREST_KEY, marketAddress, false],
+    ],
+    maxCollateralSumLongTokenLong: [
+      ["bytes32", "address", "address", "bool"],
+      [MAX_COLLATERAL_SUM_KEY, marketAddress, market.longTokenAddress, true],
+    ],
+    maxCollateralSumLongTokenShort: [
+      ["bytes32", "address", "address", "bool"],
+      [MAX_COLLATERAL_SUM_KEY, marketAddress, market.longTokenAddress, false],
+    ],
+    maxCollateralSumShortTokenLong: [
+      ["bytes32", "address", "address", "bool"],
+      [MAX_COLLATERAL_SUM_KEY, marketAddress, market.shortTokenAddress, true],
+    ],
+    maxCollateralSumShortTokenShort: [
+      ["bytes32", "address", "address", "bool"],
+      [MAX_COLLATERAL_SUM_KEY, marketAddress, market.shortTokenAddress, false],
     ],
     minPositionImpactPoolAmount: [
       ["bytes32", "address"],

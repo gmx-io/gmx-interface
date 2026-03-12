@@ -248,38 +248,32 @@ export const useGmSwapSubmitState = ({
       return undefined;
     }
 
-    const enoughWithLongCollateral =
-      payLongToken &&
-      nativeToken &&
-      payLongToken.address === nativeToken.address &&
-      nativeTokenWalletBalance > settlementChainFeeTokenAmount + longTokenAmount;
-
-    const enoughWithShortCollateral =
-      payShortToken &&
-      nativeToken &&
-      payShortToken.address === nativeToken.address &&
-      nativeTokenWalletBalance > settlementChainFeeTokenAmount + shortTokenAmount;
-
-    if (
-      nativeTokenWalletBalance < settlementChainFeeTokenAmount ||
-      !enoughWithLongCollateral ||
-      !enoughWithShortCollateral
-    ) {
-      return {
-        buttonErrorMessage: getDefaultInsufficientGasMessage(),
-        bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
-      };
-    }
-  }, [
-    paySource,
-    nativeTokenWalletBalance,
-    settlementChainFeeTokenAmount,
-    payLongToken,
-    nativeToken,
-    longTokenAmount,
-    payShortToken,
-    shortTokenAmount,
-  ]);
+    // TODO: re-enable after testnet testing
+    // const enoughWithLongCollateral =
+    //   payLongToken &&
+    //   nativeToken &&
+    //   payLongToken.address === nativeToken.address &&
+    //   nativeTokenWalletBalance > settlementChainFeeTokenAmount + longTokenAmount;
+    //
+    // const enoughWithShortCollateral =
+    //   payShortToken &&
+    //   nativeToken &&
+    //   payShortToken.address === nativeToken.address &&
+    //   nativeTokenWalletBalance > settlementChainFeeTokenAmount + shortTokenAmount;
+    //
+    // if (
+    //   nativeTokenWalletBalance < settlementChainFeeTokenAmount ||
+    //   !enoughWithLongCollateral ||
+    //   !enoughWithShortCollateral
+    // ) {
+    //   return {
+    //     buttonErrorMessage: getDefaultInsufficientGasMessage(),
+    //     bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
+    //   };
+    // }
+    // TODO: restore deps when re-enabling gas check:
+    // payLongToken, nativeToken, longTokenAmount, payShortToken, shortTokenAmount
+  }, [paySource, nativeTokenWalletBalance, settlementChainFeeTokenAmount]);
 
   const formattedEstimationError = useMemo((): ValidationResult | undefined => {
     if (estimationError instanceof ExpressEstimationInsufficientGasPaymentTokenBalanceError) {

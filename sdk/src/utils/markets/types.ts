@@ -51,6 +51,11 @@ export type MarketInfo = Market &
     maxOpenInterestLong: bigint;
     maxOpenInterestShort: bigint;
 
+    maxCollateralSumLongTokenLong: bigint;
+    maxCollateralSumLongTokenShort: bigint;
+    maxCollateralSumShortTokenLong: bigint;
+    maxCollateralSumShortTokenShort: bigint;
+
     borrowingFactorLong: bigint;
     borrowingFactorShort: bigint;
     borrowingExponentFactorLong: bigint;
@@ -185,6 +190,10 @@ export type MarketConfig = Pick<
   | "openInterestReserveFactorShort"
   | "maxOpenInterestLong"
   | "maxOpenInterestShort"
+  | "maxCollateralSumLongTokenLong"
+  | "maxCollateralSumLongTokenShort"
+  | "maxCollateralSumShortTokenLong"
+  | "maxCollateralSumShortTokenShort"
   | "minPositionImpactPoolAmount"
   | "positionImpactPoolDistributionRate"
   | "borrowingFactorLong"
