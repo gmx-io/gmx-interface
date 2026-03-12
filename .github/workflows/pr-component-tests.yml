@@ -9,6 +9,10 @@ on:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
 
+permissions:
+  contents: write
+  pull-requests: write
+
 jobs:
   component-tests:
     name: Playwright Component Tests
@@ -30,12 +34,52 @@ jobs:
         run: npx playwright install --with-deps chromium
 
       - name: Run component tests
+        id: tests
         run: yarn test:ct
+        continue-on-error: true
 
-      - name: Upload test report
+      - name: Upload test report artifact
         uses: actions/upload-artifact@v4
         if: ${{ !cancelled() }}
         with:
           name: playwright-ct-report
           path: playwright-report/
           retention-days: 30
+
+      - name: Deploy report to GitHub Pages
+        if: ${{ !cancelled() }}
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_dir: ./playwright-report
+          destination_dir: ct-report/pr-${{ github.event.pull_request.number }}/${{ github.run_number }}
+          keep_files: true
+
+      - name: Find existing report comment
+        if: ${{ !cancelled() }}
+        uses: peter-evans/find-comment@v3
+        id: find-comment
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          comment-author: "github-actions[bot]"
+          body-includes: "Playwright Component Test Report"
+
+      - name: Post report link
+        if: ${{ !cancelled() }}
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          edit-mode: replace
+          body: |
+            ## Playwright Component Test Report
+
+            ${{ steps.tests.outcome == 'success' && '**All tests passed.**' || '**Some tests failed.** Check the report for details.' }}
+
+            [View Report](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/ct-report/pr-${{ github.event.pull_request.number }}/${{ github.run_number }}/)
+
+            <sub>Run #${{ github.run_number }} | Commit ${{ github.event.pull_request.head.sha }}</sub>
+
+      - name: Fail if tests failed
+        if: ${{ steps.tests.outcome == 'failure' }}
+        run: exit 1
