@@ -209,6 +209,57 @@ describe("Batch Utils", () => {
   });
 
   describe("getBatchTotalExecutionFee", () => {
+    it("returns undefined for empty batch", () => {
+      const tokensData = {
+        [WETH.address]: {
+          ...WETH,
+          prices: {
+            minPrice: expandDecimals(2000, USD_DECIMALS),
+            maxPrice: expandDecimals(2000, USD_DECIMALS),
+          },
+        },
+      };
+
+      const result = getBatchTotalExecutionFee({
+        batchParams: { createOrderParams: [], updateOrderParams: [], cancelOrderParams: [] },
+        tokensData,
+        chainId: CHAIN_ID,
+      });
+
+      expect(result).toBeUndefined();
+    });
+
+    it("returns valid ExecutionFee with zero amounts for cancel-only batch", () => {
+      const tokensData = {
+        [WETH.address]: {
+          ...WETH,
+          prices: {
+            minPrice: expandDecimals(2000, USD_DECIMALS),
+            maxPrice: expandDecimals(2000, USD_DECIMALS),
+          },
+        },
+      };
+
+      const result = getBatchTotalExecutionFee({
+        batchParams: {
+          createOrderParams: [],
+          updateOrderParams: [],
+          cancelOrderParams: [{ orderKey: "0x123" }],
+        },
+        tokensData,
+        chainId: CHAIN_ID,
+      });
+
+      expect(result).toEqual({
+        feeTokenAmount: 0n,
+        gasLimit: 0n,
+        feeUsd: 0n,
+        feeToken: tokensData[WETH.address],
+        isFeeHigh: false,
+        isFeeVeryHigh: false,
+      });
+    });
+
     it("calculates total execution fee including top-ups", () => {
       const params5 = {
         ...commonMarketIncreaseParams,

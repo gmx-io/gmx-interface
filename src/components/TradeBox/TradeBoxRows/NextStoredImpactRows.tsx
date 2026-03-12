@@ -1,5 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 
+import { DOCS_LINKS } from "config/links";
 import { selectBreakdownNetPriceImpactEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxNextPositionValues,
@@ -27,12 +28,11 @@ export function NextStoredImpactRows() {
       <SyntheticsInfoRow
         label={
           <TooltipWithPortal
-            handle={t`Stored Price Impact`}
+            handle={t`Stored price impact`}
             content={
               <Trans>
-                The price impact is not applied until the decrease action. These are the current estimated values at
-                increase.{" "}
-                <ExternalLink href="https://docs.gmx.io/docs/trading#price-impact-and-price-impact-rebates" newTab>
+                Price impact is stored when you increase a position and applied when you decrease.{" "}
+                <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
                   Read more
                 </ExternalLink>
                 .
@@ -56,7 +56,7 @@ export function NextStoredImpactRows() {
       {nextPositionValues?.potentialPriceImpactDiffUsd !== undefined &&
         nextPositionValues?.potentialPriceImpactDiffUsd > 0n && (
           <SyntheticsInfoRow
-            label={t`Est. Impact Rebate`}
+            label={t`Estimated impact rebate`}
             value={formatDeltaUsd(nextPositionValues?.potentialPriceImpactDiffUsd)}
             valueClassName="numbers text-green-500"
           />

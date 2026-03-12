@@ -10,12 +10,12 @@ import {
 export const getDistributionTitle = (distributionId: string) => {
   switch (distributionId) {
     case GLP_DISTRIBUTION_TEST_ID.toString():
-      return t`GLP Reimbursement (test)`;
+      return t`GLP reimbursement (test)`;
     case GLP_DISTRIBUTION_ID.toString():
-      return t`GLP Reimbursement`;
+      return t`GLP reimbursement`;
     case GLV_BONUS_INCENTIVE_DISTRIBUTION_ID.toString():
-      return t`GLV Bonus Incentive`;
+      return t`GLV bonus incentive`;
     case GLV_BONUS_INCENTIVE_DISTRIBUTION_TEST_ID.toString():
-      return t`GLV Bonus Incentive (test)`;
+      return t`GLV bonus incentive (test)`;
   }
 };

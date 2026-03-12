@@ -164,6 +164,8 @@ export enum FreshnessMetricId {
   MarketsValues = "marketsValues",
   MarketsConfigs = "marketsConfigs",
   ApiMarketsInfo = "apiMarketsInfo",
+  ApiPositionsInfo = "apiPositionsInfo",
+  ApiOrders = "apiOrders",
   Positions = "positions",
   Orders = "orders",
   Balances = "balances",
@@ -354,7 +356,6 @@ export type ExpressOrderMetricData = {
   isSubbaccountExpired: boolean | undefined;
   isSubaccountActionsExceeded: boolean | undefined;
   isSubaccountNonceExpired: boolean | undefined;
-  isSponsoredCall: boolean;
   approximateGasLimit: number;
   approximateL1GasLimit: number;
   gasPrice: number;

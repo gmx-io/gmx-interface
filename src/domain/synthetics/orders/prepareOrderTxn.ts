@@ -21,13 +21,14 @@ export async function prepareOrderTxn(
   additinalErrorContent?: React.ReactNode
 ) {
   if (!contract.runner?.provider) {
-    helperToast.error(t`Error preparing transaction. Provider is not defined`);
+    helperToast.error(t`Transaction failed: provider unavailable`);
     throw new Error("Provider is not defined");
   }
 
   const provider = getProvider(undefined, chainId);
+  const account = await (contract.runner as ethers.Signer).getAddress();
   const [gasLimit, gasPriceData] = await Promise.all([
-    getGasLimit(contract, method, params, value).catch(
+    getGasLimit({ chainId, contract, method, params, value, from: account }).catch(
       makeCatchTransactionError(chainId, metricId, "gasLimit", additinalErrorContent)
     ),
     getGasPrice(provider, chainId).catch(

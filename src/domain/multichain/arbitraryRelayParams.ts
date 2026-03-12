@@ -45,12 +45,12 @@ import { convertToTokenAmount } from "domain/tokens";
 import { CustomError, isCustomError } from "lib/errors";
 import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { metrics } from "lib/metrics";
-import { expandDecimals, USD_DECIMALS } from "lib/numbers";
+import { applyFactor, BASIS_POINTS_DIVISOR_BIGINT, expandDecimals, USD_DECIMALS } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import { AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
-import { gelatoRelay } from "sdk/utils/gelatoRelay";
+import { bigMath } from "sdk/utils/bigmath";
 import { getEmptyExternalCallsPayload, type ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
 import { fallbackCustomError } from "./fallbackCustomError";
@@ -165,6 +165,9 @@ async function estimateArbitraryGasLimit({
   );
 
   const tokensToOverride = new Set([gasPaymentParams.gasPaymentTokenAddress]);
+  if (overrideWnt) {
+    tokensToOverride.add(gasPaymentParams.relayerFeeTokenAddress);
+  }
   if (additionalBalanceOverrideTokens) {
     for (const token of additionalBalanceOverrideTokens) {
       if (token) {
@@ -240,6 +243,7 @@ export async function estimateArbitraryRelayFee({
   gasPaymentParams,
   subaccount,
   additionalBalanceOverrideTokens,
+  globalExpressParams,
 }: {
   chainId: ContractsChainId;
   client: PublicClient;
@@ -249,6 +253,7 @@ export async function estimateArbitraryRelayFee({
   subaccount: Subaccount | undefined;
   account: string;
   additionalBalanceOverrideTokens?: string[];
+  globalExpressParams: GlobalExpressParams;
 }) {
   const gasLimit = await estimateArbitraryGasLimit({
     chainId,
@@ -261,14 +266,15 @@ export async function estimateArbitraryRelayFee({
     additionalBalanceOverrideTokens,
   });
 
-  const fee = await gelatoRelay.getEstimatedFee(
-    BigInt(chainId),
-    gasPaymentParams.relayerFeeTokenAddress,
-    gasLimit,
-    false
+  let relayerFeeAmount = applyFactor(
+    gasLimit * globalExpressParams.gasPrice,
+    globalExpressParams.gasLimits.gelatoRelayFeeMultiplierFactor
   );
 
-  return fee;
+  const buffer = bigMath.mulDiv(relayerFeeAmount, BigInt(globalExpressParams.bufferBps), BASIS_POINTS_DIVISOR_BIGINT);
+  relayerFeeAmount += buffer;
+
+  return relayerFeeAmount;
 }
 
 export function getArbitraryRelayParamsAndPayload({
@@ -440,11 +446,12 @@ export function useArbitraryRelayParamsAndPayload({
           executionFeeAmount: p.executionFeeAmount ?? 0n,
           gasPaymentTokenAsCollateralAmount: p.gasPaymentTokenAsCollateralAmount ?? 0n,
           subaccountActions: 0,
-          transactionPayloadGasLimit: gasLimit,
+          transactionPayloadGasLimit: 0n,
           expressTransactionBuilder: p.expressTransactionBuilder,
           executionGasLimit: 0n,
         },
         throwOnInvalid: true,
+        overrideGasLimit: gasLimit,
       });
 
       if (expressParams === undefined) {

@@ -51,7 +51,7 @@ export function OpenInterestTooltip() {
       <StatsTooltipRow label={t`Long OI`} value={longOIFormatted} showDollar={false} />
       <StatsTooltipRow label={t`Short OI`} value={shortOIFormatted} showDollar={false} />
       <div className="mt-4">
-        <Trans>Shows the total open interest in tokens and its notional value in USD.</Trans>
+        <Trans>Total open interest in tokens and notional value in USD</Trans>
       </div>
     </div>
   );

@@ -12,6 +12,7 @@ import { ja as dateJa } from "date-fns/locale/ja";
 import { ko as dateKo } from "date-fns/locale/ko";
 import { ru as dateRu } from "date-fns/locale/ru";
 import { zhCN as dateZh } from "date-fns/locale/zh-CN";
+import { zhTW as dateZhTw } from "date-fns/locale/zh-TW";
 import { useCallback, useMemo } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
@@ -35,6 +36,7 @@ export const LOCALE_DATE_LOCALE_MAP: Record<keyof typeof locales, DateLocale> = 
   ja: dateJa,
   fr: dateFr,
   de: dateDe,
+  "zh-tw": dateZhTw,
   pseudo: dateEn,
 };
 

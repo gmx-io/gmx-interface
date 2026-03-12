@@ -66,6 +66,7 @@ interface Props {
   withToggleSwitch?: boolean;
   handleClassName?: string;
   chevronClassName?: string;
+  wrapped?: boolean;
 }
 
 export function ExpandableRow({
@@ -83,6 +84,7 @@ export function ExpandableRow({
   withToggleSwitch = false,
   handleClassName,
   chevronClassName,
+  wrapped = false,
 }: Props) {
   const previousHasError = usePrevious(hasError);
   const contentRef = useRef<HTMLDivElement>(null);
@@ -117,7 +119,7 @@ export function ExpandableRow({
   );
 
   const label = useMemo(() => {
-    return hasError && disableCollapseOnError ? (
+    return hasError && disableCollapseOnError && errorMessage ? (
       <TooltipWithPortal handle={title} handleClassName={handleClassName} content={errorMessage} />
     ) : (
       <span className={handleClassName}>{title}</span>
@@ -135,7 +137,11 @@ export function ExpandableRow({
   );
 
   return (
-    <div className={cx("min-h-16", className)}>
+    <div
+      className={cx("min-h-16", className, {
+        "rounded-8 border-1/2 border-slate-600 bg-slate-950/50 px-12 py-10": wrapped,
+      })}
+    >
       <AnimatePresence initial={false}>
         <div key="handle" className={cx("transition-[margin] duration-200", { "mb-14": open })}>
           <SyntheticsInfoRow

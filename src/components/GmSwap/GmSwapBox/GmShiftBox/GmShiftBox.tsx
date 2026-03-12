@@ -144,7 +144,6 @@ export function GmShiftBox({
     marketTokenUsd: amounts?.fromTokenUsd,
     executionFee,
     routerAddress,
-    payTokenAddresses: [selectedToken?.address ?? ""],
     glvOrMarketInfoData: glvAndMarketsInfoData,
   });
 
@@ -332,10 +331,11 @@ export function GmShiftBox({
           />
 
           <ExpandableRow
-            title={t`Execution Details`}
+            title={t`Execution details`}
             open={isExecutionDetailsOpen}
             onToggle={toggleExecutionDetails}
             contentClassName="flex flex-col gap-12"
+            wrapped
           >
             <NetworkFeeRow rowPadding executionFee={executionFee} />
           </ExpandableRow>

@@ -21,24 +21,24 @@ export function createWrapOrUnwrapTxn(chainId: number, signer: Signer, p: WrapOr
   if (p.isWrap) {
     return callContract(chainId, contract, "deposit", [], {
       value: p.amount,
-      sentMsg: t`Swap submitted.`,
+      sentMsg: t`Swap submitted`,
       successMsg: t`Swapped ${formatTokenAmount(
         p.amount,
         nativeToken.decimals,
         nativeToken.symbol
-      )} for ${formatTokenAmount(p.amount, wrappedToken.decimals, wrappedToken.symbol)}.`,
-      failMsg: t`Swap failed.`,
+      )} for ${formatTokenAmount(p.amount, wrappedToken.decimals, wrappedToken.symbol)}`,
+      failMsg: t`Swap failed`,
       setPendingTxns: p.setPendingTxns,
     });
   } else {
     return callContract(chainId, contract, "withdraw", [p.amount], {
-      sentMsg: t`Swap submitted.`,
+      sentMsg: t`Swap submitted`,
       successMsg: t`Swapped ${formatTokenAmount(
         p.amount,
         wrappedToken.decimals,
         wrappedToken.symbol
-      )} for ${formatTokenAmount(p.amount, nativeToken.decimals, nativeToken.symbol)}.`,
-      failMsg: t`Swap failed.`,
+      )} for ${formatTokenAmount(p.amount, nativeToken.decimals, nativeToken.symbol)}`,
+      failMsg: t`Swap failed`,
       setPendingTxns: p.setPendingTxns,
     });
   }

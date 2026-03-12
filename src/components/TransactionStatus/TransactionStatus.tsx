@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/macro";
 import { ReactNode } from "react";
 
 import { getExplorerUrl } from "config/chains";
@@ -26,7 +27,11 @@ export function TransactionStatus({ status, text, txnHash, txnLink }: Props) {
       <div>{text}</div>
       <div className="flex flex-shrink-0 items-center justify-center">
         {status === "loading" && <SpinnerIcon className="spin size-15 text-typography-primary" />}
-        {status !== "loading" && _txnLink && <ExternalLink href={_txnLink}>View</ExternalLink>}
+        {status !== "loading" && _txnLink && (
+          <ExternalLink href={_txnLink}>
+            <Trans>View</Trans>
+          </ExternalLink>
+        )}
       </div>
     </div>
   );

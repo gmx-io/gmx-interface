@@ -1,19 +1,16 @@
-import { useCallback, useMemo, useState } from "react";
+import { useMemo } from "react";
 import { zeroAddress } from "viem";
 
 import type { SettlementChainId, SourceChainId } from "config/chains";
 import { getMappedTokenId, isSettlementChain } from "config/multichain";
-import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
-import { approveTokens } from "domain/tokens";
+import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useChainId } from "lib/chains";
-import { EMPTY_ARRAY } from "lib/objects";
-import useWallet from "lib/wallets/useWallet";
 
 export type MultichainStargateApprovalResult = {
   needsApproval: boolean;
   isApproving: boolean;
   isAllowanceLoaded: boolean;
-  handleApprove: () => Promise<void>;
+  handleApprove: () => void;
 };
 
 export function useMultichainStargateApproval({
@@ -24,8 +21,6 @@ export function useMultichainStargateApproval({
   amountToApprove: bigint | undefined;
 }): MultichainStargateApprovalResult {
   const { chainId, srcChainId } = useChainId();
-  const { signer } = useWallet();
-  const [isApproving, setIsApproving] = useState(false);
 
   const sourceChainTokenId = useMemo(() => {
     if (
@@ -43,34 +38,25 @@ export function useMultichainStargateApproval({
   const stargateSpenderAddress = sourceChainTokenId?.stargate;
   const sourceChainTokenAddress = sourceChainTokenId?.address;
 
-  const { tokensAllowanceData, isLoaded: isAllowanceLoaded } = useTokensAllowanceData(srcChainId, {
+  const tokens = useMemo(
+    () => (sourceChainTokenAddress ? [{ tokenAddress: sourceChainTokenAddress, amount: amountToApprove }] : []),
+    [sourceChainTokenAddress, amountToApprove]
+  );
+
+  const {
+    needsApproval: needsTokenApproval,
+    isApproving,
+    isAllowanceLoaded,
+    handleApprove,
+  } = useTokenApproval({
+    chainId: srcChainId,
     spenderAddress: stargateSpenderAddress,
-    tokenAddresses: sourceChainTokenAddress ? [sourceChainTokenAddress] : [],
+    tokens,
+    approveAmount: amountToApprove,
     skip: srcChainId === undefined || sourceChainTokenAddress === undefined || sourceChainTokenAddress === zeroAddress,
   });
 
-  const needsApproval = useMemo(() => {
-    if (sourceChainTokenAddress === zeroAddress) {
-      return false;
-    }
-    return getNeedTokenApprove(tokensAllowanceData, sourceChainTokenAddress, amountToApprove, EMPTY_ARRAY);
-  }, [tokensAllowanceData, sourceChainTokenAddress, amountToApprove]);
-
-  const handleApprove = useCallback(async () => {
-    if (!sourceChainTokenAddress || !stargateSpenderAddress || !srcChainId || !signer) {
-      return;
-    }
-
-    await approveTokens({
-      setIsApproving,
-      signer,
-      tokenAddress: sourceChainTokenAddress,
-      spender: stargateSpenderAddress,
-      chainId: srcChainId,
-      permitParams: undefined,
-      approveAmount: amountToApprove,
-    });
-  }, [sourceChainTokenAddress, stargateSpenderAddress, srcChainId, signer, amountToApprove]);
+  const needsApproval = sourceChainTokenAddress !== zeroAddress && needsTokenApproval;
 
   return {
     needsApproval,

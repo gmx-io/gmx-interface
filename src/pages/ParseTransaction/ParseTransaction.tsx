@@ -1,4 +1,4 @@
-import { t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -216,18 +216,24 @@ export function ParseTransactionPage() {
   if (!network || typeof network !== "string" || !getChainIdBySlug(network)) {
     return (
       <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">
-        Specify network: arbitrum, avalanche, fuji, botanix, arbitrum-sepolia
+        <Trans>Specify network: arbitrum, avalanche, fuji, botanix, arbitrum-sepolia</Trans>
       </div>
     );
   }
 
   if (!txHash) {
-    return <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">Invalid transaction</div>;
+    return (
+      <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">
+        <Trans>Invalid transaction</Trans>
+      </div>
+    );
   }
 
   if (error) {
     return (
-      <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">Error: {error.message}</div>
+      <div className="text-body-large m-auto pt-24 text-center text-red-400 xl:px-[10%]">
+        <Trans>Error:</Trans> {error.message}
+      </div>
     );
   }
 
@@ -240,10 +246,11 @@ export function ParseTransactionPage() {
   }
 
   return (
-    <AppPageLayout>
+    <AppPageLayout title="Parse Transaction">
       <div className="mx-auto max-w-[1280px] pt-24">
         <h1 className="text-body-large mb-24">
-          Transaction: <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[chainId](txHash)}>{txHash}</ExternalLink>
+          <Trans>Transaction:</Trans>{" "}
+          <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[chainId](txHash)}>{txHash}</ExternalLink>
         </h1>
 
         <ParseTransactionEvents
@@ -259,12 +266,14 @@ export function ParseTransactionPage() {
         />
         {orderLifecycleEntries.length ? (
           <div className="mt-32">
-            <h2 className="text-body-large mb-12">Order lifecycle</h2>
+            <h2 className="text-body-large mb-12">
+              <Trans>Order lifecycle</Trans>
+            </h2>
             {isOrderTransactionsLoading ? (
               <Loader />
             ) : orderTransactionsError ? (
               <div className="text-body-medium text-red-400">
-                Failed to load order data: {orderTransactionsError.message}
+                <Trans>Failed to load order data:</Trans> {orderTransactionsError.message}
               </div>
             ) : (
               orderLifecycleEntries.map((entry) => {
@@ -273,20 +282,24 @@ export function ParseTransactionPage() {
 
                 return (
                   <div key={entry.orderKey} className="mb-24 last:mb-0">
-                    <div className="text-body-medium mb-8">Order key: {entry.orderKey}</div>
+                    <div className="text-body-medium mb-8">
+                      <Trans>Order key:</Trans> {entry.orderKey}
+                    </div>
                     {!entry.transactions ? (
-                      <div className="text-body-medium text-typography-secondary">Order data is not available yet.</div>
+                      <div className="text-body-medium text-typography-secondary">
+                        <Trans>Order data unavailable yet</Trans>
+                      </div>
                     ) : lifecycleTarget ? (
                       isOrderLifecycleEventsLoading ? (
                         <Loader />
                       ) : orderLifecycleEventsError ? (
                         <div className="text-body-medium text-red-400">
-                          Failed to parse related transaction: {orderLifecycleEventsError.message}
+                          <Trans>Failed to parse related transaction:</Trans> {orderLifecycleEventsError.message}
                         </div>
                       ) : (
                         <>
                           <div className="text-body-medium mb-16">
-                            {getLabelByOrderLifecycleTxnType(lifecycleTarget.type)} transaction:{" "}
+                            {getLabelByOrderLifecycleTxnType(lifecycleTarget.type)} <Trans>transaction:</Trans>{" "}
                             <ExternalLink href={CHAIN_ID_TO_TX_URL_BUILDER[chainId](lifecycleTarget.hash)}>
                               {lifecycleTarget.hash}
                             </ExternalLink>
@@ -306,7 +319,7 @@ export function ParseTransactionPage() {
                       )
                     ) : (
                       <div className="text-body-medium text-typography-secondary">
-                        No executed or cancelled transaction found yet.
+                        <Trans>No executed or cancelled transaction found yet</Trans>
                       </div>
                     )}
                   </div>
@@ -580,7 +593,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
   }
 
   if (typeof props.value === "boolean") {
-    value = props.value ? "true" : "false";
+    value = props.value ? t`true` : t`false`;
   }
 
   if (props.type === "bytes32") {
@@ -615,7 +628,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
         })}
       >
         <div className="flex flex-row items-center gap-8">
-          {value ?? props.value ?? "Unknown value"}
+          {value ?? props.value ?? t`Unknown value`}
 
           <CopyButton value={props.value?.toString()} />
         </div>
@@ -673,7 +686,7 @@ const ParseTransactionEvents = ({
     return (
       <TableTr key={`empty-${keyPrefix}`}>
         <TableTd className="!text-center font-medium" colSpan={3}>
-          No events
+          <Trans>No events</Trans>
         </TableTd>
       </TableTr>
     );
@@ -683,19 +696,25 @@ const ParseTransactionEvents = ({
     <Table key={`${keyPrefix}-${event.key}`} className="mt-[24px] overflow-hidden !rounded-8 first:mt-0">
       <tbody>
         <TableTr>
-          <TableTd className="w-[25rem] font-medium">Name</TableTd>
+          <TableTd className="w-[25rem] font-medium">
+            <Trans>Name</Trans>
+          </TableTd>
           <TableTd className="group !text-left" colSpan={2}>
             <div className="flex flex-row items-center justify-between gap-8">
               <span className="flex flex-row items-center gap-8 whitespace-nowrap">
                 {event.log}: {event.name}
                 <CopyButton value={event.name} />
               </span>
-              <span>LogIndex: {event.logIndex}</span>
+              <span>
+                <Trans>Log index:</Trans> {event.logIndex}
+              </span>
             </div>
           </TableTd>
         </TableTr>
         <TableTr>
-          <TableTd className="w-[25rem] font-medium">Topics</TableTd>
+          <TableTd className="w-[25rem] font-medium">
+            <Trans>Topics</Trans>
+          </TableTd>
           <TableTd className="group !text-left" colSpan={3}>
             {event.topics.length > 0
               ? event.topics.map((t) => (
@@ -704,7 +723,7 @@ const ParseTransactionEvents = ({
                     <CopyButton value={t} />
                   </div>
                 ))
-              : "No topics"}
+              : t`No topics`}
           </TableTd>
         </TableTr>
         {event.values.map((value) => (

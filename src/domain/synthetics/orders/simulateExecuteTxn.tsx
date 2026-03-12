@@ -150,7 +150,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
     throw new Error(`Unknown method: ${method}`);
   }
 
-  let errorTitle = p.errorTitle || t`Execute order simulation failed.`;
+  let errorTitle = p.errorTitle || t`Order simulation failed`;
 
   const tenderlyConfig = getTenderlyConfig();
   const routerAddress = isGlv ? getContract(chainId, "GlvRouter") : getContract(chainId, "ExchangeRouter");
@@ -223,7 +223,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
       ) {
         errorContent = (
           <Trans>
-            Order error. Prices are currently volatile for this market, try again by{" "}
+            Prices are volatile.{" "}
             <span
               onClick={() => {
                 if (p.additionalErrorParams?.slippageInputId) {
@@ -232,9 +232,8 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
               }}
               className={p.additionalErrorParams?.slippageInputId ? "cursor-pointer underline" : undefined}
             >
-              <Trans>increasing the allowed slippage</Trans>
-            </span>{" "}
-            under the advanced display section.
+              Increase allowed slippage
+            </span>
           </Trans>
         );
       }
@@ -259,10 +258,10 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
     if (!msg) {
       msg = (
         <div>
-          <Trans>Execute order simulation failed.</Trans>
+          <Trans>Order simulation failed</Trans>
           <br />
           <br />
-          <ToastifyDebug error={t`Unknown Error`} />
+          <ToastifyDebug error={t`Unknown error`} />
         </div>
       );
     }

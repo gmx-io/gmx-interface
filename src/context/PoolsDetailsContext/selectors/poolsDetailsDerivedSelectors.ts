@@ -409,7 +409,7 @@ export const selectPoolsDetailsFirstTokenAmount = createSelector((q) => {
 
   const firstTokenInputValue = q(selectPoolsDetailsFirstTokenInputValue);
 
-  return parseValue(firstTokenInputValue || "0", firstToken.decimals)!;
+  return parseValue(firstTokenInputValue || "0", firstToken.decimals) ?? 0n;
 });
 
 export const selectPoolsDetailsSecondTokenAmount = createSelector((q) => {
@@ -421,13 +421,13 @@ export const selectPoolsDetailsSecondTokenAmount = createSelector((q) => {
 
   const secondTokenInputValue = q(selectPoolsDetailsSecondTokenInputValue);
 
-  return parseValue(secondTokenInputValue || "0", secondToken.decimals)!;
+  return parseValue(secondTokenInputValue || "0", secondToken.decimals) ?? 0n;
 });
 
 export const selectPoolsDetailsMarketOrGlvTokenAmount = createSelector((q) => {
   const marketOrGlvTokenInputValue = q(selectPoolsDetailsMarketOrGlvTokenInputValue);
 
-  return parseValue(marketOrGlvTokenInputValue || "0", PLATFORM_TOKEN_DECIMALS)!;
+  return parseValue(marketOrGlvTokenInputValue || "0", PLATFORM_TOKEN_DECIMALS) ?? 0n;
 });
 
 export const selectPoolsDetailsGlvTokenAmount = createSelector((q) => {

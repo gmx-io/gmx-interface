@@ -31,15 +31,16 @@ import {
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
+import { isTriggerDecreaseOrderType } from "domain/synthetics/orders";
 import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import type { OrderInfo } from "domain/synthetics/orders/types";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
 import { TradeMode } from "domain/synthetics/trade";
+import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
 import { useShareSuccessClosedPosition } from "domain/synthetics/tradeHistory/useShareSuccessClosedPosition";
-import { useInterviewNotification } from "domain/synthetics/userFeedback/useInterviewNotification";
 import { getMidPrice } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { defined } from "lib/guards";
@@ -64,7 +65,6 @@ import Badge, { BadgeIndicator } from "components/Badge/Badge";
 import Checkbox from "components/Checkbox/Checkbox";
 import { Claims } from "components/Claims/Claims";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
-import { InterviewModal } from "components/InterviewModal/InterviewModal";
 import { NpsModal } from "components/NpsModal/NpsModal";
 import { OneClickPromoBanner } from "components/OneClickPromoBanner/OneClickPromoBanner";
 import { OrderList } from "components/OrderList/OrderList";
@@ -74,12 +74,14 @@ import { PositionSeller } from "components/PositionSeller/PositionSeller";
 import { SwapCard } from "components/SwapCard/SwapCard";
 import type { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
 import Tabs from "components/Tabs/Tabs";
+import { TPSLModal } from "components/TPSLModal/TPSLModal";
 import { useIsCurtainOpen } from "components/TradeBox/Curtain";
 import { TradeBoxResponsiveContainer } from "components/TradeBox/TradeBoxResponsiveContainer";
 import { TradeHistory } from "components/TradeHistory/TradeHistory";
 import ShareClosedPosition from "components/TradeHistory/TradeHistoryRow/ShareClosedPosition";
 import { Chart } from "components/TVChart/Chart";
 import ChartHeader from "components/TVChart/ChartHeader";
+import type { OpenChartTPSLModalParams } from "components/TVChartContainer/useChartContextMenu";
 
 import logoIcon from "img/logo-icon.svg";
 import LogoText from "img/logo-text.svg?react";
@@ -94,6 +96,13 @@ enum ListSection {
   Trades = "Trades",
   Claims = "Claims",
 }
+
+type ChartTPSLModalState = {
+  isVisible: boolean;
+  positionKey?: string;
+  initialTpPriceInput?: string;
+  initialSlPriceInput?: string;
+};
 
 export function SyntheticsPage(p: Props) {
   const { openSettings } = p;
@@ -123,7 +132,8 @@ export function SyntheticsPage(p: Props) {
 
   const [, setClosingPositionKeyRaw] = useClosingPositionKeyState();
   const setClosingPositionKey = useCallback(
-    (key: string | undefined) => requestAnimationFrame(() => setClosingPositionKeyRaw(key)),
+    (key: string | undefined, orderOption?: OrderOption) =>
+      requestAnimationFrame(() => setClosingPositionKeyRaw(key, orderOption)),
     [setClosingPositionKeyRaw]
   );
 
@@ -132,8 +142,6 @@ export function SyntheticsPage(p: Props) {
 
   useTradeParamsProcessor();
   useSetOrdersAutoCancelByQueryParams();
-
-  const { isInterviewModalVisible, setIsInterviewModalVisible } = useInterviewNotification();
 
   const { chartToken } = useSelector(selectChartToken);
 
@@ -163,6 +171,11 @@ export function SyntheticsPage(p: Props) {
   const toToken = getByKey(tokensData, toTokenAddress);
 
   const [selectedPositionOrderKey, setSelectedPositionOrderKey] = useState<string>();
+  const [chartTPSLModalState, setChartTPSLModalState] = useState<ChartTPSLModalState>({
+    isVisible: false,
+  });
+
+  const chartTPSLPosition = useSelector((s) => getByKey(selectPositionsInfoData(s), chartTPSLModalState.positionKey));
 
   const handlePositionListOrdersClick = useCallback(
     (positionKey: string, orderKey: string | undefined) => {
@@ -224,10 +237,36 @@ export function SyntheticsPage(p: Props) {
 
       if (!order) return;
 
+      if (isTriggerDecreaseOrderType(order.orderType)) {
+        return;
+      }
+
       setActiveOrder(order);
     },
     [calcSelector, setActiveOrder]
   );
+
+  const onOpenChartTPSLModal = useCallback((params: OpenChartTPSLModalParams) => {
+    setChartTPSLModalState({
+      isVisible: true,
+      positionKey: params.positionKey,
+      initialTpPriceInput: params.action === "takeProfit" ? params.triggerPrice : undefined,
+      initialSlPriceInput: params.action === "stopLoss" ? params.triggerPrice : undefined,
+    });
+  }, []);
+
+  const handleChartTPSLModalVisibility = useCallback((visible: boolean) => {
+    setChartTPSLModalState(
+      visible
+        ? (prev) => ({
+            ...prev,
+            isVisible: true,
+          })
+        : {
+            isVisible: false,
+          }
+    );
+  }, []);
 
   const renderOrdersTabTitle = useCallback(() => {
     if (!ordersCount) {
@@ -335,12 +374,13 @@ export function SyntheticsPage(p: Props) {
 
   return (
     <AppPageLayout
+      title={t`Trade`}
       header={
         <AppHeader
           leftContent={
             isTablet ? (
               <Link to="/" className="flex items-center gap-5 p-8 max-md:p-[4.5px]">
-                <img src={logoIcon} alt="GMX Logo" />
+                <img src={logoIcon} alt={t`GMX logo`} />
                 <LogoText className="max-md:hidden" />
               </Link>
             ) : (
@@ -357,7 +397,7 @@ export function SyntheticsPage(p: Props) {
       <div className="flex gap-8 pt-0 max-lg:flex-col lg:grow">
         <div className="Exchange-left flex grow flex-col gap-8">
           <OneClickPromoBanner openSettings={openSettings} />
-          <Chart />
+          <Chart onOpenChartTPSLModal={onOpenChartTPSLModal} />
           {!isTablet && (
             <div className="flex grow flex-col overflow-hidden rounded-8" data-qa="trade-table-large">
               <Tabs
@@ -426,7 +466,7 @@ export function SyntheticsPage(p: Props) {
             )}
           </>
         ) : (
-          <div className="w-[40rem] shrink-0 max-xl:w-[36rem]">
+          <div className="w-[40rem] shrink-0">
             <TradeBoxResponsiveContainer />
 
             {isSwap && !isTwap && (
@@ -506,6 +546,16 @@ export function SyntheticsPage(p: Props) {
           </div>
         )}
       </div>
+      {chartTPSLPosition && (
+        <TPSLModal
+          isVisible={chartTPSLModalState.isVisible}
+          setIsVisible={handleChartTPSLModalVisibility}
+          position={chartTPSLPosition}
+          initialView="add"
+          initialTpPriceInput={chartTPSLModalState.initialTpPriceInput}
+          initialSlPriceInput={chartTPSLModalState.initialSlPriceInput}
+        />
+      )}
       <PositionSeller />
       <PositionEditor />
       {shareSuccessTradeAction ? (
@@ -519,7 +569,6 @@ export function SyntheticsPage(p: Props) {
           shareSource="auto-prompt"
         />
       ) : null}
-      <InterviewModal type="trader" isVisible={isInterviewModalVisible} setIsVisible={setIsInterviewModalVisible} />
       <NpsModal />
     </AppPageLayout>
   );
@@ -547,7 +596,7 @@ function useOrdersControl() {
   const onCancelSelectedOrders = useCallback(
     async function cancelSelectedOrders() {
       if (hasOutdatedUi) {
-        helperToast.error(t`Page outdated, please refresh`);
+        helperToast.error(t`Page outdated. Refresh`);
         return;
       }
       if (!signer || !provider) return;
@@ -611,7 +660,7 @@ function useOrdersControl() {
   const onCancelOrder = useCallback(
     async function cancelOrder(key: string) {
       if (hasOutdatedUi) {
-        helperToast.error(t`Page outdated, please refresh`);
+        helperToast.error(t`Page outdated. Refresh`);
         return;
       }
       if (!signer || !provider) return;

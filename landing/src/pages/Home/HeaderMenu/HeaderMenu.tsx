@@ -43,7 +43,7 @@ export function HeaderMenu() {
             </div>
             {!isMenuOpen && (
               <button className="btn-landing rounded-8 px-16 py-10 text-14 leading-[16px]" onClick={goToTradeArbitrum}>
-                <Trans>Open App</Trans>
+                <Trans>Open app</Trans>
               </button>
             )}
             <button
@@ -68,7 +68,7 @@ export function HeaderMenu() {
             ))}
           </div>
           <button className="btn-landing w-full rounded-8 px-16 py-10 text-14" onClick={goToTradeArbitrum}>
-            <Trans>Open App</Trans>
+            <Trans>Open app</Trans>
           </button>
           <div className="mt-auto flex w-full flex-col items-center gap-20 text-12 text-slate-500">
             <p>

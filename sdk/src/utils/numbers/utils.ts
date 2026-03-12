@@ -14,6 +14,9 @@ export const BASIS_POINTS_DECIMALS = 4;
 export const PRECISION_DECIMALS = 30;
 export const PRECISION = expandDecimals(1, PRECISION_DECIMALS);
 
+export const FLOAT_PRECISION_SQRT_DECIMALS = 15;
+export const FLOAT_PRECISION_SQRT = expandDecimals(1, FLOAT_PRECISION_SQRT_DECIMALS);
+
 export const BN_ZERO = 0n;
 export const BN_ONE = 1n;
 export const BN_NEGATIVE_ONE = -1n;
@@ -135,7 +138,7 @@ function normalizeInteger(value: string) {
 export function bigintToNumber(value: bigint, decimals: number) {
   const negative = value < 0;
   if (negative) value *= -1n;
-  const precision = 10n ** BigInt(decimals);
+  const precision = expandDecimals(1, decimals);
   const int = value / precision;
   const frac = value % precision;
 
@@ -156,6 +159,7 @@ export function formatUsd(
     minThreshold?: string;
     displayPlus?: boolean;
     visualMultiplier?: number;
+    roundMode?: "round" | "floor";
   } = {}
 ) {
   const { fallbackToZero = false, displayDecimals = 2 } = opts;
@@ -170,6 +174,11 @@ export function formatUsd(
 
   if (opts.visualMultiplier) {
     usd *= BigInt(opts.visualMultiplier);
+  }
+
+  if (opts.roundMode === "floor" && displayDecimals < USD_DECIMALS) {
+    const factor = expandDecimals(1, USD_DECIMALS - displayDecimals);
+    usd = usd >= 0n ? (usd / factor) * factor : ((usd - factor + 1n) / factor) * factor;
   }
 
   const defaultMinThreshold = displayDecimals > 1 ? "0." + "0".repeat(displayDecimals - 1) + "1" : undefined;
@@ -193,7 +202,7 @@ export function formatBigUsd(amount: bigint, opts: { displayDecimals?: number } 
 export function formatDeltaUsd(
   deltaUsd?: bigint,
   percentage?: bigint,
-  opts: { fallbackToZero?: boolean; showPlusForZero?: boolean } = {}
+  opts: { fallbackToZero?: boolean; showPlusForZero?: boolean; hidePercentage?: boolean } = {}
 ) {
   if (typeof deltaUsd !== "bigint") {
     if (opts.fallbackToZero) {
@@ -206,7 +215,8 @@ export function formatDeltaUsd(
   const sign = getPlusOrMinusSymbol(deltaUsd, { showPlusForZero: opts.showPlusForZero });
 
   const exceedingInfo = getLimitedDisplay(deltaUsd, USD_DECIMALS);
-  const percentageStr = percentage !== undefined ? ` (${sign}${formatPercentage(bigMath.abs(percentage))})` : "";
+  const percentageStr =
+    percentage !== undefined && !opts.hidePercentage ? ` (${sign}${formatPercentage(bigMath.abs(percentage))})` : "";
   const deltaUsdStr = formatAmount(exceedingInfo.value, USD_DECIMALS, 2, true);
   const symbol = exceedingInfo.symbol ? `${exceedingInfo.symbol} ` : "";
 
@@ -547,14 +557,23 @@ export const formatArrayAmount = (
   return formatAmount(arr[index], tokenDecimals, displayDecimals, useCommas);
 };
 
-export const formatAmountFree = (amount: BigNumberish, tokenDecimals: number, displayDecimals?: number) => {
+export const formatAmountFree = (
+  amount: BigNumberish,
+  tokenDecimals: number,
+  displayDecimals?: number,
+  visualMultiplier?: number
+) => {
   if (amount === undefined || amount === null) {
     return "...";
   }
 
-  amount = BigInt(amount);
+  let amountBigInt = BigInt(amount);
 
-  let amountStr = formatUnits(amount, tokenDecimals);
+  if (visualMultiplier) {
+    amountBigInt = amountBigInt / BigInt(visualMultiplier);
+  }
+
+  let amountStr = formatUnits(amountBigInt, tokenDecimals);
   amountStr = limitDecimals(amountStr, displayDecimals);
   return trimZeroDecimals(amountStr);
 };
@@ -587,6 +606,14 @@ export function getLimitedDisplay(
 
 export const limitDecimals = (amount: BigNumberish, maxDecimals?: number) => {
   let amountStr = amount.toString();
+
+  if (amountStr.includes("e") || amountStr.includes("E")) {
+    const num = Number(amountStr);
+    if (!isNaN(num)) {
+      amountStr = num.toFixed(20).replace(/\.?0+$/, "");
+    }
+  }
+
   if (maxDecimals === undefined) {
     return amountStr;
   }
@@ -701,11 +728,19 @@ export function bigNumberify(n?: BigNumberish | null | undefined) {
 export const parseValue = (value: string, tokenDecimals: number) => {
   const pValue = parseFloat(value);
 
-  if (isNaN(pValue)) {
+  if (isNaN(pValue) || !isFinite(pValue)) {
     return undefined;
   }
+
   value = limitDecimals(value, tokenDecimals);
   const amount = parseUnits(value, tokenDecimals);
+
+  // Cap at a safe maximum to prevent downstream BigInt overflow errors
+  const MAX_ALLOWED = expandDecimals(1, 62);
+  if (amount > MAX_ALLOWED || amount < -MAX_ALLOWED) {
+    return undefined;
+  }
+
   return bigNumberify(amount);
 };
 

@@ -30,18 +30,18 @@ export function AvailableLiquidityRow() {
 
   if (isSwap && swapAmounts) {
     tooltipContent = isLiquidityRisk
-      ? t`There may not be sufficient liquidity to execute your order when the min. receive is met.`
-      : t`The order will be executed if there is sufficient liquidity and the execution price guarantees that you will receive the minimum receive amount.`;
+      ? t`Warning: May not execute due to low liquidity at your min. receive price`
+      : t`Executes when liquidity and price conditions are met`;
   }
 
   if (isIncrease && increaseAmounts) {
     tooltipContent = isLiquidityRisk
-      ? t`There may not be sufficient liquidity to execute your order when the price conditions are met.`
-      : t`The order will only execute if the price conditions are met and there is sufficient liquidity.`;
+      ? t`Warning: May not execute due to low liquidity at your trigger price`
+      : t`Executes when price and liquidity conditions are met`;
   }
 
   return (
-    <SyntheticsInfoRow label={t`Available Liquidity`}>
+    <SyntheticsInfoRow label={t`Available liquidity`}>
       <Tooltip
         position="bottom-end"
         handleClassName={isLiquidityRisk ? "negative numbers" : "numbers"}

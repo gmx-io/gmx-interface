@@ -123,7 +123,7 @@ export async function createSourceChainDepositTxn({
       args: [sendParams, sendQuoteFromNative(ensuredFees.txnEstimatedNativeFee), params.addresses.receiver],
     }),
     value,
-    msg: t`Sent deposit transaction`,
+    msg: t`Deposit sent`,
   });
 
   return txnResult;

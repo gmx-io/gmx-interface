@@ -34,7 +34,7 @@ describe("TradeHistoryRow helpers", () => {
 
     expect(formatPositionMessage(requestIncreasePosition, minCollateralUsd)).toMatchInlineSnapshot(`
       {
-        "acceptablePrice": ">  $\u200a35.0578",
+        "acceptablePrice": ">  $ 35.0578",
         "action": "Request Market Increase",
         "executionPrice": undefined,
         "fullMarket": "AVAX/USD [WAVAX-USDC]",
@@ -44,12 +44,12 @@ describe("TradeHistoryRow helpers", () => {
         "market": "Short AVAX/USD",
         "marketPrice": undefined,
         "poolName": "WAVAX-USDC",
-        "price": ">  $\u200a35.0578",
+        "price": ">  $ 35.0578",
         "priceComment": [
-          "Acceptable price for the order.",
+          "Acceptable price for the order",
         ],
         "priceImpact": undefined,
-        "size": "+$\u200a1,054.88",
+        "size": "+$ 1,054.88",
         "timestamp": "08 Feb 2024, 10:50",
         "timestampUTC": "UTC: 2024-02-08 06:50:50",
       }
@@ -57,8 +57,8 @@ describe("TradeHistoryRow helpers", () => {
 
     expect(formatPositionMessage(withdraw1Usd, minCollateralUsd)).toMatchInlineSnapshot(`
       {
-        "acceptablePrice": "<  $\u200a43.2376",
-        "action": "Request Withdraw",
+        "acceptablePrice": "<  $ 43.2376",
+        "action": "Request withdraw",
         "executionPrice": undefined,
         "fullMarket": "AVAX/USD [WAVAX-USDC]",
         "indexName": "AVAX/USD",
@@ -67,9 +67,9 @@ describe("TradeHistoryRow helpers", () => {
         "market": "Short AVAX/USD",
         "marketPrice": undefined,
         "poolName": "WAVAX-USDC",
-        "price": "<  $\u200a43.2376",
+        "price": "<  $ 43.2376",
         "priceComment": [
-          "Acceptable price for the order.",
+          "Acceptable price for the order",
         ],
         "priceImpact": undefined,
         "size": "12.34 USDC",
@@ -80,8 +80,8 @@ describe("TradeHistoryRow helpers", () => {
 
     expect(formatPositionMessage(deposit1Usd, minCollateralUsd)).toMatchInlineSnapshot(`
       {
-        "acceptablePrice": "<  $\u200a0.085152",
-        "action": "Request Deposit",
+        "acceptablePrice": "<  $ 0.085152",
+        "action": "Request deposit",
         "executionPrice": undefined,
         "fullMarket": "DOGE/USD [ETH-DAI]",
         "indexName": "DOGE/USD",
@@ -90,9 +90,9 @@ describe("TradeHistoryRow helpers", () => {
         "market": "Long DOGE/USD",
         "marketPrice": undefined,
         "poolName": "ETH-DAI",
-        "price": "<  $\u200a0.085152",
+        "price": "<  $ 0.085152",
         "priceComment": [
-          "Acceptable price for the order.",
+          "Acceptable price for the order",
         ],
         "priceImpact": undefined,
         "size": "0.050 DAI",
@@ -104,7 +104,7 @@ describe("TradeHistoryRow helpers", () => {
     expect(formatPositionMessage(createOrderDecreaseLong, minCollateralUsd)).toMatchInlineSnapshot(`
       {
         "acceptablePrice": ">  $ 29,700.00",
-        "action": "Create Take Profit",
+        "action": "Create Take-Profit",
         "executionPrice": undefined,
         "fullMarket": "BTC/USD [BTC-USDC]",
         "indexName": "BTC/USD",
@@ -115,7 +115,7 @@ describe("TradeHistoryRow helpers", () => {
         "poolName": "BTC-USDC",
         "price": ">  $ 30,000.00",
         "priceComment": [
-          "Trigger price for the order.",
+          "Trigger price for the order",
         ],
         "priceImpact": undefined,
         "size": "-$ 266.23",
@@ -139,7 +139,7 @@ describe("TradeHistoryRow helpers", () => {
         "poolName": "WETH-USDC",
         "price": "<  $ 1,629.40",
         "priceComment": [
-          "Trigger price for the order.",
+          "Trigger price for the order",
         ],
         "priceImpact": undefined,
         "size": "+$ 4.11",
@@ -163,7 +163,7 @@ describe("TradeHistoryRow helpers", () => {
         "poolName": "BTC-USDC",
         "price": "<  $ 1.00",
         "priceComment": [
-          "Trigger price for the order.",
+          "Trigger price for the order",
         ],
         "priceImpact": undefined,
         "size": "+$ 2.64",
@@ -187,14 +187,14 @@ describe("TradeHistoryRow helpers", () => {
         "poolName": "ARB-USDC",
         "price": "< $ 0.00001",
         "priceComment": [
-          "Mark price for the order.",
+          "Mark price for the order",
           "",
           {
-            "key": "Order Trigger Price",
+            "key": "Order trigger price",
             "value": ">  $ 0.83600",
           },
           {
-            "key": "Price Impact",
+            "key": "Price impact",
             "value": {
               "state": "error",
               "text": "-$ 16.82",
@@ -224,14 +224,14 @@ describe("TradeHistoryRow helpers", () => {
         "poolName": "BTC-USDC",
         "price": "",
         "priceComment": [
-          "Mark price for the order.",
+          "Mark price for the order",
           "",
           {
-            "key": "Order Trigger Price",
+            "key": "Order trigger price",
             "value": ">  $ 27,210.00",
           },
           {
-            "key": "Order Acceptable Price",
+            "key": "Order acceptable price",
             "value": ">  $ 26,937.90",
           },
           undefined,
@@ -278,12 +278,12 @@ describe("TradeHistoryRow helpers", () => {
         "poolName": "LINK-USDC",
         "price": "$ 6.0907",
         "priceComment": [
-          "Mark price for the liquidation.",
+          "Mark price for the liquidation",
           "",
-          "This position was liquidated as the max. leverage of 0.0x was exceeded when taking into account fees.",
+          "Liquidated as max leverage of 0.0x was exceeded when accounting for fees.",
           "",
           {
-            "key": "Initial Collateral",
+            "key": "Initial collateral",
             "value": "214.78 USDC ($ 214.78)",
           },
           {
@@ -294,21 +294,21 @@ describe("TradeHistoryRow helpers", () => {
             },
           },
           {
-            "key": "Borrow Fee",
+            "key": "Borrow fee",
             "value": {
               "state": "error",
               "text": "$ 0.00",
             },
           },
           {
-            "key": "Funding Fee",
+            "key": "Funding fee",
             "value": {
               "state": "error",
               "text": "$ 0.00",
             },
           },
           {
-            "key": "Close Fee",
+            "key": "Close fee",
             "value": {
               "state": "error",
               "text": "-$ 4.51",
@@ -316,23 +316,23 @@ describe("TradeHistoryRow helpers", () => {
           },
           "",
           {
-            "key": "Min. Required Collateral",
+            "key": "Min. required collateral",
             "value": "< $ 0.01",
           },
           {
-            "key": "Collateral at Liquidation",
+            "key": "Collateral at liquidation",
             "value": "$ 83.95",
           },
           "",
           {
-            "key": "Price Impact",
+            "key": "Price impact",
             "value": {
               "state": "error",
               "text": "-$ 16.82",
             },
           },
           {
-            "key": "Liquidation Fee",
+            "key": "Liquidation fee",
             "value": {
               "state": "error",
               "text": "-$ 1.05",
@@ -340,7 +340,7 @@ describe("TradeHistoryRow helpers", () => {
           },
           "",
           {
-            "key": "Returned Collateral",
+            "key": "Returned collateral",
             "value": "$ 66.08",
           },
         ],
@@ -365,10 +365,10 @@ describe("TradeHistoryRow helpers", () => {
         "poolName": "WETH-USDC",
         "price": "$ 4.47",
         "priceComment": [
-          "Mark price for the order.",
+          "Mark price for the order",
           "",
           {
-            "key": "Price Impact",
+            "key": "Price impact",
             "value": {
               "state": "error",
               "text": "-$ 0.09",
@@ -396,7 +396,7 @@ describe("TradeHistoryRow helpers", () => {
         "poolName": "BTC-USDC",
         "price": ">  $ 95,600.00",
         "priceComment": [
-          "Trigger price for the order.",
+          "Trigger price for the order",
         ],
         "priceImpact": undefined,
         "size": "+$ 3.62",
@@ -420,14 +420,14 @@ describe("TradeHistoryRow helpers", () => {
         "poolName": "BTC-USDC",
         "price": "$ 95,754.20",
         "priceComment": [
-          "Mark price for the order.",
+          "Mark price for the order",
           "",
           {
-            "key": "Order Trigger Price",
+            "key": "Order trigger price",
             "value": ">  $ 95,600.00",
           },
           {
-            "key": "Price Impact",
+            "key": "Price impact",
             "value": {
               "state": "success",
               "text": "< +$ 0.01",
@@ -454,7 +454,7 @@ describe("TradeHistoryRow helpers", () => {
         "market": "...",
         "price": ">  3,327.55 USDC per WETH",
         "priceComment": [
-          "Acceptable price for the order.",
+          "Acceptable price for the order",
         ],
         "size": "0.011985 WETH to 39.88 USDC",
         "swapFromTokenAmount": "0.011985",
@@ -475,10 +475,10 @@ describe("TradeHistoryRow helpers", () => {
         "market": "...",
         "price": "965.185 USDC per ETH",
         "priceComment": [
-          "Execution price for the order.",
+          "Execution price for the order",
           "",
           {
-            "key": "Order Acceptable Price",
+            "key": "Order acceptable price",
             "value": "<  968.044 USDC per ETH",
           },
         ],
@@ -502,10 +502,10 @@ describe("TradeHistoryRow helpers", () => {
         "market": "...",
         "price": "0.81109 WETH per BTC",
         "priceComment": [
-          "Execution price for the order.",
+          "Execution price for the order",
           "",
           {
-            "key": "Order Acceptable Price",
+            "key": "Order acceptable price",
             "value": "<  2.2613 WETH per BTC",
           },
         ],
@@ -525,7 +525,7 @@ describe("TradeHistoryRow helpers", () => {
         "actionComment": [
           {
             "state": "error",
-            "text": "Insufficient available liquidity.",
+            "text": "Insufficient liquidity",
           },
         ],
         "executionPrice": "...",
@@ -535,10 +535,10 @@ describe("TradeHistoryRow helpers", () => {
         "market": "...",
         "price": "2,056.13 USDC per ETH",
         "priceComment": [
-          "Execution price for the order.",
+          "Execution price for the order",
           "",
           {
-            "key": "Order Acceptable Price",
+            "key": "Order acceptable price",
             "value": "<  2,054.58 USDC per ETH",
           },
         ],

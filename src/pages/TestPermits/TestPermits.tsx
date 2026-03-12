@@ -1,3 +1,4 @@
+import { t, Trans } from "@lingui/macro";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
 import { encodeFunctionData, withRetry } from "viem";
@@ -102,16 +103,16 @@ export function TestPermits() {
       const validationResult = await validateTokenPermitSignature(chainId, permit);
 
       if (!validationResult.isValid) {
-        helperToast.error(`Permit validation error: ${validationResult.error?.errorMessage}`);
+        helperToast.error(t`Permit validation error: ${validationResult.error?.errorMessage}`);
         // eslint-disable-next-line no-console
         console.error(validationResult);
         return;
       }
 
       setPermitData(permit);
-      helperToast.success(`Permit signed successfully for ${selectedToken.symbol}`);
+      helperToast.success(t`Permit signed for ${selectedToken.symbol}`);
     } catch (error) {
-      helperToast.error(`Error signing permit for ${selectedToken.symbol}: ${(error as Error).message}`);
+      helperToast.error(t`Error signing permit for ${selectedToken.symbol}: ${(error as Error).message}`);
     } finally {
       setIsLoading(false);
     }
@@ -143,14 +144,14 @@ export function TestPermits() {
       const explorerUrl = getExplorerUrl(chainId) + "tx/" + tx.hash;
       toast.success(
         <div>
-          Permit transaction sent for {selectedToken.symbol}!{" "}
+          <Trans>Permit transaction sent for {selectedToken.symbol}!</Trans>{" "}
           <a href={explorerUrl} target="_blank" rel="noopener noreferrer" className="underline">
-            View
+            <Trans>View</Trans>
           </a>
         </div>
       );
     } catch (error) {
-      helperToast.error(`Error sending permit for ${selectedToken.symbol}: ${(error as Error).message}`);
+      helperToast.error(t`Error sending permit for ${selectedToken.symbol}: ${(error as Error).message}`);
     } finally {
       setIsLoading(false);
     }
@@ -163,9 +164,11 @@ export function TestPermits() {
   };
 
   return (
-    <AppPageLayout>
+    <AppPageLayout title="Token Permit Testing">
       <div className="mx-auto max-w-4xl p-4">
-        <h1 className="text-2xl mb-6 font-medium">Token Permit Testing</h1>
+        <h1 className="text-2xl mb-6 font-medium">
+          <Trans>Token permit testing</Trans>
+        </h1>
 
         <div className="mt-8 space-y-16">
           {tokens
@@ -187,34 +190,48 @@ export function TestPermits() {
                     <div className="mt-2 flex flex-col gap-1 text-[11px] text-slate-400">
                       <span className="text-xs text-slate-400 ">{token.address}</span>
                       <div>
-                        <span className="font-semibold">permitSupported:</span>{" "}
+                        <span className="font-semibold">
+                          <Trans>Permit supported:</Trans>
+                        </span>{" "}
                         {token.isPermitSupported === true ? (
-                          <span className="text-green-500">true</span>
+                          <span className="text-green-500">{t`true`}</span>
                         ) : (
-                          <span className="text-red-500">false</span>
+                          <span className="text-red-500">{t`false`}</span>
                         )}
                       </div>
                       <div>
-                        <span className="font-semibold">permitDisabled:</span>{" "}
+                        <span className="font-semibold">
+                          <Trans>Permit disabled:</Trans>
+                        </span>{" "}
                         {token.isPermitDisabled === true ? (
-                          <span className="text-red-500">true</span>
+                          <span className="text-red-500">{t`true`}</span>
                         ) : (
-                          <span className="text-green-500">false</span>
+                          <span className="text-green-500">{t`false`}</span>
                         )}
                       </div>
                       <div>
-                        <span className="font-semibold">version:</span> {loading ? "..." : params?.version ?? "-"}
+                        <span className="font-semibold">
+                          <Trans>Version:</Trans>
+                        </span>{" "}
+                        {loading ? t`...` : params?.version ?? t`-`}
                       </div>
                       <div>
-                        <span className="font-semibold">onchain name:</span> {loading ? "..." : params?.name ?? "-"}
+                        <span className="font-semibold">
+                          <Trans>Onchain name:</Trans>
+                        </span>{" "}
+                        {loading ? t`...` : params?.name ?? t`-`}
                       </div>
                       <div>
-                        <span className="font-semibold">nonce:</span>{" "}
-                        {loading ? "..." : params?.nonce?.toString() ?? "-"}
+                        <span className="font-semibold">
+                          <Trans>Nonce:</Trans>
+                        </span>{" "}
+                        {loading ? t`...` : params?.nonce?.toString() ?? t`-`}
                       </div>
                       {params?.error && (
                         <div>
-                          <span className="font-semibold text-red-500">Onchain data error</span>
+                          <span className="font-semibold text-red-500">
+                            <Trans>Onchain data error</Trans>
+                          </span>
                         </div>
                       )}
                     </div>
@@ -224,7 +241,7 @@ export function TestPermits() {
             })}
         </div>
 
-        <Modal isVisible={isModalOpen} setIsVisible={setIsModalOpen} label="Token Permit">
+        <Modal isVisible={isModalOpen} setIsVisible={setIsModalOpen} label={t`Token permit`}>
           {selectedToken && (
             <div className="flex min-w-[400px] flex-col  space-y-8">
               <div className="mb-6 flex flex-col space-x-4">
@@ -237,34 +254,48 @@ export function TestPermits() {
                 </div>
                 <div>
                   <div>
-                    <span className="font-semibold">permitSupported:</span>{" "}
+                    <span className="font-semibold">
+                      <Trans>Permit supported:</Trans>
+                    </span>{" "}
                     {selectedToken.isPermitSupported === true ? (
-                      <span className="text-green-500">true</span>
+                      <span className="text-green-500">{t`true`}</span>
                     ) : (
-                      <span className="text-red-500">false</span>
+                      <span className="text-red-500">{t`false`}</span>
                     )}
                   </div>
                   <div>
-                    <span className="font-semibold">permitDisabled:</span>{" "}
+                    <span className="font-semibold">
+                      <Trans>Permit disabled:</Trans>
+                    </span>{" "}
                     {selectedToken.isPermitDisabled === true ? (
-                      <span className="text-red-500">true</span>
+                      <span className="text-red-500">{t`true`}</span>
                     ) : (
-                      <span className="text-green-500">false</span>
+                      <span className="text-green-500">{t`false`}</span>
                     )}
                   </div>
                   <div>
-                    <span className="font-semibold">version:</span> {selectedToken.contractVersion}
+                    <span className="font-semibold">
+                      <Trans>Version:</Trans>
+                    </span>{" "}
+                    {selectedToken.contractVersion}
                   </div>
                   <div>
-                    <span className="font-semibold">onchain name:</span> {selectedToken.name}
+                    <span className="font-semibold">
+                      <Trans>Onchain name:</Trans>
+                    </span>{" "}
+                    {selectedToken.name}
                   </div>
                   <div>
-                    <span className="font-semibold">nonce:</span>{" "}
-                    {onchainParams[selectedToken.address]?.nonce?.toString() ?? "-"}
+                    <span className="font-semibold">
+                      <Trans>Nonce:</Trans>
+                    </span>{" "}
+                    {onchainParams[selectedToken.address]?.nonce?.toString() ?? t`-`}
                   </div>
                   {selectedToken.isPermitDisabled && (
                     <div>
-                      <span className="font-semibold text-red-500">Onchain data error</span>
+                      <span className="font-semibold text-red-500">
+                        <Trans>Onchain data error</Trans>
+                      </span>
                     </div>
                   )}
                 </div>
@@ -272,25 +303,43 @@ export function TestPermits() {
 
               {permitData && (
                 <div className="rounded-xl text-slate-200 text-base bg-slate-800 p-6 shadow-inner">
-                  <h2 className="text-lg mb-4 font-medium tracking-wide text-typography-secondary">Permit Details</h2>
+                  <h2 className="text-lg mb-4 font-medium tracking-wide text-typography-secondary">
+                    <Trans>Permit details</Trans>
+                  </h2>
                   <div className="space-y-2">
                     <div>
-                      <span className="font-semibold">Deadline:</span>{" "}
+                      <span className="font-semibold">
+                        <Trans>Deadline:</Trans>
+                      </span>{" "}
                       {new Date(Number(permitData.deadline) * 1000).toLocaleString()}
                     </div>
                     <div>
-                      <span className="font-semibold">Value:</span> {permitData.value.toString()}
+                      <span className="font-semibold">
+                        <Trans>Value:</Trans>
+                      </span>{" "}
+                      {permitData.value.toString()}
                     </div>
-                    <div className="mb-1 mt-16 font-semibold">Signature:</div>
+                    <div className="mb-1 mt-16 font-semibold">
+                      <Trans>Signature:</Trans>
+                    </div>
                     <div className="rounded text-xs text-slate-300 space-y-1 overflow-x-auto p-3">
                       <div>
-                        <span className="font-medium">r:</span> {permitData.r}
+                        <span className="font-medium">
+                          <Trans>r:</Trans>
+                        </span>{" "}
+                        {permitData.r}
                       </div>
                       <div>
-                        <span className="font-medium">s:</span> {permitData.s}
+                        <span className="font-medium">
+                          <Trans>s:</Trans>
+                        </span>{" "}
+                        {permitData.s}
                       </div>
                       <div>
-                        <span className="font-medium">v:</span> {permitData.v}
+                        <span className="font-medium">
+                          <Trans>v:</Trans>
+                        </span>{" "}
+                        {permitData.v}
                       </div>
                     </div>
                   </div>
@@ -298,7 +347,7 @@ export function TestPermits() {
               )}
 
               <Button onClick={handleSignPermit} disabled={!account || isLoading} className="w-full" variant="primary">
-                {isLoading ? "Signing..." : "Sign Permit"}
+                {isLoading ? t`Signing...` : t`Sign permit`}
               </Button>
 
               {permitData && (
@@ -308,7 +357,7 @@ export function TestPermits() {
                   className="w-full"
                   variant="primary"
                 >
-                  {isLoading ? "Sending..." : "Send Permit"}
+                  {isLoading ? t`Sending...` : t`Send permit`}
                 </Button>
               )}
             </div>

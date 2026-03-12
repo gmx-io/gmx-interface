@@ -126,7 +126,7 @@ export function LeaderboardPositionsTable({
           <thead>
             <TableTheadTr className="text-body-medium">
               <TableHeaderCell
-                title={t`Rank`}
+                title={t`RANK`}
                 width={6}
                 tooltip={
                   <Trans>
@@ -143,19 +143,19 @@ export function LeaderboardPositionsTable({
                 }
                 tooltipPosition="bottom-start"
               />
-              <TableHeaderCell title={t`Address`} width={14} tooltipPosition="bottom-end" />
+              <TableHeaderCell title={t`ADDRESS`} width={14} tooltipPosition="bottom-end" />
               <TableHeaderCell
                 {...getSorterProps("qualifyingPnl")}
-                title={t`PnL ($)`}
+                title={t`PNL ($)`}
                 width={12}
-                tooltip={t`The total realized and unrealized profit and loss for the period, considering price impact and fees but excluding swap fees.`}
+                tooltip={t`Total realized and unrealized PnL for the period. Includes price impact and fees. Excludes swap fees.`}
                 tooltipPosition="bottom-end"
               />
-              <TableHeaderCell title={t`Position`} width={12} tooltipPosition="bottom-end" />
-              <TableHeaderCell {...getSorterProps("entryPrice")} title={t`Entry Price`} width={10} />
-              <TableHeaderCell {...getSorterProps("sizeInUsd")} title={t`Size`} width={12} />
-              <TableHeaderCell {...getSorterProps("leverage")} title={t`Lev.`} width={4} />
-              <TableHeaderCell title={t`Liq. Price`} width={10} />
+              <TableHeaderCell title={t`POSITION`} width={12} tooltipPosition="bottom-end" />
+              <TableHeaderCell {...getSorterProps("entryPrice")} title={t`ENTRY PRICE`} width={10} />
+              <TableHeaderCell {...getSorterProps("sizeInUsd")} title={t`SIZE`} width={12} />
+              <TableHeaderCell {...getSorterProps("leverage")} title={t`LEV.`} width={4} />
+              <TableHeaderCell title={t`LIQUIDATION PRICE`} width={10} />
             </TableTheadTr>
           </thead>
           <tbody>{content}</tbody>
@@ -309,11 +309,7 @@ const TableRow = memo(
       );
     }, [collateralToken, position.collateralAmount, position.collateralUsd]);
 
-    const renderNaLiquidationTooltip = useCallback(
-      () =>
-        t`There is no liquidation price, as the position's collateral value will increase to cover any negative PnL.`,
-      []
-    );
+    const renderNaLiquidationTooltip = useCallback(() => t`No liquidation price. Collateral covers any losses.`, []);
 
     const renderLiquidationTooltip = useCallback(() => {
       const markPrice = indexToken?.prices.maxPrice;
@@ -321,7 +317,7 @@ const TableRow = memo(
       return (
         <>
           <StatsTooltipRow
-            label={t`Mark Price`}
+            label={t`Mark price`}
             value={
               <span className="numbers">
                 {formatUsd(markPrice, {
@@ -334,7 +330,7 @@ const TableRow = memo(
           />
           {shouldRenderPriceChangeToLiq && (
             <StatsTooltipRow
-              label={t`Price change to Liq.`}
+              label={t`Price change to liquidation`}
               value={
                 <span className="numbers">
                   {formatUsd(liquidationPrice - markPrice, {
@@ -421,7 +417,7 @@ const TableRow = memo(
         </TableTd>
         <TableTd className="numbers">
           {formatAmount(position.leverage, 4, 2)}
-          <span className="ml-1 text-typography-secondary">x</span>
+          <span className="ml-1 text-typography-secondary">{t`x`}</span>
         </TableTd>
         <TableTd className="text-right">
           {liquidationPrice ? (
@@ -443,7 +439,7 @@ const TableRow = memo(
             <TooltipWithPortal
               position={index > 9 ? "top-end" : "bottom-end"}
               renderContent={renderNaLiquidationTooltip}
-              handle={t`NA`}
+              handle={t`N/A`}
               handleClassName="numbers"
               variant="underline"
             />
@@ -470,12 +466,12 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   const message = useMemo(() => {
     if (rank !== null) return null;
 
-    let msg = t`You have not traded during the selected period.`;
+    let msg = t`You have not traded during the selected period`;
     if (hasSomeCapital)
-      msg = t`You have yet to reach the minimum capital used of ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
+      msg = t`Minimum capital used of ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
         displayDecimals: 0,
-      })} to qualify for the rankings.`;
-    else if (isCompetition) msg = t`You do not have any eligible trade during the competition window.`;
+      })} required to qualify for rankings`;
+    else if (isCompetition) msg = t`No eligible trades during the competition window`;
     return msg;
   }, [hasSomeCapital, isCompetition, rank]);
   const tooltipContent = useCallback(() => message, [message]);
@@ -484,7 +480,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
     return (
       <TooltipWithPortal
         handleClassName="text-typography-secondary"
-        handle={t`NA`}
+        handle={t`N/A`}
         renderContent={tooltipContent}
         variant="underline"
       />
@@ -532,7 +528,7 @@ const LeaderboardPnlTooltipContent = memo(({ position }: { position: Leaderboard
         <>
           <br />
           <StatsTooltipRow
-            label={t`Realized Fees`}
+            label={t`Realized fees`}
             showDollar={false}
             value={
               <span className={cx("numbers", getSignedValueClassName(realizedFees))}>
@@ -541,7 +537,7 @@ const LeaderboardPnlTooltipContent = memo(({ position }: { position: Leaderboard
             }
           />
           <StatsTooltipRow
-            label={t`Unrealized Fees`}
+            label={t`Unrealized fees`}
             showDollar={false}
             value={
               <span className={cx("numbers", getSignedValueClassName(unrealizedFees))}>
@@ -551,7 +547,7 @@ const LeaderboardPnlTooltipContent = memo(({ position }: { position: Leaderboard
           />
           <br />
           <StatsTooltipRow
-            label={t`Realized Price Impact`}
+            label={t`Realized price impact`}
             showDollar={false}
             value={
               <span className={cx("numbers", getSignedValueClassName(position.realizedPriceImpact))}>

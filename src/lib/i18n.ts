@@ -9,13 +9,14 @@ import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 // uses BCP-47 codes from https://unicode-org.github.io/cldr-staging/charts/latest/supplemental/language_plural_rules.html
 export const locales = {
   en: "English",
-  es: "Spanish",
-  zh: "Chinese",
-  ko: "Korean",
-  ru: "Russian",
-  ja: "Japanese",
-  fr: "French",
-  de: "German",
+  es: "Español",
+  zh: "简体中文",
+  "zh-tw": "繁體中文",
+  ko: "한국어",
+  ru: "Русский",
+  ja: "日本語",
+  fr: "Français",
+  de: "Deutsch",
   ...(isDevelopment() && { pseudo: "Test" }),
 };
 

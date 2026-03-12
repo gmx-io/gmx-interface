@@ -11,6 +11,7 @@ import MenuDotsIcon from "img/ic_menu_dots.svg?react";
 import SelectIcon from "img/ic_select.svg?react";
 import ShareIcon from "img/ic_share.svg?react";
 import TriggerClose from "img/ic_triggerclose_16.svg?react";
+import IncreaseStopMarket from "img/tokens/ic_box_chevron_up.svg?react";
 
 import "./PositionDropdown.css";
 
@@ -21,7 +22,9 @@ type Props = {
   handleMarketIncreaseSize?: () => void;
   handleLimitIncreaseSize?: () => void;
   handleStopMarketIncreaseSize?: () => void;
+  handleTwapIncreaseSize?: () => void;
   handleTriggerClose?: () => void;
+  disabled?: boolean;
 };
 
 export default function PositionDropdown({
@@ -31,13 +34,23 @@ export default function PositionDropdown({
   handleMarketIncreaseSize,
   handleLimitIncreaseSize,
   handleStopMarketIncreaseSize,
+  handleTwapIncreaseSize,
   handleTriggerClose,
+  disabled,
 }: Props) {
   const { refs, floatingStyles } = useFloating({
     middleware: [offset({ mainAxis: 8 }), flip(), shift()],
     placement: "bottom-start",
     whileElementsMounted: autoUpdate,
   });
+
+  if (disabled) {
+    return (
+      <Button variant="ghost" disabled>
+        <MenuDotsIcon fontSize={14} fontWeight={500} className="text-typography-secondary" />
+      </Button>
+    );
+  }
 
   return (
     <Menu>
@@ -62,7 +75,7 @@ export default function PositionDropdown({
               <div className="menu-item" onClick={handleMarketSelect}>
                 <SelectIcon className="size-16" />
                 <p>
-                  <Trans>Select Market</Trans>
+                  <Trans>Select market</Trans>
                 </p>
               </div>
             </Menu.Item>
@@ -72,7 +85,7 @@ export default function PositionDropdown({
               <div className="menu-item" onClick={handleEditCollateral}>
                 <EditIcon width={16} height={16} />
                 <p>
-                  <Trans>Edit Collateral</Trans>
+                  <Trans>Edit collateral</Trans>
                 </p>
               </div>
             </Menu.Item>
@@ -82,7 +95,7 @@ export default function PositionDropdown({
               <div className="menu-item" onClick={handleMarketIncreaseSize}>
                 <IncreaseMarket className="size-16" />
                 <p>
-                  <Trans>Increase Size (Market)</Trans>
+                  <Trans>Increase size (Market)</Trans>
                 </p>
               </div>
             </Menu.Item>
@@ -92,7 +105,7 @@ export default function PositionDropdown({
               <div className="menu-item" onClick={handleLimitIncreaseSize}>
                 <IncreaseLimit className="size-16" />
                 <p>
-                  <Trans>Increase Size (Limit)</Trans>
+                  <Trans>Increase size (Limit)</Trans>
                 </p>
               </div>
             </Menu.Item>
@@ -100,9 +113,19 @@ export default function PositionDropdown({
           {handleStopMarketIncreaseSize && (
             <Menu.Item>
               <div className="menu-item" onClick={handleStopMarketIncreaseSize}>
+                <IncreaseStopMarket className="size-16" />
+                <p>
+                  <Trans>Increase size (Stop Market)</Trans>
+                </p>
+              </div>
+            </Menu.Item>
+          )}
+          {handleTwapIncreaseSize && (
+            <Menu.Item>
+              <div className="menu-item" onClick={handleTwapIncreaseSize}>
                 <IncreaseMarket className="size-16" />
                 <p>
-                  <Trans>Increase Size (Stop Market)</Trans>
+                  <Trans>Increase size (TWAP)</Trans>
                 </p>
               </div>
             </Menu.Item>
@@ -122,7 +145,7 @@ export default function PositionDropdown({
               <div className="menu-item" onClick={handleShare}>
                 <ShareIcon className="size-16" />
                 <p>
-                  <Trans>Share Position</Trans>
+                  <Trans>Share position</Trans>
                 </p>
               </div>
             </Menu.Item>

@@ -81,10 +81,10 @@ const TwapRows = ({
 
   return (
     <div className="flex flex-col gap-14">
-      <SyntheticsInfoRow label={t`Duration`} className="h-20">
+      <SyntheticsInfoRow label={t`Duration`} className="!items-center">
         <DurationField duration={duration} setDuration={setDuration} />
       </SyntheticsInfoRow>
-      <SyntheticsInfoRow label={t`Number of Parts`}>
+      <SyntheticsInfoRow label={t`Number of parts`} className="!items-center">
         <div className="flex">
           <ValueInput
             value={numberOfParts}
@@ -106,9 +106,9 @@ const TwapRows = ({
       {!isTwapInfoCardClosed && marketInfo && typeof sizeUsd === "bigint" && sizeUsd > 0n && (
         <AlertInfoCard onClose={handleCloseTwapInfoCard}>
           <Trans>
-            This TWAP order will execute {numberOfParts} {isLong ? "long" : "short"} {type} orders of{" "}
+            Executes {numberOfParts} {isLong ? "long" : "short"} {type} orders of{" "}
             {formatUsd(numberOfParts ? sizeUsd / BigInt(numberOfParts) : 0n)} each over the next{" "}
-            {getTwapDurationText(duration, locale)} for the {marketInfo.name} market.
+            {getTwapDurationText(duration, locale)} for {marketInfo.name}
           </Trans>
         </AlertInfoCard>
       )}
@@ -158,13 +158,13 @@ const DurationField = ({
   return (
     <div className="flex gap-4">
       <ValueInput
-        label={t`Hour(s)`}
+        label={t`Hours`}
         value={duration.hours}
         onChange={(value) => setDuration({ ...duration, hours: value })}
         className="w-[112px]"
       />
       <ValueInput
-        label={t`Minute(s)`}
+        label={t`Minutes`}
         value={duration.minutes}
         onChange={(value) => setDuration({ ...duration, minutes: value })}
         className="w-[112px]"

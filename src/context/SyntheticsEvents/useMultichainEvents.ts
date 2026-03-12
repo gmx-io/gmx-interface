@@ -768,14 +768,14 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
           account: currentAccount,
           tokenAddresses,
           spenders: stargates,
-          onApprove: (tokenAddress, spender, value) => {
+          onApprove: (tokenAddress, spender, value, blockNumber) => {
             debugLog("got approval event for", someSourceChainId, tokenAddress, spender, value);
 
             setSourceChainApprovalStatuses((old) => ({
               ...old,
               [tokenAddress]: {
                 ...old[tokenAddress],
-                [spender]: { value, createdAt: Date.now() },
+                [spender]: { value, blockNumber },
               },
             }));
           },

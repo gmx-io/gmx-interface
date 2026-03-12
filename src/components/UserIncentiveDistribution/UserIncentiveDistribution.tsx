@@ -122,13 +122,13 @@ export default function UserIncentiveDistribution() {
   const claimableBalance = account ? (
     <div className="flex flex-col gap-20 rounded-8 bg-slate-900 p-20">
       <div className="text-body-large font-medium text-typography-primary">
-        <Trans>Claimable Balance</Trans>
+        <Trans>Claimable balance</Trans>
       </div>
       {chainId !== AVALANCHE_FUJI ? (
         <ClaimableAmounts />
       ) : (
         <p className="p-18 text-gray-500">
-          <Trans>Claims are not available on Avalanche Fuji</Trans>
+          <Trans>Claims unavailable on Avalanche Fuji</Trans>
         </p>
       )}
     </div>
@@ -144,8 +144,8 @@ export default function UserIncentiveDistribution() {
               emptyText={
                 <div className="flex flex-col items-center">
                   <TooltipWithPortal
-                    handle={t`No distribution history yet`}
-                    content={t`The distribution history for your incentives, airdrops, and prizes will be displayed here.`}
+                    handle={t`No distribution history`}
+                    content={t`Incentives, airdrops, and prizes will appear here`}
                   />
                   {!active ? (
                     <div className="mt-15">
@@ -166,19 +166,19 @@ export default function UserIncentiveDistribution() {
                 <thead>
                   <TableTheadTr>
                     <TableTh className="w-[25%]">
-                      <Trans>Date</Trans>
+                      <Trans>DATE</Trans>
                     </TableTh>
                     {!isMobile && (
                       <TableTh>
-                        <Trans>Type</Trans>
+                        <Trans>TYPE</Trans>
                       </TableTh>
                     )}
                     <TableTh className="max-xl:text-right">
-                      <Trans>Amount</Trans>
+                      <Trans>AMOUNT</Trans>
                     </TableTh>
                     {!isMobile && (
                       <TableTh className="text-right">
-                        <Trans>Transaction</Trans>
+                        <Trans>TRANSACTION</Trans>
                       </TableTh>
                     )}
                     <TableTh className="w-24" />
@@ -208,11 +208,11 @@ export default function UserIncentiveDistribution() {
 
 function getTypeStr(_: ReturnType<typeof useLingui>["_"], typeId: bigint) {
   const isCompetition = typeId >= 2000n && typeId < 3000n;
-  return isCompetition ? t`COMPETITION Airdrop` : _(INCENTIVE_TYPE_MAP[String(typeId)] ?? t`Airdrop`);
+  return isCompetition ? t`Competition airdrop` : _(INCENTIVE_TYPE_MAP[String(typeId)] ?? t`Airdrop`);
 }
 
 function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
-  const { tokenIncentiveDetails, totalUsd, transaction, typeId } = incentive;
+  const { tokenIncentiveDetails, totalUsd, transactionHash, timestamp, typeId } = incentive;
   const { chainId } = useChainId();
   const explorerURL = getExplorerUrl(chainId);
   const { _ } = useLingui();
@@ -260,23 +260,25 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
 
   const txnTimestamp = (
     <span>
-      {formatDateTime(transaction.timestamp)}{" "}
-      <span className="text-typography-secondary">({getDaysAgo(transaction.timestamp)} days ago)</span>
+      {formatDateTime(timestamp)}{" "}
+      <span className="text-typography-secondary">
+        <Trans>({getDaysAgo(timestamp)} days ago)</Trans>
+      </span>
     </span>
   );
   const txnLink = (
-    <ExternalLink href={`${explorerURL}tx/${transaction.hash}`} variant="icon">
-      {shortenAddressOrEns(transaction.hash, 27)}
+    <ExternalLink href={`${explorerURL}tx/${transactionHash}`} variant="icon">
+      {shortenAddressOrEns(transactionHash, 27)}
     </ExternalLink>
   );
-  const txnStatus = <TxnStatus hash={transaction.hash} />;
+  const txnStatus = <TxnStatus hash={transactionHash} />;
 
   return (
     <>
       <TableTrActionable onClick={onClick}>
-        <TableTdActionable data-label="Date">{formatDate(transaction.timestamp)}</TableTdActionable>
-        {!isMobile && <TableTdActionable data-label="Type">{type}</TableTdActionable>}
-        <TableTdActionable className="max-xl:text-right" data-label="Amount">
+        <TableTdActionable data-label={t`DATE`}>{formatDate(timestamp)}</TableTdActionable>
+        {!isMobile && <TableTdActionable data-label={t`TYPE`}>{type}</TableTdActionable>}
+        <TableTdActionable className="max-xl:text-right" data-label={t`AMOUNT`}>
           <Tooltip
             handle={formatUsd(totalUsd)}
             handleClassName="numbers"
@@ -285,13 +287,13 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
           />
         </TableTdActionable>
         {!isMobile && (
-          <TableTdActionable data-label="Transaction" className="text-right">
+          <TableTdActionable data-label={t`TRANSACTION`} className="text-right">
             <ExternalLink
               className="font-medium text-typography-secondary"
-              href={`${explorerURL}tx/${transaction.hash}`}
+              href={`${explorerURL}tx/${transactionHash}`}
               variant="icon"
             >
-              {shortenAddressOrEns(transaction.hash, 13)}
+              {shortenAddressOrEns(transactionHash, 13)}
             </ExternalLink>
           </TableTdActionable>
         )}
@@ -330,7 +332,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
                     "h-28 items-center": !isMobile,
                   })}
                 >
-                  <Trans>{tokenInfo.symbol} Amount</Trans>
+                  <Trans>{tokenInfo.symbol} amount</Trans>
 
                   {isMobile && (
                     <span className="text-14 text-typography-primary">
@@ -346,7 +348,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
                   "h-28 items-center": !isMobile,
                 })}
               >
-                <Trans>Transaction hash</Trans>
+                <Trans>Transaction</Trans>
                 {isMobile && <span className="text-14 text-typography-primary">{txnLink}</span>}
               </div>
               <div

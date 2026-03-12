@@ -151,7 +151,7 @@ function NetworkFee({
       />
     );
 
-  return <SyntheticsInfoRow label={t`Network Fee`} value={networkFeeFormatted} />;
+  return <SyntheticsInfoRow label={t`Network fee`} value={networkFeeFormatted} />;
 }
 
 function OutOfTokenErrorAlert({
@@ -173,7 +173,7 @@ function OutOfTokenErrorAlert({
   }
 
   return (
-    <AlertInfoCard type="warning" hideClose>
+    <AlertInfoCard type="error" hideClose>
       <div>
         <Trans>
           Claiming requires{" "}
@@ -192,7 +192,7 @@ function OutOfTokenErrorAlert({
             symbol={token.symbol}
             showZero
           />
-          . Please{" "}
+          .{" "}
           <span
             className="text-body-small cursor-pointer text-13 font-medium text-typography-secondary underline underline-offset-2"
             onClick={() => {
@@ -200,7 +200,7 @@ function OutOfTokenErrorAlert({
               history.push(`/trade/swap?to=${token.symbol}`);
             }}
           >
-            swap
+            Swap
           </span>{" "}
           or{" "}
           <span
@@ -213,7 +213,7 @@ function OutOfTokenErrorAlert({
           >
             deposit
           </span>{" "}
-          more {token.symbol} to your GMX account.
+          more {token.symbol} to your GMX Account.
         </Trans>
       </div>
     </AlertInfoCard>
@@ -306,7 +306,7 @@ export function ClaimAffiliatesModal(p: Props) {
     try {
       const expressTxnParams = await expressTxnParamsAsyncResult.promise;
       if (!expressTxnParams || !account || !signer) {
-        helperToast.error(t`No necessary params to claim. Retry in a few seconds.`);
+        helperToast.error(t`Claim parameters unavailable. Retry in a few seconds`);
         metrics.pushError(new Error("No necessary params to claim"), "expressClaimAffiliateRewards");
         return;
       }
@@ -326,7 +326,7 @@ export function ClaimAffiliatesModal(p: Props) {
         throw new Error("Transaction receipt status is failed");
       }
 
-      helperToast.success(t`Claiming successful.`);
+      helperToast.success(t`Claim successful`);
       onClose();
     } catch (error) {
       helperToast.error(t`Claiming affiliate rewards failed`);
@@ -384,11 +384,13 @@ export function ClaimAffiliatesModal(p: Props) {
       contentClassName="w-[400px] overflow-y-auto"
       isVisible={true}
       setIsVisible={onClose}
-      label={t`Confirm Claim`}
+      label={t`Confirm claim`}
       withMobileBottomPosition
     >
       <div className="flex flex-col gap-12">
-        <div className="text-center text-20 font-medium">Claim {formatUsd(totalClaimableFundingUsd)}</div>
+        <div className="text-center text-20 font-medium">
+          <Trans>Claim {formatUsd(totalClaimableFundingUsd)}</Trans>
+        </div>
 
         <Table>
           <TableTheadTr>
@@ -402,10 +404,10 @@ export function ClaimAffiliatesModal(p: Props) {
               />
             </TableTh>
             <TableTh>
-              <Trans>Market</Trans>
+              <Trans>MARKET</Trans>
             </TableTh>
             <TableTh className="!pr-0">
-              <Trans>Rewards</Trans>
+              <Trans>REWARDS</Trans>
             </TableTh>
           </TableTheadTr>
           {visibleRewards.map((reward) => (

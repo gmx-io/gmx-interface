@@ -18,12 +18,10 @@ export function NotifyModal() {
   const { notifyModalOpen, setNotifyModalOpen } = useNotifyModalState();
 
   return (
-    <ModalWithPortal isVisible={notifyModalOpen} setIsVisible={setNotifyModalOpen} label={t`GMX Alerts`}>
+    <ModalWithPortal isVisible={notifyModalOpen} setIsVisible={setNotifyModalOpen} label={t`GMX alerts`}>
       <div className="NotifyModal">
         <p className="text-body-medium">
-          <Trans>
-            Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and&nbsp;more.
-          </Trans>
+          <Trans>Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more</Trans>
         </p>
         <NotifyBulletList />
         <Button
@@ -33,7 +31,7 @@ export function NotifyModal() {
           className="NotifyModal-button w-full"
           type="submit"
         >
-          <Trans>Discover GMX Alerts</Trans>
+          <Trans>Discover GMX alerts</Trans>
           <ExternalLinkIcon />
         </Button>
         <div className="NotifyModal-terms text-caption">
@@ -60,13 +58,13 @@ const NotifyBulletList = memo(function NotifyBulletList() {
   return (
     <div className="NotifyModal-bullet-list">
       {[
-        t`GMX Announcements`,
-        t`Trade Confirmations`,
-        t`Liquidation Confirmations`,
-        t`Governance Alerts`,
-        t`Trade Errors`,
-        t`Liquidation Risk Alerts`,
-        t`Trading Pair Price Alerts`,
+        t`GMX announcements`,
+        t`Trade confirmations`,
+        t`Liquidation confirmations`,
+        t`Governance alerts`,
+        t`Trade errors`,
+        t`Liquidation risk alerts`,
+        t`Trading pair price alerts`,
       ].map((item, i) => (
         <div key={i} className="NotifyModal-bullet text-body-medium">
           <ArrowBulletIcon />

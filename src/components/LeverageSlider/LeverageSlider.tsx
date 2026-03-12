@@ -1,13 +1,10 @@
 import cx from "classnames";
 import range from "lodash/range";
-import Slider, { Handle, SliderTooltip } from "rc-slider";
+import { Handle, SliderTooltip } from "rc-slider";
 import { forwardRef, useCallback, useEffect, useMemo } from "react";
 
-import "rc-slider/assets/index.css";
-import "./LeverageSlider.scss";
-
-const defaultMarks = [0.1, 25, 50];
-const DEFAULT_LEVERAGE_KEY = 20;
+import { DEFAULT_LEVERAGE, DEFAULT_LEVERAGE_MARKS } from "components/LeverageField/LeverageField";
+import { Slider } from "components/Slider";
 
 type Props = {
   isPositive?: boolean;
@@ -15,7 +12,6 @@ type Props = {
   onChange: (value: number) => void;
   marks: number[];
   className?: string;
-  isSlim?: boolean;
 };
 
 type HandleProps = {
@@ -37,7 +33,7 @@ function getMarksWithLabel(marks: number[]) {
 
 export function LeverageSlider(p: Props) {
   const { onChange, value, marks } = p;
-  const finalMarks = marks ?? defaultMarks;
+  const finalMarks = marks ?? DEFAULT_LEVERAGE_MARKS;
 
   const { keyValueMap, valueKeyMap } = useMemo(() => generateKeyValueMap(finalMarks), [finalMarks]);
 
@@ -49,8 +45,8 @@ export function LeverageSlider(p: Props) {
 
   const handleChange = useCallback(
     (newKey: number) => {
-      const truncatedKey = Math.trunc(newKey ?? DEFAULT_LEVERAGE_KEY);
-      onChange(keyValueMap[truncatedKey] ?? keyValueMap[DEFAULT_LEVERAGE_KEY]);
+      const truncatedKey = Math.trunc(newKey ?? DEFAULT_LEVERAGE);
+      onChange(keyValueMap[truncatedKey] ?? keyValueMap[DEFAULT_LEVERAGE]);
     },
     [onChange, keyValueMap]
   );
@@ -73,18 +69,7 @@ export function LeverageSlider(p: Props) {
   }, [finalMarks]);
 
   return (
-    <div
-      className={cx(
-        "LeverageSlider",
-        {
-          positive: p.isPositive,
-          negative: !p.isPositive,
-          slim: p.isSlim,
-        },
-        p.className
-      )}
-      data-qa="leverage-slider"
-    >
+    <div className={cx("mb-20 mt-16 px-4", p.className)} data-qa="leverage-slider">
       <Slider
         min={0}
         max={max}

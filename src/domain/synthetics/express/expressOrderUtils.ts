@@ -10,7 +10,6 @@ import {
   zeroHash,
 } from "viem";
 
-import { BOTANIX } from "config/chains";
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN, multichainBalanceKey } from "config/dataStore";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
@@ -41,6 +40,7 @@ import {
   Subaccount,
 } from "domain/synthetics/subaccount";
 import { SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
+import { applyMinimalBuffer } from "domain/tokens/useMaxAvailableAmount";
 import { extendError } from "lib/errors";
 import { applyGasLimitBuffer, estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { metrics } from "lib/metrics";
@@ -55,7 +55,6 @@ import { AnyChainId, ContractsChainId, SettlementChainId, SourceChainId } from "
 import { ContractName } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { bigMath } from "sdk/utils/bigmath";
-import { gelatoRelay } from "sdk/utils/gelatoRelay";
 import {
   BatchOrderTxnParams,
   CreateOrderPayload,
@@ -105,6 +104,7 @@ export async function estimateBatchExpressParams({
     chainId,
     tokensData: globalExpressParams.tokensData,
     isGmxAccount,
+    estimationMethod,
   });
 
   if (!transactionParams) {
@@ -133,6 +133,7 @@ function getBatchExpressEstimatorParams({
   chainId,
   tokensData,
   isGmxAccount,
+  estimationMethod,
 }: {
   signer: WalletSigner;
   batchParams: BatchOrderTxnParams;
@@ -141,10 +142,16 @@ function getBatchExpressEstimatorParams({
   isGmxAccount: boolean;
   chainId: ContractsChainId;
   tokensData: TokensData;
+  estimationMethod?: ExpressParamsEstimationMethod;
 }): ExpressTransactionEstimatorParams | undefined {
   const payAmounts = getBatchTotalPayCollateralAmount(batchParams);
   const gasPaymentTokenAsCollateralAmount = getByKey(payAmounts, gasPaymentToken.address) ?? 0n;
-  const executionFeeAmount = getBatchTotalExecutionFee({ batchParams, chainId, tokensData });
+  const executionFeeAmount = getBatchTotalExecutionFee({
+    batchParams,
+    chainId,
+    tokensData,
+    allowEmptyBatch: estimationMethod === "approximate",
+  });
   const transactionExternalCalls = getBatchExternalCalls(batchParams);
   const subaccountActions = getBatchRequiredActions(batchParams);
   const transactionPayloadGasLimit = estimateBatchGasLimit({
@@ -219,12 +226,14 @@ export async function estimateExpressParams({
   throwOnInvalid = false,
   provider,
   client,
+  overrideGasLimit,
 }: {
   chainId: ContractsChainId;
   isGmxAccount: boolean;
   globalExpressParams: GlobalExpressParams;
   transactionParams: ExpressTransactionEstimatorParams;
-  estimationMethod: "approximate" | "estimateGas";
+  overrideGasLimit?: bigint;
+  estimationMethod: ExpressParamsEstimationMethod;
   requireValidations: boolean;
   subaccount: Subaccount | undefined;
   throwOnInvalid?: boolean;
@@ -253,7 +262,6 @@ export async function estimateExpressParams({
     l1Reference,
     tokenPermits: rawTokenPermits,
     gasPrice,
-    isSponsoredCall,
     bufferBps,
     gasPaymentAllowanceData,
   } = globalExpressParams;
@@ -281,15 +289,18 @@ export async function estimateExpressParams({
 
   const tokenPermits = isGmxAccount ? [] : rawTokenPermits;
 
-  const baseRelayerGasLimit = estimateRelayerGasLimit({
-    gasLimits,
-    tokenPermitsCount: tokenPermits.length,
-    feeSwapsCount: 1,
-    feeExternalCallsGasLimit: 0n,
-    oraclePriceCount: 2,
-    l1GasLimit: l1Reference?.gasLimit ?? 0n,
-    transactionPayloadGasLimit,
-  });
+  const baseRelayerGasLimit =
+    overrideGasLimit ??
+    estimateRelayerGasLimit({
+      gasLimits,
+      tokenPermitsCount: tokenPermits.length,
+      // TODO: is this always 1? even when paying with USDT?
+      feeSwapsCount: 1,
+      feeExternalCallsGasLimit: 0n,
+      oraclePriceCount: 2,
+      l1GasLimit: l1Reference?.gasLimit ?? 0n,
+      transactionPayloadGasLimit,
+    });
 
   const baseRelayerFeeAmount = baseRelayerGasLimit * gasPrice;
 
@@ -338,7 +349,9 @@ export async function estimateExpressParams({
     : 0n;
 
   let gasLimit: bigint;
-  if (estimationMethod === "estimateGas") {
+  if (overrideGasLimit !== undefined) {
+    gasLimit = overrideGasLimit;
+  } else if (estimationMethod === "estimateGas") {
     try {
       if (provider) {
         const baseGasPaymentValidations = getGasPaymentValidations({
@@ -427,11 +440,7 @@ export async function estimateExpressParams({
   }
 
   let relayerFeeAmount: bigint;
-  if (isSponsoredCall) {
-    relayerFeeAmount = applyFactor(gasLimit * gasPrice, gasLimits.gelatoRelayFeeMultiplierFactor);
-  } else {
-    relayerFeeAmount = await gelatoRelay.getEstimatedFee(BigInt(chainId), relayerFeeToken.address, gasLimit, false);
-  }
+  relayerFeeAmount = applyFactor(gasLimit * gasPrice, gasLimits.gelatoRelayFeeMultiplierFactor);
 
   const buffer = bigMath.mulDiv(relayerFeeAmount, BigInt(bufferBps), BASIS_POINTS_DIVISOR_BIGINT);
   relayerFeeAmount += buffer;
@@ -476,7 +485,7 @@ export async function estimateExpressParams({
     tokenPermits,
   });
 
-  if (requireValidations && !getIsValidExpressParams({ chainId, gasPaymentValidations, isSponsoredCall })) {
+  if (requireValidations && !getIsValidExpressParams({ chainId, gasPaymentValidations })) {
     if (throwOnInvalid) {
       throw new ExpressEstimationInsufficientGasPaymentTokenBalanceError({
         balance: isGmxAccount ? gasPaymentToken.gmxAccountBalance : gasPaymentToken.walletBalance,
@@ -490,7 +499,6 @@ export async function estimateExpressParams({
     chainId,
     subaccount,
     relayParamsPayload: finalRelayParams,
-    isSponsoredCall,
     gasPaymentParams: finalRelayFeeParams.gasPaymentParams,
     executionFeeAmount,
     executionGasLimit,
@@ -505,18 +513,11 @@ export async function estimateExpressParams({
 }
 
 export function getIsValidExpressParams({
-  chainId,
   gasPaymentValidations,
-  isSponsoredCall,
 }: {
-  chainId: number;
-  isSponsoredCall: boolean;
   gasPaymentValidations: GasPaymentValidations;
+  [key: string]: unknown;
 }): boolean {
-  if (chainId === BOTANIX && !isSponsoredCall) {
-    return false;
-  }
-
   return gasPaymentValidations.isValid;
 }
 
@@ -536,7 +537,7 @@ export function getGasPaymentValidations({
   isGmxAccount: boolean;
 }): GasPaymentValidations {
   // Add buffer to onchain avoid out of balance errors in case quick of network fee increase
-  const gasTokenAmountWithBuffer = (gasPaymentTokenAmount * 13n) / 10n;
+  const gasTokenAmountWithBuffer = applyMinimalBuffer(gasPaymentTokenAmount);
   const totalGasPaymentTokenAmount = gasPaymentTokenAsCollateralAmount + gasTokenAmountWithBuffer;
 
   const tokenBalance = isGmxAccount ? gasPaymentToken.gmxAccountBalance : gasPaymentToken.walletBalance;

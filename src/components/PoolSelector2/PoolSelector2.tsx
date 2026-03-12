@@ -34,14 +34,33 @@ type Props = {
   };
   tradeType: TradeType;
   onSelect: (marketAddress: string) => void;
+  // eslint-disable-next-line react/no-unused-prop-types
+  handleClassName?: string;
+  // eslint-disable-next-line react/no-unused-prop-types
+  chevronClassName?: string;
+  // eslint-disable-next-line react/no-unused-prop-types
+  wrapperClassName?: string;
+  // eslint-disable-next-line react/no-unused-prop-types
+  popoverReferenceRef?: React.RefObject<HTMLElement | null>;
+  // eslint-disable-next-line react/no-unused-prop-types
+  disabled?: boolean;
 };
 
 export function PoolSelector2(props: Props) {
   const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
-  const disabled = props.options?.length === 1;
+  const disabled = props.disabled || props.options?.length === 1;
 
   return (
-    <SelectorBase label={props.selectedPoolName} modalLabel={t`Select pool`} disabled={disabled} qa="pool-selector">
+    <SelectorBase
+      label={props.selectedPoolName}
+      modalLabel={t`Select pool`}
+      disabled={disabled}
+      qa="pool-selector"
+      handleClassName={props.handleClassName}
+      chevronClassName={props.chevronClassName}
+      wrapperClassName={props.wrapperClassName}
+      popoverReferenceRef={props.popoverReferenceRef}
+    >
       {isMobile ? <PoolSelector2Mobile {...props} /> : <PoolSelector2Desktop {...props} />}
     </SelectorBase>
   );
@@ -56,11 +75,11 @@ function PoolSelector2Desktop(props: Props) {
       <thead>
         <TableTheadTr>
           <TableTh padding="compact">
-            <Trans>Pool</Trans>
+            <Trans>POOL</Trans>
           </TableTh>
-          <TableTh padding="compact">{isLong ? <Trans>Long Liq.</Trans> : <Trans>Short Liq.</Trans>}</TableTh>
+          <TableTh padding="compact">{isLong ? <Trans>LONG LIQ.</Trans> : <Trans>SHORT LIQ.</Trans>}</TableTh>
           <TableTh padding="compact">
-            <Trans>Net Rate</Trans>
+            <Trans>NET RATE</Trans>
           </TableTh>
         </TableTheadTr>
       </thead>
@@ -130,7 +149,7 @@ function PoolListItemDesktop({
           "text-green-500": netRateState === "success",
         })}
       >
-        <Trans>{formattedNetRate} / 1h</Trans>
+        <Trans>{formattedNetRate} / 1H</Trans>
       </TableTd>
     </SelectorBaseDesktopRow>
   );
@@ -198,7 +217,7 @@ function PoolListItemMobile({
         <div className="PoolSelector2-mobile-pool-name">{poolName}</div>
       </div>
       <dl className="PoolSelector2-mobile-info">
-        <dt>{isLong ? <Trans>Long Liq.</Trans> : <Trans>Short Liq.</Trans>}</dt>
+        <dt>{isLong ? <Trans>Long liq.</Trans> : <Trans>Short liq.</Trans>}</dt>
         <dd
           className={cx({
             "text-red-500": !isEnoughLiquidity,
@@ -207,7 +226,7 @@ function PoolListItemMobile({
           {formattedLiquidity}
         </dd>
         <dt>
-          <Trans>Net Rate</Trans>
+          <Trans>Net rate</Trans>
         </dt>
         <dd
           className={cx({
@@ -215,7 +234,7 @@ function PoolListItemMobile({
             "text-green-500": netRateState === "success",
           })}
         >
-          {formattedNetRate} / 1h
+          <Trans>{formattedNetRate} / 1h</Trans>
         </dd>
       </dl>
     </SelectorBaseMobileButton>

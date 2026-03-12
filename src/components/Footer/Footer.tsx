@@ -59,7 +59,7 @@ export default function Footer({ showRedirectModal, redirectPopupTimestamp, isMo
           })}
           <Button variant="ghost" onClick={() => setFeedbackModalVisible(true)}>
             {isMobileSideNav ? null : <FeedbackIcon />}
-            <Trans>Leave Feedback</Trans>
+            <Trans>Leave feedback</Trans>
           </Button>
         </div>
         <div

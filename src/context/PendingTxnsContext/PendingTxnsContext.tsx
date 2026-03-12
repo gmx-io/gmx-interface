@@ -91,9 +91,11 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
               toastMsg = (
                 <div>
                   <Trans>
-                    Txn failed. <ExternalLink href={txUrl}>View</ExternalLink>.
+                    Transaction failed.
+                    <br />
+                    <br />
+                    <ExternalLink href={txUrl}>View status</ExternalLink>
                   </Trans>
-                  <br />
                 </div>
               );
             }
@@ -110,12 +112,11 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
             helperToast.success(
               <div className="StatusNotification">
-                <div className="StatusNotification-title">
-                  {pendingTxn.message}{" "}
-                  <ExternalLink href={txUrl}>
-                    <Trans>View</Trans>
-                  </ExternalLink>
-                </div>
+                <div className="StatusNotification-title">{pendingTxn.message}</div>
+                <br />
+                <ExternalLink href={txUrl}>
+                  <Trans>View status</Trans>
+                </ExternalLink>
                 {pendingTxn.messageDetails && (
                   <>
                     <hr className="my-8 -ml-12 -mr-32 h-[1.5px] border-none bg-[#0f463d]" />

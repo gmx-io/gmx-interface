@@ -124,7 +124,7 @@ export function MarketGraphs({ glvOrMarketInfo }: { glvOrMarketInfo: GlvOrMarket
 
   const graphTitleLabelMap = {
     performance: <PerformanceLabel short={false} variant="none" />,
-    price: t`Current Price`,
+    price: t`Current price`,
     feeApr: <FeeApyLabel variant="none" />,
   };
 
@@ -202,7 +202,7 @@ const DOT_PROPS = {
   r: 0,
 };
 
-const GRAPH_MARGIN = { top: 5, right: 0, bottom: 0, left: 0 };
+const GRAPH_MARGIN = { top: 5, right: 16, bottom: 0, left: 0 };
 
 type GraphData = {
   value: number;
@@ -359,6 +359,7 @@ const GraphChart = ({
             axisLine={false}
             tick={AXIS_TICK_PROPS}
             minTickGap={isMobile ? 16 : 32}
+            interval="equidistantPreserveStart"
             tickMargin={8}
           />
           <YAxis

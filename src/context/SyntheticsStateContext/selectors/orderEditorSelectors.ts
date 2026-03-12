@@ -135,6 +135,7 @@ const selectOrderEditorSwapFees = createSelector((q) => {
     fundingFeeUsd: 0n,
     feeDiscountUsd: 0n,
     swapProfitFeeUsd: 0n,
+    swapProfitUsdIn: 0n,
     uiFeeFactor,
     externalSwapQuote: undefined,
     type: "increase",
@@ -185,7 +186,7 @@ export const selectOrderEditorOrder = createSelector((q): OrderInfo | undefined 
   return order;
 });
 
-const selectOrderEditorPositionKey = createSelector((q) => {
+export const selectOrderEditorPositionKey = createSelector((q) => {
   const order = q(selectOrderEditorOrder);
 
   if (!order) return;
@@ -434,7 +435,7 @@ const selectOrderEditorToToken = createSelector((q) => {
   return q((s) => selectTokensData(s)?.[swapPathInfo.outTokenAddress]);
 });
 
-const selectOrderEditorIndexToken = createSelector((q) => {
+export const selectOrderEditorIndexToken = createSelector((q) => {
   const order = q(selectOrderEditorOrder);
 
   if (!order) return undefined;

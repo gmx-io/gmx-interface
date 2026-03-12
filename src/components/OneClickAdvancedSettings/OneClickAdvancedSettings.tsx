@@ -98,7 +98,7 @@ export function OneClickAdvancedSettings() {
       <ExpandableRow
         open={isExpanded}
         onToggle={setIsExpanded}
-        title={<Trans>One-Click Settings</Trans>}
+        title={<Trans>One-Click settings</Trans>}
         className="mb-4"
       >
         <div className="mt-12 flex flex-col gap-14">
@@ -107,9 +107,9 @@ export function OneClickAdvancedSettings() {
               <TooltipWithPortal
                 position="left-start"
                 variant="icon"
-                content={<Trans>Maximum number of actions allowed before reauthorization is required.</Trans>}
+                content={<Trans>Maximum actions before reauthorization required</Trans>}
               >
-                <Trans>Remaining Allowed Actions</Trans>
+                <Trans>Allowed actions</Trans>
               </TooltipWithPortal>
             }
           >
@@ -127,9 +127,9 @@ export function OneClickAdvancedSettings() {
               <TooltipWithPortal
                 position="left-start"
                 variant="icon"
-                content={<Trans>Maximum number of days before reauthorization is required.</Trans>}
+                content={<Trans>Maximum days before reauthorization required</Trans>}
               >
-                <Trans>Time Limit</Trans>
+                <Trans>Time limit</Trans>
               </TooltipWithPortal>
             }
           >
@@ -148,7 +148,7 @@ export function OneClickAdvancedSettings() {
             className="mt-6 h-36 w-full bg-blue-600 py-3 text-typography-primary"
             disabled={disabled}
           >
-            <Trans>Save One-Click Trading settings</Trans>
+            <Trans>Save settings</Trans>
           </Button>
         </div>
       </ExpandableRow>

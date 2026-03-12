@@ -19,13 +19,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@adraffy/ens-normalize@npm:1.9.2":
-  version: 1.9.2
-  resolution: "@adraffy/ens-normalize@npm:1.9.2"
-  checksum: 10/5f33f6570d6e4017b9afdf0dd8ff64af05f7e1cc09c9b30a17460451b9ec2655a979e272148470fabdd8cbad9fb4b750a216387b4f87ae2389023b7e3f9d8ad7
-  languageName: node
-  linkType: hard
-
 "@adraffy/ens-normalize@npm:^1.10.1, @adraffy/ens-normalize@npm:^1.11.0":
   version: 1.11.1
   resolution: "@adraffy/ens-normalize@npm:1.11.1"
@@ -3120,15 +3113,16 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@gelatonetwork/relay-sdk@npm:5.6.0":
-  version: 5.6.0
-  resolution: "@gelatonetwork/relay-sdk@npm:5.6.0"
+"@gelatocloud/gasless@npm:0.0.10":
+  version: 0.0.10
+  resolution: "@gelatocloud/gasless@npm:0.0.10"
   dependencies:
-    axios: "npm:0.29.0"
-    ethers: "npm:6.7.0"
     isomorphic-ws: "npm:^5.0.0"
-    ws: "npm:^8.18.0"
-  checksum: 10/10edb045374a632f8afbbbca65a4be9a580567b74c3930dfb83d7b07aaa01e41b94f66804b37d7512b77c755a4ce711ad2292249a42aa2b7fababded7270c9b5
+    ws: "npm:^8.19.0"
+    zod: "npm:4.1.13"
+  peerDependencies:
+    viem: ^2.0.0
+  checksum: 10/247e7068f058e4e13c0f5c4ada98a65d65dd5495038d1bb9a88cf5462e6ecdaa9810285a80cd8cbd5e5de4a3c2f909ed39a622a3e64a042d80324ee9aa4b543d
   languageName: node
   linkType: hard
 
@@ -3967,13 +3961,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@noble/hashes@npm:1.1.2":
-  version: 1.1.2
-  resolution: "@noble/hashes@npm:1.1.2"
-  checksum: 10/2826c94ea30b8d2447fda549f4ffa97a637a480eeef5c96702a2f932c305038465f7436caf5b2bad41eb43c08c270b921e101488b18165feebe3854091b56d91
-  languageName: node
-  linkType: hard
-
 "@noble/hashes@npm:1.3.2":
   version: 1.3.2
   resolution: "@noble/hashes@npm:1.3.2"
@@ -4020,13 +4007,6 @@ __metadata:
   version: 1.8.0
   resolution: "@noble/hashes@npm:1.8.0"
   checksum: 10/474b7f56bc6fb2d5b3a42132561e221b0ea4f91e590f4655312ca13667840896b34195e2b53b7f097ec080a1fdd3b58d902c2a8d0fbdf51d2e238b53808a177e
-  languageName: node
-  linkType: hard
-
-"@noble/secp256k1@npm:1.7.1":
-  version: 1.7.1
-  resolution: "@noble/secp256k1@npm:1.7.1"
-  checksum: 10/214d4756c20ed20809d948d0cc161e95664198cb127266faf747fd7deffe5444901f05fe9f833787738f2c6e60b09e544c2f737f42f73b3699e3999ba15b1b63
   languageName: node
   linkType: hard
 
@@ -7739,17 +7719,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"axios@npm:0.29.0":
-  version: 0.29.0
-  resolution: "axios@npm:0.29.0"
-  dependencies:
-    follow-redirects: "npm:^1.15.4"
-    form-data: "npm:^4.0.0"
-    proxy-from-env: "npm:^1.1.0"
-  checksum: 10/5ed6c16c3551dfcbd72f23f21515c6e75834364d4050841b23b7277b8c3521bbe2a47358bb556d85f79f3c91b006dfd897eea81a5839f6674b558496bbf29804
-  languageName: node
-  linkType: hard
-
 "axios@npm:^1.12.2":
   version: 1.13.2
   resolution: "axios@npm:1.13.2"
@@ -10666,21 +10635,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ethers@npm:6.7.0":
-  version: 6.7.0
-  resolution: "ethers@npm:6.7.0"
-  dependencies:
-    "@adraffy/ens-normalize": "npm:1.9.2"
-    "@noble/hashes": "npm:1.1.2"
-    "@noble/secp256k1": "npm:1.7.1"
-    "@types/node": "npm:18.15.13"
-    aes-js: "npm:4.0.0-beta.5"
-    tslib: "npm:2.4.0"
-    ws: "npm:8.5.0"
-  checksum: 10/0ea1627fdab31605e06a39f7200d70b464a57024d269f618226cab69f72889765f9eaaff7ccb8c9d3671809f40d85159d735401b0a05d9b5a679f8c85abd5772
-  languageName: node
-  linkType: hard
-
 "ethers@npm:^5.5.4":
   version: 5.8.0
   resolution: "ethers@npm:5.8.0"
@@ -11077,7 +11031,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"follow-redirects@npm:^1.15.4, follow-redirects@npm:^1.15.6":
+"follow-redirects@npm:^1.15.6":
   version: 1.15.11
   resolution: "follow-redirects@npm:1.15.11"
   peerDependenciesMeta:
@@ -11106,7 +11060,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"form-data@npm:^4.0.0, form-data@npm:^4.0.4":
+"form-data@npm:^4.0.4":
   version: 4.0.4
   resolution: "form-data@npm:4.0.4"
   dependencies:
@@ -11467,7 +11421,7 @@ __metadata:
     "@davatar/react": "npm:1.8.1"
     "@floating-ui/dom": "npm:1.6.7"
     "@floating-ui/react": "npm:0.26.19"
-    "@gelatonetwork/relay-sdk": "npm:5.6.0"
+    "@gelatocloud/gasless": "npm:0.0.10"
     "@headlessui/react": "npm:1.7.19"
     "@intercom/messenger-js-sdk": "npm:^0.0.18"
     "@layerzerolabs/lz-v2-utilities": "npm:3.0.85"
@@ -18346,7 +18300,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"ws@npm:8.18.3, ws@npm:^8.18.0, ws@npm:^8.5.0":
+"ws@npm:8.18.3, ws@npm:^8.5.0":
   version: 8.18.3
   resolution: "ws@npm:8.18.3"
   peerDependencies:
@@ -18388,6 +18342,21 @@ __metadata:
     utf-8-validate:
       optional: true
   checksum: 10/9c796b84ba80ffc2c2adcdfc9c8e9a219ba99caa435c9a8d45f9ac593bba325563b3f83edc5eb067cc6d21b9a6bf2c930adf76dd40af5f58a5ca6859e81858f0
+  languageName: node
+  linkType: hard
+
+"ws@npm:^8.19.0":
+  version: 8.19.0
+  resolution: "ws@npm:8.19.0"
+  peerDependencies:
+    bufferutil: ^4.0.1
+    utf-8-validate: ">=5.0.2"
+  peerDependenciesMeta:
+    bufferutil:
+      optional: true
+    utf-8-validate:
+      optional: true
+  checksum: 10/26e4901e93abaf73af9f26a93707c95b4845e91a7a347ec8c569e6e9be7f9df066f6c2b817b2d685544e208207898a750b78461e6e8d810c11a370771450c31b
   languageName: node
   linkType: hard
 
@@ -18540,6 +18509,13 @@ __metadata:
   version: 3.22.4
   resolution: "zod@npm:3.22.4"
   checksum: 10/73622ca36a916f785cf528fe612a884b3e0f183dbe6b33365a7d0fc92abdbedf7804c5e2bd8df0a278e1472106d46674281397a3dd800fa9031dc3429758c6ac
+  languageName: node
+  linkType: hard
+
+"zod@npm:4.1.13":
+  version: 4.1.13
+  resolution: "zod@npm:4.1.13"
+  checksum: 10/0679190318928f69fcb07751063719de232c663b13955fcdb55db59839569d39f3f29b955cb0cba7af0b724233f88c06b3e84c550397ad4e68f8088fa6799d88
   languageName: node
   linkType: hard
 

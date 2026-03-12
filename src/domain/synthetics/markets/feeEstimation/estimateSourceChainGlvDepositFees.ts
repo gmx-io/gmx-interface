@@ -1,5 +1,3 @@
-import { zeroAddress } from "viem";
-
 import { SettlementChainId, SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { getMappedTokenId, getMultichainTokenId, RANDOM_WALLET } from "config/multichain";
@@ -302,7 +300,6 @@ async function estimateSourceChainGlvDepositInitialTxFees({
     tokenAddress: sourceChainTokenId.address,
     isPlatformToken: isValidMarketTokenDeposit ? true : false,
     account: params.addresses.receiver,
-    additionalValue: sourceChainTokenId.address === zeroAddress ? amountLD : undefined,
   });
 
   const estimatedReceivedAmount = adjustForDecimals(

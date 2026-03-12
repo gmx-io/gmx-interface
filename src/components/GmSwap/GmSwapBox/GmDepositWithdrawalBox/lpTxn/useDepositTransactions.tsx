@@ -233,7 +233,7 @@ export const useDepositTransactions = ({
       sendOrderSubmittedMetric(metricData.metricId);
 
       if (!signer || !rawParams) {
-        helperToast.error(t`Error submitting order`);
+        helperToast.error(t`Order submission failed`);
         sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
       }
@@ -419,7 +419,7 @@ export const useDepositTransactions = ({
       sendOrderSubmittedMetric(metricData.metricId);
 
       if (!signer || !rawParams) {
-        helperToast.error(t`Error submitting order`);
+        helperToast.error(t`Order submission failed`);
         sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
       }

@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { ethers } from "ethers";
 import { useState } from "react";
 import { Link, useParams } from "react-router-dom";
@@ -37,10 +37,10 @@ export default function CompleteAccountTransfer() {
 
   const getError = () => {
     if (!account) {
-      return t`Wallet is not connected`;
+      return t`Wallet not connected`;
     }
     if (!isCorrectAccount) {
-      return t`Incorrect Account`;
+      return t`Incorrect account`;
     }
   };
 
@@ -60,7 +60,7 @@ export default function CompleteAccountTransfer() {
     if (error) {
       return error;
     }
-    return t`Complete Transfer`;
+    return t`Complete transfer`;
   };
 
   const onClickPrimary = () => {
@@ -69,8 +69,8 @@ export default function CompleteAccountTransfer() {
     const contract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
 
     callContract(chainId, contract, "acceptTransfer", [sender], {
-      sentMsg: t`Transfer submitted.`,
-      failMsg: t`Transfer failed.`,
+      sentMsg: t`Transfer submitted`,
+      failMsg: t`Transfer failed`,
       setPendingTxns,
     })
       .then(() => {
@@ -83,24 +83,24 @@ export default function CompleteAccountTransfer() {
 
   if (!isSenderAndReceiverValid) {
     return (
-      <AppPageLayout>
-        <PageTitle title={t`Complete Account Transfer`} />
+      <AppPageLayout title={t`Complete account transfer`}>
+        <PageTitle title={t`Complete account transfer`} />
 
         <ColorfulBanner color="red">
-          <Trans>Invalid Transfer Addresses: Please check the url.</Trans>
+          <Trans>Invalid transfer addresses. Check the URL.</Trans>
         </ColorfulBanner>
       </AppPageLayout>
     );
   }
 
   return (
-    <AppPageLayout>
+    <AppPageLayout title={t`Complete Account Transfer`}>
       <Modal
         isVisible={isTransferSubmittedModalVisible}
         setIsVisible={setIsTransferSubmittedModalVisible}
-        label="Transfer Completed"
+        label={t`Transfer completed`}
       >
-        <Trans>Your transfer has been completed.</Trans>
+        <Trans>Your transfer is complete</Trans>
         <br />
         <br />
         <Link className="App-cta" to="/earn">
@@ -108,29 +108,28 @@ export default function CompleteAccountTransfer() {
         </Link>
       </Modal>
       <PageTitle
-        title={t`Complete Account Transfer`}
+        title={t`Complete account transfer`}
         subtitle={
           isCorrectAccount ? (
             <div className="hyphens-auto">
-              <Trans>You have a pending transfer from {sender}.</Trans>
+              <Trans>Pending transfer from {sender}</Trans>
               <br />
             </div>
           ) : (
             <div>
-              <Trans>To complete the transfer, you must switch your connected account to {receiver}.</Trans>
+              <Trans>Switch to account {receiver} to complete this transfer</Trans>
               <br />
               <br />
               <Trans>
-                You will need to be on this page to accept the transfer,{" "}
+                You must be on this page to accept the transfer.{" "}
                 <span
                   onClick={() => {
                     copyToClipboard(window.location.href);
-                    helperToast.success("Link copied to your clipboard");
+                    helperToast.success(t`Link copied`);
                   }}
                 >
-                  click here
-                </span>{" "}
-                to copy the link to this page if needed.
+                  Copy link
+                </span>
               </Trans>
               <br />
               <br />

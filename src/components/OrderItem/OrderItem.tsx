@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
 
@@ -32,11 +32,11 @@ import {
 } from "domain/synthetics/orders";
 import { useDisabledCancelMarketOrderMessage } from "domain/synthetics/orders/useDisabledCancelMarketOrderMessage";
 import { PositionsInfoData, getNameByOrderType } from "domain/synthetics/positions";
-import { adaptToV1TokenInfo, convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
+import { convertToTokenAmount, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
 import { TokensRatioAndSlippage } from "domain/tokens";
-import { getExchangeRate, getExchangeRateDisplay } from "lib/legacy";
 import { calculateDisplayDecimals, formatAmount, formatBalanceAmount, formatUsd } from "lib/numbers";
+import { useIsTruncated } from "lib/useIsTruncated";
 import { getWrappedToken } from "sdk/configs/tokens";
 
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
@@ -56,6 +56,8 @@ import TwapOrdersList from "./TwapOrdersList/TwapOrdersList";
 import { getSwapPathMarketFullNames, getSwapPathTokenSymbols } from "../TradeHistory/TradeHistoryRow/utils/swap";
 
 import "./OrderItem.scss";
+
+const TOOLTIP_HANDLE_CLASSNAME = "cursor-help underline decoration-dashed decoration-1 underline-offset-2";
 
 type Props = {
   order: OrderInfo;
@@ -134,12 +136,12 @@ function OrderSize({
           content={
             <>
               <StatsTooltipRow
-                label={"Key"}
+                label={t`Key`}
                 value={<div className="debug-key muted">{order.key}</div>}
                 showDollar={false}
               />
               <StatsTooltipRow
-                label={"Amount"}
+                label={t`Amount`}
                 value={<div className="debug-key muted">{order.minOutputAmount.toString()}</div>}
                 showDollar={false}
               />
@@ -161,7 +163,7 @@ function OrderSize({
 
   function getCollateralLabel() {
     if (isDecreaseOrderType(positionOrder.orderType)) {
-      return t`Collateral Delta`;
+      return t`Collateral delta`;
     }
     return t`Collateral`;
   }
@@ -218,11 +220,11 @@ function OrderSize({
                     ],
                     { isStable: positionOrder.initialCollateralToken.isStable }
                   )}{" "}
-                  will be swapped to{" "}
+                  swapped to{" "}
                   {positionOrder.targetCollateralToken.isNative
                     ? wrappedToken.symbol
                     : positionOrder.targetCollateralToken.symbol}{" "}
-                  on order execution.
+                  when executed
                 </Trans>
               </div>
             )}
@@ -230,7 +232,7 @@ function OrderSize({
             {showDebugValues && (
               <div className="OrderItem-tooltip-row">
                 <StatsTooltipRow
-                  label={"Key"}
+                  label={t`Key`}
                   value={<div className="debug-key muted">{positionOrder.key}</div>}
                   showDollar={false}
                 />
@@ -312,7 +314,7 @@ function SizeWithIcon({ order, className }: { order: OrderInfo; className?: stri
   );
 }
 
-function MarkPrice({ order, className }: { order: OrderInfo; className?: string }) {
+function MarkPrice({ order, className, isTruncated }: { order: OrderInfo; className?: string; isTruncated?: boolean }) {
   const markPrice = useMemo(() => {
     if (isSwapOrderType(order.orderType)) {
       return undefined;
@@ -343,19 +345,16 @@ function MarkPrice({ order, className }: { order: OrderInfo; className?: string 
 
   if (isTwapOrder(order) || isMarketOrderType(order.orderType)) {
     const { markSwapRatioText } = getSwapRatioText(order);
+    const text = isSwapOrderType(order.orderType) ? markSwapRatioText : markPriceFormatted;
 
     return (
       <TooltipWithPortal
-        handle={
-          <span className={className}>{isSwapOrderType(order.orderType) ? markSwapRatioText : markPriceFormatted}</span>
-        }
-        position="bottom-end"
-        content={
-          <Trans>
-            Note that there may be rare cases where the order cannot be executed, for example, if the chain is down and
-            no oracle reports are produced or if there is not enough available liquidity.
-          </Trans>
-        }
+        as="span"
+        className={className}
+        disabled={!isTruncated}
+        handle={text}
+        content={text}
+        variant="none"
       />
     );
   }
@@ -363,32 +362,35 @@ function MarkPrice({ order, className }: { order: OrderInfo; className?: string 
   if (isSwapOrderType(order.orderType)) {
     const { markSwapRatioText } = getSwapRatioText(order);
 
-    return <span>{markSwapRatioText}</span>;
+    return (
+      <TooltipWithPortal
+        as="span"
+        disabled={!isTruncated}
+        handle={markSwapRatioText}
+        content={markSwapRatioText}
+        variant="none"
+      />
+    );
   } else {
     const positionOrder = order as PositionOrderInfo;
 
     return (
       <TooltipWithPortal
-        handle={markPriceFormatted}
+        as="span"
+        handle={<span className={cx("numbers", TOOLTIP_HANDLE_CLASSNAME)}>{markPriceFormatted}</span>}
         position="bottom-end"
-        handleClassName="numbers"
         renderContent={() => {
           return (
-            <Trans>
-              <p>
-                The order will be executed when the oracle price is {positionOrder.triggerThresholdType}{" "}
+            <>
+              {isTruncated && <div className="mb-4">{markPriceFormatted}</div>}
+              <Trans>
+                Executes when oracle price is {positionOrder.triggerThresholdType}{" "}
                 {formatUsd(positionOrder.triggerPrice, {
                   displayDecimals: priceDecimals,
                   visualMultiplier: positionOrder.indexToken?.visualMultiplier,
                 })}
-                .
-              </p>
-              <br />
-              <p>
-                Note that there may be rare cases where the order cannot be executed, for example, if the chain is down
-                and no oracle reports are produced or if the price impact exceeds your acceptable price.
-              </p>
-            </Trans>
+              </Trans>
+            </>
           );
         }}
       />
@@ -400,11 +402,13 @@ function TriggerPrice({
   order,
   hideActions,
   isSetAcceptablePriceImpactEnabled,
+  isTruncated,
   className,
 }: {
   order: OrderInfo;
   hideActions: boolean | undefined;
   isSetAcceptablePriceImpactEnabled: boolean;
+  isTruncated?: boolean;
   className?: string;
 }) {
   if (isTwapOrder(order)) {
@@ -439,7 +443,7 @@ function TriggerPrice({
         handle={handle}
         content={
           <StatsTooltipRow
-            label={t`Acceptable Price`}
+            label={t`Acceptable price`}
             value={formatUsd(positionOrder.acceptablePrice, {
               displayDecimals: priceDecimals,
               visualMultiplier: positionOrder.indexToken?.visualMultiplier,
@@ -464,22 +468,29 @@ function TriggerPrice({
       <>
         {!hideActions ? (
           <TooltipWithPortal
+            as="span"
             position="bottom-end"
-            handle={swapRatioText}
-            handleClassName="numbers"
+            handle={<span className={cx("numbers", TOOLTIP_HANDLE_CLASSNAME)}>{swapRatioText}</span>}
             renderContent={() => (
               <>
+                {isTruncated && <div className="mb-4">{swapRatioText}</div>}
                 {isSetAcceptablePriceImpactEnabled && (
                   <div className="pb-8">
-                    <StatsTooltipRow label={t`Acceptable Price`} value={acceptablePriceText} showDollar={false} />
+                    <StatsTooltipRow label={t`Acceptable price`} value={acceptablePriceText} showDollar={false} />
                   </div>
                 )}
-                {t`You will receive at least ${toAmountText} if this order is executed. This price is being updated in real time based on swap fees and price impact.`}
+                {t`Receive at least ${toAmountText} if executed. Price updates based on fees and price impact.`}
               </>
             )}
           />
         ) : (
-          swapRatioText
+          <TooltipWithPortal
+            as="span"
+            disabled={!isTruncated}
+            handle={swapRatioText}
+            content={swapRatioText}
+            variant="none"
+          />
         )}
       </>
     );
@@ -493,34 +504,40 @@ function TriggerPrice({
 
     const isBoundary = isBoundaryAcceptablePrice(positionOrder.acceptablePrice);
 
-    const handle = (
-      <span>
-        {positionOrder.triggerThresholdType}{" "}
-        {formatUsd(positionOrder.triggerPrice, {
-          displayDecimals: priceDecimals,
-          visualMultiplier: positionOrder.indexToken?.visualMultiplier,
-        })}
-      </span>
-    );
+    const triggerPriceText = `${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.triggerPrice, {
+      displayDecimals: priceDecimals,
+      visualMultiplier: positionOrder.indexToken?.visualMultiplier,
+    })}`;
+
     return !isSetAcceptablePriceImpactEnabled || isBoundary ? (
-      handle
+      <TooltipWithPortal
+        as="span"
+        disabled={!isTruncated}
+        handle={triggerPriceText}
+        content={triggerPriceText}
+        variant="none"
+      />
     ) : (
       <TooltipWithPortal
-        handle={handle}
+        as="span"
+        handle={<span className={TOOLTIP_HANDLE_CLASSNAME}>{triggerPriceText}</span>}
         position="bottom-end"
         renderContent={() => (
-          <StatsTooltipRow
-            label={t`Acceptable Price`}
-            value={
-              isStopLossOrderType(positionOrder.orderType) || isStopIncreaseOrderType(positionOrder.orderType)
-                ? "NA"
-                : `${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.acceptablePrice, {
-                    displayDecimals: priceDecimals,
-                    visualMultiplier: positionOrder.indexToken?.visualMultiplier,
-                  })}`
-            }
-            showDollar={false}
-          />
+          <>
+            {isTruncated && <div className="mb-4">{triggerPriceText}</div>}
+            <StatsTooltipRow
+              label={t`Acceptable price`}
+              value={
+                isStopLossOrderType(positionOrder.orderType) || isStopIncreaseOrderType(positionOrder.orderType)
+                  ? "N/A"
+                  : `${positionOrder.triggerThresholdType} ${formatUsd(positionOrder.acceptablePrice, {
+                      displayDecimals: priceDecimals,
+                      visualMultiplier: positionOrder.indexToken?.visualMultiplier,
+                    })}`
+              }
+              showDollar={false}
+            />
+          </>
         )}
       />
     );
@@ -588,8 +605,16 @@ function OrderItemLarge({
   const oracleSettings = useSelector(selectOracleSettings);
   const disabledCancelMarketOrderMessage = useDisabledCancelMarketOrderMessage(order, oracleSettings);
 
+  const [triggerPriceTruncRef, isTriggerPriceTruncated] = useIsTruncated();
+  const [markPriceTruncRef, isMarkPriceTruncated] = useIsTruncated();
+
   const cancelButton = (
-    <Button variant="ghost" disabled={isCanceling || Boolean(disabledCancelMarketOrderMessage)} onClick={onCancelOrder}>
+    <Button
+      variant="ghost"
+      className="max-2xl:px-4"
+      disabled={isCanceling || Boolean(disabledCancelMarketOrderMessage)}
+      onClick={onCancelOrder}
+    >
       <CloseIcon className="size-14" />
     </Button>
   );
@@ -663,21 +688,26 @@ function OrderItemLarge({
         <OrderSize order={order} showDebugValues={showDebugValues} />
       </TableTd>
 
-      <TableTd>
-        <TriggerPrice
-          order={order}
-          hideActions={hideActions}
-          isSetAcceptablePriceImpactEnabled={isSetAcceptablePriceImpactEnabled}
-        />
+      <TableTd className="overflow-hidden">
+        <div ref={triggerPriceTruncRef} className="truncate">
+          <TriggerPrice
+            order={order}
+            hideActions={hideActions}
+            isSetAcceptablePriceImpactEnabled={isSetAcceptablePriceImpactEnabled}
+            isTruncated={isTriggerPriceTruncated}
+          />
+        </div>
       </TableTd>
-      <TableTd>
-        <MarkPrice order={order} />
+      <TableTd className="overflow-hidden">
+        <div ref={markPriceTruncRef} className="truncate">
+          <MarkPrice order={order} isTruncated={isMarkPriceTruncated} />
+        </div>
       </TableTd>
       {!hideActions && (
         <TableTd>
           <div className="inline-flex w-full items-center justify-end">
             {!isTwapOrder(order) && !isMarketOrderType(order.orderType) && (
-              <Button variant="ghost" onClick={setEditingOrderKey}>
+              <Button variant="ghost" onClick={setEditingOrderKey} className="max-2xl:px-4">
                 <EditIcon title={t`Edit order`} className="size-16" />
               </Button>
             )}
@@ -790,13 +820,15 @@ function OrderItemSmall({
       <AppCardSection>
         {showDebugValues && (
           <div className="App-card-row">
-            <div className="font-medium text-typography-secondary">Key</div>
+            <div className="font-medium text-typography-secondary">
+              <Trans>Key</Trans>
+            </div>
             <div className="debug-key muted">{order.key}</div>
           </div>
         )}
         <div className="App-card-row">
           <div className="font-medium text-typography-secondary">
-            <Trans>Order Type</Trans>
+            <Trans>Order type</Trans>
           </div>
           <div>
             <OrderItemTypeLabel order={order} />
@@ -810,7 +842,7 @@ function OrderItemSmall({
         </div>
         <div className="App-card-row">
           <div className="font-medium text-typography-secondary">
-            <Trans>Trigger Price</Trans>
+            <Trans>Trigger price</Trans>
           </div>
           <div>
             <TriggerPrice
@@ -823,7 +855,7 @@ function OrderItemSmall({
 
         <div className="App-card-row">
           <div className="font-medium text-typography-secondary">
-            <Trans>Mark Price</Trans>
+            <Trans>Mark price</Trans>
           </div>
           <div>
             <MarkPrice order={order} />
@@ -859,14 +891,16 @@ function getSwapRatioText(order: OrderInfo) {
   const fromToken = order.initialCollateralToken;
   const toToken = order.targetCollateralToken;
 
-  const fromTokenInfo = fromToken ? adaptToV1TokenInfo(fromToken) : undefined;
-  const toTokenInfo = toToken ? adaptToV1TokenInfo(toToken) : undefined;
-
   const triggerRatio = (order as SwapOrderInfo).triggerRatio as TokensRatioAndSlippage;
 
-  const markExchangeRate =
+  const markRatio =
     fromToken && toToken
-      ? getExchangeRate(adaptToV1TokenInfo(fromToken), adaptToV1TokenInfo(toToken), false)
+      ? getTokensRatioByPrice({
+          fromToken,
+          toToken,
+          fromPrice: fromToken.prices.minPrice,
+          toPrice: toToken.prices.minPrice,
+        })
       : undefined;
 
   const ratioDecimals = calculateDisplayDecimals(triggerRatio?.ratio);
@@ -880,7 +914,10 @@ function getSwapRatioText(order: OrderInfo) {
     true
   )} ${triggerRatio?.smallestToken.symbol} per ${triggerRatio?.largestToken.symbol}`;
 
-  const markSwapRatioText = getExchangeRateDisplay(markExchangeRate, fromTokenInfo, toTokenInfo);
+  const markRatioDecimals = calculateDisplayDecimals(markRatio?.ratio);
+  const markSwapRatioText = markRatio
+    ? `${formatAmount(markRatio.ratio, USD_DECIMALS, markRatioDecimals, true)} ${markRatio.smallestToken.symbol} per ${markRatio.largestToken.symbol}`
+    : "...";
 
   const acceptablePriceText = `${sign} ${formatAmount(triggerRatio?.acceptablePrice, USD_DECIMALS, 2, true)} ${triggerRatio?.smallestToken.symbol} / ${triggerRatio?.largestToken.symbol}`;
 

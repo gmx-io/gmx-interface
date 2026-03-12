@@ -1,4 +1,4 @@
-import { Provider } from "ethers";
+import { Trans } from "@lingui/macro";
 import {
   Abi,
   AbiStateMutability,
@@ -13,11 +13,10 @@ import { isDevelopment } from "config/env";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-import { applyGasLimitBuffer, estimateGasLimit } from "./gas/estimateGasLimit";
+import { applyGasLimitBuffer } from "./gas/estimateGasLimit";
 import { GasPriceData, getGasPrice } from "./gas/gasPrice";
 import { helperToast } from "./helperToast";
 import { getProvider } from "./rpc";
-import { ISigner } from "./transactions/iSigner";
 import { getPublicClientWithRpc } from "./wallets/rainbowKitConfig";
 
 export type TenderlyConfig = {
@@ -35,7 +34,6 @@ const sentReports: {
 export async function simulateCallDataWithTenderly({
   chainId,
   tenderlyConfig,
-  provider,
   to,
   data,
   from,
@@ -48,7 +46,6 @@ export async function simulateCallDataWithTenderly({
 }: {
   chainId: number;
   tenderlyConfig: TenderlyConfig;
-  provider: Provider | ISigner;
   to: string;
   data: string;
   from: string;
@@ -59,8 +56,10 @@ export async function simulateCallDataWithTenderly({
   comment: string | undefined;
   stateOverride?: StateOverride;
 }) {
+  const publicClient = getPublicClientWithRpc(chainId);
+
   if (blockNumber === undefined) {
-    blockNumber = await provider.getBlockNumber();
+    blockNumber = Number(await publicClient.getBlockNumber());
   }
 
   if (!gasPriceData) {
@@ -69,12 +68,14 @@ export async function simulateCallDataWithTenderly({
   }
 
   if (gasLimit === undefined) {
-    gasLimit = await estimateGasLimit(provider, {
-      to,
-      data,
-      from,
-      value,
-    });
+    gasLimit = await publicClient
+      .estimateGas({
+        account: from,
+        to: to,
+        data: data,
+        value: value,
+      })
+      .then(applyGasLimitBuffer);
   }
 
   return processSimulation({
@@ -237,11 +238,14 @@ async function processSimulation({
     const url = `https://dashboard.tenderly.co/${config.accountSlug}/${config.projectSlug}/simulator/${json.simulation.id}`;
     sentReports.push({ url, comment: comment ?? "" });
     success = json.simulation.status;
-    helperToast.info(
+    helperToast.success(
       <>
         {sentReports.map(({ url, comment }) => (
           <div key={url}>
-            <ExternalLink href={url}>View Tx</ExternalLink> for {comment}
+            <ExternalLink href={url}>
+              <Trans>View transaction</Trans>
+            </ExternalLink>{" "}
+            <Trans>for {comment}</Trans>
           </div>
         ))}
       </>,
@@ -257,7 +261,10 @@ async function processSimulation({
         <br />
         {sentReports.map(({ url, comment }) => (
           <div key={url}>
-            <ExternalLink href={url}>View Tx</ExternalLink> for {comment}
+            <ExternalLink href={url}>
+              <Trans>View transaction</Trans>
+            </ExternalLink>{" "}
+            <Trans>for {comment}</Trans>
           </div>
         ))}
       </>

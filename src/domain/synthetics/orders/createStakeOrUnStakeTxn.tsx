@@ -4,7 +4,9 @@ import { encodeFunctionData } from "viem";
 
 import { BOTANIX } from "config/chains";
 import { getContract } from "config/contracts";
+import { estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { helperToast } from "lib/helperToast";
+import { getProvider } from "lib/rpc";
 import { sleep } from "lib/sleep";
 import { sendWalletTransaction, TxnEventName } from "lib/transactions";
 import StBTCABI from "sdk/abis/StBTC";
@@ -74,7 +76,13 @@ export async function createStakeOrUnstakeTxn(chainId: number, signer: Signer, p
     }
 
     const stBTC = new ethers.Contract(getContract(chainId, "StBTC"), StBTCABI, signer);
-    const tx = await stBTC.withdraw(p.amount, address, address);
+    const gasLimit = await estimateGasLimit(getProvider(undefined, chainId), {
+      to: getContract(chainId, "StBTC"),
+      data: stBTC.interface.encodeFunctionData("withdraw", [p.amount, address, address]),
+      from: address,
+      value: undefined,
+    });
+    const tx = await stBTC.withdraw(p.amount, address, address, { gasLimit });
     await signer.provider?.waitForTransaction(tx.hash, 0);
 
     helperToast.success(<StakeNotification txnHash={tx.hash} {...p} />);
@@ -106,7 +114,7 @@ export async function createStakeOrUnstakeTxn(chainId: number, signer: Signer, p
           case TxnEventName.Error:
             reject(event.data.error);
 
-            helperToast.error(t`Failed to ${p.isStake ? "stake" : "unstake"}.`);
+            helperToast.error(p.isStake ? t`Failed to stake` : t`Failed to unstake`);
             break;
 
           case TxnEventName.Sent: {

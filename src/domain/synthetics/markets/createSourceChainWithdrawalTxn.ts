@@ -121,7 +121,7 @@ export async function createSourceChainWithdrawalTxn({
       args: [sendParams, sendQuoteFromNative(ensuredFees.txnEstimatedNativeFee), account],
     }),
     value,
-    msg: t`Sent withdrawal transaction`,
+    msg: t`Withdrawal sent`,
   });
   return txnResult;
 }

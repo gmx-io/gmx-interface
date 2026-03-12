@@ -4,8 +4,8 @@ import { Helmet } from "react-helmet";
 function SEO(props) {
   const { children, ...customMeta } = props;
   const meta = {
-    title: t`GMX | Decentralized Perpetual Exchange`,
-    description: t`Trade spot or perpetual BTC, ETH, AVAX and other top cryptocurrencies with up to 100x leverage directly from your wallet on Arbitrum and Avalanche.`,
+    title: t`GMX | Decentralized perpetual exchange`,
+    description: t`Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks`,
     image: "https://gmx.io/og.png",
     type: "exchange",
     ...customMeta,

@@ -173,7 +173,7 @@ export default function ClaimableAmounts() {
     let buttonText: React.ReactNode = <Trans>Claim funds</Trans>;
 
     if (hasOutdatedUi) {
-      buttonText = t`Page outdated, please refresh`;
+      buttonText = t`Refresh page`;
       isButtonDisabled = true;
     } else if (isClaiming) {
       buttonText = <Trans>Claiming...</Trans>;
@@ -182,7 +182,7 @@ export default function ClaimableAmounts() {
     let buttonTooltipText: React.ReactNode | null = null;
 
     if (selectedDistributionIds.length === 0) {
-      buttonTooltipText = <Trans>Select at least one distribution to claim.</Trans>;
+      buttonTooltipText = <Trans>Select at least one distribution to claim</Trans>;
       isButtonDisabled = true;
     }
 
@@ -248,7 +248,9 @@ export default function ClaimableAmounts() {
   if (claimableEntries.length === 0) {
     return (
       <div className="flex flex-col gap-16">
-        <span className="text-body-medium font-medium text-typography-secondary">No distributions to claim</span>
+        <span className="text-body-medium font-medium text-typography-secondary">
+          <Trans>No distributions to claim</Trans>
+        </span>
       </div>
     );
   }
@@ -268,7 +270,9 @@ export default function ClaimableAmounts() {
         ))}
 
       <div className="flex items-center justify-between">
-        <span className="text-body-medium font-medium text-typography-secondary">Total to claim</span>
+        <span className="text-body-medium font-medium text-typography-secondary">
+          <Trans>Total to claim</Trans>
+        </span>
         <Tooltip
           handle={formatUsd(totalFundsToClaimUsd)}
           handleClassName="cursor-help numbers"
@@ -278,8 +282,8 @@ export default function ClaimableAmounts() {
       </div>
 
       {displayInsufficientGasAlert ? (
-        <AlertInfoCard type="warning" hideClose>
-          <Trans>Insufficient gas for network fees.</Trans>
+        <AlertInfoCard type="error" hideClose>
+          <Trans>Insufficient gas for network fees</Trans>
         </AlertInfoCard>
       ) : null}
 
@@ -292,7 +296,7 @@ export default function ClaimableAmounts() {
             <ExternalLink href={GLP_REIMBURSEMENT_TERMS_URL} variant="underline" className="font-medium text-blue-300">
               GLP Reimbursement
             </ExternalLink>{" "}
-            terms.
+            terms
           </Trans>
         </div>
       )}

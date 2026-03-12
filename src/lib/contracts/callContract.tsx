@@ -102,7 +102,7 @@ export async function callContract(
     if (opts.showPreliminaryMsg && !opts.hideSentMsg) {
       showCallContractToast({
         chainId,
-        sentMsg: opts.sentMsg || t`Transaction sent.`,
+        sentMsg: opts.sentMsg || t`Transaction sent`,
         detailsMsg: opts.detailsMsg || "",
       });
     }
@@ -120,8 +120,7 @@ export async function callContract(
       async function retrieveGasLimit() {
         return customGasLimits[i] !== undefined
           ? (customGasLimits[i] as bigint | number)
-          : // here
-            await getGasLimit(cntrct, method, params, opts.value);
+          : getGasLimit({ chainId, contract: cntrct, method, params, value: opts.value, from: wallet.address });
       }
 
       async function retrieveGasPrice() {
@@ -168,14 +167,14 @@ export async function callContract(
     if (!opts.hideSentMsg) {
       showCallContractToast({
         chainId,
-        sentMsg: opts.sentMsg || t`Transaction sent.`,
+        sentMsg: opts.sentMsg || t`Transaction sent`,
         detailsMsg: opts.detailsMsg || "",
         hash: res.hash,
       });
     }
 
     if (opts.setPendingTxns) {
-      const message = opts.hideSuccessMsg ? "" : opts.successMsg || t`Transaction completed.`;
+      const message = opts.hideSuccessMsg ? "" : opts.successMsg || t`Transaction completed`;
       const pendingTxn: PendingTransaction = {
         hash: res.hash,
         message,
@@ -212,15 +211,23 @@ function showCallContractToast({
 }) {
   helperToast.success(
     <div>
-      {sentMsg || t`Transaction sent.`}{" "}
+      {sentMsg || t`Transaction sent`}
       {hash && (
-        <ExternalLink href={getExplorerUrl(chainId) + "tx/" + hash}>
-          <Trans>View status.</Trans>
-        </ExternalLink>
+        <>
+          <br />
+          <br />
+          <ExternalLink href={getExplorerUrl(chainId) + "tx/" + hash}>
+            <Trans>View status</Trans>
+          </ExternalLink>
+        </>
       )}
-      <br />
-      {detailsMsg && <br />}
-      {detailsMsg}
+      {detailsMsg && (
+        <>
+          <br />
+          <br />
+          {detailsMsg}
+        </>
+      )}
     </div>,
     {
       toastId,
