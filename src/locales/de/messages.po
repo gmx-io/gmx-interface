@@ -1902,6 +1902,10 @@ msgstr "GM verschieben"
 msgid "Timestamp"
 msgstr "Zeitstempel"
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "KyberSwap"
+msgstr ""
+
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Insufficient gas for execution"
 msgstr "Unzureichendes Gas für die Ausführung"
@@ -5142,10 +5146,6 @@ msgstr "Unzureichende Liquidität im GM Pool"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Additional reserve required:"
 msgstr "Zusätzliche Reserve erforderlich:"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Open Ocean"
-msgstr "Open Ocean"
 
 #: src/components/GmSwap/GmSwapBox/GmSwapBox.tsx
 msgid "Single"
