@@ -242,14 +242,6 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
 
   const simulationRouterAddress = !isGlv ? tryGetContract(chainId, "SimulationRouter") : undefined;
 
-  // eslint-disable-next-line no-console
-  console.debug("[v2.2c simulation]", {
-    method,
-    isGlv,
-    simulationRouterAddress: simulationRouterAddress ?? "N/A (legacy path)",
-    chainId,
-  });
-
   let simulateExecuteData: string;
 
   if (method === "simulateExecuteLatestWithdrawal") {
@@ -296,11 +288,10 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
     throw new Error(`Unknown method: ${method}`);
   }
 
-  simulationPayloadData.push(simulateExecuteData);
-
   const tenderlyConfig = getTenderlyConfig();
 
   if (isGlv) {
+    simulationPayloadData.push(simulateExecuteData);
     const routerAddress = getContract(chainId, "GlvRouter");
     const routerAbi = abis.GlvRouter;
 
@@ -328,19 +319,8 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
       isExpress: p.isExpress,
     });
   } else if (simulationRouterAddress) {
-    // v2.2c: SimulationRouter is deployed, but simulateExecuteLatest* uses
-    // NonceUtils.getCurrentKey(dataStore) which requires the order to exist on-chain.
-    // Since create + simulate can't run atomically across two contracts (each uses
-    // delegatecall-based multicall), we only validate the create payload here.
-    // Execution validation relies on Reader-based price/impact calculations in the UI.
+    // v2.2c: create-only validation (SimulationRouter can't simulate without on-chain order)
     const exchangeRouterAddress = getContract(chainId, "ExchangeRouter");
-
-    // eslint-disable-next-line no-console
-    console.debug("[v2.2c simulation] Create-only validation:", {
-      router: `ExchangeRouter (${exchangeRouterAddress})`,
-      method,
-      payloadCalls: simulationPayloadData.length - 1,
-    });
 
     if (tenderlyConfig) {
       await simulateTxWithTenderly({
@@ -349,7 +329,7 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
         abi: abis.ExchangeRouter,
         account: p.account,
         method: "multicall",
-        params: [simulationPayloadData.slice(0, -1)],
+        params: [simulationPayloadData],
         value: p.value,
         comment: `calling create for ${method}`,
       });
@@ -359,7 +339,7 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
       client,
       address: exchangeRouterAddress,
       abi: abis.ExchangeRouter,
-      args: [simulationPayloadData.slice(0, -1)],
+      args: [simulationPayloadData],
       value: p.value,
       account: p.account,
       blockNumber,
@@ -367,7 +347,7 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
       expectRevert: false,
     });
   } else {
-    // Legacy: ExchangeRouter still has simulation methods
+    simulationPayloadData.push(simulateExecuteData);
     const routerAddress = getContract(chainId, "ExchangeRouter");
     const routerAbi = abis.ExchangeRouter;
 
@@ -440,14 +420,12 @@ async function simulateContractWithRetry({
       }
     );
 
-    // If we expected a revert (EndOfOracleSimulation) but didn't get one,
-    // that's fine for the create-only step
+    // No revert on create-only is fine (no EndOfOracleSimulation expected)
     if (!expectRevert) {
       return;
     }
   } catch (txnError) {
     if (!expectRevert) {
-      // For create-only simulation, any revert is an actual error
       const decodedError = decodeErrorFromViemError(txnError);
       const isInsufficientFunds = isInsufficientFundsError(txnError);
       const shouldIgnoreExpressNativeTokenBalance = isInsufficientFunds && isExpress;

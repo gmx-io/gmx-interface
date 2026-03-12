@@ -42,7 +42,6 @@ import {
 export const selectTradeBoxCreateOrderParams = createSelector((q) => {
   const { isSwap, isIncrease, isTwap } = q(selectTradeboxTradeFlags);
 
-  // For TWAP orders, the primary params go through twapParams, not createOrderParams
   if (isTwap) {
     return undefined;
   }
@@ -58,10 +57,6 @@ export const selectTradeBoxCreateOrderParams = createSelector((q) => {
   return q(selectTradeboxDecreaseOrderParams);
 });
 
-/**
- * Selector for TWAP order params.
- * Returns CreateTwapTxnParams when in TWAP mode, undefined otherwise.
- */
 export const selectTradeBoxTwapParams = createSelector((q) => {
   const { isSwap, isIncrease, isTwap } = q(selectTradeboxTradeFlags);
 
@@ -137,7 +132,6 @@ const selectTradeboxSwapOrderPayload = createSelector((q) => {
   };
 
   if (isTwap) {
-    // TWAP orders are handled by selectTradeBoxTwapParams
     return undefined;
   }
 
@@ -190,7 +184,6 @@ const selectTradeboxIncreaseOrderParams = createSelector((q) => {
   };
 
   if (isTwap) {
-    // TWAP orders are handled by selectTradeBoxTwapParams
     return undefined;
   }
 
@@ -219,7 +212,6 @@ const selectTradeboxDecreaseOrderParams = createSelector((q) => {
   }
 
   if (isTwap) {
-    // TWAP orders are handled by selectTradeBoxTwapParams
     return undefined;
   }
 

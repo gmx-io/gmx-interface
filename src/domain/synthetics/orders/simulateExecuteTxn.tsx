@@ -140,17 +140,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
     throw new Error(`Unknown method: ${method}`);
   }
 
-  simulationPayloadData.push(simulateExecuteData);
-
   const simulationRouterAddress = !isGlv ? tryGetContract(chainId, "SimulationRouter") : undefined;
-
-  // eslint-disable-next-line no-console
-  console.debug("[v2.2c simulateExecuteTxn]", {
-    method,
-    isGlv,
-    path: isGlv ? "GlvRouter" : simulationRouterAddress ? "SimulationRouter (v2.2c)" : "ExchangeRouter (legacy)",
-    simulationRouterAddress: simulationRouterAddress ?? "N/A",
-  });
 
   let errorTitle = p.errorTitle || t`Order simulation failed`;
 
@@ -165,7 +155,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
   };
 
   if (isGlv) {
-    // GLV path: everything goes to GlvRouter
+    simulationPayloadData.push(simulateExecuteData);
     const routerAddress = getContract(chainId, "GlvRouter");
     const routerAbi = abis.GlvRouter;
 
@@ -198,9 +188,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
       handleSimulationTxnError(txnError, chainId, p, errorTitle);
     }
   } else if (simulationRouterAddress) {
-    // v2.2c: SimulationRouter uses NonceUtils.getCurrentKey — requires order to exist on-chain.
-    // Can't run create + simulate atomically across two contracts (delegatecall multicall).
-    // Only validate the create payload. Execution relies on Reader/SDK calculations.
+    // v2.2c: create-only validation (SimulationRouter can't simulate without on-chain order)
     const exchangeRouterAddress = getContract(chainId, "ExchangeRouter");
 
     if (tenderlyConfig) {
@@ -210,7 +198,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
         abi: abis.ExchangeRouter,
         account: p.account,
         method: "multicall",
-        params: [simulationPayloadData.slice(0, -1)],
+        params: [simulationPayloadData],
         value: p.value,
         comment: `v2.2c create-only validation for ${method}`,
       });
@@ -222,7 +210,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
           address: exchangeRouterAddress,
           abi: abis.ExchangeRouter,
           functionName: "multicall",
-          args: [simulationPayloadData.slice(0, -1)],
+          args: [simulationPayloadData],
           value: p.value,
           account: p.account,
           blockNumber: blockNumber,
@@ -232,7 +220,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
       handleSimulationTxnError(createError, chainId, p, errorTitle);
     }
   } else {
-    // Legacy: ExchangeRouter still has simulation methods
+    simulationPayloadData.push(simulateExecuteData);
     const routerAddress = getContract(chainId, "ExchangeRouter");
     const routerAbi = abis.ExchangeRouter;
 

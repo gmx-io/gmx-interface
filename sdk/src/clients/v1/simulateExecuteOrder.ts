@@ -69,13 +69,6 @@ export async function simulateExecuteOrder(sdk: GmxSdk, p: SimulateExecuteParams
 
   let simulationPayloadData = [...p.createMulticallPayload];
 
-  const simulateExecuteData = encodeFunctionData({
-    abi: abis.SimulationRouter as Abi,
-    functionName: "simulateExecuteLatestOrder",
-    args: [simulationPriceParams],
-  });
-  simulationPayloadData.push(simulateExecuteData);
-
   const simulationRouterAddress = tryGetContract(chainId, "SimulationRouter");
 
   const retryConfig = {
@@ -88,28 +81,26 @@ export async function simulateExecuteOrder(sdk: GmxSdk, p: SimulateExecuteParams
   };
 
   if (simulationRouterAddress) {
-    // v2.2c: SimulationRouter uses NonceUtils.getCurrentKey — requires order to exist on-chain.
-    // Can't run create + simulate atomically across two contracts (delegatecall multicall).
-    // Only validate the create payload. Execution relies on Reader/SDK calculations.
-
-    // eslint-disable-next-line no-console
-    console.debug("[v2.2c SDK simulateExecuteOrder] Create-only validation:", {
-      router: `ExchangeRouter (${exchangeRouterAddress})`,
-    });
-
+    // v2.2c: create-only validation (SimulationRouter can't simulate without on-chain order)
     await withRetry(async () => {
       return await client.simulateContract({
         address: exchangeRouterAddress,
         abi: abis.ExchangeRouter as Abi,
         functionName: "multicall",
-        args: [simulationPayloadData.slice(0, -1)],
+        args: [simulationPayloadData],
         value: p.value,
         account: account as Address,
         blockNumber,
       });
     }, retryConfig);
   } else {
-    // Legacy: ExchangeRouter still has simulation methods
+    const simulateExecuteData = encodeFunctionData({
+      abi: abis.SimulationRouter as Abi,
+      functionName: "simulateExecuteLatestOrder",
+      args: [simulationPriceParams],
+    });
+    simulationPayloadData.push(simulateExecuteData);
+
     try {
       await withRetry(async () => {
         return await client.simulateContract({

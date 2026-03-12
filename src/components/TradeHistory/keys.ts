@@ -71,12 +71,7 @@ const actionTextMapBase: Partial<
   "Liquidation-OrderExecuted": msg`Liquidated`,
 };
 
-/**
- * Action text overrides for expired market order cancellations.
- * In v2.2c, keepers can cancel market orders after requestExpirationTime has passed.
- * When reason === "USER_INITIATED_CANCEL" on a market order cancel, it means the request
- * expired rather than execution failed.
- */
+/** Overrides for market orders cancelled with USER_INITIATED_CANCEL — means expired, not failed. */
 export const expiredActionTextMap: Partial<Record<string, MessageDescriptor>> = {
   "MarketSwap-OrderCancelled": msg`Expired Market Swap`,
   "MarketIncrease-OrderCancelled": msg`Expired Market Increase`,
@@ -129,9 +124,6 @@ export function getActionTitle(orderType: OrderType, eventName: TradeActionType,
     ? `Twap${isSwapOrderType(orderType) ? "Swap" : ""}-${eventName}`
     : `${orderTypeToKey(orderType)}-${eventName}`;
 
-  // For market order cancellations with USER_INITIATED_CANCEL reason, show "Expired" instead of "Failed".
-  // In v2.2c, keepers can cancel market orders after requestExpirationTime. When the reason is
-  // USER_INITIATED_CANCEL on a market order cancel, it indicates expiration rather than execution failure.
   if (
     reason === USER_INITIATED_CANCEL &&
     eventName === TradeActionType.OrderCancelled &&

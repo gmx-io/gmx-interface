@@ -26,13 +26,11 @@ export type ExchangeRouterCall = {
 };
 
 export type CreateTwapTxnParams = {
-  /** The single order payload with PER-ORDER amounts (the contract divides collateral internally) */
+  /** Per-order amounts — contract divides collateral internally */
   createOrderTxnParams: CreateOrderTxnParams<
     SwapOrderParams | IncreasePositionOrderParams | DecreasePositionOrderParams
   >;
-  /** Number of TWAP sub-orders */
   twapCount: number;
-  /** Interval in seconds between sub-orders */
   intervalSeconds: number;
 };
 
@@ -42,7 +40,6 @@ export type BatchOrderTxnParams = {
   >[];
   updateOrderParams: UpdateOrderTxnParams[];
   cancelOrderParams: CancelOrderTxnParams[];
-  /** When set, uses the createTwapOrder endpoint */
   twapParams?: CreateTwapTxnParams;
 };
 
@@ -485,14 +482,8 @@ export function buildTwapOrdersPayloads<
 }
 
 /**
- * Builds a single order payload for the native `createTwapOrder` contract method.
- * The contract expects per-order values for executionFee and sizeDeltaUsd in the order params.
- * It does a single `recordTransferIn` and divides collateral by twapCount internally.
- * It checks that the total WNT transferred >= `executionFee * twapCount`.
- *
- * NOTE: The builder functions (buildSwapOrderPayload, etc.) create token transfers with
- * per-order execution fee amounts. The `buildCreateTwapOrderMulticall` function is responsible
- * for scaling up the WNT transfer to the total execution fee before sending to the vault.
+ * Builds per-order payload for `createTwapOrder`. The contract divides collateral
+ * by twapCount internally and checks `wntAmount >= executionFee * twapCount`.
  */
 export function buildTwapOrderPayload<
   T extends SwapOrderParams | IncreasePositionOrderParams | DecreasePositionOrderParams,
@@ -505,7 +496,6 @@ export function buildTwapOrderPayload<
   if (isSwapOrderType(p.orderType)) {
     const params = p as SwapOrderParams;
 
-    // Build a per-order payload (the contract expects per-order executionFee)
     const perOrderPayload = buildSwapOrderPayload({
       chainId: params.chainId,
       receiver: params.receiver,
@@ -522,9 +512,7 @@ export function buildTwapOrderPayload<
       ...(params.expectedOutputAmount !== undefined && {
         expectedOutputAmount: params.expectedOutputAmount / numberOfParts,
       }),
-      // Per-order pay amount for token transfer calculation
       payTokenAmount: params.payTokenAmount,
-      // Per-order execution fee (contract multiplies internally for total check)
       executionFeeAmount: params.executionFeeAmount / numberOfParts,
       validFromTime: startValidFromTime,
       orderType: OrderType.LimitSwap,
@@ -556,16 +544,14 @@ export function buildTwapOrderPayload<
       marketAddress: params.marketAddress,
       indexTokenAddress: params.indexTokenAddress,
       isLong: params.isLong,
-      // Per-order values
       sizeDeltaUsd: params.sizeDeltaUsd / numberOfParts,
       sizeDeltaInTokens: params.sizeDeltaInTokens / numberOfParts,
       payTokenAddress: params.payTokenAddress,
       allowedSlippage: 0,
-      // Total pay amount - contract divides collateral internally
+      // Total — contract divides collateral internally
       payTokenAmount: params.payTokenAmount,
       collateralTokenAddress: params.collateralTokenAddress,
       collateralDeltaAmount: params.collateralDeltaAmount / numberOfParts,
-      // Per-order execution fee
       executionFeeAmount: params.executionFeeAmount / numberOfParts,
       validFromTime: startValidFromTime,
       orderType: OrderType.LimitIncrease,
@@ -583,7 +569,6 @@ export function buildTwapOrderPayload<
     };
   }
 
-  // Decrease order
   const params = p as DecreasePositionOrderParams;
   const acceptablePrice = !params.isLong ? MaxUint256 : 0n;
   const triggerPrice = acceptablePrice;
@@ -600,11 +585,9 @@ export function buildTwapOrderPayload<
     indexTokenAddress: params.indexTokenAddress,
     isLong: params.isLong,
     collateralTokenAddress: params.collateralTokenAddress,
-    // Per-order values
     collateralDeltaAmount: params.collateralDeltaAmount / numberOfParts,
     sizeDeltaUsd: params.sizeDeltaUsd / numberOfParts,
     sizeDeltaInTokens: params.sizeDeltaInTokens / numberOfParts,
-    // Per-order execution fee
     executionFeeAmount: params.executionFeeAmount / numberOfParts,
     validFromTime: startValidFromTime,
     orderType: OrderType.LimitDecrease,
@@ -679,7 +662,6 @@ export function getBatchTotalExecutionFee({
     return undefined;
   }
 
-  // Account for TWAP order: per-order fee * twapCount
   if (batchParams.twapParams) {
     const { createOrderTxnParams, twapCount } = batchParams.twapParams;
     feeTokenAmount += createOrderTxnParams.orderPayload.numbers.executionFee * BigInt(twapCount);
@@ -712,7 +694,6 @@ export function getBatchTotalExecutionFee({
 export function getBatchTotalPayCollateralAmount(batchParams: BatchOrderTxnParams) {
   const payAmounts: { [tokenAddress: string]: bigint } = {};
 
-  // Account for TWAP order collateral
   if (batchParams.twapParams) {
     const { createOrderTxnParams } = batchParams.twapParams;
     const payTokenAddress = createOrderTxnParams.tokenTransfersParams?.payTokenAddress;
@@ -984,7 +965,6 @@ export function getBatchOrderMulticallPayload({ params }: { params: BatchOrderTx
   const multicall: ExchangeRouterCall[] = [];
   let value = 0n;
 
-  // If TWAP params are set, use the createTwapOrder endpoint
   if (twapParams) {
     const { multicall: twapMulticall, value: twapValue } = buildCreateTwapOrderMulticall(twapParams);
     multicall.push(...twapMulticall);
@@ -1052,13 +1032,9 @@ export function buildCreateOrderMulticall(params: CreateOrderTxnParams<any>) {
 }
 
 /**
- * Builds multicall entries for the native createTwapOrder endpoint.
- * The contract handles token division and validFromTime scheduling internally.
- *
- * IMPORTANT: The order builder functions create token transfers with per-order execution fee.
- * The contract checks `wntAmount >= executionFee * twapCount`, so we must scale up the WNT
- * transfer to the total execution fee. Collateral transfers are already the total amount
- * (the contract divides them by twapCount internally).
+ * WNT transfers must be scaled to total execution fee (per-order fee * twapCount)
+ * because the contract checks `wntAmount >= executionFee * twapCount`.
+ * Collateral transfers stay at total amount — the contract divides internally.
  */
 export function buildCreateTwapOrderMulticall(twapParams: CreateTwapTxnParams) {
   const { createOrderTxnParams, twapCount, intervalSeconds } = twapParams;
@@ -1068,23 +1044,9 @@ export function buildCreateTwapOrderMulticall(twapParams: CreateTwapTxnParams) {
   const perOrderExecutionFee = orderPayload.numbers.executionFee;
   const additionalExecutionFee = perOrderExecutionFee * BigInt(twapCount - 1);
 
-  // eslint-disable-next-line no-console
-  console.debug("[v2.2c TWAP] buildCreateTwapOrderMulticall:", {
-    twapCount,
-    intervalSeconds,
-    perOrderExecutionFee: perOrderExecutionFee.toString(),
-    totalExecutionFee: (perOrderExecutionFee * BigInt(twapCount)).toString(),
-    additionalExecutionFee: additionalExecutionFee.toString(),
-    tokenTransfers: tokenTransfers.length,
-    sizeDeltaUsd: orderPayload.numbers.sizeDeltaUsd.toString(),
-  });
-
   const multicall: ExchangeRouterCall[] = [];
   let adjustedValue = value;
 
-  // Token transfers: scale up WNT (native) transfers to include total execution fee.
-  // The builder functions only included per-order execution fee in the WNT transfer.
-  // We need to add (twapCount - 1) * perOrderExecutionFee to cover the total.
   for (const transfer of tokenTransfers) {
     if (transfer.tokenAddress === NATIVE_TOKEN_ADDRESS) {
       const scaledAmount = transfer.amount + additionalExecutionFee;
@@ -1094,10 +1056,8 @@ export function buildCreateTwapOrderMulticall(twapParams: CreateTwapTxnParams) {
     }
   }
 
-  // Adjust msg.value to include the additional execution fee
   adjustedValue += additionalExecutionFee;
 
-  // Use createTwapOrder instead of createOrder
   multicall.push({
     method: "createTwapOrder",
     params: [orderPayload, BigInt(twapCount), BigInt(intervalSeconds)],

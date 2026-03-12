@@ -589,7 +589,6 @@ export function parseMarketsConfigsResponse(
   res: MulticallResponse,
   marketsAddresses: string[]
 ): Record<string, MarketConfig> {
-  let debugLogged = false;
   return marketsAddresses.reduce(
     (acc, marketAddress) => {
       const dataStoreErrors = res.errors[`${marketAddress}-dataStore`];
@@ -666,21 +665,6 @@ export function parseMarketsConfigsResponse(
         virtualLongTokenId: dataStoreValues.virtualLongTokenId.returnValues[0],
         virtualShortTokenId: dataStoreValues.virtualShortTokenId.returnValues[0],
       };
-
-      if (!debugLogged && acc[marketAddress].maxLongPoolAmount > 0n) {
-        debugLogged = true;
-        const cfg = acc[marketAddress];
-        // eslint-disable-next-line no-console
-        console.debug("[v2.2c market config] Sample market:", marketAddress, {
-          minFundingFactorPerSecondLong: cfg.minFundingFactorPerSecondLong?.toString(),
-          minFundingFactorPerSecondShort: cfg.minFundingFactorPerSecondShort?.toString(),
-          maxFundingFactorPerSecondLong: cfg.maxFundingFactorPerSecondLong?.toString(),
-          maxFundingFactorPerSecondShort: cfg.maxFundingFactorPerSecondShort?.toString(),
-          minFundingIncreaseRatePerSecond: cfg.minFundingIncreaseRatePerSecond?.toString(),
-          minCollateralFactorForLiquidation: cfg.minCollateralFactorForLiquidation?.toString(),
-          minCollateralFactor: cfg.minCollateralFactor?.toString(),
-        });
-      }
 
       return acc;
     },

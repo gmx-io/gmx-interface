@@ -21,11 +21,7 @@ import {
 } from "context/PoolsDetailsContext/selectors";
 import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/selectors/selectDepositWithdrawalAmounts";
 import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
-import {
-  selectChainId,
-  selectSrcChainId,
-  selectTokensData,
-} from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectChainId, selectSrcChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
@@ -44,7 +40,6 @@ import {
 } from "domain/synthetics/trade/utils/validation";
 import { isCustomError } from "lib/errors";
 import { adjustForDecimals, formatBalanceAmount } from "lib/numbers";
-import { getByKey } from "lib/objects";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
@@ -101,8 +96,6 @@ export const useGmSwapSubmitState = ({
   const glvToken = glvInfo?.glvToken;
   const marketTokensData = useSelector(selectPoolsDetailsMarketTokensData);
   const marketToken = useSelector(selectPoolsDetailsMarketTokenData);
-  const tokensData = useSelector(selectTokensData);
-
   const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
   const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
   const payLongToken = useSelector(selectPoolsDetailsPayLongToken);
@@ -234,47 +227,6 @@ export const useGmSwapSubmitState = ({
     paySourceChainNativeTokenAmount,
   });
 
-  const nativeToken = getByKey(tokensData, zeroAddress);
-  const nativeTokenWalletBalance = nativeToken?.walletBalance;
-  const settlementChainFeeTokenAmount =
-    technicalFees?.kind === "settlementChain" ? technicalFees.fees.feeTokenAmount : undefined;
-
-  const settlementChainNativeFeeError = useMemo((): ValidationResult | undefined => {
-    if (
-      paySource !== "settlementChain" ||
-      nativeTokenWalletBalance === undefined ||
-      settlementChainFeeTokenAmount === undefined
-    ) {
-      return undefined;
-    }
-
-    // TODO: re-enable after testnet testing
-    // const enoughWithLongCollateral =
-    //   payLongToken &&
-    //   nativeToken &&
-    //   payLongToken.address === nativeToken.address &&
-    //   nativeTokenWalletBalance > settlementChainFeeTokenAmount + longTokenAmount;
-    //
-    // const enoughWithShortCollateral =
-    //   payShortToken &&
-    //   nativeToken &&
-    //   payShortToken.address === nativeToken.address &&
-    //   nativeTokenWalletBalance > settlementChainFeeTokenAmount + shortTokenAmount;
-    //
-    // if (
-    //   nativeTokenWalletBalance < settlementChainFeeTokenAmount ||
-    //   !enoughWithLongCollateral ||
-    //   !enoughWithShortCollateral
-    // ) {
-    //   return {
-    //     buttonErrorMessage: getDefaultInsufficientGasMessage(),
-    //     bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
-    //   };
-    // }
-    // TODO: restore deps when re-enabling gas check:
-    // payLongToken, nativeToken, longTokenAmount, payShortToken, shortTokenAmount
-  }, [paySource, nativeTokenWalletBalance, settlementChainFeeTokenAmount]);
-
   const formattedEstimationError = useMemo((): ValidationResult | undefined => {
     if (estimationError instanceof ExpressEstimationInsufficientGasPaymentTokenBalanceError) {
       if (gasPaymentToken) {
@@ -324,7 +276,6 @@ export const useGmSwapSubmitState = ({
     swapError,
     expressError,
     sourceChainNativeFeeError,
-    settlementChainNativeFeeError,
     formattedEstimationError
   );
 

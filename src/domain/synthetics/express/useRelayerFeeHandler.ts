@@ -60,7 +60,7 @@ export function useExpressOrdersParams({
   );
   const isExpressAvailable = useSelector(selectIsExpressTransactionAvailable);
 
-  // TWAP orders use the direct createTwapOrder endpoint which relay routers don't support yet
+  // Relay routers don't support createTwapOrder yet
   const isAvailable =
     isExpressAvailable && orderParams && !getBatchIsNativePayment(orderParams) && !orderParams.twapParams;
 

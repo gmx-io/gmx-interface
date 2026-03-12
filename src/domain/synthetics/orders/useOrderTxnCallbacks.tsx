@@ -429,11 +429,9 @@ function getBatchPendingOrders(
 
   const twapPendingOrders = getPendingCreateTwapOrders(txnParams.createOrderParams, createdAt);
 
-  // Handle TWAP order as a single pending order with total amounts
   if (txnParams.twapParams) {
     const { createOrderTxnParams, twapCount } = txnParams.twapParams;
     const pendingOrder = getPendingCreateOrder(createOrderTxnParams, true, createdAt);
-    // Scale per-order values to totals for the pending display
     twapPendingOrders.push({
       ...pendingOrder,
       sizeDeltaUsd: pendingOrder.sizeDeltaUsd * BigInt(twapCount),
