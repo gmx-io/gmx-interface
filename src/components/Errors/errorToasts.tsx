@@ -27,6 +27,7 @@ export type AdditionalErrorParams = {
   slippageInputId?: string;
   defaultMessage?: ReactNode;
   isInternalSwapFallback?: boolean;
+  isExternalSwapFallback?: boolean;
   permitIssueType?: PermitIssueType;
   setIsSettingsVisible?: (isVisible: boolean) => void;
 };
@@ -39,6 +40,7 @@ export function getTxnErrorToast(
     slippageInputId,
     defaultMessage = getDefaultErrorMessage(errorData),
     isInternalSwapFallback,
+    isExternalSwapFallback,
     permitIssueType,
     setIsSettingsVisible,
   }: AdditionalErrorParams
@@ -86,6 +88,22 @@ export function getTxnErrorToast(
         <br />
         <br />
         <Trans>External swap temporarily disabled. Try again</Trans>
+        <br />
+        <br />
+        {debugErrorMessage && <ToastifyDebug error={debugErrorMessage} />}
+      </div>
+    );
+
+    return toastParams;
+  }
+
+  if (isExternalSwapFallback) {
+    toastParams.errorContent = (
+      <div>
+        {defaultMessage}
+        <br />
+        <br />
+        <Trans>Switching to external swap route. Try again</Trans>
         <br />
         <br />
         {debugErrorMessage && <ToastifyDebug error={debugErrorMessage} />}

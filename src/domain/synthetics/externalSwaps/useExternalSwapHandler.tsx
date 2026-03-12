@@ -9,7 +9,9 @@ import {
   selectExternalSwapQuote,
   selectSetBaseExternalSwapOutput,
   selectSetShouldFallbackToInternalSwap,
+  selectSetShouldForceExternalSwap,
   selectShouldFallbackToInternalSwap,
+  selectShouldForceExternalSwap,
   selectTradeboxAllowedSlippage,
   selectTradeboxFromTokenAddress,
   selectTradeboxSelectSwapToToken,
@@ -39,6 +41,8 @@ export function useExternalSwapHandler() {
   const externalSwapQuote = useSelector(selectExternalSwapQuote);
   const shouldFallbackToInternalSwap = useSelector(selectShouldFallbackToInternalSwap);
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
+  const shouldForceExternalSwap = useSelector(selectShouldForceExternalSwap);
+  const setShouldForceExternalSwap = useSelector(selectSetShouldForceExternalSwap);
 
   const enabled = useExternalSwapsEnabled();
 
@@ -106,10 +110,21 @@ export function useExternalSwapHandler() {
       const isLastOrderExecuted =
         orderStatusesValues.length > 0 && orderStatusesValues.every((os) => os.executedTxnHash);
 
-      if (isLastOrderExecuted && shouldFallbackToInternalSwap) {
-        setShouldFallbackToInternalSwap(false);
+      if (isLastOrderExecuted) {
+        if (shouldFallbackToInternalSwap) {
+          setShouldFallbackToInternalSwap(false);
+        }
+        if (shouldForceExternalSwap) {
+          setShouldForceExternalSwap(false);
+        }
       }
     },
-    [orderStatuses, shouldFallbackToInternalSwap, setShouldFallbackToInternalSwap]
+    [
+      orderStatuses,
+      shouldFallbackToInternalSwap,
+      setShouldFallbackToInternalSwap,
+      shouldForceExternalSwap,
+      setShouldForceExternalSwap,
+    ]
   );
 }
