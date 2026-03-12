@@ -251,7 +251,7 @@ export function SettingsModal({
           selectedValue={activeTab}
           onChange={setActiveTab}
           type="inline"
-          tabsWrapperClassName="justify-between"
+
         />
         <div className="flex max-w-[380px] flex-row items-start overflow-x-hidden max-md:max-w-none">
           <TabWrapper tab="trading" activeTab={activeTab}>
