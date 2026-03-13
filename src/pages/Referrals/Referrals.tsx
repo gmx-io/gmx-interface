@@ -145,7 +145,7 @@ function Referrals() {
               )}
               {activeTab === ReferralsTab.Affiliates && (
                 <ReferralsAffiliatesTab
-                  loading={isLoading}
+                  isLoading={isLoading}
                   account={account}
                   referralsData={referralsData}
                   initialReferralCode={createReferralCodePrefill}
@@ -153,7 +153,7 @@ function Referrals() {
                 />
               )}
               {activeTab === ReferralsTab.Distributions && (
-                <ReferralsDistributionsTab loading={isLoading} account={account} referralsData={referralsData} />
+                <ReferralsDistributionsTab isLoading={isLoading} account={account} referralsData={referralsData} />
               )}
             </div>
           )}

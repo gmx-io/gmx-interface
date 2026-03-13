@@ -121,11 +121,15 @@ export async function simulateAndCreateMultichainClaimAffiliateRewardsTxn({
     [txnData.callData, getContract(chainId, "GelatoRelayAddress"), txnData.feeToken, txnData.feeAmount]
   );
 
-  await client.call({
-    account: GMX_SIMULATION_ORIGIN,
-    to: txnData.to,
-    data: relayPayload,
-  });
+  try {
+    await client.call({
+      account: GMX_SIMULATION_ORIGIN,
+      to: txnData.to,
+      data: relayPayload,
+    });
+  } catch (error) {
+    throw new Error(`Multichain claim simulation failed: ${error instanceof Error ? error.message : "Unknown error"}`);
+  }
 
   return await sendExpressTransaction({
     chainId,

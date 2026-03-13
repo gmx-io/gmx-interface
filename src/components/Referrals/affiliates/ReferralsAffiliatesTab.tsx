@@ -16,7 +16,7 @@ import { CreateAffiliateWizard } from "./createCode/CreateAffiliateWizard";
 import { AFFILIATE_WIZARD_FAQS } from "./faq";
 
 type ReferralsAffiliatesTabProps = {
-  loading: boolean;
+  isLoading: boolean;
   account: string | undefined;
   referralsData: TotalReferralsStats | undefined;
   initialReferralCode: string | undefined;
@@ -24,7 +24,7 @@ type ReferralsAffiliatesTabProps = {
 };
 
 export function ReferralsAffiliatesTab({
-  loading,
+  isLoading,
   account,
   referralsData,
   initialReferralCode,
@@ -54,7 +54,7 @@ export function ReferralsAffiliatesTab({
   const isSomeReferralCodeAvailable = ownsSomeChainCode || hasRecentCode;
   const handleGoToAffiliateDashboard = useCallback(() => setForceDashboard(true), []);
 
-  if (loading) return <Loader />;
+  if (isLoading) return <Loader />;
 
   const isWizard = !forceDashboard && !hasAddressInUrl && (!account || !isSomeReferralCodeAvailable);
 

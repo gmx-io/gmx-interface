@@ -3,12 +3,14 @@ import cx from "classnames";
 import { AnimatePresence, motion } from "framer-motion";
 import partition from "lodash/partition";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useSWRConfig } from "swr";
 import { zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useArbitraryError, useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
+import { getReferralsDataKey } from "domain/referrals/hooks/useReferralsData";
 import { ExpressTransactionBuilder } from "domain/synthetics/express/types";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import {
@@ -144,9 +146,10 @@ export function ClaimAffiliatesModal(p: Props) {
   const { chainId, srcChainId } = useChainId();
   const hasOutdatedUi = useHasOutdatedUi();
 
+  const { mutate: swrMutate } = useSWRConfig();
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
-  const { affiliateRewardsData } = useAffiliateRewards(chainId);
+  const { affiliateRewardsData, mutateAffiliateRewards } = useAffiliateRewards(chainId);
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showOtherMainRewards, setShowOtherMainRewards] = useState(false);
@@ -217,15 +220,6 @@ export function ClaimAffiliatesModal(p: Props) {
       }),
     [chainId, rewards, selectedMarketAddresses]
   );
-  const swapRouteClaimTokenAmountsByToken = useMemo(
-    () =>
-      getSelectedClaimTokenAmounts({
-        chainId,
-        rewards: rewards,
-        selectedMarketAddresses,
-      }),
-    [chainId, rewards, selectedMarketAddresses]
-  );
 
   const selectedClaimTokensUsd = useMemo(
     () =>
@@ -264,7 +258,7 @@ export function ClaimAffiliatesModal(p: Props) {
   } = useClaimAffiliateSwapRoutes({
     account,
     chainId,
-    selectedClaimTokenAmountsByToken: swapRouteClaimTokenAmountsByToken,
+    selectedClaimTokenAmountsByToken,
     tokensData,
     isSwapEnabled,
   });
@@ -339,6 +333,8 @@ export function ClaimAffiliatesModal(p: Props) {
 
       const receipt = await tx.wait();
       if (receipt?.status === "success") {
+        mutateAffiliateRewards();
+        swrMutate(getReferralsDataKey(account));
         helperToast.success(t`Affiliate rewards claimed`);
         onClose();
       } else {
@@ -400,14 +396,6 @@ export function ClaimAffiliatesModal(p: Props) {
 
     return fallbackGasPaymentTokenAmount > gasPaymentToken.gmxAccountBalance;
   }, [fallbackGasPaymentTokenAmount, gasPaymentToken, srcChainId]);
-
-  useEffect(() => {
-    // eslint-disable-next-line no-console
-    console.log({
-      asyncResultError: expressTxnParamsAsyncResult.error,
-      parsedError: errors,
-    });
-  }, [errors, expressTxnParamsAsyncResult.error]);
 
   const isExpressParamsLoading =
     srcChainId !== undefined &&
@@ -482,6 +470,7 @@ export function ClaimAffiliatesModal(p: Props) {
   }, [errors, tokensData]);
 
   const handleSubmitMultichain = async () => {
+    if (!account || !signer || !rewardsTxParams) return;
     if (isSwapEnabled && !multichainSwapExternalCalls) {
       helperToast.error(t`Swap route unavailable`);
       return;
@@ -491,7 +480,7 @@ export function ClaimAffiliatesModal(p: Props) {
 
     try {
       const expressTxnParams = await expressTxnParamsAsyncResult.promise;
-      if (!expressTxnParams || !account || !signer) {
+      if (!expressTxnParams) {
         helperToast.error(t`Claim parameters unavailable. Retry in a few seconds`);
         metrics.pushError(new Error("No necessary params to claim"), "expressClaimAffiliateRewards");
         return;
@@ -508,10 +497,12 @@ export function ClaimAffiliatesModal(p: Props) {
       });
 
       const receipt = await result.wait();
-      if (receipt?.status === "failed") {
+      if (!receipt || receipt.status === "failed") {
         throw new Error("Transaction receipt status is failed");
       }
 
+      mutateAffiliateRewards();
+      swrMutate(getReferralsDataKey(account));
       helperToast.success(t`Claim successful`);
 
       onClose();
@@ -637,8 +628,7 @@ export function ClaimAffiliatesModal(p: Props) {
     srcChainId,
   ]);
 
-  const isSwapRouteLoadingForSubmit =
-    srcChainId !== undefined ? isSwapEnabled && isSwapRouteLoading : isSwapEnabled && isSwapRouteLoading;
+  const isSwapRouteLoadingForSubmit = isSwapEnabled && isSwapRouteLoading;
   const hasSwapRouteErrorForSubmit =
     srcChainId !== undefined
       ? isSwapEnabled && !isSwapRouteLoading && !multichainSwapExternalCalls

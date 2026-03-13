@@ -83,7 +83,7 @@ export function CreateAffiliateWizard({
       <div className="relative z-10 mx-auto flex h-full w-[420px] flex-col py-20 text-center">
         <StepProgress steps={3} currentStep={wizardStep} />
         <div className="h-[123px]" />
-        <div className="flex grow flex-col justify-between">
+        <div className="flex grow flex-col justify-between gap-12">
           {wizardStep === CreateAffiliateWizardStep.ConnectWallet && (
             <>
               <div className="flex flex-col items-center gap-12">

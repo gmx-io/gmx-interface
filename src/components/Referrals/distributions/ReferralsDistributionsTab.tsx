@@ -14,12 +14,12 @@ import { ReferralsDocsCard } from "components/Referrals/shared/cards/ReferralsDo
 import { RebatesDistributionTable } from "./table/RebatesDistributionTable";
 
 type ReferralsDistributionsTabProps = {
-  loading: boolean;
+  isLoading: boolean;
   account: string | undefined;
   referralsData: TotalReferralsStats | undefined;
 };
 
-export function ReferralsDistributionsTab({ loading, account, referralsData }: ReferralsDistributionsTabProps) {
+export function ReferralsDistributionsTab({ isLoading, account, referralsData }: ReferralsDistributionsTabProps) {
   const { chainId } = useChainId();
   const chains = referralsData?.chains || {};
   const currentReferralsData = chains[chainId as ContractsChainId];
@@ -39,7 +39,7 @@ export function ReferralsDistributionsTab({ loading, account, referralsData }: R
 
   const currentRebateData = getCurrentRebateData();
 
-  if (loading) return <Loader />;
+  if (isLoading) return <Loader />;
 
   if (!account) {
     return (
