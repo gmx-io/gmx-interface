@@ -5,6 +5,7 @@ import { Hash, isAddress, zeroAddress, zeroHash } from "viem";
 
 import { getContract } from "config/contracts";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
+import { REGEX_VERIFY_BYTES32 } from "domain/referrals/utils/referralCode";
 import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { getReferralsGraphClient } from "lib/indexers";
@@ -17,7 +18,6 @@ import { abis } from "sdk/abis";
 import { ContractsChainId } from "sdk/configs/chains";
 import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
 
-import { REGEX_VERIFY_BYTES32 } from "domain/referrals/utils/referralCode";
 
 import { UserReferralInfo } from "../types";
 
