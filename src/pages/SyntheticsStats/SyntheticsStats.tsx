@@ -24,8 +24,8 @@ import {
   MarketInfo,
   useMarketsInfoRequest,
 } from "domain/synthetics/markets";
-import { useKinkModelMarketsRates } from "domain/synthetics/markets/useKinkModelMarketsRates";
 import { getJitLiquidityInfo, useJitLiquidity } from "domain/synthetics/markets/useJitLiquidity";
+import { useKinkModelMarketsRates } from "domain/synthetics/markets/useKinkModelMarketsRates";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions";
 import { convertToUsd, getMidPrice, useTokensDataRequest } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
