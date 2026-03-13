@@ -107,8 +107,10 @@ test.describe("Tabs", () => {
     test("switches active tab on click", async ({ mount }) => {
       const component = await mount(<ControlledTabs type="inline" initialValue="tab1" />);
 
-      await component.getByText("Second").click();
-      await expect(component.getByText("Second")).toBeVisible();
+      const secondTab = component.getByText("Second");
+      await secondTab.click();
+      // Inline active tab gets secondary variant with !text-typography-primary
+      await expect(secondTab).toHaveClass(/!text-typography-primary/);
     });
   });
 
@@ -123,8 +125,10 @@ test.describe("Tabs", () => {
     test("switches active tab on click", async ({ mount }) => {
       const component = await mount(<ControlledTabs type="pills" initialValue="tab1" />);
 
-      await component.getByText("Second").click();
-      await expect(component.getByText("Second")).toBeVisible();
+      const secondTab = component.getByText("Second");
+      await secondTab.click();
+      // Pills active tab gets bg-slate-800
+      await expect(secondTab).toHaveClass(/bg-slate-800/);
     });
   });
 

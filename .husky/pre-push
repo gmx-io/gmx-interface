@@ -1,5 +1,4 @@
 #!/bin/sh
-set -e
 . "$(dirname "$0")/_/husky.sh"
 
 yarn test:ci &
@@ -11,6 +10,8 @@ PID2=$!
 cd sdk && yarn test:ci &
 PID3=$!
 
-wait $PID1
-wait $PID2
-wait $PID3
+FAIL=0
+wait $PID1 || FAIL=1
+wait $PID2 || FAIL=1
+wait $PID3 || FAIL=1
+exit $FAIL
