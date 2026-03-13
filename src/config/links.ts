@@ -7,6 +7,8 @@ export function get1InchSwapUrlFromAddresses(chainId: number, fromAddress?: stri
   return `https://app.1inch.io/#/${chainId}/simple/swap/${addressesStr}`;
 }
 
+export const JUMPER_BRIDGE_URL = "https://jumper.exchange/";
+
 export const DOCS_LINKS = {
   fundingFees: "https://docs.gmx.io/docs/trading/fees/#funding-fees",
   borrowingFees: "https://docs.gmx.io/docs/trading/fees/#borrow-fees",

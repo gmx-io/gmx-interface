@@ -180,6 +180,10 @@ msgstr "GMX 스왑 모니터링 Telegram 봇"
 msgid "Debug values unavailable"
 msgstr "디버그 값을 사용할 수 없습니다"
 
+#: src/domain/tokens/approveTokens.tsx
+msgid "Insufficient {0} for gas on {networkName}<0/><1/><2>Swap</2> or <3>bridge</3> {1} to {networkName}"
+msgstr ""
+
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing limit order in {0} pool but lacks liquidity for this order"
 msgstr "{0} 풀에 기존 지정가 주문이 있으나 이 주문에 대한 유동성이 부족합니다"
@@ -735,6 +739,11 @@ msgstr "높은 외부 스왑 영향"
 msgid "Keep more of what you earn"
 msgstr "수익을 더 많이 보존하십시오"
 
+#: src/components/Errors/gasErrors.tsx
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {nativeTokenSymbol} for gas on {0}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}"
+msgstr ""
+
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Accrued funding fees available for settlement"
 msgstr "정산 가능한 미수 펀딩 수수료"
@@ -837,8 +846,8 @@ msgstr "청구 시 <0>GLP 보상</0> 약관에 동의하게 됩니다"
 
 #: src/components/Errors/gasErrors.tsx
 #: src/components/Errors/gasErrors.tsx
-msgid "Insufficient {nativeTokenSymbol} for gas on {0}. <0>Buy {nativeTokenSymbol}</0>"
-msgstr "{0}에서 Gas에 필요한 {nativeTokenSymbol}이 부족합니다. <0>{nativeTokenSymbol} 구매</0>"
+#~ msgid "Insufficient {nativeTokenSymbol} for gas on {0}. <0>Buy {nativeTokenSymbol}</0>"
+#~ msgstr "{0}에서 Gas에 필요한 {nativeTokenSymbol}이 부족합니다. <0>{nativeTokenSymbol} 구매</0>"
 
 #: src/components/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Add {marketName} to wallet"
@@ -993,8 +1002,8 @@ msgid "Claim {totalUsd}"
 msgstr "{totalUsd} 수령"
 
 #: src/domain/tokens/approveTokens.tsx
-msgid "Insufficient {0} for gas on {networkName}<0/><1/><2>Buy or transfer {1} to {networkName}</2>"
-msgstr "{networkName}에서 Gas에 필요한 {0}이 부족합니다<0/><1/><2>{networkName}으로 {1}을(를) 구매하거나 전송하십시오</2>"
+#~ msgid "Insufficient {0} for gas on {networkName}<0/><1/><2>Buy or transfer {1} to {networkName}</2>"
+#~ msgstr "{networkName}에서 Gas에 필요한 {0}이 부족합니다<0/><1/><2>{networkName}으로 {1}을(를) 구매하거나 전송하십시오</2>"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -2545,8 +2554,8 @@ msgid "Excludes incentives"
 msgstr "인센티브 제외"
 
 #: src/components/Errors/gasErrors.tsx
-msgid "Insufficient {localizedList} for gas on {chainName}. <0>Buy {localizedList}</0>"
-msgstr "{chainName}에서 가스비를 위한 {localizedList}이(가) 부족합니다. <0>{localizedList} 구매</0>"
+#~ msgid "Insufficient {localizedList} for gas on {chainName}. <0>Buy {localizedList}</0>"
+#~ msgstr "{chainName}에서 가스비를 위한 {localizedList}이(가) 부족합니다. <0>{localizedList} 구매</0>"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buying {symbol}..."
@@ -4175,6 +4184,10 @@ msgstr "거래량"
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "Trigger partial tickers"
 msgstr "부분 티커 트리거"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "{collateralSymbol} is required for collateral.<0/><1/>No swap path found for {0} to {collateralSymbol} within GMX.<2/><3/><4>Swap {collateralSymbol}</4> or <5>bridge {collateralSymbol}</5>."
+msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
@@ -6863,6 +6876,10 @@ msgstr ""
 msgid "STATUS"
 msgstr "STATUS"
 
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {localizedList} for gas on {chainName}. <0>Swap</0> or <1>bridge</1> {localizedList}"
+msgstr ""
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>every</0> {seconds} seconds"
 msgstr "<0>매</0> {seconds} 초"
@@ -6984,8 +7001,8 @@ msgid "Cancel Stop-Loss"
 msgstr "손절매 취소"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "{0} is required for collateral.<0/><1/>No swap path found for {1} to {2} within GMX.<2/><3/><4>Buy {3} on 1inch</4>."
-msgstr "담보로 {0}이(가) 필요합니다.<0/><1/>GMX 내에서 {1}에서 {2}로의 스왑 경로를 찾을 수 없습니다.<2/><3/><4>1inch에서 {3} 구매</4>."
+#~ msgid "{0} is required for collateral.<0/><1/>No swap path found for {1} to {2} within GMX.<2/><3/><4>Buy {3} on 1inch</4>."
+#~ msgstr "담보로 {0}이(가) 필요합니다.<0/><1/>GMX 내에서 {1}에서 {2}로의 스왑 경로를 찾을 수 없습니다.<2/><3/><4>1inch에서 {3} 구매</4>."
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
@@ -8785,6 +8802,11 @@ msgstr "롱 유동성"
 msgid "Market orders"
 msgstr "시장가 주문"
 
+#: src/components/Errors/errorToasts.tsx
+#: src/components/Errors/errorToasts.tsx
+msgid "Insufficient {0} for gas on {1}<0/><1/><2>Swap</2> or <3>bridge</3> {2} to {3}"
+msgstr ""
+
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Deposits are not supported on Avalanche."
 msgstr "Avalanche에서는 입금이 지원되지 않습니다."
@@ -10501,8 +10523,8 @@ msgstr "지정가"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
-msgid "Insufficient {0} for gas on {1}<0/><1/><2>Buy or transfer {2} to {3}</2>"
-msgstr "{1}에서 가스에 필요한 {0}이(가) 부족합니다<0/><1/><2>{3}(으)로 {2}을(를) 구매 또는 전송</2>"
+#~ msgid "Insufficient {0} for gas on {1}<0/><1/><2>Buy or transfer {2} to {3}</2>"
+#~ msgstr "{1}에서 가스에 필요한 {0}이(가) 부족합니다<0/><1/><2>{3}(으)로 {2}을(를) 구매 또는 전송</2>"
 
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "TIMEKEY"

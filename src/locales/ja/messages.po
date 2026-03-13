@@ -180,6 +180,10 @@ msgstr "GMXスワップ監視用Telegramボット"
 msgid "Debug values unavailable"
 msgstr "デバッグ値は利用できません"
 
+#: src/domain/tokens/approveTokens.tsx
+msgid "Insufficient {0} for gas on {networkName}<0/><1/><2>Swap</2> or <3>bridge</3> {1} to {networkName}"
+msgstr ""
+
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing limit order in {0} pool but lacks liquidity for this order"
 msgstr "{0}プールに既存の指値注文がありますが、この注文に対する流動性が不足しています"
@@ -735,6 +739,11 @@ msgstr "高い外部スワップ影響"
 msgid "Keep more of what you earn"
 msgstr "収益をより多く確保"
 
+#: src/components/Errors/gasErrors.tsx
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {nativeTokenSymbol} for gas on {0}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}"
+msgstr ""
+
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Accrued funding fees available for settlement"
 msgstr "決済可能な未収ファンディング手数料"
@@ -837,8 +846,8 @@ msgstr "請求することにより、<0>GLP払い戻し</0>の利用規約に�
 
 #: src/components/Errors/gasErrors.tsx
 #: src/components/Errors/gasErrors.tsx
-msgid "Insufficient {nativeTokenSymbol} for gas on {0}. <0>Buy {nativeTokenSymbol}</0>"
-msgstr "{0}でのガスに必要な{nativeTokenSymbol}が不足しています。<0>{nativeTokenSymbol}を購入</0>"
+#~ msgid "Insufficient {nativeTokenSymbol} for gas on {0}. <0>Buy {nativeTokenSymbol}</0>"
+#~ msgstr "{0}でのガスに必要な{nativeTokenSymbol}が不足しています。<0>{nativeTokenSymbol}を購入</0>"
 
 #: src/components/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Add {marketName} to wallet"
@@ -993,8 +1002,8 @@ msgid "Claim {totalUsd}"
 msgstr "{totalUsd}を請求"
 
 #: src/domain/tokens/approveTokens.tsx
-msgid "Insufficient {0} for gas on {networkName}<0/><1/><2>Buy or transfer {1} to {networkName}</2>"
-msgstr "{networkName}でのガスに必要な{0}が不足しています<0/><1/><2>{1}を購入または{networkName}へ送金</2>"
+#~ msgid "Insufficient {0} for gas on {networkName}<0/><1/><2>Buy or transfer {1} to {networkName}</2>"
+#~ msgstr "{networkName}でのガスに必要な{0}が不足しています<0/><1/><2>{1}を購入または{networkName}へ送金</2>"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -2545,8 +2554,8 @@ msgid "Excludes incentives"
 msgstr "インセンティブを除く"
 
 #: src/components/Errors/gasErrors.tsx
-msgid "Insufficient {localizedList} for gas on {chainName}. <0>Buy {localizedList}</0>"
-msgstr "{chainName}でのGas用の{localizedList}が不足しています。<0>{localizedList}を購入</0>"
+#~ msgid "Insufficient {localizedList} for gas on {chainName}. <0>Buy {localizedList}</0>"
+#~ msgstr "{chainName}でのGas用の{localizedList}が不足しています。<0>{localizedList}を購入</0>"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buying {symbol}..."
@@ -4175,6 +4184,10 @@ msgstr "ボリューム"
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "Trigger partial tickers"
 msgstr "部分ティッカーをトリガー"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "{collateralSymbol} is required for collateral.<0/><1/>No swap path found for {0} to {collateralSymbol} within GMX.<2/><3/><4>Swap {collateralSymbol}</4> or <5>bridge {collateralSymbol}</5>."
+msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
@@ -6863,6 +6876,10 @@ msgstr ""
 msgid "STATUS"
 msgstr "STATUS"
 
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {localizedList} for gas on {chainName}. <0>Swap</0> or <1>bridge</1> {localizedList}"
+msgstr ""
+
 #: src/components/TwapRows/TwapRows.tsx
 msgid "<0>every</0> {seconds} seconds"
 msgstr "<0>毎</0> {seconds} 秒"
@@ -6984,8 +7001,8 @@ msgid "Cancel Stop-Loss"
 msgstr "ストップロスをキャンセル"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "{0} is required for collateral.<0/><1/>No swap path found for {1} to {2} within GMX.<2/><3/><4>Buy {3} on 1inch</4>."
-msgstr "{0}が担保として必要です。<0/><1/>GMX内で{1}から{2}へのスワップ経路が見つかりません。<2/><3/><4>1inchで{3}を購入</4>。"
+#~ msgid "{0} is required for collateral.<0/><1/>No swap path found for {1} to {2} within GMX.<2/><3/><4>Buy {3} on 1inch</4>."
+#~ msgstr "{0}が担保として必要です。<0/><1/>GMX内で{1}から{2}へのスワップ経路が見つかりません。<2/><3/><4>1inchで{3}を購入</4>。"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
@@ -8785,6 +8802,11 @@ msgstr "ロング流動性"
 msgid "Market orders"
 msgstr "成行注文"
 
+#: src/components/Errors/errorToasts.tsx
+#: src/components/Errors/errorToasts.tsx
+msgid "Insufficient {0} for gas on {1}<0/><1/><2>Swap</2> or <3>bridge</3> {2} to {3}"
+msgstr ""
+
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Deposits are not supported on Avalanche."
 msgstr "Avalancheでは入金はサポートされていません。"
@@ -10501,8 +10523,8 @@ msgstr "リミット"
 
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
-msgid "Insufficient {0} for gas on {1}<0/><1/><2>Buy or transfer {2} to {3}</2>"
-msgstr "{1}でのガスに必要な{0}が不足しています<0/><1/><2>{2}を購入または{3}に送金してください</2>"
+#~ msgid "Insufficient {0} for gas on {1}<0/><1/><2>Buy or transfer {2} to {3}</2>"
+#~ msgstr "{1}でのガスに必要な{0}が不足しています<0/><1/><2>{2}を購入または{3}に送金してください</2>"
 
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "TIMEKEY"

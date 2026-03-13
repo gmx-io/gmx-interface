@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 import { ContractsChainId, getChainName, getGasPricePremium } from "config/chains";
+import { JUMPER_BRIDGE_URL } from "config/links";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getExecutionFeeBufferBps, getMinimumExecutionFeeBufferBps } from "domain/synthetics/fees/utils/executionFee";
@@ -134,9 +135,11 @@ export function getTxnErrorToast(
           Insufficient {nativeToken.symbol} for gas on {getChainName(chainId)}
           <br />
           <br />
-          <Link className="underline" to="/buy_gmx#bridge">
-            Buy or transfer {nativeToken.symbol} to {getChainName(chainId)}
-          </Link>
+          <Link className="underline" to={`/trade/swap?to=${nativeToken.symbol}`}>
+            Swap
+          </Link>{" "}
+          or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge</ExternalLink> {nativeToken.symbol} to{" "}
+          {getChainName(chainId)}
         </Trans>
       );
       break;
@@ -221,9 +224,11 @@ export function getErrorMessage(
           Insufficient {nativeToken.symbol} for gas on {getChainName(chainId)}
           <br />
           <br />
-          <Link className="underline" to="/buy_gmx#bridge">
-            Buy or transfer {nativeToken.symbol} to {getChainName(chainId)}
-          </Link>
+          <Link className="underline" to={`/trade/swap?to=${nativeToken.symbol}`}>
+            Swap
+          </Link>{" "}
+          or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge</ExternalLink> {nativeToken.symbol} to{" "}
+          {getChainName(chainId)}
         </Trans>
       );
       break;
