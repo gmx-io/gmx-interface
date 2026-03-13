@@ -51,6 +51,48 @@ function getClaimAffiliateRewardsAndSwapCallData({
   ]);
 }
 
+function getClaimAffiliateRewardsCallData({
+  rewardsParams,
+  receiver,
+}: {
+  rewardsParams: Params["rewardsParams"];
+  receiver: string;
+}) {
+  return encodeFunctionData({
+    abi: abis.ExchangeRouter,
+    functionName: "claimAffiliateRewards",
+    args: [rewardsParams.marketAddresses, rewardsParams.tokenAddresses, receiver],
+  });
+}
+
+export async function estimateClaimAffiliateRewardsGas(
+  chainId: ContractsChainId,
+  p: Params & { externalCalls?: SwapExternalCalls }
+) {
+  const { account, rewardsParams, externalCalls } = p;
+  const client = getPublicClientWithRpc(chainId);
+  const exchangeRouterAddress = getContract(chainId, "ExchangeRouter");
+
+  const callData = externalCalls
+    ? getClaimAffiliateRewardsAndSwapCallData({
+        chainId,
+        rewardsParams,
+        externalCalls,
+      }).callData
+    : getClaimAffiliateRewardsCallData({
+        rewardsParams,
+        receiver: account,
+      });
+
+  return client
+    .estimateGas({
+      account,
+      to: exchangeRouterAddress,
+      data: callData,
+    })
+    .then(applyGasLimitBuffer);
+}
+
 export async function claimAffiliateRewardsTxn(chainId: ContractsChainId, signer: WalletSigner | ISigner, p: Params) {
   const { rewardsParams, account } = p;
 
@@ -58,10 +100,9 @@ export async function claimAffiliateRewardsTxn(chainId: ContractsChainId, signer
     chainId,
     signer,
     to: getContract(chainId, "ExchangeRouter"),
-    callData: encodeFunctionData({
-      abi: abis.ExchangeRouter,
-      functionName: "claimAffiliateRewards",
-      args: [rewardsParams.marketAddresses, rewardsParams.tokenAddresses, account],
+    callData: getClaimAffiliateRewardsCallData({
+      rewardsParams,
+      receiver: account,
     }),
   });
 }

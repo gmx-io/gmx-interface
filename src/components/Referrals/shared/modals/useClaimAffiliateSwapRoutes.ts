@@ -1,15 +1,13 @@
 import { useEffect, useMemo, useState } from "react";
+import useSWR from "swr";
 
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getContract } from "config/contracts";
-import { useSavedAllowedSlippage } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { getOpenOceanTxnData } from "domain/synthetics/externalSwaps/openOcean";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { convertToUsd } from "domain/synthetics/tokens";
 import { metrics } from "lib/metrics";
 import { getByKey } from "lib/objects";
-import { usePrevious } from "lib/usePrevious";
-import { useThrottledAsync } from "lib/useThrottledAsync";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
@@ -18,10 +16,13 @@ import { type ExternalCallsPayload, combineExternalCalls, getExternalCallsPayloa
 import type { Token, TokensData } from "sdk/utils/tokens/types";
 import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/utils/trade/types";
 
-import type { SelectedClaimTokenAmount } from "./useClaimAffiliateRewardsSelection";
-
 export type SwapTargetTokenOption = {
   token: Token;
+};
+
+type SelectedClaimTokenAmount = {
+  tokenAddress: string;
+  amount: bigint;
 };
 
 type ClaimSwapRouteResult = {
@@ -31,17 +32,19 @@ type ClaimSwapRouteResult = {
   usdOut: bigint;
 };
 
+const CLAIM_AFFILIATE_FIXED_SLIPPAGE_BPS = 300; // 3%
+
 const SWAP_TARGET_TOKEN_OPTIONS_BY_CHAIN: Partial<Record<ContractsChainId, string[]>> = {
   [ARBITRUM]: [
-    getTokenBySymbol(ARBITRUM, "GMX").address,
-    getTokenBySymbol(ARBITRUM, "USDC").address,
-    getTokenBySymbol(ARBITRUM, "WETH").address,
-    getTokenBySymbol(ARBITRUM, "BTC").address,
+    getTokenBySymbol(ARBITRUM, "GMX", { isSynthetic: false }).address,
+    getTokenBySymbol(ARBITRUM, "USDC", { isSynthetic: false }).address,
+    getTokenBySymbol(ARBITRUM, "WETH", { isSynthetic: false }).address,
+    getTokenBySymbol(ARBITRUM, "BTC", { isSynthetic: false }).address,
   ],
   [AVALANCHE]: [
-    getTokenBySymbol(AVALANCHE, "USDC").address,
-    getTokenBySymbol(AVALANCHE, "WAVAX").address,
-    getTokenBySymbol(AVALANCHE, "BTC").address,
+    getTokenBySymbol(AVALANCHE, "USDC", { isSynthetic: false }).address,
+    getTokenBySymbol(AVALANCHE, "WAVAX", { isSynthetic: false }).address,
+    getTokenBySymbol(AVALANCHE, "BTC", { isSynthetic: false }).address,
   ],
 };
 
@@ -76,17 +79,17 @@ export function useClaimAffiliateSwapRoutes({
   chainId,
   selectedClaimTokenAmountsByToken,
   tokensData,
+  isSwapEnabled,
 }: {
   account: string | undefined;
   chainId: ContractsChainId;
   selectedClaimTokenAmountsByToken: Record<string, SelectedClaimTokenAmount>;
   tokensData: TokensData | undefined;
+  isSwapEnabled: boolean;
 }) {
   const gasPrice = useGasPrice(chainId);
-  const allowedSlippage = useSavedAllowedSlippage();
 
   const swapTargetTokenOptions = useMemo(() => getSwapTargetTokenOptions(chainId), [chainId]);
-  const [isSwapEnabled, setIsSwapEnabled] = useState(false);
   const [swapTargetTokenAddress, setSwapTargetTokenAddress] = useState<string | undefined>(
     swapTargetTokenOptions[0]?.token.address
   );
@@ -122,9 +125,10 @@ export function useClaimAffiliateSwapRoutes({
   const alreadyInTargetTokenAmount = swapTargetTokenAddress
     ? selectedClaimTokenAmountsByToken[swapTargetTokenAddress]?.amount ?? 0n
     : 0n;
-  const alreadyInTargetTokenUsd = swapTargetTokenAddress
-    ? selectedClaimTokenAmountsByToken[swapTargetTokenAddress]?.usd ?? 0n
-    : 0n;
+  const alreadyInTargetTokenUsd =
+    swapTargetToken && alreadyInTargetTokenAmount > 0n
+      ? convertToUsd(alreadyInTargetTokenAmount, swapTargetToken.decimals, swapTargetToken.prices.minPrice) ?? 0n
+      : 0n;
 
   const swapRouteEstimationKey = useMemo(() => {
     if (!isSwapEnabled || swapTargetTokenAddress === undefined || tokensToSwap.length === 0) {
@@ -139,54 +143,46 @@ export function useClaimAffiliateSwapRoutes({
     return `${chainId}:${swapTargetTokenAddress}:${sortedTokensToSwap}`;
   }, [chainId, isSwapEnabled, swapTargetTokenAddress, tokensToSwap]);
 
-  const previousSwapRouteEstimationKey = usePrevious(swapRouteEstimationKey);
-  const forceRecalculate =
-    swapRouteEstimationKey !== undefined && swapRouteEstimationKey !== previousSwapRouteEstimationKey;
-
   const swapRouteParams = useMemo(() => {
-    if (
-      !swapRouteEstimationKey ||
-      swapTargetTokenAddress === undefined ||
-      gasPrice === undefined ||
-      allowedSlippage === undefined
-    ) {
+    if (!swapRouteEstimationKey || swapTargetTokenAddress === undefined || gasPrice === undefined) {
       return undefined;
     }
 
     return {
       chainId,
+      estimationKey: swapRouteEstimationKey,
       swapTargetTokenAddress,
       tokensToSwap,
       gasPrice,
-      allowedSlippage,
+      allowedSlippage: CLAIM_AFFILIATE_FIXED_SLIPPAGE_BPS,
     };
-  }, [allowedSlippage, chainId, gasPrice, swapRouteEstimationKey, swapTargetTokenAddress, tokensToSwap]);
+  }, [chainId, gasPrice, swapRouteEstimationKey, swapTargetTokenAddress, tokensToSwap]);
 
-  const swapRouteAsyncResult = useThrottledAsync<
-    ClaimSwapRouteResult,
-    {
-      chainId: ContractsChainId;
-      swapTargetTokenAddress: string;
-      tokensToSwap: SelectedClaimTokenAmount[];
-      gasPrice: bigint;
-      allowedSlippage: number;
-    }
-  >(
-    async ({ params }) => {
-      const externalHandlerAddress = getContract(params.chainId, "ExternalHandler");
-      const client = getPublicClientWithRpc(params.chainId);
+  const swapRouteSwrKey =
+    swapRouteParams !== undefined ? ["claim-affiliate-swap-routes", swapRouteParams.estimationKey] : null;
+
+  const swapRouteAsyncResult = useSWR<ClaimSwapRouteResult>(swapRouteSwrKey, {
+    refreshInterval: 10_000,
+    keepPreviousData: true,
+    fetcher: async () => {
+      if (!swapRouteParams) {
+        throw new Error("Invalid swap route parameters");
+      }
+
+      const externalHandlerAddress = getContract(swapRouteParams.chainId, "ExternalHandler");
+      const client = getPublicClientWithRpc(swapRouteParams.chainId);
 
       const quoteResults = await Promise.all(
-        params.tokensToSwap.map(async (tokenToSwap) => {
+        swapRouteParams.tokensToSwap.map(async (tokenToSwap) => {
           const quoteData = await getOpenOceanTxnData({
-            chainId: params.chainId,
+            chainId: swapRouteParams.chainId,
             senderAddress: externalHandlerAddress,
             receiverAddress: externalHandlerAddress,
             tokenInAddress: tokenToSwap.tokenAddress,
-            tokenOutAddress: params.swapTargetTokenAddress,
+            tokenOutAddress: swapRouteParams.swapTargetTokenAddress,
             amountIn: tokenToSwap.amount,
-            gasPrice: params.gasPrice,
-            slippage: params.allowedSlippage,
+            gasPrice: swapRouteParams.gasPrice,
+            slippage: swapRouteParams.allowedSlippage,
           });
 
           if (!quoteData) {
@@ -199,7 +195,7 @@ export function useClaimAffiliateSwapRoutes({
           let needSpenderApproval = true;
           try {
             const allowance = await client.readContract({
-              address: convertTokenAddress(params.chainId, tokenToSwap.tokenAddress, "wrapped"),
+              address: convertTokenAddress(swapRouteParams.chainId, tokenToSwap.tokenAddress, "wrapped"),
               abi: abis.ERC20,
               functionName: "allowance",
               args: [externalHandlerAddress, quoteData.to],
@@ -212,7 +208,7 @@ export function useClaimAffiliateSwapRoutes({
           const quote: ExternalSwapQuote = {
             aggregator: ExternalSwapAggregator.OpenOcean,
             inTokenAddress: tokenToSwap.tokenAddress,
-            outTokenAddress: params.swapTargetTokenAddress,
+            outTokenAddress: swapRouteParams.swapTargetTokenAddress,
             receiver: externalHandlerAddress,
             amountIn: tokenToSwap.amount,
             amountOut: quoteData.outputAmount,
@@ -227,7 +223,7 @@ export function useClaimAffiliateSwapRoutes({
               data: quoteData.data,
               value: quoteData.value,
               estimatedGas: quoteData.estimatedGas,
-              estimatedExecutionFee: quoteData.estimatedGas * params.gasPrice,
+              estimatedExecutionFee: quoteData.estimatedGas * quoteData.gasPrice,
             },
           };
 
@@ -248,30 +244,33 @@ export function useClaimAffiliateSwapRoutes({
         usdOut: quotes.reduce((acc, quote) => acc + quote.usdOut, 0n),
       };
     },
-    {
-      withLoading: false,
-      throttleMs: 10_000,
-      leading: false,
-      trailing: true,
-      params: swapRouteParams,
-      forceRecalculate,
-      resetOnForceRecalculate: true,
-    }
-  );
+  });
 
   const swapRouteData = swapRouteAsyncResult.data;
-  const failedSwapTokenAddresses = useMemo(
-    () => (forceRecalculate ? [] : swapRouteData?.failedTokenAddresses ?? []),
-    [forceRecalculate, swapRouteData]
-  );
-  const hasSwapRouteError =
-    !forceRecalculate && (swapRouteAsyncResult.error !== undefined || failedSwapTokenAddresses.length > 0);
+  const isSwapRouteMatchingSelection = useMemo(() => {
+    if (!swapRouteData) {
+      return false;
+    }
+
+    if (swapRouteData.quotes.length !== tokensToSwap.length) {
+      return false;
+    }
+
+    const expectedAmountsByToken = Object.fromEntries(tokensToSwap.map((item) => [item.tokenAddress, item.amount]));
+
+    return swapRouteData.quotes.every((quote) => expectedAmountsByToken[quote.inTokenAddress] === quote.amountIn);
+  }, [swapRouteData, tokensToSwap]);
+  const failedSwapTokenAddresses = useMemo(() => swapRouteData?.failedTokenAddresses ?? [], [swapRouteData]);
+  const hasSwapRouteError = swapRouteAsyncResult.error !== undefined || failedSwapTokenAddresses.length > 0;
   const isSwapRouteLoading =
-    swapRouteParams !== undefined && !hasSwapRouteError && (forceRecalculate || !swapRouteData);
+    swapRouteParams !== undefined && !hasSwapRouteError && (swapRouteAsyncResult.isLoading || !swapRouteData);
   const isSwapRouteReady =
     !isSwapEnabled ||
     tokensToSwap.length === 0 ||
-    (!forceRecalculate && !!swapRouteData && !hasSwapRouteError && swapRouteData.quotes.length === tokensToSwap.length);
+    (!!swapRouteData &&
+      !hasSwapRouteError &&
+      isSwapRouteMatchingSelection &&
+      swapRouteData.quotes.length === tokensToSwap.length);
 
   const settlementSwapExternalCalls = useMemo(() => {
     if (!account || !isSwapEnabled || !isSwapRouteReady || tokensToSwap.length === 0) {
@@ -318,15 +317,12 @@ export function useClaimAffiliateSwapRoutes({
 
   return {
     swapTargetTokenOptions,
-    isSwapEnabled,
-    setIsSwapEnabled,
     swapTargetTokenAddress,
     setSwapTargetTokenAddress,
     swapTargetToken,
-    tokensToSwap,
+    swapQuotes: swapRouteData?.quotes ?? [],
     hasSwapRouteError,
     isSwapRouteLoading,
-    isSwapRouteReady,
     settlementSwapExternalCalls,
     multichainSwapExternalCalls,
     toReceiveAmount,

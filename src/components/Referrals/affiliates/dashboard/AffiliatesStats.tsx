@@ -408,11 +408,17 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
 
   return (
     <div className="flex gap-8 max-md:flex-col">
-      <div className="flex grow flex-col gap-8">{mainContent}</div>
-      <div className="flex w-[400px] shrink-0 flex-col gap-8 max-md:w-full">
-        <ClaimableRebatesCard />
-        <ReferralsDocsCard />
-        <Faq items={AFFILIATE_POST_WIZARD_FAQS} title={<Trans>FAQ</Trans>} />
+      <div className="flex grow flex-col gap-8 max-md:order-2">{mainContent}</div>
+      <div className="flex w-[400px] shrink-0 flex-col gap-8 max-md:contents">
+        <div className="max-md:order-1">
+          <ClaimableRebatesCard />
+        </div>
+        <div className="max-md:order-3">
+          <ReferralsDocsCard />
+        </div>
+        <div className="max-md:order-4">
+          <Faq items={AFFILIATE_POST_WIZARD_FAQS} title={<Trans>FAQ</Trans>} />
+        </div>
       </div>
     </div>
   );
