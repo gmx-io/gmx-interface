@@ -27,6 +27,7 @@ import { CustomError, CustomErrorName, extendError } from "sdk/utils/errors";
 import { CreateOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
 import { isGlvEnabled } from "../markets/glv";
+import type { GlvShiftParam } from "../markets/useJitLiquidity";
 
 export type SimulateExecuteParams = {
   account: string;
@@ -41,9 +42,11 @@ export type SimulateExecuteParams = {
     | "simulateExecuteLatestOrder"
     | "simulateExecuteLatestShift"
     | "simulateExecuteLatestGlvDeposit"
-    | "simulateExecuteLatestGlvWithdrawal";
+    | "simulateExecuteLatestGlvWithdrawal"
+    | "simulateExecuteLatestJitOrder";
   swapPricingType?: SwapPricingType;
   blockTimestampData: BlockTimestampData | undefined;
+  jitShiftParamsList?: GlvShiftParam[];
 };
 
 export function isInsufficientFundsError(error: any): boolean {
@@ -290,6 +293,18 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
         abi: abis.GlvRouter,
         functionName: "simulateExecuteLatestGlvWithdrawal",
         args: [simulationPriceParams],
+      })
+    );
+  } else if (method === "simulateExecuteLatestJitOrder") {
+    if (!p.jitShiftParamsList || p.jitShiftParamsList.length === 0) {
+      throw new Error("jitShiftParamsList is required for simulateExecuteLatestJitOrder");
+    }
+
+    simulationPayloadData.push(
+      encodeFunctionData({
+        abi: abis.ExchangeRouter,
+        functionName: "simulateExecuteLatestJitOrder",
+        args: [p.jitShiftParamsList, simulationPriceParams],
       })
     );
   } else {

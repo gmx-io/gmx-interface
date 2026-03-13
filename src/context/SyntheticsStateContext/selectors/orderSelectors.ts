@@ -8,7 +8,13 @@ import {
 
 import { SyntheticsState } from "../SyntheticsStateContextProvider";
 import { createSelector, createSelectorFactory } from "../utils";
-import { selectChainId, selectMarketsInfoData, selectPositionsInfoData, selectUiFeeFactor } from "./globalSelectors";
+import {
+  selectChainId,
+  selectJitLiquidityMap,
+  selectMarketsInfoData,
+  selectPositionsInfoData,
+  selectUiFeeFactor,
+} from "./globalSelectors";
 import { selectIsSetAcceptablePriceImpactEnabled } from "./settingsSelectors";
 import { makeSelectFindSwapPath } from "./tradeSelectors";
 
@@ -30,6 +36,8 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: st
       makeSelectFindSwapPath(orderInfo.initialCollateralToken.address, orderInfo.targetCollateralToken.address)
     );
 
+    const jitLiquidityMap = q(selectJitLiquidityMap);
+
     const { errors, level } = getOrderErrors({
       order: orderInfo,
       positionsInfoData,
@@ -38,6 +46,7 @@ export const makeSelectOrderErrorByOrderKey = createSelectorFactory((orderId: st
       uiFeeFactor,
       chainId,
       isSetAcceptablePriceImpactEnabled,
+      jitLiquidityMap,
     });
 
     return { errors, level };

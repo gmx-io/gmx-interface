@@ -7,7 +7,10 @@ import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/
 import {
   selectBlockTimestampData,
   selectIsFirstOrder,
+  selectJitLiquidityMap,
+  selectMarkJitStale,
   selectMarketsInfoData,
+  selectRefreshJitData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectExecutionFeeBufferBps,
@@ -40,6 +43,8 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useUserReferralCode } from "domain/referrals";
 import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
+import { getJitLiquidityInfo } from "domain/synthetics/markets/useJitLiquidity";
+import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets/utils";
 import { OrderType } from "domain/synthetics/orders";
 import { createStakeOrUnstakeTxn } from "domain/synthetics/orders/createStakeOrUnStakeTxn";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
@@ -59,6 +64,7 @@ import {
 } from "lib/metrics/utils";
 import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
+import { TxnEventName } from "lib/transactions/types";
 import { getTradeInteractionKey, sendUserAnalyticsOrderConfirmClickEvent, userAnalytics } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { BatchOrderTxnParams, getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
@@ -96,6 +102,9 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const fees = useSelector(selectTradeboxFees);
   const chartHeaderInfo = useSelector(selectChartHeaderInfo);
   const marketsInfoData = useSelector(selectMarketsInfoData);
+  const jitLiquidityMap = useSelector(selectJitLiquidityMap);
+  const markJitStale = useSelector(selectMarkJitStale);
+  const refreshJitData = useSelector(selectRefreshJitData);
   const executionFeeBufferBps = useSelector(selectExecutionFeeBufferBps);
   const duration = useSelector(selectTradeboxTwapDuration);
   const numberOfParts = useSelector(selectTradeboxTwapNumberOfParts);
@@ -310,6 +319,25 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
     sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
 
+    const primaryOrder = primaryCreateOrderParams[0].orderPayload;
+    const jitLiquidityInfo = marketInfo
+      ? getJitLiquidityInfo(jitLiquidityMap, marketInfo.marketTokenAddress)
+      : undefined;
+    const nativeReserveLiquidity = marketInfo ? getAvailableUsdLiquidityForPosition(marketInfo, isLong) : undefined;
+    const shouldInvalidateJitLiquidityOnSent =
+      primaryOrder.orderType === OrderType.MarketIncrease &&
+      (jitLiquidityInfo?.glvShiftParams.length ?? 0) > 0 &&
+      nativeReserveLiquidity !== undefined &&
+      primaryOrder.numbers.sizeDeltaUsd > nativeReserveLiquidity;
+    const orderTxnCallback = makeOrderTxnCallback({
+      metricId: metricData.metricId,
+      slippageInputId,
+      additionalErrorContent: undefined,
+      onInternalSwapFallback: () => {
+        setShouldFallbackToInternalSwap(true);
+      },
+    });
+
     return sendBatchOrderTxn({
       chainId,
       signer,
@@ -323,15 +351,20 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         : {
             tokensData,
             blockTimestampData,
+            jitShiftParamsList: jitLiquidityInfo?.glvShiftParams,
+            // Intentionally excludes JIT — used to determine whether JIT simulation is needed
+            nativeReserveLiquidity,
+            markJitStale,
+            refreshJitData,
           },
-      callback: makeOrderTxnCallback({
-        metricId: metricData.metricId,
-        slippageInputId,
-        additionalErrorContent: undefined,
-        onInternalSwapFallback: () => {
-          setShouldFallbackToInternalSwap(true);
-        },
-      }),
+      callback: (event) => {
+        if (event.event === TxnEventName.Sent && shouldInvalidateJitLiquidityOnSent && marketInfo) {
+          markJitStale(marketInfo.marketTokenAddress);
+          refreshJitData();
+        }
+
+        orderTxnCallback(event);
+      },
     });
   }, [
     account,
@@ -341,10 +374,15 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     expressParamsPromise,
     initOrderMetricData,
     isFromTokenGmxAccount,
+    isLong,
+    jitLiquidityMap,
     makeOrderTxnCallback,
+    markJitStale,
+    marketInfo,
     marketsInfoData,
     primaryCreateOrderParams,
     provider,
+    refreshJitData,
     setShouldFallbackToInternalSwap,
     shouldDisableValidationForTesting,
     signer,
