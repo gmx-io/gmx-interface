@@ -1,5 +1,6 @@
 import { defineConfig, devices } from "@playwright/experimental-ct-react";
 import { lingui } from "@lingui/vite-plugin";
+import react from "@vitejs/plugin-react";
 import path from "path";
 import { fileURLToPath } from "url";
 import svgr from "vite-plugin-svgr";
@@ -21,6 +22,11 @@ export default defineConfig({
       plugins: [
         svgr({
           include: "**/*.svg?react",
+        }),
+        react({
+          babel: {
+            plugins: ["macros"],
+          },
         }),
         lingui(),
       ],
