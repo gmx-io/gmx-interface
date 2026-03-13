@@ -248,6 +248,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
             <SettleAccruedFundingFeeRow
               key={position.key}
               position={position}
+              isMarketDisabled={position.marketInfo?.isDisabled ?? false}
               isSelected={positionKeys.includes(position.key)}
               onCheckboxChange={handleRowCheckboxChange}
             />

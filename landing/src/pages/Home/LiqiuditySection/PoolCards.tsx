@@ -23,6 +23,7 @@ export function PoolCards() {
   const onClickGm = useGoToPools("GM");
   const { poolsData } = useHomePageContext();
   const processedData = useStakingProcessedData(ARBITRUM);
+  const isRewardsSuspended = processedData?.data?.isRewardsSuspended ?? false;
   const gmxAprForGmxPercentage = processedData?.data?.gmxAprForGmx
     ? bigintToNumber(processedData.data.gmxAprForGmx, DECIMALS)
     : undefined;
@@ -31,6 +32,7 @@ export function PoolCards() {
       <PoolCard
         name="GMX"
         apr={gmxAprForGmxPercentage}
+        isRewardsSuspended={isRewardsSuspended}
         description={t`Stake for rewards and governance rights`}
         iconComponent={IcGmxPool}
         coinImage={gmxCoin}

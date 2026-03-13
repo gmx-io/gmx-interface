@@ -4,6 +4,7 @@ import {
   DatafeedErrorCallback,
   HistoryCallback,
   IBasicDataFeed,
+  Mark,
   LibrarySymbolInfo,
   OnReadyCallback,
   PeriodParams,
@@ -11,7 +12,7 @@ import {
   ResolveCallback,
   SubscribeBarsCallback,
 } from "charting_library";
-import { SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
+import { RESOLUTION_TO_SECONDS, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { getChainlinkChartPricesFromGraph } from "domain/prices";
 import { Bar, FromOldToNewArray } from "domain/tradingview/types";
 import {
@@ -40,17 +41,6 @@ import {
   isChartAvailableForToken,
 } from "sdk/configs/tokens";
 
-const RESOLUTION_TO_SECONDS = {
-  1: 60,
-  5: 60 * 5,
-  15: 60 * 15,
-  60: 60 * 60,
-  240: 60 * 60 * 4,
-  "1D": 60 * 60 * 24,
-  "1W": 60 * 60 * 24 * 7,
-  "1M": 60 * 60 * 24 * 30,
-};
-
 let metricsRequestId: string | undefined = undefined;
 let metricsIsFirstLoadTime = true;
 let metricsIsFirstDrawTime = true;
@@ -63,9 +53,21 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
   private subscriptions: Record<string, PauseableInterval<Bar | undefined>> = {};
   private prefetchedBarsPromises: Record<string, Promise<FromOldToNewArray<Bar>>> = {};
   private visibilityHandler: () => void;
+  private marksGetter?: (
+    symbolInfo: LibrarySymbolInfo,
+    from: number,
+    to: number,
+    resolution: ResolutionString
+  ) => Mark[] | Promise<Mark[]>;
 
-  declare addEventListener: (event: "candlesDisplay.success", callback: EventListenerOrEventListenerObject) => void;
-  declare removeEventListener: (event: "candlesDisplay.success", callback: EventListenerOrEventListenerObject) => void;
+  declare addEventListener: (
+    event: "candlesDisplay.success" | "currentCandle.update",
+    callback: EventListenerOrEventListenerObject
+  ) => void;
+  declare removeEventListener: (
+    event: "candlesDisplay.success" | "currentCandle.update",
+    callback: EventListenerOrEventListenerObject
+  ) => void;
 
   constructor(
     private chainId: number,
@@ -89,6 +91,17 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
   searchSymbols(): void {
     // noop
+  }
+
+  setMarksGetter(
+    getter: (
+      symbolInfo: LibrarySymbolInfo,
+      from: number,
+      to: number,
+      resolution: ResolutionString
+    ) => Mark[] | Promise<Mark[]>
+  ): void {
+    this.marksGetter = getter;
   }
 
   resolveSymbol(symbolNameWithMultiplier: string, onResolve: ResolveCallback): void {
@@ -273,6 +286,18 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
         newLastReturnedValue = price;
       }
 
+      if (newLastReturnedValue) {
+        this.dispatchEvent(
+          new CustomEvent("currentCandle.update", {
+            detail: {
+              symbol: symbolInfo.name,
+              resolution,
+              bar: multiplyBarValues(formatTimeInBarToMs(newLastReturnedValue), visualMultiplier),
+            },
+          })
+        );
+      }
+
       return newLastReturnedValue;
     }, V2_UPDATE_INTERVAL);
 
@@ -301,11 +326,26 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     setTimeout(() => {
       callback({
         supported_resolutions: Object.keys(SUPPORTED_RESOLUTIONS_V2) as ResolutionString[],
-        supports_marks: false,
+        supports_marks: true,
         supports_timescale_marks: false,
         supports_time: true,
       });
     }, 0);
+  }
+
+  getMarks(
+    symbolInfo: LibrarySymbolInfo,
+    from: number,
+    to: number,
+    onDataCallback: (marks: Mark[]) => void,
+    resolution: ResolutionString
+  ): void {
+    const result = this.marksGetter?.(symbolInfo, from, to, resolution) ?? [];
+    if (result instanceof Promise) {
+      result.then(onDataCallback, () => onDataCallback([]));
+    } else {
+      onDataCallback(result);
+    }
   }
 
   prefetchBars(symbol: string, resolution: ResolutionString): void {

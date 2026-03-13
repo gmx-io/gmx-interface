@@ -41,6 +41,7 @@ export const selectChartLines = createSelector<StaticChartLine[]>((q) => {
     const token = q((state) => getTokenData(selectTokensData(state), position.marketInfo?.indexTokenAddress, "native"));
     const marketIndexName = getMarketIndexName(position.marketInfo!) ?? "";
     const tokenVisualMultiplier = token?.visualMultiplier;
+    const positionTitle = `${longOrShortText} ${marketIndexName}`;
 
     const liquidationPrice = formatAmount(
       position?.liquidationPrice,
@@ -53,17 +54,29 @@ export const selectChartLines = createSelector<StaticChartLine[]>((q) => {
 
     const lines: StaticChartLine[] = [
       {
-        title: t`Open ${longOrShortText} - ${marketIndexName}`,
+        id: `${position.key}-entry`,
+        title: positionTitle,
         price: parseFloat(
           formatAmount(position.entryPrice, USD_DECIMALS, priceDecimal, undefined, undefined, tokenVisualMultiplier)
         ),
+        positionData: {
+          pnl: position.pnlAfterFees,
+          sizeInUsd: position.sizeInUsd,
+          sizeInTokens: position.sizeInTokens,
+          isLong: position.isLong,
+          marketIndexName,
+          tokenSymbol: position.indexToken.symbol,
+          tokenDecimals: position.indexToken.decimals,
+        },
       },
     ];
 
     if (liquidationPrice && liquidationPrice !== "NA") {
       lines.push({
-        title: t`Liquidation ${longOrShortText} - ${marketIndexName}`,
+        id: `${position.key}-liquidation`,
+        title: `${positionTitle} · ${t`Liq.`}`,
         price: parseFloat(liquidationPrice),
+        lineType: "liquidation",
       });
     }
 

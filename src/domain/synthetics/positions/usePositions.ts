@@ -4,26 +4,20 @@ import { ContractFunctionParameters, zeroAddress } from "viem";
 import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { hashedPositionKey } from "config/dataStore";
-import {
-  PendingPositionUpdate,
-  PositionDecreaseEvent,
-  PositionIncreaseEvent,
-  useSyntheticsEvents,
-} from "context/SyntheticsEvents";
-import type { Position } from "domain/synthetics/positions/types";
 import { FreshnessMetricId, metrics, MissedMarketPricesCounter } from "lib/metrics";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { useMulticall } from "lib/multicall";
-import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import { abis } from "sdk/abis";
 import { getContractMarketPrices } from "sdk/utils/markets";
 import type { ContractMarketPrices, MarketsData } from "sdk/utils/markets/types";
-import { getPositionKey, parsePositionKey } from "sdk/utils/positions";
+import { getPositionKey } from "sdk/utils/positions";
 import type { PositionsData } from "sdk/utils/positions/types";
 import type { TokensData } from "sdk/utils/tokens/types";
 
-const MAX_PENDING_UPDATE_AGE = 600 * 1000; // 10 minutes
+import { useOptimisticPositions } from "./useOptimisticPositions";
+
+export { getPendingMockPosition } from "./useOptimisticPositions";
 
 type PositionsResult = {
   positionsData?: PositionsData;
@@ -216,140 +210,4 @@ function useKeysAndPricesParams(p: {
 
     return values;
   }, [account, marketsData, tokensData]);
-}
-
-function useOptimisticPositions(p: {
-  positionsData: PositionsData | undefined;
-  allPositionsKeys: string[] | undefined;
-  isLoading: boolean;
-}): PositionsData | undefined {
-  const { positionsData, allPositionsKeys, isLoading } = p;
-  const { positionDecreaseEvents, positionIncreaseEvents, pendingPositionsUpdates } = useSyntheticsEvents();
-
-  return useMemo(() => {
-    if (!allPositionsKeys || isLoading) {
-      return undefined;
-    }
-
-    return allPositionsKeys.reduce((acc, key) => {
-      const now = Date.now();
-
-      const lastIncreaseEvent = positionIncreaseEvents
-        ? positionIncreaseEvents.filter((e) => e.positionKey === key).pop()
-        : undefined;
-      const lastDecreaseEvent = positionDecreaseEvents
-        ? positionDecreaseEvents.filter((e) => e.positionKey === key).pop()
-        : undefined;
-
-      const pendingUpdate =
-        pendingPositionsUpdates?.[key] && (pendingPositionsUpdates[key]?.updatedAt ?? 0) + MAX_PENDING_UPDATE_AGE > now
-          ? pendingPositionsUpdates[key]
-          : undefined;
-
-      let position: Position;
-
-      if (getByKey(positionsData, key)) {
-        position = { ...getByKey(positionsData, key)! };
-      } else if (pendingUpdate && pendingUpdate.isIncrease) {
-        position = getPendingMockPosition(pendingUpdate);
-      } else {
-        return acc;
-      }
-
-      if (
-        lastIncreaseEvent &&
-        lastIncreaseEvent.increasedAtTime > position.increasedAtTime &&
-        lastIncreaseEvent.increasedAtTime > (lastDecreaseEvent?.decreasedAtTime || 0)
-      ) {
-        position = applyEventChanges(position, lastIncreaseEvent);
-      } else if (
-        lastDecreaseEvent &&
-        lastDecreaseEvent.decreasedAtTime > position.decreasedAtTime &&
-        lastDecreaseEvent.decreasedAtTime > (lastIncreaseEvent?.increasedAtTime || 0)
-      ) {
-        position = applyEventChanges(position, lastDecreaseEvent);
-      }
-
-      if (
-        pendingUpdate &&
-        ((pendingUpdate.isIncrease && pendingUpdate.updatedAtBlock > position.increasedAtTime) ||
-          (!pendingUpdate.isIncrease && pendingUpdate.updatedAtBlock > position.decreasedAtTime))
-      ) {
-        position.pendingUpdate = pendingUpdate;
-      }
-
-      if (position.sizeInUsd > 0) {
-        acc[key] = position;
-      }
-
-      return acc;
-    }, {} as PositionsData);
-  }, [
-    allPositionsKeys,
-    isLoading,
-    pendingPositionsUpdates,
-    positionDecreaseEvents,
-    positionIncreaseEvents,
-    positionsData,
-  ]);
-}
-
-function applyEventChanges(position: Position, event: PositionIncreaseEvent | PositionDecreaseEvent) {
-  const nextPosition = { ...position };
-
-  nextPosition.sizeInUsd = event.sizeInUsd;
-  nextPosition.sizeInTokens = event.sizeInTokens;
-  nextPosition.collateralAmount = event.collateralAmount;
-  nextPosition.pendingBorrowingFeesUsd = 0n;
-  nextPosition.fundingFeeAmount = 0n;
-  nextPosition.claimableLongTokenAmount = 0n;
-  nextPosition.claimableShortTokenAmount = 0n;
-  nextPosition.pendingUpdate = undefined;
-  nextPosition.isOpening = false;
-
-  // eslint-disable-next-line local-rules/no-logical-bigint
-  if ((event as PositionIncreaseEvent).increasedAtTime) {
-    nextPosition.increasedAtTime = (event as PositionIncreaseEvent).increasedAtTime;
-  }
-
-  // eslint-disable-next-line local-rules/no-logical-bigint
-  if ((event as PositionDecreaseEvent).decreasedAtTime) {
-    nextPosition.decreasedAtTime = (event as PositionDecreaseEvent).decreasedAtTime;
-  }
-
-  return nextPosition;
-}
-
-export function getPendingMockPosition(pendingUpdate: PendingPositionUpdate): Position {
-  const { account, marketAddress, collateralAddress, isLong } = parsePositionKey(pendingUpdate.positionKey);
-
-  return {
-    key: pendingUpdate.positionKey,
-    contractKey: hashedPositionKey(account, marketAddress, collateralAddress, isLong),
-    account,
-    marketAddress,
-    collateralTokenAddress: collateralAddress,
-    isLong,
-    sizeInUsd: pendingUpdate.sizeDeltaUsd ?? 0n,
-    collateralAmount: pendingUpdate.collateralDeltaAmount ?? 0n,
-    sizeInTokens: pendingUpdate.sizeDeltaInTokens ?? 0n,
-    increasedAtTime: pendingUpdate.updatedAtBlock,
-    decreasedAtTime: 0n,
-    pendingBorrowingFeesUsd: 0n,
-    fundingFeeAmount: 0n,
-    claimableLongTokenAmount: 0n,
-    claimableShortTokenAmount: 0n,
-    positionFeeAmount: 0n,
-    uiFeeAmount: 0n,
-    pnl: 0n,
-    traderDiscountAmount: 0n,
-    pendingImpactAmount: 0n,
-    borrowingFactor: 0n,
-    fundingFeeAmountPerSize: 0n,
-    longTokenClaimableFundingAmountPerSize: 0n,
-    shortTokenClaimableFundingAmountPerSize: 0n,
-    data: "0x",
-    isOpening: true,
-    pendingUpdate: pendingUpdate,
-  };
 }

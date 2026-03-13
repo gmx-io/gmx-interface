@@ -115,8 +115,8 @@ export function GmxCard({
               </div>
               <div className="text-13 text-typography-secondary">
                 <Trans>
-                  GMX is the utility and governance token. It also accrues 27% of the protocol fees via a buyback and
-                  distribution mechanism.
+                  GMX is the utility and governance token. 27% of protocol fees accumulate in the Treasury for GMX
+                  buybacks and will be distributed to stakers when GMX reaches $90.
                 </Trans>
               </div>
             </AppCardSection>

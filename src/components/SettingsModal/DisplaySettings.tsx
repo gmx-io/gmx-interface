@@ -16,9 +16,23 @@ export function DisplaySettings() {
   return (
     <div className="flex flex-col gap-16 font-medium">
       <SettingsSection>
-        <ToggleSwitch isChecked={settings.isLeverageSliderEnabled} setIsChecked={settings.setIsLeverageSliderEnabled}>
-          <Trans>Show leverage slider</Trans>
-        </ToggleSwitch>
+        <div className="flex items-center gap-8">
+          <ToggleSwitch isChecked={settings.isLeverageSliderEnabled} setIsChecked={settings.setIsLeverageSliderEnabled}>
+            <TooltipWithPortal
+              handle={<Trans>Manual leverage</Trans>}
+              position="top"
+              variant="icon"
+              content={
+                <div>
+                  <Trans>
+                    When on, leverage is set manually and determines margin and position size. When off, margin and size
+                    are set freely, and leverage is derived.
+                  </Trans>
+                </div>
+              }
+            />
+          </ToggleSwitch>
+        </div>
 
         <ToggleSwitch isChecked={settings.showPnlAfterFees} setIsChecked={settings.setShowPnlAfterFees}>
           <Trans>Display PnL after fees</Trans>
@@ -41,7 +55,7 @@ export function DisplaySettings() {
               handle={<Trans>Break down net price impact</Trans>}
               position="top"
               variant="icon"
-              renderContent={() => (
+              content={
                 <div>
                   <Trans>
                     Show detailed price impact breakdown: stored impact (increase orders) and close impact (decrease
@@ -52,7 +66,7 @@ export function DisplaySettings() {
                     .
                   </Trans>
                 </div>
-              )}
+              }
             />
           </ToggleSwitch>
         </div>

@@ -822,6 +822,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         longTokenFundingAmountPerSize: eventData.intItems.items.longTokenFundingAmountPerSize,
         shortTokenFundingAmountPerSize: eventData.intItems.items.shortTokenFundingAmountPerSize,
         pnlUsd: eventData.intItems.items.pnlUsd,
+        executionPrice: eventData.uintItems.items.executionPrice,
         isLong: eventData.boolItems.items.isLong,
         contractPositionKey: eventData.bytes32Items.items.positionKey,
         decreasedAtTime: eventData.uintItems.items.decreasedAtTime,
@@ -982,12 +983,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       const unsubscribeApproval = subscribeToApprovalEvents({
         chainId,
         account: currentAccount,
-        onApprove: (tokenAddress, spender, value) => {
+        onApprove: (tokenAddress, spender, value, blockNumber) => {
           setApprovalStatuses((old) => ({
             ...old,
             [tokenAddress]: {
               ...old[tokenAddress],
-              [spender]: { value, createdAt: Date.now() },
+              [spender]: { value, blockNumber },
             },
           }));
           userAnalytics.pushEvent<TokenApproveResultEvent>({

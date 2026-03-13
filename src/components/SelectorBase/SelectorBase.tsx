@@ -189,10 +189,7 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
   const setButtonRef = useCallback(
     (node: HTMLElement | null) => {
       buttonRef.current = node;
-
-      if (!props.popoverReferenceRef?.current) {
-        refs.setReference(node);
-      }
+      refs.setReference(props.popoverReferenceRef?.current ?? node);
     },
     [props.popoverReferenceRef, refs]
   );

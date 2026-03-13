@@ -144,7 +144,7 @@ msgstr "Approbation signée"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Do I need to create codes on each network?"
-msgstr ""
+msgstr "Dois-je créer des codes sur chaque réseau ?"
 
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Multichain</0><1>MegaETH support</1><2>Just-in-time liquidity</2>"
@@ -225,7 +225,7 @@ msgstr "Afficher les montants rPnL"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Show other assets ({0})"
-msgstr ""
+msgstr "Afficher les autres actifs ({0})"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max factor for liquidations"
@@ -303,6 +303,10 @@ msgstr "Afficher l'erreur"
 msgid "settings"
 msgstr "paramètres"
 
+#: src/components/TVChartContainer/TVChartContainer.tsx
+msgid "Open Short"
+msgstr ""
+
 #: src/components/Claims/ClaimableCard.tsx
 msgid "Price impact rebates ready to claim. <0>Read more</0>."
 msgstr "Remises sur l'impact sur le prix prêtes à récupérer. <0>En savoir plus</0>."
@@ -353,7 +357,7 @@ msgstr "Puis-je vendre mes GLV, et où ?"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Go to Affiliate Dashboard"
-msgstr ""
+msgstr "Aller au tableau de bord Affilié"
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 #: src/components/Earn/Discovery/EarnFaq.tsx
@@ -367,7 +371,7 @@ msgstr "FAQ"
 
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Approve {depositTokenSymbol}"
-msgstr ""
+msgstr "Approuver {depositTokenSymbol}"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit details"
@@ -411,7 +415,7 @@ msgstr "Aucun ordre Take-Profit"
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Go to Trader Dashboard"
-msgstr ""
+msgstr "Aller au tableau de bord Trader"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "position size"
@@ -428,7 +432,7 @@ msgstr "Frais de financement réglés"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Rebates are paid in the collateral tokens used by your referrals. For example, if a referral trades with USDC collateral, your rebate portion will be in USDC."
-msgstr ""
+msgstr "Les remises sont versées dans les jetons de garantie utilisés par vos filleuls. Par exemple, si un filleul trade avec une garantie USDC, votre part de remise sera en USDC."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Returned collateral"
@@ -522,10 +526,6 @@ msgstr "Max {0} short dépassé"
 msgid "Insufficient GM balance"
 msgstr "Solde GM insuffisant"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Stop Market - long inc."
-msgstr "Stop Market - long inc."
-
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Slippage exceeded. Expected min: {minOutputAmountText}, actual: {outputAmountText}"
 msgstr "Glissement dépassé. Minimum attendu : {minOutputAmountText}, réel : {outputAmountText}"
@@ -615,7 +615,7 @@ msgstr "Positions"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "{0}d"
-msgstr ""
+msgstr "{0}j"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Incentives, airdrops, and prizes will appear here"
@@ -776,7 +776,7 @@ msgstr "Stats"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Can I create multiple referral codes?"
-msgstr ""
+msgstr "Puis-je créer plusieurs codes de parrainage ?"
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Unknown error"
@@ -885,6 +885,10 @@ msgstr "Contact Telegram (optionnel)"
 msgid "Conversion creation failed"
 msgstr "Échec de la création de la conversion"
 
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "27% of protocol fees fund Treasury buybacks — rewards distributed at $90"
+msgstr ""
+
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX alerts"
 msgstr "Alertes GMX"
@@ -919,7 +923,7 @@ msgstr "Valeurs des frais calculées au moment où ils sont perçus. Hors incita
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Enter the referral code and save up to 10% on fees"
-msgstr ""
+msgstr "Entrez le code de parrainage et économisez jusqu'à 10 % sur les frais"
 
 #: src/pages/Pools/Pools.tsx
 msgid "TVL in vaults and pools"
@@ -1057,7 +1061,7 @@ msgstr "Facteur d'emprunt short"
 
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "Referrals esGMX"
-msgstr ""
+msgstr "Parrainages esGMX"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (positive PI)"
@@ -1095,6 +1099,10 @@ msgstr "Solde de Gas insuffisant. Déposez davantage d'ETH."
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Tiers"
+msgstr "Niveaux"
+
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+msgid "Creating order"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -1107,7 +1115,7 @@ msgstr "Solde réclamable"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Yes! You can create as many codes as you want. This is useful for tracking different campaigns, communities, or platforms separately."
-msgstr ""
+msgstr "Oui ! Vous pouvez créer autant de codes que vous le souhaitez. C'est utile pour suivre séparément différentes campagnes, communautés ou plateformes."
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "xxxx-xxxx-xxxx"
@@ -1209,6 +1217,10 @@ msgstr "{0} échangé contre {1} lors de l'exécution"
 msgid "Unrealized PnL"
 msgstr "PnL non réalisé"
 
+#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
+msgid "Rewards"
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -1223,7 +1235,7 @@ msgstr "Payer"
 
 #: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "Rebate Claim"
-msgstr ""
+msgstr "Réclamation de remise"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -1425,7 +1437,7 @@ msgstr "Aperçu"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Fetching swap route..."
-msgstr "Récupération de la route de swap..."
+msgstr "Recherche de l'itinéraire d'échange..."
 
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -1477,7 +1489,7 @@ msgstr "Comment savoir si un code est bon ?"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Your discount is applied automatically when you execute a trade. You'll see the referral discount in your fee tooltip before opening a trade."
-msgstr "Votre remise est appliquée automatiquement à l'exécution d'un trade. Vous verrez la remise parrainage dans l'info-bulle des frais avant d'ouvrir un trade."
+msgstr "Votre réduction est appliquée automatiquement lors de l'exécution d'un trade. Vous verrez la réduction de parrainage dans l'infobulle des frais avant d'ouvrir un trade."
 
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
@@ -1490,7 +1502,7 @@ msgstr "Trading en un clic désactivé. Limite de temps expirée."
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "How is my fee discount applied?"
-msgstr "Comment ma remise sur les frais est-elle appliquée ?"
+msgstr "Comment ma réduction sur les frais est-elle appliquée ?"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Session generation failed"
@@ -1541,7 +1553,7 @@ msgstr "Dépôt sur le Compte GMX"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Your referral code {createdReferralCode} is now active. Share it with friends or your community."
-msgstr ""
+msgstr "Votre code de parrainage {createdReferralCode} est maintenant actif. Partagez-le avec vos amis ou votre communauté."
 
 #: src/domain/synthetics/markets/createDepositTxn.ts
 #: src/domain/synthetics/markets/createGlvDepositTxn.ts
@@ -1598,10 +1610,6 @@ msgstr "Marchés"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Retry"
 msgstr "Réessayer"
-
-#: src/components/Earn/Discovery/EarnFaq.tsx
-msgid "GMX staking rewards come from a buyback-and-distribute model: protocol revenue purchases GMX on the open market, which is then distributed to stakers. No new GMX tokens are minted."
-msgstr "Les récompenses de staking GMX proviennent d'un modèle de rachat et distribution : les revenus du protocole servent à acheter du GMX sur le marché libre, qui est ensuite distribué aux stakers. Aucun nouveau jeton GMX n'est créé."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Available liquidity {directionLabel}"
@@ -1683,6 +1691,10 @@ msgstr "Historique des réclamations"
 msgid "No SL orders"
 msgstr "Aucun ordre SL"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Manual leverage"
+msgstr ""
+
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Discover GMX alerts"
 msgstr "Découvrir les alertes GMX"
@@ -1704,7 +1716,7 @@ msgstr "Aucun frais"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Actions"
-msgstr ""
+msgstr "Actions"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Swap liquidity may be insufficient when order triggers"
@@ -1798,7 +1810,7 @@ msgstr "Icônes et images"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Discounts"
-msgstr ""
+msgstr "Réductions"
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Borrow fee / day"
@@ -1828,7 +1840,7 @@ msgstr "Distributions"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Your code is immediately active! Share it with traders and you'll earn rebates when they execute trades."
-msgstr ""
+msgstr "Votre code est immédiatement actif ! Partagez-le avec les traders et vous gagnerez des remises lorsqu'ils exécuteront des trades."
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Max profit limit reached. Current: {pnlToPoolFactorText}, max: {maxPnlFactorText}"
@@ -1844,7 +1856,7 @@ msgstr "Recevoir du pouvoir de vote et participer à la gouvernance"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "You'll get a shareable link like: {PRODUCTION_HOST}/#/trade/?ref=YOURCODE. Share on social media, in your content, or directly with friends."
-msgstr ""
+msgstr "Vous obtiendrez un lien partageable comme : {PRODUCTION_HOST}/#/trade/?ref=VOTRECODE. Partagez sur les réseaux sociaux, dans votre contenu ou directement avec vos amis."
 
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "RECEIVE"
@@ -1884,7 +1896,7 @@ msgstr "Symbiosis"
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "How it works"
-msgstr ""
+msgstr "Comment ça marche"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Sellable cap for pool GM: {0} [{1}] reached, as tokens are reserved by traders. Choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
@@ -2011,6 +2023,10 @@ msgstr "Prix sur Avalanche"
 msgid "Chart positions"
 msgstr "Positions sur graphiques"
 
+#: src/components/TVChartContainer/DynamicLine.tsx
+msgid "Unknown Order"
+msgstr ""
+
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Claiming price impact rebates..."
@@ -2036,17 +2052,9 @@ msgstr "Transfert sortant échoué"
 msgid "Sending sell request..."
 msgstr "Envoi de la demande de vente…"
 
-#: src/pages/Dashboard/GmxCard.tsx
-msgid "GMX is the utility and governance token. It also accrues 27% of the protocol fees via a buyback and distribution mechanism."
-msgstr "GMX est le jeton utilitaire et de gouvernance. Il accumule également 27 % des frais du protocole via un mécanisme de rachat et de distribution."
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "PURPOSE"
 msgstr "FONCTION"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - long dec."
-msgstr "Market - long dec."
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/components/Earn/Portfolio/RewardsBar.tsx
@@ -2219,6 +2227,7 @@ msgstr "MARCHÉS"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
+#: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Max {0}"
 msgstr "Max {0}"
 
@@ -2374,6 +2383,10 @@ msgstr "Sortir max {0}"
 msgid "No assets available for deposit"
 msgstr "Aucun actif disponible pour le dépôt"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Stop Loss @ {0}"
+msgstr ""
+
 #: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
 msgid "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
 msgstr "Code non enregistré sur {nonTakenNetworkNames}. Changez de réseau pour vous enregistrer et obtenir des remises."
@@ -2407,7 +2420,7 @@ msgstr "Layer 2"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "All valid codes give you at least a 5% discount. Premium affiliates (Tier 2/3) offer 10% discount. You'll see the exact discount percentage after the code has been applied."
-msgstr "Tous les codes valides offrent au moins 5 % de remise. Les affiliés premium (Tier 2/3) offrent 10 % de remise. Vous verrez le pourcentage exact après application du code."
+msgstr "Tous les codes valides vous offrent au moins 5 % de réduction. Les affiliés premium (Niveau 2/3) offrent 10 % de réduction. Vous verrez le pourcentage exact après l'application du code."
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Allow {0} spending"
@@ -2423,6 +2436,10 @@ msgstr "Acheter GM"
 msgid "of close fee"
 msgstr "des frais de fermeture"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Limit @ {0}"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "FUNDING APR"
 msgstr "FUNDING APR"
@@ -2431,6 +2448,10 @@ msgstr "FUNDING APR"
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 msgid "Search action"
 msgstr "Rechercher une action"
+
+#: src/pages/Dashboard/GmxCard.tsx
+msgid "GMX is the utility and governance token. 27% of protocol fees accumulate in the Treasury for GMX buybacks and will be distributed to stakers when GMX reaches $90."
+msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have a <0>pending transfer</0> to {pendingReceiver}"
@@ -2597,7 +2618,7 @@ msgstr "Afficher les montants PnL"
 
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 msgid "Transaction hash"
-msgstr ""
+msgstr "Hash de transaction"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Est. time: ~5 min"
@@ -2695,6 +2716,10 @@ msgstr "Glissement élevé défini. Impact actuel de l'échange : {0}."
 msgid "Instant"
 msgstr "Instantané"
 
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Insufficient pool balance to claim this funding fee."
+msgstr ""
+
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Open positions"
 msgstr "Positions ouvertes"
@@ -2705,7 +2730,7 @@ msgstr "Pièce"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Discounts earned by this account as a trader."
-msgstr ""
+msgstr "Réductions gagnées par ce compte en tant que trader."
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to settlement chain and go to the {indexName} pool to sell your {gmOrGlvLabel} tokens."
@@ -2765,7 +2790,7 @@ msgstr "Positions long"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Share your code"
-msgstr ""
+msgstr "Partagez votre code"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Buy fee"
@@ -2787,6 +2812,10 @@ msgstr "Modifier la garantie : {0} {1}{2}/USD"
 msgid "Insufficient gas balance. Express Trading and One-Click Trading unavailable."
 msgstr "Solde de gas insuffisant. Express Trading et One-Click Trading indisponibles."
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Stop Market @ {0}"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search address"
 msgstr "Rechercher une adresse"
@@ -2802,7 +2831,7 @@ msgstr "Fraîcheur des données"
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Done!"
-msgstr ""
+msgstr "Terminé !"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High potential net price impact (capped at {formattedCap} for this market) may significantly affect your collateral. Consider reducing leverage. <0>Read more</0>."
@@ -2937,7 +2966,6 @@ msgstr "LIQUIDITÉ"
 msgid "Swaps"
 msgstr "Swaps"
 
-#: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Creating order..."
@@ -2954,7 +2982,7 @@ msgstr "Staking soumis"
 
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Net"
-msgstr ""
+msgstr "Net"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
@@ -2987,6 +3015,10 @@ msgstr "DODO"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact pool amount"
 msgstr "Montant du pool d'impact"
+
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "The GMX token serves as the governance token of the GMX protocol. 27% of platform revenue accumulates in the Treasury for GMX buybacks. Stakers earn rewards based on staking power (duration × amount), distributed when GMX reaches $90."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "AI agent for GMX Blueberry Club"
@@ -3108,7 +3140,7 @@ msgstr "Paramètres Tenderly"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Swap all rewards into one asset"
-msgstr "Échanger toutes les récompenses en un actif"
+msgstr "Échanger toutes les récompenses en un seul actif"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
@@ -3132,6 +3164,10 @@ msgstr "GLV vaults"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from centralized services"
 msgstr "Acheter GMX sur des services centralisés"
+
+#: src/components/TVChartContainer/TVChartContainer.tsx
+msgid "Close Short"
+msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -3184,6 +3220,10 @@ msgstr "Aucun AB flag"
 msgid "Line heights"
 msgstr "Hauteurs de ligne"
 
+#: src/components/Earn/Discovery/EarnFaq.tsx
+msgid "27% of protocol revenue is used to buy back GMX on the open market. Bought-back GMX accumulates in the Treasury and will be distributed to stakers when GMX reaches $90, proportional to staking power. No new GMX tokens are minted."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX V2 Telegram & Discord analytics"
 msgstr "GMX V2 Telegram & Discord analytics"
@@ -3199,6 +3239,10 @@ msgstr "Analyses Dune pour GMX"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
 msgstr "Frais d'emprunt en attente de toutes les positions ouvertes"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Take Profit @ {0}"
+msgstr ""
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Shorts net rate / 1h"
@@ -3448,10 +3492,6 @@ msgstr "Les fonds sont maintenant dans votre GMX Account"
 msgid "Why should I enter a referral code?"
 msgstr "Pourquoi devrais-je entrer un code de parrainage ?"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "TP - long dec."
-msgstr "TP - long déc."
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient liquidity. Order will fill when liquidity is available."
 msgstr "Liquidité insuffisante. L'ordre sera exécuté lorsque la liquidité sera disponible."
@@ -3516,7 +3556,7 @@ msgstr "Qu'est-ce qui rend GMX plus rentable que d'autres plateformes perpétuel
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "How much can I earn as an affiliate?"
-msgstr ""
+msgstr "Combien puis-je gagner en tant qu'affilié ?"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -3642,11 +3682,7 @@ msgstr "Copin"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Swap route unavailable for: {failedSwapTokenSymbols}"
-msgstr "Route de swap non disponible pour : {failedSwapTokenSymbols}"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "TP - short dec."
-msgstr "TP - short déc."
+msgstr "Itinéraire d'échange indisponible pour : {failedSwapTokenSymbols}"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
@@ -3665,9 +3701,9 @@ msgstr "{0}"
 msgid "Liquidation price changes with fees and collateral value."
 msgstr "Le prix de liquidation varie en fonction des frais et de la valeur de la garantie."
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - short dec."
-msgstr "Market - short déc."
+#: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
+msgid "Low {symbol} balance. This amount leaves little for future fees on {0}"
+msgstr ""
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
@@ -3718,6 +3754,7 @@ msgstr "Avalanche"
 msgid "Fee APR"
 msgstr "Taux de rendement annualisé des frais"
 
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "SL"
 msgstr "SL"
@@ -3746,7 +3783,7 @@ msgstr "Réclamer les récompenses"
 msgid "Multicall idle"
 msgstr "Multicall inactif"
 
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/OutOfTokenErrorAlert.tsx
 msgid "Claiming requires <0/> while you have <1/>. <2>Swap</2> or <3>deposit</3> more {0} to your GMX Account."
 msgstr "La récupération nécessite <0/> alors que vous disposez de <1/>. <2>Échangez</2> ou <3>déposez</3> plus de {0} sur votre GMX Account."
 
@@ -3844,7 +3881,7 @@ msgstr "Échec du retrait"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "Failed to download image"
-msgstr ""
+msgstr "Échec du téléchargement de l'image"
 
 #. chainname balance
 #: src/components/MultichainBalanceTooltip/MultichainBalanceTooltip.tsx
@@ -4031,7 +4068,7 @@ msgstr "Entrez le code de parrainage"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "Referral link copied to clipboard"
-msgstr ""
+msgstr "Lien de parrainage copié dans le presse-papiers"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -4057,11 +4094,7 @@ msgstr "La chaîne source ne prend en charge qu'un seul jeton"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Referral discounts apply to opening and closing fees for leverage trading. Swap fees are not included."
-msgstr "Les remises parrainage s'appliquent aux frais d'ouverture et de clôture du trading à effet de levier. Les frais de swap ne sont pas inclus."
-
-#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-msgid "Annually"
-msgstr "Annuellement"
+msgstr "Les réductions de parrainage s'appliquent aux frais d'ouverture et de clôture du trading à effet de levier. Les frais de swap ne sont pas inclus."
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -4183,7 +4216,7 @@ msgstr "Données {chainName}"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Net referred traders in the selected period (gained - lost)."
-msgstr "Traders parrainés nets sur la période sélectionnée (gagnés - perdus)."
+msgstr "Traders parrainés nets sur la période sélectionnée (acquis - perdus)."
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No liquidation price. Collateral covers any losses."
@@ -4255,10 +4288,6 @@ msgstr "Déclencher des tickers partiels"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "<0>Buying {0}{1}<1>{poolName}</1></0> <2>with {tokensText}</2>"
 msgstr "<0>Achat de {0}{1}<1>{poolName}</1></0> <2>avec {tokensText}</2>"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - long inc."
-msgstr "Market - long inc."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Pairs trading"
@@ -4349,9 +4378,9 @@ msgid "Edit {0}"
 msgstr "Modifier {0}"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimSwapTargetTokenSelector.tsx
 msgid "Swap to"
-msgstr "Échanger vers"
+msgstr ""
 
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
@@ -4380,10 +4409,6 @@ msgstr "Impact sur le prix trop élevé"
 msgid "{0}h"
 msgstr ""
 
-#: src/components/TVChartContainer/constants.ts
-msgid "SL - long dec."
-msgstr "SL - long dec."
-
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Enter withdrawal amount"
 msgstr "Entrez le montant de retrait"
@@ -4391,6 +4416,11 @@ msgstr "Entrez le montant de retrait"
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active orders"
 msgstr "Ordres actifs"
+
+#: src/components/ClaimModal/ClaimModal.tsx
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This market has been disabled. Please contact support to claim your remaining funding fees."
+msgstr "Ce marché a été désactivé. Veuillez contacter le support pour réclamer vos frais de financement restants."
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Depositing to Avalanche is disabled. Trade directly from your Avalanche wallet."
@@ -4712,10 +4742,6 @@ msgstr "Vous avez besoin de USDC ou d'ETH sur {0} pour créer un code de parrain
 msgid "Current tier:"
 msgstr "Niveau actuel :"
 
-#: src/components/TVChartContainer/constants.ts
-msgid "Market - short inc."
-msgstr "Market - short inc."
-
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Lend GLV or GM tokens and borrow against them"
@@ -4728,6 +4754,10 @@ msgstr "Mettre à jour {orderTypeName}"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Existing position in {0} pool.<0>Switch to {1} pool</0>"
 msgstr "Position existante dans le pool {0}.<0>Basculer vers le pool {1}</0>"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Take Profit @ {0}"
+msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -4758,6 +4788,7 @@ msgstr ""
 msgid "Open interest {directionLabel}"
 msgstr "Positions ouvertes {directionLabel}"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -4940,10 +4971,6 @@ msgstr "Code de parrainage ajouté"
 msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
 msgstr "Achetez des obligations GMX sur Bond Protocol avec une décote et une courte période d'acquisition progressive"
 
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Open {longOrShortText} - {marketIndexName}"
-msgstr "Ouvrir {longOrShortText} - {marketIndexName}"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer account"
@@ -5055,6 +5082,10 @@ msgstr "Utiliser les positions ouvertes en tokens pour le solde"
 msgid "Seamless trading"
 msgstr "Trading fluide"
 
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Insufficient Pool Balance"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "from your wallet"
 msgstr "depuis votre portefeuille"
@@ -5089,6 +5120,7 @@ msgstr ""
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TVChartContainer/DynamicLine.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -5167,10 +5199,6 @@ msgstr "Liens"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact factor for withdrawals"
 msgstr "Facteur d'impact prêtable max pour les retraits"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Limit - long inc."
-msgstr "Limit - long inc."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Claim completed"
@@ -5272,7 +5300,7 @@ msgstr "Échec de la réclamation des fonds"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Which fees get discounted?"
-msgstr "Quels frais sont remisés ?"
+msgstr ""
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames} or {lastChainName}. Switch networks to continue."
@@ -5299,10 +5327,6 @@ msgstr "Longs"
 msgid "Affiliate rewards claimed"
 msgstr "Récompenses d'affiliation récupérées"
 
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "Total value of assets being swapped"
-msgstr "Valeur totale des actifs échangés"
-
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "transaction:"
 msgstr "transaction :"
@@ -5317,7 +5341,7 @@ msgstr "indicateur de chargement"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes! You can switch to a different code at any time from the Traders tab. Your new discount will apply to all future trades."
-msgstr "Oui ! Vous pouvez changer de code à tout moment depuis l'onglet Traders. Votre nouvelle remise s'appliquera à tous les trades futurs."
+msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
@@ -5337,7 +5361,7 @@ msgstr "<0>Les notifications sont fournies par Notifi et non affiliées à GMX. 
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "<0>GLV (GMX Liquidity Vaults) is GMX V2's improved version of GLP. It's a yield-optimizing crypto-index token that:</0><1><2>Earns fees from liquidity provision across GMX V2 markets</2><3>Dynamically allocates liquidity to highest-utilized markets, maximizing capital efficiency and yield</3><4>Auto-compounds yield (no manual claiming needed, unlike GLP)</4></1>"
-msgstr "<0>GLV (GMX Liquidity Vaults) est la version améliorée de GLP dans GMX V2. C'est un jeton crypto-indice optimisant le rendement qui :</0><1><2>Génère des frais grâce à la fourniture de liquidité sur les marchés GMX V2</2><3>Alloue dynamiquement la liquidité aux marchés les plus utilisés, maximisant l'efficacité du capital et le rendement</3><4>Composition automatique du rendement (aucune réclamation manuelle nécessaire, contrairement à GLP)</4></1>"
+msgstr ""
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
@@ -5415,6 +5439,7 @@ msgstr "Échec de la création du code de parrainage"
 msgid "Withdraw fee"
 msgstr "Frais de retrait"
 
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
 msgstr "TP"
@@ -5738,7 +5763,7 @@ msgstr ""
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Swap token unavailable"
-msgstr "Token de swap non disponible"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
@@ -5823,7 +5848,7 @@ msgstr "Facteur de financement maximum"
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your discount is now active!"
-msgstr "Votre remise est maintenant active !"
+msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 #: src/pages/UiPage/BannerTest.tsx
@@ -5865,10 +5890,6 @@ msgstr ""
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Decrease"
 msgstr "Diminuer"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "Loading Express Trading..."
-msgstr "Chargement d'Express Trading..."
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5945,7 +5966,7 @@ msgstr "Déplacement de <0><1>GM : {fromIndexName}</1><2>{fromPoolName}</2></0> 
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Claim & swap"
-msgstr "Réclamer et échanger"
+msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
@@ -6089,6 +6110,12 @@ msgstr "Délai d'attente principal"
 msgid "Increase size (Limit)"
 msgstr "Augmenter la taille (Limit)"
 
+#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
+#: src/components/APRLabel/APRLabel.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Accumulating"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "PnL relative to capital used (return on capital)"
 msgstr "PnL relatif au capital utilisé (rendement sur capital)"
@@ -6223,7 +6250,7 @@ msgstr "Collez les données d'erreur hexadécimales à décoder"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "You'll receive"
-msgstr "Vous recevrez"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral"
@@ -6256,9 +6283,7 @@ msgstr "Prix TP"
 #: src/components/Claims/Claims.tsx
 #: src/components/EmptyTableContent/EmptyTableContent.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
-#: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
@@ -6534,6 +6559,10 @@ msgstr "Minutes"
 msgid "What makes GMX one of the best places to earn yield on my crypto?"
 msgstr "Qu'est-ce qui fait de GMX l'un des meilleurs endroits pour obtenir du rendement sur mes cryptomonnaies ?"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Permit has expired. Please try again.</0>"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Approving {tokenSymbol}..."
 msgstr "Approbation de {tokenSymbol}..."
@@ -6614,7 +6643,7 @@ msgstr "Aucun historique de distribution de remises pour le moment"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "You can skip this step and trade without a code, but you'll pay full fees. You can always add a code later from the Traders tab if you've found a code."
-msgstr "Vous pouvez ignorer cette étape et trader sans code, mais vous paierez les frais complets. Vous pourrez toujours ajouter un code plus tard depuis l'onglet Traders si vous en trouvez un."
+msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "THREAD"
@@ -6800,6 +6829,11 @@ msgstr "Transfert échoué"
 msgid "Last 90d"
 msgstr "Derniers 90j"
 
+#: src/components/TVChartContainer/StaticLine.tsx
+#: src/components/TVChartContainer/StaticLine.tsx
+msgid "Show size in tokens"
+msgstr ""
+
 #: src/components/GmList/GmList.tsx
 msgid "Performance vs benchmark over the selected period"
 msgstr "Performance par rapport à l'indice de référence sur la période sélectionnée"
@@ -6936,6 +6970,10 @@ msgstr "Marché introuvable. Il a peut-être été supprimé"
 msgid "Insufficient liquidity to swap collateral"
 msgstr "Liquidité insuffisante pour échanger le collatéral"
 
+#: src/components/TVChartContainer/TVChartContainer.tsx
+msgid "Open Long"
+msgstr ""
+
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Swap price impact for external swap threshold"
 msgstr "Seuil d'impact sur le prix d'échange pour les échanges externes"
@@ -6997,6 +7035,10 @@ msgstr "Tradao"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity"
 msgstr "Liquidité insuffisante"
+
+#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
+msgid "Liq."
+msgstr ""
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -7120,6 +7162,10 @@ msgstr "Projet"
 msgid "24h low"
 msgstr "Plus bas 24h"
 
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Claim <0>{0}</0> of <1>{1}</1>"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from TraderJoe"
 msgstr "Acheter des GMX sur TraderJoe"
@@ -7139,6 +7185,10 @@ msgstr "Annuler le Stop-Loss"
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "{0} is required for collateral.<0/><1/>No swap path found for {1} to {2} within GMX.<2/><3/><4>Buy {3} on 1inch</4>."
 msgstr "{0} est requis comme garantie.<0/><1/>Aucun chemin d'échange trouvé de {1} à {2} dans GMX.<2/><3/><4>Acheter {3} sur 1inch</4>."
+
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Stake {tokenSymbol} rewards"
@@ -7221,10 +7271,6 @@ msgstr "Aujourd'hui"
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Link copied"
 msgstr "Lien copié"
-
-#: src/components/Earn/Discovery/EarnProductCard.tsx
-msgid "Rewards funded by protocol fees used for GMX buybacks"
-msgstr "Récompenses financées par les frais du protocole utilisés pour les rachats de GMX"
 
 #: src/components/Referrals/distributions/ReferralsDistributionsTab.tsx
 msgid "Connect your wallet to view your rebates distribution history."
@@ -7369,10 +7415,6 @@ msgstr "Surveillance des risques GMX"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Minimum capital used of {0} required to qualify for rankings"
 msgstr "Un capital utilisé minimum de {0} est requis pour être éligible au classement"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Limit - short inc."
-msgstr "Limit - short inc."
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
@@ -7588,6 +7630,13 @@ msgstr "Négociez depuis le portefeuille ou le GMX Account"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min position size: {0}"
 msgstr "Taille de position minimale : {0}"
+
+#: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
+#: src/components/APRLabel/APRLabel.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/components/Stake/GMXAprTooltip.tsx
+msgid "27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your share is based on staking power (duration × amount staked)."
+msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Down"
@@ -7832,7 +7881,7 @@ msgstr "PNL EST."
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your {currentTierDiscount}% discount is now active!"
-msgstr "Votre remise de {currentTierDiscount} % est maintenant active !"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Total performance APY"
@@ -7953,10 +8002,6 @@ msgstr "Déplacement de {symbol}..."
 msgid "Close price impact"
 msgstr "Impact sur le prix de clôture"
 
-#: src/components/SettingsModal/DisplaySettings.tsx
-msgid "Show leverage slider"
-msgstr "Afficher le curseur d'effet de levier"
-
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 msgid "Opens GMTrade in a new tab"
 msgstr "Ouvre GMTrade dans un nouvel onglet"
@@ -8016,6 +8061,10 @@ msgstr "Explorer, analyser et copier des traders on-chain"
 msgid "{addressLabel} on {networkLabel}"
 msgstr "{addressLabel} sur {networkLabel}"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Loading fees..."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "{0} GMX"
 msgstr "{0} GMX"
@@ -8064,7 +8113,7 @@ msgstr "Trading V2"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Visit the <0>Referrals Documentation</0> or ask in the <1>GMX Telegram</1>."
-msgstr "Consultez la <0>documentation Referrals</0> ou posez la question dans le <1>GMX Telegram</1>."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
@@ -8288,7 +8337,7 @@ msgstr "Frais d'ouverture"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Edit referral code"
-msgstr ""
+msgstr "Modifier le code de parrainage"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell request sent"
@@ -8417,6 +8466,10 @@ msgstr "Meme"
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 msgid "Transaction failed.<0/><1/><2>View status</2>"
 msgstr "Transaction échouée.<0/><1/><2>Voir le statut</2>"
+
+#: src/components/Earn/Discovery/EarnProductCard.tsx
+msgid "Accumulate GMX rewards by staking"
+msgstr ""
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
@@ -8567,10 +8620,6 @@ msgstr "Adresse Ethereum invalide"
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on that network."
 msgstr "Impossible de vérifier la disponibilité du code sur {0}. Vous pouvez tout de même créer le code, mais il est possible qu'il soit déjà pris sur ce réseau."
-
-#: src/components/TVChartContainer/constants.ts
-msgid "Stop Market - short inc."
-msgstr "Stop Market - inc. short"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Rebates"
@@ -8797,13 +8846,13 @@ msgstr "Remise de parrainage"
 msgid "Threshold for decrease funding"
 msgstr "Seuil de diminution du financement"
 
-#: src/components/Earn/Discovery/EarnProductCard.tsx
-msgid "Earn GMX rewards by staking"
-msgstr "Gagnez des récompenses GMX en stakant"
-
 #: src/domain/synthetics/fees/utils/index.ts
 msgid "Network fees are very high due to increased {chainName} network activity"
 msgstr "Les frais de réseau sont très élevés en raison de l'activité accrue du réseau {chainName}"
+
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Some markets have insufficient pool balance to claim funding fees. These markets are excluded from this claim."
+msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx
 #: src/components/InterviewModal/InterviewModal.tsx
@@ -8825,6 +8874,10 @@ msgstr "Les données de performance et de graphiques sont basées sur les horair
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Sell {operationTokenSymbol}"
 msgstr "Vendre {operationTokenSymbol}"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
+msgstr ""
 
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/callContract.tsx
@@ -8901,6 +8954,7 @@ msgid "Min margin: {0}"
 msgstr "Marge min. : {0}"
 
 #: src/components/TradeBox/tradeboxConstants.tsx
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Market"
 msgstr "Stop Marché"
@@ -8968,6 +9022,11 @@ msgstr "Clé de l'ordre :"
 msgid "Why is the claim in GLV tokens?"
 msgstr "Pourquoi la réclamation est en jetons GLV ?"
 
+#: src/components/TVChartContainer/StaticLine.tsx
+#: src/components/TVChartContainer/StaticLine.tsx
+msgid "Show size in USD"
+msgstr ""
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
@@ -9016,7 +9075,7 @@ msgstr "{gmOrGlvLabel} vendu avec succès, mais le pont vers Base a échoué. Vo
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Unable to fetch swap route. Please try again."
-msgstr "Impossible de récupérer la route de swap. Veuillez réessayer."
+msgstr ""
 
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
@@ -9036,6 +9095,7 @@ msgstr "Impossible de récupérer la route de swap. Veuillez réessayer."
 #: src/components/TPSLModal/TPSLModal.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TVChartContainer/DynamicLine.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
@@ -9089,7 +9149,7 @@ msgstr "Coffres de rendement"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Using a referral code gives you a 5-10% discount on trading fees for every trade you make. It costs you nothing and the savings add up quickly."
-msgstr "Un code de parrainage vous donne 5 à 10 % de remise sur les frais de trading à chaque trade. Cela ne vous coûte rien et les économies s'accumulent vite."
+msgstr ""
 
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
@@ -9097,7 +9157,7 @@ msgstr "{title}"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "What if I don't have a code right now?"
-msgstr "Et si je n'ai pas de code pour l'instant ?"
+msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit transaction sent for {0}!"
@@ -9123,7 +9183,7 @@ msgstr "Capacité en montant du pool"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Referral link copied to your clipboard"
-msgstr ""
+msgstr "Lien de parrainage copié dans votre presse-papiers"
 
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "L:"
@@ -9221,7 +9281,7 @@ msgstr "PnL max. ($)"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "<0>Save up to {traderDiscountPercentageLabel}</0> on every<1/> trade on GMX."
-msgstr "<0>Économisez jusqu'à {traderDiscountPercentageLabel}</0> sur chaque<1/> trade sur GMX."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Leverage trading terminal"
@@ -9233,7 +9293,7 @@ msgstr "Adresse du destinataire"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Where can I learn more?"
-msgstr "Où en savoir plus ?"
+msgstr ""
 
 #: src/components/Claims/SettleAccruedCard.tsx
 msgid "Positive funding fees accrued in positions, not yet claimable.<0/><1/>Available after changing position size, adjusting collateral, or clicking \"Settle\"."
@@ -9558,6 +9618,13 @@ msgstr "Frais de réseau TWAP élevé"
 msgid "Position would be liquidatable. Current: {remainingCollateralUsdText}, required: {minCollateralUsdText}"
 msgstr "La position serait liquidable. Actuel : {remainingCollateralUsdText}, requis : {minCollateralUsdText}"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/components/GmxAccountModal/DepositView.tsx
+#: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Loading network fees…"
+msgstr "Chargement des frais de réseau…"
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "All earnings auto-compound"
@@ -9566,6 +9633,10 @@ msgstr "Tous les gains se réinvestissent automatiquement"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Use the TP/SL button to set TP/SL orders."
 msgstr "Utilisez le bouton TP/SL pour définir des ordres TP/SL."
+
+#: src/components/TVChartContainer/TVChartContainer.tsx
+msgid "Close Long"
+msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GM?"
@@ -9667,7 +9738,7 @@ msgstr "C :"
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Swap route unavailable"
-msgstr "Route de swap non disponible"
+msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. This action won't affect it. <0>Switch to {1} collateral</0>"
@@ -9759,10 +9830,6 @@ msgstr "GLP en vesting non retiré"
 msgid "<0>every</0> {minutes} minutes{0}"
 msgstr "<0>toutes les</0> {minutes} minutes{0}"
 
-#: src/components/Earn/Discovery/EarnProductCard.tsx
-msgid "The GMX token serves as the governance token of the GMX protocol. By staking GMX, you earn 27% of the revenue generated by the trading platform."
-msgstr "Le token GMX sert de token de gouvernance du protocole GMX. En stakant du GMX, vous gagnez 27 % des revenus générés par la plateforme de trading."
-
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "r:"
 msgstr "r :"
@@ -9795,6 +9862,10 @@ msgstr ""
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Stabilize Protocol"
 msgstr "Protocole Stabilize"
+
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Limit @ {0}"
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Auto-cancel TP/SL"
@@ -10222,6 +10293,10 @@ msgstr "Coffres GLV :"
 msgid "Download as CSV"
 msgstr "Télécharger en CSV"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Short Stop Market @ {0}"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Benefit from up to 100x leverage and guaranteed on-chain liquidity that's not dependent on order book depth"
 msgstr "Bénéficiez d'un effet de levier jusqu'à 100x et d'une liquidité on-chain garantie, indépendante de la profondeur du carnet d'ordres"
@@ -10249,7 +10324,6 @@ msgid "Max pool amount exceeded"
 msgstr "Montant max. du pool dépassé"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
-#: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Unknown order"
 msgstr "Ordre inconnu"
 
@@ -10371,7 +10445,7 @@ msgstr "Aucun marché trouvé"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Do I need to enter a code on each network?"
-msgstr "Dois-je entrer un code sur chaque réseau ?"
+msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Insufficient collateral. Need more"
@@ -10457,6 +10531,10 @@ msgstr "Commencer à gagner"
 msgid "{orderText} cancellation failed"
 msgstr "Échec de l'annulation de {orderText}"
 
+#: src/components/TVChartContainer/useChartContextMenu.ts
+msgid "Set Long Stop Loss @ {0}"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Sell"
 msgstr "Vendre"
@@ -10505,10 +10583,6 @@ msgstr "{count, plural, one {Ordre} other {# Ordres}}"
 msgid "Avalanche trading incentives"
 msgstr "Incitations au trading sur Avalanche"
 
-#: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
-msgid "Liquidation {longOrShortText} - {marketIndexName}"
-msgstr "Liquidation {longOrShortText} - {marketIndexName}"
-
 #: src/components/Errors/errorToasts.tsx
 #: src/components/Errors/errorToasts.tsx
 msgid "Transaction canceled"
@@ -10548,6 +10622,10 @@ msgstr "Le glissement est trop élevé"
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity available for increasing shorts at<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 msgstr "Aucune liquidité disponible pour augmenter les shorts à<0/>cette taille. Taille short maximale : {0}<1/><2/>Prix d'exécution pour la réduction des longs."
+
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Total value of assets"
+msgstr ""
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "<0>Switch to {0} pool</0> for potentially lower price impact"
@@ -10614,7 +10692,6 @@ msgstr "Transfert des fonds vers..."
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormMultichain.tsx
 msgid "Network fee"
 msgstr "Frais de réseau"
@@ -10677,6 +10754,7 @@ msgstr "Aucune adresse de jeton de destination"
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/keys.ts
+#: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"
 msgstr "Limite"
@@ -10697,10 +10775,6 @@ msgstr "Taille de position minimale"
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Hours"
 msgstr "Heures"
-
-#: src/components/TVChartContainer/constants.ts
-msgid "SL - short dec."
-msgstr "SL - short déc."
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Invalid receiver address"
@@ -10871,7 +10945,7 @@ msgstr "Aucun échange décentralisé disponible"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Where do I find a referral code?"
-msgstr "Où trouver un code de parrainage ?"
+msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Enable <0>Express Trading</0> in settings for better reliability.<1/><2/>Or increase the max network fee buffer {bufferText} in {settingsLink}"

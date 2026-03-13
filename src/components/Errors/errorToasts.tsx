@@ -20,12 +20,14 @@ import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
 import { getContractErrorToastContent } from "./getContractErrorToastContent";
 
+export type PermitIssueType = "invalidSignature" | "expiredDeadline";
+
 export type AdditionalErrorParams = {
   additionalContent?: ReactNode;
   slippageInputId?: string;
   defaultMessage?: ReactNode;
   isInternalSwapFallback?: boolean;
-  isPermitIssue?: boolean;
+  permitIssueType?: PermitIssueType;
   setIsSettingsVisible?: (isVisible: boolean) => void;
 };
 
@@ -37,7 +39,7 @@ export function getTxnErrorToast(
     slippageInputId,
     defaultMessage = getDefaultErrorMessage(errorData),
     isInternalSwapFallback,
-    isPermitIssue,
+    permitIssueType,
     setIsSettingsVisible,
   }: AdditionalErrorParams
 ) {
@@ -93,8 +95,12 @@ export function getTxnErrorToast(
     return toastParams;
   }
 
-  if (isPermitIssue) {
+  if (permitIssueType === "invalidSignature") {
     toastParams.errorContent = getInvalidPermitSignatureToastContent();
+    return toastParams;
+  } else if (permitIssueType === "expiredDeadline") {
+    toastParams.errorContent = getExpiredPermitDeadlineToastContent();
+    return toastParams;
   }
 
   const contractErrorMessage = getContractErrorToastContent({ chainId, errorData, slippageInputId });
@@ -222,7 +228,7 @@ export function getErrorMessage(
           <Trans>
             RPC error. Update your wallet's RPC via{" "}
             <ExternalLink href="https://chainlist.org">chainlist.org</ExternalLink>.{" "}
-            <ExternalLink href="https://docs.gmx.io/docs/trading/#rpc-urls">Read more</ExternalLink>.
+            <ExternalLink href="https://docs.gmx.io/docs/trading/overview/#rpc-urls">Read more</ExternalLink>.
           </Trans>
           <br />
           <br />
@@ -376,6 +382,14 @@ export function getInvalidPermitSignatureToastContent() {
   return (
     <Trans>
       <div>Invalid permit signature. Try again</div>
+    </Trans>
+  );
+}
+
+export function getExpiredPermitDeadlineToastContent() {
+  return (
+    <Trans>
+      <div>Permit has expired. Please try again.</div>
     </Trans>
   );
 }

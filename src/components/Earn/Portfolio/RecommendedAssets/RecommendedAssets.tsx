@@ -3,6 +3,7 @@ import cx from "classnames";
 import { ReactNode, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
+import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
 import {
   getGlvOrMarketAddress,
   getMarketIndexName,
@@ -250,6 +251,9 @@ function RecommendedAssetSection({
 }
 
 function GmxRecommendedAssetItem({ chainId, openBuyGmxModal }: { chainId: AnyChainId; openBuyGmxModal: () => void }) {
+  const { data: stakingData } = useStakingProcessedData(chainId as any);
+  const isGmxSuspended = stakingData?.isRewardsSuspended;
+
   const handleClick = () => {
     sendEarnRecommendationClickedEvent({
       activeTab: "portfolio",
@@ -265,7 +269,7 @@ function GmxRecommendedAssetItem({ chainId, openBuyGmxModal }: { chainId: AnyCha
       icon={<GmxIcon className="size-32" />}
       title={<Trans>GMX</Trans>}
       metricValue={<APRLabel chainId={chainId} label={GMX_APR_TOTAL_LABEL} />}
-      metricLabel={<Trans>APR</Trans>}
+      metricLabel={isGmxSuspended ? undefined : <Trans>APR</Trans>}
       button={
         <Button variant="primary" onClick={handleClick}>
           <Trans>Buy GMX</Trans>

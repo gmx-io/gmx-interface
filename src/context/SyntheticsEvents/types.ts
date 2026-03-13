@@ -61,6 +61,7 @@ export type PositionDecreaseEvent = {
   longTokenFundingAmountPerSize: bigint;
   shortTokenFundingAmountPerSize: bigint;
   pnlUsd: bigint;
+  executionPrice?: bigint;
   isLong: boolean;
   orderType: OrderType;
   orderKey: string;
@@ -366,8 +367,13 @@ export type ShiftStatuses = {
   [key: string]: ShiftStatus;
 };
 
+export type ApprovalStatus = {
+  value: bigint;
+  blockNumber: bigint;
+};
+
 export type ApprovalStatuses = {
   [tokenAddress: string]: {
-    [spender: string]: { value: bigint; createdAt: number };
+    [spender: string]: ApprovalStatus;
   };
 };

@@ -7,7 +7,6 @@ import {
   useEditingOrderState,
   useOrderEditorIsSubmittingState,
 } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
-import { selectChartDynamicLines } from "context/SyntheticsStateContext/selectors/chartSelectors/selectChartDynamicLines";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
@@ -36,16 +35,20 @@ import { getOrderKeys } from "sdk/utils/orders";
 import { PositionOrderInfo } from "sdk/utils/orders/types";
 
 import { DynamicLine } from "./DynamicLine";
+import type { DynamicChartLine } from "./types";
 import type { IChartingLibraryWidget } from "../../charting_library";
 
 export function DynamicLines({
   tvWidgetRef,
   isMobile,
+  lines,
+  bodyFontSizePt,
 }: {
   tvWidgetRef: React.RefObject<IChartingLibraryWidget>;
   isMobile: boolean;
+  lines: Array<DynamicChartLine & { lineLength: number }>;
+  bodyFontSizePt: number;
 }) {
-  const dynamicChartLines = useSelector(selectChartDynamicLines);
   const { signer } = useWallet();
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
@@ -176,7 +179,7 @@ export function DynamicLines({
     [chainId, marketsData, ordersInfoData, setEditingOrderState, setTriggerPriceInputValue]
   );
 
-  return dynamicChartLines.map((line) => (
+  return lines.map(({ updatedAtTime: _, ...line }) => (
     <DynamicLine
       {...line}
       key={line.id}
@@ -185,6 +188,7 @@ export function DynamicLines({
       getError={getError}
       tvWidgetRef={tvWidgetRef}
       isMobile={isMobile}
+      bodyFontSizePt={bodyFontSizePt}
       isEdited={editingOrderState?.orderKey === line.id}
       isPending={(isSubmitting && editingOrderState?.orderKey === line.id) || line.id in pendingOrdersUpdates}
     />

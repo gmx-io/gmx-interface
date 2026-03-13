@@ -244,7 +244,7 @@ const useTradeboxPoolWarnings = () => {
         <Trans>
           Existing position in {getMarketPoolName(marketWithPosition)} pool.
           <ColorfulButtonLink
-            color="blue"
+            color="yellow"
             onClick={() => {
               setMarketAddress(marketWithPosition.marketTokenAddress);
               setCollateralAddress(marketsOptions.collateralWithPosition?.address);
@@ -282,7 +282,7 @@ const useTradeboxPoolWarnings = () => {
           Insufficient liquidity in {marketInfo ? getMarketPoolName(marketInfo) : "..."} pool. Select a different pool.
         </Trans>
         {hasEnoughLiquidity(minOpenFeesMarket) && (
-          <ColorfulButtonLink color="blue" onClick={() => setMarketAddress(minOpenFeesMarket!.marketTokenAddress)}>
+          <ColorfulButtonLink color="yellow" onClick={() => setMarketAddress(minOpenFeesMarket!.marketTokenAddress)}>
             <Trans>Switch to {getMarketPoolName(minOpenFeesMarket)} pool</Trans>
           </ColorfulButtonLink>
         )}
@@ -298,7 +298,7 @@ const useTradeboxPoolWarnings = () => {
           creates a new position.
         </Trans>
         <ColorfulButtonLink
-          color="blue"
+          color="yellow"
           onClick={() => setMarketAddress(marketsOptions.minOpenFeesMarket?.marketAddress)}
         >
           <Trans>Switch to {getMarketPoolName(minOpenFeesMarket)} pool</Trans>
@@ -315,6 +315,7 @@ const useTradeboxPoolWarnings = () => {
         <Trans>
           Existing limit order in {getMarketPoolName(marketWithOrder)} pool.
           <ColorfulButtonLink
+            color="yellow"
             onClick={() => {
               setMarketAddress(marketWithOrder.marketTokenAddress);
               setCollateralAddress(address);

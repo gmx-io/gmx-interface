@@ -7,8 +7,9 @@ const EARN_FAQ_ITEMS: FaqItem[] = [
     title: <Trans>Where do GMX staking rewards come from?</Trans>,
     content: (
       <Trans>
-        GMX staking rewards come from a buyback-and-distribute model: protocol revenue purchases GMX on the open market,
-        which is then distributed to stakers. No new GMX tokens are minted.
+        27% of protocol revenue is used to buy back GMX on the open market. Bought-back GMX accumulates in the Treasury
+        and will be distributed to stakers when GMX reaches $90, proportional to staking power. No new GMX tokens are
+        minted.
       </Trans>
     ),
   },

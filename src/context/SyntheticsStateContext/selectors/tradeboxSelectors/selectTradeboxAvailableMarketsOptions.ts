@@ -2,7 +2,7 @@ import { QueryFunction } from "@taskworld.com/rereselect";
 import keyBy from "lodash/keyBy";
 import values from "lodash/values";
 
-import { BASIS_POINTS_DIVISOR, USD_DECIMALS } from "config/factors";
+import { USD_DECIMALS } from "config/factors";
 import {
   selectMarketsInfoData,
   selectOrdersInfoData,
@@ -18,7 +18,7 @@ import {
   selectTradeboxFromTokenAddress,
   selectTradeboxFromTokenInputValue,
   selectTradeboxIncreasePositionAmounts,
-  selectTradeboxLeverageOption,
+  selectTradeboxLeverage,
   selectTradeboxSelectedPosition,
   selectTradeboxSelectedPositionKey,
   selectTradeboxSelectedTriggerAcceptablePriceImpactBps,
@@ -101,11 +101,11 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
 
   const { isIncrease, isPosition, isLong } = flags;
 
-  if (!isPosition || !indexToken || isLong === undefined) {
+  if (!isPosition || !indexToken || isLong === undefined || !marketsInfoData) {
     return {};
   }
 
-  const allMarkets = Object.values(marketsInfoData || {}).filter((market) => !market.isSpotOnly && !market.isDisabled);
+  const allMarkets = Object.values(marketsInfoData).filter((market) => !market.isSpotOnly && !market.isDisabled);
 
   const availableMarkets = q(selectTradeboxAvailableMarkets);
 
@@ -252,7 +252,6 @@ export function getMarketIncreasePositionAmounts(q: QueryFunction<SyntheticsStat
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const fromTokenInputValue = q(selectTradeboxFromTokenInputValue);
   const toTokenAddress = q(selectTradeboxToTokenAddress);
-  const leverageOption = q(selectTradeboxLeverageOption);
   const isLeverageSliderEnabled = q(selectIsLeverageSliderEnabled);
   const focusedInput = q(selectTradeboxFocusedInput);
   const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
@@ -263,7 +262,7 @@ export function getMarketIncreasePositionAmounts(q: QueryFunction<SyntheticsStat
   const fromToken = q(selectTradeboxFromToken);
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals) ?? 0n : 0n;
   const toTokenAmount = q(selectTradeboxToTokenAmount);
-  const leverage = BigInt(parseInt(String(Number(leverageOption!) * BASIS_POINTS_DIVISOR)));
+  const leverage = q(selectTradeboxLeverage);
   const positionKey = q(selectTradeboxSelectedPositionKey);
   const isExpressTxn = fromTokenAddress !== NATIVE_TOKEN_ADDRESS && q(selectIsExpressTransactionAvailable);
   const externalSwapQuote = q(selectExternalSwapQuote);

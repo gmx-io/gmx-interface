@@ -213,7 +213,7 @@ function getTypeStr(_: ReturnType<typeof useLingui>["_"], typeId: bigint) {
 }
 
 function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
-  const { tokenIncentiveDetails, totalUsd, timestamp, transactionHash, typeId } = incentive;
+  const { tokenIncentiveDetails, totalUsd, transactionHash, timestamp, typeId } = incentive;
   const { chainId } = useChainId();
   const explorerURL = getExplorerUrl(chainId);
   const { _ } = useLingui();

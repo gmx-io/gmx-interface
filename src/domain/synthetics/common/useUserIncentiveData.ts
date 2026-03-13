@@ -17,11 +17,11 @@ const USER_INCENTIVE_QUERY = gql`
     ) {
       id
       typeId
-      timestamp
-      transactionHash
       amounts
       amountsInUsd
       tokens
+      timestamp
+      transactionHash
     }
   }
 `;

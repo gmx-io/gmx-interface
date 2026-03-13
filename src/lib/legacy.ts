@@ -4,6 +4,7 @@ import { zeroAddress, zeroHash } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { useEnsName } from "wagmi";
 
+import { getIsFlagEnabled } from "config/ab";
 import { SOURCE_ETHEREUM_MAINNET, getExplorerUrl } from "config/chains";
 import { isLocal } from "config/env";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
@@ -399,6 +400,7 @@ export type StakingProcessedData = Partial<{
 }> & {
   gmxAprForEsGmx: bigint;
   gmxAprForNativeToken: bigint;
+  isRewardsSuspended: boolean;
 };
 
 export function getStakingProcessedData(
@@ -595,6 +597,12 @@ export function getStakingProcessedData(
   data.totalRewardsUsd = data.totalEsGmxRewardsUsd + data.totalNativeTokenRewardsUsd + data.totalGmxRewardsUsd;
 
   data.avgGMXAprTotal = data.gmxAprTotal ? data.gmxAprTotal + (data.avgBoostAprForNativeToken ?? 0n) : undefined;
+
+  data.isRewardsSuspended =
+    (stakingData.stakedGmxTracker.tokensPerInterval === 0n &&
+      stakingData.feeGmxTracker.tokensPerInterval === 0n &&
+      stakingData.extendedGmxTracker.tokensPerInterval === 0n) ||
+    getIsFlagEnabled("testRewardsSuspended");
 
   return data;
 }

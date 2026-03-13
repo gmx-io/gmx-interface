@@ -1,6 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ethers } from "ethers";
+import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { zeroAddress } from "viem";
 
@@ -165,16 +166,26 @@ export function StakeModal(props: {
     [unstakeError, isUnstaking, hasOutdatedUi]
   );
 
+  useEffect(() => {
+    if (!needApproval && isApproving) {
+      setIsApproving(false);
+    }
+  }, [isApproving, needApproval]);
+
   const handleStake = useCallback(() => {
     if (needApproval) {
+      setIsApproving(true);
       approveTokens({
-        setIsApproving,
+        setIsApproving: noop,
         signer,
         tokenAddress: stakeTokenAddress,
         spender: stakeFarmAddress,
         chainId,
         permitParams: undefined,
         approveAmount: undefined,
+        onApproveFail: () => {
+          setIsApproving(false);
+        },
       });
       return;
     }

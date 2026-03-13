@@ -275,7 +275,6 @@ export function SyntheticsStateContextProvider({
     marketsInfoData: marketsInfo.marketsInfoData,
     positionsData: positionsResult.positionsData,
     positionsError: positionsResult.error,
-    marketsData: markets.marketsData,
     skipLocalReferralCode,
     tokensData: tokensDataResult.tokensData,
   });

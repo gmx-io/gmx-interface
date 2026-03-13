@@ -244,7 +244,6 @@ export function SettingsModal({
       qa="settings-modal"
       className="text-body-medium text-typography-secondary"
       desktopClassName="!items-start !justify-end !pt-[56px] !pr-8"
-      desktopContentClassName="!w-[420px]"
     >
       <div className="flex flex-col gap-8">
         <Tabs options={tabOptions} selectedValue={activeTab} onChange={setActiveTab} type="inline" />
@@ -284,7 +283,7 @@ function TabWrapper({
 }) {
   return (
     <div
-      className={cx("w-[380px] shrink-0 max-md:w-full", {
+      className={cx("w-full shrink-0", {
         "max-md:hidden md:invisible": activeTab !== tab,
         "order-first": activeTab === tab,
       })}

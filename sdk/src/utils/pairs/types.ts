@@ -1,0 +1,20 @@
+export type Pair = {
+  ticker_id: string;
+  base_currency: string;
+  target_currency: string;
+  base_volume: number;
+  target_volume: number;
+  product_type: string;
+  last_price: number;
+  high?: number;
+  low?: number;
+  open_interest?: number;
+  long_open_interest?: number;
+  short_open_interest?: number;
+  funding_rate?: number;
+  next_funding_rate?: number;
+  next_funding_rate_timestamp?: number;
+  volume_usd?: number;
+  pool_id: string;
+  liquidity_in_usd?: number;
+};

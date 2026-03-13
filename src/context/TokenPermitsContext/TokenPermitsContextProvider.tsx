@@ -1,4 +1,4 @@
-import React, { createContext, useCallback, useContext, useMemo } from "react";
+import React, { createContext, useCallback, useContext, useEffect, useMemo } from "react";
 
 import { getTokenPermitsKey, PERMITS_DISABLED_KEY } from "config/localStorage";
 import { createAndSignTokenPermit, getIsPermitExpired, validateTokenPermitSignature } from "domain/tokens/permitUtils";
@@ -6,7 +6,10 @@ import { useChainId } from "lib/chains";
 import { getInvalidPermitSignatureError } from "lib/errors/customErrors";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useWallet from "lib/wallets/useWallet";
+import { nowInSeconds } from "sdk/utils/time";
 import { SignedTokenPermit } from "sdk/utils/tokens/types";
+
+const PERMIT_EXPIRY_BUFFER_MS = 500;
 
 export type TokenPermitsState = {
   tokenPermits: SignedTokenPermit[];
@@ -92,15 +95,61 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
     setTokenPermits([]);
   }, [setTokenPermits]);
 
+  useEffect(
+    function revalidatePermits() {
+      if (!tokenPermits?.length) return;
+
+      const now = nowInSeconds();
+      const valid = tokenPermits.filter((permit) => !getIsPermitExpired(permit));
+
+      if (valid.length !== tokenPermits.length) {
+        setTokenPermits(valid);
+        return;
+      }
+
+      const nearestDeadline = Math.min(...tokenPermits.map((p) => Number(p.deadline)));
+      const msUntilExpiry = (nearestDeadline - now + 1) * 1000 + PERMIT_EXPIRY_BUFFER_MS;
+
+      const timeoutId = setTimeout(
+        () => {
+          setTokenPermits(tokenPermits.filter((p) => !getIsPermitExpired(p)));
+        },
+        Math.max(0, msUntilExpiry)
+      );
+
+      const onVisibilityChange = () => {
+        if (document.visibilityState === "visible") {
+          const stillValid = tokenPermits.filter((permit) => !getIsPermitExpired(permit));
+          if (stillValid.length !== tokenPermits.length) {
+            setTokenPermits(stillValid);
+          }
+        }
+      };
+
+      document.addEventListener("visibilitychange", onVisibilityChange);
+
+      return () => {
+        clearTimeout(timeoutId);
+        document.removeEventListener("visibilitychange", onVisibilityChange);
+      };
+    },
+    [tokenPermits, setTokenPermits]
+  );
+
+  const activeTokenPermits = useMemo(
+    () => (tokenPermits ?? []).filter((permit) => !getIsPermitExpired(permit)),
+    [tokenPermits]
+  );
+
   const state = useMemo(
     () => ({
       isPermitsDisabled: Boolean(isPermitsDisabled),
       setIsPermitsDisabled,
-      tokenPermits: tokenPermits?.filter((permit) => !getIsPermitExpired(permit)) ?? [],
+      tokenPermits: activeTokenPermits,
       addTokenPermit,
       resetTokenPermits,
     }),
-    [isPermitsDisabled, setIsPermitsDisabled, tokenPermits, addTokenPermit, resetTokenPermits]
+    [isPermitsDisabled, setIsPermitsDisabled, activeTokenPermits, addTokenPermit, resetTokenPermits]
   );
 
   return <TokenPermitsContext.Provider value={state}>{children}</TokenPermitsContext.Provider>;

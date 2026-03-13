@@ -1,5 +1,5 @@
 import { estimateArbitraryRelayFee, getRawBaseRelayerParams } from "domain/multichain/arbitraryRelayParams";
-import { ExpressTransactionBuilder } from "domain/synthetics/express";
+import { ExpressTransactionBuilder, getRelayerFeeParams, GlobalExpressParams } from "domain/synthetics/express";
 import {
   RawCreateDepositParams,
   RawCreateGlvDepositParams,
@@ -14,16 +14,17 @@ import { estimatePureLpActionExecutionFee } from "domain/synthetics/markets/feeE
 import { convertToUsd } from "domain/tokens";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
+import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { buildDepositTransferRequests } from "../buildDepositTransferRequests";
 import { buildWithdrawalTransferRequests } from "../buildWithdrawalTransferRequests";
-import { CalculateTechnicalFeesParams, TechnicalGmFees } from "./technical-fees-types";
 import { Operation } from "../types";
+import { CalculateTechnicalFeesParams, TechnicalGmFees } from "./technical-fees-types";
 
 type GmxAccountFeesParams = CalculateTechnicalFeesParams &
   Required<ReturnType<typeof getRawBaseRelayerParams>> & {
-    globalExpressParams: NonNullable<CalculateTechnicalFeesParams["globalExpressParams"]>;
+    globalExpressParams: NonNullable<GlobalExpressParams>;
   };
 
 async function calculateGmxAccountDepositTechnicalFees(
@@ -117,6 +118,7 @@ async function calculateGmxAccountDepositTechnicalFees(
   };
 
   const relayFee = await estimateArbitraryRelayFee({
+    globalExpressParams: params.globalExpressParams,
     account: params.rawParams.addresses.receiver,
     chainId: params.chainId,
     client: getPublicClientWithRpc(params.chainId),
@@ -128,15 +130,32 @@ async function calculateGmxAccountDepositTechnicalFees(
       castedParams.addresses.initialLongToken,
       castedParams.addresses.initialShortToken,
     ],
-    gasPrice: params.gasPrice,
-    gelatoRelayFeeMultiplierFactor: params.gasLimits.gelatoRelayFeeMultiplierFactor,
   });
 
-  const relayFeeUsd = convertToUsd(
-    relayFee,
-    params.globalExpressParams.relayerFeeToken.decimals,
-    params.globalExpressParams.relayerFeeToken.prices.maxPrice
-  )!;
+  const relayFeeParams = getRelayerFeeParams({
+    chainId: params.chainId,
+    account: params.rawParams.addresses.receiver,
+    gasPaymentToken: params.globalExpressParams.gasPaymentToken,
+    relayerFeeToken: params.globalExpressParams.relayerFeeToken,
+    relayerFeeAmount: relayFee,
+    totalRelayerFeeTokenAmount: relayFee + executionFee.feeTokenAmount,
+    gasPaymentTokenAsCollateralAmount: 0n,
+    transactionExternalCalls: getEmptyExternalCallsPayload(),
+    feeExternalSwapQuote: undefined,
+    findFeeSwapPath: params.globalExpressParams.findFeeSwapPath,
+  });
+
+  if (!relayFeeParams) {
+    return undefined;
+  }
+
+  const gasPaymentTokenAmount = relayFeeParams.gasPaymentParams.gasPaymentTokenAmount;
+  const relayFeeUsd =
+    convertToUsd(
+      gasPaymentTokenAmount,
+      params.globalExpressParams.gasPaymentToken.decimals,
+      params.globalExpressParams.gasPaymentToken.prices.maxPrice
+    )! - executionFee.feeUsd;
 
   return {
     kind: "gmxAccount",
@@ -238,6 +257,7 @@ async function calculateGmxAccountWithdrawalTechnicalFees(
     : (params.rawParams as RawCreateWithdrawalParams).addresses.market;
 
   const relayFee = await estimateArbitraryRelayFee({
+    globalExpressParams: params.globalExpressParams,
     account: params.rawParams.addresses.receiver,
     chainId: params.chainId,
     client: getPublicClientWithRpc(params.chainId),
@@ -246,8 +266,6 @@ async function calculateGmxAccountWithdrawalTechnicalFees(
     gasPaymentParams: params.baseRelayFeeSwapParams.gasPaymentParams,
     subaccount: undefined,
     additionalBalanceOverrideTokens: [glvOrMarketTokenAddress],
-    gasPrice: params.gasPrice,
-    gelatoRelayFeeMultiplierFactor: params.gasLimits.gelatoRelayFeeMultiplierFactor,
   });
 
   const relayFeeUsd = convertToUsd(

@@ -88,7 +88,7 @@ export default function ReferralTerms() {
               <p className="text-terms-body mb-24">
                 The Rebates and Discounts percentages for the default tier Tier 1, and instructions to upgrade to Tier 2
                 and Tier 3, are contained in{" "}
-                <a href="https://docs.gmx.io/docs/referrals">https://docs.gmx.io/docs/referrals.</a>
+                <a href="https://docs.gmx.io/docs/referrals/">https://docs.gmx.io/docs/referrals/.</a>
               </p>
             </div>
             <div>

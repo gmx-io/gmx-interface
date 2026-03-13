@@ -8,11 +8,9 @@ export function get1InchSwapUrlFromAddresses(chainId: number, fromAddress?: stri
 }
 
 export const DOCS_LINKS = {
-  multiplierPoints: "https://docs.gmx.io/docs/tokenomics/rewards/#multiplier-points",
-  fundingFees: "https://docs.gmx.io/docs/trading/#funding-fees",
-  adaptiveFunding: "https://docs.gmx.io/docs/trading/#adaptive-funding",
-  borrowingFees: "https://docs.gmx.io/docs/trading/#borrowing-fees",
-  priceImpact: "https://docs.gmx.io/docs/trading/#price-impact-and-price-impact-rebates",
+  fundingFees: "https://docs.gmx.io/docs/trading/fees/#funding-fees",
+  borrowingFees: "https://docs.gmx.io/docs/trading/fees/#borrow-fees",
+  priceImpact: "https://docs.gmx.io/docs/trading/fees/#price-impact-and-price-impact-rebates",
 };
 
 const ARBITRUM_INCENTIVES_V2_URL =
