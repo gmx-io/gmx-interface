@@ -1,5 +1,4 @@
 import { t, Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { type TransactionResponse } from "ethers";
 import { useEffect, useRef, useState } from "react";
@@ -23,7 +22,6 @@ import {
 } from "domain/multichain/useMultichainReferralQuote";
 import { useMultichainStargateApproval } from "domain/multichain/useMultichainStargateApproval";
 import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
-import type { ReferralCodeStats } from "domain/referrals/types";
 import { signRegisterCode } from "domain/synthetics/express/expressOrderUtils";
 import { ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { useChainId } from "lib/chains";
@@ -31,7 +29,7 @@ import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
 import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 import { encodeReferralCode } from "sdk/utils/referrals";
@@ -39,108 +37,21 @@ import { encodeReferralCode } from "sdk/utils/referrals";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
+import { useRecentReferralCodes } from "components/Referrals/shared/hooks/useRecentReferralCodes";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 
-import {
-  getCodeError,
-  getReferralCodeTakenStatus,
-  getSampleReferrarStat,
-  REFERRAL_CODE_REGEX,
-} from "./referralsHelper";
-
-type AddAffiliateCodeProps = {
-  handleCreateReferralCode: (code: string) => Promise<unknown>;
-  active: boolean;
-  setRecentlyAddedCodes: (code: ReferralCodeStats[]) => void;
-  recentlyAddedCodes: ReferralCodeStats[] | undefined;
-  initialReferralCode: string | undefined;
-};
-
-function AddAffiliateCode({
-  handleCreateReferralCode,
-  active,
-  setRecentlyAddedCodes,
-  recentlyAddedCodes,
-  initialReferralCode,
-}: AddAffiliateCodeProps) {
-  const { openConnectModal } = useConnectModal();
-
-  return (
-    <div className="referral-card section-center">
-      <h2 className="title">
-        <Trans>Generate referral code</Trans>
-      </h2>
-      <p className="sub-title">
-        <Trans>
-          You don't have a referral code to share. <br /> Create one now and start earning rebates!
-        </Trans>
-      </p>
-      <div className="card-action">
-        {active ? (
-          <Form
-            recentlyAddedCodes={recentlyAddedCodes}
-            setRecentlyAddedCodes={setRecentlyAddedCodes}
-            initialReferralCode={initialReferralCode}
-            handleCreateReferralCode={handleCreateReferralCode}
-          />
-        ) : (
-          <Button variant="primary-action" className="w-full" onClick={openConnectModal}>
-            <Trans>Connect wallet</Trans>
-          </Button>
-        )}
-      </div>
-    </div>
-  );
-}
-
-function Form({
-  recentlyAddedCodes,
-  setRecentlyAddedCodes,
-  initialReferralCode,
-  handleCreateReferralCode,
-}: {
-  recentlyAddedCodes: ReferralCodeStats[] | undefined;
-  setRecentlyAddedCodes: (code: ReferralCodeStats[]) => void;
-  initialReferralCode: string | undefined;
-  handleCreateReferralCode: (code: string) => Promise<unknown>;
-}) {
-  const { srcChainId } = useChainId();
-  const isMultichain = srcChainId !== undefined;
-
-  if (isMultichain) {
-    return (
-      <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="referrals">
-        <AffiliateCodeFormMultichain
-          recentlyAddedCodes={recentlyAddedCodes}
-          setRecentlyAddedCodes={setRecentlyAddedCodes}
-          initialReferralCode={initialReferralCode}
-        />
-      </SyntheticsStateContextProvider>
-    );
-  }
-  return (
-    <AffiliateCodeForm
-      handleCreateReferralCode={handleCreateReferralCode}
-      recentlyAddedCodes={recentlyAddedCodes}
-      setRecentlyAddedCodes={setRecentlyAddedCodes}
-      initialReferralCode={initialReferralCode}
-    />
-  );
-}
+import { getCodeError, getReferralCodeTakenStatus, REFERRAL_CODE_REGEX } from "../../shared/utils/referralsHelper";
 
 function AffiliateCodeFormMultichain({
-  recentlyAddedCodes,
-  setRecentlyAddedCodes,
   callAfterSuccess,
   initialReferralCode = "",
 }: {
-  recentlyAddedCodes: ReferralCodeStats[] | undefined;
-  setRecentlyAddedCodes: (code: ReferralCodeStats[]) => void;
-  callAfterSuccess?: () => void;
+  callAfterSuccess?: (code: string) => void;
   initialReferralCode?: string;
 }) {
   const { chainId, srcChainId } = useChainId();
   const { account, signer } = useWallet();
+  const { addRecentCode } = useRecentReferralCodes();
   const [referralCode, setReferralCode] = useState(initialReferralCode?.trim() ?? "");
   const [error, setError] = useState("");
   const inputRef = useRef<HTMLInputElement>(null);
@@ -189,7 +100,7 @@ function AffiliateCodeFormMultichain({
 
     try {
       const trimmedCode = referralCode.trim();
-      const { takenStatus, info: takenInfo } = await getReferralCodeTakenStatus(account, trimmedCode, chainId);
+      const { takenStatus } = await getReferralCodeTakenStatus(account, trimmedCode, chainId);
 
       if (takenStatus === "all" || takenStatus === "current") {
         setReferralCodeCheckStatus("taken");
@@ -254,14 +165,11 @@ function AffiliateCodeFormMultichain({
       const receipt = await txnResult.wait();
 
       if (receipt.status === "success") {
-        if (recentlyAddedCodes) {
-          recentlyAddedCodes.push(getSampleReferrarStat({ code: trimmedCode, takenInfo, account }));
-          setRecentlyAddedCodes(recentlyAddedCodes);
-        }
+        addRecentCode(trimmedCode);
         setReferralCode("");
 
         if (callAfterSuccess) {
-          callAfterSuccess();
+          callAfterSuccess(trimmedCode);
         }
 
         helperToast.success(
@@ -292,7 +200,7 @@ function AffiliateCodeFormMultichain({
 
   if (hasOutdatedUi) {
     buttonState = {
-      text: t`Page outdated. Refresh`,
+      text: getPageOutdatedError(),
       disabled: true,
     };
   } else if (isApproving) {
@@ -418,7 +326,7 @@ function AffiliateCodeFormMultichain({
           setError(getCodeError(value));
         }}
       />
-      {error && <p className="AffiliateCode-error">{error}</p>}
+      {error && <p className="text-body-small m-0 pb-24 pt-8 text-[var(--error-red)]">{error}</p>}
       {srcChainId && (
         <SyntheticsInfoRow
           label={t`Network fee`}
@@ -465,17 +373,13 @@ function AffiliateCodeFormMultichain({
   );
 }
 
-export function AffiliateCodeForm({
+function AffiliateCodeForm({
   handleCreateReferralCode,
-  recentlyAddedCodes,
-  setRecentlyAddedCodes,
   callAfterSuccess,
   initialReferralCode = "",
 }: {
   handleCreateReferralCode: (code: string) => Promise<unknown>;
-  recentlyAddedCodes: ReferralCodeStats[] | undefined;
-  setRecentlyAddedCodes: (code: ReferralCodeStats[]) => void;
-  callAfterSuccess?: () => void;
+  callAfterSuccess?: (code: string) => void;
   initialReferralCode?: string;
 }) {
   const [referralCode, setReferralCode] = useState(initialReferralCode?.trim() ?? "");
@@ -487,6 +391,7 @@ export function AffiliateCodeForm({
   const debouncedReferralCode = useDebounce(referralCode, 300);
   const { chainId } = useChainId();
   const { address: account } = useAccount();
+  const { addRecentCode } = useRecentReferralCodes();
   const hasOutdatedUi = useHasOutdatedUi();
 
   useEffect(() => {
@@ -531,11 +436,7 @@ export function AffiliateCodeForm({
     setIsProcessing(true);
 
     const trimmedCode = referralCode.trim();
-    const {
-      takenStatus,
-      info: takenInfo,
-      failedChains,
-    } = await getReferralCodeTakenStatus(account, trimmedCode, chainId);
+    const { takenStatus, failedChains } = await getReferralCodeTakenStatus(account, trimmedCode, chainId);
     setRpcFailedChains(failedChains);
 
     if (["all", "current"].includes(takenStatus)) {
@@ -547,16 +448,13 @@ export function AffiliateCodeForm({
       const tx = (await handleCreateReferralCode(trimmedCode)) as TransactionResponse;
 
       if (callAfterSuccess) {
-        callAfterSuccess();
+        callAfterSuccess(trimmedCode);
       }
 
       const receipt = await tx.wait();
 
       if (receipt?.status === 1) {
-        if (recentlyAddedCodes) {
-          recentlyAddedCodes.push(getSampleReferrarStat({ code: trimmedCode, takenInfo, account }));
-          setRecentlyAddedCodes(recentlyAddedCodes);
-        }
+        addRecentCode(trimmedCode);
         helperToast.success(t`Referral code created`);
         setReferralCode("");
       }
@@ -580,7 +478,7 @@ export function AffiliateCodeForm({
 
   if (hasOutdatedUi) {
     buttonState = {
-      text: t`Page outdated. Refresh`,
+      text: getPageOutdatedError(),
       disabled: true,
     };
   } else if (!debouncedReferralCode) {
@@ -631,7 +529,7 @@ export function AffiliateCodeForm({
           setError(getCodeError(value));
         }}
       />
-      {error && <p className="AffiliateCode-error">{error}</p>}
+      {error && <p className="text-body-small m-0 pb-24 pt-8 text-[var(--error-red)]">{error}</p>}
       {rpcFailedChains.length > 0 && referralCodeCheckStatus !== "taken" && (
         <AlertInfoCard type="warning" className="mb-15 text-left" hideClose>
           {rpcFailedChains.length === 1 ? (
@@ -656,15 +554,11 @@ export function AffiliateCodeForm({
 
 export function AffiliateCodeFormContainer({
   handleCreateReferralCode,
-  recentlyAddedCodes,
-  setRecentlyAddedCodes,
   callAfterSuccess,
   initialReferralCode = "",
 }: {
   handleCreateReferralCode: (code: string) => Promise<unknown>;
-  recentlyAddedCodes: ReferralCodeStats[] | undefined;
-  setRecentlyAddedCodes: (code: ReferralCodeStats[]) => void;
-  callAfterSuccess?: () => void;
+  callAfterSuccess?: (code: string) => void;
   initialReferralCode?: string;
 }) {
   const { srcChainId } = useChainId();
@@ -672,12 +566,7 @@ export function AffiliateCodeFormContainer({
   if (srcChainId !== undefined) {
     return (
       <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="referrals">
-        <AffiliateCodeFormMultichain
-          recentlyAddedCodes={recentlyAddedCodes}
-          setRecentlyAddedCodes={setRecentlyAddedCodes}
-          callAfterSuccess={callAfterSuccess}
-          initialReferralCode={initialReferralCode}
-        />
+        <AffiliateCodeFormMultichain callAfterSuccess={callAfterSuccess} initialReferralCode={initialReferralCode} />
       </SyntheticsStateContextProvider>
     );
   }
@@ -685,12 +574,8 @@ export function AffiliateCodeFormContainer({
   return (
     <AffiliateCodeForm
       handleCreateReferralCode={handleCreateReferralCode}
-      recentlyAddedCodes={recentlyAddedCodes}
-      setRecentlyAddedCodes={setRecentlyAddedCodes}
       callAfterSuccess={callAfterSuccess}
       initialReferralCode={initialReferralCode}
     />
   );
 }
-
-export default AddAffiliateCode;

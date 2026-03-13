@@ -27,7 +27,7 @@ msgstr "滑點超出限制"
 msgid "Wallet not connected"
 msgstr "錢包未連接"
 
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "No rewards selected"
 msgstr "未選擇獎勵"
 
@@ -52,8 +52,7 @@ msgstr "非常不可能"
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "或透過 <0>chainlist.org</0> 更新您錢包的 RPC"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "REFERRAL CODE"
 msgstr "推薦代碼"
 
@@ -143,6 +142,10 @@ msgstr "BonsaiDAO"
 msgid "Approval signed"
 msgstr "授權已簽署"
 
+#: src/components/Referrals/affiliates/faq.tsx
+msgid "Do I need to create codes on each network?"
+msgstr "我需要在每個網路上都建立代碼嗎？"
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Multichain</0><1>MegaETH support</1><2>Just-in-time liquidity</2>"
 msgstr "<0>多鏈</0><1>MegaETH 支援</1><2>即時流動性</2>"
@@ -189,8 +192,7 @@ msgid "Price impact from closing. Positive values benefit you. <0>Read more</0>.
 msgstr "平倉時的價格影響。正值對您有利。<0>了解更多</0>。"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Type"
@@ -220,6 +222,10 @@ msgstr "（已返還）"
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Show rPnL amounts"
 msgstr "顯示已實現盈虧金額"
+
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Show other assets ({0})"
+msgstr "顯示其他資產（{0}）"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max factor for liquidations"
@@ -257,13 +263,6 @@ msgstr "總收益"
 msgid "May take a few minutes"
 msgstr "可能需要幾分鐘"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-msgid "V2 Arbitrum"
-msgstr "V2 Arbitrum"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Other"
 msgstr "其他"
@@ -290,10 +289,6 @@ msgstr "試用 Express Trading"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
 msgstr "倉位虛擬庫存"
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "Dynamically allocates liquidity to highest-utilized markets, maximizing capital efficiency and yield"
-msgstr "動態將流動性分配至使用率最高的市場，最大化資金效率與收益"
 
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
@@ -360,10 +355,23 @@ msgstr "目標"
 msgid "Can I sell my GLV, and where?"
 msgstr "我可以出售 GLV 嗎？在哪裡出售？"
 
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+msgid "Go to Affiliate Dashboard"
+msgstr "前往聯盟儀表板"
+
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 #: src/components/Earn/Discovery/EarnFaq.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/ReferralsAffiliatesTab.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+#: src/components/Referrals/traders/faq.tsx
+#: src/components/Referrals/traders/ReferralsTradersTab.tsx
 msgid "FAQ"
 msgstr "常見問題"
+
+#: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
+msgid "Approve {depositTokenSymbol}"
+msgstr "授權 {depositTokenSymbol}"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit details"
@@ -405,6 +413,10 @@ msgstr "兌換介面費用"
 msgid "No TP orders"
 msgstr "無 TP 訂單"
 
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+msgid "Go to Trader Dashboard"
+msgstr "前往交易者儀表板"
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "position size"
 msgstr "倉位規模"
@@ -417,6 +429,10 @@ msgstr "確認提取"
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Settled funding fees"
 msgstr "已結算資金費用"
+
+#: src/components/Referrals/affiliates/faq.tsx
+msgid "Rebates are paid in the collateral tokens used by your referrals. For example, if a referral trades with USDC collateral, your rebate portion will be in USDC."
+msgstr "返傭以您推薦人使用的抵押品代幣支付。例如，若推薦人使用 USDC 抵押品交易，您的返傭部分將以 USDC 支付。"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Returned collateral"
@@ -444,7 +460,7 @@ msgstr "最佳兌換路徑"
 msgid "@username"
 msgstr "@username"
 
-#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Failed to claim affiliate rewards"
 msgstr "領取聯盟獎勵失敗"
 
@@ -469,10 +485,6 @@ msgstr "未實現基礎 PnL"
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "GM"
 msgstr "GM"
-
-#: src/components/Referrals/JoinReferralCode.tsx
-msgid "Sending referral code transaction"
-msgstr "正在發送推薦碼交易"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding exponent"
@@ -565,10 +577,6 @@ msgstr "限價低於標記價格"
 msgid "Long OI"
 msgstr "做多 OI"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "Traders referred on Avalanche"
-msgstr "在 Avalanche 上推薦的交易者"
-
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "sell"
 msgstr "賣出"
@@ -600,6 +608,15 @@ msgstr "更多機會"
 msgid "Positions"
 msgstr "倉位"
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "{0}d"
+msgstr "{0} 天"
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Incentives, airdrops, and prizes will appear here"
 msgstr "獎勵、空投和獎品將顯示在這裡"
@@ -620,11 +637,6 @@ msgstr "展開"
 msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution </2><3> Low size caps, but fun to do some degen gambling with </3>"
 msgstr "<0>第一次試了 <1>@GMX_IO</1>。</0><2> 體驗相當驚艷——無滑點、執行快速 </2><3> 規模上限較低，但拿來做些 degen 投機還蠻有趣的 </3>"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-msgid "V1 airdrop"
-msgstr "V1 空投"
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -632,6 +644,10 @@ msgstr "V1 空投"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order execution price"
 msgstr "訂單成交價格"
+
+#: src/components/Referrals/traders/faq.tsx
+msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
+msgstr "是的。若您同時在 Arbitrum 和 Avalanche 上交易，請分別在每個網路上申請推薦碼。"
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in any {0}/USD pool"
@@ -757,6 +773,10 @@ msgstr "從其他網路轉帳 {nativeTokenSymbol} 至 {chainName}"
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Stats"
 msgstr "統計"
+
+#: src/components/Referrals/affiliates/faq.tsx
+msgid "Can I create multiple referral codes?"
+msgstr "我可以建立多個推薦碼嗎？"
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Unknown error"
@@ -901,6 +921,10 @@ msgstr "在 {chainName} 上沒有購買 {nativeTokenSymbol} 的選項"
 msgid "Fee values calculated when earned. Excludes incentives."
 msgstr "費用數值在賺取時計算。不包含獎勵。"
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+msgid "Enter the referral code and save up to 10% on fees"
+msgstr "輸入推薦碼，最高可節省 10% 手續費"
+
 #: src/pages/Pools/Pools.tsx
 msgid "TVL in vaults and pools"
 msgstr "金庫與池中的 TVL"
@@ -979,8 +1003,8 @@ msgid "{0} <0/><1> to </1>{1} <2/>"
 msgstr "{0} <0/><1> 至 </1>{1} <2/>"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on those networks."
 msgstr "無法在 {0} 上驗證代碼是否可用。您仍然可以建立代碼，但該代碼在這些網路上可能已被使用。"
 
@@ -1014,7 +1038,7 @@ msgstr "年化買入壓力（BB&D）："
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -1022,7 +1046,7 @@ msgstr "年化買入壓力（BB&D）："
 msgid "MARKET"
 msgstr "市場"
 
-#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Active referral code"
 msgstr "使用中的推薦碼"
 
@@ -1034,6 +1058,10 @@ msgstr "查看明細"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Borrowing factor short"
 msgstr "做空借貸因子"
+
+#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
+msgid "Referrals esGMX"
+msgstr "推薦 esGMX"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (positive PI)"
@@ -1069,6 +1097,10 @@ msgstr "合作夥伴與整合"
 msgid "Insufficient gas balance. Deposit more ETH."
 msgstr "Gas 餘額不足。請存入更多 ETH。"
 
+#: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
+msgid "Tiers"
+msgstr "等級"
+
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Creating order"
 msgstr ""
@@ -1080,6 +1112,10 @@ msgstr "兌換手續費因子（負價格影響）"
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claimable balance"
 msgstr "可領取餘額"
+
+#: src/components/Referrals/affiliates/faq.tsx
+msgid "Yes! You can create as many codes as you want. This is useful for tracking different campaigns, communities, or platforms separately."
+msgstr "可以！您想建立多少代碼都可以。這有助於分別追蹤不同的活動、社群或平台。"
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "xxxx-xxxx-xxxx"
@@ -1121,10 +1157,6 @@ msgstr "<0>切換至 TBTC-TBTC 池</0>以獲得可能更低的價格影響"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Transaction:"
 msgstr "交易："
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "Auto-compounds yield (no manual claiming needed, unlike GLP)"
-msgstr "自動複利收益（無需手動領取，不同於 GLP）"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake {tokenSymbol}"
@@ -1169,8 +1201,8 @@ msgstr "Small"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "Code already taken"
 msgstr "代碼已被使用"
 
@@ -1201,14 +1233,16 @@ msgstr ""
 msgid "Pay"
 msgstr "支付"
 
+#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
+msgid "Rebate Claim"
+msgstr "返傭領取"
+
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "Creating referral code..."
 msgstr "正在建立推薦碼..."
 
 #: src/components/Claims/ClaimsHistory.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -1273,8 +1307,7 @@ msgstr "正在賣出 {symbol}..."
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum.<0/><1/>Slippage differs from price impact, which is based on open interest imbalances."
 msgstr "因波動性導致的預期成交價格與實際成交價格之間的差異。若滑點超出您的最大設定值，訂單將不會執行。<0/><1/>滑點不同於價格影響，後者是基於未平倉量的不平衡。"
 
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Adding..."
 msgstr "正在新增..."
 
@@ -1323,7 +1356,7 @@ msgstr "購買 GM：{0}"
 msgid "TVL (Supply)"
 msgstr "TVL（供應量）"
 
-#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "May take a few minutes to reflect. Check back later"
 msgstr "可能需要幾分鐘才會顯示。請稍後再查看"
 
@@ -1396,9 +1429,15 @@ msgstr "協議"
 msgid "High network fees"
 msgstr "網路費用偏高"
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Overview"
 msgstr "概覽"
+
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Fetching swap route..."
+msgstr "正在取得兌換路徑..."
 
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
@@ -1444,6 +1483,14 @@ msgstr "發送許可"
 msgid "V1 interface"
 msgstr "V1 介面"
 
+#: src/components/Referrals/traders/faq.tsx
+msgid "How do I know if a code is good?"
+msgstr "我如何知道代碼是否有效？"
+
+#: src/components/Referrals/traders/faq.tsx
+msgid "Your discount is applied automatically when you execute a trade. You'll see the referral discount in your fee tooltip before opening a trade."
+msgstr "當您執行交易時，折扣會自動套用。開倉前您會在費用提示中看到推薦折扣。"
+
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "CSV"
@@ -1452,6 +1499,10 @@ msgstr "CSV"
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading is disabled. Time limit expired."
 msgstr "One-Click Trading 已停用。時間限制已到期。"
+
+#: src/components/Referrals/traders/faq.tsx
+msgid "How is my fee discount applied?"
+msgstr "我的手續費折扣如何套用？"
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Session generation failed"
@@ -1499,6 +1550,10 @@ msgstr "目標網路"
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Deposit to GMX Account"
 msgstr "存入至 GMX Account"
+
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+msgid "Your referral code {createdReferralCode} is now active. Share it with friends or your community."
+msgstr "您的推薦碼 {createdReferralCode} 現已啟用。請分享給朋友或您的社群。"
 
 #: src/domain/synthetics/markets/createDepositTxn.ts
 #: src/domain/synthetics/markets/createGlvDepositTxn.ts
@@ -1607,11 +1662,8 @@ msgid "Affiliate address:"
 msgstr "推廣夥伴地址："
 
 #: src/components/MarketStats/MarketGraphs.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -1651,6 +1703,7 @@ msgstr "探索 GMX 提醒"
 msgid "Failed Limit Swap"
 msgstr "Limit Swap 失敗"
 
+#: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Failed"
@@ -1660,6 +1713,10 @@ msgstr "失敗"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "No fee"
 msgstr "無手續費"
+
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+msgid "Actions"
+msgstr "操作"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Swap liquidity may be insufficient when order triggers"
@@ -1751,6 +1808,10 @@ msgstr "完成帳戶轉移"
 msgid "Icons & images"
 msgstr "圖示與圖片"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Discounts"
+msgstr "折扣"
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Borrow fee / day"
 msgstr "借貸費用 / 日"
@@ -1773,8 +1834,13 @@ msgid "Key"
 msgstr "金鑰"
 
 #: src/pages/Earn/EarnPageLayout.tsx
+#: src/pages/Referrals/Referrals.tsx
 msgid "Distributions"
 msgstr "分配"
+
+#: src/components/Referrals/affiliates/faq.tsx
+msgid "Your code is immediately active! Share it with traders and you'll earn rebates when they execute trades."
+msgstr "您的代碼立即生效！分享給交易者，當他們執行交易時您即可獲得返傭。"
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Max profit limit reached. Current: {pnlToPoolFactorText}, max: {maxPnlFactorText}"
@@ -1787,6 +1853,10 @@ msgstr "提取 {glvOrGm}"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Receive voting power and participate in governance"
 msgstr "獲得投票權並參與治理"
+
+#: src/components/Referrals/affiliates/faq.tsx
+msgid "You'll get a shareable link like: {PRODUCTION_HOST}/#/trade/?ref=YOURCODE. Share on social media, in your content, or directly with friends."
+msgstr "您將獲得可分享連結，例如：{PRODUCTION_HOST}/#/trade/?ref=YOURCODE。可在社群媒體、您的內容中分享，或直接分享給朋友。"
 
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "RECEIVE"
@@ -1823,6 +1893,10 @@ msgstr "去中心化交易協議"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Symbiosis"
 msgstr "Symbiosis"
+
+#: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
+msgid "How it works"
+msgstr "運作方式"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Sellable cap for pool GM: {0} [{1}] reached, as tokens are reserved by traders. Choose a different pool, reduce the sell size, or split your withdrawal from multiple pools."
@@ -1898,6 +1972,7 @@ msgstr "GLP 補償"
 msgid "Shift GM"
 msgstr "轉移 GM"
 
+#: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Timestamp"
 msgstr "時間戳"
@@ -2038,13 +2113,6 @@ msgstr "預設允許滑點"
 msgid "Max network fee buffer"
 msgstr "最大網路費用緩衝"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-msgid "V2 Avalanche Fuji"
-msgstr "V2 Avalanche Fuji"
-
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Shift order cancelled"
 msgstr "轉移訂單已取消"
@@ -2052,6 +2120,10 @@ msgstr "轉移訂單已取消"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Secure & permissionless"
 msgstr "安全且無需許可"
+
+#: src/pages/Referrals/Referrals.tsx
+msgid "Register an affiliate code to access distributions"
+msgstr ""
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
@@ -2065,13 +2137,6 @@ msgstr "可交易資產"
 #: src/components/TradeHistory/keys.ts
 msgid "Failed withdraw"
 msgstr "提取失敗"
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-msgid "V2 Avalanche"
-msgstr "V2 Avalanche"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Decrease"
@@ -2139,7 +2204,7 @@ msgstr "最大未平倉量 {directionLabel}"
 msgid "{ordersText} cancellation failed"
 msgstr "{ordersText} 取消失敗"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Tier {0}: {currentRebatePercentage}% rebate"
 msgstr "等級 {0}：{currentRebatePercentage}% 回饋"
 
@@ -2149,6 +2214,10 @@ msgstr "等級 {0}：{currentRebatePercentage}% 回饋"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
 msgstr "未找到兌換路徑"
+
+#: src/components/Referrals/traders/faq.tsx
+msgid "Can I change my referral code?"
+msgstr "我可以更換推薦碼嗎？"
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "MARKETS"
@@ -2230,10 +2299,6 @@ msgstr "帳戶"
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Not enough data available yet"
 msgstr "目前尚無足夠的資料"
-
-#: src/components/Referrals/TradersStats.tsx
-msgid "Your discount: {currentTierDiscount}% off trading fees."
-msgstr "您的折扣：交易手續費減免 {currentTierDiscount}%。"
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Position exceeds max allowed leverage. <0>Read more</0>."
@@ -2322,7 +2387,7 @@ msgstr "無可存入的資產"
 msgid "Set Short Stop Loss @ {0}"
 msgstr ""
 
-#: src/components/Referrals/ReferralCodeWarnings.tsx
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
 msgid "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
 msgstr "推薦碼尚未在 {nonTakenNetworkNames} 上註冊。請切換網路以完成註冊並賺取返傭。"
 
@@ -2352,6 +2417,10 @@ msgstr "做多未平倉量儲備因子"
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Layer 2"
 msgstr "Layer 2"
+
+#: src/components/Referrals/traders/faq.tsx
+msgid "All valid codes give you at least a 5% discount. Premium affiliates (Tier 2/3) offer 10% discount. You'll see the exact discount percentage after the code has been applied."
+msgstr "所有有效代碼至少可享 5% 折扣。進階聯盟（等級 2/3）提供 10% 折扣。代碼套用後您將看到確切的折扣百分比。"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Allow {0} spending"
@@ -2454,10 +2523,6 @@ msgstr "設定最大槓桿"
 msgid "{0, plural, one {Cancel order} other {Cancel # orders}}"
 msgstr "{0, plural, one {取消訂單} other {取消 # 筆訂單}}"
 
-#: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
-msgid "Refresh page"
-msgstr "重新整理頁面"
-
 #: src/components/StatusNotification/GmStatusNotification.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
@@ -2501,10 +2566,9 @@ msgstr "GMX 技術公告"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Checking code..."
 msgstr "正在檢查代碼..."
 
@@ -2532,7 +2596,7 @@ msgstr "全域網路"
 msgid "Try Express"
 msgstr "試用 Express"
 
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/traders/joinCode/ReferralCodeFormMultichain.tsx
 msgid "Changes may take a few minutes to appear"
 msgstr "變更可能需要幾分鐘才會顯示"
 
@@ -2551,6 +2615,10 @@ msgstr "正在買入 {symbol}..."
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Show PnL amounts"
 msgstr "顯示 PnL 金額"
+
+#: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
+msgid "Transaction hash"
+msgstr "交易雜湊"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Est. time: ~5 min"
@@ -2660,6 +2728,10 @@ msgstr "未平倉位"
 msgid "Coin"
 msgstr "硬幣"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Discounts earned by this account as a trader."
+msgstr "此帳戶作為交易者所獲得的折扣。"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed. Your funds are safe in your GMX Account. Switch to settlement chain and go to the {indexName} pool to sell your {gmOrGlvLabel} tokens."
 msgstr "賣出 {gmOrGlvLabel} 失敗。您的資金安全地保存在 GMX Account 中。請切換至結算鏈，前往 {indexName} 池賣出您的 {gmOrGlvLabel} 代幣。"
@@ -2716,6 +2788,10 @@ msgstr "目前"
 msgid "Long positions"
 msgstr "做多倉位"
 
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+msgid "Share your code"
+msgstr "分享您的代碼"
+
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Buy fee"
 msgstr "買入手續費"
@@ -2753,6 +2829,10 @@ msgstr "無可用兌換路徑。<0>將 {0} 兌換為 STBTC</0> 以使用 {1} 作
 msgid "Data freshness"
 msgstr "資料新鮮度"
 
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+msgid "Done!"
+msgstr "完成！"
+
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High potential net price impact (capped at {formattedCap} for this market) may significantly affect your collateral. Consider reducing leverage. <0>Read more</0>."
 msgstr "高潛在淨價格影響（此市場上限為 {formattedCap}）可能會大幅影響您的抵押品。建議降低槓桿。<0>了解更多</0>。"
@@ -2760,6 +2840,10 @@ msgstr "高潛在淨價格影響（此市場上限為 {formattedCap}）可能會
 #: src/components/TradeHistory/keys.ts
 msgid "Update Take-Profit"
 msgstr "更新止盈"
+
+#: src/pages/Referrals/Referrals.tsx
+msgid "Get fee discounts and earn up to 20% commission through the GMX <0/> referral programs."
+msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Deposit from {sourceChainName} failed"
@@ -2773,7 +2857,8 @@ msgstr "複製地址"
 msgid "Projected yearly return vs. a Uniswap V2-style benchmark.<0/><1/>Note: Short timeframes may not reflect long-term performance.<2/><3/><4>View detailed stats on Dune</4>."
 msgstr "與 Uniswap V2 風格基準相比的預估年化回報。<0/><1/>注意：短期時間範圍可能無法反映長期績效。<2/><3/><4>在 Dune 上查看詳細數據</4>。"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Create referral code"
 msgstr "建立推薦碼"
 
@@ -2866,6 +2951,10 @@ msgstr "TP 價格低於標記價格"
 msgid "Receiver has not staked GMX tokens before"
 msgstr "接收者此前未質押過 GMX 代幣"
 
+#: src/components/Referrals/traders/faq.tsx
+msgid "Referral codes are shared by content creators and community members. You can find codes on Twitter, or from any GMX-related content on social media."
+msgstr "推薦碼由內容創作者和社群成員分享。您可以在 Twitter 或社群媒體上任何 GMX 相關內容中找到代碼。"
+
 #: src/components/MarketsList/MarketsList.tsx
 msgid "LIQUIDITY"
 msgstr "流動性"
@@ -2891,6 +2980,10 @@ msgstr "授權使用 {0}"
 msgid "Stake submitted"
 msgstr "質押已提交"
 
+#: src/components/Referrals/shared/charts/GmxBarChart.tsx
+msgid "Net"
+msgstr "淨額"
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr "{symbol} 餘額不足：可用 {availableFormatted}，需要 {requiredFormatted}"
@@ -2909,8 +3002,7 @@ msgstr "我們重視您的意見"
 msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
 msgstr "<0>存入</0>或<1>買入</1> {wrappedNativeTokenSymbol}。"
 
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Update"
@@ -3046,6 +3138,10 @@ msgstr "資金不足以支付訂單費用。剩餘：{remainingCostUsdText}"
 msgid "Tenderly settings"
 msgstr "Tenderly 設定"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Swap all rewards into one asset"
+msgstr "將所有獎勵兌換成單一資產"
+
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
 msgstr "加倉（市價）"
@@ -3093,7 +3189,7 @@ msgstr "最大分割數量：{MAX_TWAP_NUMBER_OF_PARTS}"
 msgid "<0>Set recommended impact: {0}</0>."
 msgstr "<0>設定建議影響值：{0}</0>。"
 
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Claiming affiliate rewards failed"
 msgstr "領取推薦獎勵失敗"
 
@@ -3188,8 +3284,6 @@ msgstr "您的 GMX Account 中 {wrappedNativeTokenSymbol} 不足以支付 Gas �
 msgid "GMX V1 Actions"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
@@ -3208,7 +3302,7 @@ msgstr "自動複投"
 msgid "Market graph"
 msgstr "市場圖表"
 
-#: src/components/Referrals/referralsHelper.ts
+#: src/components/Referrals/shared/utils/referralsHelper.ts
 msgid "Only letters, numbers, and underscores allowed"
 msgstr "僅允許字母、數字和底線"
 
@@ -3352,8 +3446,8 @@ msgid "Deposit in progress..."
 msgstr "存入進行中..."
 
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/TPSLModal/AddTPSLModal.tsx
 msgid "Creating..."
 msgstr "建立中..."
@@ -3394,6 +3488,10 @@ msgstr "<0>Solana 支援</0><1>Botanix 支援</1><2>GMX Express</2>"
 msgid "Funds are now in your GMX Account"
 msgstr "資金已存入您的 GMX Account"
 
+#: src/components/Referrals/traders/faq.tsx
+msgid "Why should I enter a referral code?"
+msgstr "為什麼我應該輸入推薦碼？"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient liquidity. Order will fill when liquidity is available."
 msgstr "流動性不足。當流動性可用時將執行訂單。"
@@ -3416,13 +3514,17 @@ msgstr "GLV 流動性不足"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Confirm claim"
 msgstr "確認領取"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet-only"
 msgstr "僅限錢包"
+
+#: src/components/PositionShare/PositionShareCard.tsx
+msgid "Used Referral Code"
+msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing approval..."
@@ -3451,6 +3553,10 @@ msgstr "觸發時此訂單的部分可能缺乏流動性"
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
 msgstr "為什麼 GMX 比其他永續合約平台更具成本效益？"
+
+#: src/components/Referrals/affiliates/faq.tsx
+msgid "How much can I earn as an affiliate?"
+msgstr "作為聯盟夥伴我可以賺多少？"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -3491,10 +3597,6 @@ msgstr "更新訂單失敗"
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net price impact / fees"
 msgstr "淨價格影響 / 費用"
-
-#: src/components/Referrals/TradersStats.tsx
-msgid "V2 discounts apply automatically and aren't shown here"
-msgstr "V2 折扣自動套用，不在此處顯示"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order canceled"
@@ -3538,7 +3640,7 @@ msgstr "{fromText} 至"
 msgid "Decreasing..."
 msgstr "減倉中..."
 
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Claim successful"
 msgstr "領取成功"
 
@@ -3577,6 +3679,10 @@ msgstr "提取並解除 GMX 預留"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Copin"
 msgstr "Copin"
+
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Swap route unavailable for: {failedSwapTokenSymbols}"
+msgstr "無法取得以下代幣的兌換路徑：{failedSwapTokenSymbols}"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
@@ -3637,13 +3743,6 @@ msgstr "截止時間："
 msgid "Execution fee validation failed.<0/><1/>{suggestText}<2/><3/><4>View status</4>"
 msgstr "執行費用驗證失敗。<0/><1/>{suggestText}<2/><3/><4>查看狀態</4>"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-msgid "V1 Arbitrum"
-msgstr "V1 Arbitrum"
-
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -3684,7 +3783,7 @@ msgstr "領取獎勵"
 msgid "Multicall idle"
 msgstr "Multicall 閒置中"
 
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/OutOfTokenErrorAlert.tsx
 msgid "Claiming requires <0/> while you have <1/>. <2>Swap</2> or <3>deposit</3> more {0} to your GMX Account."
 msgstr "領取需要 <0/>，但您目前有 <1/>。請<2>兌換</2>或<3>存入</3>更多 {0} 至您的 GMX Account。"
 
@@ -3701,7 +3800,7 @@ msgstr "第 4-18 名"
 msgid "Set acceptable price impact"
 msgstr "設定可接受的價格影響"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V1 volume"
 msgstr "V1 交易量"
 
@@ -3740,7 +3839,7 @@ msgstr "池存入最大做空 USD"
 msgid "One-Click"
 msgstr "One-Click"
 
-#: src/components/Referrals/ReferralCodeWarnings.tsx
+#: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
 msgid "Code taken by another user on {takenNetworkNames}. No rebates from those networks."
 msgstr "推薦碼已被其他用戶在 {takenNetworkNames} 上使用。無法從這些網路獲得返傭。"
 
@@ -3779,6 +3878,10 @@ msgstr "分享 GMX 意見回饋"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw failed"
 msgstr "提取失敗"
+
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+msgid "Failed to download image"
+msgstr "下載圖片失敗"
 
 #. chainname balance
 #: src/components/MultichainBalanceTooltip/MultichainBalanceTooltip.tsx
@@ -3957,13 +4060,15 @@ msgid "Withdrawal from subaccount"
 msgstr "從子帳戶提取"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+#: src/components/Referrals/traders/joinCode/ReferralCodeInput.tsx
 msgid "Enter referral code"
 msgstr "輸入推薦碼"
+
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+msgid "Referral link copied to clipboard"
+msgstr "推薦連結已複製到剪貼簿"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -3975,7 +4080,7 @@ msgstr "智能錢包不支援 Express Trading 或 One-Click Trading"
 msgid "Executed"
 msgstr "已執行"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V2 volume"
 msgstr "V2 交易量"
 
@@ -3986,6 +4091,10 @@ msgstr "閱讀規則"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Source chain supports single token only"
 msgstr "來源鏈僅支援單一代幣"
+
+#: src/components/Referrals/traders/faq.tsx
+msgid "Referral discounts apply to opening and closing fees for leverage trading. Swap fees are not included."
+msgstr "推薦折扣適用於槓桿交易的開倉與平倉手續費。兌換手續費不包含在內。"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -4105,6 +4214,10 @@ msgstr "在 {0} 池中有現有倉位，但該池流動性不足以執行此訂�
 msgid "{chainName} data"
 msgstr "{chainName} 資料"
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+msgid "Net referred traders in the selected period (gained - lost)."
+msgstr "所選期間的淨推薦交易者數（新增 - 流失）。"
+
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "No liquidation price. Collateral covers any losses."
 msgstr "無清算價格。抵押品足以覆蓋任何損失。"
@@ -4184,13 +4297,9 @@ msgstr "配對交易"
 msgid "<0>Delegate your undelegated {0} GMX DAO</0> voting power before staking."
 msgstr "<0>在質押前，請委託您尚未委託的 {0} GMX DAO</0> 投票權。"
 
-#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
 msgid "USD value may not be accurate because prices are missing for {0}."
 msgstr "由於缺少 {0} 的價格，USD 價值可能不準確。"
-
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "V1 esGMX"
-msgstr "V1 esGMX"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Loading markets data..."
@@ -4224,8 +4333,6 @@ msgstr "止損市價單"
 msgid "Pending GMX approval..."
 msgstr "等待 GMX 授權中..."
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "AMOUNT"
@@ -4242,7 +4349,7 @@ msgstr "Botanix 上無法質押 GMX，請使用 Arbitrum 或 Avalanche。"
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Claiming..."
 msgstr "領取中..."
@@ -4270,6 +4377,11 @@ msgstr "所有帳戶的 GMX {VERSION_NAME} {networkName} 操作紀錄"
 msgid "Edit {0}"
 msgstr "編輯 {0}"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimSwapTargetTokenSelector.tsx
+msgid "Swap to"
+msgstr "兌換至"
+
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr "<0>買入</0> {wrappedNativeTokenSymbol}。"
@@ -4292,14 +4404,14 @@ msgstr "最小影響池數量"
 msgid "Price impact too high"
 msgstr "價格影響過高"
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "{0}h"
+msgstr "{0} 小時"
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Enter withdrawal amount"
 msgstr "請輸入提取金額"
-
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-msgid "Rebates distribution history"
-msgstr "回饋分配歷史"
 
 #: src/components/PositionItem/PositionItemOrders.tsx
 msgid "Active orders"
@@ -4347,8 +4459,7 @@ msgstr "種可能路徑"
 msgid "Price impact is stored when you increase a position and applied when you decrease. <0>Read more</0>."
 msgstr "價格影響在您增加倉位時儲存，並在您減少倉位時套用。<0>閱讀更多</0>。"
 
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Code not found"
 msgstr "找不到代碼"
 
@@ -4623,7 +4734,7 @@ msgid "Some other label"
 msgstr "其他標籤"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "You need USDC or ETH on {0} to create a referral code via GMX Account. Deposit funds or switch to a different network."
 msgstr "您需要在 {0} 上持有 USDC 或 ETH 才能透過 GMX Account 建立推薦碼。請存入資金或切換至其他網路。"
 
@@ -4668,6 +4779,10 @@ msgstr "費用"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Vault capacity"
 msgstr "金庫容量"
+
+#: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
+msgid "{0} Amount"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Open interest {directionLabel}"
@@ -4758,6 +4873,11 @@ msgstr "近 180 天"
 msgid "Positive funding fees"
 msgstr "正向資金費用"
 
+#: src/components/Referrals/shared/charts/TraderReferralChartContainer.tsx
+#: src/components/Referrals/shared/charts/TradersVolumeChartContainer.tsx
+msgid "Loading…"
+msgstr ""
+
 #: src/components/GmxAccountModal/DepositStatusView.tsx
 msgid "Funds will appear in your GMX Account soon"
 msgstr "資金將很快顯示在您的 GMX Account 中"
@@ -4765,10 +4885,6 @@ msgstr "資金將很快顯示在您的 GMX Account 中"
 #: src/components/InterviewToast/InterviewToast.tsx
 msgid "Join an anonymous one-on-one chat to share your GMX liquidity provider experience"
 msgstr "加入匿名一對一對話，分享您的 GMX 流動性提供者經驗"
-
-#: src/components/Referrals/TradersStats.tsx
-msgid "Code owner set a custom {currentTierDiscount}% discount instead of the standard {0}% for Tier {1}."
-msgstr "推薦碼持有人設定了自訂 {currentTierDiscount}% 折扣，而非 Tier {1} 的標準 {0}%。"
 
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawn from subaccount"
@@ -4782,29 +4898,7 @@ msgstr "未知的買入 GM 訂單"
 msgid "Text with no size set"
 msgstr "未設定大小的文字"
 
-#: src/components/BridgeModal/BridgeInModal.tsx
-#: src/components/BridgeModal/BridgeOutModal.tsx
-#: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
-#: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
-#: src/components/ClaimModal/ClaimModal.tsx
-#: src/components/ClaimModal/ClaimModal.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/components/GmxAccountModal/DepositView.tsx
-#: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/components/OrderEditor/OrderEditor.tsx
-#: src/components/OrderList/OrderList.tsx
-#: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
-#: src/components/TVChartContainer/DynamicLines.tsx
-#: src/context/SyntheticsStateContext/hooks/orderHooks.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
-#: src/pages/SyntheticsPage/SyntheticsPage.tsx
+#: src/lib/useHasOutdatedUi.ts
 msgid "Page outdated. Refresh"
 msgstr "頁面已過期，請重新整理"
 
@@ -4868,8 +4962,8 @@ msgstr "以代幣計算的總未平倉量及以 USD 計算的名義價值"
 msgid "Distribution rate, {0}"
 msgstr "分配率，{0}"
 
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/traders/joinCode/ReferralCodeFormMultichain.tsx
+#: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Referral code added"
 msgstr "推薦碼已新增"
 
@@ -4953,7 +5047,7 @@ msgstr "無效的預言機價格"
 msgid "Permit validation error: {0}"
 msgstr "許可驗證錯誤：{0}"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Create new code"
 msgstr "建立新推薦碼"
 
@@ -4972,7 +5066,7 @@ msgstr "為什麼我會收到兩種不同的 GLV 代幣？"
 msgid "Set TP/SL"
 msgstr "設定 TP/SL"
 
-#: src/components/Referrals/referralsHelper.ts
+#: src/components/Referrals/shared/utils/referralsHelper.ts
 msgid "Max {MAX_REFERRAL_CODE_LENGTH} characters"
 msgstr "最多 {MAX_REFERRAL_CODE_LENGTH} 個字元"
 
@@ -5003,6 +5097,10 @@ msgstr "探索更多"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Settings updated"
 msgstr "設定已更新"
+
+#: src/components/Referrals/distributions/ReferralsDistributionsTab.tsx
+msgid "Connect wallet to view distributions"
+msgstr ""
 
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
@@ -5056,8 +5154,7 @@ msgstr "匯入 URL："
 msgid "Enter a price"
 msgstr "請輸入價格"
 
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Updating..."
 msgstr "更新中..."
 
@@ -5167,7 +5264,7 @@ msgstr "超過 100 個協議"
 msgid "Funding fees"
 msgstr "資金費用"
 
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "REWARDS"
 msgstr "獎勵"
 
@@ -5201,9 +5298,17 @@ msgstr "PnL 分析"
 msgid "Failed to claim funds"
 msgstr "領取資金失敗"
 
+#: src/components/Referrals/traders/faq.tsx
+msgid "Which fees get discounted?"
+msgstr ""
+
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "Shifting 僅適用於 {chainNames} 或 {lastChainName}。請切換網路以繼續。"
+
+#: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
+msgid "Transferring a referral code"
+msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
@@ -5218,7 +5323,7 @@ msgstr "GMX 社群，涵蓋 NFT、交易與教育計畫"
 msgid "Longs"
 msgstr "做多"
 
-#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Affiliate rewards claimed"
 msgstr "聯盟獎勵已領取"
 
@@ -5234,6 +5339,10 @@ msgstr "成交價格"
 msgid "spinner"
 msgstr "載入中"
 
+#: src/components/Referrals/traders/faq.tsx
+msgid "Yes! You can switch to a different code at any time from the Traders tab. Your new discount will apply to all future trades."
+msgstr ""
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown sell GM order"
 msgstr "未知的 GM 賣出訂單"
@@ -5248,6 +5357,10 @@ msgstr "無法將 {nativeTokenSymbol} 轉帳至 {chainName}"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
+msgstr ""
+
+#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
+msgid "<0>GLV (GMX Liquidity Vaults) is GMX V2's improved version of GLP. It's a yield-optimizing crypto-index token that:</0><1><2>Earns fees from liquidity provision across GMX V2 markets</2><3>Dynamically allocates liquidity to highest-utilized markets, maximizing capital efficiency and yield</3><4>Auto-compounds yield (no manual claiming needed, unlike GLP)</4></1>"
 msgstr ""
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -5276,6 +5389,10 @@ msgstr "選擇代幣"
 msgid "Main thread"
 msgstr "主執行緒"
 
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+msgid "Trade smarter with up<0/> to 10% fee savings"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Difference"
 msgstr "差額"
@@ -5296,10 +5413,6 @@ msgstr "最佳"
 msgid "{updateOrdersCount} TP/SL orders updated"
 msgstr "{updateOrdersCount} 筆止盈/止損訂單已更新"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "Available to claim now"
-msgstr "目前可領取"
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Current reserved:"
 msgstr "目前已預留："
@@ -5318,17 +5431,13 @@ msgstr "選擇市場"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/pages/Referrals/Referrals.tsx
+#: src/components/Referrals/affiliates/ReferralsAffiliatesTab.tsx
 msgid "Referral code creation failed"
 msgstr "推薦碼建立失敗"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdraw fee"
 msgstr "提取手續費"
-
-#: src/components/Referrals/TradersStats.tsx
-msgid "Your fee savings from referral discounts"
-msgstr "您透過推薦折扣節省的手續費"
 
 #: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
@@ -5393,6 +5502,10 @@ msgstr "WETH-USDC 池中有現有限價單，但此訂單的流動性不足"
 msgid "({0} of swap amount)"
 msgstr "（{0}，佔兌換金額）"
 
+#: src/components/Referrals/affiliates/faq.tsx
+msgid "How do I upgrade to a higher tier?"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} liquidity"
@@ -5422,6 +5535,10 @@ msgstr "正在發送結算請求..."
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Creator"
 msgstr "創建者"
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "<0>You're now receiving a {currentTierDiscount}% discount on your trades!</0><1>The reduced rate applies to every open and close fee.</1>"
+msgstr ""
 
 #: src/components/InterviewToast/InterviewToast.tsx
 #: src/components/InterviewToast/InterviewToast.tsx
@@ -5483,10 +5600,10 @@ msgstr "初始抵押品，不含借貸與資金費用"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "Enter a code"
 msgstr "輸入代碼"
 
@@ -5622,8 +5739,10 @@ msgstr "選擇倉位"
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5637,6 +5756,14 @@ msgstr "無需重複確認錢包"
 #: src/components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner.tsx
 msgid "Deposit {gasPaymentTokensText}"
 msgstr "存入 {gasPaymentTokensText}"
+
+#: src/components/Referrals/affiliates/faq.tsx
+msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."
+msgstr ""
+
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Swap token unavailable"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
@@ -5719,6 +5846,10 @@ msgstr "為特定 GMX 市場提供流動性的池。支援單一資產和原生�
 msgid "Max funding factor"
 msgstr "最大資金費率因子"
 
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+msgid "Your discount is now active!"
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "High price impact"
@@ -5746,13 +5877,13 @@ msgstr "沒有符合所選篩選條件的交易"
 msgid "Decreased"
 msgstr "已減倉"
 
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "Earns fees from liquidity provision across GMX V2 markets"
-msgstr "從 GMX V2 市場的流動性提供中賺取手續費"
-
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Recommended"
 msgstr "推薦"
+
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+msgid "Start trading"
+msgstr ""
 
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
@@ -5765,8 +5896,6 @@ msgstr "減倉"
 msgid "Trigger price below liquidation price"
 msgstr "觸發價格低於清算價格"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -5835,6 +5964,10 @@ msgstr "舊版 One-Click Trading 子帳戶中剩餘 {balanceFormatted}"
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 msgstr "從 <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> 轉移至 <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Claim & swap"
+msgstr ""
+
 #: src/components/MarketStats/components/CompositionTable.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "COMPOSITION"
@@ -5896,6 +6029,10 @@ msgstr "遠離<0/>清算風險"
 msgid "High net price impact"
 msgstr "淨價格影響過高"
 
+#: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
+msgid "Claiming rewards"
+msgstr ""
+
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Order not found. May have been canceled or already executed"
 msgstr "找不到訂單。可能已被取消或已執行"
@@ -5912,6 +6049,11 @@ msgstr "買入訂單已取消"
 msgid "Support"
 msgstr "支援"
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+#: src/components/Referrals/shared/charts/GmxBarChart.tsx
+msgid "Lost"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Delegate"
 msgstr "委託"
@@ -5919,6 +6061,10 @@ msgstr "委託"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Harmonix"
 msgstr "Harmonix"
+
+#: src/components/Referrals/affiliates/faq.tsx
+msgid "Tier upgrades are reviewed manually by the GMX team based on your weekly performance. If you meet the requirements consistently, you can apply for an upgrade via the <0>GMX Partner Account: Telegram</0>."
+msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Less info"
@@ -6003,13 +6149,6 @@ msgstr "抵押品不足。需要更多抵押品"
 msgid "Access key"
 msgstr "存取金鑰"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-msgid "V1 Avalanche"
-msgstr "V1 Avalanche"
-
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
 #: src/components/TPSLModal/AddTPSLModal.tsx
@@ -6024,6 +6163,10 @@ msgstr "關於 GMX 交易的即時評論"
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Mixed exposure: Short {indexSymbol} + long {collateralSymbol} collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr "混合曝險：做空 {indexSymbol} + 做多 {collateralSymbol} 抵押品。清算價格隨 {collateralSymbol} 價格變動。"
+
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+msgid "Share your referral card"
+msgstr ""
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "You must be on this page to accept the transfer. <0>Copy link</0>"
@@ -6045,6 +6188,10 @@ msgstr "連接錢包以查看您的資產"
 msgid "Position size exceeds pool value"
 msgstr "倉位規模超過池價值"
 
+#: src/components/Referrals/traders/joinCode/ApplyReferralCodeButtonContent.tsx
+msgid "Apply referral code"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (positive)"
 msgstr "影響指數（正向）"
@@ -6055,8 +6202,8 @@ msgstr "無法提取抵押品。剩餘抵押品將低於最低要求"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Approving..."
 msgstr "授權中..."
@@ -6070,6 +6217,7 @@ msgid "No liquidity available for increasing longs at<0/>this size. Max long siz
 msgstr "此規模無可用流動性來加倉做多。<0/>最大做多規模：{0}<1/><2/>無價格影響。此規模減倉做空<3/>為單一成交價格。"
 
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/Referrals/Referrals.tsx
 #: src/pages/Referrals/Referrals.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
@@ -6099,6 +6247,10 @@ msgstr "領取價格影響回饋失敗"
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Paste hex error data to decode"
 msgstr "貼上十六進位錯誤資料以進行解碼"
+
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "You'll receive"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral"
@@ -6135,8 +6287,9 @@ msgstr "TP 價格"
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -6153,6 +6306,8 @@ msgstr "載入中..."
 msgid "Trade now"
 msgstr "立即交易"
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "Share"
 msgstr "分享"
@@ -6190,10 +6345,6 @@ msgstr "交易"
 msgid "Trading may be temporarily unavailable. Our team is working to resolve the issue."
 msgstr "交易可能暫時無法使用。我們的團隊正在解決此問題。"
 
-#: src/pages/Referrals/Referrals.tsx
-msgid "Get fee discounts and earn rebates through the GMX referral program. Read the <0>referral program details</0>."
-msgstr "透過 GMX 推薦計畫獲得手續費折扣和返佣。閱讀<0>推薦計畫詳情</0>。"
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6213,6 +6364,10 @@ msgstr "正在更新 {updateOrdersCount} 個 TP/SL 訂單..."
 msgid "Execution price didn't meet acceptable price"
 msgstr "成交價格未達到可接受價格"
 
+#: src/components/Referrals/affiliates/faq.tsx
+msgid "In which tokens will I receive my rebates?"
+msgstr ""
+
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Position would be liquidatable"
 msgstr "倉位將面臨清算"
@@ -6226,6 +6381,10 @@ msgstr "媒體素材包"
 msgid "$ 0.00"
 msgstr ""
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Create your referral code and earn rebates from your referrals"
+msgstr ""
+
 #: src/components/GmList/GlvList.tsx
 msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets"
 msgstr "跨多個 GMX 市場提供流動性的收益優化金庫"
@@ -6233,6 +6392,10 @@ msgstr "跨多個 GMX 市場提供流動性的收益優化金庫"
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Analytics"
 msgstr "分析"
+
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Referral code copied to clipboard"
+msgstr ""
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
@@ -6343,6 +6506,10 @@ msgstr "提取已發送"
 msgid "Because positions on Arbitrum can be funded from both your wallet and your GMX Account, we can't always determine where to return the collateral automatically.<0/><1/>Choose:<2/>• <3>Wallet</3> if you mostly trade from your personal wallet on Arbitrum<4/>• <5>GMX Account</5> if you plan to keep trading or reusing collateral on GMX.<6/><7/>You can change this preference anytime in Settings or when closing a position."
 msgstr ""
 
+#: src/components/Referrals/affiliates/faq.tsx
+msgid "How do I share my code?"
+msgstr ""
+
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "1m 40s"
@@ -6351,6 +6518,10 @@ msgstr "1分40秒"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP autocompounding vaults"
 msgstr "GLP 自動複利金庫"
+
+#: src/components/Referrals/affiliates/faq.tsx
+msgid "Yes. To earn rebates on both Arbitrum and Avalanche, create your code on both networks. You can use the same code name on each."
+msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "TP/SL orders exceed the position"
@@ -6428,6 +6599,7 @@ msgstr "警告：由於觸發價格處流動性不足，可能無法執行"
 msgid "Cancel TWAP Swap"
 msgstr "取消 TWAP 兌換"
 
+#: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Transaction"
 msgstr "交易"
@@ -6435,6 +6607,10 @@ msgstr "交易"
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 msgid "Last year"
 msgstr "過去一年"
+
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+msgid "Rebates earned as an affiliate."
+msgstr ""
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "per"
@@ -6461,10 +6637,13 @@ msgstr "可用流動性"
 msgid "Current endpoints ({0})"
 msgstr "目前端點 ({0})"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/distributions/ReferralsDistributionsTab.tsx
 msgid "No rebates distribution history yet"
 msgstr "尚無返佣分配記錄"
+
+#: src/components/Referrals/traders/faq.tsx
+msgid "You can skip this step and trade without a code, but you'll pay full fees. You can always add a code later from the Traders tab if you've found a code."
+msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "THREAD"
@@ -6477,10 +6656,6 @@ msgstr "選填：提供以便後續聯繫"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit signed for {0}"
 msgstr "已為 {0} 簽署許可"
-
-#: src/components/Referrals/TradersStats.tsx
-msgid "Your trading volume with referral discount"
-msgstr "您享有推薦折扣的交易量"
 
 #: src/domain/synthetics/orders/prepareOrderTxn.ts
 msgid "Transaction failed: provider unavailable"
@@ -6595,6 +6770,10 @@ msgstr "做多流動性"
 msgid "Select an asset to deposit"
 msgstr "選擇要存入的資產"
 
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
+msgstr ""
+
 #: src/components/PositionList/PositionList.tsx
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/Jobs/Jobs.tsx
@@ -6617,7 +6796,7 @@ msgstr "保證流動性"
 msgid "Insufficient gas balance"
 msgstr "Gas 餘額不足"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V1 rebates"
 msgstr "V1 返佣"
 
@@ -6713,6 +6892,10 @@ msgstr "訂單提交失敗"
 msgid "Total realized and unrealized PnL for the period. Includes price impact and fees. Excludes swap fees."
 msgstr "該期間的已實現與未實現 PnL 總計。包含價格影響和費用。不含兌換手續費。"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Generate your own referral code and earn rebates whenever users trade with it. Rewards scale <0/> with your tier and the activity of your referred traders. <1>Learn more</1>"
+msgstr ""
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H%"
@@ -6735,6 +6918,10 @@ msgstr "合作夥伴"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Use a TWAP order"
 msgstr "使用 TWAP 訂單"
+
+#: src/components/Referrals/distributions/table/RebateDistributionRow.tsx
+msgid "Referrals V1 WETH"
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Enable external swaps"
@@ -6863,11 +7050,19 @@ msgstr "狀態"
 msgid "<0>every</0> {seconds} seconds"
 msgstr "<0>每</0> {seconds} 秒"
 
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+msgid "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
+msgstr ""
+
 #. Filter option for tokens favorites
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "All markets"
 msgstr "所有市場"
+
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Hide assets with small value"
+msgstr ""
 
 #: src/components/GmList/GmListItem.tsx
 msgid "TVL (supply)"
@@ -6941,9 +7136,17 @@ msgstr "新增 TP/SL"
 msgid "Receiver has not staked GLP tokens before"
 msgstr "接收者先前未曾質押 GLP 代幣"
 
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+msgid "You can find referral code in <0>X</0> or on other social media platforms."
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min collateral: {0}"
 msgstr "最低抵押品：{0}"
+
+#: src/components/Referrals/shared/cards/ClaimableRebatesCard.tsx
+msgid "Claim rebates"
+msgstr ""
 
 #: src/lib/tenderly.tsx
 #: src/lib/tenderly.tsx
@@ -7029,6 +7232,7 @@ msgid "Claiming rewards only available on {settlementChainName}. Switch networks
 msgstr "領取獎勵僅在 {settlementChainName} 上可用。請切換網路以領取推薦獎勵。"
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "Edit"
 msgstr "編輯"
@@ -7068,6 +7272,10 @@ msgstr "今天"
 msgid "Link copied"
 msgstr "連結已複製"
 
+#: src/components/Referrals/distributions/ReferralsDistributionsTab.tsx
+msgid "Connect your wallet to view your rebates distribution history."
+msgstr ""
+
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/Claims/ClaimsHistory.tsx
 #: src/components/OrderList/OrderList.tsx
@@ -7097,10 +7305,6 @@ msgstr "我們將與您安排一次交流。作為感謝，您將獲得 <0>100 <
 msgid "GM bought successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or go to the ETH/USD pool to withdraw your GM tokens."
 msgstr "GM 購買成功，但跨鏈橋至 Base 失敗。您的資金安全存放在您的 GMX Account 中。請重試跨鏈橋或前往 ETH/USD 池提取您的 GM 代幣。"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "USD value may be inaccurate. Price data unavailable for {0}."
-msgstr "USD 價值可能不準確。{0} 的價格資料無法取得。"
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
 msgstr "Limit Increase"
@@ -7109,9 +7313,17 @@ msgstr "Limit Increase"
 msgid "Transferring..."
 msgstr "轉帳中..."
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+msgid "Volume traded by your referred traders."
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed."
 msgstr "賣出 {gmOrGlvLabel} 失敗。"
+
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+msgid "Number of trades done by your referred traders."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX weekly updates"
@@ -7209,9 +7421,9 @@ msgstr "需要使用最低 {0} 的資金才能參與排名"
 msgid "Proof of reserves"
 msgstr "儲備金證明"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "V2 claim"
-msgstr "V2 領取"
+#: src/components/Referrals/affiliates/faq.tsx
+msgid "When will I start earning?"
+msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No topics"
@@ -7232,8 +7444,7 @@ msgstr "請輸入存入金額"
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "Approve {0}"
 msgstr "授權 {0}"
 
@@ -7345,8 +7556,7 @@ msgstr "沒有符合搜尋條件的機會"
 msgid "Leaderboard for traders on GMX V2"
 msgstr "GMX V2 交易者排行榜"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "TOTAL REBATES"
 msgstr "總回扣"
 
@@ -7409,8 +7619,7 @@ msgstr "開始轉帳"
 msgid "market"
 msgstr "市價"
 
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Same as current active code"
 msgstr "與目前使用中的代碼相同"
 
@@ -7438,6 +7647,10 @@ msgstr "離線"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price below mark price"
 msgstr "觸發價格低於標記價格"
+
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Hide other assets"
+msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 msgid "Staked GMX"
@@ -7472,7 +7685,7 @@ msgstr "手續費"
 msgid "What could we improve?"
 msgstr "我們可以改進什麼？"
 
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Referral code update failed"
 msgstr "推薦碼更新失敗"
 
@@ -7544,8 +7757,6 @@ msgid "TP price below limit price"
 msgstr "止盈價格低於限價"
 
 #: src/components/NpsModal/NpsModal.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submit"
 msgstr "提交"
@@ -7570,16 +7781,20 @@ msgstr "下一頁"
 msgid "More info"
 msgstr "更多資訊"
 
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Create"
 msgstr "建立"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+msgid "Your code is ready. Share it!"
+msgstr ""
+
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Trading volume"
 msgstr "交易量"
 
@@ -7605,10 +7820,13 @@ msgstr "轉帳地址無效，請檢查網址。"
 msgid "Swap {fromAmount} for {toAmount}"
 msgstr "將 {fromAmount} 兌換為 {toAmount}"
 
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+msgid "Copy"
+msgstr ""
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/OrderItem/OrderItem.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
 msgid "Amount"
 msgstr "金額"
 
@@ -7629,8 +7847,7 @@ msgstr "{increaseOrDecreaseText}：{0} {longShortText}"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Claim"
 msgstr "領取"
 
@@ -7661,6 +7878,10 @@ msgstr "存入失敗"
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "EST. PNL"
 msgstr "預估 PNL"
+
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+msgid "Your {currentTierDiscount}% discount is now active!"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Total performance APY"
@@ -7736,13 +7957,6 @@ msgstr "止損價格高於限價"
 msgid "for {comment}"
 msgstr "用於 {comment}"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-#: src/components/Referrals/TradersStats.tsx
-msgid "V1 Avalanche Fuji"
-msgstr "V1 Avalanche Fuji"
-
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Performance APY"
 msgstr "績效 APY"
@@ -7770,6 +7984,10 @@ msgstr "正在執行買入請求..."
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Buy GM failed"
 msgstr "購買 GM 失敗"
+
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+msgid "Activate someone's referral code to receive a permanent discount on all opening and closing <0/> fees. Your savings apply automatically on every trade. <1>Learn more</1>"
+msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
@@ -7843,6 +8061,10 @@ msgstr "探索、分析並複製鏈上交易者"
 msgid "{addressLabel} on {networkLabel}"
 msgstr "{addressLabel} 於 {networkLabel}"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Loading fees..."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "{0} GMX"
 msgstr "{0} GMX"
@@ -7869,6 +8091,10 @@ msgstr "交易歷史 CSV 下載失敗"
 msgid "Liquidation price"
 msgstr "清算價格"
 
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+msgid "So far, my referrals have saved {totalDiscountsFormatted} total in discounts with my code: {referralCode}"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Enjoy a frictionless trading experience and sidestep blockchain congestion with One-Click Trading and Express Trading"
 msgstr "透過 One-Click Trading 和 Express Trading，享受無摩擦的交易體驗，避開區塊鏈壅塞"
@@ -7877,10 +8103,6 @@ msgstr "透過 One-Click Trading 和 Express Trading，享受無摩擦的交易�
 msgid "Top positions"
 msgstr "熱門倉位"
 
-#: src/components/Referrals/TradersStats.tsx
-msgid "V2 rebates apply automatically as fee discounts and aren't shown here"
-msgstr "V2 回饋已自動作為手續費折扣套用，不會顯示在此處"
-
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Buy GM with {0} up to the caps below"
 msgstr "使用 {0} 購買 GM，上限如下"
@@ -7888,6 +8110,10 @@ msgstr "使用 {0} 購買 GM，上限如下"
 #: src/components/BotanixBanner/BotanixBanner.tsx
 msgid "V2 trading"
 msgstr "V2 交易"
+
+#: src/components/Referrals/traders/faq.tsx
+msgid "Visit the <0>Referrals Documentation</0> or ask in the <1>GMX Telegram</1>."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Protocol analytics"
@@ -7955,8 +8181,12 @@ msgstr "查看"
 msgid "Execute Stop Market"
 msgstr "執行停損市價單"
 
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Volume traded by this account with an active referral code."
+msgstr ""
+
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/pages/Referrals/Referrals.tsx
+#: src/components/Referrals/affiliates/ReferralsAffiliatesTab.tsx
 msgid "Referral code submitted"
 msgstr "推薦碼已提交"
 
@@ -8018,7 +8248,7 @@ msgstr "做空倉位"
 msgid "Report issue"
 msgstr "回報問題"
 
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Claim {0}"
 msgstr "領取 {0}"
 
@@ -8041,10 +8271,6 @@ msgstr "做空借貸指數"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Price impact"
 msgstr "價格影響"
-
-#: src/components/Referrals/AddAffiliateCode.tsx
-msgid "You don't have a referral code to share. <0/> Create one now and start earning rebates!"
-msgstr "您沒有可分享的推薦碼。<0/>立即建立一個並開始賺取回饋！"
 
 #: src/components/AddressView/AddressView.tsx
 msgid "You"
@@ -8109,7 +8335,7 @@ msgstr "選擇要領取的獎勵"
 msgid "Open fee"
 msgstr "開倉費用"
 
-#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Edit referral code"
 msgstr "編輯推薦碼"
 
@@ -8130,8 +8356,7 @@ msgstr "要在 GMX 上開始交易，請將資產存入您的 GMX Account"
 msgid "Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021"
 msgstr "自 2021 年上線的去中心化無許可鏈上交易所，具有深度流動性與低成本"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "TOTAL VOLUME"
 msgstr "TOTAL VOLUME"
 
@@ -8163,10 +8388,6 @@ msgstr "增加倉位（TWAP）"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Refresh"
 msgstr "重新整理"
-
-#: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
-msgid "Claiming affiliate rewards..."
-msgstr "正在領取聯盟獎勵..."
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "deep liquid markets"
@@ -8221,10 +8442,6 @@ msgstr "VAULT"
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Looping"
 msgstr "循環"
-
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "Number of traders using your referral code"
-msgstr "使用您推薦碼的交易者數量"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max reserved {directionLabel}"
@@ -8289,7 +8506,7 @@ msgstr "跨鏈橋接並兌換代幣"
 msgid "Backing composition"
 msgstr "支撐組成"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/shared/cards/ClaimableRebatesCard.tsx
 msgid "Claimable rebates"
 msgstr "可領取的返利"
 
@@ -8302,7 +8519,7 @@ msgstr "次要"
 msgid "Permit signing cancelled"
 msgstr "許可簽署已取消"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V2 rebates"
 msgstr "V2 返利"
 
@@ -8361,7 +8578,7 @@ msgid "Add endpoint"
 msgstr "新增端點"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -8399,13 +8616,12 @@ msgid "Invalid Ethereum address"
 msgstr "無效的 Ethereum 地址"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on that network."
 msgstr "無法在 {0} 上驗證代碼的可用性。您仍然可以建立該代碼，但它可能已在該網路上被使用。"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Rebates"
 msgstr "返利"
 
@@ -8452,8 +8668,7 @@ msgid "Claims"
 msgstr "領取"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/TradersStats.tsx
+#: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Date"
 msgstr "日期"
@@ -8524,6 +8739,7 @@ msgid "What is GLV exactly?"
 msgstr "GLV 究竟是什麼？"
 
 #: src/components/PositionShare/PositionShare.tsx
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "Download"
 msgstr "下載"
 
@@ -8588,6 +8804,10 @@ msgstr "強制外部兌換"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Onchain data error"
 msgstr "鏈上資料錯誤"
+
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Show assets with small value ({0})"
+msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Fulfilling order request..."
@@ -8853,6 +9073,10 @@ msgstr "無法更新訂單，此類型不支援修改"
 msgid "{gmOrGlvLabel} sold successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to withdraw your tokens."
 msgstr "{gmOrGlvLabel} 賣出成功，但跨鏈橋接至 Base 失敗。您的資金安全存放在您的 GMX Account 中。請重試橋接或打開 GMX Account 提取您的代幣。"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Unable to fetch swap route. Please try again."
+msgstr ""
+
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimsHistory.tsx
@@ -8923,9 +9147,17 @@ msgstr "存入已提交"
 msgid "Yield vaults"
 msgstr "收益金庫"
 
+#: src/components/Referrals/traders/faq.tsx
+msgid "Using a referral code gives you a 5-10% discount on trading fees for every trade you make. It costs you nothing and the savings add up quickly."
+msgstr ""
+
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
 msgstr "{title}"
+
+#: src/components/Referrals/traders/faq.tsx
+msgid "What if I don't have a code right now?"
+msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit transaction sent for {0}!"
@@ -8948,6 +9180,10 @@ msgstr "許可已停用："
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pool amount capacity"
 msgstr "池數量容量"
+
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+msgid "Referral link copied to your clipboard"
+msgstr ""
 
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "L:"
@@ -8977,8 +9213,7 @@ msgstr "Avalanche LP 獎勵"
 msgid "Markets monitoring"
 msgstr "市場監控"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/distributions/ReferralsDistributionsTab.tsx
 msgid "Distribution history for claimed rebates and airdrops"
 msgstr "已領取回饋和空投的分發歷史記錄"
 
@@ -9001,6 +9236,10 @@ msgstr "已達池最大容量。目前：{poolAmountText}，上限：{maxPoolAmo
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "{nativeTokenSymbol} APR"
 msgstr "{nativeTokenSymbol} APR"
+
+#: src/components/Referrals/affiliates/faq.tsx
+msgid "What happens after I create my code?"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Option-based vaults"
@@ -9040,6 +9279,10 @@ msgstr "止盈"
 msgid "Top PnL ($)"
 msgstr "最高 PnL ($)"
 
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+msgid "<0>Save up to {traderDiscountPercentageLabel}</0> on every<1/> trade on GMX."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Leverage trading terminal"
 msgstr "槓桿交易終端"
@@ -9048,9 +9291,9 @@ msgstr "槓桿交易終端"
 msgid "Receiver address"
 msgstr "接收地址"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "Traders referred on Avalanche Fuji"
-msgstr "在 Avalanche Fuji 推薦的交易者"
+#: src/components/Referrals/traders/faq.tsx
+msgid "Where can I learn more?"
+msgstr ""
 
 #: src/components/Claims/SettleAccruedCard.tsx
 msgid "Positive funding fees accrued in positions, not yet claimable.<0/><1/>Available after changing position size, adjusting collateral, or clicking \"Settle\"."
@@ -9098,6 +9341,11 @@ msgstr "操作"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Increase"
 msgstr "加倉"
+
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
+msgid "Last Updated:"
+msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap price impact"
@@ -9242,6 +9490,10 @@ msgstr "追蹤器"
 msgid "Select network"
 msgstr "選擇網路"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Error simulating claim"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "No loss of fund ownership"
 msgstr "資金所有權不受影響"
@@ -9268,7 +9520,7 @@ msgid "Deposit ETH"
 msgstr "存入 ETH"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "No tokens on source chain"
 msgstr "來源鏈上無代幣"
 
@@ -9386,10 +9638,6 @@ msgstr "使用 TP/SL 按鈕設定 TP/SL 訂單。"
 msgid "Close Long"
 msgstr ""
 
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "Traders referred on Arbitrum"
-msgstr "在 Arbitrum 上推薦的交易者"
-
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GM?"
 msgstr "什麼是 GM？"
@@ -9423,10 +9671,6 @@ msgstr "獲取 GMX 的提醒和公告，隨時掌握您的交易、清算風險�
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} bought successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or go to the {indexName} pool to withdraw your GM tokens."
 msgstr "{gmOrGlvLabel} 買入成功，但橋接至 Base 失敗。您的資金安全存放在您的 GMX Account 中。請重試橋接，或前往 {indexName} 池提取您的 GM 代幣。"
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "GLV (GMX Liquidity Vaults) is GMX V2's improved version of GLP. It's a yield-optimizing crypto-index token that:"
-msgstr "GLV（GMX Liquidity Vaults）是 GMX V2 對 GLP 的改良版本。這是一種收益優化的加密指數代幣，能夠："
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "{0} tokens converted to GMX from the {1} esGMX deposited for vesting."
@@ -9490,6 +9734,12 @@ msgstr "提醒"
 msgid "C:"
 msgstr "C："
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Swap route unavailable"
+msgstr ""
+
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. This action won't affect it. <0>Switch to {1} collateral</0>"
 msgstr "現有倉位使用 {0} 抵押品。此操作不會影響該倉位。<0>切換至 {1} 抵押品</0>"
@@ -9505,6 +9755,11 @@ msgstr "舊的 One-Click Trading 子帳戶中仍有 0.0045 WETH"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Topics"
 msgstr "主題"
+
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+#: src/components/Referrals/shared/charts/GmxBarChart.tsx
+msgid "Gained"
+msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Updating order..."
@@ -9586,6 +9841,10 @@ msgstr "成為造市商"
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "STIP.b LP incentives"
 msgstr "STIP.b LP 激勵"
+
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+msgid "Share your referral code with friends or your community —<0/> every trade made with your code earns you $-rewards."
+msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Decrease"
@@ -9686,8 +9945,7 @@ msgstr "結算中..."
 msgid "Leaderboard"
 msgstr "排行榜"
 
-#: src/components/Referrals/AffiliatesStats.tsx
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "TRADERS REFERRED"
 msgstr "推薦交易者"
 
@@ -9714,10 +9972,6 @@ msgstr "您的 GMX Account 和倉位所在的網路。餘額和倉位不會在�
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "流動性僅在 {chainNames} 或 {lastChainName} 上可用。請切換網路以繼續。"
-
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "Total trading volume from your referrals"
-msgstr "來自您推薦的總交易量"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in WETH-USDC pool. Select a different pool."
@@ -9775,7 +10029,7 @@ msgstr "事件"
 msgid "No disabled markets"
 msgstr "無已停用的市場"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Referral codes"
 msgstr "推薦碼"
 
@@ -9783,7 +10037,7 @@ msgstr "推薦碼"
 msgid "Performance vs benchmark over selected period"
 msgstr "所選期間內與基準的績效比較"
 
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Referral code updated"
 msgstr "推薦碼已更新"
 
@@ -9820,6 +10074,7 @@ msgstr "透過 <0>Camelot</0> 在 Arbitrum 上購買 APE"
 msgid "Depositing..."
 msgstr "存入中..."
 
+#: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Status"
 msgstr "狀態"
@@ -9845,10 +10100,6 @@ msgstr "最新價格"
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "Cancelling {orderText}..."
 msgstr "正在取消 {orderText}..."
-
-#: src/components/Referrals/TradersStats.tsx
-msgid "Tier {0}: {currentTierDiscount}% discount"
-msgstr "等級 {0}：{currentTierDiscount}% 折扣"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
@@ -9876,10 +10127,6 @@ msgstr "領取資金"
 msgid "Your funds are safe. Contact support for help."
 msgstr "您的資金是安全的。如需協助請聯繫客服。"
 
-#: src/components/Referrals/AddAffiliateCode.tsx
-msgid "Generate referral code"
-msgstr "產生推薦碼"
-
 #: src/components/PositionList/PositionList.tsx
 msgid "NET VALUE"
 msgstr "淨值"
@@ -9893,10 +10140,6 @@ msgstr "標記價格"
 #: src/components/Errors/errorToasts.tsx
 msgid "Increase the max network fee buffer to {0} in {settingsLink}"
 msgstr "在 {settingsLink} 中將最大網路費用緩衝增加至 {0}"
-
-#: src/components/Referrals/AffiliatesStats.tsx
-msgid "Your affiliate earnings from referrals"
-msgstr "您從推薦中獲得的聯盟收益"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Re-sign to continue."
@@ -9948,7 +10191,7 @@ msgstr "24 小時最高"
 msgid "FACTOR"
 msgstr "因子"
 
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Claim parameters unavailable. Retry in a few seconds"
 msgstr "領取參數不可用。請幾秒後重試"
 
@@ -10111,6 +10354,10 @@ msgstr "{column}"
 msgid "No trackers registered"
 msgstr "無已註冊的追蹤器"
 
+#: src/components/Referrals/affiliates/faq.tsx
+msgid "You earn rebates the moment a referred trader executes their first trade. Rebates appear in your \"Claimable Rebates\" balance immediately."
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Request withdraw"
 msgstr "申請提取"
@@ -10196,6 +10443,10 @@ msgstr "扣除費用後抵押品過低。存入更多資金以降低清算風險
 msgid "No markets found"
 msgstr "未找到市場"
 
+#: src/components/Referrals/traders/faq.tsx
+msgid "Do I need to enter a code on each network?"
+msgstr ""
+
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Insufficient collateral. Need more"
 msgstr "抵押品不足。需要更多"
@@ -10226,7 +10477,7 @@ msgstr "頻率"
 msgid "Switch to WBTC-USDC pool"
 msgstr "切換至 WBTC-USDC 池"
 
-#: src/components/Referrals/AffiliatesStats.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Traders referred"
 msgstr "推薦交易者"
 
@@ -10304,6 +10555,10 @@ msgstr "借出的倉位影響池金額"
 msgid "short"
 msgstr "做空"
 
+#: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
+msgid "Transaction hash copied to clipboard"
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "This year"
 msgstr "今年"
@@ -10368,9 +10623,17 @@ msgstr "滑點過高"
 msgid "No liquidity available for increasing shorts at<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 msgstr "以此規模加倉做空無可用流動性。<0/>最大做空規模：{0}<1/><2/>減倉做多的成交價格。"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Total value of assets"
+msgstr ""
+
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "<0>Switch to {0} pool</0> for potentially lower price impact"
 msgstr "<0>切換至 {0} 池</0>以獲得可能更低的價格影響"
+
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+msgid "Earn up to 20% in<0/> rebates as an Affiliate"
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 msgid "Buy on other platforms"
@@ -10402,13 +10665,14 @@ msgid "No distributions to claim"
 msgstr "無可領取的分配"
 
 #: src/components/PositionShare/PositionShare.tsx
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "Copy link"
 msgstr "複製連結"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "Referral code created"
 msgstr "推薦碼已建立"
 
@@ -10426,9 +10690,9 @@ msgstr "資金正在跨鏈至..."
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/AddAffiliateCode.tsx
-#: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+#: src/components/Referrals/traders/joinCode/ReferralCodeFormMultichain.tsx
 msgid "Network fee"
 msgstr "網路費用"
 
@@ -10453,7 +10717,7 @@ msgstr "GMX 質押獎勵："
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee"
 msgstr "{longOrShort}倉位{fundingAction}每小時 {fundingRate} 的資金費用，且不支付借貸費用"
 
-#: src/components/Referrals/JoinReferralCode.tsx
+#: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Failed to add referral code"
 msgstr "新增推薦碼失敗"
 
@@ -10571,6 +10835,7 @@ msgid "Order may not execute at {priceText}: acceptable impact ({formattedOrderA
 msgstr "訂單可能無法以{priceText}成交：可接受的價格影響（{formattedOrderAcceptablePriceImpact}）低於市場（{formattedCurrentAcceptablePriceImpact}）。點擊「編輯」。"
 
 #: src/components/PositionShare/PositionShare.tsx
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "Share on"
 msgstr "分享至"
 
@@ -10620,13 +10885,13 @@ msgstr "連結"
 msgid "Available to deposit"
 msgstr "可存入"
 
-#: src/components/Referrals/JoinReferralCode.tsx
-msgid "Enter a referral code to get fee discounts"
-msgstr "輸入推薦碼以獲得手續費折扣"
-
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "General performance details"
 msgstr "整體績效詳情"
+
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+msgid "Number of Trades from Referrals"
+msgstr ""
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/TPSLModal/AddTPSLModal.tsx
@@ -10677,6 +10942,10 @@ msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> 至 </1>{0}{toTokenIcon}{1}"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No decentralized exchanges available"
 msgstr "無可用的去中心化交易所"
+
+#: src/components/Referrals/traders/faq.tsx
+msgid "Where do I find a referral code?"
+msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Enable <0>Express Trading</0> in settings for better reliability.<1/><2/>Or increase the max network fee buffer {bufferText} in {settingsLink}"
@@ -10735,6 +11004,12 @@ msgstr "由於費用和價格影響，成交價格可能與限價不同。您將
 msgid "Private"
 msgstr "私有"
 
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+msgid "Learn more"
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Min. required collateral"
 msgstr "最低所需抵押品"
@@ -10743,6 +11018,8 @@ msgstr "最低所需抵押品"
 msgid "{orderText} update failed"
 msgstr "{orderText} 更新失敗"
 
+#: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
+#: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Success"
 msgstr "成功"

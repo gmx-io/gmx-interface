@@ -1,8 +1,10 @@
 import { t, Trans } from "@lingui/macro";
+import cx from "classnames";
 import camelCase from "lodash/camelCase";
 import mapKeys from "lodash/mapKeys";
 import upperFirst from "lodash/upperFirst";
 import { memo, SVGProps, useState } from "react";
+import { useCopyToClipboard } from "react-use";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
 import { colors } from "config/colors";
@@ -38,10 +40,10 @@ const icons = Object.keys(iconsContext).map((rawPath) => {
   let componentName = upperFirst(name);
 
   return {
-    path: rawPath,
+    path: `img/${rawPath}`,
     name: name,
-    importUrl: `import ${name} from "${rawPath}";`,
-    importSvg: `import ${componentName} from "${rawPath}";`,
+    importUrl: `import ${name} from "img/${rawPath}";`,
+    importSvg: `import ${componentName} from "img/${rawPath}?react";`,
     component: iconsContext[rawPath],
   };
 }) as {
@@ -74,7 +76,7 @@ const otherImages = Object.keys(otherImagesContext)
     return {
       path: key,
       name: name,
-      importUrl: `import ${name} from "${key}";`,
+      importUrl: `import ${name} from "img/${key}";`,
       src: otherImagesContext[key],
     };
   }) as { src: string; name: string; path: string; importUrl: string }[];
@@ -310,6 +312,7 @@ export default memo(function UiPage() {
 
 function IconsAndImages() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [clipboardState, copyToClipboard] = useCopyToClipboard();
 
   const filteredIcons = icons.filter(
     (icon) =>
@@ -359,9 +362,27 @@ function IconsAndImages() {
                     <br />
                     {t`Path:`} {icon.path}
                     <br />
-                    {t`Import URL:`} {icon.importUrl}
+                    <button
+                      onClick={() => {
+                        copyToClipboard(icon.importUrl);
+                      }}
+                      className={cx({
+                        "text-green-500": clipboardState.value === icon.importUrl,
+                      })}
+                    >
+                      {t`Import URL:`} {icon.importUrl}
+                    </button>
                     <br />
-                    {t`Import SVG:`} {icon.importSvg}
+                    <button
+                      onClick={() => {
+                        copyToClipboard(icon.importSvg);
+                      }}
+                      className={cx({
+                        "text-green-500": clipboardState.value === icon.importSvg,
+                      })}
+                    >
+                      {t`Import SVG:`} {icon.importSvg}
+                    </button>
                   </code>
                 </pre>
               </div>

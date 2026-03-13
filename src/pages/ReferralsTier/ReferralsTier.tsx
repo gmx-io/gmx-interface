@@ -18,7 +18,7 @@ export default function ReferralsTier() {
 
   const [affiliate, setAffiliate] = useState<string>("");
   const [affiliateTier, setAffiliateTier] = useState<number>(1);
-  const { referrerTier: currentAffiliateTier } = useReferrerTier(signer, chainId, affiliate);
+  const { referrerTier: currentAffiliateTier } = useReferrerTier(chainId, affiliate);
 
   const onConfirmation = useCallback(() => {
     if (affiliate) {

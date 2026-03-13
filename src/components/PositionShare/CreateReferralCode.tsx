@@ -33,7 +33,7 @@ import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 import { encodeReferralCode } from "sdk/utils/referrals";
@@ -42,10 +42,14 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { getCodeError, getReferralCodeTakenStatus, REFERRAL_CODE_REGEX } from "components/Referrals/referralsHelper";
+import {
+  getCodeError,
+  getReferralCodeTakenStatus,
+  REFERRAL_CODE_REGEX,
+} from "components/Referrals/shared/utils/referralsHelper";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import ReferralsIcon from "img/referrals.svg?react";
+import ReferralsIcon from "img/ic_referrals.svg?react";
 
 type Props = {
   onSuccess: (code: string) => void;
@@ -375,7 +379,7 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
       };
     }
     if (hasOutdatedUi) {
-      return { text: t`Page outdated. Refresh`, disabled: true };
+      return { text: getPageOutdatedError(), disabled: true };
     }
     if (isApproving) {
       return { text: t`Approving...`, disabled: true };

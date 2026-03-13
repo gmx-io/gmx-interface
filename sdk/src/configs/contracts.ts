@@ -37,7 +37,7 @@ export const CONTRACTS = {
     PositionRouter: "0xb87a436B93fFE9D75c5cFA7bAcFff96430b09868",
 
     UniswapGmxEthPool: "0x80A9ae39310abf666A87C743d6ebBD0E8C42158E",
-    ReferralStorage: "0xe6fab3f0c7199b0d34d7fbe83394fc0e0d06e99d",
+    ReferralStorage: "0xe6fab3F0c7199b0d34d7FbE83394fc0e0D06e99d",
 
     // Synthetics
     DataStore: "0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8",

@@ -7,8 +7,8 @@ import type { CodeOwnershipInfo } from "domain/referrals/types";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import AlertIcon from "img/ic_alert.svg?react";
 import InfoIcon from "img/ic_info_circle.svg?react";
-import WarnIcon from "img/ic_warn.svg?react";
 
 type Props = {
   allOwnersOnOtherChains:
@@ -37,16 +37,16 @@ export function ReferralCodeWarnings({ allOwnersOnOtherChains }: Props) {
         <div className="info">
           <TooltipWithPortal
             position="right"
-            handle={<WarnIcon className="size-16 text-yellow-300" />}
+            handle={<AlertIcon className="size-16 text-yellow-300" />}
             variant="none"
             className="flex"
-            renderContent={() => (
+            content={
               <div>
                 <Trans>
                   Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates.
                 </Trans>
               </div>
-            )}
+            }
           />
         </div>
       )}
@@ -57,11 +57,11 @@ export function ReferralCodeWarnings({ allOwnersOnOtherChains }: Props) {
             handle={<InfoIcon className="size-16 text-red-500" />}
             variant="none"
             className="flex"
-            renderContent={() => (
+            content={
               <div>
                 <Trans>Code taken by another user on {takenNetworkNames}. No rebates from those networks.</Trans>
               </div>
-            )}
+            }
           />
         </div>
       )}
