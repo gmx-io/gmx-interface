@@ -844,11 +844,6 @@ msgstr "Dezentraler Geldmarkt"
 msgid "By claiming, you agree to the <0>GLP Reimbursement</0> terms"
 msgstr "Durch die Inanspruchnahme stimmen Sie den <0>GLP-Erstattungs</0>bedingungen zu"
 
-#: src/components/Errors/gasErrors.tsx
-#: src/components/Errors/gasErrors.tsx
-#~ msgid "Insufficient {nativeTokenSymbol} for gas on {0}. <0>Buy {nativeTokenSymbol}</0>"
-#~ msgstr "Unzureichend {nativeTokenSymbol} für Gas auf {0}. <0>{nativeTokenSymbol} kaufen</0>"
-
 #: src/components/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Add {marketName} to wallet"
 msgstr "{marketName} zum Wallet hinzufügen"
@@ -1000,10 +995,6 @@ msgstr "Einzahlung abgeschlossen"
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Claim {totalUsd}"
 msgstr "Beanspruche {totalUsd}"
-
-#: src/domain/tokens/approveTokens.tsx
-#~ msgid "Insufficient {0} for gas on {networkName}<0/><1/><2>Buy or transfer {1} to {networkName}</2>"
-#~ msgstr "Unzureichend {0} für Gas auf {networkName}<0/><1/><2>{1} kaufen oder auf {networkName} übertragen</2>"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -2552,10 +2543,6 @@ msgstr "Änderungen können einige Minuten dauern, bis sie angezeigt werden"
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Excludes incentives"
 msgstr "Ohne Anreize"
-
-#: src/components/Errors/gasErrors.tsx
-#~ msgid "Insufficient {localizedList} for gas on {chainName}. <0>Buy {localizedList}</0>"
-#~ msgstr "Unzureichend {localizedList} für Gas auf {chainName}. <0>{localizedList} kaufen</0>"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buying {symbol}..."
@@ -7000,10 +6987,6 @@ msgstr "Debug-Überschreibungen zurücksetzen"
 msgid "Cancel Stop-Loss"
 msgstr "Stop-Loss abbrechen"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "{0} is required for collateral.<0/><1/>No swap path found for {1} to {2} within GMX.<2/><3/><4>Buy {3} on 1inch</4>."
-#~ msgstr "{0} wird als Sicherheit benötigt.<0/><1/>Kein Tauschpfad für {1} zu {2} innerhalb von GMX gefunden.<2/><3/><4>{3} auf 1inch kaufen</4>."
-
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
 msgstr ""
@@ -10520,11 +10503,6 @@ msgstr "Keine Zieltoken-Adresse"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"
 msgstr "Limit"
-
-#: src/components/Errors/errorToasts.tsx
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Insufficient {0} for gas on {1}<0/><1/><2>Buy or transfer {2} to {3}</2>"
-#~ msgstr "Unzureichend {0} für Gas auf {1}<0/><1/><2>{2} kaufen oder an {3} übertragen</2>"
 
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "TIMEKEY"

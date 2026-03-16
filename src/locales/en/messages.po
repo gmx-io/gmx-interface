@@ -844,11 +844,6 @@ msgstr "Decentralized money market"
 msgid "By claiming, you agree to the <0>GLP Reimbursement</0> terms"
 msgstr "By claiming, you agree to the <0>GLP Reimbursement</0> terms"
 
-#: src/components/Errors/gasErrors.tsx
-#: src/components/Errors/gasErrors.tsx
-#~ msgid "Insufficient {nativeTokenSymbol} for gas on {0}. <0>Buy {nativeTokenSymbol}</0>"
-#~ msgstr "Insufficient {nativeTokenSymbol} for gas on {0}. <0>Buy {nativeTokenSymbol}</0>"
-
 #: src/components/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Add {marketName} to wallet"
 msgstr "Add {marketName} to wallet"
@@ -1000,10 +995,6 @@ msgstr "Deposit completed"
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Claim {totalUsd}"
 msgstr "Claim {totalUsd}"
-
-#: src/domain/tokens/approveTokens.tsx
-#~ msgid "Insufficient {0} for gas on {networkName}<0/><1/><2>Buy or transfer {1} to {networkName}</2>"
-#~ msgstr "Insufficient {0} for gas on {networkName}<0/><1/><2>Buy or transfer {1} to {networkName}</2>"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Swap"
@@ -2552,10 +2543,6 @@ msgstr "Changes may take a few minutes to appear"
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Excludes incentives"
 msgstr "Excludes incentives"
-
-#: src/components/Errors/gasErrors.tsx
-#~ msgid "Insufficient {localizedList} for gas on {chainName}. <0>Buy {localizedList}</0>"
-#~ msgstr "Insufficient {localizedList} for gas on {chainName}. <0>Buy {localizedList}</0>"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buying {symbol}..."
@@ -7000,10 +6987,6 @@ msgstr "Clear debug overrides"
 msgid "Cancel Stop-Loss"
 msgstr "Cancel Stop-Loss"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "{0} is required for collateral.<0/><1/>No swap path found for {1} to {2} within GMX.<2/><3/><4>Buy {3} on 1inch</4>."
-#~ msgstr "{0} is required for collateral.<0/><1/>No swap path found for {1} to {2} within GMX.<2/><3/><4>Buy {3} on 1inch</4>."
-
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
 msgstr "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
@@ -10520,11 +10503,6 @@ msgstr "No to token address"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"
 msgstr "Limit"
-
-#: src/components/Errors/errorToasts.tsx
-#: src/components/Errors/errorToasts.tsx
-#~ msgid "Insufficient {0} for gas on {1}<0/><1/><2>Buy or transfer {2} to {3}</2>"
-#~ msgstr "Insufficient {0} for gas on {1}<0/><1/><2>Buy or transfer {2} to {3}</2>"
 
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "TIMEKEY"
