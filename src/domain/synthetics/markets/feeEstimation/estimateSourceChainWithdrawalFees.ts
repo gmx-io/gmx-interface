@@ -1,5 +1,3 @@
-import { zeroAddress } from "viem";
-
 import { SettlementChainId, SourceChainId } from "config/chains";
 import { getStargatePoolAddress, RANDOM_WALLET } from "config/multichain";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
@@ -150,7 +148,6 @@ async function estimateSingleTokenReturnTransfer({
   }
 
   const tokenAmount = expandDecimals(1, token.decimals) / 100n;
-  const additionalValue = unwrappedAddress === zeroAddress ? tokenAmount : 0n;
 
   const sendParams: SendParam = getMultichainTransferSendParams({
     dstChainId: srcChainId,
@@ -164,8 +161,7 @@ async function estimateSingleTokenReturnTransfer({
     chainId,
     stargateAddress,
     sendParams,
-    tokenAddress,
-    additionalValue,
+    tokenAddress: unwrappedAddress,
   });
 
   return {

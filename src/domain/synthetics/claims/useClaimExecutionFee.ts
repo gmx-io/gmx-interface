@@ -2,8 +2,9 @@ import { useMemo } from "react";
 import useSWR from "swr";
 
 import { getContract } from "config/contracts";
-import { estimateGasLimit } from "lib/gas/estimateGasLimit";
+import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import type { WalletSigner } from "lib/wallets";
+import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import type { ContractsChainId } from "sdk/configs/chains";
 
 import { useGasPrice } from "../fees";
@@ -67,12 +68,13 @@ export const useClaimExecutionFee = ({
         signatures,
       });
 
-      const gasLimit = await estimateGasLimit(signer!.provider!, {
-        to: getContract(chainId, "ClaimHandler"),
-        data: callData,
-        from: account!,
-        value: undefined,
-      });
+      const gasLimit = await getPublicClientWithRpc(chainId)
+        .estimateGas({
+          account: account,
+          to: getContract(chainId, "ClaimHandler"),
+          data: callData,
+        })
+        .then(applyGasLimitBuffer);
 
       return gasLimit * gasPrice!;
     },

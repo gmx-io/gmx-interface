@@ -698,7 +698,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       <>
         <BuyInputSection
           topLeftLabel={t`Pay`}
-          bottomLeftValue={payUsd !== undefined ? formatUsd(payUsd) : ""}
+          bottomLeftValue={payUsd !== undefined ? formatUsd(payUsd, { roundMode: "floor" }) : ""}
           bottomRightValue={
             fromToken && fromToken.balance !== undefined && fromToken.balance > 0n ? (
               <>
@@ -1137,7 +1137,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               <Trans>
                 Execution price may differ from limit price due to fees and price impact. You'll receive at least the
                 minimum amount shown.{" "}
-                <ExternalLink href="https://docs.gmx.io/docs/trading/#limit-orders" newTab>
+                <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#limit-orders" newTab>
                   Read more
                 </ExternalLink>
                 .

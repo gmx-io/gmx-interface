@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
 import { UI_FEE_RECEIVER_ACCOUNT } from "config/ui";
@@ -18,7 +18,6 @@ import {
 import { useSavedAllowedSlippage } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import {
   selectBlockTimestampData,
-  selectGasPaymentTokenAllowance,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
@@ -28,7 +27,6 @@ import {
   selectPositionEditorSelectedCollateralToken,
   selectPositionEditorSetCollateralInputValue,
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
-import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
@@ -41,7 +39,7 @@ import {
   substractMaxLeverageSlippage,
   willPositionCollateralBeSufficientForPosition,
 } from "domain/synthetics/positions";
-import { convertToTokenAmount, getApprovalRequirements, useTokensAllowanceData } from "domain/synthetics/tokens";
+import { convertToTokenAmount } from "domain/synthetics/tokens";
 import { getMarkPrice, getMinCollateralUsdForLeverage } from "domain/synthetics/trade";
 import {
   getCommonError,
@@ -52,7 +50,7 @@ import {
   ValidationButtonTooltipName,
   ValidationResult,
 } from "domain/synthetics/trade/utils/validation";
-import { useApproveToken } from "domain/tokens/useApproveTokens";
+import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { bigNumberBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
@@ -65,6 +63,8 @@ import {
 import { expandDecimals, formatAmountFree } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { userAnalytics } from "lib/userAnalytics";
+import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
 import {
@@ -117,14 +117,6 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
   const { collateralDeltaAmount, collateralDeltaUsd } = useSelector(selectPositionEditorCollateralInputAmountAndUsd);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const marketsInfoData = useSelector(selectMarketsInfoData);
-
-  const collateralTokenAllowance = useTokensAllowanceData(chainId, {
-    spenderAddress: routerAddress,
-    tokenAddresses: position ? [position.collateralTokenAddress] : [],
-  });
-
-  const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
-  const tokenPermits = useSelector(selectTokenPermits);
 
   const isDeposit = operation === Operation.Deposit;
 
@@ -259,57 +251,38 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     isGmxAccount: isCollateralTokenFromGmxAccount,
   });
 
-  const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
-    if (isCollateralTokenFromGmxAccount) {
-      return { tokensToApprove: [], isAllowanceLoaded: true };
+  const approvalTokens = useMemo(() => {
+    const list: { tokenAddress: string; amount: bigint | undefined }[] = [];
+
+    if (selectedCollateralAddress && collateralDeltaAmount !== undefined) {
+      list.push({ tokenAddress: selectedCollateralAddress, amount: collateralDeltaAmount });
     }
 
-    if (!selectedCollateralAddress || collateralDeltaAmount === undefined) {
-      return { tokensToApprove: [], isAllowanceLoaded: false };
+    if (expressParams?.gasPaymentParams) {
+      list.push({
+        tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
+        amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
+      });
     }
 
-    const approvalRequirements = getApprovalRequirements({
-      chainId,
-      payTokenParamsList: [
-        {
-          tokenAddress: selectedCollateralAddress,
-          amount: collateralDeltaAmount,
-          allowanceData: collateralTokenAllowance.tokensAllowanceData,
-          isAllowanceLoaded: collateralTokenAllowance.isLoaded,
-        },
-      ],
-      gasPaymentTokenParams: expressParams?.gasPaymentParams
-        ? {
-            tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
-            amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
-            allowanceData: gasPaymentTokenAllowance?.tokensAllowanceData,
-            isAllowanceLoaded: gasPaymentTokenAllowance?.isLoaded,
-          }
-        : undefined,
-      permits: expressParams && tokenPermits ? tokenPermits : [],
-    });
+    return list;
+  }, [selectedCollateralAddress, collateralDeltaAmount, expressParams?.gasPaymentParams]);
 
-    return approvalRequirements;
-  }, [
-    isCollateralTokenFromGmxAccount,
-    selectedCollateralAddress,
-    collateralDeltaAmount,
+  const {
+    tokensToApprove,
+    isAllowanceLoaded: isAllowanceLoadedRaw,
+    isApproving,
+    handleApprove,
+  } = useTokenApproval({
     chainId,
-    collateralTokenAllowance.tokensAllowanceData,
-    collateralTokenAllowance.isLoaded,
-    expressParams,
-    gasPaymentTokenAllowance?.tokensAllowanceData,
-    gasPaymentTokenAllowance?.isLoaded,
-    tokenPermits,
-  ]);
+    spenderAddress: routerAddress,
+    tokens: approvalTokens,
+    allowPermit: Boolean(expressParams),
+    skip: isCollateralTokenFromGmxAccount,
+  });
 
-  const [isApproving, setIsApproving] = useState(false);
-
-  useEffect(() => {
-    if (!tokensToApprove.length && isApproving) {
-      setIsApproving(false);
-    }
-  }, [isApproving, tokensToApprove.length]);
+  const isAllowanceLoaded =
+    Boolean(selectedCollateralAddress && collateralDeltaAmount !== undefined) && isAllowanceLoadedRaw;
 
   const [isSubmitting, setIsSubmitting] = useState(false);
 
@@ -411,7 +384,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     return (
       <Trans>
         Reduce withdrawal to match the max.{" "}
-        <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
+        <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">Read more</ExternalLink>.
         <br />
         <br />
         <span onClick={detectAndSetMaxSize} className="Tradebox-handle">
@@ -420,8 +393,6 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       </Trans>
     );
   }, [detectAndSetMaxSize, validationResult.buttonTooltipName]);
-
-  const { approveToken } = useApproveToken();
 
   async function onSubmit() {
     if (!account || !signer) {
@@ -432,12 +403,16 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     if (isAllowanceLoaded && tokensToApprove.length && selectedCollateralToken) {
       if (!chainId || isApproving) return;
 
-      approveToken({
-        setIsApproving,
-        tokenAddress: tokensToApprove[0].tokenAddress,
-        chainId,
-        signer,
-        allowPermit: Boolean(expressParams),
+      userAnalytics.pushEvent<TokenApproveClickEvent>({
+        event: "TokenApproveAction",
+        data: { action: "ApproveClick" },
+      });
+      handleApprove({
+        onApproveFail: () =>
+          userAnalytics.pushEvent<TokenApproveResultEvent>({
+            event: "TokenApproveAction",
+            data: { action: "ApproveFail" },
+          }),
       });
 
       return;
@@ -519,8 +494,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     return {
       text: (
         <>
-          {t`Approve ${getToken(chainId, tokenToApprove.tokenAddress).symbol}`}{" "}
-          <SpinnerIcon className="ml-4 animate-spin" />
+          {t`Approve ${getToken(chainId, tokenToApprove).symbol}`} <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
       disabled: true,
@@ -570,7 +544,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
   if (isAllowanceLoaded && tokensToApprove.length && selectedCollateralToken) {
     const tokenToApprove = tokensToApprove[0];
     return {
-      text: t`Approve ${getToken(chainId, tokenToApprove.tokenAddress).symbol}`,
+      text: t`Approve ${getToken(chainId, tokenToApprove).symbol}`,
       disabled: false,
       ...commonParams,
     };
