@@ -8,20 +8,20 @@ import { ErrorData, ErrorLike, extendError, parseError } from ".";
 export const INVALID_PERMIT_SIGNATURE_ERROR = "Invalid permit signature";
 export const EXPIRED_PERMIT_DEADLINE_ERROR = "Expired permit deadline";
 export const FAST_EXPRESS_PARAMS_TIMEOUT_ERROR = "fastExpressParams timeout";
-const NON_EOA_ACCOUNT_DETECTED_ERROR = "Non-EOA account detected";
+export const NON_SIGNING_ACCOUNT_DETECTED_ERROR = "Non-signing account detected";
 
-export function nonEoaAccountError(chainId: number) {
-  return extendError(new Error(NON_EOA_ACCOUNT_DETECTED_ERROR), {
+export function nonSigningAccountError(chainId: number) {
+  return extendError(new Error(NON_SIGNING_ACCOUNT_DETECTED_ERROR), {
     data: {
       chainId,
     },
   });
 }
 
-export function getIsNonEoaAccountError(error: ErrorLike) {
+export function getIsNonSigningAccountError(error: ErrorLike) {
   const parsedError = parseError(error);
 
-  return parsedError?.errorMessage?.includes(NON_EOA_ACCOUNT_DETECTED_ERROR);
+  return parsedError?.errorMessage?.includes(NON_SIGNING_ACCOUNT_DETECTED_ERROR);
 }
 
 export function getIsInsufficientExecutionFeeError(

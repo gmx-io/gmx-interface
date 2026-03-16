@@ -8,7 +8,7 @@ import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useIsLargeAccountVolumeStats } from "domain/synthetics/accountStats/useIsLargeAccountData";
 import { useChainId } from "lib/chains";
 import { formatAmountForMetrics } from "lib/metrics";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
+import { useNonSingingAccount } from "lib/wallets/useAccountType";
 
 import { useAvailableToTradeAssetMultichain } from "components/GmxAccountModal/hooks";
 
@@ -22,7 +22,7 @@ import { getOrCreateSupportChatUserId, themeToIntercomTheme } from "./utils";
 export function useSupportChat() {
   const { shouldShowSupportChat } = useShowSupportChat();
   const { address: account } = useAccount();
-  const { isNonEoaAccountOnAnyChain, isLoading: isNonEoaAccountOnAnyChainLoading } = useIsNonEoaAccountOnAnyChain();
+  const { isNonEoaAccountOnAnyChain, isLoading: isNonEoaAccountOnAnyChainLoading } = useNonSingingAccount();
   const { data: largeAccountVolumeStatsData, isLoading: isLargeAccountVolumeStatsLoading } =
     useIsLargeAccountVolumeStats({ account });
   const { walletPortfolioUsd, isWalletPortfolioUsdLoading } = useWalletPortfolioUsd();

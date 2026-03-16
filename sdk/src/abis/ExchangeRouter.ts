@@ -824,6 +824,161 @@ export default [
               },
               {
                 internalType: "address",
+                name: "cancellationReceiver",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "callbackContract",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "uiFeeReceiver",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "market",
+                type: "address",
+              },
+              {
+                internalType: "address",
+                name: "initialCollateralToken",
+                type: "address",
+              },
+              {
+                internalType: "address[]",
+                name: "swapPath",
+                type: "address[]",
+              },
+            ],
+            internalType: "struct IBaseOrderUtils.CreateOrderParamsAddresses",
+            name: "addresses",
+            type: "tuple",
+          },
+          {
+            components: [
+              {
+                internalType: "uint256",
+                name: "sizeDeltaUsd",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "initialCollateralDeltaAmount",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "triggerPrice",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "acceptablePrice",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "executionFee",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "callbackGasLimit",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "minOutputAmount",
+                type: "uint256",
+              },
+              {
+                internalType: "uint256",
+                name: "validFromTime",
+                type: "uint256",
+              },
+            ],
+            internalType: "struct IBaseOrderUtils.CreateOrderParamsNumbers",
+            name: "numbers",
+            type: "tuple",
+          },
+          {
+            internalType: "enum Order.OrderType",
+            name: "orderType",
+            type: "uint8",
+          },
+          {
+            internalType: "enum Order.DecreasePositionSwapType",
+            name: "decreasePositionSwapType",
+            type: "uint8",
+          },
+          {
+            internalType: "bool",
+            name: "isLong",
+            type: "bool",
+          },
+          {
+            internalType: "bool",
+            name: "shouldUnwrapNativeToken",
+            type: "bool",
+          },
+          {
+            internalType: "bool",
+            name: "autoCancel",
+            type: "bool",
+          },
+          {
+            internalType: "bytes32",
+            name: "referralCode",
+            type: "bytes32",
+          },
+          {
+            internalType: "bytes32[]",
+            name: "dataList",
+            type: "bytes32[]",
+          },
+        ],
+        internalType: "struct IBaseOrderUtils.CreateOrderParams",
+        name: "params",
+        type: "tuple",
+      },
+      {
+        internalType: "uint256",
+        name: "twapCount",
+        type: "uint256",
+      },
+      {
+        internalType: "uint256",
+        name: "interval",
+        type: "uint256",
+      },
+    ],
+    name: "createTwapOrder",
+    outputs: [
+      {
+        internalType: "bytes32[]",
+        name: "orderKeys",
+        type: "bytes32[]",
+      },
+    ],
+    stateMutability: "payable",
+    type: "function",
+  },
+  {
+    inputs: [
+      {
+        components: [
+          {
+            components: [
+              {
+                internalType: "address",
+                name: "receiver",
+                type: "address",
+              },
+              {
+                internalType: "address",
                 name: "callbackContract",
                 type: "address",
               },
@@ -1255,278 +1410,6 @@ export default [
       },
     ],
     stateMutability: "view",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        components: [
-          {
-            internalType: "address[]",
-            name: "primaryTokens",
-            type: "address[]",
-          },
-          {
-            components: [
-              {
-                internalType: "uint256",
-                name: "min",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "max",
-                type: "uint256",
-              },
-            ],
-            internalType: "struct Price.Props[]",
-            name: "primaryPrices",
-            type: "tuple[]",
-          },
-          {
-            internalType: "uint256",
-            name: "minTimestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "maxTimestamp",
-            type: "uint256",
-          },
-        ],
-        internalType: "struct OracleUtils.SimulatePricesParams",
-        name: "simulatedOracleParams",
-        type: "tuple",
-      },
-    ],
-    name: "simulateExecuteLatestDeposit",
-    outputs: [],
-    stateMutability: "payable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        components: [
-          {
-            internalType: "address",
-            name: "glv",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "fromMarket",
-            type: "address",
-          },
-          {
-            internalType: "address",
-            name: "toMarket",
-            type: "address",
-          },
-          {
-            internalType: "uint256",
-            name: "marketTokenAmount",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "minMarketTokens",
-            type: "uint256",
-          },
-        ],
-        internalType: "struct GlvShiftUtils.CreateGlvShiftParams[]",
-        name: "shiftParamsList",
-        type: "tuple[]",
-      },
-      {
-        components: [
-          {
-            internalType: "address[]",
-            name: "primaryTokens",
-            type: "address[]",
-          },
-          {
-            components: [
-              {
-                internalType: "uint256",
-                name: "min",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "max",
-                type: "uint256",
-              },
-            ],
-            internalType: "struct Price.Props[]",
-            name: "primaryPrices",
-            type: "tuple[]",
-          },
-          {
-            internalType: "uint256",
-            name: "minTimestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "maxTimestamp",
-            type: "uint256",
-          },
-        ],
-        internalType: "struct OracleUtils.SimulatePricesParams",
-        name: "simulatedOracleParams",
-        type: "tuple",
-      },
-    ],
-    name: "simulateExecuteLatestJitOrder",
-    outputs: [],
-    stateMutability: "payable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        components: [
-          {
-            internalType: "address[]",
-            name: "primaryTokens",
-            type: "address[]",
-          },
-          {
-            components: [
-              {
-                internalType: "uint256",
-                name: "min",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "max",
-                type: "uint256",
-              },
-            ],
-            internalType: "struct Price.Props[]",
-            name: "primaryPrices",
-            type: "tuple[]",
-          },
-          {
-            internalType: "uint256",
-            name: "minTimestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "maxTimestamp",
-            type: "uint256",
-          },
-        ],
-        internalType: "struct OracleUtils.SimulatePricesParams",
-        name: "simulatedOracleParams",
-        type: "tuple",
-      },
-    ],
-    name: "simulateExecuteLatestOrder",
-    outputs: [],
-    stateMutability: "payable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        components: [
-          {
-            internalType: "address[]",
-            name: "primaryTokens",
-            type: "address[]",
-          },
-          {
-            components: [
-              {
-                internalType: "uint256",
-                name: "min",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "max",
-                type: "uint256",
-              },
-            ],
-            internalType: "struct Price.Props[]",
-            name: "primaryPrices",
-            type: "tuple[]",
-          },
-          {
-            internalType: "uint256",
-            name: "minTimestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "maxTimestamp",
-            type: "uint256",
-          },
-        ],
-        internalType: "struct OracleUtils.SimulatePricesParams",
-        name: "simulatedOracleParams",
-        type: "tuple",
-      },
-    ],
-    name: "simulateExecuteLatestShift",
-    outputs: [],
-    stateMutability: "payable",
-    type: "function",
-  },
-  {
-    inputs: [
-      {
-        components: [
-          {
-            internalType: "address[]",
-            name: "primaryTokens",
-            type: "address[]",
-          },
-          {
-            components: [
-              {
-                internalType: "uint256",
-                name: "min",
-                type: "uint256",
-              },
-              {
-                internalType: "uint256",
-                name: "max",
-                type: "uint256",
-              },
-            ],
-            internalType: "struct Price.Props[]",
-            name: "primaryPrices",
-            type: "tuple[]",
-          },
-          {
-            internalType: "uint256",
-            name: "minTimestamp",
-            type: "uint256",
-          },
-          {
-            internalType: "uint256",
-            name: "maxTimestamp",
-            type: "uint256",
-          },
-        ],
-        internalType: "struct OracleUtils.SimulatePricesParams",
-        name: "simulatedOracleParams",
-        type: "tuple",
-      },
-      {
-        internalType: "enum ISwapPricingUtils.SwapPricingType",
-        name: "swapPricingType",
-        type: "uint8",
-      },
-    ],
-    name: "simulateExecuteLatestWithdrawal",
-    outputs: [],
-    stateMutability: "payable",
     type: "function",
   },
   {

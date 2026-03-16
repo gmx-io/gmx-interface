@@ -1,5 +1,5 @@
 import { useChainId } from "lib/chains";
-import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
+import { useNonSingingAccount } from "lib/wallets/useAccountType";
 
 import { useAvailableToTradeAssetSettlementChain } from "components/GmxAccountModal/hooks";
 
@@ -8,7 +8,7 @@ import { useEmptyAvalancheGmxAccount } from "./useEmptyGmxAccounts";
 export function useGmxAccountShowDepositButton() {
   const { srcChainId } = useChainId();
   const { gmxAccountUsd, isGmxAccountLoading } = useAvailableToTradeAssetSettlementChain();
-  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
+  const { isNonEoaAccountOnAnyChain } = useNonSingingAccount();
   const { isEmptyAvalancheGmxAccountOrNotConnected } = useEmptyAvalancheGmxAccount();
 
   const shouldShowDepositButton =
