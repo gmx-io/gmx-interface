@@ -7177,8 +7177,8 @@ msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr "使用以下方式將 {tokenSymbol} 橋接至 {chainName}"
 
 #: src/domain/tokens/approveTokens.tsx
-msgid "Permit signing failed"
-msgstr "許可簽名失敗"
+#~ msgid "Permit signing failed"
+#~ msgstr "許可簽名失敗"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order uses {collateralSymbol}, but existing {longText} position uses {symbol} as collateral"

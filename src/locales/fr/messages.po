@@ -7177,8 +7177,8 @@ msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr "Transférer {tokenSymbol} vers {chainName} avec"
 
 #: src/domain/tokens/approveTokens.tsx
-msgid "Permit signing failed"
-msgstr "Échec de la signature du permis"
+#~ msgid "Permit signing failed"
+#~ msgstr "Échec de la signature du permis"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order uses {collateralSymbol}, but existing {longText} position uses {symbol} as collateral"
