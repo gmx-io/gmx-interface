@@ -56,18 +56,16 @@ export function useTokensAllowanceData(
 
       const multicallAddress = MULTICALLS_MAP[currentChainId];
 
-      if (multicallAddress !== undefined) {
-        allowanceCalls.multicall = {
-          contractAddress: multicallAddress,
-          abiId: "Multicall",
-          calls: {
-            blockNumber: {
-              methodName: "getBlockNumber",
-              params: [],
-            },
+      allowanceCalls.multicall = {
+        contractAddress: multicallAddress,
+        abiId: "Multicall",
+        calls: {
+          blockNumber: {
+            methodName: "getBlockNumber",
+            params: [],
           },
-        };
-      }
+        },
+      };
 
       return allowanceCalls;
     },
@@ -81,7 +79,7 @@ export function useTokensAllowanceData(
         tokenAllowance[address] = res.data[address].allowance.returnValues[0];
       }
 
-      const multicallContextBlockNumber = res.data.multicall.blockNumber.returnValues?.[0] as bigint | undefined;
+      const multicallContextBlockNumber = res.data.multicall.blockNumber.returnValues[0] as bigint;
 
       return {
         tokenAllowance,
