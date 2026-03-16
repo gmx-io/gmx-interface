@@ -96,6 +96,7 @@ export async function approveTokens({
       if (e.message?.includes(INVALID_PERMIT_SIGNATURE_ERROR)) {
         onApproveFail?.(e, { isPermit: true });
         permitParams.setIsPermitsDisabled(true);
+        metrics.pushError(e, "approveTokens.permitError");
         helperToast.error(getInvalidPermitSignatureToastContent());
         setIsApproving(false);
         return;
