@@ -1,11 +1,18 @@
-import { useCallback, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import useSWR from "swr";
 
 import { getApiUrl } from "sdk/configs/api";
 import type { ContractsChainId } from "sdk/configs/chains";
 
 const JIT_LIQUIDITY_UPDATE_INTERVAL = 30 * 1000;
-const JIT_STALE_COOLDOWN_DURATION = 60 * 1000;
+const JIT_STALE_MIN_COOLDOWN = 5 * 1000;
+const JIT_STALE_MAX_COOLDOWN = 60 * 1000;
+const JIT_STALE_REFETCH_DELAY = 7 * 1000;
+
+type StaleEntry = {
+  timestamp: number;
+  fetchGeneration: number;
+};
 
 export type GlvShiftParam = {
   glv: string;
@@ -28,10 +35,6 @@ export type JitLiquidityData = {
   refreshJitData: () => void;
 };
 
-/**
- * Look up the JitLiquidityInfo for a given market from the JIT liquidity map.
- * Handles the `.toLowerCase()` normalisation internally.
- */
 export function getJitLiquidityInfo(
   jitLiquidityMap: Map<string, JitLiquidityInfo> | undefined,
   marketTokenAddress: string
@@ -39,13 +42,6 @@ export function getJitLiquidityInfo(
   return jitLiquidityMap?.get(marketTokenAddress.toLowerCase());
 }
 
-/**
- * Convenience helper that resolves the JIT-adjusted maxReservedUsd for a single
- * direction (long or short) in one call.
- *
- * Returns `undefined` when there is no JIT data for this market, so the caller
- * can fall back to the on-chain maxReservedUsd.
- */
 export function getJitMaxReservedUsd(
   jitLiquidityMap: Map<string, JitLiquidityInfo> | undefined,
   marketTokenAddress: string,
@@ -62,8 +58,10 @@ function safeParseBigInt(value: string): bigint {
 
 export function useJitLiquidity(chainId: ContractsChainId, options?: { enabled?: boolean }): JitLiquidityData {
   const enabled = options?.enabled !== false;
-  const staleMarketsRef = useRef<Map<string, number>>(new Map());
+  const staleMarketsRef = useRef<Map<string, StaleEntry>>(new Map());
+  const fetchGenerationRef = useRef(0);
   const [staleVersion, setStaleVersion] = useState(0);
+  const delayedRefetchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const { data, mutate } = useSWR<Map<string, JitLiquidityInfo> | undefined>(
     enabled ? ["jitLiquidity", chainId] : null,
@@ -77,6 +75,8 @@ export function useJitLiquidity(chainId: ContractsChainId, options?: { enabled?:
 
         const res = await fetch(`${apiUrl}/jit/liquidity_info`);
         const response = await res.json();
+
+        fetchGenerationRef.current += 1;
 
         const map = new Map<string, JitLiquidityInfo>();
 
@@ -109,10 +109,32 @@ export function useJitLiquidity(chainId: ContractsChainId, options?: { enabled?:
     }
   );
 
-  const markJitStale = useCallback((marketAddress: string) => {
-    staleMarketsRef.current.set(marketAddress.toLowerCase(), Date.now());
-    setStaleVersion((v) => v + 1);
+  useEffect(() => {
+    return () => {
+      if (delayedRefetchTimerRef.current) {
+        clearTimeout(delayedRefetchTimerRef.current);
+      }
+    };
   }, []);
+
+  const markJitStale = useCallback(
+    (marketAddress: string) => {
+      staleMarketsRef.current.set(marketAddress.toLowerCase(), {
+        timestamp: Date.now(),
+        fetchGeneration: fetchGenerationRef.current,
+      });
+      setStaleVersion((v) => v + 1);
+
+      if (delayedRefetchTimerRef.current) {
+        clearTimeout(delayedRefetchTimerRef.current);
+      }
+      delayedRefetchTimerRef.current = setTimeout(() => {
+        mutate();
+        delayedRefetchTimerRef.current = null;
+      }, JIT_STALE_REFETCH_DELAY);
+    },
+    [mutate]
+  );
 
   const jitLiquidityMap = useMemo(() => {
     if (!data) {
@@ -120,20 +142,31 @@ export function useJitLiquidity(chainId: ContractsChainId, options?: { enabled?:
     }
 
     const now = Date.now();
+    const currentGeneration = fetchGenerationRef.current;
     const filtered = new Map<string, JitLiquidityInfo>();
 
     for (const [market, info] of data) {
-      const staleTimestamp = staleMarketsRef.current.get(market);
+      const staleEntry = staleMarketsRef.current.get(market);
 
-      if (staleTimestamp && staleTimestamp + JIT_STALE_COOLDOWN_DURATION > now) {
-        continue;
+      if (staleEntry) {
+        const elapsed = now - staleEntry.timestamp;
+
+        if (elapsed >= JIT_STALE_MAX_COOLDOWN) {
+          staleMarketsRef.current.delete(market);
+        } else if (elapsed < JIT_STALE_MIN_COOLDOWN) {
+          continue;
+          // Suppress until a fetch beyond the immediate refetch completes
+        } else if (currentGeneration <= staleEntry.fetchGeneration + 1) {
+          continue;
+        } else {
+          staleMarketsRef.current.delete(market);
+        }
       }
 
       filtered.set(market, info);
     }
 
     return filtered;
-    // staleVersion ensures recomputation when markJitStale is called
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [data, staleVersion]);
 
