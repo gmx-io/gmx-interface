@@ -17,6 +17,12 @@ export function RedirectPopupModal({
   appRedirectUrl,
   setShouldHideRedirectModal,
   shouldHideRedirectModal,
+}: {
+  redirectModalVisible: boolean;
+  setRedirectModalVisible: (visible: boolean) => void;
+  appRedirectUrl: string;
+  setShouldHideRedirectModal: (value: boolean) => void;
+  shouldHideRedirectModal: boolean;
 }) {
   const [, setRedirectPopupTimestamp] = useRedirectPopupTimestamp();
   const onClickAgree = () => {

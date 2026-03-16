@@ -111,7 +111,7 @@ export const TransferDetailsView = () => {
   const networkLabel = selectedTransfer && sourceChainId && (
     <span>
       <img
-        src={CHAIN_ID_TO_NETWORK_ICON[sourceChainId]}
+        src={CHAIN_ID_TO_NETWORK_ICON[sourceChainId as keyof typeof CHAIN_ID_TO_NETWORK_ICON]}
         width={20}
         height={20}
         className="-my-5 inline-block size-20 rounded-full align-baseline"
@@ -143,11 +143,13 @@ export const TransferDetailsView = () => {
       />
       {selectedTransfer?.sentTxn && initialChainId && (
         <SyntheticsInfoRow
-          label={CHAIN_ID_TO_EXPLORER_NAME[initialChainId]}
+          label={CHAIN_ID_TO_EXPLORER_NAME[initialChainId as keyof typeof CHAIN_ID_TO_EXPLORER_NAME]}
           value={
             <ExternalLink
               className="!no-underline"
-              href={CHAIN_ID_TO_TX_URL_BUILDER[initialChainId](selectedTransfer.sentTxn)}
+              href={CHAIN_ID_TO_TX_URL_BUILDER[initialChainId as keyof typeof CHAIN_ID_TO_TX_URL_BUILDER](
+                selectedTransfer.sentTxn
+              )}
             >
               <div className="flex items-center gap-4">
                 {shortenAddressOrEns(selectedTransfer.sentTxn, 13)}

@@ -15,6 +15,7 @@ import { sendOrderTxnSubmittedMetric } from "lib/metrics/utils";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { toAddress } from "lib/transactions/iSigner";
+import { TxError } from "sdk/utils/errors/transactionsErrors";
 
 import { getErrorMessage } from "components/Errors/errorToasts";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -188,7 +189,7 @@ export async function callContract(
     return res;
   } catch (e) {
     if (!opts.hideErrorMsg) {
-      const { failMsg, autoCloseToast } = getErrorMessage(chainId, e, opts?.failMsg);
+      const { failMsg, autoCloseToast } = getErrorMessage(chainId, e as TxError, opts?.failMsg);
       helperToast.error(failMsg, { autoClose: autoCloseToast });
     }
 

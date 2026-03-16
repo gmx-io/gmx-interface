@@ -104,7 +104,7 @@ function ReferralCodeForm({
         setReferralCode("");
       }
     } catch (error) {
-      toastCustomOrStargateError(chainId, error);
+      toastCustomOrStargateError(chainId, error as Error);
     } finally {
       setIsSubmitting(false);
       setIsValidating(false);
@@ -340,7 +340,7 @@ function ReferralCodeFormMultichain({
         </>
       );
     } catch (error) {
-      toastCustomOrStargateError(chainId, error);
+      toastCustomOrStargateError(chainId, error as Error);
     } finally {
       setIsSubmitting(false);
       setIsValidating(false);

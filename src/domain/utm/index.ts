@@ -21,13 +21,16 @@ export function useUtmParams() {
   const query = useRouteQuery();
 
   useEffect(() => {
-    const utmParams = ["source", "medium", "campaign", "term", "content"].reduce((acc, param) => {
-      const value = query.get(`utm_${param}`);
-      if (value && value.length < 50) {
-        acc[param] = value;
-      }
-      return acc;
-    }, {} as UtmParams);
+    const utmParams = ["source", "medium", "campaign", "term", "content"].reduce(
+      (acc: Record<string, string>, param) => {
+        const value = query.get(`utm_${param}`);
+        if (value && value.length < 50) {
+          acc[param] = value;
+        }
+        return acc;
+      },
+      {} as Record<string, string>
+    ) as unknown as UtmParams;
 
     const utmString = Object.entries(utmParams)
       .map(([key, value]) => `utm_${key}=${value}`)

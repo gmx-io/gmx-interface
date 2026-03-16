@@ -1,3 +1,4 @@
+// @ts-expect-error crypto-js has no type declarations
 import cryptoJs from "crypto-js";
 import { useCallback, useRef } from "react";
 import useSWR, { SWRConfiguration, useSWRConfig } from "swr";
@@ -155,7 +156,7 @@ export function useMulticall<
             : response;
 
         return result as TResult;
-      } catch (e) {
+      } catch (e: any) {
         // eslint-disable-next-line no-console
         console.error(`Multicall request failed: ${name}`, e);
         e.message = `Multicall request failed: ${name} ${e.message}`;

@@ -62,7 +62,8 @@ const TwapRows = ({
 }: Props) => {
   const { _, i18n } = useLingui();
   const localeStr = i18n.locale;
-  const locale: DateLocale = LOCALE_DATE_LOCALE_MAP[localeStr] ?? LOCALE_DATE_LOCALE_MAP.en;
+  const locale: DateLocale =
+    LOCALE_DATE_LOCALE_MAP[localeStr as keyof typeof LOCALE_DATE_LOCALE_MAP] ?? LOCALE_DATE_LOCALE_MAP.en;
 
   const { savedTwapNumberOfParts } = useSettings();
   const tradeboxChanges = useTradeboxChanges();

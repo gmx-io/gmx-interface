@@ -36,7 +36,7 @@ export function debugLog(messenger: () => string | void) {
       console.debug(`[multicall] ${message}`);
     } catch (e) {
       // eslint-disable-next-line no-console
-      console.error(`[multicall] Error logging message: ${e.message}`);
+      console.error(`[multicall] Error logging message: ${(e as Error).message}`);
     }
   }
 }

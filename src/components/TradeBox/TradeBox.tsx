@@ -627,7 +627,10 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     (token: Token) => onSelectToTokenAddress(token.address),
     [onSelectToTokenAddress]
   );
-  const handleCloseInputChange = useCallback((e) => setCloseSizeInputValue(e.target.value), [setCloseSizeInputValue]);
+  const handleCloseInputChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => setCloseSizeInputValue(e.target.value),
+    [setCloseSizeInputValue]
+  );
 
   const formattedMaxCloseSize = formatAmount(selectedPosition?.sizeInUsd, USD_DECIMALS, 2);
 
@@ -644,7 +647,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   );
 
   const handleTriggerPriceInputChange = useCallback(
-    (e) => setTriggerPriceInputValue(e.target.value),
+    (e: React.ChangeEvent<HTMLInputElement>) => setTriggerPriceInputValue(e.target.value),
     [setTriggerPriceInputValue]
   );
 
@@ -682,7 +685,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   );
 
   const handleFormSubmit = useCallback(
-    (e) => {
+    (e: React.FormEvent) => {
       e.preventDefault();
       if (!isCursorInside && (!submitButtonState.disabled || shouldDisableValidation)) {
         wrappedOnSubmit();
@@ -999,7 +1002,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             label: t`More`,
             options: mode.map(modeToOptions),
           }
-        : modeToOptions(mode)
+        : modeToOptions(mode as TradeMode)
     );
   }, [availableTradeModes, localizedTradeModeLabels]);
 
@@ -1014,7 +1017,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               options={tabsOptions}
               type="pills"
               selectedValue={tradeMode}
-              onChange={onSelectTradeMode}
+              onChange={onSelectTradeMode as any}
               qa="trade-mode"
               className="bg-slate-900 text-13"
               regularOptionClassname="grow"

@@ -329,7 +329,8 @@ export function buildTokenChainDataArray({
     const sourceChainId = parseInt(sourceChainIdString) as SourceChainId;
     const tokensChainBalanceData = tokenBalances[sourceChainId];
 
-    const sourceChainTokenIdMap = MULTI_CHAIN_TOKEN_MAPPING[chainId]?.[sourceChainId];
+    const sourceChainTokenIdMap =
+      MULTI_CHAIN_TOKEN_MAPPING[chainId as keyof typeof MULTI_CHAIN_TOKEN_MAPPING]?.[sourceChainId];
 
     if (!sourceChainTokenIdMap) {
       continue;
@@ -398,7 +399,9 @@ function getTokensChainData({
 export function useGmxAccountWithdrawNetworks() {
   const { chainId } = useChainId();
 
-  const sourceChains = Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId] || {}).map(Number);
+  const sourceChains = Object.keys(
+    MULTI_CHAIN_TOKEN_MAPPING[chainId as keyof typeof MULTI_CHAIN_TOKEN_MAPPING] || {}
+  ).map(Number);
 
   const networks = useMemo(() => {
     return sourceChains

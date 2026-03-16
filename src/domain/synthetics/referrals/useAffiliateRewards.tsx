@@ -18,7 +18,7 @@ export function useAffiliateRewards(chainId: ContractsChainId) {
         dataStore: {
           contractAddress: getContract(chainId, "DataStore"),
           abiId: "DataStore",
-          calls: marketsAddresses!.reduce((acc, marketAddress) => {
+          calls: marketsAddresses!.reduce((acc: Record<string, any>, marketAddress) => {
             const market = marketsData![marketAddress];
 
             acc[`${marketAddress}-${market.longTokenAddress}`] = {

@@ -59,7 +59,7 @@ export function RpcDebugSettings() {
             isChecked={_debugRpcTracker?.getFlag(flag as RpcDebugFlags) ?? false}
             setIsChecked={(checked) => handleFlagChange(flag as RpcDebugFlags, checked)}
           >
-            <Trans>{FLAG_LABELS[flag]}</Trans>
+            <Trans>{FLAG_LABELS[flag as keyof typeof FLAG_LABELS]}</Trans>
           </ToggleSwitch>
         ))}
 

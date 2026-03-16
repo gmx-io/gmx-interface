@@ -154,7 +154,7 @@ export async function approveTokens({
       };
       setPendingTxns([...pendingTxns, pendingTxn]);
     }
-  } catch (e) {
+  } catch (e: any) {
     onApproveFail?.(e, { isPermit: false });
     // eslint-disable-next-line no-console
     console.error(e);

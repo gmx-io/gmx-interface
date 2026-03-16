@@ -16,7 +16,7 @@ export function useOnchainTokenConfigs(chainId: ContractsChainId, params?: { ena
     refreshInterval: null,
 
     request: () =>
-      tokens.reduce((acc, token) => {
+      tokens.reduce((acc: Record<string, any>, token) => {
         acc[`${token.address}-priceFeed`] = {
           contractAddress: getContract(chainId, "DataStore"),
           abiId: "DataStore",

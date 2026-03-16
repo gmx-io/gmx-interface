@@ -268,7 +268,7 @@ describe("getDecreasePositionAmounts DecreasePositionSwapType", () => {
     });
 
     expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.SwapPnlTokenToCollateralToken);
-    expect(amounts.swapProfitUsdIn).toBeGreaterThan(0n);
+    expect((amounts as any).swapProfitUsdIn).toBeGreaterThan(0n);
     expect(amounts.swapProfitFeeUsd).toBeGreaterThan(0n);
   });
 
@@ -290,7 +290,7 @@ describe("getDecreasePositionAmounts DecreasePositionSwapType", () => {
     });
 
     expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.SwapCollateralTokenToPnlToken);
-    expect(amounts.swapProfitUsdIn).toBeGreaterThan(0n);
+    expect((amounts as any).swapProfitUsdIn).toBeGreaterThan(0n);
     expect(amounts.swapProfitFeeUsd).not.toEqual(0n);
   });
 });

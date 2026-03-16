@@ -217,7 +217,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   const explorerURL = getExplorerUrl(chainId);
   const { _ } = useLingui();
   const typeStr = getTypeStr(_, typeId);
-  const tooltipData = INCENTIVE_TOOLTIP_MAP[String(typeId)];
+  const tooltipData = INCENTIVE_TOOLTIP_MAP[Number(typeId) as keyof typeof INCENTIVE_TOOLTIP_MAP];
 
   const renderTotalTooltipContent = useCallback(() => {
     return tokenIncentiveDetails.map((tokenInfo) => {
@@ -243,6 +243,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
     () =>
       tooltipData ? (
         <Link className="link-underline" to={tooltipData.link}>
+          {/* @ts-expect-error lingui t macro returns MessageDescriptor at runtime but typed as string */}
           {_(tooltipData.text.id)}
         </Link>
       ) : null,

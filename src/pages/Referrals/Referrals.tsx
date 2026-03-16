@@ -51,7 +51,7 @@ const TAB_OPTION_LABELS = { [TRADERS]: msg`Traders`, [AFFILIATES]: msg`Affiliate
 function Referrals() {
   const { active, account: walletAccount, signer } = useWallet();
   const { account: queryAccount } = useParams<{ account?: string }>();
-  let account;
+  let account: string | undefined;
   if (queryAccount && isAddress(queryAccount, { strict: false })) {
     account = getAddress(queryAccount);
   } else {
@@ -125,7 +125,7 @@ function Referrals() {
   const tabsOptions = useMemo(() => {
     return TAB_OPTIONS.map((option) => ({
       value: option,
-      label: localizedTabOptionLabels[option],
+      label: localizedTabOptionLabels[option as keyof typeof localizedTabOptionLabels],
     }));
   }, [localizedTabOptionLabels]);
 

@@ -7,7 +7,7 @@ import {
   recoverTypedDataAddress,
 } from "viem";
 
-import { parseError } from "lib/errors";
+import { parseError, type ErrorLike } from "lib/errors";
 import { defined } from "lib/guards";
 import { WalletSigner } from "lib/wallets";
 import { signTypedData, splitSignature } from "lib/wallets/signing";
@@ -227,7 +227,7 @@ export async function validateTokenPermitSignature(chainId: number, permit: Sign
     return {
       isValid: false,
       recoveredAddress: undefined,
-      error: parseError(error),
+      error: parseError(error as ErrorLike),
     };
   }
 }

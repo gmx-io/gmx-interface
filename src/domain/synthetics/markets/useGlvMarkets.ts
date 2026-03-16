@@ -124,7 +124,7 @@ export function useGlvMarketsInfo(
           throw new Error("Not all required data is loaded");
         }
 
-        const request = glvs.reduce((acc, { glv, markets }) => {
+        const request = glvs.reduce((acc: Record<string, any>, { glv, markets }) => {
           const glvLongToken = tokensData[glv.longToken];
           const glvShortToken = tokensData[glv.shortToken];
 

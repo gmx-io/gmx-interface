@@ -16,7 +16,7 @@ import { isDevelopment } from "config/env";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { SignedTokenPermit } from "domain/tokens";
-import { decodeErrorFromViemError } from "lib/errors";
+import { decodeErrorFromViemError, type ErrorLike } from "lib/errors";
 import { getTenderlyConfig, simulateTxWithTenderly } from "lib/tenderly";
 import { BlockTimestampData, adjustBlockTimestamp } from "lib/useBlockTimestampRequest";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
@@ -352,7 +352,7 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
               message: JSON.stringify(decodedError, null, 2),
               args: decodedError.args,
             })
-          : txnError,
+          : (txnError as ErrorLike),
         {
           errorContext: "simulation",
         }

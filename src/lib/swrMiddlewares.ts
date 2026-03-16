@@ -1,14 +1,14 @@
 import { useEffect } from "react";
 import { Cache, Fetcher, Key, unstable_serialize } from "swr";
 
-const counter = {};
+const counter: Record<string, number> = {};
 
 export type SWRGCMiddlewareConfig = {
   clearUnusedKeys?: boolean;
 };
 
 export const swrGCMiddleware =
-  (useSWRNext) => (key: Key, fetcher: Fetcher | null, config: { clearUnusedKeys?: boolean; cache: Cache }) => {
+  (useSWRNext: any) => (key: Key, fetcher: Fetcher | null, config: { clearUnusedKeys?: boolean; cache: Cache }) => {
     const { clearUnusedKeys, cache } = config;
     const keyToWatch = clearUnusedKeys ? unstable_serialize(key) : undefined;
 

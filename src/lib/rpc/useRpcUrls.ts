@@ -73,7 +73,7 @@ class RpcTrackersRegistry {
   getCurrentRpcUrls(chainId: number) {
     // Would never happen in normal flow, but added for multichain localStorage safety
     if (chainId === undefined) {
-      return { primary: undefined, fallbacks: [], trackerKey: "unknown", endpointsStats: [] };
+      return { primary: undefined, fallbacks: [] as string[], trackerKey: "unknown", endpointsStats: [] };
     }
 
     const tracker = this.getRpcTrackerByChainId(chainId);
@@ -124,7 +124,7 @@ export function useCurrentRpcUrls(chainId: number): { primary: string; fallbacks
   }>(() => {
     const result = getCurrentRpcUrls(chainId);
     return {
-      primary: result.primary,
+      primary: result.primary!,
       fallbacks: result.fallbacks,
     };
   });
@@ -134,7 +134,7 @@ export function useCurrentRpcUrls(chainId: number): { primary: string; fallbacks
 
     const result = getCurrentRpcUrls(chainId);
     setBestRpcUrls({
-      primary: result.primary,
+      primary: result.primary!,
       fallbacks: result.fallbacks,
     });
     const tracker = getRpcTrackerByChainId(chainId);

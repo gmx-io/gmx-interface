@@ -40,7 +40,7 @@ export default function useUniqueUsers() {
   );
 
   return data?.reduce(
-    (acc, userInfo, index) => {
+    (acc: Record<number | string, number>, userInfo, index) => {
       const currentChainUsers = userInfo?.userStats?.[0]?.uniqueCountCumulative ?? 0;
       acc[ACTIVE_CHAIN_IDS[index]] = currentChainUsers;
       acc.total += currentChainUsers;
@@ -48,6 +48,6 @@ export default function useUniqueUsers() {
     },
     {
       total: 0,
-    }
+    } as Record<number | string, number>
   );
 }

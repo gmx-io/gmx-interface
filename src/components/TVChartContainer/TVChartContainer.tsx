@@ -582,7 +582,11 @@ export default function TVChartContainer({
           ? chartOverridesLight["mainSeriesProperties.priceLineColor"]!
           : chartOverridesDark["mainSeriesProperties.priceLineColor"]!;
       const priceLineColor =
-        direction === "up" ? colors.green[500][theme] : direction === "down" ? colors.red[500][theme] : neutralColor;
+        direction === "up"
+          ? (colors.green as any)[500][theme]
+          : direction === "down"
+            ? (colors.red as any)[500][theme]
+            : neutralColor;
 
       tvWidgetRef.current.applyOverrides({
         "mainSeriesProperties.priceLineColor": priceLineColor,
@@ -663,8 +667,8 @@ export default function TVChartContainer({
         ?.activeChart()
         .onIntervalChanged()
         .subscribe(null, (interval) => {
-          if (supportedResolutions[interval]) {
-            const period = supportedResolutions[interval];
+          if (supportedResolutions[interval as keyof typeof supportedResolutions]) {
+            const period = supportedResolutions[interval as keyof typeof supportedResolutions];
             setPeriod(period);
             tvWidgetRef.current?.saveChartToServer(undefined, undefined, {
               chartName: `gmx-chart-v2`,

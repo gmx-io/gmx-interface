@@ -34,7 +34,7 @@ export async function callRelayTransaction({
         ]
       ),
     });
-  } catch (ex) {
+  } catch (ex: any) {
     if (ex.error) {
       // this gives much more readable error in the console with a stacktrace
       throw ex.error;

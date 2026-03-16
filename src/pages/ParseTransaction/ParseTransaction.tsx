@@ -562,13 +562,13 @@ function LogEntryComponent(props: LogEntryComponentProps) {
     );
   }
 
-  const field = fieldFormatters[props.item];
+  const field = (fieldFormatters as Record<string, any>)[props.item];
 
   if (typeof props.value === "bigint") {
     if (field) {
       try {
         value = field(props.value, props);
-      } catch (e) {
+      } catch (e: any) {
         value = e.message;
         withError = true;
       }
@@ -586,7 +586,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
   if (props.type === "address" && field) {
     try {
       value = field(props.value, props);
-    } catch (e) {
+    } catch (e: any) {
       value = e.message;
       withError = true;
     }
@@ -602,7 +602,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
     if (field) {
       try {
         value = field(props.value, props);
-      } catch (e) {
+      } catch (e: any) {
         value = e.message;
         withError = true;
       }

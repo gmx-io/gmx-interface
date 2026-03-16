@@ -1,3 +1,4 @@
+// @ts-expect-error no declaration file for crypto-js
 import cryptoJs from "crypto-js";
 import { ethers, Provider } from "ethers";
 import {
@@ -644,7 +645,7 @@ async function getSubaccountOnchainData({
       return acc;
     }
 
-    acc[key] = decodeFunctionResult({
+    (acc as Record<string, any>)[key] = decodeFunctionResult({
       abi: call.abi,
       functionName: call.functionName,
       data: decodedMulticallResults[index] as Hex,

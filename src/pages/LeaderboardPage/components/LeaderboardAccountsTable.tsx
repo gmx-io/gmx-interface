@@ -267,7 +267,7 @@ const TableHeaderCell = memo(
           }
         : undefined;
 
-    const stopPropagation = useCallback((e) => e.stopPropagation(), []);
+    const stopPropagation = useCallback((e: React.MouseEvent) => e.stopPropagation(), []);
 
     const isSortable = !!onChange;
 

@@ -32,10 +32,14 @@ export default function LanguageModalContent({ currentLanguage, onClose }: Props
                 {isTestLanguage(item) ? (
                   "🫐"
                 ) : (
-                  <img className="network-dropdown-icon" src={importImage(`flag_${item}.svg`)} alt={locales[item]} />
+                  <img
+                    className="network-dropdown-icon"
+                    src={importImage(`flag_${item}.svg`)}
+                    alt={locales[item as keyof typeof locales]}
+                  />
                 )}
               </div>
-              <span className="text-body-medium font-medium">{locales[item]}</span>
+              <span className="text-body-medium font-medium">{locales[item as keyof typeof locales]}</span>
             </div>
             <div className="network-dropdown-menu-item-img ml-auto py-4">
               {currentLanguage === item && <CheckedIcon />}

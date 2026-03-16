@@ -19,7 +19,7 @@ import useWallet from "lib/wallets/useWallet";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-export default function APRLabel({ chainId, label }) {
+export default function APRLabel({ chainId, label }: { chainId: any; label: any }) {
   const { active, account } = useWallet();
   const vestingData = useVestingData(account, chainId);
   const rewardReaderAddress = getContract(chainId, "RewardReader");

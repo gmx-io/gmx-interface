@@ -333,7 +333,7 @@ export function useTreasuryUniswapV3({
       return undefined;
     }
 
-    const request = {};
+    const request: Record<string, any> = {};
 
     for (const [key, address] of poolAddressMap.entries()) {
       request[key] = {

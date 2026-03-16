@@ -18,6 +18,7 @@ import {
   YAxis,
   YAxisProps,
 } from "recharts";
+// @ts-expect-error no declaration file for recharts internal module
 import { useOffset, useViewBox, useYAxisWithFiniteDomainOrRandom } from "recharts/es6/context/chartLayoutContext";
 import type { CategoricalChartFunc } from "recharts/types/chart/generateCategoricalChart";
 import type { ImplicitLabelType } from "recharts/types/component/Label";
@@ -115,8 +116,8 @@ export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
 
   const theme = useTheme();
 
-  const redColor = colors.red[500][theme.theme];
-  const greenColor = colors.green[500][theme.theme];
+  const redColor = (colors.red as any)[500][theme.theme];
+  const greenColor = (colors.green as any)[500][theme.theme];
 
   const { ticks, marketPriceIndex, xAxisDomain, setTickCount } = useXAxis(marketInfo, {
     leftExecutionPrice: leftMaxExecutionPrice,

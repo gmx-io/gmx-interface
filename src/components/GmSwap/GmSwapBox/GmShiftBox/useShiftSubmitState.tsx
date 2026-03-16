@@ -98,12 +98,16 @@ export function useShiftSubmitState({
       };
     }
 
+    // TODO: potential bug - ValidationResult is not a tuple, [0] indexing is incorrect
+    // @ts-expect-error ValidationResult is not indexable by number
     const commonError = getCommonError({
       chainId,
       isConnected: true,
       hasOutdatedUi,
     })[0];
 
+    // TODO: potential bug - ValidationResult is not a tuple, [0] indexing is incorrect
+    // @ts-expect-error ValidationResult is not indexable by number
     const shiftError = getGmShiftError({
       fromMarketInfo: selectedMarketInfo,
       fromToken: selectedToken,

@@ -64,7 +64,7 @@ export async function getCallStaticError(
     try {
       txnData = (await provider.getTransaction(txnHash)) || undefined;
     } catch (error) {
-      return { error };
+      return { error: error as ErrorLike };
     }
   }
 
@@ -92,7 +92,7 @@ export async function getCallStaticError(
   } catch (error) {
     (error as ErrorLike).errorSource = "getCallStaticError";
 
-    return { error, txnData };
+    return { error: error as ErrorLike, txnData };
   }
 }
 
@@ -162,7 +162,7 @@ export function makeTransactionErrorHandler(
   txnOpts: Overrides,
   from: string
 ) {
-  return async (error) => {
+  return async (error: any) => {
     const data = contract.interface.encodeFunctionData(method, params);
     const to = await contract.getAddress();
     const provider = getProvider(undefined, chainId);

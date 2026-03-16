@@ -46,7 +46,7 @@ export function usePoolsData(): Partial<PoolsData> {
         };
 
         for (const glvKey of Object.keys(glvApys)) {
-          const glv = glvApys[glvKey];
+          const glv = (glvApys as any)[glvKey];
           if (glv.apy > result) {
             result = glv.apy;
           }
@@ -103,8 +103,8 @@ export function usePoolsData(): Partial<PoolsData> {
         for (const market of sortedAggregatedMarketInfos) {
           const marketApy =
             market.chainId === ARBITRUM
-              ? arbitrumApys.markets[market.id]?.apy ?? 0
-              : avalancheApys.markets[market.id]?.apy ?? 0;
+              ? (arbitrumApys.markets as any)[market.id]?.apy ?? 0
+              : (avalancheApys.markets as any)[market.id]?.apy ?? 0;
           if (marketApy > gmApy) {
             gmApy = marketApy;
           }
