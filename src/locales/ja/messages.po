@@ -7176,10 +7176,6 @@ msgstr "<0>戻る </0><1>ホームページへ</1> <2>または </2> <3>トレ�
 msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr "{tokenSymbol} を {chainName} にブリッジ"
 
-#: src/domain/tokens/approveTokens.tsx
-#~ msgid "Permit signing failed"
-#~ msgstr "許可署名に失敗"
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order uses {collateralSymbol}, but existing {longText} position uses {symbol} as collateral"
 msgstr "注文は{collateralSymbol}を使用していますが、既存の{longText}ポジションは{symbol}を担保としています"

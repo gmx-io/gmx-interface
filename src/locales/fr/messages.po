@@ -7176,10 +7176,6 @@ msgstr "<0>Retourner à </0><1>la page d'accueil</1> <2>ou </2> <3>Trader</3>"
 msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr "Transférer {tokenSymbol} vers {chainName} avec"
 
-#: src/domain/tokens/approveTokens.tsx
-#~ msgid "Permit signing failed"
-#~ msgstr "Échec de la signature du permis"
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order uses {collateralSymbol}, but existing {longText} position uses {symbol} as collateral"
 msgstr "L'ordre utilise {collateralSymbol}, mais la position {longText} existante utilise {symbol} comme garantie"
