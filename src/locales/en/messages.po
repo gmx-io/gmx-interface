@@ -418,6 +418,10 @@ msgstr "Confirm withdraw"
 msgid "Settled funding fees"
 msgstr "Settled funding fees"
 
+#: src/components/Errors/ErrorToastWithSupport.tsx
+msgid "Contact Support"
+msgstr "Contact Support"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Returned collateral"
 msgstr "Returned collateral"
@@ -7850,6 +7854,10 @@ msgstr "{0} GMX"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Price impact exceeds order size. Impact: {priceImpactUsdText}, order: {sizeDeltaUsdText}"
 msgstr "Price impact exceeds order size. Impact: {priceImpactUsdText}, order: {sizeDeltaUsdText}"
+
+#: src/components/Errors/ErrorToastWithSupport.tsx
+msgid "If you're having trouble completing this action, our team can help."
+msgstr "If you're having trouble completing this action, our team can help."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Jones DAO"

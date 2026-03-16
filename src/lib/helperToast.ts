@@ -1,13 +1,34 @@
+import { createElement } from "react";
 import { toast, ToastContent, ToastOptions } from "react-toastify";
+
+import { ErrorToastWithSupport } from "components/Errors/ErrorToastWithSupport";
+
+import { tradingErrorTracker, TradingErrorInfo } from "./tradingErrorTracker";
+
+export type HelperToastErrorOptions = ToastOptions & {
+  tradingErrorInfo?: TradingErrorInfo;
+};
 
 export const helperToast = {
   success: (content: ToastContent, opts?: ToastOptions) => {
     toast.dismiss();
     toast.success(content, opts);
   },
-  error: (content: ToastContent, opts?: ToastOptions) => {
+  error: (content: ToastContent, opts?: HelperToastErrorOptions) => {
     toast.dismiss();
-    toast.error(content, opts);
+
+    const { tradingErrorInfo, ...toastOpts } = opts ?? {};
+
+    if (tradingErrorInfo) {
+      tradingErrorTracker.reportError(tradingErrorInfo);
+    }
+
+    const finalContent =
+      tradingErrorInfo && tradingErrorTracker.shouldSuggestSupport()
+        ? createElement(ErrorToastWithSupport, null, content as React.ReactNode)
+        : content;
+
+    toast.error(finalContent, toastOpts);
   },
   info: (content: ToastContent, opts?: ToastOptions) => {
     toast.dismiss();

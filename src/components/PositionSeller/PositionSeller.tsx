@@ -560,7 +560,12 @@ export function PositionSeller() {
       !signer ||
       !provider
     ) {
-      helperToast.error(t`Order submission failed`);
+      helperToast.error(t`Order submission failed`, {
+        tradingErrorInfo: {
+          actionName: "Close Position",
+          collateral: position?.collateralToken?.symbol,
+        },
+      });
       sendTxnValidationErrorMetric(metricData.metricId);
       return;
     }
@@ -586,6 +591,8 @@ export function PositionSeller() {
       callback: makeOrderTxnCallback({
         metricId: metricData.metricId,
         slippageInputId,
+        actionName: "Close Position",
+        collateralSymbol: position?.collateralToken?.symbol,
       }),
     });
 

@@ -221,6 +221,10 @@ export function BridgeInModal({
       const toastParams = getTxnErrorToast(chainId, error, { defaultMessage: t`Deposit failed` });
       helperToast.error(toastParams.errorContent, {
         autoClose: toastParams.autoCloseToast,
+        tradingErrorInfo: {
+          actionName: "Bridge Deposit",
+          errorData: error instanceof Error ? error.message : String(error),
+        },
       });
     } finally {
       setIsCreatingTxn(false);

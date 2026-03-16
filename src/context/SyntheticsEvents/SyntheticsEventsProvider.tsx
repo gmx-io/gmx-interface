@@ -1157,7 +1157,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                 // Wait to ensure there is no race condition with the pending order toast
                 sleep(500).then(() => {
                   toast.dismiss(pendingOrderToastIdRef.current);
-                  helperToast.error(totastContent);
+                  helperToast.error(totastContent, {
+                    tradingErrorInfo: {
+                      actionName: "Express Order",
+                      errorData: executionFeeErrorParams.errorData.errorMessage,
+                    },
+                  });
                 });
                 isViewed = true;
               }
@@ -1168,7 +1173,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                 // Wait to ensure there is no race condition with the pending order toast
                 sleep(500).then(() => {
                   toast.dismiss(pendingOrderToastIdRef.current);
-                  helperToast.error(<InvalidSignatureToastContent />, {});
+                  helperToast.error(<InvalidSignatureToastContent />, {
+                    tradingErrorInfo: {
+                      actionName: "Express Order",
+                      errorData: "Invalid signature",
+                    },
+                  });
                 });
                 isViewed = true;
               }
@@ -1177,7 +1187,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             }
 
             if (pendingExpressTxn.errorMessage && !pendingExpressTxn.isViewed) {
-              helperToast.error(pendingExpressTxn.errorMessage);
+              helperToast.error(pendingExpressTxn.errorMessage, {
+                tradingErrorInfo: {
+                  actionName: "Express Order",
+                  errorData:
+                    typeof pendingExpressTxn.errorMessage === "string" ? pendingExpressTxn.errorMessage : undefined,
+                },
+              });
               isViewed = true;
             }
 

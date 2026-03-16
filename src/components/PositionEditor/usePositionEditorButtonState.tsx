@@ -440,7 +440,12 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     sendOrderSubmittedMetric(metricData.metricId);
 
     if (!batchParams || !tokensData || !signer || !provider) {
-      helperToast.error(t`Order failed`);
+      helperToast.error(t`Order failed`, {
+        tradingErrorInfo: {
+          actionName: "Edit Collateral",
+          collateral: selectedCollateralToken?.symbol,
+        },
+      });
       sendTxnValidationErrorMetric(metricData.metricId);
       return;
     }
@@ -464,6 +469,8 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       callback: makeOrderTxnCallback({
         metricId: metricData.metricId,
         slippageInputId: undefined,
+        actionName: "Edit Collateral",
+        collateralSymbol: selectedCollateralToken?.symbol,
       }),
     });
 

@@ -10,6 +10,7 @@ import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useIsLargeAccountVolumeStats } from "domain/synthetics/accountStats/useIsLargeAccountData";
 import { useChainId } from "lib/chains";
 import { formatAmountForMetrics } from "lib/metrics";
+import { tradingErrorTracker } from "lib/tradingErrorTracker";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 
 import { useAvailableToTradeAssetMultichain } from "components/GmxAccountModal/hooks";
@@ -23,7 +24,7 @@ import { getOrCreateSupportChatUserId, themeToIntercomTheme } from "./utils";
 
 export function useSupportChat() {
   const { shouldShowSupportChat } = useShowSupportChat();
-  const { address: account } = useAccount();
+  const { address: account, connector } = useAccount();
   const { isNonEoaAccountOnAnyChain, isLoading: isNonEoaAccountOnAnyChainLoading } = useIsNonEoaAccountOnAnyChain();
   const { data: largeAccountVolumeStatsData, isLoading: isLargeAccountVolumeStatsLoading } =
     useIsLargeAccountVolumeStats({ account });
@@ -133,4 +134,12 @@ export function useSupportChat() {
     initializedAddress.current = account;
     update(customUserAttributes);
   }, [shouldShowSupportChat, customUserAttributes, account]);
+
+  useEffect(() => {
+    tradingErrorTracker.setSupportChatContext({
+      walletAddress: account,
+      walletProvider: connector?.name,
+      network: getChainName(srcChainId ?? chainId),
+    });
+  }, [account, connector?.name, srcChainId, chainId]);
 }

@@ -5,11 +5,12 @@ import type { AnyChainId } from "config/chains";
 import { StargateErrorsAbi } from "config/multichain";
 import { extractErrorDataFromViemError } from "lib/errors";
 import { helperToast } from "lib/helperToast";
+import { TradingActionName } from "lib/tradingErrorTracker";
 import { abis } from "sdk/abis";
 
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 
-export function toastCustomOrStargateError(chainId: AnyChainId, error: Error) {
+export function toastCustomOrStargateError(chainId: AnyChainId, error: Error, actionName?: TradingActionName) {
   let prettyErrorName = error.name;
   let prettyErrorMessage = error.message;
 
@@ -43,6 +44,12 @@ export function toastCustomOrStargateError(chainId: AnyChainId, error: Error) {
 
   helperToast.error(toastContext.errorContent, {
     autoClose: toastContext.autoCloseToast,
+    tradingErrorInfo: actionName
+      ? {
+          actionName,
+          errorData: prettyErrorMessage,
+        }
+      : undefined,
   });
 
   const prettyError = new Error(prettyErrorMessage);

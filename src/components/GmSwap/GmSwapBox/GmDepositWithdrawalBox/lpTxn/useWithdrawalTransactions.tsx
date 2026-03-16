@@ -210,7 +210,9 @@ export const useWithdrawalTransactions = ({
       const metricData = getWithdrawalMetricData();
 
       if (!amounts || !signer || !params) {
-        helperToast.error(t`Order submission failed`);
+        helperToast.error(t`Order submission failed`, {
+          tradingErrorInfo: { actionName: "GM Withdrawal" },
+        });
         sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
       }
@@ -228,7 +230,9 @@ export const useWithdrawalTransactions = ({
             : undefined;
 
         if (!fees || !transferRequests) {
-          helperToast.error(t`Order submission failed`);
+          helperToast.error(t`Order submission failed`, {
+            tradingErrorInfo: { actionName: "GM Withdrawal" },
+          });
           sendTxnValidationErrorMetric(metricData.metricId);
           return;
         }
@@ -257,12 +261,14 @@ export const useWithdrawalTransactions = ({
             }
           })
           .catch((error) => {
-            throw toastCustomOrStargateError(chainId, error);
+            throw toastCustomOrStargateError(chainId, error, "GM Withdrawal");
           });
       } else if (paySource === "gmxAccount") {
         const expressTxnParams = multichainWithdrawalExpressTxnParams.data;
         if (!transferRequests || !expressTxnParams) {
-          helperToast.error(t`Order submission failed`);
+          helperToast.error(t`Order submission failed`, {
+            tradingErrorInfo: { actionName: "GM Withdrawal" },
+          });
           sendTxnValidationErrorMetric(metricData.metricId);
           return;
         }
@@ -302,7 +308,9 @@ export const useWithdrawalTransactions = ({
         const fees = technicalFees?.kind === "settlementChain" ? technicalFees.fees : undefined;
 
         if (!fees || !tokensData) {
-          helperToast.error(t`Order submission failed`);
+          helperToast.error(t`Order submission failed`, {
+            tradingErrorInfo: { actionName: "GM Withdrawal" },
+          });
           sendTxnValidationErrorMetric(metricData.metricId);
           return;
         }
@@ -361,7 +369,9 @@ export const useWithdrawalTransactions = ({
       const metricData = getWithdrawalMetricData();
 
       if (!amounts || !signer || !params) {
-        helperToast.error(t`Order submission failed`);
+        helperToast.error(t`Order submission failed`, {
+          tradingErrorInfo: { actionName: "GM Withdrawal" },
+        });
         sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
       }
@@ -378,7 +388,9 @@ export const useWithdrawalTransactions = ({
             ? technicalFees.fees
             : undefined;
         if (!fees || !transferRequests) {
-          helperToast.error(t`Order submission failed`);
+          helperToast.error(t`Order submission failed`, {
+            tradingErrorInfo: { actionName: "GM Withdrawal" },
+          });
           sendTxnValidationErrorMetric(metricData.metricId);
           return;
         }
@@ -408,7 +420,9 @@ export const useWithdrawalTransactions = ({
       } else if (paySource === "gmxAccount") {
         const expressTxnParams = multichainWithdrawalExpressTxnParams.data;
         if (!transferRequests || !expressTxnParams) {
-          helperToast.error(t`Order submission failed`);
+          helperToast.error(t`Order submission failed`, {
+            tradingErrorInfo: { actionName: "GM Withdrawal" },
+          });
           sendTxnValidationErrorMetric(metricData.metricId);
           return;
         }
@@ -449,7 +463,9 @@ export const useWithdrawalTransactions = ({
         const fees = technicalFees?.kind === "settlementChain" ? technicalFees.fees : undefined;
 
         if (!fees || !tokensData) {
-          helperToast.error(t`Order submission failed`);
+          helperToast.error(t`Order submission failed`, {
+            tradingErrorInfo: { actionName: "GM Withdrawal" },
+          });
           sendTxnValidationErrorMetric(metricData.metricId);
           return;
         }
@@ -476,7 +492,7 @@ export const useWithdrawalTransactions = ({
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
         .catch((error) => {
-          toastCustomOrStargateError(chainId, error);
+          toastCustomOrStargateError(chainId, error, "GM Withdrawal");
         });
     },
     [

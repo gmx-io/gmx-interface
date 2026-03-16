@@ -42,6 +42,7 @@ import {
   sendTxnSentMetric,
 } from "lib/metrics";
 import { getByKey } from "lib/objects";
+import { TradingActionName } from "lib/tradingErrorTracker";
 import { TxnEvent, TxnEventName } from "lib/transactions";
 import { useBlockNumber } from "lib/useBlockNumber";
 import { isIncreaseOrderType, isMarketOrderType, isSwapOrderType } from "sdk/utils/orders";
@@ -71,6 +72,8 @@ export type CallbackUiCtx = {
   additionalErrorContent?: React.ReactNode;
   isFundingFeeSettlement?: boolean;
   onInternalSwapFallback?: () => void;
+  actionName?: TradingActionName;
+  collateralSymbol?: string;
 };
 
 export function useOrderTxnCallbacks() {
@@ -287,6 +290,7 @@ export function useOrderTxnCallbacks() {
               hash: e.data.transactionHash,
               message: getOperationMessage(mainActionType, "success", actionsCount, undefined, setIsSettingsVisible),
               metricId: ctx.metricId,
+              actionName: ctx.actionName,
               data: totalExecutionFee
                 ? {
                     estimatedExecutionFee: totalExecutionFee.feeTokenAmount,
@@ -343,6 +347,13 @@ export function useOrderTxnCallbacks() {
 
           helperToast.error(toastParams.errorContent, {
             autoClose: toastParams.autoCloseToast,
+            tradingErrorInfo: ctx.actionName
+              ? {
+                  actionName: ctx.actionName,
+                  collateral: ctx.collateralSymbol,
+                  errorData: errorData?.errorMessage,
+                }
+              : undefined,
           });
 
           if (fallbackToInternalSwap) {
