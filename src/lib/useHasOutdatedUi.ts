@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import useSWR from "swr";
 
 import { UI_VERSION } from "config/env";
@@ -38,4 +39,8 @@ export function useHasOutdatedUi() {
   }
 
   return hasOutdatedUi;
+}
+
+export function getPageOutdatedError() {
+  return t`Page outdated. Refresh`;
 }

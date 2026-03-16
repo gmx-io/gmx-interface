@@ -60,11 +60,13 @@ export function getRawBaseRelayerParams({
   account,
   globalExpressParams,
   executionFeeAmount,
+  transactionExternalCalls,
 }: {
   chainId: ContractsChainId;
   account: string;
   globalExpressParams: GlobalExpressParams;
   executionFeeAmount?: bigint;
+  transactionExternalCalls?: ExternalCallsPayload;
 }): Partial<{
   rawBaseRelayParamsPayload: RawRelayParamsPayload;
   baseRelayFeeSwapParams: {
@@ -76,6 +78,7 @@ export function getRawBaseRelayerParams({
 }> {
   const { gasPaymentToken, relayerFeeToken, tokensData, marketsInfoData, gasPrice, findFeeSwapPath } =
     globalExpressParams;
+  const effectiveTransactionExternalCalls = transactionExternalCalls ?? getEmptyExternalCallsPayload();
 
   if (!gasPaymentToken || !relayerFeeToken || !account || !tokensData || !marketsInfoData || gasPrice === undefined) {
     return EMPTY_OBJECT;
@@ -98,7 +101,7 @@ export function getRawBaseRelayerParams({
     gasPaymentTokenAsCollateralAmount: 0n,
     findFeeSwapPath: findFeeSwapPath,
 
-    transactionExternalCalls: getEmptyExternalCallsPayload(),
+    transactionExternalCalls: effectiveTransactionExternalCalls,
     feeExternalSwapQuote: undefined,
   });
 
@@ -111,7 +114,7 @@ export function getRawBaseRelayerParams({
     gasPaymentTokenAddress: baseRelayFeeSwapParams.gasPaymentParams.gasPaymentTokenAddress,
     relayerFeeTokenAddress: baseRelayFeeSwapParams.gasPaymentParams.relayerFeeTokenAddress,
     feeParams: baseRelayFeeSwapParams.feeParams,
-    externalCalls: getEmptyExternalCallsPayload(),
+    externalCalls: baseRelayFeeSwapParams.externalCalls,
     tokenPermits: EMPTY_ARRAY,
   });
 
@@ -377,6 +380,7 @@ export function useArbitraryRelayParamsAndPayload({
   enabled = true,
   executionFeeAmount,
   gasPaymentTokenAsCollateralAmount,
+  transactionExternalCalls,
   withLoading = true,
   requireValidations = true,
   overrideWnt,
@@ -386,6 +390,7 @@ export function useArbitraryRelayParamsAndPayload({
   enabled?: boolean;
   executionFeeAmount?: bigint;
   gasPaymentTokenAsCollateralAmount?: bigint;
+  transactionExternalCalls?: ExternalCallsPayload;
   withLoading?: boolean;
   requireValidations?: boolean;
   overrideWnt?: boolean;
@@ -411,6 +416,7 @@ export function useArbitraryRelayParamsAndPayload({
         account: p.account,
         globalExpressParams: p.globalExpressParams,
         executionFeeAmount: p.executionFeeAmount,
+        transactionExternalCalls: p.transactionExternalCalls,
       });
 
       if (baseRelayFeeSwapParams === undefined || rawBaseRelayParamsPayload === undefined) {
@@ -442,7 +448,7 @@ export function useArbitraryRelayParamsAndPayload({
         transactionParams: {
           account: p.account,
           isValid: true,
-          transactionExternalCalls: getEmptyExternalCallsPayload(),
+          transactionExternalCalls: p.transactionExternalCalls ?? getEmptyExternalCallsPayload(),
           executionFeeAmount: p.executionFeeAmount ?? 0n,
           gasPaymentTokenAsCollateralAmount: p.gasPaymentTokenAsCollateralAmount ?? 0n,
           subaccountActions: 0,
@@ -476,6 +482,7 @@ export function useArbitraryRelayParamsAndPayload({
               subaccount,
               executionFeeAmount,
               gasPaymentTokenAsCollateralAmount,
+              transactionExternalCalls,
               requireValidations,
               overrideWnt,
             }

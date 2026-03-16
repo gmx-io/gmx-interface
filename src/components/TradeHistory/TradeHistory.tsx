@@ -16,7 +16,7 @@ import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDas
 import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
-import usePagination from "components/Referrals/usePagination";
+import usePagination from "components/Pagination/usePagination";
 import { TradesHistorySkeleton } from "components/Skeleton/Skeleton";
 import { TableTh, TableTheadTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
