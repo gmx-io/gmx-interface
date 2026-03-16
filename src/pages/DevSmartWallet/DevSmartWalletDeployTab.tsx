@@ -38,6 +38,7 @@ export function DevSmartWalletDeployTab({
     safeAddress: Address;
     chainId: DeploySupportedChainId;
     owners: Address[];
+    saltNonce?: string;
   }) => void;
   onSafeCreated: (address: Address, chainId: DeploySupportedChainId) => void;
 }) {
@@ -187,6 +188,7 @@ export function DevSmartWalletDeployTab({
               safeAddress: normalizedProxy,
               chainId: deployChainId,
               owners: ownersState.owners,
+              saltNonce: saltNonceInput.trim(),
             });
             onSafeCreated(normalizedProxy, deployChainId);
             pushActivity(`Created Safe ${normalizedProxy} on ${getChainName(deployChainId)}`);

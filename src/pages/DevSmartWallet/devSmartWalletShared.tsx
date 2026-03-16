@@ -92,6 +92,7 @@ export type SavedSmartWalletProfile = {
   owners: Address[];
   createdAt: number;
   updatedAt: number;
+  saltNonce?: string;
 };
 
 export type TopUpToken = { symbol: string; address: Address; decimals: number; isNative?: boolean };
@@ -440,12 +441,14 @@ export function parseSavedSmartWalletProfiles(raw: string | null): SavedSmartWal
           .map((owner: string) => getAddress(owner));
         const createdAt = Number((item as any).createdAt);
         const updatedAt = Number((item as any).updatedAt);
+        const saltNonce = typeof (item as any).saltNonce === "string" ? (item as any).saltNonce : undefined;
         return {
           safeAddress: getAddress(safeAddressValue),
           chainId: chainIdValue as DeploySupportedChainId,
           owners,
           createdAt: Number.isFinite(createdAt) ? createdAt : Date.now(),
           updatedAt: Number.isFinite(updatedAt) ? updatedAt : Date.now(),
+          saltNonce,
         } satisfies SavedSmartWalletProfile;
       })
       .filter(Boolean)

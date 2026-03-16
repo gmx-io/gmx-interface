@@ -136,6 +136,7 @@ export default function DevSmartWallet() {
     safeAddress: Address;
     chainId: DeploySupportedChainId;
     owners: Address[];
+    saltNonce?: string;
   }) {
     const safeAddressNormalized = getAddress(input.safeAddress);
     const owners = input.owners.map((owner) => getAddress(owner));
@@ -147,12 +148,18 @@ export default function DevSmartWallet() {
       );
       if (index >= 0) {
         const prevProfile = next[index];
-        next[index] = { ...prevProfile, owners: owners.length > 0 ? owners : prevProfile.owners, updatedAt: now };
+        next[index] = {
+          ...prevProfile,
+          owners: owners.length > 0 ? owners : prevProfile.owners,
+          saltNonce: input.saltNonce ?? prevProfile.saltNonce,
+          updatedAt: now,
+        };
       } else {
         next.unshift({
           safeAddress: safeAddressNormalized,
           chainId: input.chainId,
           owners,
+          saltNonce: input.saltNonce,
           createdAt: now,
           updatedAt: now,
         });

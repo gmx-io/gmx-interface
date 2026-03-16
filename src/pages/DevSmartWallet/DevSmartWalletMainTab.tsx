@@ -4,7 +4,20 @@ import Safe, { generateTypedData } from "@safe-global/protocol-kit";
 import { Core } from "@walletconnect/core";
 import { buildApprovedNamespaces, getSdkError } from "@walletconnect/utils";
 import { useEffect, useMemo, useRef, useState } from "react";
-import { getAddress, hashTypedData, hexToString, isAddress, isHex, numberToHex, type Address, type Hex } from "viem";
+import {
+  concat,
+  encodeAbiParameters,
+  encodeFunctionData,
+  getAddress,
+  hashTypedData,
+  hexToString,
+  isAddress,
+  isHex,
+  numberToHex,
+  zeroAddress,
+  type Address,
+  type Hex,
+} from "viem";
 
 import { ARBITRUM_SEPOLIA, getChainName } from "config/chains";
 import { helperToast } from "lib/helperToast";
@@ -17,6 +30,7 @@ import Button from "components/Button/Button";
 import {
   AddressInput,
   asArrayParams,
+  DEPLOY_SAFE_DEFAULTS_BY_CHAIN,
   DEPLOY_SUPPORTED_CHAINS,
   getErrorMessage,
   getNonEmptyErrorMessage,
@@ -26,7 +40,9 @@ import {
   parseBigIntLike,
   parseSessionChainId,
   parseWalletSwitchChainId,
+  SAFE_ABI,
   SAFE_CONTRACT_NETWORKS,
+  SAFE_PROXY_FACTORY_ABI,
   SAFE_TARGET_VERSION,
   SAFE_VERSION_ABI,
   summarizeSession,
@@ -39,6 +55,60 @@ import {
   type WalletConnectRequestEvent,
   type WalletKitSessionMap,
 } from "./devSmartWalletShared";
+
+// EIP-6492 magic suffix: keccak256("EIP-6492") truncated, used to identify wrapped signatures
+const EIP_6492_MAGIC_SUFFIX =
+  "0x6492649264926492649264926492649264926492649264926492649264926492" as Hex;
+
+/**
+ * Wraps a Safe signature in EIP-6492 format for counterfactual verification.
+ * The verifier will deploy the Safe on-chain (counterfactually), then call isValidSignature.
+ */
+function wrapSignatureEip6492({
+  innerSignature,
+  owners,
+  saltNonce,
+  targetChainId,
+}: {
+  innerSignature: Hex;
+  owners: Address[];
+  saltNonce: string;
+  targetChainId: DeploySupportedChainId;
+}): Hex {
+  const defaults = DEPLOY_SAFE_DEFAULTS_BY_CHAIN[targetChainId];
+
+  const initializer = encodeFunctionData({
+    abi: SAFE_ABI,
+    functionName: "setup",
+    args: [
+      owners,
+      1n, // threshold
+      zeroAddress,
+      "0x",
+      defaults.fallbackHandlerAddress,
+      zeroAddress,
+      0n,
+      zeroAddress,
+    ],
+  });
+
+  const factoryCalldata = encodeFunctionData({
+    abi: SAFE_PROXY_FACTORY_ABI,
+    functionName: "createProxyWithNonce",
+    args: [defaults.singletonAddress, initializer, BigInt(saltNonce)],
+  });
+
+  const wrapped = encodeAbiParameters(
+    [
+      { name: "factory", type: "address" },
+      { name: "factoryCalldata", type: "bytes" },
+      { name: "originalSignature", type: "bytes" },
+    ],
+    [defaults.proxyFactoryAddress, factoryCalldata, innerSignature]
+  );
+
+  return concat([wrapped, EIP_6492_MAGIC_SUFFIX]);
+}
 
 function normalizePersonalSignMessage(message: string) {
   if (isHex(message)) {
@@ -124,6 +194,7 @@ export function DevSmartWalletMainTab({
     safeAddress: Address;
     chainId: DeploySupportedChainId;
     owners: Address[];
+    saltNonce?: string;
   }) => void;
   removeSavedWalletProfile: (profile: SavedSmartWalletProfile) => void;
   lastCreatedSafeAddress: Address | undefined;
@@ -181,10 +252,10 @@ export function DevSmartWalletMainTab({
       errors.push("Provider Safe address is invalid");
     }
     if (!active || !account) errors.push("Connect owner EOA in this browser");
-    if (walletChainId !== providerChainId) errors.push(`Owner EOA must be on ${getChainName(providerChainId)}`);
+    // Removed chain check to allow cross-chain signing (e.g. EIP-6492 testing)
     if (!walletClient) errors.push("Wallet client unavailable");
     return errors;
-  }, [account, active, providerChainId, providerSafeAddress, providerSafeAddressInput, walletChainId, walletClient]);
+  }, [account, active, providerSafeAddress, providerSafeAddressInput, walletClient]);
 
   function refreshSessions() {
     const walletKit = walletKitRef.current;
@@ -227,15 +298,12 @@ export function DevSmartWalletMainTab({
     const {
       account: ownerAccount,
       walletClient: currentWalletClient,
-      walletChainId: currentChainId,
       providerSafeAddress: safeAddr,
       providerChainId: currentProviderChainId,
     } = latestStateRef.current;
 
     if (!ownerAccount || !currentWalletClient) throw new Error("Owner wallet is not connected");
     if (!currentProviderChainId) throw new Error("Provider chain is not configured");
-    if (currentChainId !== currentProviderChainId)
-      throw new Error(`Owner wallet must be on ${getChainName(currentProviderChainId)}`);
     if (!safeAddr) throw new Error("Set a valid Safe address for the WalletConnect provider");
 
     const cacheKey = `${ownerAccount}:${safeAddr}:${currentProviderChainId}`;
@@ -254,9 +322,25 @@ export function DevSmartWalletMainTab({
       );
     }
 
+    // Hybrid EIP-1193 provider: reads go to the provider chain's public RPC,
+    // signing goes to the owner's wallet (which may be on a different chain for EIP-6492)
+    const signingMethods = new Set([
+      "eth_signTypedData",
+      "eth_signTypedData_v3",
+      "eth_signTypedData_v4",
+      "personal_sign",
+      "eth_sign",
+      "eth_sendTransaction",
+    ]);
+
     const eip1193Provider = {
-      request: async ({ method, params }: { method: string; params?: unknown[] | object }) =>
-        (currentWalletClient.request as any)({ method, params: (params as any) ?? [] }),
+      request: async ({ method, params }: { method: string; params?: unknown[] | object }) => {
+        if (signingMethods.has(method)) {
+          return (currentWalletClient.request as any)({ method, params: (params as any) ?? [] });
+        }
+        // Route read RPCs to the provider chain
+        return publicClient.request({ method: method as any, params: (params as any) ?? [] });
+      },
     };
 
     const safeSdk = await Safe.init({
@@ -435,12 +519,18 @@ export function DevSmartWalletMainTab({
         const typedDataHash = hashTypedData(typedData as any);
         const safeMessage = safeSdk.createMessage(typedData as any);
         const safeMessageHash = await (safeSdk as any).getSafeMessageHash(typedDataHash);
-        const { walletClient: ownerWalletClient, account: ownerAccount } = latestStateRef.current;
+        const { walletClient: ownerWalletClient, account: ownerAccount, walletChainId: ownerChainId } =
+          latestStateRef.current;
         if (!ownerWalletClient || !ownerAccount) throw new Error("Owner wallet is not connected");
+
+        // EIP-6492: use the owner's current chain (settlement chain, e.g. Arb Sepolia) for the
+        // Safe envelope domain, not the Safe's deployment chain. This makes the signature
+        // verifiable on the settlement chain via EIP-6492 counterfactual verification.
+        const signingChainId = ownerChainId ? BigInt(ownerChainId) : await safeSdk.getChainId();
         const safeEnvelopeTypedData = generateTypedData({
           safeAddress: safeAddr,
           safeVersion: safeSdk.getContractVersion(),
-          chainId: await safeSdk.getChainId(),
+          chainId: signingChainId,
           data: (safeMessage as any).data,
         } as any);
         const ownerSignMethod = method === "eth_signTypedData_v3" ? "eth_signTypedData_v3" : "eth_signTypedData_v4";
@@ -476,10 +566,44 @@ export function DevSmartWalletMainTab({
           throw new Error(`Failed to sign typed data (${ownerSignMethod}): ${firstSignError ?? "unknown error"}`);
         }
 
-        const signature = normalizeTypedDataSignatureV(rawSignature);
-        pushActivity(
-          `WC typed-data signed via Safe typed-data (${method}) tdHash=${typedDataHash.slice(0, 10)} safeHash=${String(safeMessageHash).slice(0, 10)}...`
-        );
+        let signature: Hex = normalizeTypedDataSignatureV(rawSignature);
+
+        // EIP-6492: wrap signature if the owner is on a different chain than the Safe's deployment chain.
+        // This enables counterfactual verification on the settlement chain.
+        const safeDeploymentChainId = await safeSdk.getChainId();
+        const needsEip6492 = ownerChainId !== undefined && BigInt(ownerChainId) !== safeDeploymentChainId;
+        if (needsEip6492) {
+          const targetChainId = ownerChainId as DeploySupportedChainId;
+          const profile = latestStateRef.current.providerSafeAddress
+            ? savedWalletProfiles.find(
+                (p) =>
+                  isSameAddress(p.safeAddress, latestStateRef.current.providerSafeAddress) &&
+                  p.chainId === latestStateRef.current.providerChainId
+              )
+            : undefined;
+
+          if (!profile?.saltNonce) {
+            throw new Error(
+              "EIP-6492 wrapping requires saltNonce. Re-deploy the Safe or update the saved profile with the salt nonce."
+            );
+          }
+
+          const owners = await safeSdk.getOwners();
+          signature = wrapSignatureEip6492({
+            innerSignature: signature,
+            owners: owners as Address[],
+            saltNonce: profile.saltNonce,
+            targetChainId,
+          });
+          pushActivity(
+            `EIP-6492 wrapped signature for cross-chain verification (${ownerChainId}) tdHash=${typedDataHash.slice(0, 10)}`
+          );
+        } else {
+          pushActivity(
+            `WC typed-data signed via Safe typed-data (${method}) tdHash=${typedDataHash.slice(0, 10)} safeHash=${String(safeMessageHash).slice(0, 10)}...`
+          );
+        }
+
         await respondWcRequestSuccess(topic, id, signature);
         typedDataSignInFlightRef.current = false;
         return;
@@ -799,6 +923,25 @@ export function DevSmartWalletMainTab({
               {profile.owners.length > 0 && (
                 <div className="mt-6 break-all text-12 text-typography-secondary">{profile.owners.join(", ")}</div>
               )}
+              <div className="mt-6 flex items-center gap-8 text-12">
+                <span className="text-typography-secondary">Salt nonce:</span>
+                <input
+                  className="w-[200px] rounded-4 border border-slate-700 bg-slate-800 px-8 py-4 text-12 outline-none focus:border-blue-400"
+                  placeholder="e.g. 1710000000000"
+                  value={profile.saltNonce ?? ""}
+                  onChange={(e) =>
+                    upsertSavedWalletProfile({
+                      safeAddress: profile.safeAddress,
+                      chainId: profile.chainId,
+                      owners: profile.owners,
+                      saltNonce: e.target.value || undefined,
+                    })
+                  }
+                />
+                {!profile.saltNonce && (
+                  <span className="text-yellow-500">Required for EIP-6492</span>
+                )}
+              </div>
               <div className="mt-10 flex flex-wrap gap-8">
                 <Button
                   variant="secondary"
