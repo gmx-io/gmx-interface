@@ -4,6 +4,8 @@ import { useAccount } from "wagmi";
 
 import { getChainName } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useIsLargeAccountVolumeStats } from "domain/synthetics/accountStats/useIsLargeAccountData";
 import { useChainId } from "lib/chains";
@@ -26,6 +28,8 @@ export function useSupportChat() {
   const { data: largeAccountVolumeStatsData, isLoading: isLargeAccountVolumeStatsLoading } =
     useIsLargeAccountVolumeStats({ account });
   const { walletPortfolioUsd, isWalletPortfolioUsdLoading } = useWalletPortfolioUsd();
+  const { expressOrdersEnabled } = useSettings();
+  const { subaccount } = useSubaccountContext();
   const { themeMode } = useTheme();
   const { chainId, srcChainId } = useChainId();
   const initializedAddress = useRef<string | undefined>(undefined);
@@ -67,6 +71,7 @@ export function useSupportChat() {
       }),
       "Active Network": getChainName(srcChainId ?? chainId),
       "Wallet Type": isNonEoaAccountOnAnyChain ? "Smart Wallet" : "EOA",
+      "Trading Mode": !expressOrdersEnabled ? "Classic" : subaccount ? "OneClick" : "Express",
     };
   }, [
     isWalletPortfolioUsdLoading,
@@ -80,6 +85,8 @@ export function useSupportChat() {
     srcChainId,
     chainId,
     isNonEoaAccountOnAnyChain,
+    expressOrdersEnabled,
+    subaccount,
   ]);
 
   useEffect(() => {
