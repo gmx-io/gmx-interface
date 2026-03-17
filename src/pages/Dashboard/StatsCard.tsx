@@ -95,8 +95,8 @@ export function StatsCard() {
       "V2 Arbitrum": v2ArbitrumOverview?.totalVolume,
       "V2 Avalanche": v2AvalancheOverview?.totalVolume,
       "V2 Botanix": v2BotanixOverview?.totalVolume,
-      "V1 Arbitrum": v1TotalVolume?.[ARBITRUM],
-      "V1 Avalanche": v1TotalVolume?.[AVALANCHE],
+      "V1 Arbitrum": (v1TotalVolume as any)?.[ARBITRUM],
+      "V1 Avalanche": (v1TotalVolume as any)?.[AVALANCHE],
     }),
     [v1TotalVolume, v2ArbitrumOverview?.totalVolume, v2AvalancheOverview?.totalVolume, v2BotanixOverview?.totalVolume]
   );
@@ -106,8 +106,8 @@ export function StatsCard() {
       "V2 Arbitrum": v2ArbitrumOverview?.totalUsers,
       "V2 Avalanche": v2AvalancheOverview?.totalUsers,
       "V2 Botanix": v2BotanixOverview?.totalUsers,
-      "V1 Arbitrum": uniqueUsers?.[ARBITRUM],
-      "V1 Avalanche": uniqueUsers?.[AVALANCHE],
+      "V1 Arbitrum": (uniqueUsers as any)?.[ARBITRUM],
+      "V1 Avalanche": (uniqueUsers as any)?.[AVALANCHE],
     }),
     [uniqueUsers, v2ArbitrumOverview?.totalUsers, v2AvalancheOverview?.totalUsers, v2BotanixOverview?.totalUsers]
   );
@@ -142,9 +142,9 @@ export function StatsCard() {
               className="whitespace-nowrap"
               handle={formatAmountHuman(
                 sumBigInts(
-                  v1TotalVolume?.[ARBITRUM],
-                  v1TotalVolume?.[AVALANCHE],
-                  v1TotalVolume?.[BOTANIX],
+                  (v1TotalVolume as any)?.[ARBITRUM],
+                  (v1TotalVolume as any)?.[AVALANCHE],
+                  (v1TotalVolume as any)?.[BOTANIX],
                   v2ArbitrumOverview?.totalVolume,
                   v2AvalancheOverview?.totalVolume,
                   v2BotanixOverview?.totalVolume
@@ -168,9 +168,9 @@ export function StatsCard() {
               className="whitespace-nowrap"
               handle={formatAmountHuman(
                 sumBigInts(
-                  uniqueUsers?.[ARBITRUM],
-                  uniqueUsers?.[AVALANCHE],
-                  uniqueUsers?.[BOTANIX],
+                  (uniqueUsers as any)?.[ARBITRUM],
+                  (uniqueUsers as any)?.[AVALANCHE],
+                  (uniqueUsers as any)?.[BOTANIX],
                   v2ArbitrumOverview?.totalUsers,
                   v2AvalancheOverview?.totalUsers,
                   v2BotanixOverview?.totalUsers

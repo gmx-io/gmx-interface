@@ -219,7 +219,7 @@ function convertApiOrderToOrder({
 }
 
 function buildUseOrdersMulticall(chainId: ContractsChainId, key: CacheKey) {
-  const account = key![0] as string;
+  const account = (key as any)![0] as string;
 
   return {
     dataStore: {

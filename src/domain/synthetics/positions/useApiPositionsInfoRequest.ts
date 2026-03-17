@@ -18,7 +18,7 @@ export function useApiPositionsInfoRequest(
 
   const { data: positionsInfoData, ...rest } = useApiDataRequest<ApiPositionsInfoData>(
     chainId,
-    enabled && account && sdk ? ["apiPositionsInfoRequest", chainId, account] : null,
+    enabled && account && sdk ? (["apiPositionsInfoRequest", chainId, account] as any) : null,
     async () => {
       const positions: ApiPositionInfo[] = await sdk!.fetchPositionsInfo({
         address: account!,

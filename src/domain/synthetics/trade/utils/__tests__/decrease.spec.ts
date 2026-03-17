@@ -91,7 +91,7 @@ describe("getDecreasePositionAmounts DecreasePositionSwapType", () => {
     });
 
     expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.SwapPnlTokenToCollateralToken);
-    expect(amounts.swapProfitUsdIn).toBeGreaterThan(0n);
+    expect((amounts as any).swapProfitUsdIn).toBeGreaterThan(0n);
     expect(amounts.swapProfitFeeUsd).toBeGreaterThan(0n);
   });
 
@@ -113,7 +113,7 @@ describe("getDecreasePositionAmounts DecreasePositionSwapType", () => {
     });
 
     expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.SwapCollateralTokenToPnlToken);
-    expect(amounts.swapProfitUsdIn).toBeGreaterThan(0n);
+    expect((amounts as any).swapProfitUsdIn).toBeGreaterThan(0n);
     expect(amounts.swapProfitFeeUsd).not.toEqual(0n);
   });
 });
@@ -136,9 +136,9 @@ describe("getDecreasePositionAmounts primaryOutput/secondaryOutput", () => {
     });
 
     expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.SwapPnlTokenToCollateralToken);
-    expect(amounts.primaryOutput.tokenAddress).toEqual(WETH_TOKEN_FIXTURE.address);
-    expect(amounts.secondaryOutput.tokenAddress).toEqual(USDC_TOKEN_FIXTURE.address);
-    expect(amounts.primaryOutput.usd + amounts.secondaryOutput.usd).toEqual(amounts.receiveUsd);
+    expect((amounts as any).primaryOutput.tokenAddress).toEqual(WETH_TOKEN_FIXTURE.address);
+    expect((amounts as any).secondaryOutput.tokenAddress).toEqual(USDC_TOKEN_FIXTURE.address);
+    expect((amounts as any).primaryOutput.usd + (amounts as any).secondaryOutput.usd).toEqual(amounts.receiveUsd);
   });
 
   it("primary in pnl token, secondary in collateral token for SwapCollateralTokenToPnlToken", () => {
@@ -159,10 +159,10 @@ describe("getDecreasePositionAmounts primaryOutput/secondaryOutput", () => {
     });
 
     expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.SwapCollateralTokenToPnlToken);
-    expect(amounts.primaryOutput.tokenAddress).toEqual(WETH_TOKEN_FIXTURE.address);
-    expect(amounts.secondaryOutput.tokenAddress).toEqual(USDC_TOKEN_FIXTURE.address);
-    expect(amounts.primaryOutput.amount).toBeGreaterThan(0n);
-    expect(amounts.primaryOutput.usd + amounts.secondaryOutput.usd).toEqual(amounts.receiveUsd);
+    expect((amounts as any).primaryOutput.tokenAddress).toEqual(WETH_TOKEN_FIXTURE.address);
+    expect((amounts as any).secondaryOutput.tokenAddress).toEqual(USDC_TOKEN_FIXTURE.address);
+    expect((amounts as any).primaryOutput.amount).toBeGreaterThan(0n);
+    expect((amounts as any).primaryOutput.usd + (amounts as any).secondaryOutput.usd).toEqual(amounts.receiveUsd);
   });
 
   it("has zero secondary output for partial close without collateral delta", () => {
@@ -182,7 +182,7 @@ describe("getDecreasePositionAmounts primaryOutput/secondaryOutput", () => {
     });
 
     expect(amounts.isFullClose).toBe(false);
-    expect(amounts.secondaryOutput.amount).toEqual(0n);
-    expect(amounts.secondaryOutput.usd).toEqual(0n);
+    expect((amounts as any).secondaryOutput.amount).toEqual(0n);
+    expect((amounts as any).secondaryOutput.usd).toEqual(0n);
   });
 });

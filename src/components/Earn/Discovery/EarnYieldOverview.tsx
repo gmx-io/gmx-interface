@@ -221,7 +221,7 @@ function YieldRow({ token, metric, to, disabled, chainId: targetChainId, onClick
   );
 }
 
-const CHAINS_ORDER = [ARBITRUM, AVALANCHE, BOTANIX];
+const CHAINS_ORDER = [ARBITRUM, AVALANCHE, BOTANIX] as const;
 
 export default function EarnYieldOverview() {
   const { address: account } = useAccount();
@@ -403,7 +403,7 @@ export default function EarnYieldOverview() {
   );
 
   const selectedCard = useMemo(
-    () => networkCards[mobileChainId] ?? networkCards[ARBITRUM],
+    () => networkCards[mobileChainId as keyof typeof networkCards] ?? networkCards[ARBITRUM],
     [mobileChainId, networkCards]
   );
 

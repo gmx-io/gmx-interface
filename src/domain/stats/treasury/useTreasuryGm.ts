@@ -122,7 +122,7 @@ function buildTreasuryMarketsRequest({
   const dataStoreAddress = getContract(chainId, "DataStore");
   const syntheticsReaderAddress = getContract(chainId, "SyntheticsReader");
 
-  return marketsAddresses.reduce((acc, marketAddress) => {
+  return marketsAddresses.reduce((acc: Record<string, any>, marketAddress) => {
     const market = marketsData[marketAddress];
 
     acc[`${marketAddress}-balances`] = {

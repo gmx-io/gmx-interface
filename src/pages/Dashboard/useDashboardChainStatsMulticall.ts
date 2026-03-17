@@ -69,7 +69,7 @@ function buildDashboardRequest(chainId: ContractsChainId) {
   } satisfies MulticallRequestConfig<any>;
 }
 
-function parseDashboardResponse(result) {
+function parseDashboardResponse(result: any) {
   const minAum = result.data.glp.getAums.returnValues[0];
   const maxAum = result.data.glp.getAums.returnValues[1];
   const aum = (minAum + maxAum) / 2n;

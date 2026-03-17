@@ -34,7 +34,7 @@ const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
 const UPLOAD_SHARE = ROOT_SHARE_URL + "/api/s";
 const config = { quality: 0.95, canvasWidth: 460, canvasHeight: 240, type: "image/jpeg" };
 
-function getShareURL(imageInfo, ref) {
+function getShareURL(imageInfo: any, ref: any) {
   if (!imageInfo) return;
   let url = `${UPLOAD_SHARE}?id=${imageInfo.id}`;
   if (ref.success && ref.code) {

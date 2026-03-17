@@ -1007,6 +1007,7 @@ function getOrderStepTimings(metricId: OrderMetricId, step: OrderStage) {
     timeFromCreated: metrics.getTime(timingIds[OrderStage.Created], clear) ?? 0,
   };
 
+  // @ts-expect-error not all OrderStage values are keys of timingIds, handled by the if check below
   const timerToStart = timingIds[step];
 
   if (timerToStart) {

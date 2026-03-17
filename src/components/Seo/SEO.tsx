@@ -1,7 +1,8 @@
 import { t } from "@lingui/macro";
+// @ts-expect-error no declaration file for react-helmet
 import { Helmet } from "react-helmet";
 
-function SEO(props) {
+function SEO(props: any) {
   const { children, ...customMeta } = props;
   const meta = {
     title: t`GMX | Decentralized perpetual exchange`,

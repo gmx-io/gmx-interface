@@ -1,5 +1,5 @@
 import { decodeErrorFromViemError } from "lib/errors";
-import { CustomError, extendError, OrderErrorContext } from "lib/errors";
+import { CustomError, extendError, OrderErrorContext, type ErrorLike } from "lib/errors";
 
 export async function fallbackCustomError<T = void>(f: () => Promise<T>, errorContext: OrderErrorContext) {
   try {
@@ -18,7 +18,7 @@ export async function fallbackCustomError<T = void>(f: () => Promise<T>, errorCo
       });
     }
 
-    throw extendError(error, {
+    throw extendError(error as ErrorLike, {
       errorContext,
     });
   }

@@ -99,13 +99,14 @@ const RebateGroupRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) => {
   const [, copyToClipboard] = useCopyToClipboard();
   const { chainId } = useChainId();
   const handleCopyCommandClick = useCallback(
-    (e) => {
+    (e: React.MouseEvent) => {
       e.stopPropagation();
-      const networkStr = {
+      const chainIdToNetwork = {
         [ARBITRUM]: "arbitrum",
         [AVALANCHE]: "avalanche",
         [AVALANCHE_FUJI]: "avalancheFuji",
-      }[chainId];
+      };
+      const networkStr = chainIdToNetwork[chainId as keyof typeof chainIdToNetwork];
       copyToClipboard(
         `MARKET=${rebateGroup.marketInfo?.marketTokenAddress} TOKEN=${rebateGroup.tokenData?.address} TIME_KEY=${
           rebateGroup.timeKey
@@ -122,7 +123,7 @@ const RebateGroupRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) => {
     ]
   );
   const handleCopyAccountsClick = useCallback(
-    (e) => {
+    (e: React.MouseEvent) => {
       e.stopPropagation();
 
       copyToClipboard(rebateGroup.userRebates.map((rebateItem) => rebateItem.account).join(","));

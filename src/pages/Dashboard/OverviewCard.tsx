@@ -152,8 +152,8 @@ export function OverviewCard({
   // #endregion Daily Volume
 
   // #region Open Interest
-  const v1ArbitrumOpenInterest = positionStatsInfo?.[ARBITRUM]?.openInterest;
-  const v1AvalancheOpenInterest = positionStatsInfo?.[AVALANCHE]?.openInterest;
+  const v1ArbitrumOpenInterest = (positionStatsInfo as any)?.[ARBITRUM]?.openInterest;
+  const v1AvalancheOpenInterest = (positionStatsInfo as any)?.[AVALANCHE]?.openInterest;
   const v2ArbitrumOpenInterest = v2ArbitrumOverview.openInterest;
   const v2AvalancheOpenInterest = v2AvalancheOverview.openInterest;
   const v2BotanixOpenInterest = v2BotanixOverview.openInterest;
@@ -168,8 +168,8 @@ export function OverviewCard({
   // #endregion Open Interest
 
   // #region Long Position Sizes
-  const v1ArbitrumLongPositionSizes = positionStatsInfo?.[ARBITRUM]?.totalLongPositionSizes;
-  const v1AvalancheLongPositionSizes = positionStatsInfo?.[AVALANCHE]?.totalLongPositionSizes;
+  const v1ArbitrumLongPositionSizes = (positionStatsInfo as any)?.[ARBITRUM]?.totalLongPositionSizes;
+  const v1AvalancheLongPositionSizes = (positionStatsInfo as any)?.[AVALANCHE]?.totalLongPositionSizes;
 
   const v2ArbitrumLongPositionSizes = v2ArbitrumOverview.totalLongPositionSizes;
   const v2AvalancheLongPositionSizes = v2AvalancheOverview.totalLongPositionSizes;
@@ -185,8 +185,8 @@ export function OverviewCard({
   // #endregion Long Position Sizes
 
   // #region Short Position Sizes
-  const v1ArbitrumShortPositionSizes = positionStatsInfo?.[ARBITRUM]?.totalShortPositionSizes;
-  const v1AvalancheShortPositionSizes = positionStatsInfo?.[AVALANCHE]?.totalShortPositionSizes;
+  const v1ArbitrumShortPositionSizes = (positionStatsInfo as any)?.[ARBITRUM]?.totalShortPositionSizes;
+  const v1AvalancheShortPositionSizes = (positionStatsInfo as any)?.[AVALANCHE]?.totalShortPositionSizes;
 
   const v2ArbitrumShortPositionSizes = v2ArbitrumOverview.totalShortPositionSizes;
   const v2AvalancheShortPositionSizes = v2AvalancheOverview.totalShortPositionSizes;

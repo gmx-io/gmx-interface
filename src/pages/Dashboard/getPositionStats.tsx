@@ -15,7 +15,7 @@ export function getPositionStats(
   }
 
   return positionStats.reduce(
-    (acc, cv, i) => {
+    (acc: Record<string, any>, cv, i) => {
       cv.openInterest = BigInt(cv.totalLongPositionSizes) + BigInt(cv.totalShortPositionSizes);
       acc.totalLongPositionSizes += BigInt(cv.totalLongPositionSizes);
       acc.totalShortPositionSizes += BigInt(cv.totalShortPositionSizes);

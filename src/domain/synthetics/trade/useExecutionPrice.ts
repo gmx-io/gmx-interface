@@ -6,7 +6,7 @@ import { MarketInfo } from "../markets";
 import { convertToContractPrice, parseContractPrice } from "../tokens";
 
 export function useDebugExecutionPrice(
-  chainId,
+  chainId: any,
   p: {
     marketInfo?: MarketInfo;
     sizeInUsd?: bigint;

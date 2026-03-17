@@ -1,5 +1,6 @@
 import { getAbFlags } from "config/ab";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
+import type { CurrentRpcEndpoints } from "lib/rpc/RpcTracker";
 import { getCurrentRpcUrls } from "lib/rpc/useRpcUrls";
 
 import { _debugMulticall } from "./_debug";
@@ -12,5 +13,5 @@ export async function executeMulticallMainThread(chainId: number, request: Multi
   const isLargeAccount = getIsLargeAccount();
   const debugState = _debugMulticall?.getDebugState();
 
-  return multicall?.call(providerUrls, request, isLargeAccount, debugState);
+  return multicall?.call(providerUrls as CurrentRpcEndpoints, request, isLargeAccount, debugState);
 }

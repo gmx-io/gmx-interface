@@ -95,7 +95,8 @@ function TradersStats({ referralsData, traderTier, chainId, userReferralCodeStri
                           <br />
                           <Trans>
                             Code owner set a custom {currentTierDiscount}% discount instead of the standard{" "}
-                            {tierDiscountInfo[traderTier]}% for Tier {getTierIdDisplay(traderTier)}.
+                            {tierDiscountInfo[traderTier as keyof typeof tierDiscountInfo]}% for Tier{" "}
+                            {getTierIdDisplay(traderTier)}.
                           </Trans>
                         </>
                       )) ||

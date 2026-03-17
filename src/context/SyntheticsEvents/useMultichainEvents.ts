@@ -189,7 +189,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         continue;
       }
 
-      const settlementChainId = ENDPOINT_ID_TO_CHAIN_ID[info.dstEid];
+      const settlementChainId = ENDPOINT_ID_TO_CHAIN_ID[info.dstEid as keyof typeof ENDPOINT_ID_TO_CHAIN_ID];
       if (settlementChainId !== chainId) {
         continue;
       }
@@ -479,7 +479,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         continue;
       }
 
-      const sourceChainId = ENDPOINT_ID_TO_CHAIN_ID[info.dstEid];
+      const sourceChainId = ENDPOINT_ID_TO_CHAIN_ID[info.dstEid as keyof typeof ENDPOINT_ID_TO_CHAIN_ID];
 
       debugLog("withdrawal got OFTSent event for", sourceChainId, info.txnHash);
 
@@ -516,7 +516,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         operation: "withdrawal",
         step: "sent",
         token: tokenAddress,
-        sourceChainId: sourceChainId,
+        sourceChainId: sourceChainId!,
         settlementChainId: chainId,
         sentTimestamp: submittedWithdrawal.sentTimestamp,
 
@@ -720,10 +720,8 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
       const newUnsubscribers: Partial<Record<SourceChainId, () => void>> = {};
 
       for (const chainIdString of Object.keys(sourceChainApprovalActiveListeners)) {
-        if (
-          !sourceChainApprovalActiveListeners[chainIdString] ||
-          sourceChainApprovalActiveListeners[chainIdString].length === 0
-        ) {
+        const listeners = (sourceChainApprovalActiveListeners as Record<string, string[]>)[chainIdString];
+        if (!listeners || listeners.length === 0) {
           continue;
         }
 

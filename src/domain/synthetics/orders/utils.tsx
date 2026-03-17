@@ -49,7 +49,7 @@ export function getOrderTypeLabel(orderType: OrderType) {
     [OrderType.Liquidation]: t`Liquidation`,
   };
 
-  return orderTypeLabels[orderType];
+  return orderTypeLabels[orderType as keyof typeof orderTypeLabels];
 }
 
 export function setOrderInfoTitle(order: OrderInfo, indexToken?: Token) {

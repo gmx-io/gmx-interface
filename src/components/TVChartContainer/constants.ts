@@ -10,7 +10,7 @@ import { formatTVDate, formatTVTime } from "lib/dates";
 import { calculateDisplayDecimals, numberToBigint } from "lib/numbers";
 
 const createChartStyleOverrides = (upColor: string, downColor: string): Partial<WidgetOverrides> =>
-  ["candleStyle", "hollowCandleStyle", "haStyle"].reduce((acc, cv) => {
+  ["candleStyle", "hollowCandleStyle", "haStyle"].reduce<Record<string, any>>((acc, cv) => {
     acc[`mainSeriesProperties.${cv}.drawWick`] = true;
     acc[`mainSeriesProperties.${cv}.drawBorder`] = false;
     acc[`mainSeriesProperties.${cv}.upColor`] = upColor;
@@ -34,9 +34,9 @@ export const chartOverridesDark: Partial<WidgetOverrides> = {
   "mainSeriesProperties.priceLineColor": "#8B94B6AA",
   "mainSeriesProperties.highLowAvgPrice.highLowPriceLinesVisible": false,
   "mainSeriesProperties.highLowAvgPrice.highLowPriceLabelsVisible": true,
-  "scalesProperties.textColor": colors.typography["secondary"].dark,
+  "scalesProperties.textColor": (colors.typography as any)["secondary"].dark,
   "mainSeriesProperties.statusViewStyle.showExchange": false,
-  ...createChartStyleOverrides(colors.green[500].dark, colors.red[500].dark),
+  ...createChartStyleOverrides((colors.green as any)[500].dark, (colors.red as any)[500].dark),
 };
 
 export const chartOverridesLight: Partial<WidgetOverrides> = {
@@ -51,9 +51,9 @@ export const chartOverridesLight: Partial<WidgetOverrides> = {
   "mainSeriesProperties.priceLineColor": "#6B7280AA",
   "mainSeriesProperties.highLowAvgPrice.highLowPriceLinesVisible": false,
   "mainSeriesProperties.highLowAvgPrice.highLowPriceLabelsVisible": true,
-  "scalesProperties.textColor": colors.typography["secondary"].light,
+  "scalesProperties.textColor": (colors.typography as any)["secondary"].light,
   "mainSeriesProperties.statusViewStyle.showExchange": false,
-  ...createChartStyleOverrides(colors.green[500].light, colors.red[500].light),
+  ...createChartStyleOverrides((colors.green as any)[500].light, (colors.red as any)[500].light),
 };
 
 export const disabledFeaturesOnMobile: ChartingLibraryFeatureset[] = ["header_saveload", "header_fullscreen_button"];

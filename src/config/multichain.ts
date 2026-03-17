@@ -296,11 +296,12 @@ function addMultichainPlatformTokenConfig(
   tokenGroups[symbol] = {};
 
   for (const chainIdString in chainAddresses) {
-    tokenGroups[symbol]![chainIdString] = {
-      address: chainAddresses[chainIdString].address,
+    const chainIdKey = chainIdString as unknown as AnyChainId;
+    (tokenGroups[symbol] as any)[chainIdString] = {
+      address: chainAddresses[chainIdKey]!.address,
       decimals: 18,
       chainId: parseInt(chainIdString) as SettlementChainId | SourceChainId,
-      stargate: chainAddresses[chainIdString].stargate,
+      stargate: chainAddresses[chainIdKey]!.stargate,
       symbol: symbol,
       isPlatformToken: true,
     } satisfies MultichainTokenId;
@@ -371,10 +372,10 @@ for (const tokenSymbol in TOKEN_GROUPS) {
       );
 
       MULTI_CHAIN_TOKEN_MAPPING[settlementChainId] = MULTI_CHAIN_TOKEN_MAPPING[settlementChainId] || {};
-      MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString] =
-        MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString] || {};
+      (MULTI_CHAIN_TOKEN_MAPPING[settlementChainId] as any)[sourceChainIdString] =
+        (MULTI_CHAIN_TOKEN_MAPPING[settlementChainId] as any)[sourceChainIdString] || {};
 
-      MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString][sourceChainToken.address] = {
+      (MULTI_CHAIN_TOKEN_MAPPING[settlementChainId] as any)[sourceChainIdString][sourceChainToken.address] = {
         settlementChainTokenAddress: tokenId.address,
         sourceChainTokenAddress: sourceChainToken.address,
         sourceChainTokenDecimals: sourceChainToken.decimals,
@@ -389,7 +390,7 @@ for (const tokenSymbol in TOKEN_GROUPS) {
 }
 
 export function getMultichainTokenId(chainId: number, tokenAddress: string): MultichainTokenId | undefined {
-  return CHAIN_ID_TO_TOKEN_ID_MAP[chainId]?.[tokenAddress];
+  return CHAIN_ID_TO_TOKEN_ID_MAP[chainId as keyof typeof CHAIN_ID_TO_TOKEN_ID_MAP]?.[tokenAddress];
 }
 
 export function getStargatePoolAddress(chainId: number, tokenAddress: string): string | undefined {
@@ -401,7 +402,7 @@ export function getStargatePoolAddress(chainId: number, tokenAddress: string): s
 }
 
 export function getLayerZeroEndpointId(chainId: number): LayerZeroEndpointId | undefined {
-  return CHAIN_ID_TO_ENDPOINT_ID[chainId];
+  return CHAIN_ID_TO_ENDPOINT_ID[chainId as keyof typeof CHAIN_ID_TO_ENDPOINT_ID];
 }
 
 export function getMappedTokenId(

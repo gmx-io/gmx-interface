@@ -154,7 +154,9 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     const isFirstDraw = metricsIsFirstDrawTime;
     metricsIsFirstDrawTime = false;
 
-    const offset = Math.trunc(Math.max((Date.now() / 1000 - to) / RESOLUTION_TO_SECONDS[resolution], 0));
+    const offset = Math.trunc(
+      Math.max((Date.now() / 1000 - to) / RESOLUTION_TO_SECONDS[resolution as keyof typeof RESOLUTION_TO_SECONDS], 0)
+    );
     // During a first data request we fetch regular amount of candles
     const countBack = periodParams.firstDataRequest
       ? periodParams.countBack
@@ -169,7 +171,9 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
       if (!isStable) {
         bars = await this.fetchCandles(symbolInfo.name, resolution, countBack + offset);
       } else {
-        const currentCandleTime = getCurrentCandleTime(SUPPORTED_RESOLUTIONS_V2[resolution]);
+        const currentCandleTime = getCurrentCandleTime(
+          SUPPORTED_RESOLUTIONS_V2[resolution as keyof typeof SUPPORTED_RESOLUTIONS_V2]
+        );
         bars = this.getStableCandles(currentCandleTime, resolution, countBack + offset);
       }
     } catch (e) {
@@ -237,10 +241,12 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     const interval = new PauseableInterval<Bar | undefined>(async ({ lastReturnedValue }) => {
       let candlesToFetch = 1;
 
-      const currentCandleTime = getCurrentCandleTime(SUPPORTED_RESOLUTIONS_V2[resolution]);
+      const currentCandleTime = getCurrentCandleTime(
+        SUPPORTED_RESOLUTIONS_V2[resolution as keyof typeof SUPPORTED_RESOLUTIONS_V2]
+      );
 
       if (lastReturnedValue) {
-        const periodSeconds = RESOLUTION_TO_SECONDS[resolution];
+        const periodSeconds = RESOLUTION_TO_SECONDS[resolution as keyof typeof RESOLUTION_TO_SECONDS];
 
         const diff = Math.abs(currentCandleTime - lastReturnedValue.time);
         if (diff >= periodSeconds) {
@@ -402,7 +408,11 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
     result = await Promise.race([
       this.oracleFetcher
-        .fetchOracleCandles(symbol, SUPPORTED_RESOLUTIONS_V2[resolution], count)
+        .fetchOracleCandles(
+          symbol,
+          SUPPORTED_RESOLUTIONS_V2[resolution as keyof typeof SUPPORTED_RESOLUTIONS_V2],
+          count
+        )
         .then((bars) => bars.slice().reverse()),
       sleep(5000).then(() => Promise.reject("Oracle candles timeout")),
     ])
@@ -410,7 +420,10 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
         // eslint-disable-next-line no-console
         console.warn(ex, "Switching to graph chainlink data");
         return Promise.race([
-          getChainlinkChartPricesFromGraph(symbol, SUPPORTED_RESOLUTIONS_V2[resolution]),
+          getChainlinkChartPricesFromGraph(
+            symbol,
+            SUPPORTED_RESOLUTIONS_V2[resolution as keyof typeof SUPPORTED_RESOLUTIONS_V2]
+          ),
           sleep(5000).then(() => Promise.reject("Chainlink candles timeout")),
         ]);
       })
@@ -441,7 +454,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
   }
 
   private getStableCandles(to: number, resolution: ResolutionString, count: number) {
-    const periodSeconds = RESOLUTION_TO_SECONDS[resolution];
+    const periodSeconds = RESOLUTION_TO_SECONDS[resolution as keyof typeof RESOLUTION_TO_SECONDS];
     return range(count, 0, -1).map((i) => ({
       time: to - i * periodSeconds,
       open: 1,

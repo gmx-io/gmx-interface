@@ -31,41 +31,44 @@ export function useClaimableFundingDataRequest(chainId: ContractsChainId) {
         return {};
       }
 
-      return marketsAddresses.reduce((request, marketAddress) => {
-        const market = getByKey(marketsData, marketAddress);
+      return marketsAddresses.reduce(
+        (request, marketAddress) => {
+          const market = getByKey(marketsData, marketAddress);
 
-        if (!market) {
+          if (!market) {
+            return request;
+          }
+
+          const keys = hashDataMap({
+            claimableFundingAmountLong: [
+              ["bytes32", "address", "address", "address"],
+              [CLAIMABLE_FUNDING_AMOUNT, marketAddress, market.longTokenAddress, account as string],
+            ],
+            claimableFundingAmountShort: [
+              ["bytes32", "address", "address", "address"],
+              [CLAIMABLE_FUNDING_AMOUNT, marketAddress, market.shortTokenAddress, account as string],
+            ],
+          });
+
+          request[marketAddress] = {
+            contractAddress: getContract(chainId, "DataStore"),
+            abiId: "DataStore",
+            calls: {
+              claimableFundingAmountLong: {
+                methodName: "getUint",
+                params: [keys.claimableFundingAmountLong],
+              },
+              claimableFundingAmountShort: {
+                methodName: "getUint",
+                params: [keys.claimableFundingAmountShort],
+              },
+            },
+          };
+
           return request;
-        }
-
-        const keys = hashDataMap({
-          claimableFundingAmountLong: [
-            ["bytes32", "address", "address", "address"],
-            [CLAIMABLE_FUNDING_AMOUNT, marketAddress, market.longTokenAddress, account as string],
-          ],
-          claimableFundingAmountShort: [
-            ["bytes32", "address", "address", "address"],
-            [CLAIMABLE_FUNDING_AMOUNT, marketAddress, market.shortTokenAddress, account as string],
-          ],
-        });
-
-        request[marketAddress] = {
-          contractAddress: getContract(chainId, "DataStore"),
-          abiId: "DataStore",
-          calls: {
-            claimableFundingAmountLong: {
-              methodName: "getUint",
-              params: [keys.claimableFundingAmountLong],
-            },
-            claimableFundingAmountShort: {
-              methodName: "getUint",
-              params: [keys.claimableFundingAmountShort],
-            },
-          },
-        };
-
-        return request;
-      }, {});
+        },
+        {} as Record<string, any>
+      );
     },
 
     parseResponse: (result) => {

@@ -193,7 +193,7 @@ function buildTreasuryGlvRequest({
   const dataStoreAddress = getContract(chainId, "DataStore");
   const glvReaderAddress = getContract(chainId, "GlvReader");
 
-  const request = {};
+  const request: Record<string, any> = {};
   const assets: GlvAsset[] = [];
 
   glvList.forEach(({ glv, markets }) => {

@@ -40,7 +40,7 @@ export const DISABLED_OPEN_OCEAN_DEXES = {
 };
 
 export function getOpenOceanUrl(chainId: number) {
-  const url = OPEN_OCEAN_API_URL[chainId];
+  const url = OPEN_OCEAN_API_URL[chainId as keyof typeof OPEN_OCEAN_API_URL];
 
   if (!url) {
     throw new Error("Unsupported open ocean network");

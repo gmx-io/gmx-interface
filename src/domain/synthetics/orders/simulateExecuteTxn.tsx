@@ -190,7 +190,7 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
         },
       }
     );
-  } catch (txnError) {
+  } catch (txnError: any) {
     let msg: React.ReactNode = undefined;
 
     try {

@@ -35,7 +35,7 @@ export function isHomeSite() {
   return import.meta.env.VITE_APP_IS_HOME_SITE === "true";
 }
 
-export function getExchangeRate(tokenAInfo, tokenBInfo, inverted) {
+export function getExchangeRate(tokenAInfo: any, tokenBInfo: any, inverted: any) {
   if (!tokenAInfo || !tokenAInfo.minPrice || !tokenBInfo || !tokenBInfo.maxPrice) {
     return;
   }
@@ -45,14 +45,14 @@ export function getExchangeRate(tokenAInfo, tokenBInfo, inverted) {
   return (tokenBInfo.maxPrice * PRECISION) / tokenAInfo.minPrice;
 }
 
-function shouldInvertTriggerRatio(tokenA, tokenB) {
+function shouldInvertTriggerRatio(tokenA: any, tokenB: any) {
   if (tokenA.isStable && tokenB.isStable) return false;
   if ((tokenB.isStable || tokenB.isUsdg) && !tokenA.isStable) return true;
   if (tokenB.maxPrice && tokenA.maxPrice && tokenB.maxPrice < tokenA.maxPrice) return true;
   return false;
 }
 
-export function getExchangeRateDisplay(rate, tokenA, tokenB, opts: { omitSymbols?: boolean } = {}) {
+export function getExchangeRateDisplay(rate: any, tokenA: any, tokenB: any, opts: { omitSymbols?: boolean } = {}) {
   if (!rate || rate == 0 || !tokenA || !tokenB) return "...";
   if (shouldInvertTriggerRatio(tokenA, tokenB)) {
     [tokenA, tokenB] = [tokenB, tokenA];
@@ -78,7 +78,7 @@ export function getPositionKey(
   return account + ":" + tokenAddress0 + ":" + tokenAddress1 + ":" + isLong;
 }
 
-export function shortenAddress(address, length, padStart = 1) {
+export function shortenAddress(address: any, length: any, padStart = 1) {
   if (!length) {
     return "";
   }
@@ -95,7 +95,7 @@ export function shortenAddress(address, length, padStart = 1) {
   return address.substring(0, left) + "..." + address.substring(address.length - (length - (left + 3)), address.length);
 }
 
-export function useENS(address) {
+export function useENS(address: any) {
   const { data } = useEnsName({
     address,
     chainId: SOURCE_ETHEREUM_MAINNET,
@@ -131,7 +131,7 @@ export const CHART_PERIODS = {
   "1y": 60 * 60 * 24 * 365,
 };
 
-export function getTotalVolumeSum(volumes) {
+export function getTotalVolumeSum(volumes: any) {
   if (!volumes || volumes.length === 0) {
     return;
   }
@@ -154,8 +154,8 @@ export function getBalanceAndSupplyData(balances: bigint[] | undefined): {
   }
 
   const keys = ["gmx", "esGmx", "glp", "stakedGmxTracker"];
-  const balanceData = {};
-  const supplyData = {};
+  const balanceData: Record<string, bigint> = {};
+  const supplyData: Record<string, bigint> = {};
   const propsLength = 2;
 
   for (let i = 0; i < keys.length; i++) {
@@ -192,7 +192,7 @@ export function getDepositBalanceData(
     "bnGmxInFeeGmx",
     "glpInStakedGlp",
   ];
-  const data = {};
+  const data: Record<string, bigint> = {};
 
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
@@ -253,12 +253,12 @@ type RawVestingData = {
   affiliateVesterAverageStakedAmount: bigint;
 };
 
-export function getVestingData(vestingInfo): RawVestingData | undefined {
+export function getVestingData(vestingInfo: any): RawVestingData | undefined {
   if (!vestingInfo || vestingInfo.length === 0) {
     return undefined;
   }
   const propsLength = 7;
-  const data: Partial<RawVestingData> = {};
+  const data: Record<string, any> = {};
 
   const keys = ["gmxVester", "glpVester", "affiliateVester"] as const;
 
@@ -315,7 +315,7 @@ export function getStakingData(stakingInfo: bigint[] | undefined):
     "feeGlpTracker",
     "extendedGmxTracker",
   ];
-  const data = {};
+  const data: Record<string, any> = {};
   const propsLength = 5;
 
   for (let i = 0; i < keys.length; i++) {
@@ -607,15 +607,15 @@ export function getStakingProcessedData(
   return data;
 }
 
-export function getPageTitle(data) {
+export function getPageTitle(data: any) {
   const title = t`Decentralized perpetual exchange | GMX`;
   return `${data} | ${title}`;
 }
 
-export function isHashZero(value) {
+export function isHashZero(value: any) {
   return value === zeroHash;
 }
-export function isAddressZero(value) {
+export function isAddressZero(value: any) {
   return value === zeroAddress;
 }
 
@@ -661,7 +661,7 @@ const imageStaticMap = mapKeys(
   (_, key) => key.split("/").pop()
 );
 
-export function importImage(name) {
+export function importImage(name: string) {
   const sizeSuffixRegex = /_(?:24|40)\.svg$/;
   const candidates = sizeSuffixRegex.test(name) ? [name.replace(sizeSuffixRegex, ".svg"), name] : [name];
 
@@ -681,7 +681,7 @@ export function importImage(name) {
   throw new Error(`Image ${name} not found`);
 }
 
-export function getTwitterIntentURL(text, url = "", hashtag = "") {
+export function getTwitterIntentURL(text: any, url = "", hashtag = "") {
   let finalURL = "https://twitter.com/intent/tweet?text=";
   if (text.length > 0) {
     finalURL += Array.isArray(text) ? text.map((t) => encodeURIComponent(t)).join("%0a%0a") : encodeURIComponent(text);

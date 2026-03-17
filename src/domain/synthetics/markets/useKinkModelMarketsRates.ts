@@ -32,8 +32,10 @@ export function useKinkModelMarketsRates(chainId: ContractsChainId): KinkModelMa
     refreshInterval: CONFIG_UPDATE_INTERVAL,
 
     request: () =>
-      marketsAddresses.reduce((acc, marketAddress) => {
-        const prebuiltHashedKeys = HASHED_KINK_MODEL_MARKET_RATES_KEYS[chainId]?.[marketAddress];
+      marketsAddresses.reduce((acc: Record<string, any>, marketAddress) => {
+        const prebuiltHashedKeys = (HASHED_KINK_MODEL_MARKET_RATES_KEYS[chainId] as Record<string, any> | undefined)?.[
+          marketAddress
+        ];
 
         if (!prebuiltHashedKeys) {
           throw new Error(

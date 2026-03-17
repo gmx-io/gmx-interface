@@ -730,14 +730,16 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
 
 export const MARKETS = Object.keys(MARKETS_UI_CONFIGS).reduce(
   (acc, network) => {
+    const uiConfigs = MARKETS_UI_CONFIGS[network as unknown as keyof typeof MARKETS_UI_CONFIGS];
+    const sdkMarkets = SDK_MARKETS[network as unknown as keyof typeof SDK_MARKETS];
     return {
       ...acc,
-      [network]: Object.keys(MARKETS_UI_CONFIGS[network]).reduce((acc, address) => {
+      [network]: Object.keys(uiConfigs).reduce((acc, address) => {
         return {
           ...acc,
           [address]: {
-            ...SDK_MARKETS[network][address],
-            ...MARKETS_UI_CONFIGS[network][address],
+            ...sdkMarkets[address],
+            ...uiConfigs[address],
           },
         };
       }, {}),

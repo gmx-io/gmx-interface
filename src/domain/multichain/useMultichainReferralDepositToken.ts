@@ -39,7 +39,10 @@ export function useMultichainReferralDepositToken(): {
       return undefined;
     }
 
-    const preferredToken = tokens.find((token) => token.address === CHAIN_ID_PREFERRED_DEPOSIT_TOKEN[chainId]);
+    const preferredToken = tokens.find(
+      (token) =>
+        token.address === CHAIN_ID_PREFERRED_DEPOSIT_TOKEN[chainId as keyof typeof CHAIN_ID_PREFERRED_DEPOSIT_TOKEN]
+    );
 
     if (preferredToken) {
       return preferredToken.address;

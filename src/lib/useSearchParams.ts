@@ -10,7 +10,7 @@ export default function useSearchParams<T>() {
     const parsedQueryParams: T = {} as T;
 
     queryParams.forEach((value, key) => {
-      parsedQueryParams[key] = value;
+      (parsedQueryParams as Record<string, any>)[key] = value;
     });
 
     return parsedQueryParams;
