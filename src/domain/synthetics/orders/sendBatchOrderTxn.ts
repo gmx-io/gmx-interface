@@ -17,10 +17,12 @@ import { getContract } from "sdk/configs/contracts";
 import { OrderType } from "sdk/utils/orders/types";
 import {
   BatchOrderTxnParams,
+  CreateOrderPayload,
   getBatchOrderMulticallPayload,
   getIsInvalidBatchReceiver,
   getIsTwapOrderPayload,
 } from "sdk/utils/orderTransactions";
+import { setUiFeeReceiverIsJit } from "sdk/utils/twap/uiFeeReceiver";
 
 import { signerAddressError } from "components/Errors/errorToasts";
 
@@ -61,7 +63,12 @@ export async function sendBatchOrderTxn({
   simulationParams: BatchSimulationParams | undefined;
   callback: TxnCallback<BatchOrderTxnCtx> | undefined;
 }) {
-  const eventBuilder = new TxnEventBuilder<BatchOrderTxnCtx>({ expressParams, batchParams, signer });
+  const encodedBatchParams = encodeJitBatchOrderUiFeeReceiver(batchParams, simulationParams);
+  const eventBuilder = new TxnEventBuilder<BatchOrderTxnCtx>({
+    expressParams,
+    batchParams: encodedBatchParams,
+    signer,
+  });
 
   try {
     if (isGmxAccount && !expressParams) {
@@ -80,7 +87,7 @@ export async function sendBatchOrderTxn({
         return makeBatchOrderSimulation({
           chainId,
           signer,
-          batchParams,
+          batchParams: encodedBatchParams,
           blockTimestampData: simulationParams.blockTimestampData,
           tokensData: simulationParams.tokensData,
           expressParams,
@@ -97,7 +104,7 @@ export async function sendBatchOrderTxn({
       const txnData = await buildAndSignExpressBatchOrderTxn({
         chainId,
         signer,
-        batchParams,
+        batchParams: encodedBatchParams,
         relayParamsPayload: expressParams.relayParamsPayload,
         relayerFeeTokenAddress: expressParams.gasPaymentParams.relayerFeeTokenAddress,
         relayerFeeAmount: expressParams.gasPaymentParams.relayerFeeAmount,
@@ -137,7 +144,7 @@ export async function sendBatchOrderTxn({
       return await res;
     }
 
-    const { callData, value } = getBatchOrderMulticallPayload({ params: batchParams });
+    const { callData, value } = getBatchOrderMulticallPayload({ params: encodedBatchParams });
 
     return sendWalletTransaction({
       chainId,
@@ -285,13 +292,11 @@ const makeBatchOrderSimulation = async ({
       });
 
       const orderPayload = batchParams.createOrderParams[0].orderPayload;
-      const isIncreaseOrder = orderPayload.orderType === OrderType.MarketIncrease;
-      const needsJit =
-        isIncreaseOrder &&
-        jitShiftParamsList !== undefined &&
-        jitShiftParamsList.length > 0 &&
-        nativeReserveLiquidity !== undefined &&
-        orderPayload.numbers.sizeDeltaUsd > nativeReserveLiquidity;
+      const needsJit = getNeedsJitOrder({
+        orderPayload,
+        jitShiftParamsList,
+        nativeReserveLiquidity,
+      });
 
       simulationMethod = needsJit ? "simulateExecuteLatestJitOrder" : "simulateExecuteLatestOrder";
 
@@ -325,6 +330,59 @@ const makeBatchOrderSimulation = async ({
     });
   }
 };
+
+function encodeJitBatchOrderUiFeeReceiver(
+  batchParams: BatchOrderTxnParams,
+  simulationParams: BatchSimulationParams | undefined
+): BatchOrderTxnParams {
+  const firstCreateOrder = batchParams.createOrderParams[0];
+
+  if (
+    !firstCreateOrder ||
+    !getNeedsJitOrder({
+      orderPayload: firstCreateOrder.orderPayload,
+      jitShiftParamsList: simulationParams?.jitShiftParamsList,
+      nativeReserveLiquidity: simulationParams?.nativeReserveLiquidity,
+    })
+  ) {
+    return batchParams;
+  }
+
+  return {
+    ...batchParams,
+    createOrderParams: [
+      {
+        ...firstCreateOrder,
+        orderPayload: {
+          ...firstCreateOrder.orderPayload,
+          addresses: {
+            ...firstCreateOrder.orderPayload.addresses,
+            uiFeeReceiver: setUiFeeReceiverIsJit(firstCreateOrder.orderPayload.addresses.uiFeeReceiver, true),
+          },
+        },
+      },
+      ...batchParams.createOrderParams.slice(1),
+    ],
+  };
+}
+
+function getNeedsJitOrder({
+  orderPayload,
+  jitShiftParamsList,
+  nativeReserveLiquidity,
+}: {
+  orderPayload: CreateOrderPayload;
+  jitShiftParamsList?: GlvShiftParam[];
+  nativeReserveLiquidity?: bigint;
+}) {
+  return (
+    orderPayload.orderType === OrderType.MarketIncrease &&
+    jitShiftParamsList !== undefined &&
+    jitShiftParamsList.length > 0 &&
+    nativeReserveLiquidity !== undefined &&
+    orderPayload.numbers.sizeDeltaUsd > nativeReserveLiquidity
+  );
+}
 
 const JIT_SHIFT_ERROR_NAMES = new Set([
   "GlvInsufficientMarketTokenBalance",
