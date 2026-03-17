@@ -2544,6 +2544,10 @@ msgstr "未偵測到符合條件的持倉"
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr "幫助我們改善 GMX。為了安全，我們不會主動聯絡您。請發送「I have feedback」至我們的官方帳號："
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Slippage"
+msgstr ""
+
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. This order won't apply to it. <0>Switch to {1} collateral</0>"
 msgstr "現有倉位使用 {0} 抵押品。此訂單將不會套用於該倉位。<0>切換至 {1} 抵押品</0>"

@@ -2544,6 +2544,10 @@ msgstr "対象となる保有資産が検出されませんでした"
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr "GMXの改善にご協力ください。セキュリティのため、こちらから先にご連絡することはありません。公式アカウントに「I have feedback」とお送りください:"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Slippage"
+msgstr ""
+
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. This order won't apply to it. <0>Switch to {1} collateral</0>"
 msgstr "既存のポジションは{0}担保を使用しています。この注文は適用されません。<0>{1}担保に切り替える</0>"

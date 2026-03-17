@@ -1,7 +1,8 @@
 import { t, Trans } from "@lingui/macro";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { formatUsd } from "lib/numbers";
+import { CLAIM_AFFILIATE_FIXED_SLIPPAGE_BPS } from "domain/synthetics/referrals/useClaimAffiliateSwapRoutes";
+import { formatPercentageDisplay, formatUsd } from "lib/numbers";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
@@ -161,6 +162,10 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
                   <SyntheticsInfoRow
                     label={<Trans>Total value of assets</Trans>}
                     value={formatUsd(state.selectedClaimTokensUsd)}
+                  />
+                  <SyntheticsInfoRow
+                    label={<Trans>Slippage</Trans>}
+                    value={formatPercentageDisplay(CLAIM_AFFILIATE_FIXED_SLIPPAGE_BPS / 100)}
                   />
                   <SyntheticsInfoRow
                     label={<Trans>You'll receive</Trans>}

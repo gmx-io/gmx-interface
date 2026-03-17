@@ -28,7 +28,7 @@ type ClaimSwapRouteResult = {
   usdOut: bigint;
 };
 
-const CLAIM_AFFILIATE_FIXED_SLIPPAGE_BPS = 300; // 3%
+export const CLAIM_AFFILIATE_FIXED_SLIPPAGE_BPS = 300; // 3%
 
 const SWAP_TARGET_TOKEN_OPTIONS_BY_CHAIN: Partial<Record<ContractsChainId, string[]>> = {
   [ARBITRUM]: [
