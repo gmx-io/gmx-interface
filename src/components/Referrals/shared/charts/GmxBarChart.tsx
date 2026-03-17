@@ -92,24 +92,6 @@ export function GmxBarChart({
   );
 }
 
-function TradersVolumeChartTooltip({
-  active,
-  payload,
-}: {
-  active?: boolean;
-  payload?: Array<{ payload: { dateTooltip: string; volumeUsd: bigint } }>;
-}) {
-  if (!active || !payload?.length) return null;
-  const item = payload[0].payload as { dateTooltip: string; volumeUsd: bigint };
-
-  return (
-    <div className="rounded-8 border border-stroke-primary bg-slate-900 p-10">
-      <div className="text-body-small mb-4 text-typography-secondary">{item.dateTooltip}</div>
-      <div className="text-body-small text-typography-primary numbers">{formatUsd(item.volumeUsd)}</div>
-    </div>
-  );
-}
-
 export function TradersVolumeChart({
   chartData,
 }: {
@@ -123,25 +105,30 @@ export function TradersVolumeChart({
   return (
     <GmxBarChart chartData={chartData} yAxisTickFormatter={usdYAxisTickFormatter}>
       <Bar dataKey="volumeFloat" fill="var(--color-blue-300)" radius={1} />
-      <RechartsTooltip cursor={false} content={<TradersVolumeChartTooltip />} />
+      <RechartsTooltip cursor={false} content={<SimpleChartTooltip fieldName="volumeUsd" isUsd />} />
     </GmxBarChart>
   );
 }
 
-function TradesCountChartTooltip({
+function SimpleChartTooltip({
   active,
   payload,
+  fieldName,
+  isUsd,
 }: {
   active?: boolean;
-  payload?: Array<{ payload: { dateTooltip: string; tradesCount: number } }>;
+  payload?: Array<{ payload: Record<string, any> }>;
+  fieldName: "volumeUsd" | "rebatesUsd" | "tradesCount";
+  isUsd?: boolean;
 }) {
   if (!active || !payload?.length) return null;
-  const item = payload[0].payload as { dateTooltip: string; tradesCount: number };
+  const item = payload[0].payload;
+  const value = isUsd ? formatUsd(item[fieldName]) : item[fieldName];
 
   return (
     <div className="rounded-8 border border-stroke-primary bg-slate-900 p-10">
       <div className="text-body-small mb-4 text-typography-secondary">{item.dateTooltip}</div>
-      <div className="text-body-small text-typography-primary numbers">{item.tradesCount}</div>
+      <div className="text-body-small text-typography-primary numbers">{value}</div>
     </div>
   );
 }
@@ -158,26 +145,8 @@ export function TradesCountChart({
   return (
     <GmxBarChart chartData={chartData} yAxisTickFormatter={integerYAxisTickFormatter} allowDecimals={false}>
       <Bar dataKey="tradesCount" fill="var(--color-blue-300)" radius={1} />
-      <RechartsTooltip cursor={false} content={<TradesCountChartTooltip />} />
+      <RechartsTooltip cursor={false} content={<SimpleChartTooltip fieldName="tradesCount" />} />
     </GmxBarChart>
-  );
-}
-
-function RebatesChartTooltip({
-  active,
-  payload,
-}: {
-  active?: boolean;
-  payload?: Array<{ payload: { dateTooltip: string; rebatesUsd: bigint } }>;
-}) {
-  if (!active || !payload?.length) return null;
-  const item = payload[0].payload as { dateTooltip: string; rebatesUsd: bigint };
-
-  return (
-    <div className="rounded-8 border border-stroke-primary bg-slate-900 p-10">
-      <div className="text-body-small mb-4 text-typography-secondary">{item.dateTooltip}</div>
-      <div className="text-body-small text-typography-primary numbers">{formatUsd(item.rebatesUsd)}</div>
-    </div>
   );
 }
 
@@ -194,7 +163,7 @@ export function RebatesChart({
   return (
     <GmxBarChart chartData={chartData} yAxisTickFormatter={usdYAxisTickFormatter}>
       <Bar dataKey="rebatesUsdFloat" fill="var(--color-blue-300)" radius={1} />
-      <RechartsTooltip cursor={false} content={<RebatesChartTooltip />} />
+      <RechartsTooltip cursor={false} content={<SimpleChartTooltip fieldName="rebatesUsd" isUsd />} />
     </GmxBarChart>
   );
 }

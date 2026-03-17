@@ -1,3 +1,4 @@
+import cx from "classnames";
 import { ReactNode, useCallback } from "react";
 
 import affiliateCodePromoBg from "img/affiliate_code_promo_bg.png";
@@ -6,11 +7,12 @@ import CloseIcon from "img/ic_close.svg?react";
 type PromoCardProps = {
   title: ReactNode;
   subtitle: ReactNode;
-  children?: ReactNode;
+  imgSrc: string;
+  imgClassName: string;
   onClose?: () => void;
 };
 
-export function PromoCard({ title, subtitle, children, onClose }: PromoCardProps) {
+export function PromoCard({ title, subtitle, imgSrc, imgClassName, onClose }: PromoCardProps) {
   const handleClose = useCallback(
     (e: React.MouseEvent<HTMLButtonElement>) => {
       e.stopPropagation();
@@ -42,7 +44,7 @@ export function PromoCard({ title, subtitle, children, onClose }: PromoCardProps
         src={affiliateCodePromoBg}
         className="user-select-none absolute -right-8 -top-8 z-0 h-[calc(100%+16px)] blur-[8px] hue-rotate-180 invert dark:hue-rotate-0 dark:invert-0"
       />
-      {children}
+      <img src={imgSrc} className={cx("user-select-none absolute z-10 w-[104px]", imgClassName)} />
     </div>
   );
 }

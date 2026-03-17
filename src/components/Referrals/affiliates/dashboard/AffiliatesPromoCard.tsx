@@ -27,11 +27,8 @@ export function AffiliatesPromoCard({ account }: { account: string | undefined }
         </Trans>
       }
       onClose={close}
-    >
-      <img
-        src={referralCodePromoFg}
-        className="user-select-none absolute -bottom-22 right-28 z-10 w-[104px] max-[1257px]:hidden"
-      />
-    </PromoCard>
+      imgSrc={referralCodePromoFg}
+      imgClassName="-bottom-22 right-28 max-[1257px]:hidden"
+    />
   );
 }

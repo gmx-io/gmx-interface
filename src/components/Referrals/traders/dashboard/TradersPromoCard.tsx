@@ -27,11 +27,8 @@ export function TradersPromoCard({ account }: { account: string | undefined }) {
         </Trans>
       }
       onClose={close}
-    >
-      <img
-        src={affiliateCodePromoFg}
-        className="user-select-none absolute -bottom-34 right-28 z-10 w-[104px] max-[1266px]:hidden"
-      />
-    </PromoCard>
+      imgSrc={affiliateCodePromoFg}
+      imgClassName="-bottom-34 right-28 max-[1266px]:hidden"
+    />
   );
 }
