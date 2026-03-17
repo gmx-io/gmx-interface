@@ -49,6 +49,7 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
+          publish_branch: release
           publish_dir: ./playwright-report
           destination_dir: ct-report/pr-${{ github.event.pull_request.number }}
 
