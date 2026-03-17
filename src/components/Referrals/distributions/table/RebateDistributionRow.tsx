@@ -86,11 +86,13 @@ export function RebateDistributionRow({
       <GridCell>
         <TooltipWithPortal
           className="whitespace-nowrap"
+          variant="none"
+          as="div"
           handle={
             <div className="flex items-center numbers">
               {tokensWithoutPrices.length > 0 && (
                 <>
-                  <WarnIcon className="size-20 text-yellow-300" />
+                  <WarnIcon className="-my-5 size-20 text-yellow-300" />
                   &nbsp;
                 </>
               )}

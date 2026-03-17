@@ -19,6 +19,8 @@ type ReferralsDistributionsTabProps = {
   referralsData: TotalReferralsStats | undefined;
 };
 
+const REFERRALS_DISTRIBUTIONS_PAGE_SIZE = 15;
+
 export function ReferralsDistributionsTab({ isLoading, account, referralsData }: ReferralsDistributionsTabProps) {
   const { chainId } = useChainId();
   const chains = referralsData?.chains || {};
@@ -30,7 +32,7 @@ export function ReferralsDistributionsTab({ isLoading, account, referralsData }:
     getCurrentData: getCurrentRebateData,
     setCurrentPage: setCurrentRebatePage,
     pageCount: rebatePageCount,
-  } = usePagination("Rebates", affiliateDistributions);
+  } = usePagination("Rebates", affiliateDistributions, REFERRALS_DISTRIBUTIONS_PAGE_SIZE);
   const [selectedRebateId, setSelectedRebateId] = useState<string | undefined>(undefined);
 
   const toggleSelectedRebateId = useCallback((rebateId: string) => {
