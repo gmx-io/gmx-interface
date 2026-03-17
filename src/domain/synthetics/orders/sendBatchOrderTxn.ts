@@ -180,6 +180,8 @@ const makeBatchOrderSimulation = async ({
   jitShiftParamsList?: GlvShiftParam[];
   nativeReserveLiquidity?: bigint;
 }): Promise<void> => {
+  let simulationMethod: "simulateExecuteLatestOrder" | "simulateExecuteLatestJitOrder" | undefined;
+
   try {
     if (getIsInvalidBatchReceiver(batchParams, signer.address)) {
       throw extendError(new Error(signerAddressError), {
@@ -291,7 +293,7 @@ const makeBatchOrderSimulation = async ({
         nativeReserveLiquidity !== undefined &&
         orderPayload.numbers.sizeDeltaUsd > nativeReserveLiquidity;
 
-      const simulationMethod = needsJit ? "simulateExecuteLatestJitOrder" : "simulateExecuteLatestOrder";
+      simulationMethod = needsJit ? "simulateExecuteLatestJitOrder" : "simulateExecuteLatestOrder";
 
       try {
         await simulateExecution(chainId, {
@@ -319,6 +321,7 @@ const makeBatchOrderSimulation = async ({
   } catch (error) {
     throw extendError(error, {
       errorContext: "simulation",
+      simulationMethod,
     });
   }
 };

@@ -69,6 +69,7 @@ export type ErrorLike = {
   tags?: string;
   isAdditionalValidationPassed?: boolean;
   additionalValidationType?: string;
+  simulationMethod?: string;
   info?: {
     error?: ErrorLike;
   };
@@ -93,6 +94,7 @@ export type ErrorData = {
   errorSource?: string;
   isAdditionalValidationPassed?: boolean;
   additionalValidationType?: string;
+  simulationMethod?: string;
   parentError?: ErrorData;
   errorDepth?: number;
 };
@@ -109,6 +111,7 @@ export function extendError(
     errorSource?: string;
     isAdditionalValidationPassed?: boolean;
     additionalValidationType?: string;
+    simulationMethod?: string;
     data?: any;
   }
 ): ErrorLike {
@@ -116,6 +119,7 @@ export function extendError(
   error.errorSource = params.errorSource;
   error.isAdditionalValidationPassed = params.isAdditionalValidationPassed;
   error.additionalValidationType = params.additionalValidationType;
+  error.simulationMethod = params.simulationMethod;
   error.data = params.data;
 
   return error;
@@ -132,6 +136,7 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
   const errorContext: OrderErrorContext | undefined = typeof error === "string" ? undefined : error?.errorContext;
   const isAdditionalValidationPassed = typeof error === "string" ? undefined : error?.isAdditionalValidationPassed;
   const additionalValidationType = typeof error === "string" ? undefined : error?.additionalValidationType;
+  const simulationMethod = typeof error === "string" ? undefined : error?.simulationMethod;
   const data = typeof error === "string" ? undefined : error?.data;
 
   let errorMessage = "Unknown error";
@@ -249,6 +254,7 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
     parentError,
     isAdditionalValidationPassed,
     additionalValidationType,
+    simulationMethod,
     errorDepth,
   };
 }
