@@ -5,7 +5,7 @@ import { useCopyToClipboard, usePrevious } from "react-use";
 
 import { useAffiliateCodes, useUserReferralCode } from "domain/referrals";
 import { Token } from "domain/tokens";
-import downloadImage from "lib/downloadImage";
+import { copyElementAsImage } from "lib/copyElementAsImage";
 import { helperToast } from "lib/helperToast";
 import { getRootShareApiUrl, getTwitterIntentURL } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -23,7 +23,6 @@ import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
 import AlertIcon from "img/ic_alert.svg?react";
 import CopyStrokeIcon from "img/ic_copy_stroke.svg?react";
-import DownloadIcon from "img/ic_download2.svg?react";
 import TwitterIcon from "img/ic_x.svg?react";
 import shareBgImg from "img/position-share-bg.jpg";
 
@@ -238,7 +237,7 @@ function PositionShare({
     },
     [shareSource]
   );
-  async function handleDownload() {
+  async function handleCopyImage() {
     const element = cardRef.current;
     onShareAction?.();
     if (!element) return;
@@ -251,10 +250,12 @@ function PositionShare({
       },
     });
 
-    const imgBlob = await toJpeg(element, config)
-      .then(() => toJpeg(element, config))
-      .then(() => toJpeg(element, config));
-    downloadImage(imgBlob, "share.jpg");
+    try {
+      await copyElementAsImage(element);
+      helperToast.success(t`Image copied to clipboard`);
+    } catch {
+      helperToast.error(t`Failed to copy image`);
+    }
   }
 
   function handleCopy() {
@@ -382,12 +383,12 @@ function PositionShare({
           <Button
             variant="secondary"
             disabled={!uploadedImageInfo}
-            onClick={shouldPromptToCreateReferralCode ? handlePromptToCreateReferralCode : handleDownload}
+            onClick={shouldPromptToCreateReferralCode ? handlePromptToCreateReferralCode : handleCopyImage}
             size="medium"
             className="grow !text-14"
           >
-            <Trans>Download</Trans>
-            <DownloadIcon className="size-16" />
+            <Trans>Copy image</Trans>
+            <CopyStrokeIcon className="size-16" />
           </Button>
           <Button
             newTab

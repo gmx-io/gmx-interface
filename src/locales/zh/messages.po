@@ -3246,6 +3246,11 @@ msgstr ""
 msgid "TRANSACTION"
 msgstr "TRANSACTION"
 
+#: src/components/PositionShare/PositionShare.tsx
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+msgid "Copy image"
+msgstr ""
+
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show error boundary debug trigger"
 msgstr "显示错误边界调试触发器"
@@ -3822,10 +3827,6 @@ msgstr "分享 GMX 反馈"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw failed"
 msgstr "提取失败"
-
-#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
-msgid "Failed to download image"
-msgstr ""
 
 #. chainname balance
 #: src/components/MultichainBalanceTooltip/MultichainBalanceTooltip.tsx
@@ -4424,6 +4425,11 @@ msgstr "永续合约聚合器"
 msgid "Request Market Swap"
 msgstr "请求市场交换"
 
+#: src/components/PositionShare/PositionShare.tsx
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+msgid "Failed to copy image"
+msgstr ""
+
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
 msgstr "纯 {indexSymbol} 做空。风险敞口仅来自仓位。"
@@ -4529,6 +4535,11 @@ msgstr "LayerZero scan"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Borrow fee"
 msgstr "借贷费用"
+
+#: src/components/PositionShare/PositionShare.tsx
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+msgid "Image copied to clipboard"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact"
@@ -8591,11 +8602,6 @@ msgstr "转换费用"
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "What is GLV exactly?"
 msgstr "GLV 到底是什么？"
-
-#: src/components/PositionShare/PositionShare.tsx
-#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
-msgid "Download"
-msgstr "下载"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Up"

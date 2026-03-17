@@ -3,6 +3,7 @@ import { QRCodeSVG } from "qrcode.react";
 import { useCallback, useMemo, useRef } from "react";
 import { useCopyToClipboard } from "react-use";
 
+import { copyElementAsImage } from "lib/copyElementAsImage";
 import { helperToast } from "lib/helperToast";
 import { getHomeUrl, getTwitterIntentURL } from "lib/legacy";
 import { formatUsd } from "lib/numbers";
@@ -12,7 +13,6 @@ import ModalWithPortal from "components/Modal/ModalWithPortal";
 
 import logoIcon from "img/gmx_logo.svg";
 import CopyStrokeIcon from "img/ic_copy_stroke.svg?react";
-import DownloadIcon from "img/ic_download2.svg?react";
 import XIcon from "img/ic_x.svg?react";
 import LogoText from "img/logo-text.svg?react";
 import shareReferralCodeBg from "img/share_refferral_code_bg.png";
@@ -59,27 +59,16 @@ export function ShareReferralCardModal({
     helperToast.success(t`Referral link copied to clipboard`);
   }, [copyToClipboard, referralLink]);
 
-  const handleDownload = useCallback(async () => {
+  const handleCopyImage = useCallback(async () => {
     if (!cardRef.current) return;
 
     try {
-      const { toBlob } = await import("html-to-image");
-      const blob = await toBlob(cardRef.current, { quality: 1, pixelRatio: 2 });
-
-      if (blob) {
-        const url = URL.createObjectURL(blob);
-        const a = document.createElement("a");
-        a.href = url;
-        a.download = `gmx-referral-${referralCode}.png`;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        URL.revokeObjectURL(url);
-      }
+      await copyElementAsImage(cardRef.current);
+      helperToast.success(t`Image copied to clipboard`);
     } catch {
-      helperToast.error(t`Failed to download image`);
+      helperToast.error(t`Failed to copy image`);
     }
-  }, [referralCode]);
+  }, []);
 
   return (
     <ModalWithPortal
@@ -136,9 +125,9 @@ export function ShareReferralCardModal({
             <Trans>Share on</Trans>
             <XIcon className="size-20" />
           </Button>
-          <Button variant="secondary" onClick={handleDownload} size="medium" className="grow !text-14">
-            <Trans>Download</Trans>
-            <DownloadIcon className="size-20" />
+          <Button variant="secondary" onClick={handleCopyImage} size="medium" className="grow !text-14">
+            <Trans>Copy image</Trans>
+            <CopyStrokeIcon className="size-20" />
           </Button>
           <Button variant="secondary" onClick={handleCopyLink} size="medium" className="grow !text-14">
             <Trans>Copy link</Trans>

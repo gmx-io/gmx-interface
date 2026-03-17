@@ -3246,6 +3246,11 @@ msgstr ""
 msgid "TRANSACTION"
 msgstr ""
 
+#: src/components/PositionShare/PositionShare.tsx
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+msgid "Copy image"
+msgstr ""
+
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show error boundary debug trigger"
 msgstr ""
@@ -3821,10 +3826,6 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw failed"
-msgstr ""
-
-#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
-msgid "Failed to download image"
 msgstr ""
 
 #. chainname balance
@@ -4424,6 +4425,11 @@ msgstr ""
 msgid "Request Market Swap"
 msgstr ""
 
+#: src/components/PositionShare/PositionShare.tsx
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+msgid "Failed to copy image"
+msgstr ""
+
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
 msgstr ""
@@ -4528,6 +4534,11 @@ msgstr ""
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Borrow fee"
+msgstr ""
+
+#: src/components/PositionShare/PositionShare.tsx
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+msgid "Image copied to clipboard"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -8590,11 +8601,6 @@ msgstr ""
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "What is GLV exactly?"
-msgstr ""
-
-#: src/components/PositionShare/PositionShare.tsx
-#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
-msgid "Download"
 msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx

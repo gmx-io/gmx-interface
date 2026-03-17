@@ -3246,6 +3246,11 @@ msgstr "GMX V1 Actions"
 msgid "TRANSACTION"
 msgstr "TRANSACTION"
 
+#: src/components/PositionShare/PositionShare.tsx
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+msgid "Copy image"
+msgstr "Copy image"
+
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show error boundary debug trigger"
 msgstr "Show error boundary debug trigger"
@@ -3822,10 +3827,6 @@ msgstr "Share GMX feedback"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Withdraw failed"
 msgstr "Withdraw failed"
-
-#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
-msgid "Failed to download image"
-msgstr "Failed to download image"
 
 #. chainname balance
 #: src/components/MultichainBalanceTooltip/MultichainBalanceTooltip.tsx
@@ -4424,6 +4425,11 @@ msgstr "Perpetuals aggregator"
 msgid "Request Market Swap"
 msgstr "Request Market Swap"
 
+#: src/components/PositionShare/PositionShare.tsx
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+msgid "Failed to copy image"
+msgstr "Failed to copy image"
+
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
 msgstr "Pure {indexSymbol} short. Exposure is only from the position."
@@ -4529,6 +4535,11 @@ msgstr "LayerZero scan"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Borrow fee"
 msgstr "Borrow fee"
+
+#: src/components/PositionShare/PositionShare.tsx
+#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+msgid "Image copied to clipboard"
+msgstr "Image copied to clipboard"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact"
@@ -8591,11 +8602,6 @@ msgstr "Shift fee"
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "What is GLV exactly?"
 msgstr "What is GLV exactly?"
-
-#: src/components/PositionShare/PositionShare.tsx
-#: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
-msgid "Download"
-msgstr "Download"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Up"
