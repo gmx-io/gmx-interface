@@ -1,18 +1,10 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import useSWR from "swr";
 
 import { getApiUrl } from "sdk/configs/api";
 import type { ContractsChainId } from "sdk/configs/chains";
 
 const JIT_LIQUIDITY_UPDATE_INTERVAL = 30 * 1000;
-const JIT_STALE_MIN_COOLDOWN = 5 * 1000;
-const JIT_STALE_MAX_COOLDOWN = 60 * 1000;
-const JIT_STALE_REFETCH_DELAY = 7 * 1000;
-
-type StaleEntry = {
-  timestamp: number;
-  fetchGeneration: number;
-};
 
 export type GlvShiftParam = {
   glv: string;
@@ -31,8 +23,6 @@ export type JitLiquidityInfo = {
 
 export type JitLiquidityData = {
   jitLiquidityMap: Map<string, JitLiquidityInfo> | undefined;
-  markJitStale: (marketAddress: string) => void;
-  refreshJitData: () => void;
 };
 
 export function getJitLiquidityInfo(
@@ -58,12 +48,8 @@ function safeParseBigInt(value: string): bigint {
 
 export function useJitLiquidity(chainId: ContractsChainId, options?: { enabled?: boolean }): JitLiquidityData {
   const enabled = options?.enabled !== false;
-  const staleMarketsRef = useRef<Map<string, StaleEntry>>(new Map());
-  const fetchGenerationRef = useRef(0);
-  const [staleVersion, setStaleVersion] = useState(0);
-  const delayedRefetchTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
-  const { data, mutate } = useSWR<Map<string, JitLiquidityInfo> | undefined>(
+  const { data } = useSWR<Map<string, JitLiquidityInfo> | undefined>(
     enabled ? ["jitLiquidity", chainId] : null,
     async () => {
       try {
@@ -75,8 +61,6 @@ export function useJitLiquidity(chainId: ContractsChainId, options?: { enabled?:
 
         const res = await fetch(`${apiUrl}/jit/liquidity_info`);
         const response = await res.json();
-
-        fetchGenerationRef.current += 1;
 
         const map = new Map<string, JitLiquidityInfo>();
 
@@ -109,73 +93,10 @@ export function useJitLiquidity(chainId: ContractsChainId, options?: { enabled?:
     }
   );
 
-  useEffect(() => {
-    return () => {
-      if (delayedRefetchTimerRef.current) {
-        clearTimeout(delayedRefetchTimerRef.current);
-      }
-    };
-  }, []);
-
-  const markJitStale = useCallback(
-    (marketAddress: string) => {
-      staleMarketsRef.current.set(marketAddress.toLowerCase(), {
-        timestamp: Date.now(),
-        fetchGeneration: fetchGenerationRef.current,
-      });
-      setStaleVersion((v) => v + 1);
-
-      if (delayedRefetchTimerRef.current) {
-        clearTimeout(delayedRefetchTimerRef.current);
-      }
-      delayedRefetchTimerRef.current = setTimeout(() => {
-        mutate();
-        delayedRefetchTimerRef.current = null;
-      }, JIT_STALE_REFETCH_DELAY);
-    },
-    [mutate]
-  );
-
-  const jitLiquidityMap = useMemo(() => {
-    if (!data) {
-      return undefined;
-    }
-
-    const now = Date.now();
-    const currentGeneration = fetchGenerationRef.current;
-    const filtered = new Map<string, JitLiquidityInfo>();
-
-    for (const [market, info] of data) {
-      const staleEntry = staleMarketsRef.current.get(market);
-
-      if (staleEntry) {
-        const elapsed = now - staleEntry.timestamp;
-
-        if (elapsed >= JIT_STALE_MAX_COOLDOWN) {
-          staleMarketsRef.current.delete(market);
-        } else if (elapsed < JIT_STALE_MIN_COOLDOWN) {
-          continue;
-          // Suppress until a fetch beyond the immediate refetch completes
-        } else if (currentGeneration <= staleEntry.fetchGeneration + 1) {
-          continue;
-        } else {
-          staleMarketsRef.current.delete(market);
-        }
-      }
-
-      filtered.set(market, info);
-    }
-
-    return filtered;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [data, staleVersion]);
-
   return useMemo(
     () => ({
-      jitLiquidityMap,
-      markJitStale,
-      refreshJitData: mutate,
+      jitLiquidityMap: data,
     }),
-    [jitLiquidityMap, markJitStale, mutate]
+    [data]
   );
 }

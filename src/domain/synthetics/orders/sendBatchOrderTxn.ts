@@ -32,8 +32,6 @@ export type BatchSimulationParams = {
   blockTimestampData: BlockTimestampData | undefined;
   jitShiftParamsList?: GlvShiftParam[];
   nativeReserveLiquidity?: bigint;
-  markJitStale?: (marketAddress: string) => void;
-  refreshJitData?: () => void;
 };
 
 export type BatchOrderTxnCtx = {
@@ -90,8 +88,6 @@ export async function sendBatchOrderTxn({
           isGmxAccount,
           jitShiftParamsList: simulationParams.jitShiftParamsList,
           nativeReserveLiquidity: simulationParams.nativeReserveLiquidity,
-          markJitStale: simulationParams.markJitStale,
-          refreshJitData: simulationParams.refreshJitData,
         });
       };
     }
@@ -172,8 +168,6 @@ const makeBatchOrderSimulation = async ({
   expressParams,
   jitShiftParamsList,
   nativeReserveLiquidity,
-  markJitStale,
-  refreshJitData,
 }: {
   chainId: ContractsChainId;
   signer: WalletSigner;
@@ -185,8 +179,6 @@ const makeBatchOrderSimulation = async ({
   expressParams: ExpressTxnParams | undefined;
   jitShiftParamsList?: GlvShiftParam[];
   nativeReserveLiquidity?: bigint;
-  markJitStale?: (marketAddress: string) => void;
-  refreshJitData?: () => void;
 }): Promise<void> => {
   try {
     if (getIsInvalidBatchReceiver(batchParams, signer.address)) {
@@ -319,8 +311,6 @@ const makeBatchOrderSimulation = async ({
         });
       } catch (error) {
         if (needsJit && isJitShiftError(error)) {
-          markJitStale?.(orderPayload.addresses.market);
-          refreshJitData?.();
           throw new Error("Insufficient liquidity");
         }
         throw error;
