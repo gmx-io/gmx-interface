@@ -278,7 +278,7 @@ const positionsQuery = gql`
       where: {
         isSnapshot_eq: $isSnapshot
         snapshotTimestamp_eq: $snapshotTimestamp
-        accountStat: { maxCapital_gt: $requiredMaxCapital }
+        maxCapital_gt: $requiredMaxCapital
       }
       limit: $limit
       offset: $offset
