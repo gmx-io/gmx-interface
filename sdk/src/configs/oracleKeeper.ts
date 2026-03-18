@@ -13,7 +13,6 @@ export const ORACLE_FALLBACK_TRACKER_CONFIG = {
   setEndpointsThrottle: 5 * 1000, // 5 secs
   delay: 5000, // 5 secs
 };
-// TODO: fix arbitrum url after JIT is deployed
 const ORACLE_KEEPER_URLS: Record<ContractsChainId, string> = {
   [ARBITRUM]: "https://arbitrum-api-fallback.gmxinfra2.io",
 
@@ -39,13 +38,6 @@ const ORACLE_KEEPER_FALLBACK_URLS: Record<ContractsChainId, string[]> = {
 };
 
 export function getOracleKeeperUrl(chainId: number) {
-  const localOverride =
-    typeof localStorage !== "undefined" ? localStorage.getItem("ORACLE_KEEPER_URL_OVERRIDE") : undefined;
-
-  if (localOverride) {
-    return localOverride;
-  }
-
   if (!ORACLE_KEEPER_URLS[chainId]) {
     throw new Error(`No oracle keeper url for chain ${chainId}`);
   }

@@ -150,9 +150,8 @@ export class OracleKeeperFetcher implements OracleFetcher {
   };
 
   post = (path: `/${string}`, body: any) => {
-    const urlOverride = localStorage.getItem("ORACLE_KEEPER_URL_OVERRIDE");
     const endpoints = this.oracleTracker.getCurrentEndpoints();
-    const baseUrl = urlOverride || endpoints.primary;
+    const baseUrl = endpoints.primary;
     return fetch(buildUrl(baseUrl, path), {
       method: "POST",
       headers: {
