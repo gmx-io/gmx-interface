@@ -49,7 +49,6 @@ jobs:
         uses: peaceiris/actions-gh-pages@v4
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_branch: release
           publish_dir: ./playwright-report
           destination_dir: ct-report/pr-${{ github.event.pull_request.number }}
 
@@ -65,12 +64,14 @@ jobs:
       - name: Delete previous report comment
         if: ${{ !cancelled() && steps.find-comment.outputs.comment-id != '' }}
         uses: actions/github-script@v7
+        env:
+          COMMENT_ID: ${{ steps.find-comment.outputs.comment-id }}
         with:
           script: |
             await github.rest.issues.deleteComment({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              comment_id: ${{ steps.find-comment.outputs.comment-id }}
+              comment_id: process.env.COMMENT_ID
             });
 
       - name: Post report link
@@ -85,7 +86,7 @@ jobs:
 
             [View Report](https://${{ github.repository_owner }}.github.io/${{ github.event.repository.name }}/ct-report/pr-${{ github.event.pull_request.number }}/)
 
-            <sub>Run #${{ github.run_number }} | Commit ${{ github.event.pull_request.head.sha }}</sub>
+            <sub>Commit ${{ github.event.pull_request.head.sha }}</sub>
 
       - name: Fail if tests failed
         if: ${{ steps.tests.outcome == 'failure' }}
