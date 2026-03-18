@@ -47,6 +47,22 @@ export function expandDecimals(n: BigNumberish, decimals: number): bigint {
   return BigInt(n) * 10n ** BigInt(decimals);
 }
 
+export function toBigInt(value: BigNumberish | undefined | null): bigint | undefined {
+  try {
+    if (value === undefined || value === null) {
+      return undefined;
+    }
+    if (typeof value === "bigint") {
+      return value;
+    }
+    return BigInt(value);
+  } catch (e) {
+    // eslint-disable-next-line no-console
+    console.error("toBigInt error", e);
+    return undefined;
+  }
+}
+
 export function basisPointsToFloat(basisPoints: bigint) {
   return (basisPoints * PRECISION) / BASIS_POINTS_DIVISOR_BIGINT;
 }
@@ -375,17 +391,7 @@ export function formatPercentageDisplay(percentage: number, hideThreshold?: numb
   return `${percentage}%`;
 }
 
-export function formatAmountHuman(
-  amount: BigNumberish | undefined,
-  tokenDecimals: number,
-  showDollar = false,
-  displayDecimals = 1
-) {
-  if (amount === undefined) {
-    return "...";
-  }
-
-  let n = Number(formatAmount(amount, tokenDecimals));
+export function formatNumberHuman(n: number, showDollar = false, displayDecimals = 1) {
   // For large numbers, we can neglect the decimals to avoid decimals in cases like 9999999.99999
   if (n >= 1_000_000) {
     n = Math.round(n);
@@ -407,6 +413,21 @@ export function formatAmountHuman(
   }
 
   return `${isNegative ? "-" : ""}${sign}${absN.toFixed(displayDecimals)}`;
+}
+
+export function formatAmountHuman(
+  amount: BigNumberish | undefined,
+  tokenDecimals: number,
+  showDollar = false,
+  displayDecimals = 1
+) {
+  if (amount === undefined) {
+    return "...";
+  }
+
+  let n = Number(formatAmount(amount, tokenDecimals));
+
+  return formatNumberHuman(n, showDollar, displayDecimals);
 }
 
 export function formatBalanceAmount(
@@ -708,23 +729,6 @@ export function toBigNumberWithDecimals(value: string, decimals: number): bigint
   }
 }
 
-/**
- *
- * @deprecated Use BigInt instead
- */
-export function bigNumberify(n?: BigNumberish | null | undefined) {
-  try {
-    if (n === undefined) throw new Error("n is undefined");
-    if (n === null) throw new Error("n is null");
-
-    return BigInt(n);
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.error("bigNumberify error", e);
-    return undefined;
-  }
-}
-
 export const parseValue = (value: string, tokenDecimals: number) => {
   const pValue = parseFloat(value);
 
@@ -741,7 +745,7 @@ export const parseValue = (value: string, tokenDecimals: number) => {
     return undefined;
   }
 
-  return bigNumberify(amount);
+  return toBigInt(amount);
 };
 
 export function roundUpDivision(a: bigint, b: bigint) {

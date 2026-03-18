@@ -29,6 +29,7 @@ import { TokenData, TokensData, TokensRatio, getIsEquivalentTokens } from "domai
 import { DUST_USD, isAddressZero } from "lib/legacy";
 import { PRECISION, adjustForDecimals, expandDecimals, formatAmount, formatUsd, roundWithDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { getPageOutdatedError } from "lib/useHasOutdatedUi";
 import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import { bigMath } from "sdk/utils/bigmath";
 import {
@@ -83,7 +84,7 @@ export function getCommonError(p: { chainId: number; isConnected: boolean; hasOu
   }
 
   if (hasOutdatedUi) {
-    return { buttonErrorMessage: t`Page outdated. Refresh` };
+    return { buttonErrorMessage: getPageOutdatedError() };
   }
 
   if (!isConnected) {

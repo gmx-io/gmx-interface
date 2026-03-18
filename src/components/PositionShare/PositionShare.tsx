@@ -3,15 +3,16 @@ import { toJpeg } from "html-to-image";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useCopyToClipboard, usePrevious } from "react-use";
 
-import { useAffiliateCodes } from "domain/referrals";
+import { useAffiliateCodes, useUserReferralCode } from "domain/referrals";
 import { Token } from "domain/tokens";
-import downloadImage from "lib/downloadImage";
+import { copyElementAsImage } from "lib/copyElementAsImage";
 import { helperToast } from "lib/helperToast";
 import { getRootShareApiUrl, getTwitterIntentURL } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import useLoadImage from "lib/useLoadImage";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionActionEvent, SharePositionActionSource } from "lib/userAnalytics/types";
+import type { ContractsChainId } from "sdk/configs/chains";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
@@ -22,7 +23,6 @@ import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
 import AlertIcon from "img/ic_alert.svg?react";
 import CopyStrokeIcon from "img/ic_copy_stroke.svg?react";
-import DownloadIcon from "img/ic_download2.svg?react";
 import TwitterIcon from "img/ic_x.svg?react";
 import shareBgImg from "img/position-share-bg.jpg";
 
@@ -54,8 +54,8 @@ type Props = {
   pnlAfterFeesUsd: bigint;
   setIsPositionShareModalOpen: (isOpen: boolean) => void;
   isPositionShareModalOpen: boolean;
-  account: string | undefined | null;
-  chainId: number;
+  account: string | undefined;
+  chainId: ContractsChainId;
   doNotShowAgain?: boolean;
   onDoNotShowAgainChange?: (value: boolean) => void;
   onShareAction?: () => void;
@@ -83,6 +83,7 @@ function PositionShare({
   isRpnl = false,
 }: Props) {
   const userAffiliateCode = useAffiliateCodes(chainId, account);
+  const { userReferralCodeString: usedReferralCode } = useUserReferralCode(chainId, account);
   const [uploadedImageInfo, setUploadedImageInfo] = useState<any>();
   const [uploadedImageError, setUploadedImageError] = useState<string | null>(null);
   const [showPnlAmounts, setShowPnlAmounts] = useState(false);
@@ -102,6 +103,16 @@ function PositionShare({
     return userAffiliateCode;
   }, [createdReferralCode, userAffiliateCode]);
   const hasReferralCode = Boolean(shareAffiliateCode?.code);
+
+  const { referralCodeOwnerKind, code } = useMemo(() => {
+    if (hasReferralCode && shareAffiliateCode?.code) {
+      return { referralCodeOwnerKind: "created" as const, code: shareAffiliateCode.code };
+    }
+    if (usedReferralCode) {
+      return { referralCodeOwnerKind: "used" as const, code: usedReferralCode };
+    }
+    return { referralCodeOwnerKind: undefined, code: undefined };
+  }, [hasReferralCode, shareAffiliateCode?.code, usedReferralCode]);
 
   const [promptedToCreateReferralCode, setPromptedToCreateReferralCode] = useState(false);
 
@@ -226,7 +237,7 @@ function PositionShare({
     },
     [shareSource]
   );
-  async function handleDownload() {
+  async function handleCopyImage() {
     const element = cardRef.current;
     onShareAction?.();
     if (!element) return;
@@ -239,10 +250,12 @@ function PositionShare({
       },
     });
 
-    const imgBlob = await toJpeg(element, config)
-      .then(() => toJpeg(element, config))
-      .then(() => toJpeg(element, config));
-    downloadImage(imgBlob, "share.jpg");
+    try {
+      await copyElementAsImage(element);
+      helperToast.success(t`Image copied to clipboard`);
+    } catch {
+      helperToast.error(t`Failed to copy image`);
+    }
   }
 
   function handleCopy() {
@@ -313,7 +326,8 @@ function PositionShare({
               markPrice={cachedPositionData.markPrice}
               pnlAfterFeesPercentage={cachedPositionData.pnlAfterFeesPercentage}
               pnlAfterFeesUsd={cachedPositionData.pnlAfterFeesUsd}
-              userAffiliateCode={shareAffiliateCode}
+              referralCodeOwnerKind={referralCodeOwnerKind}
+              code={code}
               ref={cardRef}
               loading={!uploadedImageInfo && !uploadedImageError}
               sharePositionBgImg={sharePositionBgImg}
@@ -369,12 +383,12 @@ function PositionShare({
           <Button
             variant="secondary"
             disabled={!uploadedImageInfo}
-            onClick={shouldPromptToCreateReferralCode ? handlePromptToCreateReferralCode : handleDownload}
+            onClick={shouldPromptToCreateReferralCode ? handlePromptToCreateReferralCode : handleCopyImage}
             size="medium"
             className="grow !text-14"
           >
-            <Trans>Download</Trans>
-            <DownloadIcon className="size-16" />
+            <Trans>Copy image</Trans>
+            <CopyStrokeIcon className="size-16" />
           </Button>
           <Button
             newTab

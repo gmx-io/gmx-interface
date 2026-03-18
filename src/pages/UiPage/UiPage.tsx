@@ -1,8 +1,9 @@
-import { t, Trans } from "@lingui/macro";
+import cx from "classnames";
 import camelCase from "lodash/camelCase";
 import mapKeys from "lodash/mapKeys";
 import upperFirst from "lodash/upperFirst";
 import { memo, SVGProps, useState } from "react";
+import { useCopyToClipboard } from "react-use";
 
 import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, getChainName } from "config/chains";
 import { colors } from "config/colors";
@@ -38,10 +39,10 @@ const icons = Object.keys(iconsContext).map((rawPath) => {
   let componentName = upperFirst(name);
 
   return {
-    path: rawPath,
+    path: `img/${rawPath}`,
     name: name,
-    importUrl: `import ${name} from "${rawPath}";`,
-    importSvg: `import ${componentName} from "${rawPath}";`,
+    importUrl: `import ${name} from "img/${rawPath}";`,
+    importSvg: `import ${componentName} from "img/${rawPath}?react";`,
     component: iconsContext[rawPath],
   };
 }) as {
@@ -74,7 +75,7 @@ const otherImages = Object.keys(otherImagesContext)
     return {
       path: key,
       name: name,
-      importUrl: `import ${name} from "${key}";`,
+      importUrl: `import ${name} from "img/${key}";`,
       src: otherImagesContext[key],
     };
   }) as { src: string; name: string; path: string; importUrl: string }[];
@@ -102,19 +103,13 @@ function flattenColors(obj: ColorTree, prefix = ""): Array<{ name: string; light
 export default memo(function UiPage() {
   const { theme } = useTheme();
   return (
-    <AppPageLayout title={t`UI page`}>
+    <AppPageLayout title="UI page">
       <main className="mx-auto max-w-prose p-20">
-        <h1 className="text-34 font-medium">
-          <Trans>UI page</Trans>
-        </h1>
+        <h1 className="text-34 font-medium">UI page</h1>
 
-        <p>
-          <Trans>This page demonstrates the UI components in the app</Trans>
-        </p>
+        <p>This page demonstrates the UI components in the app</p>
 
-        <h2 className="mb-16 mt-24 text-24 font-medium">
-          <Trans>Fill colors</Trans>
-        </h2>
+        <h2 className="mb-16 mt-24 text-24 font-medium">Fill colors</h2>
         <div className="overflow-auto">
           {Object.entries(colors).map(([key, value]) => {
             const colors = isColor(value) ? flattenColors({ [key]: value }) : flattenColors(value, key);
@@ -131,156 +126,98 @@ export default memo(function UiPage() {
             );
           })}
         </div>
-        <h2 className="mb-16 mt-24 text-24 font-medium">
-          <Trans>Text colors</Trans>
-        </h2>
+        <h2 className="mb-16 mt-24 text-24 font-medium">Text colors</h2>
 
         <div className="flex flex-wrap gap-16">
-          <p className="text-blue-500">
-            <Trans>Blue 500</Trans>
-          </p>
-          <p className="text-yellow-300">
-            <Trans>Yellow 300</Trans>
-          </p>
-          <p className="text-red-500">
-            <Trans>Red 500</Trans>
-          </p>
-          <p className="text-green-500">
-            <Trans>Green 500</Trans>
-          </p>
-          <p className="text-typography-primary">
-            <Trans>Typography primary</Trans>
-          </p>
-          <p className="text-typography-secondary">
-            <Trans>Typography secondary</Trans>
-          </p>
+          <p className="text-blue-500">Blue 500</p>
+          <p className="text-yellow-300">Yellow 300</p>
+          <p className="text-red-500">Red 500</p>
+          <p className="text-green-500">Green 500</p>
+          <p className="text-typography-primary">Typography primary</p>
+          <p className="text-typography-secondary">Typography secondary</p>
         </div>
         <p className="mt-8 text-typography-primary underline decoration-gray-400 decoration-dashed decoration-8">
-          <Trans>Decoration is gray-400</Trans>
+          Decoration is gray-400
         </p>
 
-        <h2 className="mb-16 mt-24 text-24 font-medium">
-          <Trans>Font sizes</Trans>
-        </h2>
+        <h2 className="mb-16 mt-24 text-24 font-medium">Font sizes</h2>
         <div className="flex flex-col gap-16">
           <div className="flex items-baseline gap-8">
-            <div>
-              <Trans>h1</Trans>
-            </div>
-            <p className="text-h1">
-              <Trans>H1 text size</Trans>
-            </p>
+            <div>h1</div>
+            <p className="text-h1">H1 text size</p>
           </div>
           <div className="flex items-baseline gap-8">
-            <div>
-              <Trans>h2</Trans>
-            </div>
-            <p className="text-h2">
-              <Trans>H2 text size</Trans>
-            </p>
+            <div>h2</div>
+            <p className="text-h2">H2 text size</p>
           </div>
           <div className="flex items-baseline gap-8">
-            <div>
-              <Trans>Body large</Trans>
-            </div>
-            <p className="text-body-large">
-              <Trans>Some important text indeed</Trans>
-            </p>
+            <div>Body large</div>
+            <p className="text-body-large">Some important text indeed</p>
           </div>
           <div className="flex items-baseline gap-8">
-            <div>
-              <Trans>Medium</Trans>
-            </div>
-            <p className="text-body-medium">
-              <Trans>Base text it is. Nothing special.</Trans>
-            </p>
+            <div>Medium</div>
+            <p className="text-body-medium">Base text it is. Nothing special.</p>
           </div>
           <div className="flex items-baseline gap-8">
-            <div>
-              <Trans>Small</Trans>
-            </div>
-            <p className="text-body-small">
-              <Trans>Somewhat unimportant text, but still readable</Trans>
-            </p>
+            <div>Small</div>
+            <p className="text-body-small">Somewhat unimportant text, but still readable</p>
           </div>
           <div className="flex items-baseline gap-8">
-            <div>
-              <Trans>Caption</Trans>
-            </div>
-            <p className="text-caption">
-              <Trans>Somewhat unimportant text, but still readable</Trans>
-            </p>
+            <div>Caption</div>
+            <p className="text-caption">Somewhat unimportant text, but still readable</p>
           </div>
 
           <div className="flex items-baseline gap-8">
-            <div>
-              <Trans>{"<unset>"}</Trans>
-            </div>
-            <p>
-              <Trans>Text with no size set</Trans>
-            </p>
+            <div>{"<unset>"}</div>
+            <p>Text with no size set</p>
           </div>
         </div>
 
-        <h2 className="mb-16 mt-24 text-24 font-medium">
-          <Trans>Line heights</Trans>
-        </h2>
+        <h2 className="mb-16 mt-24 text-24 font-medium">Line heights</h2>
         <div className="flex flex-col gap-16">
           <p className="leading-1">
-            <Trans>leading-1</Trans>
+            leading-1
             <br />
-            <Trans>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus beatae atque eligendi sunt quasi et
-              porro nemo cumque nesciunt dolorum earum, minus fuga similique exercitationem ad. Eos omnis vitae suscipit
-              recusandae iste adipisci quasi rem odio, quidem qui modi impedit quibusdam culpa nemo distinctio rerum
-              tempora sequi facilis quaerat laudantium pariatur dicta ab. Pariatur mollitia magni consectetur
-              praesentium nulla nobis non voluptates laborum obcaecati enim unde, in tempore voluptas, expedita aut
-              corrupti ipsum sequi consequatur iste corporis quasi! Officia nihil pariatur, asperiores molestiae quia
-              earum tempora, in neque inventore quisquam dolore veniam minus beatae adipisci quod hic? Saepe, aperiam
-              consequuntur!
-            </Trans>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus beatae atque eligendi sunt quasi et
+            porro nemo cumque nesciunt dolorum earum, minus fuga similique exercitationem ad. Eos omnis vitae suscipit
+            recusandae iste adipisci quasi rem odio, quidem qui modi impedit quibusdam culpa nemo distinctio rerum
+            tempora sequi facilis quaerat laudantium pariatur dicta ab. Pariatur mollitia magni consectetur praesentium
+            nulla nobis non voluptates laborum obcaecati enim unde, in tempore voluptas, expedita aut corrupti ipsum
+            sequi consequatur iste corporis quasi! Officia nihil pariatur, asperiores molestiae quia earum tempora, in
+            neque inventore quisquam dolore veniam minus beatae adipisci quod hic? Saepe, aperiam consequuntur!
           </p>
           <p className="leading-base">
-            <Trans>leading-base</Trans>
+            leading-base
             <br />
-            <Trans>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus beatae atque eligendi sunt quasi et
-              porro nemo cumque nesciunt dolorum earum, minus fuga similique exercitationem ad. Eos omnis vitae suscipit
-              recusandae iste adipisci quasi rem odio, quidem qui modi impedit quibusdam culpa nemo distinctio rerum
-              tempora sequi facilis quaerat laudantium pariatur dicta ab. Pariatur mollitia magni consectetur
-              praesentium nulla nobis non voluptates laborum obcaecati enim unde, in tempore voluptas, expedita aut
-              corrupti ipsum sequi consequatur iste corporis quasi! Officia nihil pariatur, asperiores molestiae quia
-              earum tempora, in neque inventore quisquam dolore veniam minus beatae adipisci quod hic? Saepe, aperiam
-              consequuntur!
-            </Trans>
+            Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus beatae atque eligendi sunt quasi et
+            porro nemo cumque nesciunt dolorum earum, minus fuga similique exercitationem ad. Eos omnis vitae suscipit
+            recusandae iste adipisci quasi rem odio, quidem qui modi impedit quibusdam culpa nemo distinctio rerum
+            tempora sequi facilis quaerat laudantium pariatur dicta ab. Pariatur mollitia magni consectetur praesentium
+            nulla nobis non voluptates laborum obcaecati enim unde, in tempore voluptas, expedita aut corrupti ipsum
+            sequi consequatur iste corporis quasi! Officia nihil pariatur, asperiores molestiae quia earum tempora, in
+            neque inventore quisquam dolore veniam minus beatae adipisci quod hic? Saepe, aperiam consequuntur!
           </p>
         </div>
 
-        <h2 className="mb-16 mt-24 text-24 font-medium">
-          <Trans>Tooltips</Trans>
-        </h2>
+        <h2 className="mb-16 mt-24 text-24 font-medium">Tooltips</h2>
 
         <Tooltip
           content={
             <>
-              <Trans>
-                Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam enim excepturi veritatis, architecto
-                ab qui odio repudiandae vero accusantium dicta, eius similique a aspernatur, maxime iste ipsam facilis.
-                Libero, et.
-              </Trans>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Quisquam enim excepturi veritatis, architecto ab
+              qui odio repudiandae vero accusantium dicta, eius similique a aspernatur, maxime iste ipsam facilis.
+              Libero, et.
               <br />
               <br />
-              <ExchangeInfoRow label={t`Some label`} value={t`Some value`} />
-              <StatsTooltipRow label={t`Some other label`} value="100" />
+              <ExchangeInfoRow label="Some label" value="Some value" />
+              <StatsTooltipRow label="Some other label" value="100" />
             </>
           }
-          handle={t`Lorem ipsum dolor`}
+          handle="Lorem ipsum dolor"
           closeDelay={100000000000}
         />
 
-        <h2 className="mb-16 mt-24 text-24 font-medium">
-          <Trans>Token categories</Trans>
-        </h2>
+        <h2 className="mb-16 mt-24 text-24 font-medium">Token categories</h2>
 
         <div className="flex flex-col gap-16">
           {[ARBITRUM, AVALANCHE, AVALANCHE_FUJI].map((chainId) => (
@@ -310,6 +247,7 @@ export default memo(function UiPage() {
 
 function IconsAndImages() {
   const [searchTerm, setSearchTerm] = useState("");
+  const [clipboardState, copyToClipboard] = useCopyToClipboard();
 
   const filteredIcons = icons.filter(
     (icon) =>
@@ -326,14 +264,12 @@ function IconsAndImages() {
   return (
     <>
       <div className="mx-auto max-w-prose p-20">
-        <h2 className="mb-16 mt-24 text-24 font-medium">
-          <Trans>Icons & images</Trans>
-        </h2>
+        <h2 className="mb-16 mt-24 text-24 font-medium">Icons & images</h2>
       </div>
 
       <div className="mb-16 px-20">
         <SearchInput
-          placeholder={t`Search icons and images...`}
+          placeholder="Search icons and images..."
           value={searchTerm}
           setValue={setSearchTerm}
           className="w-full"
@@ -341,7 +277,7 @@ function IconsAndImages() {
         />
       </div>
 
-      <h3 className="mb-16 px-20 text-20 font-medium">{t`Icons (${filteredIcons.length})`}</h3>
+      <h3 className="mb-16 px-20 text-20 font-medium">Icons ({filteredIcons.length})</h3>
       <style>{`.ImageTooltip .Tooltip-popup {max-width: unset !important;}`}</style>
       <div className="relative flex flex-wrap items-center gap-16 px-20">
         {filteredIcons.map((icon) => (
@@ -355,13 +291,31 @@ function IconsAndImages() {
               <div>
                 <pre>
                   <code>
-                    {t`Name:`} {icon.name}
+                    Name: {icon.name}
                     <br />
-                    {t`Path:`} {icon.path}
+                    Path: {icon.path}
                     <br />
-                    {t`Import URL:`} {icon.importUrl}
+                    <button
+                      onClick={() => {
+                        copyToClipboard(icon.importUrl);
+                      }}
+                      className={cx({
+                        "text-green-500": clipboardState.value === icon.importUrl,
+                      })}
+                    >
+                      Import URL: {icon.importUrl}
+                    </button>
                     <br />
-                    {t`Import SVG:`} {icon.importSvg}
+                    <button
+                      onClick={() => {
+                        copyToClipboard(icon.importSvg);
+                      }}
+                      className={cx({
+                        "text-green-500": clipboardState.value === icon.importSvg,
+                      })}
+                    >
+                      Import SVG: {icon.importSvg}
+                    </button>
                   </code>
                 </pre>
               </div>
@@ -374,7 +328,7 @@ function IconsAndImages() {
         ))}
       </div>
 
-      <h3 className="mb-16 mt-24 px-20 text-20 font-medium">{t`Images (${filteredImages.length})`}</h3>
+      <h3 className="mb-16 mt-24 px-20 text-20 font-medium">Images ({filteredImages.length})</h3>
       <div className="relative flex flex-wrap items-center gap-16 px-20">
         {filteredImages.map((src) => (
           <Tooltip
@@ -387,11 +341,11 @@ function IconsAndImages() {
               <div>
                 <pre>
                   <code>
-                    {t`Name:`} {src.name}
+                    Name: {src.name}
                     <br />
-                    {t`Path:`} {src.path}
+                    Path: {src.path}
                     <br />
-                    {t`Import URL:`} {src.importUrl}
+                    Import URL: {src.importUrl}
                   </code>
                 </pre>
               </div>

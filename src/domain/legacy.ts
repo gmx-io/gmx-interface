@@ -7,7 +7,7 @@ import { getServerUrl } from "config/backend";
 import { ARBITRUM, AVALANCHE } from "config/chains";
 import { getContract } from "config/contracts";
 import { contractFetcher } from "lib/contracts";
-import { BN_ZERO, bigNumberify, expandDecimals, parseValue } from "lib/numbers";
+import { BN_ZERO, expandDecimals, parseValue, toBigInt } from "lib/numbers";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -42,7 +42,7 @@ export function useTotalGmxSupply() {
   });
 
   return {
-    total: gmxSupply ? bigNumberify(gmxSupply) : undefined,
+    total: gmxSupply ? toBigInt(gmxSupply) : undefined,
     mutate: updateGmxSupply,
   };
 }
@@ -117,7 +117,7 @@ export function useTotalGmxInLiquidity() {
   }, [mutateGMXInLiquidityOnArbitrum, mutateGMXInLiquidityOnAvax]);
 
   if (gmxInLiquidityOnAvax && gmxInLiquidityOnArbitrum) {
-    let total = bigNumberify(gmxInLiquidityOnArbitrum)! + bigNumberify(gmxInLiquidityOnAvax)!;
+    let total = toBigInt(gmxInLiquidityOnArbitrum)! + toBigInt(gmxInLiquidityOnAvax)!;
     totalGMX.current = total;
   }
   return {
