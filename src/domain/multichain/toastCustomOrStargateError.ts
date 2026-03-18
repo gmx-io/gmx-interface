@@ -10,7 +10,11 @@ import { abis } from "sdk/abis";
 
 import { getTxnErrorToast } from "components/Errors/errorToasts";
 
-export function toastCustomOrStargateError(chainId: AnyChainId, error: Error, actionName?: TradingActionName) {
+export function toastCustomOrStargateError(
+  chainId: AnyChainId,
+  error: Error,
+  errorInfo?: { actionName?: TradingActionName; requestId?: string; metricId?: string; collateral?: string }
+) {
   let prettyErrorName = error.name;
   let prettyErrorMessage = error.message;
 
@@ -44,10 +48,13 @@ export function toastCustomOrStargateError(chainId: AnyChainId, error: Error, ac
 
   helperToast.error(toastContext.errorContent, {
     autoClose: toastContext.autoCloseToast,
-    tradingErrorInfo: actionName
+    tradingErrorInfo: errorInfo?.actionName
       ? {
-          actionName,
+          actionName: errorInfo.actionName,
           errorData: error,
+          requestId: errorInfo.requestId,
+          metricId: errorInfo.metricId,
+          collateral: errorInfo.collateral,
         }
       : undefined,
   });

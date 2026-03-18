@@ -234,7 +234,10 @@ export const useDepositTransactions = ({
 
       if (!signer || !rawParams) {
         helperToast.error(t`Order submission failed`, {
-          tradingErrorInfo: { actionName: "GM Deposit", requestId: metricData.requestId },
+          tradingErrorInfo: {
+            actionName: "GM Deposit",
+            requestId: metricData.requestId,
+          },
         });
         sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
@@ -247,7 +250,10 @@ export const useDepositTransactions = ({
       if (paySource === "sourceChain") {
         if (!transferRequests) {
           helperToast.error(t`Error submitting order`, {
-            tradingErrorInfo: { actionName: "GM Deposit", requestId: metricData.requestId },
+            tradingErrorInfo: {
+              actionName: "GM Deposit",
+              requestId: metricData.requestId,
+            },
           });
           sendTxnValidationErrorMetric(metricData.metricId);
           return;
@@ -306,13 +312,20 @@ export const useDepositTransactions = ({
             }
           })
           .catch((error) => {
-            throw toastCustomOrStargateError(chainId, error, "GM Deposit");
+            throw toastCustomOrStargateError(chainId, error, {
+              actionName: "GM Deposit",
+              requestId: metricData.requestId,
+              metricId: metricData.metricId,
+            });
           });
       } else if (paySource === "gmxAccount") {
         const expressTxnParams = multichainDepositExpressTxnParams.data;
         if (!transferRequests || !expressTxnParams) {
           helperToast.error(t`Error submitting order`, {
-            tradingErrorInfo: { actionName: "GM Deposit", requestId: metricData.requestId },
+            tradingErrorInfo: {
+              actionName: "GM Deposit",
+              requestId: metricData.requestId,
+            },
           });
           sendTxnValidationErrorMetric(metricData.metricId);
           return;
@@ -359,7 +372,10 @@ export const useDepositTransactions = ({
         const fees = technicalFees?.kind === "settlementChain" ? technicalFees.fees : undefined;
         if (!fees || !tokensData) {
           helperToast.error(t`Error submitting order`, {
-            tradingErrorInfo: { actionName: "GM Deposit", requestId: metricData.requestId },
+            tradingErrorInfo: {
+              actionName: "GM Deposit",
+              requestId: metricData.requestId,
+            },
           });
           sendTxnValidationErrorMetric(metricData.metricId);
           return;
@@ -428,7 +444,10 @@ export const useDepositTransactions = ({
 
       if (!signer || !rawParams) {
         helperToast.error(t`Order submission failed`, {
-          tradingErrorInfo: { actionName: "GM Deposit", requestId: metricData.requestId },
+          tradingErrorInfo: {
+            actionName: "GM Deposit",
+            requestId: metricData.requestId,
+          },
         });
         sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
@@ -440,7 +459,10 @@ export const useDepositTransactions = ({
       if (paySource === "sourceChain") {
         if (!transferRequests || !technicalFees) {
           helperToast.error(t`Error submitting order`, {
-            tradingErrorInfo: { actionName: "GM Deposit", requestId: metricData.requestId },
+            tradingErrorInfo: {
+              actionName: "GM Deposit",
+              requestId: metricData.requestId,
+            },
           });
           sendTxnValidationErrorMetric(metricData.metricId);
           return;
@@ -502,14 +524,21 @@ export const useDepositTransactions = ({
             }
           })
           .catch((error) => {
-            throw toastCustomOrStargateError(chainId, error, "GM Deposit");
+            throw toastCustomOrStargateError(chainId, error, {
+              actionName: "GM Deposit",
+              requestId: metricData.requestId,
+              metricId: metricData.metricId,
+            });
           });
       } else if (paySource === "gmxAccount") {
         const expressTxnParams = multichainDepositExpressTxnParams.data;
 
         if (!transferRequests || !expressTxnParams) {
           helperToast.error(t`Error submitting order`, {
-            tradingErrorInfo: { actionName: "GM Deposit", requestId: metricData.requestId },
+            tradingErrorInfo: {
+              actionName: "GM Deposit",
+              requestId: metricData.requestId,
+            },
           });
           sendTxnValidationErrorMetric(metricData.metricId);
           return;
@@ -559,7 +588,10 @@ export const useDepositTransactions = ({
       } else if (paySource === "settlementChain") {
         if (!tokensData) {
           helperToast.error(t`Error submitting order`, {
-            tradingErrorInfo: { actionName: "GM Deposit", requestId: metricData.requestId },
+            tradingErrorInfo: {
+              actionName: "GM Deposit",
+              requestId: metricData.requestId,
+            },
           });
           sendTxnValidationErrorMetric(metricData.metricId);
           return;

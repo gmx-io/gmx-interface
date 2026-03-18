@@ -261,7 +261,11 @@ export const useWithdrawalTransactions = ({
             }
           })
           .catch((error) => {
-            throw toastCustomOrStargateError(chainId, error, "GM Withdrawal");
+            throw toastCustomOrStargateError(chainId, error, {
+              actionName: "GM Withdrawal",
+              requestId: metricData.requestId,
+              metricId: metricData.metricId,
+            });
           });
       } else if (paySource === "gmxAccount") {
         const expressTxnParams = multichainWithdrawalExpressTxnParams.data;
@@ -492,7 +496,11 @@ export const useWithdrawalTransactions = ({
         .then(makeTxnSentMetricsHandler(metricData.metricId))
         .catch(makeTxnErrorMetricsHandler(metricData.metricId))
         .catch((error) => {
-          toastCustomOrStargateError(chainId, error, "GM Withdrawal");
+          toastCustomOrStargateError(chainId, error, {
+            actionName: "GM Withdrawal",
+            requestId: metricData.requestId,
+            metricId: metricData.metricId,
+          });
         });
     },
     [

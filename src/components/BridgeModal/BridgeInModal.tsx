@@ -224,6 +224,7 @@ export function BridgeInModal({
         tradingErrorInfo: {
           actionName: "Bridge Deposit",
           errorData: error,
+          collateral: marketToken?.address,
         },
       });
     } finally {

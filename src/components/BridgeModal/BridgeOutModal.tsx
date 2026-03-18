@@ -271,6 +271,7 @@ export function BridgeOutModal({
         tradingErrorInfo: {
           actionName: "Bridge Withdrawal",
           errorData: error,
+          collateral: marketToken?.address,
         },
       });
     } finally {
