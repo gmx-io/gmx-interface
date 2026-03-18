@@ -12,7 +12,7 @@ import {
   useTraderReferralStats,
   useUserReferralCode,
 } from "domain/referrals";
-import { getSharePercentage } from "domain/referrals/utils/referralsHelper";
+import { getReferralCodeTradeUrl, getSharePercentage } from "domain/referrals/utils/referralsHelper";
 import { useTimeRange } from "domain/synthetics/markets/useTimeRange";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
@@ -136,8 +136,8 @@ export function ReferralsTradersContent({ account }: ReferralsTradersContentProp
               className="flex cursor-pointer items-center gap-4 text-24 font-medium text-typography-primary"
               onClick={() => {
                 if (!userReferralCodeString) return;
-                copyToClipboard(userReferralCodeString);
-                helperToast.success(t`Referral code copied to clipboard`);
+                copyToClipboard(getReferralCodeTradeUrl(userReferralCodeString));
+                helperToast.success(t`Referral link copied to clipboard`);
               }}
             >
               {userReferralCodeString} <CopyStrokeIcon className="size-20 text-typography-secondary" />

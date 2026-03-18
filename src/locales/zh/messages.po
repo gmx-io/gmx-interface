@@ -4008,6 +4008,7 @@ msgid "Enter referral code"
 msgstr "输入推荐码"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Referral link copied to clipboard"
 msgstr ""
 
@@ -6281,8 +6282,8 @@ msgid "Analytics"
 msgstr "数据分析"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
-msgid "Referral code copied to clipboard"
-msgstr ""
+#~ msgid "Referral code copied to clipboard"
+#~ msgstr ""
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"

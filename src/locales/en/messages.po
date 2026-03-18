@@ -4008,6 +4008,7 @@ msgid "Enter referral code"
 msgstr "Enter referral code"
 
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
+#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Referral link copied to clipboard"
 msgstr "Referral link copied to clipboard"
 
@@ -6281,8 +6282,8 @@ msgid "Analytics"
 msgstr "Analytics"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
-msgid "Referral code copied to clipboard"
-msgstr "Referral code copied to clipboard"
+#~ msgid "Referral code copied to clipboard"
+#~ msgstr "Referral code copied to clipboard"
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
