@@ -448,9 +448,9 @@ msgstr "@username"
 msgid "Failed to claim affiliate rewards"
 msgstr "제휴 보상 수령에 실패했습니다"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "decrease"
-#~ msgstr ""
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "decrease"
+msgstr ""
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in any BTC/USD pool"
@@ -4996,6 +4996,10 @@ msgstr "잔액에 토큰 단위 미결제약정 사용"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Seamless trading"
 msgstr "원활한 거래"
+
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "close"
+msgstr ""
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Insufficient Pool Balance"
@@ -10078,8 +10082,8 @@ msgid "Oracle keeper monitoring"
 msgstr "Oracle keeper 모니터링"
 
 #: src/components/PositionSeller/PositionSeller.tsx
-msgid "{0}: {1} {2}{3}/USD decrease"
-msgstr "{0}: {1} {2}{3}/USD decrease"
+#~ msgid "{0}: {1} {2}{3}/USD decrease"
+#~ msgstr "{0}: {1} {2}{3}/USD decrease"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Enter a new size or price"
@@ -10610,6 +10614,8 @@ msgid "multiple asset classes"
 msgstr "다중 자산 클래스"
 
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TPSLModal/AddTPSLModal.tsx

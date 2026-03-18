@@ -81,6 +81,7 @@ import {
   CreateOrderTxnParams,
   DecreasePositionOrderParams,
 } from "sdk/utils/orderTransactions";
+import { TradeMode } from "sdk/utils/trade";
 import { getIsValidTwapParams } from "sdk/utils/twap";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
@@ -868,16 +869,33 @@ export function PositionSeller() {
       };
     }
 
+    let submitButtonText: string;
+
+    if (error) {
+      submitButtonText = error;
+    } else if (tradeType !== undefined) {
+      const directionLabel = localizedTradeTypeLabels[tradeType];
+      const isFullClose = decreaseAmounts?.isFullClose ?? false;
+      const actionLabel = isFullClose ? t`Close` : t`Decrease`;
+      const isMarketMode = tradeMode === TradeMode.Market;
+
+      if (isMarketMode) {
+        submitButtonText = `${actionLabel} ${directionLabel}`;
+      } else {
+        const modeLabel = localizedTradeModeLabels[tradeMode];
+        submitButtonText = `${modeLabel}: ${actionLabel} ${directionLabel}`;
+      }
+    } else {
+      submitButtonText = t`Close`;
+    }
+
     return {
-      text:
-        error ||
-        (tradeType !== undefined
-          ? `${localizedTradeModeLabels[tradeMode]}: ${localizedTradeTypeLabels[tradeType]} ${t`Decrease`}`
-          : t`Close`),
+      text: submitButtonText,
       disabled: Boolean(error) && !shouldDisableValidationForTesting,
     };
   }, [
     chainId,
+    decreaseAmounts?.isFullClose,
     error,
     isAllowanceLoaded,
     isApproving,
@@ -895,13 +913,19 @@ export function PositionSeller() {
       <Modal
         isVisible={isVisible}
         setIsVisible={onClose}
-        label={
-          <Trans>
-            {localizedTradeModeLabels[tradeMode]}: {position?.isLong ? t`Long` : t`Short`}{" "}
-            {position?.indexToken && getTokenVisualMultiplier(position.indexToken)}
-            {position?.indexToken?.symbol}/USD decrease
-          </Trans>
-        }
+        label={(() => {
+          if (!position) return t`Close`;
+          const directionLabel = position.isLong ? t`Long` : t`Short`;
+          const tokenLabel = `${position.indexToken ? getTokenVisualMultiplier(position.indexToken) : ""}${position.indexToken?.symbol ?? ""}/USD`;
+          const isFullClose = decreaseAmounts?.isFullClose ?? false;
+          const actionLabel = isFullClose ? t`close` : t`decrease`;
+          const isMarketMode = tradeMode === TradeMode.Market;
+          if (isMarketMode) {
+            return `${directionLabel} ${tokenLabel} ${actionLabel}`;
+          }
+          const modeLabel = localizedTradeModeLabels[tradeMode];
+          return `${modeLabel}: ${directionLabel} ${tokenLabel} ${actionLabel}`;
+        })()}
         qa="position-close-modal"
         contentClassName="w-[380px]"
         contentPadding={false}

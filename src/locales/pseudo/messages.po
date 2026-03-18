@@ -448,9 +448,9 @@ msgstr ""
 msgid "Failed to claim affiliate rewards"
 msgstr ""
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "decrease"
-#~ msgstr ""
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "decrease"
+msgstr ""
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in any BTC/USD pool"
@@ -4995,6 +4995,10 @@ msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Seamless trading"
+msgstr ""
+
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "close"
 msgstr ""
 
 #: src/components/ClaimModal/ClaimModal.tsx
@@ -10078,8 +10082,8 @@ msgid "Oracle keeper monitoring"
 msgstr ""
 
 #: src/components/PositionSeller/PositionSeller.tsx
-msgid "{0}: {1} {2}{3}/USD decrease"
-msgstr ""
+#~ msgid "{0}: {1} {2}{3}/USD decrease"
+#~ msgstr ""
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Enter a new size or price"
@@ -10610,6 +10614,8 @@ msgid "multiple asset classes"
 msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TPSLModal/AddTPSLModal.tsx
