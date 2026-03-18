@@ -47,7 +47,7 @@ export function useJitLiquidityRequest(chainId: ContractsChainId, options?: { en
       } catch (e) {
         // eslint-disable-next-line no-console
         console.error("Failed to fetch JIT liquidity data", e);
-        return undefined;
+        throw e;
       }
     },
     {
