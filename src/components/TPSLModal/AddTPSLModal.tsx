@@ -554,10 +554,16 @@ export function AddTPSLModal({
     setShowSizeInTokens((prev) => {
       const next = !prev;
       if (next) {
-        const newTokenSize = bigMath.mulDiv(position.sizeInTokens, BigInt(closePercentage), 100n);
+        const newTokenSize =
+          closePercentage >= 100
+            ? position.sizeInTokens
+            : bigMath.mulDiv(position.sizeInTokens, BigInt(closePercentage), 100n);
         setCloseSizeInput(formatAmount(newTokenSize, indexTokenDecimals, 4));
       } else {
-        const newUsdSize = bigMath.mulDiv(position.sizeInUsd, BigInt(closePercentage), 100n);
+        const newUsdSize =
+          closePercentage >= 100
+            ? position.sizeInUsd
+            : bigMath.mulDiv(position.sizeInUsd, BigInt(closePercentage), 100n);
         setCloseSizeInput(formatAmount(newUsdSize, USD_DECIMALS, 2));
       }
       return next;
@@ -585,10 +591,11 @@ export function AddTPSLModal({
     (percent: number) => {
       setClosePercentage(percent);
       if (showSizeInTokens) {
-        const newSize = bigMath.mulDiv(position.sizeInTokens, BigInt(percent), 100n);
+        const newSize =
+          percent >= 100 ? position.sizeInTokens : bigMath.mulDiv(position.sizeInTokens, BigInt(percent), 100n);
         setCloseSizeInput(formatAmount(newSize, indexTokenDecimals, 4));
       } else {
-        const newSize = bigMath.mulDiv(position.sizeInUsd, BigInt(percent), 100n);
+        const newSize = percent >= 100 ? position.sizeInUsd : bigMath.mulDiv(position.sizeInUsd, BigInt(percent), 100n);
         setCloseSizeInput(formatAmount(newSize, USD_DECIMALS, 2));
       }
     },
