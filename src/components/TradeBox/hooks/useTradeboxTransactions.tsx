@@ -306,8 +306,13 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
     sendOrderSubmittedMetric(metricData.metricId);
 
+    const actionName = isSwap ? "Swap" : isIncrease ? "Open Position" : "Close Position";
+    const collateralSymbol = isSwap ? fromToken?.symbol : collateralToken?.symbol;
+
     if (!primaryCreateOrderParams || !signer || !provider || !tokensData || !account || !marketsInfoData) {
-      helperToast.error(t`Order submission failed`);
+      helperToast.error(t`Order submission failed`, {
+        tradingErrorInfo: { actionName, collateral: collateralSymbol, requestId: metricData.requestId },
+      });
       sendTxnValidationErrorMetric(metricData.metricId);
       return Promise.reject();
     }
@@ -318,15 +323,6 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       ? getJitLiquidityInfo(jitLiquidityMap, marketInfo.marketTokenAddress)
       : undefined;
     const nativeReserveLiquidity = marketInfo ? getAvailableUsdLiquidityForPosition(marketInfo, isLong) : undefined;
-    const orderTxnCallback = makeOrderTxnCallback({
-      metricId: metricData.metricId,
-      slippageInputId,
-      additionalErrorContent: undefined,
-      onInternalSwapFallback: () => {
-        setShouldFallbackToInternalSwap(true);
-      },
-    });
-
     return sendBatchOrderTxn({
       chainId,
       signer,
@@ -344,19 +340,31 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
             // Intentionally excludes JIT — used to determine whether JIT simulation is needed
             nativeReserveLiquidity,
           },
-      callback: (event) => {
-        orderTxnCallback(event);
-      },
+      callback: makeOrderTxnCallback({
+        metricId: metricData.metricId,
+        requestId: metricData.requestId,
+        slippageInputId,
+        additionalErrorContent: undefined,
+        actionName,
+        collateralSymbol,
+        onInternalSwapFallback: () => {
+          setShouldFallbackToInternalSwap(true);
+        },
+      }),
     });
   }, [
     account,
     batchParams,
     blockTimestampData,
     chainId,
+    collateralToken?.symbol,
     expressParamsPromise,
+    fromToken?.symbol,
     initOrderMetricData,
     isFromTokenGmxAccount,
+    isIncrease,
     isLong,
+    isSwap,
     jitLiquidityMap,
     makeOrderTxnCallback,
     marketInfo,
