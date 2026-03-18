@@ -37,8 +37,8 @@ export function MarketPoolSelectorField({ disabled }: Props = {}) {
       containerRef={popoverReferenceRef}
       forwardClickToSelector
       label={t`Pool`}
-      className={cx(isInteractive && "group/selector-field")}
-      disabled={disabled}
+      className={cx(isInteractive && "group/selector-field", isSinglePool && "!opacity-100")}
+      disabled={!isInteractive}
       content={
         <PoolSelector2
           selectedPoolName={poolName}
