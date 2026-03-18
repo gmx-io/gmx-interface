@@ -222,12 +222,11 @@ export function TPSLModal({
   const handleAddFormVisibilityChange = useCallback(
     (visible: boolean) => {
       setIsAddFormVisible(visible);
-      if (!visible) {
-        // Always reopen TPSLModal when AddTPSLModal closes
+      if (!visible && isVisible) {
         setIsVisible(true);
       }
     },
-    [setIsVisible]
+    [isVisible, setIsVisible]
   );
 
   const handleAddTPSLBack = useCallback(() => {

@@ -915,15 +915,6 @@ export function PositionSeller() {
                     topLeftLabel={t`Close`}
                     inputValue={closeUsdInputValue}
                     onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
-                    showPercentSelector
-                    onPercentChange={(percentage) => {
-                      const formattedAmount = formatAmountFree(
-                        (maxCloseSize * BigInt(percentage)) / 100n,
-                        USD_DECIMALS,
-                        2
-                      );
-                      setCloseUsdInputValueRaw(formattedAmount);
-                    }}
                     qa="amount-input"
                     maxDecimals={USD_DECIMALS}
                   >

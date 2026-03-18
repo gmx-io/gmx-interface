@@ -70,6 +70,8 @@ export default function Modal({
   const modalRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    if (!isVisible) return;
+
     function close(e: KeyboardEvent) {
       if (e.keyCode === 27 && setIsVisible) {
         setIsVisible(false);
@@ -77,7 +79,7 @@ export default function Modal({
     }
     window.addEventListener("keydown", close);
     return () => window.removeEventListener("keydown", close);
-  }, [setIsVisible]);
+  }, [isVisible, setIsVisible]);
 
   useEffect(() => {
     if (typeof onAfterOpen === "function") onAfterOpen();

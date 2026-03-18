@@ -449,8 +449,8 @@ msgid "Failed to claim affiliate rewards"
 msgstr "Failed to claim affiliate rewards"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "decrease"
-msgstr "decrease"
+#~ msgid "decrease"
+#~ msgstr "decrease"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in any BTC/USD pool"
@@ -636,6 +636,10 @@ msgstr "Order execution price"
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in any {0}/USD pool"
 msgstr "Insufficient liquidity in any {0}/USD pool"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Open"
+msgstr "Open"
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Treasury"
@@ -5760,6 +5764,7 @@ msgid "Recommended"
 msgstr "Recommended"
 
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Decrease"
@@ -6669,8 +6674,8 @@ msgid "Dune Analytics dashboard"
 msgstr "Dune Analytics dashboard"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "increase"
-msgstr "increase"
+#~ msgid "increase"
+#~ msgstr "increase"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: max leverage exceeded. Edit to reduce size. <0>Read more</0>."
@@ -9099,6 +9104,7 @@ msgstr "Deposited:"
 msgid "ACTION"
 msgstr "ACTION"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Increase"
@@ -10607,6 +10613,7 @@ msgstr "multiple asset classes"
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TPSLModal/AddTPSLModal.tsx
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx

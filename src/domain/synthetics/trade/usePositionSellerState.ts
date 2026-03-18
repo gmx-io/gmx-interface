@@ -1,8 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from "react";
 
+import { USD_DECIMALS } from "config/factors";
 import { getKeepLeverageKey, getSyntheticsReceiveMoneyTokenKey } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { formatAmountFree } from "lib/numbers";
 import { DEFAULT_TWAP_DURATION, DEFAULT_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import { TradeMode } from "sdk/utils/trade/types";
 import { TwapDuration } from "sdk/utils/twap/types";
@@ -45,6 +47,12 @@ export function usePositionSellerState(
       setOrderOption(initialOrderOption);
     }
   }, [initialOrderOption]);
+
+  useEffect(() => {
+    if (closingPosition?.sizeInUsd !== undefined) {
+      setCloseUsdInputValue(formatAmountFree(closingPosition.sizeInUsd, USD_DECIMALS, 2));
+    }
+  }, [closingPosition?.sizeInUsd]);
 
   const resetPositionSeller = useCallback(() => {
     setOrderOption(OrderOption.Market);

@@ -11,7 +11,6 @@ import {
 import { formatUsd } from "lib/numbers";
 
 import EditIcon from "img/ic_edit.svg?react";
-import PlusCircleIcon from "img/ic_plus_circle.svg?react";
 
 export function PositionItemTPSLCell({
   positionKey,
@@ -79,11 +78,14 @@ export function PositionItemTPSLCell({
           onClick={isDisabled ? undefined : onOpenTPSLModal}
           disabled={isDisabled}
           className={cx(
-            "flex size-20 items-center justify-center rounded-4 text-typography-secondary",
-            isDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:text-typography-primary"
+            "flex items-center justify-center rounded-4",
+            isDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
+            hasTpOrSl
+              ? "size-20 text-typography-secondary hover:text-typography-primary"
+              : "gap-2 px-6 py-2 text-12 text-typography-secondary hover:text-typography-primary"
           )}
         >
-          {hasTpOrSl ? <EditIcon width={16} height={16} /> : <PlusCircleIcon width={16} height={16} />}
+          {hasTpOrSl ? <EditIcon width={16} height={16} /> : <>Set +</>}
         </button>
       </div>
     );
@@ -123,11 +125,14 @@ export function PositionItemTPSLCell({
         onClick={isDisabled ? undefined : onOpenTPSLModal}
         disabled={isDisabled}
         className={cx(
-          "flex size-20 items-center justify-center rounded-4 text-typography-secondary",
-          isDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer hover:text-typography-primary"
+          "flex items-center justify-center rounded-4",
+          isDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
+          hasTpOrSl
+            ? "size-20 text-typography-secondary hover:text-typography-primary"
+            : "gap-2 px-6 py-2 text-12 text-typography-secondary hover:text-typography-primary"
         )}
       >
-        {hasTpOrSl ? <EditIcon width={16} height={16} /> : <PlusCircleIcon width={16} height={16} />}
+        {hasTpOrSl ? <EditIcon width={16} height={16} /> : <>Set +</>}
       </button>
     </div>
   );
