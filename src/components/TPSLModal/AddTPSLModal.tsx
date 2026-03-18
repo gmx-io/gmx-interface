@@ -739,11 +739,8 @@ export function AddTPSLModal({
     if (!tpPriceInput && !slPriceInput) {
       return t`Enter an amount`;
     }
-    if (editTPSLSize && closeSizeInput) {
-      const maxParsed = parseValue(formattedMaxCloseSize, USD_DECIMALS);
-      if (maxParsed !== undefined && closeSizeUsd > maxParsed) {
-        return t`Max close amount exceeded`;
-      }
+    if (editTPSLSize && closeSizeInput && closeSizeUsd > position.sizeInUsd) {
+      return t`Max close amount exceeded`;
     }
     if (tpPriceError && tpPriceInput) {
       return tpPriceError;
@@ -764,7 +761,7 @@ export function AddTPSLModal({
     editTPSLSize,
     closeSizeInput,
     closeSizeUsd,
-    formattedMaxCloseSize,
+    position.sizeInUsd,
   ]);
 
   const handleSubmit = useCallback(async () => {
