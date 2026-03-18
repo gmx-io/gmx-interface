@@ -36,7 +36,8 @@ export function ErrorToastWithSupport({ children }: { children: ReactNode }) {
     });
 
     const lines = [
-      "GMX support request",
+      "⚠️  GMX Support Request",
+      "",
       `– Action: ${error?.actionName ?? "N/A"}`,
       `– Collateral: ${error?.collateral ?? "N/A"}`,
       `– Wallet address: ${error?.walletAddress ?? "N/A"}`,
@@ -45,6 +46,8 @@ export function ErrorToastWithSupport({ children }: { children: ReactNode }) {
       `– Request ID: ${error?.requestId ?? "N/A"}`,
       `– Metric ID: ${error?.metricId ?? "N/A"}`,
       `– Debug Log ID: ${debugLogId}`,
+      "",
+      "*** Please describe what happened and any additional details that may help us investigate ***",
     ];
 
     showNewMessage(lines.join("\n"));
