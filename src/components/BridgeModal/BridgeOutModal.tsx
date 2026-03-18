@@ -270,7 +270,7 @@ export function BridgeOutModal({
         autoClose: toastParams.autoCloseToast,
         tradingErrorInfo: {
           actionName: "Bridge Withdrawal",
-          errorData: error instanceof Error ? error.message : String(error),
+          errorData: error,
         },
       });
     } finally {

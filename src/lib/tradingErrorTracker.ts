@@ -21,7 +21,7 @@ export type TradingActionName =
 export type TradingErrorInfo = {
   actionName: TradingActionName;
   collateral?: string;
-  errorData?: string;
+  errorData?: unknown;
 };
 
 type TrackedError = {

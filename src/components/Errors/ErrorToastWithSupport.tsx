@@ -2,13 +2,39 @@ import { showNewMessage } from "@intercom/messenger-js-sdk";
 import { Trans } from "@lingui/macro";
 import { ReactNode, useCallback } from "react";
 
+import { metrics } from "lib/metrics/Metrics";
 import { tradingErrorTracker } from "lib/tradingErrorTracker";
+import { ErrorData, parseError } from "sdk/utils/errors";
 
 import SupportChatIcon from "img/ic_support_chat.svg?react";
+
+function isErrorData(value: unknown): value is ErrorData {
+  return typeof value === "object" && value !== null && "errorMessage" in value && "errorGroup" in value;
+}
 
 export function ErrorToastWithSupport({ children }: { children: ReactNode }) {
   const handleContactSupport = useCallback(() => {
     const error = tradingErrorTracker.getLatestError();
+    const debugLogId = crypto.randomUUID();
+    let parsedError: ErrorData | undefined;
+
+    if (error?.errorData) {
+      parsedError = isErrorData(error.errorData) ? error.errorData : parseError(error.errorData);
+    }
+
+    metrics.pushEvent({
+      event: "support.debugLog",
+      isError: true,
+      data: {
+        debugLogId,
+        actionName: error?.actionName ?? "N/A",
+        collateral: error?.collateral ?? "N/A",
+        walletAddress: error?.walletAddress ?? "N/A",
+        walletProvider: error?.walletProvider ?? "N/A",
+        network: error?.network ?? "N/A",
+        ...parsedError,
+      },
+    });
 
     const lines = [
       "GMX support request",
@@ -17,7 +43,7 @@ export function ErrorToastWithSupport({ children }: { children: ReactNode }) {
       `– Wallet address: ${error?.walletAddress ?? "N/A"}`,
       `– Wallet Provider: ${error?.walletProvider ?? "N/A"}`,
       `– Connected Network: ${error?.network ?? "N/A"}`,
-      `– Error data: ${error?.errorData ?? "N/A"}`,
+      `– Debug Log ID: ${debugLogId}`,
     ];
 
     showNewMessage(lines.join("\n"));

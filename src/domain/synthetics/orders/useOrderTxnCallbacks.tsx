@@ -351,7 +351,7 @@ export function useOrderTxnCallbacks() {
               ? {
                   actionName: ctx.actionName,
                   collateral: ctx.collateralSymbol,
-                  errorData: errorData?.errorMessage,
+                  errorData: errorData,
                 }
               : undefined,
           });

@@ -1160,7 +1160,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                   helperToast.error(totastContent, {
                     tradingErrorInfo: {
                       actionName: "Express Order",
-                      errorData: executionFeeErrorParams.errorData.errorMessage,
+                      errorData: executionFeeErrorParams.errorData,
                     },
                   });
                 });
@@ -1176,7 +1176,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                   helperToast.error(<InvalidSignatureToastContent />, {
                     tradingErrorInfo: {
                       actionName: "Express Order",
-                      errorData: "Invalid signature",
+                      errorData: invalidSignatureErrorParams.errorData,
                     },
                   });
                 });
@@ -1190,8 +1190,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
               helperToast.error(pendingExpressTxn.errorMessage, {
                 tradingErrorInfo: {
                   actionName: "Express Order",
-                  errorData:
-                    typeof pendingExpressTxn.errorMessage === "string" ? pendingExpressTxn.errorMessage : undefined,
+                  errorData: pendingExpressTxn.errorMessage,
                 },
               });
               isViewed = true;

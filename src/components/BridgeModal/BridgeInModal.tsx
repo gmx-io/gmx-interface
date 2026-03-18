@@ -223,7 +223,7 @@ export function BridgeInModal({
         autoClose: toastParams.autoCloseToast,
         tradingErrorInfo: {
           actionName: "Bridge Deposit",
-          errorData: error instanceof Error ? error.message : String(error),
+          errorData: error,
         },
       });
     } finally {

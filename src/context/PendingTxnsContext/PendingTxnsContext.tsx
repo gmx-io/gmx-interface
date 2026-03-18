@@ -107,7 +107,7 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
               tradingErrorInfo: pendingTxn.actionName
                 ? {
                     actionName: pendingTxn.actionName,
-                    errorData: errorData?.errorMessage ?? onchainError?.message,
+                    errorData: errorData ?? onchainError,
                   }
                 : undefined,
             });

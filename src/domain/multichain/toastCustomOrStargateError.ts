@@ -47,7 +47,7 @@ export function toastCustomOrStargateError(chainId: AnyChainId, error: Error, ac
     tradingErrorInfo: actionName
       ? {
           actionName,
-          errorData: prettyErrorMessage,
+          errorData: error,
         }
       : undefined,
   });
