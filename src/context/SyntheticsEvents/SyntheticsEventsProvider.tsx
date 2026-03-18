@@ -1192,7 +1192,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
               helperToast.error(pendingExpressTxn.errorMessage, {
                 tradingErrorInfo: {
                   actionName: "Express Order",
-                  errorData: pendingExpressTxn.errorMessage,
                   metricId: pendingExpressTxn.metricId,
                 },
               });
