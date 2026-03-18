@@ -2540,10 +2540,6 @@ msgstr "No eligible holdings detected"
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "Slippage"
-msgstr "Slippage"
-
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. This order won't apply to it. <0>Switch to {1} collateral</0>"
 msgstr "Existing position uses {0} collateral. This order won't apply to it. <0>Switch to {1} collateral</0>"
@@ -2755,6 +2751,10 @@ msgstr "Buy fee"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Claimable collateral reduction factor"
 msgstr "Claimable collateral reduction factor"
+
+#: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
+msgid "Slippage too low"
+msgstr "Slippage too low"
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
@@ -4378,6 +4378,10 @@ msgstr "No trades yet"
 msgid "Price change to liquidation"
 msgstr "Price change to liquidation"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Allowed Slippage"
+msgstr "Allowed Slippage"
+
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "possibilities in total"
 msgstr "possibilities in total"
@@ -5411,6 +5415,10 @@ msgstr "Insufficient {0} liquidity"
 msgid "SL price above mark price"
 msgstr "SL price above mark price"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "This is an external swap routed through OpenOcean. Allowed slippage includes price impact and fees, unlike GMX native swaps where these are separate."
+msgstr "This is an external swap routed through OpenOcean. Allowed slippage includes price impact and fees, unlike GMX native swaps where these are separate."
+
 #: src/components/TPSLModal/AddTPSLModal.tsx
 msgid "Unable to calculate order"
 msgstr "Unable to calculate order"
@@ -6280,10 +6288,6 @@ msgstr "Yield-optimized vaults supplying liquidity across multiple GMX markets"
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Analytics"
 msgstr "Analytics"
-
-#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
-#~ msgid "Referral code copied to clipboard"
-#~ msgstr "Referral code copied to clipboard"
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
@@ -10442,6 +10446,7 @@ msgid "Total earned fees"
 msgstr "Total earned fees"
 
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "Slippage is too high"
 msgstr "Slippage is too high"

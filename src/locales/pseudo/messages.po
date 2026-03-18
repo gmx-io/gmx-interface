@@ -2540,10 +2540,6 @@ msgstr ""
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr ""
 
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "Slippage"
-msgstr ""
-
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. This order won't apply to it. <0>Switch to {1} collateral</0>"
 msgstr ""
@@ -2754,6 +2750,10 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Claimable collateral reduction factor"
+msgstr ""
+
+#: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
+msgid "Slippage too low"
 msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
@@ -4378,6 +4378,10 @@ msgstr ""
 msgid "Price change to liquidation"
 msgstr ""
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Allowed Slippage"
+msgstr ""
+
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "possibilities in total"
 msgstr ""
@@ -5411,6 +5415,10 @@ msgstr ""
 msgid "SL price above mark price"
 msgstr ""
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "This is an external swap routed through OpenOcean. Allowed slippage includes price impact and fees, unlike GMX native swaps where these are separate."
+msgstr ""
+
 #: src/components/TPSLModal/AddTPSLModal.tsx
 msgid "Unable to calculate order"
 msgstr ""
@@ -6280,10 +6288,6 @@ msgstr ""
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Analytics"
 msgstr ""
-
-#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
-#~ msgid "Referral code copied to clipboard"
-#~ msgstr ""
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
@@ -10442,6 +10446,7 @@ msgid "Total earned fees"
 msgstr ""
 
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "Slippage is too high"
 msgstr ""

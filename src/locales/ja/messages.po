@@ -2540,10 +2540,6 @@ msgstr "対象となる保有資産が検出されませんでした"
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr "GMXの改善にご協力ください。セキュリティのため、こちらから先にご連絡することはありません。公式アカウントに「I have feedback」とお送りください:"
 
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "Slippage"
-msgstr ""
-
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. This order won't apply to it. <0>Switch to {1} collateral</0>"
 msgstr "既存のポジションは{0}担保を使用しています。この注文は適用されません。<0>{1}担保に切り替える</0>"
@@ -2755,6 +2751,10 @@ msgstr "購入手数料"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Claimable collateral reduction factor"
 msgstr "請求可能な担保の削減ファクター"
+
+#: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
+msgid "Slippage too low"
+msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
@@ -4378,6 +4378,10 @@ msgstr "トレード履歴はありません"
 msgid "Price change to liquidation"
 msgstr "清算までの価格変動"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Allowed Slippage"
+msgstr ""
+
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "possibilities in total"
 msgstr "パターン（合計）"
@@ -5411,6 +5415,10 @@ msgstr "{0}流動性が不足しています"
 msgid "SL price above mark price"
 msgstr "ストップロス価格がマーク価格を上回っています"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "This is an external swap routed through OpenOcean. Allowed slippage includes price impact and fees, unlike GMX native swaps where these are separate."
+msgstr ""
+
 #: src/components/TPSLModal/AddTPSLModal.tsx
 msgid "Unable to calculate order"
 msgstr "注文を計算できません"
@@ -6280,10 +6288,6 @@ msgstr "複数のGMXマーケットに流動性を提供する利回り最適化
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Analytics"
 msgstr "アナリティクス"
-
-#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
-#~ msgid "Referral code copied to clipboard"
-#~ msgstr ""
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
@@ -10442,6 +10446,7 @@ msgid "Total earned fees"
 msgstr "獲得手数料合計"
 
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "Slippage is too high"
 msgstr "スリッページが高すぎます"

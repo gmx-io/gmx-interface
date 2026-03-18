@@ -25,7 +25,7 @@ type ClaimSwapRouteResult = {
   quotes: ExternalSwapQuote[];
   failedTokenAddresses: string[];
   estimatedExecutionFee: bigint;
-  usdOut: bigint;
+  estimatedOutputAmount: bigint;
 };
 
 export const CLAIM_AFFILIATE_FIXED_SLIPPAGE_BPS = 300; // 3%
@@ -76,12 +76,14 @@ export function useClaimAffiliateSwapRoutes({
   selectedClaimTokenAmountsByToken,
   tokensData,
   isSwapEnabled,
+  allowedSlippage,
 }: {
   account: string | undefined;
   chainId: ContractsChainId;
   selectedClaimTokenAmountsByToken: Record<string, SelectedClaimTokenAmount>;
   tokensData: TokensData | undefined;
   isSwapEnabled: boolean;
+  allowedSlippage: number;
 }) {
   const gasPrice = useGasPrice(chainId);
 
@@ -121,10 +123,6 @@ export function useClaimAffiliateSwapRoutes({
   const alreadyInTargetTokenAmount = swapTargetTokenAddress
     ? selectedClaimTokenAmountsByToken[swapTargetTokenAddress]?.amount ?? 0n
     : 0n;
-  const alreadyInTargetTokenUsd =
-    swapTargetToken && alreadyInTargetTokenAmount > 0n
-      ? convertToUsd(alreadyInTargetTokenAmount, swapTargetToken.decimals, swapTargetToken.prices.minPrice) ?? 0n
-      : 0n;
 
   const swapRouteEstimationKey = useMemo(() => {
     if (!isSwapEnabled || swapTargetTokenAddress === undefined || tokensToSwap.length === 0) {
@@ -136,8 +134,8 @@ export function useClaimAffiliateSwapRoutes({
       .sort()
       .join("|");
 
-    return `${chainId}:${swapTargetTokenAddress}:${sortedTokensToSwap}`;
-  }, [chainId, isSwapEnabled, swapTargetTokenAddress, tokensToSwap]);
+    return `${chainId}:${swapTargetTokenAddress}:${allowedSlippage}:${sortedTokensToSwap}`;
+  }, [allowedSlippage, chainId, isSwapEnabled, swapTargetTokenAddress, tokensToSwap]);
 
   const swapRouteParams = useMemo(() => {
     if (!swapRouteEstimationKey || swapTargetTokenAddress === undefined || gasPrice === undefined) {
@@ -150,16 +148,15 @@ export function useClaimAffiliateSwapRoutes({
       swapTargetTokenAddress,
       tokensToSwap,
       gasPrice,
-      allowedSlippage: CLAIM_AFFILIATE_FIXED_SLIPPAGE_BPS,
+      allowedSlippage,
     };
-  }, [chainId, gasPrice, swapRouteEstimationKey, swapTargetTokenAddress, tokensToSwap]);
+  }, [allowedSlippage, chainId, gasPrice, swapRouteEstimationKey, swapTargetTokenAddress, tokensToSwap]);
 
   const swapRouteSwrKey =
     swapRouteParams !== undefined ? ["claim-affiliate-swap-routes", swapRouteParams.estimationKey] : null;
 
   const swapRouteAsyncResult = useSWR<ClaimSwapRouteResult>(swapRouteSwrKey, {
     refreshInterval: 10_000,
-    keepPreviousData: true,
     fetcher: async () => {
       if (!swapRouteParams) {
         throw new Error("Invalid swap route parameters");
@@ -208,6 +205,7 @@ export function useClaimAffiliateSwapRoutes({
             receiver: externalHandlerAddress,
             amountIn: tokenToSwap.amount,
             amountOut: quoteData.outputAmount,
+            estimatedOutputAmount: quoteData.estimatedOutputAmount,
             usdIn: quoteData.usdIn,
             usdOut: quoteData.usdOut,
             priceIn: quoteData.priceIn,
@@ -237,25 +235,15 @@ export function useClaimAffiliateSwapRoutes({
         quotes,
         failedTokenAddresses,
         estimatedExecutionFee: quotes.reduce((acc, quote) => acc + quote.txnData.estimatedExecutionFee, 0n),
-        usdOut: quotes.reduce((acc, quote) => acc + quote.usdOut, 0n),
+        estimatedOutputAmount: quotes.reduce(
+          (acc, quote) => acc + (quote.estimatedOutputAmount ?? quote.amountOut),
+          0n
+        ),
       };
     },
   });
 
   const swapRouteData = swapRouteAsyncResult.data;
-  const isSwapRouteMatchingSelection = useMemo(() => {
-    if (!swapRouteData) {
-      return false;
-    }
-
-    if (swapRouteData.quotes.length !== tokensToSwap.length) {
-      return false;
-    }
-
-    const expectedAmountsByToken = Object.fromEntries(tokensToSwap.map((item) => [item.tokenAddress, item.amount]));
-
-    return swapRouteData.quotes.every((quote) => expectedAmountsByToken[quote.inTokenAddress] === quote.amountIn);
-  }, [swapRouteData, tokensToSwap]);
   const failedSwapTokenAddresses = useMemo(() => swapRouteData?.failedTokenAddresses ?? [], [swapRouteData]);
   const hasSwapRouteError = swapRouteAsyncResult.error !== undefined || failedSwapTokenAddresses.length > 0;
   const isSwapRouteLoading =
@@ -263,10 +251,7 @@ export function useClaimAffiliateSwapRoutes({
   const isSwapRouteReady =
     !isSwapEnabled ||
     tokensToSwap.length === 0 ||
-    (!!swapRouteData &&
-      !hasSwapRouteError &&
-      isSwapRouteMatchingSelection &&
-      swapRouteData.quotes.length === tokensToSwap.length);
+    (!!swapRouteData && !hasSwapRouteError && swapRouteData.quotes.length === tokensToSwap.length);
 
   const settlementSwapExternalCalls = useMemo(() => {
     if (!account || !isSwapEnabled || !isSwapRouteReady || tokensToSwap.length === 0) {
@@ -292,14 +277,11 @@ export function useClaimAffiliateSwapRoutes({
     });
   }, [chainId, isSwapEnabled, isSwapRouteReady, swapRouteData, tokensToSwap.length]);
 
-  const toReceiveAmount =
-    alreadyInTargetTokenAmount + (swapRouteData?.quotes.reduce((acc, quote) => acc + quote.amountOut, 0n) ?? 0n);
-  const toReceiveUsdFromQuotes = alreadyInTargetTokenUsd + (swapRouteData?.usdOut ?? 0n);
+  const toReceiveAmount = alreadyInTargetTokenAmount + (swapRouteData?.estimatedOutputAmount ?? 0n);
   const toReceiveUsd =
     swapTargetToken && toReceiveAmount > 0n
-      ? convertToUsd(toReceiveAmount, swapTargetToken.decimals, swapTargetToken.prices.minPrice) ??
-        toReceiveUsdFromQuotes
-      : toReceiveUsdFromQuotes;
+      ? convertToUsd(toReceiveAmount, swapTargetToken.decimals, swapTargetToken.prices.minPrice) ?? 0n
+      : 0n;
 
   const swapEstimatedNetworkFeeAmount = swapRouteData?.estimatedExecutionFee ?? 0n;
 
@@ -319,6 +301,7 @@ export function useClaimAffiliateSwapRoutes({
     swapQuotes: swapRouteData?.quotes ?? [],
     hasSwapRouteError,
     isSwapRouteLoading,
+    nothingToSwap: tokensToSwap.length === 0,
     settlementSwapExternalCalls,
     multichainSwapExternalCalls,
     toReceiveAmount,

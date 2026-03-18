@@ -51,6 +51,7 @@ export type OpenOceanQuote = {
   gasPrice: bigint;
   amountIn: bigint;
   outputAmount: bigint;
+  estimatedOutputAmount: bigint;
 };
 
 export async function getOpenOceanTxnData({
@@ -122,6 +123,7 @@ export async function getOpenOceanTxnData({
       gasPrice: BigInt(parsed.data.gasPrice),
       amountIn,
       outputAmount: BigInt(parsed.data.minOutAmount),
+      estimatedOutputAmount: BigInt(parsed.data.outAmount),
     };
   } catch (e) {
     e.message += ` URL: ${url.replace(receiverAddress, "...")}`;

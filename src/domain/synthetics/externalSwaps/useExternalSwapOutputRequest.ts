@@ -152,6 +152,7 @@ export function useExternalSwapOutputRequest({
       receiver: receiverAddress,
       amountIn: data.amountIn,
       amountOut: data.outputAmount,
+      estimatedOutputAmount: data.estimatedOutputAmount,
       usdIn: data.usdIn,
       usdOut: data.usdOut,
       priceIn: data.priceIn,

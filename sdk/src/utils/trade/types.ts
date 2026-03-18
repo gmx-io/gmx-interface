@@ -286,6 +286,7 @@ export type ExternalSwapQuote = {
   receiver: string;
   amountIn: bigint;
   amountOut: bigint;
+  estimatedOutputAmount?: bigint;
   usdIn: bigint;
   usdOut: bigint;
   priceIn: bigint;

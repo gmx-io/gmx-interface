@@ -1,17 +1,18 @@
 import { t, Trans } from "@lingui/macro";
 import { AnimatePresence, motion } from "framer-motion";
 
-import { CLAIM_AFFILIATE_FIXED_SLIPPAGE_BPS } from "domain/synthetics/referrals/useClaimAffiliateSwapRoutes";
-import { formatPercentageDisplay, formatUsd } from "lib/numbers";
+import { formatUsd } from "lib/numbers";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
+import PercentageInput from "components/PercentageInput/PercentageInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { Table, TableTh, TableTheadTr } from "components/Table/Table";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -164,13 +165,34 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
                     value={formatUsd(state.selectedClaimTokensUsd)}
                   />
                   <SyntheticsInfoRow
-                    label={<Trans>Slippage</Trans>}
-                    value={formatPercentageDisplay(CLAIM_AFFILIATE_FIXED_SLIPPAGE_BPS / 100)}
-                  />
+                    label={
+                      <TooltipWithPortal
+                        handle={t`Allowed Slippage`}
+                        position="top-start"
+                        variant="iconStroke"
+                        content={
+                          <Trans>
+                            This is an external swap routed through OpenOcean. Allowed slippage includes price impact
+                            and fees, unlike GMX native swaps where these are separate.
+                          </Trans>
+                        }
+                      />
+                    }
+                    valueClassName="-my-5"
+                  >
+                    <PercentageInput
+                      onChange={state.setAllowedSlippage}
+                      defaultValue={state.allowedSlippage}
+                      value={state.allowedSlippage}
+                      highValue={500}
+                      highValueWarningText={t`Slippage is too high`}
+                      negativeSign
+                    />
+                  </SyntheticsInfoRow>
                   <SyntheticsInfoRow
                     label={<Trans>You'll receive</Trans>}
                     value={
-                      !state.swapTargetToken || state.toReceiveAmount === 0n ? (
+                      !state.swapTargetToken || state.toReceiveAmount === 0n || state.hasSwapRouteErrorForSubmit ? (
                         "-"
                       ) : state.isSwapRouteLoadingForSubmit ? (
                         "..."

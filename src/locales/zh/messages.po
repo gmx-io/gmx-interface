@@ -2540,10 +2540,6 @@ msgstr "未检测到符合条件的持仓"
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr "帮助我们改进 GMX。出于安全考虑，我们不会主动联系您。请向我们的官方帐号发送\"I have feedback\"："
 
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "Slippage"
-msgstr ""
-
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. This order won't apply to it. <0>Switch to {1} collateral</0>"
 msgstr "现有仓位使用 {0} 抵押品。此订单不会影响该仓位。<0>切换至 {1} 抵押品</0>"
@@ -2755,6 +2751,10 @@ msgstr "买入费用"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Claimable collateral reduction factor"
 msgstr "可领取抵押品削减因子"
+
+#: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
+msgid "Slippage too low"
+msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
@@ -4378,6 +4378,10 @@ msgstr "暂无交易"
 msgid "Price change to liquidation"
 msgstr "距清算价格变动"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "Allowed Slippage"
+msgstr ""
+
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "possibilities in total"
 msgstr "种可能的路径"
@@ -5411,6 +5415,10 @@ msgstr "{0} 流动性不足"
 msgid "SL price above mark price"
 msgstr "止损价格高于标记价格"
 
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
+msgid "This is an external swap routed through OpenOcean. Allowed slippage includes price impact and fees, unlike GMX native swaps where these are separate."
+msgstr ""
+
 #: src/components/TPSLModal/AddTPSLModal.tsx
 msgid "Unable to calculate order"
 msgstr "无法计算订单"
@@ -6280,10 +6288,6 @@ msgstr "收益优化金库，跨多个 GMX 市场提供流动性"
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Analytics"
 msgstr "数据分析"
-
-#: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
-#~ msgid "Referral code copied to clipboard"
-#~ msgstr ""
 
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
@@ -10442,6 +10446,7 @@ msgid "Total earned fees"
 msgstr "累计赚取费用"
 
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
+#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "Slippage is too high"
 msgstr "滑点过高"

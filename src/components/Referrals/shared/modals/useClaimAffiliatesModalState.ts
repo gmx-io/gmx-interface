@@ -28,7 +28,11 @@ import {
 } from "domain/synthetics/referrals/createMultichainClaimAffiliateRewardsTxn";
 import { AffiliateReward } from "domain/synthetics/referrals/types";
 import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRewards";
-import { useClaimAffiliateSwapRoutes } from "domain/synthetics/referrals/useClaimAffiliateSwapRoutes";
+import {
+  CLAIM_AFFILIATE_FIXED_SLIPPAGE_BPS,
+  useClaimAffiliateSwapRoutes,
+} from "domain/synthetics/referrals/useClaimAffiliateSwapRoutes";
+import { useMaybeSlippageError } from "domain/synthetics/referrals/useMaybeSlippageError";
 import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referrals/utils";
 import { convertToTokenAmount, convertToUsd, useTokensDataRequest } from "domain/synthetics/tokens";
 import { getDefaultInsufficientGasMessage } from "domain/synthetics/trade/utils/validation";
@@ -149,6 +153,7 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
   const [isSwapEnabled, setIsSwapEnabled] = useState(false);
   const [showSmallRewards, setShowSmallRewards] = useState(false);
   const [selectedMarketAddresses, setSelectedMarketAddresses] = useState<string[]>([]);
+  const [allowedSlippage, setAllowedSlippage] = useState(CLAIM_AFFILIATE_FIXED_SLIPPAGE_BPS);
   const isInitialSelectionAppliedRef = useRef(false);
 
   const rawRewards = useMemo(() => Object.values(affiliateRewardsData || {}), [affiliateRewardsData]);
@@ -254,6 +259,7 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
     swapTargetToken,
     hasSwapRouteError,
     isSwapRouteLoading,
+    nothingToSwap,
     settlementSwapExternalCalls,
     multichainSwapExternalCalls,
     toReceiveAmount,
@@ -266,6 +272,7 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
     selectedClaimTokenAmountsByToken,
     tokensData,
     isSwapEnabled,
+    allowedSlippage,
   });
 
   const selectableMarketAddresses = useMemo(
@@ -445,15 +452,14 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
       });
     },
     {
-      params:
-        account && (!isSwapEnabled || settlementSwapExternalCalls)
-          ? {
-              chainId,
-              account,
-              rewardsParams: rewardsTxParams,
-              externalCalls: settlementSwapExternalCalls,
-            }
-          : undefined,
+      params: shouldEstimateSettlementNetworkFee
+        ? {
+            chainId,
+            account,
+            rewardsParams: rewardsTxParams,
+            externalCalls: settlementSwapExternalCalls,
+          }
+        : undefined,
       forceRecalculate: shouldForceRecalculateSettlementNetworkFee,
       resetOnForceRecalculate: true,
       leading: true,
@@ -462,6 +468,9 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
   );
 
   const settlementNetworkFeeGasLimit = settlementNetworkFeeAsyncResult.data;
+  const maybeSlippageError = useMaybeSlippageError(
+    srcChainId === undefined ? settlementNetworkFeeAsyncResult.error : expressTxnParamsAsyncResult.error
+  );
 
   const settlementNetworkFeeDetails = useMemo(
     () =>
@@ -481,7 +490,7 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
 
   const handleSubmitMultichain = useCallback(async () => {
     if (!account || !signer || !rewardsTxParams) return;
-    if (isSwapEnabled && !multichainSwapExternalCalls) {
+    if (isSwapEnabled && !nothingToSwap && !multichainSwapExternalCalls) {
       helperToast.error(t`Swap route unavailable`);
       return;
     }
@@ -528,6 +537,7 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
     expressTxnParamsAsyncResult.promise,
     isSwapEnabled,
     multichainSwapExternalCalls,
+    nothingToSwap,
     mutateAffiliateRewards,
     onClose,
     rewardsTxParams,
@@ -637,7 +647,7 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
   const isSwapRouteLoadingForSubmit = isSwapEnabled && isSwapRouteLoading;
   const hasSwapRouteErrorForSubmit =
     srcChainId !== undefined
-      ? isSwapEnabled && !isSwapRouteLoading && !multichainSwapExternalCalls
+      ? isSwapEnabled && !nothingToSwap && !isSwapRouteLoading && !multichainSwapExternalCalls
       : isSwapEnabled && hasSwapRouteError;
 
   const submitButtonState = useMemo((): SubmitButtonState => {
@@ -653,6 +663,8 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
       return { text: t`Fetching swap route...`, disabled: true };
     } else if (hasSwapRouteErrorForSubmit) {
       return { text: t`Swap route unavailable`, disabled: true };
+    } else if (maybeSlippageError) {
+      return { text: t`Slippage too low`, disabled: true };
     } else if (networkFeeInfo.isLoading) {
       return { text: t`Loading fees...`, disabled: true };
     } else if (isFallbackOutOfGasPaymentTokenBalance || errors?.isOutOfTokenError?.isGasPaymentToken) {
@@ -684,6 +696,7 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
     isSubmitting,
     isSwapEnabled,
     isSwapRouteLoadingForSubmit,
+    maybeSlippageError,
     networkFeeInfo.isLoading,
     selectedMarketAddresses.length,
     srcChainId,
@@ -712,6 +725,8 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
 
     isSwapEnabled,
     setIsSwapEnabled,
+    allowedSlippage,
+    setAllowedSlippage,
     swapTargetTokenOptions,
     swapTargetTokenAddress,
     setSwapTargetTokenAddress,
