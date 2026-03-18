@@ -564,7 +564,7 @@ export function PositionSeller() {
         tradingErrorInfo: {
           actionName: "Close Position",
           collateral: position?.collateralToken?.symbol,
-          metricId: metricData.metricId,
+          requestId: metricData.requestId,
         },
       });
       sendTxnValidationErrorMetric(metricData.metricId);
@@ -591,6 +591,7 @@ export function PositionSeller() {
           },
       callback: makeOrderTxnCallback({
         metricId: metricData.metricId,
+        requestId: metricData.requestId,
         slippageInputId,
         actionName: "Close Position",
         collateralSymbol: position?.collateralToken?.symbol,

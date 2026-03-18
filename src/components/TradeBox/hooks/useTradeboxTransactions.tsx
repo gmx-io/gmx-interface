@@ -307,7 +307,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
     if (!primaryCreateOrderParams || !signer || !provider || !tokensData || !account || !marketsInfoData) {
       helperToast.error(t`Order submission failed`, {
-        tradingErrorInfo: { actionName, collateral: collateralSymbol, metricId: metricData.metricId },
+        tradingErrorInfo: { actionName, collateral: collateralSymbol, requestId: metricData.requestId },
       });
       sendTxnValidationErrorMetric(metricData.metricId);
       return Promise.reject();
@@ -331,6 +331,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           },
       callback: makeOrderTxnCallback({
         metricId: metricData.metricId,
+        requestId: metricData.requestId,
         slippageInputId,
         additionalErrorContent: undefined,
         actionName,

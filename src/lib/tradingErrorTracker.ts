@@ -24,6 +24,7 @@ export type TradingErrorInfo = {
   actionName: TradingActionName;
   collateral?: string;
   errorData?: unknown;
+  requestId?: string;
   metricId?: string;
 };
 

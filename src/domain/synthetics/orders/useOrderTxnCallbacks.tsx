@@ -68,6 +68,7 @@ import { ExpressTxnParams } from "../express/types";
 
 export type CallbackUiCtx = {
   metricId?: OrderMetricId;
+  requestId?: string;
   slippageInputId?: string;
   additionalErrorContent?: React.ReactNode;
   isFundingFeeSettlement?: boolean;
@@ -352,7 +353,7 @@ export function useOrderTxnCallbacks() {
                   actionName: ctx.actionName,
                   collateral: ctx.collateralSymbol,
                   errorData: errorData,
-                  metricId: ctx.metricId,
+                  requestId: ctx.requestId,
                 }
               : undefined,
           });
