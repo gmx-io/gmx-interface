@@ -7,25 +7,23 @@ import { buildAndSignExpressBatchOrderTxn } from "domain/synthetics/express/expr
 import { GlvShiftParam } from "domain/synthetics/markets/useJitLiquidity";
 import { isLimitOrderType, isTriggerDecreaseOrderType } from "domain/synthetics/orders";
 import { TokensData } from "domain/tokens";
-import { decodeErrorFromViemError, extendError, isCustomError } from "lib/errors";
+import { extendError } from "lib/errors";
 import { sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
 import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
 import { TxnCallback, TxnEventBuilder } from "lib/transactions/types";
 import { BlockTimestampData } from "lib/useBlockTimestampRequest";
 import { WalletSigner } from "lib/wallets";
 import { getContract } from "sdk/configs/contracts";
-import { OrderType } from "sdk/utils/orders/types";
 import {
   BatchOrderTxnParams,
-  CreateOrderPayload,
   getBatchOrderMulticallPayload,
   getIsInvalidBatchReceiver,
   getIsTwapOrderPayload,
 } from "sdk/utils/orderTransactions";
-import { setUiFeeReceiverIsJit } from "sdk/utils/twap/uiFeeReceiver";
 
 import { signerAddressError } from "components/Errors/errorToasts";
 
+import { encodeJitBatchOrderUiFeeReceiver, getNeedsJitOrder, isJitShiftError } from "./jitOrderUtils";
 import { getOrdersTriggerPriceOverrides, getSimulationPrices, simulateExecution } from "./simulation";
 import { callRelayTransaction } from "../express/callRelayTransaction";
 
@@ -330,73 +328,3 @@ const makeBatchOrderSimulation = async ({
     });
   }
 };
-
-function encodeJitBatchOrderUiFeeReceiver(
-  batchParams: BatchOrderTxnParams,
-  simulationParams: BatchSimulationParams | undefined
-): BatchOrderTxnParams {
-  const firstCreateOrder = batchParams.createOrderParams[0];
-
-  if (
-    !firstCreateOrder ||
-    !getNeedsJitOrder({
-      orderPayload: firstCreateOrder.orderPayload,
-      jitShiftParamsList: simulationParams?.jitShiftParamsList,
-      nativeReserveLiquidity: simulationParams?.nativeReserveLiquidity,
-    })
-  ) {
-    return batchParams;
-  }
-
-  return {
-    ...batchParams,
-    createOrderParams: [
-      {
-        ...firstCreateOrder,
-        orderPayload: {
-          ...firstCreateOrder.orderPayload,
-          addresses: {
-            ...firstCreateOrder.orderPayload.addresses,
-            uiFeeReceiver: setUiFeeReceiverIsJit(firstCreateOrder.orderPayload.addresses.uiFeeReceiver, true),
-          },
-        },
-      },
-      ...batchParams.createOrderParams.slice(1),
-    ],
-  };
-}
-
-function getNeedsJitOrder({
-  orderPayload,
-  jitShiftParamsList,
-  nativeReserveLiquidity,
-}: {
-  orderPayload: CreateOrderPayload;
-  jitShiftParamsList?: GlvShiftParam[];
-  nativeReserveLiquidity?: bigint;
-}) {
-  return (
-    orderPayload.orderType === OrderType.MarketIncrease &&
-    jitShiftParamsList !== undefined &&
-    jitShiftParamsList.length > 0 &&
-    nativeReserveLiquidity !== undefined &&
-    orderPayload.numbers.sizeDeltaUsd > nativeReserveLiquidity
-  );
-}
-
-const JIT_SHIFT_ERROR_NAMES = new Set([
-  "GlvInsufficientMarketTokenBalance",
-  "GlvShiftMaxPriceImpactExceeded",
-  "GlvMaxMarketTokenBalanceUsdExceeded",
-  "GlvDisabledMarket",
-  "GlvShiftIntervalNotYetPassed",
-]);
-
-function isJitShiftError(error: unknown): boolean {
-  if (error instanceof Error && isCustomError(error)) {
-    return JIT_SHIFT_ERROR_NAMES.has(error.name);
-  }
-
-  const decoded = decodeErrorFromViemError(error);
-  return decoded !== undefined && JIT_SHIFT_ERROR_NAMES.has(decoded.name);
-}
