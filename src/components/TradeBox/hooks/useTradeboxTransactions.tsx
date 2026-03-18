@@ -302,8 +302,13 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
     sendOrderSubmittedMetric(metricData.metricId);
 
+    const actionName = isSwap ? "Swap" : isIncrease ? "Open Position" : "Close Position";
+    const collateralSymbol = isSwap ? fromToken?.symbol : collateralToken?.symbol;
+
     if (!primaryCreateOrderParams || !signer || !provider || !tokensData || !account || !marketsInfoData) {
-      helperToast.error(t`Order submission failed`);
+      helperToast.error(t`Order submission failed`, {
+        tradingErrorInfo: { actionName, collateral: collateralSymbol, requestId: metricData.requestId },
+      });
       sendTxnValidationErrorMetric(metricData.metricId);
       return Promise.reject();
     }
@@ -326,8 +331,11 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
           },
       callback: makeOrderTxnCallback({
         metricId: metricData.metricId,
+        requestId: metricData.requestId,
         slippageInputId,
         additionalErrorContent: undefined,
+        actionName,
+        collateralSymbol,
         onInternalSwapFallback: () => {
           setShouldFallbackToInternalSwap(true);
         },
@@ -338,9 +346,13 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     batchParams,
     blockTimestampData,
     chainId,
+    collateralToken?.symbol,
     expressParamsPromise,
+    fromToken?.symbol,
     initOrderMetricData,
     isFromTokenGmxAccount,
+    isIncrease,
+    isSwap,
     makeOrderTxnCallback,
     marketsInfoData,
     primaryCreateOrderParams,

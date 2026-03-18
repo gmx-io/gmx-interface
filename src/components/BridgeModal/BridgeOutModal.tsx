@@ -268,6 +268,11 @@ export function BridgeOutModal({
       const toastParams = getTxnErrorToast(chainId, error, { defaultMessage: t`Withdrawal failed` });
       helperToast.error(toastParams.errorContent, {
         autoClose: toastParams.autoCloseToast,
+        tradingErrorInfo: {
+          actionName: "Bridge Withdrawal",
+          errorData: error,
+          collateral: marketToken?.address,
+        },
       });
     } finally {
       setIsCreatingTxn(false);
