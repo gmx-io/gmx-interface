@@ -2441,10 +2441,6 @@ msgstr ""
 msgid "Deactivate 1CT"
 msgstr ""
 
-#: src/components/PositionShare/PositionShareCard.tsx
-msgid "/ USD"
-msgstr ""
-
 #: src/components/Claims/SettleAccruedCard.tsx
 msgid "Show details"
 msgstr ""
@@ -7773,7 +7769,6 @@ msgstr ""
 msgid "Insufficient gas for execution. Estimated: {estimatedGasLimitText}, starting: {startingGasText}"
 msgstr ""
 
-#: src/components/PositionShare/PositionShareCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "x"

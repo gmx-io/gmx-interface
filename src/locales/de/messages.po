@@ -2441,10 +2441,6 @@ msgstr "GM-Bridging zu..."
 msgid "Deactivate 1CT"
 msgstr "1CT deaktivieren"
 
-#: src/components/PositionShare/PositionShareCard.tsx
-msgid "/ USD"
-msgstr "/ USD"
-
 #: src/components/Claims/SettleAccruedCard.tsx
 msgid "Show details"
 msgstr "Details anzeigen"
@@ -7773,7 +7769,6 @@ msgstr "Gesamtbetrag zum Beanspruchen"
 msgid "Insufficient gas for execution. Estimated: {estimatedGasLimitText}, starting: {startingGasText}"
 msgstr "Unzureichend Gas für die Ausführung. Geschätzt: {estimatedGasLimitText}, verfügbar: {startingGasText}"
 
-#: src/components/PositionShare/PositionShareCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "x"

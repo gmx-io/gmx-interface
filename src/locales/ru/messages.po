@@ -2441,10 +2441,6 @@ msgstr "GM перевод на..."
 msgid "Deactivate 1CT"
 msgstr "Деактивировать 1CT"
 
-#: src/components/PositionShare/PositionShareCard.tsx
-msgid "/ USD"
-msgstr "/ USD"
-
 #: src/components/Claims/SettleAccruedCard.tsx
 msgid "Show details"
 msgstr "Показать детали"
@@ -7773,7 +7769,6 @@ msgstr "Итого к получению"
 msgid "Insufficient gas for execution. Estimated: {estimatedGasLimitText}, starting: {startingGasText}"
 msgstr "Недостаточно Gas для исполнения. Расчётный лимит: {estimatedGasLimitText}, начальный: {startingGasText}"
 
-#: src/components/PositionShare/PositionShareCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "x"

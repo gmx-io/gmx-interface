@@ -2441,10 +2441,6 @@ msgstr "GM 브리징 중..."
 msgid "Deactivate 1CT"
 msgstr "1CT 비활성화"
 
-#: src/components/PositionShare/PositionShareCard.tsx
-msgid "/ USD"
-msgstr "/ USD"
-
 #: src/components/Claims/SettleAccruedCard.tsx
 msgid "Show details"
 msgstr "세부 사항 표시"
@@ -7773,7 +7769,6 @@ msgstr "총 수령 금액"
 msgid "Insufficient gas for execution. Estimated: {estimatedGasLimitText}, starting: {startingGasText}"
 msgstr "실행에 필요한 Gas가 부족합니다. 예상치: {estimatedGasLimitText}, 시작 시점: {startingGasText}"
 
-#: src/components/PositionShare/PositionShareCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "x"

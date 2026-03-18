@@ -2441,10 +2441,6 @@ msgstr "GMブリッジ先..."
 msgid "Deactivate 1CT"
 msgstr "1CTを無効化"
 
-#: src/components/PositionShare/PositionShareCard.tsx
-msgid "/ USD"
-msgstr "/ USD"
-
 #: src/components/Claims/SettleAccruedCard.tsx
 msgid "Show details"
 msgstr "詳細を表示"
@@ -7773,7 +7769,6 @@ msgstr "受け取り合計"
 msgid "Insufficient gas for execution. Estimated: {estimatedGasLimitText}, starting: {startingGasText}"
 msgstr "実行に必要なGasが不足しています。推定: {estimatedGasLimitText}、開始時: {startingGasText}"
 
-#: src/components/PositionShare/PositionShareCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "x"

@@ -2441,10 +2441,6 @@ msgstr "GM 跨鏈至..."
 msgid "Deactivate 1CT"
 msgstr "停用 1CT"
 
-#: src/components/PositionShare/PositionShareCard.tsx
-msgid "/ USD"
-msgstr "/ USD"
-
 #: src/components/Claims/SettleAccruedCard.tsx
 msgid "Show details"
 msgstr "顯示詳情"
@@ -7773,7 +7769,6 @@ msgstr "可領取總額"
 msgid "Insufficient gas for execution. Estimated: {estimatedGasLimitText}, starting: {startingGasText}"
 msgstr "執行 Gas 不足。預估：{estimatedGasLimitText}，起始：{startingGasText}"
 
-#: src/components/PositionShare/PositionShareCard.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "x"

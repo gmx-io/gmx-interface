@@ -75,14 +75,16 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
                   )}
                 >
                   <VectorCircleIcon className={cx("size-14", { "rotate-180": !isLong })} />
-                  {isLong ? t`Long` : t`Short`} {formatAmount(leverage, 4, 2, true)}
-                  <span className="ml-2">{t`x`}</span>
+
+                  <span className="ml-2">
+                    {isLong ? <Trans>Long</Trans> : <Trans>Short</Trans>} {formatAmount(leverage, 4, 2, true)}x
+                  </span>
                 </div>
                 <div className="flex items-center gap-4 font-medium text-white">
                   <TokenIcon symbol={indexToken.symbol} displaySize={14} />
                   <span>
                     {getTokenVisualMultiplier(indexToken)}
-                    {indexToken.symbol} {t`/ USD`}
+                    {indexToken.symbol} / USD
                   </span>
                 </div>
               </div>
