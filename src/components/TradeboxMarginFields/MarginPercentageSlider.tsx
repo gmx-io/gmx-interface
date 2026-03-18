@@ -53,7 +53,7 @@ export function MarginPercentageSlider({ value, onChange, className, disabled }:
       <div className={cx("relative h-32 flex-1 px-4", disabled && "pointer-events-none opacity-50")}>
         <Slider min={0} max={100} step={1} onChange={handleChange} value={disabled ? 0 : sliderValue} marks={marks} />
         {disabled && (
-          <div className="absolute inset-0 flex items-center justify-center">
+          <div className="absolute inset-0 -top-1/2 flex items-center justify-center">
             <span className="text-12 text-typography-secondary">
               <Trans>Enter a margin amount to use the size slider</Trans>
             </span>
