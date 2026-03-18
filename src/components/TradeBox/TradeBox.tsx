@@ -635,14 +635,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     () => setCloseSizeInputValue(formattedMaxCloseSize),
     [formattedMaxCloseSize, setCloseSizeInputValue]
   );
-  const handleClosePercentageChange = useCallback(
-    (percent: number) =>
-      setCloseSizeInputValue(
-        formatAmount(((selectedPosition?.sizeInUsd ?? 0n) * BigInt(percent)) / 100n, USD_DECIMALS, 2)
-      ),
-    [selectedPosition?.sizeInUsd, setCloseSizeInputValue]
-  );
-
   const handleTriggerPriceInputChange = useCallback(
     (e) => setTriggerPriceInputValue(e.target.value),
     [setTriggerPriceInputValue]
@@ -867,8 +859,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         onInputValueChange={handleCloseInputChange}
         onClickBottomRightLabel={setMaxCloseSize}
         onClickMax={showMaxButton ? setMaxCloseSize : undefined}
-        showPercentSelector={selectedPosition?.sizeInUsd ? selectedPosition.sizeInUsd > 0 : false}
-        onPercentChange={handleClosePercentageChange}
         qa="close"
         maxDecimals={USD_DECIMALS}
       >

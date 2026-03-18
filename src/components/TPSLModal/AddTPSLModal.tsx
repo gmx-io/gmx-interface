@@ -545,15 +545,6 @@ export function AddTPSLModal({
     [position.sizeInUsd]
   );
 
-  const handleClosePercentageChange = useCallback(
-    (percent: number) => {
-      setClosePercentage(percent);
-      const newSize = bigMath.mulDiv(position.sizeInUsd, BigInt(percent), 100n);
-      setCloseSizeInput(formatAmount(newSize, USD_DECIMALS, 2));
-    },
-    [position.sizeInUsd]
-  );
-
   const handleSliderChange = useCallback(
     (percent: number) => {
       setClosePercentage(percent);
@@ -927,8 +918,6 @@ export function AddTPSLModal({
                 setCloseSizeInput(formattedMaxCloseSize);
                 setClosePercentage(100);
               }}
-              showPercentSelector={position.sizeInUsd > 0n}
-              onPercentChange={handleClosePercentageChange}
               qa="close-size"
             >
               {collateralToken.symbol}
