@@ -356,6 +356,8 @@ export function TPSLInputRow({
   const handleMarkPriceClick = useCallback(() => {
     if (referencePrice === undefined || referencePrice === 0n) return;
     setSuppressError(true);
+    setLastEditedField("price");
+    setGainLossInputValue("");
     onPriceChange(formatPrice(referencePrice));
   }, [referencePrice, formatPrice, onPriceChange]);
 
