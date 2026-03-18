@@ -261,7 +261,7 @@ export function TPSLModal({
         setIsVisible={setIsVisible}
         label={<Trans>TP/SL: {positionTitle}</Trans>}
         className="max-lg:!w-full max-lg:!items-end"
-        contentClassName="!max-w-[896px] w-[95%] h-[min(90vh,500px)] max-lg:h-[85vh] max-lg:!w-full max-lg:!max-w-none"
+        contentClassName="!max-w-[896px] w-[95%] h-[min(90vh,500px)] min-h-[300px] max-lg:h-[85vh] max-lg:!w-full max-lg:!max-w-none"
         contentPadding={false}
         withMobileBottomPosition={true}
         takeFullHeight={true}
