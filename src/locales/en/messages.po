@@ -143,6 +143,10 @@ msgstr "BonsaiDAO"
 msgid "Approval signed"
 msgstr "Approval signed"
 
+#: src/components/TradeBox/TradeBoxHeaderTabs.tsx
+msgid "Leverage for the current order. Resulting position leverage: {formattedLeverage}"
+msgstr "Leverage for the current order. Resulting position leverage: {formattedLeverage}"
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Multichain</0><1>MegaETH support</1><2>Just-in-time liquidity</2>"
 msgstr "<0>Multichain</0><1>MegaETH support</1><2>Just-in-time liquidity</2>"
