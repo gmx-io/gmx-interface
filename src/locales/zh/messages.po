@@ -229,10 +229,6 @@ msgstr "清算最大因子"
 msgid "Oracle keeper events"
 msgstr "Oracle keeper 事件"
 
-#: src/components/TPSLModal/AddTPSLModal.tsx
-#~ msgid "TP/SL: {actionLabel} {directionLabel}"
-#~ msgstr ""
-
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "365d est. fees"
 msgstr "365 天预估费用"
@@ -3806,10 +3802,6 @@ msgstr "众多资产"
 msgid "Connect wallet or provide an account address in the URL"
 msgstr "连接钱包或在 URL 中提供账户地址"
 
-#: src/components/TPSLModal/AddTPSLModal.tsx
-#~ msgid "TP/SL: {positionTitle} decrease"
-#~ msgstr "TP/SL：{positionTitle} 减仓"
-
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
 msgstr "错误名称："
@@ -4365,6 +4357,10 @@ msgstr "价格影响在您增加仓位时存储，并在您减少仓位时应用
 msgid "Code not found"
 msgstr "未找到推荐码"
 
+#: src/components/TradeboxMarginFields/MarginPercentageSlider.tsx
+msgid "Enter a margin amount to use the size slider"
+msgstr ""
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Inactive"
 msgstr "未激活"
@@ -4864,10 +4860,6 @@ msgstr "赚取"
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Position would be immediately liquidated upon execution. Try reducing the size."
 msgstr "仓位在执行时将被立即清算。请尝试减小规模。"
-
-#: src/components/TPSLModal/AddTPSLModal.tsx
-#~ msgid "Create TP/SL"
-#~ msgstr "创建 TP/SL"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Purpose: {0} | public: {1}"
@@ -6681,10 +6673,6 @@ msgstr "所选时段内相对于基准的表现"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dune Analytics dashboard"
 msgstr "Dune Analytics 仪表盘"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "increase"
-#~ msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: max leverage exceeded. Edit to reduce size. <0>Read more</0>."
@@ -8739,10 +8727,6 @@ msgstr "搜索市场"
 msgid "Negative funding fee"
 msgstr "负资金费用"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "Min margin per part: {0}"
-#~ msgstr "每份最低保证金：{0}"
-
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "FAILURES"
@@ -10085,10 +10069,6 @@ msgstr "止损价格"
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Oracle keeper monitoring"
 msgstr "Oracle keeper 监控"
-
-#: src/components/PositionSeller/PositionSeller.tsx
-#~ msgid "{0}: {1} {2}{3}/USD decrease"
-#~ msgstr "{0}：{1} {2}{3}/USD 减仓"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Enter a new size or price"

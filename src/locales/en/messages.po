@@ -229,10 +229,6 @@ msgstr "Max factor for liquidations"
 msgid "Oracle keeper events"
 msgstr "Oracle keeper events"
 
-#: src/components/TPSLModal/AddTPSLModal.tsx
-#~ msgid "TP/SL: {actionLabel} {directionLabel}"
-#~ msgstr "TP/SL: {actionLabel} {directionLabel}"
-
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "365d est. fees"
 msgstr "365d est. fees"
@@ -3806,10 +3802,6 @@ msgstr "numerous assets"
 msgid "Connect wallet or provide an account address in the URL"
 msgstr "Connect wallet or provide an account address in the URL"
 
-#: src/components/TPSLModal/AddTPSLModal.tsx
-#~ msgid "TP/SL: {positionTitle} decrease"
-#~ msgstr "TP/SL: {positionTitle} decrease"
-
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
 msgstr "Error name:"
@@ -4365,6 +4357,10 @@ msgstr "Price impact is stored when you increase a position and applied when you
 msgid "Code not found"
 msgstr "Code not found"
 
+#: src/components/TradeboxMarginFields/MarginPercentageSlider.tsx
+msgid "Enter a margin amount to use the size slider"
+msgstr "Enter a margin amount to use the size slider"
+
 #: src/pages/RpcDebug/parts.tsx
 msgid "Inactive"
 msgstr "Inactive"
@@ -4864,10 +4860,6 @@ msgstr "Earn"
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Position would be immediately liquidated upon execution. Try reducing the size."
 msgstr "Position would be immediately liquidated upon execution. Try reducing the size."
-
-#: src/components/TPSLModal/AddTPSLModal.tsx
-#~ msgid "Create TP/SL"
-#~ msgstr "Create TP/SL"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Purpose: {0} | public: {1}"
@@ -6681,10 +6673,6 @@ msgstr "Performance vs benchmark over the selected period"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Dune Analytics dashboard"
 msgstr "Dune Analytics dashboard"
-
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-#~ msgid "increase"
-#~ msgstr "increase"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order may not execute: max leverage exceeded. Edit to reduce size. <0>Read more</0>."
@@ -8739,10 +8727,6 @@ msgstr "Search market"
 msgid "Negative funding fee"
 msgstr "Negative funding fee"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-#~ msgid "Min margin per part: {0}"
-#~ msgstr "Min margin per part: {0}"
-
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "FAILURES"
@@ -10085,10 +10069,6 @@ msgstr "Stop loss price"
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Oracle keeper monitoring"
 msgstr "Oracle keeper monitoring"
-
-#: src/components/PositionSeller/PositionSeller.tsx
-#~ msgid "{0}: {1} {2}{3}/USD decrease"
-#~ msgstr "{0}: {1} {2}{3}/USD decrease"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Enter a new size or price"
