@@ -78,6 +78,8 @@ export const AB_FLAG_STORAGE_KEY = "ab-flags";
 
 export const IS_LARGE_ACCOUNT_KEY = "is-large-account-2";
 
+export const TRADEBOX_SIZE_DENOMINATION_KEY = "tradebox-size-denomination";
+
 const FALLBACK_TRACKER_PREFIX = "fallback-tracker";
 
 const COLLATERAL_CLOSE_DESTINATION_KEY = "collateral-close-destination";

@@ -852,6 +852,26 @@ export function AddTPSLModal({
     setIsVisible(false);
   }, [onBack, setIsVisible]);
 
+  const handleTpPriceChange = useCallback(
+    (value: string) => {
+      setTpPriceInput(value);
+      if (value) {
+        setPreviewTab("tp");
+      }
+    },
+    [setTpPriceInput, setPreviewTab]
+  );
+
+  const handleSlPriceChange = useCallback(
+    (value: string) => {
+      setSlPriceInput(value);
+      if (value) {
+        setPreviewTab("sl");
+      }
+    },
+    [setSlPriceInput, setPreviewTab]
+  );
+
   return (
     <Modal
       isVisible={isVisible}
@@ -866,7 +886,7 @@ export function AddTPSLModal({
           <TPSLInputRow
             type="takeProfit"
             priceValue={tpPriceInput}
-            onPriceChange={setTpPriceInput}
+            onPriceChange={handleTpPriceChange}
             positionData={tpPositionData}
             priceError={tpPriceError}
             variant="full"
@@ -879,7 +899,7 @@ export function AddTPSLModal({
           <TPSLInputRow
             type="stopLoss"
             priceValue={slPriceInput}
-            onPriceChange={setSlPriceInput}
+            onPriceChange={handleSlPriceChange}
             positionData={slPositionData}
             priceError={slPriceError}
             variant="full"

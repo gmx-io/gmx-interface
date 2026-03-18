@@ -731,6 +731,10 @@ msgstr "Realized PnL"
 msgid "High external swap impact"
 msgstr "High external swap impact"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min margin per part: {0}, actual: {1}"
+msgstr "Min margin per part: {0}, actual: {1}"
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Keep more of what you earn"
 msgstr "Keep more of what you earn"
@@ -3728,6 +3732,7 @@ msgid "Est. PnL"
 msgstr "Est. PnL"
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max close amount exceeded"
 msgstr "Max close amount exceeded"
@@ -8721,8 +8726,8 @@ msgid "Negative funding fee"
 msgstr "Negative funding fee"
 
 #: src/domain/synthetics/trade/utils/validation.ts
-msgid "Min margin per part: {0}"
-msgstr "Min margin per part: {0}"
+#~ msgid "Min margin per part: {0}"
+#~ msgstr "Min margin per part: {0}"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx

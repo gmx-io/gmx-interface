@@ -731,6 +731,10 @@ msgstr "已实现盈亏"
 msgid "High external swap impact"
 msgstr "高外部交换影响"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min margin per part: {0}, actual: {1}"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Keep more of what you earn"
 msgstr "留住更多收益"
@@ -3728,6 +3732,7 @@ msgid "Est. PnL"
 msgstr "预计 PnL"
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max close amount exceeded"
 msgstr "最大关闭金额超出"
@@ -8721,8 +8726,8 @@ msgid "Negative funding fee"
 msgstr "负资金费用"
 
 #: src/domain/synthetics/trade/utils/validation.ts
-msgid "Min margin per part: {0}"
-msgstr "每份最低保证金：{0}"
+#~ msgid "Min margin per part: {0}"
+#~ msgstr "每份最低保证金：{0}"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx

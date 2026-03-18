@@ -731,6 +731,10 @@ msgstr "실현 PnL"
 msgid "High external swap impact"
 msgstr "높은 외부 스왑 영향"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min margin per part: {0}, actual: {1}"
+msgstr ""
+
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Keep more of what you earn"
 msgstr "수익을 더 많이 보존하십시오"
@@ -3728,6 +3732,7 @@ msgid "Est. PnL"
 msgstr "예상 PnL"
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max close amount exceeded"
 msgstr "최대 닫기 금액 초과"
@@ -8721,8 +8726,8 @@ msgid "Negative funding fee"
 msgstr "음의 펀딩 수수료"
 
 #: src/domain/synthetics/trade/utils/validation.ts
-msgid "Min margin per part: {0}"
-msgstr "파트당 최소 증거금: {0}"
+#~ msgid "Min margin per part: {0}"
+#~ msgstr "파트당 최소 증거금: {0}"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
