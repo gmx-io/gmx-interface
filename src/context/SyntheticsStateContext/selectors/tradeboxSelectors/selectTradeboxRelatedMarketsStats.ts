@@ -10,8 +10,8 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
+import { getJitMaxReservedUsd } from "domain/synthetics/jit/utils";
 import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
-import { getJitMaxReservedUsd } from "domain/synthetics/markets/useJitLiquidity";
 import {
   MarketStat,
   marketsInfoData2IndexTokenStatsMap,

@@ -305,6 +305,15 @@ export function useOrderTxnCallbacks() {
           const { error } = e.data;
           const errorData = parseError(error);
 
+          // eslint-disable-next-line no-console
+          console.log("[SimErrorDebug] TxnEventName.Error received", {
+            errorContext: errorData?.errorContext,
+            simulationMethod: errorData?.simulationMethod,
+            errorMessage: errorData?.errorMessage,
+            errorGroup: errorData?.errorGroup,
+            hasMetricId: Boolean(ctx.metricId),
+          });
+
           if (ctx.metricId) {
             sendTxnErrorMetric(ctx.metricId, error, errorData?.errorContext ?? "unknown");
           }

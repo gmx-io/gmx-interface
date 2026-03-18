@@ -105,6 +105,17 @@ class Metrics {
   pushEvent = <T extends MetricEventParams = never>(params: T) => {
     const { time, isError, data, event } = params;
 
+    if (isError) {
+      // eslint-disable-next-line no-console
+      console.log("[SimErrorDebug] pushEvent isError=true", {
+        event,
+        simulationMethod: (data as Record<string, unknown>)?.simulationMethod,
+        errorContext: (data as Record<string, unknown>)?.errorContext,
+        errorMessage: (data as Record<string, unknown>)?.errorMessage,
+        queueLength: this.queue.length,
+      });
+    }
+
     const payload: EventPayload = {
       isDev: isDevelopment(),
       host: window.location.host,
@@ -174,8 +185,18 @@ class Metrics {
     const errorData = parseError(error);
 
     if (!errorData) {
+      // eslint-disable-next-line no-console
+      console.warn("[SimErrorDebug] pushError: parseError returned undefined, metric dropped", { errorSource });
       return;
     }
+
+    // eslint-disable-next-line no-console
+    console.log("[SimErrorDebug] pushError", {
+      errorSource,
+      errorContext: errorData.errorContext,
+      simulationMethod: errorData.simulationMethod,
+      errorMessage: errorData.errorMessage,
+    });
 
     const event: ErrorEvent = {
       event: "error",
@@ -229,6 +250,16 @@ class Metrics {
     this.queue = this.queue.slice(MAX_BATCH_LENGTH - 1);
 
     _debugMetrics?.logSendBatchItems(items);
+
+    const errorItems = items.filter((item) => item.type === "event" && (item.payload as EventPayload).isError);
+    if (errorItems.length > 0) {
+      // eslint-disable-next-line no-console
+      console.log("[SimErrorDebug] sending batch with error events", {
+        totalItems: items.length,
+        errorItems: errorItems.length,
+        errorEvents: errorItems.map((item) => (item.payload as EventPayload).event),
+      });
+    }
 
     return this.sendBatchItems(items)
       .then(async (res) => {

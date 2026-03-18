@@ -9,7 +9,7 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getJitLiquidityInfo } from "domain/synthetics/markets/useJitLiquidity";
+import { getJitLiquidityInfo } from "domain/synthetics/jit/utils";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";

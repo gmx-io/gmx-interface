@@ -21,8 +21,8 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getFeeItem } from "domain/synthetics/fees";
+import { getJitLiquidityInfo } from "domain/synthetics/jit/utils";
 import { Market, MarketInfo } from "domain/synthetics/markets/types";
-import { getJitLiquidityInfo } from "domain/synthetics/markets/useJitLiquidity";
 import { getAvailableUsdLiquidityForPosition, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { formatLeverage } from "domain/synthetics/positions/utils";
 import { useChainId } from "lib/chains";

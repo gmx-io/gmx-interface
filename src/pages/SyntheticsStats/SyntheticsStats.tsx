@@ -5,6 +5,8 @@ import { zeroAddress, zeroHash } from "viem";
 
 import { FACTOR_TO_PERCENT_MULTIPLIER_BIGINT } from "config/factors";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod, getPriceImpactUsd } from "domain/synthetics/fees";
+import { useJitLiquidityRequest } from "domain/synthetics/jit/useJitLiquidityRequest";
+import { getJitLiquidityInfo } from "domain/synthetics/jit/utils";
 import {
   getAvailableUsdLiquidityForCollateral,
   getCappedPoolPnl,
@@ -24,7 +26,6 @@ import {
   MarketInfo,
   useMarketsInfoRequest,
 } from "domain/synthetics/markets";
-import { getJitLiquidityInfo, useJitLiquidity } from "domain/synthetics/markets/useJitLiquidity";
 import { useKinkModelMarketsRates } from "domain/synthetics/markets/useKinkModelMarketsRates";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions";
 import { convertToUsd, getMidPrice, useTokensDataRequest } from "domain/synthetics/tokens";
@@ -59,7 +60,7 @@ export function SyntheticsStats() {
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const { kinkMarketsBorrowingRatesData } = useKinkModelMarketsRates(chainId);
-  const { jitLiquidityMap } = useJitLiquidity(chainId);
+  const { jitLiquidityMap } = useJitLiquidityRequest(chainId);
   const { positionsConstants } = usePositionsConstantsRequest(chainId);
   const { minCollateralUsd, minPositionSizeUsd, claimableCollateralDelay, claimableCollateralReductionFactor } =
     positionsConstants || {};

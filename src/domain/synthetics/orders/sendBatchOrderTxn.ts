@@ -4,7 +4,7 @@ import { withRetry } from "viem";
 import { ContractsChainId } from "config/chains";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { buildAndSignExpressBatchOrderTxn } from "domain/synthetics/express/expressOrderUtils";
-import { GlvShiftParam } from "domain/synthetics/markets/useJitLiquidity";
+import { GlvShiftParam } from "domain/synthetics/jit/utils";
 import { isLimitOrderType, isTriggerDecreaseOrderType } from "domain/synthetics/orders";
 import { TokensData } from "domain/tokens";
 import { extendError } from "lib/errors";
@@ -296,7 +296,7 @@ const makeBatchOrderSimulation = async ({
         nativeReserveLiquidity,
       });
 
-      simulationMethod = needsJit ? "simulateExecuteLatestJitOrder" : "simulateExecuteLatestOrder";
+      simulationMethod = !needsJit ? "simulateExecuteLatestJitOrder" : "simulateExecuteLatestOrder";
 
       try {
         await simulateExecution(chainId, {
@@ -322,6 +322,11 @@ const makeBatchOrderSimulation = async ({
       }
     }
   } catch (error) {
+    // eslint-disable-next-line no-console
+    console.log("[SimErrorDebug] simulation failed, extending error", {
+      simulationMethod,
+      errorMessage: error instanceof Error ? error.message : String(error),
+    });
     throw extendError(error, {
       errorContext: "simulation",
       simulationMethod,

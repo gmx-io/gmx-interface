@@ -26,6 +26,8 @@ import { FeaturesSettings, useEnabledFeaturesRequest } from "domain/synthetics/f
 import { L1ExpressOrderGasReference, useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
+import { useJitLiquidityRequest } from "domain/synthetics/jit/useJitLiquidityRequest";
+import { JitLiquidityData } from "domain/synthetics/jit/utils";
 import {
   MarketsInfoResult,
   MarketsResult,
@@ -35,7 +37,6 @@ import {
 } from "domain/synthetics/markets";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
-import { JitLiquidityData, useJitLiquidity } from "domain/synthetics/markets/useJitLiquidity";
 import { OrderEditorState, useOrderEditorState } from "domain/synthetics/orders/useOrderEditorState";
 import { AggregatedOrdersDataResult, useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import {
@@ -260,7 +261,7 @@ export function SyntheticsStateContextProvider({
   });
 
   const oracleSettings = useOracleSettingsData();
-  const jitLiquidityData = useJitLiquidity(chainId, { enabled: isTradePage });
+  const jitLiquidityData = useJitLiquidityRequest(chainId, { enabled: isTradePage });
 
   const [missedCoinsModalPlace, setMissedCoinsModalPlace] = useState<MissedCoinsPlace>();
 

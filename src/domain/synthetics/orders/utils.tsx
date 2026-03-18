@@ -17,8 +17,8 @@ import {
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import { getFeeItem, getIsHighPriceImpact, getPriceImpactByAcceptablePrice } from "../fees";
+import { JitLiquidityInfo, getJitMaxReservedUsd } from "../jit/utils";
 import { MarketsInfoData, getAvailableUsdLiquidityForPosition } from "../markets";
-import { JitLiquidityInfo, getJitMaxReservedUsd } from "../markets/useJitLiquidity";
 import { PositionInfo, PositionsInfoData, getLeverage } from "../positions";
 import { convertToTokenAmount, convertToUsd } from "../tokens";
 import { FindSwapPath, getAcceptablePriceInfo, getMaxSwapPathLiquidity, getSwapAmountsByFromValue } from "../trade";
@@ -84,7 +84,7 @@ export function getOrderErrors(p: {
   uiFeeFactor: bigint;
   chainId: number;
   isSetAcceptablePriceImpactEnabled: boolean;
-  jitLiquidityMap?: Map<string, JitLiquidityInfo>;
+  jitLiquidityMap?: Record<string, JitLiquidityInfo>;
 }): { errors: OrderError[]; level: "error" | "warning" | undefined } {
   const { order, positionsInfoData, marketsInfoData, isSetAcceptablePriceImpactEnabled, jitLiquidityMap } = p;
 

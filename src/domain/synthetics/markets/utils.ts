@@ -21,7 +21,7 @@ import { PositionInfo } from "../positions";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens";
 import { isGlvAddress, isGlvInfo } from "./glv";
 import { GlvInfo, GlvOrMarketInfo, MarketInfo } from "./types";
-import { JitLiquidityInfo, getJitMaxReservedUsd } from "./useJitLiquidity";
+import { JitLiquidityInfo, getJitMaxReservedUsd } from "../jit/utils";
 import { TokenData, TokensData } from "../tokens/types";
 
 export * from "sdk/utils/markets";
@@ -171,7 +171,7 @@ export function getMostLiquidMarketForPosition(
   indexTokenAddress: string,
   collateralTokenAddress: string | undefined,
   isLong: boolean,
-  jitLiquidityMap?: Map<string, JitLiquidityInfo>
+  jitLiquidityMap?: Record<string, JitLiquidityInfo>
 ) {
   let bestMarket: MarketInfo | undefined;
   let bestLiquidity: bigint | undefined;
@@ -210,7 +210,7 @@ export function getMinPriceImpactMarket(
   isLong: boolean,
   isIncrease: boolean,
   sizeDeltaUsd: bigint,
-  jitLiquidityMap?: Map<string, JitLiquidityInfo>
+  jitLiquidityMap?: Record<string, JitLiquidityInfo>
 ) {
   let bestMarket: MarketInfo | undefined;
   // minimize negative impact

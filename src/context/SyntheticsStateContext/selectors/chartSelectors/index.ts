@@ -8,12 +8,12 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
+import { getJitLiquidityInfo } from "domain/synthetics/jit/utils";
 import {
   getAvailableUsdLiquidityForPosition,
   getOpenInterestForBalance,
   getOpenInterestInTokens,
 } from "domain/synthetics/markets";
-import { getJitLiquidityInfo } from "domain/synthetics/markets/useJitLiquidity";
 import { CHART_PERIODS } from "lib/legacy";
 import { bigMath } from "sdk/utils/bigmath";
 

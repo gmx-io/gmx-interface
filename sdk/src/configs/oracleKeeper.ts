@@ -39,6 +39,13 @@ const ORACLE_KEEPER_FALLBACK_URLS: Record<ContractsChainId, string[]> = {
 };
 
 export function getOracleKeeperUrl(chainId: number) {
+  const localOverride =
+    typeof localStorage !== "undefined" ? localStorage.getItem("ORACLE_KEEPER_URL_OVERRIDE") : undefined;
+
+  if (localOverride) {
+    return localOverride;
+  }
+
   if (!ORACLE_KEEPER_URLS[chainId]) {
     throw new Error(`No oracle keeper url for chain ${chainId}`);
   }

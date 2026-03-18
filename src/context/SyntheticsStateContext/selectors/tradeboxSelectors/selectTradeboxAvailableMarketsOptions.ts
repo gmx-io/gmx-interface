@@ -33,6 +33,7 @@ import {
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getCappedPositionImpactUsd, getFeeItem } from "domain/synthetics/fees";
+import { getJitMaxReservedUsd } from "domain/synthetics/jit/utils";
 import {
   getAvailableUsdLiquidityForPosition,
   getMinPriceImpactMarket,
@@ -40,7 +41,6 @@ import {
   MarketInfo,
 } from "domain/synthetics/markets";
 import { getLargestRelatedExistingPositionOrOrder } from "domain/synthetics/markets/chooseSuitableMarket";
-import { getJitMaxReservedUsd } from "domain/synthetics/markets/useJitLiquidity";
 import { isIncreaseOrderType, PositionOrderInfo } from "domain/synthetics/orders";
 import {
   IndexTokenStat,

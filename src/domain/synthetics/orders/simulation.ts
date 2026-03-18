@@ -26,8 +26,8 @@ import { convertTokenAddress } from "sdk/configs/tokens";
 import { CustomError, CustomErrorName, extendError } from "sdk/utils/errors";
 import { CreateOrderTxnParams, ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
+import type { GlvShiftParam } from "../jit/utils";
 import { isGlvEnabled } from "../markets/glv";
-import type { GlvShiftParam } from "../markets/useJitLiquidity";
 
 export type SimulateExecuteParams = {
   account: string;

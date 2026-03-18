@@ -1,4 +1,4 @@
-import { GlvShiftParam } from "domain/synthetics/markets/useJitLiquidity";
+import { GlvShiftParam } from "domain/synthetics/jit/utils";
 import { decodeErrorFromViemError, isCustomError } from "lib/errors";
 import { OrderType } from "sdk/utils/orders/types";
 import { BatchOrderTxnParams, CreateOrderPayload } from "sdk/utils/orderTransactions";

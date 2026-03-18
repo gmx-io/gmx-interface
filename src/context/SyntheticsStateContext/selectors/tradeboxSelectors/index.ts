@@ -14,13 +14,13 @@ import {
   estimateExecuteSwapOrderGasLimit,
   estimateOrderOraclePriceCount,
 } from "domain/synthetics/fees";
+import { getJitLiquidityInfo } from "domain/synthetics/jit/utils";
 import {
   getAvailableUsdLiquidityForPosition,
   getMaxLeverageByMinCollateralFactor,
   getTradeboxLeverageSliderMarks,
 } from "domain/synthetics/markets";
 import { PreferredTradeTypePickStrategy, chooseSuitableMarket } from "domain/synthetics/markets/chooseSuitableMarket";
-import { getJitLiquidityInfo } from "domain/synthetics/markets/useJitLiquidity";
 import { DecreasePositionSwapType, isLimitOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import {
   TokenData,
