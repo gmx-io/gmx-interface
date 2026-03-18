@@ -296,7 +296,7 @@ const makeBatchOrderSimulation = async ({
         nativeReserveLiquidity,
       });
 
-      simulationMethod = !needsJit ? "simulateExecuteLatestJitOrder" : "simulateExecuteLatestOrder";
+      simulationMethod = needsJit ? "simulateExecuteLatestJitOrder" : "simulateExecuteLatestOrder";
 
       try {
         await simulateExecution(chainId, {
@@ -322,11 +322,6 @@ const makeBatchOrderSimulation = async ({
       }
     }
   } catch (error) {
-    // eslint-disable-next-line no-console
-    console.log("[SimErrorDebug] simulation failed, extending error", {
-      simulationMethod,
-      errorMessage: error instanceof Error ? error.message : String(error),
-    });
     throw extendError(error, {
       errorContext: "simulation",
       simulationMethod,

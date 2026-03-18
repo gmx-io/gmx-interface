@@ -882,15 +882,6 @@ export function sendTxnErrorMetric(
   const eventName =
     `${metricData.metricType}.${errorData?.isUserRejectedError ? OrderStage.Rejected : OrderStage.Failed}` as const;
 
-  // eslint-disable-next-line no-console
-  console.log("[SimErrorDebug] sendTxnErrorMetric", {
-    eventName,
-    errorContext,
-    simulationMethod: errorData?.simulationMethod,
-    errorMessage: errorData?.errorMessage,
-    metricType: metricData.metricType,
-  });
-
   metrics.pushEvent<OrderTxnFailedEvent>({
     event: eventName,
     isError: true,
