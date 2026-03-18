@@ -229,6 +229,10 @@ msgstr "청산 최대 계수"
 msgid "Oracle keeper events"
 msgstr "Oracle keeper 이벤트"
 
+#: src/components/TPSLModal/AddTPSLModal.tsx
+msgid "TP/SL: {actionLabel} {directionLabel}"
+msgstr ""
+
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "365d est. fees"
 msgstr "365일 예상 수수료"
@@ -3803,8 +3807,8 @@ msgid "Connect wallet or provide an account address in the URL"
 msgstr "지갑을 연결하거나 URL에 계정 주소를 입력하십시오"
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
-msgid "TP/SL: {positionTitle} decrease"
-msgstr "TP/SL: {positionTitle} 감소"
+#~ msgid "TP/SL: {positionTitle} decrease"
+#~ msgstr "TP/SL: {positionTitle} 감소"
 
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
@@ -5768,6 +5772,7 @@ msgid "Recommended"
 msgstr "추천"
 
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
@@ -10618,6 +10623,7 @@ msgstr "다중 자산 클래스"
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/TradeBox.tsx

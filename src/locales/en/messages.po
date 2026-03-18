@@ -229,6 +229,10 @@ msgstr "Max factor for liquidations"
 msgid "Oracle keeper events"
 msgstr "Oracle keeper events"
 
+#: src/components/TPSLModal/AddTPSLModal.tsx
+msgid "TP/SL: {actionLabel} {directionLabel}"
+msgstr "TP/SL: {actionLabel} {directionLabel}"
+
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "365d est. fees"
 msgstr "365d est. fees"
@@ -3803,8 +3807,8 @@ msgid "Connect wallet or provide an account address in the URL"
 msgstr "Connect wallet or provide an account address in the URL"
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
-msgid "TP/SL: {positionTitle} decrease"
-msgstr "TP/SL: {positionTitle} decrease"
+#~ msgid "TP/SL: {positionTitle} decrease"
+#~ msgstr "TP/SL: {positionTitle} decrease"
 
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
@@ -5768,6 +5772,7 @@ msgid "Recommended"
 msgstr "Recommended"
 
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
@@ -10618,6 +10623,7 @@ msgstr "multiple asset classes"
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/TradeBox.tsx

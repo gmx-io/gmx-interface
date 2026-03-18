@@ -229,6 +229,10 @@ msgstr "清算最大因子"
 msgid "Oracle keeper events"
 msgstr "Oracle keeper 事件"
 
+#: src/components/TPSLModal/AddTPSLModal.tsx
+msgid "TP/SL: {actionLabel} {directionLabel}"
+msgstr ""
+
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "365d est. fees"
 msgstr "365 天預估費用"
@@ -3803,8 +3807,8 @@ msgid "Connect wallet or provide an account address in the URL"
 msgstr "連接錢包或在網址中提供帳戶地址"
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
-msgid "TP/SL: {positionTitle} decrease"
-msgstr "TP/SL：{positionTitle} 減倉"
+#~ msgid "TP/SL: {positionTitle} decrease"
+#~ msgstr "TP/SL：{positionTitle} 減倉"
 
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Error name:"
@@ -5768,6 +5772,7 @@ msgid "Recommended"
 msgstr "推薦"
 
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
@@ -10618,6 +10623,7 @@ msgstr "多種資產類別"
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 #: src/components/TradeBox/TradeBox.tsx

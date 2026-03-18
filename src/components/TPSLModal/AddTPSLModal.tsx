@@ -796,7 +796,9 @@ export function AddTPSLModal({
     }
   }, [tpDecreaseAmounts, slDecreaseAmounts]);
 
-  const positionTitle = `${position.isLong ? t`Long` : t`Short`} ${indexToken.symbol}`;
+  const isFullClose = closeSizeUsd >= position.sizeInUsd;
+  const actionLabel = isFullClose ? t`Close` : t`Decrease`;
+  const directionLabel = position.isLong ? t`Long` : t`Short`;
 
   const currentLeverage = formatLeverage(position.leverage);
   const nextLeverage = activeNextPositionValues?.nextLeverage;
@@ -867,7 +869,11 @@ export function AddTPSLModal({
     <Modal
       isVisible={isVisible}
       setIsVisible={setIsVisible}
-      label={<Trans>TP/SL: {positionTitle} decrease</Trans>}
+      label={
+        <Trans>
+          TP/SL: {actionLabel} {directionLabel}
+        </Trans>
+      }
       onBack={onBack ? handleBack : undefined}
       withMobileBottomPosition
       contentPadding={false}
