@@ -230,8 +230,8 @@ msgid "Oracle keeper events"
 msgstr "Événements de l'Oracle keeper"
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
-msgid "TP/SL: {actionLabel} {directionLabel}"
-msgstr ""
+#~ msgid "TP/SL: {actionLabel} {directionLabel}"
+#~ msgstr ""
 
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "365d est. fees"
@@ -4866,8 +4866,8 @@ msgid "Position would be immediately liquidated upon execution. Try reducing the
 msgstr "La position serait immédiatement liquidée à l'exécution. Essayez de réduire la taille."
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
-msgid "Create TP/SL"
-msgstr "Créer un Take-Profit/Stop-Loss"
+#~ msgid "Create TP/SL"
+#~ msgstr "Créer un Take-Profit/Stop-Loss"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Purpose: {0} | public: {1}"

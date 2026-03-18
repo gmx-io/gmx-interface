@@ -799,6 +799,9 @@ export function AddTPSLModal({
   const isFullClose = closeSizeUsd >= position.sizeInUsd;
   const actionLabel = isFullClose ? t`Close` : t`Decrease`;
   const directionLabel = position.isLong ? t`Long` : t`Short`;
+  const hasTP = Boolean(tpPriceInput);
+  const hasSL = Boolean(slPriceInput);
+  const modePrefix = hasTP && hasSL ? "TP/SL" : hasTP ? "TP" : hasSL ? "SL" : "TP/SL";
 
   const currentLeverage = formatLeverage(position.leverage);
   const nextLeverage = activeNextPositionValues?.nextLeverage;
@@ -869,11 +872,7 @@ export function AddTPSLModal({
     <Modal
       isVisible={isVisible}
       setIsVisible={setIsVisible}
-      label={
-        <Trans>
-          TP/SL: {actionLabel} {directionLabel}
-        </Trans>
-      }
+      label={`${modePrefix}: ${actionLabel} ${directionLabel}`}
       onBack={onBack ? handleBack : undefined}
       withMobileBottomPosition
       contentPadding={false}
@@ -938,7 +937,7 @@ export function AddTPSLModal({
           onClick={handleSubmit}
           disabled={!!submitError || isSubmitting}
         >
-          {submitError || (isSubmitting ? t`Creating...` : t`Create TP/SL`)}
+          {submitError || (isSubmitting ? t`Creating...` : `${modePrefix}: ${actionLabel} ${directionLabel}`)}
         </Button>
 
         {hasPreviewData && (
