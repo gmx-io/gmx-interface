@@ -758,7 +758,7 @@ export function AddTPSLModal({
               blockTimestampData,
             },
         callback: makeOrderTxnCallback({
-          actionName: "Open Position",
+          actionName: "Add TP/SL",
           collateralSymbol: position.collateralToken.symbol,
         }),
         provider,

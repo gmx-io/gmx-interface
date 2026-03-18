@@ -16,7 +16,9 @@ export type TradingActionName =
   | "Cancel Order"
   | "Update Order"
   | "Express Order"
-  | "Pending Transaction";
+  | "Pending Transaction"
+  | "Settle Funding Fee"
+  | "Add TP/SL";
 
 export type TradingErrorInfo = {
   actionName: TradingActionName;
