@@ -204,7 +204,7 @@ export function AddTPSLModal({
   const indexTokenDecimals = indexToken?.decimals ?? 18;
 
   const closeSizeUsd = useMemo(() => {
-    if (!editTPSLSize || !closeSizeInput) {
+    if (!editTPSLSize || !closeSizeInput || closePercentage >= 100) {
       return position.sizeInUsd;
     }
 
@@ -217,7 +217,15 @@ export function AddTPSLModal({
     }
 
     return parseValue(closeSizeInput, USD_DECIMALS) ?? position.sizeInUsd;
-  }, [editTPSLSize, closeSizeInput, showSizeInTokens, position.sizeInUsd, position.sizeInTokens, indexTokenDecimals]);
+  }, [
+    editTPSLSize,
+    closeSizeInput,
+    closePercentage,
+    showSizeInTokens,
+    position.sizeInUsd,
+    position.sizeInTokens,
+    indexTokenDecimals,
+  ]);
 
   const sizeUsdEntry = useMemo(() => getDefaultEntryField(USD_DECIMALS, { value: closeSizeUsd }), [closeSizeUsd]);
 
