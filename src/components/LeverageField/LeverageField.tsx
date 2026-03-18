@@ -142,7 +142,7 @@ export function LeverageField({ value, onChange, marks, disabled, tooltipContent
 
   const displayValue = useMemo(() => {
     if (value === null) {
-      return disabled ? "-" : formatLeverage(minMark);
+      return disabled ? `> ${formatLeverage(maxMark, { integer: true })}` : formatLeverage(minMark);
     }
 
     if (disabled && value > maxMark) {
