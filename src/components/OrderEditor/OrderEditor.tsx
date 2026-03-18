@@ -711,7 +711,7 @@ export function OrderEditor(p: Props) {
         contentPadding={false}
         onBack={p.onBack ? handleBack : undefined}
       >
-        <div className="mt-12 flex flex-col gap-4 border-t-1/2 border-slate-600 px-20 py-16">
+        <div className="flex flex-col gap-4 px-20 py-16">
           {!isSwapOrderType(p.order.orderType) && (
             <>
               <BuyInputSection

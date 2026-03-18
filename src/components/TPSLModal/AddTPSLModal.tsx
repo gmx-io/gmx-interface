@@ -877,7 +877,7 @@ export function AddTPSLModal({
       withMobileBottomPosition
       contentPadding={false}
     >
-      <div className="mt-12 flex flex-col gap-16 border-t-1/2 border-slate-600 px-20 py-16">
+      <div className="flex flex-col gap-16 px-20 py-16">
         <div className="flex flex-col gap-4">
           <TPSLInputRow
             type="takeProfit"

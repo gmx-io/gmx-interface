@@ -266,7 +266,7 @@ export function TPSLModal({
         withMobileBottomPosition={true}
         takeFullHeight={true}
       >
-        <div className="mt-16 flex gap-32 border-t-1/2 border-slate-600 px-20 py-12 max-md:gap-16 max-md:px-16">
+        <div className="flex gap-32 px-20 py-12 max-md:gap-16 max-md:px-16">
           <div className="flex flex-col">
             <span className="text-body-small text-typography-secondary">
               <Trans>Entry price</Trans>

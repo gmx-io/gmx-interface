@@ -263,8 +263,13 @@ function MobileSlideModal({
           style={curtainStyle}
           onClick={stopPropagation}
         >
-          <div onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp}>
-            <div className="mb-8 mt-12 flex h-28 touch-none select-none items-center justify-between gap-4 px-adaptive">
+          <div
+            className="border-b-1/2 border-slate-600 pb-12"
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+          >
+            <div className="mt-12 flex h-28 touch-none select-none items-center justify-between gap-4 px-adaptive">
               <div className="text-body-medium grow font-medium text-typography-primary">{label}</div>
 
               <CloseIcon

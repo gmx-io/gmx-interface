@@ -138,7 +138,7 @@ export default function Modal({
               onClick={stopPropagation}
               data-qa={qa}
             >
-              <div className="Modal-header-wrapper flex flex-col gap-8 px-adaptive pt-adaptive">
+              <div className="Modal-header-wrapper flex flex-col gap-8 border-b-1/2 border-slate-600 px-adaptive pb-12 pt-adaptive">
                 <div className="Modal-title-bar h-28">
                   <div className="Modal-title-group">
                     {onBack && (
