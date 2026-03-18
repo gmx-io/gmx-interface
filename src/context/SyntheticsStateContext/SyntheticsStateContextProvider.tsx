@@ -1,4 +1,4 @@
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { ReactNode, useMemo, useState } from "react";
 import { useParams } from "react-router-dom";
 import { getAddress, isAddress } from "viem";
 
@@ -35,14 +35,7 @@ import {
 } from "domain/synthetics/markets";
 import { isGlvEnabled } from "domain/synthetics/markets/glv";
 import { useGlvMarketsInfo } from "domain/synthetics/markets/useGlvMarkets";
-import { JitLiquidityData, getJitLiquidityInfo, useJitLiquidity } from "domain/synthetics/markets/useJitLiquidity";
-import {
-  getAvailableUsdLiquidityForPosition,
-  getMaxOpenInterestUsd,
-  getMaxReservedUsd,
-  getOpenInterestUsd,
-  getReservedUsd,
-} from "domain/synthetics/markets/utils";
+import { JitLiquidityData, useJitLiquidity } from "domain/synthetics/markets/useJitLiquidity";
 import { OrderEditorState, useOrderEditorState } from "domain/synthetics/orders/useOrderEditorState";
 import { AggregatedOrdersDataResult, useOrdersInfoRequest } from "domain/synthetics/orders/useOrdersInfo";
 import {
@@ -268,76 +261,6 @@ export function SyntheticsStateContextProvider({
 
   const oracleSettings = useOracleSettingsData();
   const jitLiquidityData = useJitLiquidity(chainId, { enabled: isTradePage });
-
-  // DEBUG: Log JIT liquidity tables for testing
-  useEffect(() => {
-    if (!isTradePage || !marketsInfo.marketsInfoData) return;
-
-    const markets = Object.values(marketsInfo.marketsInfoData);
-    const jitMap = jitLiquidityData.jitLiquidityMap;
-    const fmt = (v: bigint) => {
-      const usd = Number(v / 10n ** 28n) / 100;
-      if (usd >= 1_000_000) return `$${(usd / 1_000_000).toFixed(2)}M`;
-      if (usd >= 1_000) return `$${(usd / 1_000).toFixed(2)}K`;
-      return `$${usd.toFixed(2)}`;
-    };
-
-    const jitMarkets: Record<string, unknown>[] = [];
-    const nonJitMarkets: Record<string, unknown>[] = [];
-
-    for (const m of markets) {
-      if (m.isSpotOnly) continue;
-      const jitInfo = getJitLiquidityInfo(jitMap, m.marketTokenAddress);
-      const nativeLong = getAvailableUsdLiquidityForPosition(m, true);
-      const nativeShort = getAvailableUsdLiquidityForPosition(m, false);
-      const combinedLong = getAvailableUsdLiquidityForPosition(m, true, jitInfo?.maxReservedUsdWithJitLong);
-      const combinedShort = getAvailableUsdLiquidityForPosition(m, false, jitInfo?.maxReservedUsdWithJitShort);
-      const maxOiLong = getMaxOpenInterestUsd(m, true);
-      const oiLong = getOpenInterestUsd(m, true);
-      const maxOiShort = getMaxOpenInterestUsd(m, false);
-      const oiShort = getOpenInterestUsd(m, false);
-      const maxResLong = getMaxReservedUsd(m, true);
-      const resLong = getReservedUsd(m, true);
-      const maxResShort = getMaxReservedUsd(m, false);
-      const resShort = getReservedUsd(m, false);
-
-      const row = {
-        Market: m.name,
-        "Native Long": fmt(nativeLong),
-        "Native Short": fmt(nativeShort),
-        "MaxRes+JIT Long": jitInfo ? fmt(jitInfo.maxReservedUsdWithJitLong) : "-",
-        "MaxRes+JIT Short": jitInfo ? fmt(jitInfo.maxReservedUsdWithJitShort) : "-",
-        "Combined Long": fmt(combinedLong),
-        "Combined Short": fmt(combinedShort),
-        "OI Cap Long": fmt(maxOiLong - oiLong),
-        "OI Cap Short": fmt(maxOiShort - oiShort),
-        "Reserve Cap Long": fmt(maxResLong - resLong),
-        "Reserve Cap Short": fmt(maxResShort - resShort),
-        Bottleneck_L: combinedLong < maxOiLong - oiLong ? "Reserve" : "OI Cap",
-        Bottleneck_S: combinedShort < maxOiShort - oiShort ? "Reserve" : "OI Cap",
-      };
-
-      if (jitInfo) {
-        jitMarkets.push(row);
-      } else {
-        nonJitMarkets.push(row);
-      }
-    }
-
-    if (jitMarkets.length > 0) {
-      // TODO: remove this after JIT testing
-      // eslint-disable-next-line no-console
-      console.log(`%c[JIT] Markets WITH JIT liquidity (${jitMarkets.length})`, "color: #00ff88; font-weight: bold");
-      // eslint-disable-next-line no-console
-      console.table(jitMarkets);
-    }
-
-    // TODO: remove this after JIT testing
-    // eslint-disable-next-line no-console
-    console.log(`%c[JIT] Markets WITHOUT JIT liquidity (${nonJitMarkets.length})`, "color: #ff8800; font-weight: bold");
-    // eslint-disable-next-line no-console
-    console.table(nonJitMarkets);
-  }, [isTradePage, marketsInfo.marketsInfoData, jitLiquidityData.jitLiquidityMap]);
 
   const [missedCoinsModalPlace, setMissedCoinsModalPlace] = useState<MissedCoinsPlace>();
 
