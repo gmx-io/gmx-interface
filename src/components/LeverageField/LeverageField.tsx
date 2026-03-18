@@ -171,7 +171,7 @@ export function LeverageField({ value, onChange, marks, disabled, tooltipContent
       >
         <TooltipWithPortal disabled={!tooltipContent} content={tooltipContent} as="span" variant="none">
           <span
-            className={cx("text-13", isOpen ? "text-blue-300" : "text-typography-primary", {
+            className={cx("text-13 whitespace-nowrap", isOpen ? "text-blue-300" : "text-typography-primary", {
               "group-hover:text-blue-300": !disabled && !isOpen,
             })}
           >
