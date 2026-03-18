@@ -412,6 +412,13 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       if (isIncrease && increaseAmounts) {
         const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
         if (focusedInput === "from") {
+          // Skip backfill when increaseAmounts is stale (has not recalculated with the current input yet).
+          // This prevents the slider from snapping back briefly when the user drags it to a new position:
+          // the from-input updates immediately but increaseAmounts still reflects the old value.
+          if (increaseAmounts.initialCollateralAmount !== fromTokenAmount) {
+            return;
+          }
+
           setToTokenInputValue(
             increaseAmounts.indexTokenAmount > 0
               ? formatAmountFree(increaseAmounts.indexTokenAmount / visualMultiplier, toToken.decimals)
@@ -431,6 +438,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     [
       focusedInput,
       fromToken,
+      fromTokenAmount,
       increaseAmounts,
       isIncrease,
       isSwap,
