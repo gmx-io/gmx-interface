@@ -82,7 +82,7 @@ export function PositionItemTPSLCell({
             isDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
             hasTpOrSl
               ? "size-20 text-typography-secondary hover:text-typography-primary"
-              : "gap-2 px-6 py-2 text-12 text-typography-secondary hover:text-typography-primary"
+              : "gap-2 rounded-full border border-slate-600 px-10 py-2 text-12 text-typography-secondary hover:border-slate-500 hover:text-typography-primary"
           )}
         >
           {hasTpOrSl ? <EditIcon width={16} height={16} /> : <>Set +</>}
