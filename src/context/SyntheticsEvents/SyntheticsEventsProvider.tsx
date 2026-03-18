@@ -1161,6 +1161,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                     tradingErrorInfo: {
                       actionName: "Express Order",
                       errorData: executionFeeErrorParams.errorData,
+                      metricId: pendingExpressTxn.metricId,
                     },
                   });
                 });
@@ -1177,6 +1178,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                     tradingErrorInfo: {
                       actionName: "Express Order",
                       errorData: invalidSignatureErrorParams.errorData,
+                      metricId: pendingExpressTxn.metricId,
                     },
                   });
                 });
@@ -1191,6 +1193,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                 tradingErrorInfo: {
                   actionName: "Express Order",
                   errorData: pendingExpressTxn.errorMessage,
+                  metricId: pendingExpressTxn.metricId,
                 },
               });
               isViewed = true;

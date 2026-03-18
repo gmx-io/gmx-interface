@@ -27,6 +27,7 @@ export function ErrorToastWithSupport({ children }: { children: ReactNode }) {
       isError: true,
       data: {
         debugLogId,
+        metricId: error?.metricId ?? "N/A",
         actionName: error?.actionName ?? "N/A",
         collateral: error?.collateral ?? "N/A",
         walletAddress: error?.walletAddress ?? "N/A",
@@ -43,6 +44,7 @@ export function ErrorToastWithSupport({ children }: { children: ReactNode }) {
       `– Wallet address: ${error?.walletAddress ?? "N/A"}`,
       `– Wallet Provider: ${error?.walletProvider ?? "N/A"}`,
       `– Connected Network: ${error?.network ?? "N/A"}`,
+      `– Metric ID: ${error?.metricId ?? "N/A"}`,
       `– Debug Log ID: ${debugLogId}`,
     ];
 

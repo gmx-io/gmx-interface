@@ -211,7 +211,7 @@ export const useWithdrawalTransactions = ({
 
       if (!amounts || !signer || !params) {
         helperToast.error(t`Order submission failed`, {
-          tradingErrorInfo: { actionName: "GM Withdrawal" },
+          tradingErrorInfo: { actionName: "GM Withdrawal", metricId: metricData.metricId },
         });
         sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
@@ -231,7 +231,7 @@ export const useWithdrawalTransactions = ({
 
         if (!fees || !transferRequests) {
           helperToast.error(t`Order submission failed`, {
-            tradingErrorInfo: { actionName: "GM Withdrawal" },
+            tradingErrorInfo: { actionName: "GM Withdrawal", metricId: metricData.metricId },
           });
           sendTxnValidationErrorMetric(metricData.metricId);
           return;
@@ -267,7 +267,7 @@ export const useWithdrawalTransactions = ({
         const expressTxnParams = multichainWithdrawalExpressTxnParams.data;
         if (!transferRequests || !expressTxnParams) {
           helperToast.error(t`Order submission failed`, {
-            tradingErrorInfo: { actionName: "GM Withdrawal" },
+            tradingErrorInfo: { actionName: "GM Withdrawal", metricId: metricData.metricId },
           });
           sendTxnValidationErrorMetric(metricData.metricId);
           return;
@@ -309,7 +309,7 @@ export const useWithdrawalTransactions = ({
 
         if (!fees || !tokensData) {
           helperToast.error(t`Order submission failed`, {
-            tradingErrorInfo: { actionName: "GM Withdrawal" },
+            tradingErrorInfo: { actionName: "GM Withdrawal", metricId: metricData.metricId },
           });
           sendTxnValidationErrorMetric(metricData.metricId);
           return;
@@ -370,7 +370,7 @@ export const useWithdrawalTransactions = ({
 
       if (!amounts || !signer || !params) {
         helperToast.error(t`Order submission failed`, {
-          tradingErrorInfo: { actionName: "GM Withdrawal" },
+          tradingErrorInfo: { actionName: "GM Withdrawal", metricId: metricData.metricId },
         });
         sendTxnValidationErrorMetric(metricData.metricId);
         return Promise.resolve();
@@ -389,7 +389,7 @@ export const useWithdrawalTransactions = ({
             : undefined;
         if (!fees || !transferRequests) {
           helperToast.error(t`Order submission failed`, {
-            tradingErrorInfo: { actionName: "GM Withdrawal" },
+            tradingErrorInfo: { actionName: "GM Withdrawal", metricId: metricData.metricId },
           });
           sendTxnValidationErrorMetric(metricData.metricId);
           return;
@@ -421,7 +421,7 @@ export const useWithdrawalTransactions = ({
         const expressTxnParams = multichainWithdrawalExpressTxnParams.data;
         if (!transferRequests || !expressTxnParams) {
           helperToast.error(t`Order submission failed`, {
-            tradingErrorInfo: { actionName: "GM Withdrawal" },
+            tradingErrorInfo: { actionName: "GM Withdrawal", metricId: metricData.metricId },
           });
           sendTxnValidationErrorMetric(metricData.metricId);
           return;
@@ -464,7 +464,7 @@ export const useWithdrawalTransactions = ({
 
         if (!fees || !tokensData) {
           helperToast.error(t`Order submission failed`, {
-            tradingErrorInfo: { actionName: "GM Withdrawal" },
+            tradingErrorInfo: { actionName: "GM Withdrawal", metricId: metricData.metricId },
           });
           sendTxnValidationErrorMetric(metricData.metricId);
           return;

@@ -564,6 +564,7 @@ export function PositionSeller() {
         tradingErrorInfo: {
           actionName: "Close Position",
           collateral: position?.collateralToken?.symbol,
+          metricId: metricData.metricId,
         },
       });
       sendTxnValidationErrorMetric(metricData.metricId);

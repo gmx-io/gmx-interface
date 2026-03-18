@@ -108,6 +108,7 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
                 ? {
                     actionName: pendingTxn.actionName,
                     errorData: errorData ?? onchainError,
+                    metricId: pendingTxn.metricId,
                   }
                 : undefined,
             });

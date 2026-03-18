@@ -307,7 +307,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
     if (!primaryCreateOrderParams || !signer || !provider || !tokensData || !account || !marketsInfoData) {
       helperToast.error(t`Order submission failed`, {
-        tradingErrorInfo: { actionName, collateral: collateralSymbol },
+        tradingErrorInfo: { actionName, collateral: collateralSymbol, metricId: metricData.metricId },
       });
       sendTxnValidationErrorMetric(metricData.metricId);
       return Promise.reject();

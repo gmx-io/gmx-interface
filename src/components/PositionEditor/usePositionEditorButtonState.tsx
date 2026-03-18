@@ -444,6 +444,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
         tradingErrorInfo: {
           actionName: "Edit Collateral",
           collateral: selectedCollateralToken?.symbol,
+          metricId: metricData.metricId,
         },
       });
       sendTxnValidationErrorMetric(metricData.metricId);

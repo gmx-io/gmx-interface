@@ -352,6 +352,7 @@ export function useOrderTxnCallbacks() {
                   actionName: ctx.actionName,
                   collateral: ctx.collateralSymbol,
                   errorData: errorData,
+                  metricId: ctx.metricId,
                 }
               : undefined,
           });
