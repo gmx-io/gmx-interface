@@ -28,6 +28,8 @@ export function MarketPoolSelectorField({ disabled }: Props = {}) {
 
   const selectedMarket = marketAddress ? getByKey(marketsInfoData, marketAddress) : undefined;
   const poolName = selectedMarket ? getMarketPoolName(selectedMarket) : undefined;
+  const isSinglePool = relatedMarketStats?.length === 1;
+  const isDisabled = disabled || isSinglePool;
 
   return (
     <BlockField
@@ -35,7 +37,7 @@ export function MarketPoolSelectorField({ disabled }: Props = {}) {
       forwardClickToSelector
       label={t`Pool`}
       className="group/selector-field"
-      disabled={disabled}
+      disabled={isDisabled}
       content={
         <PoolSelector2
           selectedPoolName={poolName}
