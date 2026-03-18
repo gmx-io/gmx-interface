@@ -1,4 +1,3 @@
-import { createElement } from "react";
 import { toast, ToastContent, ToastOptions } from "react-toastify";
 
 import { ErrorToastWithSupport } from "components/Errors/ErrorToastWithSupport";
@@ -24,9 +23,11 @@ export const helperToast = {
     }
 
     const finalContent =
-      tradingErrorInfo && tradingErrorTracker.shouldSuggestSupport()
-        ? createElement(ErrorToastWithSupport, null, content as React.ReactNode)
-        : content;
+      tradingErrorInfo && tradingErrorTracker.shouldSuggestSupport() && typeof content !== "function" ? (
+        <ErrorToastWithSupport>{content}</ErrorToastWithSupport>
+      ) : (
+        content
+      );
 
     toast.error(finalContent, toastOpts);
   },
