@@ -53,10 +53,7 @@ function Referrals({ account, activeTab, hasAddressInUrl }: Props) {
 
   const isBotanix = chainId === BOTANIX;
 
-  const hasAffiliateCode = useMemo(() => {
-    const chains = referralsData?.chains ?? {};
-    return Object.values(chains).some((c) => c.codes?.length > 0);
-  }, [referralsData]);
+  const hasAffiliateCode = Boolean(referralsData?.chains?.[chainId]?.codes?.length);
 
   const tabsOptions = useMemo((): Option<ReferralsTab>[] => {
     return TAB_OPTIONS.map((option): RegularOption<ReferralsTab> => {

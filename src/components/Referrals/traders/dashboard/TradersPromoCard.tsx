@@ -1,6 +1,7 @@
 import { Trans } from "@lingui/macro";
 
-import { useReferralPromoClosed } from "domain/referrals";
+import { useReferralPromoClosed, useReferralsData } from "domain/referrals";
+import { useChainId } from "lib/chains";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { PromoCard } from "components/Referrals/shared/cards/PromoCard";
@@ -9,8 +10,11 @@ import affiliateCodePromoFg from "img/affiliate_code_promo_fg.png";
 
 export function TradersPromoCard({ account }: { account: string | undefined }) {
   const { isClosed, close } = useReferralPromoClosed("trader", account);
+  const { chainId } = useChainId();
+  const { data: referralsData } = useReferralsData(account);
+  const hasOwnAffiliateCode = Boolean(referralsData?.chains?.[chainId]?.codes?.length);
 
-  if (isClosed) {
+  if (isClosed || hasOwnAffiliateCode) {
     return null;
   }
 

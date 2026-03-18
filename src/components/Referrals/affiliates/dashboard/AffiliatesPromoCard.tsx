@@ -1,6 +1,8 @@
 import { Trans } from "@lingui/macro";
 
-import { useReferralPromoClosed } from "domain/referrals";
+import { useReferralPromoClosed, useUserReferralCode } from "domain/referrals";
+import { useChainId } from "lib/chains";
+import { isHashZero } from "lib/legacy";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { PromoCard } from "components/Referrals/shared/cards/PromoCard";
@@ -9,8 +11,11 @@ import referralCodePromoFg from "img/referral_code_promo_fg.png";
 
 export function AffiliatesPromoCard({ account }: { account: string | undefined }) {
   const { isClosed, close } = useReferralPromoClosed("affiliate", account);
+  const { chainId } = useChainId();
+  const { userReferralCode } = useUserReferralCode(chainId, account);
+  const hasActiveReferralCode = Boolean(userReferralCode && !isHashZero(userReferralCode));
 
-  if (isClosed) {
+  if (isClosed || hasActiveReferralCode) {
     return null;
   }
 
