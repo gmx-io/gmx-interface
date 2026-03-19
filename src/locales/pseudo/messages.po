@@ -1969,6 +1969,10 @@ msgstr ""
 msgid "Claiming price impact rebates..."
 msgstr ""
 
+#: src/components/PositionItem/ClosePositionModal.tsx
+msgid "Close Position"
+msgstr ""
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityCard.tsx
 msgid "Explore"
 msgstr ""
@@ -3945,8 +3949,6 @@ msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/OrderItem/OrderItem.tsx
-#: src/components/PositionItem/PositionItem.tsx
-#: src/components/PositionItem/PositionItem.tsx
 #: src/components/TableMarketFilter/MarketFilterBase.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -4286,8 +4288,6 @@ msgstr ""
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
-#: src/components/PositionItem/PositionItem.tsx
-#: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "TWAP"
@@ -10616,6 +10616,8 @@ msgid "multiple asset classes"
 msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/PositionItem/PositionItem.tsx
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
