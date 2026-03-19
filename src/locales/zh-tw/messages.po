@@ -2907,7 +2907,7 @@ msgstr "質押已提交"
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr "{symbol} 餘額不足：可用 {availableFormatted}，需要 {requiredFormatted}"
 
-#: src/components/PositionList/PositionList.tsx
+#: src/components/PositionList/SymbolSortDropdown.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "POSITION"
@@ -6345,6 +6345,10 @@ msgstr "Yield Yak Optimizer"
 msgid "Withdrawing {balanceFormatted} to main account..."
 msgstr "正在提取 {balanceFormatted} 至主帳戶..."
 
+#: src/components/PositionList/SymbolSortDropdown.tsx
+msgid "Symbol (A to Z)"
+msgstr ""
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "{orderText} 已更新"
@@ -6533,6 +6537,10 @@ msgstr "訂單錯誤。此市場價格波動劇烈，請嘗試<0>提高允許的
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Asset"
 msgstr "資產"
+
+#: src/components/PositionList/SymbolSortDropdown.tsx
+msgid "Symbol (Z to A)"
+msgstr ""
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
@@ -9923,6 +9931,10 @@ msgstr "賣出訂單已取消"
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Acceptable price impact"
 msgstr "可接受價格影響"
+
+#: src/components/PositionList/SymbolSortDropdown.tsx
+msgid "Default sorting"
+msgstr ""
 
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Reduce withdrawal to match the max. <0>Read more</0>.<1/><2/><3>Set max withdrawal</3>"

@@ -2907,7 +2907,7 @@ msgstr "Stake enviado"
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr "Saldo de {symbol} insuficiente: {availableFormatted} disponible, {requiredFormatted} requerido"
 
-#: src/components/PositionList/PositionList.tsx
+#: src/components/PositionList/SymbolSortDropdown.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "POSITION"
@@ -6345,6 +6345,10 @@ msgstr "Optimizador Yield Yak"
 msgid "Withdrawing {balanceFormatted} to main account..."
 msgstr "Retirando {balanceFormatted} a la cuenta principal…"
 
+#: src/components/PositionList/SymbolSortDropdown.tsx
+msgid "Symbol (A to Z)"
+msgstr ""
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "{orderText} actualizada"
@@ -6533,6 +6537,10 @@ msgstr "Error de orden. Los precios son volátiles en este mercado, inténtelo d
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Asset"
 msgstr "Activo"
+
+#: src/components/PositionList/SymbolSortDropdown.tsx
+msgid "Symbol (Z to A)"
+msgstr ""
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
@@ -9923,6 +9931,10 @@ msgstr "Orden de venta cancelada"
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Acceptable price impact"
 msgstr "Impacto en el precio aceptable"
+
+#: src/components/PositionList/SymbolSortDropdown.tsx
+msgid "Default sorting"
+msgstr ""
 
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Reduce withdrawal to match the max. <0>Read more</0>.<1/><2/><3>Set max withdrawal</3>"

@@ -2907,7 +2907,7 @@ msgstr ""
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr ""
 
-#: src/components/PositionList/PositionList.tsx
+#: src/components/PositionList/SymbolSortDropdown.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "POSITION"
@@ -6345,6 +6345,10 @@ msgstr ""
 msgid "Withdrawing {balanceFormatted} to main account..."
 msgstr ""
 
+#: src/components/PositionList/SymbolSortDropdown.tsx
+msgid "Symbol (A to Z)"
+msgstr ""
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr ""
@@ -6532,6 +6536,10 @@ msgstr ""
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Asset"
+msgstr ""
+
+#: src/components/PositionList/SymbolSortDropdown.tsx
+msgid "Symbol (Z to A)"
 msgstr ""
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
@@ -9922,6 +9930,10 @@ msgstr ""
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Acceptable price impact"
+msgstr ""
+
+#: src/components/PositionList/SymbolSortDropdown.tsx
+msgid "Default sorting"
 msgstr ""
 
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx

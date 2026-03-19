@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { useMedia } from "react-use";
 
 import { useIsPositionsLoading, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -20,8 +20,12 @@ import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableConten
 import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
 import { PositionItem } from "components/PositionItem/PositionItem";
 import PositionShare from "components/PositionShare/PositionShare";
+import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { Table, TableTh, TableTheadTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
+
+import { type PositionSortField, sortPositionsByField } from "./sortPositionsByField";
+import { SymbolSortDropdown } from "./SymbolSortDropdown";
 
 type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode, showCurtain?: boolean) => void;
@@ -39,7 +43,13 @@ export function PositionList(p: Props) {
   const [isPositionShareModalOpen, setIsPositionShareModalOpen] = useState(false);
   const [positionToShareKey, setPositionToShareKey] = useState<string>();
   const positionToShare = getByKey(positionsInfoData, positionToShareKey);
-  const positions = useSelector(selectPositionsInfoDataSortedByMarket);
+  const defaultPositions = useSelector(selectPositionsInfoDataSortedByMarket);
+  const { orderBy, direction, getSorterProps } = useSorterHandlers<PositionSortField>("position-list");
+
+  const positions = useMemo(
+    () => sortPositionsByField(defaultPositions, orderBy, direction),
+    [defaultPositions, orderBy, direction]
+  );
 
   const handleSharePositionClick = useCallback((positionKey: string) => {
     userAnalytics.pushEvent<SharePositionClickEvent>({
@@ -93,36 +103,44 @@ export function PositionList(p: Props) {
             <thead className="text-body-medium">
               <TableTheadTr>
                 <TableTh className="w-[13%]">
-                  <Trans>POSITION</Trans>
+                  <SymbolSortDropdown {...getSorterProps("symbol")} />
                 </TableTh>
                 <TableTh className="w-[10%]">
-                  <Trans>SIZE</Trans>
+                  <Sorter {...getSorterProps("size")} showOnHover>
+                    <Trans>SIZE</Trans>
+                  </Sorter>
                 </TableTh>
                 <TableTh className="w-[15%]">
-                  <Trans>NET VALUE</Trans>
+                  <Sorter {...getSorterProps("netValue")} showOnHover>
+                    <Trans>NET VALUE</Trans>
+                  </Sorter>
                 </TableTh>
                 <TableTh className="w-[11%]">
-                  <Trans>COLLATERAL</Trans>
+                  <Sorter {...getSorterProps("collateral")} showOnHover>
+                    <Trans>COLLATERAL</Trans>
+                  </Sorter>
                 </TableTh>
                 <TableTh className="w-[9%]">
-                  <Trans>ENTRY PRICE</Trans>
+                  <Sorter {...getSorterProps("entryPrice")} showOnHover>
+                    <Trans>ENTRY PRICE</Trans>
+                  </Sorter>
                 </TableTh>
                 <TableTh className="w-[9%]">
-                  <Trans>MARK PRICE</Trans>
+                  <Sorter {...getSorterProps("markPrice")} showOnHover>
+                    <Trans>MARK PRICE</Trans>
+                  </Sorter>
                 </TableTh>
                 <TableTh className="w-[9%]">
-                  <Trans>LIQUIDATION PRICE</Trans>
+                  <Sorter {...getSorterProps("liqPrice")} showOnHover>
+                    <Trans>LIQUIDATION PRICE</Trans>
+                  </Sorter>
                 </TableTh>
                 {!hideActions && (
                   <TableTh className="w-[8%] text-left">
                     <Trans>TP/SL</Trans>
                   </TableTh>
                 )}
-                {!isLoading && !p.hideActions && (
-                  <>
-                    <TableTh className="w-[16%] pl-18 !text-left">Close</TableTh>
-                  </>
-                )}
+                {!isLoading && !p.hideActions && <TableTh className="w-[16%] pl-18 !text-left">Close</TableTh>}
               </TableTheadTr>
             </thead>
             <tbody>

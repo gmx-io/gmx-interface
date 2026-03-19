@@ -2907,7 +2907,7 @@ msgstr "스테이킹이 제출되었습니다"
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr "{symbol} 잔액 부족: {availableFormatted} 사용 가능, {requiredFormatted} 필요"
 
-#: src/components/PositionList/PositionList.tsx
+#: src/components/PositionList/SymbolSortDropdown.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "POSITION"
@@ -6345,6 +6345,10 @@ msgstr "Yield Yak Optimizer"
 msgid "Withdrawing {balanceFormatted} to main account..."
 msgstr "메인 계정으로 {balanceFormatted}을(를) 출금하는 중…"
 
+#: src/components/PositionList/SymbolSortDropdown.tsx
+msgid "Symbol (A to Z)"
+msgstr ""
+
 #: src/domain/synthetics/orders/useOrderTxnCallbacks.tsx
 msgid "{orderText} updated"
 msgstr "{orderText} 업데이트 완료"
@@ -6533,6 +6537,10 @@ msgstr "주문 오류. 이 마켓의 가격 변동성이 높습니다. <0>허용
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Asset"
 msgstr "자산"
+
+#: src/components/PositionList/SymbolSortDropdown.tsx
+msgid "Symbol (Z to A)"
+msgstr ""
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 #: src/pages/RpcDebug/RpcDebug.tsx
@@ -9923,6 +9931,10 @@ msgstr "판매 주문이 취소되었습니다"
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Acceptable price impact"
 msgstr "허용 가격 영향"
+
+#: src/components/PositionList/SymbolSortDropdown.tsx
+msgid "Default sorting"
+msgstr ""
 
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Reduce withdrawal to match the max. <0>Read more</0>.<1/><2/><3>Set max withdrawal</3>"
