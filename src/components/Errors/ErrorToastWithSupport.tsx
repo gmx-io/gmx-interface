@@ -2,7 +2,7 @@ import { showNewMessage } from "@intercom/messenger-js-sdk";
 import { Trans } from "@lingui/macro";
 import { ReactNode, useCallback } from "react";
 
-import { metrics } from "lib/metrics/Metrics";
+import { getRequestId, metrics } from "lib/metrics";
 import { tradingErrorTracker } from "lib/tradingErrorTracker";
 import { ErrorData, parseError } from "sdk/utils/errors";
 
@@ -15,7 +15,7 @@ function isErrorData(value: unknown): value is ErrorData {
 export function ErrorToastWithSupport({ children }: { children: ReactNode }) {
   const handleContactSupport = useCallback(() => {
     const error = tradingErrorTracker.getLatestError();
-    const debugLogId = crypto.randomUUID();
+    const debugLogId = getRequestId();
     let parsedError: ErrorData | undefined;
 
     if (error?.errorData) {
