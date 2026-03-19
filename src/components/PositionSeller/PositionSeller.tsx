@@ -51,6 +51,7 @@ import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positi
 import { getPositionSellerTradeFlags } from "domain/synthetics/trade";
 import { getTwapRecommendation } from "domain/synthetics/trade/twapRecommendation";
 import { TradeType } from "domain/synthetics/trade/types";
+import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { ORDER_OPTION_TO_TRADE_MODE, OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
@@ -63,7 +64,7 @@ import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidationErrorMetric } from "lib/metrics/utils";
-import { expandDecimals, formatAmountFree, formatDeltaUsd, formatPercentage, parseValue } from "lib/numbers";
+import { expandDecimals, formatDeltaUsd, formatPercentage, parseValue } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
@@ -91,6 +92,7 @@ import { CollateralDestinationSelector } from "components/CollateralDestinationS
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
+import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
@@ -113,6 +115,7 @@ import { PositionSellerPriceImpactFeesRow } from "./rows/PositionSellerPriceImpa
 import "./PositionSeller.scss";
 
 const PNL_TOOLTIP_THRESHOLD = expandDecimals(10000, USD_DECIMALS);
+const ORDER_OPTIONS = [{ value: OrderOption.Market }, { value: OrderOption.Twap }];
 
 export function PositionSeller() {
   const [, setClosingPositionKey] = useClosingPositionKeyState();
@@ -189,34 +192,28 @@ export function PositionSeller() {
     setDuration,
     setNumberOfParts,
   } = usePositionSeller();
+
+  const closeSizeHook = useCloseSizeInput({
+    positionSizeInUsd: position?.sizeInUsd,
+    positionSizeInTokens: position?.sizeInTokens,
+    indexTokenDecimals: position?.indexToken?.decimals ?? 18,
+    indexTokenSymbol: position?.indexToken?.symbol ?? "",
+    initialPercentage: 100,
+    onCloseSizeUsdChange: setCloseUsdInputValueRaw,
+  });
+
   const tradeMode = ORDER_OPTION_TO_TRADE_MODE[orderOption];
   const tradeType = position ? (position.isLong ? TradeType.Long : TradeType.Short) : undefined;
 
-  const [closeUsdInputValue, setCloseUsdInputValue] = useDebouncedInputValue(
-    closeUsdInputValueRaw,
-    setCloseUsdInputValueRaw
-  );
+  const [closeUsdInputValue] = useDebouncedInputValue(closeUsdInputValueRaw, setCloseUsdInputValueRaw);
 
   const [isWaitingForDebounceBeforeSubmit, setIsWaitingForDebounceBeforeSubmit] = useState(false);
   const [isTwapBannerDismissed, setIsTwapBannerDismissed] = useState(false);
 
   const isMarket = orderOption === OrderOption.Market;
   const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS) ?? 0n;
-  const maxCloseSize = position?.sizeInUsd || 0n;
 
-  const closePercentage = useMemo(() => {
-    if (maxCloseSize === 0n) return 0;
-    const percentage = Number((closeSizeUsd * 100n) / maxCloseSize);
-    return Math.min(100, Math.max(0, percentage));
-  }, [closeSizeUsd, maxCloseSize]);
-
-  const handleClosePercentageChange = useCallback(
-    (percentage: number) => {
-      const formattedAmount = formatAmountFree((maxCloseSize * BigInt(percentage)) / 100n, USD_DECIMALS, 2);
-      setCloseUsdInputValueRaw(formattedAmount);
-    },
-    [maxCloseSize, setCloseUsdInputValueRaw]
-  );
+  const closePercentage = closeSizeHook.closePercentage;
 
   const setReceiveTokenManually = useCallback(
     (token: Token) => {
@@ -240,9 +237,10 @@ export function PositionSeller() {
       // timeout to not disturb animation
       setTimeout(() => {
         resetPositionSeller();
+        closeSizeHook.reset();
       }, 200);
     }
-  }, [isVisible, resetPositionSeller]);
+  }, [isVisible, resetPositionSeller, closeSizeHook]);
 
   const markPrice = useSelector(selectPositionSellerMarkPrice);
   const { maxLiquidity: maxSwapLiquidity } = useSelector(selectPositionSellerMaxLiquidityPath);
@@ -933,18 +931,29 @@ export function PositionSeller() {
         <div className="w-full">
           {position && (
             <>
+              <div className="px-20 pt-16">
+                <Tabs
+                  type="inline"
+                  options={ORDER_OPTIONS}
+                  selectedValue={orderOption}
+                  onChange={handleSetOrderOption}
+                  qa="close-order-type"
+                />
+              </div>
               <div className="flex flex-col gap-4 px-20 py-16">
                 <div className="flex flex-col gap-8">
                   <BuyInputSection
                     topLeftLabel={t`Close`}
-                    inputValue={closeUsdInputValue}
-                    onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
+                    inputValue={closeSizeHook.closeSizeInput}
+                    onInputValueChange={closeSizeHook.handleInputChange}
                     qa="amount-input"
-                    maxDecimals={USD_DECIMALS}
+                    maxDecimals={closeSizeHook.showSizeInTokens ? position?.indexToken?.decimals ?? 18 : USD_DECIMALS}
                   >
-                    {t`USD`}
+                    <span className="cursor-pointer select-none" onClick={closeSizeHook.handleSizeToggle}>
+                      {closeSizeHook.closeSizeLabel}
+                    </span>
                   </BuyInputSection>
-                  <MarginPercentageSlider value={closePercentage} onChange={handleClosePercentageChange} />
+                  <MarginPercentageSlider value={closePercentage} onChange={closeSizeHook.handleSliderChange} />
                 </div>
               </div>
 

@@ -57,6 +57,7 @@ import { getMarketIndexName, MarketInfo } from "domain/synthetics/markets";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
 import { convertToUsd, getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
 import { getTwapRecommendation } from "domain/synthetics/trade/twapRecommendation";
+import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
@@ -102,6 +103,7 @@ import { MultichainTokenSelector } from "components/TokenSelector/MultichainToke
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
 import { TradeboxMarginFields } from "components/TradeboxMarginFields";
+import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { TradeboxPoolWarnings } from "components/TradeboxPoolWarnings/TradeboxPoolWarnings";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
@@ -175,7 +177,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     setTradeMode: onSelectTradeMode,
     focusedInput,
     setFocusedInput,
-    closeSizeInputValue,
     setCloseSizeInputValue,
     triggerPriceInputValue,
     setTriggerPriceInputValue,
@@ -214,14 +215,21 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const fromTokenPrice = fromToken?.prices.minPrice;
   const fromUsd = convertToUsd(fromTokenAmount, fromToken?.decimals, fromTokenPrice);
 
-  const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS) ?? 0n;
-
   const markPrice = useSelector(selectTradeboxMarkPrice);
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const selectedPositionKey = useSelector(selectTradeboxSelectedPositionKey);
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
+
+  const closeSizeHook = useCloseSizeInput({
+    positionSizeInUsd: selectedPosition?.sizeInUsd,
+    positionSizeInTokens: selectedPosition?.sizeInTokens,
+    indexTokenDecimals: toToken?.decimals ?? 18,
+    indexTokenSymbol: toToken?.symbol ?? "",
+    onCloseSizeUsdChange: setCloseSizeInputValue,
+  });
+
   const leverage = useSelector(selectTradeboxLeverage);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
   const fees = useSelector(selectTradeboxFees);
@@ -635,14 +643,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     (token: Token) => onSelectToTokenAddress(token.address),
     [onSelectToTokenAddress]
   );
-  const handleCloseInputChange = useCallback((e) => setCloseSizeInputValue(e.target.value), [setCloseSizeInputValue]);
-
-  const formattedMaxCloseSize = formatAmount(selectedPosition?.sizeInUsd, USD_DECIMALS, 2);
-
-  const setMaxCloseSize = useCallback(
-    () => setCloseSizeInputValue(formattedMaxCloseSize),
-    [formattedMaxCloseSize, setCloseSizeInputValue]
-  );
   const handleTriggerPriceInputChange = useCallback(
     (e) => setTriggerPriceInputValue(e.target.value),
     [setTriggerPriceInputValue]
@@ -854,24 +854,33 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   }
 
   function renderDecreaseSizeInput() {
-    const showMaxButton = Boolean(
-      selectedPosition?.sizeInUsd && selectedPosition.sizeInUsd > 0 && closeSizeInputValue !== formattedMaxCloseSize
-    );
-
     return (
-      <BuyInputSection
-        topLeftLabel={t`Close`}
-        bottomRightValue={selectedPosition?.sizeInUsd ? formatUsd(selectedPosition.sizeInUsd) : undefined}
-        bottomLeftValue={formatUsd(closeSizeUsd)}
-        inputValue={closeSizeInputValue}
-        onInputValueChange={handleCloseInputChange}
-        onClickBottomRightLabel={setMaxCloseSize}
-        onClickMax={showMaxButton ? setMaxCloseSize : undefined}
-        qa="close"
-        maxDecimals={USD_DECIMALS}
-      >
-        {t`USD`}
-      </BuyInputSection>
+      <>
+        <BuyInputSection
+          topLeftLabel={t`Close`}
+          bottomRightValue={selectedPosition?.sizeInUsd ? formatUsd(selectedPosition.sizeInUsd) : undefined}
+          bottomLeftValue={formatUsd(closeSizeHook.closeSizeUsd)}
+          inputValue={closeSizeHook.closeSizeInput}
+          onInputValueChange={closeSizeHook.handleInputChange}
+          onClickBottomRightLabel={closeSizeHook.setMaxCloseSize}
+          onClickMax={
+            selectedPosition?.sizeInUsd &&
+            selectedPosition.sizeInUsd > 0 &&
+            closeSizeHook.closeSizeInput !== closeSizeHook.formattedMaxCloseSize
+              ? closeSizeHook.setMaxCloseSize
+              : undefined
+          }
+          qa="close"
+          maxDecimals={closeSizeHook.showSizeInTokens ? toToken?.decimals ?? 18 : USD_DECIMALS}
+        >
+          <span className="cursor-pointer select-none" onClick={closeSizeHook.handleSizeToggle}>
+            {closeSizeHook.closeSizeLabel}
+          </span>
+        </BuyInputSection>
+        {selectedPosition && selectedPosition.sizeInUsd > 0n && (
+          <MarginPercentageSlider value={closeSizeHook.closePercentage} onChange={closeSizeHook.handleSliderChange} />
+        )}
+      </>
     );
   }
 

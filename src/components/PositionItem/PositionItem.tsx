@@ -18,7 +18,6 @@ import {
   getEstimatedLiquidationTimeInHours,
 } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";
-import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { CHART_PERIODS } from "lib/legacy";
 import { formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
@@ -37,7 +36,6 @@ import EditIcon from "img/ic_edit.svg?react";
 import NewLinkThinIcon from "img/ic_new_link_thin.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
-import { ClosePositionModal } from "./ClosePositionModal";
 import { PositionItemOrdersLarge, PositionItemOrdersSmall } from "./PositionItemOrders";
 import { PositionItemTPSLCell } from "./PositionItemTPSLCell";
 import { TPSLModal } from "../TPSLModal/TPSLModal";
@@ -48,7 +46,7 @@ export type Props = {
   position: PositionInfo;
   hideActions?: boolean;
   showPnlAfterFees: boolean;
-  onClosePositionClick?: (orderOption?: OrderOption) => void;
+  onClosePositionClick?: () => void;
   onEditCollateralClick?: () => void;
   onShareClick?: () => void;
   onSelectPositionClick?: (tradeMode?: TradeMode, showCurtain?: boolean) => void;
@@ -68,7 +66,6 @@ export function PositionItem(p: Props) {
   const [showSizeInTokens, setShowSizeInTokens] = useState(false);
   const [isTPSLModalVisible, setIsTPSLModalVisible] = useState(false);
   const [tpslInitialView, setTpslInitialView] = useState<"list" | "add">("list");
-  const [isCloseModalVisible, setIsCloseModalVisible] = useState(false);
   const isActionsDisabled = p.position.isOpening;
   const isCloseDisabled = isActionsDisabled || p.position.sizeInUsd == 0n;
 
@@ -89,15 +86,8 @@ export function PositionItem(p: Props) {
   }, []);
 
   const handleCloseButtonClick = useCallback(() => {
-    setIsCloseModalVisible(true);
-  }, []);
-
-  const handleCloseOrderOptionSelect = useCallback(
-    (orderOption: OrderOption) => {
-      p.onClosePositionClick?.(orderOption);
-    },
-    [p]
-  );
+    p.onClosePositionClick?.();
+  }, [p]);
 
   function renderNetValue() {
     return (
@@ -816,11 +806,6 @@ export function PositionItem(p: Props) {
         setIsVisible={setIsTPSLModalVisible}
         position={p.position}
         initialView={tpslInitialView}
-      />
-      <ClosePositionModal
-        isVisible={isCloseModalVisible}
-        setIsVisible={setIsCloseModalVisible}
-        onSelect={handleCloseOrderOptionSelect}
       />
     </>
   );

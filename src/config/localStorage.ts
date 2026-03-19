@@ -80,6 +80,8 @@ export const IS_LARGE_ACCOUNT_KEY = "is-large-account-2";
 
 export const TRADEBOX_SIZE_DENOMINATION_KEY = "tradebox-size-denomination";
 
+export const CLOSE_SIZE_DENOMINATION_KEY = "close-size-in-tokens";
+
 const FALLBACK_TRACKER_PREFIX = "fallback-tracker";
 
 const COLLATERAL_CLOSE_DESTINATION_KEY = "collateral-close-destination";

@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { ChangeEvent, ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
@@ -50,17 +50,16 @@ import {
   getTradeFees,
   getTriggerDecreaseOrderType,
 } from "domain/synthetics/trade";
+import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { buildTpSlCreatePayloads, buildTpSlInputPositionData, getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   calculateDisplayDecimals,
-  formatAmount,
   formatBalanceAmount,
   formatDeltaUsd,
   formatPercentage,
   formatUsd,
-  parseValue,
 } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import useWallet from "lib/wallets/useWallet";
@@ -114,9 +113,6 @@ export function AddTPSLModal({
   const [slPriceInput, setSlPriceInput] = useState("");
   const [keepLeverage, setKeepLeverage] = useState(true);
   const [editTPSLSize, setEditTPSLSize] = useState(false);
-  const [closeSizeInput, setCloseSizeInput] = useState("");
-  const [closePercentage, setClosePercentage] = useState(100);
-  const [showSizeInTokens, setShowSizeInTokens] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [executionDetailsOpen, setExecutionDetailsOpen] = useLocalStorageSerializeKey(
     "add-tpsl-execution-details-open",
@@ -203,29 +199,23 @@ export function AddTPSLModal({
 
   const indexTokenDecimals = indexToken?.decimals ?? 18;
 
+  const closeSizeHook = useCloseSizeInput({
+    positionSizeInUsd: position.sizeInUsd,
+    positionSizeInTokens: position.sizeInTokens,
+    indexTokenDecimals,
+    indexTokenSymbol: indexToken.symbol,
+    initialPercentage: 100,
+  });
+
+  const { closeSizeInput, closePercentage, closeSizeLabel } = closeSizeHook;
+
   const closeSizeUsd = useMemo(() => {
-    if (!editTPSLSize || !closeSizeInput || closePercentage >= 100) {
+    if (!editTPSLSize || closePercentage >= 100) {
       return position.sizeInUsd;
     }
 
-    if (showSizeInTokens) {
-      const parsedTokens = parseValue(closeSizeInput, indexTokenDecimals);
-      if (parsedTokens === undefined || parsedTokens === 0n || position.sizeInTokens === 0n) {
-        return position.sizeInUsd;
-      }
-      return bigMath.mulDiv(parsedTokens, position.sizeInUsd, position.sizeInTokens);
-    }
-
-    return parseValue(closeSizeInput, USD_DECIMALS) ?? position.sizeInUsd;
-  }, [
-    editTPSLSize,
-    closeSizeInput,
-    closePercentage,
-    showSizeInTokens,
-    position.sizeInUsd,
-    position.sizeInTokens,
-    indexTokenDecimals,
-  ]);
+    return closeSizeHook.closeSizeUsd > 0n ? closeSizeHook.closeSizeUsd : position.sizeInUsd;
+  }, [editTPSLSize, closePercentage, closeSizeHook.closeSizeUsd, position.sizeInUsd]);
 
   const sizeUsdEntry = useMemo(() => getDefaultEntryField(USD_DECIMALS, { value: closeSizeUsd }), [closeSizeUsd]);
 
@@ -549,74 +539,12 @@ export function AddTPSLModal({
     };
   }, [activeFees]);
 
-  const formattedMaxCloseSize = useMemo(() => {
-    if (showSizeInTokens) {
-      return formatAmount(position.sizeInTokens, indexTokenDecimals, 4);
-    }
-    return formatAmount(position.sizeInUsd, USD_DECIMALS, 2);
-  }, [showSizeInTokens, position.sizeInUsd, position.sizeInTokens, indexTokenDecimals]);
-
-  const closeSizeLabel = showSizeInTokens ? indexToken.symbol : t`USD`;
-
-  const handleSizeToggle = useCallback(() => {
-    setShowSizeInTokens((prev) => {
-      const next = !prev;
-      if (next) {
-        const newTokenSize =
-          closePercentage >= 100
-            ? position.sizeInTokens
-            : bigMath.mulDiv(position.sizeInTokens, BigInt(closePercentage), 100n);
-        setCloseSizeInput(formatAmount(newTokenSize, indexTokenDecimals, 4));
-      } else {
-        const newUsdSize =
-          closePercentage >= 100
-            ? position.sizeInUsd
-            : bigMath.mulDiv(position.sizeInUsd, BigInt(closePercentage), 100n);
-        setCloseSizeInput(formatAmount(newUsdSize, USD_DECIMALS, 2));
-      }
-      return next;
-    });
-  }, [closePercentage, position.sizeInUsd, position.sizeInTokens, indexTokenDecimals]);
-
-  const handleCloseSizeChange = useCallback(
-    (e: ChangeEvent<HTMLInputElement>) => {
-      const value = e.target.value;
-      setCloseSizeInput(value);
-
-      const maxSize = showSizeInTokens ? position.sizeInTokens : position.sizeInUsd;
-      const decimals = showSizeInTokens ? indexTokenDecimals : USD_DECIMALS;
-      const parsedValue = parseValue(value, decimals);
-
-      if (parsedValue !== undefined && parsedValue > 0n && maxSize > 0n) {
-        const percent = Number(bigMath.mulDiv(parsedValue, 100n, maxSize));
-        setClosePercentage(Math.min(100, Math.max(0, percent)));
-      }
-    },
-    [showSizeInTokens, position.sizeInUsd, position.sizeInTokens, indexTokenDecimals]
-  );
-
-  const handleSliderChange = useCallback(
-    (percent: number) => {
-      setClosePercentage(percent);
-      if (showSizeInTokens) {
-        const newSize =
-          percent >= 100 ? position.sizeInTokens : bigMath.mulDiv(position.sizeInTokens, BigInt(percent), 100n);
-        setCloseSizeInput(formatAmount(newSize, indexTokenDecimals, 4));
-      } else {
-        const newSize = percent >= 100 ? position.sizeInUsd : bigMath.mulDiv(position.sizeInUsd, BigInt(percent), 100n);
-        setCloseSizeInput(formatAmount(newSize, USD_DECIMALS, 2));
-      }
-    },
-    [showSizeInTokens, position.sizeInUsd, position.sizeInTokens, indexTokenDecimals]
-  );
-
   const handleEditTPSLSizeToggle = useCallback(
     (value: boolean) => {
       setEditTPSLSize(value);
-      setClosePercentage(100);
-      setCloseSizeInput(formattedMaxCloseSize);
+      closeSizeHook.handleSliderChange(100);
     },
-    [formattedMaxCloseSize]
+    [closeSizeHook]
   );
 
   const tpPriceError = useMemo(() => {
@@ -834,13 +762,11 @@ export function AddTPSLModal({
     } else {
       setTpPriceInput("");
       setSlPriceInput("");
-      setCloseSizeInput("");
       setEditTPSLSize(false);
-      setClosePercentage(100);
-      setShowSizeInTokens(false);
+      closeSizeHook.reset();
       setPreviewTab("tp");
     }
-  }, [isVisible, initialTpPriceInput, initialSlPriceInput]);
+  }, [isVisible, initialTpPriceInput, initialSlPriceInput, closeSizeHook]);
 
   useEffect(() => {
     if (tpDecreaseAmounts && !slDecreaseAmounts) {
@@ -972,18 +898,15 @@ export function AddTPSLModal({
             <BuyInputSection
               topLeftLabel={t`Close`}
               inputValue={closeSizeInput}
-              onInputValueChange={handleCloseSizeChange}
-              onClickBottomRightLabel={() => {
-                setCloseSizeInput(formattedMaxCloseSize);
-                setClosePercentage(100);
-              }}
+              onInputValueChange={closeSizeHook.handleInputChange}
+              onClickBottomRightLabel={closeSizeHook.setMaxCloseSize}
               qa="close-size"
             >
-              <span className="cursor-pointer select-none" onClick={handleSizeToggle}>
+              <span className="cursor-pointer select-none" onClick={closeSizeHook.handleSizeToggle}>
                 {closeSizeLabel}
               </span>
             </BuyInputSection>
-            <MarginPercentageSlider value={closePercentage} onChange={handleSliderChange} />
+            <MarginPercentageSlider value={closePercentage} onChange={closeSizeHook.handleSliderChange} />
           </div>
         )}
 
