@@ -5,10 +5,11 @@ import { useCopyToClipboard, usePrevious } from "react-use";
 
 import { useAffiliateCodes, useUserReferralCode } from "domain/referrals";
 import { Token } from "domain/tokens";
-import { copyElementAsImage } from "lib/copyElementAsImage";
+import { copyElementAsImage, shareElementAsImage } from "lib/copyElementAsImage";
 import { helperToast } from "lib/helperToast";
 import { getRootShareApiUrl, getTwitterIntentURL } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { useBreakpoints } from "lib/useBreakpoints";
 import useLoadImage from "lib/useLoadImage";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionActionEvent, SharePositionActionSource } from "lib/userAnalytics/types";
@@ -23,6 +24,7 @@ import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
 import AlertIcon from "img/ic_alert.svg?react";
 import CopyStrokeIcon from "img/ic_copy_stroke.svg?react";
+import ShareArrowOutlineIcon from "img/ic_share_arrow_outline.svg?react";
 import TwitterIcon from "img/ic_x.svg?react";
 import shareBgImg from "img/position-share-bg.jpg";
 
@@ -89,6 +91,7 @@ function PositionShare({
   const [showPnlAmounts, setShowPnlAmounts] = useState(false);
   const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
   const [, copyToClipboard] = useCopyToClipboard();
+  const { isMobile } = useBreakpoints();
   const sharePositionBgImg = useLoadImage(shareBgImg);
   const cardRef = useRef<HTMLDivElement>(null);
   const [createdReferralCode, setCreatedReferralCode] = useState<string | null>(null);
@@ -251,10 +254,16 @@ function PositionShare({
     });
 
     try {
-      await copyElementAsImage(element);
-      helperToast.success(t`Image copied to clipboard`);
+      if (isMobile) {
+        await shareElementAsImage(element, "GMX Position.png");
+      } else {
+        await copyElementAsImage(element);
+        helperToast.success(t`Image copied to clipboard`);
+      }
     } catch {
-      helperToast.error(t`Failed to copy image`);
+      if (!isMobile) {
+        helperToast.error(t`Failed to copy image`);
+      }
     }
   }
 
@@ -387,8 +396,17 @@ function PositionShare({
             size="medium"
             className="grow !text-14"
           >
-            <Trans>Copy image</Trans>
-            <CopyStrokeIcon className="size-16" />
+            {isMobile ? (
+              <>
+                <Trans>Share</Trans>
+                <ShareArrowOutlineIcon className="size-16" />
+              </>
+            ) : (
+              <>
+                <Trans>Copy image</Trans>
+                <CopyStrokeIcon className="size-16" />
+              </>
+            )}
           </Button>
           <Button
             newTab

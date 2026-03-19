@@ -3,16 +3,18 @@ import { QRCodeSVG } from "qrcode.react";
 import { useCallback, useMemo, useRef } from "react";
 import { useCopyToClipboard } from "react-use";
 
-import { copyElementAsImage } from "lib/copyElementAsImage";
+import { copyElementAsImage, shareElementAsImage } from "lib/copyElementAsImage";
 import { helperToast } from "lib/helperToast";
 import { getHomeUrl, getTwitterIntentURL } from "lib/legacy";
 import { formatUsd } from "lib/numbers";
+import { useBreakpoints } from "lib/useBreakpoints";
 
 import Button from "components/Button/Button";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 
 import logoIcon from "img/gmx_logo.svg";
 import CopyStrokeIcon from "img/ic_copy_stroke.svg?react";
+import ShareArrowOutlineIcon from "img/ic_share_arrow_outline.svg?react";
 import XIcon from "img/ic_x.svg?react";
 import LogoText from "img/logo-text.svg?react";
 import shareReferralCodeBg from "img/share_refferral_code_bg.png";
@@ -36,6 +38,7 @@ export function ShareReferralCardModal({
 }: ShareReferralCardModalProps) {
   const cardRef = useRef<HTMLDivElement>(null);
   const [, copyToClipboard] = useCopyToClipboard();
+  const { isMobile } = useBreakpoints();
   const homeURL = getHomeUrl();
   const referralLink = `${homeURL}/#/trade/?ref=${referralCode}`;
   const totalDiscountsFormatted = useMemo(
@@ -63,12 +66,18 @@ export function ShareReferralCardModal({
     if (!cardRef.current) return;
 
     try {
-      await copyElementAsImage(cardRef.current);
-      helperToast.success(t`Image copied to clipboard`);
+      if (isMobile) {
+        await shareElementAsImage(cardRef.current, "GMX Referral.png");
+      } else {
+        await copyElementAsImage(cardRef.current);
+        helperToast.success(t`Image copied to clipboard`);
+      }
     } catch {
-      helperToast.error(t`Failed to copy image`);
+      if (!isMobile) {
+        helperToast.error(t`Failed to copy image`);
+      }
     }
-  }, []);
+  }, [isMobile]);
 
   return (
     <ModalWithPortal
@@ -126,8 +135,17 @@ export function ShareReferralCardModal({
             <XIcon className="size-20" />
           </Button>
           <Button variant="secondary" onClick={handleCopyImage} size="medium" className="grow !text-14">
-            <Trans>Copy image</Trans>
-            <CopyStrokeIcon className="size-20" />
+            {isMobile ? (
+              <>
+                <Trans>Share</Trans>
+                <ShareArrowOutlineIcon className="size-20" />
+              </>
+            ) : (
+              <>
+                <Trans>Copy image</Trans>
+                <CopyStrokeIcon className="size-20" />
+              </>
+            )}
           </Button>
           <Button variant="secondary" onClick={handleCopyLink} size="medium" className="grow !text-14">
             <Trans>Copy link</Trans>
