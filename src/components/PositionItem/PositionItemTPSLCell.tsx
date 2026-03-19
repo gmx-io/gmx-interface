@@ -83,7 +83,7 @@ export function PositionItemTPSLCell({
             isDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
             hasTpOrSl
               ? "size-20 text-typography-secondary hover:text-typography-primary"
-              : "ml-4 gap-2 rounded-full border border-slate-500 px-8 py-3 text-12 font-medium text-typography-secondary hover:border-typography-primary hover:text-typography-primary"
+              : "ml-8 gap-2 rounded-full border border-slate-500 px-8 py-3 text-12 font-medium text-typography-secondary hover:border-typography-primary hover:text-typography-primary"
           )}
         >
           {hasTpOrSl ? (
@@ -136,7 +136,7 @@ export function PositionItemTPSLCell({
           isDisabled ? "cursor-not-allowed opacity-50" : "cursor-pointer",
           hasTpOrSl
             ? "size-20 text-typography-secondary hover:text-typography-primary"
-            : "ml-4 gap-2 rounded-full border border-slate-500 px-8 py-3 text-12 font-medium text-typography-secondary hover:border-typography-primary hover:text-typography-primary"
+            : "ml-8 gap-2 rounded-full border border-slate-500 px-8 py-3 text-12 font-medium text-typography-secondary hover:border-typography-primary hover:text-typography-primary"
         )}
       >
         {hasTpOrSl ? (
