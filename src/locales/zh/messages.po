@@ -1420,10 +1420,6 @@ msgstr "高网络费用"
 msgid "Overview"
 msgstr "概述"
 
-#: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
-msgid "Fetching swap route..."
-msgstr ""
-
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
@@ -2752,10 +2748,6 @@ msgstr "买入费用"
 msgid "Claimable collateral reduction factor"
 msgstr "可领取抵押品削减因子"
 
-#: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
-msgid "Slippage too low"
-msgstr ""
-
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
 msgstr "GM 代币自动再平衡金库，通过杠杆交易和兑换累积费用。由 {0} 和 {1} 支持。"
@@ -3093,10 +3085,6 @@ msgstr "资金不足以支付订单费用。剩余：{remainingCostUsdText}"
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Tenderly settings"
 msgstr "Tenderly 设置"
-
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "Swap all rewards into one asset"
-msgstr ""
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
@@ -4305,11 +4293,6 @@ msgstr "GMX {VERSION_NAME} {networkName} 所有账户的操作"
 msgid "Edit {0}"
 msgstr "编辑 {0}"
 
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-#: src/components/Referrals/shared/modals/ClaimSwapTargetTokenSelector.tsx
-msgid "Swap to"
-msgstr ""
-
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr "<0>购买</0> {wrappedNativeTokenSymbol}。"
@@ -4377,10 +4360,6 @@ msgstr "暂无交易"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Price change to liquidation"
 msgstr "距清算价格变动"
-
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "Allowed Slippage"
-msgstr ""
 
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "possibilities in total"
@@ -5415,10 +5394,6 @@ msgstr "{0} 流动性不足"
 msgid "SL price above mark price"
 msgstr "止损价格高于标记价格"
 
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "This is an external swap routed through OpenOcean. Allowed slippage includes price impact and fees, unlike GMX native swaps where these are separate."
-msgstr ""
-
 #: src/components/TPSLModal/AddTPSLModal.tsx
 msgid "Unable to calculate order"
 msgstr "无法计算订单"
@@ -5661,10 +5636,6 @@ msgstr "存入 {gasPaymentTokensText}"
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."
 msgstr ""
 
-#: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
-msgid "Swap token unavailable"
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
 msgstr "GMX (葡萄牙语)"
@@ -5863,10 +5834,6 @@ msgstr "旧 One-Click Trading 子账户中剩余 {balanceFormatted}"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 msgstr "从 <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> 转移到 <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
-
-#: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
-msgid "Claim & swap"
-msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
@@ -6147,10 +6114,6 @@ msgstr "领取价格影响返还失败"
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Paste hex error data to decode"
 msgstr "粘贴十六进制错误数据以解码"
-
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "You'll receive"
-msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral"
@@ -8935,10 +8898,6 @@ msgstr "订单无法更新。该类型不支持修改"
 msgid "{gmOrGlvLabel} sold successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to withdraw your tokens."
 msgstr "{gmOrGlvLabel} 已成功卖出，但跨链桥至 Base 失败。您的资金在 GMX Account 中是安全的。请重试跨链桥或打开 GMX Account 提取您的代币。"
 
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "Unable to fetch swap route. Please try again."
-msgstr ""
-
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimsHistory.tsx
@@ -9580,12 +9539,6 @@ msgstr "警报"
 msgid "C:"
 msgstr "C："
 
-#: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
-#: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
-#: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
-msgid "Swap route unavailable"
-msgstr ""
-
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. This action won't affect it. <0>Switch to {1} collateral</0>"
 msgstr "现有仓位使用 {0} 抵押品。此操作不会影响该仓位。<0>切换至 {1} 抵押品</0>"
@@ -10187,10 +10140,6 @@ msgstr "GMX 仪表盘和数据分析"
 msgid "{column}"
 msgstr "{column}"
 
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "Swap route unavailable for: {0}"
-msgstr ""
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "No trackers registered"
 msgstr "未注册追踪器"
@@ -10448,7 +10397,6 @@ msgid "Total earned fees"
 msgstr "累计赚取费用"
 
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "Slippage is too high"
 msgstr "滑点过高"
@@ -10456,10 +10404,6 @@ msgstr "滑点过高"
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity available for increasing shorts at<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 msgstr "在此规模下没有可用的流动性来增加做空仓位。<0/>最大做空规模：{0}<1/><2/>减少做多仓位的成交价格。"
-
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "Total value of assets"
-msgstr ""
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "<0>Switch to {0} pool</0> for potentially lower price impact"

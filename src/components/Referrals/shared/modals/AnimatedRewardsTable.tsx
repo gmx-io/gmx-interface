@@ -20,16 +20,12 @@ export function AnimatedRewardsTable({
   marketsInfoData,
   selectedMarketAddressesSet,
   onToggleSelect,
-  canSelectMore,
-  isSelectionLimited,
 }: {
   isVisible: boolean;
   rewards: RewardWithUsd[];
   marketsInfoData: MarketsInfoData | undefined;
   selectedMarketAddressesSet: Set<string>;
   onToggleSelect: (marketAddress: string) => void;
-  canSelectMore: boolean;
-  isSelectionLimited: boolean;
 }) {
   return (
     <AnimatePresence initial={false}>
@@ -45,9 +41,6 @@ export function AnimatedRewardsTable({
                   marketsInfoData={marketsInfoData}
                   isSelected={selectedMarketAddressesSet.has(reward.marketAddress)}
                   onToggleSelect={onToggleSelect}
-                  isSelectionDisabled={
-                    isSelectionLimited && !selectedMarketAddressesSet.has(reward.marketAddress) && !canSelectMore
-                  }
                 />
               ))}
             </tbody>

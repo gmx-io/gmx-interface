@@ -1,4 +1,3 @@
-import cx from "classnames";
 import { useCallback } from "react";
 
 import { getMarketIndexName, getMarketPoolName, MarketsInfoData } from "domain/synthetics/markets";
@@ -16,22 +15,16 @@ export function ClaimRewardRow({
   marketsInfoData,
   isSelected,
   onToggleSelect,
-  isSelectionDisabled,
 }: {
   reward: AffiliateReward;
   rewardUsd: bigint;
   marketsInfoData: MarketsInfoData | undefined;
   isSelected: boolean;
   onToggleSelect: (marketAddress: string) => void;
-  isSelectionDisabled: boolean;
 }) {
   const handleToggleSelect = useCallback(() => {
-    if (isSelectionDisabled) {
-      return;
-    }
-
     onToggleSelect(reward.marketAddress);
-  }, [isSelectionDisabled, onToggleSelect, reward.marketAddress]);
+  }, [onToggleSelect, reward.marketAddress]);
 
   const marketInfo = getByKey(marketsInfoData, reward.marketAddress);
   if (!marketInfo) {
@@ -58,9 +51,9 @@ export function ClaimRewardRow({
   }
 
   return (
-    <tr className={cx(isSelectionDisabled && !isSelected && "opacity-50")}>
+    <tr>
       <TableTd className="w-[20px] !pl-0">
-        <Checkbox isChecked={isSelected} setIsChecked={handleToggleSelect} disabled={isSelectionDisabled} />
+        <Checkbox isChecked={isSelected} setIsChecked={handleToggleSelect} />
       </TableTd>
       <TableTd>
         <div className="flex items-center justify-between gap-8">

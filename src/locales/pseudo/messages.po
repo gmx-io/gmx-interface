@@ -1420,10 +1420,6 @@ msgstr ""
 msgid "Overview"
 msgstr ""
 
-#: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
-msgid "Fetching swap route..."
-msgstr ""
-
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
@@ -2752,10 +2748,6 @@ msgstr ""
 msgid "Claimable collateral reduction factor"
 msgstr ""
 
-#: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
-msgid "Slippage too low"
-msgstr ""
-
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
 msgstr ""
@@ -3092,10 +3084,6 @@ msgstr ""
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Tenderly settings"
-msgstr ""
-
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "Swap all rewards into one asset"
 msgstr ""
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
@@ -4305,11 +4293,6 @@ msgstr ""
 msgid "Edit {0}"
 msgstr ""
 
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-#: src/components/Referrals/shared/modals/ClaimSwapTargetTokenSelector.tsx
-msgid "Swap to"
-msgstr ""
-
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr ""
@@ -4376,10 +4359,6 @@ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Price change to liquidation"
-msgstr ""
-
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "Allowed Slippage"
 msgstr ""
 
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
@@ -5415,10 +5394,6 @@ msgstr ""
 msgid "SL price above mark price"
 msgstr ""
 
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "This is an external swap routed through OpenOcean. Allowed slippage includes price impact and fees, unlike GMX native swaps where these are separate."
-msgstr ""
-
 #: src/components/TPSLModal/AddTPSLModal.tsx
 msgid "Unable to calculate order"
 msgstr ""
@@ -5661,10 +5636,6 @@ msgstr ""
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."
 msgstr ""
 
-#: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
-msgid "Swap token unavailable"
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
 msgstr ""
@@ -5862,10 +5833,6 @@ msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
-msgstr ""
-
-#: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
-msgid "Claim & swap"
 msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
@@ -6146,10 +6113,6 @@ msgstr ""
 
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Paste hex error data to decode"
-msgstr ""
-
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "You'll receive"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -8935,10 +8898,6 @@ msgstr ""
 msgid "{gmOrGlvLabel} sold successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to withdraw your tokens."
 msgstr ""
 
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "Unable to fetch swap route. Please try again."
-msgstr ""
-
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimsHistory.tsx
@@ -9580,12 +9539,6 @@ msgstr ""
 msgid "C:"
 msgstr ""
 
-#: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
-#: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
-#: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
-msgid "Swap route unavailable"
-msgstr ""
-
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. This action won't affect it. <0>Switch to {1} collateral</0>"
 msgstr ""
@@ -10187,10 +10140,6 @@ msgstr ""
 msgid "{column}"
 msgstr ""
 
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "Swap route unavailable for: {0}"
-msgstr ""
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "No trackers registered"
 msgstr ""
@@ -10448,17 +10397,12 @@ msgid "Total earned fees"
 msgstr ""
 
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "Slippage is too high"
 msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity available for increasing shorts at<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
-msgstr ""
-
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "Total value of assets"
 msgstr ""
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx

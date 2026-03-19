@@ -1420,10 +1420,6 @@ msgstr "Altas tarifas de red"
 msgid "Overview"
 msgstr "Resumen"
 
-#: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
-msgid "Fetching swap route..."
-msgstr ""
-
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
@@ -2752,10 +2748,6 @@ msgstr "Comisión de compra"
 msgid "Claimable collateral reduction factor"
 msgstr "Factor de reducción de garantía reclamable"
 
-#: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
-msgid "Slippage too low"
-msgstr ""
-
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Auto-rebalancing vault of GM tokens that accrues fees from leverage trading and swaps. Backed by {0} and {1}."
 msgstr "Vault de tokens GM con reequilibrio automático que acumula comisiones del trading con apalancamiento y los intercambios. Respaldado por {0} y {1}."
@@ -3093,10 +3085,6 @@ msgstr "Fondos insuficientes para cubrir los costes de la orden. Restante: {rema
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Tenderly settings"
 msgstr "Configuración de Tenderly"
-
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "Swap all rewards into one asset"
-msgstr ""
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Market)"
@@ -4305,11 +4293,6 @@ msgstr "Acciones de GMX {VERSION_NAME} en {networkName} para todas las cuentas"
 msgid "Edit {0}"
 msgstr "Editar {0}"
 
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-#: src/components/Referrals/shared/modals/ClaimSwapTargetTokenSelector.tsx
-msgid "Swap to"
-msgstr ""
-
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr "<0>Comprar</0> {wrappedNativeTokenSymbol}."
@@ -4377,10 +4360,6 @@ msgstr "No hay operaciones todavía"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Price change to liquidation"
 msgstr "Cambio de precio hasta la liquidación"
-
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "Allowed Slippage"
-msgstr ""
 
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "possibilities in total"
@@ -5415,10 +5394,6 @@ msgstr "Liquidez de {0} insuficiente"
 msgid "SL price above mark price"
 msgstr "Precio SL por encima del precio de referencia"
 
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "This is an external swap routed through OpenOcean. Allowed slippage includes price impact and fees, unlike GMX native swaps where these are separate."
-msgstr ""
-
 #: src/components/TPSLModal/AddTPSLModal.tsx
 msgid "Unable to calculate order"
 msgstr "No se puede calcular la orden"
@@ -5661,10 +5636,6 @@ msgstr "Depositar {gasPaymentTokensText}"
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."
 msgstr ""
 
-#: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
-msgid "Swap token unavailable"
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
 msgstr "GMX (Portugués)"
@@ -5863,10 +5834,6 @@ msgstr "{balanceFormatted} restante en la subcuenta 1CT antigua"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 msgstr "Cambiando de <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> a <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
-
-#: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
-msgid "Claim & swap"
-msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
@@ -6147,10 +6114,6 @@ msgstr "Error al reclamar las devoluciones por impacto en el precio"
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Paste hex error data to decode"
 msgstr "Pegue los datos de error en hexadecimal para decodificar"
-
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "You'll receive"
-msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral"
@@ -8935,10 +8898,6 @@ msgstr "La orden no puede actualizarse. El tipo no admite modificaciones"
 msgid "{gmOrGlvLabel} sold successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to withdraw your tokens."
 msgstr "{gmOrGlvLabel} vendido correctamente, pero el puente a Base falló. Sus fondos están seguros en su GMX Account. Reintente el puente o abra GMX Account para retirar sus tokens."
 
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "Unable to fetch swap route. Please try again."
-msgstr ""
-
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/ClaimsHistory.tsx
@@ -9580,12 +9539,6 @@ msgstr "Alertas"
 msgid "C:"
 msgstr "C:"
 
-#: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
-#: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
-#: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
-msgid "Swap route unavailable"
-msgstr ""
-
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. This action won't affect it. <0>Switch to {1} collateral</0>"
 msgstr "La posición existente utiliza garantía {0}. Esta acción no la afectará. <0>Cambiar a garantía {1}</0>"
@@ -10187,10 +10140,6 @@ msgstr "Paneles de control y análisis de GMX"
 msgid "{column}"
 msgstr "{column}"
 
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "Swap route unavailable for: {0}"
-msgstr ""
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "No trackers registered"
 msgstr "No hay rastreadores registrados"
@@ -10448,7 +10397,6 @@ msgid "Total earned fees"
 msgstr "Comisiones totales obtenidas"
 
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "Slippage is too high"
 msgstr "El deslizamiento es demasiado alto"
@@ -10456,10 +10404,6 @@ msgstr "El deslizamiento es demasiado alto"
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity available for increasing shorts at<0/>this size. Max short size: {0}<1/><2/>Execution prices for decreasing longs."
 msgstr "No hay liquidez disponible para aumentar posiciones cortas a<0/>este tamaño. Tamaño máximo corto: {0}<1/><2/>Precios de ejecución para reducir posiciones largas."
-
-#: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
-msgid "Total value of assets"
-msgstr ""
 
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "<0>Switch to {0} pool</0> for potentially lower price impact"

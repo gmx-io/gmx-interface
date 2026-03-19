@@ -1,24 +1,18 @@
 import { t, Trans } from "@lingui/macro";
-import { AnimatePresence, motion } from "framer-motion";
 
 import { formatUsd } from "lib/numbers";
 
-import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
-import PercentageInput from "components/PercentageInput/PercentageInput";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import { Table, TableTh, TableTheadTr } from "components/Table/Table";
-import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
-import { AnimatedRewardsTable, COLLAPSE_ANIMATION } from "./AnimatedRewardsTable";
+import { AnimatedRewardsTable } from "./AnimatedRewardsTable";
 import { ClaimRewardRow } from "./ClaimRewardRow";
-import { ClaimSwapTargetTokenSelector } from "./ClaimSwapTargetTokenSelector";
 import { OutOfTokenErrorAlert } from "./OutOfTokenErrorAlert";
 import { useClaimAffiliatesModalState } from "./useClaimAffiliatesModalState";
 
@@ -46,13 +40,11 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
           <thead>
             <TableTheadTr>
               <TableTh className="w-[20px] !pl-0">
-                {!state.isSelectionLimitedBySwapMultichain && (
-                  <Checkbox
-                    isChecked={state.isAllChecked}
-                    setIsChecked={state.handleToggleSelectAll}
-                    isPartialChecked={state.selectedMarketAddressesSet.size > 0 && !state.isAllChecked}
-                  />
-                )}
+                <Checkbox
+                  isChecked={state.isAllChecked}
+                  setIsChecked={state.handleToggleSelectAll}
+                  isPartialChecked={state.selectedMarketAddressesSet.size > 0 && !state.isAllChecked}
+                />
               </TableTh>
               <TableTh>
                 <Trans>MARKET</Trans>
@@ -71,11 +63,6 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
                 marketsInfoData={state.marketsInfoData}
                 isSelected={state.selectedMarketAddressesSet.has(reward.marketAddress)}
                 onToggleSelect={state.handleToggleSelect}
-                isSelectionDisabled={
-                  state.isSelectionLimitedBySwapMultichain &&
-                  !state.selectedMarketAddressesSet.has(reward.marketAddress) &&
-                  !state.canSelectMore
-                }
               />
             ))}
           </tbody>
@@ -102,8 +89,6 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
             marketsInfoData={state.marketsInfoData}
             selectedMarketAddressesSet={state.selectedMarketAddressesSet}
             onToggleSelect={state.handleToggleSelect}
-            canSelectMore={state.canSelectMore}
-            isSelectionLimited={state.isSelectionLimitedBySwapMultichain}
           />
         )}
 
@@ -128,99 +113,7 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
             marketsInfoData={state.marketsInfoData}
             selectedMarketAddressesSet={state.selectedMarketAddressesSet}
             onToggleSelect={state.handleToggleSelect}
-            canSelectMore={state.canSelectMore}
-            isSelectionLimited={state.isSelectionLimitedBySwapMultichain}
           />
-        )}
-
-        {state.swapTargetTokenOptions.length > 0 && (
-          <div>
-            <ToggleSwitch
-              isChecked={state.isSwapEnabled}
-              setIsChecked={state.setIsSwapEnabled}
-              textClassName="text-body-medium font-medium text-typography-secondary"
-            >
-              <Trans>Swap all rewards into one asset</Trans>
-            </ToggleSwitch>
-
-            <AnimatePresence initial={false}>
-              {state.isSwapEnabled && (
-                <motion.div
-                  key="swap-options"
-                  className="mt-12 flex flex-col gap-8 overflow-hidden"
-                  {...COLLAPSE_ANIMATION}
-                >
-                  <SyntheticsInfoRow
-                    label={<Trans>Swap to</Trans>}
-                    value={
-                      <ClaimSwapTargetTokenSelector
-                        options={state.swapTargetTokenOptions}
-                        value={state.swapTargetTokenAddress}
-                        onSelect={state.setSwapTargetTokenAddress}
-                      />
-                    }
-                  />
-                  <SyntheticsInfoRow
-                    label={<Trans>Total value of assets</Trans>}
-                    value={formatUsd(state.selectedClaimTokensUsd)}
-                  />
-                  <SyntheticsInfoRow
-                    label={
-                      <TooltipWithPortal
-                        handle={t`Allowed Slippage`}
-                        position="top-start"
-                        variant="iconStroke"
-                        content={
-                          <Trans>
-                            This is an external swap routed through OpenOcean. Allowed slippage includes price impact
-                            and fees, unlike GMX native swaps where these are separate.
-                          </Trans>
-                        }
-                      />
-                    }
-                    valueClassName="-my-5"
-                  >
-                    <PercentageInput
-                      onChange={state.setAllowedSlippage}
-                      defaultValue={state.allowedSlippage}
-                      value={state.allowedSlippage}
-                      highValue={500}
-                      highValueWarningText={t`Slippage is too high`}
-                      negativeSign
-                    />
-                  </SyntheticsInfoRow>
-                  <SyntheticsInfoRow
-                    label={<Trans>You'll receive</Trans>}
-                    value={
-                      !state.swapTargetToken || state.toReceiveAmount === 0n || state.hasSwapRouteErrorForSubmit ? (
-                        "-"
-                      ) : state.isSwapRouteLoadingForSubmit ? (
-                        "..."
-                      ) : (
-                        <AmountWithUsdBalance
-                          amount={state.toReceiveAmount}
-                          decimals={state.swapTargetToken.decimals}
-                          usd={state.toReceiveUsd}
-                          symbol={state.swapTargetToken.symbol}
-                          isStable={state.swapTargetToken.isStable}
-                        />
-                      )
-                    }
-                  />
-
-                  {state.hasSwapRouteErrorForSubmit && (
-                    <AlertInfoCard type="warning" hideClose>
-                      {state.failedSwapTokenSymbols ? (
-                        <Trans>Swap route unavailable for: {state.failedSwapTokenSymbols}</Trans>
-                      ) : (
-                        <Trans>Unable to fetch swap route. Please try again.</Trans>
-                      )}
-                    </AlertInfoCard>
-                  )}
-                </motion.div>
-              )}
-            </AnimatePresence>
-          </div>
         )}
 
         <SyntheticsInfoRow
