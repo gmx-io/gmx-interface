@@ -293,6 +293,7 @@ export function TableScrollFadeContainer({
         className={cx("flex grow flex-col scrollbar-hide", {
           "overflow-hidden": disableScrollFade,
           "overflow-x-auto": !disableScrollFade,
+          "is-scrollable-right": !disableScrollFade && tableScrollFade.scrollRight > 0,
         })}
         ref={tableScrollFade.setScrollableRef}
       >

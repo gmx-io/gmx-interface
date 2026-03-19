@@ -37,6 +37,7 @@ import EditIcon from "img/ic_edit.svg?react";
 import NewLinkThinIcon from "img/ic_new_link_thin.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
+import { ClosePositionModal } from "./ClosePositionModal";
 import { PositionItemOrdersLarge, PositionItemOrdersSmall } from "./PositionItemOrders";
 import { PositionItemTPSLCell } from "./PositionItemTPSLCell";
 import { TPSLModal } from "../TPSLModal/TPSLModal";
@@ -67,6 +68,7 @@ export function PositionItem(p: Props) {
   const [showSizeInTokens, setShowSizeInTokens] = useState(false);
   const [isTPSLModalVisible, setIsTPSLModalVisible] = useState(false);
   const [tpslInitialView, setTpslInitialView] = useState<"list" | "add">("list");
+  const [isCloseModalVisible, setIsCloseModalVisible] = useState(false);
   const isActionsDisabled = p.position.isOpening;
   const isCloseDisabled = isActionsDisabled || p.position.sizeInUsd == 0n;
 
@@ -85,6 +87,17 @@ export function PositionItem(p: Props) {
     setTpslInitialView("add");
     setIsTPSLModalVisible(true);
   }, []);
+
+  const handleCloseButtonClick = useCallback(() => {
+    setIsCloseModalVisible(true);
+  }, []);
+
+  const handleCloseOrderOptionSelect = useCallback(
+    (orderOption: OrderOption) => {
+      p.onClosePositionClick?.(orderOption);
+    },
+    [p]
+  );
 
   function renderNetValue() {
     return (
@@ -583,26 +596,16 @@ export function PositionItem(p: Props) {
           </TableTd>
         )}
         {!p.hideActions && (
-          <TableTd>
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <Button
-                  variant="ghost"
-                  onClick={() => p.onClosePositionClick?.(OrderOption.Market)}
-                  disabled={isCloseDisabled}
-                  data-qa="position-close-market-button"
-                >
-                  <Trans>Market</Trans>
-                </Button>
-                <Button
-                  variant="ghost"
-                  onClick={() => p.onClosePositionClick?.(OrderOption.Twap)}
-                  disabled={isCloseDisabled}
-                  data-qa="position-close-twap-button"
-                >
-                  <Trans>TWAP</Trans>
-                </Button>
-              </div>
+          <TableTd className="PositionItem-actions-cell">
+            <div className="flex items-center justify-end gap-4">
+              <Button
+                variant="ghost"
+                onClick={handleCloseButtonClick}
+                disabled={isCloseDisabled}
+                data-qa="position-close-button"
+              >
+                <Trans>Close</Trans>
+              </Button>
 
               <PositionDropdown
                 handleEditCollateral={p.onEditCollateralClick}
@@ -777,22 +780,14 @@ export function PositionItem(p: Props) {
         {!p.hideActions && (
           <AppCardSection>
             <div className="flex items-center justify-between">
-              <div className="flex gap-8">
-                <Button
-                  variant="secondary"
-                  disabled={isCloseDisabled}
-                  onClick={() => p.onClosePositionClick?.(OrderOption.Market)}
-                >
-                  <Trans>Market</Trans>
-                </Button>
-                <Button
-                  variant="secondary"
-                  disabled={isCloseDisabled}
-                  onClick={() => p.onClosePositionClick?.(OrderOption.Twap)}
-                >
-                  <Trans>TWAP</Trans>
-                </Button>
-              </div>
+              <Button
+                variant="secondary"
+                disabled={isCloseDisabled}
+                onClick={handleCloseButtonClick}
+                data-qa="position-close-button"
+              >
+                <Trans>Close</Trans>
+              </Button>
               <div>
                 <PositionDropdown
                   handleEditCollateral={p.onEditCollateralClick}
@@ -821,6 +816,11 @@ export function PositionItem(p: Props) {
         setIsVisible={setIsTPSLModalVisible}
         position={p.position}
         initialView={tpslInitialView}
+      />
+      <ClosePositionModal
+        isVisible={isCloseModalVisible}
+        setIsVisible={setIsCloseModalVisible}
+        onSelect={handleCloseOrderOptionSelect}
       />
     </>
   );

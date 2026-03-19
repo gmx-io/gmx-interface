@@ -105,12 +105,12 @@ export function PositionList(p: Props) {
                 <TableTh className="w-[13%]">
                   <SymbolSortDropdown {...getSorterProps("symbol")} />
                 </TableTh>
-                <TableTh className="w-[10%]">
+                <TableTh className="w-[12%]">
                   <Sorter {...getSorterProps("size")} showOnHover>
                     <Trans>SIZE</Trans>
                   </Sorter>
                 </TableTh>
-                <TableTh className="w-[15%]">
+                <TableTh className="w-[17%]">
                   <Sorter {...getSorterProps("netValue")} showOnHover>
                     <Trans>NET VALUE</Trans>
                   </Sorter>
@@ -140,7 +140,7 @@ export function PositionList(p: Props) {
                     <Trans>TP/SL</Trans>
                   </TableTh>
                 )}
-                {!isLoading && !p.hideActions && <TableTh className="w-[16%] pl-18 !text-left">Close</TableTh>}
+                {!isLoading && !p.hideActions && <TableTh className="PositionItem-actions-cell w-[12%]" />}
               </TableTheadTr>
             </thead>
             <tbody>
