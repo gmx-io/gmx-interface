@@ -7180,10 +7180,6 @@ msgstr "<0>로 돌아가기 </0><1>홈페이지</1> <2>또는 </2> <3>거래</3>
 msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr "{tokenSymbol}을 {chainName}으로 브릿지"
 
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit signing failed"
-msgstr "허가 서명 실패"
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order uses {collateralSymbol}, but existing {longText} position uses {symbol} as collateral"
 msgstr "주문은 {collateralSymbol}을(를) 사용하지만, 기존 {longText} 포지션은 {symbol}을(를) 담보로 사용합니다"

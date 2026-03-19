@@ -7180,10 +7180,6 @@ msgstr "<0>返回</0><1>首頁</1><2>或</2><3>交易</3>"
 msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr "使用以下方式將 {tokenSymbol} 橋接至 {chainName}"
 
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit signing failed"
-msgstr "許可簽名失敗"
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order uses {collateralSymbol}, but existing {longText} position uses {symbol} as collateral"
 msgstr "訂單使用 {collateralSymbol}，但現有的{longText}倉位使用 {symbol} 作為抵押品"
