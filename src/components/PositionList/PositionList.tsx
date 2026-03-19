@@ -97,6 +97,7 @@ export function PositionList(p: Props) {
       {!isMobile && (
         <TableScrollFadeContainer
           disableScrollFade={positions.length === 0}
+          hideControls
           className="flex grow flex-col bg-slate-900"
         >
           <Table className="!w-[max(100%,1180px)] table-fixed">
@@ -140,7 +141,7 @@ export function PositionList(p: Props) {
                     <Trans>TP/SL</Trans>
                   </TableTh>
                 )}
-                {!isLoading && !p.hideActions && <TableTh className="PositionItem-actions-cell w-[12%]" />}
+                {!isLoading && !p.hideActions && <TableTh className="PositionItem-actions-cell w-[11%]" />}
               </TableTheadTr>
             </thead>
             <tbody>
