@@ -4,6 +4,7 @@ import values from "lodash/values";
 
 import { USD_DECIMALS } from "config/factors";
 import {
+  selectJitLiquidityMap,
   selectMarketsInfoData,
   selectOrdersInfoData,
   selectPositionsInfoData,
@@ -32,6 +33,7 @@ import {
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getCappedPositionImpactUsd, getFeeItem } from "domain/synthetics/fees";
+import { getJitMaxReservedUsd } from "domain/synthetics/jit/utils";
 import {
   getAvailableUsdLiquidityForPosition,
   getMinPriceImpactMarket,
@@ -97,6 +99,8 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
   const hasExistingPosition = Boolean(q(selectTradeboxSelectedPosition));
   const hasExistingOrder = Boolean(q(selectTradeboxExistingOrder));
 
+  const jitLiquidityMap = q(selectJitLiquidityMap);
+
   const indexToken = getByKey(tokensData, indexTokenAddress);
 
   const { isIncrease, isPosition, isLong } = flags;
@@ -111,7 +115,11 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
 
   const liquidMarkets = increaseSizeUsd
     ? availableMarkets.filter((marketInfo) => {
-        const liquidity = getAvailableUsdLiquidityForPosition(marketInfo, isLong);
+        const liquidity = getAvailableUsdLiquidityForPosition(
+          marketInfo,
+          isLong,
+          getJitMaxReservedUsd(jitLiquidityMap, marketInfo.marketTokenAddress, isLong)
+        );
 
         return liquidity > increaseSizeUsd;
       })
@@ -134,7 +142,13 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
     return result;
   }
 
-  result.maxLiquidityMarket = getMostLiquidMarketForPosition(liquidMarkets, indexToken.address, undefined, isLong);
+  result.maxLiquidityMarket = getMostLiquidMarketForPosition(
+    liquidMarkets,
+    indexToken.address,
+    undefined,
+    isLong,
+    jitLiquidityMap
+  );
 
   if (!hasExistingPosition) {
     if (positionsInfo) {
@@ -151,7 +165,11 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
           result.collateralWithPosition = tokensData?.[availablePositionOrOrder.collateralTokenAddress];
           if (increaseSizeUsd != undefined) {
             result.isNoSufficientLiquidityInMarketWithPosition =
-              getAvailableUsdLiquidityForPosition(result.marketWithPosition!, isLong) <= increaseSizeUsd;
+              getAvailableUsdLiquidityForPosition(
+                result.marketWithPosition!,
+                isLong,
+                getJitMaxReservedUsd(jitLiquidityMap, result.marketWithPosition!.marketTokenAddress, isLong)
+              ) <= increaseSizeUsd;
           }
         } else {
           result.marketWithOrder = getByKey(marketsInfoData, availablePositionOrOrder.marketAddress);
@@ -183,7 +201,8 @@ export const selectTradeboxAvailableMarketsOptions = createSelector((q) => {
       indexToken.address,
       isLong,
       isIncrease,
-      increaseSizeUsd > 0 ? increaseSizeUsd : expandDecimals(1000, USD_DECIMALS)
+      increaseSizeUsd > 0 ? increaseSizeUsd : expandDecimals(1000, USD_DECIMALS),
+      jitLiquidityMap
     );
 
     if (bestMarket && bestImpactDeltaUsd != undefined) {

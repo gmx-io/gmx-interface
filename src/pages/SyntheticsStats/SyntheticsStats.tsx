@@ -5,6 +5,8 @@ import { zeroAddress, zeroHash } from "viem";
 
 import { FACTOR_TO_PERCENT_MULTIPLIER_BIGINT } from "config/factors";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod, getPriceImpactUsd } from "domain/synthetics/fees";
+import { useJitLiquidityRequest } from "domain/synthetics/jit/useJitLiquidityRequest";
+import { getJitLiquidityInfo } from "domain/synthetics/jit/utils";
 import {
   getAvailableUsdLiquidityForCollateral,
   getCappedPoolPnl,
@@ -58,6 +60,7 @@ export function SyntheticsStats() {
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
   const { marketsInfoData } = useMarketsInfoRequest(chainId, { tokensData });
   const { kinkMarketsBorrowingRatesData } = useKinkModelMarketsRates(chainId);
+  const { jitLiquidityMap } = useJitLiquidityRequest(chainId);
   const { positionsConstants } = usePositionsConstantsRequest(chainId);
   const { minCollateralUsd, minPositionSizeUsd, claimableCollateralDelay, claimableCollateralReductionFactor } =
     positionsConstants || {};
@@ -702,6 +705,11 @@ export function SyntheticsStats() {
                 }
 
                 function renderLiquidityCell(isLong: boolean) {
+                  const jitInfo = getJitLiquidityInfo(jitLiquidityMap, market.marketTokenAddress);
+                  const maxReservedWithJit = isLong
+                    ? jitInfo?.maxReservedUsdWithJitLong
+                    : jitInfo?.maxReservedUsdWithJitShort;
+
                   const [
                     collateralLiquidityUsd,
                     liquidity,
@@ -762,6 +770,12 @@ export function SyntheticsStats() {
                                 label={t`Max reserved ${directionLabel}`}
                                 value={formatAmount(maxReservedUsd, 30, 0, true)}
                               />
+                              {maxReservedWithJit !== undefined && (
+                                <StatsTooltipRow
+                                  label={t`Max reserved + JIT ${directionLabel}`}
+                                  value={formatAmount(maxReservedWithJit, 30, 0, true)}
+                                />
+                              )}
                               <StatsTooltipRow
                                 label={t`Open interest ${directionLabel}`}
                                 value={formatAmount(interestUsd, 30, 0, true)}

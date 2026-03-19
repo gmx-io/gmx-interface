@@ -1,7 +1,12 @@
 import { isAddress } from "viem";
 import { describe, it, expect } from "vitest";
 
-import { createTwapUiFeeReceiver, decodeTwapUiFeeReceiver, setUiFeeReceiverIsExpress } from "utils/twap/uiFeeReceiver";
+import {
+  createTwapUiFeeReceiver,
+  decodeTwapUiFeeReceiver,
+  setUiFeeReceiverIsExpress,
+  setUiFeeReceiverIsJit,
+} from "utils/twap/uiFeeReceiver";
 
 describe("uiFeeReceiver", () => {
   describe("decodeTwapUiFeeReceiver", () => {
@@ -18,6 +23,16 @@ describe("uiFeeReceiver", () => {
     it("should correctly decode isExpress", () => {
       expect(decodeTwapUiFeeReceiver("0xff0000000000000000000000000000010a123401")).toEqual({
         isExpress: true,
+        isJit: false,
+        twapId: "1234",
+        numberOfParts: 10,
+      });
+    });
+
+    it("should correctly decode isJit", () => {
+      expect(decodeTwapUiFeeReceiver("0xff0000000000000000000000000001000a123401")).toEqual({
+        isExpress: false,
+        isJit: true,
         twapId: "1234",
         numberOfParts: 10,
       });
@@ -26,12 +41,14 @@ describe("uiFeeReceiver", () => {
     it("should return the twapId and numberOfParts if the uiFeeReceiver is valid twap", () => {
       expect(decodeTwapUiFeeReceiver("0xff0000000000000000000000000000000a123401")).toEqual({
         isExpress: false,
+        isJit: false,
         twapId: "1234",
         numberOfParts: 10,
       });
 
       expect(decodeTwapUiFeeReceiver("0xff000000000000000000000000000000153a4f01")).toEqual({
         isExpress: false,
+        isJit: false,
         twapId: "3a4f",
         numberOfParts: 21,
       });
@@ -80,6 +97,32 @@ describe("setUiFeeReceiverIsExpress", () => {
       "0xff0000000000000000000000000000010a123401"
     );
     expect(setUiFeeReceiverIsExpress("0xff0000000000000000000000000000000a123401", false)).toEqual(
+      "0xff0000000000000000000000000000000a123401"
+    );
+  });
+});
+
+describe("setUiFeeReceiverIsJit", () => {
+  it("should correctly set isJit for simple uiFeeReceiver", () => {
+    expect(setUiFeeReceiverIsJit("0xff00000000000000000000000000000000000001", true)).toEqual(
+      "0xff00000000000000000000000000010000000001"
+    );
+    expect(setUiFeeReceiverIsJit("0xff00000000000000000000000000010000000001", false)).toEqual(
+      "0xff00000000000000000000000000000000000001"
+    );
+  });
+
+  it("should preserve isExpress when setting isJit", () => {
+    expect(setUiFeeReceiverIsJit("0xff0000000000000000000000000000010a123401", true)).toEqual(
+      "0xff0000000000000000000000000001010a123401"
+    );
+  });
+
+  it("should correctly set isJit for twap uiFeeReceiver", () => {
+    expect(setUiFeeReceiverIsJit("0xff0000000000000000000000000000000a123401", true)).toEqual(
+      "0xff0000000000000000000000000001000a123401"
+    );
+    expect(setUiFeeReceiverIsJit("0xff0000000000000000000000000001000a123401", false)).toEqual(
       "0xff0000000000000000000000000000000a123401"
     );
   });

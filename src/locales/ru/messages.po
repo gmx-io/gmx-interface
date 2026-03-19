@@ -418,6 +418,10 @@ msgstr "Подтвердить вывод"
 msgid "Settled funding fees"
 msgstr "Расчёт комиссий за фандинг"
 
+#: src/components/Errors/ErrorToastWithSupport.tsx
+msgid "Contact Support"
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Returned collateral"
 msgstr "Возвращённое обеспечение"
@@ -7176,10 +7180,6 @@ msgstr "<0>Вернуться к </0><1>Домашней странице</1> <2
 msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr "Перевести {tokenSymbol} в {chainName} с"
 
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit signing failed"
-msgstr "Подпись разрешения не удалась"
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order uses {collateralSymbol}, but existing {longText} position uses {symbol} as collateral"
 msgstr "Ордер использует {collateralSymbol}, но существующая позиция {longText} использует {symbol} в качестве обеспечения"
@@ -7779,6 +7779,10 @@ msgstr "Неизвестный ордер сдвига GM"
 msgid "Shifting {symbol}..."
 msgstr "Сдвиг {symbol}..."
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max reserved + JIT {directionLabel}"
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close price impact"
@@ -7850,6 +7854,10 @@ msgstr "{0} GMX"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Price impact exceeds order size. Impact: {priceImpactUsdText}, order: {sizeDeltaUsdText}"
 msgstr "Влияние на цену превышает размер ордера. Влияние: {priceImpactUsdText}, ордер: {sizeDeltaUsdText}"
+
+#: src/components/Errors/ErrorToastWithSupport.tsx
+msgid "If you're having trouble completing this action, our team can help."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Jones DAO"

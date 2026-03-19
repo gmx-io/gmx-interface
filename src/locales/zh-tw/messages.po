@@ -418,6 +418,10 @@ msgstr "確認提取"
 msgid "Settled funding fees"
 msgstr "已結算資金費用"
 
+#: src/components/Errors/ErrorToastWithSupport.tsx
+msgid "Contact Support"
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Returned collateral"
 msgstr "退還的抵押品"
@@ -7176,10 +7180,6 @@ msgstr "<0>返回</0><1>首頁</1><2>或</2><3>交易</3>"
 msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr "使用以下方式將 {tokenSymbol} 橋接至 {chainName}"
 
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit signing failed"
-msgstr "許可簽名失敗"
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order uses {collateralSymbol}, but existing {longText} position uses {symbol} as collateral"
 msgstr "訂單使用 {collateralSymbol}，但現有的{longText}倉位使用 {symbol} 作為抵押品"
@@ -7779,6 +7779,10 @@ msgstr "未知的 GM 轉換訂單"
 msgid "Shifting {symbol}..."
 msgstr "正在轉換 {symbol}..."
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max reserved + JIT {directionLabel}"
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close price impact"
@@ -7850,6 +7854,10 @@ msgstr "{0} GMX"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Price impact exceeds order size. Impact: {priceImpactUsdText}, order: {sizeDeltaUsdText}"
 msgstr "價格影響超過訂單規模。影響：{priceImpactUsdText}，訂單：{sizeDeltaUsdText}"
+
+#: src/components/Errors/ErrorToastWithSupport.tsx
+msgid "If you're having trouble completing this action, our team can help."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Jones DAO"
