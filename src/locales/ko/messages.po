@@ -7783,6 +7783,10 @@ msgstr "알 수 없는 GM 이전 주문"
 msgid "Shifting {symbol}..."
 msgstr "{symbol} 이전 중..."
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max reserved + JIT {directionLabel}"
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close price impact"

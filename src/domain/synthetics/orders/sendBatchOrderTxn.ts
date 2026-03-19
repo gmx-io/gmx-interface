@@ -4,6 +4,7 @@ import { withRetry } from "viem";
 import { ContractsChainId } from "config/chains";
 import { ExpressTxnParams } from "domain/synthetics/express";
 import { buildAndSignExpressBatchOrderTxn } from "domain/synthetics/express/expressOrderUtils";
+import { GlvShiftParam } from "domain/synthetics/jit/utils";
 import { isLimitOrderType, isTriggerDecreaseOrderType } from "domain/synthetics/orders";
 import { TokensData } from "domain/tokens";
 import { extendError } from "lib/errors";
@@ -22,12 +23,15 @@ import {
 
 import { signerAddressError } from "components/Errors/errorToasts";
 
+import { encodeJitBatchOrderUiFeeReceiver, getNeedsJitOrder, isJitShiftError } from "./jitOrderUtils";
 import { getOrdersTriggerPriceOverrides, getSimulationPrices, simulateExecution } from "./simulation";
 import { callRelayTransaction } from "../express/callRelayTransaction";
 
 export type BatchSimulationParams = {
   tokensData: TokensData;
   blockTimestampData: BlockTimestampData | undefined;
+  jitShiftParamsList?: GlvShiftParam[];
+  nativeReserveLiquidity?: bigint;
 };
 
 export type BatchOrderTxnCtx = {
@@ -57,7 +61,12 @@ export async function sendBatchOrderTxn({
   simulationParams: BatchSimulationParams | undefined;
   callback: TxnCallback<BatchOrderTxnCtx> | undefined;
 }) {
-  const eventBuilder = new TxnEventBuilder<BatchOrderTxnCtx>({ expressParams, batchParams, signer });
+  const encodedBatchParams = encodeJitBatchOrderUiFeeReceiver(batchParams, simulationParams);
+  const eventBuilder = new TxnEventBuilder<BatchOrderTxnCtx>({
+    expressParams,
+    batchParams: encodedBatchParams,
+    signer,
+  });
 
   try {
     if (isGmxAccount && !expressParams) {
@@ -76,12 +85,14 @@ export async function sendBatchOrderTxn({
         return makeBatchOrderSimulation({
           chainId,
           signer,
-          batchParams,
+          batchParams: encodedBatchParams,
           blockTimestampData: simulationParams.blockTimestampData,
           tokensData: simulationParams.tokensData,
           expressParams,
           provider,
           isGmxAccount,
+          jitShiftParamsList: simulationParams.jitShiftParamsList,
+          nativeReserveLiquidity: simulationParams.nativeReserveLiquidity,
         });
       };
     }
@@ -91,7 +102,7 @@ export async function sendBatchOrderTxn({
       const txnData = await buildAndSignExpressBatchOrderTxn({
         chainId,
         signer,
-        batchParams,
+        batchParams: encodedBatchParams,
         relayParamsPayload: expressParams.relayParamsPayload,
         relayerFeeTokenAddress: expressParams.gasPaymentParams.relayerFeeTokenAddress,
         relayerFeeAmount: expressParams.gasPaymentParams.relayerFeeAmount,
@@ -131,7 +142,7 @@ export async function sendBatchOrderTxn({
       return await res;
     }
 
-    const { callData, value } = getBatchOrderMulticallPayload({ params: batchParams });
+    const { callData, value } = getBatchOrderMulticallPayload({ params: encodedBatchParams });
 
     return sendWalletTransaction({
       chainId,
@@ -160,6 +171,8 @@ const makeBatchOrderSimulation = async ({
   blockTimestampData,
   tokensData,
   expressParams,
+  jitShiftParamsList,
+  nativeReserveLiquidity,
 }: {
   chainId: ContractsChainId;
   signer: WalletSigner;
@@ -169,7 +182,11 @@ const makeBatchOrderSimulation = async ({
   blockTimestampData: BlockTimestampData | undefined;
   tokensData: TokensData;
   expressParams: ExpressTxnParams | undefined;
+  jitShiftParamsList?: GlvShiftParam[];
+  nativeReserveLiquidity?: bigint;
 }): Promise<void> => {
+  let simulationMethod: "simulateExecuteLatestOrder" | "simulateExecuteLatestJitOrder" | undefined;
+
   try {
     if (getIsInvalidBatchReceiver(batchParams, signer.address)) {
       throw extendError(new Error(signerAddressError), {
@@ -272,23 +289,42 @@ const makeBatchOrderSimulation = async ({
         },
       });
 
-      await simulateExecution(chainId, {
-        account: signer.address,
-        prices: getSimulationPrices(
-          chainId,
-          tokensData,
-          getOrdersTriggerPriceOverrides([batchParams.createOrderParams[0]])
-        ),
-        tokenPermits: expressParams?.relayParamsPayload.tokenPermits ?? [],
-        createMulticallPayload: encodedMulticall,
-        value,
-        blockTimestampData,
-        isExpress: Boolean(expressParams),
+      const orderPayload = batchParams.createOrderParams[0].orderPayload;
+      const needsJit = getNeedsJitOrder({
+        orderPayload,
+        jitShiftParamsList,
+        nativeReserveLiquidity,
       });
+
+      simulationMethod = needsJit ? "simulateExecuteLatestJitOrder" : "simulateExecuteLatestOrder";
+
+      try {
+        await simulateExecution(chainId, {
+          account: signer.address,
+          prices: getSimulationPrices(
+            chainId,
+            tokensData,
+            getOrdersTriggerPriceOverrides([batchParams.createOrderParams[0]])
+          ),
+          tokenPermits: expressParams?.relayParamsPayload.tokenPermits ?? [],
+          createMulticallPayload: encodedMulticall,
+          value,
+          blockTimestampData,
+          isExpress: Boolean(expressParams),
+          method: simulationMethod,
+          jitShiftParamsList: needsJit ? jitShiftParamsList : undefined,
+        });
+      } catch (error) {
+        if (needsJit && isJitShiftError(error)) {
+          throw new Error("Insufficient liquidity");
+        }
+        throw error;
+      }
     }
   } catch (error) {
     throw extendError(error, {
       errorContext: "simulation",
+      simulationMethod,
     });
   }
 };

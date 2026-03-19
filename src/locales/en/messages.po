@@ -7783,6 +7783,10 @@ msgstr "Unknown shift GM order"
 msgid "Shifting {symbol}..."
 msgstr "Shifting {symbol}..."
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max reserved + JIT {directionLabel}"
+msgstr "Max reserved + JIT {directionLabel}"
+
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close price impact"
