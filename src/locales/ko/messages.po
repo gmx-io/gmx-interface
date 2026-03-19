@@ -4362,8 +4362,8 @@ msgid "Code not found"
 msgstr "코드를 찾을 수 없습니다"
 
 #: src/components/TradeboxMarginFields/MarginPercentageSlider.tsx
-msgid "Enter a margin amount to use the size slider"
-msgstr ""
+#~ msgid "Enter a margin amount to use the size slider"
+#~ msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Inactive"

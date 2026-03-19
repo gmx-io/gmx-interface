@@ -67,7 +67,6 @@ export function TPSLInputRow({
   const [displayMode, setDisplayMode] = useState<TPSLDisplayMode>(defaultDisplayMode);
   const [lastEditedField, setLastEditedField] = useState<"price" | "gainLoss" | undefined>(undefined);
   const [gainLossInputValue, setGainLossInputValue] = useState<string>("");
-  const [suppressError, setSuppressError] = useState(false);
 
   const {
     sizeInTokens,
@@ -260,7 +259,6 @@ export function TPSLInputRow({
 
   const handlePriceChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
-      setSuppressError(false);
       setLastEditedField("price");
       setGainLossInputValue("");
       onPriceChange(e.target.value);
@@ -271,7 +269,6 @@ export function TPSLInputRow({
   const handleGainLossChange = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
       const value = e.target.value;
-      setSuppressError(false);
       setLastEditedField("gainLoss");
       setGainLossInputValue(value);
       calculateAndUpdatePrice(value, displayMode);
@@ -343,8 +340,6 @@ export function TPSLInputRow({
     }
   };
 
-  const effectivePriceError = suppressError ? undefined : priceError;
-
   const estimatedPnl = estimatedPnlProp ?? derivedEstimatedPnl;
   const estimatedPnlDisplay = estimatedPnl ? formatDeltaUsd(estimatedPnl.pnlUsd, estimatedPnl.pnlPercentage) : "-";
 
@@ -355,7 +350,6 @@ export function TPSLInputRow({
 
   const handleMarkPriceClick = useCallback(() => {
     if (referencePrice === undefined || referencePrice === 0n) return;
-    setSuppressError(true);
     setLastEditedField("price");
     setGainLossInputValue("");
     onPriceChange(formatPrice(referencePrice));
@@ -381,17 +375,11 @@ export function TPSLInputRow({
     return (
       <div className="flex flex-col gap-4">
         <div className="flex gap-8">
-          <TooltipWithPortal
-            className="flex grow"
-            handleClassName="grow"
-            variant="none"
-            disabled={!effectivePriceError}
-            content={effectivePriceError}
-          >
+          <TooltipWithPortal className="flex grow" handleClassName="grow" variant="none" disabled content={priceError}>
             <div
               className={cx(
                 "flex flex-1 cursor-text flex-col justify-between gap-2 rounded-4 border bg-slate-800 px-8 py-3 text-13",
-                effectivePriceError ? "border-red-500" : "border-slate-800",
+                priceError ? "border-red-500" : "border-slate-800",
                 "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover active:border-blue-300"
               )}
               onClick={handleBoxClick(priceInputRef)}
@@ -401,7 +389,7 @@ export function TPSLInputRow({
                   <NumberInput
                     value={priceValue}
                     className={cx("h-18 w-full min-w-0 p-0 text-13 outline-none", {
-                      "text-red-500": effectivePriceError,
+                      "text-red-500": priceError,
                     })}
                     inputRef={priceInputRef}
                     onValueChange={handlePriceChange}
@@ -449,17 +437,11 @@ export function TPSLInputRow({
   return (
     <div className="flex flex-col gap-4">
       <div className="flex gap-8">
-        <TooltipWithPortal
-          className="flex-1"
-          handleClassName="w-full"
-          variant="none"
-          disabled={!effectivePriceError}
-          content={effectivePriceError}
-        >
+        <TooltipWithPortal className="flex-1" handleClassName="w-full" variant="none" disabled content={priceError}>
           <div
             className={cx(
               "flex flex-1 cursor-text flex-col gap-2 rounded-8 border bg-slate-800 px-8 py-6",
-              effectivePriceError ? "border-red-500" : "border-slate-800",
+              priceError ? "border-red-500" : "border-slate-800",
               "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover"
             )}
             onClick={handleBoxClick(priceInputRef)}
@@ -479,7 +461,7 @@ export function TPSLInputRow({
               <NumberInput
                 value={priceValue}
                 className={cx("bg-transparent h-24 w-full min-w-0 p-0 text-16 outline-none", {
-                  "text-red-500": effectivePriceError,
+                  "text-red-500": priceError,
                 })}
                 inputRef={priceInputRef}
                 onValueChange={handlePriceChange}

@@ -1,4 +1,3 @@
-import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
 
@@ -50,15 +49,8 @@ export function MarginPercentageSlider({ value, onChange, className, disabled }:
 
   return (
     <div className={cx("flex items-center gap-16", className)} aria-disabled={disabled || undefined}>
-      <div className={cx("relative h-32 flex-1 px-4", disabled && "pointer-events-none opacity-50")}>
+      <div className={cx("h-32 flex-1 px-4", disabled && "pointer-events-none opacity-50")}>
         <Slider min={0} max={100} step={1} onChange={handleChange} value={disabled ? 0 : sliderValue} marks={marks} />
-        {disabled && (
-          <div className="absolute inset-0 -top-1/2 flex items-center justify-center">
-            <span className="text-12 text-typography-secondary">
-              <Trans>Enter a margin amount to use the size slider</Trans>
-            </span>
-          </div>
-        )}
       </div>
     </div>
   );
