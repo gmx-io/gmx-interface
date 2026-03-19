@@ -211,7 +211,11 @@ async function main() {
         continue;
       }
 
-      const expectedDecimals = calculateDisplayDecimals(priceBigInt);
+      const vm = token.visualMultiplier ?? 1;
+      const displayDecimals = calculateDisplayDecimals(priceBigInt, undefined, vm);
+      // For tokens with visualMultiplier, pricescale = 10^priceDecimals / vm,
+      // so priceDecimals must compensate: priceDecimals = displayDecimals + log10(vm)
+      const expectedDecimals = vm === 1 ? displayDecimals : displayDecimals + Math.round(Math.log10(vm));
 
       const priceUsd = Number(priceBigInt) / 10 ** USD_DECIMALS;
 
