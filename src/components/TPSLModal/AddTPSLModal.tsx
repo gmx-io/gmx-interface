@@ -755,6 +755,7 @@ export function AddTPSLModal({
     blockTimestampData,
   ]);
 
+  const closeSizeReset = closeSizeHook.reset;
   useEffect(() => {
     if (isVisible) {
       setTpPriceInput(initialTpPriceInput ?? "");
@@ -763,10 +764,10 @@ export function AddTPSLModal({
       setTpPriceInput("");
       setSlPriceInput("");
       setEditTPSLSize(false);
-      closeSizeHook.reset();
+      closeSizeReset();
       setPreviewTab("tp");
     }
-  }, [isVisible, initialTpPriceInput, initialSlPriceInput, closeSizeHook]);
+  }, [isVisible, initialTpPriceInput, initialSlPriceInput, closeSizeReset]);
 
   useEffect(() => {
     if (tpDecreaseAmounts && !slDecreaseAmounts) {
