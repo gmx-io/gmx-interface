@@ -36,7 +36,7 @@ type TabType = "all" | "takeProfit" | "stopLoss";
 
 type Props = {
   orders: PositionOrderInfo[];
-  position: PositionInfo;
+  position?: PositionInfo;
   marketDecimals: number | undefined;
   isMobile: boolean;
   activeTab?: TabType;
@@ -141,7 +141,7 @@ function useTPSLOrderViewModel({
   onEdit,
 }: {
   order: PositionOrderInfo;
-  position: PositionInfo;
+  position?: PositionInfo;
   marketDecimals: number | undefined;
   onEdit?: (orderKey: string) => void;
 }) {
@@ -174,6 +174,10 @@ function useTPSLOrderViewModel({
       return <span>+{formatUsd(order.sizeDeltaUsd)}</span>;
     }
 
+    if (!position) {
+      return <span>-{formatUsd(order.sizeDeltaUsd)}</span>;
+    }
+
     const isFullClose = order.sizeDeltaUsd === position.sizeInUsd;
 
     if (isFullClose) {
@@ -189,10 +193,10 @@ function useTPSLOrderViewModel({
         <span className="ml-4 text-typography-secondary">(-{formatPercentage(sizePercentage)})</span>
       </span>
     );
-  }, [order.sizeDeltaUsd, position.sizeInUsd, isIncrease]);
+  }, [order.sizeDeltaUsd, position, isIncrease]);
 
   const estimatedPnl = useMemo(() => {
-    if (isIncrease) {
+    if (isIncrease || !position) {
       return undefined;
     }
 
@@ -203,19 +207,20 @@ function useTPSLOrderViewModel({
     const pnlPercentage = position.collateralUsd > 0n ? bigMath.mulDiv(pnlUsd, 10000n, position.collateralUsd) : 0n;
 
     return { pnlUsd, pnlPercentage };
-  }, [order.isLong, order.sizeDeltaUsd, order.triggerPrice, position.collateralUsd, position.entryPrice, isIncrease]);
+  }, [order.isLong, order.sizeDeltaUsd, order.triggerPrice, position, isIncrease]);
 
   const shouldKeepLeverage = useMemo(() => {
-    if (order.sizeDeltaUsd >= position.sizeInUsd) {
+    if (!position || order.sizeDeltaUsd >= position.sizeInUsd) {
       return true;
     }
 
     return order.initialCollateralDeltaAmount > 0n;
-  }, [order.initialCollateralDeltaAmount, order.sizeDeltaUsd, position.sizeInUsd]);
+  }, [order.initialCollateralDeltaAmount, order.sizeDeltaUsd, position]);
 
   const decreaseAmounts = useMemo(() => {
     if (
       isIncrease ||
+      !position ||
       minCollateralUsd === undefined ||
       minPositionSizeUsd === undefined ||
       !getIsPositionInfoLoaded(position)
@@ -303,7 +308,7 @@ function TPSLOrderCard({
   onEdit,
 }: {
   order: PositionOrderInfo;
-  position: PositionInfo;
+  position?: PositionInfo;
   marketDecimals: number | undefined;
   onEdit?: (orderKey: string) => void;
 }) {
@@ -386,7 +391,7 @@ export function TPSLOrderRow({
   onEdit,
 }: {
   order: PositionOrderInfo;
-  position: PositionInfo;
+  position?: PositionInfo;
   marketDecimals: number | undefined;
   onEdit?: (orderKey: string) => void;
 }) {

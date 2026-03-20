@@ -27,6 +27,7 @@ import {
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { PositionInfo, formatLiquidationPrice, getEstimatedLiquidationTimeInHours } from "domain/synthetics/positions";
+import type { TokenData } from "domain/synthetics/tokens";
 import { formatUsd } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useBreakpoints } from "lib/useBreakpoints";
@@ -49,7 +50,13 @@ export type TpSlTabType = "all" | "takeProfit" | "stopLoss";
 type Props = {
   isVisible: boolean;
   setIsVisible: (visible: boolean) => void;
-  position: PositionInfo;
+  position?: PositionInfo;
+  /** Used for order filtering when no position exists */
+  positionKey?: string;
+  /** Used for title when no position exists */
+  isLong?: boolean;
+  /** Used for title when no position exists */
+  indexToken?: TokenData;
   /**
    * When "add", the modal opens directly into the AddTPSLModal form.
    * When "list" (default), it shows the TP/SL orders list.
@@ -61,10 +68,13 @@ type Props = {
   initialTab?: TpSlTabType;
 };
 
-export function TPSLModal({
+export function OrdersModal({
   isVisible,
   setIsVisible,
   position,
+  positionKey: positionKeyProp,
+  isLong: isLongProp,
+  indexToken: indexTokenProp,
   initialView = "list",
   initialTpPriceInput,
   initialSlPriceInput,
@@ -87,11 +97,17 @@ export function TPSLModal({
   const globalExpressParams = useSelector(selectExpressGlobalParams);
   const subaccount = useSelector(selectSubaccountForChainAction);
 
-  const ordersWithErrors = usePositionOrdersWithErrors(position.key);
-  const marketDecimals = useSelector(makeSelectMarketPriceDecimals(position.market.indexTokenAddress));
+  const effectivePositionKey = position?.key ?? positionKeyProp;
+  const effectiveIsLong = position?.isLong ?? isLongProp;
+  const effectiveIndexToken = position?.indexToken ?? indexTokenProp;
+
+  const ordersWithErrors = usePositionOrdersWithErrors(effectivePositionKey);
+  const marketDecimals = useSelector(
+    makeSelectMarketPriceDecimals(position?.market.indexTokenAddress ?? indexTokenProp?.address)
+  );
   const { minCollateralUsd } = usePositionsConstants();
   const estimatedLiquidationHours = useMemo(
-    () => getEstimatedLiquidationTimeInHours(position, minCollateralUsd),
+    () => (position ? getEstimatedLiquidationTimeInHours(position, minCollateralUsd) : undefined),
     [position, minCollateralUsd]
   );
 
@@ -225,7 +241,7 @@ export function TPSLModal({
   /**
    * Wrapper for AddTPSLModal's setIsVisible.
    * When AddTPSLModal closes for ANY reason (X button, backdrop, Escape, back, success),
-   * this fires with visible=false and always reopens the TPSLModal list view.
+   * this fires with visible=false and always reopens the OrdersModal list view.
    */
   const handleAddFormVisibilityChange = useCallback(
     (visible: boolean) => {
@@ -241,79 +257,83 @@ export function TPSLModal({
     setIsAddFormVisible(false);
   }, []);
 
-  // Reactively hide TPSLModal when OrderEditor is open from this modal.
+  // Reactively hide OrdersModal when OrderEditor is open from this modal.
   // This avoids timing issues from trying to coordinate setIsVisible + setEditingOrderState.
-  const isEditingFromTPSL = !!editingOrderState?.orderKey && editingOrderState.source === "TPSLModal";
+  const isEditingFromOrdersModal = !!editingOrderState?.orderKey && editingOrderState.source === "OrdersModal";
 
   // Clean up intermediate state left by OrderEditor's "Back" action
-  // (sets orderKey=undefined but keeps source="TPSLModal")
+  // (sets orderKey=undefined but keeps source="OrdersModal")
   useEffect(() => {
-    if (editingOrderState && editingOrderState.source === "TPSLModal" && !editingOrderState.orderKey) {
+    if (editingOrderState && editingOrderState.source === "OrdersModal" && !editingOrderState.orderKey) {
       setEditingOrderState(undefined);
     }
   }, [editingOrderState, setEditingOrderState]);
 
   const handleEditOrder = useCallback(
     (orderKey: string) => {
-      setEditingOrderState({ orderKey, source: "TPSLModal" });
+      setEditingOrderState({ orderKey, source: "OrdersModal" });
     },
     [setEditingOrderState]
   );
 
-  const positionTitle = `${position.isLong ? t`Long` : t`Short`} ${getMarketIndexName({ indexToken: position.indexToken, isSpotOnly: false })} `;
+  const positionTitle = effectiveIndexToken
+    ? `${effectiveIsLong ? t`Long` : t`Short`} ${getMarketIndexName({ indexToken: effectiveIndexToken, isSpotOnly: false })} `
+    : "";
 
   return (
     <>
       <Modal
-        isVisible={isVisible && !isAddFormVisible && !isEditingFromTPSL}
+        isVisible={isVisible && !isAddFormVisible && !isEditingFromOrdersModal}
         setIsVisible={setIsVisible}
-        label={<Trans>TP/SL: {positionTitle}</Trans>}
+        label={<Trans>Orders: {positionTitle}</Trans>}
         className="max-lg:!w-full max-lg:!items-end"
         contentClassName="!max-w-[896px] w-[95%] h-[min(90vh,500px)] min-h-[300px] max-lg:h-[85vh] max-lg:!w-full max-lg:!max-w-none"
         contentPadding={false}
         withMobileBottomPosition={true}
         takeFullHeight={true}
       >
-        <div className="flex gap-32 px-20 py-12 max-md:gap-16 max-md:px-16">
-          <div className="flex flex-col">
-            <span className="text-body-small text-typography-secondary">
-              <Trans>Entry price</Trans>
-            </span>
-            <span className="text-body-medium numbers">
-              {formatUsd(position.entryPrice, {
-                displayDecimals: marketDecimals,
-                visualMultiplier: position.indexToken.visualMultiplier,
-              })}
-            </span>
+        {position && (
+          <div className="flex gap-32 px-20 py-12 max-md:gap-16 max-md:px-16">
+            <div className="flex flex-col">
+              <span className="text-body-small text-typography-secondary">
+                <Trans>Entry price</Trans>
+              </span>
+              <span className="text-body-medium numbers">
+                {formatUsd(position.entryPrice, {
+                  displayDecimals: marketDecimals,
+                  visualMultiplier: position.indexToken.visualMultiplier,
+                })}
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-body-small text-typography-secondary">
+                <Trans>Mark price</Trans>
+              </span>
+              <span className="text-body-medium numbers">
+                {formatUsd(position.markPrice, {
+                  displayDecimals: marketDecimals,
+                  visualMultiplier: position.indexToken.visualMultiplier,
+                })}
+              </span>
+            </div>
+            <div className="flex flex-col">
+              <span className="text-body-small text-typography-secondary">
+                <Trans>Liquidation price</Trans>
+              </span>
+              <span
+                className={cx("text-body-medium numbers", {
+                  "text-yellow-300": estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7,
+                  "text-error-red": estimatedLiquidationHours && estimatedLiquidationHours < 24,
+                })}
+              >
+                {formatLiquidationPrice(position.liquidationPrice, {
+                  displayDecimals: marketDecimals,
+                  visualMultiplier: position.indexToken.visualMultiplier,
+                }) || "..."}
+              </span>
+            </div>
           </div>
-          <div className="flex flex-col">
-            <span className="text-body-small text-typography-secondary">
-              <Trans>Mark price</Trans>
-            </span>
-            <span className="text-body-medium numbers">
-              {formatUsd(position.markPrice, {
-                displayDecimals: marketDecimals,
-                visualMultiplier: position.indexToken.visualMultiplier,
-              })}
-            </span>
-          </div>
-          <div className="flex flex-col">
-            <span className="text-body-small text-typography-secondary">
-              <Trans>Liquidation price</Trans>
-            </span>
-            <span
-              className={cx("text-body-medium numbers", {
-                "text-yellow-300": estimatedLiquidationHours && estimatedLiquidationHours < 24 * 7,
-                "text-error-red": estimatedLiquidationHours && estimatedLiquidationHours < 24,
-              })}
-            >
-              {formatLiquidationPrice(position.liquidationPrice, {
-                displayDecimals: marketDecimals,
-                visualMultiplier: position.indexToken.visualMultiplier,
-              }) || "..."}
-            </span>
-          </div>
-        </div>
+        )}
 
         <div className="flex items-center justify-between border-b-1/2 border-t-1/2 border-slate-600 bg-slate-800/50">
           <Tabs
@@ -324,7 +344,7 @@ export function TPSLModal({
             className="-mb-1 w-full pr-20 max-md:pr-16"
             rightContent={
               <div className="flex shrink-0 items-center gap-8 max-md:order-2 max-md:ml-auto max-md:pr-0">
-                {!isMobile && (
+                {!isMobile && position && (
                   <Button variant="ghost" onClick={handleAddTPSLOpen}>
                     <Trans>Add TP/SL</Trans>
                     <PlusIcon className="size-16" />
@@ -347,10 +367,10 @@ export function TPSLModal({
           isMobile={isMobile}
           activeTab={activeTab}
           onEdit={handleEditOrder}
-          onAddTPSL={handleAddTPSLOpen}
+          onAddTPSL={position ? handleAddTPSLOpen : undefined}
         />
 
-        {isMobile && (
+        {isMobile && position && (
           <div className="fixed bottom-0 left-0 right-0 border-t-1/2 border-slate-600 bg-slate-900 px-16 py-12">
             <Button variant="primary" className="w-full" onClick={handleAddTPSLOpen}>
               <Trans>Add TP/SL</Trans>
@@ -359,14 +379,16 @@ export function TPSLModal({
         )}
       </Modal>
 
-      <AddTPSLModal
-        isVisible={isAddFormVisible}
-        setIsVisible={handleAddFormVisibilityChange}
-        position={position}
-        onBack={handleAddTPSLBack}
-        initialTpPriceInput={initialTpPriceInput}
-        initialSlPriceInput={initialSlPriceInput}
-      />
+      {position && (
+        <AddTPSLModal
+          isVisible={isAddFormVisible}
+          setIsVisible={handleAddFormVisibilityChange}
+          position={position}
+          onBack={handleAddTPSLBack}
+          initialTpPriceInput={initialTpPriceInput}
+          initialSlPriceInput={initialSlPriceInput}
+        />
+      )}
     </>
   );
 }

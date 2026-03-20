@@ -12,7 +12,7 @@ import { expandDecimals } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";
 
-import { TPSLInputRow } from "components/TPSLModal/TPSLInputRow";
+import { TPSLInputRow } from "components/OrdersModal/TPSLInputRow";
 
 export type TPSLDisplayMode = "percentage" | "usd";
 

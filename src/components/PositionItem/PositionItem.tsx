@@ -38,7 +38,7 @@ import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { PositionItemOrdersLarge, PositionItemOrdersSmall } from "./PositionItemOrders";
 import { PositionItemTPSLCell } from "./PositionItemTPSLCell";
-import { TPSLModal } from "../TPSLModal/TPSLModal";
+import { OrdersModal } from "../OrdersModal/OrdersModal";
 
 import "./PositionItem.scss";
 
@@ -801,7 +801,7 @@ export function PositionItem(p: Props) {
   return (
     <>
       {p.isLarge ? renderLarge() : renderSmall()}
-      <TPSLModal
+      <OrdersModal
         isVisible={isTPSLModalVisible}
         setIsVisible={setIsTPSLModalVisible}
         position={p.position}

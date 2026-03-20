@@ -14,7 +14,7 @@ export function OrderEditorContainer() {
 
   const handleBack = useMemo(
     () => () => {
-      setEditingOrderState({ orderKey: undefined, source: "TPSLModal" });
+      setEditingOrderState({ orderKey: undefined, source: "OrdersModal" });
     },
     [setEditingOrderState]
   );
@@ -23,7 +23,7 @@ export function OrderEditorContainer() {
     return null;
   }
 
-  const shouldShowBack = editingOrderState.source === "TPSLModal";
+  const shouldShowBack = editingOrderState.source === "OrdersModal";
 
   return (
     <OrderEditor
