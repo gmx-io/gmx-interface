@@ -224,7 +224,8 @@ export function TradeboxMarginFields({
     (newMode: SizeDisplayMode) => {
       if (newMode === sizeDisplayMode) return;
 
-      if (!sizeInputValue) {
+      const currentValue = sizeDisplayMode === "usd" ? sizeInputValue : toTokenInputValue;
+      if (!currentValue) {
         setSizeDisplayMode(newMode);
         return;
       }
