@@ -337,7 +337,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
             tokensData,
             blockTimestampData,
             jitShiftParamsList: jitLiquidityInfo?.glvShiftParams,
-            // Intentionally excludes JIT — used to determine whether JIT simulation is needed
+            // Excludes JIT — determines whether JIT simulation is needed
             nativeReserveLiquidity,
           },
       callback: makeOrderTxnCallback({

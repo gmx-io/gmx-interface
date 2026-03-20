@@ -15,7 +15,7 @@ describe("getIncreasePositionPrices", () => {
       triggerPrice,
       limitOrderType: OrderType.LimitIncrease,
       indexToken: tokensData.ETH,
-      initialCollateralToken: tokensData.ETH, // same token, but collateral prices use mark price
+      initialCollateralToken: tokensData.ETH,
       collateralToken: tokensData.USDC,
       isLong: true,
     });
@@ -33,7 +33,7 @@ describe("getIncreasePositionPrices", () => {
       triggerPrice,
       indexToken: tokensData.ETH,
       initialCollateralToken: tokensData.USDC,
-      collateralToken: tokensData.ETH, // same as index token, but collateral prices use mark price
+      collateralToken: tokensData.ETH,
       isLong: true,
       limitOrderType: OrderType.LimitIncrease,
     });

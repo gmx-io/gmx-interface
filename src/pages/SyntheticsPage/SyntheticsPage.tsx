@@ -107,7 +107,6 @@ enum ListSection {
 type OrdersModalState = {
   isVisible: boolean;
   positionKey?: string;
-  /** Fallback data for title/filtering when no position exists */
   isLong?: boolean;
   indexToken?: PositionOrderInfo["indexToken"];
   initialTpPriceInput?: string;
@@ -249,10 +248,8 @@ export function SyntheticsPage(p: Props) {
 
       if (!order) return;
 
-      // Exclude TWAP orders
       if (isTwapOrder(order)) return;
 
-      // Map resting order types to the corresponding tab
       const initialTab: TpSlTabType | undefined = isLimitDecreaseOrderType(order.orderType)
         ? "takeProfit"
         : isStopLossOrderType(order.orderType)
@@ -266,7 +263,6 @@ export function SyntheticsPage(p: Props) {
         return;
       }
 
-      // Find the position this order belongs to and open the Orders modal
       const positionsInfoData = calcSelector(selectPositionsInfoData);
       const matchingPositionKey = Object.keys(positionsInfoData ?? {}).find((positionKey) =>
         isOrderForPosition(order, positionKey)
@@ -280,13 +276,8 @@ export function SyntheticsPage(p: Props) {
           initialTab,
         });
       } else {
-        // Safe cast: initialTab is only defined for position order types (TP, SL, limit/stop increase)
-        // and TWAP orders are excluded above
         const positionOrder = order as PositionOrderInfo;
 
-        // Derive collateral address matching isOrderForPosition logic:
-        // trigger decrease orders use initialCollateralTokenAddress,
-        // limit/stop increase orders use targetCollateralToken
         const isTriggerDecrease =
           isLimitDecreaseOrderType(positionOrder.orderType) || isStopLossOrderType(positionOrder.orderType);
         const collateralAddress = isTriggerDecrease

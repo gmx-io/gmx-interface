@@ -51,11 +51,8 @@ type Props = {
   isVisible: boolean;
   setIsVisible: (visible: boolean) => void;
   position?: PositionInfo;
-  /** Used for order filtering when no position exists */
   positionKey?: string;
-  /** Used for title when no position exists */
   isLong?: boolean;
-  /** Used for title when no position exists */
   indexToken?: TokenData;
   /**
    * When "add", the modal opens directly into the AddTPSLModal form.
@@ -64,7 +61,6 @@ type Props = {
   initialView?: "list" | "add";
   initialTpPriceInput?: string;
   initialSlPriceInput?: string;
-  /** Which tab to focus when the modal opens. Defaults to "all". */
   initialTab?: TpSlTabType;
 };
 
@@ -227,8 +223,6 @@ export function OrdersModal({
     position?.collateralToken.symbol,
   ]);
 
-  // When the modal opens, sync the view to initialView and the tab to initialTab.
-  // When it closes, reset the add form state.
   useEffect(() => {
     if (isVisible) {
       setIsAddFormVisible(initialView === "add");
@@ -242,11 +236,6 @@ export function OrdersModal({
     setIsAddFormVisible(true);
   }, []);
 
-  /**
-   * Wrapper for AddTPSLModal's setIsVisible.
-   * When AddTPSLModal closes for ANY reason (X button, backdrop, Escape, back, success),
-   * this fires with visible=false and always reopens the OrdersModal list view.
-   */
   const handleAddFormVisibilityChange = useCallback(
     (visible: boolean) => {
       setIsAddFormVisible(visible);
@@ -261,12 +250,9 @@ export function OrdersModal({
     setIsAddFormVisible(false);
   }, []);
 
-  // Reactively hide OrdersModal when OrderEditor is open from this modal.
-  // This avoids timing issues from trying to coordinate setIsVisible + setEditingOrderState.
   const isEditingFromOrdersModal = !!editingOrderState?.orderKey && editingOrderState.source === "OrdersModal";
 
-  // Clean up intermediate state left by OrderEditor's "Back" action
-  // (sets orderKey=undefined but keeps source="OrdersModal")
+  // Clean up stale state from OrderEditor's "Back" action
   useEffect(() => {
     if (editingOrderState && editingOrderState.source === "OrdersModal" && !editingOrderState.orderKey) {
       setEditingOrderState(undefined);
