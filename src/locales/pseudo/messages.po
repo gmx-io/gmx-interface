@@ -4361,10 +4361,6 @@ msgstr ""
 msgid "Code not found"
 msgstr ""
 
-#: src/components/TradeboxMarginFields/MarginPercentageSlider.tsx
-#~ msgid "Enter a margin amount to use the size slider"
-#~ msgstr ""
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Inactive"
 msgstr ""
@@ -8746,6 +8742,7 @@ msgstr ""
 msgid "Min margin: {0}"
 msgstr ""
 
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
@@ -10502,6 +10499,7 @@ msgstr ""
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/keys.ts
 #: src/components/TVChartContainer/constants.ts

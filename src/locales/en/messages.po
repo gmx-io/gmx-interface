@@ -4361,10 +4361,6 @@ msgstr "Price impact is stored when you increase a position and applied when you
 msgid "Code not found"
 msgstr "Code not found"
 
-#: src/components/TradeboxMarginFields/MarginPercentageSlider.tsx
-#~ msgid "Enter a margin amount to use the size slider"
-#~ msgstr "Enter a margin amount to use the size slider"
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Inactive"
 msgstr "Inactive"
@@ -8746,6 +8742,7 @@ msgstr "FAILURES"
 msgid "Min margin: {0}"
 msgstr "Min margin: {0}"
 
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
@@ -10502,6 +10499,7 @@ msgstr "No to token address"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/keys.ts
 #: src/components/TVChartContainer/constants.ts

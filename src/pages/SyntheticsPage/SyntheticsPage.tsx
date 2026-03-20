@@ -31,7 +31,13 @@ import {
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
-import { isTriggerDecreaseOrderType } from "domain/synthetics/orders";
+import {
+  isLimitDecreaseOrderType,
+  isLimitIncreaseOrderType,
+  isStopIncreaseOrderType,
+  isStopLossOrderType,
+  isTwapOrder,
+} from "domain/synthetics/orders";
 import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import type { OrderInfo } from "domain/synthetics/orders/types";
@@ -57,7 +63,7 @@ import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
-import { getOrderKeys } from "sdk/utils/orders";
+import { getOrderKeys, isOrderForPosition } from "sdk/utils/orders";
 
 import { AppHeader } from "components/AppHeader/AppHeader";
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
@@ -74,7 +80,7 @@ import { PositionSeller } from "components/PositionSeller/PositionSeller";
 import { SwapCard } from "components/SwapCard/SwapCard";
 import type { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
 import Tabs from "components/Tabs/Tabs";
-import { TPSLModal } from "components/TPSLModal/TPSLModal";
+import { TPSLModal, type TpSlTabType } from "components/TPSLModal/TPSLModal";
 import { useIsCurtainOpen } from "components/TradeBox/Curtain";
 import { TradeBoxResponsiveContainer } from "components/TradeBox/TradeBoxResponsiveContainer";
 import { TradeHistory } from "components/TradeHistory/TradeHistory";
@@ -102,6 +108,8 @@ type ChartTPSLModalState = {
   positionKey?: string;
   initialTpPriceInput?: string;
   initialSlPriceInput?: string;
+  initialView?: "list" | "add";
+  initialTab?: TpSlTabType;
 };
 
 export function SyntheticsPage(p: Props) {
@@ -237,11 +245,37 @@ export function SyntheticsPage(p: Props) {
 
       if (!order) return;
 
-      if (isTriggerDecreaseOrderType(order.orderType)) {
+      // Exclude TWAP orders
+      if (isTwapOrder(order)) return;
+
+      // Map resting order types to the corresponding TP/SL tab
+      const initialTab: TpSlTabType | undefined = isLimitDecreaseOrderType(order.orderType)
+        ? "takeProfit"
+        : isStopLossOrderType(order.orderType)
+          ? "stopLoss"
+          : isLimitIncreaseOrderType(order.orderType) || isStopIncreaseOrderType(order.orderType)
+            ? "all"
+            : undefined;
+
+      if (initialTab === undefined) {
+        setActiveOrder(order);
         return;
       }
 
-      setActiveOrder(order);
+      // Find the position this order belongs to and open the TP/SL modal
+      const positionsInfoData = calcSelector(selectPositionsInfoData);
+      const matchingPositionKey = Object.keys(positionsInfoData ?? {}).find((positionKey) =>
+        isOrderForPosition(order, positionKey)
+      );
+
+      if (matchingPositionKey) {
+        setChartTPSLModalState({
+          isVisible: true,
+          positionKey: matchingPositionKey,
+          initialView: "list",
+          initialTab,
+        });
+      }
     },
     [calcSelector, setActiveOrder]
   );
@@ -551,9 +585,10 @@ export function SyntheticsPage(p: Props) {
           isVisible={chartTPSLModalState.isVisible}
           setIsVisible={handleChartTPSLModalVisibility}
           position={chartTPSLPosition}
-          initialView="add"
+          initialView={chartTPSLModalState.initialView ?? "add"}
           initialTpPriceInput={chartTPSLModalState.initialTpPriceInput}
           initialSlPriceInput={chartTPSLModalState.initialSlPriceInput}
+          initialTab={chartTPSLModalState.initialTab}
         />
       )}
       <PositionSeller />

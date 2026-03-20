@@ -4361,10 +4361,6 @@ msgstr "价格影响在您增加仓位时存储，并在您减少仓位时应用
 msgid "Code not found"
 msgstr "未找到推荐码"
 
-#: src/components/TradeboxMarginFields/MarginPercentageSlider.tsx
-#~ msgid "Enter a margin amount to use the size slider"
-#~ msgstr ""
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Inactive"
 msgstr "未激活"
@@ -8746,6 +8742,7 @@ msgstr "失败次数"
 msgid "Min margin: {0}"
 msgstr "最低保证金：{0}"
 
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
@@ -10502,6 +10499,7 @@ msgstr "无目标代币地址"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/keys.ts
 #: src/components/TVChartContainer/constants.ts

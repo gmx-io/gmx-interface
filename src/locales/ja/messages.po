@@ -4361,10 +4361,6 @@ msgstr "価格への影響はポジションを増加する際に蓄積され、
 msgid "Code not found"
 msgstr "コードが見つかりません"
 
-#: src/components/TradeboxMarginFields/MarginPercentageSlider.tsx
-#~ msgid "Enter a margin amount to use the size slider"
-#~ msgstr ""
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Inactive"
 msgstr "無効"
@@ -8746,6 +8742,7 @@ msgstr "失敗回数"
 msgid "Min margin: {0}"
 msgstr "最小証拠金：{0}"
 
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
@@ -10502,6 +10499,7 @@ msgstr "送信先トークンアドレスがありません"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
+#: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/components/TradeHistory/keys.ts
 #: src/components/TVChartContainer/constants.ts

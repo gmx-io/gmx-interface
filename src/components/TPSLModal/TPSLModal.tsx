@@ -18,6 +18,7 @@ import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/se
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import {
+  isIncreaseOrderType,
   isLimitDecreaseOrderType,
   isStopLossOrderType,
   isTwapOrder,
@@ -43,7 +44,7 @@ import PlusIcon from "img/ic_plus.svg?react";
 import { AddTPSLModal } from "./AddTPSLModal";
 import { TPSLOrdersList } from "./TPSLOrdersList";
 
-type TabType = "all" | "takeProfit" | "stopLoss";
+export type TpSlTabType = "all" | "takeProfit" | "stopLoss";
 
 type Props = {
   isVisible: boolean;
@@ -56,6 +57,8 @@ type Props = {
   initialView?: "list" | "add";
   initialTpPriceInput?: string;
   initialSlPriceInput?: string;
+  /** Which tab to focus when the modal opens. Defaults to "all". */
+  initialTab?: TpSlTabType;
 };
 
 export function TPSLModal({
@@ -65,8 +68,9 @@ export function TPSLModal({
   initialView = "list",
   initialTpPriceInput,
   initialSlPriceInput,
+  initialTab = "all",
 }: Props) {
-  const [activeTab, setActiveTab] = useState<TabType>("all");
+  const [activeTab, setActiveTab] = useState<TpSlTabType>("all");
   const [isCancellingAll, setIsCancellingAll] = useState(false);
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
 
@@ -94,6 +98,7 @@ export function TPSLModal({
   const { tpOrders, slOrders, allOrders } = useMemo(() => {
     const tpOrders: PositionOrderInfo[] = [];
     const slOrders: PositionOrderInfo[] = [];
+    const increaseOrders: PositionOrderInfo[] = [];
 
     for (const { order } of ordersWithErrors) {
       if (isTwapOrder(order)) continue;
@@ -101,13 +106,15 @@ export function TPSLModal({
         tpOrders.push(order);
       } else if (isStopLossOrderType(order.orderType)) {
         slOrders.push(order);
+      } else if (isIncreaseOrderType(order.orderType)) {
+        increaseOrders.push(order);
       }
     }
 
     return {
       tpOrders,
       slOrders,
-      allOrders: [...tpOrders, ...slOrders],
+      allOrders: [...tpOrders, ...slOrders, ...increaseOrders],
     };
   }, [ordersWithErrors]);
 
@@ -124,9 +131,9 @@ export function TPSLModal({
 
   const tabOptions = useMemo(
     () => [
-      { value: "all" as TabType, label: t`All` },
+      { value: "all" as TpSlTabType, label: t`All` },
       {
-        value: "takeProfit" as TabType,
+        value: "takeProfit" as TpSlTabType,
         label: (
           <>
             <Trans>Take-Profit</Trans> {tpOrders.length > 0 ? <Badge>{tpOrders.length}</Badge> : null}
@@ -134,7 +141,7 @@ export function TPSLModal({
         ),
       },
       {
-        value: "stopLoss" as TabType,
+        value: "stopLoss" as TpSlTabType,
         label: (
           <>
             <Trans>Stop-Loss</Trans> {slOrders.length > 0 ? <Badge>{slOrders.length}</Badge> : null}
@@ -200,15 +207,16 @@ export function TPSLModal({
     setCancellingOrdersKeys,
   ]);
 
-  // When the modal opens, sync the view to initialView.
+  // When the modal opens, sync the view to initialView and the tab to initialTab.
   // When it closes, reset the add form state.
   useEffect(() => {
     if (isVisible) {
       setIsAddFormVisible(initialView === "add");
+      setActiveTab(initialTab);
     } else {
       setIsAddFormVisible(false);
     }
-  }, [isVisible, initialView]);
+  }, [isVisible, initialView, initialTab]);
 
   const handleAddTPSLOpen = useCallback(() => {
     setIsAddFormVisible(true);

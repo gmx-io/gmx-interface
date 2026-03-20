@@ -11,7 +11,14 @@ import { useEditingOrderState } from "context/SyntheticsStateContext/hooks/order
 import { useCancelOrder } from "context/SyntheticsStateContext/hooks/orderHooks";
 import { selectIsSetAcceptablePriceImpactEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { isLimitDecreaseOrderType, OrderType, PositionOrderInfo } from "domain/synthetics/orders";
+import {
+  isIncreaseOrderType,
+  isLimitDecreaseOrderType,
+  isLimitIncreaseOrderType,
+  isStopLossOrderType,
+  OrderType,
+  PositionOrderInfo,
+} from "domain/synthetics/orders";
 import { PositionInfo, getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import { getDecreasePositionAmounts } from "domain/synthetics/trade";
 import { formatDeltaUsd, formatUsd, formatBalanceAmount, formatPercentage } from "lib/numbers";
@@ -144,10 +151,14 @@ function useTPSLOrderViewModel({
   const isSetAcceptablePriceImpactEnabled = useSelector(selectIsSetAcceptablePriceImpactEnabled);
   const [isCancelling, cancelOrder] = useCancelOrder(order);
 
-  const orderType = useMemo(
-    () => (isLimitDecreaseOrderType(order.orderType) ? t`Take-Profit` : t`Stop-Loss`),
-    [order.orderType]
-  );
+  const isIncrease = isIncreaseOrderType(order.orderType);
+
+  const orderType = useMemo(() => {
+    if (isLimitDecreaseOrderType(order.orderType)) return t`Take-Profit`;
+    if (isStopLossOrderType(order.orderType)) return t`Stop-Loss`;
+    if (isLimitIncreaseOrderType(order.orderType)) return t`Limit`;
+    return t`Stop Market`;
+  }, [order.orderType]);
 
   const triggerPriceDisplay = useMemo(
     () =>
@@ -159,6 +170,10 @@ function useTPSLOrderViewModel({
   );
 
   const sizeDisplay = useMemo(() => {
+    if (isIncrease) {
+      return <span>+{formatUsd(order.sizeDeltaUsd)}</span>;
+    }
+
     const isFullClose = order.sizeDeltaUsd === position.sizeInUsd;
 
     if (isFullClose) {
@@ -174,9 +189,13 @@ function useTPSLOrderViewModel({
         <span className="ml-4 text-typography-secondary">(-{formatPercentage(sizePercentage)})</span>
       </span>
     );
-  }, [order.sizeDeltaUsd, position.sizeInUsd]);
+  }, [order.sizeDeltaUsd, position.sizeInUsd, isIncrease]);
 
   const estimatedPnl = useMemo(() => {
+    if (isIncrease) {
+      return undefined;
+    }
+
     const entryPrice = position.entryPrice ?? 0n;
     const priceDiff = order.isLong ? order.triggerPrice - entryPrice : entryPrice - order.triggerPrice;
 
@@ -184,7 +203,7 @@ function useTPSLOrderViewModel({
     const pnlPercentage = position.collateralUsd > 0n ? bigMath.mulDiv(pnlUsd, 10000n, position.collateralUsd) : 0n;
 
     return { pnlUsd, pnlPercentage };
-  }, [order.isLong, order.sizeDeltaUsd, order.triggerPrice, position.collateralUsd, position.entryPrice]);
+  }, [order.isLong, order.sizeDeltaUsd, order.triggerPrice, position.collateralUsd, position.entryPrice, isIncrease]);
 
   const shouldKeepLeverage = useMemo(() => {
     if (order.sizeDeltaUsd >= position.sizeInUsd) {
@@ -195,7 +214,12 @@ function useTPSLOrderViewModel({
   }, [order.initialCollateralDeltaAmount, order.sizeDeltaUsd, position.sizeInUsd]);
 
   const decreaseAmounts = useMemo(() => {
-    if (minCollateralUsd === undefined || minPositionSizeUsd === undefined || !getIsPositionInfoLoaded(position)) {
+    if (
+      isIncrease ||
+      minCollateralUsd === undefined ||
+      minPositionSizeUsd === undefined ||
+      !getIsPositionInfoLoaded(position)
+    ) {
       return undefined;
     }
 
@@ -216,6 +240,7 @@ function useTPSLOrderViewModel({
       isSetAcceptablePriceImpactEnabled,
     });
   }, [
+    isIncrease,
     minCollateralUsd,
     minPositionSizeUsd,
     order.marketInfo,
@@ -316,21 +341,25 @@ function TPSLOrderCard({
         <span className="text-body-medium numbers">{triggerPriceDisplay}</span>
       </div>
 
-      <div className="flex items-center justify-between">
-        <span className="text-14 font-medium text-typography-secondary">
-          <Trans>Est. PnL</Trans>
-        </span>
-        <span className={cx("text-body-medium numbers", getPositiveOrNegativeClass(estimatedPnl.pnlUsd))}>
-          {formatDeltaUsd(estimatedPnl.pnlUsd, estimatedPnl.pnlPercentage)}
-        </span>
-      </div>
+      {estimatedPnl && (
+        <div className="flex items-center justify-between">
+          <span className="text-14 font-medium text-typography-secondary">
+            <Trans>Est. PnL</Trans>
+          </span>
+          <span className={cx("text-body-medium numbers", getPositiveOrNegativeClass(estimatedPnl.pnlUsd))}>
+            {formatDeltaUsd(estimatedPnl.pnlUsd, estimatedPnl.pnlPercentage)}
+          </span>
+        </div>
+      )}
 
-      <div className="flex items-center justify-between">
-        <span className="text-14 font-medium text-typography-secondary">
-          <Trans>Receive</Trans>
-        </span>
-        <span className="text-body-medium numbers">{receiveDisplay}</span>
-      </div>
+      {estimatedPnl && (
+        <div className="flex items-center justify-between">
+          <span className="text-14 font-medium text-typography-secondary">
+            <Trans>Receive</Trans>
+          </span>
+          <span className="text-body-medium numbers">{receiveDisplay}</span>
+        </div>
+      )}
 
       <div className="mt-4 flex gap-8">
         <Button variant="secondary" className="flex-1" onClick={handleEdit}>
@@ -384,9 +413,13 @@ export function TPSLOrderRow({
         <span className="numbers">{triggerPriceDisplay}</span>
       </TableTd>
       <TableTd>
-        <span className={cx("numbers", getPositiveOrNegativeClass(estimatedPnl.pnlUsd))}>
-          {formatDeltaUsd(estimatedPnl.pnlUsd, estimatedPnl.pnlPercentage)}
-        </span>
+        {estimatedPnl ? (
+          <span className={cx("numbers", getPositiveOrNegativeClass(estimatedPnl.pnlUsd))}>
+            {formatDeltaUsd(estimatedPnl.pnlUsd, estimatedPnl.pnlPercentage)}
+          </span>
+        ) : (
+          <span className="text-typography-secondary">—</span>
+        )}
       </TableTd>
       <TableTd>
         <span className="numbers">{receiveDisplay}</span>
