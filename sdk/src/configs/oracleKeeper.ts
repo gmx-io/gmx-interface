@@ -13,7 +13,6 @@ export const ORACLE_FALLBACK_TRACKER_CONFIG = {
   setEndpointsThrottle: 5 * 1000, // 5 secs
   delay: 5000, // 5 secs
 };
-
 const ORACLE_KEEPER_URLS: Record<ContractsChainId, string> = {
   [ARBITRUM]: "https://arbitrum-api.gmxinfra.io",
 

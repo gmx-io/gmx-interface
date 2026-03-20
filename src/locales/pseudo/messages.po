@@ -422,6 +422,10 @@ msgstr ""
 msgid "Settled funding fees"
 msgstr ""
 
+#: src/components/Errors/ErrorToastWithSupport.tsx
+msgid "Contact Support"
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Returned collateral"
 msgstr ""
@@ -7193,10 +7197,6 @@ msgstr ""
 msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr ""
 
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit signing failed"
-msgstr ""
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order uses {collateralSymbol}, but existing {longText} position uses {symbol} as collateral"
 msgstr ""
@@ -7796,6 +7796,10 @@ msgstr ""
 msgid "Shifting {symbol}..."
 msgstr ""
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max reserved + JIT {directionLabel}"
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close price impact"
@@ -7866,6 +7870,10 @@ msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Price impact exceeds order size. Impact: {priceImpactUsdText}, order: {sizeDeltaUsdText}"
+msgstr ""
+
+#: src/components/Errors/ErrorToastWithSupport.tsx
+msgid "If you're having trouble completing this action, our team can help."
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx

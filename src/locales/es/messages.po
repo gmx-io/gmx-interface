@@ -422,6 +422,10 @@ msgstr "Confirmar retirada"
 msgid "Settled funding fees"
 msgstr "Comisiones de financiación liquidadas"
 
+#: src/components/Errors/ErrorToastWithSupport.tsx
+msgid "Contact Support"
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Returned collateral"
 msgstr "Garantía devuelta"
@@ -7193,10 +7197,6 @@ msgstr "<0>Volver a </0><1>Página inicial</1> <2>o </2> <3>Operar</3>"
 msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr "Puente {tokenSymbol} a {chainName} con"
 
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit signing failed"
-msgstr "Firma de permiso fallida"
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order uses {collateralSymbol}, but existing {longText} position uses {symbol} as collateral"
 msgstr "La orden utiliza {collateralSymbol}, pero la posición {longText} existente utiliza {symbol} como garantía"
@@ -7796,6 +7796,10 @@ msgstr "Orden de cambio GM desconocida"
 msgid "Shifting {symbol}..."
 msgstr "Cambiando {symbol}..."
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max reserved + JIT {directionLabel}"
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close price impact"
@@ -7867,6 +7871,10 @@ msgstr "{0} GMX"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Price impact exceeds order size. Impact: {priceImpactUsdText}, order: {sizeDeltaUsdText}"
 msgstr "El impacto en el precio excede el tamaño de la orden. Impacto: {priceImpactUsdText}, orden: {sizeDeltaUsdText}"
+
+#: src/components/Errors/ErrorToastWithSupport.tsx
+msgid "If you're having trouble completing this action, our team can help."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Jones DAO"

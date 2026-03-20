@@ -9,6 +9,7 @@ import { getCallStaticError } from "lib/errors/additionalValidation";
 import { helperToast } from "lib/helperToast";
 import { OrderMetricId, sendTxnErrorMetric } from "lib/metrics";
 import { useJsonRpcProvider } from "lib/rpc";
+import { TradingActionName } from "lib/tradingErrorTracker";
 import { sendUserAnalyticsOrderResultEvent } from "lib/userAnalytics";
 
 import { getInsufficientExecutionFeeToastContent } from "components/Errors/errorToasts";
@@ -25,6 +26,7 @@ export type PendingTransaction = {
   messageDetails?: ReactNode;
   metricId?: OrderMetricId;
   data?: PendingTransactionData;
+  actionName?: TradingActionName;
 };
 
 export type SetPendingTransactions = Dispatch<SetStateAction<PendingTransaction[]>>;
@@ -100,7 +102,16 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
               );
             }
 
-            helperToast.error(toastMsg, { autoClose: false });
+            helperToast.error(toastMsg, {
+              autoClose: false,
+              tradingErrorInfo: pendingTxn.actionName
+                ? {
+                    actionName: pendingTxn.actionName,
+                    errorData: errorData ?? onchainError,
+                    metricId: pendingTxn.metricId,
+                  }
+                : undefined,
+            });
 
             if (pendingTxn.metricId) {
               sendTxnErrorMetric(pendingTxn.metricId, onchainError, "minting");

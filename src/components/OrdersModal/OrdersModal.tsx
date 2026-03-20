@@ -203,7 +203,10 @@ export function OrdersModal({
         batchParams,
         expressParams,
         simulationParams: undefined,
-        callback: makeOrderTxnCallback({}),
+        callback: makeOrderTxnCallback({
+          actionName: "Cancel Order",
+          collateralSymbol: position.collateralToken.symbol,
+        }),
         provider,
         isGmxAccount: srcChainId !== undefined,
       });
@@ -215,12 +218,13 @@ export function OrdersModal({
     signer,
     provider,
     displayedOrders,
+    setCancellingOrdersKeys,
+    globalExpressParams,
     chainId,
     srcChainId,
-    globalExpressParams,
     subaccount,
     makeOrderTxnCallback,
-    setCancellingOrdersKeys,
+    position.collateralToken.symbol,
   ]);
 
   // When the modal opens, sync the view to initialView and the tab to initialTab.
