@@ -231,16 +231,18 @@ export function PositionSeller() {
     }
   }, [isVisible, settings.receiveToGmxAccount]);
 
+  const closeSizeReset = closeSizeHook.reset;
+
   useEffect(() => {
     if (!isVisible) {
       setIsDestinationDialogVisible(false);
       // timeout to not disturb animation
       setTimeout(() => {
         resetPositionSeller();
-        closeSizeHook.reset();
+        closeSizeReset();
       }, 200);
     }
-  }, [isVisible, resetPositionSeller, closeSizeHook]);
+  }, [isVisible, resetPositionSeller, closeSizeReset]);
 
   const markPrice = useSelector(selectPositionSellerMarkPrice);
   const { maxLiquidity: maxSwapLiquidity } = useSelector(selectPositionSellerMaxLiquidityPath);
