@@ -11,6 +11,7 @@ import { getIcons } from "config/icons";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 import { calculateStakeBonusPercentage } from "domain/stake/calculateStakeBonusPercentage";
+import { isLoyaltyTrackingActive, wouldTriggerReset } from "domain/stake/useStakingPowerData";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
@@ -24,6 +25,7 @@ import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
+import type { StakingPowerResponse } from "sdk/utils/staking/types";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
@@ -64,6 +66,7 @@ export function StakeModal(props: {
   stakeTokenAddress: string;
   stakeFarmAddress: string;
   reservedAmount: bigint;
+  stakingPowerData?: StakingPowerResponse;
 }) {
   const {
     isVisible,
@@ -79,6 +82,7 @@ export function StakeModal(props: {
     stakeTokenAddress,
     stakeFarmAddress,
     reservedAmount,
+    stakingPowerData,
   } = props;
 
   const { maxAmount: stakeMaxAmount, value: stakeValue, setValue: setStakeValue } = stake;
@@ -352,6 +356,12 @@ export function StakeModal(props: {
     unstakeMaxAmount !== undefined &&
     unstakeAmount <= unstakeMaxAmount;
 
+  const wouldResetPower = useMemo(() => {
+    if (!stakingPowerData || unstakeAmount === undefined || unstakeAmount === 0n) return false;
+    if (!isLoyaltyTrackingActive(stakingPowerData.loyaltyTrackingStart)) return false;
+    return wouldTriggerReset(stakingPowerData.currentStaked, unstakeAmount, stakingPowerData.historicalMaxStaked);
+  }, [stakingPowerData, unstakeAmount]);
+
   return (
     <div className="StakeModal">
       <Modal
@@ -424,6 +434,16 @@ export function StakeModal(props: {
               <span>You will earn {formatAmount(unstakeBonusLostPercentage, 2, 2)}% less rewards.</span>
             </Trans>
           </AlertInfo>
+        )}
+
+        {wouldResetPower && (
+          <AlertInfoCard type="error" hideClose>
+            <Trans>
+              This unstake will drop your balance below 80% of your historical max, resetting all your accumulated
+              staking power to zero. Your projected Treasury reward share will be lost. Power will start accruing again
+              immediately from your new balance.
+            </Trans>
+          </AlertInfoCard>
         )}
 
         <SwitchToSettlementChainWarning topic="staking" />

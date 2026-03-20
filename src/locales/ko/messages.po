@@ -641,6 +641,10 @@ msgstr "{0}/USD 풀에 유동성 부족"
 msgid "Treasury"
 msgstr "트레저리"
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "Your share of the total network staking power. Treasury rewards will be distributed proportionally to staking power when GMX reaches $90. All projected rewards are best-effort estimations. Actual distribution is subject to DAO governance."
+msgstr ""
+
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/notifications.tsx
@@ -3026,6 +3030,10 @@ msgstr "허용 슬리피지"
 msgid "No centralized exchanges available"
 msgstr "이용 가능한 중앙화 거래소가 없습니다"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Loyalty"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 msgid "No assets yet"
 msgstr "아직 자산이 없습니다"
@@ -4065,6 +4073,10 @@ msgstr "사용자 복사"
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Realized swap impact"
 msgstr "실현된 스왑 영향"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "This unstake will drop your balance below 80% of your historical max, resetting all your accumulated staking power to zero. Your projected Treasury reward share will be lost. Power will start accruing again immediately from your new balance."
+msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Break down net price impact"
@@ -7851,6 +7863,10 @@ msgstr "{0} GMX"
 msgid "Price impact exceeds order size. Impact: {priceImpactUsdText}, order: {sizeDeltaUsdText}"
 msgstr "가격 영향이 주문 규모를 초과합니다. 영향: {priceImpactUsdText}, 주문: {sizeDeltaUsdText}"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Staking Power"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Jones DAO"
 msgstr "Jones DAO"
@@ -8927,6 +8943,10 @@ msgstr "수익률 볼트"
 msgid "{title}"
 msgstr "{title}"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Staking power accrues continuously based on the amount and duration of your stake. Your share of accumulated Treasury rewards is proportional to your staking power relative to the network total. All projected rewards are best-effort estimations. Actual distribution is subject to DAO governance."
+msgstr ""
+
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit transaction sent for {0}!"
 msgstr "{0}에 대한 Permit 트랜잭션이 전송되었습니다!"
@@ -9478,6 +9498,10 @@ msgstr "예약된 양(+)의 가격 영향"
 msgid "Max rate short"
 msgstr "최대 숏 이율"
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "Staking Power Share"
+msgstr ""
+
 #: src/pages/UiPage/UiPage.tsx
 msgid "This page demonstrates the UI components in the app"
 msgstr "이 페이지는 앱의 UI 구성 요소를 보여줍니다"
@@ -9489,6 +9513,10 @@ msgstr "알림"
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "C:"
 msgstr "C:"
+
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "I understand that staking power does not transfer. The receiving wallet will start with zero staking power and a fresh historical max."
+msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. This action won't affect it. <0>Switch to {1} collateral</0>"
@@ -10061,6 +10089,10 @@ msgstr "최대 100배 레버리지와 오더북 깊이에 의존하지 않는 �
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Stop loss price"
 msgstr "손절가"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Your current staked balance relative to your historical max. Dropping below 80% resets your accumulated staking power to zero."
+msgstr ""
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Oracle keeper monitoring"
@@ -10635,6 +10667,10 @@ msgstr "일반 성과 상세"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"
 msgstr "익절매"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Your staking power was reset {0} due to dropping below the 80% loyalty threshold. Power is now accruing again from your current balance."
+msgstr ""
 
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx

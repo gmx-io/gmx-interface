@@ -641,6 +641,10 @@ msgstr "Liquidez insuficiente en cualquier pool {0}/USD"
 msgid "Treasury"
 msgstr "Tesorería"
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "Your share of the total network staking power. Treasury rewards will be distributed proportionally to staking power when GMX reaches $90. All projected rewards are best-effort estimations. Actual distribution is subject to DAO governance."
+msgstr ""
+
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/notifications.tsx
@@ -3026,6 +3030,10 @@ msgstr "Deslizamiento permitido"
 msgid "No centralized exchanges available"
 msgstr "No hay exchanges centralizados disponibles"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Loyalty"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 msgid "No assets yet"
 msgstr "Aún no hay activos"
@@ -4065,6 +4073,10 @@ msgstr "Copiar usuarios"
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Realized swap impact"
 msgstr "Impacto de intercambio realizado"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "This unstake will drop your balance below 80% of your historical max, resetting all your accumulated staking power to zero. Your projected Treasury reward share will be lost. Power will start accruing again immediately from your new balance."
+msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Break down net price impact"
@@ -7851,6 +7863,10 @@ msgstr "{0} GMX"
 msgid "Price impact exceeds order size. Impact: {priceImpactUsdText}, order: {sizeDeltaUsdText}"
 msgstr "El impacto en el precio excede el tamaño de la orden. Impacto: {priceImpactUsdText}, orden: {sizeDeltaUsdText}"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Staking Power"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Jones DAO"
 msgstr "Jones DAO"
@@ -8927,6 +8943,10 @@ msgstr "Bóvedas de rendimiento"
 msgid "{title}"
 msgstr "{title}"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Staking power accrues continuously based on the amount and duration of your stake. Your share of accumulated Treasury rewards is proportional to your staking power relative to the network total. All projected rewards are best-effort estimations. Actual distribution is subject to DAO governance."
+msgstr ""
+
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit transaction sent for {0}!"
 msgstr "¡Transacción de permiso enviada para {0}!"
@@ -9478,6 +9498,10 @@ msgstr "Impacto positivo reservado"
 msgid "Max rate short"
 msgstr "Tasa máxima corto"
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "Staking Power Share"
+msgstr ""
+
 #: src/pages/UiPage/UiPage.tsx
 msgid "This page demonstrates the UI components in the app"
 msgstr "Esta página muestra los componentes de interfaz de la aplicación"
@@ -9489,6 +9513,10 @@ msgstr "Alertas"
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "C:"
 msgstr "C:"
+
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "I understand that staking power does not transfer. The receiving wallet will start with zero staking power and a fresh historical max."
+msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. This action won't affect it. <0>Switch to {1} collateral</0>"
@@ -10061,6 +10089,10 @@ msgstr "Benefíciese de hasta 100x de apalancamiento y liquidez garantizada en c
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Stop loss price"
 msgstr "Precio de stop loss"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Your current staked balance relative to your historical max. Dropping below 80% resets your accumulated staking power to zero."
+msgstr ""
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Oracle keeper monitoring"
@@ -10635,6 +10667,10 @@ msgstr "Detalles de rendimiento general"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"
 msgstr "Take-Profit"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Your staking power was reset {0} due to dropping below the 80% loyalty threshold. Power is now accruing again from your current balance."
+msgstr ""
 
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx

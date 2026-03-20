@@ -11,6 +11,7 @@ import { ARBITRUM, getChainNativeTokenSymbol } from "config/chains";
 import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useGmxPrice } from "domain/legacy";
+import { isLoyaltyTrackingActive, useStakingPowerData } from "domain/stake/useStakingPowerData";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT, StakingProcessedData } from "lib/legacy";
@@ -19,7 +20,9 @@ import { sendEarnPortfolioItemClickEvent } from "lib/userAnalytics/earnEvents";
 import useWallet from "lib/wallets/useWallet";
 import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 import { bigMath } from "sdk/utils/bigmath";
+import type { StakingPowerResponse } from "sdk/utils/staking/types";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import { VestModal } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal";
@@ -53,6 +56,7 @@ export function GmxAssetCard({
   const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
 
   const nativeTokenSymbol = getChainNativeTokenSymbol(chainId);
+  const { stakingPowerData } = useStakingPowerData(chainId, { account });
 
   const [isStakeModalVisible, setIsStakeModalVisible] = useState(false);
   const [stakeValue, setStakeValue] = useState("");
@@ -232,6 +236,7 @@ export function GmxAssetCard({
           />
           <SyntheticsInfoRow label={<Trans>Price</Trans>} value={priceRowValue} />
           <SyntheticsInfoRow label={<Trans>APR</Trans>} value={aprRowValue} />
+          {!esGmx && <StakingPowerSection stakingPowerData={stakingPowerData} />}
         </div>
       </BaseAssetCard>
 
@@ -249,6 +254,7 @@ export function GmxAssetCard({
         unstake={unstakeConfig}
         setPendingTxns={setPendingTxns}
         processedData={processedData}
+        stakingPowerData={stakingPowerData}
       />
       {esGmx && (
         <VestModal
@@ -260,6 +266,63 @@ export function GmxAssetCard({
       )}
       <BuyGmxModal isVisible={isBuyModalVisible} setIsVisible={setIsBuyModalVisible} />
     </div>
+  );
+}
+
+function StakingPowerSection({ stakingPowerData }: { stakingPowerData: StakingPowerResponse | undefined }) {
+  if (!stakingPowerData) return null;
+
+  const loyaltyActive = isLoyaltyTrackingActive(stakingPowerData.loyaltyTrackingStart);
+  const hasBeenReset = stakingPowerData.powerResetCount > 0;
+
+  return (
+    <>
+      <div className="border-t-1/2 border-slate-700" />
+      <SyntheticsInfoRow
+        label={
+          <Tooltip
+            handle={<Trans>Staking Power</Trans>}
+            content={
+              <Trans>
+                Staking power accrues continuously based on the amount and duration of your stake. Your share of
+                accumulated Treasury rewards is proportional to your staking power relative to the network total. All
+                projected rewards are best-effort estimations. Actual distribution is subject to DAO governance.
+              </Trans>
+            }
+          />
+        }
+        value={<span className="numbers">{stakingPowerData.userSharePercent.toFixed(2)}%</span>}
+      />
+      {loyaltyActive && stakingPowerData.loyaltyRatio !== null && (
+        <SyntheticsInfoRow
+          label={
+            <Tooltip
+              handle={<Trans>Loyalty</Trans>}
+              content={
+                <Trans>
+                  Your current staked balance relative to your historical max. Dropping below 80% resets your
+                  accumulated staking power to zero.
+                </Trans>
+              }
+            />
+          }
+          value={
+            <span className={cx("numbers", { "text-red-500": stakingPowerData.loyaltyRatio < 0.85 })}>
+              {(stakingPowerData.loyaltyRatio * 100).toFixed(1)}%
+            </span>
+          }
+        />
+      )}
+      {hasBeenReset && (
+        <AlertInfoCard type="warning" hideClose>
+          <Trans>
+            Your staking power was reset{" "}
+            {stakingPowerData.powerResetCount === 1 ? "once" : `${stakingPowerData.powerResetCount} times`} due to
+            dropping below the 80% loyalty threshold. Power is now accruing again from your current balance.
+          </Trans>
+        </AlertInfoCard>
+      )}
+    </>
   );
 }
 

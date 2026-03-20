@@ -7,8 +7,10 @@ import { fetchApiOrders } from "utils/orders/api";
 import { fetchApiPositionsInfo } from "utils/positions/api";
 import { fetchApiOhlcv } from "utils/prices/api";
 import type { OhlcvParams } from "utils/prices/types";
+import { fetchApiStakingPower } from "utils/staking/api";
 
 export type { OhlcvCandle, OhlcvParams } from "utils/prices/types";
+export type { StakingPowerResponse } from "utils/staking/types";
 
 export class GmxApiSdk {
   ctx: { chainId: ContractsChainId; api: IHttp };
@@ -44,5 +46,9 @@ export class GmxApiSdk {
 
   fetchOhlcv(params: OhlcvParams) {
     return fetchApiOhlcv(this.ctx, params);
+  }
+
+  fetchStakingPower(params: { address: string }) {
+    return fetchApiStakingPower(this.ctx, params);
   }
 }

@@ -641,6 +641,10 @@ msgstr ""
 msgid "Treasury"
 msgstr ""
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "Your share of the total network staking power. Treasury rewards will be distributed proportionally to staking power when GMX reaches $90. All projected rewards are best-effort estimations. Actual distribution is subject to DAO governance."
+msgstr ""
+
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 #: src/lib/contracts/callContract.tsx
 #: src/lib/contracts/notifications.tsx
@@ -3026,6 +3030,10 @@ msgstr ""
 msgid "No centralized exchanges available"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Loyalty"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 msgid "No assets yet"
 msgstr ""
@@ -4064,6 +4072,10 @@ msgstr ""
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Realized swap impact"
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "This unstake will drop your balance below 80% of your historical max, resetting all your accumulated staking power to zero. Your projected Treasury reward share will be lost. Power will start accruing again immediately from your new balance."
 msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
@@ -7851,6 +7863,10 @@ msgstr ""
 msgid "Price impact exceeds order size. Impact: {priceImpactUsdText}, order: {sizeDeltaUsdText}"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Staking Power"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Jones DAO"
 msgstr ""
@@ -8927,6 +8943,10 @@ msgstr ""
 msgid "{title}"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Staking power accrues continuously based on the amount and duration of your stake. Your share of accumulated Treasury rewards is proportional to your staking power relative to the network total. All projected rewards are best-effort estimations. Actual distribution is subject to DAO governance."
+msgstr ""
+
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit transaction sent for {0}!"
 msgstr ""
@@ -9478,6 +9498,10 @@ msgstr ""
 msgid "Max rate short"
 msgstr ""
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "Staking Power Share"
+msgstr ""
+
 #: src/pages/UiPage/UiPage.tsx
 msgid "This page demonstrates the UI components in the app"
 msgstr ""
@@ -9488,6 +9512,10 @@ msgstr ""
 
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "C:"
+msgstr ""
+
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "I understand that staking power does not transfer. The receiving wallet will start with zero staking power and a fresh historical max."
 msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
@@ -10062,6 +10090,10 @@ msgstr ""
 msgid "Stop loss price"
 msgstr ""
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Your current staked balance relative to your historical max. Dropping below 80% resets your accumulated staking power to zero."
+msgstr ""
+
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Oracle keeper monitoring"
 msgstr ""
@@ -10634,6 +10666,10 @@ msgstr ""
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"
+msgstr ""
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Your staking power was reset {0} due to dropping below the 80% loyalty threshold. Power is now accruing again from your current balance."
 msgstr ""
 
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
