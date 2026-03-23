@@ -111,7 +111,9 @@ function RewardsBar({
         <AlertInfoCard type="info" hideClose>
           <Trans>
             27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to
-            stakers when GMX reaches $90, proportional to staking power (duration × amount staked).
+            stakers when GMX reaches $90, proportional to staking power (duration × amount staked). All projected
+            rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO
+            governance.
           </Trans>
         </AlertInfoCard>
       )}
