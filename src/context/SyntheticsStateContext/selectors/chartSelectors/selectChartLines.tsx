@@ -8,9 +8,9 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getTokenData } from "domain/synthetics/tokens";
-import { formatAmount } from "lib/numbers";
+import { calculateDisplayDecimals, formatAmount } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
-import { convertTokenAddress, getPriceDecimals } from "sdk/configs/tokens";
+import { convertTokenAddress } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
 
 import { StaticChartLine } from "components/TVChartContainer/types";
@@ -36,11 +36,11 @@ export const selectChartLines = createSelector<StaticChartLine[]>((q) => {
   );
 
   const positionLines = filteredPositions.flatMap((position) => {
-    const priceDecimal = getPriceDecimals(chainId, position.indexToken.symbol);
     const longOrShortText = position.isLong ? t`Long` : t`Short`;
     const token = q((state) => getTokenData(selectTokensData(state), position.marketInfo?.indexTokenAddress, "native"));
     const marketIndexName = getMarketIndexName(position.marketInfo!) ?? "";
     const tokenVisualMultiplier = token?.visualMultiplier;
+    const priceDecimal = calculateDisplayDecimals(position.entryPrice, USD_DECIMALS, tokenVisualMultiplier);
     const positionTitle = `${longOrShortText} ${marketIndexName}`;
 
     const liquidationPrice = formatAmount(

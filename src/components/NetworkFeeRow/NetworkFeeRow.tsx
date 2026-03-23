@@ -10,7 +10,7 @@ import { GasPaymentParams } from "domain/synthetics/express";
 import { getExecutionFeeWarning, type ExecutionFee } from "domain/synthetics/fees";
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { TokenData } from "domain/tokens";
-import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { calculateDisplayDecimals, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -80,27 +80,11 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
     };
   }, [executionFee, executionFeeToken, gasPaymentToken, gasPaymentParams]);
 
-  let executionDisplayDecimals = executionFee?.feeToken.priceDecimals;
-  if (executionDisplayDecimals !== undefined) {
-    executionDisplayDecimals += 1;
-  } else {
-    if (executionFeeToken?.isStable) {
-      executionDisplayDecimals = 2;
-    } else {
-      executionDisplayDecimals = 5;
-    }
-  }
+  const executionDisplayDecimals =
+    calculateDisplayDecimals(executionFeeToken?.prices?.minPrice, undefined, 1, executionFeeToken?.isStable) + 1;
 
-  let networkFeeDisplayDecimals = networkFee?.feeToken.priceDecimals;
-  if (networkFeeDisplayDecimals !== undefined) {
-    networkFeeDisplayDecimals += 1;
-  } else {
-    if (networkFee?.feeToken.isStable) {
-      networkFeeDisplayDecimals = 2;
-    } else {
-      networkFeeDisplayDecimals = 5;
-    }
-  }
+  const networkFeeDisplayDecimals =
+    calculateDisplayDecimals(executionFeeToken?.prices?.minPrice, undefined, 1, networkFee?.feeToken.isStable) + 1;
 
   const { estimatedRefundText, estimatedRefundUsd } = useMemo(() => {
     let estimatedRefundUsd: bigint | undefined;
