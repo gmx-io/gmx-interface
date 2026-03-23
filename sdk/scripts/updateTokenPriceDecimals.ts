@@ -8,6 +8,7 @@
 
 import fs from "fs";
 import path from "path";
+import { zeroAddress } from "viem";
 
 import * as chainIds from "../src/configs/chainIds";
 import { CONTRACTS_CHAIN_IDS_DEV } from "../src/configs/chains";
@@ -47,20 +48,21 @@ async function fetchTickers(chainId: number): Promise<Ticker[]> {
 // Oracle stores price as: rawPrice * 10^(USD_DECIMALS - tokenDecimals)
 // calculateDisplayDecimals expects bigint with USD_DECIMALS precision
 function tickerToPriceBigInt(ticker: Ticker, tokenDecimals: number): bigint {
-  return BigInt(ticker.minPrice) * BigInt(10 ** tokenDecimals);
+  return BigInt(ticker.minPrice) * 10n ** BigInt(tokenDecimals);
 }
 
-function applyUpdate(source: string, chainName: string, symbol: string, newValue: number): string {
+function applyUpdate(source: string, chainName: string, address: string, newValue: number): string {
   // Find the chain section: [ARBITRUM]: [
   const chainIdx = source.indexOf(`[${chainName}]`);
   if (chainIdx === -1) return source;
 
-  // Find this symbol within the chain section
-  const symbolIdx = source.indexOf(`symbol: "${symbol}"`, chainIdx);
-  if (symbolIdx === -1) return source;
+  // Native tokens use `address: zeroAddress` variable, others use string literals
+  const addressPattern = address === zeroAddress ? "address: zeroAddress" : `address: "${address}"`;
+  const addrIdx = source.indexOf(addressPattern, chainIdx);
+  if (addrIdx === -1) return source;
 
   // Find enclosing { }
-  let braceIdx = symbolIdx;
+  let braceIdx = addrIdx;
   while (braceIdx > chainIdx && source[braceIdx] !== "{") braceIdx--;
 
   let depth = 1;
@@ -95,6 +97,7 @@ function applyUpdate(source: string, chainName: string, symbol: string, newValue
 
 type Update = {
   symbol: string;
+  address: string;
   chainName: string;
   newValue: number;
   priceUsd: number;
@@ -160,6 +163,7 @@ async function main() {
       } else {
         updates.push({
           symbol: token.symbol,
+          address: token.address,
           chainName,
           newValue: expectedDecimals,
           priceUsd: Number(priceBigInt) / 10 ** USD_DECIMALS,
@@ -197,7 +201,7 @@ async function main() {
   }
 
   for (const update of updates) {
-    source = applyUpdate(source, update.chainName, update.symbol, update.newValue);
+    source = applyUpdate(source, update.chainName, update.address, update.newValue);
   }
 
   fs.writeFileSync(TOKENS_FILE, source, "utf-8");
