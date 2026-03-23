@@ -14,6 +14,7 @@ import {
   estimateExecuteSwapOrderGasLimit,
   estimateOrderOraclePriceCount,
 } from "domain/synthetics/fees";
+import { getJitLiquidityInfo } from "domain/synthetics/jit/utils";
 import {
   getAvailableUsdLiquidityForPosition,
   getMaxLeverageByMinCollateralFactor,
@@ -60,6 +61,7 @@ import {
   selectChainId,
   selectGasLimits,
   selectGasPrice,
+  selectJitLiquidityMap,
   selectMarketsInfoData,
   selectOrdersInfoData,
   selectPositionsInfoData,
@@ -333,8 +335,10 @@ export const selectTradeboxSelectedAllowedSwapSlippageBps = (s: SyntheticsState)
   s.tradebox.selectedAllowedSwapSlippageBps;
 export const selectTradeboxSetSelectedAllowedSwapSlippageBps = (s: SyntheticsState) =>
   s.tradebox.setSelectedAllowedSwapSlippageBps;
-const selectTradeboxCloseSizeInputValue = (s: SyntheticsState) => s.tradebox.closeSizeInputValue;
-const selectTradeboxTriggerPriceInputValue = (s: SyntheticsState) => s.tradebox.triggerPriceInputValue;
+export const selectTradeboxCloseSizeInputValue = (s: SyntheticsState) => s.tradebox.closeSizeInputValue;
+export const selectTradeboxSetCloseSizeInputValue = (s: SyntheticsState) => s.tradebox.setCloseSizeInputValue;
+export const selectTradeboxTriggerPriceInputValue = (s: SyntheticsState) => s.tradebox.triggerPriceInputValue;
+export const selectTradeboxSetTriggerPriceInputValue = (s: SyntheticsState) => s.tradebox.setTriggerPriceInputValue;
 const selectTradeboxTriggerRatioInputValue = (s: SyntheticsState) => s.tradebox.triggerRatioInputValue;
 export const selectTradeboxLeverageOption = (s: SyntheticsState) => s.tradebox.leverageOption;
 export const selectTradeboxKeepLeverage = (s: SyntheticsState) => s.tradebox.keepLeverage;
@@ -821,6 +825,7 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
         fundingFeeUsd: 0n,
         feeDiscountUsd: 0n,
         swapProfitFeeUsd: 0n,
+        swapProfitUsdIn: 0n,
         uiFeeFactor,
         type: "swap",
       });
@@ -850,6 +855,7 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
         fundingFeeUsd: selectedPosition?.pendingFundingFeesUsd || 0n,
         feeDiscountUsd: increaseAmounts.feeDiscountUsd,
         swapProfitFeeUsd: 0n,
+        swapProfitUsdIn: 0n,
         uiFeeFactor,
         type: "increase",
       });
@@ -887,6 +893,7 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
         fundingFeeUsd: decreaseAmounts.fundingFeeUsd,
         feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
         swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
+        swapProfitUsdIn: decreaseAmounts.swapProfitUsdIn,
         uiFeeFactor,
         type: "decrease",
       });
@@ -1212,8 +1219,12 @@ export const selectTradeboxLiquidity = createSelector(function selectTradeboxLiq
   if (!marketInfo || !isIncrease) {
     return {};
   }
-  const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true);
-  const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false);
+
+  const jitLiquidityMap = q(selectJitLiquidityMap);
+  const jitInfo = getJitLiquidityInfo(jitLiquidityMap, marketInfo.marketTokenAddress);
+
+  const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true, jitInfo?.maxReservedUsdWithJitLong);
+  const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false, jitInfo?.maxReservedUsdWithJitShort);
 
   const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
 

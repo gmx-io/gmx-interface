@@ -111,7 +111,7 @@ export function useDownloadAsCsv({
 
       const fullFormattedData = aggregatedTradeActions
         .map((tradeAction) => {
-          const explorerUrl = getExplorerUrl(chainId) + `tx/${tradeAction.transaction.hash}`;
+          const explorerUrl = getExplorerUrl(chainId) + `tx/${tradeAction.transactionHash}`;
 
           let rowDetails: RowDetails | null;
 

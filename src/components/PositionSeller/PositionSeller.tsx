@@ -22,7 +22,6 @@ import {
 } from "context/SyntheticsStateContext/hooks/positionSellerHooks";
 import {
   selectBlockTimestampData,
-  selectGasPaymentTokenAllowance,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
@@ -40,17 +39,15 @@ import {
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import { selectExecutionFeeBufferBps } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
-import { selectTokenPermits } from "context/SyntheticsStateContext/selectors/tokenPermitsSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useInitCollateralCloseDestination } from "domain/synthetics/express/useInitCollateralCloseDestination";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
-import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import { OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
-import { getApprovalRequirements } from "domain/synthetics/tokens";
 import { getPositionSellerTradeFlags } from "domain/synthetics/trade";
 import { getTwapRecommendation } from "domain/synthetics/trade/twapRecommendation";
 import { TradeType } from "domain/synthetics/trade/types";
@@ -59,7 +56,7 @@ import { ORDER_OPTION_TO_TRADE_MODE, OrderOption } from "domain/synthetics/trade
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { getCommonError, getDecreaseError, getExpressError } from "domain/synthetics/trade/utils/validation";
 import { Token } from "domain/tokens";
-import { useApproveToken } from "domain/tokens/useApproveTokens";
+import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useChainId } from "lib/chains";
 import { useDebouncedInputValue } from "lib/debounce/useDebouncedInputValue";
 import { helperToast } from "lib/helperToast";
@@ -69,10 +66,14 @@ import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidatio
 import { expandDecimals, formatAmountFree, formatDeltaUsd, formatPercentage, parseValue } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { userAnalytics } from "lib/userAnalytics";
+import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
+import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
+import { DecreasePositionSwapType } from "sdk/utils/orders/types";
 import {
   BatchOrderTxnParams,
   buildDecreaseOrderPayload,
@@ -114,7 +115,6 @@ const PNL_TOOLTIP_THRESHOLD = expandDecimals(10000, USD_DECIMALS);
 
 export function PositionSeller() {
   const [, setClosingPositionKey] = useClosingPositionKeyState();
-  const [isApproving, setIsApproving] = useState(false);
 
   const onClose = useCallback(() => {
     setClosingPositionKey(undefined);
@@ -157,9 +157,6 @@ export function PositionSeller() {
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
   const blockTimestampData = useSelector(selectBlockTimestampData);
   const marketsInfoData = useSelector(selectMarketsInfoData);
-  const gasPaymentTokenAllowance = useSelector(selectGasPaymentTokenAllowance);
-  const tokenPermits = useSelector(selectTokenPermits);
-  const { approveToken } = useApproveToken();
   const executionFeeBufferBps = useSelector(selectExecutionFeeBufferBps);
 
   const isVisible = Boolean(position);
@@ -263,7 +260,16 @@ export function PositionSeller() {
   const swapAmounts = useSelector(selectPositionSellerSwapAmounts);
 
   const receiveUsd = swapAmounts?.usdOut || decreaseAmounts?.receiveUsd;
-  const receiveTokenAmount = swapAmounts?.amountOut || decreaseAmounts?.receiveTokenAmount;
+
+  const receiveTokenAmount = useMemo(() => {
+    if (swapAmounts?.amountOut !== undefined) return swapAmounts.amountOut;
+    if (!decreaseAmounts) return undefined;
+    if (decreaseAmounts.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken) {
+      return decreaseAmounts.primaryOutput.amount;
+    }
+
+    return decreaseAmounts.receiveTokenAmount;
+  }, [swapAmounts, decreaseAmounts]);
 
   const nextPositionValues = useSelector(selectPositionSellerNextPositionValuesForDecrease);
 
@@ -301,11 +307,7 @@ export function PositionSeller() {
   const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
     const orderType = isTwap ? OrderType.LimitDecrease : OrderType.MarketDecrease;
 
-    // TODO findSwapPath considering decreasePositionSwapType?
-    const swapPath =
-      decreaseAmounts?.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken
-        ? []
-        : swapAmounts?.swapStrategy.swapPathStats?.swapPath || [];
+    const swapPath = swapAmounts?.swapStrategy.swapPathStats?.swapPath || [];
 
     if (
       !account ||
@@ -399,39 +401,30 @@ export function PositionSeller() {
     isGmxAccount: srcChainId !== undefined || effectiveIsReceiveToGmxAccount,
   });
 
-  const { tokensToApprove, isAllowanceLoaded } = useMemo(() => {
-    if (srcChainId) {
-      return { tokensToApprove: [], isAllowanceLoaded: true };
-    }
+  const approvalTokens = useMemo(() => {
+    if (!expressParams?.gasPaymentParams) return [];
+    return [
+      {
+        tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
+        amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
+      },
+    ];
+  }, [expressParams?.gasPaymentParams]);
 
-    if (!batchParams) {
-      return { tokensToApprove: [], isAllowanceLoaded: false };
-    }
-
-    const approvalRequirements = getApprovalRequirements({
-      chainId,
-      payTokenParamsList: [],
-      gasPaymentTokenParams: expressParams?.gasPaymentParams
-        ? {
-            tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
-            amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
-            allowanceData: gasPaymentTokenAllowance?.tokensAllowanceData,
-            isAllowanceLoaded: gasPaymentTokenAllowance?.isLoaded,
-          }
-        : undefined,
-      permits: expressParams && tokenPermits ? tokenPermits : [],
-    });
-
-    return approvalRequirements;
-  }, [
-    batchParams,
+  const {
+    tokensToApprove,
+    isAllowanceLoaded: isAllowanceLoadedRaw,
+    isApproving,
+    handleApprove,
+  } = useTokenApproval({
     chainId,
-    expressParams,
-    gasPaymentTokenAllowance?.isLoaded,
-    gasPaymentTokenAllowance?.tokensAllowanceData,
-    srcChainId,
-    tokenPermits,
-  ]);
+    spenderAddress: getContract(chainId, "SyntheticsRouter"),
+    tokens: approvalTokens,
+    allowPermit: Boolean(expressParams),
+    skip: Boolean(srcChainId),
+  });
+
+  const isAllowanceLoaded = Boolean(batchParams) && isAllowanceLoadedRaw;
 
   const error = useMemo(() => {
     if (!position) {
@@ -505,12 +498,16 @@ export function PositionSeller() {
     if (isAllowanceLoaded && tokensToApprove.length) {
       if (!chainId || isApproving) return;
 
-      approveToken({
-        signer,
-        tokenAddress: tokensToApprove[0].tokenAddress,
-        chainId,
-        allowPermit: Boolean(expressParams),
-        setIsApproving,
+      userAnalytics.pushEvent<TokenApproveClickEvent>({
+        event: "TokenApproveAction",
+        data: { action: "ApproveClick" },
+      });
+      handleApprove({
+        onApproveFail: () =>
+          userAnalytics.pushEvent<TokenApproveResultEvent>({
+            event: "TokenApproveAction",
+            data: { action: "ApproveFail" },
+          }),
       });
 
       return;
@@ -563,7 +560,13 @@ export function PositionSeller() {
       !signer ||
       !provider
     ) {
-      helperToast.error(t`Order submission failed`);
+      helperToast.error(t`Order submission failed`, {
+        tradingErrorInfo: {
+          actionName: "Close Position",
+          collateral: position?.collateralToken?.symbol,
+          requestId: metricData.requestId,
+        },
+      });
       sendTxnValidationErrorMetric(metricData.metricId);
       return;
     }
@@ -588,7 +591,10 @@ export function PositionSeller() {
           },
       callback: makeOrderTxnCallback({
         metricId: metricData.metricId,
+        requestId: metricData.requestId,
         slippageInputId,
+        actionName: "Close Position",
+        collateralSymbol: position?.collateralToken?.symbol,
       }),
     });
 
@@ -622,12 +628,6 @@ export function PositionSeller() {
     {},
     [isVisible, error, closeUsdInputValue, closeUsdInputValueRaw, latestOnSubmit]
   );
-
-  useEffect(() => {
-    if (!tokensToApprove.length && isApproving) {
-      setIsApproving(false);
-    }
-  }, [isApproving, tokensToApprove.length]);
 
   useEffect(() => {
     if (isWaitingForDebounceBeforeSubmit && closeUsdInputValue === closeUsdInputValueRaw) {
@@ -775,7 +775,7 @@ export function PositionSeller() {
       content={
         <Trans>
           Position exceeds max allowed leverage.{" "}
-          <ExternalLink href="https://docs.gmx.io/docs/trading/#max-leverage">Read more</ExternalLink>.
+          <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#max-leverage">Read more</ExternalLink>.
         </Trans>
       }
     />
@@ -862,8 +862,7 @@ export function PositionSeller() {
       return {
         text: (
           <>
-            {t`Approve ${getToken(chainId, tokenToApprove.tokenAddress).symbol}`}{" "}
-            <SpinnerIcon className="ml-4 animate-spin" />
+            {t`Approve ${getToken(chainId, tokenToApprove).symbol}`} <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),
         disabled: true,
@@ -873,7 +872,7 @@ export function PositionSeller() {
     if (isAllowanceLoaded && tokensToApprove.length) {
       const tokenToApprove = tokensToApprove[0];
       return {
-        text: t`Approve ${getToken(chainId, tokenToApprove.tokenAddress).symbol}`,
+        text: t`Approve ${getToken(chainId, tokenToApprove).symbol}`,
         disabled: false,
       };
     }
@@ -983,6 +982,7 @@ export function PositionSeller() {
                   payTokenAddress={undefined}
                   isWrapOrUnwrap={false}
                   isGmxAccount={srcChainId !== undefined}
+                  onAfterAction={onClose}
                 />
 
                 {twapRecommendation && !isTwapBannerDismissed && (

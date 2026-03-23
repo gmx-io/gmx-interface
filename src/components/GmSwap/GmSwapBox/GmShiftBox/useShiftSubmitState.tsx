@@ -1,22 +1,18 @@
 import { t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
-import uniq from "lodash/uniq";
-import { useMemo, useState, useEffect } from "react";
+import { useMemo } from "react";
 
-import { getContract } from "config/contracts";
 import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { ExecutionFee } from "domain/synthetics/fees";
 import type { GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets/types";
-import { getNeedTokenApprove, useTokensAllowanceData } from "domain/synthetics/tokens";
 import type { TokenData, TokensData } from "domain/synthetics/tokens/types";
 import type { ShiftAmounts } from "domain/synthetics/trade/utils/shift";
 import { getCommonError, getGmShiftError } from "domain/synthetics/trade/utils/validation";
-import { approveTokens } from "domain/tokens";
+import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
-import { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
-import useWallet from "lib/wallets/useWallet";
+import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import type { GmSwapFees } from "sdk/utils/trade/types";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -29,7 +25,6 @@ export function useShiftSubmitState({
   executionFee,
   fees,
   marketTokenUsd,
-  payTokenAddresses,
   routerAddress,
   selectedMarketInfo,
   selectedToken,
@@ -43,7 +38,6 @@ export function useShiftSubmitState({
   executionFee: ExecutionFee | undefined;
   fees: GmSwapFees | undefined;
   marketTokenUsd: bigint | undefined;
-  payTokenAddresses: string[];
   routerAddress: string;
   selectedMarketInfo: MarketInfo | undefined;
   selectedToken: TokenData | undefined;
@@ -56,7 +50,6 @@ export function useShiftSubmitState({
   const chainId = useSelector(selectChainId);
   const account = useSelector(selectAccount);
   const hasOutdatedUi = useHasOutdatedUi();
-  const { signer } = useWallet();
 
   const { openConnectModal } = useConnectModal();
 
@@ -72,38 +65,16 @@ export function useShiftSubmitState({
     marketTokenUsd,
   });
 
-  const {
-    tokensAllowanceData,
-    isLoading: isAllowanceLoading,
-    isLoaded: isAllowanceLoaded,
-  } = useTokensAllowanceData(chainId, {
-    spenderAddress: routerAddress,
-    tokenAddresses: payTokenAddresses,
-  });
-
-  const tokensToApprove = useMemo(
-    function getTokensToApprove() {
-      const addresses: string[] = [];
-
-      if (
-        selectedToken &&
-        getNeedTokenApprove(tokensAllowanceData, selectedToken.address, amounts?.fromTokenAmount, [])
-      ) {
-        addresses.push(selectedToken.address);
-      }
-
-      return uniq(addresses);
-    },
-    [selectedToken, amounts?.fromTokenAmount, tokensAllowanceData]
+  const tokens = useMemo(
+    () => (selectedToken ? [{ tokenAddress: selectedToken.address, amount: amounts?.fromTokenAmount }] : []),
+    [selectedToken, amounts?.fromTokenAmount]
   );
 
-  const [isApproving, setIsApproving] = useState(false);
-
-  useEffect(() => {
-    if (!tokensToApprove.length && isApproving) {
-      setIsApproving(false);
-    }
-  }, [isApproving, tokensToApprove]);
+  const { tokensToApprove, isApproving, isAllowanceLoading, isAllowanceLoaded, handleApprove } = useTokenApproval({
+    chainId,
+    spenderAddress: routerAddress,
+    tokens,
+  });
 
   return useMemo(() => {
     if (isSubmitting) {
@@ -173,46 +144,24 @@ export function useShiftSubmitState({
     }
 
     if (isAllowanceLoaded && tokensToApprove.length > 0) {
-      const onApprove = () => {
-        const tokenAddress = tokensToApprove[0];
-
-        if (!chainId || isApproving || !tokenAddress) return;
-
-        userAnalytics.pushEvent<TokenApproveClickEvent>({
-          event: "TokenApproveAction",
-          data: {
-            action: "ApproveClick",
-          },
-        });
-
-        approveTokens({
-          setIsApproving,
-          signer,
-          tokenAddress,
-          spender: getContract(chainId, "SyntheticsRouter"),
-          pendingTxns: [],
-          setPendingTxns: () => null,
-          infoTokens: {},
-          chainId,
-          approveAmount: undefined,
-          onApproveFail: () => {
-            userAnalytics.pushEvent<TokenApproveResultEvent>({
-              event: "TokenApproveAction",
-              data: {
-                action: "ApproveFail",
-              },
-            });
-          },
-          permitParams: undefined,
-        });
-      };
-
       const address = tokensToApprove[0];
       const tokenSymbol = getGmSwapBoxApproveTokenSymbol(address, tokensData, glvOrMarketInfoData);
 
       return {
         text: t`Approve ${tokenSymbol}`,
-        onSubmit: onApprove,
+        onSubmit: () => {
+          userAnalytics.pushEvent<TokenApproveClickEvent>({
+            event: "TokenApproveAction",
+            data: { action: "ApproveClick" },
+          });
+          handleApprove({
+            onApproveFail: () =>
+              userAnalytics.pushEvent<TokenApproveResultEvent>({
+                event: "TokenApproveAction",
+                data: { action: "ApproveFail" },
+              }),
+          });
+        },
       };
     }
 
@@ -246,6 +195,6 @@ export function useShiftSubmitState({
     shouldDisableValidationForTesting,
     tokensData,
     glvOrMarketInfoData,
-    signer,
+    handleApprove,
   ]);
 }

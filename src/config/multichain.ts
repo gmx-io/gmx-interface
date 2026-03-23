@@ -32,6 +32,7 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
+  BOTANIX,
   ContractsChainId,
   SETTLEMENT_CHAIN_IDS,
   SETTLEMENT_CHAIN_IDS_DEV,
@@ -48,6 +49,7 @@ import { LayerZeroEndpointId } from "domain/multichain/types";
 import { numberToBigint } from "lib/numbers";
 import { ISigner } from "lib/transactions/iSigner";
 import platformTokensData from "sdk/codegen/platformTokens.json";
+import { getContract } from "sdk/configs/contracts";
 import { isSettlementChain, isSourceChain } from "sdk/configs/multichain";
 import { convertTokenAddress, getTokenBySymbol } from "sdk/configs/tokens";
 
@@ -418,16 +420,17 @@ export function getMappedTokenId(
   return mappedTokenId;
 }
 
-export const MULTICALLS_MAP: Record<SourceChainId, string> = {
+export const MULTICALLS_MAP: Record<AnyChainId, string> = {
   [SOURCE_ETHEREUM_MAINNET]: "0xca11bde05977b3631167028862be2a173976ca11",
   [SOURCE_OPTIMISM_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
   [SOURCE_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
   [SOURCE_BASE_MAINNET]: "0xca11bde05977b3631167028862be2a173976ca11",
   [SOURCE_BSC_MAINNET]: "0xca11bde05977b3631167028862be2a173976ca11",
-  [ARBITRUM]: "0xca11bde05977b3631167028862be2a173976ca11",
-  [AVALANCHE]: "0xca11bde05977b3631167028862be2a173976ca11",
-  [ARBITRUM_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
-  [AVALANCHE_FUJI]: "0xca11bde05977b3631167028862be2a173976ca11",
+  [ARBITRUM]: getContract(ARBITRUM, "Multicall"),
+  [AVALANCHE]: getContract(AVALANCHE, "Multicall"),
+  [ARBITRUM_SEPOLIA]: getContract(ARBITRUM_SEPOLIA, "Multicall"),
+  [AVALANCHE_FUJI]: getContract(AVALANCHE_FUJI, "Multicall"),
+  [BOTANIX]: getContract(BOTANIX, "Multicall"),
 };
 
 /**

@@ -7,6 +7,7 @@ import { useAccount } from "wagmi";
 
 import { ARBITRUM, AVALANCHE, MEGAETH } from "config/chains";
 import { getChainIcon, getIcon } from "config/icons";
+import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
 import type { MarketTokensAPRData } from "domain/synthetics/markets/types";
 import { useGmMarketsApy } from "domain/synthetics/markets/useGmMarketsApy";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
@@ -271,6 +272,9 @@ export default function EarnYieldOverview() {
   const megaethMaxGm = useMemo(() => calculateMaxApr(megaethGmApy), [megaethGmApy]);
   const avgGmxAprTotalLabel = "avgGMXAprTotal";
 
+  const { data: arbStakingData } = useStakingProcessedData(ARBITRUM);
+  const isGmxSuspended = arbStakingData?.isRewardsSuspended;
+
   const networkCards = useMemo(
     () => ({
       [ARBITRUM]: {
@@ -283,7 +287,12 @@ export default function EarnYieldOverview() {
             onClick={!showGmxLink ? () => setIsBuyGmxModalVisible(true) : undefined}
             to={showGmxLink ? "/earn/portfolio" : undefined}
             chainId={ARBITRUM}
-            metric={<YieldMetric value={<APRLabel chainId={ARBITRUM} label={avgGmxAprTotalLabel} />} suffix="APR" />}
+            metric={
+              <YieldMetric
+                value={<APRLabel chainId={ARBITRUM} label={avgGmxAprTotalLabel} />}
+                suffix={isGmxSuspended ? "" : "APR"}
+              />
+            }
           />,
           <YieldRow
             key="arb-glv"
@@ -311,7 +320,12 @@ export default function EarnYieldOverview() {
             to={showGmxLink ? "/earn/portfolio" : undefined}
             onClick={!showGmxLink ? () => setIsBuyGmxModalVisible(true) : undefined}
             chainId={AVALANCHE}
-            metric={<YieldMetric value={<APRLabel chainId={AVALANCHE} label={avgGmxAprTotalLabel} />} suffix="APR" />}
+            metric={
+              <YieldMetric
+                value={<APRLabel chainId={AVALANCHE} label={avgGmxAprTotalLabel} />}
+                suffix={isGmxSuspended ? "" : "APR"}
+              />
+            }
           />,
           <YieldRow
             key="avax-glv"
@@ -364,7 +378,7 @@ export default function EarnYieldOverview() {
         ],
       },
     }),
-    [arbMaxGlv, arbMaxGm, avaxMaxGlv, avaxMaxGm, megaethMaxGlv, megaethMaxGm, showGmxLink, poolsLink]
+    [arbMaxGlv, arbMaxGm, avaxMaxGlv, avaxMaxGm, megaethMaxGlv, megaethMaxGm, showGmxLink, poolsLink, isGmxSuspended]
   );
 
   const tabs = useMemo(

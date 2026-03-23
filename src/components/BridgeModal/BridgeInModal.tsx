@@ -121,14 +121,11 @@ export function BridgeInModal({
 
   const { formattedBalance, formattedMaxAvailableAmount, showClickMax } = useMaxAvailableAmount({
     fromToken: marketToken,
-    fromTokenAmount: bridgeInAmount ?? 0n,
+    fromTokenBalance: bridgeInChainMarketTokenBalance,
+    fromTokenAmount: bridgeInAmount,
     fromTokenInputValue: bridgeInInputValue,
-    nativeToken: undefined,
-    minResidualAmount: undefined,
-    isLoading: false,
     srcChainId: bridgeInChain,
-    overrideBalance: true,
-    balance: bridgeInChainMarketTokenBalance,
+    ignoreGasPaymentToken: true,
   });
 
   const nativeFeeAsyncResult = useThrottledAsync(
@@ -224,6 +221,11 @@ export function BridgeInModal({
       const toastParams = getTxnErrorToast(chainId, error, { defaultMessage: t`Deposit failed` });
       helperToast.error(toastParams.errorContent, {
         autoClose: toastParams.autoCloseToast,
+        tradingErrorInfo: {
+          actionName: "Bridge Deposit",
+          errorData: error,
+          collateral: marketToken?.address,
+        },
       });
     } finally {
       setIsCreatingTxn(false);

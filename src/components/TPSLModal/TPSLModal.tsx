@@ -54,9 +54,18 @@ type Props = {
    * When "list" (default), it shows the TP/SL orders list.
    */
   initialView?: "list" | "add";
+  initialTpPriceInput?: string;
+  initialSlPriceInput?: string;
 };
 
-export function TPSLModal({ isVisible, setIsVisible, position, initialView = "list" }: Props) {
+export function TPSLModal({
+  isVisible,
+  setIsVisible,
+  position,
+  initialView = "list",
+  initialTpPriceInput,
+  initialSlPriceInput,
+}: Props) {
   const [activeTab, setActiveTab] = useState<TabType>("all");
   const [isCancellingAll, setIsCancellingAll] = useState(false);
   const [isAddFormVisible, setIsAddFormVisible] = useState(false);
@@ -171,7 +180,10 @@ export function TPSLModal({ isVisible, setIsVisible, position, initialView = "li
         batchParams,
         expressParams,
         simulationParams: undefined,
-        callback: makeOrderTxnCallback({}),
+        callback: makeOrderTxnCallback({
+          actionName: "Cancel Order",
+          collateralSymbol: position.collateralToken.symbol,
+        }),
         provider,
         isGmxAccount: srcChainId !== undefined,
       });
@@ -183,12 +195,13 @@ export function TPSLModal({ isVisible, setIsVisible, position, initialView = "li
     signer,
     provider,
     displayedOrders,
+    setCancellingOrdersKeys,
+    globalExpressParams,
     chainId,
     srcChainId,
-    globalExpressParams,
     subaccount,
     makeOrderTxnCallback,
-    setCancellingOrdersKeys,
+    position.collateralToken.symbol,
   ]);
 
   // When the modal opens, sync the view to initialView.
@@ -348,6 +361,8 @@ export function TPSLModal({ isVisible, setIsVisible, position, initialView = "li
         setIsVisible={handleAddFormVisibilityChange}
         position={position}
         onBack={handleAddTPSLBack}
+        initialTpPriceInput={initialTpPriceInput}
+        initialSlPriceInput={initialSlPriceInput}
       />
     </>
   );

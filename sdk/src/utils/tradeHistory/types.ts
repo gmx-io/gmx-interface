@@ -56,9 +56,7 @@ export type PositionTradeAction = {
       }
     | undefined;
   timestamp: number;
-  transaction: {
-    hash: string;
-  };
+  transactionHash: string;
 };
 
 export type SwapTradeAction = {
@@ -87,9 +85,7 @@ export type SwapTradeAction = {
     | undefined;
 
   timestamp: number;
-  transaction: {
-    hash: string;
-  };
+  transactionHash: string;
 };
 
 export type TradeAction = PositionTradeAction | SwapTradeAction;

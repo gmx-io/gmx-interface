@@ -65,7 +65,7 @@ export function FaqSection() {
                 Pendle, Dolomite, Radiant, Silo Finance, Venus Protocol, Abracadabra, Compound, and Beefy. You can
                 interact directly with GMX smart contracts or use available APIs and SDKs to plug into trading,
                 liquidity, or data flows. Check out the{" "}
-                <a href="https://docs.gmx.io/docs/category/api/" className="cursor-pointer text-blue-400">
+                <a href="https://docs.gmx.io/docs/api/overview/" className="cursor-pointer text-blue-400">
                   GMX Developer Docs
                 </a>{" "}
                 to get started.

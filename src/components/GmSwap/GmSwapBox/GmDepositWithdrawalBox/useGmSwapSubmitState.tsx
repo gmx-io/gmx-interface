@@ -269,12 +269,62 @@ export const useGmSwapSubmitState = ({
     paySourceChainNativeTokenAmount,
   });
 
+  const nativeToken = getByKey(tokensData, zeroAddress);
+  const nativeTokenWalletBalance = nativeToken?.walletBalance;
+  const settlementChainFeeTokenAmount =
+    technicalFees?.kind === "settlementChain" ? technicalFees.fees.feeTokenAmount : undefined;
+
+  const settlementChainNativeFeeError = useMemo((): ValidationResult | undefined => {
+    if (
+      paySource !== "settlementChain" ||
+      nativeTokenWalletBalance === undefined ||
+      settlementChainFeeTokenAmount === undefined
+    ) {
+      return undefined;
+    }
+
+    const insufficientWithLongCollateral =
+      payLongToken &&
+      nativeToken &&
+      payLongToken.address === nativeToken.address &&
+      nativeTokenWalletBalance < settlementChainFeeTokenAmount + longTokenAmount;
+
+    const insufficientWithShortCollateral =
+      payShortToken &&
+      nativeToken &&
+      payShortToken.address === nativeToken.address &&
+      nativeTokenWalletBalance < settlementChainFeeTokenAmount + shortTokenAmount;
+
+    if (
+      nativeTokenWalletBalance < settlementChainFeeTokenAmount ||
+      insufficientWithLongCollateral ||
+      insufficientWithShortCollateral
+    ) {
+      return {
+        buttonErrorMessage: getDefaultInsufficientGasMessage(),
+        bannerErrorName: ValidationBannerErrorName.insufficientNativeTokenBalance,
+      };
+    }
+  }, [
+    paySource,
+    nativeTokenWalletBalance,
+    settlementChainFeeTokenAmount,
+    payLongToken,
+    nativeToken,
+    longTokenAmount,
+    payShortToken,
+    shortTokenAmount,
+  ]);
+
   const formattedEstimationError = useMemo((): ValidationResult | undefined => {
     if (estimationError instanceof ExpressEstimationInsufficientGasPaymentTokenBalanceError) {
       if (gasPaymentToken) {
         const { symbol, decimals } = gasPaymentToken;
 
-        const availableFormatted = formatBalanceAmount(gasPaymentToken.gmxAccountBalance ?? 0n, decimals);
+        const availableFormatted = formatBalanceAmount(
+          estimationError.params?.balance ?? gasPaymentToken.gmxAccountBalance ?? 0n,
+          decimals
+        );
 
         let collateralAmount = 0n;
         if (isDeposit) {
@@ -316,6 +366,7 @@ export const useGmSwapSubmitState = ({
     expressError,
     nativeGasError,
     sourceChainNativeFeeError,
+    settlementChainNativeFeeError,
     formattedEstimationError
   );
 
@@ -402,7 +453,7 @@ export const useGmSwapSubmitState = ({
       return {
         text: (
           <>
-            <Trans>Loading...</Trans>
+            <Trans>Loading network fees…</Trans>
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),

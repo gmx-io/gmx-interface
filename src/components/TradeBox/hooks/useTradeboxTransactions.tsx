@@ -7,6 +7,7 @@ import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/
 import {
   selectBlockTimestampData,
   selectIsFirstOrder,
+  selectJitLiquidityMap,
   selectMarketsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
@@ -23,6 +24,7 @@ import {
   selectTradeboxFromToken,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxIsFromTokenGmxAccount,
+  selectTradeboxIsWrapOrUnwrap,
   selectTradeboxMarketInfo,
   selectTradeboxPayTokenAllowance,
   selectTradeboxSelectedPosition,
@@ -39,9 +41,12 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useUserReferralCode } from "domain/referrals";
 import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
+import { getJitLiquidityInfo } from "domain/synthetics/jit/utils";
+import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets/utils";
 import { OrderType } from "domain/synthetics/orders";
 import { createStakeOrUnstakeTxn } from "domain/synthetics/orders/createStakeOrUnStakeTxn";
 import { createWrapOrUnwrapTxn } from "domain/synthetics/orders/createWrapOrUnwrapTxn";
+import { useWrapOrUnwrapExecutionFee } from "domain/synthetics/orders/estimateWrapOrUnwrapExecutionFee";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { formatLeverage } from "domain/synthetics/positions/utils";
@@ -94,9 +99,11 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const fees = useSelector(selectTradeboxFees);
   const chartHeaderInfo = useSelector(selectChartHeaderInfo);
   const marketsInfoData = useSelector(selectMarketsInfoData);
+  const jitLiquidityMap = useSelector(selectJitLiquidityMap);
   const executionFeeBufferBps = useSelector(selectExecutionFeeBufferBps);
   const duration = useSelector(selectTradeboxTwapDuration);
   const numberOfParts = useSelector(selectTradeboxTwapNumberOfParts);
+  const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
 
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
 
@@ -130,9 +137,14 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     };
   }, [primaryCreateOrderParams, sidecarOrderPayloads]);
 
+  const { data: wrapOrUnwrapExecutionFee } = useWrapOrUnwrapExecutionFee();
+
   const totalExecutionFee = useMemo(() => {
+    if (isWrapOrUnwrap) {
+      return wrapOrUnwrapExecutionFee;
+    }
     return tokensData ? getBatchTotalExecutionFee({ batchParams, chainId, tokensData }) : undefined;
-  }, [batchParams, chainId, tokensData]);
+  }, [batchParams, chainId, isWrapOrUnwrap, tokensData, wrapOrUnwrapExecutionFee]);
 
   const {
     expressParams,
@@ -294,14 +306,23 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
 
     sendOrderSubmittedMetric(metricData.metricId);
 
+    const actionName = isSwap ? "Swap" : isIncrease ? "Open Position" : "Close Position";
+    const collateralSymbol = isSwap ? fromToken?.symbol : collateralToken?.symbol;
+
     if (!primaryCreateOrderParams || !signer || !provider || !tokensData || !account || !marketsInfoData) {
-      helperToast.error(t`Order submission failed`);
+      helperToast.error(t`Order submission failed`, {
+        tradingErrorInfo: { actionName, collateral: collateralSymbol, requestId: metricData.requestId },
+      });
       sendTxnValidationErrorMetric(metricData.metricId);
       return Promise.reject();
     }
 
     sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
 
+    const jitLiquidityInfo = marketInfo
+      ? getJitLiquidityInfo(jitLiquidityMap, marketInfo.marketTokenAddress)
+      : undefined;
+    const nativeReserveLiquidity = marketInfo ? getAvailableUsdLiquidityForPosition(marketInfo, isLong) : undefined;
     return sendBatchOrderTxn({
       chainId,
       signer,
@@ -315,11 +336,17 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         : {
             tokensData,
             blockTimestampData,
+            jitShiftParamsList: jitLiquidityInfo?.glvShiftParams,
+            // Intentionally excludes JIT — used to determine whether JIT simulation is needed
+            nativeReserveLiquidity,
           },
       callback: makeOrderTxnCallback({
         metricId: metricData.metricId,
+        requestId: metricData.requestId,
         slippageInputId,
         additionalErrorContent: undefined,
+        actionName,
+        collateralSymbol,
         onInternalSwapFallback: () => {
           setShouldFallbackToInternalSwap(true);
         },
@@ -330,10 +357,17 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     batchParams,
     blockTimestampData,
     chainId,
+    collateralToken?.symbol,
     expressParamsPromise,
+    fromToken?.symbol,
     initOrderMetricData,
     isFromTokenGmxAccount,
+    isIncrease,
+    isLong,
+    isSwap,
+    jitLiquidityMap,
     makeOrderTxnCallback,
+    marketInfo,
     marketsInfoData,
     primaryCreateOrderParams,
     provider,

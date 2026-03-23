@@ -136,15 +136,19 @@ export function GmxAssetCard({
   const priceRowValue = gmxPrice === undefined ? "..." : formatUsd(gmxPrice);
 
   const aprHandle = useMemo(() => {
+    if (processedData?.isRewardsSuspended) {
+      return <Trans>Accumulating</Trans>;
+    }
+
     if (processedData?.gmxAprTotal === undefined) {
       return "...";
     }
 
     return <span className="numbers">{formatAmount(processedData.gmxAprTotal, 2, 2, true)}%</span>;
-  }, [processedData?.gmxAprTotal]);
+  }, [processedData?.gmxAprTotal, processedData?.isRewardsSuspended]);
 
   const aprRowValue = useMemo(() => {
-    if (processedData?.gmxAprTotal === undefined) {
+    if (processedData?.gmxAprTotal === undefined && !processedData?.isRewardsSuspended) {
       return "...";
     }
 
@@ -152,9 +156,20 @@ export function GmxAssetCard({
       <Tooltip
         position="bottom-end"
         handle={aprHandle}
-        renderContent={() => (
-          <GMXAprTooltip processedData={processedData} nativeTokenSymbol={nativeTokenSymbol} isUserConnected={active} />
-        )}
+        renderContent={() =>
+          processedData?.isRewardsSuspended ? (
+            <Trans>
+              27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your
+              share is based on staking power (duration × amount staked).
+            </Trans>
+          ) : (
+            <GMXAprTooltip
+              processedData={processedData}
+              nativeTokenSymbol={nativeTokenSymbol}
+              isUserConnected={active}
+            />
+          )
+        }
       />
     );
   }, [aprHandle, processedData, nativeTokenSymbol, active]);

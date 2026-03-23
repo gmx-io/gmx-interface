@@ -15,7 +15,7 @@ export const selectPoolsDetailsSetGlvOrMarketAddress = (s: SyntheticsState) =>
   s.poolsDetails?.setGlvOrMarketAddress ?? FALLBACK_STRING_SETTER;
 
 export const selectPoolsDetailsSelectedMarketAddressForGlv = (s: SyntheticsState) =>
-  s.poolsDetails?.selectedMarketForGlv;
+  s.poolsDetails?.selectedMarketAddressForGlv;
 export const selectPoolsDetailsSetSelectedMarketAddressForGlv = (s: SyntheticsState) =>
   s.poolsDetails?.setSelectedMarketAddressForGlv ?? FALLBACK_STRING_OR_UNDEFINED_SETTER;
 

@@ -212,7 +212,7 @@ function getTypeStr(_: ReturnType<typeof useLingui>["_"], typeId: bigint) {
 }
 
 function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
-  const { tokenIncentiveDetails, totalUsd, transaction, typeId } = incentive;
+  const { tokenIncentiveDetails, totalUsd, transactionHash, timestamp, typeId } = incentive;
   const { chainId } = useChainId();
   const explorerURL = getExplorerUrl(chainId);
   const { _ } = useLingui();
@@ -260,23 +260,23 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
 
   const txnTimestamp = (
     <span>
-      {formatDateTime(transaction.timestamp)}{" "}
+      {formatDateTime(timestamp)}{" "}
       <span className="text-typography-secondary">
-        <Trans>({getDaysAgo(transaction.timestamp)} days ago)</Trans>
+        <Trans>({getDaysAgo(timestamp)} days ago)</Trans>
       </span>
     </span>
   );
   const txnLink = (
-    <ExternalLink href={`${explorerURL}tx/${transaction.hash}`} variant="icon">
-      {shortenAddressOrEns(transaction.hash, 27)}
+    <ExternalLink href={`${explorerURL}tx/${transactionHash}`} variant="icon">
+      {shortenAddressOrEns(transactionHash, 27)}
     </ExternalLink>
   );
-  const txnStatus = <TxnStatus hash={transaction.hash} />;
+  const txnStatus = <TxnStatus hash={transactionHash} />;
 
   return (
     <>
       <TableTrActionable onClick={onClick}>
-        <TableTdActionable data-label={t`DATE`}>{formatDate(transaction.timestamp)}</TableTdActionable>
+        <TableTdActionable data-label={t`DATE`}>{formatDate(timestamp)}</TableTdActionable>
         {!isMobile && <TableTdActionable data-label={t`TYPE`}>{type}</TableTdActionable>}
         <TableTdActionable className="max-xl:text-right" data-label={t`AMOUNT`}>
           <Tooltip
@@ -290,10 +290,10 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
           <TableTdActionable data-label={t`TRANSACTION`} className="text-right">
             <ExternalLink
               className="font-medium text-typography-secondary"
-              href={`${explorerURL}tx/${transaction.hash}`}
+              href={`${explorerURL}tx/${transactionHash}`}
               variant="icon"
             >
-              {shortenAddressOrEns(transaction.hash, 13)}
+              {shortenAddressOrEns(transactionHash, 13)}
             </ExternalLink>
           </TableTdActionable>
         )}

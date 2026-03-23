@@ -143,6 +143,7 @@ export function getSwapAmountsByToValue(p: {
   externalSwapQuoteParams: ExternalSwapQuoteParams | undefined;
   findSwapPath: FindSwapPath;
   allowSameTokenSwap: boolean;
+  swapPricingType?: SwapPricingType;
 }): SwapAmounts {
   const {
     tokenIn,
@@ -157,6 +158,7 @@ export function getSwapAmountsByToValue(p: {
     chainId,
     externalSwapQuoteParams,
     allowSameTokenSwap,
+    swapPricingType = SwapPricingType.Swap,
   } = p;
 
   if (!externalSwapQuoteParams) {
@@ -171,7 +173,7 @@ export function getSwapAmountsByToValue(p: {
     chainId,
     externalSwapQuoteParams,
     swapOptimizationOrder,
-    swapPricingType: SwapPricingType.Swap,
+    swapPricingType,
     allowSameTokenSwap,
   });
 
@@ -183,7 +185,7 @@ export function getSwapAmountsByToValue(p: {
     chainId,
     swapOptimizationOrder,
     externalSwapQuoteParams,
-    swapPricingType: SwapPricingType.Swap,
+    swapPricingType,
     allowSameTokenSwap,
   });
 

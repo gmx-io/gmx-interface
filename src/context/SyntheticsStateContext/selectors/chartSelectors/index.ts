@@ -1,3 +1,4 @@
+import { selectJitLiquidityMap } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxAvailableTokensOptions,
   selectTradeboxFromTokenAddress,
@@ -7,6 +8,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
+import { getJitLiquidityInfo } from "domain/synthetics/jit/utils";
 import {
   getAvailableUsdLiquidityForPosition,
   getOpenInterestForBalance,
@@ -49,6 +51,9 @@ export const selectChartHeaderInfo = createSelector((q) => {
     return;
   }
 
+  const jitLiquidityMap = q(selectJitLiquidityMap);
+  const jitInfo = getJitLiquidityInfo(jitLiquidityMap, marketInfo.marketTokenAddress);
+
   const borrowingRateLong = -getBorrowingFactorPerPeriod(marketInfo, true, BigInt(CHART_PERIODS["1h"]));
   const borrowingRateShort = -getBorrowingFactorPerPeriod(marketInfo, false, BigInt(CHART_PERIODS["1h"]));
   const fundingRateLong = getFundingFactorPerPeriod(marketInfo, true, BigInt(CHART_PERIODS["1h"]));
@@ -70,8 +75,8 @@ export const selectChartHeaderInfo = createSelector((q) => {
     totalInterest === 0n ? 0 : longOpenInterestPercentage !== undefined ? 100 - longOpenInterestPercentage : undefined;
 
   return {
-    liquidityLong: getAvailableUsdLiquidityForPosition(marketInfo, true),
-    liquidityShort: getAvailableUsdLiquidityForPosition(marketInfo, false),
+    liquidityLong: getAvailableUsdLiquidityForPosition(marketInfo, true, jitInfo?.maxReservedUsdWithJitLong),
+    liquidityShort: getAvailableUsdLiquidityForPosition(marketInfo, false, jitInfo?.maxReservedUsdWithJitShort),
     netRateHourlyLong,
     netRateHourlyShort,
     borrowingRateLong,
