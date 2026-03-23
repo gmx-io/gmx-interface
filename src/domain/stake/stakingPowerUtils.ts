@@ -26,8 +26,8 @@ export function isLoyaltyTrackingActive(loyaltyTrackingStart: number): boolean {
 }
 
 export function getUnstakeLimitPercent(safeUnstakeLimit: bigint | null, unstakeAmount: bigint | undefined): number {
-  if (safeUnstakeLimit === null || safeUnstakeLimit === 0n || unstakeAmount === undefined || unstakeAmount === 0n)
-    return 0;
+  if (safeUnstakeLimit === null || unstakeAmount === undefined || unstakeAmount === 0n) return 0;
+  if (safeUnstakeLimit === 0n) return 100;
   return Number(bigMath.mulDiv(unstakeAmount, 10000n, safeUnstakeLimit)) / 100;
 }
 
