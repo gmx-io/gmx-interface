@@ -1,7 +1,7 @@
 import { bigMath } from "sdk/utils/bigmath";
 
 export function getThresholdBalance(historicalMaxStaked: bigint): bigint {
-  return (historicalMaxStaked * 80n) / 100n;
+  return (historicalMaxStaked * 80n + 99n) / 100n;
 }
 
 export function wouldTriggerReset(

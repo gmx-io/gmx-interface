@@ -5,8 +5,8 @@ import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { zeroAddress } from "viem";
 
-import { ARBITRUM, ContractsChainId } from "config/chains";
 import { getIsFlagEnabled } from "config/ab";
+import { ARBITRUM, ContractsChainId } from "config/chains";
 import { getIcons } from "config/icons";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
@@ -36,9 +36,9 @@ import type { StakingPowerResponse } from "sdk/utils/staking/types";
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
+import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import Checkbox from "components/Checkbox/Checkbox";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
@@ -509,7 +509,7 @@ export function StakeModal(props: {
             </ColorfulBanner>
           )}
 
-          {wouldResetPower && (
+          {activeTab === "unstake" && wouldResetPower && (
             <>
               <ColorfulBanner color="red" icon={WarnIcon}>
                 <div>
