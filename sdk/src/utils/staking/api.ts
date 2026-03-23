@@ -7,7 +7,7 @@ export async function fetchApiStakingPower(
   ctx: { api: IHttp },
   params: { address: string }
 ): Promise<StakingPowerResponse> {
-  const data = await ctx.api.fetchJson("/staking/power", {
+  const data = await ctx.api.fetchJson<Record<string, unknown>>("/staking/power", {
     query: { address: params.address },
   });
   return deserializeBigIntsInObject(data, { handleInts: true }) as StakingPowerResponse;
