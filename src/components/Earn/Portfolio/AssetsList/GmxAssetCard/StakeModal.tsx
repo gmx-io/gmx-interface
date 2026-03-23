@@ -57,6 +57,8 @@ export type StakeModalTabConfig = {
   setValue: (value: string) => void;
 };
 
+const RESET_TOAST_HEADER_STYLE = { color: "#7885FF" };
+
 const METHOD_NAME_MAP: Record<string, { stake: string; unstake: string }> = {
   GMX: { stake: "stakeGmx", unstake: "unstakeGmx" },
   esGMX: { stake: "stakeEsGmx", unstake: "unstakeEsGmx" },
@@ -259,7 +261,7 @@ export function StakeModal(props: {
   const showResetToast = useCallback(() => {
     helperToast.info(
       <div>
-        <span className="font-bold" style={{ color: "#7885FF" }}>
+        <span className="font-bold" style={RESET_TOAST_HEADER_STYLE}>
           <Trans>Rewards reset.</Trans>
         </span>
         <br />
@@ -402,6 +404,7 @@ export function StakeModal(props: {
 
   const isApproachingLimit = unstakeLimitPercent >= 75 && unstakeLimitPercent < 100;
   const exceedsLimit = unstakeLimitPercent >= 100;
+  const unstakeBarStyle = useMemo(() => ({ width: `${Math.min(unstakeLimitPercent, 100)}%` }), [unstakeLimitPercent]);
 
   return (
     <div className="StakeModal">
@@ -450,7 +453,7 @@ export function StakeModal(props: {
                     "h-full rounded-full transition-all",
                     exceedsLimit ? "bg-red-500" : isApproachingLimit ? "bg-yellow-300" : "bg-blue-300"
                   )}
-                  style={{ width: `${Math.min(100, unstakeLimitPercent)}%` }}
+                  style={unstakeBarStyle}
                 />
               </div>
               <div className="flex justify-between text-12">
