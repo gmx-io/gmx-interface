@@ -11,7 +11,13 @@ import { getIcons } from "config/icons";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 import { calculateStakeBonusPercentage } from "domain/stake/calculateStakeBonusPercentage";
-import { getEffectiveHistoricalMax, getMaxSafeUnstake, getUnstakeLimitPercent, isLoyaltyTrackingActive, wouldTriggerReset } from "domain/stake/useStakingPowerData";
+import {
+  getEffectiveHistoricalMax,
+  getMaxSafeUnstake,
+  getUnstakeLimitPercent,
+  isLoyaltyTrackingActive,
+  wouldTriggerReset,
+} from "domain/stake/useStakingPowerData";
 import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmount";
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
@@ -190,7 +196,7 @@ export function StakeModal(props: {
       ? getMaxSafeUnstake(stakingPowerData.currentStaked, effectiveHistoricalMax)
       : null;
 
-  const rewardsLossUsd = wouldResetPower ? (processedData?.cumulativeGmxRewardsUsd ?? null) : null;
+  const rewardsLossUsd = wouldResetPower ? processedData?.cumulativeGmxRewardsUsd ?? null : null;
 
   const unstakeLimitPercent = getUnstakeLimitPercent(safeUnstakeLimit, unstakeAmount);
 
@@ -444,7 +450,7 @@ export function StakeModal(props: {
                     "h-full rounded-full transition-all",
                     exceedsLimit ? "bg-red-500" : isApproachingLimit ? "bg-yellow-300" : "bg-blue-300"
                   )}
-                  style={{ width: `${Math.min(unstakeLimitPercent, 100)}%` }}
+                  style={{ width: `${Math.min(100, unstakeLimitPercent)}%` }}
                 />
               </div>
               <div className="flex justify-between text-12">
@@ -454,9 +460,7 @@ export function StakeModal(props: {
                     exceedsLimit ? "text-red-500" : isApproachingLimit ? "text-yellow-300" : "text-typography-secondary"
                   )}
                 >
-                  <Trans>
-                    Safe unstake limit: {formatAmount(safeUnstakeLimit!, 18, 2, true)} {tokenSymbol} / esGMX
-                  </Trans>
+                  <Trans>Safe unstake limit: {formatAmount(safeUnstakeLimit!, 18, 2, true)} GMX / esGMX</Trans>
                 </span>
                 <span
                   className={cx(
@@ -519,11 +523,7 @@ export function StakeModal(props: {
                   )}
                 </div>
               </ColorfulBanner>
-              <Checkbox
-                isChecked={isResetAcknowledged}
-                setIsChecked={setIsResetAcknowledged}
-                className="!items-start"
-              >
+              <Checkbox isChecked={isResetAcknowledged} setIsChecked={setIsResetAcknowledged} className="!items-start">
                 <span className="text-body-small text-typography-secondary">
                   <Trans>
                     I acknowledge that I will lose{" "}

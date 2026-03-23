@@ -40,9 +40,7 @@ function getSortedAssets({
   const assets: AssetItem[] = [];
 
   if ((hasGmx || hasEsGmx) && processedData) {
-    const gmxUsdValue = hasGmx
-      ? (processedData.gmxBalanceUsd ?? 0n) + (processedData.gmxInStakedGmxUsd ?? 0n)
-      : 0n;
+    const gmxUsdValue = hasGmx ? (processedData.gmxBalanceUsd ?? 0n) + (processedData.gmxInStakedGmxUsd ?? 0n) : 0n;
     const esGmxUsdValue = hasEsGmx
       ? (processedData.esGmxBalanceUsd ?? 0n) + (processedData.esGmxInStakedGmxUsd ?? 0n)
       : 0n;

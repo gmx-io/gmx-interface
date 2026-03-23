@@ -40,13 +40,7 @@ import gmxIcon from "img/tokens/ic_gmx.svg";
 import { GMX_DAO_LINKS } from "./constants";
 import { StakeModal, StakeModalTabConfig } from "./StakeModal";
 
-export function GmxAssetCard({
-  processedData,
-  hasEsGmx,
-}: {
-  processedData: StakingProcessedData;
-  hasEsGmx: boolean;
-}) {
+export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: StakingProcessedData; hasEsGmx: boolean }) {
   const { chainId } = useChainId();
   const { active, signer, account } = useWallet();
   const { setPendingTxns } = usePendingTxns();
@@ -188,9 +182,7 @@ export function GmxAssetCard({
           <div className="mt-2">
             {accumulatedGmx !== undefined && accumulatedGmx > 0n ? (
               <div className="flex items-baseline gap-8">
-                <span className="text-h3 font-bold numbers">
-                  {formatAmount(accumulatedGmx, 18, 0, true)} GMX
-                </span>
+                <span className="text-h3 font-bold numbers">{formatAmount(accumulatedGmx, 18, 0, true)} GMX</span>
                 <span className="text-body-medium text-typography-secondary numbers">
                   {formatUsd(accumulatedGmxUsd)}
                 </span>
