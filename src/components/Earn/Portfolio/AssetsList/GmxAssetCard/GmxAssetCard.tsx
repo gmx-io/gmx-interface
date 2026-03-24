@@ -158,9 +158,9 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
         </div>
 
         <div className="mt-12">
-          <span className="text-body-small text-blue-300">
+          <span className="text-body-small text-typography-secondary">
             <Tooltip
-              handle={<Trans>Accumulated Rewards</Trans>}
+              handle={<Trans>Accumulated rewards</Trans>}
               content={
                 <>
                   <Trans>
@@ -182,9 +182,11 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
           <div className="mt-2">
             {accumulatedGmx !== undefined && accumulatedGmx > 0n ? (
               <div className="flex items-baseline gap-8">
-                <span className="text-h3 font-bold numbers">{formatAmount(accumulatedGmx, 18, 0, true)} GMX</span>
-                <span className="text-body-medium text-typography-secondary numbers">
-                  {formatUsd(accumulatedGmxUsd)}
+                <span className="text-h3 font-bold numbers">
+                  {formatAmount(accumulatedGmx, 18, 0, true)} GMX{" "}
+                  <span className="text-body-medium font-normal text-typography-secondary">
+                    ({formatUsd(accumulatedGmxUsd)})
+                  </span>
                 </span>
               </div>
             ) : (
