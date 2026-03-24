@@ -402,8 +402,8 @@ export function StakeModal(props: {
   const showSafeUnstakeBar =
     activeTab === "unstake" && safeUnstakeLimit !== null && unstakeAmount !== undefined && unstakeAmount > 0n;
 
-  const isApproachingLimit = unstakeLimitPercent >= 75 && unstakeLimitPercent < 100;
-  const exceedsLimit = unstakeLimitPercent >= 100;
+  const exceedsLimit = wouldResetPower;
+  const isApproachingLimit = !exceedsLimit && unstakeLimitPercent >= 75;
   const unstakeBarStyle = useMemo(() => ({ width: `${Math.min(unstakeLimitPercent, 100)}%` }), [unstakeLimitPercent]);
 
   return (
