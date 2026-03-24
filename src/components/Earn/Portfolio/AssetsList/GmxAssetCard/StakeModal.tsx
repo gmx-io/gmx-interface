@@ -25,12 +25,21 @@ import { approveTokens } from "domain/tokens";
 import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { StakingProcessedData } from "lib/legacy";
-import { formatAmount, formatAmountFree, formatUsd, limitDecimals, numberWithCommas, parseValue } from "lib/numbers";
+import {
+  expandDecimals,
+  formatAmount,
+  formatAmountFree,
+  formatUsd,
+  limitDecimals,
+  numberWithCommas,
+  parseValue,
+} from "lib/numbers";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 import type { StakingPowerResponse } from "sdk/utils/staking/types";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
@@ -79,6 +88,7 @@ export function StakeModal(props: {
   stakeFarmAddress: string;
   reservedAmount: bigint;
   stakingPowerData?: StakingPowerResponse;
+  gmxPrice: bigint | undefined;
 }) {
   const {
     isVisible,
@@ -95,6 +105,7 @@ export function StakeModal(props: {
     stakeFarmAddress,
     reservedAmount,
     stakingPowerData,
+    gmxPrice,
   } = props;
 
   const { maxAmount: stakeMaxAmount, value: stakeValue, setValue: setStakeValue } = stake;
@@ -198,7 +209,13 @@ export function StakeModal(props: {
       ? getMaxSafeUnstake(stakingPowerData.currentStaked, effectiveHistoricalMax)
       : null;
 
-  const rewardsLossUsd = wouldResetPower ? (processedData?.cumulativeGmxRewardsUsd ?? null) : null;
+  const rewardsLossUsd = useMemo(() => {
+    if (!wouldResetPower) return null;
+    if (stakingPowerData?.projectedRewardShare === null || stakingPowerData?.projectedRewardShare === undefined)
+      return null;
+    if (gmxPrice === undefined) return null;
+    return bigMath.mulDiv(stakingPowerData.projectedRewardShare, gmxPrice, expandDecimals(1, 18));
+  }, [wouldResetPower, stakingPowerData?.projectedRewardShare, gmxPrice]);
 
   const unstakeLimitPercent = getUnstakeLimitPercent(safeUnstakeLimit, unstakeAmount);
 

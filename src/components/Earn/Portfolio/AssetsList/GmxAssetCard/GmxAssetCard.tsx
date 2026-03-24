@@ -202,7 +202,13 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
           </span>
           <div className="mt-2">
             {isStakingPowerLoading ? (
-              <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={220} height={28} className="leading-base" />
+              <Skeleton
+                baseColor="#B4BBFF1A"
+                highlightColor="#B4BBFF1A"
+                width={220}
+                height={28}
+                className="leading-base"
+              />
             ) : !stakingPowerData ? (
               <span className="text-h3 font-bold text-typography-secondary">—</span>
             ) : stakingPowerData.treasuryGmxBalance === null ? (
@@ -330,6 +336,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
         setPendingTxns={setPendingTxns}
         processedData={processedData}
         stakingPowerData={stakingPowerData}
+        gmxPrice={gmxPrice}
       />
 
       {hasEsGmx && (
@@ -349,6 +356,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
             setPendingTxns={setPendingTxns}
             processedData={processedData}
             stakingPowerData={stakingPowerData}
+            gmxPrice={gmxPrice}
           />
           <VestModal
             isVisible={isVestModalVisible}
