@@ -25,7 +25,7 @@ import { approveTokens } from "domain/tokens";
 import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { StakingProcessedData } from "lib/legacy";
-import { formatAmount, formatAmountFree, formatUsd, limitDecimals, parseValue } from "lib/numbers";
+import { formatAmount, formatAmountFree, formatUsd, limitDecimals, numberWithCommas, parseValue } from "lib/numbers";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
@@ -198,7 +198,7 @@ export function StakeModal(props: {
       ? getMaxSafeUnstake(stakingPowerData.currentStaked, effectiveHistoricalMax)
       : null;
 
-  const rewardsLossUsd = wouldResetPower ? processedData?.cumulativeGmxRewardsUsd ?? null : null;
+  const rewardsLossUsd = wouldResetPower ? (processedData?.cumulativeGmxRewardsUsd ?? null) : null;
 
   const unstakeLimitPercent = getUnstakeLimitPercent(safeUnstakeLimit, unstakeAmount);
 
@@ -463,7 +463,9 @@ export function StakeModal(props: {
                     exceedsLimit ? "text-red-500" : isApproachingLimit ? "text-yellow-300" : "text-typography-secondary"
                   )}
                 >
-                  <Trans>Safe unstake limit: {formatAmount(safeUnstakeLimit!, 18, 2, true)} GMX / esGMX</Trans>
+                  <Trans>
+                    Safe unstake limit: {numberWithCommas(formatAmountFree(safeUnstakeLimit!, 18, 5))} GMX / esGMX
+                  </Trans>
                 </span>
                 <span
                   className={cx(
