@@ -5,6 +5,7 @@ import cx from "classnames";
 import { useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
+import Skeleton from "react-loading-skeleton";
 import { zeroAddress } from "viem";
 
 import { ARBITRUM } from "config/chains";
@@ -15,7 +16,7 @@ import { isLoyaltyTrackingActive, useStakingPowerData } from "domain/stake/useSt
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT, StakingProcessedData } from "lib/legacy";
-import { formatAmount, formatUsd } from "lib/numbers";
+import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { sendEarnPortfolioItemClickEvent } from "lib/userAnalytics/earnEvents";
 import useWallet from "lib/wallets/useWallet";
 import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
@@ -45,7 +46,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
   const { active, signer, account } = useWallet();
   const { setPendingTxns } = usePendingTxns();
   const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
-  const { stakingPowerData } = useStakingPowerData(chainId, { account });
+  const { stakingPowerData, isLoading: isStakingPowerLoading } = useStakingPowerData(chainId, { account });
 
   const [isGmxStakeModalVisible, setIsGmxStakeModalVisible] = useState(false);
   const [gmxStakeValue, setGmxStakeValue] = useState("");
@@ -101,8 +102,28 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
 
   const priceRowValue = gmxPrice === undefined ? "..." : formatUsd(gmxPrice);
 
-  const accumulatedGmx = processedData?.cumulativeGmxRewards;
-  const accumulatedGmxUsd = processedData?.cumulativeGmxRewardsUsd;
+  const displayProjectedRewardGmx = useMemo((): bigint | undefined => {
+    if (!stakingPowerData) {
+      return undefined;
+    }
+    if (stakingPowerData.treasuryGmxBalance === null) {
+      return undefined;
+    }
+    if (stakingPowerData.projectedRewardShare !== null) {
+      return stakingPowerData.projectedRewardShare;
+    }
+    if (stakingPowerData.totalNetworkPower === 0n) {
+      return 0n;
+    }
+    return undefined;
+  }, [stakingPowerData]);
+
+  const accumulatedGmxUsd = useMemo(() => {
+    if (displayProjectedRewardGmx === undefined || gmxPrice === undefined) {
+      return undefined;
+    }
+    return bigMath.mulDiv(displayProjectedRewardGmx, gmxPrice, expandDecimals(1, 18));
+  }, [displayProjectedRewardGmx, gmxPrice]);
 
   const handleOpenGmxStakeModal = () => {
     sendEarnPortfolioItemClickEvent({ item: "GMX", type: "stake" });
@@ -180,19 +201,30 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
             />
           </span>
           <div className="mt-2">
-            {accumulatedGmx !== undefined && accumulatedGmx > 0n ? (
-              <div className="flex items-baseline gap-8">
-                <span className="text-h3 font-bold numbers">
-                  {formatAmount(accumulatedGmx, 18, 0, true)} GMX{" "}
-                  <span className="text-body-medium font-normal text-typography-secondary">
-                    ({formatUsd(accumulatedGmxUsd)})
-                  </span>
-                </span>
-              </div>
-            ) : (
+            {isStakingPowerLoading ? (
+              <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={220} height={28} className="leading-base" />
+            ) : !stakingPowerData ? (
+              <span className="text-h3 font-bold text-typography-secondary">—</span>
+            ) : stakingPowerData.treasuryGmxBalance === null ? (
               <span className="text-h3 font-bold text-typography-secondary">
                 <Trans>Accumulating</Trans>
               </span>
+            ) : displayProjectedRewardGmx !== undefined ? (
+              <div className="flex items-baseline gap-8">
+                <span className="text-h3 font-bold numbers">
+                  {formatAmount(displayProjectedRewardGmx, 18, 0, true)} GMX
+                  {accumulatedGmxUsd !== undefined ? (
+                    <>
+                      {" "}
+                      <span className="text-body-medium font-normal text-typography-secondary">
+                        ({formatUsd(accumulatedGmxUsd)})
+                      </span>
+                    </>
+                  ) : null}
+                </span>
+              </div>
+            ) : (
+              <span className="text-h3 font-bold text-typography-secondary">—</span>
             )}
           </div>
         </div>

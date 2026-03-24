@@ -8,6 +8,7 @@ export type StakingPowerResponse = {
   lastPowerResetAt: number | null;
   powerResetCount: number;
   projectedRewardShare: bigint | null;
+  treasuryGmxBalance: bigint | null;
   powerAccrualStart: number;
   loyaltyTrackingStart: number;
 };
