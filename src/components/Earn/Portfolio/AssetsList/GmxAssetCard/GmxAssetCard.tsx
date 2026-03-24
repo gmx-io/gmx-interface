@@ -3,9 +3,9 @@ import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
+import Skeleton from "react-loading-skeleton";
 import { Link } from "react-router-dom";
 import useSWR from "swr";
-import Skeleton from "react-loading-skeleton";
 import { zeroAddress } from "viem";
 
 import { ARBITRUM } from "config/chains";
