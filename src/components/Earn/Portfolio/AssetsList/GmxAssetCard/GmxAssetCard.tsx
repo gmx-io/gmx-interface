@@ -330,6 +330,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
         setPendingTxns={setPendingTxns}
         processedData={processedData}
         stakingPowerData={stakingPowerData}
+        stakingPowerProjectedRewardsUsd={accumulatedGmxUsd}
       />
 
       {hasEsGmx && (
@@ -349,6 +350,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
             setPendingTxns={setPendingTxns}
             processedData={processedData}
             stakingPowerData={stakingPowerData}
+            stakingPowerProjectedRewardsUsd={accumulatedGmxUsd}
           />
           <VestModal
             isVisible={isVestModalVisible}

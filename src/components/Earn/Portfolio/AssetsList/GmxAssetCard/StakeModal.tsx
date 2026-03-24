@@ -64,6 +64,14 @@ const METHOD_NAME_MAP: Record<string, { stake: string; unstake: string }> = {
   esGMX: { stake: "stakeEsGmx", unstake: "unstakeEsGmx" },
 };
 
+function formatUnstakeLimitPercentLabel(percent: number): string {
+  if (percent >= 100) {
+    return percent.toFixed(0);
+  }
+  const truncatedToTenth = Math.floor(percent * 10) / 10;
+  return Number.isInteger(truncatedToTenth) ? `${truncatedToTenth}` : truncatedToTenth.toFixed(1);
+}
+
 export function StakeModal(props: {
   isVisible: boolean;
   setIsVisible: (isVisible: boolean) => void;
@@ -79,6 +87,7 @@ export function StakeModal(props: {
   stakeFarmAddress: string;
   reservedAmount: bigint;
   stakingPowerData?: StakingPowerResponse;
+  stakingPowerProjectedRewardsUsd?: bigint;
 }) {
   const {
     isVisible,
@@ -95,6 +104,7 @@ export function StakeModal(props: {
     stakeFarmAddress,
     reservedAmount,
     stakingPowerData,
+    stakingPowerProjectedRewardsUsd,
   } = props;
 
   const { maxAmount: stakeMaxAmount, value: stakeValue, setValue: setStakeValue } = stake;
@@ -198,7 +208,16 @@ export function StakeModal(props: {
       ? getMaxSafeUnstake(stakingPowerData.currentStaked, effectiveHistoricalMax)
       : null;
 
-  const rewardsLossUsd = wouldResetPower ? (processedData?.cumulativeGmxRewardsUsd ?? null) : null;
+  const rewardsLossUsd = useMemo(() => {
+    if (!wouldResetPower) return null;
+    if (stakingPowerProjectedRewardsUsd !== undefined) {
+      return stakingPowerProjectedRewardsUsd;
+    }
+    if (isTestLoyalty) {
+      return processedData?.cumulativeGmxRewardsUsd ?? null;
+    }
+    return null;
+  }, [wouldResetPower, stakingPowerProjectedRewardsUsd, isTestLoyalty, processedData?.cumulativeGmxRewardsUsd]);
 
   const unstakeLimitPercent = getUnstakeLimitPercent(safeUnstakeLimit, unstakeAmount);
 
@@ -473,7 +492,7 @@ export function StakeModal(props: {
                     exceedsLimit ? "text-red-500" : isApproachingLimit ? "text-yellow-300" : "text-typography-secondary"
                   )}
                 >
-                  {unstakeLimitPercent.toFixed(0)}%
+                  {formatUnstakeLimitPercentLabel(unstakeLimitPercent)}%
                   {(exceedsLimit || isApproachingLimit) && (
                     <>
                       {" "}
