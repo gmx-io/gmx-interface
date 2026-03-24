@@ -54,6 +54,8 @@ function getSortedAssets({
   }
 
   return assets.sort((a, b) => {
+    if (a.type === "gmx" && b.type !== "gmx") return -1;
+    if (a.type !== "gmx" && b.type === "gmx") return 1;
     if (b.usdValue > a.usdValue) return 1;
     if (b.usdValue < a.usdValue) return -1;
     return 0;
