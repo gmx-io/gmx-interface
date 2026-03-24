@@ -186,18 +186,21 @@ const SOURCE_CHAIN_CONFIGS = {
     name: "Base",
     slug: "base-mainnet",
     explorerUrl: "https://basescan.org/",
+    gasPriceBuffer: 3000n, // 30%
   },
   [SOURCE_BSC_MAINNET]: {
     chainId: SOURCE_BSC_MAINNET,
     name: "BNB",
     slug: "bnb-mainnet",
     explorerUrl: "https://bscscan.com/",
+    gasPriceBuffer: 3000n, // 30%
   },
   [SOURCE_ETHEREUM_MAINNET]: {
     chainId: SOURCE_ETHEREUM_MAINNET,
     name: "Ethereum",
     slug: "ethereum-mainnet",
     explorerUrl: "https://etherscan.io/",
+    gasPriceBuffer: 3000n, // 30%
   },
   [ARBITRUM]: {
     chainId: ARBITRUM,
@@ -333,8 +336,8 @@ export function getMinExecutionFeeUsd(chainId: ContractsChainId) {
   return CONTRACTS_CHAIN_CONFIGS[chainId]?.minExecutionFee;
 }
 
-export function getGasPriceBuffer(chainId: ContractsChainId) {
-  return CONTRACTS_CHAIN_CONFIGS[chainId]?.gasPriceBuffer;
+export function getGasPriceBuffer(chainId: ContractsChainId | SourceChainId) {
+  return CONTRACTS_CHAIN_CONFIGS[chainId as ContractsChainId]?.gasPriceBuffer ?? SOURCE_CHAIN_CONFIGS[chainId as SourceChainId]?.gasPriceBuffer;
 }
 
 export function isChainDisabled(chainId: ContractsChainId) {
