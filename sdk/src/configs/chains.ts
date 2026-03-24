@@ -174,12 +174,14 @@ const SOURCE_CHAIN_CONFIGS = {
     name: "Optimism Sepolia",
     slug: "optimism-sepolia",
     explorerUrl: "https://sepolia-optimism.etherscan.io/",
+    gasPriceBuffer: undefined,
   },
   [SOURCE_SEPOLIA]: {
     chainId: SOURCE_SEPOLIA,
     name: "Sepolia",
     slug: "sepolia",
     explorerUrl: "https://sepolia.etherscan.io/",
+    gasPriceBuffer: undefined,
   },
   [SOURCE_BASE_MAINNET]: {
     chainId: SOURCE_BASE_MAINNET,
@@ -207,24 +209,28 @@ const SOURCE_CHAIN_CONFIGS = {
     name: "Arbitrum",
     slug: "arbitrum",
     explorerUrl: "https://arbiscan.io/",
+    gasPriceBuffer: undefined,
   },
   [AVALANCHE]: {
     chainId: AVALANCHE,
     name: "Avalanche",
     slug: "avalanche",
     explorerUrl: "https://snowtrace.io/",
+    gasPriceBuffer: undefined,
   },
   [ARBITRUM_SEPOLIA]: {
     chainId: ARBITRUM_SEPOLIA,
     name: "Arbitrum Sepolia",
     slug: "arbitrum-sepolia",
     explorerUrl: "https://sepolia.arbiscan.io/",
+    gasPriceBuffer: undefined,
   },
   [AVALANCHE_FUJI]: {
     chainId: AVALANCHE_FUJI,
     name: "Avalanche Fuji",
     slug: "avalanche-fuji",
     explorerUrl: "https://testnet.snowtrace.io/",
+    gasPriceBuffer: undefined,
   },
   // Use this notation to correctly infer chain names, etc. from config
 } as const satisfies Record<SourceChainId, SourceChainConfig>;
