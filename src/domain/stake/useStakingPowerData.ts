@@ -7,7 +7,6 @@ import type { StakingPowerResponse } from "sdk/utils/staking/types";
 export {
   getEffectiveHistoricalMax,
   getMaxSafeUnstake,
-  getThresholdBalance,
   getUnstakeLimitPercent,
   isLoyaltyTrackingActive,
   wouldTriggerReset,
