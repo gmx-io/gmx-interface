@@ -10,7 +10,7 @@ import { GasPaymentParams } from "domain/synthetics/express";
 import { getExecutionFeeWarning, type ExecutionFee } from "domain/synthetics/fees";
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import { TokenData } from "domain/tokens";
-import { calculateDisplayDecimals, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
+import { formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -80,11 +80,8 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
     };
   }, [executionFee, executionFeeToken, gasPaymentToken, gasPaymentParams]);
 
-  const executionDisplayDecimals =
-    calculateDisplayDecimals(executionFeeToken?.prices?.minPrice, undefined, 1, executionFeeToken?.isStable) + 1;
-
-  const networkFeeDisplayDecimals =
-    calculateDisplayDecimals(executionFeeToken?.prices?.minPrice, undefined, 1, networkFee?.feeToken.isStable) + 1;
+  const executionDisplayDecimals = executionFeeToken?.isStable ? 2 : 5;
+  const networkFeeDisplayDecimals = networkFee?.feeToken.isStable ? 2 : 5;
 
   const { estimatedRefundText, estimatedRefundUsd } = useMemo(() => {
     let estimatedRefundUsd: bigint | undefined;
