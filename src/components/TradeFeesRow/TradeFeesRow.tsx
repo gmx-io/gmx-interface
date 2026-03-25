@@ -525,7 +525,7 @@ export function TradeFeesRow(p: Props) {
   }, [p.priceImpactDiff?.deltaUsd]);
 
   const swapRouteMsg = useMemo(() => {
-    if (p.swapFees && p.swapFees.length <= 2) {
+    if (!p.swapFees || p.swapFees.length <= 2 || p.externalSwapFee) {
       return null;
     }
 
@@ -535,7 +535,7 @@ export function TradeFeesRow(p: Props) {
         <Trans>Swap routed through multiple GM pools for lowest fees and price impact.</Trans>
       </>
     );
-  }, [p.swapFees]);
+  }, [p.swapFees, p.externalSwapFee]);
 
   let value: ReactNode = useMemo(() => {
     if (totalFeeUsd === undefined || totalFeeUsd == 0n) {

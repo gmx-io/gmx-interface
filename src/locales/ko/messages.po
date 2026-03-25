@@ -3316,6 +3316,10 @@ msgstr "자금 청구됨"
 msgid "Missing claim params. Retry in a few seconds"
 msgstr "수령 매개변수가 누락되었습니다. 몇 초 후 다시 시도하십시오"
 
+#: src/components/TradeBox/TradeBoxRows/SwapDebugRow.tsx
+msgid "Swap Debug"
+msgstr ""
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
 msgstr "트리거"
@@ -9489,6 +9493,10 @@ msgstr "알림"
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "C:"
 msgstr "C:"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Loading swap path…"
+msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. This action won't affect it. <0>Switch to {1} collateral</0>"
