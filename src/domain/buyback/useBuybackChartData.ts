@@ -48,7 +48,7 @@ export function useBuybackChartData(
   }, [data]);
 
   const metrics = useMemo<BuybackDerivedMetrics | undefined>(() => {
-    if (!data?.summary || gmxPrice === undefined) return undefined;
+    if (!data?.summary || gmxPrice === undefined || totalStakedGmx === undefined) return undefined;
 
     const weeklyBoughtGmx = bigintToNumber(BigInt(data.summary.latestWeekAccrued), GMX_DECIMALS);
     const totalBoughtGmx = bigintToNumber(BigInt(data.summary.totalAccrued), GMX_DECIMALS);

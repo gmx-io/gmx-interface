@@ -353,9 +353,11 @@ function TotalPendingRewards({
 }
 
 function BuybackAccrualMetric() {
-  const { data, isLoading } = useBuybackWeeklyStats();
+  const { data, isLoading, error } = useBuybackWeeklyStats();
 
   const totalAccrued = data ? bigintToNumber(BigInt(data.summary.totalAccrued), GMX_DECIMALS) : undefined;
+
+  const isUnavailable = !isLoading && (error || totalAccrued === undefined);
 
   return (
     <Link to="/stats" className="flex flex-col gap-2 !no-underline">
@@ -365,8 +367,10 @@ function BuybackAccrualMetric() {
       <span className="text-body-large font-medium numbers">
         {isLoading ? (
           <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={80} className="leading-base" />
+        ) : isUnavailable ? (
+          <Trans>N/A</Trans>
         ) : (
-          `${numberWithCommas(Math.round(totalAccrued ?? 0))} GMX`
+          `${numberWithCommas(Math.round(totalAccrued!))} GMX`
         )}
       </span>
     </Link>
