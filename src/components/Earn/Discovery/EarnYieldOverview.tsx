@@ -69,12 +69,12 @@ function calculateMaxApr(
   return maxValue;
 }
 
-function formatAprValue(value: bigint | undefined) {
+function formatAprValue(value: bigint | undefined, options?: { showNaForZero?: boolean }) {
   if (value === undefined) {
     return "...%";
   }
 
-  if (value === 0n) {
+  if (value === 0n && options?.showNaForZero) {
     return "N/A";
   }
 
@@ -366,14 +366,14 @@ export default function EarnYieldOverview() {
             token="GLV"
             to={poolsLink}
             chainId={MEGAETH}
-            metric={<YieldMetric value={formatAprValue(megaethMaxGlv)} suffix="APY" />}
+            metric={<YieldMetric value={formatAprValue(megaethMaxGlv, { showNaForZero: true })} suffix="APY" />}
           />,
           <YieldRow
             key="megaeth-gm"
             token="GM"
             to={poolsLink}
             chainId={MEGAETH}
-            metric={<YieldMetric value={formatAprValue(megaethMaxGm)} suffix="APY" />}
+            metric={<YieldMetric value={formatAprValue(megaethMaxGm, { showNaForZero: true })} suffix="APY" />}
           />,
         ],
       },
