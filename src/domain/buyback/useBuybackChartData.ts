@@ -49,10 +49,9 @@ export function useBuybackChartData(
   const metrics = useMemo<BuybackDerivedMetrics | undefined>(() => {
     if (!data?.summary || !data.weeks || gmxPrice === undefined || totalStakedGmx === undefined) return undefined;
 
-    const SECONDS_PER_WEEK = 604800;
     const now = Math.floor(Date.now() / 1000);
 
-    const completedWeeks = data.weeks.filter((w) => w.weekStart + SECONDS_PER_WEEK <= now);
+    const completedWeeks = data.weeks.filter((w) => w.weekEnd <= now);
     const firstNonZero = completedWeeks.findIndex((w) => BigInt(w.weeklyAccrued) > 0n);
     const trackedWeeks = firstNonZero >= 0 ? completedWeeks.slice(firstNonZero) : [];
 
