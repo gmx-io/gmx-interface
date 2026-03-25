@@ -64,7 +64,8 @@ export function subscribeForRpcTrackerMetrics(tracker: RpcTracker) {
     ({ endpointsStats }) => {
       const bestBlock = getBestBlock(endpointsStats);
 
-      const { primary, fallbacks } = tracker.pickCurrentRpcUrls();
+      const primary = tracker.fallbackTracker.state.primary;
+      const fallbacks = tracker.fallbackTracker.state.fallbacks;
       const secondary = fallbacks[0];
       const relevantEndpoints = [primary, secondary].filter(Boolean);
       const relevantStats = endpointsStats.filter((stat) => relevantEndpoints.includes(stat.endpoint));
