@@ -44,6 +44,7 @@ export function useBuybackChartData(
     }));
 
     const firstNonZero = allPoints.findIndex((p) => p.cumulativeAccruedRaw > 0n);
+    if (firstNonZero === -1) return [];
     return firstNonZero > 0 ? allPoints.slice(firstNonZero) : allPoints;
   }, [data]);
 
