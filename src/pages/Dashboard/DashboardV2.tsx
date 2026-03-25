@@ -12,6 +12,7 @@ import { bigMath } from "sdk/utils/bigmath";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
+import { BuybackDashboard } from "components/Earn/BuybackTracker/BuybackDashboard";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketsList } from "components/MarketsList/MarketsList";
 import PageTitle from "components/PageTitle/PageTitle";
@@ -92,6 +93,10 @@ export default function DashboardV2() {
                 totalGmxInLiquidity={totalGmxInLiquidity}
               />
               <GmCard />
+            </div>
+
+            <div className="mt-16">
+              <BuybackDashboard gmxPrice={gmxPrice} />
             </div>
 
             <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
