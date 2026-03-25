@@ -10,12 +10,8 @@ import { AppCard, AppCardSection } from "components/AppCard/AppCard";
 import { BuybackChart } from "./BuybackChart";
 import { BuybackMetricsHeader } from "./BuybackMetricsHeader";
 
-export function BuybackDashboard({
-  gmxPrice,
-}: {
-  gmxPrice: bigint | undefined;
-}) {
-  const { data, isLoading } = useBuybackWeeklyStats();
+export function BuybackDashboard({ gmxPrice }: { gmxPrice: bigint | undefined }) {
+  const { data, isLoading, error } = useBuybackWeeklyStats();
   const { total: totalStakedGmx } = useTotalGmxStaked();
 
   const gmxPriceNumber = gmxPrice !== undefined ? bigintToNumber(gmxPrice, 30) : undefined;
@@ -27,7 +23,7 @@ export function BuybackDashboard({
     <AppCard>
       <AppCardSection>
         <div className="text-16 font-medium">{t`Buyback Dashboard`}</div>
-        <BuybackMetricsHeader metrics={metrics} isLoading={isLoading} />
+        <BuybackMetricsHeader metrics={metrics} isLoading={isLoading} error={error} />
       </AppCardSection>
       <AppCardSection>
         <BuybackChart chartData={chartData} gmxPrice={gmxPriceNumber} />
