@@ -100,7 +100,13 @@ export function InsufficientGmxAccountGasTokenBalanceMessage({
   );
 }
 
-export function InsufficientSourceChainNativeTokenBalanceMessage({ srcChainId }: { srcChainId: SourceChainId }) {
+export function InsufficientSourceChainNativeTokenBalanceMessage({
+  srcChainId,
+  onBeforeNavigation,
+}: {
+  srcChainId: SourceChainId;
+  onBeforeNavigation?: () => void;
+}) {
   const nativeToken = getViemChain(srcChainId).nativeCurrency;
 
   if (!nativeToken) {
@@ -113,7 +119,11 @@ export function InsufficientSourceChainNativeTokenBalanceMessage({ srcChainId }:
     <div>
       <Trans>
         Insufficient {nativeTokenSymbol} for gas on {getChainName(srcChainId)}.{" "}
-        <Link className="underline underline-offset-2" to={`/trade/swap?to=${nativeTokenSymbol}`}>
+        <Link
+          className="underline underline-offset-2"
+          to={`/trade/swap?to=${nativeTokenSymbol}`}
+          onClick={onBeforeNavigation}
+        >
           Swap
         </Link>{" "}
         or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge</ExternalLink> {nativeTokenSymbol}
@@ -150,7 +160,12 @@ export function ValidationBannerErrorContent({
         return null;
       }
 
-      return <InsufficientSourceChainNativeTokenBalanceMessage srcChainId={srcChainId} />;
+      return (
+        <InsufficientSourceChainNativeTokenBalanceMessage
+          srcChainId={srcChainId}
+          onBeforeNavigation={onBeforeNavigation}
+        />
+      );
     }
     case ValidationBannerErrorName.insufficientGmxAccountWntBalance: {
       return <InsufficientWntBanner chainId={chainId} onBeforeNavigation={onBeforeNavigation} />;
