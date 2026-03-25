@@ -12,13 +12,12 @@ import { bigMath } from "sdk/utils/bigmath";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
+import { BuybackDashboard } from "components/Earn/BuybackTracker/BuybackDashboard";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarketsList } from "components/MarketsList/MarketsList";
 import PageTitle from "components/PageTitle/PageTitle";
 
 import V2Icon from "img/ic_v2.svg?react";
-
-import { BuybackDashboard } from "components/Earn/BuybackTracker/BuybackDashboard";
 
 import { GmCard } from "./GmCard";
 import { GmxCard } from "./GmxCard";

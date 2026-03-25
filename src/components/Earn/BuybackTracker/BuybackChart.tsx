@@ -1,4 +1,5 @@
 import { Trans, t } from "@lingui/macro";
+import { format } from "date-fns";
 import { useMemo } from "react";
 import {
   Bar,
@@ -10,10 +11,8 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import { format } from "date-fns";
 
 import type { BuybackChartPoint } from "domain/buyback/useBuybackChartData";
-
 import { numberWithCommas } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 
@@ -38,6 +37,7 @@ const CHART_CURSOR_PROPS = {
 
 const CHART_MARGIN = { top: 16, right: 16, bottom: 16, left: 0 };
 const CHART_TOOLTIP_WRAPPER_STYLE: React.CSSProperties = { zIndex: 10000 };
+const CHART_ACTIVE_DOT = { r: 4, strokeWidth: 2, stroke: "var(--color-slate-100)", fill: "var(--color-slate-900)" };
 
 function formatCompactNumber(value: number): string {
   if (value >= 1_000_000) {
@@ -151,7 +151,7 @@ export function BuybackChart({
                 stroke="var(--color-slate-100)"
                 strokeWidth={2}
                 dot={false}
-                activeDot={{ r: 4, strokeWidth: 2, stroke: "var(--color-slate-100)", fill: "var(--color-slate-900)" }}
+                activeDot={CHART_ACTIVE_DOT}
               />
               <XAxis
                 dataKey="label"

@@ -3,7 +3,6 @@ import { t } from "@lingui/macro";
 import { useBuybackChartData } from "domain/buyback/useBuybackChartData";
 import { useBuybackWeeklyStats } from "domain/buyback/useBuybackWeeklyStats";
 import { useTotalGmxStaked } from "domain/legacy";
-
 import { bigintToNumber } from "lib/numbers";
 
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
