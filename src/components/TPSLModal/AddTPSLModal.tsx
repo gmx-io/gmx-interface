@@ -757,7 +757,10 @@ export function AddTPSLModal({
               tokensData,
               blockTimestampData,
             },
-        callback: makeOrderTxnCallback({}),
+        callback: makeOrderTxnCallback({
+          actionName: "Add TP/SL",
+          collateralSymbol: position.collateralToken.symbol,
+        }),
         provider,
         isGmxAccount: srcChainId !== undefined,
       });
@@ -771,16 +774,17 @@ export function AddTPSLModal({
     signer,
     provider,
     batchParams,
-    chainId,
-    srcChainId,
-    expressParamsPromise,
-    makeOrderTxnCallback,
-    setIsVisible,
-    onSuccess,
     tokensData,
     marketsInfoData,
+    expressParamsPromise,
+    chainId,
     shouldDisableValidationForTesting,
     blockTimestampData,
+    makeOrderTxnCallback,
+    position.collateralToken.symbol,
+    srcChainId,
+    setIsVisible,
+    onSuccess,
   ]);
 
   useEffect(() => {

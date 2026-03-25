@@ -489,7 +489,10 @@ export function OrderEditor(p: Props) {
       expressParams:
         fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
       simulationParams: undefined,
-      callback: makeOrderTxnCallback({}),
+      callback: makeOrderTxnCallback({
+        actionName: "Update Order",
+        collateralSymbol: p.order.initialCollateralToken.symbol,
+      }),
       provider,
       isGmxAccount: srcChainId !== undefined,
     });

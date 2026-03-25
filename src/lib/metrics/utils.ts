@@ -879,8 +879,11 @@ export function sendTxnErrorMetric(
   const errorData = parseError(error);
   const timings = metricId ? getOrderStepTimings(metricId, OrderStage.Failed) : undefined;
 
+  const eventName =
+    `${metricData.metricType}.${errorData?.isUserRejectedError ? OrderStage.Rejected : OrderStage.Failed}` as const;
+
   metrics.pushEvent<OrderTxnFailedEvent>({
-    event: `${metricData.metricType}.${errorData?.isUserRejectedError ? OrderStage.Rejected : OrderStage.Failed}`,
+    event: eventName,
     isError: true,
     data: {
       ...(metricData || {}),

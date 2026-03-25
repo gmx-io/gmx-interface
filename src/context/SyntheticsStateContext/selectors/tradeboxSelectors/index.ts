@@ -14,6 +14,7 @@ import {
   estimateExecuteSwapOrderGasLimit,
   estimateOrderOraclePriceCount,
 } from "domain/synthetics/fees";
+import { getJitLiquidityInfo } from "domain/synthetics/jit/utils";
 import {
   getAvailableUsdLiquidityForPosition,
   getMaxLeverageByMinCollateralFactor,
@@ -60,6 +61,7 @@ import {
   selectChainId,
   selectGasLimits,
   selectGasPrice,
+  selectJitLiquidityMap,
   selectMarketsInfoData,
   selectOrdersInfoData,
   selectPositionsInfoData,
@@ -1206,8 +1208,12 @@ export const selectTradeboxLiquidity = createSelector(function selectTradeboxLiq
   if (!marketInfo || !isIncrease) {
     return {};
   }
-  const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true);
-  const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false);
+
+  const jitLiquidityMap = q(selectJitLiquidityMap);
+  const jitInfo = getJitLiquidityInfo(jitLiquidityMap, marketInfo.marketTokenAddress);
+
+  const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true, jitInfo?.maxReservedUsdWithJitLong);
+  const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false, jitInfo?.maxReservedUsdWithJitShort);
 
   const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
 
