@@ -1819,8 +1819,8 @@ msgid "Leaving GMX.io for a third-party website"
 msgstr "Leaving GMX.io for a third-party website"
 
 #: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
-msgid "Weekly Rate"
-msgstr "Weekly Rate"
+#~ msgid "Weekly Rate"
+#~ msgstr "Weekly Rate"
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Price data too old. Oracle price is stale"
@@ -2135,8 +2135,8 @@ msgid "Search"
 msgstr "Search"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
-msgid "Annualized rate of GMX buybacks based on weekly buyback volume relative to total staked GMX. 27% of protocol fees accumulate in the Treasury for buybacks."
-msgstr "Annualized rate of GMX buybacks based on weekly buyback volume relative to total staked GMX. 27% of protocol fees accumulate in the Treasury for buybacks."
+#~ msgid "Annualized rate of GMX buybacks based on weekly buyback volume relative to total staked GMX. 27% of protocol fees accumulate in the Treasury for buybacks."
+#~ msgstr "Annualized rate of GMX buybacks based on weekly buyback volume relative to total staked GMX. 27% of protocol fees accumulate in the Treasury for buybacks."
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position in WETH-USDC pool but lacks liquidity for this order"
@@ -3657,8 +3657,8 @@ msgid "No deposits required"
 msgstr "No deposits required"
 
 #: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
-msgid "Weekly Bought GMX"
-msgstr "Weekly Bought GMX"
+#~ msgid "Weekly Bought GMX"
+#~ msgstr "Weekly Bought GMX"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Trading airdrop"
@@ -5790,8 +5790,8 @@ msgid "Pools that provide liquidity to specific GMX markets. Supports single-ass
 msgstr "Pools that provide liquidity to specific GMX markets. Supports single-asset and native asset options."
 
 #: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
-msgid "This week's buyback as a percentage of total staked GMX."
-msgstr "This week's buyback as a percentage of total staked GMX."
+#~ msgid "This week's buyback as a percentage of total staked GMX."
+#~ msgstr "This week's buyback as a percentage of total staked GMX."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor"
@@ -5898,8 +5898,8 @@ msgid "Insufficient {fromSymbol} balance. Gas token switched to {toSymbol}"
 msgstr "Insufficient {fromSymbol} balance. Gas token switched to {toSymbol}"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
-msgid "Buyback Rate"
-msgstr "Buyback Rate"
+#~ msgid "Buyback Rate"
+#~ msgstr "Buyback Rate"
 
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Buyback Tracker"
@@ -7357,6 +7357,7 @@ msgstr "Max {0} long exceeded"
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
+#: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
@@ -8181,8 +8182,8 @@ msgid "No price impact. Single execution price for<0/>increasing longs or decrea
 msgstr "No price impact. Single execution price for<0/>increasing longs or decreasing shorts at<1/>this size."
 
 #: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
-msgid "Weekly rate extrapolated to a full year (weekly rate × 52)."
-msgstr "Weekly rate extrapolated to a full year (weekly rate × 52)."
+#~ msgid "Weekly rate extrapolated to a full year (weekly rate × 52)."
+#~ msgstr "Weekly rate extrapolated to a full year (weekly rate × 52)."
 
 #: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
 msgid "Total amount of GMX bought back since tracking began."
@@ -10389,8 +10390,8 @@ msgid "Yield optimizations"
 msgstr "Yield optimizations"
 
 #: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
-msgid "Amount of GMX bought back this week from protocol fees."
-msgstr "Amount of GMX bought back this week from protocol fees."
+#~ msgid "Amount of GMX bought back this week from protocol fees."
+#~ msgstr "Amount of GMX bought back this week from protocol fees."
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/domain/synthetics/orders/utils.tsx
@@ -10400,6 +10401,10 @@ msgstr "Limit Swap"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Claim {tokenSymbol} rewards"
 msgstr "Claim {tokenSymbol} rewards"
+
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+msgid "Average weekly rate extrapolated to a full year (weekly rate × 52)."
+msgstr "Average weekly rate extrapolated to a full year (weekly rate × 52)."
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H VOL."

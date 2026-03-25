@@ -1,5 +1,5 @@
-import { useMemo } from "react";
 import { format } from "date-fns";
+import { useMemo } from "react";
 
 import { GMX_DECIMALS } from "lib/legacy";
 import { bigintToNumber } from "lib/numbers";
@@ -21,8 +21,8 @@ export type BuybackDerivedMetrics = {
   weeklyBoughtUsd: number;
   totalBoughtGmx: number;
   totalBoughtUsd: number;
-  weeklyRate: number;
-  annualizedRate: number;
+  weeklyRate: number | undefined;
+  annualizedRate: number | undefined;
 };
 
 export function useBuybackChartData(
@@ -48,15 +48,34 @@ export function useBuybackChartData(
   }, [data]);
 
   const metrics = useMemo<BuybackDerivedMetrics | undefined>(() => {
-    if (!data?.summary || gmxPrice === undefined || totalStakedGmx === undefined) return undefined;
+    if (!data?.summary || !data.weeks || gmxPrice === undefined || totalStakedGmx === undefined) return undefined;
 
+    const SECONDS_PER_WEEK = 604800;
+    const now = Math.floor(Date.now() / 1000);
+
+    const completedWeeks = data.weeks.filter((w) => w.weekStart + SECONDS_PER_WEEK <= now);
+    const firstNonZero = completedWeeks.findIndex((w) => BigInt(w.weeklyAccrued) > 0n);
+    const trackedWeeks = firstNonZero >= 0 ? completedWeeks.slice(firstNonZero) : [];
+
+    const window = trackedWeeks.slice(-4);
+
+    // Current week metrics (from latestWeekAccrued)
     const weeklyBoughtGmx = bigintToNumber(BigInt(data.summary.latestWeekAccrued), GMX_DECIMALS);
     const totalBoughtGmx = bigintToNumber(BigInt(data.summary.totalAccrued), GMX_DECIMALS);
     const weeklyBoughtUsd = weeklyBoughtGmx * gmxPrice;
     const totalBoughtUsd = totalBoughtGmx * gmxPrice;
 
-    const weeklyRate = totalStakedGmx && totalStakedGmx > 0 ? weeklyBoughtGmx / totalStakedGmx : 0;
-    const annualizedRate = weeklyRate * 52;
+    let weeklyRate: number | undefined;
+    let annualizedRate: number | undefined;
+
+    if (window.length >= 2 && totalStakedGmx > 0) {
+      const avgWeeklyBoughtGmx =
+        window.reduce((sum, w) => sum + bigintToNumber(BigInt(w.weeklyAccrued), GMX_DECIMALS), 0) / window.length;
+
+      weeklyRate = avgWeeklyBoughtGmx / totalStakedGmx;
+
+      annualizedRate = weeklyRate * 52;
+    }
 
     return {
       weeklyBoughtGmx,
