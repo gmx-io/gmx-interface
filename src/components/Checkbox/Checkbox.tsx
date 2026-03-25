@@ -34,7 +34,7 @@ export default function Checkbox(props: Props) {
     >
       <span
         className={cx(
-          `flex h-14 w-14 items-center justify-center rounded-4 border
+          `flex h-14 w-14 shrink-0 items-center justify-center rounded-4 border
           border-slate-100 text-14 group-hover:border-slate-400`,
           {
             "opacity-50": disabled,
