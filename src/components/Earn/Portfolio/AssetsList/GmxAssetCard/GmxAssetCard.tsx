@@ -8,13 +8,15 @@ import useSWR from "swr";
 import { zeroAddress } from "viem";
 
 import { ARBITRUM, getChainNativeTokenSymbol } from "config/chains";
+import { useBuybackChartData } from "domain/buyback/useBuybackChartData";
+import { useBuybackWeeklyStats } from "domain/buyback/useBuybackWeeklyStats";
 import { getContract } from "config/contracts";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
-import { useGmxPrice } from "domain/legacy";
+import { useGmxPrice, useTotalGmxStaked } from "domain/legacy";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT, StakingProcessedData } from "lib/legacy";
-import { formatAmount, formatUsd } from "lib/numbers";
+import { bigintToNumber, formatAmount, formatUsd } from "lib/numbers";
 import { sendEarnPortfolioItemClickEvent } from "lib/userAnalytics/earnEvents";
 import useWallet from "lib/wallets/useWallet";
 import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
@@ -135,8 +137,17 @@ export function GmxAssetCard({
 
   const priceRowValue = gmxPrice === undefined ? "..." : formatUsd(gmxPrice);
 
+  const { data: buybackData } = useBuybackWeeklyStats();
+  const { total: totalStakedGmx } = useTotalGmxStaked();
+  const gmxPriceNumber = gmxPrice !== undefined ? bigintToNumber(gmxPrice, 30) : undefined;
+  const totalStakedGmxNumber = totalStakedGmx > 0n ? bigintToNumber(totalStakedGmx, 18) : undefined;
+  const { metrics: buybackMetrics } = useBuybackChartData(buybackData, gmxPriceNumber, totalStakedGmxNumber);
+
   const aprHandle = useMemo(() => {
     if (processedData?.isRewardsSuspended) {
+      if (buybackMetrics) {
+        return <span className="numbers">{(buybackMetrics.annualizedRate * 100).toFixed(1)}%</span>;
+      }
       return <Trans>Accumulating</Trans>;
     }
 
@@ -145,7 +156,9 @@ export function GmxAssetCard({
     }
 
     return <span className="numbers">{formatAmount(processedData.gmxAprTotal, 2, 2, true)}%</span>;
-  }, [processedData?.gmxAprTotal, processedData?.isRewardsSuspended]);
+  }, [processedData?.gmxAprTotal, processedData?.isRewardsSuspended, buybackMetrics]);
+
+  const aprLabel = processedData?.isRewardsSuspended ? <Trans>Buyback Rate</Trans> : <Trans>APR</Trans>;
 
   const aprRowValue = useMemo(() => {
     if (processedData?.gmxAprTotal === undefined && !processedData?.isRewardsSuspended) {
@@ -159,8 +172,8 @@ export function GmxAssetCard({
         renderContent={() =>
           processedData?.isRewardsSuspended ? (
             <Trans>
-              27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your
-              share is based on staking power (duration × amount staked).
+              Annualized rate of GMX buybacks based on weekly buyback volume relative to total staked GMX. 27% of
+              protocol fees accumulate in the Treasury for buybacks.
             </Trans>
           ) : (
             <GMXAprTooltip
@@ -231,7 +244,7 @@ export function GmxAssetCard({
             }
           />
           <SyntheticsInfoRow label={<Trans>Price</Trans>} value={priceRowValue} />
-          <SyntheticsInfoRow label={<Trans>APR</Trans>} value={aprRowValue} />
+          <SyntheticsInfoRow label={aprLabel} value={aprRowValue} />
         </div>
       </BaseAssetCard>
 

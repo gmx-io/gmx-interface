@@ -2,6 +2,7 @@ import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, Contrac
 
 const API_URLS: Record<ContractsChainId, string | undefined> = {
   [ARBITRUM]: "https://gmx-api-arbitrum-2nlbk.ondigitalocean.app/api/v1",
+
   [AVALANCHE]: "https://gmx-api-avalanche-vxjas.ondigitalocean.app/api/v1",
 
   [AVALANCHE_FUJI]: undefined,

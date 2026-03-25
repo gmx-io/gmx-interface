@@ -1815,6 +1815,10 @@ msgstr "Stop-Preis"
 msgid "Leaving GMX.io for a third-party website"
 msgstr "Sie verlassen GMX.io und werden zu einer Drittanbieter-Website weitergeleitet"
 
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+msgid "Weekly Rate"
+msgstr ""
+
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Price data too old. Oracle price is stale"
 msgstr "Preisdaten zu alt. Oracle-Preis ist veraltet"
@@ -2126,6 +2130,10 @@ msgstr "GMX (Chinesisch)"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search"
 msgstr "Suchen"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Annualized rate of GMX buybacks based on weekly buyback volume relative to total staked GMX. 27% of protocol fees accumulate in the Treasury for buybacks."
+msgstr ""
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position in WETH-USDC pool but lacks liquidity for this order"
@@ -3595,6 +3603,11 @@ msgstr "Finanzierungsgebühr"
 msgid "{0}"
 msgstr "{0}"
 
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "Cumulative"
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Liquidation price changes with fees and collateral value."
 msgstr "Der Liquidationspreis ändert sich mit den Gebühren und dem Wert der Sicherheit."
@@ -3620,6 +3633,10 @@ msgstr "Handeln"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "No deposits required"
 msgstr "Keine Einzahlungen erforderlich"
+
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+msgid "Weekly Bought GMX"
+msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Trading airdrop"
@@ -4881,6 +4898,10 @@ msgstr "Empfehlungscode hinzugefügt"
 msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
 msgstr "Kaufen Sie GMX-Bonds auf Bond Protocol mit einem Rabatt und einer kurzen Sperrfrist"
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "Buyback accrued"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer account"
@@ -5663,6 +5684,10 @@ msgstr "Ihre Mittel sind sicher in GMX-Verträgen auf der Zielchain. Versuchen S
 msgid "Mozaic Finance"
 msgstr "Mozaic Finance"
 
+#: src/components/Earn/BuybackTracker/BuybackDashboard.tsx
+msgid "Buyback Dashboard"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
 msgstr "Einflussexponent (negativ)"
@@ -5718,6 +5743,10 @@ msgstr "Erlaubte Aktionen"
 #: src/components/GmList/GmList.tsx
 msgid "Pools that provide liquidity to specific GMX markets. Supports single-asset and native asset options."
 msgstr "Pools, die Liquidität für bestimmte GMX-Märkte bereitstellen. Unterstützt Einzeltoken- und native Tokenoptionen."
+
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+msgid "This week's buyback as a percentage of total staked GMX."
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor"
@@ -5822,6 +5851,14 @@ msgstr "RABATT"
 #: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
 msgid "Insufficient {fromSymbol} balance. Gas token switched to {toSymbol}"
 msgstr "Unzureichendes {fromSymbol}-Guthaben. Gas-Token wurde auf {toSymbol} umgestellt"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Buyback Rate"
+msgstr ""
+
+#: src/pages/Earn/EarnPageLayout.tsx
+msgid "Buyback Tracker"
+msgstr ""
 
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to pay"
@@ -6320,6 +6357,10 @@ msgstr "Zuverlässige GMX-betriebene Transaktionen"
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawal of {balanceFormatted} failed"
 msgstr "Abhebung von {balanceFormatted} fehlgeschlagen"
+
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+msgid "Annualized Rate"
+msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Gas"
@@ -6988,8 +7029,8 @@ msgid "{0} is required for collateral.<0/><1/>No swap path found for {1} to {2} 
 msgstr "{0} wird als Sicherheit benötigt.<0/><1/>Kein Tauschpfad für {1} zu {2} innerhalb von GMX gefunden.<2/><3/><4>{3} auf 1inch kaufen</4>."
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
-msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
-msgstr ""
+#~ msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
+#~ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Stake {tokenSymbol} rewards"
@@ -7424,7 +7465,6 @@ msgstr "Min. Positionsgröße: {0}"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 #: src/components/APRLabel/APRLabel.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your share is based on staking power (duration × amount staked)."
 msgstr ""
@@ -8074,6 +8114,14 @@ msgstr "{typeString} Long Stop Market: {0} einer Long-Position, wenn der Preis u
 msgid "No price impact. Single execution price for<0/>increasing longs or decreasing shorts at<1/>this size."
 msgstr "Kein Preiseinfluss. Einzelner Ausführungspreis für das<0/>Erhöhen von Longs oder Verringern von Shorts bei<1/>dieser Größe."
 
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+msgid "Weekly rate extrapolated to a full year (weekly rate × 52)."
+msgstr ""
+
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+msgid "Total amount of GMX bought back since tracking began."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group (Chinese)"
 msgstr "Telegram-Gruppe (Chinesisch)"
@@ -8412,6 +8460,11 @@ msgstr "Ungültige Ethereum-Adresse"
 msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on that network."
 msgstr "Die Verfügbarkeit des Codes konnte auf {0} nicht überprüft werden. Sie können den Code dennoch erstellen, er ist jedoch möglicherweise bereits in diesem Netzwerk vergeben."
 
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "Weekly Bought"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
 msgid "Rebates"
@@ -8562,6 +8615,10 @@ msgstr "Staken..."
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Buy request sent"
 msgstr "Kaufanfrage gesendet"
+
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+msgid "Total Bought GMX"
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using fiat gateways"
@@ -9707,6 +9764,7 @@ msgstr "Angesammelt"
 msgid "Cancellable in ..."
 msgstr "Stornierbar in ..."
 
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "No data available"
 msgstr "Keine Daten verfügbar"
@@ -10246,6 +10304,10 @@ msgstr "Maximales Einzahlungslimit erreicht: {maxPoolUsdText}"
 msgid "Yield optimizations"
 msgstr "Renditeoptimierungen"
 
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+msgid "Amount of GMX bought back this week from protocol fees."
+msgstr ""
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Swap"
@@ -10742,6 +10804,10 @@ msgstr "Der Ausführungspreis kann aufgrund von Gebühren und Preiseinfluss vom 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Private"
 msgstr "Privat"
+
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "Week"
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Min. required collateral"

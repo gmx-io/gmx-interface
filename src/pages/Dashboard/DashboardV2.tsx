@@ -18,6 +18,8 @@ import PageTitle from "components/PageTitle/PageTitle";
 
 import V2Icon from "img/ic_v2.svg?react";
 
+import { BuybackDashboard } from "components/Earn/BuybackTracker/BuybackDashboard";
+
 import { GmCard } from "./GmCard";
 import { GmxCard } from "./GmxCard";
 import { OverviewCard } from "./OverviewCard";
@@ -92,6 +94,10 @@ export default function DashboardV2() {
                 totalGmxInLiquidity={totalGmxInLiquidity}
               />
               <GmCard />
+            </div>
+
+            <div className="mt-16">
+              <BuybackDashboard gmxPrice={gmxPrice} />
             </div>
 
             <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="pools">
