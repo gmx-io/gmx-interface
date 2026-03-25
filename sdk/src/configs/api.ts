@@ -11,7 +11,7 @@ const API_URLS: Record<ContractsChainId, string | undefined> = {
 
   [ARBITRUM_SEPOLIA]: "https://gmx-api-arbitrum-sepolia-yp6pp.ondigitalocean.app/api/v1",
 
-  [MEGAETH]: undefined,
+  [MEGAETH]: "https://megaeth-temp.gmxapi.ai/api/v1",
 };
 
 export function getApiUrl(chainId: number) {
