@@ -1,7 +1,10 @@
 import { t, Trans } from "@lingui/macro";
 import { ReactNode, useCallback, useMemo } from "react";
 
-import { selectIsSetAcceptablePriceImpactEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import {
+  selectIsSetAcceptablePriceImpactEnabled,
+  selectShowDebugValues,
+} from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectTradeboxAdvancedOptions,
   selectTradeboxDecreasePositionAmounts,
@@ -41,6 +44,7 @@ import { AvailableLiquidityRow } from "./AvailableLiquidityRow";
 import { CollateralSpreadRow } from "./CollateralSpreadRow";
 import { EntryPriceRow } from "./EntryPriceRow";
 import { NextStoredImpactRows } from "./NextStoredImpactRows";
+import { SwapDebugRow } from "./SwapDebugRow";
 import { SwapSpreadRow } from "./SwapSpreadRow";
 import { useTradeboxAllowedSwapSlippageValues } from "../hooks/useTradeboxAllowedSwapSlippageValues";
 
@@ -154,6 +158,7 @@ export function TradeBoxAdvancedGroups({
   const selectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
   const defaultTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxDefaultTriggerAcceptablePriceImpactBps);
   const isSetAcceptablePriceImpactEnabled = useSelector(selectIsSetAcceptablePriceImpactEnabled);
+  const showDebugValues = useSelector(selectShowDebugValues);
 
   useTradeboxAllowedSwapSlippageValues();
 
@@ -221,6 +226,7 @@ export function TradeBoxAdvancedGroups({
       )}
 
       <TradeFeesRow {...fees} feesType={feesType} />
+      {showDebugValues && <SwapDebugRow />}
       <NetworkFeeRow executionFee={totalExecutionFee} gasPaymentParams={gasPaymentParams} />
 
       {isTwap && isSwap ? (

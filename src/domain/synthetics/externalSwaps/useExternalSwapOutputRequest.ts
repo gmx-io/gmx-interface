@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { usePrevious } from "react-use";
 import useSWR from "swr";
 
@@ -110,9 +110,30 @@ export function useExternalSwapOutputRequest({
 
   const tokensData = useTokensData();
 
+  const userParamsKey =
+    enabled && tokenInAddress && tokenOutAddress && amountIn !== undefined && amountIn > 0n
+      ? `${tokenInAddress}:${tokenOutAddress}:${amountIn}`
+      : null;
+  const [resolvedUserParams, setResolvedUserParams] = useState<string | null>(null);
+  const prevDataRef = useRef<typeof data>(undefined);
+
+  useEffect(() => {
+    const dataChanged = data !== prevDataRef.current;
+    prevDataRef.current = data;
+
+    if (dataChanged && data && userParamsKey) {
+      setResolvedUserParams(userParamsKey);
+    }
+    if (!enabled) {
+      setResolvedUserParams(null);
+    }
+  }, [data, userParamsKey, enabled]);
+
+  const isLoading = userParamsKey !== null && userParamsKey !== resolvedUserParams;
+
   return useMemo(() => {
     if (amountIn === undefined || !tokenInAddress || !tokenOutAddress || gasPrice === undefined || !receiverAddress) {
-      return {};
+      return { isLoading };
     }
 
     const botanixStakingQuote =
@@ -131,11 +152,12 @@ export function useExternalSwapOutputRequest({
     if (botanixStakingQuote) {
       return {
         quote: botanixStakingQuote,
+        isLoading,
       };
     }
 
     if (!data) {
-      return {};
+      return { isLoading };
     }
 
     const needSpenderApproval = getNeedTokenApprove(
@@ -169,6 +191,7 @@ export function useExternalSwapOutputRequest({
 
     return {
       quote,
+      isLoading,
     };
   }, [
     amountIn,
@@ -181,5 +204,6 @@ export function useExternalSwapOutputRequest({
     chainId,
     data,
     tokensAllowanceData,
+    isLoading,
   ]);
 }

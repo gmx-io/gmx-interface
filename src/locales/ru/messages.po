@@ -3316,6 +3316,10 @@ msgstr "Средства клеймлены"
 msgid "Missing claim params. Retry in a few seconds"
 msgstr "Отсутствуют параметры для получения. Повторите попытку через несколько секунд"
 
+#: src/components/TradeBox/TradeBoxRows/SwapDebugRow.tsx
+msgid "Swap Debug"
+msgstr ""
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
 msgstr "Триггер"
@@ -9489,6 +9493,10 @@ msgstr "Оповещения"
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "C:"
 msgstr "C:"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Loading swap path…"
+msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. This action won't affect it. <0>Switch to {1} collateral</0>"

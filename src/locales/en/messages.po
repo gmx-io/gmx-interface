@@ -3316,6 +3316,10 @@ msgstr "Funds claimed"
 msgid "Missing claim params. Retry in a few seconds"
 msgstr "Missing claim params. Retry in a few seconds"
 
+#: src/components/TradeBox/TradeBoxRows/SwapDebugRow.tsx
+msgid "Swap Debug"
+msgstr "Swap Debug"
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
 msgstr "Trigger"
@@ -9489,6 +9493,10 @@ msgstr "Alerts"
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "C:"
 msgstr "C:"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Loading swap path…"
+msgstr "Loading swap path…"
 
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. This action won't affect it. <0>Switch to {1} collateral</0>"

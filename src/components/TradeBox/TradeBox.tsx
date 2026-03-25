@@ -213,6 +213,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals) ?? 0n : 0n;
   const fromTokenPrice = fromToken?.prices.minPrice;
   const fromUsd = convertToUsd(fromTokenAmount, fromToken?.decimals, fromTokenPrice);
+  const toTokenDisplayAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals) ?? 0n : 0n;
+  const toUsd = convertToUsd(toTokenDisplayAmount, toToken?.decimals, toToken?.prices?.maxPrice);
 
   const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS) ?? 0n;
 
@@ -397,15 +399,12 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
       if (isSwap && swapAmounts) {
         if (focusedInput === "from") {
-          setToTokenInputValue(
-            swapAmounts.amountOut > 0 ? formatAmountFree(swapAmounts.amountOut, toToken.decimals) : "",
-            false
-          );
+          const newToValue = swapAmounts.amountOut > 0 ? formatAmountFree(swapAmounts.amountOut, toToken.decimals) : "";
+          setToTokenInputValue(newToValue, false);
         } else {
-          setFromTokenInputValue(
-            swapAmounts.amountIn > 0 ? formatAmountFree(swapAmounts.amountIn, fromToken.decimals) : "",
-            false
-          );
+          const newFromValue =
+            swapAmounts.amountIn > 0 ? formatAmountFree(swapAmounts.amountIn, fromToken.decimals) : "";
+          setFromTokenInputValue(newFromValue, false);
         }
       }
 
@@ -776,7 +775,9 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               <BuyInputSection
                 topLeftLabel={isTwap ? t`Receive (approximate)` : t`Receive`}
                 bottomLeftValue={
-                  !isTwap && swapAmounts?.usdOut !== undefined ? formatUsd(swapAmounts?.usdOut) : undefined
+                  !isTwap && swapAmounts?.usdOut !== undefined
+                    ? formatUsd(focusedInput === "from" ? swapAmounts.usdOut : toUsd)
+                    : undefined
                 }
                 bottomRightValue={
                   !isTwap && toToken && toToken.balance !== undefined && toToken.balance > 0n
