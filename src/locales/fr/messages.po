@@ -217,6 +217,10 @@ msgstr "Surveillance RPC"
 msgid "(rebated)"
 msgstr "(remboursé)"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Accumulated rewards"
+msgstr ""
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Show rPnL amounts"
 msgstr "Afficher les montants rPnL"
@@ -1601,7 +1605,6 @@ msgid "Pool max short amount"
 msgstr "Montant short maximum du pool"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "APR"
 msgstr "TAEG"
@@ -2404,6 +2407,10 @@ msgstr "Comment pouvons-nous répondre à vos préoccupations ?"
 msgid "No liquidity available for increasing longs at<0/>this size. Max long size: {0}<1/><2/>Execution prices for decreasing shorts."
 msgstr "Aucune liquidité disponible pour augmenter les longs à<0/>cette taille. Taille long maximale : {0}<1/><2/>Prix d'exécution pour la réduction des shorts."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#~ msgid "Accumulated Rewards"
+#~ msgstr ""
+
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Transfer completed"
 msgstr "Transfert terminé"
@@ -2494,7 +2501,6 @@ msgid "{txnTypeText} {0} order for"
 msgstr "{txnTypeText} {0} ordre pour"
 
 #: src/components/BuyInputSection/BuyInputSection.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -2769,6 +2775,10 @@ msgstr "Un impact net potentiellement élevé sur le prix (plafonné à {formatt
 msgid "Update Take-Profit"
 msgstr "Mettre à jour Take-Profit"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards."
+msgstr ""
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Deposit from {sourceChainName} failed"
 msgstr "Le dépôt depuis {sourceChainName} a échoué"
@@ -3034,6 +3044,10 @@ msgstr "Glissement autorisé"
 msgid "No centralized exchanges available"
 msgstr "Aucune plateforme centralisée disponible"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Loyalty"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 msgid "No assets yet"
 msgstr "Aucun actif pour le moment"
@@ -3241,6 +3255,10 @@ msgstr "<0>Portefeuilles intelligents non pris en charge sur {0}</0><1/><2>Chang
 msgid "Buy from decentralized or centralized exchanges"
 msgstr "Acheter sur des plateformes décentralisées ou centralisées"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "of limit"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact pool after reserved positive impact"
 msgstr "Pool d'impact après réservation de l'impact positif"
@@ -3409,6 +3427,10 @@ msgstr "Liquidité insuffisante. L'ordre sera exécuté lorsque la liquidité se
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Your transfer is complete"
 msgstr "Votre transfert est terminé"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "27% of protocol fees are accumulating in the Treasury and will be distributed proportionally to staking power when GMX reaches $90."
+msgstr ""
 
 #: src/components/BotanixBanner/BotanixBanner.tsx
 msgid "and"
@@ -3668,7 +3690,6 @@ msgstr "Taux de rendement annualisé des frais"
 msgid "SL"
 msgstr "SL"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -3774,6 +3795,10 @@ msgstr "Transaction terminée"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Base borrowing factor short"
 msgstr "Facteur d'emprunt de base short"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Staked esGMX"
+msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Staked on Arbitrum"
@@ -4094,6 +4119,10 @@ msgstr "LEV. MOY."
 msgid "Enter a new ratio or allowed slippage"
 msgstr "Entrez un nouveau ratio ou glissement autorisé"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Safe unstake limit: {0} GMX / esGMX"
+msgstr ""
+
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap submitted"
@@ -4123,8 +4152,8 @@ msgid "Name:"
 msgstr "Nom :"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "{0}<0>You will earn {1}% less rewards.</0>"
-msgstr "{0}<0>Vous gagnerez {1}% de récompenses en moins.</0>"
+#~ msgid "{0}<0>You will earn {1}% less rewards.</0>"
+#~ msgstr "{0}<0>Vous gagnerez {1}% de récompenses en moins.</0>"
 
 #: src/components/TradeHistory/keys.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -4159,6 +4188,10 @@ msgstr "Facteur positif"
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "Full position close"
 msgstr "Fermeture complète de la position"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Create Stop-Loss"
@@ -4694,6 +4727,10 @@ msgstr "Mise à jour des paramètres..."
 msgid "GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
 msgstr "GMX exécute les transactions sans signature individuelle. Les trades utilisent des RPC premium sponsorisés par GMX pour garantir la fiabilité, même en cas de congestion du réseau.<0/><1/>Paiement du Gas en {gasPaymentTokensText}."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "I acknowledge that I will lose <0>{0} in rewards</0> if I proceed."
+msgstr ""
+
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Last rebalance"
 msgstr "Dernier rééquilibrage"
@@ -5205,6 +5242,10 @@ msgstr "Échec de la réclamation des fonds"
 msgid "Shifting only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "Le shifting est uniquement disponible sur {chainNames} ou {lastChainName}. Changez de réseau pour continuer."
 
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "I understand that accumulated staking power will reset on the receiving wallet. The receiving address will start accruing staking power from zero."
+msgstr ""
+
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
 msgstr "Aucun chemin d'échange disponible. <0>Échanger {0} contre {swapToTokenSymbol}</0>, puis contre {1}."
@@ -5606,6 +5647,10 @@ msgstr "Lancer l'application"
 msgid "This competition is held on the {0} network. <0>Change your network</0> to participate."
 msgstr "Cette compétition se déroule sur le réseau {0}. <0>Changez votre réseau</0> pour participer."
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Rewards reset."
+msgstr ""
+
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "All networks"
 msgstr "Tous les réseaux"
@@ -5829,6 +5874,10 @@ msgstr "Firebird Finance"
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "{balanceFormatted} remaining in old 1CT subaccount"
 msgstr "{balanceFormatted} restant dans l'ancien sous-compte 1CT"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Stake GMX"
+msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
@@ -6228,6 +6277,10 @@ msgstr ""
 #: src/components/GmList/GlvList.tsx
 msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets"
 msgstr "Coffres optimisés pour le rendement fournissant de la liquidité sur plusieurs marchés GMX"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#~ msgid "Safe unstake limit: {0} {tokenSymbol} / esGMX"
+#~ msgstr ""
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Analytics"
@@ -6820,6 +6873,10 @@ msgstr "Bond Protocol"
 msgid "Withdrawing {0} to {1} is not supported"
 msgstr "Le retrait de {0} vers {1} n'est pas pris en charge"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Wallet esGMX"
+msgstr ""
+
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Governance"
@@ -6896,6 +6953,10 @@ msgstr "Afficher le PnL après les frais"
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Share position"
 msgstr "Partager la position"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "If you continue, you will lose {0} in rewards."
+msgstr ""
 
 #: src/components/BotanixBanner/BotanixBanner.tsx
 msgid "Switch to <0><1/><2>Arbitrum</2></0> or <3><4/><5>Avalanche</5></3> for those features"
@@ -6979,8 +7040,8 @@ msgid "Cancel Stop-Loss"
 msgstr "Annuler le Stop-Loss"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
-msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
-msgstr ""
+#~ msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
+#~ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Stake {tokenSymbol} rewards"
@@ -7414,7 +7475,6 @@ msgstr "Taille de position minimale : {0}"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 #: src/components/APRLabel/APRLabel.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your share is based on staking power (duration × amount staked)."
 msgstr ""
@@ -7430,6 +7490,7 @@ msgid "Trigger price below mark price"
 msgstr "Prix de déclenchement inférieur au prix mark"
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staked GMX"
 msgstr "GMX stakés"
 
@@ -7895,6 +7956,10 @@ msgstr "Analyses du protocole"
 msgid "Show positions on chart"
 msgstr "Afficher les positions sur le graphique"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Avail."
+msgstr ""
+
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 msgid "Metrics debug"
 msgstr "Débogage des métriques"
@@ -8318,7 +8383,6 @@ msgid "Session generated"
 msgstr "Session générée"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGmxModal.tsx
@@ -9134,7 +9198,6 @@ msgstr "Convertir {tokenSymbol} en {nativeTokenSymbol}"
 msgid "({0} of position size)"
 msgstr "({0} de la taille de la position)"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Staked"
 msgstr "Staké"
@@ -9226,6 +9289,7 @@ msgid "Select at least one distribution to claim"
 msgstr "Sélectionnez au moins une distribution à récupérer"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Buy"
 msgstr "Acheter"
 
@@ -9330,6 +9394,10 @@ msgstr "Puis-je construire sur GMX ou l'intégrer dans mon app DeFi ?"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Avoid price wicks with transparent, sub-second Chainlink price feeds tailor-made for GMX"
 msgstr "Évitez les mèches de prix grâce à des flux de prix Chainlink transparents et inférieurs à la seconde, conçus sur mesure pour GMX"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Stake esGMX"
+msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe and remain in your wallet."
@@ -9455,6 +9523,10 @@ msgstr "Le règlement de {positionName} a échoué"
 msgid "Ecosystem projects"
 msgstr "Projets de l'écosystème"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstaking this amount will bring you close to the 20% reset threshold."
+msgstr ""
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Withdrawing {0} from {positionText}..."
 msgstr "Retrait de {0} de {positionText}..."
@@ -9553,7 +9625,6 @@ msgid "Sender has withdrawn all tokens from GLP vesting vault"
 msgstr "L'expéditeur a retiré tous les jetons du vault d'acquisition progressive GLP"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
@@ -9732,6 +9803,10 @@ msgstr "Liquidité insuffisante dans le pool WETH-USDC. Sélectionnez un autre p
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Cancel order"
 msgstr "Annuler l'ordre"
+
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+#~ msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked). All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
+#~ msgstr ""
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Current impact: {0}. Use -0.30% or more for better order execution."
@@ -9971,6 +10046,10 @@ msgstr "GMX trading chat"
 msgid "Compass Labs trading simulations"
 msgstr "Compass Labs trading simulations"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "The 20% unstaking limit was exceeded, and your rewards have been reset. You may now continue unstaking freely."
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL long"
 msgstr "PnL long"
@@ -10067,6 +10146,10 @@ msgstr "Bénéficiez d'un effet de levier jusqu'à 100x et d'une liquidité on-c
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Stop loss price"
 msgstr "Prix stop loss"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Your current staked balance relative to your historical max. Dropping below 80% resets your accumulated staking power to zero."
+msgstr ""
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Oracle keeper monitoring"
@@ -10467,6 +10550,10 @@ msgstr "Échec de l'ajout du code de parrainage"
 msgid "Deposit {glvOrGm}"
 msgstr "Déposer {glvOrGm}"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Wallet GMX"
+msgstr ""
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Debug settings"
 msgstr "Paramètres de débogage"
@@ -10641,6 +10728,10 @@ msgstr "Détails de la performance générale"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Take-Profit"
 msgstr "Take-Profit"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Your staking power was reset {0} due to dropping below the 80% loyalty threshold. Power is now accruing again from your current balance."
+msgstr ""
 
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
