@@ -370,7 +370,7 @@ function BuybackAccrualMetric() {
         ) : isUnavailable ? (
           <Trans>N/A</Trans>
         ) : (
-          `${numberWithCommas(Math.round(totalAccrued!))} GMX`
+          `${numberWithCommas(Math.round(totalAccrued ?? 0))} GMX`
         )}
       </span>
     </Link>

@@ -17,8 +17,6 @@ export type BuybackChartPoint = {
 };
 
 export type BuybackDerivedMetrics = {
-  weeklyBoughtGmx: number;
-  weeklyBoughtUsd: number;
   totalBoughtGmx: number;
   totalBoughtUsd: number;
   weeklyRate: number | undefined;
@@ -57,29 +55,23 @@ export function useBuybackChartData(
     const firstNonZero = completedWeeks.findIndex((w) => BigInt(w.weeklyAccrued) > 0n);
     const trackedWeeks = firstNonZero >= 0 ? completedWeeks.slice(firstNonZero) : [];
 
-    const window = trackedWeeks.slice(-4);
+    const rateWindow = trackedWeeks.slice(-4);
 
-    // Current week metrics (from latestWeekAccrued)
-    const weeklyBoughtGmx = bigintToNumber(BigInt(data.summary.latestWeekAccrued), GMX_DECIMALS);
     const totalBoughtGmx = bigintToNumber(BigInt(data.summary.totalAccrued), GMX_DECIMALS);
-    const weeklyBoughtUsd = weeklyBoughtGmx * gmxPrice;
     const totalBoughtUsd = totalBoughtGmx * gmxPrice;
 
     let weeklyRate: number | undefined;
     let annualizedRate: number | undefined;
 
-    if (window.length >= 2 && totalStakedGmx > 0) {
+    if (rateWindow.length >= 2 && totalStakedGmx > 0) {
       const avgWeeklyBoughtGmx =
-        window.reduce((sum, w) => sum + bigintToNumber(BigInt(w.weeklyAccrued), GMX_DECIMALS), 0) / window.length;
-
+        rateWindow.reduce((sum, w) => sum + bigintToNumber(BigInt(w.weeklyAccrued), GMX_DECIMALS), 0) /
+        rateWindow.length;
       weeklyRate = avgWeeklyBoughtGmx / totalStakedGmx;
-
       annualizedRate = weeklyRate * 52;
     }
 
     return {
-      weeklyBoughtGmx,
-      weeklyBoughtUsd,
       totalBoughtGmx,
       totalBoughtUsd,
       weeklyRate,
