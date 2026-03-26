@@ -20,7 +20,7 @@ export function useApiOrdersRequest(
     chainId,
     enabled && account && sdk ? ["apiOrdersRequest", chainId, account] : null,
     async () => {
-      const orders: ApiOrderInfo[] = await sdk!.fetchOrders({ account: account! });
+      const orders: ApiOrderInfo[] = await sdk!.fetchOrders({ address: account! });
       return keyBy(orders, "key");
     },
     FreshnessMetricId.ApiOrders

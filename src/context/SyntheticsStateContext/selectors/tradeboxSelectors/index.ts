@@ -14,6 +14,7 @@ import {
   estimateExecuteSwapOrderGasLimit,
   estimateOrderOraclePriceCount,
 } from "domain/synthetics/fees";
+import { getJitLiquidityInfo } from "domain/synthetics/jit/utils";
 import {
   getAvailableUsdLiquidityForPosition,
   getMaxLeverageByMinCollateralFactor,
@@ -46,7 +47,7 @@ import { getPositionKey } from "lib/legacy";
 import { PRECISION, parseValue } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
-import { BOTANIX } from "sdk/configs/chains";
+import { BOTANIX, MEGAETH } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS, convertTokenAddress } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
@@ -60,6 +61,7 @@ import {
   selectChainId,
   selectGasLimits,
   selectGasPrice,
+  selectJitLiquidityMap,
   selectMarketsInfoData,
   selectOrdersInfoData,
   selectPositionsInfoData,
@@ -297,6 +299,22 @@ export const selectTradeboxCollateralTokenAddress = (s: SyntheticsState) =>
   selectOnlyOnTradeboxPage(s, s.tradebox.collateralAddress);
 export const selectTradeboxCollateralToken = (s: SyntheticsState) => s.tradebox.collateralToken;
 export const selectTradeboxAvailableTokensOptions = (s: SyntheticsState) => s.tradebox.availableTokensOptions;
+
+// MEGAETH_TEMP
+// Temporary filter out native and wrapped tokens for MegaETH because they can
+// not be used for open positions
+export const selectTradeboxSwapTokens = createSelector((q) => {
+  const { swapTokens } = q(selectTradeboxAvailableTokensOptions);
+  const { isSwap } = q(selectTradeboxTradeFlags);
+  const chainId = q(selectChainId);
+
+  if (isSwap || chainId !== MEGAETH) {
+    return swapTokens;
+  }
+
+  return swapTokens.filter((token) => !token.isNative && !token.isWrapped);
+});
+
 export const selectTradeboxFromTokenInputValue = (s: SyntheticsState) => s.tradebox.fromTokenInputValue;
 export const selectTradeboxToTokenInputValue = (s: SyntheticsState) => s.tradebox.toTokenInputValue;
 export const selectTradeboxStage = (s: SyntheticsState) => s.tradebox.stage;
@@ -807,6 +825,7 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
         fundingFeeUsd: 0n,
         feeDiscountUsd: 0n,
         swapProfitFeeUsd: 0n,
+        swapProfitUsdIn: 0n,
         uiFeeFactor,
         type: "swap",
       });
@@ -836,6 +855,7 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
         fundingFeeUsd: selectedPosition?.pendingFundingFeesUsd || 0n,
         feeDiscountUsd: increaseAmounts.feeDiscountUsd,
         swapProfitFeeUsd: 0n,
+        swapProfitUsdIn: 0n,
         uiFeeFactor,
         type: "increase",
       });
@@ -873,6 +893,7 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
         fundingFeeUsd: decreaseAmounts.fundingFeeUsd,
         feeDiscountUsd: decreaseAmounts.feeDiscountUsd,
         swapProfitFeeUsd: decreaseAmounts.swapProfitFeeUsd,
+        swapProfitUsdIn: decreaseAmounts.swapProfitUsdIn,
         uiFeeFactor,
         type: "decrease",
       });
@@ -1198,8 +1219,12 @@ export const selectTradeboxLiquidity = createSelector(function selectTradeboxLiq
   if (!marketInfo || !isIncrease) {
     return {};
   }
-  const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true);
-  const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false);
+
+  const jitLiquidityMap = q(selectJitLiquidityMap);
+  const jitInfo = getJitLiquidityInfo(jitLiquidityMap, marketInfo.marketTokenAddress);
+
+  const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true, jitInfo?.maxReservedUsdWithJitLong);
+  const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false, jitInfo?.maxReservedUsdWithJitShort);
 
   const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
 

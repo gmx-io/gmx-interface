@@ -18,7 +18,7 @@ const TRANSITION = {
   },
 };
 
-const BLOCKCHAIN_COUNT = 7;
+const BLOCKCHAIN_COUNT = 8;
 
 export function AnimatedTitle() {
   const [currentIndex, setCurrentIndex] = useState<number>(0);

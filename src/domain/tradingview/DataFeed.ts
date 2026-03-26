@@ -31,6 +31,7 @@ import {
   metrics,
 } from "lib/metrics";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
+import { calculateDisplayDecimals } from "lib/numbers";
 import { OracleFetcher } from "lib/oracleKeeperFetcher/types";
 import { PauseableInterval } from "lib/PauseableInterval";
 import { sleep } from "lib/sleep";
@@ -59,6 +60,8 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     to: number,
     resolution: ResolutionString
   ) => Mark[] | Promise<Mark[]>;
+  private tokenPriceGetter?: (symbol: string) => bigint | undefined;
+  private pendingResolve?: () => void;
 
   declare addEventListener: (
     event: "candlesDisplay.success" | "currentCandle.update",
@@ -104,6 +107,17 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     this.marksGetter = getter;
   }
 
+  setTokenPriceGetter(getter: (symbol: string) => bigint | undefined): void {
+    this.tokenPriceGetter = getter;
+  }
+
+  notifyPricesReady(): void {
+    if (this.pendingResolve) {
+      this.pendingResolve();
+      this.pendingResolve = undefined;
+    }
+  }
+
   resolveSymbol(symbolNameWithMultiplier: string, onResolve: ResolveCallback): void {
     let { symbolName, visualMultiplier } = parseSymbolName(symbolNameWithMultiplier);
 
@@ -113,33 +127,43 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     }
 
     const token = getTokenBySymbol(this.chainId, symbolName);
-    const priceDecimals = token.priceDecimals ?? 2;
-
     const prefix = visualMultiplier !== 1 ? getTokenVisualMultiplier(token) : "";
 
-    const symbolInfo: LibrarySymbolInfo = {
-      unit_id: visualMultiplier.toString(),
-      name: symbolName,
-      type: "crypto",
-      description: `${prefix}${symbolName}/USD`,
-      ticker: symbolName,
-      session: "24x7",
-      minmov: 1,
-      timezone: "Etc/UTC",
-      has_intraday: true,
-      has_daily: true,
-      currency_code: "USD",
-      data_status: "streaming",
-      visible_plots_set: "ohlc",
-      exchange: "GMX",
-      listed_exchange: "GMX",
-      format: "price",
-      pricescale: Math.max(1, 10 ** priceDecimals / visualMultiplier),
+    const doResolve = () => {
+      const currentPrice = this.tokenPriceGetter?.(symbolName);
+      const priceDecimals = calculateDisplayDecimals(currentPrice, undefined, visualMultiplier);
+
+      const symbolInfo: LibrarySymbolInfo = {
+        unit_id: visualMultiplier.toString(),
+        name: symbolName,
+        type: "crypto",
+        description: `${prefix}${symbolName}/USD`,
+        ticker: symbolName,
+        session: "24x7",
+        minmov: 1,
+        timezone: "Etc/UTC",
+        has_intraday: true,
+        has_daily: true,
+        currency_code: "USD",
+        data_status: "streaming",
+        visible_plots_set: "ohlc",
+        exchange: "GMX",
+        listed_exchange: "GMX",
+        format: "price",
+        pricescale: 10 ** priceDecimals,
+      };
+
+      onResolve(symbolInfo);
     };
 
-    setTimeout(() => {
-      onResolve(symbolInfo);
-    }, 0);
+    const currentPrice = this.tokenPriceGetter?.(symbolName);
+
+    if (currentPrice !== undefined) {
+      setTimeout(doResolve, 0);
+    } else {
+      // Prices not loaded yet — defer until notifyPricesReady() is called
+      this.pendingResolve = doResolve;
+    }
   }
 
   async getBars(

@@ -21,6 +21,7 @@ import { PositionInfo } from "../positions";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens";
 import { isGlvAddress, isGlvInfo } from "./glv";
 import { GlvInfo, GlvOrMarketInfo, MarketInfo } from "./types";
+import { JitLiquidityInfo, getJitMaxReservedUsd } from "../jit/utils";
 import { TokenData, TokensData } from "../tokens/types";
 
 export * from "sdk/utils/markets";
@@ -102,12 +103,16 @@ export function getMaxReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
   return (poolUsd * reserveFactor) / PRECISION;
 }
 
-export function getAvailableUsdLiquidityForPosition(marketInfo: MarketInfo, isLong: boolean) {
+export function getAvailableUsdLiquidityForPosition(
+  marketInfo: MarketInfo,
+  isLong: boolean,
+  maxReservedUsdWithJit?: bigint
+) {
   if (marketInfo.isSpotOnly) {
     return 0n;
   }
 
-  const maxReservedUsd = getMaxReservedUsd(marketInfo, isLong);
+  const maxReservedUsd = maxReservedUsdWithJit ?? getMaxReservedUsd(marketInfo, isLong);
   const reservedUsd = getReservedUsd(marketInfo, isLong);
 
   const maxOpenInterest = getMaxOpenInterestUsd(marketInfo, isLong);
@@ -165,7 +170,8 @@ export function getMostLiquidMarketForPosition(
   marketsInfo: MarketInfo[],
   indexTokenAddress: string,
   collateralTokenAddress: string | undefined,
-  isLong: boolean
+  isLong: boolean,
+  jitLiquidityMap?: Record<string, JitLiquidityInfo>
 ) {
   let bestMarket: MarketInfo | undefined;
   let bestLiquidity: bigint | undefined;
@@ -182,7 +188,11 @@ export function getMostLiquidMarketForPosition(
     }
 
     if (isCandidate) {
-      const liquidity = getAvailableUsdLiquidityForPosition(marketInfo, isLong);
+      const liquidity = getAvailableUsdLiquidityForPosition(
+        marketInfo,
+        isLong,
+        getJitMaxReservedUsd(jitLiquidityMap, marketInfo.marketTokenAddress, isLong)
+      );
 
       if (liquidity !== undefined && liquidity > (bestLiquidity ?? 0)) {
         bestMarket = marketInfo;
@@ -199,14 +209,19 @@ export function getMinPriceImpactMarket(
   indexTokenAddress: string,
   isLong: boolean,
   isIncrease: boolean,
-  sizeDeltaUsd: bigint
+  sizeDeltaUsd: bigint,
+  jitLiquidityMap?: Record<string, JitLiquidityInfo>
 ) {
   let bestMarket: MarketInfo | undefined;
   // minimize negative impact
   let bestImpactDeltaUsd: bigint | undefined;
 
   for (const marketInfo of marketsInfo) {
-    const liquidity = getAvailableUsdLiquidityForPosition(marketInfo, isLong);
+    const liquidity = getAvailableUsdLiquidityForPosition(
+      marketInfo,
+      isLong,
+      getJitMaxReservedUsd(jitLiquidityMap, marketInfo.marketTokenAddress, isLong)
+    );
 
     if (isMarketIndexToken(marketInfo, indexTokenAddress) && liquidity > sizeDeltaUsd) {
       const { priceImpactDeltaUsd } = getCappedPositionImpactUsd(marketInfo, sizeDeltaUsd, isLong, true, {

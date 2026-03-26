@@ -18,7 +18,7 @@ import { getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets
 import { getLiquidationPrice } from "domain/synthetics/positions";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatAmount, formatUsd } from "lib/numbers";
+import { calculateDisplayDecimals, formatAmount, formatUsd } from "lib/numbers";
 
 import AddressView from "components/AddressView/AddressView";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
@@ -321,7 +321,11 @@ const TableRow = memo(
             value={
               <span className="numbers">
                 {formatUsd(markPrice, {
-                  displayDecimals: indexToken?.priceDecimals,
+                  displayDecimals: calculateDisplayDecimals(
+                    markPrice,
+                    undefined,
+                    marketInfo?.indexToken.visualMultiplier
+                  ),
                   visualMultiplier: marketInfo?.indexToken.visualMultiplier,
                 })}
               </span>
@@ -335,7 +339,11 @@ const TableRow = memo(
                 <span className="numbers">
                   {formatUsd(liquidationPrice - markPrice, {
                     maxThreshold: "1000000",
-                    displayDecimals: indexToken?.priceDecimals,
+                    displayDecimals: calculateDisplayDecimals(
+                      markPrice,
+                      undefined,
+                      marketInfo?.indexToken.visualMultiplier
+                    ),
                     visualMultiplier: marketInfo?.indexToken.visualMultiplier,
                   })}
                 </span>
@@ -345,12 +353,7 @@ const TableRow = memo(
           )}
         </>
       );
-    }, [
-      indexToken?.priceDecimals,
-      indexToken?.prices.maxPrice,
-      liquidationPrice,
-      marketInfo?.indexToken.visualMultiplier,
-    ]);
+    }, [indexToken?.prices.maxPrice, liquidationPrice, marketInfo?.indexToken.visualMultiplier]);
 
     return (
       <TableTr hoverable={true} key={position.key}>

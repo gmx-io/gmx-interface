@@ -5,11 +5,11 @@ import { ApiPositionInfo } from "./types";
 
 export async function fetchApiPositionsInfo(
   ctx: { api: IHttp },
-  params: { account: string; includeRelatedOrders?: boolean }
+  params: { address: string; includeRelatedOrders?: boolean }
 ): Promise<ApiPositionInfo[]> {
   const positions: any[] = await ctx.api.fetchJson("/positions", {
     query: {
-      account: params.account,
+      address: params.address,
       includeRelatedOrders: params.includeRelatedOrders || undefined,
     },
   });

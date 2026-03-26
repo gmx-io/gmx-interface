@@ -106,7 +106,10 @@ export function DynamicLines({
         batchParams,
         expressParams,
         simulationParams: undefined,
-        callback: makeOrderTxnCallback({}),
+        callback: makeOrderTxnCallback({
+          actionName: "Cancel Order",
+          collateralSymbol: order.initialCollateralToken.symbol,
+        }),
         provider,
         isGmxAccount: srcChainId !== undefined,
       }).finally(() => {

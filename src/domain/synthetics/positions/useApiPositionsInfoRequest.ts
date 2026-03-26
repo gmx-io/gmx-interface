@@ -21,7 +21,7 @@ export function useApiPositionsInfoRequest(
     enabled && account && sdk ? ["apiPositionsInfoRequest", chainId, account] : null,
     async () => {
       const positions: ApiPositionInfo[] = await sdk!.fetchPositionsInfo({
-        account: account!,
+        address: account!,
         includeRelatedOrders: false,
       });
       return keyBy(positions, "key");

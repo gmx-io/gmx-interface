@@ -10,6 +10,7 @@ import {
   selectTradeboxState,
   selectTradeboxTradeFlags,
   selectTradeboxTradeMode,
+  selectTradeboxTriggerPrice,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { calcMarginAmountByPercentage, calcMarginPercentage } from "domain/synthetics/trade";
@@ -56,6 +57,7 @@ export function TradeboxMarginFields({
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const tradeMode = useSelector(selectTradeboxTradeMode);
   const markPrice = useSelector(selectTradeboxMarkPrice);
+  const triggerPrice = useSelector(selectTradeboxTriggerPrice);
   const focusedInput = useSelector(selectTradeboxFocusedInput);
 
   const { toTokenAddress, marketAddress } = useSelector(selectTradeboxState);
@@ -72,9 +74,10 @@ export function TradeboxMarginFields({
   const showPriceField = isLimit && triggerPriceInputValue !== undefined;
   const sizeFieldInputValue = sizeDisplayMode === "usd" ? sizeInputValue : toTokenInputValue;
 
+  const sizeConversionPrice = isLimit && triggerPrice !== undefined ? triggerPrice : markPrice;
   const { tokensToUsd, usdToTokens, canConvert } = useSizeConversion({
     toToken,
-    markPrice,
+    markPrice: sizeConversionPrice,
   });
 
   const marginPercentage = useMemo(

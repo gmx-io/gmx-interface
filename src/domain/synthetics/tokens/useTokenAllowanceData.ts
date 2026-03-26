@@ -1,12 +1,12 @@
 import { useMemo } from "react";
 
-import { isSourceChainForAnySettlementChain } from "config/multichain";
-import { useSyntheticsEvents } from "context/SyntheticsEvents";
+import type { AnyChainId } from "config/chains";
+import { isSourceChainForAnySettlementChain, MULTICALLS_MAP } from "config/multichain";
+import { ApprovalStatus, useSyntheticsEvents } from "context/SyntheticsEvents";
 import { MulticallRequestConfig, useMulticall } from "lib/multicall";
 import { EMPTY_OBJECT } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import useWallet from "lib/wallets/useWallet";
-import type { AnyChainId } from "sdk/configs/chains";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import type { TokensAllowanceData } from ".";
@@ -38,8 +38,8 @@ export function useTokensAllowanceData(
   const { data } = useMulticall(chainId, "useTokenAllowance", {
     key,
     refreshInterval: FREQUENT_MULTICALL_REFRESH_INTERVAL,
-    request: () =>
-      validAddresses.reduce((contracts, address) => {
+    request: (currentChainId) => {
+      const allowanceCalls = validAddresses.reduce((contracts, address) => {
         contracts[address!] = {
           contractAddress: address,
           abiId: "ERC20",
@@ -52,19 +52,40 @@ export function useTokensAllowanceData(
         };
 
         return contracts;
-      }, {} as MulticallRequestConfig<any>),
+      }, {} as MulticallRequestConfig<any>);
+
+      const multicallAddress = MULTICALLS_MAP[currentChainId];
+
+      if (multicallAddress !== undefined) {
+        allowanceCalls.multicall = {
+          contractAddress: multicallAddress,
+          abiId: "Multicall",
+          calls: {
+            blockNumber: {
+              methodName: "getBlockNumber",
+              params: [],
+            },
+          },
+        };
+      }
+
+      return allowanceCalls;
+    },
     parseResponse: (res) => {
-      const now = Date.now();
+      const tokenAllowance: TokensAllowanceData = {};
+      for (const address in res.data) {
+        if (address === "multicall") {
+          continue;
+        }
 
-      const tokenAllowance = Object.keys(res.data).reduce((tokenAllowance: TokensAllowanceData, address) => {
         tokenAllowance[address] = res.data[address].allowance.returnValues[0];
+      }
 
-        return tokenAllowance;
-      }, {} as TokensAllowanceData);
+      const multicallContextBlockNumber = res.data.multicall.blockNumber.returnValues?.[0] as bigint | undefined;
 
       return {
         tokenAllowance,
-        createdAt: now,
+        blockNumber: multicallContextBlockNumber,
       };
     },
   });
@@ -82,14 +103,16 @@ export function useTokensAllowanceData(
     }
 
     for (const tokenAddress of validAddresses) {
-      const event = statuses[tokenAddress]?.[spenderAddress];
+      const event: ApprovalStatus | undefined = statuses[tokenAddress]?.[spenderAddress];
       const eventValue: bigint | undefined = event?.value;
-      const eventCreatedAt: number = event?.createdAt ?? 0;
+      const eventBlockNumber: bigint = event?.blockNumber ?? 0n;
 
       const multicallData: bigint | undefined = data?.tokenAllowance[tokenAddress];
-      const multicallCreatedAt: number = data?.createdAt ?? 0;
+      const multicallBlockNumber: bigint | undefined = data?.blockNumber;
+      const isEventAtLeastAsNewAsMulticall =
+        multicallBlockNumber !== undefined && eventBlockNumber >= multicallBlockNumber;
 
-      if (eventCreatedAt > multicallCreatedAt && eventValue !== undefined) {
+      if (eventValue !== undefined && (multicallData === undefined || isEventAtLeastAsNewAsMulticall)) {
         newData[tokenAddress] = eventValue;
       } else if (multicallData !== undefined) {
         newData[tokenAddress] = multicallData;
@@ -104,7 +127,7 @@ export function useTokensAllowanceData(
     chainId,
     multichainSourceChainApprovalStatuses,
     data?.tokenAllowance,
-    data?.createdAt,
+    data?.blockNumber,
   ]);
 
   const isLoaded = validAddresses.length > 0 && validAddresses.every((address) => mergedData?.[address] !== undefined);

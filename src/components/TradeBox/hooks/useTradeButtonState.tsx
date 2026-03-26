@@ -4,9 +4,9 @@ import { ReactNode, useCallback, useMemo } from "react";
 import { zeroAddress } from "viem";
 
 import { getBridgingOptionsForToken } from "config/bridging";
-import { AVALANCHE, BOTANIX, SettlementChainId } from "config/chains";
+import { AVALANCHE, BOTANIX, MEGAETH, SettlementChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
-import { get1InchSwapUrlFromAddresses } from "config/links";
+import { getExternalAggregatorSwapUrlFromAddresses } from "config/links";
 import { MULTI_CHAIN_DEPOSIT_TRADE_TOKENS } from "config/multichain";
 import {
   useGmxAccountDepositViewTokenAddress,
@@ -24,6 +24,7 @@ import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/
 import {
   selectChainId,
   selectMarketsInfoData,
+  selectSrcChainId,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
@@ -68,7 +69,7 @@ import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { numericBinarySearch } from "lib/binarySearch";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
-import { formatAmountFree } from "lib/numbers";
+import { adjustForDecimals, formatAmountFree } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { sleep } from "lib/sleep";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -87,6 +88,7 @@ import { mustNeverExist } from "sdk/utils/types";
 import { BridgingInfo } from "components/BridgingInfo/BridgingInfo";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { useMultichainTokens } from "components/GmxAccountModal/hooks";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -116,6 +118,7 @@ export function useTradeboxButtonState({
   setToTokenInputValue,
 }: TradeboxButtonStateOptions): TradeboxButtonState {
   const chainId = useSelector(selectChainId);
+  const srcChainId = useSelector(selectSrcChainId);
   const signer = useEthersSigner();
 
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
@@ -142,6 +145,7 @@ export function useTradeboxButtonState({
   const isStakeOrUnstake = useSelector(selectTradeboxIsStakeOrUnstake);
   const payAmount = useSelector(selectTradeboxPayAmount);
   const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
+  const { tokenChainDataArray } = useMultichainTokens();
 
   const { setPendingTxns } = usePendingTxns();
   const { openConnectModal } = useConnectModal();
@@ -304,6 +308,26 @@ export function useTradeboxButtonState({
     detectAndSetAvailableMaxLeverage,
   ]);
 
+  const payTokenSourceChainMappedBalance = useMemo(() => {
+    if (srcChainId === undefined || fromToken === undefined) {
+      return undefined;
+    }
+
+    const sourceChainToken = tokenChainDataArray.find(
+      (token) => token.address === fromToken.address && token.sourceChainId === srcChainId
+    );
+
+    if (sourceChainToken?.sourceChainBalance === undefined) {
+      return undefined;
+    }
+
+    return adjustForDecimals(
+      sourceChainToken.sourceChainBalance,
+      sourceChainToken.sourceChainDecimals,
+      fromToken.decimals
+    );
+  }, [tokenChainDataArray, fromToken, srcChainId]);
+
   const onSubmit = useCallback(async () => {
     if (!account || !signer) {
       sendUserAnalyticsConnectWalletClickEvent("ActionButton");
@@ -324,7 +348,13 @@ export function useTradeboxButtonState({
         if (isSupportedToDeposit) {
           setGmxAccountDepositViewTokenAddress(fromToken.address);
           if (payAmount !== undefined) {
-            setGmxAccountDepositViewTokenInputValue(formatAmountFree(payAmount, fromToken.decimals));
+            let cappedAmount = payAmount;
+
+            if (payTokenSourceChainMappedBalance !== undefined && payAmount > payTokenSourceChainMappedBalance) {
+              cappedAmount = payTokenSourceChainMappedBalance;
+            }
+
+            setGmxAccountDepositViewTokenInputValue(formatAmountFree(cappedAmount, fromToken.decimals));
           }
         }
       }
@@ -384,10 +414,10 @@ export function useTradeboxButtonState({
     });
   }, [
     account,
-    handleApprove,
     chainId,
-    expressParams,
+    expressParams?.subaccount,
     fromToken,
+    handleApprove,
     isAllowanceLoaded,
     isApproving,
     isFromTokenGmxAccount,
@@ -402,6 +432,7 @@ export function useTradeboxButtonState({
     onSubmitWrapOrUnwrap,
     openConnectModal,
     payAmount,
+    payTokenSourceChainMappedBalance,
     setGmxAccountDepositViewTokenAddress,
     setGmxAccountDepositViewTokenInputValue,
     setGmxAccountModalOpen,
@@ -736,6 +767,7 @@ function NoSwapPathTooltipContent({
   chainId: number;
   toToken: TokenData | undefined;
 }) {
+  const isMegaEth = MEGAETH === chainId;
   const { setFromTokenAddress, setToTokenAddress, setTradeType, setTradeMode } = useSelector(selectTradeboxState);
 
   const makeHandleSwapClick = useCallback(
@@ -787,8 +819,10 @@ function NoSwapPathTooltipContent({
         {collateralToken?.assetSymbol ?? collateralToken?.symbol} within GMX.
         <br />
         <br />
-        <ExternalLink href={get1InchSwapUrlFromAddresses(chainId, fromToken?.address, collateralToken?.address)}>
-          Buy {collateralToken?.assetSymbol ?? collateralToken?.symbol} on 1inch
+        <ExternalLink
+          href={getExternalAggregatorSwapUrlFromAddresses(chainId, fromToken?.address, collateralToken?.address)}
+        >
+          Buy {collateralToken?.assetSymbol ?? collateralToken?.symbol} on {isMegaEth ? "Jumper" : "1inch"}
         </ExternalLink>
         .
       </Trans>

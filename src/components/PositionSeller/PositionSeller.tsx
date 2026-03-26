@@ -44,7 +44,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useInitCollateralCloseDestination } from "domain/synthetics/express/useInitCollateralCloseDestination";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
-import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
+import { OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
@@ -73,6 +73,7 @@ import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
+import { DecreasePositionSwapType } from "sdk/utils/orders/types";
 import {
   BatchOrderTxnParams,
   buildDecreaseOrderPayload,
@@ -259,7 +260,16 @@ export function PositionSeller() {
   const swapAmounts = useSelector(selectPositionSellerSwapAmounts);
 
   const receiveUsd = swapAmounts?.usdOut || decreaseAmounts?.receiveUsd;
-  const receiveTokenAmount = swapAmounts?.amountOut || decreaseAmounts?.receiveTokenAmount;
+
+  const receiveTokenAmount = useMemo(() => {
+    if (swapAmounts?.amountOut !== undefined) return swapAmounts.amountOut;
+    if (!decreaseAmounts) return undefined;
+    if (decreaseAmounts.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken) {
+      return decreaseAmounts.primaryOutput.amount;
+    }
+
+    return decreaseAmounts.receiveTokenAmount;
+  }, [swapAmounts, decreaseAmounts]);
 
   const nextPositionValues = useSelector(selectPositionSellerNextPositionValuesForDecrease);
 
@@ -297,11 +307,7 @@ export function PositionSeller() {
   const batchParams: BatchOrderTxnParams | undefined = useMemo(() => {
     const orderType = isTwap ? OrderType.LimitDecrease : OrderType.MarketDecrease;
 
-    // TODO findSwapPath considering decreasePositionSwapType?
-    const swapPath =
-      decreaseAmounts?.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken
-        ? []
-        : swapAmounts?.swapStrategy.swapPathStats?.swapPath || [];
+    const swapPath = swapAmounts?.swapStrategy.swapPathStats?.swapPath || [];
 
     if (
       !account ||
@@ -554,7 +560,13 @@ export function PositionSeller() {
       !signer ||
       !provider
     ) {
-      helperToast.error(t`Order submission failed`);
+      helperToast.error(t`Order submission failed`, {
+        tradingErrorInfo: {
+          actionName: "Close Position",
+          collateral: position?.collateralToken?.symbol,
+          requestId: metricData.requestId,
+        },
+      });
       sendTxnValidationErrorMetric(metricData.metricId);
       return;
     }
@@ -579,7 +591,10 @@ export function PositionSeller() {
           },
       callback: makeOrderTxnCallback({
         metricId: metricData.metricId,
+        requestId: metricData.requestId,
         slippageInputId,
+        actionName: "Close Position",
+        collateralSymbol: position?.collateralToken?.symbol,
       }),
     });
 

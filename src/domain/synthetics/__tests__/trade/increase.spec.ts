@@ -15,32 +15,32 @@ describe("getIncreasePositionPrices", () => {
       triggerPrice,
       limitOrderType: OrderType.LimitIncrease,
       indexToken: tokensData.ETH,
-      initialCollateralToken: tokensData.ETH, // same token, so it shares the triggerPrice
+      initialCollateralToken: tokensData.ETH, // same token, but collateral prices use mark price
       collateralToken: tokensData.USDC,
       isLong: true,
     });
 
     expect(prices.indexPrice).toBe(triggerPrice);
-    expect(prices.initialCollateralPrice).toBe(triggerPrice);
+    expect(prices.initialCollateralPrice).toBe(tokensData.ETH.prices.minPrice);
     expect(prices.collateralPrice).toBe(tokensData.USDC.prices.minPrice);
   });
 
-  it("triggerPrice for limit order with ETH as targett collateral", () => {
+  it("triggerPrice for limit order with ETH as target collateral", () => {
     const tokensData = mockTokensData();
     const triggerPrice = 123n;
 
     const prices = getIncreasePositionPrices({
       triggerPrice,
       indexToken: tokensData.ETH,
-      initialCollateralToken: tokensData.USDC, // same token, so it shares the triggerPrice
-      collateralToken: tokensData.ETH,
+      initialCollateralToken: tokensData.USDC,
+      collateralToken: tokensData.ETH, // same as index token, but collateral prices use mark price
       isLong: true,
       limitOrderType: OrderType.LimitIncrease,
     });
 
     expect(prices.indexPrice).toBe(triggerPrice);
     expect(prices.initialCollateralPrice).toBe(tokensData.USDC.prices.minPrice);
-    expect(prices.collateralPrice).toBe(triggerPrice);
+    expect(prices.collateralPrice).toBe(tokensData.ETH.prices.minPrice);
   });
 
   it("markPrice for Long market order", () => {

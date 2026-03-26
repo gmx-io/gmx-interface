@@ -180,7 +180,10 @@ export function TPSLModal({
         batchParams,
         expressParams,
         simulationParams: undefined,
-        callback: makeOrderTxnCallback({}),
+        callback: makeOrderTxnCallback({
+          actionName: "Cancel Order",
+          collateralSymbol: position.collateralToken.symbol,
+        }),
         provider,
         isGmxAccount: srcChainId !== undefined,
       });
@@ -192,12 +195,13 @@ export function TPSLModal({
     signer,
     provider,
     displayedOrders,
+    setCancellingOrdersKeys,
+    globalExpressParams,
     chainId,
     srcChainId,
-    globalExpressParams,
     subaccount,
     makeOrderTxnCallback,
-    setCancellingOrdersKeys,
+    position.collateralToken.symbol,
   ]);
 
   // When the modal opens, sync the view to initialView.

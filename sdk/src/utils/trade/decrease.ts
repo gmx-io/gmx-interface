@@ -1,7 +1,7 @@
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER } from "configs/factors";
 import { bigMath } from "utils/bigmath";
 import { getPositionFee } from "utils/fees";
-import { MarketInfo } from "utils/markets/types";
+import { MarketInfo, MarketsInfoData } from "utils/markets/types";
 import {
   applyFactor,
   BASIS_POINTS_DIVISOR_BIGINT,
@@ -27,11 +27,11 @@ import {
   getOrderThresholdType,
 } from "utils/prices";
 import { UserReferralInfo } from "utils/referrals/types";
-import { getSwapStats } from "utils/swap";
+import { getSwapAmountsByFromValue, getSwapStats } from "utils/swap";
 import { convertToTokenAmount, convertToUsd, getIsEquivalentTokens } from "utils/tokens";
 import { TokenData } from "utils/tokens/types";
 
-import { DecreasePositionAmounts, NextPositionValues } from "./types";
+import { DecreasePositionAmounts, FindSwapPath, NextPositionValues, SwapAmounts } from "./types";
 
 export function getDecreasePositionAmounts(p: {
   marketInfo: MarketInfo;
@@ -53,6 +53,7 @@ export function getDecreasePositionAmounts(p: {
   isSetAcceptablePriceImpactEnabled: boolean;
 
   receiveToken?: TokenData;
+  forceDecreaseSwapType?: DecreasePositionSwapType;
 }) {
   const {
     marketInfo,
@@ -71,6 +72,7 @@ export function getDecreasePositionAmounts(p: {
     triggerOrderType: orderType,
     receiveToken: receiveTokenArg,
     isSetAcceptablePriceImpactEnabled,
+    forceDecreaseSwapType,
   } = p;
 
   const { indexToken } = marketInfo;
@@ -108,12 +110,16 @@ export function getDecreasePositionAmounts(p: {
     fundingFeeUsd: 0n,
     feeDiscountUsd: 0n,
     swapProfitFeeUsd: 0n,
+    swapProfitUsdIn: 0n,
     payedOutputUsd: 0n,
     payedRemainingCollateralUsd: 0n,
     payedRemainingCollateralAmount: 0n,
 
     receiveTokenAmount: 0n,
     receiveUsd: 0n,
+
+    primaryOutput: { tokenAddress: "", amount: 0n, usd: 0n },
+    secondaryOutput: { tokenAddress: "", amount: 0n, usd: 0n },
 
     triggerOrderType: orderType,
     triggerThresholdType: undefined,
@@ -122,7 +128,7 @@ export function getDecreasePositionAmounts(p: {
 
   const pnlToken = isLong ? marketInfo.longToken : marketInfo.shortToken;
 
-  values.decreaseSwapType = getDecreaseSwapType(pnlToken, collateralToken, receiveToken);
+  values.decreaseSwapType = forceDecreaseSwapType ?? getDecreaseSwapType(pnlToken, collateralToken, receiveToken);
 
   const markPrice = getMarkPrice({ prices: indexToken.prices, isIncrease: false, isLong });
   const isTrigger = orderType !== undefined;
@@ -287,20 +293,28 @@ export function getDecreasePositionAmounts(p: {
 
   values.fundingFeeUsd = fundingFeeCost.usd;
 
-  if (profitUsd > 0 && values.decreaseSwapType === DecreasePositionSwapType.SwapPnlTokenToCollateralToken) {
+  if (
+    profitUsd > 0 &&
+    (values.decreaseSwapType === DecreasePositionSwapType.SwapPnlTokenToCollateralToken ||
+      values.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken)
+  ) {
+    const isSwapToCollateral = values.decreaseSwapType === DecreasePositionSwapType.SwapPnlTokenToCollateralToken;
+
     const swapProfitStats = getSwapStats({
       marketInfo,
-      tokenInAddress: pnlToken.address,
-      tokenOutAddress: collateralToken.address,
+      tokenInAddress: isSwapToCollateral ? pnlToken.address : collateralToken.address,
+      tokenOutAddress: isSwapToCollateral ? collateralToken.address : pnlToken.address,
       usdIn: profitUsd,
       shouldApplyPriceImpact: true,
       swapPricingType: SwapPricingType.Swap,
     });
 
     values.swapProfitFeeUsd = swapProfitStats.swapFeeUsd - swapProfitStats.priceImpactDeltaUsd;
+    values.swapProfitUsdIn = swapProfitStats.usdIn;
     values.swapUiFeeUsd = applyFactor(swapProfitStats.usdIn, uiFeeFactor);
   } else {
     values.swapProfitFeeUsd = 0n;
+    values.swapProfitUsdIn = 0n;
   }
 
   const totalFeesUsd = getTotalFeesUsdForDecrease({
@@ -376,6 +390,25 @@ export function getDecreasePositionAmounts(p: {
   }
 
   values.receiveUsd = convertToUsd(values.receiveTokenAmount, collateralToken.decimals, values.collateralPrice)!;
+
+  // SwapCollateralTokenToPnlToken → primaryOutput (pnl token), otherwise → secondaryOutput (collateral token)
+  const pnlTokenPrice = pnlToken.prices.minPrice;
+
+  if (values.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken) {
+    values.primaryOutput = {
+      tokenAddress: pnlToken.address,
+      amount: convertToTokenAmount(values.receiveUsd, pnlToken.decimals, pnlTokenPrice) ?? 0n,
+      usd: values.receiveUsd,
+    };
+    values.secondaryOutput = { tokenAddress: collateralToken.address, amount: 0n, usd: 0n };
+  } else {
+    values.primaryOutput = { tokenAddress: pnlToken.address, amount: 0n, usd: 0n };
+    values.secondaryOutput = {
+      tokenAddress: collateralToken.address,
+      amount: values.receiveTokenAmount,
+      usd: values.receiveUsd,
+    };
+  }
 
   return values;
 }
@@ -719,7 +752,7 @@ export function getNextPositionValuesForDecreaseTrade(p: {
   };
 }
 
-function getDecreaseSwapType(pnlToken: TokenData, collateralToken: TokenData, receiveToken: TokenData) {
+export function getDecreaseSwapType(pnlToken: TokenData, collateralToken: TokenData, receiveToken: TokenData) {
   if (getIsEquivalentTokens(pnlToken, collateralToken)) {
     return DecreasePositionSwapType.NoSwap;
   } else if (getIsEquivalentTokens(pnlToken, receiveToken)) {
@@ -727,4 +760,173 @@ function getDecreaseSwapType(pnlToken: TokenData, collateralToken: TokenData, re
   } else {
     return DecreasePositionSwapType.SwapPnlTokenToCollateralToken;
   }
+}
+
+export function isThirdTokenDecreaseSwap(
+  pnlToken: TokenData,
+  collateralToken: TokenData,
+  receiveToken: TokenData
+): boolean {
+  return (
+    !getIsEquivalentTokens(receiveToken, pnlToken) &&
+    !getIsEquivalentTokens(receiveToken, collateralToken) &&
+    !getIsEquivalentTokens(pnlToken, collateralToken)
+  );
+}
+
+export function getCollateralToPnlInternalSwapStats(p: { pnlToken: TokenData; receiveUsd: bigint }): {
+  amountOut: bigint;
+} {
+  const { pnlToken, receiveUsd } = p;
+
+  // Fees already deducted in getDecreasePositionAmounts — convert at oracle price to avoid double-counting
+  const amountOut = convertToTokenAmount(receiveUsd, pnlToken.decimals, pnlToken.prices.minPrice) ?? 0n;
+
+  return { amountOut };
+}
+
+export function selectBetterDecreaseSwapType(p: { pathAUsdOut: bigint; pathBUsdOut: bigint }): "pathA" | "pathB" {
+  return p.pathBUsdOut > p.pathAUsdOut ? "pathB" : "pathA";
+}
+
+export function getOptimalDecreaseAndSwapAmounts(p: {
+  marketInfo: MarketInfo;
+  collateralToken: TokenData;
+  isLong: boolean;
+  position: PositionInfoLoaded | undefined;
+  closeSizeUsd: bigint;
+  keepLeverage: boolean;
+  triggerPrice?: bigint;
+  fixedAcceptablePriceImpactBps?: bigint;
+  acceptablePriceImpactBuffer?: number;
+  userReferralInfo: UserReferralInfo | undefined;
+  minCollateralUsd: bigint;
+  minPositionSizeUsd: bigint;
+  uiFeeFactor: bigint;
+  triggerOrderType?: DecreasePositionAmounts["triggerOrderType"];
+  isSetAcceptablePriceImpactEnabled: boolean;
+  receiveToken: TokenData;
+  findSwapPath: FindSwapPath;
+  findSwapPathFromPnl: FindSwapPath;
+  marketsInfoData: MarketsInfoData | undefined;
+  chainId: number;
+}): {
+  decreaseAmounts: DecreasePositionAmounts;
+  swapAmounts: SwapAmounts | undefined;
+} {
+  const {
+    marketInfo,
+    collateralToken,
+    isLong,
+    position,
+    closeSizeUsd,
+    keepLeverage,
+    triggerPrice,
+    fixedAcceptablePriceImpactBps,
+    acceptablePriceImpactBuffer,
+    userReferralInfo,
+    minCollateralUsd,
+    minPositionSizeUsd,
+    uiFeeFactor,
+    triggerOrderType,
+    isSetAcceptablePriceImpactEnabled,
+    receiveToken,
+    findSwapPath,
+    findSwapPathFromPnl,
+    marketsInfoData,
+    chainId,
+  } = p;
+
+  const decreaseBaseParams = {
+    marketInfo,
+    collateralToken,
+    isLong,
+    position,
+    closeSizeUsd,
+    keepLeverage,
+    triggerPrice,
+    fixedAcceptablePriceImpactBps,
+    acceptablePriceImpactBuffer,
+    userReferralInfo,
+    minCollateralUsd,
+    minPositionSizeUsd,
+    uiFeeFactor,
+    triggerOrderType,
+    isSetAcceptablePriceImpactEnabled,
+    receiveToken,
+  };
+
+  const pathADecrease = getDecreasePositionAmounts(decreaseBaseParams);
+
+  const pnlToken = isLong ? marketInfo.longToken : marketInfo.shortToken;
+  const shouldSwap = !getIsEquivalentTokens(collateralToken, receiveToken);
+
+  if (!shouldSwap) {
+    return { decreaseAmounts: pathADecrease, swapAmounts: undefined };
+  }
+
+  const isThirdToken = isThirdTokenDecreaseSwap(pnlToken, collateralToken, receiveToken);
+
+  const pathASwap =
+    pathADecrease.receiveTokenAmount > 0n
+      ? getSwapAmountsByFromValue({
+          tokenIn: collateralToken,
+          tokenOut: receiveToken,
+          amountIn: pathADecrease.receiveTokenAmount,
+          isLimit: false,
+          findSwapPath,
+          uiFeeFactor,
+          marketsInfoData,
+          chainId,
+          externalSwapQuoteParams: undefined,
+          allowSameTokenSwap: false,
+        })
+      : undefined;
+
+  if (!isThirdToken) {
+    return { decreaseAmounts: pathADecrease, swapAmounts: pathASwap };
+  }
+
+  // Path B: force internal collateral→pnl swap, then external pnl→receive
+  const pathBDecrease = getDecreasePositionAmounts({
+    ...decreaseBaseParams,
+    forceDecreaseSwapType: DecreasePositionSwapType.SwapCollateralTokenToPnlToken,
+  });
+
+  if (pathBDecrease.primaryOutput.usd <= 0n) {
+    return { decreaseAmounts: pathADecrease, swapAmounts: pathASwap };
+  }
+
+  const internalSwapStats = getCollateralToPnlInternalSwapStats({
+    pnlToken,
+    receiveUsd: pathBDecrease.primaryOutput.usd,
+  });
+
+  if (internalSwapStats.amountOut <= 0n) {
+    return { decreaseAmounts: pathADecrease, swapAmounts: pathASwap };
+  }
+
+  const pathBSwap = getSwapAmountsByFromValue({
+    tokenIn: pnlToken,
+    tokenOut: receiveToken,
+    amountIn: internalSwapStats.amountOut,
+    isLimit: false,
+    findSwapPath: findSwapPathFromPnl,
+    uiFeeFactor,
+    marketsInfoData,
+    chainId,
+    externalSwapQuoteParams: undefined,
+    allowSameTokenSwap: false,
+  });
+
+  const winner = selectBetterDecreaseSwapType({
+    pathAUsdOut: pathASwap?.usdOut ?? 0n,
+    pathBUsdOut: pathBSwap.usdOut,
+  });
+
+  if (winner === "pathB") {
+    return { decreaseAmounts: pathBDecrease, swapAmounts: pathBSwap };
+  }
+
+  return { decreaseAmounts: pathADecrease, swapAmounts: pathASwap };
 }

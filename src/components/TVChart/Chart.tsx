@@ -3,11 +3,13 @@ import { Suspense, lazy, useState } from "react";
 
 import { isDevelopment } from "config/env";
 import { DOCS_LINKS } from "config/links";
+import { selectJitLiquidityMap } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxMarketInfo,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getJitLiquidityInfo } from "domain/synthetics/jit/utils";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
@@ -103,11 +105,14 @@ export function Chart({ onOpenChartTPSLModal }: Props) {
 
 function DepthChartContainer() {
   const marketInfo = useSelector(selectTradeboxMarketInfo);
+  const jitLiquidityMap = useSelector(selectJitLiquidityMap);
   const [isDepthBannerDismissed, setIsDepthBannerDismissed] = useState(false);
 
   if (!marketInfo) {
     return null;
   }
+
+  const jitLiquidityInfo = getJitLiquidityInfo(jitLiquidityMap, marketInfo.marketTokenAddress);
 
   return (
     <div className="flex h-full w-full flex-col gap-8 p-8">
@@ -126,7 +131,7 @@ function DepthChartContainer() {
         </ColorfulBanner>
       )}
       <div className="w-full grow">
-        <DepthChart marketInfo={marketInfo} />
+        <DepthChart marketInfo={marketInfo} jitLiquidityInfo={jitLiquidityInfo} />
       </div>
     </div>
   );
