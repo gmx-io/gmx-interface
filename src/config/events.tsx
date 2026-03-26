@@ -10,6 +10,10 @@ export type EventData = {
   id: string;
   title: ReactNode;
   isActive?: boolean;
+  /**
+   * KLI UI flag ID. When present, overrides `isActive` — visibility is controlled by KLI.
+   */
+  flagId?: string;
   startDate?: string;
   endDate: string;
   bodyText: ReactNode;

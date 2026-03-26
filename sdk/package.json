@@ -1,6 +1,6 @@
 {
   "name": "@gmx-io/sdk",
-  "version": "1.5.0-alpha-5",
+  "version": "1.5.0-alpha-9",
   "type": "module",
   "repository": {
     "type": "git",
@@ -10,6 +10,151 @@
   "main": "./build/cjs/src/clients/v1/index.js",
   "module": "./build/esm/src/clients/v1/index.js",
   "types": "./build/types/src/clients/v1/index.d.ts",
+  "typesVersions": {
+    "*": {
+      "v1": [
+        "./build/types/src/clients/v1/index.d.ts"
+      ],
+      "v2": [
+        "./build/types/src/clients/v2/index.d.ts"
+      ],
+      "types/sdk": [
+        "./build/types/src/clients/v1/types.d.ts"
+      ],
+      "configs/*": [
+        "./build/types/src/configs/*.d.ts"
+      ],
+      "abis/*": [
+        "./build/types/src/abis/*.d.ts"
+      ],
+      "prebuilt/*": [
+        "./build/types/src/codegen/prebuilt/*.d.ts"
+      ],
+      "types/subsquid": [
+        "./build/types/src/codegen/subsquid.d.ts"
+      ],
+      "utils/markets": [
+        "./build/types/src/utils/markets/index.d.ts"
+      ],
+      "types/markets": [
+        "./build/types/src/utils/markets/types.d.ts"
+      ],
+      "utils/prices": [
+        "./build/types/src/utils/prices/index.d.ts"
+      ],
+      "types/prices": [
+        "./build/types/src/utils/prices/types.d.ts"
+      ],
+      "types/24h": [
+        "./build/types/src/utils/24h/types.d.ts"
+      ],
+      "utils/tokens": [
+        "./build/types/src/utils/tokens/index.d.ts"
+      ],
+      "types/tokens": [
+        "./build/types/src/utils/tokens/types.d.ts"
+      ],
+      "utils/orders": [
+        "./build/types/src/utils/orders/index.d.ts"
+      ],
+      "types/orders": [
+        "./build/types/src/utils/orders/types.d.ts"
+      ],
+      "utils/positions": [
+        "./build/types/src/utils/positions/index.d.ts"
+      ],
+      "types/positions": [
+        "./build/types/src/utils/positions/types.d.ts"
+      ],
+      "utils/fees": [
+        "./build/types/src/utils/fees/index.d.ts"
+      ],
+      "types/fees": [
+        "./build/types/src/utils/fees/types.d.ts"
+      ],
+      "utils/trade": [
+        "./build/types/src/utils/trade/index.d.ts"
+      ],
+      "types/trade": [
+        "./build/types/src/utils/trade/types.d.ts"
+      ],
+      "utils/swap": [
+        "./build/types/src/utils/swap/index.d.ts"
+      ],
+      "types/swap": [
+        "./build/types/src/utils/swap/types.d.ts"
+      ],
+      "utils/tradeHistory": [
+        "./build/types/src/utils/tradeHistory/index.d.ts"
+      ],
+      "types/tradeHistory": [
+        "./build/types/src/utils/tradeHistory/types.d.ts"
+      ],
+      "utils/twap": [
+        "./build/types/src/utils/twap/index.d.ts"
+      ],
+      "types/twap": [
+        "./build/types/src/utils/twap/types.d.ts"
+      ],
+      "utils/referrals": [
+        "./build/types/src/utils/referrals/index.d.ts"
+      ],
+      "types/referrals": [
+        "./build/types/src/utils/referrals/types.d.ts"
+      ],
+      "utils/chains": [
+        "./build/types/src/utils/chains/index.d.ts"
+      ],
+      "types/chains": [
+        "./build/types/src/utils/chains/types.d.ts"
+      ],
+      "utils/sidecarOrders": [
+        "./build/types/src/utils/sidecarOrders/index.d.ts"
+      ],
+      "types/sidecarOrders": [
+        "./build/types/src/utils/sidecarOrders/types.d.ts"
+      ],
+      "utils/bigmath": [
+        "./build/types/src/utils/bigmath/index.d.ts"
+      ],
+      "utils/numbers": [
+        "./build/types/src/utils/numbers/index.d.ts"
+      ],
+      "utils/objects": [
+        "./build/types/src/utils/objects/index.d.ts"
+      ],
+      "utils/hash": [
+        "./build/types/src/utils/hash/index.d.ts"
+      ],
+      "utils/time": [
+        "./build/types/src/utils/time/index.d.ts"
+      ],
+      "utils/buildUrl": [
+        "./build/types/src/utils/buildUrl/index.d.ts"
+      ],
+      "utils/graphqlFetcher": [
+        "./build/types/src/utils/graphqlFetcher/index.d.ts"
+      ],
+      "utils/indexers": [
+        "./build/types/src/utils/indexers/index.d.ts"
+      ],
+      "utils/LruCache": [
+        "./build/types/src/utils/LruCache/index.d.ts"
+      ],
+      "utils/abort": [
+        "./build/types/src/utils/abort/index.d.ts"
+      ],
+      "utils/common": [
+        "./build/types/src/utils/common/index.d.ts"
+      ],
+      "utils/gelatoRelay": [
+        "./build/types/src/utils/gelatoRelay/index.d.ts"
+      ],
+      "utils/types": [
+        "./build/types/src/utils/types/index.d.ts"
+      ]
+    }
+  },
   "exports": {
     ".": {
       "types": "./build/types/src/clients/v1/index.d.ts",
@@ -76,6 +221,12 @@
       "import": "./build/esm/src/utils/prices/index.js",
       "require": "./build/cjs/src/utils/prices/index.js",
       "default": "./build/cjs/src/utils/prices/index.js"
+    },
+    "./types/prices": {
+      "types": "./build/types/src/utils/prices/types.d.ts",
+      "import": "./build/esm/src/utils/prices/types.js",
+      "require": "./build/cjs/src/utils/prices/types.js",
+      "default": "./build/cjs/src/utils/prices/types.js"
     },
     "./types/24h": {
       "types": "./build/types/src/utils/24h/types.d.ts",

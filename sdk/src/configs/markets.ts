@@ -6,7 +6,7 @@ import { zeroAddress } from "viem";
 
 import type { ERC20Address, NativeTokenSupportedAddress, Token } from "utils/tokens/types";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH, ContractsChainId } from "./chains";
 import { convertTokenAddress, getToken, getTokenBySymbol } from "./tokens";
 
 export const SWAP_GRAPH_MAX_MARKETS_PER_TOKEN = 5;
@@ -1258,6 +1258,36 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
       indexTokenAddress: "0x1B9e25f54225bcdCf347569E38C41Ade9BB686e5",
       longTokenAddress: "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",
       shortTokenAddress: "0x0D2437F93Fed6EA64Ef01cCde385FB1263910C56",
+    },
+  },
+  [MEGAETH]: {
+    // BTC/USD [USDM-USDM]
+    "0x31EdCc52bE2Fa55Ba68f50409F9e6b7d9EbF3D59": {
+      marketTokenAddress: "0x31EdCc52bE2Fa55Ba68f50409F9e6b7d9EbF3D59",
+      indexTokenAddress: "0xc258141Ad80cafF9ab82a04bEb1c10F4B5bCb8F4",
+      longTokenAddress: "0xFAfDdbb3FC7688494971a79cc65DCa3EF82079E7",
+      shortTokenAddress: "0xFAfDdbb3FC7688494971a79cc65DCa3EF82079E7",
+    },
+    // ETH/USD [USDM-USDM]
+    "0x9b1B72720f6D277F3b1e607a0c5fab1B300248b1": {
+      marketTokenAddress: "0x9b1B72720f6D277F3b1e607a0c5fab1B300248b1",
+      indexTokenAddress: "0x4200000000000000000000000000000000000006",
+      longTokenAddress: "0xFAfDdbb3FC7688494971a79cc65DCa3EF82079E7",
+      shortTokenAddress: "0xFAfDdbb3FC7688494971a79cc65DCa3EF82079E7",
+    },
+    // SOL/USD [USDM-USDM]
+    "0xe8E716F1cddfFD0698B86919D41A8228d701fEe9": {
+      marketTokenAddress: "0xe8E716F1cddfFD0698B86919D41A8228d701fEe9",
+      indexTokenAddress: "0x30998706b1e5C95e9d3645D2e9E0EB1466819962",
+      longTokenAddress: "0xFAfDdbb3FC7688494971a79cc65DCa3EF82079E7",
+      shortTokenAddress: "0xFAfDdbb3FC7688494971a79cc65DCa3EF82079E7",
+    },
+    // SWAP-ONLY [ETH-USDM]
+    "0xc5c9B5E23810565763De41144741477eeCB25e2e": {
+      marketTokenAddress: "0xc5c9B5E23810565763De41144741477eeCB25e2e",
+      indexTokenAddress: "0x0000000000000000000000000000000000000000",
+      longTokenAddress: "0x4200000000000000000000000000000000000006",
+      shortTokenAddress: "0xFAfDdbb3FC7688494971a79cc65DCa3EF82079E7",
     },
   },
 };

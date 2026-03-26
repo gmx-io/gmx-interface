@@ -47,6 +47,7 @@ import {
   selectTradeboxSetSelectedAllowedSwapSlippageBps,
   selectTradeboxState,
   selectTradeboxSwapAmounts,
+  selectTradeboxSwapTokens,
   selectTradeboxTradeFlags,
   selectTradeboxTradeRatios,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -141,7 +142,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
 
-  const { swapTokens, infoTokens, sortedLongAndShortTokens, sortedAllMarkets } = availableTokenOptions;
+  const { infoTokens, sortedLongAndShortTokens, sortedAllMarkets } = availableTokenOptions;
+  const swapTokens = useSelector(selectTradeboxSwapTokens);
   const tokensData = useTokensData();
   const { tokenChainDataArray: multichainTokens } = useMultichainTokens();
   const marketsInfoData = useSelector(selectMarketsInfoData);
@@ -150,6 +152,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
 
   const chainId = useSelector(selectChainId);
+
   const srcChainId = useSelector(selectSrcChainId);
   const { account, active } = useWallet();
   const { openConnectModal } = useConnectModal();

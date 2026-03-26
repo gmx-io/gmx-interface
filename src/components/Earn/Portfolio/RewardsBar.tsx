@@ -1,19 +1,20 @@
 import { Trans } from "@lingui/macro";
 import { ReactNode, useMemo } from "react";
 import Skeleton from "react-loading-skeleton";
+import { Link } from "react-router-dom";
 
 import { BOTANIX, ContractsChainId, getChainNativeTokenSymbol } from "config/chains";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useBuybackWeeklyStats } from "domain/buyback/useBuybackWeeklyStats";
 import { UserEarningsData } from "domain/synthetics/markets/types";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { getTotalGlvInfo, getTotalGmInfo } from "domain/synthetics/markets/utils";
 import { useChainId } from "lib/chains";
-import { StakingProcessedData } from "lib/legacy";
-import { formatUsd } from "lib/numbers";
+import { GMX_DECIMALS, StakingProcessedData } from "lib/legacy";
+import { bigintToNumber, formatUsd, numberWithCommas } from "lib/numbers";
 
-import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -98,6 +99,12 @@ function RewardsBar({
                 />
               </div>
             </div>
+
+            <div className="border-r-1/2 border-slate-600 max-lg:border-b-1/2 max-lg:border-r-0" />
+
+            <div className="flex gap-28 max-lg:flex-col max-lg:gap-12">
+              <BuybackAccrualMetric />
+            </div>
           </div>
 
           <ClaimRewardsButton
@@ -107,14 +114,6 @@ function RewardsBar({
           />
         </div>
       </div>
-      {processedData?.isRewardsSuspended && (
-        <AlertInfoCard type="info" hideClose>
-          <Trans>
-            27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to
-            stakers when GMX reaches $90, proportional to staking power (duration × amount staked).
-          </Trans>
-        </AlertInfoCard>
-      )}
     </div>
   );
 }
@@ -350,6 +349,31 @@ function TotalPendingRewards({
         </div>
       }
     />
+  );
+}
+
+function BuybackAccrualMetric() {
+  const { data, isLoading, error } = useBuybackWeeklyStats();
+
+  const totalAccrued = data ? bigintToNumber(BigInt(data.summary.totalAccrued), GMX_DECIMALS) : undefined;
+
+  const isUnavailable = !isLoading && (error || totalAccrued === undefined);
+
+  return (
+    <Link to="/stats" className="flex flex-col gap-2 !no-underline">
+      <span className="text-body-small font-medium text-typography-secondary">
+        <Trans>Buyback accrued</Trans>
+      </span>
+      <span className="text-body-large font-medium numbers">
+        {isLoading ? (
+          <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={80} className="leading-base" />
+        ) : isUnavailable ? (
+          <Trans>N/A</Trans>
+        ) : (
+          `${numberWithCommas(Math.round(totalAccrued ?? 0))} GMX`
+        )}
+      </span>
+    </Link>
   );
 }
 

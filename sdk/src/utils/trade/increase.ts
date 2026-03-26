@@ -29,7 +29,7 @@ import {
 import { UserReferralInfo } from "utils/referrals/types";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "utils/swap";
 import { ExternalSwapStrategy, NoSwapStrategy } from "utils/swap/types";
-import { convertToTokenAmount, convertToUsd, getIsEquivalentTokens, getTokensRatioByPrice } from "utils/tokens";
+import { convertToTokenAmount, convertToUsd, getTokensRatioByPrice } from "utils/tokens";
 import { TokenData, TokensRatio } from "utils/tokens/types";
 
 import {
@@ -547,13 +547,8 @@ export function getIncreasePositionPrices({
 
   if (triggerPrice !== undefined && triggerPrice > 0 && limitOrderType !== undefined) {
     indexPrice = triggerPrice;
-    initialCollateralPrice = getIsEquivalentTokens(indexToken, initialCollateralToken)
-      ? triggerPrice
-      : initialCollateralToken.prices.minPrice;
-
-    collateralPrice = getIsEquivalentTokens(indexToken, collateralToken)
-      ? triggerPrice
-      : collateralToken.prices.minPrice;
+    initialCollateralPrice = initialCollateralToken.prices.minPrice;
+    collateralPrice = collateralToken.prices.minPrice;
 
     triggerThresholdType = getOrderThresholdType(limitOrderType, isLong);
   } else {

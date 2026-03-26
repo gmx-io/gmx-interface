@@ -1,8 +1,10 @@
 import groupBy from "lodash/groupBy";
 import maxBy from "lodash/maxBy";
 
+import { selectJitLiquidityMap } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { createSelector } from "context/SyntheticsStateContext/utils";
+import { JitLiquidityInfo, getJitLiquidityInfo } from "domain/synthetics/jit/utils";
 import { MarketInfo, getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
 import { Token } from "domain/tokens";
 import { BN_ZERO } from "lib/numbers";
@@ -24,14 +26,23 @@ const selectSortedAllMarkets = createSelector((q) => q(selectTradeboxAvailableTo
 
 export const selectTradeboxGetMaxLongShortLiquidityPool = createSelector((q) => {
   const sortedAllMarkets = q(selectSortedAllMarkets);
+  const jitLiquidityMap = q(selectJitLiquidityMap);
 
-  return createGetMaxLongShortLiquidityPool(sortedAllMarkets);
+  return createGetMaxLongShortLiquidityPool(sortedAllMarkets, jitLiquidityMap);
 });
 
-export function createGetMaxLongShortLiquidityPool(sortedAllMarkets: MarketInfo[]) {
+export function createGetMaxLongShortLiquidityPool(
+  sortedAllMarkets: MarketInfo[],
+  jitLiquidityMap?: Record<string, JitLiquidityInfo>
+) {
   const marketsWithMaxReservedUsd = sortedAllMarkets.map((marketInfo) => {
-    const maxLongLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true);
-    const maxShortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false);
+    const jitInfo = getJitLiquidityInfo(jitLiquidityMap, marketInfo.marketTokenAddress);
+    const maxLongLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true, jitInfo?.maxReservedUsdWithJitLong);
+    const maxShortLiquidity = getAvailableUsdLiquidityForPosition(
+      marketInfo,
+      false,
+      jitInfo?.maxReservedUsdWithJitShort
+    );
 
     return {
       maxLongLiquidity: bnClampMin(maxLongLiquidity, BN_ZERO),
