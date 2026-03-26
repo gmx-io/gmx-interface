@@ -1886,7 +1886,6 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       symbol: "SOL",
       address: "0x30998706b1e5C95e9d3645D2e9E0EB1466819962",
       isSynthetic: true,
-      priceDecimals: 3,
       decimals: 9,
       categories: ["layer1"],
       imageUrl: "https://assets.coingecko.com/coins/images/4128/small/solana.png?1640133422",
