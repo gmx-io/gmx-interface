@@ -25,7 +25,7 @@ export function useExternalSwapsEnabled(): boolean | undefined {
       return false;
     }
 
-    return gasPaymentToken === collateralToken;
+    return gasPaymentToken !== undefined && collateralToken !== undefined && gasPaymentToken === collateralToken;
   }, [collateralToken, gasPaymentToken, isExpressTradingEnabled]);
 
   const subaccount = useSelector(selectSubaccountForSettlementChainAction);
