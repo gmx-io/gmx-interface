@@ -195,54 +195,63 @@ const SOURCE_CHAIN_CONFIGS = {
     name: "Optimism Sepolia",
     slug: "optimism-sepolia",
     explorerUrl: "https://sepolia-optimism.etherscan.io/",
+    gasPriceBuffer: undefined,
   },
   [SOURCE_SEPOLIA]: {
     chainId: SOURCE_SEPOLIA,
     name: "Sepolia",
     slug: "sepolia",
     explorerUrl: "https://sepolia.etherscan.io/",
+    gasPriceBuffer: undefined,
   },
   [SOURCE_BASE_MAINNET]: {
     chainId: SOURCE_BASE_MAINNET,
     name: "Base",
     slug: "base-mainnet",
     explorerUrl: "https://basescan.org/",
+    gasPriceBuffer: 3000n, // 30%
   },
   [SOURCE_BSC_MAINNET]: {
     chainId: SOURCE_BSC_MAINNET,
     name: "BNB",
     slug: "bnb-mainnet",
     explorerUrl: "https://bscscan.com/",
+    gasPriceBuffer: 3000n, // 30%
   },
   [SOURCE_ETHEREUM_MAINNET]: {
     chainId: SOURCE_ETHEREUM_MAINNET,
     name: "Ethereum",
     slug: "ethereum-mainnet",
     explorerUrl: "https://etherscan.io/",
+    gasPriceBuffer: 3000n, // 30%
   },
   [ARBITRUM]: {
     chainId: ARBITRUM,
     name: "Arbitrum",
     slug: "arbitrum",
     explorerUrl: "https://arbiscan.io/",
+    gasPriceBuffer: undefined,
   },
   [AVALANCHE]: {
     chainId: AVALANCHE,
     name: "Avalanche",
     slug: "avalanche",
     explorerUrl: "https://snowtrace.io/",
+    gasPriceBuffer: undefined,
   },
   [ARBITRUM_SEPOLIA]: {
     chainId: ARBITRUM_SEPOLIA,
     name: "Arbitrum Sepolia",
     slug: "arbitrum-sepolia",
     explorerUrl: "https://sepolia.arbiscan.io/",
+    gasPriceBuffer: undefined,
   },
   [AVALANCHE_FUJI]: {
     chainId: AVALANCHE_FUJI,
     name: "Avalanche Fuji",
     slug: "avalanche-fuji",
     explorerUrl: "https://testnet.snowtrace.io/",
+    gasPriceBuffer: undefined,
   },
   // Use this notation to correctly infer chain names, etc. from config
 } as const satisfies Record<SourceChainId, SourceChainConfig>;
@@ -381,8 +390,8 @@ export function getMinExecutionFeeUsd(chainId: ContractsChainId) {
   return CONTRACTS_CHAIN_CONFIGS[chainId]?.minExecutionFee;
 }
 
-export function getGasPriceBuffer(chainId: ContractsChainId) {
-  return CONTRACTS_CHAIN_CONFIGS[chainId]?.gasPriceBuffer;
+export function getGasPriceBuffer(chainId: ContractsChainId | SourceChainId) {
+  return CONTRACTS_CHAIN_CONFIGS[chainId as ContractsChainId]?.gasPriceBuffer ?? SOURCE_CHAIN_CONFIGS[chainId as SourceChainId]?.gasPriceBuffer;
 }
 
 export function isChainDisabled(chainId: ContractsChainId) {
