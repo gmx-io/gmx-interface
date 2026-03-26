@@ -26,6 +26,8 @@ import { FeaturesSettings, useEnabledFeaturesRequest } from "domain/synthetics/f
 import { L1ExpressOrderGasReference, useGasLimits, useGasPrice } from "domain/synthetics/fees";
 import { RebateInfoItem, useRebatesInfoRequest } from "domain/synthetics/fees/useRebatesInfo";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
+import { useJitLiquidityRequest } from "domain/synthetics/jit/useJitLiquidityRequest";
+import { JitLiquidityData } from "domain/synthetics/jit/utils";
 import {
   MarketsInfoResult,
   MarketsResult,
@@ -137,6 +139,8 @@ export type SyntheticsState = {
     blockTimestampData: BlockTimestampData | undefined;
 
     oracleSettings: OracleSettingsData | undefined;
+
+    jitLiquidityData: JitLiquidityData;
   };
   claims: {
     accruedPositionPriceImpactFees: RebateInfoItem[];
@@ -257,6 +261,7 @@ export function SyntheticsStateContextProvider({
   });
 
   const oracleSettings = useOracleSettingsData();
+  const jitLiquidityData = useJitLiquidityRequest(chainId, { enabled: isTradePage });
 
   const [missedCoinsModalPlace, setMissedCoinsModalPlace] = useState<MissedCoinsPlace>();
 
@@ -292,6 +297,7 @@ export function SyntheticsStateContextProvider({
     positionsInfoData,
     ordersInfoData: ordersInfo.ordersInfoData,
     srcChainId,
+    jitLiquidityMap: jitLiquidityData.jitLiquidityMap,
   });
 
   const orderEditor = useOrderEditorState(ordersInfo.ordersInfoData);
@@ -413,6 +419,8 @@ export function SyntheticsStateContextProvider({
         blockTimestampData,
 
         oracleSettings,
+
+        jitLiquidityData,
       },
       claims: { accruedPositionPriceImpactFees, claimablePositionPriceImpactFees },
       leaderboard,
@@ -450,6 +458,7 @@ export function SyntheticsStateContextProvider({
     glvInfo,
     isCandlesLoaded,
     isFirstOrder,
+    jitLiquidityData,
     isLargeAccount,
     isLoading,
     keepLeverage,

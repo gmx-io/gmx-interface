@@ -629,7 +629,7 @@ function useOrdersControl() {
         batchParams,
         simulationParams: undefined,
         provider,
-        callback: makeOrderTxnCallback({}),
+        callback: makeOrderTxnCallback({ actionName: "Cancel Order" }),
         isGmxAccount: srcChainId !== undefined,
       })
         .then(async (tx) => {
@@ -696,7 +696,10 @@ function useOrdersControl() {
         expressParams,
         batchParams,
         simulationParams: undefined,
-        callback: makeOrderTxnCallback({}),
+        callback: makeOrderTxnCallback({
+          actionName: "Cancel Order",
+          collateralSymbol: order?.initialCollateralToken.symbol,
+        }),
         isGmxAccount: srcChainId !== undefined,
       }).finally(() => {
         setCanellingOrdersKeys((prev) => prev.filter((k) => k !== key));

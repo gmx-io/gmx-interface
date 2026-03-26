@@ -217,6 +217,10 @@ msgstr "RPC 監控"
 msgid "(rebated)"
 msgstr "（已返還）"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Accumulated rewards"
+msgstr ""
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Show rPnL amounts"
 msgstr "顯示已實現盈虧金額"
@@ -417,6 +421,10 @@ msgstr "確認提取"
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Settled funding fees"
 msgstr "已結算資金費用"
+
+#: src/components/Errors/ErrorToastWithSupport.tsx
+msgid "Contact Support"
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Returned collateral"
@@ -826,6 +834,10 @@ msgstr "STIP.b 追溯獎勵"
 #: landing/src/pages/Home/LiqiuditySection/LiqiuditySection.tsx
 msgid "in liquidity"
 msgstr "流動性"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "{0} is required for collateral.<0/><1/>No swap path found for {1} to {2} within GMX.<2/><3/><4>Buy {3} on {4}</4>."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized money market"
@@ -1593,7 +1605,6 @@ msgid "Pool max short amount"
 msgstr "池最大做空數量"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "APR"
 msgstr "APR"
@@ -1810,6 +1821,10 @@ msgstr "止損價格"
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Leaving GMX.io for a third-party website"
 msgstr "即將離開 GMX.io 前往第三方網站"
+
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+#~ msgid "Weekly Rate"
+#~ msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Price data too old. Oracle price is stale"
@@ -2127,6 +2142,10 @@ msgstr "GMX（中文）"
 msgid "Search"
 msgstr "搜尋"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#~ msgid "Annualized rate of GMX buybacks based on weekly buyback volume relative to total staked GMX. 27% of protocol fees accumulate in the Treasury for buybacks."
+#~ msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position in WETH-USDC pool but lacks liquidity for this order"
 msgstr "WETH-USDC 池中有現有倉位，但此訂單的流動性不足"
@@ -2400,6 +2419,10 @@ msgstr "我們如何改善您的疑慮？"
 msgid "No liquidity available for increasing longs at<0/>this size. Max long size: {0}<1/><2/>Execution prices for decreasing shorts."
 msgstr "此規模下無可用流動性來加倉做多。<0/>最大做多規模：{0}<1/><2/>減倉做空的成交價格。"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#~ msgid "Accumulated Rewards"
+#~ msgstr ""
+
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Transfer completed"
 msgstr "轉帳完成"
@@ -2490,7 +2513,6 @@ msgid "{txnTypeText} {0} order for"
 msgstr "{txnTypeText} {0} 訂單於"
 
 #: src/components/BuyInputSection/BuyInputSection.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -2765,6 +2787,10 @@ msgstr "高潛在淨價格影響（此市場上限為 {formattedCap}）可能會
 msgid "Update Take-Profit"
 msgstr "更新止盈"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards."
+msgstr ""
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Deposit from {sourceChainName} failed"
 msgstr "從 {sourceChainName} 存入失敗"
@@ -3030,6 +3056,10 @@ msgstr "允許滑點"
 msgid "No centralized exchanges available"
 msgstr "沒有可用的中心化交易所"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Loyalty"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 msgid "No assets yet"
 msgstr "尚無資產"
@@ -3237,6 +3267,10 @@ msgstr "<0>智能錢包不支援 {0}</0><1/><2>請切換至其他網路或使用
 msgid "Buy from decentralized or centralized exchanges"
 msgstr "從去中心化或中心化交易所買入"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "of limit"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact pool after reserved positive impact"
 msgstr "扣除保留正向影響後的影響池"
@@ -3405,6 +3439,10 @@ msgstr "流動性不足。當流動性可用時將執行訂單。"
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Your transfer is complete"
 msgstr "您的轉帳已完成"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "27% of protocol fees are accumulating in the Treasury and will be distributed proportionally to staking power when GMX reaches $90."
+msgstr ""
 
 #: src/components/BotanixBanner/BotanixBanner.tsx
 msgid "and"
@@ -3595,6 +3633,11 @@ msgstr "資金費用"
 msgid "{0}"
 msgstr "{0}"
 
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "Cumulative"
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Liquidation price changes with fees and collateral value."
 msgstr "清算價格會隨費用和抵押品價值變動。"
@@ -3620,6 +3663,10 @@ msgstr "交易"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "No deposits required"
 msgstr "無需存入"
+
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+#~ msgid "Weekly Bought GMX"
+#~ msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Trading airdrop"
@@ -3664,7 +3711,6 @@ msgstr "費用 APR"
 msgid "SL"
 msgstr "SL"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
@@ -3770,6 +3816,10 @@ msgstr "交易完成"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Base borrowing factor short"
 msgstr "做空基礎借貸因子"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Staked esGMX"
+msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Staked on Arbitrum"
@@ -4090,6 +4140,10 @@ msgstr "平均槓桿"
 msgid "Enter a new ratio or allowed slippage"
 msgstr "請輸入新比例或允許的滑點"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Safe unstake limit: {0} GMX / esGMX"
+msgstr ""
+
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap submitted"
@@ -4119,8 +4173,8 @@ msgid "Name:"
 msgstr "名稱："
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-msgid "{0}<0>You will earn {1}% less rewards.</0>"
-msgstr "{0}<0>您將減少 {1}% 的獎勵。</0>"
+#~ msgid "{0}<0>You will earn {1}% less rewards.</0>"
+#~ msgstr "{0}<0>您將減少 {1}% 的獎勵。</0>"
 
 #: src/components/TradeHistory/keys.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -4155,6 +4209,10 @@ msgstr "正向因子"
 #: src/components/TPSLModal/TPSLOrdersList.tsx
 msgid "Full position close"
 msgstr "完全平倉"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Create Stop-Loss"
@@ -4234,10 +4292,6 @@ msgstr "等待 GMX 授權中..."
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "AMOUNT"
 msgstr "金額"
-
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "GMX staking unavailable on Botanix. Use Arbitrum or Avalanche."
-msgstr "Botanix 上無法質押 GMX，請使用 Arbitrum 或 Avalanche。"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -4694,6 +4748,10 @@ msgstr "正在更新設定..."
 msgid "GMX executes transactions without individual signing. Trades use GMX-sponsored premium RPCs for reliability, even during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
 msgstr "GMX 執行交易無需逐筆簽名。交易使用 GMX 提供的高級 RPC 以確保可靠性，即使在網路擁塞時也是如此。<0/><1/>Gas 費用以 {gasPaymentTokensText} 支付。"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "I acknowledge that I will lose <0>{0} in rewards</0> if I proceed."
+msgstr ""
+
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Last rebalance"
 msgstr "上次再平衡"
@@ -4880,6 +4938,10 @@ msgstr "推薦碼已新增"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX bonds on Bond Protocol at a discount with a short vesting period"
 msgstr "在 Bond Protocol 上以折扣價購買 GMX 債券，享有短期歸屬期"
+
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "Buyback accrued"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -5127,10 +5189,6 @@ msgstr "無效交易"
 msgid "Insufficient liquidity in {0} pool. Select a different pool."
 msgstr "{0} 池流動性不足。請選擇其他池。"
 
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "No GLV vaults on Botanix. Provide liquidity via <0>GM tokens</0> instead."
-msgstr "Botanix 上沒有 GLV 金庫。請改透過 <0>GM 代幣</0>提供流動性。"
-
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
@@ -5204,6 +5262,10 @@ msgstr "領取資金失敗"
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "Shifting 僅適用於 {chainNames} 或 {lastChainName}。請切換網路以繼續。"
+
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "I understand that accumulated staking power will reset on the receiving wallet. The receiving address will start accruing staking power from zero."
+msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
@@ -5568,7 +5630,6 @@ msgstr "流動性不足。可用：{availableLiquidityText}"
 msgid "Unstake submitted"
 msgstr "解除質押已提交"
 
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Botanix"
@@ -5606,6 +5667,10 @@ msgstr "啟動應用程式"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "This competition is held on the {0} network. <0>Change your network</0> to participate."
 msgstr "此競賽在 {0} 網路上進行。請<0>切換網路</0>以參加。"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Rewards reset."
+msgstr ""
 
 #: src/components/GmxAccountModal/SelectAssetToDepositView.tsx
 msgid "All networks"
@@ -5658,6 +5723,10 @@ msgstr "您的資金安全存放在目標鏈上的 GMX 合約中。請在 LayerZ
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Mozaic Finance"
 msgstr "Mozaic Finance"
+
+#: src/components/Earn/BuybackTracker/BuybackDashboard.tsx
+msgid "Buyback Dashboard"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
@@ -5714,6 +5783,10 @@ msgstr "允許的操作"
 #: src/components/GmList/GmList.tsx
 msgid "Pools that provide liquidity to specific GMX markets. Supports single-asset and native asset options."
 msgstr "為特定 GMX 市場提供流動性的池。支援單一資產和原生資產選項。"
+
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+#~ msgid "This week's buyback as a percentage of total staked GMX."
+#~ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor"
@@ -5819,6 +5892,14 @@ msgstr "回饋"
 msgid "Insufficient {fromSymbol} balance. Gas token switched to {toSymbol}"
 msgstr "{fromSymbol} 餘額不足。Gas 代幣已切換為 {toSymbol}"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#~ msgid "Buyback Rate"
+#~ msgstr ""
+
+#: src/pages/Earn/EarnPageLayout.tsx
+msgid "Buyback Tracker"
+msgstr ""
+
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to pay"
 msgstr "可用於支付"
@@ -5830,6 +5911,10 @@ msgstr "Firebird Finance"
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "{balanceFormatted} remaining in old 1CT subaccount"
 msgstr "舊版 One-Click Trading 子帳戶中剩餘 {balanceFormatted}"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Stake GMX"
+msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
@@ -6230,6 +6315,10 @@ msgstr ""
 msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets"
 msgstr "跨多個 GMX 市場提供流動性的收益優化金庫"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+#~ msgid "Safe unstake limit: {0} {tokenSymbol} / esGMX"
+#~ msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Analytics"
 msgstr "分析"
@@ -6316,6 +6405,10 @@ msgstr "可靠的 GMX 驅動交易"
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawal of {balanceFormatted} failed"
 msgstr "提取 {balanceFormatted} 失敗"
+
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+msgid "Annualized Rate"
+msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Gas"
@@ -6821,6 +6914,10 @@ msgstr "Bond Protocol"
 msgid "Withdrawing {0} to {1} is not supported"
 msgstr "不支援將 {0} 提取至 {1}"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Wallet esGMX"
+msgstr ""
+
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Governance"
@@ -6897,6 +6994,10 @@ msgstr "顯示扣除費用後的 PnL"
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Share position"
 msgstr "分享倉位"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "If you continue, you will lose {0} in rewards."
+msgstr ""
 
 #: src/components/BotanixBanner/BotanixBanner.tsx
 msgid "Switch to <0><1/><2>Arbitrum</2></0> or <3><4/><5>Avalanche</5></3> for those features"
@@ -6979,13 +7080,9 @@ msgstr "清除除錯覆寫設定"
 msgid "Cancel Stop-Loss"
 msgstr "取消止損"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "{0} is required for collateral.<0/><1/>No swap path found for {1} to {2} within GMX.<2/><3/><4>Buy {3} on 1inch</4>."
-msgstr "{0} 為所需抵押品。<0/><1/>在 GMX 中找不到 {1} 至 {2} 的兌換路徑。<2/><3/><4>在 1inch 購買 {3}</4>。"
-
 #: src/components/Earn/Portfolio/RewardsBar.tsx
-msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
-msgstr ""
+#~ msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
+#~ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Stake {tokenSymbol} rewards"
@@ -7176,10 +7273,6 @@ msgstr "<0>返回</0><1>首頁</1><2>或</2><3>交易</3>"
 msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr "使用以下方式將 {tokenSymbol} 橋接至 {chainName}"
 
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit signing failed"
-msgstr "許可簽名失敗"
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order uses {collateralSymbol}, but existing {longText} position uses {symbol} as collateral"
 msgstr "訂單使用 {collateralSymbol}，但現有的{longText}倉位使用 {symbol} 作為抵押品"
@@ -7254,7 +7347,7 @@ msgstr "超過 {0} 最大做多量"
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
+#: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
@@ -7424,7 +7517,6 @@ msgstr "最小倉位大小：{0}"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 #: src/components/APRLabel/APRLabel.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Stake/GMXAprTooltip.tsx
 msgid "27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your share is based on staking power (duration × amount staked)."
 msgstr ""
@@ -7440,6 +7532,7 @@ msgid "Trigger price below mark price"
 msgstr "觸發價格低於標記價格"
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staked GMX"
 msgstr "已質押 GMX"
 
@@ -7779,6 +7872,10 @@ msgstr "未知的 GM 轉換訂單"
 msgid "Shifting {symbol}..."
 msgstr "正在轉換 {symbol}..."
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max reserved + JIT {directionLabel}"
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Close price impact"
@@ -7851,6 +7948,10 @@ msgstr "{0} GMX"
 msgid "Price impact exceeds order size. Impact: {priceImpactUsdText}, order: {sizeDeltaUsdText}"
 msgstr "價格影響超過訂單規模。影響：{priceImpactUsdText}，訂單：{sizeDeltaUsdText}"
 
+#: src/components/Errors/ErrorToastWithSupport.tsx
+msgid "If you're having trouble completing this action, our team can help."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Jones DAO"
 msgstr "Jones DAO"
@@ -7896,6 +7997,10 @@ msgstr "協議分析"
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Show positions on chart"
 msgstr "在圖表上顯示倉位"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Avail."
+msgstr ""
 
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 msgid "Metrics debug"
@@ -8065,6 +8170,14 @@ msgstr "{typeString} Long Stop Market：當價格低於觸發價格時{0}做多�
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing longs or decreasing shorts at<1/>this size."
 msgstr "無價格影響。在此規模下加倉做多<0/>或減倉做空為<1/>單一成交價格。"
+
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+#~ msgid "Weekly rate extrapolated to a full year (weekly rate × 52)."
+#~ msgstr ""
+
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+msgid "Total amount of GMX bought back since tracking began."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group (Chinese)"
@@ -8320,7 +8433,6 @@ msgid "Session generated"
 msgstr "工作階段已產生"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGmxModal.tsx
@@ -8403,6 +8515,11 @@ msgstr "無效的 Ethereum 地址"
 #: src/components/Referrals/AddAffiliateCode.tsx
 msgid "Unable to verify code availability on {0}. You can still create the code, but it may already be taken on that network."
 msgstr "無法在 {0} 上驗證代碼的可用性。您仍然可以建立該代碼，但它可能已在該網路上被使用。"
+
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "Weekly Bought"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -8554,6 +8671,10 @@ msgstr "質押中..."
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Buy request sent"
 msgstr "買入請求已發送"
+
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+msgid "Total Bought GMX"
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using fiat gateways"
@@ -8916,6 +9037,10 @@ msgstr "什麼是 GMX？"
 msgid "Deposit submitted"
 msgstr "存入已提交"
 
+#: src/components/Earn/Discovery/EarnYieldOverview.tsx
+msgid "GMX staking unavailable on MegaETH. Use Arbitrum or Avalanche."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -9132,7 +9257,6 @@ msgstr "將 {tokenSymbol} 轉換為 {nativeTokenSymbol}"
 msgid "({0} of position size)"
 msgstr "（{0}，佔倉位規模）"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Staked"
 msgstr "已質押"
@@ -9224,6 +9348,7 @@ msgid "Select at least one distribution to claim"
 msgstr "請至少選擇一項分配進行領取"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Buy"
 msgstr "買入"
 
@@ -9328,6 +9453,10 @@ msgstr "我可以在 GMX 上構建或將其整合到我的 DeFi 應用程式中�
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Avoid price wicks with transparent, sub-second Chainlink price feeds tailor-made for GMX"
 msgstr "透過 Chainlink 為 GMX 量身打造的透明、亞秒級價格饋送，避免價格插針"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Stake esGMX"
+msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe and remain in your wallet."
@@ -9453,6 +9582,10 @@ msgstr "{positionName} 結算失敗"
 msgid "Ecosystem projects"
 msgstr "生態系統專案"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "Unstaking this amount will bring you close to the 20% reset threshold."
+msgstr ""
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Withdrawing {0} from {positionText}..."
 msgstr "正在從 {positionText} 提取 {0}..."
@@ -9551,7 +9684,6 @@ msgid "Sender has withdrawn all tokens from GLP vesting vault"
 msgstr "發送者已從 GLP 歸屬期金庫提取所有代幣"
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
@@ -9699,6 +9831,7 @@ msgstr "已累計"
 msgid "Cancellable in ..."
 msgstr "可取消倒數 ..."
 
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "No data available"
 msgstr "無可用資料"
@@ -9715,6 +9848,10 @@ msgstr "您的 GMX Account 和倉位所在的網路。餘額和倉位不會在�
 msgid "Liquidity only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "流動性僅在 {chainNames} 或 {lastChainName} 上可用。請切換網路以繼續。"
 
+#: src/components/Earn/Discovery/EarnYieldOverview.tsx
+msgid "MegaETH"
+msgstr ""
+
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total trading volume from your referrals"
 msgstr "來自您推薦的總交易量"
@@ -9726,6 +9863,10 @@ msgstr "WETH-USDC 池的流動性不足。請選擇其他池。"
 #: src/components/TVChartContainer/DynamicLine.tsx
 msgid "Cancel order"
 msgstr "取消訂單"
+
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+#~ msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked). All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
+#~ msgstr ""
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Current impact: {0}. Use -0.30% or more for better order execution."
@@ -9965,6 +10106,10 @@ msgstr "GMX trading chat"
 msgid "Compass Labs trading simulations"
 msgstr "Compass Labs trading simulations"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
+msgid "The 20% unstaking limit was exceeded, and your rewards have been reset. You may now continue unstaking freely."
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL long"
 msgstr "做多 PnL"
@@ -10061,6 +10206,10 @@ msgstr "享受最高 100 倍槓桿以及不依賴訂單簿深度的鏈上保證�
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Stop loss price"
 msgstr "止損價格"
+
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Your current staked balance relative to your historical max. Dropping below 80% resets your accumulated staking power to zero."
+msgstr ""
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Oracle keeper monitoring"
@@ -10238,6 +10387,10 @@ msgstr "已達最大存入上限：{maxPoolUsdText}"
 msgid "Yield optimizations"
 msgstr "收益優化"
 
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+#~ msgid "Amount of GMX bought back this week from protocol fees."
+#~ msgstr ""
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Swap"
@@ -10246,6 +10399,10 @@ msgstr "Limit Swap"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Claim {tokenSymbol} rewards"
 msgstr "領取 {tokenSymbol} 獎勵"
+
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+msgid "Average weekly rate extrapolated to a full year (weekly rate × 52)."
+msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H VOL."
@@ -10461,6 +10618,10 @@ msgstr "新增推薦碼失敗"
 msgid "Deposit {glvOrGm}"
 msgstr "存入 {glvOrGm}"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Wallet GMX"
+msgstr ""
+
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Debug settings"
 msgstr "除錯設定"
@@ -10636,6 +10797,10 @@ msgstr "整體績效詳情"
 msgid "Take-Profit"
 msgstr "止盈"
 
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+msgid "Your staking power was reset {0} due to dropping below the 80% loyalty threshold. Power is now accruing again from your current balance."
+msgstr ""
+
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
@@ -10734,6 +10899,10 @@ msgstr "由於費用和價格影響，成交價格可能與限價不同。您將
 #: src/pages/RpcDebug/parts.tsx
 msgid "Private"
 msgstr "私有"
+
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "Week"
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Min. required collateral"

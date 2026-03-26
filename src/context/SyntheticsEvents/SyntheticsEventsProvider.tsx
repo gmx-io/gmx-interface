@@ -983,12 +983,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       const unsubscribeApproval = subscribeToApprovalEvents({
         chainId,
         account: currentAccount,
-        onApprove: (tokenAddress, spender, value) => {
+        onApprove: (tokenAddress, spender, value, blockNumber) => {
           setApprovalStatuses((old) => ({
             ...old,
             [tokenAddress]: {
               ...old[tokenAddress],
-              [spender]: { value, createdAt: Date.now() },
+              [spender]: { value, blockNumber },
             },
           }));
           userAnalytics.pushEvent<TokenApproveResultEvent>({
@@ -1157,7 +1157,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                 // Wait to ensure there is no race condition with the pending order toast
                 sleep(500).then(() => {
                   toast.dismiss(pendingOrderToastIdRef.current);
-                  helperToast.error(totastContent);
+                  helperToast.error(totastContent, {
+                    tradingErrorInfo: {
+                      actionName: "Express Order",
+                      errorData: executionFeeErrorParams.errorData,
+                      metricId: pendingExpressTxn.metricId,
+                    },
+                  });
                 });
                 isViewed = true;
               }
@@ -1168,7 +1174,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
                 // Wait to ensure there is no race condition with the pending order toast
                 sleep(500).then(() => {
                   toast.dismiss(pendingOrderToastIdRef.current);
-                  helperToast.error(<InvalidSignatureToastContent />, {});
+                  helperToast.error(<InvalidSignatureToastContent />, {
+                    tradingErrorInfo: {
+                      actionName: "Express Order",
+                      errorData: invalidSignatureErrorParams.errorData,
+                      metricId: pendingExpressTxn.metricId,
+                    },
+                  });
                 });
                 isViewed = true;
               }
@@ -1177,7 +1189,12 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
             }
 
             if (pendingExpressTxn.errorMessage && !pendingExpressTxn.isViewed) {
-              helperToast.error(pendingExpressTxn.errorMessage);
+              helperToast.error(pendingExpressTxn.errorMessage, {
+                tradingErrorInfo: {
+                  actionName: "Express Order",
+                  metricId: pendingExpressTxn.metricId,
+                },
+              });
               isViewed = true;
             }
 

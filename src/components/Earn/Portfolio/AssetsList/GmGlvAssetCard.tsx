@@ -36,6 +36,7 @@ type Props = {
   chainId: ContractsChainId;
   totalPerformanceApy: bigint | undefined;
   performanceApy30d: bigint | undefined;
+  isPerformanceLoading: boolean;
   multichainMarketTokenBalances: MultichainMarketTokenBalances | undefined;
 };
 
@@ -44,6 +45,7 @@ export function GmGlvAssetCard({
   chainId,
   totalPerformanceApy,
   performanceApy30d,
+  isPerformanceLoading,
   multichainMarketTokenBalances,
 }: Props) {
   const marketAddress = getGlvOrMarketAddress(marketInfo);
@@ -150,20 +152,24 @@ export function GmGlvAssetCard({
         <SyntheticsInfoRow
           label={<Trans>Total performance APY</Trans>}
           value={
-            totalPerformanceApy === undefined ? (
+            totalPerformanceApy !== undefined ? (
+              formatPercentage(totalPerformanceApy, { bps: false })
+            ) : isPerformanceLoading ? (
               <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={50} className="leading-base" />
             ) : (
-              formatPercentage(totalPerformanceApy, { bps: false })
+              "N/A"
             )
           }
         />
         <SyntheticsInfoRow
           label={<Trans>30d performance APY</Trans>}
           value={
-            performanceApy30d === undefined ? (
+            performanceApy30d !== undefined ? (
+              formatPercentage(performanceApy30d, { bps: false })
+            ) : isPerformanceLoading ? (
               <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={50} className="leading-base" />
             ) : (
-              formatPercentage(performanceApy30d, { bps: false })
+              "N/A"
             )
           }
         />

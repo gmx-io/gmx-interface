@@ -72,47 +72,41 @@ export async function approveTokens({
   }
 
   if (permitParams?.addTokenPermit && shouldUsePermit && !permitParams.isPermitsDisabled) {
-    return await permitParams
-      .addTokenPermit(tokenAddress, spender, approveAmount)
-      .then(() => {
-        onApproveSubmitted?.({ isPermit: true });
-        helperToast.success(
-          <div>
-            <Trans>Permit signed</Trans>
-            <br />
-          </div>
-        );
-      })
-      .catch((e) => {
+    try {
+      await permitParams.addTokenPermit(tokenAddress, spender, approveAmount);
+      onApproveSubmitted?.({ isPermit: true });
+      helperToast.success(
+        <div>
+          <Trans>Permit signed</Trans>
+          <br />
+        </div>
+      );
+      setIsApproving(false);
+      return;
+    } catch (e) {
+      const isUserRejection = e.message?.includes("user rejected");
+
+      if (isUserRejection) {
         onApproveFail?.(e, { isPermit: true });
-        let failMsg;
-        let isUserError = false;
-
-        if (e.message.includes("user rejected")) {
-          isUserError = true;
-          failMsg = t`Permit signing cancelled`;
-        } else if (e.message.includes(INVALID_PERMIT_SIGNATURE_ERROR)) {
-          permitParams.setIsPermitsDisabled(true);
-          failMsg = getInvalidPermitSignatureToastContent();
-        } else {
-          failMsg = (
-            <>
-              <Trans>Permit signing failed</Trans>
-              <br />
-              <ToastifyDebug error={String(e)} />
-            </>
-          );
-        }
-
-        if (!isUserError) {
-          metrics.pushError(e, "approveTokens.permitError");
-        }
-
-        helperToast.error(failMsg);
-      })
-      .finally(() => {
+        helperToast.error(t`Permit signing cancelled`);
         setIsApproving(false);
-      });
+        return;
+      }
+
+      if (e.message?.includes(INVALID_PERMIT_SIGNATURE_ERROR)) {
+        onApproveFail?.(e, { isPermit: true });
+        permitParams.setIsPermitsDisabled(true);
+        metrics.pushError(e, "approveTokens.permitError");
+        helperToast.error(getInvalidPermitSignatureToastContent());
+        setIsApproving(false);
+        return;
+      }
+
+      // For Smart wallets (Safe, etc.) and other wallets that don't support
+      // eth_signTypedData_v4, fall back to standard ERC20 approve() transaction
+      permitParams.setIsPermitsDisabled(true);
+      metrics.pushError(e, "approveTokens.permitError");
+    }
   }
 
   const contract = new ethers.Contract(tokenAddress, TokenAbi, signer);
