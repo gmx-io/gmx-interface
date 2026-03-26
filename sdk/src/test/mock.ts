@@ -164,7 +164,7 @@ export function mockExternalSwap({
   const usdOut = (amountOut * priceOut) / expandDecimals(1, outToken.decimals);
 
   return {
-    aggregator: ExternalSwapAggregator.OpenOcean,
+    aggregator: ExternalSwapAggregator.KyberSwap,
     inTokenAddress: inToken.address,
     outTokenAddress: outToken.address,
     receiver,

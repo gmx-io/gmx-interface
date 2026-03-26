@@ -247,14 +247,6 @@ export const DECENTRALISED_AGGRIGATORS: Exchange[] = [
     },
   },
   {
-    name: "OpenOcean",
-    icon: "ic_openocean.svg",
-    links: {
-      [ARBITRUM]: "https://app.openocean.finance/CLASSIC#/ARBITRUM/ETH/GMX",
-      [AVALANCHE]: "https://app.openocean.finance/CLASSIC#/AVAX/AVAX/GMX",
-    },
-  },
-  {
     name: "DODO",
     icon: "ic_dodo.svg",
     links: {
