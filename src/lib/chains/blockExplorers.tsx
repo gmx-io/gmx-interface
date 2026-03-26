@@ -7,6 +7,7 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   BOTANIX,
+  MEGAETH,
   getExplorerUrl,
   SOURCE_ETHEREUM_MAINNET,
   SOURCE_BASE_MAINNET,
@@ -28,6 +29,7 @@ export const CHAIN_ID_TO_TX_URL_BUILDER: Record<
   [AVALANCHE_FUJI]: (txId: string) => `${getExplorerUrl(AVALANCHE_FUJI)}tx/${txId}`,
   [SOURCE_SEPOLIA]: (txId: string) => `${getExplorerUrl(SOURCE_SEPOLIA)}tx/${txId}`,
   [BOTANIX]: (txId: string) => `${getExplorerUrl(BOTANIX)}tx/${txId}`,
+  [MEGAETH]: (txId: string) => `${getExplorerUrl(MEGAETH)}tx/${txId}`,
   [SOURCE_BSC_MAINNET]: (txId: string) => `${getExplorerUrl(SOURCE_BSC_MAINNET)}tx/${txId}`,
   layerzero: (txId: string) => `${getExplorerUrl("layerzero")}tx/${txId}`,
   "layerzero-testnet": (txId: string) => `${getExplorerUrl("layerzero-testnet")}tx/${txId}`,
@@ -43,5 +45,6 @@ export const CHAIN_ID_TO_EXPLORER_NAME: Record<AnyChainId, string> = {
   [SOURCE_OPTIMISM_SEPOLIA]: "OP Sepolia Etherscan",
   [SOURCE_SEPOLIA]: "Sepolia Etherscan",
   [BOTANIX]: "Botanix Explorer",
+  [MEGAETH]: "MegaExplorer",
   [SOURCE_BSC_MAINNET]: "BSC Scan",
 };

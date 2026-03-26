@@ -8,9 +8,11 @@ import {
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
   SOURCE_ETHEREUM_MAINNET,
+  MEGAETH,
 } from "config/chains";
+import { JUMPER_EXCHANGE_URL } from "config/links";
 
-const MATCHA_NETWORK_NAMES: Partial<Record<AnyChainId, string>> = {
+const EXTERNAL_AGGREGATOR_NETWORK_NAMES: Partial<Record<AnyChainId, string>> = {
   [ARBITRUM]: "arbitrum",
   [AVALANCHE]: "avalanche",
   [SOURCE_BASE_MAINNET]: "base",
@@ -18,8 +20,12 @@ const MATCHA_NETWORK_NAMES: Partial<Record<AnyChainId, string>> = {
   [SOURCE_ETHEREUM_MAINNET]: "ethereum",
 };
 
-export function getMatchaBuyTokenUrl(chainId: AnyChainId, tokenAddress: string): string {
-  const networkName = MATCHA_NETWORK_NAMES[chainId];
+export function getExternalAggregatorBuyTokenUrl(chainId: AnyChainId, tokenAddress: string): string {
+  if (MEGAETH === chainId) {
+    return JUMPER_EXCHANGE_URL;
+  }
+
+  const networkName = EXTERNAL_AGGREGATOR_NETWORK_NAMES[chainId];
 
   if (!networkName) {
     return "https://matcha.xyz";
