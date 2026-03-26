@@ -220,6 +220,16 @@ export function useAvailableTokenOptions(
       }
     });
 
+    // Add all deployment tokens to swap list so they can be swapped via external aggregator
+    // even if they have no internal GM pool route
+    if (tokensData) {
+      for (const tokenData of Object.values(tokensData)) {
+        if (!collateralAddresses.has(tokenData.address) && !tokenData.isSynthetic && !tokenData.isWrapped) {
+          collaterals.add(tokenData);
+        }
+      }
+    }
+
     return {
       tokensMap,
       swapTokens: Array.from(collaterals),
