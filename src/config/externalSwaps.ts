@@ -7,6 +7,7 @@ import { DEBUG_SWAP_SETTINGS_KEY } from "./localStorage";
 
 // Enable external swap if price impact delta is less than this threshold
 export const SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS = -15n;
+export const SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_STABLECOIN_THRESHOLD_BPS = -10n;
 
 export const HIGH_EXTERNAL_SWAP_FEES_BPS = 200; // 2%
 
@@ -14,6 +15,7 @@ let isSwapDebugSettingsInited = false;
 
 let swapDebugSettings = {
   swapPriceImpactForExternalSwapThresholdBps: SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS,
+  swapPriceImpactForExternalSwapStablecoinThresholdBps: SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_STABLECOIN_THRESHOLD_BPS,
   forceExternalSwaps: false,
   failExternalSwaps: false,
 };
@@ -58,6 +60,15 @@ export function getSwapPriceImpactForExternalSwapThresholdBps() {
 
   return (
     swapDebugSettings?.swapPriceImpactForExternalSwapThresholdBps || SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_THRESHOLD_BPS
+  );
+}
+
+export function getSwapPriceImpactForExternalSwapStablecoinThresholdBps() {
+  const swapDebugSettings = getSwapDebugSettings();
+
+  return (
+    swapDebugSettings?.swapPriceImpactForExternalSwapStablecoinThresholdBps ||
+    SWAP_PRICE_IMPACT_FOR_EXTERNAL_SWAP_STABLECOIN_THRESHOLD_BPS
   );
 }
 
