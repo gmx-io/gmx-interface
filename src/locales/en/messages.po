@@ -7347,7 +7347,6 @@ msgstr "Max {0} long exceeded"
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
