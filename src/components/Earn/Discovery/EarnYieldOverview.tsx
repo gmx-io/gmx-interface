@@ -74,10 +74,6 @@ function formatAprValue(value: bigint | undefined) {
     return "...%";
   }
 
-  if (value === 0n) {
-    return "N/A";
-  }
-
   return formatPercentage(value, { bps: false });
 }
 
