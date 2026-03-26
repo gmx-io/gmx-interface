@@ -1,6 +1,10 @@
 import { maxUint256 } from "viem";
 
-import { getSwapDebugSettings, getSwapPriceImpactForExternalSwapThresholdBps } from "config/externalSwaps";
+import {
+  getSwapDebugSettings,
+  getSwapPriceImpactForExternalSwapThresholdBps,
+  getSwapPriceImpactForExternalSwapStablecoinThresholdBps,
+} from "config/externalSwaps";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { createSelector } from "context/SyntheticsStateContext/utils";
@@ -213,22 +217,25 @@ export const selectShouldRequestExternalSwapQuote = createSelector((q) => {
   const externalSwapInputs = q(selectExternalSwapInputs);
 
   const internalSwapTotalFeeItem = externalSwapInputs?.internalSwapTotalFeeItem;
-  const swapPriceImpactForExternalSwapThresholdBps = getSwapPriceImpactForExternalSwapThresholdBps();
+  // Use tighter threshold for stablecoin↔stablecoin pairs
+  const fromToken = q(selectTradeboxFromToken);
+  const toToken = q(selectTradeboxSelectSwapToToken);
+  const isStablecoinPair = fromToken?.isStable && toToken?.isStable;
+  const thresholdBps = isStablecoinPair
+    ? getSwapPriceImpactForExternalSwapStablecoinThresholdBps()
+    : getSwapPriceImpactForExternalSwapThresholdBps();
 
   const thereIsNoInternalSwap =
     !internalSwapTotalFeeItem ||
     (externalSwapInputs && externalSwapInputs.amountIn > 0n && externalSwapInputs.internalSwapAmounts.amountOut === 0n);
 
-  const internalSwapFeesConditionMet =
-    internalSwapTotalFeeItem && internalSwapTotalFeeItem.bps < swapPriceImpactForExternalSwapThresholdBps;
+  const internalSwapFeesConditionMet = internalSwapTotalFeeItem && internalSwapTotalFeeItem.bps < thresholdBps;
 
   const isExternalSwapConditionMet = thereIsNoInternalSwap || internalSwapFeesConditionMet;
 
   const debugForceExternalSwaps = q(selectDebugForceExternalSwaps);
 
-  const result = debugForceExternalSwaps || (isExternalSwapsEnabled && isExternalSwapConditionMet);
-
-  return result;
+  return debugForceExternalSwaps || (isExternalSwapsEnabled && isExternalSwapConditionMet);
 });
 
 const selectExternalSwapInputsByFromValue = createSelector((q) => {
