@@ -113,17 +113,41 @@ export function useExternalSwapHandler() {
 
   useEffect(
     function setBaseExternalSwapOutputEff() {
-      if (quote) {
-        if (storedBaseExternalSwapOutput?.txnData?.data !== quote.txnData.data) {
-          setBaseExternalSwapOutput(quote);
-        }
-      } else if (!isHookLoading) {
-        if (storedBaseExternalSwapOutput) {
+      const shouldClearBaseOutput =
+        !enabled ||
+        externalSwapInputs?.amountIn === undefined ||
+        externalSwapInputs.amountIn <= 0n ||
+        !fromTokenAddress ||
+        !swapToToken?.address;
+
+      if (shouldClearBaseOutput) {
+        if (storedBaseExternalSwapOutput !== undefined) {
           setBaseExternalSwapOutput(undefined);
         }
+
+        return;
+      }
+
+      // Keep the last successful quote while a refreshed quote is loading.
+      // Clearing it mid-refresh causes the UI to flap back to internal swap pricing.
+      if (!quote) {
+        return;
+      }
+
+      // Update quote only if actual txn data has changed
+      if (storedBaseExternalSwapOutput?.txnData?.data !== quote.txnData.data) {
+        setBaseExternalSwapOutput(quote);
       }
     },
-    [quote, setBaseExternalSwapOutput, storedBaseExternalSwapOutput, isHookLoading]
+    [
+      enabled,
+      externalSwapInputs?.amountIn,
+      fromTokenAddress,
+      quote,
+      setBaseExternalSwapOutput,
+      storedBaseExternalSwapOutput,
+      swapToToken?.address,
+    ]
   );
 
   useEffect(

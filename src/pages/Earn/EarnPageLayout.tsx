@@ -92,6 +92,9 @@ export default function EarnPageLayout({ children }: EarnPageLayoutProps) {
                 {tab.label}
               </Button>
             ))}
+            <Button variant="secondary" to="/stats" className="shrink-0">
+              <Trans>Buyback Tracker</Trans>
+            </Button>
           </div>
         </div>
 

@@ -135,6 +135,7 @@ const selectOrderEditorSwapFees = createSelector((q) => {
     fundingFeeUsd: 0n,
     feeDiscountUsd: 0n,
     swapProfitFeeUsd: 0n,
+    swapProfitUsdIn: 0n,
     uiFeeFactor,
     externalSwapQuote: undefined,
     type: "increase",

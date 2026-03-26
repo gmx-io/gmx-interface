@@ -80,27 +80,8 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
     };
   }, [executionFee, executionFeeToken, gasPaymentToken, gasPaymentParams]);
 
-  let executionDisplayDecimals = executionFee?.feeToken.priceDecimals;
-  if (executionDisplayDecimals !== undefined) {
-    executionDisplayDecimals += 1;
-  } else {
-    if (executionFeeToken?.isStable) {
-      executionDisplayDecimals = 2;
-    } else {
-      executionDisplayDecimals = 5;
-    }
-  }
-
-  let networkFeeDisplayDecimals = networkFee?.feeToken.priceDecimals;
-  if (networkFeeDisplayDecimals !== undefined) {
-    networkFeeDisplayDecimals += 1;
-  } else {
-    if (networkFee?.feeToken.isStable) {
-      networkFeeDisplayDecimals = 2;
-    } else {
-      networkFeeDisplayDecimals = 5;
-    }
-  }
+  const executionDisplayDecimals = executionFeeToken?.isStable ? 2 : 5;
+  const networkFeeDisplayDecimals = networkFee?.feeToken.isStable ? 2 : 5;
 
   const { estimatedRefundText, estimatedRefundUsd } = useMemo(() => {
     let estimatedRefundUsd: bigint | undefined;

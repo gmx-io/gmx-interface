@@ -192,6 +192,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
         metricId: undefined,
         slippageInputId: undefined,
         isFundingFeeSettlement: true,
+        actionName: "Settle Funding Fee",
       }),
       provider,
       isGmxAccount: srcChainId !== undefined,

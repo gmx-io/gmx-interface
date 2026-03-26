@@ -1,16 +1,11 @@
-import { describe, expect, it } from "vitest";
-
 import { getMarketIndexName, getMarketPoolName, MarketInfo } from "domain/synthetics/markets";
-import { DecreasePositionSwapType } from "domain/synthetics/orders";
 import { PositionInfoLoaded } from "domain/synthetics/positions";
 import { TokenData } from "domain/synthetics/tokens";
 import { expandDecimals } from "lib/numbers";
 
-import { getDecreasePositionAmounts } from "../../../../../sdk/src/utils/trade/decrease";
+import type { SwapStats } from "../../../../../../sdk/src/utils/trade/types";
 
-const closeSizeUsd = BigInt(99);
-
-const usdcToken: TokenData = {
+export const USDC_TOKEN_FIXTURE: TokenData = {
   prices: {
     minPrice: 10n ** 28n * 99n,
     maxPrice: 10n ** 28n * 99n,
@@ -22,7 +17,7 @@ const usdcToken: TokenData = {
   address: "0x00",
 };
 
-const ethToken: TokenData = {
+export const ETH_TOKEN_FIXTURE: TokenData = {
   name: "Ethereum",
   symbol: "ETH",
   decimals: 18,
@@ -37,14 +32,25 @@ const ethToken: TokenData = {
   balance: BigInt(0),
 };
 
-const wethToken: TokenData = {
-  ...ethToken,
+export const WETH_TOKEN_FIXTURE: TokenData = {
+  ...ETH_TOKEN_FIXTURE,
   isWrapped: true,
   address: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
   wrappedAddress: undefined,
 };
 
-const marketInfo: MarketInfo = {
+export const ARB_TOKEN_FIXTURE: TokenData = {
+  name: "Arbitrum",
+  symbol: "ARB",
+  decimals: 18,
+  address: "0x912CE59144191C1204E64559FE8253a0e49E6548",
+  prices: {
+    minPrice: expandDecimals(1, 30),
+    maxPrice: expandDecimals(1, 30),
+  },
+};
+
+export const MARKET_INFO_FIXTURE: MarketInfo = {
   marketTokenAddress: "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336",
   indexTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
   longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
@@ -54,9 +60,9 @@ const marketInfo: MarketInfo = {
   name: "ETH/USD [WETH-USDC]",
   data: "",
   isDisabled: false,
-  longToken: wethToken,
-  shortToken: usdcToken,
-  indexToken: ethToken,
+  longToken: WETH_TOKEN_FIXTURE,
+  shortToken: USDC_TOKEN_FIXTURE,
+  indexToken: ETH_TOKEN_FIXTURE,
   longsPayShorts: true,
   longInterestUsd: BigInt("0x0fcaba9e090934843130d214c605c952"),
   shortInterestUsd: BigInt("0x10e6a1773a6b9d068141fbca38ef6383"),
@@ -133,7 +139,7 @@ const marketInfo: MarketInfo = {
   virtualShortTokenId: "0x0000000000000000000000000000000000000000000000000000000000000000",
 };
 
-const position: PositionInfoLoaded = {
+export const POSITION_FIXTURE: PositionInfoLoaded = {
   data: "",
   key: "0xc9e1CE91d3f782499cFe787b6F1d2AF0Ca76C049:0x70d95587d40A2caf56bd97485aB3Eec10Bee6336:0xaf88d065e77c8cC2239327C5EDb3A432268e5831:true",
   contractKey: "0x45d022785433e1ce4bab9bda22a300cc960432ba5e8bf00788efbd6bde90b85c",
@@ -151,15 +157,15 @@ const position: PositionInfoLoaded = {
   pendingImpactAmount: BigInt("0x00"),
   claimableLongTokenAmount: BigInt("0x00"),
   claimableShortTokenAmount: BigInt("0x00"),
-  marketInfo,
-  market: marketInfo,
-  longToken: marketInfo.longToken,
-  shortToken: marketInfo.shortToken,
-  indexName: getMarketIndexName(marketInfo),
-  poolName: getMarketPoolName(marketInfo),
-  indexToken: ethToken,
-  collateralToken: usdcToken,
-  pnlToken: wethToken,
+  marketInfo: MARKET_INFO_FIXTURE,
+  market: MARKET_INFO_FIXTURE,
+  longToken: MARKET_INFO_FIXTURE.longToken,
+  shortToken: MARKET_INFO_FIXTURE.shortToken,
+  indexName: getMarketIndexName(MARKET_INFO_FIXTURE),
+  poolName: getMarketPoolName(MARKET_INFO_FIXTURE),
+  indexToken: ETH_TOKEN_FIXTURE,
+  collateralToken: USDC_TOKEN_FIXTURE,
+  pnlToken: WETH_TOKEN_FIXTURE,
   markPrice: BigInt("0x9630ee7c4228a0ae237af8000000"),
   entryPrice: BigInt("0x6f0b60ef22cc9d66ddf3e1340000"),
   liquidationPrice: BigInt("0x682958f55ba441c1492a47080000"),
@@ -188,65 +194,20 @@ const position: PositionInfoLoaded = {
   closePriceImpactDeltaUsd: 0n,
 };
 
-const keepLeverage = false;
-const isLong = true;
-const minCollateralUsd = BigInt(100000);
-const minPositionSizeUsd = BigInt(100000);
-const uiFeeFactor = BigInt(0);
-
-describe("getDecreasePositionAmounts DecreasePositionSwapType", () => {
-  it("usdc collateral", () => {
-    const amounts = getDecreasePositionAmounts({
-      closeSizeUsd,
-      collateralToken: usdcToken,
-      position,
-      keepLeverage,
-      isLong,
-      marketInfo,
-      minCollateralUsd,
-      minPositionSizeUsd,
-      uiFeeFactor,
-      acceptablePriceImpactBuffer: 30,
-      userReferralInfo: undefined,
-      isSetAcceptablePriceImpactEnabled: true,
-    });
-    expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.SwapPnlTokenToCollateralToken);
-  });
-
-  it("eth collateral", () => {
-    const amounts = getDecreasePositionAmounts({
-      closeSizeUsd,
-      collateralToken: ethToken,
-      position,
-      keepLeverage,
-      isLong,
-      marketInfo,
-      minCollateralUsd,
-      minPositionSizeUsd,
-      uiFeeFactor,
-      acceptablePriceImpactBuffer: 30,
-      userReferralInfo: undefined,
-      isSetAcceptablePriceImpactEnabled: true,
-    });
-    expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.NoSwap);
-  });
-
-  it("usdc collateral but receive in eth", () => {
-    const amounts = getDecreasePositionAmounts({
-      closeSizeUsd,
-      collateralToken: usdcToken,
-      receiveToken: ethToken,
-      position,
-      keepLeverage,
-      isLong,
-      marketInfo,
-      minCollateralUsd,
-      minPositionSizeUsd,
-      uiFeeFactor,
-      acceptablePriceImpactBuffer: 30,
-      userReferralInfo: undefined,
-      isSetAcceptablePriceImpactEnabled: true,
-    });
-    expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.SwapCollateralTokenToPnlToken);
-  });
-});
+export function makeSwapStep(usdIn: bigint): SwapStats {
+  return {
+    marketAddress: "0xmarket",
+    tokenInAddress: "0xin",
+    tokenOutAddress: "0xout",
+    isWrap: false,
+    isUnwrap: false,
+    swapFeeAmount: 0n,
+    swapFeeUsd: 0n,
+    priceImpactDeltaUsd: 0n,
+    amountIn: 0n,
+    amountInAfterFees: 0n,
+    usdIn,
+    amountOut: 0n,
+    usdOut: 0n,
+  };
+}

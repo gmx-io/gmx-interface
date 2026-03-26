@@ -86,6 +86,12 @@ export type IncreasePositionAmounts = {
   potentialPriceImpactDiffUsd: bigint;
 };
 
+export type DecreasePositionOutput = {
+  tokenAddress: string;
+  amount: bigint;
+  usd: bigint;
+};
+
 export type DecreasePositionAmounts = {
   isFullClose: boolean;
   sizeDeltaUsd: bigint;
@@ -112,6 +118,7 @@ export type DecreasePositionAmounts = {
   borrowingFeeUsd: bigint;
   fundingFeeUsd: bigint;
   swapProfitFeeUsd: bigint;
+  swapProfitUsdIn: bigint;
   proportionalPendingImpactDeltaUsd: bigint;
   closePriceImpactDeltaUsd: bigint;
   totalPendingImpactDeltaUsd: bigint;
@@ -124,6 +131,9 @@ export type DecreasePositionAmounts = {
 
   receiveTokenAmount: bigint;
   receiveUsd: bigint;
+
+  primaryOutput: DecreasePositionOutput;
+  secondaryOutput: DecreasePositionOutput;
 
   triggerOrderType?: OrderType.LimitDecrease | OrderType.StopLossDecrease;
   triggerThresholdType?: TriggerThresholdType;

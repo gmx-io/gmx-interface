@@ -26,6 +26,7 @@ import type { AxisDomainItem, Margin } from "recharts/types/util/types";
 import { colors } from "config/colors";
 import { USD_DECIMALS } from "config/factors";
 import { useTheme } from "context/ThemeContext/ThemeContext";
+import { JitLiquidityInfo } from "domain/synthetics/jit/utils";
 import type { MarketInfo } from "domain/synthetics/markets/types";
 import { getAvailableUsdLiquidityForPosition, getOpenInterestForBalance } from "domain/synthetics/markets/utils";
 import { getNextPositionExecutionPrice } from "domain/synthetics/trade/utils/common";
@@ -91,403 +92,407 @@ const FLOAT_DECIMALS = 4;
 const SIDE_POINTS_COUNT = 200n;
 const MIN_FACTOR_THRESHOLD_BIGINT = 2000000000000000n;
 
-export const DepthChart = memo(({ marketInfo }: { marketInfo: MarketInfo }) => {
-  const containerRef = useRef<HTMLDivElement>(null);
-  const isZeroPriceImpact =
-    marketInfo.positionImpactFactorPositive <= MIN_FACTOR_THRESHOLD_BIGINT &&
-    marketInfo.positionImpactFactorNegative <= MIN_FACTOR_THRESHOLD_BIGINT;
+export const DepthChart = memo(
+  ({ marketInfo, jitLiquidityInfo }: { marketInfo: MarketInfo; jitLiquidityInfo?: JitLiquidityInfo }) => {
+    const containerRef = useRef<HTMLDivElement>(null);
+    const isZeroPriceImpact =
+      marketInfo.positionImpactFactorPositive <= MIN_FACTOR_THRESHOLD_BIGINT &&
+      marketInfo.positionImpactFactorNegative <= MIN_FACTOR_THRESHOLD_BIGINT;
 
-  const [zoom, setZoom] = useState(1);
-  const [isZooming, setIsZooming] = useState(false);
+    const [zoom, setZoom] = useState(1);
+    const [isZooming, setIsZooming] = useState(false);
 
-  const {
-    leftMaxExecutionPrice,
-    rightMaxExecutionPrice,
-    leftMax,
-    rightMax,
-    leftMin,
-    rightMin,
-    realLeftMax,
-    realRightMax,
-    isLeftEmpty,
-    isRightEmpty,
-  } = useEdgePoints(marketInfo, zoom);
+    const {
+      leftMaxExecutionPrice,
+      rightMaxExecutionPrice,
+      leftMax,
+      rightMax,
+      leftMin,
+      rightMin,
+      realLeftMax,
+      realRightMax,
+      isLeftEmpty,
+      isRightEmpty,
+    } = useEdgePoints(marketInfo, zoom, jitLiquidityInfo);
 
-  const theme = useTheme();
+    const theme = useTheme();
 
-  const redColor = colors.red[500][theme.theme];
-  const greenColor = colors.green[500][theme.theme];
+    const redColor = colors.red[500][theme.theme];
+    const greenColor = colors.green[500][theme.theme];
 
-  const { ticks, marketPriceIndex, xAxisDomain, setTickCount } = useXAxis(marketInfo, {
-    leftExecutionPrice: leftMaxExecutionPrice,
-    rightExecutionPrice: rightMaxExecutionPrice,
-    isZeroPriceImpact,
-  });
+    const { ticks, marketPriceIndex, xAxisDomain, setTickCount } = useXAxis(marketInfo, {
+      leftExecutionPrice: leftMaxExecutionPrice,
+      rightExecutionPrice: rightMaxExecutionPrice,
+      isZeroPriceImpact,
+    });
 
-  const { data, leftMinExecutionPrice, rightMinExecutionPrice } = useDepthChartPricesData(marketInfo, {
-    leftMax,
-    rightMax,
-    leftMin,
-    rightMin,
-    isZeroPriceImpact,
-    isLeftEmpty,
-    isRightEmpty,
-  });
+    const { data, leftMinExecutionPrice, rightMinExecutionPrice } = useDepthChartPricesData(marketInfo, {
+      leftMax,
+      rightMax,
+      leftMin,
+      rightMin,
+      isZeroPriceImpact,
+      isLeftEmpty,
+      isRightEmpty,
+    });
 
-  const drawLeftTransparent = leftMax > leftMin;
-  const drawRightTransparent = rightMax > rightMin;
+    const drawLeftTransparent = leftMax > leftMin;
+    const drawRightTransparent = rightMax > rightMin;
 
-  const drawLeftTransparentEllipsis = leftMax < realLeftMax;
-  const drawRightTransparentEllipsis = rightMax < realRightMax;
+    const drawLeftTransparentEllipsis = leftMax < realLeftMax;
+    const drawRightTransparentEllipsis = rightMax < realRightMax;
 
-  const drawLeftOpaqueEllipsis = leftMax < leftMin;
-  const drawRightOpaqueEllipsis = rightMax < rightMin;
+    const drawLeftOpaqueEllipsis = leftMax < leftMin;
+    const drawRightOpaqueEllipsis = rightMax < rightMin;
 
-  const handleResize = useCallback(
-    (width: number) => {
-      setTickCount(BigInt(Math.round(width / TICKS_SPACING)));
-    },
-    [setTickCount]
-  );
-
-  useEffect(() => {
-    setZoom(1);
-  }, [marketInfo.marketTokenAddress]);
-
-  const tooltipRef = useRef<ChartTooltipHandle>(null);
-  const lastMousePositionRef = useRef<{ x: number; y: number } | undefined>(undefined);
-
-  const handleMouseMove = useCallback<CategoricalChartFunc>((nextState) => {
-    if (!tooltipRef.current) {
-      return;
-    }
-
-    tooltipRef.current.setMouseRelativePosition(nextState.chartX, nextState.chartY);
-
-    if (nextState.chartX !== undefined && nextState.chartY !== undefined) {
-      lastMousePositionRef.current = { x: nextState.chartX, y: nextState.chartY };
-      document.dispatchEvent(
-        new CustomEvent("chartMouseMove", { detail: { x: nextState.chartX, y: nextState.chartY } })
-      );
-    } else {
-      lastMousePositionRef.current = undefined;
-      document.dispatchEvent(new CustomEvent("chartMouseMove", { detail: undefined }));
-    }
-  }, []);
-
-  const chartController = useRef<ComponentRef<typeof ComposedChart>>(null);
-  const handleMouseDown = useCallback<CategoricalChartFunc>(
-    (nextState, event) => {
-      if (event instanceof Touch) {
-        // https://github.com/recharts/recharts/blob/2074e2e404d820db5207a7724def33aaa299a785/src/chart/generateCategoricalChart.tsx#L1630-L1643
-        chartController.current?.handleClick(event as unknown as React.MouseEvent);
-        handleMouseMove(nextState, event);
-      }
-    },
-    [handleMouseMove]
-  );
-
-  const oraclePriceLabel = useMemo(() => {
-    return getOraclePriceLabel();
-  }, []);
-  const oraclePrice = useMemo(() => {
-    return bigintToNumber(
-      withVisualMultiplier(getMidPrice(marketInfo.indexToken.prices), marketInfo.indexToken.visualMultiplier),
-      USD_DECIMALS
+    const handleResize = useCallback(
+      (width: number) => {
+        setTickCount(BigInt(Math.round(width / TICKS_SPACING)));
+      },
+      [setTickCount]
     );
-  }, [marketInfo.indexToken.prices, marketInfo.indexToken.visualMultiplier]);
 
-  const yAxisLabel = useMemo(() => {
-    return getYAxisLabel();
-  }, []);
+    useEffect(() => {
+      setZoom(1);
+    }, [marketInfo.marketTokenAddress]);
 
-  useEffect(
-    function listenWheel() {
-      const container = containerRef.current;
-      if (!container) {
+    const tooltipRef = useRef<ChartTooltipHandle>(null);
+    const lastMousePositionRef = useRef<{ x: number; y: number } | undefined>(undefined);
+
+    const handleMouseMove = useCallback<CategoricalChartFunc>((nextState) => {
+      if (!tooltipRef.current) {
         return;
       }
 
-      const abortController = new AbortController();
+      tooltipRef.current.setMouseRelativePosition(nextState.chartX, nextState.chartY);
 
-      const wheelHandler = (event: WheelEvent) => {
-        if (isZeroPriceImpact || (isLeftEmpty && isRightEmpty)) {
-          return;
+      if (nextState.chartX !== undefined && nextState.chartY !== undefined) {
+        lastMousePositionRef.current = { x: nextState.chartX, y: nextState.chartY };
+        document.dispatchEvent(
+          new CustomEvent("chartMouseMove", { detail: { x: nextState.chartX, y: nextState.chartY } })
+        );
+      } else {
+        lastMousePositionRef.current = undefined;
+        document.dispatchEvent(new CustomEvent("chartMouseMove", { detail: undefined }));
+      }
+    }, []);
+
+    const chartController = useRef<ComponentRef<typeof ComposedChart>>(null);
+    const handleMouseDown = useCallback<CategoricalChartFunc>(
+      (nextState, event) => {
+        if (event instanceof Touch) {
+          // https://github.com/recharts/recharts/blob/2074e2e404d820db5207a7724def33aaa299a785/src/chart/generateCategoricalChart.tsx#L1630-L1643
+          chartController.current?.handleClick(event as unknown as React.MouseEvent);
+          handleMouseMove(nextState, event);
         }
-        event.preventDefault();
-        setZoom((pZoom) => clamp(pZoom * Math.exp(-event.deltaY * DESKTOP_ZOOM_SPEED_COEFFICIENT), MIN_ZOOM, MAX_ZOOM));
-      };
+      },
+      [handleMouseMove]
+    );
 
-      container.addEventListener("wheel", wheelHandler, { passive: false, signal: abortController.signal });
+    const oraclePriceLabel = useMemo(() => {
+      return getOraclePriceLabel();
+    }, []);
+    const oraclePrice = useMemo(() => {
+      return bigintToNumber(
+        withVisualMultiplier(getMidPrice(marketInfo.indexToken.prices), marketInfo.indexToken.visualMultiplier),
+        USD_DECIMALS
+      );
+    }, [marketInfo.indexToken.prices, marketInfo.indexToken.visualMultiplier]);
 
-      let isPressed = false;
-      let prevTouchY = 0;
-      let prevTouchX = 0;
-      let gestureRecognizeState: "idle" | "vertical" | "horizontal" = "idle";
-      let gestureRecognizeDistanceX = 0;
-      let gestureRecognizeDistanceY = 0;
+    const yAxisLabel = useMemo(() => {
+      return getYAxisLabel();
+    }, []);
 
-      const touchDownHandler = (event: TouchEvent) => {
-        if (isZeroPriceImpact || (isLeftEmpty && isRightEmpty)) {
-          return;
-        }
-
-        event.preventDefault();
-        isPressed = true;
-        prevTouchY = event.touches[0].clientY;
-        prevTouchX = event.touches[0].clientX;
-        gestureRecognizeState = "idle";
-        gestureRecognizeDistanceX = 0;
-        gestureRecognizeDistanceY = 0;
-      };
-
-      const touchUpHandler = (event: TouchEvent) => {
-        if (isZeroPriceImpact || (isLeftEmpty && isRightEmpty)) {
-          return;
-        }
-
-        event.preventDefault();
-        isPressed = false;
-        prevTouchY = 0;
-        prevTouchX = 0;
-        gestureRecognizeState = "idle";
-        gestureRecognizeDistanceX = 0;
-        gestureRecognizeDistanceY = 0;
-        setIsZooming(false);
-      };
-
-      const touchMoveHandler = (event: TouchEvent) => {
-        if (isZeroPriceImpact || (isLeftEmpty && isRightEmpty)) {
+    useEffect(
+      function listenWheel() {
+        const container = containerRef.current;
+        if (!container) {
           return;
         }
 
-        if (!isPressed) {
-          return;
-        }
+        const abortController = new AbortController();
 
-        event.preventDefault();
-
-        const deltaY = event.touches[0].clientY - prevTouchY;
-
-        if (gestureRecognizeState === "idle") {
-          const deltaX = event.touches[0].clientX - prevTouchX;
-
-          gestureRecognizeDistanceX += deltaX;
-          gestureRecognizeDistanceY += deltaY;
-
-          const gestureRecognizeDistance = Math.sqrt(
-            gestureRecognizeDistanceX * gestureRecognizeDistanceX +
-              gestureRecognizeDistanceY * gestureRecognizeDistanceY
-          );
-
-          if (
-            gestureRecognizeDistance > 10 &&
-            Math.abs(gestureRecognizeDistanceY) > Math.abs(gestureRecognizeDistanceX)
-          ) {
-            gestureRecognizeState = "vertical";
-            setZoom((pZoom) =>
-              clamp(pZoom * Math.exp(-gestureRecognizeDistanceY * TOUCH_ZOOM_SPEED_COEFFICIENT), MIN_ZOOM, MAX_ZOOM)
-            );
-            setIsZooming(true);
-          } else if (gestureRecognizeDistance > 10) {
-            gestureRecognizeState = "horizontal";
+        const wheelHandler = (event: WheelEvent) => {
+          if (isZeroPriceImpact || (isLeftEmpty && isRightEmpty)) {
+            return;
           }
-        } else if (gestureRecognizeState === "vertical") {
-          setZoom((pZoom) => clamp(pZoom * Math.exp(-deltaY * TOUCH_ZOOM_SPEED_COEFFICIENT), MIN_ZOOM, MAX_ZOOM));
-        }
+          event.preventDefault();
+          setZoom((pZoom) =>
+            clamp(pZoom * Math.exp(-event.deltaY * DESKTOP_ZOOM_SPEED_COEFFICIENT), MIN_ZOOM, MAX_ZOOM)
+          );
+        };
 
-        prevTouchY = event.touches[0].clientY;
-      };
+        container.addEventListener("wheel", wheelHandler, { passive: false, signal: abortController.signal });
 
-      container.addEventListener("touchstart", touchDownHandler, { passive: false, signal: abortController.signal });
-      container.addEventListener("touchend", touchUpHandler, { passive: false, signal: abortController.signal });
-      container.addEventListener("touchmove", touchMoveHandler, { passive: false, signal: abortController.signal });
+        let isPressed = false;
+        let prevTouchY = 0;
+        let prevTouchX = 0;
+        let gestureRecognizeState: "idle" | "vertical" | "horizontal" = "idle";
+        let gestureRecognizeDistanceX = 0;
+        let gestureRecognizeDistanceY = 0;
 
-      return () => {
-        abortController.abort();
-      };
-    },
-    [isLeftEmpty, isRightEmpty, isZeroPriceImpact]
-  );
+        const touchDownHandler = (event: TouchEvent) => {
+          if (isZeroPriceImpact || (isLeftEmpty && isRightEmpty)) {
+            return;
+          }
 
-  const handleMouseEnter = useCallback(() => {
-    sendDepthChartInteractionEvent(marketInfo.name);
-  }, [marketInfo?.name]);
+          event.preventDefault();
+          isPressed = true;
+          prevTouchY = event.touches[0].clientY;
+          prevTouchX = event.touches[0].clientX;
+          gestureRecognizeState = "idle";
+          gestureRecognizeDistanceX = 0;
+          gestureRecognizeDistanceY = 0;
+        };
 
-  return (
-    <ResponsiveContainer onResize={handleResize} className="DepthChart" width="100%" height="100%" ref={containerRef}>
-      <ComposedChart
-        ref={chartController}
-        data={data}
-        margin={CHART_MARGIN}
-        onMouseMove={handleMouseMove}
-        onMouseDown={handleMouseDown}
-        onMouseEnter={handleMouseEnter}
-      >
-        <defs>
-          <linearGradient id="colorGreen" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="50%" stopColor={greenColor} stopOpacity={0.5} />
-            <stop offset="100%" stopColor={greenColor} stopOpacity={0} />
-          </linearGradient>
-        </defs>
-        <defs>
-          <linearGradient id="colorRed" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="50%" stopColor={redColor} stopOpacity={0.5} />
-            <stop offset="100%" stopColor={redColor} stopOpacity={0} />
-          </linearGradient>
-        </defs>
+        const touchUpHandler = (event: TouchEvent) => {
+          if (isZeroPriceImpact || (isLeftEmpty && isRightEmpty)) {
+            return;
+          }
 
-        <CartesianGrid strokeDasharray="2 2" stroke="var(--color-typography-primary)" opacity={0.07} />
+          event.preventDefault();
+          isPressed = false;
+          prevTouchY = 0;
+          prevTouchX = 0;
+          gestureRecognizeState = "idle";
+          gestureRecognizeDistanceX = 0;
+          gestureRecognizeDistanceY = 0;
+          setIsZooming(false);
+        };
 
-        {drawLeftTransparent && (
-          <>
-            <Line
-              dataKey="leftTransparentSize"
-              stroke={greenColor}
-              opacity={0.3}
-              strokeWidth={2}
-              dot={isZeroPriceImpact ? <LineDot side="left" /> : false}
-              isAnimationActive={false}
-              activeDot={
-                isZeroPriceImpact ? (
-                  <ActiveDotForZeroPriceImpact opacity={0.5} initialMousePositionRef={lastMousePositionRef} />
-                ) : (
-                  <ActiveDot opacity={0.5} />
-                )
-              }
-              strokeDasharray={drawLeftTransparentEllipsis ? LINE_PATH_ELLIPSIS : undefined}
-            />
-            {!isZeroPriceImpact && (
+        const touchMoveHandler = (event: TouchEvent) => {
+          if (isZeroPriceImpact || (isLeftEmpty && isRightEmpty)) {
+            return;
+          }
+
+          if (!isPressed) {
+            return;
+          }
+
+          event.preventDefault();
+
+          const deltaY = event.touches[0].clientY - prevTouchY;
+
+          if (gestureRecognizeState === "idle") {
+            const deltaX = event.touches[0].clientX - prevTouchX;
+
+            gestureRecognizeDistanceX += deltaX;
+            gestureRecognizeDistanceY += deltaY;
+
+            const gestureRecognizeDistance = Math.sqrt(
+              gestureRecognizeDistanceX * gestureRecognizeDistanceX +
+                gestureRecognizeDistanceY * gestureRecognizeDistanceY
+            );
+
+            if (
+              gestureRecognizeDistance > 10 &&
+              Math.abs(gestureRecognizeDistanceY) > Math.abs(gestureRecognizeDistanceX)
+            ) {
+              gestureRecognizeState = "vertical";
+              setZoom((pZoom) =>
+                clamp(pZoom * Math.exp(-gestureRecognizeDistanceY * TOUCH_ZOOM_SPEED_COEFFICIENT), MIN_ZOOM, MAX_ZOOM)
+              );
+              setIsZooming(true);
+            } else if (gestureRecognizeDistance > 10) {
+              gestureRecognizeState = "horizontal";
+            }
+          } else if (gestureRecognizeState === "vertical") {
+            setZoom((pZoom) => clamp(pZoom * Math.exp(-deltaY * TOUCH_ZOOM_SPEED_COEFFICIENT), MIN_ZOOM, MAX_ZOOM));
+          }
+
+          prevTouchY = event.touches[0].clientY;
+        };
+
+        container.addEventListener("touchstart", touchDownHandler, { passive: false, signal: abortController.signal });
+        container.addEventListener("touchend", touchUpHandler, { passive: false, signal: abortController.signal });
+        container.addEventListener("touchmove", touchMoveHandler, { passive: false, signal: abortController.signal });
+
+        return () => {
+          abortController.abort();
+        };
+      },
+      [isLeftEmpty, isRightEmpty, isZeroPriceImpact]
+    );
+
+    const handleMouseEnter = useCallback(() => {
+      sendDepthChartInteractionEvent(marketInfo.name);
+    }, [marketInfo?.name]);
+
+    return (
+      <ResponsiveContainer onResize={handleResize} className="DepthChart" width="100%" height="100%" ref={containerRef}>
+        <ComposedChart
+          ref={chartController}
+          data={data}
+          margin={CHART_MARGIN}
+          onMouseMove={handleMouseMove}
+          onMouseDown={handleMouseDown}
+          onMouseEnter={handleMouseEnter}
+        >
+          <defs>
+            <linearGradient id="colorGreen" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="50%" stopColor={greenColor} stopOpacity={0.5} />
+              <stop offset="100%" stopColor={greenColor} stopOpacity={0} />
+            </linearGradient>
+          </defs>
+          <defs>
+            <linearGradient id="colorRed" x1="0" y1="0" x2="0" y2="1">
+              <stop offset="50%" stopColor={redColor} stopOpacity={0.5} />
+              <stop offset="100%" stopColor={redColor} stopOpacity={0} />
+            </linearGradient>
+          </defs>
+
+          <CartesianGrid strokeDasharray="2 2" stroke="var(--color-typography-primary)" opacity={0.07} />
+
+          {drawLeftTransparent && (
+            <>
+              <Line
+                dataKey="leftTransparentSize"
+                stroke={greenColor}
+                opacity={0.3}
+                strokeWidth={2}
+                dot={isZeroPriceImpact ? <LineDot side="left" /> : false}
+                isAnimationActive={false}
+                activeDot={
+                  isZeroPriceImpact ? (
+                    <ActiveDotForZeroPriceImpact opacity={0.5} initialMousePositionRef={lastMousePositionRef} />
+                  ) : (
+                    <ActiveDot opacity={0.5} />
+                  )
+                }
+                strokeDasharray={drawLeftTransparentEllipsis ? LINE_PATH_ELLIPSIS : undefined}
+              />
+              {!isZeroPriceImpact && (
+                <ReferenceDot
+                  x={leftMinExecutionPrice}
+                  y={bigintToNumber(leftMin, USD_DECIMALS)}
+                  fill={greenColor}
+                  shape={<TransparentOpaqueSeparatorDot />}
+                />
+              )}
+            </>
+          )}
+          <Area
+            dataKey="leftOpaqueSize"
+            stroke={greenColor}
+            strokeWidth={isZeroPriceImpact ? 0 : 2}
+            dot={isZeroPriceImpact ? <AreaDot side="left" /> : false}
+            fill="url(#colorGreen)"
+            isAnimationActive={false}
+            activeDot={
+              isZeroPriceImpact ? (
+                <ActiveDotForZeroPriceImpact initialMousePositionRef={lastMousePositionRef} />
+              ) : (
+                <ActiveDot />
+              )
+            }
+            strokeDasharray={drawLeftOpaqueEllipsis ? LINE_PATH_ELLIPSIS : undefined}
+          />
+          <Area
+            dataKey="rightOpaqueSize"
+            stroke={redColor}
+            strokeWidth={isZeroPriceImpact ? 0 : 2}
+            dot={isZeroPriceImpact ? <AreaDot side="right" /> : false}
+            fill="url(#colorRed)"
+            isAnimationActive={false}
+            activeDot={
+              isZeroPriceImpact ? (
+                <ActiveDotForZeroPriceImpact initialMousePositionRef={lastMousePositionRef} />
+              ) : (
+                <ActiveDot />
+              )
+            }
+            strokeDasharray={drawRightOpaqueEllipsis ? LINE_PATH_ELLIPSIS : undefined}
+          />
+          {drawRightTransparent && (
+            <>
               <ReferenceDot
-                x={leftMinExecutionPrice}
-                y={bigintToNumber(leftMin, USD_DECIMALS)}
-                fill={greenColor}
+                x={rightMinExecutionPrice}
+                y={bigintToNumber(rightMin, USD_DECIMALS)}
+                fill={redColor}
                 shape={<TransparentOpaqueSeparatorDot />}
               />
-            )}
-          </>
-        )}
-        <Area
-          dataKey="leftOpaqueSize"
-          stroke={greenColor}
-          strokeWidth={isZeroPriceImpact ? 0 : 2}
-          dot={isZeroPriceImpact ? <AreaDot side="left" /> : false}
-          fill="url(#colorGreen)"
-          isAnimationActive={false}
-          activeDot={
-            isZeroPriceImpact ? (
-              <ActiveDotForZeroPriceImpact initialMousePositionRef={lastMousePositionRef} />
-            ) : (
-              <ActiveDot />
-            )
-          }
-          strokeDasharray={drawLeftOpaqueEllipsis ? LINE_PATH_ELLIPSIS : undefined}
-        />
-        <Area
-          dataKey="rightOpaqueSize"
-          stroke={redColor}
-          strokeWidth={isZeroPriceImpact ? 0 : 2}
-          dot={isZeroPriceImpact ? <AreaDot side="right" /> : false}
-          fill="url(#colorRed)"
-          isAnimationActive={false}
-          activeDot={
-            isZeroPriceImpact ? (
-              <ActiveDotForZeroPriceImpact initialMousePositionRef={lastMousePositionRef} />
-            ) : (
-              <ActiveDot />
-            )
-          }
-          strokeDasharray={drawRightOpaqueEllipsis ? LINE_PATH_ELLIPSIS : undefined}
-        />
-        {drawRightTransparent && (
-          <>
-            <ReferenceDot
-              x={rightMinExecutionPrice}
-              y={bigintToNumber(rightMin, USD_DECIMALS)}
-              fill={redColor}
-              shape={<TransparentOpaqueSeparatorDot />}
-            />
-            <Line
-              dataKey="rightTransparentSize"
-              stroke={redColor}
-              strokeWidth={2}
-              opacity={0.3}
-              dot={isZeroPriceImpact ? <LineDot side="right" /> : false}
-              isAnimationActive={false}
-              activeDot={
-                isZeroPriceImpact ? (
-                  <ActiveDotForZeroPriceImpact opacity={0.5} initialMousePositionRef={lastMousePositionRef} />
-                ) : (
-                  <ActiveDot opacity={0.5} />
-                )
-              }
-              strokeDasharray={drawRightTransparentEllipsis ? LINE_PATH_ELLIPSIS : undefined}
-            />
-          </>
-        )}
+              <Line
+                dataKey="rightTransparentSize"
+                stroke={redColor}
+                strokeWidth={2}
+                opacity={0.3}
+                dot={isZeroPriceImpact ? <LineDot side="right" /> : false}
+                isAnimationActive={false}
+                activeDot={
+                  isZeroPriceImpact ? (
+                    <ActiveDotForZeroPriceImpact opacity={0.5} initialMousePositionRef={lastMousePositionRef} />
+                  ) : (
+                    <ActiveDot opacity={0.5} />
+                  )
+                }
+                strokeDasharray={drawRightTransparentEllipsis ? LINE_PATH_ELLIPSIS : undefined}
+              />
+            </>
+          )}
 
-        <RechartsTooltip
-          cursor={false}
-          isAnimationActive={false}
-          position={TOOLTIP_WRAPPER_POSITION}
-          active={isZooming ? false : undefined}
-          content={
-            <ChartTooltip
-              ref={tooltipRef}
-              leftMin={leftMin}
-              rightMin={rightMin}
-              isZeroPriceImpact={isZeroPriceImpact}
-              initialMousePositionRef={lastMousePositionRef}
-            />
-          }
-        />
-        <YAxis
-          id="yAxis"
-          orientation="right"
-          dataKey="size"
-          axisLine={false}
-          tickLine={false}
-          tickMargin={2}
-          tick={<YAxisTick />}
-          label={yAxisLabel}
-          padding={Y_AXIS_PADDING}
-          domain={
-            isZeroPriceImpact
-              ? Y_AXIS_DOMAIN_ZERO_PRICE_IMPACT
-              : isLeftEmpty && isRightEmpty
-                ? Y_AXIS_DOMAIN_EMPTY
-                : Y_AXIS_DOMAIN
-          }
-          interval="preserveStart"
-          minTickGap={25}
-          tickCount={100}
-          allowDecimals={true}
-          allowDataOverflow={false}
-        />
-        <XAxis
-          dataKey="executionPrice"
-          type="number"
-          axisLine={false}
-          tickLine={false}
-          domain={xAxisDomain}
-          allowDecimals={true}
-          allowDataOverflow={false}
-          ticks={ticks}
-          interval={0}
-          tickMargin={7}
-          tick={<Tick marketPriceIndex={marketPriceIndex} />}
-        />
-        <ReferenceLine
-          x={oraclePrice}
-          label={oraclePriceLabel}
-          stroke="var(--color-typography-primary)"
-          opacity={0.6}
-          strokeDasharray="2 2"
-        />
-      </ComposedChart>
-    </ResponsiveContainer>
-  );
-});
+          <RechartsTooltip
+            cursor={false}
+            isAnimationActive={false}
+            position={TOOLTIP_WRAPPER_POSITION}
+            active={isZooming ? false : undefined}
+            content={
+              <ChartTooltip
+                ref={tooltipRef}
+                leftMin={leftMin}
+                rightMin={rightMin}
+                isZeroPriceImpact={isZeroPriceImpact}
+                initialMousePositionRef={lastMousePositionRef}
+              />
+            }
+          />
+          <YAxis
+            id="yAxis"
+            orientation="right"
+            dataKey="size"
+            axisLine={false}
+            tickLine={false}
+            tickMargin={2}
+            tick={<YAxisTick />}
+            label={yAxisLabel}
+            padding={Y_AXIS_PADDING}
+            domain={
+              isZeroPriceImpact
+                ? Y_AXIS_DOMAIN_ZERO_PRICE_IMPACT
+                : isLeftEmpty && isRightEmpty
+                  ? Y_AXIS_DOMAIN_EMPTY
+                  : Y_AXIS_DOMAIN
+            }
+            interval="preserveStart"
+            minTickGap={25}
+            tickCount={100}
+            allowDecimals={true}
+            allowDataOverflow={false}
+          />
+          <XAxis
+            dataKey="executionPrice"
+            type="number"
+            axisLine={false}
+            tickLine={false}
+            domain={xAxisDomain}
+            allowDecimals={true}
+            allowDataOverflow={false}
+            ticks={ticks}
+            interval={0}
+            tickMargin={7}
+            tick={<Tick marketPriceIndex={marketPriceIndex} />}
+          />
+          <ReferenceLine
+            x={oraclePrice}
+            label={oraclePriceLabel}
+            stroke="var(--color-typography-primary)"
+            opacity={0.6}
+            strokeDasharray="2 2"
+          />
+        </ComposedChart>
+      </ResponsiveContainer>
+    );
+  }
+);
 
 function AreaDot(props: Partial<DotProps> & { side: "left" | "right" }) {
   const { side, cx, cy, stroke, fill, opacity } = props as Required<typeof props>;
@@ -1204,7 +1209,8 @@ function calculateTicks({
 
 function useEdgePoints(
   marketInfo: MarketInfo,
-  zoom: number
+  zoom: number,
+  jitLiquidityInfo?: JitLiquidityInfo
 ): {
   leftMaxExecutionPrice: bigint;
   rightMaxExecutionPrice: bigint;
@@ -1217,8 +1223,16 @@ function useEdgePoints(
   isLeftEmpty: boolean;
   isRightEmpty: boolean;
 } {
-  const longLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, true);
-  const shortLiquidity = getAvailableUsdLiquidityForPosition(marketInfo, false);
+  const longLiquidity = getAvailableUsdLiquidityForPosition(
+    marketInfo,
+    true,
+    jitLiquidityInfo?.maxReservedUsdWithJitLong
+  );
+  const shortLiquidity = getAvailableUsdLiquidityForPosition(
+    marketInfo,
+    false,
+    jitLiquidityInfo?.maxReservedUsdWithJitShort
+  );
 
   const longInterestUsd = getOpenInterestForBalance(marketInfo, true);
   const shortInterestUsd = getOpenInterestForBalance(marketInfo, false);

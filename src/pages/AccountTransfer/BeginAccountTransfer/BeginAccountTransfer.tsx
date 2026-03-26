@@ -42,6 +42,7 @@ export default function BeginAccountTransfer() {
   const [isApproving, setIsApproving] = useState(false);
   const [isTransferSubmittedModalVisible, setIsTransferSubmittedModalVisible] = useState(false);
   const [isAffiliateVesterSkipValidation, setIsAffiliateVesterSkipValidation] = useState(false);
+  const [isStakingPowerResetAcknowledged, setIsStakingPowerResetAcknowledged] = useState(false);
   let parsedReceiver: string = zeroAddress;
   if (isAddress(receiver, { strict: false })) {
     parsedReceiver = receiver;
@@ -236,6 +237,9 @@ export default function BeginAccountTransfer() {
     if (hasValidReceiver && !feeGmxAllowanceData) {
       return false;
     }
+    if (!isStakingPowerResetAcknowledged) {
+      return false;
+    }
     return true;
   };
 
@@ -394,6 +398,15 @@ export default function BeginAccountTransfer() {
           <ValidationRow isValid={!hasStakedGlp}>
             <Trans>Receiver has not staked GLP tokens before</Trans>
           </ValidationRow>
+
+          <Checkbox isChecked={isStakingPowerResetAcknowledged} setIsChecked={setIsStakingPowerResetAcknowledged}>
+            <span className="text-body-small text-yellow-300">
+              <Trans>
+                I understand that accumulated staking power will reset on the receiving wallet. The receiving address
+                will start accruing staking power from zero.
+              </Trans>
+            </span>
+          </Checkbox>
         </div>
 
         <Button

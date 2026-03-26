@@ -151,7 +151,8 @@ export class OracleKeeperFetcher implements OracleFetcher {
 
   post = (path: `/${string}`, body: any) => {
     const endpoints = this.oracleTracker.getCurrentEndpoints();
-    return fetch(buildUrl(endpoints.primary, path), {
+    const baseUrl = endpoints.primary;
+    return fetch(buildUrl(baseUrl, path), {
       method: "POST",
       headers: {
         "Content-Type": "application/json",

@@ -225,7 +225,7 @@ export function subscribeToApprovalEvents({
 }: {
   chainId: ContractsChainId;
   account: string;
-  onApprove: (tokenAddress: string, spender: string, value: bigint) => void;
+  onApprove: (tokenAddress: string, spender: string, value: bigint, blockNumber: bigint) => void;
 }) {
   const client = getPublicClientWithRpc(chainId, { withWs: true });
 
@@ -254,7 +254,8 @@ export function subscribeToApprovalEvents({
         const tokenAddress = checksumAddress(log.address);
         const spender = checksumAddress(log.args.spender);
         const value = log.args.value;
-        onApprove(tokenAddress, spender, value);
+        const blockNumber = log.blockNumber;
+        onApprove(tokenAddress, spender, value, blockNumber);
       }
     },
     strict: true,
@@ -419,7 +420,7 @@ export function subscribeToMultichainApprovalEvents({
   account: string;
   tokenAddresses: string[];
   spenders: string[];
-  onApprove: (tokenAddress: string, spender: string, value: bigint) => void;
+  onApprove: (tokenAddress: string, spender: string, value: bigint, blockNumber: bigint) => void;
 }) {
   const client = getPublicClientWithRpc(srcChainId, { withWs: true });
 
@@ -436,7 +437,8 @@ export function subscribeToMultichainApprovalEvents({
         const tokenAddress = checksumAddress(log.address);
         const spender = checksumAddress(log.args.spender);
         const value = log.args.value;
-        onApprove(tokenAddress, spender, value);
+        const blockNumber = log.blockNumber;
+        onApprove(tokenAddress, spender, value, blockNumber);
       }
     },
     strict: true,

@@ -18,7 +18,6 @@ export type Token = {
   baseSymbol?: string;
   decimals: number;
   address: string;
-  priceDecimals?: number;
   visualMultiplier?: number;
   visualPrefix?: string;
   wrappedAddress?: string;

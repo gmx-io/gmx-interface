@@ -5,6 +5,7 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   BOTANIX,
+  MEGAETH,
   GMX_ACCOUNT_PSEUDO_CHAIN_ID,
   GmxAccountPseudoChainId,
   SOURCE_BASE_MAINNET,
@@ -36,6 +37,7 @@ import eth from "img/tokens/ic_eth.svg";
 import glpIcon from "img/tokens/ic_glp.svg";
 import glvIcon from "img/tokens/ic_glv.svg";
 import gmxIcon from "img/tokens/ic_gmx.svg";
+import megaeth from "img/tokens/ic_megaeth.svg";
 import optimismSepolia from "img/tokens/ic_op.svg";
 import sepolia from "img/tokens/ic_sepolia.svg";
 
@@ -84,6 +86,13 @@ const ICONS: Record<number | "common", ChainIcons> = {
     gm: gmIcon,
     esgmx: esGMXIcon,
   },
+  [MEGAETH]: {
+    network: megaeth,
+    glp: glpIcon,
+    gmx: gmxIcon,
+    gm: gmIcon,
+    esgmx: esGMXIcon,
+  },
   common: {
     gmx: gmxIcon,
     gmxOutline: gmxOutlineIcon,
@@ -105,6 +114,7 @@ export const CHAIN_ID_TO_NETWORK_ICON: Record<AnyChainId | GmxAccountPseudoChain
   [SOURCE_OPTIMISM_SEPOLIA]: optimismSepolia,
   [SOURCE_SEPOLIA]: sepolia,
   [BOTANIX]: botanix,
+  [MEGAETH]: megaeth,
   [SOURCE_BSC_MAINNET]: bsc,
 };
 
