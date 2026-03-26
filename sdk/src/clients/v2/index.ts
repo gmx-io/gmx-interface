@@ -15,6 +15,8 @@ import { fetchApiOhlcv } from "utils/prices/api";
 import type { OhlcvParams } from "utils/prices/types";
 import { fetchApiRates } from "utils/rates/api";
 import { MarketRates, RatesParams } from "utils/rates/types";
+import { fetchApiStakingPower } from "utils/staking/api";
+import { StakingPowerResponse } from "utils/staking/types";
 import { fetchApiTokens } from "utils/tokens/api";
 
 export type { ApyEntry, ApyParams, ApyResponse } from "utils/apy/types";
@@ -28,6 +30,7 @@ export type {
 } from "utils/performance/types";
 export type { OhlcvCandle, OhlcvParams } from "utils/prices/types";
 export type { ApiParameterPeriod, MarketRates, RatesParams, RatesSnapshot } from "utils/rates/types";
+export type { StakingPowerResponse } from "utils/staking/types";
 
 export class GmxApiSdk {
   ctx: { chainId: ContractsChainId; api: IHttp };
@@ -95,5 +98,9 @@ export class GmxApiSdk {
 
   fetchPerformanceSnapshots(params?: PerformanceParams): Promise<PerformanceSnapshots[]> {
     return fetchApiPerformanceSnapshots(this.ctx, params);
+  }
+
+  fetchStakingPower(params: { address: string }): Promise<StakingPowerResponse> {
+    return fetchApiStakingPower(this.ctx, params);
   }
 }
