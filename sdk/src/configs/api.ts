@@ -1,7 +1,7 @@
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId, MEGAETH } from "./chains";
 
 const API_URLS: Record<ContractsChainId, string | undefined> = {
-  [ARBITRUM]: " https://arbitrum-temp.gmxapi.ai/api/v1",
+  [ARBITRUM]: "https://arbitrum-temp.gmxapi.ai/api/v1",
 
   [AVALANCHE]: "https://avalanche-temp.gmxapi.ai/api/v1",
 
