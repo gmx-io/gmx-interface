@@ -10,7 +10,7 @@ import { convertTokenAddress } from "sdk/configs/tokens";
 import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/utils/trade/types";
 
 import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
-import { getKyberSwapBuildFromRoute, getKyberSwapRouteOnly, KyberSwapQuote, KyberSwapRouteResult } from "./kyberSwap";
+import { getKyberSwapBuildFromRoute, getKyberSwapRoute, KyberSwapQuote, KyberSwapRouteResult } from "./kyberSwap";
 
 class ReverseSearchNoResultError extends Error {
   constructor() {
@@ -45,7 +45,7 @@ async function reverseSearchAmountIn({
       return undefined;
     }
 
-    const routeResult = await getKyberSwapRouteOnly({
+    const routeResult = await getKyberSwapRoute({
       chainId,
       tokenInAddress,
       tokenOutAddress,

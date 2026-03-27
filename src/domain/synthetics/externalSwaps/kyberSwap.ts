@@ -189,8 +189,7 @@ export type KyberSwapRouteResult = {
   amountIn: bigint;
 };
 
-// TODO: rename to getKyberSwapRoute
-export async function getKyberSwapRouteOnly({
+export async function getKyberSwapRoute({
   chainId,
   tokenInAddress,
   tokenOutAddress,
@@ -246,7 +245,7 @@ export async function getKyberSwapRouteOnly({
       amountIn: BigInt(routeSummary.amountIn),
     };
   } catch (e) {
-    metrics.pushError(e, "externalSwap.getKyberSwapRouteOnly");
+    metrics.pushError(e, "externalSwap.getKyberSwapRoute");
     return undefined;
   }
 }
