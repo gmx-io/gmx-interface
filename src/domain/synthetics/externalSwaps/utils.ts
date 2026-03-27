@@ -65,6 +65,60 @@ export function getExternalSwapInputsByFromValue({
   };
 }
 
+export function getExternalSwapInputsByToValue({
+  tokenIn,
+  tokenOut,
+  amountOut,
+  findSwapPath,
+  uiFeeFactor,
+  marketsInfoData,
+  chainId,
+}: {
+  tokenIn: TokenData;
+  tokenOut: TokenData;
+  amountOut: bigint;
+  findSwapPath: FindSwapPath;
+  uiFeeFactor: bigint;
+  marketsInfoData: MarketsInfoData | undefined;
+  chainId: number;
+}): ExternalSwapInputs {
+  const swapAmounts = getSwapAmountsByToValue({
+    tokenIn,
+    tokenOut,
+    amountOut,
+    isLimit: false,
+    findSwapPath,
+    uiFeeFactor,
+    marketsInfoData,
+    chainId,
+    externalSwapQuoteParams: undefined,
+    allowSameTokenSwap: false,
+  });
+
+  const internalSwapTotalFeesDeltaUsd = swapAmounts.swapStrategy.swapPathStats
+    ? swapAmounts.swapStrategy.swapPathStats.totalFeesDeltaUsd
+    : undefined;
+
+  const internalSwapTotalFeeItem = getFeeItem(internalSwapTotalFeesDeltaUsd, swapAmounts.usdIn);
+
+  // Estimate amountIn from oracle prices for the initial KyberSwap request
+  const estimatedUsdIn = convertToUsd(amountOut, tokenOut.decimals, tokenOut.prices.maxPrice)!;
+  const estimatedAmountIn = convertToTokenAmount(estimatedUsdIn, tokenIn.decimals, tokenIn.prices.minPrice)!;
+
+  return {
+    amountIn: swapAmounts.amountIn > 0n ? swapAmounts.amountIn : estimatedAmountIn,
+    priceIn: swapAmounts.priceIn,
+    priceOut: swapAmounts.priceOut,
+    usdIn: swapAmounts.usdIn > 0n ? swapAmounts.usdIn : estimatedUsdIn,
+    usdOut: swapAmounts.usdOut,
+    strategy: "byToValue",
+    desiredAmountOut: amountOut,
+    internalSwapTotalFeeItem,
+    internalSwapTotalFeesDeltaUsd,
+    internalSwapAmounts: swapAmounts,
+  };
+}
+
 export function getExternalSwapInputsByLeverageSize({
   marketInfo,
   tokenIn,

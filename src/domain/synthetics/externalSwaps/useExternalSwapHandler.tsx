@@ -8,11 +8,14 @@ import {
   selectExternalSwapInputs,
   selectExternalSwapQuote,
   selectSetBaseExternalSwapOutput,
+  selectSetExternalSwapIsLoading,
   selectSetShouldFallbackToInternalSwap,
   selectShouldFallbackToInternalSwap,
+  selectShouldRequestExternalSwapQuote,
   selectTradeboxAllowedSlippage,
   selectTradeboxFromTokenAddress,
   selectTradeboxSelectSwapToToken,
+  selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
@@ -20,6 +23,7 @@ import { throttleLog } from "lib/logging";
 import { getContract } from "sdk/configs/contracts";
 
 import { useExternalSwapOutputRequest } from "./useExternalSwapOutputRequest";
+import { useExternalSwapReverseSearch } from "./useExternalSwapReverseSearch";
 import { useExternalSwapsEnabled } from "./useExternalSwapsEnabled";
 
 export function useExternalSwapHandler() {
@@ -39,10 +43,16 @@ export function useExternalSwapHandler() {
   const externalSwapQuote = useSelector(selectExternalSwapQuote);
   const shouldFallbackToInternalSwap = useSelector(selectShouldFallbackToInternalSwap);
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
+  const setIsLoading = useSelector(selectSetExternalSwapIsLoading);
+
+  const shouldRequest = useSelector(selectShouldRequestExternalSwapQuote);
+  const tradeFlags = useSelector(selectTradeboxTradeFlags);
 
   const enabled = useExternalSwapsEnabled();
 
-  const { quote } = useExternalSwapOutputRequest({
+  const isReverseSearch = externalSwapInputs?.strategy === "byToValue";
+
+  const { quote: forwardQuote, isLoading: isForwardLoading } = useExternalSwapOutputRequest({
     chainId,
     tokenInAddress: fromTokenAddress,
     tokenOutAddress: swapToToken?.address,
@@ -50,14 +60,54 @@ export function useExternalSwapHandler() {
     receiverAddress: getContract(chainId, "OrderVault"),
     slippage,
     gasPrice,
-    enabled,
+    enabled: enabled && !isReverseSearch,
   });
+
+  const { quote: reverseQuote, isLoading: isReverseLoading } = useExternalSwapReverseSearch({
+    chainId,
+    tokenInAddress: fromTokenAddress,
+    tokenOutAddress: swapToToken?.address,
+    desiredAmountOut: externalSwapInputs?.desiredAmountOut,
+    initialAmountIn: externalSwapInputs?.amountIn,
+    receiverAddress: getContract(chainId, "OrderVault"),
+    slippage,
+    gasPrice,
+    enabled: enabled && isReverseSearch,
+  });
+
+  const quote = isReverseSearch ? reverseQuote : forwardQuote;
+
+  const isHookLoading = isReverseSearch ? isReverseLoading : isForwardLoading;
+
+  useEffect(
+    function updateExternalSwapLoadingEff() {
+      const isSwapMarket = tradeFlags.isSwap && tradeFlags.isMarket;
+      const hasInputs = Boolean(shouldRequest && externalSwapInputs && externalSwapInputs.amountIn > 0n);
+      const newIsLoading = isSwapMarket && hasInputs && isHookLoading;
+
+      setIsLoading(newIsLoading);
+    },
+    [
+      tradeFlags.isSwap,
+      tradeFlags.isMarket,
+      shouldRequest,
+      externalSwapInputs,
+      isHookLoading,
+      setIsLoading,
+      isReverseSearch,
+      isForwardLoading,
+      isReverseLoading,
+      enabled,
+    ]
+  );
 
   if (shouldDebugValues) {
     throttleLog("external swaps", {
       baseOutput: quote,
       externalSwapQuote,
       inputs: externalSwapInputs,
+      isReverseSearch,
+      isReverseLoading,
     });
   }
 
@@ -98,6 +148,19 @@ export function useExternalSwapHandler() {
       storedBaseExternalSwapOutput,
       swapToToken?.address,
     ]
+  );
+
+  useEffect(
+    function clearStaleOutputOnTokenChange() {
+      if (
+        storedBaseExternalSwapOutput &&
+        (storedBaseExternalSwapOutput.inTokenAddress !== fromTokenAddress ||
+          storedBaseExternalSwapOutput.outTokenAddress !== swapToToken?.address)
+      ) {
+        setBaseExternalSwapOutput(undefined);
+      }
+    },
+    [fromTokenAddress, swapToToken?.address, storedBaseExternalSwapOutput, setBaseExternalSwapOutput]
   );
 
   useEffect(

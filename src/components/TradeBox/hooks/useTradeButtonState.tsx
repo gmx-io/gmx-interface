@@ -30,6 +30,7 @@ import {
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectExternalSwapQuote,
+  selectExternalSwapIsLoading,
   selectTradeboxFindSwapPath,
   selectTradeboxFromToken,
   selectTradeboxFromTokenAmount,
@@ -123,6 +124,7 @@ export function useTradeboxButtonState({
 
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isSwap, isIncrease } = tradeFlags;
+  const isExternalSwapLoading = useSelector(selectExternalSwapIsLoading);
   const { stopLoss, takeProfit } = useSidecarOrders();
   const sidecarEntries = useSidecarEntries();
   const isTpSlEnabled = useSelector(selectTradeboxIsTPSLEnabled);
@@ -480,6 +482,19 @@ export function useTradeboxButtonState({
       };
     }
 
+    if (isExternalSwapLoading) {
+      return {
+        ...commonState,
+        text: (
+          <>
+            <Trans>Loading swap path…</Trans>
+            <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
+
     if (buttonErrorText) {
       return {
         ...commonState,
@@ -582,6 +597,7 @@ export function useTradeboxButtonState({
     batchParams,
     totalExecutionFee,
     isExpressLoading,
+    isExternalSwapLoading,
     account,
     buttonErrorText,
     shouldShowDepositButton,

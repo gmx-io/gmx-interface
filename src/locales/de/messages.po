@@ -3350,6 +3350,10 @@ msgstr "Mittel eingelöst"
 msgid "Missing claim params. Retry in a few seconds"
 msgstr "Fehlende Beanspruchungsparameter. Versuchen Sie es in einigen Sekunden erneut"
 
+#: src/components/TradeBox/TradeBoxRows/SwapDebugRow.tsx
+msgid "Swap Debug"
+msgstr ""
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
 msgstr "Trigger"
@@ -9622,6 +9626,10 @@ msgstr "Warnungen"
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "C:"
 msgstr "K:"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Loading swap path…"
+msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. This action won't affect it. <0>Switch to {1} collateral</0>"

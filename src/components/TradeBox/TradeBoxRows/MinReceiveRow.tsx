@@ -21,18 +21,18 @@ export function MinReceiveRow({ allowedSlippage }: { allowedSlippage: number }) 
     return null;
   }
 
+  // For both directions, display the on-chain minimum after slippage.
+  // "from": minOutputAmount is the expected output, slippage reduces it
+  // "to": minOutputAmount is inflated so that after slippage it equals the desired amount
+  const displayMinReceive = isMarket
+    ? applySlippageToMinOut(allowedSlippage, swapAmounts.minOutputAmount)
+    : swapAmounts.minOutputAmount;
+
   return (
     <SyntheticsInfoRow label={<Trans>Min. receive</Trans>} valueClassName="numbers break-all !whitespace-normal">
-      {isMarket
-        ? formatBalanceAmount(
-            applySlippageToMinOut(allowedSlippage, swapAmounts.minOutputAmount),
-            toToken.decimals,
-            toToken.symbol,
-            { isStable: toToken.isStable }
-          )
-        : formatBalanceAmount(swapAmounts.minOutputAmount, toToken.decimals, toToken.symbol, {
-            isStable: toToken.isStable,
-          })}
+      {formatBalanceAmount(displayMinReceive, toToken.decimals, toToken.symbol, {
+        isStable: toToken.isStable,
+      })}
     </SyntheticsInfoRow>
   );
 }

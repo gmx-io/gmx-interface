@@ -184,7 +184,11 @@ export function getSwapError(p: {
     return { buttonErrorMessage: t`Enter a price` };
   }
 
-  if ((!isLimit || isTwap) && (toUsd === undefined || swapLiquidity === undefined || swapLiquidity < toUsd)) {
+  if (
+    (!isLimit || isTwap) &&
+    !externalSwapQuote &&
+    (toUsd === undefined || swapLiquidity === undefined || swapLiquidity < toUsd)
+  ) {
     return { buttonErrorMessage: t`Insufficient liquidity` };
   }
 
