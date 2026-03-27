@@ -64,7 +64,13 @@ export function subscribeForRpcTrackerMetrics(tracker: RpcTracker) {
     ({ endpointsStats }) => {
       const bestBlock = getBestBlock(endpointsStats);
 
-      endpointsStats.forEach((endpointStats: RpcStats) => {
+      const primary = tracker.fallbackTracker.state.primary;
+      const fallbacks = tracker.fallbackTracker.state.fallbacks;
+      const secondary = fallbacks[0];
+      const relevantEndpoints = [primary, secondary].filter(Boolean);
+      const relevantStats = endpointsStats.filter((stat) => relevantEndpoints.includes(stat.endpoint));
+
+      relevantStats.forEach((endpointStats: RpcStats) => {
         const blockGap = getBlockGap(bestBlock, endpointStats);
         const responseTime = endpointStats.checkResults?.[0]?.stats?.responseTime;
 

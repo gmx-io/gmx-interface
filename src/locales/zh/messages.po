@@ -835,6 +835,10 @@ msgstr "STIP.b 追溯奖励"
 msgid "in liquidity"
 msgstr "流动性中"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "{0} is required for collateral.<0/><1/>No swap path found for {1} to {2} within GMX.<2/><3/><4>Buy {3} on {4}</4>."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized money market"
 msgstr "去中心化货币市场"
@@ -4285,10 +4289,6 @@ msgstr "等待 GMX 授权中..."
 msgid "AMOUNT"
 msgstr "AMOUNT"
 
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "GMX staking unavailable on Botanix. Use Arbitrum or Avalanche."
-msgstr "GMX 质押在 Botanix 上不可用。请使用 Arbitrum 或 Avalanche。"
-
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimModal/ClaimModal.tsx
@@ -5185,10 +5185,6 @@ msgstr "无效交易"
 msgid "Insufficient liquidity in {0} pool. Select a different pool."
 msgstr "{0} 池流动性不足。请选择其他池。"
 
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
-msgid "No GLV vaults on Botanix. Provide liquidity via <0>GM tokens</0> instead."
-msgstr "Botanix 上没有 GLV 金库。请通过 <0>GM 代币</0>提供流动性。"
-
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
@@ -5634,7 +5630,6 @@ msgstr "流动性不足。可用：{availableLiquidityText}"
 msgid "Unstake submitted"
 msgstr "解除质押已提交"
 
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Botanix"
@@ -7085,10 +7080,6 @@ msgstr "清除调试覆盖"
 msgid "Cancel Stop-Loss"
 msgstr "取消止损"
 
-#: src/components/TradeBox/hooks/useTradeButtonState.tsx
-msgid "{0} is required for collateral.<0/><1/>No swap path found for {1} to {2} within GMX.<2/><3/><4>Buy {3} on 1inch</4>."
-msgstr "{0} 是所需的抵押品。<0/><1/>在 GMX 内未找到 {1} 到 {2} 的兑换路径。<2/><3/><4>在 1inch 上买入 {3}</4>。"
-
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 #~ msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
 #~ msgstr ""
@@ -7355,7 +7346,6 @@ msgstr "超过最大 {0} 多头"
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-#: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -9047,6 +9037,10 @@ msgstr "什么是 GMX？"
 msgid "Deposit submitted"
 msgstr "存入已提交"
 
+#: src/components/Earn/Discovery/EarnYieldOverview.tsx
+msgid "GMX staking unavailable on MegaETH. Use Arbitrum or Avalanche."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -9853,6 +9847,10 @@ msgstr "您的 GMX Account 和仓位所在的网络。余额和仓位不会在�
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity only available on {chainNames} or {lastChainName}. Switch networks to continue."
 msgstr "流动性仅在 {chainNames} 或 {lastChainName} 上可用。请切换网络以继续。"
+
+#: src/components/Earn/Discovery/EarnYieldOverview.tsx
+msgid "MegaETH"
+msgstr ""
 
 #: src/components/Referrals/AffiliatesStats.tsx
 msgid "Total trading volume from your referrals"

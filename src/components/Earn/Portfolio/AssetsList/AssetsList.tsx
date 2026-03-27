@@ -72,6 +72,7 @@ function AssetsList({
 
   performanceTotal,
   performance30d,
+  isPerformanceLoading,
   multichainMarketTokensBalances,
 }: {
   chainId: ContractsChainId;
@@ -82,6 +83,7 @@ function AssetsList({
   gmGlvAssets: GlvOrMarketInfo[];
   performanceTotal: PerformanceData | undefined;
   performance30d: PerformanceData | undefined;
+  isPerformanceLoading: boolean;
   multichainMarketTokensBalances: MultichainMarketTokensBalances | undefined;
 }) {
   const cardsCount = (hasGmx || hasEsGmx ? 1 : 0) + gmGlvAssets.length;
@@ -133,6 +135,7 @@ function AssetsList({
                   chainId={chainId}
                   totalPerformanceApy={getByKey(performanceTotal, getGlvOrMarketAddress(info))}
                   performanceApy30d={getByKey(performance30d, getGlvOrMarketAddress(info))}
+                  isPerformanceLoading={isPerformanceLoading}
                   multichainMarketTokenBalances={multichainMarketTokensBalances?.[getGlvOrMarketAddress(info)]}
                 />
               );
