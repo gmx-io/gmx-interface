@@ -34,6 +34,7 @@ import {
   AVALANCHE_FUJI,
   BOTANIX,
   ContractsChainId,
+  MEGAETH,
   SETTLEMENT_CHAIN_IDS,
   SETTLEMENT_CHAIN_IDS_DEV,
   SettlementChainId,
@@ -431,6 +432,7 @@ export const MULTICALLS_MAP: Record<AnyChainId, string> = {
   [ARBITRUM_SEPOLIA]: getContract(ARBITRUM_SEPOLIA, "Multicall"),
   [AVALANCHE_FUJI]: getContract(AVALANCHE_FUJI, "Multicall"),
   [BOTANIX]: getContract(BOTANIX, "Multicall"),
+  [MEGAETH]: getContract(MEGAETH, "Multicall"),
 };
 
 /**

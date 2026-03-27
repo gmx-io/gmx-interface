@@ -131,6 +131,12 @@ export default function TVChartContainer({
 
   useEffect(() => {
     const newDatafeed = new DataFeed(chainId, oracleKeeperFetcher);
+    newDatafeed.setTokenPriceGetter((symbol) => {
+      const data = marksStateRef.current.tokensData;
+      if (!data) return undefined;
+      const token = Object.values(data).find((t) => t.symbol === symbol);
+      return token?.prices?.minPrice;
+    });
     newDatafeed.setMarksGetter(async (_symbolInfo, from, to, resolution) => {
       const {
         positionIncreaseEvents: inc,
@@ -493,6 +499,12 @@ export default function TVChartContainer({
   const getContextMenuItemsRef = useLatest(getContextMenuItems);
   const handlePlusClickRef = useLatest(handlePlusClick);
   const closeMenuRef = useLatest(closeMenu);
+
+  useEffect(() => {
+    if (tokensData && datafeed) {
+      datafeed.notifyPricesReady();
+    }
+  }, [tokensData, datafeed]);
 
   useEffect(() => {
     if (

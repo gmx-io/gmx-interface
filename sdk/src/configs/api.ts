@@ -1,4 +1,4 @@
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId, MEGAETH } from "./chains";
 
 const API_URLS: Record<ContractsChainId, string | undefined> = {
   // TODO: revert to https://arbitrum-temp.gmxapi.ai/api/v1
@@ -11,6 +11,8 @@ const API_URLS: Record<ContractsChainId, string | undefined> = {
   [BOTANIX]: "https://botanix-temp.gmxapi.ai/api/v1",
 
   [ARBITRUM_SEPOLIA]: "https://gmx-api-arbitrum-sepolia-yp6pp.ondigitalocean.app/api/v1",
+
+  [MEGAETH]: "https://megaeth-temp.gmxapi.ai/api/v1",
 };
 
 export function getApiUrl(chainId: number) {
