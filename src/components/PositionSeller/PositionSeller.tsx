@@ -83,11 +83,13 @@ import {
 } from "sdk/utils/orderTransactions";
 import { getIsValidTwapParams } from "sdk/utils/twap";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { CollateralDestinationSelector } from "components/CollateralDestinationSelector/CollateralDestinationSelector";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Modal from "components/Modal/Modal";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
@@ -426,9 +428,9 @@ export function PositionSeller() {
 
   const isAllowanceLoaded = Boolean(batchParams) && isAllowanceLoadedRaw;
 
-  const error = useMemo(() => {
+  const { error, bannerErrorName } = useMemo(() => {
     if (!position) {
-      return undefined;
+      return {};
     }
 
     const commonError = getCommonError({
@@ -463,12 +465,17 @@ export function PositionSeller() {
     });
 
     if (commonError.buttonErrorMessage || decreaseError.buttonErrorMessage || expressError.buttonErrorMessage) {
-      return commonError.buttonErrorMessage || decreaseError.buttonErrorMessage || expressError.buttonErrorMessage;
+      return {
+        error: commonError.buttonErrorMessage || decreaseError.buttonErrorMessage || expressError.buttonErrorMessage,
+        bannerErrorName: expressError.bannerErrorName,
+      };
     }
 
     if (isSubmitting) {
-      return t`Creating order...`;
+      return { error: t`Creating order...` };
     }
+
+    return {};
   }, [
     account,
     chainId,
@@ -975,6 +982,18 @@ export function PositionSeller() {
                   >
                     {keepLeverageTextElem}
                   </ToggleSwitch>
+                )}
+
+                {bannerErrorName && (
+                  <AlertInfoCard type="error" hideClose>
+                    <ValidationBannerErrorContent
+                      validationBannerErrorName={bannerErrorName}
+                      chainId={chainId}
+                      gasPaymentTokenAddress={expressParams?.gasPaymentParams?.gasPaymentTokenAddress}
+                      srcChainId={srcChainId}
+                      onBeforeNavigation={onClose}
+                    />
+                  </AlertInfoCard>
                 )}
 
                 <ExpressTradingWarningCard
