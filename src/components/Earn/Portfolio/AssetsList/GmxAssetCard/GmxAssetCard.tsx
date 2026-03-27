@@ -397,7 +397,7 @@ function StakingPowerAlerts({ stakingPowerData }: { stakingPowerData: StakingPow
           }
           value={
             <span className={cx("numbers", { "text-red-500": stakingPowerData.loyaltyRatio < 0.85 })}>
-              {(stakingPowerData.loyaltyRatio * 100).toFixed(1)}%
+              {(Math.min(stakingPowerData.loyaltyRatio, 1) * 100).toFixed(1)}%
             </span>
           }
         />

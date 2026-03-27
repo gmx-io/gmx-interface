@@ -981,7 +981,7 @@ export function PositionSeller() {
                   expressParams={expressParams}
                   payTokenAddress={undefined}
                   isWrapOrUnwrap={false}
-                  isGmxAccount={srcChainId !== undefined}
+                  isGmxAccount={srcChainId !== undefined || effectiveIsReceiveToGmxAccount}
                   onAfterAction={onClose}
                 />
 
