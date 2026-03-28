@@ -1,5 +1,6 @@
 import { SUPPORT_CHAT_USER_ID_KEY } from "config/localStorage";
 import { ThemeMode } from "context/ThemeContext/ThemeContext";
+import { getRequestId } from "lib/metrics/utils";
 
 export function getOrCreateSupportChatUserId(): string {
   const existingSupportChatUserId = localStorage.getItem(SUPPORT_CHAT_USER_ID_KEY);
@@ -7,7 +8,7 @@ export function getOrCreateSupportChatUserId(): string {
     return existingSupportChatUserId;
   }
 
-  const newSupportChatUserId = crypto.randomUUID();
+  const newSupportChatUserId = getRequestId();
   localStorage.setItem(SUPPORT_CHAT_USER_ID_KEY, newSupportChatUserId);
 
   return newSupportChatUserId;
