@@ -60,6 +60,7 @@ import {
   formatDeltaUsd,
   formatPercentage,
   formatUsd,
+  parseValue,
 } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import useWallet from "lib/wallets/useWallet";
@@ -682,8 +683,13 @@ export function AddTPSLModal({
     if (!tpPriceInput && !slPriceInput) {
       return t`Enter an amount`;
     }
-    if (editTPSLSize && closeSizeInput && closeSizeUsd > position.sizeInUsd) {
-      return t`Max close amount exceeded`;
+    if (editTPSLSize && closeSizeInput) {
+      const decimals = closeSizeHook.showSizeInTokens ? indexTokenDecimals : USD_DECIMALS;
+      const parsedInput = parseValue(closeSizeInput, decimals);
+      const parsedMax = parseValue(closeSizeHook.formattedMaxCloseSize, decimals);
+      if (parsedInput !== undefined && parsedMax !== undefined && parsedInput > parsedMax) {
+        return t`Max close amount exceeded`;
+      }
     }
     if (tpPriceError && tpPriceInput) {
       return tpPriceError;
@@ -703,8 +709,9 @@ export function AddTPSLModal({
     orderPayloads.length,
     editTPSLSize,
     closeSizeInput,
-    closeSizeUsd,
-    position.sizeInUsd,
+    closeSizeHook.showSizeInTokens,
+    closeSizeHook.formattedMaxCloseSize,
+    indexTokenDecimals,
   ]);
 
   const handleSubmit = useCallback(async () => {

@@ -3,7 +3,7 @@ import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "
 import { USD_DECIMALS } from "config/factors";
 import { CLOSE_SIZE_DENOMINATION_KEY } from "config/localStorage";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatAmount, formatAmountFree, parseValue } from "lib/numbers";
+import { calculateDisplayDecimals, formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 
 interface UseCloseSizeInputParams {
@@ -30,7 +30,6 @@ interface UseCloseSizeInputReturn {
   reset: () => void;
 }
 
-const TOKEN_DISPLAY_DECIMALS = 4;
 const USD_DISPLAY_DECIMALS = 2;
 
 export function useCloseSizeInput({
@@ -55,6 +54,11 @@ export function useCloseSizeInput({
   const safeSizeUsd = positionSizeInUsd ?? 0n;
   const safeSizeInTokens = positionSizeInTokens ?? 0n;
 
+  const tokenDisplayDecimals = useMemo(
+    () => calculateDisplayDecimals(safeSizeInTokens, indexTokenDecimals),
+    [safeSizeInTokens, indexTokenDecimals]
+  );
+
   const closeSizeInput = useMemo(() => {
     if (trackedPercentage !== null) {
       if (showSizeInTokens) {
@@ -62,7 +66,7 @@ export function useCloseSizeInput({
           trackedPercentage >= 100
             ? safeSizeInTokens
             : bigMath.mulDiv(safeSizeInTokens, BigInt(Math.max(0, trackedPercentage)), 100n);
-        return formatAmount(size, indexTokenDecimals, TOKEN_DISPLAY_DECIMALS);
+        return formatAmount(size, indexTokenDecimals, tokenDisplayDecimals);
       } else {
         const size =
           trackedPercentage >= 100
@@ -72,7 +76,15 @@ export function useCloseSizeInput({
       }
     }
     return manualInput;
-  }, [trackedPercentage, showSizeInTokens, safeSizeUsd, safeSizeInTokens, indexTokenDecimals, manualInput]);
+  }, [
+    trackedPercentage,
+    showSizeInTokens,
+    safeSizeUsd,
+    safeSizeInTokens,
+    indexTokenDecimals,
+    tokenDisplayDecimals,
+    manualInput,
+  ]);
 
   const closeSizeUsd = useMemo(() => {
     if (trackedPercentage !== null) {
@@ -103,10 +115,10 @@ export function useCloseSizeInput({
 
   const formattedMaxCloseSize = useMemo(() => {
     if (showSizeInTokens) {
-      return formatAmount(safeSizeInTokens, indexTokenDecimals, TOKEN_DISPLAY_DECIMALS);
+      return formatAmount(safeSizeInTokens, indexTokenDecimals, tokenDisplayDecimals);
     }
     return formatAmount(safeSizeUsd, USD_DECIMALS, USD_DISPLAY_DECIMALS);
-  }, [showSizeInTokens, safeSizeUsd, safeSizeInTokens, indexTokenDecimals]);
+  }, [showSizeInTokens, safeSizeUsd, safeSizeInTokens, indexTokenDecimals, tokenDisplayDecimals]);
 
   const onCloseSizeUsdChangeRef = useRef(onCloseSizeUsdChange);
   onCloseSizeUsdChangeRef.current = onCloseSizeUsdChange;
@@ -126,11 +138,11 @@ export function useCloseSizeInput({
   const handleSizeToggle = useCallback(() => {
     const next = !showSizeInTokens;
 
-    if (trackedPercentage === null) {
+    if (trackedPercentage === null && safeSizeUsd > 0n && safeSizeInTokens > 0n) {
       if (next) {
         const newTokenSize =
           closePercentage >= 100 ? safeSizeInTokens : bigMath.mulDiv(safeSizeInTokens, BigInt(closePercentage), 100n);
-        setManualInput(formatAmount(newTokenSize, indexTokenDecimals, TOKEN_DISPLAY_DECIMALS));
+        setManualInput(formatAmount(newTokenSize, indexTokenDecimals, tokenDisplayDecimals));
       } else {
         const newUsdSize =
           closePercentage >= 100 ? safeSizeUsd : bigMath.mulDiv(safeSizeUsd, BigInt(closePercentage), 100n);
@@ -145,6 +157,7 @@ export function useCloseSizeInput({
     safeSizeUsd,
     safeSizeInTokens,
     indexTokenDecimals,
+    tokenDisplayDecimals,
     setShowSizeInTokens,
   ]);
 
@@ -159,13 +172,13 @@ export function useCloseSizeInput({
         const parsedUsd = parseValue(usd, USD_DECIMALS);
         if (parsedUsd !== undefined && parsedUsd > 0n) {
           const tokens = bigMath.mulDiv(parsedUsd, safeSizeInTokens, safeSizeUsd);
-          setManualInput(formatAmount(tokens, indexTokenDecimals, TOKEN_DISPLAY_DECIMALS));
+          setManualInput(formatAmount(tokens, indexTokenDecimals, tokenDisplayDecimals));
           return;
         }
       }
       setManualInput(usd);
     },
-    [showSizeInTokens, safeSizeUsd, safeSizeInTokens, indexTokenDecimals]
+    [showSizeInTokens, safeSizeUsd, safeSizeInTokens, indexTokenDecimals, tokenDisplayDecimals]
   );
 
   const reset = useCallback(() => {

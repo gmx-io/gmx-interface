@@ -1974,8 +1974,8 @@ msgid "Claiming price impact rebates..."
 msgstr "Reclamando reembolsos de impacto en el precio…"
 
 #: src/components/PositionItem/ClosePositionModal.tsx
-msgid "Close Position"
-msgstr ""
+#~ msgid "Close Position"
+#~ msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityCard.tsx
 msgid "Explore"

@@ -24,12 +24,16 @@ type Props = {
  * swallowing mouseup and leaving rc-slider stuck in drag mode.
  */
 function useSliderDragOverlay(containerRef: React.RefObject<HTMLDivElement | null>) {
+  const activeCleanupRef = useRef<(() => void) | null>(null);
+
   useEffect(() => {
     const el = containerRef.current;
     if (!el) return;
 
     const onPointerDown = (e: PointerEvent) => {
       if (e.button !== 0) return;
+
+      activeCleanupRef.current?.();
 
       const overlay = document.createElement("div");
       overlay.id = "slider-drag-overlay";
@@ -38,16 +42,25 @@ function useSliderDragOverlay(containerRef: React.RefObject<HTMLDivElement | nul
 
       const cleanup = () => {
         overlay.remove();
+        activeCleanupRef.current = null;
         document.removeEventListener("mouseup", cleanup);
+        document.removeEventListener("pointerup", cleanup);
+        document.removeEventListener("touchend", cleanup);
         document.removeEventListener("pointercancel", cleanup);
       };
 
+      activeCleanupRef.current = cleanup;
       document.addEventListener("mouseup", cleanup);
+      document.addEventListener("pointerup", cleanup);
+      document.addEventListener("touchend", cleanup);
       document.addEventListener("pointercancel", cleanup);
     };
 
     el.addEventListener("pointerdown", onPointerDown);
-    return () => el.removeEventListener("pointerdown", onPointerDown);
+    return () => {
+      el.removeEventListener("pointerdown", onPointerDown);
+      activeCleanupRef.current?.();
+    };
   }, [containerRef]);
 }
 
