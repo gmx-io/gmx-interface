@@ -36,8 +36,8 @@ msgid "Pear Protocol"
 msgstr "Pear Protocol"
 
 #: src/domain/synthetics/userFeedback/utils.ts
-msgid "What would make your rating a 9 or 10?"
-msgstr "什么能让您的评分达到 9 或 10？"
+#~ msgid "What would make your rating a 9 or 10?"
+#~ msgstr "什么能让您的评分达到 9 或 10？"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
@@ -45,8 +45,8 @@ msgid "Price impact rebates claimed"
 msgstr "价格影响返还已领取"
 
 #: src/components/RatingToast/RatingToast.tsx
-msgid "Not likely"
-msgstr "不太可能"
+#~ msgid "Not likely"
+#~ msgstr "不太可能"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
@@ -449,8 +449,8 @@ msgstr "最佳兑换路径"
 
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
-msgid "@username"
-msgstr "@用户名"
+#~ msgid "@username"
+#~ msgstr "@用户名"
 
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Failed to claim affiliate rewards"
@@ -805,8 +805,8 @@ msgid "Buy GMX on centralized exchanges"
 msgstr "在中心化交易所买入 GMX"
 
 #: src/components/NpsModal/NpsModal.tsx
-msgid "Share for follow-up questions"
-msgstr "用于后续问题的跟进联系"
+#~ msgid "Share for follow-up questions"
+#~ msgstr "用于后续问题的跟进联系"
 
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
@@ -870,8 +870,8 @@ msgstr "正在创建代码..."
 
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
-msgid "Telegram contact (optional)"
-msgstr "Telegram 联系方式（可选）"
+#~ msgid "Telegram contact (optional)"
+#~ msgstr "Telegram 联系方式（可选）"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Conversion creation failed"
@@ -1926,8 +1926,8 @@ msgid "Custom"
 msgstr "自定义"
 
 #: src/components/NpsModal/NpsModal.tsx
-msgid "Enter your answer"
-msgstr "请输入您的回答"
+#~ msgid "Enter your answer"
+#~ msgstr "请输入您的回答"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Markets info"
@@ -2408,8 +2408,8 @@ msgid "You have a <0>pending transfer</0> to {pendingReceiver}"
 msgstr "您有一笔 <0>待处理的转账</0> 至 {pendingReceiver}"
 
 #: src/domain/synthetics/userFeedback/utils.ts
-msgid "How can we address your concerns?"
-msgstr "我们如何解决您的顾虑？"
+#~ msgid "How can we address your concerns?"
+#~ msgstr "我们如何解决您的顾虑？"
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity available for increasing longs at<0/>this size. Max long size: {0}<1/><2/>Execution prices for decreasing shorts."
@@ -2928,8 +2928,8 @@ msgid "POSITION"
 msgstr "仓位"
 
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
-msgid "We value your feedback"
-msgstr "我们重视您的反馈"
+#~ msgid "We value your feedback"
+#~ msgstr "我们重视您的反馈"
 
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
@@ -3718,8 +3718,8 @@ msgid "Update TWAP part"
 msgstr "更新 TWAP 子单"
 
 #: src/components/NpsModal/NpsModal.tsx
-msgid "Help us improve"
-msgstr "帮助我们改进"
+#~ msgid "Help us improve"
+#~ msgstr "帮助我们改进"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/ClaimRewardsButton.tsx
@@ -4068,8 +4068,6 @@ msgid "No funds to withdraw"
 msgstr "无资金可提取"
 
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
-#: src/components/NpsModal/NpsModal.tsx
-#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submitting..."
 msgstr "提交中..."
 
@@ -4186,8 +4184,8 @@ msgid "Approval cancelled"
 msgstr "授权已取消"
 
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
-msgid "Your feedback helps us understand what we're doing well and where we can improve"
-msgstr "您的反馈有助于我们了解哪些方面做得好以及哪些方面需要改进"
+#~ msgid "Your feedback helps us understand what we're doing well and where we can improve"
+#~ msgstr "您的反馈有助于我们了解哪些方面做得好以及哪些方面需要改进"
 
 #: src/pages/UiPage/UiPage.tsx
 msgid "Red 500"
@@ -6564,8 +6562,8 @@ msgid "THREAD"
 msgstr "THREAD"
 
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
-msgid "Optional: share for follow-up questions"
-msgstr "可选：提供以便后续沟通"
+#~ msgid "Optional: share for follow-up questions"
+#~ msgstr "可选：提供以便后续沟通"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit signed for {0}"
@@ -6861,8 +6859,8 @@ msgid "Claim submitted"
 msgstr "领取已提交"
 
 #: src/components/RatingToast/RatingToast.tsx
-msgid "How likely are you to recommend our service to a friend or colleague?"
-msgstr "您有多大可能向朋友或同事推荐我们的服务？"
+#~ msgid "How likely are you to recommend our service to a friend or colleague?"
+#~ msgstr "您有多大可能向朋友或同事推荐我们的服务？"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Created"
@@ -7562,8 +7560,8 @@ msgid "fees"
 msgstr "费用"
 
 #: src/domain/synthetics/userFeedback/utils.ts
-msgid "What could we improve?"
-msgstr "我们可以改进什么？"
+#~ msgid "What could we improve?"
+#~ msgstr "我们可以改进什么？"
 
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code update failed"
@@ -7636,10 +7634,8 @@ msgstr "做多 OI 最小抵押品系数"
 msgid "TP price below limit price"
 msgstr "TP 价格低于限价"
 
-#: src/components/NpsModal/NpsModal.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submit"
 msgstr "提交"
 
@@ -8039,8 +8035,8 @@ msgid "Max pool capacity reached"
 msgstr "池容量已达上限"
 
 #: src/components/NpsModal/NpsModal.tsx
-msgid "Error occurred. Try again"
-msgstr "发生错误，请重试"
+#~ msgid "Error occurred. Try again"
+#~ msgstr "发生错误，请重试"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
@@ -8086,8 +8082,8 @@ msgid "Two GLV variants mirror GLP's multi-asset exposure: one optimized for ETH
 msgstr "两种 GLV 变体对应 GLP 的多资产敞口：一种针对 ETH 市场优化（50% ETH / 50% USDC），另一种针对 BTC 市场优化（50% BTC / 50% USDC）。这反映了回收资金的组成，并能够在顶级 GMX 市场之间进行动态流动性分配以提高收益。"
 
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
-msgid "Enter your feedback"
-msgstr "输入您的反馈"
+#~ msgid "Enter your feedback"
+#~ msgstr "输入您的反馈"
 
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -8120,8 +8116,8 @@ msgid "Short positions"
 msgstr "做空仓位"
 
 #: src/components/Errors/errorToasts.tsx
-msgid "Report issue"
-msgstr "报告问题"
+#~ msgid "Report issue"
+#~ msgstr "报告问题"
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "Claim {0}"
@@ -8765,8 +8761,8 @@ msgid "Total investment value"
 msgstr "总投资价值"
 
 #: src/domain/synthetics/userFeedback/utils.ts
-msgid "What did you like most?"
-msgstr "您最喜欢哪些方面？"
+#~ msgid "What did you like most?"
+#~ msgstr "您最喜欢哪些方面？"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Performance and chart data are based on UTC times"
@@ -8861,8 +8857,8 @@ msgid "Stop Market"
 msgstr "止损市价"
 
 #: src/domain/synthetics/userFeedback/utils.ts
-msgid "How can we keep meeting your expectations?"
-msgstr "我们如何继续满足您的期望？"
+#~ msgid "How can we keep meeting your expectations?"
+#~ msgstr "我们如何继续满足您的期望？"
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "Execution prices for increasing longs<0/>and decreasing shorts"
@@ -9262,8 +9258,8 @@ msgid "Staked"
 msgstr "已质押"
 
 #: src/components/Footer/Footer.tsx
-msgid "Leave feedback"
-msgstr "留下反馈"
+#~ msgid "Leave feedback"
+#~ msgstr "留下反馈"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/pages/Referrals/Referrals.tsx
@@ -9893,8 +9889,8 @@ msgid "Invalid liquidation price"
 msgstr "无效的清算价格"
 
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
-msgid "Error, try again"
-msgstr "错误，请重试"
+#~ msgid "Error, try again"
+#~ msgstr "错误，请重试"
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Available to trade"
@@ -10271,8 +10267,8 @@ msgid "Last 30d"
 msgstr "过去 30 天"
 
 #: src/domain/synthetics/userFeedback/utils.ts
-msgid "What issues did you encounter?"
-msgstr "您遇到了哪些问题？"
+#~ msgid "What issues did you encounter?"
+#~ msgstr "您遇到了哪些问题？"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Dashboards"
@@ -10470,8 +10466,8 @@ msgid "Withdraw {glvOrGm}: {0}"
 msgstr "提取 {glvOrGm}：{0}"
 
 #: src/components/RatingToast/RatingToast.tsx
-msgid "Very likely"
-msgstr "很可能"
+#~ msgid "Very likely"
+#~ msgstr "很可能"
 
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "Save tier"

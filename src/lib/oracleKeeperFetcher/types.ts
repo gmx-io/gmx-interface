@@ -1,6 +1,5 @@
 import type { Address } from "viem";
 
-import { UserFeedback } from "domain/synthetics/userFeedback";
 import { FromNewToOldArray, Bar } from "domain/tradingview/types";
 
 export type EventPayload = {
@@ -120,7 +119,6 @@ export interface OracleFetcher {
   fetchOracleCandles(tokenSymbol: string, period: string, limit: number): Promise<FromNewToOldArray<Bar>>;
   fetchIncentivesRewards(): Promise<RawIncentivesStats | null>;
   fetchPostBatchReport(body: BatchReportBody): Promise<Response>;
-  fetchPostFeedback(body: UserFeedbackBody, debug?: boolean): Promise<Response>;
   fetchUiVersion(currentVersion: number, active: boolean): Promise<number>;
   fetchApys(period: ApyPeriod, debug?: boolean): Promise<ApyInfo>;
   fetchPerformanceAnnualized(period: PerformancePeriod, address?: string): Promise<PerformanceAnnualizedResponse>;
@@ -176,8 +174,4 @@ export type RawIncentivesStats = {
     period: number;
     token: Address;
   }>;
-};
-
-export type UserFeedbackBody = {
-  feedback: UserFeedback;
 };

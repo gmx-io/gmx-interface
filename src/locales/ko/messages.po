@@ -36,8 +36,8 @@ msgid "Pear Protocol"
 msgstr "Pear Protocol"
 
 #: src/domain/synthetics/userFeedback/utils.ts
-msgid "What would make your rating a 9 or 10?"
-msgstr "어떤 점이 개선되면 9점 또는 10점을 주시겠습니까?"
+#~ msgid "What would make your rating a 9 or 10?"
+#~ msgstr "어떤 점이 개선되면 9점 또는 10점을 주시겠습니까?"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
@@ -45,8 +45,8 @@ msgid "Price impact rebates claimed"
 msgstr "가격 영향 리베이트가 수령되었습니다"
 
 #: src/components/RatingToast/RatingToast.tsx
-msgid "Not likely"
-msgstr "가능성 낮음"
+#~ msgid "Not likely"
+#~ msgstr "가능성 낮음"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
@@ -449,8 +449,8 @@ msgstr "최적 스왑 경로"
 
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
-msgid "@username"
-msgstr "@username"
+#~ msgid "@username"
+#~ msgstr "@username"
 
 #: src/domain/synthetics/referrals/claimAffiliateRewardsTxn.ts
 msgid "Failed to claim affiliate rewards"
@@ -805,8 +805,8 @@ msgid "Buy GMX on centralized exchanges"
 msgstr "중앙화 거래소에서 GMX 구매"
 
 #: src/components/NpsModal/NpsModal.tsx
-msgid "Share for follow-up questions"
-msgstr "후속 질문을 위해 공유합니다"
+#~ msgid "Share for follow-up questions"
+#~ msgstr "후속 질문을 위해 공유합니다"
 
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
@@ -870,8 +870,8 @@ msgstr "코드 생성 중..."
 
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
-msgid "Telegram contact (optional)"
-msgstr "텔레그램 연락처 (선택)"
+#~ msgid "Telegram contact (optional)"
+#~ msgstr "텔레그램 연락처 (선택)"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Conversion creation failed"
@@ -1926,8 +1926,8 @@ msgid "Custom"
 msgstr "사용자 지정"
 
 #: src/components/NpsModal/NpsModal.tsx
-msgid "Enter your answer"
-msgstr "답변을 입력하십시오"
+#~ msgid "Enter your answer"
+#~ msgstr "답변을 입력하십시오"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Markets info"
@@ -2408,8 +2408,8 @@ msgid "You have a <0>pending transfer</0> to {pendingReceiver}"
 msgstr "{pendingReceiver}에게 <0>대기 중인 전송</0>이 있습니다"
 
 #: src/domain/synthetics/userFeedback/utils.ts
-msgid "How can we address your concerns?"
-msgstr "어떤 부분을 개선하면 좋겠습니까?"
+#~ msgid "How can we address your concerns?"
+#~ msgstr "어떤 부분을 개선하면 좋겠습니까?"
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity available for increasing longs at<0/>this size. Max long size: {0}<1/><2/>Execution prices for decreasing shorts."
@@ -2928,8 +2928,8 @@ msgid "POSITION"
 msgstr "포지션"
 
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
-msgid "We value your feedback"
-msgstr "소중한 의견을 남겨주십시오"
+#~ msgid "We value your feedback"
+#~ msgstr "소중한 의견을 남겨주십시오"
 
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Deposit</0> or <1>buy</1> {wrappedNativeTokenSymbol}."
@@ -3718,8 +3718,8 @@ msgid "Update TWAP part"
 msgstr "TWAP 부분 업데이트"
 
 #: src/components/NpsModal/NpsModal.tsx
-msgid "Help us improve"
-msgstr "개선 도와주기"
+#~ msgid "Help us improve"
+#~ msgstr "개선 도와주기"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/ClaimRewardsButton.tsx
@@ -4068,8 +4068,6 @@ msgid "No funds to withdraw"
 msgstr "출금할 자금 없음"
 
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
-#: src/components/NpsModal/NpsModal.tsx
-#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submitting..."
 msgstr "제출 중..."
 
@@ -4186,8 +4184,8 @@ msgid "Approval cancelled"
 msgstr "승인 취소됨"
 
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
-msgid "Your feedback helps us understand what we're doing well and where we can improve"
-msgstr "귀하의 피드백은 저희가 잘하고 있는 부분과 개선이 필요한 부분을 파악하는 데 도움이 됩니다"
+#~ msgid "Your feedback helps us understand what we're doing well and where we can improve"
+#~ msgstr "귀하의 피드백은 저희가 잘하고 있는 부분과 개선이 필요한 부분을 파악하는 데 도움이 됩니다"
 
 #: src/pages/UiPage/UiPage.tsx
 msgid "Red 500"
@@ -6564,8 +6562,8 @@ msgid "THREAD"
 msgstr "THREAD"
 
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
-msgid "Optional: share for follow-up questions"
-msgstr "선택 사항: 후속 질문을 위해 공유하십시오"
+#~ msgid "Optional: share for follow-up questions"
+#~ msgstr "선택 사항: 후속 질문을 위해 공유하십시오"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit signed for {0}"
@@ -6861,8 +6859,8 @@ msgid "Claim submitted"
 msgstr "수령 제출됨"
 
 #: src/components/RatingToast/RatingToast.tsx
-msgid "How likely are you to recommend our service to a friend or colleague?"
-msgstr "우리 서비스를 친구나 동료에게 추천할 가능성은どれくらいですか？"
+#~ msgid "How likely are you to recommend our service to a friend or colleague?"
+#~ msgstr "우리 서비스를 친구나 동료에게 추천할 가능성은どれくらいですか？"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Created"
@@ -7562,8 +7560,8 @@ msgid "fees"
 msgstr "수수료"
 
 #: src/domain/synthetics/userFeedback/utils.ts
-msgid "What could we improve?"
-msgstr "어떤 점을 개선할 수 있을까요?"
+#~ msgid "What could we improve?"
+#~ msgstr "어떤 점을 개선할 수 있을까요?"
 
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code update failed"
@@ -7636,10 +7634,8 @@ msgstr "롱 OI 최소 담보 비율"
 msgid "TP price below limit price"
 msgstr "TP 가격이 지정가보다 낮음"
 
-#: src/components/NpsModal/NpsModal.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
-#: src/components/UserFeedbackModal/UserFeedbackModal.tsx
 msgid "Submit"
 msgstr "제출"
 
@@ -8039,8 +8035,8 @@ msgid "Max pool capacity reached"
 msgstr "최대 풀 용량에 도달했습니다"
 
 #: src/components/NpsModal/NpsModal.tsx
-msgid "Error occurred. Try again"
-msgstr "오류가 발생했습니다. 다시 시도하십시오"
+#~ msgid "Error occurred. Try again"
+#~ msgstr "오류가 발생했습니다. 다시 시도하십시오"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
@@ -8086,8 +8082,8 @@ msgid "Two GLV variants mirror GLP's multi-asset exposure: one optimized for ETH
 msgstr "두 가지 GLV 변형은 GLP의 멀티에셋 익스포저를 반영합니다. 하나는 ETH 시장에 최적화되어 있고(50% ETH / 50% USDC), 다른 하나는 BTC 시장에 최적화되어 있습니다(50% BTC / 50% USDC). 이는 회수된 자금 구성을 반영하며, 향상된 수익률을 위해 주요 GMX 시장 전반에 걸쳐 동적 유동성 배분을 가능하게 합니다."
 
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
-msgid "Enter your feedback"
-msgstr "피드백을 입력하십시오"
+#~ msgid "Enter your feedback"
+#~ msgstr "피드백을 입력하십시오"
 
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -8120,8 +8116,8 @@ msgid "Short positions"
 msgstr "숏 포지션"
 
 #: src/components/Errors/errorToasts.tsx
-msgid "Report issue"
-msgstr "문제 보고"
+#~ msgid "Report issue"
+#~ msgstr "문제 보고"
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "Claim {0}"
@@ -8765,8 +8761,8 @@ msgid "Total investment value"
 msgstr "총 투자 금액"
 
 #: src/domain/synthetics/userFeedback/utils.ts
-msgid "What did you like most?"
-msgstr "가장 마음에 드셨던 점은 무엇입니까?"
+#~ msgid "What did you like most?"
+#~ msgstr "가장 마음에 드셨던 점은 무엇입니까?"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Performance and chart data are based on UTC times"
@@ -8861,8 +8857,8 @@ msgid "Stop Market"
 msgstr "스탑 마켓"
 
 #: src/domain/synthetics/userFeedback/utils.ts
-msgid "How can we keep meeting your expectations?"
-msgstr "저희가 어떻게 하면 기대에 계속 부응할 수 있을까요?"
+#~ msgid "How can we keep meeting your expectations?"
+#~ msgstr "저희가 어떻게 하면 기대에 계속 부응할 수 있을까요?"
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "Execution prices for increasing longs<0/>and decreasing shorts"
@@ -9262,8 +9258,8 @@ msgid "Staked"
 msgstr "스테이킹됨"
 
 #: src/components/Footer/Footer.tsx
-msgid "Leave feedback"
-msgstr "피드백 남기기"
+#~ msgid "Leave feedback"
+#~ msgstr "피드백 남기기"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/pages/Referrals/Referrals.tsx
@@ -9893,8 +9889,8 @@ msgid "Invalid liquidation price"
 msgstr "유효하지 않은 청산가"
 
 #: src/components/UserFeedbackModal/UserFeedbackModal.tsx
-msgid "Error, try again"
-msgstr "오류, 다시 시도하십시오"
+#~ msgid "Error, try again"
+#~ msgstr "오류, 다시 시도하십시오"
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Available to trade"
@@ -10271,8 +10267,8 @@ msgid "Last 30d"
 msgstr "최근 30일"
 
 #: src/domain/synthetics/userFeedback/utils.ts
-msgid "What issues did you encounter?"
-msgstr "어떤 문제를 겪으셨습니까?"
+#~ msgid "What issues did you encounter?"
+#~ msgstr "어떤 문제를 겪으셨습니까?"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Dashboards"
@@ -10470,8 +10466,8 @@ msgid "Withdraw {glvOrGm}: {0}"
 msgstr "{glvOrGm} 출금: {0}"
 
 #: src/components/RatingToast/RatingToast.tsx
-msgid "Very likely"
-msgstr "매우 가능"
+#~ msgid "Very likely"
+#~ msgstr "매우 가능"
 
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "Save tier"
