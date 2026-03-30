@@ -145,12 +145,14 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     false
   );
 
-  let [executionFeeBufferBps, setExecutionFeeBufferBps] = useLocalStorageSerializeKey(
-    getExecutionFeeBufferBpsKey(chainId),
-    getExecutionFeeConfig(chainId)?.defaultBufferBps
-  );
+  const defaultExecutionFeeBufferBps = getExecutionFeeConfig(chainId)?.defaultBufferBps;
+  const shouldUseExecutionFeeBuffer = Boolean(defaultExecutionFeeBufferBps);
 
-  const shouldUseExecutionFeeBuffer = Boolean(getExecutionFeeConfig(chainId)?.defaultBufferBps);
+  // useLocalStorage captures the initial value once; set defaults per-chain via effect instead.
+  let [executionFeeBufferBps, setExecutionFeeBufferBps] = useLocalStorageSerializeKey<number | undefined>(
+    getExecutionFeeBufferBpsKey(chainId),
+    undefined
+  );
 
   const [savedShowPnlAfterFees, setSavedShowPnlAfterFees] = useLocalStorageSerializeKey(
     [chainId, SHOW_PNL_AFTER_FEES_KEY],
@@ -250,17 +252,24 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   useEffect(() => {
     if (shouldUseExecutionFeeBuffer && executionFeeBufferBps === undefined) {
-      setExecutionFeeBufferBps(getExecutionFeeConfig(chainId)?.defaultBufferBps ?? 0);
+      setExecutionFeeBufferBps(defaultExecutionFeeBufferBps ?? 0);
     }
-  }, [chainId, executionFeeBufferBps, setExecutionFeeBufferBps, shouldUseExecutionFeeBuffer]);
+  }, [
+    chainId,
+    defaultExecutionFeeBufferBps,
+    executionFeeBufferBps,
+    setExecutionFeeBufferBps,
+    shouldUseExecutionFeeBuffer,
+  ]);
 
   useEffect(() => {
     if (!hasOverriddenDefaultArb30ExecutionFeeBufferBpsKey && chainId === ARBITRUM) {
-      setExecutionFeeBufferBps(getExecutionFeeConfig(chainId)?.defaultBufferBps ?? 0);
+      setExecutionFeeBufferBps(defaultExecutionFeeBufferBps ?? 0);
       setHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey(true);
     }
   }, [
     chainId,
+    defaultExecutionFeeBufferBps,
     hasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
     setExecutionFeeBufferBps,
     setHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,

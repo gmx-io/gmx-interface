@@ -3,7 +3,7 @@ import { useEffect, useMemo, useState } from "react";
 import useSWR from "swr";
 
 import { getServerUrl } from "config/backend";
-import { ARBITRUM, AVALANCHE, BOTANIX } from "config/chains";
+import { ARBITRUM, AVALANCHE, BOTANIX, MEGAETH } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { useGmxPrice, useTotalGmxStaked } from "domain/legacy";
 import { useV1FeesInfo, useVolumeInfo } from "domain/stats";
@@ -40,6 +40,7 @@ export function OverviewCard({
   const v2ArbitrumOverview = useV2Stats(ARBITRUM);
   const v2AvalancheOverview = useV2Stats(AVALANCHE);
   const v2BotanixOverview = useV2Stats(BOTANIX);
+  const v2MegaethOverview = useV2Stats(MEGAETH);
 
   const { data: positionStats } = useSWR<
     {
@@ -69,6 +70,7 @@ export function OverviewCard({
   const arbitrumPositionsCollateralUsd = usePositionsTotalCollateral(ARBITRUM);
   const avalanchePositionsCollateralUsd = usePositionsTotalCollateral(AVALANCHE);
   const botanixPositionsCollateralUsd = usePositionsTotalCollateral(BOTANIX);
+  const megaethPositionsCollateralUsd = usePositionsTotalCollateral(MEGAETH);
 
   // #region TVL and GLP Pool
   const glpTvlArbitrum = statsArbitrum?.glp.aum;
@@ -103,12 +105,14 @@ export function OverviewCard({
   const gmTvlArbitrum = v2ArbitrumOverview.totalGMLiquidity;
   const gmTvlAvalanche = v2AvalancheOverview.totalGMLiquidity;
   const gmTvlBotanix = v2BotanixOverview.totalGMLiquidity;
+  const gmTvlMegaeth = v2MegaethOverview.totalGMLiquidity;
 
-  const totalGmTvl = gmTvlArbitrum + gmTvlAvalanche + gmTvlBotanix;
+  const totalGmTvl = gmTvlArbitrum + gmTvlAvalanche + gmTvlBotanix + gmTvlMegaeth;
 
   let displayTvlArbitrum: bigint | undefined = undefined;
   let displayTvlAvalanche: bigint | undefined = undefined;
   let displayTvlBotanix: bigint | undefined = undefined;
+  let displayTvlMegaeth: bigint | undefined = undefined;
   let displayTvl: bigint | undefined = undefined;
   if (
     gmxPrice !== undefined &&
@@ -118,7 +122,8 @@ export function OverviewCard({
     glpMarketCapAvalanche !== undefined &&
     arbitrumPositionsCollateralUsd !== undefined &&
     avalanchePositionsCollateralUsd !== undefined &&
-    botanixPositionsCollateralUsd !== undefined
+    botanixPositionsCollateralUsd !== undefined &&
+    megaethPositionsCollateralUsd !== undefined
   ) {
     const stakedGmxUsdArbitrum = bigMath.mulDiv(gmxPrice, stakedGmxArbitrum, expandDecimals(1, GMX_DECIMALS));
     const stakedGmxUsdAvalanche = bigMath.mulDiv(gmxPrice, stakedGmxAvalanche, expandDecimals(1, GMX_DECIMALS));
@@ -128,7 +133,8 @@ export function OverviewCard({
     displayTvlAvalanche =
       stakedGmxUsdAvalanche + glpMarketCapAvalanche + gmTvlAvalanche + avalanchePositionsCollateralUsd;
     displayTvlBotanix = gmTvlBotanix + botanixPositionsCollateralUsd;
-    displayTvl = displayTvlArbitrum + displayTvlAvalanche;
+    displayTvlMegaeth = gmTvlMegaeth + megaethPositionsCollateralUsd;
+    displayTvl = displayTvlArbitrum + displayTvlAvalanche + displayTvlBotanix + displayTvlMegaeth;
   }
 
   // #endregion TVL and GLP Pool
@@ -141,13 +147,15 @@ export function OverviewCard({
   const v2ArbitrumDailyVolume = v2ArbitrumOverview.dailyVolume;
   const v2AvalancheDailyVolume = v2AvalancheOverview.dailyVolume;
   const v2BotanixDailyVolume = v2BotanixOverview.dailyVolume;
+  const v2MegaethDailyVolume = v2MegaethOverview.dailyVolume;
 
   const totalDailyVolume = sumBigInts(
     v1ArbitrumDailyVolume,
     v1AvalancheDailyVolume,
     v2ArbitrumDailyVolume,
     v2AvalancheDailyVolume,
-    v2BotanixDailyVolume
+    v2BotanixDailyVolume,
+    v2MegaethDailyVolume
   );
   // #endregion Daily Volume
 
@@ -157,13 +165,15 @@ export function OverviewCard({
   const v2ArbitrumOpenInterest = v2ArbitrumOverview.openInterest;
   const v2AvalancheOpenInterest = v2AvalancheOverview.openInterest;
   const v2BotanixOpenInterest = v2BotanixOverview.openInterest;
+  const v2MegaethOpenInterest = v2MegaethOverview.openInterest;
 
   const totalOpenInterest = sumBigInts(
     v1ArbitrumOpenInterest,
     v1AvalancheOpenInterest,
     v2ArbitrumOpenInterest,
     v2AvalancheOpenInterest,
-    v2BotanixOpenInterest
+    v2BotanixOpenInterest,
+    v2MegaethOpenInterest
   );
   // #endregion Open Interest
 
@@ -174,13 +184,15 @@ export function OverviewCard({
   const v2ArbitrumLongPositionSizes = v2ArbitrumOverview.totalLongPositionSizes;
   const v2AvalancheLongPositionSizes = v2AvalancheOverview.totalLongPositionSizes;
   const v2BotanixLongPositionSizes = v2BotanixOverview.totalLongPositionSizes;
+  const v2MegaethLongPositionSizes = v2MegaethOverview.totalLongPositionSizes;
 
   const totalLongPositionSizes = sumBigInts(
     v1ArbitrumLongPositionSizes,
     v1AvalancheLongPositionSizes,
     v2ArbitrumLongPositionSizes,
     v2AvalancheLongPositionSizes,
-    v2BotanixLongPositionSizes
+    v2BotanixLongPositionSizes,
+    v2MegaethLongPositionSizes
   );
   // #endregion Long Position Sizes
 
@@ -191,13 +203,15 @@ export function OverviewCard({
   const v2ArbitrumShortPositionSizes = v2ArbitrumOverview.totalShortPositionSizes;
   const v2AvalancheShortPositionSizes = v2AvalancheOverview.totalShortPositionSizes;
   const v2BotanixShortPositionSizes = v2BotanixOverview.totalShortPositionSizes;
+  const v2MegaethShortPositionSizes = v2MegaethOverview.totalShortPositionSizes;
 
   const totalShortPositionSizes = sumBigInts(
     v1ArbitrumShortPositionSizes,
     v1AvalancheShortPositionSizes,
     v2ArbitrumShortPositionSizes,
     v2AvalancheShortPositionSizes,
-    v2BotanixShortPositionSizes
+    v2BotanixShortPositionSizes,
+    v2MegaethShortPositionSizes
   );
   // #endregion Short Position Sizes
 
@@ -208,13 +222,15 @@ export function OverviewCard({
   const v2ArbitrumEpochFees = v2ArbitrumOverview?.epochFees;
   const v2AvalancheEpochFees = v2AvalancheOverview?.epochFees;
   const v2BotanixEpochFees = v2BotanixOverview?.epochFees;
+  const v2MegaethEpochFees = v2MegaethOverview?.epochFees;
 
   const totalEpochFeesUsd = sumBigInts(
     v1ArbitrumEpochFees,
     v1AvalancheEpochFees,
     v2ArbitrumEpochFees,
     v2AvalancheEpochFees,
-    v2BotanixEpochFees
+    v2BotanixEpochFees,
+    v2MegaethEpochFees
   );
 
   const v1ArbitrumWeeklyFees = v1ArbitrumFees?.weeklyFees;
@@ -223,13 +239,15 @@ export function OverviewCard({
   const v2ArbitrumWeeklyFees = v2ArbitrumOverview?.weeklyFees;
   const v2AvalancheWeeklyFees = v2AvalancheOverview?.weeklyFees;
   const v2BotanixWeeklyFees = v2BotanixOverview?.weeklyFees;
+  const v2MegaethWeeklyFees = v2MegaethOverview?.weeklyFees;
 
   const totalWeeklyFeesUsd = sumBigInts(
     v1ArbitrumWeeklyFees,
     v1AvalancheWeeklyFees,
     v2ArbitrumWeeklyFees,
     v2AvalancheWeeklyFees,
-    v2BotanixWeeklyFees
+    v2BotanixWeeklyFees,
+    v2MegaethWeeklyFees
   );
 
   // #endregion Fees
@@ -239,6 +257,7 @@ export function OverviewCard({
       "V2 Arbitrum": v2ArbitrumOverview?.dailyVolume,
       "V2 Avalanche": v2AvalancheOverview?.dailyVolume,
       "V2 Botanix": v2BotanixOverview?.dailyVolume,
+      "V2 MegaETH": v2MegaethOverview?.dailyVolume,
       "V1 Arbitrum": v1ArbitrumDailyVolume,
       "V1 Avalanche": v1AvalancheDailyVolume,
     }),
@@ -248,6 +267,7 @@ export function OverviewCard({
       v2ArbitrumOverview?.dailyVolume,
       v2AvalancheOverview?.dailyVolume,
       v2BotanixOverview?.dailyVolume,
+      v2MegaethOverview?.dailyVolume,
     ]
   );
 
@@ -256,6 +276,7 @@ export function OverviewCard({
       "V2 Arbitrum": v2ArbitrumOpenInterest,
       "V2 Avalanche": v2AvalancheOpenInterest,
       "V2 Botanix": v2BotanixOpenInterest,
+      "V2 MegaETH": v2MegaethOpenInterest,
       "V1 Avalanche": v1AvalancheOpenInterest,
       "V1 Arbitrum": v1ArbitrumOpenInterest,
     }),
@@ -265,6 +286,7 @@ export function OverviewCard({
       v2ArbitrumOpenInterest,
       v2AvalancheOpenInterest,
       v2BotanixOpenInterest,
+      v2MegaethOpenInterest,
     ]
   );
 
@@ -273,6 +295,7 @@ export function OverviewCard({
       "V2 Arbitrum": v2ArbitrumLongPositionSizes,
       "V2 Avalanche": v2AvalancheLongPositionSizes,
       "V2 Botanix": v2BotanixLongPositionSizes,
+      "V2 MegaETH": v2MegaethLongPositionSizes,
       "V1 Arbitrum": v1ArbitrumLongPositionSizes,
       "V1 Avalanche": v1AvalancheLongPositionSizes,
     }),
@@ -282,6 +305,7 @@ export function OverviewCard({
       v2ArbitrumLongPositionSizes,
       v2AvalancheLongPositionSizes,
       v2BotanixLongPositionSizes,
+      v2MegaethLongPositionSizes,
     ]
   );
 
@@ -290,6 +314,7 @@ export function OverviewCard({
       "V2 Arbitrum": v2ArbitrumShortPositionSizes,
       "V2 Avalanche": v2AvalancheShortPositionSizes,
       "V2 Botanix": v2BotanixShortPositionSizes,
+      "V2 MegaETH": v2MegaethShortPositionSizes,
       "V1 Arbitrum": v1ArbitrumShortPositionSizes,
       "V1 Avalanche": v1AvalancheShortPositionSizes,
     }),
@@ -299,6 +324,7 @@ export function OverviewCard({
       v2ArbitrumShortPositionSizes,
       v2AvalancheShortPositionSizes,
       v2BotanixShortPositionSizes,
+      v2MegaethShortPositionSizes,
     ]
   );
 
@@ -307,10 +333,18 @@ export function OverviewCard({
       "V2 Arbitrum": v2ArbitrumEpochFees,
       "V2 Avalanche": v2AvalancheEpochFees,
       "V2 Botanix": v2BotanixEpochFees,
+      "V2 MegaETH": v2MegaethEpochFees,
       "V1 Arbitrum": v1ArbitrumEpochFees,
       "V1 Avalanche": v1AvalancheEpochFees,
     }),
-    [v1ArbitrumEpochFees, v1AvalancheEpochFees, v2ArbitrumEpochFees, v2AvalancheEpochFees, v2BotanixEpochFees]
+    [
+      v1ArbitrumEpochFees,
+      v1AvalancheEpochFees,
+      v2ArbitrumEpochFees,
+      v2AvalancheEpochFees,
+      v2BotanixEpochFees,
+      v2MegaethEpochFees,
+    ]
   );
 
   const [formattedDuration, setFormattedDuration] = useState(() => getFormattedFeesDuration());
@@ -325,7 +359,12 @@ export function OverviewCard({
   const feesSubtotal = useMemo(() => {
     const v1BuyingPressure = (((v1ArbitrumWeeklyFees ?? 0n) + (v1AvalancheWeeklyFees ?? 0n)) * 30n) / 100n;
     const v2BuyingPressure =
-      (((v2ArbitrumWeeklyFees ?? 0n) + (v2AvalancheWeeklyFees ?? 0n) + (v2BotanixWeeklyFees ?? 0n)) * 27n) / 100n;
+      (((v2ArbitrumWeeklyFees ?? 0n) +
+        (v2AvalancheWeeklyFees ?? 0n) +
+        (v2BotanixWeeklyFees ?? 0n) +
+        (v2MegaethWeeklyFees ?? 0n)) *
+        27n) /
+      100n;
     const annualizedTotal = (totalWeeklyFeesUsd * 365n) / 7n;
     const totalBuyingPressure = v1BuyingPressure + v2BuyingPressure;
     const annualizedTotalBuyingPressure = (totalBuyingPressure * 365n) / 7n;
@@ -356,6 +395,7 @@ export function OverviewCard({
     v2ArbitrumWeeklyFees,
     v2AvalancheWeeklyFees,
     v2BotanixWeeklyFees,
+    v2MegaethWeeklyFees,
     totalWeeklyFeesUsd,
   ]);
 
@@ -411,6 +451,11 @@ export function OverviewCard({
                         label={t`Botanix`}
                         showDollar={false}
                         value={formatAmountHuman(displayTvlBotanix, USD_DECIMALS, true, 2)}
+                      />
+                      <StatsTooltipRow
+                        label="MegaETH"
+                        showDollar={false}
+                        value={formatAmountHuman(displayTvlMegaeth, USD_DECIMALS, true, 2)}
                       />
                       <div className="!my-8 h-1 bg-gray-800" />
                       <StatsTooltipRow
@@ -488,6 +533,11 @@ export function OverviewCard({
                         label={t`Botanix`}
                         showDollar={false}
                         value={formatAmountHuman(gmTvlBotanix, USD_DECIMALS, true, 2)}
+                      />
+                      <StatsTooltipRow
+                        label="MegaETH"
+                        showDollar={false}
+                        value={formatAmountHuman(gmTvlMegaeth, USD_DECIMALS, true, 2)}
                       />
                       <div className="!my-8 h-1 bg-gray-800" />
                       <StatsTooltipRow

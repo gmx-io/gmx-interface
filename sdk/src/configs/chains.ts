@@ -20,6 +20,7 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   BOTANIX,
+  MEGAETH,
   SOURCE_ETHEREUM_MAINNET,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
@@ -32,6 +33,7 @@ export {
   AVALANCHE,
   AVALANCHE_FUJI,
   BOTANIX,
+  MEGAETH,
   ARBITRUM_SEPOLIA,
   SOURCE_ETHEREUM_MAINNET,
   SOURCE_BASE_MAINNET,
@@ -40,7 +42,7 @@ export {
   SOURCE_SEPOLIA,
 };
 
-export const CONTRACTS_CHAIN_IDS = [ARBITRUM, AVALANCHE, BOTANIX] as const;
+export const CONTRACTS_CHAIN_IDS = [ARBITRUM, AVALANCHE, BOTANIX, MEGAETH] as const;
 export const CONTRACTS_CHAIN_IDS_DEV = [...CONTRACTS_CHAIN_IDS, AVALANCHE_FUJI, ARBITRUM_SEPOLIA] as const;
 export const SETTLEMENT_CHAIN_IDS = [ARBITRUM, AVALANCHE] as const;
 export const SETTLEMENT_CHAIN_IDS_DEV = [...SETTLEMENT_CHAIN_IDS, ARBITRUM_SEPOLIA, AVALANCHE_FUJI] as const;
@@ -165,6 +167,25 @@ const CONTRACTS_CHAIN_CONFIGS = {
     gasPriceBuffer: undefined,
     isDisabled: false,
   },
+  [MEGAETH]: {
+    chainId: MEGAETH,
+    name: "MegaETH",
+    slug: "megaeth",
+    explorerUrl: "https://megaeth.blockscout.com/",
+    nativeTokenSymbol: "ETH",
+    wrappedTokenSymbol: "WETH",
+    defaultCollateralSymbol: "USDM",
+    highExecutionFee: 5,
+    shouldUseMaxPriorityFeePerGas: true,
+    defaultExecutionFeeBufferBps: 3000, // 30%
+    maxFeePerGas: undefined,
+    gasPricePremium: 0n,
+    maxPriorityFeePerGas: 500000n, // 0.0005 gwei
+    excessiveExecutionFee: 10, // 10 USD
+    minExecutionFee: undefined,
+    gasPriceBuffer: 2000n, // 20%
+    isDisabled: false,
+  },
   // Use this notation to correctly infer chain names, etc. from config
 } as const satisfies Record<ContractsChainId, ContractsChainConfig>;
 
@@ -174,54 +195,63 @@ const SOURCE_CHAIN_CONFIGS = {
     name: "Optimism Sepolia",
     slug: "optimism-sepolia",
     explorerUrl: "https://sepolia-optimism.etherscan.io/",
+    gasPriceBuffer: undefined,
   },
   [SOURCE_SEPOLIA]: {
     chainId: SOURCE_SEPOLIA,
     name: "Sepolia",
     slug: "sepolia",
     explorerUrl: "https://sepolia.etherscan.io/",
+    gasPriceBuffer: undefined,
   },
   [SOURCE_BASE_MAINNET]: {
     chainId: SOURCE_BASE_MAINNET,
     name: "Base",
     slug: "base-mainnet",
     explorerUrl: "https://basescan.org/",
+    gasPriceBuffer: 3000n, // 30%
   },
   [SOURCE_BSC_MAINNET]: {
     chainId: SOURCE_BSC_MAINNET,
     name: "BNB",
     slug: "bnb-mainnet",
     explorerUrl: "https://bscscan.com/",
+    gasPriceBuffer: 3000n, // 30%
   },
   [SOURCE_ETHEREUM_MAINNET]: {
     chainId: SOURCE_ETHEREUM_MAINNET,
     name: "Ethereum",
     slug: "ethereum-mainnet",
     explorerUrl: "https://etherscan.io/",
+    gasPriceBuffer: 3000n, // 30%
   },
   [ARBITRUM]: {
     chainId: ARBITRUM,
     name: "Arbitrum",
     slug: "arbitrum",
     explorerUrl: "https://arbiscan.io/",
+    gasPriceBuffer: undefined,
   },
   [AVALANCHE]: {
     chainId: AVALANCHE,
     name: "Avalanche",
     slug: "avalanche",
     explorerUrl: "https://snowtrace.io/",
+    gasPriceBuffer: undefined,
   },
   [ARBITRUM_SEPOLIA]: {
     chainId: ARBITRUM_SEPOLIA,
     name: "Arbitrum Sepolia",
     slug: "arbitrum-sepolia",
     explorerUrl: "https://sepolia.arbiscan.io/",
+    gasPriceBuffer: undefined,
   },
   [AVALANCHE_FUJI]: {
     chainId: AVALANCHE_FUJI,
     name: "Avalanche Fuji",
     slug: "avalanche-fuji",
     explorerUrl: "https://testnet.snowtrace.io/",
+    gasPriceBuffer: undefined,
   },
   // Use this notation to correctly infer chain names, etc. from config
 } as const satisfies Record<SourceChainId, SourceChainConfig>;
@@ -270,12 +300,39 @@ export const botanix: Chain = defineChain({
   },
 });
 
+export const megaeth: Chain = defineChain({
+  id: MEGAETH,
+  name: "MegaETH",
+  nativeCurrency: {
+    name: "Ether",
+    symbol: "ETH",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: {
+      http: ["https://mainnet.megaeth.com/rpc"],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: "MegaExplorer",
+      url: "https://megaeth.blockscout.com",
+    },
+  },
+  contracts: {
+    multicall3: {
+      address: "0xF516BC01c50eebdBad4d7E506c8f690ae8EAFc52",
+    },
+  },
+});
+
 export const VIEM_CHAIN_BY_CHAIN_ID: Record<AnyChainId, Chain> = {
   [AVALANCHE_FUJI]: avalancheFuji,
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
   [ARBITRUM_SEPOLIA]: arbitrumSepolia,
   [BOTANIX]: botanix,
+  [MEGAETH]: megaeth,
   [SOURCE_ETHEREUM_MAINNET]: mainnet,
   [SOURCE_OPTIMISM_SEPOLIA]: optimismSepolia,
   [SOURCE_SEPOLIA]: sepolia,
@@ -333,8 +390,11 @@ export function getMinExecutionFeeUsd(chainId: ContractsChainId) {
   return CONTRACTS_CHAIN_CONFIGS[chainId]?.minExecutionFee;
 }
 
-export function getGasPriceBuffer(chainId: ContractsChainId) {
-  return CONTRACTS_CHAIN_CONFIGS[chainId]?.gasPriceBuffer;
+export function getGasPriceBuffer(chainId: ContractsChainId | SourceChainId) {
+  return (
+    CONTRACTS_CHAIN_CONFIGS[chainId as ContractsChainId]?.gasPriceBuffer ??
+    SOURCE_CHAIN_CONFIGS[chainId as SourceChainId]?.gasPriceBuffer
+  );
 }
 
 export function isChainDisabled(chainId: ContractsChainId) {

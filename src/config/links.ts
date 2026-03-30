@@ -1,8 +1,13 @@
-import { ARBITRUM, AVALANCHE } from "config/chains";
+import { ARBITRUM, AVALANCHE, MEGAETH } from "config/chains";
 
 export const PRODUCTION_HOST = "https://app.gmx.io";
+export const JUMPER_EXCHANGE_URL = "https://jumper.exchange/";
 
-export function get1InchSwapUrlFromAddresses(chainId: number, fromAddress?: string, toAddress?: string) {
+export function getExternalAggregatorSwapUrlFromAddresses(chainId: number, fromAddress?: string, toAddress?: string) {
+  if (MEGAETH === chainId) {
+    return JUMPER_EXCHANGE_URL;
+  }
+
   const addressesStr = [fromAddress, toAddress].filter(Boolean).join("/");
   return `https://app.1inch.io/#/${chainId}/simple/swap/${addressesStr}`;
 }
