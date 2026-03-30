@@ -391,7 +391,6 @@ export function getDecreasePositionAmounts(p: {
 
   values.receiveUsd = convertToUsd(values.receiveTokenAmount, collateralToken.decimals, values.collateralPrice)!;
 
-  // SwapCollateralTokenToPnlToken → primaryOutput (pnl token), otherwise → secondaryOutput (collateral token)
   const pnlTokenPrice = pnlToken.prices.minPrice;
 
   if (values.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken) {
@@ -779,7 +778,7 @@ export function getCollateralToPnlInternalSwapStats(p: { pnlToken: TokenData; re
 } {
   const { pnlToken, receiveUsd } = p;
 
-  // Fees already deducted in getDecreasePositionAmounts — convert at oracle price to avoid double-counting
+  // Fees already deducted — convert at oracle price to avoid double-counting
   const amountOut = convertToTokenAmount(receiveUsd, pnlToken.decimals, pnlToken.prices.minPrice) ?? 0n;
 
   return { amountOut };
@@ -887,7 +886,7 @@ export function getOptimalDecreaseAndSwapAmounts(p: {
     return { decreaseAmounts: pathADecrease, swapAmounts: pathASwap };
   }
 
-  // Path B: force internal collateral→pnl swap, then external pnl→receive
+  // Path B: internal collateral→pnl, then external pnl→receive
   const pathBDecrease = getDecreasePositionAmounts({
     ...decreaseBaseParams,
     forceDecreaseSwapType: DecreasePositionSwapType.SwapCollateralTokenToPnlToken,

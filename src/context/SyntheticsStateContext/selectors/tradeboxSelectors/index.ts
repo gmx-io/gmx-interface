@@ -1157,6 +1157,19 @@ const selectTradeboxExistingLimitOrder = createSelector((q) => {
 export const selectTradeboxHasExistingLimitOrder = createSelector((q) => !!q(selectTradeboxExistingLimitOrder));
 export const selectTradeboxHasExistingPosition = createSelector((q) => !!q(selectTradeboxSelectedPosition));
 
+export const selectTradeboxResultingPositionLeverage = createSelector((q) => {
+  const nextValues = q(selectTradeboxNextPositionValuesForIncrease);
+  return nextValues?.nextLeverage;
+});
+
+export const selectTradeboxLeverageTooltipEnabled = createSelector((q) => {
+  const isLeverageSliderEnabled = q(selectIsLeverageSliderEnabled);
+  const { isIncrease } = q(selectTradeboxTradeFlags);
+  const hasExistingPosition = q(selectTradeboxHasExistingPosition);
+
+  return !isLeverageSliderEnabled && isIncrease && hasExistingPosition;
+});
+
 export const selectTradeboxTradeRatios = createSelector(function selectTradeboxTradeRatios(q) {
   const { isSwap } = q(selectTradeboxTradeFlags);
 

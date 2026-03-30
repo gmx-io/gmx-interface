@@ -46,6 +46,8 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTradeMode,
   selectTradeboxTriggerPrice,
+  selectTradeboxDecreasePositionAmounts,
+  selectTradeboxHasExistingPosition,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
 import { selectExternalSwapQuoteParams } from "context/SyntheticsStateContext/selectors/tradeSelectors";
@@ -145,6 +147,8 @@ export function useTradeboxButtonState({
   const isStakeOrUnstake = useSelector(selectTradeboxIsStakeOrUnstake);
   const payAmount = useSelector(selectTradeboxPayAmount);
   const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
+  const hasExistingPosition = useSelector(selectTradeboxHasExistingPosition);
+  const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const { tokenChainDataArray } = useMultichainTokens();
 
   const { setPendingTxns } = usePendingTxns();
@@ -543,13 +547,27 @@ export function useTradeboxButtonState({
       if (buttonErrorText) {
         submitButtonText = buttonErrorText;
       } else {
-        const modeLabel = localizedTradeModeLabels[tradeMode];
-
         if (isSwap) {
+          const modeLabel = localizedTradeModeLabels[tradeMode];
           submitButtonText = `${modeLabel}: ${t`Swap`} ${fromToken?.symbol}`;
         } else {
-          const actionLabel = isIncrease ? t`increase` : t`decrease`;
-          submitButtonText = `${modeLabel}: ${localizedTradeTypeLabels[tradeType!]} ${actionLabel}`;
+          const directionLabel = localizedTradeTypeLabels[tradeType!];
+          const isMarket = tradeMode === TradeMode.Market;
+
+          let actionLabel: string;
+          if (isIncrease) {
+            actionLabel = hasExistingPosition ? t`Increase` : t`Open`;
+          } else {
+            const isFullClose = decreaseAmounts?.isFullClose ?? false;
+            actionLabel = isFullClose ? t`Close` : t`Decrease`;
+          }
+
+          if (isMarket) {
+            submitButtonText = `${actionLabel} ${directionLabel}`;
+          } else {
+            const modeLabel = localizedTradeModeLabels[tradeMode];
+            submitButtonText = `${modeLabel}: ${actionLabel} ${directionLabel}`;
+          }
         }
       }
     }
@@ -602,6 +620,8 @@ export function useTradeboxButtonState({
     tradeMode,
     tradeType,
     isFromTokenGmxAccount,
+    hasExistingPosition,
+    decreaseAmounts?.isFullClose,
   ]);
 }
 

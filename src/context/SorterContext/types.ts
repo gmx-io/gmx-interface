@@ -5,7 +5,8 @@ export type SorterKey =
   | "dashboard-markets-list"
   | "gm-token-selector"
   | "leaderboard-accounts-table"
-  | "leaderboard-positions-table";
+  | "leaderboard-positions-table"
+  | "position-list";
 
 export type SorterConfig<SortField extends string | "unspecified" = "unspecified"> = {
   orderBy: SortField;

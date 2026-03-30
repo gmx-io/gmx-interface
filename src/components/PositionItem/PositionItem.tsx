@@ -18,7 +18,6 @@ import {
   getEstimatedLiquidationTimeInHours,
 } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";
-import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { CHART_PERIODS } from "lib/legacy";
 import { formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
@@ -39,7 +38,7 @@ import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { PositionItemOrdersLarge, PositionItemOrdersSmall } from "./PositionItemOrders";
 import { PositionItemTPSLCell } from "./PositionItemTPSLCell";
-import { TPSLModal } from "../TPSLModal/TPSLModal";
+import { OrdersModal } from "../OrdersModal/OrdersModal";
 
 import "./PositionItem.scss";
 
@@ -47,7 +46,7 @@ export type Props = {
   position: PositionInfo;
   hideActions?: boolean;
   showPnlAfterFees: boolean;
-  onClosePositionClick?: (orderOption?: OrderOption) => void;
+  onClosePositionClick?: () => void;
   onEditCollateralClick?: () => void;
   onShareClick?: () => void;
   onSelectPositionClick?: (tradeMode?: TradeMode, showCurtain?: boolean) => void;
@@ -85,6 +84,10 @@ export function PositionItem(p: Props) {
     setTpslInitialView("add");
     setIsTPSLModalVisible(true);
   }, []);
+
+  const handleCloseButtonClick = useCallback(() => {
+    p.onClosePositionClick?.();
+  }, [p]);
 
   function renderNetValue() {
     return (
@@ -583,26 +586,16 @@ export function PositionItem(p: Props) {
           </TableTd>
         )}
         {!p.hideActions && (
-          <TableTd>
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <Button
-                  variant="ghost"
-                  onClick={() => p.onClosePositionClick?.(OrderOption.Market)}
-                  disabled={isCloseDisabled}
-                  data-qa="position-close-market-button"
-                >
-                  <Trans>Market</Trans>
-                </Button>
-                <Button
-                  variant="ghost"
-                  onClick={() => p.onClosePositionClick?.(OrderOption.Twap)}
-                  disabled={isCloseDisabled}
-                  data-qa="position-close-twap-button"
-                >
-                  <Trans>TWAP</Trans>
-                </Button>
-              </div>
+          <TableTd className="PositionItem-actions-cell">
+            <div className="flex items-center justify-end gap-4">
+              <Button
+                variant="ghost"
+                onClick={handleCloseButtonClick}
+                disabled={isCloseDisabled}
+                data-qa="position-close-button"
+              >
+                <Trans>Close</Trans>
+              </Button>
 
               <PositionDropdown
                 handleEditCollateral={p.onEditCollateralClick}
@@ -777,22 +770,14 @@ export function PositionItem(p: Props) {
         {!p.hideActions && (
           <AppCardSection>
             <div className="flex items-center justify-between">
-              <div className="flex gap-8">
-                <Button
-                  variant="secondary"
-                  disabled={isCloseDisabled}
-                  onClick={() => p.onClosePositionClick?.(OrderOption.Market)}
-                >
-                  <Trans>Market</Trans>
-                </Button>
-                <Button
-                  variant="secondary"
-                  disabled={isCloseDisabled}
-                  onClick={() => p.onClosePositionClick?.(OrderOption.Twap)}
-                >
-                  <Trans>TWAP</Trans>
-                </Button>
-              </div>
+              <Button
+                variant="secondary"
+                disabled={isCloseDisabled}
+                onClick={handleCloseButtonClick}
+                data-qa="position-close-button"
+              >
+                <Trans>Close</Trans>
+              </Button>
               <div>
                 <PositionDropdown
                   handleEditCollateral={p.onEditCollateralClick}
@@ -816,7 +801,7 @@ export function PositionItem(p: Props) {
   return (
     <>
       {p.isLarge ? renderLarge() : renderSmall()}
-      <TPSLModal
+      <OrdersModal
         isVisible={isTPSLModalVisible}
         setIsVisible={setIsTPSLModalVisible}
         position={p.position}

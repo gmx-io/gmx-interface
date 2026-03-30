@@ -1,6 +1,7 @@
 import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 
 import { SourceChainId } from "config/chains";
+import { TRADEBOX_SIZE_DENOMINATION_KEY } from "config/localStorage";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   selectTradeboxFocusedInput,
@@ -14,6 +15,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { calcMarginAmountByPercentage, calcMarginPercentage } from "domain/synthetics/trade";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { getByKey } from "lib/objects";
 
 import { MarginField } from "./MarginField";
@@ -67,7 +69,11 @@ export function TradeboxMarginFields({
 
   const toToken = getByKey(tokensData, toTokenAddress);
 
-  const [sizeDisplayMode, setSizeDisplayMode] = useState<SizeDisplayMode>("usd");
+  const [sizeDisplayModeRaw, setSizeDisplayMode] = useLocalStorageSerializeKey<SizeDisplayMode>(
+    TRADEBOX_SIZE_DENOMINATION_KEY,
+    "usd"
+  );
+  const sizeDisplayMode: SizeDisplayMode = sizeDisplayModeRaw ?? "usd";
   const [sizeInputValue, setSizeInputValue] = useState<string>(toTokenInputValue);
 
   const { isLimit } = tradeFlags;
@@ -85,14 +91,19 @@ export function TradeboxMarginFields({
     [fromTokenInputValue, maxAvailableAmount, fromToken?.decimals]
   );
 
-  const { isLeverageSliderEnabled, sizePercentage, handleSizePercentageChange, markFieldInteraction } =
-    useTradeboxManualLeverageSizeSlider({
-      sizeDisplayMode,
-      canConvert,
-      tokensToUsd,
-      setSizeInputValue,
-      setToTokenInputValue,
-    });
+  const {
+    isLeverageSliderEnabled,
+    isSizeSliderDisabled,
+    sizePercentage,
+    handleSizePercentageChange,
+    markFieldInteraction,
+  } = useTradeboxManualLeverageSizeSlider({
+    sizeDisplayMode,
+    canConvert,
+    tokensToUsd,
+    setSizeInputValue,
+    setToTokenInputValue,
+  });
 
   // Sync size input value to USD when market/token context changes
   // USD value calculated separately from increase/decrease amounts
@@ -216,6 +227,12 @@ export function TradeboxMarginFields({
     (newMode: SizeDisplayMode) => {
       if (newMode === sizeDisplayMode) return;
 
+      const currentValue = sizeDisplayMode === "usd" ? sizeInputValue : toTokenInputValue;
+      if (!currentValue) {
+        setSizeDisplayMode(newMode);
+        return;
+      }
+
       if (newMode === "token") {
         const tokensValue = canConvert ? usdToTokens(sizeInputValue) : toTokenInputValue;
         if (tokensValue !== toTokenInputValue) {
@@ -229,7 +246,16 @@ export function TradeboxMarginFields({
 
       setSizeDisplayMode(newMode);
     },
-    [sizeDisplayMode, canConvert, sizeInputValue, toTokenInputValue, tokensToUsd, usdToTokens, setToTokenInputValue]
+    [
+      sizeDisplayMode,
+      canConvert,
+      sizeInputValue,
+      toTokenInputValue,
+      tokensToUsd,
+      usdToTokens,
+      setToTokenInputValue,
+      setSizeDisplayMode,
+    ]
   );
 
   const percentageSliderValue = isLeverageSliderEnabled ? marginPercentage : sizePercentage;
@@ -270,7 +296,11 @@ export function TradeboxMarginFields({
           />
         )}
       </div>
-      <MarginPercentageSlider value={percentageSliderValue} onChange={handlePercentageChange} />
+      <MarginPercentageSlider
+        value={percentageSliderValue}
+        onChange={handlePercentageChange}
+        disabled={isSizeSliderDisabled}
+      />
     </div>
   );
 }

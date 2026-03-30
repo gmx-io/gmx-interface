@@ -214,7 +214,6 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
         className={cx("SelectorBase-button SelectorBase-button-disabled gap-5", props.handleClassName)}
       >
         <span className="grow overflow-hidden text-ellipsis">{props.label}</span>
-        <ChevronDownIcon className={cx("inline-block size-16 text-typography-secondary", props.chevronClassName)} />
       </div>
     );
   }
@@ -286,7 +285,6 @@ function SelectorBaseMobile(props: Props) {
     return (
       <div className={cx("SelectorBase-button SelectorBase-button-disabled", props.handleClassName)}>
         <span className="overflow-hidden text-ellipsis">{props.label}</span>
-        <ChevronDownIcon className={cx("inline-block size-16 text-typography-secondary", props.chevronClassName)} />
       </div>
     );
   }

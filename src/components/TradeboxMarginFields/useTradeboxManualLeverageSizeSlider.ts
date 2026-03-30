@@ -148,8 +148,11 @@ export function useTradeboxManualLeverageSizeSlider({
     applySizeByIndexTokenAmount(indexTokenAmount);
   }, [isLeverageSliderEnabled, maxSizeByMarginInTokens, applySizeByIndexTokenAmount]);
 
+  const isSizeSliderDisabled = !isLeverageSliderEnabled && tradeFlags.isIncrease && fromTokenAmount <= 0n;
+
   return {
     isLeverageSliderEnabled,
+    isSizeSliderDisabled,
     sizePercentage,
     handleSizePercentageChange,
     markFieldInteraction,

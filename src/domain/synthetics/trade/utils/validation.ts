@@ -369,7 +369,10 @@ export function getIncreaseError(p: {
     numberOfParts > 0 &&
     (collateralUsd === undefined ? undefined : collateralUsd / BigInt(numberOfParts) < minTwapPartSize)
   ) {
-    return { buttonErrorMessage: t`Min margin per part: ${formatUsd(minTwapPartSize)}` };
+    const actualMarginPerPart = collateralUsd! / BigInt(numberOfParts);
+    return {
+      buttonErrorMessage: t`Min margin per part: ${formatUsd(minTwapPartSize)}, actual: ${formatUsd(actualMarginPerPart, { roundMode: "floor" })}`,
+    };
   }
 
   if (

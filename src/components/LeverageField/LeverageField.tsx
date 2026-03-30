@@ -15,6 +15,7 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import AlertIcon from "img/ic_alert.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
@@ -27,6 +28,7 @@ type Props = {
   onChange: (value: number) => void;
   marks: number[];
   disabled?: boolean;
+  tooltipContent?: React.ReactNode;
 };
 
 function clampLeverage(value: number, min: number, max: number) {
@@ -42,7 +44,7 @@ function formatLeverage(value: number, options?: { integer?: boolean }) {
   return parseFloat(value.toFixed(2)).toString();
 }
 
-export function LeverageField({ value, onChange, marks, disabled }: Props) {
+export function LeverageField({ value, onChange, marks, disabled, tooltipContent }: Props) {
   const finalMarks = useMemo(() => (marks?.length ? marks : DEFAULT_LEVERAGE_MARKS), [marks]);
   const minMark = finalMarks[0] ?? DEFAULT_LEVERAGE;
   const maxMark = finalMarks.at(-1) ?? DEFAULT_LEVERAGE;
@@ -140,11 +142,15 @@ export function LeverageField({ value, onChange, marks, disabled }: Props) {
 
   const displayValue = useMemo(() => {
     if (value === null) {
-      return disabled ? "-" : formatLeverage(minMark);
+      return disabled ? `> ${formatLeverage(maxMark, { integer: true })}` : formatLeverage(minMark);
+    }
+
+    if (disabled && value > maxMark) {
+      return `> ${formatLeverage(maxMark, { integer: true })}`;
     }
 
     const clampedValue = disabled ? value : clampLeverage(value, minMark, maxMark);
-    return formatLeverage(clampedValue, { integer: disabled && value > maxMark });
+    return formatLeverage(clampedValue);
   }, [value, disabled, minMark, maxMark]);
 
   return (
@@ -163,20 +169,22 @@ export function LeverageField({ value, onChange, marks, disabled }: Props) {
         onClick={handleFieldClick}
         {...getReferenceProps()}
       >
-        <span
-          className={cx("text-13", isOpen ? "text-blue-300" : "text-typography-primary", {
-            "group-hover:text-blue-300": !disabled && !isOpen,
-          })}
-        >
-          {displayValue}
+        <TooltipWithPortal disabled={!tooltipContent} content={tooltipContent} as="span" variant="none">
           <span
-            className={cx("ml-4", isOpen ? "text-blue-300" : "text-typography-secondary", {
+            className={cx("text-13 whitespace-nowrap", isOpen ? "text-blue-300" : "text-typography-primary", {
               "group-hover:text-blue-300": !disabled && !isOpen,
             })}
           >
-            x
+            {displayValue}
+            <span
+              className={cx("ml-4", isOpen ? "text-blue-300" : "text-typography-secondary", {
+                "group-hover:text-blue-300": !disabled && !isOpen,
+              })}
+            >
+              x
+            </span>
           </span>
-        </span>
+        </TooltipWithPortal>
       </div>
 
       {isOpen && (
