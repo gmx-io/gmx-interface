@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { getIsFlagEnabled } from "config/ab";
 import { useUserReferralInfoRequest } from "domain/referrals";
 import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
@@ -65,7 +66,7 @@ export function usePositionsInfoRequest(
     positionsError,
   } = p;
 
-  const isApiSdkEnabled = false;
+  const isApiSdkEnabled = getIsFlagEnabled("apiSdk2");
 
   const {
     positionsInfoData: apiPositionsInfoData,
