@@ -13,21 +13,28 @@ import { getWrappedToken } from "sdk/configs/tokens";
 function calculateLogicalNetworkFeeUsd({
   technicalFees,
   wrappedTokenData,
+  gasPrice,
   sourceChainEstimatedNativeFeeUsd,
   sourceChainTxnEstimatedGasUsd,
 }: {
   technicalFees: TechnicalGmFees;
   wrappedTokenData: TokenData | undefined;
+  gasPrice: bigint | undefined;
   sourceChainEstimatedNativeFeeUsd: bigint | undefined;
   sourceChainTxnEstimatedGasUsd: bigint | undefined;
 }): bigint | undefined {
   if (technicalFees.kind === "settlementChain") {
-    if (!wrappedTokenData) {
+    if (!wrappedTokenData || gasPrice === undefined) {
       return undefined;
     }
+
     const wrappedTokenPrice = getMidPrice(wrappedTokenData.prices);
     const keeperUsd = convertToUsd(technicalFees.fees.feeTokenAmount, wrappedTokenData.decimals, wrappedTokenPrice)!;
-    return keeperUsd * -1n;
+    // Keep displayed network fee aligned with submit validation by adding an estimated wallet tx gas component.
+    const walletTxGasAmount = technicalFees.fees.gasLimit * gasPrice;
+    const walletTxGasUsd = convertToUsd(walletTxGasAmount, wrappedTokenData.decimals, wrappedTokenPrice) ?? 0n;
+
+    return (keeperUsd + walletTxGasUsd) * -1n;
   }
 
   if (technicalFees.kind === "gmxAccount") {
@@ -109,7 +116,7 @@ export const useDepositWithdrawalFees = ({
   });
 
   return useMemo(() => {
-    if (!gasLimits || gasPrice === undefined || !tokensData || !amounts || !technicalFees) {
+    if (!gasLimits || !tokensData || !amounts || !technicalFees) {
       return undefined;
     }
 
@@ -119,6 +126,7 @@ export const useDepositWithdrawalFees = ({
     const logicalNetworkFeeUsd = calculateLogicalNetworkFeeUsd({
       technicalFees,
       wrappedTokenData,
+      gasPrice,
       sourceChainEstimatedNativeFeeUsd,
       sourceChainTxnEstimatedGasUsd,
     });

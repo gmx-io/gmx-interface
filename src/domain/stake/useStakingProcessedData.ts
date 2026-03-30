@@ -3,7 +3,7 @@ import useSWR from "swr";
 import { zeroAddress } from "viem";
 
 import { getServerUrl } from "config/backend";
-import { ARBITRUM, BOTANIX, ContractsChainId } from "config/chains";
+import { ARBITRUM, BOTANIX, ContractsChainId, MEGAETH } from "config/chains";
 import { getContract } from "config/contracts";
 import { useGmxPrice } from "domain/legacy";
 import useVestingData from "domain/vesting/useVestingData";
@@ -110,7 +110,7 @@ export function useStakingProcessedData(targetChainId?: ContractsChainId) {
     return Promise.all(promises);
   }, [mutateContractsData, mutateGmxSupply]);
 
-  if (chainId === BOTANIX) {
+  if (chainId === BOTANIX || chainId === MEGAETH) {
     return {
       data: {} as StakingProcessedData,
       mutate: mutateProcessedData,
