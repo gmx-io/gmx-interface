@@ -13,6 +13,7 @@ import {
 
 import type { TokenBalancesData, TokenData, TokensData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
+import { bigMath } from "sdk/utils/bigmath";
 import { TokenBalanceType } from "sdk/utils/tokens/types";
 
 export type TokenBalanceUpdate = {
@@ -287,7 +288,8 @@ export function updateTokenBalance(balanceUpdate: TokenBalanceUpdate, balance: b
   }
 
   if (balanceUpdate.diff !== undefined) {
-    return balance + balanceUpdate.diff;
+    // avoid negative balances
+    return bigMath.max(0n, balance + balanceUpdate.diff);
   } else if (balanceUpdate.balance !== undefined) {
     return balanceUpdate.balance;
   }

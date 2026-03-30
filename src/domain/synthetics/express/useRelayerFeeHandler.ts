@@ -107,7 +107,10 @@ export function useExpressOrdersParams({
 
         return nextApproximateParams;
       } catch (error) {
-        metrics.pushError(error, `fastExpressParams.error.${label}`);
+        // Only log non-timeout errors to reduce log volume
+        if (error instanceof Error && error.message !== FAST_EXPRESS_PARAMS_TIMEOUT_ERROR) {
+          metrics.pushError(error, `fastExpressParams.error.${label}`);
+        }
         throw error;
       }
     },

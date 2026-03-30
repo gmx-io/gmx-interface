@@ -3,6 +3,7 @@ import { withRetry } from "viem";
 
 import {
   ContractsChainId,
+  SourceChainId,
   getGasPriceBuffer,
   getGasPricePremium,
   getMaxFeePerGas,
@@ -69,7 +70,7 @@ export async function getGasPrice(provider: Provider, chainId: number): Promise<
       throw new Error("Can't fetch gas price");
     }
 
-    const bufferBps: bigint = getGasPriceBuffer(chainId as ContractsChainId) || 0n;
+    const bufferBps: bigint = getGasPriceBuffer(chainId as ContractsChainId | SourceChainId) || 0n;
     const buffer = bigMath.mulDiv(gasPrice, bufferBps, BASIS_POINTS_DIVISOR_BIGINT);
 
     return {

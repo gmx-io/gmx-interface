@@ -42,6 +42,7 @@ import {
 import { SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
 import { applyMinimalBuffer } from "domain/tokens/useMaxAvailableAmount";
 import { extendError } from "lib/errors";
+import { isIgnoredEstimateGasError } from "lib/errors/customErrors";
 import { applyGasLimitBuffer, estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { metrics } from "lib/metrics";
 import { applyFactor } from "lib/numbers";
@@ -413,13 +414,10 @@ export async function estimateExpressParams({
         );
       }
     } catch (error) {
-      const extendedError = extendError(error, {
-        data: {
-          estimationMethod,
-        },
-      });
-
-      metrics.pushError(extendedError, "expressOrders.estimateGas");
+      if (!isIgnoredEstimateGasError(error)) {
+        const extendedError = extendError(error, { data: { estimationMethod } });
+        metrics.pushError(extendedError, "expressOrders.estimateGas");
+      }
 
       if (throwOnInvalid) {
         throw new ExpressEstimationError("gas limit estimation failed");

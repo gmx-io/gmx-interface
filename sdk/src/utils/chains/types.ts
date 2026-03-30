@@ -55,4 +55,5 @@ export type SourceChainConfig = {
   name: string;
   slug: string;
   explorerUrl: string;
+  gasPriceBuffer?: bigint;
 };
