@@ -20,7 +20,7 @@ export default function TwapOrdersList({ order }: { order: TwapOrderInfo }) {
     const lastToExecuteOrder = sortedOrders[sortedOrders.length - 1];
     const firstToExecuteOrder = sortedOrders[0];
     const timeDelta =
-      (lastToExecuteOrder.validFromTime - lastToExecuteOrder.updatedAtTime) / BigInt(order.numberOfParts);
+      (lastToExecuteOrder.validFromTime - lastToExecuteOrder.updatedAtTime) / BigInt(order.numberOfParts - 1);
     return new Array(order.numberOfParts - sortedOrders.length).fill(0).map((_, i) => {
       const validFromTime = firstToExecuteOrder.updatedAtTime - timeDelta * BigInt(i);
       return {
