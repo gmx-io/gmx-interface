@@ -1273,6 +1273,7 @@ export const DepositView = () => {
             validationBannerErrorName={buttonState.bannerErrorName}
             chainId={settlementChainId}
             srcChainId={depositViewChain}
+            onBeforeNavigation={() => setIsVisibleOrView(false)}
           />
         </AlertInfoCard>
       )}

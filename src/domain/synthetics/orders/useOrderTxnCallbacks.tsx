@@ -31,6 +31,7 @@ import {
   getIsPermitExpiredDeadlineOnSimulation,
   getIsPermitSignatureErrorOnSimulation,
   getIsPossibleExternalSwapError,
+  getIsPriceImpactTooLargeError,
 } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import {
@@ -73,6 +74,7 @@ export type CallbackUiCtx = {
   additionalErrorContent?: React.ReactNode;
   isFundingFeeSettlement?: boolean;
   onInternalSwapFallback?: () => void;
+  onExternalSwapFallback?: () => void;
   actionName?: TradingActionName;
   collateralSymbol?: string;
 };
@@ -327,6 +329,11 @@ export function useOrderTxnCallbacks() {
               ? ctx.onInternalSwapFallback
               : undefined;
 
+          const fallbackToExternalSwap =
+            !hasExternalSwap(expressParams, batchParams) && getIsPriceImpactTooLargeError(error)
+              ? ctx.onExternalSwapFallback
+              : undefined;
+
           let permitIssueType: PermitIssueType | undefined;
 
           if (expressParams?.relayParamsPayload.tokenPermits?.length) {
@@ -342,6 +349,7 @@ export function useOrderTxnCallbacks() {
             slippageInputId: ctx.slippageInputId,
             additionalContent: ctx.additionalErrorContent,
             isInternalSwapFallback: Boolean(fallbackToInternalSwap),
+            isExternalSwapFallback: Boolean(fallbackToExternalSwap),
             permitIssueType,
             setIsSettingsVisible,
           });
@@ -360,6 +368,10 @@ export function useOrderTxnCallbacks() {
 
           if (fallbackToInternalSwap) {
             fallbackToInternalSwap();
+          }
+
+          if (fallbackToExternalSwap) {
+            fallbackToExternalSwap();
           }
 
           if (permitIssueType === "expiredDeadline") {

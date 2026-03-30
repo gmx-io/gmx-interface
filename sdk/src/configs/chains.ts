@@ -391,7 +391,10 @@ export function getMinExecutionFeeUsd(chainId: ContractsChainId) {
 }
 
 export function getGasPriceBuffer(chainId: ContractsChainId | SourceChainId) {
-  return CONTRACTS_CHAIN_CONFIGS[chainId as ContractsChainId]?.gasPriceBuffer ?? SOURCE_CHAIN_CONFIGS[chainId as SourceChainId]?.gasPriceBuffer;
+  return (
+    CONTRACTS_CHAIN_CONFIGS[chainId as ContractsChainId]?.gasPriceBuffer ??
+    SOURCE_CHAIN_CONFIGS[chainId as SourceChainId]?.gasPriceBuffer
+  );
 }
 
 export function isChainDisabled(chainId: ContractsChainId) {

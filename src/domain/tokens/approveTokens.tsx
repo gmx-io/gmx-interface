@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { maxUint256 } from "viem";
 
 import { getChainName, getExplorerUrl } from "config/chains";
+import { JUMPER_BRIDGE_URL } from "config/links";
 import { AddTokenPermitFn } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { INVALID_PERMIT_SIGNATURE_ERROR } from "lib/errors/customErrors";
 import { estimateGasLimit } from "lib/gas/estimateGasLimit";
@@ -164,9 +165,10 @@ export async function approveTokens({
             Insufficient {nativeToken.symbol} for gas on {networkName}
             <br />
             <br />
-            <Link to="/buy_gmx#bridge">
-              Buy or transfer {nativeToken.symbol} to {networkName}
-            </Link>
+            <Link className="underline" to={`/trade/swap?to=${nativeToken.symbol}`}>
+              Swap
+            </Link>{" "}
+            or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge</ExternalLink> {nativeToken.symbol} to {networkName}
           </Trans>
         </div>
       );
