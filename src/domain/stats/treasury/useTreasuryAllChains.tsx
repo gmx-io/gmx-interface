@@ -1,6 +1,6 @@
 import { useMemo } from "react";
 
-import { ARBITRUM, AVALANCHE, BOTANIX, ContractsChainIdProduction } from "sdk/configs/chains";
+import { ARBITRUM, AVALANCHE, BOTANIX, MEGAETH, ContractsChainIdProduction } from "sdk/configs/chains";
 
 import { TreasuryData, useTreasury } from "./useTreasury";
 
@@ -8,6 +8,7 @@ export function useTreasuryAllChains() {
   const arbitrumTreasuryData = useTreasury(ARBITRUM);
   const avalancheTreasuryData = useTreasury(AVALANCHE);
   const botanixTreasuryData = useTreasury(BOTANIX);
+  const megaethTreasuryData = useTreasury(MEGAETH);
 
   return useMemo(
     () =>
@@ -15,8 +16,9 @@ export function useTreasuryAllChains() {
         [ARBITRUM]: arbitrumTreasuryData,
         [AVALANCHE]: avalancheTreasuryData,
         [BOTANIX]: botanixTreasuryData,
+        [MEGAETH]: megaethTreasuryData,
       }),
-    [arbitrumTreasuryData, avalancheTreasuryData, botanixTreasuryData]
+    [arbitrumTreasuryData, avalancheTreasuryData, botanixTreasuryData, megaethTreasuryData]
   );
 }
 

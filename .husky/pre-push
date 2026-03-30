@@ -4,8 +4,14 @@
 yarn test:ci &
 PID1=$!
 
-cd sdk && yarn test:ci &
+yarn test:ct &
 PID2=$!
 
-wait $PID1
-wait $PID2
+cd sdk && yarn test:ci &
+PID3=$!
+
+FAIL=0
+wait $PID1 || FAIL=1
+wait $PID2 || FAIL=1
+wait $PID3 || FAIL=1
+exit $FAIL

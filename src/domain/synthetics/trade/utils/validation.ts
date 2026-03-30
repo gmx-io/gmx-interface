@@ -19,6 +19,7 @@ import {
   getMarketIndexName,
   getMarketPoolName,
   getMaxAllowedLeverageByMinCollateralFactor,
+  getMaxLeverageByMinCollateralFactor,
   getMintableMarketTokens,
   getOpenInterestUsd,
   getSellableMarketToken,
@@ -670,7 +671,9 @@ export function getEditCollateralError(p: {
     }
   }
 
-  const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor);
+  const maxAllowedLeverage = isDeposit
+    ? getMaxLeverageByMinCollateralFactor(minCollateralFactor)
+    : getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor);
 
   if (nextLeverage !== undefined && nextLeverage > maxAllowedLeverage) {
     return { buttonErrorMessage: t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x` };
