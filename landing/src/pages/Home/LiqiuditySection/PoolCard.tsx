@@ -55,9 +55,9 @@ export function PoolCard({ name, apr, description, iconComponent, coinImage, onC
             {isRewardsSuspended ? (
               <TooltipWithPortal
                 variant="none"
-                tooltipClassName="!text-white"
+                tooltipClassName="!rounded-16 !p-20 !text-14 !font-medium !leading-[1.36] !tracking-[-0.448px] !text-white ![background:#3C4067] [&>svg]:!fill-[#3C4067]"
                 handle={
-                  <p className="leading-heading-lg text-[28px] font-medium sm:text-[40px] sm:-tracking-[2px]">
+                  <p className="leading-heading-lg text-[28px] font-medium underline decoration-[#a4c3f9] decoration-dotted decoration-[4%] sm:text-[40px] sm:-tracking-[2px]">
                     {aprText}
                   </p>
                 }
