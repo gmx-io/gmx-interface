@@ -1,5 +1,5 @@
 import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/numbers";
-import { AVALANCHE } from "sdk/configs/chains";
+import { AVALANCHE, MEGAETH } from "sdk/configs/chains";
 
 import { ARBITRUM } from "./chains";
 import { isDevelopment } from "./env";
@@ -26,11 +26,13 @@ export const KYBER_SWAP_CLIENT_ID = "gmx5326";
 const KYBER_SWAP_CHAIN_PATH: Record<number, string> = {
   [ARBITRUM]: "arbitrum",
   [AVALANCHE]: "avalanche",
+  [MEGAETH]: "megaeth",
 };
 
 export const EXCLUDED_KYBER_SWAP_SOURCES: Record<number, string[]> = {
   [ARBITRUM]: ["gmx"],
   [AVALANCHE]: ["gmx"],
+  [MEGAETH]: ["gmx"],
 };
 
 export function getKyberSwapUrl(chainId: number) {

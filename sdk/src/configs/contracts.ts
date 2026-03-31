@@ -267,7 +267,7 @@ export const CONTRACTS = {
 
     // External
     ExternalHandler: "0xa7EE2737249e0099906cB079BCEe85f0bbd837d4",
-    OpenOceanRouter: zeroAddress,
+    KyberSwapRouter: "0x6131B5fae19EA4f9D964eAc0408E4408b66337b5",
     Multicall: "0xF516BC01c50eebdBad4d7E506c8f690ae8EAFc52",
     LayerZeroEndpoint: "0x6F475642a6e85809B1c36Fa62763669b1b48DD5B",
     ArbitrumNodeInterface: zeroAddress,
