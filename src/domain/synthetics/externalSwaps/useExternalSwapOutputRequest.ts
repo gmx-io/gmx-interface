@@ -46,7 +46,7 @@ export function useExternalSwapOutputRequest({
     amountIn > 0n &&
     slippage !== undefined &&
     gasPrice !== undefined
-      ? `useExternalSwapsQuote:${chainId}:${tokenInAddress}:${tokenOutAddress}:${amountIn}:${slippage}:${gasPrice}:${receiverAddress}`
+      ? `useExternalSwapsQuote:${chainId}:${tokenInAddress}:${tokenOutAddress}:${amountIn}:${slippage}:${receiverAddress}`
       : null;
 
   const debouncedKey = useDebounce(swapKey, 300);

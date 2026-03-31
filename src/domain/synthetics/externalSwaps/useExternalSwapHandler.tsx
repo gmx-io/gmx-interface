@@ -15,7 +15,6 @@ import {
   selectTradeboxAllowedSlippage,
   selectTradeboxFromTokenAddress,
   selectTradeboxSelectSwapToToken,
-  selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
@@ -44,9 +43,7 @@ export function useExternalSwapHandler() {
   const shouldFallbackToInternalSwap = useSelector(selectShouldFallbackToInternalSwap);
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
   const setIsLoading = useSelector(selectSetExternalSwapIsLoading);
-
   const shouldRequest = useSelector(selectShouldRequestExternalSwapQuote);
-  const tradeFlags = useSelector(selectTradeboxTradeFlags);
 
   const enabled = useExternalSwapsEnabled();
 
@@ -76,29 +73,14 @@ export function useExternalSwapHandler() {
   });
 
   const quote = isReverseSearch ? reverseQuote : forwardQuote;
-
   const isHookLoading = isReverseSearch ? isReverseLoading : isForwardLoading;
 
   useEffect(
     function updateExternalSwapLoadingEff() {
-      const isSwapMarket = tradeFlags.isSwap && tradeFlags.isMarket;
       const hasInputs = Boolean(shouldRequest && externalSwapInputs && externalSwapInputs.amountIn > 0n);
-      const newIsLoading = isSwapMarket && hasInputs && isHookLoading;
-
-      setIsLoading(newIsLoading);
+      setIsLoading(hasInputs && isHookLoading);
     },
-    [
-      tradeFlags.isSwap,
-      tradeFlags.isMarket,
-      shouldRequest,
-      externalSwapInputs,
-      isHookLoading,
-      setIsLoading,
-      isReverseSearch,
-      isForwardLoading,
-      isReverseLoading,
-      enabled,
-    ]
+    [shouldRequest, externalSwapInputs, isHookLoading, setIsLoading]
   );
 
   if (shouldDebugValues) {

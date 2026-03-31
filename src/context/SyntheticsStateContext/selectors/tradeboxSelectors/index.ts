@@ -143,6 +143,34 @@ export const selectShouldFallbackToInternalSwap = (s: SyntheticsState) => s.exte
 export const selectSetShouldFallbackToInternalSwap = (s: SyntheticsState) =>
   s.externalSwap.setShouldFallbackToInternalSwap;
 
+export const selectIsWaitingForExternalSwapQuote = createSelector((q) => {
+  const tradeType = q(selectTradeboxTradeType);
+  const tradeMode = q(selectTradeboxTradeMode);
+  const tradeFlags = createTradeFlags(tradeType, tradeMode);
+  if ((!tradeFlags.isIncrease && !tradeFlags.isSwap) || !tradeFlags.isMarket) return false;
+
+  const shouldRequest = q(selectShouldRequestExternalSwapQuote);
+  if (!shouldRequest) return false;
+
+  const externalSwapInputs = q(selectExternalSwapInputs);
+  if (!externalSwapInputs || externalSwapInputs.amountIn <= 0n) return false;
+
+  const baseOutput = q(selectBaseExternalSwapOutput);
+
+  if (!baseOutput) {
+    const noInternalSwap =
+      !externalSwapInputs.internalSwapTotalFeeItem || externalSwapInputs.internalSwapAmounts.amountOut === 0n;
+    return noInternalSwap && q(selectExternalSwapIsLoading);
+  }
+
+  if (baseOutput.amountIn !== externalSwapInputs.amountIn) {
+    const externalSwapQuote = q(selectExternalSwapQuote);
+    return !!externalSwapQuote;
+  }
+
+  return false;
+});
+
 export const selectExternalSwapQuote = createSelector((q) => {
   const inputs = q(selectExternalSwapInputs);
   const baseOutput = q(selectBaseExternalSwapOutput);
@@ -167,16 +195,16 @@ export const selectExternalSwapQuote = createSelector((q) => {
   }
 
   let amountIn = baseOutput.amountIn;
-  let priceIn = baseOutput.priceIn ?? tokenIn.prices.minPrice;
-  let usdIn = baseOutput.usdIn ?? convertToUsd(amountIn, tokenIn.decimals, priceIn)!;
+  const priceIn = tokenIn.prices.minPrice;
+  let usdIn = convertToUsd(amountIn, tokenIn.decimals, priceIn)!;
 
   const amountOut = baseOutput.amountOut;
-  const priceOut = baseOutput.priceOut ?? tokenOut.prices.maxPrice;
-  const usdOut = baseOutput.usdOut ?? convertToUsd(amountOut, tokenOut.decimals, priceOut)!;
+  const priceOut = tokenOut.prices.maxPrice;
+  const usdOut = convertToUsd(amountOut, tokenOut.decimals, priceOut)!;
 
   if (inputs?.strategy === "leverageBySize") {
     usdIn = bigMath.mulDiv(usdIn, inputs.usdOut, usdOut);
-    amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, baseOutput.priceIn)!;
+    amountIn = convertToTokenAmount(usdIn, tokenIn.decimals, priceIn)!;
   }
 
   const feesUsd = usdIn - usdOut;
@@ -652,9 +680,9 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
 
   const { markRatio, triggerRatio } = q(selectTradeboxTradeRatios);
 
-  const isExternalLoading = q(selectExternalSwapIsLoading);
+  const isExternalSwapWaiting = q(selectIsWaitingForExternalSwapQuote);
   const externalSwapInputs = q(selectExternalSwapInputs);
-  const rawExternalSwapQuote = tradeFlags.isMarket && !isExternalLoading ? q(selectExternalSwapQuote) : undefined;
+  const rawExternalSwapQuote = tradeFlags.isMarket && !isExternalSwapWaiting ? q(selectExternalSwapQuote) : undefined;
 
   let externalSwapQuote = rawExternalSwapQuote;
   if (externalSwapQuote && amountBy === "to" && externalSwapInputs?.strategy !== "byToValue") {
@@ -748,7 +776,8 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
       oracleUsdIn > 0n &&
       internalFeesDeltaUsd * oracleUsdIn > -oracleFeesUsd * internalUsdIn;
 
-    if (!isInternalSwapBetter) {
+    const debugForceExternalSwaps = q(selectDebugForceExternalSwaps);
+    if (!isInternalSwapBetter || debugForceExternalSwaps) {
       const externalSwapStrategy: ExternalSwapStrategy = {
         type: "externalSwap",
         externalSwapQuote,
@@ -810,12 +839,12 @@ export const selectSwapDebugComparison = createSelector((q) => {
   const swapAmounts = q(selectTradeboxSwapAmounts);
   if (!swapAmounts) return null;
 
-  const isExternalLoading = q(selectExternalSwapIsLoading);
+  const isExternalSwapWaiting = q(selectIsWaitingForExternalSwapQuote);
   const externalSwapInputs = q(selectExternalSwapInputs);
   const amountBy = q(selectTradeboxFocusedInput);
 
   // Re-derive the quote with the same guards as selectTradeboxSwapAmounts
-  const rawQuote = !isExternalLoading ? q(selectExternalSwapQuote) : undefined;
+  const rawQuote = !isExternalSwapWaiting ? q(selectExternalSwapQuote) : undefined;
   let filteredQuote = rawQuote;
   if (filteredQuote && amountBy === "to" && externalSwapInputs?.strategy !== "byToValue") {
     filteredQuote = undefined;
@@ -896,15 +925,20 @@ export const selectSwapDebugComparison = createSelector((q) => {
   const internalFeesDeltaUsd = internalSwap.swapStrategy.swapPathStats?.totalFeesDeltaUsd;
   const internalUsdIn = internalSwap.usdIn;
 
-  // External quote comparison
+  const baseOutput = q(selectBaseExternalSwapOutput);
+
   let oracleUsdIn: bigint | undefined;
   let oracleUsdOut: bigint | undefined;
   let oracleFeesUsd: bigint | undefined;
+  let externalAmountIn: bigint | undefined;
+  let externalAmountOut: bigint | undefined;
   let isInternalSwapBetter: boolean | undefined;
 
-  if (filteredQuote) {
-    oracleUsdIn = convertToUsd(filteredQuote.amountIn, fromToken.decimals, fromToken.prices.minPrice)!;
-    oracleUsdOut = convertToUsd(filteredQuote.amountOut, toToken.decimals, toToken.prices.maxPrice)!;
+  if (baseOutput) {
+    externalAmountIn = baseOutput.amountIn;
+    externalAmountOut = baseOutput.amountOut;
+    oracleUsdIn = convertToUsd(externalAmountIn, fromToken.decimals, fromToken.prices.minPrice)!;
+    oracleUsdOut = convertToUsd(externalAmountOut, toToken.decimals, toToken.prices.maxPrice)!;
     oracleFeesUsd = oracleUsdIn - oracleUsdOut;
 
     isInternalSwapBetter =
@@ -916,22 +950,107 @@ export const selectSwapDebugComparison = createSelector((q) => {
       internalFeesDeltaUsd * oracleUsdIn > -oracleFeesUsd * internalUsdIn;
   }
 
+  const noInternalLiquidity = internalSwap.swapStrategy.type === "noSwap" || internalSwap.amountOut === 0n;
+  const noExternalLiquidity = !baseOutput && !isExternalSwapWaiting;
+
   return {
     direction: amountBy,
-    quoteExistsRaw: !!rawQuote,
+    quoteExistsRaw: !!baseOutput,
     quotePassedGuards: !!filteredQuote,
     staleGuardReason,
-    isExternalLoading,
+    isExternalLoading: isExternalSwapWaiting,
     internalAmountIn: internalSwap.amountIn,
     internalAmountOut: internalSwap.amountOut,
     internalUsdIn,
     internalUsdOut: internalSwap.usdOut,
+    externalAmountIn,
+    externalAmountOut,
     oracleUsdIn,
     oracleUsdOut,
     oracleFeesUsd,
     internalFeesDeltaUsd,
     isInternalSwapBetter,
     finalStrategy: swapAmounts.swapStrategy.type,
+    noInternalLiquidity,
+    noExternalLiquidity,
+    debugForceExternalSwaps: q(selectDebugForceExternalSwaps),
+  };
+});
+
+export const selectIncreaseSwapDebugComparison = createSelector((q) => {
+  const tradeType = q(selectTradeboxTradeType);
+  const tradeMode = q(selectTradeboxTradeMode);
+  const tradeFlags = createTradeFlags(tradeType, tradeMode);
+  if (!tradeFlags.isIncrease || !tradeFlags.isMarket) return null;
+
+  const fromToken = q(selectTradeboxFromToken);
+  const swapToToken = q(selectTradeboxSelectSwapToToken);
+  if (!fromToken || !swapToToken) return null;
+
+  const isNeedSwap = q(selectTradeboxIsNeedSwap);
+  if (!isNeedSwap) return null;
+
+  const externalSwapInputs = q(selectExternalSwapInputs);
+  if (!externalSwapInputs) return null;
+
+  const isExternalSwapWaiting = q(selectIsWaitingForExternalSwapQuote);
+  const externalSwapQuote = !isExternalSwapWaiting ? q(selectExternalSwapQuote) : undefined;
+
+  const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
+  const finalStrategy = increaseAmounts?.swapStrategy?.type ?? "noSwap";
+
+  const internalAmounts = externalSwapInputs.internalSwapAmounts;
+  const internalFeesDeltaUsd = externalSwapInputs.internalSwapTotalFeesDeltaUsd;
+  const internalUsdIn = internalAmounts.usdIn;
+
+  const baseOutput = q(selectBaseExternalSwapOutput);
+
+  let oracleUsdIn: bigint | undefined;
+  let oracleUsdOut: bigint | undefined;
+  let oracleFeesUsd: bigint | undefined;
+  let externalAmountIn: bigint | undefined;
+  let externalAmountOut: bigint | undefined;
+  let isInternalSwapBetter: boolean | undefined;
+
+  if (baseOutput) {
+    externalAmountIn = baseOutput.amountIn;
+    externalAmountOut = baseOutput.amountOut;
+    oracleUsdIn = convertToUsd(externalAmountIn, fromToken.decimals, fromToken.prices.minPrice)!;
+    oracleUsdOut = convertToUsd(externalAmountOut, swapToToken.decimals, swapToToken.prices.maxPrice)!;
+    oracleFeesUsd = oracleUsdIn - oracleUsdOut;
+
+    isInternalSwapBetter =
+      internalAmounts.amountOut > 0n &&
+      internalFeesDeltaUsd !== undefined &&
+      internalUsdIn > 0n &&
+      oracleUsdIn > 0n &&
+      internalFeesDeltaUsd * oracleUsdIn > -oracleFeesUsd * internalUsdIn;
+  }
+
+  const noInternalLiquidity = !externalSwapInputs.internalSwapTotalFeeItem || internalAmounts.amountOut === 0n;
+  const noExternalLiquidity = !baseOutput && !isExternalSwapWaiting;
+
+  return {
+    direction: "from" as const,
+    quoteExistsRaw: !!baseOutput,
+    quotePassedGuards: !!externalSwapQuote,
+    staleGuardReason: null as string | null,
+    isExternalLoading: isExternalSwapWaiting,
+    internalAmountIn: internalAmounts.amountIn,
+    internalAmountOut: internalAmounts.amountOut,
+    internalUsdIn,
+    internalUsdOut: internalAmounts.usdOut,
+    externalAmountIn,
+    externalAmountOut,
+    oracleUsdIn,
+    oracleUsdOut,
+    oracleFeesUsd,
+    internalFeesDeltaUsd,
+    isInternalSwapBetter,
+    finalStrategy,
+    noInternalLiquidity,
+    noExternalLiquidity,
+    debugForceExternalSwaps: q(selectDebugForceExternalSwaps),
   };
 });
 

@@ -30,7 +30,7 @@ import {
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectExternalSwapQuote,
-  selectExternalSwapIsLoading,
+  selectIsWaitingForExternalSwapQuote,
   selectTradeboxFindSwapPath,
   selectTradeboxFromToken,
   selectTradeboxFromTokenAmount,
@@ -124,7 +124,7 @@ export function useTradeboxButtonState({
 
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isSwap, isIncrease } = tradeFlags;
-  const isExternalSwapLoading = useSelector(selectExternalSwapIsLoading);
+  const isWaitingForExternalSwapQuote = useSelector(selectIsWaitingForExternalSwapQuote);
   const { stopLoss, takeProfit } = useSidecarOrders();
   const sidecarEntries = useSidecarEntries();
   const isTpSlEnabled = useSelector(selectTradeboxIsTPSLEnabled);
@@ -482,7 +482,7 @@ export function useTradeboxButtonState({
       };
     }
 
-    if (isExternalSwapLoading) {
+    if (isWaitingForExternalSwapQuote) {
       return {
         ...commonState,
         text: (
@@ -597,7 +597,7 @@ export function useTradeboxButtonState({
     batchParams,
     totalExecutionFee,
     isExpressLoading,
-    isExternalSwapLoading,
+    isWaitingForExternalSwapQuote,
     account,
     buttonErrorText,
     shouldShowDepositButton,

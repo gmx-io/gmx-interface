@@ -1,11 +1,12 @@
 import { Trans } from "@lingui/macro";
 
 import {
-  selectExternalSwapQuote,
+  selectIncreaseSwapDebugComparison,
   selectSwapDebugComparison,
   selectTradeboxFromToken,
+  selectTradeboxIncreasePositionAmounts,
+  selectTradeboxSelectSwapToToken,
   selectTradeboxSwapAmounts,
-  selectTradeboxToToken,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -16,21 +17,24 @@ import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export function SwapDebugRow() {
-  const { isSwap, isMarket } = useSelector(selectTradeboxTradeFlags);
+  const { isSwap, isIncrease, isMarket } = useSelector(selectTradeboxTradeFlags);
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
-  const externalSwapQuote = useSelector(selectExternalSwapQuote);
+  const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const fromToken = useSelector(selectTradeboxFromToken);
-  const toToken = useSelector(selectTradeboxToToken);
-  const comparison = useSelector(selectSwapDebugComparison);
+  const toToken = useSelector(selectTradeboxSelectSwapToToken);
+  const swapComparison = useSelector(selectSwapDebugComparison);
+  const increaseComparison = useSelector(selectIncreaseSwapDebugComparison);
 
-  if (!isSwap || !isMarket || !fromToken || !toToken || !swapAmounts || !comparison) return null;
+  const comparison = isSwap ? swapComparison : increaseComparison;
 
-  const strategyType = swapAmounts.swapStrategy.type;
+  if (!isMarket || !fromToken || !toToken || !comparison) return null;
+  if (isSwap && !swapAmounts) return null;
+  if (isIncrease && !increaseAmounts) return null;
+
+  const strategyType = isSwap ? swapAmounts!.swapStrategy.type : increaseAmounts!.swapStrategy.type;
   const isExternal = strategyType === "externalSwap";
   const winner = isExternal ? "External" : "Internal";
   const winnerColor = isExternal ? "text-green-500" : "text-blue-400";
-
-  const hasQuote = comparison.quotePassedGuards;
 
   return (
     <SyntheticsInfoRow label={<Trans>Swap Debug</Trans>}>
@@ -62,8 +66,8 @@ export function SwapDebugRow() {
                         : "—"}
                     </td>
                     <td className="pl-8 text-right">
-                      {externalSwapQuote
-                        ? formatTokenAmount(externalSwapQuote.amountIn, fromToken.decimals, fromToken.symbol)
+                      {comparison.externalAmountIn !== undefined && comparison.externalAmountIn > 0n
+                        ? formatTokenAmount(comparison.externalAmountIn, fromToken.decimals, fromToken.symbol)
                         : "—"}
                     </td>
                   </tr>
@@ -86,8 +90,8 @@ export function SwapDebugRow() {
                         : "—"}
                     </td>
                     <td className="pl-8 text-right">
-                      {externalSwapQuote
-                        ? formatTokenAmount(externalSwapQuote.amountOut, toToken.decimals, toToken.symbol)
+                      {comparison.externalAmountOut !== undefined && comparison.externalAmountOut > 0n
+                        ? formatTokenAmount(comparison.externalAmountOut, toToken.decimals, toToken.symbol)
                         : "—"}
                     </td>
                   </tr>
@@ -144,12 +148,20 @@ export function SwapDebugRow() {
                   ? "Loading..."
                   : !comparison.quoteExistsRaw
                     ? "No quote"
-                    : !hasQuote
+                    : !comparison.quotePassedGuards
                       ? "Stale (blocked)"
                       : "Ready"
               }
               showDollar={false}
             />
+            {comparison.debugForceExternalSwaps && (
+              <StatsTooltipRow
+                label="Force external"
+                value="ON (debug)"
+                showDollar={false}
+                textClassName="text-yellow-500"
+              />
+            )}
             {comparison.staleGuardReason && (
               <StatsTooltipRow
                 label="Blocked reason"
@@ -158,7 +170,23 @@ export function SwapDebugRow() {
                 textClassName="text-red-400"
               />
             )}
-            {hasQuote && (
+            {comparison.noInternalLiquidity && (
+              <StatsTooltipRow
+                label="Internal liquidity"
+                value="Insufficient"
+                showDollar={false}
+                textClassName="text-red-400"
+              />
+            )}
+            {comparison.noExternalLiquidity && (
+              <StatsTooltipRow
+                label="External liquidity"
+                value="No route found"
+                showDollar={false}
+                textClassName="text-red-400"
+              />
+            )}
+            {comparison.quotePassedGuards && (
               <StatsTooltipRow
                 label="Winner (by fee rate)"
                 value={comparison.isInternalSwapBetter ? "Internal" : "External"}
@@ -171,17 +199,36 @@ export function SwapDebugRow() {
 
             {/* Final result */}
             <div className="mb-4 font-bold text-typography-primary">Final</div>
-            <StatsTooltipRow
-              label="Amount Out"
-              value={formatTokenAmount(swapAmounts.amountOut, toToken.decimals, toToken.symbol)}
-              showDollar={false}
-            />
-            <StatsTooltipRow label="USD Out" value={formatUsd(swapAmounts.usdOut)} showDollar={false} />
-            <StatsTooltipRow
-              label="Min Output"
-              value={formatTokenAmount(swapAmounts.minOutputAmount, toToken.decimals, toToken.symbol)}
-              showDollar={false}
-            />
+            {isSwap && swapAmounts && (
+              <>
+                <StatsTooltipRow
+                  label="Amount Out"
+                  value={formatTokenAmount(swapAmounts.amountOut, toToken.decimals, toToken.symbol)}
+                  showDollar={false}
+                />
+                <StatsTooltipRow label="USD Out" value={formatUsd(swapAmounts.usdOut)} showDollar={false} />
+                <StatsTooltipRow
+                  label="Min Output"
+                  value={formatTokenAmount(swapAmounts.minOutputAmount, toToken.decimals, toToken.symbol)}
+                  showDollar={false}
+                />
+              </>
+            )}
+            {isIncrease && increaseAmounts && (
+              <>
+                <StatsTooltipRow label="Strategy" value={strategyType} showDollar={false} />
+                <StatsTooltipRow
+                  label="Swap Out"
+                  value={formatTokenAmount(increaseAmounts.swapStrategy.amountOut, toToken.decimals, toToken.symbol)}
+                  showDollar={false}
+                />
+                <StatsTooltipRow
+                  label="Swap USD Out"
+                  value={formatUsd(increaseAmounts.swapStrategy.usdOut)}
+                  showDollar={false}
+                />
+              </>
+            )}
           </div>
         )}
       />
