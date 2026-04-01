@@ -42,10 +42,10 @@ describe("externalSwapSelectors", () => {
       inTokenAddress: tokensData.ETH.address,
       outTokenAddress: tokensData.USDC.address,
       amountIn: expandDecimals(1, 18), // 1 ETH
-      amountOut: expandDecimals(1795, 6), // 1800 USDC
-      usdIn: expandDecimals(1800, 30),
-      usdOut: expandDecimals(1795, 30),
-      priceIn: expandDecimals(1800, 30),
+      amountOut: expandDecimals(1195, 6), // 1195 USDC
+      usdIn: expandDecimals(1200, 30),
+      usdOut: expandDecimals(1195, 30),
+      priceIn: expandDecimals(1200, 30),
       priceOut: expandDecimals(1, 30),
       feesUsd: expandDecimals(5, 30),
     });
@@ -58,8 +58,8 @@ describe("externalSwapSelectors", () => {
       totalSwapFeeUsd: expandDecimals(-1, 30),
       totalSwapPriceImpactDeltaUsd: expandDecimals(-1, 29),
       totalFeesDeltaUsd: expandDecimals(-11, 29),
-      usdOut: expandDecimals(1795, 30),
-      amountOut: expandDecimals(1795, 6),
+      usdOut: expandDecimals(1195, 30),
+      amountOut: expandDecimals(1195, 6),
     };
 
     defaultState = {
