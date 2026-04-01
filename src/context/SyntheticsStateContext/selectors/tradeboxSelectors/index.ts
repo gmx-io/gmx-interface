@@ -158,18 +158,13 @@ export const selectIsWaitingForExternalSwapQuote = createSelector((q) => {
 
   const baseOutput = q(selectBaseExternalSwapOutput);
 
-  if (!baseOutput) {
-    const noInternalSwap =
-      !externalSwapInputs.internalSwapTotalFeeItem || externalSwapInputs.internalSwapAmounts.amountOut === 0n;
-    return noInternalSwap && q(selectExternalSwapIsLoading);
-  }
+  const isFreshQuote = baseOutput && baseOutput.amountIn === externalSwapInputs.amountIn;
+  if (isFreshQuote) return false;
 
-  if (baseOutput.amountIn !== externalSwapInputs.amountIn) {
-    const externalSwapQuote = q(selectExternalSwapQuote);
-    return !!externalSwapQuote;
-  }
+  const noInternalSwap =
+    !externalSwapInputs.internalSwapTotalFeeItem || externalSwapInputs.internalSwapAmounts.amountOut === 0n;
 
-  return false;
+  return noInternalSwap && q(selectExternalSwapIsLoading);
 });
 
 export const selectExternalSwapQuote = createSelector((q) => {
