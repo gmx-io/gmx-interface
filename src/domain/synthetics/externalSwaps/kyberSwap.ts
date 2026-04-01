@@ -3,7 +3,7 @@ import { getKyberSwapUrl, KYBER_SWAP_CLIENT_ID, EXCLUDED_KYBER_SWAP_SOURCES } fr
 import { USD_DECIMALS } from "config/factors";
 import { buildUrl } from "lib/buildUrl";
 import { metrics } from "lib/metrics";
-import { formatTokenAmount, numberToBigint } from "lib/numbers";
+import { numberToBigint } from "lib/numbers";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 
@@ -329,7 +329,6 @@ export async function getKyberSwapBuildFromRoute({
 function calcTokenPrice(amount: bigint, usdValue: string, decimals: number): bigint {
   if (amount <= 0n) return 0n;
 
-  const formattedAmount = formatTokenAmount(amount, decimals, undefined, { showAllSignificant: true }) ?? "0";
-
-  return numberToBigint(parseFloat(usdValue) / parseFloat(formattedAmount), USD_DECIMALS);
+  const usdBigint = numberToBigint(parseFloat(usdValue), USD_DECIMALS);
+  return (usdBigint * 10n ** BigInt(decimals)) / amount;
 }

@@ -38,6 +38,7 @@ import {
   getTokensRatioByPrice,
 } from "domain/synthetics/tokens";
 import {
+  ExternalSwapCalculationStrategy,
   ExternalSwapQuote,
   SwapAmounts,
   SwapOptimizationOrderArray,
@@ -76,7 +77,7 @@ import {
   selectUiFeeFactor,
   selectUserReferralInfo,
 } from "../globalSelectors";
-import { selectIsLeverageSliderEnabled, selectIsPnlInLeverage } from "../settingsSelectors";
+import { selectIsLeverageSliderEnabled, selectIsPnlInLeverage, selectShowDebugValues } from "../settingsSelectors";
 import { selectSelectedMarketVisualMultiplier } from "../shared/marketSelectors";
 import {
   makeSelectDecreasePositionAmounts,
@@ -195,11 +196,11 @@ export const selectExternalSwapQuote = createSelector((q) => {
   }
 
   let amountIn = baseOutput.amountIn;
-  const priceIn = tokenIn.prices.minPrice;
+  const priceIn = tokenIn.prices.minPrice > 0n ? tokenIn.prices.minPrice : baseOutput.priceIn ?? 0n;
   let usdIn = convertToUsd(amountIn, tokenIn.decimals, priceIn)!;
 
   const amountOut = baseOutput.amountOut;
-  const priceOut = tokenOut.prices.maxPrice;
+  const priceOut = tokenOut.prices.maxPrice > 0n ? tokenOut.prices.maxPrice : baseOutput.priceOut ?? 0n;
   const usdOut = convertToUsd(amountOut, tokenOut.decimals, priceOut)!;
 
   if (inputs?.strategy === "leverageBySize") {
@@ -220,10 +221,13 @@ export const selectExternalSwapQuote = createSelector((q) => {
     feesUsd,
   };
 
+  const internalUsdIn = inputs.internalSwapAmounts.usdIn;
   const isInternalSwapBetter =
     inputs.internalSwapAmounts.amountOut > 0n &&
     inputs?.internalSwapTotalFeesDeltaUsd !== undefined &&
-    inputs.internalSwapTotalFeesDeltaUsd > -quote.feesUsd;
+    internalUsdIn > 0n &&
+    usdIn > 0n &&
+    inputs.internalSwapTotalFeesDeltaUsd * usdIn > -quote.feesUsd * internalUsdIn;
 
   if (isInternalSwapBetter && !debugForceExternalSwaps) {
     return undefined;
@@ -650,6 +654,27 @@ export const selectTradeboxDecreasePositionAmounts = createSelector((q) => {
   return q(selector);
 });
 
+function filterStaleExternalSwapQuote({
+  quote,
+  amountBy,
+  strategy,
+  fromTokenAmount,
+  toTokenAmount,
+}: {
+  quote: ExternalSwapQuote | undefined;
+  amountBy: "from" | "to" | undefined;
+  strategy: ExternalSwapCalculationStrategy | undefined;
+  fromTokenAmount: bigint;
+  toTokenAmount: bigint;
+}): ExternalSwapQuote | undefined {
+  if (!quote) return undefined;
+  if (amountBy === "to" && strategy !== "byToValue") return undefined;
+  if (amountBy === "from" && strategy === "byToValue") return undefined;
+  if (amountBy === "from" && quote.amountIn !== fromTokenAmount) return undefined;
+  if (amountBy === "to" && toTokenAmount > 0n && quote.amountOut < toTokenAmount) return undefined;
+  return quote;
+}
+
 export const selectTradeboxSwapAmounts = createSelector((q) => {
   const tradeMode = q(selectTradeboxTradeMode);
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
@@ -684,19 +709,13 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
   const externalSwapInputs = q(selectExternalSwapInputs);
   const rawExternalSwapQuote = tradeFlags.isMarket && !isExternalSwapWaiting ? q(selectExternalSwapQuote) : undefined;
 
-  let externalSwapQuote = rawExternalSwapQuote;
-  if (externalSwapQuote && amountBy === "to" && externalSwapInputs?.strategy !== "byToValue") {
-    externalSwapQuote = undefined;
-  }
-  if (externalSwapQuote && amountBy === "from" && externalSwapInputs?.strategy === "byToValue") {
-    externalSwapQuote = undefined;
-  }
-  if (externalSwapQuote && amountBy === "from" && externalSwapQuote.amountIn !== fromTokenAmount) {
-    externalSwapQuote = undefined;
-  }
-  if (externalSwapQuote && amountBy === "to" && toTokenAmount > 0n && externalSwapQuote.amountOut < toTokenAmount) {
-    externalSwapQuote = undefined;
-  }
+  let externalSwapQuote = filterStaleExternalSwapQuote({
+    quote: rawExternalSwapQuote,
+    amountBy,
+    strategy: externalSwapInputs?.strategy,
+    fromTokenAmount,
+    toTokenAmount,
+  });
 
   // For market swaps in "to" direction, inflate the target amount by slippage so that
   // the user is guaranteed to receive at least the desired amount. The inflated minOutputAmount
@@ -828,6 +847,9 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
  * Used by SwapDebugRow to show WHY a particular strategy was chosen.
  */
 export const selectSwapDebugComparison = createSelector((q) => {
+  const showDebug = q(selectShowDebugValues);
+  if (!showDebug) return null;
+
   const tradeMode = q(selectTradeboxTradeMode);
   const tradeFlags = createTradeFlags(TradeType.Swap, tradeMode);
   if (!tradeFlags.isMarket) return null;
@@ -845,21 +867,15 @@ export const selectSwapDebugComparison = createSelector((q) => {
 
   // Re-derive the quote with the same guards as selectTradeboxSwapAmounts
   const rawQuote = !isExternalSwapWaiting ? q(selectExternalSwapQuote) : undefined;
-  let filteredQuote = rawQuote;
-  if (filteredQuote && amountBy === "to" && externalSwapInputs?.strategy !== "byToValue") {
-    filteredQuote = undefined;
-  }
-  if (filteredQuote && amountBy === "from" && externalSwapInputs?.strategy === "byToValue") {
-    filteredQuote = undefined;
-  }
   const fromTokenAmount = q(selectTradeboxFromTokenAmount);
-  if (filteredQuote && amountBy === "from" && filteredQuote.amountIn !== fromTokenAmount) {
-    filteredQuote = undefined;
-  }
   const toTokenAmount = q(selectTradeboxToTokenAmount);
-  if (filteredQuote && amountBy === "to" && toTokenAmount > 0n && filteredQuote.amountOut < toTokenAmount) {
-    filteredQuote = undefined;
-  }
+  const filteredQuote = filterStaleExternalSwapQuote({
+    quote: rawQuote,
+    amountBy,
+    strategy: externalSwapInputs?.strategy,
+    fromTokenAmount,
+    toTokenAmount,
+  });
 
   // Stale guard info
   const staleGuardReason =
@@ -978,6 +994,9 @@ export const selectSwapDebugComparison = createSelector((q) => {
 });
 
 export const selectIncreaseSwapDebugComparison = createSelector((q) => {
+  const showDebug = q(selectShowDebugValues);
+  if (!showDebug) return null;
+
   const tradeType = q(selectTradeboxTradeType);
   const tradeMode = q(selectTradeboxTradeMode);
   const tradeFlags = createTradeFlags(tradeType, tradeMode);
