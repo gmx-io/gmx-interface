@@ -146,6 +146,16 @@ export function useExternalSwapHandler() {
   );
 
   useEffect(
+    function clearStaleOutputOnDirectionChange() {
+      if (storedBaseExternalSwapOutput) {
+        setBaseExternalSwapOutput(undefined);
+      }
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [isReverseSearch]
+  );
+
+  useEffect(
     function resetExternalSwapFallbackEff() {
       const orderStatusesValues = Object.values(orderStatuses);
       const isLastOrderExecuted =
