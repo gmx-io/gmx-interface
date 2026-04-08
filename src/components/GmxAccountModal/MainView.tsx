@@ -14,6 +14,8 @@ import { isMultichainFundingItemLoading } from "domain/multichain/isMultichainFu
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { useDisconnectAndClose } from "domain/multichain/useDisconnectAndClose";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
+import { isIncentivesEnabled, formatMultiplier } from "domain/synthetics/incentives/constants";
+import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
 import { useChainId } from "lib/chains";
 import { formatRelativeDateWithComma } from "lib/dates";
 import { helperToast } from "lib/helperToast";
@@ -40,6 +42,7 @@ import BellIcon from "img/ic_bell.svg?react";
 import ChevronLeftIcon from "img/ic_chevron_left.svg?react";
 import CopyIcon from "img/ic_copy.svg?react";
 import ExplorerIcon from "img/ic_explorer.svg?react";
+import MultiplierIcon from "img/ic_multiplier.svg?react";
 import PnlAnalysisIcon from "img/ic_pnl_analysis.svg?react";
 import SettingsIcon from "img/ic_settings.svg?react";
 import DisconnectIcon from "img/ic_sign_out_20.svg?react";
@@ -485,6 +488,53 @@ const FundingHistorySection = () => {
   );
 };
 
+const PointsSection = () => {
+  const { chainId } = useChainId();
+  const { address: account } = useAccount();
+  const history = useHistory();
+  const [, setOpen] = useGmxAccountModalOpen();
+
+  const enabled = isIncentivesEnabled(chainId);
+  const { data: status } = useAccountIncentiveStatus(chainId, {
+    account,
+    enabled,
+  });
+
+  if (!enabled) return null;
+
+  const multiplier = status?.multiplier;
+  const hasMultiplier = multiplier !== undefined && multiplier > 0;
+
+  const handleClick = () => {
+    setOpen(false);
+    history.push("/points");
+  };
+
+  return (
+    <button
+      onClick={handleClick}
+      className="flex cursor-pointer items-center justify-between rounded-8 border-1/2 border-slate-600 px-12 py-10 transition-colors hover:border-blue-300"
+    >
+      <div className="flex flex-col gap-2">
+        <span className="text-body-small font-semibold text-typography-primary">
+          {hasMultiplier ? <Trans>Your multiplier</Trans> : <Trans>GMX Points</Trans>}{" "}
+          <span className="inline-flex items-center gap-4 text-green-500">
+            <MultiplierIcon className="size-12" /> {hasMultiplier ? formatMultiplier(multiplier) : "0.0x"}
+          </span>
+        </span>
+        <span className="text-caption text-typography-secondary">
+          {hasMultiplier ? (
+            <Trans>Stake more GMX to increase your multiplier</Trans>
+          ) : (
+            <Trans>Start earning points and unlock rewards</Trans>
+          )}
+        </span>
+      </div>
+      <span className="text-typography-secondary">›</span>
+    </button>
+  );
+};
+
 export const MainView = ({ account }: { account: string }) => {
   return (
     <div className="text-body-medium flex grow flex-col gap-[--padding-adaptive] overflow-y-hidden">
@@ -492,6 +542,7 @@ export const MainView = ({ account }: { account: string }) => {
         <Toolbar account={account} />
         <BalanceSection />
         <ActionButtons />
+        <PointsSection />
       </div>
       <FundingHistorySection />
     </div>

@@ -5,6 +5,8 @@ import Skeleton from "react-loading-skeleton";
 
 import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
+import { isIncentivesEnabled, formatMultiplier } from "domain/synthetics/incentives/constants";
+import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
 import { useChainId } from "lib/chains";
 import { useENS } from "lib/legacy";
 import { formatUsd } from "lib/numbers";
@@ -15,6 +17,8 @@ import { Avatar } from "components/Avatar/Avatar";
 import Button from "components/Button/Button";
 import { useAvailableToTradeAssetSettlementChain } from "components/GmxAccountModal/hooks";
 
+import MultiplierIcon from "img/ic_multiplier.svg?react";
+
 const BACKDROP_ANIMATION_DURATION = 300;
 
 type Props = {
@@ -22,11 +26,19 @@ type Props = {
 };
 
 export function AddressDropdownWithMultichain({ account }: Props) {
-  const { srcChainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { ensName } = useENS(account);
   const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
   const { totalUsd, gmxAccountUsd, isGmxAccountLoading } = useAvailableToTradeAssetSettlementChain();
   const { shouldShowDepositButton } = useGmxAccountShowDepositButton();
+
+  const incentivesEnabled = isIncentivesEnabled(chainId);
+  const { data: incentiveStatus } = useAccountIncentiveStatus(chainId, {
+    account,
+    enabled: incentivesEnabled,
+  });
+  const multiplier = incentiveStatus?.multiplier;
+  const showMultiplier = incentivesEnabled && multiplier !== undefined && multiplier > 0;
 
   const { isMobile, isSmallMobile } = useBreakpoints();
   const displayAddressLength = isMobile ? 9 : 13;
@@ -104,6 +116,12 @@ export function AddressDropdownWithMultichain({ account }: Props) {
             <Button variant="primary" onClick={handleOpenDeposit}>
               <Trans>Deposit</Trans>
             </Button>
+          )}
+
+          {showMultiplier && (
+            <span className="text-caption flex items-center gap-2 rounded-4 bg-green-500/15 px-6 py-2 font-semibold text-green-500">
+              <MultiplierIcon className="size-12" /> {formatMultiplier(multiplier)}
+            </span>
           )}
         </div>
       </Button>
