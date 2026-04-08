@@ -16,9 +16,10 @@ type Props = {
   value: number;
   onChange: (value: number) => void;
   className?: string;
+  disabled?: boolean;
 };
 
-export function MarginPercentageSlider({ value, onChange, className }: Props) {
+export function MarginPercentageSlider({ value, onChange, className, disabled }: Props) {
   const sliderValue = useMemo(() => {
     if (!Number.isFinite(value)) {
       return 0;
@@ -47,9 +48,9 @@ export function MarginPercentageSlider({ value, onChange, className }: Props) {
   }, []);
 
   return (
-    <div className={cx("flex items-center gap-16", className)}>
-      <div className="h-32 flex-1 px-4">
-        <Slider min={0} max={100} step={1} onChange={handleChange} value={sliderValue} marks={marks} />
+    <div className={cx("flex items-center gap-16", className)} aria-disabled={disabled || undefined}>
+      <div className={cx("h-32 flex-1 px-4", disabled && "pointer-events-none opacity-50")}>
+        <Slider min={0} max={100} step={1} onChange={handleChange} value={disabled ? 0 : sliderValue} marks={marks} />
       </div>
     </div>
   );

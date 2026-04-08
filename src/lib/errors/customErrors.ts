@@ -162,3 +162,12 @@ export function getIsPossibleExternalSwapError(error: ErrorLike) {
 
   return isExternalCallError || isPayloadRelatedError;
 }
+
+export function getIsPriceImpactTooLargeError(error: ErrorLike) {
+  const parsedError = parseError(error);
+
+  return (
+    parsedError?.contractError === "PriceImpactLargerThanOrderSize" ||
+    parsedError?.contractError === "SwapPriceImpactExceedsAmountIn"
+  );
+}

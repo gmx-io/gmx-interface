@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import { maxUint256 } from "viem";
 
 import { getChainName, getExplorerUrl } from "config/chains";
+import { JUMPER_BRIDGE_URL } from "config/links";
 import { AddTokenPermitFn } from "context/TokenPermitsContext/TokenPermitsContextProvider";
 import { INVALID_PERMIT_SIGNATURE_ERROR } from "lib/errors/customErrors";
 import { estimateGasLimit } from "lib/gas/estimateGasLimit";
@@ -102,8 +103,7 @@ export async function approveTokens({
         return;
       }
 
-      // For Smart wallets (Safe, etc.) and other wallets that don't support
-      // eth_signTypedData_v4, fall back to standard ERC20 approve() transaction
+      // Smart wallets (Safe, etc.) don't support eth_signTypedData_v4 — fall back to approve()
       permitParams.setIsPermitsDisabled(true);
       metrics.pushError(e, "approveTokens.permitError");
     }
@@ -164,9 +164,10 @@ export async function approveTokens({
             Insufficient {nativeToken.symbol} for gas on {networkName}
             <br />
             <br />
-            <Link to="/buy_gmx#bridge">
-              Buy or transfer {nativeToken.symbol} to {networkName}
-            </Link>
+            <Link className="underline" to={`/trade/swap?to=${nativeToken.symbol}`}>
+              Swap
+            </Link>{" "}
+            or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge</ExternalLink> {nativeToken.symbol} to {networkName}
           </Trans>
         </div>
       );

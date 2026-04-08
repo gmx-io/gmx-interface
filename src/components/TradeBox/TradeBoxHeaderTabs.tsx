@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
@@ -7,9 +8,12 @@ import { selectTradeboxState } from "context/SyntheticsStateContext/selectors/tr
 import {
   selectTradeboxLeverageFieldValue,
   selectTradeboxLeverageSliderMarks,
+  selectTradeboxLeverageTooltipEnabled,
+  selectTradeboxResultingPositionLeverage,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { formatLeverage } from "domain/synthetics/positions/utils";
 import { TradeType } from "domain/synthetics/trade";
 import { useLocalizedMap } from "lib/i18n";
 
@@ -38,6 +42,15 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
   const leverageFieldValue = useSelector(selectTradeboxLeverageFieldValue);
   const { isIncrease, isPosition, isMarket, isLimit, isTwap } = useSelector(selectTradeboxTradeFlags);
   const isLeverageSliderEnabled = useSelector(selectIsLeverageSliderEnabled);
+  const leverageTooltipEnabled = useSelector(selectTradeboxLeverageTooltipEnabled);
+  const resultingPositionLeverage = useSelector(selectTradeboxResultingPositionLeverage);
+
+  const leverageTooltipContent = useMemo(() => {
+    if (!leverageTooltipEnabled) return undefined;
+
+    const formattedLeverage = formatLeverage(resultingPositionLeverage) ?? "-";
+    return <Trans>Leverage for the current order. Resulting position leverage: {formattedLeverage}</Trans>;
+  }, [leverageTooltipEnabled, resultingPositionLeverage]);
 
   const onTradeTypeChange = useCallback(
     (type: TradeType) => {
@@ -81,6 +94,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
           value={leverageFieldValue}
           onChange={setLeverageOption}
           disabled={!isLeverageSliderEnabled}
+          tooltipContent={leverageTooltipContent}
         />
       ) : null}
 

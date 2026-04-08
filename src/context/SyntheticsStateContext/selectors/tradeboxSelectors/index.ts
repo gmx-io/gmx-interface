@@ -106,7 +106,7 @@ export const selectExternalSwapInputs = createSelector((q) => {
     return undefined;
   }
 
-  if (!tradeFlags.isIncrease && !tradeFlags.isSwap) {
+  if (!tradeFlags.isIncrease) {
     return undefined;
   }
 
@@ -144,6 +144,9 @@ export const selectShouldFallbackToInternalSwap = (s: SyntheticsState) => s.exte
 export const selectSetShouldFallbackToInternalSwap = (s: SyntheticsState) =>
   s.externalSwap.setShouldFallbackToInternalSwap;
 
+export const selectShouldForceExternalSwap = (s: SyntheticsState) => s.externalSwap.shouldForceExternalSwap;
+export const selectSetShouldForceExternalSwap = (s: SyntheticsState) => s.externalSwap.setShouldForceExternalSwap;
+
 export const selectIsWaitingForExternalSwapQuote = createSelector((q) => {
   const tradeType = q(selectTradeboxTradeType);
   const tradeMode = q(selectTradeboxTradeMode);
@@ -173,6 +176,7 @@ export const selectExternalSwapQuote = createSelector((q) => {
 
   const debugForceExternalSwaps = q(selectDebugForceExternalSwaps);
   const shouldFallbackToInternalSwap = q(selectShouldFallbackToInternalSwap);
+  const shouldForceExternalSwap = q(selectShouldForceExternalSwap);
 
   const tokenIn = q(selectTradeboxFromToken);
   const tokenOut = q(selectTradeboxSelectSwapToToken);
@@ -184,7 +188,7 @@ export const selectExternalSwapQuote = createSelector((q) => {
     !tokenOut ||
     tokenIn.address !== baseOutput.inTokenAddress ||
     tokenOut.address !== baseOutput.outTokenAddress ||
-    shouldFallbackToInternalSwap ||
+    (shouldFallbackToInternalSwap && !shouldForceExternalSwap) ||
     baseOutput.amountIn === 0n
   ) {
     return undefined;
@@ -224,7 +228,7 @@ export const selectExternalSwapQuote = createSelector((q) => {
     usdIn > 0n &&
     inputs.internalSwapTotalFeesDeltaUsd * usdIn > -quote.feesUsd * internalUsdIn;
 
-  if (isInternalSwapBetter && !debugForceExternalSwaps) {
+  if (isInternalSwapBetter && !debugForceExternalSwaps && !shouldForceExternalSwap) {
     return undefined;
   }
 
@@ -263,8 +267,9 @@ export const selectShouldRequestExternalSwapQuote = createSelector((q) => {
   const isExternalSwapConditionMet = thereIsNoInternalSwap || internalSwapFeesConditionMet;
 
   const debugForceExternalSwaps = q(selectDebugForceExternalSwaps);
+  const shouldForceExternalSwap = q(selectShouldForceExternalSwap);
 
-  return debugForceExternalSwaps || (isExternalSwapsEnabled && isExternalSwapConditionMet);
+  return shouldForceExternalSwap || debugForceExternalSwaps || (isExternalSwapsEnabled && isExternalSwapConditionMet);
 });
 
 const selectExternalSwapInputsByFromValue = createSelector((q) => {
@@ -1652,6 +1657,19 @@ const selectTradeboxExistingLimitOrder = createSelector((q) => {
 
 export const selectTradeboxHasExistingLimitOrder = createSelector((q) => !!q(selectTradeboxExistingLimitOrder));
 export const selectTradeboxHasExistingPosition = createSelector((q) => !!q(selectTradeboxSelectedPosition));
+
+export const selectTradeboxResultingPositionLeverage = createSelector((q) => {
+  const nextValues = q(selectTradeboxNextPositionValuesForIncrease);
+  return nextValues?.nextLeverage;
+});
+
+export const selectTradeboxLeverageTooltipEnabled = createSelector((q) => {
+  const isLeverageSliderEnabled = q(selectIsLeverageSliderEnabled);
+  const { isIncrease } = q(selectTradeboxTradeFlags);
+  const hasExistingPosition = q(selectTradeboxHasExistingPosition);
+
+  return !isLeverageSliderEnabled && isIncrease && hasExistingPosition;
+});
 
 export const selectTradeboxTradeRatios = createSelector(function selectTradeboxTradeRatios(q) {
   const { isSwap } = q(selectTradeboxTradeFlags);

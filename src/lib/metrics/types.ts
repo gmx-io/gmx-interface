@@ -623,6 +623,12 @@ export type GetFeeDataBlockError = {
   event: "error.getFeeData.value.hash";
 };
 
+export type ImageExportError = {
+  event: "error.imageExport";
+  isError: true;
+  data: { errorMessage: string };
+};
+
 export type SetAutoCloseOrdersAction = {
   event: "announcement.autoCloseOrders.updateExistingOrders";
 };

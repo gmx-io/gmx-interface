@@ -99,7 +99,7 @@ export function MarginField({
               content={<span className="text-12">{formatUsd(fromUsd ?? 0n)}</span>}
               variant="none"
               position="top"
-              disabled={fromUsd === undefined}
+              disabled={fromUsd === undefined || fromToken?.isStable}
             />
 
             {formattedBalance !== undefined && (

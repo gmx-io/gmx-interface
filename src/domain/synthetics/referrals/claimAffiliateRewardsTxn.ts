@@ -1,12 +1,13 @@
-import { t } from "@lingui/macro";
-import { Signer, ethers } from "ethers";
+import { encodeFunctionData } from "viem";
 
-import { getContract } from "config/contracts";
-import { callContract } from "lib/contracts";
+import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
+import { ISigner } from "lib/transactions/iSigner";
+import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
+import { WalletSigner } from "lib/wallets";
+import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
-
-import { validateSignerAddress } from "components/Errors/errorToasts";
+import { getContract } from "sdk/configs/contracts";
 
 type Params = {
   account: string;
@@ -14,27 +15,51 @@ type Params = {
     marketAddresses: string[];
     tokenAddresses: string[];
   };
-  setPendingTxns: (txns: any) => void;
 };
 
-export async function claimAffiliateRewardsTxn(chainId: ContractsChainId, signer: Signer, p: Params) {
-  const { setPendingTxns, rewardsParams, account } = p;
+function getClaimAffiliateRewardsCallData({
+  rewardsParams,
+  receiver,
+}: {
+  rewardsParams: Params["rewardsParams"];
+  receiver: string;
+}) {
+  return encodeFunctionData({
+    abi: abis.ExchangeRouter,
+    functionName: "claimAffiliateRewards",
+    args: [rewardsParams.marketAddresses, rewardsParams.tokenAddresses, receiver],
+  });
+}
 
-  await validateSignerAddress(signer, account);
+export async function estimateClaimAffiliateRewardsGas(chainId: ContractsChainId, p: Params) {
+  const { account, rewardsParams } = p;
+  const client = getPublicClientWithRpc(chainId);
+  const exchangeRouterAddress = getContract(chainId, "ExchangeRouter");
 
-  const contract = new ethers.Contract(getContract(chainId, "ExchangeRouter"), abis.ExchangeRouter, signer);
+  const callData = getClaimAffiliateRewardsCallData({
+    rewardsParams,
+    receiver: account,
+  });
 
-  return callContract(
+  return client
+    .estimateGas({
+      account,
+      to: exchangeRouterAddress,
+      data: callData,
+    })
+    .then(applyGasLimitBuffer);
+}
+
+export async function claimAffiliateRewardsTxn(chainId: ContractsChainId, signer: WalletSigner | ISigner, p: Params) {
+  const { rewardsParams, account } = p;
+
+  return await sendWalletTransaction({
     chainId,
-    contract,
-    "claimAffiliateRewards",
-    [rewardsParams.marketAddresses, rewardsParams.tokenAddresses, account],
-    {
-      sentMsg: t`Claiming affiliate rewards...`,
-      successMsg: t`Affiliate rewards claimed`,
-      failMsg: t`Failed to claim affiliate rewards`,
-      hideSuccessMsg: true,
-      setPendingTxns,
-    }
-  );
+    signer,
+    to: getContract(chainId, "ExchangeRouter"),
+    callData: getClaimAffiliateRewardsCallData({
+      rewardsParams,
+      receiver: account,
+    }),
+  });
 }

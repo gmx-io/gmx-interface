@@ -1,7 +1,8 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useMemo, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
+import { useIntersection } from "react-use";
 
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { usePositionsConstants } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -18,7 +19,6 @@ import {
   getEstimatedLiquidationTimeInHours,
 } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";
-import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { CHART_PERIODS } from "lib/legacy";
 import { formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
@@ -39,7 +39,7 @@ import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { PositionItemOrdersLarge, PositionItemOrdersSmall } from "./PositionItemOrders";
 import { PositionItemTPSLCell } from "./PositionItemTPSLCell";
-import { TPSLModal } from "../TPSLModal/TPSLModal";
+import { OrdersModal } from "../OrdersModal/OrdersModal";
 
 import "./PositionItem.scss";
 
@@ -47,7 +47,7 @@ export type Props = {
   position: PositionInfo;
   hideActions?: boolean;
   showPnlAfterFees: boolean;
-  onClosePositionClick?: (orderOption?: OrderOption) => void;
+  onClosePositionClick?: () => void;
   onEditCollateralClick?: () => void;
   onShareClick?: () => void;
   onSelectPositionClick?: (tradeMode?: TradeMode, showCurtain?: boolean) => void;
@@ -69,6 +69,15 @@ export function PositionItem(p: Props) {
   const [tpslInitialView, setTpslInitialView] = useState<"list" | "add">("list");
   const isActionsDisabled = p.position.isOpening;
   const isCloseDisabled = isActionsDisabled || p.position.sizeInUsd == 0n;
+
+  const topSentinelRef = useRef<HTMLDivElement>(null);
+  const closeSentinelRef = useRef<HTMLDivElement>(null);
+
+  const topEntry = useIntersection(topSentinelRef, { threshold: 0, rootMargin: "0px 0px -104px 0px" });
+  const closeEntry = useIntersection(closeSentinelRef, { threshold: 0 });
+
+  const isCardTopVisible = topEntry ? topEntry.isIntersecting || topEntry.boundingClientRect.top < 0 : false;
+  const isCloseStuck = closeEntry ? !closeEntry.isIntersecting : false;
 
   const marketDecimals = useSelector(makeSelectMarketPriceDecimals(p.position.market.indexTokenAddress));
 
@@ -583,26 +592,16 @@ export function PositionItem(p: Props) {
           </TableTd>
         )}
         {!p.hideActions && (
-          <TableTd>
-            <div className="flex items-center justify-between gap-4">
-              <div className="flex items-center gap-4">
-                <Button
-                  variant="ghost"
-                  onClick={() => p.onClosePositionClick?.(OrderOption.Market)}
-                  disabled={isCloseDisabled}
-                  data-qa="position-close-market-button"
-                >
-                  <Trans>Market</Trans>
-                </Button>
-                <Button
-                  variant="ghost"
-                  onClick={() => p.onClosePositionClick?.(OrderOption.Twap)}
-                  disabled={isCloseDisabled}
-                  data-qa="position-close-twap-button"
-                >
-                  <Trans>TWAP</Trans>
-                </Button>
-              </div>
+          <TableTd className="PositionItem-actions-cell">
+            <div className="flex items-center justify-end gap-4">
+              <Button
+                variant="ghost"
+                onClick={p.onClosePositionClick}
+                disabled={isCloseDisabled}
+                data-qa="position-close-button"
+              >
+                <Trans>Close</Trans>
+              </Button>
 
               <PositionDropdown
                 handleEditCollateral={p.onEditCollateralClick}
@@ -652,6 +651,7 @@ export function PositionItem(p: Props) {
             {p.position.pendingUpdate && <SpinnerIcon className="spin position-loading-icon" />}
           </div>
         </AppCardSection>
+        <div ref={topSentinelRef} />
         <AppCardSection>
           {showDebugValues && (
             <div className="App-card-row">
@@ -766,7 +766,7 @@ export function PositionItem(p: Props) {
             </div>
           )}
         </AppCardSection>
-        <AppCardSection>
+        <AppCardSection className="border-b-0">
           <div className="font-medium text-typography-secondary">
             <Trans>Orders</Trans>
           </div>
@@ -774,40 +774,41 @@ export function PositionItem(p: Props) {
           <PositionItemOrdersSmall positionKey={p.position.key} onOrdersClick={p.onOrdersClick} />
         </AppCardSection>
 
+        <div ref={closeSentinelRef} />
         {!p.hideActions && (
-          <AppCardSection>
-            <div className="flex items-center justify-between">
-              <div className="flex gap-8">
+          <div className={cx("z-10", isCardTopVisible && "sticky bottom-14 bg-slate-950")}>
+            <AppCardSection
+              className={cx(
+                "rounded-b-8 border-t-1/2 border-slate-600 bg-slate-900",
+                isCardTopVisible && "after:absolute after:inset-x-0 after:top-full after:h-8 after:bg-slate-950",
+                isCloseStuck && isCardTopVisible && "shadow-[0_-6px_24px_rgba(0,0,0,0.4)]"
+              )}
+            >
+              <div className="flex items-center justify-between">
                 <Button
                   variant="secondary"
                   disabled={isCloseDisabled}
-                  onClick={() => p.onClosePositionClick?.(OrderOption.Market)}
+                  onClick={p.onClosePositionClick}
+                  data-qa="position-close-button"
                 >
-                  <Trans>Market</Trans>
+                  <Trans>Close</Trans>
                 </Button>
-                <Button
-                  variant="secondary"
-                  disabled={isCloseDisabled}
-                  onClick={() => p.onClosePositionClick?.(OrderOption.Twap)}
-                >
-                  <Trans>TWAP</Trans>
-                </Button>
+                <div>
+                  <PositionDropdown
+                    handleEditCollateral={p.onEditCollateralClick}
+                    handleMarketSelect={() => p.onSelectPositionClick?.()}
+                    handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market, true)}
+                    handleShare={p.onShareClick}
+                    handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit, true)}
+                    handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket, true)}
+                    handleTwapIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Twap, true)}
+                    handleTriggerClose={handleOpenAddTPSLModal}
+                    disabled={isActionsDisabled}
+                  />
+                </div>
               </div>
-              <div>
-                <PositionDropdown
-                  handleEditCollateral={p.onEditCollateralClick}
-                  handleMarketSelect={() => p.onSelectPositionClick?.()}
-                  handleMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Market, true)}
-                  handleShare={p.onShareClick}
-                  handleLimitIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Limit, true)}
-                  handleStopMarketIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.StopMarket, true)}
-                  handleTwapIncreaseSize={() => p.onSelectPositionClick?.(TradeMode.Twap, true)}
-                  handleTriggerClose={handleOpenAddTPSLModal}
-                  disabled={isActionsDisabled}
-                />
-              </div>
-            </div>
-          </AppCardSection>
+            </AppCardSection>
+          </div>
         )}
       </AppCard>
     );
@@ -816,7 +817,7 @@ export function PositionItem(p: Props) {
   return (
     <>
       {p.isLarge ? renderLarge() : renderSmall()}
-      <TPSLModal
+      <OrdersModal
         isVisible={isTPSLModalVisible}
         setIsVisible={setIsTPSLModalVisible}
         position={p.position}

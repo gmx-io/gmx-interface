@@ -75,6 +75,7 @@ import {
   getMarkPrice,
   getNextPositionValuesForIncreaseTrade,
 } from "domain/synthetics/trade";
+import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { getExpressError, getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
 import { TokensRatioAndSlippage } from "domain/tokens";
 import { numericBinarySearch } from "lib/binarySearch";
@@ -93,7 +94,7 @@ import {
 } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendEditOrderEvent } from "lib/userAnalytics";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
@@ -184,6 +185,16 @@ export function OrderEditor(p: Props) {
   );
   const nextPositionValuesForIncrease = useSelector(selectOrderEditorNextPositionValuesForIncrease);
   const nextPositionValuesWithoutPnlForIncrease = useSelector(selectOrderEditorNextPositionValuesWithoutPnlForIncrease);
+
+  const isTriggerDecrease = isTriggerDecreaseOrderType(p.order.orderType);
+
+  const closeSize = useCloseSizeInput({
+    positionSizeInUsd: existingPosition?.sizeInUsd,
+    positionSizeInTokens: existingPosition?.sizeInTokens,
+    indexTokenDecimals: positionIndexToken?.decimals ?? 18,
+    indexTokenSymbol: positionIndexToken?.symbol ?? "",
+    onCloseSizeUsdChange: isTriggerDecrease ? setSizeInputValue : undefined,
+  });
 
   const findSwapPath = useSelector(selectOrderEditorFindSwapPath);
 
@@ -535,7 +546,7 @@ export function OrderEditor(p: Props) {
   const submitButtonState = useMemo(() => {
     if (hasOutdatedUi) {
       return {
-        text: t`Page outdated. Refresh`,
+        text: getPageOutdatedError(),
         disabled: true,
       };
     }
@@ -617,7 +628,11 @@ export function OrderEditor(p: Props) {
       } else {
         const positionOrder = p.order as PositionOrderInfo;
 
-        setSizeInputValue(formatAmountFree(positionOrder.sizeDeltaUsd ?? 0n, USD_DECIMALS));
+        if (isTriggerDecrease) {
+          closeSize.setFromUsdString(formatAmountFree(positionOrder.sizeDeltaUsd ?? 0n, USD_DECIMALS));
+        } else {
+          setSizeInputValue(formatAmountFree(positionOrder.sizeDeltaUsd ?? 0n, USD_DECIMALS));
+        }
         const price = positionOrder.triggerPrice ?? 0n;
         const decimals = calculateDisplayDecimals(price, USD_DECIMALS, indexToken?.visualMultiplier);
 
@@ -631,8 +646,10 @@ export function OrderEditor(p: Props) {
       setIsInited(true);
     },
     [
+      closeSize,
       indexToken?.visualMultiplier,
       isInited,
+      isTriggerDecrease,
       p.order,
       setDefaultAllowedSwapSlippageBps,
       setSelectedAllowedSwapSlippageBps,
@@ -680,21 +697,6 @@ export function OrderEditor(p: Props) {
 
   const sizeUsd = parseValue(sizeInputValue || "0", USD_DECIMALS) ?? 0n;
 
-  const sizePercentage = useMemo(() => {
-    if (positionSize === undefined || positionSize === 0n) return 0;
-    const percentage = Number((sizeUsd * 100n) / positionSize);
-    return Math.min(100, Math.max(0, percentage));
-  }, [sizeUsd, positionSize]);
-
-  const handleSizePercentageChange = useCallback(
-    (percentage: number) => {
-      if (positionSize === undefined) return;
-      const formattedAmount = formatAmountFree((positionSize * BigInt(percentage)) / 100n, USD_DECIMALS, 2);
-      setSizeInputValue(formattedAmount);
-    },
-    [positionSize, setSizeInputValue]
-  );
-
   const handleBack = () => {
     if (p.onBack) {
       p.onBack();
@@ -704,41 +706,78 @@ export function OrderEditor(p: Props) {
     p.onClose();
   };
 
+  const editorTitle = useMemo(() => {
+    if (isSwapOrderType(p.order.orderType)) {
+      const fromSymbol = p.order.initialCollateralToken.symbol;
+      const toSymbol = p.order.targetCollateralToken.symbol;
+      return t`Edit Limit Swap: ${fromSymbol} to ${toSymbol}`;
+    }
+
+    const longShortText = p.order.isLong ? t`Long` : t`Short`;
+    const tokenSymbol = indexToken?.symbol ?? "";
+    const suffix = `${tokenSymbol} ${longShortText}`;
+
+    if (isLimitDecreaseOrderType(p.order.orderType)) {
+      return t`Edit TP: ${suffix}`;
+    }
+    if (isStopLossOrderType(p.order.orderType)) {
+      return t`Edit SL: ${suffix}`;
+    }
+    if (isStopIncreaseOrderType(p.order.orderType)) {
+      return t`Edit Stop Market: ${suffix}`;
+    }
+    if (isLimitIncreaseOrderType(p.order.orderType)) {
+      return t`Edit Limit: ${suffix}`;
+    }
+
+    return t`Edit ${p.order.title}`;
+  }, [
+    p.order.orderType,
+    p.order.isLong,
+    p.order.title,
+    p.order.initialCollateralToken?.symbol,
+    p.order.targetCollateralToken?.symbol,
+    indexToken?.symbol,
+  ]);
+
   return (
     <div className="PositionEditor">
       <Modal
         className="PositionSeller-modal"
         isVisible={true}
         setIsVisible={p.onClose}
-        label={<Trans>Edit {p.order.title}</Trans>}
+        label={editorTitle}
         contentPadding={false}
         onBack={p.onBack ? handleBack : undefined}
       >
-        <div className="mt-12 flex flex-col gap-4 border-t-1/2 border-slate-600 px-20 py-16">
+        <div className="flex flex-col gap-4 px-20 py-16">
           {!isSwapOrderType(p.order.orderType) && (
             <>
               <BuyInputSection
-                topLeftLabel={isTriggerDecreaseOrderType(p.order.orderType) ? t`Close` : t`Size`}
-                inputValue={sizeInputValue}
-                onInputValueChange={(e) => setSizeInputValue(e.target.value)}
-                bottomLeftValue={isTriggerDecreaseOrderType(p.order.orderType) ? formatUsd(sizeUsd) : undefined}
-                bottomRightLabel={
-                  isTriggerDecreaseOrderType(p.order.orderType) && positionSize !== undefined ? t`Max` : undefined
+                topLeftLabel={isTriggerDecrease ? t`Close` : t`Size`}
+                inputValue={isTriggerDecrease ? closeSize.closeSizeInput : sizeInputValue}
+                onInputValueChange={
+                  isTriggerDecrease ? closeSize.handleInputChange : (e) => setSizeInputValue(e.target.value)
                 }
-                bottomRightValue={
-                  isTriggerDecreaseOrderType(p.order.orderType) ? formatUsdPrice(positionSize) : undefined
-                }
+                bottomLeftValue={isTriggerDecrease ? formatUsd(sizeUsd) : undefined}
+                bottomRightLabel={isTriggerDecrease && positionSize !== undefined ? t`Max` : undefined}
+                bottomRightValue={isTriggerDecrease ? formatUsdPrice(positionSize) : undefined}
                 onClickMax={
-                  isTriggerDecreaseOrderType(p.order.orderType) &&
-                  positionSize !== undefined &&
-                  positionSize > 0 &&
-                  sizeUsd !== positionSize
-                    ? () => setSizeInputValue(formatAmountFree(positionSize, USD_DECIMALS))
+                  isTriggerDecrease && positionSize !== undefined && positionSize > 0 && sizeUsd !== positionSize
+                    ? closeSize.setMaxCloseSize
                     : undefined
                 }
-                maxDecimals={USD_DECIMALS}
+                maxDecimals={
+                  isTriggerDecrease && closeSize.showSizeInTokens ? positionIndexToken?.decimals ?? 18 : USD_DECIMALS
+                }
               >
-                {t`USD`}
+                {isTriggerDecrease ? (
+                  <span className="cursor-pointer select-none" onClick={closeSize.handleSizeToggle}>
+                    {closeSize.closeSizeLabel}
+                  </span>
+                ) : (
+                  t`USD`
+                )}
               </BuyInputSection>
 
               <BuyInputSection
@@ -766,8 +805,8 @@ export function OrderEditor(p: Props) {
                 {t`USD`}
               </BuyInputSection>
 
-              {isTriggerDecreaseOrderType(p.order.orderType) && positionSize !== undefined && positionSize > 0n && (
-                <MarginPercentageSlider value={sizePercentage} onChange={handleSizePercentageChange} />
+              {isTriggerDecrease && positionSize !== undefined && positionSize > 0n && (
+                <MarginPercentageSlider value={closeSize.closePercentage} onChange={closeSize.handleSliderChange} />
               )}
             </>
           )}

@@ -3,10 +3,9 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ReactNode, useCallback, useMemo } from "react";
 import { zeroAddress } from "viem";
 
-import { getBridgingOptionsForToken } from "config/bridging";
-import { AVALANCHE, BOTANIX, MEGAETH, SettlementChainId } from "config/chains";
+import { AVALANCHE, BOTANIX, SettlementChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
-import { getExternalAggregatorSwapUrlFromAddresses } from "config/links";
+import { JUMPER_BRIDGE_URL } from "config/links";
 import { MULTI_CHAIN_DEPOSIT_TRADE_TOKENS } from "config/multichain";
 import {
   useGmxAccountDepositViewTokenAddress,
@@ -47,6 +46,8 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTradeMode,
   selectTradeboxTriggerPrice,
+  selectTradeboxDecreasePositionAmounts,
+  selectTradeboxHasExistingPosition,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
 import { selectExternalSwapQuoteParams } from "context/SyntheticsStateContext/selectors/tradeSelectors";
@@ -86,7 +87,6 @@ import { TradeMode, TradeType } from "sdk/utils/trade";
 import { getNextPositionValuesForIncreaseTrade } from "sdk/utils/trade/increase";
 import { mustNeverExist } from "sdk/utils/types";
 
-import { BridgingInfo } from "components/BridgingInfo/BridgingInfo";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useMultichainTokens } from "components/GmxAccountModal/hooks";
@@ -147,6 +147,8 @@ export function useTradeboxButtonState({
   const isStakeOrUnstake = useSelector(selectTradeboxIsStakeOrUnstake);
   const payAmount = useSelector(selectTradeboxPayAmount);
   const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
+  const hasExistingPosition = useSelector(selectTradeboxHasExistingPosition);
+  const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const { tokenChainDataArray } = useMultichainTokens();
 
   const { setPendingTxns } = usePendingTxns();
@@ -558,13 +560,27 @@ export function useTradeboxButtonState({
       if (buttonErrorText) {
         submitButtonText = buttonErrorText;
       } else {
-        const modeLabel = localizedTradeModeLabels[tradeMode];
-
         if (isSwap) {
+          const modeLabel = localizedTradeModeLabels[tradeMode];
           submitButtonText = `${modeLabel}: ${t`Swap`} ${fromToken?.symbol}`;
         } else {
-          const actionLabel = isIncrease ? t`increase` : t`decrease`;
-          submitButtonText = `${modeLabel}: ${localizedTradeTypeLabels[tradeType!]} ${actionLabel}`;
+          const directionLabel = localizedTradeTypeLabels[tradeType!];
+          const isMarket = tradeMode === TradeMode.Market;
+
+          let actionLabel: string;
+          if (isIncrease) {
+            actionLabel = hasExistingPosition ? t`Increase` : t`Open`;
+          } else {
+            const isFullClose = decreaseAmounts?.isFullClose ?? false;
+            actionLabel = isFullClose ? t`Close` : t`Decrease`;
+          }
+
+          if (isMarket) {
+            submitButtonText = `${actionLabel} ${directionLabel}`;
+          } else {
+            const modeLabel = localizedTradeModeLabels[tradeMode];
+            submitButtonText = `${modeLabel}: ${actionLabel} ${directionLabel}`;
+          }
         }
       }
     }
@@ -618,6 +634,8 @@ export function useTradeboxButtonState({
     tradeMode,
     tradeType,
     isFromTokenGmxAccount,
+    hasExistingPosition,
+    decreaseAmounts?.isFullClose,
   ]);
 }
 
@@ -783,7 +801,6 @@ function NoSwapPathTooltipContent({
   chainId: number;
   toToken: TokenData | undefined;
 }) {
-  const isMegaEth = MEGAETH === chainId;
   const { setFromTokenAddress, setToTokenAddress, setTradeType, setTradeMode } = useSelector(selectTradeboxState);
 
   const makeHandleSwapClick = useCallback(
@@ -825,30 +842,20 @@ function NoSwapPathTooltipContent({
     );
   }
 
+  const collateralSymbol = collateralToken?.assetSymbol ?? collateralToken?.symbol;
+
   return (
-    <>
-      <Trans>
-        {collateralToken?.assetSymbol ?? collateralToken?.symbol} is required for collateral.
-        <br />
-        <br />
-        No swap path found for {fromToken?.assetSymbol ?? fromToken?.symbol} to{" "}
-        {collateralToken?.assetSymbol ?? collateralToken?.symbol} within GMX.
-        <br />
-        <br />
-        <ExternalLink
-          href={getExternalAggregatorSwapUrlFromAddresses(chainId, fromToken?.address, collateralToken?.address)}
-        >
-          Buy {collateralToken?.assetSymbol ?? collateralToken?.symbol} on {isMegaEth ? "Jumper" : "1inch"}
-        </ExternalLink>
-        .
-      </Trans>
-      {getBridgingOptionsForToken(collateralToken?.symbol) && (
-        <>
-          <br />
-          <br />
-          <BridgingInfo chainId={chainId} tokenSymbol={collateralToken?.symbol} textOpaque />
-        </>
-      )}
-    </>
+    <Trans>
+      {collateralSymbol} is required for collateral.
+      <br />
+      <br />
+      No swap path found for {fromToken?.assetSymbol ?? fromToken?.symbol} to {collateralSymbol} within GMX.
+      <br />
+      <br />
+      <span onClick={makeHandleSwapClick(fromToken.symbol, collateralToken?.symbol ?? "")} className="Tradebox-handle">
+        Swap {collateralSymbol}
+      </span>{" "}
+      or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge {collateralSymbol}</ExternalLink>.
+    </Trans>
   );
 }

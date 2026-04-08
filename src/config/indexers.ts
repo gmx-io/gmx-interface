@@ -18,7 +18,7 @@ const INDEXER_URLS = {
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-arbitrum-referrals/master-240506225935-51167d5/gn",
     syntheticsStats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-arbitrum-stats/master-250410222518-4486206/gn",
-    subsquid: "https://gmx.squids.live/gmx-synthetics-arbitrum:prod/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-arbitrum@24678a/api/graphql",
   },
 
   [AVALANCHE]: {
@@ -28,7 +28,7 @@ const INDEXER_URLS = {
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-avalanche-referrals/master-240415215829-f6877d6/gn",
     syntheticsStats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-avalanche-stats/master-250410222549-4486206/gn",
-    subsquid: "https://gmx.squids.live/gmx-synthetics-avalanche:prod/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-avalanche@24678a/api/graphql",
   },
 
   [AVALANCHE_FUJI]: {
@@ -40,17 +40,17 @@ const INDEXER_URLS = {
   },
 
   [ARBITRUM_SEPOLIA]: {
-    subsquid: "https://gmx.squids.live/gmx-synthetics-arb-sepolia:prod/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-arb-sepolia@24678a/api/graphql",
   },
 
   [BOTANIX]: {
-    subsquid: "https://gmx.squids.live/gmx-synthetics-botanix:prod/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-botanix@24678a/api/graphql",
     syntheticsStats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-botanix-stats/botanix-250617091016-f7b3bb5/gn",
   },
 
   [MEGAETH]: {
-    subsquid: "https://gmx.squids.live/gmx-synthetics-megaeth:prod/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-megaeth@24678a/api/graphql",
     syntheticsStats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-megaeth-stats/master-260120151613-540f334/gn",
     referrals:

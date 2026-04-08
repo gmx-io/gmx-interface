@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { memo, useCallback, useState } from "react";
+import { memo, useCallback, useMemo, useState } from "react";
 import { useMedia } from "react-use";
 
 import { useIsPositionsLoading, usePositionsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -10,7 +10,6 @@ import { selectShowPnlAfterFees } from "context/SyntheticsStateContext/selectors
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { PositionInfo } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";
-import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { getByKey } from "lib/objects";
 import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionClickEvent } from "lib/userAnalytics/types";
@@ -20,12 +19,16 @@ import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableConten
 import { OrderEditorContainer } from "components/OrderEditorContainer/OrderEditorContainer";
 import { PositionItem } from "components/PositionItem/PositionItem";
 import PositionShare from "components/PositionShare/PositionShare";
+import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { Table, TableTh, TableTheadTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
+import { type PositionSortField, sortPositionsByField } from "./sortPositionsByField";
+import { SymbolSortDropdown } from "./SymbolSortDropdown";
+
 type Props = {
   onSelectPositionClick: (key: string, tradeMode?: TradeMode, showCurtain?: boolean) => void;
-  onClosePositionClick: (key: string, orderOption?: OrderOption) => void;
+  onClosePositionClick: (key: string) => void;
   onOrdersClick: (positionKey: string, orderKey: string | undefined) => void;
   onCancelOrder: (key: string) => void;
   openSettings: () => void;
@@ -39,7 +42,13 @@ export function PositionList(p: Props) {
   const [isPositionShareModalOpen, setIsPositionShareModalOpen] = useState(false);
   const [positionToShareKey, setPositionToShareKey] = useState<string>();
   const positionToShare = getByKey(positionsInfoData, positionToShareKey);
-  const positions = useSelector(selectPositionsInfoDataSortedByMarket);
+  const defaultPositions = useSelector(selectPositionsInfoDataSortedByMarket);
+  const { orderBy, direction, getSorterProps } = useSorterHandlers<PositionSortField>("position-list");
+
+  const positions = useMemo(
+    () => sortPositionsByField(defaultPositions, orderBy, direction),
+    [defaultPositions, orderBy, direction]
+  );
 
   const handleSharePositionClick = useCallback((positionKey: string) => {
     userAnalytics.pushEvent<SharePositionClickEvent>({
@@ -87,42 +96,51 @@ export function PositionList(p: Props) {
       {!isMobile && (
         <TableScrollFadeContainer
           disableScrollFade={positions.length === 0}
+          hideControls
           className="flex grow flex-col bg-slate-900"
         >
           <Table className="!w-[max(100%,1180px)] table-fixed">
             <thead className="text-body-medium">
               <TableTheadTr>
                 <TableTh className="w-[13%]">
-                  <Trans>POSITION</Trans>
+                  <SymbolSortDropdown {...getSorterProps("symbol")} />
                 </TableTh>
-                <TableTh className="w-[10%]">
-                  <Trans>SIZE</Trans>
+                <TableTh className="w-[12%]">
+                  <Sorter {...getSorterProps("size")} showOnHover>
+                    <Trans>SIZE</Trans>
+                  </Sorter>
                 </TableTh>
-                <TableTh className="w-[15%]">
-                  <Trans>NET VALUE</Trans>
+                <TableTh className="w-[17%]">
+                  <Sorter {...getSorterProps("netValue")} showOnHover>
+                    <Trans>NET VALUE</Trans>
+                  </Sorter>
                 </TableTh>
                 <TableTh className="w-[11%]">
-                  <Trans>COLLATERAL</Trans>
+                  <Sorter {...getSorterProps("collateral")} showOnHover>
+                    <Trans>COLLATERAL</Trans>
+                  </Sorter>
                 </TableTh>
                 <TableTh className="w-[9%]">
-                  <Trans>ENTRY PRICE</Trans>
+                  <Sorter {...getSorterProps("entryPrice")} showOnHover>
+                    <Trans>ENTRY PRICE</Trans>
+                  </Sorter>
                 </TableTh>
                 <TableTh className="w-[9%]">
-                  <Trans>MARK PRICE</Trans>
+                  <Sorter {...getSorterProps("markPrice")} showOnHover>
+                    <Trans>MARK PRICE</Trans>
+                  </Sorter>
                 </TableTh>
                 <TableTh className="w-[9%]">
-                  <Trans>LIQUIDATION PRICE</Trans>
+                  <Sorter {...getSorterProps("liqPrice")} showOnHover>
+                    <Trans>LIQUIDATION PRICE</Trans>
+                  </Sorter>
                 </TableTh>
                 {!hideActions && (
                   <TableTh className="w-[8%] text-left">
                     <Trans>TP/SL</Trans>
                   </TableTh>
                 )}
-                {!isLoading && !p.hideActions && (
-                  <>
-                    <TableTh className="w-[16%] pl-18 !text-left">Close</TableTh>
-                  </>
-                )}
+                {!isLoading && !p.hideActions && <TableTh className="PositionItem-actions-cell w-[11%]" />}
               </TableTheadTr>
             </thead>
             <tbody>
@@ -188,7 +206,7 @@ const PositionItemWrapper = memo(
   }: {
     position: PositionInfo;
     onEditCollateralClick: (positionKey: string) => void;
-    onClosePositionClick: (positionKey: string, orderOption?: OrderOption) => void;
+    onClosePositionClick: (positionKey: string) => void;
     onOrdersClick: (positionKey: string, orderKey: string | undefined) => void;
     onSelectPositionClick: (positionKey: string, tradeMode: TradeMode | undefined, showCurtain?: boolean) => void;
     isLarge: boolean;
@@ -203,7 +221,7 @@ const PositionItemWrapper = memo(
       [onEditCollateralClick, position.key]
     );
     const handleClosePositionClick = useCallback(
-      (orderOption?: OrderOption) => onClosePositionClick(position.key, orderOption),
+      () => onClosePositionClick(position.key),
       [onClosePositionClick, position.key]
     );
 

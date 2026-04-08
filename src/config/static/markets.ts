@@ -715,8 +715,24 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0x3A83246bDDD60c4e71c91c10D9A66Fd64399bBCf": {
       enabled: true,
     },
-    // CRV/USD [WETH-USDC]
+    // CRV/USD [WETH-USDC.SG]
     "0xAde9D177B9E060D2064ee9F798125e6539fDaA1c": {
+      enabled: true,
+    },
+    // XAU/USD [WETH-USDC.SG]
+    "0x860F6B4B2F218885935C306B1c782a864ed2d67f": {
+      enabled: true,
+    },
+    // XAG/USD [WETH-USDC.SG]
+    "0x8490D84c29134dA93f434210D76721179C382471": {
+      enabled: true,
+    },
+    // XPT/USD [WETH-USDC.SG]
+    "0x02f0D10977f044d59460B2e71afB8c07Dc7b5E1F": {
+      enabled: true,
+    },
+    // XPD/USD [WETH-USDC.SG]
+    "0x0b0A750812700E9673547134096577D8a79d8108": {
       enabled: true,
     },
   },

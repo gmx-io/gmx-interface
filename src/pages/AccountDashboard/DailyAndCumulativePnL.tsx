@@ -1,7 +1,6 @@
 import { gql, useQuery as useGqlQuery } from "@apollo/client";
 import { Trans, t } from "@lingui/macro";
 import { lightFormat } from "date-fns";
-import { toPng } from "html-to-image";
 import { useCallback, useMemo, useRef, useState } from "react";
 import {
   Area,
@@ -369,12 +368,13 @@ function usePnlHistoricalData(chainId: number, account: Address, fromTimestamp: 
 function useImageDownload() {
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const handleImageDownload = useCallback(() => {
+  const handleImageDownload = useCallback(async () => {
     if (!cardRef.current) {
       helperToast.error("Error in downloading image");
       return;
     }
 
+    const { toPng } = await import("html-to-image");
     toPng(cardRef.current, {
       filter: (element) => {
         if (element.dataset?.exclude) {

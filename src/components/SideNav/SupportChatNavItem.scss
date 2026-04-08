@@ -13,6 +13,8 @@
   background-clip: text;
   color: transparent;
   animation: gradient-rotate 4s linear infinite;
+  -webkit-text-fill-color: transparent;
+  stroke-width: 0%;
 }
 
 .support-chat-icon-gradient-defs {
@@ -31,4 +33,9 @@
   to {
     --gradient-angle: 520.6deg;
   }
+}
+
+.image-capture-in-progress,
+.image-capture-in-progress * {
+  animation: none !important;
 }

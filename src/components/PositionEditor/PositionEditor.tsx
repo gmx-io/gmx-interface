@@ -369,7 +369,7 @@ export function PositionEditor() {
         contentPadding={false}
       >
         {position && (
-          <div className="mt-12 flex flex-col gap-12 border-t-1/2 border-slate-600 px-20 py-16">
+          <div className="flex flex-col gap-12 px-20 py-16">
             <Tabs
               onChange={setOperation}
               selectedValue={operation}

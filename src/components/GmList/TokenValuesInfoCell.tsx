@@ -23,7 +23,7 @@ export function TokenValuesInfoCell({
   const content = (
     <>
       {usd && (
-        <div className={cx("whitespace-nowrap numbers", className)}>
+        <div className={cx("whitespace-nowrap text-typography-primary numbers", className)}>
           <UsdWrapper>{usd}</UsdWrapper>
         </div>
       )}

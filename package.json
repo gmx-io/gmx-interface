@@ -76,12 +76,12 @@
     "eslint-config-recommended": "4.1.0",
     "eth-testing": "1.9.1",
     "ethers": "6.12.1",
-    "framer-motion": "11.1.9",
+    "framer-motion": "12.35.2",
     "graphql": "15.8.0",
     "hex-to-rgba": "2.0.1",
-    "html-to-image": "^1.10.8",
+    "html-to-image": "^1.11.13",
     "immer": "10.1.1",
-    "lodash": "4.17.23",
+    "lodash": "4.18.1",
     "qrcode.react": "^3.1.0",
     "query-string": "7.1.1",
     "rc-slider": "9.7.5",
@@ -117,7 +117,7 @@
     "jest-runner": "patch:jest-runner@npm:27.5.1#.yarn/patches/jest-runner-npm-27.5.1-2ed2c1cda8",
     "viem@2.39.0": "patch:viem@npm:2.39.0#.yarn/patches/viem-npm-2.39.0-c113f391fd",
     "date-fns": "4.1.0",
-    "lodash": "4.17.23"
+    "lodash": "4.18.1"
   },
   "eslintConfig": {
     "extends": [

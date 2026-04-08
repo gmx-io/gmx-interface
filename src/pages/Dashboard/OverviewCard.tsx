@@ -99,9 +99,6 @@ export function OverviewCard({
       ? bigMath.mulDiv(glpPriceAvalanche, glpSupplyAvalanche, expandDecimals(1, GLP_DECIMALS))
       : undefined;
 
-  const totalGlpTvl =
-    glpTvlArbitrum !== undefined && glpTvlAvalanche !== undefined ? glpTvlArbitrum + glpTvlAvalanche : undefined;
-
   const gmTvlArbitrum = v2ArbitrumOverview.totalGMLiquidity;
   const gmTvlAvalanche = v2AvalancheOverview.totalGMLiquidity;
   const gmTvlBotanix = v2BotanixOverview.totalGMLiquidity;
@@ -434,7 +431,7 @@ export function OverviewCard({
                   position="bottom-end"
                   content={
                     <>
-                      <Trans>TVL includes GMX staked, GLP pool, GM pools, and position collateral</Trans>
+                      <Trans>TVL includes GMX staked, GM pools, and position collateral</Trans>
                       <br />
                       <br />
                       <StatsTooltipRow
@@ -463,43 +460,6 @@ export function OverviewCard({
                         showDollar={false}
                         value={formatAmountHuman(displayTvl, USD_DECIMALS, true, 2)}
                       />
-                    </>
-                  }
-                />
-              </div>
-            </div>
-            <div className="App-card-row">
-              <div className="label">
-                <Trans>GLP pool</Trans>
-              </div>
-              <div>
-                <TooltipComponent
-                  handle={formatAmountHuman(totalGlpTvl, USD_DECIMALS, true, 2)}
-                  handleClassName="numbers"
-                  position="bottom-end"
-                  content={
-                    <>
-                      <Trans>Total value of tokens in the GLP pool</Trans>
-                      <br />
-                      <br />
-                      <StatsTooltipRow
-                        label={t`Arbitrum`}
-                        showDollar={false}
-                        value={formatAmountHuman(glpTvlArbitrum, USD_DECIMALS, true, 2)}
-                      />
-                      <StatsTooltipRow
-                        label={t`Avalanche`}
-                        showDollar={false}
-                        value={formatAmountHuman(glpTvlAvalanche, USD_DECIMALS, true, 2)}
-                      />
-                      <div className="my-8 h-1 bg-gray-800" />
-                      <StatsTooltipRow
-                        label={t`Total`}
-                        showDollar={false}
-                        value={formatAmountHuman(totalGlpTvl, USD_DECIMALS, true, 2)}
-                      />
-                      <br />
-                      <Trans>May be higher on other sites that include position collateral</Trans>
                     </>
                   }
                 />
