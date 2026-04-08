@@ -203,11 +203,11 @@ function ScaledReferralCard({
 
           <div>
             <div className="mb-8 inline-block rounded-full bg-blue-300/20 px-6 py-2 text-16 font-medium leading-[20px] text-blue-300">
-              <div className="support-chat-new-badge">{referralCode}</div>
+              <div className="nav-new-badge">{referralCode}</div>
             </div>
             <h3 className="text-32 font-medium leading-1 text-white">
               <Trans>
-                <span className="support-chat-new-badge">Save up to {traderDiscountPercentageLabel}</span> on every
+                <span className="nav-new-badge">Save up to {traderDiscountPercentageLabel}</span> on every
                 <br /> trade on GMX.
               </Trans>
             </h3>
