@@ -1,0 +1,269 @@
+import { Trans, t } from "@lingui/macro";
+import cx from "classnames";
+import type React from "react";
+import { useMemo, useState } from "react";
+
+import { formatMultiplier } from "domain/synthetics/incentives/constants";
+import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
+import { useIncentivesLeaderboard } from "domain/synthetics/incentives/useIncentivesLeaderboard";
+import { formatAmount, formatUsd } from "lib/numbers";
+
+import AddressView from "components/AddressView/AddressView";
+import Button from "components/Button/Button";
+import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
+import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
+import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
+
+const COL_RANK: React.CSSProperties = { width: "6%" };
+const COL_ADDRESS: React.CSSProperties = { width: "22%" };
+const COL_VOLUME: React.CSSProperties = { width: "18%" };
+const COL_POINTS: React.CSSProperties = { width: "18%" };
+const COL_MULTIPLIER: React.CSSProperties = { width: "22%" };
+const COL_TIER: React.CSSProperties = { width: "14%" };
+
+const PER_PAGE = 20;
+
+type TimeFilter = "current" | "last" | "all";
+type SortField = "volume" | "pointsEarned" | "rewardsEarned" | "multiplier";
+
+type Props = {
+  chainId: number;
+  account?: string;
+};
+
+export function PointsLeaderboardTab({ chainId, account }: Props) {
+  const { data: config } = useIncentivesConfig(chainId);
+  const [timeFilter, setTimeFilter] = useState<TimeFilter>("current");
+  const [searchAddress, setSearchAddress] = useState("");
+
+  const epoch = useMemo(() => {
+    if (!config) return undefined;
+    if (timeFilter === "current") return config.epochTimestamp;
+    if (timeFilter === "last") return config.epochTimestamp - config.epochDuration;
+    return undefined; // all-time
+  }, [config, timeFilter]);
+
+  const { data: leaderboard } = useIncentivesLeaderboard(chainId, { epoch });
+  const [page, setPage] = useState(1);
+  const showMultiplier = timeFilter !== "all";
+
+  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("points-leaderboard", {
+    orderBy: "volume",
+    direction: "desc",
+  });
+
+  const filteredLeaderboard = useMemo(() => {
+    if (!leaderboard) return [];
+
+    const filtered = searchAddress
+      ? leaderboard.filter((e) => e.address.toLowerCase().includes(searchAddress.toLowerCase()))
+      : leaderboard;
+
+    return [...filtered].sort((a, b) => {
+      if (orderBy === "unspecified" || direction === "unspecified") {
+        // Default: sort by volume desc
+        if (b.volume > a.volume) return 1;
+        if (b.volume < a.volume) return -1;
+        return 0;
+      }
+
+      let aVal: bigint | number;
+      let bVal: bigint | number;
+
+      switch (orderBy) {
+        case "volume":
+          aVal = a.volume;
+          bVal = b.volume;
+          break;
+        case "pointsEarned":
+          aVal = a.pointsEarned;
+          bVal = b.pointsEarned;
+          break;
+        case "rewardsEarned":
+          aVal = a.rewardsEarned;
+          bVal = b.rewardsEarned;
+          break;
+        case "multiplier":
+          aVal = a.multiplier ?? 0;
+          bVal = b.multiplier ?? 0;
+          break;
+        default:
+          return 0;
+      }
+
+      if (aVal < bVal) return direction === "asc" ? -1 : 1;
+      if (aVal > bVal) return direction === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [leaderboard, searchAddress, orderBy, direction]);
+
+  const pageCount = Math.ceil(filteredLeaderboard.length / PER_PAGE);
+  const indexFrom = (page - 1) * PER_PAGE;
+  const pageData = filteredLeaderboard.slice(indexFrom, indexFrom + PER_PAGE);
+
+  const { userRank, userEntry } = useMemo(() => {
+    if (!account || !filteredLeaderboard.length) return { userRank: null, userEntry: null };
+    const lowerAccount = account.toLowerCase();
+    const idx = filteredLeaderboard.findIndex((e) => e.address.toLowerCase() === lowerAccount);
+    return {
+      userRank: idx >= 0 ? idx + 1 : null,
+      userEntry: idx >= 0 ? filteredLeaderboard[idx] : null,
+    };
+  }, [account, filteredLeaderboard]);
+
+  return (
+    <div>
+      <h3 className="text-body-large mb-12 font-semibold text-typography-primary">
+        <Trans>Leaderboard</Trans>
+      </h3>
+
+      <div className="mb-12 flex flex-wrap items-center gap-8">
+        <Button
+          variant={timeFilter === "current" ? "primary" : "secondary"}
+          onClick={() => {
+            setTimeFilter("current");
+            setPage(1);
+          }}
+        >
+          <Trans>Volume this epoch</Trans>
+        </Button>
+        <Button
+          variant={timeFilter === "last" ? "primary" : "secondary"}
+          onClick={() => {
+            setTimeFilter("last");
+            setPage(1);
+          }}
+        >
+          <Trans>Last epoch</Trans>
+        </Button>
+        <Button
+          variant={timeFilter === "all" ? "primary" : "secondary"}
+          onClick={() => {
+            setTimeFilter("all");
+            setPage(1);
+          }}
+        >
+          <Trans>All-time</Trans>
+        </Button>
+
+        <div className="ml-auto flex items-center gap-8">
+          <div className="flex items-center gap-8 rounded-8 border-1/2 border-slate-600 bg-slate-950 px-12 py-8">
+            <span className="text-typography-secondary">🔍</span>
+            <input
+              type="text"
+              placeholder={t`Search Address`}
+              value={searchAddress}
+              onChange={(e) => {
+                setSearchAddress(e.target.value);
+                setPage(1);
+              }}
+              className="bg-transparent text-body-small w-[160px] text-typography-primary outline-none placeholder:text-typography-secondary"
+            />
+          </div>
+        </div>
+      </div>
+
+      {leaderboard && leaderboard.length === 0 ? (
+        <div className="rounded-8 border-1/2 border-slate-600 bg-slate-950 p-24 text-center text-typography-secondary">
+          <Trans>Leaderboard data is not available yet.</Trans>
+        </div>
+      ) : (
+        <div className="rounded-8 bg-slate-900">
+          <TableScrollFadeContainer>
+            <table className="w-full min-w-[800px] table-fixed">
+              <colgroup>
+                <col style={COL_RANK} />
+                <col style={COL_ADDRESS} />
+                <col style={COL_VOLUME} />
+                <col style={COL_POINTS} />
+                <col style={COL_MULTIPLIER} />
+                <col style={COL_TIER} />
+              </colgroup>
+              <thead>
+                <TableTheadTr>
+                  <TableTh>{t`Rank`}</TableTh>
+                  <TableTh>{t`Address`}</TableTh>
+                  <TableTh>
+                    <Sorter {...getSorterProps("volume")}>
+                      <span className="whitespace-nowrap">{t`Volume`}</span>
+                    </Sorter>
+                  </TableTh>
+                  <TableTh>
+                    <Sorter {...getSorterProps("pointsEarned")}>
+                      <span className="whitespace-nowrap">{t`Earned Points`}</span>
+                    </Sorter>
+                  </TableTh>
+                  <TableTh>
+                    <Sorter {...getSorterProps("rewardsEarned")}>
+                      <span className="whitespace-nowrap">{t`Earned Rewards`}</span>
+                    </Sorter>
+                  </TableTh>
+                  <TableTh>
+                    {showMultiplier && (
+                      <Sorter {...getSorterProps("multiplier")}>
+                        <span className="whitespace-nowrap">{t`Multiplier`}</span>
+                      </Sorter>
+                    )}
+                  </TableTh>
+                </TableTheadTr>
+              </thead>
+              <tbody>
+                {userEntry && userRank && (
+                  <TableTr className="border-b-1/2 border-blue-500/30 !bg-blue-500/10">
+                    <TableTd>
+                      <span className="text-typography-secondary numbers">{userRank}</span>
+                    </TableTd>
+                    <TableTd>
+                      <AddressView size={20} address={userEntry.address} breakpoint="XL" />
+                    </TableTd>
+                    <TableTd className="numbers">{formatUsd(userEntry.volume, { displayDecimals: 0 })}</TableTd>
+                    <TableTd className="numbers">{formatAmount(userEntry.pointsEarned, 18, 4, true)}</TableTd>
+                    <TableTd className="numbers">{formatAmount(userEntry.rewardsEarned, 18, 4, true)} GMX</TableTd>
+                    <TableTd className="numbers">
+                      {showMultiplier && userEntry.multiplier ? formatMultiplier(userEntry.multiplier) : ""}
+                    </TableTd>
+                  </TableTr>
+                )}
+                {pageData.map((entry, i) => {
+                  if (userEntry && entry.address.toLowerCase() === userEntry.address.toLowerCase()) return null;
+                  const rank = indexFrom + i + 1;
+                  return (
+                    <TableTr key={entry.address} hoverable>
+                      <TableTd>
+                        <span
+                          className={cx("font-semibold numbers", {
+                            "text-yellow-300": rank <= 3,
+                          })}
+                        >
+                          {rank}
+                        </span>
+                      </TableTd>
+                      <TableTd>
+                        <AddressView size={20} address={entry.address} breakpoint="XL" />
+                      </TableTd>
+                      <TableTd className="numbers">{formatUsd(entry.volume, { displayDecimals: 0 })}</TableTd>
+                      <TableTd className="numbers">{formatAmount(entry.pointsEarned, 18, 4, true)}</TableTd>
+                      <TableTd className="numbers">{formatAmount(entry.rewardsEarned, 18, 4, true)} GMX</TableTd>
+                      <TableTd className="numbers">
+                        {showMultiplier && entry.multiplier ? formatMultiplier(entry.multiplier) : ""}
+                      </TableTd>
+                    </TableTr>
+                  );
+                })}
+                {!leaderboard && (
+                  <TableTr>
+                    <TableTd colSpan={6} className="py-16 text-center text-typography-secondary">
+                      <Trans>Loading...</Trans>
+                    </TableTd>
+                  </TableTr>
+                )}
+              </tbody>
+            </table>
+          </TableScrollFadeContainer>
+          <BottomTablePagination page={page} pageCount={pageCount} onPageChange={setPage} />
+        </div>
+      )}
+    </div>
+  );
+}
