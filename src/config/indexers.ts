@@ -18,7 +18,7 @@ const INDEXER_URLS = {
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-arbitrum-referrals/master-240506225935-51167d5/gn",
     syntheticsStats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-arbitrum-stats/master-250410222518-4486206/gn",
-    subsquid: "https://gmx.squids.live/gmx-synthetics-arbitrum@24678a/api/graphql",
+    subsquid: "https://gmx-test.squids.live/gmx-synthetics-arbitrum@incntv/api/graphql",
   },
 
   [AVALANCHE]: {
@@ -40,7 +40,7 @@ const INDEXER_URLS = {
   },
 
   [ARBITRUM_SEPOLIA]: {
-    subsquid: "https://gmx.squids.live/gmx-synthetics-arb-sepolia@24678a/api/graphql",
+    subsquid: "https://gmx-test.squids.live/gmx-synthetics-arb-sepolia@7ko9g5/api/graphql",
   },
 
   [BOTANIX]: {

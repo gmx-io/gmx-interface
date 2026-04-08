@@ -1,0 +1,93 @@
+export type VolumeTierId = "Tier1" | "Tier2" | "Tier3" | "Tier4";
+export type StakingTierId = "Tier1" | "Tier2" | "Tier3" | "Tier4" | "Tier5";
+export type BoostId = "FeaturedMarkets" | "BalancingTrades" | "LifetimeTrading";
+
+export type VolumeTierConfig = {
+  tier: VolumeTierId;
+  threshold: bigint;
+  multiplier: number;
+};
+
+export type StakingTierConfig = {
+  tier: StakingTierId;
+  threshold: bigint;
+  multiplier: number;
+};
+
+export type BoostConfig = {
+  boost: BoostId;
+  multiplier: number;
+};
+
+export type IncentivesConfig = {
+  epochTimestamp: number;
+  epochStartTimestamp: number;
+  epochDuration: number;
+  maxMultiplier: number;
+  multiplierDecimals: number;
+  volumeTierPersistenceEpochs: number;
+  pointsExpirationEpochs: number;
+  basePointsFactor: bigint;
+  pointsToGmxFactor: bigint;
+  volumeTiers: VolumeTierConfig[];
+  stakingTiers: StakingTierConfig[];
+  boosts: BoostConfig[];
+  volumeDowngradingCoefficients: VolumeDowngradingCoefficientEpoch[];
+};
+
+export type AccountIncentiveStatus = {
+  account: string;
+  pointsBalance: bigint;
+  multiplier: number;
+  volumeTier: VolumeTierId | null;
+  stakingTier: StakingTierId | null;
+  projectedVolumeTier: VolumeTierId | null;
+  projectedStakingTier: StakingTierId | null;
+  epochTimestamp: number;
+  tradedVolume: bigint;
+  stakingTwa: bigint;
+};
+
+export type EpochStats = {
+  account: string;
+  multiplier: number;
+  epochTimestamp: number;
+  volumeTier: VolumeTierId | null;
+  stakingTier: StakingTierId | null;
+  tradedVolume: bigint;
+  boostIds: BoostId[];
+};
+
+export type AccountIncentiveDashboard = {
+  account: string;
+  pointsBalance: bigint;
+  rewardsBalance: bigint;
+  recentStats: EpochStats[];
+};
+
+export type RewardsHistoryEntry = {
+  epoch: number;
+  volume: bigint;
+  pointsEarned: bigint;
+  pointsSpent: bigint;
+  pointsExpired: bigint;
+  rewardsEarned: bigint;
+};
+
+export type VolumeDowngradingCoefficient = {
+  market: string;
+  coefficient: number;
+};
+
+export type VolumeDowngradingCoefficientEpoch = {
+  epochTimestamp: number;
+  coefficients: VolumeDowngradingCoefficient[];
+};
+
+export type LeaderboardEntry = {
+  address: string;
+  volume: bigint;
+  pointsEarned: bigint;
+  rewardsEarned: bigint;
+  multiplier?: number;
+};
