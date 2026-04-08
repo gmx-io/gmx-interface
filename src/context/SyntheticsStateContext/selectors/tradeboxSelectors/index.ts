@@ -106,7 +106,7 @@ export const selectExternalSwapInputs = createSelector((q) => {
     return undefined;
   }
 
-  if (!tradeFlags.isIncrease) {
+  if (!tradeFlags.isIncrease && !tradeFlags.isSwap) {
     return undefined;
   }
 
