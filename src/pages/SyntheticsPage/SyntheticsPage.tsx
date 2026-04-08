@@ -75,6 +75,7 @@ import ErrorBoundary from "components/Errors/ErrorBoundary";
 import { OneClickPromoBanner } from "components/OneClickPromoBanner/OneClickPromoBanner";
 import { OrderList } from "components/OrderList/OrderList";
 import { OrdersModal, type TpSlTabType } from "components/OrdersModal/OrdersModal";
+import { PointsPromoBanner } from "components/PointsPromoBanner/PointsPromoBanner";
 import { PositionEditor } from "components/PositionEditor/PositionEditor";
 import { PositionList } from "components/PositionList/PositionList";
 import { PositionSeller } from "components/PositionSeller/PositionSeller";
@@ -454,6 +455,7 @@ export function SyntheticsPage(p: Props) {
       {isTablet ? <ChartHeader /> : null}
       <div className="flex gap-8 pt-0 max-lg:flex-col lg:grow">
         <div className="Exchange-left flex grow flex-col gap-8">
+          <PointsPromoBanner />
           <OneClickPromoBanner openSettings={openSettings} />
           <Chart onOpenChartTPSLModal={onOpenChartTPSLModal} />
           {!isTablet && (

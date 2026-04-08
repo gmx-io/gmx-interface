@@ -124,6 +124,7 @@ import { tradeModeLabels, tradeTypeLabels } from "./tradeboxConstants";
 import { TradeBoxAdvancedGroups } from "./TradeBoxRows/AdvancedDisplayRows";
 import { useCollateralWarnings } from "./TradeBoxRows/CollateralSelectorField";
 import { MinReceiveRow } from "./TradeBoxRows/MinReceiveRow";
+import { PointsRow } from "./TradeBoxRows/PointsRow";
 import { PriceImpactFeesRow } from "./TradeBoxRows/PriceImpactFeesRow";
 import { TPSLGroup } from "./TradeBoxRows/TPSLRows";
 
@@ -1224,6 +1225,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           totalExecutionFee={submitButtonState.totalExecutionFee}
         />
       </div>
+      <PointsRow />
     </form>
   );
 }
