@@ -166,6 +166,10 @@ msgstr ""
 msgid "Orders ({0})"
 msgstr ""
 
+#: src/pages/PointsPage/components/FaqSection.tsx
+msgid "At the end of each epoch, points that were spent to discount fees are converted into GMX rewards. You can claim these rewards to your wallet or restake them to increase your staking tier and earn more points."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram bot for GMX swap monitoring"
 msgstr ""
@@ -254,6 +258,14 @@ msgstr ""
 msgid "Performance"
 msgstr ""
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Spent Points"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Staking Tiers"
+msgstr ""
+
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Total earned"
 msgstr ""
@@ -327,6 +339,9 @@ msgid "GM airdrop"
 msgstr ""
 
 #: src/pages/Dashboard/StatsCard.tsx
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Volume"
 msgstr ""
 
@@ -369,6 +384,7 @@ msgstr ""
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 #: src/components/Referrals/traders/faq.tsx
 #: src/components/Referrals/traders/ReferralsTradersTab.tsx
+#: src/pages/PointsPage/components/FaqSection.tsx
 msgid "FAQ"
 msgstr ""
 
@@ -410,6 +426,10 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Percentage"
+msgstr ""
+
+#: src/pages/PointsPage/components/HowItWorksSection.tsx
+msgid "How it works?"
 msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
@@ -512,6 +532,11 @@ msgstr ""
 msgid "Image generation failed. Refresh and try again."
 msgstr ""
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Unlock {tierName} status (+{multiplierLabel}) and earn up to ${rewardsEstimate} in additional trading rewards."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking..."
 msgstr ""
@@ -538,6 +563,10 @@ msgstr ""
 
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
+msgstr ""
+
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Advocate"
 msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
@@ -652,6 +681,10 @@ msgstr ""
 msgid "Order execution price"
 msgstr ""
 
+#: src/pages/PointsPage/PointsPage.tsx
+msgid "Earn points and save on fees when trading on GMX"
+msgstr ""
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
 msgstr ""
@@ -683,6 +716,10 @@ msgstr ""
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "..."
+msgstr ""
+
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Balancing Trades"
 msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -802,6 +839,10 @@ msgstr ""
 msgid "Market Swap"
 msgstr ""
 
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+msgid "Last epoch"
+msgstr ""
+
 #: src/components/GmList/GmListItem.tsx
 msgid "View details"
 msgstr ""
@@ -867,6 +908,10 @@ msgstr ""
 msgid "Add {marketName} to wallet"
 msgstr ""
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Epoch"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact"
 msgstr ""
@@ -915,6 +960,10 @@ msgstr ""
 msgid "No options to buy {nativeTokenSymbol} on {chainName}"
 msgstr ""
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Total points earned across all epochs."
+msgstr ""
+
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values calculated when earned. Excludes incentives."
 msgstr ""
@@ -959,6 +1008,10 @@ msgstr ""
 msgid "1st place"
 msgstr ""
 
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+msgid "Rank"
+msgstr ""
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Force primary failure"
@@ -994,6 +1047,10 @@ msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "{0} <0/><1> to </1>{1} <2/>"
+msgstr ""
+
+#: src/pages/PointsPage/components/FaqSection.tsx
+msgid "Your total multiplier is the sum of three components: Volume Tier (based on weekly trading volume), Staking Tier (based on staked GMX), and Activity Boosts (from specific trading behaviors). The maximum multiplier is 4.0x."
 msgstr ""
 
 #: src/components/PositionShare/CreateReferralCode.tsx
@@ -1088,6 +1145,7 @@ msgid "Insufficient gas balance. Deposit more ETH."
 msgstr ""
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Tiers"
 msgstr ""
 
@@ -1205,6 +1263,10 @@ msgstr ""
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 msgid "Rewards"
+msgstr ""
+
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Finished"
 msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -1374,6 +1436,10 @@ msgstr ""
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT DATA"
+msgstr ""
+
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+msgid "Leaderboard data is not available yet."
 msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
@@ -1594,6 +1660,7 @@ msgid "Available liquidity {directionLabel}"
 msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Show less"
 msgstr ""
 
@@ -1783,6 +1850,10 @@ msgstr ""
 msgid "Borrow fee / day"
 msgstr ""
 
+#: src/pages/PointsPage/PointsPage.tsx
+msgid "Dashboard"
+msgstr ""
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate vault. Withdraw them to transfer to the new account."
 msgstr ""
@@ -1873,6 +1944,10 @@ msgstr ""
 msgid "Your {symbol} collateral exceeds the {indexName} short position size. Collateral value rises with the index, covering any losses—no liquidation price."
 msgstr ""
 
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Your Volume Tier is based on how much you trade and determines your points multiplier."
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "PnL after fees"
@@ -1922,6 +1997,11 @@ msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAIL. LIQ."
+msgstr ""
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Tier Name"
 msgstr ""
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
@@ -2346,6 +2426,11 @@ msgstr ""
 msgid "Set Short Stop Loss @ {0}"
 msgstr ""
 
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Earned Points"
+msgstr ""
+
 #: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
 msgid "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
 msgstr ""
@@ -2397,6 +2482,10 @@ msgstr ""
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set Long Limit @ {0}"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Staking Tier"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -2534,8 +2623,18 @@ msgstr ""
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr ""
 
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Every week, your trading volume places you into a Volume Tier, which is active for 4 weeks. Higher tiers earn more points per dollar of trading fees paid. Volume tiers update automatically each week based on your activity. Trading more consistently helps you stay in higher tiers and earn rewards faster."
+msgstr ""
+
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. This order won't apply to it. <0>Switch to {1} collateral</0>"
+msgstr ""
+
+#: src/components/SideNav/SideNav.tsx
+#: src/pages/PointsPage/PointsPage.tsx
+#: src/pages/PointsPage/PointsPage.tsx
+msgid "Points"
 msgstr ""
 
 #: src/pages/Referrals/Referrals.tsx
@@ -2779,6 +2878,10 @@ msgstr ""
 msgid "High potential net price impact (capped at {formattedCap} for this market) may significantly affect your collateral. Consider reducing leverage. <0>Read more</0>."
 msgstr ""
 
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+msgid "Address"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Take-Profit"
 msgstr ""
@@ -2992,6 +3095,10 @@ msgstr ""
 msgid "Order type"
 msgstr ""
 
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Your multiplier"
+msgstr ""
+
 #: src/components/TradeBox/TradeBoxRows/CollateralSpreadRow.tsx
 msgid "Collateral spread"
 msgstr ""
@@ -3004,6 +3111,12 @@ msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Shift order executed"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Active"
 msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
@@ -3059,6 +3172,10 @@ msgstr ""
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Limit: {suffix}"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Staking GMX unlocks additional multipliers — the more GMX you stake, the higher your Staking Tier and points multiplier. Staked GMX must remain locked for a minimum period to keep the boost active."
 msgstr ""
 
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
@@ -3199,6 +3316,10 @@ msgstr ""
 msgid "Shorts net rate / 1h"
 msgstr ""
 
+#: src/pages/PointsPage/components/MainDataSection.tsx
+msgid "Connect wallet to see your multiplier"
+msgstr ""
+
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Remove endpoint"
 msgstr ""
@@ -3225,6 +3346,10 @@ msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer Account"
+msgstr ""
+
+#: src/pages/PointsPage/components/FaqSection.tsx
+msgid "How do I earn points?"
 msgstr ""
 
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
@@ -3260,6 +3385,10 @@ msgstr ""
 
 #: src/domain/referrals/utils/referralsHelper.ts
 msgid "Only letters, numbers, and underscores allowed"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Your Staking Tier boosts your points earnings when you stake GMX."
 msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
@@ -3308,6 +3437,10 @@ msgstr ""
 #: src/domain/synthetics/markets/createSourceChainDepositTxn.ts
 #: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
 msgid "Deposit sent"
+msgstr ""
+
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Ranked"
 msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
@@ -3379,8 +3512,17 @@ msgstr ""
 msgid "Collapse"
 msgstr ""
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "All time earned points"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Banners"
+msgstr ""
+
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "Epoch ends in"
 msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
@@ -3502,6 +3644,10 @@ msgstr ""
 msgid "Runs entirely on public chains"
 msgstr ""
 
+#: src/pages/PointsPage/components/MainDataSection.tsx
+msgid "Current"
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "May lack liquidity for parts of this order when triggered"
 msgstr ""
@@ -3535,6 +3681,10 @@ msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed TWAP Swap part"
+msgstr ""
+
+#: src/pages/PointsPage/components/HowItWorksSection.tsx
+msgid "You earn points every week based on the trading fees you paid and your active multipliers. Your total multiplier comes from your volume tier, staking tier, and any applicable boosts. Points are calculated automatically and credited weekly."
 msgstr ""
 
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -3579,6 +3729,10 @@ msgstr ""
 msgid "Trade at scale without worrying about thin order books or slippage"
 msgstr ""
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Connect your wallet to view rewards history"
+msgstr ""
+
 #: src/components/Claims/SettleAccruedCard.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Settle"
@@ -3590,6 +3744,11 @@ msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to"
+msgstr ""
+
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Earned Rewards"
 msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -3662,6 +3821,10 @@ msgstr ""
 msgid "Low {symbol} balance. This amount leaves little for future fees on {0}"
 msgstr ""
 
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Certified"
+msgstr ""
+
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
 msgstr ""
@@ -3680,12 +3843,20 @@ msgstr ""
 msgid "No deposits required"
 msgstr ""
 
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "Total earn rewards"
+msgstr ""
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Trading airdrop"
 msgstr ""
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Found {0} events in the past {DAYS_BACK} days"
+msgstr ""
+
+#: src/pages/PointsPage/components/MainDataSection.tsx
+msgid "Your total multiplier is the sum of your Volume Tier, Staking Tier, and Activity Boosts, capped at 4.0x. A higher multiplier means more points per dollar of trading fees."
 msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
@@ -3727,6 +3898,8 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/ClaimRewardsButton.tsx
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Claim rewards"
 msgstr ""
 
@@ -3808,6 +3981,10 @@ msgstr ""
 
 #: src/lib/contracts/callContract.tsx
 msgid "Transaction completed"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Boosts are multipliers earned through specific trading activity."
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -4078,6 +4255,10 @@ msgstr ""
 msgid "Pools stats"
 msgstr ""
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Reach {volumeLabel} in trading volume"
+msgstr ""
+
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4110,6 +4291,10 @@ msgstr ""
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Realized swap impact"
+msgstr ""
+
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Veteran"
 msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
@@ -4201,6 +4386,10 @@ msgstr ""
 msgid "Direction"
 msgstr ""
 
+#: src/pages/PointsPage/components/HowItWorksSection.tsx
+msgid "Earn Points"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Base borrowing factor long"
 msgstr ""
@@ -4243,6 +4432,10 @@ msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "in {0}"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Some markets have reduced volume coefficients. Volume on these markets is counted at a lower rate for tier calculations because they typically involve higher leverage and generate fewer fees."
 msgstr ""
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
@@ -4307,6 +4500,10 @@ msgstr ""
 
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
+msgstr ""
+
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Supporter"
 msgstr ""
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
@@ -4387,8 +4584,13 @@ msgstr ""
 msgid "Code not found"
 msgstr ""
 
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Inactive"
+msgstr ""
+
+#: src/pages/PointsPage/components/HowItWorksSection.tsx
+msgid "Points are automatically converted into trading fee discounts. Discounts reduce up to 50% of your open and close trading fees and are applied automatically on eligible trades. Older points are used first, and unused points expire over time."
 msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
@@ -4521,12 +4723,21 @@ msgstr ""
 msgid "Borrow fee"
 msgstr ""
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Trade ${0} to unlock {1} status +{2}"
+msgstr ""
+
 #: src/lib/copyElementAsImage.ts
 msgid "Image copied to clipboard"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Activity Boost"
 msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
@@ -4684,6 +4895,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeFi margin protocol"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Start trading →"
 msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
@@ -5134,6 +5349,10 @@ msgstr ""
 msgid "GLV"
 msgstr ""
 
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+msgid "All-time"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity in GM pool"
 msgstr ""
@@ -5196,6 +5415,10 @@ msgstr ""
 msgid "Failed to claim funds"
 msgstr ""
 
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Place balancing trades ($1M+) on under-utilized sides"
+msgstr ""
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Which fees get discounted?"
 msgstr ""
@@ -5206,6 +5429,10 @@ msgstr ""
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
+msgstr ""
+
+#: src/pages/PointsPage/components/FaqSection.tsx
+msgid "How do multipliers work?"
 msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -5231,6 +5458,10 @@ msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "transaction:"
+msgstr ""
+
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "GMX rewards available to claim or stake. Rewards are generated when your points are spent to discount trading fees."
 msgstr ""
 
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
@@ -5271,6 +5502,10 @@ msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buy failed"
+msgstr ""
+
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Steward"
 msgstr ""
 
 #: src/pages/Dashboard/StatsCard.tsx
@@ -5341,9 +5576,21 @@ msgstr ""
 msgid "Withdraw fee"
 msgstr ""
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Expired Points"
+msgstr ""
+
+#: src/components/TradeBox/TradeBoxRows/PointsRow.tsx
+msgid "Estimated rewards"
+msgstr ""
+
 #: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
+msgstr ""
+
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+msgid "You've received a bonus of {bonusFormatted} — Start trading to activate it and get your rewards."
 msgstr ""
 
 #: src/components/Claims/ClaimableCard.tsx
@@ -5366,6 +5613,10 @@ msgstr ""
 msgid "{0} cannot be sent to smart contract addresses. Select another token"
 msgstr ""
 
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Boosts apply to individual trades and reward specific behaviors, such as trading on new chains or selected markets. Multiple boosts can stack on a single trade, up to a maximum cap. Boosts do not last forever and only apply when the qualifying action is performed."
+msgstr ""
+
 #: src/pages/Jobs/Jobs.tsx
 msgid "Jobs"
 msgstr ""
@@ -5376,6 +5627,10 @@ msgstr ""
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price"
+msgstr ""
+
+#: src/pages/PointsPage/components/FaqSection.tsx
+msgid "Do points expire?"
 msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
@@ -5505,6 +5760,10 @@ msgstr ""
 msgid "Details"
 msgstr ""
 
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Titan"
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLV bonus incentive"
 msgstr ""
@@ -5544,6 +5803,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "UniDex Leverage"
+msgstr ""
+
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "Claim only"
 msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -5587,6 +5850,10 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX proposals"
+msgstr ""
+
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Featured Markets"
 msgstr ""
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
@@ -5654,6 +5921,10 @@ msgstr ""
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."
+msgstr ""
+
+#: src/pages/PointsPage/components/FaqSection.tsx
+msgid "Yes, points expire after 13 epochs (approximately 13 weeks). The oldest points are consumed first when applied to fee discounts (FIFO)."
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -5819,6 +6090,10 @@ msgstr ""
 msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price"
 msgstr ""
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Buy GMX +"
+msgstr ""
+
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
 msgstr ""
@@ -5863,6 +6138,7 @@ msgid "{balanceFormatted} remaining in old 1CT subaccount"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Stake GMX"
 msgstr ""
 
@@ -5941,6 +6217,10 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Vesting"
+msgstr ""
+
+#: src/pages/PointsPage/components/HowItWorksSection.tsx
+msgid "Trade and Stake"
 msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
@@ -6110,6 +6390,10 @@ msgstr ""
 msgid "Approving..."
 msgstr ""
 
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "Stake and earn more rewards"
+msgstr ""
+
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"
 msgstr ""
@@ -6148,6 +6432,10 @@ msgstr ""
 
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Paste hex error data to decode"
+msgstr ""
+
+#: src/pages/PointsPage/components/FaqSection.tsx
+msgid "Points are earned each epoch (weekly) based on the open/close trading fees you pay, adjusted by your total multiplier. Your multiplier is the sum of your Volume Tier, Staking Tier, and any Activity Boosts, capped at 4.0x."
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -6196,6 +6484,8 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Loading..."
 msgstr ""
 
@@ -6215,6 +6505,10 @@ msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Use your preferred token to pay and collateralize positions"
+msgstr ""
+
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Start earning points and unlock rewards"
 msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
@@ -6263,6 +6557,14 @@ msgstr ""
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "In which tokens will I receive my rebates?"
+msgstr ""
+
+#: src/pages/PointsPage/components/MainDataSection.tsx
+msgid "Connect wallet to see your points"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Stake {stakeLabel} GMX"
 msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
@@ -6476,6 +6778,10 @@ msgstr ""
 msgid "Debug swaps"
 msgstr ""
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Total points spent on fee discounts."
+msgstr ""
+
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Invalid execution price. Calculated price is negative"
 msgstr ""
@@ -6575,6 +6881,10 @@ msgstr ""
 #: src/components/PositionList/PositionList.tsx
 #: src/components/TradeBox/tradeboxConstants.tsx
 msgid "TP/SL"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "active boosts"
 msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
@@ -6695,6 +7005,10 @@ msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Sell GLV"
+msgstr ""
+
+#: src/components/TradeBox/TradeBoxRows/PointsRow.tsx
+msgid "Earn GMX Points and unlock rewards"
 msgstr ""
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
@@ -6978,6 +7292,10 @@ msgstr ""
 msgid "ENTRY PRICE"
 msgstr ""
 
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "Total non-expired points available. Points automatically discount up to 50% of your trading fees."
+msgstr ""
+
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Display PnL after fees"
 msgstr ""
@@ -7134,6 +7452,10 @@ msgstr ""
 msgid "Total supply"
 msgstr ""
 
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+msgid "Earn rewards — With your recent volume, staking {stakeFormatted} GMX could have earned you up to ${rewardsFormatted} in additional trading rewards."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 msgid "My assets"
 msgstr ""
@@ -7277,11 +7599,16 @@ msgstr ""
 msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr ""
 
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+msgid "Volume this epoch"
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order uses {collateralSymbol}, but existing {longText} position uses {symbol} as collateral"
 msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Show more"
 msgstr ""
 
@@ -7303,6 +7630,10 @@ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Minimum capital used of {0} required to qualify for rankings"
+msgstr ""
+
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "No rewards history yet. Start trading to earn points."
 msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
@@ -7396,6 +7727,10 @@ msgstr ""
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Force failures"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "GMX Staked"
 msgstr ""
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
@@ -7516,6 +7851,10 @@ msgstr ""
 msgid "Trade from wallet or GMX Account"
 msgstr ""
 
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "Points balance"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min position size: {0}"
 msgstr ""
@@ -7608,6 +7947,14 @@ msgstr ""
 msgid "{fromText} to {toExecutionText}"
 msgstr ""
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Stake more GMX to get {0} +{1}"
+msgstr ""
+
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "Available to Claim"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Limit Swap"
 msgstr ""
@@ -7638,6 +7985,10 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claimed"
+msgstr ""
+
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Stake more GMX to increase your multiplier"
 msgstr ""
 
 #: src/components/TwapRows/TwapRows.tsx
@@ -7752,6 +8103,10 @@ msgstr ""
 msgid "Deposit failed"
 msgstr ""
 
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Guardian"
+msgstr ""
+
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "EST. PNL"
 msgstr ""
@@ -7795,6 +8150,10 @@ msgstr ""
 
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "Click on"
+msgstr ""
+
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Trade featured or new markets to earn this boost"
 msgstr ""
 
 #: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
@@ -7900,7 +8259,7 @@ msgstr ""
 msgid "Amount exceeds the withdrawal limit. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr ""
 
-#: src/components/SideNav/SupportChatNavItem.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "New"
 msgstr ""
 
@@ -8300,6 +8659,11 @@ msgstr ""
 msgid "Display settings"
 msgstr ""
 
+#: src/pages/PointsPage/components/MainDataSection.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Points Balance"
+msgstr ""
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order filled"
 msgstr ""
@@ -8408,6 +8772,10 @@ msgstr ""
 msgid "Select asset to deposit"
 msgstr ""
 
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+msgid "Search Address"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max GM buyable amount reached"
 msgstr ""
@@ -8480,6 +8848,11 @@ msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "Executes when price and liquidity conditions are met"
+msgstr ""
+
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+msgid "Start earning points and unlock rewards."
 msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
@@ -8777,6 +9150,10 @@ msgstr ""
 msgid "Order trigger price"
 msgstr ""
 
+#: src/pages/PointsPage/components/HowItWorksSection.tsx
+msgid "Trade on GMX and optionally stake GMX tokens to increase your earning power. Trading generates points, while staking boosts how many points you earn."
+msgstr ""
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap TWAP: Swap tokens in evenly distributed parts over a specified time"
 msgstr ""
@@ -8907,6 +9284,15 @@ msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express + One-Click"
+msgstr ""
+
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Lifetime Volume"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Applies next epoch"
 msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
@@ -9181,6 +9567,10 @@ msgstr ""
 msgid "Negative funding fees reduce collateral and affect liquidation price. Positive funding fees are claimable in the Claims tab."
 msgstr ""
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Used Points"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact amount"
 msgstr ""
@@ -9215,6 +9605,10 @@ msgstr ""
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Increase"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Volume this epoch:"
 msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
@@ -9266,6 +9660,10 @@ msgstr ""
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
+msgstr ""
+
+#: src/pages/PointsPage/components/FaqSection.tsx
+msgid "GMX Points are loyalty rewards earned by trading on GMX. Points are pegged 1:1 to GMX price and are earned weekly based on your trading fees and multiplier. Points automatically discount up to 50% of your open/close trading fees."
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -9423,6 +9821,10 @@ msgstr ""
 msgid "Sender has withdrawn all tokens from Affiliate vesting vault"
 msgstr ""
 
+#: src/pages/PointsPage/components/FaqSection.tsx
+msgid "How are rewards claimed?"
+msgstr ""
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Share your GMX trade on X"
 msgstr ""
@@ -9454,6 +9856,10 @@ msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe and remain in your wallet."
+msgstr ""
+
+#: src/pages/PointsPage/components/MainDataSection.tsx
+msgid "Max 4.0x"
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
@@ -9541,6 +9947,10 @@ msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
+msgstr ""
+
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Legendary"
 msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
@@ -9698,6 +10108,10 @@ msgstr ""
 msgid "<0>every</0> {minutes} minutes{0}"
 msgstr ""
 
+#: src/pages/PointsPage/components/FaqSection.tsx
+msgid "What are GMX Points?"
+msgstr ""
+
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "r:"
 msgstr ""
@@ -9741,6 +10155,10 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "LIQUIDITY LONG"
+msgstr ""
+
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "Total rewards earned since the start of the program."
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -9810,6 +10228,8 @@ msgstr ""
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+#: src/pages/PointsPage/PointsPage.tsx
 msgid "Leaderboard"
 msgstr ""
 
@@ -9945,11 +10365,17 @@ msgstr ""
 
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Status"
 msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "30s"
+msgstr ""
+
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "Claim your rewards now. You can also stake them instantly to get 5% yield on it and earn even more points."
 msgstr ""
 
 #: src/components/GmList/PerformanceLabel.tsx
@@ -10001,6 +10427,10 @@ msgstr ""
 msgid "MARK PRICE"
 msgstr ""
 
+#: src/pages/PointsPage/components/MainDataSection.tsx
+msgid "Points are earned weekly based on trading fees and your multiplier. Points are pegged 1:1 to GMX price and expire after 13 weeks. Points automatically discount up to 50% of your open/close trading fees."
+msgstr ""
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Increase the max network fee buffer to {0} in {settingsLink}"
 msgstr ""
@@ -10045,6 +10475,7 @@ msgstr ""
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "About"
 msgstr ""
@@ -10084,12 +10515,20 @@ msgstr ""
 msgid "PnL long"
 msgstr ""
 
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Volume Tiers"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "For detailed stats"
 msgstr ""
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Simulate transactions"
+msgstr ""
+
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "GMX Points"
 msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
@@ -10134,6 +10573,10 @@ msgstr ""
 msgid "Longs net rate / 1h"
 msgstr ""
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Complete trading activities"
+msgstr ""
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "EVENT"
@@ -10155,6 +10598,10 @@ msgstr ""
 
 #: src/pages/Actions/ActionsRouter.tsx
 msgid "GMX V1 actions"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Boost Name"
 msgstr ""
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
@@ -10387,6 +10834,10 @@ msgstr ""
 msgid "Continue"
 msgstr ""
 
+#: src/pages/PointsPage/components/MainDataSection.tsx
+msgid "Your Multiplier"
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "GLV tokens mirror GLP's composition and integrate seamlessly into GMX V2's liquidity ecosystem. You can sell or hold to earn yield. A $500,000 GLV incentive pool rewards holders who keep their allocation for at least 3 months."
 msgstr ""
@@ -10454,6 +10905,10 @@ msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Decrease"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Volume Tier"
 msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
@@ -10569,6 +11024,10 @@ msgstr ""
 msgid "GMX staked rewards:"
 msgstr ""
 
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "Claimable rewards"
+msgstr ""
+
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee"
 msgstr ""
@@ -10644,6 +11103,11 @@ msgstr ""
 msgid "Funding activity"
 msgstr ""
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+#: src/pages/PointsPage/PointsPage.tsx
+msgid "Rewards History"
+msgstr ""
+
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Available:"
@@ -10653,12 +11117,20 @@ msgstr ""
 msgid "Realized base PnL"
 msgstr ""
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Unlock activity boosts and increase your rewards."
+msgstr ""
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "limit"
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute TWAP Swap part"
+msgstr ""
+
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Achieve $200M+ lifetime trading volume"
 msgstr ""
 
 #: src/components/Errors/ErrorBoundary.tsx
@@ -10797,6 +11269,10 @@ msgstr ""
 msgid "Complete Account Transfer"
 msgstr ""
 
+#: src/pages/PointsPage/components/HowItWorksSection.tsx
+msgid "Claim Rewards"
+msgstr ""
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
 msgstr ""
@@ -10807,6 +11283,10 @@ msgstr ""
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Where do I find a referral code?"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Volume Coefficients"
 msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
@@ -10852,6 +11332,13 @@ msgstr ""
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Stop Market)"
+msgstr ""
+
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Multiplier"
 msgstr ""
 
 #: src/components/TradeBox/TradeBox.tsx

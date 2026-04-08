@@ -166,6 +166,10 @@ msgstr "Arbitrum"
 msgid "Orders ({0})"
 msgstr "訂單 ({0})"
 
+#: src/pages/PointsPage/components/FaqSection.tsx
+msgid "At the end of each epoch, points that were spent to discount fees are converted into GMX rewards. You can claim these rewards to your wallet or restake them to increase your staking tier and earn more points."
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram bot for GMX swap monitoring"
 msgstr "用於監控 GMX 兌換的 Telegram 機器人"
@@ -254,6 +258,14 @@ msgstr "限價單失敗"
 msgid "Performance"
 msgstr "績效"
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Spent Points"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Staking Tiers"
+msgstr ""
+
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Total earned"
 msgstr "總收益"
@@ -327,6 +339,9 @@ msgid "GM airdrop"
 msgstr "GM 空投"
 
 #: src/pages/Dashboard/StatsCard.tsx
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Volume"
 msgstr "交易量"
 
@@ -369,6 +384,7 @@ msgstr ""
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 #: src/components/Referrals/traders/faq.tsx
 #: src/components/Referrals/traders/ReferralsTradersTab.tsx
+#: src/pages/PointsPage/components/FaqSection.tsx
 msgid "FAQ"
 msgstr "常見問題"
 
@@ -411,6 +427,10 @@ msgstr ""
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Percentage"
 msgstr "百分比"
+
+#: src/pages/PointsPage/components/HowItWorksSection.tsx
+msgid "How it works?"
+msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap UI fee"
@@ -512,6 +532,11 @@ msgstr "選擇代幣"
 msgid "Image generation failed. Refresh and try again."
 msgstr "圖片生成失敗。請重新整理後再試一次。"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Unlock {tierName} status (+{multiplierLabel}) and earn up to ${rewardsEstimate} in additional trading rewards."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking..."
 msgstr "解除質押中..."
@@ -539,6 +564,10 @@ msgstr "滑點超出限制。預期最小值：{minOutputAmountText}，實際值
 #: src/components/GmList/FeeApyLabel.tsx
 msgid "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
 msgstr "僅來自交易手續費的預估年化報酬。<0/><1/>包含：交易手續費、借貸費用、清算、兌換。<2/>不包含：支撐代幣價格變動、PnL、資金費率。<3/><4/><5>在 Dune 上查看詳細數據</5>。"
+
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Advocate"
+msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/AdvancedDisplayRows.tsx
 msgid "Acceptable swap impact"
@@ -652,6 +681,10 @@ msgstr ""
 msgid "Order execution price"
 msgstr "訂單成交價格"
 
+#: src/pages/PointsPage/PointsPage.tsx
+msgid "Earn points and save on fees when trading on GMX"
+msgstr ""
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes. If you trade on both Arbitrum and Avalanche, apply a referral code on each network separately."
 msgstr ""
@@ -684,6 +717,10 @@ msgstr "否"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "..."
 msgstr "..."
+
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Balancing Trades"
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Classic"
@@ -802,6 +839,10 @@ msgstr "未知錯誤"
 msgid "Market Swap"
 msgstr "Market Swap"
 
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+msgid "Last epoch"
+msgstr ""
+
 #: src/components/GmList/GmListItem.tsx
 msgid "View details"
 msgstr "查看詳情"
@@ -867,6 +908,10 @@ msgstr "領取即表示您同意 <0>GLP 補償</0>條款"
 msgid "Add {marketName} to wallet"
 msgstr "將 {marketName} 加入錢包"
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Epoch"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact"
 msgstr "倉位影響"
@@ -915,6 +960,10 @@ msgstr ""
 msgid "No options to buy {nativeTokenSymbol} on {chainName}"
 msgstr "在 {chainName} 上沒有購買 {nativeTokenSymbol} 的選項"
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Total points earned across all epochs."
+msgstr ""
+
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values calculated when earned. Excludes incentives."
 msgstr "費用數值在賺取時計算。不包含獎勵。"
@@ -959,6 +1008,10 @@ msgstr "DeltaPrime"
 msgid "1st place"
 msgstr "第 1 名"
 
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+msgid "Rank"
+msgstr ""
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Force primary failure"
@@ -995,6 +1048,10 @@ msgstr "順暢交易，Express 可靠保障"
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 msgid "{0} <0/><1> to </1>{1} <2/>"
 msgstr "{0} <0/><1> 至 </1>{1} <2/>"
+
+#: src/pages/PointsPage/components/FaqSection.tsx
+msgid "Your total multiplier is the sum of three components: Volume Tier (based on weekly trading volume), Staking Tier (based on staked GMX), and Activity Boosts (from specific trading behaviors). The maximum multiplier is 4.0x."
+msgstr ""
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -1088,6 +1145,7 @@ msgid "Insufficient gas balance. Deposit more ETH."
 msgstr "Gas 餘額不足。請存入更多 ETH。"
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Tiers"
 msgstr ""
 
@@ -1205,6 +1263,10 @@ msgstr "未實現盈虧"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 msgid "Rewards"
+msgstr ""
+
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Finished"
 msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -1375,6 +1437,10 @@ msgstr "GMX 基本面"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT DATA"
 msgstr "事件資料"
+
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+msgid "Leaderboard data is not available yet."
+msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: src/components/Footer/constants.tsx
@@ -1594,6 +1660,7 @@ msgid "Available liquidity {directionLabel}"
 msgstr "可用流動性 {directionLabel}"
 
 #: src/components/MarketStats/components/CompositionTable.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Show less"
 msgstr "收起"
 
@@ -1783,6 +1850,10 @@ msgstr ""
 msgid "Borrow fee / day"
 msgstr "借貸費用 / 日"
 
+#: src/pages/PointsPage/PointsPage.tsx
+msgid "Dashboard"
+msgstr ""
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate vault. Withdraw them to transfer to the new account."
 msgstr "您在推薦人金庫中有 esGMX 代幣。請先提取後再轉帳至新帳戶。"
@@ -1873,6 +1944,10 @@ msgstr "池子 GM：{0} [{1}] 的可賣出上限已達到，因為代幣已被�
 msgid "Your {symbol} collateral exceeds the {indexName} short position size. Collateral value rises with the index, covering any losses—no liquidation price."
 msgstr "您的 {symbol} 抵押品超過 {indexName} 做空倉位規模。抵押品價值隨指數上漲，足以覆蓋任何虧損——無清算價格。"
 
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Your Volume Tier is based on how much you trade and determines your points multiplier."
+msgstr ""
+
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 msgid "PnL after fees"
@@ -1923,6 +1998,11 @@ msgstr "起始：區塊 {0}（{1}）"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAIL. LIQ."
 msgstr "可用流動性"
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Tier Name"
+msgstr ""
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/pages/UiPage/BannerTest.tsx
@@ -2346,6 +2426,11 @@ msgstr "無可存入的資產"
 msgid "Set Short Stop Loss @ {0}"
 msgstr ""
 
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Earned Points"
+msgstr ""
+
 #: src/components/Referrals/affiliates/dashboard/ReferralCodeWarnings.tsx
 msgid "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
 msgstr "推薦碼尚未在 {nonTakenNetworkNames} 上註冊。請切換網路以完成註冊並賺取返傭。"
@@ -2397,6 +2482,10 @@ msgstr "平倉手續費的"
 
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set Long Limit @ {0}"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Staking Tier"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -2534,9 +2623,19 @@ msgstr "未偵測到符合條件的持倉"
 msgid "Help us improve GMX. For security, we won't contact you first. Send \"I have feedback\" to our official account:"
 msgstr "幫助我們改善 GMX。為了安全，我們不會主動聯絡您。請發送「I have feedback」至我們的官方帳號："
 
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Every week, your trading volume places you into a Volume Tier, which is active for 4 weeks. Higher tiers earn more points per dollar of trading fees paid. Volume tiers update automatically each week based on your activity. Trading more consistently helps you stay in higher tiers and earn rewards faster."
+msgstr ""
+
 #: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
 msgid "Existing position uses {0} collateral. This order won't apply to it. <0>Switch to {1} collateral</0>"
 msgstr "現有倉位使用 {0} 抵押品。此訂單將不會套用於該倉位。<0>切換至 {1} 抵押品</0>"
+
+#: src/components/SideNav/SideNav.tsx
+#: src/pages/PointsPage/PointsPage.tsx
+#: src/pages/PointsPage/PointsPage.tsx
+msgid "Points"
+msgstr ""
 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliates"
@@ -2779,6 +2878,10 @@ msgstr ""
 msgid "High potential net price impact (capped at {formattedCap} for this market) may significantly affect your collateral. Consider reducing leverage. <0>Read more</0>."
 msgstr "高潛在淨價格影響（此市場上限為 {formattedCap}）可能會大幅影響您的抵押品。建議降低槓桿。<0>了解更多</0>。"
 
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+msgid "Address"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Update Take-Profit"
 msgstr "更新止盈"
@@ -2992,6 +3095,10 @@ msgstr "透過 GMX 高級 RPC 實現更快執行"
 msgid "Order type"
 msgstr "訂單類型"
 
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Your multiplier"
+msgstr ""
+
 #: src/components/TradeBox/TradeBoxRows/CollateralSpreadRow.tsx
 msgid "Collateral spread"
 msgstr "抵押品價差"
@@ -3005,6 +3112,12 @@ msgstr "更新 1CT 設定"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Shift order executed"
 msgstr "Shift 訂單已執行"
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Active"
+msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -3059,6 +3172,10 @@ msgstr "您的 GMX Account 餘額，可從任何支援的鏈進行交易。<0>�
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Limit: {suffix}"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Staking GMX unlocks additional multipliers — the more GMX you stake, the higher your Staking Tier and points multiplier. Staked GMX must remain locked for a minimum period to keep the boost active."
 msgstr ""
 
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
@@ -3199,6 +3316,10 @@ msgstr ""
 msgid "Shorts net rate / 1h"
 msgstr "做空淨費率 / 1小時"
 
+#: src/pages/PointsPage/components/MainDataSection.tsx
+msgid "Connect wallet to see your multiplier"
+msgstr ""
+
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Remove endpoint"
 msgstr "移除端點"
@@ -3225,6 +3346,10 @@ msgstr "所選篩選條件無匹配結果"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transfer Account"
+msgstr ""
+
+#: src/pages/PointsPage/components/FaqSection.tsx
+msgid "How do I earn points?"
 msgstr ""
 
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
@@ -3261,6 +3386,10 @@ msgstr "市場圖表"
 #: src/domain/referrals/utils/referralsHelper.ts
 msgid "Only letters, numbers, and underscores allowed"
 msgstr "僅允許字母、數字和底線"
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Your Staking Tier boosts your points earnings when you stake GMX."
+msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Trade from your wallet"
@@ -3309,6 +3438,10 @@ msgstr "資金因子"
 #: src/domain/synthetics/markets/createSourceChainGlvDepositTxn.ts
 msgid "Deposit sent"
 msgstr "存入已送出"
+
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Ranked"
+msgstr ""
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0><1>$GMX</1> has rightfully earned its title as the perpetual trading juggernaut, and the reasons behind this recognition are manifold.</0><2><3>@GMX_IO</3> stands out as a project that's navigated its path without relying on VC backing. Remarkably, it has risen to the top, securing the No. #1 spot by TVL on Arbitrum Chain at $488.34M and an impressive overall Rank #23 on DeFiLlama... <4>see more</4></2>"
@@ -3379,9 +3512,18 @@ msgstr "許可已簽署"
 msgid "Collapse"
 msgstr "收合"
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "All time earned points"
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Banners"
 msgstr "橫幅"
+
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "Epoch ends in"
+msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Fees (including swap)"
@@ -3502,6 +3644,10 @@ msgstr "Telegram 內的 GMX V2 數據分析"
 msgid "Runs entirely on public chains"
 msgstr "完全在公共鏈上運行"
 
+#: src/pages/PointsPage/components/MainDataSection.tsx
+msgid "Current"
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "May lack liquidity for parts of this order when triggered"
 msgstr "觸發時此訂單的部分可能缺乏流動性"
@@ -3536,6 +3682,10 @@ msgstr "做空未平倉量最低抵押品因子"
 #: src/components/TradeHistory/keys.ts
 msgid "Failed TWAP Swap part"
 msgstr "TWAP 兌換部分失敗"
+
+#: src/pages/PointsPage/components/HowItWorksSection.tsx
+msgid "You earn points every week based on the trading fees you paid and your active multipliers. Your total multiplier comes from your volume tier, staking tier, and any applicable boosts. Points are calculated automatically and credited weekly."
+msgstr ""
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized data based on the past 7 days"
@@ -3579,6 +3729,10 @@ msgstr "去中心化選擇權協議"
 msgid "Trade at scale without worrying about thin order books or slippage"
 msgstr "大規模交易，無需擔憂薄弱的訂單簿或滑點"
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Connect your wallet to view rewards history"
+msgstr ""
+
 #: src/components/Claims/SettleAccruedCard.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Settle"
@@ -3591,6 +3745,11 @@ msgstr "Gas 不足以支付網路費用"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to"
 msgstr "{fromText} 至"
+
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Earned Rewards"
+msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing..."
@@ -3662,6 +3821,10 @@ msgstr "清算價格會隨費用和抵押品價值變動。"
 msgid "Low {symbol} balance. This amount leaves little for future fees on {0}"
 msgstr ""
 
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Certified"
+msgstr ""
+
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
 msgstr "帳戶不正確"
@@ -3680,6 +3843,10 @@ msgstr "交易"
 msgid "No deposits required"
 msgstr "無需存入"
 
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "Total earn rewards"
+msgstr ""
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Trading airdrop"
 msgstr "交易空投"
@@ -3687,6 +3854,10 @@ msgstr "交易空投"
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Found {0} events in the past {DAYS_BACK} days"
 msgstr "在過去 {DAYS_BACK} 天內找到 {0} 個事件"
+
+#: src/pages/PointsPage/components/MainDataSection.tsx
+msgid "Your total multiplier is the sum of your Volume Tier, Staking Tier, and Activity Boosts, capped at 4.0x. A higher multiplier means more points per dollar of trading fees."
+msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} bridging to..."
@@ -3727,6 +3898,8 @@ msgstr "更新 TWAP 部分"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/ClaimRewardsButton.tsx
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Claim rewards"
 msgstr "領取獎勵"
 
@@ -3809,6 +3982,10 @@ msgstr "T"
 #: src/lib/contracts/callContract.tsx
 msgid "Transaction completed"
 msgstr "交易完成"
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Boosts are multipliers earned through specific trading activity."
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Base borrowing factor short"
@@ -4078,6 +4255,10 @@ msgstr "提交中..."
 msgid "Pools stats"
 msgstr "池統計"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Reach {volumeLabel} in trading volume"
+msgstr ""
+
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4111,6 +4292,10 @@ msgstr "複製使用者"
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Realized swap impact"
 msgstr "已實現兌換影響"
+
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Veteran"
+msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Break down net price impact"
@@ -4201,6 +4386,10 @@ msgstr "建立止損"
 msgid "Direction"
 msgstr "方向"
 
+#: src/pages/PointsPage/components/HowItWorksSection.tsx
+msgid "Earn Points"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Base borrowing factor long"
 msgstr "做多基礎借貸因子"
@@ -4244,6 +4433,10 @@ msgstr "{longOrShort} 倉位不需支付資金費率或借貸費用"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "in {0}"
 msgstr "於 {0}"
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Some markets have reduced volume coefficients. Volume on these markets is counted at a lower rate for tier calculations because they typically involve higher leverage and generate fewer fees."
+msgstr ""
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} fees settled"
@@ -4308,6 +4501,10 @@ msgstr "編輯 {0}"
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "<0>Buy</0> {wrappedNativeTokenSymbol}."
 msgstr "<0>買入</0> {wrappedNativeTokenSymbol}。"
+
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Supporter"
+msgstr ""
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
@@ -4387,9 +4584,14 @@ msgstr "價格影響在您增加倉位時儲存，並在您減少倉位時套用
 msgid "Code not found"
 msgstr "找不到代碼"
 
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Inactive"
 msgstr "未啟用"
+
+#: src/pages/PointsPage/components/HowItWorksSection.tsx
+msgid "Points are automatically converted into trading fee discounts. Discounts reduce up to 50% of your open and close trading fees and are applied automatically on eligible trades. Older points are used first, and unused points expire over time."
+msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Max open interest exceeded. Current: {openInterestText}, max: {maxOpenInterestText}"
@@ -4521,6 +4723,10 @@ msgstr "LayerZero scan"
 msgid "Borrow fee"
 msgstr "借貸費用"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Trade ${0} to unlock {1} status +{2}"
+msgstr ""
+
 #: src/lib/copyElementAsImage.ts
 msgid "Image copied to clipboard"
 msgstr ""
@@ -4528,6 +4734,11 @@ msgstr ""
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact"
 msgstr "兌換影響"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Activity Boost"
+msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Depositing {0} to {positionText}..."
@@ -4685,6 +4896,10 @@ msgstr "開倉中..."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeFi margin protocol"
 msgstr "DeFi 保證金協議"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Start trading →"
+msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Fee"
@@ -5134,6 +5349,10 @@ msgstr "{0} 池流動性不足。請選擇其他池。"
 msgid "GLV"
 msgstr "GLV"
 
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+msgid "All-time"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity in GM pool"
 msgstr "GM 池流動性不足"
@@ -5196,6 +5415,10 @@ msgstr "PnL 分析"
 msgid "Failed to claim funds"
 msgstr "領取資金失敗"
 
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Place balancing trades ($1M+) on under-utilized sides"
+msgstr ""
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Which fees get discounted?"
 msgstr ""
@@ -5206,6 +5429,10 @@ msgstr "Shifting 僅適用於 {chainNames} 或 {lastChainName}。請切換網路
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
+msgstr ""
+
+#: src/pages/PointsPage/components/FaqSection.tsx
+msgid "How do multipliers work?"
 msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -5232,6 +5459,10 @@ msgstr "聯盟獎勵已領取"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "transaction:"
 msgstr "交易："
+
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "GMX rewards available to claim or stake. Rewards are generated when your points are spent to discount trading fees."
+msgstr ""
 
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "EXECUTION PRICE"
@@ -5272,6 +5503,10 @@ msgstr "Avalanche Fuji 上無法領取"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Buy failed"
 msgstr "買入失敗"
+
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Steward"
+msgstr ""
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Users"
@@ -5341,10 +5576,22 @@ msgstr "推薦碼建立失敗"
 msgid "Withdraw fee"
 msgstr "提取手續費"
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Expired Points"
+msgstr ""
+
+#: src/components/TradeBox/TradeBoxRows/PointsRow.tsx
+msgid "Estimated rewards"
+msgstr ""
+
 #: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
 msgstr "止盈"
+
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+msgid "You've received a bonus of {bonusFormatted} — Start trading to activate it and get your rewards."
+msgstr ""
 
 #: src/components/Claims/ClaimableCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
@@ -5366,6 +5613,10 @@ msgstr "文件"
 msgid "{0} cannot be sent to smart contract addresses. Select another token"
 msgstr "{0} 無法發送至智能合約地址。請選擇其他代幣"
 
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Boosts apply to individual trades and reward specific behaviors, such as trading on new chains or selected markets. Multiple boosts can stack on a single trade, up to a maximum cap. Boosts do not last forever and only apply when the qualifying action is performed."
+msgstr ""
+
 #: src/pages/Jobs/Jobs.tsx
 msgid "Jobs"
 msgstr "職缺"
@@ -5377,6 +5628,10 @@ msgstr "止損市價單失敗"
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price"
 msgstr "{typeString} Short Stop Market：當價格低於觸發價格時{0}做空倉位"
+
+#: src/pages/PointsPage/components/FaqSection.tsx
+msgid "Do points expire?"
+msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -5505,6 +5760,10 @@ msgstr "輸入代碼"
 msgid "Details"
 msgstr "詳情"
 
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Titan"
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLV bonus incentive"
 msgstr "GLV 額外激勵"
@@ -5545,6 +5804,10 @@ msgstr "RPC 錯誤。<0/><1/>在設定中啟用 <2>Express Trading</2> 以獲得
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "UniDex Leverage"
 msgstr "UniDex Leverage"
+
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "Claim only"
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "High execution reliability using premium RPCs"
@@ -5588,6 +5851,10 @@ msgstr "價格影響 / 手續費"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX proposals"
 msgstr "GMX 提案"
+
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Featured Markets"
+msgstr ""
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Total pending rewards"
@@ -5654,6 +5921,10 @@ msgstr "存入 {gasPaymentTokensText}"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."
+msgstr ""
+
+#: src/pages/PointsPage/components/FaqSection.tsx
+msgid "Yes, points expire after 13 epochs (approximately 13 weeks). The oldest points are consumed first when applied to fee discounts (FIFO)."
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -5819,6 +6090,10 @@ msgstr "TP 價格高於標記價格"
 msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price"
 msgstr "{typeString} Short Limit：當價格高於觸發價格時{0}做空倉位"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Buy GMX +"
+msgstr ""
+
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
 msgstr "已發送 {0, plural, one {# 個倉位} other {# 個倉位}} 的結算請求"
@@ -5863,6 +6138,7 @@ msgid "{balanceFormatted} remaining in old 1CT subaccount"
 msgstr "舊版 One-Click Trading 子帳戶中剩餘 {balanceFormatted}"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Stake GMX"
 msgstr ""
 
@@ -5942,6 +6218,10 @@ msgstr "找不到訂單。可能已被取消或已執行"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Vesting"
 msgstr "歸屬"
+
+#: src/pages/PointsPage/components/HowItWorksSection.tsx
+msgid "Trade and Stake"
+msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Buy order cancelled"
@@ -6110,6 +6390,10 @@ msgstr "無法提取抵押品。剩餘抵押品將低於最低要求"
 msgid "Approving..."
 msgstr "授權中..."
 
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "Stake and earn more rewards"
+msgstr ""
+
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"
 msgstr "使用率"
@@ -6149,6 +6433,10 @@ msgstr "領取價格影響回饋失敗"
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Paste hex error data to decode"
 msgstr "貼上十六進位錯誤資料以進行解碼"
+
+#: src/pages/PointsPage/components/FaqSection.tsx
+msgid "Points are earned each epoch (weekly) based on the open/close trading fees you pay, adjusted by your total multiplier. Your multiplier is the sum of your Volume Tier, Staking Tier, and any Activity Boosts, capped at 4.0x."
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral"
@@ -6196,6 +6484,8 @@ msgstr "TP 價格"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Loading..."
 msgstr "載入中..."
 
@@ -6216,6 +6506,10 @@ msgstr "分享"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Use your preferred token to pay and collateralize positions"
 msgstr "使用您偏好的代幣支付並為倉位提供抵押品"
+
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Start earning points and unlock rewards"
+msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Multicall events"
@@ -6263,6 +6557,14 @@ msgstr "成交價格未達到可接受價格"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "In which tokens will I receive my rebates?"
+msgstr ""
+
+#: src/pages/PointsPage/components/MainDataSection.tsx
+msgid "Connect wallet to see your points"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Stake {stakeLabel} GMX"
 msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
@@ -6476,6 +6778,10 @@ msgstr "觸發價格已計入兌換費用及價格影響，確保執行時至少
 msgid "Debug swaps"
 msgstr "除錯兌換"
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Total points spent on fee discounts."
+msgstr ""
+
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Invalid execution price. Calculated price is negative"
 msgstr "無效的成交價格。計算價格為負數"
@@ -6576,6 +6882,10 @@ msgstr "想透過 One-Click Trading 更快速交易嗎？"
 #: src/components/TradeBox/tradeboxConstants.tsx
 msgid "TP/SL"
 msgstr "止盈/止損"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "active boosts"
+msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Order error. Prices are volatile for this market, try again by <0>increasing the allowed slippage</0>"
@@ -6696,6 +7006,10 @@ msgstr "V1 返佣"
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Sell GLV"
 msgstr "賣出 GLV"
+
+#: src/components/TradeBox/TradeBoxRows/PointsRow.tsx
+msgid "Earn GMX Points and unlock rewards"
+msgstr ""
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "from {BLOCKCHAIN_COUNT} blockchains"
@@ -6978,6 +7292,10 @@ msgstr "摘要"
 msgid "ENTRY PRICE"
 msgstr "入場價格"
 
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "Total non-expired points available. Points automatically discount up to 50% of your trading fees."
+msgstr ""
+
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Display PnL after fees"
 msgstr "顯示扣除費用後的 PnL"
@@ -7134,6 +7452,10 @@ msgstr "找不到可用的槓桿"
 msgid "Total supply"
 msgstr "總供給量"
 
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+msgid "Earn rewards — With your recent volume, staking {stakeFormatted} GMX could have earned you up to ${rewardsFormatted} in additional trading rewards."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 msgid "My assets"
 msgstr "我的資產"
@@ -7277,11 +7599,16 @@ msgstr "<0>返回</0><1>首頁</1><2>或</2><3>交易</3>"
 msgid "Bridge {tokenSymbol} to {chainName} with"
 msgstr "使用以下方式將 {tokenSymbol} 橋接至 {chainName}"
 
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+msgid "Volume this epoch"
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order uses {collateralSymbol}, but existing {longText} position uses {symbol} as collateral"
 msgstr "訂單使用 {collateralSymbol}，但現有的{longText}倉位使用 {symbol} 作為抵押品"
 
 #: src/components/MarketStats/components/CompositionTable.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Show more"
 msgstr "顯示更多"
 
@@ -7304,6 +7631,10 @@ msgstr "GMX 風險監控"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Minimum capital used of {0} required to qualify for rankings"
 msgstr "需要使用最低 {0} 的資金才能參與排名"
+
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "No rewards history yet. Start trading to earn points."
+msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 #: src/pages/Dashboard/AssetDropdown.tsx
@@ -7397,6 +7728,10 @@ msgstr "餘額"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Force failures"
 msgstr "強制失敗"
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "GMX Staked"
+msgstr ""
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
@@ -7516,6 +7851,10 @@ msgstr "與目前使用中的代碼相同"
 msgid "Trade from wallet or GMX Account"
 msgstr "從錢包或 GMX Account 交易"
 
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "Points balance"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Min position size: {0}"
 msgstr "最小倉位大小：{0}"
@@ -7608,6 +7947,14 @@ msgstr "授權 GMX"
 msgid "{fromText} to {toExecutionText}"
 msgstr "{fromText} 至 {toExecutionText}"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Stake more GMX to get {0} +{1}"
+msgstr ""
+
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "Available to Claim"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Limit Swap"
 msgstr "執行 Limit Swap"
@@ -7639,6 +7986,10 @@ msgstr "止盈價格低於限價"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Claimed"
 msgstr "已領取"
+
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "Stake more GMX to increase your multiplier"
+msgstr ""
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "less than a minute"
@@ -7752,6 +8103,10 @@ msgstr "{0}ms"
 msgid "Deposit failed"
 msgstr "存入失敗"
 
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Guardian"
+msgstr ""
+
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "EST. PNL"
 msgstr "預估 PNL"
@@ -7796,6 +8151,10 @@ msgstr "<0>全倉保證金</0><1>交叉抵押品</1>"
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "Click on"
 msgstr "點擊"
+
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Trade featured or new markets to earn this boost"
+msgstr ""
 
 #: src/domain/synthetics/orders/createStakeOrUnStakeTxn.tsx
 msgid "Failed to stake"
@@ -7900,7 +8259,7 @@ msgstr "熱門地址"
 msgid "Amount exceeds the withdrawal limit. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "金額超過提取上限。請嘗試小於 <0>{upperLimitFormatted}</0> 的金額。"
 
-#: src/components/SideNav/SupportChatNavItem.tsx
+#: src/components/SideNav/SideNav.tsx
 msgid "New"
 msgstr "新功能"
 
@@ -8300,6 +8659,11 @@ msgstr "端點"
 msgid "Display settings"
 msgstr "顯示設定"
 
+#: src/pages/PointsPage/components/MainDataSection.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Points Balance"
+msgstr ""
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order filled"
 msgstr "訂單已成交"
@@ -8408,6 +8772,10 @@ msgstr "V2 返利"
 msgid "Select asset to deposit"
 msgstr "選擇要存入的資產"
 
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+msgid "Search Address"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max GM buyable amount reached"
 msgstr "已達到 GM 最大可買入數量"
@@ -8481,6 +8849,11 @@ msgstr "預估返利最高可達開倉費用的 {0}%。以 {incentivesTokenTitle
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "Executes when price and liquidity conditions are met"
 msgstr "當價格和流動性條件滿足時執行"
+
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+msgid "Start earning points and unlock rewards."
+msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Regular account"
@@ -8777,6 +9150,10 @@ msgstr "推薦碼"
 msgid "Order trigger price"
 msgstr "訂單觸發價格"
 
+#: src/pages/PointsPage/components/HowItWorksSection.tsx
+msgid "Trade on GMX and optionally stake GMX tokens to increase your earning power. Trading generates points, while staking boosts how many points you earn."
+msgstr ""
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap TWAP: Swap tokens in evenly distributed parts over a specified time"
 msgstr "兌換 TWAP：在指定時間內將代幣均分為多份進行兌換"
@@ -8908,6 +9285,15 @@ msgstr "/USD"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express + One-Click"
 msgstr "Express + One-Click"
+
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Lifetime Volume"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Applies next epoch"
+msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "GM tokens represent shares in a liquidity pool for a single GMX market. Buy GM to provide liquidity and earn fees from leverage trading, swaps, and market-making activity on that specific market. All rewards are auto-compounded."
@@ -9181,6 +9567,10 @@ msgstr "GM 從單一市場賺取手續費。GLV 持有多種 GM 代幣，並在�
 msgid "Negative funding fees reduce collateral and affect liquidation price. Positive funding fees are claimable in the Claims tab."
 msgstr "負資金費用會減少抵押品並影響清算價格。正資金費用可在「領取」分頁中領取。"
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Used Points"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact amount"
 msgstr "倉位影響金額"
@@ -9216,6 +9606,10 @@ msgstr "操作"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Increase"
 msgstr "加倉"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Volume this epoch:"
+msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
@@ -9267,6 +9661,10 @@ msgstr "已質押"
 #: src/pages/Referrals/Referrals.tsx
 msgid "Traders"
 msgstr "交易者"
+
+#: src/pages/PointsPage/components/FaqSection.tsx
+msgid "GMX Points are loyalty rewards earned by trading on GMX. Points are pegged 1:1 to GMX price and are earned weekly based on your trading fees and multiplier. Points automatically discount up to 50% of your open/close trading fees."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Kudai AI agent"
@@ -9423,6 +9821,10 @@ msgstr "停用失敗"
 msgid "Sender has withdrawn all tokens from Affiliate vesting vault"
 msgstr "發送者已從 Affiliate 歸屬期金庫提取所有代幣"
 
+#: src/pages/PointsPage/components/FaqSection.tsx
+msgid "How are rewards claimed?"
+msgstr ""
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Share your GMX trade on X"
 msgstr "在 X 上分享您的 GMX 交易"
@@ -9455,6 +9857,10 @@ msgstr ""
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe and remain in your wallet."
 msgstr "您的資金安全無虞，仍保留在您的錢包中。"
+
+#: src/pages/PointsPage/components/MainDataSection.tsx
+msgid "Max 4.0x"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Swap"
@@ -9542,6 +9948,10 @@ msgstr "請參閱上方推薦區域以開始"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "獲取 GMX 的提醒和公告，隨時掌握您的交易、清算風險等資訊"
+
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Legendary"
+msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "{gmOrGlvLabel} bought successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or go to the {indexName} pool to withdraw your GM tokens."
@@ -9698,6 +10108,10 @@ msgstr "已歸屬的 GLP 未提取"
 msgid "<0>every</0> {minutes} minutes{0}"
 msgstr "<0>每</0> {minutes} 分鐘{0}"
 
+#: src/pages/PointsPage/components/FaqSection.tsx
+msgid "What are GMX Points?"
+msgstr ""
+
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "r:"
 msgstr "r："
@@ -9742,6 +10156,10 @@ msgstr "自動取消 TP/SL"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "LIQUIDITY LONG"
 msgstr "做多流動性"
+
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "Total rewards earned since the start of the program."
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL short"
@@ -9810,6 +10228,8 @@ msgstr "結算中..."
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
 #: src/pages/LeaderboardPage/LeaderboardPage.tsx
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+#: src/pages/PointsPage/PointsPage.tsx
 msgid "Leaderboard"
 msgstr "排行榜"
 
@@ -9945,12 +10365,18 @@ msgstr "存入中..."
 
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Status"
 msgstr "狀態"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "30s"
 msgstr "30 秒"
+
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "Claim your rewards now. You can also stake them instantly to get 5% yield on it and earn even more points."
+msgstr ""
 
 #: src/components/GmList/PerformanceLabel.tsx
 msgid "Annualized performance"
@@ -10001,6 +10427,10 @@ msgstr "淨值"
 msgid "MARK PRICE"
 msgstr "標記價格"
 
+#: src/pages/PointsPage/components/MainDataSection.tsx
+msgid "Points are earned weekly based on trading fees and your multiplier. Points are pegged 1:1 to GMX price and expire after 13 weeks. Points automatically discount up to 50% of your open/close trading fees."
+msgstr ""
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Increase the max network fee buffer to {0} in {settingsLink}"
 msgstr "在 {settingsLink} 中將最大網路費用緩衝增加至 {0}"
@@ -10045,6 +10475,7 @@ msgstr "清算確認通知"
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "About"
 msgstr "關於"
@@ -10084,6 +10515,10 @@ msgstr ""
 msgid "PnL long"
 msgstr "做多 PnL"
 
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Volume Tiers"
+msgstr ""
+
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "For detailed stats"
 msgstr "查看詳細統計"
@@ -10091,6 +10526,10 @@ msgstr "查看詳細統計"
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Simulate transactions"
 msgstr "模擬交易"
+
+#: src/components/GmxAccountModal/MainView.tsx
+msgid "GMX Points"
+msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "SL price below mark price"
@@ -10134,6 +10573,10 @@ msgstr "為 {0} 簽署許可時發生錯誤：{1}"
 msgid "Longs net rate / 1h"
 msgstr "做多淨費率 / 1 小時"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Complete trading activities"
+msgstr ""
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "EVENT"
@@ -10156,6 +10599,10 @@ msgstr "{idleSeconds}s"
 #: src/pages/Actions/ActionsRouter.tsx
 msgid "GMX V1 actions"
 msgstr "GMX V1 操作"
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Boost Name"
+msgstr ""
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GLV vaults:"
@@ -10387,6 +10834,10 @@ msgstr "與 GMX 團隊匿名對話"
 msgid "Continue"
 msgstr "繼續"
 
+#: src/pages/PointsPage/components/MainDataSection.tsx
+msgid "Your Multiplier"
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "GLV tokens mirror GLP's composition and integrate seamlessly into GMX V2's liquidity ecosystem. You can sell or hold to earn yield. A $500,000 GLV incentive pool rewards holders who keep their allocation for at least 3 months."
 msgstr "GLV 代幣反映 GLP 的組成，並無縫整合至 GMX V2 的流動性生態系統。您可以賣出或持有以賺取收益。$500,000 GLV 激勵池獎勵持有分配至少 3 個月的持有者。"
@@ -10455,6 +10906,10 @@ msgstr "交易已取消"
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Decrease"
 msgstr "申請 Market Decrease"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Volume Tier"
+msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Delta neutral vaults"
@@ -10569,6 +11024,10 @@ msgstr "加入匿名一對一對話，分享您的使用體驗"
 msgid "GMX staked rewards:"
 msgstr "GMX 質押獎勵："
 
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "Claimable rewards"
+msgstr ""
+
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee"
 msgstr "{longOrShort}倉位{fundingAction}每小時 {fundingRate} 的資金費用，且不支付借貸費用"
@@ -10644,6 +11103,11 @@ msgstr "提取已提交"
 msgid "Funding activity"
 msgstr "資金活動"
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+#: src/pages/PointsPage/PointsPage.tsx
+msgid "Rewards History"
+msgstr ""
+
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Available:"
@@ -10653,6 +11117,10 @@ msgstr "可用："
 msgid "Realized base PnL"
 msgstr "已實現基礎 PnL"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Unlock activity boosts and increase your rewards."
+msgstr ""
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "limit"
 msgstr "限價"
@@ -10660,6 +11128,10 @@ msgstr "限價"
 #: src/components/TradeHistory/keys.ts
 msgid "Execute TWAP Swap part"
 msgstr "執行 TWAP Swap 部分"
+
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Achieve $200M+ lifetime trading volume"
+msgstr ""
 
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Reload the page or report the issue if the <0/> problem persists"
@@ -10797,6 +11269,10 @@ msgstr "此鏈上尚無機會"
 msgid "Complete Account Transfer"
 msgstr ""
 
+#: src/pages/PointsPage/components/HowItWorksSection.tsx
+msgid "Claim Rewards"
+msgstr ""
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
 msgstr "<0>{fromTokenText} </0>{fromTokenIcon}<1> 至 </1>{0}{toTokenIcon}{1}"
@@ -10807,6 +11283,10 @@ msgstr "無可用的去中心化交易所"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Where do I find a referral code?"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Volume Coefficients"
 msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
@@ -10853,6 +11333,13 @@ msgstr "抵押品不足。還需要 {amountText} 的抵押品"
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Stop Market)"
 msgstr "加倉（止損市價單）"
+
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Multiplier"
+msgstr ""
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Execution price may differ from limit price due to fees and price impact. You'll receive at least the minimum amount shown. <0>Read more</0>."

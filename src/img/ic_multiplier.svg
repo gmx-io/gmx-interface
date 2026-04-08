@@ -1,0 +1,18 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1em" height="1em" viewBox="0 0 20 20" fill="none">
+  <mask id="m1" fill="white">
+    <rect x="10" y="1.246" width="5.501" height="5.501" rx="1"/>
+  </mask>
+  <rect x="10" y="1.246" width="5.501" height="5.501" rx="1" transform="rotate(45 10 1.246)" stroke="currentColor" stroke-width="2.6" mask="url(#m1)"/>
+  <mask id="m2" fill="white">
+    <rect x="14.862" y="6.108" width="5.501" height="5.501" rx="1"/>
+  </mask>
+  <rect x="14.862" y="6.108" width="5.501" height="5.501" rx="1" transform="rotate(45 14.862 6.108)" stroke="currentColor" stroke-width="2.6" mask="url(#m2)"/>
+  <mask id="m3" fill="white">
+    <rect x="10" y="10.971" width="5.501" height="5.501" rx="1"/>
+  </mask>
+  <rect x="10" y="10.971" width="5.501" height="5.501" rx="1" transform="rotate(45 10 10.971)" stroke="currentColor" stroke-width="2.6" mask="url(#m3)"/>
+  <mask id="m4" fill="white">
+    <rect x="5.138" y="6.108" width="5.501" height="5.501" rx="1"/>
+  </mask>
+  <rect x="5.138" y="6.108" width="5.501" height="5.501" rx="1" transform="rotate(45 5.138 6.108)" stroke="currentColor" stroke-width="2.6" mask="url(#m4)"/>
+</svg>
