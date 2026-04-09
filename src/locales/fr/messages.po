@@ -4917,6 +4917,10 @@ msgstr ""
 msgid "Open interest {directionLabel}"
 msgstr "Positions ouvertes {directionLabel}"
 
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+msgid "You've received a points bonus worth {bonusFormatted} — Start trading to activate it and use it to discount your fees."
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
@@ -5588,10 +5592,6 @@ msgstr ""
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
 msgstr "TP"
-
-#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
-msgid "You've received a bonus of {bonusFormatted} — Start trading to activate it and get your rewards."
-msgstr ""
 
 #: src/components/Claims/ClaimableCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
