@@ -807,6 +807,17 @@ export function isDepositDisabledMarket(chainId: number, marketTokenAddress: str
   return DEPOSIT_DISABLED_MARKET_ADDRESSES[chainId]?.has(marketTokenAddress) ?? false;
 }
 
+/** GLV vault token addresses where GM deposits into that GLV are disabled in the interface (withdrawals / other flows may still apply). */
+export const DEPOSIT_DISABLED_GLV_TOKEN_ADDRESSES: Record<number, Set<string>> = {
+  [ARBITRUM]: new Set([
+    "0x528A5bac7E746C9A509A1f4F6dF58A03d44279F9", // GLV [WETH-USDC]
+  ]),
+};
+
+export function isDepositDisabledGlv(chainId: number, glvTokenAddress: string): boolean {
+  return DEPOSIT_DISABLED_GLV_TOKEN_ADDRESSES[chainId]?.has(glvTokenAddress) ?? false;
+}
+
 export const MARKETS = Object.keys(MARKETS_UI_CONFIGS).reduce(
   (acc, network) => {
     return {

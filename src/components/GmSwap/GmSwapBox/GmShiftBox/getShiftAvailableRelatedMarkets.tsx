@@ -1,12 +1,15 @@
+import { isDepositDisabledGlv } from "config/static/markets";
 import { isGlvInfo } from "domain/synthetics/markets/glv";
 import type { GlvAndGmMarketsInfoData, GlvOrMarketInfo } from "domain/synthetics/markets/types";
 import { EMPTY_ARRAY } from "lib/objects";
 
 export function getShiftAvailableRelatedMarkets({
+  chainId,
   marketsInfoData,
   sortedMarketsInfoByIndexToken,
   marketTokenAddress,
 }: {
+  chainId: number;
   marketsInfoData: GlvAndGmMarketsInfoData | undefined;
   sortedMarketsInfoByIndexToken: GlvOrMarketInfo[];
   marketTokenAddress?: string;
@@ -16,7 +19,9 @@ export function getShiftAvailableRelatedMarkets({
   }
 
   if (!marketTokenAddress) {
-    return sortedMarketsInfoByIndexToken;
+    return sortedMarketsInfoByIndexToken.filter(
+      (marketInfo) => !isGlvInfo(marketInfo) || !isDepositDisabledGlv(chainId, marketInfo.glvTokenAddress)
+    );
   }
 
   const currentMarketInfo = marketsInfoData[marketTokenAddress];
@@ -42,6 +47,10 @@ export function getShiftAvailableRelatedMarkets({
 
   const relatedGlvs = sortedMarketsInfoByIndexToken.filter((marketInfo) => {
     if (isGlvInfo(marketInfo)) {
+      if (isDepositDisabledGlv(chainId, marketInfo.glvTokenAddress)) {
+        return false;
+      }
+
       return marketInfo.markets.some((market) => market.address === marketTokenAddress);
     }
 

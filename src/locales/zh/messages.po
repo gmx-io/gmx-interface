@@ -7429,6 +7429,10 @@ msgstr "订单超过最大杠杆。点击自动调整。"
 msgid "No swap path available"
 msgstr "无可用兑换路径"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Buying GLV is disabled for this vault"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Stop-Loss"
 msgstr "执行止损"

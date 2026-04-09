@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
 
+import { isDepositDisabledGlv } from "config/static/markets";
 import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import {
   GlvOrMarketInfo,
@@ -81,6 +82,7 @@ export function PoolSelector({
   showAllPools = false,
   showIndexIcon = false,
   withFilters = true,
+  hideGlvWithDepositDisabled = false,
   favoriteKey,
 }: CommonPoolSelectorProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -94,6 +96,7 @@ export function PoolSelector({
       .filter(
         (market) =>
           !market.isDisabled &&
+          !(hideGlvWithDepositDisabled && isGlvInfo(market) && isDepositDisabledGlv(chainId, market.glvTokenAddress)) &&
           (isGlvInfo(market) ? true : market.indexToken) &&
           (showAllPools || getMarketIndexName(market) === selectedIndexName)
       )
@@ -131,7 +134,7 @@ export function PoolSelector({
     });
 
     return [...sortedMartketsWithBalance, ...marketsWithoutBalance];
-  }, [getMarketState, marketTokensData, markets, selectedIndexName, showAllPools]);
+  }, [chainId, getMarketState, hideGlvWithDepositDisabled, marketTokensData, markets, selectedIndexName, showAllPools]);
 
   const marketInfo = useMemo(
     () =>

@@ -7429,6 +7429,10 @@ msgstr "注文が最大レバレッジを超えています。クリックして
 msgid "No swap path available"
 msgstr "利用可能なスワップ経路がありません"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Buying GLV is disabled for this vault"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Stop-Loss"
 msgstr "ストップロスを実行"

@@ -7429,6 +7429,10 @@ msgstr "La orden excede el apalancamiento m√°ximo. Haga clic para ajustar autom√
 msgid "No swap path available"
 msgstr "No hay ruta de intercambio disponible"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Buying GLV is disabled for this vault"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Stop-Loss"
 msgstr "Ejecutar Stop-Loss"

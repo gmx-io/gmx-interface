@@ -7429,6 +7429,10 @@ msgstr "L'ordre dépasse l'effet de levier maximum. Cliquez pour ajuster automat
 msgid "No swap path available"
 msgstr "Aucun chemin d'échange disponible"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Buying GLV is disabled for this vault"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Stop-Loss"
 msgstr "Exécuter Stop-Loss"

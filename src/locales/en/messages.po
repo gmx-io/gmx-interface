@@ -7429,6 +7429,10 @@ msgstr "Order exceeds max leverage. Click to auto-adjust."
 msgid "No swap path available"
 msgstr "No swap path available"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Buying GLV is disabled for this vault"
+msgstr "Buying GLV is disabled for this vault"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Stop-Loss"
 msgstr "Execute Stop-Loss"

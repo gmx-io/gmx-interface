@@ -82,6 +82,7 @@ export function GmSwapBoxPoolRow({
               isSideMenu
               showBalances
               withFilters={false}
+              hideGlvWithDepositDisabled={isDeposit}
               onSelectMarket={onSelectMarketOrGlv}
               favoriteKey="gm-pool-selector"
             />

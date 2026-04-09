@@ -20,6 +20,8 @@ export type CommonPoolSelectorProps = {
    * @default true
    */
   withFilters?: boolean;
+  /** When true, GLV vaults with interface deposits disabled are omitted (e.g. deposit tab). */
+  hideGlvWithDepositDisabled?: boolean;
   favoriteKey: TokenFavoriteKey;
   size?: "l" | "m";
 };

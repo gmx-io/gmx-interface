@@ -74,6 +74,7 @@ export function GmShiftBox({
 
   const shiftAvailableGlvOrMarkets = useSelector(selectShiftAvailableMarkets);
   const shiftAvailableRelatedMarkets = useShiftAvailableRelatedMarkets(
+    chainId,
     glvAndMarketsInfoData,
     sortedMarketsInfoByIndexToken,
     selectedGlvOrMarketAddress
@@ -148,6 +149,7 @@ export function GmShiftBox({
   });
 
   useUpdateMarkets({
+    chainId,
     glvAndMarketsInfoData,
     selectedGlvOrMarketAddress,
     shiftAvailableGlvOrMarkets,

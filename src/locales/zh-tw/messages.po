@@ -7429,6 +7429,10 @@ msgstr "訂單超過最大槓桿。點擊以自動調整。"
 msgid "No swap path available"
 msgstr "無可用的兌換路徑"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Buying GLV is disabled for this vault"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Stop-Loss"
 msgstr "執行止損"
