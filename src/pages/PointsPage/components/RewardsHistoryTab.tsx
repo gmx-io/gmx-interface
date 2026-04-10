@@ -62,25 +62,37 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
   }
 
   return (
-    <div>
-      <h3 className="text-body-large mb-12 font-semibold text-typography-primary">
-        <Trans>Rewards History</Trans>
-      </h3>
+    <div className="rounded-8 bg-slate-900">
+      <div className="p-20">
+        <h3 className="mb-12 text-16 font-medium text-typography-primary">
+          <Trans>Rewards History</Trans>
+        </h3>
 
-      <div className="mb-12 flex gap-24">
-        <div>
-          <div className="text-body-small flex items-center gap-4 text-typography-secondary">
-            <Trans>All time earned points</Trans>
-            <TooltipWithPortal handle={undefined} content={t`Total points earned across all epochs.`} />
+        <div className="mb-12 flex gap-24">
+          <div>
+            <div className="flex items-center gap-2 text-12 font-medium text-typography-secondary">
+              <TooltipWithPortal
+                handle={<Trans>All time earned points</Trans>}
+                variant="iconStroke"
+                content={t`Total points earned across all epochs.`}
+              />
+            </div>
+            <span className="text-16 font-medium text-typography-primary numbers">
+              {formatAmount(totalEarned, 18, 4, true)}
+            </span>
           </div>
-          <span className="text-h2 font-bold text-typography-primary">{formatAmount(totalEarned, 18, 4, true)}</span>
-        </div>
-        <div>
-          <div className="text-body-small flex items-center gap-4 text-typography-secondary">
-            <Trans>Used Points</Trans>
-            <TooltipWithPortal handle={undefined} content={t`Total points spent on fee discounts.`} />
+          <div>
+            <div className="flex items-center gap-2 text-12 font-medium text-typography-secondary">
+              <TooltipWithPortal
+                handle={<Trans>Used Points</Trans>}
+                variant="iconStroke"
+                content={t`Total points spent on fee discounts.`}
+              />
+            </div>
+            <span className="text-16 font-medium text-typography-primary numbers">
+              {formatAmount(totalUsed, 18, 4, true)}
+            </span>
           </div>
-          <span className="text-h2 font-bold text-typography-primary">{formatAmount(totalUsed, 18, 4, true)}</span>
         </div>
       </div>
 

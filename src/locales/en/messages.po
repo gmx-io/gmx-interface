@@ -3316,10 +3316,6 @@ msgstr "Set Long Take Profit @ {0}"
 msgid "Shorts net rate / 1h"
 msgstr "Shorts net rate / 1h"
 
-#: src/pages/PointsPage/components/MainDataSection.tsx
-msgid "Connect wallet to see your multiplier"
-msgstr "Connect wallet to see your multiplier"
-
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Remove endpoint"
 msgstr "Remove endpoint"
@@ -3643,10 +3639,6 @@ msgstr "GMX V2 data analytics within Telegram"
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Runs entirely on public chains"
 msgstr "Runs entirely on public chains"
-
-#: src/pages/PointsPage/components/MainDataSection.tsx
-msgid "Current"
-msgstr "Current"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "May lack liquidity for parts of this order when triggered"
@@ -6558,10 +6550,6 @@ msgstr "Execution price didn't meet acceptable price"
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "In which tokens will I receive my rebates?"
 msgstr "In which tokens will I receive my rebates?"
-
-#: src/pages/PointsPage/components/MainDataSection.tsx
-msgid "Connect wallet to see your points"
-msgstr "Connect wallet to see your points"
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Stake {stakeLabel} GMX"
@@ -9857,10 +9845,6 @@ msgstr "Stake esGMX"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe and remain in your wallet."
 msgstr "Your funds are safe and remain in your wallet."
-
-#: src/pages/PointsPage/components/MainDataSection.tsx
-msgid "Max 4.0x"
-msgstr "Max 4.0x"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Swap"

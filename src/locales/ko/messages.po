@@ -3316,10 +3316,6 @@ msgstr ""
 msgid "Shorts net rate / 1h"
 msgstr "숏 순비율 / 1시간"
 
-#: src/pages/PointsPage/components/MainDataSection.tsx
-msgid "Connect wallet to see your multiplier"
-msgstr ""
-
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Remove endpoint"
 msgstr "엔드포인트 제거"
@@ -3643,10 +3639,6 @@ msgstr "Telegram 내 GMX V2 데이터 분석"
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Runs entirely on public chains"
 msgstr "전체적으로 공개 체인에서 실행"
-
-#: src/pages/PointsPage/components/MainDataSection.tsx
-msgid "Current"
-msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "May lack liquidity for parts of this order when triggered"
@@ -6557,10 +6549,6 @@ msgstr "체결가가 허용 가격을 충족하지 못했습니다"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "In which tokens will I receive my rebates?"
-msgstr ""
-
-#: src/pages/PointsPage/components/MainDataSection.tsx
-msgid "Connect wallet to see your points"
 msgstr ""
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
@@ -9857,10 +9845,6 @@ msgstr ""
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe and remain in your wallet."
 msgstr "자금은 안전하며 지갑에 남아 있습니다."
-
-#: src/pages/PointsPage/components/MainDataSection.tsx
-msgid "Max 4.0x"
-msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Swap"

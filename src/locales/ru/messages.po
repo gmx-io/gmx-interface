@@ -3316,10 +3316,6 @@ msgstr ""
 msgid "Shorts net rate / 1h"
 msgstr "Чистая ставка шортов / 1ч"
 
-#: src/pages/PointsPage/components/MainDataSection.tsx
-msgid "Connect wallet to see your multiplier"
-msgstr ""
-
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Remove endpoint"
 msgstr "Удалить конечную точку"
@@ -3643,10 +3639,6 @@ msgstr "Аналитика данных GMX V2 в Telegram"
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Runs entirely on public chains"
 msgstr "Работает полностью на публичных цепях"
-
-#: src/pages/PointsPage/components/MainDataSection.tsx
-msgid "Current"
-msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "May lack liquidity for parts of this order when triggered"
@@ -6557,10 +6549,6 @@ msgstr "Цена исполнения не соответствовала доп
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "In which tokens will I receive my rebates?"
-msgstr ""
-
-#: src/pages/PointsPage/components/MainDataSection.tsx
-msgid "Connect wallet to see your points"
 msgstr ""
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
@@ -9857,10 +9845,6 @@ msgstr ""
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe and remain in your wallet."
 msgstr "Ваши средства в безопасности и остаются в вашем кошельке."
-
-#: src/pages/PointsPage/components/MainDataSection.tsx
-msgid "Max 4.0x"
-msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Swap"

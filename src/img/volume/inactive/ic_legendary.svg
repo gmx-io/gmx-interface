@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="28" height="28" fill="none" viewBox="0 0 28 28">
+  <g class="Type=Legendary, Active=Off">
+    <path fill="#646A8F" d="m13.975 6.73 1.902 3.431-1.902 3.431-1.903-3.43 1.903-3.432Z" class="Polygon 25"/>
+    <path fill="#A0A3C4" d="m20.283 10.344-2.02 3.363-3.923.068 2.02-3.363 3.923-.068Z" class="Polygon 26"/>
+    <path fill="#646A8F" d="m20.308 17.613-3.922-.068-2.02-3.363 3.922.068 2.02 3.363Z" class="Polygon 27"/>
+    <path fill="#A0A3C4" d="m14.025 21.27-1.902-3.431 1.902-3.431 1.903 3.43-1.903 3.431Z" class="Polygon 28"/>
+    <path fill="#646A8F" d="m7.717 17.656 2.02-3.363 3.923-.068-2.02 3.363-3.923.068Z" class="Polygon 29"/>
+    <path fill="#A0A3C4" d="m7.692 10.387 3.922.068 2.02 3.363-3.922-.068-2.02-3.363Z" class="Polygon 30"/>
+  </g>
+</svg>

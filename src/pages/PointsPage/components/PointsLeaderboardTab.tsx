@@ -1,7 +1,9 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import type React from "react";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
+
+import "./PointsLeaderboardTab.scss";
 
 import { formatMultiplier } from "domain/synthetics/incentives/constants";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
@@ -9,11 +11,12 @@ import { useIncentivesLeaderboard } from "domain/synthetics/incentives/useIncent
 import { formatAmount, formatUsd } from "lib/numbers";
 
 import AddressView from "components/AddressView/AddressView";
-import Button from "components/Button/Button";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
+import SearchInput from "components/SearchInput/SearchInput";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
+import Tabs from "components/Tabs/Tabs";
 
 const COL_RANK: React.CSSProperties = { width: "6%" };
 const COL_ADDRESS: React.CSSProperties = { width: "22%" };
@@ -21,6 +24,11 @@ const COL_VOLUME: React.CSSProperties = { width: "18%" };
 const COL_POINTS: React.CSSProperties = { width: "18%" };
 const COL_MULTIPLIER: React.CSSProperties = { width: "22%" };
 const COL_TIER: React.CSSProperties = { width: "14%" };
+
+function getRankClassName(rank: number | null) {
+  if (rank !== null && rank <= 3) return `PointsLeaderboardRank-${rank}`;
+  return undefined;
+}
 
 const PER_PAGE = 20;
 
@@ -47,6 +55,31 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
   const { data: leaderboard } = useIncentivesLeaderboard(chainId, { epoch });
   const [page, setPage] = useState(1);
   const showMultiplier = timeFilter !== "all";
+
+  const timeFilterOptions = useMemo(
+    () => [
+      { value: "current" as const, label: <Trans>Volume this epoch</Trans> },
+      { value: "last" as const, label: <Trans>Last epoch</Trans> },
+      { value: "all" as const, label: <Trans>All-time</Trans> },
+    ],
+    []
+  );
+
+  const handleTimeFilterChange = useCallback(
+    (value: TimeFilter) => {
+      setTimeFilter(value);
+      setPage(1);
+    },
+    [setTimeFilter, setPage]
+  );
+
+  const handleSearchChange = useCallback(
+    (value: string) => {
+      setSearchAddress(value);
+      setPage(1);
+    },
+    [setSearchAddress, setPage]
+  );
 
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("points-leaderboard", {
     orderBy: "volume",
@@ -113,54 +146,29 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
   }, [account, filteredLeaderboard]);
 
   return (
-    <div>
-      <h3 className="text-body-large mb-12 font-semibold text-typography-primary">
-        <Trans>Leaderboard</Trans>
-      </h3>
+    <div className="rounded-8 bg-slate-900">
+      <div className="border-b-1/2 border-slate-600 p-20">
+        <h3 className="mb-12 text-16 font-medium text-typography-primary">
+          <Trans>Leaderboard</Trans>
+        </h3>
 
-      <div className="mb-12 flex flex-wrap items-center gap-8">
-        <Button
-          variant={timeFilter === "current" ? "primary" : "secondary"}
-          onClick={() => {
-            setTimeFilter("current");
-            setPage(1);
-          }}
-        >
-          <Trans>Volume this epoch</Trans>
-        </Button>
-        <Button
-          variant={timeFilter === "last" ? "primary" : "secondary"}
-          onClick={() => {
-            setTimeFilter("last");
-            setPage(1);
-          }}
-        >
-          <Trans>Last epoch</Trans>
-        </Button>
-        <Button
-          variant={timeFilter === "all" ? "primary" : "secondary"}
-          onClick={() => {
-            setTimeFilter("all");
-            setPage(1);
-          }}
-        >
-          <Trans>All-time</Trans>
-        </Button>
+        <div className="flex flex-wrap items-center gap-8">
+          <Tabs<TimeFilter>
+            type="inline"
+            options={timeFilterOptions}
+            selectedValue={timeFilter}
+            onChange={handleTimeFilterChange}
+            className="shrink-0"
+          />
 
-        <div className="ml-auto flex items-center gap-8">
-          <div className="flex items-center gap-8 rounded-8 border-1/2 border-slate-600 bg-slate-950 px-12 py-8">
-            <span className="text-typography-secondary">🔍</span>
-            <input
-              type="text"
-              placeholder={t`Search Address`}
-              value={searchAddress}
-              onChange={(e) => {
-                setSearchAddress(e.target.value);
-                setPage(1);
-              }}
-              className="bg-transparent text-body-small w-[160px] text-typography-primary outline-none placeholder:text-typography-secondary"
-            />
-          </div>
+          <SearchInput
+            className="ml-auto !h-36 w-[200px] !grow-0"
+            value={searchAddress}
+            setValue={handleSearchChange}
+            placeholder={t`Search Address`}
+            autoFocus={false}
+            qa="points-leaderboard-search"
+          />
         </div>
       </div>
 
@@ -211,8 +219,8 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
               <tbody>
                 {userEntry && userRank && (
                   <TableTr className="border-b-1/2 border-blue-500/30 !bg-blue-500/10">
-                    <TableTd>
-                      <span className="text-typography-secondary numbers">{userRank}</span>
+                    <TableTd className="relative">
+                      <span className={cx("numbers", getRankClassName(userRank))}>{userRank}</span>
                     </TableTd>
                     <TableTd>
                       <AddressView size={20} address={userEntry.address} breakpoint="XL" />
@@ -230,9 +238,9 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                   const rank = indexFrom + i + 1;
                   return (
                     <TableTr key={entry.address} hoverable>
-                      <TableTd>
+                      <TableTd className="relative">
                         <span
-                          className={cx("font-semibold numbers", {
+                          className={cx("font-medium numbers after:!top-7", getRankClassName(rank), {
                             "text-yellow-300": rank <= 3,
                           })}
                         >

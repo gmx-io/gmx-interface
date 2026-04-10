@@ -58,7 +58,7 @@ export function PointsRow() {
       className="text-body-small flex items-center justify-between gap-8 rounded-8 px-12 py-8 text-typography-secondary transition-colors hover:text-typography-primary"
     >
       <span className="flex min-w-0 items-center gap-8">
-        <span className="text-caption flex items-center gap-4 rounded-4 bg-green-500/15 px-6 py-2 font-semibold text-green-500">
+        <span className="text-caption flex items-center gap-4 rounded-4 bg-green-500/15 px-6 py-2 font-medium text-green-500">
           <MultiplierIcon className="size-12" /> {hasMultiplier ? formatMultiplier(multiplier) : "0.0x"}
         </span>
         {hasMultiplier ? (

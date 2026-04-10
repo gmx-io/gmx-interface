@@ -137,7 +137,7 @@ describe("PointsPromoBanner", () => {
 
     renderBanner();
 
-    const bannerText = screen.getByText(/received a bonus/);
+    const bannerText = screen.getByText(/received a points bonus worth/);
     expect(bannerText).toBeDefined();
   });
 

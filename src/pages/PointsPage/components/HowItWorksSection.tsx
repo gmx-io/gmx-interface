@@ -3,16 +3,16 @@ import { useState } from "react";
 
 import { ExpandableRow } from "components/ExpandableRow";
 
-import BoostSvg from "img/ic_boost.svg?react";
 import DiscountsSvg from "img/ic_discounts.svg?react";
-import StakingSvg from "img/ic_staking.svg?react";
+import EarnIcon from "img/ic_earn.svg?react";
+import TradeIcon from "img/ic_trade_solid.svg?react";
 
 export function HowItWorksSection() {
   const [isExpanded, setIsExpanded] = useState(false);
 
   return (
-    <div>
-      <h3 className="text-body-large mb-8 font-semibold text-typography-primary">
+    <div className="mt-20">
+      <h3 className="mb-12 text-20 font-medium text-typography-primary">
         <Trans>How it works?</Trans>
       </h3>
       <div className="grid grid-cols-3 gap-8 max-md:grid-cols-1">
@@ -20,8 +20,8 @@ export function HowItWorksSection() {
           <ExpandableRow
             title={
               <span className="flex items-center gap-12">
-                <StakingSvg className="size-20 text-blue-300" />
-                <span className="text-body-medium font-semibold">
+                <TradeIcon className="size-20 text-blue-300" />
+                <span className="text-body-medium font-medium">
                   <Trans>Trade and Stake</Trans>
                 </span>
               </span>
@@ -42,8 +42,8 @@ export function HowItWorksSection() {
           <ExpandableRow
             title={
               <span className="flex items-center gap-12">
-                <BoostSvg className="size-20 text-green-500" />
-                <span className="text-body-medium font-semibold">
+                <EarnIcon className="size-20 text-blue-300" />
+                <span className="text-body-medium font-medium">
                   <Trans>Earn Points</Trans>
                 </span>
               </span>
@@ -65,8 +65,8 @@ export function HowItWorksSection() {
           <ExpandableRow
             title={
               <span className="flex items-center gap-12">
-                <DiscountsSvg className="size-20 text-blue-500" />
-                <span className="text-body-medium font-semibold">
+                <DiscountsSvg className="size-20 text-blue-300" />
+                <span className="text-body-medium font-medium">
                   <Trans>Claim Rewards</Trans>
                 </span>
               </span>

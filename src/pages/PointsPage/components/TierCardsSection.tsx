@@ -11,32 +11,36 @@ import {
   MULTIPLIER_DECIMALS,
   MAX_FEE_DISCOUNT_PERCENT,
 } from "domain/synthetics/incentives/constants";
-import type {
-  BoostId,
-  EpochStats,
-  IncentivesConfig,
-  StakingTierId,
-  VolumeTierId,
-} from "domain/synthetics/incentives/types";
+import type { EpochStats, IncentivesConfig, StakingTierId, VolumeTierId } from "domain/synthetics/incentives/types";
 import { formatAmount, formatAmountHuman, bigintToNumber } from "lib/numbers";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import BoostSvg from "img/ic_boost.svg?react";
-import MultiplierSvg from "img/ic_multiplier.svg?react";
 import PointsSvg from "img/ic_points.svg?react";
 import StakingSvg from "img/ic_staking.svg?react";
+
+import { VolumeTierIcon, StakingTierIcon, BoostTierIcon } from "./tierIcons";
 
 type Props = {
   config?: IncentivesConfig;
   currentEpochStats?: EpochStats;
+  effectiveVolumeTier?: VolumeTierId | null;
+  effectiveStakingTier?: StakingTierId | null;
   projectedVolumeTier?: VolumeTierId | null;
   projectedStakingTier?: StakingTierId | null;
 };
 
-export function TierCardsSection({ config, currentEpochStats, projectedVolumeTier, projectedStakingTier }: Props) {
-  const volumeActive = Boolean(currentEpochStats?.volumeTier);
-  const stakingActive = Boolean(currentEpochStats?.stakingTier);
+export function TierCardsSection({
+  config,
+  currentEpochStats,
+  effectiveVolumeTier,
+  effectiveStakingTier,
+  projectedVolumeTier,
+  projectedStakingTier,
+}: Props) {
+  const volumeActive = Boolean(effectiveVolumeTier ?? currentEpochStats?.volumeTier);
+  const stakingActive = Boolean(effectiveStakingTier ?? currentEpochStats?.stakingTier);
   const boostsActive = Boolean(currentEpochStats?.boostIds?.length);
 
   const sortedKeys = useMemo(() => {
@@ -54,6 +58,7 @@ export function TierCardsSection({ config, currentEpochStats, projectedVolumeTie
         config={config}
         currentEpochStats={currentEpochStats}
         active={volumeActive}
+        effectiveTierId={effectiveVolumeTier}
         projectedTierId={projectedVolumeTier}
       />
     ),
@@ -62,6 +67,7 @@ export function TierCardsSection({ config, currentEpochStats, projectedVolumeTie
         config={config}
         currentEpochStats={currentEpochStats}
         active={stakingActive}
+        effectiveTierId={effectiveStakingTier}
         projectedTierId={projectedStakingTier}
       />
     ),
@@ -102,14 +108,16 @@ function VolumeCard({
   config,
   currentEpochStats,
   active,
+  effectiveTierId,
   projectedTierId,
 }: {
   config?: IncentivesConfig;
   currentEpochStats?: EpochStats;
   active: boolean;
+  effectiveTierId?: VolumeTierId | null;
   projectedTierId?: VolumeTierId | null;
 }) {
-  const volumeTier = currentEpochStats?.volumeTier;
+  const volumeTier = effectiveTierId ?? currentEpochStats?.volumeTier;
   const tradedVolume = currentEpochStats?.tradedVolume ?? 0n;
   const tierConfig = config?.volumeTiers;
 
@@ -134,7 +142,7 @@ function VolumeCard({
           <Trans>Volume Tier</Trans>
         </span>
         {active && currentTierConfig && (
-          <span className="inline-flex items-center gap-4 rounded-4 bg-blue-300/15 px-6 py-2 text-[1.1rem] font-semibold text-blue-300">
+          <span className="inline-flex items-center gap-4 rounded-4 bg-blue-300/15 px-6 py-2 text-[1.1rem] font-medium text-blue-300">
             +{formatMultiplier(currentTierConfig.multiplier)}
           </span>
         )}
@@ -147,7 +155,8 @@ function VolumeCard({
 
       {active ? (
         <>
-          <h3 className="text-h2 font-bold text-typography-primary">
+          <h3 className="text-h2 flex items-center gap-8 font-medium text-typography-primary">
+            {volumeTier && <VolumeTierIcon tierId={isProjectedDifferent ? projectedTierId : volumeTier} active />}
             {isProjectedDifferent
               ? VOLUME_TIER_BADGES[projectedTierId]()
               : volumeTier
@@ -199,7 +208,7 @@ function VolumeBanner({ config }: { config?: IncentivesConfig }) {
 
   return (
     <div className="flex flex-1 flex-col justify-between gap-8">
-      <h3 className="text-body-large font-semibold text-typography-primary">
+      <h3 className="text-body-large font-medium text-typography-primary">
         <Trans>Reach {volumeLabel} in trading volume</Trans>
       </h3>
       <p className="text-body-small text-typography-secondary">
@@ -218,14 +227,16 @@ function StakingCard({
   config,
   currentEpochStats,
   active,
+  effectiveTierId,
   projectedTierId,
 }: {
   config?: IncentivesConfig;
   currentEpochStats?: EpochStats;
   active: boolean;
+  effectiveTierId?: StakingTierId | null;
   projectedTierId?: StakingTierId | null;
 }) {
-  const stakingTier = currentEpochStats?.stakingTier;
+  const stakingTier = effectiveTierId ?? currentEpochStats?.stakingTier;
   const tierConfig = config?.stakingTiers;
 
   const currentTierIndex = tierConfig?.findIndex((t) => t.tier === stakingTier) ?? -1;
@@ -244,7 +255,7 @@ function StakingCard({
           <Trans>Staking Tier</Trans>
         </span>
         {active && currentTierConfig && (
-          <span className="inline-flex items-center gap-4 rounded-4 bg-blue-300/15 px-6 py-2 text-[1.1rem] font-semibold text-blue-300">
+          <span className="inline-flex items-center gap-4 rounded-4 bg-blue-300/15 px-6 py-2 text-[1.1rem] font-medium text-blue-300">
             +{formatMultiplier(currentTierConfig.multiplier)}
           </span>
         )}
@@ -257,7 +268,8 @@ function StakingCard({
 
       {active ? (
         <>
-          <h3 className="text-h2 font-bold text-typography-primary">
+          <h3 className="text-h2 flex items-center gap-8 font-medium text-typography-primary">
+            {stakingTier && <StakingTierIcon tierId={isProjectedDifferent ? projectedTierId : stakingTier} active />}
             {isProjectedDifferent
               ? STAKING_TIER_BADGES[projectedTierId]()
               : stakingTier
@@ -308,7 +320,7 @@ function StakingBanner({ config }: { config?: IncentivesConfig }) {
 
   return (
     <div className="flex flex-1 flex-col justify-between gap-8">
-      <h3 className="text-body-large font-semibold text-typography-primary">
+      <h3 className="text-body-large font-medium text-typography-primary">
         <Trans>Stake {stakeLabel} GMX</Trans>
       </h3>
       <p className="text-body-small text-typography-secondary">
@@ -371,7 +383,7 @@ function BoostsCard({
           <Trans>Activity Boost</Trans>
         </span>
         {active && (
-          <span className="inline-flex items-center gap-4 rounded-4 bg-blue-300/15 px-6 py-2 text-[1.1rem] font-semibold text-blue-300">
+          <span className="inline-flex items-center gap-4 rounded-4 bg-blue-300/15 px-6 py-2 text-[1.1rem] font-medium text-blue-300">
             +
             {formatMultiplier(
               allBoosts.reduce((sum, b) => (activeBoostIds.includes(b.boost) ? sum + b.multiplier : sum), 0)
@@ -382,7 +394,7 @@ function BoostsCard({
 
       {active ? (
         <>
-          <h3 className="text-h2 font-bold text-typography-primary">
+          <h3 className="text-h2 font-medium text-typography-primary">
             {activeBoostIds.length} <Trans>active boosts</Trans>
           </h3>
           <div className="flex flex-wrap gap-8">
@@ -394,16 +406,16 @@ function BoostsCard({
                   handle={
                     <div
                       className={cx(
-                        "flex size-36 items-center justify-center rounded-8 border text-16",
+                        "flex size-36 items-center justify-center rounded-8 border",
                         isActive ? "border-blue-300 bg-blue-500/15" : "border-slate-600 bg-slate-900 opacity-40"
                       )}
                     >
-                      <BoostIcon boostId={boost.boost} />
+                      <BoostTierIcon boostId={boost.boost} active={isActive} />
                     </div>
                   }
                   content={
                     <div>
-                      <div className="font-semibold">{BOOST_LABELS[boost.boost]()}</div>
+                      <div className="font-medium">{BOOST_LABELS[boost.boost]()}</div>
                       <div className="text-body-small mt-4">+{formatMultiplier(boost.multiplier)}</div>
                       <div className="text-body-small mt-4 text-typography-secondary">
                         {BOOST_DESCRIPTIONS[boost.boost]()}
@@ -417,7 +429,7 @@ function BoostsCard({
         </>
       ) : (
         <div className="flex flex-1 flex-col justify-between gap-8">
-          <h3 className="text-body-large font-semibold text-typography-primary">
+          <h3 className="text-body-large font-medium text-typography-primary">
             <Trans>Complete trading activities</Trans>
           </h3>
           <p className="text-body-small text-typography-secondary">
@@ -437,17 +449,4 @@ function BoostsCard({
       )}
     </div>
   );
-}
-
-function BoostIcon({ boostId }: { boostId: BoostId }) {
-  switch (boostId) {
-    case "FeaturedMarkets":
-      return <MultiplierSvg className="size-16" />;
-    case "BalancingTrades":
-      return <StakingSvg className="size-16" />;
-    case "LifetimeTrading":
-      return <BoostSvg className="size-16" />;
-    default:
-      return <BoostSvg className="size-16" />;
-  }
 }

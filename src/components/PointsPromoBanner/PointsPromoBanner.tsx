@@ -56,7 +56,10 @@ function getBannerText(bannerData: ReturnType<typeof usePersonalizedBannerData>)
   if (bannerData.isManuallyRewarded && bannerData.manualBonusUsd !== undefined) {
     const bonusFormatted = formatUsd(bannerData.manualBonusUsd);
     return (
-      <Trans>You've received a bonus of {bonusFormatted} — Start trading to activate it and get your rewards.</Trans>
+      <Trans>
+        You've received a points bonus worth {bonusFormatted} — Start trading to activate it and use it to discount your
+        fees.
+      </Trans>
     );
   }
 

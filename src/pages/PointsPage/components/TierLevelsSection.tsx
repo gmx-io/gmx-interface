@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
 
 import {
@@ -12,7 +11,11 @@ import {
 import type { EpochStats, IncentivesConfig, VolumeDowngradingCoefficient } from "domain/synthetics/incentives/types";
 import { formatAmount } from "lib/numbers";
 
+import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import Tabs from "components/Tabs/Tabs";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import { VolumeTierIcon, StakingTierIcon, BoostTierIcon } from "./tierIcons";
 
 type TierTab = "volume" | "staking" | "boosts";
 
@@ -26,6 +29,15 @@ export function TierLevelsSection({ config, currentEpochStats }: Props) {
   const [showMore, setShowMore] = useState(false);
 
   const handleToggleMore = useCallback(() => setShowMore((v) => !v), []);
+
+  const tabOptions = useMemo(
+    () => [
+      { value: "volume" as const, label: <Trans>Volume Tiers</Trans> },
+      { value: "staking" as const, label: <Trans>Staking Tiers</Trans> },
+      { value: "boosts" as const, label: <Trans>Activity Boost</Trans> },
+    ],
+    []
+  );
 
   const descriptions: Record<TierTab, { short: string; long: string }> = {
     volume: {
@@ -43,42 +55,31 @@ export function TierLevelsSection({ config, currentEpochStats }: Props) {
   };
 
   return (
-    <div className="rounded-8 border-1/2 border-slate-600 bg-slate-950">
-      <div className="px-16 pt-12">
-        <span className="text-caption font-semibold uppercase tracking-wider text-typography-secondary">
+    <div className="overflow-hidden rounded-8 bg-slate-900">
+      <div className="p-20 pb-0">
+        <span className="text-caption text-typography-disabled">
           <Trans>Tiers</Trans>
         </span>
       </div>
 
-      <div className="flex gap-20 border-b-1/2 border-slate-600 px-16 pt-16">
-        {(["volume", "staking", "boosts"] as TierTab[]).map((tab) => (
-          <button
-            key={tab}
-            className={cx(
-              "text-body-medium cursor-pointer border-b-2 pb-12 font-semibold transition-all",
-              activeTab === tab
-                ? "border-blue-300 text-typography-primary"
-                : "border-transparent text-typography-secondary hover:text-typography-primary"
-            )}
-            onClick={() => setActiveTab(tab)}
-          >
-            {tab === "volume" && <Trans>Volume Tiers</Trans>}
-            {tab === "staking" && <Trans>Staking Tiers</Trans>}
-            {tab === "boosts" && <Trans>Activity Boost</Trans>}
-          </button>
-        ))}
-      </div>
+      <Tabs<TierTab>
+        type="block"
+        options={tabOptions}
+        selectedValue={activeTab}
+        onChange={setActiveTab}
+        className="px-20"
+        tabsWrapperClassName="gap-16"
+        regularOptionClassname="!px-0 text-24 !pb-18"
+      />
 
-      <div className="p-16">
-        <p className="text-body-small text-typography-secondary">
-          {descriptions[activeTab].short} {showMore && <span>{descriptions[activeTab].long}</span>}
+      <div>
+        <p className="text-body-small p-20 pb-0 text-typography-secondary">
+          <span className="font-medium text-typography-primary">{descriptions[activeTab].short}</span>{" "}
+          {showMore && <span>{descriptions[activeTab].long}</span>}{" "}
+          <button className="text-body-small font-medium text-blue-300" onClick={handleToggleMore}>
+            {showMore ? <Trans>Show less</Trans> : <Trans>Show more</Trans>}
+          </button>
         </p>
-        <button
-          className="text-body-small mt-4 font-medium text-blue-300 hover:text-blue-400"
-          onClick={handleToggleMore}
-        >
-          {showMore ? <Trans>Show less</Trans> : <Trans>Show more</Trans>}
-        </button>
 
         <div className="mt-16">
           {activeTab === "volume" && <VolumeTiersTable config={config} currentTier={currentEpochStats?.volumeTier} />}
@@ -98,43 +99,46 @@ function VolumeTiersTable({ config, currentTier }: { config?: IncentivesConfig; 
   return (
     <table className="w-full">
       <thead>
-        <tr className="text-caption text-typography-secondary">
-          <th className="pb-8 text-left font-medium">
+        <TableTheadTr>
+          <TableTh padding="compact">
             <Trans>Tier Name</Trans>
-          </th>
-          <th className="pb-8 text-left font-medium">
+          </TableTh>
+          <TableTh padding="compact">
             <span className="inline-flex items-center gap-4">
               <Trans>Volume</Trans>
               {currentCoefficients && currentCoefficients.length > 0 && (
                 <VolumeDowngradingCoefficientsTooltip coefficients={currentCoefficients} />
               )}
             </span>
-          </th>
-          <th className="pb-8 text-right font-medium">
+          </TableTh>
+          <TableTh padding="compact">
             <Trans>Multiplier</Trans>
-          </th>
-        </tr>
+          </TableTh>
+        </TableTheadTr>
       </thead>
       <tbody>
         {config?.volumeTiers.map((tier) => {
           const isActive = currentTier === tier.tier;
           return (
-            <tr key={tier.tier} className="border-t-1/2 border-slate-700">
-              <td className="text-body-small py-10">
-                <span className="flex items-center gap-8">
+            <TableTr key={tier.tier}>
+              <TableTd padding="compact">
+                <span className="flex items-center gap-8 font-medium">
+                  <VolumeTierIcon tierId={tier.tier} active={isActive} />
                   <span className="text-typography-primary">{VOLUME_TIER_BADGES[tier.tier]()}</span>
                   {isActive && (
-                    <span className="text-caption font-medium text-green-500">
+                    <span className="font-medium text-green-500">
                       <Trans>Active</Trans> ✓
                     </span>
                   )}
                 </span>
-              </td>
-              <td className="text-body-small py-10 text-typography-secondary">
+              </TableTd>
+              <TableTd padding="compact" className="text-typography-primary">
                 ${formatAmount(tier.threshold, 30, 0, true)}
-              </td>
-              <td className="text-body-small py-10 text-right text-blue-300">+{formatMultiplier(tier.multiplier)}</td>
-            </tr>
+              </TableTd>
+              <TableTd padding="compact" className="text-typography-primary">
+                +{formatMultiplier(tier.multiplier)}
+              </TableTd>
+            </TableTr>
           );
         })}
       </tbody>
@@ -167,10 +171,10 @@ function VolumeDowngradingCoefficientsTooltip({ coefficients }: { coefficients: 
       handle={undefined}
       content={
         <div>
-          <p className="mb-8 font-semibold">
+          <p className="mb-8 font-medium">
             <Trans>Volume Coefficients</Trans>
           </p>
-          <p className="text-body-small mb-8 text-typography-secondary">
+          <p className="mb-8 text-14 text-typography-secondary">
             <Trans>
               Some markets have reduced volume coefficients. Volume on these markets is counted at a lower rate for tier
               calculations because they typically involve higher leverage and generate fewer fees.
@@ -178,7 +182,7 @@ function VolumeDowngradingCoefficientsTooltip({ coefficients }: { coefficients: 
           </p>
           <div className="flex flex-col gap-4">
             {coefficients.map((c) => (
-              <div key={c.market} className="text-body-small flex items-center justify-between gap-16">
+              <div key={c.market} className="flex items-center justify-between gap-16 text-14">
                 <span className="text-typography-primary">{c.market}</span>
                 <span className="text-typography-secondary">{c.coefficient}x</span>
               </div>
@@ -194,38 +198,41 @@ function StakingTiersTable({ config, currentTier }: { config?: IncentivesConfig;
   return (
     <table className="w-full">
       <thead>
-        <tr className="text-caption text-typography-secondary">
-          <th className="pb-8 text-left font-medium">
+        <TableTheadTr>
+          <TableTh padding="compact">
             <Trans>Tier Name</Trans>
-          </th>
-          <th className="pb-8 text-left font-medium">
+          </TableTh>
+          <TableTh padding="compact">
             <Trans>GMX Staked</Trans>
-          </th>
-          <th className="pb-8 text-right font-medium">
+          </TableTh>
+          <TableTh padding="compact">
             <Trans>Multiplier</Trans>
-          </th>
-        </tr>
+          </TableTh>
+        </TableTheadTr>
       </thead>
       <tbody>
         {config?.stakingTiers.map((tier) => {
           const isActive = currentTier === tier.tier;
           return (
-            <tr key={tier.tier} className="border-t-1/2 border-slate-700">
-              <td className="text-body-small py-10">
+            <TableTr key={tier.tier}>
+              <TableTd padding="compact">
                 <span className="flex items-center gap-8">
-                  <span className="text-typography-primary">{STAKING_TIER_BADGES[tier.tier]()}</span>
+                  <StakingTierIcon tierId={tier.tier} active={isActive} />
+                  <span className="font-medium text-typography-primary">{STAKING_TIER_BADGES[tier.tier]()}</span>
                   {isActive && (
-                    <span className="text-caption font-medium text-green-500">
+                    <span className="font-medium text-green-500">
                       <Trans>Active</Trans> ✓
                     </span>
                   )}
                 </span>
-              </td>
-              <td className="text-body-small py-10 text-typography-secondary">
+              </TableTd>
+              <TableTd padding="compact" className="text-typography-primary">
                 {formatAmount(tier.threshold, 18, 0, true)} GMX
-              </td>
-              <td className="text-body-small py-10 text-right text-blue-300">+{formatMultiplier(tier.multiplier)}</td>
-            </tr>
+              </TableTd>
+              <TableTd padding="compact" className="text-typography-primary">
+                +{formatMultiplier(tier.multiplier)}
+              </TableTd>
+            </TableTr>
           );
         })}
       </tbody>
@@ -237,37 +244,44 @@ function BoostsTable({ config, activeBoosts }: { config?: IncentivesConfig; acti
   return (
     <table className="w-full">
       <thead>
-        <tr className="text-caption text-typography-secondary">
-          <th className="pb-8 text-left font-medium">
+        <TableTheadTr>
+          <TableTh padding="compact">
             <Trans>Boost Name</Trans>
-          </th>
-          <th className="hidden pb-8 text-left font-medium sm:table-cell">
+          </TableTh>
+          <TableTh padding="compact" className="hidden sm:table-cell">
             <Trans>About</Trans>
-          </th>
-          <th className="pb-8 text-left font-medium">
+          </TableTh>
+          <TableTh padding="compact">
             <Trans>Multiplier</Trans>
-          </th>
-          <th className="pb-8 text-right font-medium">
+          </TableTh>
+          <TableTh padding="compact">
             <Trans>Status</Trans>
-          </th>
-        </tr>
+          </TableTh>
+        </TableTheadTr>
       </thead>
       <tbody>
         {config?.boosts.map((boost) => {
           const isActive = activeBoosts?.includes(boost.boost);
           return (
-            <tr key={boost.boost} className="border-t-1/2 border-slate-700">
-              <td className="text-body-small py-10 text-typography-primary">{BOOST_LABELS[boost.boost]()}</td>
-              <td className="text-body-small hidden py-10 text-typography-secondary sm:table-cell">
+            <TableTr key={boost.boost}>
+              <TableTd padding="compact" className="text-typography-primary">
+                <span className="flex items-center gap-8 font-medium">
+                  <BoostTierIcon boostId={boost.boost} active={!!isActive} />
+                  {BOOST_LABELS[boost.boost]()}
+                </span>
+              </TableTd>
+              <TableTd padding="compact" className="hidden text-typography-primary sm:table-cell">
                 {BOOST_DESCRIPTIONS[boost.boost]()}
-              </td>
-              <td className="text-body-small py-10 text-blue-300">+{formatMultiplier(boost.multiplier)}</td>
-              <td className="text-body-small py-10 text-right">
+              </TableTd>
+              <TableTd padding="compact" className="text-primary">
+                +{formatMultiplier(boost.multiplier)}
+              </TableTd>
+              <TableTd padding="compact">
                 <span className={isActive ? "text-green-500" : "text-typography-secondary"}>
                   {isActive ? <Trans>Active</Trans> : <Trans>Inactive</Trans>}
                 </span>
-              </td>
-            </tr>
+              </TableTd>
+            </TableTr>
           );
         })}
       </tbody>

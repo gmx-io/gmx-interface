@@ -3316,10 +3316,6 @@ msgstr ""
 msgid "Shorts net rate / 1h"
 msgstr "做空淨費率 / 1小時"
 
-#: src/pages/PointsPage/components/MainDataSection.tsx
-msgid "Connect wallet to see your multiplier"
-msgstr ""
-
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Remove endpoint"
 msgstr "移除端點"
@@ -3643,10 +3639,6 @@ msgstr "Telegram 內的 GMX V2 數據分析"
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Runs entirely on public chains"
 msgstr "完全在公共鏈上運行"
-
-#: src/pages/PointsPage/components/MainDataSection.tsx
-msgid "Current"
-msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "May lack liquidity for parts of this order when triggered"
@@ -6557,10 +6549,6 @@ msgstr "成交價格未達到可接受價格"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "In which tokens will I receive my rebates?"
-msgstr ""
-
-#: src/pages/PointsPage/components/MainDataSection.tsx
-msgid "Connect wallet to see your points"
 msgstr ""
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
@@ -9857,10 +9845,6 @@ msgstr ""
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe and remain in your wallet."
 msgstr "您的資金安全無虞，仍保留在您的錢包中。"
-
-#: src/pages/PointsPage/components/MainDataSection.tsx
-msgid "Max 4.0x"
-msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Swap"

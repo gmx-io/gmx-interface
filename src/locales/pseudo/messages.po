@@ -3316,10 +3316,6 @@ msgstr ""
 msgid "Shorts net rate / 1h"
 msgstr ""
 
-#: src/pages/PointsPage/components/MainDataSection.tsx
-msgid "Connect wallet to see your multiplier"
-msgstr ""
-
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Remove endpoint"
 msgstr ""
@@ -3642,10 +3638,6 @@ msgstr ""
 
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Runs entirely on public chains"
-msgstr ""
-
-#: src/pages/PointsPage/components/MainDataSection.tsx
-msgid "Current"
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
@@ -6557,10 +6549,6 @@ msgstr ""
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "In which tokens will I receive my rebates?"
-msgstr ""
-
-#: src/pages/PointsPage/components/MainDataSection.tsx
-msgid "Connect wallet to see your points"
 msgstr ""
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
@@ -9856,10 +9844,6 @@ msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe and remain in your wallet."
-msgstr ""
-
-#: src/pages/PointsPage/components/MainDataSection.tsx
-msgid "Max 4.0x"
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts

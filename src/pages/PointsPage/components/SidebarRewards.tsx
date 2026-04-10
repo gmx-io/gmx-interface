@@ -10,6 +10,8 @@ import Button from "components/Button/Button";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import EarnIcon from "img/ic_earn.svg?react";
+
 type Props = {
   chainId: number;
   account?: string;
@@ -35,40 +37,43 @@ export function SidebarRewards({ chainId, account }: Props) {
 
   return (
     <>
-      <div className="rounded-8 border-1/2 border-slate-600 bg-slate-950 p-16">
+      <div className="rounded-8 bg-slate-900 p-20">
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-8">
-            <span className="text-[2rem] font-bold text-typography-primary">{displayRewards} GMX</span>
+            <span className="text-24 font-medium text-typography-primary">{displayRewards} GMX</span>
           </div>
-          <div className="text-body-small flex items-center gap-4 text-typography-secondary">
+          <div className="text-body-small flex items-center gap-2 font-medium leading-1 text-typography-secondary">
             <Trans>Claimable rewards</Trans>
             <TooltipWithPortal
               handle={undefined}
               content={t`GMX rewards available to claim or stake. Rewards are generated when your points are spent to discount trading fees.`}
+              variant="iconStroke"
             />
           </div>
         </div>
 
-        <div className="mt-12">
+        <div className="py-16">
           <Button
-            variant="primary-action"
+            variant="primary"
             className="w-full"
             disabled={!hasRewards}
             onClick={() => setIsClaimModalOpen(true)}
+            size="medium"
           >
+            <EarnIcon className="size-16" />
             <Trans>Claim rewards</Trans>
           </Button>
         </div>
 
-        <div className="mt-12 flex flex-col gap-4">
-          <div className="flex items-center justify-between py-6 text-[1.3rem]">
-            <span className="text-typography-secondary">
+        <div className="flex flex-col gap-2 border-t-1/2 border-slate-600 pt-16">
+          <div className="flex items-center justify-between py-4 text-[1.3rem]">
+            <span className="font-medium text-typography-secondary">
               <Trans>Epoch ends in</Trans>
             </span>
             <span className="text-typography-primary">{timeLeft || "—"}</span>
           </div>
-          <div className="flex items-center justify-between py-6 text-[1.3rem]">
-            <span className="flex items-center gap-4 text-typography-secondary">
+          <div className="flex items-center justify-between py-4 text-[1.3rem]">
+            <span className="flex items-center gap-4 font-medium text-typography-secondary">
               <Trans>Points balance</Trans>
               <TooltipWithPortal
                 handle={undefined}
@@ -77,8 +82,8 @@ export function SidebarRewards({ chainId, account }: Props) {
             </span>
             <span className="text-typography-primary">{displayPoints}</span>
           </div>
-          <div className="flex items-center justify-between py-6 text-[1.3rem]">
-            <span className="flex items-center gap-4 text-typography-secondary">
+          <div className="flex items-center justify-between py-4 text-[1.3rem]">
+            <span className="flex items-center gap-4 font-medium text-typography-secondary">
               <Trans>Total earn rewards</Trans>
               <TooltipWithPortal handle={undefined} content={t`Total rewards earned since the start of the program.`} />
             </span>
@@ -108,7 +113,7 @@ function ClaimModal({
           <span className="text-body-small text-typography-secondary">
             <Trans>Available to Claim</Trans>
           </span>
-          <div className="text-h2 mt-4 font-bold text-typography-primary">{displayRewards} GMX</div>
+          <div className="text-h2 mt-4 font-medium text-typography-primary">{displayRewards} GMX</div>
           <p className="text-body-small mt-8 text-typography-secondary">
             <Trans>
               Claim your rewards now. You can also stake them instantly to get 5% yield on it and earn even more points.

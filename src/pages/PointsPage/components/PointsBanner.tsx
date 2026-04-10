@@ -28,7 +28,7 @@ export function PointsBanner({ isActiveUser, account, config, dashboard, current
     <div className="rounded-8 border-1/2 border-blue-500/30 bg-blue-500/10 px-20 py-16">
       <div className="flex items-center justify-between gap-16">
         <div>
-          <h3 className="text-body-medium font-semibold text-typography-primary">{banner.title}</h3>
+          <h3 className="text-body-medium font-medium text-typography-primary">{banner.title}</h3>
           <p className="text-body-small mt-4 text-typography-secondary">{banner.description}</p>
         </div>
       </div>

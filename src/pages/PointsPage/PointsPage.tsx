@@ -3,6 +3,9 @@ import { useMemo } from "react";
 import { Redirect, useLocation } from "react-router-dom";
 
 import { isIncentivesEnabled } from "domain/synthetics/incentives/constants";
+import { useAccountIncentiveDashboard } from "domain/synthetics/incentives/useAccountIncentiveDashboard";
+import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
+import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 
@@ -12,6 +15,7 @@ import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHe
 import PageTitle from "components/PageTitle/PageTitle";
 
 import { FaqSection } from "./components/FaqSection";
+import { PointsBanner } from "./components/PointsBanner";
 import { PointsDashboard } from "./components/PointsDashboard";
 import { PointsLeaderboardTab } from "./components/PointsLeaderboardTab";
 import { RewardsHistoryTab } from "./components/RewardsHistoryTab";
@@ -27,6 +31,24 @@ export function PointsPage() {
   const { pathname } = useLocation();
   const { chainId } = useChainId();
   const { account } = useWallet();
+
+  const { data: config } = useIncentivesConfig(chainId);
+  const { data: dashboard } = useAccountIncentiveDashboard(chainId, { account });
+  const { data: status } = useAccountIncentiveStatus(chainId, { account });
+
+  const currentEpochStats = useMemo(() => {
+    if (!dashboard?.recentStats?.length) return undefined;
+    return dashboard.recentStats.reduce((latest, s) => (s.epochTimestamp > latest.epochTimestamp ? s : latest));
+  }, [dashboard?.recentStats]);
+
+  const isActiveUser = Boolean(
+    dashboard &&
+      (status?.volumeTier ||
+        currentEpochStats?.volumeTier ||
+        status?.stakingTier ||
+        currentEpochStats?.stakingTier ||
+        currentEpochStats?.boostIds?.length)
+  );
 
   const tabOptions = useMemo(
     () => [
@@ -67,7 +89,7 @@ export function PointsPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-[1fr_30rem] items-start gap-8 max-lg:grid-cols-1">
+        <div className="grid grid-cols-[1fr_40rem] items-start gap-8 max-lg:grid-cols-1">
           <div className="flex min-w-0 flex-col gap-8">
             {activeTab === PointsTab.Dashboard && <PointsDashboard chainId={chainId} account={account} />}
             {activeTab === PointsTab.History && <RewardsHistoryTab chainId={chainId} account={account} />}
@@ -77,6 +99,13 @@ export function PointsPage() {
           <div className="sticky top-8 flex flex-col gap-8 max-lg:static">
             <SidebarRewards chainId={chainId} account={account} />
             <FaqSection />
+            <PointsBanner
+              isActiveUser={isActiveUser}
+              account={account}
+              config={config}
+              dashboard={dashboard}
+              currentEpochStats={currentEpochStats}
+            />
           </div>
         </div>
       </div>
