@@ -60,7 +60,7 @@ export const EXTRA_BOOST_ICONS = {
 };
 
 const tierIconBase = "size-28 shrink-0 rounded-8 border-1/2 border-slate-600";
-const tierIconGlow = `${tierIconBase} drop-shadow-[0_0_8px_rgba(120,133,255,0.9)] dark:drop-shadow-[0_2px_4px_rgba(120,133,255,0.7)]`;
+const tierIconGlow = `${tierIconBase} drop-shadow-[0_0_8px_rgba(120,133,255,0.9)] dark:drop-shadow-[0_2px_4px_rgba(120,133,255,0.7)] !border-blue-300/50`;
 
 export function VolumeTierIcon({ tierId, active }: { tierId: VolumeTierId; active: boolean }) {
   const iconPair = VOLUME_TIER_ICONS[tierId];
@@ -74,9 +74,17 @@ export function StakingTierIcon({ tierId, active }: { tierId: StakingTierId; act
   return <Icon className={active ? tierIconGlow : tierIconBase} />;
 }
 
-export function BoostTierIcon({ boostId, active }: { boostId: BoostId; active: boolean }) {
+export function BoostTierIcon({
+  boostId,
+  active,
+  className,
+}: {
+  boostId: BoostId;
+  active: boolean;
+  className?: string;
+}) {
   const iconPair = BOOST_ICONS[boostId];
   if (!iconPair) return null;
   const Icon = active ? iconPair.active : iconPair.inactive;
-  return <Icon className={active ? tierIconGlow : tierIconBase} />;
+  return <Icon className={className ?? (active ? tierIconGlow : tierIconBase)} />;
 }

@@ -455,7 +455,6 @@ export function SyntheticsPage(p: Props) {
       {isTablet ? <ChartHeader /> : null}
       <div className="flex gap-8 pt-0 max-lg:flex-col lg:grow">
         <div className="Exchange-left flex grow flex-col gap-8">
-          <PointsPromoBanner />
           <OneClickPromoBanner openSettings={openSettings} />
           <Chart onOpenChartTPSLModal={onOpenChartTPSLModal} />
           {!isTablet && (
@@ -528,6 +527,7 @@ export function SyntheticsPage(p: Props) {
         ) : (
           <div className="w-[40rem] shrink-0">
             <TradeBoxResponsiveContainer />
+            <PointsPromoBanner />
 
             {isSwap && !isTwap && (
               <div className="mt-8 flex flex-col gap-12">

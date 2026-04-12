@@ -36,7 +36,12 @@ export function PointsDashboard({ chainId, account }: Props) {
         projectedStakingTier={status?.projectedStakingTier}
       />
 
-      <TierLevelsSection config={config} currentEpochStats={currentEpochStats} />
+      <TierLevelsSection
+        config={config}
+        currentEpochStats={currentEpochStats}
+        effectiveVolumeTier={status?.volumeTier}
+        effectiveStakingTier={status?.stakingTier}
+      />
 
       <HowItWorksSection />
     </>

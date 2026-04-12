@@ -45,7 +45,6 @@ export type AccountIncentiveStatus = {
   projectedStakingTier: StakingTierId | null;
   epochTimestamp: number;
   tradedVolume: bigint;
-  stakingTwa: bigint;
 };
 
 export type EpochStats = {

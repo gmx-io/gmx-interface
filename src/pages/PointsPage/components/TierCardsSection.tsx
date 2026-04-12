@@ -141,17 +141,18 @@ function VolumeCard({
         <span>
           <Trans>Volume Tier</Trans>
         </span>
-        {active && currentTierConfig && (
-          <span className="inline-flex items-center gap-4 rounded-4 bg-blue-300/15 px-6 py-2 text-[1.1rem] font-medium text-blue-300">
-            +{formatMultiplier(currentTierConfig.multiplier)}
-          </span>
-        )}
         {isProjectedDifferent && (
           <span className="inline-flex items-center gap-4 rounded-4 bg-green-500/15 px-6 py-2 text-[1.1rem] font-medium text-green-500">
             <Trans>Applies next epoch</Trans>
           </span>
         )}
       </div>
+
+      {active && currentTierConfig && (
+        <span className="absolute right-12 top-12 inline-flex items-center rounded-4 bg-green-900 px-6 py-2 text-[1.1rem] font-medium text-green-500">
+          +{formatMultiplier(currentTierConfig.multiplier)}
+        </span>
+      )}
 
       {active ? (
         <>
@@ -208,6 +209,7 @@ function VolumeBanner({ config }: { config?: IncentivesConfig }) {
 
   return (
     <div className="flex flex-1 flex-col justify-between gap-8">
+      <StakingSvg className="absolute bottom-12 right-12 size-64 text-blue-500/10" />
       <h3 className="text-body-large font-medium text-typography-primary">
         <Trans>Reach {volumeLabel} in trading volume</Trans>
       </h3>
@@ -254,17 +256,18 @@ function StakingCard({
         <span>
           <Trans>Staking Tier</Trans>
         </span>
-        {active && currentTierConfig && (
-          <span className="inline-flex items-center gap-4 rounded-4 bg-blue-300/15 px-6 py-2 text-[1.1rem] font-medium text-blue-300">
-            +{formatMultiplier(currentTierConfig.multiplier)}
-          </span>
-        )}
         {isProjectedDifferent && (
           <span className="inline-flex items-center gap-4 rounded-4 bg-green-500/15 px-6 py-2 text-[1.1rem] font-medium text-green-500">
             <Trans>Applies next epoch</Trans>
           </span>
         )}
       </div>
+
+      {active && currentTierConfig && (
+        <span className="absolute right-12 top-12 inline-flex items-center rounded-4 bg-green-900 px-6 py-2 text-[1.1rem] font-medium text-green-500">
+          +{formatMultiplier(currentTierConfig.multiplier)}
+        </span>
+      )}
 
       {active ? (
         <>
@@ -320,6 +323,7 @@ function StakingBanner({ config }: { config?: IncentivesConfig }) {
 
   return (
     <div className="flex flex-1 flex-col justify-between gap-8">
+      <PointsSvg className="text-purple-500/10 absolute bottom-12 right-12 size-64" />
       <h3 className="text-body-large font-medium text-typography-primary">
         <Trans>Stake {stakeLabel} GMX</Trans>
       </h3>
@@ -382,15 +386,16 @@ function BoostsCard({
         <span>
           <Trans>Activity Boost</Trans>
         </span>
-        {active && (
-          <span className="inline-flex items-center gap-4 rounded-4 bg-blue-300/15 px-6 py-2 text-[1.1rem] font-medium text-blue-300">
-            +
-            {formatMultiplier(
-              allBoosts.reduce((sum, b) => (activeBoostIds.includes(b.boost) ? sum + b.multiplier : sum), 0)
-            )}
-          </span>
-        )}
       </div>
+
+      {active && (
+        <span className="absolute right-12 top-12 inline-flex items-center rounded-4 bg-green-900 px-6 py-2 text-[1.1rem] font-medium text-green-500">
+          +
+          {formatMultiplier(
+            allBoosts.reduce((sum, b) => (activeBoostIds.includes(b.boost) ? sum + b.multiplier : sum), 0)
+          )}
+        </span>
+      )}
 
       {active ? (
         <>
@@ -429,21 +434,25 @@ function BoostsCard({
         </>
       ) : (
         <div className="flex flex-1 flex-col justify-between gap-8">
+          <BoostSvg className="absolute bottom-12 right-12 size-64 text-yellow-500/10" />
           <h3 className="text-body-large font-medium text-typography-primary">
             <Trans>Complete trading activities</Trans>
           </h3>
           <p className="text-body-small text-typography-secondary">
             <Trans>Unlock activity boosts and increase your rewards.</Trans>
           </p>
-          <div className="flex flex-wrap gap-4">
-            {allBoosts.map((boost) => (
-              <span
-                key={boost.boost}
-                className="text-caption rounded-4 border-1/2 border-slate-600 px-8 py-4 text-typography-secondary"
-              >
-                {BOOST_LABELS[boost.boost]()}
-              </span>
-            ))}
+          <div className="overflow-hidden">
+            <div className="flex w-max animate-marquee gap-4">
+              {[...allBoosts, ...allBoosts].map((boost, i) => (
+                <span
+                  key={`${boost.boost}-${i}`}
+                  className="text-caption flex shrink-0 items-center gap-4 rounded-4 border-1/2 border-slate-600 px-8 py-4 text-typography-secondary"
+                >
+                  <BoostTierIcon boostId={boost.boost} active={false} className="size-16 shrink-0" />
+                  {BOOST_LABELS[boost.boost]()}
+                </span>
+              ))}
+            </div>
           </div>
         </div>
       )}

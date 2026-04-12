@@ -17,7 +17,7 @@ import { Avatar } from "components/Avatar/Avatar";
 import Button from "components/Button/Button";
 import { useAvailableToTradeAssetSettlementChain } from "components/GmxAccountModal/hooks";
 
-import MultiplierIcon from "img/ic_multiplier.svg?react";
+import MultiplierSolidIcon from "img/ic_multiplier_solid.svg?react";
 
 const BACKDROP_ANIMATION_DURATION = 300;
 
@@ -90,7 +90,7 @@ export function AddressDropdownWithMultichain({ account }: Props) {
         <div
           className={cx(
             "text-body-medium flex items-center font-medium text-typography-primary",
-            !isMobile && (!shouldShowDepositButton ? "gap-16" : "gap-20"),
+            !isMobile && (!shouldShowDepositButton ? "gap-12" : "gap-20"),
             isMobile && "gap-8"
           )}
         >
@@ -98,6 +98,12 @@ export function AddressDropdownWithMultichain({ account }: Props) {
             <Avatar size={isMobile ? 16 : 24} ensName={ensName} address={account} />
 
             {!isSmallMobile && <>{shortenAddressOrEns(ensName || account, displayAddressLength)}</>}
+
+            {showMultiplier && (
+              <span className="flex items-center gap-2 rounded-full bg-green-900 px-5 py-2 text-12 font-medium text-green-500">
+                <MultiplierSolidIcon className="size-12" /> {formatMultiplier(multiplier)}
+              </span>
+            )}
           </div>
 
           {showSideButton && !shouldShowDepositButton && (
@@ -116,12 +122,6 @@ export function AddressDropdownWithMultichain({ account }: Props) {
             <Button variant="primary" onClick={handleOpenDeposit}>
               <Trans>Deposit</Trans>
             </Button>
-          )}
-
-          {showMultiplier && (
-            <span className="text-caption flex items-center gap-2 rounded-4 bg-green-500/15 px-6 py-2 font-semibold text-green-500">
-              <MultiplierIcon className="size-12" /> {formatMultiplier(multiplier)}
-            </span>
           )}
         </div>
       </Button>

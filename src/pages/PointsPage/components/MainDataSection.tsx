@@ -36,7 +36,7 @@ export function MainDataSection({
     <div className="flex flex-col gap-8 rounded-8 bg-slate-900 p-12">
       <div className="flex gap-20 p-8">
         <div className="flex flex-col gap-2">
-          <span className="text-24 font-medium">{displayMultiplier}</span>
+          <span className="text-24 font-medium numbers">{displayMultiplier}</span>
           <div className="flex items-center gap-8">
             <TooltipWithPortal
               variant="iconStroke"
@@ -48,7 +48,7 @@ export function MainDataSection({
         </div>
 
         <div className="flex flex-col gap-2">
-          <span className="text-24 font-medium">{displayPoints}</span>
+          <span className="text-24 font-medium numbers">{displayPoints}</span>
           <div className="flex items-center gap-8">
             <TooltipWithPortal
               variant="iconStroke"

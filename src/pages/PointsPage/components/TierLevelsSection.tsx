@@ -8,7 +8,13 @@ import {
   BOOST_DESCRIPTIONS,
   formatMultiplier,
 } from "domain/synthetics/incentives/constants";
-import type { EpochStats, IncentivesConfig, VolumeDowngradingCoefficient } from "domain/synthetics/incentives/types";
+import type {
+  EpochStats,
+  IncentivesConfig,
+  StakingTierId,
+  VolumeDowngradingCoefficient,
+  VolumeTierId,
+} from "domain/synthetics/incentives/types";
 import { formatAmount } from "lib/numbers";
 
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
@@ -22,9 +28,11 @@ type TierTab = "volume" | "staking" | "boosts";
 type Props = {
   config?: IncentivesConfig;
   currentEpochStats?: EpochStats;
+  effectiveVolumeTier?: VolumeTierId | null;
+  effectiveStakingTier?: StakingTierId | null;
 };
 
-export function TierLevelsSection({ config, currentEpochStats }: Props) {
+export function TierLevelsSection({ config, currentEpochStats, effectiveVolumeTier, effectiveStakingTier }: Props) {
   const [activeTab, setActiveTab] = useState<TierTab>("volume");
   const [showMore, setShowMore] = useState(false);
 
@@ -82,9 +90,11 @@ export function TierLevelsSection({ config, currentEpochStats }: Props) {
         </p>
 
         <div className="mt-16">
-          {activeTab === "volume" && <VolumeTiersTable config={config} currentTier={currentEpochStats?.volumeTier} />}
+          {activeTab === "volume" && (
+            <VolumeTiersTable config={config} currentTier={effectiveVolumeTier ?? currentEpochStats?.volumeTier} />
+          )}
           {activeTab === "staking" && (
-            <StakingTiersTable config={config} currentTier={currentEpochStats?.stakingTier} />
+            <StakingTiersTable config={config} currentTier={effectiveStakingTier ?? currentEpochStats?.stakingTier} />
           )}
           {activeTab === "boosts" && <BoostsTable config={config} activeBoosts={currentEpochStats?.boostIds} />}
         </div>

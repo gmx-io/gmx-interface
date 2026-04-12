@@ -232,10 +232,10 @@ export function MenuSection({
     { icon: <EarnIcon className="size-20" />, label: t`Earn`, key: "earn", to: "/earn" },
     { icon: <DatabaseIcon className="size-20" />, label: t`Pools`, key: "pools", to: "/pools" },
     { icon: <DashboardIcon className="size-20" />, label: t`Stats`, key: "stats", to: "/stats" },
+    { icon: <ReferralsIcon className="size-20" />, label: t`Referrals`, key: "referrals", to: "/referrals" },
     ...(showPoints
       ? [{ icon: <PointsIcon className="size-20" />, label: t`Points`, key: "points", to: "/points" }]
       : []),
-    { icon: <ReferralsIcon className="size-20" />, label: t`Referrals`, key: "referrals", to: "/referrals" },
     { icon: <LeaderboardIcon className="size-20" />, label: t`Leaderboard`, key: "leaderboard", to: "/leaderboard" },
     { icon: <EcosystemIcon className="size-20" />, label: t`Ecosystem`, key: "ecosystem", to: "/ecosystem" },
   ];

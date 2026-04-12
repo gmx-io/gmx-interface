@@ -18,7 +18,6 @@ const STATUS_QUERY = gql`
       projectedStakingTier
       epochTimestamp
       tradedVolume
-      stakingTwa
     }
   }
 `;
@@ -52,7 +51,6 @@ export function useAccountIncentiveStatus(chainId: number, params: { account?: s
           projectedStakingTier: (status.projectedStakingTier as StakingTierId) ?? null,
           epochTimestamp: status.epochTimestamp,
           tradedVolume: BigInt(status.tradedVolume),
-          stakingTwa: BigInt(status.stakingTwa),
         };
       },
       refreshInterval: 30_000,

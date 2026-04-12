@@ -936,6 +936,10 @@ msgstr ""
 msgid "GMX alerts"
 msgstr "Уведомления GMX"
 
+#: src/components/TradeBox/TradeBoxRows/PointsRow.tsx
+msgid "<0>Earn GMX Points</0> and unlock rewards <1>→</1>"
+msgstr ""
+
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net price impact and fees from your trade. <0>Read more</0>."
 msgstr "Чистое влияние на цену и комиссии вашей сделки. <0>Подробнее</0>."
@@ -6994,10 +6998,6 @@ msgstr "Скидки V1"
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Sell GLV"
 msgstr "Продать GLV"
-
-#: src/components/TradeBox/TradeBoxRows/PointsRow.tsx
-msgid "Earn GMX Points and unlock rewards"
-msgstr ""
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "from {BLOCKCHAIN_COUNT} blockchains"
