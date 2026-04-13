@@ -228,12 +228,13 @@ export async function signPreparedOrder(
   const domain = typedData.domain as TypedDataDomain;
   const types = typedData.types as TypedDataTypes;
   const message = typedData.message as Record<string, any>;
+  const primaryType = typedData.primaryType as string | undefined;
 
   if (chainId !== undefined) {
     validateOrderTypedData(domain, types, message, chainId, signer.address, accountAddress);
   }
 
-  return signer.signTypedData(domain, types, message);
+  return signer.signTypedData(domain, types, message, primaryType);
 }
 
 // ---------------------------------------------------------------------------

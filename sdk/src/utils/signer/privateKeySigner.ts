@@ -13,12 +13,13 @@ export class PrivateKeySigner implements IAbstractSigner {
   async signTypedData(
     domain: TypedDataDomain,
     types: TypedDataTypes,
-    value: Record<string, any>
+    value: Record<string, any>,
+    primaryType?: string
   ): Promise<string> {
     return this.account.signTypedData({
       domain,
       types,
-      primaryType: Object.keys(types)[0],
+      primaryType: primaryType ?? Object.keys(types)[0],
       message: value,
     });
   }

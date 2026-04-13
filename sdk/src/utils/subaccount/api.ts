@@ -60,6 +60,7 @@ export async function signSubaccountApproval(
   const domain = prepared.domain as TypedDataDomain;
   const types = prepared.types as TypedDataTypes;
   const message = prepared.message;
+  const primaryType = prepared.primaryType;
 
   if (options?.chainId !== undefined && options?.expectedSubaccountAddress !== undefined) {
     validateSubaccountApprovalTypedData(
@@ -71,5 +72,5 @@ export async function signSubaccountApproval(
     );
   }
 
-  return signer.signTypedData(domain, types, message);
+  return signer.signTypedData(domain, types, message, primaryType);
 }
