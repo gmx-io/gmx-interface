@@ -2,10 +2,8 @@ import cryptoJs from "crypto-js";
 import { ethers, Provider } from "ethers";
 import {
   decodeFunctionResult,
-  encodeAbiParameters,
   encodeFunctionData,
   Hex,
-  keccak256,
   maxUint256,
   zeroAddress,
   zeroHash,
@@ -14,11 +12,11 @@ import {
 import type { AnyChainId, ContractsChainId } from "config/chains";
 import { isSourceChain } from "config/multichain";
 import type {
-  SignedSubacсountApproval,
+  SignedSubaccountApproval,
   Subaccount,
   SubaccountSerializedConfig,
   SubaccountValidations,
-} from "domain/synthetics/subaccount/types";
+} from "domain/synthetics/subaccount";
 import { WalletSigner } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { SignatureTypes, signTypedData } from "lib/wallets/signing";
@@ -67,7 +65,7 @@ export function getSubaccountValidations({
 
 export function getIsSubaccountActive(subaccount: {
   onchainData: SubaccountOnchainData;
-  signedApproval: SignedSubacсountApproval | undefined;
+  signedApproval: SignedSubaccountApproval | undefined;
 }): boolean {
   let active = subaccount.onchainData.active;
 
@@ -87,7 +85,7 @@ export function getSubaccountSigner(config: SubaccountSerializedConfig, account:
 
 function getMaxSubaccountActions(subaccount: {
   onchainData: SubaccountOnchainData;
-  signedApproval: SignedSubacсountApproval | undefined;
+  signedApproval: SignedSubaccountApproval | undefined;
 }): bigint {
   if (subaccount.signedApproval && !getIsEmptySubaccountApproval(subaccount.signedApproval)) {
     return BigInt(subaccount.signedApproval.maxAllowedCount);
@@ -98,7 +96,7 @@ function getMaxSubaccountActions(subaccount: {
 
 function getSubaccountExpiresAt(subaccount: {
   onchainData: SubaccountOnchainData;
-  signedApproval: SignedSubacсountApproval | undefined;
+  signedApproval: SignedSubaccountApproval | undefined;
 }): bigint {
   if (subaccount.signedApproval && !getIsEmptySubaccountApproval(subaccount.signedApproval)) {
     return BigInt(subaccount.signedApproval.expiresAt);
@@ -109,7 +107,7 @@ function getSubaccountExpiresAt(subaccount: {
 
 export function getRemainingSubaccountActions(subaccount: {
   onchainData: SubaccountOnchainData;
-  signedApproval: SignedSubacсountApproval | undefined;
+  signedApproval: SignedSubaccountApproval | undefined;
 }): bigint {
   const maxAllowedCount = getMaxSubaccountActions(subaccount);
   const currentActionCount = subaccount.onchainData.currentActionsCount;
@@ -157,7 +155,7 @@ export function getIsSubaccountNonceExpired({
 }: {
   chainId: ContractsChainId;
   onchainData: SubaccountOnchainData;
-  signedApproval: SignedSubacсountApproval;
+  signedApproval: SignedSubaccountApproval;
 }): boolean {
   if (getIsEmptySubaccountApproval(signedApproval)) {
     return false;
@@ -203,7 +201,7 @@ export function getIsSubaccountApprovalInvalid({
 }: {
   chainId: ContractsChainId;
   signerChainId: AnyChainId;
-  signedApproval: SignedSubacсountApproval;
+  signedApproval: SignedSubaccountApproval;
   onchainData: SubaccountOnchainData;
   subaccountRouterAddress: string;
 }): boolean {
@@ -275,7 +273,7 @@ export function getIsInvalidSubaccount({
   return isExpired || isNonceExpired || actionsExceeded || isApprovalInvalid;
 }
 
-function getEmptySubaccountApproval(chainId: ContractsChainId, subaccountAddress: string): SignedSubacсountApproval {
+function getEmptySubaccountApproval(chainId: ContractsChainId, subaccountAddress: string): SignedSubaccountApproval {
   return {
     subaccount: subaccountAddress,
     shouldAdd: false,
@@ -293,7 +291,7 @@ function getEmptySubaccountApproval(chainId: ContractsChainId, subaccountAddress
   };
 }
 
-function getIsEmptySubaccountApproval(subaccountApproval: SignedSubacсountApproval): boolean {
+function getIsEmptySubaccountApproval(subaccountApproval: SignedSubaccountApproval): boolean {
   return (
     subaccountApproval.signature === ZERO_DATA &&
     subaccountApproval.nonce === 0n &&
@@ -352,9 +350,9 @@ export async function getInitialSubaccountApproval({
 export function getActualApproval(params: {
   chainId: ContractsChainId;
   address: string;
-  signedApproval: SignedSubacсountApproval | undefined;
+  signedApproval: SignedSubaccountApproval | undefined;
   onchainData: SubaccountOnchainData;
-}): SignedSubacсountApproval {
+}): SignedSubaccountApproval {
   const { chainId, signedApproval, address, onchainData } = params;
 
   if (
@@ -373,7 +371,7 @@ export function getActualApproval(params: {
 
 function getIsSubaccountApprovalSynced(params: {
   chainId: ContractsChainId;
-  signedApproval: SignedSubacсountApproval;
+  signedApproval: SignedSubaccountApproval;
   onchainData: SubaccountOnchainData;
 }): boolean {
   const { signedApproval, onchainData } = params;
@@ -454,7 +452,7 @@ async function createAndSignSubaccountApproval(
     maxAllowedCount: bigint;
   },
   isGmxAccount: boolean
-): Promise<SignedSubacсountApproval> {
+): Promise<SignedSubaccountApproval> {
   const srcChainId = await getMultichainInfoFromSigner(mainAccountSigner, chainId);
 
   const nonce = await getSubaccountApprovalNonceForProvider(chainId, mainAccountSigner, isGmxAccount);
@@ -498,35 +496,6 @@ async function createAndSignSubaccountApproval(
     signatureChainId: domain.chainId as AnyChainId,
     subaccountRouterAddress,
   };
-}
-
-export function hashSubaccountApproval(subaccountApproval: SignedSubacсountApproval) {
-  if (!subaccountApproval) {
-    return zeroHash;
-  }
-
-  const encodedData = encodeAbiParameters(
-    [
-      {
-        type: "tuple",
-        components: [
-          { name: "subaccount", type: "address" },
-          { name: "shouldAdd", type: "bool" },
-          { name: "expiresAt", type: "uint256" },
-          { name: "maxAllowedCount", type: "uint256" },
-          { name: "actionType", type: "bytes32" },
-          { name: "nonce", type: "uint256" },
-          { name: "desChainId", type: "uint256" },
-          { name: "deadline", type: "uint256" },
-          { name: "integrationId", type: "bytes32" },
-          { name: "signature", type: "bytes" },
-        ],
-      },
-    ],
-    [subaccountApproval as any]
-  );
-
-  return keccak256(encodedData);
 }
 
 async function getSubaccountApprovalNonceForProvider(

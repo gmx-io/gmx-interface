@@ -443,6 +443,42 @@
       "import": "./build/esm/src/utils/types/index.js",
       "require": "./build/cjs/src/utils/types/index.js",
       "default": "./build/cjs/src/utils/types/index.js"
+    },
+    "./utils/orderTransactions": {
+      "types": "./build/types/src/utils/orderTransactions/index.d.ts",
+      "import": "./build/esm/src/utils/orderTransactions/index.js",
+      "require": "./build/cjs/src/utils/orderTransactions/index.js",
+      "default": "./build/cjs/src/utils/orderTransactions/index.js"
+    },
+    "./utils/express": {
+      "types": "./build/types/src/utils/express/index.d.ts",
+      "import": "./build/esm/src/utils/express/index.js",
+      "require": "./build/cjs/src/utils/express/index.js",
+      "default": "./build/cjs/src/utils/express/index.js"
+    },
+    "./utils/subaccount": {
+      "types": "./build/types/src/utils/subaccount/index.d.ts",
+      "import": "./build/esm/src/utils/subaccount/index.js",
+      "require": "./build/cjs/src/utils/subaccount/index.js",
+      "default": "./build/cjs/src/utils/subaccount/index.js"
+    },
+    "./utils/rpc": {
+      "types": "./build/types/src/utils/rpc/index.d.ts",
+      "import": "./build/esm/src/utils/rpc/index.js",
+      "require": "./build/cjs/src/utils/rpc/index.js",
+      "default": "./build/cjs/src/utils/rpc/index.js"
+    },
+    "./utils/signer": {
+      "types": "./build/types/src/utils/signer/index.d.ts",
+      "import": "./build/esm/src/utils/signer/index.js",
+      "require": "./build/cjs/src/utils/signer/index.js",
+      "default": "./build/cjs/src/utils/signer/index.js"
+    },
+    "./utils/metrics": {
+      "types": "./build/types/src/utils/metrics/index.d.ts",
+      "import": "./build/esm/src/utils/metrics/index.js",
+      "require": "./build/cjs/src/utils/metrics/index.js",
+      "default": "./build/cjs/src/utils/metrics/index.js"
     }
   },
   "scripts": {
@@ -451,6 +487,7 @@
     "test": "vitest",
     "test:ci": "vitest run",
     "test:multicall": "vitest run --config vitest.multicall.config.ts",
+    "test:v2": "vitest run --config vitest.v2.config.ts",
     "build": "rm -rf build && yarn build:types && yarn build:cjs && yarn build:esm && yarn clean",
     "build:cjs": "tsc -p tsconfig.cjs.json && echo '{\"type\": \"commonjs\"}' > build/cjs/src/package.json",
     "build:esm": "tsc -p tsconfig.esm.json && echo '{\"type\": \"module\"}' > build/esm/src/package.json",
