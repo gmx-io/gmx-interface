@@ -60,18 +60,34 @@ export const EXTRA_BOOST_ICONS = {
 };
 
 const tierIconBase = "size-28 shrink-0 rounded-8 border-1/2 border-slate-600";
-const tierIconGlow = `${tierIconBase} drop-shadow-[0_0_8px_rgba(120,133,255,0.9)] dark:drop-shadow-[0_2px_4px_rgba(120,133,255,0.7)] !border-blue-300/50`;
+const tierIconGlow = `${tierIconBase} drop-shadow-[0_4px_6px_rgba(120,133,255,0.9)] dark:drop-shadow-[0_4px_6px_rgba(120,133,255,0.9)] !border-blue-300/50`;
 
-export function VolumeTierIcon({ tierId, active }: { tierId: VolumeTierId; active: boolean }) {
+export function VolumeTierIcon({
+  tierId,
+  active,
+  className,
+}: {
+  tierId: VolumeTierId;
+  active: boolean;
+  className?: string;
+}) {
   const iconPair = VOLUME_TIER_ICONS[tierId];
   const Icon = active ? iconPair.active : iconPair.inactive;
-  return <Icon className={active ? tierIconGlow : tierIconBase} />;
+  return <Icon className={className ?? (active ? tierIconGlow : tierIconBase)} />;
 }
 
-export function StakingTierIcon({ tierId, active }: { tierId: StakingTierId; active: boolean }) {
+export function StakingTierIcon({
+  tierId,
+  active,
+  className,
+}: {
+  tierId: StakingTierId;
+  active: boolean;
+  className?: string;
+}) {
   const iconPair = STAKING_TIER_ICONS[tierId];
   const Icon = active ? iconPair.active : iconPair.inactive;
-  return <Icon className={active ? tierIconGlow : tierIconBase} />;
+  return <Icon className={className ?? (active ? tierIconGlow : tierIconBase)} />;
 }
 
 export function BoostTierIcon({

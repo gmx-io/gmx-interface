@@ -47,7 +47,7 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
 
   if (!account) {
     return (
-      <div className="rounded-8 border-1/2 border-slate-600 bg-slate-950 p-24 text-center text-typography-secondary">
+      <div className="flex grow items-center justify-center rounded-8 bg-slate-900 p-24 text-center text-typography-secondary">
         <Trans>Connect your wallet to view rewards history</Trans>
       </div>
     );
@@ -55,7 +55,7 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
 
   if (history && history.length === 0) {
     return (
-      <div className="rounded-8 border-1/2 border-slate-600 bg-slate-950 p-24 text-center text-typography-secondary">
+      <div className="flex grow items-center justify-center rounded-8 bg-slate-900 p-24 text-center text-typography-secondary">
         <Trans>No rewards history yet. Start trading to earn points.</Trans>
       </div>
     );

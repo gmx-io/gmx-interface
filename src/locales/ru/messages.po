@@ -2489,6 +2489,7 @@ msgid "Set Long Limit @ {0}"
 msgstr ""
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
+#: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Staking Tier"
 msgstr ""
 
@@ -3751,6 +3752,10 @@ msgstr ""
 msgid "Decreasing..."
 msgstr "Уменьшение..."
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Stake more GMX to get {0} <0>+{1}</0>"
+msgstr ""
+
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim successful"
 msgstr "Получение выполнено успешно"
@@ -4719,10 +4724,6 @@ msgstr "LayerZero scan"
 msgid "Borrow fee"
 msgstr "Комиссия за заимствование"
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Trade ${0} to unlock {1} status +{2}"
-msgstr ""
-
 #: src/lib/copyElementAsImage.ts
 msgid "Image copied to clipboard"
 msgstr ""
@@ -4731,6 +4732,7 @@ msgstr ""
 msgid "Swap impact"
 msgstr "Влияние свопа на цену"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
 #: src/pages/PointsPage/components/TierCardsSection.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Activity Boost"
@@ -4892,10 +4894,6 @@ msgstr "Открытие..."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeFi margin protocol"
 msgstr "DeFi маржинальный протокол"
-
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Start trading →"
-msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Fee"
@@ -5156,6 +5154,10 @@ msgstr "<0>GMX исполняет сделки против динамическ
 msgid "Read more"
 msgstr "Подробнее"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Unlock boosts and increase your rewards."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Earn {0}% more rewards with this action"
 msgstr "Получите на {0}% больше вознаграждений с этим действием"
@@ -5163,6 +5165,10 @@ msgstr "Получите на {0}% больше вознаграждений с 
 #: src/components/Seo/SEO.tsx
 msgid "Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks"
 msgstr "Торгуйте бессрочными контрактами с кредитным плечом до 100x, а также спотовыми активами напрямую из вашего кошелька на Arbitrum, Ethereum и других сетях"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Volume this epoch: <0>${0}</0>"
+msgstr ""
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Sell fee"
@@ -5429,6 +5435,10 @@ msgstr "Перемещение доступно только на {chainNames} �
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "GMX Staked: <0>{0}</0>"
 msgstr ""
 
 #: src/pages/PointsPage/components/FaqSection.tsx
@@ -6045,6 +6055,7 @@ msgstr "Рекомендуемые"
 
 #: src/components/Referrals/traders/HowToStartSaving.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+#: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Start trading"
 msgstr ""
 
@@ -6085,10 +6096,6 @@ msgstr "Цена TP выше расчётной цены"
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price"
 msgstr "{typeString} Short Limit: {0} шорт позицию, когда цена выше цены активации"
-
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Buy GMX +"
-msgstr ""
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
@@ -6134,6 +6141,7 @@ msgid "{balanceFormatted} remaining in old 1CT subaccount"
 msgstr "{balanceFormatted} остаётся на старом субаккаунте 1CT"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/pages/PointsPage/components/TierCardsSection.tsx
 #: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Stake GMX"
 msgstr ""
@@ -7935,10 +7943,6 @@ msgstr "Одобрить GMX"
 msgid "{fromText} to {toExecutionText}"
 msgstr "{fromText} в {toExecutionText}"
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Stake more GMX to get {0} +{1}"
-msgstr ""
-
 #: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Available to Claim"
 msgstr ""
@@ -9278,11 +9282,6 @@ msgstr "Express + One-Click"
 msgid "Lifetime Volume"
 msgstr ""
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Applies next epoch"
-msgstr ""
-
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "GM tokens represent shares in a liquidity pool for a single GMX market. Buy GM to provide liquidity and earn fees from leverage trading, swaps, and market-making activity on that specific market. All rewards are auto-compounded."
 msgstr "Токены GM представляют собой доли в пуле ликвидности для отдельного рынка GMX. Покупайте GM, чтобы предоставлять ликвидность и получать комиссии от торговли с кредитным плечом, свопов и маркетмейкерской деятельности на этом рынке. Все вознаграждения реинвестируются автоматически."
@@ -9594,10 +9593,6 @@ msgstr "ДЕЙСТВИЕ"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Increase"
 msgstr "Увеличить"
-
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Volume this epoch:"
-msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
@@ -10380,6 +10375,10 @@ msgstr "Отмена {orderText}…"
 msgid "Re-sign"
 msgstr "Переподписать"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Trade ${0} to unlock {1} status <0>+{2}</0>"
+msgstr ""
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to GMX Account..."
 msgstr "Депозит на GMX Account..."
@@ -10892,6 +10891,7 @@ msgid "Request Market Decrease"
 msgstr "Запрос на рыночное уменьшение"
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
+#: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Volume Tier"
 msgstr ""
 
@@ -11100,10 +11100,6 @@ msgstr "Доступно:"
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Realized base PnL"
 msgstr "Реализованный базовый PnL"
-
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Unlock activity boosts and increase your rewards."
-msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "limit"

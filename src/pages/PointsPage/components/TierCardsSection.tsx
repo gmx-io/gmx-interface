@@ -2,6 +2,7 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import React, { useMemo } from "react";
 
+import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
 import {
   BOOST_LABELS,
   BOOST_DESCRIPTIONS,
@@ -16,9 +17,12 @@ import { formatAmount, formatAmountHuman, bigintToNumber } from "lib/numbers";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import bannerGlowImg from "img/bg_banner_glow.png";
+import DatabaseIcon from "img/database.svg?react";
+import ArrowRight from "img/ic_arrow_right.svg?react";
+import BatterySvg from "img/ic_battery.svg?react";
 import BoostSvg from "img/ic_boost.svg?react";
-import PointsSvg from "img/ic_points.svg?react";
-import StakingSvg from "img/ic_staking.svg?react";
+import StatsSvg from "img/ic_stats.svg?react";
 
 import { VolumeTierIcon, StakingTierIcon, BoostTierIcon } from "./tierIcons";
 
@@ -100,9 +104,49 @@ function estimateWeeklyRewards(volumeUsd: number, rawMultiplier: number, multipl
   return Math.round(Math.min(rewards, maxDiscount));
 }
 
-const tierCardBase = "flex flex-col gap-12 rounded-8 p-16 border-1/2 border-slate-600 relative overflow-hidden";
-const tierCardBanner = "bg-gradient-to-br from-slate-950 to-cold-blue-900 hover:border-blue-300";
-const tierCardActive = "bg-slate-950";
+function MultiplierBadge({
+  currentMultiplier,
+  projectedMultiplier,
+}: {
+  currentMultiplier: number;
+  projectedMultiplier?: number;
+}) {
+  if (projectedMultiplier !== undefined) {
+    return (
+      <span className="inline-flex items-center">
+        <span className="inline-flex items-center rounded-full border-1/2 border-slate-600 py-2 pl-8 pr-12 text-[1.1rem] font-medium text-typography-secondary">
+          {formatMultiplier(currentMultiplier)} →
+        </span>
+        <span className="-ml-8 rounded-full bg-green-900 px-8 py-2 text-[1.1rem] font-medium text-green-500">
+          {formatMultiplier(projectedMultiplier)}
+        </span>
+      </span>
+    );
+  }
+
+  return (
+    <span className="inline-flex items-center rounded-full bg-green-900 px-8 py-2 text-[1.1rem] font-medium text-green-500 numbers">
+      +{formatMultiplier(currentMultiplier)}
+    </span>
+  );
+}
+
+const BANNER_GLOW_STYLES = { backgroundImage: `url(${bannerGlowImg})`, backgroundSize: "400% 400%" };
+function BannerGlow() {
+  return (
+    <div
+      aria-hidden
+      className="pointer-events-none absolute inset-0 animate-banner-glow opacity-30"
+      style={BANNER_GLOW_STYLES}
+    />
+  );
+}
+
+const tierCardBase = "flex flex-col gap-12 rounded-12 border-1/2 border-slate-600 relative overflow-hidden";
+const tierCardBanner = "bg-slate-950 p-16 max-lg:p-12 min-h-[172px]";
+const tierCardActive = "bg-slate-950 pt-16 px-16 pb-12";
+const tierIconLarge =
+  "size-52 shrink-0 rounded-12 border-[0.8px] border-blue-300/60 drop-shadow-[0_4px_8px_rgba(120,133,255,0.9)]";
 
 function VolumeCard({
   config,
@@ -126,6 +170,7 @@ function VolumeCard({
   const nextTierConfig = tierConfig?.[currentTierIndex + 1] ?? tierConfig?.[0];
 
   const isProjectedDifferent = projectedTierId && projectedTierId !== volumeTier;
+  const projectedTierConfig = isProjectedDifferent ? tierConfig?.find((t) => t.tier === projectedTierId) : undefined;
 
   const targetVolume = active ? nextTierConfig?.threshold : tierConfig?.[0]?.threshold;
   const progressPercent =
@@ -134,58 +179,61 @@ function VolumeCard({
 
   return (
     <div className={cx(tierCardBase, active ? tierCardActive : tierCardBanner)}>
-      <div className="text-caption flex items-center gap-8 text-typography-secondary">
-        <div className="flex size-32 shrink-0 items-center justify-center rounded-8 bg-blue-500/15 text-blue-500">
-          <StakingSvg className="size-16" />
-        </div>
-        <span>
-          <Trans>Volume Tier</Trans>
-        </span>
-        {isProjectedDifferent && (
-          <span className="inline-flex items-center gap-4 rounded-4 bg-green-500/15 px-6 py-2 text-[1.1rem] font-medium text-green-500">
-            <Trans>Applies next epoch</Trans>
+      {!active && <BannerGlow />}
+      <div className="flex items-center justify-between font-medium text-typography-secondary">
+        {active ? (
+          <span>
+            <Trans>Volume Tier</Trans>
           </span>
+        ) : (
+          <div className="flex items-center gap-8">
+            <div className="flex size-32 shrink-0 items-center justify-center rounded-8 border-1/2 border-slate-600">
+              <StatsSvg className="size-16" />
+            </div>
+            <span>
+              <Trans>Volume Tier</Trans>
+            </span>
+          </div>
+        )}
+        {active && currentTierConfig && (
+          <MultiplierBadge
+            currentMultiplier={currentTierConfig.multiplier}
+            projectedMultiplier={projectedTierConfig?.multiplier}
+          />
         )}
       </div>
 
-      {active && currentTierConfig && (
-        <span className="absolute right-12 top-12 inline-flex items-center rounded-4 bg-green-900 px-6 py-2 text-[1.1rem] font-medium text-green-500">
-          +{formatMultiplier(currentTierConfig.multiplier)}
-        </span>
-      )}
-
       {active ? (
         <>
-          <h3 className="text-h2 flex items-center gap-8 font-medium text-typography-primary">
-            {volumeTier && <VolumeTierIcon tierId={isProjectedDifferent ? projectedTierId : volumeTier} active />}
-            {isProjectedDifferent
-              ? VOLUME_TIER_BADGES[projectedTierId]()
-              : volumeTier
-                ? VOLUME_TIER_BADGES[volumeTier]()
-                : "—"}
-            {isProjectedDifferent && volumeTier && (
-              <span className="text-body-small ml-8 font-normal text-typography-secondary">
-                (current: {VOLUME_TIER_BADGES[volumeTier]()})
-              </span>
-            )}
+          <h3 className="text-h2 flex items-center gap-12 font-medium text-typography-primary">
+            {volumeTier && <VolumeTierIcon tierId={volumeTier} active className={tierIconLarge} />}
+            {volumeTier ? VOLUME_TIER_BADGES[volumeTier]() : "—"}
           </h3>
-          <div className="text-body-small flex flex-col gap-4 text-typography-secondary">
-            <span>
-              <Trans>Volume this epoch:</Trans> ${formatAmount(tradedVolume, 30, 0, true)}
-            </span>
-            <div className="relative h-4 overflow-hidden rounded-2 bg-slate-700">
+          <div className="text-body-small flex flex-col gap-2 text-typography-secondary">
+            <div className="flex items-center gap-4 py-2">
+              <span>
+                <Trans>
+                  Volume this epoch:{" "}
+                  <span className="text-typography-primary">${formatAmount(tradedVolume, 30, 0, true)}</span>
+                </Trans>
+              </span>
+            </div>
+            <div className="relative h-6 overflow-hidden rounded-8 bg-cold-blue-900">
               <div
-                className="absolute left-0 top-0 h-full rounded-2 bg-blue-300 transition-[width] duration-300"
+                className="absolute left-0 top-0 h-full rounded-8 bg-blue-300 transition-[width] duration-300"
                 style={progressStyle}
               />
             </div>
             {nextTierConfig && (
-              <span>
-                <Trans>
-                  Trade ${formatAmount(nextTierConfig.threshold, 30, 0, true)} to unlock{" "}
-                  {VOLUME_TIER_BADGES[nextTierConfig.tier]()} status +{formatMultiplier(nextTierConfig.multiplier)}
-                </Trans>
-              </span>
+              <div className="flex items-center gap-4 py-2">
+                <span>
+                  <Trans>
+                    Trade ${formatAmount(nextTierConfig.threshold, 30, 0, true)} to unlock{" "}
+                    {VOLUME_TIER_BADGES[nextTierConfig.tier]()} status{" "}
+                    <span className="text-typography-primary">+{formatMultiplier(nextTierConfig.multiplier)}</span>
+                  </Trans>
+                </span>
+              </div>
             )}
           </div>
         </>
@@ -208,18 +256,17 @@ function VolumeBanner({ config }: { config?: IncentivesConfig }) {
     : 0;
 
   return (
-    <div className="flex flex-1 flex-col justify-between gap-8">
-      <StakingSvg className="absolute bottom-12 right-12 size-64 text-blue-500/10" />
-      <h3 className="text-body-large font-medium text-typography-primary">
+    <div className="flex flex-1 flex-col justify-end gap-8">
+      <h3 className="text-h3 font-medium text-typography-primary">
         <Trans>Reach {volumeLabel} in trading volume</Trans>
       </h3>
-      <p className="text-body-small text-typography-secondary">
+      <div className="flex items-start gap-4 text-12 font-medium text-typography-secondary">
         <Trans>
           Unlock {tierName} status (+{multiplierLabel}) and earn up to ${rewardsEstimate} in additional trading rewards.
         </Trans>
-      </p>
-      <a href="#/trade" className="text-body-small font-medium text-blue-300 hover:text-blue-400">
-        <Trans>Start trading →</Trans>
+      </div>
+      <a href="#/trade" className="flex items-center gap-4 text-12 font-medium text-blue-300">
+        <Trans>Start trading</Trans> <ArrowRight />
       </a>
     </div>
   );
@@ -240,63 +287,74 @@ function StakingCard({
 }) {
   const stakingTier = effectiveTierId ?? currentEpochStats?.stakingTier;
   const tierConfig = config?.stakingTiers;
+  const { data: stakingData } = useStakingProcessedData();
+  const gmxStaked = stakingData?.gmxInStakedGmx;
 
   const currentTierIndex = tierConfig?.findIndex((t) => t.tier === stakingTier) ?? -1;
   const currentTierConfig = currentTierIndex >= 0 ? tierConfig?.[currentTierIndex] : undefined;
   const nextTierConfig = tierConfig?.[currentTierIndex + 1];
 
   const isProjectedDifferent = projectedTierId && projectedTierId !== stakingTier;
+  const projectedTierConfig = isProjectedDifferent ? tierConfig?.find((t) => t.tier === projectedTierId) : undefined;
 
   return (
     <div className={cx(tierCardBase, active ? tierCardActive : tierCardBanner)}>
-      <div className="text-caption flex items-center gap-8 text-typography-secondary">
-        <div className="bg-purple-500/15 text-purple-500 flex size-32 shrink-0 items-center justify-center rounded-8">
-          <PointsSvg className="size-16" />
-        </div>
-        <span>
-          <Trans>Staking Tier</Trans>
-        </span>
-        {isProjectedDifferent && (
-          <span className="inline-flex items-center gap-4 rounded-4 bg-green-500/15 px-6 py-2 text-[1.1rem] font-medium text-green-500">
-            <Trans>Applies next epoch</Trans>
+      {!active && <BannerGlow />}
+      <div className="flex items-center justify-between font-medium text-typography-secondary">
+        {active ? (
+          <span>
+            <Trans>Staking Tier</Trans>
           </span>
+        ) : (
+          <div className="flex items-center gap-8">
+            <div className="flex size-32 shrink-0 items-center justify-center rounded-8 border-1/2 border-slate-600">
+              <BatterySvg className="text-purple-500 size-16" />
+            </div>
+            <span>
+              <Trans>Staking Tier</Trans>
+            </span>
+          </div>
+        )}
+        {active && currentTierConfig && (
+          <MultiplierBadge
+            currentMultiplier={currentTierConfig.multiplier}
+            projectedMultiplier={projectedTierConfig?.multiplier}
+          />
         )}
       </div>
 
-      {active && currentTierConfig && (
-        <span className="absolute right-12 top-12 inline-flex items-center rounded-4 bg-green-900 px-6 py-2 text-[1.1rem] font-medium text-green-500">
-          +{formatMultiplier(currentTierConfig.multiplier)}
-        </span>
-      )}
-
       {active ? (
         <>
-          <h3 className="text-h2 flex items-center gap-8 font-medium text-typography-primary">
-            {stakingTier && <StakingTierIcon tierId={isProjectedDifferent ? projectedTierId : stakingTier} active />}
-            {isProjectedDifferent
-              ? STAKING_TIER_BADGES[projectedTierId]()
-              : stakingTier
-                ? STAKING_TIER_BADGES[stakingTier]()
-                : "—"}
-            {isProjectedDifferent && stakingTier && (
-              <span className="text-body-small ml-8 font-normal text-typography-secondary">
-                (current: {STAKING_TIER_BADGES[stakingTier]()})
-              </span>
-            )}
+          <h3 className="text-h2 flex items-center gap-12 font-medium text-typography-primary">
+            {stakingTier && <StakingTierIcon tierId={stakingTier} active className={tierIconLarge} />}
+            {stakingTier ? STAKING_TIER_BADGES[stakingTier]() : "—"}
           </h3>
-          <div className="text-body-small flex flex-col gap-4 text-typography-secondary">
+          <div className="text-body-small flex flex-col gap-2 text-typography-secondary">
+            <div className="flex items-center justify-between py-2 font-medium">
+              <p>
+                <Trans>
+                  GMX Staked:{" "}
+                  <span className="text-typography-primary">
+                    {gmxStaked !== undefined ? formatAmount(gmxStaked, 18, 2, true) : "—"}
+                  </span>
+                </Trans>
+              </p>
+              <a href="#/earn" className="inline-flex items-center gap-2 text-[1.1rem] font-medium text-blue-300">
+                <Trans>Stake GMX</Trans>
+                <DatabaseIcon className="size-12" />
+              </a>
+            </div>
             {tierConfig && <StakingProgressBar tiers={tierConfig} currentTier={stakingTier} />}
             {nextTierConfig && (
-              <span>
-                <Trans>
-                  Stake more GMX to get {STAKING_TIER_BADGES[nextTierConfig.tier]()} +
-                  {formatMultiplier(nextTierConfig.multiplier)}
-                </Trans>
-              </span>
+              <div className="flex items-center gap-4 py-2">
+                <span>
+                  <Trans>
+                    Stake more GMX to get {STAKING_TIER_BADGES[nextTierConfig.tier]()}{" "}
+                    <span className="text-typography-primary">+{formatMultiplier(nextTierConfig.multiplier)}</span>
+                  </Trans>
+                </span>
+              </div>
             )}
-            <a href="#/earn" className="text-body-small font-medium text-blue-300 hover:text-blue-400">
-              <Trans>Stake GMX</Trans>
-            </a>
           </div>
         </>
       ) : (
@@ -314,7 +372,6 @@ function StakingBanner({ config }: { config?: IncentivesConfig }) {
   const tierName = firstTier ? STAKING_TIER_BADGES[firstTier.tier]() : "...";
   const multiplierLabel = firstTier ? formatMultiplier(firstTier.multiplier) : "...";
 
-  // Use the first volume tier threshold for the rewards estimate context (staking alone doesn't generate volume)
   const firstVolumeTier = config?.volumeTiers?.[0];
   const estimateVolume = firstVolumeTier ? bigintToNumber(firstVolumeTier.threshold, USD_DECIMALS) : 0;
   const stakingMultiplier = firstTier?.multiplier ?? 0;
@@ -322,25 +379,22 @@ function StakingBanner({ config }: { config?: IncentivesConfig }) {
     estimateVolume > 0 ? estimateWeeklyRewards(estimateVolume, stakingMultiplier, multiplierDecimals) : 0;
 
   return (
-    <div className="flex flex-1 flex-col justify-between gap-8">
-      <PointsSvg className="text-purple-500/10 absolute bottom-12 right-12 size-64" />
-      <h3 className="text-body-large font-medium text-typography-primary">
+    <div className="flex flex-1 flex-col justify-end gap-8">
+      <h3 className="text-h3 font-medium text-typography-primary">
         <Trans>Stake {stakeLabel} GMX</Trans>
       </h3>
-      <p className="text-body-small text-typography-secondary">
+      <div className="flex items-start gap-4 text-12 font-medium text-typography-secondary">
         <Trans>
           Unlock {tierName} status (+{multiplierLabel}) and earn up to ${rewardsEstimate} in additional trading rewards.
         </Trans>
-      </p>
-      <a href="#/earn" className="text-body-small font-medium text-blue-300 hover:text-blue-400">
-        <Trans>Buy GMX +</Trans>
+      </div>
+      <a href="#/earn" className="flex items-center gap-4 text-12 font-medium text-blue-300">
+        <Trans>Stake GMX</Trans>
+        <DatabaseIcon className="size-14" />
       </a>
     </div>
   );
 }
-
-const PROGRESS_FULL: React.CSSProperties = { width: "100%" };
-const PROGRESS_EMPTY: React.CSSProperties = { width: "0%" };
 
 function StakingProgressBar({
   tiers,
@@ -352,14 +406,9 @@ function StakingProgressBar({
   const currentIdx = tiers.findIndex((t) => t.tier === currentTier);
 
   return (
-    <div className="flex h-4 gap-[2px] overflow-hidden rounded-2">
+    <div className="flex h-6 gap-[3px] rounded-8">
       {tiers.map((tier, i) => (
-        <div key={tier.tier} className="relative flex-1 bg-slate-700 first:rounded-l-2 last:rounded-r-2">
-          <div
-            className="absolute left-0 top-0 h-full bg-blue-300 transition-[width] duration-300"
-            style={i <= currentIdx ? PROGRESS_FULL : PROGRESS_EMPTY}
-          />
-        </div>
+        <div key={tier.tier} className={cx("flex-1 rounded-8", i <= currentIdx ? "bg-blue-300" : "bg-cold-blue-900")} />
       ))}
     </div>
   );
@@ -378,81 +427,104 @@ function BoostsCard({
   const allBoosts = config?.boosts ?? [];
 
   return (
-    <div className={cx(tierCardBase, active ? tierCardActive : tierCardBanner)}>
-      <div className="text-caption flex items-center gap-8 text-typography-secondary">
-        <div className="flex size-32 shrink-0 items-center justify-center rounded-8 bg-yellow-500/15 text-yellow-500">
-          <BoostSvg className="size-16" />
+    <div
+      className={cx(
+        tierCardBase,
+        "justify-between !p-0 !pb-16 max-lg:!pb-12",
+        active ? tierCardActive : tierCardBanner
+      )}
+    >
+      <div className="flex flex-col gap-12 p-16 pb-0">
+        {!active && <BannerGlow />}
+        <div className="flex items-center justify-between font-medium text-typography-secondary">
+          {active ? (
+            <span>
+              <Trans>Activity Boost</Trans>
+            </span>
+          ) : (
+            <div className="flex items-center gap-8">
+              <div className="flex size-32 shrink-0 items-center justify-center rounded-8 border-1/2 border-slate-600">
+                <BoostSvg className="size-16" />
+              </div>
+              <span>
+                <Trans>Activity Boost</Trans>
+              </span>
+            </div>
+          )}
+          {active && (
+            <span className="inline-flex items-center rounded-full bg-green-900 px-8 py-2 text-[1.1rem] font-medium text-green-500">
+              +
+              {formatMultiplier(
+                allBoosts.reduce((sum, b) => (activeBoostIds.includes(b.boost) ? sum + b.multiplier : sum), 0)
+              )}
+            </span>
+          )}
         </div>
-        <span>
-          <Trans>Activity Boost</Trans>
-        </span>
+      </div>
+      <div className="flex flex-col gap-20 px-16">
+        {active ? (
+          <>
+            <h3 className="text-h2 flex items-center gap-12 font-medium text-typography-primary">
+              <div className="flex size-48 shrink-0 items-center justify-center rounded-12 border-[0.8px] border-blue-300/60 drop-shadow-[0_4px_6px_rgba(120,133,255,0.9)]">
+                <BoostSvg className="size-24 text-blue-300" />
+              </div>
+              {activeBoostIds.length} <Trans>active boosts</Trans>
+            </h3>
+            <div className="flex flex-wrap gap-12">
+              {allBoosts.map((boost) => {
+                const isActive = activeBoostIds.includes(boost.boost);
+                return (
+                  <TooltipWithPortal
+                    key={boost.boost}
+                    handle={
+                      <div
+                        className={cx(
+                          "flex items-center justify-center rounded-8 border-1/2",
+                          isActive ? "border-slate-600 bg-slate-800" : "border-slate-600 bg-slate-900/80 opacity-40"
+                        )}
+                      >
+                        <BoostTierIcon boostId={boost.boost} active={false} className="size-44" />
+                      </div>
+                    }
+                    content={
+                      <div>
+                        <div className="font-medium">{BOOST_LABELS[boost.boost]()}</div>
+                        <div className="text-body-small mt-4">+{formatMultiplier(boost.multiplier)}</div>
+                        <div className="text-body-small mt-4 text-typography-secondary">
+                          {BOOST_DESCRIPTIONS[boost.boost]()}
+                        </div>
+                      </div>
+                    }
+                    variant="none"
+                  />
+                );
+              })}
+            </div>
+          </>
+        ) : (
+          <div className="flex flex-1 flex-col justify-between gap-8">
+            <h3 className="text-h3 font-medium text-typography-primary">
+              <Trans>Complete trading activities</Trans>
+            </h3>
+            <p className="text-12 font-medium text-typography-secondary">
+              <Trans>Unlock boosts and increase your rewards.</Trans>
+            </p>
+          </div>
+        )}
       </div>
 
-      {active && (
-        <span className="absolute right-12 top-12 inline-flex items-center rounded-4 bg-green-900 px-6 py-2 text-[1.1rem] font-medium text-green-500">
-          +
-          {formatMultiplier(
-            allBoosts.reduce((sum, b) => (activeBoostIds.includes(b.boost) ? sum + b.multiplier : sum), 0)
-          )}
-        </span>
-      )}
-
-      {active ? (
-        <>
-          <h3 className="text-h2 font-medium text-typography-primary">
-            {activeBoostIds.length} <Trans>active boosts</Trans>
-          </h3>
-          <div className="flex flex-wrap gap-8">
-            {allBoosts.map((boost) => {
-              const isActive = activeBoostIds.includes(boost.boost);
-              return (
-                <TooltipWithPortal
-                  key={boost.boost}
-                  handle={
-                    <div
-                      className={cx(
-                        "flex size-36 items-center justify-center rounded-8 border",
-                        isActive ? "border-blue-300 bg-blue-500/15" : "border-slate-600 bg-slate-900 opacity-40"
-                      )}
-                    >
-                      <BoostTierIcon boostId={boost.boost} active={isActive} />
-                    </div>
-                  }
-                  content={
-                    <div>
-                      <div className="font-medium">{BOOST_LABELS[boost.boost]()}</div>
-                      <div className="text-body-small mt-4">+{formatMultiplier(boost.multiplier)}</div>
-                      <div className="text-body-small mt-4 text-typography-secondary">
-                        {BOOST_DESCRIPTIONS[boost.boost]()}
-                      </div>
-                    </div>
-                  }
-                />
-              );
-            })}
-          </div>
-        </>
-      ) : (
-        <div className="flex flex-1 flex-col justify-between gap-8">
-          <BoostSvg className="absolute bottom-12 right-12 size-64 text-yellow-500/10" />
-          <h3 className="text-body-large font-medium text-typography-primary">
-            <Trans>Complete trading activities</Trans>
-          </h3>
-          <p className="text-body-small text-typography-secondary">
-            <Trans>Unlock activity boosts and increase your rewards.</Trans>
-          </p>
-          <div className="overflow-hidden">
-            <div className="flex w-max animate-marquee gap-4">
-              {[...allBoosts, ...allBoosts].map((boost, i) => (
-                <span
-                  key={`${boost.boost}-${i}`}
-                  className="text-caption flex shrink-0 items-center gap-4 rounded-4 border-1/2 border-slate-600 px-8 py-4 text-typography-secondary"
-                >
-                  <BoostTierIcon boostId={boost.boost} active={false} className="size-16 shrink-0" />
-                  {BOOST_LABELS[boost.boost]()}
-                </span>
-              ))}
-            </div>
+      {!active && (
+        <div className="overflow-hidden">
+          <div className="flex w-max animate-marquee gap-8">
+            {[...allBoosts, ...allBoosts].map((boost, i) => (
+              <span
+                key={`${boost.boost}-${i}`}
+                className="flex shrink-0 items-center gap-2 rounded-8 bg-slate-700 py-2 pl-4 pr-12 text-13 font-medium text-typography-secondary"
+              >
+                <BoostTierIcon boostId={boost.boost} active={false} className="size-26 shrink-0" />
+                {BOOST_LABELS[boost.boost]()}
+              </span>
+            ))}
           </div>
         </div>
       )}

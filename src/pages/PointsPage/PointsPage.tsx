@@ -89,8 +89,8 @@ export function PointsPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-[1fr_40rem] items-start gap-8 max-lg:grid-cols-1">
-          <div className="flex min-w-0 flex-col gap-8">
+        <div className="grid grid-cols-[1fr_40rem] items-start gap-8 max-[1400px]:grid-cols-[1fr_30rem] max-xl:grid-cols-1">
+          <div className="flex h-full min-w-0 flex-col gap-8">
             {activeTab === PointsTab.Dashboard && <PointsDashboard chainId={chainId} account={account} />}
             {activeTab === PointsTab.History && <RewardsHistoryTab chainId={chainId} account={account} />}
             {activeTab === PointsTab.Leaderboard && <PointsLeaderboardTab chainId={chainId} account={account} />}

@@ -173,7 +173,7 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
       </div>
 
       {leaderboard && leaderboard.length === 0 ? (
-        <div className="rounded-8 border-1/2 border-slate-600 bg-slate-950 p-24 text-center text-typography-secondary">
+        <div className="flex grow items-center justify-center rounded-8 bg-slate-900 p-24 text-center text-typography-secondary">
           <Trans>Leaderboard data is not available yet.</Trans>
         </div>
       ) : (

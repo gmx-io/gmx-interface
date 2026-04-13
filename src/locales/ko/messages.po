@@ -2489,6 +2489,7 @@ msgid "Set Long Limit @ {0}"
 msgstr ""
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
+#: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Staking Tier"
 msgstr ""
 
@@ -3751,6 +3752,10 @@ msgstr ""
 msgid "Decreasing..."
 msgstr "감소 중..."
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Stake more GMX to get {0} <0>+{1}</0>"
+msgstr ""
+
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim successful"
 msgstr "수령 완료"
@@ -4719,10 +4724,6 @@ msgstr "LayerZero scan"
 msgid "Borrow fee"
 msgstr "차입 수수료"
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Trade ${0} to unlock {1} status +{2}"
-msgstr ""
-
 #: src/lib/copyElementAsImage.ts
 msgid "Image copied to clipboard"
 msgstr ""
@@ -4731,6 +4732,7 @@ msgstr ""
 msgid "Swap impact"
 msgstr "스왑 영향"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
 #: src/pages/PointsPage/components/TierCardsSection.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Activity Boost"
@@ -4892,10 +4894,6 @@ msgstr "여는 중..."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeFi margin protocol"
 msgstr "DeFi 증거금 프로토콜"
-
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Start trading →"
-msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Fee"
@@ -5156,6 +5154,10 @@ msgstr "<0>GMX는 전통적인 주문장과 달리 동적으로 균형 잡힌 �
 msgid "Read more"
 msgstr "더 알아보기"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Unlock boosts and increase your rewards."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Earn {0}% more rewards with this action"
 msgstr "이 작업으로 {0}% 더 많은 보상을 받으십시오"
@@ -5163,6 +5165,10 @@ msgstr "이 작업으로 {0}% 더 많은 보상을 받으십시오"
 #: src/components/Seo/SEO.tsx
 msgid "Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks"
 msgstr "Arbitrum, Ethereum 및 기타 네트워크에서 지갑으로 직접 최대 100배 레버리지 무기한 선물 거래 및 현물 거래를 이용하십시오"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Volume this epoch: <0>${0}</0>"
+msgstr ""
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Sell fee"
@@ -5429,6 +5435,10 @@ msgstr "시프팅은 {chainNames} 또는 {lastChainName}에서만 가능합니�
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "GMX Staked: <0>{0}</0>"
 msgstr ""
 
 #: src/pages/PointsPage/components/FaqSection.tsx
@@ -6045,6 +6055,7 @@ msgstr "추천"
 
 #: src/components/Referrals/traders/HowToStartSaving.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+#: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Start trading"
 msgstr ""
 
@@ -6085,10 +6096,6 @@ msgstr "TP 가격이 기준가 초과"
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price"
 msgstr "{typeString} Short Limit: 가격이 조건가 이상일 때 숏 포지션을 {0}합니다"
-
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Buy GMX +"
-msgstr ""
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
@@ -6134,6 +6141,7 @@ msgid "{balanceFormatted} remaining in old 1CT subaccount"
 msgstr "기존 1CT 서브계정에 {balanceFormatted} 잔여"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/pages/PointsPage/components/TierCardsSection.tsx
 #: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Stake GMX"
 msgstr ""
@@ -7935,10 +7943,6 @@ msgstr "GMX 승인"
 msgid "{fromText} to {toExecutionText}"
 msgstr "{fromText}에서 {toExecutionText}로"
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Stake more GMX to get {0} +{1}"
-msgstr ""
-
 #: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Available to Claim"
 msgstr ""
@@ -9278,11 +9282,6 @@ msgstr "익스프레스 + 원클릭"
 msgid "Lifetime Volume"
 msgstr ""
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Applies next epoch"
-msgstr ""
-
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "GM tokens represent shares in a liquidity pool for a single GMX market. Buy GM to provide liquidity and earn fees from leverage trading, swaps, and market-making activity on that specific market. All rewards are auto-compounded."
 msgstr "GM 토큰은 단일 GMX 시장의 유동성 풀 지분을 나타냅니다. GM을 구매하여 유동성을 제공하고 해당 시장의 레버리지 거래, 스왑, 마켓 메이킹 활동에서 발생하는 수수료를 받으십시오. 모든 보상은 자동으로 재투자됩니다."
@@ -9594,10 +9593,6 @@ msgstr "거래 유형"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Increase"
 msgstr "증가"
-
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Volume this epoch:"
-msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
@@ -10380,6 +10375,10 @@ msgstr "{orderText} 취소 중…"
 msgid "Re-sign"
 msgstr "재서명"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Trade ${0} to unlock {1} status <0>+{2}</0>"
+msgstr ""
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to GMX Account..."
 msgstr "GMX Account에 입금 중..."
@@ -10892,6 +10891,7 @@ msgid "Request Market Decrease"
 msgstr "시장 감소 요청"
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
+#: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Volume Tier"
 msgstr ""
 
@@ -11100,10 +11100,6 @@ msgstr "사용 가능:"
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Realized base PnL"
 msgstr "실현 기본 PnL"
-
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Unlock activity boosts and increase your rewards."
-msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "limit"

@@ -77,7 +77,7 @@ export function TierLevelsSection({ config, currentEpochStats, effectiveVolumeTi
         onChange={setActiveTab}
         className="px-20"
         tabsWrapperClassName="gap-16"
-        regularOptionClassname="!px-0 text-24 !pb-18"
+        regularOptionClassname="!px-0 text-16 !pb-14 lg:text-24 lg:!pb-18"
       />
 
       <div>
@@ -89,7 +89,7 @@ export function TierLevelsSection({ config, currentEpochStats, effectiveVolumeTi
           </button>
         </p>
 
-        <div className="mt-16">
+        <div className="mt-16 px-12 pb-12">
           {activeTab === "volume" && (
             <VolumeTiersTable config={config} currentTier={effectiveVolumeTier ?? currentEpochStats?.volumeTier} />
           )}
@@ -130,7 +130,7 @@ function VolumeTiersTable({ config, currentTier }: { config?: IncentivesConfig; 
         {config?.volumeTiers.map((tier) => {
           const isActive = currentTier === tier.tier;
           return (
-            <TableTr key={tier.tier}>
+            <TableTr key={tier.tier} className="overflow-hidden rounded-8">
               <TableTd padding="compact">
                 <span className="flex items-center gap-8 font-medium">
                   <VolumeTierIcon tierId={tier.tier} active={isActive} />

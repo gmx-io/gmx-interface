@@ -212,9 +212,14 @@ const config: Config = {
           "0%": { transform: "translateX(0)" },
           "100%": { transform: "translateX(-50%)" },
         },
+        "banner-glow": {
+          "0%": { backgroundPosition: "25% 28%" },
+          "100%": { backgroundPosition: "75% 30%" },
+        },
       },
       animation: {
         marquee: "marquee 20s linear infinite",
+        "banner-glow": "banner-glow 8s ease-in-out infinite alternate",
       },
     },
   },

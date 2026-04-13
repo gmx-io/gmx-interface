@@ -2489,6 +2489,7 @@ msgid "Set Long Limit @ {0}"
 msgstr "Set Long Limit @ {0}"
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
+#: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Staking Tier"
 msgstr "Staking Tier"
 
@@ -3751,6 +3752,10 @@ msgstr "Earned Rewards"
 msgid "Decreasing..."
 msgstr "Decreasing..."
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Stake more GMX to get {0} <0>+{1}</0>"
+msgstr "Stake more GMX to get {0} <0>+{1}</0>"
+
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Claim successful"
 msgstr "Claim successful"
@@ -4719,10 +4724,6 @@ msgstr "LayerZero scan"
 msgid "Borrow fee"
 msgstr "Borrow fee"
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Trade ${0} to unlock {1} status +{2}"
-msgstr "Trade ${0} to unlock {1} status +{2}"
-
 #: src/lib/copyElementAsImage.ts
 msgid "Image copied to clipboard"
 msgstr "Image copied to clipboard"
@@ -4731,6 +4732,7 @@ msgstr "Image copied to clipboard"
 msgid "Swap impact"
 msgstr "Swap impact"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
 #: src/pages/PointsPage/components/TierCardsSection.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Activity Boost"
@@ -4892,10 +4894,6 @@ msgstr "Opening..."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeFi margin protocol"
 msgstr "DeFi margin protocol"
-
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Start trading →"
-msgstr "Start trading →"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Fee"
@@ -5156,6 +5154,10 @@ msgstr "<0>GMX executes trades against a dynamically balanced liquidity pool, un
 msgid "Read more"
 msgstr "Read more"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Unlock boosts and increase your rewards."
+msgstr "Unlock boosts and increase your rewards."
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Earn {0}% more rewards with this action"
 msgstr "Earn {0}% more rewards with this action"
@@ -5163,6 +5165,10 @@ msgstr "Earn {0}% more rewards with this action"
 #: src/components/Seo/SEO.tsx
 msgid "Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks"
 msgstr "Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Volume this epoch: <0>${0}</0>"
+msgstr "Volume this epoch: <0>${0}</0>"
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Sell fee"
@@ -5430,6 +5436,10 @@ msgstr "Shifting only available on {chainNames} or {lastChainName}. Switch netwo
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Transferring a referral code"
 msgstr "Transferring a referral code"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "GMX Staked: <0>{0}</0>"
+msgstr "GMX Staked: <0>{0}</0>"
 
 #: src/pages/PointsPage/components/FaqSection.tsx
 msgid "How do multipliers work?"
@@ -6045,6 +6055,7 @@ msgstr "Recommended"
 
 #: src/components/Referrals/traders/HowToStartSaving.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+#: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Start trading"
 msgstr "Start trading"
 
@@ -6085,10 +6096,6 @@ msgstr "TP price above mark price"
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price"
 msgstr "{typeString} Short Limit: {0} a short position when the price is above the trigger price"
-
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Buy GMX +"
-msgstr "Buy GMX +"
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
@@ -6134,6 +6141,7 @@ msgid "{balanceFormatted} remaining in old 1CT subaccount"
 msgstr "{balanceFormatted} remaining in old 1CT subaccount"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/pages/PointsPage/components/TierCardsSection.tsx
 #: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Stake GMX"
 msgstr "Stake GMX"
@@ -7935,10 +7943,6 @@ msgstr "Approve GMX"
 msgid "{fromText} to {toExecutionText}"
 msgstr "{fromText} to {toExecutionText}"
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Stake more GMX to get {0} +{1}"
-msgstr "Stake more GMX to get {0} +{1}"
-
 #: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Available to Claim"
 msgstr "Available to Claim"
@@ -9278,11 +9282,6 @@ msgstr "Express + One-Click"
 msgid "Lifetime Volume"
 msgstr "Lifetime Volume"
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Applies next epoch"
-msgstr "Applies next epoch"
-
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "GM tokens represent shares in a liquidity pool for a single GMX market. Buy GM to provide liquidity and earn fees from leverage trading, swaps, and market-making activity on that specific market. All rewards are auto-compounded."
 msgstr "GM tokens represent shares in a liquidity pool for a single GMX market. Buy GM to provide liquidity and earn fees from leverage trading, swaps, and market-making activity on that specific market. All rewards are auto-compounded."
@@ -9594,10 +9593,6 @@ msgstr "ACTION"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Increase"
 msgstr "Increase"
-
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Volume this epoch:"
-msgstr "Volume this epoch:"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
@@ -10380,6 +10375,10 @@ msgstr "Cancelling {orderText}..."
 msgid "Re-sign"
 msgstr "Re-sign"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Trade ${0} to unlock {1} status <0>+{2}</0>"
+msgstr "Trade ${0} to unlock {1} status <0>+{2}</0>"
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to GMX Account..."
 msgstr "Depositing to GMX Account..."
@@ -10892,6 +10891,7 @@ msgid "Request Market Decrease"
 msgstr "Request Market Decrease"
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
+#: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Volume Tier"
 msgstr "Volume Tier"
 
@@ -11100,10 +11100,6 @@ msgstr "Available:"
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Realized base PnL"
 msgstr "Realized base PnL"
-
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Unlock activity boosts and increase your rewards."
-msgstr "Unlock activity boosts and increase your rewards."
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "limit"
