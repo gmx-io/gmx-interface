@@ -1,11 +1,13 @@
-import { defineConfig, devices } from "@playwright/experimental-ct-react";
 import { lingui } from "@lingui/vite-plugin";
+import { defineConfig, devices } from "@playwright/experimental-ct-react";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { fileURLToPath } from "url";
 import svgr from "vite-plugin-svgr";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+const chromiumExecutablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH;
 
 export default defineConfig({
   testDir: "./src",
@@ -54,7 +56,12 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
-      use: { ...devices["Desktop Chrome"] },
+      use: {
+        ...devices["Desktop Chrome"],
+        ...(chromiumExecutablePath && {
+          launchOptions: { executablePath: chromiumExecutablePath },
+        }),
+      },
     },
   ],
 });

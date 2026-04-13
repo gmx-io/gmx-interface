@@ -27,7 +27,7 @@ import { helperToast } from "lib/helperToast";
 import { StakingProcessedData } from "lib/legacy";
 import { formatAmount, formatAmountFree, formatUsd, limitDecimals, numberWithCommas, parseValue } from "lib/numbers";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -341,7 +341,7 @@ export function StakeModal(props: {
 
   const primaryText = useMemo(() => {
     if (hasOutdatedUi) {
-      return t`Page outdated. Refresh`;
+      return getPageOutdatedError();
     }
 
     if (activeTab === "stake") {

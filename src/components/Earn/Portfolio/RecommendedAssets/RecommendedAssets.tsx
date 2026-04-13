@@ -3,6 +3,7 @@ import cx from "classnames";
 import { ReactNode, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
+import { isDepositDisabledMarket } from "config/static/markets";
 import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
 import {
   getGlvOrMarketAddress,
@@ -77,12 +78,14 @@ const getRecommendedGms = ({
   glvsToShow,
   marketTokensData,
   performance,
+  chainId,
 }: {
   hasGmxAssets: boolean;
   marketsInfoData: { [marketAddress: string]: GlvOrMarketInfo };
   glvsToShow: GlvInfo[];
   marketTokensData: TokensData;
   performance: PerformanceData;
+  chainId: number;
 }) => {
   let count = 4;
 
@@ -114,6 +117,7 @@ const getRecommendedGms = ({
 
       return (
         !info.isDisabled &&
+        !isDepositDisabledMarket(chainId, info.marketTokenAddress) &&
         totalPoolUsd >= MIN_LIQUIDITY_USD &&
         typeof poolPerformance !== "undefined" &&
         poolPerformance > 0n
@@ -154,8 +158,9 @@ export function RecommendedAssets({
       glvsToShow,
       marketTokensData,
       performance,
+      chainId,
     });
-  }, [hasGmxAssets, marketsInfoData, glvsToShow, marketTokensData, performance]);
+  }, [hasGmxAssets, marketsInfoData, glvsToShow, marketTokensData, performance, chainId]);
 
   const [isBuyGmxModalVisible, setIsBuyGmxModalVisible] = useState(false);
 

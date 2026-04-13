@@ -18,4 +18,4 @@ export type EditingOrderState = {
   source: EditingOrderSource;
 };
 
-export type EditingOrderSource = "PositionsList" | "PriceChart" | "TPSLModal";
+export type EditingOrderSource = "PositionsList" | "PriceChart" | "OrdersModal";

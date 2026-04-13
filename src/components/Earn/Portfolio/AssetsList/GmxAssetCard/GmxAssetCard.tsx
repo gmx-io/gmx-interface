@@ -168,8 +168,8 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
   );
 
   return (
-    <div>
-      <div className="flex flex-col rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-16">
+    <div className="h-full">
+      <div className="flex h-full flex-col rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-16">
         <div className="flex items-start justify-between gap-12">
           <div className="flex items-center gap-12">
             <img src={gmxIcon} alt="GMX" className="size-40" />
@@ -216,19 +216,14 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
                 <Trans>Accumulating</Trans>
               </span>
             ) : displayProjectedRewardGmx !== undefined ? (
-              <div className="flex items-baseline gap-8">
-                <span className="text-h3 font-bold numbers">
-                  {formatAmount(displayProjectedRewardGmx, 18, 0, true)} GMX
-                  {accumulatedGmxUsd !== undefined ? (
-                    <>
-                      {" "}
-                      <span className="text-body-medium font-normal text-typography-secondary">
-                        ({formatUsd(accumulatedGmxUsd)})
-                      </span>
-                    </>
-                  ) : null}
-                </span>
-              </div>
+              <span className="text-h3 block font-bold numbers">
+                {formatAmount(displayProjectedRewardGmx, 18, 2, true)} GMX{" "}
+                {accumulatedGmxUsd !== undefined && (
+                  <span className="text-body-medium relative -top-2 font-normal text-typography-secondary">
+                    ({formatUsd(accumulatedGmxUsd)})
+                  </span>
+                )}
+              </span>
             ) : (
               <span className="text-h3 font-bold text-typography-secondary">—</span>
             )}
@@ -243,9 +238,7 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
 
         <StakingPowerAlerts stakingPowerData={stakingPowerData} />
 
-        <div className="mt-12 border-t-1/2 border-slate-600" />
-
-        <div className="mt-12 flex flex-col gap-8">
+        <div className="mt-12 flex grow flex-col gap-8">
           <SyntheticsInfoRow
             label={<Trans>Staked GMX</Trans>}
             value={
@@ -268,7 +261,8 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
               />
             }
           />
-          <div className="mt-4 grid grid-cols-2 gap-8">
+          <div className="grow" />
+          <div className="grid grid-cols-2 gap-8">
             <Button variant="secondary" onClick={handleOpenGmxStakeModal} className="whitespace-nowrap">
               <DownloadIcon className="size-16 shrink-0" />
               <Trans>Stake GMX</Trans>
@@ -377,12 +371,14 @@ function StakingPowerAlerts({ stakingPowerData }: { stakingPowerData: StakingPow
 
   const loyaltyActive = isLoyaltyTrackingActive(stakingPowerData.loyaltyTrackingStart);
   const hasBeenReset = stakingPowerData.powerResetCount > 0;
+  const hasPower = stakingPowerData.cumulativePower > 0n;
+  const showLoyalty = loyaltyActive && stakingPowerData.loyaltyRatio !== null;
 
-  if (!loyaltyActive && !hasBeenReset) return null;
+  if (!showLoyalty && !hasBeenReset && !hasPower) return null;
 
   return (
-    <div className="mt-12 flex flex-col gap-8">
-      {loyaltyActive && stakingPowerData.loyaltyRatio !== null && (
+    <div className="mt-8 flex flex-col gap-8">
+      {showLoyalty && (
         <SyntheticsInfoRow
           label={
             <Tooltip
@@ -396,10 +392,26 @@ function StakingPowerAlerts({ stakingPowerData }: { stakingPowerData: StakingPow
             />
           }
           value={
-            <span className={cx("numbers", { "text-red-500": stakingPowerData.loyaltyRatio < 0.85 })}>
-              {(Math.min(stakingPowerData.loyaltyRatio, 1) * 100).toFixed(1)}%
+            <span className={cx("numbers", { "text-red-500": stakingPowerData.loyaltyRatio! < 0.85 })}>
+              {(Math.min(stakingPowerData.loyaltyRatio!, 1) * 100).toFixed(1)}%
             </span>
           }
+        />
+      )}
+      {hasPower && (
+        <SyntheticsInfoRow
+          label={
+            <Tooltip
+              handle={<Trans>Staking power</Trans>}
+              content={
+                <Trans>
+                  Staking power accrues over time based on your staked GMX balance and determines your share of
+                  buyback rewards.
+                </Trans>
+              }
+            />
+          }
+          value={<span className="numbers">{formatAmount(stakingPowerData.cumulativePower, 18, 0, true)}</span>}
         />
       )}
       {hasBeenReset && (

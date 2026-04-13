@@ -11,6 +11,7 @@ import {
 } from "config/chains";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { getMappedTokenId } from "config/multichain";
+import { isDepositDisabledMarket, isShiftIntoDisabledMarket } from "config/static/markets";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
 import {
   GlvInfo,
@@ -30,6 +31,7 @@ import { TokenData, TokensData, TokensRatio, getIsEquivalentTokens } from "domai
 import { DUST_USD, isAddressZero } from "lib/legacy";
 import { PRECISION, adjustForDecimals, expandDecimals, formatAmount, formatUsd, roundWithDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { getPageOutdatedError } from "lib/useHasOutdatedUi";
 import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import { bigMath } from "sdk/utils/bigmath";
 import {
@@ -84,7 +86,7 @@ export function getCommonError(p: { chainId: number; isConnected: boolean; hasOu
   }
 
   if (hasOutdatedUi) {
-    return { buttonErrorMessage: t`Page outdated. Refresh` };
+    return { buttonErrorMessage: getPageOutdatedError() };
   }
 
   if (!isConnected) {
@@ -369,7 +371,10 @@ export function getIncreaseError(p: {
     numberOfParts > 0 &&
     (collateralUsd === undefined ? undefined : collateralUsd / BigInt(numberOfParts) < minTwapPartSize)
   ) {
-    return { buttonErrorMessage: t`Min margin per part: ${formatUsd(minTwapPartSize)}` };
+    const actualMarginPerPart = collateralUsd! / BigInt(numberOfParts);
+    return {
+      buttonErrorMessage: t`Margin per part: ${formatUsd(actualMarginPerPart, { roundMode: "floor" })} (min ${formatUsd(minTwapPartSize)})`,
+    };
   }
 
   if (
@@ -387,7 +392,7 @@ export function getIncreaseError(p: {
       : nextPositionValues?.nextCollateralUsd;
 
   if (roundedNextCollateralUsd === undefined ? undefined : roundedNextCollateralUsd < _minCollateralUsd) {
-    return { buttonErrorMessage: t`Min collateral: ${formatUsd(_minCollateralUsd)}` };
+    return { buttonErrorMessage: t`Min margin: ${formatUsd(_minCollateralUsd)}` };
   }
 
   if (sizeDeltaUsd <= 0) {
@@ -602,7 +607,7 @@ export function getDecreaseError(p: {
         : nextPositionValues.nextCollateralUsd < (minCollateralUsd ?? 0n))
     ) {
       return {
-        buttonErrorMessage: t`Leftover collateral below ${formatAmount(minCollateralUsd, USD_DECIMALS, 2)} USD`,
+        buttonErrorMessage: t`Leftover margin below ${formatAmount(minCollateralUsd, USD_DECIMALS, 2)} USD`,
       };
     }
   }
@@ -789,6 +794,10 @@ export function getGmSwapError(p: {
     return { buttonErrorMessage: t`Loading...` };
   }
 
+  if (isDeposit && isDepositDisabledMarket(chainId, marketInfo.marketTokenAddress)) {
+    return { buttonErrorMessage: t`Buying GM is disabled for this market` };
+  }
+
   const glvTooltipMessage = glvInfo
     ? t`GM: ${marketInfo.name} buyable cap reached in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}]. Choose a different pool, reduce size, or pick a different token composition.`
     : undefined;
@@ -962,6 +971,7 @@ export function getGmSwapError(p: {
 }
 
 export function getGmShiftError({
+  chainId,
   fromMarketInfo,
   fromToken,
   fromTokenAmount,
@@ -974,6 +984,7 @@ export function getGmShiftError({
   fees,
   priceImpactUsd,
 }: {
+  chainId: number;
   fromMarketInfo: MarketInfo | undefined;
   fromToken: TokenData | undefined;
   fromTokenAmount: bigint | undefined;
@@ -990,6 +1001,10 @@ export function getGmShiftError({
 
   if (!fromMarketInfo || !fromToken || !toMarketInfo || !toToken) {
     return { buttonErrorMessage: t`Loading...` };
+  }
+
+  if (!isGlv && isShiftIntoDisabledMarket(chainId, toMarketInfo.marketTokenAddress)) {
+    return { buttonErrorMessage: t`Shifting into this market is disabled` };
   }
 
   if (priceImpactUsd !== undefined && priceImpactUsd > 0) {

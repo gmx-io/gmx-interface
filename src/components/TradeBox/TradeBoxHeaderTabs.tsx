@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo } from "react";
 import { useHistory } from "react-router-dom";
@@ -7,9 +8,12 @@ import { selectTradeboxState } from "context/SyntheticsStateContext/selectors/tr
 import {
   selectTradeboxLeverageFieldValue,
   selectTradeboxLeverageSliderMarks,
+  selectTradeboxLeverageTooltipEnabled,
+  selectTradeboxResultingPositionLeverage,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { formatLeverage } from "domain/synthetics/positions/utils";
 import { TradeType } from "domain/synthetics/trade";
 import { useLocalizedMap } from "lib/i18n";
 
@@ -38,6 +42,15 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
   const leverageFieldValue = useSelector(selectTradeboxLeverageFieldValue);
   const { isIncrease, isPosition, isMarket, isLimit, isTwap } = useSelector(selectTradeboxTradeFlags);
   const isLeverageSliderEnabled = useSelector(selectIsLeverageSliderEnabled);
+  const leverageTooltipEnabled = useSelector(selectTradeboxLeverageTooltipEnabled);
+  const resultingPositionLeverage = useSelector(selectTradeboxResultingPositionLeverage);
+
+  const leverageTooltipContent = useMemo(() => {
+    if (!leverageTooltipEnabled) return undefined;
+
+    const formattedLeverage = formatLeverage(resultingPositionLeverage) ?? "-";
+    return <Trans>Leverage for the current order. Resulting position leverage: {formattedLeverage}</Trans>;
+  }, [leverageTooltipEnabled, resultingPositionLeverage]);
 
   const onTradeTypeChange = useCallback(
     (type: TradeType) => {
@@ -81,6 +94,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
           value={leverageFieldValue}
           onChange={setLeverageOption}
           disabled={!isLeverageSliderEnabled}
+          tooltipContent={leverageTooltipContent}
         />
       ) : null}
 
@@ -102,7 +116,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
   const swapFields = <SwapSlippageField disabled={isLimit || isTwap} />;
 
   const fieldsRow = (
-    <div className="h-40 rounded-t-8 border-b-1/2 border-b-slate-600 bg-slate-900 px-12 py-8">
+    <div className="h-42 rounded-t-8 bg-slate-900 px-12 py-8 pb-12">
       {isSwap ? swapFields : isPosition ? positionFields : null}
     </div>
   );
@@ -117,7 +131,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
   return (
     <>
       {isInCurtain && !isCurtainOpen ? null : fieldsRow}
-      <div className={cx("flex gap-8 bg-slate-900", isInCurtain && !isCurtainOpen ? "p-8" : "p-12")}>
+      <div className={cx("flex gap-8 bg-slate-900", isInCurtain && !isCurtainOpen ? "p-8" : "px-12")}>
         <div className="flex grow items-stretch gap-12">
           <Tabs
             options={longShortTabsOptions}

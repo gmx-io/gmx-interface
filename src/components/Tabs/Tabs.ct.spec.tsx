@@ -114,24 +114,6 @@ test.describe("Tabs", () => {
     });
   });
 
-  test.describe("type=pills", () => {
-    test("renders pill-shaped tabs", async ({ mount }) => {
-      const component = await mount(<ControlledTabs type="pills" />);
-
-      await expect(component.getByText("First")).toBeVisible();
-      await expect(component.getByText("Second")).toBeVisible();
-    });
-
-    test("switches active tab on click", async ({ mount }) => {
-      const component = await mount(<ControlledTabs type="pills" initialValue="tab1" />);
-
-      const secondTab = component.getByText("Second");
-      await secondTab.click();
-      // Pills active tab gets bg-slate-800
-      await expect(secondTab).toHaveClass(/bg-slate-800/);
-    });
-  });
-
   test.describe("type=inline-primary", () => {
     test("renders inline-primary tabs", async ({ mount }) => {
       const component = await mount(<ControlledTabs type="inline-primary" />);

@@ -11,7 +11,10 @@ import { formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
-import { MultichainBalanceTooltip } from "components/MultichainBalanceTooltip/MultichainBalanceTooltip";
+import {
+  MultichainBalanceTooltip,
+  useHasMultichainBreakdown,
+} from "components/MultichainBalanceTooltip/MultichainBalanceTooltip";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TooltipPosition } from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -54,17 +57,16 @@ export const GmTokensBalanceInfo = ({
     );
 
   const symbol = isGlv ? "GLV" : "GM";
+  const hasChainBalances = useHasMultichainBreakdown(multichainBalances);
   const multichainBalanceTooltip = useMemo(() => {
-    if (balanceUsd === 0n) {
+    if (!hasChainBalances || balanceUsd === 0n) {
       return null;
     }
 
     return (
       <MultichainBalanceTooltip multichainBalances={multichainBalances} symbol={symbol} decimals={token?.decimals} />
     );
-  }, [balanceUsd, multichainBalances, symbol, token?.decimals]);
-
-  const hasChainBalances = multichainBalanceTooltip !== null;
+  }, [hasChainBalances, balanceUsd, multichainBalances, symbol, token?.decimals]);
   const hasFees = earnedTotal !== undefined || earnedRecently !== undefined;
 
   const tooltipContent = useMemo(() => {

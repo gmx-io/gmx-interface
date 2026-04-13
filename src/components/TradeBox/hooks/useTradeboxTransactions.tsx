@@ -16,6 +16,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectSetShouldFallbackToInternalSwap,
+  selectSetShouldForceExternalSwap,
   selectTradeboxAllowedSlippage,
   selectTradeboxCollateralToken,
   selectTradeboxDecreasePositionAmounts,
@@ -106,11 +107,12 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
 
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
+  const setShouldForceExternalSwap = useSelector(selectSetShouldForceExternalSwap);
 
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const triggerPrice = useSelector(selectTradeboxTriggerPrice);
-  const { referralCodeForTxn } = useUserReferralCode(signer, chainId, account);
+  const { referralCodeForTxn } = useUserReferralCode(chainId, account);
 
   const toToken = getByKey(tokensData, toTokenAddress);
 
@@ -337,7 +339,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
             tokensData,
             blockTimestampData,
             jitShiftParamsList: jitLiquidityInfo?.glvShiftParams,
-            // Intentionally excludes JIT — used to determine whether JIT simulation is needed
+            // Excludes JIT — determines whether JIT simulation is needed
             nativeReserveLiquidity,
           },
       callback: makeOrderTxnCallback({
@@ -349,6 +351,11 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
         collateralSymbol,
         onInternalSwapFallback: () => {
           setShouldFallbackToInternalSwap(true);
+          setShouldForceExternalSwap(false);
+        },
+        onExternalSwapFallback: () => {
+          setShouldForceExternalSwap(true);
+          setShouldFallbackToInternalSwap(false);
         },
       }),
     });
@@ -372,6 +379,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     primaryCreateOrderParams,
     provider,
     setShouldFallbackToInternalSwap,
+    setShouldForceExternalSwap,
     shouldDisableValidationForTesting,
     signer,
     slippageInputId,

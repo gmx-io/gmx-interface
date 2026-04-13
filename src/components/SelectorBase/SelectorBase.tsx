@@ -8,7 +8,7 @@ import React, {
   ReactNode,
   useCallback,
   useContext,
-  useLayoutEffect,
+  useEffect,
   useMemo,
   useRef,
   useState,
@@ -34,8 +34,6 @@ type Props = PropsWithChildren<{
   label: ReactNode | string | undefined;
   modalLabel: string;
   disabled?: boolean;
-  popoverXOffset?: number;
-  popoverYOffset?: number;
   mobileModalContentPadding?: boolean;
   popoverPlacement?: Placement;
   footerContent?: ReactNode;
@@ -170,14 +168,7 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
   const buttonRef = useRef<HTMLElement | null>(null);
 
   const { refs, floatingStyles } = useFloating({
-    middleware: [
-      offset({
-        mainAxis: props.popoverYOffset ?? 8,
-        crossAxis: props.popoverXOffset ?? 0,
-      }),
-      flip(),
-      shift(),
-    ],
+    middleware: [offset(4), flip(), shift()],
     placement: props.popoverPlacement ?? "bottom-end",
     whileElementsMounted: autoUpdate,
   });
@@ -194,7 +185,7 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
     [props.popoverReferenceRef, refs]
   );
 
-  useLayoutEffect(() => {
+  useEffect(() => {
     if (props.popoverReferenceRef?.current) {
       refs.setReference(props.popoverReferenceRef.current);
     }
@@ -214,7 +205,6 @@ function SelectorBaseDesktop(props: Props & { qa?: string }) {
         className={cx("SelectorBase-button SelectorBase-button-disabled gap-5", props.handleClassName)}
       >
         <span className="grow overflow-hidden text-ellipsis">{props.label}</span>
-        <ChevronDownIcon className={cx("inline-block size-16 text-typography-secondary", props.chevronClassName)} />
       </div>
     );
   }
@@ -286,7 +276,6 @@ function SelectorBaseMobile(props: Props) {
     return (
       <div className={cx("SelectorBase-button SelectorBase-button-disabled", props.handleClassName)}>
         <span className="overflow-hidden text-ellipsis">{props.label}</span>
-        <ChevronDownIcon className={cx("inline-block size-16 text-typography-secondary", props.chevronClassName)} />
       </div>
     );
   }

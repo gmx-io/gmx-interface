@@ -23,7 +23,7 @@ export function BuybackMetricsHeader({
   const isUnavailable = !isLoading && (!!error || metrics === undefined);
 
   return (
-    <div className="flex gap-28 max-md:grid max-md:grid-cols-2 max-md:gap-12">
+    <div className="flex gap-28 max-md:flex-col max-md:gap-12">
       <MetricItem
         label={<Trans>Total Bought GMX</Trans>}
         tooltip={<Trans>Total amount of GMX bought back since tracking began.</Trans>}
@@ -61,7 +61,7 @@ function MetricItem({
   isUnavailable: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex min-w-0 flex-col gap-4">
       <TooltipWithPortal
         variant="none"
         handle={
@@ -72,7 +72,7 @@ function MetricItem({
         }
         content={tooltip}
       />
-      <div className="flex items-baseline gap-8">
+      <div className="flex flex-wrap items-baseline gap-x-8">
         <span className="text-h2 numbers">{isLoading ? "..." : isUnavailable ? "N/A" : value}</span>
         {subtitle && !isLoading && !isUnavailable && (
           <span className="text-14 font-medium text-typography-secondary numbers">{subtitle}</span>

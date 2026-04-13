@@ -163,9 +163,9 @@ function OrderSize({
 
   function getCollateralLabel() {
     if (isDecreaseOrderType(positionOrder.orderType)) {
-      return t`Collateral delta`;
+      return t`Margin delta`;
     }
-    return t`Collateral`;
+    return t`Margin`;
   }
 
   function getCollateralText() {

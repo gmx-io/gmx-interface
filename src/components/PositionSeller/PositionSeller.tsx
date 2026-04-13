@@ -51,10 +51,16 @@ import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positi
 import { getPositionSellerTradeFlags } from "domain/synthetics/trade";
 import { getTwapRecommendation } from "domain/synthetics/trade/twapRecommendation";
 import { TradeType } from "domain/synthetics/trade/types";
+import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { ORDER_OPTION_TO_TRADE_MODE, OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
-import { getCommonError, getDecreaseError, getExpressError } from "domain/synthetics/trade/utils/validation";
+import {
+  getCommonError,
+  getDecreaseError,
+  getExpressError,
+  takeValidationResult,
+} from "domain/synthetics/trade/utils/validation";
 import { Token } from "domain/tokens";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useChainId } from "lib/chains";
@@ -63,7 +69,14 @@ import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidationErrorMetric } from "lib/metrics/utils";
-import { expandDecimals, formatAmountFree, formatDeltaUsd, formatPercentage, parseValue } from "lib/numbers";
+import {
+  expandDecimals,
+  formatDeltaUsd,
+  formatPercentage,
+  formatTokenAmount,
+  formatUsd,
+  parseValue,
+} from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
@@ -81,28 +94,30 @@ import {
   CreateOrderTxnParams,
   DecreasePositionOrderParams,
 } from "sdk/utils/orderTransactions";
+import { TradeMode } from "sdk/utils/trade";
 import { getIsValidTwapParams } from "sdk/utils/twap";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import { CollateralDestinationSelector } from "components/CollateralDestinationSelector/CollateralDestinationSelector";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { MarginDestinationSelector } from "components/MarginDestinationSelector/MarginDestinationSelector";
 import Modal from "components/Modal/Modal";
+import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
+import { TradeInputField, DisplayMode } from "components/TradeboxMarginFields/TradeInputField";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import InfoCircleIcon from "img/ic_info_circle_stroke.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
-import { CollateralDestinationDialog } from "./CollateralDestinationDialog";
+import { MarginDestinationDialog } from "./MarginDestinationDialog";
 import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
@@ -114,6 +129,7 @@ import { PositionSellerPriceImpactFeesRow } from "./rows/PositionSellerPriceImpa
 import "./PositionSeller.scss";
 
 const PNL_TOOLTIP_THRESHOLD = expandDecimals(10000, USD_DECIMALS);
+const ORDER_OPTIONS = [{ value: OrderOption.Market }, { value: OrderOption.Twap }];
 
 export function PositionSeller() {
   const [, setClosingPositionKey] = useClosingPositionKeyState();
@@ -190,34 +206,28 @@ export function PositionSeller() {
     setDuration,
     setNumberOfParts,
   } = usePositionSeller();
+
+  const closeSize = useCloseSizeInput({
+    positionSizeInUsd: position?.sizeInUsd,
+    positionSizeInTokens: position?.sizeInTokens,
+    indexTokenDecimals: position?.indexToken?.decimals ?? 18,
+    indexTokenSymbol: position?.indexToken?.symbol ?? "",
+    initialPercentage: 100,
+    onCloseSizeUsdChange: setCloseUsdInputValueRaw,
+  });
+
   const tradeMode = ORDER_OPTION_TO_TRADE_MODE[orderOption];
   const tradeType = position ? (position.isLong ? TradeType.Long : TradeType.Short) : undefined;
 
-  const [closeUsdInputValue, setCloseUsdInputValue] = useDebouncedInputValue(
-    closeUsdInputValueRaw,
-    setCloseUsdInputValueRaw
-  );
+  const [closeUsdInputValue] = useDebouncedInputValue(closeUsdInputValueRaw, setCloseUsdInputValueRaw);
 
   const [isWaitingForDebounceBeforeSubmit, setIsWaitingForDebounceBeforeSubmit] = useState(false);
   const [isTwapBannerDismissed, setIsTwapBannerDismissed] = useState(false);
 
   const isMarket = orderOption === OrderOption.Market;
   const closeSizeUsd = parseValue(closeUsdInputValue || "0", USD_DECIMALS) ?? 0n;
-  const maxCloseSize = position?.sizeInUsd || 0n;
 
-  const closePercentage = useMemo(() => {
-    if (maxCloseSize === 0n) return 0;
-    const percentage = Number((closeSizeUsd * 100n) / maxCloseSize);
-    return Math.min(100, Math.max(0, percentage));
-  }, [closeSizeUsd, maxCloseSize]);
-
-  const handleClosePercentageChange = useCallback(
-    (percentage: number) => {
-      const formattedAmount = formatAmountFree((maxCloseSize * BigInt(percentage)) / 100n, USD_DECIMALS, 2);
-      setCloseUsdInputValueRaw(formattedAmount);
-    },
-    [maxCloseSize, setCloseUsdInputValueRaw]
-  );
+  const closePercentage = closeSize.closePercentage;
 
   const setReceiveTokenManually = useCallback(
     (token: Token) => {
@@ -235,15 +245,18 @@ export function PositionSeller() {
     }
   }, [isVisible, settings.receiveToGmxAccount]);
 
+  const closeSizeReset = closeSize.reset;
+
   useEffect(() => {
     if (!isVisible) {
       setIsDestinationDialogVisible(false);
       // timeout to not disturb animation
       setTimeout(() => {
         resetPositionSeller();
+        closeSizeReset();
       }, 200);
     }
-  }, [isVisible, resetPositionSeller]);
+  }, [isVisible, resetPositionSeller, closeSizeReset]);
 
   const markPrice = useSelector(selectPositionSellerMarkPrice);
   const { maxLiquidity: maxSwapLiquidity } = useSelector(selectPositionSellerMaxLiquidityPath);
@@ -464,10 +477,12 @@ export function PositionSeller() {
       numberOfParts,
     });
 
-    if (commonError.buttonErrorMessage || decreaseError.buttonErrorMessage || expressError.buttonErrorMessage) {
+    const validationResult = takeValidationResult(commonError, decreaseError, expressError);
+
+    if (validationResult.buttonErrorMessage) {
       return {
-        error: commonError.buttonErrorMessage || decreaseError.buttonErrorMessage || expressError.buttonErrorMessage,
-        bannerErrorName: expressError.bannerErrorName,
+        error: validationResult.buttonErrorMessage,
+        bannerErrorName: validationResult.bannerErrorName,
       };
     }
 
@@ -749,9 +764,9 @@ export function PositionSeller() {
                 <div className="mb-16">
                   <div className="flex items-center justify-between gap-8">
                     <span className="text-14 text-typography-secondary">
-                      <Trans>Send remaining collateral to</Trans>
+                      <Trans>Send remaining margin to</Trans>
                     </span>
-                    <CollateralDestinationSelector
+                    <MarginDestinationSelector
                       isReceiveToGmxAccount={isReceiveToGmxAccount}
                       onChangeDestination={handleSetIsReceiveToGmxAccount}
                     />
@@ -884,16 +899,33 @@ export function PositionSeller() {
       };
     }
 
+    let submitButtonText: string;
+
+    if (error) {
+      submitButtonText = error;
+    } else if (tradeType !== undefined) {
+      const directionLabel = localizedTradeTypeLabels[tradeType];
+      const isFullClose = decreaseAmounts?.isFullClose ?? false;
+      const actionLabel = isFullClose ? t`Close` : t`Decrease`;
+      const isMarketMode = tradeMode === TradeMode.Market;
+
+      if (isMarketMode) {
+        submitButtonText = `${actionLabel} ${directionLabel}`;
+      } else {
+        const modeLabel = localizedTradeModeLabels[tradeMode];
+        submitButtonText = `${modeLabel}: ${actionLabel} ${directionLabel}`;
+      }
+    } else {
+      submitButtonText = t`Close`;
+    }
+
     return {
-      text:
-        error ||
-        (tradeType !== undefined
-          ? `${localizedTradeModeLabels[tradeMode]}: ${localizedTradeTypeLabels[tradeType]} ${t`Decrease`}`
-          : t`Close`),
+      text: submitButtonText,
       disabled: Boolean(error) && !shouldDisableValidationForTesting,
     };
   }, [
     chainId,
+    decreaseAmounts?.isFullClose,
     error,
     isAllowanceLoaded,
     isApproving,
@@ -911,13 +943,19 @@ export function PositionSeller() {
       <Modal
         isVisible={isVisible}
         setIsVisible={onClose}
-        label={
-          <Trans>
-            {localizedTradeModeLabels[tradeMode]}: {position?.isLong ? t`Long` : t`Short`}{" "}
-            {position?.indexToken && getTokenVisualMultiplier(position.indexToken)}
-            {position?.indexToken?.symbol}/USD decrease
-          </Trans>
-        }
+        label={(() => {
+          if (!position) return t`Close`;
+          const directionLabel = position.isLong ? t`Long` : t`Short`;
+          const tokenLabel = `${position.indexToken ? getTokenVisualMultiplier(position.indexToken) : ""}${position.indexToken?.symbol ?? ""}/USD`;
+          const isFullClose = decreaseAmounts?.isFullClose ?? false;
+          const actionLabel = isFullClose ? t`close` : t`decrease`;
+          const isMarketMode = tradeMode === TradeMode.Market;
+          if (isMarketMode) {
+            return `${directionLabel} ${tokenLabel} ${actionLabel}`;
+          }
+          const modeLabel = localizedTradeModeLabels[tradeMode];
+          return `${modeLabel}: ${directionLabel} ${tokenLabel} ${actionLabel}`;
+        })()}
         qa="position-close-modal"
         contentClassName="w-[380px]"
         contentPadding={false}
@@ -925,27 +963,53 @@ export function PositionSeller() {
         <div className="w-full">
           {position && (
             <>
-              <div className="mt-12 flex flex-col gap-4 border-t-1/2 border-slate-600 px-20 py-16">
+              <div className="px-20 pt-16">
+                <Tabs
+                  type="inline"
+                  options={ORDER_OPTIONS}
+                  selectedValue={orderOption}
+                  onChange={handleSetOrderOption}
+                  qa="close-order-type"
+                />
+              </div>
+              <div className="flex flex-col gap-4 px-20 py-16">
                 <div className="flex flex-col gap-8">
-                  <BuyInputSection
-                    topLeftLabel={t`Close`}
-                    inputValue={closeUsdInputValue}
-                    onInputValueChange={(e) => setCloseUsdInputValue(e.target.value)}
-                    showPercentSelector
-                    onPercentChange={(percentage) => {
-                      const formattedAmount = formatAmountFree(
-                        (maxCloseSize * BigInt(percentage)) / 100n,
-                        USD_DECIMALS,
-                        2
-                      );
-                      setCloseUsdInputValueRaw(formattedAmount);
+                  <TradeInputField
+                    label={t`Close`}
+                    inputValue={closeSize.closeSizeInput}
+                    onInputValueChange={closeSize.handleInputChange}
+                    displayMode={closeSize.showSizeInTokens ? ("token" as DisplayMode) : ("usd" as DisplayMode)}
+                    onDisplayModeChange={(mode: DisplayMode) => {
+                      if ((mode === "token") !== closeSize.showSizeInTokens) {
+                        closeSize.handleSizeToggle();
+                      }
                     }}
+                    tokenSymbol={position?.indexToken?.symbol}
+                    alternateValue={(() => {
+                      if (closeSize.showSizeInTokens) {
+                        return formatUsd(closeSize.closeSizeUsd);
+                      }
+                      if (!position || !toToken || position.sizeInUsd === 0n) return "0";
+                      const closeSizeInTokens = (closeSize.closeSizeUsd * position.sizeInTokens) / position.sizeInUsd;
+                      const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
+                      return formatTokenAmount(closeSizeInTokens / visualMultiplier, toToken.decimals, toToken.symbol);
+                    })()}
+                    rightHeadline={
+                      <button
+                        type="button"
+                        className="flex items-center gap-4 text-typography-secondary hover:text-typography-primary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          closeSize.setMaxCloseSize();
+                        }}
+                      >
+                        {t`Max:`} <span className="numbers">{closeSize.formattedMaxCloseSize}</span>
+                      </button>
+                    }
                     qa="amount-input"
-                    maxDecimals={USD_DECIMALS}
-                  >
-                    {t`USD`}
-                  </BuyInputSection>
-                  <MarginPercentageSlider value={closePercentage} onChange={handleClosePercentageChange} />
+                    maxDecimals={closeSize.showSizeInTokens ? position?.indexToken?.decimals ?? 18 : USD_DECIMALS}
+                  />
+                  <MarginPercentageSlider value={closePercentage} onChange={closeSize.handleSliderChange} />
                 </div>
               </div>
 
@@ -1054,7 +1118,7 @@ export function PositionSeller() {
         </div>
       </Modal>
 
-      <CollateralDestinationDialog
+      <MarginDestinationDialog
         isVisible={isDestinationDialogVisible}
         setIsVisible={setIsDestinationDialogVisible}
         chosenReceiveToGmxAccount={isReceiveToGmxAccount}

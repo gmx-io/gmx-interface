@@ -17,6 +17,7 @@ import {
 import { getJitLiquidityInfo } from "domain/synthetics/jit/utils";
 import {
   getAvailableUsdLiquidityForPosition,
+  getMaxAllowedLeverageByMinCollateralFactor,
   getMaxLeverageByMinCollateralFactor,
   getTradeboxLeverageSliderMarks,
 } from "domain/synthetics/markets";
@@ -98,7 +99,7 @@ export const selectExternalSwapInputs = createSelector((q) => {
     return undefined;
   }
 
-  if (!tradeFlags.isIncrease && !tradeFlags.isSwap) {
+  if (!tradeFlags.isIncrease) {
     return undefined;
   }
 
@@ -125,12 +126,16 @@ export const selectShouldFallbackToInternalSwap = (s: SyntheticsState) => s.exte
 export const selectSetShouldFallbackToInternalSwap = (s: SyntheticsState) =>
   s.externalSwap.setShouldFallbackToInternalSwap;
 
+export const selectShouldForceExternalSwap = (s: SyntheticsState) => s.externalSwap.shouldForceExternalSwap;
+export const selectSetShouldForceExternalSwap = (s: SyntheticsState) => s.externalSwap.setShouldForceExternalSwap;
+
 export const selectExternalSwapQuote = createSelector((q) => {
   const inputs = q(selectExternalSwapInputs);
   const baseOutput = q(selectBaseExternalSwapOutput);
 
   const debugForceExternalSwaps = q(selectDebugForceExternalSwaps);
   const shouldFallbackToInternalSwap = q(selectShouldFallbackToInternalSwap);
+  const shouldForceExternalSwap = q(selectShouldForceExternalSwap);
 
   const tokenIn = q(selectTradeboxFromToken);
   const tokenOut = q(selectTradeboxSelectSwapToToken);
@@ -142,7 +147,7 @@ export const selectExternalSwapQuote = createSelector((q) => {
     !tokenOut ||
     tokenIn.address !== baseOutput.inTokenAddress ||
     tokenOut.address !== baseOutput.outTokenAddress ||
-    shouldFallbackToInternalSwap ||
+    (shouldFallbackToInternalSwap && !shouldForceExternalSwap) ||
     baseOutput.amountIn === 0n
   ) {
     return undefined;
@@ -179,7 +184,7 @@ export const selectExternalSwapQuote = createSelector((q) => {
     inputs?.internalSwapTotalFeesDeltaUsd !== undefined &&
     inputs.internalSwapTotalFeesDeltaUsd > -quote.feesUsd;
 
-  if (isInternalSwapBetter && !debugForceExternalSwaps) {
+  if (isInternalSwapBetter && !debugForceExternalSwaps && !shouldForceExternalSwap) {
     return undefined;
   }
 
@@ -213,8 +218,9 @@ export const selectShouldRequestExternalSwapQuote = createSelector((q) => {
   const isExternalSwapConditionMet = thereIsNoInternalSwap || internalSwapFeesConditionMet;
 
   const debugForceExternalSwaps = q(selectDebugForceExternalSwaps);
+  const shouldForceExternalSwap = q(selectShouldForceExternalSwap);
 
-  return debugForceExternalSwaps || (isExternalSwapsEnabled && isExternalSwapConditionMet);
+  return shouldForceExternalSwap || debugForceExternalSwaps || (isExternalSwapsEnabled && isExternalSwapConditionMet);
 });
 
 const selectExternalSwapInputsByFromValue = createSelector((q) => {
@@ -1157,6 +1163,19 @@ const selectTradeboxExistingLimitOrder = createSelector((q) => {
 export const selectTradeboxHasExistingLimitOrder = createSelector((q) => !!q(selectTradeboxExistingLimitOrder));
 export const selectTradeboxHasExistingPosition = createSelector((q) => !!q(selectTradeboxSelectedPosition));
 
+export const selectTradeboxResultingPositionLeverage = createSelector((q) => {
+  const nextValues = q(selectTradeboxNextPositionValuesForIncrease);
+  return nextValues?.nextLeverage;
+});
+
+export const selectTradeboxLeverageTooltipEnabled = createSelector((q) => {
+  const isLeverageSliderEnabled = q(selectIsLeverageSliderEnabled);
+  const { isIncrease } = q(selectTradeboxTradeFlags);
+  const hasExistingPosition = q(selectTradeboxHasExistingPosition);
+
+  return !isLeverageSliderEnabled && isIncrease && hasExistingPosition;
+});
+
 export const selectTradeboxTradeRatios = createSelector(function selectTradeboxTradeRatios(q) {
   const { isSwap } = q(selectTradeboxTradeFlags);
 
@@ -1252,8 +1271,13 @@ export const selectTradeboxMaxLeverage = createSelector((q) => {
   return getMaxLeverageByMinCollateralFactor(minCollateralFactor);
 });
 
+export const selectTradeboxMaxAllowedLeverage = createSelector((q) => {
+  const minCollateralFactor = q((s) => s.tradebox.marketInfo?.minCollateralFactor);
+  return getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor);
+});
+
 export const selectTradeboxLeverageSliderMarks = createSelector((q) => {
-  const maxAllowedLeverage = q(selectTradeboxMaxLeverage);
+  const maxAllowedLeverage = q(selectTradeboxMaxAllowedLeverage);
   return getTradeboxLeverageSliderMarks(maxAllowedLeverage);
 });
 

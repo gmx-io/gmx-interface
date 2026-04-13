@@ -1,7 +1,7 @@
 import cx from "classnames";
 import range from "lodash/range";
 import { Handle, SliderTooltip } from "rc-slider";
-import { forwardRef, useCallback, useEffect, useMemo } from "react";
+import { forwardRef, useCallback, useMemo } from "react";
 
 import { DEFAULT_LEVERAGE, DEFAULT_LEVERAGE_MARKS } from "components/LeverageField/LeverageField";
 import { Slider } from "components/Slider";
@@ -87,14 +87,6 @@ const LeverageSliderHandle = forwardRef<Handle, HandleProps>(function LeverageSl
   { value, dragging, index, displayValue, ...restProps },
   ref
 ) {
-  useEffect(() => {
-    if (dragging) {
-      document.body.classList.add("dragging");
-    } else {
-      document.body.classList.remove("dragging");
-    }
-  }, [dragging]);
-
   return (
     <SliderTooltip
       prefixCls="rc-slider-tooltip"

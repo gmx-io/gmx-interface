@@ -10,11 +10,11 @@ const VARIANTS: Variants = {
 const TRANSITION = {
   opacity: {
     duration: 0.25,
-    ease: "easeInOut",
+    ease: "easeInOut" as const,
   },
   y: {
     duration: 0.25,
-    ease: "easeInOut",
+    ease: "easeInOut" as const,
   },
 };
 

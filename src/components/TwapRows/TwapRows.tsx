@@ -117,7 +117,8 @@ const TwapRows = ({
 };
 
 const FrequencyField = ({ duration, numberOfParts }: { duration: TwapDuration; numberOfParts: number }) => {
-  const seconds = numberOfParts ? Math.round(((duration.hours * 60 + duration.minutes) * 60) / numberOfParts) : 0;
+  const seconds =
+    numberOfParts > 1 ? Math.round(((duration.hours * 60 + duration.minutes) * 60) / (numberOfParts - 1)) : 0;
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(seconds / 3600);
 

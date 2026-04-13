@@ -37,7 +37,7 @@ export const CONTRACTS = {
     PositionRouter: "0xb87a436B93fFE9D75c5cFA7bAcFff96430b09868",
 
     UniswapGmxEthPool: "0x80A9ae39310abf666A87C743d6ebBD0E8C42158E",
-    ReferralStorage: "0xe6fab3f0c7199b0d34d7fbe83394fc0e0d06e99d",
+    ReferralStorage: "0xe6fab3F0c7199b0d34d7FbE83394fc0e0D06e99d",
 
     // Synthetics
     DataStore: "0xFD70de6b91282D8017aA4E741e9Ae325CAb992d8",
@@ -72,7 +72,7 @@ export const CONTRACTS = {
 
     // External
     ExternalHandler: "0x389CEf541397e872dC04421f166B5Bc2E0b374a5",
-    OpenOceanRouter: "0x6352a56caadC4F1E25CD6c75970Fa768A3304e64",
+    KyberSwapRouter: "0x6131B5fae19EA4f9D964eAc0408E4408b66337b5",
     Multicall: "0xe79118d6D92a4b23369ba356C90b9A7ABf1CB961",
     ArbitrumNodeInterface: "0x00000000000000000000000000000000000000C8",
     LayerZeroEndpoint: "0x1a44076050125825900e736c501f859c50fE728c",
@@ -148,7 +148,7 @@ export const CONTRACTS = {
 
     // External
     ExternalHandler: "0xD149573a098223a9185433290a5A5CDbFa54a8A9",
-    OpenOceanRouter: "0x6352a56caadC4F1E25CD6c75970Fa768A3304e64",
+    KyberSwapRouter: "0x6131B5fae19EA4f9D964eAc0408E4408b66337b5",
     Multicall: "0x50474CAe810B316c294111807F94F9f48527e7F8",
     ArbitrumNodeInterface: zeroAddress,
     LayerZeroEndpoint: "0x1a44076050125825900e736c501f859c50fE728c",
@@ -189,7 +189,7 @@ export const CONTRACTS = {
 
     // External
     ExternalHandler: "0x36b906eA6AE7c74aeEE8cDE66D01B3f1f8843872",
-    OpenOceanRouter: zeroAddress,
+    KyberSwapRouter: zeroAddress,
     Multicall: "0x4BaA24f93a657f0c1b4A0Ffc72B91011E35cA46b",
     LayerZeroEndpoint: "0x6F475642a6e85809B1c36Fa62763669b1b48DD5B",
     ArbitrumNodeInterface: zeroAddress,
@@ -267,7 +267,7 @@ export const CONTRACTS = {
 
     // External
     ExternalHandler: "0xa7EE2737249e0099906cB079BCEe85f0bbd837d4",
-    OpenOceanRouter: zeroAddress,
+    KyberSwapRouter: "0x6131B5fae19EA4f9D964eAc0408E4408b66337b5",
     Multicall: "0xF516BC01c50eebdBad4d7E506c8f690ae8EAFc52",
     LayerZeroEndpoint: "0x6F475642a6e85809B1c36Fa62763669b1b48DD5B",
     ArbitrumNodeInterface: zeroAddress,
@@ -377,7 +377,7 @@ export const CONTRACTS = {
     ClaimHandler: "0x01D68cf13B8f67b041b8D565931e1370774cCeBd",
 
     // External
-    OpenOceanRouter: zeroAddress,
+    KyberSwapRouter: zeroAddress,
     ExternalHandler: "0x0d9F90c66C392c4d0e70EE0d399c43729B942512",
     Multicall: "0x966D1F5c54a714C6443205F0Ec49eEF81F10fdfD",
     ArbitrumNodeInterface: zeroAddress,
@@ -431,7 +431,7 @@ export const CONTRACTS = {
     BN_GMX: zeroAddress,
     USDG: zeroAddress,
     ES_GMX_IOU: zeroAddress,
-    OpenOceanRouter: zeroAddress,
+    KyberSwapRouter: zeroAddress,
     Vault: zeroAddress,
     PositionRouter: zeroAddress,
     RewardRouter: zeroAddress,

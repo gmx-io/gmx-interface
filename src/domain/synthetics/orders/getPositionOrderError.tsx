@@ -81,6 +81,10 @@ export function getPositionOrderError({
       return t`Enter a new size or price`;
     }
 
+    if (existingPosition && sizeDeltaUsd > existingPosition.sizeInUsd) {
+      return t`Max close amount exceeded`;
+    }
+
     if (existingPosition?.liquidationPrice) {
       if (existingPosition.isLong && triggerPrice <= existingPosition?.liquidationPrice) {
         return t`Trigger price below liquidation price`;

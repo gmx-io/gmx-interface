@@ -34,6 +34,45 @@
   justify-content: flex-end;
 }
 
+.PositionItem-actions-cell {
+  position: sticky;
+  right: 0;
+  z-index: 10;
+  background: var(--color-slate-900);
+
+  &::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    right: 100%;
+    width: 16px;
+    background: linear-gradient(90deg, rgba(18, 20, 33, 0) 0%, #121421 100%);
+    border-right: 1px solid var(--color-slate-600);
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.2s;
+  }
+}
+
+.is-scrollable-right .PositionItem-actions-cell::before {
+  opacity: 1;
+}
+
+tbody > tr:nth-child(odd) > .PositionItem-actions-cell {
+  background: linear-gradient(var(--color-fill-surfaceElevated50), var(--color-fill-surfaceElevated50)),
+    var(--color-slate-900);
+}
+
+.TableTr_hoverable:nth-child(even):hover > .PositionItem-actions-cell {
+  background: linear-gradient(var(--color-fill-surfaceElevated50), var(--color-fill-surfaceElevated50)),
+    linear-gradient(var(--color-fill-surfaceHover), var(--color-fill-surfaceHover)), var(--color-slate-900);
+}
+
+.TableTr_hoverable:nth-child(odd):hover > .PositionItem-actions-cell {
+  background: linear-gradient(var(--color-fill-surfaceHover), var(--color-fill-surfaceHover)), var(--color-slate-900);
+}
+
 @media (max-width: 800px) {
   .PositionItem-collateral-tooltip {
     .Tooltip-popup {

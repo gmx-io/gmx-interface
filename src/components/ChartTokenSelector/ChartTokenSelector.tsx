@@ -5,6 +5,7 @@ import React, { useCallback, useMemo, useState } from "react";
 import type { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";
+import { PROMOTED_TOKENS_ORDER } from "config/promotedTokens";
 import type { SortDirection } from "context/SorterContext/types";
 import { selectAvailableChartTokens } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -732,7 +733,14 @@ function tokenSortingComparatorBuilder({
     const bAddress = convertTokenAddress(chainId, b.address, "wrapped");
 
     if (orderBy === "unspecified" || direction === "unspecified") {
-      // Tokens are already sorted by pool size
+      const promoted = PROMOTED_TOKENS_ORDER[chainId];
+      if (promoted) {
+        const aIdx = promoted.indexOf(a.address);
+        const bIdx = promoted.indexOf(b.address);
+        if (aIdx !== -1 && bIdx !== -1) return aIdx - bIdx;
+        if (aIdx !== -1) return -1;
+        if (bIdx !== -1) return 1;
+      }
       return 0;
     }
 

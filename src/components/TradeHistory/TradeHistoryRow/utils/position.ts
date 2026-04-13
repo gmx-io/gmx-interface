@@ -649,7 +649,7 @@ export const formatPositionMessage = (
         "",
         t`Liquidated as max leverage of ${formattedMaxLeverage} was exceeded when accounting for fees.`,
         "",
-        infoRow(t`Initial collateral`, formattedInitialCollateral!),
+        infoRow(t`Initial margin`, formattedInitialCollateral!),
         infoRow(t`PnL`, {
           text: formattedBasePnl,
           state: numberToState(tradeAction.basePnlUsd!),
@@ -667,8 +667,8 @@ export const formatPositionMessage = (
           state: "error",
         }),
         "",
-        infoRow(t`Min. required collateral`, formattedMinCollateral),
-        infoRow(t`Collateral at liquidation`, formattedLeftoverCollateral),
+        infoRow(t`Min. required margin`, formattedMinCollateral),
+        infoRow(t`Margin at liquidation`, formattedLeftoverCollateral),
         "",
         ...priceImpactLines,
         infoRow(t`Liquidation fee`, {
@@ -676,7 +676,7 @@ export const formatPositionMessage = (
           state: "error",
         }),
         "",
-        infoRow(t`Returned collateral`, formattedReturnedCollateral)
+        infoRow(t`Returned margin`, formattedReturnedCollateral)
       ),
       isActionError: true,
       pnl: formattedPnl,

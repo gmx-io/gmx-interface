@@ -208,7 +208,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
           <TooltipWithPortal
             position="left-start"
             variant="iconStroke"
-            content={<Trans>Blockchain gas fee (not GMX-specific). Doesn't impact your collateral.</Trans>}
+            content={<Trans>Blockchain gas fee (not GMX-specific). Doesn't impact your margin.</Trans>}
           >
             <Trans>Network fee</Trans>
           </TooltipWithPortal>
@@ -224,7 +224,7 @@ export function NetworkFeeRow({ executionFee, gasPaymentParams, isAdditionOrders
         <TooltipWithPortal
           position="left-start"
           variant="iconStroke"
-          content={<Trans>Blockchain gas fee (not GMX-specific). Doesn't impact your collateral.</Trans>}
+          content={<Trans>Blockchain gas fee (not GMX-specific). Doesn't impact your margin.</Trans>}
         >
           <Trans>Network fee</Trans>
         </TooltipWithPortal>

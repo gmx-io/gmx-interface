@@ -283,7 +283,7 @@ describe("TradeHistoryRow helpers", () => {
           "Liquidated as max leverage of 0.0x was exceeded when accounting for fees.",
           "",
           {
-            "key": "Initial collateral",
+            "key": "Initial margin",
             "value": "214.78 USDC ($ 214.78)",
           },
           {
@@ -316,11 +316,11 @@ describe("TradeHistoryRow helpers", () => {
           },
           "",
           {
-            "key": "Min. required collateral",
+            "key": "Min. required margin",
             "value": "< $ 0.01",
           },
           {
-            "key": "Collateral at liquidation",
+            "key": "Margin at liquidation",
             "value": "$ 83.95",
           },
           "",
@@ -340,7 +340,7 @@ describe("TradeHistoryRow helpers", () => {
           },
           "",
           {
-            "key": "Returned collateral",
+            "key": "Returned margin",
             "value": "$ 66.08",
           },
         ],

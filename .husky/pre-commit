@@ -3,7 +3,7 @@ set -e
 . "$(dirname "$0")/_/husky.sh"
 
 # Step 1: Start independent tasks in parallel
-yarn lingui:generate &
+yarn lingui:prepare &
 LINGUI_PID=$!
 
 yarn build-sdk &

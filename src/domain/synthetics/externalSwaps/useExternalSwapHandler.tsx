@@ -9,7 +9,9 @@ import {
   selectExternalSwapQuote,
   selectSetBaseExternalSwapOutput,
   selectSetShouldFallbackToInternalSwap,
+  selectSetShouldForceExternalSwap,
   selectShouldFallbackToInternalSwap,
+  selectShouldForceExternalSwap,
   selectTradeboxAllowedSlippage,
   selectTradeboxFromTokenAddress,
   selectTradeboxSelectSwapToToken,
@@ -39,6 +41,8 @@ export function useExternalSwapHandler() {
   const externalSwapQuote = useSelector(selectExternalSwapQuote);
   const shouldFallbackToInternalSwap = useSelector(selectShouldFallbackToInternalSwap);
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
+  const shouldForceExternalSwap = useSelector(selectShouldForceExternalSwap);
+  const setShouldForceExternalSwap = useSelector(selectSetShouldForceExternalSwap);
 
   const enabled = useExternalSwapsEnabled();
 
@@ -78,8 +82,7 @@ export function useExternalSwapHandler() {
         return;
       }
 
-      // Keep the last successful quote while a refreshed quote is loading.
-      // Clearing it mid-refresh causes the UI to flap back to internal swap pricing.
+      // Keep last quote while refresh is loading to avoid flapping to internal swap pricing
       if (!quote) {
         return;
       }
@@ -106,10 +109,21 @@ export function useExternalSwapHandler() {
       const isLastOrderExecuted =
         orderStatusesValues.length > 0 && orderStatusesValues.every((os) => os.executedTxnHash);
 
-      if (isLastOrderExecuted && shouldFallbackToInternalSwap) {
-        setShouldFallbackToInternalSwap(false);
+      if (isLastOrderExecuted) {
+        if (shouldFallbackToInternalSwap) {
+          setShouldFallbackToInternalSwap(false);
+        }
+        if (shouldForceExternalSwap) {
+          setShouldForceExternalSwap(false);
+        }
       }
     },
-    [orderStatuses, shouldFallbackToInternalSwap, setShouldFallbackToInternalSwap]
+    [
+      orderStatuses,
+      shouldFallbackToInternalSwap,
+      setShouldFallbackToInternalSwap,
+      shouldForceExternalSwap,
+      setShouldForceExternalSwap,
+    ]
   );
 }

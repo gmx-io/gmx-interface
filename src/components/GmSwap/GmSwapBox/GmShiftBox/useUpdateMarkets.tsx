@@ -8,6 +8,7 @@ import { getByKey } from "lib/objects";
 import { getShiftAvailableRelatedMarkets } from "./getShiftAvailableRelatedMarkets";
 
 export function useUpdateMarkets({
+  chainId,
   glvAndMarketsInfoData,
   selectedGlvOrMarketAddress,
   shiftAvailableGlvOrMarkets,
@@ -17,6 +18,7 @@ export function useUpdateMarkets({
   selectedMarketInfo,
   setToMarketAddress,
 }: {
+  chainId: number;
   glvAndMarketsInfoData: GlvAndGmMarketsInfoData | undefined;
   selectedGlvOrMarketAddress: string | undefined;
   shiftAvailableGlvOrMarkets: GlvOrMarketInfo[];
@@ -63,6 +65,7 @@ export function useUpdateMarkets({
 
       if (!isToMarketValid) {
         const someAvailableMarket = getShiftAvailableRelatedMarkets({
+          chainId,
           marketsInfoData: glvAndMarketsInfoData,
           sortedMarketsInfoByIndexToken: shiftAvailableGlvOrMarkets,
           marketTokenAddress: newSelectedGlvOrMarketAddress,
@@ -76,6 +79,7 @@ export function useUpdateMarkets({
       }
     },
     [
+      chainId,
       glvAndMarketsInfoData,
       onSelectGlvOrMarket,
       selectedGlvOrMarketAddress,

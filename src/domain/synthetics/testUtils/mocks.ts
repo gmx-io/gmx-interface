@@ -116,7 +116,7 @@ const MOCK_TXN_DATA = {
 
 export function mockExternalSwapQuote(overrides: Partial<ExternalSwapQuote> = {}): ExternalSwapQuote {
   return {
-    aggregator: ExternalSwapAggregator.OpenOcean,
+    aggregator: ExternalSwapAggregator.KyberSwap,
     inTokenAddress: getTokenBySymbol(AVALANCHE, "BTC").address,
     outTokenAddress: getTokenBySymbol(AVALANCHE, "USDC").address,
     receiver: "0x1234567890123456789012345678901234567890",

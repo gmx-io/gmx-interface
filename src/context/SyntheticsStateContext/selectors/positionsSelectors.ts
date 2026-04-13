@@ -7,7 +7,7 @@ export const selectPositionsInfoDataSortedByMarket = createSelector((q) => {
   const marketsSortMap = q(selectTradeboxMarketsSortMap);
 
   const positions = Object.values(positionsInfoData || {});
-  const sortedPositions = positions.sort((a, b) => {
+  const sortedPositions = [...positions].sort((a, b) => {
     const aMarketIdx = marketsSortMap[a.market.indexTokenAddress];
     const bMarketIdx = marketsSortMap[b.market.indexTokenAddress];
 

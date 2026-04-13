@@ -191,7 +191,7 @@ export function LeaderboardAccountsTable({
                     capital required for rankings.
                     <br />
                     <br />
-                    Capital = max(sum of collateral of open positions - realized PnL + starting pending PnL).
+                    Capital = max(sum of margin of open positions - realized PnL + starting pending PnL).
                   </Trans>
                 }
                 tooltipPosition="bottom-start"

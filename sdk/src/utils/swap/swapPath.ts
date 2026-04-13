@@ -1,4 +1,5 @@
-import { MarketConfig, MARKETS } from "configs/markets";
+import type { ContractsChainId } from "configs/chains";
+import { DISABLED_SWAP_ROUTE_MARKETS, MarketConfig, MARKETS } from "configs/markets";
 import { convertTokenAddress, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import { GasLimitsConfig } from "utils/fees/types";
 import { LRUCache } from "utils/LruCache";
@@ -95,7 +96,10 @@ export const createFindSwapPath = (params: {
       ? getTokenSwapPathsForTokenPairPrebuilt(chainId, wrappedFromAddress, wrappedToAddress)
       : [];
 
-  const finalDisabledMarkets = [...(disabledMarkets ?? [])];
+  const finalDisabledMarkets = [
+    ...(disabledMarkets ?? []),
+    ...(DISABLED_SWAP_ROUTE_MARKETS[chainId as ContractsChainId] ?? []),
+  ];
 
   if (swapPricingType === SwapPricingType.AtomicSwap) {
     const expressSwapUnavailableMarkets = Object.values(marketsInfoData ?? {})

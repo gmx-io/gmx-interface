@@ -14,7 +14,7 @@ import {
   getTriggerDecreaseOrderType,
 } from "domain/synthetics/trade";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { MARKETS } from "sdk/configs/markets";
+import { DISABLED_SWAP_ROUTE_MARKETS, MARKETS } from "sdk/configs/markets";
 import { buildMarketsAdjacencyGraph } from "sdk/utils/swap/buildMarketsAdjacencyGraph";
 import { createFindSwapPath, getWrappedAddress } from "sdk/utils/swap/swapPath";
 import {
@@ -70,31 +70,26 @@ export const selectGasEstimationParams = createSelector((q) => {
   };
 });
 
-export const selectMarketAdjacencyGraph = isDevelopment()
-  ? createSelector((q) => {
-      const chainId = q(selectChainId);
+export const selectMarketAdjacencyGraph = createSelector((q) => {
+  const chainId = q(selectChainId);
 
-      const debugSwapMarketsConfig = q(selectDebugSwapMarketsConfig);
+  const debugDisabled = isDevelopment() ? q(selectDebugSwapMarketsConfig)?.disabledSwapMarkets : undefined;
+  const configDisabled = DISABLED_SWAP_ROUTE_MARKETS[chainId as ContractsChainId];
 
-      if (!debugSwapMarketsConfig?.disabledSwapMarkets?.length) {
-        return getMarketAdjacencyGraph(chainId);
-      }
+  const disabledMarketAddresses = [...(debugDisabled ?? []), ...(configDisabled ?? [])];
 
-      const disabledMarketAddresses = debugSwapMarketsConfig.disabledSwapMarkets;
+  if (!disabledMarketAddresses.length) {
+    return getMarketAdjacencyGraph(chainId);
+  }
 
-      const strippedMarkets = Object.fromEntries(
-        Object.entries(MARKETS[chainId as ContractsChainId]).filter(
-          ([marketAddress]) => !disabledMarketAddresses.includes(marketAddress)
-        )
-      );
+  const strippedMarkets = Object.fromEntries(
+    Object.entries(MARKETS[chainId as ContractsChainId]).filter(
+      ([marketAddress]) => !disabledMarketAddresses.includes(marketAddress)
+    )
+  );
 
-      return buildMarketsAdjacencyGraph(strippedMarkets);
-    })
-  : createSelector((q) => {
-      const chainId = q(selectChainId);
-
-      return getMarketAdjacencyGraph(chainId);
-    });
+  return buildMarketsAdjacencyGraph(strippedMarkets);
+});
 
 const makeSelectWrappedFromAddress = (fromTokenAddress: string | undefined) =>
   createSelector((q) => {

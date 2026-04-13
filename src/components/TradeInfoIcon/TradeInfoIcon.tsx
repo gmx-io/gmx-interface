@@ -6,7 +6,7 @@ import { TradeMode, TradeType } from "sdk/utils/trade/types";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import Tooltip from "components/Tooltip/Tooltip";
 
-import InfoCircleIcon from "img/ic_info_circle.svg?react";
+import InfoCircleIcon from "img/ic_info_circle_stroke.svg?react";
 
 type TradePlace = "tradebox" | "position-seller";
 

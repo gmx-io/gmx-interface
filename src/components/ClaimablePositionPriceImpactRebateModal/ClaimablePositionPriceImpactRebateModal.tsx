@@ -26,7 +26,7 @@ import { metrics } from "lib/metrics";
 import { expandDecimals, formatDeltaUsd, formatTokenAmount } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendExpressTransaction } from "lib/transactions";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { switchNetwork } from "lib/wallets";
 import useWallet from "lib/wallets/useWallet";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
@@ -96,7 +96,7 @@ function ClaimablePositionPriceImpactRebateModalSettlementChain({
     onSubmit?: () => void;
   } = useMemo(() => {
     if (hasOutdatedUi) {
-      return { text: t`Page outdated. Refresh`, disabled: true };
+      return { text: getPageOutdatedError(), disabled: true };
     }
     if (isSubmitting) {
       return { text: t`Claiming...`, disabled: true };
@@ -252,7 +252,7 @@ function ClaimablePositionPriceImpactRebateModalMultichain({
     onSubmit?: () => void;
   } = useMemo(() => {
     if (hasOutdatedUi) {
-      return { text: t`Page outdated. Refresh`, disabled: true };
+      return { text: getPageOutdatedError(), disabled: true };
     }
     if (isSubmitting) {
       return { text: t`Claiming...`, disabled: true };

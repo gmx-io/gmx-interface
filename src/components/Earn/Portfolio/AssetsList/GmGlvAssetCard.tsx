@@ -20,7 +20,10 @@ import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
-import { MultichainBalanceTooltip } from "components/MultichainBalanceTooltip/MultichainBalanceTooltip";
+import {
+  MultichainBalanceTooltip,
+  useHasMultichainBreakdown,
+} from "components/MultichainBalanceTooltip/MultichainBalanceTooltip";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -58,14 +61,15 @@ export function GmGlvAssetCard({
   const balance = multichainMarketTokenBalances?.totalBalance ?? 0n;
   const balanceUsd = multichainMarketTokenBalances?.totalBalanceUsd ?? 0n;
   const symbol = isGlv ? "GLV" : "GM";
+  const hasMultichainBreakdown = useHasMultichainBreakdown(multichainMarketTokenBalances);
 
-  const tooltipContent = (
+  const tooltipContent = hasMultichainBreakdown ? (
     <MultichainBalanceTooltip
       multichainBalances={multichainMarketTokenBalances}
       symbol={symbol}
       decimals={PLATFORM_TOKEN_DECIMALS}
     />
-  );
+  ) : null;
 
   const title = isGlv
     ? getGlvDisplayName(marketInfo)
