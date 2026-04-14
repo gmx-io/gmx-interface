@@ -163,6 +163,15 @@ describe("PointsPromoBanner", () => {
     expect(link.getAttribute("href")).toBe("/points");
   });
 
+  it("clicking the banner link calls setDismissed with true", () => {
+    renderBanner();
+
+    const link = screen.getByRole("link");
+    fireEvent.click(link);
+
+    expect(mockSetDismissed).toHaveBeenCalledWith(true);
+  });
+
   it("dismiss button calls setDismissed with true", () => {
     renderBanner();
 

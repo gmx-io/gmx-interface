@@ -5,7 +5,6 @@ import React, { useMemo } from "react";
 import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
 import {
   BOOST_LABELS,
-  BOOST_DESCRIPTIONS,
   STAKING_TIER_BADGES,
   VOLUME_TIER_BADGES,
   formatMultiplier,
@@ -24,6 +23,7 @@ import BatterySvg from "img/ic_battery.svg?react";
 import BoostSvg from "img/ic_boost.svg?react";
 import StatsSvg from "img/ic_stats.svg?react";
 
+import { getBoostDescription } from "./incentivesText";
 import { VolumeTierIcon, StakingTierIcon, BoostTierIcon } from "./tierIcons";
 
 type Props = {
@@ -167,14 +167,17 @@ function VolumeCard({
 
   const currentTierIndex = tierConfig?.findIndex((t) => t.tier === volumeTier) ?? -1;
   const currentTierConfig = currentTierIndex >= 0 ? tierConfig?.[currentTierIndex] : undefined;
-  const nextTierConfig = tierConfig?.[currentTierIndex + 1] ?? tierConfig?.[0];
+  const nextTierConfig = tierConfig?.[currentTierIndex + 1];
+  const isMaxTier = active && currentTierIndex >= 0 && !nextTierConfig;
 
   const isProjectedDifferent = projectedTierId && projectedTierId !== volumeTier;
   const projectedTierConfig = isProjectedDifferent ? tierConfig?.find((t) => t.tier === projectedTierId) : undefined;
 
-  const targetVolume = active ? nextTierConfig?.threshold : tierConfig?.[0]?.threshold;
-  const progressPercent =
-    targetVolume !== undefined && targetVolume > 0n ? Number((tradedVolume * 100n) / targetVolume) : 0;
+  const currentThreshold = active && currentTierConfig ? currentTierConfig.threshold : 0n;
+  const nextThreshold = active ? nextTierConfig?.threshold : tierConfig?.[0]?.threshold;
+  const range = nextThreshold !== undefined && nextThreshold > currentThreshold ? nextThreshold - currentThreshold : 0n;
+  const volumeAboveCurrent = tradedVolume > currentThreshold ? tradedVolume - currentThreshold : 0n;
+  const progressPercent = isMaxTier ? 100 : range > 0n ? Number((volumeAboveCurrent * 100n) / range) : 0;
   const progressStyle = useMemo(() => ({ width: `${Math.min(progressPercent, 100)}%` }), [progressPercent]);
 
   return (
@@ -224,7 +227,7 @@ function VolumeCard({
                 style={progressStyle}
               />
             </div>
-            {nextTierConfig && (
+            {nextTierConfig && !isMaxTier && (
               <div className="flex items-center gap-4 py-2">
                 <span>
                   <Trans>
@@ -344,7 +347,7 @@ function StakingCard({
                 <DatabaseIcon className="size-12" />
               </a>
             </div>
-            {tierConfig && <StakingProgressBar tiers={tierConfig} currentTier={stakingTier} />}
+            {tierConfig && <StakingProgressBar tiers={tierConfig} currentTier={stakingTier} gmxStaked={gmxStaked} />}
             {nextTierConfig && (
               <div className="flex items-center gap-4 py-2">
                 <span>
@@ -399,17 +402,44 @@ function StakingBanner({ config }: { config?: IncentivesConfig }) {
 function StakingProgressBar({
   tiers,
   currentTier,
+  gmxStaked,
 }: {
   tiers: IncentivesConfig["stakingTiers"];
   currentTier: StakingTierId | null | undefined;
+  gmxStaked: bigint | undefined;
 }) {
   const currentIdx = tiers.findIndex((t) => t.tier === currentTier);
+  const nextIdx = currentIdx + 1;
+
+  const nextTierProgress = useMemo(() => {
+    if (gmxStaked === undefined || nextIdx < 0 || nextIdx >= tiers.length) return 0;
+    const prevThreshold = currentIdx >= 0 ? tiers[currentIdx].threshold : 0n;
+    const nextThreshold = tiers[nextIdx].threshold;
+    const range = nextThreshold - prevThreshold;
+    if (range <= 0n) return 0;
+    const above = gmxStaked > prevThreshold ? gmxStaked - prevThreshold : 0n;
+    return Math.min(Number((above * 100n) / range), 100);
+  }, [gmxStaked, tiers, currentIdx, nextIdx]);
+
+  const nextTierProgressStyle = useMemo(() => ({ width: `${nextTierProgress}%` }), [nextTierProgress]);
 
   return (
     <div className="flex h-6 gap-[3px] rounded-8">
-      {tiers.map((tier, i) => (
-        <div key={tier.tier} className={cx("flex-1 rounded-8", i <= currentIdx ? "bg-blue-300" : "bg-cold-blue-900")} />
-      ))}
+      {tiers.map((tier, i) => {
+        if (i === nextIdx && nextTierProgress > 0) {
+          return (
+            <div key={tier.tier} className="relative flex-1 overflow-hidden rounded-8 bg-cold-blue-900">
+              <div className="absolute left-0 top-0 h-full rounded-8 bg-blue-300" style={nextTierProgressStyle} />
+            </div>
+          );
+        }
+        return (
+          <div
+            key={tier.tier}
+            className={cx("flex-1 rounded-8", i <= currentIdx ? "bg-blue-300" : "bg-cold-blue-900")}
+          />
+        );
+      })}
     </div>
   );
 }
@@ -491,7 +521,7 @@ function BoostsCard({
                         <div className="font-medium">{BOOST_LABELS[boost.boost]()}</div>
                         <div className="text-body-small mt-4">+{formatMultiplier(boost.multiplier)}</div>
                         <div className="text-body-small mt-4 text-typography-secondary">
-                          {BOOST_DESCRIPTIONS[boost.boost]()}
+                          {getBoostDescription(boost.boost, config)}
                         </div>
                       </div>
                     }

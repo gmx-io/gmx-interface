@@ -1,16 +1,34 @@
 import { Trans, t } from "@lingui/macro";
-import { useState } from "react";
+import { ethers } from "ethers";
+import { useCallback, useMemo, useState } from "react";
+import useSWR from "swr";
+import { maxUint256, zeroAddress } from "viem";
 
-import { getEpochDuration } from "domain/synthetics/incentives/constants";
+import type { AnyChainId, ContractsChainId } from "config/chains";
+import { getContract } from "config/contracts";
+import { claimsDisabledKey, claimTermsKey } from "config/dataStore";
+import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
+import { POINTS_REWARDS_DISTRIBUTION_ID } from "domain/synthetics/claims/constants";
 import { useAccountIncentiveDashboard } from "domain/synthetics/incentives/useAccountIncentiveDashboard";
+import { useAccountRewardsHistory } from "domain/synthetics/incentives/useAccountRewardsHistory";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
+import { useTokensAllowanceData } from "domain/synthetics/tokens";
+import { callContract } from "lib/contracts";
+import { contractFetcher } from "lib/contracts/contractFetcher";
+import { helperToast } from "lib/helperToast";
 import { formatAmount } from "lib/numbers";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import useWallet from "lib/wallets/useWallet";
+import { abis } from "sdk/abis";
+import { getTokenBySymbol } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import EarnIcon from "img/ic_earn.svg?react";
+
+import { getCurrentEpochEndTime, useCurrentUnixTimestamp } from "./epochTiming";
 
 type Props = {
   chainId: number;
@@ -20,16 +38,28 @@ type Props = {
 export function SidebarRewards({ chainId, account }: Props) {
   const { data: config } = useIncentivesConfig(chainId);
   const { data: dashboard } = useAccountIncentiveDashboard(chainId, { account });
+  const { data: rewardsHistory } = useAccountRewardsHistory(chainId, { account });
   const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
 
   const rewardsBalance = dashboard?.rewardsBalance;
-  const displayRewards = rewardsBalance ? formatAmount(rewardsBalance, 18, 4, true) : "0.0000";
+  const displayClaimableRewards = rewardsBalance ? formatAmount(rewardsBalance, 18, 4, true) : "0.0000";
   const hasRewards = rewardsBalance !== undefined && rewardsBalance > 0n;
 
-  // Epoch timing is global (from config), not per-user
-  const epochDuration = getEpochDuration(config);
-  const epochEndTime = config ? config.epochTimestamp + epochDuration : 0;
-  const now = Math.floor(Date.now() / 1000);
+  const currentEpochRewards = useMemo(() => {
+    if (!config || !rewardsHistory?.length) return undefined;
+    return rewardsHistory.find((entry) => entry.epoch === config.epochTimestamp)?.rewardsEarned;
+  }, [config, rewardsHistory]);
+
+  const totalEarnedRewards = useMemo(() => {
+    if (!rewardsHistory?.length) return 0n;
+    return rewardsHistory.reduce((acc, entry) => acc + entry.rewardsEarned, 0n);
+  }, [rewardsHistory]);
+
+  const displayEstimatedRewards = currentEpochRewards ? formatAmount(currentEpochRewards, 18, 4, true) : "0.0000";
+  const displayTotalEarnedRewards = totalEarnedRewards ? formatAmount(totalEarnedRewards, 18, 4, true) : "0.0000";
+
+  const now = useCurrentUnixTimestamp();
+  const epochEndTime = getCurrentEpochEndTime(config, now);
   const timeLeft = epochEndTime > now ? formatTimeLeft(epochEndTime - now) : "";
 
   const pointsBalance = dashboard?.pointsBalance;
@@ -40,7 +70,7 @@ export function SidebarRewards({ chainId, account }: Props) {
       <div className="rounded-8 bg-slate-900 p-20">
         <div className="flex flex-col gap-4">
           <div className="flex items-center gap-8">
-            <span className="text-24 font-medium text-typography-primary">{displayRewards} GMX</span>
+            <span className="text-24 font-medium text-typography-primary">{displayClaimableRewards} GMX</span>
           </div>
           <div className="text-body-small flex items-center gap-2 font-medium leading-1 text-typography-secondary">
             <Trans>Claimable rewards</Trans>
@@ -74,6 +104,16 @@ export function SidebarRewards({ chainId, account }: Props) {
           </div>
           <div className="flex items-center justify-between py-4 text-[1.3rem]">
             <span className="flex items-center gap-4 font-medium text-typography-secondary">
+              <Trans>Estimated rewards</Trans>
+              <TooltipWithPortal
+                handle={undefined}
+                content={t`Estimated GMX rewards generated during the current epoch.`}
+              />
+            </span>
+            <span className="text-typography-primary">{displayEstimatedRewards} GMX</span>
+          </div>
+          <div className="flex items-center justify-between py-4 text-[1.3rem]">
+            <span className="flex items-center gap-4 font-medium text-typography-secondary">
               <Trans>Points balance</Trans>
               <TooltipWithPortal
                 handle={undefined}
@@ -84,15 +124,21 @@ export function SidebarRewards({ chainId, account }: Props) {
           </div>
           <div className="flex items-center justify-between py-4 text-[1.3rem]">
             <span className="flex items-center gap-4 font-medium text-typography-secondary">
-              <Trans>Total earn rewards</Trans>
+              <Trans>Total earned rewards</Trans>
               <TooltipWithPortal handle={undefined} content={t`Total rewards earned since the start of the program.`} />
             </span>
-            <span className="text-typography-primary">{displayRewards} GMX</span>
+            <span className="text-typography-primary">{displayTotalEarnedRewards} GMX</span>
           </div>
         </div>
       </div>
 
-      <ClaimModal isOpen={isClaimModalOpen} setIsOpen={setIsClaimModalOpen} displayRewards={displayRewards} />
+      <ClaimModal
+        isOpen={isClaimModalOpen}
+        setIsOpen={setIsClaimModalOpen}
+        displayRewards={displayClaimableRewards}
+        chainId={chainId}
+        account={account}
+      />
     </>
   );
 }
@@ -101,11 +147,238 @@ function ClaimModal({
   isOpen,
   setIsOpen,
   displayRewards,
+  chainId,
+  account,
 }: {
   isOpen: boolean;
   setIsOpen: (val: boolean) => void;
   displayRewards: string;
+  chainId: number;
+  account?: string;
 }) {
+  const { signer } = useWallet();
+  const { setPendingTxns } = usePendingTxns();
+  const hasOutdatedUi = useHasOutdatedUi();
+  const [pendingAction, setPendingAction] = useState<"claim" | "claimAndStake" | "approve" | undefined>();
+  const contractsChainId = chainId as ContractsChainId;
+  const allowanceChainId = chainId as AnyChainId;
+
+  const claimHandlerAddress = getContract(contractsChainId, "ClaimHandler");
+  const dataStoreAddress = getContract(contractsChainId, "DataStore");
+  const rewardRouterAddress = getContract(contractsChainId, "RewardRouter");
+  const stakedGmxTrackerAddress = getContract(contractsChainId, "StakedGmxTracker");
+  const gmxToken = getTokenBySymbol(contractsChainId, "GMX");
+
+  const { data: rawClaimableAmount, mutate: mutateClaimableAmount } = useSWR(
+    isOpen && account
+      ? [
+          `PointsRewardsClaimableAmount:${chainId}:${account}`,
+          chainId,
+          claimHandlerAddress,
+          "getClaimableAmount",
+          account,
+          gmxToken.address,
+          [POINTS_REWARDS_DISTRIBUTION_ID],
+        ]
+      : null,
+    { fetcher: contractFetcher(undefined, "ClaimHandler") }
+  );
+  const { data: claimTerms } = useSWR(
+    isOpen
+      ? [
+          `PointsRewardsClaimTerms:${chainId}:${POINTS_REWARDS_DISTRIBUTION_ID.toString()}`,
+          chainId,
+          dataStoreAddress,
+          "getString",
+          claimTermsKey(POINTS_REWARDS_DISTRIBUTION_ID),
+        ]
+      : null,
+    { fetcher: contractFetcher(undefined, "DataStore") }
+  );
+  const { data: rawClaimsDisabled } = useSWR(
+    isOpen
+      ? [
+          `PointsRewardsClaimsDisabled:${chainId}:${POINTS_REWARDS_DISTRIBUTION_ID.toString()}`,
+          chainId,
+          dataStoreAddress,
+          "getBool",
+          claimsDisabledKey(POINTS_REWARDS_DISTRIBUTION_ID),
+        ]
+      : null,
+    { fetcher: contractFetcher(undefined, "DataStore") }
+  );
+
+  const claimableAmount = rawClaimableAmount !== undefined ? BigInt(rawClaimableAmount) : 0n;
+  const claimsDisabled = Boolean(rawClaimsDisabled);
+  const displayClaimableRewards = claimableAmount > 0n ? formatAmount(claimableAmount, 18, 4, true) : displayRewards;
+
+  const claimParams = useMemo(
+    () => [
+      {
+        token: gmxToken.address,
+        distributionId: POINTS_REWARDS_DISTRIBUTION_ID,
+        termsSignature: "0x",
+        acceptedTerms: claimTerms ?? "",
+      },
+    ],
+    [claimTerms, gmxToken.address]
+  );
+
+  const isStakeSupported = rewardRouterAddress !== zeroAddress && stakedGmxTrackerAddress !== zeroAddress;
+  const { tokensAllowanceData, isLoaded: isStakeAllowanceLoaded } = useTokensAllowanceData(allowanceChainId, {
+    spenderAddress: isStakeSupported ? stakedGmxTrackerAddress : undefined,
+    tokenAddresses: isStakeSupported ? [gmxToken.address] : [],
+    skip: !isOpen || !isStakeSupported,
+  });
+
+  const gmxAllowance = tokensAllowanceData?.[gmxToken.address];
+  const needsStakeApproval =
+    isStakeSupported && claimableAmount > 0n && gmxAllowance !== undefined && claimableAmount > BigInt(gmxAllowance);
+
+  const canClaim = Boolean(account && signer && claimableAmount > 0n && !claimsDisabled && !hasOutdatedUi);
+  const isClaiming = pendingAction === "claim";
+  const isClaimAndStaking = pendingAction === "claimAndStake";
+  const isApproving = pendingAction === "approve";
+
+  const approveGmxForStaking = useCallback(async () => {
+    if (!signer) return;
+
+    setPendingAction("approve");
+    try {
+      const gmxContract = new ethers.Contract(gmxToken.address, abis.Token, signer);
+      const tx = await callContract(chainId, gmxContract, "approve", [stakedGmxTrackerAddress, maxUint256], {
+        sentMsg: t`GMX approval submitted`,
+        failMsg: t`GMX approval failed`,
+        successMsg: t`GMX approved`,
+        setPendingTxns,
+      });
+      await tx.wait();
+    } finally {
+      setPendingAction(undefined);
+    }
+  }, [chainId, gmxToken.address, setPendingTxns, signer, stakedGmxTrackerAddress]);
+
+  const claimRewards = useCallback(async () => {
+    if (!account || !signer || !canClaim) {
+      return;
+    }
+
+    setPendingAction("claim");
+
+    try {
+      const contract = new ethers.Contract(claimHandlerAddress, abis.ClaimHandler, signer);
+      const tx = await callContract(chainId, contract, "acceptTermsAndClaim", [claimParams, account], {
+        sentMsg: t`Claim submitted`,
+        failMsg: t`Claim failed`,
+        successMsg: t`Claim completed`,
+        setPendingTxns,
+      });
+
+      await tx.wait();
+      await mutateClaimableAmount(0n, false);
+      setIsOpen(false);
+    } catch {
+      // Error toasts are handled by callContract.
+    } finally {
+      setPendingAction(undefined);
+    }
+  }, [
+    account,
+    canClaim,
+    chainId,
+    claimHandlerAddress,
+    claimParams,
+    mutateClaimableAmount,
+    setIsOpen,
+    setPendingTxns,
+    signer,
+  ]);
+
+  const claimAndStakeRewards = useCallback(async () => {
+    if (!account || !signer || !canClaim || !isStakeSupported) {
+      return;
+    }
+
+    let didClaim = false;
+
+    try {
+      if (needsStakeApproval) {
+        await approveGmxForStaking();
+      }
+
+      setPendingAction("claimAndStake");
+
+      const gmxContract = new ethers.Contract(gmxToken.address, abis.Token, signer);
+      const balanceBefore = BigInt(await gmxContract.balanceOf(account));
+
+      // ClaimsHandler does not expose a claim+stake path, so the combined action must
+      // sequence the claim and stake contract calls after the claim has settled.
+      const claimHandlerContract = new ethers.Contract(claimHandlerAddress, abis.ClaimHandler, signer);
+      const claimTx = await callContract(chainId, claimHandlerContract, "acceptTermsAndClaim", [claimParams, account], {
+        sentMsg: t`Claim submitted`,
+        failMsg: t`Claim failed`,
+        successMsg: t`Claim completed`,
+        setPendingTxns,
+      });
+
+      await claimTx.wait();
+      didClaim = true;
+      await mutateClaimableAmount(0n, false);
+
+      const balanceAfter = BigInt(await gmxContract.balanceOf(account));
+      const claimedAmount = balanceAfter > balanceBefore ? balanceAfter - balanceBefore : claimableAmount;
+
+      if (claimedAmount <= 0n) {
+        throw new Error("No GMX claimed");
+      }
+
+      const rewardRouterContract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
+      const stakeTx = await callContract(chainId, rewardRouterContract, "stakeGmx", [claimedAmount], {
+        sentMsg: t`Stake submitted`,
+        failMsg: t`Stake failed`,
+        successMsg: t`GMX staked`,
+        setPendingTxns,
+      });
+
+      await stakeTx.wait();
+      setIsOpen(false);
+    } catch {
+      if (didClaim) {
+        setIsOpen(false);
+        helperToast.info(
+          t`GMX was claimed to your wallet. If staking did not complete, you can stake it from the Earn page.`
+        );
+      }
+    } finally {
+      setPendingAction(undefined);
+    }
+  }, [
+    account,
+    approveGmxForStaking,
+    canClaim,
+    chainId,
+    claimHandlerAddress,
+    claimParams,
+    claimableAmount,
+    gmxToken.address,
+    isStakeSupported,
+    mutateClaimableAmount,
+    needsStakeApproval,
+    rewardRouterAddress,
+    setIsOpen,
+    setPendingTxns,
+    signer,
+  ]);
+
+  const claimButtonText = isClaiming ? t`Claiming...` : hasOutdatedUi ? getPageOutdatedError() : t`Claim`;
+  const claimAndStakeButtonText = isApproving
+    ? t`Approving...`
+    : isClaimAndStaking
+      ? t`Claiming + staking...`
+      : hasOutdatedUi
+        ? getPageOutdatedError()
+        : t`Claim + stake`;
+
   return (
     <ModalWithPortal isVisible={isOpen} setIsVisible={setIsOpen} label={t`Claim rewards`}>
       <div className="flex flex-col gap-16 p-16">
@@ -113,23 +386,41 @@ function ClaimModal({
           <span className="text-body-small text-typography-secondary">
             <Trans>Available to Claim</Trans>
           </span>
-          <div className="text-h2 mt-4 font-medium text-typography-primary">{displayRewards} GMX</div>
+          <div className="text-h2 mt-4 font-medium text-typography-primary">{displayClaimableRewards} GMX</div>
           <p className="text-body-small mt-8 text-typography-secondary">
             <Trans>
               Claim your rewards now. You can also stake them instantly to get 5% yield on it and earn even more points.
             </Trans>
           </p>
+          {claimsDisabled ? (
+            <p className="text-body-small mt-8 text-typography-secondary">
+              <Trans>Claims are currently unavailable for this distribution.</Trans>
+            </p>
+          ) : null}
         </div>
 
         <div className="flex flex-col gap-8">
-          <Button variant="primary-action" className="w-full" to="/earn">
-            <Trans>Stake and earn more rewards</Trans>
+          <Button
+            variant="primary-action"
+            className="w-full"
+            disabled={
+              !canClaim ||
+              !isStakeSupported ||
+              !isStakeAllowanceLoaded ||
+              isClaiming ||
+              isClaimAndStaking ||
+              isApproving
+            }
+            onClick={claimAndStakeRewards}
+          >
+            {claimAndStakeButtonText}
           </Button>
           <button
-            className="text-body-medium w-full py-8 text-center text-typography-secondary hover:text-typography-primary"
-            onClick={() => setIsOpen(false)}
+            className="text-body-medium w-full py-8 text-center text-typography-secondary hover:text-typography-primary disabled:cursor-not-allowed disabled:text-typography-secondary/60"
+            disabled={!canClaim || isClaiming || isClaimAndStaking || isApproving}
+            onClick={claimRewards}
           >
-            <Trans>Claim only</Trans>
+            {claimButtonText}
           </button>
         </div>
       </div>

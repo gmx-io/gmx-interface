@@ -155,7 +155,7 @@ export function GmPoolsSelectorForGlvMarket({
         )
       : marketsOptions;
 
-    if (tab === "all") {
+    if (tab === "all" || tab === "incentivized") {
       return textMatched;
     } else if (tab === "favorites") {
       return textMatched?.filter((item) => favoriteTokens?.includes(getGlvOrMarketAddress(item.glvOrMarketInfo)));

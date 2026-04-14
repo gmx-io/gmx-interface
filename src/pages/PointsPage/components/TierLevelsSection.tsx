@@ -5,7 +5,6 @@ import {
   STAKING_TIER_BADGES,
   VOLUME_TIER_BADGES,
   BOOST_LABELS,
-  BOOST_DESCRIPTIONS,
   formatMultiplier,
 } from "domain/synthetics/incentives/constants";
 import type {
@@ -21,6 +20,7 @@ import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table"
 import Tabs from "components/Tabs/Tabs";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import { getBoostDescription, getVolumeTierPersistenceEpochs } from "./incentivesText";
 import { VolumeTierIcon, StakingTierIcon, BoostTierIcon } from "./tierIcons";
 
 type TierTab = "volume" | "staking" | "boosts";
@@ -35,6 +35,7 @@ type Props = {
 export function TierLevelsSection({ config, currentEpochStats, effectiveVolumeTier, effectiveStakingTier }: Props) {
   const [activeTab, setActiveTab] = useState<TierTab>("volume");
   const [showMore, setShowMore] = useState(false);
+  const volumeTierPersistenceEpochs = getVolumeTierPersistenceEpochs(config);
 
   const handleToggleMore = useCallback(() => setShowMore((v) => !v), []);
 
@@ -47,20 +48,23 @@ export function TierLevelsSection({ config, currentEpochStats, effectiveVolumeTi
     []
   );
 
-  const descriptions: Record<TierTab, { short: string; long: string }> = {
-    volume: {
-      short: t`Your Volume Tier is based on how much you trade and determines your points multiplier.`,
-      long: t`Every week, your trading volume places you into a Volume Tier, which is active for 4 weeks. Higher tiers earn more points per dollar of trading fees paid. Volume tiers update automatically each week based on your activity. Trading more consistently helps you stay in higher tiers and earn rewards faster.`,
-    },
-    staking: {
-      short: t`Your Staking Tier boosts your points earnings when you stake GMX.`,
-      long: t`Staking GMX unlocks additional multipliers — the more GMX you stake, the higher your Staking Tier and points multiplier. Staked GMX must remain locked for a minimum period to keep the boost active.`,
-    },
-    boosts: {
-      short: t`Boosts are multipliers earned through specific trading activity.`,
-      long: t`Boosts apply to individual trades and reward specific behaviors, such as trading on new chains or selected markets. Multiple boosts can stack on a single trade, up to a maximum cap. Boosts do not last forever and only apply when the qualifying action is performed.`,
-    },
-  };
+  const descriptions: Record<TierTab, { short: string; long: string }> = useMemo(
+    () => ({
+      volume: {
+        short: t`Your Volume Tier is based on how much you trade and determines your points multiplier.`,
+        long: t`Each epoch, your trading volume places you into a Volume Tier, which stays active for ${volumeTierPersistenceEpochs} epochs. Higher tiers earn more points per dollar of trading fees paid. Volume tiers update automatically after each epoch based on your activity. Trading more consistently helps you stay in higher tiers and earn rewards faster.`,
+      },
+      staking: {
+        short: t`Your Staking Tier boosts your points earnings when you stake GMX.`,
+        long: t`Staking GMX unlocks additional multipliers — the more GMX you stake, the higher your Staking Tier and points multiplier. Staked GMX must remain locked for a minimum period to keep the boost active.`,
+      },
+      boosts: {
+        short: t`Boosts are multipliers earned through specific trading activity.`,
+        long: t`Boosts apply to individual trades and reward specific behaviors, such as trading on new chains or selected markets. Multiple boosts can stack on a single trade, up to a maximum cap. Boosts do not last forever and only apply when the qualifying action is performed.`,
+      },
+    }),
+    [volumeTierPersistenceEpochs]
+  );
 
   return (
     <div className="overflow-hidden rounded-8 bg-slate-900">
@@ -281,7 +285,7 @@ function BoostsTable({ config, activeBoosts }: { config?: IncentivesConfig; acti
                 </span>
               </TableTd>
               <TableTd padding="compact" className="hidden text-typography-primary sm:table-cell">
-                {BOOST_DESCRIPTIONS[boost.boost]()}
+                {getBoostDescription(boost.boost, config)}
               </TableTd>
               <TableTd padding="compact" className="text-primary">
                 +{formatMultiplier(boost.multiplier)}

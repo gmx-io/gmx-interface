@@ -23,6 +23,14 @@ vi.mock("img/ic_staking.svg?react", () => ({
   default: (props: any) => <svg data-testid="staking-icon" {...props} />,
 }));
 
+vi.mock("domain/stake/useStakingProcessedData", () => ({
+  useStakingProcessedData: () => ({
+    data: {
+      gmxInStakedGmx: 50n * 10n ** 18n,
+    },
+  }),
+}));
+
 // Mock TooltipWithPortal to render its handle and content inline
 vi.mock("components/Tooltip/TooltipWithPortal", () => ({
   default: ({ handle, content }: { handle: React.ReactNode; content: React.ReactNode }) => (
@@ -49,6 +57,7 @@ const USD = 10n ** 30n;
 const GMX_DEC = 10n ** 18n;
 
 const mockConfig: IncentivesConfig = {
+  programStartTimestamp: 1699500000,
   epochTimestamp: 1700000000,
   epochStartTimestamp: 1699900000,
   epochDuration: 604800,
@@ -74,7 +83,10 @@ const mockConfig: IncentivesConfig = {
     { boost: "BalancingTrades", multiplier: 50 },
     { boost: "LifetimeTrading", multiplier: 100 },
   ],
+  balancingTradesThreshold: 1_000_000n * USD,
+  lifetimeVolumeThreshold: 200_000_000n * USD,
   volumeDowngradingCoefficients: [],
+  featuredMarketTokens: [],
 };
 
 // ---------------------------------------------------------------------------
@@ -109,16 +121,8 @@ describe("TierCardsSection", () => {
     it("shows first tier multiplier from config", () => {
       renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={undefined} />);
 
-      // multiplier 25 / 100 = 0.3x => formatMultiplier shows "0.3x"
-      // Note: 0.25 rounded via toFixed(1) = "0.3"
-      // Actually: 25/100 = 0.25. toFixed(1) = "0.3"? No, 0.25.toFixed(1) = "0.3"? Let me check.
-      // In JS: (0.25).toFixed(1) = "0.3" -- yes, banker's rounding or just standard rounding
-      // Actually (0.25).toFixed(1) might be "0.3" or "0.2" depending on implementation
-      // The formatMultiplier function: `${(25/100).toFixed(1)}x` = `${0.25.toFixed(1)}x`
-      // 0.25.toFixed(1) = "0.3" in most JS engines (rounds up from 0.25 -> 0.3)
-      // Let's check for the actual output pattern
       const allText = document.body.textContent || "";
-      expect(allText).toContain("0.3x");
+      expect(allText).toContain("0.25x");
     });
 
     it("shows calculated rewards estimate", () => {
@@ -147,15 +151,9 @@ describe("TierCardsSection", () => {
     it("shows first staking tier multiplier from config", () => {
       renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={undefined} />);
 
-      // The staking banner text includes the multiplier.
-      // 25/100 = 0.25 => formatted as "0.3x" or "0.2x"
-      // The text containing "Supporter" should also contain the multiplier
       const allText = document.body.textContent || "";
       expect(allText).toContain("Supporter");
-      // Check for the multiplier label in the staking banner context
-      // The multiplier is "0.3x" (or "0.2x" depending on rounding)
-      // Let's just verify the pattern exists
-      expect(allText).toMatch(/0\.\dx/);
+      expect(allText).toContain("0.25x");
     });
   });
 
@@ -253,9 +251,9 @@ describe("TierCardsSection", () => {
     it("shows boost labels from config when inactive", () => {
       renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={undefined} />);
 
-      expect(screen.getByText("Featured Markets")).toBeDefined();
-      expect(screen.getByText("Balancing Trades")).toBeDefined();
-      expect(screen.getByText("Lifetime Volume")).toBeDefined();
+      expect(screen.getAllByText("Featured Markets").length).toBeGreaterThan(0);
+      expect(screen.getAllByText("Balancing Trades").length).toBeGreaterThan(0);
+      expect(screen.getAllByText("Lifetime Volume").length).toBeGreaterThan(0);
     });
 
     it("shows active boosts count when active", () => {

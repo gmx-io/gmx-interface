@@ -6,6 +6,7 @@ import { formatAmount } from "lib/numbers";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import { getMaxMultiplierLabel, getPointsExpirationEpochs } from "./incentivesText";
 import { TierCardsSection } from "./TierCardsSection";
 
 type Props = {
@@ -31,6 +32,8 @@ export function MainDataSection({
 }: Props) {
   const displayMultiplier = multiplier !== undefined ? formatMultiplier(multiplier) : "0.0x";
   const displayPoints = pointsBalance ? formatAmount(pointsBalance, 18, 4, true) : "0.0000";
+  const maxMultiplierLabel = getMaxMultiplierLabel(config);
+  const pointsExpirationEpochs = getPointsExpirationEpochs(config);
 
   return (
     <div className="flex flex-col gap-8 rounded-8 bg-slate-900 p-12">
@@ -42,7 +45,7 @@ export function MainDataSection({
               variant="iconStroke"
               handleClassName="font-medium text-typography-secondary"
               handle={<Trans>Your Multiplier</Trans>}
-              content={t`Your total multiplier is the sum of your Volume Tier, Staking Tier, and Activity Boosts, capped at 4.0x. A higher multiplier means more points per dollar of trading fees.`}
+              content={t`Your total multiplier is the sum of your Volume Tier, Staking Tier, and Activity Boosts, capped at ${maxMultiplierLabel}. A higher multiplier means more points per dollar of trading fees.`}
             />
           </div>
         </div>
@@ -54,7 +57,7 @@ export function MainDataSection({
               variant="iconStroke"
               handleClassName="font-medium text-typography-secondary"
               handle={<Trans>Points Balance</Trans>}
-              content={t`Points are earned weekly based on trading fees and your multiplier. Points are pegged 1:1 to GMX price and expire after 13 weeks. Points automatically discount up to 50% of your open/close trading fees.`}
+              content={t`Points are earned each epoch based on trading fees and your multiplier. Points are pegged 1:1 to GMX price and expire after ${pointsExpirationEpochs} epochs. Points automatically discount up to 50% of your open/close trading fees.`}
             />
           </div>
         </div>

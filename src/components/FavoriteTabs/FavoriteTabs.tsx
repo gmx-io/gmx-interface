@@ -2,6 +2,7 @@ import cx from "classnames";
 
 import {
   TokenFavoriteKey,
+  TokenFavoritesTabOption,
   tokensFavoritesTabOptionLabels,
   tokensFavoritesTabOptions,
   useTokensFavorites,
@@ -14,18 +15,22 @@ export function FavoriteTabs({
   favoritesKey,
   className,
   activeClassName = "",
+  options,
 }: {
   favoritesKey: TokenFavoriteKey;
   className?: string;
   activeClassName?: string;
+  options?: TokenFavoritesTabOption[];
 }) {
   const { tab, setTab } = useTokensFavorites(favoritesKey);
 
   const localizedTabOptionLabels = useLocalizedMap(tokensFavoritesTabOptionLabels);
 
+  const tabOptions = options ?? tokensFavoritesTabOptions;
+
   return (
     <div className="flex items-center gap-8 whitespace-nowrap">
-      {tokensFavoritesTabOptions.map((option) => (
+      {tabOptions.map((option) => (
         <Button
           key={option}
           type="button"

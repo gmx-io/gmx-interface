@@ -22,6 +22,10 @@ vi.mock("../useAccountIncentiveDashboard", () => ({
   useAccountIncentiveDashboard: vi.fn(),
 }));
 
+vi.mock("../useAccountRewardsHistory", () => ({
+  useAccountRewardsHistory: vi.fn(),
+}));
+
 vi.mock("domain/legacy", () => ({
   useGmxPrice: vi.fn(),
 }));
@@ -43,8 +47,9 @@ import { useTokensDataRequest, convertToUsd, getMidPrice } from "domain/syntheti
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 
-import type { AccountIncentiveDashboard, IncentivesConfig } from "../types";
+import type { AccountIncentiveDashboard, IncentivesConfig, RewardsHistoryEntry } from "../types";
 import { useAccountIncentiveDashboard } from "../useAccountIncentiveDashboard";
+import { useAccountRewardsHistory } from "../useAccountRewardsHistory";
 import { useIncentivesConfig } from "../useIncentivesConfig";
 import { usePersonalizedBannerData } from "../usePersonalizedBannerData";
 
@@ -55,6 +60,7 @@ const mockUseChainId = vi.mocked(useChainId);
 const mockUseWallet = vi.mocked(useWallet);
 const mockUseIncentivesConfig = vi.mocked(useIncentivesConfig);
 const mockUseAccountDashboard = vi.mocked(useAccountIncentiveDashboard);
+const mockUseAccountRewardsHistory = vi.mocked(useAccountRewardsHistory);
 const mockUseGmxPrice = vi.mocked(useGmxPrice);
 const mockUseStakingProcessedData = vi.mocked(useStakingProcessedData);
 const mockUseTokensDataRequest = vi.mocked(useTokensDataRequest);
@@ -88,6 +94,7 @@ const GMX_DEC = 10n ** 18n;
 // Default mock config
 // ---------------------------------------------------------------------------
 const mockConfig: IncentivesConfig = {
+  programStartTimestamp: 1699500000,
   epochTimestamp: 1700000000,
   epochStartTimestamp: 1699900000,
   epochDuration: 604800,
@@ -113,7 +120,10 @@ const mockConfig: IncentivesConfig = {
     { boost: "BalancingTrades", multiplier: 50 },
     { boost: "LifetimeTrading", multiplier: 100 },
   ],
+  balancingTradesThreshold: 1_000_000n * USD,
+  lifetimeVolumeThreshold: 200_000_000n * USD,
   volumeDowngradingCoefficients: [],
+  featuredMarketTokens: [],
 };
 
 const baseDashboard: AccountIncentiveDashboard = {
@@ -141,6 +151,7 @@ function setupDefaults(overrides?: {
   account?: string | undefined;
   config?: IncentivesConfig | undefined;
   dashboard?: AccountIncentiveDashboard | undefined;
+  rewardsHistory?: RewardsHistoryEntry[] | undefined;
   dashboardLoading?: boolean;
   gmxPrice?: bigint | undefined;
   stakingData?: { gmxInStakedGmx?: bigint } | undefined;
@@ -155,6 +166,10 @@ function setupDefaults(overrides?: {
   mockUseAccountDashboard.mockReturnValue({
     data: overrides?.dashboard ?? baseDashboard,
     loading: overrides?.dashboardLoading ?? false,
+  } as any);
+  mockUseAccountRewardsHistory.mockReturnValue({
+    data: overrides?.rewardsHistory ?? [],
+    loading: false,
   } as any);
   mockUseGmxPrice.mockReturnValue({
     gmxPrice: overrides?.gmxPrice ?? 20n * USD,
@@ -195,28 +210,38 @@ describe("usePersonalizedBannerData", () => {
     expect(result.current.hasPersonalizedData).toBe(false);
   });
 
-  it("returns isManuallyRewarded: true when rewardsBalance > 0 and totalRecentVolume === 0", () => {
+  it("returns isManuallyRewarded: true when there are pre-program manual allocation entries", () => {
     const dashboard: AccountIncentiveDashboard = {
       account: "0x1234",
       pointsBalance: 100n * GMX_DEC,
-      rewardsBalance: 500n * USD,
+      rewardsBalance: 0n,
       recentStats: [],
     };
-    setupDefaults({ dashboard });
+    const rewardsHistory: RewardsHistoryEntry[] = [
+      {
+        epoch: mockConfig.programStartTimestamp - mockConfig.epochDuration,
+        volume: 0n,
+        pointsEarned: 25n * GMX_DEC,
+        pointsSpent: 0n,
+        pointsExpired: 0n,
+        rewardsEarned: 0n,
+      },
+    ];
+    setupDefaults({ dashboard, rewardsHistory });
 
     const result = renderHook(() => usePersonalizedBannerData());
 
     expect(result.current.hasPersonalizedData).toBe(true);
     expect(result.current.isManuallyRewarded).toBe(true);
-    expect(result.current.manualBonusUsd).toBe(500n * USD);
+    expect(result.current.manualBonusUsd).toBe(25n * 20n * USD);
   });
 
   it("returns correct manualBonusUsd for manually rewarded users", () => {
-    const bonusAmount = 1234n * USD;
+    const allocatedPoints = 1234n * GMX_DEC;
     const dashboard: AccountIncentiveDashboard = {
       account: "0x1234",
       pointsBalance: 10n * GMX_DEC,
-      rewardsBalance: bonusAmount,
+      rewardsBalance: 0n,
       recentStats: [
         {
           account: "0x1234",
@@ -229,12 +254,22 @@ describe("usePersonalizedBannerData", () => {
         },
       ],
     };
-    setupDefaults({ dashboard });
+    const rewardsHistory: RewardsHistoryEntry[] = [
+      {
+        epoch: mockConfig.programStartTimestamp - mockConfig.epochDuration,
+        volume: 0n,
+        pointsEarned: allocatedPoints,
+        pointsSpent: 0n,
+        pointsExpired: 0n,
+        rewardsEarned: 0n,
+      },
+    ];
+    setupDefaults({ dashboard, rewardsHistory });
 
     const result = renderHook(() => usePersonalizedBannerData());
 
     expect(result.current.isManuallyRewarded).toBe(true);
-    expect(result.current.manualBonusUsd).toBe(bonusAmount);
+    expect(result.current.manualBonusUsd).toBe((allocatedPoints * 20n * USD) / GMX_DEC);
   });
 
   it("calculates recommendedStakeGmx based on wallet size and GMX price", () => {

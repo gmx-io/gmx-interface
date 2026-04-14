@@ -1,15 +1,19 @@
 import { Trans, t } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import { useMemo, useState } from "react";
 
 import { getEpochDuration } from "domain/synthetics/incentives/constants";
 import { useAccountRewardsHistory } from "domain/synthetics/incentives/useAccountRewardsHistory";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
-import { formatAmount, formatUsd } from "lib/numbers";
+import { formatAmount } from "lib/numbers";
 
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import { useCurrentUnixTimestamp } from "./epochTiming";
+import { formatEpochLabel } from "./RewardsHistoryTab.utils";
 
 const PER_PAGE = 10;
 
@@ -19,6 +23,7 @@ type Props = {
 };
 
 export function RewardsHistoryTab({ chainId, account }: Props) {
+  const { i18n } = useLingui();
   const { data: config } = useIncentivesConfig(chainId);
   const { data: history } = useAccountRewardsHistory(chainId, { account });
   const [page, setPage] = useState(1);
@@ -43,7 +48,7 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
   const pageCount = Math.ceil(sortedHistory.length / PER_PAGE);
   const indexFrom = (page - 1) * PER_PAGE;
   const pageData = sortedHistory.slice(indexFrom, indexFrom + PER_PAGE);
-  const now = Math.floor(Date.now() / 1000);
+  const now = useCurrentUnixTimestamp();
 
   if (!account) {
     return (
@@ -98,16 +103,13 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
 
       <div className="rounded-8 bg-slate-900">
         <TableScrollFadeContainer>
-          <table className="w-full min-w-[900px]">
+          <table className="w-full min-w-[720px]">
             <thead>
               <TableTheadTr>
                 <TableTh>{t`Epoch`}</TableTh>
-                <TableTh>{t`Volume`}</TableTh>
                 <TableTh>{t`Earned Points`}</TableTh>
                 <TableTh>{t`Spent Points`}</TableTh>
-                <TableTh>{t`Expired Points`}</TableTh>
-                <TableTh>{t`Points Balance`}</TableTh>
-                <TableTh>{t`Earned Rewards`}</TableTh>
+                <TableTh>{t`Rewards Claimed`}</TableTh>
                 <TableTh>{t`Status`}</TableTh>
               </TableTheadTr>
             </thead>
@@ -119,15 +121,10 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
 
                 return (
                   <TableTr key={entry.epoch}>
-                    <TableTd>{formatEpochRange(entry.epoch, epochDuration)}</TableTd>
-                    <TableTd className="numbers">{formatUsd(entry.volume, { displayDecimals: 0 })}</TableTd>
+                    <TableTd>{formatEpochLabel(entry.epoch, epochDuration, i18n.locale)}</TableTd>
                     <TableTd className="numbers">{formatAmount(entry.pointsEarned, 18, 4, true)}</TableTd>
                     <TableTd className="numbers">{formatAmount(entry.pointsSpent, 18, 4, true)}</TableTd>
-                    <TableTd className="numbers">{formatAmount(entry.pointsExpired, 18, 4, true)}</TableTd>
-                    <TableTd className="numbers">
-                      {formatAmount(entry.pointsEarned - entry.pointsSpent - entry.pointsExpired, 18, 4, true)}
-                    </TableTd>
-                    <TableTd className="numbers">{formatAmount(entry.rewardsEarned, 18, 4, true)} GMX ($0.00)</TableTd>
+                    <TableTd className="numbers">{formatAmount(entry.rewardsEarned, 18, 4, true)} GMX</TableTd>
                     <TableTd>
                       {isCurrentEpoch ? (
                         <span className="text-body-small text-typography-secondary">
@@ -145,7 +142,7 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
               })}
               {!history && (
                 <TableTr>
-                  <TableTd colSpan={8} className="py-16 text-center text-typography-secondary">
+                  <TableTd colSpan={5} className="py-16 text-center text-typography-secondary">
                     <Trans>Loading...</Trans>
                   </TableTd>
                 </TableTr>
@@ -157,14 +154,6 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
       </div>
     </div>
   );
-}
-
-function formatEpochRange(epochTimestamp: number, epochDuration: number): string {
-  const start = new Date(epochTimestamp * 1000);
-  const end = new Date((epochTimestamp + epochDuration) * 1000);
-  const startStr = start.toLocaleDateString(undefined, { month: "short", day: "numeric" });
-  const endStr = end.toLocaleDateString(undefined, { month: "short", day: "numeric" });
-  return `${startStr} – ${endStr}`;
 }
 
 function formatTimeLeft(seconds: number): string {

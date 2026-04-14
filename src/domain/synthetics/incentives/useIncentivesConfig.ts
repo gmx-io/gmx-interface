@@ -9,6 +9,7 @@ import type { IncentivesConfig } from "./types";
 const INCENTIVES_CONFIG_QUERY = gql`
   query CurrentIncentivesConfig {
     currentIncentivesConfig {
+      programStartTimestamp
       epochTimestamp
       epochStartTimestamp
       epochDuration
@@ -32,6 +33,9 @@ const INCENTIVES_CONFIG_QUERY = gql`
         boost
         multiplier
       }
+      balancingTradesThreshold
+      lifetimeVolumeThreshold
+      featuredMarkets
     }
   }
 `;
@@ -51,6 +55,7 @@ export function useIncentivesConfig(chainId: number) {
       if (!config) return undefined;
 
       return {
+        programStartTimestamp: config.programStartTimestamp,
         epochTimestamp: config.epochTimestamp,
         epochStartTimestamp: config.epochStartTimestamp,
         epochDuration: config.epochDuration,
@@ -76,6 +81,8 @@ export function useIncentivesConfig(chainId: number) {
             boost: b.boost,
             multiplier: b.multiplier,
           })),
+        balancingTradesThreshold: BigInt(config.balancingTradesThreshold),
+        lifetimeVolumeThreshold: BigInt(config.lifetimeVolumeThreshold),
         volumeDowngradingCoefficients: config.volumeDowngradingCoefficients
           ? config.volumeDowngradingCoefficients.map(
               (epoch: { epochTimestamp: number; coefficients: { market: string; coefficient: number }[] }) => ({
@@ -87,6 +94,7 @@ export function useIncentivesConfig(chainId: number) {
               })
             )
           : [],
+        featuredMarketTokens: config.featuredMarkets ?? [],
       };
     },
     refreshInterval: 5 * 60_000,

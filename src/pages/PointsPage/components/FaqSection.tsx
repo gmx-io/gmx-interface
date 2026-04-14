@@ -1,9 +1,16 @@
 import { Trans, t } from "@lingui/macro";
 import { useMemo } from "react";
 
+import type { IncentivesConfig } from "domain/synthetics/incentives/types";
+
 import { Faq, FaqItem } from "components/Faq/Faq";
 
-export function FaqSection() {
+import { getMaxMultiplierLabel, getPointsExpirationEpochs } from "./incentivesText";
+
+export function FaqSection({ config }: { config?: IncentivesConfig }) {
+  const maxMultiplierLabel = getMaxMultiplierLabel(config);
+  const pointsExpirationEpochs = getPointsExpirationEpochs(config);
+
   const items: FaqItem[] = useMemo(
     () => [
       {
@@ -11,8 +18,8 @@ export function FaqSection() {
         content: (
           <Trans>
             GMX Points are loyalty rewards earned by trading on GMX. Points are pegged 1:1 to GMX price and are earned
-            weekly based on your trading fees and multiplier. Points automatically discount up to 50% of your open/close
-            trading fees.
+            each epoch based on your trading fees and multiplier. Points automatically discount up to 50% of your
+            open/close trading fees.
           </Trans>
         ),
       },
@@ -20,9 +27,9 @@ export function FaqSection() {
         title: t`How do I earn points?`,
         content: (
           <Trans>
-            Points are earned each epoch (weekly) based on the open/close trading fees you pay, adjusted by your total
+            Points are earned each epoch based on the open/close trading fees you pay, adjusted by your total
             multiplier. Your multiplier is the sum of your Volume Tier, Staking Tier, and any Activity Boosts, capped at
-            4.0x.
+            {maxMultiplierLabel}.
           </Trans>
         ),
       },
@@ -30,8 +37,8 @@ export function FaqSection() {
         title: t`Do points expire?`,
         content: (
           <Trans>
-            Yes, points expire after 13 epochs (approximately 13 weeks). The oldest points are consumed first when
-            applied to fee discounts (FIFO).
+            Yes, points expire after {pointsExpirationEpochs} epochs. The oldest points are consumed first when applied
+            to fee discounts (FIFO).
           </Trans>
         ),
       },
@@ -39,9 +46,9 @@ export function FaqSection() {
         title: t`How do multipliers work?`,
         content: (
           <Trans>
-            Your total multiplier is the sum of three components: Volume Tier (based on weekly trading volume), Staking
-            Tier (based on staked GMX), and Activity Boosts (from specific trading behaviors). The maximum multiplier is
-            4.0x.
+            Your total multiplier is the sum of three components: Volume Tier (based on trading volume during the
+            current epoch), Staking Tier (based on staked GMX), and Activity Boosts (from specific trading behaviors).
+            The maximum multiplier is {maxMultiplierLabel}.
           </Trans>
         ),
       },
@@ -55,7 +62,7 @@ export function FaqSection() {
         ),
       },
     ],
-    []
+    [maxMultiplierLabel, pointsExpirationEpochs]
   );
 
   return <Faq items={items} title={<Trans>FAQ</Trans>} />;

@@ -11,6 +11,7 @@ import useWallet from "lib/wallets/useWallet";
 import { isIncentivesEnabled, MAX_FEE_DISCOUNT_PERCENT } from "./constants";
 import type { IncentivesConfig, StakingTierConfig } from "./types";
 import { useAccountIncentiveDashboard } from "./useAccountIncentiveDashboard";
+import { useAccountRewardsHistory } from "./useAccountRewardsHistory";
 import { useIncentivesConfig } from "./useIncentivesConfig";
 
 // ---------------------------------------------------------------------------
@@ -53,6 +54,7 @@ const FALLBACK_STAKING_TIERS: { threshold: number; bonus: number }[] = [
 
 const USD_DECIMALS = 30;
 const GMX_DECIMALS = 18;
+const GMX_DECIMALS_FACTOR = 10n ** 18n;
 
 /**
  * Number of epochs used for the rolling volume window.
@@ -172,7 +174,7 @@ function computeWalletUsd(tokensData: TokensData | undefined): bigint | undefine
 // ---------------------------------------------------------------------------
 
 export type PersonalizedBannerData = {
-  /** Whether the user has a manually-received bonus (points-balance without recent trading volume). */
+  /** Whether the user has a manual allocation derived from pre-program history entries. */
   isManuallyRewarded: boolean;
   /** The bonus amount in USD (30-decimal bigint) for manually rewarded users. */
   manualBonusUsd: bigint | undefined;
@@ -201,6 +203,10 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
     account,
     enabled,
   });
+  const { data: rewardsHistory } = useAccountRewardsHistory(chainId, {
+    account,
+    enabled,
+  });
 
   const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
 
@@ -223,19 +229,22 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
       return noData;
     }
 
-    // -----------------------------------------------------------------------
-    // Detect "manually rewarded" users: they have a non-zero rewards balance
-    // but zero (or missing) recent traded volume.
-    // -----------------------------------------------------------------------
+    // Manual allocation is derived from pre-launch history entries.
+    const manualAllocatedPoints =
+      config?.programStartTimestamp && rewardsHistory?.length
+        ? rewardsHistory
+            .filter((entry) => entry.epoch < config.programStartTimestamp && entry.volume === 0n)
+            .reduce((sum, entry) => sum + entry.pointsEarned, 0n)
+        : 0n;
+
     const recentStats = dashboard.recentStats ?? [];
     const totalRecentVolume = recentStats.reduce((sum, s) => sum + s.tradedVolume, 0n);
-    const rewardsBalance = dashboard.rewardsBalance;
-    const isManuallyRewarded = rewardsBalance > 0n && totalRecentVolume === 0n;
+    const isManuallyRewarded = manualAllocatedPoints > 0n;
 
     if (isManuallyRewarded) {
       return {
         isManuallyRewarded: true,
-        manualBonusUsd: rewardsBalance,
+        manualBonusUsd: (manualAllocatedPoints * gmxPrice) / GMX_DECIMALS_FACTOR,
         recommendedStakeGmx: undefined,
         estimatedRewardsUsd: undefined,
         hasPersonalizedData: true,
@@ -306,7 +315,7 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
       hasPersonalizedData: true,
       isLoading: false,
     };
-  }, [enabled, dashboard, dashboardLoading, gmxPrice, walletUsd, stakingData, config]);
+  }, [enabled, dashboard, dashboardLoading, gmxPrice, walletUsd, stakingData, config, rewardsHistory]);
 }
 
 /**

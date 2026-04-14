@@ -8,7 +8,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import type { TokenCategory } from "sdk/utils/tokens/types";
 
-export type TokenFavoritesTabOption = "all" | "favorites" | TokenCategory;
+export type TokenFavoritesTabOption = "all" | "favorites" | "incentivized" | TokenCategory;
 export type TokenFavoritesType = "gm" | "index";
 export type TokenFavoriteKey =
   | "chart-token-selector"
@@ -178,6 +178,7 @@ export const tokensFavoritesTabOptionLabels: Record<TokenFavoritesTabOption, Mes
     comment: "Filter option for tokens favorites",
   }),
   favorites: msg`Favorites`,
+  incentivized: msg`Incentivized Markets`,
   meme: msg`Meme`,
   layer1: msg`Layer 1`,
   layer2: msg`Layer 2`,

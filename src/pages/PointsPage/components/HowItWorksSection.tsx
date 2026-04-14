@@ -21,7 +21,7 @@ export function HowItWorksSection() {
             title={
               <span className="flex items-center gap-12">
                 <TradeIcon className="size-20 text-blue-300" />
-                <span className="text-body-medium font-medium">
+                <span className="text-14 font-medium text-typography-primary">
                   <Trans>Trade and Stake</Trans>
                 </span>
               </span>
@@ -43,7 +43,7 @@ export function HowItWorksSection() {
             title={
               <span className="flex items-center gap-12">
                 <EarnIcon className="size-20 text-blue-300" />
-                <span className="text-body-medium font-medium">
+                <span className="text-14 font-medium text-typography-primary">
                   <Trans>Earn Points</Trans>
                 </span>
               </span>
@@ -53,9 +53,9 @@ export function HowItWorksSection() {
           >
             <p className="text-body-small text-typography-secondary">
               <Trans>
-                You earn points every week based on the trading fees you paid and your active multipliers. Your total
+                You earn points each epoch based on the trading fees you paid and your active multipliers. Your total
                 multiplier comes from your volume tier, staking tier, and any applicable boosts. Points are calculated
-                automatically and credited weekly.
+                automatically and credited after each epoch.
               </Trans>
             </p>
           </ExpandableRow>
@@ -66,7 +66,7 @@ export function HowItWorksSection() {
             title={
               <span className="flex items-center gap-12">
                 <DiscountsSvg className="size-20 text-blue-300" />
-                <span className="text-body-medium font-medium">
+                <span className="text-14 font-medium text-typography-primary">
                   <Trans>Claim Rewards</Trans>
                 </span>
               </span>

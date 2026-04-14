@@ -33,7 +33,11 @@ export function PointsPromoBanner() {
 
   return (
     <div className="flex items-center justify-between rounded-8 border-1/2 border-blue-500/30 bg-blue-500/10 px-16 py-12">
-      <Link to="/points" className="text-body-small flex items-center gap-8 font-medium text-typography-primary">
+      <Link
+        to="/points"
+        className="text-body-small flex items-center gap-8 font-medium text-typography-primary"
+        onClick={() => setDismissed(true)}
+      >
         <MultiplierIcon className="size-16 text-green-500" />
         <span>{bannerText}</span>
         <ChevronRightIcon className="size-16 text-typography-secondary" />

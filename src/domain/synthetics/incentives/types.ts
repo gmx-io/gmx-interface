@@ -20,6 +20,7 @@ export type BoostConfig = {
 };
 
 export type IncentivesConfig = {
+  programStartTimestamp: number;
   epochTimestamp: number;
   epochStartTimestamp: number;
   epochDuration: number;
@@ -32,7 +33,10 @@ export type IncentivesConfig = {
   volumeTiers: VolumeTierConfig[];
   stakingTiers: StakingTierConfig[];
   boosts: BoostConfig[];
+  balancingTradesThreshold: bigint;
+  lifetimeVolumeThreshold: bigint;
   volumeDowngradingCoefficients: VolumeDowngradingCoefficientEpoch[];
+  featuredMarketTokens: string[];
 };
 
 export type AccountIncentiveStatus = {

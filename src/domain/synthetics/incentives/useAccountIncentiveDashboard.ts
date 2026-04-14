@@ -4,7 +4,7 @@ import useSWR from "swr";
 
 import { getSubsquidGraphClient } from "lib/indexers";
 
-import type { AccountIncentiveDashboard, BoostId, VolumeTierId, StakingTierId } from "./types";
+import type { AccountIncentiveDashboard, VolumeTierId, StakingTierId } from "./types";
 
 const DASHBOARD_QUERY = gql`
   query AccountIncentiveDashboardState($account: String!) {
@@ -64,12 +64,12 @@ export function useAccountIncentiveDashboard(chainId: number, params: { account?
               volumeTier: (s.volumeTier as VolumeTierId) ?? null,
               stakingTier: (s.stakingTier as StakingTierId) ?? null,
               tradedVolume: BigInt(s.tradedVolume),
-              boostIds: s.boostIds.filter((id: string) => id !== "MultichainTrades") as BoostId[],
+              boostIds: s.boostIds,
             })
           ),
         };
       },
-      refreshInterval: 60_000,
+      refreshInterval: 5_000,
       revalidateOnFocus: false,
     }
   );

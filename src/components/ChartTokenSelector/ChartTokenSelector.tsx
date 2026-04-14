@@ -7,7 +7,11 @@ import type { Address } from "viem";
 import { USD_DECIMALS } from "config/factors";
 import type { SortDirection } from "context/SorterContext/types";
 import { selectAvailableChartTokens } from "context/SyntheticsStateContext/selectors/chartSelectors";
-import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectChainId,
+  selectMarketsInfoData,
+  selectTokensData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectIndexTokenStatsMap } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
   TokenOption,
@@ -20,8 +24,11 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   TokenFavoritesTabOption,
+  tokensFavoritesTabOptions,
   useTokensFavorites,
 } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
+import { isIncentivesEnabled } from "domain/synthetics/incentives/constants";
+import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
 import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
 import { getMarketBaseName, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { IndexTokensStats } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
@@ -53,6 +60,7 @@ import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableSc
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
+import MultiplierSolidIcon from "img/ic_multiplier_solid.svg?react";
 import LongIcon from "img/long.svg?react";
 import ShortIcon from "img/short.svg?react";
 
@@ -161,6 +169,29 @@ function MarketsList() {
   const chooseSuitableMarket = useSelector(selectTradeboxChooseSuitableMarket);
   const tokensData = useSelector(selectTokensData);
 
+  const marketsInfoData = useSelector(selectMarketsInfoData);
+  const incentivesEnabled = isIncentivesEnabled(chainId);
+  const { data: incentivesConfig } = useIncentivesConfig(chainId);
+  const featuredMarketTokens = useMemo(() => {
+    if (!incentivesEnabled || !incentivesConfig?.featuredMarketTokens?.length || !marketsInfoData) {
+      return new Set<string>();
+    }
+    const indexTokenAddresses = new Set<string>();
+    for (const marketAddress of incentivesConfig.featuredMarketTokens) {
+      const marketInfo = marketsInfoData[marketAddress];
+      if (marketInfo?.indexTokenAddress) {
+        indexTokenAddresses.add(marketInfo.indexTokenAddress.toLowerCase());
+      }
+    }
+    return indexTokenAddresses;
+  }, [incentivesEnabled, incentivesConfig, marketsInfoData]);
+
+  const hasFeaturedMarkets = featuredMarketTokens.size > 0;
+  const chartTabOptions = useMemo<TokenFavoritesTabOption[]>(() => {
+    if (!hasFeaturedMarkets) return tokensFavoritesTabOptions;
+    return [...tokensFavoritesTabOptions, "incentivized" as const];
+  }, [hasFeaturedMarkets]);
+
   const { availableChartTokens: options, availableChartTokenAddresses } = useMemo(() => {
     const availableChartTokens = availableTokens?.filter((token) => isChartAvailableForToken(chainId, token.symbol));
     const availableChartTokenAddresses = availableChartTokens?.map((token) => token.address as Address);
@@ -195,6 +226,7 @@ function MarketsList() {
     searchKeyword,
     tab,
     favoriteTokens,
+    featuredMarketTokens,
     direction,
     orderBy,
     tokensData,
@@ -219,9 +251,10 @@ function MarketsList() {
         openInterestLong: indexTokenStatsMap?.[wrappedAddress]?.totalOpenInterestLong,
         openInterestShort: indexTokenStatsMap?.[wrappedAddress]?.totalOpenInterestShort,
         maxLeverage: indexTokenStatsMap?.[wrappedAddress]?.maxUiAllowedLeverage,
+        isFeatured: featuredMarketTokens.has(token.address.toLowerCase()),
       };
     });
-  }, [sortedTokens, chainId, tokensData, dayPriceDeltaMap, dayVolumes, indexTokenStatsMap]);
+  }, [sortedTokens, chainId, tokensData, dayPriceDeltaMap, dayVolumes, indexTokenStatsMap, featuredMarketTokens]);
 
   useMissedCoinsSearch({
     searchText: searchKeyword,
@@ -292,7 +325,7 @@ function MarketsList() {
           />
 
           <ButtonRowScrollFadeContainer>
-            <FavoriteTabs favoritesKey="chart-token-selector" />
+            <FavoriteTabs favoritesKey="chart-token-selector" options={chartTabOptions} />
           </ButtonRowScrollFadeContainer>
         </div>
         <div className="mt-12 h-[0.5px] w-[2000px] -translate-x-1/2 bg-slate-600" />
@@ -309,7 +342,7 @@ function MarketsList() {
               placeholder={placeholder}
             />
             <ButtonRowScrollFadeContainer>
-              <FavoriteTabs favoritesKey="chart-token-selector" />
+              <FavoriteTabs favoritesKey="chart-token-selector" options={chartTabOptions} />
             </ButtonRowScrollFadeContainer>
           </div>
         </>
@@ -379,7 +412,16 @@ function MarketsList() {
 
           <tbody>
             {sortedDetails?.map(
-              ({ token, tokenData, dayPriceDelta, dayVolume, openInterestLong, openInterestShort, maxLeverage }) => (
+              ({
+                token,
+                tokenData,
+                dayPriceDelta,
+                dayVolume,
+                openInterestLong,
+                openInterestShort,
+                maxLeverage,
+                isFeatured,
+              }) => (
                 <MarketListItem
                   key={token.address}
                   token={token}
@@ -389,6 +431,7 @@ function MarketsList() {
                   openInterestLong={openInterestLong}
                   openInterestShort={openInterestShort}
                   maxLeverage={maxLeverage}
+                  isFeatured={isFeatured}
                   isSwap={isSwap}
                   isMobile={isMobile}
                   isFavorite={favoriteTokens?.includes(token.address)}
@@ -416,6 +459,7 @@ function useFilterSortTokens({
   searchKeyword,
   tab,
   favoriteTokens,
+  featuredMarketTokens,
   direction,
   orderBy,
   tokensData,
@@ -429,6 +473,7 @@ function useFilterSortTokens({
   searchKeyword: string;
   tab: TokenFavoritesTabOption;
   favoriteTokens: string[];
+  featuredMarketTokens: Set<string>;
   direction: SortDirection;
   orderBy: SortField;
   tokensData: TokensData | undefined;
@@ -458,11 +503,15 @@ function useFilterSortTokens({
       return textMatched?.filter((item) => favoriteTokens?.includes(item.address));
     }
 
+    if (tab === "incentivized") {
+      return textMatched?.filter((item) => featuredMarketTokens.has(item.address.toLowerCase()));
+    }
+
     const categoryTokenAddresses = getCategoryTokenAddresses(chainId, tab);
     const tabMatched = textMatched?.filter((item) => categoryTokenAddresses.includes(item.address));
 
     return tabMatched;
-  }, [chainId, favoriteTokens, isSwap, options, searchKeyword, tab]);
+  }, [chainId, favoriteTokens, featuredMarketTokens, isSwap, options, searchKeyword, tab]);
 
   const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
 
@@ -518,6 +567,7 @@ function MarketListItem({
   openInterestLong,
   openInterestShort,
   maxLeverage,
+  isFeatured,
   isSwap,
   isMobile,
   isFavorite,
@@ -534,6 +584,7 @@ function MarketListItem({
   openInterestLong: bigint | undefined;
   openInterestShort: bigint | undefined;
   maxLeverage: number | undefined;
+  isFeatured: boolean;
   isSwap: boolean;
   isMobile: boolean;
   isFavorite?: boolean;
@@ -648,6 +699,11 @@ function MarketListItem({
             <span className="rounded-full bg-slate-700 px-6 py-[1.5px] text-12 font-medium leading-[1.25] text-typography-secondary numbers">
               {maxLeverage ? `${maxLeverage}x` : "-"}
             </span>
+            {isFeatured && (
+              <div className="rounded-full bg-green-900 p-3">
+                <MultiplierSolidIcon className="size-12 text-green-500" />
+              </div>
+            )}
           </span>
         </div>
       </td>

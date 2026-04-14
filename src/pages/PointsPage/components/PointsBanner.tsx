@@ -1,14 +1,14 @@
 import { useMemo } from "react";
 
-import type { AccountIncentiveDashboard, EpochStats, IncentivesConfig } from "domain/synthetics/incentives/types";
+import type { EpochStats, IncentivesConfig, RewardsHistoryEntry } from "domain/synthetics/incentives/types";
 import { formatAmount } from "lib/numbers";
 
 type Props = {
   isActiveUser: boolean;
   account?: string;
   config?: IncentivesConfig;
-  dashboard?: AccountIncentiveDashboard;
   currentEpochStats?: EpochStats;
+  currentEpochHistory?: RewardsHistoryEntry;
 };
 
 type BannerContent = {
@@ -16,10 +16,10 @@ type BannerContent = {
   description: string;
 };
 
-export function PointsBanner({ isActiveUser, account, config, dashboard, currentEpochStats }: Props) {
+export function PointsBanner({ isActiveUser, account, config, currentEpochStats, currentEpochHistory }: Props) {
   const banner = useMemo(
-    () => getBannerContent({ isActiveUser, account, config, dashboard, currentEpochStats }),
-    [isActiveUser, account, config, dashboard, currentEpochStats]
+    () => getBannerContent({ isActiveUser, account, config, currentEpochStats, currentEpochHistory }),
+    [isActiveUser, account, config, currentEpochStats, currentEpochHistory]
   );
 
   if (!banner) return null;
@@ -40,18 +40,16 @@ function getBannerContent({
   isActiveUser,
   account,
   config,
-  dashboard,
   currentEpochStats,
+  currentEpochHistory,
 }: Props): BannerContent | null {
   if (!account || !isActiveUser) return null;
 
-  // 1. Points expiring this epoch — only show if balance is meaningful (> 1 point)
-  const MIN_POINTS_FOR_BANNER = 10n ** 18n; // 1 point in 18-decimal
-  if (dashboard?.pointsBalance && dashboard.pointsBalance > MIN_POINTS_FOR_BANNER) {
-    const pointsDisplay = formatAmount(dashboard.pointsBalance, 18, 0, true);
+  if (currentEpochHistory?.pointsExpired && currentEpochHistory.pointsExpired > 0n) {
+    const pointsDisplay = formatAmount(currentEpochHistory.pointsExpired, 18, 0, true);
     return {
       title: "Don't Let Rewards Expire",
-      description: `Use your ${pointsDisplay} points before they expire and make the most of your activity.`,
+      description: `${pointsDisplay} points are set to expire this epoch. Use them before rollover and make the most of your activity.`,
     };
   }
 

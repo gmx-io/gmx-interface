@@ -5,6 +5,7 @@ import { Redirect, useLocation } from "react-router-dom";
 import { isIncentivesEnabled } from "domain/synthetics/incentives/constants";
 import { useAccountIncentiveDashboard } from "domain/synthetics/incentives/useAccountIncentiveDashboard";
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
+import { useAccountRewardsHistory } from "domain/synthetics/incentives/useAccountRewardsHistory";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
@@ -34,6 +35,7 @@ export function PointsPage() {
 
   const { data: config } = useIncentivesConfig(chainId);
   const { data: dashboard } = useAccountIncentiveDashboard(chainId, { account });
+  const { data: rewardsHistory } = useAccountRewardsHistory(chainId, { account });
   const { data: status } = useAccountIncentiveStatus(chainId, { account });
 
   const currentEpochStats = useMemo(() => {
@@ -49,6 +51,11 @@ export function PointsPage() {
         currentEpochStats?.stakingTier ||
         currentEpochStats?.boostIds?.length)
   );
+
+  const currentEpochHistory = useMemo(() => {
+    if (!config || !rewardsHistory?.length) return undefined;
+    return rewardsHistory.find((entry) => entry.epoch === config.epochTimestamp);
+  }, [config, rewardsHistory]);
 
   const tabOptions = useMemo(
     () => [
@@ -98,13 +105,13 @@ export function PointsPage() {
 
           <div className="sticky top-8 flex flex-col gap-8 max-lg:static">
             <SidebarRewards chainId={chainId} account={account} />
-            <FaqSection />
+            <FaqSection config={config} />
             <PointsBanner
               isActiveUser={isActiveUser}
               account={account}
               config={config}
-              dashboard={dashboard}
               currentEpochStats={currentEpochStats}
+              currentEpochHistory={currentEpochHistory}
             />
           </div>
         </div>

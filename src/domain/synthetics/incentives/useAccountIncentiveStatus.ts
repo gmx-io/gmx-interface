@@ -53,7 +53,7 @@ export function useAccountIncentiveStatus(chainId: number, params: { account?: s
           tradedVolume: BigInt(status.tradedVolume),
         };
       },
-      refreshInterval: 30_000,
+      refreshInterval: 5_000,
       revalidateOnFocus: false,
     }
   );

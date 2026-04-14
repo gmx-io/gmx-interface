@@ -14,14 +14,16 @@ import { isMultichainFundingItemLoading } from "domain/multichain/isMultichainFu
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { useDisconnectAndClose } from "domain/multichain/useDisconnectAndClose";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
+import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
 import { isIncentivesEnabled, formatMultiplier } from "domain/synthetics/incentives/constants";
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
+import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
 import { useChainId } from "lib/chains";
 import { formatRelativeDateWithComma } from "lib/dates";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useENS } from "lib/legacy";
-import { formatUsd } from "lib/numbers";
+import { formatAmountHuman, formatUsd } from "lib/numbers";
 import { useNotifyModalState } from "lib/useNotifyModalState";
 import { shortenAddressOrEns } from "lib/wallets";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
@@ -495,15 +497,40 @@ const PointsSection = () => {
   const [, setOpen] = useGmxAccountModalOpen();
 
   const enabled = isIncentivesEnabled(chainId);
+  const { data: config } = useIncentivesConfig(chainId);
   const { data: status } = useAccountIncentiveStatus(chainId, {
     account,
     enabled,
   });
-
-  if (!enabled) return null;
+  const { data: stakingData } = useStakingProcessedData();
 
   const multiplier = status?.multiplier;
   const hasMultiplier = multiplier !== undefined && multiplier > 0;
+  const gmxStaked = stakingData?.gmxInStakedGmx;
+
+  const { gmxToNextTierLabel, additionalMultiplierLabel } = useMemo(() => {
+    if (!config?.stakingTiers?.length || gmxStaked === undefined) {
+      return { gmxToNextTierLabel: undefined, additionalMultiplierLabel: undefined };
+    }
+
+    const currentTierMultiplier =
+      config.stakingTiers.find((tier) => tier.tier === status?.stakingTier)?.multiplier ?? 0;
+    const nextTier = config.stakingTiers.find((tier) => gmxStaked < tier.threshold);
+
+    if (!nextTier) {
+      return { gmxToNextTierLabel: undefined, additionalMultiplierLabel: undefined };
+    }
+
+    const gmxToNextTier = nextTier.threshold - gmxStaked;
+    const additionalMultiplier = nextTier.multiplier - currentTierMultiplier;
+
+    return {
+      gmxToNextTierLabel: formatAmountHuman(gmxToNextTier, 18, false, 2),
+      additionalMultiplierLabel: additionalMultiplier > 0 ? formatMultiplier(additionalMultiplier) : undefined,
+    };
+  }, [config, gmxStaked, status?.stakingTier]);
+
+  if (!enabled) return null;
 
   const handleClick = () => {
     setOpen(false);
@@ -524,7 +551,13 @@ const PointsSection = () => {
         </span>
         <span className="text-caption text-typography-secondary">
           {hasMultiplier ? (
-            <Trans>Stake more GMX to increase your multiplier</Trans>
+            gmxToNextTierLabel && additionalMultiplierLabel ? (
+              <Trans>
+                Stake {gmxToNextTierLabel} GMX more to get {additionalMultiplierLabel} additionally
+              </Trans>
+            ) : (
+              <Trans>You are already at the highest staking tier</Trans>
+            )
           ) : (
             <Trans>Start earning points and unlock rewards</Trans>
           )}
