@@ -150,10 +150,7 @@ export function getRelayerFeeParams({
       });
     }
 
-    const bestFeeSwapStrategy = getBestSwapStrategy({
-      internalSwapAmounts: feeSwapAmounts,
-      externalSwapQuote: feeExternalSwapQuote,
-    });
+    const bestFeeSwapStrategy = getBestInternalSwapStrategy(feeSwapAmounts, feeExternalSwapQuote);
 
     if (bestFeeSwapStrategy?.swapPath) {
       feeParams = {
@@ -191,16 +188,6 @@ export function getRelayerFeeParams({
     feeExternalSwapGasLimit,
     gasPaymentParams,
   };
-}
-
-export function getBestSwapStrategy({
-  internalSwapAmounts,
-  externalSwapQuote,
-}: {
-  internalSwapAmounts: SwapAmounts | undefined;
-  externalSwapQuote: ExternalSwapQuote | undefined;
-}) {
-  return getBestInternalSwapStrategy(internalSwapAmounts, externalSwapQuote);
 }
 
 export function getBestInternalSwapStrategy(
