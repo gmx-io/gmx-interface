@@ -44,7 +44,6 @@ import { PrivateKeySigner } from "utils/signer";
 import { fetchApiStakingPower } from "utils/staking/api";
 import { StakingPowerResponse } from "utils/staking/types";
 import { generateSubaccount } from "utils/subaccount/generateSubaccount";
-import type { SubaccountSession } from "utils/subaccount/types";
 import { fetchSubaccountStatus, prepareSubaccountApproval, signSubaccountApproval } from "utils/subaccount/api";
 import type {
   SubaccountStatusRequest,
