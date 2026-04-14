@@ -2782,6 +2782,10 @@ msgstr "GMTrade（前身为 GMX Solana）托管在另一个网站上，由另一
 msgid "You have not traded during the selected period"
 msgstr "您在所选时间段内没有交易记录"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Staked: <0>{0}</0><1> / </1><2>{1} GMX</2>"
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default parts for TWAP orders"
 msgstr "TWAP 订单的默认份数"

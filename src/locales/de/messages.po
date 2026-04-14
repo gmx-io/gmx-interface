@@ -2782,6 +2782,10 @@ msgstr "GMTrade (ehemals GMX Solana) wird auf einer anderen Website gehostet und
 msgid "You have not traded during the selected period"
 msgstr "Sie haben im ausgewählten Zeitraum nicht gehandelt"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Staked: <0>{0}</0><1> / </1><2>{1} GMX</2>"
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default parts for TWAP orders"
 msgstr "Standardanzahl der Teile für TWAP-Orders"

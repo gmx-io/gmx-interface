@@ -33,6 +33,7 @@ type Props = {
   effectiveStakingTier?: StakingTierId | null;
   projectedVolumeTier?: VolumeTierId | null;
   projectedStakingTier?: StakingTierId | null;
+  hideInactive?: boolean;
 };
 
 export function TierCardsSection({
@@ -42,6 +43,7 @@ export function TierCardsSection({
   effectiveStakingTier,
   projectedVolumeTier,
   projectedStakingTier,
+  hideInactive = false,
 }: Props) {
   const volumeActive = Boolean(effectiveVolumeTier ?? currentEpochStats?.volumeTier);
   const stakingActive = Boolean(effectiveStakingTier ?? currentEpochStats?.stakingTier);
@@ -53,8 +55,15 @@ export function TierCardsSection({
       { key: "staking" as const, active: stakingActive },
       { key: "boosts" as const, active: boostsActive },
     ];
-    return items.sort((a, b) => (a.active === b.active ? 0 : a.active ? -1 : 1)).map((i) => i.key);
-  }, [volumeActive, stakingActive, boostsActive]);
+    return items
+      .filter((item) => !hideInactive || item.active)
+      .sort((a, b) => (a.active === b.active ? 0 : a.active ? -1 : 1))
+      .map((i) => i.key);
+  }, [volumeActive, stakingActive, boostsActive, hideInactive]);
+
+  if (sortedKeys.length === 0) {
+    return null;
+  }
 
   const cardComponents: Record<string, React.ReactNode> = {
     volume: (
@@ -426,17 +435,44 @@ function StakingProgressBar({
   return (
     <div className="flex h-6 gap-[3px] rounded-8">
       {tiers.map((tier, i) => {
+        const tierTooltipContent = (
+          <div>
+            <div className="flex items-center justify-between gap-4 font-medium">
+              {STAKING_TIER_BADGES[tier.tier]()}{" "}
+              <span className="text-green-300">+{formatMultiplier(tier.multiplier)}</span>
+            </div>
+            <div className="text-body-small mt-4 text-typography-secondary">
+              <Trans>
+                Staked: <span className="text-typography-primary">{formatAmount(gmxStaked, 18, 0, true)}</span>
+                <span className="text-11">{" / "}</span>
+                <span className="text-typography-primary">{formatAmount(tier.threshold, 18, 0, true)} GMX</span>
+              </Trans>
+            </div>
+          </div>
+        );
+
         if (i === nextIdx && nextTierProgress > 0) {
           return (
-            <div key={tier.tier} className="relative flex-1 overflow-hidden rounded-8 bg-cold-blue-900">
-              <div className="absolute left-0 top-0 h-full rounded-8 bg-blue-300" style={nextTierProgressStyle} />
-            </div>
+            <TooltipWithPortal
+              key={tier.tier}
+              as="div"
+              className="relative flex-1 overflow-hidden rounded-8 bg-cold-blue-900"
+              handle={
+                <div className="absolute left-0 top-0 h-full rounded-8 bg-blue-300" style={nextTierProgressStyle} />
+              }
+              content={tierTooltipContent}
+              variant="none"
+            />
           );
         }
+
         return (
-          <div
+          <TooltipWithPortal
             key={tier.tier}
+            as="div"
             className={cx("flex-1 rounded-8", i <= currentIdx ? "bg-blue-300" : "bg-cold-blue-900")}
+            content={tierTooltipContent}
+            variant="none"
           />
         );
       })}
