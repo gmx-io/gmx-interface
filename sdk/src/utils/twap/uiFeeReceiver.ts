@@ -43,10 +43,11 @@ export function createTwapUiFeeReceiver({
 
   const numberOfPartsInHex = numberOfParts.toString(16).padStart(2, "0");
 
-  const freeBuffer = "00".repeat(11);
-  const flagsHex = "00";
+  const freeBuffer = "00".repeat(10);
+  const isJitHex = "00";
+  const isExpressHex = "00";
 
-  return `${PREFIX}${source}${freeBuffer}${flagsHex}${numberOfPartsInHex}${twapId}${VERSION}`;
+  return `${PREFIX}${source}${freeBuffer}${isJitHex}${isExpressHex}${numberOfPartsInHex}${twapId}${VERSION}`;
 }
 
 export function decodeTwapUiFeeReceiver(

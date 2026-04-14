@@ -5,6 +5,7 @@ import {
   requireSigner,
   waitForOrderStatus,
   waitForOrdersUpdate,
+  activateTestSubaccount,
   TEST_SYMBOL,
   TEST_SIZE_USD,
   TEST_COLLATERAL,
@@ -14,8 +15,8 @@ const sdk = getTestSdk();
 const signer = requireSigner();
 const account = signer.address;
 
-const LIMIT_TRIGGER_PRICE = (1n * 10n ** 30n).toString(); // $1
-const LIMIT_TRIGGER_PRICE_2 = (2n * 10n ** 30n).toString(); // $2
+const LIMIT_TRIGGER_PRICE = 1n * 10n ** 30n; // $1
+const LIMIT_TRIGGER_PRICE_2 = 2n * 10n ** 30n; // $2
 
 async function signAndSubmit(sdk: ReturnType<typeof getTestSdk>, prepared: any) {
   const sig = await sdk.signOrder(prepared, signer);
@@ -53,9 +54,6 @@ async function createLimitOrder(sdkInstance: ReturnType<typeof getTestSdk>, trig
   return result;
 }
 
-// ---------------------------------------------------------------------------
-// Edit & Cancel flows
-// ---------------------------------------------------------------------------
 
 describe("edit & cancel orders", () => {
   afterAll(async () => {
@@ -67,9 +65,6 @@ describe("edit & cancel orders", () => {
     }
   });
 
-  // -------------------------------------------------------------------------
-  // Create → edit → cancel (express)
-  // -------------------------------------------------------------------------
 
   describe("create → edit → cancel (express)", () => {
     let createdOrderKey: string;
@@ -155,9 +150,6 @@ describe("edit & cancel orders", () => {
     });
   });
 
-  // -------------------------------------------------------------------------
-  // Cancel all orders
-  // -------------------------------------------------------------------------
 
   describe("cancel all orders", () => {
     it("create two limit orders", async () => {
@@ -188,39 +180,32 @@ describe("edit & cancel orders", () => {
     });
   });
 
-  // -------------------------------------------------------------------------
-  // 1CT edit + cancel
-  // -------------------------------------------------------------------------
 
   describe("1CT edit + cancel", () => {
     const sdkSub = getTestSdk();
 
     beforeAll(async () => {
-      await sdkSub.activateSubaccount(signer, {
-        expiresInSeconds: 86400,
-        maxAllowedCount: 10,
-      });
+      await activateTestSubaccount(sdkSub, signer, account);
     });
 
-    afterAll(() => {
+    afterAll(async () => {
+      try {
+        const prepared = await sdk.prepareCancelOrder({ all: true, mode: "express", from: account });
+        await signAndSubmit(sdk, prepared);
+      } catch { /* cleanup */ }
       sdkSub.clearSubaccount();
     });
 
-    it("create limit order with subaccount", async () => {
-      const ordersBefore = await sdkSub.fetchOrders({ address: account });
-      const countBefore = ordersBefore.length;
-
-      await createLimitOrder(sdkSub);
-
-      const ordersAfter = await waitForOrdersUpdate(sdkSub, account, (o) => o.length > countBefore, 30000);
-      expect(ordersAfter.length).toBeGreaterThan(countBefore);
-    });
-
-    it("edit with subaccount", async () => {
-      const orders = await sdkSub.fetchOrders({ address: account });
+    it("edit with subaccount — full submit", async () => {
+      let orders = await sdk.fetchOrders({ address: account });
+      if (orders.length === 0) {
+        await createLimitOrder(sdk);
+        orders = await waitForOrdersUpdate(sdk, account, (o) => o.length > 0, 30000);
+      }
       expect(orders.length).toBeGreaterThan(0);
 
       const orderId = orders[0].key;
+      const triggerBefore = BigInt(orders[0].triggerPrice);
 
       const prepared = await sdkSub.prepareEditOrder({
         orderIds: [orderId],
@@ -231,11 +216,13 @@ describe("edit & cancel orders", () => {
         subaccountApproval: sdkSub.subaccountApprovalMessage,
       });
 
-      const subSig = await sdkSub.signOrder(prepared, signer);
+      expect(prepared.payloadType).toBe("typed-data");
+
+      const signature = await sdkSub.signOrder(prepared, signer);
       const submitted = await sdkSub.submitOrder({
         mode: prepared.mode,
         requestId: prepared.requestId,
-        signature: subSig,
+        signature,
         from: account,
         idempotencyKey: prepared.idempotencyKey,
         eip712Data: {
@@ -245,14 +232,30 @@ describe("edit & cancel orders", () => {
         },
       });
 
-      expect(submitted.status).toBeDefined();
+      expect(submitted.requestId).toBeDefined();
+
+      const status = await waitForOrderStatus(sdk, submitted.requestId);
+      expect(status.status).toBe("executed");
+
+      const ordersAfter = await waitForOrdersUpdate(sdk, account, (ords) => {
+        const edited = ords.find((o: any) => o.key === orderId);
+        return edited ? BigInt(edited.triggerPrice) !== triggerBefore : false;
+      }, 30000);
+      const editedOrder = ordersAfter.find((o: any) => o.key === orderId);
+      expect(editedOrder).toBeDefined();
+      expect(BigInt(editedOrder!.triggerPrice)).not.toBe(triggerBefore);
     });
 
-    it("cancel with subaccount", async () => {
-      const orders = await sdkSub.fetchOrders({ address: account });
-      expect(orders.length).toBeGreaterThan(0);
+    it("cancel with subaccount — full submit", async () => {
+      const orders = await sdk.fetchOrders({ address: account });
+      if (orders.length === 0) {
+        await createLimitOrder(sdk);
+        await waitForOrdersUpdate(sdk, account, (o) => o.length > 0, 30000);
+      }
 
-      const orderId = orders[0].key;
+      const freshOrders = await sdk.fetchOrders({ address: account });
+      expect(freshOrders.length).toBeGreaterThan(0);
+      const orderId = freshOrders[0].key;
 
       const prepared = await sdkSub.prepareCancelOrder({
         orderIds: [orderId],
@@ -262,11 +265,13 @@ describe("edit & cancel orders", () => {
         subaccountApproval: sdkSub.subaccountApprovalMessage,
       });
 
-      const subSig = await sdkSub.signOrder(prepared, signer);
+      expect(prepared.payloadType).toBe("typed-data");
+
+      const signature = await sdkSub.signOrder(prepared, signer);
       const submitted = await sdkSub.submitOrder({
         mode: prepared.mode,
         requestId: prepared.requestId,
-        signature: subSig,
+        signature,
         from: account,
         idempotencyKey: prepared.idempotencyKey,
         eip712Data: {
@@ -276,13 +281,18 @@ describe("edit & cancel orders", () => {
         },
       });
 
-      expect(submitted.status).toBeDefined();
+      expect(submitted.requestId).toBeDefined();
+
+      const status = await waitForOrderStatus(sdk, submitted.requestId);
+      expect(status.status).toBe("executed");
+
+      const ordersAfter = await waitForOrdersUpdate(sdk, account, (ords) => {
+        return !ords.find((o: any) => o.key === orderId);
+      }, 30000);
+      expect(ordersAfter.find((o: any) => o.key === orderId)).toBeUndefined();
     });
   });
 
-  // -------------------------------------------------------------------------
-  // Error cases
-  // -------------------------------------------------------------------------
 
   describe("error cases", () => {
     it("edit with empty orderIds rejects", async () => {

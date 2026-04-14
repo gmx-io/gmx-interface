@@ -1,4 +1,4 @@
-import { ARBITRUM, ARBITRUM_SEPOLIA } from "configs/chains";
+import { ARBITRUM, getViemChain } from "configs/chains";
 import { PrivateKeySigner } from "utils/signer";
 import type { IAbstractSigner } from "utils/signer";
 import type {
@@ -13,8 +13,9 @@ import { GmxApiSdk } from "../index";
 export const TEST_CHAIN_ID = ARBITRUM;
 
 export const TEST_SYMBOL = "ETH/USD [WETH-USDC]";
-export const TEST_SIZE_USD = (100n * 10n ** 30n).toString(); // $100
-export const TEST_COLLATERAL = { amount: "1000000", token: "USDC" }; // 1 USDC
+export const TEST_SIZE_USD = 100n * 10n ** 30n; // $100
+export const TEST_COLLATERAL = { amount: 1000000n, token: "USDC" }; // 1 USDC
+export const TEST_BTC_SYMBOL = "BTC/USD [BTC-USDC]";
 
 const TERMINAL_STATUSES = new Set(["executed", "failed", "reverted", "expired"]);
 
@@ -26,7 +27,11 @@ export function getTestSdk() {
 export function getTestSigner(): PrivateKeySigner | undefined {
   const pk = process.env.GMX_TEST_PRIVATE_KEY;
   if (!pk) return undefined;
-  return new PrivateKeySigner(pk as `0x${string}`);
+  const rpcUrl = process.env.GMX_TEST_RPC_URL;
+  return new PrivateKeySigner(
+    pk as `0x${string}`,
+    rpcUrl ? { rpcUrl, chain: getViemChain(TEST_CHAIN_ID) } : undefined
+  );
 }
 
 export function requireSigner(): PrivateKeySigner {
@@ -35,6 +40,10 @@ export function requireSigner(): PrivateKeySigner {
     throw new Error("GMX_TEST_PRIVATE_KEY env var is required for this test");
   }
   return signer;
+}
+
+export function hasRpcUrl(): boolean {
+  return !!process.env.GMX_TEST_RPC_URL;
 }
 
 export async function waitForOrderStatus(
@@ -140,6 +149,21 @@ export async function waitForPositionUpdate(
   }
   // Final attempt
   return sdk.fetchPositionsInfo({ address: account });
+}
+
+export async function activateTestSubaccount(
+  sdkSub: GmxApiSdk,
+  signer: IAbstractSigner,
+  account: string
+): Promise<void> {
+  const subAddr = await sdkSub.generateSubaccount(signer);
+  const status = await sdkSub.fetchSubaccountStatus({ account, subaccountAddress: subAddr });
+  const maxAllowedCount = Number(status.currentActionsCount) + 50;
+
+  await sdkSub.activateSubaccount(signer, {
+    expiresInSeconds: 86400,
+    maxAllowedCount,
+  });
 }
 
 function sleep(ms: number): Promise<void> {

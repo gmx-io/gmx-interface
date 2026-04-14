@@ -15,9 +15,9 @@ import {
   signPreparedOrder,
   submitOrder,
   executeExpressOrder as executeExpressOrderRaw,
-  simulateOrder,
   prepareEditOrder,
   prepareCancelOrder,
+  prepareCollateral,
   fetchOrderStatus as fetchOrderStatusRaw,
 } from "utils/orderTransactions/api";
 import type {
@@ -25,10 +25,9 @@ import type {
   PrepareOrderResponse,
   SubmitOrderRequest,
   SubmitOrderResponse,
-  SimulateOrderRequest,
-  SimulateOrderResponse,
   PrepareEditOrderRequest,
   PrepareCancelOrderRequest,
+  PrepareCollateralRequest,
   OrderStatusRequest,
   OrderStatusResponse,
 } from "utils/orderTransactions/api";
@@ -54,6 +53,12 @@ import type {
   SubaccountApprovalPrepareResponse,
 } from "utils/subaccount/api";
 import { fetchApiTokens } from "utils/tokens/api";
+import {
+  fetchWalletBalances as fetchWalletBalancesRaw,
+  fetchAllowances as fetchAllowancesRaw,
+  buildApproveTransaction,
+} from "utils/balances/api";
+import type { WalletBalance, TokenAllowance, SpenderType, ApproveTokenParams, ApproveTokenResult } from "utils/balances/api";
 import { nowInSeconds } from "utils/time";
 
 export type { ApyEntry, ApyParams, ApyResponse } from "utils/apy/types";
@@ -74,13 +79,13 @@ export type {
   PrepareOrderResponse,
   SubmitOrderRequest,
   SubmitOrderResponse,
-  SimulateOrderRequest,
-  SimulateOrderResponse,
   PrepareEditOrderRequest,
   PrepareCancelOrderRequest,
+  PrepareCollateralRequest,
   OrderStatusRequest,
   OrderStatusResponse,
 };
+export type { WalletBalance, TokenAllowance, SpenderType, ApproveTokenParams, ApproveTokenResult } from "utils/balances/api";
 export type { IAbstractSigner } from "utils/signer";
 export { PrivateKeySigner } from "utils/signer";
 export { HttpError } from "utils/http/http";
@@ -116,10 +121,6 @@ export class GmxApiSdk {
       chainId,
       api: new HttpClient(resolvedApiUrl),
     };
-  }
-
-  static createPrivateKeySigner(privateKey: `0x${string}`): PrivateKeySigner {
-    return new PrivateKeySigner(privateKey);
   }
 
   get subaccountAddress(): string | undefined {
@@ -194,6 +195,18 @@ export class GmxApiSdk {
     return fetchApiStakingPower(this.ctx, params);
   }
 
+  fetchWalletBalances(params: { address: string }): Promise<WalletBalance[]> {
+    return fetchWalletBalancesRaw(this.ctx, params);
+  }
+
+  fetchAllowances(params: { address: string; spender: SpenderType }): Promise<TokenAllowance[]> {
+    return fetchAllowancesRaw(this.ctx, params);
+  }
+
+  buildApproveTransaction(params: ApproveTokenParams): ApproveTokenResult {
+    return buildApproveTransaction(this.ctx, params);
+  }
+
   // ---------------------------------------------------------------------------
   // Order transactions: prepare → sign → submit
   // ---------------------------------------------------------------------------
@@ -214,7 +227,6 @@ export class GmxApiSdk {
     return submitOrder(this.ctx, request);
   }
 
-
   async executeExpressOrder(request: PrepareOrderRequest, signer: IAbstractSigner): Promise<SubmitOrderResponse> {
     const subSigner = subaccountSigners.get(this);
 
@@ -231,10 +243,6 @@ export class GmxApiSdk {
     return executeExpressOrderRaw(this.ctx, request, signer);
   }
 
-  simulateOrder(request: SimulateOrderRequest): Promise<SimulateOrderResponse> {
-    return simulateOrder(this.ctx, request);
-  }
-
   fetchOrderStatus(request: OrderStatusRequest): Promise<OrderStatusResponse> {
     return fetchOrderStatusRaw(this.ctx, request);
   }
@@ -245,6 +253,10 @@ export class GmxApiSdk {
 
   prepareCancelOrder(request: PrepareCancelOrderRequest): Promise<PrepareOrderResponse> {
     return prepareCancelOrder(this.ctx, request);
+  }
+
+  prepareCollateral(request: PrepareCollateralRequest): Promise<PrepareOrderResponse> {
+    return prepareCollateral(this.ctx, request);
   }
 
   // ---------------------------------------------------------------------------

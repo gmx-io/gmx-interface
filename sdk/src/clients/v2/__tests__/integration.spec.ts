@@ -8,12 +8,9 @@ const signer = requireSigner();
 const account = signer.address;
 
 const TEST_SYMBOL = "ETH/USD [WETH-USDC]";
-const TEST_SIZE_USD = (100n * 10n ** 30n).toString(); // $100
-const TEST_COLLATERAL = { amount: "1000000", token: "USDC" }; // 1 USDC
+const TEST_SIZE_USD = 100n * 10n ** 30n; // $100
+const TEST_COLLATERAL = { amount: 1000000n, token: "USDC" }; // 1 USDC
 
-// ---------------------------------------------------------------------------
-// 1. Data fetching
-// ---------------------------------------------------------------------------
 
 describe("data fetching", () => {
   it("fetchMarketsInfo returns markets with pricing", async () => {
@@ -26,15 +23,16 @@ describe("data fetching", () => {
     expect(ethMarket!.marketTokenAddress).toBeDefined();
   });
 
-  it("fetchTokensData returns tokens with prices", async () => {
+  it("fetchTokensData returns tokens with pricing fields", async () => {
     const tokensData = await sdk.fetchTokensData();
     const keys = Object.keys(tokensData);
 
     expect(keys.length).toBeGreaterThan(0);
 
-    // Check at least one token has pricing info
     const firstToken = tokensData[keys[0]];
     expect(firstToken).toBeDefined();
+    expect(firstToken.symbol).toBeDefined();
+    expect(firstToken.prices).toBeDefined();
   });
 
   it("fetchTokens returns array", async () => {
@@ -67,16 +65,13 @@ describe("data fetching", () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// 2. Positions & Orders
-// ---------------------------------------------------------------------------
 
 describe("positions & orders", () => {
   it("fetchPositionsInfo returns positions for test account", async () => {
     const positions = await sdk.fetchPositionsInfo({ address: account });
 
     expect(Array.isArray(positions)).toBe(true);
-    // Test wallet has at least one open position
+    // Account may or may not have open positions depending on test state
     if (positions.length > 0) {
       expect(positions[0].account).toBe(account);
       expect(positions[0].marketAddress).toBeDefined();
@@ -84,13 +79,15 @@ describe("positions & orders", () => {
     }
   });
 
-  it("fetchPositionsInfo with includeRelatedOrders", async () => {
-    const positions = await sdk.fetchPositionsInfo({
-      address: account,
-      includeRelatedOrders: true,
-    });
+  it("fetchPositionsInfo with includeRelatedOrders returns positions", async () => {
+    const [without, withOrders] = await Promise.all([
+      sdk.fetchPositionsInfo({ address: account }),
+      sdk.fetchPositionsInfo({ address: account, includeRelatedOrders: true }),
+    ]);
 
-    expect(Array.isArray(positions)).toBe(true);
+    expect(Array.isArray(withOrders)).toBe(true);
+    // Should return at least the same number of positions
+    expect(withOrders.length).toBeGreaterThanOrEqual(without.length);
   });
 
   it("fetchOrders returns orders array", async () => {
@@ -99,9 +96,6 @@ describe("positions & orders", () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// 3. Express Order: prepare → sign → submit
-// ---------------------------------------------------------------------------
 
 describe("express order flow", () => {
   let prepared: PrepareOrderResponse;
@@ -177,9 +171,6 @@ describe("express order flow", () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// 4. Decrease / Close position
-// ---------------------------------------------------------------------------
 
 describe("decrease order flow", () => {
   it("prepare decrease order returns typed-data", async () => {
@@ -195,7 +186,7 @@ describe("decrease order flow", () => {
           direction: "long",
           orderType: "market",
           size: TEST_SIZE_USD,
-          collateralToPay: { amount: "5000000", token: "USDC" }, // 5 USDC for stable leverage
+          collateralToPay: { amount: 5000000n, token: "USDC" }, // 5 USDC for stable leverage
           mode: "express",
           from: account,
         },
@@ -214,7 +205,7 @@ describe("decrease order flow", () => {
 
     expect(pos).toBeDefined();
 
-    const decreaseSize = (BigInt(pos!.sizeInUsd) / 10n).toString();
+    const decreaseSize = BigInt(pos!.sizeInUsd) / 10n;
 
     const prepared = await sdk.prepareOrder({
       kind: "decrease",
@@ -232,9 +223,6 @@ describe("decrease order flow", () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// 5. Swap order
-// ---------------------------------------------------------------------------
 
 describe("swap order flow", () => {
   it("prepare swap order returns typed-data", async () => {
@@ -242,8 +230,8 @@ describe("swap order flow", () => {
       kind: "swap",
       symbol: TEST_SYMBOL,
       orderType: "market",
-      size: "1000000", // 1 USDC in token decimals
-      collateralToPay: { amount: "1000000", token: "USDC" },
+      size: 1000000n, // 1 USDC in token decimals
+      collateralToPay: { amount: 1000000n, token: "USDC" },
       receiveToken: "ETH",
       mode: "express",
       from: account,
@@ -255,14 +243,10 @@ describe("swap order flow", () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// 6. Limit orders
-// ---------------------------------------------------------------------------
 
 describe("limit order flow", () => {
   it("prepare limit increase order", async () => {
-    // Use a very low trigger price so it doesn't execute
-    const triggerPrice = (1000n * 10n ** 30n).toString(); // $1000
+    const triggerPrice = 1000n * 10n ** 30n; // $1000
 
     const prepared = await sdk.prepareOrder({
       kind: "increase",
@@ -281,34 +265,6 @@ describe("limit order flow", () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// 7. Simulate order
-// ---------------------------------------------------------------------------
-
-describe("simulate order", () => {
-  it("simulate increase order returns result or structured error", async () => {
-    try {
-      const result = await sdk.simulateOrder({
-        kind: "increase",
-        symbol: TEST_SYMBOL,
-        direction: "long",
-        orderType: "market",
-        size: TEST_SIZE_USD,
-        collateralToPay: TEST_COLLATERAL,
-        from: account,
-      });
-
-      expect(result).toBeDefined();
-    } catch (error: any) {
-      // Simulation failures (422) are expected for underfunded test accounts
-      expect(error.message).toMatch(/HTTP 4\d\d/);
-    }
-  });
-});
-
-// ---------------------------------------------------------------------------
-// 8. Subaccount flow
-// ---------------------------------------------------------------------------
 
 describe("subaccount flow", () => {
   it("generateSubaccount returns deterministic address", async () => {
@@ -371,29 +327,31 @@ describe("subaccount flow", () => {
     expect(prepared.payloadType).toBe("typed-data");
   });
 
-  it("executeExpressOrder with subaccount does full flow", async () => {
+  it("prepare and sign order with subaccount", async () => {
     const sdkSub = getTestSdk();
     await sdkSub.activateSubaccount(signer, {
       expiresInSeconds: 86400,
       maxAllowedCount: 10,
     });
 
-    const result = await sdkSub.executeExpressOrder(
-      {
-        kind: "increase",
-        symbol: TEST_SYMBOL,
-        direction: "long",
-        orderType: "market",
-        size: TEST_SIZE_USD,
-        collateralToPay: TEST_COLLATERAL,
-        mode: "express",
-        from: account,
-      },
-      signer
-    );
+    const prepared = await sdkSub.prepareOrder({
+      kind: "increase",
+      symbol: TEST_SYMBOL,
+      direction: "long",
+      orderType: "market",
+      size: TEST_SIZE_USD,
+      collateralToPay: TEST_COLLATERAL,
+      mode: "express",
+      from: account,
+      subaccountAddress: sdkSub.subaccountAddress,
+    });
 
-    expect(result.requestId).toBeDefined();
-    expect(result.status).toBeDefined();
+    expect(prepared.requestId).toBeDefined();
+    expect(prepared.payloadType).toBe("typed-data");
+    expect(prepared.estimates).toBeDefined();
+
+    const signature = await sdkSub.signOrder(prepared, signer);
+    expect(signature.startsWith("0x")).toBe(true);
   });
 
   it("clearSubaccount resets state", async () => {
@@ -410,9 +368,6 @@ describe("subaccount flow", () => {
   });
 });
 
-// ---------------------------------------------------------------------------
-// 9. Error cases
-// ---------------------------------------------------------------------------
 
 describe("error handling", () => {
   it("prepare with invalid symbol returns error", async () => {

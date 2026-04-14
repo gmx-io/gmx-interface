@@ -1,28 +1,20 @@
-import { describe, expect, it, afterAll } from "vitest";
+import { describe, expect, it, afterAll, beforeAll } from "vitest";
 
-import { getTestSdk, requireSigner, expressFlow, TEST_SYMBOL } from "./testUtil";
+import { getTestSdk, requireSigner, expressFlow, waitForOrderStatus, activateTestSubaccount, hasRpcUrl, TEST_SYMBOL } from "./testUtil";
 
 const sdk = getTestSdk();
 const signer = requireSigner();
 const account = signer.address;
 
-// ---------------------------------------------------------------------------
-// Swap order flows
-// ---------------------------------------------------------------------------
-
 describe("swap orders", () => {
-  // -------------------------------------------------------------------------
-  // Express mode
-  // -------------------------------------------------------------------------
-
   describe("express market swap", () => {
     it("USDC → ETH: estimates → submit → track", async () => {
       const { prepared, submitted } = await expressFlow(sdk, signer, {
         kind: "swap",
         symbol: TEST_SYMBOL,
         orderType: "market",
-        size: "1000000", // 1 USDC
-        collateralToPay: { amount: "1000000", token: "USDC" },
+        size: 1000000n,
+        collateralToPay: { amount: 1000000n, token: "USDC" },
         receiveToken: "ETH",
         mode: "express",
         from: account,
@@ -31,12 +23,9 @@ describe("swap orders", () => {
       expect(prepared.requestId).toBeDefined();
       expect(prepared.payloadType).toBe("typed-data");
 
-      // ------ Estimates ------
       expect(prepared.estimates).toBeDefined();
       const est = prepared.estimates!;
-      // Swap has execution fee
-      expect(BigInt(est.executionFeeAmount)).toBeGreaterThan(0n);
-      // Swap price impact should be defined
+      expect(est.executionFeeAmount).toBeGreaterThan(0n);
       expect(est.swapPriceImpactDeltaUsd).toBeDefined();
 
       expect(submitted).toBeDefined();
@@ -54,8 +43,8 @@ describe("swap orders", () => {
         kind: "swap",
         symbol: TEST_SYMBOL,
         orderType: "market",
-        size: "1000000",
-        collateralToPay: { amount: "1000000", token: "USDC" },
+        size: 1000000n,
+        collateralToPay: { amount: 1000000n, token: "USDC" },
         receiveToken: "ETH",
         mode: "express",
         from: account,
@@ -65,15 +54,28 @@ describe("swap orders", () => {
       expect(prepared.payloadType).toBe("typed-data");
       expect(prepared.payload.typedData).toBeDefined();
 
-      // Swap estimates
       expect(prepared.estimates).toBeDefined();
-      expect(BigInt(prepared.estimates!.executionFeeAmount)).toBeGreaterThan(0n);
+      expect(prepared.estimates!.executionFeeAmount).toBeGreaterThan(0n);
     });
   });
 
-  // -------------------------------------------------------------------------
-  // Classic mode
-  // -------------------------------------------------------------------------
+  describe("TWAP swap", () => {
+    it("TWAP swap rejects — no swap path for this pair", async () => {
+      await expect(
+        sdk.prepareOrder({
+          kind: "swap",
+          symbol: TEST_SYMBOL,
+          orderType: "twap",
+          size: 2_000_000n,
+          collateralToPay: { amount: 2_000_000n, token: "USDC" },
+          receiveToken: "ETH",
+          twapConfig: { duration: 600, parts: 2 },
+          mode: "express",
+          from: account,
+        })
+      ).rejects.toThrow(/swap path/i);
+    });
+  });
 
   describe("classic market swap", () => {
     it("prepare returns transaction payload", async () => {
@@ -81,8 +83,8 @@ describe("swap orders", () => {
         kind: "swap",
         symbol: TEST_SYMBOL,
         orderType: "market",
-        size: "1000000",
-        collateralToPay: { amount: "1000000", token: "USDC" },
+        size: 1000000n,
+        collateralToPay: { amount: 1000000n, token: "USDC" },
         receiveToken: "ETH",
         mode: "classic",
         from: account,
@@ -94,30 +96,51 @@ describe("swap orders", () => {
     });
   });
 
-  // -------------------------------------------------------------------------
-  // 1CT (subaccount)
-  // -------------------------------------------------------------------------
+  describe("classic market swap — submit", () => {
+    it.skipIf(!hasRpcUrl())("submit classic swap on-chain", async () => {
+      const prepared = await sdk.prepareOrder({
+        kind: "swap",
+        symbol: TEST_SYMBOL,
+        orderType: "market",
+        size: 1000000n,
+        collateralToPay: { amount: 1000000n, token: "USDC" },
+        receiveToken: "ETH",
+        mode: "classic",
+        from: account,
+      });
+
+      expect(prepared.payloadType).toBe("transaction");
+
+      const txHash = await signer.sendTransaction({
+        to: prepared.payload.to,
+        data: prepared.payload.data,
+        value: BigInt(prepared.payload.value ?? 0),
+      });
+
+      expect(txHash).toBeDefined();
+      expect(txHash.startsWith("0x")).toBe(true);
+    });
+  });
 
   describe("with subaccount (1CT)", () => {
     const sdkSub = getTestSdk();
+
+    beforeAll(async () => {
+      await activateTestSubaccount(sdkSub, signer, account);
+    });
 
     afterAll(() => {
       sdkSub.clearSubaccount();
     });
 
-    it("express market swap with subaccount", async () => {
-      await sdkSub.activateSubaccount(signer, {
-        expiresInSeconds: 86400,
-        maxAllowedCount: 10,
-      });
-
+    it("express swap with subaccount — full submit", async () => {
       const result = await sdkSub.executeExpressOrder(
         {
           kind: "swap",
           symbol: TEST_SYMBOL,
           orderType: "market",
-          size: "1000000",
-          collateralToPay: { amount: "1000000", token: "USDC" },
+          size: 1000000n,
+          collateralToPay: { amount: 1000000n, token: "USDC" },
           receiveToken: "ETH",
           mode: "express",
           from: account,
@@ -125,14 +148,13 @@ describe("swap orders", () => {
         signer
       );
 
-      expect(result).toBeDefined();
+      expect(result.requestId).toBeDefined();
       expect(result.status).toBeDefined();
+
+      const status = await waitForOrderStatus(sdk, result.requestId);
+      expect(status.status).toBe("executed");
     });
   });
-
-  // -------------------------------------------------------------------------
-  // Error cases
-  // -------------------------------------------------------------------------
 
   describe("error cases", () => {
     it("missing receiveToken rejects", async () => {
@@ -141,8 +163,8 @@ describe("swap orders", () => {
           kind: "swap",
           symbol: TEST_SYMBOL,
           orderType: "market",
-          size: "1000000",
-          collateralToPay: { amount: "1000000", token: "USDC" },
+          size: 1000000n,
+          collateralToPay: { amount: 1000000n, token: "USDC" },
           mode: "express",
           from: account,
         } as any)
@@ -155,7 +177,7 @@ describe("swap orders", () => {
           kind: "swap",
           symbol: TEST_SYMBOL,
           orderType: "market",
-          size: "1000000",
+          size: 1000000n,
           receiveToken: "ETH",
           mode: "express",
           from: account,
@@ -169,8 +191,8 @@ describe("swap orders", () => {
           kind: "swap",
           symbol: TEST_SYMBOL,
           orderType: "market",
-          size: "1000000",
-          collateralToPay: { amount: "1000000", token: "USDC" },
+          size: 1000000n,
+          collateralToPay: { amount: 1000000n, token: "USDC" },
           receiveToken: "USDC",
           mode: "express",
           from: account,
@@ -184,8 +206,8 @@ describe("swap orders", () => {
           kind: "swap",
           symbol: TEST_SYMBOL,
           orderType: "market",
-          size: "1000000",
-          collateralToPay: { amount: "1000000", token: "FAKECOIN" },
+          size: 1000000n,
+          collateralToPay: { amount: 1000000n, token: "FAKECOIN" },
           receiveToken: "ETH",
           mode: "express",
           from: account,
@@ -199,8 +221,8 @@ describe("swap orders", () => {
           kind: "swap",
           symbol: TEST_SYMBOL,
           orderType: "market",
-          size: "1000000",
-          collateralToPay: { amount: "1000000", token: "USDC" },
+          size: 1000000n,
+          collateralToPay: { amount: 1000000n, token: "USDC" },
           receiveToken: "FAKECOIN",
           mode: "express",
           from: account,

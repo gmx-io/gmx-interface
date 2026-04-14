@@ -19,7 +19,7 @@
     "lint:ci": "node node_modules/.bin/eslint src landing --max-warnings=0",
     "pre-commit": "yarn run lint",
     "pre-push": "vitest run",
-    "prepare": "husky install && yarn lingui:prepare",
+    "prepare": "husky install || true && yarn lingui:prepare",
     "extract": "NODE_ENV=development lingui extract --clean",
     "compile": "lingui compile",
     "lingui:prepare": "NODE_ENV=development yarn extract && yarn compile",

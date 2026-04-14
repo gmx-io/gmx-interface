@@ -1,20 +1,20 @@
 import { describe, expect, it } from "vitest";
 
-import { getTestSdk, requireSigner, TEST_SYMBOL, TEST_SIZE_USD, TEST_COLLATERAL } from "./testUtil";
+import {
+  getTestSdk,
+  requireSigner,
+  expressFlow,
+  waitForOrderStatus,
+  TEST_SYMBOL,
+  TEST_SIZE_USD,
+  TEST_COLLATERAL,
+} from "./testUtil";
 
 const sdk = getTestSdk();
 const signer = requireSigner();
 const account = signer.address;
 
-// ---------------------------------------------------------------------------
-// Validation & Error Cases
-// ---------------------------------------------------------------------------
-
 describe("validation errors", () => {
-  // -------------------------------------------------------------------------
-  // Prepare validation (400)
-  // -------------------------------------------------------------------------
-
   describe("prepare validation", () => {
     it("missing mode rejects", async () => {
       await expect(
@@ -126,7 +126,7 @@ describe("validation errors", () => {
           direction: "long",
           orderType: "limit",
           size: TEST_SIZE_USD,
-          triggerPrice: "0",
+          triggerPrice: 0n,
           collateralToPay: TEST_COLLATERAL,
           mode: "express",
           from: account,
@@ -181,10 +181,6 @@ describe("validation errors", () => {
     });
   });
 
-  // -------------------------------------------------------------------------
-  // Submit validation (400)
-  // -------------------------------------------------------------------------
-
   describe("submit validation", () => {
     it("missing signature rejects", async () => {
       await expect(
@@ -227,40 +223,6 @@ describe("validation errors", () => {
     });
   });
 
-  // -------------------------------------------------------------------------
-  // Simulate errors
-  // -------------------------------------------------------------------------
-
-  describe("simulate errors", () => {
-    it("invalid params rejects", async () => {
-      await expect(
-        sdk.simulateOrder({
-          kind: "increase",
-          orderType: "market",
-          from: account,
-        } as any)
-      ).rejects.toThrow();
-    });
-
-    it("invalid symbol rejects", async () => {
-      await expect(
-        sdk.simulateOrder({
-          kind: "increase",
-          symbol: "NONEXISTENT/PAIR",
-          direction: "long",
-          orderType: "market",
-          size: TEST_SIZE_USD,
-          collateralToPay: TEST_COLLATERAL,
-          from: account,
-        })
-      ).rejects.toThrow();
-    });
-  });
-
-  // -------------------------------------------------------------------------
-  // Status endpoint errors
-  // -------------------------------------------------------------------------
-
   describe("status endpoint errors", () => {
     it("empty request rejects", async () => {
       await expect(sdk.fetchOrderStatus({})).rejects.toThrow();
@@ -272,10 +234,6 @@ describe("validation errors", () => {
       ).rejects.toThrow();
     });
   });
-
-  // -------------------------------------------------------------------------
-  // Domain errors
-  // -------------------------------------------------------------------------
 
   describe("domain errors", () => {
     it("MARKET_NOT_FOUND for invalid symbol", async () => {
@@ -301,7 +259,7 @@ describe("validation errors", () => {
           direction: "long",
           orderType: "market",
           size: TEST_SIZE_USD,
-          collateralToPay: { amount: "1000000", token: "FAKECOIN" },
+          collateralToPay: { amount: 1000000n, token: "FAKECOIN" },
           mode: "express",
           from: account,
         })
@@ -320,6 +278,51 @@ describe("validation errors", () => {
           from: "0x0000000000000000000000000000000000000001",
         })
       ).rejects.toThrow();
+    });
+  });
+
+  describe("order lifecycle tracking", () => {
+    it("status transitions from initial to executed", async () => {
+      const { submitted } = await expressFlow(sdk, signer, {
+        kind: "increase",
+        symbol: TEST_SYMBOL,
+        direction: "long",
+        orderType: "market",
+        size: TEST_SIZE_USD,
+        collateralToPay: TEST_COLLATERAL,
+        mode: "express",
+        from: account,
+      });
+
+      const initial = await sdk.fetchOrderStatus({ requestId: submitted.requestId });
+      expect(["accepted", "pending", "submitted", "executed"]).toContain(initial.status);
+      expect(initial.requestId).toBe(submitted.requestId);
+
+      const terminal = await waitForOrderStatus(sdk, submitted.requestId);
+      expect(terminal.status).toBe("executed");
+      expect(terminal.requestId).toBe(submitted.requestId);
+    });
+
+    it("terminal status has populated fields", async () => {
+      const { submitted } = await expressFlow(sdk, signer, {
+        kind: "increase",
+        symbol: TEST_SYMBOL,
+        direction: "long",
+        orderType: "market",
+        size: TEST_SIZE_USD,
+        collateralToPay: TEST_COLLATERAL,
+        mode: "express",
+        from: account,
+      });
+
+      const status = await waitForOrderStatus(sdk, submitted.requestId);
+      expect(status.status).toBe("executed");
+      expect(status.requestId).toBeDefined();
+      // createdTxnHash may not be populated immediately for all executed orders
+      if (status.createdTxnHash) expect(status.createdTxnHash.startsWith("0x")).toBe(true);
+      if (status.executionTxnHash) expect(status.executionTxnHash.startsWith("0x")).toBe(true);
+      if (status.createdAt) expect(typeof status.createdAt).toBe("string");
+      if (status.updatedAt) expect(typeof status.updatedAt).toBe("string");
     });
   });
 });

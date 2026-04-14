@@ -10,40 +10,36 @@ export type TransactionMode = "express" | "classic";
 
 export type PrepareOrderRequest = {
   kind: OrderKind;
-  /** Market symbol (e.g. "ETH/USD"). Required for increase/decrease, ignored for swap. */
   symbol?: string;
   direction?: "long" | "short";
   orderType: SimpleOrderType;
-  /** Position size in USD (30-decimal string). Required for increase/decrease. */
-  size?: string;
-  triggerPrice?: string;
-  /** Slippage tolerance in basis points (e.g. 30 = 0.3%). Default: 30. */
+  size?: bigint;
+  triggerPrice?: bigint;
   slippage?: number;
-  collateralToPay?: { amount: string; token: string };
+  collateralToken?: string;
+  collateralToPay?: { amount: bigint; token: string };
   receiveToken?: string;
-  /** Manual swap path (array of market addresses). Skips automatic path finding. */
+  keepLeverage?: boolean;
   manualSwapPath?: string[];
+  acceptablePriceImpactBps?: bigint;
+  executionFeeBufferBps?: number;
+  twapConfig?: { duration: number; parts: number; frequency?: number };
+  tpsl?: { type: "take-profit" | "stop-loss"; triggerPrice: bigint; size?: bigint }[];
   mode: TransactionMode;
   from: string;
-  // TODO: EIP-1271 (smart contract wallets) not yet supported
-  // signingScheme?: "ecdsa" | "eip1271";
-  // TODO: multichain signing not yet supported
-  // signingNetwork?: string;
-  /** Subaccount address — if provided, the subaccount relay router is used */
   subaccountAddress?: string;
-  /** Signed subaccount approval data */
   subaccountApproval?: Record<string, any>;
 };
 
 export type OrderEstimates = {
-  positionPriceImpactDeltaUsd: string;
-  swapPriceImpactDeltaUsd: string;
-  executionFeeAmount: string;
-  acceptablePrice: string;
-  sizeDeltaUsd: string;
-  positionFeeUsd: string;
-  borrowingFeeUsd: string;
-  fundingFeeUsd: string;
+  positionPriceImpactDeltaUsd: bigint;
+  swapPriceImpactDeltaUsd: bigint;
+  executionFeeAmount: bigint;
+  acceptablePrice: bigint;
+  sizeDeltaUsd: bigint;
+  positionFeeUsd: bigint;
+  borrowingFeeUsd: bigint;
+  fundingFeeUsd: bigint;
 };
 
 export type PrepareOrderResponse = {
@@ -51,8 +47,6 @@ export type PrepareOrderResponse = {
   idempotencyKey?: string;
   payloadType: "transaction" | "typed-data";
   mode: TransactionMode;
-  // TODO: EIP-1271 (smart contract wallets) not yet supported
-  // signingScheme?: "ecdsa" | "eip1271";
   payload: Record<string, any>;
   estimates?: OrderEstimates;
   expiresAt?: number;
@@ -62,15 +56,10 @@ export type PrepareOrderResponse = {
 
 export type SubmitOrderRequest = {
   mode: TransactionMode;
-  /** Request ID from the prepare response — used for transaction tracking */
   requestId?: string;
   signature?: string;
   from?: string;
   eip712Data?: Record<string, any>;
-  // TODO: EIP-1271 (smart contract wallets) not yet supported
-  // signingScheme?: "ecdsa" | "eip1271";
-  // TODO: multichain signing not yet supported
-  // signingNetwork?: string;
   idempotencyKey?: string;
 };
 
@@ -82,34 +71,6 @@ export type SubmitOrderResponse = {
   error?: { code: string; message: string };
   traceId?: string;
 };
-
-// ---------------------------------------------------------------------------
-// Simulate
-// ---------------------------------------------------------------------------
-
-export type SimulateOrderRequest = {
-  kind: OrderKind;
-  symbol?: string;
-  direction?: "long" | "short";
-  orderType: SimpleOrderType;
-  size?: string;
-  triggerPrice?: string;
-  /** Slippage tolerance in basis points (e.g. 30 = 0.3%). Default: 30. */
-  slippage?: number;
-  collateralToPay?: { amount: string; token: string };
-  receiveToken?: string;
-  from: string;
-};
-
-export type SimulateOrderResponse = {
-  success: boolean;
-  error?: { code: string; message: string };
-  traceId?: string;
-};
-
-// ---------------------------------------------------------------------------
-// Status
-// ---------------------------------------------------------------------------
 
 export type OrderStatusRequest = {
   requestId?: string;
@@ -131,72 +92,96 @@ export type OrderStatusResponse = {
   traceId?: string;
 };
 
-// ---------------------------------------------------------------------------
-// Edit
-// ---------------------------------------------------------------------------
-
 export type PrepareEditOrderRequest = {
   orderIds: string[];
-  newSize?: string;
-  newTriggerPrice?: string;
-  newAcceptablePrice?: string;
+  newSize?: bigint;
+  newTriggerPrice?: bigint;
+  newAcceptablePrice?: bigint;
   newAutoCancel?: boolean;
-  executionFeeTopUp?: string;
+  executionFeeTopUp?: bigint;
   mode: TransactionMode;
-  // TODO: EIP-1271 (smart contract wallets) not yet supported
-  // signingScheme?: "ecdsa" | "eip1271";
   from: string;
-  // TODO: multichain signing not yet supported
-  // signingNetwork?: string;
   subaccountAddress?: string;
   subaccountApproval?: Record<string, any>;
 };
-
-// ---------------------------------------------------------------------------
-// Cancel
-// ---------------------------------------------------------------------------
 
 export type PrepareCancelOrderRequest = {
   orderId?: string;
   orderIds?: string[];
   all?: boolean;
   mode: TransactionMode;
-  // TODO: EIP-1271 (smart contract wallets) not yet supported
-  // signingScheme?: "ecdsa" | "eip1271";
   from: string;
-  // TODO: multichain signing not yet supported
-  // signingNetwork?: string;
   subaccountAddress?: string;
   subaccountApproval?: Record<string, any>;
 };
 
+export type CollateralOperation = "deposit" | "withdraw";
+
+export type PrepareCollateralRequest = {
+  operation: CollateralOperation;
+  positionKey: string;
+  amount: bigint;
+  slippage?: number;
+  executionFeeBufferBps?: number;
+  mode: TransactionMode;
+  from: string;
+  subaccountAddress?: string;
+  subaccountApproval?: Record<string, any>;
+};
+
+function parseEstimates(raw: any): OrderEstimates | undefined {
+  if (!raw) return undefined;
+  return {
+    positionPriceImpactDeltaUsd: BigInt(raw.positionPriceImpactDeltaUsd),
+    swapPriceImpactDeltaUsd: BigInt(raw.swapPriceImpactDeltaUsd),
+    executionFeeAmount: BigInt(raw.executionFeeAmount),
+    acceptablePrice: BigInt(raw.acceptablePrice),
+    sizeDeltaUsd: BigInt(raw.sizeDeltaUsd),
+    positionFeeUsd: BigInt(raw.positionFeeUsd),
+    borrowingFeeUsd: BigInt(raw.borrowingFeeUsd),
+    fundingFeeUsd: BigInt(raw.fundingFeeUsd),
+  };
+}
+
+function parsePrepareResponse(raw: any): PrepareOrderResponse {
+  return { ...raw, estimates: parseEstimates(raw.estimates) };
+}
+
 export async function prepareOrder(ctx: { api: IHttp }, request: PrepareOrderRequest): Promise<PrepareOrderResponse> {
-  return ctx.api.postJson<PrepareOrderResponse>("/orders/txns/prepare", request);
+  return ctx.api.postJson<PrepareOrderResponse>("/orders/txns/prepare", request, {
+    transform: parsePrepareResponse,
+  });
 }
 
 export async function submitOrder(ctx: { api: IHttp }, request: SubmitOrderRequest): Promise<SubmitOrderResponse> {
   return ctx.api.postJson<SubmitOrderResponse>("/orders/txns/submit", request);
 }
 
-export async function simulateOrder(
-  ctx: { api: IHttp },
-  request: SimulateOrderRequest
-): Promise<SimulateOrderResponse> {
-  return ctx.api.postJson<SimulateOrderResponse>("/orders/txns/simulate", request);
-}
-
 export async function prepareEditOrder(
   ctx: { api: IHttp },
   request: PrepareEditOrderRequest
 ): Promise<PrepareOrderResponse> {
-  return ctx.api.postJson<PrepareOrderResponse>("/orders/txns/edit/prepare", request);
+  return ctx.api.postJson<PrepareOrderResponse>("/orders/txns/edit/prepare", request, {
+    transform: parsePrepareResponse,
+  });
 }
 
 export async function prepareCancelOrder(
   ctx: { api: IHttp },
   request: PrepareCancelOrderRequest
 ): Promise<PrepareOrderResponse> {
-  return ctx.api.postJson<PrepareOrderResponse>("/orders/txns/cancel/prepare", request);
+  return ctx.api.postJson<PrepareOrderResponse>("/orders/txns/cancel/prepare", request, {
+    transform: parsePrepareResponse,
+  });
+}
+
+export async function prepareCollateral(
+  ctx: { api: IHttp },
+  request: PrepareCollateralRequest
+): Promise<PrepareOrderResponse> {
+  return ctx.api.postJson<PrepareOrderResponse>("/orders/txns/collateral/prepare", request, {
+    transform: parsePrepareResponse,
+  });
 }
 
 export async function fetchOrderStatus(
@@ -210,7 +195,6 @@ export async function signPreparedOrder(
   prepared: PrepareOrderResponse,
   signer: IAbstractSigner,
   chainId?: ContractsChainId,
-  /** For subaccount orders, pass the main account address so receiver validation accepts it */
   accountAddress?: string
 ): Promise<string> {
   if (prepared.payloadType !== "typed-data") {
@@ -236,15 +220,10 @@ export async function signPreparedOrder(
   return signer.signTypedData(domain, types, message);
 }
 
-// ---------------------------------------------------------------------------
-// Full flow: prepare → sign → submit
-// ---------------------------------------------------------------------------
-
 export async function executeExpressOrder(
   ctx: { api: IHttp; chainId?: ContractsChainId },
   request: PrepareOrderRequest,
   signer: IAbstractSigner,
-  /** For subaccount orders, pass the main account address for receiver validation */
   accountAddress?: string
 ): Promise<SubmitOrderResponse> {
   const prepared = await prepareOrder(ctx, request);
