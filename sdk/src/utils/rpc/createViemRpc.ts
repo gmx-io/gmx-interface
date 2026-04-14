@@ -12,6 +12,9 @@ export function createViemRpc(client: PublicClient): IRpc {
         value: value ?? 0n,
         stateOverride: stateOverride?.map((entry) => ({
           address: entry.address as Address,
+          balance: entry.balance,
+          nonce: entry.nonce,
+          code: entry.code as `0x${string}` | undefined,
           stateDiff: entry.stateDiff?.map((diff) => ({
             slot: diff.slot as `0x${string}`,
             value: diff.value as `0x${string}`,
@@ -27,6 +30,9 @@ export function createViemRpc(client: PublicClient): IRpc {
         value: value ?? 0n,
         stateOverride: stateOverride?.map((entry) => ({
           address: entry.address as Address,
+          balance: entry.balance,
+          nonce: entry.nonce,
+          code: entry.code as `0x${string}` | undefined,
           stateDiff: entry.stateDiff?.map((diff) => ({
             slot: diff.slot as `0x${string}`,
             value: diff.value as `0x${string}`,
