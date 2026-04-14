@@ -1,6 +1,6 @@
 import { getApiUrl } from "configs/api";
 import { ContractsChainId } from "configs/chains";
-import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "configs/express";
+import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT, getGasPaymentTokens } from "configs/express";
 import { fetchApiApy } from "utils/apy/api";
 import { ApyParams, ApyResponse } from "utils/apy/types";
 import { fetchApiBuybackWeeklyStats } from "utils/buyback/api";
@@ -89,6 +89,7 @@ export type { WalletBalance, TokenAllowance, SpenderType, ApproveTokenParams, Ap
 export type { IAbstractSigner } from "utils/signer";
 export { PrivateKeySigner } from "utils/signer";
 export { HttpError } from "utils/http/http";
+export { getGasPaymentTokens } from "configs/express";
 export type {
   SubaccountStatusRequest,
   SubaccountStatusResponse,

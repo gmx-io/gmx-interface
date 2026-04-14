@@ -25,6 +25,7 @@ export type PrepareOrderRequest = {
   executionFeeBufferBps?: number;
   twapConfig?: { duration: number; parts: number; frequency?: number };
   tpsl?: { type: "take-profit" | "stop-loss"; triggerPrice: bigint; size?: bigint }[];
+  gasPaymentToken?: string;
   mode: TransactionMode;
   from: string;
   subaccountAddress?: string;
@@ -123,6 +124,7 @@ export type PrepareCollateralRequest = {
   amount: bigint;
   slippage?: number;
   executionFeeBufferBps?: number;
+  gasPaymentToken?: string;
   mode: TransactionMode;
   from: string;
   subaccountAddress?: string;

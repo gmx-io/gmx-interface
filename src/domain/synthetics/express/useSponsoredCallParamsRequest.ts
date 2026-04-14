@@ -5,7 +5,6 @@ import { getIsFlagEnabled } from "config/ab";
 import { ARBITRUM_SEPOLIA } from "config/chains";
 import { metrics } from "lib/metrics";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
-
 import { fetchGelatoGasTankBalance } from "sdk/utils/express";
 
 // $100 threshold in 6-decimal USD (as returned by gelato_getBalance)

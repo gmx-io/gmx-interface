@@ -1,4 +1,4 @@
-import { describe, expect, it, beforeAll, afterAll } from "vitest";
+import { describe, expect, it, afterAll } from "vitest";
 
 import {
   getTestSdk,
@@ -184,10 +184,6 @@ describe("edit & cancel orders", () => {
   describe("1CT edit + cancel", () => {
     const sdkSub = getTestSdk();
 
-    beforeAll(async () => {
-      await activateTestSubaccount(sdkSub, signer, account);
-    });
-
     afterAll(async () => {
       try {
         const prepared = await sdk.prepareCancelOrder({ all: true, mode: "express", from: account });
@@ -197,15 +193,16 @@ describe("edit & cancel orders", () => {
     });
 
     it("edit with subaccount — full submit", async () => {
-      let orders = await sdk.fetchOrders({ address: account });
-      if (orders.length === 0) {
-        await createLimitOrder(sdk);
-        orders = await waitForOrdersUpdate(sdk, account, (o) => o.length > 0, 30000);
-      }
-      expect(orders.length).toBeGreaterThan(0);
+      // Always create a fresh order to avoid stale state from previous blocks
+      const ordersBefore = await sdk.fetchOrders({ address: account });
+      const countBefore = ordersBefore.length;
+      await createLimitOrder(sdk);
+      const ordersAfter = await waitForOrdersUpdate(sdk, account, (o) => o.length > countBefore, 30000);
+      const orderId = ordersAfter[ordersAfter.length - 1].key;
+      const triggerBefore = BigInt(ordersAfter[ordersAfter.length - 1].triggerPrice);
 
-      const orderId = orders[0].key;
-      const triggerBefore = BigInt(orders[0].triggerPrice);
+      // Activate subaccount AFTER order creation so nonce is fresh
+      await activateTestSubaccount(sdkSub, signer, account);
 
       const prepared = await sdkSub.prepareEditOrder({
         orderIds: [orderId],
@@ -237,25 +234,25 @@ describe("edit & cancel orders", () => {
       const status = await waitForOrderStatus(sdk, submitted.requestId);
       expect(status.status).toBe("executed");
 
-      const ordersAfter = await waitForOrdersUpdate(sdk, account, (ords) => {
+      const updatedOrders = await waitForOrdersUpdate(sdk, account, (ords) => {
         const edited = ords.find((o: any) => o.key === orderId);
         return edited ? BigInt(edited.triggerPrice) !== triggerBefore : false;
       }, 30000);
-      const editedOrder = ordersAfter.find((o: any) => o.key === orderId);
+      const editedOrder = updatedOrders.find((o: any) => o.key === orderId);
       expect(editedOrder).toBeDefined();
       expect(BigInt(editedOrder!.triggerPrice)).not.toBe(triggerBefore);
     });
 
     it("cancel with subaccount — full submit", async () => {
-      const orders = await sdk.fetchOrders({ address: account });
-      if (orders.length === 0) {
-        await createLimitOrder(sdk);
-        await waitForOrdersUpdate(sdk, account, (o) => o.length > 0, 30000);
-      }
+      // Always create a fresh order
+      const ordersBefore = await sdk.fetchOrders({ address: account });
+      const countBefore = ordersBefore.length;
+      await createLimitOrder(sdk);
+      const ordersAfter = await waitForOrdersUpdate(sdk, account, (o) => o.length > countBefore, 30000);
+      const orderId = ordersAfter[ordersAfter.length - 1].key;
 
-      const freshOrders = await sdk.fetchOrders({ address: account });
-      expect(freshOrders.length).toBeGreaterThan(0);
-      const orderId = freshOrders[0].key;
+      // Re-activate for fresh nonce (edit test registered the old approval)
+      await activateTestSubaccount(sdkSub, signer, account);
 
       const prepared = await sdkSub.prepareCancelOrder({
         orderIds: [orderId],
@@ -286,10 +283,10 @@ describe("edit & cancel orders", () => {
       const status = await waitForOrderStatus(sdk, submitted.requestId);
       expect(status.status).toBe("executed");
 
-      const ordersAfter = await waitForOrdersUpdate(sdk, account, (ords) => {
+      const updatedOrders = await waitForOrdersUpdate(sdk, account, (ords) => {
         return !ords.find((o: any) => o.key === orderId);
       }, 30000);
-      expect(ordersAfter.find((o: any) => o.key === orderId)).toBeUndefined();
+      expect(updatedOrders.find((o: any) => o.key === orderId)).toBeUndefined();
     });
   });
 
