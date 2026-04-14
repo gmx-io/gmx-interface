@@ -217,9 +217,8 @@ export class GmxApiSdk {
   }
 
   signOrder(prepared: PrepareOrderResponse, signer: IAbstractSigner): Promise<string> {
-    const subSigner = subaccountSigners.get(this);
+    const subSigner = this._subaccount?.approval ? subaccountSigners.get(this) : undefined;
     const effectiveSigner = subSigner ?? signer;
-    // When signing with subaccount, the main account is a valid receiver
     const accountAddress = subSigner ? signer.address : undefined;
     return signPreparedOrder(prepared, effectiveSigner, this.ctx.chainId, accountAddress);
   }
