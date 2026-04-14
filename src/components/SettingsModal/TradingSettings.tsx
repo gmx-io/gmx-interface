@@ -22,11 +22,11 @@ import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
 import { getNativeToken } from "sdk/configs/tokens";
 
-import { CollateralDestinationSelector } from "components/CollateralDestinationSelector/CollateralDestinationSelector";
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import { ExpressTradingOutOfGasBanner } from "components/ExpressTradingOutOfGasBanner/ExpressTradingOutOfGasBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { GasPaymentTokenSelector } from "components/GasPaymentTokenSelector/GasPaymentTokenSelector";
+import { MarginDestinationSelector } from "components/MarginDestinationSelector/MarginDestinationSelector";
 import { OldSubaccountWithdraw } from "components/OldSubaccountWithdraw/OldSubaccountWithdraw";
 import { OneClickAdvancedSettings } from "components/OneClickAdvancedSettings/OneClickAdvancedSettings";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
@@ -287,19 +287,19 @@ export function TradingSettings({
             <TooltipWithPortal
               className="font-medium"
               variant="icon"
-              handle={<Trans>Send remaining collateral to</Trans>}
+              handle={<Trans>Send remaining margin to</Trans>}
               content={
                 <div>
                   <Trans>
                     Because positions on Arbitrum can be funded from both your wallet and your GMX Account, we can't
-                    always determine where to return the collateral automatically.
+                    always determine where to return the margin automatically.
                     <br />
                     <br />
                     Choose:
                     <br />• <span className="font-bold">Wallet</span> if you mostly trade from your personal wallet on
                     Arbitrum
-                    <br />• <span className="font-bold">GMX Account</span> if you plan to keep trading or reusing
-                    collateral on GMX.
+                    <br />• <span className="font-bold">GMX Account</span> if you plan to keep trading or reusing margin
+                    on GMX.
                     <br />
                     <br />
                     You can change this preference anytime in Settings or when closing a position.
@@ -307,7 +307,7 @@ export function TradingSettings({
                 </div>
               }
             />
-            <CollateralDestinationSelector
+            <MarginDestinationSelector
               isReceiveToGmxAccount={settings.receiveToGmxAccount ?? false}
               onChangeDestination={settings.setReceiveToGmxAccount}
               desktopPanelClassName="!z-[10000] w-[200px] !top-[10px]"

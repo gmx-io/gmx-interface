@@ -38,7 +38,7 @@ import {
   selectTradeboxKeepLeverage,
   selectTradeboxLeverage,
   selectTradeboxMarkPrice,
-  selectTradeboxMaxLeverage,
+  selectTradeboxMaxAllowedLeverage,
   selectTradeboxNextPositionValues,
   selectTradeboxSelectedPosition,
   selectTradeboxSelectedPositionKey,
@@ -74,6 +74,7 @@ import {
   formatBalanceAmount,
   formatDeltaUsd,
   formatPercentage,
+  formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsd,
   formatUsdPrice,
@@ -105,6 +106,7 @@ import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
 import { TradeboxMarginFields } from "components/TradeboxMarginFields";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
+import { TradeInputField, DisplayMode } from "components/TradeboxMarginFields/TradeInputField";
 import { TradeboxPoolWarnings } from "components/TradeboxPoolWarnings/TradeboxPoolWarnings";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
@@ -247,9 +249,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const { markRatio } = useSelector(selectTradeboxTradeRatios);
 
-  const maxLeverage = useSelector(selectTradeboxMaxLeverage);
-
-  const maxAllowedLeverage = maxLeverage / 2;
+  const maxAllowedLeverage = useSelector(selectTradeboxMaxAllowedLeverage);
 
   const decreaseOrdersThatWillBeExecuted = useDecreaseOrdersThatWillBeExecuted();
 
@@ -855,29 +855,53 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   }
 
   function renderDecreaseSizeInput() {
+    const closeDisplayMode: DisplayMode = closeSizeHook.showSizeInTokens ? "token" : "usd";
+    const handleCloseDisplayModeChange = (mode: DisplayMode) => {
+      if ((mode === "token") !== closeSizeHook.showSizeInTokens) {
+        closeSizeHook.handleSizeToggle();
+      }
+    };
+
+    const closeAlternateValue = (() => {
+      if (closeDisplayMode === "token") {
+        return formatUsd(closeSizeHook.closeSizeUsd);
+      }
+      if (!selectedPosition || !toToken || selectedPosition.sizeInUsd === 0n) {
+        return "0";
+      }
+      const closeSizeInTokens =
+        (closeSizeHook.closeSizeUsd * selectedPosition.sizeInTokens) / selectedPosition.sizeInUsd;
+      const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
+      return formatTokenAmount(closeSizeInTokens / visualMultiplier, toToken.decimals, toToken.symbol);
+    })();
+
     return (
       <>
-        <BuyInputSection
-          topLeftLabel={t`Close`}
-          bottomRightValue={selectedPosition?.sizeInUsd ? formatUsd(selectedPosition.sizeInUsd) : undefined}
-          bottomLeftValue={formatUsd(closeSizeHook.closeSizeUsd)}
+        <TradeInputField
+          label={t`Close`}
           inputValue={closeSizeHook.closeSizeInput}
           onInputValueChange={closeSizeHook.handleInputChange}
-          onClickBottomRightLabel={closeSizeHook.setMaxCloseSize}
-          onClickMax={
-            selectedPosition?.sizeInUsd &&
-            selectedPosition.sizeInUsd > 0 &&
-            closeSizeHook.closeSizeInput !== closeSizeHook.formattedMaxCloseSize
-              ? closeSizeHook.setMaxCloseSize
-              : undefined
+          displayMode={closeDisplayMode}
+          onDisplayModeChange={handleCloseDisplayModeChange}
+          tokenSymbol={toToken?.symbol}
+          alternateValue={closeAlternateValue}
+          rightHeadline={
+            selectedPosition?.sizeInUsd ? (
+              <button
+                type="button"
+                className="flex items-center gap-4 text-typography-secondary hover:text-typography-primary"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  closeSizeHook.setMaxCloseSize();
+                }}
+              >
+                {t`Max:`} <span className="numbers">{closeSizeHook.formattedMaxCloseSize}</span>
+              </button>
+            ) : undefined
           }
           qa="close"
           maxDecimals={closeSizeHook.showSizeInTokens ? toToken?.decimals ?? 18 : USD_DECIMALS}
-        >
-          <span className="cursor-pointer select-none" onClick={closeSizeHook.handleSizeToggle}>
-            {closeSizeHook.closeSizeLabel}
-          </span>
-        </BuyInputSection>
+        />
         {selectedPosition && selectedPosition.sizeInUsd > 0n && (
           <MarginPercentageSlider value={closeSizeHook.closePercentage} onChange={closeSizeHook.handleSliderChange} />
         )}
@@ -1016,19 +1040,19 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   return (
     <form className="flex flex-col gap-8" onSubmit={handleFormSubmit} ref={formRef}>
       <div className="flex flex-col gap-12 rounded-b-8 bg-slate-900 pb-16">
+        <div className="flex items-center justify-between">
+          <Tabs
+            options={tabsOptions}
+            selectedValue={tradeMode}
+            onChange={onSelectTradeMode}
+            qa="trade-mode"
+            className="w-full px-12"
+            rightContent={<TradeInfoIcon isMobile={isMobile} tradeType={tradeType} tradePlace="tradebox" />}
+            regularOptionClassname="!px-0"
+            tabsWrapperClassName="gap-12"
+          />
+        </div>
         <div className="flex flex-col gap-12 px-12">
-          <div className="flex items-center justify-between">
-            <Tabs
-              options={tabsOptions}
-              type="pills"
-              selectedValue={tradeMode}
-              onChange={onSelectTradeMode}
-              qa="trade-mode"
-              className="bg-slate-900 text-13"
-              regularOptionClassname="grow"
-            />
-            <TradeInfoIcon isMobile={isMobile} tradeType={tradeType} tradePlace="tradebox" />
-          </div>
           <div className="text-body-medium flex grow flex-col gap-14">
             <div className="flex flex-col gap-4">
               {isSwap && renderTokenInputs()}
@@ -1094,7 +1118,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             )}
           </div>
         </div>
-        <div className="flex flex-col gap-14 border-t-1/2 border-t-slate-600 px-12 pt-12">
+        <div className="flex flex-col gap-14 px-12 pt-12">
           {isPosition && isTrigger && selectedPosition && selectedPosition?.leverage !== undefined && (
             <ToggleSwitch
               isChecked={keepLeverageChecked}

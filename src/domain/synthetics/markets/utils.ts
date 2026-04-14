@@ -112,7 +112,11 @@ export function getAvailableUsdLiquidityForPosition(
     return 0n;
   }
 
-  const maxReservedUsd = maxReservedUsdWithJit ?? getMaxReservedUsd(marketInfo, isLong);
+  const nativeMaxReservedUsd = getMaxReservedUsd(marketInfo, isLong);
+  const maxReservedUsd =
+    maxReservedUsdWithJit !== undefined
+      ? bigMath.max(maxReservedUsdWithJit, nativeMaxReservedUsd)
+      : nativeMaxReservedUsd;
   const reservedUsd = getReservedUsd(marketInfo, isLong);
 
   const maxOpenInterest = getMaxOpenInterestUsd(marketInfo, isLong);
@@ -435,8 +439,8 @@ export function getTotalGlvInfo({
   return getTotalTokensBalance(tokensData, ["GLV"], multichainMarketTokensBalances);
 }
 
-export function getTradeboxLeverageSliderMarks(maxLeverage: number) {
-  const allowedLeverage = Math.round(maxLeverage / 2 / BASIS_POINTS_DIVISOR);
+export function getTradeboxLeverageSliderMarks(maxAllowedLeverage: number) {
+  const allowedLeverage = Math.round(maxAllowedLeverage / BASIS_POINTS_DIVISOR);
 
   if (allowedLeverage >= 125) {
     return [0.1, 1, 2, 5, 10, 50, 100, allowedLeverage];

@@ -138,7 +138,7 @@ export function LeaderboardPositionsTable({
                     <br />
                     <br />
                     The capital used is calculated as the highest value of [
-                    <i>sum of collateral of open positions - realized PnL + period start pending PnL</i>].
+                    <i>sum of margin of open positions - realized PnL + period start pending PnL</i>].
                   </Trans>
                 }
                 tooltipPosition="bottom-start"
@@ -293,7 +293,7 @@ const TableRow = memo(
       return (
         <>
           <StatsTooltipRow
-            label={t`Collateral`}
+            label={t`Margin`}
             showDollar={false}
             value={
               <AmountWithUsdBalance
@@ -309,7 +309,7 @@ const TableRow = memo(
       );
     }, [collateralToken, position.collateralAmount, position.collateralUsd]);
 
-    const renderNaLiquidationTooltip = useCallback(() => t`No liquidation price. Collateral covers any losses.`, []);
+    const renderNaLiquidationTooltip = useCallback(() => t`No liquidation price. Margin covers any losses.`, []);
 
     const renderLiquidationTooltip = useCallback(() => {
       const markPrice = indexToken?.prices.maxPrice;

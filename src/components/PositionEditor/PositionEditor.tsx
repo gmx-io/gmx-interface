@@ -28,10 +28,13 @@ import { getMinCollateralUsdForLeverage, getTradeFlagsForCollateralEdit } from "
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
+import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
-import { formatAmountFree, formatBalanceAmount, formatTokenAmountWithUsd } from "lib/numbers";
+import { formatAmountFree, formatBalanceAmount, formatTokenAmountWithUsd, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
+import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
+import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
 import {
   convertTokenAddress,
   getTokenVisualMultiplier,
@@ -42,13 +45,16 @@ import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import Modal from "components/Modal/Modal";
+import NumberInput from "components/NumberInput/NumberInput";
 import Tabs from "components/Tabs/Tabs";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
+import { TradeInputBox } from "components/TradeboxMarginFields/TradeInputBox";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
+
+import WalletIcon from "img/ic_wallet.svg?react";
 
 import { PositionEditorCollateralSelector } from "../CollateralSelector/PositionEditorCollateralSelector";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
@@ -65,6 +71,9 @@ import "./PositionEditor.scss";
 export function PositionEditor() {
   const { chainId, srcChainId } = useChainId();
   const { expressOrdersEnabled, setExpressOrdersEnabled, setIsSettingsVisible } = useSettings();
+  const { isNonEoaAccountOnAnyChain } = useIsNonEoaAccountOnAnyChain();
+  const isGeminiWallet = useIsGeminiWallet();
+  const isExpressUnsupportedWallet = isNonEoaAccountOnAnyChain || isGeminiWallet;
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const tokensData = useTokensData();
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
@@ -87,6 +96,11 @@ export function PositionEditor() {
 
   const handleSetCollateralAddress = useCallback(
     (tokenAddress: string, isGmxAccount?: boolean) => {
+      if (isGmxAccount && isExpressUnsupportedWallet) {
+        helperToast.error(t`Smart wallets are not supported on Express Trading or One-Click Trading`);
+        return;
+      }
+
       if (isGmxAccount && !expressOrdersEnabled) {
         setExpressOrdersEnabled(true);
         toastEnableExpress(() => setIsSettingsVisible(true));
@@ -99,6 +113,7 @@ export function PositionEditor() {
     },
     [
       expressOrdersEnabled,
+      isExpressUnsupportedWallet,
       setSelectedCollateralAddress,
       setExpressOrdersEnabled,
       setIsSettingsVisible,
@@ -360,7 +375,7 @@ export function PositionEditor() {
         setIsVisible={onClose}
         label={
           <Trans>
-            Edit collateral: {position?.isLong ? t`Long` : t`Short`}{" "}
+            Edit margin: {position?.isLong ? t`Long` : t`Short`}{" "}
             {position?.indexToken && getTokenVisualMultiplier(position.indexToken)}
             {position?.indexToken?.symbol}/USD
           </Trans>
@@ -378,36 +393,76 @@ export function PositionEditor() {
               className="PositionEditor-tabs"
               qa="operation-tabs"
             />
-            <BuyInputSection
-              topLeftLabel={localizedOperationLabels[operation]}
-              topRightLabel={isDeposit ? t`Balance` : t`Max`}
-              topRightValue={
-                isDeposit
-                  ? formatBalanceAmount(collateralTokenBalance ?? 0n, collateralToken?.decimals ?? 0, undefined, {
-                      isStable: collateralToken?.isStable,
-                    })
-                  : formatBalanceAmount(maxWithdrawAmount ?? 0n, position?.collateralToken?.decimals ?? 0, undefined, {
-                      isStable: position?.collateralToken?.isStable,
-                    })
-              }
-              inputValue={collateralInputValue}
-              onInputValueChange={(e) => setCollateralInputValue(e.target.value)}
+            <TradeInputBox
               qa="amount-input"
-              maxDecimals={collateralToken?.decimals ?? position?.collateralToken?.decimals ?? 0}
-            >
-              {hasMultipleTokens ? (
-                <PositionEditorCollateralSelector
-                  chainId={chainId}
-                  selectedTokenSymbol={collateralToken?.symbol}
-                  isCollateralTokenFromGmxAccount={isCollateralTokenFromGmxAccount}
-                  options={options}
-                  onSelect={handleSetCollateralAddress}
-                  variant={isDeposit ? "balance" : "destination"}
-                />
-              ) : (
-                collateralToken?.symbol
-              )}
-            </BuyInputSection>
+              leftHeadline={localizedOperationLabels[operation]}
+              leftContent={
+                <>
+                  <NumberInput
+                    value={collateralInputValue}
+                    className="text-body-large min-w-0 shrink overflow-hidden text-ellipsis p-0 outline-none"
+                    onValueChange={(e) => setCollateralInputValue(e.target.value)}
+                    placeholder="0.0"
+                    qa="amount-input-input"
+                    maxDecimals={collateralToken?.decimals ?? position?.collateralToken?.decimals ?? 0}
+                  />
+                  {collateralDeltaUsd !== undefined && collateralDeltaUsd > 0n && !collateralToken?.isStable && (
+                    <span className="shrink-0 text-12 text-typography-secondary numbers">
+                      ≈{formatUsd(collateralDeltaUsd)}
+                    </span>
+                  )}
+                </>
+              }
+              rightHeadline={
+                isDeposit ? (
+                  <button
+                    type="button"
+                    className="flex items-center gap-4 text-typography-secondary hover:text-typography-primary"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleCollateralPercentageChange(100);
+                    }}
+                  >
+                    <WalletIcon className="size-14" />
+                    <span className="numbers">
+                      {formatBalanceAmount(collateralTokenBalance ?? 0n, collateralToken?.decimals ?? 0, undefined, {
+                        isStable: collateralToken?.isStable,
+                      })}
+                    </span>
+                  </button>
+                ) : (
+                  <span className="flex items-center gap-4 text-typography-secondary">
+                    {t`Max:`}{" "}
+                    <span className="numbers">
+                      {formatBalanceAmount(
+                        maxWithdrawAmount ?? 0n,
+                        position?.collateralToken?.decimals ?? 0,
+                        undefined,
+                        {
+                          isStable: position?.collateralToken?.isStable,
+                        }
+                      )}
+                    </span>
+                  </span>
+                )
+              }
+              rightContent={
+                <div data-token-selector>
+                  {hasMultipleTokens ? (
+                    <PositionEditorCollateralSelector
+                      chainId={chainId}
+                      selectedTokenSymbol={collateralToken?.symbol}
+                      isCollateralTokenFromGmxAccount={isCollateralTokenFromGmxAccount}
+                      options={options}
+                      onSelect={handleSetCollateralAddress}
+                      variant={isDeposit ? "balance" : "destination"}
+                    />
+                  ) : (
+                    <span className="text-14">{collateralToken?.symbol}</span>
+                  )}
+                </div>
+              }
+            />
             {maxAvailableAmount !== undefined && maxAvailableAmount > 0n && (
               <MarginPercentageSlider value={collateralPercentage} onChange={handleCollateralPercentageChange} />
             )}

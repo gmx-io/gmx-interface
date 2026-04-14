@@ -148,7 +148,15 @@ export function getMaxLeverageByMinCollateralFactor(minCollateralFactor: bigint 
   return rounded * BASIS_POINTS_DIVISOR;
 }
 
+// GOLD/SILVER on-hours: MCF 0.009 (9e27) → 100x UI
+const MCF_ON_HOURS = 9n * 10n ** 27n;
+// GOLD/SILVER off-hours: MCF 0.035 (35e27) → 25x UI
+const MCF_OFF_HOURS = 35n * 10n ** 27n;
+
 export function getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor: bigint | undefined) {
+  if (minCollateralFactor === MCF_ON_HOURS) return 100 * BASIS_POINTS_DIVISOR;
+  if (minCollateralFactor === MCF_OFF_HOURS) return 25 * BASIS_POINTS_DIVISOR;
+
   return getMaxLeverageByMinCollateralFactor(minCollateralFactor) / 2;
 }
 

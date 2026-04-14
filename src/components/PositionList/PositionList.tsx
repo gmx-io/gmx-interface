@@ -117,7 +117,7 @@ export function PositionList(p: Props) {
                 </TableTh>
                 <TableTh className="w-[11%]">
                   <Sorter {...getSorterProps("collateral")} showOnHover>
-                    <Trans>COLLATERAL</Trans>
+                    <Trans>MARGIN</Trans>
                   </Sorter>
                 </TableTh>
                 <TableTh className="w-[9%]">

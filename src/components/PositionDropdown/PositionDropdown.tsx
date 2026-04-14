@@ -85,7 +85,7 @@ export default function PositionDropdown({
               <div className="menu-item" onClick={handleEditCollateral}>
                 <EditIcon width={16} height={16} />
                 <p>
-                  <Trans>Edit collateral</Trans>
+                  <Trans>Edit margin</Trans>
                 </p>
               </div>
             </Menu.Item>

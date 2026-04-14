@@ -17,7 +17,7 @@ export function ControlledTabs({
 }: {
   options?: Option<string>[];
   initialValue?: string;
-  type?: "inline" | "block" | "inline-primary" | "pills";
+  type?: "inline" | "block" | "inline-primary";
   qa?: string;
 }) {
   const [selected, setSelected] = useState(initialValue);

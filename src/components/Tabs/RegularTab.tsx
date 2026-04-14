@@ -12,7 +12,7 @@ type Props<V extends string | number> = {
   onOptionClick: ((value: V) => void) | undefined;
   regularOptionClassname?: string;
   qa?: string;
-  type: "inline" | "block" | "inline-primary" | "pills";
+  type: "inline" | "block" | "inline-primary";
 };
 
 export default function RegularTab<V extends string | number>({
@@ -29,32 +29,6 @@ export default function RegularTab<V extends string | number>({
   const Wrap = isDisabled && option.disabledMessage ? TooltipWithPortal : NoopWrapper;
 
   const optionClassName = isActive ? option.className?.active : option.className?.regular;
-
-  if (type === "pills") {
-    return (
-      <Wrap content={option.disabledMessage} variant="none">
-        <button
-          type="button"
-          className={cx(
-            "text-body-medium rounded-full border px-12 py-6 font-medium transition-colors",
-            optionClassName,
-            regularOptionClassname,
-            {
-              "border-slate-600 bg-slate-800 text-typography-primary": isActive,
-              "bg-transparent border-slate-600 text-typography-secondary hover:text-typography-primary": !isActive,
-            }
-          )}
-          onClick={() => onOptionClick?.(option.value)}
-          key={option.value}
-          data-qa={qa ? `${qa}-tab-${option.value}` : undefined}
-          disabled={isDisabled}
-        >
-          {option.icon && <span className="mr-4 inline-flex items-center">{option.icon}</span>}
-          {label}
-        </button>
-      </Wrap>
-    );
-  }
 
   if (type === "inline-primary") {
     return (

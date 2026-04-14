@@ -116,7 +116,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
   const swapFields = <SwapSlippageField disabled={isLimit || isTwap} />;
 
   const fieldsRow = (
-    <div className="h-40 rounded-t-8 border-b-1/2 border-b-slate-600 bg-slate-900 px-12 py-8">
+    <div className="h-42 rounded-t-8 bg-slate-900 px-12 py-8 pb-12">
       {isSwap ? swapFields : isPosition ? positionFields : null}
     </div>
   );
@@ -131,7 +131,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
   return (
     <>
       {isInCurtain && !isCurtainOpen ? null : fieldsRow}
-      <div className={cx("flex gap-8 bg-slate-900", isInCurtain && !isCurtainOpen ? "p-8" : "p-12")}>
+      <div className={cx("flex gap-8 bg-slate-900", isInCurtain && !isCurtainOpen ? "p-8" : "px-12")}>
         <div className="flex grow items-stretch gap-12">
           <Tabs
             options={longShortTabsOptions}

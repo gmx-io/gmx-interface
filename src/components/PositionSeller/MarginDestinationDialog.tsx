@@ -8,19 +8,19 @@ import Checkbox from "components/Checkbox/Checkbox";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-interface CollateralDestinationDialogProps {
+interface MarginDestinationDialogProps {
   isVisible: boolean;
   setIsVisible: (visible: boolean) => void;
   chosenReceiveToGmxAccount: boolean;
   setDialogHidden: (val: boolean) => void;
 }
 
-export function CollateralDestinationDialog({
+export function MarginDestinationDialog({
   isVisible,
   setIsVisible,
   chosenReceiveToGmxAccount,
   setDialogHidden,
-}: CollateralDestinationDialogProps) {
+}: MarginDestinationDialogProps) {
   const settings = useSettings();
   const [dontAskAgain, setDontAskAgain] = useState(false);
 
@@ -53,7 +53,7 @@ export function CollateralDestinationDialog({
       <div className="flex flex-col gap-16">
         <div className="text-14 text-typography-secondary">
           <Trans>
-            You chose to send the remaining collateral to your{" "}
+            You chose to send the remaining margin to your{" "}
             <span className="font-medium text-typography-primary">{chosenLabel}</span>. Do you want to make this the
             default destination when closing positions?
           </Trans>
@@ -67,14 +67,14 @@ export function CollateralDestinationDialog({
             <div>
               <Trans>
                 Because positions on Arbitrum can be funded from both your wallet and your GMX Account, we can't always
-                determine where to return the collateral automatically.
+                determine where to return the margin automatically.
                 <br />
                 <br />
                 Choose:
                 <br />• <span className="font-bold">Wallet</span> if you mostly trade from your personal wallet on
                 Arbitrum
-                <br />• <span className="font-bold">GMX Account</span> if you plan to keep trading or reusing collateral
-                on GMX.
+                <br />• <span className="font-bold">GMX Account</span> if you plan to keep trading or reusing margin on
+                GMX.
                 <br />
                 <br />
                 You can change this preference anytime in Settings or when closing a position.

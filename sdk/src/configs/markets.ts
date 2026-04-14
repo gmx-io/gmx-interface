@@ -915,6 +915,20 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
       longTokenAddress: "0x2f2a2543B76A4166549F7aaB2e75Bef0aefC5B0f",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // GOLD/USD [WETH-USDC]
+    "0x0Df2BE76F517BCF0000AbfFcB6344B3b2aC4Cc4f": {
+      marketTokenAddress: "0x0Df2BE76F517BCF0000AbfFcB6344B3b2aC4Cc4f",
+      indexTokenAddress: "0xc48d782c5C54157d37d2Fa4E6BA27E8cf57Da956",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // SILVER/USD [WETH-USDC]
+    "0x448Fa722717df299ee197E2F6d8EB7911EFF6cEc": {
+      marketTokenAddress: "0x448Fa722717df299ee197E2F6d8EB7911EFF6cEc",
+      indexTokenAddress: "0xE41902f9aD379A8CC34A34efa00F5c3EE5112bC8",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
@@ -1318,6 +1332,19 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
       shortTokenAddress: "0xFAfDdbb3FC7688494971a79cc65DCa3EF82079E7",
     },
   },
+};
+
+/**
+ * Markets excluded from swap path routing (collateral swaps and express fee swaps).
+ * GM token buying/selling of these markets is unaffected — only routing through them is blocked.
+ */
+export const DISABLED_SWAP_ROUTE_MARKETS: Partial<Record<ContractsChainId, string[]>> = {
+  [ARBITRUM]: [
+    "0x248C35760068cE009a13076D573ed3497A47bCD4", // ATOM/USD [WETH-USDC]
+    "0x4fDd333FF9cA409df583f306B6F5a7fFdE790739", // OP/USD [OP-USDC]
+    "0xD4b737892baB8446Ea1e8Bb901db092fb1EC1791", // EIGEN/USD [WETH-USDC]
+    "0xdAB21c4d1F569486334C93685Da2b3F9b0A078e8", // APE/USD [APE-USDC]
+  ],
 };
 
 export type MarketLabel = `${string}/USD [${string}-${string}]`;

@@ -146,9 +146,14 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
           <SyntheticsInfoRow
             label={
               <Tooltip
-                handle={<Trans>Collateral ({position?.collateralToken?.symbol})</Trans>}
+                handle={<Trans>Margin ({position?.collateralToken?.symbol})</Trans>}
                 position="top-start"
-                content={<Trans>Initial collateral, excluding borrow and funding fees</Trans>}
+                content={
+                  <Trans>
+                    Current margin excludes pending borrow and funding fees. Post-close margin reflects realized PnL and
+                    settled fees.
+                  </Trans>
+                }
                 variant="iconStroke"
               />
             }

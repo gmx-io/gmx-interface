@@ -29,7 +29,7 @@ function AffiliatePromos() {
     <>
       <h2 className="text-[40px] font-medium max-md:text-[32px]">
         <Trans>
-          Earn up to 20% in
+          Earn up to 15% in
           <br className="max-md:hidden" /> rebates as an Affiliate
         </Trans>
       </h2>

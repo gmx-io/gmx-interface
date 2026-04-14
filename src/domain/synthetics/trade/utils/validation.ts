@@ -11,6 +11,7 @@ import {
 } from "config/chains";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { getMappedTokenId } from "config/multichain";
+import { isDepositDisabledMarket, isShiftIntoDisabledMarket } from "config/static/markets";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
 import {
   GlvInfo,
@@ -391,7 +392,7 @@ export function getIncreaseError(p: {
       : nextPositionValues?.nextCollateralUsd;
 
   if (roundedNextCollateralUsd === undefined ? undefined : roundedNextCollateralUsd < _minCollateralUsd) {
-    return { buttonErrorMessage: t`Min collateral: ${formatUsd(_minCollateralUsd)}` };
+    return { buttonErrorMessage: t`Min margin: ${formatUsd(_minCollateralUsd)}` };
   }
 
   if (sizeDeltaUsd <= 0) {
@@ -606,7 +607,7 @@ export function getDecreaseError(p: {
         : nextPositionValues.nextCollateralUsd < (minCollateralUsd ?? 0n))
     ) {
       return {
-        buttonErrorMessage: t`Leftover collateral below ${formatAmount(minCollateralUsd, USD_DECIMALS, 2)} USD`,
+        buttonErrorMessage: t`Leftover margin below ${formatAmount(minCollateralUsd, USD_DECIMALS, 2)} USD`,
       };
     }
   }
@@ -793,6 +794,10 @@ export function getGmSwapError(p: {
     return { buttonErrorMessage: t`Loading...` };
   }
 
+  if (isDeposit && isDepositDisabledMarket(chainId, marketInfo.marketTokenAddress)) {
+    return { buttonErrorMessage: t`Buying GM is disabled for this market` };
+  }
+
   const glvTooltipMessage = glvInfo
     ? t`GM: ${marketInfo.name} buyable cap reached in ${getGlvDisplayName(glvInfo)} [${getMarketPoolName(glvInfo)}]. Choose a different pool, reduce size, or pick a different token composition.`
     : undefined;
@@ -966,6 +971,7 @@ export function getGmSwapError(p: {
 }
 
 export function getGmShiftError({
+  chainId,
   fromMarketInfo,
   fromToken,
   fromTokenAmount,
@@ -978,6 +984,7 @@ export function getGmShiftError({
   fees,
   priceImpactUsd,
 }: {
+  chainId: number;
   fromMarketInfo: MarketInfo | undefined;
   fromToken: TokenData | undefined;
   fromTokenAmount: bigint | undefined;
@@ -994,6 +1001,10 @@ export function getGmShiftError({
 
   if (!fromMarketInfo || !fromToken || !toMarketInfo || !toToken) {
     return { buttonErrorMessage: t`Loading...` };
+  }
+
+  if (!isGlv && isShiftIntoDisabledMarket(chainId, toMarketInfo.marketTokenAddress)) {
+    return { buttonErrorMessage: t`Shifting into this market is disabled` };
   }
 
   if (priceImpactUsd !== undefined && priceImpactUsd > 0) {

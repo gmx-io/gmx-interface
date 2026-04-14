@@ -6,20 +6,20 @@ import { SelectorBase, useSelectorClose } from "components/SelectorBase/Selector
 import GmxRoundedIcon from "img/ic_gmx_rounded.svg?react";
 import ArbitrumIcon from "img/tokens/ic_arbitrum.svg?react";
 
-interface CollateralDestinationSelectorProps {
+interface MarginDestinationSelectorProps {
   isReceiveToGmxAccount: boolean;
   onChangeDestination: (isGmxAccount: boolean) => void;
   desktopPanelClassName?: string;
 }
 
-export function CollateralDestinationSelector({
+export function MarginDestinationSelector({
   isReceiveToGmxAccount,
   onChangeDestination,
   desktopPanelClassName = "w-[200px]",
-}: CollateralDestinationSelectorProps) {
+}: MarginDestinationSelectorProps) {
   return (
     <SelectorBase
-      modalLabel="Send remaining collateral to"
+      modalLabel="Send remaining margin to"
       desktopPanelClassName={desktopPanelClassName}
       wrapperClassName="text-typography-primary"
       label={
@@ -32,12 +32,12 @@ export function CollateralDestinationSelector({
       }
     >
       <div className="flex flex-col py-6">
-        <CollateralDestinationOption
+        <MarginDestinationOption
           isGmxBalance={false}
           isSelected={!isReceiveToGmxAccount}
           onClick={() => onChangeDestination(false)}
         />
-        <CollateralDestinationOption
+        <MarginDestinationOption
           isGmxBalance
           isSelected={isReceiveToGmxAccount}
           onClick={() => onChangeDestination(true)}
@@ -47,7 +47,7 @@ export function CollateralDestinationSelector({
   );
 }
 
-function CollateralDestinationOption({
+function MarginDestinationOption({
   isGmxBalance,
   isSelected,
   onClick,

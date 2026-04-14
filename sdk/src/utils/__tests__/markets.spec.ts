@@ -189,6 +189,18 @@ describe("getMaxAllowedLeverageByMinCollateralFactor", () => {
   it("returns half of max leverage", () => {
     expect(getMaxAllowedLeverageByMinCollateralFactor(1000000000000000000n)).toBe(5000000000000000);
   });
+
+  it("returns 100x for on-hours MCF (0.009 → 110x contract max)", () => {
+    // MCF 0.009 = 9e27 → maxLeverage 110x → allowed 100x
+    const onHoursFactor = 9n * 10n ** 27n;
+    expect(getMaxAllowedLeverageByMinCollateralFactor(onHoursFactor)).toBe(100 * 10000);
+  });
+
+  it("returns 25x for off-hours MCF (0.035 → 30x contract max)", () => {
+    // MCF 0.035 = 35e27 → maxLeverage 30x → allowed 25x
+    const offHoursFactor = 35n * 10n ** 27n;
+    expect(getMaxAllowedLeverageByMinCollateralFactor(offHoursFactor)).toBe(25 * 10000);
+  });
 });
 
 describe("getOppositeCollateral", () => {

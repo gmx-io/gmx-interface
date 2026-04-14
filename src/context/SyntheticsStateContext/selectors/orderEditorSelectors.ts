@@ -755,11 +755,19 @@ export const makeSelectOrderEditorPositionOrderError = createSelectorFactory(
       const indexToken = q((state) => getByKey(selectMarketsInfoData(state), order.marketAddress)?.indexToken);
       const markPrice = positionOrder.isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
 
-      const sizeDeltaUsd = order.sizeDeltaUsd;
+      const existingPosition = q(selectExistingPosition);
+
+      // Clamp sizeDeltaUsd to the current position size.
+      // When a position is partially closed, existing decrease orders may still
+      // reference the old (larger) size. Chart-drag updates only change the
+      // trigger price, so we should not block them with "Max close amount exceeded".
+      const sizeDeltaUsd =
+        existingPosition && order.sizeDeltaUsd > existingPosition.sizeInUsd
+          ? existingPosition.sizeInUsd
+          : order.sizeDeltaUsd;
 
       const acceptablePrice = undefined;
 
-      const existingPosition = q(selectExistingPosition);
       const nextPositionValuesForIncrease = q(selectNextPositionValuesForIncrease);
       const maxAllowedLeverage = q(selectMaxAllowedLeverage);
 

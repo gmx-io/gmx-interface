@@ -17,6 +17,7 @@ import {
 import { getJitLiquidityInfo } from "domain/synthetics/jit/utils";
 import {
   getAvailableUsdLiquidityForPosition,
+  getMaxAllowedLeverageByMinCollateralFactor,
   getMaxLeverageByMinCollateralFactor,
   getTradeboxLeverageSliderMarks,
 } from "domain/synthetics/markets";
@@ -1270,8 +1271,13 @@ export const selectTradeboxMaxLeverage = createSelector((q) => {
   return getMaxLeverageByMinCollateralFactor(minCollateralFactor);
 });
 
+export const selectTradeboxMaxAllowedLeverage = createSelector((q) => {
+  const minCollateralFactor = q((s) => s.tradebox.marketInfo?.minCollateralFactor);
+  return getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor);
+});
+
 export const selectTradeboxLeverageSliderMarks = createSelector((q) => {
-  const maxAllowedLeverage = q(selectTradeboxMaxLeverage);
+  const maxAllowedLeverage = q(selectTradeboxMaxAllowedLeverage);
   return getTradeboxLeverageSliderMarks(maxAllowedLeverage);
 });
 

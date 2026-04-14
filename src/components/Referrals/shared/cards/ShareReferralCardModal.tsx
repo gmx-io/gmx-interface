@@ -7,6 +7,7 @@ import { shareOrCopyElementAsImage } from "lib/copyElementAsImage";
 import { helperToast } from "lib/helperToast";
 import { getHomeUrl, getTwitterIntentURL } from "lib/legacy";
 import { formatUsd } from "lib/numbers";
+import { getShareURL, uploadElementAsShareImage } from "lib/shareImage";
 import { useBreakpoints } from "lib/useBreakpoints";
 
 import Button from "components/Button/Button";
@@ -17,7 +18,7 @@ import CopyStrokeIcon from "img/ic_copy_stroke.svg?react";
 import ShareArrowOutlineIcon from "img/ic_share_arrow_outline.svg?react";
 import XIcon from "img/ic_x.svg?react";
 import LogoText from "img/logo-text.svg?react";
-import shareReferralCodeBg from "img/share_refferral_code_bg.png";
+import shareReferralCodeBg from "img/share_referral_code_bg.png";
 
 type ShareReferralCardModalProps = {
   isVisible: boolean;
@@ -49,13 +50,36 @@ export function ShareReferralCardModal({
     () => (traderDiscountPercentage !== undefined ? `${String(traderDiscountPercentage)}%` : "10%"),
     [traderDiscountPercentage]
   );
-  const tweetLink = useMemo(() => {
+  const [isUploading, setIsUploading] = useState(false);
+
+  const getTweetText = useCallback(() => {
     const discountsText = hasReferredUsers
       ? `\n\nSo far, my referrals have saved ${totalDiscountsFormatted} total in discounts with my code: ${referralCode}`
       : "";
-    const text = `Save up to ${traderDiscountPercentageLabel} on every trade on GMX.${discountsText}`;
-    return getTwitterIntentURL(text, referralLink);
-  }, [traderDiscountPercentageLabel, hasReferredUsers, totalDiscountsFormatted, referralCode, referralLink]);
+    return `Save up to ${traderDiscountPercentageLabel} on every trade on GMX.${discountsText}`;
+  }, [traderDiscountPercentageLabel, hasReferredUsers, totalDiscountsFormatted, referralCode]);
+
+  const handleShareOnX = useCallback(async () => {
+    const element = cardRef.current;
+    if (!element) return;
+
+    setIsUploading(true);
+    element.classList.add("image-capture-in-progress");
+
+    let shareUrl = referralLink;
+    try {
+      const imageInfo = await uploadElementAsShareImage(element);
+      shareUrl = getShareURL(imageInfo.id, referralCode);
+    } catch {
+      // Upload failed — fall back to text-only tweet
+    } finally {
+      element.classList.remove("image-capture-in-progress");
+      setIsUploading(false);
+    }
+
+    const tweetLink = getTwitterIntentURL(getTweetText(), shareUrl);
+    window.open(tweetLink, "_blank", "noopener,noreferrer");
+  }, [referralLink, referralCode, getTweetText]);
 
   const handleCopyLink = useCallback(() => {
     copyToClipboard(referralLink);
@@ -69,14 +93,11 @@ export function ShareReferralCardModal({
 
     setIsCapturing(true);
     cardRef.current.classList.add("image-capture-in-progress");
-    const captureOptions = { style: { transform: "none", borderRadius: "0" } };
-
     try {
       await shareOrCopyElementAsImage({
         element: cardRef.current,
         isMobile,
         fileName: "GMX Referral.png",
-        extraOptions: captureOptions,
       });
     } finally {
       cardRef.current?.classList.remove("image-capture-in-progress");
@@ -104,14 +125,13 @@ export function ShareReferralCardModal({
 
         <div className="flex gap-12">
           <Button
-            newTab
             variant="secondary"
-            to={tweetLink}
+            onClick={handleShareOnX}
             size="medium"
             className="grow !text-14"
-            showExternalLinkArrow={false}
+            disabled={isUploading || isCapturing}
           >
-            <Trans>Share on</Trans>
+            {isUploading ? <Trans>Uploading...</Trans> : <Trans>Share on</Trans>}
             <XIcon className="size-20" />
           </Button>
           <Button
@@ -119,7 +139,7 @@ export function ShareReferralCardModal({
             onClick={handleCopyImage}
             size="medium"
             className="grow !text-14"
-            disabled={isCapturing}
+            disabled={isUploading || isCapturing}
           >
             {isCapturing ? (
               <Trans>Generating...</Trans>
@@ -135,7 +155,13 @@ export function ShareReferralCardModal({
               </>
             )}
           </Button>
-          <Button variant="secondary" onClick={handleCopyLink} size="medium" className="grow !text-14">
+          <Button
+            variant="secondary"
+            onClick={handleCopyLink}
+            size="medium"
+            className="grow !text-14"
+            disabled={isUploading || isCapturing}
+          >
             <Trans>Copy link</Trans>
             <CopyStrokeIcon className="size-20" />
           </Button>
@@ -187,8 +213,8 @@ function ScaledReferralCard({
   );
 
   return (
-    <div ref={containerRef} style={styles.containerStyle}>
-      <div ref={cardRef} className="relative overflow-hidden rounded-8" style={styles.cardStyle}>
+    <div ref={containerRef} className="overflow-hidden rounded-8" style={styles.containerStyle}>
+      <div ref={cardRef} className="relative overflow-hidden" style={styles.cardStyle}>
         <img src={shareReferralCodeBg} className="absolute inset-0 size-full object-cover" aria-hidden />
         <div className="absolute right-16 top-16 rounded-4 bg-white p-4">
           <QRCodeSVG value={referralLink} size={44} level="M" bgColor="white" fgColor="black" />

@@ -284,12 +284,14 @@ export const useGmSwapSubmitState = ({
     }
 
     const insufficientWithLongCollateral =
+      isDeposit &&
       payLongToken &&
       nativeToken &&
       payLongToken.address === nativeToken.address &&
       nativeTokenWalletBalance < settlementChainFeeTokenAmount + longTokenAmount;
 
     const insufficientWithShortCollateral =
+      isDeposit &&
       payShortToken &&
       nativeToken &&
       payShortToken.address === nativeToken.address &&
@@ -309,6 +311,7 @@ export const useGmSwapSubmitState = ({
     paySource,
     nativeTokenWalletBalance,
     settlementChainFeeTokenAmount,
+    isDeposit,
     payLongToken,
     nativeToken,
     longTokenAmount,
