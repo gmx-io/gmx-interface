@@ -74,11 +74,28 @@ type Props = {
 export default function ChartTokenSelector(props: Props) {
   const { selectedToken, oneRowLabels } = props;
 
+  const chainId = useSelector(selectChainId);
   const marketInfo = useSelector(selectTradeboxMarketInfo);
+  const marketsInfoData = useSelector(selectMarketsInfoData);
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
   const poolName = marketInfo && !isSwap ? getMarketPoolName(marketInfo) : null;
 
   const { isMobile } = useBreakpoints();
+
+  const incentivesEnabled = isIncentivesEnabled(chainId);
+  const { data: incentivesConfig } = useIncentivesConfig(chainId);
+  const isSelectedTokenFeatured = useMemo(() => {
+    if (!incentivesEnabled || !incentivesConfig?.featuredMarketTokens?.length || !marketsInfoData || !selectedToken) {
+      return false;
+    }
+    for (const marketAddress of incentivesConfig.featuredMarketTokens) {
+      const mi = marketsInfoData[marketAddress];
+      if (mi?.indexTokenAddress?.toLowerCase() === selectedToken.address.toLowerCase()) {
+        return true;
+      }
+    }
+    return false;
+  }, [incentivesEnabled, incentivesConfig, marketsInfoData, selectedToken]);
 
   return (
     <SelectorBase
@@ -106,7 +123,7 @@ export default function ChartTokenSelector(props: Props) {
 
               <div className="flex items-center gap-8">
                 <TokenIcon symbol={selectedToken.symbol} displaySize={isMobile ? 32 : 20} />
-                <div className="flex gap-2 md:items-center md:gap-8">
+                <div className="flex gap-2 md:items-center md:gap-6">
                   <span
                     className={cx("flex justify-start leading-base", {
                       "flex-col items-baseline gap-2": !oneRowLabels,
@@ -134,6 +151,11 @@ export default function ChartTokenSelector(props: Props) {
                       </div>
                     ) : null}
                   </span>
+                  {isSelectedTokenFeatured && (
+                    <div className="h-min rounded-full bg-green-900 p-3">
+                      <MultiplierSolidIcon className="size-12 text-green-500" />
+                    </div>
+                  )}
 
                   <ChevronDownIcon className="inline-block size-16" />
                 </div>
