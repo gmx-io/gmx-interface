@@ -16,9 +16,6 @@ const sdk = getTestSdk();
 const signer = requireSigner();
 const account = signer.address;
 
-const USD_DECIMALS = 30;
-const BASIS_POINTS_DIVISOR = 10000n;
-
 // ---------------------------------------------------------------------------
 // Increase order flows
 // ---------------------------------------------------------------------------
