@@ -15,7 +15,6 @@ export const TEST_CHAIN_ID = ARBITRUM;
 export const TEST_SYMBOL = "ETH/USD [WETH-USDC]";
 export const TEST_SIZE_USD = 100n * 10n ** 30n; // $100
 export const TEST_COLLATERAL = { amount: 1000000n, token: "USDC" }; // 1 USDC
-export const TEST_BTC_SYMBOL = "BTC/USD [BTC-USDC]";
 
 const TERMINAL_STATUSES = new Set(["executed", "failed", "reverted", "expired"]);
 
