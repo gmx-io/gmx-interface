@@ -1,6 +1,8 @@
 import { zeroHash } from "viem";
-import { SUBACCOUNT_ORDER_ACTION } from "configs/dataStore";
+
 import type { ContractsChainId } from "configs/chains";
+import { SUBACCOUNT_ORDER_ACTION } from "configs/dataStore";
+
 import type { SubaccountApproval } from "./types";
 
 /**

@@ -1,10 +1,10 @@
 import { encodeFunctionData } from "viem";
 
+import ERC20ABI from "abis/Token";
 import { ContractsChainId } from "configs/chains";
 import { getContract } from "configs/contracts";
-import ERC20ABI from "abis/Token";
-import { MaxUint256 } from "utils/numbers";
 import { IHttp } from "utils/http/types";
+import { MaxUint256 } from "utils/numbers";
 
 export type ApproveTokenParams = {
   tokenAddress: string;

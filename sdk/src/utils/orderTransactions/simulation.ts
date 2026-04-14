@@ -1,9 +1,9 @@
 import { encodeFunctionData, decodeErrorResult } from "viem";
 
 import { abis } from "abis";
+import type { ContractsChainId } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { convertTokenAddress } from "configs/tokens";
-import type { ContractsChainId } from "configs/chains";
 import type { IRpc } from "utils/rpc";
 import { convertToContractPrice, getTokenData } from "utils/tokens";
 import type { TokenPrices, TokensData } from "utils/tokens/types";

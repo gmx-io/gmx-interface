@@ -1,5 +1,6 @@
 import { createWalletClient, http, type Chain } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
+
 import type { IAbstractSigner, TypedDataDomain, TypedDataTypes } from "./index";
 
 export class PrivateKeySigner implements IAbstractSigner {

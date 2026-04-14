@@ -6,6 +6,7 @@ import { MARKETS } from "configs/markets";
 import { convertTokenAddress } from "configs/tokens";
 import { getOppositeCollateralFromConfig } from "utils/markets";
 import type { ExternalCallsPayload } from "utils/orderTransactions";
+
 import type { OracleParamsPayload } from "../types";
 
 function getOracleParams({ chainId, tokenAddresses }: { chainId: ContractsChainId; tokenAddresses: string[] }) {

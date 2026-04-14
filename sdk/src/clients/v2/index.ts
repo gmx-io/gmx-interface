@@ -1,11 +1,23 @@
 import { getApiUrl } from "configs/api";
 import { ContractsChainId } from "configs/chains";
-import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT, getGasPaymentTokens } from "configs/express";
+import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "configs/express";
 import { fetchApiApy } from "utils/apy/api";
 import { ApyParams, ApyResponse } from "utils/apy/types";
+import {
+  fetchWalletBalances as fetchWalletBalancesRaw,
+  fetchAllowances as fetchAllowancesRaw,
+  buildApproveTransaction,
+} from "utils/balances/api";
+import type {
+  WalletBalance,
+  TokenAllowance,
+  SpenderType,
+  ApproveTokenParams,
+  ApproveTokenResult,
+} from "utils/balances/api";
 import { fetchApiBuybackWeeklyStats } from "utils/buyback/api";
 import { BuybackWeeklyStatsResponse } from "utils/buyback/types";
-import { HttpClient, HttpError } from "utils/http/http";
+import { HttpClient } from "utils/http/http";
 import { IHttp } from "utils/http/types";
 import { fetchApiMarkets, fetchApiMarketsInfo, fetchApiMarketsTickers, fetchApiTokensData } from "utils/markets/api";
 import { MarketTicker, MarketWithTiers } from "utils/markets/types";
@@ -43,8 +55,6 @@ import type { IAbstractSigner } from "utils/signer";
 import { PrivateKeySigner } from "utils/signer";
 import { fetchApiStakingPower } from "utils/staking/api";
 import { StakingPowerResponse } from "utils/staking/types";
-import { generateSubaccount } from "utils/subaccount/generateSubaccount";
-import type { SubaccountSession } from "utils/subaccount/types";
 import { fetchSubaccountStatus, prepareSubaccountApproval, signSubaccountApproval } from "utils/subaccount/api";
 import type {
   SubaccountStatusRequest,
@@ -52,14 +62,9 @@ import type {
   SubaccountApprovalPrepareRequest,
   SubaccountApprovalPrepareResponse,
 } from "utils/subaccount/api";
-import { fetchApiTokens } from "utils/tokens/api";
-import {
-  fetchWalletBalances as fetchWalletBalancesRaw,
-  fetchAllowances as fetchAllowancesRaw,
-  buildApproveTransaction,
-} from "utils/balances/api";
-import type { WalletBalance, TokenAllowance, SpenderType, ApproveTokenParams, ApproveTokenResult } from "utils/balances/api";
+import { generateSubaccount } from "utils/subaccount/generateSubaccount";
 import { nowInSeconds } from "utils/time";
+import { fetchApiTokens } from "utils/tokens/api";
 
 export type { ApyEntry, ApyParams, ApyResponse } from "utils/apy/types";
 export type { MarketTicker, MarketWithTiers } from "utils/markets/types";
@@ -85,7 +90,13 @@ export type {
   OrderStatusRequest,
   OrderStatusResponse,
 };
-export type { WalletBalance, TokenAllowance, SpenderType, ApproveTokenParams, ApproveTokenResult } from "utils/balances/api";
+export type {
+  WalletBalance,
+  TokenAllowance,
+  SpenderType,
+  ApproveTokenParams,
+  ApproveTokenResult,
+} from "utils/balances/api";
 export type { IAbstractSigner } from "utils/signer";
 export { PrivateKeySigner } from "utils/signer";
 export { HttpError } from "utils/http/http";
@@ -258,10 +269,6 @@ export class GmxApiSdk {
   prepareCollateral(request: PrepareCollateralRequest): Promise<PrepareOrderResponse> {
     return prepareCollateral(this.ctx, request);
   }
-
-  // ---------------------------------------------------------------------------
-  // Subaccounts (1CT)
-  // ---------------------------------------------------------------------------
 
   fetchSubaccountStatus(request: SubaccountStatusRequest): Promise<SubaccountStatusResponse> {
     return fetchSubaccountStatus(this.ctx, request);

@@ -1,5 +1,5 @@
-import { encodePacked, type Hex, type Address } from "viem";
 import { TransactionRevertedError, TransactionRejectedError } from "@gelatocloud/gasless";
+import { encodePacked, type Hex, type Address } from "viem";
 
 import type { ContractsChainId } from "configs/chains";
 import { GELATO_API_KEYS } from "configs/express";

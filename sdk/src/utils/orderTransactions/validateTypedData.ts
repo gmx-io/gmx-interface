@@ -1,5 +1,3 @@
-import { type Address } from "viem";
-
 import { ContractsChainId } from "configs/chains";
 import { ContractName, getContract } from "configs/contracts";
 import type { TypedDataDomain, TypedDataTypes } from "utils/signer";

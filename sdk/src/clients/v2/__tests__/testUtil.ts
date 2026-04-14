@@ -1,12 +1,12 @@
 import { ARBITRUM, getViemChain } from "configs/chains";
-import { PrivateKeySigner } from "utils/signer";
-import type { IAbstractSigner } from "utils/signer";
 import type {
   PrepareOrderRequest,
   PrepareOrderResponse,
   SubmitOrderResponse,
   OrderStatusResponse,
 } from "utils/orderTransactions/api";
+import { PrivateKeySigner } from "utils/signer";
+import type { IAbstractSigner } from "utils/signer";
 
 import { GmxApiSdk } from "../index";
 
@@ -20,13 +20,16 @@ export const TEST_BTC_SYMBOL = "BTC/USD [BTC-USDC]";
 const TERMINAL_STATUSES = new Set(["executed", "failed", "reverted", "expired"]);
 
 export function getTestSdk() {
+  // eslint-disable-next-line no-restricted-globals
   const apiUrl = process.env.GMX_TEST_API_URL;
   return new GmxApiSdk({ chainId: TEST_CHAIN_ID, ...(apiUrl && { apiUrl }) });
 }
 
 export function getTestSigner(): PrivateKeySigner | undefined {
+  // eslint-disable-next-line no-restricted-globals
   const pk = process.env.GMX_TEST_PRIVATE_KEY;
   if (!pk) return undefined;
+  // eslint-disable-next-line no-restricted-globals
   const rpcUrl = process.env.GMX_TEST_RPC_URL;
   return new PrivateKeySigner(
     pk as `0x${string}`,
@@ -43,6 +46,7 @@ export function requireSigner(): PrivateKeySigner {
 }
 
 export function hasRpcUrl(): boolean {
+  // eslint-disable-next-line no-restricted-globals
   return !!process.env.GMX_TEST_RPC_URL;
 }
 
@@ -94,6 +98,7 @@ function logOrderFailure(status: OrderStatusResponse): void {
     parts.push(`execTx=${status.executionTxnHash}`);
   }
 
+  // eslint-disable-next-line no-console
   console.warn(parts.join(" "));
 }
 

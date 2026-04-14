@@ -3,5 +3,6 @@ export type IMetrics = {
 };
 
 export const noopMetrics: IMetrics = {
+  // eslint-disable-next-line @typescript-eslint/no-empty-function
   pushError() {},
 };

@@ -3,12 +3,12 @@ import { encodeFunctionData, zeroAddress, zeroHash } from "viem";
 import { abis } from "abis";
 import type { ContractsChainId, SourceChainId } from "configs/chains";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "configs/express";
-import type { BatchOrderTxnParams, CreateOrderPayload } from "utils/orderTransactions";
-import { nowInSeconds } from "utils/time";
-import { setUiFeeReceiverIsExpress } from "utils/twap/uiFeeReceiver";
-import type { IRpc } from "utils/rpc";
 import type { IMetrics } from "utils/metrics";
 import { noopMetrics } from "utils/metrics";
+import type { BatchOrderTxnParams, CreateOrderPayload } from "utils/orderTransactions";
+import type { IRpc } from "utils/rpc";
+import { nowInSeconds } from "utils/time";
+import { setUiFeeReceiverIsExpress } from "utils/twap/uiFeeReceiver";
 
 import type { BuiltGlobalExpressParams } from "./globalExpressParams";
 import { getGelatoRelayRouterDomain, getExpressContractAddress, hashRelayParams } from "./relayParamsUtils";
@@ -297,16 +297,12 @@ export async function simulateExpressOrder({
   } catch (error) {
     metrics.pushError(error, "expressOrders.simulateExpressOrder");
 
-    try {
-      await rpc.call({
-        from: simulationOrigin,
-        to,
-        data: callData,
-        value: 0n,
-      });
-      throw error;
-    } catch (callError) {
-      throw callError;
-    }
+    await rpc.call({
+      from: simulationOrigin,
+      to,
+      data: callData,
+      value: 0n,
+    });
+    throw error;
   }
 }

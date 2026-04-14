@@ -1,4 +1,5 @@
 import path from "path";
+// eslint-disable-next-line import/no-extraneous-dependencies
 import { loadEnv } from "vite";
 import { defineConfig } from "vitest/config";
 
@@ -10,6 +11,7 @@ export default defineConfig({
     maxConcurrency: 1,
     include: ["src/clients/v2/__tests__/**/*.spec.ts"],
     exclude: ["**/build/**", "**/node_modules/**"],
+    // eslint-disable-next-line no-restricted-globals
     env: loadEnv("", process.cwd(), ""),
   },
   resolve: {
