@@ -1042,6 +1042,10 @@ msgstr "Worker"
 msgid "Max network fee buffer precision is 0.01%"
 msgstr "최대 네트워크 수수료 버퍼 정밀도는 0.01%입니다."
 
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+msgid "You've received a points bonus worth <0>{bonusFormatted}</0>"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeltaPrime"
 msgstr "DeltaPrime"
@@ -3335,6 +3339,10 @@ msgstr "규모 증가 (Market)"
 msgid "Bridge transfer sent"
 msgstr "브릿지 전송이 전송되었습니다"
 
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+msgid "Start trading to activate it and use it to discount your fees."
+msgstr ""
+
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
@@ -5099,10 +5107,6 @@ msgstr ""
 msgid "Open interest {directionLabel}"
 msgstr "미결제약정 {directionLabel}"
 
-#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
-msgid "You've received a points bonus worth {bonusFormatted} — Start trading to activate it and use it to discount your fees."
-msgstr ""
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
@@ -5509,6 +5513,11 @@ msgstr "GLV는 GM 풀 전반의 거래 수수료(개설, 청산, 차입, 청산,
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Increase"
 msgstr "시장 증가 실패"
+
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+msgid "Earn rewards"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "LEV."
@@ -7722,10 +7731,6 @@ msgstr "사용 가능한 레버리지 없음"
 msgid "Total supply"
 msgstr "총 공급량"
 
-#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
-msgid "Earn rewards — With your recent volume, staking {stakeFormatted} GMX could have earned you up to ${rewardsFormatted} in additional trading rewards."
-msgstr ""
-
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 msgid "My assets"
 msgstr "내 자산"
@@ -8535,6 +8540,10 @@ msgstr "청산 가격 영향"
 msgid "Opens GMTrade in a new tab"
 msgstr "새 탭에서 GMTrade를 엽니다"
 
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+msgid "With your recent volume, staking <0>{stakeFormatted} GMX</0> could have earned you up to <1>${rewardsFormatted} in additional trading rewards</1>."
+msgstr ""
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -9179,7 +9188,6 @@ msgstr "오픈 수수료의 최대 {0}%까지 예상 리베이트. {incentivesTo
 msgid "Executes when price and liquidity conditions are met"
 msgstr "가격 및 유동성 조건이 충족되면 체결됩니다"
 
-#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
 #: src/components/PointsPromoBanner/PointsPromoBanner.tsx
 msgid "Start earning points and unlock rewards."
 msgstr ""

@@ -12,6 +12,7 @@ import {
 import { useAccountIncentiveDashboard } from "domain/synthetics/incentives/useAccountIncentiveDashboard";
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
 import { useIncentiveAccountEpochAudit } from "domain/synthetics/incentives/useIncentiveAccountEpochAudit";
+import { formatAmount, formatUsd } from "lib/numbers";
 
 import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 
@@ -168,10 +169,10 @@ export function IncentivesAuditDetail({
                 {auditData.map((entry) => (
                   <TableTr key={entry.id}>
                     <TableTd padding="compact">{format(new Date(entry.epochTimestamp * 1000), "MMM d, yyyy")}</TableTd>
-                    <TableTd padding="compact">{entry.points.toLocaleString()}</TableTd>
-                    <TableTd padding="compact">{entry.rewards.toLocaleString()}</TableTd>
-                    <TableTd padding="compact">{entry.fees.toLocaleString()}</TableTd>
-                    <TableTd padding="compact">{entry.volume.toLocaleString()}</TableTd>
+                    <TableTd padding="compact">{formatAmount(entry.points, 18, 4, true)}</TableTd>
+                    <TableTd padding="compact">{formatAmount(entry.rewards, 18, 4, true)}</TableTd>
+                    <TableTd padding="compact">{formatUsd(entry.fees, { displayDecimals: 2 })}</TableTd>
+                    <TableTd padding="compact">{formatUsd(entry.volume, { displayDecimals: 0 })}</TableTd>
                     <TableTd padding="compact">{formatMultiplier(entry.avgMultiplier)}</TableTd>
                     <TableTd padding="compact">{formatMultiplier(entry.maxMultiplier)}</TableTd>
                     <TableTd padding="compact">{entry.volumeTier ? getVolumeTierBadge(entry.volumeTier) : "-"}</TableTd>
@@ -227,8 +228,11 @@ export function IncentivesAuditDetail({
               label={<Trans>Projected Staking Tier</Trans>}
               value={status.projectedStakingTier ? getStakingTierBadge(status.projectedStakingTier) : "-"}
             />
-            <KV label={<Trans>Points Balance</Trans>} value={Number(status.pointsBalance).toLocaleString()} />
-            <KV label={<Trans>Traded Volume</Trans>} value={Number(status.tradedVolume).toLocaleString()} />
+            <KV label={<Trans>Points Balance</Trans>} value={formatAmount(status.pointsBalance, 18, 4, true)} />
+            <KV
+              label={<Trans>Traded Volume</Trans>}
+              value={formatUsd(status.tradedVolume, { displayDecimals: 0 }) ?? "0"}
+            />
             <KV label={<Trans>Epoch</Trans>} value={format(new Date(status.epochTimestamp * 1000), "MMM d, yyyy")} />
           </div>
         )}
@@ -244,8 +248,8 @@ export function IncentivesAuditDetail({
         {dashboard && (
           <div className="flex flex-col gap-16">
             <div className="grid grid-cols-2 gap-x-24 gap-y-8">
-              <KV label={<Trans>Points Balance</Trans>} value={Number(dashboard.pointsBalance).toLocaleString()} />
-              <KV label={<Trans>Rewards Balance</Trans>} value={Number(dashboard.rewardsBalance).toLocaleString()} />
+              <KV label={<Trans>Points Balance</Trans>} value={formatAmount(dashboard.pointsBalance, 18, 4, true)} />
+              <KV label={<Trans>Rewards Balance</Trans>} value={formatAmount(dashboard.rewardsBalance, 18, 4, true)} />
             </div>
 
             {dashboard.recentStats.length > 0 && (
@@ -289,7 +293,7 @@ export function IncentivesAuditDetail({
                         <TableTd padding="compact">
                           {stat.stakingTier ? getStakingTierBadge(stat.stakingTier) : "-"}
                         </TableTd>
-                        <TableTd padding="compact">{Number(stat.tradedVolume).toLocaleString()}</TableTd>
+                        <TableTd padding="compact">{formatUsd(stat.tradedVolume, { displayDecimals: 0 })}</TableTd>
                         <TableTd padding="compact">
                           {stat.boostIds.length > 0 ? stat.boostIds.map(getBoostLabel).join(", ") : "-"}
                         </TableTd>

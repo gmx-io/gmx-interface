@@ -8,6 +8,7 @@ import {
   getVolumeTierBadge,
 } from "domain/synthetics/incentives/constants";
 import { useIncentiveAccountEpochAudit } from "domain/synthetics/incentives/useIncentiveAccountEpochAudit";
+import { formatAmount, formatUsd } from "lib/numbers";
 
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
@@ -108,7 +109,7 @@ export function IncentivesAuditList({
         />
         <SummaryCard
           label={<Trans>Total Rewards</Trans>}
-          value={summary ? summary.totalRewards.toLocaleString() : "-"}
+          value={summary ? formatAmount(summary.totalRewards, 18, 4, true) : "-"}
         />
       </div>
 
@@ -192,10 +193,10 @@ export function IncentivesAuditList({
                       {truncateAddress(entry.account)}
                     </button>
                   </TableTd>
-                  <TableTd padding="compact">{entry.points.toLocaleString()}</TableTd>
-                  <TableTd padding="compact">{entry.rewards.toLocaleString()}</TableTd>
-                  <TableTd padding="compact">{entry.fees.toLocaleString()}</TableTd>
-                  <TableTd padding="compact">{entry.volume.toLocaleString()}</TableTd>
+                  <TableTd padding="compact">{formatAmount(entry.points, 18, 4, true)}</TableTd>
+                  <TableTd padding="compact">{formatAmount(entry.rewards, 18, 4, true)}</TableTd>
+                  <TableTd padding="compact">{formatUsd(entry.fees, { displayDecimals: 2 })}</TableTd>
+                  <TableTd padding="compact">{formatUsd(entry.volume, { displayDecimals: 0 })}</TableTd>
                   <TableTd padding="compact">{formatMultiplier(entry.avgMultiplier)}</TableTd>
                   <TableTd padding="compact">{formatMultiplier(entry.maxMultiplier)}</TableTd>
                   <TableTd padding="compact">{entry.volumeTier ? getVolumeTierBadge(entry.volumeTier) : "-"}</TableTd>

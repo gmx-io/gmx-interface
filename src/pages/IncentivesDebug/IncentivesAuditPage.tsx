@@ -53,7 +53,13 @@ export function IncentivesAuditPage() {
       const date = new Date(ts * 1000);
       result.push({
         timestamp: ts,
-        label: date.toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }),
+        label: date.toLocaleDateString("en-US", {
+          month: "short",
+          day: "numeric",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+        }),
       });
       ts += config.epochDuration;
     }

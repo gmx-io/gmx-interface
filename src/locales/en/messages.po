@@ -1042,6 +1042,10 @@ msgstr "Worker"
 msgid "Max network fee buffer precision is 0.01%"
 msgstr "Max network fee buffer precision is 0.01%"
 
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+msgid "You've received a points bonus worth <0>{bonusFormatted}</0>"
+msgstr "You've received a points bonus worth <0>{bonusFormatted}</0>"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeltaPrime"
 msgstr "DeltaPrime"
@@ -3335,6 +3339,10 @@ msgstr "Increase size (Market)"
 msgid "Bridge transfer sent"
 msgstr "Bridge transfer sent"
 
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+msgid "Start trading to activate it and use it to discount your fees."
+msgstr "Start trading to activate it and use it to discount your fees."
+
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
@@ -5099,10 +5107,6 @@ msgstr "Eff. Points Ratio"
 msgid "Open interest {directionLabel}"
 msgstr "Open interest {directionLabel}"
 
-#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
-msgid "You've received a points bonus worth {bonusFormatted} — Start trading to activate it and use it to discount your fees."
-msgstr "You've received a points bonus worth {bonusFormatted} — Start trading to activate it and use it to discount your fees."
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
@@ -5509,6 +5513,11 @@ msgstr "GLV earns from trading fees (open, close, borrow, liquidations, swaps) a
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Increase"
 msgstr "Failed Market Increase"
+
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+msgid "Earn rewards"
+msgstr "Earn rewards"
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "LEV."
@@ -7722,10 +7731,6 @@ msgstr "No available leverage found"
 msgid "Total supply"
 msgstr "Total supply"
 
-#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
-msgid "Earn rewards — With your recent volume, staking {stakeFormatted} GMX could have earned you up to ${rewardsFormatted} in additional trading rewards."
-msgstr "Earn rewards — With your recent volume, staking {stakeFormatted} GMX could have earned you up to ${rewardsFormatted} in additional trading rewards."
-
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 msgid "My assets"
 msgstr "My assets"
@@ -8535,6 +8540,10 @@ msgstr "Close price impact"
 msgid "Opens GMTrade in a new tab"
 msgstr "Opens GMTrade in a new tab"
 
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+msgid "With your recent volume, staking <0>{stakeFormatted} GMX</0> could have earned you up to <1>${rewardsFormatted} in additional trading rewards</1>."
+msgstr "With your recent volume, staking <0>{stakeFormatted} GMX</0> could have earned you up to <1>${rewardsFormatted} in additional trading rewards</1>."
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -9179,7 +9188,6 @@ msgstr "Estimated rebate up to {0}% of open fee. Airdropped as {incentivesTokenT
 msgid "Executes when price and liquidity conditions are met"
 msgstr "Executes when price and liquidity conditions are met"
 
-#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
 #: src/components/PointsPromoBanner/PointsPromoBanner.tsx
 msgid "Start earning points and unlock rewards."
 msgstr "Start earning points and unlock rewards."

@@ -1042,6 +1042,10 @@ msgstr "Worker"
 msgid "Max network fee buffer precision is 0.01%"
 msgstr "網路費用緩衝精度上限為 0.01%"
 
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+msgid "You've received a points bonus worth <0>{bonusFormatted}</0>"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeltaPrime"
 msgstr "DeltaPrime"
@@ -3335,6 +3339,10 @@ msgstr "加倉（市價）"
 msgid "Bridge transfer sent"
 msgstr "跨鏈轉帳已發送"
 
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+msgid "Start trading to activate it and use it to discount your fees."
+msgstr ""
+
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
@@ -5099,10 +5107,6 @@ msgstr ""
 msgid "Open interest {directionLabel}"
 msgstr "未平倉量 {directionLabel}"
 
-#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
-msgid "You've received a points bonus worth {bonusFormatted} — Start trading to activate it and use it to discount your fees."
-msgstr ""
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
@@ -5509,6 +5513,11 @@ msgstr "GLV 從 GM 池的交易手續費（開倉、平倉、借貸、清算、�
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Increase"
 msgstr "Market Increase 失敗"
+
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+msgid "Earn rewards"
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "LEV."
@@ -7722,10 +7731,6 @@ msgstr "找不到可用的槓桿"
 msgid "Total supply"
 msgstr "總供給量"
 
-#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
-msgid "Earn rewards — With your recent volume, staking {stakeFormatted} GMX could have earned you up to ${rewardsFormatted} in additional trading rewards."
-msgstr ""
-
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 msgid "My assets"
 msgstr "我的資產"
@@ -8535,6 +8540,10 @@ msgstr "平倉價格影響"
 msgid "Opens GMTrade in a new tab"
 msgstr "在新分頁中開啟 GMTrade"
 
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+msgid "With your recent volume, staking <0>{stakeFormatted} GMX</0> could have earned you up to <1>${rewardsFormatted} in additional trading rewards</1>."
+msgstr ""
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -9179,7 +9188,6 @@ msgstr "預估返利最高可達開倉費用的 {0}%。以 {incentivesTokenTitle
 msgid "Executes when price and liquidity conditions are met"
 msgstr "當價格和流動性條件滿足時執行"
 
-#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
 #: src/components/PointsPromoBanner/PointsPromoBanner.tsx
 msgid "Start earning points and unlock rewards."
 msgstr ""

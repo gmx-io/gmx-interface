@@ -1042,6 +1042,10 @@ msgstr ""
 msgid "Max network fee buffer precision is 0.01%"
 msgstr ""
 
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+msgid "You've received a points bonus worth <0>{bonusFormatted}</0>"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeltaPrime"
 msgstr ""
@@ -3335,6 +3339,10 @@ msgstr ""
 msgid "Bridge transfer sent"
 msgstr ""
 
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+msgid "Start trading to activate it and use it to discount your fees."
+msgstr ""
+
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
@@ -5099,10 +5107,6 @@ msgstr ""
 msgid "Open interest {directionLabel}"
 msgstr ""
 
-#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
-msgid "You've received a points bonus worth {bonusFormatted} — Start trading to activate it and use it to discount your fees."
-msgstr ""
-
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useTokensToApprove.tsx
@@ -5508,6 +5512,11 @@ msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Increase"
+msgstr ""
+
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+msgid "Earn rewards"
 msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -7722,10 +7731,6 @@ msgstr ""
 msgid "Total supply"
 msgstr ""
 
-#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
-msgid "Earn rewards — With your recent volume, staking {stakeFormatted} GMX could have earned you up to ${rewardsFormatted} in additional trading rewards."
-msgstr ""
-
 #: src/components/Earn/Portfolio/AssetsList/AssetsList.tsx
 msgid "My assets"
 msgstr ""
@@ -8535,6 +8540,10 @@ msgstr ""
 msgid "Opens GMTrade in a new tab"
 msgstr ""
 
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+msgid "With your recent volume, staking <0>{stakeFormatted} GMX</0> could have earned you up to <1>${rewardsFormatted} in additional trading rewards</1>."
+msgstr ""
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -9179,7 +9188,6 @@ msgstr ""
 msgid "Executes when price and liquidity conditions are met"
 msgstr ""
 
-#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
 #: src/components/PointsPromoBanner/PointsPromoBanner.tsx
 msgid "Start earning points and unlock rewards."
 msgstr ""

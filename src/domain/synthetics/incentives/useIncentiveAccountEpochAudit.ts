@@ -10,10 +10,10 @@ export type AuditEntry = {
   id: string;
   account: string;
   epochTimestamp: number;
-  points: number;
-  rewards: number;
-  fees: number;
-  volume: number;
+  points: bigint;
+  rewards: bigint;
+  fees: bigint;
+  volume: bigint;
   avgMultiplier: number;
   maxMultiplier: number;
   volumeTier: VolumeTierId | null;
@@ -30,7 +30,7 @@ export type AuditSummary = {
   loadedCount: number;
   avgPointsRatio: number;
   avgRewardsRatio: number;
-  totalRewards: number;
+  totalRewards: bigint;
 };
 
 const AUDIT_QUERY = gql`
@@ -121,10 +121,10 @@ export function useIncentiveAccountEpochAudit(
             id: string;
             account: string;
             epochTimestamp: number;
-            points: number;
-            rewards: number;
-            fees: number;
-            volume: number;
+            points: string;
+            rewards: string;
+            fees: string;
+            volume: string;
             avgMultiplier: number;
             maxMultiplier: number;
             volumeTier: string | null;
@@ -139,10 +139,10 @@ export function useIncentiveAccountEpochAudit(
             id: e.id,
             account: e.account,
             epochTimestamp: e.epochTimestamp,
-            points: e.points,
-            rewards: e.rewards,
-            fees: e.fees,
-            volume: e.volume,
+            points: BigInt(e.points),
+            rewards: BigInt(e.rewards),
+            fees: BigInt(e.fees),
+            volume: BigInt(e.volume),
             avgMultiplier: e.avgMultiplier,
             maxMultiplier: e.maxMultiplier,
             volumeTier: (e.volumeTier as VolumeTierId) ?? null,
@@ -167,7 +167,7 @@ export function useIncentiveAccountEpochAudit(
     const loadedCount = data.length;
     const avgPointsRatio = data.reduce((sum, e) => sum + e.effectivePointsRatio, 0) / loadedCount;
     const avgRewardsRatio = data.reduce((sum, e) => sum + e.effectiveRewardsRatio, 0) / loadedCount;
-    const totalRewards = data.reduce((sum, e) => sum + e.rewards, 0);
+    const totalRewards = data.reduce((sum, e) => sum + e.rewards, 0n);
 
     return { loadedCount, avgPointsRatio, avgRewardsRatio, totalRewards };
   }, [data]);
