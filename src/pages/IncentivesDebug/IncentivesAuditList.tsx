@@ -130,7 +130,7 @@ export function IncentivesAuditList({
         {data && data.length > 0 && (
           <>
             <TableScrollFadeContainer>
-              <Table>
+              <Table className="min-w-[1200px] [&_td]:whitespace-nowrap [&_th]:whitespace-nowrap">
                 <thead>
                   <TableTheadTr>
                     <TableTh padding="compact">

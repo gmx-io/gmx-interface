@@ -176,7 +176,7 @@ export function IncentivesAuditDetail({
         )}
         {auditData && auditData.length > 0 && (
           <TableScrollFadeContainer>
-            <Table>
+            <Table className="min-w-[1400px] [&_td]:whitespace-nowrap [&_th]:whitespace-nowrap">
               <thead>
                 <TableTheadTr>
                   <TableTh padding="compact">
