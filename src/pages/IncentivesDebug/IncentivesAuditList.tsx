@@ -41,7 +41,7 @@ export function IncentivesAuditList({
   onEpochChange: (epoch: number | undefined) => void;
   onAccountClick: (account: string) => void;
 }) {
-  const [page, setPage] = useState(0);
+  const [page, setPage] = useState(1);
 
   const { orderBy, direction, getSorterProps } = useSorterHandlers<AuditSortField>("incentives-audit-list", {
     orderBy: "effectiveRewardsRatio",
@@ -56,7 +56,7 @@ export function IncentivesAuditList({
     orderBy: sortField,
     orderDirection: sortDirection,
     limit: PAGE_SIZE,
-    offset: page * PAGE_SIZE,
+    offset: (page - 1) * PAGE_SIZE,
   });
 
   const hasNextPage = data ? data.length === PAGE_SIZE : false;
@@ -66,7 +66,7 @@ export function IncentivesAuditList({
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       const val = e.target.value;
       onEpochChange(val === "" ? undefined : Number(val));
-      setPage(0);
+      setPage(1);
     },
     [onEpochChange]
   );
