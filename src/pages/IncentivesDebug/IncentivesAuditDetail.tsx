@@ -89,7 +89,7 @@ export function IncentivesAuditDetail({
       </div>
 
       {/* Totals Cards */}
-      <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
+      <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
         <SummaryCard
           label={<Trans>Total Points Earned</Trans>}
           value={totals.totalPointsEarned !== undefined ? formatAmount(totals.totalPointsEarned, 18, 4, true) : "..."}
@@ -101,10 +101,6 @@ export function IncentivesAuditDetail({
               ? `${formatAmount(totals.totalRewardsEarned, 18, 4, true)} GMX`
               : "..."
           }
-        />
-        <SummaryCard
-          label={<Trans>Rewards Balance</Trans>}
-          value={dashboard ? `${formatAmount(dashboard.rewardsBalance, 18, 4, true)} GMX` : "..."}
         />
         <SummaryCard
           label={<Trans>Total Fees Paid</Trans>}
@@ -158,6 +154,10 @@ export function IncentivesAuditDetail({
               value={format(new Date(status.epochTimestamp * 1000), "MMM d, yyyy HH:mm")}
             />
             <KV label={<Trans>Points Balance</Trans>} value={formatAmount(status.pointsBalance, 18, 4, true)} />
+            <KV
+              label={<Trans>Rewards Balance</Trans>}
+              value={dashboard ? `${formatAmount(dashboard.rewardsBalance, 18, 4, true)} GMX` : "..."}
+            />
           </div>
         )}
       </Section>
