@@ -44,7 +44,7 @@ export function IncentivesAuditDetail({
   const handleEpochSelect = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       const val = e.target.value;
-      onEpochChange(val === "" ? undefined : Number(val));
+      onEpochChange(Number(val));
     },
     [onEpochChange]
   );
@@ -89,9 +89,6 @@ export function IncentivesAuditDetail({
             value={selectedEpoch ?? ""}
             onChange={handleEpochSelect}
           >
-            <option value="">
-              <Trans>All Epochs</Trans>
-            </option>
             {epochs.map((ep) => (
               <option key={ep.timestamp} value={ep.timestamp}>
                 {ep.label}

@@ -43,7 +43,8 @@ export function IncentivesAuditPage() {
   const { data: config } = useIncentivesConfig(chainId);
 
   const [epochParam, setEpochParam] = useQueryParam("epoch");
-  const selectedEpoch = epochParam ? Number(epochParam) : undefined;
+  const latestEpoch = config?.epochTimestamp;
+  const selectedEpoch = epochParam ? Number(epochParam) : latestEpoch;
 
   const epochs = useMemo(() => {
     if (!config || config.epochDuration <= 0) return [];
