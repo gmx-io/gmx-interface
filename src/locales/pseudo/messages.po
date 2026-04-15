@@ -947,7 +947,6 @@ msgstr ""
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Epoch"
@@ -2136,6 +2135,10 @@ msgstr ""
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "No status data available"
+msgstr ""
+
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+msgid "Current Epoch Status"
 msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
@@ -6319,10 +6322,6 @@ msgstr ""
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "TP price above mark price"
-msgstr ""
-
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "Live Status"
 msgstr ""
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx

@@ -947,7 +947,6 @@ msgstr "将 {marketName} 添加至钱包"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Epoch"
@@ -2136,6 +2135,10 @@ msgstr "GMX 余额"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "No status data available"
+msgstr ""
+
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+msgid "Current Epoch Status"
 msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
@@ -6320,10 +6323,6 @@ msgstr "已提取"
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "TP price above mark price"
 msgstr "TP 价格高于标记价格"
-
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "Live Status"
-msgstr ""
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price"

@@ -947,7 +947,6 @@ msgstr "Add {marketName} to wallet"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Epoch"
@@ -2137,6 +2136,10 @@ msgstr "GMX balance"
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "No status data available"
 msgstr "No status data available"
+
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+msgid "Current Epoch Status"
+msgstr "Current Epoch Status"
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Price on Avalanche"
@@ -6320,10 +6323,6 @@ msgstr "Withdrawn"
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "TP price above mark price"
 msgstr "TP price above mark price"
-
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "Live Status"
-msgstr "Live Status"
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price"

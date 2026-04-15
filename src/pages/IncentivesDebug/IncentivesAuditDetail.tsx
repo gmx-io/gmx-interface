@@ -44,8 +44,7 @@ export function IncentivesAuditDetail({
 
   const handleEpochSelect = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
-      const val = e.target.value;
-      onEpochChange(Number(val));
+      onEpochChange(Number(e.target.value));
     },
     [onEpochChange]
   );
@@ -72,6 +71,20 @@ export function IncentivesAuditDetail({
     };
   }, [rewardsHistory]);
 
+  const epochSelector = (
+    <select
+      className="text-body-medium rounded-8 border border-slate-600 bg-slate-800 px-12 py-8 text-typography-primary hover:bg-fill-surfaceElevatedHover"
+      value={selectedEpoch ?? ""}
+      onChange={handleEpochSelect}
+    >
+      {epochs.map((ep) => (
+        <option key={ep.timestamp} value={ep.timestamp}>
+          {ep.label}
+        </option>
+      ))}
+    </select>
+  );
+
   return (
     <div className="mt-16 flex flex-col gap-16">
       {/* Header */}
@@ -79,7 +92,6 @@ export function IncentivesAuditDetail({
         <button className="hover:text-blue-200 text-body-medium mb-12 text-blue-300" onClick={onBack}>
           &larr; <Trans>Back to list</Trans>
         </button>
-
         <div className="flex items-center gap-12">
           <span className="break-all font-mono text-[1.6rem] font-medium text-typography-primary">{account}</span>
           <button
@@ -89,27 +101,10 @@ export function IncentivesAuditDetail({
             <Trans>Copy</Trans>
           </button>
         </div>
-
-        <div className="mt-12 flex items-center gap-12">
-          <label className="text-body-medium font-medium text-typography-primary">
-            <Trans>Epoch</Trans>
-          </label>
-          <select
-            className="text-body-medium rounded-8 border border-slate-600 bg-slate-800 px-12 py-8 text-typography-primary hover:bg-fill-surfaceElevatedHover"
-            value={selectedEpoch ?? ""}
-            onChange={handleEpochSelect}
-          >
-            {epochs.map((ep) => (
-              <option key={ep.timestamp} value={ep.timestamp}>
-                {ep.label}
-              </option>
-            ))}
-          </select>
-        </div>
       </div>
 
-      {/* Live Status */}
-      <Section title={<Trans>Live Status</Trans>}>
+      {/* Current Epoch Status */}
+      <Section title={<Trans>Current Epoch Status</Trans>}>
         {statusLoading && !status && (
           <div className="flex items-center justify-center p-16">
             <Loader />
@@ -131,7 +126,10 @@ export function IncentivesAuditDetail({
               label={<Trans>Staking Tier</Trans>}
               value={status.stakingTier ? getStakingTierBadge(status.stakingTier) : "-"}
             />
-            <KV label={<Trans>Points Balance</Trans>} value={formatAmount(status.pointsBalance, 18, 4, true)} />
+            <KV
+              label={<Trans>Traded Volume</Trans>}
+              value={formatUsd(status.tradedVolume, { displayDecimals: 0 }) ?? "0"}
+            />
             <KV
               label={<Trans>Projected Vol. Tier</Trans>}
               value={status.projectedVolumeTier ? getVolumeTierBadge(status.projectedVolumeTier) : "-"}
@@ -141,10 +139,14 @@ export function IncentivesAuditDetail({
               value={status.projectedStakingTier ? getStakingTierBadge(status.projectedStakingTier) : "-"}
             />
             <KV
-              label={<Trans>Traded Volume</Trans>}
-              value={formatUsd(status.tradedVolume, { displayDecimals: 0 }) ?? "0"}
+              label={<Trans>Epoch</Trans>}
+              value={format(new Date(status.epochTimestamp * 1000), "MMM d, yyyy HH:mm")}
             />
-            <KV label={<Trans>Epoch</Trans>} value={format(new Date(status.epochTimestamp * 1000), "MMM d, yyyy")} />
+            <KV label={<Trans>Points Balance</Trans>} value={formatAmount(status.pointsBalance, 18, 4, true)} />
+            <KV
+              label={<Trans>Rewards Balance</Trans>}
+              value={dashboard ? `${formatAmount(dashboard.rewardsBalance, 18, 4, true)} GMX` : "..."}
+            />
             <KV
               label={<Trans>Total Points Earned</Trans>}
               value={totals ? formatAmount(totals.totalPointsEarned, 18, 4, true) : "..."}
@@ -153,16 +155,12 @@ export function IncentivesAuditDetail({
               label={<Trans>Total Rewards Earned</Trans>}
               value={totals ? `${formatAmount(totals.totalRewardsEarned, 18, 4, true)} GMX` : "..."}
             />
-            <KV
-              label={<Trans>Rewards Balance</Trans>}
-              value={dashboard ? `${formatAmount(dashboard.rewardsBalance, 18, 4, true)} GMX` : "..."}
-            />
           </div>
         )}
       </Section>
 
       {/* Audit Data */}
-      <Section title={<Trans>Audit Data</Trans>}>
+      <Section title={<Trans>Audit Data</Trans>} headerRight={epochSelector}>
         {auditError && (
           <div className="p-16 text-center text-red-500">
             <Trans>Error loading audit data</Trans>
@@ -267,12 +265,21 @@ export function IncentivesAuditDetail({
   );
 }
 
-function Section({ title, children }: { title?: ReactNode; children: ReactNode }) {
+function Section({
+  title,
+  headerRight,
+  children,
+}: {
+  title?: ReactNode;
+  headerRight?: ReactNode;
+  children: ReactNode;
+}) {
   return (
     <div className="overflow-hidden rounded-8 bg-slate-900">
       {title && (
-        <div className="border-b-1/2 border-slate-600 px-20 py-16">
+        <div className="flex items-center justify-between border-b-1/2 border-slate-600 px-20 py-16">
           <h3 className="text-body-large font-medium text-typography-primary">{title}</h3>
+          {headerRight}
         </div>
       )}
       {children}
