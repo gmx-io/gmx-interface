@@ -30,6 +30,7 @@ export type AuditSummary = {
   loadedCount: number;
   avgPointsRatio: number;
   avgRewardsRatio: number;
+  totalPoints: bigint;
   totalRewards: bigint;
 };
 
@@ -167,9 +168,10 @@ export function useIncentiveAccountEpochAudit(
     const loadedCount = data.length;
     const avgPointsRatio = data.reduce((sum, e) => sum + e.effectivePointsRatio, 0) / loadedCount;
     const avgRewardsRatio = data.reduce((sum, e) => sum + e.effectiveRewardsRatio, 0) / loadedCount;
+    const totalPoints = data.reduce((sum, e) => sum + e.points, 0n);
     const totalRewards = data.reduce((sum, e) => sum + e.rewards, 0n);
 
-    return { loadedCount, avgPointsRatio, avgRewardsRatio, totalRewards };
+    return { loadedCount, avgPointsRatio, avgRewardsRatio, totalPoints, totalRewards };
   }, [data]);
 
   return useMemo(() => ({ data, summary, error, loading: isLoading }), [data, summary, error, isLoading]);

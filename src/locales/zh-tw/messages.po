@@ -1362,6 +1362,10 @@ msgstr "日期"
 msgid "Solana"
 msgstr "Solana"
 
+#: src/pages/IncentivesDebug/IncentivesAuditList.tsx
+msgid "Total Points"
+msgstr ""
+
 #: src/domain/synthetics/trade/useMaxAutoCancelOrdersState.tsx
 msgid "Max {allowedAutoCancelOrdersNumber} auto-cancel TP/SL orders allowed. Extra orders require manual cancellation. Existing orders still close with the position. <0>Read more</0>."
 msgstr "最多允許 {allowedAutoCancelOrdersNumber} 個自動取消的 TP/SL 訂單。超出的訂單需手動取消。現有訂單仍會隨倉位一起關閉。<0>了解更多</0>。"

@@ -95,7 +95,7 @@ export function IncentivesAuditList({
       </div>
 
       {/* Summary Cards */}
-      <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
+      <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
         <SummaryCard label={<Trans>Loaded Count</Trans>} value={summary?.loadedCount ?? "..."} />
         <SummaryCard
           label={<Trans>Avg Points Ratio</Trans>}
@@ -106,6 +106,10 @@ export function IncentivesAuditList({
           label={<Trans>Avg Rewards Ratio</Trans>}
           value={summary ? summary.avgRewardsRatio.toFixed(4) : "..."}
           highlight={summary ? summary.avgRewardsRatio > 1 : false}
+        />
+        <SummaryCard
+          label={<Trans>Total Points</Trans>}
+          value={summary ? formatAmount(summary.totalPoints, 18, 4, true) : "..."}
         />
         <SummaryCard
           label={<Trans>Total Rewards</Trans>}
