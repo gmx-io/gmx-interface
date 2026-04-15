@@ -10272,6 +10272,7 @@ msgid "Accrues fees from leverage trading and swaps for the {marketName} market.
 msgstr "从 {marketName} 市场的杠杆交易和兑换中累积费用。如图所示，敞口暴露于 {exposedToLabel}。"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "Total Volume"
 msgstr ""
 
@@ -10815,6 +10816,10 @@ msgstr "减少提取量以匹配上限。<0>了解更多</0>。<1/><2/><3>设置
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 msgid "No pools matched"
 msgstr "没有匹配的资金池"
+
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+msgid "Account Page"
+msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation confirmations"

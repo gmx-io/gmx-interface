@@ -10272,6 +10272,7 @@ msgid "Accrues fees from leverage trading and swaps for the {marketName} market.
 msgstr "Accumule les frais provenant du trading à effet de levier et des échanges pour le marché {marketName}. Exposé à {exposedToLabel} comme indiqué."
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "Total Volume"
 msgstr ""
 
@@ -10815,6 +10816,10 @@ msgstr "Réduisez le retrait pour correspondre au maximum. <0>En savoir plus</0>
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 msgid "No pools matched"
 msgstr "Aucun pool correspondant"
+
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+msgid "Account Page"
+msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation confirmations"

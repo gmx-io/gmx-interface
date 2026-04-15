@@ -1,6 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { format } from "date-fns";
 import { ReactNode, useCallback, useMemo } from "react";
+import { Link } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
 
 import {
@@ -14,6 +15,7 @@ import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccou
 import { useAccountRewardsHistory } from "domain/synthetics/incentives/useAccountRewardsHistory";
 import { useIncentiveAccountEpochAudit } from "domain/synthetics/incentives/useIncentiveAccountEpochAudit";
 import { formatAmount, formatUsd } from "lib/numbers";
+import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
 import Loader from "components/Loader/Loader";
 import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
@@ -48,17 +50,19 @@ export function IncentivesAuditDetail({
   const { data: rewardsHistory } = useAccountRewardsHistory(chainId, { account });
 
   const totals = useMemo(() => {
-    const history = rewardsHistory?.length
-      ? {
-          totalPointsEarned: rewardsHistory.reduce((sum, e) => sum + e.pointsEarned, 0n),
-          totalRewardsEarned: rewardsHistory.reduce((sum, e) => sum + e.rewardsEarned, 0n),
-        }
+    const totalPointsEarned = rewardsHistory?.length
+      ? rewardsHistory.reduce((sum, e) => sum + e.pointsEarned, 0n)
       : undefined;
-
+    const totalRewardsEarned = rewardsHistory?.length
+      ? rewardsHistory.reduce((sum, e) => sum + e.rewardsEarned, 0n)
+      : undefined;
     const totalFees = auditData?.length ? auditData.reduce((sum, e) => sum + e.fees, 0n) : undefined;
+    const totalVolume = auditData?.length ? auditData.reduce((sum, e) => sum + e.volume, 0n) : undefined;
 
-    return { ...history, totalFees };
+    return { totalPointsEarned, totalRewardsEarned, totalFees, totalVolume };
   }, [rewardsHistory, auditData]);
+
+  const accountUrl = buildAccountDashboardUrl(account, chainId, 2);
 
   return (
     <div className="mt-16 flex flex-col gap-16">
@@ -75,7 +79,43 @@ export function IncentivesAuditDetail({
           >
             <Trans>Copy</Trans>
           </button>
+          <Link
+            to={accountUrl}
+            className="hover:text-blue-200 text-caption shrink-0 rounded-4 border border-slate-600 px-8 py-4 text-blue-300 hover:border-blue-300"
+          >
+            <Trans>Account Page</Trans> &rarr;
+          </Link>
         </div>
+      </div>
+
+      {/* Totals Cards */}
+      <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
+        <SummaryCard
+          label={<Trans>Total Points Earned</Trans>}
+          value={totals.totalPointsEarned !== undefined ? formatAmount(totals.totalPointsEarned, 18, 4, true) : "..."}
+        />
+        <SummaryCard
+          label={<Trans>Total Rewards Earned</Trans>}
+          value={
+            totals.totalRewardsEarned !== undefined
+              ? `${formatAmount(totals.totalRewardsEarned, 18, 4, true)} GMX`
+              : "..."
+          }
+        />
+        <SummaryCard
+          label={<Trans>Rewards Balance</Trans>}
+          value={dashboard ? `${formatAmount(dashboard.rewardsBalance, 18, 4, true)} GMX` : "..."}
+        />
+        <SummaryCard
+          label={<Trans>Total Fees Paid</Trans>}
+          value={totals.totalFees !== undefined ? formatUsd(totals.totalFees, { displayDecimals: 2 }) ?? "0" : "..."}
+        />
+        <SummaryCard
+          label={<Trans>Total Volume</Trans>}
+          value={
+            totals.totalVolume !== undefined ? formatUsd(totals.totalVolume, { displayDecimals: 0 }) ?? "0" : "..."
+          }
+        />
       </div>
 
       {/* Current Epoch Status */}
@@ -118,30 +158,6 @@ export function IncentivesAuditDetail({
               value={format(new Date(status.epochTimestamp * 1000), "MMM d, yyyy HH:mm")}
             />
             <KV label={<Trans>Points Balance</Trans>} value={formatAmount(status.pointsBalance, 18, 4, true)} />
-            <KV
-              label={<Trans>Rewards Balance</Trans>}
-              value={dashboard ? `${formatAmount(dashboard.rewardsBalance, 18, 4, true)} GMX` : "..."}
-            />
-            <KV
-              label={<Trans>Total Points Earned</Trans>}
-              value={
-                totals.totalPointsEarned !== undefined ? formatAmount(totals.totalPointsEarned, 18, 4, true) : "..."
-              }
-            />
-            <KV
-              label={<Trans>Total Rewards Earned</Trans>}
-              value={
-                totals.totalRewardsEarned !== undefined
-                  ? `${formatAmount(totals.totalRewardsEarned, 18, 4, true)} GMX`
-                  : "..."
-              }
-            />
-            <KV
-              label={<Trans>Total Fees Paid</Trans>}
-              value={
-                totals.totalFees !== undefined ? formatUsd(totals.totalFees, { displayDecimals: 2 }) ?? "0" : "..."
-              }
-            />
           </div>
         )}
       </Section>
@@ -252,21 +268,21 @@ export function IncentivesAuditDetail({
   );
 }
 
-function Section({
-  title,
-  headerRight,
-  children,
-}: {
-  title?: ReactNode;
-  headerRight?: ReactNode;
-  children: ReactNode;
-}) {
+function SummaryCard({ label, value }: { label: ReactNode; value: ReactNode }) {
+  return (
+    <div className="rounded-8 bg-slate-900 p-16">
+      <div className="text-caption text-typography-secondary">{label}</div>
+      <div className="text-body-large mt-4 font-medium text-typography-primary">{value}</div>
+    </div>
+  );
+}
+
+function Section({ title, children }: { title?: ReactNode; children: ReactNode }) {
   return (
     <div className="overflow-hidden rounded-8 bg-slate-900">
       {title && (
-        <div className="flex items-center justify-between border-b-1/2 border-slate-600 px-20 py-16">
+        <div className="border-b-1/2 border-slate-600 px-20 py-16">
           <h3 className="text-body-large font-medium text-typography-primary">{title}</h3>
-          {headerRight}
         </div>
       )}
       {children}
