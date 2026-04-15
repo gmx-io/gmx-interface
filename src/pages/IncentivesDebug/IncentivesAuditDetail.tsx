@@ -19,21 +19,13 @@ import Loader from "components/Loader/Loader";
 import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
-type EpochOption = { timestamp: number; label: string };
-
 export function IncentivesAuditDetail({
   chainId,
   account,
-  selectedEpoch,
-  epochs,
-  onEpochChange,
   onBack,
 }: {
   chainId: number;
   account: string;
-  selectedEpoch: number | undefined;
-  epochs: EpochOption[];
-  onEpochChange: (epoch: number | undefined) => void;
   onBack: () => void;
 }) {
   const [, copyToClipboard] = useCopyToClipboard();
@@ -42,30 +34,18 @@ export function IncentivesAuditDetail({
     copyToClipboard(account);
   }, [copyToClipboard, account]);
 
-  const handleEpochSelect = useCallback(
-    (e: React.ChangeEvent<HTMLSelectElement>) => {
-      onEpochChange(Number(e.target.value));
-    },
-    [onEpochChange]
-  );
-
   const {
     data: auditData,
     error: auditError,
     loading: auditLoading,
   } = useIncentiveAccountEpochAudit(chainId, {
-    epochTimestamp: selectedEpoch,
     account,
-    limit: 100,
+    limit: 1000,
   });
 
   const { data: status, loading: statusLoading } = useAccountIncentiveStatus(chainId, { account });
   const { data: dashboard } = useAccountIncentiveDashboard(chainId, { account });
   const { data: rewardsHistory } = useAccountRewardsHistory(chainId, { account });
-  const { data: allAuditEntries } = useIncentiveAccountEpochAudit(chainId, {
-    account,
-    limit: 1000,
-  });
 
   const totals = useMemo(() => {
     const history = rewardsHistory?.length
@@ -75,24 +55,10 @@ export function IncentivesAuditDetail({
         }
       : undefined;
 
-    const totalFees = allAuditEntries?.length ? allAuditEntries.reduce((sum, e) => sum + e.fees, 0n) : undefined;
+    const totalFees = auditData?.length ? auditData.reduce((sum, e) => sum + e.fees, 0n) : undefined;
 
     return { ...history, totalFees };
-  }, [rewardsHistory, allAuditEntries]);
-
-  const epochSelector = (
-    <select
-      className="text-body-medium rounded-8 border border-slate-600 bg-slate-800 px-12 py-8 text-typography-primary hover:bg-fill-surfaceElevatedHover"
-      value={selectedEpoch ?? ""}
-      onChange={handleEpochSelect}
-    >
-      {epochs.map((ep) => (
-        <option key={ep.timestamp} value={ep.timestamp}>
-          {ep.label}
-        </option>
-      ))}
-    </select>
-  );
+  }, [rewardsHistory, auditData]);
 
   return (
     <div className="mt-16 flex flex-col gap-16">
@@ -181,7 +147,7 @@ export function IncentivesAuditDetail({
       </Section>
 
       {/* Audit Data */}
-      <Section title={<Trans>Audit Data</Trans>} headerRight={epochSelector}>
+      <Section title={<Trans>Audit Data</Trans>}>
         {auditError && (
           <div className="p-16 text-center text-red-500">
             <Trans>Error loading audit data</Trans>

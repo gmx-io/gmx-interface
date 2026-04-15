@@ -96,14 +96,7 @@ export function IncentivesAuditPage() {
       />
 
       {account ? (
-        <IncentivesAuditDetail
-          chainId={chainId}
-          account={account}
-          selectedEpoch={selectedEpoch}
-          epochs={epochs}
-          onEpochChange={handleEpochChange}
-          onBack={handleBackToList}
-        />
+        <IncentivesAuditDetail chainId={chainId} account={account} onBack={handleBackToList} />
       ) : (
         <IncentivesAuditList
           chainId={chainId}
