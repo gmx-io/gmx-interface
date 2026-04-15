@@ -14,7 +14,9 @@ import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccou
 import { useIncentiveAccountEpochAudit } from "domain/synthetics/incentives/useIncentiveAccountEpochAudit";
 import { formatAmount, formatUsd } from "lib/numbers";
 
+import Loader from "components/Loader/Loader";
 import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
 type EpochOption = { timestamp: number; label: string };
 
@@ -47,7 +49,6 @@ export function IncentivesAuditDetail({
     [onEpochChange]
   );
 
-  // Audit data
   const {
     data: auditData,
     error: auditError,
@@ -58,63 +59,62 @@ export function IncentivesAuditDetail({
     limit: 100,
   });
 
-  // Live status
   const { data: status, loading: statusLoading } = useAccountIncentiveStatus(chainId, { account });
-
-  // Dashboard
   const { data: dashboard, loading: dashboardLoading } = useAccountIncentiveDashboard(chainId, { account });
 
   return (
-    <div className="flex flex-col gap-24">
+    <div className="mt-16 flex flex-col gap-16">
       {/* Header */}
-      <Section>
-        <div className="flex flex-col gap-8">
-          <button className="text-body-medium self-start text-blue-300 hover:underline" onClick={onBack}>
-            &larr; <Trans>Back to list</Trans>
+      <div className="rounded-8 bg-slate-900 p-20">
+        <button className="hover:text-blue-200 text-body-medium mb-12 text-blue-300" onClick={onBack}>
+          &larr; <Trans>Back to list</Trans>
+        </button>
+
+        <div className="flex items-center gap-12">
+          <span className="break-all font-mono text-[1.6rem] font-medium text-typography-primary">{account}</span>
+          <button
+            className="text-caption shrink-0 rounded-4 border border-slate-600 px-8 py-4 text-typography-secondary hover:border-slate-500 hover:text-typography-primary"
+            onClick={handleCopy}
+          >
+            <Trans>Copy</Trans>
           </button>
-          <div className="flex items-center gap-8">
-            <span className="text-h2 break-all font-mono">{account}</span>
-            <button
-              className="text-caption rounded-4 border border-gray-700 px-8 py-4 hover:bg-slate-700"
-              onClick={handleCopy}
-            >
-              <Trans>Copy</Trans>
-            </button>
-          </div>
-          <div className="flex items-center gap-8">
-            <label className="text-body-medium text-typography-secondary">
-              <Trans>Epoch:</Trans>
-            </label>
-            <select
-              className="text-body-medium rounded-4 border border-gray-700 bg-slate-800 px-12 py-6"
-              value={selectedEpoch ?? ""}
-              onChange={handleEpochSelect}
-            >
-              <option value="">All Epochs</option>
-              {epochs.map((ep) => (
-                <option key={ep.timestamp} value={ep.timestamp}>
-                  {ep.label}
-                </option>
-              ))}
-            </select>
-          </div>
         </div>
-      </Section>
+
+        <div className="mt-12 flex items-center gap-12">
+          <label className="text-body-medium font-medium text-typography-primary">
+            <Trans>Epoch</Trans>
+          </label>
+          <select
+            className="text-body-medium rounded-8 border border-slate-600 bg-slate-800 px-12 py-8 text-typography-primary hover:bg-fill-surfaceElevatedHover"
+            value={selectedEpoch ?? ""}
+            onChange={handleEpochSelect}
+          >
+            <option value="">
+              <Trans>All Epochs</Trans>
+            </option>
+            {epochs.map((ep) => (
+              <option key={ep.timestamp} value={ep.timestamp}>
+                {ep.label}
+              </option>
+            ))}
+          </select>
+        </div>
+      </div>
 
       {/* Audit Data */}
       <Section title={<Trans>Audit Data</Trans>}>
         {auditError && (
-          <div className="text-body-medium text-red-500">
+          <div className="p-16 text-center text-red-500">
             <Trans>Error loading audit data</Trans>
           </div>
         )}
-        {auditLoading && (
-          <div className="text-body-medium text-typography-secondary">
-            <Trans>Loading...</Trans>
+        {auditLoading && !auditData && (
+          <div className="flex items-center justify-center p-24">
+            <Loader />
           </div>
         )}
         {auditData && auditData.length > 0 && (
-          <div className="overflow-x-auto">
+          <TableScrollFadeContainer>
             <Table>
               <thead>
                 <TableTheadTr>
@@ -168,7 +168,9 @@ export function IncentivesAuditDetail({
               <tbody>
                 {auditData.map((entry) => (
                   <TableTr key={entry.id}>
-                    <TableTd padding="compact">{format(new Date(entry.epochTimestamp * 1000), "MMM d, yyyy")}</TableTd>
+                    <TableTd padding="compact">
+                      {format(new Date(entry.epochTimestamp * 1000), "MMM d, yyyy HH:mm")}
+                    </TableTd>
                     <TableTd padding="compact">{formatAmount(entry.points, 18, 4, true)}</TableTd>
                     <TableTd padding="compact">{formatAmount(entry.rewards, 18, 4, true)}</TableTd>
                     <TableTd padding="compact">{formatUsd(entry.fees, { displayDecimals: 2 })}</TableTd>
@@ -193,10 +195,10 @@ export function IncentivesAuditDetail({
                 ))}
               </tbody>
             </Table>
-          </div>
+          </TableScrollFadeContainer>
         )}
         {auditData && auditData.length === 0 && !auditLoading && (
-          <div className="text-body-medium text-typography-secondary">
+          <div className="p-16 text-center text-typography-secondary">
             <Trans>No audit entries found for this account.</Trans>
           </div>
         )}
@@ -204,31 +206,36 @@ export function IncentivesAuditDetail({
 
       {/* Live Status */}
       <Section title={<Trans>Live Status</Trans>}>
-        {statusLoading && (
-          <div className="text-body-medium text-typography-secondary">
-            <Trans>Loading...</Trans>
+        {statusLoading && !status && (
+          <div className="flex items-center justify-center p-16">
+            <Loader />
+          </div>
+        )}
+        {!statusLoading && !status && (
+          <div className="p-16 text-center text-typography-secondary">
+            <Trans>No status data available</Trans>
           </div>
         )}
         {status && (
-          <div className="grid grid-cols-2 gap-x-24 gap-y-8 md:grid-cols-3">
+          <div className="grid grid-cols-2 gap-x-24 gap-y-12 p-20 md:grid-cols-4">
             <KV label={<Trans>Multiplier</Trans>} value={formatMultiplier(status.multiplier)} />
             <KV
               label={<Trans>Volume Tier</Trans>}
               value={status.volumeTier ? getVolumeTierBadge(status.volumeTier) : "-"}
             />
             <KV
-              label={<Trans>Projected Volume Tier</Trans>}
-              value={status.projectedVolumeTier ? getVolumeTierBadge(status.projectedVolumeTier) : "-"}
-            />
-            <KV
               label={<Trans>Staking Tier</Trans>}
               value={status.stakingTier ? getStakingTierBadge(status.stakingTier) : "-"}
             />
+            <KV label={<Trans>Points Balance</Trans>} value={formatAmount(status.pointsBalance, 18, 4, true)} />
             <KV
-              label={<Trans>Projected Staking Tier</Trans>}
+              label={<Trans>Projected Vol. Tier</Trans>}
+              value={status.projectedVolumeTier ? getVolumeTierBadge(status.projectedVolumeTier) : "-"}
+            />
+            <KV
+              label={<Trans>Projected Stk. Tier</Trans>}
               value={status.projectedStakingTier ? getStakingTierBadge(status.projectedStakingTier) : "-"}
             />
-            <KV label={<Trans>Points Balance</Trans>} value={formatAmount(status.pointsBalance, 18, 4, true)} />
             <KV
               label={<Trans>Traded Volume</Trans>}
               value={formatUsd(status.tradedVolume, { displayDecimals: 0 }) ?? "0"}
@@ -240,67 +247,79 @@ export function IncentivesAuditDetail({
 
       {/* Dashboard */}
       <Section title={<Trans>Dashboard</Trans>}>
-        {dashboardLoading && (
-          <div className="text-body-medium text-typography-secondary">
-            <Trans>Loading...</Trans>
+        {dashboardLoading && !dashboard && (
+          <div className="flex items-center justify-center p-16">
+            <Loader />
+          </div>
+        )}
+        {!dashboardLoading && !dashboard && (
+          <div className="p-16 text-center text-typography-secondary">
+            <Trans>No dashboard data available</Trans>
           </div>
         )}
         {dashboard && (
           <div className="flex flex-col gap-16">
-            <div className="grid grid-cols-2 gap-x-24 gap-y-8">
+            <div className="grid grid-cols-2 gap-x-24 gap-y-12 px-20 pt-20 md:grid-cols-3">
               <KV label={<Trans>Points Balance</Trans>} value={formatAmount(dashboard.pointsBalance, 18, 4, true)} />
-              <KV label={<Trans>Rewards Balance</Trans>} value={formatAmount(dashboard.rewardsBalance, 18, 4, true)} />
+              <KV
+                label={<Trans>Rewards Balance</Trans>}
+                value={`${formatAmount(dashboard.rewardsBalance, 18, 4, true)} GMX`}
+              />
             </div>
 
             {dashboard.recentStats.length > 0 && (
-              <div className="overflow-x-auto">
-                <div className="text-body-medium mb-8 font-medium">
-                  <Trans>Recent Epoch Stats</Trans>
+              <div>
+                <div className="border-t-1/2 border-slate-600 px-20 pt-16">
+                  <div className="text-body-medium mb-8 font-medium text-typography-primary">
+                    <Trans>Recent Epoch Stats</Trans>
+                  </div>
                 </div>
-                <Table>
-                  <thead>
-                    <TableTheadTr>
-                      <TableTh padding="compact">
-                        <Trans>Epoch</Trans>
-                      </TableTh>
-                      <TableTh padding="compact">
-                        <Trans>Multiplier</Trans>
-                      </TableTh>
-                      <TableTh padding="compact">
-                        <Trans>Vol. Tier</Trans>
-                      </TableTh>
-                      <TableTh padding="compact">
-                        <Trans>Stk. Tier</Trans>
-                      </TableTh>
-                      <TableTh padding="compact">
-                        <Trans>Traded Volume</Trans>
-                      </TableTh>
-                      <TableTh padding="compact">
-                        <Trans>Boosts</Trans>
-                      </TableTh>
-                    </TableTheadTr>
-                  </thead>
-                  <tbody>
-                    {dashboard.recentStats.map((stat) => (
-                      <TableTr key={stat.epochTimestamp}>
-                        <TableTd padding="compact">
-                          {format(new Date(stat.epochTimestamp * 1000), "MMM d, yyyy")}
-                        </TableTd>
-                        <TableTd padding="compact">{formatMultiplier(stat.multiplier)}</TableTd>
-                        <TableTd padding="compact">
-                          {stat.volumeTier ? getVolumeTierBadge(stat.volumeTier) : "-"}
-                        </TableTd>
-                        <TableTd padding="compact">
-                          {stat.stakingTier ? getStakingTierBadge(stat.stakingTier) : "-"}
-                        </TableTd>
-                        <TableTd padding="compact">{formatUsd(stat.tradedVolume, { displayDecimals: 0 })}</TableTd>
-                        <TableTd padding="compact">
-                          {stat.boostIds.length > 0 ? stat.boostIds.map(getBoostLabel).join(", ") : "-"}
-                        </TableTd>
-                      </TableTr>
-                    ))}
-                  </tbody>
-                </Table>
+                <TableScrollFadeContainer>
+                  <Table>
+                    <thead>
+                      <TableTheadTr>
+                        <TableTh padding="compact">
+                          <Trans>Epoch</Trans>
+                        </TableTh>
+                        <TableTh padding="compact">
+                          <Trans>Multiplier</Trans>
+                        </TableTh>
+                        <TableTh padding="compact">
+                          <Trans>Vol. Tier</Trans>
+                        </TableTh>
+                        <TableTh padding="compact">
+                          <Trans>Stk. Tier</Trans>
+                        </TableTh>
+                        <TableTh padding="compact">
+                          <Trans>Traded Volume</Trans>
+                        </TableTh>
+                        <TableTh padding="compact">
+                          <Trans>Boosts</Trans>
+                        </TableTh>
+                      </TableTheadTr>
+                    </thead>
+                    <tbody>
+                      {dashboard.recentStats.map((stat) => (
+                        <TableTr key={stat.epochTimestamp}>
+                          <TableTd padding="compact">
+                            {format(new Date(stat.epochTimestamp * 1000), "MMM d, yyyy")}
+                          </TableTd>
+                          <TableTd padding="compact">{formatMultiplier(stat.multiplier)}</TableTd>
+                          <TableTd padding="compact">
+                            {stat.volumeTier ? getVolumeTierBadge(stat.volumeTier) : "-"}
+                          </TableTd>
+                          <TableTd padding="compact">
+                            {stat.stakingTier ? getStakingTierBadge(stat.stakingTier) : "-"}
+                          </TableTd>
+                          <TableTd padding="compact">{formatUsd(stat.tradedVolume, { displayDecimals: 0 })}</TableTd>
+                          <TableTd padding="compact">
+                            {stat.boostIds.length > 0 ? stat.boostIds.map(getBoostLabel).join(", ") : "-"}
+                          </TableTd>
+                        </TableTr>
+                      ))}
+                    </tbody>
+                  </Table>
+                </TableScrollFadeContainer>
               </div>
             )}
           </div>
@@ -312,8 +331,12 @@ export function IncentivesAuditDetail({
 
 function Section({ title, children }: { title?: ReactNode; children: ReactNode }) {
   return (
-    <div className="flex flex-col gap-8">
-      {title && <h3 className="text-h2">{title}</h3>}
+    <div className="overflow-hidden rounded-8 bg-slate-900">
+      {title && (
+        <div className="border-b-1/2 border-slate-600 px-20 py-16">
+          <h3 className="text-body-large font-medium text-typography-primary">{title}</h3>
+        </div>
+      )}
       {children}
     </div>
   );
@@ -323,7 +346,7 @@ function KV({ label, value }: { label: ReactNode; value: ReactNode }) {
   return (
     <div>
       <div className="text-caption text-typography-secondary">{label}</div>
-      <div className="text-body-medium mt-2 font-mono">{value}</div>
+      <div className="text-body-medium mt-2 font-medium text-typography-primary">{value}</div>
     </div>
   );
 }

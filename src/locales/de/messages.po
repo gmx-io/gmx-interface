@@ -126,6 +126,10 @@ msgstr "Zustimmen"
 msgid "BonsaiDAO"
 msgstr "BonsaiDAO"
 
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+msgid "No dashboard data available"
+msgstr ""
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signed"
 msgstr "Genehmigung unterzeichnet"
@@ -925,6 +929,7 @@ msgid "in liquidity"
 msgstr "In Liquidität"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Eff. Pts Ratio"
 msgstr ""
 
@@ -943,6 +948,8 @@ msgstr "{marketName} zum Wallet hinzufügen"
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Epoch"
 msgstr ""
@@ -2128,6 +2135,10 @@ msgstr "{0} gegen {1} getauscht"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "GMX balance"
 msgstr "GMX-Guthaben"
+
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+msgid "No status data available"
+msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Price on Avalanche"
@@ -3525,10 +3536,6 @@ msgstr "<0>Smart Wallets werden auf {0} nicht unterstützt</0><1/><2>Wechseln Si
 msgid "Buy from decentralized or centralized exchanges"
 msgstr "Kaufen Sie über dezentrale oder zentralisierte Börsen"
 
-#: src/pages/IncentivesDebug/IncentivesAuditList.tsx
-msgid "Eff. Rewards Ratio"
-msgstr ""
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "of limit"
 msgstr ""
@@ -4657,6 +4664,7 @@ msgid "Swap to"
 msgstr ""
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Eff. Rwd Ratio"
 msgstr ""
 
@@ -5099,10 +5107,6 @@ msgstr "Vaultkapazität"
 msgid "{0} Amount"
 msgstr ""
 
-#: src/pages/IncentivesDebug/IncentivesAuditList.tsx
-msgid "Eff. Points Ratio"
-msgstr ""
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Open interest {directionLabel}"
 msgstr "Open Interest {directionLabel}"
@@ -5148,6 +5152,11 @@ msgstr "TWAP erstellen"
 #: src/components/TradeBox/SwapSlippageField.tsx
 msgid "Slippage is the difference between your expected and actual execution price due to price volatility. Orders won't execute if slippage exceeds your allowed maximum. The default can be adjusted in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Note: slippage is different from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr "Slippage ist die Differenz zwischen deinem erwarteten und tatsächlichen Ausführungspreis aufgrund von Preisvolatilität. Orders werden nicht ausgeführt, wenn die Slippage dein erlaubtes Maximum überschreitet. Der Standardwert kann in den Einstellungen angepasst werden.<0/><1/>Ein niedriger Wert (z. B. weniger als -{0}) kann bei Volatilität zu fehlgeschlagenen Orders führen.<2/><3/>Hinweis: Slippage unterscheidet sich vom Preis-Impact, der auf Open-Interest-Ungleichgewichten basiert. <4>Mehr erfahren</4>."
+
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditList.tsx
+msgid "All Epochs"
+msgstr ""
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "In other tokens"
@@ -5344,11 +5353,6 @@ msgstr "{positionName} Gebühren werden abgerechnet..."
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "<0>GMX executes trades against a dynamically balanced liquidity pool, unlike traditional order books. This model supports deep liquidity, allowing for opening positions of over $50m with reduced price impact, even when compared to the biggest order books in the space. In some cases, you may even get paid when executing an order due to a positive price impact.</0><1>GMX prevents unfair liquidations by using decentralized oracles from Chainlink and Chaos Labs, which aggregate prices from multiple trusted sources to avoid manipulation.</1>"
 msgstr "<0>GMX führt Trades gegen einen dynamisch ausbalancierten Liquiditätspool aus, im Gegensatz zu traditionellen Orderbüchern. Dieses Modell unterstützt tiefe Liquidität und ermöglicht das Öffnen von Positionen über $50M mit reduzierter Preisauswirkung, sogar im Vergleich zu den größten Orderbüchern. In einigen Fällen werden Sie sogar bezahlt, wenn Sie eine Order ausführen, aufgrund positiver Preisauswirkung.</0><1>GMX verhindert unfaire Liquidationen durch dezentralisierte Orakel von Chainlink und Chaos Labs, die Preise aus mehreren vertrauenswürdigen Quellen aggregieren, um Manipulation zu vermeiden.</1>"
-
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-#: src/pages/IncentivesDebug/IncentivesAuditList.tsx
-msgid "Epoch:"
-msgstr ""
 
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
 #: landing/src/pages/Home/RoadmapSection/RoadmapSection.tsx
@@ -6497,6 +6501,10 @@ msgstr "Harmonix"
 msgid "Tier upgrades are reviewed manually by the GMX team based on your weekly performance. If you meet the requirements consistently, you can apply for an upgrade via the <0>GMX Partner Account: Telegram</0>."
 msgstr ""
 
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+msgid "Projected Vol. Tier"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Less info"
 msgstr "Weniger Infos"
@@ -6736,10 +6744,6 @@ msgstr "TP-Preis"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-#: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 #: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Loading..."
@@ -7282,10 +7286,6 @@ msgstr "V1-Rabatte"
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 msgid "Sell GLV"
 msgstr "GLV verkaufen"
-
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "Projected Volume Tier"
-msgstr ""
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "from {BLOCKCHAIN_COUNT} blockchains"
@@ -8190,10 +8190,6 @@ msgstr "TP/SL-Orders werden automatisch storniert, wenn die Position geschlossen
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "fees"
 msgstr "Gebühren"
-
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "Projected Staking Tier"
-msgstr ""
 
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Referral code update failed"
@@ -10085,6 +10081,10 @@ msgstr "Wählen Sie mindestens eine Ausschüttung zum Beanspruchen aus"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Buy"
 msgstr "Kaufen"
+
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+msgid "Projected Stk. Tier"
+msgstr ""
 
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Total Rewards"
