@@ -6244,6 +6244,10 @@ msgstr "特定のGMX市場に流動性を提供するプールです。単一ア
 msgid "Max funding factor"
 msgstr "最大ファンディングファクター"
 
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+msgid "Total Fees Paid"
+msgstr ""
+
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your discount is now active!"
 msgstr ""

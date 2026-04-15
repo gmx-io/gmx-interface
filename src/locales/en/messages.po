@@ -6244,6 +6244,10 @@ msgstr "Pools that provide liquidity to specific GMX markets. Supports single-as
 msgid "Max funding factor"
 msgstr "Max funding factor"
 
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+msgid "Total Fees Paid"
+msgstr "Total Fees Paid"
+
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your discount is now active!"
 msgstr "Your discount is now active!"

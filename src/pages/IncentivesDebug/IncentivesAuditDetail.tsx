@@ -62,14 +62,23 @@ export function IncentivesAuditDetail({
   const { data: status, loading: statusLoading } = useAccountIncentiveStatus(chainId, { account });
   const { data: dashboard } = useAccountIncentiveDashboard(chainId, { account });
   const { data: rewardsHistory } = useAccountRewardsHistory(chainId, { account });
+  const { data: allAuditEntries } = useIncentiveAccountEpochAudit(chainId, {
+    account,
+    limit: 1000,
+  });
 
   const totals = useMemo(() => {
-    if (!rewardsHistory?.length) return undefined;
-    return {
-      totalPointsEarned: rewardsHistory.reduce((sum, e) => sum + e.pointsEarned, 0n),
-      totalRewardsEarned: rewardsHistory.reduce((sum, e) => sum + e.rewardsEarned, 0n),
-    };
-  }, [rewardsHistory]);
+    const history = rewardsHistory?.length
+      ? {
+          totalPointsEarned: rewardsHistory.reduce((sum, e) => sum + e.pointsEarned, 0n),
+          totalRewardsEarned: rewardsHistory.reduce((sum, e) => sum + e.rewardsEarned, 0n),
+        }
+      : undefined;
+
+    const totalFees = allAuditEntries?.length ? allAuditEntries.reduce((sum, e) => sum + e.fees, 0n) : undefined;
+
+    return { ...history, totalFees };
+  }, [rewardsHistory, allAuditEntries]);
 
   const epochSelector = (
     <select
@@ -149,11 +158,23 @@ export function IncentivesAuditDetail({
             />
             <KV
               label={<Trans>Total Points Earned</Trans>}
-              value={totals ? formatAmount(totals.totalPointsEarned, 18, 4, true) : "..."}
+              value={
+                totals.totalPointsEarned !== undefined ? formatAmount(totals.totalPointsEarned, 18, 4, true) : "..."
+              }
             />
             <KV
               label={<Trans>Total Rewards Earned</Trans>}
-              value={totals ? `${formatAmount(totals.totalRewardsEarned, 18, 4, true)} GMX` : "..."}
+              value={
+                totals.totalRewardsEarned !== undefined
+                  ? `${formatAmount(totals.totalRewardsEarned, 18, 4, true)} GMX`
+                  : "..."
+              }
+            />
+            <KV
+              label={<Trans>Total Fees Paid</Trans>}
+              value={
+                totals.totalFees !== undefined ? formatUsd(totals.totalFees, { displayDecimals: 2 }) ?? "0" : "..."
+              }
             />
           </div>
         )}
