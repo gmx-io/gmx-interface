@@ -126,10 +126,6 @@ msgstr "Agree"
 msgid "BonsaiDAO"
 msgstr "BonsaiDAO"
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "No dashboard data available"
-msgstr "No dashboard data available"
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signed"
 msgstr "Approval signed"
@@ -504,6 +500,10 @@ msgstr "decrease"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in any BTC/USD pool"
 msgstr "Insufficient liquidity in any BTC/USD pool"
+
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+msgid "Total Points Earned"
+msgstr "Total Points Earned"
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Yes, GLV is fully liquid and permissionless. Sell via the GMX interface to redeem for underlying assets with low fees."
@@ -945,7 +945,6 @@ msgstr "By claiming, you agree to the <0>GLP Reimbursement</0> terms"
 msgid "Add {marketName} to wallet"
 msgstr "Add {marketName} to wallet"
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
@@ -1924,7 +1923,6 @@ msgstr "Discounts"
 msgid "Borrow fee / day"
 msgstr "Borrow fee / day"
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/PointsPage/PointsPage.tsx
 msgid "Dashboard"
 msgstr "Dashboard"
@@ -4791,6 +4789,10 @@ msgstr "Swap Market: Swap tokens at the current market price"
 msgid "Per 1h"
 msgstr "Per 1h"
 
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+msgid "Total Rewards Earned"
+msgstr "Total Rewards Earned"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perpetuals aggregator"
 msgstr "Perpetuals aggregator"
@@ -5018,7 +5020,6 @@ msgid "Current impact: {0}. Add 0.30% buffer for better order execution."
 msgstr "Current impact: {0}. Add 0.30% buffer for better order execution."
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Vol. Tier"
 msgstr "Vol. Tier"
@@ -5124,7 +5125,6 @@ msgstr "Approval failed"
 msgid "Updating settings..."
 msgstr "Updating settings..."
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "Traded Volume"
 msgstr "Traded Volume"
@@ -5732,10 +5732,6 @@ msgstr "<0>Notifications are provided by Notifi and not affiliated with GMX. By
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "<0>GLV (GMX Liquidity Vaults) is GMX V2's improved version of GLP. It's a yield-optimizing crypto-index token that:</0><1><2>Earns fees from liquidity provision across GMX V2 markets</2><3>Dynamically allocates liquidity to highest-utilized markets, maximizing capital efficiency and yield</3><4>Auto-compounds yield (no manual claiming needed, unlike GLP)</4></1>"
 msgstr "<0>GLV (GMX Liquidity Vaults) is GMX V2's improved version of GLP. It's a yield-optimizing crypto-index token that:</0><1><2>Earns fees from liquidity provision across GMX V2 markets</2><3>Dynamically allocates liquidity to highest-utilized markets, maximizing capital efficiency and yield</3><4>Auto-compounds yield (no manual claiming needed, unlike GLP)</4></1>"
-
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "Recent Epoch Stats"
-msgstr "Recent Epoch Stats"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
@@ -8973,7 +8969,6 @@ msgid "Display settings"
 msgstr "Display settings"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/PointsPage/components/MainDataSection.tsx
 msgid "Points Balance"
 msgstr "Points Balance"
@@ -9906,7 +9901,6 @@ msgstr "Used Points"
 msgid "Position impact amount"
 msgstr "Position impact amount"
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Boosts"
@@ -11585,7 +11579,6 @@ msgid "Link"
 msgstr "Link"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Stk. Tier"
 msgstr "Stk. Tier"
@@ -11721,7 +11714,6 @@ msgstr "Insufficient collateral. Need {amountText} more collateral"
 msgid "Increase size (Stop Market)"
 msgstr "Increase size (Stop Market)"
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx

@@ -126,10 +126,6 @@ msgstr "Accepter"
 msgid "BonsaiDAO"
 msgstr "BonsaiDAO"
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "No dashboard data available"
-msgstr ""
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signed"
 msgstr "Approbation signée"
@@ -504,6 +500,10 @@ msgstr ""
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in any BTC/USD pool"
 msgstr "Liquidité insuffisante dans tous les pools BTC/USD"
+
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+msgid "Total Points Earned"
+msgstr ""
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Yes, GLV is fully liquid and permissionless. Sell via the GMX interface to redeem for underlying assets with low fees."
@@ -945,7 +945,6 @@ msgstr "En réclamant, vous acceptez les conditions de <0>remboursement GLP</0>"
 msgid "Add {marketName} to wallet"
 msgstr "Ajouter {marketName} au portefeuille"
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
@@ -1924,7 +1923,6 @@ msgstr ""
 msgid "Borrow fee / day"
 msgstr "Frais d'emprunt / jour"
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/PointsPage/PointsPage.tsx
 msgid "Dashboard"
 msgstr ""
@@ -4791,6 +4789,10 @@ msgstr "Swap Market : Échangez des tokens au prix du marché actuel"
 msgid "Per 1h"
 msgstr "Par heure"
 
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+msgid "Total Rewards Earned"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perpetuals aggregator"
 msgstr "Agrégateur de perpétuels"
@@ -5018,7 +5020,6 @@ msgid "Current impact: {0}. Add 0.30% buffer for better order execution."
 msgstr "Impact actuel : {0}. Ajoutez un tampon de 0,30 % pour une meilleure exécution des ordres."
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Vol. Tier"
 msgstr ""
@@ -5124,7 +5125,6 @@ msgstr "Approbation échouée"
 msgid "Updating settings..."
 msgstr "Mise à jour des paramètres..."
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "Traded Volume"
 msgstr ""
@@ -5731,10 +5731,6 @@ msgstr "<0>Les notifications sont fournies par Notifi et non affiliées à GMX. 
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "<0>GLV (GMX Liquidity Vaults) is GMX V2's improved version of GLP. It's a yield-optimizing crypto-index token that:</0><1><2>Earns fees from liquidity provision across GMX V2 markets</2><3>Dynamically allocates liquidity to highest-utilized markets, maximizing capital efficiency and yield</3><4>Auto-compounds yield (no manual claiming needed, unlike GLP)</4></1>"
-msgstr ""
-
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "Recent Epoch Stats"
 msgstr ""
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -8973,7 +8969,6 @@ msgid "Display settings"
 msgstr "Paramètres d'affichage"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/PointsPage/components/MainDataSection.tsx
 msgid "Points Balance"
 msgstr ""
@@ -9906,7 +9901,6 @@ msgstr ""
 msgid "Position impact amount"
 msgstr "Montant d'impact sur la position"
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Boosts"
@@ -11585,7 +11579,6 @@ msgid "Link"
 msgstr "Lien"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Stk. Tier"
 msgstr ""
@@ -11721,7 +11714,6 @@ msgstr "Garantie insuffisante. {amountText} de garantie supplémentaire nécessa
 msgid "Increase size (Stop Market)"
 msgstr "Augmenter la taille (Stop Market)"
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx

@@ -126,10 +126,6 @@ msgstr "동의하기"
 msgid "BonsaiDAO"
 msgstr "BonsaiDAO"
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "No dashboard data available"
-msgstr ""
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signed"
 msgstr "승인 서명 완료"
@@ -504,6 +500,10 @@ msgstr ""
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in any BTC/USD pool"
 msgstr "모든 BTC/USD 풀에 유동성 부족"
+
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+msgid "Total Points Earned"
+msgstr ""
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Yes, GLV is fully liquid and permissionless. Sell via the GMX interface to redeem for underlying assets with low fees."
@@ -945,7 +945,6 @@ msgstr "청구 시 <0>GLP 보상</0> 약관에 동의하게 됩니다"
 msgid "Add {marketName} to wallet"
 msgstr "{marketName}을(를) 지갑에 추가"
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
@@ -1924,7 +1923,6 @@ msgstr ""
 msgid "Borrow fee / day"
 msgstr "차입 수수료 / 일"
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/PointsPage/PointsPage.tsx
 msgid "Dashboard"
 msgstr ""
@@ -4791,6 +4789,10 @@ msgstr "Market Swap: 현재 시장 가격으로 토큰을 스왑합니다"
 msgid "Per 1h"
 msgstr "1시간당"
 
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+msgid "Total Rewards Earned"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perpetuals aggregator"
 msgstr "무기한 선물 애그리게이터"
@@ -5018,7 +5020,6 @@ msgid "Current impact: {0}. Add 0.30% buffer for better order execution."
 msgstr "현재 영향: {0}. 더 나은 주문 체결을 위해 0.30% 버퍼를 추가하십시오."
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Vol. Tier"
 msgstr ""
@@ -5124,7 +5125,6 @@ msgstr "승인 실패"
 msgid "Updating settings..."
 msgstr "설정 업데이트 중..."
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "Traded Volume"
 msgstr ""
@@ -5731,10 +5731,6 @@ msgstr "<0>알림은 Notifi에서 제공되며 GMX와 무관합니다. 구독 �
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "<0>GLV (GMX Liquidity Vaults) is GMX V2's improved version of GLP. It's a yield-optimizing crypto-index token that:</0><1><2>Earns fees from liquidity provision across GMX V2 markets</2><3>Dynamically allocates liquidity to highest-utilized markets, maximizing capital efficiency and yield</3><4>Auto-compounds yield (no manual claiming needed, unlike GLP)</4></1>"
-msgstr ""
-
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "Recent Epoch Stats"
 msgstr ""
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -8973,7 +8969,6 @@ msgid "Display settings"
 msgstr "디스플레이 설정"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/PointsPage/components/MainDataSection.tsx
 msgid "Points Balance"
 msgstr ""
@@ -9906,7 +9901,6 @@ msgstr ""
 msgid "Position impact amount"
 msgstr "포지션 영향 금액"
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Boosts"
@@ -11585,7 +11579,6 @@ msgid "Link"
 msgstr "링크"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Stk. Tier"
 msgstr ""
@@ -11721,7 +11714,6 @@ msgstr "담보가 부족합니다. {amountText}만큼의 담보가 추가로 필
 msgid "Increase size (Stop Market)"
 msgstr "규모 확대 (Stop Market)"
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx

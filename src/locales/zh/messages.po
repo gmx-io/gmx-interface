@@ -126,10 +126,6 @@ msgstr "同意"
 msgid "BonsaiDAO"
 msgstr "BonsaiDAO"
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "No dashboard data available"
-msgstr ""
-
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signed"
 msgstr "批准已签名"
@@ -504,6 +500,10 @@ msgstr ""
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in any BTC/USD pool"
 msgstr "所有 BTC/USD 池流动性不足"
+
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+msgid "Total Points Earned"
+msgstr ""
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "Yes, GLV is fully liquid and permissionless. Sell via the GMX interface to redeem for underlying assets with low fees."
@@ -945,7 +945,6 @@ msgstr "领取即表示您同意 <0>GLP Reimbursement</0> 条款"
 msgid "Add {marketName} to wallet"
 msgstr "将 {marketName} 添加至钱包"
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
@@ -1924,7 +1923,6 @@ msgstr ""
 msgid "Borrow fee / day"
 msgstr "借贷费用 / 天"
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/PointsPage/PointsPage.tsx
 msgid "Dashboard"
 msgstr ""
@@ -4791,6 +4789,10 @@ msgstr "Market Swap：以当前市场价格兑换代币"
 msgid "Per 1h"
 msgstr "每 1 小时"
 
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+msgid "Total Rewards Earned"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perpetuals aggregator"
 msgstr "永续合约聚合器"
@@ -5018,7 +5020,6 @@ msgid "Current impact: {0}. Add 0.30% buffer for better order execution."
 msgstr "当前影响：{0}。建议添加 0.30% 缓冲以获得更好的订单执行效果。"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Vol. Tier"
 msgstr ""
@@ -5124,7 +5125,6 @@ msgstr "批准失败"
 msgid "Updating settings..."
 msgstr "更新设置中..."
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "Traded Volume"
 msgstr ""
@@ -5731,10 +5731,6 @@ msgstr "<0>通知由 Notifi 提供，与 GMX 无关。通过订阅，您同意�
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "<0>GLV (GMX Liquidity Vaults) is GMX V2's improved version of GLP. It's a yield-optimizing crypto-index token that:</0><1><2>Earns fees from liquidity provision across GMX V2 markets</2><3>Dynamically allocates liquidity to highest-utilized markets, maximizing capital efficiency and yield</3><4>Auto-compounds yield (no manual claiming needed, unlike GLP)</4></1>"
-msgstr ""
-
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "Recent Epoch Stats"
 msgstr ""
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -8973,7 +8969,6 @@ msgid "Display settings"
 msgstr "显示设置"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/PointsPage/components/MainDataSection.tsx
 msgid "Points Balance"
 msgstr ""
@@ -9906,7 +9901,6 @@ msgstr ""
 msgid "Position impact amount"
 msgstr "仓位影响金额"
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Boosts"
@@ -11585,7 +11579,6 @@ msgid "Link"
 msgstr "链接"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Stk. Tier"
 msgstr ""
@@ -11721,7 +11714,6 @@ msgstr "抵押品不足。还需要 {amountText} 抵押品"
 msgid "Increase size (Stop Market)"
 msgstr "增加规模（止损市价单）"
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx

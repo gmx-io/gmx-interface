@@ -1,6 +1,6 @@
 import { Trans } from "@lingui/macro";
 import { format } from "date-fns";
-import { ReactNode, useCallback } from "react";
+import { ReactNode, useCallback, useMemo } from "react";
 import { useCopyToClipboard } from "react-use";
 
 import {
@@ -11,6 +11,7 @@ import {
 } from "domain/synthetics/incentives/constants";
 import { useAccountIncentiveDashboard } from "domain/synthetics/incentives/useAccountIncentiveDashboard";
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
+import { useAccountRewardsHistory } from "domain/synthetics/incentives/useAccountRewardsHistory";
 import { useIncentiveAccountEpochAudit } from "domain/synthetics/incentives/useIncentiveAccountEpochAudit";
 import { formatAmount, formatUsd } from "lib/numbers";
 
@@ -60,7 +61,16 @@ export function IncentivesAuditDetail({
   });
 
   const { data: status, loading: statusLoading } = useAccountIncentiveStatus(chainId, { account });
-  const { data: dashboard, loading: dashboardLoading } = useAccountIncentiveDashboard(chainId, { account });
+  const { data: dashboard } = useAccountIncentiveDashboard(chainId, { account });
+  const { data: rewardsHistory } = useAccountRewardsHistory(chainId, { account });
+
+  const totals = useMemo(() => {
+    if (!rewardsHistory?.length) return undefined;
+    return {
+      totalPointsEarned: rewardsHistory.reduce((sum, e) => sum + e.pointsEarned, 0n),
+      totalRewardsEarned: rewardsHistory.reduce((sum, e) => sum + e.rewardsEarned, 0n),
+    };
+  }, [rewardsHistory]);
 
   return (
     <div className="mt-16 flex flex-col gap-16">
@@ -97,6 +107,59 @@ export function IncentivesAuditDetail({
           </select>
         </div>
       </div>
+
+      {/* Live Status */}
+      <Section title={<Trans>Live Status</Trans>}>
+        {statusLoading && !status && (
+          <div className="flex items-center justify-center p-16">
+            <Loader />
+          </div>
+        )}
+        {!statusLoading && !status && (
+          <div className="p-16 text-center text-typography-secondary">
+            <Trans>No status data available</Trans>
+          </div>
+        )}
+        {status && (
+          <div className="grid grid-cols-2 gap-x-24 gap-y-12 p-20 md:grid-cols-4">
+            <KV label={<Trans>Multiplier</Trans>} value={formatMultiplier(status.multiplier)} />
+            <KV
+              label={<Trans>Volume Tier</Trans>}
+              value={status.volumeTier ? getVolumeTierBadge(status.volumeTier) : "-"}
+            />
+            <KV
+              label={<Trans>Staking Tier</Trans>}
+              value={status.stakingTier ? getStakingTierBadge(status.stakingTier) : "-"}
+            />
+            <KV label={<Trans>Points Balance</Trans>} value={formatAmount(status.pointsBalance, 18, 4, true)} />
+            <KV
+              label={<Trans>Projected Vol. Tier</Trans>}
+              value={status.projectedVolumeTier ? getVolumeTierBadge(status.projectedVolumeTier) : "-"}
+            />
+            <KV
+              label={<Trans>Projected Stk. Tier</Trans>}
+              value={status.projectedStakingTier ? getStakingTierBadge(status.projectedStakingTier) : "-"}
+            />
+            <KV
+              label={<Trans>Traded Volume</Trans>}
+              value={formatUsd(status.tradedVolume, { displayDecimals: 0 }) ?? "0"}
+            />
+            <KV label={<Trans>Epoch</Trans>} value={format(new Date(status.epochTimestamp * 1000), "MMM d, yyyy")} />
+            <KV
+              label={<Trans>Total Points Earned</Trans>}
+              value={totals ? formatAmount(totals.totalPointsEarned, 18, 4, true) : "..."}
+            />
+            <KV
+              label={<Trans>Total Rewards Earned</Trans>}
+              value={totals ? `${formatAmount(totals.totalRewardsEarned, 18, 4, true)} GMX` : "..."}
+            />
+            <KV
+              label={<Trans>Rewards Balance</Trans>}
+              value={dashboard ? `${formatAmount(dashboard.rewardsBalance, 18, 4, true)} GMX` : "..."}
+            />
+          </div>
+        )}
+      </Section>
 
       {/* Audit Data */}
       <Section title={<Trans>Audit Data</Trans>}>
@@ -197,128 +260,6 @@ export function IncentivesAuditDetail({
         {auditData && auditData.length === 0 && !auditLoading && (
           <div className="p-16 text-center text-typography-secondary">
             <Trans>No audit entries found for this account.</Trans>
-          </div>
-        )}
-      </Section>
-
-      {/* Live Status */}
-      <Section title={<Trans>Live Status</Trans>}>
-        {statusLoading && !status && (
-          <div className="flex items-center justify-center p-16">
-            <Loader />
-          </div>
-        )}
-        {!statusLoading && !status && (
-          <div className="p-16 text-center text-typography-secondary">
-            <Trans>No status data available</Trans>
-          </div>
-        )}
-        {status && (
-          <div className="grid grid-cols-2 gap-x-24 gap-y-12 p-20 md:grid-cols-4">
-            <KV label={<Trans>Multiplier</Trans>} value={formatMultiplier(status.multiplier)} />
-            <KV
-              label={<Trans>Volume Tier</Trans>}
-              value={status.volumeTier ? getVolumeTierBadge(status.volumeTier) : "-"}
-            />
-            <KV
-              label={<Trans>Staking Tier</Trans>}
-              value={status.stakingTier ? getStakingTierBadge(status.stakingTier) : "-"}
-            />
-            <KV label={<Trans>Points Balance</Trans>} value={formatAmount(status.pointsBalance, 18, 4, true)} />
-            <KV
-              label={<Trans>Projected Vol. Tier</Trans>}
-              value={status.projectedVolumeTier ? getVolumeTierBadge(status.projectedVolumeTier) : "-"}
-            />
-            <KV
-              label={<Trans>Projected Stk. Tier</Trans>}
-              value={status.projectedStakingTier ? getStakingTierBadge(status.projectedStakingTier) : "-"}
-            />
-            <KV
-              label={<Trans>Traded Volume</Trans>}
-              value={formatUsd(status.tradedVolume, { displayDecimals: 0 }) ?? "0"}
-            />
-            <KV label={<Trans>Epoch</Trans>} value={format(new Date(status.epochTimestamp * 1000), "MMM d, yyyy")} />
-          </div>
-        )}
-      </Section>
-
-      {/* Dashboard */}
-      <Section title={<Trans>Dashboard</Trans>}>
-        {dashboardLoading && !dashboard && (
-          <div className="flex items-center justify-center p-16">
-            <Loader />
-          </div>
-        )}
-        {!dashboardLoading && !dashboard && (
-          <div className="p-16 text-center text-typography-secondary">
-            <Trans>No dashboard data available</Trans>
-          </div>
-        )}
-        {dashboard && (
-          <div className="flex flex-col gap-16">
-            <div className="grid grid-cols-2 gap-x-24 gap-y-12 px-20 pt-20 md:grid-cols-3">
-              <KV label={<Trans>Points Balance</Trans>} value={formatAmount(dashboard.pointsBalance, 18, 4, true)} />
-              <KV
-                label={<Trans>Rewards Balance</Trans>}
-                value={`${formatAmount(dashboard.rewardsBalance, 18, 4, true)} GMX`}
-              />
-            </div>
-
-            {dashboard.recentStats.length > 0 && (
-              <div>
-                <div className="border-t-1/2 border-slate-600 px-20 pt-16">
-                  <div className="text-body-medium mb-8 font-medium text-typography-primary">
-                    <Trans>Recent Epoch Stats</Trans>
-                  </div>
-                </div>
-                <TableScrollFadeContainer>
-                  <Table>
-                    <thead>
-                      <TableTheadTr>
-                        <TableTh padding="compact">
-                          <Trans>Epoch</Trans>
-                        </TableTh>
-                        <TableTh padding="compact">
-                          <Trans>Multiplier</Trans>
-                        </TableTh>
-                        <TableTh padding="compact">
-                          <Trans>Vol. Tier</Trans>
-                        </TableTh>
-                        <TableTh padding="compact">
-                          <Trans>Stk. Tier</Trans>
-                        </TableTh>
-                        <TableTh padding="compact">
-                          <Trans>Traded Volume</Trans>
-                        </TableTh>
-                        <TableTh padding="compact">
-                          <Trans>Boosts</Trans>
-                        </TableTh>
-                      </TableTheadTr>
-                    </thead>
-                    <tbody>
-                      {dashboard.recentStats.map((stat) => (
-                        <TableTr key={stat.epochTimestamp}>
-                          <TableTd padding="compact">
-                            {format(new Date(stat.epochTimestamp * 1000), "MMM d, yyyy")}
-                          </TableTd>
-                          <TableTd padding="compact">{formatMultiplier(stat.multiplier)}</TableTd>
-                          <TableTd padding="compact">
-                            {stat.volumeTier ? getVolumeTierBadge(stat.volumeTier) : "-"}
-                          </TableTd>
-                          <TableTd padding="compact">
-                            {stat.stakingTier ? getStakingTierBadge(stat.stakingTier) : "-"}
-                          </TableTd>
-                          <TableTd padding="compact">{formatUsd(stat.tradedVolume, { displayDecimals: 0 })}</TableTd>
-                          <TableTd padding="compact">
-                            {stat.boostIds.length > 0 ? stat.boostIds.map(getBoostLabel).join(", ") : "-"}
-                          </TableTd>
-                        </TableTr>
-                      ))}
-                    </tbody>
-                  </Table>
-                </TableScrollFadeContainer>
-              </div>
-            )}
           </div>
         )}
       </Section>
