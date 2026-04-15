@@ -82,6 +82,15 @@ const DecodeErrorPage = () => (
   </Suspense>
 );
 
+const LazyIncentivesAudit = lazy(() =>
+  import("pages/IncentivesDebug/IncentivesAuditPage").then((module) => ({ default: module.IncentivesAuditPage }))
+);
+const IncentivesAuditPage = () => (
+  <Suspense fallback={<Trans>Loading...</Trans>}>
+    <LazyIncentivesAudit />
+  </Suspense>
+);
+
 export function MainRoutes({ openSettings }: { openSettings: () => void }) {
   const { chainId } = useChainId();
 
@@ -238,6 +247,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         </Route>,
         <Route exact path="/decode-error" key="decode-error">
           <DecodeErrorPage />
+        </Route>,
+        <Route path="/incentives-audit/:account?" key="incentives-audit">
+          <IncentivesAuditPage />
         </Route>,
       ]}
       <Route path="*">
