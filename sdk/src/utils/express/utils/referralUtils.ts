@@ -25,7 +25,7 @@ export async function signSetTraderReferralCode({
     ],
   };
 
-  const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, getContract(chainId, "MultichainOrderRouter"));
+  const domain = getGelatoRelayRouterDomain(srcChainId, getContract(chainId, "MultichainOrderRouter"));
   const typedData = {
     referralCode: referralCode,
     relayParams: hashRelayParams(relayParams),
@@ -54,7 +54,7 @@ export async function signRegisterCode({
     ],
   };
 
-  const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, getContract(chainId, "MultichainOrderRouter"));
+  const domain = getGelatoRelayRouterDomain(srcChainId, getContract(chainId, "MultichainOrderRouter"));
   const typedData = {
     referralCode: referralCode,
     relayParams: hashRelayParams(relayParams),
