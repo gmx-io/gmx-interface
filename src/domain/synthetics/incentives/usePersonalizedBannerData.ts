@@ -225,13 +225,13 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
       isLoading: dashboardLoading,
     };
 
-    if (!enabled || !dashboard || gmxPrice === undefined || gmxPrice === 0n) {
+    if (!enabled || !dashboard || !rewardsHistory || gmxPrice === undefined || gmxPrice === 0n) {
       return noData;
     }
 
     // Manual allocation is derived from pre-launch history entries.
     const manualAllocatedPoints =
-      config?.programStartTimestamp && rewardsHistory?.length
+      config?.programStartTimestamp && rewardsHistory.length
         ? rewardsHistory
             .filter((entry) => entry.epoch < config.programStartTimestamp && entry.volume === 0n)
             .reduce((sum, entry) => sum + entry.pointsEarned, 0n)

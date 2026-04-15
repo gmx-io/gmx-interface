@@ -3,6 +3,8 @@ import { useMemo } from "react";
 import type { EpochStats, IncentivesConfig, RewardsHistoryEntry } from "domain/synthetics/incentives/types";
 import { formatAmount } from "lib/numbers";
 
+import bgPointsBanner from "img/bg_points_banner.png";
+
 type Props = {
   isActiveUser: boolean;
   account?: string;
@@ -16,6 +18,12 @@ type BannerContent = {
   description: string;
 };
 
+const BANNER_STYLES = {
+  backgroundImage: `url(${bgPointsBanner})`,
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+};
+
 export function PointsBanner({ isActiveUser, account, config, currentEpochStats, currentEpochHistory }: Props) {
   const banner = useMemo(
     () => getBannerContent({ isActiveUser, account, config, currentEpochStats, currentEpochHistory }),
@@ -25,7 +33,10 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
   if (!banner) return null;
 
   return (
-    <div className="rounded-8 border-1/2 border-blue-500/30 bg-blue-500/10 px-20 py-16">
+    <div
+      className="overflow-hidden rounded-8 border-1/2 border-blue-500/30 bg-blue-500/10 px-20 py-16"
+      style={BANNER_STYLES}
+    >
       <div className="flex items-center justify-between gap-16">
         <div>
           <h3 className="text-body-medium font-medium text-typography-primary">{banner.title}</h3>

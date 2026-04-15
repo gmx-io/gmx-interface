@@ -8,8 +8,8 @@ import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatUsd } from "lib/numbers";
 
-import ChevronRightIcon from "img/ic_chevron_right.svg?react";
-import MultiplierIcon from "img/ic_multiplier.svg?react";
+import bgPointsPromoBanner from "img/bg_points_promo_banner.png";
+import CrossIcon from "img/ic_cross.svg?react";
 
 function formatCompactNumber(value: number): string {
   if (value >= 1000) {
@@ -22,6 +22,12 @@ function formatCompactNumber(value: number): string {
   return value.toFixed(2);
 }
 
+const BANNER_STYLES = {
+  backgroundImage: `url(${bgPointsPromoBanner})`,
+  backgroundSize: "cover",
+  backgroundPosition: "center",
+};
+
 export function PointsPromoBanner() {
   const { chainId } = useChainId();
   const [dismissed, setDismissed] = useLocalStorageSerializeKey(POINTS_TRADE_BANNER_DISMISSED_KEY, false);
@@ -31,39 +37,62 @@ export function PointsPromoBanner() {
 
   const bannerText = getBannerText(bannerData);
 
-  return (
-    <div className="flex items-center justify-between rounded-8 border-1/2 border-blue-500/30 bg-blue-500/10 px-16 py-12">
+  return bannerData.isLoading ? null : (
+    <div className="flex justify-center">
       <Link
+        className="grid min-h-[78px] w-full grid-cols-[1fr_76px] rounded-8 border-1/2 border-stroke-primary bg-slate-900/50 px-16 py-12"
+        style={BANNER_STYLES}
+        onClick={() => setDismissed(true)}
         to="/points"
-        className="text-body-small flex items-center gap-8 font-medium text-typography-primary"
-        onClick={() => setDismissed(true)}
       >
-        <MultiplierIcon className="size-16 text-green-500" />
-        <span>{bannerText}</span>
-        <ChevronRightIcon className="size-16 text-typography-secondary" />
+        <div className="flex gap-8">
+          <div className="flex flex-col gap-2">{bannerText}</div>
+        </div>
+
+        <div className="flex items-start justify-end">
+          <button
+            className="text-typography-secondary hover:text-typography-primary"
+            onClick={() => setDismissed(true)}
+          >
+            <CrossIcon className="size-11" />
+          </button>
+        </div>
       </Link>
-      <button
-        className="ml-8 text-typography-secondary hover:text-typography-primary"
-        onClick={() => setDismissed(true)}
-      >
-        ✕
-      </button>
     </div>
   );
 }
 
 function getBannerText(bannerData: ReturnType<typeof usePersonalizedBannerData>) {
+  const defaultContent = (
+    <>
+      <h6 className="text-16 font-medium text-typography-primary">
+        <Trans>Earn rewards</Trans>
+      </h6>
+
+      <span className="text-13 text-typography-secondary">
+        <Trans>Start earning points and unlock rewards.</Trans>
+      </span>
+    </>
+  );
+
   if (!bannerData.hasPersonalizedData) {
-    return <Trans>Start earning points and unlock rewards.</Trans>;
+    return defaultContent;
   }
 
   if (bannerData.isManuallyRewarded && bannerData.manualBonusUsd !== undefined) {
     const bonusFormatted = formatUsd(bannerData.manualBonusUsd);
     return (
-      <Trans>
-        You've received a points bonus worth {bonusFormatted} — Start trading to activate it and use it to discount your
-        fees.
-      </Trans>
+      <>
+        <h6 className="text-16 font-medium text-typography-primary">
+          <Trans>
+            You've received a points bonus worth <span className="whitespace-nowrap">{bonusFormatted}</span>
+          </Trans>
+        </h6>
+
+        <span className="text-13 text-typography-secondary">
+          <Trans>Start trading to activate it and use it to discount your fees.</Trans>
+        </span>
+      </>
     );
   }
 
@@ -76,12 +105,25 @@ function getBannerText(bannerData: ReturnType<typeof usePersonalizedBannerData>)
     const stakeFormatted = formatCompactNumber(bannerData.recommendedStakeGmx);
     const rewardsFormatted = formatCompactNumber(bannerData.estimatedRewardsUsd);
     return (
-      <Trans>
-        Earn rewards — With your recent volume, staking {stakeFormatted} GMX could have earned you up to $
-        {rewardsFormatted} in additional trading rewards.
-      </Trans>
+      <>
+        <h6 className="text-16 font-medium text-typography-primary">
+          <Trans>Earn rewards</Trans>
+        </h6>
+
+        <span className="text-13 text-typography-secondary">
+          <Trans>
+            With your recent volume, staking{" "}
+            <span className="font-medium text-typography-primary">{stakeFormatted} GMX</span> could have earned you up
+            to{" "}
+            <span className="font-medium text-typography-primary">
+              ${rewardsFormatted} in additional trading rewards
+            </span>
+            .
+          </Trans>
+        </span>
+      </>
     );
   }
 
-  return <Trans>Start earning points and unlock rewards.</Trans>;
+  return defaultContent;
 }
