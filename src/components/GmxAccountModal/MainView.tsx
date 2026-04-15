@@ -42,9 +42,10 @@ import { UsdValueWithSkeleton } from "components/UsdValueWithSkeleton/UsdValueWi
 
 import BellIcon from "img/ic_bell.svg?react";
 import ChevronLeftIcon from "img/ic_chevron_left.svg?react";
+import ChevronRight from "img/ic_chevron_right.svg?react";
 import CopyIcon from "img/ic_copy.svg?react";
 import ExplorerIcon from "img/ic_explorer.svg?react";
-import MultiplierIcon from "img/ic_multiplier.svg?react";
+import MultiplierSolidIcon from "img/ic_multiplier_solid.svg?react";
 import PnlAnalysisIcon from "img/ic_pnl_analysis.svg?react";
 import SettingsIcon from "img/ic_settings.svg?react";
 import DisconnectIcon from "img/ic_sign_out_20.svg?react";
@@ -229,30 +230,35 @@ function SettlementChainBalance() {
   const availableToTradeAssetSymbols = useAvailableToTradeAssetSymbolsSettlementChain();
 
   return (
-    <div className="flex flex-col gap-12 rounded-8 bg-fill-surfaceElevated50 p-12">
-      <div className="flex flex-col gap-8">
-        <div className="text-body-small text-typography-secondary">
-          <Trans>Available to trade</Trans>
+    <div className="rounded-8 bg-slate-700/50">
+      <div className="flex flex-col gap-12 rounded-8 border-1/2 border-slate-600 bg-slate-950/75 p-12">
+        <div className="flex flex-col gap-8">
+          <div className="text-body-small text-typography-secondary">
+            <Trans>Available to trade</Trans>
+          </div>
+          <Balance usd={totalUsd} availableToTradeAssetSymbols={availableToTradeAssetSymbols} />
         </div>
-        <Balance usd={totalUsd} availableToTradeAssetSymbols={availableToTradeAssetSymbols} />
+        <div className="h-[0.5px] bg-slate-600" />
+        <div>
+          <SyntheticsInfoRow
+            label={<Trans>Wallet</Trans>}
+            className="py-4"
+            value={<UsdValueWithSkeleton usd={walletUsd} />}
+          />
+          <SyntheticsInfoRow
+            label={
+              <TooltipWithPortal content={<GmxAccountBalanceTooltipContent />} variant="iconStroke">
+                <Trans>GMX Account balance</Trans>
+              </TooltipWithPortal>
+            }
+            className="py-4"
+            value={<UsdValueWithSkeleton usd={gmxAccountUsd} />}
+          />
+        </div>
+
+        <ActionButtons />
       </div>
-      <div className="h-[0.5px] bg-slate-600" />
-      <div>
-        <SyntheticsInfoRow
-          label={<Trans>Wallet</Trans>}
-          className="py-4"
-          value={<UsdValueWithSkeleton usd={walletUsd} />}
-        />
-        <SyntheticsInfoRow
-          label={
-            <TooltipWithPortal content={<GmxAccountBalanceTooltipContent />} variant="iconStroke">
-              <Trans>GMX Account balance</Trans>
-            </TooltipWithPortal>
-          }
-          className="py-4"
-          value={<UsdValueWithSkeleton usd={gmxAccountUsd} />}
-        />
-      </div>
+      <PointsSection />
     </div>
   );
 }
@@ -262,16 +268,21 @@ function MultichainBalance() {
   const availableToTradeAssetSymbols = useAvailableToTradeAssetSymbolsMultichain();
 
   return (
-    <div className="flex flex-col gap-8 rounded-8 bg-fill-surfaceElevated50 p-12">
-      <TooltipWithPortal
-        handleClassName="text-body-small text-typography-secondary"
-        content={<GmxAccountBalanceTooltipContent />}
-        variant="iconStroke"
-      >
-        <Trans>Balance</Trans>
-      </TooltipWithPortal>
+    <div className="rounded-8 bg-slate-700/50">
+      <div className="flex flex-col gap-8 rounded-8 border-1/2 border-slate-600 bg-slate-950/75 p-12">
+        <TooltipWithPortal
+          handleClassName="text-body-small text-typography-secondary"
+          content={<GmxAccountBalanceTooltipContent />}
+          variant="iconStroke"
+        >
+          <Trans>Balance</Trans>
+        </TooltipWithPortal>
 
-      <Balance usd={gmxAccountUsd} availableToTradeAssetSymbols={availableToTradeAssetSymbols} />
+        <Balance usd={gmxAccountUsd} availableToTradeAssetSymbols={availableToTradeAssetSymbols} />
+
+        <ActionButtons />
+      </div>
+      <PointsSection />
     </div>
   );
 }
@@ -305,7 +316,7 @@ function Balance({
       )}
       {usd !== undefined && usd !== 0n && (
         <button
-          className="flex min-h-32 items-center gap-4 rounded-full bg-slate-600 py-6 pl-12 pr-12 text-[13px] font-medium gmx-hover:bg-slate-600/90"
+          className="flex min-h-32 items-center gap-4 rounded-full border-1/2 border-slate-600 py-6 pl-12 pr-12 text-[13px] font-medium gmx-hover:bg-slate-800/50"
           onClick={handleAvailableToTradeClick}
         >
           <Trans>All assets</Trans>
@@ -538,18 +549,15 @@ const PointsSection = () => {
   };
 
   return (
-    <button
-      onClick={handleClick}
-      className="flex cursor-pointer items-center justify-between rounded-8 border-1/2 border-slate-600 px-12 py-10 transition-colors hover:border-blue-300"
-    >
-      <div className="flex flex-col gap-2">
-        <span className="text-body-small font-semibold text-typography-primary">
+    <div className="flex cursor-pointer items-center justify-between p-12" onClick={handleClick}>
+      <div className="flex flex-col items-start gap-2">
+        <span className="text-13 font-medium text-typography-primary">
           {hasMultiplier ? <Trans>Your multiplier</Trans> : <Trans>GMX Points</Trans>}{" "}
-          <span className="inline-flex items-center gap-4 text-green-500">
-            <MultiplierIcon className="size-12" /> {hasMultiplier ? formatMultiplier(multiplier) : "0.0x"}
+          <span className="inline-flex items-center gap-4 rounded-full bg-green-900 px-4 py-3 text-12 text-green-500">
+            <MultiplierSolidIcon className="size-12" /> {hasMultiplier ? formatMultiplier(multiplier) : "0.0x"}
           </span>
         </span>
-        <span className="text-caption text-typography-secondary">
+        <span className="text-12 text-typography-secondary">
           {hasMultiplier ? (
             gmxToNextTierLabel && additionalMultiplierLabel ? (
               <Trans>
@@ -563,8 +571,10 @@ const PointsSection = () => {
           )}
         </span>
       </div>
-      <span className="text-typography-secondary">›</span>
-    </button>
+      <Button variant="secondary" className="!h-32 !w-32">
+        <ChevronRight className="size-20 h-20 shrink-0 pl-2" />
+      </Button>
+    </div>
   );
 };
 
@@ -574,8 +584,6 @@ export const MainView = ({ account }: { account: string }) => {
       <div className="flex flex-col gap-12 px-adaptive pb-12 pt-8">
         <Toolbar account={account} />
         <BalanceSection />
-        <ActionButtons />
-        <PointsSection />
       </div>
       <FundingHistorySection />
     </div>

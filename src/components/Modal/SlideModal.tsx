@@ -26,6 +26,7 @@ function MobileSlideModal({
   contentPadding = true,
   footerContent,
   className,
+  headerWrapperClassName,
   fitContent = false,
 }: PropsWithChildren<{
   label?: React.ReactNode;
@@ -37,6 +38,7 @@ function MobileSlideModal({
   contentPadding?: boolean;
   footerContent?: React.ReactNode;
   className?: string;
+  headerWrapperClassName?: string;
   fitContent?: boolean;
 }>) {
   const curtainStyle = useMemo(
@@ -272,7 +274,7 @@ function MobileSlideModal({
           onClick={stopPropagation}
         >
           <div
-            className="border-b-1/2 border-slate-600 pb-12"
+            className={cx("border-b-1/2 border-slate-600 pb-12", headerWrapperClassName)}
             onPointerDown={handlePointerDown}
             onPointerMove={handlePointerMove}
             onPointerUp={handlePointerUp}
@@ -325,6 +327,7 @@ export function SlideModal({
   contentPadding = true,
   footerContent,
   className,
+  headerWrapperClassName,
   desktopContentClassName,
   desktopClassName,
   disableOverflowHandling = false,
@@ -339,6 +342,7 @@ export function SlideModal({
   contentPadding?: boolean;
   footerContent?: React.ReactNode;
   className?: string;
+  headerWrapperClassName?: string;
   desktopContentClassName?: string;
   /**
    * Additional className for the desktop modal wrapper (overrides Modal positioning)
@@ -365,6 +369,7 @@ export function SlideModal({
         footerContent={footerContent}
         className={className}
         fitContent={fitContent}
+        headerWrapperClassName={headerWrapperClassName}
       >
         {children}
       </MobileSlideModal>
@@ -384,6 +389,7 @@ export function SlideModal({
         className={cx(className, desktopClassName)}
         contentClassName={desktopContentClassName}
         disableOverflowHandling={disableOverflowHandling}
+        headerWrapperClassName={headerWrapperClassName}
       >
         {children}
       </Modal>

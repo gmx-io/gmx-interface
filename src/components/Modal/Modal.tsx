@@ -44,6 +44,7 @@ export type ModalProps = PropsWithChildren<{
   contentPadding?: boolean;
   qa?: string;
   contentClassName?: string;
+  headerWrapperClassName?: string;
   disableOverflowHandling?: boolean;
   withMobileBottomPosition?: boolean;
   takeFullHeight?: boolean;
@@ -63,6 +64,7 @@ export default function Modal({
   setIsVisible,
   qa,
   contentClassName,
+  headerWrapperClassName,
   disableOverflowHandling = false,
   withMobileBottomPosition = false,
   takeFullHeight = false,
@@ -138,7 +140,12 @@ export default function Modal({
               onClick={stopPropagation}
               data-qa={qa}
             >
-              <div className="Modal-header-wrapper flex flex-col gap-8 border-b-1/2 border-slate-600 px-adaptive pb-12 pt-adaptive">
+              <div
+                className={cx(
+                  "Modal-header-wrapper flex flex-col gap-8 border-b-1/2 border-slate-600 px-adaptive pb-12 pt-adaptive",
+                  headerWrapperClassName
+                )}
+              >
                 <div className="Modal-title-bar h-28">
                   <div className="Modal-title-group">
                     {onBack && (
