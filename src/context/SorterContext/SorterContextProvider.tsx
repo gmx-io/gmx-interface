@@ -18,6 +18,7 @@ const DEFAULT_SORTER_STATE: SorterState = {
   "leaderboard-positions-table": { orderBy: "unspecified", direction: "unspecified", isDefault: true },
   "points-leaderboard": { orderBy: "unspecified", direction: "unspecified", isDefault: true },
   "position-list": { orderBy: "unspecified", direction: "unspecified", isDefault: true },
+  "incentives-audit-list": { orderBy: "unspecified", direction: "unspecified", isDefault: true },
 };
 
 type SorterContextType = {
