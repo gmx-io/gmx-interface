@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useState } from "react";
 
 import {
   formatMultiplier,
@@ -58,10 +58,8 @@ export function IncentivesAuditList({
     offset: page * PAGE_SIZE,
   });
 
-  const pageCount = useMemo(() => {
-    if (!summary) return 1;
-    return Math.max(1, Math.ceil(summary.loadedCount / PAGE_SIZE));
-  }, [summary]);
+  const hasNextPage = data ? data.length === PAGE_SIZE : false;
+  const pageCount = page + 1 + (hasNextPage ? 1 : 0);
 
   const handleEpochSelect = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {

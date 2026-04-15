@@ -227,8 +227,8 @@ export function IncentivesAuditDetail({
               label={<Trans>Projected Staking Tier</Trans>}
               value={status.projectedStakingTier ? getStakingTierBadge(status.projectedStakingTier) : "-"}
             />
-            <KV label={<Trans>Points Balance</Trans>} value={status.pointsBalance.toString()} />
-            <KV label={<Trans>Traded Volume</Trans>} value={status.tradedVolume.toString()} />
+            <KV label={<Trans>Points Balance</Trans>} value={Number(status.pointsBalance).toLocaleString()} />
+            <KV label={<Trans>Traded Volume</Trans>} value={Number(status.tradedVolume).toLocaleString()} />
             <KV label={<Trans>Epoch</Trans>} value={format(new Date(status.epochTimestamp * 1000), "MMM d, yyyy")} />
           </div>
         )}
@@ -244,8 +244,8 @@ export function IncentivesAuditDetail({
         {dashboard && (
           <div className="flex flex-col gap-16">
             <div className="grid grid-cols-2 gap-x-24 gap-y-8">
-              <KV label={<Trans>Points Balance</Trans>} value={dashboard.pointsBalance.toString()} />
-              <KV label={<Trans>Rewards Balance</Trans>} value={dashboard.rewardsBalance.toString()} />
+              <KV label={<Trans>Points Balance</Trans>} value={Number(dashboard.pointsBalance).toLocaleString()} />
+              <KV label={<Trans>Rewards Balance</Trans>} value={Number(dashboard.rewardsBalance).toLocaleString()} />
             </div>
 
             {dashboard.recentStats.length > 0 && (
@@ -289,7 +289,7 @@ export function IncentivesAuditDetail({
                         <TableTd padding="compact">
                           {stat.stakingTier ? getStakingTierBadge(stat.stakingTier) : "-"}
                         </TableTd>
-                        <TableTd padding="compact">{stat.tradedVolume.toString()}</TableTd>
+                        <TableTd padding="compact">{Number(stat.tradedVolume).toLocaleString()}</TableTd>
                         <TableTd padding="compact">
                           {stat.boostIds.length > 0 ? stat.boostIds.map(getBoostLabel).join(", ") : "-"}
                         </TableTd>

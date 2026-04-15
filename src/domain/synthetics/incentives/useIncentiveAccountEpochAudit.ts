@@ -105,7 +105,7 @@ export function useIncentiveAccountEpochAudit(
 
         const variables: Record<string, unknown> = { orderBy, orderDirection, limit, offset };
         if (epochTimestamp !== undefined) variables.epochTimestamp = epochTimestamp;
-        if (account !== undefined) variables.account = account;
+        if (account !== undefined) variables.account = account.toLowerCase();
 
         const res = await client.query({
           query: AUDIT_QUERY,

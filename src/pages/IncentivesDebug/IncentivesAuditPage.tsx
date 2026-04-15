@@ -46,7 +46,7 @@ export function IncentivesAuditPage() {
   const selectedEpoch = epochParam ? Number(epochParam) : undefined;
 
   const epochs = useMemo(() => {
-    if (!config) return [];
+    if (!config || config.epochDuration <= 0) return [];
     const result: { timestamp: number; label: string }[] = [];
     let ts = config.programStartTimestamp;
     while (ts <= config.epochTimestamp) {
