@@ -35,6 +35,10 @@ const INCENTIVES_CONFIG_QUERY = gql`
       }
       balancingTradesThreshold
       lifetimeVolumeThreshold
+      downgradingCoefficients {
+        market
+        coefficient
+      }
       featuredMarkets
     }
   }
@@ -83,17 +87,12 @@ export function useIncentivesConfig(chainId: number) {
           })),
         balancingTradesThreshold: BigInt(config.balancingTradesThreshold),
         lifetimeVolumeThreshold: BigInt(config.lifetimeVolumeThreshold),
-        volumeDowngradingCoefficients: config.volumeDowngradingCoefficients
-          ? config.volumeDowngradingCoefficients.map(
-              (epoch: { epochTimestamp: number; coefficients: { market: string; coefficient: number }[] }) => ({
-                epochTimestamp: epoch.epochTimestamp,
-                coefficients: epoch.coefficients.map((c: { market: string; coefficient: number }) => ({
-                  market: c.market,
-                  coefficient: c.coefficient,
-                })),
-              })
-            )
-          : [],
+        downgradingCoefficients: Object.fromEntries(
+          (config.downgradingCoefficients ?? []).map((c: { market: string; coefficient: string }) => [
+            c.market,
+            BigInt(c.coefficient),
+          ])
+        ),
         featuredMarketTokens: config.featuredMarkets ?? [],
       };
     },

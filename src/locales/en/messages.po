@@ -1501,10 +1501,6 @@ msgstr "Trigger error boundary"
 msgid "GMX fundamentals"
 msgstr "GMX fundamentals"
 
-#: src/pages/PointsPage/components/TierLevelsSection.tsx
-msgid "Each epoch, your trading volume places you into a Volume Tier, which stays active for {volumeTierPersistenceEpochs} epochs. Higher tiers earn more points per dollar of trading fees paid. Volume tiers update automatically after each epoch based on your activity. Trading more consistently helps you stay in higher tiers and earn rewards faster."
-msgstr "Each epoch, your trading volume places you into a Volume Tier, which stays active for {volumeTierPersistenceEpochs} epochs. Higher tiers earn more points per dollar of trading fees paid. Volume tiers update automatically after each epoch based on your activity. Trading more consistently helps you stay in higher tiers and earn rewards faster."
-
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT DATA"
 msgstr "EVENT DATA"
@@ -4590,10 +4586,6 @@ msgstr "Long Funding Rate"
 msgid "in {0}"
 msgstr "in {0}"
 
-#: src/pages/PointsPage/components/TierLevelsSection.tsx
-msgid "Some markets have reduced volume coefficients. Volume on these markets is counted at a lower rate for tier calculations because they typically involve higher leverage and generate fewer fees."
-msgstr "Some markets have reduced volume coefficients. Volume on these markets is counted at a lower rate for tier calculations because they typically involve higher leverage and generate fewer fees."
-
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} fees settled"
 msgstr "{positionName} fees settled"
@@ -4738,6 +4730,10 @@ msgstr "Select a market"
 #: src/components/TokenSelector/TokenSelector.tsx
 msgid "No tokens matched"
 msgstr "No tokens matched"
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Trading volume on RWA pairs is counted with a reduced coefficient"
+msgstr "Trading volume on RWA pairs is counted with a reduced coefficient"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Error sending permit for {0}: {1}"
@@ -7276,6 +7272,10 @@ msgstr "Guaranteed liquidity"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
 msgstr "Insufficient gas balance"
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Volume on the following pairs is weighted with a reduced coefficient:"
+msgstr "Volume on the following pairs is weighted with a reduced coefficient:"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V1 rebates"
@@ -11130,6 +11130,10 @@ msgstr "Do I need to enter a code on each network?"
 msgid "Insufficient collateral. Need more"
 msgstr "Insufficient collateral. Need more"
 
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Every week, your trading volume places you into a Volume Tier, which is active for {volumeTierPersistenceEpochs} weeks. Higher tiers earn more points per dollar of trading fees paid. Volume tiers update automatically each week based on your activity. Trading more consistently helps you stay in higher tiers and earn rewards faster."
+msgstr "Every week, your trading volume places you into a Volume Tier, which is active for {volumeTierPersistenceEpochs} weeks. Higher tiers earn more points per dollar of trading fees paid. Volume tiers update automatically each week based on your activity. Trading more consistently helps you stay in higher tiers and earn rewards faster."
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Return on capital used (PnL / capital).<0/><1/>Capital used = max(<2>sum of collateral of open positions - realized PnL + starting pending PnL</2>)."
 msgstr "Return on capital used (PnL / capital).<0/><1/>Capital used = max(<2>sum of collateral of open positions - realized PnL + starting pending PnL</2>)."
@@ -11676,10 +11680,6 @@ msgstr "No decentralized exchanges available"
 #: src/components/Referrals/traders/faq.tsx
 msgid "Where do I find a referral code?"
 msgstr "Where do I find a referral code?"
-
-#: src/pages/PointsPage/components/TierLevelsSection.tsx
-msgid "Volume Coefficients"
-msgstr "Volume Coefficients"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Enable <0>Express Trading</0> in settings for better reliability.<1/><2/>Or increase the max network fee buffer {bufferText} in {settingsLink}"

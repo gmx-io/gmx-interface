@@ -25,7 +25,7 @@ const mockConfig: IncentivesConfig = {
   boosts: [],
   balancingTradesThreshold: 250000n * 10n ** 30n,
   lifetimeVolumeThreshold: 42000000n * 10n ** 30n,
-  volumeDowngradingCoefficients: [],
+  downgradingCoefficients: {},
   featuredMarketTokens: [],
 };
 

@@ -7,18 +7,18 @@ import {
   BOOST_LABELS,
   formatMultiplier,
 } from "domain/synthetics/incentives/constants";
-import type {
-  EpochStats,
-  IncentivesConfig,
-  StakingTierId,
-  VolumeDowngradingCoefficient,
-  VolumeTierId,
-} from "domain/synthetics/incentives/types";
+import type { EpochStats, IncentivesConfig, StakingTierId, VolumeTierId } from "domain/synthetics/incentives/types";
+import { useMarkets } from "domain/synthetics/markets";
+import { getMarketIndexName } from "domain/synthetics/markets/utils";
 import { formatAmount } from "lib/numbers";
+import { convertTokenAddress, getNormalizedTokenSymbol, getToken } from "sdk/configs/tokens";
 
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import Tabs from "components/Tabs/Tabs";
+import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 import { getBoostDescription, getVolumeTierPersistenceEpochs } from "./incentivesText";
 import { VolumeTierIcon, StakingTierIcon, BoostTierIcon } from "./tierIcons";
@@ -26,16 +26,25 @@ import { VolumeTierIcon, StakingTierIcon, BoostTierIcon } from "./tierIcons";
 type TierTab = "volume" | "staking" | "boosts";
 
 type Props = {
+  chainId: number;
   config?: IncentivesConfig;
   currentEpochStats?: EpochStats;
   effectiveVolumeTier?: VolumeTierId | null;
   effectiveStakingTier?: StakingTierId | null;
 };
 
-export function TierLevelsSection({ config, currentEpochStats, effectiveVolumeTier, effectiveStakingTier }: Props) {
+export function TierLevelsSection({
+  chainId,
+  config,
+  currentEpochStats,
+  effectiveVolumeTier,
+  effectiveStakingTier,
+}: Props) {
   const [activeTab, setActiveTab] = useState<TierTab>("volume");
   const [showMore, setShowMore] = useState(false);
   const volumeTierPersistenceEpochs = getVolumeTierPersistenceEpochs(config);
+  const hasDowngradingCoefficients =
+    config?.downgradingCoefficients && Object.keys(config.downgradingCoefficients).length > 0;
 
   const handleToggleMore = useCallback(() => setShowMore((v) => !v), []);
 
@@ -52,7 +61,7 @@ export function TierLevelsSection({ config, currentEpochStats, effectiveVolumeTi
     () => ({
       volume: {
         short: t`Your Volume Tier is based on how much you trade and determines your points multiplier.`,
-        long: t`Each epoch, your trading volume places you into a Volume Tier, which stays active for ${volumeTierPersistenceEpochs} epochs. Higher tiers earn more points per dollar of trading fees paid. Volume tiers update automatically after each epoch based on your activity. Trading more consistently helps you stay in higher tiers and earn rewards faster.`,
+        long: t`Every week, your trading volume places you into a Volume Tier, which is active for ${volumeTierPersistenceEpochs} weeks. Higher tiers earn more points per dollar of trading fees paid. Volume tiers update automatically each week based on your activity. Trading more consistently helps you stay in higher tiers and earn rewards faster.`,
       },
       staking: {
         short: t`Your Staking Tier boosts your points earnings when you stake GMX.`,
@@ -85,13 +94,26 @@ export function TierLevelsSection({ config, currentEpochStats, effectiveVolumeTi
       />
 
       <div>
-        <p className="text-body-small p-20 pb-0 text-typography-secondary">
-          <span className="font-medium text-typography-primary">{descriptions[activeTab].short}</span>{" "}
-          {showMore && <span>{descriptions[activeTab].long}</span>}{" "}
-          <button className="text-body-small font-medium text-blue-300" onClick={handleToggleMore}>
+        <div className="text-body-small p-20 pb-0 text-typography-secondary">
+          <p className="font-medium text-typography-primary">{descriptions[activeTab].short}</p>
+          {showMore && (
+            <>
+              <p className="mt-8">{descriptions[activeTab].long}</p>
+              {activeTab === "volume" && hasDowngradingCoefficients && (
+                <p className="mt-8">
+                  <DowngradingCoefficientsTooltip chainId={chainId} coefficients={config!.downgradingCoefficients} />
+                </p>
+              )}
+            </>
+          )}
+          <button
+            className="text-body-small mt-8 flex items-center gap-4 font-medium text-blue-300"
+            onClick={handleToggleMore}
+          >
             {showMore ? <Trans>Show less</Trans> : <Trans>Show more</Trans>}
+            <ChevronDownIcon className={showMore ? "h-16 w-16 rotate-180" : "h-16 w-16"} />
           </button>
-        </p>
+        </div>
 
         <div className="mt-16 px-12 pb-12">
           {activeTab === "volume" && (
@@ -108,8 +130,6 @@ export function TierLevelsSection({ config, currentEpochStats, effectiveVolumeTi
 }
 
 function VolumeTiersTable({ config, currentTier }: { config?: IncentivesConfig; currentTier?: string | null }) {
-  const currentCoefficients = useCurrentDowngradingCoefficients(config);
-
   return (
     <table className="w-full">
       <thead>
@@ -120,9 +140,6 @@ function VolumeTiersTable({ config, currentTier }: { config?: IncentivesConfig; 
           <TableTh padding="compact">
             <span className="inline-flex items-center gap-4">
               <Trans>Volume</Trans>
-              {currentCoefficients && currentCoefficients.length > 0 && (
-                <VolumeDowngradingCoefficientsTooltip coefficients={currentCoefficients} />
-              )}
             </span>
           </TableTh>
           <TableTh padding="compact">
@@ -160,45 +177,52 @@ function VolumeTiersTable({ config, currentTier }: { config?: IncentivesConfig; 
   );
 }
 
-/**
- * Returns the most recent (by epochTimestamp) set of downgrading coefficients,
- * falling back to the first entry when the current epoch is unknown.
- */
-function useCurrentDowngradingCoefficients(config?: IncentivesConfig): VolumeDowngradingCoefficient[] | undefined {
-  return useMemo(() => {
-    const epochs = config?.volumeDowngradingCoefficients;
-    if (!epochs || epochs.length === 0) return undefined;
+function DowngradingCoefficientsTooltip({
+  chainId,
+  coefficients,
+}: {
+  chainId: number;
+  coefficients: Record<string, bigint>;
+}) {
+  const { marketsData } = useMarkets(chainId);
 
-    const currentEpochTs = config?.epochTimestamp ?? 0;
+  const items = useMemo(() => {
+    return Object.entries(coefficients).map(([marketAddress, coefficient]) => {
+      const market = marketsData?.[marketAddress];
 
-    // Pick the latest epoch whose timestamp is <= the current epoch timestamp.
-    // If none qualifies (e.g. all are in the future), return the first entry.
-    const sorted = [...epochs].sort((a, b) => b.epochTimestamp - a.epochTimestamp);
-    const match = sorted.find((e) => e.epochTimestamp <= currentEpochTs) ?? sorted[sorted.length - 1];
-    return match?.coefficients;
-  }, [config]);
-}
+      let symbol: string | undefined;
+      let name = marketAddress;
 
-function VolumeDowngradingCoefficientsTooltip({ coefficients }: { coefficients: VolumeDowngradingCoefficient[] }) {
+      if (market) {
+        const indexToken = getToken(chainId, convertTokenAddress(chainId, market.indexTokenAddress, "native"));
+        symbol = getNormalizedTokenSymbol(indexToken.symbol);
+        name = getMarketIndexName({ indexToken, isSpotOnly: market.isSpotOnly });
+      }
+
+      return { marketAddress, symbol, name, coefficient };
+    });
+  }, [chainId, coefficients, marketsData]);
+
   return (
     <TooltipWithPortal
-      handle={undefined}
+      variant="iconStroke"
+      handle={<Trans>Trading volume on RWA pairs is counted with a reduced coefficient</Trans>}
       content={
         <div>
-          <p className="mb-8 font-medium">
-            <Trans>Volume Coefficients</Trans>
-          </p>
-          <p className="mb-8 text-14 text-typography-secondary">
-            <Trans>
-              Some markets have reduced volume coefficients. Volume on these markets is counted at a lower rate for tier
-              calculations because they typically involve higher leverage and generate fewer fees.
-            </Trans>
+          <p className="mb-8 text-12 text-typography-secondary">
+            <Trans>Volume on the following pairs is weighted with a reduced coefficient:</Trans>
           </p>
           <div className="flex flex-col gap-4">
-            {coefficients.map((c) => (
-              <div key={c.market} className="flex items-center justify-between gap-16 text-14">
-                <span className="text-typography-primary">{c.market}</span>
-                <span className="text-typography-secondary">{c.coefficient}x</span>
+            {items.map(({ marketAddress, symbol, name, coefficient }) => (
+              <div
+                key={marketAddress}
+                className="flex items-center justify-between gap-16 text-12 text-14 text-typography-primary"
+              >
+                <span className="flex items-center gap-4 font-medium">
+                  {symbol && <TokenIcon symbol={symbol} displaySize={16} />}
+                  {name}
+                </span>
+                <span>{Number(formatAmount(coefficient, 2, 2))}x</span>
               </div>
             ))}
           </div>

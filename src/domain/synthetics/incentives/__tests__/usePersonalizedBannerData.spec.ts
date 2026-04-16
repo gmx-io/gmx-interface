@@ -122,7 +122,7 @@ const mockConfig: IncentivesConfig = {
   ],
   balancingTradesThreshold: 1_000_000n * USD,
   lifetimeVolumeThreshold: 200_000_000n * USD,
-  volumeDowngradingCoefficients: [],
+  downgradingCoefficients: {},
   featuredMarketTokens: [],
 };
 

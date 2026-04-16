@@ -1501,10 +1501,6 @@ msgstr "触发错误边界"
 msgid "GMX fundamentals"
 msgstr "GMX 基础"
 
-#: src/pages/PointsPage/components/TierLevelsSection.tsx
-msgid "Each epoch, your trading volume places you into a Volume Tier, which stays active for {volumeTierPersistenceEpochs} epochs. Higher tiers earn more points per dollar of trading fees paid. Volume tiers update automatically after each epoch based on your activity. Trading more consistently helps you stay in higher tiers and earn rewards faster."
-msgstr ""
-
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT DATA"
 msgstr "事件数据"
@@ -4590,10 +4586,6 @@ msgstr "做多资金费率"
 msgid "in {0}"
 msgstr "在 {0} 中"
 
-#: src/pages/PointsPage/components/TierLevelsSection.tsx
-msgid "Some markets have reduced volume coefficients. Volume on these markets is counted at a lower rate for tier calculations because they typically involve higher leverage and generate fewer fees."
-msgstr ""
-
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} fees settled"
 msgstr "{positionName} 费用已结算"
@@ -4738,6 +4730,10 @@ msgstr "选择市场"
 #: src/components/TokenSelector/TokenSelector.tsx
 msgid "No tokens matched"
 msgstr "没有匹配的代币"
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Trading volume on RWA pairs is counted with a reduced coefficient"
+msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Error sending permit for {0}: {1}"
@@ -7276,6 +7272,10 @@ msgstr "保障流动性"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
 msgstr "Gas余额不足"
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Volume on the following pairs is weighted with a reduced coefficient:"
+msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V1 rebates"
@@ -11130,6 +11130,10 @@ msgstr ""
 msgid "Insufficient collateral. Need more"
 msgstr "抵押品不足。需要更多"
 
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Every week, your trading volume places you into a Volume Tier, which is active for {volumeTierPersistenceEpochs} weeks. Higher tiers earn more points per dollar of trading fees paid. Volume tiers update automatically each week based on your activity. Trading more consistently helps you stay in higher tiers and earn rewards faster."
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Return on capital used (PnL / capital).<0/><1/>Capital used = max(<2>sum of collateral of open positions - realized PnL + starting pending PnL</2>)."
 msgstr "已用资本回报率（PnL / 资本）。<0/><1/>已用资本 = max(<2>未平仓仓位抵押品总和 - 已实现盈亏 + 初始待结算盈亏</2>)。"
@@ -11675,10 +11679,6 @@ msgstr "无可用的去中心化交易所"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Where do I find a referral code?"
-msgstr ""
-
-#: src/pages/PointsPage/components/TierLevelsSection.tsx
-msgid "Volume Coefficients"
 msgstr ""
 
 #: src/components/Errors/errorToasts.tsx

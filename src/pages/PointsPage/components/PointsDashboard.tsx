@@ -37,6 +37,7 @@ export function PointsDashboard({ chainId, account }: Props) {
       />
 
       <TierLevelsSection
+        chainId={chainId}
         config={config}
         currentEpochStats={currentEpochStats}
         effectiveVolumeTier={status?.volumeTier}

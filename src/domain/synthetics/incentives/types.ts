@@ -35,7 +35,7 @@ export type IncentivesConfig = {
   boosts: BoostConfig[];
   balancingTradesThreshold: bigint;
   lifetimeVolumeThreshold: bigint;
-  volumeDowngradingCoefficients: VolumeDowngradingCoefficientEpoch[];
+  downgradingCoefficients: Record<string, bigint>;
   featuredMarketTokens: string[];
 };
 
@@ -75,16 +75,6 @@ export type RewardsHistoryEntry = {
   pointsSpent: bigint;
   pointsExpired: bigint;
   rewardsEarned: bigint;
-};
-
-export type VolumeDowngradingCoefficient = {
-  market: string;
-  coefficient: number;
-};
-
-export type VolumeDowngradingCoefficientEpoch = {
-  epochTimestamp: number;
-  coefficients: VolumeDowngradingCoefficient[];
 };
 
 export type LeaderboardEntry = {

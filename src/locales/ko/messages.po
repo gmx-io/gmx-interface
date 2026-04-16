@@ -1501,10 +1501,6 @@ msgstr "에러 바운더리 트리거"
 msgid "GMX fundamentals"
 msgstr "GMX 펀더멘탈"
 
-#: src/pages/PointsPage/components/TierLevelsSection.tsx
-msgid "Each epoch, your trading volume places you into a Volume Tier, which stays active for {volumeTierPersistenceEpochs} epochs. Higher tiers earn more points per dollar of trading fees paid. Volume tiers update automatically after each epoch based on your activity. Trading more consistently helps you stay in higher tiers and earn rewards faster."
-msgstr ""
-
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "EVENT DATA"
 msgstr "이벤트 데이터"
@@ -4590,10 +4586,6 @@ msgstr "롱 자금조달 이자율"
 msgid "in {0}"
 msgstr "{0} 내"
 
-#: src/pages/PointsPage/components/TierLevelsSection.tsx
-msgid "Some markets have reduced volume coefficients. Volume on these markets is counted at a lower rate for tier calculations because they typically involve higher leverage and generate fewer fees."
-msgstr ""
-
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "{positionName} fees settled"
 msgstr "{positionName} 수수료 정산 완료"
@@ -4738,6 +4730,10 @@ msgstr "시장 선택"
 #: src/components/TokenSelector/TokenSelector.tsx
 msgid "No tokens matched"
 msgstr "일치하는 토큰 없음"
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Trading volume on RWA pairs is counted with a reduced coefficient"
+msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Error sending permit for {0}: {1}"
@@ -7276,6 +7272,10 @@ msgstr "보장된 유동성"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient gas balance"
 msgstr "가스 잔액 부족"
+
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Volume on the following pairs is weighted with a reduced coefficient:"
+msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "V1 rebates"
@@ -11130,6 +11130,10 @@ msgstr ""
 msgid "Insufficient collateral. Need more"
 msgstr "담보가 부족합니다. 추가 담보가 필요합니다"
 
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Every week, your trading volume places you into a Volume Tier, which is active for {volumeTierPersistenceEpochs} weeks. Higher tiers earn more points per dollar of trading fees paid. Volume tiers update automatically each week based on your activity. Trading more consistently helps you stay in higher tiers and earn rewards faster."
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Return on capital used (PnL / capital).<0/><1/>Capital used = max(<2>sum of collateral of open positions - realized PnL + starting pending PnL</2>)."
 msgstr "사용 자본 대비 수익률 (PnL / 자본).<0/><1/>사용 자본 = max(<2>미결제 포지션 담보 합계 - 실현 손익 + 시작 대기 PnL</2>)."
@@ -11675,10 +11679,6 @@ msgstr "이용 가능한 탈중앙화 거래소가 없습니다"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Where do I find a referral code?"
-msgstr ""
-
-#: src/pages/PointsPage/components/TierLevelsSection.tsx
-msgid "Volume Coefficients"
 msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
