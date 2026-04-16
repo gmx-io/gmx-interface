@@ -1,10 +1,14 @@
 import { Trans, t } from "@lingui/macro";
+import cx from "classnames";
+import { useMemo } from "react";
 
 import { formatMultiplier } from "domain/synthetics/incentives/constants";
 import type { EpochStats, IncentivesConfig, StakingTierId, VolumeTierId } from "domain/synthetics/incentives/types";
 import { formatAmount } from "lib/numbers";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
+
+import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 
 import { getMaxMultiplierLabel, getPointsExpirationEpochs } from "./incentivesText";
 import { TierCardsSection } from "./TierCardsSection";
@@ -35,11 +39,66 @@ export function MainDataSection({
   const maxMultiplierLabel = getMaxMultiplierLabel(config);
   const pointsExpirationEpochs = getPointsExpirationEpochs(config);
 
+  const projectedMultiplierInfo = useMemo(() => {
+    if (multiplier === undefined || !config) return undefined;
+    if (projectedVolumeTier === undefined && projectedStakingTier === undefined) return undefined;
+
+    const findVolumeMult = (tier?: VolumeTierId | null) =>
+      Number(config.volumeTiers.find((t) => t.tier === tier)?.multiplier ?? 0);
+    const findStakingMult = (tier?: StakingTierId | null) =>
+      Number(config.stakingTiers.find((t) => t.tier === tier)?.multiplier ?? 0);
+
+    const currentVolumeMult = findVolumeMult(effectiveVolumeTier);
+    const currentStakingMult = findStakingMult(effectiveStakingTier);
+    const projectedVolumeMult =
+      projectedVolumeTier !== undefined ? findVolumeMult(projectedVolumeTier) : currentVolumeMult;
+    const projectedStakingMult =
+      projectedStakingTier !== undefined ? findStakingMult(projectedStakingTier) : currentStakingMult;
+
+    const projected =
+      Number(multiplier) + (projectedVolumeMult - currentVolumeMult) + (projectedStakingMult - currentStakingMult);
+
+    if (formatMultiplier(projected) === formatMultiplier(multiplier)) return undefined;
+
+    return { value: projected, isIncrease: projected > multiplier };
+  }, [multiplier, config, effectiveVolumeTier, effectiveStakingTier, projectedVolumeTier, projectedStakingTier]);
+
   return (
     <div className="flex flex-col gap-8 rounded-8 bg-slate-900 p-12">
       <div className="flex gap-20 p-8">
         <div className="flex flex-col gap-2">
-          <span className="text-24 font-medium numbers">{displayMultiplier}</span>
+          {projectedMultiplierInfo ? (
+            <TooltipWithPortal
+              handle={
+                <span className="flex items-center gap-8 text-24 font-medium numbers">
+                  <span className="flex items-center text-typography-disabled">{displayMultiplier}</span>
+                  <ArrowRightIcon
+                    className={cx(
+                      "size-16 shrink-0",
+                      "rounded-full p-2",
+                      projectedMultiplierInfo.isIncrease ? "bg-green-900 text-green-300" : "bg-blue-900 text-blue-100"
+                    )}
+                  />
+                  <span className={projectedMultiplierInfo.isIncrease ? "text-green-300" : "text-blue-100"}>
+                    {formatMultiplier(projectedMultiplierInfo.value)}
+                  </span>
+                </span>
+              }
+              content={
+                <div className="text-body-small">
+                  <Trans>
+                    Your multiplier will {projectedMultiplierInfo.isIncrease ? "increase" : "decrease"} next epoch
+                  </Trans>{" "}
+                  <span className="text-typography-secondary">
+                    <Trans>due to changes in your volume and staking tiers.</Trans>
+                  </span>
+                </div>
+              }
+              variant="none"
+            />
+          ) : (
+            <span className="text-24 font-medium numbers">{displayMultiplier}</span>
+          )}
           <div className="flex items-center gap-8">
             <TooltipWithPortal
               variant="iconStroke"

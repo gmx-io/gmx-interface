@@ -20,6 +20,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
+import { useCurrentUnixTimestamp, getCurrentEpochEndTime } from "./epochTiming";
 import { getBoostDescription, getVolumeTierPersistenceEpochs } from "./incentivesText";
 import { VolumeTierIcon, StakingTierIcon, BoostTierIcon } from "./tierIcons";
 
@@ -31,6 +32,7 @@ type Props = {
   currentEpochStats?: EpochStats;
   effectiveVolumeTier?: VolumeTierId | null;
   effectiveStakingTier?: StakingTierId | null;
+  projectedVolumeTier?: VolumeTierId | null;
 };
 
 export function TierLevelsSection({
@@ -39,6 +41,7 @@ export function TierLevelsSection({
   currentEpochStats,
   effectiveVolumeTier,
   effectiveStakingTier,
+  projectedVolumeTier,
 }: Props) {
   const [activeTab, setActiveTab] = useState<TierTab>("volume");
   const [showMore, setShowMore] = useState(false);
@@ -94,7 +97,7 @@ export function TierLevelsSection({
       />
 
       <div>
-        <div className="text-body-small p-20 pb-0 text-typography-secondary">
+        <div className="p-20 pb-0 text-14 text-typography-secondary">
           <p className="font-medium text-typography-primary">{descriptions[activeTab].short}</p>
           {showMore && (
             <>
@@ -106,10 +109,7 @@ export function TierLevelsSection({
               )}
             </>
           )}
-          <button
-            className="text-body-small mt-8 flex items-center gap-4 font-medium text-blue-300"
-            onClick={handleToggleMore}
-          >
+          <button className="mt-8 flex items-center gap-4 text-14 font-medium text-blue-300" onClick={handleToggleMore}>
             {showMore ? <Trans>Show less</Trans> : <Trans>Show more</Trans>}
             <ChevronDownIcon className={showMore ? "h-16 w-16 rotate-180" : "h-16 w-16"} />
           </button>
@@ -117,7 +117,11 @@ export function TierLevelsSection({
 
         <div className="mt-16 px-12 pb-12">
           {activeTab === "volume" && (
-            <VolumeTiersTable config={config} currentTier={effectiveVolumeTier ?? currentEpochStats?.volumeTier} />
+            <VolumeTiersTable
+              config={config}
+              currentTier={effectiveVolumeTier ?? currentEpochStats?.volumeTier}
+              projectedTier={projectedVolumeTier}
+            />
           )}
           {activeTab === "staking" && (
             <StakingTiersTable config={config} currentTier={effectiveStakingTier ?? currentEpochStats?.stakingTier} />
@@ -129,7 +133,25 @@ export function TierLevelsSection({
   );
 }
 
-function VolumeTiersTable({ config, currentTier }: { config?: IncentivesConfig; currentTier?: string | null }) {
+function VolumeTiersTable({
+  config,
+  currentTier,
+  projectedTier,
+}: {
+  config?: IncentivesConfig;
+  currentTier?: string | null;
+  projectedTier?: VolumeTierId | null;
+}) {
+  const now = useCurrentUnixTimestamp(60_000);
+  const epochEnd = getCurrentEpochEndTime(config, now);
+  const daysRemaining = epochEnd > now ? Math.ceil((epochEnd - now) / 86400) : 0;
+
+  const currentTierIndex = config?.volumeTiers.findIndex((t) => t.tier === currentTier) ?? -1;
+  const projectedTierIndex = projectedTier ? config?.volumeTiers.findIndex((t) => t.tier === projectedTier) ?? -1 : -1;
+  const isDowngrading =
+    (currentTierIndex >= 0 && projectedTierIndex >= 0 && projectedTierIndex < currentTierIndex) ||
+    (currentTier && projectedTier === null);
+
   return (
     <table className="w-full">
       <thead>
@@ -137,14 +159,15 @@ function VolumeTiersTable({ config, currentTier }: { config?: IncentivesConfig; 
           <TableTh padding="compact">
             <Trans>Tier Name</Trans>
           </TableTh>
-          <TableTh padding="compact">
+          <TableTh width="150px" padding="compact">
             <span className="inline-flex items-center gap-4">
               <Trans>Volume</Trans>
             </span>
           </TableTh>
-          <TableTh padding="compact">
+          <TableTh width="100px" padding="compact">
             <Trans>Multiplier</Trans>
           </TableTh>
+          <TableTh width="120px" padding="compact" />
         </TableTheadTr>
       </thead>
       <tbody>
@@ -168,6 +191,9 @@ function VolumeTiersTable({ config, currentTier }: { config?: IncentivesConfig; 
               </TableTd>
               <TableTd padding="compact" className="text-typography-primary">
                 +{formatMultiplier(tier.multiplier)}
+              </TableTd>
+              <TableTd padding="compact">
+                {isActive && isDowngrading && daysRemaining > 0 && <ExpiresInLabel daysRemaining={daysRemaining} />}
               </TableTd>
             </TableTr>
           );
@@ -240,12 +266,13 @@ function StakingTiersTable({ config, currentTier }: { config?: IncentivesConfig;
           <TableTh padding="compact">
             <Trans>Tier Name</Trans>
           </TableTh>
-          <TableTh padding="compact">
+          <TableTh width="150px" padding="compact">
             <Trans>GMX Staked</Trans>
           </TableTh>
-          <TableTh padding="compact">
+          <TableTh width="100px" padding="compact">
             <Trans>Multiplier</Trans>
           </TableTh>
+          <TableTh width="120px" padding="compact" />
         </TableTheadTr>
       </thead>
       <tbody>
@@ -270,6 +297,7 @@ function StakingTiersTable({ config, currentTier }: { config?: IncentivesConfig;
               <TableTd padding="compact" className="text-typography-primary">
                 +{formatMultiplier(tier.multiplier)}
               </TableTd>
+              <TableTd padding="compact" />
             </TableTr>
           );
         })}
@@ -295,6 +323,7 @@ function BoostsTable({ config, activeBoosts }: { config?: IncentivesConfig; acti
           <TableTh padding="compact">
             <Trans>Status</Trans>
           </TableTh>
+          <TableTh padding="compact" />
         </TableTheadTr>
       </thead>
       <tbody>
@@ -319,10 +348,31 @@ function BoostsTable({ config, activeBoosts }: { config?: IncentivesConfig; acti
                   {isActive ? <Trans>Active</Trans> : <Trans>Inactive</Trans>}
                 </span>
               </TableTd>
+              <TableTd padding="compact" />
             </TableTr>
           );
         })}
       </tbody>
     </table>
+  );
+}
+
+function ExpiresInLabel({ daysRemaining }: { daysRemaining: number }) {
+  return (
+    <span className="inline-flex items-center gap-4 whitespace-nowrap rounded-full bg-yellow-500/15 px-8 py-2 text-12 font-medium text-yellow-500">
+      <svg className="size-14" viewBox="0 0 16 16" fill="none">
+        <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.2" strokeDasharray="2.5 1.5" />
+        <path
+          d="M8 4.5V8L10.5 9.5"
+          stroke="currentColor"
+          strokeWidth="1.2"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        />
+      </svg>
+      <Trans>
+        Expires in {daysRemaining} {daysRemaining === 1 ? "day" : "days"}
+      </Trans>
+    </span>
   );
 }

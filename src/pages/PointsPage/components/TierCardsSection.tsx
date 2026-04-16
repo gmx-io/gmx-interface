@@ -46,7 +46,7 @@ export function TierCardsSection({
   hideInactive = false,
 }: Props) {
   const volumeActive = Boolean(effectiveVolumeTier ?? currentEpochStats?.volumeTier);
-  const stakingActive = Boolean(effectiveStakingTier ?? currentEpochStats?.stakingTier);
+  const stakingActive = Boolean(effectiveStakingTier ?? currentEpochStats?.stakingTier ?? projectedStakingTier);
   const boostsActive = Boolean(currentEpochStats?.boostIds?.length);
 
   const sortedKeys = useMemo(() => {
@@ -116,27 +116,52 @@ function estimateWeeklyRewards(volumeUsd: number, rawMultiplier: number, multipl
 function MultiplierBadge({
   currentMultiplier,
   projectedMultiplier,
+  tooltipContent,
 }: {
   currentMultiplier: number;
   projectedMultiplier?: number;
+  tooltipContent?: React.ReactNode;
 }) {
-  if (projectedMultiplier !== undefined) {
-    return (
+  if (projectedMultiplier !== undefined && projectedMultiplier !== currentMultiplier) {
+    const isDowngrade = Number(projectedMultiplier) < Number(currentMultiplier);
+    const badge = (
       <span className="inline-flex items-center">
-        <span className="inline-flex items-center rounded-full border-1/2 border-slate-600 py-2 pl-8 pr-12 text-[1.1rem] font-medium text-typography-secondary">
+        <span className="inline-flex items-center rounded-full border-1/2 border-slate-600 py-2 pl-8 pr-18 text-12 font-medium text-typography-disabled">
           {formatMultiplier(currentMultiplier)} →
         </span>
-        <span className="-ml-8 rounded-full bg-green-900 px-8 py-2 text-[1.1rem] font-medium text-green-500">
+        <span
+          className={cx(
+            "-ml-18 rounded-full border-1/2 px-6 py-2 text-12 font-medium",
+            isDowngrade ? "border-slate-700 bg-slate-700 text-blue-100" : "border-green-900 bg-green-900 text-green-500"
+          )}
+        >
           {formatMultiplier(projectedMultiplier)}
         </span>
       </span>
     );
+
+    if (tooltipContent) {
+      return <TooltipWithPortal handle={badge} content={tooltipContent} variant="none" />;
+    }
+
+    return badge;
   }
 
   return (
     <span className="inline-flex items-center rounded-full bg-green-900 px-6 py-2 text-12 font-medium text-green-500 numbers">
-      +{formatMultiplier(currentMultiplier)}
+      {formatMultiplier(currentMultiplier)}
     </span>
+  );
+}
+
+function MultiplierChangeTooltip({ isDecrease, children }: { isDecrease: boolean; children: React.ReactNode }) {
+  return (
+    <div className="text-12">
+      <span>{children}</span>{" "}
+      <span className="text-typography-secondary">
+        <Trans>Your multiplier will {isDecrease ? "decrease" : "increase"} next epoch.</Trans>
+      </span>
+    </div>
   );
 }
 
@@ -182,6 +207,21 @@ function VolumeCard({
   const isProjectedDifferent = projectedTierId && projectedTierId !== volumeTier;
   const projectedTierConfig = isProjectedDifferent ? tierConfig?.find((t) => t.tier === projectedTierId) : undefined;
 
+  const isVolumeDowngrade =
+    projectedTierConfig && currentTierConfig
+      ? Number(projectedTierConfig.multiplier) < Number(currentTierConfig.multiplier)
+      : false;
+
+  const volumeTooltip = projectedTierConfig ? (
+    <MultiplierChangeTooltip isDecrease={isVolumeDowngrade}>
+      {isVolumeDowngrade ? (
+        <Trans>Your trading volume this epoch is below the threshold for your current tier.</Trans>
+      ) : (
+        <Trans>Your trading volume this epoch exceeds the threshold for the next tier.</Trans>
+      )}
+    </MultiplierChangeTooltip>
+  ) : undefined;
+
   const currentThreshold = active && currentTierConfig ? currentTierConfig.threshold : 0n;
   const nextThreshold = active ? nextTierConfig?.threshold : tierConfig?.[0]?.threshold;
   const range = nextThreshold !== undefined && nextThreshold > currentThreshold ? nextThreshold - currentThreshold : 0n;
@@ -208,10 +248,18 @@ function VolumeCard({
           </div>
         )}
         {active && currentTierConfig && (
-          <MultiplierBadge
-            currentMultiplier={currentTierConfig.multiplier}
-            projectedMultiplier={projectedTierConfig?.multiplier}
-          />
+          <span className="inline-flex items-center gap-6">
+            {active && projectedTierId === null && (
+              <span className="text-12">
+                <Trans>Expires next epoch</Trans>
+              </span>
+            )}
+            <MultiplierBadge
+              currentMultiplier={currentTierConfig.multiplier}
+              projectedMultiplier={projectedTierConfig?.multiplier}
+              tooltipContent={volumeTooltip}
+            />
+          </span>
         )}
       </div>
 
@@ -302,12 +350,30 @@ function StakingCard({
   const { data: stakingData } = useStakingProcessedData();
   const gmxStaked = stakingData?.gmxInStakedGmx;
 
-  const currentTierIndex = tierConfig?.findIndex((t) => t.tier === stakingTier) ?? -1;
+  const isProjectedOnly = !stakingTier && !!projectedTierId;
+  const displayTier = stakingTier ?? projectedTierId;
+
+  const currentTierIndex = tierConfig?.findIndex((t) => t.tier === displayTier) ?? -1;
   const currentTierConfig = currentTierIndex >= 0 ? tierConfig?.[currentTierIndex] : undefined;
   const nextTierConfig = tierConfig?.[currentTierIndex + 1];
 
-  const isProjectedDifferent = projectedTierId && projectedTierId !== stakingTier;
+  const isProjectedDifferent = !isProjectedOnly && projectedTierId && projectedTierId !== stakingTier;
   const projectedTierConfig = isProjectedDifferent ? tierConfig?.find((t) => t.tier === projectedTierId) : undefined;
+
+  const isStakingDowngrade =
+    projectedTierConfig && currentTierConfig
+      ? Number(projectedTierConfig.multiplier) < Number(currentTierConfig.multiplier)
+      : false;
+
+  const stakingTooltip = projectedTierConfig ? (
+    <MultiplierChangeTooltip isDecrease={isStakingDowngrade}>
+      {isStakingDowngrade ? (
+        <Trans>Your staked GMX is below the threshold for your current tier.</Trans>
+      ) : (
+        <Trans>You've staked enough GMX to reach a higher tier.</Trans>
+      )}
+    </MultiplierChangeTooltip>
+  ) : undefined;
 
   return (
     <div className={cx(tierCardBase, active ? tierCardActive : tierCardBanner)}>
@@ -327,19 +393,30 @@ function StakingCard({
             </span>
           </div>
         )}
-        {active && currentTierConfig && (
+        {active && currentTierConfig && !isProjectedOnly && (
           <MultiplierBadge
             currentMultiplier={currentTierConfig.multiplier}
             projectedMultiplier={projectedTierConfig?.multiplier}
+            tooltipContent={stakingTooltip}
           />
+        )}
+        {active && currentTierConfig && isProjectedOnly && (
+          <span className="inline-flex items-center gap-6">
+            <span className="text-12 text-typography-secondary">
+              <Trans>Applies next epoch</Trans>
+            </span>
+            <span className="rounded-full bg-green-900 px-6 py-2 text-12 font-medium text-green-500">
+              {formatMultiplier(currentTierConfig.multiplier)}
+            </span>
+          </span>
         )}
       </div>
 
       {active ? (
         <>
           <h3 className="text-h2 flex items-center gap-12 font-medium text-typography-primary">
-            {stakingTier && <StakingTierIcon tierId={stakingTier} active className={tierIconLarge} />}
-            {stakingTier ? STAKING_TIER_BADGES[stakingTier]() : "—"}
+            {displayTier && <StakingTierIcon tierId={displayTier} active className={tierIconLarge} />}
+            {displayTier ? STAKING_TIER_BADGES[displayTier]() : "—"}
           </h3>
           <div className="text-body-small flex flex-col gap-2 text-typography-secondary">
             <div className="flex items-center justify-between py-2 font-medium">
@@ -351,12 +428,12 @@ function StakingCard({
                   </span>
                 </Trans>
               </p>
-              <a href="#/earn" className="inline-flex items-center gap-2 text-[1.1rem] font-medium text-blue-300">
+              <a href="#/earn" className="inline-flex items-center gap-2 text-12 font-medium text-blue-300">
                 <Trans>Stake GMX</Trans>
                 <DatabaseIcon className="size-12" />
               </a>
             </div>
-            {tierConfig && <StakingProgressBar tiers={tierConfig} currentTier={stakingTier} gmxStaked={gmxStaked} />}
+            {tierConfig && <StakingProgressBar tiers={tierConfig} currentTier={displayTier} gmxStaked={gmxStaked} />}
             {nextTierConfig && (
               <div className="flex items-center gap-4 py-2">
                 <span>
@@ -518,8 +595,7 @@ function BoostsCard({
             </div>
           )}
           {active && (
-            <span className="inline-flex items-center rounded-full bg-green-900 px-8 py-2 text-[1.1rem] font-medium text-green-500">
-              +
+            <span className="inline-flex items-center rounded-full bg-green-900 px-6 py-2 text-12 font-medium text-green-500">
               {formatMultiplier(
                 allBoosts.reduce((sum, b) => (activeBoostIds.includes(b.boost) ? sum + b.multiplier : sum), 0)
               )}

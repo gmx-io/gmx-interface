@@ -8,6 +8,7 @@ export const colors: ColorTree = {
     500: { light: "#3d51ff", dark: "#3d51ff" },
     600: { light: "#2d42fc", dark: "#2d42fc" },
     700: { light: "#2e3dcd", dark: "#2e3dcd" },
+    900: { light: "#E2E5FD", dark: "#1E223C" },
   },
   "cold-blue": {
     500: { light: "#3a3f79", dark: "#3a3f79" },

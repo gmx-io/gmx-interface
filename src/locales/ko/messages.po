@@ -354,6 +354,10 @@ msgstr "거래량"
 msgid "Telegram bot"
 msgstr "Telegram 봇"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Your multiplier will {0} next epoch."
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Limit Swap"
 msgstr "지정가 스왑 취소"
@@ -564,6 +568,10 @@ msgstr "출발 네트워크"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral factor for liquidation"
 msgstr "청산 최소 담보 계수"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Your staked GMX is below the threshold for your current tier."
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} short exceeded"
@@ -5068,6 +5076,10 @@ msgstr "GMX Account를 통해 추천 코드를 생성하려면 {0}에 USDC 또�
 msgid "Current tier:"
 msgstr "현재 등급:"
 
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Expires in {daysRemaining} {0}"
+msgstr ""
+
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short Net Rate"
@@ -6069,6 +6081,10 @@ msgstr "유동성 부족. 가용: {availableLiquidityText}"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake submitted"
 msgstr "언스테이킹 제출됨"
+
+#: src/pages/PointsPage/components/MainDataSection.tsx
+msgid "due to changes in your volume and staking tiers."
+msgstr ""
 
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -8481,6 +8497,10 @@ msgstr "SL 가격이 지정가보다 높습니다"
 msgid "for {comment}"
 msgstr "{comment}에 대해"
 
+#: src/pages/PointsPage/components/MainDataSection.tsx
+msgid "Your multiplier will {0} next epoch"
+msgstr ""
+
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Performance APY"
 msgstr "성과 APY"
@@ -8923,6 +8943,10 @@ msgstr "총 거래량"
 msgid "Enable One-Click Trading"
 msgstr "원클릭 거래 활성화"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Your trading volume this epoch is below the threshold for your current tier."
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Conversion execution failed"
 msgstr "전환 실행에 실패했습니다"
@@ -9041,6 +9065,10 @@ msgstr ""
 
 #: src/pages/PointsPage/components/HowItWorksSection.tsx
 msgid "You earn points each epoch based on the trading fees you paid and your active multipliers. Your total multiplier comes from your volume tier, staking tier, and any applicable boosts. Points are calculated automatically and credited after each epoch."
+msgstr ""
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "You've staked enough GMX to reach a higher tier."
 msgstr ""
 
 #: src/components/PositionShare/CreateReferralCode.tsx
@@ -9628,6 +9656,10 @@ msgstr "익스프레스 + 원클릭"
 msgid "Lifetime Volume"
 msgstr ""
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Applies next epoch"
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "GM tokens represent shares in a liquidity pool for a single GMX market. Buy GM to provide liquidity and earn fees from leverage trading, swaps, and market-making activity on that specific market. All rewards are auto-compounded."
 msgstr "GM 토큰은 단일 GMX 시장의 유동성 풀 지분을 나타냅니다. GM을 구매하여 유동성을 제공하고 해당 시장의 레버리지 거래, 스왑, 마켓 메이킹 활동에서 발생하는 수수료를 받으십시오. 모든 보상은 자동으로 재투자됩니다."
@@ -9990,6 +10022,10 @@ msgstr ""
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Staked"
 msgstr "스테이킹됨"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Expires next epoch"
+msgstr ""
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/pages/Referrals/Referrals.tsx
@@ -10455,6 +10491,10 @@ msgstr "트리거 가격 입력"
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Total stats"
 msgstr "종합 통계"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Your trading volume this epoch exceeds the threshold for the next tier."
+msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Vested GLP not withdrawn"

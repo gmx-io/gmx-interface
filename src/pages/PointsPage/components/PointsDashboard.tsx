@@ -42,6 +42,7 @@ export function PointsDashboard({ chainId, account }: Props) {
         currentEpochStats={currentEpochStats}
         effectiveVolumeTier={status?.volumeTier}
         effectiveStakingTier={status?.stakingTier}
+        projectedVolumeTier={status?.projectedVolumeTier}
       />
 
       <HowItWorksSection />
