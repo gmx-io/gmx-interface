@@ -1,21 +1,21 @@
 import { Trans, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import cx from "classnames";
-import { type ReactNode, useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 
 import { getEpochDuration } from "domain/synthetics/incentives/constants";
+import { RewardsHistoryEntry } from "domain/synthetics/incentives/types";
 import { useAccountRewardsHistory } from "domain/synthetics/incentives/useAccountRewardsHistory";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
 import { formatAmount, formatUsd } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
-import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { TableTd, TableTdActionable, TableTh, TableTheadTr, TableTr, TableTrActionable } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
-import ChevronUpIcon from "img/ic_chevron_up.svg?react";
 
 import { useCurrentUnixTimestamp } from "./epochTiming";
 import { formatEpochLabel } from "./RewardsHistoryTab.utils";
@@ -32,7 +32,6 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
   const { data: config } = useIncentivesConfig(chainId);
   const { data: history } = useAccountRewardsHistory(chainId, { account });
   const [page, setPage] = useState(1);
-  const [expandedEpoch, setExpandedEpoch] = useState<number | null>(null);
   const { isMobile } = useBreakpoints();
   const epochDuration = getEpochDuration(config);
 
@@ -108,88 +107,37 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
         </div>
       </div>
 
-      {isMobile ? (
-        <div>
-          <div className="flex items-center px-20 py-8">
-            <span className="flex-1 text-12 uppercase text-typography-secondary">{t`Epoch`}</span>
-            <span className="pr-32 text-12 uppercase text-typography-secondary">{t`Earned Points`}</span>
-          </div>
-
-          <div className="flex flex-col gap-4 px-8 pb-8">
-            {pageData.map((entry) => {
-              const isExpanded = expandedEpoch === entry.epoch;
-              const epochEnd = entry.epoch + epochDuration;
-              const isCurrentEpoch = now < epochEnd;
-              const timeLeft = epochEnd - now;
-              const pointsBalance = entry.pointsEarned - entry.pointsSpent - entry.pointsExpired;
-
-              return (
-                <div key={entry.epoch} className={cx("rounded-4", isExpanded ? "bg-slate-800" : "bg-cold-blue-900")}>
-                  <button
-                    className="flex w-full items-center justify-between px-12 py-10"
-                    onClick={() => setExpandedEpoch(isExpanded ? null : entry.epoch)}
-                  >
-                    <span className="text-14 text-typography-primary">
-                      {formatEpochLabel(entry.epoch, epochDuration, i18n.locale)}
-                    </span>
-                    <div className="flex items-center gap-8">
-                      <span className="text-14 text-typography-primary numbers">
-                        {formatAmount(entry.pointsEarned, 18, 2, true)}
-                      </span>
-                      {isExpanded ? (
-                        <ChevronUpIcon className="w-16 text-typography-secondary" />
-                      ) : (
-                        <ChevronDownIcon className="w-16 text-typography-secondary" />
-                      )}
-                    </div>
-                  </button>
-
-                  {isExpanded && (
-                    <div className="flex flex-col gap-4 px-12 pb-12">
-                      <MobileDetailRow label={t`Volume`} value={formatUsd(entry.volume, { displayDecimals: 0 })} />
-                      <MobileDetailRow label={t`Spent points`} value={formatAmount(entry.pointsSpent, 18, 2, true)} />
-                      <MobileDetailRow
-                        label={t`Expired points`}
-                        value={formatAmount(entry.pointsExpired, 18, 2, true)}
-                      />
-                      <MobileDetailRow label={t`Points balance`} value={formatAmount(pointsBalance, 18, 2, true)} />
-                      <MobileDetailRow
-                        label={t`Earned rewards`}
-                        value={`${formatAmount(entry.rewardsEarned, 18, 2, true)} GMX`}
-                      />
-                      <MobileDetailRow
-                        label={t`Status`}
-                        value={
-                          isCurrentEpoch ? (
-                            <span className="text-typography-secondary">
-                              <Trans>Epoch ends in:</Trans>{" "}
-                              <span className="text-typography-primary">{formatTimeLeft(timeLeft)}</span>
-                            </span>
-                          ) : (
-                            <span className="text-typography-secondary">
-                              <Trans>Finished</Trans>
-                            </span>
-                          )
-                        }
-                      />
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-
-            {!history && (
-              <div className="py-16 text-center text-typography-secondary">
-                <Trans>Loading...</Trans>
-              </div>
-            )}
-          </div>
-
-          <BottomTablePagination page={page} pageCount={pageCount} onPageChange={setPage} />
-        </div>
-      ) : (
-        <div className="rounded-8 bg-slate-900">
-          <TableScrollFadeContainer>
+      <div className="rounded-8 bg-slate-900">
+        <TableScrollFadeContainer>
+          {isMobile ? (
+            <table className="w-full">
+              <thead>
+                <TableTheadTr>
+                  <TableTh>{t`Epoch`}</TableTh>
+                  <TableTh className="text-right">{t`Earned Points`}</TableTh>
+                  <TableTh className="w-24" />
+                </TableTheadTr>
+              </thead>
+              <tbody>
+                {pageData.map((entry) => (
+                  <MobileRewardsHistoryRow
+                    key={entry.epoch}
+                    entry={entry}
+                    epochDuration={epochDuration}
+                    now={now}
+                    locale={i18n.locale}
+                  />
+                ))}
+                {!history && (
+                  <tr>
+                    <td colSpan={3} className="py-16 text-center text-typography-secondary">
+                      <Trans>Loading...</Trans>
+                    </td>
+                  </tr>
+                )}
+              </tbody>
+            </table>
+          ) : (
             <table className="w-full min-w-[720px]">
               <thead>
                 <TableTheadTr>
@@ -238,20 +186,100 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
                 )}
               </tbody>
             </table>
-          </TableScrollFadeContainer>
-          <BottomTablePagination page={page} pageCount={pageCount} onPageChange={setPage} />
-        </div>
-      )}
+          )}
+        </TableScrollFadeContainer>
+        <BottomTablePagination page={page} pageCount={pageCount} onPageChange={setPage} />
+      </div>
     </div>
   );
 }
 
-function MobileDetailRow({ label, value }: { label: string; value: ReactNode }) {
+function MobileRewardsHistoryRow({
+  entry,
+  epochDuration,
+  now,
+  locale,
+}: {
+  entry: RewardsHistoryEntry;
+  epochDuration: number;
+  now: number;
+  locale: string;
+}) {
+  const [isExpanded, setIsExpanded] = useState(false);
+
+  const onClick = useCallback(() => {
+    setIsExpanded((prev) => !prev);
+  }, []);
+
+  const epochEnd = entry.epoch + epochDuration;
+  const isCurrentEpoch = now < epochEnd;
+  const timeLeft = epochEnd - now;
+  const pointsBalance = entry.pointsEarned - entry.pointsSpent - entry.pointsExpired;
+
+  const statusContent = isCurrentEpoch ? (
+    <span className="text-body-small text-typography-secondary">
+      <Trans>Epoch ends in</Trans> <span className="text-typography-primary">{formatTimeLeft(timeLeft)}</span>
+    </span>
+  ) : (
+    <span className="text-body-small text-typography-secondary">
+      <Trans>Finished</Trans>
+    </span>
+  );
+
   return (
-    <div className="flex items-center justify-between py-4">
-      <span className="text-14 font-medium text-typography-primary">{label}</span>
-      <span className="text-14 text-typography-primary numbers">{value}</span>
-    </div>
+    <>
+      <TableTrActionable onClick={onClick}>
+        <TableTdActionable>{formatEpochLabel(entry.epoch, epochDuration, locale)}</TableTdActionable>
+        <TableTdActionable className="text-right numbers">
+          {formatAmount(entry.pointsEarned, 18, 2, true)}
+        </TableTdActionable>
+        <TableTdActionable className="w-24">
+          <ChevronDownIcon className={cx("size-16 text-typography-secondary", { "rotate-180": isExpanded })} />
+        </TableTdActionable>
+      </TableTrActionable>
+      {isExpanded && (
+        <tr>
+          <td colSpan={3} className="px-20 py-10">
+            <div className="flex flex-col gap-12">
+              <div className="flex justify-between text-13 font-medium text-typography-secondary">
+                <Trans>Volume</Trans>
+                <span className="text-14 text-typography-primary numbers">
+                  {formatUsd(entry.volume, { displayDecimals: 0 })}
+                </span>
+              </div>
+              <div className="flex justify-between text-13 font-medium text-typography-secondary">
+                <Trans>Spent points</Trans>
+                <span className="text-14 text-typography-primary numbers">
+                  {formatAmount(entry.pointsSpent, 18, 2, true)}
+                </span>
+              </div>
+              <div className="flex justify-between text-13 font-medium text-typography-secondary">
+                <Trans>Expired points</Trans>
+                <span className="text-14 text-typography-primary numbers">
+                  {formatAmount(entry.pointsExpired, 18, 2, true)}
+                </span>
+              </div>
+              <div className="flex justify-between text-13 font-medium text-typography-secondary">
+                <Trans>Points balance</Trans>
+                <span className="text-14 text-typography-primary numbers">
+                  {formatAmount(pointsBalance, 18, 2, true)}
+                </span>
+              </div>
+              <div className="flex justify-between text-13 font-medium text-typography-secondary">
+                <Trans>Earned rewards</Trans>
+                <span className="text-14 text-typography-primary numbers">
+                  {formatAmount(entry.rewardsEarned, 18, 2, true)} GMX
+                </span>
+              </div>
+              <div className="flex justify-between text-13 font-medium text-typography-secondary">
+                <Trans>Status</Trans>
+                <span className="text-14 text-typography-primary">{statusContent}</span>
+              </div>
+            </div>
+          </td>
+        </tr>
+      )}
+    </>
   );
 }
 

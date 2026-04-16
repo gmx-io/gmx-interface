@@ -3669,6 +3669,7 @@ msgid "Banners"
 msgstr ""
 
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 #: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Epoch ends in"
 msgstr ""
@@ -6972,10 +6973,6 @@ msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Gas"
-msgstr ""
-
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-msgid "Epoch ends in:"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
