@@ -3113,6 +3113,10 @@ msgstr "Quelle est l'incitation bonus pour détenir votre GLV ?"
 msgid "Day(s)"
 msgstr "Jour(s)"
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Rewards Earned"
+msgstr ""
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
 msgstr "Retrait depuis GMX Account..."

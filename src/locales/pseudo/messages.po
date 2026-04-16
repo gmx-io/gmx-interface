@@ -3113,6 +3113,10 @@ msgstr ""
 msgid "Day(s)"
 msgstr ""
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Rewards Earned"
+msgstr ""
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
 msgstr ""

@@ -3113,6 +3113,10 @@ msgstr "持有 GLV 的額外獎勵是什麼？"
 msgid "Day(s)"
 msgstr "天"
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Rewards Earned"
+msgstr ""
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
 msgstr "正在從 GMX Account 提取..."

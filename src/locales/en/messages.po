@@ -3113,6 +3113,10 @@ msgstr "What is the bonus incentive for holding your GLV?"
 msgid "Day(s)"
 msgstr "Day(s)"
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Rewards Earned"
+msgstr "Rewards Earned"
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
 msgstr "Withdrawing from GMX Account..."

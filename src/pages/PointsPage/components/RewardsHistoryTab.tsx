@@ -109,6 +109,7 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
                 <TableTh>{t`Epoch`}</TableTh>
                 <TableTh>{t`Earned Points`}</TableTh>
                 <TableTh>{t`Spent Points`}</TableTh>
+                <TableTh>{t`Rewards Earned`}</TableTh>
                 <TableTh>{t`Rewards Claimed`}</TableTh>
                 <TableTh>{t`Status`}</TableTh>
               </TableTheadTr>
@@ -125,6 +126,7 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
                     <TableTd className="numbers">{formatAmount(entry.pointsEarned, 18, 4, true)}</TableTd>
                     <TableTd className="numbers">{formatAmount(entry.pointsSpent, 18, 4, true)}</TableTd>
                     <TableTd className="numbers">{formatAmount(entry.rewardsEarned, 18, 4, true)} GMX</TableTd>
+                    <TableTd className="numbers">{formatAmount(entry.rewardsClaimed, 18, 4, true)} GMX</TableTd>
                     <TableTd>
                       {isCurrentEpoch ? (
                         <span className="text-body-small text-typography-secondary">
@@ -142,7 +144,7 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
               })}
               {!history && (
                 <TableTr>
-                  <TableTd colSpan={5} className="py-16 text-center text-typography-secondary">
+                  <TableTd colSpan={6} className="py-16 text-center text-typography-secondary">
                     <Trans>Loading...</Trans>
                   </TableTd>
                 </TableTr>

@@ -3113,6 +3113,10 @@ msgstr "GLV 보유에 대한 보너스 인센티브는 무엇인가요?"
 msgid "Day(s)"
 msgstr "일"
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Rewards Earned"
+msgstr ""
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
 msgstr "GMX Account에서 출금 중..."

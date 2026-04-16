@@ -75,6 +75,7 @@ export type RewardsHistoryEntry = {
   pointsSpent: bigint;
   pointsExpired: bigint;
   rewardsEarned: bigint;
+  rewardsClaimed: bigint;
 };
 
 export type LeaderboardEntry = {

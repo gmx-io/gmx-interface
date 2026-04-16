@@ -225,6 +225,7 @@ describe("usePersonalizedBannerData", () => {
         pointsSpent: 0n,
         pointsExpired: 0n,
         rewardsEarned: 0n,
+        rewardsClaimed: 0n,
       },
     ];
     setupDefaults({ dashboard, rewardsHistory });
@@ -262,6 +263,7 @@ describe("usePersonalizedBannerData", () => {
         pointsSpent: 0n,
         pointsExpired: 0n,
         rewardsEarned: 0n,
+        rewardsClaimed: 0n,
       },
     ];
     setupDefaults({ dashboard, rewardsHistory });

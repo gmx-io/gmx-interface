@@ -134,7 +134,7 @@ function MultiplierBadge({
   }
 
   return (
-    <span className="inline-flex items-center rounded-full bg-green-900 px-8 py-2 text-[1.1rem] font-medium text-green-500 numbers">
+    <span className="inline-flex items-center rounded-full bg-green-900 px-6 py-2 text-12 font-medium text-green-500 numbers">
       +{formatMultiplier(currentMultiplier)}
     </span>
   );

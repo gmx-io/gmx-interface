@@ -15,6 +15,7 @@ const REWARDS_HISTORY_QUERY = gql`
       pointsSpent
       pointsExpired
       rewardsEarned
+      rewardsClaimed
     }
   }
 `;
@@ -46,6 +47,7 @@ export function useAccountRewardsHistory(chainId: number, params: { account?: st
             pointsSpent: string;
             pointsExpired: string;
             rewardsEarned: string;
+            rewardsClaimed: string;
           }) => ({
             epoch: e.epoch,
             volume: BigInt(e.volume),
@@ -53,6 +55,7 @@ export function useAccountRewardsHistory(chainId: number, params: { account?: st
             pointsSpent: BigInt(e.pointsSpent),
             pointsExpired: BigInt(e.pointsExpired),
             rewardsEarned: BigInt(e.rewardsEarned),
+            rewardsClaimed: BigInt(e.rewardsClaimed),
           })
         );
       },
