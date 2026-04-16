@@ -34,7 +34,7 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
 
   return (
     <div
-      className="overflow-hidden rounded-8 border-1/2 border-blue-500/30 bg-blue-500/10 px-20 py-16"
+      className="grid grid-cols-[1fr_80px] rounded-8 border-1/2 border-stroke-primary bg-slate-900/50 p-16"
       style={BANNER_STYLES}
     >
       <div className="flex items-center justify-between gap-16">
@@ -64,7 +64,6 @@ function getBannerContent({
     };
   }
 
-  // 2. Close to next volume tier (< 30% needed)
   if (config && currentEpochStats?.volumeTier) {
     const tierConfig = config.volumeTiers;
     const currentIdx = tierConfig.findIndex((t) => t.tier === currentEpochStats.volumeTier);
@@ -81,7 +80,6 @@ function getBannerContent({
     }
   }
 
-  // 3. Boosts not active
   if (currentEpochStats && (!currentEpochStats.boostIds || currentEpochStats.boostIds.length === 0)) {
     return {
       title: "Activate Pair Boosts",
@@ -89,7 +87,6 @@ function getBannerContent({
     };
   }
 
-  // 4. Default: restake
   return {
     title: "Restake your rewards and earn more",
     description:

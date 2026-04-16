@@ -153,18 +153,18 @@ function VolumeTiersTable({
     (currentTier && projectedTier === null);
 
   return (
-    <table className="w-full">
+    <table className="w-full table-fixed">
       <thead>
         <TableTheadTr>
-          <TableTh padding="compact">
+          <TableTh width="40%" padding="compact">
             <Trans>Tier Name</Trans>
           </TableTh>
-          <TableTh width="150px" padding="compact">
+          <TableTh width="25%" padding="compact">
             <span className="inline-flex items-center gap-4">
               <Trans>Volume</Trans>
             </span>
           </TableTh>
-          <TableTh width="100px" padding="compact">
+          <TableTh width="15%" padding="compact">
             <Trans>Multiplier</Trans>
           </TableTh>
           <TableTh width="120px" padding="compact" />
@@ -260,16 +260,16 @@ function DowngradingCoefficientsTooltip({
 
 function StakingTiersTable({ config, currentTier }: { config?: IncentivesConfig; currentTier?: string | null }) {
   return (
-    <table className="w-full">
+    <table className="w-full table-fixed">
       <thead>
         <TableTheadTr>
-          <TableTh padding="compact">
+          <TableTh width="40%" padding="compact">
             <Trans>Tier Name</Trans>
           </TableTh>
-          <TableTh width="150px" padding="compact">
+          <TableTh width="25%" padding="compact">
             <Trans>GMX Staked</Trans>
           </TableTh>
-          <TableTh width="100px" padding="compact">
+          <TableTh width="15%" padding="compact">
             <Trans>Multiplier</Trans>
           </TableTh>
           <TableTh width="120px" padding="compact" />
@@ -308,22 +308,21 @@ function StakingTiersTable({ config, currentTier }: { config?: IncentivesConfig;
 
 function BoostsTable({ config, activeBoosts }: { config?: IncentivesConfig; activeBoosts?: string[] }) {
   return (
-    <table className="w-full">
+    <table className="w-full table-fixed">
       <thead>
         <TableTheadTr>
-          <TableTh padding="compact">
+          <TableTh width="20%" padding="compact">
             <Trans>Boost Name</Trans>
           </TableTh>
-          <TableTh padding="compact" className="hidden sm:table-cell">
+          <TableTh width="40%" padding="compact">
             <Trans>About</Trans>
           </TableTh>
-          <TableTh padding="compact">
+          <TableTh width="15%" padding="compact">
             <Trans>Multiplier</Trans>
           </TableTh>
-          <TableTh padding="compact">
+          <TableTh width="15%" padding="compact">
             <Trans>Status</Trans>
           </TableTh>
-          <TableTh padding="compact" />
         </TableTheadTr>
       </thead>
       <tbody>
@@ -337,7 +336,7 @@ function BoostsTable({ config, activeBoosts }: { config?: IncentivesConfig; acti
                   {BOOST_LABELS[boost.boost]()}
                 </span>
               </TableTd>
-              <TableTd padding="compact" className="hidden text-typography-primary sm:table-cell">
+              <TableTd padding="compact" className="text-typography-primary">
                 {getBoostDescription(boost.boost, config)}
               </TableTd>
               <TableTd padding="compact" className="text-primary">
@@ -348,7 +347,6 @@ function BoostsTable({ config, activeBoosts }: { config?: IncentivesConfig; acti
                   {isActive ? <Trans>Active</Trans> : <Trans>Inactive</Trans>}
                 </span>
               </TableTd>
-              <TableTd padding="compact" />
             </TableTr>
           );
         })}

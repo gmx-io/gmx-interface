@@ -346,6 +346,7 @@ msgstr ""
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 #: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Volume"
 msgstr ""
@@ -957,6 +958,7 @@ msgstr ""
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Epoch"
 msgstr ""
 
@@ -1304,6 +1306,10 @@ msgstr ""
 msgid "Max {0} buyable amount exceeded"
 msgstr ""
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Expired points"
+msgstr ""
+
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -1332,6 +1338,7 @@ msgstr ""
 msgid "Rewards"
 msgstr ""
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Finished"
 msgstr ""
@@ -1742,6 +1749,10 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Vest"
+msgstr ""
+
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Spent points"
 msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
@@ -2528,6 +2539,7 @@ msgid "Set Short Stop Loss @ {0}"
 msgstr ""
 
 #: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Earned Points"
 msgstr ""
@@ -6760,6 +6772,7 @@ msgstr ""
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Loading..."
 msgstr ""
 
@@ -6959,6 +6972,10 @@ msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Gas"
+msgstr ""
+
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Epoch ends in:"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -8147,6 +8164,7 @@ msgstr ""
 msgid "Trade from wallet or GMX Account"
 msgstr ""
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 #: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Points balance"
 msgstr ""
@@ -10406,6 +10424,10 @@ msgstr ""
 msgid "C:"
 msgstr ""
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Earned rewards"
+msgstr ""
+
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
@@ -10760,6 +10782,7 @@ msgstr ""
 
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Status"

@@ -25,9 +25,9 @@ import BellIcon from "img/ic_bell.svg?react";
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import CopyIcon from "img/ic_copy.svg?react";
 import ExplorerIcon from "img/ic_explorer.svg?react";
-import MultiplierIcon from "img/ic_multiplier.svg?react";
 import PnlAnalysisIcon from "img/ic_pnl_analysis.svg?react";
 import DisconnectIcon from "img/ic_sign_out_20.svg?react";
+import { IcMultiplier as MultiplierIcon } from "img/IcMultiplier";
 
 import "./AddressDropdownWithoutMultichain.scss";
 

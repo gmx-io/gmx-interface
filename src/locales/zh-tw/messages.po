@@ -346,6 +346,7 @@ msgstr "GM 空投"
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 #: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Volume"
 msgstr "交易量"
@@ -957,6 +958,7 @@ msgstr "將 {marketName} 加入錢包"
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Epoch"
 msgstr ""
 
@@ -1304,6 +1306,10 @@ msgstr "{0} 價格"
 msgid "Max {0} buyable amount exceeded"
 msgstr "已超過 {0} 可購買上限"
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Expired points"
+msgstr ""
+
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
@@ -1332,6 +1338,7 @@ msgstr "未實現盈虧"
 msgid "Rewards"
 msgstr ""
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Finished"
 msgstr ""
@@ -1743,6 +1750,10 @@ msgstr "收起"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Vest"
 msgstr "歸屬"
+
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Spent points"
+msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Bridge transaction hash"
@@ -2528,6 +2539,7 @@ msgid "Set Short Stop Loss @ {0}"
 msgstr ""
 
 #: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Earned Points"
 msgstr ""
@@ -6760,6 +6772,7 @@ msgstr "TP 價格"
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Loading..."
 msgstr "載入中..."
 
@@ -6960,6 +6973,10 @@ msgstr ""
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Gas"
 msgstr "Gas"
+
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Epoch ends in:"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield Yak Optimizer"
@@ -8147,6 +8164,7 @@ msgstr "與目前使用中的代碼相同"
 msgid "Trade from wallet or GMX Account"
 msgstr "從錢包或 GMX Account 交易"
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 #: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Points balance"
 msgstr ""
@@ -10406,6 +10424,10 @@ msgstr "提醒"
 msgid "C:"
 msgstr "C："
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Earned rewards"
+msgstr ""
+
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
@@ -10760,6 +10782,7 @@ msgstr "存入中..."
 
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Status"
