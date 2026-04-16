@@ -544,6 +544,7 @@ msgstr "<0>Без KYC, длительной регистрации и обяза
 msgid "Select token"
 msgstr "Выберите токен"
 
+#: src/components/PointsShare/PointsShare.tsx
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Image generation failed. Refresh and try again."
 msgstr "Не удалось сгенерировать изображение. Обновите страницу и попробуйте снова."
@@ -2719,6 +2720,7 @@ msgstr "Подтвердить расчёт"
 msgid "Protocol risk explorer and stats"
 msgstr "Исследователь рисков протокола и статистика"
 
+#: src/components/PointsShare/PointsShareCard.tsx
 #: src/components/PositionShare/PositionShareCard.tsx
 msgid "Generating shareable image..."
 msgstr "Создание изображения, доступного для совместного использования..."
@@ -3523,6 +3525,7 @@ msgstr ""
 msgid "TRANSACTION"
 msgstr "ТРАНЗАКЦИЯ"
 
+#: src/components/PointsShare/PointsShare.tsx
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "Copy image"
@@ -3781,6 +3784,7 @@ msgstr "Подтвердить получение"
 msgid "Wallet-only"
 msgstr "Только кошелёк"
 
+#: src/components/PointsShare/PointsShareCard.tsx
 #: src/components/PositionShare/PositionShareCard.tsx
 msgid "Used Referral Code"
 msgstr ""
@@ -5414,6 +5418,10 @@ msgstr "Подробнее"
 msgid "Unlock boosts and increase your rewards."
 msgstr ""
 
+#: src/components/PointsShare/PointsShareCard.tsx
+msgid "Earned points"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Earn {0}% more rewards with this action"
 msgstr "Получите на {0}% больше вознаграждений с этим действием"
@@ -6426,6 +6434,7 @@ msgid "{balanceFormatted} remaining in old 1CT subaccount"
 msgstr "{balanceFormatted} остаётся на старом субаккаунте 1CT"
 
 #: src/components/HistoricalPointsAllocationModal/HistoricalPointsAllocationModal.tsx
+#: src/components/PointsShare/PointsShare.tsx
 msgid "Share your rewards"
 msgstr ""
 
@@ -6799,12 +6808,14 @@ msgstr "Загрузка..."
 msgid "Trade now"
 msgstr "Торговать"
 
+#: src/components/PointsShare/PointsShare.tsx
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
 msgid "Share"
 msgstr "Поделиться"
 
@@ -8676,6 +8687,10 @@ msgstr "Jones DAO"
 msgid "Failed to download trade history CSV"
 msgstr "Не удалось скачать CSV истории сделок"
 
+#: src/components/PointsShare/PointsShareCard.tsx
+msgid "I'm ranked #{rank} on GMX."
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
@@ -9542,6 +9557,7 @@ msgstr "Транзакция отправлена"
 msgid "Perfectswap"
 msgstr "Perfectswap"
 
+#: src/components/PointsShare/PointsShareCard.tsx
 #: src/components/PositionShare/PositionShareCard.tsx
 msgid "Referral code"
 msgstr "Реферальный код"
@@ -9898,6 +9914,7 @@ msgstr "Введите новую сумму или цену"
 msgid "Stake {tokenSymbol}"
 msgstr "Застейкать {tokenSymbol}"
 
+#: src/components/PointsShare/PointsShare.tsx
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Link copied to clipboard"
 msgstr "Ссылка скопирована в буфер обмена"
@@ -10446,6 +10463,7 @@ msgstr "Оповещения"
 msgid "C:"
 msgstr "C:"
 
+#: src/components/PointsShare/PointsShareCard.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Earned rewards"
 msgstr ""
@@ -11098,6 +11116,10 @@ msgstr "Введите новый размер или цену"
 msgid "Max pool amount exceeded"
 msgstr "Превышена максимальная сумма пула"
 
+#: src/components/PointsShare/PointsShareCard.tsx
+msgid "Start trading with me."
+msgstr ""
+
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Unknown order"
 msgstr "Неизвестный ордер"
@@ -11367,6 +11389,10 @@ msgstr "Сохранить уровень"
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {Ордер} other {# Ордеров}}"
 
+#: src/components/PointsShare/PointsShare.tsx
+msgid "Get up to 20% in rewards and give your community up to 10% off on every trade. Higher referrals tiers unlock higher benefits. <0>Read more</0>."
+msgstr ""
+
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche trading incentives"
 msgstr "Торговые поощрения Avalanche"
@@ -11451,6 +11477,7 @@ msgstr "Переключитесь на аккаунт {receiver}, чтобы з
 msgid "No distributions to claim"
 msgstr "Нет доступных начислений для получения"
 
+#: src/components/PointsShare/PointsShare.tsx
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "Copy link"
@@ -11638,6 +11665,7 @@ msgstr "Uniswap"
 msgid "Order may not execute at {priceText}: acceptable impact ({formattedOrderAcceptablePriceImpact}) below market ({formattedCurrentAcceptablePriceImpact}). Click \"Edit\"."
 msgstr "Ордер может не исполниться по {priceText}: допустимое влияние на цену ({formattedOrderAcceptablePriceImpact}) ниже рыночного ({formattedCurrentAcceptablePriceImpact}). Нажмите \"Edit\"."
 
+#: src/components/PointsShare/PointsShare.tsx
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 msgid "Share on"

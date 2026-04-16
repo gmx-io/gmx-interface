@@ -9,21 +9,26 @@ import { formatMultiplier } from "domain/synthetics/incentives/constants";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
 import { useIncentivesLeaderboard } from "domain/synthetics/incentives/useIncentivesLeaderboard";
 import { formatAmount, formatUsd } from "lib/numbers";
+import type { ContractsChainId } from "sdk/configs/chains";
 
 import AddressView from "components/AddressView/AddressView";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
+import { PointsShare } from "components/PointsShare/PointsShare";
 import SearchInput from "components/SearchInput/SearchInput";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import Tabs from "components/Tabs/Tabs";
 
+import ShareIcon from "img/ic_share_arrow_filled.svg?react";
+
 const COL_RANK: React.CSSProperties = { width: "6%" };
 const COL_ADDRESS: React.CSSProperties = { width: "22%" };
 const COL_VOLUME: React.CSSProperties = { width: "18%" };
-const COL_POINTS: React.CSSProperties = { width: "18%" };
-const COL_MULTIPLIER: React.CSSProperties = { width: "22%" };
-const COL_TIER: React.CSSProperties = { width: "14%" };
+const COL_POINTS: React.CSSProperties = { width: "16%" };
+const COL_REWARDS: React.CSSProperties = { width: "20%" };
+const COL_MULTIPLIER: React.CSSProperties = { width: "10%" };
+const COL_SHARE: React.CSSProperties = { width: "8%" };
 
 function getRankClassName(rank: number | null) {
   if (rank !== null && rank <= 3) return `PointsLeaderboardRank-${rank}`;
@@ -36,7 +41,7 @@ type TimeFilter = "current" | "last" | "all";
 type SortField = "volume" | "pointsEarned" | "rewardsEarned" | "multiplier";
 
 type Props = {
-  chainId: number;
+  chainId: ContractsChainId;
   account?: string;
 };
 
@@ -44,6 +49,7 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
   const { data: config } = useIncentivesConfig(chainId);
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("current");
   const [searchAddress, setSearchAddress] = useState("");
+  const [isShareOpen, setIsShareOpen] = useState(false);
 
   const epoch = useMemo(() => {
     if (!config) return undefined;
@@ -185,8 +191,9 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                 <col style={COL_ADDRESS} />
                 <col style={COL_VOLUME} />
                 <col style={COL_POINTS} />
+                <col style={COL_REWARDS} />
                 <col style={COL_MULTIPLIER} />
-                <col style={COL_TIER} />
+                <col style={COL_SHARE} />
               </colgroup>
               <thead>
                 <TableTheadTr>
@@ -214,6 +221,7 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                       </Sorter>
                     )}
                   </TableTh>
+                  <TableTh />
                 </TableTheadTr>
               </thead>
               <tbody>
@@ -230,6 +238,16 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                     <TableTd className="numbers">{formatAmount(userEntry.rewardsEarned, 18, 4, true)} GMX</TableTd>
                     <TableTd className="numbers">
                       {showMultiplier && userEntry.multiplier ? formatMultiplier(userEntry.multiplier) : ""}
+                    </TableTd>
+                    <TableTd>
+                      <button
+                        type="button"
+                        onClick={() => setIsShareOpen(true)}
+                        className="inline-flex items-center gap-4 whitespace-nowrap text-13 font-medium text-blue-100"
+                      >
+                        <ShareIcon />
+                        <Trans>Share</Trans>
+                      </button>
                     </TableTd>
                   </TableTr>
                 )}
@@ -256,12 +274,13 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                       <TableTd className="numbers">
                         {showMultiplier && entry.multiplier ? formatMultiplier(entry.multiplier) : ""}
                       </TableTd>
+                      <TableTd />
                     </TableTr>
                   );
                 })}
                 {!leaderboard && (
                   <TableTr>
-                    <TableTd colSpan={6} className="py-16 text-center text-typography-secondary">
+                    <TableTd colSpan={7} className="py-16 text-center text-typography-secondary">
                       <Trans>Loading...</Trans>
                     </TableTd>
                   </TableTr>
@@ -271,6 +290,17 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
           </TableScrollFadeContainer>
           <BottomTablePagination page={page} pageCount={pageCount} onPageChange={setPage} />
         </div>
+      )}
+      {userEntry && userRank !== null && (
+        <PointsShare
+          isOpen={isShareOpen}
+          setIsOpen={setIsShareOpen}
+          account={account}
+          chainId={chainId}
+          rank={userRank}
+          pointsEarned={userEntry.pointsEarned}
+          rewardsEarned={userEntry.rewardsEarned}
+        />
       )}
     </div>
   );
