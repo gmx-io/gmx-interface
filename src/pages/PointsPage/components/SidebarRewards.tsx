@@ -68,24 +68,24 @@ export function SidebarRewards({ chainId, account }: Props) {
   return (
     <>
       <div className="rounded-8 bg-slate-900 p-20">
-        <div className="flex flex-col gap-4">
-          <div className="flex items-center gap-8">
-            <span className="text-24 font-medium text-typography-primary">{displayClaimableRewards} GMX</span>
+        <div className="flex flex-col gap-12">
+          <div className="flex flex-col gap-4">
+            <div className="flex items-center gap-8">
+              <span className="text-24 font-medium text-typography-primary">{displayClaimableRewards} GMX</span>
+            </div>
+            <div className="text-body-small flex items-center gap-2 font-medium leading-1 text-typography-secondary">
+              <Trans>Claimable rewards</Trans>
+              <TooltipWithPortal
+                handle={undefined}
+                content={t`GMX rewards available to claim or stake. Rewards are generated when your points are spent to discount trading fees.`}
+                variant="iconStroke"
+              />
+            </div>
           </div>
-          <div className="text-body-small flex items-center gap-2 font-medium leading-1 text-typography-secondary">
-            <Trans>Claimable rewards</Trans>
-            <TooltipWithPortal
-              handle={undefined}
-              content={t`GMX rewards available to claim or stake. Rewards are generated when your points are spent to discount trading fees.`}
-              variant="iconStroke"
-            />
-          </div>
-        </div>
 
-        <div className="py-16">
           <Button
             variant="primary"
-            className="w-full"
+            className="shrink-0 max-lg:w-full"
             disabled={!hasRewards}
             onClick={() => setIsClaimModalOpen(true)}
             size="medium"
@@ -95,7 +95,7 @@ export function SidebarRewards({ chainId, account }: Props) {
           </Button>
         </div>
 
-        <div className="flex flex-col gap-2 border-t-1/2 border-slate-600 pt-16">
+        <div className="mt-16 flex flex-col gap-2 border-t-1/2 border-slate-600 pt-16">
           <div className="flex items-center justify-between py-4 text-[1.3rem]">
             <span className="font-medium text-typography-secondary">
               <Trans>Epoch ends in</Trans>
@@ -380,7 +380,13 @@ function ClaimModal({
         : t`Claim + stake`;
 
   return (
-    <ModalWithPortal isVisible={isOpen} setIsVisible={setIsOpen} label={t`Claim rewards`}>
+    <ModalWithPortal
+      isVisible={isOpen}
+      setIsVisible={setIsOpen}
+      label={t`Claim rewards`}
+      withMobileBottomPosition
+      contentPadding={false}
+    >
       <div className="flex flex-col gap-16 p-16">
         <div>
           <span className="text-body-small text-typography-secondary">

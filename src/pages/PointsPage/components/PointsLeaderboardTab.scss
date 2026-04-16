@@ -2,6 +2,7 @@
 .PointsLeaderboardRank-2,
 .PointsLeaderboardRank-3 {
   display: inline-flex;
+  align-items: center;
 }
 
 .PointsLeaderboardRank-1::after,
@@ -14,10 +15,6 @@
   background-size: cover;
   background-position: center;
   margin-left: 0.5rem;
-  position: absolute;
-  left: 31px;
-  top: 10px;
-  z-index: 111;
 }
 
 .PointsLeaderboardRank-1::after {

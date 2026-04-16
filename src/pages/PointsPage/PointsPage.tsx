@@ -96,16 +96,8 @@ export function PointsPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-[1fr_40rem] items-start gap-8 max-[1480px]:grid-cols-[1fr_30rem] max-xl:grid-cols-1">
-          <div className="flex h-full min-w-0 flex-col gap-8">
-            {activeTab === PointsTab.Dashboard && <PointsDashboard chainId={chainId} account={account} />}
-            {activeTab === PointsTab.History && <RewardsHistoryTab chainId={chainId} account={account} />}
-            {activeTab === PointsTab.Leaderboard && <PointsLeaderboardTab chainId={chainId} account={account} />}
-          </div>
-
-          <div className="sticky top-8 flex flex-col gap-8 max-lg:static">
-            <SidebarRewards chainId={chainId} account={account} />
-            <FaqSection config={config} />
+        {activeTab === PointsTab.Dashboard && (
+          <div className="hidden flex-col gap-8 max-xl:flex">
             <PointsBanner
               isActiveUser={isActiveUser}
               account={account}
@@ -113,6 +105,31 @@ export function PointsPage() {
               currentEpochStats={currentEpochStats}
               currentEpochHistory={currentEpochHistory}
             />
+            <SidebarRewards chainId={chainId} account={account} />
+          </div>
+        )}
+
+        <div className="grid grid-cols-[1fr_40rem] items-start gap-8 max-[1480px]:grid-cols-[1fr_30rem] max-xl:grid-cols-1">
+          <div className="flex h-full min-w-0 flex-col gap-8">
+            {activeTab === PointsTab.Dashboard && <PointsDashboard chainId={chainId} account={account} />}
+            {activeTab === PointsTab.History && <RewardsHistoryTab chainId={chainId} account={account} />}
+            {activeTab === PointsTab.Leaderboard && <PointsLeaderboardTab chainId={chainId} account={account} />}
+          </div>
+
+          <div className="sticky top-8 flex flex-col gap-8 max-xl:static">
+            <div className="max-xl:hidden">
+              <SidebarRewards chainId={chainId} account={account} />
+            </div>
+            <FaqSection config={config} />
+            <div className="max-xl:hidden">
+              <PointsBanner
+                isActiveUser={isActiveUser}
+                account={account}
+                config={config}
+                currentEpochStats={currentEpochStats}
+                currentEpochHistory={currentEpochHistory}
+              />
+            </div>
           </div>
         </div>
       </div>
