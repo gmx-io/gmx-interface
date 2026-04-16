@@ -72,6 +72,10 @@ import Badge, { BadgeIndicator } from "components/Badge/Badge";
 import Checkbox from "components/Checkbox/Checkbox";
 import { Claims } from "components/Claims/Claims";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
+import {
+  HistoricalPointsAllocationModal,
+  useHistoricalPointsAllocationModal,
+} from "components/HistoricalPointsAllocationModal";
 import { OneClickPromoBanner } from "components/OneClickPromoBanner/OneClickPromoBanner";
 import { OrderList } from "components/OrderList/OrderList";
 import { OrdersModal, type TpSlTabType } from "components/OrdersModal/OrdersModal";
@@ -130,6 +134,8 @@ export function SyntheticsPage(p: Props) {
     onDoNotShowAgainChange: handleShareSuccessDoNotShowAgainChange,
     onShareAction: handleShareSuccessShareAction,
   } = useShareSuccessClosedPosition({ chainId, account });
+
+  const historicalPointsAllocationModal = useHistoricalPointsAllocationModal();
 
   useExternalSwapHandler();
 
@@ -631,6 +637,12 @@ export function SyntheticsPage(p: Props) {
           shareSource="auto-prompt"
         />
       ) : null}
+      <HistoricalPointsAllocationModal
+        isVisible={historicalPointsAllocationModal.isVisible}
+        setIsVisible={historicalPointsAllocationModal.setIsVisible}
+        manualAllocatedPoints={historicalPointsAllocationModal.manualAllocatedPoints}
+        manualBonusUsd={historicalPointsAllocationModal.manualBonusUsd}
+      />
     </AppPageLayout>
   );
 }

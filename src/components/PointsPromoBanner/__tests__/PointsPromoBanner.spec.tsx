@@ -62,6 +62,7 @@ const ARBITRUM = 42161;
 
 const defaultBannerData: PersonalizedBannerData = {
   isManuallyRewarded: false,
+  manualAllocatedPoints: undefined,
   manualBonusUsd: undefined,
   recommendedStakeGmx: undefined,
   estimatedRewardsUsd: undefined,

@@ -176,6 +176,8 @@ function computeWalletUsd(tokensData: TokensData | undefined): bigint | undefine
 export type PersonalizedBannerData = {
   /** Whether the user has a manual allocation derived from pre-program history entries. */
   isManuallyRewarded: boolean;
+  /** The manually allocated points amount (18-decimal bigint) for manually rewarded users. */
+  manualAllocatedPoints: bigint | undefined;
   /** The bonus amount in USD (30-decimal bigint) for manually rewarded users. */
   manualBonusUsd: bigint | undefined;
   /** Recommended GMX amount to stake (human-readable number, e.g. 100). */
@@ -218,6 +220,7 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
   return useMemo(() => {
     const noData: PersonalizedBannerData = {
       isManuallyRewarded: false,
+      manualAllocatedPoints: undefined,
       manualBonusUsd: undefined,
       recommendedStakeGmx: undefined,
       estimatedRewardsUsd: undefined,
@@ -244,6 +247,7 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
     if (isManuallyRewarded) {
       return {
         isManuallyRewarded: true,
+        manualAllocatedPoints,
         manualBonusUsd: (manualAllocatedPoints * gmxPrice) / GMX_DECIMALS_FACTOR,
         recommendedStakeGmx: undefined,
         estimatedRewardsUsd: undefined,
@@ -309,6 +313,7 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
 
     return {
       isManuallyRewarded: false,
+      manualAllocatedPoints: undefined,
       manualBonusUsd: undefined,
       recommendedStakeGmx,
       estimatedRewardsUsd: Math.round(feeSavingsWeek * 100) / 100,
