@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
 import { useAccount } from "wagmi";
 
@@ -504,7 +504,6 @@ const FundingHistorySection = () => {
 const PointsSection = () => {
   const { chainId } = useChainId();
   const { address: account } = useAccount();
-  const history = useHistory();
   const [, setOpen] = useGmxAccountModalOpen();
 
   const enabled = isIncentivesEnabled(chainId);
@@ -545,11 +544,14 @@ const PointsSection = () => {
 
   const handleClick = () => {
     setOpen(false);
-    history.push("/points");
   };
 
   return (
-    <div className="flex cursor-pointer items-center justify-between p-12" onClick={handleClick}>
+    <Link
+      to="/points"
+      onClick={handleClick}
+      className="flex items-center justify-between p-12 no-underline -outline-offset-4"
+    >
       <div className="flex flex-col items-start gap-2">
         <span className="text-13 font-medium text-typography-primary">
           {hasMultiplier ? <Trans>Your multiplier</Trans> : <Trans>GMX Points</Trans>}{" "}
@@ -571,10 +573,13 @@ const PointsSection = () => {
           )}
         </span>
       </div>
-      <Button variant="secondary" className="!h-32 !w-32">
+      <span
+        aria-hidden="true"
+        className="inline-flex h-32 w-32 shrink-0 items-center justify-center rounded-8 bg-[var(--color-button-secondary)] text-typography-secondary"
+      >
         <ChevronRight className="size-20 h-20 shrink-0 pl-2" />
-      </Button>
-    </div>
+      </span>
+    </Link>
   );
 };
 

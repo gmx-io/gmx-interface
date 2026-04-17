@@ -116,18 +116,12 @@ function resolveStakingTiers(config: IncentivesConfig | undefined): { threshold:
 
   const decimals = config.multiplierDecimals || FALLBACK_MULTIPLIER_DECIMALS;
 
-  return config.stakingTiers
-    .slice()
-    .sort((a: StakingTierConfig, b: StakingTierConfig) => {
-      const aNum = bigintToNumber(a.threshold, GMX_DECIMALS);
-      const bNum = bigintToNumber(b.threshold, GMX_DECIMALS);
-      return aNum - bNum;
-    })
-    .map((t: StakingTierConfig) => ({
-      threshold: bigintToNumber(t.threshold, GMX_DECIMALS),
-      // multiplier from config is stored in `multiplierDecimals` units (e.g. 25 = 0.25x bonus)
-      bonus: t.multiplier / decimals,
-    }));
+  // Tiers are pre-sorted ascending by threshold in `useIncentivesConfig`.
+  return config.stakingTiers.map((t: StakingTierConfig) => ({
+    threshold: bigintToNumber(t.threshold, GMX_DECIMALS),
+    // multiplier from config is stored in `multiplierDecimals` units (e.g. 25 = 0.25x bonus)
+    bonus: t.multiplier / decimals,
+  }));
 }
 
 /**

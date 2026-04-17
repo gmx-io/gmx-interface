@@ -69,16 +69,20 @@ export function useIncentivesConfig(chainId: number) {
         pointsExpirationEpochs: config.pointsExpirationEpochs,
         basePointsFactor: BigInt(config.basePointsFactor),
         pointsToGmxFactor: BigInt(config.pointsToGmxFactor),
-        volumeTiers: config.volumeTiers.map((t: { tier: string; threshold: string; multiplier: number }) => ({
-          tier: t.tier,
-          threshold: BigInt(t.threshold),
-          multiplier: t.multiplier,
-        })),
-        stakingTiers: config.stakingTiers.map((t: { tier: string; threshold: string; multiplier: number }) => ({
-          tier: t.tier,
-          threshold: BigInt(t.threshold),
-          multiplier: t.multiplier,
-        })),
+        volumeTiers: config.volumeTiers
+          .map((t: { tier: string; threshold: string; multiplier: number }) => ({
+            tier: t.tier,
+            threshold: BigInt(t.threshold),
+            multiplier: t.multiplier,
+          }))
+          .sort((a, b) => (a.threshold < b.threshold ? -1 : a.threshold > b.threshold ? 1 : 0)),
+        stakingTiers: config.stakingTiers
+          .map((t: { tier: string; threshold: string; multiplier: number }) => ({
+            tier: t.tier,
+            threshold: BigInt(t.threshold),
+            multiplier: t.multiplier,
+          }))
+          .sort((a, b) => (a.threshold < b.threshold ? -1 : a.threshold > b.threshold ? 1 : 0)),
         boosts: config.boosts
           .filter((b: { boost: string }) => b.boost !== "MultichainTrades")
           .map((b: { boost: string; multiplier: number }) => ({
