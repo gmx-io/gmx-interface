@@ -54,7 +54,7 @@ export function IncentivesAuditPage() {
       const date = new Date(ts * 1000);
       result.push({
         timestamp: ts,
-        label: date.toLocaleDateString("en-US", {
+        label: date.toLocaleDateString(undefined, {
           month: "short",
           day: "numeric",
           year: "numeric",

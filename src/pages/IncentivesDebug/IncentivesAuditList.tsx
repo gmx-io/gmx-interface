@@ -17,6 +17,8 @@ import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
+import { SummaryCard } from "./SummaryCard";
+
 const PAGE_SIZE = 20;
 
 type AuditSortField =
@@ -54,36 +56,47 @@ export function IncentivesAuditList({
   const sortField = direction === "unspecified" ? "effectiveRewardsRatio" : orderBy;
   const sortDirection = direction === "unspecified" ? "desc" : direction;
 
+  // Gate the query: before the incentives config resolves, selectedEpoch is
+  // undefined. Without this, the hook would fire a full-range (no-epoch)
+  // query that's immediately discarded once the epoch becomes known.
   const { data, summary, error, loading } = useIncentiveAccountEpochAudit(chainId, {
     epochTimestamp: selectedEpoch,
     orderBy: sortField,
     orderDirection: sortDirection,
     limit: PAGE_SIZE,
     offset: (page - 1) * PAGE_SIZE,
+    enabled: selectedEpoch !== undefined,
   });
 
   const hasNextPage = data ? data.length === PAGE_SIZE : false;
-  const pageCount = page + 1 + (hasNextPage ? 1 : 0);
+  const pageCount = hasNextPage ? page + 1 : page;
 
   const handleEpochSelect = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       const val = e.target.value;
-      onEpochChange(Number(val));
+      onEpochChange(val ? Number(val) : undefined);
       setPage(1);
     },
     [onEpochChange]
   );
 
+  if (selectedEpoch === undefined) {
+    return (
+      <div className="mt-16 flex items-center justify-center p-40">
+        <Loader />
+      </div>
+    );
+  }
+
   return (
     <div className="mt-16 flex flex-col gap-16">
-      {/* Epoch Selector */}
       <div className="flex items-center gap-12">
         <label className="text-body-medium font-medium text-typography-primary">
           <Trans>Epoch</Trans>
         </label>
         <select
           className="text-body-medium rounded-8 border border-slate-600 bg-slate-800 px-12 py-8 text-typography-primary hover:bg-fill-surfaceElevatedHover"
-          value={selectedEpoch ?? ""}
+          value={selectedEpoch}
           onChange={handleEpochSelect}
         >
           {epochs.map((ep) => (
@@ -94,7 +107,6 @@ export function IncentivesAuditList({
         </select>
       </div>
 
-      {/* Summary Cards */}
       <div className="grid grid-cols-2 gap-8 md:grid-cols-5">
         <SummaryCard label={<Trans>Loaded Count</Trans>} value={summary?.loadedCount ?? "..."} />
         <SummaryCard
@@ -117,7 +129,6 @@ export function IncentivesAuditList({
         />
       </div>
 
-      {/* Table */}
       <div className="rounded-8 bg-slate-900">
         {error && (
           <div className="flex items-center justify-center p-24 text-red-500">
@@ -228,25 +239,6 @@ export function IncentivesAuditList({
             <Trans>No audit entries found for this epoch.</Trans>
           </div>
         )}
-      </div>
-    </div>
-  );
-}
-
-function SummaryCard({
-  label,
-  value,
-  highlight,
-}: {
-  label: React.ReactNode;
-  value: React.ReactNode;
-  highlight?: boolean;
-}) {
-  return (
-    <div className="rounded-8 bg-slate-900 p-16">
-      <div className="text-caption text-typography-secondary">{label}</div>
-      <div className={`text-body-large mt-4 font-medium ${highlight ? "text-yellow-300" : "text-typography-primary"}`}>
-        {value}
       </div>
     </div>
   );

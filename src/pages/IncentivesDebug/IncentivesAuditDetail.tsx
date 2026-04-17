@@ -21,6 +21,8 @@ import Loader from "components/Loader/Loader";
 import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
+import { SummaryCard } from "./SummaryCard";
+
 export function IncentivesAuditDetail({
   chainId,
   account,
@@ -66,7 +68,6 @@ export function IncentivesAuditDetail({
 
   return (
     <div className="mt-16 flex flex-col gap-16">
-      {/* Header */}
       <div className="rounded-8 bg-slate-900 p-20">
         <button className="hover:text-blue-200 text-body-medium mb-12 text-blue-300" onClick={onBack}>
           &larr; <Trans>Back to list</Trans>
@@ -88,7 +89,6 @@ export function IncentivesAuditDetail({
         </div>
       </div>
 
-      {/* Totals Cards */}
       <div className="grid grid-cols-2 gap-8 md:grid-cols-4">
         <SummaryCard
           label={<Trans>Total Points Earned</Trans>}
@@ -114,7 +114,6 @@ export function IncentivesAuditDetail({
         />
       </div>
 
-      {/* Current Epoch Status */}
       <Section title={<Trans>Current Epoch Status</Trans>}>
         {statusLoading && !status && (
           <div className="flex items-center justify-center p-16">
@@ -162,7 +161,6 @@ export function IncentivesAuditDetail({
         )}
       </Section>
 
-      {/* Audit Data */}
       <Section title={<Trans>Audit Data</Trans>}>
         {auditError && (
           <div className="p-16 text-center text-red-500">
@@ -264,15 +262,6 @@ export function IncentivesAuditDetail({
           </div>
         )}
       </Section>
-    </div>
-  );
-}
-
-function SummaryCard({ label, value }: { label: ReactNode; value: ReactNode }) {
-  return (
-    <div className="rounded-8 bg-slate-900 p-16">
-      <div className="text-caption text-typography-secondary">{label}</div>
-      <div className="text-body-large mt-4 font-medium text-typography-primary">{value}</div>
     </div>
   );
 }
