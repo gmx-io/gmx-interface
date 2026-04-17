@@ -172,6 +172,7 @@ function ClaimModal({
   const [pendingAction, setPendingAction] = useState<"claim" | "claimAndStake" | "approve" | undefined>();
   const contractsChainId = chainId as ContractsChainId;
   const allowanceChainId = chainId as AnyChainId;
+  // Off-settlement GMX-Account users need multichain relay wiring; disable claim to avoid wallet-chain mismatch until that lands.
   const isOnSettlementChain = srcChainId === undefined;
 
   const claimHandlerAddress = getContract(contractsChainId, "ClaimHandler");
