@@ -9,6 +9,7 @@ export const VOLUME_TIER_BADGES: Record<VolumeTierId, () => string> = {
   Tier2: () => t`Certified`,
   Tier3: () => t`Veteran`,
   Tier4: () => t`Legendary`,
+  Tier5: () => t`Apex`,
 };
 
 export const STAKING_TIER_BADGES: Record<StakingTierId, () => string> = {

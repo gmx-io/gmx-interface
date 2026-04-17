@@ -7495,8 +7495,6 @@ msgstr "Solv Finance"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Claim submitted"
 msgstr "수령 제출됨"
 
@@ -11419,6 +11417,10 @@ msgstr "델타 중립 볼트"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sending shift request..."
 msgstr "시프트 요청을 전송하는 중…"
+
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Apex"
+msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"

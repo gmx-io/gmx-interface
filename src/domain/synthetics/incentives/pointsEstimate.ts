@@ -19,25 +19,31 @@ export function getEstimatedTradeRewards({
   multiplier,
   multiplierDecimals = MULTIPLIER_DECIMALS,
   totalRebate,
-  discountShare,
   gmxPrice,
 }: EstimatedRewardsParams) {
   if (feeUsd === undefined || feeUsd <= 0n || multiplier === undefined || multiplier <= 0 || multiplierDecimals <= 0) {
     return undefined;
   }
 
-  const boostedRewardBps = bigMath.mulDiv(BASE_POINTS_RATE_BPS, BigInt(multiplier), BigInt(multiplierDecimals));
-  const referralDiscountBps =
-    totalRebate !== undefined && discountShare !== undefined
-      ? bigMath.mulDiv(totalRebate, discountShare, BASIS_POINTS_DIVISOR_BIGINT)
-      : 0n;
-  const effectiveRewardBps = boostedRewardBps > referralDiscountBps ? boostedRewardBps - referralDiscountBps : 0n;
+  const rebateBps = totalRebate ?? 0n;
+  const eligibleFeeUsd =
+    rebateBps > 0n && rebateBps < BASIS_POINTS_DIVISOR_BIGINT
+      ? bigMath.mulDiv(feeUsd, BASIS_POINTS_DIVISOR_BIGINT - rebateBps, BASIS_POINTS_DIVISOR_BIGINT)
+      : rebateBps >= BASIS_POINTS_DIVISOR_BIGINT
+        ? 0n
+        : feeUsd;
 
-  if (effectiveRewardBps <= 0n) {
+  if (eligibleFeeUsd <= 0n) {
     return undefined;
   }
 
-  const rewardsUsd = bigMath.mulDiv(feeUsd, effectiveRewardBps, BASIS_POINTS_DIVISOR_BIGINT);
+  const boostedRewardBps = bigMath.mulDiv(BASE_POINTS_RATE_BPS, BigInt(multiplier), BigInt(multiplierDecimals));
+
+  if (boostedRewardBps <= 0n) {
+    return undefined;
+  }
+
+  const rewardsUsd = bigMath.mulDiv(eligibleFeeUsd, boostedRewardBps, BASIS_POINTS_DIVISOR_BIGINT);
 
   return {
     rewardsUsd,

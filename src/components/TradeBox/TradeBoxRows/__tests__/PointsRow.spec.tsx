@@ -88,7 +88,10 @@ function renderPointsRow() {
 }
 
 describe("getEstimatedTradeRewards", () => {
-  it("calculates rewards from fees, multiplier, and referral discount", () => {
+  it("applies multiplier to fees net of the full referral rebate", () => {
+    // Spec: (fees - fees * totalRebate / 10000) * baseRate * multiplier.
+    // fees=1000, totalRebate=10%  -> eligible=900
+    // baseRate=10% (1000 bps), multiplier=2.5x -> reward = 900 * 0.1 * 2.5 = 225 USD
     const feeUsd = 1000n * 10n ** USD_DECIMALS;
     const gmxPrice = 20n * 10n ** USD_DECIMALS;
 
@@ -101,8 +104,34 @@ describe("getEstimatedTradeRewards", () => {
       gmxPrice,
     });
 
-    expect(result?.rewardsUsd).toBe(150n * 10n ** USD_DECIMALS);
-    expect(result?.rewardsGmx).toBe(75n * 10n ** 17n);
+    expect(result?.rewardsUsd).toBe(225n * 10n ** USD_DECIMALS);
+    expect(result?.rewardsGmx).toBe(1125n * 10n ** 16n);
+  });
+
+  it("ignores discountShare because totalRebate already covers both affiliate and trader", () => {
+    // Same fees & multiplier as above with discountShare=0 should give the same result:
+    // the deduction must be the full totalRebate, not the trader portion.
+    const feeUsd = 1000n * 10n ** USD_DECIMALS;
+    const gmxPrice = 20n * 10n ** USD_DECIMALS;
+
+    const withTraderShare = getEstimatedTradeRewards({
+      feeUsd,
+      multiplier: 250,
+      multiplierDecimals: MULTIPLIER_DECIMALS,
+      totalRebate: 1000n,
+      discountShare: 10000n,
+      gmxPrice,
+    });
+    const withoutTraderShare = getEstimatedTradeRewards({
+      feeUsd,
+      multiplier: 250,
+      multiplierDecimals: MULTIPLIER_DECIMALS,
+      totalRebate: 1000n,
+      discountShare: 0n,
+      gmxPrice,
+    });
+
+    expect(withTraderShare?.rewardsUsd).toBe(withoutTraderShare?.rewardsUsd);
   });
 });
 
@@ -153,7 +182,7 @@ describe("PointsRow", () => {
     renderPointsRow();
 
     expect(screen.getByText("Estimated rewards")).toBeDefined();
-    expect(screen.getByText(/7\.50 GMX/)).toBeDefined();
-    expect(screen.getByText((content) => content.includes("150.00"))).toBeDefined();
+    expect(screen.getByText(/11\.25 GMX/)).toBeDefined();
+    expect(screen.getByText((content) => content.includes("225.00"))).toBeDefined();
   });
 });

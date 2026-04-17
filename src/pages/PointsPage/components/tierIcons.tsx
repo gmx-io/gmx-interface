@@ -37,6 +37,7 @@ const VOLUME_TIER_ICONS: Record<VolumeTierId, IconPair> = {
   Tier2: { active: CertifiedActive, inactive: CertifiedInactive },
   Tier3: { active: VeteranActive, inactive: VeteranInactive },
   Tier4: { active: LegendaryActive, inactive: LegendaryInactive },
+  Tier5: { active: ApexActive, inactive: ApexInactive },
 };
 
 const STAKING_TIER_ICONS: Record<StakingTierId, IconPair> = {
@@ -50,7 +51,7 @@ const STAKING_TIER_ICONS: Record<StakingTierId, IconPair> = {
 const BOOST_ICONS: Record<BoostId, IconPair> = {
   BalancingTrades: { active: MarketBalancerActive, inactive: MarketBalancerInactive },
   FeaturedMarkets: { active: MultichainTraderActive, inactive: MultichainTraderInactive },
-  LifetimeTrading: { active: ApexActive, inactive: ApexInactive },
+  LifetimeTrading: { active: RiskManagedTraderActive, inactive: RiskManagedTraderInactive },
 };
 
 // Extra boost icons available for future boost types

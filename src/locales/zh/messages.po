@@ -7495,8 +7495,6 @@ msgstr "Solv Finance"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Claim submitted"
 msgstr "领取已提交"
 
@@ -11419,6 +11417,10 @@ msgstr "Delta 中性金库"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sending shift request..."
 msgstr "正在发送转移请求…"
+
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Apex"
+msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"

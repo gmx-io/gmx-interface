@@ -1,4 +1,4 @@
-export type VolumeTierId = "Tier1" | "Tier2" | "Tier3" | "Tier4";
+export type VolumeTierId = "Tier1" | "Tier2" | "Tier3" | "Tier4" | "Tier5";
 export type StakingTierId = "Tier1" | "Tier2" | "Tier3" | "Tier4" | "Tier5";
 export type BoostId = "FeaturedMarkets" | "BalancingTrades" | "LifetimeTrading";
 

@@ -7495,8 +7495,6 @@ msgstr "Solv Finance"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Claim submitted"
 msgstr "Reclamación enviada"
 
@@ -11419,6 +11417,10 @@ msgstr "Bóvedas delta neutral"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sending shift request..."
 msgstr "Enviando solicitud de cambio…"
+
+#: src/domain/synthetics/incentives/constants.ts
+msgid "Apex"
+msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"

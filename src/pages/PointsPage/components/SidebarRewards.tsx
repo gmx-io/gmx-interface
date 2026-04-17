@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import { ethers } from "ethers";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
-import { maxUint256, zeroAddress } from "viem";
+import { encodeFunctionData, maxUint256, zeroAddress } from "viem";
 
 import type { AnyChainId, ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
@@ -13,13 +13,16 @@ import { useAccountIncentiveDashboard } from "domain/synthetics/incentives/useAc
 import { useAccountRewardsHistory } from "domain/synthetics/incentives/useAccountRewardsHistory";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
+import { useChainId } from "lib/chains";
 import { callContract } from "lib/contracts";
 import { contractFetcher } from "lib/contracts/contractFetcher";
 import { helperToast } from "lib/helperToast";
 import { formatAmount } from "lib/numbers";
+import { sendWalletTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
+import ClaimHandlerAbi from "sdk/abis/ClaimHandler";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
@@ -108,6 +111,7 @@ export function SidebarRewards({ chainId, account }: Props) {
               <TooltipWithPortal
                 handle={undefined}
                 content={t`Estimated GMX rewards generated during the current epoch.`}
+                variant="iconStroke"
               />
             </span>
             <span className="text-typography-primary">{displayEstimatedRewards} GMX</span>
@@ -118,6 +122,7 @@ export function SidebarRewards({ chainId, account }: Props) {
               <TooltipWithPortal
                 handle={undefined}
                 content={t`Total non-expired points available. Points automatically discount up to 50% of your trading fees.`}
+                variant="iconStroke"
               />
             </span>
             <span className="text-typography-primary">{displayPoints}</span>
@@ -125,7 +130,11 @@ export function SidebarRewards({ chainId, account }: Props) {
           <div className="flex items-center justify-between py-4 text-[1.3rem]">
             <span className="flex items-center gap-4 font-medium text-typography-secondary">
               <Trans>Total earned rewards</Trans>
-              <TooltipWithPortal handle={undefined} content={t`Total rewards earned since the start of the program.`} />
+              <TooltipWithPortal
+                handle={undefined}
+                content={t`Total rewards earned since the start of the program.`}
+                variant="iconStroke"
+              />
             </span>
             <span className="text-typography-primary">{displayTotalEarnedRewards} GMX</span>
           </div>
@@ -157,11 +166,13 @@ function ClaimModal({
   account?: string;
 }) {
   const { signer } = useWallet();
+  const { srcChainId } = useChainId();
   const { setPendingTxns } = usePendingTxns();
   const hasOutdatedUi = useHasOutdatedUi();
   const [pendingAction, setPendingAction] = useState<"claim" | "claimAndStake" | "approve" | undefined>();
   const contractsChainId = chainId as ContractsChainId;
   const allowanceChainId = chainId as AnyChainId;
+  const isOnSettlementChain = srcChainId === undefined;
 
   const claimHandlerAddress = getContract(contractsChainId, "ClaimHandler");
   const dataStoreAddress = getContract(contractsChainId, "DataStore");
@@ -235,7 +246,9 @@ function ClaimModal({
   const needsStakeApproval =
     isStakeSupported && claimableAmount > 0n && gmxAllowance !== undefined && claimableAmount > BigInt(gmxAllowance);
 
-  const canClaim = Boolean(account && signer && claimableAmount > 0n && !claimsDisabled && !hasOutdatedUi);
+  const canClaim = Boolean(
+    account && signer && claimableAmount > 0n && !claimsDisabled && !hasOutdatedUi && isOnSettlementChain
+  );
   const isClaiming = pendingAction === "claim";
   const isClaimAndStaking = pendingAction === "claimAndStake";
   const isApproving = pendingAction === "approve";
@@ -258,47 +271,56 @@ function ClaimModal({
     }
   }, [chainId, gmxToken.address, setPendingTxns, signer, stakedGmxTrackerAddress]);
 
+  const submitClaim = useCallback(async () => {
+    if (!account || !signer) {
+      throw new Error("Wallet not connected");
+    }
+
+    const callData = encodeFunctionData({
+      abi: ClaimHandlerAbi,
+      functionName: "acceptTermsAndClaim",
+      args: [claimParams, account],
+    });
+
+    const result = await sendWalletTransaction({
+      chainId: contractsChainId,
+      signer,
+      to: claimHandlerAddress,
+      callData,
+      value: 0n,
+    });
+
+    const receipt = await result.wait();
+    if (receipt?.status !== "success") {
+      throw new Error("Claim transaction failed");
+    }
+  }, [account, claimHandlerAddress, claimParams, contractsChainId, signer]);
+
   const claimRewards = useCallback(async () => {
-    if (!account || !signer || !canClaim) {
+    if (!canClaim) {
       return;
     }
 
     setPendingAction("claim");
 
     try {
-      const contract = new ethers.Contract(claimHandlerAddress, abis.ClaimHandler, signer);
-      const tx = await callContract(chainId, contract, "acceptTermsAndClaim", [claimParams, account], {
-        sentMsg: t`Claim submitted`,
-        failMsg: t`Claim failed`,
-        successMsg: t`Claim completed`,
-        setPendingTxns,
-      });
-
-      await tx.wait();
+      await submitClaim();
+      helperToast.success(t`Claim completed`);
       await mutateClaimableAmount(0n, false);
       setIsOpen(false);
     } catch {
-      // Error toasts are handled by callContract.
+      helperToast.error(t`Claim failed`);
     } finally {
       setPendingAction(undefined);
     }
-  }, [
-    account,
-    canClaim,
-    chainId,
-    claimHandlerAddress,
-    claimParams,
-    mutateClaimableAmount,
-    setIsOpen,
-    setPendingTxns,
-    signer,
-  ]);
+  }, [canClaim, mutateClaimableAmount, setIsOpen, submitClaim]);
 
   const claimAndStakeRewards = useCallback(async () => {
     if (!account || !signer || !canClaim || !isStakeSupported) {
       return;
     }
 
+    const stakeAmount = claimableAmount;
     let didClaim = false;
 
     try {
@@ -308,32 +330,17 @@ function ClaimModal({
 
       setPendingAction("claimAndStake");
 
-      const gmxContract = new ethers.Contract(gmxToken.address, abis.Token, signer);
-      const balanceBefore = BigInt(await gmxContract.balanceOf(account));
-
-      // ClaimsHandler does not expose a claim+stake path, so the combined action must
-      // sequence the claim and stake contract calls after the claim has settled.
-      const claimHandlerContract = new ethers.Contract(claimHandlerAddress, abis.ClaimHandler, signer);
-      const claimTx = await callContract(chainId, claimHandlerContract, "acceptTermsAndClaim", [claimParams, account], {
-        sentMsg: t`Claim submitted`,
-        failMsg: t`Claim failed`,
-        successMsg: t`Claim completed`,
-        setPendingTxns,
-      });
-
-      await claimTx.wait();
+      await submitClaim();
       didClaim = true;
+      helperToast.success(t`Claim completed`);
       await mutateClaimableAmount(0n, false);
 
-      const balanceAfter = BigInt(await gmxContract.balanceOf(account));
-      const claimedAmount = balanceAfter > balanceBefore ? balanceAfter - balanceBefore : claimableAmount;
-
-      if (claimedAmount <= 0n) {
+      if (stakeAmount <= 0n) {
         throw new Error("No GMX claimed");
       }
 
       const rewardRouterContract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
-      const stakeTx = await callContract(chainId, rewardRouterContract, "stakeGmx", [claimedAmount], {
+      const stakeTx = await callContract(chainId, rewardRouterContract, "stakeGmx", [stakeAmount], {
         sentMsg: t`Stake submitted`,
         failMsg: t`Stake failed`,
         successMsg: t`GMX staked`,
@@ -343,7 +350,9 @@ function ClaimModal({
       await stakeTx.wait();
       setIsOpen(false);
     } catch {
-      if (didClaim) {
+      if (!didClaim) {
+        helperToast.error(t`Claim failed`);
+      } else {
         setIsOpen(false);
         helperToast.info(
           t`GMX was claimed to your wallet. If staking did not complete, you can stake it from the Earn page.`
@@ -357,10 +366,7 @@ function ClaimModal({
     approveGmxForStaking,
     canClaim,
     chainId,
-    claimHandlerAddress,
-    claimParams,
     claimableAmount,
-    gmxToken.address,
     isStakeSupported,
     mutateClaimableAmount,
     needsStakeApproval,
@@ -368,6 +374,7 @@ function ClaimModal({
     setIsOpen,
     setPendingTxns,
     signer,
+    submitClaim,
   ]);
 
   const claimButtonText = isClaiming ? t`Claiming...` : hasOutdatedUi ? getPageOutdatedError() : t`Claim`;
