@@ -942,6 +942,10 @@ msgstr "STIP.b 追溯奖励"
 msgid "in liquidity"
 msgstr "流动性中"
 
+#: src/pages/PointsPage/components/PointsBanner.tsx
+msgid "Your volume this epoch is below the threshold for your current tier. Trade more to keep your rewards multiplier."
+msgstr ""
+
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Eff. Pts Ratio"
@@ -1760,6 +1764,10 @@ msgstr "归属"
 msgid "Spent points"
 msgstr ""
 
+#: src/pages/PointsPage/components/PointsBanner.tsx
+msgid "Stake rewards"
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Bridge transaction hash"
 msgstr "跨链桥交易哈希"
@@ -1931,6 +1939,10 @@ msgstr "被动管理"
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Telegram groups"
 msgstr "Telegram 群组"
+
+#: src/pages/PointsPage/components/PointsBanner.tsx
+msgid "Restake your rewards and earn more"
+msgstr ""
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
@@ -3999,6 +4011,10 @@ msgstr "Express Trading 不支持网络原生代币 {0}。请考虑使用 {1} �
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/SideNav/SideNav.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trade"
 msgstr "交易"
@@ -4058,6 +4074,7 @@ msgstr "更新 TWAP 子单"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/ClaimRewardsButton.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/SidebarRewards.tsx
 #: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Claim rewards"
@@ -4916,6 +4933,10 @@ msgstr "{secondLabel}"
 msgid "High swap profit fee"
 msgstr "高交换利润费用"
 
+#: src/pages/PointsPage/components/PointsBanner.tsx
+msgid "Your tier will drop next epoch"
+msgstr ""
+
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/MarketsList.tsx
@@ -5571,6 +5592,7 @@ msgstr "市场增加失败"
 
 #: src/components/PointsPromoBanner/PointsPromoBanner.tsx
 #: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Earn rewards"
 msgstr ""
 
@@ -7926,6 +7948,10 @@ msgstr "Dolomite"
 msgid "Order request sent"
 msgstr "订单请求已发送"
 
+#: src/pages/PointsPage/components/PointsBanner.tsx
+msgid "Trade eligible pairs to unlock multipliers and increase your reward potential this epoch."
+msgstr ""
+
 #: src/pages/DebugOracleKeeper/DebugOracleKeeper.tsx
 msgid "Oracle Keeper debug"
 msgstr "Oracle Keeper 调试"
@@ -9272,6 +9298,7 @@ msgid "Executes when price and liquidity conditions are met"
 msgstr "当价格和流动性条件满足时执行"
 
 #: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Start earning points and unlock rewards."
 msgstr ""
 
@@ -9361,6 +9388,10 @@ msgstr "已预留 {directionLabel}"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Distribution rate per day, USD"
 msgstr "每日分配率（USD）"
+
+#: src/pages/PointsPage/components/PointsBanner.tsx
+msgid "So Close to the Next Tier"
+msgstr ""
 
 #: src/components/ModalViews/RedirectModal.tsx
 msgid "Don't show for 30 days"
@@ -10662,6 +10693,10 @@ msgstr "已用时间"
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
 msgstr "链下签署交易。优质 RPC 确保在网络拥堵时的可靠性。<0/><1/>Gas 以 {gasPaymentTokensText} 支付。"
 
+#: src/pages/PointsPage/components/PointsBanner.tsx
+msgid "Don't Let Rewards Expire"
+msgstr ""
+
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Uniswap or directly on GMX (select Arbitrum)"
 msgstr "从 Uniswap 或直接在 GMX 上买入 GMX（选择 Arbitrum）"
@@ -10731,6 +10766,10 @@ msgstr "流动性仅在 {chainNames} 或 {lastChainName} 上可用。请切换�
 msgid "MegaETH"
 msgstr ""
 
+#: src/pages/PointsPage/components/PointsBanner.tsx
+msgid "Continue restaking your rewards to boost your earnings and unlock additional yield on your GMX tokens."
+msgstr ""
+
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in WETH-USDC pool. Select a different pool."
 msgstr "WETH-USDC 池流动性不足。请选择其他池。"
@@ -10798,6 +10837,10 @@ msgstr "推荐码已更新"
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "to toggle its filtering. To use this debug tool on swap, stay on MARKET GRAPH tab and switch to swap. Settings are saved in local storage; don't forget to clear it when done."
 msgstr "来切换其过滤。要在兑换中使用此调试工具，请停留在 MARKET GRAPH 标签并切换到兑换。设置保存在本地存储中，使用完毕后请记得清除。"
+
+#: src/pages/PointsPage/components/PointsBanner.tsx
+msgid "Activate Pair Boosts"
+msgstr ""
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
@@ -11372,6 +11415,10 @@ msgstr "此网络不支持智能钱包"
 msgid "Lent position impact pool amount"
 msgstr "借出的仓位影响池金额"
 
+#: src/pages/PointsPage/components/PointsBanner.tsx
+msgid "{expiredPointsCount, plural, one {{pointsDisplay} point is set to expire this epoch. Use it before rollover and make the most of your activity.} other {{pointsDisplay} points are set to expire this epoch. Use them before rollover and make the most of your activity.}}"
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "short"
 msgstr "空头"
@@ -11395,6 +11442,10 @@ msgstr "保存等级"
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {订单} other {# 订单}}"
+
+#: src/pages/PointsPage/components/PointsBanner.tsx
+msgid "A small increase in volume will unlock a higher status and stronger rewards."
+msgstr ""
 
 #: src/components/PointsShare/PointsShare.tsx
 msgid "Get up to 20% in rewards and give your community up to 10% off on every trade. Higher referrals tiers unlock higher benefits. <0>Read more</0>."

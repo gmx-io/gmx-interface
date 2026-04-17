@@ -1,7 +1,9 @@
+import { Plural, Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { useEffect, useMemo, useState } from "react";
+import { ReactNode, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
+import { getEpochDuration } from "domain/synthetics/incentives/constants";
 import type { EpochStats, IncentivesConfig, RewardsHistoryEntry } from "domain/synthetics/incentives/types";
 import { formatAmount } from "lib/numbers";
 
@@ -9,6 +11,8 @@ import bgPointsBanner from "img/bg_points_banner.png";
 import CloseIcon from "img/ic_close.svg?react";
 import EarnIcon from "img/ic_earn.svg?react";
 import TradeIcon from "img/ic_trade_solid.svg?react";
+
+import { getCurrentEpochEndTime, useCurrentUnixTimestamp } from "./epochTiming";
 
 type Props = {
   isActiveUser: boolean;
@@ -19,14 +23,14 @@ type Props = {
 };
 
 type BannerAction = {
-  label: string;
+  label: ReactNode;
   type: "trade" | "stake";
   to: string;
 };
 
 type BannerContent = {
-  title: string;
-  description: string;
+  title: ReactNode;
+  description: ReactNode;
   action: BannerAction;
 };
 
@@ -44,9 +48,11 @@ const ACTION_ICONS: Record<BannerAction["type"], React.ReactNode> = {
 };
 
 export function PointsBanner({ isActiveUser, account, config, currentEpochStats, currentEpochHistory }: Props) {
+  const now = useCurrentUnixTimestamp();
+
   const banners = useMemo(
-    () => getBannerContent({ isActiveUser, account, config, currentEpochStats, currentEpochHistory }),
-    [isActiveUser, account, config, currentEpochStats, currentEpochHistory]
+    () => getBannerContent({ isActiveUser, account, config, currentEpochStats, currentEpochHistory, now }),
+    [isActiveUser, account, config, currentEpochStats, currentEpochHistory, now]
   );
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -110,24 +116,47 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
   );
 }
 
+type BannerContext = Props & { now: number };
+
+const DEFAULT_BANNER: BannerContent = {
+  title: <Trans>Earn rewards</Trans>,
+  description: <Trans>Start earning points and unlock rewards.</Trans>,
+  action: {
+    label: <Trans>Trade</Trans>,
+    type: "trade",
+    to: "/trade",
+  },
+};
+
 function getBannerContent({
   isActiveUser,
   account,
   config,
   currentEpochStats,
   currentEpochHistory,
-}: Props): BannerContent[] {
-  if (!account || !isActiveUser) return [];
+  now,
+}: BannerContext): BannerContent[] {
+  if (!account || !isActiveUser) {
+    return [DEFAULT_BANNER];
+  }
 
   const items: BannerContent[] = [];
 
   if (currentEpochHistory?.pointsExpired && currentEpochHistory.pointsExpired > 0n) {
-    const pointsDisplay = formatAmount(currentEpochHistory.pointsExpired, 18, 0, true);
+    const expiredAmount = currentEpochHistory.pointsExpired;
+    const pointsDisplay = formatAmount(expiredAmount, 18, 0, true);
+    const expiredPointsCount = Number(expiredAmount / 10n ** 18n);
     items.push({
-      title: "Don't Let Rewards Expire",
-      description: `${pointsDisplay} points are set to expire this epoch. Use them before rollover and make the most of your activity.`,
+      title: t`Don't Let Rewards Expire`,
+      description: (
+        <Plural
+          value={expiredPointsCount}
+          one={`${pointsDisplay} point is set to expire this epoch. Use it before rollover and make the most of your activity.`}
+          other={`${pointsDisplay} points are set to expire this epoch. Use them before rollover and make the most of your activity.`}
+        />
+      ),
       action: {
-        label: "Claim rewards",
+        label: <Trans>Claim rewards</Trans>,
         type: "stake",
         to: "/points",
       },
@@ -136,17 +165,42 @@ function getBannerContent({
 
   if (config && currentEpochStats?.volumeTier) {
     const tierConfig = config.volumeTiers;
-    const currentIdx = tierConfig.findIndex((t) => t.tier === currentEpochStats.volumeTier);
+    const currentIdx = tierConfig.findIndex((tier) => tier.tier === currentEpochStats.volumeTier);
+    const currentTierConfig = currentIdx >= 0 ? tierConfig[currentIdx] : undefined;
     const nextTier = tierConfig[currentIdx + 1];
+
+    // "So close" upgrade prompt
     if (nextTier && currentEpochStats.tradedVolume > 0n) {
       const remaining = nextTier.threshold - currentEpochStats.tradedVolume;
       const threshold30Pct = (nextTier.threshold * 30n) / 100n;
       if (remaining > 0n && remaining < threshold30Pct) {
         items.push({
-          title: "So Close to the Next Tier",
-          description: "A small increase in volume will unlock a higher status and stronger rewards.",
+          title: t`So Close to the Next Tier`,
+          description: t`A small increase in volume will unlock a higher status and stronger rewards.`,
           action: {
-            label: "Trade",
+            label: <Trans>Trade</Trans>,
+            type: "trade",
+            to: "/trade",
+          },
+        });
+      }
+    }
+
+    // Downgrade risk prompt: the user hasn't traded enough so far to sustain their
+    // current tier, and less than half of the epoch remains.
+    if (currentTierConfig) {
+      const epochDuration = getEpochDuration(config);
+      const epochEnd = getCurrentEpochEndTime(config, now);
+      const epochStart = epochEnd - epochDuration;
+      const secondsIntoEpoch = Math.max(0, now - epochStart);
+      const epochProgressed = epochDuration > 0 && secondsIntoEpoch * 2 >= epochDuration;
+      const halfThreshold = currentTierConfig.threshold / 2n;
+      if (epochProgressed && currentEpochStats.tradedVolume < halfThreshold) {
+        items.push({
+          title: t`Your tier will drop next epoch`,
+          description: t`Your volume this epoch is below the threshold for your current tier. Trade more to keep your rewards multiplier.`,
+          action: {
+            label: <Trans>Trade</Trans>,
             type: "trade",
             to: "/trade",
           },
@@ -157,10 +211,10 @@ function getBannerContent({
 
   if (currentEpochStats && (!currentEpochStats.boostIds || currentEpochStats.boostIds.length === 0)) {
     items.push({
-      title: "Activate Pair Boosts",
-      description: "Trade eligible pairs to unlock multipliers and increase your reward potential this epoch.",
+      title: t`Activate Pair Boosts`,
+      description: t`Trade eligible pairs to unlock multipliers and increase your reward potential this epoch.`,
       action: {
-        label: "Trade",
+        label: <Trans>Trade</Trans>,
         type: "trade",
         to: "/trade",
       },
@@ -168,11 +222,10 @@ function getBannerContent({
   }
 
   items.push({
-    title: "Restake your rewards and earn more",
-    description:
-      "Continue restaking your rewards to boost your earnings and unlock additional yield on your GMX tokens.",
+    title: t`Restake your rewards and earn more`,
+    description: t`Continue restaking your rewards to boost your earnings and unlock additional yield on your GMX tokens.`,
     action: {
-      label: "Stake rewards",
+      label: <Trans>Stake rewards</Trans>,
       type: "stake",
       to: "/earn",
     },
