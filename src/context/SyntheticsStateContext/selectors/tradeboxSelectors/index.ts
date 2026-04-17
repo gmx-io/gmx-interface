@@ -1,5 +1,6 @@
 import { maxUint256 } from "viem";
 
+import { isDevelopment } from "config/env";
 import { getSwapDebugSettings, getSwapPriceImpactForExternalSwapThresholdBps } from "config/externalSwaps";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
@@ -70,7 +71,11 @@ import {
   selectUiFeeFactor,
   selectUserReferralInfo,
 } from "../globalSelectors";
-import { selectIsLeverageSliderEnabled, selectIsPnlInLeverage } from "../settingsSelectors";
+import {
+  selectDebugSwapMarketsConfig,
+  selectIsLeverageSliderEnabled,
+  selectIsPnlInLeverage,
+} from "../settingsSelectors";
 import { selectSelectedMarketVisualMultiplier } from "../shared/marketSelectors";
 import {
   makeSelectDecreasePositionAmounts,
@@ -580,6 +585,7 @@ export const selectTradeboxDecreasePositionAmounts = createSelector((q) => {
   return q(selector);
 });
 
+const IS_DEVELOPMENT = isDevelopment();
 export const selectTradeboxSwapAmounts = createSelector((q) => {
   const tradeMode = q(selectTradeboxTradeMode);
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
@@ -608,6 +614,8 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
     ? ["length", "liquidity"]
     : undefined;
 
+  const debugSwapMarketsConfig = IS_DEVELOPMENT ? q(selectDebugSwapMarketsConfig) : undefined;
+
   const { markRatio, triggerRatio } = q(selectTradeboxTradeRatios);
 
   if (amountBy === "from") {
@@ -625,6 +633,8 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
       chainId,
       externalSwapQuoteParams,
       allowSameTokenSwap: tradeFlags.isSwap,
+      disabledMarkets: debugSwapMarketsConfig?.disabledSwapMarkets,
+      manualPath: debugSwapMarketsConfig?.manualPath,
     });
   } else {
     return getSwapAmountsByToValue({
@@ -641,6 +651,8 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
       chainId,
       externalSwapQuoteParams,
       allowSameTokenSwap: tradeFlags.isSwap,
+      disabledMarkets: debugSwapMarketsConfig?.disabledSwapMarkets,
+      manualPath: debugSwapMarketsConfig?.manualPath,
     });
   }
 });
@@ -1272,8 +1284,8 @@ export const selectTradeboxMaxLeverage = createSelector((q) => {
 });
 
 export const selectTradeboxMaxAllowedLeverage = createSelector((q) => {
-  const minCollateralFactor = q((s) => s.tradebox.marketInfo?.minCollateralFactor);
-  return getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor);
+  const marketInfo = q((s) => s.tradebox.marketInfo);
+  return getMaxAllowedLeverageByMinCollateralFactor(marketInfo?.minCollateralFactor, marketInfo?.marketTokenAddress);
 });
 
 export const selectTradeboxLeverageSliderMarks = createSelector((q) => {

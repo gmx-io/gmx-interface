@@ -33,8 +33,21 @@ export const homeEventsData: EventData[] = [];
 
 export const AL16Z_DELISTING_EVENT_ID = "al16z-delisting";
 export const OM_MANTRA_MIGRATION_EVENT_ID = "om-mantra-migration";
+export const WELL_DELISTING_EVENT_ID = "well-delisting";
 
 export const appEventsData: EventData[] = [
+  {
+    id: WELL_DELISTING_EVENT_ID,
+    isActive: true,
+    endDate: "20 Apr 2026, 0:00",
+    title: "WELL/USD delisting",
+    bodyText: (
+      <>
+        Position openings for WELL/USD are no longer available. Please close your existing positions before April 19.
+        Remaining positions may be auto-closed.
+      </>
+    ),
+  },
   {
     id: "gold-silver-fee-reduction",
     flagId: "showGoldSilverFeeReduction",

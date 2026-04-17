@@ -687,19 +687,19 @@ export const selectOrderEditorFindSwapPath = createSelector((q) => {
 
 export const selectOrderEditorMaxAllowedLeverage = createSelector((q) => {
   const order = q(selectOrderEditorOrder);
-  if (!order) return getMaxAllowedLeverageByMinCollateralFactor(undefined);
+  if (!order) return getMaxAllowedLeverageByMinCollateralFactor(undefined, undefined);
 
   const minCollateralFactor = q((s) => selectMarketsInfoData(s)?.[order.marketAddress]?.minCollateralFactor);
-  return getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor);
+  return getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor, order.marketAddress);
 });
 
 const makeSelectOrderEditorMaxAllowedLeverage = createSelectorFactory((orderKey: string) =>
   createSelector((q) => {
     const order = q((state) => getByKey(selectOrdersInfoData(state), orderKey));
-    if (!order) return getMaxAllowedLeverageByMinCollateralFactor(undefined);
+    if (!order) return getMaxAllowedLeverageByMinCollateralFactor(undefined, undefined);
 
     const minCollateralFactor = q((s) => selectMarketsInfoData(s)?.[order.marketAddress]?.minCollateralFactor);
-    return getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor);
+    return getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor, order.marketAddress);
   })
 );
 

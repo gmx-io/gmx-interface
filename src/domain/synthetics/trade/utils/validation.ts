@@ -435,7 +435,10 @@ export function getIncreaseError(p: {
     }
   }
 
-  const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(marketInfo?.minCollateralFactor);
+  const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(
+    marketInfo?.minCollateralFactor,
+    marketInfo?.marketTokenAddress
+  );
 
   if (nextLeverageWithoutPnl !== undefined && nextLeverageWithoutPnl > maxAllowedLeverage) {
     return { buttonErrorMessage: t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x` };
@@ -589,7 +592,10 @@ export function getDecreaseError(p: {
     }
   }
 
-  const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(marketInfo?.minCollateralFactor);
+  const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(
+    marketInfo?.minCollateralFactor,
+    marketInfo?.marketTokenAddress
+  );
 
   if (nextPositionValues?.nextLeverage !== undefined && nextPositionValues?.nextLeverage > maxAllowedLeverage) {
     return { buttonErrorMessage: t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x` };
@@ -637,6 +643,7 @@ export function getEditCollateralError(p: {
   depositToken: TokenData | undefined;
   depositAmount: bigint | undefined;
   minCollateralFactor: bigint | undefined;
+  marketAddress: string | undefined;
 }): ValidationResult {
   const {
     collateralDeltaAmount,
@@ -648,6 +655,7 @@ export function getEditCollateralError(p: {
     depositToken,
     depositAmount,
     minCollateralFactor,
+    marketAddress,
   } = p;
 
   if (
@@ -675,7 +683,7 @@ export function getEditCollateralError(p: {
 
   const maxAllowedLeverage = isDeposit
     ? getMaxLeverageByMinCollateralFactor(minCollateralFactor)
-    : getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor);
+    : getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor, marketAddress);
 
   if (nextLeverage !== undefined && nextLeverage > maxAllowedLeverage) {
     return { buttonErrorMessage: t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x` };

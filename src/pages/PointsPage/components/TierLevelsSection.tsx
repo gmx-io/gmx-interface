@@ -190,7 +190,7 @@ function VolumeTiersTable({
                 ${formatAmount(tier.threshold, 30, 0, true)}
               </TableTd>
               <TableTd padding="compact" className="text-typography-primary">
-                +{formatMultiplier(tier.multiplier)}
+                {formatMultiplier(tier.multiplier)}
               </TableTd>
               <TableTd padding="compact">
                 {isActive && isDowngrading && daysRemaining > 0 && <ExpiresInLabel daysRemaining={daysRemaining} />}
@@ -295,7 +295,7 @@ function StakingTiersTable({ config, currentTier }: { config?: IncentivesConfig;
                 {formatAmount(tier.threshold, 18, 0, true)} GMX
               </TableTd>
               <TableTd padding="compact" className="text-typography-primary">
-                +{formatMultiplier(tier.multiplier)}
+                {formatMultiplier(tier.multiplier)}
               </TableTd>
               <TableTd padding="compact" />
             </TableTr>

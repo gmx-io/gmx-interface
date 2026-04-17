@@ -193,6 +193,7 @@ export type SwapStats = {
   isUnwrap: boolean;
   isOutLiquidity?: boolean;
   isOutCapacity?: boolean;
+  isOutMaxFactor?: boolean;
   swapFeeAmount: bigint;
   swapFeeUsd: bigint;
   priceImpactDeltaUsd: bigint;

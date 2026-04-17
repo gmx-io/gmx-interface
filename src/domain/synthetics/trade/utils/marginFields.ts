@@ -51,7 +51,10 @@ export function calcMaxSizeDeltaInUsdByLeverage(params: CalcMaxSizeDeltaParams):
 
   if (initialCollateralUsd <= 0n) return undefined;
 
-  const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(marketInfo.minCollateralFactor);
+  const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(
+    marketInfo.minCollateralFactor,
+    marketInfo.marketTokenAddress
+  );
   if (!maxAllowedLeverage || maxAllowedLeverage <= 0) return undefined;
 
   const leverageBigInt = BigInt(maxAllowedLeverage);

@@ -438,6 +438,22 @@ export async function buildMarketsConfigsRequest(
           methodName: "getUint",
           params: [prebuiltHashedKeys.maxPnlFactorForTradersShort],
         },
+        maxPnlFactorForDepositsLong: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxPnlFactorForDepositsLong],
+        },
+        maxPnlFactorForDepositsShort: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxPnlFactorForDepositsShort],
+        },
+        maxPnlFactorForWithdrawalsLong: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxPnlFactorForWithdrawalsLong],
+        },
+        maxPnlFactorForWithdrawalsShort: {
+          methodName: "getUint",
+          params: [prebuiltHashedKeys.maxPnlFactorForWithdrawalsShort],
+        },
         positionFeeFactorForBalanceWasImproved: {
           methodName: "getUint",
           params: [prebuiltHashedKeys.positionFeeFactorForBalanceWasImproved],
@@ -598,6 +614,10 @@ export function parseMarketsConfigsResponse(
         maxFundingFactorPerSecond: dataStoreValues.maxFundingFactorPerSecond.returnValues[0],
         maxPnlFactorForTradersLong: dataStoreValues.maxPnlFactorForTradersLong.returnValues[0],
         maxPnlFactorForTradersShort: dataStoreValues.maxPnlFactorForTradersShort.returnValues[0],
+        maxPnlFactorForDepositsLong: dataStoreValues.maxPnlFactorForDepositsLong.returnValues[0],
+        maxPnlFactorForDepositsShort: dataStoreValues.maxPnlFactorForDepositsShort.returnValues[0],
+        maxPnlFactorForWithdrawalsLong: dataStoreValues.maxPnlFactorForWithdrawalsLong.returnValues[0],
+        maxPnlFactorForWithdrawalsShort: dataStoreValues.maxPnlFactorForWithdrawalsShort.returnValues[0],
         minCollateralFactor: dataStoreValues.minCollateralFactor.returnValues[0],
         minCollateralFactorForOpenInterestLong: dataStoreValues.minCollateralFactorForOpenInterestLong.returnValues[0],
         minCollateralFactorForOpenInterestShort:

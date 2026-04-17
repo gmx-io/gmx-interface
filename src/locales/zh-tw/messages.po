@@ -494,10 +494,6 @@ msgstr "倉位和抵押品帶來雙重 {indexSymbol} 曝險。清算價格高於
 msgid "GMX Account balance"
 msgstr "GMX Account 餘額"
 
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "Best swap path"
-msgstr "最佳兌換路徑"
-
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Failed to claim affiliate rewards"
 msgstr "領取聯盟獎勵失敗"
@@ -814,10 +810,6 @@ msgstr "正資金費率費用"
 msgid "Light"
 msgstr "淺色"
 
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "Use manual path"
-msgstr "使用手動路徑"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Longs / shorts"
 msgstr "做多 / 做空"
@@ -1053,10 +1045,6 @@ msgstr "限價高於標記價格"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Trading simulations on GMX using DOJO"
 msgstr "使用 DOJO 在 GMX 上進行交易模擬"
-
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "Manual swap path (click market to remove)"
-msgstr "手動兌換路徑（點擊市場以移除）"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker"
@@ -2490,10 +2478,6 @@ msgstr "購買或轉帳 {nativeTokenSymbol} 至 {chainName}"
 msgid "GMX"
 msgstr "GMX"
 
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "{0} route types"
-msgstr "{0} 種路由類型"
-
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "Current swap impact: {0}. Add 1% buffer for better execution."
 msgstr "目前兌換影響：{0}。建議增加 1% 的緩衝以獲得更好的執行效果。"
@@ -3099,10 +3083,6 @@ msgstr "累計 LP 獎勵"
 msgid "Invalid decrease size"
 msgstr "無效的減少規模"
 
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "It's just a wrap"
-msgstr "這只是一個包裝操作"
-
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
 msgstr "訂閱"
@@ -3304,10 +3284,6 @@ msgstr "賣出 {gmOrGlvSymbol}"
 msgid "Clear selection"
 msgstr "清除選擇"
 
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "Disabled markets"
-msgstr "已停用市場"
-
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to market traders' PnL"
 msgstr "市場交易者 PnL 的風險敞口"
@@ -3502,10 +3478,6 @@ msgstr "社群主導的 Telegram 群組"
 #: src/domain/multichain/SettlementChainWarningContainer.tsx
 msgid "Change to {0}"
 msgstr "切換至 {0}"
-
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "It's just an unwrap"
-msgstr "這只是一個解包操作"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Relayer request failed"
@@ -4299,10 +4271,6 @@ msgstr "槓桿"
 msgid "Accrued price impact rebates"
 msgstr "累計價格影響返還"
 
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "market label"
-msgstr "市場標籤"
-
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "Total volume"
 msgstr "總交易量"
@@ -4812,10 +4780,6 @@ msgstr "距清算價格變動"
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Allowed Slippage"
 msgstr ""
-
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "possibilities in total"
-msgstr "種可能路徑"
 
 #: src/components/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
 msgid "Price impact is stored when you increase a position and applied when you decrease. <0>Read more</0>."
@@ -6082,11 +6046,6 @@ msgstr "GLV 額外激勵"
 msgid "Lifetime staking rewards"
 msgstr "終身質押獎勵"
 
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "Click to toggle market"
-msgstr "點擊切換市場"
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe in LayerZero on the destination chain. Retry the receive transaction in LayerZero Scan or contact support."
 msgstr "您的資金安全存放在目標鏈上的 LayerZero 中。請在 LayerZero Scan 重試接收交易或聯繫客服。"
@@ -6520,10 +6479,6 @@ msgstr "訂單執行失敗"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} and {1} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "賣出 GM 換取 {0} 和 {1}，上限如下。剩餘代幣保留給未平倉倉位。"
-
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "No routes"
-msgstr "無路由"
 
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
@@ -7630,7 +7585,6 @@ msgid "You have activated the referral code {userReferralCodeString}. Every posi
 msgstr ""
 
 #. Filter option for tokens favorites
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "All markets"
 msgstr "所有市場"
@@ -7760,10 +7714,6 @@ msgstr "從 TraderJoe 買入 GMX"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average leverage used"
 msgstr "平均使用槓桿"
-
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "Clear debug overrides"
-msgstr "清除除錯覆寫設定"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop-Loss"
@@ -8057,7 +8007,6 @@ msgstr "超過 {0} 最大做多量"
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -8114,10 +8063,6 @@ msgstr ""
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Re-enable"
 msgstr "重新啟用"
-
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "Related markets"
-msgstr "相關市場"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "I do not want to transfer the Affiliate esGMX tokens"
@@ -8528,10 +8473,6 @@ msgstr "交易模式"
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Cross-margin</0><1>Cross-collateral</1>"
 msgstr "<0>全倉保證金</0><1>交叉抵押品</1>"
-
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "Click on"
-msgstr "點擊"
 
 #: src/domain/synthetics/incentives/constants.ts
 #: src/pages/PointsPage/components/incentivesText.ts
@@ -9256,10 +9197,6 @@ msgstr "Saulius GMX analytics"
 msgid "Express Trading and One-Click Trading are unavailable due to insufficient gas balance"
 msgstr "由於 Gas 餘額不足，Express Trading 和 One-Click Trading 目前無法使用"
 
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "Add"
-msgstr "新增"
-
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Add RPC"
 msgstr "新增 RPC"
@@ -9429,10 +9366,6 @@ msgstr "選擇累計資金費用超過 {0} Gas 費用的倉位進行結算"
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Unable to load rate history."
 msgstr "無法載入費率歷史記錄。"
-
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "No from token address"
-msgstr "無來源代幣地址"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Large account"
@@ -9916,10 +9849,6 @@ msgstr "池數量容量"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Referral link copied to your clipboard"
 msgstr ""
-
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "L:"
-msgstr "L："
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Fastest"
@@ -10498,10 +10427,6 @@ msgstr "最大做空費率"
 msgid "Alerts"
 msgstr "提醒"
 
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "C:"
-msgstr "C："
-
 #: src/components/PointsShare/PointsShareCard.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Earned rewards"
@@ -10823,10 +10748,6 @@ msgstr "可接受價格"
 msgid "Events"
 msgstr "事件"
 
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "No disabled markets"
-msgstr "無已停用的市場"
-
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Referral codes"
 msgstr "推薦碼"
@@ -10838,10 +10759,6 @@ msgstr "所選期間內與基準的績效比較"
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Referral code updated"
 msgstr "推薦碼已更新"
-
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "to toggle its filtering. To use this debug tool on swap, stay on MARKET GRAPH tab and switch to swap. Settings are saved in local storage; don't forget to clear it when done."
-msgstr "以切換其篩選。若要在兌換上使用此除錯工具，請停留在 MARKET GRAPH 分頁並切換至兌換。設定儲存於本機儲存空間中，完成後請記得清除。"
 
 #: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Activate Pair Boosts"
@@ -11639,10 +11556,6 @@ msgstr "{ordersText} 已取消"
 msgid "No addresses match your search."
 msgstr ""
 
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "No to token address"
-msgstr "無目標代幣地址"
-
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -11822,12 +11735,6 @@ msgstr "止盈"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Your staking power was reset {0} due to dropping below the 80% loyalty threshold. Power is now accruing again from your current balance."
 msgstr ""
-
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "possibilities"
-msgstr "種可能性"
 
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Loading Express Trading params..."

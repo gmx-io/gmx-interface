@@ -48,9 +48,10 @@ export const createSwapEstimator = (
 
     const isOutLiquidity = swapStats?.isOutLiquidity;
     const isOutCapacity = swapStats?.isOutCapacity;
+    const isOutMaxFactor = swapStats?.isOutMaxFactor;
     const usdOut = swapStats?.usdOut;
 
-    if (usdOut === undefined || isOutLiquidity || isOutCapacity) {
+    if (usdOut === undefined || isOutLiquidity || isOutCapacity || isOutMaxFactor) {
       return {
         usdOut: 0n,
       };
@@ -103,7 +104,13 @@ export const createNaiveSwapEstimator = (
 
     const usdOut = swapStats?.usdOut;
 
-    if (usdOut === undefined || usdOut === 0n || swapStats.isOutCapacity || swapStats.isOutLiquidity) {
+    if (
+      usdOut === undefined ||
+      usdOut === 0n ||
+      swapStats.isOutCapacity ||
+      swapStats.isOutLiquidity ||
+      swapStats.isOutMaxFactor
+    ) {
       return { swapYield: 0 };
     }
 

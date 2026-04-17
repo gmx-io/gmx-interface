@@ -1334,19 +1334,6 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
   },
 };
 
-/**
- * Markets excluded from swap path routing (collateral swaps and express fee swaps).
- * GM token buying/selling of these markets is unaffected — only routing through them is blocked.
- */
-export const DISABLED_SWAP_ROUTE_MARKETS: Partial<Record<ContractsChainId, string[]>> = {
-  [ARBITRUM]: [
-    "0x248C35760068cE009a13076D573ed3497A47bCD4", // ATOM/USD [WETH-USDC]
-    "0x4fDd333FF9cA409df583f306B6F5a7fFdE790739", // OP/USD [OP-USDC]
-    "0xD4b737892baB8446Ea1e8Bb901db092fb1EC1791", // EIGEN/USD [WETH-USDC]
-    "0xdAB21c4d1F569486334C93685Da2b3F9b0A078e8", // APE/USD [APE-USDC]
-  ],
-};
-
 export type MarketLabel = `${string}/USD [${string}-${string}]`;
 
 export function getMarketsByChainId(chainId: ContractsChainId): Record<string, MarketConfig> {

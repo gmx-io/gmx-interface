@@ -14,7 +14,7 @@ import {
   getTriggerDecreaseOrderType,
 } from "domain/synthetics/trade";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
-import { DISABLED_SWAP_ROUTE_MARKETS, MARKETS } from "sdk/configs/markets";
+import { MARKETS } from "sdk/configs/markets";
 import { buildMarketsAdjacencyGraph } from "sdk/utils/swap/buildMarketsAdjacencyGraph";
 import { createFindSwapPath, getWrappedAddress } from "sdk/utils/swap/swapPath";
 import {
@@ -70,26 +70,31 @@ export const selectGasEstimationParams = createSelector((q) => {
   };
 });
 
-export const selectMarketAdjacencyGraph = createSelector((q) => {
-  const chainId = q(selectChainId);
+export const selectMarketAdjacencyGraph = isDevelopment()
+  ? createSelector((q) => {
+      const chainId = q(selectChainId);
 
-  const debugDisabled = isDevelopment() ? q(selectDebugSwapMarketsConfig)?.disabledSwapMarkets : undefined;
-  const configDisabled = DISABLED_SWAP_ROUTE_MARKETS[chainId as ContractsChainId];
+      const debugSwapMarketsConfig = q(selectDebugSwapMarketsConfig);
 
-  const disabledMarketAddresses = [...(debugDisabled ?? []), ...(configDisabled ?? [])];
+      if (!debugSwapMarketsConfig?.disabledSwapMarkets?.length) {
+        return getMarketAdjacencyGraph(chainId);
+      }
 
-  if (!disabledMarketAddresses.length) {
-    return getMarketAdjacencyGraph(chainId);
-  }
+      const disabledMarketAddresses = debugSwapMarketsConfig.disabledSwapMarkets;
 
-  const strippedMarkets = Object.fromEntries(
-    Object.entries(MARKETS[chainId as ContractsChainId]).filter(
-      ([marketAddress]) => !disabledMarketAddresses.includes(marketAddress)
-    )
-  );
+      const strippedMarkets = Object.fromEntries(
+        Object.entries(MARKETS[chainId as ContractsChainId]).filter(
+          ([marketAddress]) => !disabledMarketAddresses.includes(marketAddress)
+        )
+      );
 
-  return buildMarketsAdjacencyGraph(strippedMarkets);
-});
+      return buildMarketsAdjacencyGraph(strippedMarkets);
+    })
+  : createSelector((q) => {
+      const chainId = q(selectChainId);
+
+      return getMarketAdjacencyGraph(chainId);
+    });
 
 const makeSelectWrappedFromAddress = (fromTokenAddress: string | undefined) =>
   createSelector((q) => {
@@ -236,6 +241,7 @@ export const makeSelectIncreasePositionAmounts = ({
     const externalSwapQuoteParams = q(selectExternalSwapQuoteParams);
     const chainId = q(selectChainId);
     const tradeFlags = createTradeFlags(tradeType, tradeMode);
+    const debugSwapMarketsConfig = ENABLE_DEBUG_SWAP_MARKETS_CONFIG ? q(selectDebugSwapMarketsConfig) : undefined;
 
     let limitOrderType: OrderType | undefined = undefined;
     if (tradeFlags.isLimit) {
@@ -280,6 +286,8 @@ export const makeSelectIncreasePositionAmounts = ({
       chainId,
       externalSwapQuoteParams,
       isSetAcceptablePriceImpactEnabled,
+      disabledMarkets: debugSwapMarketsConfig?.disabledSwapMarkets,
+      manualPath: debugSwapMarketsConfig?.manualPath,
     });
   });
 };

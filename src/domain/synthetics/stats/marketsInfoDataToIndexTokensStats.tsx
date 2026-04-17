@@ -123,7 +123,8 @@ export function marketsInfoData2IndexTokenStatsMap(marketsInfoData: MarketsInfoD
     indexTokenStats.totalOpenInterestShort += getOpenInterestForBalance(marketInfo, false);
     indexTokenStats.maxUiAllowedLeverage = Math.max(
       indexTokenStats.maxUiAllowedLeverage,
-      getMaxAllowedLeverageByMinCollateralFactor(marketInfo.minCollateralFactor) / BASIS_POINTS_DIVISOR
+      getMaxAllowedLeverageByMinCollateralFactor(marketInfo.minCollateralFactor, marketInfo.marketTokenAddress) /
+        BASIS_POINTS_DIVISOR
     );
     if (netFeeLong > indexTokenStats.bestNetFeeLong) {
       indexTokenStats.bestNetFeeLong = netFeeLong;

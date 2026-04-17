@@ -1,3 +1,4 @@
+import { tz } from "@date-fns/tz";
 import { format } from "date-fns";
 import { useMemo } from "react";
 
@@ -32,7 +33,7 @@ export function useBuybackChartData(
     if (!data?.weeks) return [];
 
     const allPoints = data.weeks.map((week) => ({
-      label: format(week.weekStart * 1000, "MMM d").toUpperCase(),
+      label: format(week.weekStart * 1000, "MMM d", { in: tz("UTC") }).toUpperCase(),
       weekStart: week.weekStart,
       weekEnd: week.weekEnd,
       weeklyAccrued: bigintToNumber(BigInt(week.weeklyAccrued), GMX_DECIMALS),

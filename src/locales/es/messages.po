@@ -494,10 +494,6 @@ msgstr "Doble exposición a {indexSymbol} por posición y garantía. Precio de l
 msgid "GMX Account balance"
 msgstr "Saldo de GMX Account"
 
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "Best swap path"
-msgstr "Mejor ruta de intercambio"
-
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Failed to claim affiliate rewards"
 msgstr "Error al reclamar las recompensas de afiliado"
@@ -814,10 +810,6 @@ msgstr "Comisión de financiación positiva"
 msgid "Light"
 msgstr "Claro"
 
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "Use manual path"
-msgstr "Usar ruta manual"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Longs / shorts"
 msgstr "Largos / cortos"
@@ -1053,10 +1045,6 @@ msgstr "Precio límite por encima del precio de referencia"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Trading simulations on GMX using DOJO"
 msgstr "Simulaciones de trading en GMX con DOJO"
-
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "Manual swap path (click market to remove)"
-msgstr "Ruta de intercambio manual (haga clic en el mercado para eliminarlo)"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Worker"
@@ -2490,10 +2478,6 @@ msgstr "Comprar o transferir {nativeTokenSymbol} a {chainName}"
 msgid "GMX"
 msgstr "GMX"
 
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "{0} route types"
-msgstr "{0} tipos de ruta"
-
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "Current swap impact: {0}. Add 1% buffer for better execution."
 msgstr "Impacto actual del intercambio: {0}. Añada un 1% de margen para una mejor ejecución."
@@ -3099,10 +3083,6 @@ msgstr "Recompensas LP acumuladas"
 msgid "Invalid decrease size"
 msgstr "Tamaño de reducción no válido"
 
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "It's just a wrap"
-msgstr "Es solo un wrap"
-
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 msgid "Subscribe"
 msgstr "Suscribirse"
@@ -3304,10 +3284,6 @@ msgstr "Vender {gmOrGlvSymbol}"
 msgid "Clear selection"
 msgstr "Limpiar selección"
 
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "Disabled markets"
-msgstr "Mercados deshabilitados"
-
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to market traders' PnL"
 msgstr "Exposición al PnL de los operadores del mercado"
@@ -3502,10 +3478,6 @@ msgstr "Grupos de Telegram gestionados por la comunidad"
 #: src/domain/multichain/SettlementChainWarningContainer.tsx
 msgid "Change to {0}"
 msgstr "Cambiar a {0}"
-
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "It's just an unwrap"
-msgstr "Es solo un unwrap"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Relayer request failed"
@@ -4299,10 +4271,6 @@ msgstr "Apalancamiento"
 msgid "Accrued price impact rebates"
 msgstr "Reembolsos acumulados por impacto en el precio"
 
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "market label"
-msgstr "etiqueta de mercado"
-
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "Total volume"
 msgstr "Volumen total"
@@ -4812,10 +4780,6 @@ msgstr "Cambio de precio hasta la liquidación"
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Allowed Slippage"
 msgstr ""
-
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "possibilities in total"
-msgstr "posibilidades en total"
 
 #: src/components/TradeBox/TradeBoxRows/NextStoredImpactRows.tsx
 msgid "Price impact is stored when you increase a position and applied when you decrease. <0>Read more</0>."
@@ -6082,11 +6046,6 @@ msgstr "Incentivo adicional GLV"
 msgid "Lifetime staking rewards"
 msgstr "Recompensas de staking acumuladas"
 
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "Click to toggle market"
-msgstr "Haga clic para alternar mercado"
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe in LayerZero on the destination chain. Retry the receive transaction in LayerZero Scan or contact support."
 msgstr "Sus fondos están seguros en LayerZero en la cadena de destino. Reintente la transacción de recepción en LayerZero Scan o contacte con soporte."
@@ -6520,10 +6479,6 @@ msgstr "Error en la ejecución de la orden"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Sell GM for {0} and {1} up to the caps below. Remaining tokens are reserved for open positions."
 msgstr "Venda GM por {0} y {1} hasta los límites que se indican a continuación. Los tokens restantes están reservados para posiciones abiertas."
-
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "No routes"
-msgstr "Sin rutas"
 
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
@@ -7630,7 +7585,6 @@ msgid "You have activated the referral code {userReferralCodeString}. Every posi
 msgstr ""
 
 #. Filter option for tokens favorites
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "All markets"
 msgstr "Todos los mercados"
@@ -7760,10 +7714,6 @@ msgstr "Comprar GMX en TraderJoe"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average leverage used"
 msgstr "Apalancamiento medio utilizado"
-
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "Clear debug overrides"
-msgstr "Restablecer configuración de depuración"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop-Loss"
@@ -8057,7 +8007,6 @@ msgstr "Superados largos Máx. de {0}"
 
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrderItem/OrderItem.tsx
@@ -8114,10 +8063,6 @@ msgstr ""
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Re-enable"
 msgstr "Re-habilitar"
-
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "Related markets"
-msgstr "Mercados relacionados"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "I do not want to transfer the Affiliate esGMX tokens"
@@ -8528,10 +8473,6 @@ msgstr "Modo de trading"
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Cross-margin</0><1>Cross-collateral</1>"
 msgstr "<0>Cross-margin</0><1>Cross-collateral</1>"
-
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "Click on"
-msgstr "Haga clic en"
 
 #: src/domain/synthetics/incentives/constants.ts
 #: src/pages/PointsPage/components/incentivesText.ts
@@ -9256,10 +9197,6 @@ msgstr "Saulius GMX analytics"
 msgid "Express Trading and One-Click Trading are unavailable due to insufficient gas balance"
 msgstr "Express Trading y One-Click Trading no están disponibles debido a un saldo de gas insuficiente"
 
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "Add"
-msgstr "Añadir"
-
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "Add RPC"
 msgstr "Añadir RPC"
@@ -9429,10 +9366,6 @@ msgstr "Seleccione las posiciones en las que la comisión de financiación acumu
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Unable to load rate history."
 msgstr "No se pudo cargar el historial de tasas."
-
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "No from token address"
-msgstr "Sin dirección del token de origen"
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Large account"
@@ -9916,10 +9849,6 @@ msgstr "Capacidad de cantidad del pool"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Referral link copied to your clipboard"
 msgstr ""
-
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "L:"
-msgstr "L:"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Fastest"
@@ -10498,10 +10427,6 @@ msgstr "Tasa máxima corto"
 msgid "Alerts"
 msgstr "Alertas"
 
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "C:"
-msgstr "C:"
-
 #: src/components/PointsShare/PointsShareCard.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Earned rewards"
@@ -10823,10 +10748,6 @@ msgstr "PRECIO ACEPTABLE"
 msgid "Events"
 msgstr "Eventos"
 
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "No disabled markets"
-msgstr "No hay mercados desactivados"
-
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Referral codes"
 msgstr "Códigos de referido"
@@ -10838,10 +10759,6 @@ msgstr "Rendimiento frente al índice de referencia en el período seleccionado"
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Referral code updated"
 msgstr "Código de referido actualizado"
-
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "to toggle its filtering. To use this debug tool on swap, stay on MARKET GRAPH tab and switch to swap. Settings are saved in local storage; don't forget to clear it when done."
-msgstr "para alternar su filtrado. Para utilizar esta herramienta de depuración en intercambio, permanezca en la pestaña MARKET GRAPH y cambie a intercambio. La configuración se guarda en el almacenamiento local; no olvide borrarla cuando termine."
 
 #: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Activate Pair Boosts"
@@ -11639,10 +11556,6 @@ msgstr "{ordersText} canceladas"
 msgid "No addresses match your search."
 msgstr ""
 
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "No to token address"
-msgstr "Sin dirección de token de destino"
-
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -11822,12 +11735,6 @@ msgstr "Take-Profit"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Your staking power was reset {0} due to dropping below the 80% loyalty threshold. Power is now accruing again from your current balance."
 msgstr ""
-
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-#: src/components/DebugMarketGraph/DebugMarketGraph.tsx
-msgid "possibilities"
-msgstr "posibilidades"
 
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Loading Express Trading params..."
