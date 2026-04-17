@@ -69,11 +69,11 @@ export function IncentivesAuditDetail({
   return (
     <div className="mt-16 flex flex-col gap-16">
       <div className="rounded-8 bg-slate-900 p-20">
-        <button className="hover:text-blue-200 text-body-medium mb-12 text-blue-300" onClick={onBack}>
+        <button className="hover:text-blue-200 mb-12 text-14 text-blue-300" onClick={onBack}>
           &larr; <Trans>Back to list</Trans>
         </button>
         <div className="flex items-center gap-12">
-          <span className="break-all font-mono text-[1.6rem] font-medium text-typography-primary">{account}</span>
+          <span className="break-all font-mono text-16 font-medium text-typography-primary">{account}</span>
           <button
             className="text-caption shrink-0 rounded-4 border border-slate-600 px-8 py-4 text-typography-secondary hover:border-slate-500 hover:text-typography-primary"
             onClick={handleCopy}
@@ -271,7 +271,7 @@ function Section({ title, children }: { title?: ReactNode; children: ReactNode }
     <div className="overflow-hidden rounded-8 bg-slate-900">
       {title && (
         <div className="border-b-1/2 border-slate-600 px-20 py-16">
-          <h3 className="text-body-large font-medium text-typography-primary">{title}</h3>
+          <h3 className="text-16 font-medium text-typography-primary">{title}</h3>
         </div>
       )}
       {children}
@@ -283,7 +283,7 @@ function KV({ label, value }: { label: ReactNode; value: ReactNode }) {
   return (
     <div>
       <div className="text-caption text-typography-secondary">{label}</div>
-      <div className="text-body-medium mt-2 font-medium text-typography-primary">{value}</div>
+      <div className="mt-2 text-14 font-medium text-typography-primary">{value}</div>
     </div>
   );
 }

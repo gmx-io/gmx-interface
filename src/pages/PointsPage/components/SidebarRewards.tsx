@@ -79,7 +79,7 @@ export function SidebarRewards({ chainId, account }: Props) {
           <span className="text-16 font-medium text-typography-primary">
             <Trans>Claim your GMX rewards</Trans>
           </span>
-          <span className="text-body-small text-typography-secondary">
+          <span className="text-12 text-typography-secondary">
             <Trans>Connect your wallet to view your points balance and claim earned rewards.</Trans>
           </span>
         </div>
@@ -98,7 +98,7 @@ export function SidebarRewards({ chainId, account }: Props) {
             <div className="flex items-center gap-8">
               <span className="text-24 font-medium text-typography-primary">{displayClaimableRewards} GMX</span>
             </div>
-            <div className="text-body-small flex items-center gap-2 font-medium leading-1 text-typography-secondary">
+            <div className="flex items-center gap-2 text-12 font-medium leading-1 text-typography-secondary">
               <Trans>Claimable rewards</Trans>
               <TooltipWithPortal
                 handle={undefined}
@@ -121,13 +121,13 @@ export function SidebarRewards({ chainId, account }: Props) {
         </div>
 
         <div className="mt-16 flex flex-col gap-2 border-t-1/2 border-slate-600 pt-16">
-          <div className="flex items-center justify-between py-4 text-[1.3rem]">
+          <div className="flex items-center justify-between py-4 text-13">
             <span className="font-medium text-typography-secondary">
               <Trans>Epoch ends in</Trans>
             </span>
             <span className="text-typography-primary">{timeLeft || "—"}</span>
           </div>
-          <div className="flex items-center justify-between py-4 text-[1.3rem]">
+          <div className="flex items-center justify-between py-4 text-13">
             <span className="flex items-center gap-4 font-medium text-typography-secondary">
               <Trans>Estimated rewards</Trans>
               <TooltipWithPortal
@@ -138,7 +138,7 @@ export function SidebarRewards({ chainId, account }: Props) {
             </span>
             <span className="text-typography-primary">{displayEstimatedRewards} GMX</span>
           </div>
-          <div className="flex items-center justify-between py-4 text-[1.3rem]">
+          <div className="flex items-center justify-between py-4 text-13">
             <span className="flex items-center gap-4 font-medium text-typography-secondary">
               <Trans>Points balance</Trans>
               <TooltipWithPortal
@@ -149,7 +149,7 @@ export function SidebarRewards({ chainId, account }: Props) {
             </span>
             <span className="text-typography-primary">{displayPoints}</span>
           </div>
-          <div className="flex items-center justify-between py-4 text-[1.3rem]">
+          <div className="flex items-center justify-between py-4 text-13">
             <span className="flex items-center gap-4 font-medium text-typography-secondary">
               <Trans>Total earned rewards</Trans>
               <TooltipWithPortal
@@ -448,17 +448,17 @@ function ClaimModal({
     >
       <div className="flex flex-col gap-16 p-16">
         <div>
-          <span className="text-body-small text-typography-secondary">
+          <span className="text-12 text-typography-secondary">
             <Trans>Available to Claim</Trans>
           </span>
           <div className="text-h2 mt-4 font-medium text-typography-primary">{displayClaimableRewards} GMX</div>
-          <p className="text-body-small mt-8 text-typography-secondary">
+          <p className="mt-8 text-12 text-typography-secondary">
             <Trans>
               Claim your rewards now. You can also stake them instantly to get 5% yield on it and earn even more points.
             </Trans>
           </p>
           {claimsDisabled ? (
-            <p className="text-body-small mt-8 text-typography-secondary">
+            <p className="mt-8 text-12 text-typography-secondary">
               <Trans>Claims are currently unavailable for this distribution.</Trans>
             </p>
           ) : null}
@@ -481,7 +481,7 @@ function ClaimModal({
             {claimAndStakeButtonText}
           </Button>
           <button
-            className="text-body-medium w-full py-8 text-center text-typography-secondary hover:text-typography-primary disabled:cursor-not-allowed disabled:text-typography-secondary/60"
+            className="w-full py-8 text-center text-14 text-typography-secondary hover:text-typography-primary disabled:cursor-not-allowed disabled:text-typography-secondary/60"
             disabled={!canClaim || isClaiming || isClaimAndStaking || isApproving}
             onClick={claimRewards}
           >

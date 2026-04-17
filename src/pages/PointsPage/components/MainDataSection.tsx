@@ -85,7 +85,7 @@ export function MainDataSection({
                 </span>
               }
               content={
-                <div className="text-body-small">
+                <div className="text-12">
                   <Trans>
                     Your multiplier will {projectedMultiplierInfo.isIncrease ? "increase" : "decrease"} next epoch
                   </Trans>{" "}

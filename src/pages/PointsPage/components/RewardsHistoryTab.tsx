@@ -164,14 +164,14 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
                       <TableTd className="numbers">{formatAmount(entry.rewardsClaimed, 18, 4, true)} GMX</TableTd>
                       <TableTd>
                         {isCurrentEpoch ? (
-                          <span className="text-body-small text-typography-secondary">
+                          <span className="text-12 text-typography-secondary">
                             <Trans>Epoch ends in</Trans>{" "}
                             <span className="text-typography-primary">
                               {formatTimeLeft(timeLeft, { alwaysShowDays: true })}
                             </span>
                           </span>
                         ) : (
-                          <span className="text-body-small text-typography-secondary">
+                          <span className="text-12 text-typography-secondary">
                             <Trans>Finished</Trans>
                           </span>
                         )}
@@ -219,12 +219,12 @@ function MobileRewardsHistoryRow({
   const pointsBalance = entry.pointsEarned - entry.pointsSpent - entry.pointsExpired;
 
   const statusContent = isCurrentEpoch ? (
-    <span className="text-body-small text-typography-secondary">
+    <span className="text-12 text-typography-secondary">
       <Trans>Epoch ends in</Trans>{" "}
       <span className="text-typography-primary">{formatTimeLeft(timeLeft, { alwaysShowDays: true })}</span>
     </span>
   ) : (
-    <span className="text-body-small text-typography-secondary">
+    <span className="text-12 text-typography-secondary">
       <Trans>Finished</Trans>
     </span>
   );

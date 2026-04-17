@@ -270,7 +270,7 @@ function VolumeCard({
             {volumeTier && <VolumeTierIcon tierId={volumeTier} active className={tierIconLarge} />}
             {volumeTier ? VOLUME_TIER_BADGES[volumeTier]() : "—"}
           </h3>
-          <div className="text-body-small flex flex-col gap-2 text-typography-secondary">
+          <div className="flex flex-col gap-2 text-12 text-typography-secondary">
             <div className="flex items-center gap-4 py-2">
               <span>
                 <Trans>
@@ -419,7 +419,7 @@ function StakingCard({
             {displayTier && <StakingTierIcon tierId={displayTier} active className={tierIconLarge} />}
             {displayTier ? STAKING_TIER_BADGES[displayTier]() : "—"}
           </h3>
-          <div className="text-body-small flex flex-col gap-2 text-typography-secondary">
+          <div className="flex flex-col gap-2 text-12 text-typography-secondary">
             <div className="flex items-center justify-between py-2 font-medium">
               <p>
                 <Trans>
@@ -519,7 +519,7 @@ function StakingProgressBar({
               {STAKING_TIER_BADGES[tier.tier]()}{" "}
               <span className="text-green-300">+{formatMultiplier(tier.multiplier)}</span>
             </div>
-            <div className="text-body-small mt-4 text-typography-secondary">
+            <div className="mt-4 text-12 text-typography-secondary">
               <Trans>
                 Staked: <span className="text-typography-primary">{formatAmount(gmxStaked, 18, 0, true)}</span>
                 <span className="text-11">{" / "}</span>
@@ -632,8 +632,8 @@ function BoostsCard({
                     content={
                       <div>
                         <div className="font-medium">{BOOST_LABELS[boost.boost]()}</div>
-                        <div className="text-body-small mt-4">+{formatMultiplier(boost.multiplier)}</div>
-                        <div className="text-body-small mt-4 text-typography-secondary">
+                        <div className="mt-4 text-12">+{formatMultiplier(boost.multiplier)}</div>
+                        <div className="mt-4 text-12 text-typography-secondary">
                           {getBoostDescription(boost.boost, config)}
                         </div>
                       </div>

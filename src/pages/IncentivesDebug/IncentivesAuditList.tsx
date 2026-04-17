@@ -91,11 +91,11 @@ export function IncentivesAuditList({
   return (
     <div className="mt-16 flex flex-col gap-16">
       <div className="flex items-center gap-12">
-        <label className="text-body-medium font-medium text-typography-primary">
+        <label className="text-14 font-medium text-typography-primary">
           <Trans>Epoch</Trans>
         </label>
         <select
-          className="text-body-medium rounded-8 border border-slate-600 bg-slate-800 px-12 py-8 text-typography-primary hover:bg-fill-surfaceElevatedHover"
+          className="rounded-8 border border-slate-600 bg-slate-800 px-12 py-8 text-14 text-typography-primary hover:bg-fill-surfaceElevatedHover"
           value={selectedEpoch}
           onChange={handleEpochSelect}
         >

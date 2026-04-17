@@ -29,7 +29,7 @@ export function HowItWorksSection() {
             open={isExpanded}
             onToggle={setIsExpanded}
           >
-            <p className="text-body-small text-typography-secondary">
+            <p className="text-12 text-typography-secondary">
               <Trans>
                 Trade on GMX and optionally stake GMX tokens to increase your earning power. Trading generates points,
                 while staking boosts how many points you earn.
@@ -51,7 +51,7 @@ export function HowItWorksSection() {
             open={isExpanded}
             onToggle={setIsExpanded}
           >
-            <p className="text-body-small text-typography-secondary">
+            <p className="text-12 text-typography-secondary">
               <Trans>
                 You earn points each epoch based on the trading fees you paid and your active multipliers. Your total
                 multiplier comes from your volume tier, staking tier, and any applicable boosts. Points are calculated
@@ -74,7 +74,7 @@ export function HowItWorksSection() {
             open={isExpanded}
             onToggle={setIsExpanded}
           >
-            <p className="text-body-small text-typography-secondary">
+            <p className="text-12 text-typography-secondary">
               <Trans>
                 Points are automatically converted into trading fee discounts. Discounts reduce up to 50% of your open
                 and close trading fees and are applied automatically on eligible trades. Older points are used first,

@@ -4,7 +4,7 @@ export function SummaryCard({ label, value, highlight }: { label: ReactNode; val
   return (
     <div className="rounded-8 bg-slate-900 p-16">
       <div className="text-caption text-typography-secondary">{label}</div>
-      <div className={`text-body-large mt-4 font-medium ${highlight ? "text-yellow-300" : "text-typography-primary"}`}>
+      <div className={`mt-4 text-16 font-medium ${highlight ? "text-yellow-300" : "text-typography-primary"}`}>
         {value}
       </div>
     </div>
