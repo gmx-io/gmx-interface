@@ -4486,6 +4486,10 @@ msgstr "Realized swap impact"
 msgid "Veteran"
 msgstr "Veteran"
 
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "Claim your GMX rewards"
+msgstr "Claim your GMX rewards"
+
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Break down net price impact"
 msgstr "Break down net price impact"
@@ -6189,6 +6193,7 @@ msgstr "Select positions"
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Connect wallet"
 msgstr "Connect wallet"
 
@@ -9061,6 +9066,10 @@ msgstr "Points Balance"
 msgid "Order filled"
 msgstr "Order filled"
 
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "Connect your wallet to view your points balance and claim earned rewards."
+msgstr "Connect your wallet to view your points balance and claim earned rewards."
+
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Pools/Pools.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
@@ -11569,6 +11578,10 @@ msgstr "true"
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
 msgstr "{ordersText} canceled"
+
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+msgid "No addresses match your search."
+msgstr "No addresses match your search."
 
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "No to token address"

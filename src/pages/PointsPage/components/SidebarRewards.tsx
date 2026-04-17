@@ -1,4 +1,5 @@
 import { Trans, t } from "@lingui/macro";
+import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ethers } from "ethers";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
@@ -26,6 +27,7 @@ import ClaimHandlerAbi from "sdk/abis/ClaimHandler";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
+import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletButton";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -43,6 +45,7 @@ export function SidebarRewards({ chainId, account }: Props) {
   const { data: dashboard } = useAccountIncentiveDashboard(chainId, { account });
   const { data: rewardsHistory } = useAccountRewardsHistory(chainId, { account });
   const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
+  const { openConnectModal } = useConnectModal();
 
   const rewardsBalance = dashboard?.rewardsBalance;
   const displayClaimableRewards = rewardsBalance ? formatAmount(rewardsBalance, 18, 4, true) : "0.0000";
@@ -67,6 +70,24 @@ export function SidebarRewards({ chainId, account }: Props) {
 
   const pointsBalance = dashboard?.pointsBalance;
   const displayPoints = pointsBalance ? formatAmount(pointsBalance, 18, 4, true) : "0.0000";
+
+  if (!account) {
+    return (
+      <div className="flex flex-col gap-12 rounded-8 bg-slate-900 p-20">
+        <div className="flex flex-col gap-4">
+          <span className="text-16 font-medium text-typography-primary">
+            <Trans>Claim your GMX rewards</Trans>
+          </span>
+          <span className="text-body-small text-typography-secondary">
+            <Trans>Connect your wallet to view your points balance and claim earned rewards.</Trans>
+          </span>
+        </div>
+        <ConnectWalletButton onClick={openConnectModal}>
+          <Trans>Connect wallet</Trans>
+        </ConnectWalletButton>
+      </div>
+    );
+  }
 
   return (
     <>

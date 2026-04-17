@@ -285,6 +285,13 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                     </TableTd>
                   </TableTr>
                 )}
+                {leaderboard && searchAddress && pageData.length === 0 && !userEntry && (
+                  <TableTr>
+                    <TableTd colSpan={7} className="py-16 text-center text-typography-secondary">
+                      <Trans>No addresses match your search.</Trans>
+                    </TableTd>
+                  </TableTr>
+                )}
               </tbody>
             </table>
           </TableScrollFadeContainer>

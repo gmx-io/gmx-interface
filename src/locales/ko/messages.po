@@ -4486,6 +4486,10 @@ msgstr "실현된 스왑 영향"
 msgid "Veteran"
 msgstr ""
 
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "Claim your GMX rewards"
+msgstr ""
+
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Break down net price impact"
 msgstr "순 가격 영향 세부 분석"
@@ -6189,6 +6193,7 @@ msgstr "포지션 선택"
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
+#: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Connect wallet"
 msgstr "지갑 연결"
 
@@ -9061,6 +9066,10 @@ msgstr ""
 msgid "Order filled"
 msgstr "주문 체결됨"
 
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "Connect your wallet to view your points balance and claim earned rewards."
+msgstr ""
+
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/Pools/Pools.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
@@ -11569,6 +11578,10 @@ msgstr "true"
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
 msgstr "{ordersText} 취소됨"
+
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+msgid "No addresses match your search."
+msgstr ""
 
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
 msgid "No to token address"
