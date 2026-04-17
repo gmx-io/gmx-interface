@@ -3,13 +3,14 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ethers } from "ethers";
 import { useCallback, useMemo, useState } from "react";
 import useSWR from "swr";
-import { encodeFunctionData, maxUint256, zeroAddress } from "viem";
+import { maxUint256, zeroAddress } from "viem";
 
 import type { AnyChainId, ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { claimsDisabledKey, claimTermsKey } from "config/dataStore";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { POINTS_REWARDS_DISTRIBUTION_ID } from "domain/synthetics/claims/constants";
+import { encodeAcceptTermsAndClaim } from "domain/synthetics/claims/createClaimTransaction";
 import { useAccountIncentiveDashboard } from "domain/synthetics/incentives/useAccountIncentiveDashboard";
 import { useAccountRewardsHistory } from "domain/synthetics/incentives/useAccountRewardsHistory";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
@@ -18,12 +19,12 @@ import { useChainId } from "lib/chains";
 import { callContract } from "lib/contracts";
 import { contractFetcher } from "lib/contracts/contractFetcher";
 import { helperToast } from "lib/helperToast";
+import { metrics } from "lib/metrics";
 import { formatAmount } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
-import ClaimHandlerAbi from "sdk/abis/ClaimHandler";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
@@ -275,6 +276,9 @@ function ClaimModal({
   const isClaimAndStaking = pendingAction === "claimAndStake";
   const isApproving = pendingAction === "approve";
 
+  // Intentionally uses `callContract` + `tx.wait()` (not the shared `approveTokens` helper)
+  // because the follow-up `stakeGmx` call requires the approval to be mined first —
+  // `approveTokens` fires its callback when the tx is submitted, not when it is mined.
   const approveGmxForStaking = useCallback(async () => {
     if (!signer) return;
 
@@ -288,6 +292,11 @@ function ClaimModal({
         setPendingTxns,
       });
       await tx.wait();
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error("Points GMX stake approval failed", err);
+      metrics.pushError(err, "pointsSidebar.stakeApprove");
+      throw err;
     } finally {
       setPendingAction(undefined);
     }
@@ -298,11 +307,7 @@ function ClaimModal({
       throw new Error("Wallet not connected");
     }
 
-    const callData = encodeFunctionData({
-      abi: ClaimHandlerAbi,
-      functionName: "acceptTermsAndClaim",
-      args: [claimParams, account],
-    });
+    const callData = encodeAcceptTermsAndClaim(claimParams, account);
 
     const result = await sendWalletTransaction({
       chainId: contractsChainId,
@@ -326,11 +331,23 @@ function ClaimModal({
     setPendingAction("claim");
 
     try {
+      // Revalidate the on-chain claimable amount before submitting so we don't send a tx
+      // against stale data if the modal has been sitting open for a while.
+      const latestRaw = await mutateClaimableAmount();
+      const latest = latestRaw !== undefined ? BigInt(latestRaw) : 0n;
+      if (latest <= 0n) {
+        helperToast.error(t`No rewards available to claim`);
+        return;
+      }
+
       await submitClaim();
       helperToast.success(t`Claim completed`);
       await mutateClaimableAmount(0n, false);
       setIsOpen(false);
-    } catch {
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error("Points rewards claim failed", err);
+      metrics.pushError(err, "pointsSidebar.claim");
       helperToast.error(t`Claim failed`);
     } finally {
       setPendingAction(undefined);
@@ -342,7 +359,7 @@ function ClaimModal({
       return;
     }
 
-    const stakeAmount = claimableAmount;
+    let stakeAmount = claimableAmount;
     let didClaim = false;
 
     try {
@@ -351,6 +368,16 @@ function ClaimModal({
       }
 
       setPendingAction("claimAndStake");
+
+      // Revalidate the on-chain claimable amount before submitting so we stake the
+      // actual amount that will be claimed, not a stale cached value.
+      const latestRaw = await mutateClaimableAmount();
+      const latest = latestRaw !== undefined ? BigInt(latestRaw) : 0n;
+      if (latest <= 0n) {
+        helperToast.error(t`No rewards available to claim`);
+        return;
+      }
+      stakeAmount = latest;
 
       await submitClaim();
       didClaim = true;
@@ -371,7 +398,10 @@ function ClaimModal({
 
       await stakeTx.wait();
       setIsOpen(false);
-    } catch {
+    } catch (err) {
+      // eslint-disable-next-line no-console
+      console.error("Points rewards claim+stake failed", err);
+      metrics.pushError(err, didClaim ? "pointsSidebar.stakeAfterClaim" : "pointsSidebar.claimAndStake");
       if (!didClaim) {
         helperToast.error(t`Claim failed`);
       } else {
