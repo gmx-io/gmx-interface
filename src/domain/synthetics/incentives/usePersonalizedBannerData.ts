@@ -8,7 +8,7 @@ import { useChainId } from "lib/chains";
 import { bigintToNumber } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
-import { isIncentivesEnabled, MAX_FEE_DISCOUNT_PERCENT } from "./constants";
+import { INCENTIVES_BASE_RATE, INCENTIVES_FEE_RATE, isIncentivesEnabled, MAX_FEE_DISCOUNT_PERCENT } from "./constants";
 import type { IncentivesConfig, StakingTierConfig } from "./types";
 import { useAccountIncentiveDashboard } from "./useAccountIncentiveDashboard";
 import { useAccountRewardsHistory } from "./useAccountRewardsHistory";
@@ -21,8 +21,6 @@ import { useIncentivesConfig } from "./useIncentivesConfig";
 const ASSUMED_LEVERAGE = 5;
 const ASSUMED_COLLATERAL_TURNOVER = 1.5;
 const MAX_GROWTH_VS_HISTORY = 1.25;
-const FEE_RATE = 0.0005; // open + close fee share of volume
-const BASE_RATE = 0.1; // 10% of eligible fees
 const REFERRAL_DISCOUNT = 0.0; // for max-potential banners
 const STAKE_BUDGET_FRAC = 0.2; // 20% of wallet for staking budget
 
@@ -301,8 +299,8 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
     const stakeBonus = getStakingBonus(sPot, stakingTiers);
     const lifeBonus = 0; // life_bonus not available in banner context
     const mult = Math.min(multCap, 1.0 + stakeBonus + lifeBonus + activityBoost);
-    const feesWeek = vPotWeek * FEE_RATE;
-    const berryRate = Math.max(0, BASE_RATE * mult - REFERRAL_DISCOUNT);
+    const feesWeek = vPotWeek * INCENTIVES_FEE_RATE;
+    const berryRate = Math.max(0, INCENTIVES_BASE_RATE * mult - REFERRAL_DISCOUNT);
     const berriesWeekUsd = feesWeek * berryRate;
     const feeSavingsWeek = Math.min(berriesWeekUsd, maxFeeDiscountFraction * feesWeek);
 

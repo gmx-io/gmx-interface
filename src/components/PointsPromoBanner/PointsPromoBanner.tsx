@@ -6,21 +6,10 @@ import { isIncentivesEnabled } from "domain/synthetics/incentives/constants";
 import { usePersonalizedBannerData } from "domain/synthetics/incentives/usePersonalizedBannerData";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatUsd } from "lib/numbers";
+import { formatNumberHuman, formatUsd } from "lib/numbers";
 
 import bgPointsPromoBanner from "img/bg_points_promo_banner.png";
 import CrossIcon from "img/ic_cross.svg?react";
-
-function formatCompactNumber(value: number): string {
-  if (value >= 1000) {
-    const k = value / 1000;
-    return k === Math.floor(k) ? `${Math.floor(k)}K` : `${k.toFixed(1)}K`;
-  }
-  if (value >= 1) {
-    return value === Math.floor(value) ? `${Math.floor(value)}` : `${value.toFixed(2)}`;
-  }
-  return value.toFixed(2);
-}
 
 const BANNER_STYLES = {
   backgroundImage: `url(${bgPointsPromoBanner})`,
@@ -102,8 +91,8 @@ function getBannerText(bannerData: ReturnType<typeof usePersonalizedBannerData>)
     bannerData.recommendedStakeGmx > 0 &&
     bannerData.estimatedRewardsUsd > 0
   ) {
-    const stakeFormatted = formatCompactNumber(bannerData.recommendedStakeGmx);
-    const rewardsFormatted = formatCompactNumber(bannerData.estimatedRewardsUsd);
+    const stakeFormatted = formatNumberHuman(bannerData.recommendedStakeGmx, false, 1);
+    const rewardsFormatted = formatNumberHuman(bannerData.estimatedRewardsUsd, false, 1);
     return (
       <>
         <h6 className="text-16 font-medium text-typography-primary">

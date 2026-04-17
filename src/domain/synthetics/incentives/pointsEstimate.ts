@@ -1,5 +1,5 @@
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { MULTIPLIER_DECIMALS } from "domain/synthetics/incentives/constants";
+import { MAX_FEE_DISCOUNT_PERCENT, MULTIPLIER_DECIMALS } from "domain/synthetics/incentives/constants";
 import { bigMath } from "sdk/utils/bigmath";
 
 const BASE_POINTS_RATE_BPS = 1000n;
@@ -43,7 +43,11 @@ export function getEstimatedTradeRewards({
     return undefined;
   }
 
-  const rewardsUsd = bigMath.mulDiv(eligibleFeeUsd, boostedRewardBps, BASIS_POINTS_DIVISOR_BIGINT);
+  const uncappedRewardsUsd = bigMath.mulDiv(eligibleFeeUsd, boostedRewardBps, BASIS_POINTS_DIVISOR_BIGINT);
+
+  // Cap rewards at MAX_FEE_DISCOUNT_PERCENT of the fee to match on-chain enforcement.
+  const maxRewardsUsd = bigMath.mulDiv(feeUsd, BigInt(MAX_FEE_DISCOUNT_PERCENT), 100n);
+  const rewardsUsd = uncappedRewardsUsd > maxRewardsUsd ? maxRewardsUsd : uncappedRewardsUsd;
 
   return {
     rewardsUsd,

@@ -43,6 +43,10 @@ export const MAX_MULTIPLIER = 400;
 export const MAX_FEE_DISCOUNT_PERCENT = 50;
 export const POINTS_EXPIRATION_EPOCHS = 13;
 export const VOLUME_TIER_PERSISTENCE_EPOCHS = 4;
+
+/** Incentives reward modelling constants — shared across banners / tier cards. */
+export const INCENTIVES_FEE_RATE = 0.0005; // open + close fee share of volume
+export const INCENTIVES_BASE_RATE = 0.1; // 10% of eligible fees
 const DEFAULT_EPOCH_DURATION = 7 * 24 * 60 * 60; // 1 week fallback
 
 export function getEpochDuration(config?: { epochDuration: number }): number {

@@ -31,7 +31,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import EarnIcon from "img/ic_earn.svg?react";
 
-import { getCurrentEpochEndTime, useCurrentUnixTimestamp } from "./epochTiming";
+import { formatTimeLeft, getCurrentEpochEndTime, useCurrentUnixTimestamp } from "./epochTiming";
 
 type Props = {
   chainId: number;
@@ -440,13 +440,4 @@ function ClaimModal({
       </div>
     </ModalWithPortal>
   );
-}
-
-function formatTimeLeft(seconds: number): string {
-  if (seconds <= 0) return "";
-  const days = Math.floor(seconds / 86400);
-  const hours = Math.floor((seconds % 86400) / 3600);
-  if (days > 0) return `${days}d ${hours}h`;
-  const minutes = Math.floor((seconds % 3600) / 60);
-  return `${hours}h ${minutes}m`;
 }

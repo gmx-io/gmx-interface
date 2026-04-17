@@ -133,6 +133,25 @@ describe("getEstimatedTradeRewards", () => {
 
     expect(withTraderShare?.rewardsUsd).toBe(withoutTraderShare?.rewardsUsd);
   });
+
+  it("caps rewards at MAX_FEE_DISCOUNT_PERCENT (50%) of the fee", () => {
+    // With a very large multiplier (e.g. 10x), the uncapped reward would be
+    // fee * 0.1 * 10 = 100% of fee. The cap must clip this to 50% of fee.
+    const feeUsd = 1000n * 10n ** USD_DECIMALS;
+    const gmxPrice = 20n * 10n ** USD_DECIMALS;
+
+    const result = getEstimatedTradeRewards({
+      feeUsd,
+      multiplier: 1000, // 10x
+      multiplierDecimals: MULTIPLIER_DECIMALS,
+      totalRebate: 0n,
+      discountShare: 0n,
+      gmxPrice,
+    });
+
+    // 50% of feeUsd = 500 USD
+    expect(result?.rewardsUsd).toBe(500n * 10n ** USD_DECIMALS);
+  });
 });
 
 describe("PointsRow", () => {

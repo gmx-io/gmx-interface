@@ -1,6 +1,7 @@
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import React, { useMemo } from "react";
+import { Link } from "react-router-dom";
 
 import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
 import {
@@ -8,6 +9,8 @@ import {
   STAKING_TIER_BADGES,
   VOLUME_TIER_BADGES,
   formatMultiplier,
+  INCENTIVES_BASE_RATE,
+  INCENTIVES_FEE_RATE,
   MULTIPLIER_DECIMALS,
   MAX_FEE_DISCOUNT_PERCENT,
 } from "domain/synthetics/incentives/constants";
@@ -98,8 +101,6 @@ export function TierCardsSection({
 
 const USD_DECIMALS = 30;
 const GMX_DECIMALS = 18;
-const FEE_RATE = 0.0005;
-const BASE_RATE = 0.1;
 
 /**
  * Estimate weekly rewards for a given volume and multiplier based on config values.
@@ -107,9 +108,9 @@ const BASE_RATE = 0.1;
  */
 function estimateWeeklyRewards(volumeUsd: number, rawMultiplier: number, multiplierDecimals: number): number {
   const mult = rawMultiplier / multiplierDecimals;
-  const fees = volumeUsd * FEE_RATE;
+  const fees = volumeUsd * INCENTIVES_FEE_RATE;
   const maxDiscount = (MAX_FEE_DISCOUNT_PERCENT / 100) * fees;
-  const rewards = fees * BASE_RATE * (1.0 + mult);
+  const rewards = fees * INCENTIVES_BASE_RATE * (1.0 + mult);
   return Math.round(Math.min(rewards, maxDiscount));
 }
 
@@ -325,9 +326,9 @@ function VolumeBanner({ config }: { config?: IncentivesConfig }) {
           Unlock {tierName} status (+{multiplierLabel}) and earn up to ${rewardsEstimate} in additional trading rewards.
         </Trans>
       </div>
-      <a href="#/trade" className="flex items-center gap-4 text-12 font-medium text-blue-300">
+      <Link to="/trade" className="flex items-center gap-4 text-12 font-medium text-blue-300">
         <Trans>Start trading</Trans> <ArrowRight />
-      </a>
+      </Link>
     </div>
   );
 }
@@ -428,10 +429,10 @@ function StakingCard({
                   </span>
                 </Trans>
               </p>
-              <a href="#/earn" className="inline-flex items-center gap-2 text-12 font-medium text-blue-300">
+              <Link to="/earn" className="inline-flex items-center gap-2 text-12 font-medium text-blue-300">
                 <Trans>Stake GMX</Trans>
                 <DatabaseIcon className="size-12" />
-              </a>
+              </Link>
             </div>
             {tierConfig && <StakingProgressBar tiers={tierConfig} currentTier={displayTier} gmxStaked={gmxStaked} />}
             {nextTierConfig && (
@@ -477,10 +478,10 @@ function StakingBanner({ config }: { config?: IncentivesConfig }) {
           Unlock {tierName} status (+{multiplierLabel}) and earn up to ${rewardsEstimate} in additional trading rewards.
         </Trans>
       </div>
-      <a href="#/earn" className="flex items-center gap-4 text-12 font-medium text-blue-300">
+      <Link to="/earn" className="flex items-center gap-4 text-12 font-medium text-blue-300">
         <Trans>Stake GMX</Trans>
         <DatabaseIcon className="size-14" />
-      </a>
+      </Link>
     </div>
   );
 }

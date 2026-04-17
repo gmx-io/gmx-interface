@@ -17,7 +17,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
-import { useCurrentUnixTimestamp } from "./epochTiming";
+import { formatTimeLeft, useCurrentUnixTimestamp } from "./epochTiming";
 import { formatEpochLabel } from "./RewardsHistoryTab.utils";
 
 const PER_PAGE = 10;
@@ -166,7 +166,9 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
                         {isCurrentEpoch ? (
                           <span className="text-body-small text-typography-secondary">
                             <Trans>Epoch ends in</Trans>{" "}
-                            <span className="text-typography-primary">{formatTimeLeft(timeLeft)}</span>
+                            <span className="text-typography-primary">
+                              {formatTimeLeft(timeLeft, { alwaysShowDays: true })}
+                            </span>
                           </span>
                         ) : (
                           <span className="text-body-small text-typography-secondary">
@@ -218,7 +220,8 @@ function MobileRewardsHistoryRow({
 
   const statusContent = isCurrentEpoch ? (
     <span className="text-body-small text-typography-secondary">
-      <Trans>Epoch ends in</Trans> <span className="text-typography-primary">{formatTimeLeft(timeLeft)}</span>
+      <Trans>Epoch ends in</Trans>{" "}
+      <span className="text-typography-primary">{formatTimeLeft(timeLeft, { alwaysShowDays: true })}</span>
     </span>
   ) : (
     <span className="text-body-small text-typography-secondary">
@@ -281,11 +284,4 @@ function MobileRewardsHistoryRow({
       )}
     </>
   );
-}
-
-function formatTimeLeft(seconds: number): string {
-  if (seconds <= 0) return "";
-  const days = Math.floor(seconds / 86400);
-  const hours = Math.floor((seconds % 86400) / 3600);
-  return `${days}d ${hours}h`;
 }
