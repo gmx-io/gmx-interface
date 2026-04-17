@@ -7884,6 +7884,11 @@ msgstr "Limit Increase"
 msgid "Transferring..."
 msgstr "轉帳中..."
 
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "No rewards available to claim"
+msgstr ""
+
 #: src/components/TVChart/Chart.tsx
 msgid "Net Rate History"
 msgstr "淨費率歷史"

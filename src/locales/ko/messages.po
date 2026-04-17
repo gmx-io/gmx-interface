@@ -7884,6 +7884,11 @@ msgstr "지정가 증가"
 msgid "Transferring..."
 msgstr "전송 중..."
 
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "No rewards available to claim"
+msgstr ""
+
 #: src/components/TVChart/Chart.tsx
 msgid "Net Rate History"
 msgstr "순이자율 기록"

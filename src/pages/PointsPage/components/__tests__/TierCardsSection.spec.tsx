@@ -2,6 +2,7 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
 import { render, screen, cleanup } from "@testing-library/react";
+import { MemoryRouter } from "react-router-dom";
 import { describe, it, expect, vi, afterEach } from "vitest";
 
 import type { EpochStats, IncentivesConfig } from "domain/synthetics/incentives/types";
@@ -93,7 +94,11 @@ const mockConfig: IncentivesConfig = {
 // Helpers
 // ---------------------------------------------------------------------------
 function renderWithI18n(ui: React.ReactElement) {
-  return render(<I18nProvider i18n={i18n}>{ui}</I18nProvider>);
+  return render(
+    <I18nProvider i18n={i18n}>
+      <MemoryRouter>{ui}</MemoryRouter>
+    </I18nProvider>
+  );
 }
 
 afterEach(() => {

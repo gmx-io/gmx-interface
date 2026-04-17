@@ -7884,6 +7884,11 @@ msgstr "Limit-Erhöhung"
 msgid "Transferring..."
 msgstr "Übertragung läuft..."
 
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "No rewards available to claim"
+msgstr ""
+
 #: src/components/TVChart/Chart.tsx
 msgid "Net Rate History"
 msgstr "Net-Rate-Verlauf"

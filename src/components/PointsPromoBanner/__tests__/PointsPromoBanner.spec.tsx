@@ -154,7 +154,7 @@ describe("PointsPromoBanner", () => {
     renderBanner();
 
     expect(screen.getByText(/staking/)).toBeDefined();
-    expect(screen.getByText(/1K/)).toBeDefined();
+    expect(screen.getByText(/1\.0k/)).toBeDefined();
   });
 
   it("contains link to /points", () => {

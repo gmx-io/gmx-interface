@@ -7884,6 +7884,11 @@ msgstr "Увеличение лимита"
 msgid "Transferring..."
 msgstr "Перевод..."
 
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/SidebarRewards.tsx
+msgid "No rewards available to claim"
+msgstr ""
+
 #: src/components/TVChart/Chart.tsx
 msgid "Net Rate History"
 msgstr "История чистой ставки"
