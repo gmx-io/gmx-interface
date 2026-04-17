@@ -9795,10 +9795,6 @@ msgstr "订单无法更新。该类型不支持修改"
 msgid "{gmOrGlvLabel} sold successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to withdraw your tokens."
 msgstr "{gmOrGlvLabel} 已成功卖出，但跨链桥至 Base 失败。您的资金在 GMX Account 中是安全的。请重试跨链桥或打开 GMX Account 提取您的代币。"
 
-#: src/pages/PointsPage/components/FaqSection.tsx
-msgid "Yes, points expire after {pointsExpirationEpochs} epochs. The oldest points are consumed first when applied to fee discounts (FIFO)."
-msgstr ""
-
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Unable to fetch swap route. Please try again."
 msgstr ""
@@ -10588,6 +10584,10 @@ msgstr "发送方已从 GLP 归属期金库中提取所有代币"
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "Wallet"
 msgstr "钱包"
+
+#: src/pages/PointsPage/components/FaqSection.tsx
+msgid "{pointsExpirationEpochs, plural, one {Yes, points expire after # epoch. The oldest points are consumed first when applied to fee discounts (FIFO).} other {Yes, points expire after # epochs. The oldest points are consumed first when applied to fee discounts (FIFO).}}"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a trigger price"

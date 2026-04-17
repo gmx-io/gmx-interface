@@ -1,4 +1,4 @@
-import { Trans, t } from "@lingui/macro";
+import { Plural, Trans, t } from "@lingui/macro";
 import { useMemo } from "react";
 
 import type { IncentivesConfig } from "domain/synthetics/incentives/types";
@@ -36,10 +36,11 @@ export function FaqSection({ config }: { config?: IncentivesConfig }) {
       {
         title: t`Do points expire?`,
         content: (
-          <Trans>
-            Yes, points expire after {pointsExpirationEpochs} epochs. The oldest points are consumed first when applied
-            to fee discounts (FIFO).
-          </Trans>
+          <Plural
+            value={pointsExpirationEpochs}
+            one="Yes, points expire after # epoch. The oldest points are consumed first when applied to fee discounts (FIFO)."
+            other="Yes, points expire after # epochs. The oldest points are consumed first when applied to fee discounts (FIFO)."
+          />
         ),
       },
       {

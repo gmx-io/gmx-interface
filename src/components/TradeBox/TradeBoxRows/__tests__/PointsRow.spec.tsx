@@ -35,10 +35,6 @@ vi.mock("domain/legacy", () => ({
   useGmxPrice: vi.fn(),
 }));
 
-vi.mock("domain/synthetics/incentives/useIncentivesConfig", () => ({
-  useIncentivesConfig: vi.fn(),
-}));
-
 vi.mock("domain/synthetics/incentives/useAccountIncentiveStatus", () => ({
   useAccountIncentiveStatus: vi.fn(),
 }));
@@ -51,7 +47,7 @@ vi.mock("domain/synthetics/incentives/constants", async () => {
   };
 });
 
-vi.mock("img/ic_multiplier.svg?react", () => ({
+vi.mock("img/ic_multiplier_solid.svg?react", () => ({
   default: (props: any) => <svg data-testid="multiplier-icon" {...props} />,
 }));
 

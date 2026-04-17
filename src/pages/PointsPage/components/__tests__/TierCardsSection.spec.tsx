@@ -7,9 +7,7 @@ import { describe, it, expect, vi, afterEach } from "vitest";
 
 import type { EpochStats, IncentivesConfig } from "domain/synthetics/incentives/types";
 
-// ---------------------------------------------------------------------------
-// Mocks -- SVG imports need to be mocked for happy-dom
-// ---------------------------------------------------------------------------
+// SVG imports need to be mocked for happy-dom
 
 vi.mock("img/ic_boost.svg?react", () => ({
   default: (props: any) => <svg data-testid="boost-icon" {...props} />,
@@ -45,15 +43,9 @@ vi.mock("components/Tooltip/TooltipWithPortal", () => ({
 // Import after mocks
 import { TierCardsSection } from "../TierCardsSection";
 
-// ---------------------------------------------------------------------------
-// i18n setup
-// ---------------------------------------------------------------------------
 i18n.load({ en: {} });
 i18n.activate("en");
 
-// ---------------------------------------------------------------------------
-// Constants
-// ---------------------------------------------------------------------------
 const USD = 10n ** 30n;
 const GMX_DEC = 10n ** 18n;
 
@@ -90,9 +82,6 @@ const mockConfig: IncentivesConfig = {
   featuredMarketTokens: [],
 };
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
 function renderWithI18n(ui: React.ReactElement) {
   return render(
     <I18nProvider i18n={i18n}>
@@ -105,9 +94,6 @@ afterEach(() => {
   cleanup();
 });
 
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
 describe("TierCardsSection", () => {
   describe("VolumeBanner (inactive volume card)", () => {
     it("shows first volume tier threshold from config", () => {

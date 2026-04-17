@@ -14,20 +14,16 @@ import { useAccountIncentiveDashboard } from "./useAccountIncentiveDashboard";
 import { useAccountRewardsHistory } from "./useAccountRewardsHistory";
 import { useIncentivesConfig } from "./useIncentivesConfig";
 
-// ---------------------------------------------------------------------------
 // Calculation assumptions — these are modelling constants that have no
 // equivalent in the backend config and are kept as hardcoded values.
-// ---------------------------------------------------------------------------
 const ASSUMED_LEVERAGE = 5;
 const ASSUMED_COLLATERAL_TURNOVER = 1.5;
 const MAX_GROWTH_VS_HISTORY = 1.25;
 const REFERRAL_DISCOUNT = 0.0; // for max-potential banners
 const STAKE_BUDGET_FRAC = 0.2; // 20% of wallet for staking budget
 
-// ---------------------------------------------------------------------------
 // Fallback values — used only when the backend config has not loaded yet.
 // Once `useIncentivesConfig` resolves, the real values take precedence.
-// ---------------------------------------------------------------------------
 const FALLBACK_EPOCHS = 13;
 const FALLBACK_MULT_CAP = 4.0;
 const FALLBACK_ACTIVITY_BOOST = 1.5;
@@ -46,9 +42,7 @@ const FALLBACK_STAKING_TIERS: { threshold: number; bonus: number }[] = [
   { threshold: 50_000, bonus: 2.0 },
 ];
 
-// ---------------------------------------------------------------------------
 // Helpers — derive calculation parameters from IncentivesConfig
-// ---------------------------------------------------------------------------
 
 const USD_DECIMALS = 30;
 const GMX_DECIMALS = 18;
@@ -161,10 +155,6 @@ function computeWalletUsd(tokensData: TokensData | undefined): bigint | undefine
   return hasAny ? walletUsd : undefined;
 }
 
-// ---------------------------------------------------------------------------
-// Result type
-// ---------------------------------------------------------------------------
-
 export type PersonalizedBannerData = {
   /** Whether the user has a manual allocation derived from pre-program history entries. */
   isManuallyRewarded: boolean;
@@ -181,10 +171,6 @@ export type PersonalizedBannerData = {
   /** True while underlying data is still loading. */
   isLoading: boolean;
 };
-
-// ---------------------------------------------------------------------------
-// Hook
-// ---------------------------------------------------------------------------
 
 export function usePersonalizedBannerData(): PersonalizedBannerData {
   const { chainId, srcChainId } = useChainId();
@@ -248,9 +234,7 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
       };
     }
 
-    // -----------------------------------------------------------------------
     // Personalized staking/rewards calculation
-    // -----------------------------------------------------------------------
     const gmxPriceNum = bigintToNumber(gmxPrice, USD_DECIMALS);
     if (gmxPriceNum <= 0) return noData;
 

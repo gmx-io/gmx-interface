@@ -4,10 +4,6 @@ import { render, screen, fireEvent, cleanup } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
 
-// ---------------------------------------------------------------------------
-// Mocks
-// ---------------------------------------------------------------------------
-
 vi.mock("lib/chains", () => ({
   useChainId: vi.fn(),
 }));
@@ -27,14 +23,6 @@ vi.mock("lib/localStorage", () => ({
   useLocalStorageSerializeKey: vi.fn(() => [mockDismissed, mockSetDismissed]),
 }));
 
-vi.mock("img/ic_chevron_right.svg?react", () => ({
-  default: (props: any) => <svg data-testid="chevron-icon" {...props} />,
-}));
-
-vi.mock("img/ic_multiplier.svg?react", () => ({
-  default: (props: any) => <svg data-testid="multiplier-icon" {...props} />,
-}));
-
 // Import after mocks
 import { isIncentivesEnabled } from "domain/synthetics/incentives/constants";
 import type { PersonalizedBannerData } from "domain/synthetics/incentives/usePersonalizedBannerData";
@@ -49,15 +37,9 @@ const mockIsIncentivesEnabled = vi.mocked(isIncentivesEnabled);
 const mockUsePersonalizedBannerData = vi.mocked(usePersonalizedBannerData);
 const mockUseLocalStorage = vi.mocked(useLocalStorageSerializeKey);
 
-// ---------------------------------------------------------------------------
-// i18n setup
-// ---------------------------------------------------------------------------
 i18n.load({ en: {} });
 i18n.activate("en");
 
-// ---------------------------------------------------------------------------
-// Helpers
-// ---------------------------------------------------------------------------
 const ARBITRUM = 42161;
 
 const defaultBannerData: PersonalizedBannerData = {
@@ -80,9 +62,6 @@ function renderBanner() {
   );
 }
 
-// ---------------------------------------------------------------------------
-// Setup
-// ---------------------------------------------------------------------------
 beforeEach(() => {
   vi.clearAllMocks();
   mockDismissed = false;
@@ -96,9 +75,6 @@ afterEach(() => {
   cleanup();
 });
 
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
 describe("PointsPromoBanner", () => {
   it("returns null when isIncentivesEnabled returns false", () => {
     mockIsIncentivesEnabled.mockReturnValue(false);

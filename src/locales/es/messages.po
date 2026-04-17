@@ -9795,10 +9795,6 @@ msgstr "La orden no puede actualizarse. El tipo no admite modificaciones"
 msgid "{gmOrGlvLabel} sold successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to withdraw your tokens."
 msgstr "{gmOrGlvLabel} vendido correctamente, pero el puente a Base falló. Sus fondos están seguros en su GMX Account. Reintente el puente o abra GMX Account para retirar sus tokens."
 
-#: src/pages/PointsPage/components/FaqSection.tsx
-msgid "Yes, points expire after {pointsExpirationEpochs} epochs. The oldest points are consumed first when applied to fee discounts (FIFO)."
-msgstr ""
-
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Unable to fetch swap route. Please try again."
 msgstr ""
@@ -10588,6 +10584,10 @@ msgstr "El remitente ha retirado todos los tokens del vault de consolidación de
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "Wallet"
 msgstr "Monedero"
+
+#: src/pages/PointsPage/components/FaqSection.tsx
+msgid "{pointsExpirationEpochs, plural, one {Yes, points expire after # epoch. The oldest points are consumed first when applied to fee discounts (FIFO).} other {Yes, points expire after # epochs. The oldest points are consumed first when applied to fee discounts (FIFO).}}"
+msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Enter a trigger price"

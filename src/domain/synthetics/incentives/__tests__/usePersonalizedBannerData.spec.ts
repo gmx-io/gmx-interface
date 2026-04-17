@@ -2,10 +2,6 @@ import { render } from "@testing-library/react";
 import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
-// ---------------------------------------------------------------------------
-// Mocks
-// ---------------------------------------------------------------------------
-
 vi.mock("lib/chains", () => ({
   useChainId: vi.fn(),
 }));
@@ -53,9 +49,6 @@ import { useAccountRewardsHistory } from "../useAccountRewardsHistory";
 import { useIncentivesConfig } from "../useIncentivesConfig";
 import { usePersonalizedBannerData } from "../usePersonalizedBannerData";
 
-// ---------------------------------------------------------------------------
-// Typed mock helpers
-// ---------------------------------------------------------------------------
 const mockUseChainId = vi.mocked(useChainId);
 const mockUseWallet = vi.mocked(useWallet);
 const mockUseIncentivesConfig = vi.mocked(useIncentivesConfig);
@@ -67,9 +60,7 @@ const mockUseTokensDataRequest = vi.mocked(useTokensDataRequest);
 const mockConvertToUsd = vi.mocked(convertToUsd);
 const mockGetMidPrice = vi.mocked(getMidPrice);
 
-// ---------------------------------------------------------------------------
 // renderHook helper (v11 of @testing-library/react does not export renderHook)
-// ---------------------------------------------------------------------------
 function renderHook<T>(hookFn: () => T): { current: T } {
   const ref: { current: T } = {} as any;
 
@@ -82,17 +73,11 @@ function renderHook<T>(hookFn: () => T): { current: T } {
   return ref;
 }
 
-// ---------------------------------------------------------------------------
-// Constants
-// ---------------------------------------------------------------------------
 const ARBITRUM = 42161;
 const AVALANCHE = 43114;
 const USD = 10n ** 30n;
 const GMX_DEC = 10n ** 18n;
 
-// ---------------------------------------------------------------------------
-// Default mock config
-// ---------------------------------------------------------------------------
 const mockConfig: IncentivesConfig = {
   programStartTimestamp: 1699500000,
   epochTimestamp: 1700000000,
@@ -143,9 +128,6 @@ const baseDashboard: AccountIncentiveDashboard = {
   ],
 };
 
-// ---------------------------------------------------------------------------
-// Setup
-// ---------------------------------------------------------------------------
 function setupDefaults(overrides?: {
   chainId?: number;
   account?: string | undefined;
@@ -189,9 +171,6 @@ beforeEach(() => {
   mockGetMidPrice.mockReturnValue(0n);
 });
 
-// ---------------------------------------------------------------------------
-// Tests
-// ---------------------------------------------------------------------------
 describe("usePersonalizedBannerData", () => {
   it("returns hasPersonalizedData: false when incentives not enabled (non-ARBITRUM chain)", () => {
     setupDefaults({ chainId: AVALANCHE });
