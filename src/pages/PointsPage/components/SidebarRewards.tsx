@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ethers } from "ethers";
 import { useCallback, useMemo, useState } from "react";
-import useSWR from "swr";
+import useSWR, { type KeyedMutator } from "swr";
 import { maxUint256, zeroAddress } from "viem";
 
 import type { AnyChainId, ContractsChainId } from "config/chains";
@@ -48,9 +48,28 @@ export function SidebarRewards({ chainId, account }: Props) {
   const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
   const { openConnectModal } = useConnectModal();
 
-  const rewardsBalance = dashboard?.rewardsBalance;
-  const displayClaimableRewards = rewardsBalance ? formatAmount(rewardsBalance, 18, 4, true) : "0.0000";
-  const hasRewards = rewardsBalance !== undefined && rewardsBalance > 0n;
+  const contractsChainId = chainId as ContractsChainId;
+  const claimHandlerAddress = getContract(contractsChainId, "ClaimHandler");
+  const gmxTokenAddress = getTokenBySymbol(contractsChainId, "GMX").address;
+
+  const { data: rawClaimableAmount, mutate: mutateClaimableAmount } = useSWR(
+    account
+      ? [
+          `PointsRewardsClaimableAmount:${chainId}:${account}`,
+          chainId,
+          claimHandlerAddress,
+          "getClaimableAmount",
+          account,
+          gmxTokenAddress,
+          [POINTS_REWARDS_DISTRIBUTION_ID],
+        ]
+      : null,
+    { fetcher: contractFetcher(undefined, "ClaimHandler") }
+  );
+
+  const claimableAmount = rawClaimableAmount !== undefined ? BigInt(rawClaimableAmount) : 0n;
+  const displayClaimableRewards = formatAmount(claimableAmount, 18, 4, true);
+  const hasRewards = claimableAmount > 0n;
 
   const currentEpochRewards = useMemo(() => {
     if (!config || !rewardsHistory?.length) return undefined;
@@ -99,9 +118,8 @@ export function SidebarRewards({ chainId, account }: Props) {
               <span className="text-24 font-medium text-typography-primary">{displayClaimableRewards} GMX</span>
             </div>
             <div className="flex items-center gap-2 text-12 font-medium leading-1 text-typography-secondary">
-              <Trans>Claimable rewards</Trans>
               <TooltipWithPortal
-                handle={undefined}
+                handle={<Trans>Claimable rewards</Trans>}
                 content={t`GMX rewards available to claim or stake. Rewards are generated when your points are spent to discount trading fees.`}
                 variant="iconStroke"
               />
@@ -169,6 +187,8 @@ export function SidebarRewards({ chainId, account }: Props) {
         displayRewards={displayClaimableRewards}
         chainId={chainId}
         account={account}
+        claimableAmount={claimableAmount}
+        mutateClaimableAmount={mutateClaimableAmount}
       />
     </>
   );
@@ -180,12 +200,16 @@ function ClaimModal({
   displayRewards,
   chainId,
   account,
+  claimableAmount,
+  mutateClaimableAmount,
 }: {
   isOpen: boolean;
   setIsOpen: (val: boolean) => void;
   displayRewards: string;
   chainId: number;
   account?: string;
+  claimableAmount: bigint;
+  mutateClaimableAmount: KeyedMutator<any>;
 }) {
   const { signer } = useWallet();
   const { srcChainId } = useChainId();
@@ -203,20 +227,6 @@ function ClaimModal({
   const stakedGmxTrackerAddress = getContract(contractsChainId, "StakedGmxTracker");
   const gmxToken = getTokenBySymbol(contractsChainId, "GMX");
 
-  const { data: rawClaimableAmount, mutate: mutateClaimableAmount } = useSWR(
-    isOpen && account
-      ? [
-          `PointsRewardsClaimableAmount:${chainId}:${account}`,
-          chainId,
-          claimHandlerAddress,
-          "getClaimableAmount",
-          account,
-          gmxToken.address,
-          [POINTS_REWARDS_DISTRIBUTION_ID],
-        ]
-      : null,
-    { fetcher: contractFetcher(undefined, "ClaimHandler") }
-  );
   const { data: claimTerms } = useSWR(
     isOpen
       ? [
@@ -242,7 +252,6 @@ function ClaimModal({
     { fetcher: contractFetcher(undefined, "DataStore") }
   );
 
-  const claimableAmount = rawClaimableAmount !== undefined ? BigInt(rawClaimableAmount) : 0n;
   const claimsDisabled = Boolean(rawClaimsDisabled);
   const displayClaimableRewards = claimableAmount > 0n ? formatAmount(claimableAmount, 18, 4, true) : displayRewards;
 
