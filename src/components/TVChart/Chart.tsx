@@ -50,7 +50,7 @@ const TAB_LABELS = {
   ),
 };
 
-const TABS = isDevelopment() ? ["PRICE", "DEPTH", "NET_RATE", "MARKET_GRAPH"] : ["PRICE", "DEPTH"];
+const TABS = isDevelopment() ? ["PRICE", "DEPTH", "NET_RATE", "MARKET_GRAPH"] : ["PRICE", "DEPTH", "NET_RATE"];
 
 const TABS_OPTIONS = TABS.map((tab) => ({
   value: tab,
