@@ -818,4 +818,64 @@ describe("same token arbitrage swaps", () => {
     expect(topPath).toBeDefined();
     expect(topPath!.length).toEqual(3);
   });
+
+  describe("skips markets whose ETH->USDC swap would exceed max pnl factor", () => {
+    const bigPool = {
+      longPoolAmount: usdToToken(100_000, tokensData.ETH),
+      shortPoolAmount: usdToToken(100_000, tokensData.USDC),
+      maxLongPoolAmount: usdToToken(1_000_000, tokensData.ETH),
+      maxShortPoolAmount: usdToToken(1_000_000, tokensData.USDC),
+    } satisfies Partial<MarketInfo>;
+
+    const buildMarketsInfoData = (maxPnlFactorForWithdrawalsShort: bigint) =>
+      mockMarketsInfoData(tokensData, marketKeys, {
+        "ETH-ETH-USDC": bigPool,
+        "SOL-ETH-USDC": {
+          ...bigPool,
+          swapFeeFactorForBalanceWasImproved: 0n,
+          swapFeeFactorForBalanceWasNotImproved: 0n,
+          shortInterestUsd: expandDecimals(15_000, USD_DECIMALS),
+          shortInterestInTokens: usdToToken(5_000, tokensData.SOL),
+          maxPnlFactorForWithdrawalsShort,
+        },
+      });
+
+    it("picks the more profitable SOL-ETH-USDC when max pnl factor is not exceeded", () => {
+      const marketsInfoData = buildMarketsInfoData(expandDecimals(25, 28));
+
+      const tokenSwapPaths = getTokenSwapPathsForTokenPair(swapPaths, "ETH", "USDC");
+      const estimator = createNaiveSwapEstimator(marketsInfoData, SwapPricingType.Swap);
+
+      const paths = getNaiveBestMarketSwapPathsFromTokenSwapPaths({
+        graph: marketAdjacencyGraph,
+        tokenSwapPaths,
+        topPathsCount: 1,
+        tokenInAddress: "ETH",
+        tokenOutAddress: "USDC",
+        estimator,
+        usdIn: expandDecimals(50_000n, USD_DECIMALS),
+      });
+
+      expect(paths?.[0]).toEqual(["SOL-ETH-USDC"]);
+    });
+
+    it("falls back to ETH-ETH-USDC when SOL-ETH-USDC would exceed max pnl factor", () => {
+      const marketsInfoData = buildMarketsInfoData(expandDecimals(15, 28));
+
+      const tokenSwapPaths = getTokenSwapPathsForTokenPair(swapPaths, "ETH", "USDC");
+      const estimator = createNaiveSwapEstimator(marketsInfoData, SwapPricingType.Swap);
+
+      const paths = getNaiveBestMarketSwapPathsFromTokenSwapPaths({
+        graph: marketAdjacencyGraph,
+        tokenSwapPaths,
+        topPathsCount: 1,
+        tokenInAddress: "ETH",
+        tokenOutAddress: "USDC",
+        estimator,
+        usdIn: expandDecimals(50_000n, USD_DECIMALS),
+      });
+
+      expect(paths?.[0]).toEqual(["ETH-ETH-USDC"]);
+    });
+  });
 });

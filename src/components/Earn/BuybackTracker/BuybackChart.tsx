@@ -1,3 +1,4 @@
+import { tz } from "@date-fns/tz";
 import { Trans, t } from "@lingui/macro";
 import { format } from "date-fns";
 import { useMemo } from "react";
@@ -55,7 +56,8 @@ function ChartTooltip({ active, payload, gmxPrice }: TooltipProps<number, string
   }
 
   const point = payload[0]!.payload as BuybackChartPoint;
-  const weekRange = `${format(point.weekStart * 1000, "MMM d")} - ${format(point.weekEnd * 1000, "MMM d")}`;
+  const utc = { in: tz("UTC") };
+  const weekRange = `${format(point.weekStart * 1000, "MMM d", utc)} - ${format((point.weekEnd - 1) * 1000, "MMM d", utc)}`;
   const weeklyUsd =
     gmxPrice !== undefined ? numberWithCommas(Math.round(point.weeklyAccrued * gmxPrice), { showDollar: true }) : "—";
   const cumulativeUsd =

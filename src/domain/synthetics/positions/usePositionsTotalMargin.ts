@@ -8,7 +8,7 @@ import { getByKey } from "sdk/utils/objects";
 
 import { convertToUsd, useTokensDataRequest } from "../tokens";
 
-const POSITIONS_COLLATERAL_QUERY = gql`
+const POSITIONS_MARGIN_QUERY = gql`
   query MyQuery {
     positionTotalCollateralAmount {
       amount
@@ -17,7 +17,7 @@ const POSITIONS_COLLATERAL_QUERY = gql`
   }
 `;
 
-export function usePositionsTotalCollateral(chainId: ContractsChainId) {
+export function usePositionsTotalMargin(chainId: ContractsChainId) {
   const { tokensData } = useTokensDataRequest(chainId);
 
   const { data } = useSWR<bigint | undefined>(
@@ -30,7 +30,7 @@ export function usePositionsTotalCollateral(chainId: ContractsChainId) {
       }
 
       const response = await client.query<{ positionTotalCollateralAmount: { amount: string; token: Address }[] }>({
-        query: POSITIONS_COLLATERAL_QUERY,
+        query: POSITIONS_MARGIN_QUERY,
       });
 
       return response.data?.positionTotalCollateralAmount.reduce((acc, cur) => {

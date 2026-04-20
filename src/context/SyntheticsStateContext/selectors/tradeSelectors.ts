@@ -241,6 +241,7 @@ export const makeSelectIncreasePositionAmounts = ({
     const externalSwapQuoteParams = q(selectExternalSwapQuoteParams);
     const chainId = q(selectChainId);
     const tradeFlags = createTradeFlags(tradeType, tradeMode);
+    const debugSwapMarketsConfig = ENABLE_DEBUG_SWAP_MARKETS_CONFIG ? q(selectDebugSwapMarketsConfig) : undefined;
 
     let limitOrderType: OrderType | undefined = undefined;
     if (tradeFlags.isLimit) {
@@ -285,6 +286,8 @@ export const makeSelectIncreasePositionAmounts = ({
       chainId,
       externalSwapQuoteParams,
       isSetAcceptablePriceImpactEnabled,
+      disabledMarkets: debugSwapMarketsConfig?.disabledSwapMarkets,
+      manualPath: debugSwapMarketsConfig?.manualPath,
     });
   });
 };

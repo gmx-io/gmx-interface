@@ -357,6 +357,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       depositToken: selectedCollateralToken,
       depositAmount: collateralDeltaAmount,
       minCollateralFactor,
+      marketAddress: position?.marketAddress,
     });
 
     return takeValidationResult(commonError, editCollateralError, expressError);

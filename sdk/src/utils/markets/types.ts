@@ -81,6 +81,10 @@ export type MarketInfo = Market &
 
     maxPnlFactorForTradersLong: bigint;
     maxPnlFactorForTradersShort: bigint;
+    maxPnlFactorForDepositsLong?: bigint;
+    maxPnlFactorForDepositsShort?: bigint;
+    maxPnlFactorForWithdrawalsLong?: bigint;
+    maxPnlFactorForWithdrawalsShort?: bigint;
 
     claimableFundingAmountLong?: bigint;
     claimableFundingAmountShort?: bigint;
@@ -198,6 +202,10 @@ export type MarketConfig = Pick<
   | "maxFundingFactorPerSecond"
   | "maxPnlFactorForTradersLong"
   | "maxPnlFactorForTradersShort"
+  | "maxPnlFactorForDepositsLong"
+  | "maxPnlFactorForDepositsShort"
+  | "maxPnlFactorForWithdrawalsLong"
+  | "maxPnlFactorForWithdrawalsShort"
   | "minCollateralFactor"
   | "minCollateralFactorForLiquidation"
   | "minCollateralFactorForOpenInterestLong"

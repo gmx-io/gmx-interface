@@ -2,6 +2,7 @@ import { t } from "@lingui/macro";
 import partition from "lodash/partition";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useSWRConfig } from "swr";
+import { zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
@@ -11,10 +12,15 @@ import { getReferralsDataKey } from "domain/referrals/hooks/useReferralsData";
 import { ExpressTransactionBuilder } from "domain/synthetics/express/types";
 import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { MarketsInfoData, useMarketsInfoRequest } from "domain/synthetics/markets";
-import { buildRewardsParams, type RewardsParams } from "domain/synthetics/referrals/claimAffiliateRewards";
+import {
+  buildRewardsParams,
+  getSelectedClaimTokenAmounts,
+  type RewardsParams,
+} from "domain/synthetics/referrals/claimAffiliateRewards";
 import {
   claimAffiliateRewardsTxn,
   estimateClaimAffiliateRewardsGas,
+  simulateAndClaimAffiliateRewardsAndSwapTxn,
 } from "domain/synthetics/referrals/claimAffiliateRewardsTxn";
 import {
   buildAndSignMultichainClaimAffiliateRewardsTxn,
@@ -22,14 +28,20 @@ import {
 } from "domain/synthetics/referrals/createMultichainClaimAffiliateRewardsTxn";
 import { AffiliateReward } from "domain/synthetics/referrals/types";
 import { useAffiliateRewards } from "domain/synthetics/referrals/useAffiliateRewards";
+import {
+  CLAIM_AFFILIATE_FIXED_SLIPPAGE_BPS,
+  useClaimAffiliateSwapRoutes,
+} from "domain/synthetics/referrals/useClaimAffiliateSwapRoutes";
+import { useMaybeSlippageError } from "domain/synthetics/referrals/useMaybeSlippageError";
 import { getTotalClaimableAffiliateRewardsUsd } from "domain/synthetics/referrals/utils";
-import { convertToUsd, useTokensDataRequest } from "domain/synthetics/tokens";
+import { convertToTokenAmount, convertToUsd, useTokensDataRequest } from "domain/synthetics/tokens";
 import { getDefaultInsufficientGasMessage } from "domain/synthetics/trade/utils/validation";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { WalletTxnResult } from "lib/transactions/sendWalletTransaction";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { usePrevious } from "lib/usePrevious";
 import { useThrottledAsync } from "lib/useThrottledAsync";
@@ -40,6 +52,7 @@ import type { TokenData } from "sdk/utils/tokens/types";
 import { calculateNetworkFeeDetails } from "components/GmxAccountModal/calculateNetworkFeeDetails";
 
 const MAIN_REWARDS_PREVIEW_COUNT = 5;
+const MAX_MULTICHAIN_SWAP_REWARDS = 5;
 const MIN_REWARD_USD_THRESHOLD = expandDecimals(1, 30); // $1 in USD_DECIMALS
 
 export type RewardWithUsd = {
@@ -137,8 +150,10 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showOtherMainRewards, setShowOtherMainRewards] = useState(false);
+  const [isSwapEnabled, setIsSwapEnabled] = useState(false);
   const [showSmallRewards, setShowSmallRewards] = useState(false);
   const [selectedMarketAddresses, setSelectedMarketAddresses] = useState<string[]>([]);
+  const [allowedSlippage, setAllowedSlippage] = useState(CLAIM_AFFILIATE_FIXED_SLIPPAGE_BPS);
   const isInitialSelectionAppliedRef = useRef(false);
 
   const rawRewards = useMemo(() => Object.values(affiliateRewardsData || {}), [affiliateRewardsData]);
@@ -167,22 +182,62 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
   }, [marketsInfoData, rewards]);
 
   const mainRewards = useMemo(() => mainRewardsWithUsd.map(({ reward }) => reward), [mainRewardsWithUsd]);
+  const smallRewards = useMemo(() => smallRewardsWithUsd.map(({ reward }) => reward), [smallRewardsWithUsd]);
+
+  const rankedMarketAddresses = useMemo(
+    () => [...mainRewards, ...smallRewards].map((reward) => reward.marketAddress),
+    [mainRewards, smallRewards]
+  );
+  const isSelectionLimitedBySwapMultichain = srcChainId !== undefined && isSwapEnabled;
 
   const selectedMarketAddressesSet = useMemo(() => new Set(selectedMarketAddresses), [selectedMarketAddresses]);
 
-  const handleToggleSelect = useCallback((marketAddress: string) => {
-    setSelectedMarketAddresses((prev) => {
-      if (prev.includes(marketAddress)) {
-        return prev.filter((address) => address !== marketAddress);
-      }
+  const canSelectMore =
+    !isSelectionLimitedBySwapMultichain || selectedMarketAddresses.length < MAX_MULTICHAIN_SWAP_REWARDS;
 
-      return [...prev, marketAddress];
-    });
-  }, []);
+  const handleToggleSelect = useCallback(
+    (marketAddress: string) => {
+      setSelectedMarketAddresses((prev) => {
+        if (prev.includes(marketAddress)) {
+          return prev.filter((address) => address !== marketAddress);
+        }
+
+        if (isSelectionLimitedBySwapMultichain && prev.length >= MAX_MULTICHAIN_SWAP_REWARDS) {
+          return prev;
+        }
+
+        return [...prev, marketAddress];
+      });
+    },
+    [isSelectionLimitedBySwapMultichain]
+  );
 
   const rewardsTxParams = useMemo(
     () => buildRewardsParams(chainId, rewards, selectedMarketAddresses),
     [chainId, rewards, selectedMarketAddresses]
+  );
+
+  const selectedClaimTokenAmountsByToken = useMemo(
+    () =>
+      getSelectedClaimTokenAmounts({
+        chainId,
+        rewards,
+        selectedMarketAddresses,
+      }),
+    [chainId, rewards, selectedMarketAddresses]
+  );
+
+  const selectedClaimTokensUsd = useMemo(
+    () =>
+      Object.values(selectedClaimTokenAmountsByToken).reduce((acc, item) => {
+        const token = getByKey(tokensData, item.tokenAddress);
+        if (!token) {
+          return acc;
+        }
+
+        return acc + (convertToUsd(item.amount, token.decimals, token.prices.minPrice) ?? 0n);
+      }, 0n),
+    [selectedClaimTokenAmountsByToken, tokensData]
   );
 
   const totalClaimableFundingUsd =
@@ -196,6 +251,31 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
   );
   const hiddenMainRewards = useMemo(() => mainRewardsWithUsd.slice(MAIN_REWARDS_PREVIEW_COUNT), [mainRewardsWithUsd]);
   const shouldShowSmallRewardsToggle = hiddenMainRewards.length === 0 || showOtherMainRewards;
+
+  const {
+    swapTargetTokenOptions,
+    swapTargetTokenAddress,
+    setSwapTargetTokenAddress,
+    swapTargetToken,
+    hasSwapRouteError,
+    hasApiSlippageError,
+    isSwapRouteLoading,
+    nothingToSwap,
+    settlementSwapExternalCalls,
+    multichainSwapExternalCalls,
+    toReceiveAmount,
+    toReceiveUsd,
+    failedSwapTokenSymbols,
+    swapEstimatedNetworkFeeAmount,
+    swapRouteFetchProgress,
+  } = useClaimAffiliateSwapRoutes({
+    account,
+    chainId,
+    selectedClaimTokenAmountsByToken,
+    tokensData,
+    isSwapEnabled,
+    allowedSlippage,
+  });
 
   const selectableMarketAddresses = useMemo(
     () => (showSmallRewards ? rewards : mainRewards).map((reward) => reward.marketAddress),
@@ -212,8 +292,13 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
       return;
     }
 
+    if (isSelectionLimitedBySwapMultichain) {
+      setSelectedMarketAddresses(selectableMarketAddresses.slice(0, MAX_MULTICHAIN_SWAP_REWARDS));
+      return;
+    }
+
     setSelectedMarketAddresses(selectableMarketAddresses);
-  }, [isAllChecked, selectableMarketAddresses]);
+  }, [isAllChecked, isSelectionLimitedBySwapMultichain, selectableMarketAddresses]);
 
   const gasPaymentToken = useSelector(selectGasPaymentToken);
   const gasPrice = useGasPrice(chainId);
@@ -228,14 +313,27 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
       !rewardsTxParams
     )
       return;
+    if (isSwapEnabled && !settlementSwapExternalCalls && (isSwapRouteLoading || hasSwapRouteError)) {
+      helperToast.error(t`Swap route unavailable`);
+      return;
+    }
 
     setIsSubmitting(true);
 
     try {
-      const tx = await claimAffiliateRewardsTxn(chainId, signer, {
-        account,
-        rewardsParams: rewardsTxParams,
-      });
+      let tx: WalletTxnResult;
+      if (isSwapEnabled && settlementSwapExternalCalls) {
+        tx = await simulateAndClaimAffiliateRewardsAndSwapTxn(chainId, signer, {
+          account,
+          rewardsParams: rewardsTxParams,
+          externalCalls: settlementSwapExternalCalls,
+        });
+      } else {
+        tx = await claimAffiliateRewardsTxn(chainId, signer, {
+          account,
+          rewardsParams: rewardsTxParams,
+        });
+      }
 
       const receipt = await tx.wait();
       if (receipt?.status === "success") {
@@ -256,10 +354,14 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
     account,
     affiliateRewardsData,
     chainId,
+    hasSwapRouteError,
+    isSwapEnabled,
+    isSwapRouteLoading,
     marketsInfoData,
     mutateAffiliateRewards,
     onClose,
     rewardsTxParams,
+    settlementSwapExternalCalls,
     signer,
     srcChainId,
     swrMutate,
@@ -274,21 +376,60 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
     enabled: srcChainId !== undefined,
     expressTransactionBuilder,
     withLoading: false,
+    transactionExternalCalls: multichainSwapExternalCalls,
   });
 
   const errors = useArbitraryError(expressTxnParamsAsyncResult.error);
+  const fallbackGasPaymentTokenAmount = useMemo(() => {
+    if (srcChainId === undefined || !gasPaymentToken || swapEstimatedNetworkFeeAmount <= 0n) {
+      return undefined;
+    }
+
+    const nativeToken = getByKey(tokensData, zeroAddress);
+
+    if (!nativeToken) {
+      return undefined;
+    }
+
+    const swapEstimatedNetworkFeeUsd = convertToUsd(
+      swapEstimatedNetworkFeeAmount,
+      nativeToken.decimals,
+      nativeToken.prices.minPrice
+    );
+
+    if (swapEstimatedNetworkFeeUsd === undefined) {
+      return undefined;
+    }
+
+    return convertToTokenAmount(swapEstimatedNetworkFeeUsd, gasPaymentToken.decimals, gasPaymentToken.prices.minPrice);
+  }, [gasPaymentToken, srcChainId, swapEstimatedNetworkFeeAmount, tokensData]);
+
+  const isFallbackOutOfGasPaymentTokenBalance = useMemo(() => {
+    if (srcChainId === undefined || !gasPaymentToken || fallbackGasPaymentTokenAmount === undefined) {
+      return false;
+    }
+
+    if (gasPaymentToken.gmxAccountBalance === undefined) {
+      return false;
+    }
+
+    return fallbackGasPaymentTokenAmount > gasPaymentToken.gmxAccountBalance;
+  }, [fallbackGasPaymentTokenAmount, gasPaymentToken, srcChainId]);
 
   const isExpressParamsLoading =
     srcChainId !== undefined &&
     expressTxnParamsAsyncResult.data === undefined &&
     expressTxnParamsAsyncResult.error === undefined;
 
+  const isSwapReady =
+    settlementSwapExternalCalls !== undefined || (isSwapEnabled && !isSwapRouteLoading && !hasSwapRouteError);
   const shouldEstimateSettlementNetworkFee =
     srcChainId === undefined &&
     account !== undefined &&
     rewardsTxParams !== undefined &&
     rewardsTxParams.marketAddresses.length > 0 &&
-    rewardsTxParams.tokenAddresses.length > 0;
+    rewardsTxParams.tokenAddresses.length > 0 &&
+    (!isSwapEnabled || isSwapReady);
 
   const settlementFeeForceRecalculateKey = useMemo(() => {
     if (!shouldEstimateSettlementNetworkFee || !rewardsTxParams) {
@@ -296,8 +437,8 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
     }
 
     const uniqueSortedMarketAddresses = [...new Set(rewardsTxParams.marketAddresses)].sort().join("|");
-    return uniqueSortedMarketAddresses;
-  }, [rewardsTxParams, shouldEstimateSettlementNetworkFee]);
+    return `${settlementSwapExternalCalls ? "withExternalCalls" : "withoutExternalCalls"}:${uniqueSortedMarketAddresses}`;
+  }, [rewardsTxParams, settlementSwapExternalCalls, shouldEstimateSettlementNetworkFee]);
 
   const previousSettlementFeeForceRecalculateKey = usePrevious(settlementFeeForceRecalculateKey);
   const shouldForceRecalculateSettlementNetworkFee =
@@ -309,6 +450,7 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
       return estimateClaimAffiliateRewardsGas(params.chainId, {
         account: params.account,
         rewardsParams: params.rewardsParams,
+        externalCalls: params.externalCalls,
       });
     },
     {
@@ -317,6 +459,7 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
             chainId,
             account,
             rewardsParams: rewardsTxParams,
+            externalCalls: settlementSwapExternalCalls,
           }
         : undefined,
       forceRecalculate: shouldForceRecalculateSettlementNetworkFee,
@@ -327,6 +470,9 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
   );
 
   const settlementNetworkFeeGasLimit = settlementNetworkFeeAsyncResult.data;
+  const maybeSlippageError = useMaybeSlippageError(
+    srcChainId === undefined ? settlementNetworkFeeAsyncResult.error : expressTxnParamsAsyncResult.error
+  );
 
   const settlementNetworkFeeDetails = useMemo(
     () =>
@@ -346,6 +492,10 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
 
   const handleSubmitMultichain = useCallback(async () => {
     if (!account || !signer || !rewardsTxParams) return;
+    if (isSwapEnabled && !nothingToSwap && !multichainSwapExternalCalls) {
+      helperToast.error(t`Swap route unavailable`);
+      return;
+    }
 
     setIsSubmitting(true);
 
@@ -387,6 +537,9 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
     account,
     chainId,
     expressTxnParamsAsyncResult.promise,
+    isSwapEnabled,
+    multichainSwapExternalCalls,
+    nothingToSwap,
     mutateAffiliateRewards,
     onClose,
     rewardsTxParams,
@@ -407,13 +560,45 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
   }, [handleSubmitMultichain, handleSubmitSettlementChain, hasOutdatedUi, srcChainId]);
 
   useEffect(() => {
-    if (isInitialSelectionAppliedRef.current || mainRewards.length === 0) {
+    if (!isSelectionLimitedBySwapMultichain) {
       return;
     }
 
-    setSelectedMarketAddresses(mainRewards.map((reward) => reward.marketAddress));
-    isInitialSelectionAppliedRef.current = true;
-  }, [mainRewards]);
+    const rankedMarketAddressesSet = new Set(rankedMarketAddresses);
+    setSelectedMarketAddresses((prev) => {
+      const filtered = prev.filter((address) => rankedMarketAddressesSet.has(address));
+
+      let next: string[];
+      if (filtered.length === 0) {
+        next = rankedMarketAddresses.slice(0, MAX_MULTICHAIN_SWAP_REWARDS);
+      } else if (filtered.length <= MAX_MULTICHAIN_SWAP_REWARDS) {
+        next = filtered;
+      } else {
+        next = filtered.slice(0, MAX_MULTICHAIN_SWAP_REWARDS);
+      }
+
+      if (next.length === prev.length && next.every((addr, i) => addr === prev[i])) {
+        return prev;
+      }
+
+      return next;
+    });
+  }, [isSelectionLimitedBySwapMultichain, rankedMarketAddresses]);
+
+  useEffect(() => {
+    if (isInitialSelectionAppliedRef.current) {
+      return;
+    }
+
+    if (mainRewards.length > 0) {
+      setSelectedMarketAddresses(mainRewards.map((reward) => reward.marketAddress));
+      isInitialSelectionAppliedRef.current = true;
+    } else if (smallRewards.length > 0) {
+      setSelectedMarketAddresses(smallRewards.map((reward) => reward.marketAddress));
+      setShowSmallRewards(true);
+      isInitialSelectionAppliedRef.current = true;
+    }
+  }, [mainRewards, smallRewards]);
 
   useEffect(() => {
     if (!shouldShowSmallRewardsToggle && showSmallRewards) {
@@ -444,6 +629,8 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
       amount = errors.isOutOfTokenError.requiredAmount;
     } else if (expressTxnParamsAsyncResult.data?.gasPaymentParams.gasPaymentTokenAmount !== undefined) {
       amount = expressTxnParamsAsyncResult.data.gasPaymentParams.gasPaymentTokenAmount;
+    } else if (isFallbackOutOfGasPaymentTokenBalance) {
+      amount = fallbackGasPaymentTokenAmount;
     }
 
     if (amount === undefined || token === undefined) {
@@ -463,10 +650,20 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
     errors?.isOutOfTokenError?.isGasPaymentToken,
     errors?.isOutOfTokenError?.requiredAmount,
     expressTxnParamsAsyncResult.data?.gasPaymentParams.gasPaymentTokenAmount,
+    fallbackGasPaymentTokenAmount,
     gasPaymentToken,
+    isFallbackOutOfGasPaymentTokenBalance,
     settlementNetworkFeeDetails,
     srcChainId,
   ]);
+
+  const isSwapRouteLoadingForSubmit = isSwapEnabled && isSwapRouteLoading;
+  const isSlippageTooLow = maybeSlippageError || (isSwapEnabled && hasApiSlippageError);
+  const hasSwapRouteErrorForSubmit =
+    !isSlippageTooLow &&
+    (srcChainId !== undefined
+      ? isSwapEnabled && !nothingToSwap && !isSwapRouteLoading && !multichainSwapExternalCalls
+      : isSwapEnabled && hasSwapRouteError);
 
   const submitButtonState = useMemo((): SubmitButtonState => {
     if (hasOutdatedUi) {
@@ -475,9 +672,20 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
       return { text: t`Claiming...`, disabled: true };
     } else if (selectedMarketAddresses.length === 0) {
       return { text: t`No rewards selected`, disabled: true };
+    } else if (isSwapEnabled && !swapTargetTokenAddress) {
+      return { text: t`Swap token unavailable`, disabled: true };
+    } else if (isSwapRouteLoadingForSubmit) {
+      const progressText = swapRouteFetchProgress
+        ? t`Fetching swap route (${swapRouteFetchProgress.current}/${swapRouteFetchProgress.total})...`
+        : t`Fetching swap route...`;
+      return { text: progressText, disabled: true };
+    } else if (hasSwapRouteErrorForSubmit) {
+      return { text: t`Swap route unavailable`, disabled: true };
+    } else if (isSlippageTooLow) {
+      return { text: t`Slippage too low`, disabled: true };
     } else if (networkFeeInfo.isLoading) {
       return { text: t`Loading fees...`, disabled: true };
-    } else if (errors?.isOutOfTokenError?.isGasPaymentToken) {
+    } else if (isFallbackOutOfGasPaymentTokenBalance || errors?.isOutOfTokenError?.isGasPaymentToken) {
       return { text: getDefaultInsufficientGasMessage(), disabled: true };
     } else if (errors?.isOutOfTokenError) {
       const token = getToken(chainId, errors.isOutOfTokenError.tokenAddress);
@@ -491,7 +699,7 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
       };
     } else {
       return {
-        text: t`Claim`,
+        text: isSwapEnabled ? t`Claim & swap` : t`Claim`,
         disabled: false,
       };
     }
@@ -500,11 +708,18 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
     errors?.isOutOfTokenError,
     expressTxnParamsAsyncResult.error,
     hasOutdatedUi,
+    hasSwapRouteErrorForSubmit,
     isExpressParamsLoading,
+    isFallbackOutOfGasPaymentTokenBalance,
     isSubmitting,
+    isSwapEnabled,
+    isSwapRouteLoadingForSubmit,
+    isSlippageTooLow,
+    swapRouteFetchProgress,
     networkFeeInfo.isLoading,
     selectedMarketAddresses.length,
     srcChainId,
+    swapTargetTokenAddress,
   ]);
 
   return {
@@ -516,6 +731,8 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
 
     selectedMarketAddressesSet,
     isAllChecked,
+    canSelectMore,
+    isSelectionLimitedBySwapMultichain,
     handleToggleSelect,
     handleToggleSelectAll,
 
@@ -524,6 +741,21 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
     showSmallRewards,
     setShowSmallRewards,
     shouldShowSmallRewardsToggle,
+
+    isSwapEnabled,
+    setIsSwapEnabled,
+    allowedSlippage,
+    setAllowedSlippage,
+    swapTargetTokenOptions,
+    swapTargetTokenAddress,
+    setSwapTargetTokenAddress,
+    swapTargetToken,
+    selectedClaimTokensUsd,
+    toReceiveAmount,
+    toReceiveUsd,
+    isSwapRouteLoadingForSubmit,
+    hasSwapRouteErrorForSubmit,
+    failedSwapTokenSymbols,
 
     networkFeeInfo,
 

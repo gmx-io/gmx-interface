@@ -7,35 +7,43 @@ import type { ImageExportError } from "lib/metrics/types";
 
 type Options = NonNullable<Parameters<typeof toBlob>[1]>;
 
-async function renderElementToBlob(element: HTMLElement, extraOptions?: Options): Promise<Blob> {
-  const { toBlob } = await import("html-to-image");
+async function dataUrlToBlob(dataUrl: string): Promise<Blob> {
+  const res = await fetch(dataUrl);
+  return res.blob();
+}
+
+export async function renderElementToBlob(element: HTMLElement, extraOptions?: Options): Promise<Blob> {
+  const { toPng, toJpeg } = await import("html-to-image");
+
+  const toImg = extraOptions?.type === "image/png" ? toPng : toJpeg;
   const options = { quality: 1, pixelRatio: 2, ...extraOptions };
 
   // Render repeatedly until the output stabilizes (same blob size across calls).
   // Safari may not load all resources (images, fonts) on the first render pass.
   let previousSize = 0;
+  let lastDataUrl: string | undefined;
   for (let i = 0; i < 5; i++) {
-    const blob = await toBlob(element, options);
-    if (blob && blob.size === previousSize) {
-      return blob;
+    lastDataUrl = await toImg(element, options);
+    if (lastDataUrl && lastDataUrl.length === previousSize) {
+      return dataUrlToBlob(lastDataUrl);
     }
-    previousSize = blob?.size ?? 0;
+    previousSize = lastDataUrl?.length ?? 0;
   }
 
-  const blob = await toBlob(element, options);
-
-  if (!blob) {
+  if (!lastDataUrl) {
     throw new Error("Failed to render image");
   }
 
-  return blob;
+  return dataUrlToBlob(lastDataUrl);
 }
 
 export async function copyElementAsImage(element: HTMLElement, extraOptions?: Options): Promise<void> {
   // Pass the blob as a Promise so clipboard.write() is called synchronously
   // within the user gesture — Safari revokes clipboard permission if an async
   // operation separates the gesture from the write call.
-  await navigator.clipboard.write([new ClipboardItem({ "image/png": renderElementToBlob(element, extraOptions) })]);
+  await navigator.clipboard.write([
+    new ClipboardItem({ "image/png": renderElementToBlob(element, { ...extraOptions, type: "image/png" }) }),
+  ]);
 }
 
 function downloadBlob(blob: Blob, fileName: string): void {
@@ -66,7 +74,7 @@ export async function shareOrCopyElementAsImage({
   try {
     if (isMobile) {
       const blob = await renderElementToBlob(element, extraOptions);
-      const file = new File([blob], fileName, { type: "image/png" });
+      const file = new File([blob], fileName, { type: blob.type });
 
       // Android WebView (MetaMask, Trust Wallet, etc.) doesn't support Web Share API
       const canShare = typeof navigator.canShare === "function" && navigator.canShare({ files: [file] });

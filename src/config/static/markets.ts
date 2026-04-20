@@ -533,6 +533,14 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0xbA30e198CFFeBEf0A84D6943cC8B2e356E324112": {
       enabled: true,
     },
+    // GOLD/USD [WETH-USDC]
+    "0x0Df2BE76F517BCF0000AbfFcB6344B3b2aC4Cc4f": {
+      enabled: true,
+    },
+    // SILVER/USD [WETH-USDC]
+    "0x448Fa722717df299ee197E2F6d8EB7911EFF6cEc": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
@@ -769,6 +777,58 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     },
   },
 };
+
+export const DEPOSIT_DISABLED_MARKET_ADDRESSES: Record<number, Set<string>> = {
+  [ARBITRUM]: new Set([
+    // ETH side [WETH-USDC]
+    "0x970b730b5dD18de53A230eE8F4af088dBC3a6F8d", // KTA/USD
+    "0xac484106d935f0f20F1485b631fA6F65AeEff550", // ZORA/USD
+    "0x4D3Eb91efd36C2b74181F34B111bc1E91a0d0cb4", // DOLO/USD
+    "0xb3588455858a49D3244237CEe00880CcB84b91Dd", // WLFI/USD
+    "0xFec8f404FBCa3b11aFD3b3f0c57507C2a06dE636", // TRUMP/USD
+    "0xD9535bB5f58A1a75032416F2dFe7880C30575a41", // LTC/USD
+    "0x9F159014CC218e942E9E9481742fE5BFa9ac5A2C", // ENA/USD
+    "0xB489711B1cB86afDA48924730084e23310EB4883", // SEI/USD
+    "0x4c505e0062459cf8F60FfF13279c92ea15aE6e2D", // RENDER/USD
+    "0x6Ecf2133E2C9751cAAdCb6958b9654baE198a797", // SUI/USD
+    "0x12fD1A4BdB96219E637180Ff5293409502b2951D", // MELANIA/USD
+    "0x41E3bC5B72384C8B26b559B7d16C2B81Fd36fbA2", // CVX/USD
+    "0xfaEaE570B07618D3F10360608E43c241181c4614", // AERO/USD
+    "0x9e79146b3A022Af44E0708c6794F03Ef798381A5", // ZRO/USD
+    "0x00310c6d8A9F821e3FE991f4835f2cA4d87034Cf", // SKY/USD
+    "0x0e46941F9bfF8d0784BFfa3d0D7883CDb82D7aE7", // CRV/USD
+    "0xBeB1f4EBC9af627Ca1E5a75981CE1AE97eFeDA22", // TIA/USD
+    "0x970e578fF01589Bb470CE38a2f1753152A009366", // FET/USD
+    "0x04DecfB37e46075189324817df80a32D22b9eD8D", // AIXBT/USD
+    "0xD4b737892baB8446Ea1e8Bb901db092fb1EC1791", // EIGEN/USD
+    // BTC side [WBTC-USDC]
+    "0xBcb8FE13d02b023e8f94f6881Cc0192fd918A5C0", // HYPE/USD
+    "0xe024188850A822409F362209C1EF2cFdc7c4DE4C", // 0G/USD
+    "0x7c54D547FAD72f8AFbf6E5b04403A0168b654C6f", // XMR/USD
+    "0x0164B6c847c65e07C9F6226149ADBFA7C1dE40Cf", // ASTER/USD
+    "0x4b67aa8F754b17b1029Ad2DB4fb6a276CCe350c4", // XPL/USD
+    "0xe55e1A29985488A2c8846a91E925c2B7C6564db1", // TAO/USD
+    // Commodity markets — accessible only via GLV
+    "0x0Df2BE76F517BCF0000AbfFcB6344B3b2aC4Cc4f", // GOLD/USD
+    "0x448Fa722717df299ee197E2F6d8EB7911EFF6cEc", // SILVER/USD
+  ]),
+};
+
+export function isDepositDisabledMarket(chainId: number, marketTokenAddress: string): boolean {
+  return DEPOSIT_DISABLED_MARKET_ADDRESSES[chainId]?.has(marketTokenAddress) ?? false;
+}
+
+export const SHIFT_INTO_DISABLED_MARKET_ADDRESSES: Record<number, Set<string>> = {
+  [ARBITRUM]: new Set([
+    // Commodity markets — accessible only via GLV
+    "0x0Df2BE76F517BCF0000AbfFcB6344B3b2aC4Cc4f", // GOLD/USD
+    "0x448Fa722717df299ee197E2F6d8EB7911EFF6cEc", // SILVER/USD
+  ]),
+};
+
+export function isShiftIntoDisabledMarket(chainId: number, marketTokenAddress: string): boolean {
+  return SHIFT_INTO_DISABLED_MARKET_ADDRESSES[chainId]?.has(marketTokenAddress) ?? false;
+}
 
 export const MARKETS = Object.keys(MARKETS_UI_CONFIGS).reduce(
   (acc, network) => {

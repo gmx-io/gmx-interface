@@ -629,7 +629,11 @@ export function OrderEditor(p: Props) {
         const positionOrder = p.order as PositionOrderInfo;
 
         if (isTriggerDecrease) {
-          closeSize.setFromUsdString(formatAmountFree(positionOrder.sizeDeltaUsd ?? 0n, USD_DECIMALS));
+          const clampedSizeDeltaUsd =
+            existingPosition && (positionOrder.sizeDeltaUsd ?? 0n) > existingPosition.sizeInUsd
+              ? existingPosition.sizeInUsd
+              : positionOrder.sizeDeltaUsd ?? 0n;
+          closeSize.setFromUsdString(formatAmountFree(clampedSizeDeltaUsd, USD_DECIMALS));
         } else {
           setSizeInputValue(formatAmountFree(positionOrder.sizeDeltaUsd ?? 0n, USD_DECIMALS));
         }
@@ -647,6 +651,7 @@ export function OrderEditor(p: Props) {
     },
     [
       closeSize,
+      existingPosition,
       indexToken?.visualMultiplier,
       isInited,
       isTriggerDecrease,

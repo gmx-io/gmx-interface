@@ -7,7 +7,7 @@ import { ARBITRUM, AVALANCHE, BOTANIX, MEGAETH } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { useGmxPrice, useTotalGmxStaked } from "domain/legacy";
 import { useV1FeesInfo, useVolumeInfo } from "domain/stats";
-import { usePositionsTotalCollateral } from "domain/synthetics/positions/usePositionsTotalCollateral";
+import { usePositionsTotalMargin } from "domain/synthetics/positions/usePositionsTotalMargin";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { useChainId } from "lib/chains";
 import { arrayURLFetcher } from "lib/fetcher";
@@ -67,10 +67,10 @@ export function OverviewCard({
 
   let { [AVALANCHE]: stakedGmxAvalanche, [ARBITRUM]: stakedGmxArbitrum } = useTotalGmxStaked();
 
-  const arbitrumPositionsCollateralUsd = usePositionsTotalCollateral(ARBITRUM);
-  const avalanchePositionsCollateralUsd = usePositionsTotalCollateral(AVALANCHE);
-  const botanixPositionsCollateralUsd = usePositionsTotalCollateral(BOTANIX);
-  const megaethPositionsCollateralUsd = usePositionsTotalCollateral(MEGAETH);
+  const arbitrumPositionsMarginUsd = usePositionsTotalMargin(ARBITRUM);
+  const avalanchePositionsMarginUsd = usePositionsTotalMargin(AVALANCHE);
+  const botanixPositionsMarginUsd = usePositionsTotalMargin(BOTANIX);
+  const megaethPositionsMarginUsd = usePositionsTotalMargin(MEGAETH);
 
   // #region TVL and GLP Pool
   const glpTvlArbitrum = statsArbitrum?.glp.aum;
@@ -117,20 +117,19 @@ export function OverviewCard({
     stakedGmxAvalanche !== undefined &&
     glpMarketCapArbitrum !== undefined &&
     glpMarketCapAvalanche !== undefined &&
-    arbitrumPositionsCollateralUsd !== undefined &&
-    avalanchePositionsCollateralUsd !== undefined &&
-    botanixPositionsCollateralUsd !== undefined &&
-    megaethPositionsCollateralUsd !== undefined
+    arbitrumPositionsMarginUsd !== undefined &&
+    avalanchePositionsMarginUsd !== undefined &&
+    botanixPositionsMarginUsd !== undefined &&
+    megaethPositionsMarginUsd !== undefined
   ) {
     const stakedGmxUsdArbitrum = bigMath.mulDiv(gmxPrice, stakedGmxArbitrum, expandDecimals(1, GMX_DECIMALS));
     const stakedGmxUsdAvalanche = bigMath.mulDiv(gmxPrice, stakedGmxAvalanche, expandDecimals(1, GMX_DECIMALS));
 
     // GMX Staked + GLP Pools + GM Pools
-    displayTvlArbitrum = stakedGmxUsdArbitrum + glpMarketCapArbitrum + gmTvlArbitrum + arbitrumPositionsCollateralUsd;
-    displayTvlAvalanche =
-      stakedGmxUsdAvalanche + glpMarketCapAvalanche + gmTvlAvalanche + avalanchePositionsCollateralUsd;
-    displayTvlBotanix = gmTvlBotanix + botanixPositionsCollateralUsd;
-    displayTvlMegaeth = gmTvlMegaeth + megaethPositionsCollateralUsd;
+    displayTvlArbitrum = stakedGmxUsdArbitrum + glpMarketCapArbitrum + gmTvlArbitrum + arbitrumPositionsMarginUsd;
+    displayTvlAvalanche = stakedGmxUsdAvalanche + glpMarketCapAvalanche + gmTvlAvalanche + avalanchePositionsMarginUsd;
+    displayTvlBotanix = gmTvlBotanix + botanixPositionsMarginUsd;
+    displayTvlMegaeth = gmTvlMegaeth + megaethPositionsMarginUsd;
     displayTvl = displayTvlArbitrum + displayTvlAvalanche + displayTvlBotanix + displayTvlMegaeth;
   }
 

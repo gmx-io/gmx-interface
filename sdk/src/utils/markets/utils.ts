@@ -148,7 +148,26 @@ export function getMaxLeverageByMinCollateralFactor(minCollateralFactor: bigint 
   return rounded * BASIS_POINTS_DIVISOR;
 }
 
-export function getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor: bigint | undefined) {
+// GOLD/SILVER on-hours: MCF 0.009 (9e27) → 100x UI
+const MCF_ON_HOURS = 9n * 10n ** 27n;
+// GOLD/SILVER off-hours: MCF 0.035 (35e27) → 25x UI
+const MCF_OFF_HOURS = 35n * 10n ** 27n;
+
+const GOLD_SILVER_MARKETS = new Set([
+  // Arbitrum
+  "0x0Df2BE76F517BCF0000AbfFcB6344B3b2aC4Cc4f", // GOLD/USD
+  "0x448Fa722717df299ee197E2F6d8EB7911EFF6cEc", // SILVER/USD
+]);
+
+export function getMaxAllowedLeverageByMinCollateralFactor(
+  minCollateralFactor: bigint | undefined,
+  marketAddress: string | undefined
+) {
+  if (marketAddress && GOLD_SILVER_MARKETS.has(marketAddress)) {
+    if (minCollateralFactor === MCF_ON_HOURS) return 100 * BASIS_POINTS_DIVISOR;
+    if (minCollateralFactor === MCF_OFF_HOURS) return 25 * BASIS_POINTS_DIVISOR;
+  }
+
   return getMaxLeverageByMinCollateralFactor(minCollateralFactor) / 2;
 }
 

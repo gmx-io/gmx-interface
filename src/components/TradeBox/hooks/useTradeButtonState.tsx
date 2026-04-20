@@ -37,7 +37,7 @@ import {
   selectTradeboxIsStakeOrUnstake,
   selectTradeboxIsTPSLEnabled,
   selectTradeboxIsWrapOrUnwrap,
-  selectTradeboxMaxLeverage,
+  selectTradeboxMaxAllowedLeverage,
   selectTradeboxPayAmount,
   selectTradeboxSelectedPosition,
   selectTradeboxState,
@@ -662,9 +662,7 @@ function useDetectAndSetAvailableMaxLeverage({
 
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
 
-  const maxLeverage = useSelector(selectTradeboxMaxLeverage);
-
-  const maxAllowedLeverage = maxLeverage / 2;
+  const maxAllowedLeverage = useSelector(selectTradeboxMaxAllowedLeverage);
 
   const findSwapPath = useSelector(selectTradeboxFindSwapPath);
   const uiFeeFactor = useUiFeeFactor();

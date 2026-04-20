@@ -69,6 +69,15 @@ export type KyberSwapQuote = {
   outputAmount: bigint;
 };
 
+const KYBER_SWAP_SLIPPAGE_ERROR_CODE = 4222;
+
+export class KyberSwapSlippageError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "KyberSwapSlippageError";
+  }
+}
+
 export async function getKyberSwapTxnData({
   chainId,
   tokenInAddress,
@@ -78,6 +87,7 @@ export async function getKyberSwapTxnData({
   receiverAddress,
   gasPrice,
   slippage,
+  signal,
 }: {
   senderAddress: string;
   receiverAddress: string;
@@ -87,6 +97,7 @@ export async function getKyberSwapTxnData({
   amountIn: bigint;
   gasPrice: bigint;
   slippage: number;
+  signal?: AbortSignal;
 }): Promise<KyberSwapQuote | undefined> {
   const baseUrl = getKyberSwapUrl(chainId);
   const tokenIn = getToken(chainId, tokenInAddress);
@@ -109,6 +120,7 @@ export async function getKyberSwapTxnData({
   try {
     const routeRes = await fetch(routeUrl, {
       headers: { "x-client-id": KYBER_SWAP_CLIENT_ID },
+      signal,
     });
 
     if (routeRes.status === 403) {
@@ -142,11 +154,15 @@ export async function getKyberSwapTxnData({
         recipient: receiverAddress,
         slippageTolerance: slippage,
       }),
+      signal,
     });
 
     const buildData = (await buildRes.json()) as KyberSwapBuildResponse;
 
     if (!buildData.data || buildData.code !== 0) {
+      if (buildData.code === KYBER_SWAP_SLIPPAGE_ERROR_CODE) {
+        throw new KyberSwapSlippageError(`${buildData.message}`);
+      }
       throw new Error(`Failed to build transaction: ${buildData.code} ${buildData.message}`);
     }
 
@@ -176,6 +192,9 @@ export async function getKyberSwapTxnData({
       outputAmount: amountOutBigint,
     };
   } catch (e) {
+    if (e instanceof KyberSwapSlippageError) {
+      throw e;
+    }
     (e as Error).message += ` URL: ${routeUrl.replace(receiverAddress, "...")}`;
     metrics.pushError(e, "externalSwap.getKyberSwapTxnData");
     return undefined;

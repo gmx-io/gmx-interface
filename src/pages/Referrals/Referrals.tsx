@@ -3,19 +3,21 @@ import { useCallback, useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
 import { BOTANIX } from "config/chains";
-import { useReferralsData } from "domain/referrals";
+import { useReferralsData, useUserReferralCode } from "domain/referrals";
 import { CREATE_REFERRAL_CODE_QUERY_PARAM } from "domain/referrals/utils/referralsHelper";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
-import { getPageTitle } from "lib/legacy";
+import { getPageTitle, isHashZero } from "lib/legacy";
 import useRouteQuery from "lib/useRouteQuery";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
+import { BlueShimmerText } from "components/BlueShimmerText/BlueShimmerText";
 import { BotanixBanner } from "components/BotanixBanner/BotanixBanner";
 import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
 import PageTitle from "components/PageTitle/PageTitle";
 import { ReferralsAffiliatesTab } from "components/Referrals/affiliates/ReferralsAffiliatesTab";
 import { ReferralsDistributionsTab } from "components/Referrals/distributions/ReferralsDistributionsTab";
+import { useRecentReferralCodes } from "components/Referrals/shared/hooks/useRecentReferralCodes";
 import { ReferralsTradersTab } from "components/Referrals/traders/ReferralsTradersTab";
 import SEO from "components/Seo/SEO";
 import Tabs from "components/Tabs/Tabs";
@@ -54,19 +56,41 @@ function Referrals({ account, activeTab, hasAddressInUrl }: Props) {
   const isBotanix = chainId === BOTANIX;
 
   const hasAffiliateCode = Boolean(referralsData?.chains?.[chainId]?.codes?.length);
+  const { recentCodes } = useRecentReferralCodes();
+  const hasAnyAffiliateCode = hasAffiliateCode || recentCodes.length > 0;
+
+  const { userReferralCode } = useUserReferralCode(chainId, account);
+  const hasTraderCode = Boolean(userReferralCode && !isHashZero(userReferralCode));
+
+  const isOnTradersDashboard = activeTab === ReferralsTab.Traders && hasTraderCode && !hasAddressInUrl;
+  const isOnAffiliatesDashboard = activeTab === ReferralsTab.Affiliates && hasAnyAffiliateCode && !hasAddressInUrl;
 
   const tabsOptions = useMemo((): Option<ReferralsTab>[] => {
     return TAB_OPTIONS.map((option): RegularOption<ReferralsTab> => {
       const isDistributionsLocked = option === ReferralsTab.Distributions && !hasAffiliateCode;
+
+      const shouldShimmer =
+        (option === ReferralsTab.Affiliates && isOnTradersDashboard && !hasAnyAffiliateCode) ||
+        (option === ReferralsTab.Traders && isOnAffiliatesDashboard && !hasTraderCode);
+
+      const label = localizedTabOptionLabels[option];
+
       return {
         value: option,
-        label: localizedTabOptionLabels[option],
+        label: shouldShimmer ? <BlueShimmerText>{label}</BlueShimmerText> : label,
         disabled: isDistributionsLocked,
         disabledMessage: isDistributionsLocked ? t`Register an affiliate code to access distributions` : undefined,
         icon: isDistributionsLocked ? <LockIcon className="size-16" /> : undefined,
       };
     });
-  }, [localizedTabOptionLabels, hasAffiliateCode]);
+  }, [
+    localizedTabOptionLabels,
+    hasAffiliateCode,
+    isOnTradersDashboard,
+    isOnAffiliatesDashboard,
+    hasAnyAffiliateCode,
+    hasTraderCode,
+  ]);
 
   const setActiveTab = useCallback(
     (newTab: ReferralsTab) => {
@@ -98,7 +122,7 @@ function Referrals({ account, activeTab, hasAddressInUrl }: Props) {
             subtitle={
               !isBotanix ? (
                 <Trans>
-                  Get fee discounts and earn up to 20% commission through the GMX <br /> referral programs.
+                  Get fee discounts and earn up to 15% commission through the GMX <br /> referral program.
                 </Trans>
               ) : undefined
             }

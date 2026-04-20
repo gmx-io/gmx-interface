@@ -69,7 +69,7 @@ export function Slider({ min, max, value, step = 1, marks, handle, onChange, cla
   useSliderDragOverlay(containerRef);
 
   return (
-    <div className={cx("Slider", className)} data-qa={qa} ref={containerRef}>
+    <div className={cx("Slider cursor-pointer", className)} data-qa={qa} ref={containerRef}>
       <RcSlider min={min} max={max} step={step} value={value} marks={marks} handle={handle} onChange={onChange} />
     </div>
   );

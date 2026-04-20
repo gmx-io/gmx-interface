@@ -60,6 +60,7 @@ import {
   formatBalanceAmount,
   formatDeltaUsd,
   formatPercentage,
+  formatTokenAmount,
   formatUsd,
   parseValue,
 } from "lib/numbers";
@@ -78,7 +79,6 @@ import { SidecarSlTpOrderEntry } from "sdk/utils/sidecarOrders/types";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";
 
 import Button from "components/Button/Button";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
 import { ExitPriceRow } from "components/ExitPriceRow/ExitPriceRow";
 import { ExpandableRow } from "components/ExpandableRow";
 import Modal from "components/Modal/Modal";
@@ -88,6 +88,7 @@ import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
+import { TradeInputField, DisplayMode } from "components/TradeboxMarginFields/TradeInputField";
 import { TradeFeesRow } from "components/TradeFeesRow/TradeFeesRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
@@ -210,7 +211,7 @@ export function AddTPSLModal({
     initialPercentage: 100,
   });
 
-  const { closeSizeInput, closePercentage, closeSizeLabel } = closeSize;
+  const { closeSizeInput, closePercentage } = closeSize;
 
   const closeSizeUsd = useMemo(() => {
     if (!editTPSLSize || closePercentage >= 100) {
@@ -910,17 +911,40 @@ export function AddTPSLModal({
 
         {editTPSLSize && (
           <div className="flex flex-col gap-12">
-            <BuyInputSection
-              topLeftLabel={t`Close`}
+            <TradeInputField
+              label={t`Close`}
               inputValue={closeSizeInput}
               onInputValueChange={closeSize.handleInputChange}
-              onClickBottomRightLabel={closeSize.setMaxCloseSize}
+              displayMode={closeSize.showSizeInTokens ? ("token" as DisplayMode) : ("usd" as DisplayMode)}
+              onDisplayModeChange={(mode: DisplayMode) => {
+                if ((mode === "token") !== closeSize.showSizeInTokens) {
+                  closeSize.handleSizeToggle();
+                }
+              }}
+              tokenSymbol={indexToken.symbol}
+              alternateValue={(() => {
+                if (closeSize.showSizeInTokens) {
+                  return formatUsd(closeSize.closeSizeUsd);
+                }
+                if (position.sizeInUsd === 0n) return "0";
+                const closeSizeInTokens = (closeSize.closeSizeUsd * position.sizeInTokens) / position.sizeInUsd;
+                const vm = BigInt(indexToken.visualMultiplier ?? 1);
+                return formatTokenAmount(closeSizeInTokens / vm, indexToken.decimals, indexToken.symbol);
+              })()}
+              rightHeadline={
+                <button
+                  type="button"
+                  className="flex items-center gap-4 text-typography-secondary hover:text-typography-primary"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    closeSize.setMaxCloseSize();
+                  }}
+                >
+                  {t`Max:`} <span className="numbers">{closeSize.formattedMaxCloseSize}</span>
+                </button>
+              }
               qa="close-size"
-            >
-              <span className="cursor-pointer select-none" onClick={closeSize.handleSizeToggle}>
-                {closeSizeLabel}
-              </span>
-            </BuyInputSection>
+            />
             <MarginPercentageSlider value={closePercentage} onChange={closeSize.handleSliderChange} />
           </div>
         )}
@@ -1063,8 +1087,8 @@ export function AddTPSLModal({
           <SyntheticsInfoRow
             label={
               <TooltipWithPortal
-                handle={<Trans>Collateral ({collateralToken.symbol})</Trans>}
-                content={<Trans>Initial collateral, excluding borrow and funding fees</Trans>}
+                handle={<Trans>Margin ({collateralToken.symbol})</Trans>}
+                content={<Trans>Margin before pending borrow and funding fees</Trans>}
                 variant="icon"
               />
             }

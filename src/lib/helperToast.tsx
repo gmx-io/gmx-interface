@@ -18,7 +18,13 @@ export const helperToast = {
 
     const { tradingErrorInfo, ...toastOpts } = opts ?? {};
 
-    if (tradingErrorInfo) {
+    const isUserRejection =
+      tradingErrorInfo?.errorData &&
+      typeof tradingErrorInfo.errorData === "object" &&
+      "isUserRejectedError" in tradingErrorInfo.errorData &&
+      (tradingErrorInfo.errorData as { isUserRejectedError?: boolean }).isUserRejectedError === true;
+
+    if (tradingErrorInfo && !isUserRejection) {
       tradingErrorTracker.reportError(tradingErrorInfo);
     }
 

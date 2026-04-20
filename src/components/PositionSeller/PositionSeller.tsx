@@ -55,7 +55,12 @@ import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { useDebugExecutionPrice } from "domain/synthetics/trade/useExecutionPrice";
 import { ORDER_OPTION_TO_TRADE_MODE, OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
-import { getCommonError, getDecreaseError, getExpressError } from "domain/synthetics/trade/utils/validation";
+import {
+  getCommonError,
+  getDecreaseError,
+  getExpressError,
+  takeValidationResult,
+} from "domain/synthetics/trade/utils/validation";
 import { Token } from "domain/tokens";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useChainId } from "lib/chains";
@@ -64,7 +69,14 @@ import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { initDecreaseOrderMetricData, sendOrderSubmittedMetric, sendTxnValidationErrorMetric } from "lib/metrics/utils";
-import { expandDecimals, formatDeltaUsd, formatPercentage, parseValue } from "lib/numbers";
+import {
+  expandDecimals,
+  formatDeltaUsd,
+  formatPercentage,
+  formatTokenAmount,
+  formatUsd,
+  parseValue,
+} from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
@@ -85,12 +97,13 @@ import {
 import { TradeMode } from "sdk/utils/trade";
 import { getIsValidTwapParams } from "sdk/utils/twap";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
-import BuyInputSection from "components/BuyInputSection/BuyInputSection";
-import { CollateralDestinationSelector } from "components/CollateralDestinationSelector/CollateralDestinationSelector";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
+import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { MarginDestinationSelector } from "components/MarginDestinationSelector/MarginDestinationSelector";
 import Modal from "components/Modal/Modal";
 import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
@@ -98,12 +111,13 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
+import { TradeInputField, DisplayMode } from "components/TradeboxMarginFields/TradeInputField";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import InfoCircleIcon from "img/ic_info_circle_stroke.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
-import { CollateralDestinationDialog } from "./CollateralDestinationDialog";
+import { MarginDestinationDialog } from "./MarginDestinationDialog";
 import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
@@ -427,9 +441,9 @@ export function PositionSeller() {
 
   const isAllowanceLoaded = Boolean(batchParams) && isAllowanceLoadedRaw;
 
-  const error = useMemo(() => {
+  const { error, bannerErrorName } = useMemo(() => {
     if (!position) {
-      return undefined;
+      return {};
     }
 
     const commonError = getCommonError({
@@ -463,13 +477,20 @@ export function PositionSeller() {
       numberOfParts,
     });
 
-    if (commonError.buttonErrorMessage || decreaseError.buttonErrorMessage || expressError.buttonErrorMessage) {
-      return commonError.buttonErrorMessage || decreaseError.buttonErrorMessage || expressError.buttonErrorMessage;
+    const validationResult = takeValidationResult(commonError, decreaseError, expressError);
+
+    if (validationResult.buttonErrorMessage) {
+      return {
+        error: validationResult.buttonErrorMessage,
+        bannerErrorName: validationResult.bannerErrorName,
+      };
     }
 
     if (isSubmitting) {
-      return t`Creating order...`;
+      return { error: t`Creating order...` };
     }
+
+    return {};
   }, [
     account,
     chainId,
@@ -743,9 +764,9 @@ export function PositionSeller() {
                 <div className="mb-16">
                   <div className="flex items-center justify-between gap-8">
                     <span className="text-14 text-typography-secondary">
-                      <Trans>Send remaining collateral to</Trans>
+                      <Trans>Send remaining margin to</Trans>
                     </span>
-                    <CollateralDestinationSelector
+                    <MarginDestinationSelector
                       isReceiveToGmxAccount={isReceiveToGmxAccount}
                       onChangeDestination={handleSetIsReceiveToGmxAccount}
                     />
@@ -953,17 +974,41 @@ export function PositionSeller() {
               </div>
               <div className="flex flex-col gap-4 px-20 py-16">
                 <div className="flex flex-col gap-8">
-                  <BuyInputSection
-                    topLeftLabel={t`Close`}
+                  <TradeInputField
+                    label={t`Close`}
                     inputValue={closeSize.closeSizeInput}
                     onInputValueChange={closeSize.handleInputChange}
+                    displayMode={closeSize.showSizeInTokens ? ("token" as DisplayMode) : ("usd" as DisplayMode)}
+                    onDisplayModeChange={(mode: DisplayMode) => {
+                      if ((mode === "token") !== closeSize.showSizeInTokens) {
+                        closeSize.handleSizeToggle();
+                      }
+                    }}
+                    tokenSymbol={position?.indexToken?.symbol}
+                    alternateValue={(() => {
+                      if (closeSize.showSizeInTokens) {
+                        return formatUsd(closeSize.closeSizeUsd);
+                      }
+                      if (!position || !toToken || position.sizeInUsd === 0n) return "0";
+                      const closeSizeInTokens = (closeSize.closeSizeUsd * position.sizeInTokens) / position.sizeInUsd;
+                      const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
+                      return formatTokenAmount(closeSizeInTokens / visualMultiplier, toToken.decimals, toToken.symbol);
+                    })()}
+                    rightHeadline={
+                      <button
+                        type="button"
+                        className="flex items-center gap-4 text-typography-secondary hover:text-typography-primary"
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          closeSize.setMaxCloseSize();
+                        }}
+                      >
+                        {t`Max:`} <span className="numbers">{closeSize.formattedMaxCloseSize}</span>
+                      </button>
+                    }
                     qa="amount-input"
                     maxDecimals={closeSize.showSizeInTokens ? position?.indexToken?.decimals ?? 18 : USD_DECIMALS}
-                  >
-                    <span className="cursor-pointer select-none" onClick={closeSize.handleSizeToggle}>
-                      {closeSize.closeSizeLabel}
-                    </span>
-                  </BuyInputSection>
+                  />
                   <MarginPercentageSlider value={closePercentage} onChange={closeSize.handleSliderChange} />
                 </div>
               </div>
@@ -1003,11 +1048,23 @@ export function PositionSeller() {
                   </ToggleSwitch>
                 )}
 
+                {bannerErrorName && (
+                  <AlertInfoCard type="error" hideClose>
+                    <ValidationBannerErrorContent
+                      validationBannerErrorName={bannerErrorName}
+                      chainId={chainId}
+                      gasPaymentTokenAddress={expressParams?.gasPaymentParams?.gasPaymentTokenAddress}
+                      srcChainId={srcChainId}
+                      onBeforeNavigation={onClose}
+                    />
+                  </AlertInfoCard>
+                )}
+
                 <ExpressTradingWarningCard
                   expressParams={expressParams}
                   payTokenAddress={undefined}
                   isWrapOrUnwrap={false}
-                  isGmxAccount={srcChainId !== undefined}
+                  isGmxAccount={srcChainId !== undefined || effectiveIsReceiveToGmxAccount}
                   onAfterAction={onClose}
                 />
 
@@ -1061,7 +1118,7 @@ export function PositionSeller() {
         </div>
       </Modal>
 
-      <CollateralDestinationDialog
+      <MarginDestinationDialog
         isVisible={isDestinationDialogVisible}
         setIsVisible={setIsDestinationDialogVisible}
         chosenReceiveToGmxAccount={isReceiveToGmxAccount}

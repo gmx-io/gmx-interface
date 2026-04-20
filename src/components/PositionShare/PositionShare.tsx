@@ -6,8 +6,9 @@ import { useAffiliateCodes, useUserReferralCode } from "domain/referrals";
 import { Token } from "domain/tokens";
 import { shareOrCopyElementAsImage } from "lib/copyElementAsImage";
 import { helperToast } from "lib/helperToast";
-import { getRootShareApiUrl, getTwitterIntentURL } from "lib/legacy";
+import { getTwitterIntentURL } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { getShareURL, uploadElementAsShareImage } from "lib/shareImage";
 import { useBreakpoints } from "lib/useBreakpoints";
 import useLoadImage from "lib/useLoadImage";
 import { userAnalytics } from "lib/userAnalytics";
@@ -29,20 +30,6 @@ import shareBgImg from "img/position-share-bg.jpg";
 
 import CreateReferralCode from "./CreateReferralCode";
 import { PositionShareCard } from "./PositionShareCard";
-
-const ROOT_SHARE_URL = getRootShareApiUrl();
-const UPLOAD_URL = ROOT_SHARE_URL + "/api/upload";
-const UPLOAD_SHARE = ROOT_SHARE_URL + "/api/s";
-const config = { quality: 0.95, canvasWidth: 460, canvasHeight: 240, type: "image/jpeg" };
-
-function getShareURL(imageInfo, ref) {
-  if (!imageInfo) return;
-  let url = `${UPLOAD_SHARE}?id=${imageInfo.id}`;
-  if (ref.success && ref.code) {
-    url = url + `&ref=${ref.code}`;
-  }
-  return url;
-}
 
 type Props = {
   entryPrice: bigint | undefined;
@@ -85,8 +72,8 @@ function PositionShare({
 }: Props) {
   const userAffiliateCode = useAffiliateCodes(chainId, account);
   const { userReferralCodeString: usedReferralCode } = useUserReferralCode(chainId, account);
-  const [uploadedImageInfo, setUploadedImageInfo] = useState<any>();
-  const [uploadedImageError, setUploadedImageError] = useState<string | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadError, setUploadError] = useState<string | null>(null);
   const [showPnlAmounts, setShowPnlAmounts] = useState(false);
   const [isPnlInLeverage, setIsPnlInLeverage] = useState(false);
   const [, copyToClipboard] = useCopyToClipboard();
@@ -117,11 +104,6 @@ function PositionShare({
   }, [hasReferralCode, shareAffiliateCode?.code, usedReferralCode]);
 
   const [promptedToCreateReferralCode, setPromptedToCreateReferralCode] = useState(false);
-
-  const tweetLink = getTwitterIntentURL(
-    `Latest $\u200a${indexToken?.symbol} trade on @GMX_IO`,
-    getShareURL(uploadedImageInfo, shareAffiliateCode)
-  );
 
   const prevIsOpen = usePrevious(isPositionShareModalOpen);
 
@@ -202,27 +184,25 @@ function PositionShare({
     }
   }, [prevIsOpen, isPositionShareModalOpen, hasReferralCode, shareSource, doNotShowAgain]);
 
-  useEffect(() => {
-    (async function () {
-      const element = cardRef.current;
-      setUploadedImageInfo(null);
-      if (element && shareAffiliateCode.success && sharePositionBgImg && cachedPositionData) {
-        // We have to call the toJpeg function multiple times to make sure the canvas renders all the elements like background image
-        // @refer https://github.com/tsayen/dom-to-image/issues/343#issuecomment-652831863
-        const { toJpeg } = await import("html-to-image");
-        const image = await toJpeg(element, config)
-          .then(() => toJpeg(element, config))
-          .then(() => toJpeg(element, config));
-        try {
-          const imageInfo = await fetch(UPLOAD_URL, { method: "POST", body: image }).then((res) => res.json());
-          setUploadedImageInfo(imageInfo);
-        } catch (error) {
-          setUploadedImageInfo(null);
-          setUploadedImageError(t`Image generation failed. Refresh and try again.`);
-        }
-      }
-    })();
-  }, [shareAffiliateCode, sharePositionBgImg, showPnlAmounts, cachedPositionData, isPnlInLeverage]);
+  const uploadAndGetShareUrl = useCallback(async (): Promise<string | undefined> => {
+    const element = cardRef.current;
+    if (!element) return undefined;
+
+    setIsUploading(true);
+    setUploadError(null);
+    element.classList.add("image-capture-in-progress");
+    try {
+      const imageInfo = await uploadElementAsShareImage(element);
+      const ref = shareAffiliateCode.success && shareAffiliateCode.code ? shareAffiliateCode.code : undefined;
+      return getShareURL(imageInfo.id, ref);
+    } catch {
+      setUploadError(t`Image generation failed. Refresh and try again.`);
+      return undefined;
+    } finally {
+      element.classList.remove("image-capture-in-progress");
+      setIsUploading(false);
+    }
+  }, [shareAffiliateCode]);
 
   const shouldShowCreateReferralCard = userAffiliateCode.success && !userAffiliateCode.code && !createdReferralCode;
   const handleReferralCodeSuccess = useCallback(
@@ -256,9 +236,8 @@ function PositionShare({
     await shareOrCopyElementAsImage({ element, isMobile, fileName: "GMX Position.png" });
   }
 
-  function handleCopy() {
+  async function handleCopy() {
     onShareAction?.();
-    if (!uploadedImageInfo) return;
 
     userAnalytics.pushEvent<SharePositionActionEvent>({
       event: "SharePositionAction",
@@ -269,12 +248,14 @@ function PositionShare({
       },
     });
 
-    const url = getShareURL(uploadedImageInfo, shareAffiliateCode);
-    copyToClipboard(url as string);
-    helperToast.success(t`Link copied to clipboard`);
+    const url = await uploadAndGetShareUrl();
+    if (url) {
+      copyToClipboard(url);
+      helperToast.success(t`Link copied to clipboard`);
+    }
   }
 
-  const trackShareTwitter = useCallback(() => {
+  const handleShareTwitter = useCallback(async () => {
     onShareAction?.();
     userAnalytics.pushEvent<SharePositionActionEvent>(
       {
@@ -287,7 +268,11 @@ function PositionShare({
       },
       { instantSend: true }
     );
-  }, [hasReferralCode, onShareAction, shareSource]);
+
+    const url = await uploadAndGetShareUrl();
+    const tweetLink = getTwitterIntentURL(`Latest $\u200a${indexToken?.symbol} trade on @GMX_IO`, url);
+    window.open(tweetLink, "_blank", "noopener,noreferrer");
+  }, [hasReferralCode, indexToken?.symbol, onShareAction, shareSource, uploadAndGetShareUrl]);
 
   const handleDoNotShowAgainToggle = useCallback(
     (value: boolean) => {
@@ -327,16 +312,16 @@ function PositionShare({
               referralCodeOwnerKind={referralCodeOwnerKind}
               code={code}
               ref={cardRef}
-              loading={!uploadedImageInfo && !uploadedImageError}
+              loading={isUploading}
               sharePositionBgImg={sharePositionBgImg}
               showPnlAmounts={showPnlAmounts}
             />
           )}
         </div>
         {shouldShowCreateReferralCard && <CreateReferralCode onSuccess={handleReferralCodeSuccess} />}
-        {uploadedImageError && (
+        {uploadError && (
           <AlertInfoCard type="error" hideClose>
-            {uploadedImageError}
+            {uploadError}
           </AlertInfoCard>
         )}
       </div>
@@ -370,7 +355,7 @@ function PositionShare({
         <div className="flex gap-12">
           <Button
             variant="secondary"
-            disabled={!uploadedImageInfo}
+            disabled={isUploading}
             onClick={shouldPromptToCreateReferralCode ? handlePromptToCreateReferralCode : handleCopy}
             size="medium"
             className="grow !text-14"
@@ -380,7 +365,6 @@ function PositionShare({
           </Button>
           <Button
             variant="secondary"
-            disabled={!uploadedImageInfo}
             onClick={shouldPromptToCreateReferralCode ? handlePromptToCreateReferralCode : handleCopyImage}
             size="medium"
             className="grow !text-14"
@@ -398,13 +382,11 @@ function PositionShare({
             )}
           </Button>
           <Button
-            newTab
             variant="secondary"
-            disabled={!uploadedImageInfo}
-            to={tweetLink}
+            disabled={isUploading}
+            onClick={shouldPromptToCreateReferralCode ? handlePromptToCreateReferralCode : handleShareTwitter}
             size="medium"
             className="grow !text-14"
-            onClick={shouldPromptToCreateReferralCode ? handlePromptToCreateReferralCode : trackShareTwitter}
           >
             <Trans>Share on</Trans>
             <TwitterIcon className="size-16" />
