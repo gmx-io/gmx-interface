@@ -595,13 +595,6 @@ function BoostsCard({
               </span>
             </div>
           )}
-          {active && (
-            <span className="inline-flex items-center rounded-full bg-green-900 px-6 py-2 text-12 font-medium text-green-500">
-              {formatMultiplier(
-                allBoosts.reduce((sum, b) => (activeBoostIds.includes(b.boost) ? sum + b.multiplier : sum), 0)
-              )}
-            </span>
-          )}
         </div>
       </div>
       <div className="flex flex-col gap-20 px-16">
