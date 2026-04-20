@@ -169,9 +169,15 @@ describe("externalSwapSelectors", () => {
       mockSwapPathStats.totalFeesDeltaUsd = -expandDecimals(10, 30);
 
       const inputs = selectExternalSwapInputs(state as SyntheticsState);
-      const result = selectExternalSwapQuote(state as SyntheticsState);
-
       expect(inputs?.strategy).toBe("leverageBySize");
+
+      // Align baseOutput.amountIn with the strategy's required amountIn so the quote is not
+      // filtered as stale. Rescaling still fires because inputs.usdOut diverges from
+      // baseOutput.usdOut (oracle vs KyberSwap price).
+      mockBaseSwapQuote.amountIn = inputs!.amountIn;
+      mockBaseSwapQuote.usdIn = bigMath.mulDiv(inputs!.amountIn, mockBaseSwapQuote.priceIn, expandDecimals(1, 18));
+
+      const result = selectExternalSwapQuote(state as SyntheticsState);
 
       const expectedUsdIn = (mockBaseSwapQuote.usdIn * inputs!.usdOut) / mockBaseSwapQuote.usdOut;
       const expectedAmountIn = bigMath.mulDiv(expectedUsdIn, expandDecimals(1, 18), mockBaseSwapQuote.priceIn);

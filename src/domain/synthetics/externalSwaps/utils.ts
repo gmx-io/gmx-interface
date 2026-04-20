@@ -1,12 +1,19 @@
 import { getSwapDebugSettings } from "config/externalSwaps";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { UserReferralInfo } from "domain/referrals";
 import { applyFactor } from "lib/numbers";
 import { getFeeItem, getPositionFee } from "sdk/utils/fees";
 import { MarketInfo, MarketsInfoData } from "sdk/utils/markets/types";
 import { PositionInfo } from "sdk/utils/positions/types";
+import { SwapStrategyForSwapOrders } from "sdk/utils/swap/types";
 import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens";
 import { TokenData } from "sdk/utils/tokens/types";
-import { ExternalSwapInputs, ExternalSwapQuote, SwapAmounts } from "sdk/utils/trade/types";
+import {
+  ExternalSwapCalculationStrategy,
+  ExternalSwapInputs,
+  ExternalSwapQuote,
+  SwapAmounts,
+} from "sdk/utils/trade/types";
 
 import {
   FindSwapPath,
@@ -210,6 +217,82 @@ export function getExternalSwapInputsByLeverageSize({
     internalSwapTotalFeesDeltaUsd,
     internalSwapAmounts: swapAmounts,
   };
+}
+
+export function isInternalSwapBetterByFeeRate(params: {
+  internalFeesDeltaUsd: bigint | undefined;
+  internalUsdIn: bigint;
+  internalAmountOut: bigint;
+  internalSwapType: SwapStrategyForSwapOrders["type"];
+  externalUsdIn: bigint;
+  externalFeesUsd: bigint;
+}): boolean {
+  const { internalFeesDeltaUsd, internalUsdIn, internalAmountOut, internalSwapType, externalUsdIn, externalFeesUsd } =
+    params;
+  return (
+    internalSwapType !== "noSwap" &&
+    internalAmountOut > 0n &&
+    internalFeesDeltaUsd !== undefined &&
+    internalUsdIn > 0n &&
+    externalUsdIn > 0n &&
+    // Cross-multiplied from internalFee/internalUsdIn > -externalFee/externalUsdIn to avoid division.
+    internalFeesDeltaUsd * externalUsdIn > -externalFeesUsd * internalUsdIn
+  );
+}
+
+export function inflateAmountForSlippage(amount: bigint, slippageBps: bigint): bigint {
+  if (slippageBps <= 0n || slippageBps >= BASIS_POINTS_DIVISOR_BIGINT) return amount;
+  // Ceiling division: ensures that subsequent floor-style slippage reduction upstream
+  // cannot yield less than the original amount due to compounded rounding.
+  const denominator = BASIS_POINTS_DIVISOR_BIGINT - slippageBps;
+  return (amount * BASIS_POINTS_DIVISOR_BIGINT + denominator - 1n) / denominator;
+}
+
+export function overrideQuoteWithOraclePrices(
+  quote: ExternalSwapQuote,
+  oracle: { usdIn: bigint; usdOut: bigint; feesUsd: bigint; priceIn: bigint; priceOut: bigint }
+): ExternalSwapQuote {
+  return { ...quote, ...oracle };
+}
+
+// Structural staleness (tokens + direction). For amount-based check use `isQuoteStaleForRequest`.
+export function isQuoteStale(params: {
+  quote: ExternalSwapQuote;
+  fromTokenAddress: string | undefined;
+  toTokenAddress: string | undefined;
+  strategy: ExternalSwapCalculationStrategy | undefined;
+  amountBy: "from" | "to" | undefined;
+}): boolean {
+  const { quote, fromTokenAddress, toTokenAddress, strategy, amountBy } = params;
+  if (fromTokenAddress && quote.inTokenAddress !== fromTokenAddress) return true;
+  if (toTokenAddress && quote.outTokenAddress !== toTokenAddress) return true;
+  const isSwapStrategy = strategy === "byFromValue" || strategy === "byToValue";
+  if (isSwapStrategy) {
+    if (amountBy === "to" && strategy !== "byToValue") return true;
+    if (amountBy === "from" && strategy === "byToValue") return true;
+  }
+  return false;
+}
+
+export function isQuoteStaleForRequest(params: {
+  quote: ExternalSwapQuote | undefined;
+  fromTokenAddress: string | undefined;
+  toTokenAddress: string | undefined;
+  strategy: ExternalSwapCalculationStrategy | undefined;
+  amountBy: "from" | "to" | undefined;
+  inputsAmountIn: bigint;
+  inputsDesiredAmountOut: bigint | undefined;
+}): boolean {
+  const { quote, fromTokenAddress, toTokenAddress, strategy, amountBy, inputsAmountIn, inputsDesiredAmountOut } =
+    params;
+  if (!quote) return true;
+  if (isQuoteStale({ quote, fromTokenAddress, toTokenAddress, strategy, amountBy })) return true;
+  if (strategy === "byToValue") {
+    // Match on the stamped target, not `amountOut` — KyberSwap's search converges within
+    // tolerance, so its `outputAmount` isn't a stable identifier of the request.
+    return quote.desiredAmountOut !== inputsDesiredAmountOut;
+  }
+  return quote.amountIn !== inputsAmountIn;
 }
 
 export function getBestSwapStrategy({

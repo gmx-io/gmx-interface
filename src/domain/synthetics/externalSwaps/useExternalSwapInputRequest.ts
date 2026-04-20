@@ -1,7 +1,8 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import useSWR from "swr";
 
 import { BOTANIX } from "config/chains";
+import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { metrics } from "lib/metrics";
 import { ContractsChainId } from "sdk/configs/chains";
@@ -11,11 +12,13 @@ import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/utils/trade/types
 
 import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
 import { getKyberSwapBuildFromRoute, getKyberSwapRoute, KyberSwapQuote, KyberSwapRouteResult } from "./kyberSwap";
+import { useExternalSwapQuoteLoadingState } from "./useExternalSwapQuoteLoadingState";
+import { inflateAmountForSlippage } from "./utils";
 
-class ReverseSearchNoResultError extends Error {
+class InputRequestNoResultError extends Error {
   constructor() {
-    super("Reverse search: insufficient liquidity");
-    this.name = "ReverseSearchNoResultError";
+    super("ExternalSwap input request: insufficient liquidity");
+    this.name = "InputRequestNoResultError";
   }
 }
 
@@ -23,7 +26,7 @@ const MAX_ITERATIONS = 5;
 const CONVERGENCE_THRESHOLD_BPS = 50n; // 0.5% tolerance
 const MIN_OUTPUT_RATIO_BPS = 5000n; // 50% - stop if output is less than 50% of desired
 
-async function reverseSearchAmountIn({
+async function searchAmountInForDesiredOutput({
   chainId,
   tokenInAddress,
   tokenOutAddress,
@@ -41,9 +44,7 @@ async function reverseSearchAmountIn({
   let amountIn = initialAmountIn;
 
   for (let i = 0; i < MAX_ITERATIONS; i++) {
-    if (amountIn <= 0n) {
-      return undefined;
-    }
+    if (amountIn <= 0n) return undefined;
 
     const routeResult = await getKyberSwapRoute({
       chainId,
@@ -53,37 +54,28 @@ async function reverseSearchAmountIn({
       gasPrice,
     });
 
-    if (!routeResult) {
-      return undefined;
-    }
+    if (!routeResult) return undefined;
 
     const outputAmount = routeResult.outputAmount;
+    if (outputAmount <= 0n) return undefined;
 
-    if (outputAmount <= 0n) {
+    // First-iteration divergence guard: KyberSwap returned a route with wildly lower output than
+    // oracle-seeded expectation — signals a dead pool or extreme price impact, not worth iterating.
+    if (i === 0 && (outputAmount * BASIS_POINTS_DIVISOR_BIGINT) / desiredAmountOut < MIN_OUTPUT_RATIO_BPS) {
       return undefined;
     }
 
-    // Check if first iteration output is way too low (divergence protection)
-    if (i === 0 && (outputAmount * 10000n) / desiredAmountOut < MIN_OUTPUT_RATIO_BPS) {
-      return undefined;
-    }
-
-    // Check convergence
     const diff = outputAmount > desiredAmountOut ? outputAmount - desiredAmountOut : desiredAmountOut - outputAmount;
-
-    const diffBps = (diff * 10000n) / desiredAmountOut;
+    const diffBps = (diff * BASIS_POINTS_DIVISOR_BIGINT) / desiredAmountOut;
 
     if (diffBps <= CONVERGENCE_THRESHOLD_BPS) {
       return { amountIn, routeResult };
     }
 
-    // Secant method: adjust amountIn proportionally
     const newAmountIn = (amountIn * desiredAmountOut) / outputAmount;
 
-    // Protection against exponential growth
-    if (newAmountIn > amountIn * 3n) {
-      return undefined;
-    }
+    // Exponential-growth guard: secant step blew up (would 3x amountIn in one step).
+    if (newAmountIn > amountIn * 3n) return undefined;
 
     amountIn = newAmountIn;
   }
@@ -91,7 +83,7 @@ async function reverseSearchAmountIn({
   return undefined;
 }
 
-export function useExternalSwapReverseSearch({
+export function useExternalSwapInputRequest({
   chainId,
   tokenInAddress,
   tokenOutAddress,
@@ -124,7 +116,7 @@ export function useExternalSwapReverseSearch({
     initialAmountIn > 0n &&
     slippage !== undefined &&
     gasPrice !== undefined
-      ? `useExternalSwapReverseSearch:${chainId}:${tokenInAddress}:${tokenOutAddress}:${desiredAmountOut}:${slippage}:${receiverAddress}`
+      ? `useExternalSwapInputRequest:${chainId}:${tokenInAddress}:${tokenOutAddress}:${desiredAmountOut}:${slippage}:${receiverAddress}`
       : null;
 
   const debouncedKey = useDebounce(swapKey, 300);
@@ -159,10 +151,9 @@ export function useExternalSwapReverseSearch({
 
         // Target more than desired to compensate for execution variance and slippage.
         // This ensures the user receives at least desiredAmountOut after all deductions.
-        const slippageBps = BigInt(slippage);
-        const targetAmountOut = (desiredAmountOut * 10000n) / (10000n - slippageBps);
+        const targetAmountOut = inflateAmountForSlippage(desiredAmountOut, BigInt(slippage));
 
-        const searchResult = await reverseSearchAmountIn({
+        const searchResult = await searchAmountInForDesiredOutput({
           chainId,
           tokenInAddress,
           tokenOutAddress,
@@ -172,7 +163,7 @@ export function useExternalSwapReverseSearch({
         });
 
         if (!searchResult) {
-          throw new ReverseSearchNoResultError();
+          throw new InputRequestNoResultError();
         }
 
         const result = await getKyberSwapBuildFromRoute({
@@ -187,13 +178,13 @@ export function useExternalSwapReverseSearch({
         });
 
         if (!result) {
-          throw new ReverseSearchNoResultError();
+          throw new InputRequestNoResultError();
         }
 
         return result;
       } catch (error) {
-        if (!(error instanceof ReverseSearchNoResultError)) {
-          metrics.pushError(error, "externalSwap.useExternalSwapReverseSearch");
+        if (!(error instanceof InputRequestNoResultError)) {
+          metrics.pushError(error, "externalSwap.useExternalSwapInputRequest");
         }
         throw error;
       }
@@ -201,32 +192,17 @@ export function useExternalSwapReverseSearch({
   });
 
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
-    spenderAddress: data?.to,
-    tokenAddresses: tokenInAddress ? [convertTokenAddress(chainId, tokenInAddress, "wrapped")] : [],
+    spenderAddress: enabled ? data?.to : undefined,
+    tokenAddresses: enabled && tokenInAddress ? [convertTokenAddress(chainId, tokenInAddress, "wrapped")] : [],
   });
 
-  const prevDataRef = useRef<typeof data>(undefined);
-  const prevErrorRef = useRef<typeof swrError>(undefined);
-  const [resolvedUserParams, setResolvedUserParams] = useState<string | null>(null);
-
-  useEffect(() => {
-    const dataChanged = data !== prevDataRef.current;
-    const errorChanged = swrError !== prevErrorRef.current;
-    prevDataRef.current = data;
-    prevErrorRef.current = swrError;
-
-    if (dataChanged && data && userParamsKey) {
-      setResolvedUserParams(userParamsKey);
-    }
-    if (errorChanged && swrError && userParamsKey && !isSWRLoading) {
-      setResolvedUserParams(userParamsKey);
-    }
-    if (!enabled) {
-      setResolvedUserParams(null);
-    }
-  }, [data, swrError, isSWRLoading, userParamsKey, enabled]);
-
-  const isLoading = userParamsKey !== null && userParamsKey !== resolvedUserParams;
+  const isLoading = useExternalSwapQuoteLoadingState({
+    userParamsKey,
+    data,
+    error: swrError,
+    isInitialFetch: isSWRLoading,
+    enabled,
+  });
 
   return useMemo(() => {
     if (
@@ -263,6 +239,7 @@ export function useExternalSwapReverseSearch({
       priceOut: data.priceOut,
       feesUsd: data.usdIn - data.usdOut,
       needSpenderApproval,
+      desiredAmountOut,
       txnData: {
         to: data.to,
         data: data.data,

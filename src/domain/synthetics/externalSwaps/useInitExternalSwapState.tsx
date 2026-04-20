@@ -8,16 +8,16 @@ export function useInitExternalSwapState(): ExternalSwapState {
   const [baseOutput, setBaseOutput] = useState<ExternalSwapQuote>();
   const [shouldFallbackToInternalSwap, setShouldFallbackToInternalSwap] = useState(false);
   const [shouldForceExternalSwap, setShouldForceExternalSwap] = useState(false);
-  const [isLoading, setIsLoading] = useState(false);
+  const [isHookLoading, setIsHookLoading] = useState(false);
 
   return {
     baseOutput,
     shouldFallbackToInternalSwap,
     shouldForceExternalSwap,
-    isLoading,
+    isHookLoading,
     setBaseOutput,
     setShouldFallbackToInternalSwap,
     setShouldForceExternalSwap,
-    setIsLoading,
+    setIsHookLoading,
   };
 }

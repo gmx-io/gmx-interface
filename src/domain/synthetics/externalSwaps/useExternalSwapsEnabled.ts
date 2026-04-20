@@ -8,7 +8,7 @@ import { selectSubaccountForSettlementChainAction } from "context/SyntheticsStat
 import {
   selectShouldRequestExternalSwapQuote,
   selectTradeboxCollateralToken,
-  selectTradeboxToToken,
+  selectTradeboxSelectSwapToToken,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -22,7 +22,7 @@ export function useExternalSwapsEnabled(): boolean | undefined {
   const isExpressTradingEnabled = useSelector(selectIsExpressTransactionAvailable);
   const gasPaymentToken = useSelector(selectGasPaymentToken);
   const collateralToken = useSelector(selectTradeboxCollateralToken);
-  const toToken = useSelector(selectTradeboxToToken);
+  const swapToToken = useSelector(selectTradeboxSelectSwapToToken);
   const { chainId } = useChainId();
 
   const disabledByExpressSchema = useMemo(() => {
@@ -37,9 +37,9 @@ export function useExternalSwapsEnabled(): boolean | undefined {
       return false;
     }
 
-    const conflictToken = isSwap ? toToken : collateralToken;
+    const conflictToken = isSwap ? swapToToken : collateralToken;
     return conflictToken !== undefined && gasPaymentToken === conflictToken;
-  }, [collateralToken, toToken, gasPaymentToken, isExpressTradingEnabled, isSwap, chainId]);
+  }, [collateralToken, swapToToken, gasPaymentToken, isExpressTradingEnabled, isSwap, chainId]);
 
   const subaccount = useSelector(selectSubaccountForSettlementChainAction);
 

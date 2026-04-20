@@ -12,6 +12,10 @@ import {
   getExternalSwapInputsByFromValue,
   getExternalSwapInputsByLeverageSize,
   getExternalSwapInputsByToValue,
+  inflateAmountForSlippage,
+  isInternalSwapBetterByFeeRate,
+  isQuoteStaleForRequest,
+  overrideQuoteWithOraclePrices,
 } from "domain/synthetics/externalSwaps/utils";
 import {
   estimateExecuteDecreaseOrderGasLimit,
@@ -38,7 +42,6 @@ import {
   getTokensRatioByPrice,
 } from "domain/synthetics/tokens";
 import {
-  ExternalSwapCalculationStrategy,
   ExternalSwapQuote,
   SwapAmounts,
   SwapOptimizationOrderArray,
@@ -111,6 +114,11 @@ export const selectExternalSwapInputs = createSelector((q) => {
   }
 
   if (tradeFlags.isSwap) {
+    const fromTokenAmount = q(selectTradeboxFromTokenAmount);
+    const toTokenAmount = q(selectTradeboxToTokenAmount);
+    if (fromTokenAmount === 0n && toTokenAmount === 0n) {
+      return undefined;
+    }
     const focusedInput = q(selectTradeboxFocusedInput);
     if (focusedInput === "to") {
       return q(selectExternalSwapInputsByToValue);
@@ -137,8 +145,18 @@ export const selectExternalSwapInputs = createSelector((q) => {
 export const selectBaseExternalSwapOutput = (s: SyntheticsState) => s.externalSwap.baseOutput;
 export const selectSetBaseExternalSwapOutput = (s: SyntheticsState) => s.externalSwap.setBaseOutput;
 
-export const selectExternalSwapIsLoading = (s: SyntheticsState) => s.externalSwap.isLoading;
-export const selectSetExternalSwapIsLoading = (s: SyntheticsState) => s.externalSwap.setIsLoading;
+const selectExternalSwapHookIsLoading = (s: SyntheticsState) => s.externalSwap.isHookLoading;
+export const selectSetExternalSwapHookIsLoading = (s: SyntheticsState) => s.externalSwap.setIsHookLoading;
+
+export const selectExternalSwapIsLoading = createSelector((q) => {
+  const shouldRequest = q(selectShouldRequestExternalSwapQuote);
+  if (!shouldRequest) return false;
+
+  const inputs = q(selectExternalSwapInputs);
+  if (!inputs || inputs.amountIn <= 0n) return false;
+
+  return q(selectExternalSwapHookIsLoading);
+});
 
 export const selectShouldFallbackToInternalSwap = (s: SyntheticsState) => s.externalSwap.shouldFallbackToInternalSwap;
 export const selectSetShouldFallbackToInternalSwap = (s: SyntheticsState) =>
@@ -159,10 +177,19 @@ export const selectIsWaitingForExternalSwapQuote = createSelector((q) => {
   const externalSwapInputs = q(selectExternalSwapInputs);
   if (!externalSwapInputs || externalSwapInputs.amountIn <= 0n) return false;
 
-  const baseOutput = q(selectBaseExternalSwapOutput);
+  const fromToken = q(selectTradeboxFromToken);
+  const toToken = q(selectTradeboxSelectSwapToToken);
 
-  const isFreshQuote = baseOutput && baseOutput.amountIn === externalSwapInputs.amountIn;
-  if (isFreshQuote) return false;
+  const storedQuoteMatchesCurrentInput = !isQuoteStaleForRequest({
+    quote: q(selectBaseExternalSwapOutput),
+    fromTokenAddress: fromToken?.address,
+    toTokenAddress: toToken?.address,
+    strategy: externalSwapInputs.strategy,
+    amountBy: q(selectTradeboxFocusedInput),
+    inputsAmountIn: externalSwapInputs.amountIn,
+    inputsDesiredAmountOut: externalSwapInputs.desiredAmountOut,
+  });
+  if (storedQuoteMatchesCurrentInput) return false;
 
   const noInternalSwap =
     !externalSwapInputs.internalSwapTotalFeeItem || externalSwapInputs.internalSwapAmounts.amountOut === 0n;
@@ -181,15 +208,25 @@ export const selectExternalSwapQuote = createSelector((q) => {
   const tokenIn = q(selectTradeboxFromToken);
   const tokenOut = q(selectTradeboxSelectSwapToToken);
 
+  if (!inputs || !baseOutput || !tokenIn || !tokenOut || baseOutput.amountIn === 0n) {
+    return undefined;
+  }
+
+  if (shouldFallbackToInternalSwap && !shouldForceExternalSwap) {
+    return undefined;
+  }
+
+  const amountBy = q(selectTradeboxFocusedInput);
   if (
-    !inputs ||
-    !baseOutput ||
-    !tokenIn ||
-    !tokenOut ||
-    tokenIn.address !== baseOutput.inTokenAddress ||
-    tokenOut.address !== baseOutput.outTokenAddress ||
-    (shouldFallbackToInternalSwap && !shouldForceExternalSwap) ||
-    baseOutput.amountIn === 0n
+    isQuoteStaleForRequest({
+      quote: baseOutput,
+      fromTokenAddress: tokenIn.address,
+      toTokenAddress: tokenOut.address,
+      strategy: inputs.strategy,
+      amountBy,
+      inputsAmountIn: inputs.amountIn,
+      inputsDesiredAmountOut: inputs.desiredAmountOut,
+    })
   ) {
     return undefined;
   }
@@ -220,13 +257,14 @@ export const selectExternalSwapQuote = createSelector((q) => {
     feesUsd,
   };
 
-  const internalUsdIn = inputs.internalSwapAmounts.usdIn;
-  const isInternalSwapBetter =
-    inputs.internalSwapAmounts.amountOut > 0n &&
-    inputs?.internalSwapTotalFeesDeltaUsd !== undefined &&
-    internalUsdIn > 0n &&
-    usdIn > 0n &&
-    inputs.internalSwapTotalFeesDeltaUsd * usdIn > -quote.feesUsd * internalUsdIn;
+  const isInternalSwapBetter = isInternalSwapBetterByFeeRate({
+    internalFeesDeltaUsd: inputs.internalSwapTotalFeesDeltaUsd,
+    internalUsdIn: inputs.internalSwapAmounts.usdIn,
+    internalAmountOut: inputs.internalSwapAmounts.amountOut,
+    internalSwapType: inputs.internalSwapAmounts.swapStrategy.type,
+    externalUsdIn: usdIn,
+    externalFeesUsd: quote.feesUsd,
+  });
 
   if (isInternalSwapBetter && !debugForceExternalSwaps && !shouldForceExternalSwap) {
     return undefined;
@@ -250,7 +288,7 @@ export const selectShouldRequestExternalSwapQuote = createSelector((q) => {
   const externalSwapInputs = q(selectExternalSwapInputs);
 
   const internalSwapTotalFeeItem = externalSwapInputs?.internalSwapTotalFeeItem;
-  // Use tighter threshold for stablecoin↔stablecoin pairs
+
   const fromToken = q(selectTradeboxFromToken);
   const toToken = q(selectTradeboxSelectSwapToToken);
   const isStablecoinPair = fromToken?.isStable && toToken?.isStable;
@@ -654,28 +692,17 @@ export const selectTradeboxDecreasePositionAmounts = createSelector((q) => {
   return q(selector);
 });
 
-function filterStaleExternalSwapQuote({
-  quote,
-  amountBy,
-  strategy,
-  fromTokenAmount,
-  toTokenAmount,
-}: {
-  quote: ExternalSwapQuote | undefined;
-  amountBy: "from" | "to" | undefined;
-  strategy: ExternalSwapCalculationStrategy | undefined;
-  fromTokenAmount: bigint;
-  toTokenAmount: bigint;
-}): ExternalSwapQuote | undefined {
-  if (!quote) return undefined;
-  if (amountBy === "to" && strategy !== "byToValue") return undefined;
-  if (amountBy === "from" && strategy === "byToValue") return undefined;
-  if (amountBy === "from" && quote.amountIn !== fromTokenAmount) return undefined;
-  if (amountBy === "to" && toTokenAmount > 0n && quote.amountOut < toTokenAmount) return undefined;
-  return quote;
-}
+export const selectTradeboxInflatedToAmount = createSelector((q) => {
+  const tradeMode = q(selectTradeboxTradeMode);
+  const tradeFlags = createTradeFlags(TradeType.Swap, tradeMode);
+  const amountBy = q(selectTradeboxFocusedInput);
+  const toTokenAmount = q(selectTradeboxToTokenAmount);
+  const slippageBps = BigInt(q(selectTradeboxAllowedSlippage));
+  const shouldInflate = amountBy === "to" && tradeFlags.isMarket && slippageBps > 0n;
+  return shouldInflate ? inflateAmountForSlippage(toTokenAmount, slippageBps) : toTokenAmount;
+});
 
-export const selectTradeboxSwapAmounts = createSelector((q) => {
+export const selectTradeboxRawInternalSwapAmounts = createSelector((q) => {
   const tradeMode = q(selectTradeboxTradeMode);
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const fromToken = q(selectTradeboxFromToken);
@@ -705,28 +732,8 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
 
   const { markRatio, triggerRatio } = q(selectTradeboxTradeRatios);
 
-  const isExternalSwapWaiting = q(selectIsWaitingForExternalSwapQuote);
-  const externalSwapInputs = q(selectExternalSwapInputs);
-  const rawExternalSwapQuote = tradeFlags.isMarket && !isExternalSwapWaiting ? q(selectExternalSwapQuote) : undefined;
-
-  let externalSwapQuote = filterStaleExternalSwapQuote({
-    quote: rawExternalSwapQuote,
-    amountBy,
-    strategy: externalSwapInputs?.strategy,
-    fromTokenAmount,
-    toTokenAmount,
-  });
-
-  // For market swaps in "to" direction, inflate the target amount by slippage so that
-  // the user is guaranteed to receive at least the desired amount. The inflated minOutputAmount
-  // is later reduced by applySlippageToMinOut back to the desired amount on-chain.
-  // This matches the behavior of external swaps which do the same inflation in reverse search.
-  const allowedSlippage = q(selectTradeboxAllowedSlippage);
-  const slippageBps = BigInt(allowedSlippage);
-  const shouldInflateToAmount = amountBy === "to" && tradeFlags.isMarket && slippageBps > 0n;
-  const effectiveToTokenAmount = shouldInflateToAmount
-    ? (toTokenAmount * BASIS_POINTS_DIVISOR_BIGINT) / (BASIS_POINTS_DIVISOR_BIGINT - slippageBps)
-    : toTokenAmount;
+  const effectiveToTokenAmount = q(selectTradeboxInflatedToAmount);
+  const shouldInflateToAmount = effectiveToTokenAmount !== toTokenAmount;
 
   let swapAmounts: SwapAmounts;
 
@@ -763,7 +770,6 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
       allowSameTokenSwap: tradeFlags.isSwap,
     });
 
-    // Set inflated minOutputAmount so applySlippageToMinOut yields the desired amount
     if (shouldInflateToAmount) {
       swapAmounts = {
         ...swapAmounts,
@@ -772,28 +778,42 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
     }
   }
 
+  return swapAmounts;
+});
+
+export const selectTradeboxSwapAmounts = createSelector((q) => {
+  const swapAmounts = q(selectTradeboxRawInternalSwapAmounts);
+  if (!swapAmounts) return undefined;
+
+  const tradeMode = q(selectTradeboxTradeMode);
+  const tradeFlags = createTradeFlags(TradeType.Swap, tradeMode);
+  const fromToken = q(selectTradeboxFromToken);
+  const toToken = q(selectTradeboxToToken);
+  const amountBy = q(selectTradeboxFocusedInput);
+
+  if (!fromToken || !toToken) return swapAmounts;
+
+  const isExternalSwapWaiting = q(selectIsWaitingForExternalSwapQuote);
+  const externalSwapQuote = tradeFlags.isMarket && !isExternalSwapWaiting ? q(selectExternalSwapQuote) : undefined;
+
+  const effectiveToTokenAmount = q(selectTradeboxInflatedToAmount);
+
   if (externalSwapQuote && tradeFlags.isMarket) {
     // Use oracle prices for all USD values — KyberSwap's prices can diverge significantly
     const oracleUsdIn = convertToUsd(externalSwapQuote.amountIn, fromToken.decimals, fromToken.prices.minPrice)!;
     const oracleUsdOut = convertToUsd(externalSwapQuote.amountOut, toToken.decimals, toToken.prices.maxPrice)!;
     const oracleFeesUsd = oracleUsdIn - oracleUsdOut;
 
-    // Fee-rate comparison: normalize fees by swap size (usdIn) to compare fairly.
-    // In "to" direction the reverse search inflates amountOut by slippage, making external
-    // swap larger than internal. Comparing absolute fees would bias toward the smaller swap.
-    // Dividing by usdIn gives fee rate (impact per dollar), making the comparison fair.
-    const internalFeesDeltaUsd = swapAmounts.swapStrategy.swapPathStats?.totalFeesDeltaUsd;
-    const internalUsdIn = swapAmounts.usdIn;
-
-    // Use cross-multiplication to avoid division: internalFee/internalUsdIn > -oracleFee/oracleUsdIn
-    // ↔ internalFee * oracleUsdIn > -oracleFee * internalUsdIn (when both usdIn > 0)
-    const isInternalSwapBetter =
-      swapAmounts.swapStrategy.type !== "noSwap" &&
-      swapAmounts.amountOut > 0n &&
-      internalFeesDeltaUsd !== undefined &&
-      internalUsdIn > 0n &&
-      oracleUsdIn > 0n &&
-      internalFeesDeltaUsd * oracleUsdIn > -oracleFeesUsd * internalUsdIn;
+    // Fee-rate (fee / usdIn) comparison — the "to" direction inflates amountOut by slippage,
+    // so absolute fee comparison would bias toward the smaller swap. Normalizing by usdIn fixes that.
+    const isInternalSwapBetter = isInternalSwapBetterByFeeRate({
+      internalFeesDeltaUsd: swapAmounts.swapStrategy.swapPathStats?.totalFeesDeltaUsd,
+      internalUsdIn: swapAmounts.usdIn,
+      internalAmountOut: swapAmounts.amountOut,
+      internalSwapType: swapAmounts.swapStrategy.type,
+      externalUsdIn: oracleUsdIn,
+      externalFeesUsd: oracleFeesUsd,
+    });
 
     const debugForceExternalSwaps = q(selectDebugForceExternalSwaps);
     if (!isInternalSwapBetter || debugForceExternalSwaps) {
@@ -842,10 +862,6 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
   return swapAmounts;
 });
 
-/**
- * Debug-only selector that exposes the internal vs external comparison details.
- * Used by SwapDebugRow to show WHY a particular strategy was chosen.
- */
 export const selectSwapDebugComparison = createSelector((q) => {
   const showDebug = q(selectShowDebugValues);
   if (!showDebug) return null;
@@ -858,90 +874,38 @@ export const selectSwapDebugComparison = createSelector((q) => {
   const toToken = q(selectTradeboxToToken);
   if (!fromToken || !toToken) return null;
 
+  const internalSwap = q(selectTradeboxRawInternalSwapAmounts);
   const swapAmounts = q(selectTradeboxSwapAmounts);
-  if (!swapAmounts) return null;
+  if (!internalSwap || !swapAmounts) return null;
 
   const isExternalSwapWaiting = q(selectIsWaitingForExternalSwapQuote);
   const externalSwapInputs = q(selectExternalSwapInputs);
   const amountBy = q(selectTradeboxFocusedInput);
-
-  // Re-derive the quote with the same guards as selectTradeboxSwapAmounts
-  const rawQuote = !isExternalSwapWaiting ? q(selectExternalSwapQuote) : undefined;
   const fromTokenAmount = q(selectTradeboxFromTokenAmount);
   const toTokenAmount = q(selectTradeboxToTokenAmount);
-  const filteredQuote = filterStaleExternalSwapQuote({
-    quote: rawQuote,
-    amountBy,
-    strategy: externalSwapInputs?.strategy,
-    fromTokenAmount,
-    toTokenAmount,
-  });
 
-  // Stale guard info
+  const baseOutput = q(selectBaseExternalSwapOutput);
+  const filteredQuote = !isExternalSwapWaiting ? q(selectExternalSwapQuote) : undefined;
+
   const staleGuardReason =
-    rawQuote && !filteredQuote
-      ? amountBy === "to" && externalSwapInputs?.strategy !== "byToValue"
-        ? "direction mismatch (to but not byToValue)"
-        : amountBy === "from" && externalSwapInputs?.strategy === "byToValue"
-          ? "direction mismatch (from but byToValue)"
-          : amountBy === "from" && rawQuote.amountIn !== fromTokenAmount
-            ? `amountIn mismatch (quote=${rawQuote.amountIn}, current=${fromTokenAmount})`
-            : amountBy === "to" && toTokenAmount > 0n && rawQuote.amountOut < toTokenAmount
-              ? `amountOut stale (quote=${rawQuote.amountOut}, desired=${toTokenAmount})`
-              : "unknown"
+    baseOutput && !filteredQuote
+      ? baseOutput.inTokenAddress !== fromToken.address
+        ? `in-token mismatch (quote=${baseOutput.inTokenAddress}, current=${fromToken.address})`
+        : baseOutput.outTokenAddress !== toToken.address
+          ? `out-token mismatch (quote=${baseOutput.outTokenAddress}, current=${toToken.address})`
+          : amountBy === "to" && externalSwapInputs?.strategy !== "byToValue"
+            ? "direction mismatch (to but not byToValue)"
+            : amountBy === "from" && externalSwapInputs?.strategy === "byToValue"
+              ? "direction mismatch (from but byToValue)"
+              : amountBy === "from" && baseOutput.amountIn !== fromTokenAmount
+                ? `amountIn mismatch (quote=${baseOutput.amountIn}, current=${fromTokenAmount})`
+                : amountBy === "to" && toTokenAmount > 0n && baseOutput.amountOut < toTokenAmount
+                  ? `amountOut stale (quote=${baseOutput.amountOut}, desired=${toTokenAmount})`
+                  : "fallback (shouldFallbackToInternalSwap)"
       : null;
-
-  // Compute the inflated internal swap independently — same logic as selectTradeboxSwapAmounts.
-  // This guarantees correct values regardless of which strategy won the final comparison.
-  const allowedSlippage = q(selectTradeboxAllowedSlippage);
-  const slippageBps = BigInt(allowedSlippage);
-  const shouldInflate = amountBy === "to" && slippageBps > 0n;
-  const effectiveToTokenAmount = shouldInflate
-    ? (toTokenAmount * BASIS_POINTS_DIVISOR_BIGINT) / (BASIS_POINTS_DIVISOR_BIGINT - slippageBps)
-    : toTokenAmount;
-
-  const fromTokenAddress = q(selectTradeboxFromTokenAddress);
-  const toSwapToken = q(selectTradeboxSwapToTokenAddress);
-  const findSwapPath = q(makeSelectFindSwapPath(fromTokenAddress, toSwapToken));
-  const uiFeeFactor = q(selectUiFeeFactor);
-  const marketsInfoData = q(selectMarketsInfoData);
-  const chainId = q(selectChainId);
-  const externalSwapQuoteParams = q(selectExternalSwapQuoteParams);
-  const { markRatio, triggerRatio } = q(selectTradeboxTradeRatios);
-
-  const internalSwap =
-    amountBy === "from"
-      ? getSwapAmountsByFromValue({
-          tokenIn: fromToken,
-          tokenOut: toToken,
-          amountIn: fromTokenAmount,
-          triggerRatio: triggerRatio || markRatio,
-          isLimit: false,
-          findSwapPath,
-          uiFeeFactor,
-          marketsInfoData,
-          chainId,
-          externalSwapQuoteParams,
-          allowSameTokenSwap: true,
-        })
-      : getSwapAmountsByToValue({
-          tokenIn: fromToken,
-          tokenOut: toToken,
-          amountOut: effectiveToTokenAmount,
-          triggerRatio: triggerRatio || markRatio,
-          isLimit: false,
-          findSwapPath,
-          uiFeeFactor,
-          marketsInfoData,
-          chainId,
-          externalSwapQuoteParams,
-          allowSameTokenSwap: true,
-        });
 
   const internalFeesDeltaUsd = internalSwap.swapStrategy.swapPathStats?.totalFeesDeltaUsd;
   const internalUsdIn = internalSwap.usdIn;
-
-  const baseOutput = q(selectBaseExternalSwapOutput);
 
   let oracleUsdIn: bigint | undefined;
   let oracleUsdOut: bigint | undefined;
@@ -957,17 +921,15 @@ export const selectSwapDebugComparison = createSelector((q) => {
     oracleUsdOut = convertToUsd(externalAmountOut, toToken.decimals, toToken.prices.maxPrice)!;
     oracleFeesUsd = oracleUsdIn - oracleUsdOut;
 
-    isInternalSwapBetter =
-      internalSwap.swapStrategy.type !== "noSwap" &&
-      internalSwap.amountOut > 0n &&
-      internalFeesDeltaUsd !== undefined &&
-      internalUsdIn > 0n &&
-      oracleUsdIn > 0n &&
-      internalFeesDeltaUsd * oracleUsdIn > -oracleFeesUsd * internalUsdIn;
+    isInternalSwapBetter = isInternalSwapBetterByFeeRate({
+      internalFeesDeltaUsd,
+      internalUsdIn,
+      internalAmountOut: internalSwap.amountOut,
+      internalSwapType: internalSwap.swapStrategy.type,
+      externalUsdIn: oracleUsdIn,
+      externalFeesUsd: oracleFeesUsd,
+    });
   }
-
-  const noInternalLiquidity = internalSwap.swapStrategy.type === "noSwap" || internalSwap.amountOut === 0n;
-  const noExternalLiquidity = !baseOutput && !isExternalSwapWaiting;
 
   return {
     direction: amountBy,
@@ -987,8 +949,8 @@ export const selectSwapDebugComparison = createSelector((q) => {
     internalFeesDeltaUsd,
     isInternalSwapBetter,
     finalStrategy: swapAmounts.swapStrategy.type,
-    noInternalLiquidity,
-    noExternalLiquidity,
+    noInternalLiquidity: internalSwap.swapStrategy.type === "noSwap" || internalSwap.amountOut === 0n,
+    noExternalLiquidity: !baseOutput && !isExternalSwapWaiting,
     debugForceExternalSwaps: q(selectDebugForceExternalSwaps),
   };
 });
@@ -1038,12 +1000,14 @@ export const selectIncreaseSwapDebugComparison = createSelector((q) => {
     oracleUsdOut = convertToUsd(externalAmountOut, swapToToken.decimals, swapToToken.prices.maxPrice)!;
     oracleFeesUsd = oracleUsdIn - oracleUsdOut;
 
-    isInternalSwapBetter =
-      internalAmounts.amountOut > 0n &&
-      internalFeesDeltaUsd !== undefined &&
-      internalUsdIn > 0n &&
-      oracleUsdIn > 0n &&
-      internalFeesDeltaUsd * oracleUsdIn > -oracleFeesUsd * internalUsdIn;
+    isInternalSwapBetter = isInternalSwapBetterByFeeRate({
+      internalFeesDeltaUsd,
+      internalUsdIn,
+      internalAmountOut: internalAmounts.amountOut,
+      internalSwapType: internalAmounts.swapStrategy.type,
+      externalUsdIn: oracleUsdIn,
+      externalFeesUsd: oracleFeesUsd,
+    });
   }
 
   const noInternalLiquidity = !externalSwapInputs.internalSwapTotalFeeItem || internalAmounts.amountOut === 0n;
@@ -1248,14 +1212,13 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
       // KyberSwap's own prices (which can diverge significantly from oracle).
       if (swapAmounts.swapStrategy.type === "externalSwap") {
         const oracleQuote = swapAmounts.swapStrategy.externalSwapQuote
-          ? {
-              ...swapAmounts.swapStrategy.externalSwapQuote,
+          ? overrideQuoteWithOraclePrices(swapAmounts.swapStrategy.externalSwapQuote, {
               usdIn: swapAmounts.swapStrategy.usdIn,
               usdOut: swapAmounts.swapStrategy.usdOut,
               feesUsd: swapAmounts.swapStrategy.feesUsd,
               priceIn: swapAmounts.swapStrategy.priceIn,
               priceOut: swapAmounts.swapStrategy.priceOut,
-            }
+            })
           : undefined;
 
         return getTradeFees({
@@ -1286,14 +1249,13 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
 
       // For combined swaps, also use oracle prices for the external quote portion
       const combinedOracleQuote = swapAmounts.swapStrategy.externalSwapQuote
-        ? {
-            ...swapAmounts.swapStrategy.externalSwapQuote,
+        ? overrideQuoteWithOraclePrices(swapAmounts.swapStrategy.externalSwapQuote, {
             usdIn: swapAmounts.swapStrategy.usdIn,
             usdOut: swapAmounts.swapStrategy.usdOut,
             feesUsd: swapAmounts.swapStrategy.feesUsd,
             priceIn: swapAmounts.swapStrategy.priceIn,
             priceOut: swapAmounts.swapStrategy.priceOut,
-          }
+          })
         : undefined;
 
       return getTradeFees({
@@ -1328,14 +1290,13 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
 
       // Use oracle prices for external swap fees display (same as swap case)
       const increaseOracleQuote = increaseAmounts.swapStrategy.externalSwapQuote
-        ? {
-            ...increaseAmounts.swapStrategy.externalSwapQuote,
+        ? overrideQuoteWithOraclePrices(increaseAmounts.swapStrategy.externalSwapQuote, {
             usdIn: increaseAmounts.swapStrategy.usdIn,
             usdOut: increaseAmounts.swapStrategy.usdOut,
             feesUsd: increaseAmounts.swapStrategy.feesUsd,
             priceIn: increaseAmounts.swapStrategy.priceIn,
             priceOut: increaseAmounts.swapStrategy.priceOut,
-          }
+          })
         : undefined;
 
       return getTradeFees({

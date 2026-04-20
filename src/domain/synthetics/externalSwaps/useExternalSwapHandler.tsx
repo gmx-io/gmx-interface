@@ -8,12 +8,11 @@ import {
   selectExternalSwapInputs,
   selectExternalSwapQuote,
   selectSetBaseExternalSwapOutput,
-  selectSetExternalSwapIsLoading,
+  selectSetExternalSwapHookIsLoading,
   selectSetShouldFallbackToInternalSwap,
   selectSetShouldForceExternalSwap,
   selectShouldFallbackToInternalSwap,
   selectShouldForceExternalSwap,
-  selectShouldRequestExternalSwapQuote,
   selectTradeboxAllowedSlippage,
   selectTradeboxFromTokenAddress,
   selectTradeboxSelectSwapToToken,
@@ -23,9 +22,10 @@ import { useChainId } from "lib/chains";
 import { throttleLog } from "lib/logging";
 import { getContract } from "sdk/configs/contracts";
 
+import { useExternalSwapInputRequest } from "./useExternalSwapInputRequest";
 import { useExternalSwapOutputRequest } from "./useExternalSwapOutputRequest";
-import { useExternalSwapReverseSearch } from "./useExternalSwapReverseSearch";
 import { useExternalSwapsEnabled } from "./useExternalSwapsEnabled";
+import { isQuoteStale } from "./utils";
 
 export function useExternalSwapHandler() {
   const { chainId } = useChainId();
@@ -46,14 +46,13 @@ export function useExternalSwapHandler() {
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
   const shouldForceExternalSwap = useSelector(selectShouldForceExternalSwap);
   const setShouldForceExternalSwap = useSelector(selectSetShouldForceExternalSwap);
-  const setIsLoading = useSelector(selectSetExternalSwapIsLoading);
-  const shouldRequest = useSelector(selectShouldRequestExternalSwapQuote);
+  const setIsHookLoading = useSelector(selectSetExternalSwapHookIsLoading);
 
   const enabled = useExternalSwapsEnabled();
 
-  const isReverseSearch = externalSwapInputs?.strategy === "byToValue";
+  const isByToValue = externalSwapInputs?.strategy === "byToValue";
 
-  const { quote: forwardQuote, isLoading: isForwardLoading } = useExternalSwapOutputRequest({
+  const { quote: outputQuote, isLoading: isOutputLoading } = useExternalSwapOutputRequest({
     chainId,
     tokenInAddress: fromTokenAddress,
     tokenOutAddress: swapToToken?.address,
@@ -61,10 +60,10 @@ export function useExternalSwapHandler() {
     receiverAddress: getContract(chainId, "OrderVault"),
     slippage,
     gasPrice,
-    enabled: enabled && !isReverseSearch,
+    enabled: enabled && !isByToValue,
   });
 
-  const { quote: reverseQuote, isLoading: isReverseLoading } = useExternalSwapReverseSearch({
+  const { quote: inputQuote, isLoading: isInputLoading } = useExternalSwapInputRequest({
     chainId,
     tokenInAddress: fromTokenAddress,
     tokenOutAddress: swapToToken?.address,
@@ -73,18 +72,17 @@ export function useExternalSwapHandler() {
     receiverAddress: getContract(chainId, "OrderVault"),
     slippage,
     gasPrice,
-    enabled: enabled && isReverseSearch,
+    enabled: enabled && isByToValue,
   });
 
-  const quote = isReverseSearch ? reverseQuote : forwardQuote;
-  const isHookLoading = isReverseSearch ? isReverseLoading : isForwardLoading;
+  const quote = isByToValue ? inputQuote : outputQuote;
+  const isHookLoading = isByToValue ? isInputLoading : isOutputLoading;
 
   useEffect(
-    function updateExternalSwapLoadingEff() {
-      const hasInputs = Boolean(shouldRequest && externalSwapInputs && externalSwapInputs.amountIn > 0n);
-      setIsLoading(hasInputs && isHookLoading);
+    function syncHookLoadingEff() {
+      setIsHookLoading(isHookLoading);
     },
-    [shouldRequest, externalSwapInputs, isHookLoading, setIsLoading]
+    [isHookLoading, setIsHookLoading]
   );
 
   if (shouldDebugValues) {
@@ -92,8 +90,10 @@ export function useExternalSwapHandler() {
       baseOutput: quote,
       externalSwapQuote,
       inputs: externalSwapInputs,
-      isReverseSearch,
-      isReverseLoading,
+      isByToValue,
+      isInputLoading,
+      isOutputLoading,
+      isHookLoading,
     });
   }
 
@@ -136,26 +136,31 @@ export function useExternalSwapHandler() {
   );
 
   useEffect(
-    function clearStaleOutputOnTokenChange() {
+    function clearStructurallyStaleStoredOutput() {
+      if (!storedBaseExternalSwapOutput) return;
       if (
-        storedBaseExternalSwapOutput &&
-        (storedBaseExternalSwapOutput.inTokenAddress !== fromTokenAddress ||
-          storedBaseExternalSwapOutput.outTokenAddress !== swapToToken?.address)
+        isQuoteStale({
+          quote: storedBaseExternalSwapOutput,
+          fromTokenAddress,
+          toTokenAddress: swapToToken?.address,
+          strategy: externalSwapInputs?.strategy,
+          amountBy: isByToValue ? "to" : "from",
+        })
       ) {
         setBaseExternalSwapOutput(undefined);
       }
     },
-    [fromTokenAddress, swapToToken?.address, storedBaseExternalSwapOutput, setBaseExternalSwapOutput]
-  );
-
-  useEffect(
-    function clearStaleOutputOnDirectionChange() {
-      if (storedBaseExternalSwapOutput) {
-        setBaseExternalSwapOutput(undefined);
-      }
-    },
+    // Intentionally narrow: we only react to structural changes (tokens, direction).
+    // Amount/txnData refreshes of `storedBaseExternalSwapOutput` must not re-run this effect.
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [isReverseSearch]
+    [
+      fromTokenAddress,
+      swapToToken?.address,
+      isByToValue,
+      storedBaseExternalSwapOutput?.inTokenAddress,
+      storedBaseExternalSwapOutput?.outTokenAddress,
+      setBaseExternalSwapOutput,
+    ]
   );
 
   useEffect(

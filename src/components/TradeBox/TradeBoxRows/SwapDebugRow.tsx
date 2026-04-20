@@ -1,5 +1,6 @@
 import { Trans } from "@lingui/macro";
 
+import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import {
   selectIncreaseSwapDebugComparison,
   selectSwapDebugComparison,
@@ -17,6 +18,12 @@ import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export function SwapDebugRow() {
+  const showDebug = useShowDebugValues();
+  if (!showDebug) return null;
+  return <SwapDebugRowContent />;
+}
+
+function SwapDebugRowContent() {
   const { isSwap, isIncrease, isMarket } = useSelector(selectTradeboxTradeFlags);
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);

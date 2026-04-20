@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useMemo } from "react";
 import { usePrevious } from "react-use";
 import useSWR from "swr";
 
@@ -16,6 +16,7 @@ import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/utils/trade/types
 
 import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
 import { getKyberSwapTxnData, KyberSwapQuote } from "./kyberSwap";
+import { useExternalSwapQuoteLoadingState } from "./useExternalSwapQuoteLoadingState";
 
 export function useExternalSwapOutputRequest({
   chainId,
@@ -55,7 +56,11 @@ export function useExternalSwapOutputRequest({
   const prevAmountIn = usePrevious(amountIn);
   const botanixAssetsPerShare = useSelector(selectBotanixStakingAssetsPerShare);
 
-  const { data } = useSWR<KyberSwapQuote | undefined>(debouncedKey, {
+  const {
+    data,
+    error: swrError,
+    isLoading: isSWRLoading,
+  } = useSWR<KyberSwapQuote | undefined>(debouncedKey, {
     keepPreviousData: enabled && prevTokensKey === tokensKey && prevAmountIn === amountIn,
     fetcher: async () => {
       try {
@@ -104,8 +109,8 @@ export function useExternalSwapOutputRequest({
   });
 
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
-    spenderAddress: data?.to,
-    tokenAddresses: tokenInAddress ? [convertTokenAddress(chainId, tokenInAddress, "wrapped")] : [],
+    spenderAddress: enabled ? data?.to : undefined,
+    tokenAddresses: enabled && tokenInAddress ? [convertTokenAddress(chainId, tokenInAddress, "wrapped")] : [],
   });
 
   const tokensData = useTokensData();
@@ -114,22 +119,14 @@ export function useExternalSwapOutputRequest({
     enabled && tokenInAddress && tokenOutAddress && amountIn !== undefined && amountIn > 0n
       ? `${tokenInAddress}:${tokenOutAddress}:${amountIn}`
       : null;
-  const [resolvedUserParams, setResolvedUserParams] = useState<string | null>(null);
-  const prevDataRef = useRef<typeof data>(undefined);
 
-  useEffect(() => {
-    const dataChanged = data !== prevDataRef.current;
-    prevDataRef.current = data;
-
-    if (dataChanged && data && userParamsKey) {
-      setResolvedUserParams(userParamsKey);
-    }
-    if (!enabled) {
-      setResolvedUserParams(null);
-    }
-  }, [data, userParamsKey, enabled]);
-
-  const isLoading = userParamsKey !== null && userParamsKey !== resolvedUserParams;
+  const isLoading = useExternalSwapQuoteLoadingState({
+    userParamsKey,
+    data,
+    error: swrError,
+    isInitialFetch: isSWRLoading,
+    enabled,
+  });
 
   return useMemo(() => {
     if (amountIn === undefined || !tokenInAddress || !tokenOutAddress || gasPrice === undefined || !receiverAddress) {
