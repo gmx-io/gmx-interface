@@ -351,6 +351,7 @@ msgstr "GM Airdrop"
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 #: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Volume"
 msgstr "Volumen"
@@ -3135,10 +3136,6 @@ msgstr "Was ist der Bonus-Anreiz für das Halten Ihres GLV?"
 msgid "Day(s)"
 msgstr "Tag(e)"
 
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-msgid "Rewards Earned"
-msgstr ""
-
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
 msgstr "Abheben von GMX Account..."
@@ -3896,6 +3893,7 @@ msgid "{fromText} to"
 msgstr "{fromText} zu"
 
 #: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Earned Rewards"
 msgstr ""
 
@@ -5862,6 +5860,10 @@ msgstr "Erstellung des Empfehlungscodes fehlgeschlagen"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdraw fee"
 msgstr "Abhebungsgebühr"
+
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Expired Points"
+msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/PointsRow.tsx
 #: src/pages/PointsPage/components/SidebarRewards.tsx
@@ -9031,6 +9033,7 @@ msgstr "Anzeigeeinstellungen"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/PointsPage/components/MainDataSection.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Points Balance"
 msgstr ""
 
@@ -9147,10 +9150,6 @@ msgstr "Einlösbare Rückvergütungen"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Secondary"
 msgstr "Sekundär"
-
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-msgid "Rewards Claimed"
-msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit signing cancelled"

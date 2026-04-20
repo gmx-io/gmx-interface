@@ -351,6 +351,7 @@ msgstr "GM 空投"
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 #: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Volume"
 msgstr "交易量"
@@ -3135,10 +3136,6 @@ msgstr "持有 GLV 的奖金激励是什么？"
 msgid "Day(s)"
 msgstr "天"
 
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-msgid "Rewards Earned"
-msgstr ""
-
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
 msgstr "正在从 GMX Account 提取..."
@@ -3896,6 +3893,7 @@ msgid "{fromText} to"
 msgstr "{fromText} 到"
 
 #: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Earned Rewards"
 msgstr ""
 
@@ -5862,6 +5860,10 @@ msgstr "推荐码创建失败"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdraw fee"
 msgstr "提取费用"
+
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Expired Points"
+msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/PointsRow.tsx
 #: src/pages/PointsPage/components/SidebarRewards.tsx
@@ -9031,6 +9033,7 @@ msgstr "显示设置"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/PointsPage/components/MainDataSection.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Points Balance"
 msgstr ""
 
@@ -9147,10 +9150,6 @@ msgstr "可领取返佣"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Secondary"
 msgstr "备用"
-
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-msgid "Rewards Claimed"
-msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit signing cancelled"

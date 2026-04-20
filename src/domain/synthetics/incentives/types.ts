@@ -74,6 +74,7 @@ export type RewardsHistoryEntry = {
   pointsEarned: bigint;
   pointsSpent: bigint;
   pointsExpired: bigint;
+  pointsBalance: bigint;
   rewardsEarned: bigint;
   rewardsClaimed: bigint;
 };
