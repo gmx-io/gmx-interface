@@ -2,6 +2,7 @@ import { TransactionRevertedError, TransactionRejectedError } from "@gelatocloud
 import { encodePacked } from "viem";
 
 import type { ContractsChainId } from "configs/chains";
+import { getContract } from "configs/contracts";
 import { GELATO_API_KEYS } from "configs/express";
 import { getGelatoRelayerClient, type GelatoEvmRelayerClient, StatusCode } from "utils/gelatoRelay/utils";
 
@@ -31,7 +32,7 @@ export async function sendToGelatoRelay({
 }): Promise<GelatoRelayResult> {
   const data = encodePacked(
     ["bytes", "address", "address", "uint256"],
-    [txnData.callData, txnData.to, txnData.feeToken, txnData.feeAmount]
+    [txnData.callData, getContract(chainId, "GelatoRelayAddress"), txnData.feeToken, txnData.feeAmount]
   );
 
   const apiKey = GELATO_API_KEYS[chainId];
