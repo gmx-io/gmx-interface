@@ -8,7 +8,8 @@ export type SorterKey =
   | "leaderboard-positions-table"
   | "points-leaderboard"
   | "position-list"
-  | "incentives-audit-list";
+  | "incentives-audit-list"
+  | "incentives-audit-detail";
 
 export type SorterConfig<SortField extends string | "unspecified" = "unspecified"> = {
   orderBy: SortField;

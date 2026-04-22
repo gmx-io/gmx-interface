@@ -560,10 +560,6 @@ msgstr "Financiación"
 msgid "Unstaking..."
 msgstr "Retirando del staking..."
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "Pt. Records"
-msgstr ""
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From network"
 msgstr "Red de origen"
@@ -11249,10 +11245,6 @@ msgstr "Traders referidos"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Max deposit limit reached: {maxPoolUsdText}"
 msgstr "Límite máximo de depósito alcanzado: {maxPoolUsdText}"
-
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "Rwd. Records"
-msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield optimizations"

@@ -560,10 +560,6 @@ msgstr "ファンディング"
 msgid "Unstaking..."
 msgstr "ステーキング解除中..."
 
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "Pt. Records"
-msgstr ""
-
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From network"
 msgstr "送信元ネットワーク"
@@ -11249,10 +11245,6 @@ msgstr "紹介されたトレーダー"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Max deposit limit reached: {maxPoolUsdText}"
 msgstr "最大入金上限に達しました: {maxPoolUsdText}"
-
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "Rwd. Records"
-msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield optimizations"
