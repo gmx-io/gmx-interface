@@ -351,6 +351,7 @@ msgstr ""
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 #: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Volume"
 msgstr ""
@@ -557,10 +558,6 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking..."
-msgstr ""
-
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "Pt. Records"
 msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx
@@ -3135,10 +3132,6 @@ msgstr ""
 msgid "Day(s)"
 msgstr ""
 
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-msgid "Rewards Earned"
-msgstr ""
-
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
 msgstr ""
@@ -3896,6 +3889,7 @@ msgid "{fromText} to"
 msgstr ""
 
 #: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Earned Rewards"
 msgstr ""
 
@@ -5861,6 +5855,10 @@ msgstr ""
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdraw fee"
+msgstr ""
+
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Expired Points"
 msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/PointsRow.tsx
@@ -9031,6 +9029,7 @@ msgstr ""
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/PointsPage/components/MainDataSection.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Points Balance"
 msgstr ""
 
@@ -9146,10 +9145,6 @@ msgstr ""
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Secondary"
-msgstr ""
-
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-msgid "Rewards Claimed"
 msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
@@ -11249,10 +11244,6 @@ msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Max deposit limit reached: {maxPoolUsdText}"
-msgstr ""
-
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "Rwd. Records"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx

@@ -14,6 +14,7 @@ const REWARDS_HISTORY_QUERY = gql`
       pointsEarned
       pointsSpent
       pointsExpired
+      pointsBalance
       rewardsEarned
       rewardsClaimed
     }
@@ -46,6 +47,7 @@ export function useAccountRewardsHistory(chainId: number, params: { account?: st
             pointsEarned: string;
             pointsSpent: string;
             pointsExpired: string;
+            pointsBalance: string;
             rewardsEarned: string;
             rewardsClaimed: string;
           }) => ({
@@ -54,6 +56,7 @@ export function useAccountRewardsHistory(chainId: number, params: { account?: st
             pointsEarned: BigInt(e.pointsEarned),
             pointsSpent: BigInt(e.pointsSpent),
             pointsExpired: BigInt(e.pointsExpired),
+            pointsBalance: BigInt(e.pointsBalance),
             rewardsEarned: BigInt(e.rewardsEarned),
             rewardsClaimed: BigInt(e.rewardsClaimed),
           })

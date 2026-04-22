@@ -13,15 +13,28 @@ import {
 import { useAccountIncentiveDashboard } from "domain/synthetics/incentives/useAccountIncentiveDashboard";
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
 import { useAccountRewardsHistory } from "domain/synthetics/incentives/useAccountRewardsHistory";
-import { useIncentiveAccountEpochAudit } from "domain/synthetics/incentives/useIncentiveAccountEpochAudit";
+import { AuditEntry, useIncentiveAccountEpochAudit } from "domain/synthetics/incentives/useIncentiveAccountEpochAudit";
 import { formatAmount, formatUsd } from "lib/numbers";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
 import Loader from "components/Loader/Loader";
+import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
 import { SummaryCard } from "./SummaryCard";
+
+type AuditDetailSortField =
+  | "epoch"
+  | "points"
+  | "rewards"
+  | "fees"
+  | "volume"
+  | "avgMultiplier"
+  | "maxMultiplier"
+  | "effectivePointsRatio"
+  | "effectiveRewardsRatio"
+  | "lastReceivedAt";
 
 export function IncentivesAuditDetail({
   chainId,
@@ -50,6 +63,52 @@ export function IncentivesAuditDetail({
   const { data: status, loading: statusLoading } = useAccountIncentiveStatus(chainId, { account });
   const { data: dashboard } = useAccountIncentiveDashboard(chainId, { account });
   const { data: rewardsHistory } = useAccountRewardsHistory(chainId, { account });
+
+  const { orderBy, direction, getSorterProps } = useSorterHandlers<AuditDetailSortField>("incentives-audit-detail", {
+    orderBy: "epoch",
+    direction: "desc",
+  });
+
+  const sortedAuditData = useMemo(() => {
+    if (!auditData) return undefined;
+
+    const effectiveOrderBy: AuditDetailSortField =
+      orderBy === "unspecified" || direction === "unspecified" ? "epoch" : orderBy;
+    const effectiveDirection = orderBy === "unspecified" || direction === "unspecified" ? "desc" : direction;
+
+    const getValue = (entry: AuditEntry, field: AuditDetailSortField): bigint | number => {
+      switch (field) {
+        case "epoch":
+          return entry.epochTimestamp;
+        case "points":
+          return entry.points;
+        case "rewards":
+          return entry.rewards;
+        case "fees":
+          return entry.fees;
+        case "volume":
+          return entry.volume;
+        case "avgMultiplier":
+          return entry.avgMultiplier;
+        case "maxMultiplier":
+          return entry.maxMultiplier;
+        case "effectivePointsRatio":
+          return entry.effectivePointsRatio;
+        case "effectiveRewardsRatio":
+          return entry.effectiveRewardsRatio;
+        case "lastReceivedAt":
+          return entry.lastReceivedAt;
+      }
+    };
+
+    return [...auditData].sort((a, b) => {
+      const aVal = getValue(a, effectiveOrderBy);
+      const bVal = getValue(b, effectiveOrderBy);
+      if (aVal < bVal) return effectiveDirection === "asc" ? -1 : 1;
+      if (aVal > bVal) return effectiveDirection === "asc" ? 1 : -1;
+      return 0;
+    });
+  }, [auditData, orderBy, direction]);
 
   const totals = useMemo(() => {
     const totalPointsEarned = rewardsHistory?.length
@@ -172,31 +231,45 @@ export function IncentivesAuditDetail({
             <Loader />
           </div>
         )}
-        {auditData && auditData.length > 0 && (
+        {sortedAuditData && sortedAuditData.length > 0 && (
           <TableScrollFadeContainer>
             <Table className="min-w-[1400px] [&_td]:whitespace-nowrap [&_th]:whitespace-nowrap">
               <thead>
                 <TableTheadTr>
                   <TableTh padding="compact">
-                    <Trans>Epoch</Trans>
+                    <Sorter {...getSorterProps("epoch")}>
+                      <Trans>Epoch</Trans>
+                    </Sorter>
                   </TableTh>
                   <TableTh padding="compact">
-                    <Trans>Points</Trans>
+                    <Sorter {...getSorterProps("points")}>
+                      <Trans>Points</Trans>
+                    </Sorter>
                   </TableTh>
                   <TableTh padding="compact">
-                    <Trans>Rewards</Trans>
+                    <Sorter {...getSorterProps("rewards")}>
+                      <Trans>Rewards</Trans>
+                    </Sorter>
                   </TableTh>
                   <TableTh padding="compact">
-                    <Trans>Fees</Trans>
+                    <Sorter {...getSorterProps("fees")}>
+                      <Trans>Fees</Trans>
+                    </Sorter>
                   </TableTh>
                   <TableTh padding="compact">
-                    <Trans>Volume</Trans>
+                    <Sorter {...getSorterProps("volume")}>
+                      <Trans>Volume</Trans>
+                    </Sorter>
                   </TableTh>
                   <TableTh padding="compact">
-                    <Trans>Avg Mult.</Trans>
+                    <Sorter {...getSorterProps("avgMultiplier")}>
+                      <Trans>Avg Mult.</Trans>
+                    </Sorter>
                   </TableTh>
                   <TableTh padding="compact">
-                    <Trans>Max Mult.</Trans>
+                    <Sorter {...getSorterProps("maxMultiplier")}>
+                      <Trans>Max Mult.</Trans>
+                    </Sorter>
                   </TableTh>
                   <TableTh padding="compact">
                     <Trans>Vol. Tier</Trans>
@@ -208,24 +281,24 @@ export function IncentivesAuditDetail({
                     <Trans>Boosts</Trans>
                   </TableTh>
                   <TableTh padding="compact">
-                    <Trans>Eff. Pts Ratio</Trans>
+                    <Sorter {...getSorterProps("effectivePointsRatio")}>
+                      <Trans>Eff. Pts Ratio</Trans>
+                    </Sorter>
                   </TableTh>
                   <TableTh padding="compact">
-                    <Trans>Eff. Rwd Ratio</Trans>
+                    <Sorter {...getSorterProps("effectiveRewardsRatio")}>
+                      <Trans>Eff. Rwd Ratio</Trans>
+                    </Sorter>
                   </TableTh>
                   <TableTh padding="compact">
-                    <Trans>Pt. Records</Trans>
-                  </TableTh>
-                  <TableTh padding="compact">
-                    <Trans>Rwd. Records</Trans>
-                  </TableTh>
-                  <TableTh padding="compact">
-                    <Trans>Last Received</Trans>
+                    <Sorter {...getSorterProps("lastReceivedAt")}>
+                      <Trans>Last Received</Trans>
+                    </Sorter>
                   </TableTh>
                 </TableTheadTr>
               </thead>
               <tbody>
-                {auditData.map((entry) => (
+                {sortedAuditData.map((entry) => (
                   <TableTr key={entry.id}>
                     <TableTd padding="compact">
                       {format(new Date(entry.epochTimestamp * 1000), "MMM d, yyyy HH:mm")}
@@ -245,8 +318,6 @@ export function IncentivesAuditDetail({
                     </TableTd>
                     <TableTd padding="compact">{entry.effectivePointsRatio.toFixed(4)}</TableTd>
                     <TableTd padding="compact">{entry.effectiveRewardsRatio.toFixed(4)}</TableTd>
-                    <TableTd padding="compact">{entry.pointRecordsCount}</TableTd>
-                    <TableTd padding="compact">{entry.rewardRecordsCount}</TableTd>
                     <TableTd padding="compact">
                       {entry.lastReceivedAt ? format(new Date(entry.lastReceivedAt * 1000), "MMM d, HH:mm") : "-"}
                     </TableTd>

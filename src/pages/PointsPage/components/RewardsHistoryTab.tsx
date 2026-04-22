@@ -3,12 +3,16 @@ import { useLingui } from "@lingui/react";
 import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
 
+import { ARBITRUM } from "config/chains";
+import { USD_DECIMALS } from "config/factors";
+import { useGmxPrice } from "domain/legacy";
 import { getEpochDuration } from "domain/synthetics/incentives/constants";
 import { RewardsHistoryEntry } from "domain/synthetics/incentives/types";
 import { useAccountRewardsHistory } from "domain/synthetics/incentives/useAccountRewardsHistory";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
-import { formatAmount, formatUsd } from "lib/numbers";
+import { formatAmount, formatAmountHuman, formatUsd } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
+import useWallet from "lib/wallets/useWallet";
 
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import { TableTd, TableTdActionable, TableTh, TableTheadTr, TableTr, TableTrActionable } from "components/Table/Table";
@@ -21,6 +25,8 @@ import { formatTimeLeft, useCurrentUnixTimestamp } from "./epochTiming";
 import { formatEpochLabel } from "./RewardsHistoryTab.utils";
 
 const PER_PAGE = 10;
+const GMX_DECIMALS = 18;
+const GMX_DECIMALS_FACTOR = 10n ** 18n;
 
 type Props = {
   chainId: number;
@@ -29,11 +35,24 @@ type Props = {
 
 export function RewardsHistoryTab({ chainId, account }: Props) {
   const { i18n } = useLingui();
+  const { active, signer } = useWallet();
   const { data: config } = useIncentivesConfig(chainId);
   const { data: history } = useAccountRewardsHistory(chainId, { account });
+  const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
   const [page, setPage] = useState(1);
   const { isMobile } = useBreakpoints();
   const epochDuration = getEpochDuration(config);
+
+  const formatRewards = useCallback(
+    (rewardsEarned: bigint) => {
+      const gmxLabel = `${formatAmount(rewardsEarned, GMX_DECIMALS, 2, true)} GMX`;
+      const usdValue =
+        gmxPrice !== undefined && gmxPrice > 0n ? (rewardsEarned * gmxPrice) / GMX_DECIMALS_FACTOR : undefined;
+      const usdLabel = formatUsd(usdValue, { fallbackToZero: true, displayDecimals: 2 });
+      return `${gmxLabel} (${usdLabel})`;
+    },
+    [gmxPrice]
+  );
 
   const sortedHistory = useMemo(() => {
     if (!history) return [];
@@ -126,6 +145,7 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
                     epochDuration={epochDuration}
                     now={now}
                     locale={i18n.locale}
+                    formatRewards={formatRewards}
                   />
                 ))}
                 {!history && (
@@ -138,14 +158,16 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
               </tbody>
             </table>
           ) : (
-            <table className="w-full min-w-[720px]">
+            <table className="w-full min-w-[960px]">
               <thead>
                 <TableTheadTr>
                   <TableTh>{t`Epoch`}</TableTh>
+                  <TableTh>{t`Volume`}</TableTh>
                   <TableTh>{t`Earned Points`}</TableTh>
                   <TableTh>{t`Spent Points`}</TableTh>
-                  <TableTh>{t`Rewards Earned`}</TableTh>
-                  <TableTh>{t`Rewards Claimed`}</TableTh>
+                  <TableTh>{t`Expired Points`}</TableTh>
+                  <TableTh>{t`Points Balance`}</TableTh>
+                  <TableTh>{t`Earned Rewards`}</TableTh>
                   <TableTh>{t`Status`}</TableTh>
                 </TableTheadTr>
               </thead>
@@ -158,10 +180,12 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
                   return (
                     <TableTr key={entry.epoch}>
                       <TableTd>{formatEpochLabel(entry.epoch, epochDuration, i18n.locale)}</TableTd>
-                      <TableTd className="numbers">{formatAmount(entry.pointsEarned, 18, 4, true)}</TableTd>
-                      <TableTd className="numbers">{formatAmount(entry.pointsSpent, 18, 4, true)}</TableTd>
-                      <TableTd className="numbers">{formatAmount(entry.rewardsEarned, 18, 4, true)} GMX</TableTd>
-                      <TableTd className="numbers">{formatAmount(entry.rewardsClaimed, 18, 4, true)} GMX</TableTd>
+                      <TableTd className="numbers">{formatAmountHuman(entry.volume, USD_DECIMALS, true, 0)}</TableTd>
+                      <TableTd className="numbers">{formatAmount(entry.pointsEarned, GMX_DECIMALS, 2, true)}</TableTd>
+                      <TableTd className="numbers">{formatAmount(entry.pointsSpent, GMX_DECIMALS, 2, true)}</TableTd>
+                      <TableTd className="numbers">{formatAmount(entry.pointsExpired, GMX_DECIMALS, 2, true)}</TableTd>
+                      <TableTd className="numbers">{formatAmount(entry.pointsBalance, GMX_DECIMALS, 2, true)}</TableTd>
+                      <TableTd className="numbers">{formatRewards(entry.rewardsEarned)}</TableTd>
                       <TableTd>
                         {isCurrentEpoch ? (
                           <span className="text-12 text-typography-secondary">
@@ -181,7 +205,7 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
                 })}
                 {!history && (
                   <TableTr>
-                    <TableTd colSpan={6} className="py-16 text-center text-typography-secondary">
+                    <TableTd colSpan={8} className="py-16 text-center text-typography-secondary">
                       <Trans>Loading...</Trans>
                     </TableTd>
                   </TableTr>
@@ -201,11 +225,13 @@ function MobileRewardsHistoryRow({
   epochDuration,
   now,
   locale,
+  formatRewards,
 }: {
   entry: RewardsHistoryEntry;
   epochDuration: number;
   now: number;
   locale: string;
+  formatRewards: (rewardsEarned: bigint) => string;
 }) {
   const [isExpanded, setIsExpanded] = useState(false);
 
@@ -216,7 +242,6 @@ function MobileRewardsHistoryRow({
   const epochEnd = entry.epoch + epochDuration;
   const isCurrentEpoch = now < epochEnd;
   const timeLeft = epochEnd - now;
-  const pointsBalance = entry.pointsEarned - entry.pointsSpent - entry.pointsExpired;
 
   const statusContent = isCurrentEpoch ? (
     <span className="text-12 text-typography-secondary">
@@ -265,14 +290,12 @@ function MobileRewardsHistoryRow({
               <div className="flex justify-between text-13 font-medium text-typography-secondary">
                 <Trans>Points balance</Trans>
                 <span className="text-14 text-typography-primary numbers">
-                  {formatAmount(pointsBalance, 18, 2, true)}
+                  {formatAmount(entry.pointsBalance, 18, 2, true)}
                 </span>
               </div>
               <div className="flex justify-between text-13 font-medium text-typography-secondary">
                 <Trans>Earned rewards</Trans>
-                <span className="text-14 text-typography-primary numbers">
-                  {formatAmount(entry.rewardsEarned, 18, 2, true)} GMX
-                </span>
+                <span className="text-14 text-typography-primary numbers">{formatRewards(entry.rewardsEarned)}</span>
               </div>
               <div className="flex justify-between text-13 font-medium text-typography-secondary">
                 <Trans>Status</Trans>

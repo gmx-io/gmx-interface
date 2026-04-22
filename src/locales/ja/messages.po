@@ -351,6 +351,7 @@ msgstr "GMエアドロップ"
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 #: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Volume"
 msgstr "出来高"
@@ -558,10 +559,6 @@ msgstr "ファンディング"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking..."
 msgstr "ステーキング解除中..."
-
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "Pt. Records"
-msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From network"
@@ -3135,10 +3132,6 @@ msgstr "GLVを保有するためのボーナスインセンティブとは何で
 msgid "Day(s)"
 msgstr "日"
 
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-msgid "Rewards Earned"
-msgstr ""
-
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
 msgstr "GMX Accountから出金中..."
@@ -3896,6 +3889,7 @@ msgid "{fromText} to"
 msgstr "{fromText}から"
 
 #: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Earned Rewards"
 msgstr ""
 
@@ -5862,6 +5856,10 @@ msgstr "リファラルコードの作成に失敗しました"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdraw fee"
 msgstr "出金手数料"
+
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Expired Points"
+msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/PointsRow.tsx
 #: src/pages/PointsPage/components/SidebarRewards.tsx
@@ -9031,6 +9029,7 @@ msgstr "表示設定"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/PointsPage/components/MainDataSection.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Points Balance"
 msgstr ""
 
@@ -9147,10 +9146,6 @@ msgstr "請求可能なリベート"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Secondary"
 msgstr "セカンダリ"
-
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-msgid "Rewards Claimed"
-msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit signing cancelled"
@@ -11250,10 +11245,6 @@ msgstr "紹介されたトレーダー"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Max deposit limit reached: {maxPoolUsdText}"
 msgstr "最大入金上限に達しました: {maxPoolUsdText}"
-
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "Rwd. Records"
-msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield optimizations"

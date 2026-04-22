@@ -21,8 +21,6 @@ export type AuditEntry = {
   boostIds: BoostId[];
   effectivePointsRatio: number;
   effectiveRewardsRatio: number;
-  pointRecordsCount: number;
-  rewardRecordsCount: number;
   lastReceivedAt: number;
 };
 
@@ -65,8 +63,6 @@ const AUDIT_QUERY = gql`
       boostIds
       effectivePointsRatio
       effectiveRewardsRatio
-      pointRecordsCount
-      rewardRecordsCount
       lastReceivedAt
     }
   }
@@ -133,8 +129,6 @@ export function useIncentiveAccountEpochAudit(
             boostIds: string[];
             effectivePointsRatio: number;
             effectiveRewardsRatio: number;
-            pointRecordsCount: number;
-            rewardRecordsCount: number;
             lastReceivedAt: number;
           }): AuditEntry => ({
             id: e.id,
@@ -151,8 +145,6 @@ export function useIncentiveAccountEpochAudit(
             boostIds: (e.boostIds as BoostId[]) ?? [],
             effectivePointsRatio: e.effectivePointsRatio,
             effectiveRewardsRatio: e.effectiveRewardsRatio,
-            pointRecordsCount: e.pointRecordsCount,
-            rewardRecordsCount: e.rewardRecordsCount,
             lastReceivedAt: e.lastReceivedAt,
           })
         );

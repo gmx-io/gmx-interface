@@ -351,6 +351,7 @@ msgstr "GM аирдроп"
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 #: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Volume"
 msgstr "Объем"
@@ -558,10 +559,6 @@ msgstr "Финансирование"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstaking..."
 msgstr "Снятие со стейкинга..."
-
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "Pt. Records"
-msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From network"
@@ -3135,10 +3132,6 @@ msgstr "Что такое бонусный стимул за持有 GLV?"
 msgid "Day(s)"
 msgstr "День(и)"
 
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-msgid "Rewards Earned"
-msgstr ""
-
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
 msgstr "Вывод средств с GMX Account..."
@@ -3896,6 +3889,7 @@ msgid "{fromText} to"
 msgstr "{fromText} в"
 
 #: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Earned Rewards"
 msgstr ""
 
@@ -5862,6 +5856,10 @@ msgstr "Не удалось создать реферальный код"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdraw fee"
 msgstr "Комиссия за вывод"
+
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Expired Points"
+msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/PointsRow.tsx
 #: src/pages/PointsPage/components/SidebarRewards.tsx
@@ -9031,6 +9029,7 @@ msgstr "Настройки отображения"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/PointsPage/components/MainDataSection.tsx
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Points Balance"
 msgstr ""
 
@@ -9147,10 +9146,6 @@ msgstr "Доступные к получению скидки"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Secondary"
 msgstr "Резервный"
-
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-msgid "Rewards Claimed"
-msgstr ""
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit signing cancelled"
@@ -11250,10 +11245,6 @@ msgstr "Привлечённые трейдеры"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Max deposit limit reached: {maxPoolUsdText}"
 msgstr "Достигнут максимальный лимит депозита: {maxPoolUsdText}"
-
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "Rwd. Records"
-msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield optimizations"
