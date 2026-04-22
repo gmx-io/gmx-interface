@@ -19,7 +19,7 @@ import {
   getGlvDisplayName,
   getMarketIndexName,
   getMarketPoolName,
-  getMaxAllowedLeverageByMinCollateralFactor,
+  getMaxAllowedLeverage,
   getMaxLeverageByMinCollateralFactor,
   getMintableMarketTokens,
   getOpenInterestUsd,
@@ -435,10 +435,11 @@ export function getIncreaseError(p: {
     }
   }
 
-  const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(
-    marketInfo?.minCollateralFactor,
-    marketInfo?.marketTokenAddress
-  );
+  const maxAllowedLeverage = getMaxAllowedLeverage({
+    minCollateralFactor: marketInfo?.minCollateralFactor,
+    minCollateralFactorForLiquidation: marketInfo?.minCollateralFactorForLiquidation,
+    positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,
+  });
 
   if (nextLeverageWithoutPnl !== undefined && nextLeverageWithoutPnl > maxAllowedLeverage) {
     return { buttonErrorMessage: t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x` };
@@ -592,10 +593,11 @@ export function getDecreaseError(p: {
     }
   }
 
-  const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(
-    marketInfo?.minCollateralFactor,
-    marketInfo?.marketTokenAddress
-  );
+  const maxAllowedLeverage = getMaxAllowedLeverage({
+    minCollateralFactor: marketInfo?.minCollateralFactor,
+    minCollateralFactorForLiquidation: marketInfo?.minCollateralFactorForLiquidation,
+    positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,
+  });
 
   if (nextPositionValues?.nextLeverage !== undefined && nextPositionValues?.nextLeverage > maxAllowedLeverage) {
     return { buttonErrorMessage: t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x` };
@@ -642,8 +644,7 @@ export function getEditCollateralError(p: {
   isDeposit: boolean;
   depositToken: TokenData | undefined;
   depositAmount: bigint | undefined;
-  minCollateralFactor: bigint | undefined;
-  marketAddress: string | undefined;
+  marketInfo: MarketInfo | undefined;
 }): ValidationResult {
   const {
     collateralDeltaAmount,
@@ -654,9 +655,10 @@ export function getEditCollateralError(p: {
     isDeposit,
     depositToken,
     depositAmount,
-    minCollateralFactor,
-    marketAddress,
+    marketInfo,
   } = p;
+
+  const minCollateralFactor = marketInfo?.minCollateralFactor;
 
   if (
     collateralDeltaAmount === undefined ||
@@ -683,7 +685,11 @@ export function getEditCollateralError(p: {
 
   const maxAllowedLeverage = isDeposit
     ? getMaxLeverageByMinCollateralFactor(minCollateralFactor)
-    : getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor, marketAddress);
+    : getMaxAllowedLeverage({
+        minCollateralFactor: marketInfo?.minCollateralFactor,
+        minCollateralFactorForLiquidation: marketInfo?.minCollateralFactorForLiquidation,
+        positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,
+      });
 
   if (nextLeverage !== undefined && nextLeverage > maxAllowedLeverage) {
     return { buttonErrorMessage: t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x` };

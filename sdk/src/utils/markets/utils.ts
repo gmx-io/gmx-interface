@@ -2,7 +2,6 @@ import { zeroAddress } from "viem";
 
 import type { ContractsChainId } from "configs/chains";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
-import { MARKET_HOURS_MARKETS, MARKET_HOURS_MCF_OFF_HOURS, MARKET_HOURS_MCF_ON_HOURS } from "configs/marketHours";
 import type { MarketConfig as ConfigMarketConfig } from "configs/markets";
 import { convertTokenAddress, getTokenVisualMultiplier, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import type { DayPriceCandle } from "utils/24h/types";
@@ -142,7 +141,11 @@ export function getCappedPoolPnl(p: { marketInfo: MarketInfo; poolUsd: bigint; p
 }
 
 /**
- * Rounds to nearest .0 leverage, so that getMaxAllowedLeverageByMinCollateralFactor can get .0 or .5 leverage.
+ * Theoretical max leverage derived purely from minCollateralFactor. Does not account for
+ * fees or the liquidation safety buffer. Used by the deposit-collateral path where the
+ * user is not opening a new size.
+ *
+ * Rounded to the nearest 1x (in BASIS_POINTS units).
  */
 const ROUNDING_VALUE = 10000;
 export function getMaxLeverageByMinCollateralFactor(minCollateralFactor: bigint | undefined) {
@@ -154,16 +157,53 @@ export function getMaxLeverageByMinCollateralFactor(minCollateralFactor: bigint 
   return rounded;
 }
 
-export function getMaxAllowedLeverageByMinCollateralFactor(
-  minCollateralFactor: bigint | undefined,
-  marketAddress: string | undefined
-) {
-  if (marketAddress && MARKET_HOURS_MARKETS.has(marketAddress)) {
-    if (minCollateralFactor === MARKET_HOURS_MCF_ON_HOURS) return 100 * BASIS_POINTS_DIVISOR;
-    if (minCollateralFactor === MARKET_HOURS_MCF_OFF_HOURS) return 25 * BASIS_POINTS_DIVISOR;
+/**
+ * Max allowed leverage for opening a position, accounting for opening+closing fees and the
+ * 50% liquidation safety buffer.
+ *
+ *   maxAllowed = floor(
+ *     min(
+ *       1 / (minCollateralFactor + 2 × positionFeeFactorForBalanceWasNotImproved),
+ *       1 / (2 × minCollateralFactorForLiquidation)
+ *     ) / 5
+ *   ) × 5
+ *
+ * First term: opening limit with fees. The fee is charged twice because the contract
+ * simulates a closing fee on top of the already-deducted opening fee during
+ * `isPositionLiquidatable`.
+ * Second term: 50% liquidation buffer (prevents immediate liquidation after open).
+ *
+ * Floored to the nearest 5x (in BASIS_POINTS units) for clean slider values.
+ */
+const MAX_ALLOWED_LEVERAGE_STEP_BP = 5 * BASIS_POINTS_DIVISOR;
+export function getMaxAllowedLeverage({
+  minCollateralFactor,
+  minCollateralFactorForLiquidation,
+  positionFeeFactorForBalanceWasNotImproved,
+}: {
+  minCollateralFactor: bigint | undefined;
+  minCollateralFactorForLiquidation: bigint | undefined;
+  positionFeeFactorForBalanceWasNotImproved: bigint | undefined;
+}): number {
+  if (
+    minCollateralFactor === undefined ||
+    minCollateralFactor === 0n ||
+    minCollateralFactorForLiquidation === undefined ||
+    minCollateralFactorForLiquidation === 0n ||
+    positionFeeFactorForBalanceWasNotImproved === undefined
+  ) {
+    return 100 * BASIS_POINTS_DIVISOR;
   }
 
-  return getMaxLeverageByMinCollateralFactor(minCollateralFactor) / 2;
+  const openingDenominator = minCollateralFactor + 2n * positionFeeFactorForBalanceWasNotImproved;
+  const openingMaxBp = bigMath.mulDiv(PRECISION, BASIS_POINTS_DIVISOR_BIGINT, openingDenominator);
+
+  const liquidationDenominator = 2n * minCollateralFactorForLiquidation;
+  const liquidationMaxBp = bigMath.mulDiv(PRECISION, BASIS_POINTS_DIVISOR_BIGINT, liquidationDenominator);
+
+  const rawMaxBp = openingMaxBp < liquidationMaxBp ? openingMaxBp : liquidationMaxBp;
+
+  return Math.floor(Number(rawMaxBp) / MAX_ALLOWED_LEVERAGE_STEP_BP) * MAX_ALLOWED_LEVERAGE_STEP_BP;
 }
 
 export function getOppositeCollateral(marketInfo: MarketInfo, tokenAddress: string) {
