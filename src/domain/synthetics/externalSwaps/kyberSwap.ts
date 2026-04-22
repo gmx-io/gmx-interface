@@ -67,6 +67,7 @@ export type KyberSwapQuote = {
   gasPrice: bigint;
   amountIn: bigint;
   outputAmount: bigint;
+  slippage: number;
 };
 
 const KYBER_SWAP_SLIPPAGE_ERROR_CODE = 4222;
@@ -190,6 +191,7 @@ export async function getKyberSwapTxnData({
       gasPrice,
       amountIn: amountInBigint,
       outputAmount: amountOutBigint,
+      slippage,
     };
   } catch (e) {
     if (e instanceof KyberSwapSlippageError) {
@@ -339,6 +341,7 @@ export async function getKyberSwapBuildFromRoute({
       gasPrice,
       amountIn: amountInBigint,
       outputAmount: amountOutBigint,
+      slippage,
     };
   } catch (e) {
     metrics.pushError(e, "externalSwap.getKyberSwapBuildFromRoute");

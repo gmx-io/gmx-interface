@@ -282,11 +282,21 @@ export function isQuoteStaleForRequest(params: {
   amountBy: "from" | "to" | undefined;
   inputsAmountIn: bigint;
   inputsDesiredAmountOut: bigint | undefined;
+  inputsSlippage: number | undefined;
 }): boolean {
-  const { quote, fromTokenAddress, toTokenAddress, strategy, amountBy, inputsAmountIn, inputsDesiredAmountOut } =
-    params;
+  const {
+    quote,
+    fromTokenAddress,
+    toTokenAddress,
+    strategy,
+    amountBy,
+    inputsAmountIn,
+    inputsDesiredAmountOut,
+    inputsSlippage,
+  } = params;
   if (!quote) return true;
   if (isQuoteStale({ quote, fromTokenAddress, toTokenAddress, strategy, amountBy })) return true;
+  if (quote.slippage !== undefined && inputsSlippage !== undefined && quote.slippage !== inputsSlippage) return true;
   if (strategy === "byToValue") {
     // Match on the stamped target, not `amountOut` — KyberSwap's search converges within
     // tolerance, so its `outputAmount` isn't a stable identifier of the request.

@@ -195,6 +195,7 @@ export const selectIsWaitingForExternalSwapQuote = createSelector((q) => {
     amountBy: q(selectTradeboxFocusedInput),
     inputsAmountIn: externalSwapInputs.amountIn,
     inputsDesiredAmountOut: externalSwapInputs.desiredAmountOut,
+    inputsSlippage: q(selectTradeboxAllowedSlippage),
   });
   if (storedQuoteMatchesCurrentInput) return false;
 
@@ -233,6 +234,7 @@ export const selectExternalSwapQuote = createSelector((q) => {
       amountBy,
       inputsAmountIn: inputs.amountIn,
       inputsDesiredAmountOut: inputs.desiredAmountOut,
+      inputsSlippage: q(selectTradeboxAllowedSlippage),
     })
   ) {
     return undefined;
@@ -876,6 +878,51 @@ export const selectTradeboxSwapAmounts = createSelector((q) => {
   return swapAmounts;
 });
 
+function getStaleGuardReason(args: {
+  baseOutput: ExternalSwapQuote | undefined;
+  filteredQuote: ExternalSwapQuote | undefined;
+  fromTokenAddress: string;
+  toTokenAddress: string;
+  strategy: "byFromValue" | "byToValue" | "leverageBySize" | undefined;
+  amountBy: "from" | "to" | undefined;
+  fromTokenAmount: bigint;
+  toTokenAmount: bigint;
+}): string | null {
+  const {
+    baseOutput,
+    filteredQuote,
+    fromTokenAddress,
+    toTokenAddress,
+    strategy,
+    amountBy,
+    fromTokenAmount,
+    toTokenAmount,
+  } = args;
+
+  if (!baseOutput || filteredQuote) return null;
+
+  if (baseOutput.inTokenAddress !== fromTokenAddress) {
+    return `in-token mismatch (quote=${baseOutput.inTokenAddress}, current=${fromTokenAddress})`;
+  }
+  if (baseOutput.outTokenAddress !== toTokenAddress) {
+    return `out-token mismatch (quote=${baseOutput.outTokenAddress}, current=${toTokenAddress})`;
+  }
+  if (amountBy === "to" && strategy !== "byToValue") {
+    return "direction mismatch (to but not byToValue)";
+  }
+  if (amountBy === "from" && strategy === "byToValue") {
+    return "direction mismatch (from but byToValue)";
+  }
+  if (amountBy === "from" && baseOutput.amountIn !== fromTokenAmount) {
+    return `amountIn mismatch (quote=${baseOutput.amountIn}, current=${fromTokenAmount})`;
+  }
+  if (amountBy === "to" && toTokenAmount > 0n && baseOutput.amountOut < toTokenAmount) {
+    return `amountOut stale (quote=${baseOutput.amountOut}, desired=${toTokenAmount})`;
+  }
+
+  return "fallback (shouldFallbackToInternalSwap)";
+}
+
 export const selectSwapDebugComparison = createSelector((q) => {
   const showDebug = q(selectShowDebugValues);
   if (!showDebug) return null;
@@ -901,22 +948,16 @@ export const selectSwapDebugComparison = createSelector((q) => {
   const baseOutput = q(selectBaseExternalSwapOutput);
   const filteredQuote = !isExternalSwapWaiting ? q(selectExternalSwapQuote) : undefined;
 
-  const staleGuardReason =
-    baseOutput && !filteredQuote
-      ? baseOutput.inTokenAddress !== fromToken.address
-        ? `in-token mismatch (quote=${baseOutput.inTokenAddress}, current=${fromToken.address})`
-        : baseOutput.outTokenAddress !== toToken.address
-          ? `out-token mismatch (quote=${baseOutput.outTokenAddress}, current=${toToken.address})`
-          : amountBy === "to" && externalSwapInputs?.strategy !== "byToValue"
-            ? "direction mismatch (to but not byToValue)"
-            : amountBy === "from" && externalSwapInputs?.strategy === "byToValue"
-              ? "direction mismatch (from but byToValue)"
-              : amountBy === "from" && baseOutput.amountIn !== fromTokenAmount
-                ? `amountIn mismatch (quote=${baseOutput.amountIn}, current=${fromTokenAmount})`
-                : amountBy === "to" && toTokenAmount > 0n && baseOutput.amountOut < toTokenAmount
-                  ? `amountOut stale (quote=${baseOutput.amountOut}, desired=${toTokenAmount})`
-                  : "fallback (shouldFallbackToInternalSwap)"
-      : null;
+  const staleGuardReason = getStaleGuardReason({
+    baseOutput,
+    filteredQuote,
+    fromTokenAddress: fromToken.address,
+    toTokenAddress: toToken.address,
+    strategy: externalSwapInputs?.strategy,
+    amountBy,
+    fromTokenAmount,
+    toTokenAmount,
+  });
 
   const internalFeesDeltaUsd = internalSwap.swapStrategy.swapPathStats?.totalFeesDeltaUsd;
   const internalUsdIn = internalSwap.usdIn;

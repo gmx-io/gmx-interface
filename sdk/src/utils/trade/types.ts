@@ -292,6 +292,7 @@ export type ExternalSwapQuote = {
   priceIn: bigint;
   priceOut: bigint;
   feesUsd: bigint;
+  slippage?: number;
   needSpenderApproval?: boolean;
   // Stamped by byToValue fetches as a request fingerprint; other strategies use `amountIn`.
   desiredAmountOut?: bigint;

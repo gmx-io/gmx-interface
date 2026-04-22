@@ -22,6 +22,8 @@ class InputRequestNoResultError extends Error {
   }
 }
 
+type InputRequestData = KyberSwapQuote & { desiredAmountOut: bigint };
+
 const MAX_ITERATIONS = 5;
 const CONVERGENCE_THRESHOLD_BPS = 50n; // 0.5% tolerance
 const MIN_OUTPUT_RATIO_BPS = 5000n; // 50% - stop if output is less than 50% of desired
@@ -130,7 +132,7 @@ export function useExternalSwapInputRequest({
     data,
     error: swrError,
     isLoading: isSWRLoading,
-  } = useSWR<KyberSwapQuote | undefined>(debouncedKey, {
+  } = useSWR<InputRequestData | undefined>(debouncedKey, {
     fetcher: async () => {
       try {
         if (
@@ -181,7 +183,7 @@ export function useExternalSwapInputRequest({
           throw new InputRequestNoResultError();
         }
 
-        return result;
+        return { ...result, desiredAmountOut };
       } catch (error) {
         if (!(error instanceof InputRequestNoResultError)) {
           metrics.pushError(error, "externalSwap.useExternalSwapInputRequest");
@@ -206,11 +208,12 @@ export function useExternalSwapInputRequest({
 
   return useMemo(() => {
     if (
-      desiredAmountOut === undefined ||
       !tokenInAddress ||
       !tokenOutAddress ||
       gasPrice === undefined ||
-      !receiverAddress
+      !receiverAddress ||
+      desiredAmountOut === undefined ||
+      slippage === undefined
     ) {
       return { isLoading: false };
     }
@@ -238,8 +241,9 @@ export function useExternalSwapInputRequest({
       priceIn: data.priceIn,
       priceOut: data.priceOut,
       feesUsd: data.usdIn - data.usdOut,
+      slippage: data.slippage,
       needSpenderApproval,
-      desiredAmountOut,
+      desiredAmountOut: data.desiredAmountOut,
       txnData: {
         to: data.to,
         data: data.data,
@@ -254,11 +258,12 @@ export function useExternalSwapInputRequest({
       isLoading,
     };
   }, [
-    desiredAmountOut,
     tokenInAddress,
     tokenOutAddress,
     gasPrice,
     receiverAddress,
+    desiredAmountOut,
+    slippage,
     data,
     swrError,
     isLoading,

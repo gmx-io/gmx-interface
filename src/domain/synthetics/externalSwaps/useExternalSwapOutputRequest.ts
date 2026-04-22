@@ -176,6 +176,7 @@ export function useExternalSwapOutputRequest({
       priceIn: data.priceIn,
       priceOut: data.priceOut,
       feesUsd: data.usdIn - data.usdOut,
+      slippage: data.slippage,
       needSpenderApproval,
       txnData: {
         to: data.to,
