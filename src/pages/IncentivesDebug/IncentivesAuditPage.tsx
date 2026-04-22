@@ -44,7 +44,8 @@ export function IncentivesAuditPage() {
 
   const [epochParam, setEpochParam] = useQueryParam("epoch");
   const latestEpoch = config?.epochTimestamp;
-  const selectedEpoch = epochParam ? Number(epochParam) : latestEpoch;
+  const selectedEpoch: number | "all" | undefined =
+    epochParam === "all" ? "all" : epochParam ? Number(epochParam) : latestEpoch;
 
   const epochs = useMemo(() => {
     if (!config || config.epochDuration <= 0) return [];
@@ -68,7 +69,7 @@ export function IncentivesAuditPage() {
   }, [config]);
 
   const handleEpochChange = useCallback(
-    (epoch: number | undefined) => {
+    (epoch: number | "all" | undefined) => {
       setEpochParam(epoch !== undefined ? String(epoch) : undefined);
     },
     [setEpochParam]

@@ -41,9 +41,9 @@ export function IncentivesAuditList({
   onAccountClick,
 }: {
   chainId: number;
-  selectedEpoch: number | undefined;
+  selectedEpoch: number | "all" | undefined;
   epochs: EpochOption[];
-  onEpochChange: (epoch: number | undefined) => void;
+  onEpochChange: (epoch: number | "all" | undefined) => void;
   onAccountClick: (account: string) => void;
 }) {
   const [page, setPage] = useState(1);
@@ -59,8 +59,9 @@ export function IncentivesAuditList({
   // Gate the query: before the incentives config resolves, selectedEpoch is
   // undefined. Without this, the hook would fire a full-range (no-epoch)
   // query that's immediately discarded once the epoch becomes known.
+  // "all" is a user-picked sentinel that omits epochTimestamp for an all-time view.
   const { data, summary, error, loading } = useIncentiveAccountEpochAudit(chainId, {
-    epochTimestamp: selectedEpoch,
+    epochTimestamp: selectedEpoch === "all" ? undefined : selectedEpoch,
     orderBy: sortField,
     orderDirection: sortDirection,
     limit: PAGE_SIZE,
@@ -74,7 +75,13 @@ export function IncentivesAuditList({
   const handleEpochSelect = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
       const val = e.target.value;
-      onEpochChange(val ? Number(val) : undefined);
+      if (val === "all") {
+        onEpochChange("all");
+      } else if (val) {
+        onEpochChange(Number(val));
+      } else {
+        onEpochChange(undefined);
+      }
       setPage(1);
     },
     [onEpochChange]
@@ -99,6 +106,7 @@ export function IncentivesAuditList({
           value={selectedEpoch}
           onChange={handleEpochSelect}
         >
+          <option value="all">All Time</option>
           {epochs.map((ep) => (
             <option key={ep.timestamp} value={ep.timestamp}>
               {ep.label}
