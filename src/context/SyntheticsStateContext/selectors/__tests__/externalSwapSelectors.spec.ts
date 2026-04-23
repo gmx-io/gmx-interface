@@ -14,6 +14,7 @@ import { ExternalSwapQuote, SwapPathStats, TradeMode, TradeType } from "sdk/util
 
 import { SyntheticsState } from "../../SyntheticsStateContextProvider";
 import {
+  selectExternalSwapIsLoading,
   selectExternalSwapInputs,
   selectExternalSwapQuote,
   selectShouldRequestExternalSwapQuote,
@@ -125,6 +126,8 @@ describe("externalSwapSelectors", () => {
         externalSwapsEnabled: true,
         isLeverageSliderEnabled: true,
       },
+      subaccountState: { subaccount: undefined },
+      features: { relayRouterEnabled: false, subaccountRelayRouterEnabled: false },
     };
 
     findSwapPathFn = vi.fn().mockReturnValue(mockSwapPathStats);
@@ -133,7 +136,7 @@ describe("externalSwapSelectors", () => {
   });
 
   afterEach(() => {
-    vi.clearAllMocks();
+    vi.restoreAllMocks();
   });
 
   describe("selectExternalSwapQuote", () => {
@@ -289,6 +292,149 @@ describe("externalSwapSelectors", () => {
         tokensData.ETH.address,
         tokensData.USDC.address
       );
+    });
+
+    it("uses byToValue strategy on swap tab when focusedInput is 'to'", () => {
+      const state = createMockState({
+        tradebox: {
+          ...defaultState.tradebox,
+          tradeType: TradeType.Swap,
+          focusedInput: "to",
+        },
+      });
+      const result = selectExternalSwapInputs(state);
+      expect(result?.strategy).toBe("byToValue");
+    });
+
+    it("uses byFromValue on swap tab when focusedInput is 'from'", () => {
+      const state = createMockState({
+        tradebox: {
+          ...defaultState.tradebox,
+          tradeType: TradeType.Swap,
+          focusedInput: "from",
+        },
+      });
+      const result = selectExternalSwapInputs(state);
+      expect(result?.strategy).toBe("byFromValue");
+    });
+  });
+
+  describe("selectShouldRequestExternalSwapQuote — gates", () => {
+    it("returns false when tradeMode is Limit", () => {
+      const state = createMockState({
+        tradebox: { ...defaultState.tradebox, tradeMode: TradeMode.Limit },
+      });
+      mockSwapPathStats.totalFeesDeltaUsd = -expandDecimals(10, 30);
+      expect(selectShouldRequestExternalSwapQuote(state)).toBe(false);
+    });
+
+    it("returns false when tradeMode is TWAP", () => {
+      const state = createMockState({
+        tradebox: { ...defaultState.tradebox, tradeMode: TradeMode.Twap },
+      });
+      mockSwapPathStats.totalFeesDeltaUsd = -expandDecimals(10, 30);
+      expect(selectShouldRequestExternalSwapQuote(state)).toBe(false);
+    });
+
+    // NOTE: subaccount and express-schema gates require deeper state plumbing (subaccountState
+    // structure, features flags, sponsoredCallBalanceData) and createSelector-based selectors
+    // can't be cleanly mocked with vi.spyOn — they're exercised in higher-level integration tests.
+  });
+
+  describe("selectExternalSwapIsLoading", () => {
+    it("returns false when shouldRequest is false (e.g. no inputs)", () => {
+      mockSwapPathStats.totalFeesDeltaUsd = -expandDecimals(10, 30);
+      const state = createMockState({
+        tradebox: { ...defaultState.tradebox, fromTokenInputValue: "0", toTokenInputValue: "0" },
+      });
+      expect(selectExternalSwapIsLoading(state as SyntheticsState)).toBe(false);
+    });
+
+    it("returns true when stored result key does not match current input (stale)", () => {
+      mockSwapPathStats.totalFeesDeltaUsd = -expandDecimals(10, 30);
+
+      const state = createMockState({
+        externalSwap: {
+          ...defaultState.externalSwap,
+          requestResult: { status: "success", key: "stale-key", quote: mockBaseSwapQuote },
+        },
+      });
+      expect(selectExternalSwapIsLoading(state as SyntheticsState)).toBe(true);
+    });
+
+    it("returns true when no stored result at all", () => {
+      mockSwapPathStats.totalFeesDeltaUsd = -expandDecimals(10, 30);
+      const state = createMockState({
+        externalSwap: { ...defaultState.externalSwap, requestResult: undefined },
+      });
+      expect(selectExternalSwapIsLoading(state as SyntheticsState)).toBe(true);
+    });
+
+    it("returns false when stored success result matches current input", () => {
+      mockSwapPathStats.totalFeesDeltaUsd = -expandDecimals(10, 30);
+      const state = createMockState();
+      expect(selectExternalSwapIsLoading(state as SyntheticsState)).toBe(false);
+    });
+
+    it("returns false when stored failed result matches current input (no infinite loading)", () => {
+      mockSwapPathStats.totalFeesDeltaUsd = -expandDecimals(10, 30);
+      const inputs = selectExternalSwapInputs(createMockState()) as NonNullable<
+        ReturnType<typeof selectExternalSwapInputs>
+      >;
+      const key = getExternalSwapRequestKey({
+        fromTokenAddress: tokensData.ETH.address,
+        toTokenAddress: tokensData.USDC.address,
+        strategy: inputs.strategy,
+        amountIn: inputs.amountIn,
+        desiredAmountOut: undefined,
+        slippage: DEFAULT_SLIPPAGE,
+      })!;
+
+      const state = createMockState({
+        externalSwap: {
+          ...defaultState.externalSwap,
+          requestResult: { status: "failed", key },
+        },
+      });
+      expect(selectExternalSwapIsLoading(state as SyntheticsState)).toBe(false);
+    });
+  });
+
+  describe("selectExternalSwapQuote — gates", () => {
+    beforeEach(() => {
+      mockSwapPathStats.totalFeesDeltaUsd = -expandDecimals(10, 30);
+    });
+
+    it("returns undefined when stored result is failed (even with matching key)", () => {
+      const inputs = selectExternalSwapInputs(createMockState()) as NonNullable<
+        ReturnType<typeof selectExternalSwapInputs>
+      >;
+      const key = getExternalSwapRequestKey({
+        fromTokenAddress: tokensData.ETH.address,
+        toTokenAddress: tokensData.USDC.address,
+        strategy: inputs.strategy,
+        amountIn: inputs.amountIn,
+        desiredAmountOut: undefined,
+        slippage: DEFAULT_SLIPPAGE,
+      })!;
+
+      const state = createMockState({
+        externalSwap: {
+          ...defaultState.externalSwap,
+          requestResult: { status: "failed", key },
+        },
+      });
+      expect(selectExternalSwapQuote(state as SyntheticsState)).toBeUndefined();
+    });
+
+    it("returns undefined when stored success result key is stale", () => {
+      const state = createMockState({
+        externalSwap: {
+          ...defaultState.externalSwap,
+          requestResult: { status: "success", key: "stale-key", quote: mockBaseSwapQuote },
+        },
+      });
+      expect(selectExternalSwapQuote(state as SyntheticsState)).toBeUndefined();
     });
   });
 });

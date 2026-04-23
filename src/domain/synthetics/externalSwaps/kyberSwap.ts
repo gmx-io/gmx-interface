@@ -349,7 +349,7 @@ export async function getKyberSwapBuildFromRoute({
   }
 }
 
-function calcTokenPrice(amount: bigint, usdValue: string, decimals: number): bigint {
+export function calcTokenPrice(amount: bigint, usdValue: string, decimals: number): bigint {
   if (amount <= 0n) return 0n;
 
   const usdBigint = numberToBigint(parseFloat(usdValue), USD_DECIMALS);

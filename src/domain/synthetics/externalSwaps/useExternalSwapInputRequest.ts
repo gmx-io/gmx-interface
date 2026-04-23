@@ -2,7 +2,6 @@ import { useMemo } from "react";
 import useSWR from "swr";
 
 import { BOTANIX } from "config/chains";
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { metrics } from "lib/metrics";
 import { ContractsChainId } from "sdk/configs/chains";
@@ -11,7 +10,8 @@ import { convertTokenAddress } from "sdk/configs/tokens";
 import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/utils/trade/types";
 
 import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
-import { getKyberSwapBuildFromRoute, getKyberSwapRoute, KyberSwapQuote, KyberSwapRouteResult } from "./kyberSwap";
+import { getKyberSwapBuildFromRoute, KyberSwapQuote } from "./kyberSwap";
+import { searchAmountInForDesiredOutput } from "./searchAmountInForDesiredOutput";
 import { inflateAmountForSlippage } from "./utils";
 
 class InputRequestNoResultError extends Error {
@@ -22,67 +22,6 @@ class InputRequestNoResultError extends Error {
 }
 
 type InputRequestData = KyberSwapQuote & { desiredAmountOut: bigint };
-
-const MAX_ITERATIONS = 5;
-const CONVERGENCE_THRESHOLD_BPS = 50n; // 0.5% tolerance
-const MIN_OUTPUT_RATIO_BPS = 5000n; // 50% - stop if output is less than 50% of desired
-
-async function searchAmountInForDesiredOutput({
-  chainId,
-  tokenInAddress,
-  tokenOutAddress,
-  desiredAmountOut,
-  initialAmountIn,
-  gasPrice,
-}: {
-  chainId: ContractsChainId;
-  tokenInAddress: string;
-  tokenOutAddress: string;
-  desiredAmountOut: bigint;
-  initialAmountIn: bigint;
-  gasPrice: bigint;
-}): Promise<{ amountIn: bigint; routeResult: KyberSwapRouteResult } | undefined> {
-  let amountIn = initialAmountIn;
-
-  for (let i = 0; i < MAX_ITERATIONS; i++) {
-    if (amountIn <= 0n) return undefined;
-
-    const routeResult = await getKyberSwapRoute({
-      chainId,
-      tokenInAddress,
-      tokenOutAddress,
-      amountIn,
-      gasPrice,
-    });
-
-    if (!routeResult) return undefined;
-
-    const outputAmount = routeResult.outputAmount;
-    if (outputAmount <= 0n) return undefined;
-
-    // First-iteration divergence guard: KyberSwap returned a route with wildly lower output than
-    // oracle-seeded expectation — signals a dead pool or extreme price impact, not worth iterating.
-    if (i === 0 && (outputAmount * BASIS_POINTS_DIVISOR_BIGINT) / desiredAmountOut < MIN_OUTPUT_RATIO_BPS) {
-      return undefined;
-    }
-
-    const diff = outputAmount > desiredAmountOut ? outputAmount - desiredAmountOut : desiredAmountOut - outputAmount;
-    const diffBps = (diff * BASIS_POINTS_DIVISOR_BIGINT) / desiredAmountOut;
-
-    if (diffBps <= CONVERGENCE_THRESHOLD_BPS) {
-      return { amountIn, routeResult };
-    }
-
-    const newAmountIn = (amountIn * desiredAmountOut) / outputAmount;
-
-    // Exponential-growth guard: secant step blew up (would 3x amountIn in one step).
-    if (newAmountIn > amountIn * 3n) return undefined;
-
-    amountIn = newAmountIn;
-  }
-
-  return undefined;
-}
 
 export function useExternalSwapInputRequest({
   chainId,
