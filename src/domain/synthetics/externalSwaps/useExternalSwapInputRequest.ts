@@ -12,7 +12,6 @@ import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/utils/trade/types
 
 import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
 import { getKyberSwapBuildFromRoute, getKyberSwapRoute, KyberSwapQuote, KyberSwapRouteResult } from "./kyberSwap";
-import { useExternalSwapQuoteLoadingState } from "./useExternalSwapQuoteLoadingState";
 import { inflateAmountForSlippage } from "./utils";
 
 class InputRequestNoResultError extends Error {
@@ -123,16 +122,7 @@ export function useExternalSwapInputRequest({
 
   const debouncedKey = useDebounce(swapKey, 300);
 
-  // Track user params (tokens + desiredAmount) separately from background params (gasPrice)
-  const userParamsKey =
-    enabled && tokenInAddress && tokenOutAddress && desiredAmountOut !== undefined && desiredAmountOut > 0n
-      ? `${tokenInAddress}:${tokenOutAddress}:${desiredAmountOut}`
-      : null;
-  const {
-    data,
-    error: swrError,
-    isLoading: isSWRLoading,
-  } = useSWR<InputRequestData | undefined>(debouncedKey, {
+  const { data, error: swrError } = useSWR<InputRequestData | undefined>(debouncedKey, {
     fetcher: async () => {
       try {
         if (
@@ -198,14 +188,6 @@ export function useExternalSwapInputRequest({
     tokenAddresses: enabled && tokenInAddress ? [convertTokenAddress(chainId, tokenInAddress, "wrapped")] : [],
   });
 
-  const isLoading = useExternalSwapQuoteLoadingState({
-    userParamsKey,
-    data,
-    error: swrError,
-    isInitialFetch: isSWRLoading,
-    enabled,
-  });
-
   return useMemo(() => {
     if (
       !tokenInAddress ||
@@ -215,11 +197,11 @@ export function useExternalSwapInputRequest({
       desiredAmountOut === undefined ||
       slippage === undefined
     ) {
-      return { isLoading: false };
+      return { error: swrError };
     }
 
     if (!data || swrError) {
-      return { isLoading: isLoading && enabled && !swrError };
+      return { error: swrError };
     }
 
     const needSpenderApproval = getNeedTokenApprove(
@@ -253,10 +235,7 @@ export function useExternalSwapInputRequest({
       },
     };
 
-    return {
-      quote,
-      isLoading,
-    };
+    return { quote, error: swrError };
   }, [
     tokenInAddress,
     tokenOutAddress,
@@ -266,8 +245,6 @@ export function useExternalSwapInputRequest({
     slippage,
     data,
     swrError,
-    isLoading,
-    enabled,
     tokensAllowanceData,
     chainId,
   ]);

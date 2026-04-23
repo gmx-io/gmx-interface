@@ -2,6 +2,8 @@ import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { AVALANCHE } from "config/chains";
 import { getSwapPriceImpactForExternalSwapThresholdBps } from "config/externalSwaps";
+import { ExternalSwapRequestResult } from "domain/synthetics/externalSwaps/types";
+import { getExternalSwapRequestKey } from "domain/synthetics/externalSwaps/utils";
 import { mockExternalSwapQuote } from "domain/synthetics/testUtils/mocks";
 import { FindSwapPath } from "domain/synthetics/trade";
 import { expandDecimals } from "lib/numbers";
@@ -33,6 +35,24 @@ const createMockState = (overrides: DeepPartial<SyntheticsState> = {}): Syntheti
     ...defaultState,
     ...overrides,
   }) as SyntheticsState;
+
+function buildSuccessResult(
+  quote: ExternalSwapQuote,
+  fromTokenAmount: bigint,
+  slippage: number
+): ExternalSwapRequestResult {
+  const key = getExternalSwapRequestKey({
+    fromTokenAddress: quote.inTokenAddress,
+    toTokenAddress: quote.outTokenAddress,
+    strategy: "byFromValue",
+    amountIn: fromTokenAmount,
+    desiredAmountOut: undefined,
+    slippage,
+  })!;
+  return { status: "success", key, quote };
+}
+
+const DEFAULT_SLIPPAGE = 50;
 
 describe("externalSwapSelectors", () => {
   let findSwapPathFn: FindSwapPath;
@@ -90,10 +110,11 @@ describe("externalSwapSelectors", () => {
         toTokenInputValue: "1800",
         focusedInput: "from",
         leverageOption: 2,
+        allowedSlippage: DEFAULT_SLIPPAGE,
       },
       externalSwap: {
-        baseOutput: mockBaseSwapQuote,
-        setBaseOutput: () => undefined,
+        requestResult: buildSuccessResult(mockBaseSwapQuote, expandDecimals(1, 18), DEFAULT_SLIPPAGE),
+        setRequestResult: () => undefined,
         shouldFallbackToInternalSwap: false,
         shouldForceExternalSwap: false,
         setShouldFallbackToInternalSwap: () => undefined,
@@ -120,7 +141,7 @@ describe("externalSwapSelectors", () => {
       const state = createMockState({
         externalSwap: {
           ...defaultState.externalSwap,
-          baseOutput: undefined,
+          requestResult: undefined,
         },
       });
 
@@ -159,16 +180,15 @@ describe("externalSwapSelectors", () => {
     });
 
     it("should recalculate amountIn and usdIn for leverageBySize strategy", () => {
-      const state = createMockState({
+      mockSwapPathStats.totalFeesDeltaUsd = -expandDecimals(10, 30);
+
+      const inputsState = createMockState({
         tradebox: {
           ...defaultState.tradebox,
           focusedInput: "to",
         },
       });
-
-      mockSwapPathStats.totalFeesDeltaUsd = -expandDecimals(10, 30);
-
-      const inputs = selectExternalSwapInputs(state as SyntheticsState);
+      const inputs = selectExternalSwapInputs(inputsState as SyntheticsState);
       expect(inputs?.strategy).toBe("leverageBySize");
 
       // Align baseOutput.amountIn with the strategy's required amountIn so the quote is not
@@ -176,6 +196,26 @@ describe("externalSwapSelectors", () => {
       // baseOutput.usdOut (oracle vs KyberSwap price).
       mockBaseSwapQuote.amountIn = inputs!.amountIn;
       mockBaseSwapQuote.usdIn = bigMath.mulDiv(inputs!.amountIn, mockBaseSwapQuote.priceIn, expandDecimals(1, 18));
+
+      const key = getExternalSwapRequestKey({
+        fromTokenAddress: mockBaseSwapQuote.inTokenAddress,
+        toTokenAddress: mockBaseSwapQuote.outTokenAddress,
+        strategy: "leverageBySize",
+        amountIn: inputs!.amountIn,
+        desiredAmountOut: undefined,
+        slippage: DEFAULT_SLIPPAGE,
+      })!;
+
+      const state = createMockState({
+        tradebox: {
+          ...defaultState.tradebox,
+          focusedInput: "to",
+        },
+        externalSwap: {
+          ...defaultState.externalSwap,
+          requestResult: { status: "success", key, quote: mockBaseSwapQuote },
+        },
+      });
 
       const result = selectExternalSwapQuote(state as SyntheticsState);
 

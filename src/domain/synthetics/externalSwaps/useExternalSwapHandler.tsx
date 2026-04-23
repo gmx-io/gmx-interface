@@ -4,15 +4,15 @@ import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
-  selectBaseExternalSwapOutput,
   selectExternalSwapInputs,
   selectExternalSwapQuote,
-  selectSetBaseExternalSwapOutput,
-  selectSetExternalSwapHookIsLoading,
+  selectExternalSwapRequestResult,
+  selectSetExternalSwapRequestResult,
   selectSetShouldFallbackToInternalSwap,
   selectSetShouldForceExternalSwap,
   selectShouldFallbackToInternalSwap,
   selectShouldForceExternalSwap,
+  selectShouldRequestExternalSwapQuote,
   selectTradeboxAllowedSlippage,
   selectTradeboxFromTokenAddress,
   selectTradeboxSelectSwapToToken,
@@ -24,16 +24,15 @@ import { getContract } from "sdk/configs/contracts";
 
 import { useExternalSwapInputRequest } from "./useExternalSwapInputRequest";
 import { useExternalSwapOutputRequest } from "./useExternalSwapOutputRequest";
-import { useExternalSwapsEnabled } from "./useExternalSwapsEnabled";
-import { isQuoteStale } from "./utils";
+import { getExternalSwapRequestKey } from "./utils";
 
 export function useExternalSwapHandler() {
   const { chainId } = useChainId();
   const { orderStatuses } = useSyntheticsEvents();
   const fromTokenAddress = useSelector(selectTradeboxFromTokenAddress);
   const slippage = useSelector(selectTradeboxAllowedSlippage);
-  const setBaseExternalSwapOutput = useSelector(selectSetBaseExternalSwapOutput);
-  const storedBaseExternalSwapOutput = useSelector(selectBaseExternalSwapOutput);
+  const storedResult = useSelector(selectExternalSwapRequestResult);
+  const setRequestResult = useSelector(selectSetExternalSwapRequestResult);
   const gasPrice = useSelector(selectGasPrice);
 
   const swapToToken = useSelector(selectTradeboxSelectSwapToToken);
@@ -46,13 +45,12 @@ export function useExternalSwapHandler() {
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
   const shouldForceExternalSwap = useSelector(selectShouldForceExternalSwap);
   const setShouldForceExternalSwap = useSelector(selectSetShouldForceExternalSwap);
-  const setIsHookLoading = useSelector(selectSetExternalSwapHookIsLoading);
 
-  const enabled = useExternalSwapsEnabled();
+  const enabled = useSelector(selectShouldRequestExternalSwapQuote);
 
   const isByToValue = externalSwapInputs?.strategy === "byToValue";
 
-  const { quote: outputQuote, isLoading: isOutputLoading } = useExternalSwapOutputRequest({
+  const { quote: outputQuote, error: outputError } = useExternalSwapOutputRequest({
     chainId,
     tokenInAddress: fromTokenAddress,
     tokenOutAddress: swapToToken?.address,
@@ -63,7 +61,7 @@ export function useExternalSwapHandler() {
     enabled: enabled && !isByToValue,
   });
 
-  const { quote: inputQuote, isLoading: isInputLoading } = useExternalSwapInputRequest({
+  const { quote: inputQuote, error: inputError } = useExternalSwapInputRequest({
     chainId,
     tokenInAddress: fromTokenAddress,
     tokenOutAddress: swapToToken?.address,
@@ -76,90 +74,66 @@ export function useExternalSwapHandler() {
   });
 
   const quote = isByToValue ? inputQuote : outputQuote;
-  const isHookLoading = isByToValue ? isInputLoading : isOutputLoading;
-
-  useEffect(
-    function syncHookLoadingEff() {
-      setIsHookLoading(isHookLoading);
-    },
-    [isHookLoading, setIsHookLoading]
-  );
+  const requestError = isByToValue ? inputError : outputError;
 
   if (shouldDebugValues) {
     throttleLog("external swaps", {
-      baseOutput: quote,
+      quote,
       externalSwapQuote,
       inputs: externalSwapInputs,
       isByToValue,
-      isInputLoading,
-      isOutputLoading,
-      isHookLoading,
     });
   }
 
   useEffect(
-    function setBaseExternalSwapOutputEff() {
-      const shouldClearBaseOutput =
+    function syncRequestResultEff() {
+      const shouldClear =
         !enabled ||
         externalSwapInputs?.amountIn === undefined ||
         externalSwapInputs.amountIn <= 0n ||
         !fromTokenAddress ||
         !swapToToken?.address;
 
-      if (shouldClearBaseOutput) {
-        if (storedBaseExternalSwapOutput !== undefined) {
-          setBaseExternalSwapOutput(undefined);
+      if (shouldClear) {
+        if (storedResult !== undefined) {
+          setRequestResult(undefined);
         }
-
         return;
       }
 
-      // Keep last quote while refresh is loading to avoid flapping to internal swap pricing
-      if (!quote) {
+      const key = getExternalSwapRequestKey({
+        fromTokenAddress,
+        toTokenAddress: swapToToken.address,
+        strategy: externalSwapInputs.strategy,
+        amountIn: externalSwapInputs.amountIn,
+        desiredAmountOut: externalSwapInputs.desiredAmountOut,
+        slippage,
+      });
+      if (!key) return;
+
+      if (quote) {
+        if (storedResult?.status !== "success" || storedResult.quote.txnData.data !== quote.txnData.data) {
+          setRequestResult({ status: "success", key, quote });
+        }
         return;
       }
 
-      // Update quote only if actual txn data has changed
-      if (storedBaseExternalSwapOutput?.txnData?.data !== quote.txnData.data) {
-        setBaseExternalSwapOutput(quote);
+      if (requestError) {
+        if (storedResult?.status !== "failed" || storedResult.key !== key) {
+          setRequestResult({ status: "failed", key });
+        }
       }
     },
     [
       enabled,
-      externalSwapInputs?.amountIn,
       fromTokenAddress,
+      swapToToken?.address,
+      externalSwapInputs,
+      slippage,
       quote,
-      setBaseExternalSwapOutput,
-      storedBaseExternalSwapOutput,
-      swapToToken?.address,
-    ]
-  );
-
-  useEffect(
-    function clearStructurallyStaleStoredOutput() {
-      if (!storedBaseExternalSwapOutput) return;
-      if (
-        isQuoteStale({
-          quote: storedBaseExternalSwapOutput,
-          fromTokenAddress,
-          toTokenAddress: swapToToken?.address,
-          strategy: externalSwapInputs?.strategy,
-          amountBy: isByToValue ? "to" : "from",
-        })
-      ) {
-        setBaseExternalSwapOutput(undefined);
-      }
-    },
-    // Intentionally narrow: we only react to structural changes (tokens, direction).
-    // Amount/txnData refreshes of `storedBaseExternalSwapOutput` must not re-run this effect.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-    [
-      fromTokenAddress,
-      swapToToken?.address,
-      isByToValue,
-      storedBaseExternalSwapOutput?.inTokenAddress,
-      storedBaseExternalSwapOutput?.outTokenAddress,
-      setBaseExternalSwapOutput,
+      requestError,
+      storedResult,
+      setRequestResult,
     ]
   );
 

@@ -1,23 +1,18 @@
 import { useState } from "react";
 
-import { ExternalSwapQuote } from "sdk/utils/trade/types";
-
-import { ExternalSwapState } from "./types";
+import { ExternalSwapRequestResult, ExternalSwapState } from "./types";
 
 export function useInitExternalSwapState(): ExternalSwapState {
-  const [baseOutput, setBaseOutput] = useState<ExternalSwapQuote>();
+  const [requestResult, setRequestResult] = useState<ExternalSwapRequestResult>();
   const [shouldFallbackToInternalSwap, setShouldFallbackToInternalSwap] = useState(false);
   const [shouldForceExternalSwap, setShouldForceExternalSwap] = useState(false);
-  const [isHookLoading, setIsHookLoading] = useState(false);
 
   return {
-    baseOutput,
+    requestResult,
     shouldFallbackToInternalSwap,
     shouldForceExternalSwap,
-    isHookLoading,
-    setBaseOutput,
+    setRequestResult,
     setShouldFallbackToInternalSwap,
     setShouldForceExternalSwap,
-    setIsHookLoading,
   };
 }

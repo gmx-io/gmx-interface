@@ -255,54 +255,19 @@ export function overrideQuoteWithOraclePrices(
   return { ...quote, ...oracle };
 }
 
-// Structural staleness (tokens + direction). For amount-based check use `isQuoteStaleForRequest`.
-export function isQuoteStale(params: {
-  quote: ExternalSwapQuote;
+export function getExternalSwapRequestKey(params: {
   fromTokenAddress: string | undefined;
   toTokenAddress: string | undefined;
   strategy: ExternalSwapCalculationStrategy | undefined;
-  amountBy: "from" | "to" | undefined;
-}): boolean {
-  const { quote, fromTokenAddress, toTokenAddress, strategy, amountBy } = params;
-  if (fromTokenAddress && quote.inTokenAddress !== fromTokenAddress) return true;
-  if (toTokenAddress && quote.outTokenAddress !== toTokenAddress) return true;
-  const isSwapStrategy = strategy === "byFromValue" || strategy === "byToValue";
-  if (isSwapStrategy) {
-    if (amountBy === "to" && strategy !== "byToValue") return true;
-    if (amountBy === "from" && strategy === "byToValue") return true;
-  }
-  return false;
-}
-
-export function isQuoteStaleForRequest(params: {
-  quote: ExternalSwapQuote | undefined;
-  fromTokenAddress: string | undefined;
-  toTokenAddress: string | undefined;
-  strategy: ExternalSwapCalculationStrategy | undefined;
-  amountBy: "from" | "to" | undefined;
-  inputsAmountIn: bigint;
-  inputsDesiredAmountOut: bigint | undefined;
-  inputsSlippage: number | undefined;
-}): boolean {
-  const {
-    quote,
-    fromTokenAddress,
-    toTokenAddress,
-    strategy,
-    amountBy,
-    inputsAmountIn,
-    inputsDesiredAmountOut,
-    inputsSlippage,
-  } = params;
-  if (!quote) return true;
-  if (isQuoteStale({ quote, fromTokenAddress, toTokenAddress, strategy, amountBy })) return true;
-  if (quote.slippage !== undefined && inputsSlippage !== undefined && quote.slippage !== inputsSlippage) return true;
-  if (strategy === "byToValue") {
-    // Match on the stamped target, not `amountOut` — KyberSwap's search converges within
-    // tolerance, so its `outputAmount` isn't a stable identifier of the request.
-    return quote.desiredAmountOut !== inputsDesiredAmountOut;
-  }
-  return quote.amountIn !== inputsAmountIn;
+  amountIn: bigint | undefined;
+  desiredAmountOut: bigint | undefined;
+  slippage: number | undefined;
+}): string | undefined {
+  const { fromTokenAddress, toTokenAddress, strategy, amountIn, desiredAmountOut, slippage } = params;
+  if (!fromTokenAddress || !toTokenAddress || !strategy || slippage === undefined) return undefined;
+  const amount = strategy === "byToValue" ? desiredAmountOut : amountIn;
+  if (amount === undefined || amount <= 0n) return undefined;
+  return `${fromTokenAddress}:${toTokenAddress}:${strategy}:${amount}:${slippage}`;
 }
 
 export function getBestSwapStrategy({
