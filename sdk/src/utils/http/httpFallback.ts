@@ -22,7 +22,7 @@ export class HttpClientWithFallback implements IHttp {
     }
 
     this.clients = urls.map((url) => new HttpClient(url, timeoutMs));
-    this.primaryIndex = Math.floor(Math.random() * this.clients.length);
+    this.primaryIndex = 0;
   }
 
   get url(): string {
