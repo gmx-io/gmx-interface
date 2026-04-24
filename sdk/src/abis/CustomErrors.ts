@@ -455,6 +455,14 @@ export default [
   },
   {
     inputs: [
+      { internalType: "uint256", name: "outputAmount", type: "uint256" },
+      { internalType: "uint256", name: "minAmountOut", type: "uint256" },
+    ],
+    name: "InsufficientBridgeOutputAmount",
+    type: "error",
+  },
+  {
+    inputs: [
       { internalType: "address", name: "feeToken", type: "address" },
       { internalType: "address", name: "buybackToken", type: "address" },
       { internalType: "uint256", name: "outputAmount", type: "uint256" },
@@ -831,6 +839,14 @@ export default [
       { internalType: "uint256", name: "ask", type: "uint256" },
     ],
     name: "InvalidEdgeDataStreamBidAsk",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "address", name: "token", type: "address" },
+      { internalType: "uint256", name: "decimals", type: "uint256" },
+    ],
+    name: "InvalidEdgeDataStreamDecimals",
     type: "error",
   },
   {
@@ -1492,6 +1508,14 @@ export default [
       { internalType: "uint256", name: "tokensForReferralRewards", type: "uint256" },
     ],
     name: "MaxReferralRewardsExceeded",
+    type: "error",
+  },
+  {
+    inputs: [
+      { internalType: "uint256", name: "feeUsd", type: "uint256" },
+      { internalType: "uint256", name: "maxFeeUsd", type: "uint256" },
+    ],
+    name: "MaxRelayFeeSwapExceeded",
     type: "error",
   },
   {

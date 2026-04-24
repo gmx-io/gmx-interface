@@ -154,6 +154,7 @@ const position: PositionInfoLoaded = {
   increasedAtTime: BigInt((Date.now() / 1000) >> 0),
   decreasedAtTime: BigInt((Date.now() / 1000) >> 0),
   pendingImpactAmount: BigInt("0x00"),
+  positionValueInUsd: 0n,
   isLong: true,
   pendingBorrowingFeesUsd: BigInt("0x01f7685a27fa507f04c467a667"),
   fundingFeeAmount: BigInt("0x059624"),
