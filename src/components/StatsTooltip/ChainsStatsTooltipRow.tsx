@@ -7,7 +7,7 @@ import { formatAmountHuman } from "lib/numbers";
 import "./StatsTooltip.css";
 
 type Props = {
-  entries: { [key: string]: bigint | string | undefined };
+  entries: { [key: string]: bigint | number | string | undefined };
   showDollar?: boolean;
   decimalsForConversion?: number;
   symbol?: string;

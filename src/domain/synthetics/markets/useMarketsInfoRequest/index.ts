@@ -1,6 +1,5 @@
 import { useMemo } from "react";
 
-import { getIsFlagEnabled } from "config/ab";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { composeFullMarketsInfoData, composeRawMarketsInfoData } from "sdk/utils/markets";
 import type { MarketsInfoData, RawMarketsInfoData } from "sdk/utils/markets/types";
@@ -22,7 +21,7 @@ export function useMarketsInfoRequest(
 ): MarketsInfoResult {
   const { claimableFundingData } = useClaimableFundingDataRequest(chainId);
 
-  const isApiSdkEnabled = getIsFlagEnabled("apiSdk2");
+  const isApiSdkEnabled = false;
 
   const {
     marketsInfoData: apiMarketsInfoData,

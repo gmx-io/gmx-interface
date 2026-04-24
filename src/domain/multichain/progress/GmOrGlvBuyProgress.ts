@@ -1,6 +1,6 @@
 import { decodeEventLog, encodeEventTopics, getAbiItem } from "viem";
 
-import { ContractsChainId } from "config/chains";
+import { AnyChainId, ContractsChainId } from "config/chains";
 import { Operation } from "domain/synthetics/markets/types";
 import { Token } from "domain/tokens";
 import { abis } from "sdk/abis";
@@ -28,11 +28,11 @@ abstract class GmOrGlvBuyProgress extends MultichainTransferProgress<GmOrGlvBuyS
   override readonly operation = Operation.Deposit;
 
   constructor(params: {
-    sourceChainId: number;
+    sourceChainId: AnyChainId;
     initialTxHash: string;
     token: Token;
     amount: bigint;
-    settlementChainId: number;
+    settlementChainId: AnyChainId;
     estimatedFeeUsd: bigint;
   }) {
     super(params);
@@ -131,7 +131,7 @@ abstract class GmOrGlvBuyProgress extends MultichainTransferProgress<GmOrGlvBuyS
     });
   }
 
-  private async watchComposeTx(chainId: number, txHash: string) {
+  private async watchComposeTx(chainId: AnyChainId, txHash: string) {
     if (!this.isFirstTimeCalling("watchComposeTx", [chainId, txHash])) {
       return;
     }
@@ -211,7 +211,7 @@ abstract class GmOrGlvBuyProgress extends MultichainTransferProgress<GmOrGlvBuyS
     await this.watchDepositExecuted(chainId, depositCreatedLog.blockNumber, depositKey);
   }
 
-  private async watchDepositExecuted(chainId: number, fromBlock: bigint, depositKey: string) {
+  private async watchDepositExecuted(chainId: AnyChainId, fromBlock: bigint, depositKey: string) {
     if (!this.isFirstTimeCalling("watchDepositExecuted", [chainId, fromBlock, depositKey])) {
       return;
     }
@@ -316,7 +316,7 @@ abstract class GmOrGlvBuyProgress extends MultichainTransferProgress<GmOrGlvBuyS
     }
   }
 
-  private async watchReturnTransits(chainId: number, txHash: string) {
+  private async watchReturnTransits(chainId: AnyChainId, txHash: string) {
     if (!this.isFirstTimeCalling("watchReturnTransits", [chainId, txHash])) {
       return;
     }

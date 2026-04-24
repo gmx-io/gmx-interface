@@ -1,7 +1,7 @@
 import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { isDevelopment } from "config/env";
-import { OrderType, SwapPricingType } from "domain/synthetics/orders";
+import { DecreasePositionSwapType, OrderType, SwapPricingType } from "domain/synthetics/orders";
 import { getIsPositionInfoLoaded } from "domain/synthetics/positions";
 import {
   TradeMode,
@@ -241,6 +241,7 @@ export const makeSelectIncreasePositionAmounts = ({
     const externalSwapQuoteParams = q(selectExternalSwapQuoteParams);
     const chainId = q(selectChainId);
     const tradeFlags = createTradeFlags(tradeType, tradeMode);
+    const debugSwapMarketsConfig = ENABLE_DEBUG_SWAP_MARKETS_CONFIG ? q(selectDebugSwapMarketsConfig) : undefined;
 
     let limitOrderType: OrderType | undefined = undefined;
     if (tradeFlags.isLimit) {
@@ -285,6 +286,8 @@ export const makeSelectIncreasePositionAmounts = ({
       chainId,
       externalSwapQuoteParams,
       isSetAcceptablePriceImpactEnabled,
+      disabledMarkets: debugSwapMarketsConfig?.disabledSwapMarkets,
+      manualPath: debugSwapMarketsConfig?.manualPath,
     });
   });
 };
@@ -301,6 +304,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
     keepLeverage,
     fixedAcceptablePriceImpactBps,
     receiveTokenAddress,
+    forceDecreaseSwapType,
   }: {
     positionKey: string | undefined;
     tradeMode: TradeMode;
@@ -312,6 +316,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
     fixedAcceptablePriceImpactBps: bigint | undefined;
     keepLeverage: boolean | undefined;
     receiveTokenAddress: string | undefined;
+    forceDecreaseSwapType?: DecreasePositionSwapType;
   }) =>
     createSelectorDeprecated(
       [
@@ -390,6 +395,7 @@ export const makeSelectDecreasePositionAmounts = createSelectorFactory(
           receiveToken,
           triggerOrderType,
           isSetAcceptablePriceImpactEnabled,
+          forceDecreaseSwapType,
         });
       }
     )

@@ -18,7 +18,6 @@ export type Token = {
   baseSymbol?: string;
   decimals: number;
   address: string;
-  priceDecimals?: number;
   visualMultiplier?: number;
   visualPrefix?: string;
   wrappedAddress?: string;
@@ -28,6 +27,8 @@ export type Token = {
   reservesUrl?: string;
   imageUrl?: string;
   categories?: TokenCategory[];
+  /** Extra search terms (e.g. Chainlink ticker aliases) not shown in `name` / `symbol`. */
+  searchAliases?: string[];
   isPermitSupported?: boolean;
   isPermitDisabled?: boolean;
   contractVersion?: string;

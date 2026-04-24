@@ -1,5 +1,5 @@
 import { deserializeBigIntsInObject, serializeBigIntsInObject } from "lib/numbers";
-import { AVALANCHE } from "sdk/configs/chains";
+import { AVALANCHE, MEGAETH } from "sdk/configs/chains";
 
 import { ARBITRUM } from "./chains";
 import { isDevelopment } from "./env";
@@ -18,35 +18,29 @@ let swapDebugSettings = {
   failExternalSwaps: false,
 };
 
-const OPEN_OCEAN_BASE_URL = "https://open-api.openocean.finance/v3";
-export const OPEN_OCEAN_REFERRER = "0xC539cB358a58aC67185BaAD4d5E3f7fCfc903700";
+const KYBER_SWAP_BASE_URL = "https://aggregator-api.kyberswap.com";
+export const KYBER_SWAP_CLIENT_ID = "gmx5326";
 
-const OPEN_OCEAN_API_URL = {
-  [ARBITRUM]: `${OPEN_OCEAN_BASE_URL}/arbitrum`,
-  [AVALANCHE]: `${OPEN_OCEAN_BASE_URL}/avax`,
+const KYBER_SWAP_CHAIN_PATH: Record<number, string> = {
+  [ARBITRUM]: "arbitrum",
+  [AVALANCHE]: "avalanche",
+  [MEGAETH]: "megaeth",
 };
 
-export const DISABLED_OPEN_OCEAN_DEXES = {
-  /**
-   *  @see https://open-api.openocean.finance/v3/arbitrum/dexList
-   */
-  [ARBITRUM]: [8, 54],
-  /**
-   *  @see https://open-api.openocean.finance/v3/avax/dexList
-   */
-  [AVALANCHE]: [
-    18, // GMX
-  ],
+export const EXCLUDED_KYBER_SWAP_SOURCES: Record<number, string[]> = {
+  [ARBITRUM]: ["gmx"],
+  [AVALANCHE]: ["gmx"],
+  [MEGAETH]: ["gmx"],
 };
 
-export function getOpenOceanUrl(chainId: number) {
-  const url = OPEN_OCEAN_API_URL[chainId];
+export function getKyberSwapUrl(chainId: number) {
+  const chainPath = KYBER_SWAP_CHAIN_PATH[chainId];
 
-  if (!url) {
-    throw new Error("Unsupported open ocean network");
+  if (!chainPath) {
+    throw new Error("Unsupported KyberSwap network");
   }
 
-  return url;
+  return `${KYBER_SWAP_BASE_URL}/${chainPath}`;
 }
 
 export function setSwapDebugSetting<K extends keyof typeof swapDebugSettings>(

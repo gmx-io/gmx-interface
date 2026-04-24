@@ -20,7 +20,10 @@ import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
-import { MultichainBalanceTooltip } from "components/MultichainBalanceTooltip/MultichainBalanceTooltip";
+import {
+  MultichainBalanceTooltip,
+  useHasMultichainBreakdown,
+} from "components/MultichainBalanceTooltip/MultichainBalanceTooltip";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -36,6 +39,7 @@ type Props = {
   chainId: ContractsChainId;
   totalPerformanceApy: bigint | undefined;
   performanceApy30d: bigint | undefined;
+  isPerformanceLoading: boolean;
   multichainMarketTokenBalances: MultichainMarketTokenBalances | undefined;
 };
 
@@ -44,6 +48,7 @@ export function GmGlvAssetCard({
   chainId,
   totalPerformanceApy,
   performanceApy30d,
+  isPerformanceLoading,
   multichainMarketTokenBalances,
 }: Props) {
   const marketAddress = getGlvOrMarketAddress(marketInfo);
@@ -56,14 +61,15 @@ export function GmGlvAssetCard({
   const balance = multichainMarketTokenBalances?.totalBalance ?? 0n;
   const balanceUsd = multichainMarketTokenBalances?.totalBalanceUsd ?? 0n;
   const symbol = isGlv ? "GLV" : "GM";
+  const hasMultichainBreakdown = useHasMultichainBreakdown(multichainMarketTokenBalances);
 
-  const tooltipContent = (
+  const tooltipContent = hasMultichainBreakdown ? (
     <MultichainBalanceTooltip
       multichainBalances={multichainMarketTokenBalances}
       symbol={symbol}
       decimals={PLATFORM_TOKEN_DECIMALS}
     />
-  );
+  ) : null;
 
   const title = isGlv
     ? getGlvDisplayName(marketInfo)
@@ -150,20 +156,24 @@ export function GmGlvAssetCard({
         <SyntheticsInfoRow
           label={<Trans>Total performance APY</Trans>}
           value={
-            totalPerformanceApy === undefined ? (
+            totalPerformanceApy !== undefined ? (
+              formatPercentage(totalPerformanceApy, { bps: false })
+            ) : isPerformanceLoading ? (
               <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={50} className="leading-base" />
             ) : (
-              formatPercentage(totalPerformanceApy, { bps: false })
+              "N/A"
             )
           }
         />
         <SyntheticsInfoRow
           label={<Trans>30d performance APY</Trans>}
           value={
-            performanceApy30d === undefined ? (
+            performanceApy30d !== undefined ? (
+              formatPercentage(performanceApy30d, { bps: false })
+            ) : isPerformanceLoading ? (
               <Skeleton baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A" width={50} className="leading-base" />
             ) : (
-              formatPercentage(performanceApy30d, { bps: false })
+              "N/A"
             )
           }
         />

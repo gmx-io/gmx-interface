@@ -43,18 +43,18 @@ export function TradeFeesRow(p: Props) {
   const tradingIncentives = useTradingIncentives(chainId);
   const incentivesTokenTitle = useTradingAirdroppedTokenTitle();
   const shouldShowRebate = p.shouldShowRebate ?? true;
-  const shouldShowWarning = getIsHighSwapImpact(p.swapPriceImpact);
   const showDebugValues = useShowDebugValues();
   const { breakdownNetPriceImpactEnabled } = useSettings();
 
   const estimatedRebatesPercentage = tradingIncentives?.estimatedRebatePercent ?? 0n;
+  const shouldShowWarning = getIsHighSwapImpact(p.swapPriceImpact);
 
   const rebateIsApplicable =
     shouldShowRebate && p.positionFee?.deltaUsd !== undefined && p.positionFee.deltaUsd <= 0 && p.feesType !== "swap";
 
   const feeRows: FeeRow[] = useMemo(() => {
     const swapPriceImpactRow = (
-      p.swapPriceImpact?.deltaUsd === undefined ? undefined : bigMath.abs(p.swapPriceImpact?.deltaUsd) > 0
+      p.swapPriceImpact?.deltaUsd === undefined ? undefined : bigMath.abs(p.swapPriceImpact.deltaUsd) > 0
     )
       ? {
           id: "swapPriceImpact",
@@ -525,16 +525,11 @@ export function TradeFeesRow(p: Props) {
   }, [p.priceImpactDiff?.deltaUsd]);
 
   const swapRouteMsg = useMemo(() => {
-    if (p.swapFees && p.swapFees.length <= 2) {
+    if (!p.swapFees || p.swapFees.length <= 2) {
       return null;
     }
 
-    return (
-      <>
-        <br />
-        <Trans>Swap routed through multiple GM pools for lowest fees and price impact.</Trans>
-      </>
-    );
+    return <Trans>Swap routed through multiple GM pools for lowest fees and price impact.</Trans>;
   }, [p.swapFees]);
 
   let value: ReactNode = useMemo(() => {

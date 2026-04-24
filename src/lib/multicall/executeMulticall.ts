@@ -4,6 +4,7 @@ import throttle from "lodash/throttle";
 import uniqueId from "lodash/uniqueId";
 import values from "lodash/values";
 
+import { type AnyChainId } from "config/chains";
 import { isDevelopment } from "config/env";
 import { MulticallBatchedCallCounter, MulticallBatchedErrorCounter, MulticallBatchedTiming } from "lib/metrics";
 import { emitMetricCounter, emitMetricTiming } from "lib/metrics/emitMetricEvent";
@@ -64,7 +65,7 @@ function executeChainsMulticalls() {
   throttledExecuteBackgroundChainsMulticalls.cancel();
 
   for (const [chainIdStr, calls] of entries(store.current)) {
-    const chainId = parseInt(chainIdStr);
+    const chainId = parseInt(chainIdStr) as AnyChainId;
     const priority = store.priorities[chainId] || "urgent";
     const task = executeChainMulticall(chainId, calls, priority);
     tasks.push(task);
@@ -76,7 +77,7 @@ function executeChainsMulticalls() {
 }
 
 async function executeChainMulticall(
-  chainId: number,
+  chainId: AnyChainId,
   calls: MulticallFetcherConfig[number],
   priority: "urgent" | "background"
 ) {
@@ -179,7 +180,7 @@ const throttledExecuteBackgroundChainsMulticalls = throttle(executeChainsMultica
 });
 
 export async function executeMulticall<TConfig extends MulticallRequestConfig<any>>(
-  chainId: number,
+  chainId: AnyChainId,
   request: TConfig,
   priority: "urgent" | "background" = "urgent",
   /**
@@ -300,7 +301,7 @@ export async function executeMulticall<TConfig extends MulticallRequestConfig<an
   return promise as any;
 }
 
-function executeWorkerOrMainThread(chainId: number, requestConfig: MulticallRequestConfig<any>, callCount: number) {
+function executeWorkerOrMainThread(chainId: AnyChainId, requestConfig: MulticallRequestConfig<any>, callCount: number) {
   if (callCount > CALL_COUNT_MAIN_THREAD_THRESHOLD && !isOldIOS()) {
     return executeMulticallWorker(chainId, requestConfig);
   } else {

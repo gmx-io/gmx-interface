@@ -3,6 +3,7 @@ import cx from "classnames";
 import { ReactNode, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
+import { isDepositDisabledMarket } from "config/static/markets";
 import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
 import {
   getGlvOrMarketAddress,
@@ -20,7 +21,7 @@ import { expandDecimals, formatPercentage, USD_DECIMALS } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { sendEarnRecommendationClickedEvent } from "lib/userAnalytics/earnEvents";
 import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
-import { AnyChainId, BOTANIX } from "sdk/configs/chains";
+import { AnyChainId, BOTANIX, ContractsChainId, MEGAETH } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { MarketInfo } from "sdk/utils/markets/types";
 import { getByKey } from "sdk/utils/objects";
@@ -77,12 +78,14 @@ const getRecommendedGms = ({
   glvsToShow,
   marketTokensData,
   performance,
+  chainId,
 }: {
   hasGmxAssets: boolean;
   marketsInfoData: { [marketAddress: string]: GlvOrMarketInfo };
   glvsToShow: GlvInfo[];
   marketTokensData: TokensData;
   performance: PerformanceData;
+  chainId: number;
 }) => {
   let count = 4;
 
@@ -114,6 +117,7 @@ const getRecommendedGms = ({
 
       return (
         !info.isDisabled &&
+        !isDepositDisabledMarket(chainId, info.marketTokenAddress) &&
         totalPoolUsd >= MIN_LIQUIDITY_USD &&
         typeof poolPerformance !== "undefined" &&
         poolPerformance > 0n
@@ -154,10 +158,19 @@ export function RecommendedAssets({
       glvsToShow,
       marketTokensData,
       performance,
+      chainId,
     });
-  }, [hasGmxAssets, marketsInfoData, glvsToShow, marketTokensData, performance]);
+  }, [hasGmxAssets, marketsInfoData, glvsToShow, marketTokensData, performance, chainId]);
 
   const [isBuyGmxModalVisible, setIsBuyGmxModalVisible] = useState(false);
+
+  if (
+    glvsToShow.length === 0 &&
+    gmsToShow.length === 0 &&
+    (!hasGmxAssets || chainId === BOTANIX || chainId === MEGAETH)
+  ) {
+    return null;
+  }
 
   return (
     <section className="flex flex-col gap-8">
@@ -172,7 +185,7 @@ export function RecommendedAssets({
           "md:grid-flow-col": gmsToShow.length === 3,
         })}
       >
-        {!hasGmxAssets && chainId !== BOTANIX && (
+        {!hasGmxAssets && chainId !== BOTANIX && chainId !== MEGAETH && (
           <RecommendedAssetSection title={<Trans>GMX</Trans>}>
             {[
               <GmxRecommendedAssetItem
@@ -268,7 +281,7 @@ function GmxRecommendedAssetItem({ chainId, openBuyGmxModal }: { chainId: AnyCha
     <BaseRecommendedAssetItem
       icon={<GmxIcon className="size-32" />}
       title={<Trans>GMX</Trans>}
-      metricValue={<APRLabel chainId={chainId} label={GMX_APR_TOTAL_LABEL} />}
+      metricValue={<APRLabel chainId={chainId as ContractsChainId} label={GMX_APR_TOTAL_LABEL} />}
       metricLabel={isGmxSuspended ? undefined : <Trans>APR</Trans>}
       button={
         <Button variant="primary" onClick={handleClick}>

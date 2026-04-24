@@ -1,4 +1,5 @@
 import { t } from "@lingui/macro";
+import cx from "classnames";
 import { useRef } from "react";
 
 import { selectMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -28,14 +29,16 @@ export function MarketPoolSelectorField({ disabled }: Props = {}) {
 
   const selectedMarket = marketAddress ? getByKey(marketsInfoData, marketAddress) : undefined;
   const poolName = selectedMarket ? getMarketPoolName(selectedMarket) : undefined;
+  const isSinglePool = relatedMarketStats?.length === 1;
+  const isInteractive = !disabled && !isSinglePool;
 
   return (
     <BlockField
       containerRef={popoverReferenceRef}
       forwardClickToSelector
       label={t`Pool`}
-      className="group/selector-field"
-      disabled={disabled}
+      className={cx(isInteractive && "group/selector-field", isSinglePool && "!opacity-100")}
+      disabled={!isInteractive}
       content={
         <PoolSelector2
           selectedPoolName={poolName}
@@ -43,8 +46,14 @@ export function MarketPoolSelectorField({ disabled }: Props = {}) {
           tradeType={tradeType}
           positionStats={relatedMarketsPositionStats}
           onSelect={setMarketAddress}
-          handleClassName="inline-block overflow-hidden text-ellipsis whitespace-nowrap text-13 group-gmx-hover/selector-field:text-blue-300"
-          chevronClassName="w-12 text-typography-secondary max-lg:ml-4 group-gmx-hover/selector-field:text-blue-300"
+          handleClassName={cx(
+            "inline-block overflow-hidden text-ellipsis whitespace-nowrap text-13",
+            isInteractive && "group-gmx-hover/selector-field:text-blue-300"
+          )}
+          chevronClassName={cx(
+            "w-12 text-typography-secondary max-lg:ml-4",
+            isInteractive && "group-gmx-hover/selector-field:text-blue-300"
+          )}
           wrapperClassName="overflow-hidden"
           popoverReferenceRef={popoverReferenceRef}
           disabled={disabled}

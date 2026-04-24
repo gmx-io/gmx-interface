@@ -9,7 +9,9 @@ import {
   selectExternalSwapQuote,
   selectSetBaseExternalSwapOutput,
   selectSetShouldFallbackToInternalSwap,
+  selectSetShouldForceExternalSwap,
   selectShouldFallbackToInternalSwap,
+  selectShouldForceExternalSwap,
   selectTradeboxAllowedSlippage,
   selectTradeboxFromTokenAddress,
   selectTradeboxSelectSwapToToken,
@@ -39,6 +41,8 @@ export function useExternalSwapHandler() {
   const externalSwapQuote = useSelector(selectExternalSwapQuote);
   const shouldFallbackToInternalSwap = useSelector(selectShouldFallbackToInternalSwap);
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
+  const shouldForceExternalSwap = useSelector(selectShouldForceExternalSwap);
+  const setShouldForceExternalSwap = useSelector(selectSetShouldForceExternalSwap);
 
   const enabled = useExternalSwapsEnabled();
 
@@ -63,12 +67,40 @@ export function useExternalSwapHandler() {
 
   useEffect(
     function setBaseExternalSwapOutputEff() {
+      const shouldClearBaseOutput =
+        !enabled ||
+        externalSwapInputs?.amountIn === undefined ||
+        externalSwapInputs.amountIn <= 0n ||
+        !fromTokenAddress ||
+        !swapToToken?.address;
+
+      if (shouldClearBaseOutput) {
+        if (storedBaseExternalSwapOutput !== undefined) {
+          setBaseExternalSwapOutput(undefined);
+        }
+
+        return;
+      }
+
+      // Keep last quote while refresh is loading to avoid flapping to internal swap pricing
+      if (!quote) {
+        return;
+      }
+
       // Update quote only if actual txn data has changed
-      if (storedBaseExternalSwapOutput?.txnData?.data !== quote?.txnData.data) {
+      if (storedBaseExternalSwapOutput?.txnData?.data !== quote.txnData.data) {
         setBaseExternalSwapOutput(quote);
       }
     },
-    [quote, setBaseExternalSwapOutput, storedBaseExternalSwapOutput]
+    [
+      enabled,
+      externalSwapInputs?.amountIn,
+      fromTokenAddress,
+      quote,
+      setBaseExternalSwapOutput,
+      storedBaseExternalSwapOutput,
+      swapToToken?.address,
+    ]
   );
 
   useEffect(
@@ -77,10 +109,21 @@ export function useExternalSwapHandler() {
       const isLastOrderExecuted =
         orderStatusesValues.length > 0 && orderStatusesValues.every((os) => os.executedTxnHash);
 
-      if (isLastOrderExecuted && shouldFallbackToInternalSwap) {
-        setShouldFallbackToInternalSwap(false);
+      if (isLastOrderExecuted) {
+        if (shouldFallbackToInternalSwap) {
+          setShouldFallbackToInternalSwap(false);
+        }
+        if (shouldForceExternalSwap) {
+          setShouldForceExternalSwap(false);
+        }
       }
     },
-    [orderStatuses, shouldFallbackToInternalSwap, setShouldFallbackToInternalSwap]
+    [
+      orderStatuses,
+      shouldFallbackToInternalSwap,
+      setShouldFallbackToInternalSwap,
+      shouldForceExternalSwap,
+      setShouldForceExternalSwap,
+    ]
   );
 }

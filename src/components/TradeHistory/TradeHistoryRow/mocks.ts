@@ -279,6 +279,22 @@ export const requestIncreasePosition = prepare({
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
+    maxPnlFactorForDepositsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
     minCollateralFactor: {
       type: "bigint",
       hex: "0x204fce5e3e25026110000000",
@@ -780,6 +796,22 @@ export const withdraw1Usd = prepare({
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
+    maxPnlFactorForDepositsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
     minCollateralFactor: {
       type: "bigint",
       hex: "0x204fce5e3e25026110000000",
@@ -1088,7 +1120,6 @@ export const deposit1Usd = prepare({
       name: "Dogecoin",
       symbol: "DOGE",
       decimals: 8,
-      priceDecimals: 4,
       address: "0x2265F317eA5f47A684E5B26c50948617c945d986",
       isSynthetic: true,
       isShortable: true,
@@ -1275,6 +1306,22 @@ export const deposit1Usd = prepare({
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
+    maxPnlFactorForDepositsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
     minCollateralFactor: {
       type: "bigint",
       hex: "0x204fce5e3e25026110000000",
@@ -1417,7 +1464,6 @@ export const deposit1Usd = prepare({
     name: "Dogecoin",
     symbol: "DOGE",
     decimals: 8,
-    priceDecimals: 4,
     address: "0x2265F317eA5f47A684E5B26c50948617c945d986",
     isSynthetic: true,
     isShortable: true,
@@ -1721,6 +1767,22 @@ export const createOrderDecreaseLong = prepare({
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsShort: {
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
@@ -2208,6 +2270,22 @@ export const cancelOrderIncreaseLong = prepare({
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsShort: {
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
@@ -2705,6 +2783,22 @@ export const createOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
+    maxPnlFactorForDepositsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
     minCollateralFactor: {
       type: "bigint",
       hex: "0x204fce5e3e25026110000000",
@@ -3009,7 +3103,6 @@ export const executeOrderIncreaseLong = prepare({
       name: "Arbitrum",
       symbol: "ARB",
       decimals: 18,
-      priceDecimals: 3,
       address: "0x912CE59144191C1204E64559FE8253a0e49E6548",
       imageUrl: "https://assets.coingecko.com/coins/images/16547/small/photo_2023-03-29_21.47.00.jpeg?1680097630",
       explorerUrl: "https://arbiscan.io/token/0x912ce59144191c1204e64559fe8253a0e49e6548",
@@ -3056,7 +3149,6 @@ export const executeOrderIncreaseLong = prepare({
       name: "Arbitrum",
       symbol: "ARB",
       decimals: 18,
-      priceDecimals: 3,
       address: "0x912CE59144191C1204E64559FE8253a0e49E6548",
       imageUrl: "https://assets.coingecko.com/coins/images/16547/small/photo_2023-03-29_21.47.00.jpeg?1680097630",
       explorerUrl: "https://arbiscan.io/token/0x912ce59144191c1204e64559fe8253a0e49e6548",
@@ -3200,6 +3292,22 @@ export const executeOrderIncreaseLong = prepare({
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsShort: {
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
@@ -3389,7 +3497,6 @@ export const executeOrderIncreaseLong = prepare({
     name: "Arbitrum",
     symbol: "ARB",
     decimals: 18,
-    priceDecimals: 3,
     address: "0x912CE59144191C1204E64559FE8253a0e49E6548",
     imageUrl: "https://assets.coingecko.com/coins/images/16547/small/photo_2023-03-29_21.47.00.jpeg?1680097630",
     explorerUrl: "https://arbiscan.io/token/0x912ce59144191c1204e64559fe8253a0e49e6548",
@@ -3712,6 +3819,22 @@ export const frozenOrderIncreaseShort = prepare({
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsShort: {
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
@@ -4068,7 +4191,6 @@ export const undefinedOrder = prepare({
       name: "XRP",
       symbol: "XRP",
       decimals: 6,
-      priceDecimals: 4,
       address: "0xc14e065b0067dE91534e032868f5Ac6ecf2c6868",
       imageUrl: "https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png?1605778731",
       isSynthetic: true,
@@ -4184,6 +4306,22 @@ export const undefinedOrder = prepare({
       hex: "0x064f964e68233a76f520000000",
     },
     maxPnlFactorForTradersShort: {
+      type: "bigint",
+      hex: "0x064f964e68233a76f520000000",
+    },
+    maxPnlFactorForDepositsLong: {
+      type: "bigint",
+      hex: "0x064f964e68233a76f520000000",
+    },
+    maxPnlFactorForDepositsShort: {
+      type: "bigint",
+      hex: "0x064f964e68233a76f520000000",
+    },
+    maxPnlFactorForWithdrawalsLong: {
+      type: "bigint",
+      hex: "0x064f964e68233a76f520000000",
+    },
+    maxPnlFactorForWithdrawalsShort: {
       type: "bigint",
       hex: "0x064f964e68233a76f520000000",
     },
@@ -4397,7 +4535,6 @@ export const undefinedOrder = prepare({
     name: "XRP",
     symbol: "XRP",
     decimals: 6,
-    priceDecimals: 4,
     address: "0xc14e065b0067dE91534e032868f5Ac6ecf2c6868",
     imageUrl: "https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png?1605778731",
     isSynthetic: true,
@@ -4512,7 +4649,6 @@ export const liquidated = prepare({
       name: "Chainlink",
       symbol: "LINK",
       decimals: 18,
-      priceDecimals: 3,
       address: "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4",
       isStable: false,
       isShortable: true,
@@ -4562,7 +4698,6 @@ export const liquidated = prepare({
       name: "Chainlink",
       symbol: "LINK",
       decimals: 18,
-      priceDecimals: 3,
       address: "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4",
       isStable: false,
       isShortable: true,
@@ -4709,6 +4844,22 @@ export const liquidated = prepare({
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsShort: {
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
@@ -4898,7 +5049,6 @@ export const liquidated = prepare({
     name: "Chainlink",
     symbol: "LINK",
     decimals: 18,
-    priceDecimals: 3,
     address: "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4",
     isStable: false,
     isShortable: true,
@@ -5273,6 +5423,22 @@ export const increaseLongETH = prepare({
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsShort: {
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
@@ -5924,6 +6090,10 @@ export const createOrderStopMarketLong = prepare({
     maxFundingFactorPerSecondShort: { type: "bigint", value: "22124377728363333333333" },
     maxPnlFactorForTradersLong: { type: "bigint", value: "900000000000000000000000000000" },
     maxPnlFactorForTradersShort: { type: "bigint", value: "900000000000000000000000000000" },
+    maxPnlFactorForDepositsLong: { type: "bigint", value: "900000000000000000000000000000" },
+    maxPnlFactorForDepositsShort: { type: "bigint", value: "900000000000000000000000000000" },
+    maxPnlFactorForWithdrawalsLong: { type: "bigint", value: "900000000000000000000000000000" },
+    maxPnlFactorForWithdrawalsShort: { type: "bigint", value: "900000000000000000000000000000" },
     minCollateralFactor: { type: "bigint", value: "5000000000000000000000000000" },
     minCollateralFactorForOpenInterestLong: { type: "bigint", value: "60000000000000000000" },
     minCollateralFactorForOpenInterestShort: { type: "bigint", value: "60000000000000000000" },
@@ -6151,6 +6321,10 @@ export const executeOrderStopMarketLong = prepare({
     maxFundingFactorPerSecondShort: { type: "bigint", value: "22124377728363333333333" },
     maxPnlFactorForTradersLong: { type: "bigint", value: "900000000000000000000000000000" },
     maxPnlFactorForTradersShort: { type: "bigint", value: "900000000000000000000000000000" },
+    maxPnlFactorForDepositsLong: { type: "bigint", value: "900000000000000000000000000000" },
+    maxPnlFactorForDepositsShort: { type: "bigint", value: "900000000000000000000000000000" },
+    maxPnlFactorForWithdrawalsLong: { type: "bigint", value: "900000000000000000000000000000" },
+    maxPnlFactorForWithdrawalsShort: { type: "bigint", value: "900000000000000000000000000000" },
     minCollateralFactor: { type: "bigint", value: "5000000000000000000000000000" },
     minCollateralFactorForOpenInterestLong: { type: "bigint", value: "60000000000000000000" },
     minCollateralFactorForOpenInterestShort: { type: "bigint", value: "60000000000000000000" },

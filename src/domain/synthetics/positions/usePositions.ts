@@ -25,6 +25,34 @@ type PositionsResult = {
   error?: Error;
 };
 
+type PositionInfoResult = {
+  position: {
+    addresses: { account: string; market: string; collateralToken: string };
+    numbers: {
+      sizeInUsd: bigint;
+      sizeInTokens: bigint;
+      collateralAmount: bigint;
+      increasedAtTime: bigint;
+      decreasedAtTime: bigint;
+      pendingImpactAmount: bigint;
+    };
+    flags: { isLong: boolean };
+  };
+  fees: {
+    borrowing: { borrowingFeeUsd: bigint };
+    funding: {
+      fundingFeeAmount: bigint;
+      claimableLongTokenAmount: bigint;
+      claimableShortTokenAmount: bigint;
+    };
+    referral: { traderDiscountAmount: bigint };
+    ui: { uiFeeAmount: bigint };
+    positionFeeAmount: bigint;
+  };
+  basePnlUsd: bigint;
+  positionValueInUsd: bigint;
+};
+
 export function usePositions(
   chainId: ContractsChainId,
   p: {
@@ -92,7 +120,7 @@ export function usePositions(
 
       freshnessMetrics.reportThrottled(chainId, FreshnessMetricId.Positions);
 
-      return positions.reduce((positionsMap: PositionsData, positionInfo) => {
+      return positions.reduce((positionsMap: PositionsData, positionInfo: PositionInfoResult) => {
         const { position, fees, basePnlUsd, positionValueInUsd } = positionInfo;
         const { addresses, numbers, flags } = position;
         const { account, market: marketAddress, collateralToken: collateralTokenAddress } = addresses;

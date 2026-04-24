@@ -604,8 +604,8 @@ export type MulticallBatchedErrorCounter = {
   };
 };
 
-export type OpenOceanQuoteTiming = {
-  event: "openOcean.quote.timing";
+export type KyberSwapQuoteTiming = {
+  event: "kyberSwap.quote.timing";
 };
 
 export type MulticallRequestCounter = {
@@ -621,6 +621,12 @@ export type MulticallRequestCounter = {
 
 export type GetFeeDataBlockError = {
   event: "error.getFeeData.value.hash";
+};
+
+export type ImageExportError = {
+  event: "error.imageExport";
+  isError: true;
+  data: { errorMessage: string };
 };
 
 export type SetAutoCloseOrdersAction = {

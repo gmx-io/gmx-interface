@@ -2,9 +2,11 @@ import { zeroAddress } from "viem";
 
 import type { ContractsChainId } from "configs/chains";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
+import { MARKET_HOURS_MARKETS } from "configs/marketHours";
 import type { MarketConfig as ConfigMarketConfig } from "configs/markets";
 import { convertTokenAddress, getTokenVisualMultiplier, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import type { DayPriceCandle } from "utils/24h/types";
+import { bigMath } from "utils/bigmath";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "utils/fees";
 import { applyFactor, PRECISION } from "utils/numbers";
 import { getByKey } from "utils/objects";
@@ -139,16 +141,31 @@ export function getCappedPoolPnl(p: { marketInfo: MarketInfo; poolUsd: bigint; p
   return poolPnl > maxPnl ? maxPnl : poolPnl;
 }
 
+/**
+ * Rounds to nearest .0 leverage, so that getMaxAllowedLeverageByMinCollateralFactor can get .0 or .5 leverage.
+ */
+const ROUNDING_VALUE = 10000;
 export function getMaxLeverageByMinCollateralFactor(minCollateralFactor: bigint | undefined) {
   if (minCollateralFactor === undefined) return 100 * BASIS_POINTS_DIVISOR;
   if (minCollateralFactor === 0n) return 100 * BASIS_POINTS_DIVISOR;
 
-  const x = Number(PRECISION / minCollateralFactor);
-  const rounded = Math.round(x / 10) * 10;
-  return rounded * BASIS_POINTS_DIVISOR;
+  const x = bigMath.mulDiv(PRECISION, BASIS_POINTS_DIVISOR_BIGINT, minCollateralFactor);
+  const rounded = Math.round(Number(x) / ROUNDING_VALUE) * ROUNDING_VALUE;
+  return rounded;
 }
 
-export function getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor: bigint | undefined) {
+export function getMaxAllowedLeverageByMinCollateralFactor(
+  minCollateralFactor: bigint | undefined,
+  marketAddress: string | undefined
+) {
+  if (marketAddress) {
+    const cfg = MARKET_HOURS_MARKETS[marketAddress];
+    if (cfg) {
+      if (minCollateralFactor === cfg.onHoursMcf) return cfg.onHoursMaxLeverage * BASIS_POINTS_DIVISOR;
+      if (minCollateralFactor === cfg.offHoursMcf) return cfg.offHoursMaxLeverage * BASIS_POINTS_DIVISOR;
+    }
+  }
+
   return getMaxLeverageByMinCollateralFactor(minCollateralFactor) / 2;
 }
 

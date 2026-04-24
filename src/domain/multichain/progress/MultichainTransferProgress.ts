@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-namespace */
+import { AnyChainId } from "config/chains";
 import { Operation } from "domain/synthetics/markets/types";
 import { Token } from "domain/tokens";
 
@@ -8,7 +9,7 @@ type FundsLeftIn = "source" | "lz" | "gmx-lz" | "unknown";
 
 export class BridgeInFailed extends Error {
   readonly name = "BridgeInFailed";
-  readonly chainId: number;
+  readonly chainId: AnyChainId;
   readonly creationTx: string | undefined;
   readonly fundsLeftIn: FundsLeftIn;
 
@@ -17,7 +18,7 @@ export class BridgeInFailed extends Error {
     creationTx,
     fundsLeftIn,
   }: {
-    chainId: number;
+    chainId: AnyChainId;
     creationTx?: string;
     fundsLeftIn: FundsLeftIn;
   }) {
@@ -30,7 +31,7 @@ export class BridgeInFailed extends Error {
 
 export class ConversionFailed extends Error {
   readonly name = "ConversionFailed";
-  readonly chainId: number;
+  readonly chainId: AnyChainId;
   readonly operation: Operation;
   readonly creationTx: string | undefined;
   readonly executionTx: string | undefined;
@@ -42,7 +43,7 @@ export class ConversionFailed extends Error {
     executionTx,
     operationKey,
   }: {
-    chainId: number;
+    chainId: AnyChainId;
     operation: Operation;
     creationTx?: string;
     executionTx?: string;
@@ -58,9 +59,9 @@ export class ConversionFailed extends Error {
 }
 class BridgeOutFailed extends Error {
   readonly name = "BridgeOutFailed";
-  readonly chainId: number;
+  readonly chainId: AnyChainId;
   readonly executionTx: string | undefined;
-  constructor({ chainId, executionTx }: { chainId: number; executionTx?: string }) {
+  constructor({ chainId, executionTx }: { chainId: AnyChainId; executionTx?: string }) {
     super("Bridge out failed");
     this.chainId = chainId;
     this.executionTx = executionTx;
@@ -76,9 +77,9 @@ const MultichainTransferError = {
 } as const;
 
 export abstract class MultichainTransferProgress<
-  Step extends string | "finished" = "finished",
+  CustomStep extends string,
   Group extends string | undefined = undefined,
-> extends LongCrossChainTask<Step, Group, MultichainTransferError> {
+> extends LongCrossChainTask<CustomStep, Group, MultichainTransferError> {
   static readonly errors = MultichainTransferError;
   abstract readonly isGlv: boolean;
   abstract readonly operation: Operation;
@@ -87,11 +88,11 @@ export abstract class MultichainTransferProgress<
   readonly estimatedFeeUsd: bigint;
 
   constructor(params: {
-    sourceChainId: number;
+    sourceChainId: AnyChainId;
     initialTxHash: string;
     token: Token;
     amount: bigint;
-    settlementChainId: number;
+    settlementChainId: AnyChainId;
     estimatedFeeUsd: bigint;
   }) {
     super(params.initialTxHash, params.sourceChainId, params.settlementChainId);

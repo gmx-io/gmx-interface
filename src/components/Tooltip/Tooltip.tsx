@@ -43,6 +43,9 @@ type InnerTooltipProps<T extends ElementType | undefined> = {
    */
   handle?: ReactNode;
   children?: ReactNode;
+  /**
+   * @deprecated Use `content` instead.
+   */
   renderContent?: () => ReactNode;
   content?: ReactNode | undefined | null;
   position?: TooltipPosition;

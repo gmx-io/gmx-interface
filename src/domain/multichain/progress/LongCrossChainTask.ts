@@ -1,6 +1,8 @@
 import noop from "lodash/noop";
 import { EncodeEventTopicsReturnType, Hex } from "viem";
 
+import { AnyChainId } from "config/chains";
+
 export function matchLogRequest(request: EncodeEventTopicsReturnType, logTopics: [Hex, ...Hex[]] | []): boolean {
   return request.every((filter, index) => {
     if (!filter) {
@@ -24,19 +26,21 @@ const DEBUG = false;
 // eslint-disable-next-line no-console
 export const debugLog = DEBUG ? (...args: any[]) => console.log("[LongCrossChainTask]", ...args) : noop;
 
+export type Step<CustomStep extends string> = CustomStep | "finished";
+
 export abstract class LongCrossChainTask<
-  Step extends string | "finished" = "finished",
+  CustomStep extends string,
   Group extends string | undefined = undefined,
   ErrorType = unknown,
 > {
-  private readonly resolversRegistry: Record<Step, PromiseWithResolvers<void>> = {} as Record<
-    Step,
+  private readonly resolversRegistry: Record<Step<CustomStep>, PromiseWithResolvers<void>> = {} as Record<
+    Step<CustomStep>,
     PromiseWithResolvers<void>
   >;
   private readonly dynamicGroups: Partial<Record<NonNullable<Group>, Record<string, PromiseWithResolvers<void>>>> =
     {} as Partial<Record<NonNullable<Group>, Record<string, PromiseWithResolvers<void>>>>;
 
-  readonly steps: Step[] = [];
+  readonly steps: Step<CustomStep>[] = [];
   readonly groups: Group[] = [];
 
   readonly startTimestamp = Date.now();
@@ -44,8 +48,8 @@ export abstract class LongCrossChainTask<
 
   constructor(
     public readonly initialTxHash: string,
-    public readonly sourceChainId: number,
-    public readonly settlementChainId: number
+    public readonly sourceChainId: AnyChainId,
+    public readonly settlementChainId: AnyChainId
   ) {
     this.resolversRegistry["finished"] = Promise.withResolvers<void>();
     // TODO MLTCH add steps when managers say to show steps
@@ -81,15 +85,15 @@ export abstract class LongCrossChainTask<
     return true;
   }
 
-  protected getResolver(name: Step) {
+  protected getResolver(name: Step<CustomStep>) {
     return this.resolversRegistry[name];
   }
 
-  public getStepPromise(name: Step) {
+  public getStepPromise(name: Step<CustomStep>) {
     return this.getResolver(name)?.promise;
   }
 
-  protected resolve(name: Step) {
+  protected resolve(name: Step<CustomStep>) {
     debugLog("resolve", name);
     if (name === "finished") {
       this.finishTimestamp = Date.now();
@@ -97,7 +101,7 @@ export abstract class LongCrossChainTask<
     this.resolversRegistry[name]?.resolve();
   }
 
-  protected reject(name: Step, reason?: ErrorType) {
+  protected reject(name: Step<CustomStep>, reason?: ErrorType) {
     debugLog("reject", name, reason);
     if (name === "finished") {
       this.finishTimestamp = Date.now();

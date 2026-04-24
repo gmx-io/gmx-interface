@@ -23,6 +23,7 @@ import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/sele
 import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
+  selectGasPrice,
   selectSrcChainId,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -38,6 +39,7 @@ import {
   getCommonError,
   getDefaultInsufficientGasMessage,
   getGmSwapError,
+  getNativeGasError,
   takeValidationResult,
   ValidationBannerErrorName,
   ValidationResult,
@@ -101,7 +103,6 @@ export const useGmSwapSubmitState = ({
   const glvToken = glvInfo?.glvToken;
   const marketTokensData = useSelector(selectPoolsDetailsMarketTokensData);
   const marketToken = useSelector(selectPoolsDetailsMarketTokenData);
-  const tokensData = useSelector(selectTokensData);
 
   const longTokenAddress = useSelector(selectPoolsDetailsLongTokenAddress);
   const shortTokenAddress = useSelector(selectPoolsDetailsShortTokenAddress);
@@ -112,6 +113,8 @@ export const useGmSwapSubmitState = ({
   const amounts = useSelector(selectDepositWithdrawalAmounts);
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
+  const gasPrice = useSelector(selectGasPrice);
+  const tokensData = useSelector(selectTokensData);
   const gasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
   const gasPaymentToken = useSelector(selectGasPaymentToken);
   const hasOutdatedUi = useHasOutdatedUi();
@@ -190,6 +193,38 @@ export const useGmSwapSubmitState = ({
     isDeposit,
   });
 
+  const settlementChainNativeTokenAmount = useMemo(() => {
+    if (paySource !== "settlementChain" || !isDeposit) {
+      return 0n;
+    }
+
+    let amount = 0n;
+
+    if (payLongToken?.address === zeroAddress) {
+      amount += longTokenAmount;
+    }
+
+    if (payShortToken?.address === zeroAddress) {
+      amount += shortTokenAmount;
+    }
+
+    return amount;
+  }, [isDeposit, longTokenAmount, payLongToken, payShortToken, paySource, shortTokenAmount]);
+
+  const nativeGasError = useMemo((): ValidationResult | undefined => {
+    if (technicalFees?.kind !== "settlementChain") {
+      return undefined;
+    }
+
+    const walletTxGasAmount = gasPrice !== undefined ? technicalFees.fees.gasLimit * gasPrice : 0n;
+    const requiredAmount = technicalFees.fees.feeTokenAmount + settlementChainNativeTokenAmount + walletTxGasAmount;
+
+    return getNativeGasError({
+      networkFee: requiredAmount,
+      nativeBalance: getByKey(tokensData, zeroAddress)?.walletBalance,
+    });
+  }, [gasPrice, settlementChainNativeTokenAmount, technicalFees, tokensData]);
+
   const paySourceChainNativeTokenAmount = useMemo(() => {
     if (srcChainId === undefined || !isDeposit) {
       return 0n;
@@ -248,22 +283,24 @@ export const useGmSwapSubmitState = ({
       return undefined;
     }
 
-    const enoughWithLongCollateral =
+    const insufficientWithLongCollateral =
+      isDeposit &&
       payLongToken &&
       nativeToken &&
       payLongToken.address === nativeToken.address &&
-      nativeTokenWalletBalance > settlementChainFeeTokenAmount + longTokenAmount;
+      nativeTokenWalletBalance < settlementChainFeeTokenAmount + longTokenAmount;
 
-    const enoughWithShortCollateral =
+    const insufficientWithShortCollateral =
+      isDeposit &&
       payShortToken &&
       nativeToken &&
       payShortToken.address === nativeToken.address &&
-      nativeTokenWalletBalance > settlementChainFeeTokenAmount + shortTokenAmount;
+      nativeTokenWalletBalance < settlementChainFeeTokenAmount + shortTokenAmount;
 
     if (
       nativeTokenWalletBalance < settlementChainFeeTokenAmount ||
-      !enoughWithLongCollateral ||
-      !enoughWithShortCollateral
+      insufficientWithLongCollateral ||
+      insufficientWithShortCollateral
     ) {
       return {
         buttonErrorMessage: getDefaultInsufficientGasMessage(),
@@ -274,6 +311,7 @@ export const useGmSwapSubmitState = ({
     paySource,
     nativeTokenWalletBalance,
     settlementChainFeeTokenAmount,
+    isDeposit,
     payLongToken,
     nativeToken,
     longTokenAmount,
@@ -329,6 +367,7 @@ export const useGmSwapSubmitState = ({
     commonError,
     swapError,
     expressError,
+    nativeGasError,
     sourceChainNativeFeeError,
     settlementChainNativeFeeError,
     formattedEstimationError

@@ -1,5 +1,6 @@
 import { useEffect, useMemo } from "react";
 
+import { isDepositDisabledMarket } from "config/static/markets";
 import {
   selectPoolsDetailsFlags,
   selectPoolsDetailsFocusedInput,
@@ -68,7 +69,13 @@ export const useBestGmPoolAddressForGlv = ({
 
     const halfOfLong = longTokenAmount !== undefined ? longTokenAmount / 2n : undefined;
 
-    return [...marketsWithComposition].map((marketConfig) => {
+    const candidateMarkets = isDeposit
+      ? marketsWithComposition.filter(
+          (marketConfig) => !isDepositDisabledMarket(chainId, marketConfig.market.marketTokenAddress)
+        )
+      : marketsWithComposition;
+
+    return [...candidateMarkets].map((marketConfig) => {
       const marketInfo = marketConfig.market;
 
       const adjustedLongTokenAmount = (marketInfo.isSameCollaterals ? halfOfLong : longTokenAmount) || 0n;

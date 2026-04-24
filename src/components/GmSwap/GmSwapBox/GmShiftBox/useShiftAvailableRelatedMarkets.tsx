@@ -5,6 +5,7 @@ import type { GlvAndGmMarketsInfoData, GlvOrMarketInfo } from "domain/synthetics
 import { getShiftAvailableRelatedMarkets } from "./getShiftAvailableRelatedMarkets";
 
 export function useShiftAvailableRelatedMarkets(
+  chainId: number,
   marketsInfoData: GlvAndGmMarketsInfoData | undefined,
   sortedMarketsInfoByIndexToken: GlvOrMarketInfo[],
   marketTokenAddress?: string
@@ -12,11 +13,12 @@ export function useShiftAvailableRelatedMarkets(
   const shiftAvailableRelatedMarkets: GlvOrMarketInfo[] = useMemo(
     () =>
       getShiftAvailableRelatedMarkets({
+        chainId,
         marketsInfoData,
         sortedMarketsInfoByIndexToken,
         marketTokenAddress,
       }),
-    [marketTokenAddress, marketsInfoData, sortedMarketsInfoByIndexToken]
+    [chainId, marketTokenAddress, marketsInfoData, sortedMarketsInfoByIndexToken]
   );
 
   return shiftAvailableRelatedMarkets;

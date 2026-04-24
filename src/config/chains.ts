@@ -5,6 +5,8 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   BOTANIX,
+  ContractsChainId,
+  MEGAETH,
   CONTRACTS_CHAIN_IDS as SDK_CONTRACTS_CHAIN_IDS,
   CONTRACTS_CHAIN_IDS_DEV as SDK_CONTRACTS_CHAIN_IDS_DEV,
   SettlementChainId,
@@ -19,7 +21,7 @@ import { isDevelopment } from "./env";
 
 export * from "sdk/configs/chains";
 
-export const CONTRACTS_CHAIN_IDS: readonly number[] = isDevelopment()
+export const CONTRACTS_CHAIN_IDS: readonly ContractsChainId[] = isDevelopment()
   ? SDK_CONTRACTS_CHAIN_IDS_DEV
   : SDK_CONTRACTS_CHAIN_IDS;
 
@@ -33,6 +35,7 @@ export const DEFAULT_SETTLEMENT_CHAIN_ID_MAP: Record<AnyChainId, SettlementChain
   [SOURCE_BASE_MAINNET]: ARBITRUM,
   [SOURCE_BSC_MAINNET]: ARBITRUM,
   [BOTANIX]: ARBITRUM,
+  [MEGAETH]: ARBITRUM,
 
   // Stubs
   [ARBITRUM]: ARBITRUM, // ARBITRUM,

@@ -205,7 +205,7 @@ class UserAnalytics {
     });
   };
 
-  processQueue = async () => {
+  processQueue = async (): Promise<void> => {
     if (this.earlyEventsQueue.length === 0) {
       return;
     }

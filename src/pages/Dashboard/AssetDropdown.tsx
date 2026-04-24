@@ -19,7 +19,7 @@ import nansenPortfolioIcon from "img/nansen_portfolio.svg";
 
 import "./AssetDropdown.scss";
 
-const PLATFORM_TOKEN_ROUTES = {
+const PLATFORM_TOKEN_ROUTES: Record<string, string> = {
   GMX: "/buy_gmx",
   GLP: "/buy_glp",
   GM: "/pools",
@@ -115,7 +115,7 @@ function AssetDropdown({ assetSymbol, token: propsToken, position = "right", mar
   );
 }
 
-const AssetDropdownMarketItem = ({ marketStat, chainId }: { marketStat: MarketStat; chainId }) => {
+const AssetDropdownMarketItem = ({ marketStat, chainId }: { marketStat: MarketStat; chainId: number }) => {
   const tokenIconName = marketStat.marketInfo.isSpotOnly
     ? getNormalizedTokenSymbol(marketStat.marketInfo.longToken.symbol) +
       getNormalizedTokenSymbol(marketStat.marketInfo.shortToken.symbol)

@@ -3,6 +3,7 @@ import "core-js/stable/promise/with-resolvers";
 import uniqueId from "lodash/uniqueId";
 
 import { getAbFlags } from "config/ab";
+import { type AnyChainId } from "config/chains";
 import { PRODUCTION_PREVIEW_KEY } from "config/localStorage";
 import { getIsLargeAccount } from "domain/stats/isLargeAccount";
 import { emitReportEndpointFailure } from "lib/FallbackTracker/events";
@@ -102,7 +103,7 @@ if (executorWorker) {
  * If the worker does not respond in time, it falls back to the main thread.
  */
 export async function executeMulticallWorker(
-  chainId: number,
+  chainId: AnyChainId,
   request: MulticallRequestConfig<any>
 ): Promise<MulticallResult<any> | undefined> {
   // If worker is not available, fallback to main thread
