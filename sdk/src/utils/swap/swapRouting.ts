@@ -163,6 +163,7 @@ export function getBestSwapPath({
 
   let bestRoute = routes[0];
   let bestUsdOut = 0n;
+  let hasEvaluatedRoute = false;
 
   for (const route of routes) {
     try {
@@ -176,6 +177,8 @@ export function getBestSwapPath({
         pathUsdOut = usdOut;
       }
 
+      hasEvaluatedRoute = true;
+
       if (pathUsdOut > bestUsdOut) {
         bestRoute = route;
         bestUsdOut = pathUsdOut;
@@ -183,6 +186,10 @@ export function getBestSwapPath({
     } catch (e) {
       continue;
     }
+  }
+
+  if (hasEvaluatedRoute && bestUsdOut === 0n) {
+    return undefined;
   }
 
   return bestRoute;
