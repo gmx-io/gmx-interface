@@ -1,4 +1,3 @@
-import { t, Trans } from "@lingui/macro";
 import { FormEvent, useEffect, useMemo, useState } from "react";
 import { type Address, decodeEventLog, encodeFunctionData, getAddress, type Hex, isAddress, zeroAddress } from "viem";
 
@@ -108,19 +107,19 @@ export function DevSmartWalletDeployTab({
     setLastDeploymentChainId(undefined);
 
     if (!account || !active) {
-      const message = t`Connect a wallet first`;
+      const message = "Connect a wallet first";
       setSubmitError(message);
       helperToast.error(message);
       return;
     }
     if (!walletClient) {
-      const message = t`Wallet client unavailable. Reconnect wallet and retry`;
+      const message = "Wallet client unavailable. Reconnect wallet and retry";
       setSubmitError(message);
       helperToast.error(message);
       return;
     }
     if (!isOnDeployNetwork) {
-      const message = t`Switch wallet to selected deploy chain`;
+      const message = "Switch wallet to selected deploy chain";
       setSubmitError(message);
       helperToast.error(message);
       return;
@@ -168,7 +167,7 @@ export function DevSmartWalletDeployTab({
 
       setTxHash(hash);
       setLastDeploymentChainId(deployChainId);
-      helperToast.info(t`Transaction submitted. Waiting for confirmation...`);
+      helperToast.info("Transaction submitted. Waiting for confirmation…");
 
       const publicClient = getPublicClientWithRpc(deployChainId);
       const receipt = await publicClient.waitForTransactionReceipt({ hash });
@@ -200,11 +199,11 @@ export function DevSmartWalletDeployTab({
         }
       }
 
-      helperToast.success(t`Safe wallet created`);
+      helperToast.success("Safe wallet created");
     } catch (error) {
       const message = getErrorMessage(error);
       setSubmitError(message);
-      helperToast.error(t`Safe creation failed: ${message}`);
+      helperToast.error(`Safe creation failed: ${message}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -213,14 +212,12 @@ export function DevSmartWalletDeployTab({
   return (
     <>
       <form onSubmit={handleSubmit} className="rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-16">
-        <h2 className="text-18 font-medium">
-          <Trans>Deploy Safe</Trans>
-        </h2>
+        <h2 className="text-18 font-medium">Deploy Safe</h2>
 
         <div className="mt-16 grid gap-16">
           <div>
             <label className="mb-6 block text-13 font-medium text-typography-primary" htmlFor="deployChain">
-              <Trans>Deploy chain</Trans>
+              Deploy chain
             </label>
             <select
               id="deployChain"
@@ -235,13 +232,13 @@ export function DevSmartWalletDeployTab({
               ))}
             </select>
             <div className="mt-6 text-12 text-typography-secondary">
-              <Trans>Switch owner wallet to this chain before submitting.</Trans>
+              Switch owner wallet to this chain before submitting.
             </div>
           </div>
 
           <div>
             <label className="mb-6 block text-13 font-medium text-typography-primary" htmlFor="owners">
-              <Trans>Owners</Trans>
+              Owners
             </label>
             <textarea
               id="owners"
@@ -252,7 +249,7 @@ export function DevSmartWalletDeployTab({
               className="w-full rounded-8 border border-slate-800 bg-slate-800 px-12 py-10 text-14 outline-none focus:border-blue-400"
             />
             <div className="mt-6 text-12 text-typography-secondary">
-              <Trans>Parsed owners</Trans>: {ownersState.owners.length}
+              Parsed owners: {ownersState.owners.length}
               {ownersState.rawOwnersCount !== ownersState.owners.length && ownersState.invalidOwners.length > 0
                 ? ` • ${ownersState.invalidOwners.length} invalid`
                 : ""}
@@ -262,7 +259,7 @@ export function DevSmartWalletDeployTab({
           <div className="grid gap-16 md:grid-cols-2">
             <div>
               <label className="mb-6 block text-13 font-medium text-typography-primary" htmlFor="threshold">
-                <Trans>Threshold</Trans>
+                Threshold
               </label>
               <input
                 id="threshold"
@@ -273,12 +270,12 @@ export function DevSmartWalletDeployTab({
                 className="w-full cursor-not-allowed rounded-8 border border-slate-800 bg-slate-800 px-12 py-10 text-14 opacity-60 outline-none focus:border-blue-400"
               />
               <div className="mt-6 text-12 text-typography-secondary">
-                <Trans>Locked to 1: the WalletConnect provider only supports single-owner signing.</Trans>
+                Locked to 1: the WalletConnect provider only supports single-owner signing.
               </div>
             </div>
             <div>
               <label className="mb-6 block text-13 font-medium text-typography-primary" htmlFor="saltNonce">
-                <Trans>Salt nonce</Trans>
+                Salt nonce
               </label>
               <input
                 id="saltNonce"
@@ -293,19 +290,19 @@ export function DevSmartWalletDeployTab({
           <div className="grid gap-16">
             <AddressInput
               id="proxyFactory"
-              label={t`Safe Proxy Factory`}
+              label="Safe Proxy Factory"
               value={proxyFactoryAddress}
               onChange={setProxyFactoryAddress}
             />
             <AddressInput
               id="singleton"
-              label={t`Safe Singleton (SafeL2)`}
+              label="Safe Singleton (SafeL2)"
               value={singletonAddress}
               onChange={setSingletonAddress}
             />
             <AddressInput
               id="fallbackHandler"
-              label={t`Compatibility Fallback Handler`}
+              label="Compatibility Fallback Handler"
               value={fallbackHandlerAddress}
               onChange={setFallbackHandlerAddress}
             />
@@ -329,7 +326,7 @@ export function DevSmartWalletDeployTab({
               type="submit"
               disabled={!active || !walletClient || !isOnDeployNetwork || isSubmitting || formErrors.length > 0}
             >
-              {isSubmitting ? t`Creating Safe...` : t`Create Safe on selected chain`}
+              {isSubmitting ? "Creating Safe…" : "Create Safe on selected chain"}
             </Button>
           </div>
         </div>
@@ -337,15 +334,11 @@ export function DevSmartWalletDeployTab({
 
       {(txHash || safeAddress) && (
         <div className="rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-16">
-          <h2 className="text-18 font-medium">
-            <Trans>Last Deployment Result</Trans>
-          </h2>
+          <h2 className="text-18 font-medium">Last Deployment Result</h2>
 
           {txHash && (
             <div className="mt-8 text-13">
-              <div className="text-typography-secondary">
-                <Trans>Transaction hash</Trans>
-              </div>
+              <div className="text-typography-secondary">Transaction hash</div>
               <a
                 href={`${lastDeploymentExplorerUrl}tx/${txHash}`}
                 target="_blank"
@@ -359,9 +352,7 @@ export function DevSmartWalletDeployTab({
 
           {safeAddress && (
             <div className="mt-12 text-13">
-              <div className="text-typography-secondary">
-                <Trans>Created Safe address</Trans>
-              </div>
+              <div className="text-typography-secondary">Created Safe address</div>
               <a
                 href={`${lastDeploymentExplorerUrl}address/${safeAddress}`}
                 target="_blank"

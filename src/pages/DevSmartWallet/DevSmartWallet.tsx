@@ -1,4 +1,3 @@
-import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useCallback, useEffect, useState } from "react";
 import { type Address, getAddress, isAddress } from "viem";
@@ -180,7 +179,7 @@ export default function DevSmartWallet() {
     try {
       await switchNetwork(deployChainId, Boolean(active));
     } catch (error) {
-      helperToast.error(t`Failed to switch network: ${getErrorMessage(error)}`);
+      helperToast.error(`Failed to switch network: ${getErrorMessage(error)}`);
     }
   }
 
@@ -194,45 +193,33 @@ export default function DevSmartWallet() {
       <div className="mx-auto flex w-full max-w-[1100px] flex-col gap-16">
         {/* ---- Header ---- */}
         <div className="rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-16">
-          <h1 className="text-24 font-medium">
-            <Trans>Dev Smart Wallet (Safe)</Trans>
-          </h1>
+          <h1 className="text-24 font-medium">Dev Smart Wallet (Safe)</h1>
           <p className="mt-8 text-13 text-typography-secondary">
-            <Trans>
-              Use this page as a Safe deployer and a WalletConnect wallet-provider MVP. Keep /trade open in another
-              browser tab/window and pair it here by pasting the WalletConnect URI.
-            </Trans>
+            Use this page as a Safe deployer and a WalletConnect wallet-provider MVP. Keep /trade open in another
+            browser tab/window and pair it here by pasting the WalletConnect URI.
           </p>
 
           <div className="mt-12 flex flex-wrap items-center gap-8 text-13">
             <div className="rounded-8 border border-slate-700 px-10 py-6">
-              <Trans>Deploy chain</Trans>: {getChainName(deployChainId)} ({deployChainId})
+              Deploy chain: {getChainName(deployChainId)} ({deployChainId})
             </div>
             <div className="rounded-8 border border-slate-700 px-10 py-6">
-              <Trans>WC chain</Trans>: {getChainName(providerChainId)} ({providerChainId})
+              WC chain: {getChainName(providerChainId)} ({providerChainId})
             </div>
             <div className="rounded-8 border border-slate-700 px-10 py-6">
-              <Trans>Owner wallet</Trans>: {active && account ? account : t`Not connected`}
+              Owner wallet: {active && account ? account : "Not connected"}
             </div>
-            <div className="rounded-8 border border-slate-700 px-10 py-6">
-              <Trans>Owner chain</Trans>: {walletChainId ?? t`-`}
-            </div>
-            <div className="rounded-8 border border-slate-700 px-10 py-6">
-              <Trans>WC Wallet status</Trans>: {walletKitStatus}
-            </div>
-            <div className="rounded-8 border border-slate-700 px-10 py-6">
-              <Trans>Safe version</Trans>: {SAFE_TARGET_VERSION}
-            </div>
+            <div className="rounded-8 border border-slate-700 px-10 py-6">Owner chain: {walletChainId ?? "—"}</div>
+            <div className="rounded-8 border border-slate-700 px-10 py-6">WC Wallet status: {walletKitStatus}</div>
+            <div className="rounded-8 border border-slate-700 px-10 py-6">Safe version: {SAFE_TARGET_VERSION}</div>
           </div>
 
           <div className="mt-12 flex flex-wrap gap-8">
             {!active ? (
-              <ConnectWalletButton onClick={() => openConnectModal?.()}>
-                <Trans>Connect owner wallet</Trans>
-              </ConnectWalletButton>
+              <ConnectWalletButton onClick={() => openConnectModal?.()}>Connect owner wallet</ConnectWalletButton>
             ) : null}
             <Button variant="secondary" onClick={handleSwitchNetwork}>
-              <Trans>Switch owner to deploy chain</Trans>
+              Switch owner to deploy chain
             </Button>
           </div>
 

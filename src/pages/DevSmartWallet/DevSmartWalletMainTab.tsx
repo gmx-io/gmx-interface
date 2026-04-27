@@ -1,4 +1,3 @@
-import { t, Trans } from "@lingui/macro";
 import { WalletKit } from "@reown/walletkit";
 import Safe, { generateTypedData } from "@safe-global/protocol-kit";
 import { Core } from "@walletconnect/core";
@@ -786,15 +785,15 @@ export function DevSmartWalletMainTab({
     const walletKit = walletKitRef.current;
     const wcUri = pairUriInput.trim();
     if (!walletKit) {
-      helperToast.error(t`WalletConnect wallet not initialized yet`);
+      helperToast.error("WalletConnect wallet not initialized yet");
       return;
     }
     if (!wcUri) {
-      helperToast.error(t`Paste a WalletConnect URI from /trade`);
+      helperToast.error("Paste a WalletConnect URI from /trade");
       return;
     }
     if (!wcUri.startsWith("wc:")) {
-      helperToast.error(t`WalletConnect URI should start with wc:`);
+      helperToast.error("WalletConnect URI should start with wc:");
       return;
     }
     setIsPairing(true);
@@ -802,11 +801,11 @@ export function DevSmartWalletMainTab({
       await walletKit.pair({ uri: wcUri });
       pushActivity("WalletConnect pairing started");
       setPairUriInput("");
-      helperToast.success(t`WalletConnect pairing started`);
+      helperToast.success("WalletConnect pairing started");
     } catch (error) {
       const message = getErrorMessage(error);
       pushActivity(`Pairing failed: ${message}`, "err");
-      helperToast.error(t`WalletConnect pairing failed: ${message}`);
+      helperToast.error(`WalletConnect pairing failed: ${message}`);
     } finally {
       setIsPairing(false);
     }
@@ -826,35 +825,31 @@ export function DevSmartWalletMainTab({
 
   function handleSaveCurrentProviderProfile() {
     if (!providerSafeAddress) {
-      helperToast.error(t`Set a valid provider Safe address first`);
+      helperToast.error("Set a valid provider Safe address first");
       return;
     }
     const owners = account ? [account as Address] : [];
     upsertSavedWalletProfile({ safeAddress: providerSafeAddress, chainId: providerChainId, owners });
     pushActivity(`Saved wallet profile: ${providerSafeAddress} on ${getChainName(providerChainId)}`);
-    helperToast.success(t`Saved smart wallet profile`);
+    helperToast.success("Saved smart wallet profile");
   }
 
   return (
     <>
       <div className="rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-16">
-        <h2 className="text-18 font-medium">
-          <Trans>WalletConnect Wallet Provider (MVP)</Trans>
-        </h2>
+        <h2 className="text-18 font-medium">WalletConnect Wallet Provider (MVP)</h2>
         <p className="mt-8 text-13 text-typography-secondary">
-          <Trans>
-            Threshold-1 Safe only. Exposes the Safe address over WalletConnect and executes dapp transactions through
-            Safe Protocol Kit using the connected owner EOA in this browser.
-          </Trans>
+          Threshold-1 Safe only. Exposes the Safe address over WalletConnect and executes dapp transactions through Safe
+          Protocol Kit using the connected owner EOA in this browser.
         </p>
         <p className="mt-4 text-12 text-typography-secondary">
-          <Trans>This dev wallet is pinned to Safe version {SAFE_TARGET_VERSION}.</Trans>
+          This dev wallet is pinned to Safe version {SAFE_TARGET_VERSION}.
         </p>
 
         <div className="mt-12 grid gap-16">
           <div>
             <label className="mb-6 block text-13 font-medium text-typography-primary" htmlFor="providerChain">
-              <Trans>Provider chain (WalletConnect account chain)</Trans>
+              Provider chain (WalletConnect account chain)
             </label>
             <select
               id="providerChain"
@@ -872,7 +867,7 @@ export function DevSmartWalletMainTab({
 
           <AddressInput
             id="providerSafeAddress"
-            label={t`Safe address to expose over WalletConnect`}
+            label="Safe address to expose over WalletConnect"
             value={providerSafeAddressInput}
             onChange={setProviderSafeAddressInput}
           />
@@ -887,10 +882,10 @@ export function DevSmartWalletMainTab({
               }}
               disabled={!lastCreatedSafeAddress}
             >
-              <Trans>Use last created Safe</Trans>
+              Use last created Safe
             </Button>
             <Button variant="secondary" onClick={handleSaveCurrentProviderProfile} disabled={!providerSafeAddress}>
-              <Trans>Save current provider wallet</Trans>
+              Save current provider wallet
             </Button>
           </div>
 
@@ -902,7 +897,7 @@ export function DevSmartWalletMainTab({
 
           <div>
             <label className="mb-6 block text-13 font-medium text-typography-primary" htmlFor="wcPairUri">
-              <Trans>WalletConnect URI (paste from /trade)</Trans>
+              WalletConnect URI (paste from /trade)
             </label>
             <textarea
               id="wcPairUri"
@@ -920,35 +915,27 @@ export function DevSmartWalletMainTab({
               onClick={handlePairWalletConnect}
               disabled={!isWalletKitReady || isPairing || providerErrors.length > 0}
             >
-              {isPairing ? t`Pairing...` : t`Pair WalletConnect Session`}
+              {isPairing ? "Pairing…" : "Pair WalletConnect Session"}
             </Button>
           </div>
 
           <div className="text-12 text-typography-secondary">
-            <Trans>
-              Connection flow: open /trade in Chrome, choose WalletConnect, copy the wc: URI from the modal, paste it
-              here in Firefox, then approve the session on this page.
-            </Trans>
+            Connection flow: open /trade in Chrome, choose WalletConnect, copy the wc: URI from the modal, paste it here
+            in Firefox, then approve the session on this page.
           </div>
         </div>
       </div>
 
       <div className="rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-16">
-        <h2 className="text-18 font-medium">
-          <Trans>Saved Smart Wallets</Trans>
-        </h2>
+        <h2 className="text-18 font-medium">Saved Smart Wallets</h2>
         <p className="mt-8 text-13 text-typography-secondary">
-          <Trans>
-            Persisted in this browser: Safe address, chain, and owners. Use saved entries to quickly switch provider
-            wallet, validator target, or deploy form owners.
-          </Trans>
+          Persisted in this browser: Safe address, chain, and owners. Use saved entries to quickly switch provider
+          wallet, validator target, or deploy form owners.
         </p>
 
         <div className="mt-12 flex flex-col gap-10">
           {savedWalletProfiles.length === 0 && (
-            <div className="text-13 text-typography-secondary">
-              <Trans>No saved smart wallets yet</Trans>
-            </div>
+            <div className="text-13 text-typography-secondary">No saved smart wallets yet</div>
           )}
 
           {savedWalletProfiles.map((profile) => (
@@ -960,9 +947,7 @@ export function DevSmartWalletMainTab({
                 <span className="rounded-8 border border-slate-700 px-8 py-4 text-12">
                   {getChainName(profile.chainId)} ({profile.chainId})
                 </span>
-                <span className="text-typography-secondary">
-                  <Trans>Owners</Trans>: {profile.owners.length}
-                </span>
+                <span className="text-typography-secondary">Owners: {profile.owners.length}</span>
               </div>
               <div className="mt-8 break-all text-13 text-typography-primary">{profile.safeAddress}</div>
               {profile.owners.length > 0 && (
@@ -994,7 +979,7 @@ export function DevSmartWalletMainTab({
                     upsertSavedWalletProfile(profile);
                   }}
                 >
-                  <Trans>Use for provider</Trans>
+                  Use for provider
                 </Button>
                 <Button
                   variant="secondary"
@@ -1003,7 +988,7 @@ export function DevSmartWalletMainTab({
                     upsertSavedWalletProfile(profile);
                   }}
                 >
-                  <Trans>Use for validator</Trans>
+                  Use for validator
                 </Button>
                 <Button
                   variant="secondary"
@@ -1013,10 +998,10 @@ export function DevSmartWalletMainTab({
                     upsertSavedWalletProfile(profile);
                   }}
                 >
-                  <Trans>Use for deploy form</Trans>
+                  Use for deploy form
                 </Button>
                 <Button variant="secondary" onClick={() => removeSavedWalletProfile(profile)}>
-                  <Trans>Remove</Trans>
+                  Remove
                 </Button>
               </div>
             </div>
@@ -1026,25 +1011,21 @@ export function DevSmartWalletMainTab({
 
       <div className="grid gap-16 xl:grid-cols-2">
         <div className="rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-16">
-          <h2 className="text-18 font-medium">
-            <Trans>Active WalletConnect Sessions</Trans>
-          </h2>
+          <h2 className="text-18 font-medium">Active WalletConnect Sessions</h2>
           <div className="mt-12 flex flex-col gap-10">
             {Object.entries(sessionMap).length === 0 && (
-              <div className="text-13 text-typography-secondary">
-                <Trans>No active sessions</Trans>
-              </div>
+              <div className="text-13 text-typography-secondary">No active sessions</div>
             )}
             {Object.entries(sessionMap).map(([topic, session]) => (
               <div key={topic} className="rounded-8 border border-slate-700 bg-slate-900/40 p-12">
                 <div className="text-13 font-medium text-typography-primary">{summarizeSession(session)}</div>
                 <div className="mt-6 break-all text-12 text-typography-secondary">{topic}</div>
                 <div className="mt-6 break-all text-12 text-typography-secondary">
-                  <Trans>Accounts</Trans>: {session?.namespaces?.eip155?.accounts?.join(", ") ?? "-"}
+                  Accounts: {session?.namespaces?.eip155?.accounts?.join(", ") ?? "-"}
                 </div>
                 <div className="mt-10">
                   <Button variant="secondary" onClick={() => handleDisconnectSession(topic)}>
-                    <Trans>Disconnect</Trans>
+                    Disconnect
                   </Button>
                 </div>
               </div>
@@ -1054,28 +1035,24 @@ export function DevSmartWalletMainTab({
 
         <div className="rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-16">
           <div className="flex items-center justify-between">
-            <h2 className="text-18 font-medium">
-              <Trans>Wallet Activity</Trans>
-            </h2>
+            <h2 className="text-18 font-medium">Wallet Activity</h2>
             <Button
               variant="secondary"
               onClick={() => {
                 if (activityLog.length === 0) return;
                 navigator.clipboard.writeText(serializeLogEntries(activityLog)).then(
-                  () => helperToast.success(t`Activity log copied`),
-                  () => helperToast.error(t`Copy failed`)
+                  () => helperToast.success("Activity log copied"),
+                  () => helperToast.error("Copy failed")
                 );
               }}
               disabled={activityLog.length === 0}
             >
-              <Trans>Copy</Trans>
+              Copy
             </Button>
           </div>
           <div className="mt-12 max-h-[360px] overflow-auto rounded-8 border border-slate-700 bg-slate-900/40">
             {activityLog.length === 0 ? (
-              <div className="p-12 text-12 text-typography-secondary">
-                <Trans>No activity yet</Trans>
-              </div>
+              <div className="p-12 text-12 text-typography-secondary">No activity yet</div>
             ) : (
               activityLog.map((entry, idx) => {
                 const tagColor =

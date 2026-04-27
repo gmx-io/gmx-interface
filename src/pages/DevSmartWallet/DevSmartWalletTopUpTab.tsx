@@ -1,4 +1,3 @@
-import { t, Trans } from "@lingui/macro";
 import { useState } from "react";
 import { encodeFunctionData, getAddress, isAddress, zeroAddress, type Address, type Hex } from "viem";
 
@@ -85,15 +84,15 @@ export function DevSmartWalletTopUpTab({
         ...gasOverrides,
       });
 
-      helperToast.info(t`Approval submitted. Waiting for confirmation...`);
+      helperToast.info("Approval submitted. Waiting for confirmation…");
       const publicClient = getPublicClientWithRpc(ARBITRUM_SEPOLIA);
       await publicClient.waitForTransactionReceipt({ hash });
-      helperToast.success(t`Token approved`);
+      helperToast.success("Token approved");
       pushActivity(`Approved ${selectedToken.symbol} for MultichainTransferRouter`);
     } catch (err) {
       const message = getErrorMessage(err);
       setError(message);
-      helperToast.error(t`Approval failed: ${message}`);
+      helperToast.error(`Approval failed: ${message}`);
     } finally {
       setIsApproving(false);
     }
@@ -168,19 +167,19 @@ export function DevSmartWalletTopUpTab({
       }
 
       setTxHash(hash);
-      helperToast.info(t`Top-up submitted. Waiting for confirmation...`);
+      helperToast.info("Top-up submitted. Waiting for confirmation…");
 
       const publicClient = getPublicClientWithRpc(ARBITRUM_SEPOLIA);
       await publicClient.waitForTransactionReceipt({ hash });
 
-      helperToast.success(t`Top-up confirmed`);
+      helperToast.success("Top-up confirmed");
       pushActivity(
         `Topped up ${recipient} with ${amountInput} ${selectedToken.symbol} on ${getChainName(ARBITRUM_SEPOLIA)}`
       );
     } catch (err) {
       const message = getErrorMessage(err);
       setError(message);
-      helperToast.error(t`Top-up failed: ${message}`);
+      helperToast.error(`Top-up failed: ${message}`);
     } finally {
       setIsSubmitting(false);
     }
@@ -188,20 +187,16 @@ export function DevSmartWalletTopUpTab({
 
   return (
     <div className="rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-16">
-      <h2 className="text-18 font-medium">
-        <Trans>Top Up Multichain Account (Same-Chain Deposit)</Trans>
-      </h2>
+      <h2 className="text-18 font-medium">Top Up Multichain Account (Same-Chain Deposit)</h2>
       <p className="mt-8 text-13 text-typography-secondary">
-        <Trans>
-          Credit tokens to any account's multichain balance via <code>bridgeIn</code>. The connected wallet pays; the
-          recipient's multichain balance is credited. Runs on Arbitrum Sepolia.
-        </Trans>
+        Credit tokens to any account's multichain balance via <code>bridgeIn</code>. The connected wallet pays; the
+        recipient's multichain balance is credited. Runs on Arbitrum Sepolia.
       </p>
 
       <div className="mt-16 grid gap-16">
         <AddressInput
           id="topUpRecipient"
-          label={t`Recipient account (who receives the multichain balance)`}
+          label="Recipient account (who receives the multichain balance)"
           value={recipientInput}
           onChange={setRecipientInput}
         />
@@ -214,7 +209,7 @@ export function DevSmartWalletTopUpTab({
             }}
             disabled={!providerSafeAddressInput.trim()}
           >
-            <Trans>Use provider Safe address</Trans>
+            Use provider Safe address
           </Button>
           <Button
             variant="secondary"
@@ -223,13 +218,13 @@ export function DevSmartWalletTopUpTab({
             }}
             disabled={!account}
           >
-            <Trans>Use own address</Trans>
+            Use own address
           </Button>
         </div>
 
         <div>
           <label className="mb-6 block text-13 font-medium text-typography-primary" htmlFor="topUpToken">
-            <Trans>Token</Trans>
+            Token
           </label>
           <select
             id="topUpToken"
@@ -245,14 +240,14 @@ export function DevSmartWalletTopUpTab({
           </select>
           <div className="mt-6 text-12 text-typography-secondary">
             {selectedToken.isNative
-              ? t`Native ETH — will be wrapped and credited via sendWnt + bridgeIn`
-              : t`ERC-20 — approve the router first, then sendTokens + bridgeIn`}
+              ? "Native ETH — will be wrapped and credited via sendWnt + bridgeIn"
+              : "ERC-20 — approve the router first, then sendTokens + bridgeIn"}
           </div>
         </div>
 
         <div>
           <label className="mb-6 block text-13 font-medium text-typography-primary" htmlFor="topUpAmount">
-            <Trans>Amount (human-readable)</Trans>
+            Amount (human-readable)
           </label>
           <input
             id="topUpAmount"
@@ -280,7 +275,7 @@ export function DevSmartWalletTopUpTab({
               onClick={handleApprove}
               disabled={!active || !walletClient || !isOnTopUpNetwork || isApproving || formErrors.length > 0}
             >
-              {isApproving ? t`Approving...` : t`Approve ${selectedToken.symbol}`}
+              {isApproving ? "Approving…" : `Approve ${selectedToken.symbol}`}
             </Button>
           )}
           <Button
@@ -288,7 +283,7 @@ export function DevSmartWalletTopUpTab({
             onClick={handleSubmit}
             disabled={!active || !walletClient || !isOnTopUpNetwork || isSubmitting || formErrors.length > 0}
           >
-            {isSubmitting ? t`Sending...` : t`Top Up Account`}
+            {isSubmitting ? "Sending…" : "Top Up Account"}
           </Button>
           {!isOnTopUpNetwork && (
             <Button
@@ -297,20 +292,18 @@ export function DevSmartWalletTopUpTab({
                 try {
                   await switchNetwork(ARBITRUM_SEPOLIA, Boolean(active));
                 } catch (err) {
-                  helperToast.error(t`Failed to switch network: ${getErrorMessage(err)}`);
+                  helperToast.error(`Failed to switch network: ${getErrorMessage(err)}`);
                 }
               }}
             >
-              <Trans>Switch to Arbitrum Sepolia</Trans>
+              Switch to Arbitrum Sepolia
             </Button>
           )}
         </div>
 
         {txHash && (
           <div className="mt-8 text-13">
-            <div className="text-typography-secondary">
-              <Trans>Transaction hash</Trans>
-            </div>
+            <div className="text-typography-secondary">Transaction hash</div>
             <a
               href={`${getExplorerUrl(ARBITRUM_SEPOLIA)}tx/${txHash}`}
               target="_blank"

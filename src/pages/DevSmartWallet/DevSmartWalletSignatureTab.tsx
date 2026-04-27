@@ -1,4 +1,3 @@
-import { t, Trans } from "@lingui/macro";
 import { useMemo, useState } from "react";
 import { concatHex, decodeAbiParameters, encodeAbiParameters, isHex, keccak256, type Address, type Hex } from "viem";
 
@@ -286,7 +285,7 @@ export function DevSmartWalletSignatureTab({
         }`
       );
       helperToast[isValid ? "success" : "info"](
-        isValid ? t`1271 signature is valid` : t`1271 signature is invalid (magic mismatch)`
+        isValid ? "1271 signature is valid" : "1271 signature is invalid (magic mismatch)"
       );
 
       if (!bytes32ReturnValue && !bytesReturnValue) {
@@ -303,7 +302,7 @@ export function DevSmartWalletSignatureTab({
       const detailedMessage = safeHint ? `${message}\n\nSafe code: ${safeHint}` : message;
       setValidatorError(detailedMessage);
       pushActivity(`1271 check error: ${safeHint ?? message}`);
-      helperToast.error(safeHint ? t`1271 validation failed (${safeHint})` : t`1271 validation failed: ${message}`);
+      helperToast.error(safeHint ? `1271 validation failed (${safeHint})` : `1271 validation failed: ${message}`);
     } finally {
       setIsValidatorChecking(false);
     }
@@ -311,20 +310,16 @@ export function DevSmartWalletSignatureTab({
 
   return (
     <div className="rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-16">
-      <h2 className="text-18 font-medium">
-        <Trans>ERC-1271 Signature Validator</Trans>
-      </h2>
+      <h2 className="text-18 font-medium">ERC-1271 Signature Validator</h2>
       <p className="mt-8 text-13 text-typography-secondary">
-        <Trans>
-          Tests <code>isValidSignature(bytes32,bytes)</code> on the Safe contract on the selected chain and shows the
-          returned magic value. Detects EIP-6492 wrapping and also validates the unwrapped inner signature.
-        </Trans>
+        Tests <code>isValidSignature(bytes32,bytes)</code> on the Safe contract on the selected chain and shows the
+        returned magic value. Detects EIP-6492 wrapping and also validates the unwrapped inner signature.
       </p>
 
       <div className="mt-16 grid gap-16">
         <div>
           <label className="mb-6 block text-13 font-medium text-typography-primary" htmlFor="validatorChain">
-            <Trans>Validation chain</Trans>
+            Validation chain
           </label>
           <select
             id="validatorChain"
@@ -342,14 +337,14 @@ export function DevSmartWalletSignatureTab({
 
         <AddressInput
           id="validatorSafeAddress"
-          label={t`Safe address (validator target)`}
+          label="Safe address (validator target)"
           value={validatorSafeAddressInput}
           onChange={setValidatorSafeAddressInput}
         />
 
         <div>
           <label className="mb-6 block text-13 font-medium text-typography-primary" htmlFor="validatorHash">
-            <Trans>Hash (bytes32)</Trans>
+            Hash (bytes32)
           </label>
           <input
             id="validatorHash"
@@ -362,7 +357,7 @@ export function DevSmartWalletSignatureTab({
 
         <div>
           <label className="mb-6 block text-13 font-medium text-typography-primary" htmlFor="validatorDomainSeparator">
-            <Trans>Domain separator (optional, for SignatureUtils-style minified check)</Trans>
+            Domain separator (optional, for SignatureUtils-style minified check)
           </label>
           <input
             id="validatorDomainSeparator"
@@ -375,7 +370,7 @@ export function DevSmartWalletSignatureTab({
 
         <div>
           <label className="mb-6 block text-13 font-medium text-typography-primary" htmlFor="validatorSignature">
-            <Trans>Signature (hex)</Trans>
+            Signature (hex)
           </label>
           <textarea
             id="validatorSignature"
@@ -387,20 +382,12 @@ export function DevSmartWalletSignatureTab({
           />
           {detectedEip6492 && (
             <div className="text-blue-200 mt-6 rounded-8 border border-blue-500/40 bg-blue-500/10 p-12 text-12">
-              <div className="font-medium">
-                <Trans>EIP-6492 wrapped signature detected</Trans>
-              </div>
-              <div className="mt-4 break-all">
-                <Trans>Factory</Trans>: {detectedEip6492.factory}
-              </div>
-              <div className="mt-2 break-all">
-                <Trans>Inner signature</Trans>: {detectedEip6492.innerSignature}
-              </div>
+              <div className="font-medium">EIP-6492 wrapped signature detected</div>
+              <div className="mt-4 break-all">Factory: {detectedEip6492.factory}</div>
+              <div className="mt-2 break-all">Inner signature: {detectedEip6492.innerSignature}</div>
               <div className="mt-4 text-typography-secondary">
-                <Trans>
-                  The Safe's 1271 will not unwrap 6492 itself — that's the verifier's job. We'll also validate the inner
-                  signature directly.
-                </Trans>
+                The Safe's 1271 will not unwrap 6492 itself — that's the verifier's job. We'll also validate the inner
+                signature directly.
               </div>
             </div>
           )}
@@ -424,7 +411,7 @@ export function DevSmartWalletSignatureTab({
             onClick={handleValidate}
             disabled={Boolean(validatorFormError) || isValidatorChecking}
           >
-            {isValidatorChecking ? t`Checking...` : t`Check ERC-1271 Validity`}
+            {isValidatorChecking ? "Checking…" : "Check ERC-1271 Validity"}
           </Button>
           <Button
             variant="secondary"
@@ -435,7 +422,7 @@ export function DevSmartWalletSignatureTab({
             }}
             disabled={!providerSafeAddressInput.trim()}
           >
-            <Trans>Use provider Safe address</Trans>
+            Use provider Safe address
           </Button>
         </div>
 
@@ -448,62 +435,62 @@ export function DevSmartWalletSignatureTab({
             }`}
           >
             <div>
-              <Trans>Result</Trans>: {validatorResult.isValid ? t`Valid` : t`Invalid`}{" "}
+              Result: {validatorResult.isValid ? "Valid" : "Invalid"}{" "}
               <span className="text-typography-secondary">
                 ({getChainName(validatorResult.chainId)}
                 {validatorResult.eip6492 ? ", EIP-6492" : ""})
               </span>
             </div>
             <div className="mt-6 break-all">
-              <Trans>bytes32 overload (raw signature)</Trans>:{" "}
-              {validatorResult.bytes32ReturnValue ?? validatorResult.bytes32Error ?? t`No result`}
+              bytes32 overload (raw signature):{" "}
+              {validatorResult.bytes32ReturnValue ?? validatorResult.bytes32Error ?? "No result"}
             </div>
             <div className="mt-6 break-all">
-              <Trans>bytes overload (raw signature)</Trans>:{" "}
-              {validatorResult.bytesReturnValue ?? validatorResult.bytesError ?? t`No result`}
+              bytes overload (raw signature):{" "}
+              {validatorResult.bytesReturnValue ?? validatorResult.bytesError ?? "No result"}
             </div>
             {validatorResult.eip6492 && (
               <>
                 <div className="mt-6 break-all">
-                  <Trans>bytes32 overload (inner unwrapped)</Trans>:{" "}
-                  {validatorResult.innerBytes32ReturnValue ?? validatorResult.innerBytes32Error ?? t`No result`}
+                  bytes32 overload (inner unwrapped):{" "}
+                  {validatorResult.innerBytes32ReturnValue ?? validatorResult.innerBytes32Error ?? "No result"}
                 </div>
                 <div className="mt-6 break-all">
-                  <Trans>bytes overload (inner unwrapped)</Trans>:{" "}
-                  {validatorResult.innerBytesReturnValue ?? validatorResult.innerBytesError ?? t`No result`}
+                  bytes overload (inner unwrapped):{" "}
+                  {validatorResult.innerBytesReturnValue ?? validatorResult.innerBytesError ?? "No result"}
                 </div>
               </>
             )}
             <div className="mt-6 break-all text-typography-secondary">
-              <Trans>Expected bytes32 magic</Trans>: {EIP1271_MAGIC_VALUE}
+              Expected bytes32 magic: {EIP1271_MAGIC_VALUE}
             </div>
             <div className="mt-6 break-all text-typography-secondary">
-              <Trans>Expected bytes magic</Trans>: {EIP1271_BYTES_MAGIC_VALUE}
+              Expected bytes magic: {EIP1271_BYTES_MAGIC_VALUE}
             </div>
             {validatorResult.signatureUtilsDomainSeparator && (
               <>
                 <div className="mt-8 break-all text-typography-secondary">
-                  <Trans>SignatureUtils minifiedDigest</Trans>: {validatorResult.signatureUtilsMinifiedDigest}
+                  SignatureUtils minifiedDigest: {validatorResult.signatureUtilsMinifiedDigest}
                 </div>
                 <div className="mt-6 break-all">
-                  <Trans>SignatureUtils 1271 on digest</Trans>:{" "}
+                  SignatureUtils 1271 on digest:{" "}
                   {validatorResult.signatureUtilsDigest1271ReturnValue ??
                     validatorResult.signatureUtilsDigest1271Error ??
-                    t`No result`}
+                    "No result"}
                 </div>
                 <div className="mt-6 break-all">
-                  <Trans>SignatureUtils 1271 on minifiedDigest</Trans>:{" "}
+                  SignatureUtils 1271 on minifiedDigest:{" "}
                   {validatorResult.signatureUtilsMinified1271ReturnValue ??
                     validatorResult.signatureUtilsMinified1271Error ??
-                    t`No result`}
+                    "No result"}
                 </div>
                 <div className="mt-6 break-all text-typography-secondary">
-                  <Trans>SignatureUtils-style 1271 path</Trans>:{" "}
+                  SignatureUtils-style 1271 path:{" "}
                   {validatorResult.signatureUtils1271Valid === undefined
-                    ? t`N/A`
+                    ? "N/A"
                     : validatorResult.signatureUtils1271Valid
-                      ? t`Pass`
-                      : t`Fail`}
+                      ? "Pass"
+                      : "Fail"}
                 </div>
               </>
             )}

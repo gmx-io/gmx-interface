@@ -84,7 +84,6 @@ msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
 msgid "Disconnect"
 msgstr ""
 
@@ -98,10 +97,6 @@ msgstr ""
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Order simulation failed"
 msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
-#~ msgid "Target chain"
-#~ msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
@@ -410,10 +405,6 @@ msgstr ""
 msgid "No TP orders"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
-#~ msgid "Create Safe on Arbitrum Sepolia"
-#~ msgstr ""
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "position size"
 msgstr ""
@@ -425,10 +416,6 @@ msgstr ""
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Settled funding fees"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
-msgid "Locked to 1: the WalletConnect provider only supports single-owner signing."
 msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -701,10 +688,6 @@ msgstr ""
 msgid "NET RATE"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "Active WalletConnect Sessions"
-msgstr ""
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "No rewards"
 msgstr ""
@@ -817,10 +800,6 @@ msgstr ""
 msgid "Share for follow-up questions"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
-msgid "Salt nonce"
-msgstr ""
-
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -846,10 +825,6 @@ msgstr ""
 
 #: landing/src/pages/Home/LiqiuditySection/LiqiuditySection.tsx
 msgid "in liquidity"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "Signature (hex)"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -987,10 +962,6 @@ msgstr ""
 msgid "High swap price impact"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
-msgid "Deploy Safe"
-msgstr ""
-
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Failed to parse related transaction:"
 msgstr ""
@@ -1102,10 +1073,6 @@ msgstr ""
 msgid "Creating order"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
-#~ msgid "bytes32 overload"
-#~ msgstr ""
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (negative PI)"
 msgstr ""
@@ -1161,10 +1128,6 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake {tokenSymbol}"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
-msgid "Native ETH — will be wrapped and credited via sendWnt + bridgeIn"
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -1356,10 +1319,6 @@ msgstr ""
 msgid "Buy GM: {0}"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "Pairing..."
-msgstr ""
-
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "TVL (Supply)"
 msgstr ""
@@ -1498,10 +1457,6 @@ msgstr ""
 msgid "Session generation failed"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "Saved Smart Wallets"
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Onchain quests and rewards"
 msgstr ""
@@ -1637,10 +1592,6 @@ msgstr ""
 msgid "Pool max short amount"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
-msgid "Last Deployment Result"
-msgstr ""
-
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
@@ -1708,10 +1659,6 @@ msgstr ""
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "No fee"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "Paste a WalletConnect URI from /trade"
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
@@ -1928,10 +1875,6 @@ msgstr ""
 msgid "Keep leverage at {0}"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "bytes32 overload (raw signature)"
-msgstr ""
-
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "From: Block {0} ({1})"
 msgstr ""
@@ -1986,11 +1929,6 @@ msgstr ""
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swapped {0} for {1}"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
-#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
-msgid "Deploy chain"
 msgstr ""
 
 #: src/pages/UiPage/UiPage.tsx
@@ -2078,10 +2016,6 @@ msgstr ""
 msgid "Claim failed"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "Use for validator"
-msgstr ""
-
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value of tokens in GM pools"
 msgstr ""
@@ -2163,16 +2097,8 @@ msgstr ""
 msgid "Funding increase factor"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
-msgid "Dev Smart Wallet (Safe)"
-msgstr ""
-
 #: src/components/PositionShare/CreateReferralCode.tsx
 msgid "May take a few minutes to appear. Check back later"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "Copy failed"
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
@@ -2182,10 +2108,6 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "2nd place"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "SignatureUtils-style 1271 path"
 msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
@@ -2226,10 +2148,6 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
-msgid "WC chain"
 msgstr ""
 
 #: src/components/MarketsList/MarketsList.tsx
@@ -2391,10 +2309,6 @@ msgstr ""
 msgid "Pair"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
-msgid "Create Safe on selected chain"
-msgstr ""
-
 #: src/components/SwapCard/SwapCard.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max {0} out"
@@ -2410,10 +2324,6 @@ msgstr ""
 
 #: src/components/Referrals/ReferralCodeWarnings.tsx
 msgid "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "Safe address to expose over WalletConnect"
 msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
@@ -2445,14 +2355,6 @@ msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Allow {0} spending"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "bytes overload (inner unwrapped)"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "The Safe's 1271 will not unwrap 6492 itself — that's the verifier's job. We'll also validate the inner signature directly."
 msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
@@ -2528,10 +2430,6 @@ msgstr ""
 
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Buy {0}"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "WalletConnect pairing failed: {message}"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -2622,14 +2520,6 @@ msgstr ""
 msgid "Existing position uses {0} collateral. This order won't apply to it. <0>Switch to {1} collateral</0>"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "WalletConnect wallet not initialized yet"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "WalletConnect pairing started"
-msgstr ""
-
 #: src/pages/Referrals/Referrals.tsx
 msgid "Affiliates"
 msgstr ""
@@ -2650,11 +2540,6 @@ msgstr ""
 msgid "Excludes incentives"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "Owners"
-msgstr ""
-
 #: src/components/Errors/gasErrors.tsx
 msgid "Insufficient {localizedList} for gas on {chainName}. <0>Buy {localizedList}</0>"
 msgstr ""
@@ -2665,11 +2550,6 @@ msgstr ""
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Show PnL amounts"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
-#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
-msgid "Transaction hash"
 msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
@@ -2750,17 +2630,9 @@ msgstr ""
 msgid "Tickers simulation"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
-msgid "Safe Proxy Factory"
-msgstr ""
-
 #: src/components/Errors/getContractErrorToastContent.tsx
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Position size exceeds available open interest"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "SignatureUtils 1271 on minifiedDigest"
 msgstr ""
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
@@ -2816,10 +2688,6 @@ msgstr ""
 msgid "Daily profit"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "Activity log copied"
-msgstr ""
-
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
 msgstr ""
@@ -2847,14 +2715,6 @@ msgstr ""
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Long positions"
 msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "Check ERC-1271 Validity"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
-#~ msgid "bytes overload"
-#~ msgstr ""
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Buy fee"
@@ -3071,10 +2931,6 @@ msgstr ""
 msgid "Max lendable impact USD"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "Save current provider wallet"
-msgstr ""
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Negative factor"
@@ -3189,10 +3045,6 @@ msgstr ""
 msgid "Increase size (Market)"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
-msgid "Safe Singleton (SafeL2)"
-msgstr ""
-
 #: src/domain/synthetics/markets/createBridgeInTxn.ts
 msgid "Bridge transfer sent"
 msgstr ""
@@ -3223,11 +3075,6 @@ msgstr ""
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Edit collateral"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
-#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
-msgid "Failed to switch network: {0}"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -3342,10 +3189,6 @@ msgstr ""
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "TRANSACTION"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
-msgid "Top Up Multichain Account (Same-Chain Deposit)"
 msgstr ""
 
 #: src/components/SettingsModal/DebugSettings.tsx
@@ -3706,7 +3549,6 @@ msgstr ""
 msgid "Minimum {0} capital required for rankings"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Sending..."
 msgstr ""
@@ -3760,10 +3602,6 @@ msgstr ""
 msgid "Express Trading is unavailable with the network's native token {0}. Consider using {1} instead."
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "Invalid"
-msgstr ""
-
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/SideNav/SideNav.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
@@ -3808,10 +3646,6 @@ msgstr ""
 msgid "Avalanche"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "Saved smart wallet profile"
-msgstr ""
-
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Fee APR"
 msgstr ""
@@ -3843,10 +3677,6 @@ msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Multicall idle"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "Use for provider"
 msgstr ""
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
@@ -3949,10 +3779,6 @@ msgstr ""
 msgid "numerous assets"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
-msgid "Approval submitted. Waiting for confirmation..."
-msgstr ""
-
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Connect wallet or provide an account address in the URL"
 msgstr ""
@@ -4001,10 +3827,6 @@ msgstr ""
 msgid "Acceptable price"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
-msgid "Created Safe address"
-msgstr ""
-
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawing from subaccount..."
 msgstr ""
@@ -4023,10 +3845,6 @@ msgstr ""
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL VALUE"
 msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
-#~ msgid "Tests <0>isValidSignature(bytes32,bytes)</0> on the Safe contract on Arbitrum Sepolia and shows the returned magic value."
-#~ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake completed"
@@ -4060,10 +3878,6 @@ msgstr ""
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "Total volume"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "WalletConnect Wallet Provider (MVP)"
 msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
@@ -4396,10 +4210,6 @@ msgstr ""
 msgid "stop market"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
-msgid "Amount (human-readable)"
-msgstr ""
-
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Pending GMX approval..."
 msgstr ""
@@ -4413,10 +4223,6 @@ msgstr ""
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "GMX staking unavailable on Botanix. Use Arbitrum or Avalanche."
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "bytes32 overload (inner unwrapped)"
 msgstr ""
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -4468,10 +4274,6 @@ msgstr ""
 msgid "TWAP"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "Use for deploy form"
-msgstr ""
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min impact pool amount"
 msgstr ""
@@ -4502,10 +4304,6 @@ msgstr ""
 msgid "Depositing to Avalanche is disabled. Trade directly from your Avalanche wallet."
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "Use last created Safe"
-msgstr ""
-
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Limit"
 msgstr ""
@@ -4529,11 +4327,6 @@ msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Price change to liquidation"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
-msgid "Use provider Safe address"
 msgstr ""
 
 #: src/components/DebugMarketGraph/DebugMarketGraph.tsx
@@ -4573,10 +4366,6 @@ msgstr ""
 msgid "Per 1h"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
-msgid "Connect a wallet first"
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perpetuals aggregator"
 msgstr ""
@@ -4591,10 +4380,6 @@ msgstr ""
 
 #: src/components/TPSLModal/TPSLInputRow.tsx
 msgid "Loss"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "WalletConnect URI (paste from /trade)"
 msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -4874,10 +4659,6 @@ msgstr ""
 msgid "Vault capacity"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
-msgid "Safe wallet created"
-msgstr ""
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Open interest {directionLabel}"
 msgstr ""
@@ -5154,10 +4935,6 @@ msgstr ""
 msgid "Sell fee"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
-msgid "Wallet client unavailable. Reconnect wallet and retry"
-msgstr ""
-
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Invalid oracle price"
 msgstr ""
@@ -5195,10 +4972,6 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Use open interest in tokens for balance"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "Result"
 msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
@@ -5267,10 +5040,6 @@ msgstr ""
 msgid "Import URL:"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
-msgid "Switch owner wallet to this chain before submitting."
-msgstr ""
-
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5320,10 +5089,6 @@ msgstr ""
 msgid "Links"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "SignatureUtils minifiedDigest"
-msgstr ""
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact factor for withdrawals"
 msgstr ""
@@ -5360,10 +5125,6 @@ msgstr ""
 msgid "GLV"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
-msgid "Not connected"
-msgstr ""
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient liquidity in GM pool"
 msgstr ""
@@ -5382,10 +5143,6 @@ msgstr ""
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
 msgid "Invest with control over risk and reward"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "Tests <0>isValidSignature(bytes32,bytes)</0> on the Safe contract on the selected chain and shows the returned magic value. Detects EIP-6492 wrapping and also validates the unwrapped inner signature."
 msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
@@ -5465,10 +5222,6 @@ msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "spinner"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "Domain separator (optional, for SignatureUtils-style minified check)"
 msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
@@ -5559,10 +5312,6 @@ msgstr ""
 msgid "Referral code creation failed"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
-msgid "Switch wallet to selected deploy chain"
-msgstr ""
-
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdraw fee"
 msgstr ""
@@ -5574,14 +5323,6 @@ msgstr ""
 #: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
-msgid "Token"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "1271 validation failed: {message}"
 msgstr ""
 
 #: src/components/Claims/ClaimableCard.tsx
@@ -5600,10 +5341,6 @@ msgstr ""
 msgid "Docs"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
-#~ msgid "Switch owner to Arbitrum Sepolia"
-#~ msgstr ""
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} cannot be sent to smart contract addresses. Select another token"
 msgstr ""
@@ -5618,10 +5355,6 @@ msgstr ""
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
-msgid "Owner chain"
 msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
@@ -6067,10 +5800,6 @@ msgstr ""
 msgid "Approve {tokenSymbol}"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "Factory"
-msgstr ""
-
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "REBATE"
@@ -6094,10 +5823,6 @@ msgstr ""
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "Set a valid provider Safe address first"
 msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
@@ -6239,10 +5964,6 @@ msgstr ""
 msgid "PnL relative to capital used (return on capital)"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "Threshold-1 Safe only. Exposes the Safe address over WalletConnect and executes dapp transactions through Safe Protocol Kit using the connected owner EOA in this browser."
-msgstr ""
-
 #: src/components/TradeHistory/keys.ts
 msgid "Create Stop Market"
 msgstr ""
@@ -6327,7 +6048,6 @@ msgstr ""
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
 msgid "Approving..."
 msgstr ""
 
@@ -6368,10 +6088,6 @@ msgstr ""
 
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Paste hex error data to decode"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "Safe address (validator target)"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -6488,10 +6204,6 @@ msgstr ""
 msgid "Execution price didn't meet acceptable price"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
-msgid "Top-up confirmed"
-msgstr ""
-
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Position would be liquidatable"
 msgstr ""
@@ -6570,10 +6282,6 @@ msgstr ""
 msgid "Governance alerts"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
-msgid "Safe version"
-msgstr ""
-
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6633,10 +6341,6 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP autocompounding vaults"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "No activity yet"
 msgstr ""
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
@@ -6731,16 +6435,8 @@ msgstr ""
 msgid "Reserve factor longs"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "No active sessions"
-msgstr ""
-
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "buy"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
-msgid "Safe creation failed: {message}"
 msgstr ""
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -6792,10 +6488,6 @@ msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Price impact exceeds order size"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "Accounts"
 msgstr ""
 
 #: src/components/GmxAccountModal/DepositStatusView.tsx
@@ -6926,10 +6618,6 @@ msgstr ""
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "from {BLOCKCHAIN_COUNT} blockchains"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
-msgid "ERC-20 — approve the router first, then sendTokens + bridgeIn"
 msgstr ""
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
@@ -7152,10 +6840,6 @@ msgstr ""
 msgid "Insufficient liquidity"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
-msgid "Use this page as a Safe deployer and a WalletConnect wallet-provider MVP. Keep /trade open in another browser tab/window and pair it here by pasting the WalletConnect URI."
-msgstr ""
-
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq."
 msgstr ""
@@ -7257,10 +6941,6 @@ msgstr ""
 msgid "View transaction"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "Persisted in this browser: Safe address, chain, and owners. Use saved entries to quickly switch provider wallet, validator target, or deploy form owners."
-msgstr ""
-
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Project"
 msgstr ""
@@ -7312,7 +6992,6 @@ msgstr ""
 msgid "You chose to send the remaining collateral to your <0>{chosenLabel}</0>. Do you want to make this the default destination when closing positions?"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 #: src/pages/TestPermits/TestPermits.tsx
@@ -7322,10 +7001,6 @@ msgstr ""
 
 #: src/pages/UiPage/UiPage.tsx
 msgid "h1"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
-msgid "Owner wallet"
 msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
@@ -7342,10 +7017,6 @@ msgstr ""
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Claiming rewards only available on {settlementChainName}. Switch networks to claim referral rewards."
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "1271 validation failed ({safeHint})"
 msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx
@@ -7396,14 +7067,6 @@ msgstr ""
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "SIZE"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
-msgid "Transaction submitted. Waiting for confirmation..."
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
-msgid "Parsed owners"
 msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
@@ -7508,17 +7171,9 @@ msgstr ""
 msgid "Permit signing failed"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
-msgid "Recipient account (who receives the multichain balance)"
-msgstr ""
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order uses {collateralSymbol}, but existing {longText} position uses {symbol} as collateral"
 msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
-#~ msgid "Dev Smart Wallet (Safe on Arbitrum Sepolia)"
-#~ msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "Show more"
@@ -7570,7 +7225,6 @@ msgstr ""
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
-#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
 msgid "Approve {0}"
 msgstr ""
 
@@ -7604,15 +7258,10 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/pages/AccountEvents/AccountEvents.tsx
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "N/A"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "bytes overload (raw signature)"
 msgstr ""
 
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
@@ -7700,10 +7349,6 @@ msgstr ""
 msgid "GMX V2 actions"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
-msgid "Connect owner wallet"
-msgstr ""
-
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade errors"
 msgstr ""
@@ -7779,18 +7424,10 @@ msgstr ""
 msgid "Down"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "Expected bytes32 magic"
-msgstr ""
-
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Trigger price below mark price"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
-msgid "Token approved"
 msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
@@ -7799,10 +7436,6 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Open interest reserve factor shorts"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
-msgid "Switch to Arbitrum Sepolia"
 msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
@@ -7963,10 +7596,6 @@ msgstr ""
 msgid "Swap {fromAmount} for {toAmount}"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "Copy"
-msgstr ""
-
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -8105,10 +7734,6 @@ msgstr ""
 msgid "V1 Avalanche Fuji"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
-msgid "Use own address"
-msgstr ""
-
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Performance APY"
 msgstr ""
@@ -8205,20 +7830,12 @@ msgstr ""
 msgid "Explore, analyze, and copy on-chain traders"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
-msgid "Creating Safe..."
-msgstr ""
-
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "{addressLabel} on {networkLabel}"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "{0} GMX"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
-msgid "Credit tokens to any account's multichain balance via <0>bridgeIn</0>. The connected wallet pays; the recipient's multichain balance is credited. Runs on Arbitrum Sepolia."
 msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
@@ -8390,10 +8007,6 @@ msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Report issue"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "Wallet Activity"
 msgstr ""
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
@@ -8569,10 +8182,6 @@ msgstr ""
 msgid "Receive"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
-msgid "Switch owner to deploy chain"
-msgstr ""
-
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "ENDPOINT"
 msgstr ""
@@ -8583,10 +8192,6 @@ msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order filled"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "1271 signature is invalid (magic mismatch)"
 msgstr ""
 
 #: src/components/SideNav/SideNav.tsx
@@ -8804,10 +8409,6 @@ msgstr ""
 msgid "Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus beatae atque eligendi sunt quasi et porro nemo cumque nesciunt dolorum earum, minus fuga similique exercitationem ad. Eos omnis vitae suscipit recusandae iste adipisci quasi rem odio, quidem qui modi impedit quibusdam culpa nemo distinctio rerum tempora sequi facilis quaerat laudantium pariatur dicta ab. Pariatur mollitia magni consectetur praesentium nulla nobis non voluptates laborum obcaecati enim unde, in tempore voluptas, expedita aut corrupti ipsum sequi consequatur iste corporis quasi! Officia nihil pariatur, asperiores molestiae quia earum tempora, in neque inventore quisquam dolore veniam minus beatae adipisci quod hic? Saepe, aperiam consequuntur!"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "ERC-1271 Signature Validator"
-msgstr ""
-
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "AVG. SIZE"
 msgstr ""
@@ -8929,10 +8530,6 @@ msgstr ""
 msgid "Depth"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
-msgid "Top-up submitted. Waiting for confirmation..."
-msgstr ""
-
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Layer 1"
 msgstr ""
@@ -9049,10 +8646,6 @@ msgstr ""
 msgid "Sell {operationTokenSymbol}"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "Valid"
-msgstr ""
-
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "When on, leverage is set manually and determines margin and position size. When off, margin and size are set freely, and leverage is derived."
 msgstr ""
@@ -9137,10 +8730,6 @@ msgstr ""
 msgid "Stop Market"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
-msgid "Compatibility Fallback Handler"
-msgstr ""
-
 #: src/domain/synthetics/userFeedback/utils.ts
 msgid "How can we keep meeting your expectations?"
 msgstr ""
@@ -9164,10 +8753,6 @@ msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to backing tokens"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
-msgid "Top Up Account"
 msgstr ""
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
@@ -9211,10 +8796,6 @@ msgstr ""
 #: src/components/TVChartContainer/StaticLine.tsx
 #: src/components/TVChartContainer/StaticLine.tsx
 msgid "Show size in USD"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "No saved smart wallets yet"
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
@@ -9420,10 +9001,6 @@ msgstr ""
 msgid "Time limit"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "Checking..."
-msgstr ""
-
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "DeFi"
 msgstr ""
@@ -9589,20 +9166,12 @@ msgstr ""
 msgid "A $500,000 GLV pool (DAO-funded) rewards long-term holders. Keep your GLV for at least 3 months without selling or transferring to receive a pro rata share."
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "1271 signature is valid"
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "esGMX OTC market"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group (Portuguese)"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
-msgid "Threshold"
 msgstr ""
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
@@ -9632,10 +9201,6 @@ msgstr ""
 msgid "GMX Account"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "Fail"
-msgstr ""
-
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/TradeBox/TradeBox.tsx
@@ -9651,10 +9216,6 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Buy"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "Provider chain (WalletConnect account chain)"
 msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
@@ -9757,10 +9318,6 @@ msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Avoid price wicks with transparent, sub-second Chainlink price feeds tailor-made for GMX"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "Connection flow: open /trade in Chrome, choose WalletConnect, copy the wc: URI from the modal, paste it here in Firefox, then approve the session on this page."
 msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
@@ -9965,10 +9522,6 @@ msgstr ""
 msgid "Optimal usage factor long"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "Hash (bytes32)"
-msgstr ""
-
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -10058,10 +9611,6 @@ msgstr ""
 msgid "PnL short"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "Remove"
-msgstr ""
-
 #: src/components/Seo/SEO.tsx
 msgid "GMX | Decentralized perpetual exchange"
 msgstr ""
@@ -10092,10 +9641,6 @@ msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
-msgid "WC Wallet status"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -10203,10 +9748,6 @@ msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Available to trade"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "Pair WalletConnect Session"
 msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
@@ -10356,10 +9897,6 @@ msgstr ""
 msgid "GLP to GM airdrop"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "Expected bytes magic"
-msgstr ""
-
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order cancelled"
 msgstr ""
@@ -10451,10 +9988,6 @@ msgstr ""
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Swap"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
-msgid "Top-up failed: {message}"
 msgstr ""
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
@@ -10599,14 +10132,6 @@ msgstr ""
 msgid "Failed to decode error. Make sure the hex data is valid and starts with \"0x\"."
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "WalletConnect URI should start with wc:"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "Pass"
-msgstr ""
-
 #: src/pages/UiPage/UiPage.tsx
 msgid "Text colors"
 msgstr ""
@@ -10642,10 +10167,6 @@ msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Save on costs"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "Validation chain"
 msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
@@ -10717,10 +10238,6 @@ msgstr ""
 msgid "Claim {tokenSymbol} rewards"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "SignatureUtils 1271 on digest"
-msgstr ""
-
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H VOL."
 msgstr ""
@@ -10735,10 +10252,6 @@ msgstr ""
 
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX team"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
-msgid "This dev wallet is pinned to Safe version {SAFE_TARGET_VERSION}."
 msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
@@ -10817,10 +10330,6 @@ msgstr ""
 
 #: src/pages/UiPage/UiPage.tsx
 msgid "Icons ({0})"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
-msgid "Approval failed: {message}"
 msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
@@ -10934,10 +10443,6 @@ msgstr ""
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee"
 msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
-#~ msgid "Switch wallet to Arbitrum Sepolia"
-#~ msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Failed to add referral code"
@@ -11172,15 +10677,6 @@ msgstr ""
 msgid "Enter a ratio"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "No result"
-msgstr ""
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "OK"
 msgstr ""
@@ -11208,14 +10704,6 @@ msgstr ""
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Insufficient balance"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "Inner signature"
-msgstr ""
-
-#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
-msgid "EIP-6492 wrapped signature detected"
 msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx
