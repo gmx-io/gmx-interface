@@ -27,7 +27,7 @@ export function DevSmartWalletTopUpTab({
   pushActivity,
 }: {
   providerSafeAddressInput: string;
-  pushActivity: (message: string) => void;
+  pushActivity: (message: string, level?: "log" | "warn" | "err") => void;
 }) {
   const { account, active, chainId: walletChainId, walletClient } = useWallet();
 

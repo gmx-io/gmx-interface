@@ -33,7 +33,7 @@ export function DevSmartWalletDeployTab({
   setDeployChainId: (chainId: DeploySupportedChainId) => void;
   ownersInput: string;
   setOwnersInput: (value: string) => void;
-  pushActivity: (message: string) => void;
+  pushActivity: (message: string, level?: "log" | "warn" | "err") => void;
   upsertSavedWalletProfile: (input: {
     safeAddress: Address;
     chainId: DeploySupportedChainId;
@@ -44,7 +44,8 @@ export function DevSmartWalletDeployTab({
 }) {
   const { account, active, chainId: walletChainId, walletClient } = useWallet();
 
-  const [thresholdInput, setThresholdInput] = useState("1");
+  // Locked to 1 for MVP — the WalletConnect provider in MainTab only supports single-owner signing.
+  const thresholdInput = "1";
   const [saltNonceInput, setSaltNonceInput] = useState(() => String(Date.now()));
   const [proxyFactoryAddress, setProxyFactoryAddress] = useState<string>(
     DEPLOY_SAFE_DEFAULTS_BY_CHAIN[deployChainId].proxyFactoryAddress
@@ -266,12 +267,14 @@ export function DevSmartWalletDeployTab({
               <input
                 id="threshold"
                 type="number"
-                min={1}
-                step={1}
                 value={thresholdInput}
-                onChange={(e) => setThresholdInput(e.target.value)}
-                className="w-full rounded-8 border border-slate-800 bg-slate-800 px-12 py-10 text-14 outline-none focus:border-blue-400"
+                readOnly
+                disabled
+                className="w-full cursor-not-allowed rounded-8 border border-slate-800 bg-slate-800 px-12 py-10 text-14 opacity-60 outline-none focus:border-blue-400"
               />
+              <div className="mt-6 text-12 text-typography-secondary">
+                <Trans>Locked to 1: the WalletConnect provider only supports single-owner signing.</Trans>
+              </div>
             </div>
             <div>
               <label className="mb-6 block text-13 font-medium text-typography-primary" htmlFor="saltNonce">

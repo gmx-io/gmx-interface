@@ -84,7 +84,7 @@ msgstr "Автоматически реинвестирует ваши возн�
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
 msgid "Disconnect"
 msgstr "Разъединить"
 
@@ -100,8 +100,8 @@ msgid "Order simulation failed"
 msgstr "Симуляция ордера не удалась"
 
 #: src/pages/DevSmartWallet/DevSmartWallet.tsx
-msgid "Target chain"
-msgstr ""
+#~ msgid "Target chain"
+#~ msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
@@ -411,8 +411,8 @@ msgid "No TP orders"
 msgstr "Нет ордеров тейк-профит"
 
 #: src/pages/DevSmartWallet/DevSmartWallet.tsx
-msgid "Create Safe on Arbitrum Sepolia"
-msgstr ""
+#~ msgid "Create Safe on Arbitrum Sepolia"
+#~ msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "position size"
@@ -426,6 +426,10 @@ msgstr "Подтвердить вывод"
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Settled funding fees"
 msgstr "Расчёт комиссий за фандинг"
+
+#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
+msgid "Locked to 1: the WalletConnect provider only supports single-owner signing."
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Returned collateral"
@@ -697,7 +701,7 @@ msgstr "для снижения общего влияния на цену"
 msgid "NET RATE"
 msgstr "ЧИСТАЯ СТАВКА"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
 msgid "Active WalletConnect Sessions"
 msgstr ""
 
@@ -813,7 +817,7 @@ msgstr "Купить GMX на централизованных биржах"
 msgid "Share for follow-up questions"
 msgstr "Для дальнейших вопросов"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
 msgid "Salt nonce"
 msgstr ""
 
@@ -844,7 +848,7 @@ msgstr "Ретроактивный бонус STIP.b"
 msgid "in liquidity"
 msgstr "используется для обеспечения ликвидности"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
 msgid "Signature (hex)"
 msgstr ""
 
@@ -983,7 +987,7 @@ msgstr "Фактор комиссии позиции (положительное
 msgid "High swap price impact"
 msgstr "Высокое влияние цены свопа"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
 msgid "Deploy Safe"
 msgstr ""
 
@@ -1099,8 +1103,8 @@ msgid "Creating order"
 msgstr ""
 
 #: src/pages/DevSmartWallet/DevSmartWallet.tsx
-msgid "bytes32 overload"
-msgstr ""
+#~ msgid "bytes32 overload"
+#~ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap fee factor (negative PI)"
@@ -1158,6 +1162,10 @@ msgstr "Автоматически реинвестирует доходност
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake {tokenSymbol}"
 msgstr "Вывести из стейкинга {tokenSymbol}"
+
+#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
+msgid "Native ETH — will be wrapped and credited via sendWnt + bridgeIn"
+msgstr ""
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Invalid slippage value"
@@ -1348,7 +1356,7 @@ msgstr "Купить {operationTokenSymbol}"
 msgid "Buy GM: {0}"
 msgstr "Купить GM: {0}"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
 msgid "Pairing..."
 msgstr ""
 
@@ -1490,6 +1498,10 @@ msgstr "Торговля в один клик отключена. Истекло
 msgid "Session generation failed"
 msgstr "Не удалось сгенерировать сессию"
 
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
+msgid "Saved Smart Wallets"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Onchain quests and rewards"
 msgstr "Ончейн-задания и вознаграждения"
@@ -1625,7 +1637,7 @@ msgstr "Индекс лога:"
 msgid "Pool max short amount"
 msgstr "Максимальный объём шорт-токена в пуле"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
 msgid "Last Deployment Result"
 msgstr ""
 
@@ -1698,7 +1710,7 @@ msgstr "Ошибка"
 msgid "No fee"
 msgstr "Без комиссии"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
 msgid "Paste a WalletConnect URI from /trade"
 msgstr ""
 
@@ -1916,6 +1928,10 @@ msgstr "EIP-4844"
 msgid "Keep leverage at {0}"
 msgstr "Сохранить левередж на {0}"
 
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
+msgid "bytes32 overload (raw signature)"
+msgstr ""
+
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "From: Block {0} ({1})"
 msgstr "С: Блок {0} ({1})"
@@ -1971,6 +1987,11 @@ msgstr "Прибыль"
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swapped {0} for {1}"
 msgstr "Обменяно {0} на {1}"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
+msgid "Deploy chain"
+msgstr ""
 
 #: src/pages/UiPage/UiPage.tsx
 msgid "H2 text size"
@@ -2057,6 +2078,10 @@ msgstr "Ошибка сдвига"
 msgid "Claim failed"
 msgstr "Получение не удалось"
 
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
+msgid "Use for validator"
+msgstr ""
+
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Total value of tokens in GM pools"
 msgstr "Общая стоимость токенов в пулах GM"
@@ -2138,9 +2163,17 @@ msgstr "Поиск пулов"
 msgid "Funding increase factor"
 msgstr "Фактор увеличения финансирования"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Dev Smart Wallet (Safe)"
+msgstr ""
+
 #: src/components/PositionShare/CreateReferralCode.tsx
 msgid "May take a few minutes to appear. Check back later"
 msgstr "Может потребоваться несколько минут. Проверьте позже"
+
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
+msgid "Copy failed"
+msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed deposit"
@@ -2151,7 +2184,7 @@ msgstr "Депозит не выполнен"
 msgid "2nd place"
 msgstr "2-е место"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
 msgid "SignatureUtils-style 1271 path"
 msgstr ""
 
@@ -2194,6 +2227,10 @@ msgstr "Уровень {0}: {currentRebatePercentage}% возмещение"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "No swap path found"
 msgstr "Путь обмена не найден"
+
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "WC chain"
+msgstr ""
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "MARKETS"
@@ -2354,6 +2391,10 @@ msgstr "Предоставляйте GM токены в кредит и зани
 msgid "Pair"
 msgstr "Пара"
 
+#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
+msgid "Create Safe on selected chain"
+msgstr ""
+
 #: src/components/SwapCard/SwapCard.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max {0} out"
@@ -2371,7 +2412,7 @@ msgstr ""
 msgid "Code not registered on {nonTakenNetworkNames}. Switch networks to register and earn rebates."
 msgstr "Код не зарегистрирован в {nonTakenNetworkNames}. Переключите сеть для регистрации и получения скидок."
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
 msgid "Safe address to expose over WalletConnect"
 msgstr ""
 
@@ -2405,6 +2446,14 @@ msgstr "Layer 2"
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Allow {0} spending"
 msgstr "Разрешить использование {0}"
+
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
+msgid "bytes overload (inner unwrapped)"
+msgstr ""
+
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
+msgid "The Safe's 1271 will not unwrap 6492 itself — that's the verifier's job. We'll also validate the inner signature directly."
+msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
@@ -2481,7 +2530,7 @@ msgstr "Недостаточная ликвидность пула. Доступ
 msgid "Buy {0}"
 msgstr "Купить {0}"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
 msgid "WalletConnect pairing failed: {message}"
 msgstr ""
 
@@ -2573,11 +2622,11 @@ msgstr "Помогите нам улучшить GMX. В целях безопа
 msgid "Existing position uses {0} collateral. This order won't apply to it. <0>Switch to {1} collateral</0>"
 msgstr "Существующая позиция использует обеспечение {0}. Данный ордер не будет к ней применён. <0>Переключить на обеспечение {1}</0>"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
 msgid "WalletConnect wallet not initialized yet"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
 msgid "WalletConnect pairing started"
 msgstr ""
 
@@ -2601,7 +2650,8 @@ msgstr "Изменения могут отобразиться через нес
 msgid "Excludes incentives"
 msgstr "Без учёта бонусов"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
 msgid "Owners"
 msgstr ""
 
@@ -2617,7 +2667,8 @@ msgstr "Покупка {symbol}..."
 msgid "Show PnL amounts"
 msgstr "Показать суммы PnL"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
 msgid "Transaction hash"
 msgstr ""
 
@@ -2699,7 +2750,7 @@ msgstr "GM рынки"
 msgid "Tickers simulation"
 msgstr "Симуляция тикеров"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
 msgid "Safe Proxy Factory"
 msgstr ""
 
@@ -2708,7 +2759,7 @@ msgstr ""
 msgid "Position size exceeds available open interest"
 msgstr "Размер позиции превышает доступный открытый интерес"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
 msgid "SignatureUtils 1271 on minifiedDigest"
 msgstr ""
 
@@ -2765,6 +2816,10 @@ msgstr "Ликвидировано, так как максимальное кр�
 msgid "Daily profit"
 msgstr "Дневная прибыль"
 
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
+msgid "Activity log copied"
+msgstr ""
+
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
 msgstr "Внесено {0} в {positionText}"
@@ -2793,13 +2848,13 @@ msgstr "ТЕКУЩЕЕ"
 msgid "Long positions"
 msgstr "Позиции лонг"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
 msgid "Check ERC-1271 Validity"
 msgstr ""
 
 #: src/pages/DevSmartWallet/DevSmartWallet.tsx
-msgid "bytes overload"
-msgstr ""
+#~ msgid "bytes overload"
+#~ msgstr ""
 
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Buy fee"
@@ -3016,6 +3071,10 @@ msgstr "AI-агент для GMX Blueberry Club"
 msgid "Max lendable impact USD"
 msgstr "Макс. сумма заимствования из пула влияния (USD)"
 
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
+msgid "Save current provider wallet"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Negative factor"
@@ -3130,7 +3189,7 @@ msgstr "Настройки Tenderly"
 msgid "Increase size (Market)"
 msgstr "Увеличить размер (Market)"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
 msgid "Safe Singleton (SafeL2)"
 msgstr ""
 
@@ -3167,6 +3226,7 @@ msgid "Edit collateral"
 msgstr "Редактировать обеспечение"
 
 #: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
 msgid "Failed to switch network: {0}"
 msgstr ""
 
@@ -3283,6 +3343,10 @@ msgstr ""
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "TRANSACTION"
 msgstr "ТРАНЗАКЦИЯ"
+
+#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
+msgid "Top Up Multichain Account (Same-Chain Deposit)"
+msgstr ""
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Show error boundary debug trigger"
@@ -3642,6 +3706,7 @@ msgstr "Максимальное количество дней до необхо
 msgid "Minimum {0} capital required for rankings"
 msgstr "Минимальный капитал {0} необходим для участия в рейтинге"
 
+#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Sending..."
 msgstr "Отправка..."
@@ -3695,7 +3760,7 @@ msgstr "Неверный аккаунт"
 msgid "Express Trading is unavailable with the network's native token {0}. Consider using {1} instead."
 msgstr "Express Trading недоступен с нативным токеном сети {0}. Рассмотрите использование {1} вместо него."
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
 msgid "Invalid"
 msgstr ""
 
@@ -3743,6 +3808,10 @@ msgstr "V1 Arbitrum"
 msgid "Avalanche"
 msgstr "Avalanche"
 
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
+msgid "Saved smart wallet profile"
+msgstr ""
+
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Fee APR"
 msgstr "Годовая Процентная Ставка Комиссии"
@@ -3775,6 +3844,10 @@ msgstr "Получить награды"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Multicall idle"
 msgstr "Multicall неактивен"
+
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
+msgid "Use for provider"
+msgstr ""
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "Claiming requires <0/> while you have <1/>. <2>Swap</2> or <3>deposit</3> more {0} to your GMX Account."
@@ -3876,6 +3949,10 @@ msgstr "Баланс {0}"
 msgid "numerous assets"
 msgstr "множество активов"
 
+#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
+msgid "Approval submitted. Waiting for confirmation..."
+msgstr ""
+
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "Connect wallet or provide an account address in the URL"
 msgstr "Подключите кошелёк или укажите адрес аккаунта в URL"
@@ -3924,7 +4001,7 @@ msgstr "Как начать на GMX?"
 msgid "Acceptable price"
 msgstr "Допустимая цена"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
 msgid "Created Safe address"
 msgstr ""
 
@@ -3948,8 +4025,8 @@ msgid "POOL VALUE"
 msgstr "СТОИМОСТЬ ПУЛА"
 
 #: src/pages/DevSmartWallet/DevSmartWallet.tsx
-msgid "Tests <0>isValidSignature(bytes32,bytes)</0> on the Safe contract on Arbitrum Sepolia and shows the returned magic value."
-msgstr ""
+#~ msgid "Tests <0>isValidSignature(bytes32,bytes)</0> on the Safe contract on Arbitrum Sepolia and shows the returned magic value."
+#~ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Unstake completed"
@@ -3985,7 +4062,7 @@ msgstr "метка рынка"
 msgid "Total volume"
 msgstr "Общий объём"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
 msgid "WalletConnect Wallet Provider (MVP)"
 msgstr ""
 
@@ -4319,6 +4396,10 @@ msgstr "Портфель"
 msgid "stop market"
 msgstr "стоп-маркет"
 
+#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
+msgid "Amount (human-readable)"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Pending GMX approval..."
 msgstr "Ожидание одобрения GMX..."
@@ -4333,6 +4414,10 @@ msgstr "СУММА"
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 msgid "GMX staking unavailable on Botanix. Use Arbitrum or Avalanche."
 msgstr "Стейкинг GMX недоступен на Botanix. Используйте Arbitrum или Avalanche."
+
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
+msgid "bytes32 overload (inner unwrapped)"
+msgstr ""
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -4383,6 +4468,10 @@ msgstr "<0>Купить</0> {wrappedNativeTokenSymbol}."
 msgid "TWAP"
 msgstr "TWAP"
 
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
+msgid "Use for deploy form"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min impact pool amount"
 msgstr "Мин. сумма пула влияния"
@@ -4413,7 +4502,7 @@ msgstr "Этот рынок отключён. Пожалуйста, свяжит
 msgid "Depositing to Avalanche is disabled. Trade directly from your Avalanche wallet."
 msgstr "Депозит на Avalanche отключён. Торгуйте напрямую с вашего кошелька Avalanche."
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
 msgid "Use last created Safe"
 msgstr ""
 
@@ -4442,7 +4531,8 @@ msgstr "Пока нет сделок"
 msgid "Price change to liquidation"
 msgstr "Изменение цены до ликвидации"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
 msgid "Use provider Safe address"
 msgstr ""
 
@@ -4483,7 +4573,7 @@ msgstr "Swap Market: Обмен токенов по текущей рыночн�
 msgid "Per 1h"
 msgstr "За 1ч"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
 msgid "Connect a wallet first"
 msgstr ""
 
@@ -4503,7 +4593,7 @@ msgstr "Чистый шорт {indexSymbol}. Экспозиция формиру
 msgid "Loss"
 msgstr "Убыток"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
 msgid "WalletConnect URI (paste from /trade)"
 msgstr ""
 
@@ -4784,7 +4874,7 @@ msgstr "Комиссия"
 msgid "Vault capacity"
 msgstr "Ёмкость хранилища"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
 msgid "Safe wallet created"
 msgstr ""
 
@@ -5064,7 +5154,7 @@ msgstr "Торгуйте бессрочными контрактами с кре
 msgid "Sell fee"
 msgstr "Комиссия продажи"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
 msgid "Wallet client unavailable. Reconnect wallet and retry"
 msgstr ""
 
@@ -5107,7 +5197,7 @@ msgstr "Предоставление изолированной ликвидно
 msgid "Use open interest in tokens for balance"
 msgstr "Использовать открытый интерес в токенах для баланса"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
 msgid "Result"
 msgstr ""
 
@@ -5177,6 +5267,10 @@ msgstr "Пример метки"
 msgid "Import URL:"
 msgstr "URL для импорта:"
 
+#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
+msgid "Switch owner wallet to this chain before submitting."
+msgstr ""
+
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -5226,7 +5320,7 @@ msgstr "Стейкинг доступен только на {chainNames}. Пер
 msgid "Links"
 msgstr "Ссылки"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
 msgid "SignatureUtils minifiedDigest"
 msgstr ""
 
@@ -5289,6 +5383,10 @@ msgstr "Одиночный"
 #: landing/src/pages/Home/LiqiuditySection/PoolCards.tsx
 msgid "Invest with control over risk and reward"
 msgstr "Инвестируйте с контролем над риском и вознаграждением"
+
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
+msgid "Tests <0>isValidSignature(bytes32,bytes)</0> on the Safe contract on the selected chain and shows the returned magic value. Detects EIP-6492 wrapping and also validates the unwrapped inner signature."
+msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Insufficient funds to pay for order costs"
@@ -5369,7 +5467,7 @@ msgstr "ЦЕНА ИСПОЛНЕНИЯ"
 msgid "spinner"
 msgstr "загрузка"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
 msgid "Domain separator (optional, for SignatureUtils-style minified check)"
 msgstr ""
 
@@ -5461,6 +5559,10 @@ msgstr "Выбрать рынок"
 msgid "Referral code creation failed"
 msgstr "Не удалось создать реферальный код"
 
+#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
+msgid "Switch wallet to selected deploy chain"
+msgstr ""
+
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdraw fee"
 msgstr "Комиссия за вывод"
@@ -5474,7 +5576,11 @@ msgstr "Ваша экономия на комиссиях от рефераль�
 msgid "TP"
 msgstr "TP"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
+msgid "Token"
+msgstr ""
+
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
 msgid "1271 validation failed: {message}"
 msgstr ""
 
@@ -5495,8 +5601,8 @@ msgid "Docs"
 msgstr "Документация"
 
 #: src/pages/DevSmartWallet/DevSmartWallet.tsx
-msgid "Switch owner to Arbitrum Sepolia"
-msgstr ""
+#~ msgid "Switch owner to Arbitrum Sepolia"
+#~ msgstr ""
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "{0} cannot be sent to smart contract addresses. Select another token"
@@ -5961,6 +6067,10 @@ msgstr "Ошибка подписания одобрения"
 msgid "Approve {tokenSymbol}"
 msgstr "Одобрить {tokenSymbol}"
 
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
+msgid "Factory"
+msgstr ""
+
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "REBATE"
@@ -5985,6 +6095,10 @@ msgstr "{balanceFormatted} остаётся на старом субаккаун
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 msgstr "Переход от <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> к <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
+
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
+msgid "Set a valid provider Safe address first"
+msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
@@ -6125,7 +6239,7 @@ msgstr ""
 msgid "PnL relative to capital used (return on capital)"
 msgstr "PnL относительно задействованного капитала (доходность на капитал)"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
 msgid "Threshold-1 Safe only. Exposes the Safe address over WalletConnect and executes dapp transactions through Safe Protocol Kit using the connected owner EOA in this browser."
 msgstr ""
 
@@ -6213,6 +6327,7 @@ msgstr "Невозможно вывести обеспечение. Оставш
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
 msgid "Approving..."
 msgstr "Одобрение…"
 
@@ -6255,7 +6370,7 @@ msgstr "Не удалось получить компенсацию влияни
 msgid "Paste hex error data to decode"
 msgstr "Вставьте hex-данные ошибки для декодирования"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
 msgid "Safe address (validator target)"
 msgstr ""
 
@@ -6373,6 +6488,10 @@ msgstr "Обновление {updateOrdersCount} TP/SL ордеров..."
 msgid "Execution price didn't meet acceptable price"
 msgstr "Цена исполнения не соответствовала допустимой цене"
 
+#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
+msgid "Top-up confirmed"
+msgstr ""
+
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Position would be liquidatable"
 msgstr "Позиция будет подлежать ликвидации"
@@ -6451,6 +6570,10 @@ msgstr "Мин. фактор финансирования"
 msgid "Governance alerts"
 msgstr "Уведомления о голосованиях"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Safe version"
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6512,7 +6635,7 @@ msgstr "1м 40с"
 msgid "GLP autocompounding vaults"
 msgstr "Хранилища с автокомпаундингом GLP"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
 msgid "No activity yet"
 msgstr ""
 
@@ -6608,7 +6731,7 @@ msgstr "за"
 msgid "Reserve factor longs"
 msgstr "Резервный фактор лонгов"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
 msgid "No active sessions"
 msgstr ""
 
@@ -6616,7 +6739,7 @@ msgstr ""
 msgid "buy"
 msgstr "купить"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
 msgid "Safe creation failed: {message}"
 msgstr ""
 
@@ -6671,7 +6794,7 @@ msgstr "Иконка GMX"
 msgid "Price impact exceeds order size"
 msgstr "Влияние на цену превышает размер ордера"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
 msgid "Accounts"
 msgstr ""
 
@@ -6804,6 +6927,10 @@ msgstr "Продать GLV"
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "from {BLOCKCHAIN_COUNT} blockchains"
 msgstr "из {BLOCKCHAIN_COUNT} блокчейнов"
+
+#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
+msgid "ERC-20 — approve the router first, then sendTokens + bridgeIn"
+msgstr ""
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading approval nonce expired. Re-sign to continue."
@@ -7130,6 +7257,10 @@ msgstr "Мин залог: {0}"
 msgid "View transaction"
 msgstr "Просмотреть транзакцию"
 
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
+msgid "Persisted in this browser: Safe address, chain, and owners. Use saved entries to quickly switch provider wallet, validator target, or deploy form owners."
+msgstr ""
+
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Project"
 msgstr "Проект"
@@ -7213,7 +7344,7 @@ msgstr "Стейкинг доступен только на {chainNames} или 
 msgid "Claiming rewards only available on {settlementChainName}. Switch networks to claim referral rewards."
 msgstr "Получение вознаграждений доступно только на {settlementChainName}. Переключите сеть, чтобы получить реферальные вознаграждения."
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
 msgid "1271 validation failed ({safeHint})"
 msgstr ""
 
@@ -7267,11 +7398,11 @@ msgstr "Ссылка скопирована"
 msgid "SIZE"
 msgstr "РАЗМЕР"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
 msgid "Transaction submitted. Waiting for confirmation..."
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
 msgid "Parsed owners"
 msgstr ""
 
@@ -7377,13 +7508,17 @@ msgstr "Перевести {tokenSymbol} в {chainName} с"
 msgid "Permit signing failed"
 msgstr "Подпись разрешения не удалась"
 
+#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
+msgid "Recipient account (who receives the multichain balance)"
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Order uses {collateralSymbol}, but existing {longText} position uses {symbol} as collateral"
 msgstr "Ордер использует {collateralSymbol}, но существующая позиция {longText} использует {symbol} в качестве обеспечения"
 
 #: src/pages/DevSmartWallet/DevSmartWallet.tsx
-msgid "Dev Smart Wallet (Safe on Arbitrum Sepolia)"
-msgstr ""
+#~ msgid "Dev Smart Wallet (Safe on Arbitrum Sepolia)"
+#~ msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "Show more"
@@ -7435,6 +7570,7 @@ msgstr "Введите сумму внесения"
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/AddAffiliateCode.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
 msgid "Approve {0}"
 msgstr "Одобрить {0}"
 
@@ -7468,12 +7604,16 @@ msgstr "Максимальный {0} лонг превышен"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/pages/AccountEvents/AccountEvents.tsx
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "N/A"
 msgstr "Н/Д"
+
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
+msgid "bytes overload (raw signature)"
+msgstr ""
 
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Operates on open, permissionless networks to ensure transparency, decentralization, and unrestricted access"
@@ -7639,7 +7779,7 @@ msgstr ""
 msgid "Down"
 msgstr "Недоступен"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
 msgid "Expected bytes32 magic"
 msgstr ""
 
@@ -7649,6 +7789,10 @@ msgstr ""
 msgid "Trigger price below mark price"
 msgstr "Цена триггера ниже маркированной цены"
 
+#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
+msgid "Token approved"
+msgstr ""
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 msgid "Staked GMX"
 msgstr "GMX в стейкинге"
@@ -7656,6 +7800,10 @@ msgstr "GMX в стейкинге"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Open interest reserve factor shorts"
 msgstr "Резервный фактор открытого интереса для шортов"
+
+#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
+msgid "Switch to Arbitrum Sepolia"
+msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Insufficient pool liquidity"
@@ -7815,6 +7963,10 @@ msgstr "Недействительные адреса перевода. Пров
 msgid "Swap {fromAmount} for {toAmount}"
 msgstr "Обмен {fromAmount} на {toAmount}"
 
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
+msgid "Copy"
+msgstr ""
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/Referrals/AffiliatesStats.tsx
@@ -7953,6 +8105,10 @@ msgstr "для {comment}"
 msgid "V1 Avalanche Fuji"
 msgstr "V1 Avalanche Fuji"
 
+#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
+msgid "Use own address"
+msgstr ""
+
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Performance APY"
 msgstr "Доходность APY"
@@ -8049,7 +8205,7 @@ msgstr "Переключиться на пул {0}"
 msgid "Explore, analyze, and copy on-chain traders"
 msgstr "Исследуйте, анализируйте и копируйте ончейн трейдеров"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
 msgid "Creating Safe..."
 msgstr ""
 
@@ -8060,6 +8216,10 @@ msgstr "{addressLabel} на {networkLabel}"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "{0} GMX"
 msgstr "{0} GMX"
+
+#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
+msgid "Credit tokens to any account's multichain balance via <0>bridgeIn</0>. The connected wallet pays; the recipient's multichain balance is credited. Runs on Arbitrum Sepolia."
+msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Price impact exceeds order size. Impact: {priceImpactUsdText}, order: {sizeDeltaUsdText}"
@@ -8232,7 +8392,7 @@ msgstr "Шорт-позиции"
 msgid "Report issue"
 msgstr "Сообщить о проблеме"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
 msgid "Wallet Activity"
 msgstr ""
 
@@ -8409,6 +8569,10 @@ msgstr "Запросить <0>{0}</0>"
 msgid "Receive"
 msgstr "Получение"
 
+#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+msgid "Switch owner to deploy chain"
+msgstr ""
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "ENDPOINT"
 msgstr "ENDPOINT"
@@ -8421,7 +8585,7 @@ msgstr "Настройки отображения"
 msgid "Order filled"
 msgstr "Ордер исполнен"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
 msgid "1271 signature is invalid (magic mismatch)"
 msgstr ""
 
@@ -8640,7 +8804,7 @@ msgstr "События для аккаунта:"
 msgid "Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus beatae atque eligendi sunt quasi et porro nemo cumque nesciunt dolorum earum, minus fuga similique exercitationem ad. Eos omnis vitae suscipit recusandae iste adipisci quasi rem odio, quidem qui modi impedit quibusdam culpa nemo distinctio rerum tempora sequi facilis quaerat laudantium pariatur dicta ab. Pariatur mollitia magni consectetur praesentium nulla nobis non voluptates laborum obcaecati enim unde, in tempore voluptas, expedita aut corrupti ipsum sequi consequatur iste corporis quasi! Officia nihil pariatur, asperiores molestiae quia earum tempora, in neque inventore quisquam dolore veniam minus beatae adipisci quod hic? Saepe, aperiam consequuntur!"
 msgstr "Lorem ipsum dolor sit amet consectetur adipisicing elit. Temporibus beatae atque eligendi sunt quasi et porro nemo cumque nesciunt dolorum earum, minus fuga similique exercitationem ad. Eos omnis vitae suscipit recusandae iste adipisci quasi rem odio, quidem qui modi impedit quibusdam culpa nemo distinctio rerum tempora sequi facilis quaerat laudantium pariatur dicta ab. Pariatur mollitia magni consectetur praesentium nulla nobis non voluptates laborum obcaecati enim unde, in tempore voluptas, expedita aut corrupti ipsum sequi consequatur iste corporis quasi! Officia nihil pariatur, asperiores molestiae quia earum tempora, in neque inventore quisquam dolore veniam minus beatae adipisci quod hic? Saepe, aperiam consequuntur!"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
 msgid "ERC-1271 Signature Validator"
 msgstr ""
 
@@ -8765,6 +8929,10 @@ msgstr "Обмен {0} на {1}"
 msgid "Depth"
 msgstr "Глубина"
 
+#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
+msgid "Top-up submitted. Waiting for confirmation..."
+msgstr ""
+
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Layer 1"
 msgstr "Слой 1"
@@ -8881,7 +9049,7 @@ msgstr "Данные о результатах и графиках основа�
 msgid "Sell {operationTokenSymbol}"
 msgstr "Продать {operationTokenSymbol}"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
 msgid "Valid"
 msgstr ""
 
@@ -8969,7 +9137,7 @@ msgstr "Мин. маржа: {0}"
 msgid "Stop Market"
 msgstr "Стоп-рынок"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
 msgid "Compatibility Fallback Handler"
 msgstr ""
 
@@ -8997,6 +9165,10 @@ msgstr "История сделок"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to backing tokens"
 msgstr "Экспозиция к обеспечивающим токенам"
+
+#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
+msgid "Top Up Account"
+msgstr ""
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 msgid "Search type"
@@ -9039,6 +9211,10 @@ msgstr "Почему клейм в токенах GLV?"
 #: src/components/TVChartContainer/StaticLine.tsx
 #: src/components/TVChartContainer/StaticLine.tsx
 msgid "Show size in USD"
+msgstr ""
+
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
+msgid "No saved smart wallets yet"
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
@@ -9244,7 +9420,7 @@ msgstr "Опционные хранилища"
 msgid "Time limit"
 msgstr "Ограничение по времени"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
 msgid "Checking..."
 msgstr ""
 
@@ -9413,7 +9589,7 @@ msgstr "Создать лимитный своп"
 msgid "A $500,000 GLV pool (DAO-funded) rewards long-term holders. Keep your GLV for at least 3 months without selling or transferring to receive a pro rata share."
 msgstr "Пул GLV на $500 000 (финансируемый DAO) вознаграждает долгосрочных держателей. Удерживайте GLV не менее 3 месяцев без продажи или перевода, чтобы получить пропорциональную долю."
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
 msgid "1271 signature is valid"
 msgstr ""
 
@@ -9425,7 +9601,7 @@ msgstr "Внебиржевой рынок esGMX"
 msgid "Telegram group (Portuguese)"
 msgstr "Telegram-группа (португальская)"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletDeployTab.tsx
 msgid "Threshold"
 msgstr ""
 
@@ -9456,7 +9632,7 @@ msgstr "GMX, доступные из вестинга:"
 msgid "GMX Account"
 msgstr "Счет GMX"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
 msgid "Fail"
 msgstr ""
 
@@ -9476,6 +9652,10 @@ msgstr "Выберите хотя бы одно распределение дл�
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Buy"
 msgstr "Купить"
+
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
+msgid "Provider chain (WalletConnect account chain)"
+msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Copy technical details"
@@ -9579,7 +9759,7 @@ msgstr "Могу ли я строить на базе GMX или интегри�
 msgid "Avoid price wicks with transparent, sub-second Chainlink price feeds tailor-made for GMX"
 msgstr "Избегайте ценовых фитилей благодаря прозрачным ценовым потокам Chainlink с задержкой менее секунды, разработанным специально для GMX"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
 msgid "Connection flow: open /trade in Chrome, choose WalletConnect, copy the wc: URI from the modal, paste it here in Firefox, then approve the session on this page."
 msgstr ""
 
@@ -9785,7 +9965,7 @@ msgstr "Награды esGMX:"
 msgid "Optimal usage factor long"
 msgstr "Оптимальный коэффициент использования для лонгов"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
 msgid "Hash (bytes32)"
 msgstr ""
 
@@ -9877,6 +10057,10 @@ msgstr "ЛИКВИДНОСТЬ ЛОНГ"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL short"
 msgstr "PnL шорт"
+
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
+msgid "Remove"
+msgstr ""
 
 #: src/components/Seo/SEO.tsx
 msgid "GMX | Decentralized perpetual exchange"
@@ -10021,7 +10205,7 @@ msgstr "Ошибка, попробуйте снова"
 msgid "Available to trade"
 msgstr "Доступно для торговли"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
 msgid "Pair WalletConnect Session"
 msgstr ""
 
@@ -10172,7 +10356,7 @@ msgstr "Подтверждение One-Click Trading недействитель�
 msgid "GLP to GM airdrop"
 msgstr "GLP to GM аирдроп"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
 msgid "Expected bytes magic"
 msgstr ""
 
@@ -10268,6 +10452,10 @@ msgstr "Установлено высокое допустимое влияни�
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Swap"
 msgstr "Своп"
+
+#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
+msgid "Top-up failed: {message}"
+msgstr ""
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "Where do GMX staking rewards come from?"
@@ -10411,11 +10599,11 @@ msgstr "триггер"
 msgid "Failed to decode error. Make sure the hex data is valid and starts with \"0x\"."
 msgstr "Не удалось декодировать ошибку. Убедитесь, что hex-данные корректны и начинаются с \"0x\"."
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
 msgid "WalletConnect URI should start with wc:"
 msgstr ""
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
 msgid "Pass"
 msgstr ""
 
@@ -10455,6 +10643,10 @@ msgstr "EIP-4844, 20-27 марта"
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Save on costs"
 msgstr "Экономьте на расходах"
+
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
+msgid "Validation chain"
+msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Get optimized exposure to the highest-utilized pools"
@@ -10525,7 +10717,7 @@ msgstr "Лимитный своп"
 msgid "Claim {tokenSymbol} rewards"
 msgstr "Получить вознаграждения {tokenSymbol}"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
 msgid "SignatureUtils 1271 on digest"
 msgstr ""
 
@@ -10544,6 +10736,10 @@ msgstr "Дневной убыток"
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX team"
 msgstr "Анонимный чат с командой GMX"
+
+#: src/pages/DevSmartWallet/DevSmartWalletMainTab.tsx
+msgid "This dev wallet is pinned to Safe version {SAFE_TARGET_VERSION}."
+msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
@@ -10622,6 +10818,10 @@ msgstr "Запрос на рыночное уменьшение"
 #: src/pages/UiPage/UiPage.tsx
 msgid "Icons ({0})"
 msgstr "Иконки ({0})"
+
+#: src/pages/DevSmartWallet/DevSmartWalletTopUpTab.tsx
+msgid "Approval failed: {message}"
+msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Delta neutral vaults"
@@ -10736,8 +10936,8 @@ msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} pe
 msgstr "Позиции {longOrShort} {fundingAction} комиссию за финансирование в размере {fundingRate} в час и не платят комиссию за заимствование"
 
 #: src/pages/DevSmartWallet/DevSmartWallet.tsx
-msgid "Switch wallet to Arbitrum Sepolia"
-msgstr ""
+#~ msgid "Switch wallet to Arbitrum Sepolia"
+#~ msgstr ""
 
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Failed to add referral code"
@@ -10972,10 +11172,12 @@ msgstr "Включите <0>Express Trading</0> в настройках для �
 msgid "Enter a ratio"
 msgstr "Введите соотношение"
 
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
-#: src/pages/DevSmartWallet/DevSmartWallet.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
 msgid "No result"
 msgstr ""
 
@@ -11007,6 +11209,14 @@ msgstr "Бонусное поощрение GLV (тест)"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Insufficient balance"
 msgstr "Недостаточно баланса"
+
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
+msgid "Inner signature"
+msgstr ""
+
+#: src/pages/DevSmartWallet/DevSmartWalletSignatureTab.tsx
+msgid "EIP-6492 wrapped signature detected"
+msgstr ""
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Collateral delta"

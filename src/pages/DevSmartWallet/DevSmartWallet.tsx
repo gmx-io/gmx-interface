@@ -15,6 +15,8 @@ import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletBut
 import { DevSmartWalletDeployTab } from "./DevSmartWalletDeployTab";
 import { DevSmartWalletMainTab } from "./DevSmartWalletMainTab";
 import {
+  type ActivityLogEntry,
+  type ActivityLogLevel,
   type DeploySupportedChainId,
   type DevSmartWalletTab,
   type SavedSmartWalletProfile,
@@ -23,9 +25,9 @@ import {
   DEV_SMART_WALLET_SAVED_PROFILES_LS_KEY,
   DEV_SMART_WALLET_TAB_LABELS,
   DEV_SMART_WALLET_TABS,
-  formatLogLine,
   getErrorMessage,
   isSameAddress,
+  makeLogEntry,
   parseSavedSmartWalletProfiles,
   parseSupportedChainId,
   SAFE_TARGET_VERSION,
@@ -65,7 +67,7 @@ export default function DevSmartWallet() {
       return [];
     }
   });
-  const [activityLog, setActivityLog] = useState<string[]>([]);
+  const [activityLog, setActivityLog] = useState<ActivityLogEntry[]>([]);
   const [walletKitStatus, setWalletKitStatus] = useState("Initializing WalletConnect wallet...");
   const [walletKitInitError, setWalletKitInitError] = useState<string | undefined>();
   const [lastCreatedSafeAddress, setLastCreatedSafeAddress] = useState<Address | undefined>();
@@ -128,8 +130,8 @@ export default function DevSmartWallet() {
   }, [providerChainId, providerSafeAddressInput, savedWalletProfiles]);
 
   // ---- Shared callbacks ----
-  const pushActivity = useCallback((message: string) => {
-    setActivityLog((prev) => [formatLogLine(message), ...prev].slice(0, 30));
+  const pushActivity = useCallback((message: string, level: ActivityLogLevel = "log") => {
+    setActivityLog((prev) => [makeLogEntry(message, level), ...prev].slice(0, 500));
   }, []);
 
   function upsertSavedWalletProfile(input: {

@@ -360,8 +360,24 @@ export function parseBigIntLike(value: unknown, fallback = 0n) {
   throw new Error("Invalid bigint value");
 }
 
+export type ActivityLogLevel = "log" | "warn" | "err";
+
+export type ActivityLogEntry = {
+  ts: string;
+  level: ActivityLogLevel;
+  message: string;
+};
+
 export function formatLogLine(message: string) {
   return `${new Date().toLocaleTimeString()} ${message}`;
+}
+
+export function makeLogEntry(message: string, level: ActivityLogLevel = "log"): ActivityLogEntry {
+  return { ts: new Date().toLocaleTimeString(), level, message };
+}
+
+export function serializeLogEntries(entries: ActivityLogEntry[]): string {
+  return entries.map((e) => `${e.ts} [${e.level}] ${e.message}`).join("\n");
 }
 
 export function isStaleWcRequestError(message: string) {

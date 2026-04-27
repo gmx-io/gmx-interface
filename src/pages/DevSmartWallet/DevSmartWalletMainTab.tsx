@@ -45,11 +45,14 @@ import {
   SAFE_PROXY_FACTORY_ABI,
   SAFE_TARGET_VERSION,
   SAFE_VERSION_ABI,
+  serializeLogEntries,
   summarizeSession,
   toEip155Chain,
   WC_PROJECT_ID,
   WC_SUPPORTED_EVENTS,
   WC_SUPPORTED_METHODS,
+  type ActivityLogEntry,
+  type ActivityLogLevel,
   type DeploySupportedChainId,
   type SavedSmartWalletProfile,
   type WalletConnectRequestEvent,
@@ -57,8 +60,7 @@ import {
 } from "./devSmartWalletShared";
 
 // EIP-6492 magic suffix: keccak256("EIP-6492") truncated, used to identify wrapped signatures
-const EIP_6492_MAGIC_SUFFIX =
-  "0x6492649264926492649264926492649264926492649264926492649264926492" as Hex;
+const EIP_6492_MAGIC_SUFFIX = "0x6492649264926492649264926492649264926492649264926492649264926492" as Hex;
 
 /**
  * Wraps a Safe signature in EIP-6492 format for counterfactual verification.
@@ -202,8 +204,8 @@ export function DevSmartWalletMainTab({
   setValidatorSafeAddressInput: (value: string) => void;
   setDeployChainId: (chainId: DeploySupportedChainId) => void;
   setOwnersInput: (value: string) => void;
-  pushActivity: (message: string) => void;
-  activityLog: string[];
+  pushActivity: (message: string, level?: ActivityLogLevel) => void;
+  activityLog: ActivityLogEntry[];
   onWalletKitStatusChange: (status: string) => void;
   onWalletKitInitErrorChange: (error: string | undefined) => void;
 }) {
@@ -288,7 +290,7 @@ export function DevSmartWalletMainTab({
         await walletKit.disconnectSession({ topic, reason: getSdkError("USER_DISCONNECTED") });
         pushActivity(`Closed duplicate WC session: ${topic}`);
       } catch (error) {
-        pushActivity(`Failed to close duplicate WC session ${topic}: ${getErrorMessage(error)}`);
+        pushActivity(`Failed to close duplicate WC session ${topic}: ${getErrorMessage(error)}`, "warn");
       }
     }
     refreshSessions();
@@ -368,7 +370,18 @@ export function DevSmartWalletMainTab({
   async function respondWcRequestSuccess(topic: string, id: number, result: unknown) {
     const walletKit = walletKitRef.current;
     if (!walletKit) return;
-    await walletKit.respondSessionRequest({ topic, response: { id, jsonrpc: "2.0", result } as any });
+    try {
+      await walletKit.respondSessionRequest({ topic, response: { id, jsonrpc: "2.0", result } as any });
+    } catch (error) {
+      const message = getErrorMessage(error);
+      // Late response after the dapp's WC client already evicted the request id from history.
+      // Happens when MetaMask takes long enough that GMX UI's withRetry fires and replaces the id.
+      if (isStaleWcRequestError(message)) {
+        pushActivity(`WC late success ignored (request id evicted): ${id}`);
+        return;
+      }
+      throw error;
+    }
   }
 
   async function respondWcRequestError(topic: string, id: number, code: number, message: string) {
@@ -457,12 +470,7 @@ export function DevSmartWalletMainTab({
           requestedChainId === undefined ||
           !DEPLOY_SUPPORTED_CHAINS.includes(requestedChainId as DeploySupportedChainId)
         ) {
-          await respondWcRequestError(
-            topic,
-            id,
-            4902,
-            `Unsupported chain id: ${requestedChainId ?? "unknown"}`
-          );
+          await respondWcRequestError(topic, id, 4902, `Unsupported chain id: ${requestedChainId ?? "unknown"}`);
           return;
         }
         const nextChainId = requestedChainId as DeploySupportedChainId;
@@ -471,7 +479,7 @@ export function DevSmartWalletMainTab({
         await switchNetwork(nextChainId, Boolean(latestStateRef.current.active));
         await respondWcRequestSuccess(topic, id, null);
         void emitWcAccountAndChainChanged(topic, nextChainId).catch((error) => {
-          pushActivity(`WC event emit warning (wallet_switchEthereumChain): ${getErrorMessage(error)}`);
+          pushActivity(`WC event emit warning (wallet_switchEthereumChain): ${getErrorMessage(error)}`, "warn");
         });
         return;
       }
@@ -481,12 +489,7 @@ export function DevSmartWalletMainTab({
           requestedChainId === undefined ||
           !DEPLOY_SUPPORTED_CHAINS.includes(requestedChainId as DeploySupportedChainId)
         ) {
-          await respondWcRequestError(
-            topic,
-            id,
-            4902,
-            `Unsupported chain id: ${requestedChainId ?? "unknown"}`
-          );
+          await respondWcRequestError(topic, id, 4902, `Unsupported chain id: ${requestedChainId ?? "unknown"}`);
           return;
         }
         const nextChainId = requestedChainId as DeploySupportedChainId;
@@ -495,7 +498,7 @@ export function DevSmartWalletMainTab({
         await switchNetwork(nextChainId, Boolean(latestStateRef.current.active));
         await respondWcRequestSuccess(topic, id, null);
         void emitWcAccountAndChainChanged(topic, nextChainId).catch((error) => {
-          pushActivity(`WC event emit warning (wallet_addEthereumChain): ${getErrorMessage(error)}`);
+          pushActivity(`WC event emit warning (wallet_addEthereumChain): ${getErrorMessage(error)}`, "warn");
         });
         return;
       }
@@ -519,61 +522,103 @@ export function DevSmartWalletMainTab({
         const typedDataHash = hashTypedData(typedData as any);
         const safeMessage = safeSdk.createMessage(typedData as any);
         const safeMessageHash = await (safeSdk as any).getSafeMessageHash(typedDataHash);
-        const { walletClient: ownerWalletClient, account: ownerAccount, walletChainId: ownerChainId } =
-          latestStateRef.current;
+        const {
+          walletClient: ownerWalletClient,
+          account: ownerAccount,
+          walletChainId: ownerChainId,
+          providerChainId: currentProviderChainId,
+        } = latestStateRef.current;
         if (!ownerWalletClient || !ownerAccount) throw new Error("Owner wallet is not connected");
 
-        // EIP-6492: use the owner's current chain (settlement chain, e.g. Arb Sepolia) for the
-        // Safe envelope domain, not the Safe's deployment chain. This makes the signature
-        // verifiable on the settlement chain via EIP-6492 counterfactual verification.
-        const signingChainId = ownerChainId ? BigInt(ownerChainId) : await safeSdk.getChainId();
+        // The Safe envelope's chainId MUST be the chain where verification happens. WC v2 tags
+        // each session_request with a chainId (params.chainId, e.g. "eip155:421614"); when the
+        // dapp's wallet client is bound to chain X, every request carries that tag. We honor the
+        // request's chainId (= the dapp's chosen signing chain) instead of our own UI-selected
+        // providerChainId, matching standard CSW/Safe behavior. Falls back to providerChainId if
+        // the WC envelope didn't carry a chainId tag.
+        const signingChainId = BigInt(requestChainId);
         const safeEnvelopeTypedData = generateTypedData({
           safeAddress: safeAddr,
           safeVersion: safeSdk.getContractVersion(),
           chainId: signingChainId,
           data: (safeMessage as any).data,
         } as any);
+        const expectedEnvelopeHash = hashTypedData(safeEnvelopeTypedData as any);
+        pushActivity(
+          `pre-sign: requestChainId=${requestChainId} providerChainId=${currentProviderChainId} ownerChainId=${ownerChainId ?? "n/a"} signingChainId=${signingChainId} tdHash=${typedDataHash.slice(0, 10)} envelopeHash=${expectedEnvelopeHash.slice(0, 10)} safeMsgHash=${String(safeMessageHash).slice(0, 10)}`
+        );
         const ownerSignMethod = method === "eth_signTypedData_v3" ? "eth_signTypedData_v3" : "eth_signTypedData_v4";
         const typedDataJson = JSON.stringify(safeEnvelopeTypedData);
+
+        // MetaMask (and similar strict wallets) reject eth_signTypedData_v4 when the typed
+        // data's `domain.chainId` doesn't match the wallet's currently-active chain
+        // ("Provided chainId X must match the active chainId Y"). Briefly switch the owner EOA
+        // wallet to match the envelope's chainId, sign, then restore — so the dev wallet behaves
+        // like a real CSW that prepares its signing context before invoking the underlying signer.
+        const envelopeChainIdNumber = Number(signingChainId);
+        let didSwitchOwnerChain = false;
+        let originalOwnerChainId: number | undefined;
+        if (ownerChainId !== undefined && ownerChainId !== envelopeChainIdNumber) {
+          originalOwnerChainId = ownerChainId;
+          try {
+            await switchNetwork(envelopeChainIdNumber, true);
+            didSwitchOwnerChain = true;
+            pushActivity(`Switched owner EOA chain to ${envelopeChainIdNumber} for signing`);
+          } catch (e) {
+            pushActivity(`Failed to switch owner EOA chain: ${getErrorMessage(e)}`, "warn");
+          }
+        }
 
         // Some wallet providers are strict about parameter ordering. Try both.
         let rawSignature: Hex | undefined;
         let firstSignError: string | undefined;
         try {
-          rawSignature = (await (ownerWalletClient.request as any)({
-            method: ownerSignMethod,
-            params: [ownerAccount, typedDataJson],
-          })) as Hex;
-        } catch (error) {
-          firstSignError = getNonEmptyErrorMessage(error);
-        }
-
-        if (!rawSignature && firstSignError && isLikelyInvalidParamsError(firstSignError)) {
           try {
             rawSignature = (await (ownerWalletClient.request as any)({
               method: ownerSignMethod,
-              params: [typedDataJson, ownerAccount],
+              params: [ownerAccount, typedDataJson],
             })) as Hex;
           } catch (error) {
-            const secondSignError = getNonEmptyErrorMessage(error);
-            throw new Error(
-              `Failed to sign typed data (${ownerSignMethod}). first=[${firstSignError ?? "n/a"}] second=[${secondSignError}]`
-            );
+            firstSignError = getNonEmptyErrorMessage(error);
           }
-        }
 
-        if (!rawSignature) {
-          throw new Error(`Failed to sign typed data (${ownerSignMethod}): ${firstSignError ?? "unknown error"}`);
+          if (!rawSignature && firstSignError && isLikelyInvalidParamsError(firstSignError)) {
+            try {
+              rawSignature = (await (ownerWalletClient.request as any)({
+                method: ownerSignMethod,
+                params: [typedDataJson, ownerAccount],
+              })) as Hex;
+            } catch (error) {
+              const secondSignError = getNonEmptyErrorMessage(error);
+              throw new Error(
+                `Failed to sign typed data (${ownerSignMethod}). first=[${firstSignError ?? "n/a"}] second=[${secondSignError}]`
+              );
+            }
+          }
+
+          if (!rawSignature) {
+            throw new Error(`Failed to sign typed data (${ownerSignMethod}): ${firstSignError ?? "unknown error"}`);
+          }
+        } finally {
+          if (didSwitchOwnerChain && originalOwnerChainId !== undefined) {
+            await switchNetwork(originalOwnerChainId, true).catch((e) => {
+              pushActivity(`Failed to restore owner EOA chain: ${getErrorMessage(e)}`, "warn");
+            });
+          }
         }
 
         let signature: Hex = normalizeTypedDataSignatureV(rawSignature);
 
-        // EIP-6492: wrap signature if the owner is on a different chain than the Safe's deployment chain.
-        // This enables counterfactual verification on the settlement chain.
-        const safeDeploymentChainId = await safeSdk.getChainId();
-        const needsEip6492 = ownerChainId !== undefined && BigInt(ownerChainId) !== safeDeploymentChainId;
-        if (needsEip6492) {
-          const targetChainId = ownerChainId as DeploySupportedChainId;
+        // EIP-6492: wrap only if the Safe is not yet deployed on the verification chain
+        // (= requestChainId, the chain the dapp's session-request is targeting). Wrapping when
+        // the Safe is already deployed there causes the on-chain universal validator's
+        // factory.createProxyWithNonce to CREATE2-collide before it can fall through to plain
+        // 1271, burning all gas and tipping the relay-fee accounting.
+        const verificationChainId = requestChainId as DeploySupportedChainId;
+        const verificationClient = getPublicClientWithRpc(verificationChainId);
+        const safeCode = await verificationClient.getCode({ address: safeAddr }).catch(() => undefined);
+        const safeIsDeployed = Boolean(safeCode && safeCode !== "0x");
+        if (!safeIsDeployed) {
           const profile = latestStateRef.current.providerSafeAddress
             ? savedWalletProfiles.find(
                 (p) =>
@@ -593,14 +638,14 @@ export function DevSmartWalletMainTab({
             innerSignature: signature,
             owners: owners as Address[],
             saltNonce: profile.saltNonce,
-            targetChainId,
+            targetChainId: verificationChainId,
           });
           pushActivity(
-            `EIP-6492 wrapped signature for cross-chain verification (${ownerChainId}) tdHash=${typedDataHash.slice(0, 10)}`
+            `EIP-6492 wrapped signature (Safe not yet deployed on chain ${verificationChainId}) tdHash=${typedDataHash.slice(0, 10)} envelopeHash=${expectedEnvelopeHash.slice(0, 10)}`
           );
         } else {
           pushActivity(
-            `WC typed-data signed via Safe typed-data (${method}) tdHash=${typedDataHash.slice(0, 10)} safeHash=${String(safeMessageHash).slice(0, 10)}...`
+            `WC typed-data signed (Safe already deployed on chain ${verificationChainId}, no 6492 wrap) tdHash=${typedDataHash.slice(0, 10)} envelopeHash=${expectedEnvelopeHash.slice(0, 10)} safeHash=${String(safeMessageHash).slice(0, 10)}`
           );
         }
 
@@ -644,7 +689,7 @@ export function DevSmartWalletMainTab({
       await respondWcRequestError(topic, id, 4200, `Unsupported method: ${method}`);
     } catch (error) {
       const message = getNonEmptyErrorMessage(error);
-      pushActivity(`WC error (${method}): ${message}`);
+      pushActivity(`WC error (${method}): ${message}`, "err");
       if (!isStaleWcRequestError(message)) {
         const code = message.toLowerCase().includes("rejected") ? 4001 : -32000;
         await respondWcRequestError(topic, id, code, message);
@@ -684,7 +729,7 @@ export function DevSmartWalletMainTab({
       onWalletKitStatusChange("WalletConnect wallet ready");
     } catch (error) {
       const message = getErrorMessage(error);
-      pushActivity(`WC proposal rejected: ${message}`);
+      pushActivity(`WC proposal rejected: ${message}`, "err");
       await walletKit.rejectSession({ id: event.id, reason: getSdkError("USER_REJECTED") });
     }
   }
@@ -726,7 +771,7 @@ export function DevSmartWalletMainTab({
         const message = getErrorMessage(error);
         onWalletKitInitErrorChange(message);
         onWalletKitStatusChange("WalletConnect wallet failed to initialize");
-        pushActivity(`WalletConnect init error: ${message}`);
+        pushActivity(`WalletConnect init error: ${message}`, "err");
       }
     }
     void initWalletKit();
@@ -760,7 +805,7 @@ export function DevSmartWalletMainTab({
       helperToast.success(t`WalletConnect pairing started`);
     } catch (error) {
       const message = getErrorMessage(error);
-      pushActivity(`Pairing failed: ${message}`);
+      pushActivity(`Pairing failed: ${message}`, "err");
       helperToast.error(t`WalletConnect pairing failed: ${message}`);
     } finally {
       setIsPairing(false);
@@ -938,9 +983,7 @@ export function DevSmartWalletMainTab({
                     })
                   }
                 />
-                {!profile.saltNonce && (
-                  <span className="text-yellow-500">Required for EIP-6492</span>
-                )}
+                {!profile.saltNonce && <span className="text-yellow-500">Required for EIP-6492</span>}
               </div>
               <div className="mt-10 flex flex-wrap gap-8">
                 <Button
@@ -1010,13 +1053,57 @@ export function DevSmartWalletMainTab({
         </div>
 
         <div className="rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-16">
-          <h2 className="text-18 font-medium">
-            <Trans>Wallet Activity</Trans>
-          </h2>
-          <div className="mt-12 rounded-8 border border-slate-700 bg-slate-900/40 p-12">
-            <pre className="max-h-[360px] max-w-full overflow-auto whitespace-pre-wrap break-words text-12 text-typography-secondary">
-              {activityLog.length > 0 ? activityLog.join("\n") : t`No activity yet`}
-            </pre>
+          <div className="flex items-center justify-between">
+            <h2 className="text-18 font-medium">
+              <Trans>Wallet Activity</Trans>
+            </h2>
+            <Button
+              variant="secondary"
+              onClick={() => {
+                if (activityLog.length === 0) return;
+                navigator.clipboard.writeText(serializeLogEntries(activityLog)).then(
+                  () => helperToast.success(t`Activity log copied`),
+                  () => helperToast.error(t`Copy failed`)
+                );
+              }}
+              disabled={activityLog.length === 0}
+            >
+              <Trans>Copy</Trans>
+            </Button>
+          </div>
+          <div className="mt-12 max-h-[360px] overflow-auto rounded-8 border border-slate-700 bg-slate-900/40">
+            {activityLog.length === 0 ? (
+              <div className="p-12 text-12 text-typography-secondary">
+                <Trans>No activity yet</Trans>
+              </div>
+            ) : (
+              activityLog.map((entry, idx) => {
+                const tagColor =
+                  entry.level === "err"
+                    ? "text-red-500 bg-red-500/10 border-red-500/40"
+                    : entry.level === "warn"
+                      ? "text-yellow-500 bg-yellow-500/10 border-yellow-500/40"
+                      : "text-typography-secondary bg-slate-800/40 border-slate-700";
+                const textColor =
+                  entry.level === "err"
+                    ? "text-red-300"
+                    : entry.level === "warn"
+                      ? "text-yellow-200"
+                      : "text-typography-primary";
+                return (
+                  <div
+                    key={idx}
+                    className={`flex items-start gap-8 px-12 py-8 text-12 ${idx > 0 ? "border-t border-slate-800" : ""}`}
+                  >
+                    <span className="shrink-0 font-mono text-typography-secondary">{entry.ts}</span>
+                    <span className={`text-10 shrink-0 rounded-4 border px-4 py-1 font-semibold uppercase ${tagColor}`}>
+                      {entry.level}
+                    </span>
+                    <span className={`break-words ${textColor}`}>{entry.message}</span>
+                  </div>
+                );
+              })
+            )}
           </div>
         </div>
       </div>

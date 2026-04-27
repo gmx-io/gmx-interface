@@ -784,6 +784,7 @@ async function getBatchSignatureParams({
     typedData,
     domain,
     shouldUseSignerMethod: subaccountApproval !== undefined,
+    verificationChainId: chainId,
   };
 }
 

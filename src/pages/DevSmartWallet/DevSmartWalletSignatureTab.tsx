@@ -1,8 +1,8 @@
 import { t, Trans } from "@lingui/macro";
 import { useMemo, useState } from "react";
-import { concatHex, encodeAbiParameters, isHex, keccak256, type Address, type Hex } from "viem";
+import { concatHex, decodeAbiParameters, encodeAbiParameters, isHex, keccak256, type Address, type Hex } from "viem";
 
-import { ARBITRUM_SEPOLIA } from "config/chains";
+import { ARBITRUM_SEPOLIA, getChainName } from "config/chains";
 import { helperToast } from "lib/helperToast";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 
@@ -10,6 +10,8 @@ import Button from "components/Button/Button";
 
 import {
   AddressInput,
+  DEPLOY_SUPPORTED_CHAINS,
+  type DeploySupportedChainId,
   EIP1271_BYTES_MAGIC_VALUE,
   EIP1271_MAGIC_VALUE,
   getErrorMessage,
@@ -18,6 +20,38 @@ import {
   SAFE_1271_BYTES32_ABI,
   SAFE_1271_BYTES_ABI,
 } from "./devSmartWalletShared";
+
+const EIP_6492_MAGIC_SUFFIX = "0x6492649264926492649264926492649264926492649264926492649264926492" as Hex;
+
+type Eip6492Decoded = {
+  factory: Address;
+  factoryCalldata: Hex;
+  innerSignature: Hex;
+};
+
+function tryDecodeEip6492(signature: Hex): Eip6492Decoded | undefined {
+  if (signature.length < 2 + 64) return undefined;
+  const trailing = `0x${signature.slice(-64)}`.toLowerCase();
+  if (trailing !== EIP_6492_MAGIC_SUFFIX.toLowerCase()) return undefined;
+  const prefix = `0x${signature.slice(2, signature.length - 64)}` as Hex;
+  try {
+    const [factory, factoryCalldata, innerSignature] = decodeAbiParameters(
+      [
+        { name: "factory", type: "address" },
+        { name: "factoryCalldata", type: "bytes" },
+        { name: "originalSignature", type: "bytes" },
+      ],
+      prefix
+    );
+    return {
+      factory: factory as Address,
+      factoryCalldata: factoryCalldata as Hex,
+      innerSignature: innerSignature as Hex,
+    };
+  } catch {
+    return undefined;
+  }
+}
 
 export function DevSmartWalletSignatureTab({
   validatorSafeAddressInput,
@@ -30,8 +64,9 @@ export function DevSmartWalletSignatureTab({
   setValidatorSafeAddressInput: (value: string) => void;
   validatorSafeAddress: Address | undefined;
   providerSafeAddressInput: string;
-  pushActivity: (message: string) => void;
+  pushActivity: (message: string, level?: "log" | "warn" | "err") => void;
 }) {
+  const [validatorChainId, setValidatorChainId] = useState<DeploySupportedChainId>(ARBITRUM_SEPOLIA);
   const [validatorHashInput, setValidatorHashInput] = useState("");
   const [validatorDomainSeparatorInput, setValidatorDomainSeparatorInput] = useState("");
   const [validatorSignatureInput, setValidatorSignatureInput] = useState("");
@@ -39,11 +74,17 @@ export function DevSmartWalletSignatureTab({
   const [validatorResult, setValidatorResult] = useState<
     | {
         safeAddress: Address;
+        chainId: DeploySupportedChainId;
         hash: Hex;
+        eip6492?: Eip6492Decoded;
         bytes32ReturnValue?: Hex;
         bytesReturnValue?: Hex;
         bytes32Error?: string;
         bytesError?: string;
+        innerBytes32ReturnValue?: Hex;
+        innerBytes32Error?: string;
+        innerBytesReturnValue?: Hex;
+        innerBytesError?: string;
         signatureUtilsDomainSeparator?: Hex;
         signatureUtilsMinifiedDigest?: Hex;
         signatureUtilsDigest1271ReturnValue?: Hex;
@@ -56,6 +97,11 @@ export function DevSmartWalletSignatureTab({
     | undefined
   >();
   const [validatorError, setValidatorError] = useState<string | undefined>();
+
+  const detectedEip6492 = useMemo(() => {
+    if (!validatorSignatureInput.trim() || !isHex(validatorSignatureInput)) return undefined;
+    return tryDecodeEip6492(validatorSignatureInput as Hex);
+  }, [validatorSignatureInput]);
 
   const validatorFormError = useMemo(() => {
     if (!validatorSafeAddressInput.trim()) return "Safe address is required";
@@ -99,11 +145,16 @@ export function DevSmartWalletSignatureTab({
     setIsValidatorChecking(true);
 
     try {
-      const publicClient = getPublicClientWithRpc(ARBITRUM_SEPOLIA);
+      const publicClient = getPublicClientWithRpc(validatorChainId);
+      const eip6492 = tryDecodeEip6492(validatorSignatureInput as Hex);
       let bytes32ReturnValue: Hex | undefined;
       let bytesReturnValue: Hex | undefined;
       let bytes32Error: string | undefined;
       let bytesError: string | undefined;
+      let innerBytes32ReturnValue: Hex | undefined;
+      let innerBytes32Error: string | undefined;
+      let innerBytesReturnValue: Hex | undefined;
+      let innerBytesError: string | undefined;
 
       try {
         bytes32ReturnValue = (await publicClient.readContract({
@@ -127,8 +178,36 @@ export function DevSmartWalletSignatureTab({
         bytesError = getErrorMessage(error);
       }
 
+      // If signature is EIP-6492 wrapped, also try the inner Safe signature directly.
+      // The Safe contract's 1271 doesn't unwrap 6492 — that's the verifier's job. But against an
+      // already-deployed Safe, the inner sig should validate, which proves the inner part is well-formed.
+      if (eip6492) {
+        try {
+          innerBytes32ReturnValue = (await publicClient.readContract({
+            address: validatorSafeAddress,
+            abi: SAFE_1271_BYTES32_ABI,
+            functionName: "isValidSignature",
+            args: [validatorHashInput as Hex, eip6492.innerSignature],
+          })) as Hex;
+        } catch (error) {
+          innerBytes32Error = getErrorMessage(error);
+        }
+        try {
+          innerBytesReturnValue = (await publicClient.readContract({
+            address: validatorSafeAddress,
+            abi: SAFE_1271_BYTES_ABI,
+            functionName: "isValidSignature",
+            args: [validatorHashInput as Hex, eip6492.innerSignature],
+          })) as Hex;
+        } catch (error) {
+          innerBytesError = getErrorMessage(error);
+        }
+      }
+
       const bytes32Valid = bytes32ReturnValue?.slice(0, 10).toLowerCase() === EIP1271_MAGIC_VALUE;
       const bytesValid = bytesReturnValue?.slice(0, 10).toLowerCase() === EIP1271_BYTES_MAGIC_VALUE;
+      const innerBytes32Valid = innerBytes32ReturnValue?.slice(0, 10).toLowerCase() === EIP1271_MAGIC_VALUE;
+      const innerBytesValid = innerBytesReturnValue?.slice(0, 10).toLowerCase() === EIP1271_BYTES_MAGIC_VALUE;
       let signatureUtilsDomainSeparator: Hex | undefined;
       let signatureUtilsMinifiedDigest: Hex | undefined;
       let signatureUtilsDigest1271ReturnValue: Hex | undefined;
@@ -172,15 +251,23 @@ export function DevSmartWalletSignatureTab({
           ? Boolean(signatureUtilsDigestValid || signatureUtilsMinifiedValid)
           : undefined;
 
-      const isValid = Boolean(bytes32Valid || bytesValid || signatureUtils1271Valid);
+      const isValid = Boolean(
+        bytes32Valid || bytesValid || innerBytes32Valid || innerBytesValid || signatureUtils1271Valid
+      );
 
       setValidatorResult({
         safeAddress: validatorSafeAddress,
+        chainId: validatorChainId,
         hash: validatorHashInput as Hex,
+        eip6492,
         bytes32ReturnValue,
         bytesReturnValue,
         bytes32Error,
         bytesError,
+        innerBytes32ReturnValue,
+        innerBytes32Error,
+        innerBytesReturnValue,
+        innerBytesError,
         signatureUtilsDomainSeparator,
         signatureUtilsMinifiedDigest,
         signatureUtilsDigest1271ReturnValue,
@@ -192,9 +279,9 @@ export function DevSmartWalletSignatureTab({
       });
 
       pushActivity(
-        `1271 check (${validatorSafeAddress}): ${
+        `1271 check (${getChainName(validatorChainId)} ${validatorSafeAddress})${eip6492 ? " [EIP-6492]" : ""}: ${
           isValid
-            ? `valid${bytes32Valid ? " [bytes32]" : ""}${bytesValid ? " [bytes]" : ""}`
+            ? `valid${bytes32Valid ? " [bytes32]" : ""}${bytesValid ? " [bytes]" : ""}${innerBytes32Valid ? " [inner bytes32]" : ""}${innerBytesValid ? " [inner bytes]" : ""}`
             : `invalid (${bytes32ReturnValue ?? bytesReturnValue ?? "reverted"})`
         }`
       );
@@ -229,12 +316,30 @@ export function DevSmartWalletSignatureTab({
       </h2>
       <p className="mt-8 text-13 text-typography-secondary">
         <Trans>
-          Tests <code>isValidSignature(bytes32,bytes)</code> on the Safe contract on Arbitrum Sepolia and shows the
-          returned magic value.
+          Tests <code>isValidSignature(bytes32,bytes)</code> on the Safe contract on the selected chain and shows the
+          returned magic value. Detects EIP-6492 wrapping and also validates the unwrapped inner signature.
         </Trans>
       </p>
 
       <div className="mt-16 grid gap-16">
+        <div>
+          <label className="mb-6 block text-13 font-medium text-typography-primary" htmlFor="validatorChain">
+            <Trans>Validation chain</Trans>
+          </label>
+          <select
+            id="validatorChain"
+            value={validatorChainId}
+            onChange={(e) => setValidatorChainId(Number(e.target.value) as DeploySupportedChainId)}
+            className="w-full rounded-8 border border-slate-800 bg-slate-800 px-12 py-10 text-14 outline-none focus:border-blue-400"
+          >
+            {DEPLOY_SUPPORTED_CHAINS.map((chainId) => (
+              <option key={chainId} value={chainId}>
+                {getChainName(chainId)} ({chainId})
+              </option>
+            ))}
+          </select>
+        </div>
+
         <AddressInput
           id="validatorSafeAddress"
           label={t`Safe address (validator target)`}
@@ -280,6 +385,25 @@ export function DevSmartWalletSignatureTab({
             placeholder="0x..."
             className="w-full rounded-8 border border-slate-800 bg-slate-800 px-12 py-10 text-14 outline-none focus:border-blue-400"
           />
+          {detectedEip6492 && (
+            <div className="text-blue-200 mt-6 rounded-8 border border-blue-500/40 bg-blue-500/10 p-12 text-12">
+              <div className="font-medium">
+                <Trans>EIP-6492 wrapped signature detected</Trans>
+              </div>
+              <div className="mt-4 break-all">
+                <Trans>Factory</Trans>: {detectedEip6492.factory}
+              </div>
+              <div className="mt-2 break-all">
+                <Trans>Inner signature</Trans>: {detectedEip6492.innerSignature}
+              </div>
+              <div className="mt-4 text-typography-secondary">
+                <Trans>
+                  The Safe's 1271 will not unwrap 6492 itself — that's the verifier's job. We'll also validate the inner
+                  signature directly.
+                </Trans>
+              </div>
+            </div>
+          )}
         </div>
 
         {validatorFormError && (
@@ -324,16 +448,32 @@ export function DevSmartWalletSignatureTab({
             }`}
           >
             <div>
-              <Trans>Result</Trans>: {validatorResult.isValid ? t`Valid` : t`Invalid`}
+              <Trans>Result</Trans>: {validatorResult.isValid ? t`Valid` : t`Invalid`}{" "}
+              <span className="text-typography-secondary">
+                ({getChainName(validatorResult.chainId)}
+                {validatorResult.eip6492 ? ", EIP-6492" : ""})
+              </span>
             </div>
             <div className="mt-6 break-all">
-              <Trans>bytes32 overload</Trans>:{" "}
+              <Trans>bytes32 overload (raw signature)</Trans>:{" "}
               {validatorResult.bytes32ReturnValue ?? validatorResult.bytes32Error ?? t`No result`}
             </div>
             <div className="mt-6 break-all">
-              <Trans>bytes overload</Trans>:{" "}
+              <Trans>bytes overload (raw signature)</Trans>:{" "}
               {validatorResult.bytesReturnValue ?? validatorResult.bytesError ?? t`No result`}
             </div>
+            {validatorResult.eip6492 && (
+              <>
+                <div className="mt-6 break-all">
+                  <Trans>bytes32 overload (inner unwrapped)</Trans>:{" "}
+                  {validatorResult.innerBytes32ReturnValue ?? validatorResult.innerBytes32Error ?? t`No result`}
+                </div>
+                <div className="mt-6 break-all">
+                  <Trans>bytes overload (inner unwrapped)</Trans>:{" "}
+                  {validatorResult.innerBytesReturnValue ?? validatorResult.innerBytesError ?? t`No result`}
+                </div>
+              </>
+            )}
             <div className="mt-6 break-all text-typography-secondary">
               <Trans>Expected bytes32 magic</Trans>: {EIP1271_MAGIC_VALUE}
             </div>
