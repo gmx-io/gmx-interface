@@ -153,8 +153,6 @@ export const selectExternalSwapInputs = createSelector((q) => {
 export const selectExternalSwapRequestResult = (s: SyntheticsState) => s.externalSwap.requestResult;
 export const selectSetExternalSwapRequestResult = (s: SyntheticsState) => s.externalSwap.setRequestResult;
 
-// Key identifying the quote request the user is currently waiting on, derived synchronously
-// from inputs to avoid a one-render gap with effect-synced state.
 const selectCurrentExternalSwapRequestKey = createSelector((q) => {
   const inputs = q(selectExternalSwapInputs);
   if (!inputs) return undefined;
@@ -172,7 +170,6 @@ const selectCurrentExternalSwapRequestKey = createSelector((q) => {
   });
 });
 
-// Loading while the user-facing request key has not yet been resolved (success or failed).
 export const selectExternalSwapIsLoading = createSelector((q) => {
   if (!q(selectShouldRequestExternalSwapQuote)) return false;
 

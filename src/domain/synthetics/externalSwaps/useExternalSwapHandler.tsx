@@ -116,8 +116,6 @@ export function useExternalSwapHandler() {
       });
       if (!key) return;
 
-      // SWR's keepPreviousData keeps stale `quote` while `error` is set for the new key —
-      // handle error first to avoid writing a success record with a stale quote.
       if (requestError) {
         if (storedResult?.status !== "failed" || storedResult.key !== key) {
           setRequestResult({ status: "failed", key });
