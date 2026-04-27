@@ -226,8 +226,7 @@ function VolumeCard({
   const currentThreshold = active && currentTierConfig ? currentTierConfig.threshold : 0n;
   const nextThreshold = active ? nextTierConfig?.threshold : tierConfig?.[0]?.threshold;
   const range = nextThreshold !== undefined && nextThreshold > currentThreshold ? nextThreshold - currentThreshold : 0n;
-  const volumeAboveCurrent = tradedVolume > currentThreshold ? tradedVolume - currentThreshold : 0n;
-  const progressPercent = isMaxTier ? 100 : range > 0n ? Number((volumeAboveCurrent * 100n) / range) : 0;
+  const progressPercent = isMaxTier ? 100 : range > 0n ? Number((tradedVolume * 100n) / range) : 0;
   const progressStyle = useMemo(() => ({ width: `${Math.min(progressPercent, 100)}%` }), [progressPercent]);
 
   return (
@@ -570,6 +569,12 @@ function BoostsCard({
   const activeBoostIds = currentEpochStats?.boostIds ?? [];
   const allBoosts = config?.boosts ?? [];
 
+  const isLifetimeVolumeBoostActive = activeBoostIds.includes("LifetimeTrading");
+  const lifetimeVolumeBoost = useMemo(
+    () => config?.boosts.find((b) => b.boost === "LifetimeTrading"),
+    [config?.boosts]
+  );
+
   return (
     <div
       className={cx(
@@ -582,9 +587,14 @@ function BoostsCard({
         {!active && <BannerGlow />}
         <div className="flex items-center justify-between font-medium text-typography-secondary">
           {active ? (
-            <span>
-              <Trans>Activity Boost</Trans>
-            </span>
+            <div className="flex w-full justify-between">
+              <span>
+                <Trans>Activity Boost</Trans>
+              </span>
+              {lifetimeVolumeBoost && isLifetimeVolumeBoostActive && (
+                <MultiplierBadge currentMultiplier={lifetimeVolumeBoost.multiplier} />
+              )}
+            </div>
           ) : (
             <div className="flex items-center gap-8">
               <div className="flex size-32 shrink-0 items-center justify-center rounded-8 border-1/2 border-slate-600">
