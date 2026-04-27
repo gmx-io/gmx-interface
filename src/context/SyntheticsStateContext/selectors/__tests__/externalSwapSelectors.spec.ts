@@ -14,8 +14,11 @@ import { ExternalSwapQuote, SwapPathStats, TradeMode, TradeType } from "sdk/util
 
 import { SyntheticsState } from "../../SyntheticsStateContextProvider";
 import {
+  selectExternalSwapDesirability,
   selectExternalSwapIsLoading,
   selectExternalSwapInputs,
+  selectIsExternalSwapDisabledByExpressSchema,
+  selectIsWaitingForExternalSwapQuote,
   selectExternalSwapQuote,
   selectShouldRequestExternalSwapQuote,
 } from "../tradeboxSelectors";
@@ -266,6 +269,54 @@ describe("externalSwapSelectors", () => {
     });
   });
 
+  describe("selectExternalSwapDesirability", () => {
+    it("returns required when there is no internal swap route", () => {
+      findSwapPathFn = vi.fn().mockReturnValue(undefined);
+
+      const state = createMockState();
+
+      expect(selectExternalSwapDesirability(state)).toBe("required");
+    });
+
+    it("returns optional when internal swap is available but below the threshold", () => {
+      mockSwapPathStats.totalFeesDeltaUsd = -expandDecimals(10, 30);
+
+      const state = createMockState();
+
+      expect(selectExternalSwapDesirability(state)).toBe("optional");
+    });
+
+    it("returns not_wanted when internal swap is available and not better than the threshold", () => {
+      const state = createMockState();
+
+      expect(selectExternalSwapDesirability(state)).toBe("not_wanted");
+    });
+  });
+
+  describe("selectIsExternalSwapDisabledByExpressSchema", () => {
+    it("blocks external swap when express gas token conflicts with the swap to-token", () => {
+      findSwapPathFn = vi.fn().mockReturnValue(undefined);
+
+      const state = createMockState({
+        settings: {
+          ...defaultState.settings,
+          expressOrdersEnabled: true,
+          gasPaymentTokenAddress: tokensData.USDC.address,
+        },
+        features: {
+          relayRouterEnabled: true,
+          subaccountRelayRouterEnabled: true,
+        },
+        sponsoredCallBalanceData: {
+          isSponsoredCallAllowed: true,
+        },
+      });
+
+      expect(selectExternalSwapDesirability(state)).toBe("required");
+      expect(selectIsExternalSwapDisabledByExpressSchema(state)).toBe(true);
+    });
+  });
+
   describe("selectExternalSwapInputs", () => {
     it("should return undefined when swap is not needed", () => {
       const state = createMockState({
@@ -397,6 +448,37 @@ describe("externalSwapSelectors", () => {
         },
       });
       expect(selectExternalSwapIsLoading(state as SyntheticsState)).toBe(false);
+    });
+  });
+
+  describe("selectIsWaitingForExternalSwapQuote", () => {
+    it("returns false for optional external routing even when the quote is still loading", () => {
+      mockSwapPathStats.totalFeesDeltaUsd = -expandDecimals(10, 30);
+
+      const state = createMockState({
+        externalSwap: {
+          ...defaultState.externalSwap,
+          requestResult: { status: "success", key: "stale-key", quote: mockBaseSwapQuote },
+        },
+      });
+
+      expect(selectExternalSwapDesirability(state)).toBe("optional");
+      expect(selectExternalSwapIsLoading(state)).toBe(true);
+      expect(selectIsWaitingForExternalSwapQuote(state)).toBe(false);
+    });
+
+    it("returns true when external routing is required and the quote is still loading", () => {
+      findSwapPathFn = vi.fn().mockReturnValue(undefined);
+
+      const state = createMockState({
+        externalSwap: {
+          ...defaultState.externalSwap,
+          requestResult: undefined,
+        },
+      });
+
+      expect(selectExternalSwapDesirability(state)).toBe("required");
+      expect(selectIsWaitingForExternalSwapQuote(state)).toBe(true);
     });
   });
 

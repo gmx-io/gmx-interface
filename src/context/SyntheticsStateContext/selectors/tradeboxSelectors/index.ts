@@ -78,7 +78,7 @@ import {
   selectMarketsInfoData,
   selectOrdersInfoData,
   selectPositionsInfoData,
-  selectSubaccountForChainAction,
+  selectRawSubaccount,
   selectTokensData,
   selectUiFeeFactor,
   selectUserReferralInfo,
@@ -190,18 +190,12 @@ export const selectShouldForceExternalSwap = (s: SyntheticsState) => s.externalS
 export const selectSetShouldForceExternalSwap = (s: SyntheticsState) => s.externalSwap.setShouldForceExternalSwap;
 
 export const selectIsWaitingForExternalSwapQuote = createSelector((q) => {
-  const tradeType = q(selectTradeboxTradeType);
-  const tradeMode = q(selectTradeboxTradeMode);
-  const tradeFlags = createTradeFlags(tradeType, tradeMode);
-  if ((!tradeFlags.isIncrease && !tradeFlags.isSwap) || !tradeFlags.isMarket) return false;
+  if (q(selectExternalSwapDesirability) !== "required") return false;
 
   const externalSwapInputs = q(selectExternalSwapInputs);
   if (!externalSwapInputs || externalSwapInputs.amountIn <= 0n) return false;
 
-  const noInternalSwap =
-    !externalSwapInputs.internalSwapTotalFeeItem || externalSwapInputs.internalSwapAmounts.amountOut === 0n;
-
-  return noInternalSwap && q(selectExternalSwapIsLoading);
+  return q(selectExternalSwapIsLoading);
 });
 
 export const selectExternalSwapQuote = createSelector((q) => {
@@ -216,8 +210,7 @@ export const selectExternalSwapQuote = createSelector((q) => {
   const tokenIn = q(selectTradeboxFromToken);
   const tokenOut = q(selectTradeboxSelectSwapToToken);
 
-  const subaccount = q(selectSubaccountForChainAction);
-  if (subaccount) return undefined;
+  if (q(selectIsOneClickActiveByUser)) return undefined;
 
   if (!inputs || !tokenIn || !tokenOut) return undefined;
   if (result?.status !== "success" || result.key !== currentKey || result.quote.amountIn === 0n) return undefined;
@@ -277,7 +270,11 @@ const selectDebugForceExternalSwaps = createSelector((q) => {
   return isNeedSwap && (swapDebugSettings?.forceExternalSwaps || false);
 });
 
-const selectIsExternalSwapDisabledByExpressSchema = createSelector((q) => {
+export const selectIsOneClickActiveByUser = createSelector((q) => {
+  return q(selectIsExpressTransactionAvailable) && Boolean(q(selectRawSubaccount));
+});
+
+export const selectIsExternalSwapDisabledByExpressSchema = createSelector((q) => {
   if (!q(selectIsExpressTransactionAvailable)) return false;
 
   const gasPaymentToken = q(selectGasPaymentToken);
@@ -293,19 +290,24 @@ const selectIsExternalSwapDisabledByExpressSchema = createSelector((q) => {
   return conflictToken !== undefined && gasPaymentToken.address === conflictToken.address;
 });
 
-export const selectShouldRequestExternalSwapQuote = createSelector((q) => {
+export const selectExternalSwapDesirability = createSelector((q): "not_wanted" | "required" | "optional" => {
   const tradeMode = q(selectTradeboxTradeMode);
   const tradeType = q(selectTradeboxTradeType);
   const tradeFlags = createTradeFlags(tradeType, tradeMode);
-  if (!tradeFlags.isMarket) return false;
+  if (!tradeFlags.isMarket) return "not_wanted";
 
-  if (q(selectSubaccountForChainAction)) return false;
-  if (q(selectIsExternalSwapDisabledByExpressSchema)) return false;
+  if (!q(selectExternalSwapsEnabled)) return "not_wanted";
 
-  const isExternalSwapsEnabled = q(selectExternalSwapsEnabled);
   const externalSwapInputs = q(selectExternalSwapInputs);
+  if (!externalSwapInputs || externalSwapInputs.amountIn <= 0n) return "not_wanted";
 
-  const internalSwapTotalFeeItem = externalSwapInputs?.internalSwapTotalFeeItem;
+  const internalSwapTotalFeeItem = externalSwapInputs.internalSwapTotalFeeItem;
+
+  const thereIsNoInternalSwap =
+    !internalSwapTotalFeeItem ||
+    (externalSwapInputs.amountIn > 0n && externalSwapInputs.internalSwapAmounts.amountOut === 0n);
+
+  if (thereIsNoInternalSwap) return "required";
 
   const fromToken = q(selectTradeboxFromToken);
   const toToken = q(selectTradeboxSelectSwapToToken);
@@ -314,18 +316,16 @@ export const selectShouldRequestExternalSwapQuote = createSelector((q) => {
     ? getSwapPriceImpactForExternalSwapStablecoinThresholdBps()
     : getSwapPriceImpactForExternalSwapThresholdBps();
 
-  const thereIsNoInternalSwap =
-    !internalSwapTotalFeeItem ||
-    (externalSwapInputs && externalSwapInputs.amountIn > 0n && externalSwapInputs.internalSwapAmounts.amountOut === 0n);
+  return internalSwapTotalFeeItem.bps < thresholdBps ? "optional" : "not_wanted";
+});
 
-  const internalSwapFeesConditionMet = internalSwapTotalFeeItem && internalSwapTotalFeeItem.bps < thresholdBps;
+export const selectShouldRequestExternalSwapQuote = createSelector((q) => {
+  if (q(selectIsOneClickActiveByUser)) return false;
+  if (q(selectIsExternalSwapDisabledByExpressSchema)) return false;
 
-  const isExternalSwapConditionMet = thereIsNoInternalSwap || internalSwapFeesConditionMet;
+  if (q(selectShouldForceExternalSwap) || q(selectDebugForceExternalSwaps)) return true;
 
-  const debugForceExternalSwaps = q(selectDebugForceExternalSwaps);
-  const shouldForceExternalSwap = q(selectShouldForceExternalSwap);
-
-  return shouldForceExternalSwap || debugForceExternalSwaps || (isExternalSwapsEnabled && isExternalSwapConditionMet);
+  return q(selectExternalSwapDesirability) !== "not_wanted";
 });
 
 const selectExternalSwapInputsByFromValue = createSelector((q) => {

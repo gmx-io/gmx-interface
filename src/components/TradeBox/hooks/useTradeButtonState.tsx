@@ -28,7 +28,10 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
+  selectExternalSwapDesirability,
   selectExternalSwapQuote,
+  selectIsExternalSwapDisabledByExpressSchema,
+  selectIsOneClickActiveByUser,
   selectIsWaitingForExternalSwapQuote,
   selectTradeboxFindSwapPath,
   selectTradeboxFromToken,
@@ -222,6 +225,19 @@ export function useTradeboxButtonState({
     totalExecutionFee?.feeTokenAmount,
   ]);
 
+  const externalSwapDesirability = useSelector(selectExternalSwapDesirability);
+  const isOneClickActiveByUser = useSelector(selectIsOneClickActiveByUser);
+  const isExternalSwapBlockedByGasConflict = useSelector(selectIsExternalSwapDisabledByExpressSchema);
+  const isSubmitBlockedByRequiredExternalSwap =
+    externalSwapDesirability === "required" && (isOneClickActiveByUser || isExternalSwapBlockedByGasConflict);
+
+  const externalSwapBlockedError = useMemo((): ValidationResult => {
+    if (isSubmitBlockedByRequiredExternalSwap) {
+      return { buttonErrorMessage: t`No swap route available` };
+    }
+    return {};
+  }, [isSubmitBlockedByRequiredExternalSwap]);
+
   const { buttonErrorText, tooltipContent, bannerErrorContent } = useMemo((): {
     buttonErrorText: string | undefined;
     tooltipContent: ReactNode | null;
@@ -238,7 +254,13 @@ export function useTradeboxButtonState({
       tokensData,
     });
 
-    const validationResult = takeValidationResult(commonError, tradeError, expressError, nativeGasError);
+    const validationResult = takeValidationResult(
+      commonError,
+      tradeError,
+      externalSwapBlockedError,
+      expressError,
+      nativeGasError
+    );
 
     let tooltipContent: ReactNode = null;
     if (validationResult.buttonTooltipName) {
@@ -304,6 +326,7 @@ export function useTradeboxButtonState({
     expressParams,
     tokensData,
     tradeError,
+    externalSwapBlockedError,
     nativeGasError,
     collateralToken,
     fromToken,

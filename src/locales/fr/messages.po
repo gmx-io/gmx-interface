@@ -860,6 +860,10 @@ msgstr "Bonus rétroactif STIP.b"
 msgid "in liquidity"
 msgstr "en liquidité"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "This swap requires external routing, which isn't available with One-Click Trading."
+msgstr "Ce swap nécessite un routage externe, qui n'est pas disponible avec One-Click Trading."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized money market"
 msgstr "Marché monétaire décentralisé"
@@ -1270,6 +1274,11 @@ msgstr "Stop-Loss"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "External swap {0} to {1}"
 msgstr "Échange externe de {0} vers {1}"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Use {0} for gas"
+msgstr "Utiliser {0} pour le gas"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To buy GMX on {0}, <0>change your network</0>"
@@ -5716,6 +5725,10 @@ msgstr ""
 msgid "Swap token unavailable"
 msgstr ""
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "This swap requires external routing. Pay gas in {0} to enable it."
+msgstr "Ce swap nécessite un routage externe. Payez le gas en {0} pour l'activer."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
 msgstr "GMX (Portugais)"
@@ -7262,6 +7275,10 @@ msgstr "Nous planifierons un entretien avec vous. En guise de remerciement, vous
 #: src/pages/UiPage/BannerTest.tsx
 msgid "GM bought successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or go to the ETH/USD pool to withdraw your GM tokens."
 msgstr "Achat de GM réussi, mais le transfert vers Base a échoué. Vos fonds sont en sécurité dans votre GMX Account. Réessayez le transfert ou accédez au pool ETH/USD pour retirer vos jetons GM."
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Disable One-Click Trading"
+msgstr "Désactiver One-Click Trading"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
@@ -9091,6 +9108,10 @@ msgstr ""
 msgid "Venus"
 msgstr "Venus"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No swap route available"
+msgstr "Aucune route de swap disponible"
+
 #: src/components/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Open {marketName} in explorer"
 msgstr "Ouvrir {marketName} dans l'explorateur"
@@ -9221,6 +9242,10 @@ msgstr "SNAPSHOT"
 #: src/pages/RpcDebug/parts.tsx
 msgid "BLOCK"
 msgstr "BLOCK"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Paying gas in {0} may give a better rate on this swap."
+msgstr "Payer le gas en {0} peut donner un meilleur taux pour ce swap."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx

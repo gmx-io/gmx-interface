@@ -2,7 +2,8 @@ import { useEffect } from "react";
 
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
-import { selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectGasPrice, selectRawSubaccount } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { selectExpressOrdersEnabled } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
   selectExternalSwapInputs,
   selectExternalSwapQuote,
@@ -45,6 +46,10 @@ export function useExternalSwapHandler() {
   const setShouldFallbackToInternalSwap = useSelector(selectSetShouldFallbackToInternalSwap);
   const shouldForceExternalSwap = useSelector(selectShouldForceExternalSwap);
   const setShouldForceExternalSwap = useSelector(selectSetShouldForceExternalSwap);
+
+  const hasRawSubaccount = Boolean(useSelector(selectRawSubaccount));
+  const expressOrdersEnabled = useSelector(selectExpressOrdersEnabled);
+  const swapToTokenAddress = swapToToken?.address;
 
   const enabled = useSelector(selectShouldRequestExternalSwapQuote);
 
@@ -111,16 +116,18 @@ export function useExternalSwapHandler() {
       });
       if (!key) return;
 
-      if (quote) {
-        if (storedResult?.status !== "success" || storedResult.quote.txnData.data !== quote.txnData.data) {
-          setRequestResult({ status: "success", key, quote });
+      // SWR's keepPreviousData keeps stale `quote` while `error` is set for the new key —
+      // handle error first to avoid writing a success record with a stale quote.
+      if (requestError) {
+        if (storedResult?.status !== "failed" || storedResult.key !== key) {
+          setRequestResult({ status: "failed", key });
         }
         return;
       }
 
-      if (requestError) {
-        if (storedResult?.status !== "failed" || storedResult.key !== key) {
-          setRequestResult({ status: "failed", key });
+      if (quote) {
+        if (storedResult?.status !== "success" || storedResult.quote.txnData.data !== quote.txnData.data) {
+          setRequestResult({ status: "success", key, quote });
         }
       }
     },
@@ -157,6 +164,22 @@ export function useExternalSwapHandler() {
       shouldFallbackToInternalSwap,
       setShouldFallbackToInternalSwap,
       shouldForceExternalSwap,
+      setShouldForceExternalSwap,
+    ]
+  );
+
+  useEffect(
+    function resetFallbackFlagsOnContextChangeEff() {
+      setShouldFallbackToInternalSwap(false);
+      setShouldForceExternalSwap(false);
+    },
+    [
+      hasRawSubaccount,
+      expressOrdersEnabled,
+      fromTokenAddress,
+      swapToTokenAddress,
+      chainId,
+      setShouldFallbackToInternalSwap,
       setShouldForceExternalSwap,
     ]
   );
