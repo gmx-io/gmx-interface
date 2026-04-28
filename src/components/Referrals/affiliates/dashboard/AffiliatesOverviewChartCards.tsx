@@ -1,15 +1,22 @@
-import { Trans } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import { useState } from "react";
 
 import { AffiliateReferralStats } from "domain/referrals";
 import { TimeRangeInfo } from "domain/synthetics/markets/useTimeRange";
+import {
+  MEGAETH_POINTS_READ_MORE_URL,
+  useMegaethPointsActive,
+} from "domain/synthetics/common/useMegaethPointsActive";
 import { formatBigUsd, formatUsd } from "lib/numbers";
 
+import ExternalLink from "components/ExternalLink/ExternalLink";
 import { OverviewChartCard } from "components/Referrals/shared/cards/ReferralsOverviewChartCard";
 import { ShareReferralCardModal } from "components/Referrals/shared/cards/ShareReferralCardModal";
 import { TradersVolumeChartContainer } from "components/Referrals/shared/charts/TradersVolumeChartContainer";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ShareArrowFilledIcon from "img/ic_share_arrow_filled.svg?react";
+import sparkleIcon from "img/sparkle.svg";
 
 type BaseChartCardProps = {
   stats?: AffiliateReferralStats;
@@ -44,11 +51,35 @@ export function TradingVolumeChartCard({
   hasReferredUsers,
 }: TradingVolumeChartCardProps) {
   const [isShareModalVisible, setIsShareModalVisible] = useState(false);
+  const isMegaethPointsActive = useMegaethPointsActive();
 
   return (
     <>
       <OverviewChartCard
         label={<Trans>Trading volume</Trans>}
+        valueSuffix={
+          isMegaethPointsActive ? (
+            <TooltipWithPortal
+              variant="none"
+              maxAllowedWidth={260}
+              handle={
+                <span className="inline-flex items-center gap-3 rounded-4 bg-blue-300/20 px-6 py-2 text-12 font-medium text-blue-300">
+                  <img className="h-10" src={sparkleIcon} alt="" />
+                  <Trans>Earns MegaETH points</Trans>
+                </span>
+              }
+              renderContent={() => (
+                <Trans>
+                  Referral volume (30%): points based on the total notional trading volume on GMX MegaETH generated
+                  by wallets using your onchain referral code.
+                  <br />
+                  <br />
+                  <ExternalLink href={MEGAETH_POINTS_READ_MORE_URL}>Read more</ExternalLink>.
+                </Trans>
+              )}
+            />
+          ) : undefined
+        }
         tooltipContent={<Trans>Volume traded by your referred traders.</Trans>}
         value={formatBigUsd(stats?.summary.volumeUsd ?? 0n)}
         valueChange={formatUsd(stats?.summary.volumeUsdDelta, { displayPlus: true })}

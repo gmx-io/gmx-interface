@@ -3,6 +3,8 @@
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
+import { MEGAETH } from "config/chains";
+
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
@@ -36,6 +38,57 @@ export const OM_MANTRA_MIGRATION_EVENT_ID = "om-mantra-migration";
 export const WELL_DELISTING_EVENT_ID = "well-delisting";
 
 export const appEventsData: EventData[] = [
+  {
+    id: "megaeth-points-program",
+    flagId: "showMegaethPoints",
+    endDate: "31 Dec 2026, 0:00",
+    chains: [MEGAETH],
+    title: "Earn points on GMX MegaETH",
+    bodyText: (
+      <span className="block">
+        <span className="mb-12 block text-slate-100">Earn points each epoch across four weighted activities:</span>
+        <span className="grid grid-cols-[auto_1fr] items-center gap-x-12 gap-y-12">
+          <span className="numbers rounded-4 bg-blue-300/20 px-8 py-2 text-center font-semibold text-blue-300">
+            50%
+          </span>
+          <span>
+            <span className="block font-medium">Trading fees</span>
+            <span className="block text-12 text-slate-100">
+              Based on cumulative trading fees you pay (open and close only)
+            </span>
+          </span>
+          <span className="numbers rounded-4 bg-blue-300/20 px-8 py-2 text-center font-semibold text-blue-300">
+            30%
+          </span>
+          <span>
+            <span className="block font-medium">Referral volume</span>
+            <span className="block text-12 text-slate-100">Trading volume from wallets using your referral code</span>
+          </span>
+          <span className="numbers rounded-4 bg-blue-300/20 px-8 py-2 text-center font-semibold text-blue-300">
+            10%
+          </span>
+          <span>
+            <span className="block font-medium">Trader PnL</span>
+            <span className="block text-12 text-slate-100">Net positive realized PnL only, to reward skill</span>
+          </span>
+          <span className="numbers rounded-4 bg-blue-300/20 px-8 py-2 text-center font-semibold text-blue-300">
+            10%
+          </span>
+          <span>
+            <span className="block font-medium">
+              GLV <span className="text-slate-100">[USDM-USDM]</span> liquidity
+            </span>
+            <span className="block text-12 text-slate-100">Time-weighted share of the vault over the epoch</span>
+          </span>
+        </span>
+      </span>
+    ),
+    link: {
+      text: "Read more",
+      href: "https://gmxio.substack.com/",
+      newTab: true,
+    },
+  },
   {
     id: WELL_DELISTING_EVENT_ID,
     isActive: true,
