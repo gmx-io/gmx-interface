@@ -21,7 +21,7 @@ const currentEpochStats: EpochStats = {
   epochTimestamp: 0,
   volumeTier: "Tier1",
   stakingTier: "Tier1",
-  tradedVolume: 100n,
+  tradedVolume: 800n,
   boostIds: [],
 };
 

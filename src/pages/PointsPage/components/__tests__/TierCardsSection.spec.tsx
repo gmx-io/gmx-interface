@@ -176,8 +176,8 @@ describe("TierCardsSection", () => {
       // Should show "Volume this epoch:" with current volume
       expect(screen.getByText(/Volume this epoch/)).toBeDefined();
 
-      // Next tier (Tier2) threshold = $5000 => "Trade $5,000 to unlock Certified status"
-      expect(screen.getByText(/5,000/)).toBeDefined();
+      // Next tier (Tier2) threshold = $5000 => compact display renders "$5K"
+      expect(screen.getByText(/5K/)).toBeDefined();
       expect(screen.getByText(/Certified/)).toBeDefined();
     });
   });
