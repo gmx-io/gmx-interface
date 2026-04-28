@@ -1232,7 +1232,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   const [multichainTransferProgress, setMultichainTransferProgress] = useState<
     MultichainTransferProgress<string> | undefined
-  >(undefined);
+  >(
+    undefined
+  );
 
   useMultichainTransferProgressView(multichainTransferProgress);
 

@@ -144,8 +144,6 @@ export function getCappedPoolPnl(p: { marketInfo: MarketInfo; poolUsd: bigint; p
  * Theoretical max leverage derived purely from minCollateralFactor. Does not account for
  * fees or the liquidation safety buffer. Used by the deposit-collateral path where the
  * user is not opening a new size.
- *
- * Rounded to the nearest 1x (in BASIS_POINTS units).
  */
 const ROUNDING_VALUE = 10000;
 export function getMaxLeverageByMinCollateralFactor(minCollateralFactor: bigint | undefined) {
@@ -157,24 +155,6 @@ export function getMaxLeverageByMinCollateralFactor(minCollateralFactor: bigint 
   return rounded;
 }
 
-/**
- * Max allowed leverage for opening a position, accounting for opening+closing fees and the
- * 50% liquidation safety buffer.
- *
- *   maxAllowed = floor(
- *     min(
- *       1 / (minCollateralFactor + 2 × positionFeeFactorForBalanceWasNotImproved),
- *       1 / (2 × minCollateralFactorForLiquidation)
- *     ) / 5
- *   ) × 5
- *
- * First term: opening limit with fees. The fee is charged twice because the contract
- * simulates a closing fee on top of the already-deducted opening fee during
- * `isPositionLiquidatable`.
- * Second term: 50% liquidation buffer (prevents immediate liquidation after open).
- *
- * Floored to the nearest 5x (in BASIS_POINTS units) for clean slider values.
- */
 const MAX_ALLOWED_LEVERAGE_STEP_BP = 5 * BASIS_POINTS_DIVISOR;
 export function getMaxAllowedLeverage({
   minCollateralFactor,
@@ -201,7 +181,7 @@ export function getMaxAllowedLeverage({
   const liquidationDenominator = 2n * minCollateralFactorForLiquidation;
   const liquidationMaxBp = bigMath.mulDiv(PRECISION, BASIS_POINTS_DIVISOR_BIGINT, liquidationDenominator);
 
-  const rawMaxBp = openingMaxBp < liquidationMaxBp ? openingMaxBp : liquidationMaxBp;
+  const rawMaxBp = bigMath.min(openingMaxBp, liquidationMaxBp);
 
   return Math.floor(Number(rawMaxBp) / MAX_ALLOWED_LEVERAGE_STEP_BP) * MAX_ALLOWED_LEVERAGE_STEP_BP;
 }

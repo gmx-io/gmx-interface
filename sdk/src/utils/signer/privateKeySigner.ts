@@ -16,7 +16,11 @@ export class PrivateKeySigner implements IAbstractSigner {
     this._chain = options?.chain;
   }
 
-  async signTypedData(domain: TypedDataDomain, types: TypedDataTypes, value: Record<string, any>): Promise<string> {
+  async signTypedData(
+    domain: TypedDataDomain,
+    types: TypedDataTypes,
+    value: Record<string, any>
+  ): Promise<string> {
     return this.account.signTypedData({
       domain,
       types,
