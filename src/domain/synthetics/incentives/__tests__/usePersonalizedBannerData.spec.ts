@@ -19,7 +19,7 @@ vi.mock("../useAccountIncentiveDashboard", () => ({
 }));
 
 vi.mock("../useAccountRewardsHistory", () => ({
-  useAccountRewardsHistory: vi.fn(),
+  useAccountManualRewardsAllocation: vi.fn(),
 }));
 
 vi.mock("domain/legacy", () => ({
@@ -43,9 +43,9 @@ import { useTokensDataRequest, convertToUsd, getMidPrice } from "domain/syntheti
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 
-import type { AccountIncentiveDashboard, IncentivesConfig, RewardsHistoryEntry } from "../types";
+import type { AccountIncentiveDashboard, IncentivesConfig } from "../types";
 import { useAccountIncentiveDashboard } from "../useAccountIncentiveDashboard";
-import { useAccountRewardsHistory } from "../useAccountRewardsHistory";
+import { useAccountManualRewardsAllocation } from "../useAccountRewardsHistory";
 import { useIncentivesConfig } from "../useIncentivesConfig";
 import { usePersonalizedBannerData } from "../usePersonalizedBannerData";
 
@@ -53,7 +53,7 @@ const mockUseChainId = vi.mocked(useChainId);
 const mockUseWallet = vi.mocked(useWallet);
 const mockUseIncentivesConfig = vi.mocked(useIncentivesConfig);
 const mockUseAccountDashboard = vi.mocked(useAccountIncentiveDashboard);
-const mockUseAccountRewardsHistory = vi.mocked(useAccountRewardsHistory);
+const mockUseAccountManualRewardsAllocation = vi.mocked(useAccountManualRewardsAllocation);
 const mockUseGmxPrice = vi.mocked(useGmxPrice);
 const mockUseStakingProcessedData = vi.mocked(useStakingProcessedData);
 const mockUseTokensDataRequest = vi.mocked(useTokensDataRequest);
@@ -133,8 +133,9 @@ function setupDefaults(overrides?: {
   account?: string | undefined;
   config?: IncentivesConfig | undefined;
   dashboard?: AccountIncentiveDashboard | undefined;
-  rewardsHistory?: RewardsHistoryEntry[] | undefined;
+  manualAllocatedPoints?: bigint | undefined;
   dashboardLoading?: boolean;
+  manualAllocatedPointsLoading?: boolean;
   gmxPrice?: bigint | undefined;
   stakingData?: { gmxInStakedGmx?: bigint } | undefined;
   tokensData?: Record<string, unknown> | undefined;
@@ -149,9 +150,9 @@ function setupDefaults(overrides?: {
     data: overrides?.dashboard ?? baseDashboard,
     loading: overrides?.dashboardLoading ?? false,
   } as any);
-  mockUseAccountRewardsHistory.mockReturnValue({
-    data: overrides?.rewardsHistory ?? [],
-    loading: false,
+  mockUseAccountManualRewardsAllocation.mockReturnValue({
+    data: overrides?.manualAllocatedPoints ?? 0n,
+    loading: overrides?.manualAllocatedPointsLoading ?? false,
   } as any);
   mockUseGmxPrice.mockReturnValue({
     gmxPrice: overrides?.gmxPrice ?? 20n * USD,
@@ -196,19 +197,7 @@ describe("usePersonalizedBannerData", () => {
       rewardsBalance: 0n,
       recentStats: [],
     };
-    const rewardsHistory: RewardsHistoryEntry[] = [
-      {
-        epoch: mockConfig.programStartTimestamp - mockConfig.epochDuration,
-        volume: 0n,
-        pointsEarned: 25n * GMX_DEC,
-        pointsSpent: 0n,
-        pointsExpired: 0n,
-        pointsBalance: 25n * GMX_DEC,
-        rewardsEarned: 0n,
-        rewardsClaimed: 0n,
-      },
-    ];
-    setupDefaults({ dashboard, rewardsHistory });
+    setupDefaults({ dashboard, manualAllocatedPoints: 25n * GMX_DEC });
 
     const result = renderHook(() => usePersonalizedBannerData());
 
@@ -235,19 +224,7 @@ describe("usePersonalizedBannerData", () => {
         },
       ],
     };
-    const rewardsHistory: RewardsHistoryEntry[] = [
-      {
-        epoch: mockConfig.programStartTimestamp - mockConfig.epochDuration,
-        volume: 0n,
-        pointsEarned: allocatedPoints,
-        pointsSpent: 0n,
-        pointsExpired: 0n,
-        pointsBalance: allocatedPoints,
-        rewardsEarned: 0n,
-        rewardsClaimed: 0n,
-      },
-    ];
-    setupDefaults({ dashboard, rewardsHistory });
+    setupDefaults({ dashboard, manualAllocatedPoints: allocatedPoints });
 
     const result = renderHook(() => usePersonalizedBannerData());
 

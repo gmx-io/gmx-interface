@@ -12,7 +12,6 @@ import {
 } from "domain/synthetics/incentives/constants";
 import { useAccountIncentiveDashboard } from "domain/synthetics/incentives/useAccountIncentiveDashboard";
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
-import { useAccountRewardsHistory } from "domain/synthetics/incentives/useAccountRewardsHistory";
 import { AuditEntry, useIncentiveAccountEpochAudit } from "domain/synthetics/incentives/useIncentiveAccountEpochAudit";
 import { formatAmount, formatUsd } from "lib/numbers";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
@@ -62,7 +61,6 @@ export function IncentivesAuditDetail({
 
   const { data: status, loading: statusLoading } = useAccountIncentiveStatus(chainId, { account });
   const { data: dashboard } = useAccountIncentiveDashboard(chainId, { account });
-  const { data: rewardsHistory } = useAccountRewardsHistory(chainId, { account });
 
   const { orderBy, direction, getSorterProps } = useSorterHandlers<AuditDetailSortField>("incentives-audit-detail", {
     orderBy: "epoch",
@@ -111,17 +109,13 @@ export function IncentivesAuditDetail({
   }, [auditData, orderBy, direction]);
 
   const totals = useMemo(() => {
-    const totalPointsEarned = rewardsHistory?.length
-      ? rewardsHistory.reduce((sum, e) => sum + e.pointsEarned, 0n)
-      : undefined;
-    const totalRewardsEarned = rewardsHistory?.length
-      ? rewardsHistory.reduce((sum, e) => sum + e.rewardsEarned, 0n)
-      : undefined;
+    const totalPointsEarned = auditData?.length ? auditData.reduce((sum, e) => sum + e.points, 0n) : undefined;
+    const totalRewardsEarned = auditData?.length ? auditData.reduce((sum, e) => sum + e.rewards, 0n) : undefined;
     const totalFees = auditData?.length ? auditData.reduce((sum, e) => sum + e.fees, 0n) : undefined;
     const totalVolume = auditData?.length ? auditData.reduce((sum, e) => sum + e.volume, 0n) : undefined;
 
     return { totalPointsEarned, totalRewardsEarned, totalFees, totalVolume };
-  }, [rewardsHistory, auditData]);
+  }, [auditData]);
 
   const accountUrl = buildAccountDashboardUrl(account, chainId, 2);
 

@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import cx from "classnames";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 
 import { ARBITRUM } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
@@ -17,14 +17,13 @@ import useWallet from "lib/wallets/useWallet";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import { TableTd, TableTdActionable, TableTh, TableTheadTr, TableTr, TableTrActionable } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 import { formatTimeLeft, useCurrentUnixTimestamp } from "./epochTiming";
 import { formatEpochLabel } from "./RewardsHistoryTab.utils";
 
-const PER_PAGE = 10;
+const PER_PAGE = 16;
 const GMX_DECIMALS = 18;
 const GMX_DECIMALS_FACTOR = 10n ** 18n;
 
@@ -37,11 +36,23 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
   const { i18n } = useLingui();
   const { active, signer } = useWallet();
   const { data: config } = useIncentivesConfig(chainId);
-  const { data: history } = useAccountRewardsHistory(chainId, { account });
-  const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
   const [page, setPage] = useState(1);
+  const {
+    data: history,
+    hasNextPage,
+    loading,
+  } = useAccountRewardsHistory(chainId, {
+    account,
+    limit: PER_PAGE,
+    offset: (page - 1) * PER_PAGE,
+  });
+  const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
   const { isMobile } = useBreakpoints();
   const epochDuration = getEpochDuration(config);
+
+  useEffect(() => {
+    setPage(1);
+  }, [account]);
 
   const formatRewards = useCallback(
     (rewardsEarned: bigint) => {
@@ -54,25 +65,8 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
     [gmxPrice]
   );
 
-  const sortedHistory = useMemo(() => {
-    if (!history) return [];
-    return [...history].sort((a, b) => b.epoch - a.epoch);
-  }, [history]);
-
-  const { totalEarned, totalUsed } = useMemo(() => {
-    if (!history) return { totalEarned: 0n, totalUsed: 0n };
-    return history.reduce(
-      (acc, e) => ({
-        totalEarned: acc.totalEarned + e.pointsEarned,
-        totalUsed: acc.totalUsed + e.pointsSpent,
-      }),
-      { totalEarned: 0n, totalUsed: 0n }
-    );
-  }, [history]);
-
-  const pageCount = Math.ceil(sortedHistory.length / PER_PAGE);
-  const indexFrom = (page - 1) * PER_PAGE;
-  const pageData = sortedHistory.slice(indexFrom, indexFrom + PER_PAGE);
+  const pageCount = history ? (hasNextPage ? page + 1 : page) : page;
+  const pageData = history ?? [];
   const now = useCurrentUnixTimestamp();
 
   if (!account) {
@@ -83,7 +77,7 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
     );
   }
 
-  if (history && history.length === 0) {
+  if (page === 1 && history && history.length === 0) {
     return (
       <div className="flex grow items-center justify-center rounded-8 bg-slate-900 p-24 text-center text-typography-secondary">
         <Trans>No rewards history yet. Start trading to earn points.</Trans>
@@ -91,43 +85,18 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
     );
   }
 
+  const tdClassName = "!py-12";
+
   return (
-    <div className="rounded-8 bg-slate-900">
+    <div className="flex h-full flex-col rounded-8 bg-slate-900">
       <div className="p-20">
         <h3 className="mb-12 text-16 font-medium text-typography-primary">
           <Trans>Rewards History</Trans>
         </h3>
-
-        <div className="flex gap-24">
-          <div>
-            <div className="flex items-center gap-2 text-12 font-medium text-typography-secondary">
-              <TooltipWithPortal
-                handle={<Trans>All time earned points</Trans>}
-                variant="iconStroke"
-                content={t`Total points earned across all epochs.`}
-              />
-            </div>
-            <span className="text-16 font-medium text-typography-primary numbers">
-              {formatAmount(totalEarned, 18, 4, true)}
-            </span>
-          </div>
-          <div>
-            <div className="flex items-center gap-2 text-12 font-medium text-typography-secondary">
-              <TooltipWithPortal
-                handle={<Trans>Used Points</Trans>}
-                variant="iconStroke"
-                content={t`Total points spent on fee discounts.`}
-              />
-            </div>
-            <span className="text-16 font-medium text-typography-primary numbers">
-              {formatAmount(totalUsed, 18, 4, true)}
-            </span>
-          </div>
-        </div>
       </div>
 
-      <div className="rounded-8 bg-slate-900">
-        <TableScrollFadeContainer>
+      <div className="flex grow flex-col rounded-8 bg-slate-900">
+        <TableScrollFadeContainer className="grow">
           {isMobile ? (
             <table className="w-full">
               <thead>
@@ -148,7 +117,7 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
                     formatRewards={formatRewards}
                   />
                 ))}
-                {!history && (
+                {loading && !history && (
                   <tr>
                     <td colSpan={3} className="py-16 text-center text-typography-secondary">
                       <Trans>Loading...</Trans>
@@ -179,23 +148,35 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
 
                   return (
                     <TableTr key={entry.epoch}>
-                      <TableTd>{formatEpochLabel(entry.epoch, epochDuration, i18n.locale)}</TableTd>
-                      <TableTd className="numbers">{formatAmountHuman(entry.volume, USD_DECIMALS, true, 0)}</TableTd>
-                      <TableTd className="numbers">{formatAmount(entry.pointsEarned, GMX_DECIMALS, 2, true)}</TableTd>
-                      <TableTd className="numbers">{formatAmount(entry.pointsSpent, GMX_DECIMALS, 2, true)}</TableTd>
-                      <TableTd className="numbers">{formatAmount(entry.pointsExpired, GMX_DECIMALS, 2, true)}</TableTd>
-                      <TableTd className="numbers">{formatAmount(entry.pointsBalance, GMX_DECIMALS, 2, true)}</TableTd>
-                      <TableTd className="numbers">{formatRewards(entry.rewardsEarned)}</TableTd>
-                      <TableTd>
+                      <TableTd className={cx(tdClassName, "text-typography-secondary")}>
+                        {formatEpochLabel(entry.epoch, epochDuration, i18n.locale)}
+                      </TableTd>
+                      <TableTd className={cx(tdClassName, "numbers")}>
+                        {formatAmountHuman(entry.volume, USD_DECIMALS, true, 0)}
+                      </TableTd>
+                      <TableTd className={cx(tdClassName, "numbers")}>
+                        {formatAmount(entry.pointsEarned, GMX_DECIMALS, 2, true)}
+                      </TableTd>
+                      <TableTd className={cx(tdClassName, "numbers")}>
+                        {formatAmount(entry.pointsSpent, GMX_DECIMALS, 2, true)}
+                      </TableTd>
+                      <TableTd className={cx(tdClassName, "numbers")}>
+                        {formatAmount(entry.pointsExpired, GMX_DECIMALS, 2, true)}
+                      </TableTd>
+                      <TableTd className={cx(tdClassName, "numbers")}>
+                        {formatAmount(entry.pointsBalance, GMX_DECIMALS, 2, true)}
+                      </TableTd>
+                      <TableTd className={cx(tdClassName, "numbers")}>{formatRewards(entry.rewardsEarned)}</TableTd>
+                      <TableTd className={tdClassName}>
                         {isCurrentEpoch ? (
-                          <span className="text-12 text-typography-secondary">
+                          <span className="text-13 text-typography-secondary">
                             <Trans>Epoch ends in</Trans>{" "}
                             <span className="text-typography-primary">
                               {formatTimeLeft(timeLeft, { alwaysShowDays: true })}
                             </span>
                           </span>
                         ) : (
-                          <span className="text-12 text-typography-secondary">
+                          <span className="text-13 text-typography-secondary">
                             <Trans>Finished</Trans>
                           </span>
                         )}
@@ -203,7 +184,7 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
                     </TableTr>
                   );
                 })}
-                {!history && (
+                {loading && !history && (
                   <TableTr>
                     <TableTd colSpan={8} className="py-16 text-center text-typography-secondary">
                       <Trans>Loading...</Trans>
@@ -244,12 +225,12 @@ function MobileRewardsHistoryRow({
   const timeLeft = epochEnd - now;
 
   const statusContent = isCurrentEpoch ? (
-    <span className="text-12 text-typography-secondary">
+    <span className="text-13 text-typography-secondary">
       <Trans>Epoch ends in</Trans>{" "}
       <span className="text-typography-primary">{formatTimeLeft(timeLeft, { alwaysShowDays: true })}</span>
     </span>
   ) : (
-    <span className="text-12 text-typography-secondary">
+    <span className="text-13 text-typography-secondary">
       <Trans>Finished</Trans>
     </span>
   );
