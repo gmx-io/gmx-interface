@@ -11679,6 +11679,7 @@ msgstr "다중 자산 클래스"
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Close"
 msgstr "종료"
 

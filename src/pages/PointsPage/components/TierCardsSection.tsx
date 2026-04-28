@@ -166,18 +166,18 @@ function MultiplierChangeTooltip({ isDecrease, children }: { isDecrease: boolean
   );
 }
 
-const BANNER_GLOW_STYLES = { backgroundImage: `url(${bannerGlowImg})`, backgroundSize: "400% 400%" };
+const BANNER_GLOW_STYLES = { backgroundImage: `url(${bannerGlowImg})`, backgroundSize: "300% 300%" };
 function BannerGlow() {
   return (
     <div
       aria-hidden
-      className="pointer-events-none absolute inset-0 animate-banner-glow opacity-30"
+      className="pointer-events-none absolute inset-0 opacity-30 transition-[background-position] duration-[2000ms] ease-in-out [background-position:65%_80%] group-hover:[background-position:90%_80%]"
       style={BANNER_GLOW_STYLES}
     />
   );
 }
 
-const tierCardBase = "flex flex-col gap-12 rounded-12 border-1/2 border-slate-600 relative overflow-hidden";
+const tierCardBase = "group flex flex-col gap-12 rounded-12 border-1/2 border-slate-600 relative overflow-hidden";
 const tierCardBanner = "bg-slate-950 p-16 max-lg:p-12 min-h-[172px]";
 const tierCardActive = "bg-slate-950 pt-16 px-16 pb-12";
 const tierIconLarge =

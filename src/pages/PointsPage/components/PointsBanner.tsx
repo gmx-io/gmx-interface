@@ -1,8 +1,9 @@
 import { Plural, Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
+import { POINTS_PAGE_BANNERS_DISMISSED_KEY } from "config/localStorage";
 import { getEpochDuration } from "domain/synthetics/incentives/constants";
 import type { EpochStats, IncentivesConfig, RewardsHistoryEntry } from "domain/synthetics/incentives/types";
 import { formatAmount } from "lib/numbers";
@@ -28,11 +29,22 @@ type BannerAction = {
   to: string;
 };
 
+type BannerType =
+  | "default"
+  | "points-expiring"
+  | "next-volume-tier"
+  | "volume-tier-drop-risk"
+  | "pair-boosts"
+  | "restake-rewards";
+
 type BannerContent = {
+  type: BannerType;
   title: ReactNode;
   description: ReactNode;
   action: BannerAction;
 };
+
+type DismissedBannerState = Partial<Record<BannerType, boolean>>;
 
 const BANNER_STYLES = {
   backgroundImage: `url(${bgPointsBanner})`,
@@ -41,6 +53,8 @@ const BANNER_STYLES = {
 };
 
 const AUTO_ROTATE_MS = 6000;
+const DISMISSED_STORAGE_KEY = JSON.stringify(POINTS_PAGE_BANNERS_DISMISSED_KEY);
+const DISMISSED_STORAGE_EVENT = "points-page-banners-dismissed-change";
 
 const ACTION_ICONS: Record<BannerAction["type"], React.ReactNode> = {
   trade: <TradeIcon className="size-16 text-blue-300" />,
@@ -49,17 +63,43 @@ const ACTION_ICONS: Record<BannerAction["type"], React.ReactNode> = {
 
 export function PointsBanner({ isActiveUser, account, config, currentEpochStats, currentEpochHistory }: Props) {
   const now = useCurrentUnixTimestamp();
+  const [dismissedBannerTypes, setDismissedBannerTypes] = useState<DismissedBannerState>(() =>
+    readDismissedBannerTypes()
+  );
 
-  const banners = useMemo(
+  const allBanners = useMemo(
     () => getBannerContent({ isActiveUser, account, config, currentEpochStats, currentEpochHistory, now }),
     [isActiveUser, account, config, currentEpochStats, currentEpochHistory, now]
   );
+  const banners = useMemo(
+    () => allBanners.filter((banner) => !dismissedBannerTypes?.[banner.type]),
+    [allBanners, dismissedBannerTypes]
+  );
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [dismissed, setDismissed] = useState(false);
 
   useEffect(() => {
-    setCurrentIndex(0);
+    const syncDismissedBannerTypes = () => {
+      setDismissedBannerTypes(readDismissedBannerTypes());
+    };
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === DISMISSED_STORAGE_KEY) {
+        syncDismissedBannerTypes();
+      }
+    };
+
+    window.addEventListener(DISMISSED_STORAGE_EVENT, syncDismissedBannerTypes);
+    window.addEventListener("storage", handleStorage);
+
+    return () => {
+      window.removeEventListener(DISMISSED_STORAGE_EVENT, syncDismissedBannerTypes);
+      window.removeEventListener("storage", handleStorage);
+    };
+  }, []);
+
+  useEffect(() => {
+    setCurrentIndex((prev) => (banners.length === 0 ? 0 : prev % banners.length));
   }, [banners.length]);
 
   useEffect(() => {
@@ -70,16 +110,30 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
     }, AUTO_ROTATE_MS);
 
     return () => clearInterval(interval);
-  }, [banners.length, currentIndex]);
+  }, [banners.length]);
 
-  if (banners.length === 0 || dismissed) return null;
+  const selectedIndex = banners.length === 0 ? 0 : currentIndex % banners.length;
+  const current = banners[selectedIndex];
 
-  const current = banners[currentIndex % banners.length];
+  const handleDismiss = useCallback(() => {
+    if (!current) return;
+
+    const nextDismissedBannerTypes = {
+      ...readDismissedBannerTypes(),
+      [current.type]: true,
+    };
+
+    setDismissedBannerTypes(nextDismissedBannerTypes);
+    writeDismissedBannerTypes(nextDismissedBannerTypes);
+  }, [current]);
+
+  if (banners.length === 0 || !current) return null;
 
   return (
     <div className="flex flex-col items-center">
       <div
-        className="relative grid w-full grid-cols-[1fr_80px] overflow-hidden rounded-8 border-1/2 border-stroke-primary bg-slate-900/50 p-16"
+        key={current.type}
+        className="relative grid w-full animate-points-banner-slide-in-right grid-cols-[1fr_80px] overflow-hidden rounded-8 border-1/2 border-stroke-primary bg-slate-900/50 p-16"
         style={BANNER_STYLES}
       >
         <div className="flex flex-col gap-4">
@@ -94,8 +148,9 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
         </div>
 
         <button
+          aria-label={t`Close`}
           className="absolute right-12 top-12 text-typography-secondary opacity-50 hover:opacity-80"
-          onClick={() => setDismissed(true)}
+          onClick={handleDismiss}
         >
           <CloseIcon className="size-20" />
         </button>
@@ -106,7 +161,7 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
           {banners.map((_, index) => (
             <button
               key={index}
-              className={cx("size-8 rounded-full bg-blue-300", index === currentIndex ? "opacity-100" : "opacity-40")}
+              className={cx("size-8 rounded-full bg-blue-300", index === selectedIndex ? "opacity-100" : "opacity-40")}
               onClick={() => setCurrentIndex(index)}
             />
           ))}
@@ -116,9 +171,41 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
   );
 }
 
+function readDismissedBannerTypes(): DismissedBannerState {
+  if (typeof window === "undefined") {
+    return {};
+  }
+
+  try {
+    const item = window.localStorage.getItem(DISMISSED_STORAGE_KEY);
+    if (!item) {
+      return {};
+    }
+
+    const parsed = JSON.parse(item);
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
+function writeDismissedBannerTypes(value: DismissedBannerState) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  try {
+    window.localStorage.setItem(DISMISSED_STORAGE_KEY, JSON.stringify(value));
+    window.dispatchEvent(new Event(DISMISSED_STORAGE_EVENT));
+  } catch {
+    return;
+  }
+}
+
 type BannerContext = Props & { now: number };
 
 const DEFAULT_BANNER: BannerContent = {
+  type: "default",
   title: <Trans>Earn rewards</Trans>,
   description: <Trans>Start earning points and unlock rewards.</Trans>,
   action: {
@@ -147,6 +234,7 @@ function getBannerContent({
     const pointsDisplay = formatAmount(expiredAmount, 18, 0, true);
     const expiredPointsCount = Number(expiredAmount / 10n ** 18n);
     items.push({
+      type: "points-expiring",
       title: t`Don't Let Rewards Expire`,
       description: (
         <Plural
@@ -175,6 +263,7 @@ function getBannerContent({
       const threshold30Pct = (nextTier.threshold * 30n) / 100n;
       if (remaining > 0n && remaining < threshold30Pct) {
         items.push({
+          type: "next-volume-tier",
           title: t`So Close to the Next Tier`,
           description: t`A small increase in volume will unlock a higher status and stronger rewards.`,
           action: {
@@ -197,6 +286,7 @@ function getBannerContent({
       const halfThreshold = currentTierConfig.threshold / 2n;
       if (epochProgressed && currentEpochStats.tradedVolume < halfThreshold) {
         items.push({
+          type: "volume-tier-drop-risk",
           title: t`Your tier will drop next epoch`,
           description: t`Your volume this epoch is below the threshold for your current tier. Trade more to keep your rewards multiplier.`,
           action: {
@@ -211,6 +301,7 @@ function getBannerContent({
 
   if (currentEpochStats && (!currentEpochStats.boostIds || currentEpochStats.boostIds.length === 0)) {
     items.push({
+      type: "pair-boosts",
       title: t`Activate Pair Boosts`,
       description: t`Trade eligible pairs to unlock multipliers and increase your reward potential this epoch.`,
       action: {
@@ -222,6 +313,7 @@ function getBannerContent({
   }
 
   items.push({
+    type: "restake-rewards",
     title: t`Restake your rewards and earn more`,
     description: t`Continue restaking your rewards to boost your earnings and unlock additional yield on your GMX tokens.`,
     action: {
