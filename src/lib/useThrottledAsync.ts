@@ -116,7 +116,7 @@ export function useThrottledAsync<T, D extends object>(
         setState((prev) => ({
           ...prev,
           data: undefined,
-          error: error as Error,
+          error,
           isLoading: false,
           promise: undefined,
           lastEstimated: Date.now(),

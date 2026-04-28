@@ -178,7 +178,7 @@ export function PoolSelector({
     setIsModalVisible(false);
   }
 
-  const _handleKeyDown = (e) => {
+  const _handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault();
       e.stopPropagation();

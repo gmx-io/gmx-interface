@@ -3,6 +3,7 @@ import { stableHash } from "swr/_internal";
 import { isAddress } from "viem";
 
 import { swrCache, SWRConfigProp } from "App/swrConfig";
+import { type AnyChainId } from "config/chains";
 import { executeMulticall } from "lib/multicall";
 import { abis, AbiId } from "sdk/abis";
 
@@ -58,7 +59,7 @@ export const contractFetcher =
 
     let shouldCallFallback = true;
 
-    const handleFallback = async (resolve, reject, error) => {
+    const handleFallback = async (resolve: (value: T) => void, reject: (reason?: unknown) => void, error: unknown) => {
       if (!shouldCallFallback) {
         return;
       }
@@ -167,7 +168,7 @@ async function fetchContractData({
     const contract = new ethers.Contract(address, abis[abiId], provider);
 
     const result = await executeMulticall(
-      chainId,
+      chainId as AnyChainId,
       {
         getContractCall: {
           abiId,
@@ -210,6 +211,7 @@ async function fetchContractData({
     return;
   }
 
+  // @ts-expect-error
   return provider[method](arg1, ...params);
 }
 

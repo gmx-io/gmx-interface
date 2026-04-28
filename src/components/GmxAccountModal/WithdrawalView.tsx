@@ -7,7 +7,14 @@ import Skeleton from "react-loading-skeleton";
 import { Address, encodeAbiParameters, encodeEventTopics, toHex, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
-import { ContractsChainId, getChainName, isTestnetChain, SettlementChainId, SourceChainId } from "config/chains";
+import {
+  AnyChainId,
+  ContractsChainId,
+  getChainName,
+  isTestnetChain,
+  SettlementChainId,
+  SourceChainId,
+} from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import {
   CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
@@ -201,7 +208,7 @@ function getSameChainWithdrawalTokens({
         token.address !== zeroAddress &&
         token.gmxAccountBalance !== undefined &&
         token.gmxAccountBalance > 0n &&
-        !MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId]?.includes(token.address)
+        !MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId as SettlementChainId]?.includes(token.address)
       );
     })
     .sort(sortTokenDataByBalance);
@@ -1024,7 +1031,9 @@ export const WithdrawalView = () => {
         const unwrappedTokenAddress = convertTokenAddress(chainId, tokenAddress, "native");
         const tokenId = getMappedTokenId(chainId as SettlementChainId, unwrappedTokenAddress, withdrawalViewChain);
         if (tokenId === undefined) {
-          const sourceChainIds = Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId]).map(Number) as SourceChainId[];
+          const sourceChainIds = Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId as SettlementChainId]).map(
+            Number
+          ) as SourceChainId[];
           for (const someSourceChainId of sourceChainIds) {
             if (someSourceChainId === withdrawalViewChain) {
               continue;
@@ -1161,7 +1170,8 @@ export const WithdrawalView = () => {
       const isValidSameChainToken = isSameChain && isValidTokenSafe(chainId, selectedTokenAddress);
 
       const isValidMultichainToken =
-        !isSameChain && MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId]?.includes(selectedTokenAddress);
+        !isSameChain &&
+        MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId as SettlementChainId]?.includes(selectedTokenAddress);
 
       if (isValidSameChainToken || isValidMultichainToken) {
         return;
@@ -1530,7 +1540,7 @@ function NetworkItem({ option }: { option: { id: number; name: string; disabled?
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-8">
-        <img src={CHAIN_ID_TO_NETWORK_ICON[option.id]} alt={option.name} className="size-20" />
+        <img src={CHAIN_ID_TO_NETWORK_ICON[option.id as AnyChainId]} alt={option.name} className="size-20" />
         <span className="text-body-large">{option.name}</span>
       </div>
     </div>

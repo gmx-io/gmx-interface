@@ -1,3 +1,5 @@
+import { ContractsChainId } from "config/chains";
+
 import { NETWORK_ID_SLUGS_MAP, NETWORK_QUERY_PARAM, VERSION_QUERY_PARAM } from "./constants";
 
 export function buildAccountDashboardUrl(
@@ -14,7 +16,7 @@ export function buildAccountDashboardUrl(
   const qs = new URLSearchParams();
 
   if (chainId) {
-    qs.set(NETWORK_QUERY_PARAM, NETWORK_ID_SLUGS_MAP[chainId]);
+    qs.set(NETWORK_QUERY_PARAM, NETWORK_ID_SLUGS_MAP[chainId as ContractsChainId]);
   }
 
   qs.set(VERSION_QUERY_PARAM, version.toString());

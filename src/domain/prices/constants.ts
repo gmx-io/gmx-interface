@@ -1,5 +1,5 @@
 // Ethereum network, Chainlink Aggregator contracts
-export const FEED_ID_MAP = {
+export const FEED_ID_MAP: Record<string, string> = {
   BTC_USD: "0xae74faa92cb67a95ebcab07358bc222e33a34da7",
   ETH_USD: "0xe62b71cf983019bff55bc83b48601ce8419650cc",
   BNB_USD: "0xc45ebd0f901ba6b2b8c7e70b717778f055ef5e6d",

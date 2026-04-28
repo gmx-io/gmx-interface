@@ -31,6 +31,7 @@ export function sortMarketsWithIndexToken<T extends GlvAndGmMarketsInfoData | Ma
   // Group markets by index token address
   const groupedMarketList: { [marketAddress: string]: GlvOrMarketInfo[] } = groupBy(
     Object.values(marketsInfoData),
+    // @ts-expect-error
     (market) => market[market.isSpotOnly ? "marketTokenAddress" : "indexTokenAddress"]
   );
 

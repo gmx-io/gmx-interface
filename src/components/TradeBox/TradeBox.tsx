@@ -645,7 +645,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     [onSelectToTokenAddress]
   );
   const handleTriggerPriceInputChange = useCallback(
-    (e) => setTriggerPriceInputValue(e.target.value),
+    (e: React.ChangeEvent<HTMLInputElement>) => setTriggerPriceInputValue(e.target.value),
     [setTriggerPriceInputValue]
   );
 
@@ -683,7 +683,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   );
 
   const handleFormSubmit = useCallback(
-    (e) => {
+    (e: React.FormEvent) => {
       e.preventDefault();
       if (!isCursorInside && (!submitButtonState.disabled || shouldDisableValidation)) {
         wrappedOnSubmit();
@@ -1031,7 +1031,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             label: t`More`,
             options: mode.map(modeToOptions),
           }
-        : modeToOptions(mode)
+        : modeToOptions(mode as TradeMode)
     );
   }, [availableTradeModes, localizedTradeModeLabels]);
 

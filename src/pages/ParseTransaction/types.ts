@@ -21,6 +21,7 @@ export interface LogEntryComponentProps extends LogEntry {
   tokensData?: TokensData;
   marketsInfoData?: MarketsInfoData;
   chainId: number;
+  network?: string;
   glvData?: GlvInfoData;
   entries: LogEntry[]; // eslint-disable-line react/no-unused-prop-types
   marketTokensData?: TokensData; // eslint-disable-line react/no-unused-prop-types

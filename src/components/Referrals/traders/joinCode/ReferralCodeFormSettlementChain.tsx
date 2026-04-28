@@ -32,7 +32,7 @@ export function ReferralCodeFormSettlementChain({
   const [isValidating, setIsValidating] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [referralCodeExists, setReferralCodeExists] = useState(true);
-  const { pendingTxns, setPendingTxns } = usePendingTxns();
+  const { setPendingTxns } = usePendingTxns();
   const debouncedReferralCode = useDebounce(referralCode, 300);
 
   async function handleSubmit(event: React.FormEvent) {
@@ -47,11 +47,9 @@ export function ReferralCodeFormSettlementChain({
 
     try {
       const tx = await setTraderReferralCodeByUser(chainId, referralCode, signer, {
-        account,
         successMsg: isEdit ? t`Referral code updated` : t`Referral code added`,
         failMsg: isEdit ? t`Referral code update failed` : t`Failed to add referral code`,
         setPendingTxns,
-        pendingTxns,
       });
       if (callAfterSuccess) {
         callAfterSuccess(referralCode);

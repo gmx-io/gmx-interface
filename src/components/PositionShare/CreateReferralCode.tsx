@@ -8,7 +8,6 @@ import { useAccount } from "wagmi";
 
 import type { SettlementChainId, SourceChainId } from "config/chains";
 import { ContractsChainId, getChainName } from "config/chains";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -70,7 +69,6 @@ export function CreateReferralCode({ onSuccess }: Props) {
 
 function CreateReferralCodeSettlement({ onSuccess }: Props) {
   const { signer } = useWallet();
-  const { pendingTxns } = usePendingTxns();
   const { openConnectModal } = useConnectModal();
   const { address: account, isConnected } = useAccount();
   const { chainId } = useChainId();
@@ -92,10 +90,9 @@ function CreateReferralCodeSettlement({ onSuccess }: Props) {
       return registerReferralCode(chainId, referralCode, signer, {
         sentMsg: t`Referral code submitted`,
         failMsg: t`Referral code creation failed`,
-        pendingTxns,
       });
     },
-    [chainId, pendingTxns, signer]
+    [chainId, signer]
   );
 
   useEffect(() => {

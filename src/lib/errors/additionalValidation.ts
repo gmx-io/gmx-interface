@@ -48,7 +48,7 @@ function getEstimateGasError(provider: Provider | ISigner, txnData: TransactionR
       return undefined;
     })
     .catch((error) => {
-      (error as ErrorLike).errorSource = "getEstimateGasError";
+      error.errorSource = "getEstimateGasError";
       return error;
     });
 }
@@ -90,7 +90,7 @@ export async function getCallStaticError(
     await provider.call(txnData);
     return { txnData };
   } catch (error) {
-    (error as ErrorLike).errorSource = "getCallStaticError";
+    error.errorSource = "getCallStaticError";
 
     return { error, txnData };
   }
@@ -162,7 +162,7 @@ export function makeTransactionErrorHandler(
   txnOpts: Overrides,
   from: string
 ) {
-  return async (error) => {
+  return async (error: Error) => {
     const data = contract.interface.encodeFunctionData(method, params);
     const to = await contract.getAddress();
     const provider = getProvider(undefined, chainId);

@@ -2,7 +2,8 @@ import { useMemo } from "react";
 
 import { getContract } from "config/contracts";
 import { useMarkets } from "domain/synthetics/markets";
-import { ContractCallsConfig, useMulticall } from "lib/multicall";
+import { useMulticall } from "lib/multicall";
+import type { ContractCallsConfig, MulticallRequestConfig } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { HASHED_KINK_MODEL_MARKET_RATES_KEYS } from "sdk/codegen/prebuilt";
 import type { ContractsChainId } from "sdk/configs/chains";
@@ -32,7 +33,8 @@ export function useKinkModelMarketsRates(chainId: ContractsChainId): KinkModelMa
     refreshInterval: CONFIG_UPDATE_INTERVAL,
 
     request: () =>
-      marketsAddresses.reduce((acc, marketAddress) => {
+      marketsAddresses.reduce<MulticallRequestConfig>((acc, marketAddress) => {
+        // @ts-expect-error
         const prebuiltHashedKeys = HASHED_KINK_MODEL_MARKET_RATES_KEYS[chainId]?.[marketAddress];
 
         if (!prebuiltHashedKeys) {

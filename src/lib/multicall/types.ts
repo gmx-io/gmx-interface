@@ -18,7 +18,9 @@ export type ContractCallsConfig<T extends { calls: any }> = {
   };
 };
 
-export type MulticallRequestConfig<T extends { [key: string]: any }> = {
+export type MulticallRequestConfig<
+  T extends { [key: string]: any } = Record<string, { calls: Record<string, ContractCallConfig> }>,
+> = {
   [contractKey in keyof T]: ContractCallsConfig<T[contractKey]>;
 };
 

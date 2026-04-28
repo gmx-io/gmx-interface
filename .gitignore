@@ -30,6 +30,8 @@
 .env.test.local
 .env.production.local
 
+_gmx-api
+
 # cache files
 .eslintcache
 *.tsbuildinfo

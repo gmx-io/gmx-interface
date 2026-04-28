@@ -405,8 +405,8 @@ function StakingPowerAlerts({ stakingPowerData }: { stakingPowerData: StakingPow
               handle={<Trans>Staking power</Trans>}
               content={
                 <Trans>
-                  Staking power accrues over time based on your staked GMX balance and determines your share of
-                  buyback rewards.
+                  Staking power accrues over time based on your staked GMX balance and determines your share of buyback
+                  rewards.
                 </Trans>
               }
             />

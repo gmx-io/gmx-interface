@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
 
+import { isDepositDisabledMarket } from "config/static/markets";
 import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import {
   GlvInfo,
@@ -99,6 +100,10 @@ export function GmPoolsSelectorForGlvMarket({
             return null;
           }
 
+          if (isDeposit && (marketInfo.isDisabled || isDepositDisabledMarket(chainId, marketInfo.marketTokenAddress))) {
+            return null;
+          }
+
           const indexName = getMarketIndexName(marketInfo);
           const marketToken = getByKey(marketTokensData, marketInfo.marketTokenAddress);
           const gmBalance = marketToken?.balance;
@@ -133,15 +138,12 @@ export function GmPoolsSelectorForGlvMarket({
     });
 
     return [...sortedMarketsWithBalance, ...marketsWithoutBalance];
-  }, [getMarketState, marketTokensData, markets]);
+  }, [chainId, getMarketState, isDeposit, marketTokensData, markets]);
 
-  const selectedPool = useMemo(
-    () => marketsOptions.find((option) => getGlvOrMarketAddress(option.glvOrMarketInfo) === selectedMarketAddress),
-    [marketsOptions, selectedMarketAddress]
+  const marketInfo = useMemo(
+    () => markets.find((m) => m.market?.marketTokenAddress === selectedMarketAddress)?.market,
+    [markets, selectedMarketAddress]
   );
-
-  const selectedMarketInfo = selectedPool?.glvOrMarketInfo;
-  const marketInfo = selectedMarketInfo && isMarketInfo(selectedMarketInfo) ? selectedMarketInfo : undefined;
 
   const filteredOptions = useMemo(() => {
     const textMatched = searchKeyword.trim()
@@ -150,6 +152,7 @@ export function GmPoolsSelectorForGlvMarket({
           [
             (item) => stripBlacklistedWords((item.glvOrMarketInfo as MarketInfo).indexToken.name),
             (item) => (item.glvOrMarketInfo as MarketInfo).indexToken.symbol,
+            (item) => ((item.glvOrMarketInfo as MarketInfo).indexToken.searchAliases ?? []).join(" "),
           ],
           searchKeyword
         )
@@ -186,7 +189,7 @@ export function GmPoolsSelectorForGlvMarket({
   );
 
   const handleKeyDown = useCallback(
-    (e) => {
+    (e: React.KeyboardEvent) => {
       if (e.key === "Enter") {
         e.preventDefault();
         e.stopPropagation();

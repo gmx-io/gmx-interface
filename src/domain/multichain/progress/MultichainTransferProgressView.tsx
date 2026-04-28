@@ -75,7 +75,7 @@ function usePromiseState<ErrorType = unknown>(
   return { state, error };
 }
 
-export function useMultichainTransferProgressView(task: MultichainTransferProgress | undefined) {
+export function useMultichainTransferProgressView(task: MultichainTransferProgress<string> | undefined) {
   const { chainId } = useChainId();
 
   const { state: finishedState, error: finishedError } = usePromiseState<MultichainTransferProgress.errors>(
@@ -121,7 +121,7 @@ export function useMultichainTransferProgressView(task: MultichainTransferProgre
 
 type Props = {
   chainId: number;
-  task: MultichainTransferProgress;
+  task: MultichainTransferProgress<string>;
   finishedState: PromiseState;
   finishedError: MultichainTransferProgress.errors | undefined;
   closeToast?: () => void;

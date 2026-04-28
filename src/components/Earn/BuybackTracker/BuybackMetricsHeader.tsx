@@ -36,7 +36,12 @@ export function BuybackMetricsHeader({
       />
       <MetricItem
         label={<Trans>Annualized Rate</Trans>}
-        tooltip={<Trans>Average weekly rate extrapolated to a full year (weekly rate × 52).</Trans>}
+        tooltip={
+          <Trans>
+            Protocol-wide annualized GMX buyback rate, based on the average of the last 4 completed weeks relative to
+            total staked GMX and esGMX. Your actual rewards depend on staking power and may differ.
+          </Trans>
+        }
         value={metrics ? (metrics.annualizedRate !== undefined ? formatPercent(metrics.annualizedRate) : "N/A") : "N/A"}
         isLoading={isLoading}
         isUnavailable={isUnavailable}

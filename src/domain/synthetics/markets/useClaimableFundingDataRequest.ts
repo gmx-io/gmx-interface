@@ -3,6 +3,7 @@ import { useMemo } from "react";
 import { getContract } from "config/contracts";
 import { CLAIMABLE_FUNDING_AMOUNT } from "config/dataStore";
 import { useMulticall } from "lib/multicall";
+import type { MulticallRequestConfig } from "lib/multicall";
 import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import useWallet from "lib/wallets/useWallet";
@@ -31,7 +32,7 @@ export function useClaimableFundingDataRequest(chainId: ContractsChainId) {
         return {};
       }
 
-      return marketsAddresses.reduce((request, marketAddress) => {
+      return marketsAddresses.reduce<MulticallRequestConfig>((request, marketAddress) => {
         const market = getByKey(marketsData, marketAddress);
 
         if (!market) {
