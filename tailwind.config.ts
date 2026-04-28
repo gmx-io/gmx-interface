@@ -216,10 +216,15 @@ const config: Config = {
           "0%": { opacity: "0", transform: "translateX(18px)" },
           "100%": { opacity: "1", transform: "translateX(0)" },
         },
+        "points-banner-slide-in-left": {
+          "0%": { opacity: "0", transform: "translateX(-18px)" },
+          "100%": { opacity: "1", transform: "translateX(0)" },
+        },
       },
       animation: {
         marquee: "marquee 20s linear infinite",
         "points-banner-slide-in-right": "points-banner-slide-in-right 260ms ease-out",
+        "points-banner-slide-in-left": "points-banner-slide-in-left 260ms ease-out",
       },
     },
   },

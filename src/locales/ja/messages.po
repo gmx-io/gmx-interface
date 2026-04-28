@@ -1016,10 +1016,6 @@ msgstr ""
 msgid "No options to buy {nativeTokenSymbol} on {chainName}"
 msgstr "{chainName}で{nativeTokenSymbol}を購入するオプションがありません"
 
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-msgid "Total points earned across all epochs."
-msgstr ""
-
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values calculated when earned. Excludes incentives."
 msgstr "手数料は獲得時に計算されます。インセンティブは含まれません。"
@@ -1738,6 +1734,7 @@ msgstr "利用可能な流動性 {directionLabel}"
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Show less"
 msgstr "少なく表示"
 
@@ -2194,6 +2191,10 @@ msgstr "最大プラスファクター"
 #: src/pages/RpcDebug/parts.tsx
 msgid "{failedTrackersCount} / {totalActiveTrackersCount} active trackers failed ({totalTrackersCount} total)"
 msgstr "{failedTrackersCount} / {totalActiveTrackersCount} 件のアクティブトラッカーが失敗しました（合計 {totalTrackersCount} 件）"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Trade {0} to unlock {1} status <0>+{2}</0>"
+msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Bridge out failed"
@@ -3648,10 +3649,6 @@ msgstr "Permit が署名されました"
 msgid "Collapse"
 msgstr "折りたたむ"
 
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-msgid "All time earned points"
-msgstr ""
-
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Banners"
 msgstr "バナー"
@@ -3760,11 +3757,6 @@ msgstr "受け取りの確認"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet-only"
 msgstr "ウォレットのみ"
-
-#: src/components/PointsShare/PointsShareCard.tsx
-#: src/components/PositionShare/PositionShareCard.tsx
-msgid "Used Referral Code"
-msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing approval..."
@@ -4546,6 +4538,10 @@ msgstr "プラスファクター"
 msgid "Full position close"
 msgstr "ポジション全決済"
 
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Activity Boosts"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
 msgstr ""
@@ -4948,7 +4944,6 @@ msgstr "スワップへの影響"
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
 #: src/pages/PointsPage/components/TierCardsSection.tsx
-#: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Activity Boost"
 msgstr ""
 
@@ -5413,10 +5408,6 @@ msgstr "このアクションで報酬が {0}% 増加します"
 msgid "Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks"
 msgstr "Arbitrum、Ethereum、その他のネットワーク上で、ウォレットから直接、最大100倍レバレッジのパーペチュアル取引やスポット取引を行えます"
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Volume this epoch: <0>${0}</0>"
-msgstr ""
-
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Sell fee"
 msgstr "売却手数料"
@@ -5862,7 +5853,6 @@ msgid "Expired Points"
 msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/PointsRow.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Estimated rewards"
 msgstr ""
 
@@ -6661,6 +6651,10 @@ msgstr "ポジションサイズがプール価値を超えています"
 msgid "Apply referral code"
 msgstr ""
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Volume this epoch: <0>{0}</0>"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (positive)"
 msgstr "インパクト指数（正）"
@@ -6892,10 +6886,6 @@ msgstr "アナリティクス"
 msgid "wstETH APR"
 msgstr "wstETH APR"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
-msgid "Estimated GMX rewards generated during the current epoch."
-msgstr ""
-
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "About the GLP incident"
 msgstr "GLPインシデントについて"
@@ -7089,10 +7079,6 @@ msgstr "トリガー価格はスワップ手数料と価格への影響を考慮
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Debug swaps"
 msgstr "スワップデバッグ"
-
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-msgid "Total points spent on fee discounts."
-msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Invalid execution price. Calculated price is negative"
@@ -7292,6 +7278,11 @@ msgstr "LONG LIQ."
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Select an asset to deposit"
 msgstr "入金するアセットを選択してください"
+
+#: src/components/PointsShare/PointsShareCard.tsx
+#: src/components/PositionShare/PositionShareCard.tsx
+msgid "Used Code"
+msgstr ""
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
@@ -7934,6 +7925,7 @@ msgid "Order uses {collateralSymbol}, but existing {longText} position uses {sym
 msgstr "注文は{collateralSymbol}を使用していますが、既存の{longText}ポジションは{symbol}を担保としています"
 
 #: src/components/MarketStats/components/CompositionTable.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Show more"
 msgstr "さらに表示"
@@ -9160,10 +9152,6 @@ msgstr "V2 リベート"
 msgid "Select asset to deposit"
 msgstr "入金するアセットを選択"
 
-#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
-msgid "Search Address"
-msgstr ""
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max GM buyable amount reached"
 msgstr "最大GM購入可能額に到達"
@@ -9955,10 +9943,6 @@ msgstr "ポジションに発生したプラスのファンディング手数料
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GMは1つのマーケットから手数料を獲得します。GLVは複数のGMトークンを保有し、関連マーケット間で自動的にリバランスします。どちらも収益を自動的に複利運用します。単一マーケットへのエクスポージャーにはGMを、複数プールへの分散にはGLVをお選びください。"
-
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-msgid "Used Points"
-msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact amount"
@@ -10825,10 +10809,6 @@ msgstr "{orderText}をキャンセル中…"
 msgid "Re-sign"
 msgstr "再署名"
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Trade ${0} to unlock {1} status <0>+{2}</0>"
-msgstr ""
-
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to GMX Account..."
 msgstr "GMX Account に入金中..."
@@ -11542,10 +11522,6 @@ msgstr "true"
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
 msgstr "{ordersText}がキャンセルされました"
-
-#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
-msgid "No addresses match your search."
-msgstr ""
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx

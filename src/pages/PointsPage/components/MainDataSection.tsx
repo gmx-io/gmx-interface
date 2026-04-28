@@ -34,7 +34,8 @@ export function MainDataSection({
   projectedVolumeTier,
   projectedStakingTier,
 }: Props) {
-  const displayMultiplier = multiplier !== undefined ? formatMultiplier(multiplier) : "0.0x";
+  const hasMultiplier = multiplier !== undefined && multiplier > 0;
+  const displayMultiplier = formatMultiplier(multiplier);
   const displayPoints = pointsBalance ? formatAmount(pointsBalance, 18, 4, true) : "0.0000";
   const maxMultiplierLabel = getMaxMultiplierLabel(config);
   const pointsExpirationEpochs = getPointsExpirationEpochs(config);
@@ -97,7 +98,9 @@ export function MainDataSection({
               variant="none"
             />
           ) : (
-            <span className="text-24 font-medium numbers">{displayMultiplier}</span>
+            <span className={cx("text-24 font-medium numbers", { "text-green-300": hasMultiplier })}>
+              {displayMultiplier}
+            </span>
           )}
           <div className="flex items-center gap-8">
             <TooltipWithPortal

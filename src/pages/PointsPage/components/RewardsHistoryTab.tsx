@@ -39,7 +39,7 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
   const [page, setPage] = useState(1);
   const {
     data: history,
-    hasNextPage,
+    totalCount,
     loading,
   } = useAccountRewardsHistory(chainId, {
     account,
@@ -65,7 +65,7 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
     [gmxPrice]
   );
 
-  const pageCount = history ? (hasNextPage ? page + 1 : page) : page;
+  const pageCount = totalCount === undefined ? page : Math.max(1, Math.ceil(totalCount / PER_PAGE));
   const pageData = history ?? [];
   const now = useCurrentUnixTimestamp();
 

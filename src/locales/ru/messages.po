@@ -1016,10 +1016,6 @@ msgstr ""
 msgid "No options to buy {nativeTokenSymbol} on {chainName}"
 msgstr "Нет вариантов покупки {nativeTokenSymbol} на {chainName}"
 
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-msgid "Total points earned across all epochs."
-msgstr ""
-
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values calculated when earned. Excludes incentives."
 msgstr "Значения комиссий рассчитываются на момент получения. Без учёта поощрений."
@@ -1738,6 +1734,7 @@ msgstr "Доступная ликвидность {directionLabel}"
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Show less"
 msgstr "Показать меньше"
 
@@ -2194,6 +2191,10 @@ msgstr "Макс. положительный фактор"
 #: src/pages/RpcDebug/parts.tsx
 msgid "{failedTrackersCount} / {totalActiveTrackersCount} active trackers failed ({totalTrackersCount} total)"
 msgstr "{failedTrackersCount} / {totalActiveTrackersCount} активных трекеров с ошибкой ({totalTrackersCount} всего)"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Trade {0} to unlock {1} status <0>+{2}</0>"
+msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Bridge out failed"
@@ -3648,10 +3649,6 @@ msgstr "Permit подписан"
 msgid "Collapse"
 msgstr "Свернуть"
 
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-msgid "All time earned points"
-msgstr ""
-
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Banners"
 msgstr "Баннеры"
@@ -3760,11 +3757,6 @@ msgstr "Подтвердить получение"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet-only"
 msgstr "Только кошелёк"
-
-#: src/components/PointsShare/PointsShareCard.tsx
-#: src/components/PositionShare/PositionShareCard.tsx
-msgid "Used Referral Code"
-msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Signing approval..."
@@ -4546,6 +4538,10 @@ msgstr "Положительный фактор"
 msgid "Full position close"
 msgstr "Полное закрытие позиции"
 
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Activity Boosts"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
 msgstr ""
@@ -4948,7 +4944,6 @@ msgstr "Влияние свопа на цену"
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
 #: src/pages/PointsPage/components/TierCardsSection.tsx
-#: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Activity Boost"
 msgstr ""
 
@@ -5413,10 +5408,6 @@ msgstr "Получите на {0}% больше вознаграждений с 
 msgid "Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks"
 msgstr "Торгуйте бессрочными контрактами с кредитным плечом до 100x, а также спотовыми активами напрямую из вашего кошелька на Arbitrum, Ethereum и других сетях"
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Volume this epoch: <0>${0}</0>"
-msgstr ""
-
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Sell fee"
 msgstr "Комиссия продажи"
@@ -5862,7 +5853,6 @@ msgid "Expired Points"
 msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/PointsRow.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Estimated rewards"
 msgstr ""
 
@@ -6661,6 +6651,10 @@ msgstr "Размер позиции превышает стоимость пул
 msgid "Apply referral code"
 msgstr ""
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Volume this epoch: <0>{0}</0>"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (positive)"
 msgstr "Экспонента влияния (положительная)"
@@ -6892,10 +6886,6 @@ msgstr "Аналитика"
 msgid "wstETH APR"
 msgstr "APR wstETH"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
-msgid "Estimated GMX rewards generated during the current epoch."
-msgstr ""
-
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "About the GLP incident"
 msgstr "Об инциденте с GLP"
@@ -7089,10 +7079,6 @@ msgstr "Цена активации учитывает комиссии за о�
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Debug swaps"
 msgstr "Отладка обменов"
-
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-msgid "Total points spent on fee discounts."
-msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Invalid execution price. Calculated price is negative"
@@ -7292,6 +7278,11 @@ msgstr "LONG LIQ."
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Select an asset to deposit"
 msgstr "Выберите актив для депозита"
+
+#: src/components/PointsShare/PointsShareCard.tsx
+#: src/components/PositionShare/PositionShareCard.tsx
+msgid "Used Code"
+msgstr ""
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Enter a referral code to receive a trading fee discount.<0/> Depending on the referral tier, you can save up to 10% on all<1/> opening and closing fees."
@@ -7934,6 +7925,7 @@ msgid "Order uses {collateralSymbol}, but existing {longText} position uses {sym
 msgstr "Ордер использует {collateralSymbol}, но существующая позиция {longText} использует {symbol} в качестве обеспечения"
 
 #: src/components/MarketStats/components/CompositionTable.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Show more"
 msgstr "Показать больше"
@@ -9160,10 +9152,6 @@ msgstr "Скидки V2"
 msgid "Select asset to deposit"
 msgstr "Выберите актив для пополнения"
 
-#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
-msgid "Search Address"
-msgstr ""
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max GM buyable amount reached"
 msgstr "Достигнута максимальная сумма покупки GM"
@@ -9955,10 +9943,6 @@ msgstr "Положительные комиссии за финансирова�
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
 msgstr "GM получает комиссии с одного рынка. GLV содержит несколько токенов GM и автоматически ребалансирует их между связанными рынками. Оба варианта автоматически реинвестируют доход. Выбирайте GM для экспозиции к одному рынку или GLV для диверсификации по нескольким пулам."
-
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-msgid "Used Points"
-msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact amount"
@@ -10825,10 +10809,6 @@ msgstr "Отмена {orderText}…"
 msgid "Re-sign"
 msgstr "Переподписать"
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Trade ${0} to unlock {1} status <0>+{2}</0>"
-msgstr ""
-
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to GMX Account..."
 msgstr "Депозит на GMX Account..."
@@ -11542,10 +11522,6 @@ msgstr "true"
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
 msgstr "{ordersText} отменён"
-
-#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
-msgid "No addresses match your search."
-msgstr ""
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrderList/filters/OrderTypeFilter.tsx

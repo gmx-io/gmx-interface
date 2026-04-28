@@ -58,7 +58,7 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
   const leaderboardEnabled = timeFilter === "all" || epoch !== undefined;
   const {
     data: leaderboard,
-    hasNextPage,
+    totalCount,
     loading,
   } = useIncentivesLeaderboard(chainId, {
     epoch,
@@ -85,7 +85,7 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
     [setTimeFilter, setPage]
   );
 
-  const pageCount = leaderboard ? (hasNextPage ? page + 1 : page) : page;
+  const pageCount = totalCount === undefined ? page : Math.max(1, Math.ceil(totalCount / PER_PAGE));
   const indexFrom = (page - 1) * PER_PAGE;
   const pageData = useMemo(() => leaderboard ?? [], [leaderboard]);
 
@@ -124,8 +124,8 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
           <Trans>Leaderboard data is not available yet.</Trans>
         </div>
       ) : (
-        <div className="grow rounded-8 bg-slate-900">
-          <TableScrollFadeContainer>
+        <div className="flex grow flex-col rounded-8 bg-slate-900">
+          <TableScrollFadeContainer className="grow">
             <table className="w-full min-w-[800px] table-fixed">
               <colgroup>
                 <col style={COL_RANK} />

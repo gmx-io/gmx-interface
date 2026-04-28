@@ -126,33 +126,27 @@ export function SidebarRewards({ chainId, account }: Props) {
           </Button>
         </div>
 
-        <div className="mt-16 flex flex-col gap-2 border-t-1/2 border-slate-600 pt-16">
-          <div className="flex items-center justify-between py-4 text-13">
-            <span className="font-medium text-typography-secondary">
-              <Trans>Epoch ends in</Trans>
-            </span>
+        <div className="mt-16 flex flex-col border-t-1/2 border-slate-600 pt-16">
+          <div className="flex h-24 items-center justify-between text-13 font-medium text-typography-secondary">
+            <Trans>Epoch ends in</Trans>
             <span className="text-typography-primary">{timeLeft || "—"}</span>
           </div>
-          <div className="flex items-center justify-between py-4 text-13">
-            <span className="flex items-center gap-4 font-medium text-typography-secondary">
-              <Trans>Points balance</Trans>
-              <TooltipWithPortal
-                handle={undefined}
-                content={t`Total non-expired points available. Points automatically discount up to 50% of your trading fees.`}
-                variant="iconStroke"
-              />
-            </span>
+          <div className="flex h-24 items-center justify-between text-13 font-medium text-typography-secondary">
+            <TooltipWithPortal
+              handle={<Trans>Points balance</Trans>}
+              content={t`Total non-expired points available. Points automatically discount up to 50% of your trading fees.`}
+              variant="iconStroke"
+            />
+
             <span className="text-typography-primary">{displayPoints}</span>
           </div>
-          <div className="flex items-center justify-between py-4 text-13">
-            <span className="flex items-center gap-4 font-medium text-typography-secondary">
-              <Trans>Total earned rewards</Trans>
-              <TooltipWithPortal
-                handle={undefined}
-                content={t`Total rewards earned since the start of the program.`}
-                variant="iconStroke"
-              />
-            </span>
+          <div className="flex h-24 items-center justify-between text-13  font-medium text-typography-secondary">
+            <TooltipWithPortal
+              handle={<Trans>Total earned rewards</Trans>}
+              content={t`Total rewards earned since the start of the program.`}
+              variant="iconStroke"
+            />
+
             <span className="text-typography-primary">{displayTotalEarnedRewards} GMX</span>
           </div>
         </div>

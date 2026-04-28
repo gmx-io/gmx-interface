@@ -34,6 +34,7 @@ import { Amount } from "components/Amount/Amount";
 import { Avatar } from "components/Avatar/Avatar";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { MultiplierBadge } from "components/MultiplierBadge/MultiplierBadge";
 import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -44,12 +45,13 @@ import BellIcon from "img/ic_bell.svg?react";
 import ChevronLeftIcon from "img/ic_chevron_left.svg?react";
 import ChevronRight from "img/ic_chevron_right.svg?react";
 import CopyIcon from "img/ic_copy.svg?react";
+import DepositIcon from "img/ic_deposit.svg?react";
 import ExplorerIcon from "img/ic_explorer.svg?react";
-import MultiplierSolidIcon from "img/ic_multiplier_solid.svg?react";
 import PnlAnalysisIcon from "img/ic_pnl_analysis.svg?react";
 import SettingsIcon from "img/ic_settings.svg?react";
 import DisconnectIcon from "img/ic_sign_out_20.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
+import WithdrawIcon from "img/ic_withdraw.svg?react";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import {
@@ -361,13 +363,14 @@ const ActionButtons = () => {
     <Button
       variant="secondary"
       size="medium"
-      className={cx("flex-grow basis-1/2", {
+      className={cx("flex-grow basis-1/2 !gap-4", {
         "!text-typography-primary": !isAvalancheSettlement,
         "w-full": isAvalancheSettlement,
       })}
       onClick={handleDepositClick}
       disabled={isAvalancheSettlement}
     >
+      <DepositIcon className="size-24 shrink-0 text-blue-100" />
       <Trans>Deposit</Trans>
     </Button>
   );
@@ -390,9 +393,10 @@ const ActionButtons = () => {
       <Button
         variant="secondary"
         size="medium"
-        className="flex-grow basis-1/2 !text-typography-primary"
+        className="flex-grow basis-1/2 !gap-4 !text-typography-primary"
         onClick={handleWithdrawClick}
       >
+        <WithdrawIcon className="size-24 shrink-0 text-blue-100" />
         <Trans>Withdraw</Trans>
       </Button>
     </div>
@@ -555,9 +559,7 @@ const PointsSection = () => {
       <div className="flex flex-col items-start gap-2">
         <span className="text-13 font-medium text-typography-primary">
           {hasMultiplier ? <Trans>Your multiplier</Trans> : <Trans>GMX Points</Trans>}{" "}
-          <span className="inline-flex items-center gap-4 rounded-full bg-green-900 px-4 py-3 text-12 text-green-500">
-            <MultiplierSolidIcon className="size-12" /> {hasMultiplier ? formatMultiplier(multiplier) : "0.0x"}
-          </span>
+          <MultiplierBadge multiplier={multiplier} />
         </span>
         <span className="text-12 text-typography-secondary">
           {hasMultiplier ? (

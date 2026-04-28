@@ -1,5 +1,4 @@
 import { Trans } from "@lingui/macro";
-import cx from "classnames";
 import { Link } from "react-router-dom";
 
 import { ARBITRUM } from "config/chains";
@@ -10,7 +9,7 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useGmxPrice } from "domain/legacy";
-import { isIncentivesEnabled, formatMultiplier, MULTIPLIER_DECIMALS } from "domain/synthetics/incentives/constants";
+import { isIncentivesEnabled, MULTIPLIER_DECIMALS } from "domain/synthetics/incentives/constants";
 import { getEstimatedTradeRewards } from "domain/synthetics/incentives/pointsEstimate";
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
 import { useChainId } from "lib/chains";
@@ -18,7 +17,7 @@ import { formatAmount, formatUsd } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
-import MultiplierSolidIcon from "img/ic_multiplier_solid.svg?react";
+import { MultiplierBadge } from "components/MultiplierBadge/MultiplierBadge";
 
 export function PointsRow() {
   const { chainId } = useChainId();
@@ -60,14 +59,7 @@ export function PointsRow() {
       className="flex items-center justify-between gap-8 rounded-8 p-8 text-12 text-typography-secondary transition-colors"
     >
       <span className="flex min-w-0 items-center gap-8">
-        <span
-          className={cx(
-            "flex items-center gap-4 rounded-full px-6 py-2 font-medium",
-            hasMultiplier ? "bg-green-900 text-green-500" : "border-1/2 border-slate-600 text-typography-secondary"
-          )}
-        >
-          <MultiplierSolidIcon className="size-12" /> {hasMultiplier ? formatMultiplier(multiplier) : "0.0x"}
-        </span>
+        <MultiplierBadge multiplier={multiplier} />
         {hasMultiplier && hasEstimatedRewards ? (
           <span className="truncate">
             <Trans>Estimated rewards</Trans>

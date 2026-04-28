@@ -1016,10 +1016,6 @@ msgstr ""
 msgid "No options to buy {nativeTokenSymbol} on {chainName}"
 msgstr ""
 
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-msgid "Total points earned across all epochs."
-msgstr ""
-
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values calculated when earned. Excludes incentives."
 msgstr ""
@@ -1738,6 +1734,7 @@ msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Show less"
 msgstr ""
 
@@ -2193,6 +2190,10 @@ msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "{failedTrackersCount} / {totalActiveTrackersCount} active trackers failed ({totalTrackersCount} total)"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Trade {0} to unlock {1} status <0>+{2}</0>"
 msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
@@ -3648,10 +3649,6 @@ msgstr ""
 msgid "Collapse"
 msgstr ""
 
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-msgid "All time earned points"
-msgstr ""
-
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Banners"
 msgstr ""
@@ -3759,11 +3756,6 @@ msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Wallet-only"
-msgstr ""
-
-#: src/components/PointsShare/PointsShareCard.tsx
-#: src/components/PositionShare/PositionShareCard.tsx
-msgid "Used Referral Code"
 msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
@@ -4546,6 +4538,10 @@ msgstr ""
 msgid "Full position close"
 msgstr ""
 
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Activity Boosts"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
 msgstr ""
@@ -4948,7 +4944,6 @@ msgstr ""
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
 #: src/pages/PointsPage/components/TierCardsSection.tsx
-#: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Activity Boost"
 msgstr ""
 
@@ -5413,10 +5408,6 @@ msgstr ""
 msgid "Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks"
 msgstr ""
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Volume this epoch: <0>${0}</0>"
-msgstr ""
-
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Sell fee"
 msgstr ""
@@ -5862,7 +5853,6 @@ msgid "Expired Points"
 msgstr ""
 
 #: src/components/TradeBox/TradeBoxRows/PointsRow.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Estimated rewards"
 msgstr ""
 
@@ -6661,6 +6651,10 @@ msgstr ""
 msgid "Apply referral code"
 msgstr ""
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Volume this epoch: <0>{0}</0>"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (positive)"
 msgstr ""
@@ -6892,10 +6886,6 @@ msgstr ""
 msgid "wstETH APR"
 msgstr ""
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
-msgid "Estimated GMX rewards generated during the current epoch."
-msgstr ""
-
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
 msgid "About the GLP incident"
 msgstr ""
@@ -7088,10 +7078,6 @@ msgstr ""
 
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Debug swaps"
-msgstr ""
-
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-msgid "Total points spent on fee discounts."
 msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
@@ -7291,6 +7277,11 @@ msgstr ""
 
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "Select an asset to deposit"
+msgstr ""
+
+#: src/components/PointsShare/PointsShareCard.tsx
+#: src/components/PositionShare/PositionShareCard.tsx
+msgid "Used Code"
 msgstr ""
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
@@ -7934,6 +7925,7 @@ msgid "Order uses {collateralSymbol}, but existing {longText} position uses {sym
 msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Show more"
 msgstr ""
@@ -9160,10 +9152,6 @@ msgstr ""
 msgid "Select asset to deposit"
 msgstr ""
 
-#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
-msgid "Search Address"
-msgstr ""
-
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max GM buyable amount reached"
 msgstr ""
@@ -9954,10 +9942,6 @@ msgstr ""
 
 #: src/components/Earn/Discovery/EarnFaq.tsx
 msgid "GM earns fees from one market. GLV holds multiple GM tokens and auto-rebalances across related markets. Both auto-compound returns. Choose GM for single-market exposure or GLV to diversify across multiple pools."
-msgstr ""
-
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-msgid "Used Points"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -10825,10 +10809,6 @@ msgstr ""
 msgid "Re-sign"
 msgstr ""
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Trade ${0} to unlock {1} status <0>+{2}</0>"
-msgstr ""
-
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to GMX Account..."
 msgstr ""
@@ -11541,10 +11521,6 @@ msgstr ""
 
 #: src/domain/synthetics/orders/cancelOrdersTxn.ts
 msgid "{ordersText} canceled"
-msgstr ""
-
-#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
-msgid "No addresses match your search."
 msgstr ""
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx

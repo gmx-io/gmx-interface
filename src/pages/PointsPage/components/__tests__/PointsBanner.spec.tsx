@@ -1,8 +1,8 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
-import { cleanup, fireEvent, render, screen } from "@testing-library/react";
+import { act, cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
-import { afterEach, beforeEach, describe, expect, it } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { POINTS_PAGE_BANNERS_DISMISSED_KEY } from "config/localStorage";
 import type { EpochStats, IncentivesConfig, RewardsHistoryEntry } from "domain/synthetics/incentives/types";
@@ -105,12 +105,77 @@ describe("PointsBanner", () => {
 
   afterEach(() => {
     cleanup();
+    vi.useRealTimers();
   });
 
   it("slides the displayed banner in from the right", () => {
     const { container } = renderBanner();
 
     expect(container.querySelector(".animate-points-banner-slide-in-right")).not.toBeNull();
+  });
+
+  it("chooses animation direction when clicking banner dots", () => {
+    const { container } = renderBanner();
+    const dots = container.querySelectorAll(".rounded-full");
+
+    fireEvent.click(dots[3]);
+
+    expect(screen.getByText("Restake your rewards and earn more")).toBeTruthy();
+    expect(container.querySelector(".animate-points-banner-slide-in-right")).not.toBeNull();
+
+    fireEvent.click(dots[0]);
+
+    expect(screen.getByText("Don't Let Rewards Expire")).toBeTruthy();
+    expect(container.querySelector(".animate-points-banner-slide-in-left")).not.toBeNull();
+  });
+
+  it("restarts the auto-rotate timer when switching banners", () => {
+    vi.useFakeTimers();
+
+    const { container } = renderBanner();
+    const dots = container.querySelectorAll(".rounded-full");
+
+    act(() => {
+      vi.advanceTimersByTime(5999);
+    });
+
+    fireEvent.click(dots[3]);
+
+    expect(screen.getByText("Restake your rewards and earn more")).toBeTruthy();
+
+    act(() => {
+      vi.advanceTimersByTime(1);
+    });
+
+    expect(screen.getByText("Restake your rewards and earn more")).toBeTruthy();
+
+    act(() => {
+      vi.advanceTimersByTime(5999);
+    });
+
+    expect(screen.getByText("Don't Let Rewards Expire")).toBeTruthy();
+  });
+
+  it("advances to the next banner on left swipe", () => {
+    const { container } = renderBanner();
+    const banner = container.querySelector(".animate-points-banner-slide-in-right");
+
+    fireEvent.pointerDown(banner!, { pointerId: 1, pointerType: "touch", clientX: 200, clientY: 20 });
+    fireEvent.pointerUp(banner!, { pointerId: 1, pointerType: "touch", clientX: 120, clientY: 25 });
+
+    expect(screen.getByText("So Close to the Next Tier")).toBeTruthy();
+    expect(container.querySelector(".animate-points-banner-slide-in-right")).not.toBeNull();
+  });
+
+  it("moves to the previous banner on right swipe", () => {
+    const { container } = renderBanner();
+    const banner = container.querySelector(".animate-points-banner-slide-in-right");
+
+    fireEvent.pointerDown(banner!, { pointerId: 1, pointerType: "touch", clientX: 120, clientY: 20 });
+    fireEvent.pointerUp(banner!, { pointerId: 1, pointerType: "touch", clientX: 200, clientY: 25 });
+
+    expect(screen.getByText("Restake your rewards and earn more")).toBeTruthy();
+    expect(container.querySelector(".animate-points-banner-slide-in-left")).not.toBeNull();
   });
 
   it("dismisses only the currently displayed banner type", () => {
@@ -121,7 +186,7 @@ describe("PointsBanner", () => {
     fireEvent.click(screen.getByRole("button", { name: "Close" }));
 
     expect(screen.queryByText("Don't Let Rewards Expire")).toBeNull();
-    expect(screen.getByText("Activate Pair Boosts")).toBeTruthy();
+    expect(screen.getByText("So Close to the Next Tier")).toBeTruthy();
     expect(localStorage.getItem(STORAGE_KEY)).toBe(JSON.stringify({ "points-expiring": true }));
   });
 
@@ -131,7 +196,7 @@ describe("PointsBanner", () => {
     renderBanner();
 
     expect(screen.queryByText("Don't Let Rewards Expire")).toBeNull();
-    expect(screen.getByText("Activate Pair Boosts")).toBeTruthy();
+    expect(screen.getByText("So Close to the Next Tier")).toBeTruthy();
   });
 
   it("syncs dismissed banner types across mounted banner instances", () => {
@@ -142,6 +207,6 @@ describe("PointsBanner", () => {
     fireEvent.click(screen.getAllByRole("button", { name: "Close" })[0]);
 
     expect(screen.queryByText("Don't Let Rewards Expire")).toBeNull();
-    expect(screen.getAllByText("Activate Pair Boosts")).toHaveLength(2);
+    expect(screen.getAllByText("So Close to the Next Tier")).toHaveLength(2);
   });
 });

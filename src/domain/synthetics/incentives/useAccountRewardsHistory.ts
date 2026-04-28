@@ -11,14 +11,17 @@ const REWARDS_HISTORY_PAGE_SIZE = 1000;
 const REWARDS_HISTORY_QUERY = gql`
   query AccountRewardsHistory($account: String!, $limit: Int, $offset: Int) {
     accountRewardsHistory(account: $account, limit: $limit, offset: $offset) {
-      epoch
-      volume
-      pointsEarned
-      pointsSpent
-      pointsExpired
-      pointsBalance
-      rewardsEarned
-      rewardsClaimed
+      totalCount
+      items {
+        epoch
+        volume
+        pointsEarned
+        pointsSpent
+        pointsExpired
+        pointsBalance
+        rewardsEarned
+        rewardsClaimed
+      }
     }
   }
 `;
@@ -38,6 +41,7 @@ type AccountRewardsHistoryClient = NonNullable<ReturnType<typeof getSubsquidGrap
 
 type AccountRewardsHistoryResult = {
   entries: RewardsHistoryEntry[];
+  totalCount: number;
   hasNextPage: boolean;
 };
 
@@ -71,10 +75,13 @@ async function fetchAccountRewardsHistoryPage({
     fetchPolicy: "no-cache",
   });
 
-  const entries = res?.data?.accountRewardsHistory;
-  if (!entries) return undefined;
+  const accountRewardsHistory = res?.data?.accountRewardsHistory;
+  if (!accountRewardsHistory) return undefined;
 
-  return entries.map(parseRewardsHistoryEntry);
+  return {
+    entries: accountRewardsHistory.items.map(parseRewardsHistoryEntry),
+    totalCount: accountRewardsHistory.totalCount,
+  };
 }
 
 async function fetchManualAllocatedPoints({
@@ -91,16 +98,16 @@ async function fetchManualAllocatedPoints({
   let hasMore = true;
 
   while (hasMore) {
-    const entries = await fetchAccountRewardsHistoryPage({
+    const page = await fetchAccountRewardsHistoryPage({
       client,
       account,
       limit: REWARDS_HISTORY_PAGE_SIZE,
       offset,
     });
 
-    if (!entries) return undefined;
+    if (!page) return undefined;
 
-    for (const entry of entries) {
+    for (const entry of page.entries) {
       if (entry.epoch >= programStartTimestamp) {
         return manualAllocatedPoints;
       }
@@ -110,11 +117,12 @@ async function fetchManualAllocatedPoints({
       }
     }
 
-    if (entries.length < REWARDS_HISTORY_PAGE_SIZE) {
+    if (page.entries.length === 0 || offset + page.entries.length >= page.totalCount) {
       return manualAllocatedPoints;
     }
 
-    offset += entries.length;
+    offset += page.entries.length;
+    hasMore = offset < page.totalCount;
   }
 
   return manualAllocatedPoints;
@@ -134,17 +142,18 @@ export function useAccountRewardsHistory(
         if (!client || !account) return undefined;
 
         const normalizedAccount = account.toLowerCase();
-        const entries = await fetchAccountRewardsHistoryPage({
+        const page = await fetchAccountRewardsHistoryPage({
           client,
           account: normalizedAccount,
-          limit: limit + 1,
+          limit,
           offset,
         });
-        if (!entries) return undefined;
+        if (!page) return undefined;
 
         return {
-          entries: entries.slice(0, limit),
-          hasNextPage: entries.length > limit,
+          entries: page.entries,
+          totalCount: page.totalCount,
+          hasNextPage: offset + page.entries.length < page.totalCount,
         };
       },
       refreshInterval: 5 * 60_000,
@@ -153,7 +162,13 @@ export function useAccountRewardsHistory(
   );
 
   return useMemo(
-    () => ({ data: data?.entries, hasNextPage: data?.hasNextPage ?? false, error, loading: isLoading }),
+    () => ({
+      data: data?.entries,
+      totalCount: data?.totalCount,
+      hasNextPage: data?.hasNextPage ?? false,
+      error,
+      loading: isLoading,
+    }),
     [data, error, isLoading]
   );
 }

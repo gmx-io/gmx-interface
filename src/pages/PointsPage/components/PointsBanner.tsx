@@ -1,11 +1,12 @@
 import { Plural, Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
+import { type PointerEvent, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { POINTS_PAGE_BANNERS_DISMISSED_KEY } from "config/localStorage";
 import { getEpochDuration } from "domain/synthetics/incentives/constants";
 import type { EpochStats, IncentivesConfig, RewardsHistoryEntry } from "domain/synthetics/incentives/types";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount } from "lib/numbers";
 
 import bgPointsBanner from "img/bg_points_banner.png";
@@ -53,6 +54,8 @@ const BANNER_STYLES = {
 };
 
 const AUTO_ROTATE_MS = 6000;
+const SWIPE_THRESHOLD_PX = 40;
+const SWIPE_DIRECTION_LOCK_RATIO = 1.25;
 const DISMISSED_STORAGE_KEY = JSON.stringify(POINTS_PAGE_BANNERS_DISMISSED_KEY);
 const DISMISSED_STORAGE_EVENT = "points-page-banners-dismissed-change";
 
@@ -61,11 +64,15 @@ const ACTION_ICONS: Record<BannerAction["type"], React.ReactNode> = {
   stake: <EarnIcon className="size-16 text-blue-300" />,
 };
 
+type BannerAnimationDirection = "left" | "right";
+
 export function PointsBanner({ isActiveUser, account, config, currentEpochStats, currentEpochHistory }: Props) {
   const now = useCurrentUnixTimestamp();
-  const [dismissedBannerTypes, setDismissedBannerTypes] = useState<DismissedBannerState>(() =>
-    readDismissedBannerTypes()
+  const [dismissedBannerTypes, setDismissedBannerTypes] = useLocalStorageSerializeKey<DismissedBannerState>(
+    POINTS_PAGE_BANNERS_DISMISSED_KEY,
+    {}
   );
+  const swipeStartRef = useRef<{ x: number; y: number; pointerId: number } | null>(null);
 
   const allBanners = useMemo(
     () => getBannerContent({ isActiveUser, account, config, currentEpochStats, currentEpochHistory, now }),
@@ -77,15 +84,17 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
   );
 
   const [currentIndex, setCurrentIndex] = useState(0);
+  const [animationDirection, setAnimationDirection] = useState<BannerAnimationDirection>("right");
 
   useEffect(() => {
-    const syncDismissedBannerTypes = () => {
-      setDismissedBannerTypes(readDismissedBannerTypes());
+    const syncDismissedBannerTypes = (event: Event) => {
+      const customEvent = event as CustomEvent<DismissedBannerState>;
+      setDismissedBannerTypes(customEvent.detail ?? {});
     };
 
     const handleStorage = (event: StorageEvent) => {
       if (event.key === DISMISSED_STORAGE_KEY) {
-        syncDismissedBannerTypes();
+        setDismissedBannerTypes(parseDismissedBannerTypes(event.newValue));
       }
     };
 
@@ -96,36 +105,104 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
       window.removeEventListener(DISMISSED_STORAGE_EVENT, syncDismissedBannerTypes);
       window.removeEventListener("storage", handleStorage);
     };
-  }, []);
+  }, [setDismissedBannerTypes]);
 
   useEffect(() => {
     setCurrentIndex((prev) => (banners.length === 0 ? 0 : prev % banners.length));
   }, [banners.length]);
 
+  const goToRelativeIndex = useCallback(
+    (offset: number) => {
+      if (banners.length <= 1 || offset === 0) return;
+
+      setAnimationDirection(offset > 0 ? "right" : "left");
+      setCurrentIndex((prev) => normalizeBannerIndex(prev + offset, banners.length));
+    },
+    [banners.length]
+  );
+
+  const selectedIndex = banners.length === 0 ? 0 : normalizeBannerIndex(currentIndex, banners.length);
+  const current = banners[selectedIndex];
+
   useEffect(() => {
     if (banners.length <= 1) return;
 
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % banners.length);
+    const timeout = window.setTimeout(() => {
+      goToRelativeIndex(1);
     }, AUTO_ROTATE_MS);
 
-    return () => clearInterval(interval);
-  }, [banners.length]);
+    return () => window.clearTimeout(timeout);
+  }, [banners.length, current?.type, goToRelativeIndex, selectedIndex]);
 
-  const selectedIndex = banners.length === 0 ? 0 : currentIndex % banners.length;
-  const current = banners[selectedIndex];
+  const bannerAnimationClass =
+    animationDirection === "left" ? "animate-points-banner-slide-in-left" : "animate-points-banner-slide-in-right";
+
+  const handleDotClick = useCallback(
+    (index: number) => {
+      if (index === selectedIndex) return;
+
+      setAnimationDirection(index > selectedIndex ? "right" : "left");
+      setCurrentIndex(index);
+    },
+    [selectedIndex]
+  );
+
+  const handlePointerDown = useCallback(
+    (event: PointerEvent<HTMLDivElement>) => {
+      if (banners.length <= 1 || event.pointerType === "mouse") return;
+
+      const target = event.target;
+      if (target instanceof HTMLElement && target.closest("a, button")) return;
+
+      swipeStartRef.current = {
+        x: event.clientX,
+        y: event.clientY,
+        pointerId: event.pointerId,
+      };
+      event.currentTarget.setPointerCapture?.(event.pointerId);
+    },
+    [banners.length]
+  );
+
+  const handlePointerUp = useCallback(
+    (event: PointerEvent<HTMLDivElement>) => {
+      const swipeStart = swipeStartRef.current;
+      if (!swipeStart || swipeStart.pointerId !== event.pointerId) return;
+
+      swipeStartRef.current = null;
+      event.currentTarget.releasePointerCapture?.(event.pointerId);
+
+      const deltaX = event.clientX - swipeStart.x;
+      const deltaY = event.clientY - swipeStart.y;
+      const absDeltaX = Math.abs(deltaX);
+
+      if (absDeltaX < SWIPE_THRESHOLD_PX || absDeltaX < Math.abs(deltaY) * SWIPE_DIRECTION_LOCK_RATIO) return;
+
+      event.preventDefault();
+      goToRelativeIndex(deltaX < 0 ? 1 : -1);
+    },
+    [goToRelativeIndex]
+  );
+
+  const handlePointerCancel = useCallback((event: PointerEvent<HTMLDivElement>) => {
+    const swipeStart = swipeStartRef.current;
+    if (!swipeStart || swipeStart.pointerId !== event.pointerId) return;
+
+    swipeStartRef.current = null;
+    event.currentTarget.releasePointerCapture?.(event.pointerId);
+  }, []);
 
   const handleDismiss = useCallback(() => {
     if (!current) return;
 
     const nextDismissedBannerTypes = {
-      ...readDismissedBannerTypes(),
+      ...dismissedBannerTypes,
       [current.type]: true,
     };
 
     setDismissedBannerTypes(nextDismissedBannerTypes);
-    writeDismissedBannerTypes(nextDismissedBannerTypes);
-  }, [current]);
+    window.dispatchEvent(new CustomEvent(DISMISSED_STORAGE_EVENT, { detail: nextDismissedBannerTypes }));
+  }, [current, dismissedBannerTypes, setDismissedBannerTypes]);
 
   if (banners.length === 0 || !current) return null;
 
@@ -133,8 +210,14 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
     <div className="flex flex-col items-center">
       <div
         key={current.type}
-        className="relative grid w-full animate-points-banner-slide-in-right grid-cols-[1fr_80px] overflow-hidden rounded-8 border-1/2 border-stroke-primary bg-slate-900/50 p-16"
+        className={cx(
+          "relative grid w-full grid-cols-[1fr_80px] overflow-hidden rounded-8 border-1/2 border-stroke-primary bg-slate-900/50 p-16 [touch-action:pan-y]",
+          bannerAnimationClass
+        )}
         style={BANNER_STYLES}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerCancel}
       >
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
@@ -162,7 +245,7 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
             <button
               key={index}
               className={cx("size-8 rounded-full bg-blue-300", index === selectedIndex ? "opacity-100" : "opacity-40")}
-              onClick={() => setCurrentIndex(index)}
+              onClick={() => handleDotClick(index)}
             />
           ))}
         </div>
@@ -171,34 +254,20 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
   );
 }
 
-function readDismissedBannerTypes(): DismissedBannerState {
-  if (typeof window === "undefined") {
+function normalizeBannerIndex(index: number, length: number) {
+  return ((index % length) + length) % length;
+}
+
+function parseDismissedBannerTypes(value: string | null): DismissedBannerState {
+  if (!value) {
     return {};
   }
 
   try {
-    const item = window.localStorage.getItem(DISMISSED_STORAGE_KEY);
-    if (!item) {
-      return {};
-    }
-
-    const parsed = JSON.parse(item);
+    const parsed = JSON.parse(value);
     return parsed && typeof parsed === "object" ? parsed : {};
   } catch {
     return {};
-  }
-}
-
-function writeDismissedBannerTypes(value: DismissedBannerState) {
-  if (typeof window === "undefined") {
-    return;
-  }
-
-  try {
-    window.localStorage.setItem(DISMISSED_STORAGE_KEY, JSON.stringify(value));
-    window.dispatchEvent(new Event(DISMISSED_STORAGE_EVENT));
-  } catch {
-    return;
   }
 }
 

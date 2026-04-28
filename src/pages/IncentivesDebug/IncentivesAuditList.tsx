@@ -60,7 +60,7 @@ export function IncentivesAuditList({
   // undefined. Without this, the hook would fire a full-range (no-epoch)
   // query that's immediately discarded once the epoch becomes known.
   // "all" is a user-picked sentinel that omits epochTimestamp for an all-time view.
-  const { data, summary, error, loading } = useIncentiveAccountEpochAudit(chainId, {
+  const { data, totalCount, summary, error, loading } = useIncentiveAccountEpochAudit(chainId, {
     epochTimestamp: selectedEpoch === "all" ? undefined : selectedEpoch,
     orderBy: sortField,
     orderDirection: sortDirection,
@@ -69,8 +69,7 @@ export function IncentivesAuditList({
     enabled: selectedEpoch !== undefined,
   });
 
-  const hasNextPage = data ? data.length === PAGE_SIZE : false;
-  const pageCount = hasNextPage ? page + 1 : page;
+  const pageCount = totalCount === undefined ? page : Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
 
   const handleEpochSelect = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {

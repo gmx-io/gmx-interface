@@ -9,11 +9,14 @@ import type { LeaderboardEntry } from "./types";
 const LEADERBOARD_QUERY = gql`
   query IncentivesLeaderboard($epoch: Int, $limit: Int, $offset: Int) {
     incentivesLeaderboard(epoch: $epoch, limit: $limit, offset: $offset) {
-      address
-      volume
-      pointsEarned
-      rewardsEarned
-      multiplier
+      totalCount
+      items {
+        address
+        volume
+        pointsEarned
+        rewardsEarned
+        multiplier
+      }
     }
   }
 `;
@@ -28,6 +31,7 @@ type RawLeaderboardEntry = {
 
 type IncentivesLeaderboardResult = {
   entries: LeaderboardEntry[];
+  totalCount: number;
   hasNextPage: boolean;
 };
 
@@ -58,18 +62,19 @@ export function useIncentivesLeaderboard(
           query: LEADERBOARD_QUERY,
           variables: {
             epoch,
-            limit: limit + 1,
+            limit,
             offset,
           },
           fetchPolicy: "no-cache",
         });
 
-        const entries = res?.data?.incentivesLeaderboard;
-        if (!entries) return undefined;
+        const leaderboard = res?.data?.incentivesLeaderboard;
+        if (!leaderboard) return undefined;
 
         return {
-          entries: entries.slice(0, limit).map(parseLeaderboardEntry),
-          hasNextPage: entries.length > limit,
+          entries: leaderboard.items.map(parseLeaderboardEntry),
+          totalCount: leaderboard.totalCount,
+          hasNextPage: offset + leaderboard.items.length < leaderboard.totalCount,
         };
       },
       refreshInterval: 5 * 60_000,
@@ -78,7 +83,13 @@ export function useIncentivesLeaderboard(
   );
 
   return useMemo(
-    () => ({ data: data?.entries, hasNextPage: data?.hasNextPage ?? false, error, loading: isLoading }),
+    () => ({
+      data: data?.entries,
+      totalCount: data?.totalCount,
+      hasNextPage: data?.hasNextPage ?? false,
+      error,
+      loading: isLoading,
+    }),
     [data, error, isLoading]
   );
 }
