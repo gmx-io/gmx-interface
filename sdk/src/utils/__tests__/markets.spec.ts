@@ -208,9 +208,9 @@ describe("getMaxAllowedLeverage", () => {
     ).toBe(bps(100));
   });
 
-  it("skips the liquidation bound when liqMCF is missing (fast/subsquid path)", () => {
-    // ZEC fast-path: MCF=1%, fee=0.06%, liqMCF unknown → opening bound only = 85x.
-    // Without this, seeding liqMCF=MCF would have produced a transient 50x.
+  it("caps at 100x when liqMCF is missing (fast/subsquid path)", () => {
+    // ZEC fast-path: MCF=1%, fee=0.06%, liqMCF unknown → opening 85x, well below the 100x
+    // cap, so result matches the eventual RPC value (no 50x flash).
     expect(
       getMaxAllowedLeverage({
         minCollateralFactor: pct(1),
@@ -219,13 +219,15 @@ describe("getMaxAllowedLeverage", () => {
       })
     ).toBe(bps(85));
 
+    // BTC fast-path: MCF=0.5%, fee=0.06%, liqMCF unknown → opening 160x, capped at 100x
+    // so the fast-path result matches the RPC result (liqMCF=0.5% → liqMax=100x).
     expect(
       getMaxAllowedLeverage({
-        minCollateralFactor: pct(1),
+        minCollateralFactor: pct(0.5),
         minCollateralFactorForLiquidation: 0n,
         positionFeeFactorForBalanceWasNotImproved: pct(0.06),
       })
-    ).toBe(bps(85));
+    ).toBe(bps(100));
   });
 
   it("treats missing fee as zero (theoretical opening bound)", () => {

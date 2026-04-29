@@ -156,6 +156,7 @@ export function getMaxLeverageByMinCollateralFactor(minCollateralFactor: bigint 
 }
 
 const MAX_ALLOWED_LEVERAGE_STEP_BP = 5 * BASIS_POINTS_DIVISOR;
+const FAST_PATH_LEVERAGE_CAP_BP = 100 * BASIS_POINTS_DIVISOR;
 export function getMaxAllowedLeverage({
   minCollateralFactor,
   minCollateralFactorForLiquidation,
@@ -175,14 +176,18 @@ export function getMaxAllowedLeverage({
   const openingDenominator = minCollateralFactor + 2n * fee;
   let rawMaxBp = bigMath.mulDiv(PRECISION, BASIS_POINTS_DIVISOR_BIGINT, openingDenominator);
 
-  // Liquidation bound — only applied when liqMCF is actually known. Subsquid does not
-  // index liqMCF, so during the brief fast-path window we skip this term rather than
-  // approximating with MCF (which would understate the cap on split-factor markets like
-  // ZEC and produce a transient wrong value).
   if (minCollateralFactorForLiquidation !== undefined && minCollateralFactorForLiquidation !== 0n) {
+    // Full data path: apply the liquidation bound from on-chain config.
     const liquidationDenominator = 2n * minCollateralFactorForLiquidation;
     const liquidationMaxBp = bigMath.mulDiv(PRECISION, BASIS_POINTS_DIVISOR_BIGINT, liquidationDenominator);
     rawMaxBp = bigMath.min(rawMaxBp, liquidationMaxBp);
+  } else {
+    // Fast/subsquid path: liqMCF is not indexed, so cap at 100x. Real liqMCF is always
+    // ≥ 0.5% on listed markets, which means the on-chain liquidation bound never exceeds
+    // 100x. Capping here keeps the fast-path result aligned with the eventual full-data
+    // result for the common case (BTC/ETH, GOLD on-hours, …) and avoids the transient
+    // 50x flash on split-factor markets like ZEC.
+    rawMaxBp = bigMath.min(rawMaxBp, BigInt(FAST_PATH_LEVERAGE_CAP_BP));
   }
 
   return Math.floor(Number(rawMaxBp) / MAX_ALLOWED_LEVERAGE_STEP_BP) * MAX_ALLOWED_LEVERAGE_STEP_BP;
