@@ -165,23 +165,25 @@ export function getMaxAllowedLeverage({
   minCollateralFactorForLiquidation: bigint | undefined;
   positionFeeFactorForBalanceWasNotImproved: bigint | undefined;
 }): number {
-  if (
-    minCollateralFactor === undefined ||
-    minCollateralFactor === 0n ||
-    minCollateralFactorForLiquidation === undefined ||
-    minCollateralFactorForLiquidation === 0n ||
-    positionFeeFactorForBalanceWasNotImproved === undefined
-  ) {
+  if (minCollateralFactor === undefined || minCollateralFactor === 0n) {
     return 100 * BASIS_POINTS_DIVISOR;
   }
 
-  const openingDenominator = minCollateralFactor + 2n * positionFeeFactorForBalanceWasNotImproved;
-  const openingMaxBp = bigMath.mulDiv(PRECISION, BASIS_POINTS_DIVISOR_BIGINT, openingDenominator);
+  // Opening bound — applied whenever MCF is known. Treat missing fee as 0 so the bound
+  // is still computable from the partial data the fast/subsquid path provides.
+  const fee = positionFeeFactorForBalanceWasNotImproved ?? 0n;
+  const openingDenominator = minCollateralFactor + 2n * fee;
+  let rawMaxBp = bigMath.mulDiv(PRECISION, BASIS_POINTS_DIVISOR_BIGINT, openingDenominator);
 
-  const liquidationDenominator = 2n * minCollateralFactorForLiquidation;
-  const liquidationMaxBp = bigMath.mulDiv(PRECISION, BASIS_POINTS_DIVISOR_BIGINT, liquidationDenominator);
-
-  const rawMaxBp = bigMath.min(openingMaxBp, liquidationMaxBp);
+  // Liquidation bound — only applied when liqMCF is actually known. Subsquid does not
+  // index liqMCF, so during the brief fast-path window we skip this term rather than
+  // approximating with MCF (which would understate the cap on split-factor markets like
+  // ZEC and produce a transient wrong value).
+  if (minCollateralFactorForLiquidation !== undefined && minCollateralFactorForLiquidation !== 0n) {
+    const liquidationDenominator = 2n * minCollateralFactorForLiquidation;
+    const liquidationMaxBp = bigMath.mulDiv(PRECISION, BASIS_POINTS_DIVISOR_BIGINT, liquidationDenominator);
+    rawMaxBp = bigMath.min(rawMaxBp, liquidationMaxBp);
+  }
 
   return Math.floor(Number(rawMaxBp) / MAX_ALLOWED_LEVERAGE_STEP_BP) * MAX_ALLOWED_LEVERAGE_STEP_BP;
 }

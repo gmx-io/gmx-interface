@@ -190,7 +190,7 @@ describe("getMaxAllowedLeverage", () => {
   const pct = (percent: number) => expandDecimals(percent * 100, 26); // 0.5% → 5e27
   const bps = (lev: number) => lev * BASIS_POINTS_DIVISOR;
 
-  it("returns default 100x when any factor is undefined or zero", () => {
+  it("returns default 100x when MCF is undefined or zero", () => {
     expect(
       getMaxAllowedLeverage({
         minCollateralFactor: undefined,
@@ -206,15 +206,30 @@ describe("getMaxAllowedLeverage", () => {
         positionFeeFactorForBalanceWasNotImproved: pct(0.05),
       })
     ).toBe(bps(100));
+  });
+
+  it("skips the liquidation bound when liqMCF is missing (fast/subsquid path)", () => {
+    // ZEC fast-path: MCF=1%, fee=0.06%, liqMCF unknown → opening bound only = 85x.
+    // Without this, seeding liqMCF=MCF would have produced a transient 50x.
+    expect(
+      getMaxAllowedLeverage({
+        minCollateralFactor: pct(1),
+        minCollateralFactorForLiquidation: undefined,
+        positionFeeFactorForBalanceWasNotImproved: pct(0.06),
+      })
+    ).toBe(bps(85));
 
     expect(
       getMaxAllowedLeverage({
-        minCollateralFactor: pct(0.5),
+        minCollateralFactor: pct(1),
         minCollateralFactorForLiquidation: 0n,
-        positionFeeFactorForBalanceWasNotImproved: pct(0.05),
+        positionFeeFactorForBalanceWasNotImproved: pct(0.06),
       })
-    ).toBe(bps(100));
+    ).toBe(bps(85));
+  });
 
+  it("treats missing fee as zero (theoretical opening bound)", () => {
+    // MCF=0.5% with no fee info → 1/0.005 = 200x; further constrained by liqMCF=0.5% → 100x.
     expect(
       getMaxAllowedLeverage({
         minCollateralFactor: pct(0.5),
