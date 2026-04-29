@@ -4,7 +4,7 @@ import { MultichainAction, MultichainActionType } from "domain/multichain/codecs
 import { estimateMultichainDepositNetworkComposeGas } from "domain/multichain/estimateMultichainDepositNetworkComposeGas";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
 import { getTransferRequests } from "domain/multichain/getTransferRequests";
-import { getRawRelayerParams } from "domain/synthetics/express/relayParamsUtils";
+import { getRawRelayerParams } from "domain/synthetics/express";
 import { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express/types";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { getContract } from "sdk/configs/contracts";

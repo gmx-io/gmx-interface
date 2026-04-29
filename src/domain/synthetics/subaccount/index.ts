@@ -1,4 +1,10 @@
 export * from "./generateSubaccount";
 export * from "./removeSubaccount";
-export * from "./types";
+export type {
+  Subaccount,
+  SubaccountOnchainData,
+  SubaccountSerializedConfig,
+  SubaccountValidations,
+  SignedSubaccountApproval,
+} from "sdk/utils/subaccount";
 export * from "./utils";

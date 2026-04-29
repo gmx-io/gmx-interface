@@ -16,7 +16,7 @@ export type PaginationProps = {
   topMargin?: boolean;
 };
 
-function getPageNumbers(current, max = 1) {
+function getPageNumbers(current: number, max = 1) {
   if (max === 1) return [];
   if (current === 1) {
     return max >= 3 ? [1, 2, 3] : [1, 2];

@@ -1,24 +1,23 @@
-import { Address, encodeAbiParameters, keccak256 } from "viem";
+import { encodeAbiParameters, keccak256 } from "viem";
 
-import type { ContractsChainId, SourceChainId } from "config/chains";
-import { getBestSwapStrategy } from "domain/synthetics/externalSwaps/utils";
-import type { SignedTokenPermit, TokenData } from "domain/tokens";
-import type { SignatureDomain } from "lib/wallets/signing";
-import { abis } from "sdk/abis";
-import { ContractName, getContract } from "sdk/configs/contracts";
+import { abis } from "abis";
+import type { ContractsChainId, SourceChainId } from "configs/chains";
+import { ContractName, getContract } from "configs/contracts";
+import { SwapPricingType } from "utils/orders/types";
 import {
   combineExternalCalls,
   ExternalCallsPayload,
   getEmptyExternalCallsPayload,
   getExternalCallsPayload,
-} from "sdk/utils/orderTransactions";
-import { getSwapAmountsByToValue } from "sdk/utils/swap";
-import { nowInSeconds } from "sdk/utils/time";
-import { ExternalSwapQuote, FindSwapPath, SwapAmounts } from "sdk/utils/trade/types";
+} from "utils/orderTransactions";
+import type { TypedDataDomain } from "utils/signer";
+import { getSwapAmountsByToValue } from "utils/swap";
+import { nowInSeconds } from "utils/time";
+import type { SignedTokenPermit, TokenData } from "utils/tokens/types";
+import type { ExternalSwapQuote, FindSwapPath, SwapAmounts } from "utils/trade/types";
 
 import { getOracleParamsForRelayParams } from "./oracleParamsUtils";
-import type { GasPaymentParams, RawRelayParamsPayload, RelayFeePayload, RelayParamsPayload } from "./types";
-import { SwapPricingType } from "../orders";
+import type { GasPaymentParams, RawRelayParamsPayload, RelayFeePayload, RelayParamsPayload } from "../types";
 
 export function getExpressContractAddress(
   chainId: ContractsChainId,
@@ -31,7 +30,7 @@ export function getExpressContractAddress(
     isMultichain?: boolean;
     scope?: "glv" | "gm" | "transfer" | "claims" | "order" | "subaccount";
   }
-): Address {
+): string {
   let contractName: ContractName;
   if (isMultichain) {
     switch (scope) {
@@ -70,14 +69,12 @@ export function getExpressContractAddress(
 export function getGelatoRelayRouterDomain(
   chainId: SourceChainId | ContractsChainId,
   relayRouterAddress: string
-): SignatureDomain {
-  const name = "GmxBaseGelatoRelayRouter";
-
+): TypedDataDomain {
   return {
-    name,
+    name: "GmxBaseGelatoRelayRouter",
     version: "1",
     chainId,
-    verifyingContract: relayRouterAddress as Address,
+    verifyingContract: relayRouterAddress,
   };
 }
 
@@ -102,10 +99,6 @@ export function getRelayerFeeParams({
   gasPaymentTokenAsCollateralAmount: bigint;
   findFeeSwapPath: FindSwapPath | undefined;
   feeExternalSwapQuote: ExternalSwapQuote | undefined;
-  /**
-   * If transaction contains an external calls e.g. for collateral external swaps,
-   * it should also be included in relayParams
-   */
   transactionExternalCalls: ExternalCallsPayload | undefined;
 }):
   | {
@@ -157,10 +150,7 @@ export function getRelayerFeeParams({
       });
     }
 
-    const bestFeeSwapStrategy = getBestSwapStrategy({
-      internalSwapAmounts: feeSwapAmounts,
-      externalSwapQuote: feeExternalSwapQuote,
-    });
+    const bestFeeSwapStrategy = getBestFeeSwapStrategy(feeSwapAmounts, feeExternalSwapQuote);
 
     if (bestFeeSwapStrategy?.swapPath) {
       feeParams = {
@@ -181,8 +171,8 @@ export function getRelayerFeeParams({
       ]);
       feeExternalSwapGasLimit = bestFeeSwapStrategy.externalSwapQuote.txnData.estimatedGas;
       feeParams = {
-        feeToken: relayerFeeToken.address, // final token
-        feeAmount: 0n, // fee already sent in external calls
+        feeToken: relayerFeeToken.address,
+        feeAmount: 0n,
         feeSwapPath: [],
       };
       gasPaymentParams.gasPaymentTokenAmount = bestFeeSwapStrategy.externalSwapQuote.amountIn;
@@ -198,6 +188,27 @@ export function getRelayerFeeParams({
     feeExternalSwapGasLimit,
     gasPaymentParams,
   };
+}
+
+export function getBestFeeSwapStrategy(
+  internalSwapAmounts: SwapAmounts | undefined,
+  externalSwapQuote: ExternalSwapQuote | undefined
+) {
+  if (externalSwapQuote && externalSwapQuote.usdOut > (internalSwapAmounts?.swapStrategy.swapPathStats?.usdOut ?? 0n)) {
+    return {
+      amountIn: externalSwapQuote.amountIn,
+      amountOut: externalSwapQuote.amountOut,
+      externalSwapQuote,
+    };
+  } else if (internalSwapAmounts?.swapStrategy.swapPathStats) {
+    return {
+      amountIn: internalSwapAmounts.amountIn,
+      amountOut: internalSwapAmounts.amountOut,
+      swapPath: internalSwapAmounts.swapStrategy.swapPathStats.swapPath,
+    };
+  }
+
+  return undefined;
 }
 
 export function getRawRelayerParams({
@@ -223,7 +234,7 @@ export function getRawRelayerParams({
     relayerFeeTokenAddress,
   });
 
-  const relayParamsPayload: RawRelayParamsPayload = {
+  return {
     oracleParams,
     tokenPermits,
     externalCalls,
@@ -231,8 +242,6 @@ export function getRawRelayerParams({
     desChainId: BigInt(chainId),
     userNonce: BigInt(nowInSeconds()),
   };
-
-  return relayParamsPayload;
 }
 
 export function hashRelayParams(relayParams: RelayParamsPayload) {
@@ -261,7 +270,5 @@ export function hashRelayParams(relayParams: RelayParamsPayload) {
     relayParams.desChainId,
   ]);
 
-  const hash = keccak256(encoded);
-
-  return hash;
+  return keccak256(encoded);
 }

@@ -8,7 +8,7 @@ import { getByKey } from "lib/objects";
 
 import Checkbox from "components/Checkbox/Checkbox";
 import { TableTd } from "components/Table/Table";
-import Tooltip from "components/Tooltip/Tooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 export function ClaimRewardRow({
   reward,
@@ -72,7 +72,7 @@ export function ClaimRewardRow({
       </TableTd>
 
       <TableTd className="!pr-0">
-        <Tooltip
+        <TooltipWithPortal
           className="ClaimModal-row-tooltip"
           handle={formatUsd(rewardUsd)}
           position="top-end"

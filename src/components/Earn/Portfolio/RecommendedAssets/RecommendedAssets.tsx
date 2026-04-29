@@ -21,7 +21,7 @@ import { expandDecimals, formatPercentage, USD_DECIMALS } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { sendEarnRecommendationClickedEvent } from "lib/userAnalytics/earnEvents";
 import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
-import { AnyChainId, BOTANIX, MEGAETH } from "sdk/configs/chains";
+import { AnyChainId, BOTANIX, ContractsChainId, MEGAETH } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { MarketInfo } from "sdk/utils/markets/types";
 import { getByKey } from "sdk/utils/objects";
@@ -281,7 +281,7 @@ function GmxRecommendedAssetItem({ chainId, openBuyGmxModal }: { chainId: AnyCha
     <BaseRecommendedAssetItem
       icon={<GmxIcon className="size-32" />}
       title={<Trans>GMX</Trans>}
-      metricValue={<APRLabel chainId={chainId} label={GMX_APR_TOTAL_LABEL} />}
+      metricValue={<APRLabel chainId={chainId as ContractsChainId} label={GMX_APR_TOTAL_LABEL} />}
       metricLabel={isGmxSuspended ? undefined : <Trans>APR</Trans>}
       button={
         <Button variant="primary" onClick={handleClick}>

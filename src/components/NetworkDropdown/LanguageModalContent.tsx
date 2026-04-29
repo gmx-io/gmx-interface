@@ -1,6 +1,6 @@
 import cx from "classnames";
 
-import { dynamicActivate, isTestLanguage, locales } from "lib/i18n";
+import { type Locale, dynamicActivate, isTestLanguage, locales } from "lib/i18n";
 import { importImage } from "lib/legacy";
 
 import Button from "components/Button/Button";
@@ -32,10 +32,14 @@ export default function LanguageModalContent({ currentLanguage, onClose }: Props
                 {isTestLanguage(item) ? (
                   "🫐"
                 ) : (
-                  <img className="network-dropdown-icon" src={importImage(`flag_${item}.svg`)} alt={locales[item]} />
+                  <img
+                    className="network-dropdown-icon"
+                    src={importImage(`flag_${item}.svg`)}
+                    alt={locales[item as Locale]}
+                  />
                 )}
               </div>
-              <span className="text-body-medium font-medium">{locales[item]}</span>
+              <span className="text-body-medium font-medium">{locales[item as Locale]}</span>
             </div>
             <div className="network-dropdown-menu-item-img ml-auto py-4">
               {currentLanguage === item && <CheckedIcon />}

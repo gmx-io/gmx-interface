@@ -14,6 +14,7 @@ export default defineConfig({
       "**/clients/v1/modules/orders/orders.spec.ts",
       "**/clients/v1/modules/orders/helpers.spec.ts",
       "**/clients/v1/modules/trades/trades.spec.ts",
+      "**/clients/v2/__tests__/**",
     ],
   },
   resolve: {

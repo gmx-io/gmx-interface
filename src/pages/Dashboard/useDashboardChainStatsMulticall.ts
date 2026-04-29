@@ -1,7 +1,7 @@
 import { zeroAddress } from "viem";
 
 import { getContract } from "config/contracts";
-import { MulticallRequestConfig } from "lib/multicall/types";
+import { MulticallRequestConfig, MulticallResult } from "lib/multicall/types";
 import { useMulticall } from "lib/multicall/useMulticall";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import type { ContractsChainId } from "sdk/configs/chains";
@@ -69,7 +69,7 @@ function buildDashboardRequest(chainId: ContractsChainId) {
   } satisfies MulticallRequestConfig<any>;
 }
 
-function parseDashboardResponse(result) {
+function parseDashboardResponse(result: MulticallResult<ReturnType<typeof buildDashboardRequest>>) {
   const minAum = result.data.glp.getAums.returnValues[0];
   const maxAum = result.data.glp.getAums.returnValues[1];
   const aum = (minAum + maxAum) / 2n;

@@ -22,7 +22,7 @@ import {
   getPriceForPnl,
 } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
-import { expandDecimals } from "utils/numbers";
+import { BASIS_POINTS_DIVISOR, expandDecimals, numberToBigint, PRECISION_DECIMALS } from "utils/numbers";
 import { Token, TokensData } from "utils/tokens/types";
 
 function getToken(symbol: string) {
@@ -187,29 +187,86 @@ describe("getMaxLeverageByMinCollateralFactor", () => {
 
 describe("getMaxAllowedLeverageByMinCollateralFactor", () => {
   const GOLD_MARKET = "0x0Df2BE76F517BCF0000AbfFcB6344B3b2aC4Cc4f";
-  const NON_GOLD_SILVER_MARKET = "0x1234567890abcdef1234567890abcdef12345678";
+  const SILVER_MARKET = "0x448Fa722717df299ee197E2F6d8EB7911EFF6cEc";
+  const NON_CONFIGURED_MARKET = "0x1234567890abcdef1234567890abcdef12345678";
 
-  it("returns half of max leverage for non-gold/silver market", () => {
-    expect(getMaxAllowedLeverageByMinCollateralFactor(1000000000000000000n, NON_GOLD_SILVER_MARKET)).toBe(
+  it("returns half of max leverage for a market with no hours config", () => {
+    expect(getMaxAllowedLeverageByMinCollateralFactor(1000000000000000000n, NON_CONFIGURED_MARKET)).toBe(
       5000000000000000
     );
   });
 
-  it("returns 100x for gold/silver on-hours MCF", () => {
+  it("returns 100x for GOLD on on-hours MCF", () => {
     const onHoursFactor = 9n * 10n ** 27n;
-    expect(getMaxAllowedLeverageByMinCollateralFactor(onHoursFactor, GOLD_MARKET)).toBe(100 * 10000);
+    expect(getMaxAllowedLeverageByMinCollateralFactor(onHoursFactor, GOLD_MARKET)).toBe(100 * BASIS_POINTS_DIVISOR);
   });
 
-  it("returns 25x for gold/silver off-hours MCF", () => {
+  it("returns 25x for GOLD on off-hours MCF", () => {
     const offHoursFactor = 35n * 10n ** 27n;
-    expect(getMaxAllowedLeverageByMinCollateralFactor(offHoursFactor, GOLD_MARKET)).toBe(25 * 10000);
+    expect(getMaxAllowedLeverageByMinCollateralFactor(offHoursFactor, GOLD_MARKET)).toBe(25 * BASIS_POINTS_DIVISOR);
   });
 
-  it("does not apply gold/silver overrides to other markets with same MCF", () => {
+  it("returns 100x / 25x for SILVER with the same GOLD MCFs", () => {
+    expect(getMaxAllowedLeverageByMinCollateralFactor(9n * 10n ** 27n, SILVER_MARKET)).toBe(100 * BASIS_POINTS_DIVISOR);
+    expect(getMaxAllowedLeverageByMinCollateralFactor(35n * 10n ** 27n, SILVER_MARKET)).toBe(25 * BASIS_POINTS_DIVISOR);
+  });
+
+  it("does not apply GOLD/SILVER overrides to other markets with same MCF", () => {
     const onHoursFactor = 9n * 10n ** 27n;
     const offHoursFactor = 35n * 10n ** 27n;
-    expect(getMaxAllowedLeverageByMinCollateralFactor(onHoursFactor, NON_GOLD_SILVER_MARKET)).toBe((110 * 10000) / 2);
-    expect(getMaxAllowedLeverageByMinCollateralFactor(offHoursFactor, NON_GOLD_SILVER_MARKET)).toBe((30 * 10000) / 2);
+    expect(getMaxAllowedLeverageByMinCollateralFactor(onHoursFactor, NON_CONFIGURED_MARKET)).toBe(
+      55.5 * BASIS_POINTS_DIVISOR
+    );
+    expect(getMaxAllowedLeverageByMinCollateralFactor(offHoursFactor, NON_CONFIGURED_MARKET)).toBe(
+      14.5 * BASIS_POINTS_DIVISOR
+    );
+  });
+
+  it("rounds allowed leverage to nearest .0 or .5", () => {
+    expect(getMaxAllowedLeverageByMinCollateralFactor(numberToBigint(1 / 24, PRECISION_DECIMALS), undefined)).toBe(
+      12 * BASIS_POINTS_DIVISOR
+    );
+    expect(getMaxAllowedLeverageByMinCollateralFactor(numberToBigint(1 / 25, PRECISION_DECIMALS), undefined)).toBe(
+      12.5 * BASIS_POINTS_DIVISOR
+    );
+    expect(getMaxAllowedLeverageByMinCollateralFactor(numberToBigint(1 / 50, PRECISION_DECIMALS), undefined)).toBe(
+      25 * BASIS_POINTS_DIVISOR
+    );
+  });
+
+  const WTIOIL_MARKET = "0xda81cdd397210C08cFc567f93982E148A3aac8a6";
+  const BRENTOIL_MARKET = "0x6F287D071800BfA847B4a7a7104BE33F87Ce9E74";
+  const NATGAS_MARKET = "0x2Ce2bc8B0f9d000f359d756a5816C125474Bb39b";
+
+  it("returns 100x for WTIOIL on-hours MCF and 25x for off-hours MCF", () => {
+    expect(getMaxAllowedLeverageByMinCollateralFactor(9n * 10n ** 27n, WTIOIL_MARKET)).toBe(100 * BASIS_POINTS_DIVISOR);
+    expect(getMaxAllowedLeverageByMinCollateralFactor(35n * 10n ** 27n, WTIOIL_MARKET)).toBe(25 * BASIS_POINTS_DIVISOR);
+  });
+
+  it("returns 100x for BRENTOIL on-hours MCF and 25x for off-hours MCF", () => {
+    expect(getMaxAllowedLeverageByMinCollateralFactor(9n * 10n ** 27n, BRENTOIL_MARKET)).toBe(
+      100 * BASIS_POINTS_DIVISOR
+    );
+    expect(getMaxAllowedLeverageByMinCollateralFactor(35n * 10n ** 27n, BRENTOIL_MARKET)).toBe(
+      25 * BASIS_POINTS_DIVISOR
+    );
+  });
+
+  it("returns 40x for NATGAS on-hours MCF and 20x for off-hours MCF", () => {
+    expect(getMaxAllowedLeverageByMinCollateralFactor(22n * 10n ** 27n, NATGAS_MARKET)).toBe(40 * BASIS_POINTS_DIVISOR);
+    expect(getMaxAllowedLeverageByMinCollateralFactor(40n * 10n ** 27n, NATGAS_MARKET)).toBe(20 * BASIS_POINTS_DIVISOR);
+  });
+
+  it("does not apply NATGAS overrides to another market with the same NATGAS MCFs", () => {
+    const randomMarket = "0x1234567890abcdef1234567890abcdef12345678";
+    // NATGAS on-hours MCF 22e27 → (1e30*10000)/22e27 = 10^7/22 = 454545 → round /10000 = 45 → 450000 → /2 = 225000 (22.5x)
+    expect(getMaxAllowedLeverageByMinCollateralFactor(22n * 10n ** 27n, randomMarket)).toBe(
+      22.5 * BASIS_POINTS_DIVISOR
+    );
+    // NATGAS off-hours MCF 40e27 → (1e30*10000)/40e27 = 10^7/40 = 250000 → /2 = 125000 (12.5x)
+    expect(getMaxAllowedLeverageByMinCollateralFactor(40n * 10n ** 27n, randomMarket)).toBe(
+      12.5 * BASIS_POINTS_DIVISOR
+    );
   });
 });
 

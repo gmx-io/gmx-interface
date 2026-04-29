@@ -83,7 +83,7 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
     <div className="relative min-h-[570px] overflow-hidden rounded-8">
       <img
         src={referralWizardBg}
-        className="absolute -left-8 -top-8 min-h-[calc(100%+16px)] min-w-[calc(100%+16px)] select-none object-fill blur-[12px]"
+        className="absolute -left-8 -top-8 min-h-[calc(100%+16px)] min-w-[calc(100%+16px)] select-none object-fill blur-[12px] hue-rotate-180 invert dark:hue-rotate-0 dark:invert-0"
       />
 
       <div className="relative z-10 mx-auto flex h-full max-w-[452px] flex-col px-16 py-adaptive text-center">

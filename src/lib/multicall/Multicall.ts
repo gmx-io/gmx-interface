@@ -1,6 +1,6 @@
 import { Chain, createPublicClient, http } from "viem";
 
-import { getViemChain } from "config/chains";
+import { type AnyChainId, getViemChain, type ContractsChainId } from "config/chains";
 import { isWebWorker } from "config/env";
 import { getProviderNameFromUrl } from "config/rpc";
 import { emitReportEndpointFailure } from "lib/FallbackTracker/events";
@@ -12,7 +12,7 @@ import type {
   MulticallTimeoutEvent,
 } from "lib/metrics";
 import { emitMetricCounter, emitMetricEvent, emitMetricTiming } from "lib/metrics/emitMetricEvent";
-import type { MulticallRequestConfig, MulticallResult } from "lib/multicall/types";
+import type { MulticallError, MulticallRequestConfig, MulticallResult } from "lib/multicall/types";
 import { CurrentRpcEndpoints } from "lib/rpc/RpcTracker";
 import { sleepWithSignal } from "lib/sleep";
 import { AbiId, abis as allAbis } from "sdk/abis";
@@ -27,7 +27,7 @@ export class Multicall {
     [chainId: number]: Multicall | undefined;
   } = {};
 
-  static async getInstance(chainId: number, abFlags: Record<string, boolean>) {
+  static async getInstance(chainId: AnyChainId, abFlags: Record<string, boolean>) {
     let instance = Multicall.instances[chainId];
 
     if (!instance || instance.chainId !== chainId) {
@@ -45,11 +45,11 @@ export class Multicall {
         // retries works strangely in viem, so we disable them
         retryCount: 0,
         retryDelay: 10000000,
-        batch: BATCH_CONFIGS[chainId].http,
+        batch: BATCH_CONFIGS[chainId as ContractsChainId].http,
         timeout: MAX_PRIMARY_TIMEOUT,
       }),
       pollingInterval: undefined,
-      batch: BATCH_CONFIGS[chainId].client,
+      batch: BATCH_CONFIGS[chainId as ContractsChainId].client,
       chain: getViemChain(chainId) as Chain,
     });
   }
@@ -57,7 +57,7 @@ export class Multicall {
   getClient: (options?: { forceFallback?: boolean }) => ReturnType<typeof Multicall.getViemClient>;
 
   constructor(
-    public chainId: number,
+    public chainId: AnyChainId,
     private abFlags: Record<string, boolean>
   ) {}
 
@@ -165,24 +165,23 @@ export class Multicall {
       });
     };
 
-    const processResponse = (response: any) => {
+    type MulticallResponseItem =
+      | { status: "success"; result: unknown; error?: undefined }
+      | { status: "failure"; error: Error; result?: undefined };
+
+    const processResponse = (response: readonly MulticallResponseItem[]) => {
       const multicallResult: MulticallResult<any> = {
         success: true,
         errors: {},
         data: {},
       };
 
-      response.forEach(({ result, status, error }, i) => {
+      response.forEach((item, i) => {
         const { contractKey, callKey } = originalKeys[i];
 
-        if (status === "success") {
-          let values: any;
-
-          if (Array.isArray(result) || typeof result === "object") {
-            values = result;
-          } else {
-            values = [result];
-          }
+        if (item.status === "success") {
+          const { result } = item;
+          const values = Array.isArray(result) || (typeof result === "object" && result !== null) ? result : [result];
 
           multicallResult.data[contractKey] = multicallResult.data[contractKey] || {};
           multicallResult.data[contractKey][callKey] = {
@@ -193,9 +192,10 @@ export class Multicall {
           };
         } else {
           multicallResult.success = false;
+          const { error } = item;
 
           multicallResult.errors[contractKey] = multicallResult.errors[contractKey] || {};
-          multicallResult.errors[contractKey][callKey] = error;
+          multicallResult.errors[contractKey][callKey] = error as unknown as MulticallError;
 
           multicallResult.data[contractKey] = multicallResult.data[contractKey] || {};
           multicallResult.data[contractKey][callKey] = {
@@ -203,7 +203,7 @@ export class Multicall {
             callKey,
             returnValues: [],
             success: false,
-            error: error,
+            error: error.message,
           };
         }
       });

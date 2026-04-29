@@ -6,11 +6,15 @@ import {
   BOTANIX,
   MEGAETH,
   SOURCE_ETHEREUM_MAINNET,
+  type ContractsChainId,
 } from "./chains";
 import { isDevelopment } from "./env";
 import { getIndexerUrlKey } from "./localStorage";
 
-const INDEXER_URLS = {
+type IndexerKey = "stats" | "referrals" | "syntheticsStats" | "subsquid" | "chainLink";
+type IndexerUrlMap = Partial<Record<IndexerKey, string>>;
+
+const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
   [ARBITRUM]: {
     stats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-arbitrum-stats/synts-stats-230627214534-0265e1f/gn",
@@ -56,18 +60,15 @@ const INDEXER_URLS = {
     referrals:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-megaeth-referrals/master-260209144108-a841c81/gn",
   },
+};
 
-  common: {
-    [SOURCE_ETHEREUM_MAINNET]: {
-      chainLink: "https://api.thegraph.com/subgraphs/name/deividask/chainlink",
-    },
+const COMMON_INDEXER_URLS: Partial<Record<number, IndexerUrlMap>> = {
+  [SOURCE_ETHEREUM_MAINNET]: {
+    chainLink: "https://api.thegraph.com/subgraphs/name/deividask/chainlink",
   },
 };
 
-export function getIndexerUrl(
-  chainId: number,
-  indexer: "stats" | "referrals" | "syntheticsStats" | "subsquid" | "chainLink"
-): string | undefined {
+export function getIndexerUrl(chainId: number, indexer: IndexerKey): string | undefined {
   if (isDevelopment()) {
     const localStorageKey = getIndexerUrlKey(chainId, indexer);
     const url = localStorage.getItem(localStorageKey);
@@ -79,8 +80,8 @@ export function getIndexerUrl(
   }
 
   if (chainId === SOURCE_ETHEREUM_MAINNET) {
-    return INDEXER_URLS.common[SOURCE_ETHEREUM_MAINNET]?.[indexer];
+    return COMMON_INDEXER_URLS[chainId]?.[indexer];
   }
 
-  return INDEXER_URLS?.[chainId]?.[indexer];
+  return INDEXER_URLS[chainId as ContractsChainId]?.[indexer];
 }

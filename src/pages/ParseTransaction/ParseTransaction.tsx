@@ -562,6 +562,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
     );
   }
 
+  // @ts-expect-error
   const field = fieldFormatters[props.item];
 
   if (typeof props.value === "bigint") {

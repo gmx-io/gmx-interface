@@ -6,6 +6,7 @@ import { useLocalStorage } from "react-use";
 
 import { TWAP_INFO_CARD_CLOSED_KEY } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import type { Locale } from "lib/i18n";
 import { formatUsd } from "lib/numbers";
 import { MarketInfo } from "sdk/utils/markets/types";
 import { changeTwapNumberOfPartsValue } from "sdk/utils/twap";
@@ -61,7 +62,7 @@ const TwapRows = ({
   isLong,
 }: Props) => {
   const { _, i18n } = useLingui();
-  const localeStr = i18n.locale;
+  const localeStr = i18n.locale as Locale;
   const locale: DateLocale = LOCALE_DATE_LOCALE_MAP[localeStr] ?? LOCALE_DATE_LOCALE_MAP.en;
 
   const { savedTwapNumberOfParts } = useSettings();

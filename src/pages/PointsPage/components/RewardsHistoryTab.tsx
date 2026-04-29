@@ -4,6 +4,7 @@ import cx from "classnames";
 import { useCallback, useEffect, useState } from "react";
 
 import { ARBITRUM } from "config/chains";
+import type { ContractsChainId } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { useGmxPrice } from "domain/legacy";
 import { getEpochDuration } from "domain/synthetics/incentives/constants";
@@ -28,7 +29,7 @@ const GMX_DECIMALS = 18;
 const GMX_DECIMALS_FACTOR = 10n ** 18n;
 
 type Props = {
-  chainId: number;
+  chainId: ContractsChainId;
   account?: string;
 };
 

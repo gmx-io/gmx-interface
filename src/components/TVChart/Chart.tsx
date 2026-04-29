@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { Suspense, lazy, useState } from "react";
+import { type ReactNode, Suspense, lazy, useState } from "react";
 
 import { isDevelopment } from "config/env";
 import { DOCS_LINKS } from "config/links";
@@ -27,7 +27,7 @@ import "./TVChart.scss";
 
 const LazyMarketGraph = lazy(() => import("components/DebugMarketGraph/DebugMarketGraph"));
 
-const TAB_LABELS = {
+const TAB_LABELS: Record<string, ReactNode> = {
   PRICE: (
     <div className="flex items-center gap-8">
       <Trans>Price</Trans>
@@ -50,7 +50,7 @@ const TAB_LABELS = {
   ),
 };
 
-const TABS = isDevelopment() ? ["PRICE", "DEPTH", "NET_RATE", "MARKET_GRAPH"] : ["PRICE", "DEPTH"];
+const TABS = isDevelopment() ? ["PRICE", "DEPTH", "NET_RATE", "MARKET_GRAPH"] : ["PRICE", "DEPTH", "NET_RATE"];
 
 const TABS_OPTIONS = TABS.map((tab) => ({
   value: tab,

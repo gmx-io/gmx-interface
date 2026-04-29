@@ -6,7 +6,7 @@ import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 export const useToastAutoClose = (isCompleted: boolean, toastTimestamp: number) => {
   useEffect(
     function autoClose() {
-      let timerId;
+      let timerId: ReturnType<typeof setTimeout>;
 
       if (isCompleted) {
         timerId = setTimeout(() => {

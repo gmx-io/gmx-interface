@@ -1,5 +1,13 @@
 import { Trans } from "@lingui/macro";
-import { Bar, BarChart, CartesianGrid, ResponsiveContainer, Tooltip as RechartsTooltip, XAxis, YAxis } from "recharts";
+import {
+  Bar,
+  CartesianGrid,
+  ComposedChart,
+  ResponsiveContainer,
+  Tooltip as RechartsTooltip,
+  XAxis,
+  YAxis,
+} from "recharts";
 
 import { formatUsd } from "lib/numbers";
 
@@ -19,6 +27,12 @@ const Y_AXIS_TICK_PROPS: React.SVGProps<SVGTextElement> = {
 const X_AXIS_LINE_PROPS: React.SVGProps<SVGLineElement> = {
   stroke: "var(--color-slate-600)",
   strokeWidth: 0.5,
+};
+
+const CHART_CURSOR_PROPS = {
+  stroke: "var(--color-slate-500)",
+  strokeWidth: 1,
+  strokeDasharray: "2 2",
 };
 
 function usdYAxisTickFormatter(value: number) {
@@ -60,7 +74,7 @@ export function GmxBarChart({
   return (
     <div className="h-[250px] w-full grow">
       <ResponsiveContainer width="100%" height="100%" debounce={500}>
-        <BarChart data={chartData} margin={CHART_MARGIN} barSize={2} stackOffset="sign">
+        <ComposedChart data={chartData} margin={CHART_MARGIN} barSize={2} stackOffset="sign">
           <CartesianGrid
             vertical={false}
             strokeDasharray="1.5 8"
@@ -86,7 +100,7 @@ export function GmxBarChart({
             allowDecimals={allowDecimals}
           />
           {children}
-        </BarChart>
+        </ComposedChart>
       </ResponsiveContainer>
     </div>
   );
@@ -105,7 +119,7 @@ export function TradersVolumeChart({
   return (
     <GmxBarChart chartData={chartData} yAxisTickFormatter={usdYAxisTickFormatter}>
       <Bar dataKey="volumeFloat" fill="var(--color-blue-300)" radius={1} />
-      <RechartsTooltip cursor={false} content={<SimpleChartTooltip fieldName="volumeUsd" isUsd />} />
+      <RechartsTooltip cursor={CHART_CURSOR_PROPS} content={<SimpleChartTooltip fieldName="volumeUsd" isUsd />} />
     </GmxBarChart>
   );
 }
@@ -145,7 +159,7 @@ export function TradesCountChart({
   return (
     <GmxBarChart chartData={chartData} yAxisTickFormatter={integerYAxisTickFormatter} allowDecimals={false}>
       <Bar dataKey="tradesCount" fill="var(--color-blue-300)" radius={1} />
-      <RechartsTooltip cursor={false} content={<SimpleChartTooltip fieldName="tradesCount" />} />
+      <RechartsTooltip cursor={CHART_CURSOR_PROPS} content={<SimpleChartTooltip fieldName="tradesCount" />} />
     </GmxBarChart>
   );
 }
@@ -163,7 +177,7 @@ export function RebatesChart({
   return (
     <GmxBarChart chartData={chartData} yAxisTickFormatter={usdYAxisTickFormatter}>
       <Bar dataKey="rebatesUsdFloat" fill="var(--color-blue-300)" radius={1} />
-      <RechartsTooltip cursor={false} content={<SimpleChartTooltip fieldName="rebatesUsd" isUsd />} />
+      <RechartsTooltip cursor={CHART_CURSOR_PROPS} content={<SimpleChartTooltip fieldName="rebatesUsd" isUsd />} />
     </GmxBarChart>
   );
 }
@@ -237,7 +251,7 @@ export function TradersReferredChart({
         radius={2}
         minPointSize={minPointSizeForNonZero}
       />
-      <RechartsTooltip cursor={false} content={<TradersReferredChartTooltip />} />
+      <RechartsTooltip cursor={CHART_CURSOR_PROPS} content={<TradersReferredChartTooltip />} />
     </GmxBarChart>
   );
 }

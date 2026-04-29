@@ -75,6 +75,22 @@ export const appEventsData: EventData[] = [
     ),
   },
   {
+    id: "energy-markets-arbitrum-listing",
+    flagId: "showEnergyMarketsArbitrumListing",
+    endDate: "30 Apr 2026, 12:00",
+    title: "WTI Crude Oil, Brent Crude Oil and Natural Gas energy commodity markets added on Arbitrum",
+    bodyText: (
+      <>
+        Trade WTIOIL, BRENTOIL (up to 100x leverage) and NATGAS (up to 40x leverage) perpetuals 24/7, or{" "}
+        <Link to="/pools">provide liquidity</Link> via GLV <span className="text-slate-100">[WETH-USDC]</span>.{" "}
+        <ExternalLink href="https://docs.gmx.io/docs/trading/overview/#rwa-and-commodity-markets">
+          Read more
+        </ExternalLink>
+        .
+      </>
+    ),
+  },
+  {
     id: "megaeth-launch",
     isActive: true,
     startDate: "03 Apr 2026, 0:00",

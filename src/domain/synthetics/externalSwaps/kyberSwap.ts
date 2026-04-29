@@ -195,7 +195,7 @@ export async function getKyberSwapTxnData({
     if (e instanceof KyberSwapSlippageError) {
       throw e;
     }
-    (e as Error).message += ` URL: ${routeUrl.replace(receiverAddress, "...")}`;
+    e.message += ` URL: ${routeUrl.replace(receiverAddress, "...")}`;
     metrics.pushError(e, "externalSwap.getKyberSwapTxnData");
     return undefined;
   }

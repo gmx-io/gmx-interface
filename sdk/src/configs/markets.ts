@@ -929,6 +929,27 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // WTIOIL/USD [WETH-USDC]
+    "0xda81cdd397210C08cFc567f93982E148A3aac8a6": {
+      marketTokenAddress: "0xda81cdd397210C08cFc567f93982E148A3aac8a6",
+      indexTokenAddress: "0xa8Ffb545d5cBF1F44E3eBA123D60372cD267D73c",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // BRENTOIL/USD [WETH-USDC]
+    "0x6F287D071800BfA847B4a7a7104BE33F87Ce9E74": {
+      marketTokenAddress: "0x6F287D071800BfA847B4a7a7104BE33F87Ce9E74",
+      indexTokenAddress: "0x9C5C4b9BA1fEBA72186f50d8Ae7C58b1D7f0B12F",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // NATGAS/USD [WETH-USDC]
+    "0x2Ce2bc8B0f9d000f359d756a5816C125474Bb39b": {
+      marketTokenAddress: "0x2Ce2bc8B0f9d000f359d756a5816C125474Bb39b",
+      indexTokenAddress: "0x620aC65BE29066Bb9D1E92C65b35B9fD321Fb963",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]

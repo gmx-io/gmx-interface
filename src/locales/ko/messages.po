@@ -1128,10 +1128,6 @@ msgstr "Yield Yak 스왑"
 msgid "Vaultka"
 msgstr "Vaultka"
 
-#: src/pages/Dashboard/OverviewCard.tsx
-msgid "Annualized buy pressure (BB&D):"
-msgstr "연간 매수 압력 (BB&D):"
-
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
@@ -3942,7 +3938,6 @@ msgstr "펀딩 수수료"
 #: src/components/MetricsDebugSettings/MetricsDebugSettings.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
 #: src/components/OrderItem/TwapOrdersList/TwapOrdersList.tsx
-#: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "{0}"
 msgstr "{0}"
 
@@ -4213,6 +4208,7 @@ msgid "Current margin"
 msgstr ""
 
 #: src/components/BridgeModal/BridgeOutModal.tsx
+#: src/components/GmxAccountModal/keys.ts
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawal failed"
@@ -4692,6 +4688,10 @@ msgstr "<0>{wrappedNativeTokenSymbol} 구매</0>."
 #: src/domain/synthetics/incentives/constants.ts
 msgid "Supporter"
 msgstr ""
+
+#: src/pages/Dashboard/OverviewCard.tsx
+msgid "Annualized buy pressure:"
+msgstr "연간 매수 압력:"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "No audit entries found for this account."
@@ -6555,6 +6555,10 @@ msgstr "숏 유동성"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation fee"
 msgstr "청산 수수료"
+
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+msgid "Protocol-wide annualized GMX buyback rate, based on the average of the last 4 completed weeks relative to total staked GMX and esGMX. Your actual rewards depend on staking power and may differ."
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact exponent"
@@ -11116,6 +11120,10 @@ msgstr "최근 30일"
 msgid "Dashboards"
 msgstr "대시보드"
 
+#: src/components/SettingsModal/RpcDebugSettings.tsx
+msgid "{label}"
+msgstr ""
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "trigger"
 msgstr "트리거"
@@ -11241,10 +11249,6 @@ msgstr "{tokenSymbol} 보상 수령"
 
 #: src/components/Referrals/traders/HowToStartSaving.tsx
 msgid "How to start saving?"
-msgstr ""
-
-#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
-msgid "Average weekly rate extrapolated to a full year (weekly rate × 52)."
 msgstr ""
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
