@@ -11,7 +11,7 @@ import useWallet from "lib/wallets/useWallet";
 import { INCENTIVES_BASE_RATE, INCENTIVES_FEE_RATE, isIncentivesEnabled, MAX_FEE_DISCOUNT_PERCENT } from "./constants";
 import type { IncentivesConfig, StakingTierConfig } from "./types";
 import { useAccountIncentiveDashboard } from "./useAccountIncentiveDashboard";
-import { useAccountRewardsHistory } from "./useAccountRewardsHistory";
+import { useAccountManualRewardsAllocation } from "./useAccountRewardsHistory";
 import { useIncentivesConfig } from "./useIncentivesConfig";
 
 // Calculation assumptions — these are modelling constants that have no
@@ -183,10 +183,14 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
     account,
     enabled,
   });
-  const { data: rewardsHistory } = useAccountRewardsHistory(chainId, {
-    account,
-    enabled,
-  });
+  const hasProgramStartTimestamp = config?.programStartTimestamp !== undefined;
+  const { data: fetchedManualAllocatedPoints, loading: manualAllocatedPointsLoading } =
+    useAccountManualRewardsAllocation(chainId, {
+      account,
+      programStartTimestamp: config?.programStartTimestamp,
+      enabled: enabled && hasProgramStartTimestamp,
+    });
+  const manualAllocatedPoints = hasProgramStartTimestamp ? fetchedManualAllocatedPoints : 0n;
 
   const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
 
@@ -196,6 +200,8 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
   const walletUsd = useMemo(() => computeWalletUsd(tokensData), [tokensData]);
 
   return useMemo(() => {
+    const isLoading = dashboardLoading || (hasProgramStartTimestamp && manualAllocatedPointsLoading);
+
     const noData: PersonalizedBannerData = {
       isManuallyRewarded: false,
       manualAllocatedPoints: undefined,
@@ -203,23 +209,13 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
       recommendedStakeGmx: undefined,
       estimatedRewardsUsd: undefined,
       hasPersonalizedData: false,
-      isLoading: dashboardLoading,
+      isLoading,
     };
 
-    if (!enabled || !dashboard || !rewardsHistory || gmxPrice === undefined || gmxPrice === 0n) {
+    if (!enabled || !dashboard || manualAllocatedPoints === undefined || gmxPrice === undefined || gmxPrice === 0n) {
       return noData;
     }
 
-    // Manual allocation is derived from pre-launch history entries.
-    const manualAllocatedPoints =
-      config?.programStartTimestamp && rewardsHistory.length
-        ? rewardsHistory
-            .filter((entry) => entry.epoch < config.programStartTimestamp && entry.volume === 0n)
-            .reduce((sum, entry) => sum + entry.pointsEarned, 0n)
-        : 0n;
-
-    const recentStats = dashboard.recentStats ?? [];
-    const totalRecentVolume = recentStats.reduce((sum, s) => sum + s.tradedVolume, 0n);
     const isManuallyRewarded = manualAllocatedPoints > 0n;
 
     if (isManuallyRewarded) {
@@ -233,6 +229,9 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
         isLoading: false,
       };
     }
+
+    const recentStats = dashboard.recentStats ?? [];
+    const totalRecentVolume = recentStats.reduce((sum, s) => sum + s.tradedVolume, 0n);
 
     // Personalized staking/rewards calculation
     const gmxPriceNum = bigintToNumber(gmxPrice, USD_DECIMALS);
@@ -296,7 +295,18 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
       hasPersonalizedData: true,
       isLoading: false,
     };
-  }, [enabled, dashboard, dashboardLoading, gmxPrice, walletUsd, stakingData, config, rewardsHistory]);
+  }, [
+    enabled,
+    dashboard,
+    dashboardLoading,
+    hasProgramStartTimestamp,
+    manualAllocatedPoints,
+    manualAllocatedPointsLoading,
+    gmxPrice,
+    walletUsd,
+    stakingData,
+    config,
+  ]);
 }
 
 /**

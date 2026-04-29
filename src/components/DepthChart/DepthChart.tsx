@@ -18,6 +18,7 @@ import {
   YAxis,
   YAxisProps,
 } from "recharts";
+// @ts-expect-error no declaration file for recharts internal module
 import { useOffset, useViewBox, useYAxisWithFiniteDomainOrRandom } from "recharts/es6/context/chartLayoutContext";
 import type { CategoricalChartFunc } from "recharts/types/chart/generateCategoricalChart";
 import type { ImplicitLabelType } from "recharts/types/component/Label";

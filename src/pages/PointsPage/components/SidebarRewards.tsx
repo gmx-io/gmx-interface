@@ -12,7 +12,6 @@ import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { POINTS_REWARDS_DISTRIBUTION_ID } from "domain/synthetics/claims/constants";
 import { encodeAcceptTermsAndClaim } from "domain/synthetics/claims/createClaimTransaction";
 import { useAccountIncentiveDashboard } from "domain/synthetics/incentives/useAccountIncentiveDashboard";
-import { useAccountRewardsHistory } from "domain/synthetics/incentives/useAccountRewardsHistory";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
@@ -44,7 +43,6 @@ type Props = {
 export function SidebarRewards({ chainId, account }: Props) {
   const { data: config } = useIncentivesConfig(chainId);
   const { data: dashboard } = useAccountIncentiveDashboard(chainId, { account });
-  const { data: rewardsHistory } = useAccountRewardsHistory(chainId, { account });
   const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
   const { openConnectModal } = useConnectModal();
 
@@ -71,17 +69,7 @@ export function SidebarRewards({ chainId, account }: Props) {
   const displayClaimableRewards = formatAmount(claimableAmount, 18, 4, true);
   const hasRewards = claimableAmount > 0n;
 
-  const currentEpochRewards = useMemo(() => {
-    if (!config || !rewardsHistory?.length) return undefined;
-    return rewardsHistory.find((entry) => entry.epoch === config.epochTimestamp)?.rewardsEarned;
-  }, [config, rewardsHistory]);
-
-  const totalEarnedRewards = useMemo(() => {
-    if (!rewardsHistory?.length) return 0n;
-    return rewardsHistory.reduce((acc, entry) => acc + entry.rewardsEarned, 0n);
-  }, [rewardsHistory]);
-
-  const displayEstimatedRewards = currentEpochRewards ? formatAmount(currentEpochRewards, 18, 4, true) : "0.0000";
+  const totalEarnedRewards = dashboard?.rewardsBalance ?? 0n;
   const displayTotalEarnedRewards = totalEarnedRewards ? formatAmount(totalEarnedRewards, 18, 4, true) : "0.0000";
 
   const now = useCurrentUnixTimestamp();
@@ -138,44 +126,27 @@ export function SidebarRewards({ chainId, account }: Props) {
           </Button>
         </div>
 
-        <div className="mt-16 flex flex-col gap-2 border-t-1/2 border-slate-600 pt-16">
-          <div className="flex items-center justify-between py-4 text-13">
-            <span className="font-medium text-typography-secondary">
-              <Trans>Epoch ends in</Trans>
-            </span>
+        <div className="mt-16 flex flex-col border-t-1/2 border-slate-600 pt-16">
+          <div className="flex h-24 items-center justify-between text-13 font-medium text-typography-secondary">
+            <Trans>Epoch ends in</Trans>
             <span className="text-typography-primary">{timeLeft || "—"}</span>
           </div>
-          <div className="flex items-center justify-between py-4 text-13">
-            <span className="flex items-center gap-4 font-medium text-typography-secondary">
-              <Trans>Estimated rewards</Trans>
-              <TooltipWithPortal
-                handle={undefined}
-                content={t`Estimated GMX rewards generated during the current epoch.`}
-                variant="iconStroke"
-              />
-            </span>
-            <span className="text-typography-primary">{displayEstimatedRewards} GMX</span>
-          </div>
-          <div className="flex items-center justify-between py-4 text-13">
-            <span className="flex items-center gap-4 font-medium text-typography-secondary">
-              <Trans>Points balance</Trans>
-              <TooltipWithPortal
-                handle={undefined}
-                content={t`Total non-expired points available. Points automatically discount up to 50% of your trading fees.`}
-                variant="iconStroke"
-              />
-            </span>
+          <div className="flex h-24 items-center justify-between text-13 font-medium text-typography-secondary">
+            <TooltipWithPortal
+              handle={<Trans>Points balance</Trans>}
+              content={t`Total non-expired points available. Points automatically discount up to 50% of your trading fees.`}
+              variant="iconStroke"
+            />
+
             <span className="text-typography-primary">{displayPoints}</span>
           </div>
-          <div className="flex items-center justify-between py-4 text-13">
-            <span className="flex items-center gap-4 font-medium text-typography-secondary">
-              <Trans>Total earned rewards</Trans>
-              <TooltipWithPortal
-                handle={undefined}
-                content={t`Total rewards earned since the start of the program.`}
-                variant="iconStroke"
-              />
-            </span>
+          <div className="flex h-24 items-center justify-between text-13  font-medium text-typography-secondary">
+            <TooltipWithPortal
+              handle={<Trans>Total earned rewards</Trans>}
+              content={t`Total rewards earned since the start of the program.`}
+              variant="iconStroke"
+            />
+
             <span className="text-typography-primary">{displayTotalEarnedRewards} GMX</span>
           </div>
         </div>

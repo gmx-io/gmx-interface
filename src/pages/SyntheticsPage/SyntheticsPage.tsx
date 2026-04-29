@@ -533,11 +533,12 @@ export function SyntheticsPage(p: Props) {
         ) : (
           <div className="flex w-[40rem] shrink-0 flex-col gap-8">
             <TradeBoxResponsiveContainer />
-            <PointsPromoBanner />
 
             {isSwap && !isTwap && (
               <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />
             )}
+
+            <PointsPromoBanner />
           </div>
         )}
 

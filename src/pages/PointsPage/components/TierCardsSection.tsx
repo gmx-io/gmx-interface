@@ -102,6 +102,10 @@ export function TierCardsSection({
 const USD_DECIMALS = 30;
 const GMX_DECIMALS = 18;
 
+function formatCompactUsd(amount: bigint) {
+  return formatAmountHuman(amount, USD_DECIMALS, true, 0).replace(/[kmb]$/i, (suffix) => suffix.toUpperCase());
+}
+
 /**
  * Estimate weekly rewards for a given volume and multiplier based on config values.
  * Returns a rounded USD number suitable for display (e.g. 300).
@@ -157,7 +161,7 @@ function MultiplierBadge({
 
 function MultiplierChangeTooltip({ isDecrease, children }: { isDecrease: boolean; children: React.ReactNode }) {
   return (
-    <div className="text-12">
+    <div className="text-13">
       <span>{children}</span>{" "}
       <span className="text-typography-secondary">
         <Trans>Your multiplier will {isDecrease ? "decrease" : "increase"} next epoch.</Trans>
@@ -166,18 +170,30 @@ function MultiplierChangeTooltip({ isDecrease, children }: { isDecrease: boolean
   );
 }
 
-const BANNER_GLOW_STYLES = { backgroundImage: `url(${bannerGlowImg})`, backgroundSize: "400% 400%" };
-function BannerGlow() {
+const BANNER_GLOW_STYLES = { backgroundImage: `url(${bannerGlowImg})`, backgroundSize: "300% 300%" };
+
+type BannerGlowType = "top-right" | "bottom-right" | "bottom";
+
+function BannerGlow({ type }: { type: BannerGlowType }) {
+  const classNamesByType: Record<BannerGlowType, string> = {
+    "top-right": "[background-position:65%_80%] group-hover:[background-position:80%_80%]",
+    "bottom-right": "[background-position:65%_20%] group-hover:[background-position:90%_20%]",
+    bottom: "[background-position:40%_20%] group-hover:[background-position:60%_20%]",
+  };
+
   return (
     <div
       aria-hidden
-      className="pointer-events-none absolute inset-0 animate-banner-glow opacity-30"
+      className={cx(
+        "pointer-events-none absolute inset-0 opacity-30 transition-[background-position] duration-[2000ms] ease-in-out",
+        classNamesByType[type]
+      )}
       style={BANNER_GLOW_STYLES}
     />
   );
 }
 
-const tierCardBase = "flex flex-col gap-12 rounded-12 border-1/2 border-slate-600 relative overflow-hidden";
+const tierCardBase = "group flex flex-col gap-12 rounded-12 border-1/2 border-slate-600 relative overflow-hidden";
 const tierCardBanner = "bg-slate-950 p-16 max-lg:p-12 min-h-[172px]";
 const tierCardActive = "bg-slate-950 pt-16 px-16 pb-12";
 const tierIconLarge =
@@ -231,7 +247,7 @@ function VolumeCard({
 
   return (
     <div className={cx(tierCardBase, active ? tierCardActive : tierCardBanner)}>
-      {!active && <BannerGlow />}
+      {!active && <BannerGlow type="top-right" />}
       <div className="flex items-center justify-between font-medium text-typography-secondary">
         {active ? (
           <span>
@@ -269,12 +285,11 @@ function VolumeCard({
             {volumeTier && <VolumeTierIcon tierId={volumeTier} active className={tierIconLarge} />}
             {volumeTier ? VOLUME_TIER_BADGES[volumeTier]() : "—"}
           </h3>
-          <div className="flex flex-col gap-2 text-12 text-typography-secondary">
+          <div className="flex flex-col gap-2 text-13 text-typography-secondary">
             <div className="flex items-center gap-4 py-2">
               <span>
                 <Trans>
-                  Volume this epoch:{" "}
-                  <span className="text-typography-primary">${formatAmount(tradedVolume, 30, 0, true)}</span>
+                  Volume this epoch: <span className="text-typography-primary">{formatCompactUsd(tradedVolume)}</span>
                 </Trans>
               </span>
             </div>
@@ -288,7 +303,7 @@ function VolumeCard({
               <div className="flex items-center gap-4 py-2">
                 <span>
                   <Trans>
-                    Trade ${formatAmount(nextTierConfig.threshold, 30, 0, true)} to unlock{" "}
+                    Trade {formatCompactUsd(nextTierConfig.threshold)} to unlock{" "}
                     {VOLUME_TIER_BADGES[nextTierConfig.tier]()} status{" "}
                     <span className="text-typography-primary">+{formatMultiplier(nextTierConfig.multiplier)}</span>
                   </Trans>
@@ -320,12 +335,12 @@ function VolumeBanner({ config }: { config?: IncentivesConfig }) {
       <h3 className="text-h3 font-medium text-typography-primary">
         <Trans>Reach {volumeLabel} in trading volume</Trans>
       </h3>
-      <div className="flex items-start gap-4 text-12 font-medium text-typography-secondary">
+      <div className="flex items-start gap-4 text-13 font-medium text-typography-secondary">
         <Trans>
           Unlock {tierName} status (+{multiplierLabel}) and earn up to ${rewardsEstimate} in additional trading rewards.
         </Trans>
       </div>
-      <Link to="/trade" className="flex items-center gap-4 text-12 font-medium text-blue-300">
+      <Link to="/trade" className="flex items-center gap-4 text-13 font-medium text-blue-300">
         <Trans>Start trading</Trans> <ArrowRight />
       </Link>
     </div>
@@ -377,7 +392,7 @@ function StakingCard({
 
   return (
     <div className={cx(tierCardBase, active ? tierCardActive : tierCardBanner)}>
-      {!active && <BannerGlow />}
+      {!active && <BannerGlow type="bottom-right" />}
       <div className="flex items-center justify-between font-medium text-typography-secondary">
         {active ? (
           <span>
@@ -418,7 +433,7 @@ function StakingCard({
             {displayTier && <StakingTierIcon tierId={displayTier} active className={tierIconLarge} />}
             {displayTier ? STAKING_TIER_BADGES[displayTier]() : "—"}
           </h3>
-          <div className="flex flex-col gap-2 text-12 text-typography-secondary">
+          <div className="flex flex-col gap-2 text-13 text-typography-secondary">
             <div className="flex items-center justify-between py-2 font-medium">
               <p>
                 <Trans>
@@ -428,7 +443,7 @@ function StakingCard({
                   </span>
                 </Trans>
               </p>
-              <Link to="/earn" className="inline-flex items-center gap-2 text-12 font-medium text-blue-300">
+              <Link to="/earn" className="inline-flex items-center gap-2 text-13 font-medium text-blue-300">
                 <Trans>Stake GMX</Trans>
                 <DatabaseIcon className="size-12" />
               </Link>
@@ -472,12 +487,12 @@ function StakingBanner({ config }: { config?: IncentivesConfig }) {
       <h3 className="text-h3 font-medium text-typography-primary">
         <Trans>Stake {stakeLabel} GMX</Trans>
       </h3>
-      <div className="flex items-start gap-4 text-12 font-medium text-typography-secondary">
+      <div className="flex items-start gap-4 text-13 font-medium text-typography-secondary">
         <Trans>
           Unlock {tierName} status (+{multiplierLabel}) and earn up to ${rewardsEstimate} in additional trading rewards.
         </Trans>
       </div>
-      <Link to="/earn" className="flex items-center gap-4 text-12 font-medium text-blue-300">
+      <Link to="/earn" className="flex items-center gap-4 text-13 font-medium text-blue-300">
         <Trans>Stake GMX</Trans>
         <DatabaseIcon className="size-14" />
       </Link>
@@ -518,7 +533,7 @@ function StakingProgressBar({
               {STAKING_TIER_BADGES[tier.tier]()}{" "}
               <span className="text-green-300">+{formatMultiplier(tier.multiplier)}</span>
             </div>
-            <div className="mt-4 text-12 text-typography-secondary">
+            <div className="mt-4 text-13 text-typography-secondary">
               <Trans>
                 Staked: <span className="text-typography-primary">{formatAmount(gmxStaked, 18, 0, true)}</span>
                 <span className="text-11">{" / "}</span>
@@ -584,7 +599,7 @@ function BoostsCard({
       )}
     >
       <div className="flex flex-col gap-12 p-16 pb-0">
-        {!active && <BannerGlow />}
+        {!active && <BannerGlow type="bottom" />}
         <div className="flex items-center justify-between font-medium text-typography-secondary">
           {active ? (
             <div className="flex w-full justify-between">
@@ -635,8 +650,8 @@ function BoostsCard({
                     content={
                       <div>
                         <div className="font-medium">{BOOST_LABELS[boost.boost]()}</div>
-                        <div className="mt-4 text-12">+{formatMultiplier(boost.multiplier)}</div>
-                        <div className="mt-4 text-12 text-typography-secondary">
+                        <div className="mt-4 text-13">+{formatMultiplier(boost.multiplier)}</div>
+                        <div className="mt-4 text-13 text-typography-secondary">
                           {getBoostDescription(boost.boost, config)}
                         </div>
                       </div>
@@ -652,7 +667,7 @@ function BoostsCard({
             <h3 className="text-h3 font-medium text-typography-primary">
               <Trans>Complete trading activities</Trans>
             </h3>
-            <p className="text-12 font-medium text-typography-secondary">
+            <p className="text-13 font-medium text-typography-secondary">
               <Trans>Unlock boosts and increase your rewards.</Trans>
             </p>
           </div>

@@ -136,11 +136,7 @@ export const PositionShareCard = forwardRef<HTMLDivElement, Props>(
               {referralCodeOwnerKind && code && (
                 <div className="flex flex-col gap-4">
                   <p className="text-11 font-medium uppercase tracking-[0.08em] text-[#A0A3C4]">
-                    {referralCodeOwnerKind === "created" ? (
-                      <Trans>Referral code</Trans>
-                    ) : (
-                      <Trans>Used Referral Code</Trans>
-                    )}
+                    {referralCodeOwnerKind === "created" ? <Trans>Referral code</Trans> : <Trans>Used Code</Trans>}
                   </p>
                   <p className="whitespace-nowrap text-13 font-medium text-white">{code}</p>
                 </div>

@@ -49,24 +49,70 @@ const AUDIT_QUERY = gql`
       limit: $limit
       offset: $offset
     ) {
-      id
-      account
-      epochTimestamp
-      points
-      rewards
-      fees
-      volume
-      avgMultiplier
-      maxMultiplier
-      volumeTier
-      stakingTier
-      boostIds
-      effectivePointsRatio
-      effectiveRewardsRatio
-      lastReceivedAt
+      totalCount
+      items {
+        id
+        account
+        epochTimestamp
+        points
+        rewards
+        fees
+        volume
+        avgMultiplier
+        maxMultiplier
+        volumeTier
+        stakingTier
+        boostIds
+        effectivePointsRatio
+        effectiveRewardsRatio
+        lastReceivedAt
+      }
     }
   }
 `;
+
+type RawAuditEntry = {
+  id: string;
+  account: string;
+  epochTimestamp: number;
+  points: string;
+  rewards: string;
+  fees: string;
+  volume: string;
+  avgMultiplier: number;
+  maxMultiplier: number;
+  volumeTier: string | null;
+  stakingTier: string | null;
+  boostIds: string[];
+  effectivePointsRatio: number;
+  effectiveRewardsRatio: number;
+  lastReceivedAt: number;
+};
+
+type AuditResult = {
+  entries: AuditEntry[];
+  totalCount: number;
+};
+
+function parseAuditEntry(e: RawAuditEntry): AuditEntry {
+  return {
+    id: e.id,
+    account: e.account,
+    epochTimestamp: e.epochTimestamp,
+    points: BigInt(e.points),
+    rewards: BigInt(e.rewards),
+    fees: BigInt(e.fees),
+    volume: BigInt(e.volume),
+    avgMultiplier: e.avgMultiplier,
+    maxMultiplier: e.maxMultiplier,
+    volumeTier: (e.volumeTier as VolumeTierId) ?? null,
+    stakingTier: (e.stakingTier as StakingTierId) ?? null,
+    boostIds: (e.boostIds as BoostId[]) ?? [],
+    effectivePointsRatio: e.effectivePointsRatio,
+    effectiveRewardsRatio: e.effectiveRewardsRatio,
+    lastReceivedAt: e.lastReceivedAt,
+  };
+}
 
 export function useIncentiveAccountEpochAudit(
   chainId: number,
@@ -82,7 +128,7 @@ export function useIncentiveAccountEpochAudit(
 ) {
   const { epochTimestamp, account, orderBy, orderDirection, limit = 20, offset = 0, enabled = true } = params;
 
-  const { data, error, isLoading } = useSWR<AuditEntry[] | undefined>(
+  const { data, error, isLoading } = useSWR<AuditResult | undefined>(
     enabled
       ? [
           "useIncentiveAccountEpochAudit",
@@ -110,44 +156,13 @@ export function useIncentiveAccountEpochAudit(
           fetchPolicy: "no-cache",
         });
 
-        const entries = res?.data?.incentiveAccountEpochAudit;
-        if (!entries) return undefined;
+        const audit = res?.data?.incentiveAccountEpochAudit;
+        if (!audit) return undefined;
 
-        return entries.map(
-          (e: {
-            id: string;
-            account: string;
-            epochTimestamp: number;
-            points: string;
-            rewards: string;
-            fees: string;
-            volume: string;
-            avgMultiplier: number;
-            maxMultiplier: number;
-            volumeTier: string | null;
-            stakingTier: string | null;
-            boostIds: string[];
-            effectivePointsRatio: number;
-            effectiveRewardsRatio: number;
-            lastReceivedAt: number;
-          }): AuditEntry => ({
-            id: e.id,
-            account: e.account,
-            epochTimestamp: e.epochTimestamp,
-            points: BigInt(e.points),
-            rewards: BigInt(e.rewards),
-            fees: BigInt(e.fees),
-            volume: BigInt(e.volume),
-            avgMultiplier: e.avgMultiplier,
-            maxMultiplier: e.maxMultiplier,
-            volumeTier: (e.volumeTier as VolumeTierId) ?? null,
-            stakingTier: (e.stakingTier as StakingTierId) ?? null,
-            boostIds: (e.boostIds as BoostId[]) ?? [],
-            effectivePointsRatio: e.effectivePointsRatio,
-            effectiveRewardsRatio: e.effectiveRewardsRatio,
-            lastReceivedAt: e.lastReceivedAt,
-          })
-        );
+        return {
+          entries: audit.items.map(parseAuditEntry),
+          totalCount: audit.totalCount,
+        };
       },
       refreshInterval: 5 * 60_000,
       revalidateOnFocus: false,
@@ -155,16 +170,19 @@ export function useIncentiveAccountEpochAudit(
   );
 
   const summary = useMemo<AuditSummary | undefined>(() => {
-    if (!data || data.length === 0) return undefined;
+    if (!data || data.entries.length === 0) return undefined;
 
-    const loadedCount = data.length;
-    const avgPointsRatio = data.reduce((sum, e) => sum + e.effectivePointsRatio, 0) / loadedCount;
-    const avgRewardsRatio = data.reduce((sum, e) => sum + e.effectiveRewardsRatio, 0) / loadedCount;
-    const totalPoints = data.reduce((sum, e) => sum + e.points, 0n);
-    const totalRewards = data.reduce((sum, e) => sum + e.rewards, 0n);
+    const loadedCount = data.entries.length;
+    const avgPointsRatio = data.entries.reduce((sum, e) => sum + e.effectivePointsRatio, 0) / loadedCount;
+    const avgRewardsRatio = data.entries.reduce((sum, e) => sum + e.effectiveRewardsRatio, 0) / loadedCount;
+    const totalPoints = data.entries.reduce((sum, e) => sum + e.points, 0n);
+    const totalRewards = data.entries.reduce((sum, e) => sum + e.rewards, 0n);
 
     return { loadedCount, avgPointsRatio, avgRewardsRatio, totalPoints, totalRewards };
   }, [data]);
 
-  return useMemo(() => ({ data, summary, error, loading: isLoading }), [data, summary, error, isLoading]);
+  return useMemo(
+    () => ({ data: data?.entries, totalCount: data?.totalCount, summary, error, loading: isLoading }),
+    [data, summary, error, isLoading]
+  );
 }

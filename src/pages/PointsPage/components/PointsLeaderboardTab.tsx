@@ -14,8 +14,6 @@ import type { ContractsChainId } from "sdk/configs/chains";
 import AddressView from "components/AddressView/AddressView";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import { PointsShare } from "components/PointsShare/PointsShare";
-import SearchInput from "components/SearchInput/SearchInput";
-import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import Tabs from "components/Tabs/Tabs";
@@ -35,10 +33,9 @@ function getRankClassName(rank: number | null) {
   return undefined;
 }
 
-const PER_PAGE = 20;
+const PER_PAGE = 16;
 
 type TimeFilter = "current" | "last" | "all";
-type SortField = "volume" | "pointsEarned" | "rewardsEarned" | "multiplier";
 
 type Props = {
   chainId: ContractsChainId;
@@ -48,8 +45,8 @@ type Props = {
 export function PointsLeaderboardTab({ chainId, account }: Props) {
   const { data: config } = useIncentivesConfig(chainId);
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("current");
-  const [searchAddress, setSearchAddress] = useState("");
   const [isShareOpen, setIsShareOpen] = useState(false);
+  const [page, setPage] = useState(1);
 
   const epoch = useMemo(() => {
     if (!config) return undefined;
@@ -58,8 +55,17 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
     return undefined; // all-time
   }, [config, timeFilter]);
 
-  const { data: leaderboard } = useIncentivesLeaderboard(chainId, { epoch });
-  const [page, setPage] = useState(1);
+  const leaderboardEnabled = timeFilter === "all" || epoch !== undefined;
+  const {
+    data: leaderboard,
+    totalCount,
+    loading,
+  } = useIncentivesLeaderboard(chainId, {
+    epoch,
+    limit: PER_PAGE,
+    offset: (page - 1) * PER_PAGE,
+    enabled: leaderboardEnabled,
+  });
   const showMultiplier = timeFilter !== "all";
 
   const timeFilterOptions = useMemo(
@@ -79,80 +85,24 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
     [setTimeFilter, setPage]
   );
 
-  const handleSearchChange = useCallback(
-    (value: string) => {
-      setSearchAddress(value);
-      setPage(1);
-    },
-    [setSearchAddress, setPage]
-  );
-
-  const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("points-leaderboard", {
-    orderBy: "volume",
-    direction: "desc",
-  });
-
-  const filteredLeaderboard = useMemo(() => {
-    if (!leaderboard) return [];
-
-    const filtered = searchAddress
-      ? leaderboard.filter((e) => e.address.toLowerCase().includes(searchAddress.toLowerCase()))
-      : leaderboard;
-
-    return [...filtered].sort((a, b) => {
-      if (orderBy === "unspecified" || direction === "unspecified") {
-        // Default: sort by volume desc
-        if (b.volume > a.volume) return 1;
-        if (b.volume < a.volume) return -1;
-        return 0;
-      }
-
-      let aVal: bigint | number;
-      let bVal: bigint | number;
-
-      switch (orderBy) {
-        case "volume":
-          aVal = a.volume;
-          bVal = b.volume;
-          break;
-        case "pointsEarned":
-          aVal = a.pointsEarned;
-          bVal = b.pointsEarned;
-          break;
-        case "rewardsEarned":
-          aVal = a.rewardsEarned;
-          bVal = b.rewardsEarned;
-          break;
-        case "multiplier":
-          aVal = a.multiplier ?? 0;
-          bVal = b.multiplier ?? 0;
-          break;
-        default:
-          return 0;
-      }
-
-      if (aVal < bVal) return direction === "asc" ? -1 : 1;
-      if (aVal > bVal) return direction === "asc" ? 1 : -1;
-      return 0;
-    });
-  }, [leaderboard, searchAddress, orderBy, direction]);
-
-  const pageCount = Math.ceil(filteredLeaderboard.length / PER_PAGE);
+  const pageCount = totalCount === undefined ? page : Math.max(1, Math.ceil(totalCount / PER_PAGE));
   const indexFrom = (page - 1) * PER_PAGE;
-  const pageData = filteredLeaderboard.slice(indexFrom, indexFrom + PER_PAGE);
+  const pageData = useMemo(() => leaderboard ?? [], [leaderboard]);
 
   const { userRank, userEntry } = useMemo(() => {
-    if (!account || !filteredLeaderboard.length) return { userRank: null, userEntry: null };
+    if (!account || !pageData.length) return { userRank: null, userEntry: null };
     const lowerAccount = account.toLowerCase();
-    const idx = filteredLeaderboard.findIndex((e) => e.address.toLowerCase() === lowerAccount);
+    const idx = pageData.findIndex((e) => e.address.toLowerCase() === lowerAccount);
     return {
-      userRank: idx >= 0 ? idx + 1 : null,
-      userEntry: idx >= 0 ? filteredLeaderboard[idx] : null,
+      userRank: idx >= 0 ? indexFrom + idx + 1 : null,
+      userEntry: idx >= 0 ? pageData[idx] : null,
     };
-  }, [account, filteredLeaderboard]);
+  }, [account, pageData, indexFrom]);
+
+  const tdClassName = "!py-10";
 
   return (
-    <div className="rounded-8 bg-slate-900">
+    <div className="flex h-full flex-col rounded-8 bg-slate-900">
       <div className="border-b-1/2 border-slate-600 p-20">
         <h3 className="mb-12 text-16 font-medium text-typography-primary">
           <Trans>Leaderboard</Trans>
@@ -166,25 +116,16 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
             onChange={handleTimeFilterChange}
             className="shrink-0"
           />
-
-          <SearchInput
-            className="ml-auto !h-36 w-[200px] !grow-0"
-            value={searchAddress}
-            setValue={handleSearchChange}
-            placeholder={t`Search Address`}
-            autoFocus={false}
-            qa="points-leaderboard-search"
-          />
         </div>
       </div>
 
-      {leaderboard && leaderboard.length === 0 ? (
+      {page === 1 && leaderboard && leaderboard.length === 0 ? (
         <div className="flex grow items-center justify-center rounded-8 bg-slate-900 p-24 text-center text-typography-secondary">
           <Trans>Leaderboard data is not available yet.</Trans>
         </div>
       ) : (
-        <div className="rounded-8 bg-slate-900">
-          <TableScrollFadeContainer>
+        <div className="flex grow flex-col rounded-8 bg-slate-900">
+          <TableScrollFadeContainer className="grow">
             <table className="w-full min-w-[800px] table-fixed">
               <colgroup>
                 <col style={COL_RANK} />
@@ -199,47 +140,35 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                 <TableTheadTr>
                   <TableTh>{t`Rank`}</TableTh>
                   <TableTh>{t`Address`}</TableTh>
-                  <TableTh>
-                    <Sorter {...getSorterProps("volume")}>
-                      <span className="whitespace-nowrap">{t`Volume`}</span>
-                    </Sorter>
-                  </TableTh>
-                  <TableTh>
-                    <Sorter {...getSorterProps("pointsEarned")}>
-                      <span className="whitespace-nowrap">{t`Earned Points`}</span>
-                    </Sorter>
-                  </TableTh>
-                  <TableTh>
-                    <Sorter {...getSorterProps("rewardsEarned")}>
-                      <span className="whitespace-nowrap">{t`Earned Rewards`}</span>
-                    </Sorter>
-                  </TableTh>
-                  <TableTh>
-                    {showMultiplier && (
-                      <Sorter {...getSorterProps("multiplier")}>
-                        <span className="whitespace-nowrap">{t`Multiplier`}</span>
-                      </Sorter>
-                    )}
-                  </TableTh>
+                  <TableTh>{t`Volume`}</TableTh>
+                  <TableTh>{t`Earned Points`}</TableTh>
+                  <TableTh>{t`Earned Rewards`}</TableTh>
+                  <TableTh>{showMultiplier && t`Multiplier`}</TableTh>
                   <TableTh />
                 </TableTheadTr>
               </thead>
               <tbody>
                 {userEntry && userRank && (
                   <TableTr className="border-b-1/2 border-blue-500/30 !bg-blue-500/10">
-                    <TableTd className="relative">
+                    <TableTd className={cx(tdClassName, "relative")}>
                       <span className={cx("numbers", getRankClassName(userRank))}>{userRank}</span>
                     </TableTd>
                     <TableTd>
                       <AddressView size={20} address={userEntry.address} breakpoint="XL" />
                     </TableTd>
-                    <TableTd className="numbers">{formatUsd(userEntry.volume, { displayDecimals: 0 })}</TableTd>
-                    <TableTd className="numbers">{formatAmount(userEntry.pointsEarned, 18, 4, true)}</TableTd>
-                    <TableTd className="numbers">{formatAmount(userEntry.rewardsEarned, 18, 4, true)} GMX</TableTd>
-                    <TableTd className="numbers">
+                    <TableTd className={cx(tdClassName, "numbers")}>
+                      {formatUsd(userEntry.volume, { displayDecimals: 0 })}
+                    </TableTd>
+                    <TableTd className={cx(tdClassName, "numbers")}>
+                      {formatAmount(userEntry.pointsEarned, 18, 4, true)}
+                    </TableTd>
+                    <TableTd className={cx(tdClassName, "numbers")}>
+                      {formatAmount(userEntry.rewardsEarned, 18, 4, true)} GMX
+                    </TableTd>
+                    <TableTd className={cx(tdClassName, "numbers")}>
                       {showMultiplier && userEntry.multiplier ? formatMultiplier(userEntry.multiplier) : ""}
                     </TableTd>
-                    <TableTd>
+                    <TableTd className={tdClassName}>
                       <button
                         type="button"
                         onClick={() => setIsShareOpen(true)}
@@ -256,7 +185,7 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                   const rank = indexFrom + i + 1;
                   return (
                     <TableTr key={entry.address} hoverable>
-                      <TableTd className="relative">
+                      <TableTd className={cx(tdClassName, "relative")}>
                         <span
                           className={cx("font-medium numbers after:!top-7", getRankClassName(rank), {
                             "text-yellow-300": rank <= 3,
@@ -265,30 +194,29 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                           {rank}
                         </span>
                       </TableTd>
-                      <TableTd>
+                      <TableTd className={cx(tdClassName, "numbers")}>
                         <AddressView size={20} address={entry.address} breakpoint="XL" />
                       </TableTd>
-                      <TableTd className="numbers">{formatUsd(entry.volume, { displayDecimals: 0 })}</TableTd>
-                      <TableTd className="numbers">{formatAmount(entry.pointsEarned, 18, 4, true)}</TableTd>
-                      <TableTd className="numbers">{formatAmount(entry.rewardsEarned, 18, 4, true)} GMX</TableTd>
-                      <TableTd className="numbers">
+                      <TableTd className={cx(tdClassName, "numbers")}>
+                        {formatUsd(entry.volume, { displayDecimals: 0 })}
+                      </TableTd>
+                      <TableTd className={cx(tdClassName, "numbers")}>
+                        {formatAmount(entry.pointsEarned, 18, 4, true)}
+                      </TableTd>
+                      <TableTd className={cx(tdClassName, "numbers")}>
+                        {formatAmount(entry.rewardsEarned, 18, 4, true)} GMX
+                      </TableTd>
+                      <TableTd className={cx(tdClassName, "numbers")}>
                         {showMultiplier && entry.multiplier ? formatMultiplier(entry.multiplier) : ""}
                       </TableTd>
-                      <TableTd />
+                      <TableTd className={cx(tdClassName, "numbers")} />
                     </TableTr>
                   );
                 })}
-                {!leaderboard && (
+                {loading && !leaderboard && (
                   <TableTr>
-                    <TableTd colSpan={7} className="py-16 text-center text-typography-secondary">
+                    <TableTd colSpan={7} rowSpan={6} className="!py-24 text-center text-typography-secondary">
                       <Trans>Loading...</Trans>
-                    </TableTd>
-                  </TableTr>
-                )}
-                {leaderboard && searchAddress && pageData.length === 0 && !userEntry && (
-                  <TableTr>
-                    <TableTd colSpan={7} className="py-16 text-center text-typography-secondary">
-                      <Trans>No addresses match your search.</Trans>
                     </TableTd>
                   </TableTr>
                 )}

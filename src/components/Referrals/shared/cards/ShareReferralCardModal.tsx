@@ -221,7 +221,7 @@ function ScaledReferralCard({
         </div>
         <div className="relative z-10 flex h-full flex-col justify-between p-20">
           <div className="flex items-start justify-between">
-            <div className="flex items-center text-typography-primary">
+            <div className="flex items-center text-white">
               <img src={logoIcon} alt="GMX Logo" className="w-22" />
               <LogoText className="h-14" />
             </div>

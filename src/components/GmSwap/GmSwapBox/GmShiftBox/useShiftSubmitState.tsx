@@ -8,7 +8,7 @@ import { ExecutionFee } from "domain/synthetics/fees";
 import type { GlvOrMarketInfo, MarketInfo } from "domain/synthetics/markets/types";
 import type { TokenData, TokensData } from "domain/synthetics/tokens/types";
 import type { ShiftAmounts } from "domain/synthetics/trade/utils/shift";
-import { getCommonError, getGmShiftError } from "domain/synthetics/trade/utils/validation";
+import { getCommonError, getGmShiftError, takeValidationResult } from "domain/synthetics/trade/utils/validation";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
@@ -102,7 +102,7 @@ export function useShiftSubmitState({
       chainId,
       isConnected: true,
       hasOutdatedUi,
-    })[0];
+    });
 
     const shiftError = getGmShiftError({
       chainId,
@@ -117,14 +117,14 @@ export function useShiftSubmitState({
       toTokenAmount: amounts?.toTokenAmount,
       fees,
       priceImpactUsd: amounts?.swapPriceImpactDeltaUsd,
-    })[0];
+    });
 
-    const error = commonError || shiftError;
+    const error = takeValidationResult(commonError, shiftError);
 
-    if (error) {
+    if (error.buttonErrorMessage) {
       return {
-        text: error,
-        error,
+        text: error.buttonErrorMessage,
+        error: error.buttonErrorMessage,
         disabled: !shouldDisableValidationForTesting,
         onSubmit,
       };

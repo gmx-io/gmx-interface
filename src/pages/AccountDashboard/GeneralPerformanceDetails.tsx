@@ -1,3 +1,4 @@
+import type { MessageDescriptor } from "@lingui/core";
 import { Trans, msg, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import cx from "classnames";
@@ -18,7 +19,7 @@ import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
 
 import { GeneralPerformanceDetailsDebugTooltip } from "./generalPerformanceDetailsDebug";
 
-const bucketLabelMap = {
+const bucketLabelMap: Record<string, MessageDescriptor> = {
   today: msg`Today`,
   yesterday: msg`Yesterday`,
   week: msg`Last 7d`,
@@ -101,7 +102,7 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
 
   return (
     <TableTr key={row.bucketLabel}>
-      <TableTd>{_(bucketLabelMap[row.bucketLabel as keyof typeof bucketLabelMap])}</TableTd>
+      <TableTd>{_(bucketLabelMap[row.bucketLabel])}</TableTd>
       <TableTd className="numbers">{formatUsd(row.volume, { maxThreshold: null })}</TableTd>
       <TableTd>
         <TooltipWithPortal

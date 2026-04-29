@@ -1,10 +1,12 @@
 import { Plural, Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { ReactNode, useEffect, useMemo, useState } from "react";
+import { type PointerEvent, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
+import { POINTS_PAGE_BANNERS_DISMISSED_KEY } from "config/localStorage";
 import { getEpochDuration } from "domain/synthetics/incentives/constants";
 import type { EpochStats, IncentivesConfig, RewardsHistoryEntry } from "domain/synthetics/incentives/types";
+import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount } from "lib/numbers";
 
 import bgPointsBanner from "img/bg_points_banner.png";
@@ -28,11 +30,22 @@ type BannerAction = {
   to: string;
 };
 
+type BannerType =
+  | "default"
+  | "points-expiring"
+  | "next-volume-tier"
+  | "volume-tier-drop-risk"
+  | "pair-boosts"
+  | "restake-rewards";
+
 type BannerContent = {
+  type: BannerType;
   title: ReactNode;
   description: ReactNode;
   action: BannerAction;
 };
+
+type DismissedBannerState = Partial<Record<BannerType, boolean>>;
 
 const BANNER_STYLES = {
   backgroundImage: `url(${bgPointsBanner})`,
@@ -41,46 +54,170 @@ const BANNER_STYLES = {
 };
 
 const AUTO_ROTATE_MS = 6000;
+const SWIPE_THRESHOLD_PX = 40;
+const SWIPE_DIRECTION_LOCK_RATIO = 1.25;
+const DISMISSED_STORAGE_KEY = JSON.stringify(POINTS_PAGE_BANNERS_DISMISSED_KEY);
+const DISMISSED_STORAGE_EVENT = "points-page-banners-dismissed-change";
 
 const ACTION_ICONS: Record<BannerAction["type"], React.ReactNode> = {
   trade: <TradeIcon className="size-16 text-blue-300" />,
   stake: <EarnIcon className="size-16 text-blue-300" />,
 };
 
+type BannerAnimationDirection = "left" | "right";
+
 export function PointsBanner({ isActiveUser, account, config, currentEpochStats, currentEpochHistory }: Props) {
   const now = useCurrentUnixTimestamp();
+  const [dismissedBannerTypes, setDismissedBannerTypes] = useLocalStorageSerializeKey<DismissedBannerState>(
+    POINTS_PAGE_BANNERS_DISMISSED_KEY,
+    {}
+  );
+  const swipeStartRef = useRef<{ x: number; y: number; pointerId: number } | null>(null);
 
-  const banners = useMemo(
+  const allBanners = useMemo(
     () => getBannerContent({ isActiveUser, account, config, currentEpochStats, currentEpochHistory, now }),
     [isActiveUser, account, config, currentEpochStats, currentEpochHistory, now]
   );
+  const banners = useMemo(
+    () => allBanners.filter((banner) => !dismissedBannerTypes?.[banner.type]),
+    [allBanners, dismissedBannerTypes]
+  );
 
   const [currentIndex, setCurrentIndex] = useState(0);
-  const [dismissed, setDismissed] = useState(false);
+  const [animationDirection, setAnimationDirection] = useState<BannerAnimationDirection>("right");
 
   useEffect(() => {
-    setCurrentIndex(0);
+    const syncDismissedBannerTypes = (event: Event) => {
+      const customEvent = event as CustomEvent<DismissedBannerState>;
+      setDismissedBannerTypes(customEvent.detail ?? {});
+    };
+
+    const handleStorage = (event: StorageEvent) => {
+      if (event.key === DISMISSED_STORAGE_KEY) {
+        setDismissedBannerTypes(parseDismissedBannerTypes(event.newValue));
+      }
+    };
+
+    window.addEventListener(DISMISSED_STORAGE_EVENT, syncDismissedBannerTypes);
+    window.addEventListener("storage", handleStorage);
+
+    return () => {
+      window.removeEventListener(DISMISSED_STORAGE_EVENT, syncDismissedBannerTypes);
+      window.removeEventListener("storage", handleStorage);
+    };
+  }, [setDismissedBannerTypes]);
+
+  useEffect(() => {
+    setCurrentIndex((prev) => (banners.length === 0 ? 0 : prev % banners.length));
   }, [banners.length]);
+
+  const goToRelativeIndex = useCallback(
+    (offset: number) => {
+      if (banners.length <= 1 || offset === 0) return;
+
+      setAnimationDirection(offset > 0 ? "right" : "left");
+      setCurrentIndex((prev) => normalizeBannerIndex(prev + offset, banners.length));
+    },
+    [banners.length]
+  );
+
+  const selectedIndex = banners.length === 0 ? 0 : normalizeBannerIndex(currentIndex, banners.length);
+  const current = banners[selectedIndex];
 
   useEffect(() => {
     if (banners.length <= 1) return;
 
-    const interval = setInterval(() => {
-      setCurrentIndex((prev) => (prev + 1) % banners.length);
+    const timeout = window.setTimeout(() => {
+      goToRelativeIndex(1);
     }, AUTO_ROTATE_MS);
 
-    return () => clearInterval(interval);
-  }, [banners.length, currentIndex]);
+    return () => window.clearTimeout(timeout);
+  }, [banners.length, current?.type, goToRelativeIndex, selectedIndex]);
 
-  if (banners.length === 0 || dismissed) return null;
+  const bannerAnimationClass =
+    animationDirection === "left" ? "animate-points-banner-slide-in-left" : "animate-points-banner-slide-in-right";
 
-  const current = banners[currentIndex % banners.length];
+  const handleDotClick = useCallback(
+    (index: number) => {
+      if (index === selectedIndex) return;
+
+      setAnimationDirection(index > selectedIndex ? "right" : "left");
+      setCurrentIndex(index);
+    },
+    [selectedIndex]
+  );
+
+  const handlePointerDown = useCallback(
+    (event: PointerEvent<HTMLDivElement>) => {
+      if (banners.length <= 1 || event.pointerType === "mouse") return;
+
+      const target = event.target;
+      if (target instanceof HTMLElement && target.closest("a, button")) return;
+
+      swipeStartRef.current = {
+        x: event.clientX,
+        y: event.clientY,
+        pointerId: event.pointerId,
+      };
+      event.currentTarget.setPointerCapture?.(event.pointerId);
+    },
+    [banners.length]
+  );
+
+  const handlePointerUp = useCallback(
+    (event: PointerEvent<HTMLDivElement>) => {
+      const swipeStart = swipeStartRef.current;
+      if (!swipeStart || swipeStart.pointerId !== event.pointerId) return;
+
+      swipeStartRef.current = null;
+      event.currentTarget.releasePointerCapture?.(event.pointerId);
+
+      const deltaX = event.clientX - swipeStart.x;
+      const deltaY = event.clientY - swipeStart.y;
+      const absDeltaX = Math.abs(deltaX);
+
+      if (absDeltaX < SWIPE_THRESHOLD_PX || absDeltaX < Math.abs(deltaY) * SWIPE_DIRECTION_LOCK_RATIO) return;
+
+      event.preventDefault();
+      goToRelativeIndex(deltaX < 0 ? 1 : -1);
+    },
+    [goToRelativeIndex]
+  );
+
+  const handlePointerCancel = useCallback((event: PointerEvent<HTMLDivElement>) => {
+    const swipeStart = swipeStartRef.current;
+    if (!swipeStart || swipeStart.pointerId !== event.pointerId) return;
+
+    swipeStartRef.current = null;
+    event.currentTarget.releasePointerCapture?.(event.pointerId);
+  }, []);
+
+  const handleDismiss = useCallback(() => {
+    if (!current) return;
+
+    const nextDismissedBannerTypes = {
+      ...dismissedBannerTypes,
+      [current.type]: true,
+    };
+
+    setDismissedBannerTypes(nextDismissedBannerTypes);
+    window.dispatchEvent(new CustomEvent(DISMISSED_STORAGE_EVENT, { detail: nextDismissedBannerTypes }));
+  }, [current, dismissedBannerTypes, setDismissedBannerTypes]);
+
+  if (banners.length === 0 || !current) return null;
 
   return (
     <div className="flex flex-col items-center">
       <div
-        className="relative grid w-full grid-cols-[1fr_80px] overflow-hidden rounded-8 border-1/2 border-stroke-primary bg-slate-900/50 p-16"
+        key={current.type}
+        className={cx(
+          "relative grid w-full grid-cols-[1fr_80px] overflow-hidden rounded-8 border-1/2 border-stroke-primary bg-slate-900/50 p-16 [touch-action:pan-y]",
+          bannerAnimationClass
+        )}
         style={BANNER_STYLES}
+        onPointerDown={handlePointerDown}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerCancel}
       >
         <div className="flex flex-col gap-4">
           <div className="flex flex-col gap-2">
@@ -94,8 +231,9 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
         </div>
 
         <button
+          aria-label={t`Close`}
           className="absolute right-12 top-12 text-typography-secondary opacity-50 hover:opacity-80"
-          onClick={() => setDismissed(true)}
+          onClick={handleDismiss}
         >
           <CloseIcon className="size-20" />
         </button>
@@ -106,8 +244,8 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
           {banners.map((_, index) => (
             <button
               key={index}
-              className={cx("size-8 rounded-full bg-blue-300", index === currentIndex ? "opacity-100" : "opacity-40")}
-              onClick={() => setCurrentIndex(index)}
+              className={cx("size-8 rounded-full bg-blue-300", index === selectedIndex ? "opacity-100" : "opacity-40")}
+              onClick={() => handleDotClick(index)}
             />
           ))}
         </div>
@@ -116,9 +254,27 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
   );
 }
 
+function normalizeBannerIndex(index: number, length: number) {
+  return ((index % length) + length) % length;
+}
+
+function parseDismissedBannerTypes(value: string | null): DismissedBannerState {
+  if (!value) {
+    return {};
+  }
+
+  try {
+    const parsed = JSON.parse(value);
+    return parsed && typeof parsed === "object" ? parsed : {};
+  } catch {
+    return {};
+  }
+}
+
 type BannerContext = Props & { now: number };
 
 const DEFAULT_BANNER: BannerContent = {
+  type: "default",
   title: <Trans>Earn rewards</Trans>,
   description: <Trans>Start earning points and unlock rewards.</Trans>,
   action: {
@@ -147,6 +303,7 @@ function getBannerContent({
     const pointsDisplay = formatAmount(expiredAmount, 18, 0, true);
     const expiredPointsCount = Number(expiredAmount / 10n ** 18n);
     items.push({
+      type: "points-expiring",
       title: t`Don't Let Rewards Expire`,
       description: (
         <Plural
@@ -175,6 +332,7 @@ function getBannerContent({
       const threshold30Pct = (nextTier.threshold * 30n) / 100n;
       if (remaining > 0n && remaining < threshold30Pct) {
         items.push({
+          type: "next-volume-tier",
           title: t`So Close to the Next Tier`,
           description: t`A small increase in volume will unlock a higher status and stronger rewards.`,
           action: {
@@ -197,6 +355,7 @@ function getBannerContent({
       const halfThreshold = currentTierConfig.threshold / 2n;
       if (epochProgressed && currentEpochStats.tradedVolume < halfThreshold) {
         items.push({
+          type: "volume-tier-drop-risk",
           title: t`Your tier will drop next epoch`,
           description: t`Your volume this epoch is below the threshold for your current tier. Trade more to keep your rewards multiplier.`,
           action: {
@@ -211,6 +370,7 @@ function getBannerContent({
 
   if (currentEpochStats && (!currentEpochStats.boostIds || currentEpochStats.boostIds.length === 0)) {
     items.push({
+      type: "pair-boosts",
       title: t`Activate Pair Boosts`,
       description: t`Trade eligible pairs to unlock multipliers and increase your reward potential this epoch.`,
       action: {
@@ -222,6 +382,7 @@ function getBannerContent({
   }
 
   items.push({
+    type: "restake-rewards",
     title: t`Restake your rewards and earn more`,
     description: t`Continue restaking your rewards to boost your earnings and unlock additional yield on your GMX tokens.`,
     action: {

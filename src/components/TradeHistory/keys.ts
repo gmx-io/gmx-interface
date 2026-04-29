@@ -110,7 +110,7 @@ function orderTypeToKey(orderType: OrderType): keyof typeof OrderType {
 }
 
 export function getActionTitle(orderType: OrderType, eventName: TradeActionType, isTwap: boolean) {
-  const key = isTwap
+  const key: keyof typeof actionTextMap = isTwap
     ? `Twap${isSwapOrderType(orderType) ? "Swap" : ""}-${eventName}`
     : `${orderTypeToKey(orderType)}-${eventName}`;
   const title = actionTextMap[key];

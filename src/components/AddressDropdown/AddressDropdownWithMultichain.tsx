@@ -5,7 +5,7 @@ import Skeleton from "react-loading-skeleton";
 
 import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
-import { isIncentivesEnabled, formatMultiplier } from "domain/synthetics/incentives/constants";
+import { isIncentivesEnabled } from "domain/synthetics/incentives/constants";
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
 import { useChainId } from "lib/chains";
 import { useENS } from "lib/legacy";
@@ -16,8 +16,7 @@ import { shortenAddressOrEns } from "lib/wallets";
 import { Avatar } from "components/Avatar/Avatar";
 import Button from "components/Button/Button";
 import { useAvailableToTradeAssetSettlementChain } from "components/GmxAccountModal/hooks";
-
-import MultiplierSolidIcon from "img/ic_multiplier_solid.svg?react";
+import { MultiplierBadge } from "components/MultiplierBadge/MultiplierBadge";
 
 const BACKDROP_ANIMATION_DURATION = 300;
 
@@ -99,11 +98,7 @@ export function AddressDropdownWithMultichain({ account }: Props) {
 
             {!isSmallMobile && <>{shortenAddressOrEns(ensName || account, displayAddressLength)}</>}
 
-            {showMultiplier && (
-              <span className="flex items-center gap-2 rounded-full bg-green-900 px-5 py-2 text-12 font-medium text-green-500">
-                <MultiplierSolidIcon className="size-12" /> {formatMultiplier(multiplier)}
-              </span>
-            )}
+            {showMultiplier && <MultiplierBadge multiplier={multiplier} />}
           </div>
 
           {showSideButton && !shouldShowDepositButton && (

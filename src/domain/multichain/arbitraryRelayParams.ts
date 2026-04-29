@@ -40,7 +40,7 @@ import {
   getOrderRelayRouterAddress,
 } from "domain/synthetics/express/expressOrderUtils";
 import { getSubaccountValidations } from "domain/synthetics/subaccount";
-import type { Subaccount, SubaccountValidations } from "domain/synthetics/subaccount/types";
+import type { Subaccount, SubaccountValidations } from "domain/synthetics/subaccount";
 import { convertToTokenAmount } from "domain/tokens";
 import { CustomError, isCustomError } from "lib/errors";
 import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
@@ -52,6 +52,7 @@ import { AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { bigMath } from "sdk/utils/bigmath";
 import { getEmptyExternalCallsPayload, type ExternalCallsPayload } from "sdk/utils/orderTransactions";
+import { createViemRpc, type IRpc, type StateOverrideEntry } from "sdk/utils/rpc";
 
 import { fallbackCustomError } from "./fallbackCustomError";
 
@@ -437,12 +438,34 @@ export function useArbitraryRelayParamsAndPayload({
         throw error;
       });
 
+      const viemRpc = createViemRpc(client);
+      const rpc: IRpc = {
+        ...viemRpc,
+        estimateGas: (params) => fallbackCustomError(() => viemRpc.estimateGas(params), "gasLimit"),
+      };
+
+      const stateOverride: StateOverrideEntry[] = [
+        {
+          address: getContract(chainId, "DataStore"),
+          stateDiff: [
+            {
+              slot: calculateMappingSlot(
+                multichainBalanceKey(p.account, p.globalExpressParams.gasPaymentToken.address),
+                DATASTORE_SLOT_INDEXES.uintValues
+              ),
+              value: toHex(SIMULATED_MULTICHAIN_BALANCE, { size: 32 }),
+            },
+          ],
+        },
+      ];
+
       const expressParams = await estimateExpressParams({
         chainId,
         isGmxAccount: p.isGmxAccount,
         estimationMethod: "estimateGas",
         globalExpressParams: p.globalExpressParams,
-        client,
+        rpc,
+        stateOverride,
         requireValidations: p.requireValidations,
         subaccount: p.subaccount,
         transactionParams: {

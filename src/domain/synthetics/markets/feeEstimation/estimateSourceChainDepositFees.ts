@@ -7,7 +7,7 @@ import { getMultichainTransferSendParams } from "domain/multichain/getSendParams
 import { getTransferRequests } from "domain/multichain/getTransferRequests";
 import { SendParam } from "domain/multichain/types";
 import { GlobalExpressParams, RelayParamsPayload } from "domain/synthetics/express";
-import { getRawRelayerParams } from "domain/synthetics/express/relayParamsUtils";
+import { getRawRelayerParams } from "domain/synthetics/express";
 import { adjustForDecimals } from "lib/numbers";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";

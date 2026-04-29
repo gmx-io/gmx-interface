@@ -4,16 +4,21 @@ import { useCallback, useMemo, useRef } from "react";
 import useSWR from "swr";
 
 import { getServerUrl } from "config/backend";
-import { ARBITRUM, AVALANCHE } from "config/chains";
+import { ARBITRUM, AVALANCHE, ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { contractFetcher } from "lib/contracts";
 import { BN_ZERO, expandDecimals, parseValue, toBigInt } from "lib/numbers";
+import type { WalletSigner } from "lib/wallets";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
 export * from "./prices";
 
-export function useGmxPrice(chainId, libraries, active) {
+export function useGmxPrice(
+  chainId: ContractsChainId,
+  libraries: { arbitrum?: WalletSigner | undefined },
+  active: boolean
+) {
   const arbitrumLibrary = libraries && libraries.arbitrum ? libraries.arbitrum : undefined;
   const { data: gmxPriceFromArbitrum, mutate: mutateFromArbitrum } = useGmxPriceFromArbitrum(arbitrumLibrary, active);
   const { data: gmxPriceFromAvalanche, mutate: mutateFromAvalanche } = useGmxPriceFromAvalanche();
@@ -94,6 +99,95 @@ export function useTotalGmxStaked() {
   };
 }
 
+export function useTotalStakedGmxAndEsGmx() {
+  const stakedGmxTrackerAddressArbitrum = getContract(ARBITRUM, "StakedGmxTracker");
+  const stakedGmxTrackerAddressAvax = getContract(AVALANCHE, "StakedGmxTracker");
+
+  const { data: stakedGmxSupplyArbitrum, mutate: updateStakedGmxSupplyArbitrum } = useSWR<bigint>(
+    [
+      `StakeV2:stakedGmxSupply:${ARBITRUM}`,
+      ARBITRUM,
+      getContract(ARBITRUM, "GMX"),
+      "balanceOf",
+      stakedGmxTrackerAddressArbitrum,
+    ],
+    {
+      fetcher: contractFetcher(undefined, "Token") as any,
+    }
+  );
+  const { data: stakedGmxSupplyAvax, mutate: updateStakedGmxSupplyAvax } = useSWR<bigint>(
+    [
+      `StakeV2:stakedGmxSupply:${AVALANCHE}`,
+      AVALANCHE,
+      getContract(AVALANCHE, "GMX"),
+      "balanceOf",
+      stakedGmxTrackerAddressAvax,
+    ],
+    {
+      fetcher: contractFetcher(undefined, "Token") as any,
+    }
+  );
+  const { data: stakedEsGmxSupplyArbitrum, mutate: updateStakedEsGmxSupplyArbitrum } = useSWR<bigint>(
+    [
+      `StakeV2:stakedEsGmxSupply:${ARBITRUM}`,
+      ARBITRUM,
+      getContract(ARBITRUM, "ES_GMX"),
+      "balanceOf",
+      stakedGmxTrackerAddressArbitrum,
+    ],
+    {
+      fetcher: contractFetcher(undefined, "Token") as any,
+    }
+  );
+  const { data: stakedEsGmxSupplyAvax, mutate: updateStakedEsGmxSupplyAvax } = useSWR<bigint>(
+    [
+      `StakeV2:stakedEsGmxSupply:${AVALANCHE}`,
+      AVALANCHE,
+      getContract(AVALANCHE, "ES_GMX"),
+      "balanceOf",
+      stakedGmxTrackerAddressAvax,
+    ],
+    {
+      fetcher: contractFetcher(undefined, "Token") as any,
+    }
+  );
+
+  const mutate = useCallback(() => {
+    updateStakedGmxSupplyArbitrum();
+    updateStakedGmxSupplyAvax();
+    updateStakedEsGmxSupplyArbitrum();
+    updateStakedEsGmxSupplyAvax();
+  }, [
+    updateStakedGmxSupplyArbitrum,
+    updateStakedGmxSupplyAvax,
+    updateStakedEsGmxSupplyArbitrum,
+    updateStakedEsGmxSupplyAvax,
+  ]);
+
+  const total = useMemo(() => {
+    if (
+      stakedGmxSupplyArbitrum === undefined ||
+      stakedGmxSupplyAvax === undefined ||
+      stakedEsGmxSupplyArbitrum === undefined ||
+      stakedEsGmxSupplyAvax === undefined
+    ) {
+      return undefined;
+    }
+
+    return (
+      BigInt(stakedGmxSupplyArbitrum) +
+      BigInt(stakedGmxSupplyAvax) +
+      BigInt(stakedEsGmxSupplyArbitrum) +
+      BigInt(stakedEsGmxSupplyAvax)
+    );
+  }, [stakedGmxSupplyArbitrum, stakedGmxSupplyAvax, stakedEsGmxSupplyArbitrum, stakedEsGmxSupplyAvax]);
+
+  return {
+    total,
+    mutate,
+  };
+}
+
 export function useTotalGmxInLiquidity() {
   let poolAddressArbitrum = getContract(ARBITRUM, "UniswapGmxEthPool");
   let poolAddressAvax = getContract(AVALANCHE, "TraderJoeGmxAvaxPool");
@@ -159,7 +253,7 @@ function useGmxPriceFromAvalanche() {
   return { data: gmxPrice, mutate };
 }
 
-function useGmxPriceFromArbitrum(signer, active) {
+function useGmxPriceFromArbitrum(signer: WalletSigner | undefined, active: boolean) {
   const poolAddress = getContract(ARBITRUM, "UniswapGmxEthPool");
   const { data: uniPoolSlot0, mutate: updateUniPoolSlot0 } = useSWR<any>(
     [`StakeV2:uniPoolSlot0:${active}`, ARBITRUM, poolAddress, "slot0"],

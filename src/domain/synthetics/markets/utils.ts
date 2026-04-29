@@ -17,11 +17,11 @@ import {
 } from "sdk/utils/markets";
 
 import { getCappedPositionImpactUsd } from "../fees";
+import { JitLiquidityInfo, getJitMaxReservedUsd } from "../jit/utils";
 import { PositionInfo } from "../positions";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens";
 import { isGlvAddress, isGlvInfo } from "./glv";
 import { GlvInfo, GlvOrMarketInfo, MarketInfo } from "./types";
-import { JitLiquidityInfo, getJitMaxReservedUsd } from "../jit/utils";
 import { TokenData, TokensData } from "../tokens/types";
 
 export * from "sdk/utils/markets";
@@ -461,11 +461,11 @@ export function getTradeboxLeverageSliderMarks(maxAllowedLeverage: number) {
   } else if (allowedLeverage >= 60) {
     return [0.1, 1, 2, 5, 10, 25, 50, 60];
   } else if (allowedLeverage >= 50) {
-    return [0.1, 1, 2, 5, 10, 25, 50];
+    return [0.1, 1, 2, 5, 10, 25, allowedLeverage];
   } else if (allowedLeverage >= 30) {
-    return [0.1, 1, 2, 5, 10, 30];
+    return [0.1, 1, 2, 5, 10, allowedLeverage];
   } else if (allowedLeverage >= 25) {
-    return [0.1, 1, 2, 5, 10, 25];
+    return [0.1, 1, 2, 5, 10, allowedLeverage];
   } else if (allowedLeverage >= 10) {
     return [0.1, 1, 2, 5, allowedLeverage];
   } else {

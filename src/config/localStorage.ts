@@ -70,6 +70,7 @@ export const METRICS_TIMERS_KEY = "metrics-timers-key";
 
 export const POINTS_NAV_NEW_BADGE_CLICKED_KEY = "points-nav-new-badge-clicked";
 export const POINTS_TRADE_BANNER_DISMISSED_KEY = "points-trade-banner-dismissed";
+export const POINTS_PAGE_BANNERS_DISMISSED_KEY = "points-page-banners-dismissed";
 export const HISTORICAL_POINTS_ALLOCATION_MODAL_DISMISSED_KEY = "historical-points-allocation-modal-dismissed";
 
 export const UI_FLAG_EVENTS_DISMISSED_KEY_PREFIX = "ui-flag-event-dismissed";

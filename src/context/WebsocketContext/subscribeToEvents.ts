@@ -465,6 +465,7 @@ export function parseEventLogData(eventData: RawEventLogData): EventLogData {
     for (const listKey of ["items", "arrayItems"]) {
       ret[typeKey][listKey] = {};
 
+      // @ts-expect-error
       for (const item of eventData[typeKey][listKey]) {
         ret[typeKey][listKey][item.key] = item.value;
       }

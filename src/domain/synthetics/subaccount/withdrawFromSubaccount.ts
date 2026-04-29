@@ -4,7 +4,7 @@ import useSWR from "swr";
 import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { useJsonRpcProvider } from "lib/rpc";
 
-import { SubaccountSerializedConfig } from "./types";
+import { SubaccountSerializedConfig } from ".";
 import { getSubaccountSigner } from "./utils";
 
 export function useSubaccountWithdrawalAmount(

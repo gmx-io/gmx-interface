@@ -1,4 +1,5 @@
 import { Trans, t } from "@lingui/macro";
+import cx from "classnames";
 import { useCallback, useMemo, useState } from "react";
 
 import {
@@ -10,7 +11,7 @@ import {
 import type { EpochStats, IncentivesConfig, StakingTierId, VolumeTierId } from "domain/synthetics/incentives/types";
 import { useMarkets } from "domain/synthetics/markets";
 import { getMarketIndexName } from "domain/synthetics/markets/utils";
-import { formatAmount } from "lib/numbers";
+import { formatAmount, formatAmountHuman } from "lib/numbers";
 import { convertTokenAddress, getNormalizedTokenSymbol, getToken } from "sdk/configs/tokens";
 
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
@@ -35,6 +36,12 @@ type Props = {
   projectedVolumeTier?: VolumeTierId | null;
 };
 
+const USD_DECIMALS = 30;
+
+function formatVolumeTierThreshold(threshold: bigint) {
+  return formatAmountHuman(threshold, USD_DECIMALS, true, 0).replace(/[kmb]$/i, (suffix) => suffix.toUpperCase());
+}
+
 export function TierLevelsSection({
   chainId,
   config,
@@ -55,7 +62,7 @@ export function TierLevelsSection({
     () => [
       { value: "volume" as const, label: <Trans>Volume Tiers</Trans> },
       { value: "staking" as const, label: <Trans>Staking Tiers</Trans> },
-      { value: "boosts" as const, label: <Trans>Activity Boost</Trans> },
+      { value: "boosts" as const, label: <Trans>Activity Boosts</Trans> },
     ],
     []
   );
@@ -97,21 +104,51 @@ export function TierLevelsSection({
       />
 
       <div>
-        <div className="p-20 pb-0 text-14 text-typography-secondary">
+        <div className="max-w-[600px] p-20 pb-0 text-14 text-typography-secondary">
           <p className="font-medium text-typography-primary">{descriptions[activeTab].short}</p>
-          {showMore && (
-            <>
+          <div
+            className={cx(
+              "grid transition-all duration-200 ease-out",
+              showMore ? "grid-rows-[1fr] opacity-100" : "pointer-events-none grid-rows-[0fr] opacity-0"
+            )}
+            aria-hidden={!showMore}
+          >
+            <div className="min-h-0 overflow-hidden">
               <p className="mt-8">{descriptions[activeTab].long}</p>
               {activeTab === "volume" && hasDowngradingCoefficients && (
                 <p className="mt-8">
                   <DowngradingCoefficientsTooltip chainId={chainId} coefficients={config!.downgradingCoefficients} />
                 </p>
               )}
-            </>
-          )}
-          <button className="mt-8 flex items-center gap-4 text-14 font-medium text-blue-300" onClick={handleToggleMore}>
-            {showMore ? <Trans>Show less</Trans> : <Trans>Show more</Trans>}
-            <ChevronDownIcon className={showMore ? "h-16 w-16 rotate-180" : "h-16 w-16"} />
+            </div>
+          </div>
+          <button
+            className="gmx-hover:text-blue-200 mt-8 flex items-center gap-4 text-14 font-medium text-blue-300 transition-colors duration-200"
+            onClick={handleToggleMore}
+            aria-expanded={showMore}
+            aria-label={showMore ? t`Show less` : t`Show more`}
+          >
+            <span aria-hidden="true" className="grid overflow-hidden">
+              <span
+                className={cx(
+                  "col-start-1 row-start-1 transition-all duration-200",
+                  showMore ? "-translate-y-1 opacity-0" : "translate-y-0 opacity-100"
+                )}
+              >
+                <Trans>Show more</Trans>
+              </span>
+              <span
+                className={cx(
+                  "col-start-1 row-start-1 transition-all duration-200",
+                  showMore ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0"
+                )}
+              >
+                <Trans>Show less</Trans>
+              </span>
+            </span>
+            <ChevronDownIcon
+              className={cx("h-16 w-16 transition-transform duration-200", { "rotate-180": showMore })}
+            />
           </button>
         </div>
 
@@ -187,7 +224,7 @@ function VolumeTiersTable({
                 </span>
               </TableTd>
               <TableTd padding="compact" className="text-typography-primary">
-                ${formatAmount(tier.threshold, 30, 0, true)}
+                {formatVolumeTierThreshold(tier.threshold)}
               </TableTd>
               <TableTd padding="compact" className="text-typography-primary">
                 {formatMultiplier(tier.multiplier)}

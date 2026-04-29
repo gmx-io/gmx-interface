@@ -23,7 +23,7 @@ import PageTitle from "components/PageTitle/PageTitle";
 import CheckIcon from "img/ic_check.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
 
-function ValidationRow({ isValid, children }) {
+function ValidationRow({ isValid, children }: { isValid: boolean; children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-4">
       {isValid ? <CheckIcon className="size-16 text-green-500" /> : <CloseIcon className="size-16 text-red-500" />}

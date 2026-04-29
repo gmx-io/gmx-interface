@@ -5,7 +5,6 @@ import { Redirect, useHistory, useLocation } from "react-router-dom";
 import { isIncentivesEnabled } from "domain/synthetics/incentives/constants";
 import { useAccountIncentiveDashboard } from "domain/synthetics/incentives/useAccountIncentiveDashboard";
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
-import { useAccountRewardsHistory } from "domain/synthetics/incentives/useAccountRewardsHistory";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
@@ -36,7 +35,6 @@ export function PointsPage() {
 
   const { data: config } = useIncentivesConfig(chainId);
   const { data: dashboard } = useAccountIncentiveDashboard(chainId, { account });
-  const { data: rewardsHistory } = useAccountRewardsHistory(chainId, { account });
   const { data: status } = useAccountIncentiveStatus(chainId, { account });
 
   const currentEpochStats = useMemo(() => {
@@ -52,11 +50,6 @@ export function PointsPage() {
         currentEpochStats?.stakingTier ||
         currentEpochStats?.boostIds?.length)
   );
-
-  const currentEpochHistory = useMemo(() => {
-    if (!config || !rewardsHistory?.length) return undefined;
-    return rewardsHistory.find((entry) => entry.epoch === config.epochTimestamp);
-  }, [config, rewardsHistory]);
 
   const tabOptions = useMemo(
     () => [
@@ -90,7 +83,12 @@ export function PointsPage() {
 
       <div className="mt-12 flex grow flex-col gap-8">
         <div className="overflow-x-auto scrollbar-hide">
-          <Tabs<PointsTab> type="inline" options={tabOptions} selectedValue={activeTab} onChange={handleTabChange} />
+          <Tabs<PointsTab>
+            type="inline-primary"
+            options={tabOptions}
+            selectedValue={activeTab}
+            onChange={handleTabChange}
+          />
         </div>
 
         {activeTab === PointsTab.Dashboard && (
@@ -100,7 +98,6 @@ export function PointsPage() {
               account={account}
               config={config}
               currentEpochStats={currentEpochStats}
-              currentEpochHistory={currentEpochHistory}
             />
             <SidebarRewards chainId={chainId} account={account} />
           </div>
@@ -124,7 +121,6 @@ export function PointsPage() {
                 account={account}
                 config={config}
                 currentEpochStats={currentEpochStats}
-                currentEpochHistory={currentEpochHistory}
               />
             </div>
           </div>

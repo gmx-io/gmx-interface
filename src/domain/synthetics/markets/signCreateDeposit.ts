@@ -8,7 +8,7 @@ import type { WalletSigner } from "lib/wallets";
 import { signTypedData } from "lib/wallets/signing";
 
 import type { CreateDepositParams } from ".";
-import { getGelatoRelayRouterDomain, hashRelayParams } from "../express/relayParamsUtils";
+import { getGelatoRelayRouterDomain, hashRelayParams } from "../express";
 import type { RelayParamsPayload } from "../express/types";
 
 export async function signCreateDeposit({

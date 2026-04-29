@@ -225,7 +225,7 @@ function YieldRow({ token, metric, to, disabled, chainId: targetChainId, onClick
   );
 }
 
-const CHAINS_ORDER = [ARBITRUM, AVALANCHE, MEGAETH];
+const CHAINS_ORDER = [ARBITRUM, AVALANCHE, MEGAETH] as const;
 
 export default function EarnYieldOverview() {
   const { address: account } = useAccount();
@@ -235,7 +235,7 @@ export default function EarnYieldOverview() {
   const avalancheTokens = useTokensDataRequest(AVALANCHE);
   const megaethTokens = useTokensDataRequest(MEGAETH);
 
-  const [mobileChainId, setMobileChainId] = useState<number>(ARBITRUM);
+  const [mobileChainId, setMobileChainId] = useState<(typeof CHAINS_ORDER)[number]>(ARBITRUM);
 
   const hasGmxHoldings = useMemo(
     () =>
@@ -276,7 +276,10 @@ export default function EarnYieldOverview() {
   const isGmxSuspended = arbStakingData?.isRewardsSuspended;
 
   const networkCards = useMemo(
-    () => ({
+    (): Record<
+      (typeof CHAINS_ORDER)[number],
+      { chainId: (typeof CHAINS_ORDER)[number]; title: React.ReactNode; rows: React.ReactNode[] }
+    > => ({
       [ARBITRUM]: {
         chainId: ARBITRUM,
         title: <Trans>Arbitrum</Trans>,

@@ -1,7 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { useCallback, useState } from "react";
 
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { registerReferralCode, TotalReferralsStats, useTiers } from "domain/referrals";
 import { getSharePercentage } from "domain/referrals/utils/referralsHelper";
 import { useChainId } from "lib/chains";
@@ -34,7 +33,6 @@ export function ReferralsAffiliatesTab({
   const [forceDashboard, setForceDashboard] = useState(false);
   const { signer } = useWallet();
   const { chainId } = useChainId();
-  const { pendingTxns } = usePendingTxns();
   const { recentCodes } = useRecentReferralCodes();
   const affiliateTierInfo = referralsData?.chains?.[chainId]?.affiliateTierInfo;
   const tierId = affiliateTierInfo?.tierId;
@@ -46,7 +44,6 @@ export function ReferralsAffiliatesTab({
     return registerReferralCode(chainId, referralCode, signer, {
       sentMsg: t`Referral code submitted`,
       failMsg: t`Referral code creation failed`,
-      pendingTxns,
     });
   }
 

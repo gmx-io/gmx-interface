@@ -1,7 +1,7 @@
 import cx from "classnames";
 import { type Address } from "viem";
 
-import { CONTRACTS_CHAIN_IDS, ContractsChainId, getChainName } from "config/chains";
+import { CONTRACTS_CHAIN_IDS, getChainName } from "config/chains";
 import { getIcon } from "config/icons";
 
 import Button from "components/Button/Button";
@@ -37,9 +37,9 @@ function Options({ account, chainId, version }: { account?: Address; chainId: nu
             <img
               className="inline-block h-16"
               src={getIcon(supportedChainId, "network")}
-              alt={getChainName(supportedChainId as ContractsChainId)}
+              alt={getChainName(supportedChainId)}
             />
-            {getChainName(supportedChainId as ContractsChainId)}
+            {getChainName(supportedChainId)}
           </Button>
         );
       })}

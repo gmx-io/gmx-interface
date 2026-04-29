@@ -4,7 +4,11 @@ import useSWR from "swr";
 
 import { getSubsquidGraphClient } from "lib/indexers";
 
-import type { IncentivesConfig } from "./types";
+import type { BoostId, IncentivesConfig, StakingTierId, VolumeTierId } from "./types";
+
+type RawVolumeTierConfig = { tier: VolumeTierId; threshold: string; multiplier: number };
+type RawStakingTierConfig = { tier: StakingTierId; threshold: string; multiplier: number };
+type RawBoostConfig = { boost: BoostId | "MultichainTrades"; multiplier: number };
 
 const INCENTIVES_CONFIG_QUERY = gql`
   query CurrentIncentivesConfig {
@@ -69,23 +73,23 @@ export function useIncentivesConfig(chainId: number) {
         pointsExpirationEpochs: config.pointsExpirationEpochs,
         basePointsFactor: BigInt(config.basePointsFactor),
         pointsToGmxFactor: BigInt(config.pointsToGmxFactor),
-        volumeTiers: config.volumeTiers
-          .map((t: { tier: string; threshold: string; multiplier: number }) => ({
+        volumeTiers: (config.volumeTiers as RawVolumeTierConfig[])
+          .map((t) => ({
             tier: t.tier,
             threshold: BigInt(t.threshold),
             multiplier: t.multiplier,
           }))
           .sort((a, b) => (a.threshold < b.threshold ? -1 : a.threshold > b.threshold ? 1 : 0)),
-        stakingTiers: config.stakingTiers
-          .map((t: { tier: string; threshold: string; multiplier: number }) => ({
+        stakingTiers: (config.stakingTiers as RawStakingTierConfig[])
+          .map((t) => ({
             tier: t.tier,
             threshold: BigInt(t.threshold),
             multiplier: t.multiplier,
           }))
           .sort((a, b) => (a.threshold < b.threshold ? -1 : a.threshold > b.threshold ? 1 : 0)),
-        boosts: config.boosts
-          .filter((b: { boost: string }) => b.boost !== "MultichainTrades")
-          .map((b: { boost: string; multiplier: number }) => ({
+        boosts: (config.boosts as RawBoostConfig[])
+          .filter((b): b is { boost: BoostId; multiplier: number } => b.boost !== "MultichainTrades")
+          .map((b) => ({
             boost: b.boost,
             multiplier: b.multiplier,
           })),

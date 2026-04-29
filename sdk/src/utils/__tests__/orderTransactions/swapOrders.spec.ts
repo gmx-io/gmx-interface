@@ -374,6 +374,7 @@ describe("Swap Order Payloads", () => {
           numberOfParts: twapParams.numberOfParts,
           isExpress: false,
           isJit: false,
+          source: "00",
         });
 
         return {

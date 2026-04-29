@@ -1,6 +1,6 @@
 import { t } from "@lingui/macro";
 import mapKeys from "lodash/mapKeys";
-import { zeroAddress, zeroHash } from "viem";
+import { Address, zeroAddress, zeroHash } from "viem";
 import { generatePrivateKey, privateKeyToAccount } from "viem/accounts";
 import { useEnsName } from "wagmi";
 
@@ -9,6 +9,7 @@ import { SOURCE_ETHEREUM_MAINNET, getExplorerUrl } from "config/chains";
 import { isLocal } from "config/env";
 import { BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { PRODUCTION_HOST } from "config/links";
+import type { TokenInfo } from "sdk/utils/tokens/types";
 
 import { isValidTimestamp } from "./dates";
 import { PRECISION, calculateDisplayDecimals, expandDecimals, formatAmount, toBigInt } from "./numbers";
@@ -35,8 +36,19 @@ export function isHomeSite() {
   return import.meta.env.VITE_APP_IS_HOME_SITE === "true";
 }
 
-export function getExchangeRate(tokenAInfo, tokenBInfo, inverted) {
-  if (!tokenAInfo || !tokenAInfo.minPrice || !tokenBInfo || !tokenBInfo.maxPrice) {
+export function getExchangeRate(
+  tokenAInfo: TokenInfo | undefined,
+  tokenBInfo: TokenInfo | undefined,
+  inverted: boolean
+) {
+  if (
+    !tokenAInfo ||
+    tokenAInfo.minPrice === undefined ||
+    tokenAInfo.minPrice === 0n ||
+    !tokenBInfo ||
+    tokenBInfo.maxPrice === undefined ||
+    tokenBInfo.maxPrice === 0n
+  ) {
     return;
   }
   if (inverted) {
@@ -45,15 +57,28 @@ export function getExchangeRate(tokenAInfo, tokenBInfo, inverted) {
   return (tokenBInfo.maxPrice * PRECISION) / tokenAInfo.minPrice;
 }
 
-function shouldInvertTriggerRatio(tokenA, tokenB) {
+function shouldInvertTriggerRatio(tokenA: TokenInfo, tokenB: TokenInfo) {
   if (tokenA.isStable && tokenB.isStable) return false;
   if ((tokenB.isStable || tokenB.isUsdg) && !tokenA.isStable) return true;
-  if (tokenB.maxPrice && tokenA.maxPrice && tokenB.maxPrice < tokenA.maxPrice) return true;
+  if (
+    tokenB.maxPrice !== undefined &&
+    tokenB.maxPrice !== 0n &&
+    tokenA.maxPrice !== undefined &&
+    tokenA.maxPrice !== 0n &&
+    tokenB.maxPrice < tokenA.maxPrice
+  ) {
+    return true;
+  }
   return false;
 }
 
-export function getExchangeRateDisplay(rate, tokenA, tokenB, opts: { omitSymbols?: boolean } = {}) {
-  if (!rate || rate == 0 || !tokenA || !tokenB) return "...";
+export function getExchangeRateDisplay(
+  rate: bigint | undefined,
+  tokenA: TokenInfo | undefined,
+  tokenB: TokenInfo | undefined,
+  opts: { omitSymbols?: boolean } = {}
+) {
+  if (rate === undefined || rate === 0n || !tokenA || !tokenB) return "...";
   if (shouldInvertTriggerRatio(tokenA, tokenB)) {
     [tokenA, tokenB] = [tokenB, tokenA];
     rate = (PRECISION * PRECISION) / rate;
@@ -78,7 +103,7 @@ export function getPositionKey(
   return account + ":" + tokenAddress0 + ":" + tokenAddress1 + ":" + isLong;
 }
 
-export function shortenAddress(address, length, padStart = 1) {
+export function shortenAddress(address: string | undefined, length: number, padStart = 1) {
   if (!length) {
     return "";
   }
@@ -95,7 +120,7 @@ export function shortenAddress(address, length, padStart = 1) {
   return address.substring(0, left) + "..." + address.substring(address.length - (length - (left + 3)), address.length);
 }
 
-export function useENS(address) {
+export function useENS(address: Address | undefined) {
   const { data } = useEnsName({
     address,
     chainId: SOURCE_ETHEREUM_MAINNET,
@@ -131,7 +156,9 @@ export const CHART_PERIODS = {
   "1y": 60 * 60 * 24 * 365,
 };
 
-export function getTotalVolumeSum(volumes) {
+export type ChartPeriod = keyof typeof CHART_PERIODS;
+
+export function getTotalVolumeSum(volumes: { data: { volume: string | number | bigint } }[] | undefined) {
   if (!volumes || volumes.length === 0) {
     return;
   }
@@ -154,8 +181,8 @@ export function getBalanceAndSupplyData(balances: bigint[] | undefined): {
   }
 
   const keys = ["gmx", "esGmx", "glp", "stakedGmxTracker"];
-  const balanceData = {};
-  const supplyData = {};
+  const balanceData: Record<string, bigint> = {};
+  const supplyData: Record<string, bigint> = {};
   const propsLength = 2;
 
   for (let i = 0; i < keys.length; i++) {
@@ -192,7 +219,7 @@ export function getDepositBalanceData(
     "bnGmxInFeeGmx",
     "glpInStakedGlp",
   ];
-  const data = {};
+  const data: Record<string, bigint> = {};
 
   for (let i = 0; i < keys.length; i++) {
     const key = keys[i];
@@ -253,37 +280,52 @@ type RawVestingData = {
   affiliateVesterAverageStakedAmount: bigint;
 };
 
-export function getVestingData(vestingInfo): RawVestingData | undefined {
+export function getVestingData(vestingInfo: bigint[] | undefined): RawVestingData | undefined {
   if (!vestingInfo || vestingInfo.length === 0) {
     return undefined;
   }
   const propsLength = 7;
-  const data: Partial<RawVestingData> = {};
 
-  const keys = ["gmxVester", "glpVester", "affiliateVester"] as const;
+  const readVester = (offset: number) => ({
+    pairAmount: vestingInfo[offset],
+    vestedAmount: vestingInfo[offset + 1],
+    escrowedBalance: vestingInfo[offset + 2],
+    claimedAmounts: vestingInfo[offset + 3],
+    claimable: vestingInfo[offset + 4],
+    maxVestableAmount: vestingInfo[offset + 5],
+    averageStakedAmount: vestingInfo[offset + 6],
+  });
 
-  for (let i = 0; i < keys.length; i++) {
-    const key = keys[i] as (typeof keys)[number];
-    data[key] = {
-      pairAmount: vestingInfo[i * propsLength],
-      vestedAmount: vestingInfo[i * propsLength + 1],
-      escrowedBalance: vestingInfo[i * propsLength + 2],
-      claimedAmounts: vestingInfo[i * propsLength + 3],
-      claimable: vestingInfo[i * propsLength + 4],
-      maxVestableAmount: vestingInfo[i * propsLength + 5],
-      averageStakedAmount: vestingInfo[i * propsLength + 6],
-    };
+  const gmxVester = readVester(0);
+  const glpVester = readVester(propsLength);
+  const affiliateVester = readVester(propsLength * 2);
 
-    data[key + "PairAmount"] = data[key]!.pairAmount;
-    data[key + "VestedAmount"] = data[key]!.vestedAmount;
-    data[key + "EscrowedBalance"] = data[key]!.escrowedBalance;
-    data[key + "ClaimSum"] = data[key]!.claimedAmounts + data[key]!.claimable;
-    data[key + "Claimable"] = data[key]!.claimable;
-    data[key + "MaxVestableAmount"] = data[key]!.maxVestableAmount;
-    data[key + "AverageStakedAmount"] = data[key]!.averageStakedAmount;
-  }
-
-  return data as RawVestingData;
+  return {
+    gmxVester,
+    gmxVesterPairAmount: gmxVester.pairAmount,
+    gmxVesterVestedAmount: gmxVester.vestedAmount,
+    gmxVesterEscrowedBalance: gmxVester.escrowedBalance,
+    gmxVesterClaimSum: gmxVester.claimedAmounts + gmxVester.claimable,
+    gmxVesterClaimable: gmxVester.claimable,
+    gmxVesterMaxVestableAmount: gmxVester.maxVestableAmount,
+    gmxVesterAverageStakedAmount: gmxVester.averageStakedAmount,
+    glpVester,
+    glpVesterPairAmount: glpVester.pairAmount,
+    glpVesterVestedAmount: glpVester.vestedAmount,
+    glpVesterEscrowedBalance: glpVester.escrowedBalance,
+    glpVesterClaimSum: glpVester.claimedAmounts + glpVester.claimable,
+    glpVesterClaimable: glpVester.claimable,
+    glpVesterMaxVestableAmount: glpVester.maxVestableAmount,
+    glpVesterAverageStakedAmount: glpVester.averageStakedAmount,
+    affiliateVester,
+    affiliateVesterPairAmount: affiliateVester.pairAmount,
+    affiliateVesterVestedAmount: affiliateVester.vestedAmount,
+    affiliateVesterEscrowedBalance: affiliateVester.escrowedBalance,
+    affiliateVesterClaimSum: affiliateVester.claimedAmounts + affiliateVester.claimable,
+    affiliateVesterClaimable: affiliateVester.claimable,
+    affiliateVesterMaxVestableAmount: affiliateVester.maxVestableAmount,
+    affiliateVesterAverageStakedAmount: affiliateVester.averageStakedAmount,
+  };
 }
 
 export function getStakingData(stakingInfo: bigint[] | undefined):
@@ -315,7 +357,8 @@ export function getStakingData(stakingInfo: bigint[] | undefined):
     "feeGlpTracker",
     "extendedGmxTracker",
   ];
-  const data = {};
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const data: Record<string, any> = {};
   const propsLength = 5;
 
   for (let i = 0; i < keys.length; i++) {
@@ -397,6 +440,7 @@ export type StakingProcessedData = Partial<{
   cumulativeGmxRewardsUsd: bigint;
   cumulativeNativeTokenRewards: bigint;
   cumulativeNativeTokenRewardsUsd: bigint;
+  avgGMXAprTotal: bigint;
 }> & {
   gmxAprForEsGmx: bigint;
   gmxAprForNativeToken: bigint;
@@ -607,15 +651,15 @@ export function getStakingProcessedData(
   return data;
 }
 
-export function getPageTitle(data) {
+export function getPageTitle(data: string) {
   const title = t`Decentralized perpetual exchange | GMX`;
   return `${data} | ${title}`;
 }
 
-export function isHashZero(value) {
+export function isHashZero(value: string | undefined) {
   return value === zeroHash;
 }
-export function isAddressZero(value) {
+export function isAddressZero(value: unknown) {
   return value === zeroAddress;
 }
 
@@ -661,7 +705,7 @@ const imageStaticMap = mapKeys(
   (_, key) => key.split("/").pop()
 );
 
-export function importImage(name) {
+export function importImage(name: string) {
   const sizeSuffixRegex = /_(?:24|40)\.svg$/;
   const candidates = sizeSuffixRegex.test(name) ? [name.replace(sizeSuffixRegex, ".svg"), name] : [name];
 

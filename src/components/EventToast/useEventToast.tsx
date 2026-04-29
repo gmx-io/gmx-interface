@@ -77,7 +77,7 @@ function useEventToast() {
 
   useEffect(() => {
     const someIncentivesOn = Boolean(arbIncentiveStats?.lp?.isActive || arbIncentiveStats?.trading?.isActive);
-    const validationParams = {
+    const validationParams: Record<string, boolean | undefined> = {
       "v2-adaptive-funding": isAdaptiveFundingActiveSomeMarkets,
       "v2-adaptive-funding-coming-soon":
         isAdaptiveFundingActiveSomeMarkets !== undefined && !isAdaptiveFundingActiveSomeMarkets,

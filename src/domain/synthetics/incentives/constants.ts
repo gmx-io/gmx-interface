@@ -53,7 +53,9 @@ export function getEpochDuration(config?: { epochDuration: number }): number {
   return config?.epochDuration ?? DEFAULT_EPOCH_DURATION;
 }
 
-export function formatMultiplier(rawMultiplier: number): string {
+export function formatMultiplier(rawMultiplier: number | undefined): string {
+  if (rawMultiplier === undefined || rawMultiplier === 0) return "0x";
+
   const value = rawMultiplier / MULTIPLIER_DECIMALS;
   return `${Number(value.toFixed(2))}x`;
 }

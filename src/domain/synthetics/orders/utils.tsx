@@ -48,6 +48,7 @@ export function getOrderTypeLabel(orderType: OrderType) {
     [OrderType.LimitDecrease]: t`Limit Decrease`,
     [OrderType.StopLossDecrease]: t`Stop-Loss Decrease`,
     [OrderType.Liquidation]: t`Liquidation`,
+    [OrderType.StopIncrease]: undefined,
   };
 
   return orderTypeLabels[orderType];
