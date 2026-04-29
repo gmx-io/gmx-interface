@@ -156,7 +156,6 @@ export function getMaxLeverageByMinCollateralFactor(minCollateralFactor: bigint 
 }
 
 const MAX_ALLOWED_LEVERAGE_STEP_BP = 5 * BASIS_POINTS_DIVISOR;
-const FAST_PATH_LEVERAGE_CAP_BP = 100 * BASIS_POINTS_DIVISOR;
 export function getMaxAllowedLeverage({
   minCollateralFactor,
   minCollateralFactorForLiquidation,
@@ -166,29 +165,23 @@ export function getMaxAllowedLeverage({
   minCollateralFactorForLiquidation: bigint | undefined;
   positionFeeFactorForBalanceWasNotImproved: bigint | undefined;
 }): number {
-  if (minCollateralFactor === undefined || minCollateralFactor === 0n) {
+  if (
+    minCollateralFactor === undefined ||
+    minCollateralFactor === 0n ||
+    minCollateralFactorForLiquidation === undefined ||
+    minCollateralFactorForLiquidation === 0n ||
+    positionFeeFactorForBalanceWasNotImproved === undefined
+  ) {
     return 100 * BASIS_POINTS_DIVISOR;
   }
 
-  // Opening bound — applied whenever MCF is known. Treat missing fee as 0 so the bound
-  // is still computable from the partial data the fast/subsquid path provides.
-  const fee = positionFeeFactorForBalanceWasNotImproved ?? 0n;
-  const openingDenominator = minCollateralFactor + 2n * fee;
-  let rawMaxBp = bigMath.mulDiv(PRECISION, BASIS_POINTS_DIVISOR_BIGINT, openingDenominator);
+  const openingDenominator = minCollateralFactor + 2n * positionFeeFactorForBalanceWasNotImproved;
+  const openingMaxBp = bigMath.mulDiv(PRECISION, BASIS_POINTS_DIVISOR_BIGINT, openingDenominator);
 
-  if (minCollateralFactorForLiquidation !== undefined && minCollateralFactorForLiquidation !== 0n) {
-    // Full data path: apply the liquidation bound from on-chain config.
-    const liquidationDenominator = 2n * minCollateralFactorForLiquidation;
-    const liquidationMaxBp = bigMath.mulDiv(PRECISION, BASIS_POINTS_DIVISOR_BIGINT, liquidationDenominator);
-    rawMaxBp = bigMath.min(rawMaxBp, liquidationMaxBp);
-  } else {
-    // Fast/subsquid path: liqMCF is not indexed, so cap at 100x. Real liqMCF is always
-    // ≥ 0.5% on listed markets, which means the on-chain liquidation bound never exceeds
-    // 100x. Capping here keeps the fast-path result aligned with the eventual full-data
-    // result for the common case (BTC/ETH, GOLD on-hours, …) and avoids the transient
-    // 50x flash on split-factor markets like ZEC.
-    rawMaxBp = bigMath.min(rawMaxBp, BigInt(FAST_PATH_LEVERAGE_CAP_BP));
-  }
+  const liquidationDenominator = 2n * minCollateralFactorForLiquidation;
+  const liquidationMaxBp = bigMath.mulDiv(PRECISION, BASIS_POINTS_DIVISOR_BIGINT, liquidationDenominator);
+
+  const rawMaxBp = bigMath.min(openingMaxBp, liquidationMaxBp);
 
   return Math.floor(Number(rawMaxBp) / MAX_ALLOWED_LEVERAGE_STEP_BP) * MAX_ALLOWED_LEVERAGE_STEP_BP;
 }

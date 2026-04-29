@@ -190,7 +190,7 @@ describe("getMaxAllowedLeverage", () => {
   const pct = (percent: number) => expandDecimals(percent * 100, 26); // 0.5% → 5e27
   const bps = (lev: number) => lev * BASIS_POINTS_DIVISOR;
 
-  it("returns default 100x when MCF is undefined or zero", () => {
+  it("returns default 100x when any factor is undefined or zero", () => {
     expect(
       getMaxAllowedLeverage({
         minCollateralFactor: undefined,
@@ -206,32 +206,15 @@ describe("getMaxAllowedLeverage", () => {
         positionFeeFactorForBalanceWasNotImproved: pct(0.05),
       })
     ).toBe(bps(100));
-  });
 
-  it("caps at 100x when liqMCF is missing (fast/subsquid path)", () => {
-    // ZEC fast-path: MCF=1%, fee=0.06%, liqMCF unknown → opening 85x, well below the 100x
-    // cap, so result matches the eventual RPC value (no 50x flash).
-    expect(
-      getMaxAllowedLeverage({
-        minCollateralFactor: pct(1),
-        minCollateralFactorForLiquidation: undefined,
-        positionFeeFactorForBalanceWasNotImproved: pct(0.06),
-      })
-    ).toBe(bps(85));
-
-    // BTC fast-path: MCF=0.5%, fee=0.06%, liqMCF unknown → opening 160x, capped at 100x
-    // so the fast-path result matches the RPC result (liqMCF=0.5% → liqMax=100x).
     expect(
       getMaxAllowedLeverage({
         minCollateralFactor: pct(0.5),
         minCollateralFactorForLiquidation: 0n,
-        positionFeeFactorForBalanceWasNotImproved: pct(0.06),
+        positionFeeFactorForBalanceWasNotImproved: pct(0.05),
       })
     ).toBe(bps(100));
-  });
 
-  it("treats missing fee as zero (theoretical opening bound)", () => {
-    // MCF=0.5% with no fee info → 1/0.005 = 200x; further constrained by liqMCF=0.5% → 100x.
     expect(
       getMaxAllowedLeverage({
         minCollateralFactor: pct(0.5),

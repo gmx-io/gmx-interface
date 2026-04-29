@@ -211,11 +211,7 @@ export function useFastMarketsInfoRequest(chainId: number) {
             positionImpactPoolDistributionRate: BigInt(mInfo.positionImpactPoolDistributionRate),
 
             minCollateralFactor: BigInt(mInfo.minCollateralFactor),
-            // Subsquid does not index minCollateralFactorForLiquidation. Leaving it 0n
-            // makes getMaxAllowedLeverage skip the liquidation bound until the RPC config
-            // arrives, instead of approximating with MCF (which would understate the cap
-            // on split-factor markets like ZEC: 50x flash before settling at 85x).
-            minCollateralFactorForLiquidation: 0n,
+            minCollateralFactorForLiquidation: BigInt(mInfo.minCollateralFactor),
             minCollateralFactorForOpenInterestLong: BigInt(mInfo.minCollateralFactorForOpenInterestLong),
             minCollateralFactorForOpenInterestShort: BigInt(mInfo.minCollateralFactorForOpenInterestShort),
 
