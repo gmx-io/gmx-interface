@@ -22,11 +22,16 @@ vi.mock("img/ic_staking.svg?react", () => ({
   default: (props: any) => <svg data-testid="staking-icon" {...props} />,
 }));
 
+const stakingDataMock = vi.hoisted(() => ({
+  data: {
+    gmxInStakedGmx: 50n * 10n ** 18n,
+    gmxBalance: 0n,
+  },
+}));
+
 vi.mock("domain/stake/useStakingProcessedData", () => ({
   useStakingProcessedData: () => ({
-    data: {
-      gmxInStakedGmx: 50n * 10n ** 18n,
-    },
+    data: stakingDataMock.data,
   }),
 }));
 
@@ -91,6 +96,10 @@ function renderWithI18n(ui: React.ReactElement) {
 }
 
 afterEach(() => {
+  stakingDataMock.data = {
+    gmxInStakedGmx: 50n * GMX_DEC,
+    gmxBalance: 0n,
+  };
   cleanup();
 });
 
@@ -145,6 +154,28 @@ describe("TierCardsSection", () => {
       const allText = document.body.textContent || "";
       expect(allText).toContain("Supporter");
       expect(allText).toContain("0.25x");
+    });
+
+    it("prompts to buy GMX when the wallet has no GMX", () => {
+      stakingDataMock.data = {
+        gmxInStakedGmx: 0n,
+        gmxBalance: 0n,
+      };
+
+      renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={undefined} />);
+
+      expect(screen.getByText("Buy GMX")).toBeDefined();
+    });
+
+    it("prompts to stake GMX when the wallet has GMX", () => {
+      stakingDataMock.data = {
+        gmxInStakedGmx: 0n,
+        gmxBalance: 10n * GMX_DEC,
+      };
+
+      renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={undefined} />);
+
+      expect(screen.getByText("Stake GMX")).toBeDefined();
     });
   });
 
@@ -203,6 +234,75 @@ describe("TierCardsSection", () => {
       // Each segment is a div with relative flex-1 and bg-slate-700 class
       const segments = container.querySelectorAll(".bg-slate-700");
       expect(segments.length).toBeGreaterThanOrEqual(3);
+    });
+
+    it("prompts to buy GMX when wallet GMX is not enough for the next tier", () => {
+      stakingDataMock.data = {
+        gmxInStakedGmx: 25n * GMX_DEC,
+        gmxBalance: 50n * GMX_DEC,
+      };
+
+      const currentEpochStats: EpochStats = {
+        account: "0x1234",
+        multiplier: 150,
+        epochTimestamp: 1700000000,
+        volumeTier: null,
+        stakingTier: "Tier1",
+        tradedVolume: 0n,
+        boostIds: [],
+      };
+
+      renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />);
+
+      const allText = document.body.textContent || "";
+      expect(allText).toContain("Stake 75 GMX more to get Advocate status +0.5x");
+      expect(screen.getByText("Buy GMX")).toBeDefined();
+    });
+
+    it("prompts to stake the missing GMX amount when wallet GMX reaches the next tier requirement", () => {
+      stakingDataMock.data = {
+        gmxInStakedGmx: 25n * GMX_DEC,
+        gmxBalance: 75n * GMX_DEC,
+      };
+
+      const currentEpochStats: EpochStats = {
+        account: "0x1234",
+        multiplier: 150,
+        epochTimestamp: 1700000000,
+        volumeTier: null,
+        stakingTier: "Tier1",
+        tradedVolume: 0n,
+        boostIds: [],
+      };
+
+      renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />);
+
+      const allText = document.body.textContent || "";
+      expect(allText).toContain("Stake 75 GMX more to get Advocate status +0.5x");
+      expect(screen.getByText("Stake 75 GMX")).toBeDefined();
+    });
+
+    it("hides next tier target copy and CTA on the last staking tier", () => {
+      stakingDataMock.data = {
+        gmxInStakedGmx: 1000n * GMX_DEC,
+        gmxBalance: 5000n * GMX_DEC,
+      };
+
+      const currentEpochStats: EpochStats = {
+        account: "0x1234",
+        multiplier: 150,
+        epochTimestamp: 1700000000,
+        volumeTier: null,
+        stakingTier: "Tier3",
+        tradedVolume: 0n,
+        boostIds: [],
+      };
+
+      renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />);
+
+      const allText = document.body.textContent || "";
+      expect(allText).not.toContain("GMX more to get");
+      expect(allText).not.toContain("Stake 0 GMX");
     });
   });
 

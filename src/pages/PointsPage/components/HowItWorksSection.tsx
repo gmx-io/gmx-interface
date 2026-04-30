@@ -12,7 +12,7 @@ export function HowItWorksSection() {
 
   return (
     <div className="mt-20">
-      <h3 className="mb-12 text-20 font-medium text-typography-primary max-xl:pl-8">
+      <h3 className="mb-20 text-20 font-medium text-typography-primary max-xl:pl-8">
         <Trans>How it works?</Trans>
       </h3>
       <div className="grid grid-cols-3 gap-8 max-md:grid-cols-1">

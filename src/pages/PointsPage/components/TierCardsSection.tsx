@@ -364,6 +364,7 @@ function StakingCard({
   const tierConfig = config?.stakingTiers;
   const { data: stakingData } = useStakingProcessedData();
   const gmxStaked = stakingData?.gmxInStakedGmx;
+  const walletGmx = stakingData?.gmxBalance;
 
   const isProjectedOnly = !stakingTier && !!projectedTierId;
   const displayTier = stakingTier ?? projectedTierId;
@@ -371,6 +372,14 @@ function StakingCard({
   const currentTierIndex = tierConfig?.findIndex((t) => t.tier === displayTier) ?? -1;
   const currentTierConfig = currentTierIndex >= 0 ? tierConfig?.[currentTierIndex] : undefined;
   const nextTierConfig = tierConfig?.[currentTierIndex + 1];
+  const requiredToNextTier =
+    nextTierConfig && gmxStaked !== undefined
+      ? gmxStaked < nextTierConfig.threshold
+        ? nextTierConfig.threshold - gmxStaked
+        : 0n
+      : undefined;
+  const hasNextTierTarget = nextTierConfig && requiredToNextTier !== undefined && requiredToNextTier > 0n;
+  const canStakeToNextTier = hasNextTierTarget && walletGmx !== undefined ? walletGmx >= requiredToNextTier : false;
 
   const isProjectedDifferent = !isProjectedOnly && projectedTierId && projectedTierId !== stakingTier;
   const projectedTierConfig = isProjectedDifferent ? tierConfig?.find((t) => t.tier === projectedTierId) : undefined;
@@ -443,17 +452,29 @@ function StakingCard({
                   </span>
                 </Trans>
               </p>
-              <Link to="/earn" className="inline-flex items-center gap-2 text-13 font-medium text-blue-300">
-                <Trans>Stake GMX</Trans>
-                <DatabaseIcon className="size-12" />
-              </Link>
+              {hasNextTierTarget && (
+                <Link
+                  to={canStakeToNextTier ? "/earn" : "/buy_gmx"}
+                  className="inline-flex items-center gap-2 text-13 font-medium text-blue-300"
+                >
+                  {canStakeToNextTier ? (
+                    <Trans>
+                      Stake {formatAmount(requiredToNextTier, GMX_DECIMALS, 2, true, undefined, undefined, true)} GMX
+                    </Trans>
+                  ) : (
+                    <Trans>Buy GMX</Trans>
+                  )}
+                  {canStakeToNextTier ? <DatabaseIcon className="size-12" /> : <ArrowRight className="size-12" />}
+                </Link>
+              )}
             </div>
             {tierConfig && <StakingProgressBar tiers={tierConfig} currentTier={displayTier} gmxStaked={gmxStaked} />}
-            {nextTierConfig && (
+            {hasNextTierTarget && (
               <div className="flex items-center gap-4 py-2">
                 <span>
                   <Trans>
-                    Stake more GMX to get {STAKING_TIER_BADGES[nextTierConfig.tier]()}{" "}
+                    Stake {formatAmount(requiredToNextTier, GMX_DECIMALS, 2, true, undefined, undefined, true)} GMX more
+                    to get {STAKING_TIER_BADGES[nextTierConfig.tier]()} status{" "}
                     <span className="text-typography-primary">+{formatMultiplier(nextTierConfig.multiplier)}</span>
                   </Trans>
                 </span>
@@ -462,19 +483,20 @@ function StakingCard({
           </div>
         </>
       ) : (
-        <StakingBanner config={config} />
+        <StakingBanner config={config} walletGmx={walletGmx} />
       )}
     </div>
   );
 }
 
-function StakingBanner({ config }: { config?: IncentivesConfig }) {
+function StakingBanner({ config, walletGmx }: { config?: IncentivesConfig; walletGmx?: bigint }) {
   const firstTier = config?.stakingTiers?.[0];
   const multiplierDecimals = config?.multiplierDecimals ?? MULTIPLIER_DECIMALS;
 
   const stakeLabel = firstTier ? formatAmount(firstTier.threshold, GMX_DECIMALS, 0, true) : "...";
   const tierName = firstTier ? STAKING_TIER_BADGES[firstTier.tier]() : "...";
   const multiplierLabel = firstTier ? formatMultiplier(firstTier.multiplier) : "...";
+  const hasWalletGmx = (walletGmx ?? 0n) > 0n;
 
   const firstVolumeTier = config?.volumeTiers?.[0];
   const estimateVolume = firstVolumeTier ? bigintToNumber(firstVolumeTier.threshold, USD_DECIMALS) : 0;
@@ -492,9 +514,12 @@ function StakingBanner({ config }: { config?: IncentivesConfig }) {
           Unlock {tierName} status (+{multiplierLabel}) and earn up to ${rewardsEstimate} in additional trading rewards.
         </Trans>
       </div>
-      <Link to="/earn" className="flex items-center gap-4 text-13 font-medium text-blue-300">
-        <Trans>Stake GMX</Trans>
-        <DatabaseIcon className="size-14" />
+      <Link
+        to={hasWalletGmx ? "/earn" : "/buy_gmx"}
+        className="flex items-center gap-4 text-13 font-medium text-blue-300"
+      >
+        {hasWalletGmx ? <Trans>Stake GMX</Trans> : <Trans>Buy GMX</Trans>}
+        {hasWalletGmx ? <DatabaseIcon className="size-14" /> : <ArrowRight />}
       </Link>
     </div>
   );

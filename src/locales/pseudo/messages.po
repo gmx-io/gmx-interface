@@ -3237,6 +3237,7 @@ msgid "Order type"
 msgstr ""
 
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/pages/PointsPage/components/MainDataSection.tsx
 msgid "Your multiplier"
 msgstr ""
 
@@ -3883,10 +3884,6 @@ msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Decreasing..."
-msgstr ""
-
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Stake more GMX to get {0} <0>+{1}</0>"
 msgstr ""
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
@@ -5923,6 +5920,10 @@ msgstr ""
 msgid "How do I upgrade to a higher tier?"
 msgstr ""
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Stake {0} GMX"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} liquidity"
@@ -6413,7 +6414,6 @@ msgid "Share your rewards"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
-#: src/pages/PointsPage/components/TierCardsSection.tsx
 #: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Stake GMX"
 msgstr ""
@@ -8166,6 +8166,7 @@ msgstr ""
 msgid "Trade from wallet or GMX Account"
 msgstr ""
 
+#: src/pages/PointsPage/components/MainDataSection.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 #: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Points balance"
@@ -8556,6 +8557,10 @@ msgstr ""
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Long Net Rate"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Stake {0} GMX more to get {1} status <0>+{2}</0>"
 msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
@@ -9024,7 +9029,6 @@ msgid "Display settings"
 msgstr ""
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-#: src/pages/PointsPage/components/MainDataSection.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Points Balance"
 msgstr ""
@@ -9169,6 +9173,8 @@ msgstr ""
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGmxModal.tsx
 #: src/pages/Dashboard/GmxCard.tsx
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+#: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Buy GMX"
 msgstr ""
 
@@ -11274,10 +11280,6 @@ msgstr ""
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Continue"
-msgstr ""
-
-#: src/pages/PointsPage/components/MainDataSection.tsx
-msgid "Your Multiplier"
 msgstr ""
 
 #: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx

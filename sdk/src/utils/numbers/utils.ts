@@ -517,14 +517,31 @@ export function numberWithCommas(x: BigNumberish, { showDollar = false }: { show
   return `${showDollar ? "$\u200a" : ""}${parts.join(".")}`;
 }
 
+type FormatAmountOptions = {
+  defaultValue?: string;
+  visualMultiplier?: number;
+  trimTrailingZeros?: boolean;
+};
+
+function trimTrailingZeroDecimals(amount: string) {
+  return amount.replace(/\.0+$/, "").replace(/(\.\d*?)0+$/, "$1");
+}
+
 export const formatAmount = (
   amount: BigNumberish | undefined,
   tokenDecimals: number,
   displayDecimals?: number,
   useCommas?: boolean,
-  defaultValue?: string,
-  visualMultiplier?: number
+  defaultValueOrOptions?: string | FormatAmountOptions,
+  visualMultiplier?: number,
+  trimTrailingZeros?: boolean
 ) => {
+  const options = typeof defaultValueOrOptions === "object" ? defaultValueOrOptions : undefined;
+  let defaultValue =
+    options?.defaultValue ?? (typeof defaultValueOrOptions === "string" ? defaultValueOrOptions : undefined);
+  const resolvedVisualMultiplier = options?.visualMultiplier ?? visualMultiplier;
+  const shouldTrimTrailingZeros = options?.trimTrailingZeros ?? trimTrailingZeros;
+
   if (defaultValue === undefined || defaultValue === null) {
     defaultValue = "...";
   }
@@ -534,7 +551,7 @@ export const formatAmount = (
   if (displayDecimals === undefined) {
     displayDecimals = 4;
   }
-  const amountBigInt = roundWithDecimals(BigInt(amount) * BigInt(visualMultiplier ?? 1), {
+  const amountBigInt = roundWithDecimals(BigInt(amount) * BigInt(resolvedVisualMultiplier ?? 1), {
     displayDecimals,
     decimals: tokenDecimals,
   });
@@ -542,6 +559,9 @@ export const formatAmount = (
   amountStr = limitDecimals(amountStr, displayDecimals);
   if (displayDecimals !== 0) {
     amountStr = padDecimals(amountStr, displayDecimals);
+  }
+  if (shouldTrimTrailingZeros) {
+    amountStr = trimTrailingZeroDecimals(amountStr);
   }
   if (useCommas) {
     return numberWithCommas(amountStr);

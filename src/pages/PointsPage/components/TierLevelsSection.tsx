@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
-import { useCallback, useMemo, useState } from "react";
+import { type HTMLProps, useCallback, useMemo, useState } from "react";
 
 import {
   STAKING_TIER_BADGES,
@@ -14,7 +14,7 @@ import { getMarketIndexName } from "domain/synthetics/markets/utils";
 import { formatAmount, formatAmountHuman } from "lib/numbers";
 import { convertTokenAddress, getNormalizedTokenSymbol, getToken } from "sdk/configs/tokens";
 
-import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
+import { TableTd, TableTh, TableTheadTr } from "components/Table/Table";
 import Tabs from "components/Tabs/Tabs";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -37,6 +37,15 @@ type Props = {
 };
 
 const USD_DECIMALS = 30;
+
+const tierLevelTableClassName =
+  "w-full table-fixed border-separate border-spacing-x-0 border-spacing-y-4 [&_td:first-child]:!pl-8 [&_th:first-child]:!pl-8";
+const tierLevelRowClassName =
+  "[&:nth-child(odd)>td]:bg-slate-800 [&>td]:!py-7 [&>td:first-child]:rounded-l-8 [&>td:last-child]:rounded-r-8";
+
+function TierLevelTableTr({ className, ...props }: HTMLProps<HTMLTableRowElement>) {
+  return <tr {...props} className={cx(tierLevelRowClassName, className)} />;
+}
 
 function formatVolumeTierThreshold(threshold: bigint) {
   return formatAmountHuman(threshold, USD_DECIMALS, true, 0).replace(/[kmb]$/i, (suffix) => suffix.toUpperCase());
@@ -87,7 +96,7 @@ export function TierLevelsSection({
 
   return (
     <div className="overflow-hidden rounded-8 bg-slate-900">
-      <div className="p-20 pb-0">
+      <div className="flex p-20 pb-0">
         <span className="text-caption text-typography-disabled">
           <Trans>Tiers</Trans>
         </span>
@@ -100,11 +109,11 @@ export function TierLevelsSection({
         onChange={setActiveTab}
         className="px-20"
         tabsWrapperClassName="gap-16"
-        regularOptionClassname="!px-0 text-16 !pb-14 lg:text-24 lg:!pb-18"
+        regularOptionClassname="!px-0 text-16 !pb-14 lg:text-24 lg:!pb-18 !pt-12 leading-[1.1]"
       />
 
       <div>
-        <div className="max-w-[600px] p-20 pb-0 text-14 text-typography-secondary">
+        <div className="max-w-[600px] p-20 pb-12 text-14 text-typography-secondary">
           <p className="font-medium text-typography-primary">{descriptions[activeTab].short}</p>
           <div
             className={cx(
@@ -123,7 +132,7 @@ export function TierLevelsSection({
             </div>
           </div>
           <button
-            className="gmx-hover:text-blue-200 mt-8 flex items-center gap-4 text-14 font-medium text-blue-300 transition-colors duration-200"
+            className="gmx-hover:text-blue-200 mt-2 flex items-center gap-4 text-14 font-medium text-blue-300 transition-colors duration-200"
             onClick={handleToggleMore}
             aria-expanded={showMore}
             aria-label={showMore ? t`Show less` : t`Show more`}
@@ -152,7 +161,7 @@ export function TierLevelsSection({
           </button>
         </div>
 
-        <div className="mt-16 px-12 pb-12">
+        <div className="px-12 pb-8">
           {activeTab === "volume" && (
             <VolumeTiersTable
               config={config}
@@ -190,7 +199,7 @@ function VolumeTiersTable({
     (currentTier && projectedTier === null);
 
   return (
-    <table className="w-full table-fixed">
+    <table className={tierLevelTableClassName}>
       <thead>
         <TableTheadTr>
           <TableTh width="40%" padding="compact">
@@ -211,10 +220,11 @@ function VolumeTiersTable({
         {config?.volumeTiers.map((tier) => {
           const isActive = currentTier === tier.tier;
           return (
-            <TableTr key={tier.tier} className="overflow-hidden rounded-8">
+            <TierLevelTableTr key={tier.tier}>
               <TableTd padding="compact">
                 <span className="flex items-center gap-8 font-medium">
                   <VolumeTierIcon tierId={tier.tier} active={isActive} />
+
                   <span className="text-typography-primary">{VOLUME_TIER_BADGES[tier.tier]()}</span>
                   {isActive && (
                     <span className="font-medium text-green-500">
@@ -232,7 +242,7 @@ function VolumeTiersTable({
               <TableTd padding="compact">
                 {isActive && isDowngrading && daysRemaining > 0 && <ExpiresInLabel daysRemaining={daysRemaining} />}
               </TableTd>
-            </TableTr>
+            </TierLevelTableTr>
           );
         })}
       </tbody>
@@ -297,7 +307,7 @@ function DowngradingCoefficientsTooltip({
 
 function StakingTiersTable({ config, currentTier }: { config?: IncentivesConfig; currentTier?: string | null }) {
   return (
-    <table className="w-full table-fixed">
+    <table className={tierLevelTableClassName}>
       <thead>
         <TableTheadTr>
           <TableTh width="40%" padding="compact">
@@ -316,10 +326,12 @@ function StakingTiersTable({ config, currentTier }: { config?: IncentivesConfig;
         {config?.stakingTiers.map((tier) => {
           const isActive = currentTier === tier.tier;
           return (
-            <TableTr key={tier.tier}>
+            <TierLevelTableTr key={tier.tier}>
               <TableTd padding="compact">
                 <span className="flex items-center gap-8">
-                  <StakingTierIcon tierId={tier.tier} active={isActive} />
+                  <div className="p-1">
+                    <StakingTierIcon tierId={tier.tier} active={isActive} />
+                  </div>
                   <span className="font-medium text-typography-primary">{STAKING_TIER_BADGES[tier.tier]()}</span>
                   {isActive && (
                     <span className="font-medium text-green-500">
@@ -335,7 +347,7 @@ function StakingTiersTable({ config, currentTier }: { config?: IncentivesConfig;
                 {formatMultiplier(tier.multiplier)}
               </TableTd>
               <TableTd padding="compact" />
-            </TableTr>
+            </TierLevelTableTr>
           );
         })}
       </tbody>
@@ -345,7 +357,7 @@ function StakingTiersTable({ config, currentTier }: { config?: IncentivesConfig;
 
 function BoostsTable({ config, activeBoosts }: { config?: IncentivesConfig; activeBoosts?: string[] }) {
   return (
-    <table className="w-full table-fixed">
+    <table className={tierLevelTableClassName}>
       <thead>
         <TableTheadTr>
           <TableTh width="20%" padding="compact">
@@ -366,14 +378,16 @@ function BoostsTable({ config, activeBoosts }: { config?: IncentivesConfig; acti
         {config?.boosts.map((boost) => {
           const isActive = activeBoosts?.includes(boost.boost);
           return (
-            <TableTr key={boost.boost}>
+            <TierLevelTableTr key={boost.boost}>
               <TableTd padding="compact" className="text-typography-primary">
                 <span className="flex items-center gap-8 font-medium">
-                  <BoostTierIcon boostId={boost.boost} active={!!isActive} />
+                  <div className="p-1">
+                    <BoostTierIcon boostId={boost.boost} active={!!isActive} />
+                  </div>
                   {BOOST_LABELS[boost.boost]()}
                 </span>
               </TableTd>
-              <TableTd padding="compact" className="text-typography-primary">
+              <TableTd padding="compact" className="text-typography-secondary">
                 {getBoostDescription(boost.boost, config)}
               </TableTd>
               <TableTd padding="compact" className="text-primary">
@@ -384,7 +398,7 @@ function BoostsTable({ config, activeBoosts }: { config?: IncentivesConfig; acti
                   {isActive ? <Trans>Active</Trans> : <Trans>Inactive</Trans>}
                 </span>
               </TableTd>
-            </TableTr>
+            </TierLevelTableTr>
           );
         })}
       </tbody>
