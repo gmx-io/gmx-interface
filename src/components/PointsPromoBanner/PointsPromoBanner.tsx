@@ -15,6 +15,7 @@ const BANNER_STYLES = {
   backgroundImage: `url(${bgPointsPromoBanner})`,
   backgroundSize: "cover",
   backgroundPosition: "center",
+  backgroundColor: "var(--color-slate-950)",
 };
 
 type PointsTradeBannerDismissedState =

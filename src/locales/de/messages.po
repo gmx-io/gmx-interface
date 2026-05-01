@@ -911,6 +911,10 @@ msgstr "GMX auf zentralen Börsen kaufen"
 msgid "Available liquidity"
 msgstr "Verfügbare Liquidität"
 
+#: src/pages/PointsPage/components/PointsBanner.tsx
+msgid "You have {0} GMX unstaked - stake now to earn more points and rewards."
+msgstr ""
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "No net rate history available for this market."
 msgstr "Kein Net-Rate-Verlauf für diesen Markt verfügbar."
@@ -934,11 +938,6 @@ msgstr "STIP.b retroaktiver Bonus"
 #: landing/src/pages/Home/LiqiuditySection/LiqiuditySection.tsx
 msgid "in liquidity"
 msgstr "In Liquidität"
-
-#: src/pages/PointsPage/components/PointsBanner.tsx
-#: src/pages/PointsPage/components/PointsBanner.tsx
-msgid "Your volume this epoch is below the threshold for your current tier. Trade more to keep your rewards multiplier."
-msgstr ""
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
@@ -1380,10 +1379,6 @@ msgstr "Maximal {allowedAutoCancelOrdersNumber} automatisch stornierbare TP/SL-O
 msgid "GMX proposals voting page"
 msgstr "GMX-Abstimmungsseite für Vorschläge"
 
-#: src/pages/PointsPage/components/PointsBanner.tsx
-msgid "Points are set to expire this epoch. Use them before rollover and make the most of your activity."
-msgstr ""
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity only available on {chainNames}. Switch networks to continue."
 msgstr "Liquidität nur auf {chainNames} verfügbar. Wechseln Sie das Netzwerk, um fortzufahren."
@@ -1563,6 +1558,11 @@ msgstr "Hohe Netzwerkgebühren"
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Overview"
 msgstr "Übersicht"
+
+#: src/pages/PointsPage/components/PointsBanner.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
+msgid "You have GMX ready to stake"
+msgstr ""
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Fetching swap route..."
@@ -2795,6 +2795,11 @@ msgstr "Änderungen können einige Minuten dauern, bis sie angezeigt werden"
 msgid "Excludes incentives"
 msgstr "Ohne Anreize"
 
+#: src/pages/PointsPage/components/PointsBanner.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
+msgid "Use your rewards before they expire and make the most of your activity."
+msgstr ""
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Short Positions"
 msgstr "Short-Positionen"
@@ -2858,6 +2863,10 @@ msgstr "GMTrade (ehemals GMX Solana) wird auf einer anderen Website gehostet und
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
 msgstr "Sie haben im ausgewählten Zeitraum nicht gehandelt"
+
+#: src/pages/PointsPage/components/PointsBanner.tsx
+msgid "Start trading to activate it and get your rewards."
+msgstr ""
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Staked: <0>{0}</0><1> / </1><2>{1} GMX</2>"
@@ -3976,9 +3985,6 @@ msgstr "Express Trading ist mit dem nativen Token des Netzwerks {0} nicht verfü
 #: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
-#: src/pages/PointsPage/components/PointsBanner.tsx
-#: src/pages/PointsPage/components/PointsBanner.tsx
-#: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trade"
 msgstr "Handeln"
@@ -4899,11 +4905,6 @@ msgstr "{secondLabel}"
 msgid "High swap profit fee"
 msgstr "Hohe Swap-Gewinngebühr"
 
-#: src/pages/PointsPage/components/PointsBanner.tsx
-#: src/pages/PointsPage/components/PointsBanner.tsx
-msgid "Your tier will drop next epoch"
-msgstr ""
-
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketsList/MarketsList.tsx
@@ -5554,7 +5555,6 @@ msgstr "Fehlgeschlagene Markterhöhung"
 
 #: src/components/PointsPromoBanner/PointsPromoBanner.tsx
 #: src/components/PointsPromoBanner/PointsPromoBanner.tsx
-#: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Earn rewards"
 msgstr ""
 
@@ -6335,6 +6335,7 @@ msgstr "Empfohlen"
 #: src/components/HistoricalPointsAllocationModal/HistoricalPointsAllocationModal.tsx
 #: src/components/Referrals/traders/HowToStartSaving.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Start trading"
 msgstr ""
@@ -6430,6 +6431,8 @@ msgid "Share your rewards"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Stake GMX"
 msgstr ""
@@ -8248,6 +8251,10 @@ msgstr "Gebühren"
 msgid "Referral code update failed"
 msgstr "Aktualisierung des Empfehlungscodes fehlgeschlagen"
 
+#: src/pages/PointsPage/components/PointsBanner.tsx
+msgid "You have X GMX unstaked - stake now to earn more points and rewards."
+msgstr ""
+
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "Execution prices for increasing shorts<0/>and decreasing longs"
 msgstr "Ausführungspreise für steigende Shorts<0/>und sinkende Longs"
@@ -8874,6 +8881,10 @@ msgstr "Leihexponent Short"
 msgid "Price impact"
 msgstr "Preiseinfluss"
 
+#: src/pages/PointsPage/components/PointsBanner.tsx
+msgid "You've received bonus of {bonusFormatted}"
+msgstr ""
+
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "Edit margin: {0} {1}{2}/USD"
 msgstr ""
@@ -9247,7 +9258,6 @@ msgid "Executes when price and liquidity conditions are met"
 msgstr "Wird ausgeführt, wenn Preis- und Liquiditätsbedingungen erfüllt sind"
 
 #: src/components/PointsPromoBanner/PointsPromoBanner.tsx
-#: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Start earning points and unlock rewards."
 msgstr ""
 
@@ -11331,10 +11341,6 @@ msgstr "Smart Wallets werden in diesem Netzwerk nicht unterstützt"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Lent position impact pool amount"
 msgstr "Ausgeliehener Betrag des Position-Impact-Pools"
-
-#: src/pages/PointsPage/components/PointsBanner.tsx
-msgid "{expiredPointsCount, plural, one {{pointsDisplay} point is set to expire this epoch. Use it before rollover and make the most of your activity.} other {{pointsDisplay} points are set to expire this epoch. Use them before rollover and make the most of your activity.}}"
-msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "short"
