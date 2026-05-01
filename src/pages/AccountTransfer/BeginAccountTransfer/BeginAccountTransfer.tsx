@@ -402,21 +402,12 @@ export default function BeginAccountTransfer() {
           <Checkbox isChecked={isStakingPowerResetAcknowledged} setIsChecked={setIsStakingPowerResetAcknowledged}>
             <span className="text-body-small text-yellow-300">
               <Trans>
-                I understand that accumulated staking power will reset on the receiving wallet. The receiving address
-                will start accruing staking power from zero.
+                I understand that staking power does not transfer. The receiving wallet will start with zero staking
+                power and a fresh historical max.
               </Trans>
             </span>
           </Checkbox>
         </div>
-
-        <Checkbox isChecked={isStakingPowerResetAcknowledged} setIsChecked={setIsStakingPowerResetAcknowledged}>
-          <span className="text-body-small text-yellow-300">
-            <Trans>
-              I understand that staking power does not transfer. The receiving wallet will start with zero staking power
-              and a fresh historical max.
-            </Trans>
-          </span>
-        </Checkbox>
 
         <Button
           variant="primary-action"
