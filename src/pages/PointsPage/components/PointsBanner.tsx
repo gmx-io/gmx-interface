@@ -4,6 +4,7 @@ import { type PointerEvent, type ReactNode, useCallback, useEffect, useMemo, use
 import { Link } from "react-router-dom";
 
 import { POINTS_PAGE_BANNERS_DISMISSED_KEY } from "config/localStorage";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getEpochDuration } from "domain/synthetics/incentives/constants";
 import type { EpochStats, IncentivesConfig, RewardsHistoryEntry } from "domain/synthetics/incentives/types";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -68,6 +69,7 @@ type BannerAnimationDirection = "left" | "right";
 
 export function PointsBanner({ isActiveUser, account, config, currentEpochStats, currentEpochHistory }: Props) {
   const now = useCurrentUnixTimestamp();
+  const { showAllPointsPageBanners } = useSettings();
   const [dismissedBannerTypes, setDismissedBannerTypes] = useLocalStorageSerializeKey<DismissedBannerState>(
     POINTS_PAGE_BANNERS_DISMISSED_KEY,
     {}
@@ -75,12 +77,21 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
   const swipeStartRef = useRef<{ x: number; y: number; pointerId: number } | null>(null);
 
   const allBanners = useMemo(
-    () => getBannerContent({ isActiveUser, account, config, currentEpochStats, currentEpochHistory, now }),
-    [isActiveUser, account, config, currentEpochStats, currentEpochHistory, now]
+    () =>
+      getBannerContent({
+        isActiveUser,
+        account,
+        config,
+        currentEpochStats,
+        currentEpochHistory,
+        now,
+        showAllBanners: showAllPointsPageBanners,
+      }),
+    [isActiveUser, account, config, currentEpochStats, currentEpochHistory, now, showAllPointsPageBanners]
   );
   const banners = useMemo(
-    () => allBanners.filter((banner) => !dismissedBannerTypes?.[banner.type]),
-    [allBanners, dismissedBannerTypes]
+    () => (showAllPointsPageBanners ? allBanners : allBanners.filter((banner) => !dismissedBannerTypes?.[banner.type])),
+    [allBanners, dismissedBannerTypes, showAllPointsPageBanners]
   );
 
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -271,7 +282,7 @@ function parseDismissedBannerTypes(value: string | null): DismissedBannerState {
   }
 }
 
-type BannerContext = Props & { now: number };
+type BannerContext = Props & { now: number; showAllBanners?: boolean };
 
 const DEFAULT_BANNER: BannerContent = {
   type: "default",
@@ -291,7 +302,12 @@ function getBannerContent({
   currentEpochStats,
   currentEpochHistory,
   now,
+  showAllBanners,
 }: BannerContext): BannerContent[] {
+  if (showAllBanners) {
+    return getAllBannerContent();
+  }
+
   if (!account || !isActiveUser) {
     return [DEFAULT_BANNER];
   }
@@ -300,7 +316,7 @@ function getBannerContent({
 
   if (currentEpochHistory?.pointsExpired && currentEpochHistory.pointsExpired > 0n) {
     const expiredAmount = currentEpochHistory.pointsExpired;
-    const pointsDisplay = formatAmount(expiredAmount, 18, 0, true);
+    const pointsDisplay = formatAmount(expiredAmount, 18, 2, true);
     const expiredPointsCount = Number(expiredAmount / 10n ** 18n);
     items.push({
       type: "points-expiring",
@@ -393,4 +409,60 @@ function getBannerContent({
   });
 
   return items;
+}
+
+function getAllBannerContent(): BannerContent[] {
+  return [
+    DEFAULT_BANNER,
+    {
+      type: "points-expiring",
+      title: t`Don't Let Rewards Expire`,
+      description: t`Points are set to expire this epoch. Use them before rollover and make the most of your activity.`,
+      action: {
+        label: <Trans>Claim rewards</Trans>,
+        type: "stake",
+        to: "/points",
+      },
+    },
+    {
+      type: "next-volume-tier",
+      title: t`So Close to the Next Tier`,
+      description: t`A small increase in volume will unlock a higher status and stronger rewards.`,
+      action: {
+        label: <Trans>Trade</Trans>,
+        type: "trade",
+        to: "/trade",
+      },
+    },
+    {
+      type: "volume-tier-drop-risk",
+      title: t`Your tier will drop next epoch`,
+      description: t`Your volume this epoch is below the threshold for your current tier. Trade more to keep your rewards multiplier.`,
+      action: {
+        label: <Trans>Trade</Trans>,
+        type: "trade",
+        to: "/trade",
+      },
+    },
+    {
+      type: "pair-boosts",
+      title: t`Activate Pair Boosts`,
+      description: t`Trade eligible pairs to unlock multipliers and increase your reward potential this epoch.`,
+      action: {
+        label: <Trans>Trade</Trans>,
+        type: "trade",
+        to: "/trade",
+      },
+    },
+    {
+      type: "restake-rewards",
+      title: t`Restake your rewards and earn more`,
+      description: t`Continue restaking your rewards to boost your earnings and unlock additional yield on your GMX tokens.`,
+      action: {
+        label: <Trans>Stake rewards</Trans>,
+        type: "stake",
+        to: "/earn",
+      },
+    },
+  ];
 }

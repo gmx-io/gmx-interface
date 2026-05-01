@@ -5,15 +5,19 @@ import { useCallback, useMemo, useState } from "react";
 
 import "./PointsLeaderboardTab.scss";
 
+import { ARBITRUM } from "config/chains";
+import type { ContractsChainId } from "config/chains";
+import { useGmxPrice } from "domain/legacy";
 import { formatMultiplier } from "domain/synthetics/incentives/constants";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
 import { useIncentivesLeaderboard } from "domain/synthetics/incentives/useIncentivesLeaderboard";
 import { formatAmount, formatUsd } from "lib/numbers";
-import type { ContractsChainId } from "sdk/configs/chains";
+import useWallet from "lib/wallets/useWallet";
 
 import AddressView from "components/AddressView/AddressView";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import { PointsShare } from "components/PointsShare/PointsShare";
+import { TableRowsSkeleton } from "components/Skeleton/TableRowsSkeleton";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import Tabs from "components/Tabs/Tabs";
@@ -27,6 +31,9 @@ const COL_POINTS: React.CSSProperties = { width: "16%" };
 const COL_REWARDS: React.CSSProperties = { width: "20%" };
 const COL_MULTIPLIER: React.CSSProperties = { width: "10%" };
 const COL_SHARE: React.CSSProperties = { width: "8%" };
+const GMX_DECIMALS = 18;
+const GMX_DECIMALS_FACTOR = 10n ** 18n;
+const LEADERBOARD_SKELETON_COLUMNS = [40, 140, 90, 90, 150, 70, 56];
 
 function getRankClassName(rank: number | null) {
   if (rank !== null && rank <= 3) return `PointsLeaderboardRank-${rank}`;
@@ -44,9 +51,11 @@ type Props = {
 
 export function PointsLeaderboardTab({ chainId, account }: Props) {
   const { data: config } = useIncentivesConfig(chainId);
+  const { active, signer } = useWallet();
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("current");
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [page, setPage] = useState(1);
+  const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
 
   const epoch = useMemo(() => {
     if (!config) return undefined;
@@ -88,6 +97,18 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
   const pageCount = totalCount === undefined ? page : Math.max(1, Math.ceil(totalCount / PER_PAGE));
   const indexFrom = (page - 1) * PER_PAGE;
   const pageData = useMemo(() => leaderboard ?? [], [leaderboard]);
+  const isInitialLoading = loading && !leaderboard;
+  const formatRewards = useCallback(
+    (rewardsEarned: bigint) => {
+      const gmxLabel = `${formatAmount(rewardsEarned, GMX_DECIMALS, 2, true)} GMX`;
+      const usdValue =
+        gmxPrice !== undefined && gmxPrice > 0n ? (rewardsEarned * gmxPrice) / GMX_DECIMALS_FACTOR : undefined;
+      const usdLabel = formatUsd(usdValue, { fallbackToZero: true, displayDecimals: 2 });
+
+      return `${gmxLabel} (${usdLabel})`;
+    },
+    [gmxPrice]
+  );
 
   const { userRank, userEntry } = useMemo(() => {
     if (!account || !pageData.length) return { userRank: null, userEntry: null };
@@ -148,77 +169,86 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                 </TableTheadTr>
               </thead>
               <tbody>
-                {userEntry && userRank && (
-                  <TableTr className="border-b-1/2 border-blue-500/30 !bg-blue-500/10">
-                    <TableTd className={cx(tdClassName, "relative")}>
-                      <span className={cx("numbers", getRankClassName(userRank))}>{userRank}</span>
-                    </TableTd>
-                    <TableTd>
-                      <AddressView size={20} address={userEntry.address} breakpoint="XL" />
-                    </TableTd>
-                    <TableTd className={cx(tdClassName, "numbers")}>
-                      {formatUsd(userEntry.volume, { displayDecimals: 0 })}
-                    </TableTd>
-                    <TableTd className={cx(tdClassName, "numbers")}>
-                      {formatAmount(userEntry.pointsEarned, 18, 4, true)}
-                    </TableTd>
-                    <TableTd className={cx(tdClassName, "numbers")}>
-                      {formatAmount(userEntry.rewardsEarned, 18, 4, true)} GMX
-                    </TableTd>
-                    <TableTd className={cx(tdClassName, "numbers")}>
-                      {showMultiplier && userEntry.multiplier ? formatMultiplier(userEntry.multiplier) : ""}
-                    </TableTd>
-                    <TableTd className={tdClassName}>
-                      <button
-                        type="button"
-                        onClick={() => setIsShareOpen(true)}
-                        className="inline-flex items-center gap-4 whitespace-nowrap text-13 font-medium text-blue-100"
-                      >
-                        <ShareIcon />
-                        <Trans>Share</Trans>
-                      </button>
-                    </TableTd>
-                  </TableTr>
-                )}
-                {pageData.map((entry, i) => {
-                  if (userEntry && entry.address.toLowerCase() === userEntry.address.toLowerCase()) return null;
-                  const rank = indexFrom + i + 1;
-                  return (
-                    <TableTr key={entry.address} hoverable>
-                      <TableTd className={cx(tdClassName, "relative")}>
-                        <span
-                          className={cx("font-medium numbers after:!top-7", getRankClassName(rank), {
-                            "text-yellow-300": rank <= 3,
-                          })}
-                        >
-                          {rank}
-                        </span>
-                      </TableTd>
-                      <TableTd className={cx(tdClassName, "numbers")}>
-                        <AddressView size={20} address={entry.address} breakpoint="XL" />
-                      </TableTd>
-                      <TableTd className={cx(tdClassName, "numbers")}>
-                        {formatUsd(entry.volume, { displayDecimals: 0 })}
-                      </TableTd>
-                      <TableTd className={cx(tdClassName, "numbers")}>
-                        {formatAmount(entry.pointsEarned, 18, 4, true)}
-                      </TableTd>
-                      <TableTd className={cx(tdClassName, "numbers")}>
-                        {formatAmount(entry.rewardsEarned, 18, 4, true)} GMX
-                      </TableTd>
-                      <TableTd className={cx(tdClassName, "numbers")}>
-                        {showMultiplier && entry.multiplier ? formatMultiplier(entry.multiplier) : ""}
-                      </TableTd>
-                      <TableTd className={cx(tdClassName, "numbers")} />
-                    </TableTr>
-                  );
-                })}
-                {loading && !leaderboard && (
-                  <TableTr>
-                    <TableTd colSpan={7} rowSpan={6} className="!py-24 text-center text-typography-secondary">
-                      <Trans>Loading...</Trans>
-                    </TableTd>
-                  </TableTr>
+                {isInitialLoading ? (
+                  <TableRowsSkeleton
+                    count={PER_PAGE}
+                    columns={LEADERBOARD_SKELETON_COLUMNS}
+                    cellClassName={tdClassName}
+                  />
+                ) : (
+                  <>
+                    {userEntry && userRank && (
+                      <TableTr className="border-b-1/2 border-blue-500/30 !bg-blue-500/10">
+                        <TableTd className={cx(tdClassName, "relative")}>
+                          <span className={cx("numbers", getRankClassName(userRank))}>{userRank}</span>
+                        </TableTd>
+                        <TableTd>
+                          <AddressView size={20} address={userEntry.address} breakpoint="XL" />
+                        </TableTd>
+                        <TableTd className={cx(tdClassName, "numbers")}>
+                          {formatUsd(userEntry.volume, { displayDecimals: 0 })}
+                        </TableTd>
+                        <TableTd className={cx(tdClassName, "numbers")}>
+                          {formatAmount(userEntry.pointsEarned, 18, 2, true)}
+                        </TableTd>
+                        <TableTd className={cx(tdClassName, "numbers")}>
+                          {formatRewards(userEntry.rewardsEarned)}
+                        </TableTd>
+                        <TableTd className={cx(tdClassName, "numbers")}>
+                          {showMultiplier && userEntry.multiplier ? formatMultiplier(userEntry.multiplier) : ""}
+                        </TableTd>
+                        <TableTd className={tdClassName}>
+                          <button
+                            type="button"
+                            onClick={() => setIsShareOpen(true)}
+                            className="inline-flex items-center gap-4 whitespace-nowrap text-13 font-medium text-blue-100"
+                          >
+                            <ShareIcon />
+                            <Trans>Share</Trans>
+                          </button>
+                        </TableTd>
+                      </TableTr>
+                    )}
+                    {pageData.map((entry, i) => {
+                      if (userEntry && entry.address.toLowerCase() === userEntry.address.toLowerCase()) return null;
+                      const rank = indexFrom + i + 1;
+                      return (
+                        <TableTr key={entry.address} hoverable>
+                          <TableTd className={cx(tdClassName, "relative")}>
+                            <span
+                              className={cx("font-medium numbers after:!top-7", getRankClassName(rank), {
+                                "text-yellow-300": rank <= 3,
+                              })}
+                            >
+                              {rank}
+                            </span>
+                          </TableTd>
+                          <TableTd className={cx(tdClassName, "numbers")}>
+                            <AddressView size={20} address={entry.address} breakpoint="XL" />
+                          </TableTd>
+                          <TableTd className={cx(tdClassName, "numbers")}>
+                            {formatUsd(entry.volume, { displayDecimals: 0 })}
+                          </TableTd>
+                          <TableTd className={cx(tdClassName, "numbers")}>
+                            {formatAmount(entry.pointsEarned, 18, 2, true)}
+                          </TableTd>
+                          <TableTd className={cx(tdClassName, "numbers")}>{formatRewards(entry.rewardsEarned)}</TableTd>
+                          <TableTd className={cx(tdClassName, "numbers")}>
+                            {showMultiplier && entry.multiplier ? formatMultiplier(entry.multiplier) : ""}
+                          </TableTd>
+                          <TableTd className={cx(tdClassName, "numbers")} />
+                        </TableTr>
+                      );
+                    })}
+                    {leaderboard && pageData.length < PER_PAGE && (
+                      <TableRowsSkeleton
+                        invisible
+                        count={PER_PAGE - pageData.length}
+                        columns={LEADERBOARD_SKELETON_COLUMNS}
+                        cellClassName={tdClassName}
+                      />
+                    )}
+                  </>
                 )}
               </tbody>
             </table>

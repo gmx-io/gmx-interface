@@ -222,7 +222,7 @@ const config: Config = {
         },
       },
       animation: {
-        marquee: "marquee 20s linear infinite",
+        marquee: "marquee 30s linear infinite",
         "points-banner-slide-in-right": "points-banner-slide-in-right 260ms ease-out",
         "points-banner-slide-in-left": "points-banner-slide-in-left 260ms ease-out",
       },

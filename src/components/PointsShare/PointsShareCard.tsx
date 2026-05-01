@@ -65,7 +65,7 @@ export const PointsShareCard = forwardRef<HTMLDivElement, Props>(
                     <Trans>Earned points</Trans>
                   </p>
                   <p className="whitespace-nowrap text-13 font-medium text-white">
-                    {formatAmount(pointsEarned, 18, 4, true)}
+                    {formatAmount(pointsEarned, 18, 2, true)}
                   </p>
                 </div>
                 <div className="flex flex-col gap-4">
@@ -73,7 +73,7 @@ export const PointsShareCard = forwardRef<HTMLDivElement, Props>(
                     <Trans>Earned rewards</Trans>
                   </p>
                   <p className="whitespace-nowrap text-13 font-medium text-white">
-                    {formatAmount(rewardsEarned, 18, 4, true)} GMX
+                    {formatAmount(rewardsEarned, 18, 2, true)} GMX
                   </p>
                 </div>
                 {referralCodeOwnerKind && code && (

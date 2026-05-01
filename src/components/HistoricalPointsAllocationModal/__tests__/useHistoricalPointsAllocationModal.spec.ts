@@ -1,0 +1,59 @@
+import { describe, expect, it } from "vitest";
+
+import { getShouldShowHistoricalPointsAllocationModal } from "../useHistoricalPointsAllocationModal";
+
+const GMX_DEC = 10n ** 18n;
+
+const baseBannerData = {
+  hasVolumeAfterFirstProgramEpoch: false,
+  isLoading: false,
+  isManuallyRewarded: true,
+  manualAllocatedPoints: 100n * GMX_DEC,
+};
+
+describe("getShouldShowHistoricalPointsAllocationModal", () => {
+  it("shows when the manual allocation modal was not dismissed", () => {
+    expect(
+      getShouldShowHistoricalPointsAllocationModal({
+        dismissedState: false,
+        bannerData: baseBannerData,
+      })
+    ).toBe(true);
+  });
+
+  it("keeps the modal hidden after dismissal before post-first-epoch volume exists", () => {
+    expect(
+      getShouldShowHistoricalPointsAllocationModal({
+        dismissedState: true,
+        bannerData: baseBannerData,
+      })
+    ).toBe(false);
+  });
+
+  it("ignores a legacy dismissal once post-first-epoch volume exists", () => {
+    expect(
+      getShouldShowHistoricalPointsAllocationModal({
+        dismissedState: true,
+        bannerData: {
+          ...baseBannerData,
+          hasVolumeAfterFirstProgramEpoch: true,
+        },
+      })
+    ).toBe(true);
+  });
+
+  it("keeps the modal hidden after dismissal with post-first-epoch volume", () => {
+    expect(
+      getShouldShowHistoricalPointsAllocationModal({
+        dismissedState: {
+          dismissed: true,
+          dismissedAfterFirstProgramEpochVolume: true,
+        },
+        bannerData: {
+          ...baseBannerData,
+          hasVolumeAfterFirstProgramEpoch: true,
+        },
+      })
+    ).toBe(false);
+  });
+});

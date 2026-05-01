@@ -66,18 +66,18 @@ export function SidebarRewards({ chainId, account }: Props) {
   );
 
   const claimableAmount = rawClaimableAmount !== undefined ? BigInt(rawClaimableAmount) : 0n;
-  const displayClaimableRewards = formatAmount(claimableAmount, 18, 4, true);
+  const displayClaimableRewards = formatAmount(claimableAmount, 18, 2, true);
   const hasRewards = claimableAmount > 0n;
 
   const totalEarnedRewards = dashboard?.rewardsBalance ?? 0n;
-  const displayTotalEarnedRewards = totalEarnedRewards ? formatAmount(totalEarnedRewards, 18, 4, true) : "0.0000";
+  const displayTotalEarnedRewards = totalEarnedRewards ? formatAmount(totalEarnedRewards, 18, 2, true) : "0.00";
 
   const now = useCurrentUnixTimestamp();
   const epochEndTime = getCurrentEpochEndTime(config, now);
   const timeLeft = epochEndTime > now ? formatTimeLeft(epochEndTime - now) : "";
 
   const pointsBalance = dashboard?.pointsBalance;
-  const displayPoints = pointsBalance ? formatAmount(pointsBalance, 18, 4, true) : "0.0000";
+  const displayPoints = pointsBalance ? formatAmount(pointsBalance, 18, 2, true) : "0.00";
 
   if (!account) {
     return (
@@ -224,7 +224,7 @@ function ClaimModal({
   );
 
   const claimsDisabled = Boolean(rawClaimsDisabled);
-  const displayClaimableRewards = claimableAmount > 0n ? formatAmount(claimableAmount, 18, 4, true) : displayRewards;
+  const displayClaimableRewards = claimableAmount > 0n ? formatAmount(claimableAmount, 18, 2, true) : displayRewards;
 
   const claimParams = useMemo(
     () => [

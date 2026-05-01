@@ -9,7 +9,7 @@ import { bigintToNumber } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
 import { INCENTIVES_BASE_RATE, INCENTIVES_FEE_RATE, isIncentivesEnabled, MAX_FEE_DISCOUNT_PERCENT } from "./constants";
-import type { IncentivesConfig, StakingTierConfig } from "./types";
+import type { AccountIncentiveDashboard, IncentivesConfig, StakingTierConfig } from "./types";
 import { useAccountIncentiveDashboard } from "./useAccountIncentiveDashboard";
 import { useAccountManualRewardsAllocation } from "./useAccountRewardsHistory";
 import { useIncentivesConfig } from "./useIncentivesConfig";
@@ -158,6 +158,8 @@ function computeWalletUsd(tokensData: TokensData | undefined): bigint | undefine
 export type PersonalizedBannerData = {
   /** Whether the user has a manual allocation derived from pre-program history entries. */
   isManuallyRewarded: boolean;
+  /** Whether the user has traded volume in the second or later program epoch. */
+  hasVolumeAfterFirstProgramEpoch: boolean;
   /** The manually allocated points amount (18-decimal bigint) for manually rewarded users. */
   manualAllocatedPoints: bigint | undefined;
   /** The bonus amount in USD (30-decimal bigint) for manually rewarded users. */
@@ -171,6 +173,19 @@ export type PersonalizedBannerData = {
   /** True while underlying data is still loading. */
   isLoading: boolean;
 };
+
+function getHasVolumeAfterFirstProgramEpoch(
+  dashboard: AccountIncentiveDashboard | undefined,
+  config: IncentivesConfig | undefined
+): boolean {
+  if (!dashboard || !config) {
+    return false;
+  }
+
+  const secondEpochTimestamp = config.programStartTimestamp + config.epochDuration;
+
+  return dashboard.recentStats.some((stat) => stat.epochTimestamp >= secondEpochTimestamp && stat.tradedVolume > 0n);
+}
 
 export function usePersonalizedBannerData(): PersonalizedBannerData {
   const { chainId, srcChainId } = useChainId();
@@ -201,9 +216,11 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
 
   return useMemo(() => {
     const isLoading = dashboardLoading || (hasProgramStartTimestamp && manualAllocatedPointsLoading);
+    const hasVolumeAfterFirstProgramEpoch = getHasVolumeAfterFirstProgramEpoch(dashboard, config);
 
     const noData: PersonalizedBannerData = {
       isManuallyRewarded: false,
+      hasVolumeAfterFirstProgramEpoch,
       manualAllocatedPoints: undefined,
       manualBonusUsd: undefined,
       recommendedStakeGmx: undefined,
@@ -221,6 +238,7 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
     if (isManuallyRewarded) {
       return {
         isManuallyRewarded: true,
+        hasVolumeAfterFirstProgramEpoch,
         manualAllocatedPoints,
         manualBonusUsd: (manualAllocatedPoints * gmxPrice) / GMX_DECIMALS_FACTOR,
         recommendedStakeGmx: undefined,
@@ -288,6 +306,7 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
 
     return {
       isManuallyRewarded: false,
+      hasVolumeAfterFirstProgramEpoch,
       manualAllocatedPoints: undefined,
       manualBonusUsd: undefined,
       recommendedStakeGmx,
