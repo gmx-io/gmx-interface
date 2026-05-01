@@ -1,8 +1,8 @@
 import { test, expect } from "@playwright/experimental-ct-react";
 
-import Tabs from "./Tabs";
+import Tabs from "../Tabs";
 import { ControlledTabs } from "./Tabs.ct.stories";
-import { Option } from "./types";
+import { Option } from "../types";
 
 const SIMPLE_OPTIONS: Option<string>[] = [
   { value: "tab1", label: "First" },

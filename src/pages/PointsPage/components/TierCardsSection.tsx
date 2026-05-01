@@ -550,8 +550,11 @@ function StakingProgressBar({
   const nextTierProgressStyle = useMemo(() => ({ width: `${nextTierProgress}%` }), [nextTierProgress]);
 
   return (
-    <div className="flex h-6 gap-[3px] rounded-8">
+    <div className="-my-5 flex h-16 gap-[3px] rounded-8">
       {tiers.map((tier, i) => {
+        const isCompleted = i <= currentIdx;
+        const isNextTierWithProgress = i === nextIdx && nextTierProgress > 0;
+
         const tierTooltipContent = (
           <div>
             <div className="flex items-center justify-between gap-4 font-medium">
@@ -568,14 +571,19 @@ function StakingProgressBar({
           </div>
         );
 
-        if (i === nextIdx && nextTierProgress > 0) {
+        if (isNextTierWithProgress) {
           return (
             <TooltipWithPortal
               key={tier.tier}
               as="div"
-              className="relative flex-1 overflow-hidden rounded-8 bg-cold-blue-900"
+              className="group/segment flex flex-1 items-center py-5"
               handle={
-                <div className="absolute left-0 top-0 h-full rounded-8 bg-blue-300" style={nextTierProgressStyle} />
+                <div className="relative h-6 w-full overflow-hidden rounded-8 bg-cold-blue-900 transition-[background-color,transform] duration-150 ease-out group-hover/segment:scale-y-150 group-hover/segment:bg-cold-blue-700">
+                  <div
+                    className="absolute left-0 top-0 h-full rounded-8 bg-blue-300 transition-[background-color] duration-150 ease-out group-hover/segment:bg-blue-100"
+                    style={nextTierProgressStyle}
+                  />
+                </div>
               }
               content={tierTooltipContent}
               variant="none"
@@ -587,7 +595,17 @@ function StakingProgressBar({
           <TooltipWithPortal
             key={tier.tier}
             as="div"
-            className={cx("flex-1 rounded-8", i <= currentIdx ? "bg-blue-300" : "bg-cold-blue-900")}
+            className="group/segment flex flex-1 items-center py-5"
+            handle={
+              <div
+                className={cx(
+                  "h-6 w-full rounded-8 transition-[background-color,transform] duration-150 ease-out group-hover/segment:scale-y-150 group-hover/segment:scale-x-105",
+                  isCompleted
+                    ? "bg-blue-300"
+                    : "bg-cold-blue-900"
+                )}
+              />
+            }
             content={tierTooltipContent}
             variant="none"
           />

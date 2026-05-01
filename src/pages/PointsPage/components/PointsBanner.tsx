@@ -1,21 +1,26 @@
-import { Plural, Trans, t } from "@lingui/macro";
+import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { type PointerEvent, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { POINTS_PAGE_BANNERS_DISMISSED_KEY } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { getEpochDuration } from "domain/synthetics/incentives/constants";
+import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
 import type { EpochStats, IncentivesConfig, RewardsHistoryEntry } from "domain/synthetics/incentives/types";
+import { usePersonalizedBannerData } from "domain/synthetics/incentives/usePersonalizedBannerData";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatAmount } from "lib/numbers";
+import { formatAmount, formatUsd } from "lib/numbers";
 
 import bgPointsBanner from "img/bg_points_banner.png";
 import CloseIcon from "img/ic_close.svg?react";
 import EarnIcon from "img/ic_earn.svg?react";
 import TradeIcon from "img/ic_trade_solid.svg?react";
-
-import { getCurrentEpochEndTime, useCurrentUnixTimestamp } from "./epochTiming";
+import pointsBannerCoinEarn from "img/points_banner_coin_earn.png";
+import pointsBannerCoinGmx from "img/points_banner_coin_gmx.png";
+import pointsBannerCoinMultiplier from "img/points_banner_coin_multiplier.png";
+import pointsBannerCoinTime from "img/points_banner_coin_time.png";
+import pointsBannerCoinTrade from "img/points_banner_coin_trade.png";
+import pointsBannerCoinWallet from "img/points_banner_coin_wallet.png";
 
 type Props = {
   isActiveUser: boolean;
@@ -32,10 +37,10 @@ type BannerAction = {
 };
 
 type BannerType =
-  | "default"
+  | "manual-reward"
   | "points-expiring"
+  | "gmx-ready-to-stake"
   | "next-volume-tier"
-  | "volume-tier-drop-risk"
   | "pair-boosts"
   | "restake-rewards";
 
@@ -52,6 +57,7 @@ const BANNER_STYLES = {
   backgroundImage: `url(${bgPointsBanner})`,
   backgroundSize: "cover",
   backgroundPosition: "center",
+  backgroundColor: "var(--color-slate-950)",
 };
 
 const AUTO_ROTATE_MS = 6000;
@@ -65,11 +71,21 @@ const ACTION_ICONS: Record<BannerAction["type"], React.ReactNode> = {
   stake: <EarnIcon className="size-16 text-blue-300" />,
 };
 
+const BANNER_COINS: Record<BannerType, string> = {
+  "manual-reward": pointsBannerCoinWallet,
+  "points-expiring": pointsBannerCoinTime,
+  "gmx-ready-to-stake": pointsBannerCoinGmx,
+  "next-volume-tier": pointsBannerCoinMultiplier,
+  "pair-boosts": pointsBannerCoinTrade,
+  "restake-rewards": pointsBannerCoinEarn,
+};
+
 type BannerAnimationDirection = "left" | "right";
 
 export function PointsBanner({ isActiveUser, account, config, currentEpochStats, currentEpochHistory }: Props) {
-  const now = useCurrentUnixTimestamp();
   const { showAllPointsPageBanners } = useSettings();
+  const { data: stakingData } = useStakingProcessedData();
+  const personalizedBannerData = usePersonalizedBannerData();
   const [dismissedBannerTypes, setDismissedBannerTypes] = useLocalStorageSerializeKey<DismissedBannerState>(
     POINTS_PAGE_BANNERS_DISMISSED_KEY,
     {}
@@ -84,10 +100,22 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
         config,
         currentEpochStats,
         currentEpochHistory,
-        now,
+        walletGmx: stakingData?.gmxBalance,
+        isManuallyRewarded: personalizedBannerData.isManuallyRewarded,
+        manualBonusUsd: personalizedBannerData.manualBonusUsd,
         showAllBanners: showAllPointsPageBanners,
       }),
-    [isActiveUser, account, config, currentEpochStats, currentEpochHistory, now, showAllPointsPageBanners]
+    [
+      isActiveUser,
+      account,
+      config,
+      currentEpochStats,
+      currentEpochHistory,
+      stakingData?.gmxBalance,
+      personalizedBannerData.isManuallyRewarded,
+      personalizedBannerData.manualBonusUsd,
+      showAllPointsPageBanners,
+    ]
   );
   const banners = useMemo(
     () => (showAllPointsPageBanners ? allBanners : allBanners.filter((banner) => !dismissedBannerTypes?.[banner.type])),
@@ -222,7 +250,7 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
       <div
         key={current.type}
         className={cx(
-          "relative grid w-full grid-cols-[1fr_80px] overflow-hidden rounded-8 border-1/2 border-stroke-primary bg-slate-900/50 p-16 [touch-action:pan-y]",
+          "relative grid min-h-[110px] w-full grid-cols-[minmax(0,1fr)_80px] overflow-hidden rounded-8 border-1/2 border-stroke-primary bg-slate-900/50 p-16 [touch-action:pan-y] max-sm:grid-cols-[minmax(0,1fr)_80px]",
           bannerAnimationClass
         )}
         style={BANNER_STYLES}
@@ -230,7 +258,7 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerCancel}
       >
-        <div className="flex flex-col gap-4">
+        <div className="relative z-10 flex min-w-0 flex-col gap-4">
           <div className="flex flex-col gap-2">
             <h3 className="text-16 font-medium text-typography-primary">{current.title}</h3>
             <p className="text-13 text-typography-secondary">{current.description}</p>
@@ -241,9 +269,16 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
           </Link>
         </div>
 
+        <img
+          src={BANNER_COINS[current.type]}
+          alt=""
+          aria-hidden="true"
+          className="pointer-events-none absolute bottom-[-30px] right-[-12px] size-[126px] select-none max-sm:bottom-[-22px] max-sm:right-[-36px] max-sm:size-[124px]"
+        />
+
         <button
           aria-label={t`Close`}
-          className="absolute right-12 top-12 text-typography-secondary opacity-50 hover:opacity-80"
+          className="absolute right-12 top-12 z-20 text-typography-secondary opacity-50 hover:opacity-80"
           onClick={handleDismiss}
         >
           <CloseIcon className="size-20" />
@@ -282,17 +317,11 @@ function parseDismissedBannerTypes(value: string | null): DismissedBannerState {
   }
 }
 
-type BannerContext = Props & { now: number; showAllBanners?: boolean };
-
-const DEFAULT_BANNER: BannerContent = {
-  type: "default",
-  title: <Trans>Earn rewards</Trans>,
-  description: <Trans>Start earning points and unlock rewards.</Trans>,
-  action: {
-    label: <Trans>Trade</Trans>,
-    type: "trade",
-    to: "/trade",
-  },
+type BannerContext = Props & {
+  showAllBanners?: boolean;
+  walletGmx?: bigint;
+  isManuallyRewarded?: boolean;
+  manualBonusUsd?: bigint;
 };
 
 function getBannerContent({
@@ -301,7 +330,9 @@ function getBannerContent({
   config,
   currentEpochStats,
   currentEpochHistory,
-  now,
+  walletGmx,
+  isManuallyRewarded,
+  manualBonusUsd,
   showAllBanners,
 }: BannerContext): BannerContent[] {
   if (showAllBanners) {
@@ -309,25 +340,20 @@ function getBannerContent({
   }
 
   if (!account || !isActiveUser) {
-    return [DEFAULT_BANNER];
+    if (account && isManuallyRewarded && manualBonusUsd !== undefined) {
+      return [getManualRewardBanner(manualBonusUsd)];
+    }
+
+    return [];
   }
 
   const items: BannerContent[] = [];
 
   if (currentEpochHistory?.pointsExpired && currentEpochHistory.pointsExpired > 0n) {
-    const expiredAmount = currentEpochHistory.pointsExpired;
-    const pointsDisplay = formatAmount(expiredAmount, 18, 2, true);
-    const expiredPointsCount = Number(expiredAmount / 10n ** 18n);
     items.push({
       type: "points-expiring",
       title: t`Don't Let Rewards Expire`,
-      description: (
-        <Plural
-          value={expiredPointsCount}
-          one={`${pointsDisplay} point is set to expire this epoch. Use it before rollover and make the most of your activity.`}
-          other={`${pointsDisplay} points are set to expire this epoch. Use them before rollover and make the most of your activity.`}
-        />
-      ),
+      description: t`Use your rewards before they expire and make the most of your activity.`,
       action: {
         label: <Trans>Claim rewards</Trans>,
         type: "stake",
@@ -336,13 +362,24 @@ function getBannerContent({
     });
   }
 
+  if (walletGmx !== undefined && walletGmx > 0n) {
+    items.push({
+      type: "gmx-ready-to-stake",
+      title: t`You have GMX ready to stake`,
+      description: t`You have ${formatAmount(walletGmx, 18, 2, true)} GMX unstaked - stake now to earn more points and rewards.`,
+      action: {
+        label: <Trans>Stake GMX</Trans>,
+        type: "stake",
+        to: "/earn",
+      },
+    });
+  }
+
   if (config && currentEpochStats?.volumeTier) {
     const tierConfig = config.volumeTiers;
     const currentIdx = tierConfig.findIndex((tier) => tier.tier === currentEpochStats.volumeTier);
-    const currentTierConfig = currentIdx >= 0 ? tierConfig[currentIdx] : undefined;
     const nextTier = tierConfig[currentIdx + 1];
 
-    // "So close" upgrade prompt
     if (nextTier && currentEpochStats.tradedVolume > 0n) {
       const remaining = nextTier.threshold - currentEpochStats.tradedVolume;
       const threshold30Pct = (nextTier.threshold * 30n) / 100n;
@@ -351,29 +388,6 @@ function getBannerContent({
           type: "next-volume-tier",
           title: t`So Close to the Next Tier`,
           description: t`A small increase in volume will unlock a higher status and stronger rewards.`,
-          action: {
-            label: <Trans>Trade</Trans>,
-            type: "trade",
-            to: "/trade",
-          },
-        });
-      }
-    }
-
-    // Downgrade risk prompt: the user hasn't traded enough so far to sustain their
-    // current tier, and less than half of the epoch remains.
-    if (currentTierConfig) {
-      const epochDuration = getEpochDuration(config);
-      const epochEnd = getCurrentEpochEndTime(config, now);
-      const epochStart = epochEnd - epochDuration;
-      const secondsIntoEpoch = Math.max(0, now - epochStart);
-      const epochProgressed = epochDuration > 0 && secondsIntoEpoch * 2 >= epochDuration;
-      const halfThreshold = currentTierConfig.threshold / 2n;
-      if (epochProgressed && currentEpochStats.tradedVolume < halfThreshold) {
-        items.push({
-          type: "volume-tier-drop-risk",
-          title: t`Your tier will drop next epoch`,
-          description: t`Your volume this epoch is below the threshold for your current tier. Trade more to keep your rewards multiplier.`,
           action: {
             label: <Trans>Trade</Trans>,
             type: "trade",
@@ -413,11 +427,11 @@ function getBannerContent({
 
 function getAllBannerContent(): BannerContent[] {
   return [
-    DEFAULT_BANNER,
+    getManualRewardBanner(200n * 10n ** 30n),
     {
       type: "points-expiring",
       title: t`Don't Let Rewards Expire`,
-      description: t`Points are set to expire this epoch. Use them before rollover and make the most of your activity.`,
+      description: t`Use your rewards before they expire and make the most of your activity.`,
       action: {
         label: <Trans>Claim rewards</Trans>,
         type: "stake",
@@ -425,19 +439,19 @@ function getAllBannerContent(): BannerContent[] {
       },
     },
     {
-      type: "next-volume-tier",
-      title: t`So Close to the Next Tier`,
-      description: t`A small increase in volume will unlock a higher status and stronger rewards.`,
+      type: "gmx-ready-to-stake",
+      title: t`You have GMX ready to stake`,
+      description: t`You have X GMX unstaked - stake now to earn more points and rewards.`,
       action: {
-        label: <Trans>Trade</Trans>,
-        type: "trade",
-        to: "/trade",
+        label: <Trans>Stake GMX</Trans>,
+        type: "stake",
+        to: "/earn",
       },
     },
     {
-      type: "volume-tier-drop-risk",
-      title: t`Your tier will drop next epoch`,
-      description: t`Your volume this epoch is below the threshold for your current tier. Trade more to keep your rewards multiplier.`,
+      type: "next-volume-tier",
+      title: t`So Close to the Next Tier`,
+      description: t`A small increase in volume will unlock a higher status and stronger rewards.`,
       action: {
         label: <Trans>Trade</Trans>,
         type: "trade",
@@ -465,4 +479,19 @@ function getAllBannerContent(): BannerContent[] {
       },
     },
   ];
+}
+
+function getManualRewardBanner(manualBonusUsd: bigint): BannerContent {
+  const bonusFormatted = formatUsd(manualBonusUsd) ?? "$0.00";
+
+  return {
+    type: "manual-reward",
+    title: t`You've received bonus of ${bonusFormatted}`,
+    description: t`Start trading to activate it and get your rewards.`,
+    action: {
+      label: <Trans>Start trading</Trans>,
+      type: "trade",
+      to: "/trade",
+    },
+  };
 }

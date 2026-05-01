@@ -1,5 +1,10 @@
 export * from "./types";
-export { generateSubaccount, type GeneratedSubaccount } from "./generateSubaccount";
+export {
+  generateSubaccount,
+  decryptSubaccountPrivateKey,
+  createSubaccountSignerFromConfig,
+  type GeneratedSubaccount,
+} from "./generateSubaccount";
 export { hashSubaccountApproval } from "./hashSubaccountApproval";
 export { getEmptySubaccountApproval } from "./getEmptySubaccountApproval";
 export { getSubaccountApprovalTypedData, type SubaccountApprovalTypedData } from "./getSubaccountApprovalTypedData";

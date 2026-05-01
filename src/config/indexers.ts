@@ -22,7 +22,7 @@ const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-arbitrum-referrals/master-240506225935-51167d5/gn",
     syntheticsStats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-arbitrum-stats/master-250410222518-4486206/gn",
-    subsquid: "https://gmx-test.squids.live/gmx-synthetics-arbitrum@pinctv/api/graphql",
+    subsquid: "https://gmx-test.squids.live/gmx-synthetics-arbitrum@incntv/api/graphql",
   },
 
   [AVALANCHE]: {
@@ -40,7 +40,7 @@ const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-fuji-referrals/synts-stats-230726124533-065cd0d/gn",
     syntheticsStats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-fuji-stats/master-250708141244-939c871/gn",
-    subsquid: "https://gmx.squids.live/gmx-synthetics-fuji:prod/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-fuji@5eaa69/api/graphql",
   },
 
   [ARBITRUM_SEPOLIA]: {

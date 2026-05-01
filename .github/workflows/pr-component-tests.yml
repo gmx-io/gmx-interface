@@ -35,6 +35,8 @@ jobs:
         id: tests
         run: yarn test:ct
         continue-on-error: true
+        env:
+          NODE_OPTIONS: "--max-old-space-size=8192"
 
       - name: Upload test report artifact
         uses: actions/upload-artifact@v4

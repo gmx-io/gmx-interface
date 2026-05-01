@@ -9,6 +9,27 @@ import type { EpochStats, IncentivesConfig, RewardsHistoryEntry } from "domain/s
 
 import { PointsBanner } from "../PointsBanner";
 
+const stakingDataMock = vi.hoisted(() => ({
+  gmxBalance: 0n as bigint | undefined,
+}));
+
+const personalizedBannerDataMock = vi.hoisted(() => ({
+  isManuallyRewarded: false,
+  manualBonusUsd: undefined as bigint | undefined,
+}));
+
+vi.mock("domain/stake/useStakingProcessedData", () => ({
+  useStakingProcessedData: () => ({
+    data: {
+      gmxBalance: stakingDataMock.gmxBalance,
+    },
+  }),
+}));
+
+vi.mock("domain/synthetics/incentives/usePersonalizedBannerData", () => ({
+  usePersonalizedBannerData: () => personalizedBannerDataMock,
+}));
+
 i18n.load({ en: {} });
 i18n.activate("en");
 
@@ -75,6 +96,16 @@ function renderBanner() {
   );
 }
 
+function renderInactiveBanner() {
+  return render(
+    <I18nProvider i18n={i18n}>
+      <MemoryRouter>
+        <PointsBanner isActiveUser={false} account="0xAccount" config={config} />
+      </MemoryRouter>
+    </I18nProvider>
+  );
+}
+
 function renderTwoBanners() {
   return render(
     <I18nProvider i18n={i18n}>
@@ -101,6 +132,9 @@ function renderTwoBanners() {
 describe("PointsBanner", () => {
   beforeEach(() => {
     localStorage.clear();
+    stakingDataMock.gmxBalance = 0n;
+    personalizedBannerDataMock.isManuallyRewarded = false;
+    personalizedBannerDataMock.manualBonusUsd = undefined;
   });
 
   afterEach(() => {
@@ -112,6 +146,42 @@ describe("PointsBanner", () => {
     const { container } = renderBanner();
 
     expect(container.querySelector(".animate-points-banner-slide-in-right")).not.toBeNull();
+  });
+
+  it("does not render for inactive users without a manual reward banner", () => {
+    const { container } = renderInactiveBanner();
+
+    expect(container.querySelector(".animate-points-banner-slide-in-right")).toBeNull();
+  });
+
+  it("shows the manual reward banner for inactive rewarded users", () => {
+    personalizedBannerDataMock.isManuallyRewarded = true;
+    personalizedBannerDataMock.manualBonusUsd = 200n * 10n ** 30n;
+
+    renderInactiveBanner();
+
+    expect(screen.getByText(/You've received bonus of .*200\.00/)).toBeTruthy();
+    expect(screen.getByText("Start trading to activate it and get your rewards.")).toBeTruthy();
+  });
+
+  it("uses the configured expiring rewards text", () => {
+    renderBanner();
+
+    expect(screen.getByText("Don't Let Rewards Expire")).toBeTruthy();
+    expect(screen.getByText("Use your rewards before they expire and make the most of your activity.")).toBeTruthy();
+  });
+
+  it("shows the unstaked GMX banner when wallet GMX is available", () => {
+    stakingDataMock.gmxBalance = 5n * GMX_DECIMALS;
+
+    const { container } = renderBanner();
+    const dots = container.querySelectorAll(".rounded-full");
+
+    fireEvent.click(dots[1]);
+
+    expect(screen.getByText("You have GMX ready to stake")).toBeTruthy();
+    expect(screen.getByText("You have 5.00 GMX unstaked - stake now to earn more points and rewards.")).toBeTruthy();
+    expect(screen.getByText("Stake GMX")).toBeTruthy();
   });
 
   it("chooses animation direction when clicking banner dots", () => {

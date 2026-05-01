@@ -343,6 +343,7 @@ export async function fetchRawTradeActions({
             positionFeeAmount
             borrowingFeeAmount
             fundingFeeAmount
+            swapFeeUsd
             liquidationFeeAmount
             pnlUsd
             basePnlUsd
