@@ -223,7 +223,9 @@ function VolumeTiersTable({
             <TierLevelTableTr key={tier.tier}>
               <TableTd padding="compact">
                 <span className="flex items-center gap-8 font-medium">
-                  <VolumeTierIcon tierId={tier.tier} active={isActive} />
+                  <div className="p-1">
+                    <VolumeTierIcon tierId={tier.tier} active={isActive} />
+                  </div>
 
                   <span className="text-typography-primary">{VOLUME_TIER_BADGES[tier.tier]()}</span>
                   {isActive && (
