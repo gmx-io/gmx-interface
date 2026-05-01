@@ -215,6 +215,7 @@ function convertApiOrderToOrder({
     decreasePositionSwapType: rest.decreasePositionSwapType as DecreasePositionSwapType,
     contractTriggerPrice: triggerPrice,
     contractAcceptablePrice: acceptablePrice,
+    marketAddress: getAddress(rest.marketAddress),
     initialCollateralTokenAddress: getAddress(rest.initialCollateralTokenAddress),
     swapPath: rest.swapPath.map((addr) => getAddress(addr)),
     data: [],
