@@ -151,16 +151,20 @@ export type PrepareCollateralRequest = {
 
 function parseEstimates(raw: any): OrderEstimates | undefined {
   if (!raw) return undefined;
-  return {
-    positionPriceImpactDeltaUsd: BigInt(raw.positionPriceImpactDeltaUsd),
-    swapPriceImpactDeltaUsd: BigInt(raw.swapPriceImpactDeltaUsd),
-    executionFeeAmount: BigInt(raw.executionFeeAmount),
-    acceptablePrice: BigInt(raw.acceptablePrice),
-    sizeDeltaUsd: BigInt(raw.sizeDeltaUsd),
-    positionFeeUsd: BigInt(raw.positionFeeUsd),
-    borrowingFeeUsd: BigInt(raw.borrowingFeeUsd),
-    fundingFeeUsd: BigInt(raw.fundingFeeUsd),
-  };
+  try {
+    return {
+      positionPriceImpactDeltaUsd: BigInt(raw.positionPriceImpactDeltaUsd ?? "0"),
+      swapPriceImpactDeltaUsd: BigInt(raw.swapPriceImpactDeltaUsd ?? "0"),
+      executionFeeAmount: BigInt(raw.executionFeeAmount ?? "0"),
+      acceptablePrice: BigInt(raw.acceptablePrice ?? "0"),
+      sizeDeltaUsd: BigInt(raw.sizeDeltaUsd ?? "0"),
+      positionFeeUsd: BigInt(raw.positionFeeUsd ?? "0"),
+      borrowingFeeUsd: BigInt(raw.borrowingFeeUsd ?? "0"),
+      fundingFeeUsd: BigInt(raw.fundingFeeUsd ?? "0"),
+    };
+  } catch (e) {
+    throw new Error(`Failed to parse order estimates: ${e instanceof Error ? e.message : e}`);
+  }
 }
 
 function parsePrepareResponse(raw: any): PrepareOrderResponse {

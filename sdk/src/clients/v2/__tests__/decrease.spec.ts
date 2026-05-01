@@ -37,9 +37,14 @@ async function openLongPosition(): Promise<void> {
   const status = await waitForOrderStatus(sdk, result.requestId);
   expect(status.status).toBe("executed");
 
-  const positions = await waitForPositionUpdate(sdk, account, (positions) => {
-    return positions.some((p: any) => p.isLong && p.indexName?.includes("ETH/USD"));
-  }, 30000);
+  const positions = await waitForPositionUpdate(
+    sdk,
+    account,
+    (positions) => {
+      return positions.some((p: any) => p.isLong && p.indexName?.includes("ETH/USD"));
+    },
+    30000
+  );
   expect(positions.some((p: any) => p.isLong && p.indexName?.includes("ETH/USD"))).toBe(true);
 }
 
@@ -89,6 +94,7 @@ describe("decrease orders", () => {
         direction: "long",
         orderType: "market",
         size: decreaseSize,
+        collateralToken: "USDC",
         receiveToken: "USDC",
         mode: "express",
         from: account,
@@ -107,13 +113,16 @@ describe("decrease orders", () => {
       const status = await waitForOrderStatus(sdk, submitted.requestId);
       expect(status.status).toBe("executed");
 
-      const positionsAfter = await waitForPositionUpdate(sdk, account, (positions) => {
-        const p = positions.find((p: any) => p.isLong && p.indexName?.includes("ETH/USD"));
-        return p ? BigInt(p.sizeInUsd) < sizeBefore : true;
-      }, 30000);
-      const posAfter = positionsAfter.find(
-        (p: any) => p.isLong && p.indexName?.includes("ETH/USD")
+      const positionsAfter = await waitForPositionUpdate(
+        sdk,
+        account,
+        (positions) => {
+          const p = positions.find((p: any) => p.isLong && p.indexName?.includes("ETH/USD"));
+          return p ? BigInt(p.sizeInUsd) < sizeBefore : true;
+        },
+        30000
       );
+      const posAfter = positionsAfter.find((p: any) => p.isLong && p.indexName?.includes("ETH/USD"));
 
       // Position must either be smaller or fully closed (not same size)
       const sizeAfter = posAfter ? BigInt(posAfter.sizeInUsd) : 0n;
@@ -126,7 +135,7 @@ describe("decrease orders", () => {
       const pos = await ensureLongPosition();
       const sizeBefore = BigInt(pos.sizeInUsd);
       const collateralBefore = BigInt(pos.collateralUsd);
-      const leverageBefore = sizeBefore * 10000n / collateralBefore;
+      const leverageBefore = (sizeBefore * 10000n) / collateralBefore;
 
       const decreaseSize = sizeBefore / 5n;
 
@@ -137,6 +146,7 @@ describe("decrease orders", () => {
         orderType: "market",
         size: decreaseSize,
         keepLeverage: true,
+        collateralToken: "USDC",
         receiveToken: "USDC",
         mode: "express",
         from: account,
@@ -145,22 +155,25 @@ describe("decrease orders", () => {
       const status = await waitForOrderStatus(sdk, submitted.requestId);
       expect(status.status).toBe("executed");
 
-      const positionsAfter = await waitForPositionUpdate(sdk, account, (positions) => {
-        const p = positions.find((p: any) => p.isLong && p.indexName?.includes("ETH/USD"));
-        return p ? BigInt(p.sizeInUsd) < sizeBefore : false;
-      }, 30000);
+      const positionsAfter = await waitForPositionUpdate(
+        sdk,
+        account,
+        (positions) => {
+          const p = positions.find((p: any) => p.isLong && p.indexName?.includes("ETH/USD"));
+          return p ? BigInt(p.sizeInUsd) < sizeBefore : false;
+        },
+        30000
+      );
       const posAfter = positionsAfter.find((p: any) => p.isLong && p.indexName?.includes("ETH/USD"));
       expect(posAfter).toBeDefined();
 
       const sizeAfter = BigInt(posAfter!.sizeInUsd);
       const collateralAfter = BigInt(posAfter!.collateralUsd);
-      const leverageAfter = sizeAfter * 10000n / collateralAfter;
+      const leverageAfter = (sizeAfter * 10000n) / collateralAfter;
 
       // Leverage preserved within 5% tolerance
-      const diff = leverageAfter > leverageBefore
-        ? leverageAfter - leverageBefore
-        : leverageBefore - leverageAfter;
-      expect(diff * 100n / leverageBefore).toBeLessThanOrEqual(5n);
+      const diff = leverageAfter > leverageBefore ? leverageAfter - leverageBefore : leverageBefore - leverageAfter;
+      expect((diff * 100n) / leverageBefore).toBeLessThanOrEqual(5n);
 
       // Collateral also removed proportionally
       expect(collateralAfter).toBeLessThan(collateralBefore);
@@ -180,6 +193,7 @@ describe("decrease orders", () => {
         orderType: "market",
         size: decreaseSize,
         keepLeverage: false,
+        collateralToken: "USDC",
         receiveToken: "USDC",
         mode: "express",
         from: account,
@@ -188,20 +202,24 @@ describe("decrease orders", () => {
       const status = await waitForOrderStatus(sdk, submitted.requestId);
       expect(status.status).toBe("executed");
 
-      const positionsAfter = await waitForPositionUpdate(sdk, account, (positions) => {
-        const p = positions.find((p: any) => p.isLong && p.indexName?.includes("ETH/USD"));
-        return p ? BigInt(p.sizeInUsd) < sizeBefore : false;
-      }, 30000);
+      const positionsAfter = await waitForPositionUpdate(
+        sdk,
+        account,
+        (positions) => {
+          const p = positions.find((p: any) => p.isLong && p.indexName?.includes("ETH/USD"));
+          return p ? BigInt(p.sizeInUsd) < sizeBefore : false;
+        },
+        30000
+      );
       const posAfter = positionsAfter.find((p: any) => p.isLong && p.indexName?.includes("ETH/USD"));
       expect(posAfter).toBeDefined();
 
       const collateralAfter = BigInt(posAfter!.collateralUsd);
 
       // Collateral stays roughly the same (may change slightly due to fees)
-      const collateralDiff = collateralAfter > collateralBefore
-        ? collateralAfter - collateralBefore
-        : collateralBefore - collateralAfter;
-      expect(collateralDiff * 100n / collateralBefore).toBeLessThanOrEqual(10n);
+      const collateralDiff =
+        collateralAfter > collateralBefore ? collateralAfter - collateralBefore : collateralBefore - collateralAfter;
+      expect((collateralDiff * 100n) / collateralBefore).toBeLessThanOrEqual(10n);
     });
   });
 
@@ -215,6 +233,7 @@ describe("decrease orders", () => {
         direction: "long",
         orderType: "market",
         size: TEST_SIZE_USD,
+        collateralToken: "USDC",
         receiveToken: "ETH",
         mode: "express",
         from: account,
@@ -234,6 +253,7 @@ describe("decrease orders", () => {
         direction: "long",
         orderType: "market",
         size: TEST_SIZE_USD,
+        collateralToken: "USDC",
         mode: "express",
         from: account,
       });
@@ -259,7 +279,9 @@ describe("decrease orders", () => {
             relayParams: prepared.payload.relayParams,
           },
         });
-      } catch { /* cleanup */ }
+      } catch {
+        /* cleanup */
+      }
     });
 
     it("TWAP market decrease — partial close split into parts", async () => {
@@ -272,6 +294,7 @@ describe("decrease orders", () => {
         symbol: TEST_SYMBOL,
         direction: "long",
         size: decreaseSize,
+        collateralToken: "USDC",
         receiveToken: "USDC",
         twapConfig: { duration: 600, parts: 2 },
         mode: "express",
@@ -298,6 +321,7 @@ describe("decrease orders", () => {
         direction: "long",
         orderType: "market",
         size: decreaseSize,
+        collateralToken: "USDC",
         receiveToken: "USDC",
         mode: "express",
         from: account,
@@ -322,6 +346,7 @@ describe("decrease orders", () => {
         direction: "long" as const,
         orderType: "market" as const,
         size: TEST_SIZE_USD,
+        collateralToken: "USDC" as const,
         receiveToken: "USDC" as const,
         mode: "express" as const,
         from: account,
@@ -358,7 +383,9 @@ describe("decrease orders", () => {
             relayParams: prepared.payload.relayParams,
           },
         });
-      } catch { /* cleanup */ }
+      } catch {
+        /* cleanup */
+      }
     });
 
     it("stop-loss: estimates present", async () => {
@@ -373,6 +400,7 @@ describe("decrease orders", () => {
         orderType: "stop-loss",
         size: TEST_SIZE_USD,
         triggerPrice,
+        collateralToken: "USDC",
         receiveToken: "USDC",
         mode: "express",
         from: account,
@@ -404,6 +432,7 @@ describe("decrease orders", () => {
         orderType: "take-profit",
         size: TEST_SIZE_USD,
         triggerPrice,
+        collateralToken: "USDC",
         receiveToken: "USDC",
         mode: "express",
         from: account,
@@ -433,6 +462,7 @@ describe("decrease orders", () => {
         direction: "long",
         orderType: "market",
         size: TEST_SIZE_USD,
+        collateralToken: "USDC",
         receiveToken: "USDC",
         mode: "classic",
         from: account,
@@ -456,6 +486,7 @@ describe("decrease orders", () => {
         direction: "long",
         orderType: "market",
         size: decreaseSize,
+        collateralToken: "USDC",
         receiveToken: "USDC",
         mode: "classic",
         from: account,
@@ -496,6 +527,7 @@ describe("decrease orders", () => {
           direction: "long",
           orderType: "market",
           size: decreaseSize,
+          collateralToken: "USDC",
           receiveToken: "USDC",
           mode: "express",
           from: account,
@@ -528,6 +560,7 @@ describe("decrease orders", () => {
           direction: "long",
           orderType: "market",
           size: fullSize,
+          collateralToken: "USDC",
           receiveToken: "USDC",
           mode: "express",
           from: account,
@@ -539,16 +572,19 @@ describe("decrease orders", () => {
         expect(status.status).toBe("executed");
 
         // Wait for position update before next iteration
-        await waitForPositionUpdate(sdk, account, (positions) => {
-          const p = positions.find((p: any) => p.isLong && p.indexName?.includes("ETH/USD"));
-          return !p || BigInt(p.sizeInUsd) < fullSize;
-        }, 30000);
+        await waitForPositionUpdate(
+          sdk,
+          account,
+          (positions) => {
+            const p = positions.find((p: any) => p.isLong && p.indexName?.includes("ETH/USD"));
+            return !p || BigInt(p.sizeInUsd) < fullSize;
+          },
+          30000
+        );
       }
 
       const positionsAfter = await sdk.fetchPositionsInfo({ address: account });
-      const posAfter = positionsAfter.find(
-        (p: any) => p.isLong && p.indexName?.includes("ETH/USD")
-      );
+      const posAfter = positionsAfter.find((p: any) => p.isLong && p.indexName?.includes("ETH/USD"));
       expect(posAfter).toBeUndefined();
     });
   });

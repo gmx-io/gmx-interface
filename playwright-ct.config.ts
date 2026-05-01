@@ -3,9 +3,36 @@ import { defineConfig, devices } from "@playwright/experimental-ct-react";
 import react from "@vitejs/plugin-react";
 import path from "path";
 import { fileURLToPath } from "url";
+import type { Plugin } from "vite";
 import svgr from "vite-plugin-svgr";
+import tsconfigPaths from "vite-tsconfig-paths";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
+
+/**
+ * Vite plugin that mocks modules whose top-level code has circular
+ * dependency issues in the production bundle (TDZ errors).
+ */
+function ctModuleMocks(): Plugin {
+  const mockPath = path.resolve(__dirname, "playwright/mocks/rpcDebug.ts");
+
+  return {
+    name: "ct-module-mocks",
+    enforce: "pre",
+    resolveId(source, importer) {
+      if (source === "lib/rpc/_debug") {
+        return mockPath;
+      }
+      // Relative import from within lib/rpc/
+      if (source === "./_debug" && importer && importer.includes(path.join("lib", "rpc"))) {
+        return mockPath;
+      }
+      if (source.includes("lib/rpc/_debug")) {
+        return mockPath;
+      }
+    },
+  };
+}
 
 const chromiumExecutablePath = process.env.PLAYWRIGHT_CHROMIUM_EXECUTABLE_PATH;
 
@@ -19,12 +46,23 @@ export default defineConfig({
   reporter: "html",
 
   use: {
+    screenshot: "only-on-failure",
     trace: "on-first-retry",
     ctViteConfig: {
+      worker: {
+        format: "es",
+      },
+      build: {
+        // Reduce memory usage during CT builds
+        sourcemap: false,
+        minify: false,
+      },
       plugins: [
+        ctModuleMocks(),
         svgr({
           include: "**/*.svg?react",
         }),
+        tsconfigPaths(),
         react({
           babel: {
             plugins: ["macros"],
@@ -32,6 +70,9 @@ export default defineConfig({
         }),
         lingui(),
       ],
+      optimizeDeps: {
+        include: ["@vanilla-extract/sprinkles", "@rainbow-me/rainbowkit"],
+      },
       resolve: {
         alias: {
           App: path.resolve(__dirname, "src/App"),

@@ -40,7 +40,7 @@ const TAB_LABELS: Record<string, ReactNode> = {
   ),
   NET_RATE: (
     <div className="flex items-center gap-8">
-      <Trans>Net Rate History</Trans>
+      <Trans>Net Rate</Trans>
     </div>
   ),
   MARKET_GRAPH: (

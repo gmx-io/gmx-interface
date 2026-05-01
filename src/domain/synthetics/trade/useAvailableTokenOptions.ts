@@ -4,7 +4,14 @@ import { zeroAddress } from "viem";
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH } from "config/chains";
 import { getSortedMarketsAddressesKey } from "config/localStorage";
 import { SORTED_MARKETS } from "config/static/sortedMarkets";
-import { GlvAndGmMarketsInfoData, Market, MarketInfo, MarketsData, isMarketInfo } from "domain/synthetics/markets";
+import {
+  GlvAndGmMarketsInfoData,
+  Market,
+  MarketInfo,
+  MarketsData,
+  getIsMarketDeprecated,
+  isMarketInfo,
+} from "domain/synthetics/markets";
 import { InfoTokens, Token, getMidPrice } from "domain/tokens";
 import { getByKey } from "lib/objects";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
@@ -178,7 +185,7 @@ export function useAvailableTokenOptions(
       shortTokensWithPoolValue[shortToken.address] =
         (shortTokensWithPoolValue[shortToken.address] ?? 0n) + shortPoolAmountUsd;
 
-      if (!marketInfo.isSpotOnly) {
+      if (!marketInfo.isSpotOnly && !getIsMarketDeprecated(marketInfo)) {
         indexTokens.add(indexToken);
         allMarkets.add(marketInfo);
         indexTokensWithPoolValue[indexToken.address] =
