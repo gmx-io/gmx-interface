@@ -34,7 +34,7 @@
     "prettier": "prettier --write src/**/*.{js,ts,jsx,tsx,css,scss} landing/**/*.{js,ts,jsx,tsx,css,scss}",
     "postinstall": "cd ./sdk && echo \"Building SDK\" && yarn && yarn build",
     "prebuild": "cd ./sdk && yarn tsx scripts/prebuild",
-    "test:ct": "playwright test -c playwright-ct.config.ts"
+    "test:ct": "NODE_OPTIONS='--max-old-space-size=8192' playwright test -c playwright-ct.config.ts"
   },
   "dependencies": {
     "@apollo/client": "3.5.6",

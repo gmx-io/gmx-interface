@@ -3,8 +3,12 @@
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
+import { ARBITRUM, MEGAETH } from "config/chains";
+
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import sparkleIcon from "img/sparkle.svg";
 
 export type EventData = {
   id: string;
@@ -36,6 +40,56 @@ export const OM_MANTRA_MIGRATION_EVENT_ID = "om-mantra-migration";
 export const WELL_DELISTING_EVENT_ID = "well-delisting";
 
 export const appEventsData: EventData[] = [
+  {
+    id: "mega-arbitrum-megaeth-listing",
+    flagId: "showMegaListingArbitrumMegaeth",
+    endDate: "07 May 2026, 12:00",
+    chains: [ARBITRUM, MEGAETH],
+    title: "MEGA market added on Arbitrum and MegaETH",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> MEGA, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
+        <span className="text-slate-100">[WETH-USDC]</span> on Arbitrum, or GLV{" "}
+        <span className="text-slate-100">[USDM-USDM]</span> on MegaETH.
+      </>
+    ),
+  },
+  {
+    id: "megaeth-points-program",
+    flagId: "showMegaethPoints",
+    endDate: "31 Dec 2026, 0:00",
+    chains: [MEGAETH],
+    title: "Earn points on GMX MegaETH",
+    bodyText: (
+      <span className="block">
+        <span className="mb-12 block text-slate-100">Earn points each epoch across four activities:</span>
+        <span className="grid grid-cols-[auto_1fr] items-start gap-x-8 gap-y-12">
+          <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+          <span>
+            <span className="block font-medium">Trading activity</span>
+            <span className="block text-12 text-slate-100">Based on cumulative trading volume</span>
+          </span>
+          <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+          <span>
+            <span className="block font-medium">Referral volume</span>
+            <span className="block text-12 text-slate-100">Trading volume from wallets using your referral code</span>
+          </span>
+          <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+          <span>
+            <span className="block font-medium">Trader PnL</span>
+            <span className="block text-12 text-slate-100">Net positive realized PnL only, to reward skill</span>
+          </span>
+          <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+          <span>
+            <span className="block font-medium">
+              GLV <span className="text-slate-100">[USDM-USDM]</span> liquidity
+            </span>
+            <span className="block text-12 text-slate-100">Time-weighted share of the vault over the epoch</span>
+          </span>
+        </span>
+      </span>
+    ),
+  },
   {
     id: WELL_DELISTING_EVENT_ID,
     isActive: true,
