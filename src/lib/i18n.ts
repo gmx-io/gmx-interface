@@ -20,6 +20,8 @@ export const locales = {
   ...(isDevelopment() && { pseudo: "Test" }),
 };
 
+export type Locale = keyof typeof locales;
+
 export const defaultLocale = "en";
 
 export function isTestLanguage(locale: string) {

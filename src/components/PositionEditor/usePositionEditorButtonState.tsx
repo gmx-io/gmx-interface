@@ -357,6 +357,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       depositToken: selectedCollateralToken,
       depositAmount: collateralDeltaAmount,
       minCollateralFactor,
+      marketAddress: position?.marketAddress,
     });
 
     return takeValidationResult(commonError, editCollateralError, expressError);
@@ -440,7 +441,13 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     sendOrderSubmittedMetric(metricData.metricId);
 
     if (!batchParams || !tokensData || !signer || !provider) {
-      helperToast.error(t`Order failed`);
+      helperToast.error(t`Order failed`, {
+        tradingErrorInfo: {
+          actionName: "Edit Collateral",
+          collateral: selectedCollateralToken?.symbol,
+          requestId: metricData.requestId,
+        },
+      });
       sendTxnValidationErrorMetric(metricData.metricId);
       return;
     }
@@ -463,7 +470,10 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
           },
       callback: makeOrderTxnCallback({
         metricId: metricData.metricId,
+        requestId: metricData.requestId,
         slippageInputId: undefined,
+        actionName: "Edit Collateral",
+        collateralSymbol: selectedCollateralToken?.symbol,
       }),
     });
 

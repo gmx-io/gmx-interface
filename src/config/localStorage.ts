@@ -58,7 +58,6 @@ export const EXPRESS_TRADING_NATIVE_TOKEN_WARN_HIDDEN_KEY = "express-trading-nat
 export const EXPRESS_TRADING_WRAP_OR_UNWRAP_WARN_HIDDEN_KEY = "express-trading-wrap-or-unwrap-warn-hidden";
 
 export const INTERVIEW_INVITATION_SHOWN_TIME_KEY = "interview-invitation-shown-time";
-export const NPS_SURVEY_SHOWN_TIME_KEY = "nps-survey-shown-time";
 export const TOKEN_FAVORITES_PREFERENCE_KEY = "token-favorites-preference";
 export const SETTINGS_WARNING_DOT_VISIBLE_KEY = "settings-warning-dot-visible";
 export const SUPPORT_CHAT_WAS_EVER_SHOWN_KEY = "support-chat-was-ever-shown";
@@ -77,6 +76,10 @@ export const PERMITS_DISABLED_KEY = "permits-disabled";
 export const AB_FLAG_STORAGE_KEY = "ab-flags";
 
 export const IS_LARGE_ACCOUNT_KEY = "is-large-account-2";
+
+export const TRADEBOX_SIZE_DENOMINATION_KEY = "tradebox-size-denomination";
+
+export const CLOSE_SIZE_DENOMINATION_KEY = "close-size-in-tokens";
 
 const FALLBACK_TRACKER_PREFIX = "fallback-tracker";
 

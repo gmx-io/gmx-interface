@@ -1,14 +1,14 @@
 import { IHttp } from "utils/http/types";
-import { deserializeBigIntsInObject } from "utils/numbers/utils";
+import { deserializeBigIntsInObject } from "utils/numbers";
 
-import type { StakingPowerResponse } from "./types";
+import { StakingPowerResponse } from "./types";
 
 export async function fetchApiStakingPower(
   ctx: { api: IHttp },
   params: { address: string }
 ): Promise<StakingPowerResponse> {
-  const result: any = await ctx.api.fetchJson("/staking/power", {
+  const data = await ctx.api.fetchJson<Record<string, unknown>>("/staking/power", {
     query: { address: params.address },
   });
-  return deserializeBigIntsInObject(result, { handleInts: true }) as StakingPowerResponse;
+  return deserializeBigIntsInObject(data, { handleInts: true }) as StakingPowerResponse;
 }

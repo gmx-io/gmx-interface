@@ -7,12 +7,12 @@ import { selectExpressGlobalParams } from "context/SyntheticsStateContext/select
 import { selectTradeboxIsFromTokenGmxAccount } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useCalcSelector } from "context/SyntheticsStateContext/utils";
 import { removeSubaccountExpressTxn, removeSubaccountWalletTxn } from "domain/synthetics/subaccount";
-import { generateSubaccount } from "domain/synthetics/subaccount/generateSubaccount";
 import type {
-  SignedSubacсountApproval,
+  SignedSubaccountApproval,
   Subaccount,
   SubaccountSerializedConfig,
-} from "domain/synthetics/subaccount/types";
+} from "domain/synthetics/subaccount";
+import { generateSubaccount } from "domain/synthetics/subaccount/generateSubaccount";
 import { useSubaccountOnchainData } from "domain/synthetics/subaccount/useSubaccountOnchainData";
 import {
   getActualApproval,
@@ -535,7 +535,7 @@ function useStoredSubaccountData(chainId: number, account: string | undefined) {
     }
   );
 
-  const [signedApproval, setSignedApproval] = useLocalStorageSerializeKey<SignedSubacсountApproval | undefined>(
+  const [signedApproval, setSignedApproval] = useLocalStorageSerializeKey<SignedSubaccountApproval | undefined>(
     getSubaccountApprovalKey(chainId, account),
     undefined,
     {

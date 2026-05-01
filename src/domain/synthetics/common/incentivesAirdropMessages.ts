@@ -29,7 +29,7 @@ export const INCENTIVE_TYPE_MAP = {
   [GLP_DISTRIBUTION_TEST_ID.toString()]: getDistributionTitle(GLP_DISTRIBUTION_TEST_ID.toString()),
 };
 
-export const INCENTIVE_TOOLTIP_MAP = {
+export const INCENTIVE_TOOLTIP_MAP: Partial<Record<number, { link: string; text: string }>> = {
   2001: { link: "/competitions/march_13-20_2024", text: t`EIP-4844, 13-20 Mar` },
   2002: { link: "/competitions/march_20-27_2024", text: t`EIP-4844, 20-27 Mar` },
 };

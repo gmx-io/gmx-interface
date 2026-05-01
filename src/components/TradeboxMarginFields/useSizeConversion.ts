@@ -33,8 +33,9 @@ export function useSizeConversion({ toToken, markPrice }: UseSizeConversionParam
   const usdToTokens = useCallback(
     (usdValue: string): string => {
       if (!canConvert) return "";
+      if (!usdValue) return "";
 
-      const parsedUsd = parseValue(usdValue || "0", USD_DECIMALS);
+      const parsedUsd = parseValue(usdValue, USD_DECIMALS);
       if (parsedUsd === undefined) return "";
 
       const sizeInTokens = convertToTokenAmount(parsedUsd, decimals, markPrice);

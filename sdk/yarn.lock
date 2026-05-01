@@ -878,7 +878,7 @@ __metadata:
     graphql: "npm:15.8.0"
     isomorphic-performance: "npm:5.1.1"
     lint-staged: "npm:12.3.4"
-    lodash: "npm:4.17.23"
+    lodash: "npm:4.18.1"
     query-string: "npm:7.1.1"
     ts-patch: "npm:3.2.1"
     tsx: "npm:4.19.0"
@@ -3910,10 +3910,10 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash@npm:4.17.23":
-  version: 4.17.23
-  resolution: "lodash@npm:4.17.23"
-  checksum: 10/82504c88250f58da7a5a4289f57a4f759c44946c005dd232821c7688b5fcfbf4a6268f6a6cdde4b792c91edd2f3b5398c1d2a0998274432cff76def48735e233
+"lodash@npm:4.18.1":
+  version: 4.18.1
+  resolution: "lodash@npm:4.18.1"
+  checksum: 10/306fea53dfd39dad1f03d45ba654a2405aebd35797b673077f401edb7df2543623dc44b9effbb98f69b32152295fff725a4cec99c684098947430600c6af0c3f
   languageName: node
   linkType: hard
 

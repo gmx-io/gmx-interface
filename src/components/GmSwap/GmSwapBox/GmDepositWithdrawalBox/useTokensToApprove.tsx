@@ -6,7 +6,6 @@ import { zeroAddress } from "viem";
 import { SourceChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { getMappedTokenId, getMultichainTokenId } from "config/multichain";
-import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import {
   selectPoolsDetailsFirstTokenAddress,
   selectPoolsDetailsFirstTokenAmount,
@@ -28,11 +27,8 @@ import { adjustForDecimals } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { userAnalytics } from "lib/userAnalytics";
 import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
-import type { WalletSigner } from "lib/wallets";
 import { isMarketTokenAddress } from "sdk/configs/markets";
 import { getToken, isValidTokenSafe } from "sdk/configs/tokens";
-
-import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 
 type TokensToApproveResult = {
   tokensToApproveSymbols: string[];
@@ -136,7 +132,6 @@ const useSettlementChainTokensToApprove = (): TokensToApproveResult => {
 const useSourceChainTokensToApprove = (): TokensToApproveResult => {
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
-  const [, setSettlementChainId] = useGmxAccountSettlementChainId();
   const { isDeposit } = useSelector(selectPoolsDetailsFlags);
 
   const firstTokenAddress = useSelector(selectPoolsDetailsFirstTokenAddress);
@@ -168,34 +163,6 @@ const useSourceChainTokensToApprove = (): TokensToApproveResult => {
 
   useMultichainApprovalsActiveListener(srcChainId, "multichain-gm-swap-box");
 
-  const wrapApprove = useCallback(
-    async (approveFn: (signer: WalletSigner) => Promise<void>) => {
-      if (!settlementChainSpendTokenAddress || sourceChainSpendTokenAmountLD === undefined || !srcChainId) {
-        helperToast.error(t`Approval failed`);
-        return;
-      }
-
-      if (settlementChainSpendTokenAddress === zeroAddress) {
-        helperToast.error(t`Native token cannot be approved`);
-        return;
-      }
-
-      if (!sourceChainSpendTokenId) {
-        helperToast.error(t`Approval failed`);
-        return;
-      }
-
-      await wrapChainAction(srcChainId, setSettlementChainId, approveFn);
-    },
-    [
-      settlementChainSpendTokenAddress,
-      sourceChainSpendTokenAmountLD,
-      srcChainId,
-      sourceChainSpendTokenId,
-      setSettlementChainId,
-    ]
-  );
-
   const tokens = useMemo(
     () =>
       sourceChainSpendTokenId
@@ -210,7 +177,6 @@ const useSourceChainTokensToApprove = (): TokensToApproveResult => {
     tokens,
     approveAmount: sourceChainSpendTokenAmountLD,
     skip: srcChainId === undefined || sourceChainSpendTokenId === undefined,
-    wrapApprove,
   });
 
   const multichainTokensToApproveSymbols = useMemo(() => {
@@ -230,13 +196,35 @@ const useSourceChainTokensToApprove = (): TokensToApproveResult => {
   }, [chainId, needsApproval, settlementChainSpendTokenAddress, settlementChainSpendTokenId]);
 
   const approve = useCallback(() => {
+    if (!settlementChainSpendTokenAddress || sourceChainSpendTokenAmountLD === undefined || !srcChainId) {
+      helperToast.error(t`Approval failed`);
+      return;
+    }
+
+    if (settlementChainSpendTokenAddress === zeroAddress) {
+      helperToast.error(t`Native token cannot be approved`);
+      return;
+    }
+
+    if (!sourceChainSpendTokenId) {
+      helperToast.error(t`Approval failed`);
+      return;
+    }
+
     if (!multichainSpenderAddress) {
       helperToast.error(t`Approval failed`);
       return;
     }
 
     handleApprove();
-  }, [handleApprove, multichainSpenderAddress]);
+  }, [
+    handleApprove,
+    multichainSpenderAddress,
+    settlementChainSpendTokenAddress,
+    sourceChainSpendTokenAmountLD,
+    srcChainId,
+    sourceChainSpendTokenId,
+  ]);
 
   return {
     isApproving,

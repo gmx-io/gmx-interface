@@ -1,7 +1,16 @@
 import { isAddress } from "viem";
 import { describe, it, expect } from "vitest";
 
-import { createTwapUiFeeReceiver, decodeTwapUiFeeReceiver, setUiFeeReceiverIsExpress } from "utils/twap/uiFeeReceiver";
+import {
+  createTwapUiFeeReceiver,
+  decodeTwapUiFeeReceiver,
+  setUiFeeReceiverIsExpress,
+  setUiFeeReceiverIsJit,
+  setUiFeeReceiverSource,
+  getUiFeeReceiverSource,
+  UI_FEE_SOURCE_UI,
+  UI_FEE_SOURCE_API,
+} from "utils/twap/uiFeeReceiver";
 
 describe("uiFeeReceiver", () => {
   describe("decodeTwapUiFeeReceiver", () => {
@@ -18,6 +27,28 @@ describe("uiFeeReceiver", () => {
     it("should correctly decode isExpress", () => {
       expect(decodeTwapUiFeeReceiver("0xff0000000000000000000000000000010a123401")).toEqual({
         isExpress: true,
+        isJit: false,
+        source: "00",
+        twapId: "1234",
+        numberOfParts: 10,
+      });
+    });
+
+    it("should correctly decode isJit", () => {
+      expect(decodeTwapUiFeeReceiver("0xff0000000000000000000000000001000a123401")).toEqual({
+        isExpress: false,
+        isJit: true,
+        source: "00",
+        twapId: "1234",
+        numberOfParts: 10,
+      });
+    });
+
+    it("should correctly decode source byte", () => {
+      expect(decodeTwapUiFeeReceiver("0xff0000010000000000000000000000000a123401")).toEqual({
+        isExpress: false,
+        isJit: false,
+        source: "01",
         twapId: "1234",
         numberOfParts: 10,
       });
@@ -26,12 +57,16 @@ describe("uiFeeReceiver", () => {
     it("should return the twapId and numberOfParts if the uiFeeReceiver is valid twap", () => {
       expect(decodeTwapUiFeeReceiver("0xff0000000000000000000000000000000a123401")).toEqual({
         isExpress: false,
+        isJit: false,
+        source: "00",
         twapId: "1234",
         numberOfParts: 10,
       });
 
       expect(decodeTwapUiFeeReceiver("0xff000000000000000000000000000000153a4f01")).toEqual({
         isExpress: false,
+        isJit: false,
+        source: "00",
         twapId: "3a4f",
         numberOfParts: 21,
       });
@@ -62,6 +97,18 @@ describe("uiFeeReceiver", () => {
         parseInt(decodeTwapUiFeeReceiver(createTwapUiFeeReceiver({ numberOfParts: 21 }))?.twapId ?? "", 16)
       ).not.toBeNaN();
     });
+
+    it("should default source to UI", () => {
+      expect(decodeTwapUiFeeReceiver(createTwapUiFeeReceiver({ numberOfParts: 10 }))?.source).toEqual(
+        UI_FEE_SOURCE_UI
+      );
+    });
+
+    it("should correctly encode API source", () => {
+      expect(
+        decodeTwapUiFeeReceiver(createTwapUiFeeReceiver({ numberOfParts: 10, source: UI_FEE_SOURCE_API }))?.source
+      ).toEqual(UI_FEE_SOURCE_API);
+    });
   });
 });
 
@@ -82,5 +129,55 @@ describe("setUiFeeReceiverIsExpress", () => {
     expect(setUiFeeReceiverIsExpress("0xff0000000000000000000000000000000a123401", false)).toEqual(
       "0xff0000000000000000000000000000000a123401"
     );
+  });
+});
+
+describe("setUiFeeReceiverIsJit", () => {
+  it("should correctly set isJit for simple uiFeeReceiver", () => {
+    expect(setUiFeeReceiverIsJit("0xff00000000000000000000000000000000000001", true)).toEqual(
+      "0xff00000000000000000000000000010000000001"
+    );
+    expect(setUiFeeReceiverIsJit("0xff00000000000000000000000000010000000001", false)).toEqual(
+      "0xff00000000000000000000000000000000000001"
+    );
+  });
+
+  it("should preserve isExpress when setting isJit", () => {
+    expect(setUiFeeReceiverIsJit("0xff0000000000000000000000000000010a123401", true)).toEqual(
+      "0xff0000000000000000000000000001010a123401"
+    );
+  });
+
+  it("should correctly set isJit for twap uiFeeReceiver", () => {
+    expect(setUiFeeReceiverIsJit("0xff0000000000000000000000000000000a123401", true)).toEqual(
+      "0xff0000000000000000000000000001000a123401"
+    );
+    expect(setUiFeeReceiverIsJit("0xff0000000000000000000000000001000a123401", false)).toEqual(
+      "0xff0000000000000000000000000000000a123401"
+    );
+  });
+});
+
+describe("setUiFeeReceiverSource", () => {
+  it("should correctly set source byte", () => {
+    expect(setUiFeeReceiverSource("0xff00000000000000000000000000000000000001", UI_FEE_SOURCE_API)).toEqual(
+      "0xff00000100000000000000000000000000000001"
+    );
+    expect(setUiFeeReceiverSource("0xff00000100000000000000000000000000000001", UI_FEE_SOURCE_UI)).toEqual(
+      "0xff00000000000000000000000000000000000001"
+    );
+  });
+
+  it("should preserve other bytes when setting source", () => {
+    expect(setUiFeeReceiverSource("0xff0000000000000000000000000000010a123401", UI_FEE_SOURCE_API)).toEqual(
+      "0xff0000010000000000000000000000010a123401"
+    );
+  });
+});
+
+describe("getUiFeeReceiverSource", () => {
+  it("should return source byte", () => {
+    expect(getUiFeeReceiverSource("0xff00000000000000000000000000000000000001")).toEqual(UI_FEE_SOURCE_UI);
+    expect(getUiFeeReceiverSource("0xff00000100000000000000000000000000000001")).toEqual(UI_FEE_SOURCE_API);
   });
 });

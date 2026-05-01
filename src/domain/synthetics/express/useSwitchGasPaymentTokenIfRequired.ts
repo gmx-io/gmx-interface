@@ -5,6 +5,7 @@ import { selectTokensData } from "context/SyntheticsStateContext/selectors/globa
 import { selectSetGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { convertToTokenAmount, convertToUsd, TokenData } from "domain/tokens";
+import { applyMinimalBuffer } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { getByKey } from "lib/objects";
@@ -69,7 +70,7 @@ function useSwitchGasPaymentTokenIfRequired({
             return false;
           }
 
-          return balance > requiredTokenAmount;
+          return balance > applyMinimalBuffer(requiredTokenAmount);
         });
 
         if (anotherGasToken && anotherGasToken !== gasPaymentToken.address) {

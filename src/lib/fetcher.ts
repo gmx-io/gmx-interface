@@ -1,4 +1,4 @@
-export function arrayURLFetcher(urlArr) {
-  const fetcher = (url) => fetch(url).then((res) => res.json());
+export function arrayURLFetcher(urlArr: string[]) {
+  const fetcher = (url: string) => fetch(url).then((res) => res.json());
   return Promise.all(urlArr.map(fetcher));
 }

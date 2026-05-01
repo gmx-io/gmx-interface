@@ -32,7 +32,9 @@ import {
   ARBITRUM_SEPOLIA,
   AVALANCHE,
   AVALANCHE_FUJI,
+  BOTANIX,
   ContractsChainId,
+  MEGAETH,
   SETTLEMENT_CHAIN_IDS,
   SETTLEMENT_CHAIN_IDS_DEV,
   SettlementChainId,
@@ -48,6 +50,7 @@ import { LayerZeroEndpointId } from "domain/multichain/types";
 import { numberToBigint } from "lib/numbers";
 import { ISigner } from "lib/transactions/iSigner";
 import platformTokensData from "sdk/codegen/platformTokens.json";
+import { getContract } from "sdk/configs/contracts";
 import { isSettlementChain, isSourceChain } from "sdk/configs/multichain";
 import { convertTokenAddress, getTokenBySymbol } from "sdk/configs/tokens";
 
@@ -282,7 +285,7 @@ function addMultichainPlatformTokenConfig(
     symbol: string;
     chainAddresses: Partial<
       Record<
-        AnyChainId,
+        SettlementChainId | SourceChainId,
         {
           address: string;
           stargate: string;
@@ -294,11 +297,12 @@ function addMultichainPlatformTokenConfig(
   tokenGroups[symbol] = {};
 
   for (const chainIdString in chainAddresses) {
-    tokenGroups[symbol]![chainIdString] = {
-      address: chainAddresses[chainIdString].address,
+    const chainIdKey = chainIdString as unknown as SettlementChainId | SourceChainId;
+    tokenGroups[symbol]![chainIdKey] = {
+      address: chainAddresses[chainIdKey]!.address,
       decimals: 18,
-      chainId: parseInt(chainIdString) as SettlementChainId | SourceChainId,
-      stargate: chainAddresses[chainIdString].stargate,
+      chainId: chainIdKey,
+      stargate: chainAddresses[chainIdKey]!.stargate,
       symbol: symbol,
       isPlatformToken: true,
     } satisfies MultichainTokenId;
@@ -310,10 +314,7 @@ export const MULTI_CHAIN_DEPOSIT_TRADE_TOKENS = {} as Record<SettlementChainId, 
 export const MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS = {} as Record<SettlementChainId, string[]>;
 export const MULTI_CHAIN_PLATFORM_TOKENS_MAP = {} as Record<SettlementChainId, string[]>;
 
-export const CHAIN_ID_TO_TOKEN_ID_MAP: Record<
-  SettlementChainId | SourceChainId,
-  Record<string, MultichainTokenId>
-> = {} as any;
+export const CHAIN_ID_TO_TOKEN_ID_MAP: Partial<Record<AnyChainId, Record<string, MultichainTokenId>>> = {} as any;
 
 export const MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING: MultichainSourceToSettlementsMap = {} as any;
 
@@ -328,7 +329,7 @@ for (const tokenSymbol in TOKEN_GROUPS) {
     }
 
     CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId] = CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId] || {};
-    CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId][tokenId.address] = tokenId;
+    CHAIN_ID_TO_TOKEN_ID_MAP[firstChainId]![tokenId.address] = tokenId;
 
     if (!isSettlementChain(firstChainId)) {
       continue;
@@ -369,10 +370,10 @@ for (const tokenSymbol in TOKEN_GROUPS) {
       );
 
       MULTI_CHAIN_TOKEN_MAPPING[settlementChainId] = MULTI_CHAIN_TOKEN_MAPPING[settlementChainId] || {};
-      MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString] =
-        MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString] || {};
+      MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainId] =
+        MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainId] || {};
 
-      MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainIdString][sourceChainToken.address] = {
+      MULTI_CHAIN_TOKEN_MAPPING[settlementChainId][sourceChainId]![sourceChainToken.address] = {
         settlementChainTokenAddress: tokenId.address,
         sourceChainTokenAddress: sourceChainToken.address,
         sourceChainTokenDecimals: sourceChainToken.decimals,
@@ -387,7 +388,7 @@ for (const tokenSymbol in TOKEN_GROUPS) {
 }
 
 export function getMultichainTokenId(chainId: number, tokenAddress: string): MultichainTokenId | undefined {
-  return CHAIN_ID_TO_TOKEN_ID_MAP[chainId]?.[tokenAddress];
+  return CHAIN_ID_TO_TOKEN_ID_MAP[chainId as AnyChainId]?.[tokenAddress];
 }
 
 export function getStargatePoolAddress(chainId: number, tokenAddress: string): string | undefined {
@@ -399,7 +400,7 @@ export function getStargatePoolAddress(chainId: number, tokenAddress: string): s
 }
 
 export function getLayerZeroEndpointId(chainId: number): LayerZeroEndpointId | undefined {
-  return CHAIN_ID_TO_ENDPOINT_ID[chainId];
+  return CHAIN_ID_TO_ENDPOINT_ID[chainId as SettlementChainId | SourceChainId];
 }
 
 export function getMappedTokenId(
@@ -418,16 +419,18 @@ export function getMappedTokenId(
   return mappedTokenId;
 }
 
-export const MULTICALLS_MAP: Record<SourceChainId, string> = {
+export const MULTICALLS_MAP: Record<AnyChainId, string> = {
   [SOURCE_ETHEREUM_MAINNET]: "0xca11bde05977b3631167028862be2a173976ca11",
   [SOURCE_OPTIMISM_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
   [SOURCE_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
   [SOURCE_BASE_MAINNET]: "0xca11bde05977b3631167028862be2a173976ca11",
   [SOURCE_BSC_MAINNET]: "0xca11bde05977b3631167028862be2a173976ca11",
-  [ARBITRUM]: "0xca11bde05977b3631167028862be2a173976ca11",
-  [AVALANCHE]: "0xca11bde05977b3631167028862be2a173976ca11",
-  [ARBITRUM_SEPOLIA]: "0xca11bde05977b3631167028862be2a173976ca11",
-  [AVALANCHE_FUJI]: "0xca11bde05977b3631167028862be2a173976ca11",
+  [ARBITRUM]: getContract(ARBITRUM, "Multicall"),
+  [AVALANCHE]: getContract(AVALANCHE, "Multicall"),
+  [ARBITRUM_SEPOLIA]: getContract(ARBITRUM_SEPOLIA, "Multicall"),
+  [AVALANCHE_FUJI]: getContract(AVALANCHE_FUJI, "Multicall"),
+  [BOTANIX]: getContract(BOTANIX, "Multicall"),
+  [MEGAETH]: getContract(MEGAETH, "Multicall"),
 };
 
 /**

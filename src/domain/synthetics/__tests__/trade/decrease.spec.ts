@@ -95,6 +95,10 @@ const marketInfo: MarketInfo = {
   maxFundingFactorPerSecond: BigInt("0x021e19e0c9bab2400000"),
   maxPnlFactorForTradersLong: BigInt("0x0b5c0e8d21d902d61fa0000000"),
   maxPnlFactorForTradersShort: BigInt("0x0b5c0e8d21d902d61fa0000000"),
+  maxPnlFactorForDepositsLong: BigInt("0x0b5c0e8d21d902d61fa0000000"),
+  maxPnlFactorForDepositsShort: BigInt("0x0b5c0e8d21d902d61fa0000000"),
+  maxPnlFactorForWithdrawalsLong: BigInt("0x0b5c0e8d21d902d61fa0000000"),
+  maxPnlFactorForWithdrawalsShort: BigInt("0x0b5c0e8d21d902d61fa0000000"),
   minCollateralFactor: BigInt("0x204fce5e3e25026110000000"),
   minCollateralFactorForLiquidation: BigInt("0x204fce5e3e25026110000000"),
   minCollateralFactorForOpenInterestLong: BigInt("0x0ad78ebc5ac6200000"),
@@ -249,5 +253,48 @@ describe("getDecreasePositionAmounts DecreasePositionSwapType", () => {
       isSetAcceptablePriceImpactEnabled: true,
     });
     expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.SwapCollateralTokenToPnlToken);
+  });
+
+  it("exposes swapProfitUsdIn for SwapPnlTokenToCollateralToken", () => {
+    const amounts = getDecreasePositionAmounts({
+      closeSizeUsd: position.sizeInUsd,
+      collateralToken: usdcToken,
+      position,
+      keepLeverage,
+      isLong,
+      marketInfo,
+      minCollateralUsd,
+      minPositionSizeUsd,
+      uiFeeFactor,
+      acceptablePriceImpactBuffer: 30,
+      userReferralInfo: undefined,
+      isSetAcceptablePriceImpactEnabled: true,
+    });
+
+    expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.SwapPnlTokenToCollateralToken);
+    expect(amounts.swapProfitUsdIn).toBeGreaterThan(0n);
+    expect(amounts.swapProfitFeeUsd).toBeGreaterThan(0n);
+  });
+
+  it("estimates internal swap fee for SwapCollateralTokenToPnlToken", () => {
+    const amounts = getDecreasePositionAmounts({
+      closeSizeUsd: position.sizeInUsd,
+      collateralToken: usdcToken,
+      receiveToken: ethToken,
+      position,
+      keepLeverage,
+      isLong,
+      marketInfo,
+      minCollateralUsd,
+      minPositionSizeUsd,
+      uiFeeFactor,
+      acceptablePriceImpactBuffer: 30,
+      userReferralInfo: undefined,
+      isSetAcceptablePriceImpactEnabled: true,
+    });
+
+    expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.SwapCollateralTokenToPnlToken);
+    expect(amounts.swapProfitUsdIn).toBeGreaterThan(0n);
+    expect(amounts.swapProfitFeeUsd).not.toEqual(0n);
   });
 });

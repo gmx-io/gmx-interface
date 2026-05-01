@@ -8,9 +8,11 @@ import {
   createOrderStopMarketLong,
   deposit1Usd,
   executeOrderIncreaseLong,
+  executeOrderMarketIncreaseLongWithFee,
   executeOrderStopMarketLong,
   executeOrderSwap,
   executeSwap,
+  executeTwapIncreaseWithFee,
   failedSwap,
   frozenOrderIncreaseShort,
   increaseLongETH,
@@ -184,6 +186,9 @@ describe("TradeHistoryRow helpers", () => {
         "isLong": false,
         "market": "Short ARB/USD",
         "marketPrice": "< $ 0.00001",
+        "pnl": "-$ 126.32",
+        "pnlState": "error",
+        "pnlTooltip": "Opening fee paid at this action. Subtracted from your realized PnL.",
         "poolName": "ARB-USDC",
         "price": "< $ 0.00001",
         "priceComment": [
@@ -207,6 +212,49 @@ describe("TradeHistoryRow helpers", () => {
         "timestampUTC": "UTC: 2023-09-18 12:43:18",
       }
     `);
+
+    expect(formatPositionMessage(executeOrderMarketIncreaseLongWithFee, minCollateralUsd)).toMatchInlineSnapshot(`
+      {
+        "acceptablePrice": ">  $ 0.82764",
+        "action": "Market Increase",
+        "executionPrice": "$ 0.83711",
+        "fullMarket": "ARB/USD [ARB-USDC]",
+        "indexName": "ARB/USD",
+        "indexTokenSymbol": "ARB",
+        "isLong": false,
+        "market": "Short ARB/USD",
+        "marketPrice": "< $ 0.00001",
+        "pnl": "-$ 126.32",
+        "pnlState": "error",
+        "pnlTooltip": "Opening fee paid at this action. Subtracted from your realized PnL.",
+        "poolName": "ARB-USDC",
+        "price": "< $ 0.00001",
+        "priceComment": [
+          "Mark price for the order",
+          "",
+          {
+            "key": "Price impact",
+            "value": {
+              "state": "error",
+              "text": "-$ 16.82",
+            },
+          },
+        ],
+        "priceImpact": "-$ 16.82",
+        "size": "+$ 2,070.19",
+        "timestamp": "18 Sep 2023, 16:43",
+        "timestampUTC": "UTC: 2023-09-18 12:43:18",
+      }
+    `);
+
+    expect(formatPositionMessage(executeTwapIncreaseWithFee, minCollateralUsd).pnl).toBe("-$\u200a126.32");
+    expect(formatPositionMessage(executeTwapIncreaseWithFee, minCollateralUsd).pnlState).toBe("error");
+    expect(formatPositionMessage(executeTwapIncreaseWithFee, minCollateralUsd).pnlTooltip).toBe(
+      "Opening fee paid at this action. Subtracted from your realized PnL."
+    );
+
+    expect(formatPositionMessage(createOrderIncreaseLong, minCollateralUsd).pnl).toBeUndefined();
+    expect(formatPositionMessage(createOrderIncreaseLong, minCollateralUsd).pnlTooltip).toBeUndefined();
 
     expect(formatPositionMessage(frozenOrderIncreaseShort, minCollateralUsd)).toMatchInlineSnapshot(`
       {
@@ -283,7 +331,7 @@ describe("TradeHistoryRow helpers", () => {
           "Liquidated as max leverage of 0.0x was exceeded when accounting for fees.",
           "",
           {
-            "key": "Initial collateral",
+            "key": "Initial margin",
             "value": "214.78 USDC ($ 214.78)",
           },
           {
@@ -316,11 +364,11 @@ describe("TradeHistoryRow helpers", () => {
           },
           "",
           {
-            "key": "Min. required collateral",
+            "key": "Min. required margin",
             "value": "< $ 0.01",
           },
           {
-            "key": "Collateral at liquidation",
+            "key": "Margin at liquidation",
             "value": "$ 83.95",
           },
           "",
@@ -340,7 +388,7 @@ describe("TradeHistoryRow helpers", () => {
           },
           "",
           {
-            "key": "Returned collateral",
+            "key": "Returned margin",
             "value": "$ 66.08",
           },
         ],
@@ -362,6 +410,9 @@ describe("TradeHistoryRow helpers", () => {
         "isLong": true,
         "market": "Long ETH/USD",
         "marketPrice": "$ 4.47",
+        "pnl": undefined,
+        "pnlState": undefined,
+        "pnlTooltip": undefined,
         "poolName": "WETH-USDC",
         "price": "$ 4.47",
         "priceComment": [
@@ -417,6 +468,9 @@ describe("TradeHistoryRow helpers", () => {
         "isLong": true,
         "market": "Long BTC/USD",
         "marketPrice": "$ 95,754.20",
+        "pnl": undefined,
+        "pnlState": undefined,
+        "pnlTooltip": undefined,
         "poolName": "BTC-USDC",
         "price": "$ 95,754.20",
         "priceComment": [

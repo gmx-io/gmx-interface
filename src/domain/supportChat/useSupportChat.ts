@@ -4,16 +4,19 @@ import { useAccount } from "wagmi";
 
 import { getChainName } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useIsLargeAccountVolumeStats } from "domain/synthetics/accountStats/useIsLargeAccountData";
-import { usePeriodAccountStats } from "domain/synthetics/accountStats/usePeriodAccountStats";
 import { useChainId } from "lib/chains";
 import { formatAmountForMetrics } from "lib/metrics";
+import { tradingErrorTracker } from "lib/tradingErrorTracker";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 
 import { useAvailableToTradeAssetMultichain } from "components/GmxAccountModal/hooks";
 
-import { INTERCOM_APP_ID, TIME_PERIODS } from "./constants";
+import { INTERCOM_APP_ID } from "./constants";
+import { getTraderTier } from "./getTraderTier";
 import { useShowSupportChat } from "./useShowSupportChat";
 import { useSupportChatUnreadCount } from "./useSupportChatUnreadCount";
 import { useWalletPortfolioUsd } from "./useWalletPortfolioUsd";
@@ -21,22 +24,16 @@ import { getOrCreateSupportChatUserId, themeToIntercomTheme } from "./utils";
 
 export function useSupportChat() {
   const { shouldShowSupportChat } = useShowSupportChat();
-  const { address: account } = useAccount();
+  const { address: account, connector } = useAccount();
   const { isNonEoaAccountOnAnyChain, isLoading: isNonEoaAccountOnAnyChainLoading } = useIsNonEoaAccountOnAnyChain();
   const { data: largeAccountVolumeStatsData, isLoading: isLargeAccountVolumeStatsLoading } =
     useIsLargeAccountVolumeStats({ account });
   const { walletPortfolioUsd, isWalletPortfolioUsdLoading } = useWalletPortfolioUsd();
+  const { expressOrdersEnabled } = useSettings();
+  const { subaccount } = useSubaccountContext();
   const { themeMode } = useTheme();
   const { chainId, srcChainId } = useChainId();
   const initializedAddress = useRef<string | undefined>(undefined);
-
-  const { data: lastMonthAccountStats, loading: isLastMonthAccountStatsLoading } = usePeriodAccountStats(chainId, {
-    account,
-    from: TIME_PERIODS.month[0],
-    to: TIME_PERIODS.month[1],
-    enabled: shouldShowSupportChat,
-    refreshInterval: 0,
-  });
 
   const { gmxAccountUsd, isLoading: isGmxAccountUsdLoading } = useAvailableToTradeAssetMultichain({
     enabled: shouldShowSupportChat,
@@ -47,7 +44,6 @@ export function useSupportChat() {
   const customUserAttributes = useMemo(() => {
     if (
       isWalletPortfolioUsdLoading ||
-      isLastMonthAccountStatsLoading ||
       isNonEoaAccountOnAnyChainLoading ||
       isLargeAccountVolumeStatsLoading ||
       isGmxAccountUsdLoading
@@ -61,25 +57,37 @@ export function useSupportChat() {
         USD_DECIMALS,
         "toSecondOrderInt"
       ),
-      "Last 30d Volume": formatAmountForMetrics(lastMonthAccountStats?.volume, USD_DECIMALS, "toSecondOrderInt"),
+      "Last 30d Volume": formatAmountForMetrics(
+        largeAccountVolumeStatsData?.last30DaysVolume,
+        USD_DECIMALS,
+        "toSecondOrderInt"
+      ),
       "Wallet Portfolio USD": formatAmountForMetrics(walletPortfolioUsd, USD_DECIMALS, "toSecondOrderInt"),
       "GMX Account Portfolio USD": formatAmountForMetrics(gmxAccountUsd, USD_DECIMALS, "toSecondOrderInt"),
+      Tier: getTraderTier({
+        volume30d: largeAccountVolumeStatsData?.last30DaysVolume,
+        volumeLifetime: largeAccountVolumeStatsData?.totalVolume,
+        walletPortfolio: walletPortfolioUsd,
+        gmxAccount: gmxAccountUsd,
+      }),
       "Active Network": getChainName(srcChainId ?? chainId),
       "Wallet Type": isNonEoaAccountOnAnyChain ? "Smart Wallet" : "EOA",
+      "Trading Mode": !expressOrdersEnabled ? "Classic" : subaccount ? "OneClick" : "Express",
     };
   }, [
     isWalletPortfolioUsdLoading,
-    isLastMonthAccountStatsLoading,
     isNonEoaAccountOnAnyChainLoading,
     isLargeAccountVolumeStatsLoading,
     isGmxAccountUsdLoading,
     largeAccountVolumeStatsData?.totalVolume,
-    lastMonthAccountStats?.volume,
+    largeAccountVolumeStatsData?.last30DaysVolume,
     walletPortfolioUsd,
     gmxAccountUsd,
     srcChainId,
     chainId,
     isNonEoaAccountOnAnyChain,
+    expressOrdersEnabled,
+    subaccount,
   ]);
 
   useEffect(() => {
@@ -126,4 +134,12 @@ export function useSupportChat() {
     initializedAddress.current = account;
     update(customUserAttributes);
   }, [shouldShowSupportChat, customUserAttributes, account]);
+
+  useEffect(() => {
+    tradingErrorTracker.setSupportChatContext({
+      walletAddress: account,
+      walletProvider: connector?.name,
+      network: getChainName(srcChainId ?? chainId),
+    });
+  }, [account, connector?.name, srcChainId, chainId]);
 }

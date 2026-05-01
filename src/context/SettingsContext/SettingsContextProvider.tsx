@@ -6,6 +6,7 @@ import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import {
   BREAKDOWN_NET_PRICE_IMPACT_ENABLED_KEY,
+  CLOSE_SIZE_DENOMINATION_KEY,
   DEBUG_ERROR_BOUNDARY_KEY,
   DEBUG_SWAP_MARKETS_CONFIG_KEY,
   DISABLE_ORDER_VALIDATION_KEY,
@@ -31,6 +32,8 @@ import {
 import { useChainId } from "lib/chains";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { tenderlyLsKeys } from "lib/tenderly";
+import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
+import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
 import useWallet from "lib/wallets/useWallet";
 import { getDefaultGasPaymentToken } from "sdk/configs/express";
 import { isValidTokenSafe } from "sdk/configs/tokens";
@@ -90,9 +93,6 @@ export type SettingsContextType = {
   settingsWarningDotVisible: boolean;
   setSettingsWarningDotVisible: (val: boolean) => void;
 
-  feedbackModalVisible: boolean;
-  setFeedbackModalVisible: (val: boolean) => void;
-
   debugSwapMarketsConfig:
     | {
         disabledSwapMarkets?: string[];
@@ -109,6 +109,9 @@ export type SettingsContextType = {
 
   receiveToGmxAccount: boolean | null;
   setReceiveToGmxAccount: (val: boolean) => void;
+
+  showCloseSizeInTokens: boolean;
+  setShowCloseSizeInTokens: (val: boolean) => void;
 };
 
 const SettingsContext = createContext({});
@@ -120,6 +123,9 @@ export function useSettings() {
 export function SettingsContextProvider({ children }: { children: ReactNode }) {
   const { chainId, srcChainId } = useChainId();
   const { account } = useWallet();
+  const { isNonEoaAccountOnAnyChain, isLoading: isNonEoaLoading } = useIsNonEoaAccountOnAnyChain();
+  const isGeminiWallet = useIsGeminiWallet();
+  const isExpressUnsupportedWallet = isNonEoaAccountOnAnyChain || isGeminiWallet;
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [showDebugValues, setShowDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
@@ -145,12 +151,14 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     false
   );
 
-  let [executionFeeBufferBps, setExecutionFeeBufferBps] = useLocalStorageSerializeKey(
-    getExecutionFeeBufferBpsKey(chainId),
-    getExecutionFeeConfig(chainId)?.defaultBufferBps
-  );
+  const defaultExecutionFeeBufferBps = getExecutionFeeConfig(chainId)?.defaultBufferBps;
+  const shouldUseExecutionFeeBuffer = Boolean(defaultExecutionFeeBufferBps);
 
-  const shouldUseExecutionFeeBuffer = Boolean(getExecutionFeeConfig(chainId)?.defaultBufferBps);
+  // useLocalStorage captures the initial value once; set defaults per-chain via effect instead.
+  let [executionFeeBufferBps, setExecutionFeeBufferBps] = useLocalStorageSerializeKey<number | undefined>(
+    getExecutionFeeBufferBpsKey(chainId),
+    undefined
+  );
 
   const [savedShowPnlAfterFees, setSavedShowPnlAfterFees] = useLocalStorageSerializeKey(
     [chainId, SHOW_PNL_AFTER_FEES_KEY],
@@ -246,21 +254,31 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     DEFAULT_TWAP_NUMBER_OF_PARTS
   );
 
-  const [feedbackModalVisible, setFeedbackModalVisible] = useState(false);
+  const [showCloseSizeInTokens, setShowCloseSizeInTokens] = useLocalStorageSerializeKey(
+    CLOSE_SIZE_DENOMINATION_KEY,
+    false
+  );
 
   useEffect(() => {
     if (shouldUseExecutionFeeBuffer && executionFeeBufferBps === undefined) {
-      setExecutionFeeBufferBps(getExecutionFeeConfig(chainId)?.defaultBufferBps ?? 0);
+      setExecutionFeeBufferBps(defaultExecutionFeeBufferBps ?? 0);
     }
-  }, [chainId, executionFeeBufferBps, setExecutionFeeBufferBps, shouldUseExecutionFeeBuffer]);
+  }, [
+    chainId,
+    defaultExecutionFeeBufferBps,
+    executionFeeBufferBps,
+    setExecutionFeeBufferBps,
+    shouldUseExecutionFeeBuffer,
+  ]);
 
   useEffect(() => {
     if (!hasOverriddenDefaultArb30ExecutionFeeBufferBpsKey && chainId === ARBITRUM) {
-      setExecutionFeeBufferBps(getExecutionFeeConfig(chainId)?.defaultBufferBps ?? 0);
+      setExecutionFeeBufferBps(defaultExecutionFeeBufferBps ?? 0);
       setHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey(true);
     }
   }, [
     chainId,
+    defaultExecutionFeeBufferBps,
     hasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
     setExecutionFeeBufferBps,
     setHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
@@ -268,11 +286,20 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   useEffect(
     function fallbackMultichain() {
-      if (srcChainId && !expressOrdersEnabled) {
+      if (srcChainId && !expressOrdersEnabled && !isExpressUnsupportedWallet && !isNonEoaLoading) {
         setExpressOrdersEnabled(true);
       }
     },
-    [expressOrdersEnabled, setExpressOrdersEnabled, srcChainId]
+    [expressOrdersEnabled, setExpressOrdersEnabled, srcChainId, isExpressUnsupportedWallet, isNonEoaLoading]
+  );
+
+  useEffect(
+    function disableExpressForUnsupportedWallets() {
+      if (isExpressUnsupportedWallet && expressOrdersEnabled) {
+        setExpressOrdersEnabled(false);
+      }
+    },
+    [isExpressUnsupportedWallet, expressOrdersEnabled, setExpressOrdersEnabled]
   );
 
   const contextState: SettingsContextType = useMemo(() => {
@@ -342,8 +369,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       receiveToGmxAccount: receiveToGmxAccount ?? null,
       setReceiveToGmxAccount,
 
-      feedbackModalVisible,
-      setFeedbackModalVisible,
+      showCloseSizeInTokens: showCloseSizeInTokens!,
+      setShowCloseSizeInTokens,
     };
   }, [
     showDebugValues,
@@ -399,7 +426,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setSavedTWAPNumberOfParts,
     receiveToGmxAccount,
     setReceiveToGmxAccount,
-    feedbackModalVisible,
+    showCloseSizeInTokens,
+    setShowCloseSizeInTokens,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

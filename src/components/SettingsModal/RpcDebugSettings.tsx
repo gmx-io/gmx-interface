@@ -53,13 +53,13 @@ export function RpcDebugSettings() {
   return (
     <ExpandableRow title={<Trans>RPC debug</Trans>} open={open} onToggle={setOpen}>
       <div className="flex flex-col gap-16 rounded-8 bg-slate-800 p-12 pr-16">
-        {Object.keys(FLAG_LABELS).map((flag) => (
+        {Object.entries(FLAG_LABELS).map(([flag, label]) => (
           <ToggleSwitch
             key={flag}
             isChecked={_debugRpcTracker?.getFlag(flag as RpcDebugFlags) ?? false}
             setIsChecked={(checked) => handleFlagChange(flag as RpcDebugFlags, checked)}
           >
-            <Trans>{FLAG_LABELS[flag]}</Trans>
+            <Trans>{label}</Trans>
           </ToggleSwitch>
         ))}
 

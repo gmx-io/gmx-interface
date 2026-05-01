@@ -116,7 +116,7 @@ function ExistingPositionInfoRows() {
         />
       )}
       <SyntheticsInfoRow
-        label={t`Collateral (${selectedPosition?.collateralToken?.symbol})`}
+        label={t`Margin (${selectedPosition?.collateralToken?.symbol})`}
         value={
           <ValueTransition
             from={formatUsd(selectedPosition?.collateralUsd)}

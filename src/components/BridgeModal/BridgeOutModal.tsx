@@ -35,7 +35,7 @@ import { convertToUsd, getMidPrice, getTokenData } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
 import { formatBalanceAmount, formatUsd, parseValue } from "sdk/utils/numbers";
@@ -268,6 +268,11 @@ export function BridgeOutModal({
       const toastParams = getTxnErrorToast(chainId, error, { defaultMessage: t`Withdrawal failed` });
       helperToast.error(toastParams.errorContent, {
         autoClose: toastParams.autoCloseToast,
+        tradingErrorInfo: {
+          actionName: "Bridge Withdrawal",
+          errorData: error,
+          collateral: marketToken?.address,
+        },
       });
     } finally {
       setIsCreatingTxn(false);
@@ -291,7 +296,7 @@ export function BridgeOutModal({
   } => {
     if (hasOutdatedUi) {
       return {
-        text: t`Page outdated. Refresh`,
+        text: getPageOutdatedError(),
         disabled: true,
       };
     }

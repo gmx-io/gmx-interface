@@ -14,6 +14,11 @@ type Props = {
   decimals: number | undefined;
 };
 
+export function useHasMultichainBreakdown(multichainBalances: MultichainMarketTokenBalances | undefined): boolean {
+  const sorted = useSortedTokenBalances({ multichainBalances });
+  return useMemo(() => sorted.filter((d) => d.balanceUsd > 0n).length > 1, [sorted]);
+}
+
 export function MultichainBalanceTooltip({ multichainBalances, symbol, decimals }: Props) {
   const sortedTokenBalancesDataArray = useSortedTokenBalances({
     multichainBalances,
@@ -24,9 +29,15 @@ export function MultichainBalanceTooltip({ multichainBalances, symbol, decimals 
       return null;
     }
 
+    const visibleRows = sortedTokenBalancesDataArray.filter((d) => d.balanceUsd !== undefined && d.balanceUsd !== 0n);
+
+    if (visibleRows.length <= 1) {
+      return null;
+    }
+
     return (
       <>
-        {sortedTokenBalancesDataArray.map((tokenBalancesData) => {
+        {visibleRows.map((tokenBalancesData) => {
           const label =
             tokenBalancesData.chainId === GMX_ACCOUNT_PSEUDO_CHAIN_ID
               ? t`GMX Account balance`
@@ -34,12 +45,6 @@ export function MultichainBalanceTooltip({ multichainBalances, symbol, decimals 
                   message: `${getChainName(tokenBalancesData.chainId)} balance`,
                   comment: "chainname balance",
                 });
-
-          let balanceUsd: bigint | undefined = tokenBalancesData.balanceUsd;
-
-          if (balanceUsd === undefined || balanceUsd === 0n) {
-            return null;
-          }
 
           const formattedToken = formatBalanceAmount(tokenBalancesData.balance, decimals, symbol);
 
@@ -49,7 +54,7 @@ export function MultichainBalanceTooltip({ multichainBalances, symbol, decimals 
               label={label}
               value={
                 <span>
-                  <span className="numbers">{formatUsd(balanceUsd)}</span>{" "}
+                  <span className="text-typography-primary numbers">{formatUsd(tokenBalancesData.balanceUsd)}</span>{" "}
                   <span className="text-typography-secondary numbers">({formattedToken})</span>
                 </span>
               }

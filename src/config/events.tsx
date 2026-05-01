@@ -3,13 +3,21 @@
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
+import { ARBITRUM, MEGAETH } from "config/chains";
+
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import sparkleIcon from "img/sparkle.svg";
 
 export type EventData = {
   id: string;
   title: ReactNode;
   isActive?: boolean;
+  /**
+   * KLI UI flag ID. When present, overrides `isActive` — visibility is controlled by KLI.
+   */
+  flagId?: string;
   startDate?: string;
   endDate: string;
   bodyText: ReactNode;
@@ -29,8 +37,127 @@ export const homeEventsData: EventData[] = [];
 
 export const AL16Z_DELISTING_EVENT_ID = "al16z-delisting";
 export const OM_MANTRA_MIGRATION_EVENT_ID = "om-mantra-migration";
+export const WELL_DELISTING_EVENT_ID = "well-delisting";
 
 export const appEventsData: EventData[] = [
+  {
+    id: "mega-arbitrum-megaeth-listing",
+    flagId: "showMegaListingArbitrumMegaeth",
+    endDate: "07 May 2026, 12:00",
+    chains: [ARBITRUM, MEGAETH],
+    title: "MEGA market added on Arbitrum and MegaETH",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> MEGA, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
+        <span className="text-slate-100">[WETH-USDC]</span> on Arbitrum, or GLV{" "}
+        <span className="text-slate-100">[USDM-USDM]</span> on MegaETH.
+      </>
+    ),
+  },
+  {
+    id: "megaeth-points-program",
+    flagId: "showMegaethPoints",
+    endDate: "31 Dec 2026, 0:00",
+    chains: [MEGAETH],
+    title: "Earn points on GMX MegaETH",
+    bodyText: (
+      <span className="block">
+        <span className="mb-12 block text-slate-100">Earn points each epoch across four activities:</span>
+        <span className="grid grid-cols-[auto_1fr] items-start gap-x-8 gap-y-12">
+          <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+          <span>
+            <span className="block font-medium">Trading activity</span>
+            <span className="block text-12 text-slate-100">Based on cumulative trading volume</span>
+          </span>
+          <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+          <span>
+            <span className="block font-medium">Referral volume</span>
+            <span className="block text-12 text-slate-100">Trading volume from wallets using your referral code</span>
+          </span>
+          <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+          <span>
+            <span className="block font-medium">Trader PnL</span>
+            <span className="block text-12 text-slate-100">Net positive realized PnL only, to reward skill</span>
+          </span>
+          <img className="mt-3 h-12" src={sparkleIcon} alt="" />
+          <span>
+            <span className="block font-medium">
+              GLV <span className="text-slate-100">[USDM-USDM]</span> liquidity
+            </span>
+            <span className="block text-12 text-slate-100">Time-weighted share of the vault over the epoch</span>
+          </span>
+        </span>
+      </span>
+    ),
+  },
+  {
+    id: WELL_DELISTING_EVENT_ID,
+    isActive: true,
+    endDate: "20 Apr 2026, 0:00",
+    title: "WELL/USD delisting",
+    bodyText: (
+      <>
+        Position openings for WELL/USD are no longer available. Please close your existing positions before April 19.
+        Remaining positions may be auto-closed.
+      </>
+    ),
+  },
+  {
+    id: "gold-silver-fee-reduction",
+    flagId: "showGoldSilverFeeReduction",
+    endDate: "21 Apr 2026, 12:00",
+    title: "GOLD and SILVER trading fees heavily reduced",
+    bodyText: (
+      <>
+        Position fees for GOLD/USD and SILVER/USD have been lowered to 1/2 bps from 4/6 bps during on-hours.{" "}
+        <ExternalLink href="https://docs.gmx.io/docs/trading/overview/#fees">Read more</ExternalLink>.
+      </>
+    ),
+  },
+  {
+    id: "gold-silver-arbitrum-listing",
+    isActive: true,
+    startDate: "10 Apr 2026, 12:00",
+    endDate: "17 Apr 2026, 12:00",
+    title: "GOLD and SILVER commodity markets added on Arbitrum",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> GOLD and SILVER perpetuals 24/7 with up to 100x leverage, or{" "}
+        <Link to="/pools">provide liquidity</Link> via GLV <span className="text-slate-100">[WETH-USDC]</span>. Find
+        them under the RWA category in the market dropdown.
+      </>
+    ),
+  },
+  {
+    id: "energy-markets-arbitrum-listing",
+    flagId: "showEnergyMarketsArbitrumListing",
+    endDate: "30 Apr 2026, 12:00",
+    title: "WTI Crude Oil, Brent Crude Oil and Natural Gas energy commodity markets added on Arbitrum",
+    bodyText: (
+      <>
+        Trade WTIOIL, BRENTOIL (up to 100x leverage) and NATGAS (up to 40x leverage) perpetuals 24/7, or{" "}
+        <Link to="/pools">provide liquidity</Link> via GLV <span className="text-slate-100">[WETH-USDC]</span>.{" "}
+        <ExternalLink href="https://docs.gmx.io/docs/trading/overview/#rwa-and-commodity-markets">
+          Read more
+        </ExternalLink>
+        .
+      </>
+    ),
+  },
+  {
+    id: "megaeth-launch",
+    isActive: true,
+    startDate: "03 Apr 2026, 0:00",
+    endDate: "10 Apr 2026, 16:00",
+    title: "GMX is now live on MegaETH",
+    bodyText: (
+      <>
+        Trade perpetuals, create and share your referral code, and provide liquidity on MegaETH using its native
+        stablecoin: USDm.{" "}
+        <ExternalLink href="https://gmxio.substack.com/p/gmx-is-now-live-on-megaeth-trade">Read more</ExternalLink>.
+      </>
+    ),
+  },
   {
     id: OM_MANTRA_MIGRATION_EVENT_ID,
     isActive: true,

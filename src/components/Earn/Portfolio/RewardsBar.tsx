@@ -15,7 +15,6 @@ import { StakingProcessedData } from "lib/legacy";
 import { formatUsd } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
-import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -130,14 +129,6 @@ function RewardsBar({
           />
         </div>
       </div>
-      {processedData?.isRewardsSuspended && (
-        <AlertInfoCard type="info" hideClose>
-          <Trans>
-            27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to
-            stakers when GMX reaches $90, proportional to staking power (duration × amount staked).
-          </Trans>
-        </AlertInfoCard>
-      )}
     </div>
   );
 }

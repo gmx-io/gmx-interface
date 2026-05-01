@@ -26,6 +26,7 @@ function MobileSlideModal({
   contentPadding = true,
   footerContent,
   className,
+  fitContent = false,
 }: PropsWithChildren<{
   label?: React.ReactNode;
   headerContent?: React.ReactNode;
@@ -36,13 +37,20 @@ function MobileSlideModal({
   contentPadding?: boolean;
   footerContent?: React.ReactNode;
   className?: string;
+  fitContent?: boolean;
 }>) {
   const curtainStyle = useMemo(
-    () => ({
-      top: `calc(100dvh)`,
-      height: `calc(100dvh - ${TOP_OFFSET}px)`,
-    }),
-    []
+    () =>
+      fitContent
+        ? {
+            top: `calc(100dvh)`,
+            maxHeight: `calc(100dvh - ${TOP_OFFSET}px)`,
+          }
+        : {
+            top: `calc(100dvh)`,
+            height: `calc(100dvh - ${TOP_OFFSET}px)`,
+          },
+    [fitContent]
   );
   const curtainRef = useRef<HTMLDivElement | null>(null);
 
@@ -110,7 +118,7 @@ function MobileSlideModal({
 
     const curtainRect = curtainRef.current.getBoundingClientRect();
 
-    currentRelativeY.current = (curtainRect.height + TOP_OFFSET - curtainRect.top) * -1;
+    currentRelativeY.current = curtainRect.top - window.innerHeight;
     prevScreenY.current = e.screenY;
     prevScreenX.current = e.screenX;
   }, []);
@@ -263,8 +271,13 @@ function MobileSlideModal({
           style={curtainStyle}
           onClick={stopPropagation}
         >
-          <div onPointerDown={handlePointerDown} onPointerMove={handlePointerMove} onPointerUp={handlePointerUp}>
-            <div className="mb-8 mt-12 flex h-28 touch-none select-none items-center justify-between gap-4 px-adaptive">
+          <div
+            className="border-b-1/2 border-slate-600 pb-12"
+            onPointerDown={handlePointerDown}
+            onPointerMove={handlePointerMove}
+            onPointerUp={handlePointerUp}
+          >
+            <div className="mt-12 flex h-28 touch-none select-none items-center justify-between gap-4 px-adaptive">
               <div className="text-body-medium grow font-medium text-typography-primary">{label}</div>
 
               <CloseIcon
@@ -315,6 +328,7 @@ export function SlideModal({
   desktopContentClassName,
   desktopClassName,
   disableOverflowHandling = false,
+  fitContent = false,
 }: PropsWithChildren<{
   label?: React.ReactNode;
   headerContent?: React.ReactNode;
@@ -331,6 +345,10 @@ export function SlideModal({
    */
   desktopClassName?: string;
   disableOverflowHandling?: boolean;
+  /**
+   * When true, the mobile curtain sizes to its content instead of being full-screen.
+   */
+  fitContent?: boolean;
 }>) {
   const { isMobile } = useBreakpoints();
 
@@ -346,6 +364,7 @@ export function SlideModal({
         contentPadding={contentPadding}
         footerContent={footerContent}
         className={className}
+        fitContent={fitContent}
       >
         {children}
       </MobileSlideModal>

@@ -10,15 +10,15 @@ const VARIANTS: Variants = {
 const TRANSITION = {
   opacity: {
     duration: 0.25,
-    ease: "easeInOut",
+    ease: "easeInOut" as const,
   },
   y: {
     duration: 0.25,
-    ease: "easeInOut",
+    ease: "easeInOut" as const,
   },
 };
 
-const BLOCKCHAIN_COUNT = 7;
+const BLOCKCHAIN_COUNT = 8;
 
 export function AnimatedTitle() {
   const [currentIndex, setCurrentIndex] = useState<number>(0);

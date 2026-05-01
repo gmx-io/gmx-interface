@@ -70,7 +70,11 @@ export function MultichainTokenSelectorForLp({
 
   const availableToTradeTokenList = useMemo(() => {
     if (searchKeyword.trim()) {
-      return searchBy(tokens, ["symbol", "name", "address"], searchKeyword);
+      return searchBy(
+        tokens,
+        ["symbol", "name", "address", (item) => (item.searchAliases ?? []).join(" ")],
+        searchKeyword
+      );
     }
 
     return tokens;

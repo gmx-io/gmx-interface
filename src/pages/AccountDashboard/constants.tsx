@@ -1,7 +1,15 @@
 import invert from "lodash/invert";
 import mapValues from "lodash/mapValues";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, type ContractsChainId } from "config/chains";
+import {
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  BOTANIX,
+  MEGAETH,
+  type ContractsChainId,
+} from "config/chains";
 
 export const NETWORK_QUERY_PARAM = "network";
 export const VERSION_QUERY_PARAM = "v";
@@ -11,6 +19,7 @@ export const NETWORK_ID_SLUGS_MAP: Record<ContractsChainId, string> = {
   [AVALANCHE]: "avalanche",
   [AVALANCHE_FUJI]: "avalanche_fuji",
   [BOTANIX]: "botanix",
+  [MEGAETH]: "megaeth",
   [ARBITRUM_SEPOLIA]: "arbitrum_sepolia",
 };
 

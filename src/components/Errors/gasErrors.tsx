@@ -1,13 +1,14 @@
 import { Trans } from "@lingui/macro";
 import { useCallback } from "react";
+import { Link } from "react-router-dom";
 import { zeroAddress } from "viem";
 
 import { ContractsChainId, getChainName, getViemChain, SourceChainId } from "config/chains";
+import { JUMPER_BRIDGE_URL } from "config/links";
 import { useGmxAccountDepositViewTokenAddress, useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { useGasPaymentTokensText } from "lib/gas/useGasPaymentTokensText";
 import { useLocalizedList } from "lib/i18n";
-import { getMatchaBuyTokenUrl } from "lib/matcha";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 
@@ -22,13 +23,15 @@ export function InsufficientNativeTokenBalanceMessage({ chainId }: { chainId: Co
   }
 
   const nativeTokenSymbol = nativeToken.symbol;
-  const matchaBuyTokenUrl = getMatchaBuyTokenUrl(chainId, zeroAddress);
 
   return (
     <div>
       <Trans>
         Insufficient {nativeTokenSymbol} for gas on {getChainName(chainId)}.{" "}
-        <ExternalLink href={matchaBuyTokenUrl}>Buy {nativeTokenSymbol}</ExternalLink>
+        <Link className="underline underline-offset-2" to={`/trade/swap?to=${nativeTokenSymbol}`}>
+          Swap
+        </Link>{" "}
+        or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge</ExternalLink> {nativeTokenSymbol}
       </Trans>
     </div>
   );
@@ -44,7 +47,13 @@ export function InsufficientWalletGasTokenBalanceMessage({ chainId }: { chainId:
     <div>
       <Trans>
         Insufficient {localizedList} for gas on {chainName}.{" "}
-        <ExternalLink href={getMatchaBuyTokenUrl(chainId, firstGasPaymentToken)}>Buy {localizedList}</ExternalLink>
+        <Link
+          className="underline underline-offset-2"
+          to={`/trade/swap?to=${getToken(chainId, firstGasPaymentToken).symbol}`}
+        >
+          Swap
+        </Link>{" "}
+        or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge</ExternalLink> {localizedList}
       </Trans>
     </div>
   );
@@ -91,7 +100,13 @@ export function InsufficientGmxAccountGasTokenBalanceMessage({
   );
 }
 
-export function InsufficientSourceChainNativeTokenBalanceMessage({ srcChainId }: { srcChainId: SourceChainId }) {
+export function InsufficientSourceChainNativeTokenBalanceMessage({
+  srcChainId,
+  onBeforeNavigation,
+}: {
+  srcChainId: SourceChainId;
+  onBeforeNavigation?: () => void;
+}) {
   const nativeToken = getViemChain(srcChainId).nativeCurrency;
 
   if (!nativeToken) {
@@ -99,13 +114,19 @@ export function InsufficientSourceChainNativeTokenBalanceMessage({ srcChainId }:
   }
 
   const nativeTokenSymbol = nativeToken.symbol;
-  const matchaBuyTokenUrl = getMatchaBuyTokenUrl(srcChainId, zeroAddress);
 
   return (
     <div>
       <Trans>
         Insufficient {nativeTokenSymbol} for gas on {getChainName(srcChainId)}.{" "}
-        <ExternalLink href={matchaBuyTokenUrl}>Buy {nativeTokenSymbol}</ExternalLink>
+        <Link
+          className="underline underline-offset-2"
+          to={`/trade/swap?to=${nativeTokenSymbol}`}
+          onClick={onBeforeNavigation}
+        >
+          Swap
+        </Link>{" "}
+        or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge</ExternalLink> {nativeTokenSymbol}
       </Trans>
     </div>
   );
@@ -139,7 +160,12 @@ export function ValidationBannerErrorContent({
         return null;
       }
 
-      return <InsufficientSourceChainNativeTokenBalanceMessage srcChainId={srcChainId} />;
+      return (
+        <InsufficientSourceChainNativeTokenBalanceMessage
+          srcChainId={srcChainId}
+          onBeforeNavigation={onBeforeNavigation}
+        />
+      );
     }
     case ValidationBannerErrorName.insufficientGmxAccountWntBalance: {
       return <InsufficientWntBanner chainId={chainId} onBeforeNavigation={onBeforeNavigation} />;

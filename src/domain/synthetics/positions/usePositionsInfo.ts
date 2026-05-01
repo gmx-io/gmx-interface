@@ -3,7 +3,6 @@ import { useMemo } from "react";
 import { getIsFlagEnabled } from "config/ab";
 import { useUserReferralInfoRequest } from "domain/referrals";
 import { getByKey } from "lib/objects";
-import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 import { ApiPositionInfo, getPositionInfo, PositionInfo } from "sdk/utils/positions";
 
@@ -47,7 +46,7 @@ export type PositionsInfoResult = {
 export function usePositionsInfoRequest(
   chainId: ContractsChainId,
   p: {
-    account: string | null | undefined;
+    account: string | undefined;
     marketsInfoData?: MarketsInfoData;
     tokensData?: TokensData;
     positionsData?: PositionsData;
@@ -76,11 +75,10 @@ export function usePositionsInfoRequest(
 
   const shouldFallbackToRpc = !isApiSdkEnabled || apiError || isApiStale;
 
-  const { signer } = useWallet();
   const { positionsConstants, error: positionsConstantsError } = usePositionsConstantsRequest(chainId);
   const { minCollateralUsd } = positionsConstants || {};
   const { uiFeeFactor, error: uiFeeFactorError } = useUiFeeFactorRequest(chainId);
-  const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
+  const userReferralInfo = useUserReferralInfoRequest(chainId, account, skipLocalReferralCode);
 
   const rpcError = positionsError || positionsConstantsError || uiFeeFactorError || userReferralInfo?.error;
 

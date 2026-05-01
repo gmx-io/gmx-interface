@@ -12,7 +12,6 @@ import {
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "utils/tokens";
 import { TokenData } from "utils/tokens/types";
 import { TradeFees } from "utils/trade/types";
-import { bigNumberify } from "utils/tradeHistory";
 
 export function getPriceImpactByAcceptablePrice(p: {
   sizeDeltaUsd: bigint;
@@ -524,7 +523,7 @@ export function applyImpactFactor(diff: bigint, factor: bigint, exponent: bigint
     return 0n;
   }
 
-  let result = bigNumberify(BigInt(Math.round(powered)))!;
+  let result = BigInt(Math.round(powered));
 
   result = (result * factor) / expandDecimals(1, 30);
 

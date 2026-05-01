@@ -8,6 +8,7 @@ import {
   type Log,
 } from "viem";
 
+import { AnyChainId } from "config/chains";
 import { tryGetContract } from "config/contracts";
 import { ENDPOINT_ID_TO_CHAIN_ID } from "config/multichain";
 import {
@@ -15,6 +16,7 @@ import {
   LZ_COMPOSE_ALERT_ABI,
   OFT_RECEIVED_ABI,
 } from "context/WebsocketContext/subscribeToEvents";
+import { LayerZeroEndpointId } from "domain/multichain/types";
 import { createAnySignal, createTimeoutSignal } from "lib/abortSignalHelpers";
 import { sleep } from "lib/sleep";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
@@ -33,7 +35,7 @@ export type LzStatus = {
   sourceTx?: string;
   destination: "pending" | "confirmed" | "failed";
   destinationTx?: string;
-  destinationChainId?: number;
+  destinationChainId?: AnyChainId;
   lz: "pending" | "confirmed" | "failed" | undefined;
   lzTx?: string;
 };
@@ -135,7 +137,7 @@ export async function watchLzTxRpc({
   debugLog("[watchLzTxRpc] got guid", guid);
 
   debugLog("[watchLzTxRpc] getting destination chain id");
-  const destinationChainId = ENDPOINT_ID_TO_CHAIN_ID[oftSentEvent.args.dstEid];
+  const destinationChainId = ENDPOINT_ID_TO_CHAIN_ID[oftSentEvent.args.dstEid as LayerZeroEndpointId];
   debugLog("[watchLzTxRpc] got destination chain id", destinationChainId);
   if (!destinationChainId) {
     debugLog("[watchLzTxRpc] no destination chain id found");
@@ -652,7 +654,9 @@ function getLzStatusFromApiResponse(operation: LzApiOperation): LzStatus {
     }
   }
 
-  const destinationChainId = operation.pathway?.dstEid ? ENDPOINT_ID_TO_CHAIN_ID[operation.pathway.dstEid] : undefined;
+  const destinationChainId = operation.pathway?.dstEid
+    ? ENDPOINT_ID_TO_CHAIN_ID[operation.pathway.dstEid as LayerZeroEndpointId]
+    : undefined;
 
   const lzTx =
     operation.destination && "lzCompose" in operation.destination && operation.destination.lzCompose?.txs?.[0]?.txHash;

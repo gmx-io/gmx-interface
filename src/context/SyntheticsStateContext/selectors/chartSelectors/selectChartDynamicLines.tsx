@@ -7,9 +7,9 @@ import {
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { PositionOrderInfo, isMarketOrderType, isSwapOrderType } from "domain/synthetics/orders";
 import { getTokenData } from "domain/synthetics/tokens";
-import { formatAmount } from "lib/numbers";
+import { calculateDisplayDecimals, formatAmount } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
-import { convertTokenAddress, getPriceDecimals } from "sdk/configs/tokens";
+import { convertTokenAddress } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
 
 import { DynamicChartLine } from "components/TVChartContainer/types";
@@ -44,12 +44,12 @@ export const selectChartDynamicLines = createSelector<DynamicChartLine[]>((q) =>
     })
     .map((order) => {
       const positionOrder = order as PositionOrderInfo;
-      const priceDecimal = getPriceDecimals(chainId, positionOrder.indexToken.symbol);
-
       const tokenVisualMultiplier = q(
         (state) =>
           getTokenData(selectTokensData(state), positionOrder.marketInfo.indexTokenAddress, "native")?.visualMultiplier
       );
+
+      const priceDecimal = calculateDisplayDecimals(positionOrder.triggerPrice, USD_DECIMALS, tokenVisualMultiplier);
 
       return {
         id: positionOrder.key,

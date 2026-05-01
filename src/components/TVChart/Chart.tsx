@@ -1,19 +1,23 @@
 import { Trans } from "@lingui/macro";
-import { Suspense, lazy, useState } from "react";
+import { type ReactNode, Suspense, lazy, useState } from "react";
 
 import { isDevelopment } from "config/env";
 import { DOCS_LINKS } from "config/links";
+import { selectJitLiquidityMap } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxMarketInfo,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getJitLiquidityInfo } from "domain/synthetics/jit/utils";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import { DepthChart } from "components/DepthChart/DepthChart";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import Loader from "components/Loader/Loader";
+import { NetRateChart } from "components/NetRateChart/NetRateChart";
 import Tabs from "components/Tabs/Tabs";
 import type { OpenChartTPSLModalParams } from "components/TVChartContainer/useChartContextMenu";
 
@@ -23,7 +27,7 @@ import "./TVChart.scss";
 
 const LazyMarketGraph = lazy(() => import("components/DebugMarketGraph/DebugMarketGraph"));
 
-const TAB_LABELS = {
+const TAB_LABELS: Record<string, ReactNode> = {
   PRICE: (
     <div className="flex items-center gap-8">
       <Trans>Price</Trans>
@@ -34,6 +38,11 @@ const TAB_LABELS = {
       <Trans>Depth</Trans>
     </div>
   ),
+  NET_RATE: (
+    <div className="flex items-center gap-8">
+      <Trans>Net Rate</Trans>
+    </div>
+  ),
   MARKET_GRAPH: (
     <div className="flex items-center gap-8">
       <Trans>Market graph</Trans>
@@ -41,7 +50,7 @@ const TAB_LABELS = {
   ),
 };
 
-const TABS = isDevelopment() ? ["PRICE", "DEPTH", "MARKET_GRAPH"] : ["PRICE", "DEPTH"];
+const TABS = isDevelopment() ? ["PRICE", "DEPTH", "NET_RATE", "MARKET_GRAPH"] : ["PRICE", "DEPTH", "NET_RATE"];
 
 const TABS_OPTIONS = TABS.map((tab) => ({
   value: tab,
@@ -69,6 +78,12 @@ export function Chart({ onOpenChartTPSLModal }: Props) {
     </ErrorBoundary>
   );
 
+  const netRateTabContent = (
+    <ErrorBoundary id="Chart-NetRate" variant="block">
+      <NetRateChart />
+    </ErrorBoundary>
+  );
+
   const marketGraphTabContent = (
     <Suspense fallback={<div>...</div>}>
       <ErrorBoundary id="Chart-MarketGraph" variant="block">
@@ -78,7 +93,8 @@ export function Chart({ onOpenChartTPSLModal }: Props) {
   );
 
   const activeTabContent =
-    activeTab === "DEPTH" ? depthTabContent : activeTab === "MARKET_GRAPH" ? marketGraphTabContent : priceTabContent;
+    { DEPTH: depthTabContent, NET_RATE: netRateTabContent, MARKET_GRAPH: marketGraphTabContent }[activeTab] ??
+    priceTabContent;
 
   return (
     <div className="ExchangeChart tv Synthetics-chart flex flex-col">
@@ -103,11 +119,18 @@ export function Chart({ onOpenChartTPSLModal }: Props) {
 
 function DepthChartContainer() {
   const marketInfo = useSelector(selectTradeboxMarketInfo);
+  const jitLiquidityMap = useSelector(selectJitLiquidityMap);
   const [isDepthBannerDismissed, setIsDepthBannerDismissed] = useState(false);
 
   if (!marketInfo) {
-    return null;
+    return (
+      <div className="flex h-full w-full items-center justify-center">
+        <Loader />
+      </div>
+    );
   }
+
+  const jitLiquidityInfo = getJitLiquidityInfo(jitLiquidityMap, marketInfo.marketTokenAddress);
 
   return (
     <div className="flex h-full w-full flex-col gap-8 p-8">
@@ -126,7 +149,7 @@ function DepthChartContainer() {
         </ColorfulBanner>
       )}
       <div className="w-full grow">
-        <DepthChart marketInfo={marketInfo} />
+        <DepthChart marketInfo={marketInfo} jitLiquidityInfo={jitLiquidityInfo} />
       </div>
     </div>
   );

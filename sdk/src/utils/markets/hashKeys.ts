@@ -15,7 +15,9 @@ import {
   MAX_LENDABLE_IMPACT_FACTOR_KEY,
   MAX_LENDABLE_IMPACT_USD_KEY,
   MAX_OPEN_INTEREST_KEY,
+  MAX_PNL_FACTOR_FOR_DEPOSITS_KEY,
   MAX_PNL_FACTOR_FOR_TRADERS_KEY,
+  MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY,
   MAX_PNL_FACTOR_KEY,
   MAX_POOL_AMOUNT_KEY,
   MAX_POOL_USD_FOR_DEPOSIT_KEY,
@@ -190,6 +192,22 @@ export function hashMarketConfigKeys(market: MarketConfigInput): MarketConfigKey
     maxPnlFactorForTradersShort: [
       ["bytes32", "bytes32", "address", "bool"],
       [MAX_PNL_FACTOR_KEY, MAX_PNL_FACTOR_FOR_TRADERS_KEY, marketAddress, false],
+    ],
+    maxPnlFactorForDepositsLong: [
+      ["bytes32", "bytes32", "address", "bool"],
+      [MAX_PNL_FACTOR_KEY, MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, marketAddress, true],
+    ],
+    maxPnlFactorForDepositsShort: [
+      ["bytes32", "bytes32", "address", "bool"],
+      [MAX_PNL_FACTOR_KEY, MAX_PNL_FACTOR_FOR_DEPOSITS_KEY, marketAddress, false],
+    ],
+    maxPnlFactorForWithdrawalsLong: [
+      ["bytes32", "bytes32", "address", "bool"],
+      [MAX_PNL_FACTOR_KEY, MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY, marketAddress, true],
+    ],
+    maxPnlFactorForWithdrawalsShort: [
+      ["bytes32", "bytes32", "address", "bool"],
+      [MAX_PNL_FACTOR_KEY, MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY, marketAddress, false],
     ],
     positionFeeFactorForBalanceWasImproved: [
       ["bytes32", "address", "bool"],

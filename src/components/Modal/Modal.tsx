@@ -70,6 +70,8 @@ export default function Modal({
   const modalRef = useRef<HTMLDivElement | null>(null);
 
   useEffect(() => {
+    if (!isVisible) return;
+
     function close(e: KeyboardEvent) {
       if (e.keyCode === 27 && setIsVisible) {
         setIsVisible(false);
@@ -77,7 +79,7 @@ export default function Modal({
     }
     window.addEventListener("keydown", close);
     return () => window.removeEventListener("keydown", close);
-  }, [setIsVisible]);
+  }, [isVisible, setIsVisible]);
 
   useEffect(() => {
     if (typeof onAfterOpen === "function") onAfterOpen();
@@ -136,7 +138,7 @@ export default function Modal({
               onClick={stopPropagation}
               data-qa={qa}
             >
-              <div className="Modal-header-wrapper flex flex-col gap-8 px-adaptive pt-adaptive">
+              <div className="Modal-header-wrapper flex flex-col gap-8 border-b-1/2 border-slate-600 px-adaptive pb-12 pt-adaptive">
                 <div className="Modal-title-bar h-28">
                   <div className="Modal-title-group">
                     {onBack && (

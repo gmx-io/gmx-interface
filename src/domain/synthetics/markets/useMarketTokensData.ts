@@ -19,6 +19,7 @@ import {
 import { getBalanceTypeFromSrcChainId, TokensData, useTokensDataRequest } from "domain/synthetics/tokens";
 import { TokenBalanceType } from "domain/tokens";
 import { ContractCallsConfig, useMulticall } from "lib/multicall";
+import type { MulticallRequestConfig } from "lib/multicall";
 import { expandDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
@@ -76,84 +77,87 @@ export function useMarketTokensDataRequest(
     keepPreviousData: true,
 
     request: () =>
-      marketsAddresses!.reduce((requests, marketAddress) => {
-        const market = getByKey(marketsData, marketAddress)!;
-        const marketPrices = getContractMarketPrices(tokensData!, market);
+      marketsAddresses!.reduce<MulticallRequestConfig>(
+        (requests, marketAddress) => {
+          const market = getByKey(marketsData, marketAddress)!;
+          const marketPrices = getContractMarketPrices(tokensData!, market);
 
-        if (marketPrices) {
-          const marketProps = {
-            marketToken: market.marketTokenAddress,
-            longToken: market.longTokenAddress,
-            shortToken: market.shortTokenAddress,
-            indexToken: market.indexTokenAddress,
-          };
+          if (marketPrices) {
+            const marketProps = {
+              marketToken: market.marketTokenAddress,
+              longToken: market.longTokenAddress,
+              shortToken: market.shortTokenAddress,
+              indexToken: market.indexTokenAddress,
+            };
 
-          const pnlFactorType = isDeposit ? MAX_PNL_FACTOR_FOR_DEPOSITS_KEY : MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY;
+            const pnlFactorType = isDeposit ? MAX_PNL_FACTOR_FOR_DEPOSITS_KEY : MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY;
 
-          requests[`${marketAddress}-prices`] = {
-            contractAddress: getContract(chainId, "SyntheticsReader"),
-            abiId: "SyntheticsReader",
+            requests[`${marketAddress}-prices`] = {
+              contractAddress: getContract(chainId, "SyntheticsReader"),
+              abiId: "SyntheticsReader",
+              calls: {
+                minPrice: {
+                  methodName: "getMarketTokenPrice",
+                  params: [
+                    getContract(chainId, "DataStore"),
+                    marketProps,
+                    marketPrices.indexTokenPrice,
+                    marketPrices.longTokenPrice,
+                    marketPrices.shortTokenPrice,
+                    pnlFactorType,
+                    false,
+                  ],
+                },
+                maxPrice: {
+                  methodName: "getMarketTokenPrice",
+                  params: [
+                    getContract(chainId, "DataStore"),
+                    marketProps,
+                    marketPrices.indexTokenPrice,
+                    marketPrices.longTokenPrice,
+                    marketPrices.shortTokenPrice,
+                    pnlFactorType,
+                    true,
+                  ],
+                },
+              },
+            } satisfies ContractCallsConfig<any>;
+          }
+
+          requests[`${marketAddress}-tokenData`] = {
+            contractAddress: marketAddress,
+            abiId: "Token",
             calls: {
-              minPrice: {
-                methodName: "getMarketTokenPrice",
-                params: [
-                  getContract(chainId, "DataStore"),
-                  marketProps,
-                  marketPrices.indexTokenPrice,
-                  marketPrices.longTokenPrice,
-                  marketPrices.shortTokenPrice,
-                  pnlFactorType,
-                  false,
-                ],
+              totalSupply: {
+                methodName: "totalSupply",
+                params: [],
               },
-              maxPrice: {
-                methodName: "getMarketTokenPrice",
-                params: [
-                  getContract(chainId, "DataStore"),
-                  marketProps,
-                  marketPrices.indexTokenPrice,
-                  marketPrices.longTokenPrice,
-                  marketPrices.shortTokenPrice,
-                  pnlFactorType,
-                  true,
-                ],
-              },
+              balance: account
+                ? {
+                    methodName: "balanceOf",
+                    params: [account],
+                  }
+                : undefined,
             },
           } satisfies ContractCallsConfig<any>;
-        }
 
-        requests[`${marketAddress}-tokenData`] = {
-          contractAddress: marketAddress,
-          abiId: "Token",
-          calls: {
-            totalSupply: {
-              methodName: "totalSupply",
-              params: [],
-            },
-            balance: account
-              ? {
-                  methodName: "balanceOf",
-                  params: [account],
-                }
-              : undefined,
-          },
-        } satisfies ContractCallsConfig<any>;
-
-        if (account) {
-          requests[`${marketAddress}-gmxAccountData`] = {
-            contractAddress: getContract(chainId, "DataStore"),
-            abiId: "DataStore",
-            calls: {
-              balance: {
-                methodName: "getUint",
-                params: [multichainBalanceKey(account, marketAddress)],
+          if (account) {
+            requests[`${marketAddress}-gmxAccountData`] = {
+              contractAddress: getContract(chainId, "DataStore"),
+              abiId: "DataStore",
+              calls: {
+                balance: {
+                  methodName: "getUint",
+                  params: [multichainBalanceKey(account, marketAddress)],
+                },
               },
-            },
-          } satisfies ContractCallsConfig<any>;
-        }
+            } satisfies ContractCallsConfig<any>;
+          }
 
-        return requests;
-      }, {}),
+          return requests;
+        },
+        {}
+      ),
     parseResponse: (res) =>
       marketsAddresses!.reduce((marketTokensMap: TokensData, marketAddress: string) => {
         const pricesErrors = res.errors[`${marketAddress}-prices`];

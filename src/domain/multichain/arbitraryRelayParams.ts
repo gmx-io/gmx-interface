@@ -40,7 +40,7 @@ import {
   getOrderRelayRouterAddress,
 } from "domain/synthetics/express/expressOrderUtils";
 import { getSubaccountValidations } from "domain/synthetics/subaccount";
-import type { Subaccount, SubaccountValidations } from "domain/synthetics/subaccount/types";
+import type { Subaccount, SubaccountValidations } from "domain/synthetics/subaccount";
 import { convertToTokenAmount } from "domain/tokens";
 import { CustomError, isCustomError } from "lib/errors";
 import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
@@ -52,6 +52,7 @@ import { AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { bigMath } from "sdk/utils/bigmath";
 import { getEmptyExternalCallsPayload, type ExternalCallsPayload } from "sdk/utils/orderTransactions";
+import { createViemRpc, type IRpc, type StateOverrideEntry } from "sdk/utils/rpc";
 
 import { fallbackCustomError } from "./fallbackCustomError";
 
@@ -60,11 +61,13 @@ export function getRawBaseRelayerParams({
   account,
   globalExpressParams,
   executionFeeAmount,
+  transactionExternalCalls,
 }: {
   chainId: ContractsChainId;
   account: string;
   globalExpressParams: GlobalExpressParams;
   executionFeeAmount?: bigint;
+  transactionExternalCalls?: ExternalCallsPayload;
 }): Partial<{
   rawBaseRelayParamsPayload: RawRelayParamsPayload;
   baseRelayFeeSwapParams: {
@@ -76,6 +79,7 @@ export function getRawBaseRelayerParams({
 }> {
   const { gasPaymentToken, relayerFeeToken, tokensData, marketsInfoData, gasPrice, findFeeSwapPath } =
     globalExpressParams;
+  const effectiveTransactionExternalCalls = transactionExternalCalls ?? getEmptyExternalCallsPayload();
 
   if (!gasPaymentToken || !relayerFeeToken || !account || !tokensData || !marketsInfoData || gasPrice === undefined) {
     return EMPTY_OBJECT;
@@ -98,7 +102,7 @@ export function getRawBaseRelayerParams({
     gasPaymentTokenAsCollateralAmount: 0n,
     findFeeSwapPath: findFeeSwapPath,
 
-    transactionExternalCalls: getEmptyExternalCallsPayload(),
+    transactionExternalCalls: effectiveTransactionExternalCalls,
     feeExternalSwapQuote: undefined,
   });
 
@@ -111,7 +115,7 @@ export function getRawBaseRelayerParams({
     gasPaymentTokenAddress: baseRelayFeeSwapParams.gasPaymentParams.gasPaymentTokenAddress,
     relayerFeeTokenAddress: baseRelayFeeSwapParams.gasPaymentParams.relayerFeeTokenAddress,
     feeParams: baseRelayFeeSwapParams.feeParams,
-    externalCalls: getEmptyExternalCallsPayload(),
+    externalCalls: baseRelayFeeSwapParams.externalCalls,
     tokenPermits: EMPTY_ARRAY,
   });
 
@@ -377,6 +381,7 @@ export function useArbitraryRelayParamsAndPayload({
   enabled = true,
   executionFeeAmount,
   gasPaymentTokenAsCollateralAmount,
+  transactionExternalCalls,
   withLoading = true,
   requireValidations = true,
   overrideWnt,
@@ -386,6 +391,7 @@ export function useArbitraryRelayParamsAndPayload({
   enabled?: boolean;
   executionFeeAmount?: bigint;
   gasPaymentTokenAsCollateralAmount?: bigint;
+  transactionExternalCalls?: ExternalCallsPayload;
   withLoading?: boolean;
   requireValidations?: boolean;
   overrideWnt?: boolean;
@@ -411,6 +417,7 @@ export function useArbitraryRelayParamsAndPayload({
         account: p.account,
         globalExpressParams: p.globalExpressParams,
         executionFeeAmount: p.executionFeeAmount,
+        transactionExternalCalls: p.transactionExternalCalls,
       });
 
       if (baseRelayFeeSwapParams === undefined || rawBaseRelayParamsPayload === undefined) {
@@ -431,18 +438,40 @@ export function useArbitraryRelayParamsAndPayload({
         throw error;
       });
 
+      const viemRpc = createViemRpc(client);
+      const rpc: IRpc = {
+        ...viemRpc,
+        estimateGas: (params) => fallbackCustomError(() => viemRpc.estimateGas(params), "gasLimit"),
+      };
+
+      const stateOverride: StateOverrideEntry[] = [
+        {
+          address: getContract(chainId, "DataStore"),
+          stateDiff: [
+            {
+              slot: calculateMappingSlot(
+                multichainBalanceKey(p.account, p.globalExpressParams.gasPaymentToken.address),
+                DATASTORE_SLOT_INDEXES.uintValues
+              ),
+              value: toHex(SIMULATED_MULTICHAIN_BALANCE, { size: 32 }),
+            },
+          ],
+        },
+      ];
+
       const expressParams = await estimateExpressParams({
         chainId,
         isGmxAccount: p.isGmxAccount,
         estimationMethod: "estimateGas",
         globalExpressParams: p.globalExpressParams,
-        client,
+        rpc,
+        stateOverride,
         requireValidations: p.requireValidations,
         subaccount: p.subaccount,
         transactionParams: {
           account: p.account,
           isValid: true,
-          transactionExternalCalls: getEmptyExternalCallsPayload(),
+          transactionExternalCalls: p.transactionExternalCalls ?? getEmptyExternalCallsPayload(),
           executionFeeAmount: p.executionFeeAmount ?? 0n,
           gasPaymentTokenAsCollateralAmount: p.gasPaymentTokenAsCollateralAmount ?? 0n,
           subaccountActions: 0,
@@ -476,6 +505,7 @@ export function useArbitraryRelayParamsAndPayload({
               subaccount,
               executionFeeAmount,
               gasPaymentTokenAsCollateralAmount,
+              transactionExternalCalls,
               requireValidations,
               overrideWnt,
             }

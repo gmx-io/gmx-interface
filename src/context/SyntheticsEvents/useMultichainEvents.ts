@@ -24,6 +24,7 @@ import {
   subscribeToOftSentEvents,
 } from "context/WebsocketContext/subscribeToEvents";
 import { isMultichainFundingItemLoading } from "domain/multichain/isMultichainFundingItemLoading";
+import { LayerZeroEndpointId } from "domain/multichain/types";
 import { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { isStepGreater } from "domain/multichain/useGmxAccountFundingHistory";
 import { useChainId } from "lib/chains";
@@ -189,7 +190,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         continue;
       }
 
-      const settlementChainId = ENDPOINT_ID_TO_CHAIN_ID[info.dstEid];
+      const settlementChainId = ENDPOINT_ID_TO_CHAIN_ID[info.dstEid as LayerZeroEndpointId];
       if (settlementChainId !== chainId) {
         continue;
       }
@@ -479,7 +480,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         continue;
       }
 
-      const sourceChainId = ENDPOINT_ID_TO_CHAIN_ID[info.dstEid];
+      const sourceChainId = ENDPOINT_ID_TO_CHAIN_ID[info.dstEid as LayerZeroEndpointId];
 
       debugLog("withdrawal got OFTSent event for", sourceChainId, info.txnHash);
 
@@ -516,7 +517,7 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
         operation: "withdrawal",
         step: "sent",
         token: tokenAddress,
-        sourceChainId: sourceChainId,
+        sourceChainId: sourceChainId!,
         settlementChainId: chainId,
         sentTimestamp: submittedWithdrawal.sentTimestamp,
 
@@ -719,11 +720,8 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
 
       const newUnsubscribers: Partial<Record<SourceChainId, () => void>> = {};
 
-      for (const chainIdString of Object.keys(sourceChainApprovalActiveListeners)) {
-        if (
-          !sourceChainApprovalActiveListeners[chainIdString] ||
-          sourceChainApprovalActiveListeners[chainIdString].length === 0
-        ) {
+      for (const [chainIdString, listeners] of Object.entries(sourceChainApprovalActiveListeners)) {
+        if (!listeners || listeners.length === 0) {
           continue;
         }
 
@@ -768,14 +766,14 @@ export function useMultichainEvents({ hasPageLostFocus }: { hasPageLostFocus: bo
           account: currentAccount,
           tokenAddresses,
           spenders: stargates,
-          onApprove: (tokenAddress, spender, value) => {
+          onApprove: (tokenAddress, spender, value, blockNumber) => {
             debugLog("got approval event for", someSourceChainId, tokenAddress, spender, value);
 
             setSourceChainApprovalStatuses((old) => ({
               ...old,
               [tokenAddress]: {
                 ...old[tokenAddress],
-                [spender]: { value, createdAt: Date.now() },
+                [spender]: { value, blockNumber },
               },
             }));
           },

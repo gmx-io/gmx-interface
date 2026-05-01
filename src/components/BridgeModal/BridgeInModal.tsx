@@ -25,7 +25,7 @@ import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { EMPTY_OBJECT } from "lib/objects";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useThrottledAsync } from "lib/useThrottledAsync";
 import { getMarketIndexName } from "sdk/utils/markets";
 import { adjustForDecimals, formatBalanceAmount, formatUsd, parseValue } from "sdk/utils/numbers";
@@ -221,6 +221,11 @@ export function BridgeInModal({
       const toastParams = getTxnErrorToast(chainId, error, { defaultMessage: t`Deposit failed` });
       helperToast.error(toastParams.errorContent, {
         autoClose: toastParams.autoCloseToast,
+        tradingErrorInfo: {
+          actionName: "Bridge Deposit",
+          errorData: error,
+          collateral: marketToken?.address,
+        },
       });
     } finally {
       setIsCreatingTxn(false);
@@ -230,7 +235,7 @@ export function BridgeInModal({
   const buttonState = useMemo((): { text: ReactNode; disabled?: boolean } => {
     if (hasOutdatedUi) {
       return {
-        text: t`Page outdated. Refresh`,
+        text: getPageOutdatedError(),
         disabled: true,
       };
     }

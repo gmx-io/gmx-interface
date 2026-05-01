@@ -9,20 +9,20 @@ export function useLocalStorageByChainId<T>(
   key: string,
   defaultValue: T
 ): [T | undefined, React.Dispatch<React.SetStateAction<T>>] {
-  const [internalValue, setInternalValue] = useLocalStorage(key, {});
+  const [internalValue, setInternalValue] = useLocalStorage<Record<number, T>>(key, {});
   const internalValueRef = useRef(internalValue);
 
   const setValue: React.Dispatch<React.SetStateAction<T>> = useCallback(
     (value) => {
       const internalValue = internalValueRef.current;
-      if (typeof value === "function") {
-        // @ts-ignore
-        value = value(internalValue?.[chainId] || defaultValue);
-      }
+      const resolvedValue: T =
+        typeof value === "function"
+          ? (value as (prev: T) => T)(internalValue?.[chainId] || defaultValue)
+          : value;
 
       const newInternalValue = {
         ...internalValue,
-        [chainId]: value,
+        [chainId]: resolvedValue,
       };
 
       internalValueRef.current = newInternalValue;

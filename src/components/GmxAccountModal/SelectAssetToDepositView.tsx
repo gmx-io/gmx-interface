@@ -3,7 +3,7 @@ import cx from "classnames";
 import { useMemo, useState } from "react";
 import { useAccount } from "wagmi";
 
-import { AnyChainId, getChainName, SourceChainId } from "config/chains";
+import { AnyChainId, getChainName, SettlementChainId, SourceChainId } from "config/chains";
 import { getChainIcon } from "config/icons";
 import { MULTI_CHAIN_TOKEN_MAPPING } from "config/multichain";
 import {
@@ -189,7 +189,7 @@ export const SelectAssetToDepositView = () => {
   const networksFilter = useMemo(() => {
     const wildCard = { id: "all" as const, name: t`All networks` };
 
-    const chainFilters = Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId] ?? EMPTY_OBJECT)
+    const chainFilters = Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId as SettlementChainId] ?? EMPTY_OBJECT)
       .map((sourceChainId) => ({
         id: parseInt(sourceChainId),
         name: getChainName(parseInt(sourceChainId)),

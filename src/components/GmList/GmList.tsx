@@ -23,7 +23,7 @@ import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableConten
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import Loader from "components/Loader/Loader";
 import Pagination from "components/Pagination/Pagination";
-import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagination";
+import usePagination, { DEFAULT_PAGE_SIZE } from "components/Pagination/usePagination";
 import SearchInput from "components/SearchInput/SearchInput";
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";

@@ -23,7 +23,7 @@ import PageTitle from "components/PageTitle/PageTitle";
 import CheckIcon from "img/ic_check.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
 
-function ValidationRow({ isValid, children }) {
+function ValidationRow({ isValid, children }: { isValid: boolean; children: React.ReactNode }) {
   return (
     <div className="flex items-center gap-4">
       {isValid ? <CheckIcon className="size-16 text-green-500" /> : <CloseIcon className="size-16 text-red-500" />}
@@ -398,6 +398,15 @@ export default function BeginAccountTransfer() {
           <ValidationRow isValid={!hasStakedGlp}>
             <Trans>Receiver has not staked GLP tokens before</Trans>
           </ValidationRow>
+
+          <Checkbox isChecked={isStakingPowerResetAcknowledged} setIsChecked={setIsStakingPowerResetAcknowledged}>
+            <span className="text-body-small text-yellow-300">
+              <Trans>
+                I understand that accumulated staking power will reset on the receiving wallet. The receiving address
+                will start accruing staking power from zero.
+              </Trans>
+            </span>
+          </Checkbox>
         </div>
 
         <Checkbox isChecked={isStakingPowerResetAcknowledged} setIsChecked={setIsStakingPowerResetAcknowledged}>

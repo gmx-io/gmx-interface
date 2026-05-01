@@ -409,6 +409,8 @@ describe("Decrease Order Payloads", () => {
           twapId: "8000",
           numberOfParts: twapParams.numberOfParts,
           isExpress: false,
+          isJit: false,
+          source: "00",
         });
 
         return {
@@ -511,6 +513,8 @@ describe("Decrease Order Payloads", () => {
         const decoded = decodeTwapUiFeeReceiver(uiFeeReceiver);
         expect(decoded).toEqual({
           isExpress: false,
+          isJit: false,
+          source: "00",
           twapId: "8000",
           numberOfParts: twapParams.numberOfParts,
         });

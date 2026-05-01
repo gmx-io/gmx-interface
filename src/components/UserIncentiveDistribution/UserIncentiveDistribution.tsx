@@ -20,6 +20,7 @@ import { GM_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { shortenAddressOrEns } from "lib/wallets";
+import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import useWallet from "lib/wallets/useWallet";
 import { Distribution } from "sdk/codegen/subsquid";
 import { getTokens } from "sdk/configs/tokens";
@@ -29,7 +30,7 @@ import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
-import usePagination from "components/Referrals/usePagination";
+import usePagination from "components/Pagination/usePagination";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTdActionable, TableTh, TableTheadTr, TableTrActionable } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
@@ -217,7 +218,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   const explorerURL = getExplorerUrl(chainId);
   const { _ } = useLingui();
   const typeStr = getTypeStr(_, typeId);
-  const tooltipData = INCENTIVE_TOOLTIP_MAP[String(typeId)];
+  const tooltipData = INCENTIVE_TOOLTIP_MAP[Number(typeId)];
 
   const renderTotalTooltipContent = useCallback(() => {
     return tokenIncentiveDetails.map((tokenInfo) => {
@@ -243,7 +244,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
     () =>
       tooltipData ? (
         <Link className="link-underline" to={tooltipData.link}>
-          {_(tooltipData.text.id)}
+          {_(tooltipData.text)}
         </Link>
       ) : null,
     [_, tooltipData]
@@ -271,7 +272,7 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
       {shortenAddressOrEns(transactionHash, 27)}
     </ExternalLink>
   );
-  const txnStatus = <TxnStatus hash={transactionHash} />;
+  const txnStatus = <TxnStatus chainId={chainId} hash={transactionHash} />;
 
   return (
     <>
@@ -384,15 +385,16 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   );
 }
 
-const TxnStatus = ({ hash }: { hash: string }) => {
-  const { signer } = useWallet();
+const TxnStatus = ({ chainId, hash }: { chainId: number; hash: string }) => {
   const [status, setStatus] = useState<"success" | "failed" | null>(null);
 
   useEffect(() => {
-    signer?.provider?.getTransactionReceipt(hash).then((receipt) => {
-      setStatus(receipt?.status === 0 ? "failed" : "success");
-    });
-  }, [hash, signer?.provider]);
+    getPublicClientWithRpc(chainId)
+      .getTransactionReceipt({ hash })
+      .then((receipt) => {
+        setStatus(receipt?.status === "success" ? "success" : "failed");
+      });
+  }, [chainId, hash]);
 
   return (
     <div className="flex h-28 items-center font-medium text-typography-primary">
