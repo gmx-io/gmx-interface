@@ -28,7 +28,8 @@ export function useStakingPowerData(
     { refreshInterval: STAKING_POWER_REFRESH_INTERVAL }
   );
 
-  const isLoading = !stakingPowerData && !rest.error;
+  const isDisabled = !enabled || !account || !sdk;
+  const isLoading = !isDisabled && !stakingPowerData && !rest.error;
 
   return {
     stakingPowerData,
