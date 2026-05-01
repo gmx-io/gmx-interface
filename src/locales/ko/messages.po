@@ -230,6 +230,10 @@ msgstr "(리베이트 적용)"
 msgid "Accumulated rewards"
 msgstr ""
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Show all points page banners"
+msgstr ""
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Show rPnL amounts"
 msgstr "실현 PnL 금액 표시"
@@ -932,6 +936,7 @@ msgid "in liquidity"
 msgstr "유동성 내"
 
 #: src/pages/PointsPage/components/PointsBanner.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Your volume this epoch is below the threshold for your current tier. Trade more to keep your rewards multiplier."
 msgstr ""
 
@@ -1375,6 +1380,10 @@ msgstr "자동 취소 TP/SL 주문은 최대 {allowedAutoCancelOrdersNumber}건�
 msgid "GMX proposals voting page"
 msgstr "GMX 제안 투표 페이지"
 
+#: src/pages/PointsPage/components/PointsBanner.tsx
+msgid "Points are set to expire this epoch. Use them before rollover and make the most of your activity."
+msgstr ""
+
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity only available on {chainNames}. Switch networks to continue."
 msgstr "유동성은 {chainNames}에서만 이용 가능합니다. 계속하려면 네트워크를 전환하십시오."
@@ -1743,6 +1752,7 @@ msgid "Spent points"
 msgstr ""
 
 #: src/pages/PointsPage/components/PointsBanner.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Stake rewards"
 msgstr ""
 
@@ -1918,6 +1928,7 @@ msgstr "패시브 운용"
 msgid "Telegram groups"
 msgstr "Telegram 그룹"
 
+#: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Restake your rewards and earn more"
 msgstr ""
@@ -3965,6 +3976,9 @@ msgstr "네트워크 기본 토큰 {0}에서는 Express Trading을 사용할 수
 #: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trade"
 msgstr "트레이드"
@@ -4024,6 +4038,7 @@ msgstr "TWAP 부분 업데이트"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/ClaimRewardsButton.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/SidebarRewards.tsx
 #: src/pages/PointsPage/components/SidebarRewards.tsx
@@ -4884,6 +4899,7 @@ msgstr "{secondLabel}"
 msgid "High swap profit fee"
 msgstr "높은 스왑 이익 수수료"
 
+#: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Your tier will drop next epoch"
 msgstr ""
@@ -6775,9 +6791,6 @@ msgstr "TP 가격"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
-#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Loading..."
 msgstr "로딩 중..."
 
@@ -7896,6 +7909,7 @@ msgstr "Dolomite"
 msgid "Order request sent"
 msgstr "주문 요청 전송됨"
 
+#: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Trade eligible pairs to unlock multipliers and increase your reward potential this epoch."
 msgstr ""
@@ -9325,6 +9339,7 @@ msgid "Distribution rate per day, USD"
 msgstr "일일 분배율, USD"
 
 #: src/pages/PointsPage/components/PointsBanner.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "So Close to the Next Tier"
 msgstr ""
 
@@ -10613,6 +10628,7 @@ msgid "Sign transactions off-chain. Premium RPCs ensure reliability during netwo
 msgstr "오프체인으로 거래에 서명합니다. 프리미엄 RPC가 네트워크 혼잡 시 안정성을 보장합니다.<0/><1/>Gas 결제는 {gasPaymentTokensText}로 이루어집니다."
 
 #: src/pages/PointsPage/components/PointsBanner.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Don't Let Rewards Expire"
 msgstr ""
 
@@ -10686,6 +10702,7 @@ msgid "MegaETH"
 msgstr ""
 
 #: src/pages/PointsPage/components/PointsBanner.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Continue restaking your rewards to boost your earnings and unlock additional yield on your GMX tokens."
 msgstr ""
 
@@ -10749,6 +10766,7 @@ msgstr "선택한 기간의 벤치마크 대비 성과"
 msgid "Referral code updated"
 msgstr "추천 코드가 업데이트되었습니다"
 
+#: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Activate Pair Boosts"
 msgstr ""
@@ -11342,6 +11360,7 @@ msgstr "등급 저장"
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {주문} other {# 주문}}"
 
+#: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "A small increase in volume will unlock a higher status and stronger rewards."
 msgstr ""

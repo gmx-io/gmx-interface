@@ -439,7 +439,7 @@ const FundingHistorySection = () => {
   };
 
   return (
-    <div className="flex grow flex-col gap-12 overflow-y-hidden">
+    <div className="flex grow flex-col gap-8 overflow-y-hidden">
       <div className="flex items-center justify-between px-adaptive">
         <div className="text-body-large font-medium">
           <Trans>Funding activity</Trans>
@@ -587,8 +587,8 @@ const PointsSection = () => {
 
 export const MainView = ({ account }: { account: string }) => {
   return (
-    <div className="text-body-medium flex grow flex-col gap-[--padding-adaptive] overflow-y-hidden">
-      <div className="flex flex-col gap-12 px-adaptive pb-12 pt-8">
+    <div className="text-body-medium flex grow flex-col gap-24 overflow-y-hidden">
+      <div className="flex flex-col gap-12 px-adaptive pt-8">
         <Toolbar account={account} />
         <BalanceSection />
       </div>

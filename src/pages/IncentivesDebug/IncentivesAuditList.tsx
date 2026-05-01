@@ -13,6 +13,7 @@ import { formatAmount, formatUsd } from "lib/numbers";
 import AddressView from "components/AddressView/AddressView";
 import Loader from "components/Loader/Loader";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
+import { TableRowsSkeleton } from "components/Skeleton/TableRowsSkeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
@@ -20,6 +21,7 @@ import { TableScrollFadeContainer } from "components/TableScrollFade/TableScroll
 import { SummaryCard } from "./SummaryCard";
 
 const PAGE_SIZE = 20;
+const AUDIT_LIST_SKELETON_COLUMNS = [140, 90, 90, 90, 90, 70, 70, 80, 80, 120, 90, 90];
 
 type AuditSortField =
   | "points"
@@ -70,6 +72,8 @@ export function IncentivesAuditList({
   });
 
   const pageCount = totalCount === undefined ? page : Math.max(1, Math.ceil(totalCount / PAGE_SIZE));
+  const isInitialLoading = loading && !data;
+  const shouldShowTable = isInitialLoading || (data && data.length > 0);
 
   const handleEpochSelect = useCallback(
     (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -143,13 +147,7 @@ export function IncentivesAuditList({
           </div>
         )}
 
-        {loading && !data && (
-          <div className="flex items-center justify-center p-40">
-            <Loader />
-          </div>
-        )}
-
-        {data && data.length > 0 && (
+        {shouldShowTable && (
           <>
             <TableScrollFadeContainer>
               <Table className="min-w-[1200px] [&_td]:whitespace-nowrap [&_th]:whitespace-nowrap">
@@ -210,30 +208,42 @@ export function IncentivesAuditList({
                   </TableTheadTr>
                 </thead>
                 <tbody>
-                  {data.map((entry) => (
-                    <TableTr key={entry.id} hoverable onClick={() => onAccountClick(entry.account)}>
-                      <TableTd padding="compact">
-                        <AddressView size={20} address={entry.account} breakpoint="XL" noLink />
-                      </TableTd>
-                      <TableTd padding="compact">{formatAmount(entry.points, 18, 4, true)}</TableTd>
-                      <TableTd padding="compact">{formatAmount(entry.rewards, 18, 4, true)}</TableTd>
-                      <TableTd padding="compact">{formatUsd(entry.fees, { displayDecimals: 2 })}</TableTd>
-                      <TableTd padding="compact">{formatUsd(entry.volume, { displayDecimals: 0 })}</TableTd>
-                      <TableTd padding="compact">{formatMultiplier(entry.avgMultiplier)}</TableTd>
-                      <TableTd padding="compact">{formatMultiplier(entry.maxMultiplier)}</TableTd>
-                      <TableTd padding="compact">
-                        {entry.volumeTier ? getVolumeTierBadge(entry.volumeTier) : "-"}
-                      </TableTd>
-                      <TableTd padding="compact">
-                        {entry.stakingTier ? getStakingTierBadge(entry.stakingTier) : "-"}
-                      </TableTd>
-                      <TableTd padding="compact">
-                        {entry.boostIds.length > 0 ? entry.boostIds.map(getBoostLabel).join(", ") : "-"}
-                      </TableTd>
-                      <TableTd padding="compact">{entry.effectivePointsRatio.toFixed(4)}</TableTd>
-                      <TableTd padding="compact">{entry.effectiveRewardsRatio.toFixed(4)}</TableTd>
-                    </TableTr>
-                  ))}
+                  {isInitialLoading ? (
+                    <TableRowsSkeleton count={PAGE_SIZE} columns={AUDIT_LIST_SKELETON_COLUMNS} padding="compact" />
+                  ) : (
+                    data?.map((entry) => (
+                      <TableTr key={entry.id} hoverable onClick={() => onAccountClick(entry.account)}>
+                        <TableTd padding="compact">
+                          <AddressView size={20} address={entry.account} breakpoint="XL" noLink />
+                        </TableTd>
+                        <TableTd padding="compact">{formatAmount(entry.points, 18, 4, true)}</TableTd>
+                        <TableTd padding="compact">{formatAmount(entry.rewards, 18, 4, true)}</TableTd>
+                        <TableTd padding="compact">{formatUsd(entry.fees, { displayDecimals: 2 })}</TableTd>
+                        <TableTd padding="compact">{formatUsd(entry.volume, { displayDecimals: 0 })}</TableTd>
+                        <TableTd padding="compact">{formatMultiplier(entry.avgMultiplier)}</TableTd>
+                        <TableTd padding="compact">{formatMultiplier(entry.maxMultiplier)}</TableTd>
+                        <TableTd padding="compact">
+                          {entry.volumeTier ? getVolumeTierBadge(entry.volumeTier) : "-"}
+                        </TableTd>
+                        <TableTd padding="compact">
+                          {entry.stakingTier ? getStakingTierBadge(entry.stakingTier) : "-"}
+                        </TableTd>
+                        <TableTd padding="compact">
+                          {entry.boostIds.length > 0 ? entry.boostIds.map(getBoostLabel).join(", ") : "-"}
+                        </TableTd>
+                        <TableTd padding="compact">{entry.effectivePointsRatio.toFixed(4)}</TableTd>
+                        <TableTd padding="compact">{entry.effectiveRewardsRatio.toFixed(4)}</TableTd>
+                      </TableTr>
+                    ))
+                  )}
+                  {data && data.length < PAGE_SIZE && (
+                    <TableRowsSkeleton
+                      invisible
+                      count={PAGE_SIZE - data.length}
+                      columns={AUDIT_LIST_SKELETON_COLUMNS}
+                      padding="compact"
+                    />
+                  )}
                 </tbody>
               </Table>
             </TableScrollFadeContainer>

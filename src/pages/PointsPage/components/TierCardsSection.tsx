@@ -448,7 +448,7 @@ function StakingCard({
                 <Trans>
                   GMX Staked:{" "}
                   <span className="text-typography-primary">
-                    {gmxStaked !== undefined ? formatAmount(gmxStaked, 18, 2, true) : "—"}
+                    {gmxStaked !== undefined ? formatAmount(gmxStaked, 18, 0, true) : "—"}
                   </span>
                 </Trans>
               </p>

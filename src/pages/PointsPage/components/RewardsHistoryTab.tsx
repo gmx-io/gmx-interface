@@ -16,6 +16,7 @@ import { useBreakpoints } from "lib/useBreakpoints";
 import useWallet from "lib/wallets/useWallet";
 
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
+import { TableRowsSkeleton } from "components/Skeleton/TableRowsSkeleton";
 import { TableTd, TableTdActionable, TableTh, TableTheadTr, TableTr, TableTrActionable } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
@@ -27,6 +28,8 @@ import { formatEpochLabel } from "./RewardsHistoryTab.utils";
 const PER_PAGE = 16;
 const GMX_DECIMALS = 18;
 const GMX_DECIMALS_FACTOR = 10n ** 18n;
+const MOBILE_REWARDS_HISTORY_SKELETON_COLUMNS = [120, { width: 80, className: "text-right" }, 16];
+const REWARDS_HISTORY_SKELETON_COLUMNS = [120, 80, 80, 80, 80, 80, 140, 120];
 
 type Props = {
   chainId: ContractsChainId;
@@ -68,6 +71,7 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
 
   const pageCount = totalCount === undefined ? page : Math.max(1, Math.ceil(totalCount / PER_PAGE));
   const pageData = history ?? [];
+  const isInitialLoading = loading && !history;
   const now = useCurrentUnixTimestamp();
 
   if (!account) {
@@ -108,22 +112,31 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
                 </TableTheadTr>
               </thead>
               <tbody>
-                {pageData.map((entry) => (
-                  <MobileRewardsHistoryRow
-                    key={entry.epoch}
-                    entry={entry}
-                    epochDuration={epochDuration}
-                    now={now}
-                    locale={i18n.locale}
-                    formatRewards={formatRewards}
+                {isInitialLoading ? (
+                  <TableRowsSkeleton
+                    count={PER_PAGE}
+                    columns={MOBILE_REWARDS_HISTORY_SKELETON_COLUMNS}
+                    cellClassName="!py-12"
                   />
-                ))}
-                {loading && !history && (
-                  <tr>
-                    <td colSpan={3} className="py-16 text-center text-typography-secondary">
-                      <Trans>Loading...</Trans>
-                    </td>
-                  </tr>
+                ) : (
+                  pageData.map((entry) => (
+                    <MobileRewardsHistoryRow
+                      key={entry.epoch}
+                      entry={entry}
+                      epochDuration={epochDuration}
+                      now={now}
+                      locale={i18n.locale}
+                      formatRewards={formatRewards}
+                    />
+                  ))
+                )}
+                {history && pageData.length < PER_PAGE && (
+                  <TableRowsSkeleton
+                    invisible
+                    count={PER_PAGE - pageData.length}
+                    columns={MOBILE_REWARDS_HISTORY_SKELETON_COLUMNS}
+                    cellClassName="!py-12"
+                  />
                 )}
               </tbody>
             </table>
@@ -142,55 +155,64 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
                 </TableTheadTr>
               </thead>
               <tbody>
-                {pageData.map((entry) => {
-                  const epochEnd = entry.epoch + epochDuration;
-                  const isCurrentEpoch = now < epochEnd;
-                  const timeLeft = epochEnd - now;
+                {isInitialLoading ? (
+                  <TableRowsSkeleton
+                    count={PER_PAGE}
+                    columns={REWARDS_HISTORY_SKELETON_COLUMNS}
+                    cellClassName={tdClassName}
+                  />
+                ) : (
+                  pageData.map((entry) => {
+                    const epochEnd = entry.epoch + epochDuration;
+                    const isCurrentEpoch = now < epochEnd;
+                    const timeLeft = epochEnd - now;
 
-                  return (
-                    <TableTr key={entry.epoch}>
-                      <TableTd className={cx(tdClassName, "text-typography-secondary")}>
-                        {formatEpochLabel(entry.epoch, epochDuration, i18n.locale)}
-                      </TableTd>
-                      <TableTd className={cx(tdClassName, "numbers")}>
-                        {formatAmountHuman(entry.volume, USD_DECIMALS, true, 0)}
-                      </TableTd>
-                      <TableTd className={cx(tdClassName, "numbers")}>
-                        {formatAmount(entry.pointsEarned, GMX_DECIMALS, 2, true)}
-                      </TableTd>
-                      <TableTd className={cx(tdClassName, "numbers")}>
-                        {formatAmount(entry.pointsSpent, GMX_DECIMALS, 2, true)}
-                      </TableTd>
-                      <TableTd className={cx(tdClassName, "numbers")}>
-                        {formatAmount(entry.pointsExpired, GMX_DECIMALS, 2, true)}
-                      </TableTd>
-                      <TableTd className={cx(tdClassName, "numbers")}>
-                        {formatAmount(entry.pointsBalance, GMX_DECIMALS, 2, true)}
-                      </TableTd>
-                      <TableTd className={cx(tdClassName, "numbers")}>{formatRewards(entry.rewardsEarned)}</TableTd>
-                      <TableTd className={tdClassName}>
-                        {isCurrentEpoch ? (
-                          <span className="text-13 text-typography-secondary">
-                            <Trans>Epoch ends in</Trans>{" "}
-                            <span className="text-typography-primary">
-                              {formatTimeLeft(timeLeft, { alwaysShowDays: true })}
+                    return (
+                      <TableTr key={entry.epoch}>
+                        <TableTd className={cx(tdClassName, "text-typography-secondary")}>
+                          {formatEpochLabel(entry.epoch, epochDuration, i18n.locale)}
+                        </TableTd>
+                        <TableTd className={cx(tdClassName, "numbers")}>
+                          {formatAmountHuman(entry.volume, USD_DECIMALS, true, 0)}
+                        </TableTd>
+                        <TableTd className={cx(tdClassName, "numbers")}>
+                          {formatAmount(entry.pointsEarned, GMX_DECIMALS, 2, true)}
+                        </TableTd>
+                        <TableTd className={cx(tdClassName, "numbers")}>
+                          {formatAmount(entry.pointsSpent, GMX_DECIMALS, 2, true)}
+                        </TableTd>
+                        <TableTd className={cx(tdClassName, "numbers")}>
+                          {formatAmount(entry.pointsExpired, GMX_DECIMALS, 2, true)}
+                        </TableTd>
+                        <TableTd className={cx(tdClassName, "numbers")}>
+                          {formatAmount(entry.pointsBalance, GMX_DECIMALS, 2, true)}
+                        </TableTd>
+                        <TableTd className={cx(tdClassName, "numbers")}>{formatRewards(entry.rewardsEarned)}</TableTd>
+                        <TableTd className={tdClassName}>
+                          {isCurrentEpoch ? (
+                            <span className="text-13 text-typography-secondary">
+                              <Trans>Epoch ends in</Trans>{" "}
+                              <span className="text-typography-primary">
+                                {formatTimeLeft(timeLeft, { alwaysShowDays: true })}
+                              </span>
                             </span>
-                          </span>
-                        ) : (
-                          <span className="text-13 text-typography-secondary">
-                            <Trans>Finished</Trans>
-                          </span>
-                        )}
-                      </TableTd>
-                    </TableTr>
-                  );
-                })}
-                {loading && !history && (
-                  <TableTr>
-                    <TableTd colSpan={8} className="py-16 text-center text-typography-secondary">
-                      <Trans>Loading...</Trans>
-                    </TableTd>
-                  </TableTr>
+                          ) : (
+                            <span className="text-13 text-typography-secondary">
+                              <Trans>Finished</Trans>
+                            </span>
+                          )}
+                        </TableTd>
+                      </TableTr>
+                    );
+                  })
+                )}
+                {history && pageData.length < PER_PAGE && (
+                  <TableRowsSkeleton
+                    invisible
+                    count={PER_PAGE - pageData.length}
+                    columns={REWARDS_HISTORY_SKELETON_COLUMNS}
+                    cellClassName={tdClassName}
+                  />
                 )}
               </tbody>
             </table>

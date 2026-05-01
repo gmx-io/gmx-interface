@@ -17,10 +17,41 @@ const BANNER_STYLES = {
   backgroundPosition: "center",
 };
 
+type PointsTradeBannerDismissedState =
+  | boolean
+  | {
+      dismissed: boolean;
+      dismissedAfterFirstProgramEpochVolume?: boolean;
+    };
+
+function getIsDismissedForCurrentState(
+  dismissedState: PointsTradeBannerDismissedState | undefined,
+  bannerData: ReturnType<typeof usePersonalizedBannerData>
+) {
+  if (bannerData.isManuallyRewarded && bannerData.hasVolumeAfterFirstProgramEpoch) {
+    return typeof dismissedState === "object" && dismissedState.dismissedAfterFirstProgramEpochVolume === true;
+  }
+
+  return typeof dismissedState === "object" ? dismissedState.dismissed : dismissedState === true;
+}
+
 export function PointsPromoBanner() {
   const { chainId } = useChainId();
-  const [dismissed, setDismissed] = useLocalStorageSerializeKey(POINTS_TRADE_BANNER_DISMISSED_KEY, false);
+  const [dismissedState, setDismissedState] = useLocalStorageSerializeKey<PointsTradeBannerDismissedState>(
+    POINTS_TRADE_BANNER_DISMISSED_KEY,
+    false
+  );
   const bannerData = usePersonalizedBannerData();
+  const dismissed = getIsDismissedForCurrentState(dismissedState, bannerData);
+
+  const handleDismiss = () => {
+    setDismissedState((previousState) => ({
+      dismissed: true,
+      dismissedAfterFirstProgramEpochVolume:
+        (bannerData.isManuallyRewarded && bannerData.hasVolumeAfterFirstProgramEpoch) ||
+        (typeof previousState === "object" && previousState.dismissedAfterFirstProgramEpochVolume === true),
+    }));
+  };
 
   if (!isIncentivesEnabled(chainId) || dismissed) return null;
 
@@ -31,7 +62,7 @@ export function PointsPromoBanner() {
       <Link
         className="grid min-h-[78px] w-full grid-cols-[1fr_76px] rounded-8 border-1/2 border-stroke-primary bg-slate-900/50 px-16 py-12"
         style={BANNER_STYLES}
-        onClick={() => setDismissed(true)}
+        onClick={handleDismiss}
         to="/points"
       >
         <div className="flex gap-8">
@@ -39,10 +70,7 @@ export function PointsPromoBanner() {
         </div>
 
         <div className="flex items-start justify-end">
-          <button
-            className="text-typography-secondary hover:text-typography-primary"
-            onClick={() => setDismissed(true)}
-          >
+          <button className="text-typography-secondary hover:text-typography-primary" onClick={handleDismiss}>
             <CrossIcon className="size-11" />
           </button>
         </div>

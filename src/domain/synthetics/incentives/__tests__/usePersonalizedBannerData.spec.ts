@@ -232,6 +232,56 @@ describe("usePersonalizedBannerData", () => {
     expect(result.current.manualBonusUsd).toBe((allocatedPoints * 20n * USD) / GMX_DEC);
   });
 
+  it("does not count first program epoch volume as post-first-epoch volume", () => {
+    const dashboard: AccountIncentiveDashboard = {
+      account: "0x1234",
+      pointsBalance: 10n * GMX_DEC,
+      rewardsBalance: 0n,
+      recentStats: [
+        {
+          account: "0x1234",
+          multiplier: 100,
+          epochTimestamp: mockConfig.programStartTimestamp,
+          volumeTier: null,
+          stakingTier: null,
+          tradedVolume: 1000n * USD,
+          boostIds: [],
+        },
+      ],
+    };
+
+    setupDefaults({ dashboard, manualAllocatedPoints: 25n * GMX_DEC });
+
+    const result = renderHook(() => usePersonalizedBannerData());
+
+    expect(result.current.hasVolumeAfterFirstProgramEpoch).toBe(false);
+  });
+
+  it("counts second and later program epoch volume", () => {
+    const dashboard: AccountIncentiveDashboard = {
+      account: "0x1234",
+      pointsBalance: 10n * GMX_DEC,
+      rewardsBalance: 0n,
+      recentStats: [
+        {
+          account: "0x1234",
+          multiplier: 100,
+          epochTimestamp: mockConfig.programStartTimestamp + mockConfig.epochDuration,
+          volumeTier: null,
+          stakingTier: null,
+          tradedVolume: 1000n * USD,
+          boostIds: [],
+        },
+      ],
+    };
+
+    setupDefaults({ dashboard, manualAllocatedPoints: 25n * GMX_DEC });
+
+    const result = renderHook(() => usePersonalizedBannerData());
+
+    expect(result.current.hasVolumeAfterFirstProgramEpoch).toBe(true);
+  });
+
   it("calculates recommendedStakeGmx based on wallet size and GMX price", () => {
     // Set up wallet with $100,000 in tokens
     // STAKE_BUDGET_FRAC = 0.20 => $20,000 budget

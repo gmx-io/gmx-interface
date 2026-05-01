@@ -44,6 +44,7 @@ const ARBITRUM = 42161;
 
 const defaultBannerData: PersonalizedBannerData = {
   isManuallyRewarded: false,
+  hasVolumeAfterFirstProgramEpoch: false,
   manualAllocatedPoints: undefined,
   manualBonusUsd: undefined,
   recommendedStakeGmx: undefined,
@@ -91,6 +92,21 @@ describe("PointsPromoBanner", () => {
     const { container } = renderBanner();
 
     expect(container.innerHTML).toBe("");
+  });
+
+  it("shows manual allocation text when legacy dismissed state exists but user has post-first-epoch volume", () => {
+    mockUseLocalStorage.mockImplementation(() => [true, mockSetDismissed] as any);
+    mockUsePersonalizedBannerData.mockReturnValue({
+      ...defaultBannerData,
+      hasPersonalizedData: true,
+      isManuallyRewarded: true,
+      hasVolumeAfterFirstProgramEpoch: true,
+      manualBonusUsd: 500n * 10n ** 30n,
+    });
+
+    renderBanner();
+
+    expect(screen.getByText(/received a points bonus worth/)).toBeDefined();
   });
 
   it("shows generic text when hasPersonalizedData is false", () => {
@@ -146,7 +162,11 @@ describe("PointsPromoBanner", () => {
     const link = screen.getByRole("link");
     fireEvent.click(link);
 
-    expect(mockSetDismissed).toHaveBeenCalledWith(true);
+    expect(mockSetDismissed).toHaveBeenCalledWith(expect.any(Function));
+    expect(mockSetDismissed.mock.calls[0][0](false)).toEqual({
+      dismissed: true,
+      dismissedAfterFirstProgramEpochVolume: false,
+    });
   });
 
   it("dismiss button calls setDismissed with true", () => {
@@ -155,6 +175,29 @@ describe("PointsPromoBanner", () => {
     const dismissButton = screen.getByRole("button");
     fireEvent.click(dismissButton);
 
-    expect(mockSetDismissed).toHaveBeenCalledWith(true);
+    expect(mockSetDismissed).toHaveBeenCalledWith(expect.any(Function));
+    expect(mockSetDismissed.mock.calls[0][0](false)).toEqual({
+      dismissed: true,
+      dismissedAfterFirstProgramEpochVolume: false,
+    });
+  });
+
+  it("records dismissal after post-first-epoch volume for manual allocation text", () => {
+    mockUsePersonalizedBannerData.mockReturnValue({
+      ...defaultBannerData,
+      hasPersonalizedData: true,
+      isManuallyRewarded: true,
+      hasVolumeAfterFirstProgramEpoch: true,
+      manualBonusUsd: 500n * 10n ** 30n,
+    });
+
+    renderBanner();
+
+    fireEvent.click(screen.getByRole("button"));
+
+    expect(mockSetDismissed.mock.calls[0][0](true)).toEqual({
+      dismissed: true,
+      dismissedAfterFirstProgramEpochVolume: true,
+    });
   });
 });

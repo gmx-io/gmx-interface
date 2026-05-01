@@ -230,6 +230,10 @@ msgstr "(rückerstattet)"
 msgid "Accumulated rewards"
 msgstr ""
 
+#: src/components/SettingsModal/DebugSettings.tsx
+msgid "Show all points page banners"
+msgstr ""
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Show rPnL amounts"
 msgstr "rPnL-Beträge anzeigen"
@@ -932,6 +936,7 @@ msgid "in liquidity"
 msgstr "In Liquidität"
 
 #: src/pages/PointsPage/components/PointsBanner.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Your volume this epoch is below the threshold for your current tier. Trade more to keep your rewards multiplier."
 msgstr ""
 
@@ -1375,6 +1380,10 @@ msgstr "Maximal {allowedAutoCancelOrdersNumber} automatisch stornierbare TP/SL-O
 msgid "GMX proposals voting page"
 msgstr "GMX-Abstimmungsseite für Vorschläge"
 
+#: src/pages/PointsPage/components/PointsBanner.tsx
+msgid "Points are set to expire this epoch. Use them before rollover and make the most of your activity."
+msgstr ""
+
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Liquidity only available on {chainNames}. Switch networks to continue."
 msgstr "Liquidität nur auf {chainNames} verfügbar. Wechseln Sie das Netzwerk, um fortzufahren."
@@ -1743,6 +1752,7 @@ msgid "Spent points"
 msgstr ""
 
 #: src/pages/PointsPage/components/PointsBanner.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Stake rewards"
 msgstr ""
 
@@ -1918,6 +1928,7 @@ msgstr "Passives Management"
 msgid "Telegram groups"
 msgstr "Telegram-Gruppen"
 
+#: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Restake your rewards and earn more"
 msgstr ""
@@ -3965,6 +3976,9 @@ msgstr "Express Trading ist mit dem nativen Token des Netzwerks {0} nicht verfü
 #: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Trade"
 msgstr "Handeln"
@@ -4024,6 +4038,7 @@ msgstr "TWAP-Teil aktualisieren"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/ClaimRewardsButton.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/SidebarRewards.tsx
 #: src/pages/PointsPage/components/SidebarRewards.tsx
@@ -4884,6 +4899,7 @@ msgstr "{secondLabel}"
 msgid "High swap profit fee"
 msgstr "Hohe Swap-Gewinngebühr"
 
+#: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Your tier will drop next epoch"
 msgstr ""
@@ -6775,9 +6791,6 @@ msgstr "TP-Preis"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
-#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 msgid "Loading..."
 msgstr "Lädt..."
 
@@ -7896,6 +7909,7 @@ msgstr "Dolomite"
 msgid "Order request sent"
 msgstr "Orderanfrage gesendet"
 
+#: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Trade eligible pairs to unlock multipliers and increase your reward potential this epoch."
 msgstr ""
@@ -9325,6 +9339,7 @@ msgid "Distribution rate per day, USD"
 msgstr "Verteilungsrate pro Tag, USD"
 
 #: src/pages/PointsPage/components/PointsBanner.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "So Close to the Next Tier"
 msgstr ""
 
@@ -10613,6 +10628,7 @@ msgid "Sign transactions off-chain. Premium RPCs ensure reliability during netwo
 msgstr "Transaktionen off-chain signieren. Premium-RPCs gewährleisten Zuverlässigkeit bei Netzwerküberlastung.<0/><1/>Gasgebühren in {gasPaymentTokensText}."
 
 #: src/pages/PointsPage/components/PointsBanner.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Don't Let Rewards Expire"
 msgstr ""
 
@@ -10686,6 +10702,7 @@ msgid "MegaETH"
 msgstr ""
 
 #: src/pages/PointsPage/components/PointsBanner.tsx
+#: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Continue restaking your rewards to boost your earnings and unlock additional yield on your GMX tokens."
 msgstr ""
 
@@ -10749,6 +10766,7 @@ msgstr "Performance im Vergleich zum Benchmark über den ausgewählten Zeitraum"
 msgid "Referral code updated"
 msgstr "Empfehlungscode aktualisiert"
 
+#: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Activate Pair Boosts"
 msgstr ""
@@ -11342,6 +11360,7 @@ msgstr "Stufe speichern"
 msgid "{count, plural, one {Order} other {# Orders}}"
 msgstr "{count, plural, one {Order} other {# Orders}}"
 
+#: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "A small increase in volume will unlock a higher status and stronger rewards."
 msgstr ""

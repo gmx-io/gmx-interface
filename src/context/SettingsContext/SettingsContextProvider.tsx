@@ -15,6 +15,7 @@ import {
   IS_AUTO_CANCEL_TPSL_KEY,
   IS_PNL_IN_LEVERAGE_KEY,
   SETTINGS_WARNING_DOT_VISIBLE_KEY,
+  SHOW_ALL_POINTS_PAGE_BANNERS_KEY,
   SET_ACCEPTABLE_PRICE_IMPACT_ENABLED_KEY,
   SHOULD_SHOW_POSITION_LINES_KEY,
   SHOW_DEBUG_VALUES_KEY,
@@ -42,6 +43,8 @@ import { DEFAULT_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 export type SettingsContextType = {
   showDebugValues: boolean;
   setShowDebugValues: (val: boolean) => void;
+  showAllPointsPageBanners: boolean;
+  setShowAllPointsPageBanners: (val: boolean) => void;
   isErrorBoundaryDebugEnabled: boolean;
   setIsErrorBoundaryDebugEnabled: (val: boolean) => void;
   savedAllowedSlippage: number;
@@ -129,6 +132,10 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [showDebugValues, setShowDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
+  const [showAllPointsPageBanners, setShowAllPointsPageBanners] = useLocalStorageSerializeKey(
+    SHOW_ALL_POINTS_PAGE_BANNERS_KEY,
+    false
+  );
   const [isErrorBoundaryDebugEnabled, setIsErrorBoundaryDebugEnabled] = useLocalStorageSerializeKey(
     DEBUG_ERROR_BOUNDARY_KEY,
     false
@@ -306,6 +313,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     return {
       showDebugValues: isDevelopment() ? showDebugValues! : false,
       setShowDebugValues,
+      showAllPointsPageBanners: isDevelopment() ? showAllPointsPageBanners! : false,
+      setShowAllPointsPageBanners,
       isErrorBoundaryDebugEnabled: isDevelopment() ? isErrorBoundaryDebugEnabled! : false,
       setIsErrorBoundaryDebugEnabled,
       savedAllowedSlippage: savedAllowedSlippage!,
@@ -375,6 +384,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   }, [
     showDebugValues,
     setShowDebugValues,
+    showAllPointsPageBanners,
+    setShowAllPointsPageBanners,
     isErrorBoundaryDebugEnabled,
     setIsErrorBoundaryDebugEnabled,
     savedAllowedSlippage,

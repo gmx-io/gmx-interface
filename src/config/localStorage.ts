@@ -22,6 +22,7 @@ const LEVERAGE_OPTION_KEY = "leverage-option";
 const LEVERAGE_ENABLED_KEY = "leverage-enabled";
 const KEEP_LEVERAGE_FOR_DECREASE_KEY = "Exchange-keep-leverage";
 export const SHOW_DEBUG_VALUES_KEY = "show-debug-values";
+export const SHOW_ALL_POINTS_PAGE_BANNERS_KEY = "show-all-points-page-banners";
 export const DEBUG_METRICS_KEY = "debug_metrics";
 export const RPC_DEBUG_STATE_KEY = "rpc_debug_state";
 export const DEBUG_RPC_ENDPOINTS_KEY = "debug_rpc_endpoints";

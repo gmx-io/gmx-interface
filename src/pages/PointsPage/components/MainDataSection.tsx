@@ -36,7 +36,7 @@ export function MainDataSection({
 }: Props) {
   const hasMultiplier = multiplier !== undefined && multiplier > 0;
   const displayMultiplier = formatMultiplier(multiplier);
-  const displayPoints = pointsBalance ? formatAmount(pointsBalance, 18, 4, true) : "0.0000";
+  const displayPoints = pointsBalance ? formatAmount(pointsBalance, 18, 2, true) : "0.00";
   const maxMultiplierLabel = getMaxMultiplierLabel(config);
   const pointsExpirationEpochs = getPointsExpirationEpochs(config);
 
