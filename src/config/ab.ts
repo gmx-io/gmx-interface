@@ -55,6 +55,9 @@ function loadAbStorage(): void {
             enabled: Math.random() < abFlagsConfig[flag],
           };
           changed = true;
+        } else if (abFlagsConfig[flag] === 1 && !abStorage[flag].enabled) {
+          abStorage[flag] = { enabled: true };
+          changed = true;
         }
       }
 
