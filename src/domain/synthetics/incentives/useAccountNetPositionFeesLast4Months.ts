@@ -6,7 +6,9 @@ import { getSubsquidGraphClient } from "lib/indexers";
 
 const FEES_QUERY = gql`
   query AccountNetPositionFeesLast4Months($account: String!) {
-    accountNetPositionFeesLast4Months(account: $account)
+    accountNetPositionFeesLast4Months(account: $account) {
+      netPositionFeeUsd
+    }
   }
 `;
 
@@ -26,7 +28,7 @@ export function useAccountNetPositionFeesLast4Months(chainId: number, params: { 
           fetchPolicy: "no-cache",
         });
 
-        const value = res?.data?.accountNetPositionFeesLast4Months;
+        const value = res?.data?.accountNetPositionFeesLast4Months?.netPositionFeeUsd;
         if (value === null || value === undefined) return undefined;
 
         return BigInt(value);
