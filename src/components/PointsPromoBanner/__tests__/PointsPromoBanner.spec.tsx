@@ -128,7 +128,7 @@ describe("PointsPromoBanner", () => {
 
     renderBanner();
 
-    expect(screen.getByText(/Stake GMX and receive 50% of your fees back/)).toBeDefined();
+    expect(screen.getByText(/Stake GMX and receive up to 50% of your fees back/)).toBeDefined();
   });
 
   it("shows manual reward text when bannerVariant is manual-reward", () => {

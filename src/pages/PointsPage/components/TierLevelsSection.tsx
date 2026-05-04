@@ -22,6 +22,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 import { useCurrentUnixTimestamp, getCurrentEpochEndTime } from "./epochTiming";
+import { FeaturedMarketsTooltipContent } from "./FeaturedMarketsTooltipContent";
 import { getBoostDescription, getVolumeTierPersistenceEpochs } from "./incentivesText";
 import { VolumeTierIcon, StakingTierIcon, BoostTierIcon } from "./tierIcons";
 
@@ -172,7 +173,9 @@ export function TierLevelsSection({
           {activeTab === "staking" && (
             <StakingTiersTable config={config} currentTier={effectiveStakingTier ?? currentEpochStats?.stakingTier} />
           )}
-          {activeTab === "boosts" && <BoostsTable config={config} activeBoosts={currentEpochStats?.boostIds} />}
+          {activeTab === "boosts" && (
+            <BoostsTable chainId={chainId} config={config} activeBoosts={currentEpochStats?.boostIds} />
+          )}
         </div>
       </div>
     </div>
@@ -357,7 +360,17 @@ function StakingTiersTable({ config, currentTier }: { config?: IncentivesConfig;
   );
 }
 
-function BoostsTable({ config, activeBoosts }: { config?: IncentivesConfig; activeBoosts?: string[] }) {
+function BoostsTable({
+  chainId,
+  config,
+  activeBoosts,
+}: {
+  chainId: number;
+  config?: IncentivesConfig;
+  activeBoosts?: string[];
+}) {
+  const featuredMarketTokens = config?.featuredMarketTokens ?? [];
+
   return (
     <table className={tierLevelTableClassName}>
       <thead>
@@ -379,6 +392,8 @@ function BoostsTable({ config, activeBoosts }: { config?: IncentivesConfig; acti
       <tbody>
         {config?.boosts.map((boost) => {
           const isActive = activeBoosts?.includes(boost.boost);
+          const description = getBoostDescription(boost.boost, config);
+          const isFeaturedMarkets = boost.boost === "FeaturedMarkets" && featuredMarketTokens.length > 0;
           return (
             <TierLevelTableTr key={boost.boost}>
               <TableTd padding="compact" className="text-typography-primary">
@@ -390,7 +405,20 @@ function BoostsTable({ config, activeBoosts }: { config?: IncentivesConfig; acti
                 </span>
               </TableTd>
               <TableTd padding="compact" className="text-typography-secondary">
-                {getBoostDescription(boost.boost, config)}
+                <>
+                  {description}{" "}
+                  {isFeaturedMarkets ? (
+                    <TooltipWithPortal
+                      variant="iconStroke"
+                      handle={<Trans>Featured markets.</Trans>}
+                      content={
+                        <FeaturedMarketsTooltipContent chainId={chainId} featuredMarketTokens={featuredMarketTokens} />
+                      }
+                    />
+                  ) : (
+                    description
+                  )}
+                </>
               </TableTd>
               <TableTd padding="compact" className="text-primary">
                 +{formatMultiplier(boost.multiplier)}

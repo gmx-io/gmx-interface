@@ -554,6 +554,10 @@ msgstr "La generación de la imagen ha fallado. Actualice la página e inténtel
 msgid "Unlock {tierName} status (+{multiplierLabel}) and earn up to ${rewardsEstimate} in additional trading rewards."
 msgstr ""
 
+#: src/pages/PointsPage/components/FeaturedMarketsTooltipContent.tsx
+msgid "Featured markets"
+msgstr ""
+
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Funding"
@@ -4637,6 +4641,10 @@ msgstr "Cargando datos de mercados..."
 msgid "{longOrShort} positions do not pay a funding fee or a borrow fee"
 msgstr "Las posiciones {longOrShort} no pagan comisión de financiación ni comisión de préstamo"
 
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
+msgid "Featured markets."
+msgstr ""
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Long Funding Rate"
 msgstr "Tasa de financiación largo"
@@ -6404,6 +6412,10 @@ msgstr "Retirado"
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "TP price above mark price"
 msgstr "Precio TP por encima del precio de referencia"
+
+#: src/pages/PointsPage/components/incentivesText.ts
+msgid "Trade featured or new markets to earn this boost."
+msgstr ""
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price"
@@ -8511,7 +8523,6 @@ msgid "<0>Cross-margin</0><1>Cross-collateral</1>"
 msgstr "<0>Cross-margin</0><1>Cross-collateral</1>"
 
 #: src/domain/synthetics/incentives/constants.ts
-#: src/pages/PointsPage/components/incentivesText.ts
 msgid "Trade featured or new markets to earn this boost"
 msgstr ""
 

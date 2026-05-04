@@ -82,16 +82,20 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
     (hasProgramStartTimestamp && manualAllocatedPointsLoading);
 
   // SWR's `isLoading` flips back to `true` on every revalidation when the fetched value is
-  // undefined, which would make the banner blink in/out every refresh. Latch on first resolve.
-  const [hasResolvedOnce, setHasResolvedOnce] = useState(false);
-  if (!hasResolvedOnce && (!enabled || !underlyingLoading)) {
-    setHasResolvedOnce(true);
+  // undefined, which would make the banner blink in/out every refresh. Latch on first resolve,
+  // keyed by chainId+account so a freshly-connected wallet (or chain switch) waits for fresh
+  // data instead of rendering whatever variant the previous session had cached.
+  const sessionKey = enabled ? `${chainId}:${account}` : "disabled";
+  const [resolvedSession, setResolvedSession] = useState<string | null>(null);
+  const hasResolvedSession = resolvedSession === sessionKey;
+  if (!hasResolvedSession && !underlyingLoading) {
+    setResolvedSession(sessionKey);
   }
 
   return useMemo(() => {
     const hasVolumeAfterFirstProgramEpoch = getHasVolumeAfterFirstProgramEpoch(dashboard, config);
 
-    if (enabled && underlyingLoading && !hasResolvedOnce) {
+    if (enabled && underlyingLoading && !hasResolvedSession) {
       return {
         bannerVariant: undefined,
         isManuallyRewarded: false,
@@ -173,7 +177,7 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
   }, [
     enabled,
     underlyingLoading,
-    hasResolvedOnce,
+    hasResolvedSession,
     dashboard,
     netPositionFees,
     firstTradeTimestamp,

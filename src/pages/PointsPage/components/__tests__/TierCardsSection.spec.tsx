@@ -205,7 +205,7 @@ describe("TierCardsSection", () => {
       expect(screen.queryByText(/You've received bonus of/)).toBeNull();
       expect(screen.queryByText(/Start trading to redeem your rewards/)).toBeNull();
       expect(screen.getByText(/Earn rewards/)).toBeDefined();
-      expect(screen.getByText(/Stake GMX and receive 50% of your fees back/)).toBeDefined();
+      expect(screen.getByText(/Stake GMX and receive up to 50% of your fees back/)).toBeDefined();
     });
 
     it("shows recent-activity copy when connected and bannerVariant is recent-activity", () => {
@@ -232,7 +232,7 @@ describe("TierCardsSection", () => {
       renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={undefined} />);
 
       expect(screen.getByText(/Earn rewards/)).toBeDefined();
-      expect(screen.getByText(/Stake GMX and receive 50% of your fees back/)).toBeDefined();
+      expect(screen.getByText(/Stake GMX and receive up to 50% of your fees back/)).toBeDefined();
     });
 
     it("prompts to buy GMX when the wallet has no GMX", () => {

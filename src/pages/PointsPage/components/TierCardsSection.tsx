@@ -16,6 +16,7 @@ import {
 } from "domain/synthetics/incentives/constants";
 import type { EpochStats, IncentivesConfig, StakingTierId, VolumeTierId } from "domain/synthetics/incentives/types";
 import { usePersonalizedBannerData } from "domain/synthetics/incentives/usePersonalizedBannerData";
+import { useChainId } from "lib/chains";
 import { formatAmount, formatAmountHuman, bigintToNumber } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
@@ -31,6 +32,7 @@ import GmxIcon from "img/ic_gmx_glyph.svg?react";
 import PlusIcon from "img/ic_plus.svg?react";
 import StatsSvg from "img/ic_stats.svg?react";
 
+import { FeaturedMarketsTooltipContent } from "./FeaturedMarketsTooltipContent";
 import { getBoostDescription } from "./incentivesText";
 import { VolumeTierIcon, StakingTierIcon, BoostTierIcon } from "./tierIcons";
 
@@ -632,8 +634,10 @@ function BoostsCard({
   currentEpochStats?: EpochStats;
   active: boolean;
 }) {
+  const { chainId } = useChainId();
   const activeBoostIds = currentEpochStats?.boostIds ?? [];
   const allBoosts = config?.boosts ?? [];
+  const featuredMarketTokens = config?.featuredMarketTokens ?? [];
 
   const isLifetimeVolumeBoostActive = activeBoostIds.includes("LifetimeTrading");
   const lifetimeVolumeBoost = useMemo(
@@ -685,6 +689,7 @@ function BoostsCard({
             <div className="flex flex-wrap gap-12">
               {allBoosts.map((boost) => {
                 const isActive = activeBoostIds.includes(boost.boost);
+                const isFeaturedMarkets = boost.boost === "FeaturedMarkets" && featuredMarketTokens.length > 0;
                 return (
                   <TooltipWithPortal
                     key={boost.boost}
@@ -699,13 +704,17 @@ function BoostsCard({
                       </div>
                     }
                     content={
-                      <div>
-                        <div className="font-medium">{BOOST_LABELS[boost.boost]()}</div>
-                        <div className="mt-4 text-13">+{formatMultiplier(boost.multiplier)}</div>
-                        <div className="mt-4 text-13 text-typography-secondary">
-                          {getBoostDescription(boost.boost, config)}
+                      isFeaturedMarkets ? (
+                        <FeaturedMarketsTooltipContent chainId={chainId} featuredMarketTokens={featuredMarketTokens} />
+                      ) : (
+                        <div>
+                          <div className="font-medium">{BOOST_LABELS[boost.boost]()}</div>
+                          <div className="mt-4 text-13">+{formatMultiplier(boost.multiplier)}</div>
+                          <div className="mt-4 text-13 text-typography-secondary">
+                            {getBoostDescription(boost.boost, config)}
+                          </div>
                         </div>
-                      </div>
+                      )
                     }
                     variant="none"
                   />

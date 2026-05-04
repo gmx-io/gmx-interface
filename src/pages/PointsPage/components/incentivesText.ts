@@ -32,7 +32,7 @@ export function getBoostDescription(boostId: BoostId, config?: IncentivesConfig)
       : t`Achieve a lifetime trading volume milestone`;
   }
 
-  return t`Trade featured or new markets to earn this boost`;
+  return t`Trade featured or new markets to earn this boost.`;
 }
 
 export function getMaxMultiplierLabel(config?: IncentivesConfig): string {
