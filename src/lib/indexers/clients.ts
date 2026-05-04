@@ -1,4 +1,12 @@
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH, SOURCE_ETHEREUM_MAINNET } from "config/chains";
+import {
+  ARBITRUM,
+  ARBITRUM_SEPOLIA,
+  AVALANCHE,
+  AVALANCHE_FUJI,
+  BOTANIX,
+  MEGAETH,
+  SOURCE_ETHEREUM_MAINNET,
+} from "config/chains";
 import { isDevelopment } from "config/env";
 
 import { createClient } from "./utils";
@@ -90,7 +98,7 @@ export function getGmxGraphClient(chainId: number) {
   throw new Error(`Unsupported chain ${chainId}`);
 }
 
-export function getReferralsGraphClient(chainId) {
+export function getReferralsGraphClient(chainId: number) {
   if (chainId === ARBITRUM) {
     return arbitrumReferralsGraphClient;
   } else if (chainId === AVALANCHE) {

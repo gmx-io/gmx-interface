@@ -40,7 +40,7 @@ import gmxIcon from "img/tokens/ic_gmx.svg";
 import optimismSepolia from "img/tokens/ic_op.svg";
 import sepolia from "img/tokens/ic_sepolia.svg";
 
-type ChainIcons = {
+export type ChainIcons = {
   network?: string;
   gmx: string;
   glp: string;
@@ -129,11 +129,12 @@ export function getIcon(chainId: number | "common", label: keyof ChainIcons) {
 }
 
 export function getChainIcon(chainId: number): string {
-  if (!(chainId in CHAIN_ID_TO_NETWORK_ICON)) {
+  const icon = CHAIN_ID_TO_NETWORK_ICON[chainId as keyof typeof CHAIN_ID_TO_NETWORK_ICON];
+  if (icon === undefined) {
     throw new Error(`No icon found for chain: ${chainId}`);
   }
 
-  return CHAIN_ID_TO_NETWORK_ICON[chainId];
+  return icon;
 }
 
 export function getIcons(chainId: number | "common") {

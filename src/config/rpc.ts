@@ -37,6 +37,7 @@ const ENV_MEGAETH_RPC_URLS = parseRpcUrlsFromEnv(import.meta.env.VITE_APP_MEGAET
 const ALCHEMY_WS_SUPPORT_CHAINS = [
   ARBITRUM,
   BOTANIX,
+  MEGAETH,
   ARBITRUM_SEPOLIA,
   SOURCE_BASE_MAINNET,
   SOURCE_OPTIMISM_SEPOLIA,
@@ -208,32 +209,22 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
       purpose: "default",
     })),
 
+    // Fallback
     ...(ENV_MEGAETH_RPC_URLS
       ? ENV_MEGAETH_RPC_URLS.map((url: string) => ({
           url,
           isPublic: false,
           purpose: "fallback",
         }))
-      : [
-          {
-            url: "https://mainnet.megaeth.com/rpc",
-            isPublic: true,
-            purpose: "fallback",
-          },
-        ]),
+      : [getAlchemyProvider(MEGAETH, "fallback")]),
 
-    {
-      url: "https://mainnet.megaeth.com/rpc",
-      isPublic: true,
-      purpose: "largeAccount",
-    },
+    // Large account
+    getAlchemyProvider(MEGAETH, "largeAccount"),
 
-    {
-      url: "https://mainnet.megaeth.com/rpc",
-      isPublic: true,
-      purpose: "express",
-    },
+    // Express
+    getAlchemyProvider(MEGAETH, "express"),
 
+    // Debug endpoints from settings
     ...(_debugRpcTracker?.getDebugRpcEndpoints(MEGAETH) ?? []),
   ],
 
@@ -339,7 +330,7 @@ const RPC_CONFIGS: Record<number, RpcConfig[]> = {
   ],
 };
 
-const WS_RPC_CONFIGS: Record<number, RpcConfig[]> = {
+const WS_RPC_CONFIGS: Partial<Record<AnyChainId, RpcConfig[]>> = {
   [ARBITRUM]: [getAlchemyProvider(ARBITRUM, "fallback", "ws"), getAlchemyProvider(ARBITRUM, "largeAccount", "ws")],
   [AVALANCHE]: [{ url: "wss://api.avax.network/ext/bc/C/ws", isPublic: true, purpose: "fallback" }],
   [ARBITRUM_SEPOLIA]: [
@@ -347,6 +338,7 @@ const WS_RPC_CONFIGS: Record<number, RpcConfig[]> = {
     getAlchemyProvider(ARBITRUM_SEPOLIA, "largeAccount", "ws"),
   ],
   [BOTANIX]: [getAlchemyProvider(BOTANIX, "fallback", "ws"), getAlchemyProvider(BOTANIX, "largeAccount", "ws")],
+  [MEGAETH]: [getAlchemyProvider(MEGAETH, "fallback", "ws"), getAlchemyProvider(MEGAETH, "largeAccount", "ws")],
   [SOURCE_BASE_MAINNET]: [
     getAlchemyProvider(SOURCE_BASE_MAINNET, "fallback", "ws"),
     getAlchemyProvider(SOURCE_BASE_MAINNET, "largeAccount", "ws"),
@@ -380,7 +372,7 @@ export function getRpcProviders(chainId: number, purpose: RpcPurpose): RpcConfig
 }
 
 export function getWsRpcProviders(chainId: number, purpose: RpcPurpose): RpcConfig[] | [undefined] {
-  const config = WS_RPC_CONFIGS[chainId];
+  const config = WS_RPC_CONFIGS[chainId as AnyChainId];
 
   if (!config) {
     return [];
@@ -443,6 +435,9 @@ function getAlchemyProvider(
     case BOTANIX:
       baseUrl = `botanix-mainnet.g.alchemy.com/v2`;
       break;
+    case MEGAETH:
+      baseUrl = `megaeth-mainnet.g.alchemy.com/v2`;
+      break;
     case ARBITRUM_SEPOLIA:
       baseUrl = `arb-sepolia.g.alchemy.com/v2`;
       break;
@@ -461,8 +456,6 @@ function getAlchemyProvider(
     case SOURCE_ETHEREUM_MAINNET:
       baseUrl = `eth-mainnet.g.alchemy.com/v2`;
       break;
-    case MEGAETH:
-      throw new Error("Alchemy provider is not used for MegaETH");
     default: {
       mustNeverExist(chainId);
       throw new Error(`Unsupported chainId: ${chainId}`);

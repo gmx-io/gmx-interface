@@ -33,7 +33,6 @@ import { useChainId } from "lib/chains";
 import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { tenderlyLsKeys } from "lib/tenderly";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
-import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
 import useWallet from "lib/wallets/useWallet";
 import { getDefaultGasPaymentToken } from "sdk/configs/express";
 import { isValidTokenSafe } from "sdk/configs/tokens";
@@ -123,9 +122,7 @@ export function useSettings() {
 export function SettingsContextProvider({ children }: { children: ReactNode }) {
   const { chainId, srcChainId } = useChainId();
   const { account } = useWallet();
-  const { isNonEoaAccountOnAnyChain, isLoading: isNonEoaLoading } = useIsNonEoaAccountOnAnyChain();
-  const isGeminiWallet = useIsGeminiWallet();
-  const isExpressUnsupportedWallet = isNonEoaAccountOnAnyChain || isGeminiWallet;
+  const { isLoading: isNonEoaLoading } = useIsNonEoaAccountOnAnyChain();
 
   const [isSettingsVisible, setIsSettingsVisible] = useState(false);
   const [showDebugValues, setShowDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
@@ -286,20 +283,11 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
   useEffect(
     function fallbackMultichain() {
-      if (srcChainId && !expressOrdersEnabled && !isExpressUnsupportedWallet && !isNonEoaLoading) {
+      if (srcChainId && !expressOrdersEnabled && !isNonEoaLoading) {
         setExpressOrdersEnabled(true);
       }
     },
-    [expressOrdersEnabled, setExpressOrdersEnabled, srcChainId, isExpressUnsupportedWallet, isNonEoaLoading]
-  );
-
-  useEffect(
-    function disableExpressForUnsupportedWallets() {
-      if (isExpressUnsupportedWallet && expressOrdersEnabled) {
-        setExpressOrdersEnabled(false);
-      }
-    },
-    [isExpressUnsupportedWallet, expressOrdersEnabled, setExpressOrdersEnabled]
+    [expressOrdersEnabled, setExpressOrdersEnabled, srcChainId, isNonEoaLoading]
   );
 
   const contextState: SettingsContextType = useMemo(() => {

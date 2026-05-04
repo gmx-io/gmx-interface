@@ -35,7 +35,6 @@ import {
   BOTANIX,
   MEGAETH,
   ContractsChainId,
-  MEGAETH,
   SETTLEMENT_CHAIN_IDS,
   SETTLEMENT_CHAIN_IDS_DEV,
   SettlementChainId,

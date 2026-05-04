@@ -1,4 +1,4 @@
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH } from "sdk/configs/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH, type ContractsChainId } from "sdk/configs/chains";
 
 /*
   A temporary solution before positions sorting logic is updated
@@ -7,7 +7,7 @@ import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH } from "sdk/confi
   When adding new markets, add them to the end of the list
   or update arrays based on marketInfo sorting in runtime
 */
-export const SORTED_MARKETS = {
+export const SORTED_MARKETS: Partial<Record<ContractsChainId, string[]>> = {
   [ARBITRUM]: [
     "0x47c031236e19d024b42f8AE6780E44A573170703",
     "0x7C11F78Ce78768518D743E81Fdfa2F860C6b9A77",
@@ -177,11 +177,9 @@ export const SORTED_MARKETS = {
     "0x6bFDD025827F7CE130BcfC446927AEF34ae2a98d",
   ],
   [MEGAETH]: [
-    "0xBc7edFa7491cFbF317a65788e0E0cd89E91eC8a7",
     "0x9b1B72720f6D277F3b1e607a0c5fab1B300248b1",
     "0x31EdCc52bE2Fa55Ba68f50409F9e6b7d9EbF3D59",
     "0xe8E716F1cddfFD0698B86919D41A8228d701fEe9",
-    "0x1b997cb4841c4cb360E384192fFd7fb26eb10e5f",
     "0xc5c9B5E23810565763De41144741477eeCB25e2e",
   ],
 };

@@ -90,7 +90,6 @@ export const abis = {
   RewardTracker,
   SimulationRouter,
   SmartAccount,
-  SimulationRouter,
   StBTC,
   SubaccountGelatoRelayRouter,
   SubaccountRouter,
