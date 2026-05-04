@@ -860,6 +860,10 @@ msgstr "STIP.b 소급 보너스"
 msgid "in liquidity"
 msgstr "유동성 내"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "This swap requires external routing, which isn't available with One-Click Trading."
+msgstr "이 스왑은 외부 라우팅이 필요하지만 One-Click Trading에서는 사용할 수 없습니다."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized money market"
 msgstr "탈중앙화 머니마켓"
@@ -1274,6 +1278,11 @@ msgstr "손절매"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "External swap {0} to {1}"
 msgstr "외부 스왑 {0} → {1}"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Use {0} for gas"
+msgstr "가스로 {0} 사용"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To buy GMX on {0}, <0>change your network</0>"
@@ -3373,6 +3382,10 @@ msgstr "자금 청구됨"
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Missing claim params. Retry in a few seconds"
 msgstr "수령 매개변수가 누락되었습니다. 몇 초 후 다시 시도하십시오"
+
+#: src/components/TradeBox/TradeBoxRows/SwapDebugRow.tsx
+msgid "Swap Debug"
+msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
@@ -5732,6 +5745,10 @@ msgstr ""
 msgid "Swap token unavailable"
 msgstr ""
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "This swap requires external routing. Pay gas in {0} to enable it."
+msgstr "이 스왑은 외부 라우팅이 필요합니다. {0}로 가스비를 지불하여 활성화하세요."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
 msgstr "GMX (포르투갈어)"
@@ -7278,6 +7295,10 @@ msgstr "채팅 일정을 잡아드리겠습니다. 감사의 표시로 피드백
 #: src/pages/UiPage/BannerTest.tsx
 msgid "GM bought successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or go to the ETH/USD pool to withdraw your GM tokens."
 msgstr "GM 구매에 성공하였으나 Base로의 브릿지가 실패하였습니다. 자금은 GMX Account에 안전하게 보관되어 있습니다. 브릿지를 재시도하거나 ETH/USD 풀로 이동하여 GM 토큰을 출금하십시오."
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Disable One-Click Trading"
+msgstr "One-Click Trading 비활성화"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
@@ -9107,6 +9128,10 @@ msgstr ""
 msgid "Venus"
 msgstr "비너스"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No swap route available"
+msgstr "사용 가능한 스왑 경로가 없습니다"
+
 #: src/components/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Open {marketName} in explorer"
 msgstr "{marketName}을(를) 탐색기에서 열기"
@@ -9237,6 +9262,10 @@ msgstr "스냅샷"
 #: src/pages/RpcDebug/parts.tsx
 msgid "BLOCK"
 msgstr "블록"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Paying gas in {0} may give a better rate on this swap."
+msgstr "{0}로 가스비를 지불하면 이 스왑에서 더 나은 환율을 얻을 수 있습니다."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -9706,6 +9735,10 @@ msgstr "최대 숏 이율"
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Alerts"
 msgstr "알림"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Loading swap path…"
+msgstr "스왑 경로 로딩 중…"
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts

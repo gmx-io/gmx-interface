@@ -66,10 +66,12 @@ export function createMockSyntheticsState(overrides: MockSyntheticsStateOverride
       account: undefined,
     },
     externalSwap: {
-      baseOutput: undefined,
-      setBaseOutput: () => undefined,
+      requestResult: undefined,
+      setRequestResult: () => undefined,
       shouldFallbackToInternalSwap: false,
       setShouldFallbackToInternalSwap: () => undefined,
+      shouldForceExternalSwap: false,
+      setShouldForceExternalSwap: () => undefined,
     },
     claims: {
       accruedPositionPriceImpactFees: [],
