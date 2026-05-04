@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
 import cx from "classnames";
 import { useCallback, useEffect, useState } from "react";
+import Skeleton from "react-loading-skeleton";
 
 import { ARBITRUM } from "config/chains";
 import type { ContractsChainId } from "config/chains";
@@ -16,7 +17,7 @@ import { useBreakpoints } from "lib/useBreakpoints";
 import useWallet from "lib/wallets/useWallet";
 
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
-import { TableRowsSkeleton } from "components/Skeleton/TableRowsSkeleton";
+import { TableListSkeleton } from "components/Skeleton/Skeleton";
 import { TableTd, TableTdActionable, TableTh, TableTheadTr, TableTr, TableTrActionable } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 
@@ -28,8 +29,53 @@ import { formatEpochLabel } from "./RewardsHistoryTab.utils";
 const PER_PAGE = 16;
 const GMX_DECIMALS = 18;
 const GMX_DECIMALS_FACTOR = 10n ** 18n;
-const MOBILE_REWARDS_HISTORY_SKELETON_COLUMNS = [120, { width: 80, className: "text-right" }, 16];
-const REWARDS_HISTORY_SKELETON_COLUMNS = [120, 80, 80, 80, 80, 80, 140, 120];
+
+function RewardsHistoryMobileSkeletonRow({ invisible }: { invisible?: boolean }) {
+  return (
+    <tr className={invisible ? undefined : "odd:bg-fill-surfaceElevated50"}>
+      <TableTd className="!py-12">
+        <Skeleton width={120} inline />
+      </TableTd>
+      <TableTd className="!py-12 text-right">
+        <Skeleton width={80} inline />
+      </TableTd>
+      <TableTd className="!py-12">
+        <Skeleton width={16} inline />
+      </TableTd>
+    </tr>
+  );
+}
+
+function RewardsHistoryDesktopSkeletonRow({ invisible }: { invisible?: boolean }) {
+  return (
+    <tr className={invisible ? undefined : "odd:bg-fill-surfaceElevated50"}>
+      <TableTd className="!py-12">
+        <Skeleton width={120} inline />
+      </TableTd>
+      <TableTd className="!py-12">
+        <Skeleton width={80} inline />
+      </TableTd>
+      <TableTd className="!py-12">
+        <Skeleton width={80} inline />
+      </TableTd>
+      <TableTd className="!py-12">
+        <Skeleton width={80} inline />
+      </TableTd>
+      <TableTd className="!py-12">
+        <Skeleton width={80} inline />
+      </TableTd>
+      <TableTd className="!py-12">
+        <Skeleton width={80} inline />
+      </TableTd>
+      <TableTd className="!py-12">
+        <Skeleton width={140} inline />
+      </TableTd>
+      <TableTd className="!py-12">
+        <Skeleton width={120} inline />
+      </TableTd>
+    </tr>
+  );
+}
 
 type Props = {
   chainId: ContractsChainId;
@@ -113,11 +159,7 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
               </thead>
               <tbody>
                 {isInitialLoading ? (
-                  <TableRowsSkeleton
-                    count={PER_PAGE}
-                    columns={MOBILE_REWARDS_HISTORY_SKELETON_COLUMNS}
-                    cellClassName="!py-12"
-                  />
+                  <TableListSkeleton count={PER_PAGE} Structure={RewardsHistoryMobileSkeletonRow} />
                 ) : (
                   pageData.map((entry) => (
                     <MobileRewardsHistoryRow
@@ -131,11 +173,10 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
                   ))
                 )}
                 {history && pageData.length < PER_PAGE && (
-                  <TableRowsSkeleton
+                  <TableListSkeleton
                     invisible
                     count={PER_PAGE - pageData.length}
-                    columns={MOBILE_REWARDS_HISTORY_SKELETON_COLUMNS}
-                    cellClassName="!py-12"
+                    Structure={RewardsHistoryMobileSkeletonRow}
                   />
                 )}
               </tbody>
@@ -156,11 +197,7 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
               </thead>
               <tbody>
                 {isInitialLoading ? (
-                  <TableRowsSkeleton
-                    count={PER_PAGE}
-                    columns={REWARDS_HISTORY_SKELETON_COLUMNS}
-                    cellClassName={tdClassName}
-                  />
+                  <TableListSkeleton count={PER_PAGE} Structure={RewardsHistoryDesktopSkeletonRow} />
                 ) : (
                   pageData.map((entry) => {
                     const epochEnd = entry.epoch + epochDuration;
@@ -207,11 +244,10 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
                   })
                 )}
                 {history && pageData.length < PER_PAGE && (
-                  <TableRowsSkeleton
+                  <TableListSkeleton
                     invisible
                     count={PER_PAGE - pageData.length}
-                    columns={REWARDS_HISTORY_SKELETON_COLUMNS}
-                    cellClassName={tdClassName}
+                    Structure={RewardsHistoryDesktopSkeletonRow}
                   />
                 )}
               </tbody>

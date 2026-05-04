@@ -1,41 +1,33 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { ARBITRUM } from "config/chains";
 import { useGmxPrice } from "domain/legacy";
 import { useChainId } from "lib/chains";
-import { bigintToNumber } from "lib/numbers";
+import { bigintToNumber, USD_DECIMALS } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
 import { isIncentivesEnabled, MAX_FEE_DISCOUNT_PERCENT } from "./constants";
 import type { AccountIncentiveDashboard, IncentivesConfig } from "./types";
+import { useAccountFirstTradeTimestamp } from "./useAccountFirstTradeTimestamp";
 import { useAccountIncentiveDashboard } from "./useAccountIncentiveDashboard";
 import { useAccountNetPositionFeesLast4Months } from "./useAccountNetPositionFeesLast4Months";
 import { useAccountManualRewardsAllocation } from "./useAccountRewardsHistory";
 import { useIncentivesConfig } from "./useIncentivesConfig";
 
-const USD_DECIMALS = 30;
-const GMX_DECIMALS = 18;
 const GMX_DECIMALS_FACTOR = 10n ** 18n;
 
-const FALLBACK_FIRST_STAKING_TIER_GMX = 10;
 const RECENT_FEES_THRESHOLD_USD = 20;
+const NEW_USER_WINDOW_SECONDS = 14 * 24 * 60 * 60;
+
+export type BannerVariant = "manual-reward" | "recent-activity" | "new-or-low-fees";
 
 export type PersonalizedBannerData = {
-  /** Whether the user has a manual allocation derived from pre-program history entries. */
+  bannerVariant: BannerVariant | undefined;
   isManuallyRewarded: boolean;
-  /** Whether the user has traded volume in the second or later program epoch. */
   hasVolumeAfterFirstProgramEpoch: boolean;
-  /** The manually allocated points amount (18-decimal bigint) for manually rewarded users. */
   manualAllocatedPoints: bigint | undefined;
-  /** The bonus amount in USD (30-decimal bigint) for manually rewarded users. */
   manualBonusUsd: bigint | undefined;
-  /** Recommended GMX amount to stake (human-readable number, e.g. 100). */
-  recommendedStakeGmx: number | undefined;
-  /** Estimated recent fee savings in USD (human-readable number, e.g. 12.50). */
   estimatedRewardsUsd: number | undefined;
-  /** Whether we have enough data to show a personalized banner. */
-  hasPersonalizedData: boolean;
-  /** True while underlying data is still loading. */
   isLoading: boolean;
 };
 
@@ -50,15 +42,6 @@ function getHasVolumeAfterFirstProgramEpoch(
   const secondEpochTimestamp = config.programStartTimestamp + config.epochDuration;
 
   return dashboard.recentStats.some((stat) => stat.epochTimestamp >= secondEpochTimestamp && stat.tradedVolume > 0n);
-}
-
-function getFirstStakingTierThreshold(config: IncentivesConfig | undefined): number {
-  const firstTier = config?.stakingTiers?.[0];
-  if (!firstTier) {
-    return FALLBACK_FIRST_STAKING_TIER_GMX;
-  }
-
-  return bigintToNumber(firstTier.threshold, GMX_DECIMALS);
 }
 
 export function usePersonalizedBannerData(): PersonalizedBannerData {
@@ -76,6 +59,10 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
     account,
     enabled,
   });
+  const { data: firstTradeTimestamp, loading: firstTradeLoading } = useAccountFirstTradeTimestamp(chainId, {
+    account,
+    enabled,
+  });
   const hasProgramStartTimestamp = config?.programStartTimestamp !== undefined;
   const { data: fetchedManualAllocatedPoints, loading: manualAllocatedPointsLoading } =
     useAccountManualRewardsAllocation(chainId, {
@@ -87,76 +74,113 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
 
   const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
 
+  const underlyingLoading =
+    dashboardLoading ||
+    netPositionFeesLoading ||
+    firstTradeLoading ||
+    (hasProgramStartTimestamp && manualAllocatedPointsLoading);
+
+  // SWR's `isLoading` flips back to `true` on every revalidation when the fetched value is
+  // undefined, which would make the banner blink in/out every refresh. Latch on first resolve,
+  // keyed by chainId+account so a freshly-connected wallet (or chain switch) waits for fresh
+  // data instead of rendering whatever variant the previous session had cached.
+  const sessionKey = enabled ? `${chainId}:${account}` : "disabled";
+  const [resolvedSession, setResolvedSession] = useState<string | null>(null);
+  const hasResolvedSession = resolvedSession === sessionKey;
+  if (!hasResolvedSession && !underlyingLoading) {
+    setResolvedSession(sessionKey);
+  }
+
   return useMemo(() => {
-    const isLoading =
-      dashboardLoading || netPositionFeesLoading || (hasProgramStartTimestamp && manualAllocatedPointsLoading);
     const hasVolumeAfterFirstProgramEpoch = getHasVolumeAfterFirstProgramEpoch(dashboard, config);
 
-    const noData: PersonalizedBannerData = {
-      isManuallyRewarded: false,
-      hasVolumeAfterFirstProgramEpoch,
-      manualAllocatedPoints: undefined,
-      manualBonusUsd: undefined,
-      recommendedStakeGmx: undefined,
-      estimatedRewardsUsd: undefined,
-      hasPersonalizedData: false,
-      isLoading,
-    };
-
-    if (!enabled || !dashboard || manualAllocatedPoints === undefined) {
-      return noData;
+    if (enabled && underlyingLoading && !hasResolvedSession) {
+      return {
+        bannerVariant: undefined,
+        isManuallyRewarded: false,
+        hasVolumeAfterFirstProgramEpoch,
+        manualAllocatedPoints: undefined,
+        manualBonusUsd: undefined,
+        estimatedRewardsUsd: undefined,
+        isLoading: true,
+      };
     }
 
-    const isManuallyRewarded = manualAllocatedPoints > 0n;
-
-    if (isManuallyRewarded) {
-      if (gmxPrice === undefined || gmxPrice === 0n) {
-        return noData;
-      }
-
+    if (!enabled) {
       return {
-        isManuallyRewarded: true,
-        hasVolumeAfterFirstProgramEpoch,
-        manualAllocatedPoints,
-        manualBonusUsd: (manualAllocatedPoints * gmxPrice) / GMX_DECIMALS_FACTOR,
-        recommendedStakeGmx: undefined,
+        bannerVariant: "new-or-low-fees",
+        isManuallyRewarded: false,
+        hasVolumeAfterFirstProgramEpoch: false,
+        manualAllocatedPoints: undefined,
+        manualBonusUsd: undefined,
         estimatedRewardsUsd: undefined,
-        hasPersonalizedData: true,
         isLoading: false,
       };
     }
 
-    if (netPositionFees === undefined) {
-      return noData;
+    const allocatedPoints = manualAllocatedPoints ?? 0n;
+    const isManuallyRewarded = allocatedPoints > 0n;
+
+    if (isManuallyRewarded) {
+      if (gmxPrice === undefined || gmxPrice === 0n) {
+        return {
+          bannerVariant: undefined,
+          isManuallyRewarded: true,
+          hasVolumeAfterFirstProgramEpoch,
+          manualAllocatedPoints: allocatedPoints,
+          manualBonusUsd: undefined,
+          estimatedRewardsUsd: undefined,
+          isLoading: true,
+        };
+      }
+
+      return {
+        bannerVariant: "manual-reward",
+        isManuallyRewarded: true,
+        hasVolumeAfterFirstProgramEpoch,
+        manualAllocatedPoints: allocatedPoints,
+        manualBonusUsd: (allocatedPoints * gmxPrice) / GMX_DECIMALS_FACTOR,
+        estimatedRewardsUsd: undefined,
+        isLoading: false,
+      };
     }
 
-    const recentFeesUsd = bigintToNumber(netPositionFees, USD_DECIMALS);
+    const recentFeesUsd = netPositionFees !== undefined ? bigintToNumber(netPositionFees, USD_DECIMALS) : undefined;
+    const nowSeconds = Math.floor(Date.now() / 1000);
+    const isFirstTradeWithinNewUserWindow =
+      firstTradeTimestamp === undefined || nowSeconds - firstTradeTimestamp < NEW_USER_WINDOW_SECONDS;
+    const hasEnoughFees = recentFeesUsd !== undefined && recentFeesUsd >= RECENT_FEES_THRESHOLD_USD;
 
-    if (recentFeesUsd < RECENT_FEES_THRESHOLD_USD) {
-      return noData;
+    if (!isFirstTradeWithinNewUserWindow && hasEnoughFees) {
+      const estimatedRewardsUsd = recentFeesUsd * (MAX_FEE_DISCOUNT_PERCENT / 100);
+      return {
+        bannerVariant: "recent-activity",
+        isManuallyRewarded: false,
+        hasVolumeAfterFirstProgramEpoch,
+        manualAllocatedPoints: undefined,
+        manualBonusUsd: undefined,
+        estimatedRewardsUsd: Math.round(estimatedRewardsUsd * 100) / 100,
+        isLoading: false,
+      };
     }
-
-    const estimatedRewardsUsd = recentFeesUsd * (MAX_FEE_DISCOUNT_PERCENT / 100);
 
     return {
+      bannerVariant: "new-or-low-fees",
       isManuallyRewarded: false,
       hasVolumeAfterFirstProgramEpoch,
       manualAllocatedPoints: undefined,
       manualBonusUsd: undefined,
-      recommendedStakeGmx: getFirstStakingTierThreshold(config),
-      estimatedRewardsUsd: Math.round(estimatedRewardsUsd * 100) / 100,
-      hasPersonalizedData: true,
+      estimatedRewardsUsd: undefined,
       isLoading: false,
     };
   }, [
     enabled,
+    underlyingLoading,
+    hasResolvedSession,
     dashboard,
-    dashboardLoading,
     netPositionFees,
-    netPositionFeesLoading,
-    hasProgramStartTimestamp,
+    firstTradeTimestamp,
     manualAllocatedPoints,
-    manualAllocatedPointsLoading,
     gmxPrice,
     config,
   ]);

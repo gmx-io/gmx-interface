@@ -11,6 +11,8 @@ import { usePersonalizedBannerData } from "domain/synthetics/incentives/usePerso
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatUsd } from "lib/numbers";
 
+import { EARN_PORTFOLIO_STAKE_GMX_LINK } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/constants";
+
 import bgPointsBanner from "img/bg_points_banner.png";
 import CloseIcon from "img/ic_close.svg?react";
 import EarnIcon from "img/ic_earn.svg?react";
@@ -370,7 +372,7 @@ function getBannerContent({
       action: {
         label: <Trans>Stake GMX</Trans>,
         type: "stake",
-        to: "/earn",
+        to: EARN_PORTFOLIO_STAKE_GMX_LINK,
       },
     });
   }
@@ -418,7 +420,7 @@ function getBannerContent({
     action: {
       label: <Trans>Stake rewards</Trans>,
       type: "stake",
-      to: "/earn",
+      to: EARN_PORTFOLIO_STAKE_GMX_LINK,
     },
   });
 
@@ -445,7 +447,7 @@ function getAllBannerContent(): BannerContent[] {
       action: {
         label: <Trans>Stake GMX</Trans>,
         type: "stake",
-        to: "/earn",
+        to: EARN_PORTFOLIO_STAKE_GMX_LINK,
       },
     },
     {
@@ -475,7 +477,7 @@ function getAllBannerContent(): BannerContent[] {
       action: {
         label: <Trans>Stake rewards</Trans>,
         type: "stake",
-        to: "/earn",
+        to: EARN_PORTFOLIO_STAKE_GMX_LINK,
       },
     },
   ];

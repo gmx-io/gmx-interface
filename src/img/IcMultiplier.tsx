@@ -1,5 +1,6 @@
 import { useId } from "react";
 
+// Icon added as react component to avoid id duplication which creates bugs
 export function IcMultiplier(props: React.SVGProps<SVGSVGElement>) {
   const uid = useId();
 
