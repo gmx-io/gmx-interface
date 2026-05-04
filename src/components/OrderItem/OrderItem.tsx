@@ -28,6 +28,7 @@ import {
   isStopIncreaseOrderType,
   isStopLossOrderType,
   isSwapOrderType,
+  isTriggerDecreaseOrderType,
   isTwapOrder,
 } from "domain/synthetics/orders";
 import { useDisabledCancelMarketOrderMessage } from "domain/synthetics/orders/useDisabledCancelMarketOrderMessage";
@@ -35,6 +36,7 @@ import { PositionsInfoData, getNameByOrderType } from "domain/synthetics/positio
 import { convertToTokenAmount, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
 import { TokensRatioAndSlippage } from "domain/tokens";
+import { isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
 import { calculateDisplayDecimals, formatAmount, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { useIsTruncated } from "lib/useIsTruncated";
 import { getWrappedToken } from "sdk/configs/tokens";
@@ -303,6 +305,14 @@ function SizeWithIcon({ order, className }: { order: OrderInfo; className?: stri
   }
 
   const { sizeDeltaUsd } = order;
+  if (isTriggerDecreaseOrderType(order.orderType) && isFullPositionCloseSizeDeltaUsd(sizeDeltaUsd)) {
+    return (
+      <span className={className}>
+        <Trans>Full position close</Trans>
+      </span>
+    );
+  }
+
   const sizeText = formatUsd(sizeDeltaUsd * (isIncreaseOrderType(order.orderType) ? 1n : -1n), {
     displayPlus: true,
   });

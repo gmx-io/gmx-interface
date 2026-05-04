@@ -78,6 +78,7 @@ import {
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { getExpressError, getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
 import { TokensRatioAndSlippage } from "domain/tokens";
+import { FULL_POSITION_CLOSE_SIZE_DELTA_USD, isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
 import { numericBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
@@ -371,6 +372,12 @@ export function OrderEditor(p: Props) {
       };
     } else {
       const positionOrder = p.order as PositionOrderInfo;
+      const nextSizeDeltaUsd = sizeDeltaUsd ?? positionOrder.sizeDeltaUsd;
+      const shouldPreserveFullCloseSize =
+        isTriggerDecrease &&
+        isFullPositionCloseSizeDeltaUsd(positionOrder.sizeDeltaUsd) &&
+        existingPosition !== undefined &&
+        nextSizeDeltaUsd >= existingPosition.sizeInUsd;
 
       return {
         createOrderParams: [],
@@ -380,7 +387,7 @@ export function OrderEditor(p: Props) {
             indexTokenAddress: positionOrder.indexToken.address,
             orderKey: p.order.key,
             orderType: p.order.orderType,
-            sizeDeltaUsd: sizeDeltaUsd ?? positionOrder.sizeDeltaUsd,
+            sizeDeltaUsd: shouldPreserveFullCloseSize ? FULL_POSITION_CLOSE_SIZE_DELTA_USD : nextSizeDeltaUsd,
             triggerPrice: triggerPrice ?? positionOrder.triggerPrice,
             acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
             minOutputAmount: minOutputAmount ?? positionOrder.minOutputAmount,
@@ -397,6 +404,8 @@ export function OrderEditor(p: Props) {
     tokensData,
     marketsInfoData,
     p.order,
+    existingPosition,
+    isTriggerDecrease,
     triggerRatio?.ratio,
     triggerPrice,
     chainId,

@@ -11,10 +11,12 @@ import {
   PositionOrderInfo,
   isIncreaseOrderType,
   isMarketOrderType,
+  isTriggerDecreaseOrderType,
   isTwapOrder,
 } from "domain/synthetics/orders";
 import { useDisabledCancelMarketOrderMessage } from "domain/synthetics/orders/useDisabledCancelMarketOrderMessage";
 import { getNameByOrderType } from "domain/synthetics/positions";
+import { isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
 import { calculateDisplayDecimals, formatUsd } from "lib/numbers";
 
 import Button from "components/Button/Button";
@@ -180,6 +182,8 @@ function PositionItemOrderText({ order }: { order: PositionOrderInfo }) {
   const triggerThresholdType = order.triggerThresholdType;
   const isIncrease = isIncreaseOrderType(order.orderType);
   const isTwap = isTwapOrder(order);
+  const isFullClose =
+    isTriggerDecreaseOrderType(order.orderType) && isFullPositionCloseSizeDeltaUsd(order.sizeDeltaUsd);
 
   return (
     <div key={order.key} className="text-start">
@@ -199,8 +203,14 @@ function PositionItemOrderText({ order }: { order: PositionOrderInfo }) {
       )}
       :{" "}
       <span className="numbers">
-        {isIncrease ? "+" : "-"}
-        {formatUsd(order.sizeDeltaUsd)} {isTwapOrder(order) && <TwapOrderProgress order={order} />}
+        {isFullClose ? (
+          <Trans>Full position close</Trans>
+        ) : (
+          <>
+            {isIncrease ? "+" : "-"}
+            {formatUsd(order.sizeDeltaUsd)} {isTwap && <TwapOrderProgress order={order} />}
+          </>
+        )}
       </span>
     </div>
   );

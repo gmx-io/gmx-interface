@@ -210,6 +210,7 @@ export type TpSlCreatePayloadEntry = {
   amounts?: DecreasePositionAmounts;
   executionFeeAmount?: bigint;
   executionGasLimit?: bigint;
+  sizeDeltaUsd?: bigint;
 };
 
 export function buildTpSlCreatePayloads(p: {
@@ -247,7 +248,7 @@ export function buildTpSlCreatePayloads(p: {
       receiver: account,
       collateralDeltaAmount: amounts.collateralDeltaAmount ?? 0n,
       collateralTokenAddress,
-      sizeDeltaUsd: amounts.sizeDeltaUsd,
+      sizeDeltaUsd: item.sizeDeltaUsd ?? amounts.sizeDeltaUsd,
       sizeDeltaInTokens: amounts.sizeDeltaInTokens,
       referralCode: p.userReferralCode,
       uiFeeReceiver: UI_FEE_RECEIVER_ACCOUNT,

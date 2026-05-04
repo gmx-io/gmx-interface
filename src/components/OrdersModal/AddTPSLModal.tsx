@@ -53,6 +53,7 @@ import {
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { buildTpSlCreatePayloads, buildTpSlInputPositionData, getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
+import { FULL_POSITION_CLOSE_SIZE_DELTA_USD } from "domain/tpsl/utils";
 import { DUST_USD } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
@@ -622,6 +623,7 @@ export function AddTPSLModal({
     }
 
     const autoCancelOrdersLimitForModal = autoCancelOrdersLimit > 0 ? 2 : 0;
+    const sizeDeltaUsd = !editTPSLSize ? FULL_POSITION_CLOSE_SIZE_DELTA_USD : undefined;
 
     return buildTpSlCreatePayloads({
       autoCancelOrdersLimit: autoCancelOrdersLimitForModal,
@@ -636,11 +638,13 @@ export function AddTPSLModal({
           amounts: tpCreateAmounts,
           executionFeeAmount: tpExecutionFee?.feeTokenAmount,
           executionGasLimit: tpExecutionFee?.gasLimit,
+          sizeDeltaUsd,
         },
         {
           amounts: slCreateAmounts,
           executionFeeAmount: slExecutionFee?.feeTokenAmount,
           executionGasLimit: slExecutionFee?.gasLimit,
+          sizeDeltaUsd,
         },
       ],
       userReferralCode: userReferralInfo?.referralCodeForTxn,
@@ -659,6 +663,7 @@ export function AddTPSLModal({
     slPriceError,
     tpExecutionFee,
     slExecutionFee,
+    editTPSLSize,
   ]);
 
   const batchParams = useMemo(() => {
