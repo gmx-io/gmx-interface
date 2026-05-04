@@ -38,7 +38,7 @@ export function useSidecarOrderPayloads() {
 
     const getPayloadSizeDeltaUsd = (entry: (typeof createSltpEntries)[number] | (typeof updateSltpEntries)[number]) => {
       const amounts = entry.increaseAmounts || entry.decreaseAmounts;
-      const isFullClose = entry.percentage?.value === MAX_PERCENTAGE && Boolean(entry.decreaseAmounts?.isFullClose);
+      const isFullClose = Boolean(entry.decreaseAmounts) && entry.percentage?.value === MAX_PERCENTAGE;
 
       if (!amounts) {
         return 0n;
