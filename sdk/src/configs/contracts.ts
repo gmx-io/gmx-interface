@@ -70,6 +70,9 @@ export const CONTRACTS = {
 
     ChainlinkPriceFeedProvider: "0x38B8dB61b724b51e42A88Cb8eC564CD685a0f53B",
     ClaimHandler: "0x8a83F2a71A53d3860a60C9F2E68AB2C46Ff9624e",
+    StaticOracleProvider: "0xf9B783AFd36fc6e5e0b5f6490036343A9F12D05f",
+    FeeHandler: "0x7EB417637a3E6d1C19E6d69158c47610b7a5d9B3",
+    ConfigSyncer: "0x4C8569E2F8A8Af32E0464E53d76449Ca7a004baF",
 
     // External
     ExternalHandler: "0x389CEf541397e872dC04421f166B5Bc2E0b374a5",
@@ -147,6 +150,9 @@ export const CONTRACTS = {
 
     ChainlinkPriceFeedProvider: "0x05d97cee050bfb81FB3EaD4A9368584F8e72C88e",
     ClaimHandler: "0xefCAdA759241D10B45d9Cb6265B19ADec97ceced",
+    StaticOracleProvider: zeroAddress,
+    FeeHandler: "0x1A3A103F9F536a0456C9b205152A3ac2b3c54490",
+    ConfigSyncer: "0xFe6bDB87e59484Db1494a467CdbA7C051FB2A604",
 
     // External
     ExternalHandler: "0xD149573a098223a9185433290a5A5CDbFa54a8A9",
@@ -189,6 +195,9 @@ export const CONTRACTS = {
 
     ChainlinkPriceFeedProvider: "0xDc613305e9267f0770072dEaB8c03162e0554b2d",
     ClaimHandler: "0x162e3a5B47C9a45ff762E5b4b23D048D6780C14e",
+    StaticOracleProvider: zeroAddress,
+    FeeHandler: zeroAddress,
+    ConfigSyncer: zeroAddress,
 
     // External
     ExternalHandler: "0x36b906eA6AE7c74aeEE8cDE66D01B3f1f8843872",
@@ -311,6 +320,78 @@ export const CONTRACTS = {
     NATIVE_TOKEN: "0x4200000000000000000000000000000000000006",
   },
 
+  [MEGAETH]: {
+    // Synthetics
+    DataStore: "0xE43C7B694f6b652a9F4A0f275C008d18758Dce35",
+    EventEmitter: "0xAf2E131d483cedE068e21a9228aD91E623a989C2",
+    SubaccountRouter: "0x3133aC88af73d3187f1700a2426AD95B5d6E0562",
+    ExchangeRouter: "0x73B3593F01CF8e573a412D1d0c972b581794ebE0",
+    SimulationRouter: zeroAddress,
+    DepositVault: "0x8231A60862F9b0bA93fFA050c0E94AC902D901d2",
+    WithdrawalVault: "0x0Ec53dda9676219dE63eC703212219b07811F33C",
+    OrderVault: "0xD5AE04762E2afb1506695b3F36286EBE7B0E6772",
+    ShiftVault: "0xC255c70b50623054CADbAD9A02E1CFE73d286666",
+    SyntheticsReader: "0x0f038EB4a38B08cd3c937a3256b51aa01904a684",
+    SyntheticsRouter: "0x1eAfB14236C489C28845EC04F78DECA5Fb9879Aa",
+    GlvReader: "0x424527a588D56513cB2F5161958D83883EE8aB0f",
+    GlvRouter: "0x505F0cCADA00F0CcB4EEbf6467531cF4dd907B0E",
+    GlvVault: "0x52e4875EB5603d21912d30A1dBA6B0B97192459A",
+    GelatoRelayRouter: "0x24eD625B9C47fDEbF088A4d12B7f9B4B2f556297",
+    SubaccountGelatoRelayRouter: "0xD515fA0B4d704f3E2C57270F1F53BEeE16348B3b",
+    MultichainClaimsRouter: "0xfE9fD31e499bA6d8733Aec49ECe5b41381103433",
+    MultichainGlvRouter: "0xa44a3F66B3B4D4711D5Bd47e62ab5F13471e77CC",
+    MultichainGmRouter: "0x915d980926a8d63D8dfb577982BAa6916988aD52",
+    MultichainOrderRouter: "0x37322E93a0E611522D526ED0A6EC90EDE2118125",
+    MultichainSubaccountRouter: "0xeB8f828A4B89dc3A854f278227A2A5E136E50bF9",
+    MultichainTransferRouter: "0xB9FdA3F0f089B4fcaCd66BCC62D811fa6D69F53E",
+    MultichainVault: "0xd6922E889cE4CF14e59427F20e7d857ff81A5A9D",
+    LayerZeroProvider: "0xbfB6f55a561dd5c6FB263FBaBFdD82e4E9A9AffD",
+    ChainlinkPriceFeedProvider: "0x7452c558d45f8afC8c83dAe62C3f8A5BE19c71f6",
+    ClaimHandler: "0x06D774708a890f520e695322eE1aA5De3897261B",
+    StaticOracleProvider: "0x99442BA2f8c7E0d9c80acEeF142554c5dF324c7b",
+    FeeHandler: zeroAddress,
+    ConfigSyncer: zeroAddress,
+    ExternalHandler: "0xa7EE2737249e0099906cB079BCEe85f0bbd837d4",
+    OpenOceanRouter: zeroAddress,
+    Multicall: "0xF516BC01c50eebdBad4d7E506c8f690ae8EAFc52",
+    LayerZeroEndpoint: "0x6F475642a6e85809B1c36Fa62763669b1b48DD5B",
+    ArbitrumNodeInterface: zeroAddress,
+    GelatoRelayAddress: "0xaBcC9b596420A9E9172FD5938620E265a0f9Df92",
+    Vault: zeroAddress,
+    Reader: zeroAddress,
+    PositionRouter: zeroAddress,
+    ReferralStorage: zeroAddress,
+    VaultReader: zeroAddress,
+    GlpManager: zeroAddress,
+    RewardRouter: zeroAddress,
+    RewardReader: zeroAddress,
+    GlpRewardRouter: zeroAddress,
+    StakedGmxTracker: zeroAddress,
+    FeeGmxTracker: zeroAddress,
+    GLP: zeroAddress,
+    GMX: zeroAddress,
+    ES_GMX: zeroAddress,
+    BN_GMX: zeroAddress,
+    USDG: zeroAddress,
+    BonusGmxTracker: zeroAddress,
+    StakedGlpTracker: zeroAddress,
+    FeeGlpTracker: zeroAddress,
+    ExtendedGmxTracker: zeroAddress,
+    StakedGmxDistributor: zeroAddress,
+    StakedGlpDistributor: zeroAddress,
+    GmxVester: zeroAddress,
+    GlpVester: zeroAddress,
+    AffiliateVester: zeroAddress,
+    Router: zeroAddress,
+    GovToken: zeroAddress,
+    ES_GMX_IOU: zeroAddress,
+    OrderBook: zeroAddress,
+    UniswapGmxEthPool: zeroAddress,
+    NATIVE_TOKEN: "0x4200000000000000000000000000000000000006",
+    StBTC: zeroAddress,
+    PBTC: zeroAddress,
+  },
+
   [AVALANCHE_FUJI]: {
     // V1
     Vault: zeroAddress,
@@ -379,6 +460,9 @@ export const CONTRACTS = {
 
     ChainlinkPriceFeedProvider: "0x2e149AbC99cDC98FB0207d6F184DC323CEBB955B",
     ClaimHandler: "0x01D68cf13B8f67b041b8D565931e1370774cCeBd",
+    StaticOracleProvider: zeroAddress,
+    FeeHandler: zeroAddress,
+    ConfigSyncer: zeroAddress,
 
     // External
     KyberSwapRouter: zeroAddress,
@@ -420,6 +504,9 @@ export const CONTRACTS = {
     ChainlinkPriceFeedProvider: "0xa76BF7f977E80ac0bff49BDC98a27b7b070a937d",
     ReferralStorage: "0xBbCdA58c228Bb29B5769778181c81Ac8aC546c11",
     ClaimHandler: "0xdB980712cCB142A11296c1b9cf70C24E1e90002A",
+    StaticOracleProvider: zeroAddress,
+    FeeHandler: zeroAddress,
+    ConfigSyncer: zeroAddress,
 
     // External
     Multicall: "0xD84793ae65842fFac5C20Ab8eaBD699ea1FC79F3",

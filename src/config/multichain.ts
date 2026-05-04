@@ -33,6 +33,7 @@ import {
   AVALANCHE,
   AVALANCHE_FUJI,
   BOTANIX,
+  MEGAETH,
   ContractsChainId,
   MEGAETH,
   SETTLEMENT_CHAIN_IDS,

@@ -1,20 +1,8 @@
-import {
-  ARBITRUM,
-  ARBITRUM_SEPOLIA,
-  AVALANCHE,
-  AVALANCHE_FUJI,
-  BOTANIX,
-  MEGAETH,
-  SOURCE_ETHEREUM_MAINNET,
-  type ContractsChainId,
-} from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH, SOURCE_ETHEREUM_MAINNET } from "./chains";
 import { isDevelopment } from "./env";
 import { getIndexerUrlKey } from "./localStorage";
 
-type IndexerKey = "stats" | "referrals" | "syntheticsStats" | "subsquid" | "chainLink";
-type IndexerUrlMap = Partial<Record<IndexerKey, string>>;
-
-const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
+const INDEXER_URLS = {
   [ARBITRUM]: {
     stats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-arbitrum-stats/synts-stats-230627214534-0265e1f/gn",
@@ -44,31 +32,32 @@ const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
   },
 
   [ARBITRUM_SEPOLIA]: {
-    subsquid: "https://gmx-test.squids.live/gmx-synthetics-arb-sepolia@istcvu/api/graphql",
+    subsquid: "https://gmx.squids.live/gmx-synthetics-arb-sepolia:prod/api/graphql",
   },
 
   [BOTANIX]: {
     subsquid: "https://gmx.squids.live/gmx-synthetics-botanix:prod/api/graphql",
+    stats:
+      "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-botanix-stats/botanix-250617091016-f7b3bb5/gn",
     syntheticsStats:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-botanix-stats/botanix-250617091016-f7b3bb5/gn",
   },
 
   [MEGAETH]: {
     subsquid: "https://gmx.squids.live/gmx-synthetics-megaeth:prod/api/graphql",
-    syntheticsStats:
-      "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-megaeth-stats/master-260120151613-540f334/gn",
-    referrals:
-      "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-megaeth-referrals/master-260209144108-a841c81/gn",
+  },
+
+  common: {
+    [SOURCE_ETHEREUM_MAINNET]: {
+      chainLink: "https://api.thegraph.com/subgraphs/name/deividask/chainlink",
+    },
   },
 };
 
-const COMMON_INDEXER_URLS: Partial<Record<number, IndexerUrlMap>> = {
-  [SOURCE_ETHEREUM_MAINNET]: {
-    chainLink: "https://api.thegraph.com/subgraphs/name/deividask/chainlink",
-  },
-};
-
-export function getIndexerUrl(chainId: number, indexer: IndexerKey): string | undefined {
+export function getIndexerUrl(
+  chainId: number,
+  indexer: "stats" | "referrals" | "syntheticsStats" | "subsquid" | "chainLink"
+): string | undefined {
   if (isDevelopment()) {
     const localStorageKey = getIndexerUrlKey(chainId, indexer);
     const url = localStorage.getItem(localStorageKey);
@@ -80,8 +69,8 @@ export function getIndexerUrl(chainId: number, indexer: IndexerKey): string | un
   }
 
   if (chainId === SOURCE_ETHEREUM_MAINNET) {
-    return COMMON_INDEXER_URLS[chainId]?.[indexer];
+    return INDEXER_URLS.common[SOURCE_ETHEREUM_MAINNET]?.[indexer];
   }
 
-  return INDEXER_URLS[chainId as ContractsChainId]?.[indexer];
+  return INDEXER_URLS?.[chainId]?.[indexer];
 }

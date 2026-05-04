@@ -45,6 +45,6 @@ export const CHAIN_ID_TO_EXPLORER_NAME: Record<AnyChainId, string> = {
   [SOURCE_OPTIMISM_SEPOLIA]: "OP Sepolia Etherscan",
   [SOURCE_SEPOLIA]: "Sepolia Etherscan",
   [BOTANIX]: "Botanix Explorer",
-  [MEGAETH]: "MegaExplorer",
+  [MEGAETH]: "MegaETH Explorer",
   [SOURCE_BSC_MAINNET]: "BSC Scan",
 };

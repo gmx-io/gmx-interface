@@ -106,6 +106,25 @@ const CONTRACTS_CHAIN_CONFIGS = {
     gasPriceBuffer: undefined,
     isDisabled: false,
   },
+  [MEGAETH]: {
+    chainId: MEGAETH,
+    name: "MegaETH",
+    slug: "megaeth",
+    explorerUrl: "https://megaeth.blockscout.com/",
+    nativeTokenSymbol: "ETH",
+    wrappedTokenSymbol: "WETH",
+    defaultCollateralSymbol: "USDM",
+    highExecutionFee: 5,
+    shouldUseMaxPriorityFeePerGas: false,
+    defaultExecutionFeeBufferBps: 3000, // 30%
+    maxFeePerGas: undefined,
+    gasPricePremium: 0n,
+    maxPriorityFeePerGas: 1500000000n, // 1.5 gwei
+    excessiveExecutionFee: 10, // 10 USD
+    minExecutionFee: undefined,
+    gasPriceBuffer: 2000n, // 20%
+    isDisabled: false,
+  },
   [AVALANCHE_FUJI]: {
     chainId: AVALANCHE_FUJI,
     name: "Avalanche Fuji",
@@ -269,6 +288,32 @@ export type ContractsChainSlug = (typeof CONTRACTS_CHAIN_CONFIGS)[keyof typeof C
 export type SourceChainSlug = (typeof SOURCE_CHAIN_CONFIGS)[keyof typeof SOURCE_CHAIN_CONFIGS]["slug"];
 export type ChainSlug = ContractsChainSlug | SourceChainSlug | "unknown";
 
+export const megaEth: Chain = defineChain({
+  id: MEGAETH,
+  name: "MegaETH",
+  nativeCurrency: {
+    name: "Ether",
+    symbol: "ETH",
+    decimals: 18,
+  },
+  rpcUrls: {
+    default: {
+      http: ["https://mainnet.megaeth.com/rpc"],
+    },
+  },
+  blockExplorers: {
+    default: {
+      name: "MegaETH Explorer",
+      url: "https://megaeth.blockscout.com/",
+    },
+  },
+  contracts: {
+    multicall3: {
+      address: "0xF516BC01c50eebdBad4d7E506c8f690ae8EAFc52",
+    },
+  },
+});
+
 export const botanix: Chain = defineChain({
   id: BOTANIX,
   name: "Botanix",
@@ -331,6 +376,7 @@ export const VIEM_CHAIN_BY_CHAIN_ID: Record<AnyChainId, Chain> = {
   [ARBITRUM]: arbitrum,
   [AVALANCHE]: avalanche,
   [ARBITRUM_SEPOLIA]: arbitrumSepolia,
+  [MEGAETH]: megaEth,
   [BOTANIX]: botanix,
   [MEGAETH]: megaeth,
   [SOURCE_ETHEREUM_MAINNET]: mainnet,

@@ -24,7 +24,7 @@ const chainsMap: Record<ContractsChainIdProduction, ContractsChainIdProduction> 
   [BOTANIX]: BOTANIX,
   [MEGAETH]: MEGAETH,
 };
-const chains = Object.values(chainsMap);
+const chains = Object.values(chainsMap).filter((chain) => Boolean(getTokenBySymbol(chain, "GMX").address));
 const gmxTokenAddresses = chains.map((chain) => getTokenBySymbol(chain, "GMX").address);
 const gmGmxTokenAddresses = chains.map((chain) =>
   Object.keys(MARKETS[chain]).filter((address) => {

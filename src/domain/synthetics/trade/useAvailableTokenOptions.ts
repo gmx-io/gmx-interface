@@ -78,6 +78,7 @@ const FORCE_ALLOWED_COLLATERAL_TOKENS: Record<ContractsChainId, string[]> = {
   [ARBITRUM]: [],
   [AVALANCHE_FUJI]: [],
   [ARBITRUM_SEPOLIA]: [],
+  [MEGAETH]: [],
 };
 
 export function useAvailableTokenOptions(
