@@ -78,7 +78,11 @@ import {
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { getExpressError, getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
 import { TokensRatioAndSlippage } from "domain/tokens";
-import { FULL_POSITION_CLOSE_SIZE_DELTA_USD, isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
+import {
+  FULL_POSITION_CLOSE_SIZE_DELTA_USD,
+  getPositionCloseSizeDeltaUsdForDisplay,
+  isFullPositionCloseSizeDeltaUsd,
+} from "domain/tpsl/utils";
 import { numericBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
@@ -638,10 +642,20 @@ export function OrderEditor(p: Props) {
         const positionOrder = p.order as PositionOrderInfo;
 
         if (isTriggerDecrease) {
+          const orderSizeDeltaUsd = positionOrder.sizeDeltaUsd ?? 0n;
+
+          if (isFullPositionCloseSizeDeltaUsd(orderSizeDeltaUsd) && !existingPosition) {
+            return;
+          }
+
+          const displaySizeDeltaUsd = getPositionCloseSizeDeltaUsdForDisplay(
+            orderSizeDeltaUsd,
+            existingPosition?.sizeInUsd
+          );
           const clampedSizeDeltaUsd =
-            existingPosition && (positionOrder.sizeDeltaUsd ?? 0n) > existingPosition.sizeInUsd
+            existingPosition && displaySizeDeltaUsd > existingPosition.sizeInUsd
               ? existingPosition.sizeInUsd
-              : positionOrder.sizeDeltaUsd ?? 0n;
+              : displaySizeDeltaUsd;
           closeSize.setFromUsdString(formatAmountFree(clampedSizeDeltaUsd, USD_DECIMALS));
         } else {
           setSizeInputValue(formatAmountFree(positionOrder.sizeDeltaUsd ?? 0n, USD_DECIMALS));

@@ -623,7 +623,8 @@ export function AddTPSLModal({
     }
 
     const autoCancelOrdersLimitForModal = autoCancelOrdersLimit > 0 ? 2 : 0;
-    const sizeDeltaUsd = !editTPSLSize ? FULL_POSITION_CLOSE_SIZE_DELTA_USD : undefined;
+    const tpSizeDeltaUsd = tpCreateAmounts?.isFullClose ? FULL_POSITION_CLOSE_SIZE_DELTA_USD : undefined;
+    const slSizeDeltaUsd = slCreateAmounts?.isFullClose ? FULL_POSITION_CLOSE_SIZE_DELTA_USD : undefined;
 
     return buildTpSlCreatePayloads({
       autoCancelOrdersLimit: autoCancelOrdersLimitForModal,
@@ -638,13 +639,13 @@ export function AddTPSLModal({
           amounts: tpCreateAmounts,
           executionFeeAmount: tpExecutionFee?.feeTokenAmount,
           executionGasLimit: tpExecutionFee?.gasLimit,
-          sizeDeltaUsd,
+          sizeDeltaUsd: tpSizeDeltaUsd,
         },
         {
           amounts: slCreateAmounts,
           executionFeeAmount: slExecutionFee?.feeTokenAmount,
           executionGasLimit: slExecutionFee?.gasLimit,
-          sizeDeltaUsd,
+          sizeDeltaUsd: slSizeDeltaUsd,
         },
       ],
       userReferralCode: userReferralInfo?.referralCodeForTxn,
@@ -663,7 +664,6 @@ export function AddTPSLModal({
     slPriceError,
     tpExecutionFee,
     slExecutionFee,
-    editTPSLSize,
   ]);
 
   const batchParams = useMemo(() => {
