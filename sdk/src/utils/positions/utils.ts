@@ -107,6 +107,20 @@ export function getPositionNetValue(p: {
   return collateralUsd - pendingFeesUsd + pnl;
 }
 
+export function getPositionNetValueAfterAllFees(p: {
+  collateralUsd: bigint;
+  pnl: bigint;
+  pendingBorrowingFeesUsd: bigint;
+  pendingFundingFeesUsd: bigint;
+  netPriceImpactDeltaUsd: bigint;
+  closingFeeUsd: bigint;
+}) {
+  const { collateralUsd, pnl, pendingBorrowingFeesUsd, pendingFundingFeesUsd, netPriceImpactDeltaUsd, closingFeeUsd } =
+    p;
+
+  return collateralUsd + pnl - pendingBorrowingFeesUsd - pendingFundingFeesUsd + netPriceImpactDeltaUsd - closingFeeUsd;
+}
+
 export function getPositionPnlAfterFees({
   pnl,
   pendingBorrowingFeesUsd,
@@ -119,6 +133,22 @@ export function getPositionPnlAfterFees({
   const pnlAfterFees = pnl - pendingBorrowingFeesUsd - pendingFundingFeesUsd;
 
   return pnlAfterFees;
+}
+
+export function getPositionPnlAfterAllFees({
+  pnl,
+  pendingBorrowingFeesUsd,
+  pendingFundingFeesUsd,
+  netPriceImpactDeltaUsd,
+  closingFeeUsd,
+}: {
+  pnl: bigint;
+  pendingBorrowingFeesUsd: bigint;
+  pendingFundingFeesUsd: bigint;
+  netPriceImpactDeltaUsd: bigint;
+  closingFeeUsd: bigint;
+}) {
+  return pnl - pendingBorrowingFeesUsd - pendingFundingFeesUsd + netPriceImpactDeltaUsd - closingFeeUsd;
 }
 
 export function getLeverage(p: {
