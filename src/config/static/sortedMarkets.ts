@@ -1,4 +1,4 @@
-import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH } from "sdk/configs/chains";
+import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH, type ContractsChainId } from "sdk/configs/chains";
 
 /*
   A temporary solution before positions sorting logic is updated
@@ -7,7 +7,7 @@ import { ARBITRUM, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH } from "sdk/confi
   When adding new markets, add them to the end of the list
   or update arrays based on marketInfo sorting in runtime
 */
-export const SORTED_MARKETS = {
+export const SORTED_MARKETS: Partial<Record<ContractsChainId, string[]>> = {
   [ARBITRUM]: [
     "0x47c031236e19d024b42f8AE6780E44A573170703",
     "0x7C11F78Ce78768518D743E81Fdfa2F860C6b9A77",
@@ -138,6 +138,10 @@ export const SORTED_MARKETS = {
     "0x5ff52BE1968107D7886a8E9A64874A45c8F5D96a",
     "0x45F0331a6e175B556Bc7d28E0A1c349525006d4E",
     "0xbA30e198CFFeBEf0A84D6943cC8B2e356E324112",
+    "0xda81cdd397210C08cFc567f93982E148A3aac8a6", // WTIOIL/USD
+    "0x6F287D071800BfA847B4a7a7104BE33F87Ce9E74", // BRENTOIL/USD
+    "0x2Ce2bc8B0f9d000f359d756a5816C125474Bb39b", // NATGAS/USD
+    "0xE26E7b91143f367445f1c0a5dCf4f4aC8EaDcDb1", // MEGA/USD
   ],
   [AVALANCHE]: [
     "0x913C1F46b48b3eD35E7dc3Cf754d4ae8499F31CF",
@@ -183,5 +187,6 @@ export const SORTED_MARKETS = {
     "0x9b1B72720f6D277F3b1e607a0c5fab1B300248b1",
     "0xe8E716F1cddfFD0698B86919D41A8228d701fEe9",
     "0xc5c9B5E23810565763De41144741477eeCB25e2e",
+    "0x1b997cb4841c4cb360E384192fFd7fb26eb10e5f",
   ],
 };

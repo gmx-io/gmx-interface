@@ -29,12 +29,12 @@ export async function getReferralCodeTakenStatus(
   await Promise.all(
     CONTRACTS_CHAIN_IDS.map(async (otherChainId) => {
       try {
-        const res = await getReferralCodeOwner(otherChainId as ContractsChainId, referralCodeBytes32);
+        const res = await getReferralCodeOwner(otherChainId, referralCodeBytes32);
         ownerMap[otherChainId] = res;
       } catch (error) {
         // eslint-disable-next-line no-console
         console.error(`Failed to check referral code owner on chain ${otherChainId}:`, error);
-        failedChains.push(otherChainId as ContractsChainId);
+        failedChains.push(otherChainId);
       }
     })
   );
@@ -42,7 +42,7 @@ export async function getReferralCodeTakenStatus(
   const takenMap: Partial<Record<ContractsChainId, boolean>> = {};
 
   for (const otherChainId of CONTRACTS_CHAIN_IDS) {
-    if (failedChains.includes(otherChainId as ContractsChainId)) {
+    if (failedChains.includes(otherChainId)) {
       continue;
     }
 
@@ -53,9 +53,7 @@ export async function getReferralCodeTakenStatus(
     takenMap[otherChainId] = takenOnOtherChain;
   }
 
-  const checkedChains = CONTRACTS_CHAIN_IDS.filter(
-    (id) => !failedChains.includes(id as ContractsChainId)
-  ) as ContractsChainId[];
+  const checkedChains = CONTRACTS_CHAIN_IDS.filter((id) => !failedChains.includes(id));
   const allTaken = checkedChains.length > 0 && checkedChains.every((id) => takenMap[id]);
   const someTaken = Object.values(takenMap).some(identity);
 
@@ -76,13 +74,13 @@ export function getTierIdDisplay(tierId: number | bigint | string): number {
   return Number(tierId) + 1;
 }
 
-const tierRebateInfo = {
+const tierRebateInfo: Record<number, number> = {
   0: 5,
   1: 10,
   2: 15,
 };
 
-const tierDiscountInfo = {
+const tierDiscountInfo: Record<number, number> = {
   0: 5,
   1: 10,
   2: 10,

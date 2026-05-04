@@ -445,6 +445,7 @@ function useFilterSortTokens({
             [
               (item) => stripBlacklistedWords(item.name),
               (item) => (isSwap ? item.symbol : `${getTokenVisualMultiplier(item)}${item.symbol}`),
+              (item) => (item.searchAliases ?? []).join(" "),
             ],
             searchKeyword
           )

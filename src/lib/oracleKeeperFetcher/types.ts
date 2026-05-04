@@ -78,9 +78,11 @@ export type BatchReportBody = {
   items: BatchReportItem[];
 };
 
+export type ApyInfoEntry = { address: string; baseApy: number; bonusApy: number; apy: number };
+
 export type ApyInfo = {
-  markets: { address: string; baseApy: number; bonusApy: number; apy: number }[];
-  glvs: { address: string; baseApy: number; bonusApy: number; apy: number }[];
+  markets: Record<string, ApyInfoEntry>;
+  glvs: Record<string, ApyInfoEntry>;
 };
 
 export type PerformanceInfo = {

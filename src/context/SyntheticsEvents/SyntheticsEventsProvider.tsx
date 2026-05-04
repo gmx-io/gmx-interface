@@ -1230,7 +1230,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
     hasPageLostFocus,
   });
 
-  const [multichainTransferProgress, setMultichainTransferProgress] = useState<MultichainTransferProgress | undefined>(
+  const [multichainTransferProgress, setMultichainTransferProgress] = useState<
+    MultichainTransferProgress<string> | undefined
+  >(
     undefined
   );
 

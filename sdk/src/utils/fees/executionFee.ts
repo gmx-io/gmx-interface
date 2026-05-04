@@ -90,6 +90,14 @@ export function estimateRelayerGasLimit({
   return relayParamsGasLimit + transactionPayloadGasLimit + l1GasLimit;
 }
 
+const MIN_GAS_LIMIT = 22000n;
+const GAS_BUFFER_BPS = 1000n; // 10%
+
+export function applyGasBuffer(gasLimit: bigint): bigint {
+  const clamped = gasLimit < MIN_GAS_LIMIT ? MIN_GAS_LIMIT : gasLimit;
+  return clamped + (clamped * GAS_BUFFER_BPS) / 10000n;
+}
+
 export function approximateL1GasBuffer({
   l1Reference,
   sizeOfData,

@@ -202,11 +202,17 @@ export const formatPositionMessage = (
         ? lines(t`Mark price for the order`, "", ...priceImpactLines)
         : lines(t`Mark price for the order`);
 
+    const showFeePnl = sizeDeltaUsd > 0n && tradeAction.pnlUsd !== undefined;
+    const formattedPnl = showFeePnl ? formatUsd(tradeAction.pnlUsd) : undefined;
+
     result = {
       action: customAction,
       size: customSize,
       priceComment: priceComment,
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
+      pnl: formattedPnl,
+      pnlState: showFeePnl ? numberToState(tradeAction.pnlUsd!) : undefined,
+      pnlTooltip: showFeePnl ? t`Opening fee paid at this action. Subtracted from your realized PnL.` : undefined,
     };
   } else if (ot === OrderType.MarketIncrease && ev === TradeActionType.OrderCancelled) {
     const customAction = sizeDeltaUsd > 0 ? action : i18n._(actionTextMap["Deposit-OrderCancelled"]!);
@@ -247,6 +253,7 @@ export const formatPositionMessage = (
   } else if (tradeAction.twapParams) {
     if (ev === TradeActionType.OrderExecuted) {
       const formattedPnl = sizeDeltaUsd > 0n ? formatUsd(tradeAction.pnlUsd) : undefined;
+      const isIncreaseTwap = isIncreaseOrderType(tradeAction.orderType);
 
       result = {
         priceComment: lines(
@@ -258,6 +265,10 @@ export const formatPositionMessage = (
         acceptablePrice: t`N/A`,
         pnl: formattedPnl,
         pnlState: numberToState(tradeAction.pnlUsd),
+        pnlTooltip:
+          isIncreaseTwap && tradeAction.pnlUsd !== undefined && sizeDeltaUsd > 0n
+            ? t`Opening fee paid at this action. Subtracted from your realized PnL.`
+            : undefined,
       };
     } else {
       const error = tradeAction.reasonBytes ? tryDecodeCustomError(tradeAction.reasonBytes) ?? undefined : undefined;
@@ -304,6 +315,7 @@ export const formatPositionMessage = (
     (ot === OrderType.StopIncrease && ev === TradeActionType.OrderExecuted)
   ) {
     const isAcceptablePriceUseful = !isBoundaryAcceptablePrice(tradeAction.acceptablePrice);
+    const formattedPnl = tradeAction.pnlUsd !== undefined ? formatUsd(tradeAction.pnlUsd) : undefined;
 
     result = {
       priceComment: lines(
@@ -313,6 +325,12 @@ export const formatPositionMessage = (
         ...priceImpactLines
       ),
       acceptablePrice: isAcceptablePriceUseful ? acceptablePriceInequality + formattedAcceptablePrice : undefined,
+      pnl: formattedPnl,
+      pnlState: tradeAction.pnlUsd !== undefined ? numberToState(tradeAction.pnlUsd) : undefined,
+      pnlTooltip:
+        tradeAction.pnlUsd !== undefined
+          ? t`Opening fee paid at this action. Subtracted from your realized PnL.`
+          : undefined,
     };
   } else if (
     (ot === OrderType.LimitIncrease && ev === TradeActionType.OrderFrozen) ||

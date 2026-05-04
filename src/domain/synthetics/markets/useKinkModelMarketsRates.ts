@@ -2,7 +2,8 @@ import { useMemo } from "react";
 
 import { getContract } from "config/contracts";
 import { useMarkets } from "domain/synthetics/markets";
-import { ContractCallsConfig, useMulticall } from "lib/multicall";
+import { useMulticall } from "lib/multicall";
+import type { ContractCallsConfig, MulticallRequestConfig } from "lib/multicall";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 import { HASHED_KINK_MODEL_MARKET_RATES_KEYS } from "sdk/codegen/prebuilt";
 import type { ContractsChainId } from "sdk/configs/chains";
@@ -32,48 +33,52 @@ export function useKinkModelMarketsRates(chainId: ContractsChainId): KinkModelMa
     refreshInterval: CONFIG_UPDATE_INTERVAL,
 
     request: () =>
-      marketsAddresses.reduce((acc, marketAddress) => {
-        const prebuiltHashedKeys = HASHED_KINK_MODEL_MARKET_RATES_KEYS[chainId]?.[marketAddress];
+      marketsAddresses.reduce<MulticallRequestConfig>(
+        (acc, marketAddress) => {
+          // @ts-expect-error
+          const prebuiltHashedKeys = HASHED_KINK_MODEL_MARKET_RATES_KEYS[chainId]?.[marketAddress];
 
-        if (!prebuiltHashedKeys) {
-          throw new Error(
-            `No pre-built hashed config keys found for the market ${marketAddress}. Run \`yarn prebuild\` to generate them.`
-          );
-        }
+          if (!prebuiltHashedKeys) {
+            throw new Error(
+              `No pre-built hashed config keys found for the market ${marketAddress}. Run \`yarn prebuild\` to generate them.`
+            );
+          }
 
-        acc[`${marketAddress}-dataStore`] = {
-          contractAddress: dataStoreAddress,
-          abiId: "DataStore",
-          calls: {
-            optimalUsageFactorLong: {
-              methodName: "getUint",
-              params: [prebuiltHashedKeys.optimalUsageFactorLong],
+          acc[`${marketAddress}-dataStore`] = {
+            contractAddress: dataStoreAddress,
+            abiId: "DataStore",
+            calls: {
+              optimalUsageFactorLong: {
+                methodName: "getUint",
+                params: [prebuiltHashedKeys.optimalUsageFactorLong],
+              },
+              optimalUsageFactorShort: {
+                methodName: "getUint",
+                params: [prebuiltHashedKeys.optimalUsageFactorShort],
+              },
+              baseBorrowingFactorLong: {
+                methodName: "getUint",
+                params: [prebuiltHashedKeys.baseBorrowingFactorLong],
+              },
+              baseBorrowingFactorShort: {
+                methodName: "getUint",
+                params: [prebuiltHashedKeys.baseBorrowingFactorShort],
+              },
+              aboveOptimalUsageBorrowingFactorLong: {
+                methodName: "getUint",
+                params: [prebuiltHashedKeys.aboveOptimalUsageBorrowingFactorLong],
+              },
+              aboveOptimalUsageBorrowingFactorShort: {
+                methodName: "getUint",
+                params: [prebuiltHashedKeys.aboveOptimalUsageBorrowingFactorShort],
+              },
             },
-            optimalUsageFactorShort: {
-              methodName: "getUint",
-              params: [prebuiltHashedKeys.optimalUsageFactorShort],
-            },
-            baseBorrowingFactorLong: {
-              methodName: "getUint",
-              params: [prebuiltHashedKeys.baseBorrowingFactorLong],
-            },
-            baseBorrowingFactorShort: {
-              methodName: "getUint",
-              params: [prebuiltHashedKeys.baseBorrowingFactorShort],
-            },
-            aboveOptimalUsageBorrowingFactorLong: {
-              methodName: "getUint",
-              params: [prebuiltHashedKeys.aboveOptimalUsageBorrowingFactorLong],
-            },
-            aboveOptimalUsageBorrowingFactorShort: {
-              methodName: "getUint",
-              params: [prebuiltHashedKeys.aboveOptimalUsageBorrowingFactorShort],
-            },
-          },
-        } satisfies ContractCallsConfig<any>;
+          } satisfies ContractCallsConfig<any>;
 
-        return acc;
-      }, {}),
+          return acc;
+        },
+        {}
+      ),
     parseResponse: (res) => {
       const result = marketsAddresses!.reduce(
         (acc, marketAddress) => {

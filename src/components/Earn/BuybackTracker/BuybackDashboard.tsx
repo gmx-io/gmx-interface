@@ -2,7 +2,7 @@ import { t } from "@lingui/macro";
 
 import { useBuybackChartData } from "domain/buyback/useBuybackChartData";
 import { useBuybackWeeklyStats } from "domain/buyback/useBuybackWeeklyStats";
-import { useTotalGmxStaked } from "domain/legacy";
+import { useTotalStakedGmxAndEsGmx } from "domain/legacy";
 import { bigintToNumber } from "lib/numbers";
 
 import { AppCard, AppCardSection } from "components/AppCard/AppCard";
@@ -12,10 +12,11 @@ import { BuybackMetricsHeader } from "./BuybackMetricsHeader";
 
 export function BuybackDashboard({ gmxPrice }: { gmxPrice: bigint | undefined }) {
   const { data, isLoading, error } = useBuybackWeeklyStats();
-  const { total: totalStakedGmx } = useTotalGmxStaked();
+  const { total: totalStakedAmount } = useTotalStakedGmxAndEsGmx();
 
   const gmxPriceNumber = gmxPrice !== undefined ? bigintToNumber(gmxPrice, 30) : undefined;
-  const totalStakedGmxNumber = totalStakedGmx > 0n ? bigintToNumber(totalStakedGmx, 18) : undefined;
+  const totalStakedGmxNumber =
+    totalStakedAmount !== undefined && totalStakedAmount > 0n ? bigintToNumber(totalStakedAmount, 18) : undefined;
 
   const { chartData, metrics } = useBuybackChartData(data, gmxPriceNumber, totalStakedGmxNumber);
 

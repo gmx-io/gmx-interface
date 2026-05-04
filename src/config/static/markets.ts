@@ -541,6 +541,22 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0x448Fa722717df299ee197E2F6d8EB7911EFF6cEc": {
       enabled: true,
     },
+    // WTIOIL/USD [WETH-USDC]
+    "0xda81cdd397210C08cFc567f93982E148A3aac8a6": {
+      enabled: true,
+    },
+    // BRENTOIL/USD [WETH-USDC]
+    "0x6F287D071800BfA847B4a7a7104BE33F87Ce9E74": {
+      enabled: true,
+    },
+    // NATGAS/USD [WETH-USDC]
+    "0x2Ce2bc8B0f9d000f359d756a5816C125474Bb39b": {
+      enabled: true,
+    },
+    // MEGA/USD [WETH-USDC]
+    "0xE26E7b91143f367445f1c0a5dCf4f4aC8EaDcDb1": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
@@ -771,6 +787,10 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0xe8E716F1cddfFD0698B86919D41A8228d701fEe9": {
       enabled: true,
     },
+    // MEGA/USD [USDM-USDM]
+    "0x1b997cb4841c4cb360E384192fFd7fb26eb10e5f": {
+      enabled: true,
+    },
     // SWAP-ONLY [ETH-USDM]
     "0xc5c9B5E23810565763De41144741477eeCB25e2e": {
       enabled: true,
@@ -811,6 +831,9 @@ export const DEPOSIT_DISABLED_MARKET_ADDRESSES: Record<number, Set<string>> = {
     // Commodity markets — accessible only via GLV
     "0x0Df2BE76F517BCF0000AbfFcB6344B3b2aC4Cc4f", // GOLD/USD
     "0x448Fa722717df299ee197E2F6d8EB7911EFF6cEc", // SILVER/USD
+    "0xda81cdd397210C08cFc567f93982E148A3aac8a6", // WTIOIL/USD
+    "0x6F287D071800BfA847B4a7a7104BE33F87Ce9E74", // BRENTOIL/USD
+    "0x2Ce2bc8B0f9d000f359d756a5816C125474Bb39b", // NATGAS/USD
   ]),
 };
 
@@ -823,6 +846,9 @@ export const SHIFT_INTO_DISABLED_MARKET_ADDRESSES: Record<number, Set<string>> =
     // Commodity markets — accessible only via GLV
     "0x0Df2BE76F517BCF0000AbfFcB6344B3b2aC4Cc4f", // GOLD/USD
     "0x448Fa722717df299ee197E2F6d8EB7911EFF6cEc", // SILVER/USD
+    "0xda81cdd397210C08cFc567f93982E148A3aac8a6", // WTIOIL/USD
+    "0x6F287D071800BfA847B4a7a7104BE33F87Ce9E74", // BRENTOIL/USD
+    "0x2Ce2bc8B0f9d000f359d756a5816C125474Bb39b", // NATGAS/USD
   ]),
 };
 
@@ -830,16 +856,18 @@ export function isShiftIntoDisabledMarket(chainId: number, marketTokenAddress: s
   return SHIFT_INTO_DISABLED_MARKET_ADDRESSES[chainId]?.has(marketTokenAddress) ?? false;
 }
 
-export const MARKETS = Object.keys(MARKETS_UI_CONFIGS).reduce(
+export const MARKETS = (Object.keys(MARKETS_UI_CONFIGS) as unknown as ContractsChainId[]).reduce(
   (acc, network) => {
+    const uiConfigs = MARKETS_UI_CONFIGS[network];
+    const sdkMarkets = SDK_MARKETS[network];
     return {
       ...acc,
-      [network]: Object.keys(MARKETS_UI_CONFIGS[network]).reduce((acc, address) => {
+      [network]: Object.keys(uiConfigs).reduce((acc, address) => {
         return {
           ...acc,
           [address]: {
-            ...SDK_MARKETS[network][address],
-            ...MARKETS_UI_CONFIGS[network][address],
+            ...sdkMarkets[address],
+            ...uiConfigs[address],
           },
         };
       }, {}),

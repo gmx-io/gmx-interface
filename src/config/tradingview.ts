@@ -9,6 +9,8 @@ export const SUPPORTED_RESOLUTIONS_V2 = {
   "1M": "1M",
 };
 
+export type TradingViewResolution = keyof typeof SUPPORTED_RESOLUTIONS_V2;
+
 export const RESOLUTION_TO_SECONDS: Record<string, number> = {
   1: 60,
   5: 60 * 5,

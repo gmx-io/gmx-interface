@@ -31,6 +31,7 @@ export function useGmxAccountTokenBalances(
   const { data, error } = useMulticall(chainId as SettlementChainId, "useGmxAccountTokenBalances", {
     key: account && enabled && isSettlementChain(chainId) ? [account] : null,
     refreshInterval,
+    // @ts-expect-error
     request: (chainId, key) => buildGmxAccountTokenBalancesRequest(chainId, key?.[0] as string),
     parseResponse: (result) => {
       const parsedResult = parseGmxAccountTokenBalancesData(result);

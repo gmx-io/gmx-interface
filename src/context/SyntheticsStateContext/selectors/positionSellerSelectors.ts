@@ -10,10 +10,10 @@ import {
   findAllReachableTokens,
   getMarkPrice,
   getNextPositionValuesForDecreaseTrade,
-  getOptimalDecreaseAndSwapAmounts,
   getTradeFees,
   getTriggerDecreaseOrderType,
 } from "domain/synthetics/trade";
+import { getOptimalDecreaseAndSwapAmounts } from "domain/synthetics/trade";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { parseValue } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";

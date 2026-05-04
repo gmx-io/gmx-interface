@@ -376,7 +376,7 @@ export function OverviewCard({
         </p>
         <p className="Tooltip-row">
           <span className="label">
-            <Trans>Annualized buy pressure (BB&D):</Trans>
+            <Trans>Annualized buy pressure:</Trans>
           </span>
           <span className="numbers">{formatAmountHuman(annualizedTotalBuyingPressure, USD_DECIMALS, true, 2)}</span>
         </p>

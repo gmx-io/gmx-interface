@@ -1,21 +1,24 @@
 import { gql } from "@apollo/client";
 
 import { chainlinkClient } from "lib/indexers/clients";
-import { CHART_PERIODS } from "lib/legacy";
+import { type ChartPeriod, CHART_PERIODS } from "lib/legacy";
 import { MaxInt256 } from "lib/numbers";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { FEED_ID_MAP } from "./constants";
 import type { Bar, FromOldToNewArray } from "../tradingview/types";
 
-function getCandlesFromPrices(prices, period) {
+type PricePoint = [timestamp: number, price: number];
+type RawCandle = { t: number; o: number; h: number; l: number; c: number };
+
+function getCandlesFromPrices(prices: PricePoint[], period: ChartPeriod): Bar[] {
   const periodTime = CHART_PERIODS[period];
 
   if (prices.length < 2) {
     return [];
   }
 
-  const candles: any[] = [];
+  const candles: RawCandle[] = [];
   const first = prices[0];
   let prevTsGroup = Math.floor(first[0] / periodTime) * periodTime;
   let prevPrice = first[1];
@@ -79,7 +82,7 @@ export function getChainlinkChartPricesFromGraph(tokenSymbol: string, period: st
       let prices: any[] = [];
       const uniqTs = new Set();
       chunks.forEach((chunk) => {
-        chunk.data.rounds.forEach((item) => {
+        chunk.data.rounds.forEach((item: { unixTimestamp: number; value: string | number }) => {
           if (uniqTs.has(item.unixTimestamp)) {
             return;
           }
@@ -90,7 +93,7 @@ export function getChainlinkChartPricesFromGraph(tokenSymbol: string, period: st
       });
 
       prices.sort(([timeA], [timeB]) => timeA - timeB);
-      prices = getCandlesFromPrices(prices, period);
+      prices = getCandlesFromPrices(prices, period as ChartPeriod);
       return prices;
     })
     .catch((err) => {

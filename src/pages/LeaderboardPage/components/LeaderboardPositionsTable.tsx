@@ -148,7 +148,7 @@ export function LeaderboardPositionsTable({
                 {...getSorterProps("qualifyingPnl")}
                 title={t`PNL ($)`}
                 width={12}
-                tooltip={t`Total realized and unrealized PnL for the period. Includes price impact and fees. Excludes swap fees.`}
+                tooltip={t`Total realized and unrealized PnL for the period. Includes price impact and fees.`}
                 tooltipPosition="bottom-end"
               />
               <TableHeaderCell title={t`POSITION`} width={12} tooltipPosition="bottom-end" />
@@ -191,7 +191,7 @@ const TableHeaderCell = memo(
           }
         : undefined;
 
-    const stopPropagation = useCallback((e) => e.stopPropagation(), []);
+    const stopPropagation = useCallback((e: React.MouseEvent) => e.stopPropagation(), []);
 
     const isSortable = onChange !== undefined;
 

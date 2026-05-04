@@ -1,6 +1,6 @@
 import { ColorTree } from "lib/generateColorConfig";
 
-export const colors: ColorTree = {
+export const colors = {
   blue: {
     100: { light: "#A4C3F9", dark: "#A4C3F9" },
     300: { light: "#7885FF", dark: "#7885FF" },
@@ -84,4 +84,4 @@ export const colors: ColorTree = {
   stroke: {
     primary: { light: "#D4D4E2", dark: "#363a59" },
   },
-};
+} satisfies ColorTree;

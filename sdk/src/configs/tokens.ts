@@ -1206,6 +1206,48 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://s2.coinmarketcap.com/static/img/coins/64x64/39343.png",
       explorerUrl: "https://arbiscan.io/token/0xE41902f9aD379A8CC34A34efa00F5c3EE5112bC8",
     },
+    {
+      name: "WTI Crude Oil",
+      symbol: "WTIOIL",
+      address: "0xa8Ffb545d5cBF1F44E3eBA123D60372cD267D73c",
+      isSynthetic: true,
+      decimals: 18,
+      categories: ["rwa"],
+      searchAliases: ["CL"],
+      imageUrl: "https://s2.coinmarketcap.com/static/img/coins/64x64/39487.png",
+      explorerUrl: "https://arbiscan.io/token/0xa8Ffb545d5cBF1F44E3eBA123D60372cD267D73c",
+    },
+    {
+      name: "Brent Crude Oil",
+      symbol: "BRENTOIL",
+      address: "0x9C5C4b9BA1fEBA72186f50d8Ae7C58b1D7f0B12F",
+      isSynthetic: true,
+      decimals: 18,
+      categories: ["rwa"],
+      searchAliases: ["BZ"],
+      imageUrl: "https://s2.coinmarketcap.com/static/img/coins/64x64/39804.png",
+      explorerUrl: "https://arbiscan.io/token/0x9C5C4b9BA1fEBA72186f50d8Ae7C58b1D7f0B12F",
+    },
+    {
+      name: "Natural Gas",
+      symbol: "NATGAS",
+      address: "0x620aC65BE29066Bb9D1E92C65b35B9fD321Fb963",
+      isSynthetic: true,
+      decimals: 18,
+      categories: ["rwa"],
+      imageUrl: "https://s2.coinmarketcap.com/static/img/coins/64x64/39464.png",
+      explorerUrl: "https://arbiscan.io/token/0x620aC65BE29066Bb9D1E92C65b35B9fD321Fb963",
+    },
+    {
+      name: "MegaETH",
+      symbol: "MEGA",
+      address: "0x13983f27Ce9365055a6a553233c49fE28e70103e",
+      isSynthetic: true,
+      decimals: 18,
+      categories: ["layer2", "defi"],
+      imageUrl: "https://assets.coingecko.com/coins/images/69995/standard/ICON.png?1760337992",
+      explorerUrl: "https://arbiscan.io/token/0x13983f27Ce9365055a6a553233c49fE28e70103e",
+    },
   ],
   [AVALANCHE]: [
     {
@@ -1955,6 +1997,14 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://assets.coingecko.com/coins/images/69955/standard/USDm.png?1760170136",
     },
     {
+      name: "MegaETH",
+      symbol: "MEGA",
+      address: "0x28B7E77f82B25B95953825F1E3eA0E36c1c29861",
+      decimals: 18,
+      categories: ["layer2", "defi"],
+      imageUrl: "https://assets.coingecko.com/coins/images/69995/standard/ICON.png?1760337992",
+    },
+    {
       name: "GMX",
       symbol: "GMX",
       address: GMX_STUB_ADDRESS,
@@ -1997,7 +2047,7 @@ export const TOKENS: { [chainId: number]: Token[] } = {
   ],
 };
 
-export const TOKEN_COLOR_MAP = {
+export const TOKEN_COLOR_MAP: { default: string } & Partial<Record<string, string>> = {
   ETH: "#6062a6",
   BTC: "#F7931A",
   WBTC: "#F7931A",

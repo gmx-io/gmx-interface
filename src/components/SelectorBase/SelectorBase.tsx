@@ -282,9 +282,14 @@ function SelectorBaseMobile(props: Props) {
 
   return (
     <>
-      <div className={cx("SelectorBase-button group/selector-base", props.handleClassName)} onClick={toggleVisibility}>
+      <div
+        className={cx("SelectorBase-button group/selector-base gap-5", props.handleClassName)}
+        onClick={toggleVisibility}
+      >
         <span className="overflow-hidden text-ellipsis">{props.label}</span>
-        {!props.disabled && <ChevronDownIcon className={cx("inline-block size-16", props.chevronClassName)} />}
+        {!props.disabled && (
+          <ChevronDownIcon className={cx("inline-block size-16 text-typography-secondary", props.chevronClassName)} />
+        )}
       </div>
 
       <SlideModal

@@ -83,6 +83,7 @@ export const selectExpressGlobalParams = createSelector(function selectExpressGl
   const findFeeSwapPath = q(selectExpressFindSwapPath);
 
   return {
+    chainId,
     l1Reference,
     tokensData,
     marketsInfoData,

@@ -1,6 +1,6 @@
-import { ContractsChainId } from "config/chains";
-import { GELATO_API_KEYS } from "sdk/configs/express";
-import { getGelatoRelayerClient } from "sdk/utils/gelatoRelay";
+import { ContractsChainId } from "configs/chains";
+import { GELATO_API_KEYS } from "configs/express";
+import { getGelatoRelayerClient } from "utils/gelatoRelay";
 
 export async function fetchGelatoGasTankBalance(chainId: number) {
   const apiKey = GELATO_API_KEYS[chainId as ContractsChainId];

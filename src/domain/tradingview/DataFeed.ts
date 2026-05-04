@@ -12,7 +12,7 @@ import {
   ResolveCallback,
   SubscribeBarsCallback,
 } from "charting_library";
-import { RESOLUTION_TO_SECONDS, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
+import { type TradingViewResolution, RESOLUTION_TO_SECONDS, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { getChainlinkChartPricesFromGraph } from "domain/prices";
 import { Bar, FromOldToNewArray } from "domain/tradingview/types";
 import {
@@ -22,6 +22,7 @@ import {
   parseSymbolName,
 } from "domain/tradingview/utils";
 import { parseError } from "lib/errors";
+import type { ChartPeriod } from "lib/legacy";
 import {
   FreshnessMetricId,
   getRequestId,
@@ -174,11 +175,12 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     onError: DatafeedErrorCallback
   ): Promise<void> {
     const to = periodParams.to;
+    const res = resolution as TradingViewResolution;
 
     const isFirstDraw = metricsIsFirstDrawTime;
     metricsIsFirstDrawTime = false;
 
-    const offset = Math.trunc(Math.max((Date.now() / 1000 - to) / RESOLUTION_TO_SECONDS[resolution], 0));
+    const offset = Math.trunc(Math.max((Date.now() / 1000 - to) / RESOLUTION_TO_SECONDS[res], 0));
     // During a first data request we fetch regular amount of candles
     const countBack = periodParams.firstDataRequest
       ? periodParams.countBack
@@ -193,7 +195,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
       if (!isStable) {
         bars = await this.fetchCandles(symbolInfo.name, resolution, countBack + offset);
       } else {
-        const currentCandleTime = getCurrentCandleTime(SUPPORTED_RESOLUTIONS_V2[resolution]);
+        const currentCandleTime = getCurrentCandleTime(SUPPORTED_RESOLUTIONS_V2[res] as ChartPeriod);
         bars = this.getStableCandles(currentCandleTime, resolution, countBack + offset);
       }
     } catch (e) {
@@ -258,13 +260,15 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
 
     const visualMultiplier = parseInt(symbolInfo.unit_id ?? "1");
 
+    const res = resolution as TradingViewResolution;
+
     const interval = new PauseableInterval<Bar | undefined>(async ({ lastReturnedValue }) => {
       let candlesToFetch = 1;
 
-      const currentCandleTime = getCurrentCandleTime(SUPPORTED_RESOLUTIONS_V2[resolution]);
+      const currentCandleTime = getCurrentCandleTime(SUPPORTED_RESOLUTIONS_V2[res] as ChartPeriod);
 
       if (lastReturnedValue) {
-        const periodSeconds = RESOLUTION_TO_SECONDS[resolution];
+        const periodSeconds = RESOLUTION_TO_SECONDS[res];
 
         const diff = Math.abs(currentCandleTime - lastReturnedValue.time);
         if (diff >= periodSeconds) {
@@ -424,9 +428,11 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
     let success = true;
     let result: FromOldToNewArray<Bar> = [];
 
+    const res = resolution as TradingViewResolution;
+
     result = await Promise.race([
       this.oracleFetcher
-        .fetchOracleCandles(symbol, SUPPORTED_RESOLUTIONS_V2[resolution], count)
+        .fetchOracleCandles(symbol, SUPPORTED_RESOLUTIONS_V2[res], count)
         .then((bars) => bars.slice().reverse()),
       sleep(5000).then(() => Promise.reject("Oracle candles timeout")),
     ])
@@ -434,7 +440,7 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
         // eslint-disable-next-line no-console
         console.warn(ex, "Switching to graph chainlink data");
         return Promise.race([
-          getChainlinkChartPricesFromGraph(symbol, SUPPORTED_RESOLUTIONS_V2[resolution]),
+          getChainlinkChartPricesFromGraph(symbol, SUPPORTED_RESOLUTIONS_V2[res]),
           sleep(5000).then(() => Promise.reject("Chainlink candles timeout")),
         ]);
       })
@@ -465,7 +471,8 @@ export class DataFeed extends EventTarget implements IBasicDataFeed {
   }
 
   private getStableCandles(to: number, resolution: ResolutionString, count: number) {
-    const periodSeconds = RESOLUTION_TO_SECONDS[resolution];
+    const res = resolution as TradingViewResolution;
+    const periodSeconds = RESOLUTION_TO_SECONDS[res];
     return range(count, 0, -1).map((i) => ({
       time: to - i * periodSeconds,
       open: 1,

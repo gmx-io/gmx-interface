@@ -1,64 +1,48 @@
-import { AbstractSigner, Provider, Signer, Wallet } from "ethers";
+import { AbstractSigner, Provider, Signer } from "ethers";
 import {
   Address,
   encodeFunctionData,
-  PublicClient,
   recoverTypedDataAddress,
-  size,
-  toHex,
-  zeroAddress,
-  zeroHash,
 } from "viem";
 
 import { getContract } from "config/contracts";
-import { GMX_SIMULATION_ORIGIN, multichainBalanceKey } from "config/dataStore";
-import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { SIMULATED_MULTICHAIN_BALANCE } from "config/multichain";
+import { GMX_SIMULATION_ORIGIN } from "config/dataStore";
 import { isSourceChain } from "config/multichain";
-import { calculateMappingSlot, DATASTORE_SLOT_INDEXES } from "domain/multichain/arbitraryRelayParams";
-import { fallbackCustomError } from "domain/multichain/fallbackCustomError";
 import type { BridgeOutParams } from "domain/multichain/types";
 import {
   ExpressParamsEstimationMethod,
   ExpressTransactionBuilder,
   ExpressTransactionEstimatorParams,
   ExpressTxnParams,
-  GasPaymentValidations,
   getGelatoRelayRouterDomain,
-  getRawRelayerParams,
-  getRelayerFeeParams,
   GlobalExpressParams,
   hashRelayParams,
   RawRelayParamsPayload,
   RelayParamsPayload,
-  RelayParamsPayloadWithSignature,
 } from "domain/synthetics/express";
 import {
   getSubaccountValidations,
-  hashSubaccountApproval,
-  SignedSubacсountApproval,
   Subaccount,
 } from "domain/synthetics/subaccount";
-import { SignedTokenPermit, TokenData, TokensAllowanceData, TokensData } from "domain/tokens";
-import { applyMinimalBuffer } from "domain/tokens/useMaxAvailableAmount";
+import { TokenData, TokensData } from "domain/tokens";
 import { extendError } from "lib/errors";
-import { isIgnoredEstimateGasError } from "lib/errors/customErrors";
-import { applyGasLimitBuffer, estimateGasLimit } from "lib/gas/estimateGasLimit";
 import { metrics } from "lib/metrics";
-import { applyFactor } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { createProviderRpc } from "lib/rpc/createProviderRpc";
 import { ISigner } from "lib/transactions/iSigner";
-import { ExpressTxnData } from "lib/transactions/sendExpressTransaction";
 import { WalletSigner } from "lib/wallets";
 import { SignatureDomain, signTypedData, SignTypedDataParams } from "lib/wallets/signing";
 import { abis } from "sdk/abis";
 import { AnyChainId, ContractsChainId, SettlementChainId, SourceChainId } from "sdk/configs/chains";
 import { ContractName } from "sdk/configs/contracts";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
-import { bigMath } from "sdk/utils/bigmath";
+import {
+  type ExpressTxnData,
+  estimateExpressParams as sdkEstimateExpressParams,
+} from "sdk/utils/express";
+import { getBatchTypedData, buildBatchOrderCalldata } from "sdk/utils/express";
 import {
   BatchOrderTxnParams,
-  CreateOrderPayload,
   getBatchExternalCalls,
   getBatchExternalSwapGasLimit,
   getBatchRequiredActions,
@@ -66,11 +50,11 @@ import {
   getBatchTotalPayCollateralAmount,
   getIsEmptyBatch,
 } from "sdk/utils/orderTransactions";
+import type { IRpc, StateOverrideEntry } from "sdk/utils/rpc";
+import { hashSubaccountApproval } from "sdk/utils/subaccount";
 import { nowInSeconds } from "sdk/utils/time";
-import { setUiFeeReceiverIsExpress } from "sdk/utils/twap/uiFeeReceiver";
 
-import { approximateL1GasBuffer, estimateBatchGasLimit, estimateRelayerGasLimit, GasLimitsConfig } from "../fees";
-import { getNeedTokenApprove } from "../tokens";
+import { estimateBatchGasLimit, GasLimitsConfig } from "../fees";
 
 export async function estimateBatchExpressParams({
   signer,
@@ -114,7 +98,7 @@ export async function estimateBatchExpressParams({
 
   const expressParams = await estimateExpressParams({
     chainId,
-    provider,
+    rpc: createProviderRpc(provider),
     transactionParams,
     globalExpressParams,
     estimationMethod,
@@ -201,20 +185,7 @@ function getBatchExpressEstimatorParams({
   };
 }
 
-class ExpressEstimationError extends Error {
-  name = "ExpressEstimationError";
-}
-export class ExpressEstimationInsufficientGasPaymentTokenBalanceError extends ExpressEstimationError {
-  name = "ExpressEstimationInsufficientGasPaymentTokenBalanceError";
-  constructor(
-    public readonly params?: {
-      balance?: bigint;
-      requiredAmount?: bigint;
-    }
-  ) {
-    super();
-  }
-}
+export { ExpressEstimationError, ExpressEstimationInsufficientGasPaymentTokenBalanceError } from "sdk/utils/express";
 
 export async function estimateExpressParams({
   chainId,
@@ -223,10 +194,10 @@ export async function estimateExpressParams({
   globalExpressParams,
   estimationMethod = "approximate",
   requireValidations = true,
-  subaccount: rawSubaccount,
+  subaccount,
   throwOnInvalid = false,
-  provider,
-  client,
+  rpc,
+  stateOverride,
   overrideGasLimit,
 }: {
   chainId: ContractsChainId;
@@ -238,319 +209,31 @@ export async function estimateExpressParams({
   requireValidations: boolean;
   subaccount: Subaccount | undefined;
   throwOnInvalid?: boolean;
-} & (
-  | {
-      client: PublicClient;
-      provider?: undefined;
-    }
-  | {
-      provider: Provider;
-      client?: undefined;
-    }
-)): Promise<ExpressTxnParams | undefined> {
-  if (requireValidations && !transactionParams.isValid) {
-    if (throwOnInvalid) {
-      throw new ExpressEstimationError("transactionParams is invalid");
-    }
-    return undefined;
-  }
-
-  const {
-    findFeeSwapPath,
-    gasLimits,
-    gasPaymentToken,
-    relayerFeeToken,
-    l1Reference,
-    tokenPermits: rawTokenPermits,
-    gasPrice,
-    bufferBps,
-    gasPaymentAllowanceData,
-  } = globalExpressParams;
-
-  const {
-    expressTransactionBuilder,
-    gasPaymentTokenAsCollateralAmount,
-    executionFeeAmount,
-    executionGasLimit,
-    transactionPayloadGasLimit,
-    transactionExternalCalls,
-    subaccountActions,
-    account,
-  } = transactionParams;
-
-  const subaccountValidations = rawSubaccount
-    ? getSubaccountValidations({
-        requiredActions: subaccountActions,
-        subaccount: rawSubaccount,
-        subaccountRouterAddress: getOrderRelayRouterAddress(chainId, true, isGmxAccount),
-      })
-    : undefined;
-
-  const subaccount = subaccountValidations?.isValid ? rawSubaccount : undefined;
-
-  const tokenPermits = isGmxAccount ? [] : rawTokenPermits;
-
-  const baseRelayerGasLimit =
-    overrideGasLimit ??
-    estimateRelayerGasLimit({
-      gasLimits,
-      tokenPermitsCount: tokenPermits.length,
-      // TODO: is this always 1? even when paying with USDT?
-      feeSwapsCount: 1,
-      feeExternalCallsGasLimit: 0n,
-      oraclePriceCount: 2,
-      l1GasLimit: l1Reference?.gasLimit ?? 0n,
-      transactionPayloadGasLimit,
-    });
-
-  const baseRelayerFeeAmount = baseRelayerGasLimit * gasPrice;
-
-  const baseTotalRelayerFeeTokenAmount = baseRelayerFeeAmount + executionFeeAmount;
-
-  const baseRelayFeeParams = getRelayerFeeParams({
+  rpc?: IRpc;
+  stateOverride?: StateOverrideEntry[];
+}): Promise<ExpressTxnParams | undefined> {
+  return sdkEstimateExpressParams({
     chainId,
-    account,
-    gasPaymentToken,
-    relayerFeeToken,
-    relayerFeeAmount: baseRelayerFeeAmount,
-    totalRelayerFeeTokenAmount: baseTotalRelayerFeeTokenAmount,
-    gasPaymentTokenAsCollateralAmount,
-    transactionExternalCalls,
-    feeExternalSwapQuote: undefined,
-    findFeeSwapPath,
-  });
-
-  if (!baseRelayFeeParams) {
-    if (throwOnInvalid) {
-      throw new ExpressEstimationError("baseRelayFeeParams is undefined");
-    }
-    return undefined;
-  }
-
-  const baseRelayParams = getRawRelayerParams({
-    chainId,
-    gasPaymentTokenAddress: gasPaymentToken.address,
-    relayerFeeTokenAddress: relayerFeeToken.address,
-    feeParams: baseRelayFeeParams.feeParams,
-    externalCalls: baseRelayFeeParams.externalCalls,
-    tokenPermits,
-  });
-
-  const baseTxn = await expressTransactionBuilder({
-    relayParams: baseRelayParams,
-    gasPaymentParams: baseRelayFeeParams.gasPaymentParams,
-    subaccount,
-  });
-
-  const l1GasLimit = l1Reference
-    ? approximateL1GasBuffer({
-        l1Reference,
-        sizeOfData: BigInt(size(baseTxn.txnData.callData as `0x${string}`)),
-      })
-    : 0n;
-
-  let gasLimit: bigint;
-  if (overrideGasLimit !== undefined) {
-    gasLimit = overrideGasLimit;
-  } else if (estimationMethod === "estimateGas") {
-    try {
-      if (provider) {
-        const baseGasPaymentValidations = getGasPaymentValidations({
-          gasPaymentToken,
-          gasPaymentTokenAsCollateralAmount,
-          gasPaymentTokenAmount: baseRelayFeeParams.gasPaymentParams.gasPaymentTokenAmount,
-          gasPaymentAllowanceData,
-          isGmxAccount,
-          tokenPermits,
-        });
-
-        if (
-          baseGasPaymentValidations.isOutGasTokenBalance ||
-          baseGasPaymentValidations.needGasPaymentTokenApproval ||
-          !transactionParams.isValid
-        ) {
-          // In this cases simulation will fail
-          if (throwOnInvalid) {
-            throw new ExpressEstimationInsufficientGasPaymentTokenBalanceError({
-              balance: isGmxAccount ? gasPaymentToken.gmxAccountBalance : gasPaymentToken.walletBalance,
-              requiredAmount: baseRelayFeeParams.gasPaymentParams.gasPaymentTokenAmount,
-            });
-          }
-          return undefined;
-        }
-
-        gasLimit = await estimateGasLimit(provider, {
-          from: GMX_SIMULATION_ORIGIN,
-          to: baseTxn.txnData.to,
-          data: baseTxn.txnData.callData,
-          value: 0n,
-        });
-      } else {
-        gasLimit = await fallbackCustomError(
-          async () =>
-            client
-              .estimateGas({
-                account: GMX_SIMULATION_ORIGIN,
-                to: baseTxn.txnData.to,
-                data: baseTxn.txnData.callData,
-                value: 0n,
-                stateOverride: [
-                  {
-                    address: getContract(chainId, "DataStore"),
-                    stateDiff: [
-                      {
-                        slot: calculateMappingSlot(
-                          multichainBalanceKey(account, gasPaymentToken.address),
-                          DATASTORE_SLOT_INDEXES.uintValues
-                        ),
-                        value: toHex(SIMULATED_MULTICHAIN_BALANCE, { size: 32 }),
-                      },
-                    ],
-                  },
-                ],
-              })
-              .then(applyGasLimitBuffer),
-          "gasLimit"
-        );
-      }
-    } catch (error) {
-      if (!isIgnoredEstimateGasError(error)) {
-        const extendedError = extendError(error, { data: { estimationMethod } });
-        metrics.pushError(extendedError, "expressOrders.estimateGas");
-      }
-
-      if (throwOnInvalid) {
-        throw new ExpressEstimationError("gas limit estimation failed");
-      }
-
-      return undefined;
-    }
-  } else {
-    gasLimit = estimateRelayerGasLimit({
-      gasLimits,
-      tokenPermitsCount: tokenPermits.length,
-      feeSwapsCount: baseRelayFeeParams.feeParams.feeSwapPath.length,
-      feeExternalCallsGasLimit: baseRelayFeeParams.feeExternalSwapGasLimit,
-      oraclePriceCount: baseRelayParams.oracleParams.tokens.length,
-      l1GasLimit,
-      transactionPayloadGasLimit,
-    });
-  }
-
-  let relayerFeeAmount: bigint;
-  relayerFeeAmount = applyFactor(gasLimit * gasPrice, gasLimits.gelatoRelayFeeMultiplierFactor);
-
-  const buffer = bigMath.mulDiv(relayerFeeAmount, BigInt(bufferBps), BASIS_POINTS_DIVISOR_BIGINT);
-  relayerFeeAmount += buffer;
-
-  const totalRelayerFeeTokenAmount = relayerFeeAmount + executionFeeAmount;
-
-  const finalRelayFeeParams = getRelayerFeeParams({
-    chainId,
-    account,
-    gasPaymentToken,
-    relayerFeeToken,
-    relayerFeeAmount,
-    totalRelayerFeeTokenAmount,
-    gasPaymentTokenAsCollateralAmount,
-    transactionExternalCalls,
-    feeExternalSwapQuote: undefined,
-    findFeeSwapPath,
-  });
-
-  if (!finalRelayFeeParams) {
-    if (throwOnInvalid) {
-      throw new ExpressEstimationError("finalRelayFeeParams is undefined");
-    }
-    return undefined;
-  }
-
-  const finalRelayParams = getRawRelayerParams({
-    chainId,
-    gasPaymentTokenAddress: gasPaymentToken.address,
-    relayerFeeTokenAddress: relayerFeeToken.address,
-    feeParams: finalRelayFeeParams.feeParams,
-    externalCalls: finalRelayFeeParams.externalCalls,
-    tokenPermits,
-  });
-
-  const gasPaymentValidations = getGasPaymentValidations({
-    gasPaymentToken,
-    gasPaymentTokenAmount: finalRelayFeeParams.gasPaymentParams.gasPaymentTokenAmount,
-    gasPaymentTokenAsCollateralAmount,
-    gasPaymentAllowanceData,
     isGmxAccount,
-    tokenPermits,
-  });
-
-  if (requireValidations && !getIsValidExpressParams({ chainId, gasPaymentValidations })) {
-    if (throwOnInvalid) {
-      throw new ExpressEstimationInsufficientGasPaymentTokenBalanceError({
-        balance: isGmxAccount ? gasPaymentToken.gmxAccountBalance : gasPaymentToken.walletBalance,
-        requiredAmount: finalRelayFeeParams.gasPaymentParams.gasPaymentTokenAmount,
-      });
-    }
-    return undefined;
-  }
-
-  return {
-    chainId,
-    subaccount,
-    relayParamsPayload: finalRelayParams,
-    gasPaymentParams: finalRelayFeeParams.gasPaymentParams,
-    executionFeeAmount,
-    executionGasLimit,
+    transactionParams,
+    globalExpressParams,
     estimationMethod,
-    gasLimit,
-    l1GasLimit,
-    gasPrice,
-    subaccountValidations,
-    gasPaymentValidations,
-    isGmxAccount,
-  };
+    requireValidations,
+    subaccount,
+    throwOnInvalid,
+    overrideGasLimit,
+    rpc,
+    simulationOrigin: GMX_SIMULATION_ORIGIN,
+    stateOverride,
+    gasPaymentAllowanceData: globalExpressParams.gasPaymentAllowanceData,
+    getSubaccountValidations,
+    metrics,
+  });
 }
 
-export function getIsValidExpressParams({
-  gasPaymentValidations,
-}: {
-  gasPaymentValidations: GasPaymentValidations;
-  [key: string]: unknown;
-}): boolean {
-  return gasPaymentValidations.isValid;
-}
 
-export function getGasPaymentValidations({
-  gasPaymentToken,
-  gasPaymentTokenAmount,
-  gasPaymentTokenAsCollateralAmount,
-  gasPaymentAllowanceData,
-  tokenPermits,
-  isGmxAccount,
-}: {
-  gasPaymentToken: TokenData;
-  gasPaymentTokenAmount: bigint;
-  gasPaymentTokenAsCollateralAmount: bigint;
-  gasPaymentAllowanceData: TokensAllowanceData;
-  tokenPermits: SignedTokenPermit[];
-  isGmxAccount: boolean;
-}): GasPaymentValidations {
-  // Add buffer to onchain avoid out of balance errors in case quick of network fee increase
-  const gasTokenAmountWithBuffer = applyMinimalBuffer(gasPaymentTokenAmount);
-  const totalGasPaymentTokenAmount = gasPaymentTokenAsCollateralAmount + gasTokenAmountWithBuffer;
 
-  const tokenBalance = isGmxAccount ? gasPaymentToken.gmxAccountBalance : gasPaymentToken.walletBalance;
-  const isOutGasTokenBalance = tokenBalance === undefined || totalGasPaymentTokenAmount > tokenBalance;
-
-  const needGasPaymentTokenApproval = isGmxAccount
-    ? false
-    : getNeedTokenApprove(gasPaymentAllowanceData, gasPaymentToken?.address, totalGasPaymentTokenAmount, tokenPermits);
-
-  return {
-    isOutGasTokenBalance,
-    needGasPaymentTokenApproval,
-    isValid: !isOutGasTokenBalance && !needGasPaymentTokenApproval,
-  };
-}
+export { getGasPaymentValidations, getIsValidExpressParams } from "sdk/utils/express";
 
 export async function buildAndSignExpressBatchOrderTxn({
   chainId,
@@ -574,243 +257,71 @@ export async function buildAndSignExpressBatchOrderTxn({
   emptySignature?: boolean;
 }): Promise<ExpressTxnData> {
   const messageSigner = subaccount ? subaccount!.signer : signer;
-
+  const crossChainId = isGmxAccount ? await getMultichainInfoFromSigner(signer, chainId) : undefined;
+  const effectiveSrcChainId = isGmxAccount ? (crossChainId ?? chainId) : undefined;
   const relayRouterAddress = getOrderRelayRouterAddress(chainId, subaccount !== undefined, isGmxAccount);
 
-  const params = {
-    account: signer.address,
-    messageSigner,
-    chainId,
-    relayPayload: {
-      ...(relayParamsPayload as RelayParamsPayload),
-      deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
-      userNonce: BigInt(nowInSeconds()),
-    } satisfies RelayParamsPayload,
-    subaccountApproval: subaccount?.signedApproval,
-    paramsLists: getBatchParamsLists(batchParams),
+  const relayPayload: RelayParamsPayload = {
+    ...(relayParamsPayload as RelayParamsPayload),
+    deadline: BigInt(nowInSeconds() + DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION),
+    userNonce: BigInt(nowInSeconds()),
   };
 
   let signature: string;
   if (emptySignature) {
     signature = "0x";
   } else {
-    const signatureParams = await getBatchSignatureParams({
-      signer: params.messageSigner,
-      relayParams: params.relayPayload,
-      batchParams,
+    const typedData = getBatchTypedData({
       chainId,
-      account: params.account,
-      subaccountApproval: params.subaccountApproval,
+      signingChainId: crossChainId ?? chainId,
+      batchParams,
+      relayParams: relayPayload,
+      account: signer.address,
+      subaccountApprovalHash: subaccount?.signedApproval
+        ? hashSubaccountApproval(subaccount.signedApproval)
+        : undefined,
       relayRouterAddress,
     });
+
+    const signatureParams: SignTypedDataParams = {
+      signer: messageSigner,
+      types: typedData.types,
+      typedData: typedData.message,
+      domain: typedData.domain,
+      shouldUseSignerMethod: subaccount !== undefined,
+    };
 
     signature = await signTypedData(signatureParams);
 
     validateSignature({
       signatureParams,
       signature,
-      expectedAccount: params.messageSigner.address,
+      expectedAccount: messageSigner.address,
       errorSource: "expressOrders.batch.signatureValidation",
       silent: true,
     });
   }
 
-  let batchCalldata: string;
-  if (isGmxAccount) {
-    const srcChainId = (await getMultichainInfoFromSigner(signer, chainId)) ?? chainId;
-
-    if (!srcChainId) {
-      throw new Error("No srcChainId");
-    }
-
-    if (subaccount) {
-      batchCalldata = encodeFunctionData({
-        abi: abis.MultichainSubaccountRouter,
-        functionName: "batch",
-        args: [
-          {
-            ...params.relayPayload,
-            signature,
-          } satisfies RelayParamsPayloadWithSignature,
-          subaccount.signedApproval,
-          params.account,
-          BigInt(srcChainId),
-          subaccount.signedApproval?.subaccount,
-          params.paramsLists,
-        ],
-      });
-    } else {
-      batchCalldata = encodeFunctionData({
-        abi: abis.MultichainOrderRouter,
-        functionName: "batch",
-        args: [
-          {
-            ...params.relayPayload,
-            signature,
-          },
-          params.account,
-          BigInt(srcChainId),
-          params.paramsLists,
-        ],
-      });
-    }
-  } else {
-    if (subaccount) {
-      batchCalldata = encodeFunctionData({
-        abi: abis.SubaccountGelatoRelayRouter,
-        functionName: "batch",
-        args: [
-          {
-            ...params.relayPayload,
-            signature,
-          },
-          subaccount.signedApproval,
-          params.account,
-          subaccount.signedApproval?.subaccount,
-          params.paramsLists,
-        ],
-      });
-    } else {
-      batchCalldata = encodeFunctionData({
-        abi: abis.GelatoRelayRouter,
-        functionName: "batch",
-        args: [
-          {
-            ...params.relayPayload,
-            signature,
-          },
-          params.account,
-          params.paramsLists,
-        ],
-      });
-    }
-  }
+  const result = buildBatchOrderCalldata({
+    chainId,
+    batchParams,
+    relayParamsPayload: relayPayload,
+    signature,
+    account: signer.address,
+    srcChainId: effectiveSrcChainId as any,
+    subaccountApproval: subaccount?.signedApproval,
+    isGmxAccount,
+    deadline: relayPayload.deadline,
+  });
 
   return {
-    callData: batchCalldata,
-    to: relayRouterAddress,
+    callData: result.callData,
+    to: result.to,
     feeToken: relayerFeeTokenAddress,
     feeAmount: relayerFeeAmount,
   };
 }
 
-async function getBatchSignatureParams({
-  signer,
-  relayParams,
-  batchParams,
-  chainId,
-  account,
-  subaccountApproval,
-  relayRouterAddress,
-}: {
-  account: string;
-  subaccountApproval: SignedSubacсountApproval | undefined;
-  signer: WalletSigner | Wallet;
-  relayParams: RelayParamsPayload | RelayParamsPayload;
-  batchParams: BatchOrderTxnParams;
-  chainId: ContractsChainId;
-  relayRouterAddress: string;
-}): Promise<SignTypedDataParams> {
-  const types = {
-    Batch: [
-      { name: "account", type: "address" },
-      { name: "createOrderParamsList", type: "CreateOrderParams[]" },
-      { name: "updateOrderParamsList", type: "UpdateOrderParams[]" },
-      { name: "cancelOrderKeys", type: "bytes32[]" },
-      { name: "relayParams", type: "bytes32" },
-      { name: "subaccountApproval", type: "bytes32" },
-    ],
-    CreateOrderParams: [
-      { name: "addresses", type: "CreateOrderAddresses" },
-      { name: "numbers", type: "CreateOrderNumbers" },
-      { name: "orderType", type: "uint256" },
-      { name: "decreasePositionSwapType", type: "uint256" },
-      { name: "isLong", type: "bool" },
-      { name: "shouldUnwrapNativeToken", type: "bool" },
-      { name: "autoCancel", type: "bool" },
-      { name: "referralCode", type: "bytes32" },
-      { name: "dataList", type: "bytes32[]" },
-    ],
-    CreateOrderAddresses: [
-      { name: "receiver", type: "address" },
-      { name: "cancellationReceiver", type: "address" },
-      { name: "callbackContract", type: "address" },
-      { name: "uiFeeReceiver", type: "address" },
-      { name: "market", type: "address" },
-      { name: "initialCollateralToken", type: "address" },
-      { name: "swapPath", type: "address[]" },
-    ],
-    CreateOrderNumbers: [
-      { name: "sizeDeltaUsd", type: "uint256" },
-      { name: "initialCollateralDeltaAmount", type: "uint256" },
-      { name: "triggerPrice", type: "uint256" },
-      { name: "acceptablePrice", type: "uint256" },
-      { name: "executionFee", type: "uint256" },
-      { name: "callbackGasLimit", type: "uint256" },
-      { name: "minOutputAmount", type: "uint256" },
-      { name: "validFromTime", type: "uint256" },
-    ],
-    UpdateOrderParams: [
-      { name: "key", type: "bytes32" },
-      { name: "sizeDeltaUsd", type: "uint256" },
-      { name: "acceptablePrice", type: "uint256" },
-      { name: "triggerPrice", type: "uint256" },
-      { name: "minOutputAmount", type: "uint256" },
-      { name: "validFromTime", type: "uint256" },
-      { name: "autoCancel", type: "bool" },
-      { name: "executionFeeIncrease", type: "uint256" },
-    ],
-  };
-
-  const srcChainId = await getMultichainInfoFromSigner(signer, chainId);
-  const domain = getGelatoRelayRouterDomain(srcChainId ?? chainId, relayRouterAddress);
-
-  const paramsLists = getBatchParamsLists(batchParams);
-
-  const typedData = {
-    account: subaccountApproval ? account : zeroAddress,
-    createOrderParamsList: paramsLists.createOrderParamsList,
-    updateOrderParamsList: paramsLists.updateOrderParamsList,
-    cancelOrderKeys: paramsLists.cancelOrderKeys,
-    relayParams: hashRelayParams(relayParams as RelayParamsPayload),
-    subaccountApproval: subaccountApproval ? hashSubaccountApproval(subaccountApproval) : zeroHash,
-  };
-
-  return {
-    signer,
-    types,
-    typedData,
-    domain,
-    shouldUseSignerMethod: subaccountApproval !== undefined,
-  };
-}
-
-function getBatchParamsLists(batchParams: BatchOrderTxnParams) {
-  return {
-    createOrderParamsList: batchParams.createOrderParams.map((p) => ({
-      addresses: updateExpressOrdersAddresses(p.orderPayload.addresses),
-      numbers: p.orderPayload.numbers,
-      orderType: p.orderPayload.orderType,
-      decreasePositionSwapType: p.orderPayload.decreasePositionSwapType,
-      isLong: p.orderPayload.isLong,
-      shouldUnwrapNativeToken: p.orderPayload.shouldUnwrapNativeToken,
-      autoCancel: p.orderPayload.autoCancel,
-      referralCode: p.orderPayload.referralCode,
-      dataList: p.orderPayload.dataList,
-    })),
-    updateOrderParamsList: batchParams.updateOrderParams.map((p) => ({
-      key: p.updatePayload.orderKey,
-      sizeDeltaUsd: p.updatePayload.sizeDeltaUsd,
-      acceptablePrice: p.updatePayload.acceptablePrice,
-      triggerPrice: p.updatePayload.triggerPrice,
-      minOutputAmount: p.updatePayload.minOutputAmount,
-      validFromTime: p.updatePayload.validFromTime,
-      autoCancel: p.updatePayload.autoCancel,
-      executionFeeIncrease: p.updatePayload.executionFeeTopUp,
-    })),
-    cancelOrderKeys: batchParams.cancelOrderParams.map((p) => p.orderKey),
-  };
-}
 
 export async function getMultichainInfoFromSigner(
   signer: Signer,
@@ -1019,14 +530,6 @@ export async function signRegisterCode({
   };
 
   return signTypedData({ signer, domain, types, typedData, shouldUseSignerMethod });
-}
-
-function updateExpressOrdersAddresses(addresses: CreateOrderPayload["addresses"]) {
-  return {
-    ...addresses,
-    receiver: addresses.receiver ?? zeroAddress,
-    uiFeeReceiver: setUiFeeReceiverIsExpress(addresses.uiFeeReceiver, true),
-  };
 }
 
 async function validateSignature({

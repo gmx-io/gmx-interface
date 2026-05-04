@@ -7,7 +7,7 @@ import WalletIcon from "img/ic_wallet.svg?react";
 export function HowToStartSaving() {
   return (
     <div className="flex flex-col gap-8">
-      <h3 className="mb-12 mt-20 text-20 font-medium leading-1 text-white max-lg:mb-8 max-lg:mt-12">
+      <h3 className="mb-12 mt-20 text-20 font-medium leading-1 text-typography-primary max-lg:mb-8 max-lg:mt-12">
         <Trans>How to start saving?</Trans>
       </h3>
       <div className="flex gap-8 max-lg:flex-col">
