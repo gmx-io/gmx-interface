@@ -600,6 +600,25 @@ export function getPositionInfo(p: {
 
   const pnlAfterFeesPercentage = collateralUsd !== 0n ? getBasisPoints(pnlAfterFees, collateralUsd) : 0n;
 
+  const netValueAfterAllFees = getPositionNetValueAfterAllFees({
+    collateralUsd,
+    pnl,
+    pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
+    pendingFundingFeesUsd,
+    netPriceImpactDeltaUsd: netPriceImpactValues.totalImpactDeltaUsd,
+    closingFeeUsd,
+  });
+
+  const pnlAfterAllFees = getPositionPnlAfterAllFees({
+    pnl,
+    pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
+    pendingFundingFeesUsd,
+    netPriceImpactDeltaUsd: netPriceImpactValues.totalImpactDeltaUsd,
+    closingFeeUsd,
+  });
+
+  const pnlAfterAllFeesPercentage = collateralUsd !== 0n ? getBasisPoints(pnlAfterAllFees, collateralUsd) : 0n;
+
   const leverage = getLeverage({
     sizeInUsd: position.sizeInUsd,
     collateralUsd,
@@ -685,6 +704,9 @@ export function getPositionInfo(p: {
     pnlPercentage,
     pnlAfterFees,
     pnlAfterFeesPercentage,
+    netValueAfterAllFees,
+    pnlAfterAllFees,
+    pnlAfterAllFeesPercentage,
     netValue,
     netPriceImapctDeltaUsd: netPriceImpactValues.totalImpactDeltaUsd,
     priceImpactDiffUsd: netPriceImpactValues.priceImpactDiffUsd,
