@@ -942,6 +942,10 @@ msgstr "Bonificación retroactiva STIP.b"
 msgid "in liquidity"
 msgstr "en liquidez"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "This swap requires external routing, which isn't available with One-Click Trading."
+msgstr "Este swap requiere enrutamiento externo, que no está disponible con One-Click Trading."
+
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Eff. Pts Ratio"
@@ -1401,6 +1405,11 @@ msgstr "Stop-Loss"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "External swap {0} to {1}"
 msgstr "Intercambio externo de {0} a {1}"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Use {0} for gas"
+msgstr "Usar {0} para el gas"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To buy GMX on {0}, <0>change your network</0>"
@@ -3660,6 +3669,10 @@ msgstr "Fondos reclamados"
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Missing claim params. Retry in a few seconds"
 msgstr "Faltan parámetros de reclamación. Vuelva a intentarlo en unos segundos"
+
+#: src/components/TradeBox/TradeBoxRows/SwapDebugRow.tsx
+msgid "Swap Debug"
+msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
@@ -6238,6 +6251,10 @@ msgstr ""
 msgid "Swap token unavailable"
 msgstr ""
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "This swap requires external routing. Pay gas in {0} to enable it."
+msgstr "Este swap requiere enrutamiento externo. Paga el gas en {0} para habilitarlo."
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
 msgstr "GMX (Portugués)"
@@ -7870,6 +7887,10 @@ msgstr "Programaremos una conversación con usted. Como agradecimiento, recibir�
 #: src/pages/UiPage/BannerTest.tsx
 msgid "GM bought successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or go to the ETH/USD pool to withdraw your GM tokens."
 msgstr "GM comprado con éxito, pero el puente a Base ha fallado. Sus fondos están seguros en su GMX Account. Reintente el puente o acceda al pool ETH/USD para retirar sus tokens GM."
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Disable One-Click Trading"
+msgstr "Desactivar One-Click Trading"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
@@ -9837,6 +9858,10 @@ msgstr ""
 msgid "Venus"
 msgstr "Venus"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No swap route available"
+msgstr "No hay ruta de swap disponible"
+
 #: src/components/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Open {marketName} in explorer"
 msgstr "Abrir {marketName} en el explorador"
@@ -9968,6 +9993,10 @@ msgstr "SNAPSHOT"
 #: src/pages/RpcDebug/parts.tsx
 msgid "BLOCK"
 msgstr "BLOCK"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Paying gas in {0} may give a better rate on this swap."
+msgstr "Pagar el gas en {0} puede ofrecer una mejor tasa en este swap."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -10471,6 +10500,10 @@ msgstr "Tasa máxima corto"
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Alerts"
 msgstr "Alertas"
+
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Loading swap path…"
+msgstr "Cargando ruta de swap…"
 
 #: src/components/PointsShare/PointsShareCard.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx

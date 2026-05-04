@@ -1,28 +1,35 @@
 import { useMemo } from "react";
-import { usePrevious } from "react-use";
 import useSWR from "swr";
 
 import { BOTANIX } from "config/chains";
-import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectBotanixStakingAssetsPerShare } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useDebounce } from "lib/debounce/useDebounce";
-import { metrics, KyberSwapQuoteTiming } from "lib/metrics";
+import { metrics } from "lib/metrics";
 import { ContractsChainId } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { getBotanixStakingExternalSwapQuote } from "sdk/utils/swap/botanixStaking";
 import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/utils/trade/types";
 
 import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
-import { getKyberSwapTxnData, KyberSwapQuote } from "./kyberSwap";
+import { getKyberSwapBuildFromRoute, KyberSwapQuote } from "./kyberSwap";
+import { searchAmountInForDesiredOutput } from "./searchAmountInForDesiredOutput";
+import { inflateAmountForSlippage } from "./utils";
 
-export function useExternalSwapOutputRequest({
+class InputRequestNoResultError extends Error {
+  constructor() {
+    super("ExternalSwap input request: insufficient liquidity");
+    this.name = "InputRequestNoResultError";
+  }
+}
+
+type InputRequestData = KyberSwapQuote & { desiredAmountOut: bigint };
+
+export function useExternalSwapInputRequest({
   chainId,
   tokenInAddress,
   tokenOutAddress,
   receiverAddress,
-  amountIn,
+  desiredAmountOut,
+  initialAmountIn,
   slippage,
   gasPrice,
   enabled = true,
@@ -31,7 +38,8 @@ export function useExternalSwapOutputRequest({
   tokenInAddress: string | undefined;
   tokenOutAddress: string | undefined;
   receiverAddress: string | undefined;
-  amountIn: bigint | undefined;
+  desiredAmountOut: bigint | undefined;
+  initialAmountIn: bigint | undefined;
   slippage: number | undefined;
   gasPrice: bigint | undefined;
   enabled?: boolean;
@@ -42,62 +50,73 @@ export function useExternalSwapOutputRequest({
     tokenOutAddress &&
     receiverAddress &&
     tokenOutAddress !== tokenInAddress &&
-    amountIn !== undefined &&
-    amountIn > 0n &&
+    desiredAmountOut !== undefined &&
+    desiredAmountOut > 0n &&
+    initialAmountIn !== undefined &&
+    initialAmountIn > 0n &&
     slippage !== undefined &&
     gasPrice !== undefined
-      ? `useExternalSwapsQuote:${chainId}:${tokenInAddress}:${tokenOutAddress}:${amountIn}:${slippage}:${receiverAddress}`
+      ? `useExternalSwapInputRequest:${chainId}:${tokenInAddress}:${tokenOutAddress}:${desiredAmountOut}:${slippage}:${receiverAddress}`
       : null;
 
   const debouncedKey = useDebounce(swapKey, 300);
-  const tokensKey = `${tokenInAddress}:${tokenOutAddress};`;
-  const prevTokensKey = usePrevious(tokensKey);
-  const prevAmountIn = usePrevious(amountIn);
-  const botanixAssetsPerShare = useSelector(selectBotanixStakingAssetsPerShare);
 
-  const { data, error } = useSWR<KyberSwapQuote | undefined>(debouncedKey, {
-    keepPreviousData: enabled && prevTokensKey === tokensKey && prevAmountIn === amountIn,
+  const { data, error: swrError } = useSWR<InputRequestData | undefined>(debouncedKey, {
     fetcher: async () => {
       try {
         if (
           !tokenInAddress ||
           !tokenOutAddress ||
           !receiverAddress ||
-          amountIn === undefined ||
+          desiredAmountOut === undefined ||
+          initialAmountIn === undefined ||
           slippage === undefined ||
           gasPrice === undefined
         ) {
-          throw new Error("Invalid swap parameters");
+          return undefined;
         }
-
-        const startTime = Date.now();
 
         if (chainId === BOTANIX) {
           return undefined;
         }
 
-        const result = await getKyberSwapTxnData({
+        // Target more than desired to compensate for execution variance and slippage.
+        // This ensures the user receives at least desiredAmountOut after all deductions.
+        const targetAmountOut = inflateAmountForSlippage(desiredAmountOut, BigInt(slippage));
+
+        const searchResult = await searchAmountInForDesiredOutput({
           chainId,
-          senderAddress: getContract(chainId, "ExternalHandler"),
-          receiverAddress,
           tokenInAddress,
           tokenOutAddress,
-          amountIn,
+          desiredAmountOut: targetAmountOut,
+          initialAmountIn,
           gasPrice,
-          slippage,
         });
 
-        metrics.pushTiming<KyberSwapQuoteTiming>("kyberSwap.quote.timing", Date.now() - startTime);
-
-        if (!result) {
-          throw new Error("Failed to fetch KyberSwap txn data");
+        if (!searchResult) {
+          throw new InputRequestNoResultError();
         }
 
-        return result;
+        const result = await getKyberSwapBuildFromRoute({
+          chainId,
+          routeSummary: searchResult.routeResult.routeSummary,
+          senderAddress: getContract(chainId, "ExternalHandler"),
+          receiverAddress,
+          slippage,
+          tokenInAddress,
+          tokenOutAddress,
+          gasPrice,
+        });
+
+        if (!result) {
+          throw new InputRequestNoResultError();
+        }
+
+        return { ...result, desiredAmountOut };
       } catch (error) {
-        // eslint-disable-next-line no-console
-        console.error("Error fetching external swap quote", error);
-        metrics.pushError(error, "externalSwap.useExternalSwapOutputRequest");
+        if (!(error instanceof InputRequestNoResultError)) {
+          metrics.pushError(error, "externalSwap.useExternalSwapInputRequest");
+        }
         throw error;
       }
     },
@@ -108,32 +127,20 @@ export function useExternalSwapOutputRequest({
     tokenAddresses: enabled && tokenInAddress ? [convertTokenAddress(chainId, tokenInAddress, "wrapped")] : [],
   });
 
-  const tokensData = useTokensData();
-
   return useMemo(() => {
-    if (amountIn === undefined || !tokenInAddress || !tokenOutAddress || gasPrice === undefined || !receiverAddress) {
-      return { error };
+    if (
+      !tokenInAddress ||
+      !tokenOutAddress ||
+      gasPrice === undefined ||
+      !receiverAddress ||
+      desiredAmountOut === undefined ||
+      slippage === undefined
+    ) {
+      return { error: swrError };
     }
 
-    const botanixStakingQuote =
-      tokensData && botanixAssetsPerShare !== undefined && chainId === BOTANIX
-        ? getBotanixStakingExternalSwapQuote({
-            tokenInAddress,
-            tokenOutAddress,
-            amountIn,
-            gasPrice,
-            receiverAddress,
-            tokensData,
-            assetsPerShare: botanixAssetsPerShare,
-          })
-        : undefined;
-
-    if (botanixStakingQuote) {
-      return { quote: botanixStakingQuote, error };
-    }
-
-    if (!data) {
-      return { error };
+    if (!data || swrError) {
+      return { error: swrError };
     }
 
     const needSpenderApproval = getNeedTokenApprove(
@@ -157,6 +164,7 @@ export function useExternalSwapOutputRequest({
       feesUsd: data.usdIn - data.usdOut,
       slippage: data.slippage,
       needSpenderApproval,
+      desiredAmountOut: data.desiredAmountOut,
       txnData: {
         to: data.to,
         data: data.data,
@@ -166,18 +174,17 @@ export function useExternalSwapOutputRequest({
       },
     };
 
-    return { quote, error };
+    return { quote, error: swrError };
   }, [
-    amountIn,
     tokenInAddress,
     tokenOutAddress,
     gasPrice,
     receiverAddress,
-    tokensData,
-    botanixAssetsPerShare,
-    chainId,
+    desiredAmountOut,
+    slippage,
     data,
-    error,
+    swrError,
     tokensAllowanceData,
+    chainId,
   ]);
 }
