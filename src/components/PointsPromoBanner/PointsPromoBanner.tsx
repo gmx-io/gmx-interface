@@ -6,13 +6,17 @@ import { isIncentivesEnabled } from "domain/synthetics/incentives/constants";
 import { usePersonalizedBannerData } from "domain/synthetics/incentives/usePersonalizedBannerData";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatNumberHuman, formatUsd } from "lib/numbers";
 
-import bgPointsPromoBanner from "img/bg_points_promo_banner.png";
+import bgPointsBanner from "img/bg_points_banner.png";
+import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 import CrossIcon from "img/ic_cross.svg?react";
+import GmxIcon from "img/ic_gmx_glyph.svg?react";
+import pointsBannerCoinGmx from "img/points_banner_coin_gmx.png";
+
+import { getPersonalizedBannerCopy } from "./personalizedBannerCopy";
 
 const BANNER_STYLES = {
-  backgroundImage: `url(${bgPointsPromoBanner})`,
+  backgroundImage: `url(${bgPointsBanner})`,
   backgroundSize: "cover",
   backgroundPosition: "center",
   backgroundColor: "var(--color-slate-950)",
@@ -54,94 +58,57 @@ export function PointsPromoBanner() {
     }));
   };
 
-  if (!isIncentivesEnabled(chainId) || dismissed) return null;
+  if (!isIncentivesEnabled(chainId) || dismissed || bannerData.isLoading || bannerData.bannerVariant === undefined) {
+    return null;
+  }
 
-  const bannerText = getBannerText(bannerData);
+  const { title, body } = getPersonalizedBannerCopy(bannerData);
+  const isStakeCta = bannerData.bannerVariant === "recent-activity";
+  const ctaTo = isStakeCta ? "/earn" : "/points";
 
-  return bannerData.isLoading ? null : (
+  return (
     <div className="flex justify-center">
       <Link
-        className="grid min-h-[78px] w-full grid-cols-[1fr_76px] rounded-8 border-1/2 border-stroke-primary bg-slate-900/50 px-16 py-12"
+        className="relative grid w-full grid-cols-[minmax(0,1fr)_80px] overflow-hidden rounded-8 border-1/2 border-stroke-primary bg-slate-900/50 p-16"
         style={BANNER_STYLES}
         onClick={handleDismiss}
-        to="/points"
+        to={ctaTo}
       >
-        <div className="flex gap-8">
-          <div className="flex flex-col gap-2">{bannerText}</div>
+        <div className="relative z-10 flex min-w-0 flex-col gap-4">
+          <div className="flex flex-col gap-2">
+            <h6 className="text-16 font-medium text-typography-primary">{title}</h6>
+            <span className="text-13 text-typography-secondary">{body}</span>
+          </div>
+
+          <span className="flex items-center gap-4 text-14 font-medium text-blue-300">
+            {isStakeCta ? (
+              <>
+                <GmxIcon className="size-16" />
+                <Trans>Stake GMX</Trans>
+              </>
+            ) : (
+              <>
+                <Trans>Learn more</Trans>
+                <ArrowRightIcon />
+              </>
+            )}
+          </span>
         </div>
 
-        <div className="flex items-start justify-end">
-          <button className="text-typography-secondary hover:text-typography-primary" onClick={handleDismiss}>
-            <CrossIcon className="size-11" />
-          </button>
-        </div>
+        <img
+          src={pointsBannerCoinGmx}
+          alt=""
+          aria-hidden="true"
+          className="pointer-events-none absolute bottom-[-30px] right-[-12px] size-[126px] select-none max-sm:bottom-[-22px] max-sm:right-[-36px] max-sm:size-[124px]"
+        />
+
+        <button
+          className="absolute right-12 top-12 z-20 text-typography-secondary opacity-50 hover:opacity-80"
+          onClick={handleDismiss}
+        >
+          <CrossIcon className="size-11" />
+        </button>
       </Link>
     </div>
   );
-}
-
-function getBannerText(bannerData: ReturnType<typeof usePersonalizedBannerData>) {
-  const defaultContent = (
-    <>
-      <h6 className="text-16 font-medium text-typography-primary">
-        <Trans>Earn rewards</Trans>
-      </h6>
-
-      <span className="text-13 text-typography-secondary">
-        <Trans>Start earning points and unlock rewards.</Trans>
-      </span>
-    </>
-  );
-
-  if (!bannerData.hasPersonalizedData) {
-    return defaultContent;
-  }
-
-  if (bannerData.isManuallyRewarded && bannerData.manualBonusUsd !== undefined) {
-    const bonusFormatted = formatUsd(bannerData.manualBonusUsd);
-    return (
-      <>
-        <h6 className="text-16 font-medium text-typography-primary">
-          <Trans>
-            You've received a points bonus worth <span className="whitespace-nowrap">{bonusFormatted}</span>
-          </Trans>
-        </h6>
-
-        <span className="text-13 text-typography-secondary">
-          <Trans>Start trading to activate it and use it to discount your fees.</Trans>
-        </span>
-      </>
-    );
-  }
-
-  if (
-    bannerData.recommendedStakeGmx !== undefined &&
-    bannerData.estimatedRewardsUsd !== undefined &&
-    bannerData.recommendedStakeGmx > 0 &&
-    bannerData.estimatedRewardsUsd > 0
-  ) {
-    const stakeFormatted = formatNumberHuman(bannerData.recommendedStakeGmx, false, 1);
-    const rewardsFormatted = formatNumberHuman(bannerData.estimatedRewardsUsd, false, 1);
-    return (
-      <>
-        <h6 className="text-16 font-medium text-typography-primary">
-          <Trans>Earn rewards</Trans>
-        </h6>
-
-        <span className="text-13 text-typography-secondary">
-          <Trans>
-            With your recent volume, staking{" "}
-            <span className="font-medium text-typography-primary">{stakeFormatted} GMX</span> could have earned you up
-            to{" "}
-            <span className="font-medium text-typography-primary">
-              ${rewardsFormatted} in additional trading rewards
-            </span>
-            .
-          </Trans>
-        </span>
-      </>
-    );
-  }
-
-  return defaultContent;
 }

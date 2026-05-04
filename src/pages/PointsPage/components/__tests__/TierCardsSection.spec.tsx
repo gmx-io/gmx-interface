@@ -35,6 +35,30 @@ vi.mock("domain/stake/useStakingProcessedData", () => ({
   }),
 }));
 
+const walletMock = vi.hoisted(() => ({
+  account: undefined as string | undefined,
+}));
+
+vi.mock("lib/wallets/useWallet", () => ({
+  default: () => ({ account: walletMock.account }),
+}));
+
+const personalizedBannerDataMock = vi.hoisted(() => ({
+  data: {
+    bannerVariant: "new-or-low-fees" as "manual-reward" | "recent-activity" | "new-or-low-fees" | undefined,
+    isManuallyRewarded: false,
+    hasVolumeAfterFirstProgramEpoch: false,
+    manualAllocatedPoints: undefined as bigint | undefined,
+    manualBonusUsd: undefined as bigint | undefined,
+    estimatedRewardsUsd: undefined as number | undefined,
+    isLoading: false,
+  },
+}));
+
+vi.mock("domain/synthetics/incentives/usePersonalizedBannerData", () => ({
+  usePersonalizedBannerData: () => personalizedBannerDataMock.data,
+}));
+
 // Mock TooltipWithPortal to render its handle and content inline
 vi.mock("components/Tooltip/TooltipWithPortal", () => ({
   default: ({ handle, content }: { handle: React.ReactNode; content: React.ReactNode }) => (
@@ -100,6 +124,16 @@ afterEach(() => {
     gmxInStakedGmx: 50n * GMX_DEC,
     gmxBalance: 0n,
   };
+  walletMock.account = undefined;
+  personalizedBannerDataMock.data = {
+    bannerVariant: "new-or-low-fees",
+    isManuallyRewarded: false,
+    hasVolumeAfterFirstProgramEpoch: false,
+    manualAllocatedPoints: undefined,
+    manualBonusUsd: undefined,
+    estimatedRewardsUsd: undefined,
+    isLoading: false,
+  };
   cleanup();
 });
 
@@ -135,25 +169,70 @@ describe("TierCardsSection", () => {
   });
 
   describe("StakingBanner (inactive staking card)", () => {
-    it("shows first staking tier threshold from config", () => {
+    it('shows static "Stake to Boost Points" copy when wallet not connected', () => {
+      walletMock.account = undefined;
+
       renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={undefined} />);
 
-      // First staking tier = 10 GMX => formatAmount(10 * 10^18, 18, 0, true) = "10"
-      expect(screen.getByText(/Stake 10 GMX/)).toBeDefined();
+      expect(screen.getByText(/Stake to Boost Points/)).toBeDefined();
+      expect(screen.getByText(/up to 50% of your fees as rewards/)).toBeDefined();
     });
 
-    it("shows first staking tier name (Supporter for Tier1)", () => {
+    it('shows static "Stake to Boost Points" copy while personalized data is loading', () => {
+      walletMock.account = "0xAccount";
+      personalizedBannerDataMock.data = {
+        ...personalizedBannerDataMock.data,
+        bannerVariant: undefined,
+        isLoading: true,
+      };
+
       renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={undefined} />);
 
-      expect(screen.getByText(/Supporter/)).toBeDefined();
+      expect(screen.getByText(/Stake to Boost Points/)).toBeDefined();
     });
 
-    it("shows first staking tier multiplier from config", () => {
+    it("falls through to new-or-low-fees copy when bannerVariant is manual-reward (skipping the Tradebox-only redeem message)", () => {
+      walletMock.account = "0xAccount";
+      personalizedBannerDataMock.data = {
+        ...personalizedBannerDataMock.data,
+        bannerVariant: "manual-reward",
+        isManuallyRewarded: true,
+        manualBonusUsd: 200n * USD,
+      };
+
       renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={undefined} />);
 
-      const allText = document.body.textContent || "";
-      expect(allText).toContain("Supporter");
-      expect(allText).toContain("0.25x");
+      expect(screen.queryByText(/You've received bonus of/)).toBeNull();
+      expect(screen.queryByText(/Start trading to redeem your rewards/)).toBeNull();
+      expect(screen.getByText(/Earn rewards/)).toBeDefined();
+      expect(screen.getByText(/Stake GMX and receive 50% of your fees back/)).toBeDefined();
+    });
+
+    it("shows recent-activity copy when connected and bannerVariant is recent-activity", () => {
+      walletMock.account = "0xAccount";
+      personalizedBannerDataMock.data = {
+        ...personalizedBannerDataMock.data,
+        bannerVariant: "recent-activity",
+        estimatedRewardsUsd: 250,
+      };
+
+      renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={undefined} />);
+
+      expect(screen.getByText(/With your recent activity, staking/)).toBeDefined();
+      expect(screen.getByText(/\$250 in rewards/)).toBeDefined();
+    });
+
+    it("shows new-or-low-fees copy when connected and bannerVariant is new-or-low-fees", () => {
+      walletMock.account = "0xAccount";
+      personalizedBannerDataMock.data = {
+        ...personalizedBannerDataMock.data,
+        bannerVariant: "new-or-low-fees",
+      };
+
+      renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={undefined} />);
+
+      expect(screen.getByText(/Earn rewards/)).toBeDefined();
+      expect(screen.getByText(/Stake GMX and receive 50% of your fees back/)).toBeDefined();
     });
 
     it("prompts to buy GMX when the wallet has no GMX", () => {

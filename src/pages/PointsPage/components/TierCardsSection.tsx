@@ -15,8 +15,11 @@ import {
   MAX_FEE_DISCOUNT_PERCENT,
 } from "domain/synthetics/incentives/constants";
 import type { EpochStats, IncentivesConfig, StakingTierId, VolumeTierId } from "domain/synthetics/incentives/types";
+import { usePersonalizedBannerData } from "domain/synthetics/incentives/usePersonalizedBannerData";
 import { formatAmount, formatAmountHuman, bigintToNumber } from "lib/numbers";
+import useWallet from "lib/wallets/useWallet";
 
+import { getPersonalizedBannerCopy } from "components/PointsPromoBanner/personalizedBannerCopy";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import bannerGlowImg from "img/bg_banner_glow.png";
@@ -24,6 +27,8 @@ import DatabaseIcon from "img/database.svg?react";
 import ArrowRight from "img/ic_arrow_right.svg?react";
 import BatterySvg from "img/ic_battery.svg?react";
 import BoostSvg from "img/ic_boost.svg?react";
+import GmxIcon from "img/ic_gmx_glyph.svg?react";
+import PlusIcon from "img/ic_plus.svg?react";
 import StatsSvg from "img/ic_stats.svg?react";
 
 import { getBoostDescription } from "./incentivesText";
@@ -483,43 +488,48 @@ function StakingCard({
           </div>
         </>
       ) : (
-        <StakingBanner config={config} walletGmx={walletGmx} />
+        <StakingBanner walletGmx={walletGmx} />
       )}
     </div>
   );
 }
 
-function StakingBanner({ config, walletGmx }: { config?: IncentivesConfig; walletGmx?: bigint }) {
-  const firstTier = config?.stakingTiers?.[0];
-  const multiplierDecimals = config?.multiplierDecimals ?? MULTIPLIER_DECIMALS;
-
-  const stakeLabel = firstTier ? formatAmount(firstTier.threshold, GMX_DECIMALS, 0, true) : "...";
-  const tierName = firstTier ? STAKING_TIER_BADGES[firstTier.tier]() : "...";
-  const multiplierLabel = firstTier ? formatMultiplier(firstTier.multiplier) : "...";
+function StakingBanner({ walletGmx }: { walletGmx?: bigint }) {
+  const { account } = useWallet();
+  const bannerData = usePersonalizedBannerData();
   const hasWalletGmx = (walletGmx ?? 0n) > 0n;
 
-  const firstVolumeTier = config?.volumeTiers?.[0];
-  const estimateVolume = firstVolumeTier ? bigintToNumber(firstVolumeTier.threshold, USD_DECIMALS) : 0;
-  const stakingMultiplier = firstTier?.multiplier ?? 0;
-  const rewardsEstimate =
-    estimateVolume > 0 ? estimateWeeklyRewards(estimateVolume, stakingMultiplier, multiplierDecimals) : 0;
+  const showStaticCopy = !account || bannerData.isLoading || bannerData.bannerVariant === undefined;
+
+  // The manual-reward variant's "Start trading to redeem" body is Tradebox-context — for the
+  // staking card it doesn't fit, so fall through to the new-or-low-fees default.
+  const personalizedData =
+    bannerData.bannerVariant === "manual-reward"
+      ? { ...bannerData, bannerVariant: "new-or-low-fees" as const }
+      : bannerData;
+
+  const { title, body } = showStaticCopy
+    ? {
+        title: <Trans>Stake to Boost Points</Trans>,
+        body: (
+          <Trans>
+            Stake <span className="font-medium text-typography-primary">GMX</span> and receive up to 50% of your fees as
+            rewards.
+          </Trans>
+        ),
+      }
+    : getPersonalizedBannerCopy(personalizedData);
 
   return (
     <div className="flex flex-1 flex-col justify-end gap-8">
-      <h3 className="text-h3 font-medium text-typography-primary">
-        <Trans>Stake {stakeLabel} GMX</Trans>
-      </h3>
-      <div className="flex items-start gap-4 text-13 font-medium text-typography-secondary">
-        <Trans>
-          Unlock {tierName} status (+{multiplierLabel}) and save up to ${rewardsEstimate} in trading fees.
-        </Trans>
-      </div>
+      <h3 className="text-h3 font-medium text-typography-primary">{title}</h3>
+      <div className="text-13 font-medium text-typography-secondary">{body}</div>
       <Link
         to={hasWalletGmx ? "/earn" : "/buy_gmx"}
         className="flex items-center gap-4 text-13 font-medium text-blue-300"
       >
         {hasWalletGmx ? <Trans>Stake GMX</Trans> : <Trans>Buy GMX</Trans>}
-        {hasWalletGmx ? <DatabaseIcon className="size-14" /> : <ArrowRight />}
+        {hasWalletGmx ? <GmxIcon className="size-16" /> : <PlusIcon className="size-16" />}
       </Link>
     </div>
   );

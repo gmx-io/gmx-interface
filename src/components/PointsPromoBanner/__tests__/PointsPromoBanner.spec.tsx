@@ -43,13 +43,12 @@ i18n.activate("en");
 const ARBITRUM = 42161;
 
 const defaultBannerData: PersonalizedBannerData = {
+  bannerVariant: "new-or-low-fees",
   isManuallyRewarded: false,
   hasVolumeAfterFirstProgramEpoch: false,
   manualAllocatedPoints: undefined,
   manualBonusUsd: undefined,
-  recommendedStakeGmx: undefined,
   estimatedRewardsUsd: undefined,
-  hasPersonalizedData: false,
   isLoading: false,
 };
 
@@ -94,11 +93,23 @@ describe("PointsPromoBanner", () => {
     expect(container.innerHTML).toBe("");
   });
 
-  it("shows manual allocation text when legacy dismissed state exists but user has post-first-epoch volume", () => {
+  it("returns null while data is still loading", () => {
+    mockUsePersonalizedBannerData.mockReturnValue({
+      ...defaultBannerData,
+      bannerVariant: undefined,
+      isLoading: true,
+    });
+
+    const { container } = renderBanner();
+
+    expect(container.innerHTML).toBe("");
+  });
+
+  it("shows manual reward text when legacy dismissed state exists but user has post-first-epoch volume", () => {
     mockUseLocalStorage.mockImplementation(() => [true, mockSetDismissed] as any);
     mockUsePersonalizedBannerData.mockReturnValue({
       ...defaultBannerData,
-      hasPersonalizedData: true,
+      bannerVariant: "manual-reward",
       isManuallyRewarded: true,
       hasVolumeAfterFirstProgramEpoch: true,
       manualBonusUsd: 500n * 10n ** 30n,
@@ -106,54 +117,80 @@ describe("PointsPromoBanner", () => {
 
     renderBanner();
 
-    expect(screen.getByText(/received a points bonus worth/)).toBeDefined();
+    expect(screen.getByText(/You've received bonus of/)).toBeDefined();
   });
 
-  it("shows generic text when hasPersonalizedData is false", () => {
+  it("shows new-or-low-fees text by default", () => {
     mockUsePersonalizedBannerData.mockReturnValue({
       ...defaultBannerData,
-      hasPersonalizedData: false,
+      bannerVariant: "new-or-low-fees",
     });
 
     renderBanner();
 
-    expect(screen.getByText(/Start earning points and unlock rewards/)).toBeDefined();
+    expect(screen.getByText(/Stake GMX and receive 50% of your fees back/)).toBeDefined();
   });
 
-  it("shows bonus text when isManuallyRewarded is true", () => {
+  it("shows manual reward text when bannerVariant is manual-reward", () => {
     mockUsePersonalizedBannerData.mockReturnValue({
       ...defaultBannerData,
-      hasPersonalizedData: true,
+      bannerVariant: "manual-reward",
       isManuallyRewarded: true,
-      manualBonusUsd: 500n * 10n ** 30n, // $500.00
+      manualBonusUsd: 500n * 10n ** 30n, // $500
     });
 
     renderBanner();
 
-    const bannerText = screen.getByText(/received a points bonus worth/);
-    expect(bannerText).toBeDefined();
+    expect(screen.getByText(/You've received bonus of/)).toBeDefined();
+    expect(screen.getByText(/Start trading to redeem your rewards/)).toBeDefined();
   });
 
-  it("shows staking recommendation text when personalized data available", () => {
+  it("shows recent-activity text when bannerVariant is recent-activity", () => {
     mockUsePersonalizedBannerData.mockReturnValue({
       ...defaultBannerData,
-      hasPersonalizedData: true,
-      isManuallyRewarded: false,
-      recommendedStakeGmx: 1000,
-      estimatedRewardsUsd: 50,
+      bannerVariant: "recent-activity",
+      estimatedRewardsUsd: 200,
     });
 
     renderBanner();
 
-    expect(screen.getByText(/staking/)).toBeDefined();
-    expect(screen.getByText(/1\.0k/)).toBeDefined();
+    expect(screen.getByText(/With your recent activity, staking/)).toBeDefined();
+    expect(screen.getByText(/\$200 in rewards/)).toBeDefined();
   });
 
-  it("contains link to /points", () => {
+  it('renders "Stake GMX" CTA and links to /earn for recent-activity variant', () => {
+    mockUsePersonalizedBannerData.mockReturnValue({
+      ...defaultBannerData,
+      bannerVariant: "recent-activity",
+      estimatedRewardsUsd: 200,
+    });
+
     renderBanner();
 
-    const link = screen.getByRole("link");
-    expect(link.getAttribute("href")).toBe("/points");
+    expect(screen.getByText("Stake GMX")).toBeDefined();
+    expect(screen.queryByText(/Learn more/)).toBeNull();
+    expect(screen.getByRole("link").getAttribute("href")).toBe("/earn");
+  });
+
+  it("renders Learn more CTA for new-or-low-fees variant and links to /points", () => {
+    renderBanner();
+
+    expect(screen.getByText(/Learn more/)).toBeDefined();
+    expect(screen.getByRole("link").getAttribute("href")).toBe("/points");
+  });
+
+  it("renders Learn more CTA for manual-reward variant and links to /points", () => {
+    mockUsePersonalizedBannerData.mockReturnValue({
+      ...defaultBannerData,
+      bannerVariant: "manual-reward",
+      isManuallyRewarded: true,
+      manualBonusUsd: 500n * 10n ** 30n,
+    });
+
+    renderBanner();
+
+    expect(screen.getByText(/Learn more/)).toBeDefined();
+    expect(screen.getByRole("link").getAttribute("href")).toBe("/points");
   });
 
   it("clicking the banner link calls setDismissed with true", () => {
@@ -182,10 +219,10 @@ describe("PointsPromoBanner", () => {
     });
   });
 
-  it("records dismissal after post-first-epoch volume for manual allocation text", () => {
+  it("records dismissal after post-first-epoch volume for manual reward text", () => {
     mockUsePersonalizedBannerData.mockReturnValue({
       ...defaultBannerData,
-      hasPersonalizedData: true,
+      bannerVariant: "manual-reward",
       isManuallyRewarded: true,
       hasVolumeAfterFirstProgramEpoch: true,
       manualBonusUsd: 500n * 10n ** 30n,

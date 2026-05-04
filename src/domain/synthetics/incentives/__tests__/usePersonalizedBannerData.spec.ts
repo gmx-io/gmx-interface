@@ -22,6 +22,10 @@ vi.mock("../useAccountNetPositionFeesLast4Months", () => ({
   useAccountNetPositionFeesLast4Months: vi.fn(),
 }));
 
+vi.mock("../useAccountFirstTradeTimestamp", () => ({
+  useAccountFirstTradeTimestamp: vi.fn(),
+}));
+
 vi.mock("../useAccountRewardsHistory", () => ({
   useAccountManualRewardsAllocation: vi.fn(),
 }));
@@ -36,6 +40,7 @@ import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 
 import type { AccountIncentiveDashboard, IncentivesConfig } from "../types";
+import { useAccountFirstTradeTimestamp } from "../useAccountFirstTradeTimestamp";
 import { useAccountIncentiveDashboard } from "../useAccountIncentiveDashboard";
 import { useAccountNetPositionFeesLast4Months } from "../useAccountNetPositionFeesLast4Months";
 import { useAccountManualRewardsAllocation } from "../useAccountRewardsHistory";
@@ -47,6 +52,7 @@ const mockUseWallet = vi.mocked(useWallet);
 const mockUseIncentivesConfig = vi.mocked(useIncentivesConfig);
 const mockUseAccountDashboard = vi.mocked(useAccountIncentiveDashboard);
 const mockUseAccountNetPositionFees = vi.mocked(useAccountNetPositionFeesLast4Months);
+const mockUseAccountFirstTradeTimestamp = vi.mocked(useAccountFirstTradeTimestamp);
 const mockUseAccountManualRewardsAllocation = vi.mocked(useAccountManualRewardsAllocation);
 const mockUseGmxPrice = vi.mocked(useGmxPrice);
 
@@ -67,13 +73,18 @@ const ARBITRUM = 42161;
 const AVALANCHE = 43114;
 const USD = 10n ** 30n;
 const GMX_DEC = 10n ** 18n;
+const TWO_WEEKS_SECONDS = 14 * 24 * 60 * 60;
+
+const NOW_SECONDS = 1_800_000_000;
+const OLD_FIRST_TRADE = NOW_SECONDS - TWO_WEEKS_SECONDS - 1; // > 2 weeks ago
+const RECENT_FIRST_TRADE = NOW_SECONDS - 60; // ~1 minute ago — within new-user window
 
 const mockConfig: IncentivesConfig = {
   programStartTimestamp: 1699500000,
   epochTimestamp: 1700000000,
   epochStartTimestamp: 1699900000,
   epochDuration: 604800,
-  maxMultiplier: 400, // 4.0x
+  maxMultiplier: 400,
   multiplierDecimals: 100,
   volumeTierPersistenceEpochs: 4,
   pointsExpirationEpochs: 13,
@@ -125,6 +136,8 @@ function setupDefaults(overrides?: {
   dashboard?: AccountIncentiveDashboard | undefined;
   netPositionFees?: bigint | undefined;
   netPositionFeesLoading?: boolean;
+  firstTradeTimestamp?: number | undefined;
+  firstTradeLoading?: boolean;
   manualAllocatedPoints?: bigint | undefined;
   dashboardLoading?: boolean;
   manualAllocatedPointsLoading?: boolean;
@@ -145,6 +158,10 @@ function setupDefaults(overrides?: {
     data: "netPositionFees" in o ? o.netPositionFees : 100n * USD,
     loading: o.netPositionFeesLoading ?? false,
   } as any);
+  mockUseAccountFirstTradeTimestamp.mockReturnValue({
+    data: "firstTradeTimestamp" in o ? o.firstTradeTimestamp : OLD_FIRST_TRADE,
+    loading: o.firstTradeLoading ?? false,
+  } as any);
   mockUseAccountManualRewardsAllocation.mockReturnValue({
     data: o.manualAllocatedPoints ?? 0n,
     loading: o.manualAllocatedPointsLoading ?? false,
@@ -157,27 +174,31 @@ function setupDefaults(overrides?: {
 
 beforeEach(() => {
   vi.clearAllMocks();
+  vi.useFakeTimers();
+  vi.setSystemTime(new Date(NOW_SECONDS * 1000));
 });
 
 describe("usePersonalizedBannerData", () => {
-  it("returns hasPersonalizedData: false when incentives not enabled (non-ARBITRUM chain)", () => {
+  it('returns "new-or-low-fees" variant when incentives not enabled (non-ARBITRUM chain)', () => {
     setupDefaults({ chainId: AVALANCHE });
 
     const result = renderHook(() => usePersonalizedBannerData());
 
-    expect(result.current.hasPersonalizedData).toBe(false);
+    expect(result.current.bannerVariant).toBe("new-or-low-fees");
     expect(result.current.isManuallyRewarded).toBe(false);
+    expect(result.current.isLoading).toBe(false);
   });
 
-  it("returns hasPersonalizedData: false when no account connected", () => {
+  it('returns "new-or-low-fees" variant when no account connected', () => {
     setupDefaults({ account: undefined });
 
     const result = renderHook(() => usePersonalizedBannerData());
 
-    expect(result.current.hasPersonalizedData).toBe(false);
+    expect(result.current.bannerVariant).toBe("new-or-low-fees");
+    expect(result.current.isLoading).toBe(false);
   });
 
-  it("returns isManuallyRewarded: true when there are pre-program manual allocation entries", () => {
+  it('returns "manual-reward" variant when there are pre-program manual allocation entries', () => {
     const dashboard: AccountIncentiveDashboard = {
       account: "0x1234",
       pointsBalance: 100n * GMX_DEC,
@@ -188,7 +209,7 @@ describe("usePersonalizedBannerData", () => {
 
     const result = renderHook(() => usePersonalizedBannerData());
 
-    expect(result.current.hasPersonalizedData).toBe(true);
+    expect(result.current.bannerVariant).toBe("manual-reward");
     expect(result.current.isManuallyRewarded).toBe(true);
     expect(result.current.manualBonusUsd).toBe(25n * 20n * USD);
   });
@@ -215,7 +236,7 @@ describe("usePersonalizedBannerData", () => {
 
     const result = renderHook(() => usePersonalizedBannerData());
 
-    expect(result.current.isManuallyRewarded).toBe(true);
+    expect(result.current.bannerVariant).toBe("manual-reward");
     expect(result.current.manualBonusUsd).toBe((allocatedPoints * 20n * USD) / GMX_DEC);
   });
 
@@ -269,38 +290,54 @@ describe("usePersonalizedBannerData", () => {
     expect(result.current.hasVolumeAfterFirstProgramEpoch).toBe(true);
   });
 
-  it("uses the first staking tier as the trade banner stake recommendation", () => {
-    setupDefaults({ netPositionFees: 50n * USD });
+  it('returns "recent-activity" variant when fees >= $20 and first trade is older than 2 weeks', () => {
+    setupDefaults({ netPositionFees: 50n * USD, firstTradeTimestamp: OLD_FIRST_TRADE });
 
     const result = renderHook(() => usePersonalizedBannerData());
 
-    expect(result.current.hasPersonalizedData).toBe(true);
-    expect(result.current.recommendedStakeGmx).toBe(10);
+    expect(result.current.bannerVariant).toBe("recent-activity");
   });
 
   it("calculates estimatedRewardsUsd from netPositionFeesLast4Months", () => {
-    setupDefaults({ netPositionFees: 500n * USD }); // $500 fees
+    setupDefaults({ netPositionFees: 500n * USD });
 
     const result = renderHook(() => usePersonalizedBannerData());
 
-    expect(result.current.hasPersonalizedData).toBe(true);
+    expect(result.current.bannerVariant).toBe("recent-activity");
     // $500 fees * 50% max discount = $250
     expect(result.current.estimatedRewardsUsd).toBe(250);
   });
 
-  it("returns hasPersonalizedData: false when recent fees are below the display threshold", () => {
-    setupDefaults({ netPositionFees: 5n * USD }); // $5 fees, below $20 threshold
+  it('returns "new-or-low-fees" when recent fees are below the display threshold', () => {
+    setupDefaults({ netPositionFees: 5n * USD });
 
     const result = renderHook(() => usePersonalizedBannerData());
 
-    expect(result.current.hasPersonalizedData).toBe(false);
+    expect(result.current.bannerVariant).toBe("new-or-low-fees");
+    expect(result.current.estimatedRewardsUsd).toBeUndefined();
+  });
+
+  it('returns "new-or-low-fees" when first trade is within the new-user window', () => {
+    setupDefaults({ netPositionFees: 500n * USD, firstTradeTimestamp: RECENT_FIRST_TRADE });
+
+    const result = renderHook(() => usePersonalizedBannerData());
+
+    expect(result.current.bannerVariant).toBe("new-or-low-fees");
+  });
+
+  it('returns "new-or-low-fees" when the user has never traded (firstTradeTimestamp undefined)', () => {
+    setupDefaults({ netPositionFees: 500n * USD, firstTradeTimestamp: undefined });
+
+    const result = renderHook(() => usePersonalizedBannerData());
+
+    expect(result.current.bannerVariant).toBe("new-or-low-fees");
   });
 
   it("estimates trade banner rewards as up to 50% of recent open and close fees", () => {
     setupDefaults({ netPositionFees: 50n * USD });
     const result = renderHook(() => usePersonalizedBannerData());
 
-    expect(result.current.hasPersonalizedData).toBe(true);
+    expect(result.current.bannerVariant).toBe("recent-activity");
     // $50 fees * 50% max discount = $25
     expect(result.current.estimatedRewardsUsd).toBe(25);
   });
@@ -319,7 +356,6 @@ describe("usePersonalizedBannerData", () => {
   });
 
   it("does not use boost config for the simplified trade banner estimate", () => {
-    // Small boosts sum = 0.1
     const configSmallBoosts: IncentivesConfig = {
       ...mockConfig,
       boosts: [{ boost: "FeaturedMarkets", multiplier: 10 }],
@@ -327,7 +363,6 @@ describe("usePersonalizedBannerData", () => {
     setupDefaults({ netPositionFees: 250n * USD, config: configSmallBoosts });
     const result1 = renderHook(() => usePersonalizedBannerData());
 
-    // Large boosts sum = 3.0
     const configLargeBoosts: IncentivesConfig = {
       ...mockConfig,
       boosts: [
@@ -343,56 +378,32 @@ describe("usePersonalizedBannerData", () => {
     expect(result2.current.estimatedRewardsUsd).toBe(125);
   });
 
-  it("uses the first config staking tier as the recommended stake", () => {
-    const configLowCap: IncentivesConfig = {
-      ...mockConfig,
-      stakingTiers: [{ tier: "Tier1", threshold: 1n * GMX_DEC, multiplier: 25 }],
-    };
-
-    const configHighCap: IncentivesConfig = {
-      ...mockConfig,
-      stakingTiers: [
-        { tier: "Tier1", threshold: 10n * GMX_DEC, multiplier: 25 },
-        { tier: "Tier2", threshold: 100n * GMX_DEC, multiplier: 50 },
-        { tier: "Tier3", threshold: 100000n * GMX_DEC, multiplier: 100 }, // 100K GMX max
-      ],
-    };
-
-    setupDefaults({ netPositionFees: 250n * USD, config: configLowCap });
-    const result1 = renderHook(() => usePersonalizedBannerData());
-
-    setupDefaults({ netPositionFees: 250n * USD, config: configHighCap });
-    const result2 = renderHook(() => usePersonalizedBannerData());
-
-    expect(result1.current.recommendedStakeGmx).toBe(1);
-    expect(result2.current.recommendedStakeGmx).toBe(10);
-  });
-
-  it("falls back to hardcoded values when config is undefined", () => {
+  it("falls back to recent-activity when netPositionFees is sufficient even if config is undefined", () => {
     setupDefaults({ netPositionFees: 500n * USD, config: undefined });
 
     const result = renderHook(() => usePersonalizedBannerData());
 
-    expect(result.current.hasPersonalizedData).toBe(true);
-    expect(result.current.recommendedStakeGmx).toBe(10);
+    expect(result.current.bannerVariant).toBe("recent-activity");
     expect(result.current.estimatedRewardsUsd).toBeDefined();
     expect(result.current.estimatedRewardsUsd!).toBeGreaterThan(0);
   });
 
-  it("requires GMX price for manual allocation USD value", () => {
+  it("requires GMX price for manual allocation USD value (stays loading)", () => {
     setupDefaults({ manualAllocatedPoints: 25n * GMX_DEC, gmxPrice: 0n });
 
     const result = renderHook(() => usePersonalizedBannerData());
 
-    expect(result.current.hasPersonalizedData).toBe(false);
+    expect(result.current.bannerVariant).toBeUndefined();
+    expect(result.current.isLoading).toBe(true);
+    expect(result.current.isManuallyRewarded).toBe(true);
   });
 
-  it("returns hasPersonalizedData: false when dashboard is undefined", () => {
+  it("derives hasVolumeAfterFirstProgramEpoch as false when dashboard is undefined", () => {
     setupDefaults({ dashboard: undefined });
 
     const result = renderHook(() => usePersonalizedBannerData());
 
-    expect(result.current.hasPersonalizedData).toBe(false);
+    expect(result.current.hasVolumeAfterFirstProgramEpoch).toBe(false);
   });
 
   it("returns isLoading: true when dashboard is loading", () => {
@@ -401,21 +412,31 @@ describe("usePersonalizedBannerData", () => {
     const result = renderHook(() => usePersonalizedBannerData());
 
     expect(result.current.isLoading).toBe(true);
+    expect(result.current.bannerVariant).toBeUndefined();
   });
 
-  it("returns hasPersonalizedData: false when netPositionFees is undefined", () => {
+  it("returns isLoading: true when first trade timestamp is loading", () => {
+    setupDefaults({ firstTradeTimestamp: undefined, firstTradeLoading: true });
+
+    const result = renderHook(() => usePersonalizedBannerData());
+
+    expect(result.current.isLoading).toBe(true);
+    expect(result.current.bannerVariant).toBeUndefined();
+  });
+
+  it('returns "new-or-low-fees" when netPositionFees is undefined', () => {
     setupDefaults({ netPositionFees: undefined });
 
     const result = renderHook(() => usePersonalizedBannerData());
 
-    expect(result.current.hasPersonalizedData).toBe(false);
+    expect(result.current.bannerVariant).toBe("new-or-low-fees");
   });
 
-  it("returns hasPersonalizedData: false when netPositionFees is zero", () => {
+  it('returns "new-or-low-fees" when netPositionFees is zero', () => {
     setupDefaults({ netPositionFees: 0n });
 
     const result = renderHook(() => usePersonalizedBannerData());
 
-    expect(result.current.hasPersonalizedData).toBe(false);
+    expect(result.current.bannerVariant).toBe("new-or-low-fees");
   });
 });

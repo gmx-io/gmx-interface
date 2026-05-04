@@ -1050,10 +1050,6 @@ msgstr "Worker"
 msgid "Max network fee buffer precision is 0.01%"
 msgstr "網路費用緩衝精度上限為 0.01%"
 
-#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
-msgid "You've received a points bonus worth <0>{bonusFormatted}</0>"
-msgstr ""
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeltaPrime"
 msgstr "DeltaPrime"
@@ -1504,6 +1500,10 @@ msgstr "過去 {DAYS_BACK} 天內未找到此帳戶的事件"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the order"
 msgstr "訂單的標記價格"
+
+#: src/components/PointsPromoBanner/personalizedBannerCopy.tsx
+msgid "You've received bonus of <0>{bonusFormatted}</0>"
+msgstr ""
 
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Trigger error boundary"
@@ -3395,10 +3395,6 @@ msgstr "加倉（市價）"
 msgid "Bridge transfer sent"
 msgstr "跨鏈轉帳已發送"
 
-#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
-msgid "Start trading to activate it and use it to discount your fees."
-msgstr ""
-
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GlvList.tsx
@@ -3846,6 +3842,10 @@ msgstr "做空未平倉量最低抵押品因子"
 msgid "Failed TWAP Swap part"
 msgstr "TWAP 兌換部分失敗"
 
+#: src/components/PointsPromoBanner/personalizedBannerCopy.tsx
+msgid "Start trading to redeem your rewards."
+msgstr ""
+
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Annualized data based on the past 7 days"
 msgstr "年化數據基於過去 7 天"
@@ -3870,6 +3870,10 @@ msgstr "淨價格影響 / 費用"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Order canceled"
 msgstr "訂單已取消"
+
+#: src/components/PointsPromoBanner/personalizedBannerCopy.tsx
+msgid "With your recent activity, staking <0>GMX</0> could have earned you up to <1>{rewardsFormatted} in rewards</1>."
+msgstr ""
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "<0>Yes, we encourage you to build on top of GMX or integrate it into your DeFi app. GMX is fully composable and already integrated with hundreds of protocols across the ecosystem, including notable names like Pendle, Dolomite, Radiant, Silo Finance, Venus Protocol, Abracadabra, Compound, and Beefy. You can interact directly with GMX smart contracts or use available APIs and SDKs to plug into trading, liquidity, or data flows. Check out the <1>GMX Developer Docs</1> to get started.</0>"
@@ -3925,6 +3929,10 @@ msgstr "領取成功"
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Cumulative PnL <0>{0}</0>"
 msgstr "累計 PnL <0>{0}</0>"
+
+#: src/components/PointsPromoBanner/personalizedBannerCopy.tsx
+msgid "Stake GMX and receive up to 50% of your fees back."
+msgstr ""
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Maximum days before reauthorization required"
@@ -5576,8 +5584,8 @@ msgstr "GLV 從 GM 池的交易手續費（開倉、平倉、借貸、清算、�
 msgid "Failed Market Increase"
 msgstr "Market Increase 失敗"
 
-#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
-#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
+#: src/components/PointsPromoBanner/personalizedBannerCopy.tsx
+#: src/components/PointsPromoBanner/personalizedBannerCopy.tsx
 msgid "Earn rewards"
 msgstr ""
 
@@ -6454,6 +6462,7 @@ msgid "Share your rewards"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/TierCardsSection.tsx
@@ -6890,10 +6899,6 @@ msgstr "成交價格未達到可接受價格"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "In which tokens will I receive my rebates?"
-msgstr ""
-
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Stake {stakeLabel} GMX"
 msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
@@ -8615,10 +8620,6 @@ msgstr "平倉價格影響"
 msgid "Opens GMTrade in a new tab"
 msgstr "在新分頁中開啟 GMTrade"
 
-#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
-msgid "With your recent volume, staking <0>{stakeFormatted} GMX</0> could have earned you up to <1>${rewardsFormatted} in additional trading rewards</1>."
-msgstr ""
-
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -9276,10 +9277,6 @@ msgstr "預估返利最高可達開倉費用的 {0}%。以 {incentivesTokenTitle
 msgid "Executes when price and liquidity conditions are met"
 msgstr "當價格和流動性條件滿足時執行"
 
-#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
-msgid "Start earning points and unlock rewards."
-msgstr ""
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Regular account"
 msgstr "一般帳戶"
@@ -9343,10 +9340,6 @@ msgstr "模擬提取時發生錯誤"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims"
 msgstr "領取"
-
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Unlock {tierName} status (+{multiplierLabel}) and save up to ${rewardsEstimate} in trading fees."
-msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
@@ -9530,6 +9523,10 @@ msgstr "降低資金費率門檻"
 #: src/domain/synthetics/fees/utils/index.ts
 msgid "Network fees are very high due to increased {chainName} network activity"
 msgstr "由於 {chainName} 網路活動增加，網路費用非常高"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Stake <0>GMX</0> and receive up to 50% of your fees as rewards."
+msgstr ""
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Some markets have insufficient pool balance to claim funding fees. These markets are excluded from this claim."
@@ -10970,6 +10967,10 @@ msgstr "關於"
 msgid "24h high"
 msgstr "24 小時最高"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Stake to Boost Points"
+msgstr ""
+
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "FACTOR"
@@ -11882,6 +11883,7 @@ msgstr "由於費用和價格影響，成交價格可能與限價不同。您將
 msgid "Private"
 msgstr "私有"
 
+#: src/components/PointsPromoBanner/PointsPromoBanner.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
