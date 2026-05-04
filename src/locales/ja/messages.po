@@ -551,7 +551,6 @@ msgid "Image generation failed. Refresh and try again."
 msgstr "画像の生成に失敗しました。更新して再度お試しください。"
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
-#: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Unlock {tierName} status (+{multiplierLabel}) and earn up to ${rewardsEstimate} in additional trading rewards."
 msgstr ""
 
@@ -2434,6 +2433,10 @@ msgstr "{orderTypeText} {0} を {1}に"
 #: src/pages/Jobs/Jobs.tsx
 msgid "Job openings at GMX"
 msgstr "GMXの求人情報"
+
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+msgid "Net Position Fees (4mo)"
+msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
@@ -9340,6 +9343,10 @@ msgstr "引き出しシミュレーションエラー"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims"
 msgstr "請求"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Unlock {tierName} status (+{multiplierLabel}) and save up to ${rewardsEstimate} in trading fees."
+msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx

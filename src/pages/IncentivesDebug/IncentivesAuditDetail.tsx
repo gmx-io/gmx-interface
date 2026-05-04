@@ -12,6 +12,7 @@ import {
 } from "domain/synthetics/incentives/constants";
 import { useAccountIncentiveDashboard } from "domain/synthetics/incentives/useAccountIncentiveDashboard";
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
+import { useAccountNetPositionFeesLast4Months } from "domain/synthetics/incentives/useAccountNetPositionFeesLast4Months";
 import { AuditEntry, useIncentiveAccountEpochAudit } from "domain/synthetics/incentives/useIncentiveAccountEpochAudit";
 import { formatAmount, formatUsd } from "lib/numbers";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
@@ -61,6 +62,10 @@ export function IncentivesAuditDetail({
 
   const { data: status, loading: statusLoading } = useAccountIncentiveStatus(chainId, { account });
   const { data: dashboard } = useAccountIncentiveDashboard(chainId, { account });
+  const { data: netPositionFeesLast4Months, loading: netPositionFeesLoading } = useAccountNetPositionFeesLast4Months(
+    chainId,
+    { account }
+  );
 
   const { orderBy, direction, getSorterProps } = useSorterHandlers<AuditDetailSortField>("incentives-audit-detail", {
     orderBy: "epoch",
@@ -209,6 +214,16 @@ export function IncentivesAuditDetail({
             <KV
               label={<Trans>Rewards Balance</Trans>}
               value={dashboard ? `${formatAmount(dashboard.rewardsBalance, 18, 4, true)} GMX` : "..."}
+            />
+            <KV
+              label={<Trans>Net Position Fees (4mo)</Trans>}
+              value={
+                netPositionFeesLast4Months !== undefined
+                  ? formatUsd(netPositionFeesLast4Months, { displayDecimals: 2 }) ?? "0"
+                  : netPositionFeesLoading
+                    ? "..."
+                    : "-"
+              }
             />
           </div>
         )}
