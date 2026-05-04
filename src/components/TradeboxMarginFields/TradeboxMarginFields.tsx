@@ -100,6 +100,7 @@ export function TradeboxMarginFields({
   } = useTradeboxManualLeverageSizeSlider({
     sizeDisplayMode,
     canConvert,
+    maxAvailableAmount,
     tokensToUsd,
     setSizeInputValue,
     setToTokenInputValue,
