@@ -10624,7 +10624,7 @@ msgstr "<0>每</0> {minutes} 分钟{0}"
 
 #: src/pages/PointsPage/components/FaqSection.tsx
 msgid "What are GMX Points?"
-msgstr ""
+msgstr "什么是 GMX 积分？"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "r:"
@@ -10673,7 +10673,7 @@ msgstr "LIQUIDITY LONG"
 
 #: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Total rewards earned since the start of the program."
-msgstr ""
+msgstr "自计划开始以来累计获得的奖励。"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "PnL short"
@@ -10714,7 +10714,7 @@ msgstr "链下签署交易。优质 RPC 确保在网络拥堵时的可靠性。<
 #: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Don't Let Rewards Expire"
-msgstr ""
+msgstr "不要让奖励过期"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX from Uniswap or directly on GMX (select Arbitrum)"
@@ -10788,7 +10788,7 @@ msgstr ""
 #: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Continue restaking your rewards to boost your earnings and unlock additional yield on your GMX tokens."
-msgstr ""
+msgstr "继续重新质押您的奖励，提升您的收益并解锁 GMX 代币的额外收益。"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in WETH-USDC pool. Select a different pool."
@@ -10853,7 +10853,7 @@ msgstr "推荐码已更新"
 #: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Activate Pair Boosts"
-msgstr ""
+msgstr "激活交易对加成"
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 #: src/pages/AccountEvents/AccountEvents.tsx
@@ -10902,7 +10902,7 @@ msgstr "30 秒"
 
 #: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Claim your rewards now. You can also stake them instantly to get 5% yield on it and earn even more points."
-msgstr ""
+msgstr "立即领取您的奖励。您也可以立即质押，获得 5% 的收益并赚取更多积分。"
 
 #: src/components/GmList/PerformanceLabel.tsx
 msgid "Annualized performance"
@@ -10990,7 +10990,7 @@ msgstr "没有匹配的资金池"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "Account Page"
-msgstr ""
+msgstr "账户页面"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation confirmations"
@@ -11013,7 +11013,7 @@ msgstr "24小时最高"
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Stake to Boost Points"
-msgstr ""
+msgstr "质押以提升积分"
 
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
@@ -11047,7 +11047,7 @@ msgstr "PnL 做多"
 
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Volume Tiers"
-msgstr ""
+msgstr "交易量等级"
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "For detailed stats"
@@ -11059,7 +11059,7 @@ msgstr "模拟交易"
 
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "GMX Points"
-msgstr ""
+msgstr "GMX 积分"
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "SL price below mark price"
@@ -11109,7 +11109,7 @@ msgstr "做多净费率 / 1h"
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Complete trading activities"
-msgstr ""
+msgstr "完成交易活动"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -11140,7 +11140,7 @@ msgstr "GMX V1 操作"
 
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Boost Name"
-msgstr ""
+msgstr "加成名称"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GLV vaults:"
@@ -11186,7 +11186,7 @@ msgstr "超过最大池子金额"
 
 #: src/components/PointsShare/PointsShareCard.tsx
 msgid "Start trading with me."
-msgstr ""
+msgstr "和我一起开始交易。"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 msgid "Unknown order"
@@ -11285,7 +11285,7 @@ msgstr "EIP-4844, 3 月 20-27 日"
 
 #: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Claiming + staking..."
-msgstr ""
+msgstr "正在领取并质押..."
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Save on costs"
@@ -11315,7 +11315,7 @@ msgstr "抵押品不足。需要更多"
 
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Every week, your trading volume places you into a Volume Tier, which is active for {volumeTierPersistenceEpochs} weeks. Higher tiers earn more points per dollar of trading fees paid. Volume tiers update automatically each week based on your activity. Trading more consistently helps you stay in higher tiers and earn rewards faster."
-msgstr ""
+msgstr "每周，您的交易量会将您归入相应的交易量等级，该等级生效 {volumeTierPersistenceEpochs} 周。等级越高，每一美元交易费用所获得的积分越多。交易量等级会根据您的活动每周自动更新。持续稳定的交易有助于您保持在更高的等级，并更快地赚取奖励。"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Return on capital used (PnL / capital).<0/><1/>Capital used = max(<2>sum of collateral of open positions - realized PnL + starting pending PnL</2>)."
@@ -11386,7 +11386,7 @@ msgstr "与 GMX 团队匿名聊天"
 
 #: src/components/HistoricalPointsAllocationModal/HistoricalPointsAllocationModal.tsx
 msgid "Know someone who traded on GMX?"
-msgstr ""
+msgstr "认识在 GMX 上交易过的人吗？"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
@@ -11452,11 +11452,11 @@ msgstr "{count, plural, one {订单} other {# 订单}}"
 #: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "A small increase in volume will unlock a higher status and stronger rewards."
-msgstr ""
+msgstr "稍微增加交易量即可解锁更高等级和更丰厚的奖励。"
 
 #: src/components/PointsShare/PointsShare.tsx
 msgid "Get up to 20% in rewards and give your community up to 10% off on every trade. Higher referrals tiers unlock higher benefits. <0>Read more</0>."
-msgstr ""
+msgstr "最高可获得 20% 的奖励，并为您的社区每笔交易提供最高 10% 的折扣。更高的推荐等级可解锁更高的权益。<0>了解更多</0>。"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Avalanche trading incentives"
@@ -11475,7 +11475,7 @@ msgstr "请求市场减少"
 #: src/pages/PointsPage/components/TierCardsSection.tsx
 #: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Volume Tier"
-msgstr ""
+msgstr "交易量等级"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 msgid "Delta neutral vaults"
@@ -11487,7 +11487,7 @@ msgstr "正在发送转移请求…"
 
 #: src/domain/synthetics/incentives/constants.ts
 msgid "Apex"
-msgstr ""
+msgstr "巅峰"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"
@@ -11602,7 +11602,7 @@ msgstr "GMX 质押奖励："
 
 #: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Claimable rewards"
-msgstr ""
+msgstr "可领取奖励"
 
 #: src/components/MarketNetFee/MarketNetFee.tsx
 msgid "{longOrShort} positions {fundingAction} a funding fee of {fundingRate} per hour and do not pay a borrow fee"
@@ -11661,7 +11661,7 @@ msgstr "最小仓位规模"
 
 #: src/pages/PointsPage/components/incentivesText.ts
 msgid "Place balancing trades ({thresholdLabel}) on under-utilized sides"
-msgstr ""
+msgstr "在使用率较低的方向上进行平衡交易（{thresholdLabel}）"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Hours"
@@ -11682,7 +11682,7 @@ msgstr "资金费率活动"
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 #: src/pages/PointsPage/PointsPage.tsx
 msgid "Rewards History"
-msgstr ""
+msgstr "奖励历史"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
@@ -11703,7 +11703,7 @@ msgstr "执行 TWAP 兑换部分"
 
 #: src/domain/synthetics/incentives/constants.ts
 msgid "Achieve $200M+ lifetime trading volume"
-msgstr ""
+msgstr "达成 $200M+ 累计交易量"
 
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Reload the page or report the issue if the <0/> problem persists"
@@ -11788,7 +11788,7 @@ msgstr "链接"
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Stk. Tier"
-msgstr ""
+msgstr "质押等级"
 
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to deposit"
@@ -11852,7 +11852,7 @@ msgstr ""
 
 #: src/pages/PointsPage/components/HowItWorksSection.tsx
 msgid "Claim Rewards"
-msgstr ""
+msgstr "领取奖励"
 
 #: src/components/OrderItem/OrderItem.tsx
 msgid "<0>{fromTokenText} </0>{fromTokenIcon}<1> to </1>{0}{toTokenIcon}{1}"
@@ -11917,7 +11917,7 @@ msgstr "增加规模（止损市价单）"
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Multiplier"
-msgstr ""
+msgstr "倍数"
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Execution price may differ from limit price due to fees and price impact. You'll receive at least the minimum amount shown. <0>Read more</0>."
