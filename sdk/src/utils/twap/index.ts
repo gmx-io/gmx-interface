@@ -5,6 +5,7 @@ import { OrderType } from "utils/orders/types";
 import { TwapDuration } from "./types";
 
 export * from "./types";
+export { UI_FEE_SOURCE_UI, UI_FEE_SOURCE_API } from "./uiFeeReceiver";
 
 export function getIsValidTwapParams(duration: TwapDuration, numberOfParts: number) {
   return (

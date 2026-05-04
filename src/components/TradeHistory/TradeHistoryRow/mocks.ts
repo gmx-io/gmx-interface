@@ -170,6 +170,22 @@ export const requestIncreasePosition = prepare({
       type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
+    maxCollateralSumLongTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumLongTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
     totalBorrowingFees: {
       type: "bigint",
       hex: "0x0312dc3edf3f01f94db43caa6644",
@@ -222,6 +238,10 @@ export const requestIncreasePosition = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    minFundingIncreaseRatePerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingDecreaseFactorPerSecond: {
       type: "bigint",
       hex: "0x00",
@@ -234,11 +254,19 @@ export const requestIncreasePosition = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -248,6 +276,22 @@ export const requestIncreasePosition = prepare({
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsShort: {
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
@@ -644,6 +688,22 @@ export const withdraw1Usd = prepare({
       type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
+    maxCollateralSumLongTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumLongTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
     totalBorrowingFees: {
       type: "bigint",
       hex: "0x0312e29f769647e643be40a5b828",
@@ -696,6 +756,10 @@ export const withdraw1Usd = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    minFundingIncreaseRatePerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingDecreaseFactorPerSecond: {
       type: "bigint",
       hex: "0x00",
@@ -708,11 +772,19 @@ export const withdraw1Usd = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -721,6 +793,22 @@ export const withdraw1Usd = prepare({
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsShort: {
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
@@ -1032,7 +1120,6 @@ export const deposit1Usd = prepare({
       name: "Dogecoin",
       symbol: "DOGE",
       decimals: 8,
-      priceDecimals: 4,
       address: "0x2265F317eA5f47A684E5B26c50948617c945d986",
       isSynthetic: true,
       isShortable: true,
@@ -1111,6 +1198,22 @@ export const deposit1Usd = prepare({
       type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
+    maxCollateralSumLongTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumLongTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
     totalBorrowingFees: {
       type: "bigint",
       hex: "0x44ffb6d9efc35b60f80a10eab6",
@@ -1163,6 +1266,10 @@ export const deposit1Usd = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    minFundingIncreaseRatePerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingDecreaseFactorPerSecond: {
       type: "bigint",
       hex: "0x00",
@@ -1175,11 +1282,19 @@ export const deposit1Usd = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -1188,6 +1303,22 @@ export const deposit1Usd = prepare({
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsShort: {
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
@@ -1333,7 +1464,6 @@ export const deposit1Usd = prepare({
     name: "Dogecoin",
     symbol: "DOGE",
     decimals: 8,
-    priceDecimals: 4,
     address: "0x2265F317eA5f47A684E5B26c50948617c945d986",
     isSynthetic: true,
     isShortable: true,
@@ -1576,6 +1706,22 @@ export const createOrderDecreaseLong = prepare({
       type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
+    maxCollateralSumLongTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumLongTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
     totalBorrowingFees: {
       type: "bigint",
       hex: "0x2ae01a651ad1a71f94202c9027",
@@ -1621,6 +1767,22 @@ export const createOrderDecreaseLong = prepare({
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsShort: {
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
@@ -1765,6 +1927,10 @@ export const createOrderDecreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    minFundingIncreaseRatePerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingDecreaseFactorPerSecond: {
       type: "bigint",
       hex: "0x00",
@@ -1777,11 +1943,19 @@ export const createOrderDecreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -2035,6 +2209,22 @@ export const cancelOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
+    maxCollateralSumLongTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumLongTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
     totalBorrowingFees: {
       type: "bigint",
       hex: "0x02a1527b2029038ab8110a2a1b9b",
@@ -2080,6 +2270,22 @@ export const cancelOrderIncreaseLong = prepare({
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsShort: {
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
@@ -2199,6 +2405,10 @@ export const cancelOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    minFundingIncreaseRatePerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingDecreaseFactorPerSecond: {
       type: "bigint",
       hex: "0x00",
@@ -2211,11 +2421,19 @@ export const cancelOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -2501,6 +2719,22 @@ export const createOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
+    maxCollateralSumLongTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumLongTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
     totalBorrowingFees: {
       type: "bigint",
       hex: "0x2b394ddfa1af6530444f10967f",
@@ -2546,6 +2780,22 @@ export const createOrderIncreaseLong = prepare({
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsShort: {
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
@@ -2665,6 +2915,10 @@ export const createOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    minFundingIncreaseRatePerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingDecreaseFactorPerSecond: {
       type: "bigint",
       hex: "0x00",
@@ -2677,11 +2931,19 @@ export const createOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -2841,7 +3103,6 @@ export const executeOrderIncreaseLong = prepare({
       name: "Arbitrum",
       symbol: "ARB",
       decimals: 18,
-      priceDecimals: 3,
       address: "0x912CE59144191C1204E64559FE8253a0e49E6548",
       imageUrl: "https://assets.coingecko.com/coins/images/16547/small/photo_2023-03-29_21.47.00.jpeg?1680097630",
       explorerUrl: "https://arbiscan.io/token/0x912ce59144191c1204e64559fe8253a0e49e6548",
@@ -2888,7 +3149,6 @@ export const executeOrderIncreaseLong = prepare({
       name: "Arbitrum",
       symbol: "ARB",
       decimals: 18,
-      priceDecimals: 3,
       address: "0x912CE59144191C1204E64559FE8253a0e49E6548",
       imageUrl: "https://assets.coingecko.com/coins/images/16547/small/photo_2023-03-29_21.47.00.jpeg?1680097630",
       explorerUrl: "https://arbiscan.io/token/0x912ce59144191c1204e64559fe8253a0e49e6548",
@@ -2971,6 +3231,22 @@ export const executeOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
+    maxCollateralSumLongTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumLongTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
     totalBorrowingFees: {
       type: "bigint",
       hex: "0x289e543927407e0ac1af2da10586",
@@ -3016,6 +3292,22 @@ export const executeOrderIncreaseLong = prepare({
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsShort: {
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
@@ -3135,6 +3427,10 @@ export const executeOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    minFundingIncreaseRatePerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingDecreaseFactorPerSecond: {
       type: "bigint",
       hex: "0x00",
@@ -3147,11 +3443,19 @@ export const executeOrderIncreaseLong = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -3193,7 +3497,6 @@ export const executeOrderIncreaseLong = prepare({
     name: "Arbitrum",
     symbol: "ARB",
     decimals: 18,
-    priceDecimals: 3,
     address: "0x912CE59144191C1204E64559FE8253a0e49E6548",
     imageUrl: "https://assets.coingecko.com/coins/images/16547/small/photo_2023-03-29_21.47.00.jpeg?1680097630",
     explorerUrl: "https://arbiscan.io/token/0x912ce59144191c1204e64559fe8253a0e49e6548",
@@ -3455,6 +3758,22 @@ export const frozenOrderIncreaseShort = prepare({
       type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
+    maxCollateralSumLongTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumLongTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
     totalBorrowingFees: {
       type: "bigint",
       hex: "0x019dc9ef3df233d4d9fe733fb163b8",
@@ -3500,6 +3819,22 @@ export const frozenOrderIncreaseShort = prepare({
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsShort: {
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
@@ -3619,6 +3954,10 @@ export const frozenOrderIncreaseShort = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    minFundingIncreaseRatePerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingDecreaseFactorPerSecond: {
       type: "bigint",
       hex: "0x00",
@@ -3631,11 +3970,19 @@ export const frozenOrderIncreaseShort = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -3844,7 +4191,6 @@ export const undefinedOrder = prepare({
       name: "XRP",
       symbol: "XRP",
       decimals: 6,
-      priceDecimals: 4,
       address: "0xc14e065b0067dE91534e032868f5Ac6ecf2c6868",
       imageUrl: "https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png?1605778731",
       isSynthetic: true,
@@ -3960,6 +4306,22 @@ export const undefinedOrder = prepare({
       hex: "0x064f964e68233a76f520000000",
     },
     maxPnlFactorForTradersShort: {
+      type: "bigint",
+      hex: "0x064f964e68233a76f520000000",
+    },
+    maxPnlFactorForDepositsLong: {
+      type: "bigint",
+      hex: "0x064f964e68233a76f520000000",
+    },
+    maxPnlFactorForDepositsShort: {
+      type: "bigint",
+      hex: "0x064f964e68233a76f520000000",
+    },
+    maxPnlFactorForWithdrawalsLong: {
+      type: "bigint",
+      hex: "0x064f964e68233a76f520000000",
+    },
+    maxPnlFactorForWithdrawalsShort: {
       type: "bigint",
       hex: "0x064f964e68233a76f520000000",
     },
@@ -4083,7 +4445,27 @@ export const undefinedOrder = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    maxCollateralSumLongTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumLongTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingIncreaseFactorPerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    minFundingIncreaseRatePerSecond: {
       type: "bigint",
       hex: "0x00",
     },
@@ -4099,11 +4481,19 @@ export const undefinedOrder = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -4145,7 +4535,6 @@ export const undefinedOrder = prepare({
     name: "XRP",
     symbol: "XRP",
     decimals: 6,
-    priceDecimals: 4,
     address: "0xc14e065b0067dE91534e032868f5Ac6ecf2c6868",
     imageUrl: "https://assets.coingecko.com/coins/images/44/small/xrp-symbol-white-128.png?1605778731",
     isSynthetic: true,
@@ -4260,7 +4649,6 @@ export const liquidated = prepare({
       name: "Chainlink",
       symbol: "LINK",
       decimals: 18,
-      priceDecimals: 3,
       address: "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4",
       isStable: false,
       isShortable: true,
@@ -4310,7 +4698,6 @@ export const liquidated = prepare({
       name: "Chainlink",
       symbol: "LINK",
       decimals: 18,
-      priceDecimals: 3,
       address: "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4",
       isStable: false,
       isShortable: true,
@@ -4396,6 +4783,22 @@ export const liquidated = prepare({
       type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
+    maxCollateralSumLongTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumLongTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
     totalBorrowingFees: {
       type: "bigint",
       hex: "0x4959b5647baa949d1f4102e6db02",
@@ -4441,6 +4844,22 @@ export const liquidated = prepare({
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsShort: {
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
@@ -4560,6 +4979,10 @@ export const liquidated = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    minFundingIncreaseRatePerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingDecreaseFactorPerSecond: {
       type: "bigint",
       hex: "0x00",
@@ -4572,11 +4995,19 @@ export const liquidated = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -4618,7 +5049,6 @@ export const liquidated = prepare({
     name: "Chainlink",
     symbol: "LINK",
     decimals: 18,
-    priceDecimals: 3,
     address: "0xf97f4df75117a78c1A5a0DBb814Af92458539FB4",
     isStable: false,
     isShortable: true,
@@ -4931,6 +5361,22 @@ export const increaseLongETH = prepare({
       type: "bigint",
       hex: "0x02f050fe938943acc45f65568000000000",
     },
+    maxCollateralSumLongTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumLongTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxCollateralSumShortTokenShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
     totalBorrowingFees: {
       type: "bigint",
       hex: "0x039938fe034c3882e849df93144f",
@@ -4977,6 +5423,22 @@ export const increaseLongETH = prepare({
       hex: "0x0a18f07d736b90be5500000000",
     },
     maxPnlFactorForTradersShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForDepositsShort: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsLong: {
+      type: "bigint",
+      hex: "0x0a18f07d736b90be5500000000",
+    },
+    maxPnlFactorForWithdrawalsShort: {
       type: "bigint",
       hex: "0x0a18f07d736b90be5500000000",
     },
@@ -5096,6 +5558,10 @@ export const increaseLongETH = prepare({
       type: "bigint",
       hex: "0x00",
     },
+    minFundingIncreaseRatePerSecond: {
+      type: "bigint",
+      hex: "0x00",
+    },
     fundingDecreaseFactorPerSecond: {
       type: "bigint",
       hex: "0x00",
@@ -5108,11 +5574,19 @@ export const increaseLongETH = prepare({
       type: "bigint",
       hex: "0x00",
     },
-    minFundingFactorPerSecond: {
+    minFundingFactorPerSecondLong: {
       type: "bigint",
       hex: "0x00",
     },
-    maxFundingFactorPerSecond: {
+    minFundingFactorPerSecondShort: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondLong: {
+      type: "bigint",
+      hex: "0x00",
+    },
+    maxFundingFactorPerSecondShort: {
       type: "bigint",
       hex: "0x00",
     },
@@ -5593,6 +6067,10 @@ export const createOrderStopMarketLong = prepare({
     openInterestReserveFactorShort: { type: "bigint", value: "2100000000000000000000000000000" },
     maxOpenInterestLong: { type: "bigint", value: "90251000000000000000000000000000000000" },
     maxOpenInterestShort: { type: "bigint", value: "90251000000000000000000000000000000000" },
+    maxCollateralSumLongTokenLong: { type: "bigint", value: "0" },
+    maxCollateralSumLongTokenShort: { type: "bigint", value: "0" },
+    maxCollateralSumShortTokenLong: { type: "bigint", value: "0" },
+    maxCollateralSumShortTokenShort: { type: "bigint", value: "0" },
     minPositionImpactPoolAmount: { type: "bigint", value: "95000000" },
     positionImpactPoolDistributionRate: { type: "bigint", value: "0" },
     borrowingFactorLong: { type: "bigint", value: "6250000000000000000000" },
@@ -5602,13 +6080,20 @@ export const createOrderStopMarketLong = prepare({
     fundingFactor: { type: "bigint", value: "20000000000000000000000" },
     fundingExponentFactor: { type: "bigint", value: "1000000000000000000000000000000" },
     fundingIncreaseFactorPerSecond: { type: "bigint", value: "2048553493366975277" },
+    minFundingIncreaseRatePerSecond: { type: "bigint", value: "0" },
     fundingDecreaseFactorPerSecond: { type: "bigint", value: "128034593335435961" },
     thresholdForDecreaseFunding: { type: "bigint", value: "0" },
     thresholdForStableFunding: { type: "bigint", value: "40000000000000000000000000000" },
-    minFundingFactorPerSecond: { type: "bigint", value: "317097919837645865043" },
-    maxFundingFactorPerSecond: { type: "bigint", value: "22124377728363333333333" },
+    minFundingFactorPerSecondLong: { type: "bigint", value: "317097919837645865043" },
+    minFundingFactorPerSecondShort: { type: "bigint", value: "317097919837645865043" },
+    maxFundingFactorPerSecondLong: { type: "bigint", value: "22124377728363333333333" },
+    maxFundingFactorPerSecondShort: { type: "bigint", value: "22124377728363333333333" },
     maxPnlFactorForTradersLong: { type: "bigint", value: "900000000000000000000000000000" },
     maxPnlFactorForTradersShort: { type: "bigint", value: "900000000000000000000000000000" },
+    maxPnlFactorForDepositsLong: { type: "bigint", value: "900000000000000000000000000000" },
+    maxPnlFactorForDepositsShort: { type: "bigint", value: "900000000000000000000000000000" },
+    maxPnlFactorForWithdrawalsLong: { type: "bigint", value: "900000000000000000000000000000" },
+    maxPnlFactorForWithdrawalsShort: { type: "bigint", value: "900000000000000000000000000000" },
     minCollateralFactor: { type: "bigint", value: "5000000000000000000000000000" },
     minCollateralFactorForOpenInterestLong: { type: "bigint", value: "60000000000000000000" },
     minCollateralFactorForOpenInterestShort: { type: "bigint", value: "60000000000000000000" },
@@ -5813,6 +6298,10 @@ export const executeOrderStopMarketLong = prepare({
     openInterestReserveFactorShort: { type: "bigint", value: "2100000000000000000000000000000" },
     maxOpenInterestLong: { type: "bigint", value: "90251000000000000000000000000000000000" },
     maxOpenInterestShort: { type: "bigint", value: "90251000000000000000000000000000000000" },
+    maxCollateralSumLongTokenLong: { type: "bigint", value: "0" },
+    maxCollateralSumLongTokenShort: { type: "bigint", value: "0" },
+    maxCollateralSumShortTokenLong: { type: "bigint", value: "0" },
+    maxCollateralSumShortTokenShort: { type: "bigint", value: "0" },
     minPositionImpactPoolAmount: { type: "bigint", value: "95000000" },
     positionImpactPoolDistributionRate: { type: "bigint", value: "0" },
     borrowingFactorLong: { type: "bigint", value: "6250000000000000000000" },
@@ -5822,13 +6311,20 @@ export const executeOrderStopMarketLong = prepare({
     fundingFactor: { type: "bigint", value: "20000000000000000000000" },
     fundingExponentFactor: { type: "bigint", value: "1000000000000000000000000000000" },
     fundingIncreaseFactorPerSecond: { type: "bigint", value: "2048553493366975277" },
+    minFundingIncreaseRatePerSecond: { type: "bigint", value: "0" },
     fundingDecreaseFactorPerSecond: { type: "bigint", value: "128034593335435961" },
     thresholdForDecreaseFunding: { type: "bigint", value: "0" },
     thresholdForStableFunding: { type: "bigint", value: "40000000000000000000000000000" },
-    minFundingFactorPerSecond: { type: "bigint", value: "317097919837645865043" },
-    maxFundingFactorPerSecond: { type: "bigint", value: "22124377728363333333333" },
+    minFundingFactorPerSecondLong: { type: "bigint", value: "317097919837645865043" },
+    minFundingFactorPerSecondShort: { type: "bigint", value: "317097919837645865043" },
+    maxFundingFactorPerSecondLong: { type: "bigint", value: "22124377728363333333333" },
+    maxFundingFactorPerSecondShort: { type: "bigint", value: "22124377728363333333333" },
     maxPnlFactorForTradersLong: { type: "bigint", value: "900000000000000000000000000000" },
     maxPnlFactorForTradersShort: { type: "bigint", value: "900000000000000000000000000000" },
+    maxPnlFactorForDepositsLong: { type: "bigint", value: "900000000000000000000000000000" },
+    maxPnlFactorForDepositsShort: { type: "bigint", value: "900000000000000000000000000000" },
+    maxPnlFactorForWithdrawalsLong: { type: "bigint", value: "900000000000000000000000000000" },
+    maxPnlFactorForWithdrawalsShort: { type: "bigint", value: "900000000000000000000000000000" },
     minCollateralFactor: { type: "bigint", value: "5000000000000000000000000000" },
     minCollateralFactorForOpenInterestLong: { type: "bigint", value: "60000000000000000000" },
     minCollateralFactorForOpenInterestShort: { type: "bigint", value: "60000000000000000000" },

@@ -10,7 +10,7 @@ import { formatTVDate, formatTVTime } from "lib/dates";
 import { calculateDisplayDecimals, numberToBigint } from "lib/numbers";
 
 const createChartStyleOverrides = (upColor: string, downColor: string): Partial<WidgetOverrides> =>
-  ["candleStyle", "hollowCandleStyle", "haStyle"].reduce((acc, cv) => {
+  (["candleStyle", "hollowCandleStyle", "haStyle"] as const).reduce<Partial<WidgetOverrides>>((acc, cv) => {
     acc[`mainSeriesProperties.${cv}.drawWick`] = true;
     acc[`mainSeriesProperties.${cv}.drawBorder`] = false;
     acc[`mainSeriesProperties.${cv}.upColor`] = upColor;

@@ -189,3 +189,5 @@ export const selectMultichainMarketTokensBalancesResult = (s: SyntheticsState) =
 
 export const selectMultichainMarketTokensBalancesIsLoading = (s: SyntheticsState) =>
   s.globals.multichainMarketTokensBalancesResult?.isLoading ?? false;
+
+export const selectJitLiquidityMap = (s: SyntheticsState) => s.globals.jitLiquidityData.jitLiquidityMap;

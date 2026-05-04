@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import { ReactNode } from "react";
 import { ContractFunctionParameters, encodeFunctionData, withRetry } from "viem";
 
-import { getContract } from "config/contracts";
+import { getContract, tryGetContract } from "config/contracts";
 import { SwapPricingType } from "domain/synthetics/orders";
 import { TokenPrices, TokensData, convertToContractPrice, getTokenData } from "domain/synthetics/tokens";
 import { decodeErrorFromViemError } from "lib/errors";
@@ -15,8 +15,7 @@ import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress } from "sdk/configs/tokens";
-import { CustomErrorName, tryDecodeCustomError } from "sdk/utils/errors";
-import { ExternalCallsPayload } from "sdk/utils/orderTransactions";
+import { CustomErrorName } from "sdk/utils/errors";
 import { ExternalSwapQuote } from "sdk/utils/trade/types";
 
 import { getErrorMessage } from "components/Errors/errorToasts";
@@ -95,113 +94,86 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
 
   let simulationPayloadData = [...p.createMulticallPayload];
 
-  if (
-    method === "simulateExecuteLatestWithdrawal" ||
-    method === "simulateExecuteLatestDeposit" ||
-    method === "simulateExecuteLatestOrder" ||
-    method === "simulateExecuteLatestShift"
-  ) {
-    if (method === "simulateExecuteLatestWithdrawal" && p.swapPricingType === undefined) {
+  let simulateExecuteData: string;
+
+  if (method === "simulateExecuteLatestWithdrawal") {
+    if (p.swapPricingType === undefined) {
       throw new Error("swapPricingType is required for simulateExecuteLatestWithdrawal");
     }
 
-    const externalCalls: ExternalCallsPayload = {
-      sendTokens: [],
-      sendAmounts: [],
-      externalCallTargets: [getContract(chainId, "SimulationRouter")],
-      externalCallDataList: [],
-      refundTokens: [],
-      refundReceivers: [],
-    };
-
-    if (method === "simulateExecuteLatestWithdrawal") {
-      externalCalls.externalCallDataList = [
-        encodeFunctionData({
-          abi: abis.SimulationRouter,
-          functionName: "simulateExecuteLatestWithdrawal",
-          args: [simulationPriceParams, p.swapPricingType!],
-        }),
-      ];
-    } else if (method === "simulateExecuteLatestDeposit") {
-      externalCalls.externalCallDataList = [
-        encodeFunctionData({
-          abi: abis.SimulationRouter,
-          functionName: "simulateExecuteLatestDeposit",
-          args: [simulationPriceParams],
-        }),
-      ];
-    } else if (method === "simulateExecuteLatestOrder") {
-      externalCalls.externalCallDataList = [
-        encodeFunctionData({
-          abi: abis.SimulationRouter,
-          functionName: "simulateExecuteLatestOrder",
-          args: [simulationPriceParams],
-        }),
-      ];
-    } else if (method === "simulateExecuteLatestShift") {
-      externalCalls.externalCallDataList = [
-        encodeFunctionData({
-          abi: abis.SimulationRouter,
-          functionName: "simulateExecuteLatestShift",
-          args: [simulationPriceParams],
-        }),
-      ];
-    }
-
-    simulationPayloadData.push(
-      encodeFunctionData({
-        abi: abis.ExchangeRouter,
-        functionName: "makeExternalCalls",
-        args: [
-          externalCalls.externalCallTargets,
-          externalCalls.externalCallDataList,
-          externalCalls.refundTokens,
-          externalCalls.refundReceivers,
-        ],
-      })
-    );
+    simulateExecuteData = encodeFunctionData({
+      abi: abis.SimulationRouter,
+      functionName: "simulateExecuteLatestWithdrawal",
+      args: [simulationPriceParams, p.swapPricingType],
+    });
+  } else if (method === "simulateExecuteLatestDeposit") {
+    simulateExecuteData = encodeFunctionData({
+      abi: abis.SimulationRouter,
+      functionName: "simulateExecuteLatestDeposit",
+      args: [simulationPriceParams],
+    });
+  } else if (method === "simulateExecuteLatestOrder") {
+    simulateExecuteData = encodeFunctionData({
+      abi: abis.SimulationRouter,
+      functionName: "simulateExecuteLatestOrder",
+      args: [simulationPriceParams],
+    });
+  } else if (method === "simulateExecuteLatestShift") {
+    simulateExecuteData = encodeFunctionData({
+      abi: abis.SimulationRouter,
+      functionName: "simulateExecuteLatestShift",
+      args: [simulationPriceParams],
+    });
   } else if (method === "simulateExecuteLatestGlvDeposit") {
-    simulationPayloadData.push(
-      encodeFunctionData({
-        abi: abis.GlvRouter,
-        functionName: "simulateExecuteLatestGlvDeposit",
-        args: [simulationPriceParams],
-      })
-    );
+    simulateExecuteData = encodeFunctionData({
+      abi: abis.GlvRouter,
+      functionName: "simulateExecuteLatestGlvDeposit",
+      args: [simulationPriceParams],
+    });
   } else if (method === "simulateExecuteLatestGlvWithdrawal") {
-    simulationPayloadData.push(
-      encodeFunctionData({
-        abi: abis.GlvRouter,
-        functionName: "simulateExecuteLatestGlvWithdrawal",
-        args: [simulationPriceParams],
-      })
-    );
+    simulateExecuteData = encodeFunctionData({
+      abi: abis.GlvRouter,
+      functionName: "simulateExecuteLatestGlvWithdrawal",
+      args: [simulationPriceParams],
+    });
   } else {
     throw new Error(`Unknown method: ${method}`);
   }
 
+  const simulationRouterAddress = !isGlv ? tryGetContract(chainId, "SimulationRouter") : undefined;
+
   let errorTitle = p.errorTitle || t`Order simulation failed`;
 
   const tenderlyConfig = getTenderlyConfig();
-  const routerAddress = isGlv ? getContract(chainId, "GlvRouter") : getContract(chainId, "ExchangeRouter");
-  const routerAbi = isGlv ? abis.GlvRouter : abis.ExchangeRouter;
 
-  if (tenderlyConfig) {
-    await simulateTxWithTenderly({
-      chainId,
-      address: routerAddress,
-      abi: routerAbi,
-      account: p.account,
-      method: "multicall",
-      params: [simulationPayloadData],
-      value: p.value,
-      comment: `calling ${method}`,
-    });
-  }
+  const retryConfig = {
+    retryCount: 2,
+    delay: 200,
+    shouldRetry: ({ error }: { error: Error }) => {
+      return isTemporaryError(error);
+    },
+  };
 
-  try {
-    await withRetry(
-      () => {
+  if (isGlv) {
+    simulationPayloadData.push(simulateExecuteData);
+    const routerAddress = getContract(chainId, "GlvRouter");
+    const routerAbi = abis.GlvRouter;
+
+    if (tenderlyConfig) {
+      await simulateTxWithTenderly({
+        chainId,
+        address: routerAddress,
+        abi: routerAbi,
+        account: p.account,
+        method: "multicall",
+        params: [simulationPayloadData],
+        value: p.value,
+        comment: `calling ${method}`,
+      });
+    }
+
+    try {
+      await withRetry(() => {
         return client.simulateContract({
           address: routerAddress,
           abi: routerAbi,
@@ -211,99 +183,162 @@ export async function simulateExecuteTxn(chainId: ContractsChainId, p: SimulateE
           account: p.account,
           blockNumber: blockNumber,
         });
-      },
-      {
-        retryCount: 2,
-        delay: 200,
-        shouldRetry: ({ error }) => {
-          return isTemporaryError(error);
-        },
-      }
-    );
-  } catch (txnError) {
-    let msg: React.ReactNode = undefined;
+      }, retryConfig);
+    } catch (txnError) {
+      handleSimulationTxnError(txnError, chainId, p, errorTitle);
+    }
+  } else if (simulationRouterAddress) {
+    // v2.2c: create-only validation (SimulationRouter can't simulate without on-chain order)
+    const exchangeRouterAddress = getContract(chainId, "ExchangeRouter");
+
+    if (tenderlyConfig) {
+      await simulateTxWithTenderly({
+        chainId,
+        address: exchangeRouterAddress,
+        abi: abis.ExchangeRouter,
+        account: p.account,
+        method: "multicall",
+        params: [simulationPayloadData],
+        value: p.value,
+        comment: `v2.2c create-only validation for ${method}`,
+      });
+    }
 
     try {
-      let parsedError = decodeErrorFromViemError(txnError);
-      parsedError =
-        parsedError?.name === CustomErrorName.ExternalCallFailed
-          ? tryDecodeCustomError(parsedError.args!.data)
-          : parsedError;
-      if (!parsedError) {
-        const error = new Error("No data found in error.");
-        error.cause = txnError;
-        throw error;
-      }
+      await withRetry(() => {
+        return client.simulateContract({
+          address: exchangeRouterAddress,
+          abi: abis.ExchangeRouter,
+          functionName: "multicall",
+          args: [simulationPayloadData],
+          value: p.value,
+          account: p.account,
+          blockNumber: blockNumber,
+        });
+      }, retryConfig);
+    } catch (createError) {
+      handleSimulationTxnError(createError, chainId, p, errorTitle);
+    }
+  } else {
+    simulationPayloadData.push(simulateExecuteData);
+    const routerAddress = getContract(chainId, "ExchangeRouter");
+    const routerAbi = abis.ExchangeRouter;
 
-      const isPassed = parsedError.name === CustomErrorName.EndOfOracleSimulation;
-
-      if (isPassed) {
-        if (p.metricId) {
-          sendOrderSimulatedMetric(p.metricId);
-        }
-        return;
-      }
-
-      if (p.metricId) {
-        sendTxnErrorMetric(p.metricId, txnError, "simulation");
-      }
-
-      const parsedArgs = parsedError.args;
-
-      let errorContent: ReactNode = errorTitle;
-      if (
-        parsedError.name === CustomErrorName.OrderNotFulfillableAtAcceptablePrice ||
-        parsedError.name === CustomErrorName.InsufficientSwapOutputAmount
-      ) {
-        errorContent = (
-          <Trans>
-            Prices are volatile.{" "}
-            <span
-              onClick={() => {
-                if (p.additionalErrorParams?.slippageInputId) {
-                  document.getElementById(p.additionalErrorParams?.slippageInputId)?.focus();
-                }
-              }}
-              className={p.additionalErrorParams?.slippageInputId ? "cursor-pointer underline" : undefined}
-            >
-              Increase allowed slippage
-            </span>
-          </Trans>
-        );
-      }
-
-      msg = (
-        <div>
-          {errorContent}
-          {p.additionalErrorParams?.content}
-          <br />
-          <br />
-          <ToastifyDebug error={`${parsedError.name ?? txnError?.message} ${JSON.stringify(parsedArgs, null, 2)}`} />
-        </div>
-      );
-    } catch (parsingError) {
-      // eslint-disable-next-line no-console
-      console.error(parsingError);
-
-      const commonError = getErrorMessage(chainId, txnError, errorTitle, p.additionalErrorParams?.content);
-      msg = commonError.failMsg;
+    if (tenderlyConfig) {
+      await simulateTxWithTenderly({
+        chainId,
+        address: routerAddress,
+        abi: routerAbi,
+        account: p.account,
+        method: "multicall",
+        params: [simulationPayloadData],
+        value: p.value,
+        comment: `calling ${method}`,
+      });
     }
 
-    if (!msg) {
-      msg = (
-        <div>
-          <Trans>Order simulation failed</Trans>
-          <br />
-          <br />
-          <ToastifyDebug error={t`Unknown error`} />
-        </div>
-      );
+    try {
+      await withRetry(() => {
+        return client.simulateContract({
+          address: routerAddress,
+          abi: routerAbi,
+          functionName: "multicall",
+          args: [simulationPayloadData],
+          value: p.value,
+          account: p.account,
+          blockNumber: blockNumber,
+        });
+      }, retryConfig);
+    } catch (txnError) {
+      handleSimulationTxnError(txnError, chainId, p, errorTitle);
     }
-
-    helperToast.error(msg);
-
-    throw txnError;
   }
+}
+
+function handleSimulationTxnError(
+  txnError: any,
+  chainId: ContractsChainId,
+  p: SimulateExecuteParams,
+  errorTitle: string
+): never | void {
+  let msg: React.ReactNode = undefined;
+
+  try {
+    const parsedError = decodeErrorFromViemError(txnError);
+    if (!parsedError) {
+      const error = new Error("No data found in error.");
+      error.cause = txnError;
+      throw error;
+    }
+
+    const isSimulationPassed = parsedError.name === CustomErrorName.EndOfOracleSimulation;
+
+    if (isSimulationPassed) {
+      if (p.metricId) {
+        sendOrderSimulatedMetric(p.metricId);
+      }
+      return;
+    }
+
+    if (p.metricId) {
+      sendTxnErrorMetric(p.metricId, txnError, "simulation");
+    }
+
+    const parsedArgs = parsedError.args;
+
+    let errorContent: ReactNode = errorTitle;
+    if (
+      parsedError.name === CustomErrorName.OrderNotFulfillableAtAcceptablePrice ||
+      parsedError.name === CustomErrorName.InsufficientSwapOutputAmount
+    ) {
+      errorContent = (
+        <Trans>
+          Prices are volatile.{" "}
+          <span
+            onClick={() => {
+              if (p.additionalErrorParams?.slippageInputId) {
+                document.getElementById(p.additionalErrorParams?.slippageInputId)?.focus();
+              }
+            }}
+            className={p.additionalErrorParams?.slippageInputId ? "cursor-pointer underline" : undefined}
+          >
+            Increase allowed slippage
+          </span>
+        </Trans>
+      );
+    }
+
+    msg = (
+      <div>
+        {errorContent}
+        {p.additionalErrorParams?.content}
+        <br />
+        <br />
+        <ToastifyDebug error={`${parsedError.name ?? txnError?.message} ${JSON.stringify(parsedArgs, null, 2)}`} />
+      </div>
+    );
+  } catch (parsingError) {
+    // eslint-disable-next-line no-console
+    console.error(parsingError);
+
+    const commonError = getErrorMessage(chainId, txnError, errorTitle, p.additionalErrorParams?.content);
+    msg = commonError.failMsg;
+  }
+
+  if (!msg) {
+    msg = (
+      <div>
+        <Trans>Order simulation failed</Trans>
+        <br />
+        <br />
+        <ToastifyDebug error={t`Unknown error`} />
+      </div>
+    );
+  }
+
+  helperToast.error(msg);
+
+  throw txnError;
 }
 
 function getSimulationPrices(chainId: number, tokensData: TokensData, primaryPricesMap: PriceOverrides) {

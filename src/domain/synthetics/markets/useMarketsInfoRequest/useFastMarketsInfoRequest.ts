@@ -6,7 +6,7 @@ import { zeroAddress } from "viem";
 import { getSubsquidGraphClient } from "lib/indexers";
 import { metrics } from "lib/metrics";
 import { MarketInfo as SquidMarketInfo } from "sdk/codegen/subsquid";
-import { convertTokenAddress, getToken } from "sdk/configs/tokens";
+import { convertTokenAddress, getToken, isValidTokenSafe } from "sdk/configs/tokens";
 import { queryPaginated } from "sdk/utils/indexers";
 
 import { getMarketFullName, RawMarketsInfoData } from "..";
@@ -44,11 +44,14 @@ const MARKETS_INFO_QUERY = gql`
       fundingFactor
       fundingExponentFactor
       fundingIncreaseFactorPerSecond
+      minFundingIncreaseRatePerSecond
       fundingDecreaseFactorPerSecond
       thresholdForStableFunding
       thresholdForDecreaseFunding
-      minFundingFactorPerSecond
-      maxFundingFactorPerSecond
+      minFundingFactorPerSecondLong
+      minFundingFactorPerSecondShort
+      maxFundingFactorPerSecondLong
+      maxFundingFactorPerSecondShort
 
       totalBorrowingFees
 
@@ -57,6 +60,7 @@ const MARKETS_INFO_QUERY = gql`
       positionImpactPoolDistributionRate
 
       minCollateralFactor
+      minCollateralFactorForLiquidation
       minCollateralFactorForOpenInterestLong
       minCollateralFactorForOpenInterestShort
 
@@ -140,7 +144,18 @@ export function useFastMarketsInfoRequest(chainId: number) {
         }
 
         return rawMarketsInfos.reduce((acc: RawMarketsInfoData, mInfo) => {
-          const indexToken = getToken(chainId, convertTokenAddress(chainId, mInfo.indexTokenAddress, "native"));
+          const nativeIndexAddress = convertTokenAddress(chainId, mInfo.indexTokenAddress, "native");
+
+          // Skip markets with tokens not in the config to avoid throwing
+          if (
+            !isValidTokenSafe(chainId, nativeIndexAddress) ||
+            !isValidTokenSafe(chainId, mInfo.longTokenAddress) ||
+            !isValidTokenSafe(chainId, mInfo.shortTokenAddress)
+          ) {
+            return acc;
+          }
+
+          const indexToken = getToken(chainId, nativeIndexAddress);
           const longToken = getToken(chainId, mInfo.longTokenAddress);
           const shortToken = getToken(chainId, mInfo.shortTokenAddress);
           const isSpotOnly = mInfo.indexTokenAddress === zeroAddress;
@@ -179,6 +194,11 @@ export function useFastMarketsInfoRequest(chainId: number) {
             maxOpenInterestLong: BigInt(mInfo.maxOpenInterestLong),
             maxOpenInterestShort: BigInt(mInfo.maxOpenInterestShort),
 
+            maxCollateralSumLongTokenLong: 0n,
+            maxCollateralSumLongTokenShort: 0n,
+            maxCollateralSumShortTokenLong: 0n,
+            maxCollateralSumShortTokenShort: 0n,
+
             borrowingFactorLong: 0n,
             borrowingFactorShort: 0n,
             borrowingExponentFactorLong: 0n,
@@ -187,11 +207,14 @@ export function useFastMarketsInfoRequest(chainId: number) {
             fundingFactor: BigInt(mInfo.fundingFactor),
             fundingExponentFactor: BigInt(mInfo.fundingExponentFactor),
             fundingIncreaseFactorPerSecond: BigInt(mInfo.fundingIncreaseFactorPerSecond),
+            minFundingIncreaseRatePerSecond: BigInt(mInfo.minFundingIncreaseRatePerSecond),
             fundingDecreaseFactorPerSecond: BigInt(mInfo.fundingDecreaseFactorPerSecond),
             thresholdForStableFunding: BigInt(mInfo.thresholdForStableFunding),
             thresholdForDecreaseFunding: BigInt(mInfo.thresholdForDecreaseFunding),
-            minFundingFactorPerSecond: BigInt(mInfo.minFundingFactorPerSecond),
-            maxFundingFactorPerSecond: BigInt(mInfo.maxFundingFactorPerSecond),
+            minFundingFactorPerSecondLong: BigInt(mInfo.minFundingFactorPerSecondLong),
+            minFundingFactorPerSecondShort: BigInt(mInfo.minFundingFactorPerSecondShort),
+            maxFundingFactorPerSecondLong: BigInt(mInfo.maxFundingFactorPerSecondLong),
+            maxFundingFactorPerSecondShort: BigInt(mInfo.maxFundingFactorPerSecondShort),
 
             totalBorrowingFees: BigInt(mInfo.totalBorrowingFees),
 
@@ -200,7 +223,7 @@ export function useFastMarketsInfoRequest(chainId: number) {
             positionImpactPoolDistributionRate: BigInt(mInfo.positionImpactPoolDistributionRate),
 
             minCollateralFactor: BigInt(mInfo.minCollateralFactor),
-            minCollateralFactorForLiquidation: BigInt(mInfo.minCollateralFactor),
+            minCollateralFactorForLiquidation: BigInt(mInfo.minCollateralFactorForLiquidation),
             minCollateralFactorForOpenInterestLong: BigInt(mInfo.minCollateralFactorForOpenInterestLong),
             minCollateralFactorForOpenInterestShort: BigInt(mInfo.minCollateralFactorForOpenInterestShort),
 

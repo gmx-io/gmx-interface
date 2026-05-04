@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import { ReactNode, forwardRef, useCallback, useImperativeHandle, useLayoutEffect, useRef } from "react";
 import { useLatest } from "react-use";
 import type { TooltipProps } from "recharts";
+// @ts-expect-error no declaration file for recharts internal module
 import { useViewBox, useYAxisWithFiniteDomainOrRandom } from "recharts/es6/context/chartLayoutContext";
 
 import { formatPercentage, formatUsd, formatUsdPrice } from "lib/numbers";

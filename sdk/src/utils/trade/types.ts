@@ -193,6 +193,7 @@ export type SwapStats = {
   isUnwrap: boolean;
   isOutLiquidity?: boolean;
   isOutCapacity?: boolean;
+  isOutMaxFactor?: boolean;
   swapFeeAmount: bigint;
   swapFeeUsd: bigint;
   priceImpactDeltaUsd: bigint;
@@ -275,7 +276,7 @@ export type FindSwapPath = (usdIn: bigint, opts?: { order?: SwapOptimizationOrde
 export type TradeFeesType = "swap" | "increase" | "decrease" | "edit";
 
 export enum ExternalSwapAggregator {
-  OpenOcean = "openOcean",
+  KyberSwap = "kyberSwap",
   BotanixStaking = "botanixStaking",
 }
 

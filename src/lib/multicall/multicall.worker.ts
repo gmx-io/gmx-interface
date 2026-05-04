@@ -1,3 +1,4 @@
+import { type AnyChainId } from "config/chains";
 import { fallbackTrackerEventKeys } from "lib/FallbackTracker/events";
 import {
   METRIC_EVENT_DISPATCH_NAME,
@@ -12,7 +13,7 @@ import { Multicall } from "./Multicall";
 import type { MulticallRequestConfig } from "./types";
 
 async function executeMulticall(
-  chainId: number,
+  chainId: AnyChainId,
   providerUrls: CurrentRpcEndpoints,
   request: MulticallRequestConfig<any>,
   abFlags: Record<string, boolean>,
@@ -26,7 +27,7 @@ async function executeMulticall(
 
 self.addEventListener("message", run);
 
-async function run(event) {
+async function run(event: MessageEvent) {
   const { PRODUCTION_PREVIEW_KEY, chainId, providerUrls, request, id, abFlags, isLargeAccount, debugState } =
     event.data;
   // @ts-ignore

@@ -29,7 +29,7 @@ import {
 import { UserReferralInfo } from "utils/referrals/types";
 import { getSwapAmountsByFromValue, getSwapAmountsByToValue } from "utils/swap";
 import { ExternalSwapStrategy, NoSwapStrategy } from "utils/swap/types";
-import { convertToTokenAmount, convertToUsd, getIsEquivalentTokens, getTokensRatioByPrice } from "utils/tokens";
+import { convertToTokenAmount, convertToUsd, getTokensRatioByPrice } from "utils/tokens";
 import { TokenData, TokensRatio } from "utils/tokens/types";
 
 import {
@@ -65,6 +65,8 @@ type IncreasePositionParams = {
   chainId: number;
   externalSwapQuoteParams: ExternalSwapQuoteParams | undefined;
   isSetAcceptablePriceImpactEnabled: boolean;
+  disabledMarkets?: string[];
+  manualPath?: string[];
 };
 
 export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreasePositionAmounts {
@@ -91,6 +93,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     chainId,
     externalSwapQuoteParams,
     isSetAcceptablePriceImpactEnabled,
+    disabledMarkets,
+    manualPath,
   } = p;
 
   const swapStrategy: NoSwapStrategy = {
@@ -207,6 +211,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         chainId,
         externalSwapQuoteParams,
         allowSameTokenSwap: false,
+        disabledMarkets,
+        manualPath,
       });
 
       values.swapStrategy = swapAmounts.swapStrategy;
@@ -302,6 +308,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         chainId,
         externalSwapQuoteParams,
         allowSameTokenSwap: false,
+        disabledMarkets,
+        manualPath,
       });
       values.swapStrategy = swapAmounts.swapStrategy;
     }
@@ -357,6 +365,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
           chainId,
           externalSwapQuoteParams,
           allowSameTokenSwap: false,
+          disabledMarkets,
+          manualPath,
         });
         values.swapStrategy = swapAmounts.swapStrategy;
       }
@@ -399,6 +409,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     isLong,
     indexPrice: values.indexPrice,
     sizeDeltaUsd: values.sizeDeltaUsd,
+    sizeDeltaInTokens: values.indexTokenAmount,
   });
 
   values.positionPriceImpactDeltaUsd = acceptablePriceInfo.priceImpactDeltaUsd;
@@ -437,6 +448,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         indexPrice: values.indexPrice,
         sizeDeltaUsd: values.sizeDeltaUsd,
         maxNegativePriceImpactBps,
+        sizeDeltaInTokens: values.indexTokenAmount,
       });
 
       values.acceptablePrice = limitAcceptablePriceInfo.acceptablePrice;
@@ -547,13 +559,8 @@ export function getIncreasePositionPrices({
 
   if (triggerPrice !== undefined && triggerPrice > 0 && limitOrderType !== undefined) {
     indexPrice = triggerPrice;
-    initialCollateralPrice = getIsEquivalentTokens(indexToken, initialCollateralToken)
-      ? triggerPrice
-      : initialCollateralToken.prices.minPrice;
-
-    collateralPrice = getIsEquivalentTokens(indexToken, collateralToken)
-      ? triggerPrice
-      : collateralToken.prices.minPrice;
+    initialCollateralPrice = initialCollateralToken.prices.minPrice;
+    collateralPrice = collateralToken.prices.minPrice;
 
     triggerThresholdType = getOrderThresholdType(limitOrderType, isLong);
   } else {

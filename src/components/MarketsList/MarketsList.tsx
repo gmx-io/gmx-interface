@@ -14,7 +14,7 @@ import AssetDropdown from "pages/Dashboard/AssetDropdown";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
-import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagination";
+import usePagination, { DEFAULT_PAGE_SIZE } from "components/Pagination/usePagination";
 import SearchInput from "components/SearchInput/SearchInput";
 import { MarketListSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
@@ -156,6 +156,7 @@ function useFilterSortMarkets({
         (item) => stripBlacklistedWords(item.token.name),
         (item) => `${getTokenVisualMultiplier(item.token)}${item.token.symbol}`,
         (item) => item.token.address,
+        (item) => (item.token.searchAliases ?? []).join(" "),
       ],
       searchText
     );

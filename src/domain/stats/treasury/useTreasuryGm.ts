@@ -5,6 +5,7 @@ import { MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY } from "config/dataStore";
 import { getContractMarketPrices } from "domain/synthetics/markets/utils";
 import type { TokensData } from "domain/synthetics/tokens";
 import { useMulticall } from "lib/multicall";
+import type { MulticallRequestConfig } from "lib/multicall";
 import type { ContractsChainId } from "sdk/configs/chains";
 import type { MarketsData } from "sdk/utils/markets/types";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
@@ -122,7 +123,7 @@ function buildTreasuryMarketsRequest({
   const dataStoreAddress = getContract(chainId, "DataStore");
   const syntheticsReaderAddress = getContract(chainId, "SyntheticsReader");
 
-  return marketsAddresses.reduce((acc, marketAddress) => {
+  return marketsAddresses.reduce<MulticallRequestConfig>((acc, marketAddress) => {
     const market = marketsData[marketAddress];
 
     acc[`${marketAddress}-balances`] = {

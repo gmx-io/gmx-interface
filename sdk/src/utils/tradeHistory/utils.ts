@@ -2,6 +2,7 @@ import { getAddress } from "viem";
 
 import type { TradeAction as SubsquidTradeAction } from "codegen/subsquid";
 import type { MarketsInfoData } from "utils/markets/types";
+import { toBigInt } from "utils/numbers";
 import { getByKey } from "utils/objects";
 import { isIncreaseOrderType, isSwapOrderType } from "utils/orders";
 import { getSwapPathOutputAddresses } from "utils/swap/swapStats";
@@ -53,9 +54,9 @@ export function createRawTradeActionTransformer(
         orderType,
         orderKey: rawAction.orderKey,
         initialCollateralTokenAddress: rawAction.initialCollateralTokenAddress!,
-        initialCollateralDeltaAmount: bigNumberify(rawAction.initialCollateralDeltaAmount)!,
-        minOutputAmount: bigNumberify(rawAction.minOutputAmount)!,
-        executionAmountOut: rawAction.executionAmountOut ? bigNumberify(rawAction.executionAmountOut) : undefined,
+        initialCollateralDeltaAmount: toBigInt(rawAction.initialCollateralDeltaAmount)!,
+        minOutputAmount: toBigInt(rawAction.minOutputAmount)!,
+        executionAmountOut: rawAction.executionAmountOut ? toBigInt(rawAction.executionAmountOut) : undefined,
         shouldUnwrapNativeToken: rawAction.shouldUnwrapNativeToken!,
         targetCollateralToken,
         initialCollateralToken,
@@ -107,24 +108,24 @@ export function createRawTradeActionTransformer(
         initialCollateralTokenAddress,
         initialCollateralToken,
         targetCollateralToken,
-        initialCollateralDeltaAmount: bigNumberify(rawAction.initialCollateralDeltaAmount)!,
-        sizeDeltaUsd: bigNumberify(rawAction.sizeDeltaUsd)!,
-        sizeDeltaInTokens: rawAction.sizeDeltaInTokens ? bigNumberify(rawAction.sizeDeltaInTokens) : undefined,
+        initialCollateralDeltaAmount: toBigInt(rawAction.initialCollateralDeltaAmount)!,
+        sizeDeltaUsd: toBigInt(rawAction.sizeDeltaUsd)!,
+        sizeDeltaInTokens: rawAction.sizeDeltaInTokens ? toBigInt(rawAction.sizeDeltaInTokens) : undefined,
         triggerPrice: rawAction.triggerPrice
-          ? parseContractPrice(bigNumberify(rawAction.triggerPrice)!, indexToken.decimals)
+          ? parseContractPrice(toBigInt(rawAction.triggerPrice)!, indexToken.decimals)
           : undefined,
-        acceptablePrice: parseContractPrice(bigNumberify(rawAction.acceptablePrice)!, indexToken.decimals),
+        acceptablePrice: parseContractPrice(toBigInt(rawAction.acceptablePrice)!, indexToken.decimals),
         executionPrice: rawAction.executionPrice
-          ? parseContractPrice(bigNumberify(rawAction.executionPrice)!, indexToken.decimals)
+          ? parseContractPrice(toBigInt(rawAction.executionPrice)!, indexToken.decimals)
           : undefined,
-        minOutputAmount: bigNumberify(rawAction.minOutputAmount)!,
+        minOutputAmount: toBigInt(rawAction.minOutputAmount)!,
 
         collateralTokenPriceMax: rawAction.collateralTokenPriceMax
-          ? parseContractPrice(bigNumberify(rawAction.collateralTokenPriceMax)!, initialCollateralToken.decimals)
+          ? parseContractPrice(toBigInt(rawAction.collateralTokenPriceMax)!, initialCollateralToken.decimals)
           : undefined,
 
         collateralTokenPriceMin: rawAction.collateralTokenPriceMin
-          ? parseContractPrice(bigNumberify(rawAction.collateralTokenPriceMin)!, initialCollateralToken.decimals)
+          ? parseContractPrice(toBigInt(rawAction.collateralTokenPriceMin)!, initialCollateralToken.decimals)
           : undefined,
 
         indexTokenPriceMin: rawAction.indexTokenPriceMin
@@ -166,17 +167,4 @@ export function createRawTradeActionTransformer(
       return tradeAction;
     }
   };
-}
-
-export function bigNumberify(n?: bigint | string | null | undefined) {
-  try {
-    if (n === undefined) throw new Error("n is undefined");
-    if (n === null) throw new Error("n is null");
-
-    return BigInt(n);
-  } catch (e) {
-    // eslint-disable-next-line no-console
-    console.error("bigNumberify error", e);
-    return undefined;
-  }
 }

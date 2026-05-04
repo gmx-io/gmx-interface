@@ -88,6 +88,7 @@ export const abis = {
   RewardReader,
   RewardRouter,
   RewardTracker,
+  SimulationRouter,
   SmartAccount,
   SimulationRouter,
   StBTC,

@@ -91,7 +91,7 @@ export function getEstimatedLiquidationTimeInHours(
 
   if (isOpening || minCollateralUsd === undefined || !marketInfo) return;
 
-  let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactor);
+  let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactorForLiquidation);
   if (liquidationCollateralUsd < minCollateralUsd) {
     liquidationCollateralUsd = minCollateralUsd;
   }
@@ -100,6 +100,7 @@ export function getEstimatedLiquidationTimeInHours(
   const maxNegativePriceImpactUsd = -1n * applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations);
   let { priceImpactDeltaUsd } = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, {
     fallbackToZero: true,
+    sizeDeltaInTokens: position.sizeInTokens,
   });
 
   if (priceImpactDeltaUsd > 0) {

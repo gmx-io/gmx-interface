@@ -12,6 +12,11 @@ import {
   useSelectorClose,
 } from "components/SelectorBase/SelectorBase";
 import { TableTd } from "components/Table/Table";
+import TokenIcon from "components/TokenIcon/TokenIcon";
+
+import UsdIcon from "img/ic_usd.svg?react";
+
+import { TradeInputBox } from "./TradeInputBox";
 
 export type DisplayMode = "token" | "usd";
 
@@ -23,11 +28,13 @@ type Props = {
   onDisplayModeChange?: (mode: DisplayMode) => void;
   showDisplayModeToggle?: boolean;
   unitLabel?: ReactNode;
+  rightHeadline?: ReactNode;
   inputValue: string;
   onInputValueChange: (e: ChangeEvent<HTMLInputElement>) => void;
   onFocus?: () => void;
   placeholder?: string;
   qa?: string;
+  maxDecimals?: number;
 };
 
 export function TradeInputField({
@@ -38,83 +45,84 @@ export function TradeInputField({
   onDisplayModeChange,
   showDisplayModeToggle = true,
   unitLabel,
+  rightHeadline,
   inputValue,
   onInputValueChange,
   onFocus,
   placeholder = "0.0",
   qa,
+  maxDecimals,
 }: Props) {
   const inputRef = useRef<HTMLInputElement>(null);
   const isMobile = useMedia(`(max-width: ${SELECTOR_BASE_MOBILE_THRESHOLD}px)`);
 
-  const handleBoxClick = useCallback((e: React.MouseEvent) => {
-    // Don't focus input if clicking on the toggle area
-    if ((e.target as HTMLElement).closest("[data-toggle-selector]")) {
-      return;
-    }
-    inputRef.current?.focus();
-  }, []);
+  const displayModeLabel =
+    displayMode === "token" && tokenSymbol ? (
+      <span className="flex items-center gap-4">
+        <TokenIcon symbol={tokenSymbol} displaySize={20} />
+        {tokenSymbol}
+      </span>
+    ) : (
+      <span className="flex items-center gap-4">
+        <UsdIcon className="size-20" />
+        USD
+      </span>
+    );
 
-  const displayModeLabel = displayMode === "token" ? tokenSymbol : "USD";
+  const rightContent =
+    showDisplayModeToggle && onDisplayModeChange ? (
+      <div data-toggle-selector>
+        <SelectorBase
+          label={displayModeLabel}
+          modalLabel="Display Mode"
+          qa={qa ? `${qa}-display-mode` : "display-mode"}
+          handleClassName="text-14"
+          chevronClassName="w-16"
+        >
+          {isMobile ? (
+            <DisplayModeSelectorMobile
+              tokenSymbol={tokenSymbol}
+              displayMode={displayMode}
+              onDisplayModeChange={onDisplayModeChange}
+            />
+          ) : (
+            <DisplayModeSelectorDesktop
+              tokenSymbol={tokenSymbol}
+              displayMode={displayMode}
+              onDisplayModeChange={onDisplayModeChange}
+            />
+          )}
+        </SelectorBase>
+      </div>
+    ) : unitLabel ? (
+      <div className="flex shrink-0 items-center text-13 text-typography-secondary">{unitLabel}</div>
+    ) : null;
 
   return (
-    <div data-qa={qa}>
-      <div
-        className={cx(
-          `text-body-small flex cursor-text flex-col justify-between gap-2
-          rounded-8 border border-slate-800 bg-slate-800 px-12 py-8`,
-          "focus-within:border-blue-300 hover:bg-fill-surfaceElevatedHover active:border-blue-300"
-        )}
-        onClick={handleBoxClick}
-      >
-        <div className="flex justify-between">
-          <div className="text-typography-secondary">{label}</div>
-          <div className="text-12 text-typography-secondary numbers">{alternateValue}</div>
-        </div>
-
-        <div className="flex items-center justify-between">
-          <div className="relative grow">
-            <NumberInput
-              value={inputValue}
-              className="text-body-large h-28 w-full min-w-0 p-0 outline-none"
-              inputRef={inputRef}
-              onValueChange={onInputValueChange}
-              onFocus={onFocus}
-              placeholder={placeholder}
-              qa={qa ? qa + "-input" : undefined}
-            />
-          </div>
-
-          {showDisplayModeToggle && onDisplayModeChange ? (
-            <div data-toggle-selector>
-              <SelectorBase
-                label={displayModeLabel}
-                modalLabel="Display Mode"
-                qa={qa ? `${qa}-display-mode` : "display-mode"}
-                handleClassName="text-14"
-                chevronClassName="w-16"
-              >
-                {isMobile ? (
-                  <DisplayModeSelectorMobile
-                    tokenSymbol={tokenSymbol}
-                    displayMode={displayMode}
-                    onDisplayModeChange={onDisplayModeChange}
-                  />
-                ) : (
-                  <DisplayModeSelectorDesktop
-                    tokenSymbol={tokenSymbol}
-                    displayMode={displayMode}
-                    onDisplayModeChange={onDisplayModeChange}
-                  />
-                )}
-              </SelectorBase>
-            </div>
-          ) : unitLabel ? (
-            <div className="flex shrink-0 items-center text-13 text-typography-secondary">{unitLabel}</div>
-          ) : null}
-        </div>
-      </div>
-    </div>
+    <TradeInputBox
+      qa={qa}
+      leftHeadline={label}
+      leftContent={
+        <>
+          <NumberInput
+            value={inputValue}
+            className="text-body-large w-full min-w-0 p-0 outline-none"
+            inputRef={inputRef}
+            onValueChange={onInputValueChange}
+            onFocus={onFocus}
+            placeholder={placeholder}
+            qa={qa ? qa + "-input" : undefined}
+            maxDecimals={maxDecimals}
+          />
+          {alternateValue && (
+            <span className="shrink-0 text-12 text-typography-secondary numbers">≈{alternateValue}</span>
+          )}
+        </>
+      }
+      rightHeadline={rightHeadline}
+      rightContent={rightContent}
+      hideDivider={!showDisplayModeToggle || !onDisplayModeChange}
+    />
   );
 }
 

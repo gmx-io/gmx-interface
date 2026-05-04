@@ -4,6 +4,7 @@ import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
 import { ContractsChainId, getChainName, getGasPricePremium } from "config/chains";
+import { JUMPER_BRIDGE_URL } from "config/links";
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { getExecutionFeeBufferBps, getMinimumExecutionFeeBufferBps } from "domain/synthetics/fees/utils/executionFee";
@@ -27,6 +28,7 @@ export type AdditionalErrorParams = {
   slippageInputId?: string;
   defaultMessage?: ReactNode;
   isInternalSwapFallback?: boolean;
+  isExternalSwapFallback?: boolean;
   permitIssueType?: PermitIssueType;
   setIsSettingsVisible?: (isVisible: boolean) => void;
 };
@@ -39,6 +41,7 @@ export function getTxnErrorToast(
     slippageInputId,
     defaultMessage = getDefaultErrorMessage(errorData),
     isInternalSwapFallback,
+    isExternalSwapFallback,
     permitIssueType,
     setIsSettingsVisible,
   }: AdditionalErrorParams
@@ -95,6 +98,22 @@ export function getTxnErrorToast(
     return toastParams;
   }
 
+  if (isExternalSwapFallback) {
+    toastParams.errorContent = (
+      <div>
+        {defaultMessage}
+        <br />
+        <br />
+        <Trans>Switching to external swap route. Try again</Trans>
+        <br />
+        <br />
+        {debugErrorMessage && <ToastifyDebug error={debugErrorMessage} />}
+      </div>
+    );
+
+    return toastParams;
+  }
+
   if (permitIssueType === "invalidSignature") {
     toastParams.errorContent = getInvalidPermitSignatureToastContent();
     return toastParams;
@@ -116,9 +135,11 @@ export function getTxnErrorToast(
           Insufficient {nativeToken.symbol} for gas on {getChainName(chainId)}
           <br />
           <br />
-          <Link className="underline" to="/buy_gmx#bridge">
-            Buy or transfer {nativeToken.symbol} to {getChainName(chainId)}
-          </Link>
+          <Link className="underline" to={`/trade/swap?to=${nativeToken.symbol}`}>
+            Swap
+          </Link>{" "}
+          or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge</ExternalLink> {nativeToken.symbol} to{" "}
+          {getChainName(chainId)}
         </Trans>
       );
       break;
@@ -203,9 +224,11 @@ export function getErrorMessage(
           Insufficient {nativeToken.symbol} for gas on {getChainName(chainId)}
           <br />
           <br />
-          <Link className="underline" to="/buy_gmx#bridge">
-            Buy or transfer {nativeToken.symbol} to {getChainName(chainId)}
-          </Link>
+          <Link className="underline" to={`/trade/swap?to=${nativeToken.symbol}`}>
+            Swap
+          </Link>{" "}
+          or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge</ExternalLink> {nativeToken.symbol} to{" "}
+          {getChainName(chainId)}
         </Trans>
       );
       break;
@@ -280,7 +303,7 @@ export function getNonEoaAccountChainWarningToastContent(chainId: number) {
 }
 
 export function InvalidSignatureToastContent() {
-  const { setFeedbackModalVisible, setIsSettingsVisible } = useSettings();
+  const { setIsSettingsVisible } = useSettings();
 
   return (
     <div>
@@ -293,11 +316,6 @@ export function InvalidSignatureToastContent() {
           settings
         </span>
       </Trans>
-      <br />
-      <br />
-      <div className="clickable underline" onClick={() => setFeedbackModalVisible(true)}>
-        <Trans>Report issue</Trans>
-      </div>
     </div>
   );
 }

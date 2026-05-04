@@ -4,6 +4,7 @@ import { hashTypedData, withRetry, type Hex } from "viem";
 
 import { parseError } from "lib/errors";
 import { ISigner } from "lib/transactions/iSigner";
+import type { IAbstractSigner } from "sdk/utils/signer";
 
 import { switchNetwork, type WalletSigner } from ".";
 import { getPublicClientWithRpc, getRainbowKitConfig } from "./rainbowKitConfig";
@@ -19,7 +20,7 @@ export type SignatureDomain = {
 export type SignatureTypes = Record<string, { name: string; type: string }[]>;
 
 export type SignTypedDataParams = {
-  signer: WalletSigner | Wallet | AbstractSigner | ISigner;
+  signer: WalletSigner | Wallet | AbstractSigner | ISigner | IAbstractSigner;
   types: SignatureTypes;
   typedData: Record<string, any>;
   domain: SignatureDomain;
@@ -139,6 +140,7 @@ export async function signTypedData({
   // filter inputs
   for (const [key, value] of Object.entries(domain)) {
     if (value === undefined) {
+      // @ts-expect-error
       delete domain[key];
     }
   }
@@ -174,6 +176,13 @@ export async function signTypedData({
   }
 
   const primaryType = Object.keys(typesToSign).filter((t) => t !== "EIP712Domain")[0];
+
+  if (!("provider" in signer) || !("getAddress" in signer)) {
+    if (signer.signTypedData) {
+      return signer.signTypedData(domain, typesToSign, messageToSign);
+    }
+    throw new Error("Signer does not support provider-based signing or signTypedData");
+  }
 
   const from = await signer.getAddress();
 

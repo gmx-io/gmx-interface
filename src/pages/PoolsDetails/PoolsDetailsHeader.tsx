@@ -26,7 +26,10 @@ import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { BridgeInModal } from "components/BridgeModal/BridgeInModal";
 import { BridgeOutModal } from "components/BridgeModal/BridgeOutModal";
 import Button from "components/Button/Button";
-import { MultichainBalanceTooltip } from "components/MultichainBalanceTooltip/MultichainBalanceTooltip";
+import {
+  MultichainBalanceTooltip,
+  useHasMultichainBreakdown,
+} from "components/MultichainBalanceTooltip/MultichainBalanceTooltip";
 import { ShimmerText } from "components/ShimmerText/ShimmerText";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
@@ -71,6 +74,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
     ? multichainMarketTokensBalances[marketToken.address]
     : undefined;
   const isMultichainBalancesLoading = useSelector(selectMultichainMarketTokensBalancesIsLoading);
+  const hasMultichainBreakdown = useHasMultichainBreakdown(multichainMarketTokenBalances);
 
   const totalBalance = multichainMarketTokenBalances?.totalBalance;
   const marketBalanceUsd = multichainMarketTokenBalances?.totalBalanceUsd;
@@ -190,7 +194,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
                       ) : undefined
                     }
                     tooltipContent={
-                      totalBalance === undefined || totalBalance === 0n ? undefined : (
+                      !hasMultichainBreakdown || totalBalance === undefined || totalBalance === 0n ? undefined : (
                         <MultichainBalanceTooltip
                           multichainBalances={multichainMarketTokenBalances}
                           symbol={glvOrGm}

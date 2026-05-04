@@ -108,6 +108,7 @@ export function useDateRange() {
 }
 
 export const SECONDS_IN_DAY = 86400;
+export const ONE_YEAR_SECONDS = 365 * 24 * 60 * 60;
 
 function floorTimestamp(timestamp: number, period: "day" | "hour") {
   const delimiter = period === "day" ? 86400 : 3600;

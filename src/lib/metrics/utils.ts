@@ -879,8 +879,11 @@ export function sendTxnErrorMetric(
   const errorData = parseError(error);
   const timings = metricId ? getOrderStepTimings(metricId, OrderStage.Failed) : undefined;
 
+  const eventName =
+    `${metricData.metricType}.${errorData?.isUserRejectedError ? OrderStage.Rejected : OrderStage.Failed}` as const;
+
   metrics.pushEvent<OrderTxnFailedEvent>({
-    event: `${metricData.metricType}.${errorData?.isUserRejectedError ? OrderStage.Rejected : OrderStage.Failed}`,
+    event: eventName,
     isError: true,
     data: {
       ...(metricData || {}),
@@ -1007,6 +1010,7 @@ function getOrderStepTimings(metricId: OrderMetricId, step: OrderStage) {
     timeFromCreated: metrics.getTime(timingIds[OrderStage.Created], clear) ?? 0,
   };
 
+  // @ts-expect-error not all OrderStage values are keys of timingIds, handled by the if check below
   const timerToStart = timingIds[step];
 
   if (timerToStart) {

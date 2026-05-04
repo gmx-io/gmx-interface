@@ -112,7 +112,7 @@ export function TestPermits() {
       setPermitData(permit);
       helperToast.success(t`Permit signed for ${selectedToken.symbol}`);
     } catch (error) {
-      helperToast.error(t`Error signing permit for ${selectedToken.symbol}: ${(error as Error).message}`);
+      helperToast.error(t`Error signing permit for ${selectedToken.symbol}: ${error.message}`);
     } finally {
       setIsLoading(false);
     }
@@ -151,7 +151,7 @@ export function TestPermits() {
         </div>
       );
     } catch (error) {
-      helperToast.error(t`Error sending permit for ${selectedToken.symbol}: ${(error as Error).message}`);
+      helperToast.error(t`Error sending permit for ${selectedToken.symbol}: ${error.message}`);
     } finally {
       setIsLoading(false);
     }

@@ -4,8 +4,7 @@ import useSWR from "swr";
 import { getIsFlagEnabled } from "config/ab";
 import { metrics } from "lib/metrics";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
-
-import { fetchGelatoGasTankBalance } from "./fetchGelatoGasTankBalance";
+import { fetchGelatoGasTankBalance } from "sdk/utils/express";
 
 // $100 threshold in 6-decimal USD (as returned by gelato_getBalance)
 const MIN_GELATO_USD_BALANCE = 100_000_000n;

@@ -553,6 +553,7 @@ function applyAcceptablePrice(p: {
     isLong,
     indexPrice: values.indexPrice,
     sizeDeltaUsd: values.sizeDeltaUsd,
+    sizeDeltaInTokens: values.sizeDeltaInTokens,
   });
 
   values.acceptablePrice = acceptablePriceInfo.acceptablePrice;
@@ -598,6 +599,7 @@ function applyAcceptablePrice(p: {
         indexPrice: values.indexPrice,
         sizeDeltaUsd: values.sizeDeltaUsd,
         maxNegativePriceImpactBps,
+        sizeDeltaInTokens: values.sizeDeltaInTokens,
       });
 
       values.acceptablePrice = triggerAcceptablePriceInfo.acceptablePrice;

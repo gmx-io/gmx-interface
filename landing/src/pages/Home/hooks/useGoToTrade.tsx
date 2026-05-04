@@ -6,6 +6,7 @@ import {
   ARBITRUM,
   AVALANCHE,
   BOTANIX,
+  MEGAETH,
   SOURCE_ETHEREUM_MAINNET,
   SOURCE_BASE_MAINNET,
   SOURCE_BSC_MAINNET,
@@ -18,6 +19,7 @@ export enum RedirectChainIds {
   Arbitum = ARBITRUM,
   Avalanche = AVALANCHE,
   Botanix = BOTANIX,
+  MegaETH = MEGAETH,
   Base = SOURCE_BASE_MAINNET,
   Bsc = SOURCE_BSC_MAINNET,
   Ethereum = SOURCE_ETHEREUM_MAINNET,
@@ -35,6 +37,7 @@ const REDIRECT_MAP: Record<RedirectChainIds, string> = {
   [RedirectChainIds.Arbitum]: makeLink(ARBITRUM),
   [RedirectChainIds.Avalanche]: makeLink(AVALANCHE),
   [RedirectChainIds.Botanix]: makeLink(BOTANIX),
+  [RedirectChainIds.MegaETH]: makeLink(MEGAETH),
   [RedirectChainIds.Bsc]: makeLink(SOURCE_BSC_MAINNET),
   [RedirectChainIds.Ethereum]: makeLink(SOURCE_ETHEREUM_MAINNET),
 };

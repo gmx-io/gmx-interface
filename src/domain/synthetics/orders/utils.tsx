@@ -17,6 +17,7 @@ import {
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
 import { getFeeItem, getIsHighPriceImpact, getPriceImpactByAcceptablePrice } from "../fees";
+import { JitLiquidityInfo, getJitMaxReservedUsd } from "../jit/utils";
 import { MarketsInfoData, getAvailableUsdLiquidityForPosition } from "../markets";
 import { PositionInfo, PositionsInfoData, getLeverage } from "../positions";
 import { convertToTokenAmount, convertToUsd } from "../tokens";
@@ -47,6 +48,7 @@ export function getOrderTypeLabel(orderType: OrderType) {
     [OrderType.LimitDecrease]: t`Limit Decrease`,
     [OrderType.StopLossDecrease]: t`Stop-Loss Decrease`,
     [OrderType.Liquidation]: t`Liquidation`,
+    [OrderType.StopIncrease]: undefined,
   };
 
   return orderTypeLabels[orderType];
@@ -83,8 +85,9 @@ export function getOrderErrors(p: {
   uiFeeFactor: bigint;
   chainId: number;
   isSetAcceptablePriceImpactEnabled: boolean;
+  jitLiquidityMap?: Record<string, JitLiquidityInfo>;
 }): { errors: OrderError[]; level: "error" | "warning" | undefined } {
-  const { order, positionsInfoData, marketsInfoData, isSetAcceptablePriceImpactEnabled } = p;
+  const { order, positionsInfoData, marketsInfoData, isSetAcceptablePriceImpactEnabled, jitLiquidityMap } = p;
 
   const errors: OrderError[] = [];
 
@@ -97,7 +100,11 @@ export function getOrderErrors(p: {
             swapPath: order.swapPath,
             initialCollateralAddress: order.initialCollateralTokenAddress,
           })
-        : getAvailableUsdLiquidityForPosition(positionOrder.marketInfo, positionOrder.isLong);
+        : getAvailableUsdLiquidityForPosition(
+            positionOrder.marketInfo,
+            positionOrder.isLong,
+            getJitMaxReservedUsd(jitLiquidityMap, positionOrder.marketInfo.marketTokenAddress, positionOrder.isLong)
+          );
 
       const orderWithValidFromTimeExceeded = order.orders.find(
         (order) => order.validFromTime < BigInt(Math.floor(Date.now() / 1000))
@@ -203,7 +210,11 @@ export function getOrderErrors(p: {
     }
 
     if (positionOrder.orderType === OrderType.LimitIncrease && !isTwapOrder(order)) {
-      const currentLiquidity = getAvailableUsdLiquidityForPosition(positionOrder.marketInfo, positionOrder.isLong);
+      const currentLiquidity = getAvailableUsdLiquidityForPosition(
+        positionOrder.marketInfo,
+        positionOrder.isLong,
+        getJitMaxReservedUsd(jitLiquidityMap, positionOrder.marketInfo.marketTokenAddress, positionOrder.isLong)
+      );
 
       if (currentLiquidity < positionOrder.sizeDeltaUsd) {
         errors.push({

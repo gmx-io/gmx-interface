@@ -31,6 +31,7 @@ import {
   getIsPermitExpiredDeadlineOnSimulation,
   getIsPermitSignatureErrorOnSimulation,
   getIsPossibleExternalSwapError,
+  getIsPriceImpactTooLargeError,
 } from "lib/errors/customErrors";
 import { helperToast } from "lib/helperToast";
 import {
@@ -42,6 +43,7 @@ import {
   sendTxnSentMetric,
 } from "lib/metrics";
 import { getByKey } from "lib/objects";
+import { TradingActionName } from "lib/tradingErrorTracker";
 import { TxnEvent, TxnEventName } from "lib/transactions";
 import { useBlockNumber } from "lib/useBlockNumber";
 import { isIncreaseOrderType, isMarketOrderType, isSwapOrderType } from "sdk/utils/orders";
@@ -67,10 +69,14 @@ import { ExpressTxnParams } from "../express/types";
 
 export type CallbackUiCtx = {
   metricId?: OrderMetricId;
+  requestId?: string;
   slippageInputId?: string;
   additionalErrorContent?: React.ReactNode;
   isFundingFeeSettlement?: boolean;
   onInternalSwapFallback?: () => void;
+  onExternalSwapFallback?: () => void;
+  actionName?: TradingActionName;
+  collateralSymbol?: string;
 };
 
 export function useOrderTxnCallbacks() {
@@ -104,7 +110,7 @@ export function useOrderTxnCallbacks() {
       const actionsCount = getBatchRequiredActions(batchParams);
 
       let mainActionType: "create" | "update" | "cancel";
-      if (batchParams.createOrderParams.length > 0) {
+      if (batchParams.createOrderParams.length > 0 || batchParams.twapParams) {
         mainActionType = "create";
       } else if (batchParams.updateOrderParams.length > 0) {
         mainActionType = "update";
@@ -287,6 +293,7 @@ export function useOrderTxnCallbacks() {
               hash: e.data.transactionHash,
               message: getOperationMessage(mainActionType, "success", actionsCount, undefined, setIsSettingsVisible),
               metricId: ctx.metricId,
+              actionName: ctx.actionName,
               data: totalExecutionFee
                 ? {
                     estimatedExecutionFee: totalExecutionFee.feeTokenAmount,
@@ -322,6 +329,11 @@ export function useOrderTxnCallbacks() {
               ? ctx.onInternalSwapFallback
               : undefined;
 
+          const fallbackToExternalSwap =
+            !hasExternalSwap(expressParams, batchParams) && getIsPriceImpactTooLargeError(error)
+              ? ctx.onExternalSwapFallback
+              : undefined;
+
           let permitIssueType: PermitIssueType | undefined;
 
           if (expressParams?.relayParamsPayload.tokenPermits?.length) {
@@ -337,16 +349,29 @@ export function useOrderTxnCallbacks() {
             slippageInputId: ctx.slippageInputId,
             additionalContent: ctx.additionalErrorContent,
             isInternalSwapFallback: Boolean(fallbackToInternalSwap),
+            isExternalSwapFallback: Boolean(fallbackToExternalSwap),
             permitIssueType,
             setIsSettingsVisible,
           });
 
           helperToast.error(toastParams.errorContent, {
             autoClose: toastParams.autoCloseToast,
+            tradingErrorInfo: ctx.actionName
+              ? {
+                  actionName: ctx.actionName,
+                  collateral: ctx.collateralSymbol,
+                  errorData: errorData,
+                  requestId: ctx.requestId,
+                }
+              : undefined,
           });
 
           if (fallbackToInternalSwap) {
             fallbackToInternalSwap();
+          }
+
+          if (fallbackToExternalSwap) {
+            fallbackToExternalSwap();
           }
 
           if (permitIssueType === "expiredDeadline") {
@@ -428,6 +453,17 @@ function getBatchPendingOrders(
     .map((cp) => getPendingCreateOrder(cp, false, createdAt));
 
   const twapPendingOrders = getPendingCreateTwapOrders(txnParams.createOrderParams, createdAt);
+
+  if (txnParams.twapParams) {
+    const { createOrderTxnParams, twapCount } = txnParams.twapParams;
+    const pendingOrder = getPendingCreateOrder(createOrderTxnParams, true, createdAt);
+    twapPendingOrders.push({
+      ...pendingOrder,
+      sizeDeltaUsd: pendingOrder.sizeDeltaUsd * BigInt(twapCount),
+      initialCollateralDeltaAmount: pendingOrder.initialCollateralDeltaAmount * BigInt(twapCount),
+      minOutputAmount: pendingOrder.minOutputAmount * BigInt(twapCount),
+    });
+  }
 
   const updatePendingOrders = txnParams.updateOrderParams
     .map((updateOrderParams) => {

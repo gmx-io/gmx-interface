@@ -38,7 +38,7 @@ import {
   selectTradeboxKeepLeverage,
   selectTradeboxLeverage,
   selectTradeboxMarkPrice,
-  selectTradeboxMaxLeverage,
+  selectTradeboxMaxAllowedLeverage,
   selectTradeboxNextPositionValues,
   selectTradeboxSelectedPosition,
   selectTradeboxSelectedPositionKey,
@@ -47,6 +47,7 @@ import {
   selectTradeboxSetSelectedAllowedSwapSlippageBps,
   selectTradeboxState,
   selectTradeboxSwapAmounts,
+  selectTradeboxSwapTokens,
   selectTradeboxTradeFlags,
   selectTradeboxTradeRatios,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
@@ -57,6 +58,7 @@ import { getMarketIndexName, MarketInfo } from "domain/synthetics/markets";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
 import { convertToUsd, getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
 import { getTwapRecommendation } from "domain/synthetics/trade/twapRecommendation";
+import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
@@ -72,6 +74,7 @@ import {
   formatBalanceAmount,
   formatDeltaUsd,
   formatPercentage,
+  formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsd,
   formatUsdPrice,
@@ -102,6 +105,8 @@ import { MultichainTokenSelector } from "components/TokenSelector/MultichainToke
 import TokenSelector from "components/TokenSelector/TokenSelector";
 import Tooltip from "components/Tooltip/Tooltip";
 import { TradeboxMarginFields } from "components/TradeboxMarginFields";
+import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
+import { TradeInputField, DisplayMode } from "components/TradeboxMarginFields/TradeInputField";
 import { TradeboxPoolWarnings } from "components/TradeboxPoolWarnings/TradeboxPoolWarnings";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
@@ -141,7 +146,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const allowedSlippage = useSelector(selectTradeboxAllowedSlippage);
 
-  const { swapTokens, infoTokens, sortedLongAndShortTokens, sortedAllMarkets } = availableTokenOptions;
+  const { infoTokens, sortedLongAndShortTokens, sortedAllMarkets } = availableTokenOptions;
+  const swapTokens = useSelector(selectTradeboxSwapTokens);
   const tokensData = useTokensData();
   const { tokenChainDataArray: multichainTokens } = useMultichainTokens();
   const marketsInfoData = useSelector(selectMarketsInfoData);
@@ -150,6 +156,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
 
   const chainId = useSelector(selectChainId);
+
   const srcChainId = useSelector(selectSrcChainId);
   const { account, active } = useWallet();
   const { openConnectModal } = useConnectModal();
@@ -175,7 +182,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     setTradeMode: onSelectTradeMode,
     focusedInput,
     setFocusedInput,
-    closeSizeInputValue,
     setCloseSizeInputValue,
     triggerPriceInputValue,
     setTriggerPriceInputValue,
@@ -214,14 +220,21 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const fromTokenPrice = fromToken?.prices.minPrice;
   const fromUsd = convertToUsd(fromTokenAmount, fromToken?.decimals, fromTokenPrice);
 
-  const closeSizeUsd = parseValue(closeSizeInputValue || "0", USD_DECIMALS) ?? 0n;
-
   const markPrice = useSelector(selectTradeboxMarkPrice);
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const selectedPositionKey = useSelector(selectTradeboxSelectedPositionKey);
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
+
+  const closeSizeHook = useCloseSizeInput({
+    positionSizeInUsd: selectedPosition?.sizeInUsd,
+    positionSizeInTokens: selectedPosition?.sizeInTokens,
+    indexTokenDecimals: toToken?.decimals ?? 18,
+    indexTokenSymbol: toToken?.symbol ?? "",
+    onCloseSizeUsdChange: setCloseSizeInputValue,
+  });
+
   const leverage = useSelector(selectTradeboxLeverage);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
   const fees = useSelector(selectTradeboxFees);
@@ -236,9 +249,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const executionFee = useSelector(selectTradeboxExecutionFee);
   const { markRatio } = useSelector(selectTradeboxTradeRatios);
 
-  const maxLeverage = useSelector(selectTradeboxMaxLeverage);
-
-  const maxAllowedLeverage = maxLeverage / 2;
+  const maxAllowedLeverage = useSelector(selectTradeboxMaxAllowedLeverage);
 
   const decreaseOrdersThatWillBeExecuted = useDecreaseOrdersThatWillBeExecuted();
 
@@ -412,6 +423,11 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       if (isIncrease && increaseAmounts) {
         const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
         if (focusedInput === "from") {
+          // Skip backfill when increaseAmounts hasn't recalculated yet (prevents slider snap-back)
+          if (increaseAmounts.initialCollateralAmount !== fromTokenAmount) {
+            return;
+          }
+
           setToTokenInputValue(
             increaseAmounts.indexTokenAmount > 0
               ? formatAmountFree(increaseAmounts.indexTokenAmount / visualMultiplier, toToken.decimals)
@@ -431,6 +447,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     [
       focusedInput,
       fromToken,
+      fromTokenAmount,
       increaseAmounts,
       isIncrease,
       isSwap,
@@ -627,24 +644,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     (token: Token) => onSelectToTokenAddress(token.address),
     [onSelectToTokenAddress]
   );
-  const handleCloseInputChange = useCallback((e) => setCloseSizeInputValue(e.target.value), [setCloseSizeInputValue]);
-
-  const formattedMaxCloseSize = formatAmount(selectedPosition?.sizeInUsd, USD_DECIMALS, 2);
-
-  const setMaxCloseSize = useCallback(
-    () => setCloseSizeInputValue(formattedMaxCloseSize),
-    [formattedMaxCloseSize, setCloseSizeInputValue]
-  );
-  const handleClosePercentageChange = useCallback(
-    (percent: number) =>
-      setCloseSizeInputValue(
-        formatAmount(((selectedPosition?.sizeInUsd ?? 0n) * BigInt(percent)) / 100n, USD_DECIMALS, 2)
-      ),
-    [selectedPosition?.sizeInUsd, setCloseSizeInputValue]
-  );
-
   const handleTriggerPriceInputChange = useCallback(
-    (e) => setTriggerPriceInputValue(e.target.value),
+    (e: React.ChangeEvent<HTMLInputElement>) => setTriggerPriceInputValue(e.target.value),
     [setTriggerPriceInputValue]
   );
 
@@ -682,7 +683,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   );
 
   const handleFormSubmit = useCallback(
-    (e) => {
+    (e: React.FormEvent) => {
       e.preventDefault();
       if (!isCursorInside && (!submitButtonState.disabled || shouldDisableValidation)) {
         wrappedOnSubmit();
@@ -854,26 +855,57 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   }
 
   function renderDecreaseSizeInput() {
-    const showMaxButton = Boolean(
-      selectedPosition?.sizeInUsd && selectedPosition.sizeInUsd > 0 && closeSizeInputValue !== formattedMaxCloseSize
-    );
+    const closeDisplayMode: DisplayMode = closeSizeHook.showSizeInTokens ? "token" : "usd";
+    const handleCloseDisplayModeChange = (mode: DisplayMode) => {
+      if ((mode === "token") !== closeSizeHook.showSizeInTokens) {
+        closeSizeHook.handleSizeToggle();
+      }
+    };
+
+    const closeAlternateValue = (() => {
+      if (closeDisplayMode === "token") {
+        return formatUsd(closeSizeHook.closeSizeUsd);
+      }
+      if (!selectedPosition || !toToken || selectedPosition.sizeInUsd === 0n) {
+        return "0";
+      }
+      const closeSizeInTokens =
+        (closeSizeHook.closeSizeUsd * selectedPosition.sizeInTokens) / selectedPosition.sizeInUsd;
+      const visualMultiplier = BigInt(toToken.visualMultiplier ?? 1);
+      return formatTokenAmount(closeSizeInTokens / visualMultiplier, toToken.decimals, toToken.symbol);
+    })();
 
     return (
-      <BuyInputSection
-        topLeftLabel={t`Close`}
-        bottomRightValue={selectedPosition?.sizeInUsd ? formatUsd(selectedPosition.sizeInUsd) : undefined}
-        bottomLeftValue={formatUsd(closeSizeUsd)}
-        inputValue={closeSizeInputValue}
-        onInputValueChange={handleCloseInputChange}
-        onClickBottomRightLabel={setMaxCloseSize}
-        onClickMax={showMaxButton ? setMaxCloseSize : undefined}
-        showPercentSelector={selectedPosition?.sizeInUsd ? selectedPosition.sizeInUsd > 0 : false}
-        onPercentChange={handleClosePercentageChange}
-        qa="close"
-        maxDecimals={USD_DECIMALS}
-      >
-        {t`USD`}
-      </BuyInputSection>
+      <>
+        <TradeInputField
+          label={t`Close`}
+          inputValue={closeSizeHook.closeSizeInput}
+          onInputValueChange={closeSizeHook.handleInputChange}
+          displayMode={closeDisplayMode}
+          onDisplayModeChange={handleCloseDisplayModeChange}
+          tokenSymbol={toToken?.symbol}
+          alternateValue={closeAlternateValue}
+          rightHeadline={
+            selectedPosition?.sizeInUsd ? (
+              <button
+                type="button"
+                className="flex items-center gap-4 text-typography-secondary hover:text-typography-primary"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  closeSizeHook.setMaxCloseSize();
+                }}
+              >
+                {t`Max:`} <span className="numbers">{closeSizeHook.formattedMaxCloseSize}</span>
+              </button>
+            ) : undefined
+          }
+          qa="close"
+          maxDecimals={closeSizeHook.showSizeInTokens ? toToken?.decimals ?? 18 : USD_DECIMALS}
+        />
+        {selectedPosition && selectedPosition.sizeInUsd > 0n && (
+          <MarginPercentageSlider value={closeSizeHook.closePercentage} onChange={closeSizeHook.handleSliderChange} />
+        )}
+      </>
     );
   }
 
@@ -999,7 +1031,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             label: t`More`,
             options: mode.map(modeToOptions),
           }
-        : modeToOptions(mode)
+        : modeToOptions(mode as TradeMode)
     );
   }, [availableTradeModes, localizedTradeModeLabels]);
 
@@ -1008,19 +1040,19 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   return (
     <form className="flex flex-col gap-8" onSubmit={handleFormSubmit} ref={formRef}>
       <div className="flex flex-col gap-12 rounded-b-8 bg-slate-900 pb-16">
+        <div className="flex items-center justify-between">
+          <Tabs
+            options={tabsOptions}
+            selectedValue={tradeMode}
+            onChange={onSelectTradeMode}
+            qa="trade-mode"
+            className="w-full px-12"
+            rightContent={<TradeInfoIcon isMobile={isMobile} tradeType={tradeType} tradePlace="tradebox" />}
+            regularOptionClassname="!px-0"
+            tabsWrapperClassName="gap-12"
+          />
+        </div>
         <div className="flex flex-col gap-12 px-12">
-          <div className="flex items-center justify-between">
-            <Tabs
-              options={tabsOptions}
-              type="pills"
-              selectedValue={tradeMode}
-              onChange={onSelectTradeMode}
-              qa="trade-mode"
-              className="bg-slate-900 text-13"
-              regularOptionClassname="grow"
-            />
-            <TradeInfoIcon isMobile={isMobile} tradeType={tradeType} tradePlace="tradebox" />
-          </div>
           <div className="text-body-medium flex grow flex-col gap-14">
             <div className="flex flex-col gap-4">
               {isSwap && renderTokenInputs()}
@@ -1086,7 +1118,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             )}
           </div>
         </div>
-        <div className="flex flex-col gap-14 border-t-1/2 border-t-slate-600 px-12 pt-12">
+        <div className="flex flex-col gap-14 px-12 pt-12">
           {isPosition && isTrigger && selectedPosition && selectedPosition?.leverage !== undefined && (
             <ToggleSwitch
               isChecked={keepLeverageChecked}

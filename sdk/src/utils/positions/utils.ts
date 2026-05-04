@@ -95,49 +95,28 @@ export function getPositionPendingFeesUsd(p: { pendingFundingFeesUsd: bigint; pe
 }
 
 export function getPositionNetValue(p: {
-  totalPendingImpactDeltaUsd: bigint;
-  priceImpactDiffUsd: bigint;
   collateralUsd: bigint;
   pendingFundingFeesUsd: bigint;
   pendingBorrowingFeesUsd: bigint;
   pnl: bigint;
-  closingFeeUsd: bigint;
-  uiFeeUsd: bigint;
 }) {
-  const { pnl, closingFeeUsd, collateralUsd, uiFeeUsd, totalPendingImpactDeltaUsd, priceImpactDiffUsd } = p;
+  const { pnl, collateralUsd } = p;
 
   const pendingFeesUsd = getPositionPendingFeesUsd(p);
 
-  return (
-    collateralUsd - pendingFeesUsd - closingFeeUsd - uiFeeUsd + pnl + totalPendingImpactDeltaUsd + priceImpactDiffUsd
-  );
+  return collateralUsd - pendingFeesUsd + pnl;
 }
 
 export function getPositionPnlAfterFees({
   pnl,
   pendingBorrowingFeesUsd,
   pendingFundingFeesUsd,
-  closingFeeUsd,
-  uiFeeUsd,
-  totalPendingImpactDeltaUsd,
-  priceImpactDiffUsd,
 }: {
   pnl: bigint;
   pendingBorrowingFeesUsd: bigint;
   pendingFundingFeesUsd: bigint;
-  closingFeeUsd: bigint;
-  uiFeeUsd: bigint;
-  totalPendingImpactDeltaUsd: bigint;
-  priceImpactDiffUsd: bigint;
 }) {
-  const pnlAfterFees =
-    pnl -
-    pendingBorrowingFeesUsd -
-    pendingFundingFeesUsd -
-    closingFeeUsd -
-    uiFeeUsd +
-    totalPendingImpactDeltaUsd +
-    priceImpactDiffUsd;
+  const pnlAfterFees = pnl - pendingBorrowingFeesUsd - pendingFundingFeesUsd;
 
   return pnlAfterFees;
 }
@@ -210,7 +189,10 @@ export function getLiquidationPrice(p: {
   if (useMaxPriceImpact) {
     priceImpactDeltaUsd = maxNegativePriceImpactUsd;
   } else {
-    const priceImpactForPosition = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, { fallbackToZero: true });
+    const priceImpactForPosition = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, {
+      fallbackToZero: true,
+      sizeDeltaInTokens: sizeInTokens,
+    });
     priceImpactDeltaUsd = priceImpactForPosition.priceImpactDeltaUsd;
 
     if (priceImpactDeltaUsd > 0) {
@@ -555,6 +537,7 @@ export function getPositionInfo(p: {
     isLong: position.isLong,
     indexPrice: markPrice,
     sizeDeltaUsd: position.sizeInUsd,
+    sizeDeltaInTokens: position.sizeInTokens,
   });
 
   const positionFeeInfo = getPositionFee(
@@ -581,24 +564,15 @@ export function getPositionInfo(p: {
     pnl,
     pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
     pendingFundingFeesUsd,
-    closingFeeUsd,
-    uiFeeUsd,
-    totalPendingImpactDeltaUsd: netPriceImpactValues.totalImpactDeltaUsd,
-    priceImpactDiffUsd: netPriceImpactValues.priceImpactDiffUsd,
   });
 
   const pnlAfterFees = getPositionPnlAfterFees({
     pnl,
     pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
     pendingFundingFeesUsd,
-    closingFeeUsd,
-    uiFeeUsd,
-    totalPendingImpactDeltaUsd: netPriceImpactValues.totalImpactDeltaUsd,
-    priceImpactDiffUsd: netPriceImpactValues.priceImpactDiffUsd,
   });
 
-  const pnlAfterFeesPercentage =
-    collateralUsd !== 0n ? getBasisPoints(pnlAfterFees, collateralUsd + closingFeeUsd) : 0n;
+  const pnlAfterFeesPercentage = collateralUsd !== 0n ? getBasisPoints(pnlAfterFees, collateralUsd) : 0n;
 
   const leverage = getLeverage({
     sizeInUsd: position.sizeInUsd,
@@ -624,7 +598,10 @@ export function getPositionInfo(p: {
     pnl: undefined,
   });
 
-  const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(marketInfo.minCollateralFactor);
+  const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(
+    marketInfo.minCollateralFactor,
+    marketInfo.marketTokenAddress
+  );
   const hasLowCollateral = (leverage !== undefined && leverage > maxAllowedLeverage) || false;
 
   const liquidationPrice = getLiquidationPrice({

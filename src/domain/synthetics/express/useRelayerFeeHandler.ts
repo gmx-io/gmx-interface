@@ -60,7 +60,9 @@ export function useExpressOrdersParams({
   );
   const isExpressAvailable = useSelector(selectIsExpressTransactionAvailable);
 
-  const isAvailable = isExpressAvailable && orderParams && !getBatchIsNativePayment(orderParams);
+  // Relay routers don't support createTwapOrder yet
+  const isAvailable =
+    isExpressAvailable && orderParams && !getBatchIsNativePayment(orderParams) && !orderParams.twapParams;
 
   const { signer } = useWallet();
   const { provider } = useJsonRpcProvider(chainId, { isExpress: isExpressAvailable });
@@ -107,7 +109,10 @@ export function useExpressOrdersParams({
 
         return nextApproximateParams;
       } catch (error) {
-        metrics.pushError(error, `fastExpressParams.error.${label}`);
+        // Only log non-timeout errors to reduce log volume
+        if (error instanceof Error && error.message !== FAST_EXPRESS_PARAMS_TIMEOUT_ERROR) {
+          metrics.pushError(error, `fastExpressParams.error.${label}`);
+        }
         throw error;
       }
     },

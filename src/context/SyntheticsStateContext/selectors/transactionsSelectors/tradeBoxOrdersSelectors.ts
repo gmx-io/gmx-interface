@@ -4,8 +4,8 @@ import { OrderType } from "sdk/utils/orders/types";
 import {
   buildDecreaseOrderPayload,
   buildIncreaseOrderPayload,
+  buildTwapOrderPayload,
   buildSwapOrderPayload,
-  buildTwapOrdersPayloads,
   DecreasePositionOrderParams,
   IncreasePositionOrderParams,
   SwapOrderParams,
@@ -40,7 +40,11 @@ import {
 } from "../tradeboxSelectors";
 
 export const selectTradeBoxCreateOrderParams = createSelector((q) => {
-  const { isSwap, isIncrease } = q(selectTradeboxTradeFlags);
+  const { isSwap, isIncrease, isTwap } = q(selectTradeboxTradeFlags);
+
+  if (isTwap) {
+    return undefined;
+  }
 
   if (isSwap) {
     return q(selectTradeboxSwapOrderPayload);
@@ -51,6 +55,24 @@ export const selectTradeBoxCreateOrderParams = createSelector((q) => {
   }
 
   return q(selectTradeboxDecreaseOrderParams);
+});
+
+export const selectTradeBoxTwapParams = createSelector((q) => {
+  const { isSwap, isIncrease, isTwap } = q(selectTradeboxTradeFlags);
+
+  if (!isTwap) {
+    return undefined;
+  }
+
+  if (isSwap) {
+    return q(selectTradeboxSwapTwapParams);
+  }
+
+  if (isIncrease) {
+    return q(selectTradeboxIncreaseTwapParams);
+  }
+
+  return q(selectTradeboxDecreaseTwapParams);
 });
 
 const selectCommonOrderParams = createSelector((q) => {
@@ -86,8 +108,6 @@ const selectTradeboxSwapOrderPayload = createSelector((q) => {
   const { triggerRatio } = q(selectTradeboxTradeRatios);
   const { isLimit, isMarket, isTwap } = q(selectTradeboxTradeFlags);
   const allowedSlippage = q(selectTradeboxAllowedSlippage);
-  const duration = q(selectTradeboxTwapDuration);
-  const numberOfParts = q(selectTradeboxTwapNumberOfParts);
 
   if (!commonParams || !fromTokenAddress || !toTokenAddress || !swapAmounts) {
     return undefined;
@@ -112,14 +132,7 @@ const selectTradeboxSwapOrderPayload = createSelector((q) => {
   };
 
   if (isTwap) {
-    if (!getIsValidTwapParams(duration, numberOfParts)) {
-      return undefined;
-    }
-
-    return buildTwapOrdersPayloads(swapOrderParams, {
-      duration,
-      numberOfParts,
-    });
+    return undefined;
   }
 
   return [buildSwapOrderPayload(swapOrderParams)];
@@ -135,8 +148,6 @@ const selectTradeboxIncreaseOrderParams = createSelector((q) => {
   const { isLimit, isLong, isMarket, isTwap } = q(selectTradeboxTradeFlags);
   const allowedSlippage = q(selectTradeboxAllowedSlippage);
   const triggerPrice = q(selectTradeboxTriggerPrice);
-  const duration = q(selectTradeboxTwapDuration);
-  const numberOfParts = q(selectTradeboxTwapNumberOfParts);
 
   if (
     !commonParams ||
@@ -173,14 +184,7 @@ const selectTradeboxIncreaseOrderParams = createSelector((q) => {
   };
 
   if (isTwap) {
-    if (!getIsValidTwapParams(duration, numberOfParts)) {
-      return undefined;
-    }
-
-    return buildTwapOrdersPayloads(increaseOrderParams, {
-      duration,
-      numberOfParts,
-    });
+    return undefined;
   }
 
   return [buildIncreaseOrderPayload(increaseOrderParams)];
@@ -204,6 +208,10 @@ const selectTradeboxDecreaseOrderParams = createSelector((q) => {
     !decreaseAmounts ||
     !decreaseAmounts.triggerOrderType
   ) {
+    return undefined;
+  }
+
+  if (isTwap) {
     return undefined;
   }
 
@@ -231,8 +239,160 @@ const selectTradeboxDecreaseOrderParams = createSelector((q) => {
     isLong,
     validFromTime: 0n,
     uiFeeReceiver: commonParams.uiFeeReceiver,
-    autoCancel: !isTwap && autoCancelOrdersLimit > 0,
+    autoCancel: autoCancelOrdersLimit > 0,
   };
 
   return [buildDecreaseOrderPayload(decreaseOrderParams)];
+});
+
+const selectTradeboxSwapTwapParams = createSelector((q) => {
+  const commonParams = q(selectCommonOrderParams);
+  const fromTokenAddress = q(selectTradeboxFromTokenAddress);
+  const toTokenAddress = q(selectTradeboxToTokenAddress);
+  const swapAmounts = q(selectTradeboxSwapAmounts);
+  const { triggerRatio } = q(selectTradeboxTradeRatios);
+  const { isMarket } = q(selectTradeboxTradeFlags);
+  const allowedSlippage = q(selectTradeboxAllowedSlippage);
+  const duration = q(selectTradeboxTwapDuration);
+  const numberOfParts = q(selectTradeboxTwapNumberOfParts);
+
+  if (!commonParams || !fromTokenAddress || !toTokenAddress || !swapAmounts) {
+    return undefined;
+  }
+
+  if (!getIsValidTwapParams(duration, numberOfParts)) {
+    return undefined;
+  }
+
+  const orderType = isMarket ? OrderType.MarketSwap : OrderType.LimitSwap;
+
+  const swapOrderParams: SwapOrderParams = {
+    ...commonParams,
+    payTokenAddress: fromTokenAddress,
+    payTokenAmount: swapAmounts.amountIn,
+    receiveTokenAddress: toTokenAddress,
+    minOutputAmount: swapAmounts.minOutputAmount,
+    expectedOutputAmount: swapAmounts.amountOut,
+    swapPath: swapAmounts.swapStrategy.swapPathStats?.swapPath ?? [],
+    triggerRatio: triggerRatio?.ratio ?? undefined,
+    externalSwapQuote: undefined,
+    allowedSlippage: isMarket ? allowedSlippage : 0,
+    orderType,
+    validFromTime: 0n,
+    uiFeeReceiver: commonParams.uiFeeReceiver,
+  };
+
+  return buildTwapOrderPayload(swapOrderParams, {
+    duration,
+    numberOfParts,
+  });
+});
+
+const selectTradeboxIncreaseTwapParams = createSelector((q) => {
+  const commonParams = q(selectCommonOrderParams);
+  const fromTokenAddress = q(selectTradeboxFromTokenAddress);
+  const indexTokenAddress = q(selectTradeboxToTokenAddress);
+  const marketAddress = q(selectTradeboxMarketAddress);
+  const collateralTokenAddress = q(selectTradeboxCollateralTokenAddress);
+  const increaseAmounts = q(selectTradeboxIncreasePositionAmounts);
+  const { isLimit, isLong, isMarket } = q(selectTradeboxTradeFlags);
+  const allowedSlippage = q(selectTradeboxAllowedSlippage);
+  const triggerPrice = q(selectTradeboxTriggerPrice);
+  const duration = q(selectTradeboxTwapDuration);
+  const numberOfParts = q(selectTradeboxTwapNumberOfParts);
+
+  if (
+    !commonParams ||
+    !fromTokenAddress ||
+    !marketAddress ||
+    !indexTokenAddress ||
+    !collateralTokenAddress ||
+    !increaseAmounts
+  ) {
+    return undefined;
+  }
+
+  if (!getIsValidTwapParams(duration, numberOfParts)) {
+    return undefined;
+  }
+
+  const orderType = increaseAmounts.limitOrderType ?? OrderType.MarketIncrease;
+
+  const increaseOrderParams: IncreasePositionOrderParams = {
+    ...commonParams,
+    payTokenAddress: fromTokenAddress,
+    payTokenAmount: increaseAmounts.initialCollateralAmount,
+    collateralTokenAddress: collateralTokenAddress,
+    swapPath: increaseAmounts.swapStrategy.swapPathStats?.swapPath ?? [],
+    externalSwapQuote: undefined,
+    sizeDeltaUsd: increaseAmounts.sizeDeltaUsd,
+    sizeDeltaInTokens: increaseAmounts.sizeDeltaInTokens,
+    collateralDeltaAmount: increaseAmounts.collateralDeltaAmount,
+    acceptablePrice: increaseAmounts.acceptablePrice,
+    triggerPrice: isLimit ? triggerPrice : undefined,
+    orderType,
+    isLong,
+    marketAddress,
+    indexTokenAddress,
+    allowedSlippage: isMarket ? allowedSlippage : 0,
+    validFromTime: 0n,
+    uiFeeReceiver: commonParams.uiFeeReceiver,
+  };
+
+  return buildTwapOrderPayload(increaseOrderParams, {
+    duration,
+    numberOfParts,
+  });
+});
+
+const selectTradeboxDecreaseTwapParams = createSelector((q) => {
+  const commonParams = q(selectCommonOrderParams);
+  const marketInfo = q(selectTradeboxMarketInfo);
+  const collateralTokenAddress: string | undefined = q(selectTradeboxCollateralTokenAddress);
+  const decreaseAmounts = q(selectTradeboxDecreasePositionAmounts);
+  const { isLong } = q(selectTradeboxTradeFlags);
+  const duration = q(selectTradeboxTwapDuration);
+  const numberOfParts = q(selectTradeboxTwapNumberOfParts);
+
+  if (
+    !commonParams ||
+    !marketInfo ||
+    !collateralTokenAddress ||
+    !decreaseAmounts ||
+    !decreaseAmounts.triggerOrderType
+  ) {
+    return undefined;
+  }
+
+  if (!getIsValidTwapParams(duration, numberOfParts)) {
+    return undefined;
+  }
+
+  const decreaseOrderParams: DecreasePositionOrderParams = {
+    ...commonParams,
+    orderType: decreaseAmounts.triggerOrderType,
+    marketAddress: marketInfo.marketTokenAddress,
+    indexTokenAddress: marketInfo.indexToken.address,
+    collateralTokenAddress: collateralTokenAddress,
+    collateralDeltaAmount: decreaseAmounts.collateralDeltaAmount ?? 0n,
+    receiveTokenAddress: collateralTokenAddress,
+    swapPath: [],
+    sizeDeltaUsd: decreaseAmounts.sizeDeltaUsd,
+    sizeDeltaInTokens: decreaseAmounts.sizeDeltaInTokens,
+    triggerPrice: decreaseAmounts.triggerPrice,
+    acceptablePrice: decreaseAmounts.acceptablePrice,
+    decreasePositionSwapType: decreaseAmounts.decreaseSwapType,
+    externalSwapQuote: undefined,
+    allowedSlippage: 0,
+    minOutputUsd: 0n,
+    isLong,
+    validFromTime: 0n,
+    uiFeeReceiver: commonParams.uiFeeReceiver,
+    autoCancel: false,
+  };
+
+  return buildTwapOrderPayload(decreaseOrderParams, {
+    duration,
+    numberOfParts,
+  });
 });

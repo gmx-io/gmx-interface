@@ -136,6 +136,7 @@ export function getPendingMockPosition(pendingUpdate: PendingPositionUpdate): Po
     pnl: 0n,
     traderDiscountAmount: 0n,
     pendingImpactAmount: 0n,
+    positionValueInUsd: 0n,
     data: "0x",
     isOpening: true,
     pendingUpdate: pendingUpdate,

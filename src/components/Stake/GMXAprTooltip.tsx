@@ -11,8 +11,8 @@ type Props = {
   isUserConnected?: boolean;
 };
 
-function renderEscrowedGMXApr(processedData) {
-  if (!processedData?.gmxAprForEsGmx || processedData.gmxAprForEsGmx <= 0) return;
+function renderEscrowedGMXApr(processedData: StakingProcessedData | undefined) {
+  if (processedData?.gmxAprForEsGmx === undefined || processedData.gmxAprForEsGmx <= 0) return;
   return (
     <StatsTooltipRow
       label={t`Escrowed GMX APR`}

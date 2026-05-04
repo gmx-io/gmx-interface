@@ -81,6 +81,11 @@ export function mockMarketsInfoData(
       maxOpenInterestLong: expandDecimals(5, 29),
       maxOpenInterestShort: expandDecimals(5, 29),
 
+      maxCollateralSumLongTokenLong: 0n,
+      maxCollateralSumLongTokenShort: 0n,
+      maxCollateralSumShortTokenLong: 0n,
+      maxCollateralSumShortTokenShort: 0n,
+
       positionImpactPoolAmount: usdToToken(1000, indexToken),
       positionImpactPoolDistributionRate: 0n,
       minPositionImpactPoolAmount: 0n,
@@ -123,9 +128,12 @@ export function mockMarketsInfoData(
       fundingFactor: 0n,
       fundingExponentFactor: 0n,
       fundingIncreaseFactorPerSecond: 0n,
+      minFundingIncreaseRatePerSecond: 0n,
       fundingDecreaseFactorPerSecond: 0n,
-      maxFundingFactorPerSecond: 0n,
-      minFundingFactorPerSecond: 0n,
+      maxFundingFactorPerSecondLong: 0n,
+      maxFundingFactorPerSecondShort: 0n,
+      minFundingFactorPerSecondLong: 0n,
+      minFundingFactorPerSecondShort: 0n,
       thresholdForDecreaseFunding: 0n,
       thresholdForStableFunding: 0n,
 
@@ -149,6 +157,10 @@ export function mockMarketsInfoData(
 
       maxPnlFactorForTradersLong: expandDecimals(1, 30),
       maxPnlFactorForTradersShort: expandDecimals(1, 30),
+      maxPnlFactorForDepositsLong: expandDecimals(1, 30),
+      maxPnlFactorForDepositsShort: expandDecimals(1, 30),
+      maxPnlFactorForWithdrawalsLong: expandDecimals(1, 30),
+      maxPnlFactorForWithdrawalsShort: expandDecimals(1, 30),
 
       data: "",
 

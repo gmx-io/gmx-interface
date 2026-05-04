@@ -10,6 +10,9 @@ export enum TradeActionType {
   OrderFrozen = "OrderFrozen",
 }
 
+/** For market orders this means expired (keeper cancelled after requestExpirationTime). */
+export const USER_INITIATED_CANCEL = "USER_INITIATED_CANCEL";
+
 export type PositionTradeAction = {
   type: "position";
   id: string;

@@ -53,16 +53,18 @@ export function PoolCard({ name, apr, description, iconComponent, coinImage, onC
               <Trans>Rewards</Trans>
             </p>
             {isRewardsSuspended ? (
-              <TooltipWithPortal
-                variant="none"
-                tooltipClassName="!text-white"
-                handle={
-                  <p className="leading-heading-lg text-[28px] font-medium sm:text-[40px] sm:-tracking-[2px]">
-                    {aprText}
-                  </p>
-                }
-                content={t`27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your share is based on staking power (duration × amount staked).`}
-              />
+              <div onClick={(e) => e.stopPropagation()}>
+                <TooltipWithPortal
+                  variant="none"
+                  tooltipClassName="!rounded-16 !p-20 !text-14 !font-medium !leading-[1.36] !tracking-[-0.448px] !text-white ![background:#3C4067] [&>svg]:!fill-[#3C4067]"
+                  handle={
+                    <p className="leading-heading-lg text-[28px] font-medium underline decoration-[#a4c3f9] decoration-dotted decoration-[4%] sm:text-[40px] sm:-tracking-[2px]">
+                      {aprText}
+                    </p>
+                  }
+                  content={t`27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your share is based on staking power (duration × amount staked).`}
+                />
+              </div>
             ) : (
               <p className="leading-heading-lg text-[28px] font-medium sm:text-[50px] sm:-tracking-[2px]">
                 {aprText}{" "}

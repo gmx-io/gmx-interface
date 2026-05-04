@@ -15,7 +15,7 @@ type Props<V extends string | number> = {
   commonOptionClassname?: string;
   onOptionClick: ((value: V) => void) | undefined;
   qa?: string;
-  type?: "inline" | "block" | "inline-primary" | "pills";
+  type?: "inline" | "block" | "inline-primary";
 };
 
 export default function NestedTab<V extends string | number>({
@@ -24,7 +24,7 @@ export default function NestedTab<V extends string | number>({
   commonOptionClassname,
   onOptionClick,
   qa,
-  type,
+  type = "block",
 }: Props<V>) {
   const { refs, floatingStyles } = useFloating({
     middleware: [flip(), shift()],
@@ -36,26 +36,24 @@ export default function NestedTab<V extends string | number>({
 
   const label = selectedSubOption ? selectedSubOption.label || selectedSubOption.value : t`More`;
 
-  const isPills = type === "pills";
-
   return (
     <Menu as="div" className="flex items-center justify-center gap-8">
       <Menu.Button as="div" ref={refs.setReference} data-qa={qa ? `${qa}-tab-${option.label}` : undefined}>
-        {isPills ? (
+        {type === "block" ? (
           <button
             type="button"
             className={cx(
-              "text-body-medium flex items-center gap-4 rounded-full border px-12 py-6 font-medium transition-colors",
+              `-mb-[0.5px] flex items-center justify-center gap-4 border-b-[2.5px] border-b-[transparent] px-20 pb-9 pt-11
+              font-medium hover:text-typography-primary`,
               commonOptionClassname,
               {
-                "border-slate-600 bg-slate-800 text-typography-primary": selectedSubOption,
-                "bg-transparent border-slate-600 text-typography-secondary hover:text-typography-primary":
-                  !selectedSubOption,
+                "border-b-blue-300 !text-typography-primary": selectedSubOption,
+                "text-typography-secondary": !selectedSubOption,
               }
             )}
           >
             <span>{label}</span>
-            <ChevronDownIcon className="size-16" />
+            <ChevronDownIcon className="size-16 px-2 text-typography-secondary" />
           </button>
         ) : (
           <Button
@@ -64,7 +62,7 @@ export default function NestedTab<V extends string | number>({
             className={cx({ "!bg-button-secondary !text-typography-primary": selectedSubOption })}
           >
             <span>{label}</span>
-            <ChevronDownIcon className="mt-1 size-16" />
+            <ChevronDownIcon className="mt-1 size-16 px-2 text-typography-secondary" />
           </Button>
         )}
       </Menu.Button>
@@ -82,8 +80,7 @@ export default function NestedTab<V extends string | number>({
                 key={subOpt.value}
                 className={cx(
                   "text-body-medium cursor-pointer p-8 font-medium text-typography-secondary hover:bg-fill-surfaceHover hover:text-typography-primary",
-                  { "text-typography-primary": subOpt.value === selectedValue },
-                  commonOptionClassname
+                  { "text-typography-primary": subOpt.value === selectedValue }
                 )}
                 onClick={() => onOptionClick?.(subOpt.value)}
               >

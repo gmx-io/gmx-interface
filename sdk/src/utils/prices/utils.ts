@@ -52,6 +52,7 @@ export function getAcceptablePriceInfo(p: {
   indexPrice: bigint;
   sizeDeltaUsd: bigint;
   maxNegativePriceImpactBps?: bigint;
+  sizeDeltaInTokens?: bigint;
 }) {
   const { marketInfo, isIncrease, isLong, indexPrice, sizeDeltaUsd, maxNegativePriceImpactBps } = p;
   const { indexToken } = marketInfo;
@@ -101,6 +102,7 @@ export function getAcceptablePriceInfo(p: {
     {
       fallbackToZero: !isIncrease,
       shouldCapNegativeImpact: false,
+      sizeDeltaInTokens: p.sizeDeltaInTokens,
     }
   );
 
@@ -134,6 +136,7 @@ export function getAcceptablePriceInfo(p: {
     {
       fallbackToZero: !isIncrease,
       shouldCapNegativeImpact: false,
+      sizeDeltaInTokens: p.sizeDeltaInTokens,
     }
   );
 

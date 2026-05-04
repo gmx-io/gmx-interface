@@ -2,7 +2,7 @@ import { USD_DECIMALS } from "utils/numbers";
 import { periodToSeconds } from "utils/time";
 import { Token } from "utils/tokens/types";
 
-import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, ContractsChainId } from "./chains";
+import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH, ContractsChainId } from "./chains";
 import { getTokenBySymbol, getWrappedToken } from "./tokens";
 
 export const SUBACCOUNT_MESSAGE =
@@ -21,7 +21,8 @@ export const GELATO_API_KEYS: Partial<Record<ContractsChainId, string>> = {
   [ARBITRUM]: "6dE6kOa9pc1ap4dQQC2iaK9i6nBFp8eYxQlm00VreWc_",
   [AVALANCHE]: "FalsQh9loL6V0rwPy4gWgnQPR6uTHfWjSVT2qlTzUq4_",
   [BOTANIX]: "s5GgkfX7dvd_2uYqsRSCjzMekUrXh0dibUvfLab1Anc_",
-  [ARBITRUM_SEPOLIA]: "test_XXlYFJm_1xyl5LTm6t2NcxR0Oyikc4m1xPd4k6hXXhY_",
+  [ARBITRUM_SEPOLIA]: "nx5nyAg4h2kI_64YtOuPt7LSPDEXo4u8eJY_idF9xDw_",
+  [MEGAETH]: "MDPcJgFTWgc8ifFElmv_vHLaioG_h8GU2ZDju1eyQ4Y_",
 };
 
 export const EXPRESS_EXTRA_EXECUTION_FEE_BUFFER_BPS = 1000;
@@ -46,6 +47,7 @@ const GAS_PAYMENT_TOKENS: Record<ContractsChainId, string[]> = {
     getTokenBySymbol(ARBITRUM_SEPOLIA, "WETH").address,
   ],
   [BOTANIX]: [getTokenBySymbol(BOTANIX, "pBTC").address],
+  [MEGAETH]: [getTokenBySymbol(MEGAETH, "USDM").address, getTokenBySymbol(MEGAETH, "WETH").address],
 };
 
 export function getGasPaymentTokens(chainId: number): string[] {
