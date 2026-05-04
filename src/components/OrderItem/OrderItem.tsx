@@ -10,6 +10,7 @@ import {
   selectChainId,
   selectMarketsInfoData,
   selectOracleSettings,
+  selectPositionsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxSelectedOrderKey } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -32,12 +33,13 @@ import {
   isTwapOrder,
 } from "domain/synthetics/orders";
 import { useDisabledCancelMarketOrderMessage } from "domain/synthetics/orders/useDisabledCancelMarketOrderMessage";
-import { PositionsInfoData, getNameByOrderType } from "domain/synthetics/positions";
+import { PositionsInfoData, getNameByOrderType, getPositionKey } from "domain/synthetics/positions";
 import { convertToTokenAmount, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
 import { TokensRatioAndSlippage } from "domain/tokens";
 import { isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
 import { calculateDisplayDecimals, formatAmount, formatBalanceAmount, formatUsd } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import { useIsTruncated } from "lib/useIsTruncated";
 import { getWrappedToken } from "sdk/configs/tokens";
 
@@ -127,6 +129,7 @@ function OrderSize({
   className?: string;
 }) {
   const chainId = useSelector(selectChainId);
+  const positionsInfoData = useSelector(selectPositionsInfoData);
 
   if (isSwapOrderType(order.orderType)) {
     if (showDebugValues) {
@@ -163,6 +166,19 @@ function OrderSize({
 
   const wrappedToken = getWrappedToken(chainId);
 
+  const position = getByKey(
+    positionsInfoData,
+    getPositionKey(
+      positionOrder.account,
+      positionOrder.marketAddress,
+      positionOrder.initialCollateralTokenAddress,
+      positionOrder.isLong
+    )
+  );
+  const isFullClose =
+    isTriggerDecreaseOrderType(positionOrder.orderType) &&
+    isFullPositionCloseSizeDeltaUsd(positionOrder.sizeDeltaUsd, position?.sizeInUsd);
+
   function getCollateralLabel() {
     if (isDecreaseOrderType(positionOrder.orderType)) {
       return t`Margin delta`;
@@ -171,8 +187,11 @@ function OrderSize({
   }
 
   function getCollateralText() {
+    const sourceAmount =
+      isFullClose && position ? position.collateralAmount : positionOrder.initialCollateralDeltaAmount;
+
     const collateralUsd = convertToUsd(
-      positionOrder.initialCollateralDeltaAmount,
+      sourceAmount,
       positionOrder.initialCollateralToken.decimals,
       positionOrder.initialCollateralToken.prices.minPrice
     )!;
