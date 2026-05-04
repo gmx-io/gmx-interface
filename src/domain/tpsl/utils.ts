@@ -23,6 +23,10 @@ export function isFullPositionCloseSizeDeltaUsd(sizeDeltaUsd: bigint | undefined
 }
 
 export function getPositionCloseSizeDeltaUsdForDisplay(sizeDeltaUsd: bigint, positionSizeUsd?: bigint) {
+  if (sizeDeltaUsd === FULL_POSITION_CLOSE_SIZE_DELTA_USD) {
+    return positionSizeUsd ?? 0n;
+  }
+
   return isFullPositionCloseSizeDeltaUsd(sizeDeltaUsd, positionSizeUsd) && positionSizeUsd !== undefined
     ? positionSizeUsd
     : sizeDeltaUsd;

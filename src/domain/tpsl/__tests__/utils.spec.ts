@@ -26,4 +26,9 @@ describe("TPSL full-position close utilities", () => {
     expect(isFullPositionCloseSizeDeltaUsd(expandDecimals(400, 30), positionSizeUsd)).toBe(false);
     expect(getPositionCloseSizeDeltaUsdForPayload(expandDecimals(400, 30), false)).toBe(expandDecimals(400, 30));
   });
+
+  it("never returns the sentinel from the display helper", () => {
+    expect(getPositionCloseSizeDeltaUsdForDisplay(MaxUint256, undefined)).toBe(0n);
+    expect(getPositionCloseSizeDeltaUsdForDisplay(MaxUint256, 0n)).toBe(0n);
+  });
 });

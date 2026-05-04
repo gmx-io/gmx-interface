@@ -4,7 +4,10 @@ import { useCallback, useMemo } from "react";
 
 import { useEditingOrderState } from "context/SyntheticsStateContext/hooks/orderEditorHooks";
 import { useCancelOrder, usePositionOrdersWithErrors } from "context/SyntheticsStateContext/hooks/orderHooks";
-import { selectOracleSettings } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectOracleSettings,
+  selectPositionsInfoData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   OrderErrors,
@@ -15,9 +18,10 @@ import {
   isTwapOrder,
 } from "domain/synthetics/orders";
 import { useDisabledCancelMarketOrderMessage } from "domain/synthetics/orders/useDisabledCancelMarketOrderMessage";
-import { getNameByOrderType } from "domain/synthetics/positions";
+import { getNameByOrderType, getPositionKey } from "domain/synthetics/positions";
 import { isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
 import { calculateDisplayDecimals, formatUsd } from "lib/numbers";
+import { getByKey } from "lib/objects";
 
 import Button from "components/Button/Button";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -179,11 +183,17 @@ function PositionItemOrder({
 }
 
 function PositionItemOrderText({ order }: { order: PositionOrderInfo }) {
+  const positionsInfoData = useSelector(selectPositionsInfoData);
   const triggerThresholdType = order.triggerThresholdType;
   const isIncrease = isIncreaseOrderType(order.orderType);
   const isTwap = isTwapOrder(order);
+  const position = getByKey(
+    positionsInfoData,
+    getPositionKey(order.account, order.marketAddress, order.targetCollateralToken.address, order.isLong)
+  );
   const isFullClose =
-    isTriggerDecreaseOrderType(order.orderType) && isFullPositionCloseSizeDeltaUsd(order.sizeDeltaUsd);
+    isTriggerDecreaseOrderType(order.orderType) &&
+    isFullPositionCloseSizeDeltaUsd(order.sizeDeltaUsd, position?.sizeInUsd);
 
   return (
     <div key={order.key} className="text-start">

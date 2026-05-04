@@ -1618,6 +1618,10 @@ export const selectTradeboxSelectedPosition = createSelector((q) => {
   return getByKey(positionsInfoData, selectedPositionKey);
 });
 
+export const selectTradeboxSelectedPositionSizeInUsd = createSelector((q) => {
+  return q(selectTradeboxSelectedPosition)?.sizeInUsd;
+});
+
 const selectTradeboxExistingOrders = createSelector((q) => {
   const ordersInfoData = q(selectOrdersInfoData);
 

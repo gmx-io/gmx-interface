@@ -21,6 +21,7 @@ import { selectSelectedMarketVisualMultiplier } from "../shared/marketSelectors"
 import {
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxSelectedPosition,
+  selectTradeboxSelectedPositionSizeInUsd,
   selectTradeboxTradeFlags,
 } from "../tradeboxSelectors";
 
@@ -133,7 +134,7 @@ export const selectTradeboxSidecarOrdersTotalSizeUsd = createSelector((q) => {
 export const selectTradeboxSidecarOrdersExistingSlEntries = createSelector((q) => {
   const existingSlOrders = q(selectTradeboxExistingSlOrders);
   const { isLong } = q(selectTradeboxTradeFlags);
-  const position = q(selectTradeboxSelectedPosition);
+  const positionSizeUsd = q(selectTradeboxSelectedPositionSizeInUsd);
 
   const visualMultiplier = q(selectSelectedMarketVisualMultiplier);
 
@@ -141,7 +142,7 @@ export const selectTradeboxSidecarOrdersExistingSlEntries = createSelector((q) =
     positionOrders: existingSlOrders,
     sort: isLong ? "desc" : "asc",
     visualMultiplier,
-    positionSizeUsd: position?.sizeInUsd,
+    positionSizeUsd,
     onlyFullPositionClose: true,
   });
 });
@@ -149,7 +150,7 @@ export const selectTradeboxSidecarOrdersExistingSlEntries = createSelector((q) =
 export const selectTradeboxSidecarOrdersExistingTpEntries = createSelector((q) => {
   const existingTpOrders = q(selectTradeboxExistingTpOrders);
   const { isLong } = q(selectTradeboxTradeFlags);
-  const position = q(selectTradeboxSelectedPosition);
+  const positionSizeUsd = q(selectTradeboxSelectedPositionSizeInUsd);
 
   const visualMultiplier = q(selectSelectedMarketVisualMultiplier);
 
@@ -157,7 +158,7 @@ export const selectTradeboxSidecarOrdersExistingTpEntries = createSelector((q) =
     positionOrders: existingTpOrders,
     sort: isLong ? "asc" : "desc",
     visualMultiplier,
-    positionSizeUsd: position?.sizeInUsd,
+    positionSizeUsd,
     onlyFullPositionClose: true,
   });
 });

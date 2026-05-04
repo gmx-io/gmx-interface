@@ -171,7 +171,7 @@ function OrderSize({
     getPositionKey(
       positionOrder.account,
       positionOrder.marketAddress,
-      positionOrder.initialCollateralTokenAddress,
+      positionOrder.targetCollateralToken.address,
       positionOrder.isLong
     )
   );
@@ -187,14 +187,11 @@ function OrderSize({
   }
 
   function getCollateralText() {
-    const sourceAmount =
-      isFullClose && position ? position.collateralAmount : positionOrder.initialCollateralDeltaAmount;
+    const useLivePositionMargin = isFullClose && position;
+    const sourceAmount = useLivePositionMargin ? position.collateralAmount : positionOrder.initialCollateralDeltaAmount;
+    const sourceToken = useLivePositionMargin ? position.collateralToken : positionOrder.initialCollateralToken;
 
-    const collateralUsd = convertToUsd(
-      sourceAmount,
-      positionOrder.initialCollateralToken.decimals,
-      positionOrder.initialCollateralToken.prices.minPrice
-    )!;
+    const collateralUsd = convertToUsd(sourceAmount, sourceToken.decimals, sourceToken.prices.minPrice)!;
 
     const targetCollateralAmount = convertToTokenAmount(
       collateralUsd,
@@ -218,7 +215,7 @@ function OrderSize({
 
   return (
     <TooltipWithPortal
-      handle={<SizeWithIcon order={order} className={className} />}
+      handle={<SizeWithIcon order={order} className={className} positionSizeUsd={position?.sizeInUsd} />}
       position="bottom-start"
       tooltipClassName={isTwapOrder(order) ? "!p-0" : undefined}
       maxAllowedWidth={400}
@@ -271,7 +268,15 @@ export function TwapOrderProgress({ order, className }: { order: TwapOrderInfo; 
   return <span className={className}>{content}</span>;
 }
 
-function SizeWithIcon({ order, className }: { order: OrderInfo; className?: string }) {
+function SizeWithIcon({
+  order,
+  className,
+  positionSizeUsd,
+}: {
+  order: OrderInfo;
+  className?: string;
+  positionSizeUsd?: bigint;
+}) {
   if (isSwapOrderType(order.orderType)) {
     const { initialCollateralToken, targetCollateralToken, minOutputAmount, initialCollateralDeltaAmount } = order;
 
@@ -324,7 +329,7 @@ function SizeWithIcon({ order, className }: { order: OrderInfo; className?: stri
   }
 
   const { sizeDeltaUsd } = order;
-  if (isTriggerDecreaseOrderType(order.orderType) && isFullPositionCloseSizeDeltaUsd(sizeDeltaUsd)) {
+  if (isTriggerDecreaseOrderType(order.orderType) && isFullPositionCloseSizeDeltaUsd(sizeDeltaUsd, positionSizeUsd)) {
     return (
       <span className={className}>
         <Trans>Full position close</Trans>

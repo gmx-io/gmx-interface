@@ -379,7 +379,7 @@ export function OrderEditor(p: Props) {
       const nextSizeDeltaUsd = sizeDeltaUsd ?? positionOrder.sizeDeltaUsd;
       const shouldPreserveFullCloseSize =
         isTriggerDecrease &&
-        isFullPositionCloseSizeDeltaUsd(positionOrder.sizeDeltaUsd) &&
+        isFullPositionCloseSizeDeltaUsd(positionOrder.sizeDeltaUsd, existingPosition?.sizeInUsd) &&
         existingPosition !== undefined &&
         nextSizeDeltaUsd >= existingPosition.sizeInUsd;
 
@@ -564,6 +564,17 @@ export function OrderEditor(p: Props) {
       };
     }
 
+    if (
+      isTriggerDecrease &&
+      isFullPositionCloseSizeDeltaUsd((p.order as PositionOrderInfo).sizeDeltaUsd) &&
+      !existingPosition
+    ) {
+      return {
+        text: t`Loading position...`,
+        disabled: true,
+      };
+    }
+
     if (isMaxLeverageError) {
       return {
         text: t`Max leverage exceeded`,
@@ -603,10 +614,11 @@ export function OrderEditor(p: Props) {
     error,
     hasOutdatedUi,
     isMaxLeverageError,
-    p.order.orderType,
-    p.order.isTwap,
+    p.order,
     onSubmit,
     detectAndSetAvailableMaxLeverage,
+    isTriggerDecrease,
+    existingPosition,
   ]);
 
   useKey(
