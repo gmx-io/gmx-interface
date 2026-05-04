@@ -65,6 +65,8 @@ export function TradeboxMarginFields({
   const { toTokenAddress, marketAddress } = useSelector(selectTradeboxState);
 
   const prevSizeSyncContextRef = useRef<string>();
+  // null sentinel = "uninitialized"; bigint | undefined = previously seen value (undefined means no triggerPrice)
+  const prevTriggerPriceRef = useRef<bigint | undefined | null>(null);
   const shouldForceSizeUsdSyncRef = useRef(false);
 
   const toToken = getByKey(tokensData, toTokenAddress);
@@ -124,6 +126,30 @@ export function TradeboxMarginFields({
       prevSizeSyncContextRef.current = nextContext;
     }
   }, [marketAddress, toTokenAddress]);
+
+  // For limit orders in USD mode, the user-typed USD is the anchor: when the
+  // trigger price changes, re-derive toTokenInputValue from sizeInputValue so
+  // sizeDeltaUsd (which uses triggerPrice) stays consistent with the typed USD.
+  // Without this, leverage = sizeDeltaUsd / collateralUsd would diverge from
+  // the displayed Size USD whenever triggerPrice differs from the price used
+  // when the user originally typed the size.
+  useEffect(() => {
+    if (!isLimit) {
+      prevTriggerPriceRef.current = triggerPrice;
+      return;
+    }
+
+    if (prevTriggerPriceRef.current === null) {
+      prevTriggerPriceRef.current = triggerPrice;
+      return;
+    }
+
+    if (prevTriggerPriceRef.current !== triggerPrice && sizeDisplayMode === "usd") {
+      shouldForceSizeUsdSyncRef.current = true;
+    }
+
+    prevTriggerPriceRef.current = triggerPrice;
+  }, [isLimit, triggerPrice, sizeDisplayMode]);
 
   useEffect(() => {
     if (sizeDisplayMode !== "usd" || !canConvert) return;

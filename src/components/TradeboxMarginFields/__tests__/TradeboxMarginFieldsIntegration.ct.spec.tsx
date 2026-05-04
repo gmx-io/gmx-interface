@@ -241,6 +241,32 @@ test.describe("TradeboxMarginFields Integration", () => {
       const priceInput = page.locator(getDataQALocator("trigger-price-input"));
       await expect(priceInput).toHaveValue("1800");
     });
+
+    // FEDEV-3706: with manual leverage off, the displayed leverage must be
+    // derived from the displayed size/margin. Re-deriving toTokenInputValue
+    // from sizeInputValue (the typed USD value) on triggerPrice change is what
+    // keeps sizeDeltaUsd consistent with the user-facing Size USD.
+    test("limit order: typing size before limit price re-derives token amount on limit change", async ({
+      mount,
+      page,
+    }) => {
+      await mount(<IntegrationStory tradeMode={TradeMode.Limit} initialFromValue="" initialToValue="" />);
+
+      // Type Size = 4000 USD with no triggerPrice yet (mark price = $2000)
+      // Expected token amount at this stage: 4000 / 2000 = 2 ETH
+      const sizeInput = page.locator(getDataQALocator("position-size-input"));
+      await sizeInput.fill("4000");
+      await expect(page.getByTestId("to-value")).toHaveText("2");
+
+      // Then type Limit price = $1000 — token amount should now reflect typed Size
+      // at the new conversion price: 4000 / 1000 = 4 ETH (anchor is the typed USD)
+      const priceInput = page.locator(getDataQALocator("trigger-price-input"));
+      await priceInput.fill("1000");
+
+      await expect(page.getByTestId("to-value")).toHaveText("4");
+      // Size USD input stays at user-typed value
+      await expect(sizeInput).toHaveValue("4000");
+    });
   });
 
   test.describe("Passive USD sync", () => {
