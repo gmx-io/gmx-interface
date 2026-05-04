@@ -3,9 +3,16 @@ import { t } from "@lingui/macro";
 
 import { isBoundaryAcceptablePrice } from "domain/prices";
 import { getMarketFullName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { OrderType, isDecreaseOrderType, isIncreaseOrderType, isLiquidationOrderType } from "domain/synthetics/orders";
+import {
+  OrderType,
+  isDecreaseOrderType,
+  isIncreaseOrderType,
+  isLiquidationOrderType,
+  isTriggerDecreaseOrderType,
+} from "domain/synthetics/orders";
 import { convertToUsd, parseContractPrice } from "domain/synthetics/tokens";
 import { getShouldUseMaxPrice } from "domain/synthetics/trade";
+import { isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
 import { tryDecodeCustomError } from "lib/errors";
 import {
   BN_NEGATIVE_ONE,
@@ -106,9 +113,13 @@ export const formatPositionMessage = (
     triggerPriceInequality = INEQUALITY_GT;
   }
 
-  const sizeDeltaText = formatUsd(sizeDeltaUsd * (isIncrease ? BN_ONE : BN_NEGATIVE_ONE), {
-    displayPlus: true,
-  })!;
+  const isFullClose = isTriggerDecreaseOrderType(ot) && isFullPositionCloseSizeDeltaUsd(sizeDeltaUsd);
+
+  const sizeDeltaText = isFullClose
+    ? t`Full position close`
+    : formatUsd(sizeDeltaUsd * (isIncrease ? BN_ONE : BN_NEGATIVE_ONE), {
+        displayPlus: true,
+      })!;
 
   const indexName = getMarketIndexName({
     indexToken: tradeAction.indexToken,
