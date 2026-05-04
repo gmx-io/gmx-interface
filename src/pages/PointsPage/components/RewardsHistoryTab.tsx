@@ -30,9 +30,9 @@ const PER_PAGE = 16;
 const GMX_DECIMALS = 18;
 const GMX_DECIMALS_FACTOR = 10n ** 18n;
 
-function RewardsHistoryMobileSkeletonRow() {
+function RewardsHistoryMobileSkeletonRow({ invisible }: { invisible?: boolean }) {
   return (
-    <TableTr>
+    <tr className={invisible ? undefined : "odd:bg-fill-surfaceElevated50"}>
       <TableTd className="!py-12">
         <Skeleton width={120} inline />
       </TableTd>
@@ -42,13 +42,13 @@ function RewardsHistoryMobileSkeletonRow() {
       <TableTd className="!py-12">
         <Skeleton width={16} inline />
       </TableTd>
-    </TableTr>
+    </tr>
   );
 }
 
-function RewardsHistoryDesktopSkeletonRow() {
+function RewardsHistoryDesktopSkeletonRow({ invisible }: { invisible?: boolean }) {
   return (
-    <TableTr>
+    <tr className={invisible ? undefined : "odd:bg-fill-surfaceElevated50"}>
       <TableTd className="!py-12">
         <Skeleton width={120} inline />
       </TableTd>
@@ -73,7 +73,7 @@ function RewardsHistoryDesktopSkeletonRow() {
       <TableTd className="!py-12">
         <Skeleton width={120} inline />
       </TableTd>
-    </TableTr>
+    </tr>
   );
 }
 

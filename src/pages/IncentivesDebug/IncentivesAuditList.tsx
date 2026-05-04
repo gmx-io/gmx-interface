@@ -23,9 +23,9 @@ import { SummaryCard } from "./SummaryCard";
 
 const PAGE_SIZE = 20;
 
-function IncentivesAuditSkeletonRow() {
+function IncentivesAuditSkeletonRow({ invisible }: { invisible?: boolean }) {
   return (
-    <TableTr>
+    <tr className={invisible ? undefined : "odd:bg-fill-surfaceElevated50"}>
       <TableTd padding="compact">
         <Skeleton width={140} inline />
       </TableTd>
@@ -62,7 +62,7 @@ function IncentivesAuditSkeletonRow() {
       <TableTd padding="compact">
         <Skeleton width={90} inline />
       </TableTd>
-    </TableTr>
+    </tr>
   );
 }
 

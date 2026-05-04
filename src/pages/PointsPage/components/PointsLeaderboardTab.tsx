@@ -35,9 +35,9 @@ const COL_SHARE: React.CSSProperties = { width: "8%" };
 const GMX_DECIMALS = 18;
 const GMX_DECIMALS_FACTOR = 10n ** 18n;
 
-function PointsLeaderboardSkeletonRow() {
+function PointsLeaderboardSkeletonRow({ invisible }: { invisible?: boolean }) {
   return (
-    <TableTr>
+    <tr className={invisible ? undefined : "odd:bg-fill-surfaceElevated50"}>
       <TableTd className="!py-10">
         <Skeleton width={40} inline />
       </TableTd>
@@ -59,7 +59,7 @@ function PointsLeaderboardSkeletonRow() {
       <TableTd className="!py-10">
         <Skeleton width={56} inline />
       </TableTd>
-    </TableTr>
+    </tr>
   );
 }
 
