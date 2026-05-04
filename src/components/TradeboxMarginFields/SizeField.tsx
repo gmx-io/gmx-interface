@@ -3,6 +3,7 @@ import { ChangeEvent, useMemo } from "react";
 
 import { TokenData } from "domain/synthetics/tokens";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
+import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 
 import { TradeInputField, DisplayMode } from "./TradeInputField";
 
@@ -46,6 +47,7 @@ export function SizeField({
       label={<Trans>Size</Trans>}
       alternateValue={alternateValue}
       tokenSymbol={indexToken?.symbol}
+      tokenLabel={indexToken ? `${getTokenVisualMultiplier(indexToken)}${indexToken.symbol}` : undefined}
       displayMode={displayMode}
       onDisplayModeChange={onDisplayModeChange}
       inputValue={inputValue}
