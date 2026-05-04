@@ -392,6 +392,17 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const prevIsISwap = usePrevious(isSwap);
 
+  // Tracks the last focusedInput / input values seen by updateInputAmounts so we
+  // can skip the backfill when the user only changed focus (clicking/tabbing
+  // between Margin and Size). Without this guard, a focus toggle alone causes
+  // the leverage strategy selector to switch direction (leverageByCollateral ↔
+  // leverageBySize), which feeds the previously-backfilled value through the
+  // opposite formula — re-applying fee math each toggle and inflating both
+  // values (FEDEV-3785).
+  const prevFocusedInputRef = useRef(focusedInput);
+  const prevFromTokenInputValueRef = useRef(fromTokenInputValue);
+  const prevToTokenInputValueRef = useRef(toTokenInputValue);
+
   useEffect(
     function updateInputAmounts() {
       if (!fromToken || !toToken || (!isSwap && !isIncrease)) {
@@ -403,6 +414,26 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         setFocusedInput("from");
 
         setFromTokenInputValue("", true);
+        prevFocusedInputRef.current = "from";
+        prevFromTokenInputValueRef.current = "";
+        prevToTokenInputValueRef.current = toTokenInputValue;
+        return;
+      }
+
+      // FEDEV-3785: skip backfill when only focus changed. Mere focus toggles
+      // must not mutate the inputs — the backfill should run on actual user
+      // edits (typing, slider, max) and on external recomputes (price,
+      // leverage, market). Those all change either an input value or a
+      // non-focus dep that re-renders this effect.
+      const focusChanged = prevFocusedInputRef.current !== focusedInput;
+      const fromInputChanged = prevFromTokenInputValueRef.current !== fromTokenInputValue;
+      const toInputChanged = prevToTokenInputValueRef.current !== toTokenInputValue;
+
+      prevFocusedInputRef.current = focusedInput;
+      prevFromTokenInputValueRef.current = fromTokenInputValue;
+      prevToTokenInputValueRef.current = toTokenInputValue;
+
+      if (focusChanged && !fromInputChanged && !toInputChanged) {
         return;
       }
 
@@ -448,6 +479,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       focusedInput,
       fromToken,
       fromTokenAmount,
+      fromTokenInputValue,
       increaseAmounts,
       isIncrease,
       isSwap,
@@ -457,6 +489,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       setToTokenInputValue,
       swapAmounts,
       toToken,
+      toTokenInputValue,
     ]
   );
 
