@@ -551,7 +551,6 @@ msgid "Image generation failed. Refresh and try again."
 msgstr ""
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
-#: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Unlock {tierName} status (+{multiplierLabel}) and earn up to ${rewardsEstimate} in additional trading rewards."
 msgstr ""
 
@@ -2433,6 +2432,10 @@ msgstr ""
 
 #: src/pages/Jobs/Jobs.tsx
 msgid "Job openings at GMX"
+msgstr ""
+
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+msgid "Net Position Fees (4mo)"
 msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
@@ -9339,6 +9342,10 @@ msgstr ""
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Unlock {tierName} status (+{multiplierLabel}) and save up to ${rewardsEstimate} in trading fees."
 msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx

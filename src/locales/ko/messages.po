@@ -551,7 +551,6 @@ msgid "Image generation failed. Refresh and try again."
 msgstr "이미지 생성에 실패했습니다. 새로고침 후 다시 시도하십시오."
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
-#: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Unlock {tierName} status (+{multiplierLabel}) and earn up to ${rewardsEstimate} in additional trading rewards."
 msgstr ""
 
@@ -2434,6 +2433,10 @@ msgstr "{orderTypeText} {0}을 {1}로"
 #: src/pages/Jobs/Jobs.tsx
 msgid "Job openings at GMX"
 msgstr "GMX 채용 공고"
+
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+msgid "Net Position Fees (4mo)"
+msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
@@ -9340,6 +9343,10 @@ msgstr "출금 시뮬레이션 오류"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims"
 msgstr "청구"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Unlock {tierName} status (+{multiplierLabel}) and save up to ${rewardsEstimate} in trading fees."
+msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx

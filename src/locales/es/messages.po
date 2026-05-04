@@ -551,7 +551,6 @@ msgid "Image generation failed. Refresh and try again."
 msgstr "La generación de la imagen ha fallado. Actualice la página e inténtelo de nuevo."
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
-#: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Unlock {tierName} status (+{multiplierLabel}) and earn up to ${rewardsEstimate} in additional trading rewards."
 msgstr ""
 
@@ -2434,6 +2433,10 @@ msgstr "{orderTypeText} {0} por {1}"
 #: src/pages/Jobs/Jobs.tsx
 msgid "Job openings at GMX"
 msgstr "Ofertas de empleo en GMX"
+
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+msgid "Net Position Fees (4mo)"
+msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
@@ -9340,6 +9343,10 @@ msgstr "Error simulando retiro"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims"
 msgstr "Reclamaciones"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Unlock {tierName} status (+{multiplierLabel}) and save up to ${rewardsEstimate} in trading fees."
+msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx

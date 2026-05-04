@@ -511,7 +511,7 @@ function StakingBanner({ config, walletGmx }: { config?: IncentivesConfig; walle
       </h3>
       <div className="flex items-start gap-4 text-13 font-medium text-typography-secondary">
         <Trans>
-          Unlock {tierName} status (+{multiplierLabel}) and earn up to ${rewardsEstimate} in additional trading rewards.
+          Unlock {tierName} status (+{multiplierLabel}) and save up to ${rewardsEstimate} in trading fees.
         </Trans>
       </div>
       <Link
@@ -599,10 +599,8 @@ function StakingProgressBar({
             handle={
               <div
                 className={cx(
-                  "h-6 w-full rounded-8 transition-[background-color,transform] duration-150 ease-out group-hover/segment:scale-y-150 group-hover/segment:scale-x-105",
-                  isCompleted
-                    ? "bg-blue-300"
-                    : "bg-cold-blue-900"
+                  "h-6 w-full rounded-8 transition-[background-color,transform] duration-150 ease-out group-hover/segment:scale-x-105 group-hover/segment:scale-y-150",
+                  isCompleted ? "bg-blue-300" : "bg-cold-blue-900"
                 )}
               />
             }

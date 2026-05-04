@@ -18,6 +18,10 @@ vi.mock("../useAccountIncentiveDashboard", () => ({
   useAccountIncentiveDashboard: vi.fn(),
 }));
 
+vi.mock("../useAccountNetPositionFeesLast4Months", () => ({
+  useAccountNetPositionFeesLast4Months: vi.fn(),
+}));
+
 vi.mock("../useAccountRewardsHistory", () => ({
   useAccountManualRewardsAllocation: vi.fn(),
 }));
@@ -26,25 +30,14 @@ vi.mock("domain/legacy", () => ({
   useGmxPrice: vi.fn(),
 }));
 
-vi.mock("domain/stake/useStakingProcessedData", () => ({
-  useStakingProcessedData: vi.fn(),
-}));
-
-vi.mock("domain/synthetics/tokens", () => ({
-  useTokensDataRequest: vi.fn().mockReturnValue({ tokensData: undefined }),
-  convertToUsd: vi.fn(),
-  getMidPrice: vi.fn(),
-}));
-
 // Import after mocks are registered
 import { useGmxPrice } from "domain/legacy";
-import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
-import { useTokensDataRequest, convertToUsd, getMidPrice } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 
 import type { AccountIncentiveDashboard, IncentivesConfig } from "../types";
 import { useAccountIncentiveDashboard } from "../useAccountIncentiveDashboard";
+import { useAccountNetPositionFeesLast4Months } from "../useAccountNetPositionFeesLast4Months";
 import { useAccountManualRewardsAllocation } from "../useAccountRewardsHistory";
 import { useIncentivesConfig } from "../useIncentivesConfig";
 import { usePersonalizedBannerData } from "../usePersonalizedBannerData";
@@ -53,12 +46,9 @@ const mockUseChainId = vi.mocked(useChainId);
 const mockUseWallet = vi.mocked(useWallet);
 const mockUseIncentivesConfig = vi.mocked(useIncentivesConfig);
 const mockUseAccountDashboard = vi.mocked(useAccountIncentiveDashboard);
+const mockUseAccountNetPositionFees = vi.mocked(useAccountNetPositionFeesLast4Months);
 const mockUseAccountManualRewardsAllocation = vi.mocked(useAccountManualRewardsAllocation);
 const mockUseGmxPrice = vi.mocked(useGmxPrice);
-const mockUseStakingProcessedData = vi.mocked(useStakingProcessedData);
-const mockUseTokensDataRequest = vi.mocked(useTokensDataRequest);
-const mockConvertToUsd = vi.mocked(convertToUsd);
-const mockGetMidPrice = vi.mocked(getMidPrice);
 
 // renderHook helper (v11 of @testing-library/react does not export renderHook)
 function renderHook<T>(hookFn: () => T): { current: T } {
@@ -133,43 +123,40 @@ function setupDefaults(overrides?: {
   account?: string | undefined;
   config?: IncentivesConfig | undefined;
   dashboard?: AccountIncentiveDashboard | undefined;
+  netPositionFees?: bigint | undefined;
+  netPositionFeesLoading?: boolean;
   manualAllocatedPoints?: bigint | undefined;
   dashboardLoading?: boolean;
   manualAllocatedPointsLoading?: boolean;
   gmxPrice?: bigint | undefined;
-  stakingData?: { gmxInStakedGmx?: bigint } | undefined;
-  tokensData?: Record<string, unknown> | undefined;
 }) {
-  const chainId = overrides?.chainId ?? ARBITRUM;
-  const account = overrides?.account ?? "0x1234";
+  const o = overrides ?? {};
+  const chainId = o.chainId ?? ARBITRUM;
+  const account = "account" in o ? o.account : "0x1234";
 
   mockUseChainId.mockReturnValue({ chainId, srcChainId: chainId } as any);
   mockUseWallet.mockReturnValue({ active: true, signer: {}, account } as any);
-  mockUseIncentivesConfig.mockReturnValue({ data: overrides?.config ?? mockConfig } as any);
+  mockUseIncentivesConfig.mockReturnValue({ data: "config" in o ? o.config : mockConfig } as any);
   mockUseAccountDashboard.mockReturnValue({
-    data: overrides?.dashboard ?? baseDashboard,
-    loading: overrides?.dashboardLoading ?? false,
+    data: "dashboard" in o ? o.dashboard : baseDashboard,
+    loading: o.dashboardLoading ?? false,
+  } as any);
+  mockUseAccountNetPositionFees.mockReturnValue({
+    data: "netPositionFees" in o ? o.netPositionFees : 100n * USD,
+    loading: o.netPositionFeesLoading ?? false,
   } as any);
   mockUseAccountManualRewardsAllocation.mockReturnValue({
-    data: overrides?.manualAllocatedPoints ?? 0n,
-    loading: overrides?.manualAllocatedPointsLoading ?? false,
+    data: o.manualAllocatedPoints ?? 0n,
+    loading: o.manualAllocatedPointsLoading ?? false,
   } as any);
   mockUseGmxPrice.mockReturnValue({
-    gmxPrice: overrides?.gmxPrice ?? 20n * USD,
+    gmxPrice: o.gmxPrice ?? 20n * USD,
     mutate: vi.fn(),
-  } as any);
-  mockUseStakingProcessedData.mockReturnValue({
-    data: overrides?.stakingData ?? { gmxInStakedGmx: 50n * GMX_DEC },
-  } as any);
-  mockUseTokensDataRequest.mockReturnValue({
-    tokensData: overrides?.tokensData ?? undefined,
   } as any);
 }
 
 beforeEach(() => {
   vi.clearAllMocks();
-  mockConvertToUsd.mockReturnValue(undefined);
-  mockGetMidPrice.mockReturnValue(0n);
 });
 
 describe("usePersonalizedBannerData", () => {
@@ -282,220 +269,62 @@ describe("usePersonalizedBannerData", () => {
     expect(result.current.hasVolumeAfterFirstProgramEpoch).toBe(true);
   });
 
-  it("calculates recommendedStakeGmx based on wallet size and GMX price", () => {
-    // Set up wallet with $100,000 in tokens
-    // STAKE_BUDGET_FRAC = 0.20 => $20,000 budget
-    // GMX price = $20 => stakeCapGmx = 1000
-    // Max stake cap from config = 1000 GMX (highest tier threshold)
-    // S = 50 (current staked) < stakeCapGmx = 1000
-    // sPot = min(1000, max(50, 1000)) = 1000
-    const walletBalance = 50n * GMX_DEC; // 50 tokens
-    const tokenPrice = 2000n * USD; // $2000 each => $100,000 wallet
-
-    setupDefaults();
-    mockUseTokensDataRequest.mockReturnValue({
-      tokensData: {
-        WETH: {
-          walletBalance,
-          decimals: 18,
-          prices: { minPrice: tokenPrice, maxPrice: tokenPrice },
-        },
-      },
-    } as any);
-    mockConvertToUsd.mockReturnValue((walletBalance * tokenPrice) / GMX_DEC);
-    mockGetMidPrice.mockReturnValue(tokenPrice);
+  it("uses the first staking tier as the trade banner stake recommendation", () => {
+    setupDefaults({ netPositionFees: 50n * USD });
 
     const result = renderHook(() => usePersonalizedBannerData());
 
     expect(result.current.hasPersonalizedData).toBe(true);
-    expect(result.current.recommendedStakeGmx).toBeDefined();
-    expect(result.current.recommendedStakeGmx!).toBeGreaterThan(0);
+    expect(result.current.recommendedStakeGmx).toBe(10);
   });
 
-  it("calculates estimatedRewardsUsd using config-derived values", () => {
-    // Use dashboard with high volume so rewards > $0.01
-    const highVolumeDashboard: AccountIncentiveDashboard = {
-      account: "0x1234",
-      pointsBalance: 100n * GMX_DEC,
-      rewardsBalance: 0n,
-      recentStats: [
-        {
-          account: "0x1234",
-          multiplier: 150,
-          epochTimestamp: 1700000000,
-          volumeTier: "Tier1",
-          stakingTier: null,
-          tradedVolume: 1000000n * USD, // $1M volume
-          boostIds: [],
-        },
-      ],
-    };
-
-    setupDefaults({ dashboard: highVolumeDashboard });
-
-    // Provide wallet data for wallet-based calcs
-    const walletBalance = 100n * GMX_DEC;
-    const tokenPrice = 1000n * USD;
-    mockUseTokensDataRequest.mockReturnValue({
-      tokensData: {
-        WETH: {
-          walletBalance,
-          decimals: 18,
-          prices: { minPrice: tokenPrice, maxPrice: tokenPrice },
-        },
-      },
-    } as any);
-    mockConvertToUsd.mockReturnValue((walletBalance * tokenPrice) / GMX_DEC);
-    mockGetMidPrice.mockReturnValue(tokenPrice);
+  it("calculates estimatedRewardsUsd from netPositionFeesLast4Months", () => {
+    setupDefaults({ netPositionFees: 500n * USD }); // $500 fees
 
     const result = renderHook(() => usePersonalizedBannerData());
 
     expect(result.current.hasPersonalizedData).toBe(true);
-    expect(result.current.estimatedRewardsUsd).toBeDefined();
-    expect(result.current.estimatedRewardsUsd!).toBeGreaterThan(0);
+    // $500 fees * 50% max discount = $250
+    expect(result.current.estimatedRewardsUsd).toBe(250);
   });
 
-  it("returns hasPersonalizedData: false when estimated rewards < $0.01", () => {
-    // Very low volume, no wallet => rewards will be negligible
-    const tinyDashboard: AccountIncentiveDashboard = {
-      account: "0x1234",
-      pointsBalance: 1n,
-      rewardsBalance: 0n,
-      recentStats: [
-        {
-          account: "0x1234",
-          multiplier: 100,
-          epochTimestamp: 1700000000,
-          volumeTier: null,
-          stakingTier: null,
-          tradedVolume: 1n, // negligible volume (1 wei)
-          boostIds: [],
-        },
-      ],
-    };
-
-    setupDefaults({ dashboard: tinyDashboard });
-    mockUseTokensDataRequest.mockReturnValue({ tokensData: undefined } as any);
+  it("returns hasPersonalizedData: false when recent fees are below the display threshold", () => {
+    setupDefaults({ netPositionFees: 5n * USD }); // $5 fees, below $20 threshold
 
     const result = renderHook(() => usePersonalizedBannerData());
 
     expect(result.current.hasPersonalizedData).toBe(false);
   });
 
-  it("uses config.pointsExpirationEpochs instead of hardcoded 13", () => {
-    // With pointsExpirationEpochs = 1, vHist = $100K > 0.20*vWalletCap = $15K
-    // With pointsExpirationEpochs = 100, vHist = $1K < $15K, so wallet-based floor dominates
-    // This causes different vPotWeek values, proving the config epoch window is used
-    const dashboard: AccountIncentiveDashboard = {
-      account: "0x1234",
-      pointsBalance: 100n * GMX_DEC,
-      rewardsBalance: 0n,
-      recentStats: [
-        {
-          account: "0x1234",
-          multiplier: 150,
-          epochTimestamp: 1700000000,
-          volumeTier: "Tier1",
-          stakingTier: null,
-          tradedVolume: 100000n * USD, // $100K volume
-          boostIds: [],
-        },
-      ],
-    };
+  it("estimates trade banner rewards as up to 50% of recent open and close fees", () => {
+    setupDefaults({ netPositionFees: 50n * USD });
+    const result = renderHook(() => usePersonalizedBannerData());
 
-    // Wallet = $10K so vWalletCap = $75K, 0.20*vWalletCap = $15K
-    const walletBalance = 5n * GMX_DEC;
-    const tokenPrice = 2000n * USD; // $10K wallet
-    const setupTokens = () => {
-      mockUseTokensDataRequest.mockReturnValue({
-        tokensData: {
-          WETH: {
-            walletBalance,
-            decimals: 18,
-            prices: { minPrice: tokenPrice, maxPrice: tokenPrice },
-          },
-        },
-      } as any);
-      mockConvertToUsd.mockReturnValue((walletBalance * tokenPrice) / GMX_DEC);
-      mockGetMidPrice.mockReturnValue(tokenPrice);
-    };
-
-    // Run with pointsExpirationEpochs = 1
-    const configSmallWindow: IncentivesConfig = { ...mockConfig, pointsExpirationEpochs: 1 };
-    setupDefaults({ dashboard, config: configSmallWindow });
-    setupTokens();
-    const result1 = renderHook(() => usePersonalizedBannerData());
-
-    // Run with pointsExpirationEpochs = 100
-    const configLargeWindow: IncentivesConfig = { ...mockConfig, pointsExpirationEpochs: 100 };
-    setupDefaults({ dashboard, config: configLargeWindow });
-    setupTokens();
-    const result2 = renderHook(() => usePersonalizedBannerData());
-
-    // A smaller window (1) means higher weekly volume estimate, so higher rewards
-    expect(result1.current.hasPersonalizedData).toBe(true);
-    expect(result2.current.hasPersonalizedData).toBe(true);
-    expect(result1.current.estimatedRewardsUsd!).toBeGreaterThan(result2.current.estimatedRewardsUsd!);
+    expect(result.current.hasPersonalizedData).toBe(true);
+    // $50 fees * 50% max discount = $25
+    expect(result.current.estimatedRewardsUsd).toBe(25);
   });
 
-  it("uses config.maxMultiplier / config.multiplierDecimals instead of hardcoded 4.0", () => {
-    // With maxMultiplier = 200 / 100 = 2.0 cap, rewards are lower
-    // With maxMultiplier = 1000 / 100 = 10.0 cap, rewards are higher
-    const dashboard: AccountIncentiveDashboard = {
-      account: "0x1234",
-      pointsBalance: 100n * GMX_DEC,
-      rewardsBalance: 0n,
-      recentStats: [
-        {
-          account: "0x1234",
-          multiplier: 150,
-          epochTimestamp: 1700000000,
-          volumeTier: "Tier1",
-          stakingTier: null,
-          tradedVolume: 500000n * USD,
-          boostIds: [],
-        },
-      ],
-    };
-
+  it("does not use multiplier config for the simplified trade banner estimate", () => {
     const configLowCap: IncentivesConfig = { ...mockConfig, maxMultiplier: 200 };
-    setupDefaults({ dashboard, config: configLowCap });
+    setupDefaults({ netPositionFees: 250n * USD, config: configLowCap });
     const result1 = renderHook(() => usePersonalizedBannerData());
 
     const configHighCap: IncentivesConfig = { ...mockConfig, maxMultiplier: 1000 };
-    setupDefaults({ dashboard, config: configHighCap });
+    setupDefaults({ netPositionFees: 250n * USD, config: configHighCap });
     const result2 = renderHook(() => usePersonalizedBannerData());
 
-    // Higher multiplier cap => higher rewards (or equal if capped elsewhere)
-    if (result1.current.estimatedRewardsUsd && result2.current.estimatedRewardsUsd) {
-      expect(result2.current.estimatedRewardsUsd).toBeGreaterThanOrEqual(result1.current.estimatedRewardsUsd);
-    }
+    expect(result1.current.estimatedRewardsUsd).toBe(125);
+    expect(result2.current.estimatedRewardsUsd).toBe(125);
   });
 
-  it("uses sum of config.boosts[].multiplier instead of hardcoded 1.5", () => {
-    const dashboard: AccountIncentiveDashboard = {
-      account: "0x1234",
-      pointsBalance: 100n * GMX_DEC,
-      rewardsBalance: 0n,
-      recentStats: [
-        {
-          account: "0x1234",
-          multiplier: 150,
-          epochTimestamp: 1700000000,
-          volumeTier: "Tier1",
-          stakingTier: null,
-          tradedVolume: 500000n * USD,
-          boostIds: [],
-        },
-      ],
-    };
-
+  it("does not use boost config for the simplified trade banner estimate", () => {
     // Small boosts sum = 0.1
     const configSmallBoosts: IncentivesConfig = {
       ...mockConfig,
       boosts: [{ boost: "FeaturedMarkets", multiplier: 10 }],
     };
-    setupDefaults({ dashboard, config: configSmallBoosts });
+    setupDefaults({ netPositionFees: 250n * USD, config: configSmallBoosts });
     const result1 = renderHook(() => usePersonalizedBannerData());
 
     // Large boosts sum = 3.0
@@ -507,24 +336,19 @@ describe("usePersonalizedBannerData", () => {
         { boost: "LifetimeTrading", multiplier: 100 },
       ],
     };
-    setupDefaults({ dashboard, config: configLargeBoosts });
+    setupDefaults({ netPositionFees: 250n * USD, config: configLargeBoosts });
     const result2 = renderHook(() => usePersonalizedBannerData());
 
-    if (result1.current.estimatedRewardsUsd && result2.current.estimatedRewardsUsd) {
-      expect(result2.current.estimatedRewardsUsd).toBeGreaterThanOrEqual(result1.current.estimatedRewardsUsd);
-    }
+    expect(result1.current.estimatedRewardsUsd).toBe(125);
+    expect(result2.current.estimatedRewardsUsd).toBe(125);
   });
 
-  it("uses highest config.stakingTiers[].threshold as max stake cap", () => {
-    // Config with very low max stake cap
+  it("uses the first config staking tier as the recommended stake", () => {
     const configLowCap: IncentivesConfig = {
       ...mockConfig,
-      stakingTiers: [
-        { tier: "Tier1", threshold: 1n * GMX_DEC, multiplier: 25 }, // 1 GMX max
-      ],
+      stakingTiers: [{ tier: "Tier1", threshold: 1n * GMX_DEC, multiplier: 25 }],
     };
 
-    // Config with very high max stake cap
     const configHighCap: IncentivesConfig = {
       ...mockConfig,
       stakingTiers: [
@@ -534,98 +358,29 @@ describe("usePersonalizedBannerData", () => {
       ],
     };
 
-    const dashboard: AccountIncentiveDashboard = {
-      account: "0x1234",
-      pointsBalance: 100n * GMX_DEC,
-      rewardsBalance: 0n,
-      recentStats: [
-        {
-          account: "0x1234",
-          multiplier: 150,
-          epochTimestamp: 1700000000,
-          volumeTier: "Tier1",
-          stakingTier: null,
-          tradedVolume: 500000n * USD,
-          boostIds: [],
-        },
-      ],
-    };
-
-    // With wallet that has high value
-    const walletBalance = 1000n * GMX_DEC;
-    const tokenPrice = 1000n * USD;
-    const setupTokens = () => {
-      mockUseTokensDataRequest.mockReturnValue({
-        tokensData: {
-          WETH: {
-            walletBalance,
-            decimals: 18,
-            prices: { minPrice: tokenPrice, maxPrice: tokenPrice },
-          },
-        },
-      } as any);
-      mockConvertToUsd.mockReturnValue((walletBalance * tokenPrice) / GMX_DEC);
-      mockGetMidPrice.mockReturnValue(tokenPrice);
-    };
-
-    setupDefaults({ dashboard, config: configLowCap });
-    setupTokens();
+    setupDefaults({ netPositionFees: 250n * USD, config: configLowCap });
     const result1 = renderHook(() => usePersonalizedBannerData());
 
-    setupDefaults({ dashboard, config: configHighCap });
-    setupTokens();
+    setupDefaults({ netPositionFees: 250n * USD, config: configHighCap });
     const result2 = renderHook(() => usePersonalizedBannerData());
 
-    // The high cap should allow a higher recommended stake
-    if (result1.current.recommendedStakeGmx != null && result2.current.recommendedStakeGmx != null) {
-      expect(result2.current.recommendedStakeGmx).toBeGreaterThanOrEqual(result1.current.recommendedStakeGmx);
-    }
+    expect(result1.current.recommendedStakeGmx).toBe(1);
+    expect(result2.current.recommendedStakeGmx).toBe(10);
   });
 
   it("falls back to hardcoded values when config is undefined", () => {
-    const dashboard: AccountIncentiveDashboard = {
-      account: "0x1234",
-      pointsBalance: 100n * GMX_DEC,
-      rewardsBalance: 0n,
-      recentStats: [
-        {
-          account: "0x1234",
-          multiplier: 150,
-          epochTimestamp: 1700000000,
-          volumeTier: "Tier1",
-          stakingTier: null,
-          tradedVolume: 1000000n * USD,
-          boostIds: [],
-        },
-      ],
-    };
-
-    // Provide wallet so vWalletCap > 0
-    const walletBalance = 500n * GMX_DEC;
-    const tokenPrice = 200n * USD; // $100K wallet
-    setupDefaults({ dashboard, config: undefined });
-    mockUseTokensDataRequest.mockReturnValue({
-      tokensData: {
-        WETH: {
-          walletBalance,
-          decimals: 18,
-          prices: { minPrice: tokenPrice, maxPrice: tokenPrice },
-        },
-      },
-    } as any);
-    mockConvertToUsd.mockReturnValue((walletBalance * tokenPrice) / GMX_DEC);
-    mockGetMidPrice.mockReturnValue(tokenPrice);
+    setupDefaults({ netPositionFees: 500n * USD, config: undefined });
 
     const result = renderHook(() => usePersonalizedBannerData());
 
-    // Should still compute results using fallback values
     expect(result.current.hasPersonalizedData).toBe(true);
+    expect(result.current.recommendedStakeGmx).toBe(10);
     expect(result.current.estimatedRewardsUsd).toBeDefined();
     expect(result.current.estimatedRewardsUsd!).toBeGreaterThan(0);
   });
 
-  it("returns hasPersonalizedData: false when gmxPrice is 0n", () => {
-    setupDefaults({ gmxPrice: 0n });
+  it("requires GMX price for manual allocation USD value", () => {
+    setupDefaults({ manualAllocatedPoints: 25n * GMX_DEC, gmxPrice: 0n });
 
     const result = renderHook(() => usePersonalizedBannerData());
 
@@ -648,15 +403,16 @@ describe("usePersonalizedBannerData", () => {
     expect(result.current.isLoading).toBe(true);
   });
 
-  it("returns hasPersonalizedData: false when wallet is zero and volume is zero", () => {
-    const zeroVolumeDashboard: AccountIncentiveDashboard = {
-      account: "0x1234",
-      pointsBalance: 0n,
-      rewardsBalance: 0n,
-      recentStats: [],
-    };
+  it("returns hasPersonalizedData: false when netPositionFees is undefined", () => {
+    setupDefaults({ netPositionFees: undefined });
 
-    setupDefaults({ dashboard: zeroVolumeDashboard });
+    const result = renderHook(() => usePersonalizedBannerData());
+
+    expect(result.current.hasPersonalizedData).toBe(false);
+  });
+
+  it("returns hasPersonalizedData: false when netPositionFees is zero", () => {
+    setupDefaults({ netPositionFees: 0n });
 
     const result = renderHook(() => usePersonalizedBannerData());
 

@@ -551,7 +551,6 @@ msgid "Image generation failed. Refresh and try again."
 msgstr "Image generation failed. Refresh and try again."
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
-#: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Unlock {tierName} status (+{multiplierLabel}) and earn up to ${rewardsEstimate} in additional trading rewards."
 msgstr "Unlock {tierName} status (+{multiplierLabel}) and earn up to ${rewardsEstimate} in additional trading rewards."
 
@@ -2434,6 +2433,10 @@ msgstr "{orderTypeText} {0} for {1}"
 #: src/pages/Jobs/Jobs.tsx
 msgid "Job openings at GMX"
 msgstr "Job openings at GMX"
+
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+msgid "Net Position Fees (4mo)"
+msgstr "Net Position Fees (4mo)"
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/domain/synthetics/tokens/useAirdroppedTokenTitle.tsx
@@ -9340,6 +9343,10 @@ msgstr "Error simulating withdrawal"
 #: src/pages/SyntheticsPage/SyntheticsPage.tsx
 msgid "Claims"
 msgstr "Claims"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Unlock {tierName} status (+{multiplierLabel}) and save up to ${rewardsEstimate} in trading fees."
+msgstr "Unlock {tierName} status (+{multiplierLabel}) and save up to ${rewardsEstimate} in trading fees."
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/Referrals/distributions/table/RebatesDistributionTable.tsx
