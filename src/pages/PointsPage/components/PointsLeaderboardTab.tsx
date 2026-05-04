@@ -2,6 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import type React from "react";
 import { useCallback, useMemo, useState } from "react";
+import Skeleton from "react-loading-skeleton";
 
 import "./PointsLeaderboardTab.scss";
 
@@ -17,7 +18,7 @@ import useWallet from "lib/wallets/useWallet";
 import AddressView from "components/AddressView/AddressView";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import { PointsShare } from "components/PointsShare/PointsShare";
-import { TableRowsSkeleton } from "components/Skeleton/TableRowsSkeleton";
+import { TableListSkeleton } from "components/Skeleton/Skeleton";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import Tabs from "components/Tabs/Tabs";
@@ -33,7 +34,34 @@ const COL_MULTIPLIER: React.CSSProperties = { width: "10%" };
 const COL_SHARE: React.CSSProperties = { width: "8%" };
 const GMX_DECIMALS = 18;
 const GMX_DECIMALS_FACTOR = 10n ** 18n;
-const LEADERBOARD_SKELETON_COLUMNS = [40, 140, 90, 90, 150, 70, 56];
+
+function PointsLeaderboardSkeletonRow() {
+  return (
+    <TableTr>
+      <TableTd className="!py-10">
+        <Skeleton width={40} inline />
+      </TableTd>
+      <TableTd className="!py-10">
+        <Skeleton width={140} inline />
+      </TableTd>
+      <TableTd className="!py-10">
+        <Skeleton width={90} inline />
+      </TableTd>
+      <TableTd className="!py-10">
+        <Skeleton width={90} inline />
+      </TableTd>
+      <TableTd className="!py-10">
+        <Skeleton width={150} inline />
+      </TableTd>
+      <TableTd className="!py-10">
+        <Skeleton width={70} inline />
+      </TableTd>
+      <TableTd className="!py-10">
+        <Skeleton width={56} inline />
+      </TableTd>
+    </TableTr>
+  );
+}
 
 function getRankClassName(rank: number | null) {
   if (rank !== null && rank <= 3) return `PointsLeaderboardRank-${rank}`;
@@ -170,11 +198,7 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
               </thead>
               <tbody>
                 {isInitialLoading ? (
-                  <TableRowsSkeleton
-                    count={PER_PAGE}
-                    columns={LEADERBOARD_SKELETON_COLUMNS}
-                    cellClassName={tdClassName}
-                  />
+                  <TableListSkeleton count={PER_PAGE} Structure={PointsLeaderboardSkeletonRow} />
                 ) : (
                   <>
                     {userEntry && userRank && (
@@ -241,11 +265,10 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                       );
                     })}
                     {leaderboard && pageData.length < PER_PAGE && (
-                      <TableRowsSkeleton
+                      <TableListSkeleton
                         invisible
                         count={PER_PAGE - pageData.length}
-                        columns={LEADERBOARD_SKELETON_COLUMNS}
-                        cellClassName={tdClassName}
+                        Structure={PointsLeaderboardSkeletonRow}
                       />
                     )}
                   </>

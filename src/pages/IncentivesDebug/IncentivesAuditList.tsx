@@ -1,5 +1,6 @@
 import { Trans } from "@lingui/macro";
 import { useCallback, useState } from "react";
+import Skeleton from "react-loading-skeleton";
 
 import {
   formatMultiplier,
@@ -13,7 +14,7 @@ import { formatAmount, formatUsd } from "lib/numbers";
 import AddressView from "components/AddressView/AddressView";
 import Loader from "components/Loader/Loader";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
-import { TableRowsSkeleton } from "components/Skeleton/TableRowsSkeleton";
+import { TableListSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
@@ -21,7 +22,49 @@ import { TableScrollFadeContainer } from "components/TableScrollFade/TableScroll
 import { SummaryCard } from "./SummaryCard";
 
 const PAGE_SIZE = 20;
-const AUDIT_LIST_SKELETON_COLUMNS = [140, 90, 90, 90, 90, 70, 70, 80, 80, 120, 90, 90];
+
+function IncentivesAuditSkeletonRow() {
+  return (
+    <TableTr>
+      <TableTd padding="compact">
+        <Skeleton width={140} inline />
+      </TableTd>
+      <TableTd padding="compact">
+        <Skeleton width={90} inline />
+      </TableTd>
+      <TableTd padding="compact">
+        <Skeleton width={90} inline />
+      </TableTd>
+      <TableTd padding="compact">
+        <Skeleton width={90} inline />
+      </TableTd>
+      <TableTd padding="compact">
+        <Skeleton width={90} inline />
+      </TableTd>
+      <TableTd padding="compact">
+        <Skeleton width={70} inline />
+      </TableTd>
+      <TableTd padding="compact">
+        <Skeleton width={70} inline />
+      </TableTd>
+      <TableTd padding="compact">
+        <Skeleton width={80} inline />
+      </TableTd>
+      <TableTd padding="compact">
+        <Skeleton width={80} inline />
+      </TableTd>
+      <TableTd padding="compact">
+        <Skeleton width={120} inline />
+      </TableTd>
+      <TableTd padding="compact">
+        <Skeleton width={90} inline />
+      </TableTd>
+      <TableTd padding="compact">
+        <Skeleton width={90} inline />
+      </TableTd>
+    </TableTr>
+  );
+}
 
 type AuditSortField =
   | "points"
@@ -209,7 +252,7 @@ export function IncentivesAuditList({
                 </thead>
                 <tbody>
                   {isInitialLoading ? (
-                    <TableRowsSkeleton count={PAGE_SIZE} columns={AUDIT_LIST_SKELETON_COLUMNS} padding="compact" />
+                    <TableListSkeleton count={PAGE_SIZE} Structure={IncentivesAuditSkeletonRow} />
                   ) : (
                     data?.map((entry) => (
                       <TableTr key={entry.id} hoverable onClick={() => onAccountClick(entry.account)}>
@@ -237,11 +280,10 @@ export function IncentivesAuditList({
                     ))
                   )}
                   {data && data.length < PAGE_SIZE && (
-                    <TableRowsSkeleton
+                    <TableListSkeleton
                       invisible
                       count={PAGE_SIZE - data.length}
-                      columns={AUDIT_LIST_SKELETON_COLUMNS}
-                      padding="compact"
+                      Structure={IncentivesAuditSkeletonRow}
                     />
                   )}
                 </tbody>

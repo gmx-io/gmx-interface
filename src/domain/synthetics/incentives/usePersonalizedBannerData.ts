@@ -3,7 +3,7 @@ import { useMemo, useState } from "react";
 import { ARBITRUM } from "config/chains";
 import { useGmxPrice } from "domain/legacy";
 import { useChainId } from "lib/chains";
-import { bigintToNumber } from "lib/numbers";
+import { bigintToNumber, USD_DECIMALS } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
 import { isIncentivesEnabled, MAX_FEE_DISCOUNT_PERCENT } from "./constants";
@@ -14,7 +14,6 @@ import { useAccountNetPositionFeesLast4Months } from "./useAccountNetPositionFee
 import { useAccountManualRewardsAllocation } from "./useAccountRewardsHistory";
 import { useIncentivesConfig } from "./useIncentivesConfig";
 
-const USD_DECIMALS = 30;
 const GMX_DECIMALS_FACTOR = 10n ** 18n;
 
 const RECENT_FEES_THRESHOLD_USD = 20;

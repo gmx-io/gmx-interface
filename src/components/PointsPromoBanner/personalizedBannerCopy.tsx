@@ -13,11 +13,6 @@ export type PersonalizedBannerCopy = {
   body: ReactNode;
 };
 
-/**
- * Title + body copy for the three personalized banner variants. Shared between the Tradebox
- * banner and the Points page Staking tier card banner so the spec's "{Same as Tradebox banner}"
- * directive stays enforced from a single source of truth.
- */
 export function getPersonalizedBannerCopy(bannerData: PersonalizedBannerData): PersonalizedBannerCopy {
   if (bannerData.bannerVariant === "manual-reward" && bannerData.manualBonusUsd !== undefined) {
     const bonusFormatted = formatUsd(bannerData.manualBonusUsd, { displayDecimals: 0 });
