@@ -2,9 +2,9 @@ import { autoUpdate, flip, FloatingPortal, offset, shift, useFloating } from "@f
 import { Menu } from "@headlessui/react";
 import { Trans } from "@lingui/macro";
 import cx from "classnames";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { Link } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import useSWR from "swr";
 import { zeroAddress } from "viem";
 
@@ -18,6 +18,7 @@ import { contractFetcher } from "lib/contracts";
 import { PLACEHOLDER_ACCOUNT, StakingProcessedData } from "lib/legacy";
 import { expandDecimals, formatAmount, formatUsd } from "lib/numbers";
 import { sendEarnPortfolioItemClickEvent } from "lib/userAnalytics/earnEvents";
+import useSearchParams from "lib/useSearchParams";
 import useWallet from "lib/wallets/useWallet";
 import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 import { bigMath } from "sdk/utils/bigmath";
@@ -38,7 +39,7 @@ import PlusCircleIcon from "img/ic_plus_circle.svg?react";
 import ShareIcon from "img/ic_share.svg?react";
 import gmxIcon from "img/tokens/ic_gmx.svg";
 
-import { GMX_DAO_LINKS } from "./constants";
+import { EARN_OPERATION_QUERY_PARAM, EARN_OPERATION_STAKE_GMX, GMX_DAO_LINKS } from "./constants";
 import { StakeModal, StakeModalTabConfig } from "./StakeModal";
 
 export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: StakingProcessedData; hasEsGmx: boolean }) {
@@ -58,6 +59,23 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
 
   const [isVestModalVisible, setIsVestModalVisible] = useState(false);
   const [isBuyModalVisible, setIsBuyModalVisible] = useState(false);
+
+  const history = useHistory();
+  const { [EARN_OPERATION_QUERY_PARAM]: operation } = useSearchParams<{ [EARN_OPERATION_QUERY_PARAM]?: string }>();
+
+  useEffect(() => {
+    if (operation !== EARN_OPERATION_STAKE_GMX) return;
+
+    setIsGmxStakeModalVisible(true);
+    setGmxStakeValue("");
+
+    const nextSearch = new URLSearchParams(history.location.search);
+    nextSearch.delete(EARN_OPERATION_QUERY_PARAM);
+    history.replace({
+      pathname: history.location.pathname,
+      search: nextSearch.toString(),
+    });
+  }, [operation, history]);
 
   const rewardRouterAddress = getContract(chainId, "RewardRouter");
   const stakedGmxTrackerAddress = getContract(chainId, "StakedGmxTracker");

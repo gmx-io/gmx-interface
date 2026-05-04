@@ -1,4 +1,5 @@
-import { useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
+import { useHistory } from "react-router-dom";
 
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { selectGlvAndMarketsInfoData } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -11,10 +12,16 @@ import { usePerformanceAnnualized } from "domain/synthetics/markets/usePerforman
 import useVestingData from "domain/vesting/useVestingData";
 import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
+import useSearchParams from "lib/useSearchParams";
 import useWallet from "lib/wallets/useWallet";
+import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 import EarnPageLayout from "pages/Earn/EarnPageLayout";
 
 import AssetsList from "components/Earn/Portfolio/AssetsList/AssetsList";
+import {
+  EARN_OPERATION_BUY_GMX,
+  EARN_OPERATION_QUERY_PARAM,
+} from "components/Earn/Portfolio/AssetsList/GmxAssetCard/constants";
 import { RecommendedAssets } from "components/Earn/Portfolio/RecommendedAssets/RecommendedAssets";
 import RewardsBar from "components/Earn/Portfolio/RewardsBar";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
@@ -23,6 +30,23 @@ import Loader from "components/Loader/Loader";
 export default function EarnPortfolioPage() {
   const { account, status } = useWallet();
   const { data: processedData, mutate: mutateProcessedData } = useStakingProcessedData();
+
+  const history = useHistory();
+  const { [EARN_OPERATION_QUERY_PARAM]: operation } = useSearchParams<{ [EARN_OPERATION_QUERY_PARAM]?: string }>();
+  const [isBuyGmxModalVisible, setIsBuyGmxModalVisible] = useState(false);
+
+  useEffect(() => {
+    if (operation !== EARN_OPERATION_BUY_GMX) return;
+
+    setIsBuyGmxModalVisible(true);
+
+    const nextSearch = new URLSearchParams(history.location.search);
+    nextSearch.delete(EARN_OPERATION_QUERY_PARAM);
+    history.replace({
+      pathname: history.location.pathname,
+      search: nextSearch.toString(),
+    });
+  }, [operation, history]);
 
   const { chainId, srcChainId } = useChainId();
   const marketsInfoData = useSelector(selectGlvAndMarketsInfoData);
@@ -79,6 +103,7 @@ export default function EarnPortfolioPage() {
 
   return (
     <EarnPageLayout>
+      <BuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
       {processedData && !isWalletInitializing && (
         <RewardsBar processedData={processedData} mutateProcessedData={mutateProcessedData} />
       )}

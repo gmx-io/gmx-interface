@@ -20,6 +20,10 @@ import { useChainId } from "lib/chains";
 import { formatAmount, formatAmountHuman, bigintToNumber } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
+import {
+  EARN_PORTFOLIO_BUY_GMX_LINK,
+  EARN_PORTFOLIO_STAKE_GMX_LINK,
+} from "components/Earn/Portfolio/AssetsList/GmxAssetCard/constants";
 import { getPersonalizedBannerCopy } from "components/PointsPromoBanner/personalizedBannerCopy";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -461,7 +465,7 @@ function StakingCard({
               </p>
               {hasNextTierTarget && (
                 <Link
-                  to={canStakeToNextTier ? "/earn" : "/buy_gmx"}
+                  to={canStakeToNextTier ? EARN_PORTFOLIO_STAKE_GMX_LINK : EARN_PORTFOLIO_BUY_GMX_LINK}
                   className="inline-flex items-center gap-2 text-13 font-medium text-blue-300"
                 >
                   {canStakeToNextTier ? (
@@ -527,7 +531,7 @@ function StakingBanner({ walletGmx }: { walletGmx?: bigint }) {
       <h3 className="text-h3 font-medium text-typography-primary">{title}</h3>
       <div className="text-13 font-medium text-typography-secondary">{body}</div>
       <Link
-        to={hasWalletGmx ? "/earn" : "/buy_gmx"}
+        to={hasWalletGmx ? EARN_PORTFOLIO_STAKE_GMX_LINK : EARN_PORTFOLIO_BUY_GMX_LINK}
         className="flex items-center gap-4 text-13 font-medium text-blue-300"
       >
         {hasWalletGmx ? <Trans>Stake GMX</Trans> : <Trans>Buy GMX</Trans>}
