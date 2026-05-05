@@ -92,7 +92,6 @@ function OrderStatusNotification({
     }
 
     const marketInfo = getByKey(marketsInfoData, pendingOrderData.marketAddress);
-    const initialCollateralToken = getByKey(tokensData, pendingOrderData.initialCollateralTokenAddress);
     const { outTokenAddress } = getSwapPathOutputAddresses({
       marketsInfoData,
       initialCollateralAddress: pendingOrderData.initialCollateralTokenAddress,
@@ -106,10 +105,19 @@ function OrderStatusNotification({
     const externalSwapFromToken = getByKey(tokensData, pendingOrderData.externalSwapQuote?.inTokenAddress);
     const externalSwapToToken = getByKey(tokensData, pendingOrderData.externalSwapQuote?.outTokenAddress);
 
+    const initialCollateralToken =
+      pendingOrderData.externalSwapQuote && externalSwapFromToken
+        ? externalSwapFromToken
+        : getByKey(tokensData, pendingOrderData.initialCollateralTokenAddress);
+    const initialCollateralDeltaAmount = pendingOrderData.externalSwapQuote
+      ? pendingOrderData.externalSwapQuote.amountIn
+      : pendingOrderData.initialCollateralDeltaAmount;
+
     return {
       ...pendingOrderData,
       marketInfo,
       initialCollateralToken,
+      initialCollateralDeltaAmount,
       targetCollateralToken,
       externalSwapFromToken,
       externalSwapToToken,

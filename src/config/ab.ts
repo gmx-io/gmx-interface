@@ -17,6 +17,7 @@ const abFlagsConfig = {
   testExampleAb: 0,
   apiSdk2: 0.5,
   testRewardsSuspended: 0,
+  testStakingPowerLoyalty: 0,
 };
 
 export type AbFlag = keyof typeof abFlagsConfig;

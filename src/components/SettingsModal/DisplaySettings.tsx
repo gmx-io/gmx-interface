@@ -59,7 +59,7 @@ export function DisplaySettings() {
                 <div>
                   <Trans>
                     Show detailed price impact breakdown: stored impact (increase orders) and close impact (decrease
-                    orders) in tooltips and execution details.{" "}
+                    orders) in execution details.{" "}
                     <ExternalLink href={DOCS_LINKS.priceImpact} newTab>
                       Read more
                     </ExternalLink>

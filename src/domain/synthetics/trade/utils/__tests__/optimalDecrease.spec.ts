@@ -130,10 +130,7 @@ describe("getOptimalDecreaseAndSwapAmounts", () => {
     chainId: 42161,
   };
 
-  // Short position with ETH (WETH) collateral: pnl token is USDC (shortToken for shorts)
-  // Index price = $4000 (from ETH_TOKEN_FIXTURE.prices)
-  // Position value = 0.25 ETH × $4000 = $1000
-  // sizeInUsd controls PnL: < $1000 → negative PnL, > $1000 → positive PnL
+  // Short ETH-collateral position: pnl token = USDC, position value = 0.25 ETH × $4000 = $1000
   const makeShortPositionEthCollateral = (sizeInUsd: bigint): PositionInfoLoaded => ({
     ...POSITION_FIXTURE,
     isLong: false,
@@ -141,8 +138,8 @@ describe("getOptimalDecreaseAndSwapAmounts", () => {
     collateralTokenAddress: WETH_TOKEN_FIXTURE.address,
     pnlToken: USDC_TOKEN_FIXTURE,
     sizeInUsd,
-    sizeInTokens: expandDecimals(25, 16), // 0.25 ETH
-    collateralAmount: expandDecimals(1, 17), // 0.1 ETH ($400)
+    sizeInTokens: expandDecimals(25, 16),
+    collateralAmount: expandDecimals(1, 17),
     collateralUsd: expandDecimals(400, 30),
     pendingBorrowingFeesUsd: 0n,
     pendingFundingFeesUsd: 0n,
@@ -172,9 +169,7 @@ describe("getOptimalDecreaseAndSwapAmounts", () => {
       findSwapPathFromPnl: makeNoPathFindSwapPath(),
     });
 
-    // receive=ETH=pnlToken → not third-token → only pathA is used
     expect(result.decreaseAmounts.decreaseSwapType).toBe(DecreasePositionSwapType.SwapCollateralTokenToPnlToken);
-    // No external swap path found → swapAmounts returned with 0 usdOut (no swapPathStats)
     expect(result.swapAmounts).toBeDefined();
     expect(result.swapAmounts!.usdOut).toBe(0n);
     expect(result.swapAmounts!.swapStrategy.swapPathStats).toBeUndefined();
@@ -228,7 +223,6 @@ describe("getOptimalDecreaseAndSwapAmounts", () => {
       findSwapPathFromPnl: makeNoPathFindSwapPath(),
     });
 
-    // pathB swap returns 0 usdOut → pathA wins
     expect(result.decreaseAmounts.decreaseSwapType).toBe(DecreasePositionSwapType.SwapPnlTokenToCollateralToken);
     expect(result.swapAmounts!.usdOut).toBe(pathAUsdOut);
   });
@@ -241,7 +235,6 @@ describe("getOptimalDecreaseAndSwapAmounts", () => {
       findSwapPathFromPnl: makeNoPathFindSwapPath(),
     });
 
-    // Both paths have 0 usdOut → pathA default
     expect(result.decreaseAmounts.decreaseSwapType).toBe(DecreasePositionSwapType.SwapPnlTokenToCollateralToken);
   });
 
@@ -262,10 +255,7 @@ describe("getOptimalDecreaseAndSwapAmounts", () => {
     expect(findSwapPathFromPnl).toHaveBeenCalled();
   });
 
-  // Regression tests: short position with ETH collateral receiving USDC (pnl token).
-  // When PnL is negative, the contract's internal collateral→pnl swap is a no-op
-  // (no profit to swap), so the entire receive is in collateral token (ETH).
-  // The UI must recognize this and include an external swap (ETH→USDC).
+  // Regression: negative PnL means no internal swap, so UI must add external swap (ETH→USDC)
   describe("short ETH-collateral position receiving pnl token (USDC)", () => {
     const shortBaseParams = {
       ...baseDecreaseParams,
@@ -275,7 +265,6 @@ describe("getOptimalDecreaseAndSwapAmounts", () => {
     };
 
     it("negative PnL: primaryOutput has full amount and swap amounts are defined", () => {
-      // sizeInUsd=$950 < positionValue=$1000 → PnL=-$50
       const position = makeShortPositionEthCollateral(expandDecimals(950, 30));
 
       const result = getOptimalDecreaseAndSwapAmounts({
@@ -288,20 +277,15 @@ describe("getOptimalDecreaseAndSwapAmounts", () => {
       });
 
       expect(result.decreaseAmounts.decreaseSwapType).toBe(DecreasePositionSwapType.SwapCollateralTokenToPnlToken);
-      // Contract swaps ALL output to pnl token → primaryOutput has full amount
       expect(result.decreaseAmounts.primaryOutput.amount).toBeGreaterThan(0n);
       expect(result.decreaseAmounts.primaryOutput.usd).toBeGreaterThan(0n);
-      // secondaryOutput is zero — contract swaps everything
       expect(result.decreaseAmounts.secondaryOutput.amount).toBe(0n);
       expect(result.decreaseAmounts.receiveTokenAmount).toBeGreaterThan(0n);
-      // External swap must be defined — pnl token (USDC) needs to be swapped to receive (USDC)
-      // In this case receive=pnl so no external swap is needed, but pathA is used
       expect(result.swapAmounts).toBeDefined();
       expect(result.swapAmounts!.usdOut).toBeGreaterThan(0n);
     });
 
     it("positive PnL: primaryOutput has full amount when receive=pnl", () => {
-      // sizeInUsd=$1100 > positionValue=$1000 → PnL=$100
       const position = makeShortPositionEthCollateral(expandDecimals(1100, 30));
 
       const result = getOptimalDecreaseAndSwapAmounts({
@@ -314,12 +298,9 @@ describe("getOptimalDecreaseAndSwapAmounts", () => {
       });
 
       expect(result.decreaseAmounts.decreaseSwapType).toBe(DecreasePositionSwapType.SwapCollateralTokenToPnlToken);
-      // Contract swaps ALL output to pnl token → primaryOutput has full amount
       expect(result.decreaseAmounts.primaryOutput.amount).toBeGreaterThan(0n);
       expect(result.decreaseAmounts.primaryOutput.usd).toBeGreaterThan(0n);
-      // secondaryOutput is zero — contract swaps everything
       expect(result.decreaseAmounts.secondaryOutput.amount).toBe(0n);
-      // External swap defined (collateral→receive via pathA)
       expect(result.swapAmounts).toBeDefined();
     });
   });

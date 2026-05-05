@@ -37,6 +37,8 @@ export function buildSwapStrategy({
   externalSwapQuoteParams,
   swapPricingType = SwapPricingType.Swap,
   allowSameTokenSwap,
+  disabledMarkets,
+  manualPath,
 }: {
   chainId: number;
   amountIn: bigint;
@@ -47,6 +49,8 @@ export function buildSwapStrategy({
   externalSwapQuoteParams: ExternalSwapQuoteParams;
   swapPricingType: SwapPricingType;
   allowSameTokenSwap: boolean;
+  disabledMarkets?: string[];
+  manualPath?: string[];
 }): SwapStrategyForSwapOrders {
   const priceIn = tokenIn.prices.minPrice;
   const usdIn = convertToUsd(amountIn, tokenIn.decimals, priceIn)!;
@@ -84,6 +88,8 @@ export function buildSwapStrategy({
     toTokenAddress: tokenOut.address,
     marketsInfoData,
     swapPricingType,
+    disabledMarkets,
+    manualPath,
   });
 
   const swapPathStats = findSwapPath(usdIn, { order: swapOptimizationOrder });
@@ -112,6 +118,7 @@ export function buildSwapStrategy({
       toTokenAddress: tokenOut.address,
       marketsInfoData,
       swapPricingType,
+      disabledMarkets,
     });
 
     const swapPathStats = findSwapPath(usdIn);
@@ -131,6 +138,7 @@ export function buildSwapStrategy({
       toTokenAddress: tokenOut.address,
       marketsInfoData,
       swapPricingType,
+      disabledMarkets,
     });
 
     const swapPathStatsForCombinedSwap = externalSwapQuoteForCombinedSwap
@@ -167,6 +175,8 @@ export function buildReverseSwapStrategy({
   swapOptimizationOrder,
   swapPricingType,
   allowSameTokenSwap,
+  disabledMarkets,
+  manualPath,
 }: {
   chainId: number;
   amountOut: bigint;
@@ -177,6 +187,8 @@ export function buildReverseSwapStrategy({
   swapOptimizationOrder: SwapOptimizationOrderArray | undefined;
   swapPricingType: SwapPricingType;
   allowSameTokenSwap: boolean;
+  disabledMarkets?: string[];
+  manualPath?: string[];
 }): SwapStrategyForSwapOrders {
   const priceIn = getMidPrice(tokenIn.prices);
   const priceOut = getMidPrice(tokenOut.prices);
@@ -214,6 +226,8 @@ export function buildReverseSwapStrategy({
     toTokenAddress: tokenOut.address,
     marketsInfoData,
     swapPricingType,
+    disabledMarkets,
+    manualPath,
   });
 
   const approximateSwapPathStats = findSwapPath(approximateUsdIn, { order: swapOptimizationOrder });
@@ -257,6 +271,7 @@ export function buildReverseSwapStrategy({
       toTokenAddress: path.inTokenAddress,
       marketsInfoData,
       swapPricingType,
+      disabledMarkets,
     });
 
     const swapPathStats = findSwapPath(approximateUsdIn);
@@ -281,6 +296,7 @@ export function buildReverseSwapStrategy({
       toTokenAddress: suitableSwapPath.inTokenAddress,
       marketsInfoData,
       swapPricingType,
+      disabledMarkets,
     });
 
     const approximateSwapPathStatsForCombinedSwap = findSwapPathForSuitableSwapPath(

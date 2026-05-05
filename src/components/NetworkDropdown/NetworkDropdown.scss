@@ -119,7 +119,7 @@
 .network-dropdown-items {
   position: absolute;
   right: 0;
-  top: 4.3rem;
+  top: calc(100% + 8px);
   min-width: 22.8rem;
   transform-origin: top right;
   overflow: hidden;

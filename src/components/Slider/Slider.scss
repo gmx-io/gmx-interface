@@ -20,36 +20,24 @@ $slider-color: var(--color-blue-300);
 
   .rc-slider-rail {
     border-radius: 0;
-    height: 8px;
+    height: 4px;
     background: var(--color-slate-800);
   }
 
   .rc-slider-track {
     border-radius: 0;
-    height: 8px;
-    background-color: $slider-color;
-  }
-
-  // This element is a hack to hide left corners of the track
-  .rc-slider-track::before {
-    content: "";
-    position: absolute;
-    top: 0;
-    left: -4px;
-    width: 8px;
-    height: 8px;
-    border-radius: 4px 0 0 4px;
+    height: 4px;
     background-color: $slider-color;
   }
 
   .rc-slider-dot {
     border-radius: 50%;
-    width: 4px;
-    height: 4px;
+    width: 5px;
+    height: 5px;
     background: var(--color-slate-900);
     box-sizing: content-box;
-    border-width: 2;
-    top: 0px;
+    border-width: 3;
+    top: -2.5px;
     border-color: var(--color-slate-800);
   }
 
@@ -60,10 +48,10 @@ $slider-color: var(--color-blue-300);
   .rc-slider-handle {
     background-color: var(--color-slate-800);
     border: solid 2px $slider-color;
-    width: 9px;
-    height: 9px;
+    width: 8px;
+    height: 8px;
     box-sizing: content-box;
-    top: 8px;
+    top: 6px;
 
     &:active {
       box-shadow: unset;

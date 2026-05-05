@@ -59,11 +59,11 @@ export function PositionEditorAdvancedRows({ operation, gasPaymentParams }: Opti
           <TooltipWithPortal
             handle={
               <span className="Exchange-info-label">
-                <Trans>Collateral ({position?.collateralToken?.symbol})</Trans>
+                <Trans>Margin ({position?.collateralToken?.symbol})</Trans>
               </span>
             }
             position="left-start"
-            content={<Trans>Initial collateral, excluding borrow and funding fees</Trans>}
+            content={<Trans>Margin before pending borrow and funding fees</Trans>}
           />
         }
         value={

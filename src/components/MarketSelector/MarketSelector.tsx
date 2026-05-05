@@ -116,6 +116,7 @@ export function MarketSelector({
           [
             "indexName",
             (item) => (item.marketInfo.isSpotOnly ? "" : stripBlacklistedWords(item.marketInfo.indexToken.name)),
+            (item) => (item.marketInfo.isSpotOnly ? "" : (item.marketInfo.indexToken.searchAliases ?? []).join(" ")),
           ],
           searchKeyword
         )
@@ -150,7 +151,7 @@ export function MarketSelector({
     setIsModalVisible(false);
   }
 
-  const _handleKeyDown = (e) => {
+  const _handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault();
       e.stopPropagation();

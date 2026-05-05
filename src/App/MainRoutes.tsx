@@ -25,7 +25,7 @@ import { ParseTransactionPage } from "pages/ParseTransaction/ParseTransaction";
 import Pools from "pages/Pools/Pools";
 import { PoolsDetails } from "pages/PoolsDetails/PoolsDetails";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
-import Referrals from "pages/Referrals/Referrals";
+import { ReferralsRouter } from "pages/Referrals/ReferralsRouter";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
@@ -183,14 +183,10 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
           <LeaderboardPage />
         </SyntheticsStateContextProvider>
       </Route>
-      <Route exact path="/referrals">
+      <RedirectWithQuery exact from="/referrals" to="/referrals/traders" />
+      <Route path="/referrals">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="referrals">
-          <Referrals />
-        </SyntheticsStateContextProvider>
-      </Route>
-      <Route exact path="/referrals/:account">
-        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="referrals">
-          <Referrals />
+          <ReferralsRouter />
         </SyntheticsStateContextProvider>
       </Route>
       <Route exact path="/actions/:v/:account">

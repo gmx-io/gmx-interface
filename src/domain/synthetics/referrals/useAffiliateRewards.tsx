@@ -2,6 +2,7 @@ import { getContract } from "config/contracts";
 import { affiliateRewardKey } from "config/dataStore";
 import { useMarkets } from "domain/synthetics/markets";
 import { useMulticall } from "lib/multicall";
+import type { ContractCallConfig } from "lib/multicall";
 import useWallet from "lib/wallets/useWallet";
 import type { ContractsChainId } from "sdk/configs/chains";
 
@@ -11,14 +12,14 @@ export function useAffiliateRewards(chainId: ContractsChainId) {
   const { account } = useWallet();
   const { marketsData, marketsAddresses } = useMarkets(chainId);
 
-  const { data } = useMulticall(chainId, "useAffiliateRewards", {
+  const { data, mutate } = useMulticall(chainId, "useAffiliateRewards", {
     key: account && marketsAddresses?.length ? [account, marketsAddresses.join("-")] : null,
     request: () => {
       return {
         dataStore: {
           contractAddress: getContract(chainId, "DataStore"),
           abiId: "DataStore",
-          calls: marketsAddresses!.reduce((acc, marketAddress) => {
+          calls: marketsAddresses!.reduce<Record<string, ContractCallConfig>>((acc, marketAddress) => {
             const market = marketsData![marketAddress];
 
             acc[`${marketAddress}-${market.longTokenAddress}`] = {
@@ -57,5 +58,6 @@ export function useAffiliateRewards(chainId: ContractsChainId) {
 
   return {
     affiliateRewardsData: data,
+    mutateAffiliateRewards: mutate,
   };
 }

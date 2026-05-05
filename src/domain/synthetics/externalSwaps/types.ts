@@ -1,8 +1,14 @@
 import { ExternalSwapQuote } from "sdk/utils/trade/types";
 
+export type ExternalSwapRequestResult =
+  | { status: "success"; key: string; quote: ExternalSwapQuote }
+  | { status: "failed"; key: string };
+
 export type ExternalSwapState = {
-  baseOutput: ExternalSwapQuote | undefined;
+  requestResult: ExternalSwapRequestResult | undefined;
   shouldFallbackToInternalSwap: boolean;
-  setBaseOutput: (output: ExternalSwapQuote | undefined) => void;
+  shouldForceExternalSwap: boolean;
+  setRequestResult: (result: ExternalSwapRequestResult | undefined) => void;
   setShouldFallbackToInternalSwap: (shouldFallback: boolean) => void;
+  setShouldForceExternalSwap: (shouldForce: boolean) => void;
 };

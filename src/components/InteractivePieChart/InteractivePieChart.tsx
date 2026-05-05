@@ -1,6 +1,8 @@
 import hexToRgba from "hex-to-rgba";
 import { useMemo, useState } from "react";
 import { Cell, Pie, PieChart, Tooltip } from "recharts";
+import type { TooltipProps } from "recharts";
+import type { NameType, ValueType } from "recharts/types/component/DefaultTooltipContent";
 
 type Props = {
   data: {
@@ -27,7 +29,7 @@ export default function InteractivePieChart({ data, label }: Props) {
     [activeIndex, sortedData]
   );
 
-  const onChartEnter = (_, index) => {
+  const onChartEnter = (_: unknown, index: number) => {
     setActiveIndex(index);
   };
 
@@ -81,7 +83,7 @@ export default function InteractivePieChart({ data, label }: Props) {
   );
 }
 
-function CustomTooltip({ active, payload }) {
+function CustomTooltip({ active, payload }: TooltipProps<ValueType, NameType>) {
   const customTooltipStyle = useMemo(
     () => (payload && payload.length ? { backgroundColor: payload[0].color } : undefined),
     [payload]

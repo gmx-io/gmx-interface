@@ -115,7 +115,7 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
     });
 
     const collateralUsd = expandDecimals(1000, USD_DECIMALS);
-    const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(MCF_100X);
+    const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(MCF_100X, undefined);
 
     const result = calcMaxSizeDeltaInUsdByLeverage({
       marketInfo,
@@ -158,7 +158,7 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
     });
 
     const collateralUsd = expandDecimals(500, USD_DECIMALS);
-    const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(MCF_100X);
+    const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(MCF_100X, undefined);
 
     const existingPosition = {
       sizeInUsd: expandDecimals(50000, USD_DECIMALS),

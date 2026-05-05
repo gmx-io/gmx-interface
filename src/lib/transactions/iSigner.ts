@@ -1,6 +1,5 @@
 import {
   AddressLike,
-  BigNumberish,
   BrowserProvider,
   AbstractSigner as EthersSigner,
   JsonRpcProvider,
@@ -22,6 +21,7 @@ import {
 
 import { mustNeverExist } from "lib/types";
 import { SignatureDomain, SignatureTypes } from "lib/wallets/signing";
+import { toBigInt } from "sdk/utils/numbers";
 
 export type ISignerSendTransactionParams = Pick<
   TransactionRequest,
@@ -361,15 +361,4 @@ export async function toAddress(address: AddressLike | undefined | null): Promis
     return awaitedAddress;
   }
   return await awaitedAddress.getAddress();
-}
-
-function toBigInt(value: BigNumberish | undefined | null): bigint | undefined {
-  if (value === undefined || value === null) {
-    return undefined;
-  }
-  if (typeof value === "bigint") {
-    return value;
-  }
-
-  return BigInt(value);
 }

@@ -307,6 +307,20 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
         <TableTd>
           {!msg.pnl ? (
             <span className="text-typography-secondary">-</span>
+          ) : msg.pnlTooltip ? (
+            <TooltipWithPortal
+              handle={
+                <span
+                  className={cx("numbers", {
+                    "text-red-500": msg.pnlState === "error",
+                    "text-green-500": msg.pnlState === "success",
+                  })}
+                >
+                  {msg.pnl}
+                </span>
+              }
+              content={msg.pnlTooltip}
+            />
           ) : (
             <span
               className={cx("numbers", {

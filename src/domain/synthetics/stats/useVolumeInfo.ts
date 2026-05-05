@@ -30,7 +30,10 @@ export default function useVolumeInfo(chainId: number) {
         fetchPolicy: "no-cache",
       });
       const { hourlyVolumeInfos, totalVolumeInfos } = data;
-      const dailyVolume = hourlyVolumeInfos.reduce((acc, { volumeUsd }) => acc + BigInt(volumeUsd), 0n);
+      const dailyVolume = hourlyVolumeInfos.reduce(
+        (acc: bigint, { volumeUsd }: { volumeUsd: string }) => acc + BigInt(volumeUsd),
+        0n
+      );
 
       return {
         dailyVolume,
@@ -46,7 +49,7 @@ export default function useVolumeInfo(chainId: number) {
     }
   }
 
-  async function fetcher([, chainId]) {
+  async function fetcher([, chainId]: [string, number]) {
     const lastPeriodFor24Hours = Math.floor(Date.now() / 1000 / 3600) * 3600 - 60 * 60 * 24;
     try {
       const { dailyVolume, totalVolume } = await fetchVolumeData(chainId, lastPeriodFor24Hours);

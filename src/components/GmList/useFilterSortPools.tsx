@@ -74,6 +74,11 @@ export function useFilterSortPools({
 
             return `${name} ${symbol}`;
           },
+          (marketToken) => {
+            const market = getByKey(marketsInfo, marketToken?.address);
+            if (!market || market.isSpotOnly) return "";
+            return (market.indexToken.searchAliases ?? []).join(" ");
+          },
         ],
         searchText
       );

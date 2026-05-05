@@ -48,7 +48,7 @@ const appLocale2RainbowLocaleMap: Record<string, Locale> = {
   pseudo: "en",
 };
 
-export default function WalletProvider({ children }) {
+export default function WalletProvider({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <WagmiProvider config={getRainbowKitConfig()}>{children}</WagmiProvider>
@@ -56,7 +56,7 @@ export default function WalletProvider({ children }) {
   );
 }
 
-export function RainbowKitProviderWrapper({ children }) {
+export function RainbowKitProviderWrapper({ children }: { children: React.ReactNode }) {
   const { i18n } = useLingui();
   const { theme } = useTheme();
   const locale = useMemo(() => appLocale2RainbowLocaleMap[i18n.locale] ?? "en", [i18n.locale]);

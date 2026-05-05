@@ -5,6 +5,7 @@ import { MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY } from "config/dataStore";
 import { getContractMarketPrices } from "domain/synthetics/markets/utils";
 import type { TokensData } from "domain/synthetics/tokens";
 import { useMulticall } from "lib/multicall";
+import type { MulticallRequestConfig } from "lib/multicall";
 import type { ContractsChainId } from "sdk/configs/chains";
 import type { MarketsData } from "sdk/utils/markets/types";
 import { convertToUsd, getMidPrice } from "sdk/utils/tokens";
@@ -122,59 +123,62 @@ function buildTreasuryMarketsRequest({
   const dataStoreAddress = getContract(chainId, "DataStore");
   const syntheticsReaderAddress = getContract(chainId, "SyntheticsReader");
 
-  return marketsAddresses.reduce((acc, marketAddress) => {
-    const market = marketsData[marketAddress];
+  return marketsAddresses.reduce<MulticallRequestConfig>(
+    (acc, marketAddress) => {
+      const market = marketsData[marketAddress];
 
-    acc[`${marketAddress}-balances`] = {
-      contractAddress: marketAddress,
-      abiId: "Token",
-      calls: createBalanceCalls(addresses, { includeDecimals: true }),
-    };
+      acc[`${marketAddress}-balances`] = {
+        contractAddress: marketAddress,
+        abiId: "Token",
+        calls: createBalanceCalls(addresses, { includeDecimals: true }),
+      };
 
-    if (market) {
-      const marketPrices = getContractMarketPrices(tokensData, market);
+      if (market) {
+        const marketPrices = getContractMarketPrices(tokensData, market);
 
-      if (marketPrices) {
-        const marketProps = {
-          marketToken: market.marketTokenAddress,
-          longToken: market.longTokenAddress,
-          shortToken: market.shortTokenAddress,
-          indexToken: market.indexTokenAddress,
-        };
+        if (marketPrices) {
+          const marketProps = {
+            marketToken: market.marketTokenAddress,
+            longToken: market.longTokenAddress,
+            shortToken: market.shortTokenAddress,
+            indexToken: market.indexTokenAddress,
+          };
 
-        acc[`${marketAddress}-prices`] = {
-          contractAddress: syntheticsReaderAddress,
-          abiId: "SyntheticsReader",
-          calls: {
-            minPrice: {
-              methodName: "getMarketTokenPrice",
-              params: [
-                dataStoreAddress,
-                marketProps,
-                marketPrices.indexTokenPrice,
-                marketPrices.longTokenPrice,
-                marketPrices.shortTokenPrice,
-                MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY,
-                false,
-              ],
+          acc[`${marketAddress}-prices`] = {
+            contractAddress: syntheticsReaderAddress,
+            abiId: "SyntheticsReader",
+            calls: {
+              minPrice: {
+                methodName: "getMarketTokenPrice",
+                params: [
+                  dataStoreAddress,
+                  marketProps,
+                  marketPrices.indexTokenPrice,
+                  marketPrices.longTokenPrice,
+                  marketPrices.shortTokenPrice,
+                  MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY,
+                  false,
+                ],
+              },
+              maxPrice: {
+                methodName: "getMarketTokenPrice",
+                params: [
+                  dataStoreAddress,
+                  marketProps,
+                  marketPrices.indexTokenPrice,
+                  marketPrices.longTokenPrice,
+                  marketPrices.shortTokenPrice,
+                  MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY,
+                  true,
+                ],
+              },
             },
-            maxPrice: {
-              methodName: "getMarketTokenPrice",
-              params: [
-                dataStoreAddress,
-                marketProps,
-                marketPrices.indexTokenPrice,
-                marketPrices.longTokenPrice,
-                marketPrices.shortTokenPrice,
-                MAX_PNL_FACTOR_FOR_WITHDRAWALS_KEY,
-                true,
-              ],
-            },
-          },
-        };
+          };
+        }
       }
-    }
 
-    return acc;
-  }, {});
+      return acc;
+    },
+    {}
+  );
 }

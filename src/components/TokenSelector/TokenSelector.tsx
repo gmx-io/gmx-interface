@@ -90,7 +90,7 @@ export default function TokenSelector(props: Props) {
 
   const visibleTokens = tokens.filter((t) => t && !t.isTempHidden);
 
-  const onSelectToken = (token) => {
+  const onSelectToken = (token: Token) => {
     setIsModalVisible(false);
     props.onSelectToken(token);
   };
@@ -119,6 +119,7 @@ export default function TokenSelector(props: Props) {
           return stripBlacklistedWords(name);
         },
         "symbol",
+        (item) => (item.searchAliases ?? []).join(" "),
       ],
       searchKeyword
     );
@@ -183,7 +184,7 @@ export default function TokenSelector(props: Props) {
     return [...sortedTokensWithBalance, ...sortedTokensWithoutBalance];
   }, [filteredTokens, infoTokens, extendedSortSequence, showBalances]);
 
-  const _handleKeyDown = (e) => {
+  const _handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault();
       e.stopPropagation();

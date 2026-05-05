@@ -386,6 +386,7 @@ function useAvailableToTradeTokenList({
             return stripBlacklistedWords(name);
           },
           "symbol",
+          (item) => (item.searchAliases ?? []).join(" "),
         ],
         searchKeyword
       );
@@ -554,6 +555,7 @@ function useMultichainTokensList({
           return stripBlacklistedWords(name);
         },
         "symbol",
+        (item) => (item.searchAliases ?? []).join(" "),
       ],
       searchKeyword
     );

@@ -35,6 +35,8 @@ export function getSwapAmountsByFromValue(p: {
   externalSwapQuoteParams: ExternalSwapQuoteParams | undefined;
   findSwapPath: FindSwapPath;
   allowSameTokenSwap: boolean;
+  disabledMarkets?: string[];
+  manualPath?: string[];
 }): SwapAmounts {
   const {
     tokenIn,
@@ -49,6 +51,8 @@ export function getSwapAmountsByFromValue(p: {
     chainId,
     externalSwapQuoteParams,
     allowSameTokenSwap,
+    disabledMarkets,
+    manualPath,
   } = p;
 
   if (!externalSwapQuoteParams) {
@@ -65,6 +69,8 @@ export function getSwapAmountsByFromValue(p: {
     externalSwapQuoteParams,
     swapPricingType: SwapPricingType.Swap,
     allowSameTokenSwap,
+    disabledMarkets,
+    manualPath,
   });
 
   const swapPathStats = swapStrategy.swapPathStats;
@@ -144,6 +150,8 @@ export function getSwapAmountsByToValue(p: {
   findSwapPath: FindSwapPath;
   allowSameTokenSwap: boolean;
   swapPricingType?: SwapPricingType;
+  disabledMarkets?: string[];
+  manualPath?: string[];
 }): SwapAmounts {
   const {
     tokenIn,
@@ -159,6 +167,8 @@ export function getSwapAmountsByToValue(p: {
     externalSwapQuoteParams,
     allowSameTokenSwap,
     swapPricingType = SwapPricingType.Swap,
+    disabledMarkets,
+    manualPath,
   } = p;
 
   if (!externalSwapQuoteParams) {
@@ -175,6 +185,8 @@ export function getSwapAmountsByToValue(p: {
     swapOptimizationOrder,
     swapPricingType,
     allowSameTokenSwap,
+    disabledMarkets,
+    manualPath,
   });
 
   const swapStrategy = buildSwapStrategy({
@@ -187,6 +199,8 @@ export function getSwapAmountsByToValue(p: {
     externalSwapQuoteParams,
     swapPricingType,
     allowSameTokenSwap,
+    disabledMarkets,
+    manualPath,
   });
 
   const uiFeeUsd = applyFactor(swapStrategy.usdIn, uiFeeFactor);

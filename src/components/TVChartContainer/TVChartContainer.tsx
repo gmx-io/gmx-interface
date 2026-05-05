@@ -5,7 +5,7 @@ import { isAddressEqual, type Address } from "viem";
 
 import { colors } from "config/colors";
 import { TV_SAVE_LOAD_CHARTS_KEY, WAS_TV_CHART_OVERRIDDEN_KEY } from "config/localStorage";
-import { RESOLUTION_TO_SECONDS, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
+import { type TradingViewResolution, RESOLUTION_TO_SECONDS, SUPPORTED_RESOLUTIONS_V2 } from "config/tradingview";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents/SyntheticsEventsProvider";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
@@ -131,6 +131,12 @@ export default function TVChartContainer({
 
   useEffect(() => {
     const newDatafeed = new DataFeed(chainId, oracleKeeperFetcher);
+    newDatafeed.setTokenPriceGetter((symbol) => {
+      const data = marksStateRef.current.tokensData;
+      if (!data) return undefined;
+      const token = Object.values(data).find((t) => t.symbol === symbol);
+      return token?.prices?.minPrice;
+    });
     newDatafeed.setMarksGetter(async (_symbolInfo, from, to, resolution) => {
       const {
         positionIncreaseEvents: inc,
@@ -495,6 +501,12 @@ export default function TVChartContainer({
   const closeMenuRef = useLatest(closeMenu);
 
   useEffect(() => {
+    if (tokensData && datafeed) {
+      datafeed.notifyPricesReady();
+    }
+  }, [tokensData, datafeed]);
+
+  useEffect(() => {
     if (
       !chartReady ||
       !tvWidgetRef.current ||
@@ -577,10 +589,11 @@ export default function TVChartContainer({
       if (markPriceDirectionRef.current === direction) return;
       markPriceDirectionRef.current = direction;
 
-      const neutralColor =
+      const neutralColor = (
         theme === "light"
-          ? chartOverridesLight["mainSeriesProperties.priceLineColor"]!
-          : chartOverridesDark["mainSeriesProperties.priceLineColor"]!;
+          ? chartOverridesLight["mainSeriesProperties.priceLineColor"]
+          : chartOverridesDark["mainSeriesProperties.priceLineColor"]
+      ) as string;
       const priceLineColor =
         direction === "up" ? colors.green[500][theme] : direction === "down" ? colors.red[500][theme] : neutralColor;
 
@@ -663,8 +676,9 @@ export default function TVChartContainer({
         ?.activeChart()
         .onIntervalChanged()
         .subscribe(null, (interval) => {
-          if (supportedResolutions[interval]) {
-            const period = supportedResolutions[interval];
+          const res = interval as TradingViewResolution;
+          if (supportedResolutions[res]) {
+            const period = supportedResolutions[res];
             setPeriod(period);
             tvWidgetRef.current?.saveChartToServer(undefined, undefined, {
               chartName: `gmx-chart-v2`,

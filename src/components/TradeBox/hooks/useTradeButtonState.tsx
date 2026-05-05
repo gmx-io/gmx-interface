@@ -3,10 +3,9 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ReactNode, useCallback, useMemo } from "react";
 import { zeroAddress } from "viem";
 
-import { getBridgingOptionsForToken } from "config/bridging";
 import { AVALANCHE, BOTANIX, SettlementChainId } from "config/chains";
 import { BASIS_POINTS_DIVISOR } from "config/factors";
-import { get1InchSwapUrlFromAddresses } from "config/links";
+import { JUMPER_BRIDGE_URL } from "config/links";
 import { MULTI_CHAIN_DEPOSIT_TRADE_TOKENS } from "config/multichain";
 import {
   useGmxAccountDepositViewTokenAddress,
@@ -29,7 +28,11 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
+  selectExternalSwapDesirability,
   selectExternalSwapQuote,
+  selectIsExternalSwapDisabledByExpressSchema,
+  selectIsOneClickActiveByUser,
+  selectIsWaitingForExternalSwapQuote,
   selectTradeboxFindSwapPath,
   selectTradeboxFromToken,
   selectTradeboxFromTokenAmount,
@@ -37,7 +40,7 @@ import {
   selectTradeboxIsStakeOrUnstake,
   selectTradeboxIsTPSLEnabled,
   selectTradeboxIsWrapOrUnwrap,
-  selectTradeboxMaxLeverage,
+  selectTradeboxMaxAllowedLeverage,
   selectTradeboxPayAmount,
   selectTradeboxSelectedPosition,
   selectTradeboxState,
@@ -46,6 +49,8 @@ import {
   selectTradeboxTradeFlags,
   selectTradeboxTradeMode,
   selectTradeboxTriggerPrice,
+  selectTradeboxDecreasePositionAmounts,
+  selectTradeboxHasExistingPosition,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { selectTradeboxTradeTypeError } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxTradeErrors";
 import { selectExternalSwapQuoteParams } from "context/SyntheticsStateContext/selectors/tradeSelectors";
@@ -85,7 +90,6 @@ import { TradeMode, TradeType } from "sdk/utils/trade";
 import { getNextPositionValuesForIncreaseTrade } from "sdk/utils/trade/increase";
 import { mustNeverExist } from "sdk/utils/types";
 
-import { BridgingInfo } from "components/BridgingInfo/BridgingInfo";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { useMultichainTokens } from "components/GmxAccountModal/hooks";
@@ -123,6 +127,7 @@ export function useTradeboxButtonState({
 
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isSwap, isIncrease } = tradeFlags;
+  const isWaitingForExternalSwapQuote = useSelector(selectIsWaitingForExternalSwapQuote);
   const { stopLoss, takeProfit } = useSidecarOrders();
   const sidecarEntries = useSidecarEntries();
   const isTpSlEnabled = useSelector(selectTradeboxIsTPSLEnabled);
@@ -145,6 +150,8 @@ export function useTradeboxButtonState({
   const isStakeOrUnstake = useSelector(selectTradeboxIsStakeOrUnstake);
   const payAmount = useSelector(selectTradeboxPayAmount);
   const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
+  const hasExistingPosition = useSelector(selectTradeboxHasExistingPosition);
+  const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const { tokenChainDataArray } = useMultichainTokens();
 
   const { setPendingTxns } = usePendingTxns();
@@ -218,6 +225,19 @@ export function useTradeboxButtonState({
     totalExecutionFee?.feeTokenAmount,
   ]);
 
+  const externalSwapDesirability = useSelector(selectExternalSwapDesirability);
+  const isOneClickActiveByUser = useSelector(selectIsOneClickActiveByUser);
+  const isExternalSwapBlockedByGasConflict = useSelector(selectIsExternalSwapDisabledByExpressSchema);
+  const isSubmitBlockedByRequiredExternalSwap =
+    externalSwapDesirability === "required" && (isOneClickActiveByUser || isExternalSwapBlockedByGasConflict);
+
+  const externalSwapBlockedError = useMemo((): ValidationResult => {
+    if (isSubmitBlockedByRequiredExternalSwap) {
+      return { buttonErrorMessage: t`No swap route available` };
+    }
+    return {};
+  }, [isSubmitBlockedByRequiredExternalSwap]);
+
   const { buttonErrorText, tooltipContent, bannerErrorContent } = useMemo((): {
     buttonErrorText: string | undefined;
     tooltipContent: ReactNode | null;
@@ -234,7 +254,13 @@ export function useTradeboxButtonState({
       tokensData,
     });
 
-    const validationResult = takeValidationResult(commonError, tradeError, expressError, nativeGasError);
+    const validationResult = takeValidationResult(
+      commonError,
+      tradeError,
+      externalSwapBlockedError,
+      expressError,
+      nativeGasError
+    );
 
     let tooltipContent: ReactNode = null;
     if (validationResult.buttonTooltipName) {
@@ -300,6 +326,7 @@ export function useTradeboxButtonState({
     expressParams,
     tokensData,
     tradeError,
+    externalSwapBlockedError,
     nativeGasError,
     collateralToken,
     fromToken,
@@ -480,6 +507,19 @@ export function useTradeboxButtonState({
       };
     }
 
+    if (isWaitingForExternalSwapQuote) {
+      return {
+        ...commonState,
+        text: (
+          <>
+            <Trans>Loading swap path…</Trans>
+            <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
+
     if (buttonErrorText) {
       return {
         ...commonState,
@@ -543,13 +583,27 @@ export function useTradeboxButtonState({
       if (buttonErrorText) {
         submitButtonText = buttonErrorText;
       } else {
-        const modeLabel = localizedTradeModeLabels[tradeMode];
-
         if (isSwap) {
+          const modeLabel = localizedTradeModeLabels[tradeMode];
           submitButtonText = `${modeLabel}: ${t`Swap`} ${fromToken?.symbol}`;
         } else {
-          const actionLabel = isIncrease ? t`increase` : t`decrease`;
-          submitButtonText = `${modeLabel}: ${localizedTradeTypeLabels[tradeType!]} ${actionLabel}`;
+          const directionLabel = localizedTradeTypeLabels[tradeType!];
+          const isMarket = tradeMode === TradeMode.Market;
+
+          let actionLabel: string;
+          if (isIncrease) {
+            actionLabel = hasExistingPosition ? t`Increase` : t`Open`;
+          } else {
+            const isFullClose = decreaseAmounts?.isFullClose ?? false;
+            actionLabel = isFullClose ? t`Close` : t`Decrease`;
+          }
+
+          if (isMarket) {
+            submitButtonText = `${actionLabel} ${directionLabel}`;
+          } else {
+            const modeLabel = localizedTradeModeLabels[tradeMode];
+            submitButtonText = `${modeLabel}: ${actionLabel} ${directionLabel}`;
+          }
         }
       }
     }
@@ -582,6 +636,7 @@ export function useTradeboxButtonState({
     batchParams,
     totalExecutionFee,
     isExpressLoading,
+    isWaitingForExternalSwapQuote,
     account,
     buttonErrorText,
     shouldShowDepositButton,
@@ -602,6 +657,8 @@ export function useTradeboxButtonState({
     tradeMode,
     tradeType,
     isFromTokenGmxAccount,
+    hasExistingPosition,
+    decreaseAmounts?.isFullClose,
   ]);
 }
 
@@ -628,9 +685,7 @@ function useDetectAndSetAvailableMaxLeverage({
 
   const selectedPosition = useSelector(selectTradeboxSelectedPosition);
 
-  const maxLeverage = useSelector(selectTradeboxMaxLeverage);
-
-  const maxAllowedLeverage = maxLeverage / 2;
+  const maxAllowedLeverage = useSelector(selectTradeboxMaxAllowedLeverage);
 
   const findSwapPath = useSelector(selectTradeboxFindSwapPath);
   const uiFeeFactor = useUiFeeFactor();
@@ -808,28 +863,20 @@ function NoSwapPathTooltipContent({
     );
   }
 
+  const collateralSymbol = collateralToken?.assetSymbol ?? collateralToken?.symbol;
+
   return (
-    <>
-      <Trans>
-        {collateralToken?.assetSymbol ?? collateralToken?.symbol} is required for collateral.
-        <br />
-        <br />
-        No swap path found for {fromToken?.assetSymbol ?? fromToken?.symbol} to{" "}
-        {collateralToken?.assetSymbol ?? collateralToken?.symbol} within GMX.
-        <br />
-        <br />
-        <ExternalLink href={get1InchSwapUrlFromAddresses(chainId, fromToken?.address, collateralToken?.address)}>
-          Buy {collateralToken?.assetSymbol ?? collateralToken?.symbol} on 1inch
-        </ExternalLink>
-        .
-      </Trans>
-      {getBridgingOptionsForToken(collateralToken?.symbol) && (
-        <>
-          <br />
-          <br />
-          <BridgingInfo chainId={chainId} tokenSymbol={collateralToken?.symbol} textOpaque />
-        </>
-      )}
-    </>
+    <Trans>
+      {collateralSymbol} is required for collateral.
+      <br />
+      <br />
+      No swap path found for {fromToken?.assetSymbol ?? fromToken?.symbol} to {collateralSymbol} within GMX.
+      <br />
+      <br />
+      <span onClick={makeHandleSwapClick(fromToken.symbol, collateralToken?.symbol ?? "")} className="Tradebox-handle">
+        Swap {collateralSymbol}
+      </span>{" "}
+      or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge {collateralSymbol}</ExternalLink>.
+    </Trans>
   );
 }

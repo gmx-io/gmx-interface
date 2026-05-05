@@ -178,7 +178,7 @@ export function PoolSelector({
     setIsModalVisible(false);
   }
 
-  const _handleKeyDown = (e) => {
+  const _handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter") {
       e.preventDefault();
       e.stopPropagation();
@@ -235,7 +235,7 @@ export function PoolSelector({
             );
           })}
           {filteredOptions.length === 0 && (
-            <div className="text-body-medium text-typography-secondary">
+            <div className="text-body-medium p-adaptive text-typography-secondary">
               <Trans>No pools found</Trans>
             </div>
           )}

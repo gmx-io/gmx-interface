@@ -17,6 +17,7 @@ import {
 } from "sdk/utils/markets";
 
 import { getCappedPositionImpactUsd } from "../fees";
+import { JitLiquidityInfo, getJitMaxReservedUsd } from "../jit/utils";
 import { PositionInfo } from "../positions";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens";
 import { isGlvAddress, isGlvInfo } from "./glv";
@@ -102,12 +103,20 @@ export function getMaxReservedUsd(marketInfo: MarketInfo, isLong: boolean) {
   return (poolUsd * reserveFactor) / PRECISION;
 }
 
-export function getAvailableUsdLiquidityForPosition(marketInfo: MarketInfo, isLong: boolean) {
+export function getAvailableUsdLiquidityForPosition(
+  marketInfo: MarketInfo,
+  isLong: boolean,
+  maxReservedUsdWithJit?: bigint
+) {
   if (marketInfo.isSpotOnly) {
     return 0n;
   }
 
-  const maxReservedUsd = getMaxReservedUsd(marketInfo, isLong);
+  const nativeMaxReservedUsd = getMaxReservedUsd(marketInfo, isLong);
+  const maxReservedUsd =
+    maxReservedUsdWithJit !== undefined
+      ? bigMath.max(maxReservedUsdWithJit, nativeMaxReservedUsd)
+      : nativeMaxReservedUsd;
   const reservedUsd = getReservedUsd(marketInfo, isLong);
 
   const maxOpenInterest = getMaxOpenInterestUsd(marketInfo, isLong);
@@ -165,7 +174,8 @@ export function getMostLiquidMarketForPosition(
   marketsInfo: MarketInfo[],
   indexTokenAddress: string,
   collateralTokenAddress: string | undefined,
-  isLong: boolean
+  isLong: boolean,
+  jitLiquidityMap?: Record<string, JitLiquidityInfo>
 ) {
   let bestMarket: MarketInfo | undefined;
   let bestLiquidity: bigint | undefined;
@@ -182,7 +192,11 @@ export function getMostLiquidMarketForPosition(
     }
 
     if (isCandidate) {
-      const liquidity = getAvailableUsdLiquidityForPosition(marketInfo, isLong);
+      const liquidity = getAvailableUsdLiquidityForPosition(
+        marketInfo,
+        isLong,
+        getJitMaxReservedUsd(jitLiquidityMap, marketInfo.marketTokenAddress, isLong)
+      );
 
       if (liquidity !== undefined && liquidity > (bestLiquidity ?? 0)) {
         bestMarket = marketInfo;
@@ -199,14 +213,19 @@ export function getMinPriceImpactMarket(
   indexTokenAddress: string,
   isLong: boolean,
   isIncrease: boolean,
-  sizeDeltaUsd: bigint
+  sizeDeltaUsd: bigint,
+  jitLiquidityMap?: Record<string, JitLiquidityInfo>
 ) {
   let bestMarket: MarketInfo | undefined;
   // minimize negative impact
   let bestImpactDeltaUsd: bigint | undefined;
 
   for (const marketInfo of marketsInfo) {
-    const liquidity = getAvailableUsdLiquidityForPosition(marketInfo, isLong);
+    const liquidity = getAvailableUsdLiquidityForPosition(
+      marketInfo,
+      isLong,
+      getJitMaxReservedUsd(jitLiquidityMap, marketInfo.marketTokenAddress, isLong)
+    );
 
     if (isMarketIndexToken(marketInfo, indexTokenAddress) && liquidity > sizeDeltaUsd) {
       const { priceImpactDeltaUsd } = getCappedPositionImpactUsd(marketInfo, sizeDeltaUsd, isLong, true, {
@@ -420,8 +439,8 @@ export function getTotalGlvInfo({
   return getTotalTokensBalance(tokensData, ["GLV"], multichainMarketTokensBalances);
 }
 
-export function getTradeboxLeverageSliderMarks(maxLeverage: number) {
-  const allowedLeverage = Math.round(maxLeverage / 2 / BASIS_POINTS_DIVISOR);
+export function getTradeboxLeverageSliderMarks(maxAllowedLeverage: number) {
+  const allowedLeverage = Math.round(maxAllowedLeverage / BASIS_POINTS_DIVISOR);
 
   if (allowedLeverage >= 125) {
     return [0.1, 1, 2, 5, 10, 50, 100, allowedLeverage];
@@ -442,11 +461,11 @@ export function getTradeboxLeverageSliderMarks(maxLeverage: number) {
   } else if (allowedLeverage >= 60) {
     return [0.1, 1, 2, 5, 10, 25, 50, 60];
   } else if (allowedLeverage >= 50) {
-    return [0.1, 1, 2, 5, 10, 25, 50];
+    return [0.1, 1, 2, 5, 10, 25, allowedLeverage];
   } else if (allowedLeverage >= 30) {
-    return [0.1, 1, 2, 5, 10, 30];
+    return [0.1, 1, 2, 5, 10, allowedLeverage];
   } else if (allowedLeverage >= 25) {
-    return [0.1, 1, 2, 5, 10, 25];
+    return [0.1, 1, 2, 5, 10, allowedLeverage];
   } else if (allowedLeverage >= 10) {
     return [0.1, 1, 2, 5, allowedLeverage];
   } else {

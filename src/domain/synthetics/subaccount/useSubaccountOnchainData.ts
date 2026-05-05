@@ -13,16 +13,9 @@ import {
   subaccountIntegrationIdKey,
   subaccountListKey,
 } from "sdk/configs/dataStore";
+import type { SubaccountOnchainData } from "sdk/utils/subaccount";
 
-export type SubaccountOnchainData = {
-  active: boolean;
-  maxAllowedCount: bigint;
-  currentActionsCount: bigint;
-  expiresAt: bigint;
-  approvalNonce: bigint;
-  multichainApprovalNonce: bigint;
-  integrationId: string | undefined;
-};
+export type { SubaccountOnchainData } from "sdk/utils/subaccount";
 
 export type SubaccountOnchainDataResult = {
   subaccountData: SubaccountOnchainData | undefined;

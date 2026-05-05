@@ -10,6 +10,8 @@ export type RegularOption<V extends BaseOptionValue> = {
   };
   icon?: ReactNode;
   value: V;
+  disabled?: boolean;
+  disabledMessage?: ReactNode;
 };
 
 export type NestedOption<V extends BaseOptionValue> = {
