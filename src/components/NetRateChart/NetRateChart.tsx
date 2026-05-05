@@ -16,6 +16,7 @@ import {
   YAxis,
 } from "recharts";
 
+import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectTradeboxMarketInfo } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { RateTimeframe, useRateSnapshots } from "domain/synthetics/markets/useRateSnapshots";
@@ -62,6 +63,15 @@ const PROJECTION_MULTIPLIERS: Record<RateProjection, number> = {
   "1y": 31536000,
 };
 
+const PROJECTION_HOURS: Record<RateProjection, number> = {
+  "1h": 1,
+  "8h": 8,
+  "24h": 24,
+  "1y": 8760,
+};
+
+const LIVE_DASH_ARRAY = "4 4";
+
 const LONG_COLOR = "var(--color-green-500)";
 const SHORT_COLOR = "var(--color-red-500)";
 
@@ -93,6 +103,10 @@ function rateToProjectedPercent(rateString: string, projection: RateProjection):
   const rate = BigInt(rateString);
   const multiplier = BigInt(PROJECTION_MULTIPLIERS[projection]);
   return bigintToNumber(rate * multiplier * 100n, PRECISION_DECIMALS);
+}
+
+function hourlyRateToProjectedPercent(rateHourly: bigint, projection: RateProjection): number {
+  return bigintToNumber(rateHourly * BigInt(PROJECTION_HOURS[projection]) * 100n, PRECISION_DECIMALS);
 }
 
 /**
@@ -145,15 +159,29 @@ function getRateDirectionLabel(rateType: RateType, direction: "long" | "short"):
 
 type ChartDataPoint = {
   timestamp: Date;
+  longRate: number | null;
+  shortRate: number | null;
+  longRateLive: number | null;
+  shortRateLive: number | null;
+  raw: RatesSnapshot | null;
+};
+
+type SnapshotChartDataPoint = ChartDataPoint & {
   longRate: number;
   shortRate: number;
   raw: RatesSnapshot;
 };
 
-function isChartDataPoint(value: unknown): value is ChartDataPoint {
+function isChartDataPoint(value: unknown): value is SnapshotChartDataPoint {
   if (value === null || typeof value !== "object") return false;
   const v = value as Record<string, unknown>;
-  return v.timestamp instanceof Date && typeof v.longRate === "number" && typeof v.shortRate === "number";
+  return (
+    v.timestamp instanceof Date &&
+    typeof v.longRate === "number" &&
+    typeof v.shortRate === "number" &&
+    v.raw !== null &&
+    typeof v.raw === "object"
+  );
 }
 
 function buildChartData(snapshots: RatesSnapshot[], rateType: RateType, projection: RateProjection): ChartDataPoint[] {
@@ -164,8 +192,27 @@ function buildChartData(snapshots: RatesSnapshot[], rateType: RateType, projecti
     timestamp: new Date(snapshot.timestamp * 1000),
     longRate: convert(String(snapshot[longKey]), projection),
     shortRate: convert(String(snapshot[shortKey]), projection),
+    longRateLive: null,
+    shortRateLive: null,
     raw: snapshot,
   }));
+}
+
+type LiveRateHourly = { long: bigint; short: bigint };
+
+function getLiveHourlyRate(info: ReturnType<typeof selectChartHeaderInfo>, rateType: RateType): LiveRateHourly | null {
+  if (!info) return null;
+
+  switch (rateType) {
+    case "netRate":
+      return { long: info.netRateHourlyLong, short: info.netRateHourlyShort };
+    case "borrowingRate":
+      if (info.borrowingRateLong === undefined || info.borrowingRateShort === undefined) return null;
+      return { long: info.borrowingRateLong, short: info.borrowingRateShort };
+    case "fundingRate":
+      if (info.fundingRateLong === undefined || info.fundingRateShort === undefined) return null;
+      return { long: info.fundingRateLong, short: info.fundingRateShort };
+  }
 }
 
 export function NetRateChart() {
@@ -188,12 +235,52 @@ export function NetRateChart() {
     timeframe: activeTimeframe,
   });
 
+  const headerInfo = useSelector(selectChartHeaderInfo);
+
+  const liveRates = useMemo(() => {
+    const hourly = getLiveHourlyRate(headerInfo, activeRateType);
+    if (!hourly) return null;
+    return {
+      longRate: hourlyRateToProjectedPercent(hourly.long, activeProjection),
+      shortRate: hourlyRateToProjectedPercent(hourly.short, activeProjection),
+    };
+  }, [headerInfo, activeRateType, activeProjection]);
+
   const chartData = useMemo(() => {
     if (!snapshots || snapshots.length === 0) return [];
-    return buildChartData(snapshots, activeRateType, activeProjection);
-  }, [snapshots, activeRateType, activeProjection]);
+
+    const base = buildChartData(snapshots, activeRateType, activeProjection);
+
+    if (!liveRates) return base;
+
+    const lastIdx = base.length - 1;
+    const enriched = base.map((point, i) =>
+      i === lastIdx ? { ...point, longRateLive: point.longRate, shortRateLive: point.shortRate } : point
+    );
+
+    enriched.push({
+      timestamp: new Date(),
+      longRate: null,
+      shortRate: null,
+      longRateLive: liveRates.longRate,
+      shortRateLive: liveRates.shortRate,
+      raw: null,
+    });
+
+    return enriched;
+  }, [snapshots, activeRateType, activeProjection, liveRates]);
 
   const decimals = getProjectionDisplayDecimals(activeProjection);
+
+  const legendRates = useMemo(() => {
+    if (liveRates) return liveRates;
+    if (chartData.length === 0) return null;
+
+    const last = chartData[chartData.length - 1];
+    if (last.longRate === null || last.shortRate === null) return null;
+
+    return { longRate: last.longRate, shortRate: last.shortRate };
+  }, [chartData, liveRates]);
 
   const rateTypeTabs = useMemo(
     () => RATE_TYPES.map((type) => ({ label: rateTypeLabels[type], value: type })),
@@ -241,19 +328,13 @@ export function NetRateChart() {
         <span className="text-body-small flex items-center gap-6 text-typography-secondary">
           <span className="inline-block size-8 rounded-full bg-green-500" />
           <Trans>Long Positions</Trans>
-          {chartData.length > 0 && (
-            <span className="text-typography-primary">
-              {formatRate(chartData[chartData.length - 1].longRate, decimals)}
-            </span>
-          )}
+          {legendRates && <span className="text-typography-primary">{formatRate(legendRates.longRate, decimals)}</span>}
         </span>
         <span className="text-body-small flex items-center gap-6 text-typography-secondary">
           <span className="inline-block size-8 rounded-full bg-red-500" />
           <Trans>Short Positions</Trans>
-          {chartData.length > 0 && (
-            <span className="text-typography-primary">
-              {formatRate(chartData[chartData.length - 1].shortRate, decimals)}
-            </span>
+          {legendRates && (
+            <span className="text-typography-primary">{formatRate(legendRates.shortRate, decimals)}</span>
           )}
         </span>
       </div>
@@ -321,11 +402,31 @@ export function NetRateChart() {
               />
               <Line
                 type="monotone"
+                dataKey="longRateLive"
+                stroke={LONG_COLOR}
+                strokeWidth={2}
+                strokeDasharray={LIVE_DASH_ARRAY}
+                dot={false}
+                activeDot={false}
+                isAnimationActive={false}
+              />
+              <Line
+                type="monotone"
                 dataKey="shortRate"
                 stroke={SHORT_COLOR}
                 strokeWidth={2}
                 dot={false}
                 activeDot={SHORT_ACTIVE_DOT}
+                isAnimationActive={false}
+              />
+              <Line
+                type="monotone"
+                dataKey="shortRateLive"
+                stroke={SHORT_COLOR}
+                strokeWidth={2}
+                strokeDasharray={LIVE_DASH_ARRAY}
+                dot={false}
+                activeDot={false}
                 isAnimationActive={false}
               />
             </LineChart>
@@ -389,7 +490,7 @@ function NetRateTooltip({
   projection,
   decimals,
 }: {
-  point: ChartDataPoint;
+  point: SnapshotChartDataPoint;
   rateType: RateType;
   projection: RateProjection;
   decimals: number;
@@ -478,7 +579,7 @@ function SimpleRateTooltip({
   suffix,
   decimals,
 }: {
-  point: ChartDataPoint;
+  point: SnapshotChartDataPoint;
   rateType: RateType;
   suffix: string;
   decimals: number;
