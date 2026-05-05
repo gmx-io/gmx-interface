@@ -554,13 +554,6 @@ msgstr "結算鏈"
 msgid "Max pool USD exceeded"
 msgstr "超過池最大 USD 上限"
 
-#: src/components/OrderEditor/OrderEditor.tsx
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Limit price below mark price"
-msgstr "限價低於標記價格"
-
 #: src/components/TVChart/components/OpenInterestTooltip.tsx
 msgid "Long OI"
 msgstr "做多 OI"
@@ -904,13 +897,6 @@ msgstr "費用數值在賺取時計算。不包含獎勵。"
 #: src/pages/Pools/Pools.tsx
 msgid "TVL in vaults and pools"
 msgstr "金庫與池中的 TVL"
-
-#: src/components/OrderEditor/OrderEditor.tsx
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Limit price above mark price"
-msgstr "限價高於標記價格"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Trading simulations on GMX using DOJO"
@@ -1465,10 +1451,6 @@ msgstr "鏈上任務與獎勵"
 msgid "Tokens"
 msgstr "代幣"
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "TP price above limit price"
-msgstr "TP 價格高於限價"
-
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Action(s)"
 msgstr "操作"
@@ -1504,6 +1486,10 @@ msgstr "存入至 GMX Account"
 #: src/domain/synthetics/markets/createGlvDepositTxn.ts
 msgid "Deposit error"
 msgstr "存入錯誤"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Set SL price below mark price"
+msgstr ""
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -1568,6 +1554,10 @@ msgstr "收起"
 msgid "Vest"
 msgstr "歸屬"
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Set TP price below limit price"
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Bridge transaction hash"
 msgstr "跨鏈交易雜湊"
@@ -1587,6 +1577,10 @@ msgstr "選擇池子"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Log index:"
 msgstr "Log index："
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Set TP price above limit price"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pool max short amount"
@@ -2404,6 +2398,13 @@ msgstr "轉帳完成"
 msgid "GM bridging to..."
 msgstr "GM 跨鏈至..."
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Set limit price below mark price"
+msgstr ""
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivate 1CT"
 msgstr "停用 1CT"
@@ -2603,6 +2604,10 @@ msgstr "您在所選期間內未進行任何交易"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default parts for TWAP orders"
 msgstr "TWAP 訂單的預設分段數"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Set TP price below mark price"
+msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
@@ -2858,10 +2863,6 @@ msgstr "正在從 GMX Account 提取..."
 msgid "Vesting status"
 msgstr "歸屬狀態"
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "TP price below mark price"
-msgstr "TP 價格低於標記價格"
-
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GMX tokens before"
 msgstr "接收者此前未質押過 GMX 代幣"
@@ -2984,6 +2985,10 @@ msgstr "已停用市場"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to market traders' PnL"
 msgstr "市場交易者 PnL 的風險敞口"
+
+#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average position size"
@@ -3487,6 +3492,10 @@ msgstr "工作執行緒"
 msgid "Failed to update orders"
 msgstr "更新訂單失敗"
 
+#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Long Stop Market: {0} a long position when the price is above the trigger price."
+msgstr ""
+
 #: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net price impact / fees"
@@ -3526,6 +3535,10 @@ msgstr "大規模交易，無需擔憂薄弱的訂單簿或滑點"
 msgid "Settle"
 msgstr "結算"
 
+#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Short TWAP: {0} a short position in evenly distributed parts over a specified time."
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Insufficient gas for network fees"
 msgstr "Gas 不足以支付網路費用"
@@ -3533,10 +3546,6 @@ msgstr "Gas 不足以支付網路費用"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to"
 msgstr "{fromText} 至"
-
-#: src/components/StatusNotification/OrderStatusNotification.tsx
-msgid "Decreasing..."
-msgstr "減倉中..."
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "Claim successful"
@@ -4594,10 +4603,6 @@ msgstr "目前影響：{0}。建議增加 0.30% 緩衝以獲得更好的訂單�
 msgid "Settle {totalStr}"
 msgstr "結算 {totalStr}"
 
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price"
-msgstr "{typeString} Long Limit：當價格低於觸發價格時{0}做多倉位"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive impact factor"
 msgstr "正向影響因子"
@@ -5250,6 +5255,10 @@ msgstr "無法將 {nativeTokenSymbol} 轉帳至 {chainName}"
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 msgstr ""
 
+#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
 msgstr "Avalanche Fuji 上無法領取"
@@ -5363,10 +5372,6 @@ msgstr "職缺"
 msgid "Failed Stop Market"
 msgstr "止損市價單失敗"
 
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price"
-msgstr "{typeString} Short Stop Market：當價格低於觸發價格時{0}做空倉位"
-
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SideNav/SettingsNavItem.tsx
@@ -5397,10 +5402,6 @@ msgstr "（{0}，佔兌換金額）"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} liquidity"
 msgstr "{0} 流動性不足"
-
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "SL price above mark price"
-msgstr "SL 價格高於標記價格"
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
 msgid "Unable to calculate order"
@@ -5679,10 +5680,6 @@ msgstr "ODOS"
 msgid "GMX Substack"
 msgstr "GMX Substack"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
-msgid "Increasing..."
-msgstr "加倉中..."
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Insufficient liquidity for pay-to-collateral swap at trigger price"
 msgstr "在觸發價格下，支付代幣至抵押品兌換的流動性不足"
@@ -5719,6 +5716,10 @@ msgstr "為特定 GMX 市場提供流動性的池。支援單一資產和原生�
 msgid "Max funding factor"
 msgstr "最大資金費率因子"
 
+#: src/components/StatusNotification/OrderStatusNotification.tsx
+msgid "Decreasing"
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "High price impact"
@@ -5737,6 +5738,10 @@ msgstr "投票"
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Swap part"
 msgstr "更新 TWAP 兌換部分"
+
+#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price."
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "No trades match the selected filters"
@@ -5758,12 +5763,11 @@ msgstr "推薦"
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Decrease"
-msgstr "減倉"
+msgstr "減倉<<<<<<< Updated upstream"
 
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Trigger price below liquidation price"
-msgstr "觸發價格低於清算價格"
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Set SL price above mark price"
+msgstr ">>>>>>> Stashed changes"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -5784,13 +5788,10 @@ msgstr "請求結算資金費率"
 msgid "Withdrawn"
 msgstr "已提取"
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "TP price above mark price"
-msgstr "TP 價格高於標記價格"
-
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price"
-msgstr "{typeString} Short Limit：當價格高於觸發價格時{0}做空倉位"
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Set stop price below mark price"
+msgstr ""
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
@@ -5834,6 +5835,10 @@ msgstr "舊版 One-Click Trading 子帳戶中剩餘 {balanceFormatted}"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 msgstr "從 <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> 轉移至 <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
+
+#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Long TWAP: {0} a long position in evenly distributed parts over a specified time."
+msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
@@ -6266,6 +6271,10 @@ msgstr "正在結算倉位費用..."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX announcements and updates"
 msgstr "GMX 公告與更新"
+
+#: src/pages/BuyGMX/BuyGmxModal.tsx
+msgid "Buy GMX on GMX Swap"
+msgstr ""
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
 msgid "Edit TP/SL size"
@@ -6890,6 +6899,11 @@ msgstr "摘要"
 msgid "ENTRY PRICE"
 msgstr "入場價格"
 
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Set stop price above mark price"
+msgstr ""
+
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Display PnL after fees"
 msgstr "顯示扣除費用後的 PnL"
@@ -6981,7 +6995,14 @@ msgstr "取消止損"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "{0} is required for collateral.<0/><1/>No swap path found for {1} to {2} within GMX.<2/><3/><4>Buy {3} on 1inch</4>."
-msgstr "{0} 為所需抵押品。<0/><1/>在 GMX 中找不到 {1} 至 {2} 的兌換路徑。<2/><3/><4>在 1inch 購買 {3}</4>。"
+msgstr "{0} 為所需抵押品。<0/><1/>在 GMX 中找不到 {1} 至 {2} 的兌換路徑。<2/><3/><4>在 1inch 購買 {3}</4>。<<<<<<< Updated upstream"
+
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Set limit price above mark price"
+msgstr ""
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
@@ -7131,6 +7152,10 @@ msgstr "DEX 聚合器"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Trade via GMX Account using Arbitrum liquidity. Wallet trading also available on Arbitrum."
 msgstr "透過 GMX Account 使用 Arbitrum 流動性進行交易。也可在 Arbitrum 上使用錢包交易。"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Set SL price below limit price"
+msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "({0} of {1})"
@@ -7358,6 +7383,11 @@ msgstr "單邊流動性金庫，透過主動對沖與再平衡來最小化無常
 msgid "GMX V2 actions"
 msgstr "GMX V2 操作"
 
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Set trigger price below liquidation price"
+msgstr ""
+
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade errors"
 msgstr "交易錯誤"
@@ -7369,11 +7399,6 @@ msgstr "正在存入和提取 GMX Account..."
 #: src/config/uiFlagEvents.tsx
 msgid "Service disruption"
 msgstr "服務中斷"
-
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Stop Market price above mark price"
-msgstr "止損市價高於標記價格"
 
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "SHORT LIQ."
@@ -7433,12 +7458,6 @@ msgstr ""
 msgid "Down"
 msgstr "離線"
 
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Trigger price below mark price"
-msgstr "觸發價格低於標記價格"
-
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 msgid "Staked GMX"
 msgstr "已質押 GMX"
@@ -7475,6 +7494,10 @@ msgstr "我們可以改進什麼？"
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code update failed"
 msgstr "推薦碼更新失敗"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Set SL price above limit price"
+msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "Execution prices for increasing shorts<0/>and decreasing longs"
@@ -7538,10 +7561,6 @@ msgstr ""
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral factor OI long"
 msgstr "做多未平倉量最低抵押品因子"
-
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "TP price below limit price"
-msgstr "止盈價格低於限價"
 
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
@@ -7727,10 +7746,6 @@ msgstr "24 小時交易量"
 msgid "Enter an amount"
 msgstr "請輸入數量"
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "SL price above limit price"
-msgstr "止損價格高於限價"
-
 #: src/lib/tenderly.tsx
 #: src/lib/tenderly.tsx
 msgid "for {comment}"
@@ -7787,12 +7802,6 @@ msgstr "平倉價格影響"
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 msgid "Opens GMTrade in a new tab"
 msgstr "在新分頁中開啟 GMTrade"
-
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Trigger price above mark price"
-msgstr "觸發價格高於標記價格"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top addresses"
@@ -8057,10 +8066,6 @@ msgstr "現有倉位使用 USDC 抵押品。此操作不會影響該倉位。<0>
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "with 100x leverage"
 msgstr "以 100 倍槓桿"
-
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{typeString} Long Stop Market: {0} a long position when the price is below the trigger price"
-msgstr "{typeString} Long Stop Market：當價格低於觸發價格時{0}做多倉位"
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing longs or decreasing shorts at<1/>this size."
@@ -8467,6 +8472,10 @@ msgstr "當流動性和價格條件滿足時執行"
 msgid "Failed settlement of funding fees"
 msgstr "資金費用結算失敗"
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Set TP price above mark price"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Reserved {directionLabel}"
 msgstr "已保留 {directionLabel}"
@@ -8562,10 +8571,6 @@ msgstr "透過法幣入口買入 GMX"
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max network fee"
 msgstr "最大網路費用"
-
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "SL price below limit price"
-msgstr "止損價格低於限價"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -8926,6 +8931,10 @@ msgstr "收益金庫"
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
 msgstr "{title}"
+
+#: src/components/StatusNotification/OrderStatusNotification.tsx
+msgid "Increasing"
+msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit transaction sent for {0}!"
@@ -9432,11 +9441,6 @@ msgstr "GLV（GMX Liquidity Vaults）是 GMX V2 對 GLP 的改良版本。這是
 msgid "{0} tokens converted to GMX from the {1} esGMX deposited for vesting."
 msgstr "{0} 個代幣已從存入歸屬期的 {1} esGMX 轉換為 GMX。"
 
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Trigger price above liquidation price"
-msgstr "觸發價格高於清算價格"
-
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Repeat transaction"
 msgstr "重複交易"
@@ -9703,10 +9707,6 @@ msgstr "可取消倒數 ..."
 msgid "No data available"
 msgstr "無可用資料"
 
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{typeString} Short TWAP: {0} a short position in evenly distributed parts over a specified time"
-msgstr "{typeString} Short TWAP：在指定時間內以均勻分佈的方式{0}做空倉位"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Network for your GMX Account and positions. Balances and positions don't transfer between networks."
 msgstr "您的 GMX Account 和倉位所在的網路。餘額和倉位不會在網路之間轉移。"
@@ -9739,10 +9739,6 @@ msgstr "領取資金費用"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Token permit testing"
 msgstr "代幣許可測試"
-
-#: src/pages/BuyGMX/BuyGmxModal.tsx
-msgid "Buy GMX directly"
-msgstr "直接購買 GMX"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -9977,10 +9973,6 @@ msgstr "查看詳細統計"
 msgid "Simulate transactions"
 msgstr "模擬交易"
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "SL price below mark price"
-msgstr "SL 價格低於標記價格"
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order will execute once sufficient liquidity is available"
 msgstr "此訂單的部分將在有足夠流動性時執行"
@@ -10182,11 +10174,6 @@ msgstr "節省費用"
 msgid "Get optimized exposure to the highest-utilized pools"
 msgstr "獲得最高利用率池的最佳化配置"
 
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Stop Market price below mark price"
-msgstr "Stop Market 價格低於標記價格"
-
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Low collateral after fees. Deposit more to reduce liquidation risk."
 msgstr "扣除費用後抵押品過低。存入更多資金以降低清算風險。"
@@ -10250,10 +10237,6 @@ msgstr "領取 {tokenSymbol} 獎勵"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H VOL."
 msgstr "24H 交易量"
-
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{typeString} Long TWAP: {0} a long position in evenly distributed parts over a specified time"
-msgstr "{typeString} Long TWAP：在指定時間內以均勻分佈的方式{0}做多倉位"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily loss"
@@ -10431,6 +10414,11 @@ msgstr "資金正在跨鏈至..."
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Network fee"
 msgstr "網路費用"
+
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Set trigger price above liquidation price"
+msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivated"
@@ -10654,6 +10642,12 @@ msgstr "做多池上限"
 msgid "Express Trading enabled. Disable in <0>settings</0>"
 msgstr "Express Trading 已啟用。可在<0>設定</0>中停用"
 
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Set trigger price above mark price"
+msgstr ""
+
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "Incl. reviewed"
 msgstr "包含已審核"
@@ -10689,6 +10683,12 @@ msgstr "請輸入比率"
 #: src/pages/RpcDebug/parts.tsx
 msgid "OK"
 msgstr "OK"
+
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Set trigger price below mark price"
+msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Active management"

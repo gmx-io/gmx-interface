@@ -226,7 +226,7 @@ export function getSwapError(p: {
       !isRatioInverted &&
       (markRatio?.ratio === undefined ? undefined : markRatio.ratio < triggerRatio.ratio)
     ) {
-      return { buttonErrorMessage: t`Limit price above mark price` };
+      return { buttonErrorMessage: t`Set limit price below mark price` };
     }
 
     if (
@@ -234,7 +234,7 @@ export function getSwapError(p: {
       isRatioInverted &&
       (markRatio?.ratio === undefined ? undefined : markRatio.ratio > triggerRatio.ratio)
     ) {
-      return { buttonErrorMessage: t`Limit price below mark price` };
+      return { buttonErrorMessage: t`Set limit price above mark price` };
     }
   }
 
@@ -413,19 +413,19 @@ export function getIncreaseError(p: {
     }
 
     if (isLong && thresholdType === TriggerThresholdType.Below && markPrice < triggerPrice) {
-      return { buttonErrorMessage: t`Limit price above mark price` };
+      return { buttonErrorMessage: t`Set limit price below mark price` };
     }
 
     if (!isLong && thresholdType === TriggerThresholdType.Above && markPrice > triggerPrice) {
-      return { buttonErrorMessage: t`Limit price below mark price` };
+      return { buttonErrorMessage: t`Set limit price above mark price` };
     }
 
     if (isLong && thresholdType === TriggerThresholdType.Above && triggerPrice < markPrice) {
-      return { buttonErrorMessage: t`Stop Market price below mark price` };
+      return { buttonErrorMessage: t`Set stop price above mark price` };
     }
 
     if (!isLong && thresholdType === TriggerThresholdType.Below && triggerPrice > markPrice) {
-      return { buttonErrorMessage: t`Stop Market price above mark price` };
+      return { buttonErrorMessage: t`Set stop price below mark price` };
     }
   }
 
@@ -566,20 +566,20 @@ export function getDecreaseError(p: {
 
     if (existingPosition?.liquidationPrice && existingPosition.liquidationPrice !== maxUint256) {
       if (isLong && triggerPrice <= existingPosition.liquidationPrice) {
-        return { buttonErrorMessage: t`Trigger price below liquidation price` };
+        return { buttonErrorMessage: t`Set trigger price above liquidation price` };
       }
 
       if (!isLong && triggerPrice >= existingPosition.liquidationPrice) {
-        return { buttonErrorMessage: t`Trigger price above liquidation price` };
+        return { buttonErrorMessage: t`Set trigger price below liquidation price` };
       }
     }
 
     if (triggerThresholdType === TriggerThresholdType.Above && triggerPrice < (markPrice ?? 0n)) {
-      return { buttonErrorMessage: t`Trigger price below mark price` };
+      return { buttonErrorMessage: t`Set trigger price above mark price` };
     }
 
     if (triggerThresholdType === TriggerThresholdType.Below && triggerPrice > (markPrice ?? 0n)) {
-      return { buttonErrorMessage: t`Trigger price above mark price` };
+      return { buttonErrorMessage: t`Set trigger price below mark price` };
     }
   }
 

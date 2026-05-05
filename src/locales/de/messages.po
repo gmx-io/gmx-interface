@@ -554,13 +554,6 @@ msgstr "Abwicklungskette"
 msgid "Max pool USD exceeded"
 msgstr "Max. Pool-USD überschritten"
 
-#: src/components/OrderEditor/OrderEditor.tsx
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Limit price below mark price"
-msgstr "Limitpreis unter Markpreis"
-
 #: src/components/TVChart/components/OpenInterestTooltip.tsx
 msgid "Long OI"
 msgstr "Long OI"
@@ -904,13 +897,6 @@ msgstr "Gebührenwerte werden bei Erhalt berechnet. Ohne Anreize."
 #: src/pages/Pools/Pools.tsx
 msgid "TVL in vaults and pools"
 msgstr "TVL in Vaults und Pools"
-
-#: src/components/OrderEditor/OrderEditor.tsx
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Limit price above mark price"
-msgstr "Limitpreis über Markpreis"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Trading simulations on GMX using DOJO"
@@ -1465,10 +1451,6 @@ msgstr "Onchain-Quests und Belohnungen"
 msgid "Tokens"
 msgstr "Tokens"
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "TP price above limit price"
-msgstr "TP-Preis über dem Limitpreis"
-
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Action(s)"
 msgstr "Aktion(en)"
@@ -1504,6 +1486,10 @@ msgstr "Einzahlung auf GMX-Konto"
 #: src/domain/synthetics/markets/createGlvDepositTxn.ts
 msgid "Deposit error"
 msgstr "Einzahlungsfehler"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Set SL price below mark price"
+msgstr ""
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -1568,6 +1554,10 @@ msgstr "Weniger anzeigen"
 msgid "Vest"
 msgstr "Vesten"
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Set TP price below limit price"
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Bridge transaction hash"
 msgstr "Bridge-Transaktionshash"
@@ -1587,6 +1577,10 @@ msgstr "Pool wählen"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Log index:"
 msgstr "Log-Index:"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Set TP price above limit price"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pool max short amount"
@@ -2404,6 +2398,13 @@ msgstr "Übertragung abgeschlossen"
 msgid "GM bridging to..."
 msgstr "GM-Bridging zu..."
 
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Set limit price below mark price"
+msgstr ""
+
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivate 1CT"
 msgstr "1CT deaktivieren"
@@ -2603,6 +2604,10 @@ msgstr "Sie haben im ausgewählten Zeitraum nicht gehandelt"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default parts for TWAP orders"
 msgstr "Standardanzahl der Teile für TWAP-Orders"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Set TP price below mark price"
+msgstr ""
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
@@ -2858,10 +2863,6 @@ msgstr "Abheben von GMX Account..."
 msgid "Vesting status"
 msgstr "Vesting-Status"
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "TP price below mark price"
-msgstr "TP-Preis unter dem Markpreis"
-
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GMX tokens before"
 msgstr "Der Empfänger hat zuvor noch keine GMX-Token gestaked"
@@ -2984,6 +2985,10 @@ msgstr "Deaktivierte Märkte"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to market traders' PnL"
 msgstr "Exposition gegenüber dem PnL der Marktteilnehmer"
+
+#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
+msgstr ""
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Average position size"
@@ -3487,6 +3492,10 @@ msgstr "Worker-Thread"
 msgid "Failed to update orders"
 msgstr "Orders konnten nicht aktualisiert werden"
 
+#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Long Stop Market: {0} a long position when the price is above the trigger price."
+msgstr ""
+
 #: src/components/TPSLModal/AddTPSLModal.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net price impact / fees"
@@ -3526,6 +3535,10 @@ msgstr "Handeln Sie in großem Umfang, ohne sich über dünne Orderbücher oder 
 msgid "Settle"
 msgstr "Abrechnen"
 
+#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Short TWAP: {0} a short position in evenly distributed parts over a specified time."
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Insufficient gas for network fees"
 msgstr "Unzureichendes Gas für Netzwerkgebühren"
@@ -3533,10 +3546,6 @@ msgstr "Unzureichendes Gas für Netzwerkgebühren"
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to"
 msgstr "{fromText} zu"
-
-#: src/components/StatusNotification/OrderStatusNotification.tsx
-msgid "Decreasing..."
-msgstr "Reduzierung..."
 
 #: src/components/Referrals/ClaimAffiliatesModal/ClaimAffiliatesModal.tsx
 msgid "Claim successful"
@@ -4594,10 +4603,6 @@ msgstr "Aktueller Einfluss: {0}. Fügen Sie 0,30% Puffer für eine bessere Order
 msgid "Settle {totalStr}"
 msgstr "Abrechnen {totalStr}"
 
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price"
-msgstr "{typeString} Long Limit: {0} eine Long-Position, wenn der Preis unter dem Auslösepreis liegt"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive impact factor"
 msgstr "Positiver Einflussfaktor"
@@ -5250,6 +5255,10 @@ msgstr "Keine Optionen zum Übertragen von {nativeTokenSymbol} nach {chainName}"
 msgid "<0>Notifications are provided by Notifi and not affiliated with GMX. By subscribing, you agree that info you provide to Notifi will be governed by its </0><1>Privacy Policy</1><2> and </2><3>Terms of Use</3>."
 msgstr "<0>Benachrichtigungen werden von Notifi bereitgestellt und sind nicht mit GMX verbunden. Durch Abonnieren stimmst du zu, dass die von dir an Notifi bereitgestellten Infos von seiner </0><1>Datenschutzrichtlinie</1><2> und </2><3>Nutzungsbedingungen</3> geregelt werden."
 
+#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
+msgstr ""
+
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
 msgstr "Beanspruchungen auf Avalanche Fuji nicht verfügbar"
@@ -5363,10 +5372,6 @@ msgstr "Jobs"
 msgid "Failed Stop Market"
 msgstr "Fehlgeschlagener Stop Market"
 
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price"
-msgstr "{typeString} Short Stop Market: {0} einer Short-Position, wenn der Preis unter dem Auslösepreis liegt"
-
 #: src/components/GmxAccountModal/MainView.tsx
 #: src/components/SettingsModal/SettingsModal.tsx
 #: src/components/SideNav/SettingsNavItem.tsx
@@ -5397,10 +5402,6 @@ msgstr "({0} des Tauschbetrags)"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient {0} liquidity"
 msgstr "Unzureichende {0}-Liquidität"
-
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "SL price above mark price"
-msgstr "SL-Preis über dem Markpreis"
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
 msgid "Unable to calculate order"
@@ -5679,10 +5680,6 @@ msgstr "ODOS"
 msgid "GMX Substack"
 msgstr "GMX Substack"
 
-#: src/components/StatusNotification/OrderStatusNotification.tsx
-msgid "Increasing..."
-msgstr "Wird erhöht..."
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Insufficient liquidity for pay-to-collateral swap at trigger price"
 msgstr "Unzureichende Liquidität für den Tausch von Zahlungstoken zu Sicherheit zum Auslösepreis"
@@ -5719,6 +5716,10 @@ msgstr "Pools, die Liquidität für bestimmte GMX-Märkte bereitstellen. Unterst
 msgid "Max funding factor"
 msgstr "Maximaler Finanzierungsfaktor"
 
+#: src/components/StatusNotification/OrderStatusNotification.tsx
+msgid "Decreasing"
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmSwapWarningsRow.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "High price impact"
@@ -5737,6 +5738,10 @@ msgstr "Abstimmung"
 #: src/components/TradeHistory/keys.ts
 msgid "Update TWAP Swap part"
 msgstr "TWAP Tauschteil aktualisieren"
+
+#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price."
+msgstr ""
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "No trades match the selected filters"
@@ -5758,12 +5763,11 @@ msgstr "Empfohlen"
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Decrease"
-msgstr "Verringern"
+msgstr "Verringern<<<<<<< Updated upstream"
 
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Trigger price below liquidation price"
-msgstr "Auslösepreis unter Liquidationspreis"
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Set SL price above mark price"
+msgstr ">>>>>>> Stashed changes"
 
 #: src/components/Referrals/AffiliatesStats.tsx
 #: src/components/Referrals/TradersStats.tsx
@@ -5784,13 +5788,10 @@ msgstr "Abwicklung der Finanzierungsgebühren anfordern"
 msgid "Withdrawn"
 msgstr "Abgehoben"
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "TP price above mark price"
-msgstr "TP-Preis über Markpreis"
-
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price"
-msgstr "{typeString} Short Limit: {0} eine Short-Position, wenn der Preis über dem Auslösepreis liegt"
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Set stop price below mark price"
+msgstr ""
 
 #: src/components/StatusNotification/FeesSettlementStatusNotification.tsx
 msgid "Settle request for {0, plural, one {# position} other {# positions}} sent"
@@ -5834,6 +5835,10 @@ msgstr "{balanceFormatted} verbleibend im alten 1CT-Unterkonto"
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Shifting from <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> to <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
 msgstr "Verschiebe von <0><1>GM: {fromIndexName}</1><2>{fromPoolName}</2></0> zu <3><4>GM: {toIndexName}</4><5>{toPoolName}</5></3>"
+
+#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
+msgid "{typeString} Long TWAP: {0} a long position in evenly distributed parts over a specified time."
+msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
 #: src/components/MarketStats/components/CompositionTable.tsx
@@ -6266,6 +6271,10 @@ msgstr "Positionsgebühren werden abgerechnet..."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX announcements and updates"
 msgstr "GMX Ankündigungen und Aktualisierungen"
+
+#: src/pages/BuyGMX/BuyGmxModal.tsx
+msgid "Buy GMX on GMX Swap"
+msgstr ""
 
 #: src/components/TPSLModal/AddTPSLModal.tsx
 msgid "Edit TP/SL size"
@@ -6890,6 +6899,11 @@ msgstr "Zusammenfassung"
 msgid "ENTRY PRICE"
 msgstr "EINSTIEGSPREIS"
 
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Set stop price above mark price"
+msgstr ""
+
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Display PnL after fees"
 msgstr "PnL nach Gebühren anzeigen"
@@ -6981,7 +6995,14 @@ msgstr "Stop-Loss abbrechen"
 
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "{0} is required for collateral.<0/><1/>No swap path found for {1} to {2} within GMX.<2/><3/><4>Buy {3} on 1inch</4>."
-msgstr "{0} wird als Sicherheit benötigt.<0/><1/>Kein Tauschpfad für {1} zu {2} innerhalb von GMX gefunden.<2/><3/><4>{3} auf 1inch kaufen</4>."
+msgstr "{0} wird als Sicherheit benötigt.<0/><1/>Kein Tauschpfad für {1} zu {2} innerhalb von GMX gefunden.<2/><3/><4>{3} auf 1inch kaufen</4>.<<<<<<< Updated upstream"
+
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Set limit price above mark price"
+msgstr ""
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
@@ -7131,6 +7152,10 @@ msgstr "DEX-Aggregator"
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Trade via GMX Account using Arbitrum liquidity. Wallet trading also available on Arbitrum."
 msgstr "Handeln Sie über GMX Account mit Arbitrum-Liquidität. Wallet-Handel ist ebenfalls auf Arbitrum verfügbar."
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Set SL price below limit price"
+msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "({0} of {1})"
@@ -7358,6 +7383,11 @@ msgstr "Einseitige Liquiditätsvaults mit aktivem Hedging und Rebalancing zur Mi
 msgid "GMX V2 actions"
 msgstr "GMX V2 Aktionen"
 
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Set trigger price below liquidation price"
+msgstr ""
+
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Trade errors"
 msgstr "Handelsfehler"
@@ -7369,11 +7399,6 @@ msgstr "Ein- und Auszahlung vom GMX Account..."
 #: src/config/uiFlagEvents.tsx
 msgid "Service disruption"
 msgstr "Dienstunterbrechung"
-
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Stop Market price above mark price"
-msgstr "Stop-Market-Preis über dem Markpreis"
 
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "SHORT LIQ."
@@ -7433,12 +7458,6 @@ msgstr ""
 msgid "Down"
 msgstr "Ausgefallen"
 
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Trigger price below mark price"
-msgstr "Trigger-Preis unter Markpreis"
-
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 msgid "Staked GMX"
 msgstr "Gestaktes GMX"
@@ -7475,6 +7494,10 @@ msgstr "Was könnten wir verbessern?"
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Referral code update failed"
 msgstr "Aktualisierung des Empfehlungscodes fehlgeschlagen"
+
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Set SL price above limit price"
+msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "Execution prices for increasing shorts<0/>and decreasing longs"
@@ -7538,10 +7561,6 @@ msgstr "<0>⬡ Chainlink Data Story ⬡ <1/><2>#Chainlink</2> Data Streams haben
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral factor OI long"
 msgstr "Min. Sicherheitsfaktor OI Long"
-
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "TP price below limit price"
-msgstr "TP-Preis unter dem Limit-Preis"
 
 #: src/components/NpsModal/NpsModal.tsx
 #: src/components/Referrals/JoinReferralCode.tsx
@@ -7727,10 +7746,6 @@ msgstr "24h Volumen"
 msgid "Enter an amount"
 msgstr "Betrag eingeben"
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "SL price above limit price"
-msgstr "SL-Preis über dem Limitpreis"
-
 #: src/lib/tenderly.tsx
 #: src/lib/tenderly.tsx
 msgid "for {comment}"
@@ -7787,12 +7802,6 @@ msgstr "Preiseinfluss beim Schließen"
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 msgid "Opens GMTrade in a new tab"
 msgstr "Öffnet GMTrade in einem neuen Tab"
-
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Trigger price above mark price"
-msgstr "Trigger-Preis über Markpreis"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Top addresses"
@@ -8057,10 +8066,6 @@ msgstr "Bestehende Position verwendet USDC als Sicherheit. Diese Aktion hat kein
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "with 100x leverage"
 msgstr "mit 100x Hebel"
-
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{typeString} Long Stop Market: {0} a long position when the price is below the trigger price"
-msgstr "{typeString} Long Stop Market: {0} einer Long-Position, wenn der Preis unter dem Auslösepreis liegt"
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing longs or decreasing shorts at<1/>this size."
@@ -8467,6 +8472,10 @@ msgstr "Wird ausgeführt, wenn Liquiditäts- und Preisbedingungen erfüllt sind"
 msgid "Failed settlement of funding fees"
 msgstr "Fehlgeschlagene Abwicklung von Finanzierungsgebühren"
 
+#: src/domain/synthetics/sidecarOrders/utils.ts
+msgid "Set TP price above mark price"
+msgstr ""
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Reserved {directionLabel}"
 msgstr "Reserviert {directionLabel}"
@@ -8562,10 +8571,6 @@ msgstr "GMX über Fiat-Gateways kaufen"
 #: src/components/NetworkFeeRow/NetworkFeeRow.tsx
 msgid "Max network fee"
 msgstr "Max. Netzwerkgebühr"
-
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "SL price below limit price"
-msgstr "SL-Preis unter dem Limitpreis"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -8926,6 +8931,10 @@ msgstr "Renditetresore"
 #: src/components/StatsTooltip/ChainsStatsTooltipRow.tsx
 msgid "{title}"
 msgstr "{title}"
+
+#: src/components/StatusNotification/OrderStatusNotification.tsx
+msgid "Increasing"
+msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit transaction sent for {0}!"
@@ -9432,11 +9441,6 @@ msgstr "GLV (GMX Liquidity Vaults) ist die verbesserte Version von GLP in GMX V2
 msgid "{0} tokens converted to GMX from the {1} esGMX deposited for vesting."
 msgstr "{0} Token wurden aus den {1} für das Vesting eingezahlten esGMX in GMX umgewandelt."
 
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Trigger price above liquidation price"
-msgstr "Auslösepreis über dem Liquidationspreis"
-
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Repeat transaction"
 msgstr "Transaktion wiederholen"
@@ -9703,10 +9707,6 @@ msgstr "Stornierbar in ..."
 msgid "No data available"
 msgstr "Keine Daten verfügbar"
 
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{typeString} Short TWAP: {0} a short position in evenly distributed parts over a specified time"
-msgstr "{typeString} Short TWAP: {0} eine Short-Position in gleichmäßig verteilten Teilen über einen bestimmten Zeitraum"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Network for your GMX Account and positions. Balances and positions don't transfer between networks."
 msgstr "Netzwerk für Ihr GMX Account und Ihre Positionen. Guthaben und Positionen werden nicht zwischen Netzwerken übertragen."
@@ -9739,10 +9739,6 @@ msgstr "Finanzierungsgebühren beanspruchen"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Token permit testing"
 msgstr "Token-Permit-Tests"
-
-#: src/pages/BuyGMX/BuyGmxModal.tsx
-msgid "Buy GMX directly"
-msgstr "GMX direkt kaufen"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -9977,10 +9973,6 @@ msgstr "Für detaillierte Statistiken"
 msgid "Simulate transactions"
 msgstr "Transaktionen simulieren"
 
-#: src/domain/synthetics/sidecarOrders/utils.ts
-msgid "SL price below mark price"
-msgstr "SL-Preis unter Markpreis"
-
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Parts of this order will execute once sufficient liquidity is available"
 msgstr "Teile dieser Order werden ausgeführt, sobald ausreichend Liquidität verfügbar ist"
@@ -10182,11 +10174,6 @@ msgstr "Kosten sparen"
 msgid "Get optimized exposure to the highest-utilized pools"
 msgstr "Erhalte optimierte Exposure zu den am stärksten genutzten Pools"
 
-#: src/domain/synthetics/orders/getPositionOrderError.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Stop Market price below mark price"
-msgstr "Stop-Market-Preis unter Markpreis"
-
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Low collateral after fees. Deposit more to reduce liquidation risk."
 msgstr "Geringe Sicherheit nach Gebühren. Zahlen Sie mehr ein, um das Liquidationsrisiko zu reduzieren."
@@ -10250,10 +10237,6 @@ msgstr "{tokenSymbol} Belohnungen beanspruchen"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H VOL."
 msgstr "24H VOL."
-
-#: src/components/TradeInfoIcon/TradeInfoIcon.tsx
-msgid "{typeString} Long TWAP: {0} a long position in evenly distributed parts over a specified time"
-msgstr "{typeString} Long TWAP: {0} eine Long-Position in gleichmäßig verteilten Teilen über einen festgelegten Zeitraum"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily loss"
@@ -10431,6 +10414,11 @@ msgstr "Guthaben wird übertragen nach..."
 #: src/components/Referrals/JoinReferralCode.tsx
 msgid "Network fee"
 msgstr "Netzwerkgebühr"
+
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Set trigger price above liquidation price"
+msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivated"
@@ -10654,6 +10642,12 @@ msgstr "POOL CAP LONG"
 msgid "Express Trading enabled. Disable in <0>settings</0>"
 msgstr "Express Trading aktiviert. Deaktivieren Sie es in den <0>Einstellungen</0>"
 
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Set trigger price above mark price"
+msgstr ""
+
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "Incl. reviewed"
 msgstr "Inkl. überprüfter"
@@ -10689,6 +10683,12 @@ msgstr "Verhältnis eingeben"
 #: src/pages/RpcDebug/parts.tsx
 msgid "OK"
 msgstr "OK"
+
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/orders/getPositionOrderError.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Set trigger price below mark price"
+msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Active management"

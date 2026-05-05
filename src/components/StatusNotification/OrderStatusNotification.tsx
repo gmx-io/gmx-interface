@@ -186,7 +186,7 @@ function OrderStatusNotification({
         let orderTypeText = "";
 
         if (isMarketOrderType(orderType)) {
-          orderTypeText = isIncreaseOrderType(orderType) ? t`Increasing...` : t`Decreasing...`;
+          orderTypeText = isIncreaseOrderType(orderType) ? t`Increasing` : t`Decreasing`;
         } else {
           const txnTypeText = {
             create: t`Create`,

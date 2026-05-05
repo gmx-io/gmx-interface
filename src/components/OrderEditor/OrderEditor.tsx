@@ -440,11 +440,11 @@ export function OrderEditor(p: Props) {
       }
 
       if (triggerRatio && !isRatioInverted && markRatio && markRatio.ratio < triggerRatio.ratio) {
-        return t`Limit price above mark price`;
+        return t`Set limit price below mark price`;
       }
 
       if (triggerRatio && isRatioInverted && markRatio && markRatio.ratio > triggerRatio.ratio) {
-        return t`Limit price below mark price`;
+        return t`Set limit price above mark price`;
       }
 
       const expressError = getExpressError({
