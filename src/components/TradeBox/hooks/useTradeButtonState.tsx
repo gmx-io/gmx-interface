@@ -214,6 +214,10 @@ export function useTradeboxButtonState({
       return {};
     }
 
+    if (payAmount === undefined || payAmount === 0n) {
+      return {};
+    }
+
     return getNativeGasError({
       networkFee: totalExecutionFee?.feeTokenAmount,
       nativeBalance: getByKey(tokensData, zeroAddress)?.walletBalance,
@@ -221,6 +225,7 @@ export function useTradeboxButtonState({
   }, [
     expressParams?.gasPaymentParams?.gasPaymentTokenAmount,
     gasPaymentToken,
+    payAmount,
     tokensData,
     totalExecutionFee?.feeTokenAmount,
   ]);

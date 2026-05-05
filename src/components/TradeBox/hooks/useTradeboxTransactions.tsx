@@ -145,7 +145,9 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     if (isWrapOrUnwrap) {
       return wrapOrUnwrapExecutionFee;
     }
-    return tokensData ? getBatchTotalExecutionFee({ batchParams, chainId, tokensData }) : undefined;
+    return tokensData
+      ? getBatchTotalExecutionFee({ batchParams, chainId, tokensData, allowEmptyBatch: true })
+      : undefined;
   }, [batchParams, chainId, isWrapOrUnwrap, tokensData, wrapOrUnwrapExecutionFee]);
 
   const {

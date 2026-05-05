@@ -27,7 +27,7 @@ export function getMaxAvailableTokenAmount({
   fromTokenBalance,
   gasPaymentToken,
   gasPaymentTokenBalance,
-  gasPaymentTokenAmount,
+  gasPaymentTokenAmount = 0n,
   ignoreGasPaymentToken = false,
   useMinimalBuffer = false,
 }: {
@@ -35,7 +35,7 @@ export function getMaxAvailableTokenAmount({
   fromTokenBalance: bigint | undefined;
   gasPaymentToken: TokenData | undefined;
   gasPaymentTokenBalance: bigint | undefined;
-  gasPaymentTokenAmount: bigint | undefined;
+  gasPaymentTokenAmount?: bigint;
   ignoreGasPaymentToken?: boolean;
   useMinimalBuffer?: boolean;
 }): {
@@ -56,7 +56,7 @@ export function getMaxAvailableTokenAmount({
     };
   }
 
-  if (gasPaymentToken === undefined || gasPaymentTokenBalance === undefined || gasPaymentTokenAmount === undefined) {
+  if (gasPaymentToken === undefined || gasPaymentTokenBalance === undefined) {
     return {
       maxAvailableAmount: 0n,
       bufferType: undefined,
@@ -90,12 +90,14 @@ export function getMaxAvailableTokenAmount({
     }
   }
 
-  const minimalBuffer = applyValidMinimalBuffer(gasPaymentTokenAmount);
-  if (gasPaymentTokenBalance >= minimalBuffer) {
-    return {
-      maxAvailableAmount: gasPaymentTokenBalance - minimalBuffer,
-      bufferType: "minimal",
-    };
+  if (gasPaymentTokenAmount > 0n) {
+    const minimalBuffer = applyValidMinimalBuffer(gasPaymentTokenAmount);
+    if (gasPaymentTokenBalance >= minimalBuffer) {
+      return {
+        maxAvailableAmount: gasPaymentTokenBalance - minimalBuffer,
+        bufferType: "minimal",
+      };
+    }
   }
 
   return { maxAvailableAmount: 0n, bufferType: undefined };
@@ -172,7 +174,10 @@ export function useMaxAvailableAmount({
     isStable: fromToken.isStable,
   });
 
-  if (isLoading) {
+  const needsGasBuffer =
+    !ignoreGasPaymentToken && gasPaymentToken !== undefined && fromToken.address === gasPaymentToken.address;
+
+  if (isLoading && needsGasBuffer) {
     return {
       formattedBalance,
       formattedMaxAvailableAmount: "",

@@ -356,9 +356,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     ? expressGasPaymentTokenAmount
     : submitButtonState.totalExecutionFee?.feeTokenAmount;
 
-  const isMaxAmountLoading = expressOrdersEnabledForMax
-    ? submitButtonState.isExpressLoading || expressGasPaymentTokenAmount === undefined
-    : submitButtonState.totalExecutionFee?.feeTokenAmount === undefined;
+  const isMaxAmountLoading = expressOrdersEnabledForMax && submitButtonState.isExpressLoading;
 
   const fromTokenBalance = getBalanceByBalanceType(
     fromToken,

@@ -241,9 +241,7 @@ export function PositionEditor() {
       : executionFee?.feeTokenAmount;
 
   const expressEnabledForMax = expressOrdersEnabled && !collateralToken?.isNative;
-  const isMaxAmountLoading = expressEnabledForMax
-    ? submitButtonState.isExpressLoading || gasPaymentTokenAmountForMax === undefined
-    : executionFee?.feeTokenAmount === undefined;
+  const isMaxAmountLoading = expressEnabledForMax && submitButtonState.isExpressLoading;
 
   const depositBalanceType = isCollateralTokenFromGmxAccount ? TokenBalanceType.GmxAccount : TokenBalanceType.Wallet;
   const collateralTokenBalance = getBalanceByBalanceType(collateralToken, depositBalanceType);

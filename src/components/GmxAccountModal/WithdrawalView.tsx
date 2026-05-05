@@ -1007,7 +1007,7 @@ export const WithdrawalView = () => {
     };
   }, [gasPaymentToken, isSameChain, networkFeeInGasPaymentToken, selectedToken, someGasPaymentTokenAmount, wntFee]);
 
-  const isLoadingWithdrawalMax = isSameChain ? false : gasPaymentTokenAmountForMax === undefined;
+  const isLoadingWithdrawalMax = isSameChain ? false : expressTxnParamsAsyncResult.isLoading;
 
   const withdrawalMaxDetails = useMaxAvailableAmount({
     fromToken: selectedToken,
