@@ -378,6 +378,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       gasPaymentTokenBalance: gasPaymentTokenBalanceForMax,
       gasPaymentTokenAmount: gasPaymentTokenAmountForMax,
       useMinimalBuffer: treatMinimalBufferAsEnough,
+      isGmxAccount: isFromTokenGmxAccount,
     });
 
   const onMaxClick = useCallback(() => {

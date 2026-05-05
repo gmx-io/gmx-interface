@@ -8148,6 +8148,10 @@ msgstr ""
 msgid "Insufficient {tokensText} for gas in your GMX Account. <0>Deposit {tokensText}</0>"
 msgstr ""
 
+#: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
+msgid "Low {symbol} balance. This amount leaves little for future fees on your GMX Account"
+msgstr ""
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "No trades during selected period"
 msgstr ""

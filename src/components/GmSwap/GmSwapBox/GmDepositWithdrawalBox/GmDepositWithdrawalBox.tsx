@@ -239,6 +239,7 @@ export function GmSwapBoxDepositWithdrawal() {
     gasPaymentToken: isDeposit ? gasPaymentTokenForMax : undefined,
     gasPaymentTokenBalance: isDeposit ? gasPaymentTokenBalanceForMax : undefined,
     gasPaymentTokenAmount: isDeposit ? gasPaymentTokenAmountForMax : undefined,
+    isGmxAccount: paySource === "gmxAccount",
   });
 
   const firstTokenShowMaxButton = isDeposit && firstTokenMaxDetails.showClickMax;
@@ -252,6 +253,7 @@ export function GmSwapBoxDepositWithdrawal() {
     gasPaymentToken: isDeposit ? gasPaymentTokenForMax : undefined,
     gasPaymentTokenBalance: isDeposit ? gasPaymentTokenBalanceForMax : undefined,
     gasPaymentTokenAmount: isDeposit ? gasPaymentTokenAmountForMax : undefined,
+    isGmxAccount: paySource === "gmxAccount",
   });
 
   const secondTokenShowMaxButton = isDeposit && secondTokenMaxDetails.showClickMax;

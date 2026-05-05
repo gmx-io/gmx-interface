@@ -115,6 +115,7 @@ export function useMaxAvailableAmount({
   gasPaymentTokenAmount,
   ignoreGasPaymentToken = false,
   useMinimalBuffer = false,
+  isGmxAccount = false,
 }: {
   fromToken: TokenData | undefined;
   fromTokenBalance: bigint | undefined;
@@ -136,6 +137,7 @@ export function useMaxAvailableAmount({
    * For cases when user swaps from one gas payment token to another gas payment token
    */
   useMinimalBuffer?: boolean;
+  isGmxAccount?: boolean;
 }): {
   formattedBalance: string;
   formattedMaxAvailableAmount: string;
@@ -202,6 +204,7 @@ export function useMaxAvailableAmount({
     if (!aboveBalance && (bufferType === "minimal" || isDifferentEnough)) {
       gasPaymentTokenWarningContent = getLowGasPaymentTokenBalanceWarning({
         chainId,
+        isGmxAccount,
         symbol: gasPaymentToken.symbol,
       });
     }

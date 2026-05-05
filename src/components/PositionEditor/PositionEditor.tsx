@@ -256,6 +256,7 @@ export function PositionEditor() {
     gasPaymentToken: isDeposit ? gasPaymentTokenForMax : undefined,
     gasPaymentTokenBalance: isDeposit ? gasPaymentTokenBalanceForMax : undefined,
     gasPaymentTokenAmount: isDeposit ? gasPaymentTokenAmountForMax : undefined,
+    isGmxAccount: isCollateralTokenFromGmxAccount,
   });
 
   const maxAvailableAmount = isDeposit ? depositMaxDetails.maxAvailableAmount : maxWithdrawAmount;

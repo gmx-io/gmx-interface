@@ -8148,6 +8148,10 @@ msgstr "Nouveau palier :"
 msgid "Insufficient {tokensText} for gas in your GMX Account. <0>Deposit {tokensText}</0>"
 msgstr "Insuffisant {tokensText} pour le gaz dans votre Compte GMX. <0>Déposer {tokensText}</0>"
 
+#: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
+msgid "Low {symbol} balance. This amount leaves little for future fees on your GMX Account"
+msgstr "Solde {symbol} faible. Ce montant laisse peu pour les frais futurs sur votre GMX Account"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "No trades during selected period"
 msgstr "Aucune transaction pendant la période sélectionnée"

@@ -8148,6 +8148,10 @@ msgstr "新しいティア:"
 msgid "Insufficient {tokensText} for gas in your GMX Account. <0>Deposit {tokensText}</0>"
 msgstr "GMXアカウント内のガス用の{tokensText}が不足しています。<0>{tokensText}を入金</0>"
 
+#: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
+msgid "Low {symbol} balance. This amount leaves little for future fees on your GMX Account"
+msgstr "{symbol}残高が不足しています。GMX Accountでの今後の手数料のための残高がほとんど残りません"
+
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "No trades during selected period"
 msgstr "選択期間中の取引はありません"

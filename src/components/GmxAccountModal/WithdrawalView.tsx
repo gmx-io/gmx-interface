@@ -1018,6 +1018,7 @@ export const WithdrawalView = () => {
     gasPaymentToken: gasPaymentTokenForMax,
     gasPaymentTokenBalance: gasPaymentTokenBalanceForMax,
     gasPaymentTokenAmount: gasPaymentTokenAmountForMax,
+    isGmxAccount: true,
   });
 
   const showMaxButton =
