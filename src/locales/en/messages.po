@@ -408,6 +408,10 @@ msgstr "What is GLV?"
 msgid "Edit Limit Swap: {fromSymbol} to {toSymbol}"
 msgstr "Edit Limit Swap: {fromSymbol} to {toSymbol}"
 
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Increase"
+msgstr "Expired Market Increase"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Percentage"
 msgstr "Percentage"
@@ -899,6 +903,10 @@ msgstr "GMX alerts"
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "Net price impact and fees from your trade. <0>Read more</0>."
 msgstr "Net price impact and fees from your trade. <0>Read more</0>."
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Decrease"
+msgstr "Expired Market Decrease"
 
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Prices are volatile. <0>Increase allowed slippage</0>"
@@ -1738,6 +1746,7 @@ msgstr "Not supported"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Acceptable price for the order"
@@ -3297,6 +3306,7 @@ msgstr "Impact pool after reserved positive impact"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "{fromText} to {toMinText}"
 msgstr "{fromText} to {toMinText}"
 
@@ -3508,6 +3518,10 @@ msgstr "Runs entirely on public chains"
 #: src/domain/synthetics/orders/utils.tsx
 msgid "May lack liquidity for parts of this order when triggered"
 msgstr "May lack liquidity for parts of this order when triggered"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min funding factor (long)"
+msgstr "Min funding factor (long)"
 
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 msgid "What makes GMX more cost-efficient than other perpetual platforms?"
@@ -4151,6 +4165,10 @@ msgstr "Buying..."
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 msgid "Missing claim parameters. Retry in a few seconds"
 msgstr "Missing claim parameters. Retry in a few seconds"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max funding factor (short)"
+msgstr "Max funding factor (short)"
 
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "AVG. LEV."
@@ -4940,6 +4958,10 @@ msgstr "Transfer account"
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "LONGS NET RATE / 1H"
 msgstr "LONGS NET RATE / 1H"
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired withdraw"
+msgstr "Expired withdraw"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -5797,10 +5819,6 @@ msgstr "Allowed actions"
 msgid "Pools that provide liquidity to specific GMX markets. Supports single-asset and native asset options."
 msgstr "Pools that provide liquidity to specific GMX markets. Supports single-asset and native asset options."
 
-#: src/pages/SyntheticsStats/SyntheticsStats.tsx
-msgid "Max funding factor"
-msgstr "Max funding factor"
-
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Your discount is now active!"
 msgstr "Your discount is now active!"
@@ -6412,10 +6430,6 @@ msgstr "Pool max long amount"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Requires more active management than GLV"
 msgstr "Requires more active management than GLV"
-
-#: src/pages/SyntheticsStats/SyntheticsStats.tsx
-msgid "Min funding factor"
-msgstr "Min funding factor"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Governance alerts"
@@ -7566,6 +7580,10 @@ msgstr "OPEN INTEREST"
 msgid "Begin transfer"
 msgstr "Begin transfer"
 
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Min funding factor (short)"
+msgstr "Min funding factor (short)"
+
 #: src/domain/synthetics/positions/utils.ts
 msgid "market"
 msgstr "market"
@@ -7928,6 +7946,10 @@ msgstr "Fulfilling buy request..."
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Buy GM failed"
 msgstr "Buy GM failed"
+
+#: src/pages/SyntheticsStats/SyntheticsStats.tsx
+msgid "Max funding factor (long)"
+msgstr "Max funding factor (long)"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesPromoCard.tsx
 msgid "Activate someone's referral code to receive a permanent discount on all opening and closing <0/> fees. Your savings apply automatically on every trade. <1>Learn more</1>"
@@ -10555,6 +10577,12 @@ msgstr "Delta neutral vaults"
 msgid "Sending shift request..."
 msgstr "Sending shift request..."
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
+msgid "Order expired before it could be executed"
+msgstr "Order expired before it could be executed"
+
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"
 msgstr "PNG"
@@ -10827,6 +10855,10 @@ msgstr "Close"
 msgid "Link"
 msgstr "Link"
 
+#: src/components/TradeHistory/keys.ts
+msgid "Expired Market Swap"
+msgstr "Expired Market Swap"
+
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 msgid "Available to deposit"
 msgstr "Available to deposit"
@@ -10846,6 +10878,10 @@ msgstr "General performance details"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Number of Trades from Referrals"
 msgstr "Number of Trades from Referrals"
+
+#: src/components/TradeHistory/keys.ts
+msgid "Expired deposit"
+msgstr "Expired deposit"
 
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx

@@ -293,7 +293,7 @@ export async function simulateExecution(chainId: ContractsChainId, p: SimulateEx
     }
 
     simulateExecuteData = encodeFunctionData({
-      abi: abis.ExchangeRouter,
+      abi: abis.SimulationRouter,
       functionName: "simulateExecuteLatestJitOrder",
       args: [p.jitShiftParamsList, simulationPriceParams],
     });

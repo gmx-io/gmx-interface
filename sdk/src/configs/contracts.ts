@@ -254,16 +254,16 @@ export const CONTRACTS = {
     SubaccountGelatoRelayRouter: "0xD515fA0B4d704f3E2C57270F1F53BEeE16348B3b",
 
     MultichainClaimsRouter: "0xfE9fD31e499bA6d8733Aec49ECe5b41381103433",
-    MultichainGlvRouter: "0x7EF7d01316425de5d7C2EFDf8b802A250c222faB",
-    MultichainGmRouter: "0x041336A3DaF0a12d004a95f1511393d9A3d7236d",
-    MultichainOrderRouter: "0x976363dFbA3AeB8Fb10b733baD74e7099cCB558A",
+    MultichainGlvRouter: "0xa44a3F66B3B4D4711D5Bd47e62ab5F13471e77CC",
+    MultichainGmRouter: "0x915d980926a8d63D8dfb577982BAa6916988aD52",
+    MultichainOrderRouter: "0x37322E93a0E611522D526ED0A6EC90EDE2118125",
     MultichainSubaccountRouter: "0xeB8f828A4B89dc3A854f278227A2A5E136E50bF9",
-    MultichainTransferRouter: "0xCa62C570D8667a00A56EB989881ECbA4364BFe9e",
+    MultichainTransferRouter: "0xB9FdA3F0f089B4fcaCd66BCC62D811fa6D69F53E",
     MultichainVault: "0xd6922E889cE4CF14e59427F20e7d857ff81A5A9D",
-    LayerZeroProvider: "0x9c41F854f123a7905907FfcF2578dFB7E47D02E0",
+    LayerZeroProvider: "0xbfB6f55a561dd5c6FB263FBaBFdD82e4E9A9AffD",
 
     ChainlinkPriceFeedProvider: "0x7452c558d45f8afC8c83dAe62C3f8A5BE19c71f6",
-    ClaimHandler: "0x7e42e350FEF7c0A766590A6b2F4eF3F38D8A2988",
+    ClaimHandler: "0x06D774708a890f520e695322eE1aA5De3897261B",
 
     // External
     ExternalHandler: "0xa7EE2737249e0099906cB079BCEe85f0bbd837d4",
