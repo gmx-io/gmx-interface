@@ -1,4 +1,4 @@
-import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { ChangeEvent, useCallback, useLayoutEffect, useMemo, useRef, useState } from "react";
 
 import { SourceChainId } from "config/chains";
 import { TRADEBOX_SIZE_DENOMINATION_KEY } from "config/localStorage";
@@ -110,8 +110,10 @@ export function TradeboxMarginFields({
 
   // Sync size input value to USD when market/token context changes
   // USD value calculated separately from increase/decrease amounts
-  // so we need to force a sync when the context changes
-  useEffect(() => {
+  // so we need to force a sync when the context changes.
+  // useLayoutEffect so the flag is set before the consumer effect below
+  // runs, keeping the sync within a single paint cycle.
+  useLayoutEffect(() => {
     const nextContext = `${marketAddress ?? ""}:${toTokenAddress ?? ""}`;
 
     if (prevSizeSyncContextRef.current === undefined) {
@@ -131,7 +133,9 @@ export function TradeboxMarginFields({
   // Without this, leverage = sizeDeltaUsd / collateralUsd would diverge from
   // the displayed Size USD whenever triggerPrice differs from the price used
   // when the user originally typed the size.
-  useEffect(() => {
+  // useLayoutEffect so the re-derive happens before paint, otherwise the user
+  // briefly sees leverage computed with the stale toTokenInputValue.
+  useLayoutEffect(() => {
     if (!isLimit) {
       prevTriggerPriceRef.current = triggerPrice;
       return;
@@ -149,7 +153,7 @@ export function TradeboxMarginFields({
     prevTriggerPriceRef.current = triggerPrice;
   }, [isLimit, triggerPrice, sizeDisplayMode]);
 
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (sizeDisplayMode !== "usd" || !canConvert) return;
 
     if (shouldForceSizeUsdSyncRef.current) {
