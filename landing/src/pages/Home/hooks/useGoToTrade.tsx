@@ -1,5 +1,7 @@
+import { getLandingReferralCode } from "landing/utils/referralCode";
 import { useCallback } from "react";
 
+import { REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 import type { LandingPageLaunchAppEvent } from "lib/userAnalytics/types";
 import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
 import {
@@ -31,15 +33,14 @@ type Props = {
   buttonPosition: LandingPageLaunchAppEvent["data"]["buttonPosition"];
 };
 
-const REDIRECT_MAP: Record<RedirectChainIds, string> = {
-  [RedirectChainIds.Solana]: "https://gmtrade.xyz",
-  [RedirectChainIds.Base]: makeLink(SOURCE_BASE_MAINNET),
-  [RedirectChainIds.Arbitum]: makeLink(ARBITRUM),
-  [RedirectChainIds.Avalanche]: makeLink(AVALANCHE),
-  [RedirectChainIds.Botanix]: makeLink(BOTANIX),
-  [RedirectChainIds.MegaETH]: makeLink(MEGAETH),
-  [RedirectChainIds.Bsc]: makeLink(SOURCE_BSC_MAINNET),
-  [RedirectChainIds.Ethereum]: makeLink(SOURCE_ETHEREUM_MAINNET),
+const TRADE_CHAIN_IDS: Record<Exclude<RedirectChainIds, RedirectChainIds.Solana>, number> = {
+  [RedirectChainIds.Base]: SOURCE_BASE_MAINNET,
+  [RedirectChainIds.Arbitum]: ARBITRUM,
+  [RedirectChainIds.Avalanche]: AVALANCHE,
+  [RedirectChainIds.Botanix]: BOTANIX,
+  [RedirectChainIds.MegaETH]: MEGAETH,
+  [RedirectChainIds.Bsc]: SOURCE_BSC_MAINNET,
+  [RedirectChainIds.Ethereum]: SOURCE_ETHEREUM_MAINNET,
 };
 
 export function useGoToTrade({ buttonPosition, chainId }: Props) {
@@ -67,7 +68,9 @@ export function useGoToTrade({ buttonPosition, chainId }: Props) {
       { instantSend: true }
     );
 
-    const redirectUrl = REDIRECT_MAP[chainId];
+    const redirectUrl =
+      chainId === RedirectChainIds.Solana ? "https://gmtrade.xyz" : makeLink(TRADE_CHAIN_IDS[chainId]);
+
     if (redirectUrl) {
       redirectWithWarning(redirectUrl, chainId);
     }
@@ -75,5 +78,7 @@ export function useGoToTrade({ buttonPosition, chainId }: Props) {
 }
 
 function makeLink(chainId: number) {
-  return `${import.meta.env.VITE_APP_BASE_URL}/trade?${userAnalytics.getSessionForwardParams()}&chainId=${chainId}`;
+  const refCode = getLandingReferralCode();
+  const refParam = refCode ? `&${REFERRAL_CODE_QUERY_PARAM}=${encodeURIComponent(refCode)}` : "";
+  return `${import.meta.env.VITE_APP_BASE_URL}/trade?${userAnalytics.getSessionForwardParams()}&chainId=${chainId}${refParam}`;
 }

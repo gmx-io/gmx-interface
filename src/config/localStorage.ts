@@ -15,6 +15,7 @@ export const DISABLE_ORDER_VALIDATION_KEY = "disable-order-validation";
 export const DISABLE_SHARE_MODAL_PNL_CHECK_KEY = "disable-share-modal-pnl-check";
 export const SHOULD_SHOW_POSITION_LINES_KEY = "Exchange-swap-should-show-position-lines-key";
 export const REFERRAL_CODE_KEY = "GMX-referralCode";
+export const PENDING_REFERRAL_CODE_KEY = "GMX-pending-referral-code";
 export const REFERRALS_SELECTED_TAB_KEY = "Referrals-selected-tab";
 export const TV_SAVE_LOAD_CHARTS_KEY = "tv-save-load-charts";
 export const REDIRECT_POPUP_TIMESTAMP_KEY = "redirect-popup-timestamp";
