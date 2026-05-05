@@ -104,13 +104,17 @@ function borrowingRateToProjectedPercent(rateString: string, projection: RatePro
   return -rateToProjectedPercent(rateString, projection);
 }
 
-function getPercentageDisplayDecimals(values: number[]): number {
-  const maxAbs = Math.max(...values.map(Math.abs));
-  if (maxAbs >= 100) return 0;
-  if (maxAbs >= 10) return 1;
-  if (maxAbs >= 1) return 2;
-  if (maxAbs >= 0.1) return 3;
-  return 4;
+function getProjectionDisplayDecimals(projection: RateProjection): number {
+  switch (projection) {
+    case "1h":
+      return 4;
+    case "8h":
+      return 3;
+    case "24h":
+      return 3;
+    case "1y":
+      return 2;
+  }
 }
 
 function formatRate(value: number, decimals = 4): string {
@@ -189,11 +193,7 @@ export function NetRateChart() {
     return buildChartData(snapshots, activeRateType, activeProjection);
   }, [snapshots, activeRateType, activeProjection]);
 
-  const yAxisDecimals = useMemo(() => {
-    if (chartData.length === 0) return 4;
-    const allValues = chartData.flatMap((d) => [d.longRate, d.shortRate]);
-    return getPercentageDisplayDecimals(allValues);
-  }, [chartData]);
+  const decimals = getProjectionDisplayDecimals(activeProjection);
 
   const rateTypeTabs = useMemo(
     () => RATE_TYPES.map((type) => ({ label: rateTypeLabels[type], value: type })),
@@ -221,15 +221,10 @@ export function NetRateChart() {
       const point = payload?.[0]?.payload;
       if (!isChartDataPoint(point)) return null;
       return (
-        <NetRateTooltip
-          point={point}
-          rateType={activeRateType}
-          projection={activeProjection}
-          decimals={yAxisDecimals}
-        />
+        <NetRateTooltip point={point} rateType={activeRateType} projection={activeProjection} decimals={decimals} />
       );
     },
-    [activeRateType, activeProjection, yAxisDecimals]
+    [activeRateType, activeProjection, decimals]
   );
 
   return (
@@ -248,7 +243,7 @@ export function NetRateChart() {
           <Trans>Long Positions</Trans>
           {chartData.length > 0 && (
             <span className="text-typography-primary">
-              {formatRate(chartData[chartData.length - 1].longRate, yAxisDecimals)}
+              {formatRate(chartData[chartData.length - 1].longRate, decimals)}
             </span>
           )}
         </span>
@@ -257,7 +252,7 @@ export function NetRateChart() {
           <Trans>Short Positions</Trans>
           {chartData.length > 0 && (
             <span className="text-typography-primary">
-              {formatRate(chartData[chartData.length - 1].shortRate, yAxisDecimals)}
+              {formatRate(chartData[chartData.length - 1].shortRate, decimals)}
             </span>
           )}
         </span>
@@ -307,7 +302,7 @@ export function NetRateChart() {
               <YAxis
                 tickFormatter={(value: number) => {
                   if (value === 0) return "0%";
-                  return formatRate(value, yAxisDecimals);
+                  return formatRate(value, decimals);
                 }}
                 tickLine={false}
                 axisLine={false}
