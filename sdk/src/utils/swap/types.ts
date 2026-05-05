@@ -40,4 +40,8 @@ export type SwapStrategyForIncreaseOrders =
   | InternalSwapStrategy
   | CombinedSwapStrategy;
 
-export type SwapStrategyForSwapOrders = NoSwapStrategy | InternalSwapStrategy | CombinedSwapStrategy;
+export type SwapStrategyForSwapOrders =
+  | NoSwapStrategy
+  | ExternalSwapStrategy
+  | InternalSwapStrategy
+  | CombinedSwapStrategy;

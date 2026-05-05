@@ -30,4 +30,18 @@ export const MARKET_HOURS_MARKETS: Record<string, MarketHoursConfig> = {
     offHoursMcf: 40n * 10n ** 27n,
     offHoursMaxLeverage: 20,
   },
+  "0xE26E7b91143f367445f1c0a5dCf4f4aC8EaDcDb1": {
+    // MegaETH MEGA/USD
+    onHoursMcf: 22n * 10n ** 27n,
+    onHoursMaxLeverage: 40,
+    offHoursMcf: 22n * 10n ** 27n,
+    offHoursMaxLeverage: 40,
+  },
+  "0x1b997cb4841c4cb360E384192fFd7fb26eb10e5f": {
+    // Arbitrum MEGA/USD
+    onHoursMcf: 18n * 10n ** 27n,
+    onHoursMaxLeverage: 50,
+    offHoursMcf: 18n * 10n ** 27n,
+    offHoursMaxLeverage: 50,
+  },
 };

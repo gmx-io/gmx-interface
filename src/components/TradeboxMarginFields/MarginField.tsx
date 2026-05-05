@@ -108,6 +108,7 @@ export function MarginField({
             type="button"
             onClick={handleBalanceClick}
             className="flex items-center gap-4 text-12 text-typography-secondary hover:text-typography-primary"
+            data-qa={qa ? qa + "-max" : undefined}
           >
             <WalletIcon className="size-14" />
             <span className="numbers">{formattedBalance}</span>

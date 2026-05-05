@@ -149,6 +149,7 @@ export function getSwapError(p: {
   fees: TradeFees | undefined;
   swapPathStats: SwapPathStats | undefined;
   externalSwapQuote: ExternalSwapQuote | undefined;
+  isExternalSwapLoading: boolean;
   isWrapOrUnwrap: boolean;
   isStakeOrUnstake: boolean;
   swapLiquidity: bigint | undefined;
@@ -170,6 +171,7 @@ export function getSwapError(p: {
     swapLiquidity,
     swapPathStats,
     externalSwapQuote,
+    isExternalSwapLoading,
     isTwap,
     numberOfParts,
   } = p;
@@ -186,7 +188,12 @@ export function getSwapError(p: {
     return { buttonErrorMessage: t`Enter a price` };
   }
 
-  if ((!isLimit || isTwap) && (toUsd === undefined || swapLiquidity === undefined || swapLiquidity < toUsd)) {
+  if (
+    (!isLimit || isTwap) &&
+    !externalSwapQuote &&
+    !isExternalSwapLoading &&
+    (toUsd === undefined || swapLiquidity === undefined || swapLiquidity < toUsd)
+  ) {
     return { buttonErrorMessage: t`Insufficient liquidity` };
   }
 
@@ -267,6 +274,7 @@ export function getIncreaseError(p: {
   markPrice: bigint | undefined;
   triggerPrice: bigint | undefined;
   externalSwapQuote: ExternalSwapQuote | undefined;
+  isExternalSwapLoading: boolean;
   swapPathStats: SwapPathStats | undefined;
   collateralLiquidity: bigint | undefined;
   longLiquidity: bigint | undefined;
@@ -294,6 +302,7 @@ export function getIncreaseError(p: {
     fees,
     swapPathStats,
     externalSwapQuote,
+    isExternalSwapLoading,
     collateralLiquidity,
     longLiquidity,
     shortLiquidity,
@@ -341,12 +350,16 @@ export function getIncreaseError(p: {
   const noExternalSwap = !externalSwapQuote;
 
   if (isNeedSwap) {
-    if (noInternalSwap && noExternalSwap) {
+    if (noInternalSwap && noExternalSwap && !isExternalSwapLoading) {
       return { buttonErrorMessage: t`No swap path found`, buttonTooltipName: ValidationButtonTooltipName.noSwapPath };
     }
 
     if (!isLimit) {
-      if (noExternalSwap && (collateralLiquidity === undefined || collateralLiquidity < (initialCollateralUsd ?? 0n))) {
+      if (
+        noExternalSwap &&
+        !isExternalSwapLoading &&
+        (collateralLiquidity === undefined || collateralLiquidity < (initialCollateralUsd ?? 0n))
+      ) {
         return { buttonErrorMessage: t`Insufficient liquidity to swap collateral` };
       }
     }

@@ -34,7 +34,7 @@
     "prettier": "prettier --write src/**/*.{js,ts,jsx,tsx,css,scss} landing/**/*.{js,ts,jsx,tsx,css,scss}",
     "postinstall": "cd ./sdk && echo \"Building SDK\" && yarn && yarn build",
     "prebuild": "cd ./sdk && yarn tsx scripts/prebuild",
-    "test:ct": "playwright test -c playwright-ct.config.ts"
+    "test:ct": "NODE_OPTIONS='--max-old-space-size=8192' playwright test -c playwright-ct.config.ts"
   },
   "dependencies": {
     "@apollo/client": "3.5.6",
@@ -171,7 +171,7 @@
     "happy-dom": "^20.8.8",
     "husky": "7.0.4",
     "lint-staged": "12.3.4",
-    "postcss": "8.4.41",
+    "postcss": "8.5.12",
     "prettier": "3.2.5",
     "prettier-plugin-tailwindcss": "0.6.5",
     "rollup-plugin-visualizer": "5.12.0",

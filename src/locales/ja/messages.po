@@ -864,6 +864,10 @@ msgstr "STIP.b遡及ボーナス"
 msgid "in liquidity"
 msgstr "流動性で"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "This swap requires external routing, which isn't available with One-Click Trading."
+msgstr "このスワップには外部ルーティングが必要ですが、One-Click Tradingでは利用できません。"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized money market"
 msgstr "分散型マネーマーケット"
@@ -962,6 +966,14 @@ msgstr "最大ネットワーク手数料バッファ精度は0.01%"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeltaPrime"
 msgstr "DeltaPrime"
+
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+#: src/components/GmList/GlvList.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "Earns MegaETH points"
+msgstr ""
 
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
@@ -1274,6 +1286,11 @@ msgstr "ストップロス"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "External swap {0} to {1}"
 msgstr "外部スワップ {0} → {1}"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Use {0} for gas"
+msgstr "ガスに{0}を使用"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To buy GMX on {0}, <0>change your network</0>"
@@ -3128,6 +3145,7 @@ msgstr "ブリッジ送金が送信されました"
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
+#: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "GLV vaults"
 msgstr "GLVボールト"
@@ -3374,6 +3392,10 @@ msgstr "資金が請求されました"
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Missing claim params. Retry in a few seconds"
 msgstr "受け取りパラメータが不足しています。数秒後にお試しください"
+
+#: src/components/TradeBox/TradeBoxRows/SwapDebugRow.tsx
+msgid "Swap Debug"
+msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
@@ -4136,6 +4158,11 @@ msgstr "ロング借入指数"
 msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
 msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+msgid "Outstanding claimable amounts are not included."
+msgstr ""
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap {0} to {1}"
 msgstr "{0}を{1}にスワップ"
@@ -4477,6 +4504,12 @@ msgstr "パーペチュアルアグリゲーター"
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr "マーケットスワップリクエスト"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Opening fee paid at this action. Subtracted from your realized PnL."
+msgstr ""
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
@@ -5734,6 +5767,10 @@ msgstr ""
 msgid "Swap token unavailable"
 msgstr ""
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "This swap requires external routing. Pay gas in {0} to enable it."
+msgstr "このスワップには外部ルーティングが必要です。{0}でガスを支払うと有効化できます。"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
 msgstr "GMX (ポルトガル語)"
@@ -6869,10 +6906,6 @@ msgstr "送金が送信されました"
 msgid "Order submission failed"
 msgstr "注文の送信に失敗しました"
 
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
-msgid "Total realized and unrealized PnL for the period. Includes price impact and fees. Excludes swap fees."
-msgstr "選択期間の実現損益および含み損益の合計。価格への影響と手数料を含みます。スワップ手数料は含みません。"
-
 #: src/components/Referrals/traders/dashboard/TradersPromoCard.tsx
 msgid "Generate your own referral code and earn rebates whenever users trade with it. Rewards scale <0/> with your tier and the activity of your referred traders. <1>Learn more</1>"
 msgstr ""
@@ -7277,6 +7310,10 @@ msgstr "チャットの日程を調整いたします。ご協力いただいた
 msgid "GM bought successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or go to the ETH/USD pool to withdraw your GM tokens."
 msgstr "GMの購入は成功しましたが、Baseへのブリッジに失敗しました。資金はGMX Account内に安全に保管されています。ブリッジを再試行するか、ETH/USDプールでGMトークンを出金してください。"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Disable One-Click Trading"
+msgstr "One-Click Tradingを無効化"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
 msgstr "指値増加"
@@ -7284,10 +7321,6 @@ msgstr "指値増加"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transferring..."
 msgstr "送金中..."
-
-#: src/components/TVChart/Chart.tsx
-msgid "Net Rate History"
-msgstr "ネットレート履歴"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders."
@@ -8253,6 +8286,10 @@ msgstr "ショート借入指数"
 msgid "Price impact"
 msgstr "価格への影響"
 
+#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+msgid "Total realized and unrealized PnL for the period. Includes price impact and fees."
+msgstr ""
+
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "Edit margin: {0} {1}{2}/USD"
 msgstr ""
@@ -9113,6 +9150,10 @@ msgstr ""
 msgid "Venus"
 msgstr "Venus"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No swap route available"
+msgstr "利用可能なスワップルートがありません"
+
 #: src/components/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Open {marketName} in explorer"
 msgstr "{marketName}をエクスプローラーで開く"
@@ -9243,6 +9284,10 @@ msgstr "スナップショット"
 #: src/pages/RpcDebug/parts.tsx
 msgid "BLOCK"
 msgstr "BLOCK"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Paying gas in {0} may give a better rate on this swap."
+msgstr "ガスを{0}で支払うと、このスワップでより良いレートが得られる可能性があります。"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -9713,6 +9758,10 @@ msgstr "ショート最大レート"
 msgid "Alerts"
 msgstr "アラート"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Loading swap path…"
+msgstr "スワップ経路を読み込み中…"
+
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
@@ -9753,6 +9802,10 @@ msgstr "注文を更新中…"
 msgid "Escrowed GMX APR"
 msgstr "エスクローGMX APR"
 
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "Points are allocated based on your cumulative trading volume on GMX MegaETH."
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Take profit price"
 msgstr "テイクプロフィット価格"
@@ -9782,6 +9835,12 @@ msgstr "false"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from GLP vesting vault"
 msgstr "送信者はGLPベスティングボールトからすべてのトークンを出金済みです"
+
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+#: src/components/GmList/GlvList.tsx
+msgid "Points are based on the time-weighted average value of your share of the GLV [USDM-USDM] vault over the epoch."
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
@@ -10049,6 +10108,7 @@ msgid "Status"
 msgstr "ステータス"
 
 #: src/components/NetRateChart/NetRateChart.tsx
+#: src/components/TVChart/Chart.tsx
 msgid "Net Rate"
 msgstr "ネットレート"
 
@@ -10233,6 +10293,10 @@ msgstr "ロング"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Error signing permit for {0}: {1}"
 msgstr "{0} のパーミット署名エラー: {1}"
+
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+msgid "Points are based on the total notional trading volume on GMX MegaETH generated by wallets using your onchain referral code."
+msgstr ""
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Longs net rate / 1h"
@@ -10586,6 +10650,10 @@ msgstr ""
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"
 msgstr "PNG"
+
+#: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+msgid "Realized swap fees"
+msgstr ""
 
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx

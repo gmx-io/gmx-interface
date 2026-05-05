@@ -5,6 +5,7 @@ import { useHistory } from "react-router-dom";
 import { BOTANIX } from "config/chains";
 import { useReferralsData, useUserReferralCode } from "domain/referrals";
 import { CREATE_REFERRAL_CODE_QUERY_PARAM } from "domain/referrals/utils/referralsHelper";
+import { useMegaethPointsActive } from "domain/synthetics/common/useMegaethPointsActive";
 import { useChainId } from "lib/chains";
 import { useLocalizedMap } from "lib/i18n";
 import { getPageTitle, isHashZero } from "lib/legacy";
@@ -24,6 +25,7 @@ import Tabs from "components/Tabs/Tabs";
 import { Option, RegularOption } from "components/Tabs/types";
 
 import LockIcon from "img/ic_lock.svg?react";
+import sparkleIcon from "img/sparkle.svg";
 
 export enum ReferralsTab {
   Traders = "traders",
@@ -64,6 +66,7 @@ function Referrals({ account, activeTab, hasAddressInUrl }: Props) {
 
   const isOnTradersDashboard = activeTab === ReferralsTab.Traders && hasTraderCode && !hasAddressInUrl;
   const isOnAffiliatesDashboard = activeTab === ReferralsTab.Affiliates && hasAnyAffiliateCode && !hasAddressInUrl;
+  const isMegaethPointsActive = useMegaethPointsActive();
 
   const tabsOptions = useMemo((): Option<ReferralsTab>[] => {
     return TAB_OPTIONS.map((option): RegularOption<ReferralsTab> => {
@@ -73,11 +76,20 @@ function Referrals({ account, activeTab, hasAddressInUrl }: Props) {
         (option === ReferralsTab.Affiliates && isOnTradersDashboard && !hasAnyAffiliateCode) ||
         (option === ReferralsTab.Traders && isOnAffiliatesDashboard && !hasTraderCode);
 
-      const label = localizedTabOptionLabels[option];
+      const baseLabel = localizedTabOptionLabels[option];
+      const labelNode =
+        isMegaethPointsActive && option === ReferralsTab.Affiliates ? (
+          <span className="inline-flex items-center gap-4">
+            {baseLabel}
+            <img className="h-10" src={sparkleIcon} alt="" />
+          </span>
+        ) : (
+          baseLabel
+        );
 
       return {
         value: option,
-        label: shouldShimmer ? <BlueShimmerText>{label}</BlueShimmerText> : label,
+        label: shouldShimmer ? <BlueShimmerText>{labelNode}</BlueShimmerText> : labelNode,
         disabled: isDistributionsLocked,
         disabledMessage: isDistributionsLocked ? t`Register an affiliate code to access distributions` : undefined,
         icon: isDistributionsLocked ? <LockIcon className="size-16" /> : undefined,
@@ -90,6 +102,7 @@ function Referrals({ account, activeTab, hasAddressInUrl }: Props) {
     isOnAffiliatesDashboard,
     hasAnyAffiliateCode,
     hasTraderCode,
+    isMegaethPointsActive,
   ]);
 
   const setActiveTab = useCallback(

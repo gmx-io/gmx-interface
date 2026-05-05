@@ -8,7 +8,7 @@ import { convertTokenAddress, getTokenVisualMultiplier, NATIVE_TOKEN_ADDRESS } f
 import type { DayPriceCandle } from "utils/24h/types";
 import { bigMath } from "utils/bigmath";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "utils/fees";
-import { applyFactor, PRECISION } from "utils/numbers";
+import { applyFactor, expandDecimals, PRECISION } from "utils/numbers";
 import { getByKey } from "utils/objects";
 import { periodToSeconds } from "utils/time";
 import { convertToContractTokenPrices, convertToUsd, getMidPrice } from "utils/tokens";
@@ -320,6 +320,10 @@ export function getIsMarketAvailableForExpressSwaps(marketInfo: MarketInfo) {
   return [marketInfo.indexToken, marketInfo.longToken, marketInfo.shortToken].every(
     (token) => token.hasPriceFeedProvider
   );
+}
+
+export function getIsMarketDeprecated(marketInfo: MarketInfo) {
+  return marketInfo.maxOpenInterestLong <= expandDecimals(1n, 30) && marketInfo.maxOpenInterestShort <= expandDecimals(1n, 30);
 }
 
 export function getMarket24Stats(dayPriceCandle: DayPriceCandle) {

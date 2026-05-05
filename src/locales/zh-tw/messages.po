@@ -864,6 +864,10 @@ msgstr "STIP.b 追溯獎勵"
 msgid "in liquidity"
 msgstr "流動性"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "This swap requires external routing, which isn't available with One-Click Trading."
+msgstr "此交換需要外部路由，但 One-Click Trading 不支援。"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Decentralized money market"
 msgstr "去中心化貨幣市場"
@@ -962,6 +966,14 @@ msgstr "網路費用緩衝精度上限為 0.01%"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "DeltaPrime"
 msgstr "DeltaPrime"
+
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+#: src/components/GmList/GlvList.tsx
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "Earns MegaETH points"
+msgstr ""
 
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
@@ -1274,6 +1286,11 @@ msgstr "止損"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "External swap {0} to {1}"
 msgstr "外部兌換 {0} 至 {1}"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Use {0} for gas"
+msgstr "使用 {0} 支付 gas"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "To buy GMX on {0}, <0>change your network</0>"
@@ -3128,6 +3145,7 @@ msgstr "跨鏈轉帳已發送"
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
+#: src/components/GmList/GlvList.tsx
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "GLV vaults"
 msgstr "GLV 金庫"
@@ -3374,6 +3392,10 @@ msgstr "資金已領取"
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Missing claim params. Retry in a few seconds"
 msgstr "缺少領取參數，請稍後重試"
+
+#: src/components/TradeBox/TradeBoxRows/SwapDebugRow.tsx
+msgid "Swap Debug"
+msgstr ""
 
 #: src/domain/synthetics/positions/utils.ts
 msgid "Trigger"
@@ -4136,6 +4158,11 @@ msgstr "做多借貸指數"
 msgid "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
 msgstr "<0>{0}</0> <1><2>{indexName}</2><3>[{poolName}]</3></1>"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+#: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+msgid "Outstanding claimable amounts are not included."
+msgstr ""
+
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap {0} to {1}"
 msgstr "兌換 {0} 至 {1}"
@@ -4477,6 +4504,12 @@ msgstr "永續合約聚合器"
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr "Request Market Swap"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Opening fee paid at this action. Subtracted from your realized PnL."
+msgstr ""
 
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
@@ -5734,6 +5767,10 @@ msgstr ""
 msgid "Swap token unavailable"
 msgstr ""
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "This swap requires external routing. Pay gas in {0} to enable it."
+msgstr "此交換需要外部路由。使用 {0} 支付 gas 以啟用。"
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX (Portuguese)"
 msgstr "GMX（葡萄牙語）"
@@ -6869,10 +6906,6 @@ msgstr "轉帳已提交"
 msgid "Order submission failed"
 msgstr "訂單提交失敗"
 
-#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
-msgid "Total realized and unrealized PnL for the period. Includes price impact and fees. Excludes swap fees."
-msgstr "該期間的已實現與未實現 PnL 總計。包含價格影響和費用。不含兌換手續費。"
-
 #: src/components/Referrals/traders/dashboard/TradersPromoCard.tsx
 msgid "Generate your own referral code and earn rebates whenever users trade with it. Rewards scale <0/> with your tier and the activity of your referred traders. <1>Learn more</1>"
 msgstr ""
@@ -7277,6 +7310,10 @@ msgstr "我們將與您安排一次交流。作為感謝，您將獲得 <0>100 <
 msgid "GM bought successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or go to the ETH/USD pool to withdraw your GM tokens."
 msgstr "GM 購買成功，但跨鏈橋至 Base 失敗。您的資金安全存放在您的 GMX Account 中。請重試跨鏈橋或前往 ETH/USD 池提取您的 GM 代幣。"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Disable One-Click Trading"
+msgstr "停用 One-Click Trading"
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
 msgstr "Limit Increase"
@@ -7284,10 +7321,6 @@ msgstr "Limit Increase"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Transferring..."
 msgstr "轉帳中..."
-
-#: src/components/TVChart/Chart.tsx
-msgid "Net Rate History"
-msgstr "淨費率歷史"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Volume traded by your referred traders."
@@ -8253,6 +8286,10 @@ msgstr "做空借貸指數"
 msgid "Price impact"
 msgstr "價格影響"
 
+#: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
+msgid "Total realized and unrealized PnL for the period. Includes price impact and fees."
+msgstr ""
+
 #: src/components/PositionEditor/PositionEditor.tsx
 msgid "Edit margin: {0} {1}{2}/USD"
 msgstr ""
@@ -9113,6 +9150,10 @@ msgstr ""
 msgid "Venus"
 msgstr "Venus"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "No swap route available"
+msgstr "沒有可用的交換路由"
+
 #: src/components/GmAssetDropdown/GmAssetDropdown.tsx
 msgid "Open {marketName} in explorer"
 msgstr "在區塊瀏覽器中查看 {marketName}"
@@ -9243,6 +9284,10 @@ msgstr "快照"
 #: src/pages/RpcDebug/parts.tsx
 msgid "BLOCK"
 msgstr "區塊"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "Paying gas in {0} may give a better rate on this swap."
+msgstr "使用 {0} 支付 gas 可能為此交換提供更好的匯率。"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -9713,6 +9758,10 @@ msgstr "最大做空費率"
 msgid "Alerts"
 msgstr "提醒"
 
+#: src/components/TradeBox/hooks/useTradeButtonState.tsx
+msgid "Loading swap path…"
+msgstr "正在載入交換路徑…"
+
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
@@ -9753,6 +9802,10 @@ msgstr "正在更新訂單..."
 msgid "Escrowed GMX APR"
 msgstr "託管 GMX APR"
 
+#: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+msgid "Points are allocated based on your cumulative trading volume on GMX MegaETH."
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Take profit price"
 msgstr "止盈價格"
@@ -9782,6 +9835,12 @@ msgstr "false"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from GLP vesting vault"
 msgstr "發送者已從 GLP 歸屬期金庫提取所有代幣"
+
+#: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
+#: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
+#: src/components/GmList/GlvList.tsx
+msgid "Points are based on the time-weighted average value of your share of the GLV [USDM-USDM] vault over the epoch."
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
@@ -10049,6 +10108,7 @@ msgid "Status"
 msgstr "狀態"
 
 #: src/components/NetRateChart/NetRateChart.tsx
+#: src/components/TVChart/Chart.tsx
 msgid "Net Rate"
 msgstr "淨費率"
 
@@ -10233,6 +10293,10 @@ msgstr "做多"
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Error signing permit for {0}: {1}"
 msgstr "為 {0} 簽署許可時發生錯誤：{1}"
+
+#: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
+msgid "Points are based on the total notional trading volume on GMX MegaETH generated by wallets using your onchain referral code."
+msgstr ""
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Longs net rate / 1h"
@@ -10586,6 +10650,10 @@ msgstr ""
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PNG"
 msgstr "PNG"
+
+#: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
+msgid "Realized swap fees"
+msgstr ""
 
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
