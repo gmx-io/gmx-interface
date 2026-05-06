@@ -8,9 +8,22 @@
 
 .ReferralsTier-input {
   padding: 10px;
-  border: 1px solid var(--color-gray-400);
+  border: 1px solid var(--color-slate-700);
+  background: var(--color-slate-900);
+  color: var(--color-typography-primary);
   font-size: 16px;
   width: 100%;
+}
+
+.ReferralsTier-form .Select {
+  border: 1px solid var(--color-slate-700);
+  background: var(--color-slate-900);
+  color: var(--color-typography-primary);
+
+  option {
+    background: var(--color-slate-900);
+    color: var(--color-typography-primary);
+  }
 }
 
 .ReferralsTier-label {
