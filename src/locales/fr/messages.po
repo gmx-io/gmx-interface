@@ -361,10 +361,6 @@ msgstr "MARCHÉ COMPLET"
 msgid "To"
 msgstr "Vers"
 
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "Can I sell my GLV, and where?"
-msgstr "Puis-je vendre mes GLV, et où ?"
-
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 #: src/components/Earn/Discovery/EarnFaq.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
@@ -474,10 +470,6 @@ msgstr "réduction"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in any BTC/USD pool"
 msgstr "Liquidité insuffisante dans tous les pools BTC/USD"
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "Yes, GLV is fully liquid and permissionless. Sell via the GMX interface to redeem for underlying assets with low fees."
-msgstr "Oui, GLV est entièrement liquide et sans permission. Vendez via l'interface GMX pour récupérer les actifs sous-jacents avec des frais réduits."
 
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Unrealized base PnL"
@@ -2929,10 +2921,6 @@ msgstr "TOKEN"
 msgid "No eligible tokens available for deposit"
 msgstr "Aucun jeton éligible disponible pour dépôt"
 
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "What is the bonus incentive for holding your GLV?"
-msgstr "Quelle est l'incitation bonus pour détenir votre GLV ?"
-
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Day(s)"
 msgstr "Jour(s)"
@@ -5034,10 +5022,6 @@ msgstr "Créer un nouveau code"
 msgid "Fees exceed pay amount"
 msgstr "Les frais dépassent le montant du paiement"
 
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "Why do I receive two different GLV tokens?"
-msgstr "Pourquoi je reçois deux jetons GLV différents ?"
-
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Set TP/SL"
 msgstr "Définir TP/SL"
@@ -5133,10 +5117,6 @@ msgstr "Entrez un prix"
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Updating..."
 msgstr "Mise à jour en cours…"
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "GLV earns from trading fees (open, close, borrow, liquidations, swaps) and trader losses across GM pools. Yields auto-compound for seamless growth (20-30% historical APY). View earnings and portfolio value on the <0>Pools page</0>."
-msgstr "GLV génère des revenus à partir des frais de trading (ouverture, clôture, emprunt, liquidations, swaps) et des pertes des traders sur les pools GM. Les rendements se réinvestissent automatiquement pour une croissance continue (20-30% APY historique). Consultez vos gains et la valeur de votre portefeuille sur la <0>page Pools</0>."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Increase"
@@ -5334,10 +5314,6 @@ msgstr "<0>Les notifications sont fournies par Notifi et non affiliées à GMX. 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
 msgstr "{typeString} Long Limit : {0} une position long lorsque le prix est inférieur au prix de déclenchement."
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "<0>GLV (GMX Liquidity Vaults) is GMX V2's improved version of GLP. It's a yield-optimizing crypto-index token that:</0><1><2>Earns fees from liquidity provision across GMX V2 markets</2><3>Dynamically allocates liquidity to highest-utilized markets, maximizing capital efficiency and yield</3><4>Auto-compounds yield (no manual claiming needed, unlike GLP)</4></1>"
-msgstr "<0>GLV (GMX Liquidity Vaults) est la version améliorée de GLP par GMX V2. C'est un token crypto-indice optimisant le rendement qui :</0><1><2>Génère des frais issus de la fourniture de liquidité sur les marchés GMX V2</2><3>Alloue dynamiquement les liquidités aux marchés les plus utilisés, maximisant l'efficacité du capital et le rendement</3><4>Capitalise automatiquement le rendement (aucune réclamation manuelle requise, contrairement à GLP)</4></1>"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
@@ -6443,10 +6419,6 @@ msgstr "Analytics"
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
 msgstr "APR wstETH"
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "About the GLP incident"
-msgstr "À propos de l'incident GLP"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -8244,10 +8216,6 @@ msgstr "Échec du unstaker"
 msgid "[{0}]"
 msgstr "[{0}]"
 
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "Two GLV variants mirror GLP's multi-asset exposure: one optimized for ETH markets (50% ETH / 50% USDC), the other for BTC markets (50% BTC / 50% USDC). This reflects the recovered funds composition and enables dynamic liquidity allocation across top GMX markets for enhanced yield."
-msgstr "Deux variantes GLV reproduisent l'exposition multi-actifs de GLP : l'une optimisée pour les marchés ETH (50 % ETH / 50 % USDC), l'autre pour les marchés BTC (50 % BTC / 50 % USDC). Cela reflète la composition des fonds récupérés et permet une allocation dynamique de la liquidité sur les principaux marchés GMX pour un rendement amélioré."
-
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Net rate / 1h"
@@ -8791,10 +8759,6 @@ msgstr "Compte important"
 msgid "Shift fee"
 msgstr "Frais de transfert"
 
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "What is GLV exactly?"
-msgstr "Qu'est-ce que GLV exactement ?"
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Up"
 msgstr "Actif"
@@ -9062,10 +9026,6 @@ msgstr "Alertes de risque de liquidation"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Order key:"
 msgstr "Clé de l'ordre :"
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "Why is the claim in GLV tokens?"
-msgstr "Pourquoi la réclamation est en jetons GLV ?"
 
 #: src/components/TVChartContainer/StaticLine.tsx
 #: src/components/TVChartContainer/StaticLine.tsx
@@ -9462,10 +9422,6 @@ msgstr "Exécuter une partie TWAP"
 #: src/components/TradeHistory/keys.ts
 msgid "Create Limit Swap"
 msgstr "Créer un échange limité"
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "A $500,000 GLV pool (DAO-funded) rewards long-term holders. Keep your GLV for at least 3 months without selling or transferring to receive a pro rata share."
-msgstr "Un pool GLV de 500 000 $ (financé par le DAO) récompense les détenteurs à long terme. Conservez vos GLV pendant au moins 3 mois sans vendre ni transférer pour recevoir une part au prorata."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "esGMX OTC market"
@@ -10498,10 +10454,6 @@ msgstr "Chat anonyme avec l'équipe GMX"
 msgid "Continue"
 msgstr "Continuer"
 
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "GLV tokens mirror GLP's composition and integrate seamlessly into GMX V2's liquidity ecosystem. You can sell or hold to earn yield. A $500,000 GLV incentive pool rewards holders who keep their allocation for at least 3 months."
-msgstr "Les jetons GLV reflètent la composition de GLP et s'intègrent parfaitement dans l'écosystème de liquidité de GMX V2. Vous pouvez vendre ou conserver pour générer du rendement. Un pool d'incitation GLV de 500 000 $ récompense les détenteurs qui conservent leur allocation pendant au moins 3 mois."
-
 #: landing/src/pages/Home/LiqiuditySection/LiqiuditySection.tsx
 msgid "Start earning"
 msgstr "Commencer à gagner"
@@ -10900,10 +10852,6 @@ msgstr "Express Trading activé. Désactiver dans les <0>paramètres</0>"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price above mark price"
 msgstr "Définir le prix de déclenchement au-dessus du prix de référence"
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "How does GLV earn yield, and where do I see my earnings?"
-msgstr "Comment GLV gagne-t-il du rendement, et où voir mes gains ?"
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
