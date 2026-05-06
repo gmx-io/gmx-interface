@@ -535,6 +535,8 @@ export type MissedCoinEvent = {
     monthVolume: number | undefined;
     place: MissedCoinsPlace;
     account?: string;
+    /** "perp" or "swap" — present for marketDropdown searches. Optional to stay backward-compatible. */
+    mode?: "perp" | "swap";
   };
 };
 

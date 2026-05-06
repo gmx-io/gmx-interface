@@ -296,6 +296,7 @@ function MarketsList() {
     isEmpty: !sortedTokens?.length && topLevelTab === "all",
     isLoaded: Boolean(options?.length),
     place: MissedCoinsPlace.marketDropdown,
+    mode,
   });
 
   const handleMarketSelect = useCallback(
