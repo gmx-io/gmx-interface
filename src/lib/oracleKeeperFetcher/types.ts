@@ -1,6 +1,7 @@
 import type { Address } from "viem";
 
 import { FromNewToOldArray, Bar } from "domain/tradingview/types";
+import type { MarketWithTiers } from "sdk/utils/markets/types";
 
 export type EventPayload = {
   isError: boolean;
@@ -126,6 +127,7 @@ export interface OracleFetcher {
   fetchPerformanceAnnualized(period: PerformancePeriod, address?: string): Promise<PerformanceAnnualizedResponse>;
   fetchPerformanceSnapshots(period: PerformancePeriod, address?: string): Promise<PerformanceSnapshotsResponse>;
   fetchUiFlags(): Promise<Record<string, boolean>>;
+  fetchMarkets(): Promise<MarketWithTiers[]>;
   handleFailure(method: string): void;
 }
 

@@ -11,6 +11,7 @@ import {
 } from "sdk/configs/oracleKeeper";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { buildUrl } from "sdk/utils/buildUrl";
+import type { MarketWithTiers } from "sdk/utils/markets/types";
 
 import { _debugOracleKeeper, OracleKeeperDebugFlags } from "./_debug";
 import { OracleKeeperFallbackTracker } from "./OracleFallbackTracker";
@@ -230,5 +231,14 @@ export class OracleKeeperFetcher implements OracleFetcher {
 
   fetchUiFlags(): Promise<Record<string, boolean>> {
     return this.request("/ui-flags", {});
+  }
+
+  fetchMarkets(): Promise<MarketWithTiers[]> {
+    return this.request("/markets", {
+      validate: (res) => {
+        if (!Array.isArray(res)) return new Error("Invalid /markets response");
+        return undefined;
+      },
+    });
   }
 }
