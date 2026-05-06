@@ -2347,10 +2347,6 @@ msgstr "做空儲備因子"
 msgid "Max deposit limit reached"
 msgstr "已達最大存入限額"
 
-#: landing/src/pages/Home/SocialSection/SocialSlider.tsx
-msgid "<0><1>#GMX V2</1>'s OI looks great.</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial.</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4>.</3>"
-msgstr "<0><1>#GMX V2</1> 的 OI 表現亮眼。</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial。</2><3>了解更多：<4>https://tradao.xyz/#/open-interest</4>。</3>"
-
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total staked"
 msgstr "總質押量"
@@ -2632,6 +2628,10 @@ msgstr "交易哈希"
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap failed"
 msgstr "兌換失敗"
+
+#: landing/src/pages/Home/SocialSection/SocialSlider.tsx
+msgid "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop</0>"
+msgstr "<0>必須密切關注 <1>@GMX_IO</1>。在整個 DeFi 一片混亂之際，GMX 在用戶數、AUM、交易量/手續費、未平倉量及資本利用率等方面持續展現令人印象深刻的穩健表現。在 Arbitrum 上兌換主要資產並獲取 Arb 空投曝光的最佳平台</0>"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX on {chainName}"
@@ -3082,10 +3082,6 @@ msgstr "主題"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
 msgstr "超過最大槓桿"
-
-#: landing/src/pages/Home/SocialSection/SocialSlider.tsx
-msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution.</2><3> Low size caps, but fun to do some degen gambling with.</3>"
-msgstr "<0>首次嘗試 <1>@GMX_IO</1>。</0><2> 體驗相當令人印象深刻——零滑點，執行速度快。</2><3> 倉位上限較低，但用來做些激進交易蠻有趣的。</3>"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claiming funding fees failed"
@@ -4193,10 +4189,6 @@ msgstr "缺少領取參數，請稍後重試"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "AVG. LEV."
 msgstr "平均槓桿"
-
-#: landing/src/pages/Home/SocialSection/SocialSlider.tsx
-msgid "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop.</0>"
-msgstr "<0>必須密切關注 <1>@GMX_IO</1>。在整個 DeFi 市場一片混亂之際，GMX 在用戶數、AUM、交易量/費用、未平倉量及資金利用率等方面持續展現出令人印象深刻的表現。是在 Arbitrum 上兌換主要資產並獲取 Arb 空投的最佳場所。</0>"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Enter a new ratio or allowed slippage"
@@ -7699,6 +7691,10 @@ msgstr "池流動性不足"
 msgid "No opportunities on Botanix yet"
 msgstr "Botanix 上尚無機會"
 
+#: landing/src/pages/Home/SocialSection/SocialSlider.tsx
+msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
+msgstr "<0><1>#GMX V2</1> 的 OI 表現亮眼</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>查看更多：<4>https://tradao.xyz/#/open-interest</4></3>"
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
 msgstr "倉位平倉時，止盈/止損訂單會自動取消。僅適用於啟用後建立的訂單。"
@@ -9535,6 +9531,10 @@ msgstr "複製技術詳情"
 #: src/pages/RpcDebug/parts.tsx
 msgid "TRACKER"
 msgstr "追蹤器"
+
+#: landing/src/pages/Home/SocialSection/SocialSlider.tsx
+msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution</2><3> Low size caps, but fun to do some degen gambling with</3>"
+msgstr "<0>第一次嘗試 <1>@GMX_IO</1>。 </0><2> 相當令人印象深刻的體驗——零滑點、執行快速</2><3> 倉位上限偏低，但用來做些 degen 賭博還挺有趣的</3>"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx

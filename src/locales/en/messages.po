@@ -2347,10 +2347,6 @@ msgstr "Reserve factor shorts"
 msgid "Max deposit limit reached"
 msgstr "Max deposit limit reached"
 
-#: landing/src/pages/Home/SocialSection/SocialSlider.tsx
-msgid "<0><1>#GMX V2</1>'s OI looks great.</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial.</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4>.</3>"
-msgstr "<0><1>#GMX V2</1>'s OI looks great.</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial.</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4>.</3>"
-
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total staked"
 msgstr "Total staked"
@@ -2632,6 +2628,10 @@ msgstr "Transaction hash"
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap failed"
 msgstr "Swap failed"
+
+#: landing/src/pages/Home/SocialSection/SocialSlider.tsx
+msgid "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop</0>"
+msgstr "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop</0>"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX on {chainName}"
@@ -3082,10 +3082,6 @@ msgstr "Theme"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
 msgstr "Max leverage exceeded"
-
-#: landing/src/pages/Home/SocialSection/SocialSlider.tsx
-msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution.</2><3> Low size caps, but fun to do some degen gambling with.</3>"
-msgstr "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution.</2><3> Low size caps, but fun to do some degen gambling with.</3>"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claiming funding fees failed"
@@ -4193,10 +4189,6 @@ msgstr "Missing claim parameters. Retry in a few seconds"
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "AVG. LEV."
 msgstr "AVG. LEV."
-
-#: landing/src/pages/Home/SocialSection/SocialSlider.tsx
-msgid "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop.</0>"
-msgstr "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop.</0>"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Enter a new ratio or allowed slippage"
@@ -7699,6 +7691,10 @@ msgstr "Insufficient pool liquidity"
 msgid "No opportunities on Botanix yet"
 msgstr "No opportunities on Botanix yet"
 
+#: landing/src/pages/Home/SocialSection/SocialSlider.tsx
+msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
+msgstr "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
 msgstr "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
@@ -9535,6 +9531,10 @@ msgstr "Copy technical details"
 #: src/pages/RpcDebug/parts.tsx
 msgid "TRACKER"
 msgstr "TRACKER"
+
+#: landing/src/pages/Home/SocialSection/SocialSlider.tsx
+msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution</2><3> Low size caps, but fun to do some degen gambling with</3>"
+msgstr "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution</2><3> Low size caps, but fun to do some degen gambling with</3>"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx

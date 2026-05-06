@@ -46,8 +46,8 @@ function Slides() {
             <p>
               Tried <span className="text-blue-100">@GMX_IO</span> for the first time.{" "}
             </p>
-            <p> Pretty impressive experience - no slippage, fast execution.</p>
-            <p> Low size caps, but fun to do some degen gambling with.</p>
+            <p> Pretty impressive experience - no slippage, fast execution</p>
+            <p> Low size caps, but fun to do some degen gambling with</p>
           </Trans>
         </div>
         <img src={andrewAttachment} alt="Andrew Attachment" className="radius-8 w-full object-cover" />
@@ -175,11 +175,11 @@ function Slides() {
         <div className="flex h-full grow flex-col justify-between">
           <Trans>
             <p>
-              <span className="text-blue-100">#GMX V2</span>'s OI looks great.
+              <span className="text-blue-100">#GMX V2</span>'s OI looks great
             </p>
-            <p>GMX V2 {">"} GMX V1 + Kwenta + Polynomial.</p>
+            <p>GMX V2 {">"} GMX V1 + Kwenta + Polynomial</p>
             <p>
-              Check more: <span className="text-blue-100">https://tradao.xyz/#/open-interest</span>.
+              Check more: <span className="text-blue-100">https://tradao.xyz/#/open-interest</span>
             </p>
           </Trans>
         </div>
@@ -198,7 +198,7 @@ function Slides() {
               Have to keep an eye on <span className="text-blue-100">@GMX_IO</span> here. While all of DeFi is in
               shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open
               interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to
-              the Arb airdrop.
+              the Arb airdrop
             </p>
           </Trans>
         </div>

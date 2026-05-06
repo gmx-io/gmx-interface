@@ -2347,10 +2347,6 @@ msgstr "Facteur de réserve shorts"
 msgid "Max deposit limit reached"
 msgstr "Limite maximale de dépôt atteinte"
 
-#: landing/src/pages/Home/SocialSection/SocialSlider.tsx
-msgid "<0><1>#GMX V2</1>'s OI looks great.</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial.</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4>.</3>"
-msgstr "<0>L'OI de <1>#GMX V2</1> est excellent.</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial.</2><3>En savoir plus : <4>https://tradao.xyz/#/open-interest</4>.</3>"
-
 #: src/pages/Dashboard/GmxCard.tsx
 msgid "Total staked"
 msgstr "Total mis en staking"
@@ -2632,6 +2628,10 @@ msgstr "Hash de transaction"
 #: src/domain/synthetics/orders/createWrapOrUnwrapTxn.ts
 msgid "Swap failed"
 msgstr "Échec de l'échange"
+
+#: landing/src/pages/Home/SocialSection/SocialSlider.tsx
+msgid "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop</0>"
+msgstr "<0>Il faut garder un œil sur <1>@GMX_IO</1> ici. Alors que tout le secteur DeFi est en déroute, GMX continue d'afficher des performances remarquables et soutenues en termes d'utilisateurs, d'AUM, de volume/frais, de positions ouvertes et d'utilisation du capital. Le meilleur endroit pour échanger entre les actifs majeurs sur Arbitrum et s'exposer à l'airdrop Arb</0>"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX on {chainName}"
@@ -3082,10 +3082,6 @@ msgstr "Thème"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max leverage exceeded"
 msgstr "Effet de levier maximum dépassé"
-
-#: landing/src/pages/Home/SocialSection/SocialSlider.tsx
-msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution.</2><3> Low size caps, but fun to do some degen gambling with.</3>"
-msgstr "<0>J'ai essayé <1>@GMX_IO</1> pour la première fois. </0><2> Expérience assez impressionnante - pas de glissement, exécution rapide.</2><3> Des plafonds de taille faibles, mais amusant pour quelques paris degen.</3>"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "Claiming funding fees failed"
@@ -4193,10 +4189,6 @@ msgstr "Paramètres de réclamation manquants. Réessayez dans quelques secondes
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "AVG. LEV."
 msgstr "LEV. MOY."
-
-#: landing/src/pages/Home/SocialSection/SocialSlider.tsx
-msgid "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop.</0>"
-msgstr "<0>Il faut garder un œil sur <1>@GMX_IO</1> ici. Alors que toute la DeFi est en difficulté, GMX continue d'afficher des performances soutenues impressionnantes en termes d'utilisateurs, d'AUM, de volume/frais, de positions ouvertes et d'utilisation du capital. Meilleur endroit pour échanger des actifs majeurs sur Arbitrum et s'exposer à l'airdrop Arb.</0>"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Enter a new ratio or allowed slippage"
@@ -7699,6 +7691,10 @@ msgstr "Liquidité du pool insuffisante"
 msgid "No opportunities on Botanix yet"
 msgstr "Aucune opportunité sur Botanix pour le moment"
 
+#: landing/src/pages/Home/SocialSection/SocialSlider.tsx
+msgid "<0><1>#GMX V2</1>'s OI looks great</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>Check more: <4>https://tradao.xyz/#/open-interest</4></3>"
+msgstr "<0>L'OI de <1>#GMX V2</1> a l'air excellent</0><2>GMX V2 > GMX V1 + Kwenta + Polynomial</2><3>En savoir plus : <4>https://tradao.xyz/#/open-interest</4></3>"
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "TP/SL orders auto-cancel when the position closes. Applies only to orders created after enabling."
 msgstr "Les ordres TP/SL sont automatiquement annulés à la fermeture de la position. S'applique uniquement aux ordres créés après l'activation."
@@ -9535,6 +9531,10 @@ msgstr "Copier les détails techniques"
 #: src/pages/RpcDebug/parts.tsx
 msgid "TRACKER"
 msgstr "TRACKER"
+
+#: landing/src/pages/Home/SocialSection/SocialSlider.tsx
+msgid "<0>Tried <1>@GMX_IO</1> for the first time. </0><2> Pretty impressive experience - no slippage, fast execution</2><3> Low size caps, but fun to do some degen gambling with</3>"
+msgstr "<0>J'ai essayé <1>@GMX_IO</1> pour la première fois. </0><2> Expérience plutôt impressionnante - pas de glissement, exécution rapide</2><3> Des plafonds de taille faibles, mais amusant pour du gambling de degen</3>"
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
