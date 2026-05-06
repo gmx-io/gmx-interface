@@ -500,6 +500,10 @@ msgstr "<0>KYCは不要、長い手続きも不要、入金も必要ありませ
 msgid "Select token"
 msgstr "トークンを選択"
 
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Crypto"
+msgstr ""
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Image generation failed. Refresh and try again."
 msgstr "画像の生成に失敗しました。更新して再度お試しください。"
@@ -4354,9 +4358,11 @@ msgid "<0><1>@GMX_IO</1> enters into a Data Partnership with Token Terminal. GMX
 msgstr "<0><1>@GMX_IO</1> が Token Terminal とデータパートナーシップを締結しました。GMX は <2>@Arbitrum</2> および <3>@Avax</3> 上に構築された、主要なパーミッションレス・パーペチュアル取引所です。</0><4>このプロトコルは、マルチチェーン DeFi の基盤となる流動性ベースレイヤーとして機能しています。</4><5>想定元本取引高が約2,800億ドルに達し、GMX は信頼性の高いデータ主導のステークホルダーレポーティングの必要性を認識しました。</5>"
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
+#: src/components/FavoriteTabs/SubCategoryTabs.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "All"
 msgstr "すべて"
 
@@ -4538,6 +4544,10 @@ msgstr "署名:"
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Processing claim..."
 msgstr "受け取りを処理中..."
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Recently Listed"
+msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Failed to load order data:"
@@ -7073,11 +7083,6 @@ msgstr "<0>毎</0> {seconds} 秒"
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
 msgstr ""
-
-#. Filter option for tokens favorites
-#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
-msgid "All markets"
-msgstr "すべてのマーケット"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Hide assets with small value"

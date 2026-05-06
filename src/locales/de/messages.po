@@ -500,6 +500,10 @@ msgstr "<0>Kein KYC, kein langwieriges Onboarding und keine Einzahlung erforderl
 msgid "Select token"
 msgstr "Token auswählen"
 
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Crypto"
+msgstr ""
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Image generation failed. Refresh and try again."
 msgstr "Bilderzeugung fehlgeschlagen. Aktualisieren Sie die Seite und versuchen Sie es erneut."
@@ -4354,9 +4358,11 @@ msgid "<0><1>@GMX_IO</1> enters into a Data Partnership with Token Terminal. GMX
 msgstr "<0><1>@GMX_IO</1> geht eine Datenpartnerschaft mit Token Terminal ein. GMX ist eine führende genehmigungsfreie Perpetual-Börse, aufgebaut auf <2>@Arbitrum</2> und <3>@Avax</3>.</0><4>Das Protokoll dient als grundlegende Liquiditätsbasis für Multichain-DeFi.</4><5>Mit einem nominalen Handelsvolumen von ~280 Milliarden USD und steigend erkannte GMX die Notwendigkeit einer zuverlässigen und datengestützten Berichterstattung für Stakeholder.</5>"
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
+#: src/components/FavoriteTabs/SubCategoryTabs.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "All"
 msgstr "Alle"
 
@@ -4538,6 +4544,10 @@ msgstr "Signatur:"
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Processing claim..."
 msgstr "Beanspruchung wird verarbeitet..."
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Recently Listed"
+msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Failed to load order data:"
@@ -7073,11 +7083,6 @@ msgstr "<0>jede</0> {seconds} Sekunden"
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
 msgstr ""
-
-#. Filter option for tokens favorites
-#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
-msgid "All markets"
-msgstr "Alle Märkte"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Hide assets with small value"

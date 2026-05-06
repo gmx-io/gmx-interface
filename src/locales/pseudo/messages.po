@@ -500,6 +500,10 @@ msgstr ""
 msgid "Select token"
 msgstr ""
 
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Crypto"
+msgstr ""
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Image generation failed. Refresh and try again."
 msgstr ""
@@ -4354,9 +4358,11 @@ msgid "<0><1>@GMX_IO</1> enters into a Data Partnership with Token Terminal. GMX
 msgstr ""
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
+#: src/components/FavoriteTabs/SubCategoryTabs.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "All"
 msgstr ""
 
@@ -4537,6 +4543,10 @@ msgstr ""
 
 #: src/domain/synthetics/claims/useClaimFundsTransactionCallback.tsx
 msgid "Processing claim..."
+msgstr ""
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Recently Listed"
 msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
@@ -7072,11 +7082,6 @@ msgstr ""
 
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
-msgstr ""
-
-#. Filter option for tokens favorites
-#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
-msgid "All markets"
 msgstr ""
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
