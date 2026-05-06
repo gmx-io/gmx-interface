@@ -48,6 +48,10 @@ msgstr "추천 코드"
 msgid "Insufficient funds for order costs. Remaining: {remainingCostUsdText}"
 msgstr "주문 비용을 충당할 자금이 부족합니다. 잔액: {remainingCostUsdText}"
 
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
+msgid "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} collateral</0>"
+msgstr "기존 지정가 주문이 {symbol} 담보를 사용 중입니다. <0>{symbol} 담보로 전환</0>"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive value: traders receive funding"
 msgstr "양수 값: 트레이더가 펀딩을 수령합니다"
@@ -295,10 +299,6 @@ msgstr "익스프레스 트레이딩 시도"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
 msgstr "포지션에 대한 가상 재고"
-
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Existing position in {0} pool.<0>Switch to {1} pool</0>."
-msgstr "{0} 풀에 기존 포지션이 있습니다.<0>{1} 풀로 전환</0>."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Margin per part: {0} (min {1})"
@@ -1066,6 +1066,10 @@ msgstr "Vaultka"
 msgid "MARKET"
 msgstr "마켓"
 
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
+msgid "Existing position uses {0} collateral. Using the selected collateral will create a separate position. <0>Switch to {1} collateral</0>"
+msgstr "기존 포지션은 {0} 담보를 사용합니다. 선택한 담보를 사용하면 별도의 포지션이 생성됩니다. <0>{1} 담보로 전환</0>"
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Active referral code"
 msgstr "활성 추천 코드"
@@ -1203,6 +1207,10 @@ msgstr "{0} 가격"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} buyable amount exceeded"
 msgstr "최대 {0} 구매 가능 금액 초과"
+
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
+msgid "Existing position uses {0} collateral. If executed, this order will create a separate position. <0>Switch to {1} collateral</0>"
+msgstr "기존 포지션은 {0} 담보를 사용합니다. 이 주문이 체결되면 별도의 포지션이 생성됩니다. <0>{1} 담보로 전환</0>"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
@@ -2130,6 +2138,10 @@ msgstr "매개변수가 누락되었습니다. 새로고침 후 다시 시도하
 msgid "Available to trade assets"
 msgstr "거래 가능 자산"
 
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
+msgstr "기존 포지션은 WETH-USDC 풀에 있지만, 해당 풀은 이 주문에 필요한 유동성이 부족합니다"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed withdraw"
 msgstr "출금 실패"
@@ -2187,10 +2199,6 @@ msgstr "GMX (중국어)"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search"
 msgstr "검색"
-
-#: src/pages/UiPage/BannerTest.tsx
-msgid "Existing position in WETH-USDC pool but lacks liquidity for this order"
-msgstr "WETH-USDC 풀에 기존 포지션이 있으나 이 주문에 대한 유동성이 부족합니다"
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Fees for the past"
@@ -3163,6 +3171,10 @@ msgstr "기본 실패"
 msgid "How to start earning?"
 msgstr "수익 창출을 시작하는 방법은?"
 
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {tokensText} for gas in your GMX Account <0>Deposit {tokensText}</0>"
+msgstr "GMX Account에 Gas용 {tokensText} 잔액이 부족합니다 <0>{tokensText} 입금</0>"
+
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "<0>Set recommended impact: {0}</0>."
@@ -3298,6 +3310,10 @@ msgstr "입금 USD 한도"
 msgid "Arbitrum wallet"
 msgstr "Arbitrum 지갑"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
+msgstr "{0} 풀에 기존 지정가 주문이 있습니다<0>{1} 풀로 전환</0>"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Smart wallets not supported on {0}</0><1/><2>Switch to a different network or use an EOA wallet</2>"
 msgstr "<0>스마트 지갑은 {0}에서 지원되지 않습니다</0><1/><2>다른 네트워크로 전환하거나 EOA 지갑을 사용하십시오</2>"
@@ -3309,10 +3325,6 @@ msgstr "탈중앙화 또는 중앙화 거래소에서 구매"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "of limit"
 msgstr "한도 대비"
-
-#: src/components/Errors/gasErrors.tsx
-msgid "Insufficient {tokensText} for gas in your GMX Account. <0>Deposit {tokensText}</0>."
-msgstr "GMX Account의 Gas용 {tokensText}이(가) 부족합니다. <0>{tokensText} 입금</0>."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact pool after reserved positive impact"
@@ -3425,10 +3437,6 @@ msgstr "입금 처리 중..."
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "Creating..."
 msgstr "생성 중…"
-
-#: src/pages/UiPage/BannerTest.tsx
-msgid "Existing position in WETH-USDC pool.<0>Switch to WETH-USDC pool</0>"
-msgstr "WETH-USDC 풀에 기존 포지션이 있습니다.<0>WETH-USDC 풀로 전환</0>"
 
 #: src/pages/Jobs/Jobs.tsx
 msgid "GMX is not actively hiring. If you think you can contribute, email <0>jobs@gmx.io</0>."
@@ -4207,10 +4215,6 @@ msgstr "스왑 제출 완료"
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr "변동성으로 인해 예상 체결가와 실제 체결가 사이의 차이입니다. 슬리피지가 최대치를 초과하면 주문이 체결되지 않습니다. 설정에서 기본값을 조정하십시오.<0/><1/>낮은 값(예: -{0} 미만)은 변동성이 큰 시기에 주문 실패를 초래할 수 있습니다.<2/><3/>슬리피지는 미결제약정 불균형에 기반한 가격 영향과 다릅니다. <4>자세히 보기</4>."
-
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Existing position in {0} pool but lacks liquidity for this order"
-msgstr "{0} 풀에 기존 포지션이 있지만 이 주문에 대한 유동성이 부족합니다"
 
 #: src/components/ChainDataImage.tsx
 #: src/components/ChainDataImage.tsx
@@ -5066,6 +5070,10 @@ msgstr "종료"
 msgid "from your wallet"
 msgstr "지갑에서"
 
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Existing position uses USDC collateral. Using the selected collateral will create a separate position. <0>Switch to USDC collateral</0>"
+msgstr "기존 포지션은 USDC 담보를 사용합니다. 선택한 담보를 사용하면 별도의 포지션이 생성됩니다. <0>USDC 담보로 전환</0>"
+
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Explore more"
 msgstr "더 탐색하기"
@@ -5801,10 +5809,6 @@ msgstr "GMX Substack"
 msgid "Insufficient liquidity for pay-to-collateral swap at trigger price"
 msgstr "조건가에서 지불-담보 스왑을 위한 유동성 부족"
 
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Existing limit order in {0} pool.<0>Switch to {1} pool</0>."
-msgstr "{0} 풀에 기존 지정가 주문이 있습니다.<0>{1} 풀로 전환</0>."
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Fewer details"
 msgstr "간략히 보기"
@@ -6052,10 +6056,6 @@ msgstr "청산으로부터 <0/> 안전하게 보호"
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High net price impact"
 msgstr "높은 순 가격 영향"
-
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
-msgid "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} collateral</0>."
-msgstr "기존 지정가 주문이 {symbol} 담보를 사용 중입니다. <0>{symbol} 담보로 전환</0>."
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Claiming rewards"
@@ -6782,10 +6782,6 @@ msgstr "GMX 추천 시스템 통계 대시보드"
 msgid "Join {0} users earning real yield"
 msgstr "{0}명의 사용자와 함께 실제 수익률을 얻으십시오"
 
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
-msgid "Existing position uses {0} collateral. This action won't affect it. <0>Switch to {1} collateral</0>."
-msgstr "기존 포지션은 {0} 담보를 사용 중입니다. 이 작업은 해당 포지션에 영향을 주지 않습니다. <0>{1} 담보로 전환</0>."
-
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 msgid "Action"
@@ -7049,6 +7045,10 @@ msgstr "{0}을(를) {1}(으)로 출금하는 것은 지원되지 않습니다"
 msgid "Wallet esGMX"
 msgstr "지갑 esGMX"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing position is in {0} pool. Using the selected pool will create a separate position. <0>Switch to {1} pool</0>"
+msgstr "기존 포지션은 {0} 풀에 있습니다. 선택한 풀을 사용하면 별도의 포지션이 생성됩니다. <0>{1} 풀로 전환</0>"
+
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Governance"
@@ -7149,6 +7149,10 @@ msgstr "포지션 공유"
 #: src/components/BotanixBanner/BotanixBanner.tsx
 msgid "Switch to <0><1/><2>Arbitrum</2></0> or <3><4/><5>Avalanche</5></3> for those features"
 msgstr "해당 기능을 사용하려면 <0><1/><2>Arbitrum</2></0> 또는 <3><4/><5>Avalanche</5></3>(으)로 전환하십시오"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing position is in {0} pool, but that pool lacks liquidity for this order"
+msgstr "기존 포지션은 {0} 풀에 있지만, 해당 풀은 이 주문에 필요한 유동성이 부족합니다"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral factor"
@@ -8316,10 +8320,6 @@ msgstr "증거금 수정: {0} {1}{2}/USD"
 #: src/components/AddressView/AddressView.tsx
 msgid "You"
 msgstr "당신"
-
-#: src/pages/UiPage/BannerTest.tsx
-msgid "Existing position uses USDC collateral. This action won't affect it. <0>Switch to USDC collateral</0>"
-msgstr "기존 포지션이 USDC 담보를 사용합니다. 이 작업은 해당 포지션에 영향을 미치지 않습니다. <0>USDC 담보로 전환</0>"
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "with 100x leverage"
@@ -10433,6 +10433,10 @@ msgstr "최대 미결제약정을 초과했습니다"
 msgid "Network fees are high due to increased {chainName} network activity"
 msgstr "{chainName} 네트워크 활동 증가로 인해 네트워크 수수료가 높습니다"
 
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Existing position is in WETH-USDC pool. Using the selected pool will create a separate position. <0>Switch to WETH-USDC pool</0>"
+msgstr "기존 포지션은 WETH-USDC 풀에 있습니다. 선택한 풀을 사용하면 별도의 포지션이 생성됩니다. <0>WETH-USDC 풀로 전환</0>"
+
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set short Take-Profit @ {0}"
 msgstr "숏 익절매 설정 @ {0}"
@@ -10727,10 +10731,6 @@ msgstr "{ordersText} 취소됨"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"
 msgstr "지정가"
-
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
-msgid "Existing position uses {0} collateral. This order won't apply to it. <0>Switch to {1} collateral</0>."
-msgstr "기존 포지션은 {0} 담보를 사용합니다. 이 주문은 해당 포지션에 적용되지 않습니다. <0>{1} 담보로 전환</0>."
 
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "TIMEKEY"

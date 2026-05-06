@@ -90,7 +90,7 @@ export function BannerTest() {
         <Section title="Text + inline ColorfulButtonLink">
           <AlertInfoCard onClose={noop}>
             <Trans>
-              Existing position in WETH-USDC pool.
+              Existing position is in WETH-USDC pool. Using the selected pool will create a separate position.{" "}
               <ColorfulButtonLink color="blue" onClick={noop}>
                 Switch to WETH-USDC pool
               </ColorfulButtonLink>
@@ -108,7 +108,7 @@ export function BannerTest() {
 
           <AlertInfoCard onClose={noop}>
             <Trans>
-              Existing position uses USDC collateral. This action won't affect it.{" "}
+              Existing position uses USDC collateral. Using the selected collateral will create a separate position.{" "}
               <ColorfulButtonLink color="blue" onClick={noop}>
                 Switch to USDC collateral
               </ColorfulButtonLink>
@@ -126,7 +126,7 @@ export function BannerTest() {
           </ColorfulBanner>
 
           <AlertInfoCard type="error" hideClose>
-            <Trans>Existing position in WETH-USDC pool but lacks liquidity for this order</Trans>
+            <Trans>Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order</Trans>
           </AlertInfoCard>
 
           <AlertInfoCard type="error" hideClose>

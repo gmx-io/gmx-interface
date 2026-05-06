@@ -48,6 +48,10 @@ msgstr "CODE DE PARRAINAGE"
 msgid "Insufficient funds for order costs. Remaining: {remainingCostUsdText}"
 msgstr "Fonds insuffisants pour les coûts de l'ordre. Restant : {remainingCostUsdText}"
 
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
+msgid "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} collateral</0>"
+msgstr "L'ordre à cours limité existant utilise la garantie {symbol}. <0>Passer à la garantie {symbol}</0>"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive value: traders receive funding"
 msgstr "Valeur positive : les traders reçoivent du financement"
@@ -295,10 +299,6 @@ msgstr "Essayer le Trading Express"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
 msgstr "Inventaire virtuel pour les positions"
-
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Existing position in {0} pool.<0>Switch to {1} pool</0>."
-msgstr "Position existante dans le pool {0}.<0>Passer au pool {1}</0>."
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Margin per part: {0} (min {1})"
@@ -1066,6 +1066,10 @@ msgstr "Vaultka"
 msgid "MARKET"
 msgstr "MARCHÉ"
 
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
+msgid "Existing position uses {0} collateral. Using the selected collateral will create a separate position. <0>Switch to {1} collateral</0>"
+msgstr "La position existante utilise la garantie {0}. Utiliser la garantie sélectionnée créera une position distincte. <0>Passer à la garantie {1}</0>"
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Active referral code"
 msgstr "Code de parrainage actif"
@@ -1203,6 +1207,10 @@ msgstr "Prix de {0}"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} buyable amount exceeded"
 msgstr "Montant achetable max {0} dépassé"
+
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
+msgid "Existing position uses {0} collateral. If executed, this order will create a separate position. <0>Switch to {1} collateral</0>"
+msgstr "La position existante utilise la garantie {0}. S'il s'exécute, cet ordre créera une position distincte. <0>Passer à la garantie {1}</0>"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
@@ -2130,6 +2138,10 @@ msgstr "Paramètres manquants. Actualisez et réessayez"
 msgid "Available to trade assets"
 msgstr "Actifs disponibles pour le trading"
 
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
+msgstr "La position existante se trouve dans le pool WETH-USDC, mais ce pool manque de liquidité pour cet ordre"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed withdraw"
 msgstr "Retrait échoué"
@@ -2187,10 +2199,6 @@ msgstr "GMX (Chinois)"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search"
 msgstr "Rechercher"
-
-#: src/pages/UiPage/BannerTest.tsx
-msgid "Existing position in WETH-USDC pool but lacks liquidity for this order"
-msgstr "Position existante dans le pool WETH-USDC mais liquidité insuffisante pour cet ordre"
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Fees for the past"
@@ -3163,6 +3171,10 @@ msgstr "Primaire échoué"
 msgid "How to start earning?"
 msgstr "Comment commencer à gagner ?"
 
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {tokensText} for gas in your GMX Account <0>Deposit {tokensText}</0>"
+msgstr "Solde {tokensText} insuffisant pour le Gas dans votre GMX Account <0>Déposer {tokensText}</0>"
+
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "<0>Set recommended impact: {0}</0>."
@@ -3298,6 +3310,10 @@ msgstr "Capacité de dépôt en USD"
 msgid "Arbitrum wallet"
 msgstr "Portefeuille Arbitrum"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
+msgstr "Ordre à cours limité existant dans le pool {0}<0>Passer au pool {1}</0>"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Smart wallets not supported on {0}</0><1/><2>Switch to a different network or use an EOA wallet</2>"
 msgstr "<0>Portefeuilles intelligents non pris en charge sur {0}</0><1/><2>Changez de réseau ou utilisez un portefeuille EOA</2>"
@@ -3309,10 +3325,6 @@ msgstr "Acheter sur des plateformes décentralisées ou centralisées"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "of limit"
 msgstr "de la limite"
-
-#: src/components/Errors/gasErrors.tsx
-msgid "Insufficient {tokensText} for gas in your GMX Account. <0>Deposit {tokensText}</0>."
-msgstr "{tokensText} insuffisant pour le Gas dans votre GMX Account. <0>Déposez {tokensText}</0>."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact pool after reserved positive impact"
@@ -3425,10 +3437,6 @@ msgstr "Dépôt en cours..."
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "Creating..."
 msgstr "Création en cours…"
-
-#: src/pages/UiPage/BannerTest.tsx
-msgid "Existing position in WETH-USDC pool.<0>Switch to WETH-USDC pool</0>"
-msgstr "Position existante dans le pool WETH-USDC.<0>Passer au pool WETH-USDC</0>"
 
 #: src/pages/Jobs/Jobs.tsx
 msgid "GMX is not actively hiring. If you think you can contribute, email <0>jobs@gmx.io</0>."
@@ -4207,10 +4215,6 @@ msgstr "Swap soumis"
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr "La différence entre le prix d'exécution attendu et le prix réel due à la volatilité. Les ordres ne s'exécuteront pas si le glissement dépasse votre maximum. Ajustez la valeur par défaut dans les paramètres.<0/><1/>Une valeur faible (par ex. inférieure à -{0}) peut entraîner l'échec d'ordres en période de volatilité.<2/><3/>Le glissement diffère de l'impact sur le prix, qui est basé sur les déséquilibres des positions ouvertes. <4>En savoir plus</4>."
-
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Existing position in {0} pool but lacks liquidity for this order"
-msgstr "Position existante dans le pool {0} mais liquidité insuffisante pour cet ordre"
 
 #: src/components/ChainDataImage.tsx
 #: src/components/ChainDataImage.tsx
@@ -5066,6 +5070,10 @@ msgstr "clôture"
 msgid "from your wallet"
 msgstr "depuis votre portefeuille"
 
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Existing position uses USDC collateral. Using the selected collateral will create a separate position. <0>Switch to USDC collateral</0>"
+msgstr "La position existante utilise la garantie USDC. Utiliser la garantie sélectionnée créera une position distincte. <0>Passer à la garantie USDC</0>"
+
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Explore more"
 msgstr "Explorer davantage"
@@ -5801,10 +5809,6 @@ msgstr "GMX Substack"
 msgid "Insufficient liquidity for pay-to-collateral swap at trigger price"
 msgstr "Liquidité insuffisante pour l'échange paiement-garantie au prix de déclenchement"
 
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Existing limit order in {0} pool.<0>Switch to {1} pool</0>."
-msgstr "Ordre à cours limité existant dans le pool {0}.<0>Passer au pool {1}</0>."
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Fewer details"
 msgstr "Moins de détails"
@@ -6052,10 +6056,6 @@ msgstr "Protégez-vous des <0/> liquidations"
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High net price impact"
 msgstr "Impact net élevé sur le prix"
-
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
-msgid "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} collateral</0>."
-msgstr "L'ordre à cours limité existant utilise la garantie {symbol}. <0>Passer à la garantie {symbol}</0>."
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Claiming rewards"
@@ -6782,10 +6782,6 @@ msgstr "Tableau de bord pour les statistiques de parrainage GMX"
 msgid "Join {0} users earning real yield"
 msgstr "Rejoignez {0} utilisateurs qui génèrent un rendement réel"
 
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
-msgid "Existing position uses {0} collateral. This action won't affect it. <0>Switch to {1} collateral</0>."
-msgstr "La position existante utilise la garantie {0}. Cette action ne l'affectera pas. <0>Passer à la garantie {1}</0>."
-
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 msgid "Action"
@@ -7049,6 +7045,10 @@ msgstr "Le retrait de {0} vers {1} n'est pas pris en charge"
 msgid "Wallet esGMX"
 msgstr "Portefeuille esGMX"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing position is in {0} pool. Using the selected pool will create a separate position. <0>Switch to {1} pool</0>"
+msgstr "La position existante se trouve dans le pool {0}. Utiliser le pool sélectionné créera une position distincte. <0>Passer au pool {1}</0>"
+
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Governance"
@@ -7149,6 +7149,10 @@ msgstr "Partager la position"
 #: src/components/BotanixBanner/BotanixBanner.tsx
 msgid "Switch to <0><1/><2>Arbitrum</2></0> or <3><4/><5>Avalanche</5></3> for those features"
 msgstr "Passez à <0><1/><2>Arbitrum</2></0> ou <3><4/><5>Avalanche</5></3> pour accéder à ces fonctionnalités"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing position is in {0} pool, but that pool lacks liquidity for this order"
+msgstr "La position existante se trouve dans le pool {0}, mais ce pool manque de liquidité pour cet ordre"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral factor"
@@ -8316,10 +8320,6 @@ msgstr "Modifier la marge : {0} {1}{2}/USD"
 #: src/components/AddressView/AddressView.tsx
 msgid "You"
 msgstr "Vous"
-
-#: src/pages/UiPage/BannerTest.tsx
-msgid "Existing position uses USDC collateral. This action won't affect it. <0>Switch to USDC collateral</0>"
-msgstr "La position existante utilise la garantie USDC. Cette action ne l'affectera pas. <0>Passer à la garantie USDC</0>"
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "with 100x leverage"
@@ -10433,6 +10433,10 @@ msgstr "Positions ouvertes maximales dépassées"
 msgid "Network fees are high due to increased {chainName} network activity"
 msgstr "Les frais de réseau sont élevés en raison d'une activité accrue sur le réseau {chainName}"
 
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Existing position is in WETH-USDC pool. Using the selected pool will create a separate position. <0>Switch to WETH-USDC pool</0>"
+msgstr "La position existante se trouve dans le pool WETH-USDC. Utiliser le pool sélectionné créera une position distincte. <0>Passer au pool WETH-USDC</0>"
+
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set short Take-Profit @ {0}"
 msgstr "Définir un Take-Profit short @ {0}"
@@ -10727,10 +10731,6 @@ msgstr "{ordersText} annulé(s)"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"
 msgstr "Limite"
-
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
-msgid "Existing position uses {0} collateral. This order won't apply to it. <0>Switch to {1} collateral</0>."
-msgstr "La position existante utilise la garantie {0}. Cet ordre ne s'y appliquera pas. <0>Passer à la garantie {1}</0>."
 
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "TIMEKEY"

@@ -48,6 +48,10 @@ msgstr "推薦代碼"
 msgid "Insufficient funds for order costs. Remaining: {remainingCostUsdText}"
 msgstr "訂單費用資金不足。剩餘：{remainingCostUsdText}"
 
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
+msgid "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} collateral</0>"
+msgstr "現有限價單使用 {symbol} 抵押品。<0>切換至 {symbol} 抵押品</0>"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive value: traders receive funding"
 msgstr "正值：交易者收取資金費用"
@@ -295,10 +299,6 @@ msgstr "試用 Express Trading"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
 msgstr "倉位虛擬庫存"
-
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Existing position in {0} pool.<0>Switch to {1} pool</0>."
-msgstr "在 {0} 池中已有倉位。<0>切換至 {1} 池</0>。"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Margin per part: {0} (min {1})"
@@ -1066,6 +1066,10 @@ msgstr "Vaultka"
 msgid "MARKET"
 msgstr "市場"
 
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
+msgid "Existing position uses {0} collateral. Using the selected collateral will create a separate position. <0>Switch to {1} collateral</0>"
+msgstr "現有倉位使用 {0} 抵押品。使用所選抵押品將建立一個單獨倉位。<0>切換至 {1} 抵押品</0>"
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Active referral code"
 msgstr "使用中的推薦碼"
@@ -1203,6 +1207,10 @@ msgstr "{0} 價格"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} buyable amount exceeded"
 msgstr "已超過 {0} 可購買上限"
+
+#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
+msgid "Existing position uses {0} collateral. If executed, this order will create a separate position. <0>Switch to {1} collateral</0>"
+msgstr "現有倉位使用 {0} 抵押品。如果執行，此訂單將建立一個單獨倉位。<0>切換至 {1} 抵押品</0>"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/PositionShare/CreateReferralCode.tsx
@@ -2130,6 +2138,10 @@ msgstr "缺少參數。請重新整理後再試"
 msgid "Available to trade assets"
 msgstr "可交易資產"
 
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
+msgstr "現有倉位在 WETH-USDC 池中，但該池流動性不足以執行此訂單"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Failed withdraw"
 msgstr "提取失敗"
@@ -2187,10 +2199,6 @@ msgstr "GMX（中文）"
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search"
 msgstr "搜尋"
-
-#: src/pages/UiPage/BannerTest.tsx
-msgid "Existing position in WETH-USDC pool but lacks liquidity for this order"
-msgstr "WETH-USDC 池中有現有倉位，但此訂單的流動性不足"
 
 #: src/pages/Dashboard/OverviewCard.tsx
 msgid "Fees for the past"
@@ -3163,6 +3171,10 @@ msgstr "主要失敗"
 msgid "How to start earning?"
 msgstr "如何開始賺取收益？"
 
+#: src/components/Errors/gasErrors.tsx
+msgid "Insufficient {tokensText} for gas in your GMX Account <0>Deposit {tokensText}</0>"
+msgstr "您的 GMX Account 中用於 Gas 的 {tokensText} 不足 <0>存入 {tokensText}</0>"
+
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "<0>Set recommended impact: {0}</0>."
@@ -3298,6 +3310,10 @@ msgstr "存入 USD 容量"
 msgid "Arbitrum wallet"
 msgstr "Arbitrum 錢包"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing limit order in {0} pool<0>Switch to {1} pool</0>"
+msgstr "在 {0} 池中有現有限價單<0>切換至 {1} 池</0>"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Smart wallets not supported on {0}</0><1/><2>Switch to a different network or use an EOA wallet</2>"
 msgstr "<0>智能錢包不支援 {0}</0><1/><2>請切換至其他網路或使用 EOA 錢包</2>"
@@ -3309,10 +3325,6 @@ msgstr "從去中心化或中心化交易所買入"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "of limit"
 msgstr "的限額"
-
-#: src/components/Errors/gasErrors.tsx
-msgid "Insufficient {tokensText} for gas in your GMX Account. <0>Deposit {tokensText}</0>."
-msgstr "您的 GMX Account 中 {tokensText} Gas 費用不足。<0>存入 {tokensText}</0>。"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact pool after reserved positive impact"
@@ -3425,10 +3437,6 @@ msgstr "存入進行中..."
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "Creating..."
 msgstr "建立中..."
-
-#: src/pages/UiPage/BannerTest.tsx
-msgid "Existing position in WETH-USDC pool.<0>Switch to WETH-USDC pool</0>"
-msgstr "WETH-USDC 池中有現有倉位。<0>切換至 WETH-USDC 池</0>"
 
 #: src/pages/Jobs/Jobs.tsx
 msgid "GMX is not actively hiring. If you think you can contribute, email <0>jobs@gmx.io</0>."
@@ -4207,10 +4215,6 @@ msgstr "兌換已提交"
 #: src/components/TradeBox/TradeBoxRows/AllowedSlippageRow.tsx
 msgid "The difference between expected and actual execution price due to volatility. Orders won't execute if slippage exceeds your maximum. Adjust the default in settings.<0/><1/>A low value (e.g. less than -{0}) may cause failed orders during volatility.<2/><3/>Slippage differs from price impact, which is based on open interest imbalances. <4>Read more</4>."
 msgstr "預期成交價格與實際成交價格之間因波動性產生的差異。若滑點超過您設定的最大值，訂單將不會執行。可在設定中調整預設值。<0/><1/>過低的值（例如低於 -{0}）可能導致訂單在波動時失敗。<2/><3/>滑點不同於價格影響，後者基於未平倉量的不平衡。<4>閱讀更多</4>。"
-
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Existing position in {0} pool but lacks liquidity for this order"
-msgstr "在 {0} 池中有現有倉位，但該池流動性不足以執行此訂單"
 
 #: src/components/ChainDataImage.tsx
 #: src/components/ChainDataImage.tsx
@@ -5066,6 +5070,10 @@ msgstr "平倉"
 msgid "from your wallet"
 msgstr "從您的錢包"
 
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Existing position uses USDC collateral. Using the selected collateral will create a separate position. <0>Switch to USDC collateral</0>"
+msgstr "現有倉位使用 USDC 抵押品。使用所選抵押品將建立一個單獨倉位。<0>切換至 USDC 抵押品</0>"
+
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Explore more"
 msgstr "探索更多"
@@ -5801,10 +5809,6 @@ msgstr "GMX Substack"
 msgid "Insufficient liquidity for pay-to-collateral swap at trigger price"
 msgstr "在觸發價格下，支付代幣至抵押品兌換的流動性不足"
 
-#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
-msgid "Existing limit order in {0} pool.<0>Switch to {1} pool</0>."
-msgstr "{0} 池中已有限價單。<0>切換至 {1} 池</0>。"
-
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Fewer details"
 msgstr "收起詳情"
@@ -6052,10 +6056,6 @@ msgstr "遠離<0/>清算風險"
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High net price impact"
 msgstr "淨價格影響過高"
-
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
-msgid "Existing limit order uses {symbol} collateral. <0>Switch to {symbol} collateral</0>."
-msgstr "現有限價單使用 {symbol} 抵押品。<0>切換至 {symbol} 抵押品</0>。"
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Claiming rewards"
@@ -6782,10 +6782,6 @@ msgstr "GMX 推薦統計儀表板"
 msgid "Join {0} users earning real yield"
 msgstr "加入 {0} 位用戶，賺取真實收益"
 
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
-msgid "Existing position uses {0} collateral. This action won't affect it. <0>Switch to {1} collateral</0>."
-msgstr "現有倉位使用 {0} 抵押品。此操作不會影響該倉位。<0>切換至 {1} 抵押品</0>。"
-
 #: src/components/Claims/filters/ActionFilter.tsx
 #: src/components/TradeHistory/filters/ActionFilter.tsx
 msgid "Action"
@@ -7049,6 +7045,10 @@ msgstr "不支援將 {0} 提取至 {1}"
 msgid "Wallet esGMX"
 msgstr "錢包 esGMX"
 
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing position is in {0} pool. Using the selected pool will create a separate position. <0>Switch to {1} pool</0>"
+msgstr "現有倉位在 {0} 池中。使用所選池將建立一個單獨倉位。<0>切換至 {1} 池</0>"
+
 #: landing/src/pages/Home/HeaderMenu/HeaderMenu.tsx
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Governance"
@@ -7149,6 +7149,10 @@ msgstr "分享倉位"
 #: src/components/BotanixBanner/BotanixBanner.tsx
 msgid "Switch to <0><1/><2>Arbitrum</2></0> or <3><4/><5>Avalanche</5></3> for those features"
 msgstr "切換至 <0><1/><2>Arbitrum</2></0> 或 <3><4/><5>Avalanche</5></3> 以使用這些功能"
+
+#: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
+msgid "Existing position is in {0} pool, but that pool lacks liquidity for this order"
+msgstr "現有倉位在 {0} 池中，但該池流動性不足以執行此訂單"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral factor"
@@ -8316,10 +8320,6 @@ msgstr "編輯保證金：{0} {1}{2}/USD"
 #: src/components/AddressView/AddressView.tsx
 msgid "You"
 msgstr "您"
-
-#: src/pages/UiPage/BannerTest.tsx
-msgid "Existing position uses USDC collateral. This action won't affect it. <0>Switch to USDC collateral</0>"
-msgstr "現有倉位使用 USDC 抵押品。此操作不會影響該倉位。<0>切換至 USDC 抵押品</0>"
 
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "with 100x leverage"
@@ -10433,6 +10433,10 @@ msgstr "已超過最大未平倉量"
 msgid "Network fees are high due to increased {chainName} network activity"
 msgstr "由於 {chainName} 網路活動增加，網路費用偏高"
 
+#: src/pages/UiPage/BannerTest.tsx
+msgid "Existing position is in WETH-USDC pool. Using the selected pool will create a separate position. <0>Switch to WETH-USDC pool</0>"
+msgstr "現有倉位在 WETH-USDC 池中。使用所選池將建立一個單獨倉位。<0>切換至 WETH-USDC 池</0>"
+
 #: src/components/TVChartContainer/useChartContextMenu.ts
 msgid "Set short Take-Profit @ {0}"
 msgstr "設定做空止盈 @ {0}"
@@ -10727,10 +10731,6 @@ msgstr "{ordersText} 已取消"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Limit"
 msgstr "限價"
-
-#: src/components/TradeBox/TradeBoxRows/CollateralSelectorField.tsx
-msgid "Existing position uses {0} collateral. This order won't apply to it. <0>Switch to {1} collateral</0>."
-msgstr "現有倉位使用 {0} 抵押品，此訂單不適用於該倉位。<0>切換至 {1} 抵押品</0>。"
 
 #: src/pages/PriceImpactRebatesStats/PriceImpactRebatesStats.tsx
 msgid "TIMEKEY"

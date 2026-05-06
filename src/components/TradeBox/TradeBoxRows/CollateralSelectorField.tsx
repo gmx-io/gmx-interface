@@ -108,7 +108,8 @@ export function useCollateralWarnings() {
         messages.push(
           <AlertInfoCard key="showHasExistingPositionWithDifferentCollateral_1" type="warning" hideClose>
             <Trans>
-              Existing position uses {collateralWithPosition.symbol} collateral. This action won't affect it.{" "}
+              Existing position uses {collateralWithPosition.symbol} collateral. Using the selected collateral will
+              create a separate position.{" "}
               <ColorfulButtonLink
                 color="blue"
                 onClick={() => {
@@ -117,7 +118,6 @@ export function useCollateralWarnings() {
               >
                 Switch to {collateralWithPosition.symbol} collateral
               </ColorfulButtonLink>
-              .
             </Trans>
           </AlertInfoCard>
         );
@@ -125,7 +125,8 @@ export function useCollateralWarnings() {
         messages.push(
           <AlertInfoCard key="showHasExistingPositionWithDifferentCollateral_2" type="warning" hideClose>
             <Trans>
-              Existing position uses {collateralWithPosition.symbol} collateral. This order won't apply to it.{" "}
+              Existing position uses {collateralWithPosition.symbol} collateral. If executed, this order will create a
+              separate position.{" "}
               <ColorfulButtonLink
                 color="blue"
                 onClick={() => {
@@ -134,7 +135,6 @@ export function useCollateralWarnings() {
               >
                 Switch to {collateralWithPosition.symbol} collateral
               </ColorfulButtonLink>
-              .
             </Trans>
           </AlertInfoCard>
         );
@@ -157,7 +157,6 @@ export function useCollateralWarnings() {
             >
               Switch to {symbol} collateral
             </ColorfulButtonLink>
-            .
           </Trans>
         </AlertInfoCard>
       );
