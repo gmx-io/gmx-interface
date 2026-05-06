@@ -28,6 +28,7 @@ import {
   useTokensFavorites,
 } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
+import { useMarketsListingDates } from "domain/synthetics/markets/useMarketsListingDates";
 import { getMarketBaseName, getMarketPoolName } from "domain/synthetics/markets/utils";
 import { IndexTokensStats } from "domain/synthetics/stats/marketsInfoDataToIndexTokensStats";
 import { PriceDelta, PriceDeltaMap, TokenData, TokensData, use24hPriceDeltaMap } from "domain/synthetics/tokens";
@@ -57,7 +58,7 @@ import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import LongIcon from "img/long.svg?react";
 import ShortIcon from "img/short.svg?react";
 
-import { applySubCategoryFilter, applyTopLevelFilter } from "./marketFilters";
+import { applySubCategoryFilter, applyTopLevelFilter, getRecentlyListedTokenAddresses } from "./marketFilters";
 import { SelectorBase, SelectorBaseMobileHeaderContent, useSelectorClose } from "../SelectorBase/SelectorBase";
 
 type Props = {
@@ -198,6 +199,13 @@ function MarketsList() {
   const { topLevelTab, subCategoryTab, mode, setMode, favoriteTokens, toggleFavoriteToken } =
     useTokensFavorites("chart-token-selector");
 
+  const { listingDateByIndexToken } = useMarketsListingDates(chainId);
+
+  const recentlyListedAddressesSet = useMemo(
+    () => new Set(getRecentlyListedTokenAddresses(listingDateByIndexToken, Date.now())),
+    [listingDateByIndexToken]
+  );
+
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
 
   // Initialize local mode from page state once on first mount.
@@ -222,6 +230,11 @@ function MarketsList() {
       availableChartTokenAddresses,
     };
   }, [availableTokens, chainId]);
+
+  const recentlyListedCount = useMemo(() => {
+    if (!options || recentlyListedAddressesSet.size === 0) return 0;
+    return options.filter((t) => recentlyListedAddressesSet.has(t.address.toLowerCase())).length;
+  }, [options, recentlyListedAddressesSet]);
 
   const populatedCryptoSubCats = useMemo(() => {
     const set = new Set<SubCategoryTab>();
@@ -262,6 +275,7 @@ function MarketsList() {
     searchKeyword,
     topLevelTab,
     subCategoryTab,
+    recentlyListedAddressesSet,
     favoriteTokens,
     direction,
     orderBy,
@@ -364,7 +378,7 @@ function MarketsList() {
           />
 
           <ButtonRowScrollFadeContainer>
-            <FavoriteTabs favoritesKey="chart-token-selector" />
+            <FavoriteTabs favoritesKey="chart-token-selector" recentlyListedCount={recentlyListedCount} />
           </ButtonRowScrollFadeContainer>
           {topLevelTab === "crypto" && populatedCryptoSubCats.size > 0 && (
             <ButtonRowScrollFadeContainer>
@@ -401,7 +415,7 @@ function MarketsList() {
               placeholder={placeholder}
             />
             <ButtonRowScrollFadeContainer>
-              <FavoriteTabs favoritesKey="chart-token-selector" />
+              <FavoriteTabs favoritesKey="chart-token-selector" recentlyListedCount={recentlyListedCount} />
             </ButtonRowScrollFadeContainer>
             {topLevelTab === "crypto" && populatedCryptoSubCats.size > 0 && (
               <ButtonRowScrollFadeContainer>
@@ -547,6 +561,7 @@ function useFilterSortTokens({
   searchKeyword,
   topLevelTab,
   subCategoryTab,
+  recentlyListedAddressesSet,
   favoriteTokens,
   direction,
   orderBy,
@@ -561,6 +576,7 @@ function useFilterSortTokens({
   searchKeyword: string;
   topLevelTab: TopLevelTab;
   subCategoryTab: SubCategoryTab;
+  recentlyListedAddressesSet: Set<string>;
   favoriteTokens: string[];
   direction: SortDirection;
   orderBy: SortField;
@@ -588,13 +604,11 @@ function useFilterSortTokens({
     const afterTopLevel = applyTopLevelFilter(textMatched ?? [], {
       topLevelTab,
       favoriteAddresses: favoriteTokens,
-      // recentlyListedAddresses wired in Phase 4 — empty for now means
-      // 'recently-listed' tab returns 0 results, but the tab itself is hidden
-      // by FavoriteTabs when recentlyListedCount === 0 (default).
+      recentlyListedAddresses: recentlyListedAddressesSet,
     });
 
     return applySubCategoryFilter(afterTopLevel, { topLevelTab, subCategoryTab });
-  }, [options, searchKeyword, isSwap, topLevelTab, subCategoryTab, favoriteTokens]);
+  }, [options, searchKeyword, isSwap, topLevelTab, subCategoryTab, favoriteTokens, recentlyListedAddressesSet]);
 
   const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
 
