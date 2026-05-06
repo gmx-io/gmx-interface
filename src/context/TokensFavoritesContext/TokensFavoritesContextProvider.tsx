@@ -6,10 +6,19 @@ import { PropsWithChildren, createContext, useCallback, useContext, useMemo } fr
 import { TOKEN_FAVORITES_PREFERENCE_KEY } from "config/localStorage";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
-import type { TokenCategory } from "sdk/utils/tokens/types";
 
-export type TokenFavoritesTabOption = "all" | "favorites" | TokenCategory;
+// ---- Types ----
+
+export type TopLevelTab = "all" | "favorites" | "crypto" | "tradfi" | "recently-listed";
+
+export type CryptoSubCategory = "all" | "ai" | "layer1" | "layer2" | "defi" | "meme";
+export type TradfiSubCategory = "all" | "commodities" | "stocks" | "indices" | "fx";
+export type SubCategoryTab = CryptoSubCategory | TradfiSubCategory;
+
+export type TradeMode = "perp" | "swap";
+
 export type TokenFavoritesType = "gm" | "index";
+
 export type TokenFavoriteKey =
   | "chart-token-selector"
   | "market-selector"
@@ -31,41 +40,151 @@ const TAB_TYPE_MAP: Record<TokenFavoriteKey, TokenFavoritesType> = {
   "gm-pool-selector": "gm",
 };
 
+// ---- Tab option arrays + labels ----
+
+export const topLevelTabOptions: TopLevelTab[] = [
+  "all",
+  "favorites",
+  "crypto",
+  "tradfi",
+  "recently-listed",
+];
+
+export const cryptoSubCategoryOptions: CryptoSubCategory[] = [
+  "all",
+  "ai",
+  "layer1",
+  "layer2",
+  "defi",
+  "meme",
+];
+
+export const tradfiSubCategoryOptions: TradfiSubCategory[] = [
+  "all",
+  "commodities",
+  "stocks",
+  "indices",
+  "fx",
+];
+
+export const topLevelTabLabels: Record<TopLevelTab, MessageDescriptor> = {
+  all: msg`All`,
+  favorites: msg`Favorites`,
+  crypto: msg`Crypto`,
+  tradfi: msg`TradFi`,
+  "recently-listed": msg`Recently Listed`,
+};
+
+export const subCategoryTabLabels: Record<Exclude<SubCategoryTab, "all">, MessageDescriptor> = {
+  ai: msg`AI`,
+  layer1: msg`Layer 1`,
+  layer2: msg`Layer 2`,
+  defi: msg`DeFi`,
+  meme: msg`Meme`,
+  commodities: msg`Commodities`,
+  stocks: msg`Stocks`,
+  indices: msg`Indices`,
+  fx: msg`FX`,
+};
+
+// ---- Persisted store ----
+
 type TokensFavoritesStore = {
-  tabs: {
-    [key in TokenFavoriteKey]?: TokenFavoritesTabOption;
+  topLevelTabs: { [key in TokenFavoriteKey]?: TopLevelTab };
+  subCategoryTabs: {
+    [key in TokenFavoriteKey]?: { crypto?: CryptoSubCategory; tradfi?: TradfiSubCategory };
   };
+  modes: { [key in TokenFavoriteKey]?: TradeMode };
   gmFavoriteTokens: string[];
   indexFavoriteTokens: string[];
+
+  /**
+   * Legacy field kept for one-shot migration. Older sessions wrote `tabs` with
+   * the flat tab model. We migrate then drop it on next save.
+   */
+  tabs?: { [key in TokenFavoriteKey]?: string };
 };
 
 const DEFAULT_TOKENS_FAVORITES_STORE: TokensFavoritesStore = {
-  tabs: EMPTY_OBJECT,
+  topLevelTabs: EMPTY_OBJECT,
+  subCategoryTabs: EMPTY_OBJECT,
+  modes: EMPTY_OBJECT,
   gmFavoriteTokens: EMPTY_ARRAY,
   indexFavoriteTokens: EMPTY_ARRAY,
 };
 
+// ---- Context value ----
+
 type TokensFavoritesContextType = TokensFavoritesStore & {
-  setTab: (key: TokenFavoriteKey, tab: TokenFavoritesTabOption) => void;
+  setTopLevelTab: (key: TokenFavoriteKey, tab: TopLevelTab) => void;
+  setSubCategoryTab: (key: TokenFavoriteKey, parent: "crypto" | "tradfi", tab: SubCategoryTab) => void;
+  setMode: (key: TokenFavoriteKey, mode: TradeMode) => void;
   toggleFavoriteToken: (type: TokenFavoritesType, address: string) => void;
 };
 
 export type TokenFavoritesState = {
-  tab: TokenFavoritesTabOption;
+  topLevelTab: TopLevelTab;
+  subCategoryTab: SubCategoryTab;
+  mode: TradeMode;
   favoriteTokens: string[];
-  setTab: (tab: TokenFavoritesTabOption) => void;
+  setTopLevelTab: (tab: TopLevelTab) => void;
+  setSubCategoryTab: (tab: SubCategoryTab) => void;
+  setMode: (mode: TradeMode) => void;
   toggleFavoriteToken: (address: string) => void;
 };
 
 const context = createContext<TokensFavoritesContextType>({
-  tabs: {},
+  topLevelTabs: {},
+  subCategoryTabs: {},
+  modes: {},
   gmFavoriteTokens: EMPTY_ARRAY,
   indexFavoriteTokens: EMPTY_ARRAY,
-  setTab: noop,
+  setTopLevelTab: noop,
+  setSubCategoryTab: noop,
+  setMode: noop,
   toggleFavoriteToken: noop,
 });
 
 const Provider = context.Provider;
+
+// ---- Migration: map legacy flat tab values to new hierarchical model ----
+
+function migrateLegacyTabs(legacy: TokensFavoritesStore["tabs"]): {
+  topLevelTabs: TokensFavoritesStore["topLevelTabs"];
+  subCategoryTabs: TokensFavoritesStore["subCategoryTabs"];
+} {
+  const topLevelTabs: TokensFavoritesStore["topLevelTabs"] = {};
+  const subCategoryTabs: TokensFavoritesStore["subCategoryTabs"] = {};
+  if (!legacy) return { topLevelTabs, subCategoryTabs };
+
+  for (const [key, value] of Object.entries(legacy)) {
+    const k = key as TokenFavoriteKey;
+    switch (value) {
+      case "all":
+      case "favorites":
+        topLevelTabs[k] = value;
+        break;
+      case "rwa":
+      case "tradfi":
+        topLevelTabs[k] = "tradfi";
+        break;
+      case "defi":
+      case "meme":
+      case "layer1":
+      case "layer2":
+      case "ai":
+        topLevelTabs[k] = "crypto";
+        subCategoryTabs[k] = { crypto: value as CryptoSubCategory };
+        break;
+      default:
+        // unknown — drop
+        break;
+    }
+  }
+  return { topLevelTabs, subCategoryTabs };
+}
+
+// ---- Provider ----
 
 export function TokensFavoritesContextProvider({ children }: PropsWithChildren) {
   const [settings, changeSettings] = useLocalStorageSerializeKey<TokensFavoritesStore>(
@@ -80,17 +199,50 @@ export function TokensFavoritesContextProvider({ children }: PropsWithChildren) 
     [changeSettings, settings]
   );
 
-  const setTab = useCallback(
-    (key: TokenFavoriteKey, tab: TokenFavoritesTabOption) => {
-      setSettings((prev) => {
-        return {
-          ...prev,
-          tabs: {
-            ...prev.tabs,
-            [key]: tab,
-          },
-        };
-      });
+  // One-shot migration on first render after upgrade.
+  const migrated = useMemo(() => {
+    const s = settings ?? DEFAULT_TOKENS_FAVORITES_STORE;
+    if (s.tabs && (!s.topLevelTabs || Object.keys(s.topLevelTabs).length === 0)) {
+      const { topLevelTabs, subCategoryTabs } = migrateLegacyTabs(s.tabs);
+      return {
+        ...s,
+        topLevelTabs: { ...topLevelTabs, ...(s.topLevelTabs ?? {}) },
+        subCategoryTabs: { ...subCategoryTabs, ...(s.subCategoryTabs ?? {}) },
+        tabs: undefined,
+      };
+    }
+    return s;
+  }, [settings]);
+
+  const setTopLevelTab = useCallback(
+    (key: TokenFavoriteKey, tab: TopLevelTab) => {
+      setSettings((prev) => ({
+        ...prev,
+        topLevelTabs: { ...prev.topLevelTabs, [key]: tab },
+      }));
+    },
+    [setSettings]
+  );
+
+  const setSubCategoryTab = useCallback(
+    (key: TokenFavoriteKey, parent: "crypto" | "tradfi", tab: SubCategoryTab) => {
+      setSettings((prev) => ({
+        ...prev,
+        subCategoryTabs: {
+          ...prev.subCategoryTabs,
+          [key]: { ...prev.subCategoryTabs[key], [parent]: tab },
+        },
+      }));
+    },
+    [setSettings]
+  );
+
+  const setMode = useCallback(
+    (key: TokenFavoriteKey, mode: TradeMode) => {
+      setSettings((prev) => ({
+        ...prev,
+        modes: { ...prev.modes, [key]: mode },
+      }));
     },
     [setSettings]
   );
@@ -99,93 +251,79 @@ export function TokensFavoritesContextProvider({ children }: PropsWithChildren) 
     (type: TokenFavoritesType, address: string) => {
       setSettings((prev) => {
         const favoriteTokens = type === "gm" ? prev.gmFavoriteTokens : prev.indexFavoriteTokens;
-        const updatedFavoriteTokens = favoriteTokens.includes(address)
-          ? favoriteTokens.filter((token) => token !== address)
+        const updated = favoriteTokens.includes(address)
+          ? favoriteTokens.filter((t) => t !== address)
           : [...favoriteTokens, address];
-
-        const newState = {
-          ...prev,
-        };
-
-        if (type === "gm") {
-          newState.gmFavoriteTokens = updatedFavoriteTokens;
-        } else {
-          newState.indexFavoriteTokens = updatedFavoriteTokens;
-        }
-
-        return newState;
+        const next = { ...prev };
+        if (type === "gm") next.gmFavoriteTokens = updated;
+        else next.indexFavoriteTokens = updated;
+        return next;
       });
     },
     [setSettings]
   );
 
-  const stableObj = useMemo<TokensFavoritesContextType>(
+  const value = useMemo<TokensFavoritesContextType>(
     () => ({
-      tabs: settings!.tabs,
-      gmFavoriteTokens: settings!.gmFavoriteTokens,
-      indexFavoriteTokens: settings!.indexFavoriteTokens,
-      setTab,
+      topLevelTabs: migrated.topLevelTabs,
+      subCategoryTabs: migrated.subCategoryTabs,
+      modes: migrated.modes,
+      gmFavoriteTokens: migrated.gmFavoriteTokens,
+      indexFavoriteTokens: migrated.indexFavoriteTokens,
+      setTopLevelTab,
+      setSubCategoryTab,
+      setMode,
       toggleFavoriteToken,
     }),
-    [settings, setTab, toggleFavoriteToken]
+    [migrated, setTopLevelTab, setSubCategoryTab, setMode, toggleFavoriteToken]
   );
 
-  return <Provider value={stableObj}>{children}</Provider>;
+  return <Provider value={value}>{children}</Provider>;
 }
 
+// ---- Hook ----
+
 export function useTokensFavorites(key: TokenFavoriteKey): TokenFavoritesState {
-  const { tabs, setTab, toggleFavoriteToken, indexFavoriteTokens, gmFavoriteTokens } = useContext(context);
+  const ctx = useContext(context);
   const type = TAB_TYPE_MAP[key];
 
-  const tab = tabs[key] || "all";
-  const favoriteTokens = type === "gm" ? gmFavoriteTokens : indexFavoriteTokens;
+  const topLevelTab: TopLevelTab = ctx.topLevelTabs[key] ?? "all";
+  const mode: TradeMode = ctx.modes[key] ?? "perp";
 
-  const internalSetTab = useCallback(
-    (tab: TokenFavoritesTabOption) => {
-      setTab(key, tab);
+  const subCategoryTab: SubCategoryTab = (() => {
+    if (topLevelTab === "crypto") return ctx.subCategoryTabs[key]?.crypto ?? "all";
+    if (topLevelTab === "tradfi") return ctx.subCategoryTabs[key]?.tradfi ?? "all";
+    return "all";
+  })();
+
+  const favoriteTokens = type === "gm" ? ctx.gmFavoriteTokens : ctx.indexFavoriteTokens;
+
+  const setTopLevelTab = useCallback((tab: TopLevelTab) => ctx.setTopLevelTab(key, tab), [ctx, key]);
+
+  const setSubCategoryTab = useCallback(
+    (tab: SubCategoryTab) => {
+      // Decide parent from current top-level tab; ignore otherwise.
+      if (topLevelTab === "crypto") ctx.setSubCategoryTab(key, "crypto", tab);
+      else if (topLevelTab === "tradfi") ctx.setSubCategoryTab(key, "tradfi", tab);
     },
-    [key, setTab]
+    [ctx, key, topLevelTab]
   );
 
-  const internalToggleFavoriteToken = useCallback(
-    (address: string) => {
-      toggleFavoriteToken(type, address);
-    },
-    [toggleFavoriteToken, type]
+  const setMode = useCallback((m: TradeMode) => ctx.setMode(key, m), [ctx, key]);
+
+  const toggleFavoriteToken = useCallback(
+    (address: string) => ctx.toggleFavoriteToken(type, address),
+    [ctx, type]
   );
 
   return {
-    tab,
+    topLevelTab,
+    subCategoryTab,
+    mode,
     favoriteTokens,
-    setTab: internalSetTab,
-    toggleFavoriteToken: internalToggleFavoriteToken,
+    setTopLevelTab,
+    setSubCategoryTab,
+    setMode,
+    toggleFavoriteToken,
   };
 }
-
-export const tokensFavoritesTabOptions: TokenFavoritesTabOption[] = [
-  "all",
-  "favorites",
-  "tradfi",
-  "defi",
-  "meme",
-  "layer1",
-  "layer2",
-];
-
-export const tokensFavoritesTabOptionLabels: Record<TokenFavoritesTabOption, MessageDescriptor> = {
-  all: msg({
-    message: "All markets",
-    comment: "Filter option for tokens favorites",
-  }),
-  favorites: msg`Favorites`,
-  meme: msg`Meme`,
-  layer1: msg`Layer 1`,
-  layer2: msg`Layer 2`,
-  defi: msg`DeFi`,
-  tradfi: msg`TradFi`,
-  ai: msg`AI`,
-  commodities: msg`Commodities`,
-  stocks: msg`Stocks`,
-  indices: msg`Indices`,
-  fx: msg`FX`,
-};
