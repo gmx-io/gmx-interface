@@ -44,7 +44,7 @@ function SwapDebugRowContent() {
   const winnerColor = isExternal ? "text-green-500" : "text-blue-400";
 
   return (
-    <SyntheticsInfoRow label={<Trans>Swap Debug</Trans>}>
+    <SyntheticsInfoRow label={<Trans>Swap debug</Trans>}>
       <TooltipWithPortal
         handle={
           <span className={winnerColor}>

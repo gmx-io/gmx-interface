@@ -353,7 +353,7 @@ function ClaimModalComponent(p: {
   const { totalClaimableFundingUsd, claimableFundingUsd, hasInsufficientBalance, allInsufficient } =
     useClaimableFunding(markets);
 
-  const effectiveButtonState = allInsufficient ? { text: t`Insufficient Pool Balance`, disabled: true } : buttonState;
+  const effectiveButtonState = allInsufficient ? { text: t`Insufficient pool balance`, disabled: true } : buttonState;
 
   function renderMarketSection(market: MarketInfo) {
     const indexName = getMarketIndexName(market);
@@ -413,9 +413,7 @@ function ClaimModalComponent(p: {
                     </>
                   }
                   content={
-                    <Trans>
-                      This market has been disabled. Please contact support to claim your remaining funding fees.
-                    </Trans>
+                    <Trans>This market has been disabled. Contact support to claim your remaining funding fees.</Trans>
                   }
                 />
               ) : (
@@ -443,7 +441,7 @@ function ClaimModalComponent(p: {
                 ))}
                 {isMarketInsufficient && (
                   <div className="mt-5 text-yellow-500">
-                    <Trans>Insufficient pool balance to claim this funding fee.</Trans>
+                    <Trans>Insufficient pool balance to claim this funding fee</Trans>
                   </div>
                 )}
               </>
@@ -488,7 +486,7 @@ function ClaimModalComponent(p: {
           <Tooltip
             className="ClaimSettleModal-tooltip-text-gray"
             position="top-end"
-            handle={t`Funding fee`}
+            handle={t`FUNDING FEE`}
             renderContent={() => (
               <Trans>
                 <span className="text-typography-primary">Positive funding fees accrued from your positions</span>

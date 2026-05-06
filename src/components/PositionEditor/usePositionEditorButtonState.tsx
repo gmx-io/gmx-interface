@@ -529,7 +529,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     return {
       text: (
         <>
-          <Trans>Creating order</Trans>
+          <Trans>Creating order...</Trans>
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),

@@ -456,7 +456,7 @@ export const useGmSwapSubmitState = ({
       return {
         text: (
           <>
-            <Trans>Loading network fees…</Trans>
+            <Trans>Loading network fees...</Trans>
             <SpinnerIcon className="ml-4 animate-spin" />
           </>
         ),

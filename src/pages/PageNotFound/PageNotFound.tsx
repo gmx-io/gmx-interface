@@ -21,7 +21,7 @@ function PageNotFound() {
             <p className="go-back">
               <Trans>
                 <span>Return to </span>
-                <a href={homeUrl}>Homepage</a> <span>or </span> <a href={tradePageUrl}>Trade</a>
+                <a href={homeUrl}>homepage</a> <span>or </span> <a href={tradePageUrl}>trade</a>
               </Trans>
             </p>
           </div>

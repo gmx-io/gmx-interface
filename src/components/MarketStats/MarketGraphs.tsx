@@ -318,7 +318,7 @@ const GraphChart = ({
     return (
       <div className={cx("flex items-center justify-center", { "h-[260px]": isMobile, "h-[300px]": !isMobile })}>
         <p className="text-body-medium text-typography-secondary">
-          <Trans>Not enough data available yet</Trans>
+          <Trans>Not enough data yet</Trans>
         </p>
       </div>
     );

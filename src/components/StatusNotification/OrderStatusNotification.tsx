@@ -166,53 +166,57 @@ function OrderStatusNotification({
         initialCollateralToken,
       } = orderData;
 
-      const longShortText = isLong ? t`Long` : t`Short`;
       const visualMultiplierPrefix = marketInfo?.indexToken ? getTokenVisualMultiplier(marketInfo.indexToken) : "";
-      const positionText = `${visualMultiplierPrefix}${marketInfo?.indexToken.symbol} ${longShortText}`;
+      const indexTokenText = `${visualMultiplierPrefix}${marketInfo?.indexToken.symbol}`;
 
       if (sizeDeltaUsd == 0n) {
         const symbol = orderData.shouldUnwrapNativeToken
           ? initialCollateralToken?.baseSymbol
           : initialCollateralToken?.symbol;
+        const amountText = formatTokenAmount(initialCollateralDeltaAmount, initialCollateralToken?.decimals, symbol, {
+          isStable: initialCollateralToken?.isStable,
+        });
 
         if (isIncreaseOrderType(orderType)) {
-          return t`Depositing ${formatTokenAmount(
-            initialCollateralDeltaAmount,
-            initialCollateralToken?.decimals,
-            symbol,
-            { isStable: initialCollateralToken?.isStable }
-          )} to ${positionText}...`;
+          return isLong
+            ? t`Depositing ${amountText} to ${indexTokenText} Long...`
+            : t`Depositing ${amountText} to ${indexTokenText} Short...`;
         } else {
-          return t`Withdrawing ${formatTokenAmount(
-            initialCollateralDeltaAmount,
-            initialCollateralToken?.decimals,
-            symbol,
-            { isStable: initialCollateralToken?.isStable }
-          )} from ${positionText}...`;
+          return isLong
+            ? t`Withdrawing ${amountText} from ${indexTokenText} Long...`
+            : t`Withdrawing ${amountText} from ${indexTokenText} Short...`;
         }
       } else {
-        let orderTypeText = "";
-
         if (isMarketOrderType(orderType)) {
-          orderTypeText = isIncreaseOrderType(orderType) ? t`Increasing...` : t`Decreasing...`;
+          const sizeDeltaUsdText = formatUsd(sizeDeltaUsd);
+
+          if (isIncreaseOrderType(orderType)) {
+            return isLong
+              ? t`Increasing ${indexTokenText} Long: +${sizeDeltaUsdText}`
+              : t`Increasing ${indexTokenText} Short: +${sizeDeltaUsdText}`;
+          }
+
+          return isLong
+            ? t`Decreasing ${indexTokenText} Long: -${sizeDeltaUsdText}`
+            : t`Decreasing ${indexTokenText} Short: -${sizeDeltaUsdText}`;
         } else {
+          const longShortText = isLong ? t`Long` : t`Short`;
           const txnTypeText = {
             create: t`Create`,
             cancel: t`Cancel`,
             update: t`Update`,
           }[txnType];
 
-          orderTypeText = t`${txnTypeText} ${getNameByOrderType(orderType, orderData.isTwap, {
+          const orderTypeText = t`${txnTypeText} ${getNameByOrderType(orderType, orderData.isTwap, {
             abbr: true,
             lower: true,
           })} order for`;
+          const sign = isIncreaseOrderType(orderType) ? "+" : "-";
+
+          return t`${orderTypeText} ${visualMultiplierPrefix}${marketInfo?.indexToken?.symbol} ${longShortText}: ${sign}${formatUsd(
+            sizeDeltaUsd
+          )}`;
         }
-
-        const sign = isIncreaseOrderType(orderType) ? "+" : "-";
-
-        return t`${orderTypeText} ${visualMultiplierPrefix}${marketInfo?.indexToken?.symbol} ${longShortText}: ${sign}${formatUsd(
-          sizeDeltaUsd
-        )}`;
       }
     }
   }, [orderData]);

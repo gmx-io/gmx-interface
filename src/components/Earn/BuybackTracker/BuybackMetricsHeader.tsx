@@ -25,8 +25,8 @@ export function BuybackMetricsHeader({
   return (
     <div className="flex gap-28 max-md:flex-col max-md:gap-12">
       <MetricItem
-        label={<Trans>Total Bought GMX</Trans>}
-        tooltip={<Trans>Total amount of GMX bought back since tracking began.</Trans>}
+        label={<Trans>Total bought GMX</Trans>}
+        tooltip={<Trans>Total amount of GMX bought back since tracking began</Trans>}
         value={metrics ? `${numberWithCommas(Math.round(metrics.totalBoughtGmx))} GMX` : "N/A"}
         subtitle={
           metrics ? `(${numberWithCommas(Math.round(metrics.totalBoughtUsd), { showDollar: true })})` : undefined
@@ -35,7 +35,7 @@ export function BuybackMetricsHeader({
         isUnavailable={isUnavailable}
       />
       <MetricItem
-        label={<Trans>Annualized Rate</Trans>}
+        label={<Trans>Annualized rate</Trans>}
         tooltip={
           <Trans>
             Protocol-wide annualized GMX buyback rate, based on the average of the last 4 completed weeks relative to

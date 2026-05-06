@@ -53,18 +53,18 @@ export function getPositionOrderError({
   if (isLimitIncreaseOrderType(positionOrder.orderType)) {
     if (positionOrder.isLong) {
       if (triggerPrice >= markPrice) {
-        return t`Limit price above mark price`;
+        return t`Set limit price below mark price`;
       }
     } else {
       if (triggerPrice <= markPrice) {
-        return t`Limit price below mark price`;
+        return t`Set limit price above mark price`;
       }
     }
   } else if (isStopIncreaseOrderType(positionOrder.orderType)) {
     if (positionOrder.isLong && triggerPrice <= markPrice) {
-      return t`Stop Market price below mark price`;
+      return t`Set stop price above mark price`;
     } else if (!positionOrder.isLong && triggerPrice >= markPrice) {
-      return t`Stop Market price above mark price`;
+      return t`Set stop price below mark price`;
     }
   }
 
@@ -87,29 +87,29 @@ export function getPositionOrderError({
 
     if (existingPosition?.liquidationPrice) {
       if (existingPosition.isLong && triggerPrice <= existingPosition?.liquidationPrice) {
-        return t`Trigger price below liquidation price`;
+        return t`Set trigger price above liquidation price`;
       }
 
       if (!existingPosition.isLong && triggerPrice >= existingPosition?.liquidationPrice) {
-        return t`Trigger price above liquidation price`;
+        return t`Set trigger price below liquidation price`;
       }
     }
 
     if (positionOrder.isLong) {
       if (positionOrder.orderType === OrderType.LimitDecrease && triggerPrice <= markPrice) {
-        return t`Trigger price below mark price`;
+        return t`Set trigger price above mark price`;
       }
 
       if (positionOrder.orderType === OrderType.StopLossDecrease && triggerPrice >= markPrice) {
-        return t`Trigger price above mark price`;
+        return t`Set trigger price below mark price`;
       }
     } else {
       if (positionOrder.orderType === OrderType.LimitDecrease && triggerPrice >= markPrice) {
-        return t`Trigger price above mark price`;
+        return t`Set trigger price below mark price`;
       }
 
       if (positionOrder.orderType === OrderType.StopLossDecrease && triggerPrice <= markPrice) {
-        return t`Trigger price below mark price`;
+        return t`Set trigger price above mark price`;
       }
     }
   }

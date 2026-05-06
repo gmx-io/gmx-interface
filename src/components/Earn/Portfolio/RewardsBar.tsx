@@ -13,6 +13,7 @@ import { useChainId } from "lib/chains";
 import { StakingProcessedData } from "lib/legacy";
 import { formatUsd } from "lib/numbers";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";
@@ -99,11 +100,17 @@ function RewardsBar({
             </div>
           </div>
 
-          <ClaimRewardsButton
-            className="shrink-0 xl:self-center"
-            processedData={processedData}
-            mutateProcessedData={mutateProcessedData}
-          />
+          <div className="flex shrink-0 flex-col gap-12 xl:self-center">
+            {processedData?.isRewardsSuspended && (
+              <AlertInfoCard type="info">
+                <Trans>
+                  27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to
+                  stakers when GMX reaches $90, proportional to staking power (duration × amount staked).
+                </Trans>
+              </AlertInfoCard>
+            )}
+            <ClaimRewardsButton processedData={processedData} mutateProcessedData={mutateProcessedData} />
+          </div>
         </div>
       </div>
     </div>
