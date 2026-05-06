@@ -1369,6 +1369,10 @@ msgstr ""
 msgid "May take a few minutes to reflect. Check back later"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Net total of action-level fees, discounts, and price impact. Hover the value to see the breakdown."
+msgstr ""
+
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "No events found for this account in the past {DAYS_BACK} days"
 msgstr ""
@@ -1475,6 +1479,10 @@ msgstr ""
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "Oracle endpoints"
+msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Swap fee"
 msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
@@ -3221,6 +3229,10 @@ msgstr ""
 msgid "Set Long Take Profit @ {0}"
 msgstr ""
 
+#: src/components/TradeHistory/useDownloadAsCsv.tsx
+msgid "RPNL ($)"
+msgstr ""
+
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Shorts net rate / 1h"
 msgstr ""
@@ -3667,6 +3679,7 @@ msgstr ""
 
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Funding fee"
 msgstr ""
@@ -4128,7 +4141,6 @@ msgstr ""
 msgid "Pools stats"
 msgstr ""
 
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -4487,12 +4499,6 @@ msgstr ""
 msgid "Request Market Swap"
 msgstr ""
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Opening fee paid at this action. Subtracted from your realized PnL."
-msgstr ""
-
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
 msgstr ""
@@ -4547,6 +4553,10 @@ msgstr ""
 msgid "{secondLabel}"
 msgstr ""
 
+#: src/components/TradeHistory/useDownloadAsCsv.tsx
+msgid "FEES ($)"
+msgstr ""
+
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap profit fee"
 msgstr ""
@@ -4590,6 +4600,7 @@ msgstr ""
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Borrow fee"
 msgstr ""
@@ -4959,6 +4970,10 @@ msgstr ""
 
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
+msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Execution fee"
 msgstr ""
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -6091,6 +6106,7 @@ msgid "Short liq."
 msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation fee"
 msgstr ""
 
@@ -7040,6 +7056,10 @@ msgstr ""
 msgid "Insufficient liquidity"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Realized price PnL only, before fees, discounts, and price impact."
+msgstr ""
+
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq."
 msgstr ""
@@ -7689,6 +7709,7 @@ msgstr ""
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Net price impact"
 msgstr ""
 
@@ -8029,6 +8050,7 @@ msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Close fee"
 msgstr ""
 
@@ -8233,6 +8255,10 @@ msgstr ""
 msgid "Short positions"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "FEES"
+msgstr ""
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
@@ -8258,6 +8284,7 @@ msgstr ""
 #: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8336,6 +8363,7 @@ msgid "Select rewards to claim"
 msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Open fee"
 msgstr ""
 
@@ -8453,10 +8481,6 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max reserved {directionLabel}"
-msgstr ""
-
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Realized PnL after fees and net price impact"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -8840,6 +8864,7 @@ msgid "Approval submitted<0/><1/><2>View status</2>"
 msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Referral discount"
 msgstr ""
 
@@ -9350,6 +9375,7 @@ msgid "Last Updated:"
 msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Swap price impact"
 msgstr ""
 

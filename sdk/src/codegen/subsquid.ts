@@ -3062,6 +3062,7 @@ export interface MarketInfo {
   maxShortPoolAmount: Scalars["BigInt"]["output"];
   maxShortPoolUsdForDeposit: Scalars["BigInt"]["output"];
   minCollateralFactor: Scalars["BigInt"]["output"];
+  minCollateralFactorForLiquidation: Scalars["BigInt"]["output"];
   minCollateralFactorForOpenInterestLong: Scalars["BigInt"]["output"];
   minCollateralFactorForOpenInterestShort: Scalars["BigInt"]["output"];
   minFundingFactorPerSecond: Scalars["BigInt"]["output"];
@@ -3394,6 +3395,12 @@ export enum MarketInfoOrderByInput {
   maxShortPoolUsdForDeposit_DESC = "maxShortPoolUsdForDeposit_DESC",
   maxShortPoolUsdForDeposit_DESC_NULLS_FIRST = "maxShortPoolUsdForDeposit_DESC_NULLS_FIRST",
   maxShortPoolUsdForDeposit_DESC_NULLS_LAST = "maxShortPoolUsdForDeposit_DESC_NULLS_LAST",
+  minCollateralFactorForLiquidation_ASC = "minCollateralFactorForLiquidation_ASC",
+  minCollateralFactorForLiquidation_ASC_NULLS_FIRST = "minCollateralFactorForLiquidation_ASC_NULLS_FIRST",
+  minCollateralFactorForLiquidation_ASC_NULLS_LAST = "minCollateralFactorForLiquidation_ASC_NULLS_LAST",
+  minCollateralFactorForLiquidation_DESC = "minCollateralFactorForLiquidation_DESC",
+  minCollateralFactorForLiquidation_DESC_NULLS_FIRST = "minCollateralFactorForLiquidation_DESC_NULLS_FIRST",
+  minCollateralFactorForLiquidation_DESC_NULLS_LAST = "minCollateralFactorForLiquidation_DESC_NULLS_LAST",
   minCollateralFactorForOpenInterestLong_ASC = "minCollateralFactorForOpenInterestLong_ASC",
   minCollateralFactorForOpenInterestLong_ASC_NULLS_FIRST = "minCollateralFactorForOpenInterestLong_ASC_NULLS_FIRST",
   minCollateralFactorForOpenInterestLong_ASC_NULLS_LAST = "minCollateralFactorForOpenInterestLong_ASC_NULLS_LAST",
@@ -4121,6 +4128,15 @@ export interface MarketInfoWhereInput {
   maxShortPoolUsdForDeposit_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   maxShortPoolUsdForDeposit_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   maxShortPoolUsdForDeposit_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  minCollateralFactorForLiquidation_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minCollateralFactorForLiquidation_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minCollateralFactorForLiquidation_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minCollateralFactorForLiquidation_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  minCollateralFactorForLiquidation_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  minCollateralFactorForLiquidation_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minCollateralFactorForLiquidation_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minCollateralFactorForLiquidation_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  minCollateralFactorForLiquidation_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   minCollateralFactorForOpenInterestLong_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   minCollateralFactorForOpenInterestLong_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
   minCollateralFactorForOpenInterestLong_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
@@ -10620,6 +10636,7 @@ export interface TradeAction {
   __typename?: "TradeAction";
   acceptablePrice?: Maybe<Scalars["BigInt"]["output"]>;
   account: Scalars["String"]["output"];
+  affiliateRewardAmount?: Maybe<Scalars["BigInt"]["output"]>;
   basePnlUsd?: Maybe<Scalars["BigInt"]["output"]>;
   borrowingFeeAmount?: Maybe<Scalars["BigInt"]["output"]>;
   collateralTokenPriceMax?: Maybe<Scalars["BigInt"]["output"]>;
@@ -10629,6 +10646,7 @@ export interface TradeAction {
   decreasePositionSwapType?: Maybe<Scalars["Int"]["output"]>;
   eventName: Scalars["String"]["output"];
   executionAmountOut?: Maybe<Scalars["BigInt"]["output"]>;
+  executionFee?: Maybe<Scalars["BigInt"]["output"]>;
   executionPrice?: Maybe<Scalars["BigInt"]["output"]>;
   fundingFeeAmount?: Maybe<Scalars["BigInt"]["output"]>;
   id: Scalars["String"]["output"];
@@ -10660,6 +10678,7 @@ export interface TradeAction {
   swapPath: Array<Scalars["String"]["output"]>;
   timestamp: Scalars["Int"]["output"];
   totalImpactUsd?: Maybe<Scalars["BigInt"]["output"]>;
+  traderDiscountAmount?: Maybe<Scalars["BigInt"]["output"]>;
   transactionHash: Scalars["String"]["output"];
   triggerPrice?: Maybe<Scalars["BigInt"]["output"]>;
   twapGroupId?: Maybe<Scalars["String"]["output"]>;
@@ -10685,6 +10704,12 @@ export enum TradeActionOrderByInput {
   account_DESC = "account_DESC",
   account_DESC_NULLS_FIRST = "account_DESC_NULLS_FIRST",
   account_DESC_NULLS_LAST = "account_DESC_NULLS_LAST",
+  affiliateRewardAmount_ASC = "affiliateRewardAmount_ASC",
+  affiliateRewardAmount_ASC_NULLS_FIRST = "affiliateRewardAmount_ASC_NULLS_FIRST",
+  affiliateRewardAmount_ASC_NULLS_LAST = "affiliateRewardAmount_ASC_NULLS_LAST",
+  affiliateRewardAmount_DESC = "affiliateRewardAmount_DESC",
+  affiliateRewardAmount_DESC_NULLS_FIRST = "affiliateRewardAmount_DESC_NULLS_FIRST",
+  affiliateRewardAmount_DESC_NULLS_LAST = "affiliateRewardAmount_DESC_NULLS_LAST",
   basePnlUsd_ASC = "basePnlUsd_ASC",
   basePnlUsd_ASC_NULLS_FIRST = "basePnlUsd_ASC_NULLS_FIRST",
   basePnlUsd_ASC_NULLS_LAST = "basePnlUsd_ASC_NULLS_LAST",
@@ -10739,6 +10764,12 @@ export enum TradeActionOrderByInput {
   executionAmountOut_DESC = "executionAmountOut_DESC",
   executionAmountOut_DESC_NULLS_FIRST = "executionAmountOut_DESC_NULLS_FIRST",
   executionAmountOut_DESC_NULLS_LAST = "executionAmountOut_DESC_NULLS_LAST",
+  executionFee_ASC = "executionFee_ASC",
+  executionFee_ASC_NULLS_FIRST = "executionFee_ASC_NULLS_FIRST",
+  executionFee_ASC_NULLS_LAST = "executionFee_ASC_NULLS_LAST",
+  executionFee_DESC = "executionFee_DESC",
+  executionFee_DESC_NULLS_FIRST = "executionFee_DESC_NULLS_FIRST",
+  executionFee_DESC_NULLS_LAST = "executionFee_DESC_NULLS_LAST",
   executionPrice_ASC = "executionPrice_ASC",
   executionPrice_ASC_NULLS_FIRST = "executionPrice_ASC_NULLS_FIRST",
   executionPrice_ASC_NULLS_LAST = "executionPrice_ASC_NULLS_LAST",
@@ -10919,6 +10950,12 @@ export enum TradeActionOrderByInput {
   totalImpactUsd_DESC = "totalImpactUsd_DESC",
   totalImpactUsd_DESC_NULLS_FIRST = "totalImpactUsd_DESC_NULLS_FIRST",
   totalImpactUsd_DESC_NULLS_LAST = "totalImpactUsd_DESC_NULLS_LAST",
+  traderDiscountAmount_ASC = "traderDiscountAmount_ASC",
+  traderDiscountAmount_ASC_NULLS_FIRST = "traderDiscountAmount_ASC_NULLS_FIRST",
+  traderDiscountAmount_ASC_NULLS_LAST = "traderDiscountAmount_ASC_NULLS_LAST",
+  traderDiscountAmount_DESC = "traderDiscountAmount_DESC",
+  traderDiscountAmount_DESC_NULLS_FIRST = "traderDiscountAmount_DESC_NULLS_FIRST",
+  traderDiscountAmount_DESC_NULLS_LAST = "traderDiscountAmount_DESC_NULLS_LAST",
   transactionHash_ASC = "transactionHash_ASC",
   transactionHash_ASC_NULLS_FIRST = "transactionHash_ASC_NULLS_FIRST",
   transactionHash_ASC_NULLS_LAST = "transactionHash_ASC_NULLS_LAST",
@@ -10974,6 +11011,15 @@ export interface TradeActionWhereInput {
   account_not_in?: InputMaybe<Array<Scalars["String"]["input"]>>;
   account_not_startsWith?: InputMaybe<Scalars["String"]["input"]>;
   account_startsWith?: InputMaybe<Scalars["String"]["input"]>;
+  affiliateRewardAmount_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  affiliateRewardAmount_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  affiliateRewardAmount_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  affiliateRewardAmount_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  affiliateRewardAmount_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  affiliateRewardAmount_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  affiliateRewardAmount_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  affiliateRewardAmount_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  affiliateRewardAmount_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   basePnlUsd_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   basePnlUsd_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
   basePnlUsd_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
@@ -11063,6 +11109,15 @@ export interface TradeActionWhereInput {
   executionAmountOut_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   executionAmountOut_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   executionAmountOut_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  executionFee_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  executionFee_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  executionFee_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  executionFee_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  executionFee_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  executionFee_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  executionFee_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  executionFee_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  executionFee_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   executionPrice_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   executionPrice_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
   executionPrice_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
@@ -11373,6 +11428,15 @@ export interface TradeActionWhereInput {
   totalImpactUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   totalImpactUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   totalImpactUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  traderDiscountAmount_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  traderDiscountAmount_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  traderDiscountAmount_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  traderDiscountAmount_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  traderDiscountAmount_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  traderDiscountAmount_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  traderDiscountAmount_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  traderDiscountAmount_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  traderDiscountAmount_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   transactionHash_contains?: InputMaybe<Scalars["String"]["input"]>;
   transactionHash_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
   transactionHash_endsWith?: InputMaybe<Scalars["String"]["input"]>;

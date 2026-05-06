@@ -1369,6 +1369,10 @@ msgstr "TVL (供应)"
 msgid "May take a few minutes to reflect. Check back later"
 msgstr "可能需要几分钟才能生效。请稍后查看"
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Net total of action-level fees, discounts, and price impact. Hover the value to see the breakdown."
+msgstr ""
+
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "No events found for this account in the past {DAYS_BACK} days"
 msgstr "过去 {DAYS_BACK} 天内未找到此账户的事件"
@@ -1476,6 +1480,10 @@ msgstr "时间"
 #: src/pages/DebugOracleKeeper/parts.tsx
 msgid "Oracle endpoints"
 msgstr "Oracle 端点"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Swap fee"
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express"
@@ -3221,6 +3229,10 @@ msgstr "所有未平仓仓位的待结算借贷费用"
 msgid "Set Long Take Profit @ {0}"
 msgstr ""
 
+#: src/components/TradeHistory/useDownloadAsCsv.tsx
+msgid "RPNL ($)"
+msgstr ""
+
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Shorts net rate / 1h"
 msgstr "做空净费率 / 1h"
@@ -3667,6 +3679,7 @@ msgstr "Copin"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Funding fee"
 msgstr "资金费用"
@@ -4128,7 +4141,6 @@ msgstr "提交中..."
 msgid "Pools stats"
 msgstr "池统计数据"
 
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -4487,12 +4499,6 @@ msgstr "永续合约聚合器"
 msgid "Request Market Swap"
 msgstr "请求市场交换"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Opening fee paid at this action. Subtracted from your realized PnL."
-msgstr ""
-
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
 msgstr "纯 {indexSymbol} 做空。风险敞口仅来自仓位。"
@@ -4547,6 +4553,10 @@ msgstr "<0>每</0> {hours} 小时{0}"
 msgid "{secondLabel}"
 msgstr "{secondLabel}"
 
+#: src/components/TradeHistory/useDownloadAsCsv.tsx
+msgid "FEES ($)"
+msgstr ""
+
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap profit fee"
 msgstr "高交换利润费用"
@@ -4590,6 +4600,7 @@ msgstr "LayerZero scan"
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Borrow fee"
 msgstr "借贷费用"
@@ -4959,6 +4970,10 @@ msgstr "在 Bond Protocol 上以折扣价购买 GMX 债券，归属期较短"
 
 #: src/components/OrdersModal/OrdersModal.tsx
 msgid "{positionTitle} orders"
+msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Execution fee"
 msgstr ""
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -6091,6 +6106,7 @@ msgid "Short liq."
 msgstr "做空流动性"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation fee"
 msgstr "清算费用"
 
@@ -7040,6 +7056,10 @@ msgstr "Tradao"
 msgid "Insufficient liquidity"
 msgstr "流动性不足"
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Realized price PnL only, before fees, discounts, and price impact."
+msgstr ""
+
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq."
 msgstr ""
@@ -7689,6 +7709,7 @@ msgstr "仅在完整账户转移时使用此功能。<0/>这将把您所有的 G
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Net price impact"
 msgstr "净价格影响"
 
@@ -8029,6 +8050,7 @@ msgstr "GMX announcements"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Close fee"
 msgstr "平仓费用"
 
@@ -8233,6 +8255,10 @@ msgstr "已归属 GMX 未提取"
 msgid "Short positions"
 msgstr "做空仓位"
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "FEES"
+msgstr ""
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
@@ -8258,6 +8284,7 @@ msgstr "做空借贷指数"
 #: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8336,6 +8363,7 @@ msgid "Select rewards to claim"
 msgstr "选择要领取的奖励"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Open fee"
 msgstr "开仓费用"
 
@@ -8454,10 +8482,6 @@ msgstr "循环策略"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max reserved {directionLabel}"
 msgstr "最大预留 {directionLabel}"
-
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Realized PnL after fees and net price impact"
-msgstr "扣除费用和净价格影响后的已实现盈亏"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Transfer {nativeTokenSymbol}"
@@ -8840,6 +8864,7 @@ msgid "Approval submitted<0/><1/><2>View status</2>"
 msgstr "授权已提交<0/><1/><2>查看状态</2>"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Referral discount"
 msgstr "推荐折扣"
 
@@ -9350,6 +9375,7 @@ msgid "Last Updated:"
 msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Swap price impact"
 msgstr "兑换价格影响"
 

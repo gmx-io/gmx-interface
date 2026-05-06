@@ -9,12 +9,14 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isSwapOrderType } from "domain/synthetics/orders";
 import { OrderType } from "domain/synthetics/orders/types";
+import { convertToUsd } from "domain/synthetics/tokens";
 import { PositionTradeAction, SwapTradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
 import { processRawTradeActions } from "domain/synthetics/tradeHistory/processTradeActions";
 import { fetchRawTradeActions } from "domain/synthetics/tradeHistory/useTradeHistory";
 import { downloadAsCsv } from "lib/csv";
 import { definedOrThrow } from "lib/guards";
 import { helperToast } from "lib/helperToast";
+import { getWrappedToken } from "sdk/configs/tokens";
 
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
@@ -109,6 +111,9 @@ export function useDownloadAsCsv({
 
       definedOrThrow(aggregatedTradeActions);
 
+      const wrappedToken = getWrappedToken(chainId);
+      const nativeToken = tokensData[wrappedToken.address];
+
       const fullFormattedData = aggregatedTradeActions
         .map((tradeAction) => {
           const explorerUrl = getExplorerUrl(chainId) + `tx/${tradeAction.transactionHash}`;
@@ -118,7 +123,12 @@ export function useDownloadAsCsv({
           if (isSwapOrderType(tradeAction.orderType!)) {
             rowDetails = formatSwapMessage(tradeAction as SwapTradeAction, marketsInfoData, false);
           } else {
-            rowDetails = formatPositionMessage(tradeAction as PositionTradeAction, minCollateralUsd, false);
+            const positionAction = tradeAction as PositionTradeAction;
+            const executionFeeUsd =
+              positionAction.executionFee !== undefined && nativeToken?.prices?.minPrice
+                ? convertToUsd(positionAction.executionFee, nativeToken.decimals, nativeToken.prices.minPrice)
+                : undefined;
+            rowDetails = formatPositionMessage(positionAction, minCollateralUsd, false, { executionFeeUsd });
           }
 
           return {
@@ -130,7 +140,7 @@ export function useDownloadAsCsv({
 
       const timezone = dateFnsFormat(new Date(), "z");
 
-      downloadAsCsv("trade-history", fullFormattedData, ["priceComment"], {
+      downloadAsCsv("trade-history", fullFormattedData, ["priceComment", "feesTooltip"], {
         timestamp: t`DATE` + ` (${timezone})`,
         action: t`ACTION`,
         size: t`SIZE`,
@@ -142,7 +152,8 @@ export function useDownloadAsCsv({
         triggerPrice: t`TRIGGER PRICE`,
         priceImpact: t`PRICE IMPACT`,
         explorerUrl: t`TRANSACTION ID`,
-        pnl: t`PNL ($)`,
+        pnl: t`RPNL ($)`,
+        fees: t`FEES ($)`,
       });
     } catch (error) {
       helperToast.error(

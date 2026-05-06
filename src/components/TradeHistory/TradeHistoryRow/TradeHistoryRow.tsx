@@ -5,10 +5,11 @@ import { Link } from "react-router-dom";
 import type { Address } from "viem";
 
 import { getChainSlug, getExplorerUrl } from "config/chains";
-import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isDecreaseOrderType, isSwapOrderType } from "domain/synthetics/orders";
+import { convertToUsd } from "domain/synthetics/tokens";
 import {
   isPositionTradeAction,
   PositionTradeAction,
@@ -21,6 +22,7 @@ import { userAnalytics } from "lib/userAnalytics";
 import { SharePositionClickEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
+import { getWrappedToken } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -123,15 +125,30 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
   const chainId = useSelector(selectChainId);
   const { account } = useWallet();
   const marketsInfoData = useMarketsInfoData();
+  const tokensData = useTokensData();
 
+  const executionFeeUsd = useMemo(() => {
+    if (isSwapOrderType(tradeAction.orderType!) || !tokensData) return undefined;
+    const positionAction = tradeAction as PositionTradeAction;
+    if (positionAction.executionFee === undefined) return undefined;
+    const wrappedToken = getWrappedToken(chainId);
+    const nativeToken = tokensData[wrappedToken.address];
+    const nativePrice = nativeToken?.prices?.minPrice;
+    if (nativePrice === undefined) return undefined;
+    return convertToUsd(positionAction.executionFee, nativeToken!.decimals, nativePrice);
+  }, [chainId, tokensData, tradeAction]);
+
+  const swapMarketsInfoDep = isSwapOrderType(tradeAction.orderType!) && marketsInfoData;
+  const minCollateralUsdDep = minCollateralUsd.toString();
+  const executionFeeUsdDep = executionFeeUsd?.toString();
   const msg = useMemo(() => {
     if (isSwapOrderType(tradeAction.orderType!)) {
       return formatSwapMessage(tradeAction as SwapTradeAction, marketsInfoData);
     }
 
-    return formatPositionMessage(tradeAction as PositionTradeAction, minCollateralUsd);
+    return formatPositionMessage(tradeAction as PositionTradeAction, minCollateralUsd, true, { executionFeeUsd });
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isSwapOrderType(tradeAction.orderType!) && marketsInfoData, minCollateralUsd.toString(), tradeAction.id]);
+  }, [swapMarketsInfoDep, minCollateralUsdDep, tradeAction.id, executionFeeUsdDep]);
 
   const renderTimestamp = useCallback(() => msg.timestampUTC, [msg.timestampUTC]);
 
@@ -172,6 +189,11 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
   const renderActionTooltipContent = useCallback(
     () => <TooltipContentComponent content={msg.actionComment!} />,
     [msg.actionComment]
+  );
+
+  const renderFeesTooltipContent = useCallback(
+    () => <TooltipContentComponent content={msg.feesTooltip ?? EMPTY_ARRAY} />,
+    [msg.feesTooltip]
   );
 
   const marketTooltipHandle = useMemo(
@@ -330,6 +352,18 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
             >
               {msg.pnl}
             </span>
+          )}
+        </TableTd>
+        <TableTd>
+          {!msg.fees ? (
+            <span className="text-typography-secondary">-</span>
+          ) : msg.feesTooltip && msg.feesTooltip.length > 0 ? (
+            <TooltipWithPortal
+              handle={<span className="numbers">{msg.fees}</span>}
+              renderContent={renderFeesTooltipContent}
+            />
+          ) : (
+            <span className="numbers">{msg.fees}</span>
           )}
         </TableTd>
         <TableTd>
