@@ -33,11 +33,12 @@ describe("useMarketsListingDates", () => {
   });
   afterEach(cleanup);
 
-  it("returns a map keyed by lowercased indexTokenAddress (skipping undefined dates)", async () => {
+  it("returns a map keyed by lowercased indexToken with parsed ISO dates (skipping undefined)", async () => {
     fetchMarketsMock.mockResolvedValue([
-      { indexTokenAddress: "0xAaA", listingDate: 1000 },
-      { indexTokenAddress: "0xBBB", listingDate: 2000 },
-      { indexTokenAddress: "0xCCC", listingDate: undefined },
+      { indexToken: "0xAaA", listingDate: "2024-01-01T00:00:00.000Z" },
+      { indexToken: "0xBBB", listingDate: "2025-06-15T00:00:00.000Z" },
+      { indexToken: "0xCCC", listingDate: undefined },
+      { indexToken: "0xDDD" }, // listingDate absent
     ]);
 
     let captured: HookResult = { listingDateByIndexToken: {}, isLoading: true };
@@ -51,8 +52,8 @@ describe("useMarketsListingDates", () => {
     });
 
     expect(captured.listingDateByIndexToken).toEqual({
-      "0xaaa": 1000,
-      "0xbbb": 2000,
+      "0xaaa": Date.UTC(2024, 0, 1),
+      "0xbbb": Date.UTC(2025, 5, 15),
     });
   });
 

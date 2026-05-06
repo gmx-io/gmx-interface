@@ -11,11 +11,11 @@ import {
 } from "sdk/configs/oracleKeeper";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { buildUrl } from "sdk/utils/buildUrl";
-import type { MarketWithTiers } from "sdk/utils/markets/types";
 
 import { _debugOracleKeeper, OracleKeeperDebugFlags } from "./_debug";
 import { OracleKeeperFallbackTracker } from "./OracleFallbackTracker";
 import {
+  ApiMarket,
   ApyInfo,
   ApyPeriod,
   BatchReportBody,
@@ -233,12 +233,12 @@ export class OracleKeeperFetcher implements OracleFetcher {
     return this.request("/ui-flags", {});
   }
 
-  fetchMarkets(): Promise<MarketWithTiers[]> {
+  fetchMarkets(): Promise<ApiMarket[]> {
     return this.request("/markets", {
       validate: (res) => {
-        if (!Array.isArray(res)) return new Error("Invalid /markets response");
+        if (!res || !Array.isArray(res.markets)) return new Error("Invalid /markets response");
         return undefined;
       },
-    });
+    }).then((res) => res.markets as ApiMarket[]);
   }
 }

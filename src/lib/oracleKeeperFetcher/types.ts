@@ -1,7 +1,18 @@
 import type { Address } from "viem";
 
 import { FromNewToOldArray, Bar } from "domain/tradingview/types";
-import type { MarketWithTiers } from "sdk/utils/markets/types";
+
+/** Single entry from the OracleKeeper `/markets` endpoint. */
+export type ApiMarket = {
+  name: string;
+  marketToken: string;
+  indexToken: string;
+  longToken: string;
+  shortToken: string;
+  isListed: boolean;
+  /** ISO 8601 timestamp, e.g. "2024-10-24T00:00:00.000Z". May be absent. */
+  listingDate?: string;
+};
 
 export type EventPayload = {
   isError: boolean;
@@ -127,7 +138,7 @@ export interface OracleFetcher {
   fetchPerformanceAnnualized(period: PerformancePeriod, address?: string): Promise<PerformanceAnnualizedResponse>;
   fetchPerformanceSnapshots(period: PerformancePeriod, address?: string): Promise<PerformanceSnapshotsResponse>;
   fetchUiFlags(): Promise<Record<string, boolean>>;
-  fetchMarkets(): Promise<MarketWithTiers[]>;
+  fetchMarkets(): Promise<ApiMarket[]>;
   handleFailure(method: string): void;
 }
 

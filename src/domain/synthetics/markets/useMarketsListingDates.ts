@@ -25,8 +25,10 @@ export function useMarketsListingDates(chainId: ContractsChainId): {
       const markets = await oracleKeeperFetcher.fetchMarkets();
       const map: MarketsListingDates = {};
       for (const m of markets) {
-        if (m.listingDate !== undefined && m.indexTokenAddress) {
-          map[m.indexTokenAddress.toLowerCase()] = m.listingDate;
+        if (!m.listingDate || !m.indexToken) continue;
+        const ts = Date.parse(m.listingDate);
+        if (Number.isFinite(ts)) {
+          map[m.indexToken.toLowerCase()] = ts;
         }
       }
       return map;
