@@ -5788,6 +5788,10 @@ msgstr "Ihre Mittel sind sicher in GMX-Verträgen auf der Zielchain. Versuchen S
 msgid "Mozaic Finance"
 msgstr "Mozaic Finance"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Perpetuals"
+msgstr ""
+
 #: src/components/Earn/BuybackTracker/BuybackDashboard.tsx
 msgid "Buyback Dashboard"
 msgstr ""
@@ -10267,6 +10271,7 @@ msgstr "Teile dieser Order werden ausgeführt, sobald ausreichend Liquidität ve
 msgid "High acceptable price impact set. Current impact: {0}."
 msgstr "Hoher akzeptabler Preiseinfluss festgelegt. Aktueller Einfluss: {0}."
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx

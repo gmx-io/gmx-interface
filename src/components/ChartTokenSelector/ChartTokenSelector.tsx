@@ -156,6 +156,37 @@ type SortField =
   | "combinedOpenInterest"
   | "unspecified";
 
+function ModeTabs({ mode, setMode }: { mode: "perp" | "swap"; setMode: (mode: "perp" | "swap") => void }) {
+  return (
+    <div className="flex items-center gap-8 whitespace-nowrap">
+      <Button
+        type="button"
+        variant="ghost"
+        size="small"
+        className={cx({
+          "!bg-button-secondary !text-typography-primary": mode === "perp",
+        })}
+        onClick={() => setMode("perp")}
+        data-selected={mode === "perp"}
+      >
+        <Trans>Perpetuals</Trans>
+      </Button>
+      <Button
+        type="button"
+        variant="ghost"
+        size="small"
+        className={cx({
+          "!bg-button-secondary !text-typography-primary": mode === "swap",
+        })}
+        onClick={() => setMode("swap")}
+        data-selected={mode === "swap"}
+      >
+        <Trans>Swap</Trans>
+      </Button>
+    </div>
+  );
+}
+
 function MarketsList() {
   const chainId = useSelector(selectChainId);
   const perpTokens = useSelector(selectAvailablePerpChartTokens);
@@ -320,6 +351,9 @@ function MarketsList() {
     <>
       <SelectorBaseMobileHeaderContent>
         <div className="flex flex-col gap-12">
+          <ButtonRowScrollFadeContainer>
+            <ModeTabs mode={mode} setMode={setMode} />
+          </ButtonRowScrollFadeContainer>
           <SearchInput
             className="w-full *:!text-body-medium"
             value={searchKeyword}
@@ -355,6 +389,9 @@ function MarketsList() {
       {!isMobile && (
         <>
           <div className="flex flex-col justify-between gap-12 border-b-1/2 border-slate-600 p-12">
+            <div className="border-b-1/2 border-slate-600 pb-12">
+              <ModeTabs mode={mode} setMode={setMode} />
+            </div>
             <SearchInput
               className="w-full"
               value={searchKeyword}

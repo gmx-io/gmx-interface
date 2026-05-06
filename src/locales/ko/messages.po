@@ -5788,6 +5788,10 @@ msgstr "자금은 목적지 체인의 GMX 컨트랙트에 안전하게 보관되
 msgid "Mozaic Finance"
 msgstr "Mozaic Finance"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Perpetuals"
+msgstr ""
+
 #: src/components/Earn/BuybackTracker/BuybackDashboard.tsx
 msgid "Buyback Dashboard"
 msgstr ""
@@ -10267,6 +10271,7 @@ msgstr "충분한 유동성이 확보되면 이 주문의 일부가 체결됩니
 msgid "High acceptable price impact set. Current impact: {0}."
 msgstr "높은 허용 가격 영향이 설정되었습니다. 현재 영향: {0}."
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx

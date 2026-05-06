@@ -5788,6 +5788,10 @@ msgstr "お客様の資金は送信先チェーンのGMXコントラクトに安
 msgid "Mozaic Finance"
 msgstr "Mozaic Finance"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Perpetuals"
+msgstr ""
+
 #: src/components/Earn/BuybackTracker/BuybackDashboard.tsx
 msgid "Buyback Dashboard"
 msgstr ""
@@ -10267,6 +10271,7 @@ msgstr "この注文の一部は、十分な流動性が確保され次第実行
 msgid "High acceptable price impact set. Current impact: {0}."
 msgstr "許容価格への影響が高く設定されています。現在の影響: {0}。"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
