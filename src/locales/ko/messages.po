@@ -7024,6 +7024,10 @@ msgstr "거버넌스"
 msgid "Cancel"
 msgstr "취소"
 
+#: src/components/NetRateChart/NetRateChart.tsx
+msgid "Live"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group"
 msgstr "Telegram 그룹"

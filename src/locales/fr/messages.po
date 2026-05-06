@@ -7024,6 +7024,10 @@ msgstr "Gouvernance"
 msgid "Cancel"
 msgstr "Annuler"
 
+#: src/components/NetRateChart/NetRateChart.tsx
+msgid "Live"
+msgstr ""
+
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group"
 msgstr "Groupe Telegram"
