@@ -13,6 +13,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import type { SubCategoryTab } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { MarketTokensAPRData, getTotalGmInfo } from "domain/synthetics/markets";
+import { useMarketsListingDates } from "domain/synthetics/markets/useMarketsListingDates";
 import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
 import { PerformanceSnapshotsData } from "domain/synthetics/markets/usePerformanceSnapshots";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
@@ -20,6 +21,7 @@ import useWallet from "lib/wallets/useWallet";
 import PoolsCard from "pages/Pools/PoolsCard";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
 
+import { getRecentlyListedTokenAddresses } from "components/ChartTokenSelector/marketFilters";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import { SubCategoryTabs } from "components/FavoriteTabs/SubCategoryTabs";
@@ -73,8 +75,21 @@ export function GmList({
   const { userEarnings } = useUserEarnings(chainId, srcChainId);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("gm-list");
   const [searchText, setSearchText] = useState("");
-  const { topLevelTab, subCategoryTab, favoriteTokens, toggleFavoriteToken } =
-    useTokensFavorites("gm-list");
+  const { topLevelTab, subCategoryTab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites("gm-list");
+
+  const { listingDateByIndexToken } = useMarketsListingDates(chainId);
+
+  const recentlyListedAddressesSet = useMemo(
+    () => new Set(getRecentlyListedTokenAddresses(listingDateByIndexToken, Date.now())),
+    [listingDateByIndexToken]
+  );
+
+  const recentlyListedCount = useMemo(() => {
+    if (!marketsInfo || recentlyListedAddressesSet.size === 0) return 0;
+    return Object.values(marketsInfo).filter(
+      (m) => !m.isSpotOnly && !m.isDisabled && recentlyListedAddressesSet.has(m.indexTokenAddress.toLowerCase())
+    ).length;
+  }, [marketsInfo, recentlyListedAddressesSet]);
 
   const isLoading = !marketsInfo || !progressiveMarketTokensData;
 
@@ -113,6 +128,7 @@ export function GmList({
     searchText,
     topLevelTab,
     subCategoryTab,
+    recentlyListedAddresses: recentlyListedAddressesSet,
     favoriteTokens,
     performance,
     multichainMarketTokensBalances,
@@ -174,22 +190,15 @@ export function GmList({
                   favoritesKey="gm-list"
                   className="!text-typography-secondary hover:!text-typography-primary"
                   activeClassName="!text-typography-primary"
+                  recentlyListedCount={recentlyListedCount}
                 />
               </ButtonRowScrollFadeContainer>
             </div>
             {topLevelTab === "crypto" && populatedCryptoSubCats.size > 0 && (
-              <SubCategoryTabs
-                favoritesKey="gm-list"
-                parent="crypto"
-                populatedSubCategories={populatedCryptoSubCats}
-              />
+              <SubCategoryTabs favoritesKey="gm-list" parent="crypto" populatedSubCategories={populatedCryptoSubCats} />
             )}
             {topLevelTab === "tradfi" && populatedTradfiSubCats.size > 0 && (
-              <SubCategoryTabs
-                favoritesKey="gm-list"
-                parent="tradfi"
-                populatedSubCategories={populatedTradfiSubCats}
-              />
+              <SubCategoryTabs favoritesKey="gm-list" parent="tradfi" populatedSubCategories={populatedTradfiSubCats} />
             )}
           </div>
         </div>
