@@ -20,7 +20,8 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
-  TokenFavoritesTabOption,
+  SubCategoryTab,
+  TopLevelTab,
   useTokensFavorites,
 } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
@@ -39,7 +40,6 @@ import { searchBy } from "lib/searchBy";
 import { useBreakpoints } from "lib/useBreakpoints";
 import {
   convertTokenAddress,
-  getCategoryTokenAddresses,
   getTokenVisualMultiplier,
   isChartAvailableForToken,
 } from "sdk/configs/tokens";
@@ -48,6 +48,7 @@ import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
+import { SubCategoryTabs } from "components/FavoriteTabs/SubCategoryTabs";
 import SearchInput from "components/SearchInput/SearchInput";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
@@ -58,6 +59,8 @@ import LongIcon from "img/long.svg?react";
 import ShortIcon from "img/short.svg?react";
 
 import { SelectorBase, SelectorBaseMobileHeaderContent, useSelectorClose } from "../SelectorBase/SelectorBase";
+
+import { applySubCategoryFilter, applyTopLevelFilter } from "./marketFilters";
 
 type Props = {
   selectedToken: Token | undefined;
@@ -172,7 +175,26 @@ function MarketsList() {
     };
   }, [availableTokens, chainId]);
 
-  const { tab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites("chart-token-selector");
+  const { topLevelTab, subCategoryTab, favoriteTokens, toggleFavoriteToken } =
+    useTokensFavorites("chart-token-selector");
+
+  const populatedCryptoSubCats = useMemo(() => {
+    const set = new Set<SubCategoryTab>();
+    if (!options) return set;
+    for (const cat of ["ai", "layer1", "layer2", "defi", "meme"] as const) {
+      if (options.some((o) => o.categories?.includes(cat))) set.add(cat);
+    }
+    return set;
+  }, [options]);
+
+  const populatedTradfiSubCats = useMemo(() => {
+    const set = new Set<SubCategoryTab>();
+    if (!options) return set;
+    for (const cat of ["commodities", "stocks", "indices", "fx"] as const) {
+      if (options.some((o) => o.categories?.includes(cat))) set.add(cat);
+    }
+    return set;
+  }, [options]);
 
   const dayPriceDeltaMap = use24hPriceDeltaMap(chainId, availableChartTokenAddresses);
   const dayVolumesData = use24hVolumes();
@@ -194,7 +216,8 @@ function MarketsList() {
     chainId,
     options,
     searchKeyword,
-    tab,
+    topLevelTab,
+    subCategoryTab,
     favoriteTokens,
     direction,
     orderBy,
@@ -226,7 +249,7 @@ function MarketsList() {
 
   useMissedCoinsSearch({
     searchText: searchKeyword,
-    isEmpty: !sortedTokens?.length && tab === "all",
+    isEmpty: !sortedTokens?.length && topLevelTab === "all",
     isLoaded: Boolean(options?.length),
     place: MissedCoinsPlace.marketDropdown,
   });
@@ -295,6 +318,24 @@ function MarketsList() {
           <ButtonRowScrollFadeContainer>
             <FavoriteTabs favoritesKey="chart-token-selector" />
           </ButtonRowScrollFadeContainer>
+          {topLevelTab === "crypto" && populatedCryptoSubCats.size > 0 && (
+            <ButtonRowScrollFadeContainer>
+              <SubCategoryTabs
+                favoritesKey="chart-token-selector"
+                parent="crypto"
+                populatedSubCategories={populatedCryptoSubCats}
+              />
+            </ButtonRowScrollFadeContainer>
+          )}
+          {topLevelTab === "tradfi" && populatedTradfiSubCats.size > 0 && (
+            <ButtonRowScrollFadeContainer>
+              <SubCategoryTabs
+                favoritesKey="chart-token-selector"
+                parent="tradfi"
+                populatedSubCategories={populatedTradfiSubCats}
+              />
+            </ButtonRowScrollFadeContainer>
+          )}
         </div>
       </SelectorBaseMobileHeaderContent>
 
@@ -311,6 +352,24 @@ function MarketsList() {
             <ButtonRowScrollFadeContainer>
               <FavoriteTabs favoritesKey="chart-token-selector" />
             </ButtonRowScrollFadeContainer>
+            {topLevelTab === "crypto" && populatedCryptoSubCats.size > 0 && (
+              <ButtonRowScrollFadeContainer>
+                <SubCategoryTabs
+                  favoritesKey="chart-token-selector"
+                  parent="crypto"
+                  populatedSubCategories={populatedCryptoSubCats}
+                />
+              </ButtonRowScrollFadeContainer>
+            )}
+            {topLevelTab === "tradfi" && populatedTradfiSubCats.size > 0 && (
+              <ButtonRowScrollFadeContainer>
+                <SubCategoryTabs
+                  favoritesKey="chart-token-selector"
+                  parent="tradfi"
+                  populatedSubCategories={populatedTradfiSubCats}
+                />
+              </ButtonRowScrollFadeContainer>
+            )}
           </div>
         </>
       )}
@@ -414,7 +473,8 @@ function useFilterSortTokens({
   chainId,
   options,
   searchKeyword,
-  tab,
+  topLevelTab,
+  subCategoryTab,
   favoriteTokens,
   direction,
   orderBy,
@@ -427,7 +487,8 @@ function useFilterSortTokens({
   chainId: number;
   options: Token[] | undefined;
   searchKeyword: string;
-  tab: TokenFavoritesTabOption;
+  topLevelTab: TopLevelTab;
+  subCategoryTab: SubCategoryTab;
   favoriteTokens: string[];
   direction: SortDirection;
   orderBy: SortField;
@@ -438,8 +499,10 @@ function useFilterSortTokens({
   isSwap: boolean;
 }) {
   const filteredTokens: Token[] | undefined = useMemo(() => {
+    if (!options) return undefined;
+
     const textMatched =
-      searchKeyword.trim() && options
+      searchKeyword.trim()
         ? searchBy(
             options,
             [
@@ -451,19 +514,16 @@ function useFilterSortTokens({
           )
         : options;
 
-    if (tab === "all") {
-      return textMatched;
-    }
+    const afterTopLevel = applyTopLevelFilter(textMatched ?? [], {
+      topLevelTab,
+      favoriteAddresses: favoriteTokens,
+      // recentlyListedAddresses wired in Phase 4 — empty for now means
+      // 'recently-listed' tab returns 0 results, but the tab itself is hidden
+      // by FavoriteTabs when recentlyListedCount === 0 (default).
+    });
 
-    if (tab === "favorites") {
-      return textMatched?.filter((item) => favoriteTokens?.includes(item.address));
-    }
-
-    const categoryTokenAddresses = getCategoryTokenAddresses(chainId, tab);
-    const tabMatched = textMatched?.filter((item) => categoryTokenAddresses.includes(item.address));
-
-    return tabMatched;
-  }, [chainId, favoriteTokens, isSwap, options, searchKeyword, tab]);
+    return applySubCategoryFilter(afterTopLevel, { topLevelTab, subCategoryTab });
+  }, [options, searchKeyword, isSwap, topLevelTab, subCategoryTab, favoriteTokens]);
 
   const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
 
