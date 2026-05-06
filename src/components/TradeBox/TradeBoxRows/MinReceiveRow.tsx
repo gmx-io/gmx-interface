@@ -29,7 +29,7 @@ export function MinReceiveRow({ allowedSlippage }: { allowedSlippage: number }) 
     : swapAmounts.minOutputAmount;
 
   return (
-    <SyntheticsInfoRow label={<Trans>Min. receive</Trans>} valueClassName="numbers break-all !whitespace-normal">
+    <SyntheticsInfoRow label={<Trans>Minimum receive</Trans>} valueClassName="numbers break-all !whitespace-normal">
       {formatBalanceAmount(displayMinReceive, toToken.decimals, toToken.symbol, {
         isStable: toToken.isStable,
       })}

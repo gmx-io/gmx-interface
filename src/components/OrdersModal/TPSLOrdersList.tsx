@@ -342,7 +342,7 @@ function TPSLOrderCard({
 
       <div className="flex items-center justify-between">
         <span className="text-14 font-medium text-typography-secondary">
-          <Trans>Trigger Price</Trans>
+          <Trans>Trigger price</Trans>
         </span>
         <span className="text-body-medium numbers">{triggerPriceDisplay}</span>
       </div>

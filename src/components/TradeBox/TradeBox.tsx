@@ -1,7 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
-import { ChangeEvent, useCallback, useEffect, useMemo, useRef } from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useKey, useLatest, usePrevious } from "react-use";
 import { zeroAddress } from "viem";
 
@@ -1038,6 +1038,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const collateralWarnings = useCollateralWarnings();
 
+  const [twapRecommendationDismissed, setTwapRecommendationDismissed] = useState(false);
+
   return (
     <form className="flex flex-col gap-8" onSubmit={handleFormSubmit} ref={formRef}>
       <div className="flex flex-col gap-12 rounded-b-8 bg-slate-900 pb-16">
@@ -1076,8 +1078,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               {isSwap && isLimit && renderTriggerRatioInput()}
               {isTrigger && renderTriggerPriceInput()}
             </div>
-
-            {maxAutoCancelOrdersWarning}
 
             {isTrigger && (
               <SyntheticsInfoRow
@@ -1133,6 +1133,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           )}
 
           {!isTrigger && !isSwap && !isTwap && <TPSLGroup />}
+          {maxAutoCancelOrdersWarning}
 
           {priceImpactWarningState.shouldShowWarning && (
             <HighPriceImpactOrFeesWarningCard
@@ -1152,8 +1153,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             disabled={shouldShowDepositButton}
             isGmxAccount={isFromTokenGmxAccount}
           />
-          {twapRecommendation && (
-            <AlertInfoCard>
+          {twapRecommendation && !twapRecommendationDismissed && (
+            <AlertInfoCard onClose={() => setTwapRecommendationDismissed(true)}>
               <span>
                 <span
                   className="cursor-pointer font-medium text-blue-300"

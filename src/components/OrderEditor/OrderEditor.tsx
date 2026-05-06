@@ -451,11 +451,11 @@ export function OrderEditor(p: Props) {
       }
 
       if (triggerRatio && !isRatioInverted && markRatio && markRatio.ratio < triggerRatio.ratio) {
-        return t`Limit price above mark price`;
+        return t`Set limit price below mark price`;
       }
 
       if (triggerRatio && isRatioInverted && markRatio && markRatio.ratio > triggerRatio.ratio) {
-        return t`Limit price below mark price`;
+        return t`Set limit price above mark price`;
       }
 
       const expressError = getExpressError({
@@ -691,9 +691,9 @@ export function OrderEditor(p: Props) {
   );
 
   const priceLabel = isLimitDecreaseOrderType(p.order.orderType)
-    ? t`Take profit price`
+    ? t`Take-Profit price`
     : isStopLossOrderType(p.order.orderType)
-      ? t`Stop loss price`
+      ? t`Stop-Loss price`
       : isStopIncreaseOrderType(p.order.orderType)
         ? t`Stop price`
         : t`Limit price`;
@@ -723,16 +723,16 @@ export function OrderEditor(p: Props) {
     const suffix = `${tokenSymbol} ${longShortText}`;
 
     if (isLimitDecreaseOrderType(p.order.orderType)) {
-      return t`Edit TP: ${suffix}`;
+      return t`Edit Take-Profit: ${suffix}`;
     }
     if (isStopLossOrderType(p.order.orderType)) {
-      return t`Edit SL: ${suffix}`;
+      return t`Edit Stop-Loss: ${suffix}`;
     }
     if (isStopIncreaseOrderType(p.order.orderType)) {
       return t`Edit Stop Market: ${suffix}`;
     }
     if (isLimitIncreaseOrderType(p.order.orderType)) {
-      return t`Edit Limit: ${suffix}`;
+      return t`Edit Limit Increase: ${suffix}`;
     }
 
     return t`Edit ${p.order.title}`;
@@ -934,7 +934,7 @@ export function OrderEditor(p: Props) {
               />
               <div className="h-1 bg-slate-600" />
               <SyntheticsInfoRow
-                label={t`Min. receive`}
+                label={t`Min receive`}
                 value={formatBalanceAmount(
                   minOutputAmount,
                   p.order.targetCollateralToken.decimals,

@@ -434,7 +434,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   const message = useMemo(() => {
     if (rank !== null) return null;
 
-    let msg = t`No trades during selected period`;
+    let msg = t`No trades during the selected period`;
     if (hasSomeCapital)
       msg = t`Minimum ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
         displayDecimals: 0,

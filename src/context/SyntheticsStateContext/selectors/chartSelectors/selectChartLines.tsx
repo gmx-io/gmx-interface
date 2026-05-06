@@ -74,7 +74,7 @@ export const selectChartLines = createSelector<StaticChartLine[]>((q) => {
     if (liquidationPrice && liquidationPrice !== "NA") {
       lines.push({
         id: `${position.key}-liquidation`,
-        title: `${positionTitle} · ${t`Liq.`}`,
+        title: `${positionTitle} · ${t`liquidation`}`,
         price: parseFloat(liquidationPrice),
         lineType: "liquidation",
       });
