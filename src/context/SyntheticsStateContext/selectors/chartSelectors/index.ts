@@ -1,3 +1,5 @@
+import { QueryFunction } from "@taskworld.com/rereselect";
+
 import { selectJitLiquidityMap } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxAvailableTokensOptions,
@@ -6,6 +8,7 @@ import {
   selectTradeboxToTokenAddress,
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
+import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/synthetics/fees";
 import { getJitLiquidityInfo } from "domain/synthetics/jit/utils";
@@ -19,7 +22,7 @@ import { bigMath } from "sdk/utils/bigmath";
 
 export { selectChartToken } from "../shared/marketSelectors";
 
-export const selectAvailableChartTokens = createSelector(function selectChartToken(q) {
+function getAvailableChartTokensInternal(q: QueryFunction<SyntheticsState>, forSwap: boolean) {
   const fromTokenAddress = q(selectTradeboxFromTokenAddress);
   const toTokenAddress = q(selectTradeboxToTokenAddress);
 
@@ -27,21 +30,33 @@ export const selectAvailableChartTokens = createSelector(function selectChartTok
     return [];
   }
 
-  const { isSwap } = q(selectTradeboxTradeFlags);
   const { swapTokens, indexTokens, sortedLongAndShortTokens, sortedIndexTokensWithPoolValue } = q(
     selectTradeboxAvailableTokensOptions
   );
 
-  const availableChartTokens = isSwap ? swapTokens : indexTokens;
+  const availableChartTokens = forSwap ? swapTokens : indexTokens;
   const sortedAvailableChartTokens = availableChartTokens.sort((a, b) => {
     if (sortedIndexTokensWithPoolValue || sortedLongAndShortTokens) {
-      const currentSortReferenceList = isSwap ? sortedLongAndShortTokens : sortedIndexTokensWithPoolValue;
+      const currentSortReferenceList = forSwap ? sortedLongAndShortTokens : sortedIndexTokensWithPoolValue;
       return currentSortReferenceList.indexOf(a.address) - currentSortReferenceList.indexOf(b.address);
     }
     return 0;
   });
 
   return sortedAvailableChartTokens;
+}
+
+export const selectAvailableChartTokens = createSelector(function selectAvailableChartTokensImpl(q) {
+  const { isSwap } = q(selectTradeboxTradeFlags);
+  return getAvailableChartTokensInternal(q, isSwap);
+});
+
+export const selectAvailablePerpChartTokens = createSelector(function selectAvailablePerpChartTokensImpl(q) {
+  return getAvailableChartTokensInternal(q, false);
+});
+
+export const selectAvailableSwapChartTokens = createSelector(function selectAvailableSwapChartTokensImpl(q) {
+  return getAvailableChartTokensInternal(q, true);
 });
 
 export const selectChartHeaderInfo = createSelector((q) => {

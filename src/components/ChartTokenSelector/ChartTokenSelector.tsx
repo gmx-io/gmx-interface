@@ -1,13 +1,16 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import partition from "lodash/partition";
-import React, { useCallback, useMemo, useState } from "react";
+import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import type { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";
 import { PROMOTED_TOKENS_ORDER } from "config/promotedTokens";
 import type { SortDirection } from "context/SorterContext/types";
-import { selectAvailableChartTokens } from "context/SyntheticsStateContext/selectors/chartSelectors";
+import {
+  selectAvailablePerpChartTokens,
+  selectAvailableSwapChartTokens,
+} from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectChainId, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectIndexTokenStatsMap } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import {
@@ -38,11 +41,7 @@ import { formatAmountHuman, formatUsdPrice } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { searchBy } from "lib/searchBy";
 import { useBreakpoints } from "lib/useBreakpoints";
-import {
-  convertTokenAddress,
-  getTokenVisualMultiplier,
-  isChartAvailableForToken,
-} from "sdk/configs/tokens";
+import { convertTokenAddress, getTokenVisualMultiplier, isChartAvailableForToken } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
@@ -58,9 +57,8 @@ import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import LongIcon from "img/long.svg?react";
 import ShortIcon from "img/short.svg?react";
 
-import { SelectorBase, SelectorBaseMobileHeaderContent, useSelectorClose } from "../SelectorBase/SelectorBase";
-
 import { applySubCategoryFilter, applyTopLevelFilter } from "./marketFilters";
+import { SelectorBase, SelectorBaseMobileHeaderContent, useSelectorClose } from "../SelectorBase/SelectorBase";
 
 type Props = {
   selectedToken: Token | undefined;
@@ -160,10 +158,29 @@ type SortField =
 
 function MarketsList() {
   const chainId = useSelector(selectChainId);
-  const availableTokens = useSelector(selectAvailableChartTokens);
+  const perpTokens = useSelector(selectAvailablePerpChartTokens);
+  const swapTokens = useSelector(selectAvailableSwapChartTokens);
   const tradeType = useSelector(selectTradeboxTradeType);
   const chooseSuitableMarket = useSelector(selectTradeboxChooseSuitableMarket);
   const tokensData = useSelector(selectTokensData);
+
+  const { topLevelTab, subCategoryTab, mode, setMode, favoriteTokens, toggleFavoriteToken } =
+    useTokensFavorites("chart-token-selector");
+
+  const tradeFlags = useSelector(selectTradeboxTradeFlags);
+
+  // Initialize local mode from page state once on first mount.
+  const initialModeSyncRef = useRef(false);
+  useEffect(() => {
+    if (initialModeSyncRef.current) return;
+    initialModeSyncRef.current = true;
+    setMode(tradeFlags.isSwap ? "swap" : "perp");
+    // Only run on first render; we want a one-shot sync, not continuous.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  const isSwap = mode === "swap";
+  const availableTokens = isSwap ? swapTokens : perpTokens;
 
   const { availableChartTokens: options, availableChartTokenAddresses } = useMemo(() => {
     const availableChartTokens = availableTokens?.filter((token) => isChartAvailableForToken(chainId, token.symbol));
@@ -174,9 +191,6 @@ function MarketsList() {
       availableChartTokenAddresses,
     };
   }, [availableTokens, chainId]);
-
-  const { topLevelTab, subCategoryTab, favoriteTokens, toggleFavoriteToken } =
-    useTokensFavorites("chart-token-selector");
 
   const populatedCryptoSubCats = useMemo(() => {
     const set = new Set<SubCategoryTab>();
@@ -205,7 +219,6 @@ function MarketsList() {
 
   const close = useSelectorClose();
 
-  const { isSwap } = useSelector(selectTradeboxTradeFlags);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>(
     `chart-token-selector-${isSwap ? "spot" : "perp"}`
   );
@@ -501,18 +514,17 @@ function useFilterSortTokens({
   const filteredTokens: Token[] | undefined = useMemo(() => {
     if (!options) return undefined;
 
-    const textMatched =
-      searchKeyword.trim()
-        ? searchBy(
-            options,
-            [
-              (item) => stripBlacklistedWords(item.name),
-              (item) => (isSwap ? item.symbol : `${getTokenVisualMultiplier(item)}${item.symbol}`),
-              (item) => (item.searchAliases ?? []).join(" "),
-            ],
-            searchKeyword
-          )
-        : options;
+    const textMatched = searchKeyword.trim()
+      ? searchBy(
+          options,
+          [
+            (item) => stripBlacklistedWords(item.name),
+            (item) => (isSwap ? item.symbol : `${getTokenVisualMultiplier(item)}${item.symbol}`),
+            (item) => (item.searchAliases ?? []).join(" "),
+          ],
+          searchKeyword
+        )
+      : options;
 
     const afterTopLevel = applyTopLevelFilter(textMatched ?? [], {
       topLevelTab,
