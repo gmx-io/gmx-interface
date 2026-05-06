@@ -1371,7 +1371,7 @@ msgstr "반영까지 몇 분이 소요될 수 있습니다. 나중에 다시 확
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Net total of action-level fees, discounts, and price impact. Hover the value to see the breakdown."
-msgstr ""
+msgstr "액션 단위의 수수료, 할인, 가격 영향의 순 총합입니다. 값 위에 마우스를 올리면 세부 내역이 표시됩니다."
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "No events found for this account in the past {DAYS_BACK} days"
@@ -1483,7 +1483,7 @@ msgstr "Oracle 엔드포인트"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Swap fee"
-msgstr ""
+msgstr "스왑 수수료"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express"
@@ -3231,7 +3231,7 @@ msgstr ""
 
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "RPNL ($)"
-msgstr ""
+msgstr "RPNL ($)"
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Shorts net rate / 1h"
@@ -4555,7 +4555,7 @@ msgstr "{secondLabel}"
 
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "FEES ($)"
-msgstr ""
+msgstr "수수료 ($)"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap profit fee"
@@ -4974,7 +4974,7 @@ msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Execution fee"
-msgstr ""
+msgstr "실행 수수료"
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
@@ -7058,7 +7058,7 @@ msgstr "유동성 부족"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Realized price PnL only, before fees, discounts, and price impact."
-msgstr ""
+msgstr "수수료, 할인, 가격 영향이 반영되기 전의 실현 가격 PnL만 표시합니다."
 
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq."
@@ -8257,7 +8257,7 @@ msgstr "숏 포지션"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "FEES"
-msgstr ""
+msgstr "수수료"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx

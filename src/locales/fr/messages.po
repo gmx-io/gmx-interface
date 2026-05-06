@@ -1371,7 +1371,7 @@ msgstr "Peut prendre quelques minutes avant d'apparaître. Veuillez vérifier ul
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Net total of action-level fees, discounts, and price impact. Hover the value to see the breakdown."
-msgstr ""
+msgstr "Total net des frais, réductions et impact sur le prix au niveau de l'action. Survolez la valeur pour voir le détail."
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "No events found for this account in the past {DAYS_BACK} days"
@@ -1483,7 +1483,7 @@ msgstr "Points d'accès Oracle"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Swap fee"
-msgstr ""
+msgstr "Frais d'échange"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express"
@@ -3231,7 +3231,7 @@ msgstr ""
 
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "RPNL ($)"
-msgstr ""
+msgstr "RPNL ($)"
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Shorts net rate / 1h"
@@ -4555,7 +4555,7 @@ msgstr "{secondLabel}"
 
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "FEES ($)"
-msgstr ""
+msgstr "FRAIS ($)"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap profit fee"
@@ -4974,7 +4974,7 @@ msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Execution fee"
-msgstr ""
+msgstr "Frais d'exécution"
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
@@ -7058,7 +7058,7 @@ msgstr "Liquidité insuffisante"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Realized price PnL only, before fees, discounts, and price impact."
-msgstr ""
+msgstr "PnL de prix réalisé uniquement, avant frais, réductions et impact sur le prix."
 
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq."
@@ -8257,7 +8257,7 @@ msgstr "Positions short"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "FEES"
-msgstr ""
+msgstr "FRAIS"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx

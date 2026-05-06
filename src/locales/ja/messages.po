@@ -1371,7 +1371,7 @@ msgstr "反映まで数分かかる場合があります。後ほどご確認く
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Net total of action-level fees, discounts, and price impact. Hover the value to see the breakdown."
-msgstr ""
+msgstr "アクションレベルの手数料、割引、価格への影響の正味合計。値にカーソルを合わせると内訳が表示されます。"
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "No events found for this account in the past {DAYS_BACK} days"
@@ -1483,7 +1483,7 @@ msgstr "Oracle エンドポイント"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Swap fee"
-msgstr ""
+msgstr "スワップ手数料"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express"
@@ -3231,7 +3231,7 @@ msgstr ""
 
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "RPNL ($)"
-msgstr ""
+msgstr "RPNL ($)"
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Shorts net rate / 1h"
@@ -4555,7 +4555,7 @@ msgstr "{secondLabel}"
 
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "FEES ($)"
-msgstr ""
+msgstr "手数料 ($)"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap profit fee"
@@ -4974,7 +4974,7 @@ msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Execution fee"
-msgstr ""
+msgstr "実行手数料"
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
@@ -7058,7 +7058,7 @@ msgstr "流動性不足"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Realized price PnL only, before fees, discounts, and price impact."
-msgstr ""
+msgstr "手数料、割引、価格への影響を反映する前の、実現した価格PnLのみ。"
 
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq."
@@ -8257,7 +8257,7 @@ msgstr "ショートポジション"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "FEES"
-msgstr ""
+msgstr "手数料"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx

@@ -1371,7 +1371,7 @@ msgstr "Puede tardar unos minutos en reflejarse. Vuelva a comprobarlo más tarde
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Net total of action-level fees, discounts, and price impact. Hover the value to see the breakdown."
-msgstr ""
+msgstr "Total neto de comisiones, descuentos e impacto en el precio a nivel de acción. Pasa el cursor sobre el valor para ver el desglose."
 
 #: src/pages/AccountEvents/AccountEvents.tsx
 msgid "No events found for this account in the past {DAYS_BACK} days"
@@ -1483,7 +1483,7 @@ msgstr "Endpoints de Oracle"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Swap fee"
-msgstr ""
+msgstr "Comisión de intercambio"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express"
@@ -3231,7 +3231,7 @@ msgstr ""
 
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "RPNL ($)"
-msgstr ""
+msgstr "RPNL ($)"
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Shorts net rate / 1h"
@@ -4555,7 +4555,7 @@ msgstr "{secondLabel}"
 
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "FEES ($)"
-msgstr ""
+msgstr "COMISIONES ($)"
 
 #: src/components/HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard.tsx
 msgid "High swap profit fee"
@@ -4974,7 +4974,7 @@ msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Execution fee"
-msgstr ""
+msgstr "Comisión de ejecución"
 
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
@@ -7058,7 +7058,7 @@ msgstr "Insuficiente liquidez"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Realized price PnL only, before fees, discounts, and price impact."
-msgstr ""
+msgstr "Solo PnL realizado por precio, antes de comisiones, descuentos e impacto en el precio."
 
 #: src/context/SyntheticsStateContext/selectors/chartSelectors/selectChartLines.tsx
 msgid "Liq."
@@ -8257,7 +8257,7 @@ msgstr "Posiciones cortas"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "FEES"
-msgstr ""
+msgstr "COMISIONES"
 
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
