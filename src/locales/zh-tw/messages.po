@@ -5817,10 +5817,6 @@ msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 msgid "Allowed actions"
 msgstr "允許的操作"
 
-#: src/components/GmList/GmList.tsx
-msgid "Pools that provide liquidity to specific GMX markets. Supports single-asset and native asset options."
-msgstr "為特定 GMX 市場提供流動性的池。支援單一資產和原生資產選項。"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor"
 msgstr "最大資金費率因子"
@@ -6185,6 +6181,10 @@ msgstr "套用推薦代碼"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (positive)"
 msgstr "影響指數（正向）"
+
+#: src/components/GmList/GmList.tsx
+msgid "Liquidity pools for specific GMX markets with single-asset and native asset options"
+msgstr "面向特定 GMX 市場的流動性池，支援單一資產和原生資產選項"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "If you continue, you will lose {0} in rewards"

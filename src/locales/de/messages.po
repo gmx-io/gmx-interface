@@ -5817,10 +5817,6 @@ msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 msgid "Allowed actions"
 msgstr "Erlaubte Aktionen"
 
-#: src/components/GmList/GmList.tsx
-msgid "Pools that provide liquidity to specific GMX markets. Supports single-asset and native asset options."
-msgstr "Pools, die Liquidität für bestimmte GMX-Märkte bereitstellen. Unterstützt Einzeltoken- und native Tokenoptionen."
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor"
 msgstr "Maximaler Finanzierungsfaktor"
@@ -6185,6 +6181,10 @@ msgstr "Empfehlungscode anwenden"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (positive)"
 msgstr "Auswirkungsexponent (positiv)"
+
+#: src/components/GmList/GmList.tsx
+msgid "Liquidity pools for specific GMX markets with single-asset and native asset options"
+msgstr "Liquiditätspools für bestimmte GMX-Märkte mit Einzeltoken- und nativen Tokenoptionen"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "If you continue, you will lose {0} in rewards"

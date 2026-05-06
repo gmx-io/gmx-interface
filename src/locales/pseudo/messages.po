@@ -5817,10 +5817,6 @@ msgstr ""
 msgid "Allowed actions"
 msgstr ""
 
-#: src/components/GmList/GmList.tsx
-msgid "Pools that provide liquidity to specific GMX markets. Supports single-asset and native asset options."
-msgstr ""
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor"
 msgstr ""
@@ -6184,6 +6180,10 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (positive)"
+msgstr ""
+
+#: src/components/GmList/GmList.tsx
+msgid "Liquidity pools for specific GMX markets with single-asset and native asset options"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx

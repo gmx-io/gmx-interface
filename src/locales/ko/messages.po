@@ -5817,10 +5817,6 @@ msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 msgid "Allowed actions"
 msgstr "허용된 작업"
 
-#: src/components/GmList/GmList.tsx
-msgid "Pools that provide liquidity to specific GMX markets. Supports single-asset and native asset options."
-msgstr "특정 GMX 마켓에 유동성을 제공하는 풀입니다. 단일 자산 및 네이티브 자산 옵션을 지원합니다."
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor"
 msgstr "최대 펀딩 계수"
@@ -6185,6 +6181,10 @@ msgstr "추천 코드 적용"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (positive)"
 msgstr "영향 지수 (양수)"
+
+#: src/components/GmList/GmList.tsx
+msgid "Liquidity pools for specific GMX markets with single-asset and native asset options"
+msgstr "단일 자산 및 네이티브 자산 옵션을 지원하는 특정 GMX 마켓용 유동성 풀"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "If you continue, you will lose {0} in rewards"

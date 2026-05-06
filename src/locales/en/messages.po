@@ -5817,10 +5817,6 @@ msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 msgid "Allowed actions"
 msgstr "Allowed actions"
 
-#: src/components/GmList/GmList.tsx
-msgid "Pools that provide liquidity to specific GMX markets. Supports single-asset and native asset options."
-msgstr "Pools that provide liquidity to specific GMX markets. Supports single-asset and native asset options."
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor"
 msgstr "Max funding factor"
@@ -6185,6 +6181,10 @@ msgstr "Apply referral code"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (positive)"
 msgstr "Impact exponent (positive)"
+
+#: src/components/GmList/GmList.tsx
+msgid "Liquidity pools for specific GMX markets with single-asset and native asset options"
+msgstr "Liquidity pools for specific GMX markets with single-asset and native asset options"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "If you continue, you will lose {0} in rewards"
