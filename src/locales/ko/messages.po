@@ -1452,6 +1452,10 @@ msgstr ""
 msgid "Collateral"
 msgstr "담보"
 
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Stocks"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop Market"
 msgstr "스탑 마켓 취소"
@@ -3160,6 +3164,10 @@ msgstr "기본 실패"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max number of parts: {MAX_TWAP_NUMBER_OF_PARTS}"
 msgstr "최대 부분 수: {MAX_TWAP_NUMBER_OF_PARTS}"
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Commodities"
+msgstr ""
 
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
 msgid "How to start earning?"
@@ -6488,6 +6496,10 @@ msgstr "{balanceFormatted} 출금에 실패했습니다"
 msgid "Annualized Rate"
 msgstr ""
 
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "TradFi"
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Gas"
 msgstr "가스"
@@ -7091,6 +7103,10 @@ msgstr "요약"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "ENTRY PRICE"
 msgstr "ENTRY PRICE"
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "FX"
+msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Display PnL after fees"
@@ -7950,10 +7966,6 @@ msgstr "연간화:"
 msgid "Trigger tickers failure"
 msgstr "Trigger tickers 장애"
 
-#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
-msgid "RWA"
-msgstr "RWA"
-
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling buy request..."
 msgstr "매수 요청을 실행하는 중…"
@@ -8176,6 +8188,10 @@ msgstr "스톱 마켓 실행"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Volume traded by this account with an active referral code."
+msgstr ""
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "AI"
 msgstr ""
 
 #: src/components/PositionShare/CreateReferralCode.tsx
@@ -10306,6 +10322,10 @@ msgstr "{idleSeconds}초"
 #: src/pages/Actions/ActionsRouter.tsx
 msgid "GMX V1 actions"
 msgstr "GMX V1 액션"
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Indices"
+msgstr ""
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GLV vaults:"

@@ -1452,6 +1452,10 @@ msgstr "Fetching swap route..."
 msgid "Collateral"
 msgstr "Collateral"
 
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Stocks"
+msgstr "Stocks"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop Market"
 msgstr "Cancel Stop Market"
@@ -3160,6 +3164,10 @@ msgstr "Primary failed"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max number of parts: {MAX_TWAP_NUMBER_OF_PARTS}"
 msgstr "Max number of parts: {MAX_TWAP_NUMBER_OF_PARTS}"
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Commodities"
+msgstr "Commodities"
 
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
 msgid "How to start earning?"
@@ -6488,6 +6496,10 @@ msgstr "Withdrawal of {balanceFormatted} failed"
 msgid "Annualized Rate"
 msgstr "Annualized Rate"
 
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "TradFi"
+msgstr "TradFi"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Gas"
 msgstr "Gas"
@@ -7091,6 +7103,10 @@ msgstr "Summary"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "ENTRY PRICE"
 msgstr "ENTRY PRICE"
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "FX"
+msgstr "FX"
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Display PnL after fees"
@@ -7950,10 +7966,6 @@ msgstr "Annualized:"
 msgid "Trigger tickers failure"
 msgstr "Trigger tickers failure"
 
-#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
-msgid "RWA"
-msgstr "RWA"
-
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling buy request..."
 msgstr "Fulfilling buy request..."
@@ -8177,6 +8189,10 @@ msgstr "Execute Stop Market"
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Volume traded by this account with an active referral code."
 msgstr "Volume traded by this account with an active referral code."
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "AI"
+msgstr "AI"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/ReferralsAffiliatesTab.tsx
@@ -10306,6 +10322,10 @@ msgstr "{idleSeconds}s"
 #: src/pages/Actions/ActionsRouter.tsx
 msgid "GMX V1 actions"
 msgstr "GMX V1 actions"
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Indices"
+msgstr "Indices"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GLV vaults:"

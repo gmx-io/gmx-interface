@@ -1452,6 +1452,10 @@ msgstr ""
 msgid "Collateral"
 msgstr "抵押品"
 
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Stocks"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop Market"
 msgstr "取消止損市價單"
@@ -3160,6 +3164,10 @@ msgstr "主要失敗"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max number of parts: {MAX_TWAP_NUMBER_OF_PARTS}"
 msgstr "最大分割數量：{MAX_TWAP_NUMBER_OF_PARTS}"
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Commodities"
+msgstr ""
 
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
 msgid "How to start earning?"
@@ -6488,6 +6496,10 @@ msgstr "提取 {balanceFormatted} 失敗"
 msgid "Annualized Rate"
 msgstr ""
 
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "TradFi"
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Gas"
 msgstr "Gas"
@@ -7091,6 +7103,10 @@ msgstr "摘要"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "ENTRY PRICE"
 msgstr "入場價格"
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "FX"
+msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Display PnL after fees"
@@ -7950,10 +7966,6 @@ msgstr "年化："
 msgid "Trigger tickers failure"
 msgstr "觸發行情報價失敗"
 
-#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
-msgid "RWA"
-msgstr "RWA"
-
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling buy request..."
 msgstr "正在執行買入請求..."
@@ -8176,6 +8188,10 @@ msgstr "執行停損市價單"
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Volume traded by this account with an active referral code."
+msgstr ""
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "AI"
 msgstr ""
 
 #: src/components/PositionShare/CreateReferralCode.tsx
@@ -10306,6 +10322,10 @@ msgstr "{idleSeconds}s"
 #: src/pages/Actions/ActionsRouter.tsx
 msgid "GMX V1 actions"
 msgstr "GMX V1 操作"
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Indices"
+msgstr ""
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GLV vaults:"

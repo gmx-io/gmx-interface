@@ -1452,6 +1452,10 @@ msgstr ""
 msgid "Collateral"
 msgstr ""
 
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Stocks"
+msgstr ""
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop Market"
 msgstr ""
@@ -3159,6 +3163,10 @@ msgstr ""
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max number of parts: {MAX_TWAP_NUMBER_OF_PARTS}"
+msgstr ""
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Commodities"
 msgstr ""
 
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
@@ -6488,6 +6496,10 @@ msgstr ""
 msgid "Annualized Rate"
 msgstr ""
 
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "TradFi"
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Gas"
 msgstr ""
@@ -7090,6 +7102,10 @@ msgstr ""
 #: src/components/PositionList/PositionList.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "ENTRY PRICE"
+msgstr ""
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "FX"
 msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
@@ -7950,10 +7966,6 @@ msgstr ""
 msgid "Trigger tickers failure"
 msgstr ""
 
-#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
-msgid "RWA"
-msgstr ""
-
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling buy request..."
 msgstr ""
@@ -8176,6 +8188,10 @@ msgstr ""
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Volume traded by this account with an active referral code."
+msgstr ""
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "AI"
 msgstr ""
 
 #: src/components/PositionShare/CreateReferralCode.tsx
@@ -10305,6 +10321,10 @@ msgstr ""
 
 #: src/pages/Actions/ActionsRouter.tsx
 msgid "GMX V1 actions"
+msgstr ""
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Indices"
 msgstr ""
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
