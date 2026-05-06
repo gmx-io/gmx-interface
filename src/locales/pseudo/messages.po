@@ -458,6 +458,10 @@ msgstr ""
 msgid "GMX Account balance"
 msgstr ""
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Search in perpetuals markets"
+msgstr ""
+
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Failed to claim affiliate rewards"
 msgstr ""
@@ -986,6 +990,7 @@ msgstr ""
 msgid "Force primary failure"
 msgstr ""
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No matching markets"
 msgstr ""
@@ -10201,6 +10206,10 @@ msgstr ""
 #: src/components/GmList/GmList.tsx
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 msgid "No pools matched"
+msgstr ""
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Search in swap markets"
 msgstr ""
 
 #: src/components/NotifyModal/NotifyModal.tsx

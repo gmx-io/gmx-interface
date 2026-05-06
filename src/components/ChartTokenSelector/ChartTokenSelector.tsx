@@ -512,7 +512,28 @@ function MarketsList() {
           </tbody>
         </table>
         {options && options.length > 0 && !sortedTokens?.length && (
-          <EmptyTableContent isLoading={false} isEmpty={true} emptyText={<Trans>No matching markets</Trans>} />
+          <EmptyTableContent
+            isLoading={false}
+            isEmpty={true}
+            emptyText={
+              searchKeyword.trim() ? (
+                <div className="flex flex-col items-center gap-8">
+                  <span>
+                    <Trans>No matching markets</Trans>
+                  </span>
+                  <button
+                    type="button"
+                    className="cursor-pointer font-medium text-blue-300 underline"
+                    onClick={() => setMode(isSwap ? "perp" : "swap")}
+                  >
+                    {isSwap ? <Trans>Search in perpetuals markets</Trans> : <Trans>Search in swap markets</Trans>}
+                  </button>
+                </div>
+              ) : (
+                <Trans>No matching markets</Trans>
+              )
+            }
+          />
         )}
       </div>
     </>
