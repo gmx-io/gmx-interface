@@ -46,7 +46,7 @@ export function MarginDestinationDialog({
     <ModalWithPortal
       isVisible={isVisible}
       setIsVisible={setIsVisible}
-      label={<Trans>Update Default Destination</Trans>}
+      label={<Trans>Update default destination</Trans>}
       contentClassName="w-[380px]"
       zIndex={1002}
     >
@@ -54,8 +54,8 @@ export function MarginDestinationDialog({
         <div className="text-14 text-typography-secondary">
           <Trans>
             You chose to send the remaining margin to your{" "}
-            <span className="font-medium text-typography-primary">{chosenLabel}</span>. Do you want to make this the
-            default destination when closing positions?
+            <span className="font-medium text-typography-primary">{chosenLabel}</span>. Make this the default
+            destination when closing positions?
           </Trans>
         </div>
 
@@ -74,10 +74,10 @@ export function MarginDestinationDialog({
                 <br />• <span className="font-bold">Wallet</span> if you mostly trade from your personal wallet on
                 Arbitrum
                 <br />• <span className="font-bold">GMX Account</span> if you plan to keep trading or reusing margin on
-                GMX.
+                GMX
                 <br />
                 <br />
-                You can change this preference anytime in Settings or when closing a position.
+                You can change this preference anytime in settings or when closing a position.
               </Trans>
             </div>
           }

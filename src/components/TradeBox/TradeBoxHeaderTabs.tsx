@@ -49,7 +49,7 @@ export function TradeBoxHeaderTabs({ isInCurtain }: { isInCurtain?: boolean }) {
     if (!leverageTooltipEnabled) return undefined;
 
     const formattedLeverage = formatLeverage(resultingPositionLeverage) ?? "-";
-    return <Trans>Leverage for the current order. Resulting position leverage: {formattedLeverage}</Trans>;
+    return <Trans>Leverage for the current order. Resulting position leverage: {formattedLeverage}.</Trans>;
   }, [leverageTooltipEnabled, resultingPositionLeverage]);
 
   const onTradeTypeChange = useCallback(

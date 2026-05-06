@@ -124,11 +124,6 @@ export const TransferDetailsView = () => {
 
   return (
     <div className="text-body-medium flex grow flex-col gap-8 p-adaptive">
-      {selectedTransfer?.isExecutionError ? (
-        <AlertInfoCard type="error" hideClose>
-          <Trans>Deposit from {sourceChainName} failed</Trans>
-        </AlertInfoCard>
-      ) : null}
       <SyntheticsInfoRow
         label={<Trans>Date</Trans>}
         value={selectedTransfer ? formatTradeActionTimestamp(selectedTransfer.sentTimestamp) : undefined}
@@ -211,6 +206,11 @@ export const TransferDetailsView = () => {
       )}
 
       <div className="grow" />
+      {selectedTransfer?.isExecutionError ? (
+        <AlertInfoCard type="error" hideClose>
+          <Trans>Deposit from {sourceChainName} failed</Trans>
+        </AlertInfoCard>
+      ) : null}
       <Button variant="secondary" onClick={handleRepeatTransaction}>
         <Trans>Repeat transaction</Trans>
       </Button>

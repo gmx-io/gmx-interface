@@ -249,11 +249,11 @@ export function getSwapError(p: {
   }
 
   if (isTwap && numberOfParts < MIN_TWAP_NUMBER_OF_PARTS) {
-    return { buttonErrorMessage: t`Min parts: ${MIN_TWAP_NUMBER_OF_PARTS}` };
+    return { buttonErrorMessage: t`Min TWAP parts: ${MIN_TWAP_NUMBER_OF_PARTS}` };
   }
 
   if (isTwap && numberOfParts > MAX_TWAP_NUMBER_OF_PARTS) {
-    return { buttonErrorMessage: t`Max number of parts: ${MAX_TWAP_NUMBER_OF_PARTS}` };
+    return { buttonErrorMessage: t`Max TWAP parts: ${MAX_TWAP_NUMBER_OF_PARTS}` };
   }
 
   return {};
@@ -493,11 +493,11 @@ export function getIncreaseError(p: {
   }
 
   if (isTwap && numberOfParts < MIN_TWAP_NUMBER_OF_PARTS) {
-    return { buttonErrorMessage: t`Min parts: ${MIN_TWAP_NUMBER_OF_PARTS}` };
+    return { buttonErrorMessage: t`Min TWAP parts: ${MIN_TWAP_NUMBER_OF_PARTS}` };
   }
 
   if (isTwap && numberOfParts > MAX_TWAP_NUMBER_OF_PARTS) {
-    return { buttonErrorMessage: t`Max number of parts: ${MAX_TWAP_NUMBER_OF_PARTS}` };
+    return { buttonErrorMessage: t`Max TWAP parts: ${MAX_TWAP_NUMBER_OF_PARTS}` };
   }
 
   return {};
@@ -636,11 +636,11 @@ export function getDecreaseError(p: {
   }
 
   if (isTwap && numberOfParts < MIN_TWAP_NUMBER_OF_PARTS) {
-    return { buttonErrorMessage: t`Min parts: ${MIN_TWAP_NUMBER_OF_PARTS}` };
+    return { buttonErrorMessage: t`Min TWAP parts: ${MIN_TWAP_NUMBER_OF_PARTS}` };
   }
 
   if (isTwap && numberOfParts > MAX_TWAP_NUMBER_OF_PARTS) {
-    return { buttonErrorMessage: t`Max number of parts: ${MAX_TWAP_NUMBER_OF_PARTS}` };
+    return { buttonErrorMessage: t`Max TWAP parts: ${MAX_TWAP_NUMBER_OF_PARTS}` };
   }
 
   return {};
@@ -816,7 +816,7 @@ export function getGmSwapError(p: {
   }
 
   if (isDeposit && isDepositDisabledMarket(chainId, marketInfo.marketTokenAddress)) {
-    return { buttonErrorMessage: t`Buying GM is disabled for this market` };
+    return { buttonErrorMessage: t`Buying GM unavailable` };
   }
 
   const glvTooltipMessage = glvInfo
@@ -965,7 +965,7 @@ export function getGmSwapError(p: {
       if ((glvTokenAmount ?? 0n) > (sellableGlvInMarket.sellableAmount ?? 0n)) {
         return {
           buttonErrorMessage: t`Insufficient GLV liquidity`,
-          buttonTooltipMessage: t`Insufficient GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] liquidity in GLV. Choose a different pool, reduce the sell size, or split your withdrawal from multiple pools.`,
+          buttonTooltipMessage: t`Insufficient GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] liquidity in GLV. Choose a different pool, reduce the sell size, or split the withdrawal across pools.`,
         };
       }
 
@@ -973,8 +973,8 @@ export function getGmSwapError(p: {
 
       if ((marketTokenUsd ?? 0n) > (sellableWithinMarket.totalUsd ?? 0n)) {
         return {
-          buttonErrorMessage: t`Insufficient liquidity in GM pool`,
-          buttonTooltipMessage: t`Sellable cap for pool GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] reached, as tokens are reserved by traders. Choose a different pool, reduce the sell size, or split your withdrawal from multiple pools.`,
+          buttonErrorMessage: t`Insufficient GM pool liquidity`,
+          buttonTooltipMessage: t`Sellable cap for pool GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] reached, as tokens are reserved by traders. Choose a different pool, reduce the sell size, or split the withdrawal across pools.`,
         };
       }
     }
@@ -1025,7 +1025,7 @@ export function getGmShiftError({
   }
 
   if (!isGlv && isShiftIntoDisabledMarket(chainId, toMarketInfo.marketTokenAddress)) {
-    return { buttonErrorMessage: t`Shifting into this market is disabled` };
+    return { buttonErrorMessage: t`Shifting into this market unavailable` };
   }
 
   if (priceImpactUsd !== undefined && priceImpactUsd > 0) {

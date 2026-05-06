@@ -66,7 +66,7 @@ export function RebateDistributionRow({
   if (rebate.typeId === RebateDistributionType.Rebate) {
     rebateType = rebate.tokens[0] === esGmxAddress ? t`Referrals esGMX` : t`Referrals V1 WETH`;
   } else if (rebate.typeId === RebateDistributionType.Claim) {
-    rebateType = t`Rebate Claim`;
+    rebateType = t`Rebate claim`;
   }
 
   const tokensWithoutPrices: string[] = [];
@@ -110,7 +110,6 @@ export function RebateDistributionRow({
                         isValidTokenSafe(chainId, address) ? getToken(chainId, address).symbol : address
                       )
                       .join(", ")}
-                    .
                   </Trans>
                   <br />
                   <br />

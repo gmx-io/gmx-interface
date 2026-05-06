@@ -56,26 +56,26 @@ function buildMenuItems(p: {
       if (p.showTpSlActions) {
         items.push({
           position: "top",
-          text: t`Set Long Take Profit @ ${p.formattedPrice}`,
+          text: t`Set long Take-Profit @ ${p.formattedPrice}`,
           click: () => p.onAction("takeProfit", direction, p.clickPrice),
         });
       }
       items.push({
         position: "top",
-        text: t`Set Long Stop Market @ ${p.formattedPrice}`,
+        text: t`Set long Stop Market @ ${p.formattedPrice}`,
         click: () => p.onAction("stopMarket", direction, p.clickPrice),
       });
     } else {
       if (p.showTpSlActions) {
         items.push({
           position: "top",
-          text: t`Set Long Stop Loss @ ${p.formattedPrice}`,
+          text: t`Set long Stop-Loss @ ${p.formattedPrice}`,
           click: () => p.onAction("stopLoss", direction, p.clickPrice),
         });
       }
       items.push({
         position: "top",
-        text: t`Set Long Limit @ ${p.formattedPrice}`,
+        text: t`Set long Limit @ ${p.formattedPrice}`,
         click: () => p.onAction("limit", direction, p.clickPrice),
       });
     }
@@ -84,26 +84,26 @@ function buildMenuItems(p: {
       if (p.showTpSlActions) {
         items.push({
           position: "top",
-          text: t`Set Short Stop Loss @ ${p.formattedPrice}`,
+          text: t`Set short Stop-Loss @ ${p.formattedPrice}`,
           click: () => p.onAction("stopLoss", direction, p.clickPrice),
         });
       }
       items.push({
         position: "top",
-        text: t`Set Short Limit @ ${p.formattedPrice}`,
+        text: t`Set short Limit @ ${p.formattedPrice}`,
         click: () => p.onAction("limit", direction, p.clickPrice),
       });
     } else {
       if (p.showTpSlActions) {
         items.push({
           position: "top",
-          text: t`Set Short Take Profit @ ${p.formattedPrice}`,
+          text: t`Set short Take-Profit @ ${p.formattedPrice}`,
           click: () => p.onAction("takeProfit", direction, p.clickPrice),
         });
       }
       items.push({
         position: "top",
-        text: t`Set Short Stop Market @ ${p.formattedPrice}`,
+        text: t`Set short Stop Market @ ${p.formattedPrice}`,
         click: () => p.onAction("stopMarket", direction, p.clickPrice),
       });
     }

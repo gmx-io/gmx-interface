@@ -106,7 +106,7 @@ export function useCollateralWarnings() {
     if (showHasExistingPositionWithDifferentCollateral) {
       if (isMarket) {
         messages.push(
-          <AlertInfoCard key="showHasExistingPositionWithDifferentCollateral_1">
+          <AlertInfoCard key="showHasExistingPositionWithDifferentCollateral_1" type="warning" hideClose>
             <Trans>
               Existing position uses {collateralWithPosition.symbol} collateral. This action won't affect it.{" "}
               <ColorfulButtonLink
@@ -117,12 +117,13 @@ export function useCollateralWarnings() {
               >
                 Switch to {collateralWithPosition.symbol} collateral
               </ColorfulButtonLink>
+              .
             </Trans>
           </AlertInfoCard>
         );
       } else {
         messages.push(
-          <AlertInfoCard key="showHasExistingPositionWithDifferentCollateral_2">
+          <AlertInfoCard key="showHasExistingPositionWithDifferentCollateral_2" type="warning" hideClose>
             <Trans>
               Existing position uses {collateralWithPosition.symbol} collateral. This order won't apply to it.{" "}
               <ColorfulButtonLink
@@ -133,6 +134,7 @@ export function useCollateralWarnings() {
               >
                 Switch to {collateralWithPosition.symbol} collateral
               </ColorfulButtonLink>
+              .
             </Trans>
           </AlertInfoCard>
         );
@@ -144,7 +146,7 @@ export function useCollateralWarnings() {
       const symbol = collateralWithOrder.symbol;
 
       messages.push(
-        <AlertInfoCard key="showHasExistingOrderWithDifferentCollateral">
+        <AlertInfoCard key="showHasExistingOrderWithDifferentCollateral" type="warning" hideClose>
           <Trans>
             Existing limit order uses {symbol} collateral.{" "}
             <ColorfulButtonLink
@@ -155,6 +157,7 @@ export function useCollateralWarnings() {
             >
               Switch to {symbol} collateral
             </ColorfulButtonLink>
+            .
           </Trans>
         </AlertInfoCard>
       );

@@ -256,7 +256,7 @@ const useTradeboxPoolWarnings = () => {
         <Trans>
           Existing position in {getMarketPoolName(marketWithPosition)} pool.
           <ColorfulButtonLink
-            color="yellow"
+            color="blue"
             onClick={() => {
               setMarketAddress(marketWithPosition.marketTokenAddress);
               setCollateralAddress(marketsOptions.collateralWithPosition?.address);
@@ -264,6 +264,7 @@ const useTradeboxPoolWarnings = () => {
           >
             Switch to {getMarketPoolName(marketWithPosition)} pool
           </ColorfulButtonLink>
+          .
         </Trans>
       </AlertInfoCard>
     );
@@ -294,7 +295,7 @@ const useTradeboxPoolWarnings = () => {
           Insufficient liquidity in {marketInfo ? getMarketPoolName(marketInfo) : "..."} pool. Select a different pool.
         </Trans>
         {hasEnoughLiquidity(minOpenFeesMarket) && (
-          <ColorfulButtonLink color="yellow" onClick={() => setMarketAddress(minOpenFeesMarket!.marketTokenAddress)}>
+          <ColorfulButtonLink color="blue" onClick={() => setMarketAddress(minOpenFeesMarket!.marketTokenAddress)}>
             <Trans>Switch to {getMarketPoolName(minOpenFeesMarket)} pool</Trans>
           </ColorfulButtonLink>
         )}
@@ -310,7 +311,7 @@ const useTradeboxPoolWarnings = () => {
           creates a new position.
         </Trans>
         <ColorfulButtonLink
-          color="yellow"
+          color="blue"
           onClick={() => setMarketAddress(marketsOptions.minOpenFeesMarket?.marketAddress)}
         >
           <Trans>Switch to {getMarketPoolName(minOpenFeesMarket)} pool</Trans>
@@ -327,7 +328,7 @@ const useTradeboxPoolWarnings = () => {
         <Trans>
           Existing limit order in {getMarketPoolName(marketWithOrder)} pool.
           <ColorfulButtonLink
-            color="yellow"
+            color="blue"
             onClick={() => {
               setMarketAddress(marketWithOrder.marketTokenAddress);
               setCollateralAddress(address);
@@ -335,6 +336,7 @@ const useTradeboxPoolWarnings = () => {
           >
             Switch to {getMarketPoolName(marketWithOrder)} pool
           </ColorfulButtonLink>
+          .
         </Trans>
       </AlertInfoCard>
     );

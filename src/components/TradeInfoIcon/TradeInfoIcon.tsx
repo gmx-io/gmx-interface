@@ -43,7 +43,7 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
         <li className={LI_CLASS_NAME}>
           <Trans>
             {typeString} Long Market: {getTradeTypeLabel(TradeMode.Market, tradePlace)} a long position at the current
-            price
+            price.
           </Trans>
         </li>
         {isTradeBox ? (
@@ -84,7 +84,7 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
         <li className={LI_CLASS_NAME}>
           <Trans>
             {typeString} Short Market: {getTradeTypeLabel(TradeMode.Market, tradePlace)} a short position at the current
-            price
+            price.
           </Trans>
         </li>
         {isTradeBox ? (
