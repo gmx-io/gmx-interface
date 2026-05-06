@@ -84,6 +84,7 @@ const CONTRACTS_CHAIN_CONFIGS = {
     maxPriorityFeePerGas: 1500000000n, // 1.5 gwei
     excessiveExecutionFee: 10, // 10 USD
     minExecutionFee: undefined,
+    residualGasUsd: undefined,
     gasPriceBuffer: 2000n, // 20%
     isDisabled: false,
   },
@@ -103,6 +104,7 @@ const CONTRACTS_CHAIN_CONFIGS = {
     maxPriorityFeePerGas: 1500000000n, // 1.5 gwei
     excessiveExecutionFee: 10, // 10 USD
     minExecutionFee: undefined,
+    residualGasUsd: undefined,
     gasPriceBuffer: undefined,
     isDisabled: false,
   },
@@ -122,6 +124,7 @@ const CONTRACTS_CHAIN_CONFIGS = {
     maxPriorityFeePerGas: 1500000000n,
     excessiveExecutionFee: 10, // 10 USD
     minExecutionFee: undefined,
+    residualGasUsd: undefined,
     gasPriceBuffer: undefined,
     isDisabled: false,
   },
@@ -141,6 +144,7 @@ const CONTRACTS_CHAIN_CONFIGS = {
     maxPriorityFeePerGas: 1500000000n,
     excessiveExecutionFee: 10, // 10 USD
     minExecutionFee: undefined,
+    residualGasUsd: undefined,
     gasPriceBuffer: undefined,
     isDisabled: false,
   },
@@ -164,6 +168,7 @@ const CONTRACTS_CHAIN_CONFIGS = {
      * if set, execution fee value should not be less than this in USD equivalent
      */
     minExecutionFee: 1000000000000000000000000000n, // 1e27 $0.001
+    residualGasUsd: undefined,
     gasPriceBuffer: undefined,
     isDisabled: false,
   },
@@ -183,6 +188,12 @@ const CONTRACTS_CHAIN_CONFIGS = {
     maxPriorityFeePerGas: 500000n, // 0.0005 gwei
     excessiveExecutionFee: 10, // 10 USD
     minExecutionFee: undefined,
+    /**
+     * MegaETH execution fees are sub-cent (~$0.003 per tx with current gas params), so the global
+     * $20/$40 default would lock up balance worth hundreds of future transactions. Scale down to
+     * $1/$2 to preserve the "buffer for many future operations" semantic.
+     */
+    residualGasUsd: { min: 1, max: 2 },
     gasPriceBuffer: 2000n, // 20%
     isDisabled: false,
   },
@@ -388,6 +399,10 @@ export function getMaxPriorityFeePerGas(chainId: ContractsChainId) {
 
 export function getMinExecutionFeeUsd(chainId: ContractsChainId) {
   return CONTRACTS_CHAIN_CONFIGS[chainId]?.minExecutionFee;
+}
+
+export function getResidualGasUsdConfig(chainId: ContractsChainId) {
+  return CONTRACTS_CHAIN_CONFIGS[chainId]?.residualGasUsd;
 }
 
 export function getGasPriceBuffer(chainId: ContractsChainId | SourceChainId) {

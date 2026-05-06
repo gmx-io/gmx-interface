@@ -4,12 +4,8 @@ import { TokenData, convertToTokenAmount } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { absDiffBps, formatAmountFree, formatBalanceAmount } from "lib/numbers";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
-import { SourceChainId } from "sdk/configs/chains";
-import {
-  DEFAULT_MAX_RESIDUAL_GAS_USD,
-  DEFAULT_MIN_RESIDUAL_GAS_USD,
-  RESIDUAL_GAS_AMOUNT_MULTIPLIER,
-} from "sdk/configs/fees";
+import { ContractsChainId, SourceChainId } from "sdk/configs/chains";
+import { getResidualGasUsd, RESIDUAL_GAS_AMOUNT_MULTIPLIER } from "sdk/configs/fees";
 import { bigMath } from "sdk/utils/bigmath";
 
 import { getLowGasPaymentTokenBalanceWarning } from "components/Errors/LowGasPaymentTokenBalanceWarning";
@@ -23,6 +19,7 @@ export function applyValidMinimalBuffer(value: bigint): bigint {
 }
 
 export function getMaxAvailableTokenAmount({
+  chainId,
   fromTokenAddress,
   fromTokenBalance,
   gasPaymentToken,
@@ -31,6 +28,7 @@ export function getMaxAvailableTokenAmount({
   ignoreGasPaymentToken = false,
   useMinimalBuffer = false,
 }: {
+  chainId: ContractsChainId;
   fromTokenAddress: string | undefined;
   fromTokenBalance: bigint | undefined;
   gasPaymentToken: TokenData | undefined;
@@ -64,14 +62,16 @@ export function getMaxAvailableTokenAmount({
   }
 
   if (!useMinimalBuffer) {
+    const { min: minResidualUsd, max: maxResidualUsd } = getResidualGasUsd(chainId);
+
     const minResidualAmount = convertToTokenAmount(
-      DEFAULT_MIN_RESIDUAL_GAS_USD,
+      minResidualUsd,
       gasPaymentToken.decimals,
       gasPaymentToken.prices.minPrice
     )!;
 
     const maxResidualAmount = convertToTokenAmount(
-      DEFAULT_MAX_RESIDUAL_GAS_USD,
+      maxResidualUsd,
       gasPaymentToken.decimals,
       gasPaymentToken.prices.maxPrice
     )!;
@@ -149,6 +149,7 @@ export function useMaxAvailableAmount({
   const isMetamaskMobile = useIsMetamaskMobile();
 
   const { maxAvailableAmount, bufferType } = getMaxAvailableTokenAmount({
+    chainId,
     fromTokenAddress: fromToken?.address,
     fromTokenBalance,
     gasPaymentToken,
