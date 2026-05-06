@@ -147,23 +147,28 @@ export function GmList({
 
   const rows =
     currentData.length > 0 &&
-    currentData.map((token) => (
-      <GmListItem
-        key={token.address}
-        token={token}
-        marketsTokensApyData={marketsTokensApyData}
-        glvTokensIncentiveAprData={undefined}
-        marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
-        marketsTokensLidoAprData={marketsTokensLidoAprData}
-        glvTokensApyData={undefined}
-        apyLoading={apyLoading}
-        performance={performance}
-        performanceLoading={performanceLoading}
-        performanceSnapshots={performanceSnapshots}
-        isFavorite={favoriteTokens.includes(token.address)}
-        onFavoriteClick={toggleFavoriteToken}
-      />
-    ));
+    currentData.map((token) => {
+      const market = marketsInfo?.[token.address];
+      const indexTokenAddr = market?.indexTokenAddress?.toLowerCase() ?? "";
+      return (
+        <GmListItem
+          key={token.address}
+          token={token}
+          marketsTokensApyData={marketsTokensApyData}
+          glvTokensIncentiveAprData={undefined}
+          marketsTokensIncentiveAprData={marketsTokensIncentiveAprData}
+          marketsTokensLidoAprData={marketsTokensLidoAprData}
+          glvTokensApyData={undefined}
+          apyLoading={apyLoading}
+          performance={performance}
+          performanceLoading={performanceLoading}
+          performanceSnapshots={performanceSnapshots}
+          isFavorite={favoriteTokens.includes(token.address)}
+          onFavoriteClick={toggleFavoriteToken}
+          listingDate={indexTokenAddr ? listingDateByIndexToken[indexTokenAddr] : undefined}
+        />
+      );
+    });
 
   const isMobile = usePoolsIsMobilePage();
 

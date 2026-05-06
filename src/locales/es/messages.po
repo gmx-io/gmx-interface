@@ -8031,6 +8031,7 @@ msgstr "Principales direcciones"
 msgid "Amount exceeds the withdrawal limit. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "El importe excede el límite de retirada. Pruebe con un importe inferior a <0>{upperLimitFormatted}</0>."
 
+#: src/components/FavoriteTabs/RecentlyListedBadge.tsx
 #: src/components/SideNav/SupportChatNavItem.tsx
 msgid "New"
 msgstr "Nuevo"

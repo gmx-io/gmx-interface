@@ -37,7 +37,9 @@ import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import Button from "components/Button/Button";
+import { isMarketRecentlyListed } from "components/ChartTokenSelector/marketFilters";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
+import { RecentlyListedBadge } from "components/FavoriteTabs/RecentlyListedBadge";
 import { TableTdActionable, TableTrActionable } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
@@ -64,6 +66,7 @@ export function GmListItem({
   performance,
   performanceLoading,
   performanceSnapshots,
+  listingDate,
 }: {
   token: ProgressiveTokenData;
   marketsTokensApyData: MarketTokensAPRData | undefined;
@@ -77,6 +80,7 @@ export function GmListItem({
   performanceLoading: boolean;
   performance: PerformanceData | undefined;
   performanceSnapshots: PerformanceSnapshotsData | undefined;
+  listingDate?: number;
 }) {
   const chainId = useSelector(selectChainId);
   const srcChainId = useSelector(selectSrcChainId);
@@ -156,12 +160,17 @@ export function GmListItem({
               />
             </div>
             <div className="flex flex-col">
-              <div className="text-body-medium flex">
+              <div className="text-body-medium flex items-center">
                 <span className="font-medium">
                   {isGlv
                     ? getGlvDisplayName(marketOrGlv)
                     : getMarketIndexName({ indexToken, isSpotOnly: marketOrGlv.isSpotOnly })}
                 </span>
+                {!isGlv && isMarketRecentlyListed(listingDate, Date.now()) && (
+                  <span className="ml-6">
+                    <RecentlyListedBadge />
+                  </span>
+                )}
 
                 <div className="inline-block">
                   <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
@@ -274,6 +283,11 @@ export function GmListItem({
                   ? getGlvDisplayName(marketOrGlv)
                   : getMarketIndexName({ indexToken, isSpotOnly: Boolean(marketOrGlv?.isSpotOnly) })}
               </span>
+              {!isGlv && isMarketRecentlyListed(listingDate, Date.now()) && (
+                <span className="ml-6">
+                  <RecentlyListedBadge />
+                </span>
+              )}
 
               <div className="inline-block">
                 <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />

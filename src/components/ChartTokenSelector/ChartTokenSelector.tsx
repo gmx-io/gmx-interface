@@ -48,6 +48,7 @@ import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
+import { RecentlyListedBadge } from "components/FavoriteTabs/RecentlyListedBadge";
 import { SubCategoryTabs } from "components/FavoriteTabs/SubCategoryTabs";
 import SearchInput from "components/SearchInput/SearchInput";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
@@ -58,7 +59,12 @@ import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import LongIcon from "img/long.svg?react";
 import ShortIcon from "img/short.svg?react";
 
-import { applySubCategoryFilter, applyTopLevelFilter, getRecentlyListedTokenAddresses } from "./marketFilters";
+import {
+  applySubCategoryFilter,
+  applyTopLevelFilter,
+  getRecentlyListedTokenAddresses,
+  isMarketRecentlyListed,
+} from "./marketFilters";
 import { SelectorBase, SelectorBaseMobileHeaderContent, useSelectorClose } from "../SelectorBase/SelectorBase";
 
 type Props = {
@@ -521,6 +527,7 @@ function MarketsList() {
                   rowHorizontalPadding={rowHorizontalPadding}
                   tdClassName={tdClassName}
                   onMarketSelect={handleMarketSelect}
+                  listingDate={listingDateByIndexToken[token.address.toLowerCase()]}
                 />
               )
             )}
@@ -672,6 +679,7 @@ function MarketListItem({
   rowHorizontalPadding,
   tdClassName,
   onMarketSelect,
+  listingDate,
 }: {
   token: Token;
   tokenData: TokenData | undefined;
@@ -688,6 +696,7 @@ function MarketListItem({
   rowHorizontalPadding: string;
   tdClassName: string;
   onMarketSelect: (address: string, preferredTradeType?: PreferredTradeTypePickStrategy | undefined) => void;
+  listingDate?: number;
 }) {
   const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
 
@@ -794,6 +803,7 @@ function MarketListItem({
             <span className="rounded-full bg-slate-700 px-6 py-[1.5px] text-12 font-medium leading-[1.25] text-typography-secondary numbers">
               {maxLeverage ? `${maxLeverage}x` : "-"}
             </span>
+            {isMarketRecentlyListed(listingDate, Date.now()) && <RecentlyListedBadge />}
           </span>
         </div>
       </td>
