@@ -7026,7 +7026,7 @@ msgstr "Abbrechen"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Live"
-msgstr ""
+msgstr "Live"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group"

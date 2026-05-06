@@ -7026,7 +7026,7 @@ msgstr "キャンセル"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Live"
-msgstr ""
+msgstr "ライブ"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group"

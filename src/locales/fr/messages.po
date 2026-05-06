@@ -7026,7 +7026,7 @@ msgstr "Annuler"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Live"
-msgstr ""
+msgstr "En direct"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group"
