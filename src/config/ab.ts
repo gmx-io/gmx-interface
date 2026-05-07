@@ -15,7 +15,7 @@ const abFlagsConfig = {
   testMultichain: 1,
   testSponsoredCall: 1,
   testExampleAb: 0,
-  apiSdk2: 1,
+  apiSdk2: 0,
   testRewardsSuspended: 0,
   testStakingPowerLoyalty: 0,
 };
