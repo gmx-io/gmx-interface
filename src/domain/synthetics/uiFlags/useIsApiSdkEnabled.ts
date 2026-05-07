@@ -34,7 +34,7 @@ function isInRolloutBucket(percent: number): boolean {
 export function useIsApiSdkEnabled(uiFlagName: ApiUiFlagName): boolean {
   const { uiFlags } = useUiFlagsRequest();
 
-  if (!getIsFlagEnabled("apiSdk2")) return false;
+  if (getIsFlagEnabled("apiSdk2")) return true;
 
   if (uiFlags?.[uiFlagName] === true) return true;
 

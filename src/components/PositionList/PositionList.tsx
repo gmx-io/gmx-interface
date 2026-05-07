@@ -39,6 +39,7 @@ export function PositionList(p: Props) {
   const { onClosePositionClick, onOrdersClick, onSelectPositionClick, onCancelOrder, hideActions } = p;
   const positionsInfoData = usePositionsInfoData();
   const chainId = useSelector(selectChainId);
+  const showPnlAfterFees = useSelector(selectShowPnlAfterFees);
   const [isPositionShareModalOpen, setIsPositionShareModalOpen] = useState(false);
   const [positionToShareKey, setPositionToShareKey] = useState<string>();
   const positionToShare = getByKey(positionsInfoData, positionToShareKey);
@@ -46,8 +47,8 @@ export function PositionList(p: Props) {
   const { orderBy, direction, getSorterProps } = useSorterHandlers<PositionSortField>("position-list");
 
   const positions = useMemo(
-    () => sortPositionsByField(defaultPositions, orderBy, direction),
-    [defaultPositions, orderBy, direction]
+    () => sortPositionsByField(defaultPositions, orderBy, direction, showPnlAfterFees),
+    [defaultPositions, orderBy, direction, showPnlAfterFees]
   );
 
   const handleSharePositionClick = useCallback((positionKey: string) => {
@@ -172,7 +173,7 @@ export function PositionList(p: Props) {
       {positionToShare && (
         <PositionShare
           key={positionToShare.key}
-          pnlAfterFeesUsd={positionToShare.pnlAfterFees}
+          pnlAfterFeesUsd={showPnlAfterFees ? positionToShare.pnlAfterAllFees : positionToShare.pnl}
           setIsPositionShareModalOpen={setIsPositionShareModalOpen}
           isPositionShareModalOpen={isPositionShareModalOpen}
           entryPrice={positionToShare.entryPrice}
@@ -182,7 +183,9 @@ export function PositionList(p: Props) {
           leverageWithPnl={positionToShare.leverageWithPnl}
           markPrice={positionToShare.markPrice}
           account={positionToShare.account}
-          pnlAfterFeesPercentage={positionToShare?.pnlAfterFeesPercentage}
+          pnlAfterFeesPercentage={
+            showPnlAfterFees ? positionToShare.pnlAfterAllFeesPercentage : positionToShare.pnlPercentage
+          }
           chainId={chainId}
           shareSource="positions-list"
         />

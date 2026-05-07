@@ -1918,11 +1918,6 @@ msgstr "Symbiosis"
 msgid "How it works"
 msgstr ""
 
-#: src/components/PositionItem/PositionItem.tsx
-#: src/components/PositionItem/PositionItem.tsx
-msgid "PnL after fees"
-msgstr "PnL nach Gebühren"
-
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "{orderTypeLabel} {positionText}, -{0}"
 msgstr "{orderTypeLabel} {positionText}, -{0}"
@@ -3070,7 +3065,7 @@ msgstr "Exposition gegenüber dem PnL der Marktteilnehmer"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Realized PnL before fees, discounts and price impact."
-msgstr ""
+msgstr "Realisierter PnL vor Gebühren, Rabatten und Preiseinfluss."
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
@@ -5203,6 +5198,10 @@ msgstr "Unzureichende Liquidität im {0} Pool. Wählen Sie einen anderen Pool."
 msgid "GLV"
 msgstr "GLV"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "PnL after all fees"
+msgstr "PnL nach allen Gebühren"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Additional reserve required:"
 msgstr "Zusätzliche Reserve erforderlich:"
@@ -6097,6 +6096,10 @@ msgstr "GLP und GMX autocompounding Vaults"
 msgid "Position size exceeds pool value. Delta: {usdDeltaText}, pool: {poolUsdText}"
 msgstr "Positionsgröße übersteigt den Poolwert. Delta: {usdDeltaText}, Pool: {poolUsdText}"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Display net value and PnL after all fees"
+msgstr "Nettowert und PnL nach allen Gebühren anzeigen"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation fee"
@@ -6157,6 +6160,10 @@ msgstr ""
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Access key"
 msgstr "Zugriffsschlüssel"
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Position value after PnL and all fees"
+msgstr "Positionswert nach PnL und allen Gebühren"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Real-time rants about GMX trades"
@@ -7122,10 +7129,6 @@ msgstr ""
 msgid "<0>To </0><1>{0}</1>"
 msgstr ""
 
-#: src/components/SettingsModal/DisplaySettings.tsx
-msgid "Display PnL after fees"
-msgstr "PnL nach Gebühren anzeigen"
-
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Share position"
 msgstr "Position teilen"
@@ -7712,6 +7715,7 @@ msgstr "der Eröffnungsgebühr"
 msgid "Only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP, Multiplier Points and voting power to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 msgstr "Verwenden Sie dies nur für vollständige Kontoübertragungen.<0/>Hiermit werden alle Ihre GMX, esGMX, GLP, Multiplikatorpunkte und Stimmrechte auf Ihr neues Konto übertragen.<1/>Übertragungen werden nur unterstützt, wenn das empfangende Konto zuvor keine GMX- oder GLP-Token gestakt hat.<2/>Übertragungen sind einseitig, Sie können gestakte Token nicht an das sendende Konto zurückübertragen."
 
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8068,6 +8072,7 @@ msgstr "Abgeschlossen"
 msgid "GMX announcements"
 msgstr "GMX announcements"
 
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -9384,6 +9389,10 @@ msgstr "Erhöhen"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Swap price impact"
 msgstr "Tausch-Preiseinfluss"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Include all fees, including close fees, in net value and PnL display."
+msgstr "Alle Gebühren, einschließlich Schließgebühren, in der Nettowert- und PnL-Anzeige berücksichtigen."
 
 #: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
@@ -10908,7 +10917,7 @@ msgstr "OK"
 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "Net total of action-level fees, and price impact. Hover the value to see the breakdown."
-msgstr ""
+msgstr "Nettosumme aus Gebühren und Preiseinfluss auf Aktionsebene. Bewegen Sie den Mauszeiger über den Wert, um die Aufschlüsselung anzuzeigen."
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
