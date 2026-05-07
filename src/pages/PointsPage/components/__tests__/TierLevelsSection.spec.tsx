@@ -83,13 +83,15 @@ describe("TierLevelsSection BoostsTable", () => {
     // Boosts table is the only one rendered inside the boosts tab.
     const allText = container.textContent || "";
 
-    // BalancingTrades description: "Place balancing trades ($1,000,000+) on under-utilized sides"
-    const balancingMatches = allText.match(/Place balancing trades \(\$1,000,000\+\) on under-utilized sides/g);
+    const balancingMatches = allText.match(
+      /Place balancing trades \(\$1,000,000\+\) on underutilized sides to earn an additional multiplier on those trades\./g
+    );
     expect(balancingMatches).not.toBeNull();
     expect(balancingMatches!.length).toBe(1);
 
-    // LifetimeTrading description: "Achieve $200,000,000+ lifetime trading volume"
-    const lifetimeMatches = allText.match(/Achieve \$200,000,000\+ lifetime trading volume/g);
+    const lifetimeMatches = allText.match(
+      /Reach \$200,000,000\+ in lifetime trading volume to unlock a permanent 1× multiplier\./g
+    );
     expect(lifetimeMatches).not.toBeNull();
     expect(lifetimeMatches!.length).toBe(1);
   });
@@ -107,7 +109,9 @@ describe("TierLevelsSection BoostsTable", () => {
 
     const allText = container.textContent || "";
 
-    const featuredDescMatches = allText.match(/Trade featured or new markets to earn this boost\./g);
+    const featuredDescMatches = allText.match(
+      /Trade featured markets to activate this boost and earn a higher multiplier for those trades\./g
+    );
     expect(featuredDescMatches).not.toBeNull();
     expect(featuredDescMatches!.length).toBe(1);
 

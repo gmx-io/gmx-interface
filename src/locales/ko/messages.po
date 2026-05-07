@@ -922,6 +922,10 @@ msgstr "이 마켓의 순이자율 기록이 없습니다."
 msgid "The website is a community-deployed instance of the open source <0>GMX front end</0>, hosted on the distributed, peer-to-peer <1>IPFS network</1>"
 msgstr "이 웹사이트는 오픈소스 <0>GMX 프론트엔드</0>의 커뮤니티 배포 인스턴스로, 분산형 P2P <1>IPFS 네트워크</1>에서 호스팅됩니다"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Trade {0} more to unlock {1} status <0>+{2}</0>"
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Total PnL (realized + unrealized) after fees and price impact"
 msgstr "수수료 및 가격 영향 차감 후 총 PnL(실현 + 미실현)"
@@ -1888,6 +1892,10 @@ msgstr "100개 이상의 암호화폐 토큰"
 msgid "Optimal usage factor short"
 msgstr "최적 사용 비율 숏"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Trade {0} more to keep {1} status <0>+{2}</0>"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "{0} per {1}"
 msgstr "{0}/{1}"
@@ -2218,10 +2226,6 @@ msgstr "최대 양수 팩터"
 #: src/pages/RpcDebug/parts.tsx
 msgid "{failedTrackersCount} / {totalActiveTrackersCount} active trackers failed ({totalTrackersCount} total)"
 msgstr "{failedTrackersCount} / {totalActiveTrackersCount} 활성 트래커 실패 (총 {totalTrackersCount}개)"
-
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Trade {0} to unlock {1} status <0>+{2}</0>"
-msgstr "{0}을(를) 거래하여 {1} 등급 <0>+{2}</0>를 잠금 해제하세요"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Bridge out failed"
@@ -3257,6 +3261,11 @@ msgstr "영향 풀 금액"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "The GMX token serves as the governance token of the GMX protocol. 27% of platform revenue accumulates in the Treasury for GMX buybacks. Stakers earn rewards based on staking power (duration × amount), distributed when GMX reaches $90."
+msgstr ""
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Max tier reached ✓"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -5481,6 +5490,10 @@ msgstr "판매 수수료"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Invalid oracle price"
 msgstr "유효하지 않은 Oracle 가격"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "get {0} Status <0>+{1}</0>"
+msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit validation error: {0}"
@@ -10818,6 +10831,10 @@ msgstr "현재 영향: {0}. 더 나은 주문 체결을 위해 -0.30% 이상을 
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Claim funding fees"
 msgstr "펀딩 수수료 수령"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "to save {0} Status <0>+{1}</0>"
+msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Token permit testing"

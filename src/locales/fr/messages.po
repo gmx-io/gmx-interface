@@ -922,6 +922,10 @@ msgstr "Aucun historique de taux net disponible pour ce marché."
 msgid "The website is a community-deployed instance of the open source <0>GMX front end</0>, hosted on the distributed, peer-to-peer <1>IPFS network</1>"
 msgstr "Le site est une instance déployée par la communauté du <0>front end GMX</0> open source, hébergée sur le réseau distribué pair-à-pair <1>IPFS network</1>"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Trade {0} more to unlock {1} status <0>+{2}</0>"
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Total PnL (realized + unrealized) after fees and price impact"
 msgstr "PnL total (réalisé + non réalisé) après frais et impact sur le prix"
@@ -1888,6 +1892,10 @@ msgstr "Plus de 100 tokens crypto"
 msgid "Optimal usage factor short"
 msgstr "Facteur d'utilisation optimal short"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Trade {0} more to keep {1} status <0>+{2}</0>"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "{0} per {1}"
 msgstr "{0} par {1}"
@@ -2218,10 +2226,6 @@ msgstr "Facteur positif maximum"
 #: src/pages/RpcDebug/parts.tsx
 msgid "{failedTrackersCount} / {totalActiveTrackersCount} active trackers failed ({totalTrackersCount} total)"
 msgstr "{failedTrackersCount} / {totalActiveTrackersCount} trackers actifs en échec ({totalTrackersCount} au total)"
-
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Trade {0} to unlock {1} status <0>+{2}</0>"
-msgstr "Tradez {0} pour débloquer le statut {1} <0>+{2}</0>"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Bridge out failed"
@@ -3257,6 +3261,11 @@ msgstr "Montant du pool d'impact"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "The GMX token serves as the governance token of the GMX protocol. 27% of platform revenue accumulates in the Treasury for GMX buybacks. Stakers earn rewards based on staking power (duration × amount), distributed when GMX reaches $90."
+msgstr ""
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Max tier reached ✓"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -5481,6 +5490,10 @@ msgstr "Frais de vente"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Invalid oracle price"
 msgstr "Prix Oracle invalide"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "get {0} Status <0>+{1}</0>"
+msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit validation error: {0}"
@@ -10818,6 +10831,10 @@ msgstr "Impact actuel : {0}. Utilisez -0,30 % ou plus pour une meilleure exécut
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Claim funding fees"
 msgstr "Récupérer les frais de financement"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "to save {0} Status <0>+{1}</0>"
+msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Token permit testing"

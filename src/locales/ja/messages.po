@@ -922,6 +922,10 @@ msgstr "このマーケットのネットレート履歴はありません。"
 msgid "The website is a community-deployed instance of the open source <0>GMX front end</0>, hosted on the distributed, peer-to-peer <1>IPFS network</1>"
 msgstr "このウェブサイトは、分散型ピアツーピア<1>IPFSネットワーク</1>上でホストされた、オープンソースの<0>GMXフロントエンド</0>のコミュニティデプロイ版です"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Trade {0} more to unlock {1} status <0>+{2}</0>"
+msgstr ""
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Total PnL (realized + unrealized) after fees and price impact"
 msgstr "手数料および価格への影響を差し引いた合計PnL（実現 + 未実現）"
@@ -1888,6 +1892,10 @@ msgstr "100種類以上の暗号資産"
 msgid "Optimal usage factor short"
 msgstr "最適利用率ファクター（ショート）"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Trade {0} more to keep {1} status <0>+{2}</0>"
+msgstr ""
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "{0} per {1}"
 msgstr "{0} / {1}"
@@ -2218,10 +2226,6 @@ msgstr "最大プラスファクター"
 #: src/pages/RpcDebug/parts.tsx
 msgid "{failedTrackersCount} / {totalActiveTrackersCount} active trackers failed ({totalTrackersCount} total)"
 msgstr "{failedTrackersCount} / {totalActiveTrackersCount} 件のアクティブトラッカーが失敗しました（合計 {totalTrackersCount} 件）"
-
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Trade {0} to unlock {1} status <0>+{2}</0>"
-msgstr "{0}を取引して{1}ステータスをアンロック <0>+{2}</0>"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Bridge out failed"
@@ -3257,6 +3261,11 @@ msgstr "インパクトプール額"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "The GMX token serves as the governance token of the GMX protocol. 27% of platform revenue accumulates in the Treasury for GMX buybacks. Stakers earn rewards based on staking power (duration × amount), distributed when GMX reaches $90."
+msgstr ""
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Max tier reached ✓"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -5481,6 +5490,10 @@ msgstr "売却手数料"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Invalid oracle price"
 msgstr "無効な Oracle 価格"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "get {0} Status <0>+{1}</0>"
+msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit validation error: {0}"
@@ -10818,6 +10831,10 @@ msgstr "現在のインパクト: {0}。より良い注文執行のため、-0.3
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Claim funding fees"
 msgstr "ファンディング手数料を受け取る"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "to save {0} Status <0>+{1}</0>"
+msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Token permit testing"

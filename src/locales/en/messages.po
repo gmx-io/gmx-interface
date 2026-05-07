@@ -922,6 +922,10 @@ msgstr "No net rate history available for this market."
 msgid "The website is a community-deployed instance of the open source <0>GMX front end</0>, hosted on the distributed, peer-to-peer <1>IPFS network</1>"
 msgstr "The website is a community-deployed instance of the open source <0>GMX front end</0>, hosted on the distributed, peer-to-peer <1>IPFS network</1>"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Trade {0} more to unlock {1} status <0>+{2}</0>"
+msgstr "Trade {0} more to unlock {1} status <0>+{2}</0>"
+
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Total PnL (realized + unrealized) after fees and price impact"
 msgstr "Total PnL (realized + unrealized) after fees and price impact"
@@ -1888,6 +1892,10 @@ msgstr "100+ crypto tokens"
 msgid "Optimal usage factor short"
 msgstr "Optimal usage factor short"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Trade {0} more to keep {1} status <0>+{2}</0>"
+msgstr "Trade {0} more to keep {1} status <0>+{2}</0>"
+
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "{0} per {1}"
 msgstr "{0} per {1}"
@@ -2218,10 +2226,6 @@ msgstr "Max positive factor"
 #: src/pages/RpcDebug/parts.tsx
 msgid "{failedTrackersCount} / {totalActiveTrackersCount} active trackers failed ({totalTrackersCount} total)"
 msgstr "{failedTrackersCount} / {totalActiveTrackersCount} active trackers failed ({totalTrackersCount} total)"
-
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Trade {0} to unlock {1} status <0>+{2}</0>"
-msgstr "Trade {0} to unlock {1} status <0>+{2}</0>"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Bridge out failed"
@@ -3258,6 +3262,11 @@ msgstr "Impact pool amount"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "The GMX token serves as the governance token of the GMX protocol. 27% of platform revenue accumulates in the Treasury for GMX buybacks. Stakers earn rewards based on staking power (duration × amount), distributed when GMX reaches $90."
 msgstr "The GMX token serves as the governance token of the GMX protocol. 27% of platform revenue accumulates in the Treasury for GMX buybacks. Stakers earn rewards based on staking power (duration × amount), distributed when GMX reaches $90."
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Max tier reached ✓"
+msgstr "Max tier reached ✓"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "AI agent for GMX Blueberry Club"
@@ -5481,6 +5490,10 @@ msgstr "Sell fee"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Invalid oracle price"
 msgstr "Invalid oracle price"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "get {0} Status <0>+{1}</0>"
+msgstr "get {0} Status <0>+{1}</0>"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit validation error: {0}"
@@ -10818,6 +10831,10 @@ msgstr "Current impact: {0}. Use -0.30% or more for better order execution."
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Claim funding fees"
 msgstr "Claim funding fees"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "to save {0} Status <0>+{1}</0>"
+msgstr "to save {0} Status <0>+{1}</0>"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Token permit testing"
