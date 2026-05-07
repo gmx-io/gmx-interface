@@ -226,7 +226,7 @@ export function RecommendedAssets({
                     content={
                       <Trans>
                         Points are based on the time-weighted average value of your share of the GLV [USDM-USDM] vault
-                        over the epoch.
+                        over the epoch
                       </Trans>
                     }
                   />
@@ -404,7 +404,7 @@ function BaseRecommendedAssetItem({
           </div>
         </div>
         <div className="border-r-1/2 border-slate-600" />
-        <div className="flex flex-col gap-2">
+        <div className="flex min-h-32 flex-col justify-center gap-2">
           <span className="text-body-medium font-medium text-typography-primary">{metricValue}</span>
           <span className="text-body-small text-typography-secondary">{metricLabel}</span>
         </div>

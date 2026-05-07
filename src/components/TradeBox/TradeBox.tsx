@@ -1,7 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
-import { ChangeEvent, useCallback, useEffect, useMemo, useRef } from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useKey, useLatest, usePrevious } from "react-use";
 import { zeroAddress } from "viem";
 
@@ -219,6 +219,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const fromTokenAmount = fromToken ? parseValue(fromTokenInputValue || "0", fromToken.decimals) ?? 0n : 0n;
   const fromTokenPrice = fromToken?.prices.minPrice;
   const fromUsd = convertToUsd(fromTokenAmount, fromToken?.decimals, fromTokenPrice);
+  const toTokenDisplayAmount = toToken ? parseValue(toTokenInputValue || "0", toToken.decimals) ?? 0n : 0n;
+  const toUsd = convertToUsd(toTokenDisplayAmount, toToken?.decimals, toToken?.prices?.maxPrice);
 
   const markPrice = useSelector(selectTradeboxMarkPrice);
   const swapAmounts = useSelector(selectTradeboxSwapAmounts);
@@ -408,15 +410,12 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
       if (isSwap && swapAmounts) {
         if (focusedInput === "from") {
-          setToTokenInputValue(
-            swapAmounts.amountOut > 0 ? formatAmountFree(swapAmounts.amountOut, toToken.decimals) : "",
-            false
-          );
+          const newToValue = swapAmounts.amountOut > 0 ? formatAmountFree(swapAmounts.amountOut, toToken.decimals) : "";
+          setToTokenInputValue(newToValue, false);
         } else {
-          setFromTokenInputValue(
-            swapAmounts.amountIn > 0 ? formatAmountFree(swapAmounts.amountIn, fromToken.decimals) : "",
-            false
-          );
+          const newFromValue =
+            swapAmounts.amountIn > 0 ? formatAmountFree(swapAmounts.amountIn, fromToken.decimals) : "";
+          setFromTokenInputValue(newFromValue, false);
         }
       }
 
@@ -777,7 +776,9 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               <BuyInputSection
                 topLeftLabel={isTwap ? t`Receive (approximate)` : t`Receive`}
                 bottomLeftValue={
-                  !isTwap && swapAmounts?.usdOut !== undefined ? formatUsd(swapAmounts?.usdOut) : undefined
+                  !isTwap && swapAmounts?.usdOut !== undefined
+                    ? formatUsd(focusedInput === "from" ? swapAmounts.usdOut : toUsd)
+                    : undefined
                 }
                 bottomRightValue={
                   !isTwap && toToken && toToken.balance !== undefined && toToken.balance > 0n
@@ -1037,6 +1038,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const collateralWarnings = useCollateralWarnings();
 
+  const [twapRecommendationDismissed, setTwapRecommendationDismissed] = useState(false);
+
   return (
     <form className="flex flex-col gap-8" onSubmit={handleFormSubmit} ref={formRef}>
       <div className="flex flex-col gap-12 rounded-b-8 bg-slate-900 pb-16">
@@ -1075,8 +1078,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               {isSwap && isLimit && renderTriggerRatioInput()}
               {isTrigger && renderTriggerPriceInput()}
             </div>
-
-            {maxAutoCancelOrdersWarning}
 
             {isTrigger && (
               <SyntheticsInfoRow
@@ -1132,6 +1133,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           )}
 
           {!isTrigger && !isSwap && !isTwap && <TPSLGroup />}
+          {maxAutoCancelOrdersWarning}
 
           {priceImpactWarningState.shouldShowWarning && (
             <HighPriceImpactOrFeesWarningCard
@@ -1151,8 +1153,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             disabled={shouldShowDepositButton}
             isGmxAccount={isFromTokenGmxAccount}
           />
-          {twapRecommendation && (
-            <AlertInfoCard>
+          {twapRecommendation && !twapRecommendationDismissed && (
+            <AlertInfoCard onClose={() => setTwapRecommendationDismissed(true)}>
               <span>
                 <span
                   className="cursor-pointer font-medium text-blue-300"

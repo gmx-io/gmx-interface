@@ -46,8 +46,8 @@ function Slides() {
             <p>
               Tried <span className="text-blue-100">@GMX_IO</span> for the first time.{" "}
             </p>
-            <p> Pretty impressive experience - no slippage, fast execution </p>
-            <p> Low size caps, but fun to do some degen gambling with </p>
+            <p> Pretty impressive experience - no slippage, fast execution</p>
+            <p> Low size caps, but fun to do some degen gambling with</p>
           </Trans>
         </div>
         <img src={andrewAttachment} alt="Andrew Attachment" className="radius-8 w-full object-cover" />

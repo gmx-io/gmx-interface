@@ -77,7 +77,7 @@ export function ReferralsTradersContent({ account }: ReferralsTradersContentProp
           <div className="grid grid-cols-2 gap-12 max-lg:grid-cols-1">
             <OverviewChartCard
               label={<Trans>Trading volume</Trans>}
-              tooltipContent={<Trans>Volume traded by this account with an active referral code.</Trans>}
+              tooltipContent={<Trans>Volume traded by this account with an active referral code</Trans>}
               value={formatUsd(traderStats?.summary.volumeUsd ?? 0n)}
               valueChange={
                 traderStats?.summary.volumeUsdDelta !== undefined
@@ -97,7 +97,7 @@ export function ReferralsTradersContent({ account }: ReferralsTradersContentProp
             </OverviewChartCard>
             <OverviewChartCard
               label={<Trans>Discounts</Trans>}
-              tooltipContent={<Trans>Discounts earned by this account as a trader.</Trans>}
+              tooltipContent={<Trans>Discounts earned by this account as a trader</Trans>}
               value={formatUsd(traderStats?.summary.discountsUsd ?? 0n)}
               valueChange={
                 traderStats?.summary.discountsUsdDelta !== undefined
@@ -120,7 +120,7 @@ export function ReferralsTradersContent({ account }: ReferralsTradersContentProp
           </div>
           <div className="text-body-small font-medium text-typography-secondary">
             <span className="text-slate-500">
-              <Trans>Last Updated:</Trans>
+              <Trans>Last updated:</Trans>
             </span>{" "}
             {lastUpdated}
           </div>

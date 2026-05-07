@@ -234,7 +234,7 @@ function ScaledReferralCard({
             <h3 className="text-32 font-medium leading-1 text-white">
               <Trans>
                 <span className="support-chat-new-badge">Save up to {traderDiscountPercentageLabel}</span> on every
-                <br /> trade on GMX.
+                <br /> trade on GMX
               </Trans>
             </h3>
             {hasReferredUsers && (

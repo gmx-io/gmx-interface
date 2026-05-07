@@ -12,6 +12,7 @@ import { useLocalizedList } from "lib/i18n";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 
+import { ColorfulButtonLink } from "components/ColorfulBanner/ColorfulBanner";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { InsufficientWntBanner } from "components/GmxAccountModal/InsufficientWntBanner";
 
@@ -31,7 +32,7 @@ export function InsufficientNativeTokenBalanceMessage({ chainId }: { chainId: Co
         <Link className="underline underline-offset-2" to={`/trade/swap?to=${nativeTokenSymbol}`}>
           Swap
         </Link>{" "}
-        or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge</ExternalLink> {nativeTokenSymbol}
+        or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge</ExternalLink> {nativeTokenSymbol}.
       </Trans>
     </div>
   );
@@ -53,7 +54,7 @@ export function InsufficientWalletGasTokenBalanceMessage({ chainId }: { chainId:
         >
           Swap
         </Link>{" "}
-        or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge</ExternalLink> {localizedList}
+        or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge</ExternalLink> {localizedList}.
       </Trans>
     </div>
   );
@@ -91,10 +92,10 @@ export function InsufficientGmxAccountGasTokenBalanceMessage({
   return (
     <div>
       <Trans>
-        Insufficient {tokensText} for gas in your GMX Account.{" "}
-        <button className="cursor-pointer underline underline-offset-2" type="button" onClick={handleDeposit}>
+        Insufficient {tokensText} for gas in your GMX Account{" "}
+        <ColorfulButtonLink color="blue" onClick={handleDeposit}>
           Deposit {tokensText}
-        </button>
+        </ColorfulButtonLink>
       </Trans>
     </div>
   );
@@ -126,7 +127,7 @@ export function InsufficientSourceChainNativeTokenBalanceMessage({
         >
           Swap
         </Link>{" "}
-        or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge</ExternalLink> {nativeTokenSymbol}
+        or <ExternalLink href={JUMPER_BRIDGE_URL}>bridge</ExternalLink> {nativeTokenSymbol}.
       </Trans>
     </div>
   );

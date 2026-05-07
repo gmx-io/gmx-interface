@@ -13,7 +13,7 @@ type SEOProps = {
 function SEO(props: SEOProps) {
   const { children, ...customMeta } = props;
   const meta = {
-    title: t`GMX | Decentralized perpetual exchange`,
+    title: t`GMX | decentralized perpetual exchange`,
     description: t`Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks`,
     image: "https://gmx.io/og.png",
     type: "exchange",

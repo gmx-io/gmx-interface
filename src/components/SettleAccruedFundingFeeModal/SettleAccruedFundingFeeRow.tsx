@@ -32,7 +32,7 @@ export const SettleAccruedFundingFeeRow = ({ position, isMarketDisabled, isSelec
       position="top-start"
       handle={labelContent}
       content={
-        <Trans>This market has been disabled. Please contact support to claim your remaining funding fees.</Trans>
+        <Trans>This market is disabled. Contact support to claim your remaining funding fees.</Trans>
       }
     />
   ) : (

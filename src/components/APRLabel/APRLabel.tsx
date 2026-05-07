@@ -140,7 +140,7 @@ export default function APRLabel({ chainId, label }: { chainId: ContractsChainId
   if (processedData?.isRewardsSuspended) {
     return (
       <TooltipWithPortal
-        handle={<Trans>Accumulating</Trans>}
+        handle={<Trans>Accumulating...</Trans>}
         content={
           <Trans>
             27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your
