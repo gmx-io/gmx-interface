@@ -25,6 +25,7 @@ export function getMaxAvailableTokenAmount({
   gasPaymentToken,
   gasPaymentTokenBalance,
   gasPaymentTokenAmount = 0n,
+  fallbackGasPaymentTokenAmount = 0n,
   ignoreGasPaymentToken = false,
   useMinimalBuffer = false,
 }: {
@@ -34,6 +35,7 @@ export function getMaxAvailableTokenAmount({
   gasPaymentToken: TokenData | undefined;
   gasPaymentTokenBalance: bigint | undefined;
   gasPaymentTokenAmount?: bigint;
+  fallbackGasPaymentTokenAmount?: bigint;
   ignoreGasPaymentToken?: boolean;
   useMinimalBuffer?: boolean;
 }): {
@@ -61,6 +63,9 @@ export function getMaxAvailableTokenAmount({
     };
   }
 
+  const effectiveGasPaymentTokenAmount =
+    gasPaymentTokenAmount > 0n ? gasPaymentTokenAmount : fallbackGasPaymentTokenAmount;
+
   if (!useMinimalBuffer) {
     const { min: minResidualUsd, max: maxResidualUsd } = getResidualGasUsd(chainId);
 
@@ -77,21 +82,21 @@ export function getMaxAvailableTokenAmount({
     )!;
 
     let safeBuffer = bigMath.clamp(
-      gasPaymentTokenAmount * RESIDUAL_GAS_AMOUNT_MULTIPLIER,
+      effectiveGasPaymentTokenAmount * RESIDUAL_GAS_AMOUNT_MULTIPLIER,
       minResidualAmount,
       maxResidualAmount
     );
 
-    if (safeBuffer + gasPaymentTokenAmount <= gasPaymentTokenBalance) {
+    if (safeBuffer + effectiveGasPaymentTokenAmount <= gasPaymentTokenBalance) {
       return {
-        maxAvailableAmount: gasPaymentTokenBalance - safeBuffer - gasPaymentTokenAmount,
+        maxAvailableAmount: gasPaymentTokenBalance - safeBuffer - effectiveGasPaymentTokenAmount,
         bufferType: "safe",
       };
     }
   }
 
-  if (gasPaymentTokenAmount > 0n) {
-    const minimalBuffer = applyValidMinimalBuffer(gasPaymentTokenAmount);
+  if (effectiveGasPaymentTokenAmount > 0n) {
+    const minimalBuffer = applyValidMinimalBuffer(effectiveGasPaymentTokenAmount);
     if (gasPaymentTokenBalance >= minimalBuffer) {
       return {
         maxAvailableAmount: gasPaymentTokenBalance - minimalBuffer,
@@ -113,6 +118,7 @@ export function useMaxAvailableAmount({
   gasPaymentToken,
   gasPaymentTokenBalance,
   gasPaymentTokenAmount,
+  fallbackGasPaymentTokenAmount,
   ignoreGasPaymentToken = false,
   useMinimalBuffer = false,
   isGmxAccount = false,
@@ -129,6 +135,11 @@ export function useMaxAvailableAmount({
   gasPaymentToken?: TokenData;
   gasPaymentTokenBalance?: bigint;
   gasPaymentTokenAmount?: bigint;
+  /**
+   * Conservative lower bound on the order's executionFee, used when the real fee
+   * can't be computed yet (e.g., no swap path and no external quote).
+   */
+  fallbackGasPaymentTokenAmount?: bigint;
   /**
    * For cases when pay token is guaranteed to be different from from token
    */
@@ -155,6 +166,7 @@ export function useMaxAvailableAmount({
     gasPaymentToken,
     gasPaymentTokenBalance,
     gasPaymentTokenAmount,
+    fallbackGasPaymentTokenAmount,
     ignoreGasPaymentToken,
     useMinimalBuffer,
   });
