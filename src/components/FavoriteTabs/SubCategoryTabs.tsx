@@ -1,6 +1,6 @@
-import cx from "classnames";
-import { msg } from "@lingui/macro";
 import type { MessageDescriptor } from "@lingui/core";
+import { msg } from "@lingui/macro";
+import cx from "classnames";
 import { useMemo } from "react";
 
 import {
@@ -14,8 +14,6 @@ import {
   useTokensFavorites,
 } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { useLocalizedMap } from "lib/i18n";
-
-import Button from "components/Button/Button";
 
 const allLabel: Record<"all", MessageDescriptor> = {
   all: msg`All`,
@@ -48,24 +46,28 @@ export function SubCategoryTabs({
   );
 
   return (
-    <div className="flex items-center gap-8 whitespace-nowrap">
+    <div className="flex items-center gap-16 whitespace-nowrap px-4">
       {visible.map((option) => {
+        const isActive = subCategoryTab === option;
         const label = option === "all" ? allLabels.all : subLabels[option];
         return (
-          <Button
+          <button
             key={option}
             type="button"
-            variant="ghost"
-            size="small"
-            className={cx(className, {
-              "!bg-button-secondary !text-typography-primary": subCategoryTab === option,
-              [activeClassName]: activeClassName && subCategoryTab === option,
-            })}
+            className={cx(
+              "border-transparent text-body-small flex h-40 items-center gap-4 border-b-2 py-10 font-medium transition-colors",
+              {
+                "border-blue-300 text-typography-primary": isActive,
+                "text-typography-secondary hover:text-typography-primary": !isActive,
+              },
+              className,
+              { [activeClassName]: activeClassName && isActive }
+            )}
             onClick={() => setSubCategoryTab(option as CryptoSubCategory | TradfiSubCategory)}
-            data-selected={subCategoryTab === option}
+            data-selected={isActive}
           >
             {label}
-          </Button>
+          </button>
         );
       })}
     </div>

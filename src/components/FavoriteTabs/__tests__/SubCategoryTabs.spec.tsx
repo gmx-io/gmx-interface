@@ -1,7 +1,7 @@
-import { cleanup, render, screen } from "@testing-library/react";
-import { afterEach, describe, expect, it, beforeAll } from "vitest";
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
+import { cleanup, render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it, beforeAll } from "vitest";
 
 import { TokensFavoritesContextProvider } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 
@@ -50,7 +50,7 @@ describe("SubCategoryTabs", () => {
       />
     );
     const labels = screen.getAllByRole("button").map((b) => b.textContent);
-    expect(labels).toEqual(["All", "AI", "Layer 1", "Layer 2", "DeFi", "Meme"]);
+    expect(labels).toEqual(["All", "AI", "DeFi", "Meme", "Layer 1", "Layer 2"]);
   });
 
   it("places AI right after All for crypto", () => {

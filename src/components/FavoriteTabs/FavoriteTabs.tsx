@@ -8,8 +8,6 @@ import {
 } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { useLocalizedMap } from "lib/i18n";
 
-import Button from "components/Button/Button";
-
 export function FavoriteTabs({
   favoritesKey,
   className,
@@ -29,28 +27,32 @@ export function FavoriteTabs({
   );
 
   return (
-    <div className="flex items-center gap-8 whitespace-nowrap">
+    <div className="flex items-center gap-16 whitespace-nowrap px-4">
       {visibleOptions.map((option) => {
-        const label =
-          option === "recently-listed" && recentlyListedCount > 0
-            ? `${labels[option]} (${recentlyListedCount})`
-            : labels[option];
-
+        const isActive = topLevelTab === option;
         return (
-          <Button
+          <button
             key={option}
             type="button"
-            variant="ghost"
-            size="small"
-            className={cx(className, {
-              "!bg-button-secondary !text-typography-primary": topLevelTab === option,
-              [activeClassName]: activeClassName && topLevelTab === option,
-            })}
+            className={cx(
+              "border-transparent text-body-small flex h-40 items-center gap-6 border-b-2 py-10 font-medium transition-colors",
+              {
+                "border-blue-300 text-typography-primary": isActive,
+                "text-typography-secondary hover:text-typography-primary": !isActive,
+              },
+              className,
+              { [activeClassName]: activeClassName && isActive }
+            )}
             onClick={() => setTopLevelTab(option)}
-            data-selected={topLevelTab === option}
+            data-selected={isActive}
           >
-            {label}
-          </Button>
+            <span>{labels[option]}</span>
+            {option === "recently-listed" && recentlyListedCount > 0 && (
+              <span className="flex h-18 min-w-20 items-center justify-center rounded-full bg-button-secondary px-4 text-[12px] font-medium text-typography-secondary">
+                {recentlyListedCount}
+              </span>
+            )}
+          </button>
         );
       })}
     </div>
