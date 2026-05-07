@@ -3,13 +3,15 @@ import cx from "classnames";
 import { type PointerEvent, type ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Link } from "react-router-dom";
 
+import { USD_DECIMALS } from "config/factors";
 import { POINTS_PAGE_BANNERS_DISMISSED_KEY } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
+import { formatMultiplier, VOLUME_TIER_BADGES } from "domain/synthetics/incentives/constants";
 import type { EpochStats, IncentivesConfig, RewardsHistoryEntry } from "domain/synthetics/incentives/types";
 import { usePersonalizedBannerData } from "domain/synthetics/incentives/usePersonalizedBannerData";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import { formatAmount, formatUsd } from "lib/numbers";
+import { formatAmount, formatAmountHuman, formatUsd } from "lib/numbers";
 
 import { EARN_PORTFOLIO_STAKE_GMX_LINK } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/constants";
 
@@ -386,10 +388,13 @@ function getBannerContent({
       const remaining = nextTier.threshold - currentEpochStats.tradedVolume;
       const threshold30Pct = (nextTier.threshold * 30n) / 100n;
       if (remaining > 0n && remaining < threshold30Pct) {
+        const remainingLabel = formatAmountHuman(remaining, USD_DECIMALS, true, 0);
+        const tierLabel = VOLUME_TIER_BADGES[nextTier.tier]();
+        const multiplierLabel = formatMultiplier(nextTier.multiplier);
         items.push({
           type: "next-volume-tier",
-          title: t`So Close to the Next Tier`,
-          description: t`A small increase in volume will unlock a higher status and stronger rewards.`,
+          title: t`Almost at the next tier`,
+          description: t`Trade ${remainingLabel} more to unlock ${tierLabel} status and a +${multiplierLabel} multiplier`,
           action: {
             label: <Trans>Trade</Trans>,
             type: "trade",
@@ -452,8 +457,8 @@ function getAllBannerContent(): BannerContent[] {
     },
     {
       type: "next-volume-tier",
-      title: t`So Close to the Next Tier`,
-      description: t`A small increase in volume will unlock a higher status and stronger rewards.`,
+      title: t`Almost at the next tier`,
+      description: t`Trade $X more to unlock ${VOLUME_TIER_BADGES.Tier2()} status and a +${formatMultiplier(125)} multiplier`,
       action: {
         label: <Trans>Trade</Trans>,
         type: "trade",
