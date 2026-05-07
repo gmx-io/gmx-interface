@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import type React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 
 import "./PointsLeaderboardTab.scss";
@@ -12,7 +12,10 @@ import { useGmxPrice } from "domain/legacy";
 import { formatMultiplier } from "domain/synthetics/incentives/constants";
 import type { LeaderboardEntry } from "domain/synthetics/incentives/types";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
-import { useIncentivesLeaderboard } from "domain/synthetics/incentives/useIncentivesLeaderboard";
+import {
+  type IncentivesLeaderboardOrderBy,
+  useIncentivesLeaderboard,
+} from "domain/synthetics/incentives/useIncentivesLeaderboard";
 import { formatAmount, formatUsd } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
@@ -20,6 +23,7 @@ import AddressView from "components/AddressView/AddressView";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import { PointsShare } from "components/PointsShare/PointsShare";
 import { TableListSkeleton } from "components/Skeleton/Skeleton";
+import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import Tabs from "components/Tabs/Tabs";
@@ -73,6 +77,16 @@ const PER_PAGE = 16;
 
 type TimeFilter = "current" | "last" | "all";
 
+type LeaderboardSortField = "volume" | "pointsEarned" | "rewardsEarned" | "multiplier";
+
+function toLeaderboardOrderBy(
+  field: LeaderboardSortField | "unspecified",
+  direction: "asc" | "desc" | "unspecified"
+): IncentivesLeaderboardOrderBy {
+  if (direction === "unspecified" || field === "unspecified") return "volume_DESC";
+  return `${field}_${direction === "asc" ? "ASC" : "DESC"}` as IncentivesLeaderboardOrderBy;
+}
+
 type Props = {
   chainId: ContractsChainId;
   account?: string;
@@ -93,6 +107,31 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
     return undefined; // all-time
   }, [config, timeFilter]);
 
+  const showMultiplier = timeFilter !== "all";
+  const {
+    orderBy: sortField,
+    direction: sortDirection,
+    getSorterProps,
+    setOrderBy,
+    setDirection,
+  } = useSorterHandlers<LeaderboardSortField>("points-leaderboard", {
+    orderBy: "volume",
+    direction: "desc",
+  });
+
+  // Backend silently falls back to volume_DESC for multiplier ordering when
+  // epoch is undefined (all-time). To keep the visible sort consistent with
+  // the data, snap the sort back to volume_DESC if the user switches to
+  // all-time while sorting by multiplier.
+  useEffect(() => {
+    if (!showMultiplier && sortField === "multiplier") {
+      setOrderBy("volume");
+      setDirection("desc");
+    }
+  }, [showMultiplier, sortField, setOrderBy, setDirection]);
+
+  const orderBy = toLeaderboardOrderBy(sortField, sortDirection);
+
   const leaderboardEnabled = timeFilter === "all" || epoch !== undefined;
   const {
     data: leaderboard,
@@ -100,6 +139,7 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
     loading,
   } = useIncentivesLeaderboard(chainId, {
     epoch,
+    orderBy,
     limit: PER_PAGE,
     offset: (page - 1) * PER_PAGE,
     enabled: leaderboardEnabled,
@@ -116,7 +156,6 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
     enabled: leaderboardEnabled && !!account,
   });
   const pinnedEntry = pinnedEntries?.[0];
-  const showMultiplier = timeFilter !== "all";
 
   const timeFilterOptions = useMemo(
     () => [
@@ -134,6 +173,12 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
     },
     [setTimeFilter, setPage]
   );
+
+  // Reset to page 1 whenever the sort changes — otherwise the user can land
+  // mid-list with no rows above the visible offset.
+  useEffect(() => {
+    setPage(1);
+  }, [orderBy]);
 
   const pageCount = totalCount === undefined ? page : Math.max(1, Math.ceil(totalCount / PER_PAGE));
   const indexFrom = (page - 1) * PER_PAGE;
@@ -222,10 +267,20 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                 <TableTheadTr>
                   <TableTh>{t`Rank`}</TableTh>
                   <TableTh>{t`Address`}</TableTh>
-                  <TableTh>{t`Volume`}</TableTh>
-                  <TableTh>{t`Earned Points`}</TableTh>
-                  <TableTh>{t`Earned Rewards`}</TableTh>
-                  <TableTh>{showMultiplier && t`Multiplier`}</TableTh>
+                  <TableTh>
+                    <Sorter {...getSorterProps("volume")}>{t`Volume`}</Sorter>
+                  </TableTh>
+                  <TableTh>
+                    <Sorter {...getSorterProps("pointsEarned")}>{t`Earned Points`}</Sorter>
+                  </TableTh>
+                  <TableTh>
+                    <Sorter {...getSorterProps("rewardsEarned")}>{t`Earned Rewards`}</Sorter>
+                  </TableTh>
+                  <TableTh>
+                    {showMultiplier ? (
+                      <Sorter {...getSorterProps("multiplier")}>{t`Multiplier`}</Sorter>
+                    ) : null}
+                  </TableTh>
                   <TableTh />
                 </TableTheadTr>
               </thead>

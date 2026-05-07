@@ -4,6 +4,7 @@ import { cleanup, fireEvent, render, screen, within } from "@testing-library/rea
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { SorterContextProvider } from "context/SorterContext/SorterContextProvider";
 import type { LeaderboardEntry } from "domain/synthetics/incentives/types";
 
 vi.mock("img/ic_share_arrow_filled.svg?react", () => ({
@@ -46,6 +47,9 @@ const leaderboardMock = vi.hoisted(() => ({
   totalCount: 0 as number | undefined,
   loading: false,
   pinnedEntry: undefined as LeaderboardEntry | undefined,
+  // Captures the most recent variables passed to the page query so tests can
+  // assert that orderBy / offset / limit were forwarded correctly.
+  lastPageParams: undefined as Record<string, unknown> | undefined,
 }));
 
 vi.mock("domain/synthetics/incentives/useIncentivesLeaderboard", () => ({
@@ -60,6 +64,7 @@ vi.mock("domain/synthetics/incentives/useIncentivesLeaderboard", () => ({
         loading: false,
       };
     }
+    leaderboardMock.lastPageParams = params as unknown as Record<string, unknown>;
     return {
       data: leaderboardMock.data,
       totalCount: leaderboardMock.totalCount,
@@ -122,7 +127,9 @@ function renderTab() {
   return render(
     <I18nProvider i18n={i18n}>
       <MemoryRouter>
-        <PointsLeaderboardTab chainId={ARBITRUM_CHAIN_ID} account={ACCOUNT} />
+        <SorterContextProvider>
+          <PointsLeaderboardTab chainId={ARBITRUM_CHAIN_ID} account={ACCOUNT} />
+        </SorterContextProvider>
       </MemoryRouter>
     </I18nProvider>
   );
@@ -137,6 +144,10 @@ afterEach(() => {
   leaderboardMock.totalCount = 0;
   leaderboardMock.loading = false;
   leaderboardMock.pinnedEntry = undefined;
+  leaderboardMock.lastPageParams = undefined;
+  // Sorter state persists to localStorage; wipe it so tests don't leak sort
+  // selections from one another.
+  localStorage.clear();
   cleanup();
 });
 
@@ -281,6 +292,95 @@ describe("PointsLeaderboardTab", () => {
       const { container } = renderTab();
 
       expect(getPinnedRow(container)).toBeNull();
+    });
+  });
+
+  describe("sortable columns", () => {
+    beforeEach(() => {
+      leaderboardMock.data = buildPageEntries(0, PER_PAGE);
+      leaderboardMock.totalCount = PER_PAGE;
+    });
+
+    function getSortButton(label: string): HTMLButtonElement {
+      // The Sorter wraps the header label in a <button>; querying by text and
+      // walking up to the closest button is the most resilient lookup.
+      const labelEl = screen.getByText(label);
+      const button = labelEl.closest("button");
+      if (!button) throw new Error(`No sortable button found for column "${label}"`);
+      return button as HTMLButtonElement;
+    }
+
+    it("requests volume_DESC by default", () => {
+      renderTab();
+
+      expect(leaderboardMock.lastPageParams?.orderBy).toBe("volume_DESC");
+    });
+
+    it("toggles a column between DESC, ASC, and unspecified", () => {
+      renderTab();
+
+      const earnedPoints = getSortButton("Earned Points");
+
+      // First click: desc (the directionSequence in Sorter is desc → asc → unspecified)
+      fireEvent.click(earnedPoints);
+      expect(leaderboardMock.lastPageParams?.orderBy).toBe("pointsEarned_DESC");
+
+      // Second click: asc
+      fireEvent.click(earnedPoints);
+      expect(leaderboardMock.lastPageParams?.orderBy).toBe("pointsEarned_ASC");
+
+      // Third click: unspecified — falls back to default volume_DESC
+      fireEvent.click(earnedPoints);
+      expect(leaderboardMock.lastPageParams?.orderBy).toBe("volume_DESC");
+    });
+
+    it("sends rewardsEarned_DESC when sorting by Earned Rewards", () => {
+      renderTab();
+
+      fireEvent.click(getSortButton("Earned Rewards"));
+
+      expect(leaderboardMock.lastPageParams?.orderBy).toBe("rewardsEarned_DESC");
+    });
+
+    it("renders a sortable Multiplier column on current/last epochs", () => {
+      renderTab();
+
+      const multiplier = getSortButton("Multiplier");
+      fireEvent.click(multiplier);
+      expect(leaderboardMock.lastPageParams?.orderBy).toBe("multiplier_DESC");
+    });
+
+    it("disables the Multiplier sort and snaps back to volume_DESC on All-time", () => {
+      renderTab();
+
+      // Sort by multiplier on the default current epoch
+      fireEvent.click(getSortButton("Multiplier"));
+      expect(leaderboardMock.lastPageParams?.orderBy).toBe("multiplier_DESC");
+
+      // Switch to All-time — the multiplier column hides and the sort snaps
+      // back to volume_DESC since multiplier ordering is silently downgraded
+      // by the backend in all-time mode.
+      fireEvent.click(screen.getByText("All-time"));
+
+      expect(leaderboardMock.lastPageParams?.orderBy).toBe("volume_DESC");
+      // The Multiplier sort button is no longer rendered
+      expect(screen.queryByText("Multiplier")).toBeNull();
+    });
+
+    it("resets to page 1 when the sort changes", () => {
+      // 32 entries => 2 pages
+      leaderboardMock.data = buildPageEntries(0, PER_PAGE);
+      leaderboardMock.totalCount = 2 * PER_PAGE;
+
+      renderTab();
+
+      // Move to page 2
+      fireEvent.click(screen.getByRole("button", { name: "2" }));
+      expect(leaderboardMock.lastPageParams?.offset).toBe(PER_PAGE);
+
+      // Change sort — page should reset
+      fireEvent.click(getSortButton("Earned Points"));
+      expect(leaderboardMock.lastPageParams?.offset).toBe(0);
     });
   });
 });
