@@ -2933,10 +2933,6 @@ msgstr "沒有符合條件的代幣可供存入"
 msgid "Day(s)"
 msgstr "天"
 
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Realized PnL before fees, discounts, and price impact."
-msgstr "扣除費用、折扣與價格影響之前的已實現盈虧。"
-
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
 msgstr "正在從 GMX Account 提取..."
@@ -3071,6 +3067,10 @@ msgstr "清除選擇"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to market traders' PnL"
 msgstr "市場交易者 PnL 的風險敞口"
+
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Realized PnL before fees, discounts and price impact."
+msgstr ""
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."

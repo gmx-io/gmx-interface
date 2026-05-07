@@ -2933,10 +2933,6 @@ msgstr "No eligible tokens available for deposit"
 msgid "Day(s)"
 msgstr "Day(s)"
 
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Realized PnL before fees, discounts, and price impact."
-msgstr "Realized PnL before fees, discounts, and price impact."
-
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
 msgstr "Withdrawing from GMX Account..."
@@ -3071,6 +3067,10 @@ msgstr "Clear selection"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to market traders' PnL"
 msgstr "Exposure to market traders' PnL"
+
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Realized PnL before fees, discounts and price impact."
+msgstr "Realized PnL before fees, discounts and price impact."
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."

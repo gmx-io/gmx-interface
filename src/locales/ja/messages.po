@@ -2933,10 +2933,6 @@ msgstr "入金可能な対象トークンなし"
 msgid "Day(s)"
 msgstr "日"
 
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Realized PnL before fees, discounts, and price impact."
-msgstr "手数料、割引、価格への影響を反映する前の実現PnL。"
-
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
 msgstr "GMX Accountから出金中..."
@@ -3071,6 +3067,10 @@ msgstr "選択をクリア"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to market traders' PnL"
 msgstr "マーケットトレーダーのPnLへのエクスポージャー"
+
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Realized PnL before fees, discounts and price impact."
+msgstr ""
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."

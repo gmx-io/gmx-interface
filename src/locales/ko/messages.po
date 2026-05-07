@@ -2933,10 +2933,6 @@ msgstr "입금 가능한 적격 토큰 없음"
 msgid "Day(s)"
 msgstr "일"
 
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Realized PnL before fees, discounts, and price impact."
-msgstr "수수료, 할인, 가격 영향이 반영되기 전의 실현 PnL."
-
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
 msgstr "GMX Account에서 출금 중..."
@@ -3071,6 +3067,10 @@ msgstr "선택 해제"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to market traders' PnL"
 msgstr "마켓 트레이더 PnL에 대한 노출"
+
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Realized PnL before fees, discounts and price impact."
+msgstr ""
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."

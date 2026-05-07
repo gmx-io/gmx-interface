@@ -2933,10 +2933,6 @@ msgstr "Keine berechtigten Tokens für Einzahlung verfügbar"
 msgid "Day(s)"
 msgstr "Tag(e)"
 
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Realized PnL before fees, discounts, and price impact."
-msgstr "Realisierter PnL vor Gebühren, Rabatten und Preiseinfluss."
-
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
 msgstr "Abheben von GMX Account..."
@@ -3071,6 +3067,10 @@ msgstr "Auswahl löschen"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to market traders' PnL"
 msgstr "Exposition gegenüber dem PnL der Marktteilnehmer"
+
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Realized PnL before fees, discounts and price impact."
+msgstr ""
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."

@@ -2933,10 +2933,6 @@ msgstr "Нет подходящих токенов для внесения"
 msgid "Day(s)"
 msgstr "День(и)"
 
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Realized PnL before fees, discounts, and price impact."
-msgstr "Реализованный PnL до комиссий, скидок и влияния на цену."
-
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
 msgstr "Вывод средств с GMX Account..."
@@ -3071,6 +3067,10 @@ msgstr "Очистить выбор"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to market traders' PnL"
 msgstr "Экспозиция к PnL рыночных трейдеров"
+
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Realized PnL before fees, discounts and price impact."
+msgstr ""
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."

@@ -2933,10 +2933,6 @@ msgstr "Aucun jeton éligible disponible pour dépôt"
 msgid "Day(s)"
 msgstr "Jour(s)"
 
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Realized PnL before fees, discounts, and price impact."
-msgstr "PnL réalisé avant frais, réductions et impact sur le prix."
-
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
 msgstr "Retrait depuis GMX Account..."
@@ -3071,6 +3067,10 @@ msgstr "Effacer la sélection"
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to market traders' PnL"
 msgstr "Exposition au PnL des traders du marché"
+
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Realized PnL before fees, discounts and price impact."
+msgstr ""
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."

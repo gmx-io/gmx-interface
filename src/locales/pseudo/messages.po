@@ -2933,10 +2933,6 @@ msgstr ""
 msgid "Day(s)"
 msgstr ""
 
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Realized PnL before fees, discounts, and price impact."
-msgstr ""
-
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
 msgstr ""
@@ -3070,6 +3066,10 @@ msgstr ""
 
 #: src/pages/PoolsDetails/PoolsDetails.tsx
 msgid "Exposure to market traders' PnL"
+msgstr ""
+
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Realized PnL before fees, discounts and price impact."
 msgstr ""
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
