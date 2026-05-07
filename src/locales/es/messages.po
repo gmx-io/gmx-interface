@@ -1491,6 +1491,10 @@ msgstr "HORA"
 msgid "Oracle endpoints"
 msgstr "Endpoints de Oracle"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Swap fee"
+msgstr "Comisión de intercambio"
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express"
 msgstr "Express"
@@ -3059,6 +3063,10 @@ msgstr "Limpiar selección"
 msgid "Exposure to market traders' PnL"
 msgstr "Exposición al PnL de los operadores del mercado"
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Realized PnL before fees, discounts and price impact."
+msgstr "PnL realizado antes de comisiones, descuentos e impacto en el precio."
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
 msgstr ""
@@ -3222,6 +3230,10 @@ msgstr "Dune Analytics para GMX"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
 msgstr "Comisiones de préstamo pendientes de todas las posiciones abiertas"
+
+#: src/components/TradeHistory/useDownloadAsCsv.tsx
+msgid "RPNL ($)"
+msgstr "RPNL ($)"
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Shorts net rate / 1h"
@@ -3670,6 +3682,7 @@ msgid "Copin"
 msgstr "Copin"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Funding fee"
 msgstr "Comisión de financiación"
@@ -4135,7 +4148,6 @@ msgstr ""
 msgid "Pools stats"
 msgstr "Estadísticas de pools"
 
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -4469,12 +4481,6 @@ msgstr "Agregador de perpetuos"
 msgid "Request Market Swap"
 msgstr "Solicitar Intercambio de Mercado"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Opening fee paid at this action. Subtracted from your realized PnL."
-msgstr ""
-
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
 msgstr "Posición corta pura de {indexSymbol}. La exposición proviene únicamente de la posición."
@@ -4525,6 +4531,10 @@ msgstr "Red"
 msgid "{secondLabel}"
 msgstr "{secondLabel}"
 
+#: src/components/TradeHistory/useDownloadAsCsv.tsx
+msgid "FEES ($)"
+msgstr "COMISIONES ($)"
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Borrowing rate"
 msgstr ""
@@ -4572,6 +4582,7 @@ msgstr "LayerZero scan"
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Borrow fee"
 msgstr "Comisión de préstamo"
@@ -6089,6 +6100,7 @@ msgstr "El tamaño de la posición excede el valor del pool. Delta: {usdDeltaTex
 msgid "Display net value and PnL after all fees"
 msgstr "Mostrar valor neto y PnL después de todas las tarifas"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation fee"
 msgstr "Comisión de liquidación"
@@ -7708,6 +7720,7 @@ msgstr "Utilice esta opción únicamente para transferencias completas de cuenta
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Net price impact"
 msgstr "Impacto neto en el precio"
 
@@ -8062,6 +8075,7 @@ msgstr "GMX announcements"
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Close fee"
 msgstr "Comisión de cierre"
 
@@ -8252,6 +8266,10 @@ msgstr "GMX en vesting no retirado"
 msgid "Short positions"
 msgstr "Posiciones cortas"
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "FEES"
+msgstr "COMISIONES"
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
@@ -8272,6 +8290,7 @@ msgstr "Exponente de préstamo corto"
 #: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8342,6 +8361,7 @@ msgid "Select rewards to claim"
 msgstr "Seleccionar recompensas a reclamar"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Open fee"
 msgstr "Comisión de apertura"
 
@@ -8462,10 +8482,6 @@ msgstr "Looping"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max reserved {directionLabel}"
 msgstr "Máximo reservado {directionLabel}"
-
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Realized PnL after fees and net price impact"
-msgstr "PnL realizado después de comisiones e impacto en el precio neto"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Transfer {nativeTokenSymbol}"
@@ -9370,6 +9386,7 @@ msgid "Increase"
 msgstr "Incrementar"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Swap price impact"
 msgstr "Impacto en el precio del intercambio"
 
@@ -10897,6 +10914,10 @@ msgstr "Ingresa una relación"
 #: src/pages/RpcDebug/parts.tsx
 msgid "OK"
 msgstr "OK"
+
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Net total of action-level fees, and price impact. Hover the value to see the breakdown."
+msgstr "Total neto de comisiones e impacto en el precio a nivel de acción. Pasa el cursor sobre el valor para ver el desglose."
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx

@@ -1491,6 +1491,10 @@ msgstr "ВРЕМЯ"
 msgid "Oracle endpoints"
 msgstr "Конечные точки Oracle"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Swap fee"
+msgstr "Комиссия за обмен"
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express"
 msgstr "Экспресс"
@@ -3059,6 +3063,10 @@ msgstr "Очистить выбор"
 msgid "Exposure to market traders' PnL"
 msgstr "Экспозиция к PnL рыночных трейдеров"
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Realized PnL before fees, discounts and price impact."
+msgstr "Реализованный PnL до комиссий, скидок и влияния на цену."
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
 msgstr ""
@@ -3222,6 +3230,10 @@ msgstr "Dune Analytics для GMX"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
 msgstr "Незафиксированные комиссии за заимствование по всем открытым позициям"
+
+#: src/components/TradeHistory/useDownloadAsCsv.tsx
+msgid "RPNL ($)"
+msgstr "RPNL ($)"
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Shorts net rate / 1h"
@@ -3670,6 +3682,7 @@ msgid "Copin"
 msgstr "Copin"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Funding fee"
 msgstr "Комиссия за финансирование"
@@ -4135,7 +4148,6 @@ msgstr ""
 msgid "Pools stats"
 msgstr "Статистика пулов"
 
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -4469,12 +4481,6 @@ msgstr "Агрегатор бессрочных контрактов"
 msgid "Request Market Swap"
 msgstr "Запрос на Рыночный Обмен"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Opening fee paid at this action. Subtracted from your realized PnL."
-msgstr ""
-
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
 msgstr "Чистый шорт {indexSymbol}. Экспозиция формируется только из позиции."
@@ -4525,6 +4531,10 @@ msgstr "Сеть"
 msgid "{secondLabel}"
 msgstr "{secondLabel}"
 
+#: src/components/TradeHistory/useDownloadAsCsv.tsx
+msgid "FEES ($)"
+msgstr "КОМИССИИ ($)"
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Borrowing rate"
 msgstr ""
@@ -4572,6 +4582,7 @@ msgstr "LayerZero scan"
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Borrow fee"
 msgstr "Комиссия за заимствование"
@@ -6089,6 +6100,7 @@ msgstr "Размер позиции превышает стоимость пул
 msgid "Display net value and PnL after all fees"
 msgstr "Отображать чистую стоимость и PnL после всех комиссий"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation fee"
 msgstr "Комиссия за ликвидацию"
@@ -7708,6 +7720,7 @@ msgstr "Используйте это только для полного пер�
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Net price impact"
 msgstr "Чистое влияние на цену"
 
@@ -8062,6 +8075,7 @@ msgstr "GMX announcements"
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Close fee"
 msgstr "Комиссия за закрытие"
 
@@ -8252,6 +8266,10 @@ msgstr "Вестинговый GMX не выведен"
 msgid "Short positions"
 msgstr "Шорт-позиции"
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "FEES"
+msgstr "КОМИССИИ"
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
@@ -8272,6 +8290,7 @@ msgstr "Экспонента заимствования шорт"
 #: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8342,6 +8361,7 @@ msgid "Select rewards to claim"
 msgstr "Выберите награды для получения"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Open fee"
 msgstr "Комиссия за открытие"
 
@@ -8462,10 +8482,6 @@ msgstr "Лупинг"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max reserved {directionLabel}"
 msgstr "Макс. зарезервировано {directionLabel}"
-
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Realized PnL after fees and net price impact"
-msgstr "Реализованный PnL после комиссий и итогового влияния на цену"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Transfer {nativeTokenSymbol}"
@@ -9370,6 +9386,7 @@ msgid "Increase"
 msgstr "Увеличить"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Swap price impact"
 msgstr "Влияние свопа на цену"
 
@@ -10897,6 +10914,10 @@ msgstr "Введите соотношение"
 #: src/pages/RpcDebug/parts.tsx
 msgid "OK"
 msgstr "OK"
+
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Net total of action-level fees, and price impact. Hover the value to see the breakdown."
+msgstr "Чистая сумма комиссий и влияния на цену на уровне действия. Наведите курсор на значение, чтобы увидеть разбивку."
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx

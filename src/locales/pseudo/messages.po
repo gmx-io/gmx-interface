@@ -1491,6 +1491,10 @@ msgstr ""
 msgid "Oracle endpoints"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Swap fee"
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express"
 msgstr ""
@@ -3059,6 +3063,10 @@ msgstr ""
 msgid "Exposure to market traders' PnL"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Realized PnL before fees, discounts and price impact."
+msgstr ""
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
 msgstr ""
@@ -3221,6 +3229,10 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
+msgstr ""
+
+#: src/components/TradeHistory/useDownloadAsCsv.tsx
+msgid "RPNL ($)"
 msgstr ""
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
@@ -3670,6 +3682,7 @@ msgid "Copin"
 msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Funding fee"
 msgstr ""
@@ -4135,7 +4148,6 @@ msgstr ""
 msgid "Pools stats"
 msgstr ""
 
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -4469,12 +4481,6 @@ msgstr ""
 msgid "Request Market Swap"
 msgstr ""
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Opening fee paid at this action. Subtracted from your realized PnL."
-msgstr ""
-
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
 msgstr ""
@@ -4525,6 +4531,10 @@ msgstr ""
 msgid "{secondLabel}"
 msgstr ""
 
+#: src/components/TradeHistory/useDownloadAsCsv.tsx
+msgid "FEES ($)"
+msgstr ""
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Borrowing rate"
 msgstr ""
@@ -4572,6 +4582,7 @@ msgstr ""
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Borrow fee"
 msgstr ""
@@ -6089,6 +6100,7 @@ msgstr ""
 msgid "Display net value and PnL after all fees"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation fee"
 msgstr ""
@@ -7708,6 +7720,7 @@ msgstr ""
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Net price impact"
 msgstr ""
 
@@ -8062,6 +8075,7 @@ msgstr ""
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Close fee"
 msgstr ""
 
@@ -8252,6 +8266,10 @@ msgstr ""
 msgid "Short positions"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "FEES"
+msgstr ""
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
@@ -8272,6 +8290,7 @@ msgstr ""
 #: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8342,6 +8361,7 @@ msgid "Select rewards to claim"
 msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Open fee"
 msgstr ""
 
@@ -8461,10 +8481,6 @@ msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max reserved {directionLabel}"
-msgstr ""
-
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Realized PnL after fees and net price impact"
 msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -9370,6 +9386,7 @@ msgid "Increase"
 msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Swap price impact"
 msgstr ""
 
@@ -10896,6 +10913,10 @@ msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "OK"
+msgstr ""
+
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Net total of action-level fees, and price impact. Hover the value to see the breakdown."
 msgstr ""
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx

@@ -1491,6 +1491,10 @@ msgstr "TIME"
 msgid "Oracle endpoints"
 msgstr "Oracle エンドポイント"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Swap fee"
+msgstr "スワップ手数料"
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express"
 msgstr "エクスプレス"
@@ -3059,6 +3063,10 @@ msgstr "選択をクリア"
 msgid "Exposure to market traders' PnL"
 msgstr "マーケットトレーダーのPnLへのエクスポージャー"
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Realized PnL before fees, discounts and price impact."
+msgstr "手数料、割引、価格への影響を反映する前の実現PnL。"
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
 msgstr ""
@@ -3222,6 +3230,10 @@ msgstr "GMXのDuneアナリティクス"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
 msgstr "すべてのオープンポジションからの未払い借入手数料"
+
+#: src/components/TradeHistory/useDownloadAsCsv.tsx
+msgid "RPNL ($)"
+msgstr "RPNL ($)"
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Shorts net rate / 1h"
@@ -3670,6 +3682,7 @@ msgid "Copin"
 msgstr "Copin"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Funding fee"
 msgstr "ファンディング手数料"
@@ -4135,7 +4148,6 @@ msgstr ""
 msgid "Pools stats"
 msgstr "プール統計"
 
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -4469,12 +4481,6 @@ msgstr "パーペチュアルアグリゲーター"
 msgid "Request Market Swap"
 msgstr "マーケットスワップリクエスト"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Opening fee paid at this action. Subtracted from your realized PnL."
-msgstr ""
-
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
 msgstr "純粋な{indexSymbol}ショートです。エクスポージャーはポジションからのみ発生します。"
@@ -4525,6 +4531,10 @@ msgstr "ネットワーク"
 msgid "{secondLabel}"
 msgstr "{secondLabel}"
 
+#: src/components/TradeHistory/useDownloadAsCsv.tsx
+msgid "FEES ($)"
+msgstr "手数料 ($)"
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Borrowing rate"
 msgstr ""
@@ -4572,6 +4582,7 @@ msgstr "LayerZero scan"
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Borrow fee"
 msgstr "借入手数料"
@@ -6089,6 +6100,7 @@ msgstr "ポジションサイズがプール値を超えています。デルタ
 msgid "Display net value and PnL after all fees"
 msgstr "すべての手数料控除後の純価値とPnLを表示"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation fee"
 msgstr "清算手数料"
@@ -7708,6 +7720,7 @@ msgstr "これはアカウント全体の移行にのみ使用してください
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Net price impact"
 msgstr "正味の価格への影響"
 
@@ -8062,6 +8075,7 @@ msgstr "GMX announcements"
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Close fee"
 msgstr "決済手数料"
 
@@ -8252,6 +8266,10 @@ msgstr "ベスティング済みGMX未引き出し"
 msgid "Short positions"
 msgstr "ショートポジション"
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "FEES"
+msgstr "手数料"
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
@@ -8272,6 +8290,7 @@ msgstr "ショート借入指数"
 #: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8342,6 +8361,7 @@ msgid "Select rewards to claim"
 msgstr "請求する報酬を選択"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Open fee"
 msgstr "オープン手数料"
 
@@ -8462,10 +8482,6 @@ msgstr "ループ"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max reserved {directionLabel}"
 msgstr "最大予約済み {directionLabel}"
-
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Realized PnL after fees and net price impact"
-msgstr "手数料および価格への影響（ネット）控除後の確定損益"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Transfer {nativeTokenSymbol}"
@@ -9370,6 +9386,7 @@ msgid "Increase"
 msgstr "増加"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Swap price impact"
 msgstr "スワップ価格への影響"
 
@@ -10897,6 +10914,10 @@ msgstr "比率を入力"
 #: src/pages/RpcDebug/parts.tsx
 msgid "OK"
 msgstr "OK"
+
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Net total of action-level fees, and price impact. Hover the value to see the breakdown."
+msgstr "アクションレベルの手数料と価格への影響の正味合計。値にカーソルを合わせると内訳が表示されます。"
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx

@@ -1491,6 +1491,10 @@ msgstr "시간"
 msgid "Oracle endpoints"
 msgstr "Oracle 엔드포인트"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+msgid "Swap fee"
+msgstr "스왑 수수료"
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express"
 msgstr "익스프레스"
@@ -3059,6 +3063,10 @@ msgstr "선택 해제"
 msgid "Exposure to market traders' PnL"
 msgstr "마켓 트레이더 PnL에 대한 노출"
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Realized PnL before fees, discounts and price impact."
+msgstr "수수료, 할인, 가격 영향이 반영되기 전의 실현 PnL."
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Stop Market: {0} a short position when the price is below the trigger price."
 msgstr ""
@@ -3222,6 +3230,10 @@ msgstr "GMX를 위한 Dune 분석"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pending borrowing fees from all open positions"
 msgstr "모든 미결 포지션의 미지급 차입 수수료"
+
+#: src/components/TradeHistory/useDownloadAsCsv.tsx
+msgid "RPNL ($)"
+msgstr "RPNL ($)"
 
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "Shorts net rate / 1h"
@@ -3670,6 +3682,7 @@ msgid "Copin"
 msgstr "Copin"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Funding fee"
 msgstr "펀딩 수수료"
@@ -4135,7 +4148,6 @@ msgstr ""
 msgid "Pools stats"
 msgstr "풀 통계"
 
-#: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
@@ -4469,12 +4481,6 @@ msgstr "무기한 선물 애그리게이터"
 msgid "Request Market Swap"
 msgstr "마켓 스왑 요청"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Opening fee paid at this action. Subtracted from your realized PnL."
-msgstr ""
-
 #: src/components/TradeBox/hooks/useCollateralInTooltipContent.tsx
 msgid "Pure {indexSymbol} short. Exposure is only from the position."
 msgstr "순수 {indexSymbol} 숏. 익스포저는 포지션에서만 발생합니다."
@@ -4525,6 +4531,10 @@ msgstr "네트워크"
 msgid "{secondLabel}"
 msgstr "{secondLabel}"
 
+#: src/components/TradeHistory/useDownloadAsCsv.tsx
+msgid "FEES ($)"
+msgstr "수수료 ($)"
+
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Borrowing rate"
 msgstr ""
@@ -4572,6 +4582,7 @@ msgstr "LayerZero scan"
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Borrow fee"
 msgstr "차입 수수료"
@@ -6089,6 +6100,7 @@ msgstr "포지션 규모가 풀 가치를 초과합니다. 델타: {usdDeltaText
 msgid "Display net value and PnL after all fees"
 msgstr "모든 수수료 차감 후 순가치 및 PnL 표시"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidation fee"
 msgstr "청산 수수료"
@@ -7708,6 +7720,7 @@ msgstr "전체 계정 전송에만 사용하십시오.<0/>이 작업은 모든 G
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Net price impact"
 msgstr "순 가격 영향"
 
@@ -8062,6 +8075,7 @@ msgstr "GMX 공지사항"
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Close fee"
 msgstr "청산 수수료"
 
@@ -8252,6 +8266,10 @@ msgstr "베스팅된 GMX가 출금되지 않음"
 msgid "Short positions"
 msgstr "숏 포지션"
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "FEES"
+msgstr "수수료"
+
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/PositionEditor/PositionEditorAdvancedRows.tsx
 #: src/components/PositionSeller/PositionSellerAdvancedDisplayRows.tsx
@@ -8272,6 +8290,7 @@ msgstr "차입 지수 (숏)"
 #: src/components/DepthChart/DepthChartTooltip.tsx
 #: src/components/GmSwap/GmFees/GmFees.tsx
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8342,6 +8361,7 @@ msgid "Select rewards to claim"
 msgstr "청구할 보상 선택"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Open fee"
 msgstr "개시 수수료"
 
@@ -8462,10 +8482,6 @@ msgstr "루핑"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max reserved {directionLabel}"
 msgstr "최대 예약 {directionLabel}"
-
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Realized PnL after fees and net price impact"
-msgstr "수수료 및 순 가격 영향 차감 후 실현 PnL"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Transfer {nativeTokenSymbol}"
@@ -9370,6 +9386,7 @@ msgid "Increase"
 msgstr "증가"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Swap price impact"
 msgstr "스왑 가격 영향"
 
@@ -10897,6 +10914,10 @@ msgstr "비율 입력"
 #: src/pages/RpcDebug/parts.tsx
 msgid "OK"
 msgstr "OK"
+
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Net total of action-level fees, and price impact. Hover the value to see the breakdown."
+msgstr "액션 단위의 수수료와 가격 영향의 순 총합입니다. 값 위에 마우스를 올리면 세부 내역이 표시됩니다."
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
