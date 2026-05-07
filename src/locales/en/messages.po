@@ -361,10 +361,6 @@ msgstr "FULL MARKET"
 msgid "To"
 msgstr "To"
 
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "Can I sell my GLV, and where?"
-msgstr "Can I sell my GLV, and where?"
-
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 #: src/components/Earn/Discovery/EarnFaq.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
@@ -474,10 +470,6 @@ msgstr "decrease"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in any BTC/USD pool"
 msgstr "Insufficient liquidity in any BTC/USD pool"
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "Yes, GLV is fully liquid and permissionless. Sell via the GMX interface to redeem for underlying assets with low fees."
-msgstr "Yes, GLV is fully liquid and permissionless. Sell via the GMX interface to redeem for underlying assets with low fees."
 
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Unrealized base PnL"
@@ -674,6 +666,10 @@ msgstr "Open"
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Treasury"
 msgstr "Treasury"
+
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "Your share of the total network staking power. Treasury rewards will be distributed proportionally to staking power when GMX reaches $90. All projected rewards are best-effort estimations. Actual distribution is subject to DAO governance."
+msgstr "Your share of the total network staking power. Treasury rewards will be distributed proportionally to staking power when GMX reaches $90. All projected rewards are best-effort estimations. Actual distribution is subject to DAO governance."
 
 #: src/context/PendingTxnsContext/PendingTxnsContext.tsx
 #: src/lib/contracts/callContract.tsx
@@ -2937,10 +2933,6 @@ msgstr "TOKEN"
 msgid "No eligible tokens available for deposit"
 msgstr "No eligible tokens available for deposit"
 
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "What is the bonus incentive for holding your GLV?"
-msgstr "What is the bonus incentive for holding your GLV?"
-
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Day(s)"
 msgstr "Day(s)"
@@ -5049,10 +5041,6 @@ msgstr "Create new code"
 msgid "Fees exceed pay amount"
 msgstr "Fees exceed pay amount"
 
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "Why do I receive two different GLV tokens?"
-msgstr "Why do I receive two different GLV tokens?"
-
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Set TP/SL"
 msgstr "Set TP/SL"
@@ -5148,10 +5136,6 @@ msgstr "Enter a price"
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Updating..."
 msgstr "Updating..."
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "GLV earns from trading fees (open, close, borrow, liquidations, swaps) and trader losses across GM pools. Yields auto-compound for seamless growth (20-30% historical APY). View earnings and portfolio value on the <0>Pools page</0>."
-msgstr "GLV earns from trading fees (open, close, borrow, liquidations, swaps) and trader losses across GM pools. Yields auto-compound for seamless growth (20-30% historical APY). View earnings and portfolio value on the <0>Pools page</0>."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Increase"
@@ -5293,10 +5277,6 @@ msgstr "Shifting only available on {chainNames} or {lastChainName}. Switch netwo
 msgid "Transferring a referral code"
 msgstr "Transferring a referral code"
 
-#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-msgid "I understand that accumulated staking power will reset on the receiving wallet. The receiving address will start accruing staking power from zero."
-msgstr "I understand that accumulated staking power will reset on the receiving wallet. The receiving address will start accruing staking power from zero."
-
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
 msgstr "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
@@ -5349,10 +5329,6 @@ msgstr "<0>Notifications are provided by Notifi and not affiliated with GMX. By
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
 msgstr "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "<0>GLV (GMX Liquidity Vaults) is GMX V2's improved version of GLP. It's a yield-optimizing crypto-index token that:</0><1><2>Earns fees from liquidity provision across GMX V2 markets</2><3>Dynamically allocates liquidity to highest-utilized markets, maximizing capital efficiency and yield</3><4>Auto-compounds yield (no manual claiming needed, unlike GLP)</4></1>"
-msgstr "<0>GLV (GMX Liquidity Vaults) is GMX V2's improved version of GLP. It's a yield-optimizing crypto-index token that:</0><1><2>Earns fees from liquidity provision across GMX V2 markets</2><3>Dynamically allocates liquidity to highest-utilized markets, maximizing capital efficiency and yield</3><4>Auto-compounds yield (no manual claiming needed, unlike GLP)</4></1>"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
@@ -5856,10 +5832,6 @@ msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 msgid "Allowed actions"
 msgstr "Allowed actions"
 
-#: src/components/GmList/GmList.tsx
-msgid "Pools that provide liquidity to specific GMX markets. Supports single-asset and native asset options."
-msgstr "Pools that provide liquidity to specific GMX markets. Supports single-asset and native asset options."
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor"
 msgstr "Max funding factor"
@@ -6226,6 +6198,10 @@ msgstr "Apply referral code"
 msgid "Impact exponent (positive)"
 msgstr "Impact exponent (positive)"
 
+#: src/components/GmList/GmList.tsx
+msgid "Liquidity pools for specific GMX markets with single-asset and native asset options"
+msgstr "Liquidity pools for specific GMX markets with single-asset and native asset options"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "If you continue, you will lose {0} in rewards"
 msgstr "If you continue, you will lose {0} in rewards"
@@ -6459,10 +6435,6 @@ msgstr "Analytics"
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
 msgstr "wstETH APR"
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "About the GLP incident"
-msgstr "About the GLP incident"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -8262,10 +8234,6 @@ msgstr "Unstake failed"
 msgid "[{0}]"
 msgstr "[{0}]"
 
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "Two GLV variants mirror GLP's multi-asset exposure: one optimized for ETH markets (50% ETH / 50% USDC), the other for BTC markets (50% BTC / 50% USDC). This reflects the recovered funds composition and enables dynamic liquidity allocation across top GMX markets for enhanced yield."
-msgstr "Two GLV variants mirror GLP's multi-asset exposure: one optimized for ETH markets (50% ETH / 50% USDC), the other for BTC markets (50% BTC / 50% USDC). This reflects the recovered funds composition and enables dynamic liquidity allocation across top GMX markets for enhanced yield."
-
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Net rate / 1h"
@@ -8811,10 +8779,6 @@ msgstr "Large account"
 msgid "Shift fee"
 msgstr "Shift fee"
 
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "What is GLV exactly?"
-msgstr "What is GLV exactly?"
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Up"
 msgstr "Up"
@@ -9082,10 +9046,6 @@ msgstr "Liquidation risk alerts"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Order key:"
 msgstr "Order key:"
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "Why is the claim in GLV tokens?"
-msgstr "Why is the claim in GLV tokens?"
 
 #: src/components/TVChartContainer/StaticLine.tsx
 #: src/components/TVChartContainer/StaticLine.tsx
@@ -9484,10 +9444,6 @@ msgstr "Execute TWAP part"
 msgid "Create Limit Swap"
 msgstr "Create Limit Swap"
 
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "A $500,000 GLV pool (DAO-funded) rewards long-term holders. Keep your GLV for at least 3 months without selling or transferring to receive a pro rata share."
-msgstr "A $500,000 GLV pool (DAO-funded) rewards long-term holders. Keep your GLV for at least 3 months without selling or transferring to receive a pro rata share."
-
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "esGMX OTC market"
 msgstr "esGMX OTC market"
@@ -9773,6 +9729,10 @@ msgstr "Reserved positive impact"
 msgid "Max rate short"
 msgstr "Max rate short"
 
+#: src/components/Earn/Portfolio/RewardsBar.tsx
+msgid "Staking Power Share"
+msgstr "Staking Power Share"
+
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Alerts"
 msgstr "Alerts"
@@ -9786,6 +9746,10 @@ msgstr "Loading swap path…"
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Swap route unavailable"
 msgstr "Swap route unavailable"
+
+#: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
+msgid "I understand that staking power does not transfer. The receiving wallet will start with zero staking power and a fresh historical max."
+msgstr "I understand that staking power does not transfer. The receiving wallet will start with zero staking power and a fresh historical max."
 
 #: src/components/ClaimModal/ClaimModal.tsx
 msgid "<0>Positive funding fees accrued from your positions</0>"
@@ -10519,10 +10483,6 @@ msgstr "Anonymous chat with GMX team"
 msgid "Continue"
 msgstr "Continue"
 
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "GLV tokens mirror GLP's composition and integrate seamlessly into GMX V2's liquidity ecosystem. You can sell or hold to earn yield. A $500,000 GLV incentive pool rewards holders who keep their allocation for at least 3 months."
-msgstr "GLV tokens mirror GLP's composition and integrate seamlessly into GMX V2's liquidity ecosystem. You can sell or hold to earn yield. A $500,000 GLV incentive pool rewards holders who keep their allocation for at least 3 months."
-
 #: landing/src/pages/Home/LiqiuditySection/LiqiuditySection.tsx
 msgid "Start earning"
 msgstr "Start earning"
@@ -10921,10 +10881,6 @@ msgstr "Express Trading enabled. Disable in <0>settings</0>"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price above mark price"
 msgstr "Set trigger price above mark price"
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "How does GLV earn yield, and where do I see my earnings?"
-msgstr "How does GLV earn yield, and where do I see my earnings?"
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"

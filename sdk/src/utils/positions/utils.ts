@@ -13,7 +13,7 @@ import {
   getMarketIndexName,
   getMarketPnl,
   getMarketPoolName,
-  getMaxAllowedLeverageByMinCollateralFactor,
+  getMaxAllowedLeverage,
   getOpenInterestUsd,
   getPoolUsdWithoutPnl,
 } from "utils/markets";
@@ -594,10 +594,11 @@ export function getPositionInfo(p: {
     pnl: undefined,
   });
 
-  const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(
-    marketInfo.minCollateralFactor,
-    marketInfo.marketTokenAddress
-  );
+  const maxAllowedLeverage = getMaxAllowedLeverage({
+    minCollateralFactor: marketInfo.minCollateralFactor,
+    minCollateralFactorForLiquidation: marketInfo.minCollateralFactorForLiquidation,
+    positionFeeFactorForBalanceWasNotImproved: marketInfo.positionFeeFactorForBalanceWasNotImproved,
+  });
   const hasLowCollateral = (leverage !== undefined && leverage > maxAllowedLeverage) || false;
 
   const liquidationPrice = getLiquidationPrice({

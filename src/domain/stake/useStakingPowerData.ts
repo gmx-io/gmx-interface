@@ -1,6 +1,6 @@
-import useSWR from "swr";
-
 import { useGmxSdk } from "context/GmxSdkContext/GmxSdkContext";
+import { useApiDataRequest } from "domain/synthetics/common/useApiDataRequest";
+import { FreshnessMetricId } from "lib/metrics";
 import type { ContractsChainId } from "sdk/configs/chains";
 import type { StakingPowerResponse } from "sdk/utils/staking/types";
 
@@ -20,14 +20,20 @@ export function useStakingPowerData(
 ) {
   const sdk = useGmxSdk(chainId);
 
-  const { data: stakingPowerData, ...rest } = useSWR<StakingPowerResponse>(
-    enabled && sdk && account ? ["apiStakingPower", chainId, account] : null,
-    () => sdk!.fetchStakingPower({ address: account! }),
+  const { data: stakingPowerData, ...rest } = useApiDataRequest<StakingPowerResponse>(
+    chainId,
+    enabled && account && sdk ? ["apiStakingPower", chainId, account] : null,
+    async () => sdk!.fetchStakingPower({ address: account! }),
+    FreshnessMetricId.ApiStakingPower,
     { refreshInterval: STAKING_POWER_REFRESH_INTERVAL }
   );
 
+  const isDisabled = !enabled || !account || !sdk;
+  const isLoading = !isDisabled && !stakingPowerData && !rest.error;
+
   return {
     stakingPowerData,
+    isLoading,
     ...rest,
   };
 }
