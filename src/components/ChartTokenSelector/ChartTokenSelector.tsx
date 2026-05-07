@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import partition from "lodash/partition";
-import React, { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import React, { useCallback, useEffect, useLayoutEffect, useMemo, useRef, useState } from "react";
 import type { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";
@@ -164,14 +164,45 @@ type SortField =
   | "unspecified";
 
 function ModeTabs({ mode, setMode }: { mode: "perp" | "swap"; setMode: (mode: "perp" | "swap") => void }) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const perpRef = useRef<HTMLButtonElement>(null);
+  const swapRef = useRef<HTMLButtonElement>(null);
+  const [thumb, setThumb] = useState<{ left: number; width: number } | null>(null);
+
+  useLayoutEffect(() => {
+    const activeEl = mode === "perp" ? perpRef.current : swapRef.current;
+    const container = containerRef.current;
+    if (!activeEl || !container) return;
+    const c = container.getBoundingClientRect();
+    const r = activeEl.getBoundingClientRect();
+    setThumb({ left: r.left - c.left, width: r.width });
+  }, [mode]);
+
+  const thumbStyle = useMemo(
+    () => (thumb ? { left: `${thumb.left}px`, width: `${thumb.width}px` } : undefined),
+    [thumb]
+  );
+
   const itemClass =
-    "text-body-small flex h-full items-center justify-center rounded-6 px-10 py-4 font-medium transition-colors";
+    "text-body-small relative z-10 flex h-full items-center justify-center rounded-6 px-10 py-4 font-medium transition-colors";
+
   return (
-    <div className="bg-fill-surfaceelevated flex h-32 shrink-0 items-center gap-2 rounded-8 p-2">
+    <div
+      ref={containerRef}
+      className="bg-fill-surfaceelevated relative flex h-32 shrink-0 items-center gap-2 rounded-8 p-2"
+    >
+      {thumbStyle && (
+        <div
+          aria-hidden
+          className="absolute bottom-2 top-2 rounded-6 bg-button-secondary transition-all duration-200 ease-out"
+          style={thumbStyle}
+        />
+      )}
       <button
+        ref={perpRef}
         type="button"
         className={cx(itemClass, {
-          "bg-button-secondary text-typography-primary": mode === "perp",
+          "text-typography-primary": mode === "perp",
           "text-typography-secondary hover:text-typography-primary": mode !== "perp",
         })}
         onClick={() => setMode("perp")}
@@ -180,9 +211,10 @@ function ModeTabs({ mode, setMode }: { mode: "perp" | "swap"; setMode: (mode: "p
         <Trans>Perpetuals</Trans>
       </button>
       <button
+        ref={swapRef}
         type="button"
         className={cx(itemClass, {
-          "bg-button-secondary text-typography-primary": mode === "swap",
+          "text-typography-primary": mode === "swap",
           "text-typography-secondary hover:text-typography-primary": mode !== "swap",
         })}
         onClick={() => setMode("swap")}
