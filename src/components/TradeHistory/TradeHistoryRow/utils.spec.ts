@@ -364,7 +364,7 @@ describe("TradeHistoryRow helpers", () => {
           },
           "",
           {
-            "key": "Min. required margin",
+            "key": "Minimum required margin",
             "value": "< $ 0.01",
           },
           {
