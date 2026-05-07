@@ -144,7 +144,7 @@ export const selectTradeboxSidecarOrdersExistingSlEntries = createSelector((q) =
     visualMultiplier,
     positionSizeUsd,
     onlyFullPositionClose: true,
-  });
+  })?.slice(0, 1);
 });
 
 export const selectTradeboxSidecarOrdersExistingTpEntries = createSelector((q) => {
@@ -160,7 +160,7 @@ export const selectTradeboxSidecarOrdersExistingTpEntries = createSelector((q) =
     visualMultiplier,
     positionSizeUsd,
     onlyFullPositionClose: true,
-  });
+  })?.slice(0, 1);
 });
 
 export const selectTradeboxSidecarOrdersExistingLimitEntries = createSelector((q) => {
