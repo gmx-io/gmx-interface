@@ -351,6 +351,27 @@ export function formatTokenAmountWithUsd(
 }
 
 /**
+ * Formats a points value (no currency suffix) at `displayDecimals` precision.
+ *
+ * Mirrors the convention used by `formatUsd`: when the underlying value is
+ * non-zero but smaller than the minimum representable amount at the requested
+ * precision (`1 / 10^displayDecimals`), returns `<<minThreshold>` (e.g.
+ * `<0.01` for `displayDecimals=2`) so a sub-precision balance is visible
+ * instead of collapsing to a flat `0.00`.
+ */
+export function formatPointsAmount(value: bigint, decimals: number, displayDecimals = 2): string {
+  const minThreshold = displayDecimals > 0 ? "0." + "0".repeat(Math.max(displayDecimals - 1, 0)) + "1" : "1";
+
+  const limited = getLimitedDisplay(value, decimals, { maxThreshold: null, minThreshold });
+
+  if (limited.symbol === TRIGGER_PREFIX_BELOW) {
+    return `${TRIGGER_PREFIX_BELOW}${minThreshold}`;
+  }
+
+  return formatAmount(limited.value, decimals, displayDecimals, true);
+}
+
+/**
  *
  * @param opts.signed - Default `true`. whether to display a `+` or `-` sign for all non-zero values.
  */

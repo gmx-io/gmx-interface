@@ -12,7 +12,7 @@ import { getEpochDuration } from "domain/synthetics/incentives/constants";
 import { RewardsHistoryEntry } from "domain/synthetics/incentives/types";
 import { useAccountRewardsHistory } from "domain/synthetics/incentives/useAccountRewardsHistory";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
-import { formatAmount, formatAmountHuman, formatUsd } from "lib/numbers";
+import { formatAmount, formatAmountHuman, formatPointsAmount, formatUsd } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import useWallet from "lib/wallets/useWallet";
 
@@ -213,16 +213,16 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
                           {formatAmountHuman(entry.volume, USD_DECIMALS, true, 0)}
                         </TableTd>
                         <TableTd className={cx(tdClassName, "numbers")}>
-                          {formatAmount(entry.pointsEarned, GMX_DECIMALS, 2, true)}
+                          {formatPointsAmount(entry.pointsEarned, GMX_DECIMALS)}
                         </TableTd>
                         <TableTd className={cx(tdClassName, "numbers")}>
-                          {formatAmount(entry.pointsSpent, GMX_DECIMALS, 2, true)}
+                          {formatPointsAmount(entry.pointsSpent, GMX_DECIMALS)}
                         </TableTd>
                         <TableTd className={cx(tdClassName, "numbers")}>
-                          {formatAmount(entry.pointsExpired, GMX_DECIMALS, 2, true)}
+                          {formatPointsAmount(entry.pointsExpired, GMX_DECIMALS)}
                         </TableTd>
                         <TableTd className={cx(tdClassName, "numbers")}>
-                          {formatAmount(entry.pointsBalance, GMX_DECIMALS, 2, true)}
+                          {formatPointsAmount(entry.pointsBalance, GMX_DECIMALS)}
                         </TableTd>
                         <TableTd className={cx(tdClassName, "numbers")}>{formatRewards(entry.rewardsEarned)}</TableTd>
                         <TableTd className={tdClassName}>
@@ -299,7 +299,7 @@ function MobileRewardsHistoryRow({
       <TableTrActionable onClick={onClick}>
         <TableTdActionable>{formatEpochLabel(entry.epoch, epochDuration, locale)}</TableTdActionable>
         <TableTdActionable className="text-right numbers">
-          {formatAmount(entry.pointsEarned, 18, 2, true)}
+          {formatPointsAmount(entry.pointsEarned, GMX_DECIMALS)}
         </TableTdActionable>
         <TableTdActionable className="w-24">
           <ChevronDownIcon className={cx("size-16 text-typography-secondary", { "rotate-180": isExpanded })} />
@@ -318,19 +318,19 @@ function MobileRewardsHistoryRow({
               <div className="flex justify-between text-13 font-medium text-typography-secondary">
                 <Trans>Spent points</Trans>
                 <span className="text-14 text-typography-primary numbers">
-                  {formatAmount(entry.pointsSpent, 18, 2, true)}
+                  {formatPointsAmount(entry.pointsSpent, GMX_DECIMALS)}
                 </span>
               </div>
               <div className="flex justify-between text-13 font-medium text-typography-secondary">
                 <Trans>Expired points</Trans>
                 <span className="text-14 text-typography-primary numbers">
-                  {formatAmount(entry.pointsExpired, 18, 2, true)}
+                  {formatPointsAmount(entry.pointsExpired, GMX_DECIMALS)}
                 </span>
               </div>
               <div className="flex justify-between text-13 font-medium text-typography-secondary">
                 <Trans>Points balance</Trans>
                 <span className="text-14 text-typography-primary numbers">
-                  {formatAmount(entry.pointsBalance, 18, 2, true)}
+                  {formatPointsAmount(entry.pointsBalance, GMX_DECIMALS)}
                 </span>
               </div>
               <div className="flex justify-between text-13 font-medium text-typography-secondary">
