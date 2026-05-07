@@ -673,7 +673,9 @@ function StakingProgressBar({
               <div
                 className={cx(
                   "h-6 w-full rounded-8 transition-[background-color,transform] duration-150 ease-out group-hover/segment:scale-x-105 group-hover/segment:scale-y-150",
-                  isCompleted ? "bg-blue-300" : "bg-cold-blue-900"
+                  isCompleted
+                    ? "bg-blue-300 group-hover/segment:bg-blue-100"
+                    : "bg-cold-blue-900 group-hover/segment:bg-cold-blue-700"
                 )}
               />
             }
