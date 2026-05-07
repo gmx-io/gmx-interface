@@ -75,6 +75,8 @@ export const PERMITS_DISABLED_KEY = "permits-disabled";
 
 export const AB_FLAG_STORAGE_KEY = "ab-flags";
 
+export const API_ROLLOUT_BUCKET_KEY = "api-rollout-bucket";
+
 export const IS_LARGE_ACCOUNT_KEY = "is-large-account-2";
 
 export const TRADEBOX_SIZE_DENOMINATION_KEY = "tradebox-size-denomination";

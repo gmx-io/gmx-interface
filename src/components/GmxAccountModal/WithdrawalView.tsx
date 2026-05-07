@@ -1484,23 +1484,6 @@ export const WithdrawalView = () => {
               </div>
             </AlertInfoCard>
           )}
-
-          {buttonState.bannerErrorName && (
-            <AlertInfoCard type="error" className="mt-8" hideClose>
-              <ValidationBannerErrorContent
-                validationBannerErrorName={buttonState.bannerErrorName}
-                chainId={chainId}
-                srcChainId={withdrawalViewChain}
-                gasPaymentTokenAddress={gasPaymentToken?.address}
-              />
-            </AlertInfoCard>
-          )}
-
-          {withdrawalMaxDetails.gasPaymentTokenWarningContent && (
-            <AlertInfoCard type="warning" className="mt-8" hideClose>
-              {withdrawalMaxDetails.gasPaymentTokenWarningContent}
-            </AlertInfoCard>
-          )}
         </>
       )}
 
@@ -1532,6 +1515,27 @@ export const WithdrawalView = () => {
             }
           />
         </div>
+      )}
+
+      {!isInsufficientBalance && (
+        <>
+          {buttonState.bannerErrorName && (
+            <AlertInfoCard type="error" className="mt-8" hideClose>
+              <ValidationBannerErrorContent
+                validationBannerErrorName={buttonState.bannerErrorName}
+                chainId={chainId}
+                srcChainId={withdrawalViewChain}
+                gasPaymentTokenAddress={gasPaymentToken?.address}
+              />
+            </AlertInfoCard>
+          )}
+
+          {withdrawalMaxDetails.gasPaymentTokenWarningContent && (
+            <AlertInfoCard type="warning" className="mt-8" hideClose>
+              {withdrawalMaxDetails.gasPaymentTokenWarningContent}
+            </AlertInfoCard>
+          )}
+        </>
       )}
 
       <Button

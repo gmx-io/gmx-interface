@@ -1,5 +1,5 @@
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { getMaxAllowedLeverageByMinCollateralFactor } from "domain/synthetics/markets";
+import { getMaxAllowedLeverage } from "domain/synthetics/markets";
 import { calculateDisplayDecimals, formatAmountFree, limitDecimals, parseValue, PRECISION } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 import { getPriceImpactForPosition } from "sdk/utils/fees/priceImpact";
@@ -51,10 +51,11 @@ export function calcMaxSizeDeltaInUsdByLeverage(params: CalcMaxSizeDeltaParams):
 
   if (initialCollateralUsd <= 0n) return undefined;
 
-  const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(
-    marketInfo.minCollateralFactor,
-    marketInfo.marketTokenAddress
-  );
+  const maxAllowedLeverage = getMaxAllowedLeverage({
+    minCollateralFactor: marketInfo.minCollateralFactor,
+    minCollateralFactorForLiquidation: marketInfo.minCollateralFactorForLiquidation,
+    positionFeeFactorForBalanceWasNotImproved: marketInfo.positionFeeFactorForBalanceWasNotImproved,
+  });
   if (!maxAllowedLeverage || maxAllowedLeverage <= 0) return undefined;
 
   const leverageBigInt = BigInt(maxAllowedLeverage);

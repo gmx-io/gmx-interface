@@ -38,7 +38,7 @@ export function useSetOrdersAutoCancelByQueryParams() {
       if (!setOrdersAutoCancel || maxAutoCancelOrders === undefined) return;
 
       if (!signer) {
-        helperToast.error("Connect your wallet to proceed with orders conversion.");
+        helperToast.error("Connect your wallet to proceed with orders conversion");
         return;
       }
 
@@ -90,7 +90,7 @@ export function useSetOrdersAutoCancelByQueryParams() {
           }
         );
       } else {
-        helperToast.success("No orders eligible for conversion.");
+        helperToast.success("No orders eligible for conversion");
       }
 
       emitMetricCounter<SetAutoCloseOrdersAction>({

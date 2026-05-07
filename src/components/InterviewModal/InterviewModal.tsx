@@ -40,7 +40,7 @@ export function InterviewModal({ type, isVisible, setIsVisible }: Props) {
       <Modal isVisible={isVisible} setIsVisible={setIsVisible} label={t`Anonymous chat with GMX team`}>
         <div className="max-w-xl">
           <Trans>
-            Help us improve GMX for Liquidity Providers. For security, we won't contact you first. Send "I'm a Liquidity
+            Help us improve GMX for liquidity providers. For security, we won't contact you first. Send "I'm a Liquidity
             Provider" to our official Telegram account:
           </Trans>
           <div className="mb-20 mt-20 flex flex-col gap-8">

@@ -11,7 +11,9 @@ import {
   getLiquidationPrice,
   getPositionKey,
   getPositionNetValue,
+  getPositionNetValueAfterAllFees,
   getPositionPendingFeesUsd,
+  getPositionPnlAfterAllFees,
   getPositionPnlAfterFees,
   getPositionPnlUsd,
   getPositionValueUsd,
@@ -179,6 +181,107 @@ describe("getPositionPnlAfterFees", () => {
     });
     // pnlAfterFees = 10n - 50n - 30n = -70n
     expect(result).toBe(-70n);
+  });
+});
+
+describe("getPositionNetValueAfterAllFees", () => {
+  it("subtracts all fees and adds signed price impact (adverse)", () => {
+    const result = getPositionNetValueAfterAllFees({
+      collateralUsd: 1000n,
+      pnl: 200n,
+      pendingBorrowingFeesUsd: 15n,
+      pendingFundingFeesUsd: 10n,
+      netPriceImpactDeltaUsd: -50n,
+      closingFeeUsd: 30n,
+    });
+    // 1000 + 200 - 15 - 10 + (-50) - 30 = 1095
+    expect(result).toBe(1095n);
+  });
+
+  it("adds favorable price impact", () => {
+    const result = getPositionNetValueAfterAllFees({
+      collateralUsd: 1000n,
+      pnl: 200n,
+      pendingBorrowingFeesUsd: 0n,
+      pendingFundingFeesUsd: 0n,
+      netPriceImpactDeltaUsd: 25n,
+      closingFeeUsd: 0n,
+    });
+    // 1000 + 200 + 25 = 1225
+    expect(result).toBe(1225n);
+  });
+
+  it("reduces to collateral when pnl, fees, and impact are zero", () => {
+    const result = getPositionNetValueAfterAllFees({
+      collateralUsd: 500n,
+      pnl: 0n,
+      pendingBorrowingFeesUsd: 0n,
+      pendingFundingFeesUsd: 0n,
+      netPriceImpactDeltaUsd: 0n,
+      closingFeeUsd: 0n,
+    });
+    expect(result).toBe(500n);
+  });
+
+  it("handles negative pnl with adverse impact", () => {
+    const result = getPositionNetValueAfterAllFees({
+      collateralUsd: 1000n,
+      pnl: -300n,
+      pendingBorrowingFeesUsd: 5n,
+      pendingFundingFeesUsd: 5n,
+      netPriceImpactDeltaUsd: -20n,
+      closingFeeUsd: 10n,
+    });
+    // 1000 - 300 - 5 - 5 - 20 - 10 = 660
+    expect(result).toBe(660n);
+  });
+});
+
+describe("getPositionPnlAfterAllFees", () => {
+  it("subtracts all fees and adds signed price impact (adverse) from pnl", () => {
+    const result = getPositionPnlAfterAllFees({
+      pnl: 500n,
+      pendingBorrowingFeesUsd: 30n,
+      pendingFundingFeesUsd: 20n,
+      netPriceImpactDeltaUsd: -40n,
+      closingFeeUsd: 50n,
+    });
+    // 500 - 30 - 20 - 40 - 50 = 360
+    expect(result).toBe(360n);
+  });
+
+  it("adds favorable price impact to pnl", () => {
+    const result = getPositionPnlAfterAllFees({
+      pnl: 100n,
+      pendingBorrowingFeesUsd: 0n,
+      pendingFundingFeesUsd: 0n,
+      netPriceImpactDeltaUsd: 50n,
+      closingFeeUsd: 0n,
+    });
+    expect(result).toBe(150n);
+  });
+
+  it("returns pnl when fees and impact are zero", () => {
+    const result = getPositionPnlAfterAllFees({
+      pnl: 200n,
+      pendingBorrowingFeesUsd: 0n,
+      pendingFundingFeesUsd: 0n,
+      netPriceImpactDeltaUsd: 0n,
+      closingFeeUsd: 0n,
+    });
+    expect(result).toBe(200n);
+  });
+
+  it("handles negative pnl with adverse impact", () => {
+    const result = getPositionPnlAfterAllFees({
+      pnl: -100n,
+      pendingBorrowingFeesUsd: 10n,
+      pendingFundingFeesUsd: 5n,
+      netPriceImpactDeltaUsd: -20n,
+      closingFeeUsd: 30n,
+    });
+    // -100 - 10 - 5 - 20 - 30 = -165
+    expect(result).toBe(-165n);
   });
 });
 

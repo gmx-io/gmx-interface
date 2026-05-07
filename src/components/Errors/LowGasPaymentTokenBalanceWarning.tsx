@@ -18,8 +18,8 @@ export function getLowGasPaymentTokenBalanceWarning({
   }
 
   if (isGmxAccount) {
-    return t`Low ${symbol} balance. This amount leaves little for future fees on your GMX Account`;
+    return t`Low ${symbol} balance. This amount leaves little for future fees on your GMX Account.`;
   }
 
-  return t`Low ${symbol} balance. This amount leaves little for future fees on ${getChainName(chainId)}`;
+  return t`Low ${symbol} balance. This amount leaves little for future fees on ${getChainName(chainId)}.`;
 }

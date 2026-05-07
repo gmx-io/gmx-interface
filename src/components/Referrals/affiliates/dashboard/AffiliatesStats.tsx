@@ -184,7 +184,7 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
             </div>
             <div className="text-body-small font-medium text-typography-secondary">
               <span className="text-slate-500">
-                <Trans>Last Updated:</Trans>
+                <Trans>Last updated:</Trans>
               </span>{" "}
               {lastUpdated ?? "—"}
             </div>
@@ -237,7 +237,7 @@ export function AffiliatesStats({ account, referralsData, handleCreateReferralCo
                       </TableTh>
                       <TableTh scope="col" className="w-0">
                         <span className="sr-only">
-                          <Trans>Actions</Trans>
+                          <Trans>ACTIONS</Trans>
                         </span>
                       </TableTh>
                     </TableTheadTr>
@@ -422,10 +422,10 @@ function ReferralCodesMobileTable({
     <div role="table" className="grid grid-cols-[1fr_1fr_auto] gap-y-4 px-4">
       <GridRow>
         <GridHeaderCell>
-          <Trans>Code</Trans>
+          <Trans>CODE</Trans>
         </GridHeaderCell>
         <GridHeaderCell className="col-span-2 text-right">
-          <Trans>Total Volume</Trans>
+          <Trans>TOTAL VOLUME</Trans>
         </GridHeaderCell>
         <GridHeaderCell />
       </GridRow>
@@ -461,14 +461,14 @@ function ReferralCodesMobileTable({
               >
                 <div className="text-body-small flex items-center justify-between py-4">
                   <span className="font-medium text-typography-secondary">
-                    <Trans>Traders Referred</Trans>
+                    <Trans>Traders referred</Trans>
                   </span>
                   <span className="numbers">{stat.registeredReferralsCount}</span>
                 </div>
 
                 <div className="text-body-small flex items-center justify-between py-4">
                   <span className="font-medium text-typography-secondary">
-                    <Trans>Total Rebates</Trans>
+                    <Trans>Total rebates</Trans>
                   </span>
                   <span className="numbers">{formatBigUsd(stat.affiliateRebateUsd)}</span>
                 </div>

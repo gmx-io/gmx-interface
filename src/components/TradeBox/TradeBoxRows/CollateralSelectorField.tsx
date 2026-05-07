@@ -106,9 +106,10 @@ export function useCollateralWarnings() {
     if (showHasExistingPositionWithDifferentCollateral) {
       if (isMarket) {
         messages.push(
-          <AlertInfoCard key="showHasExistingPositionWithDifferentCollateral_1">
+          <AlertInfoCard key="showHasExistingPositionWithDifferentCollateral_1" type="warning" hideClose>
             <Trans>
-              Existing position uses {collateralWithPosition.symbol} collateral. This action won't affect it.{" "}
+              Existing position uses {collateralWithPosition.symbol} collateral. Using the selected collateral will
+              create a separate position.{" "}
               <ColorfulButtonLink
                 color="blue"
                 onClick={() => {
@@ -122,9 +123,10 @@ export function useCollateralWarnings() {
         );
       } else {
         messages.push(
-          <AlertInfoCard key="showHasExistingPositionWithDifferentCollateral_2">
+          <AlertInfoCard key="showHasExistingPositionWithDifferentCollateral_2" type="warning" hideClose>
             <Trans>
-              Existing position uses {collateralWithPosition.symbol} collateral. This order won't apply to it.{" "}
+              Existing position uses {collateralWithPosition.symbol} collateral. If executed, this order will create a
+              separate position.{" "}
               <ColorfulButtonLink
                 color="blue"
                 onClick={() => {
@@ -144,7 +146,7 @@ export function useCollateralWarnings() {
       const symbol = collateralWithOrder.symbol;
 
       messages.push(
-        <AlertInfoCard key="showHasExistingOrderWithDifferentCollateral">
+        <AlertInfoCard key="showHasExistingOrderWithDifferentCollateral" type="warning" hideClose>
           <Trans>
             Existing limit order uses {symbol} collateral.{" "}
             <ColorfulButtonLink

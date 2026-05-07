@@ -258,7 +258,7 @@ export default function BeginAccountTransfer() {
       if (!isReadyForSbfGmxTokenApproval) {
         return t`Pending transfer approval...`;
       }
-      return t`Allow all tokens to transfer to new account`;
+      return t`Allow all tokens to transfer to the new account`;
     }
     if (isTransferring) {
       return t`Transferring...`;
@@ -314,7 +314,7 @@ export default function BeginAccountTransfer() {
   const pendingTransferLink = `/complete_account_transfer/${account}/${pendingReceiver}`;
 
   return (
-    <AppPageLayout title={t`Transfer Account`}>
+    <AppPageLayout title={t`Transfer account`}>
       <Modal
         isVisible={isTransferSubmittedModalVisible}
         setIsVisible={setIsTransferSubmittedModalVisible}
@@ -365,13 +365,13 @@ export default function BeginAccountTransfer() {
         </div>
         <div className="flex flex-col gap-8 text-14 font-medium">
           <ValidationRow isValid={!hasVestedGmx}>
-            <Trans>Sender has withdrawn all tokens from GMX vesting vault</Trans>
+            <Trans>Sender has withdrawn all tokens from the GMX vesting vault</Trans>
           </ValidationRow>
           <ValidationRow isValid={!hasVestedGlp}>
-            <Trans>Sender has withdrawn all tokens from GLP vesting vault</Trans>
+            <Trans>Sender has withdrawn all tokens from the GLP vesting vault</Trans>
           </ValidationRow>
           <ValidationRow isValid={!hasVestedAffiliate}>
-            <Trans>Sender has withdrawn all tokens from Affiliate vesting vault</Trans>
+            <Trans>Sender has withdrawn all tokens from the Affiliate vesting vault</Trans>
           </ValidationRow>
           {hasVestedAffiliate && (
             <>
@@ -402,8 +402,8 @@ export default function BeginAccountTransfer() {
           <Checkbox isChecked={isStakingPowerResetAcknowledged} setIsChecked={setIsStakingPowerResetAcknowledged}>
             <span className="text-body-small text-yellow-300">
               <Trans>
-                I understand that accumulated staking power will reset on the receiving wallet. The receiving address
-                will start accruing staking power from zero.
+                I understand that staking power does not transfer. The receiving wallet will start with zero staking
+                power and a fresh historical max.
               </Trans>
             </span>
           </Checkbox>

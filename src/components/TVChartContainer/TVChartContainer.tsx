@@ -192,11 +192,11 @@ export default function TVChartContainer({
 
         const action = p.isIncrease
           ? p.isLong
-            ? t`Open Long`
-            : t`Open Short`
+            ? t`Open long`
+            : t`Open short`
           : p.isLong
-            ? t`Close Long`
-            : t`Close Short`;
+            ? t`Close long`
+            : t`Close short`;
         const indexToken = market.indexToken;
         const tokenVm = indexToken?.visualMultiplier ?? vm ?? 1;
         const marketPriceDecimals = indexToken?.prices?.minPrice
