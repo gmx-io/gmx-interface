@@ -5,6 +5,7 @@ import Skeleton from "react-loading-skeleton";
 import { BOTANIX, ContractsChainId, getChainNativeTokenSymbol } from "config/chains";
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { useStakingPowerData } from "domain/stake/useStakingPowerData";
 import { UserEarningsData } from "domain/synthetics/markets/types";
 import { useMarketTokensData } from "domain/synthetics/markets/useMarketTokensData";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
@@ -12,6 +13,7 @@ import { getTotalGlvInfo, getTotalGmInfo } from "domain/synthetics/markets/utils
 import { useChainId } from "lib/chains";
 import { StakingProcessedData } from "lib/legacy";
 import { formatUsd } from "lib/numbers";
+import useWallet from "lib/wallets/useWallet";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
@@ -29,7 +31,9 @@ function RewardsBar({
   mutateProcessedData: () => void;
 }) {
   const { chainId, srcChainId } = useChainId();
+  const { account } = useWallet();
   const nativeTokenSymbol = getChainNativeTokenSymbol(chainId);
+  const { stakingPowerData } = useStakingPowerData(chainId, { account });
 
   const { marketTokensData } = useMarketTokensData(chainId, srcChainId, { isDeposit: false, withGlv: true });
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
@@ -106,6 +110,25 @@ function RewardsBar({
                   chainId={chainId}
                 />
               </div>
+              {stakingPowerData && (
+                <div className="flex flex-col gap-2">
+                  <span className="text-body-small font-medium text-typography-secondary">
+                    <Tooltip
+                      handle={<Trans>Staking Power Share</Trans>}
+                      content={
+                        <Trans>
+                          Your share of the total network staking power. Treasury rewards will be distributed
+                          proportionally to staking power when GMX reaches $90. All projected rewards are best-effort
+                          estimations. Actual distribution is subject to DAO governance.
+                        </Trans>
+                      }
+                    />
+                  </span>
+                  <span className="text-body-large font-medium numbers">
+                    {stakingPowerData.userSharePercent.toFixed(2)}%
+                  </span>
+                </div>
+              )}
             </div>
           </div>
 

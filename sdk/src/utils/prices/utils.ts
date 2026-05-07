@@ -189,17 +189,17 @@ export function getDefaultAcceptablePriceImpactBps(p: {
   indexPrice: bigint;
   sizeDeltaUsd: bigint;
   priceImpactDeltaUsd: bigint;
-  acceptablePriceImapctBuffer?: number;
+  acceptablePriceImpactBuffer?: number;
 }) {
   const {
     indexPrice,
     sizeDeltaUsd,
     priceImpactDeltaUsd,
-    acceptablePriceImapctBuffer = DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER,
+    acceptablePriceImpactBuffer = DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER,
   } = p;
 
   if (priceImpactDeltaUsd > 0) {
-    return BigInt(acceptablePriceImapctBuffer);
+    return BigInt(acceptablePriceImpactBuffer);
   }
 
   const baseAcceptablePriceValues = getAcceptablePriceByPriceImpact({
@@ -211,8 +211,8 @@ export function getDefaultAcceptablePriceImpactBps(p: {
   });
 
   if (baseAcceptablePriceValues.acceptablePriceDeltaBps < 0) {
-    return bigMath.abs(baseAcceptablePriceValues.acceptablePriceDeltaBps) + BigInt(acceptablePriceImapctBuffer);
+    return bigMath.abs(baseAcceptablePriceValues.acceptablePriceDeltaBps) + BigInt(acceptablePriceImpactBuffer);
   }
 
-  return BigInt(acceptablePriceImapctBuffer);
+  return BigInt(acceptablePriceImpactBuffer);
 }
