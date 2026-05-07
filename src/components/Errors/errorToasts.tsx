@@ -311,7 +311,7 @@ export function InvalidSignatureToastContent() {
         Invalid signature.
         <br />
         <br />
-        Try a different wallet provider or switch to Classic or One-Click Trading in{" "}
+        Try a different wallet provider or switch to Classic Trading or One-Click Trading in{" "}
         <span className="clickable underline" onClick={() => setIsSettingsVisible(true)}>
           settings
         </span>
@@ -350,7 +350,7 @@ export function getInsufficientExecutionFeeToastContent({
   });
 
   const bufferText =
-    requiredBufferBps !== undefined ? t`to ${formatPercentage(requiredBufferBps, { displayDecimals: 0 })} ` : t``;
+    requiredBufferBps !== undefined ? t`to ${formatPercentage(requiredBufferBps, { displayDecimals: 0 })} ` : "";
 
   const settingsLink = (
     <div className="inline-block cursor-pointer underline" onClick={() => setIsSettingsVisible(true)}>
@@ -407,7 +407,7 @@ export function getInvalidPermitSignatureToastContent() {
 export function getExpiredPermitDeadlineToastContent() {
   return (
     <Trans>
-      <div>Permit has expired. Please try again.</div>
+      <div>Permit has expired. Try again</div>
     </Trans>
   );
 }

@@ -94,7 +94,7 @@ export default function CompleteAccountTransfer() {
   }
 
   return (
-    <AppPageLayout title={t`Complete Account Transfer`}>
+    <AppPageLayout title={t`Complete account transfer`}>
       <Modal
         isVisible={isTransferSubmittedModalVisible}
         setIsVisible={setIsTransferSubmittedModalVisible}
@@ -130,6 +130,7 @@ export default function CompleteAccountTransfer() {
                 >
                   Copy link
                 </span>
+                {"."}
               </Trans>
               <br />
               <br />

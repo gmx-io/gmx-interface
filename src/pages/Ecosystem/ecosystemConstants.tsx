@@ -292,7 +292,7 @@ export const integrations: EcosystemGmxPage[] = [
     chainIds: [ARBITRUM, AVALANCHE],
   },
   {
-    title: msg`Paraswap`,
+    title: msg`ParaSwap`,
     link: "https://www.paraswap.io/",
     linkLabel: "paraswap.io",
     about: msg`DEX aggregator`,

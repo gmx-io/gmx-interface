@@ -164,7 +164,7 @@ export const GmTokensTotalBalanceInfo = ({
             {userEarnings.allMarkets.expected365d > 0 && (
               <>
                 <StatsTooltipRow
-                  label={t`365d est. fees`}
+                  label={t`365d estimated fees`}
                   textClassName={getPositiveOrNegativeClass(userEarnings.allMarkets.expected365d)}
                   value={formatDeltaUsd(userEarnings.allMarkets.expected365d, undefined, { showPlusForZero: true })}
                   valueClassName="numbers"

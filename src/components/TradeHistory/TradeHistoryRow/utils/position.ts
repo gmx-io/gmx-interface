@@ -657,7 +657,7 @@ export const formatPositionMessage = (
           state: "error",
         }),
         "",
-        infoRow(t`Min. required margin`, formattedMinCollateral),
+        infoRow(t`Minimum required margin`, formattedMinCollateral),
         infoRow(t`Margin at liquidation`, formattedLeftoverCollateral),
         "",
         ...priceImpactLines,

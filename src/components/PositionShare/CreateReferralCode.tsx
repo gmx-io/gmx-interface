@@ -555,38 +555,25 @@ function CreateReferralCodeLayout({
         }}
         className="flex flex-col gap-8"
       >
-        <div className="flex gap-8">
-          <label
-            className={cx(
-              "flex grow cursor-pointer items-center gap-8 rounded-8 border-1/2 bg-slate-800 p-8",
-              error || referralCodeCheckStatus === "taken" ? "border-red-500" : "border-slate-800"
-            )}
-          >
-            <ReferralsIcon className="size-16 text-typography-secondary" />
-            <input
-              ref={inputRef}
-              value={referralCode}
-              disabled={isProcessing || !isConnected}
-              placeholder={t`Enter referral code`}
-              className="grow p-0 py-2 text-13 leading-[13px] placeholder:text-typography-secondary"
-              onChange={(event) => {
-                const { value } = event.target;
-                setReferralCode(value);
-              }}
-            />
-          </label>
-
-          <div className="flex justify-end">
-            <Button
-              type="submit"
-              variant="primary"
-              disabled={buttonState.disabled}
-              className="min-w-[140px] justify-center"
-            >
-              {error ? <TooltipWithPortal handle={buttonState.text} content={error} /> : buttonState.text}
-            </Button>
-          </div>
-        </div>
+        <label
+          className={cx(
+            "flex cursor-pointer items-center gap-8 rounded-8 border-1/2 bg-slate-800 p-8",
+            error || referralCodeCheckStatus === "taken" ? "border-red-500" : "border-slate-800"
+          )}
+        >
+          <ReferralsIcon className="size-16 text-typography-secondary" />
+          <input
+            ref={inputRef}
+            value={referralCode}
+            disabled={isProcessing || !isConnected}
+            placeholder={t`Enter referral code`}
+            className="grow p-0 py-2 text-13 leading-[13px] placeholder:text-typography-secondary"
+            onChange={(event) => {
+              const { value } = event.target;
+              setReferralCode(value);
+            }}
+          />
+        </label>
         {networkFeeUsd !== undefined && (
           <div className="flex justify-between text-12 text-typography-secondary">
             <span>
@@ -627,6 +614,9 @@ function CreateReferralCodeLayout({
             />
           </AlertInfoCard>
         )}
+        <Button type="submit" variant="primary" disabled={buttonState.disabled} className="w-full justify-center">
+          {error ? <TooltipWithPortal handle={buttonState.text} content={error} /> : buttonState.text}
+        </Button>
       </form>
     </div>
   );
