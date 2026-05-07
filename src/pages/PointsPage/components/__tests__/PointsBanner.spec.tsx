@@ -80,7 +80,7 @@ const config: IncentivesConfig = {
   featuredMarketTokens: [],
 };
 
-function renderBanner() {
+function renderBanner(overrides?: { currentEpochHistory?: RewardsHistoryEntry }) {
   return render(
     <I18nProvider i18n={i18n}>
       <MemoryRouter>
@@ -89,7 +89,9 @@ function renderBanner() {
           account="0xAccount"
           config={config}
           currentEpochStats={currentEpochStats}
-          currentEpochHistory={currentEpochHistory}
+          currentEpochHistory={
+            overrides && "currentEpochHistory" in overrides ? overrides.currentEpochHistory : currentEpochHistory
+          }
         />
       </MemoryRouter>
     </I18nProvider>
@@ -169,6 +171,23 @@ describe("PointsBanner", () => {
 
     expect(screen.getByText("Don't Let Rewards Expire")).toBeTruthy();
     expect(screen.getByText("Use your rewards before they expire and make the most of your activity.")).toBeTruthy();
+  });
+
+  it("hides the expiring rewards banner when currentEpochHistory is undefined", () => {
+    renderBanner({ currentEpochHistory: undefined });
+
+    expect(screen.queryByText("Don't Let Rewards Expire")).toBeNull();
+  });
+
+  it("hides the expiring rewards banner when pointsExpired is zero", () => {
+    renderBanner({
+      currentEpochHistory: {
+        ...currentEpochHistory,
+        pointsExpired: 0n,
+      },
+    });
+
+    expect(screen.queryByText("Don't Let Rewards Expire")).toBeNull();
   });
 
   it("shows the unstaked GMX banner when wallet GMX is available", () => {
