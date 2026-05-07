@@ -595,10 +595,6 @@ msgstr "Slippage exceeded. Expected min: {minOutputAmountText}, actual: {outputA
 msgid "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
 msgstr "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
 
-#: src/pages/PointsPage/components/incentivesText.ts
-msgid "Place balancing trades on under-utilized sides"
-msgstr "Place balancing trades on under-utilized sides"
-
 #: src/domain/synthetics/incentives/constants.ts
 msgid "Advocate"
 msgstr "Advocate"
@@ -1971,6 +1967,10 @@ msgstr "Borrow fee / day"
 msgid "Dashboard"
 msgstr "Dashboard"
 
+#: src/pages/PointsPage/components/incentivesText.ts
+msgid "Place balancing trades on underutilized sides to earn an additional multiplier on those trades."
+msgstr "Place balancing trades on underutilized sides to earn an additional multiplier on those trades."
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate vault. Withdraw them to transfer to the new account."
 msgstr "You have esGMX tokens in the Affiliate vault. Withdraw them to transfer to the new account."
@@ -2234,10 +2234,6 @@ msgstr "Sending sell request..."
 #: src/pages/RpcDebug/parts.tsx
 msgid "PURPOSE"
 msgstr "PURPOSE"
-
-#: src/pages/PointsPage/components/incentivesText.ts
-msgid "Achieve a lifetime trading volume milestone"
-msgstr "Achieve a lifetime trading volume milestone"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/components/Earn/Portfolio/RewardsBar.tsx
@@ -3097,6 +3093,10 @@ msgstr "Edit SL: {suffix}"
 #: src/components/GmList/PerformanceLabel.tsx
 msgid "Projected yearly return vs. a Uniswap V2-style benchmark.<0/><1/>Note: Short timeframes may not reflect long-term performance.<2/><3/><4>View detailed stats on Dune</4>."
 msgstr "Projected yearly return vs. a Uniswap V2-style benchmark.<0/><1/>Note: Short timeframes may not reflect long-term performance.<2/><3/><4>View detailed stats on Dune</4>."
+
+#: src/pages/PointsPage/components/incentivesText.ts
+msgid "Trade featured markets to activate this boost and earn a higher multiplier for those trades."
+msgstr "Trade featured markets to activate this boost and earn a higher multiplier for those trades."
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
@@ -4880,10 +4880,6 @@ msgstr "Total Rewards Earned"
 msgid "Perpetuals aggregator"
 msgstr "Perpetuals aggregator"
 
-#: src/pages/PointsPage/components/incentivesText.ts
-msgid "Achieve {thresholdLabel} lifetime trading volume"
-msgstr "Achieve {thresholdLabel} lifetime trading volume"
-
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr "Request Market Swap"
@@ -5643,6 +5639,10 @@ msgstr "Links"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact factor for withdrawals"
 msgstr "Max lendable impact factor for withdrawals"
+
+#: src/pages/PointsPage/components/incentivesText.ts
+msgid "Reach {thresholdLabel} in lifetime trading volume to unlock a permanent 1× multiplier."
+msgstr "Reach {thresholdLabel} in lifetime trading volume to unlock a permanent 1× multiplier."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/pages/PointsPage/components/SidebarRewards.tsx
@@ -6434,10 +6434,6 @@ msgstr "Withdrawn"
 msgid "TP price above mark price"
 msgstr "TP price above mark price"
 
-#: src/pages/PointsPage/components/incentivesText.ts
-msgid "Trade featured or new markets to earn this boost."
-msgstr "Trade featured or new markets to earn this boost."
-
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price"
 msgstr "{typeString} Short Limit: {0} a short position when the price is above the trigger price"
@@ -6453,6 +6449,10 @@ msgstr "Price on Arbitrum"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signing failed"
 msgstr "Approval signing failed"
+
+#: src/pages/PointsPage/components/incentivesText.ts
+msgid "Place balancing trades ({thresholdLabel}) on underutilized sides to earn an additional multiplier on those trades."
+msgstr "Place balancing trades ({thresholdLabel}) on underutilized sides to earn an additional multiplier on those trades."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
@@ -9630,6 +9630,10 @@ msgstr "Order trigger price"
 msgid "Trade on GMX and optionally stake GMX tokens to increase your earning power. Trading generates points, while staking boosts how many points you earn."
 msgstr "Trade on GMX and optionally stake GMX tokens to increase your earning power. Trading generates points, while staking boosts how many points you earn."
 
+#: src/pages/PointsPage/components/incentivesText.ts
+msgid "Reach a lifetime trading volume milestone to unlock a permanent 1× multiplier."
+msgstr "Reach a lifetime trading volume milestone to unlock a permanent 1× multiplier."
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap TWAP: Swap tokens in evenly distributed parts over a specified time"
 msgstr "Swap TWAP: Swap tokens in evenly distributed parts over a specified time"
@@ -11661,10 +11665,6 @@ msgstr "TIMEKEY"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min position size"
 msgstr "Min position size"
-
-#: src/pages/PointsPage/components/incentivesText.ts
-msgid "Place balancing trades ({thresholdLabel}) on under-utilized sides"
-msgstr "Place balancing trades ({thresholdLabel}) on under-utilized sides"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Hours"

@@ -595,10 +595,6 @@ msgstr "滑點超出限制。預期最小值：{minOutputAmountText}，實際值
 msgid "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
 msgstr "僅來自交易手續費的預估年化報酬。<0/><1/>包含：交易手續費、借貸費用、清算、兌換。<2/>不包含：支撐代幣價格變動、PnL、資金費率。<3/><4/><5>在 Dune 上查看詳細數據</5>。"
 
-#: src/pages/PointsPage/components/incentivesText.ts
-msgid "Place balancing trades on under-utilized sides"
-msgstr "在使用率較低的方向進行平衡交易"
-
 #: src/domain/synthetics/incentives/constants.ts
 msgid "Advocate"
 msgstr "倡導者"
@@ -1971,6 +1967,10 @@ msgstr "借貸費用 / 日"
 msgid "Dashboard"
 msgstr "儀表板"
 
+#: src/pages/PointsPage/components/incentivesText.ts
+msgid "Place balancing trades on underutilized sides to earn an additional multiplier on those trades."
+msgstr ""
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate vault. Withdraw them to transfer to the new account."
 msgstr "您在推薦人金庫中有 esGMX 代幣。請先提取後再轉帳至新帳戶。"
@@ -2234,10 +2234,6 @@ msgstr "正在發送賣出請求..."
 #: src/pages/RpcDebug/parts.tsx
 msgid "PURPOSE"
 msgstr "用途"
-
-#: src/pages/PointsPage/components/incentivesText.ts
-msgid "Achieve a lifetime trading volume milestone"
-msgstr "達成終身交易量里程碑"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/components/Earn/Portfolio/RewardsBar.tsx
@@ -3097,6 +3093,10 @@ msgstr ""
 #: src/components/GmList/PerformanceLabel.tsx
 msgid "Projected yearly return vs. a Uniswap V2-style benchmark.<0/><1/>Note: Short timeframes may not reflect long-term performance.<2/><3/><4>View detailed stats on Dune</4>."
 msgstr "與 Uniswap V2 風格基準相比的預估年化回報。<0/><1/>注意：短期時間範圍可能無法反映長期績效。<2/><3/><4>在 Dune 上查看詳細數據</4>。"
+
+#: src/pages/PointsPage/components/incentivesText.ts
+msgid "Trade featured markets to activate this boost and earn a higher multiplier for those trades."
+msgstr ""
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
@@ -4880,10 +4880,6 @@ msgstr "總賺取獎勵"
 msgid "Perpetuals aggregator"
 msgstr "永續合約聚合器"
 
-#: src/pages/PointsPage/components/incentivesText.ts
-msgid "Achieve {thresholdLabel} lifetime trading volume"
-msgstr "達成 {thresholdLabel} 終身交易量"
-
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr "Request Market Swap"
@@ -5643,6 +5639,10 @@ msgstr "連結"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact factor for withdrawals"
 msgstr "提取最大可借出影響因子"
+
+#: src/pages/PointsPage/components/incentivesText.ts
+msgid "Reach {thresholdLabel} in lifetime trading volume to unlock a permanent 1× multiplier."
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/pages/PointsPage/components/SidebarRewards.tsx
@@ -6434,10 +6434,6 @@ msgstr "已提取"
 msgid "TP price above mark price"
 msgstr "TP 價格高於標記價格"
 
-#: src/pages/PointsPage/components/incentivesText.ts
-msgid "Trade featured or new markets to earn this boost."
-msgstr "交易精選或新市場以賺取此加成。"
-
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price"
 msgstr "{typeString} Short Limit：當價格高於觸發價格時{0}做空倉位"
@@ -6453,6 +6449,10 @@ msgstr "Arbitrum 上的價格"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signing failed"
 msgstr "授權簽署失敗"
+
+#: src/pages/PointsPage/components/incentivesText.ts
+msgid "Place balancing trades ({thresholdLabel}) on underutilized sides to earn an additional multiplier on those trades."
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
@@ -9630,6 +9630,10 @@ msgstr "訂單觸發價格"
 msgid "Trade on GMX and optionally stake GMX tokens to increase your earning power. Trading generates points, while staking boosts how many points you earn."
 msgstr "在 GMX 上交易，並可選擇質押 GMX 代幣以提升您的賺取能力。交易會產生積分，而質押會提升您能賺取的積分數量。"
 
+#: src/pages/PointsPage/components/incentivesText.ts
+msgid "Reach a lifetime trading volume milestone to unlock a permanent 1× multiplier."
+msgstr ""
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap TWAP: Swap tokens in evenly distributed parts over a specified time"
 msgstr "兌換 TWAP：在指定時間內將代幣均分為多份進行兌換"
@@ -11661,10 +11665,6 @@ msgstr "時間鍵"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min position size"
 msgstr "最小倉位大小"
-
-#: src/pages/PointsPage/components/incentivesText.ts
-msgid "Place balancing trades ({thresholdLabel}) on under-utilized sides"
-msgstr "在使用率較低的方向進行平衡交易（{thresholdLabel}）"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Hours"

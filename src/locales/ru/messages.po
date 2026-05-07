@@ -595,10 +595,6 @@ msgstr "Проскальзывание превышено. Ожидаемый м
 msgid "Projected yearly return from trading fees only.<0/><1/>Includes: trading fees, borrow fees, liquidations, swaps.<2/>Excludes: backing token price changes, PnL, funding fees.<3/><4/><5>View detailed stats on Dune</5>."
 msgstr "Прогнозируемая годовая доходность только от торговых комиссий.<0/><1/>Включает: торговые комиссии, комиссии за заём, ликвидации, свопы.<2/>Исключает: изменения цены базовых токенов, PnL, комиссии за фандинг.<3/><4/><5>Подробная статистика на Dune</5>."
 
-#: src/pages/PointsPage/components/incentivesText.ts
-msgid "Place balancing trades on under-utilized sides"
-msgstr "Размещайте балансирующие сделки на недозагруженных сторонах"
-
 #: src/domain/synthetics/incentives/constants.ts
 msgid "Advocate"
 msgstr "Адвокат"
@@ -1971,6 +1967,10 @@ msgstr "Комиссия за заимствование / день"
 msgid "Dashboard"
 msgstr "Панель"
 
+#: src/pages/PointsPage/components/incentivesText.ts
+msgid "Place balancing trades on underutilized sides to earn an additional multiplier on those trades."
+msgstr ""
+
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "You have esGMX tokens in the Affiliate vault. Withdraw them to transfer to the new account."
 msgstr "У вас есть токены esGMX в хранилище Affiliate. Выведите их для перевода на новый аккаунт."
@@ -2234,10 +2234,6 @@ msgstr "Отправка запроса на продажу…"
 #: src/pages/RpcDebug/parts.tsx
 msgid "PURPOSE"
 msgstr "НАЗНАЧЕНИЕ"
-
-#: src/pages/PointsPage/components/incentivesText.ts
-msgid "Achieve a lifetime trading volume milestone"
-msgstr "Достигните рубежа торгового объёма за всё время"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 #: src/components/Earn/Portfolio/RewardsBar.tsx
@@ -3097,6 +3093,10 @@ msgstr ""
 #: src/components/GmList/PerformanceLabel.tsx
 msgid "Projected yearly return vs. a Uniswap V2-style benchmark.<0/><1/>Note: Short timeframes may not reflect long-term performance.<2/><3/><4>View detailed stats on Dune</4>."
 msgstr "Прогнозируемая годовая доходность по сравнению с бенчмарком в стиле Uniswap V2.<0/><1/>Примечание: короткие временные периоды могут не отражать долгосрочную доходность.<2/><3/><4>Подробная статистика на Dune</4>."
+
+#: src/pages/PointsPage/components/incentivesText.ts
+msgid "Trade featured markets to activate this boost and earn a higher multiplier for those trades."
+msgstr ""
 
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
@@ -4880,10 +4880,6 @@ msgstr "Всего заработанных вознаграждений"
 msgid "Perpetuals aggregator"
 msgstr "Агрегатор бессрочных контрактов"
 
-#: src/pages/PointsPage/components/incentivesText.ts
-msgid "Achieve {thresholdLabel} lifetime trading volume"
-msgstr "Достигните торгового объёма {thresholdLabel} за всё время"
-
 #: src/components/TradeHistory/keys.ts
 msgid "Request Market Swap"
 msgstr "Запрос на Рыночный Обмен"
@@ -5643,6 +5639,10 @@ msgstr "Ссылки"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact factor for withdrawals"
 msgstr "Макс. фактор влияния заёмных средств для выводов"
+
+#: src/pages/PointsPage/components/incentivesText.ts
+msgid "Reach {thresholdLabel} in lifetime trading volume to unlock a permanent 1× multiplier."
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/pages/PointsPage/components/SidebarRewards.tsx
@@ -6434,10 +6434,6 @@ msgstr "Выведено"
 msgid "TP price above mark price"
 msgstr "Цена TP выше расчётной цены"
 
-#: src/pages/PointsPage/components/incentivesText.ts
-msgid "Trade featured or new markets to earn this boost."
-msgstr "Торгуйте на рекомендуемых или новых рынках, чтобы получить этот буст."
-
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Short Limit: {0} a short position when the price is above the trigger price"
 msgstr "{typeString} Short Limit: {0} шорт позицию, когда цена выше цены активации"
@@ -6453,6 +6449,10 @@ msgstr "Цена на Arbitrum"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Approval signing failed"
 msgstr "Ошибка подписания одобрения"
+
+#: src/pages/PointsPage/components/incentivesText.ts
+msgid "Place balancing trades ({thresholdLabel}) on underutilized sides to earn an additional multiplier on those trades."
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
@@ -9630,6 +9630,10 @@ msgstr "Цена активации ордера"
 msgid "Trade on GMX and optionally stake GMX tokens to increase your earning power. Trading generates points, while staking boosts how many points you earn."
 msgstr "Торгуйте на GMX и при желании стейкайте токены GMX, чтобы увеличить свою заработную мощность. Торговля генерирует очки, а стейкинг усиливает количество зарабатываемых очков."
 
+#: src/pages/PointsPage/components/incentivesText.ts
+msgid "Reach a lifetime trading volume milestone to unlock a permanent 1× multiplier."
+msgstr ""
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap TWAP: Swap tokens in evenly distributed parts over a specified time"
 msgstr "Swap TWAP: обмен токенов равномерными частями в течение заданного времени"
@@ -11661,10 +11665,6 @@ msgstr "TIMEKEY"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min position size"
 msgstr "Мин. размер позиции"
-
-#: src/pages/PointsPage/components/incentivesText.ts
-msgid "Place balancing trades ({thresholdLabel}) on under-utilized sides"
-msgstr "Размещайте балансирующие сделки ({thresholdLabel}) на недозагруженных сторонах"
 
 #: src/components/TwapRows/TwapRows.tsx
 msgid "Hours"
