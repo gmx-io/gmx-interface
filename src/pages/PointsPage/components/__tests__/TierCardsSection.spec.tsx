@@ -498,6 +498,105 @@ describe("TierCardsSection", () => {
     });
   });
 
+  describe("max tier display (FEDEV-3824)", () => {
+    it("shows 'Max tier reached' copy and green progress fill when at the top volume tier", () => {
+      // Tier4 (Legendary) is the last tier in mockConfig.volumeTiers.
+      const currentEpochStats: EpochStats = {
+        account: "0x1234",
+        multiplier: 250,
+        epochTimestamp: 1700000000,
+        volumeTier: "Tier4",
+        stakingTier: null,
+        tradedVolume: 25_000n * USD,
+        boostIds: [],
+      };
+
+      const { container } = renderWithI18n(
+        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />
+      );
+
+      const allText = container.textContent || "";
+      expect(allText).toMatch(/Max tier reached/);
+
+      // The fill bar should now be green-300 instead of blue-300.
+      const greenFill = container.querySelector(".bg-green-300[style*='width']") as HTMLElement | null;
+      expect(greenFill).toBeTruthy();
+      expect(greenFill?.style.width).toBe("100%");
+      // No blue fill on the volume card.
+      const blueVolumeFill = container.querySelector(".bg-blue-300[style*='width']");
+      expect(blueVolumeFill).toBeNull();
+    });
+
+    it("falls back to the preserve-mode bar at max volume tier when projectedTierId is null", () => {
+      // User is at the last tier but projection is to lose it next epoch — the bar should show
+      // progress towards keeping the current tier, NOT show the "Max tier reached" celebratory
+      // copy.
+      const currentEpochStats: EpochStats = {
+        account: "0x1234",
+        multiplier: 250,
+        epochTimestamp: 1700000000,
+        volumeTier: "Tier4",
+        stakingTier: null,
+        tradedVolume: 5_000n * USD, // far below Tier4's $20K threshold
+        boostIds: [],
+      };
+
+      const { container } = renderWithI18n(
+        <TierCardsSection
+          config={mockConfig}
+          currentEpochStats={currentEpochStats}
+          projectedVolumeTier={null}
+        />
+      );
+
+      const allText = container.textContent || "";
+      // Should NOT show the "Max tier reached" celebratory copy in this case.
+      expect(allText).not.toMatch(/Max tier reached/);
+      // Should show the keep/save preserve copy targeting Legendary (current top tier).
+      expect(allText).toMatch(/Trade \$\s?15K more to keep\s+Legendary status\s+\+1\.50x/);
+
+      // Bar fill should be the normal blue (not green).
+      const tooltips = container.querySelectorAll('[data-testid="tooltip"]');
+      const volumeTooltip = Array.from(tooltips).find((t) =>
+        t.querySelector('[data-testid="tooltip-handle"] .bg-blue-300[style*="width"]')
+      );
+      expect(volumeTooltip).toBeTruthy();
+      const tooltipContent = volumeTooltip?.querySelector('[data-testid="tooltip-content"]');
+      const tooltipText = tooltipContent?.textContent || "";
+      expect(tooltipText).toMatch(/\$\s?5K\/\$\s?20K\s+to save\s+Legendary Status\s+\+1\.50x/);
+    });
+
+    it("shows 'Max tier reached' copy and green segmented bar at the top staking tier", () => {
+      stakingDataMock.data = {
+        gmxInStakedGmx: 1500n * GMX_DEC,
+        gmxBalance: 0n,
+      };
+
+      const currentEpochStats: EpochStats = {
+        account: "0x1234",
+        multiplier: 200,
+        epochTimestamp: 1700000000,
+        volumeTier: null,
+        stakingTier: "Tier3", // last staking tier in mockConfig
+        tradedVolume: 0n,
+        boostIds: [],
+      };
+
+      const { container } = renderWithI18n(
+        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />
+      );
+
+      const allText = container.textContent || "";
+      expect(allText).toMatch(/Max tier reached/);
+
+      // All staking segments should now use green-300 instead of blue-300.
+      const greenSegments = container.querySelectorAll(".bg-green-300");
+      expect(greenSegments.length).toBeGreaterThanOrEqual(3);
+      const blueStakingSegments = container.querySelectorAll(".bg-blue-300:not([style*='width'])");
+      expect(blueStakingSegments.length).toBe(0);
+    });
+  });
+
   describe("card sorting", () => {
     it("active cards appear first, then inactive", () => {
       const currentEpochStats: EpochStats = {
