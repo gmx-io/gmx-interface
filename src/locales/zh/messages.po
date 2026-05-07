@@ -2945,6 +2945,10 @@ msgstr "持有 GLV 的奖金激励是什么？"
 msgid "Day(s)"
 msgstr "天"
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Realized PnL before fees, discounts, and price impact."
+msgstr "扣除费用、折扣和价格影响之前的已实现盈亏。"
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
 msgstr "正在从 GMX Account 提取..."
@@ -7102,10 +7106,6 @@ msgstr "流动性不足"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No executed or cancelled transaction yet"
 msgstr "暂无已执行或已取消的交易"
-
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Realized price PnL only, before fees, discounts, and price impact."
-msgstr "仅显示扣除费用、折扣和价格影响之前的已实现价格盈亏。"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx

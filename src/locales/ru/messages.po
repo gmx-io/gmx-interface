@@ -2945,6 +2945,10 @@ msgstr "Что такое бонусный стимул за持有 GLV?"
 msgid "Day(s)"
 msgstr "День(и)"
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Realized PnL before fees, discounts, and price impact."
+msgstr "Реализованный PnL до комиссий, скидок и влияния на цену."
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
 msgstr "Вывод средств с GMX Account..."
@@ -7102,10 +7106,6 @@ msgstr "Недостаточная ликвидность"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No executed or cancelled transaction yet"
 msgstr "Нет выполненных или отменённых транзакций"
-
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Realized price PnL only, before fees, discounts, and price impact."
-msgstr "Только реализованный ценовой PnL, до комиссий, скидок и влияния на цену."
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx

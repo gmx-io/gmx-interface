@@ -2945,6 +2945,10 @@ msgstr ""
 msgid "Day(s)"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Realized PnL before fees, discounts, and price impact."
+msgstr ""
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
 msgstr ""
@@ -7101,10 +7105,6 @@ msgstr ""
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No executed or cancelled transaction yet"
-msgstr ""
-
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Realized price PnL only, before fees, discounts, and price impact."
 msgstr ""
 
 #: src/pages/DebugOracleKeeper/parts.tsx

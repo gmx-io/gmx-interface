@@ -2945,6 +2945,10 @@ msgstr "GLV 보유에 대한 보너스 인센티브는 무엇인가요?"
 msgid "Day(s)"
 msgstr "일"
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Realized PnL before fees, discounts, and price impact."
+msgstr "수수료, 할인, 가격 영향이 반영되기 전의 실현 PnL."
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
 msgstr "GMX Account에서 출금 중..."
@@ -7102,10 +7106,6 @@ msgstr "유동성 부족"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No executed or cancelled transaction yet"
 msgstr "아직 실행 또는 취소된 거래가 없습니다"
-
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Realized price PnL only, before fees, discounts, and price impact."
-msgstr "수수료, 할인, 가격 영향이 반영되기 전의 실현 가격 PnL만 표시합니다."
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx

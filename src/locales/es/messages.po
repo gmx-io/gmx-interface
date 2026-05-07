@@ -2945,6 +2945,10 @@ msgstr "¿Cuál es el incentivo bono por mantener tu GLV?"
 msgid "Day(s)"
 msgstr "Día(s)"
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Realized PnL before fees, discounts, and price impact."
+msgstr "PnL realizado antes de comisiones, descuentos e impacto en el precio."
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
 msgstr "Retirando de GMX Account..."
@@ -7102,10 +7106,6 @@ msgstr "Insuficiente liquidez"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No executed or cancelled transaction yet"
 msgstr "Aún no hay transacciones ejecutadas ni canceladas"
-
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Realized price PnL only, before fees, discounts, and price impact."
-msgstr "Solo PnL realizado por precio, antes de comisiones, descuentos e impacto en el precio."
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx

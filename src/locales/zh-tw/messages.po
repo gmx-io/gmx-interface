@@ -2945,6 +2945,10 @@ msgstr "持有 GLV 的額外獎勵是什麼？"
 msgid "Day(s)"
 msgstr "天"
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Realized PnL before fees, discounts, and price impact."
+msgstr "扣除費用、折扣與價格影響之前的已實現盈虧。"
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
 msgstr "正在從 GMX Account 提取..."
@@ -7102,10 +7106,6 @@ msgstr "流動性不足"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No executed or cancelled transaction yet"
 msgstr "尚無已執行或已取消的交易"
-
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Realized price PnL only, before fees, discounts, and price impact."
-msgstr "僅顯示扣除費用、折扣與價格影響之前的已實現價格盈虧。"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx

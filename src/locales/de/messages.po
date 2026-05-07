@@ -2945,6 +2945,10 @@ msgstr "Was ist der Bonus-Anreiz für das Halten Ihres GLV?"
 msgid "Day(s)"
 msgstr "Tag(e)"
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Realized PnL before fees, discounts, and price impact."
+msgstr "Realisierter PnL vor Gebühren, Rabatten und Preiseinfluss."
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Withdrawing from GMX Account..."
 msgstr "Abheben von GMX Account..."
@@ -7102,10 +7106,6 @@ msgstr "Unzureichende Liquidität"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "No executed or cancelled transaction yet"
 msgstr "Noch keine ausgeführte oder stornierte Transaktion"
-
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Realized price PnL only, before fees, discounts, and price impact."
-msgstr "Nur realisierter Preis-PnL, vor Gebühren, Rabatten und Preiseinfluss."
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
