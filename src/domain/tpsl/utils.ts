@@ -1,4 +1,5 @@
-import type { PositionOrderInfo } from "domain/synthetics/orders";
+import type { OrderInfo, PositionOrderInfo } from "domain/synthetics/orders";
+import { isTriggerDecreaseOrderType, isTwapOrder } from "domain/synthetics/orders";
 import { convertToTokenAmount, convertToUsd } from "domain/synthetics/tokens";
 import type { TokenData } from "domain/synthetics/tokens";
 import { DUST_USD } from "lib/legacy";
@@ -20,6 +21,16 @@ export function isFullPositionCloseSizeDeltaUsd(sizeDeltaUsd: bigint | undefined
   }
 
   return sizeDeltaUsd >= positionSizeUsd || positionSizeUsd - sizeDeltaUsd < DUST_USD;
+}
+
+export function isFullClosePositionOrder(order: OrderInfo, positionSizeUsd?: bigint) {
+  if (isTwapOrder(order)) {
+    return false;
+  }
+
+  return (
+    isTriggerDecreaseOrderType(order.orderType) && isFullPositionCloseSizeDeltaUsd(order.sizeDeltaUsd, positionSizeUsd)
+  );
 }
 
 export function getPositionCloseSizeDeltaUsdForDisplay(sizeDeltaUsd: bigint, positionSizeUsd?: bigint) {

@@ -29,7 +29,6 @@ import {
   isStopIncreaseOrderType,
   isStopLossOrderType,
   isSwapOrderType,
-  isTriggerDecreaseOrderType,
   isTwapOrder,
 } from "domain/synthetics/orders";
 import { useDisabledCancelMarketOrderMessage } from "domain/synthetics/orders/useDisabledCancelMarketOrderMessage";
@@ -37,7 +36,7 @@ import { PositionsInfoData, getNameByOrderType, getPositionKey } from "domain/sy
 import { convertToTokenAmount, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
 import { TokensRatioAndSlippage } from "domain/tokens";
-import { isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
+import { isFullClosePositionOrder } from "domain/tpsl/utils";
 import { calculateDisplayDecimals, formatAmount, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useIsTruncated } from "lib/useIsTruncated";
@@ -175,9 +174,7 @@ function OrderSize({
       positionOrder.isLong
     )
   );
-  const isFullClose =
-    isTriggerDecreaseOrderType(positionOrder.orderType) &&
-    isFullPositionCloseSizeDeltaUsd(positionOrder.sizeDeltaUsd, position?.sizeInUsd);
+  const isFullClose = isFullClosePositionOrder(order, position?.sizeInUsd);
 
   function getCollateralLabel() {
     if (isDecreaseOrderType(positionOrder.orderType)) {
@@ -329,7 +326,7 @@ function SizeWithIcon({
   }
 
   const { sizeDeltaUsd } = order;
-  if (isTriggerDecreaseOrderType(order.orderType) && isFullPositionCloseSizeDeltaUsd(sizeDeltaUsd, positionSizeUsd)) {
+  if (isFullClosePositionOrder(order, positionSizeUsd)) {
     return (
       <span className={className}>
         <Trans>Full position close</Trans>

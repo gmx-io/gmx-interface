@@ -14,12 +14,11 @@ import {
   PositionOrderInfo,
   isIncreaseOrderType,
   isMarketOrderType,
-  isTriggerDecreaseOrderType,
   isTwapOrder,
 } from "domain/synthetics/orders";
 import { useDisabledCancelMarketOrderMessage } from "domain/synthetics/orders/useDisabledCancelMarketOrderMessage";
 import { getNameByOrderType, getPositionKey } from "domain/synthetics/positions";
-import { isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
+import { isFullClosePositionOrder } from "domain/tpsl/utils";
 import { calculateDisplayDecimals, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 
@@ -191,9 +190,7 @@ function PositionItemOrderText({ order }: { order: PositionOrderInfo }) {
     positionsInfoData,
     getPositionKey(order.account, order.marketAddress, order.targetCollateralToken.address, order.isLong)
   );
-  const isFullClose =
-    isTriggerDecreaseOrderType(order.orderType) &&
-    isFullPositionCloseSizeDeltaUsd(order.sizeDeltaUsd, position?.sizeInUsd);
+  const isFullClose = isFullClosePositionOrder(order, position?.sizeInUsd);
 
   return (
     <div key={order.key} className="text-start">
