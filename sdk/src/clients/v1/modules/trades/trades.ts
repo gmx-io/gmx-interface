@@ -265,9 +265,6 @@ export async function fetchTradeActions({
             fundingFeeAmount
             swapFeeUsd
             liquidationFeeAmount
-            traderDiscountAmount
-            affiliateRewardAmount
-            executionFee
             pnlUsd
             basePnlUsd
 

@@ -41,9 +41,6 @@ export type PositionTradeAction = {
   positionFeeAmount?: bigint;
   borrowingFeeAmount?: bigint;
   fundingFeeAmount?: bigint;
-  traderDiscountAmount?: bigint;
-  affiliateRewardAmount?: bigint;
-  executionFee?: bigint;
   pnlUsd?: bigint;
   basePnlUsd?: bigint;
   orderType: OrderType;

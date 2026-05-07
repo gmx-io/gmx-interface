@@ -4949,10 +4949,6 @@ msgstr "Buy GMX bonds on Bond Protocol at a discount with a short vesting period
 msgid "{positionTitle} orders"
 msgstr "{positionTitle} orders"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Execution fee"
-msgstr "Execution fee"
-
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
 msgstr "No resting orders"
@@ -8910,7 +8906,6 @@ msgid "Approval submitted<0/><1/><2>View status</2>"
 msgstr "Approval submitted<0/><1/><2>View status</2>"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Referral discount"
 msgstr "Referral discount"
 

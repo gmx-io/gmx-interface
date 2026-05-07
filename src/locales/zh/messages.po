@@ -4949,10 +4949,6 @@ msgstr "在 Bond Protocol 上以折扣价购买 GMX 债券，归属期较短"
 msgid "{positionTitle} orders"
 msgstr "{positionTitle} 订单"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Execution fee"
-msgstr "执行费用"
-
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
 msgstr "暂无挂单"
@@ -8910,7 +8906,6 @@ msgid "Approval submitted<0/><1/><2>View status</2>"
 msgstr "授权已提交<0/><1/><2>查看状态</2>"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Referral discount"
 msgstr "推荐折扣"
 

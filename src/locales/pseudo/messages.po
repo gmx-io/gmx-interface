@@ -4949,10 +4949,6 @@ msgstr ""
 msgid "{positionTitle} orders"
 msgstr ""
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Execution fee"
-msgstr ""
-
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
 msgstr ""
@@ -8910,7 +8906,6 @@ msgid "Approval submitted<0/><1/><2>View status</2>"
 msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Referral discount"
 msgstr ""
 

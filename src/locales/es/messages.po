@@ -4949,10 +4949,6 @@ msgstr "Compre bonos GMX en Bond Protocol con descuento y un periodo de consolid
 msgid "{positionTitle} orders"
 msgstr "Órdenes de {positionTitle}"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Execution fee"
-msgstr "Comisión de ejecución"
-
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
 msgstr "Sin órdenes en espera"
@@ -8910,7 +8906,6 @@ msgid "Approval submitted<0/><1/><2>View status</2>"
 msgstr "Aprobación enviada<0/><1/><2>Ver estado</2>"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Referral discount"
 msgstr "Descuento por referencia"
 

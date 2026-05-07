@@ -36,15 +36,10 @@ import {
 } from "./shared";
 import { actionTextMap, getActionTitle } from "../../keys";
 
-export type FormatPositionMessageContext = {
-  executionFeeUsd?: bigint;
-};
-
 export const formatPositionMessage = (
   tradeAction: PositionTradeAction,
   minCollateralUsd: bigint,
-  relativeTimestamp = true,
-  context: FormatPositionMessageContext = {}
+  relativeTimestamp = true
 ): RowDetails => {
   const collateralToken = tradeAction.initialCollateralToken;
   const isV22Action = tradeAction.srcChainId !== undefined;
@@ -686,7 +681,7 @@ export const formatPositionMessage = (
   let fees: string | undefined;
   let feesTooltip: ReturnType<typeof getFeesBreakdown>["lines"] | undefined;
   if (isExecuted) {
-    const breakdown = getFeesBreakdown(tradeAction, context.executionFeeUsd);
+    const breakdown = getFeesBreakdown(tradeAction);
     if (breakdown.lines.length > 0) {
       fees = formatDeltaUsd(breakdown.totalUsd);
       feesTooltip = breakdown.lines;
@@ -716,10 +711,7 @@ export const formatPositionMessage = (
   };
 };
 
-function getFeesBreakdown(
-  tradeAction: PositionTradeAction,
-  executionFeeUsd: bigint | undefined
-): { totalUsd: bigint; lines: Line[] } {
+function getFeesBreakdown(tradeAction: PositionTradeAction): { totalUsd: bigint; lines: Line[] } {
   const collateralPrice = tradeAction.collateralTokenPriceMin;
   const collateralDecimals = tradeAction.initialCollateralToken?.decimals;
   const orderType = tradeAction.orderType;
@@ -774,15 +766,6 @@ function getFeesBreakdown(
 
   if (tradeAction.swapImpactUsd !== undefined && tradeAction.swapImpactUsd !== 0n) {
     items.push({ label: t`Swap price impact`, amountUsd: tradeAction.swapImpactUsd });
-  }
-
-  const discountUsd = convertToUsd(tradeAction.traderDiscountAmount, collateralDecimals, collateralPrice);
-  if (discountUsd !== undefined && discountUsd !== 0n) {
-    items.push({ label: t`Referral discount`, amountUsd: discountUsd });
-  }
-
-  if (executionFeeUsd !== undefined && executionFeeUsd !== 0n) {
-    items.push({ label: t`Execution fee`, amountUsd: -executionFeeUsd });
   }
 
   const totalUsd = items.reduce((acc, item) => acc + item.amountUsd, 0n);

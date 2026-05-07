@@ -4949,10 +4949,6 @@ msgstr "Bond Protocol에서 짧은 베스팅 기간으로 GMX 채권을 할인 �
 msgid "{positionTitle} orders"
 msgstr "{positionTitle} 주문"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-msgid "Execution fee"
-msgstr "실행 수수료"
-
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 msgid "No resting orders"
 msgstr "대기 주문 없음"
@@ -8910,7 +8906,6 @@ msgid "Approval submitted<0/><1/><2>View status</2>"
 msgstr "승인 제출됨<0/><1/><2>상태 보기</2>"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Referral discount"
 msgstr "추천 할인"
 
