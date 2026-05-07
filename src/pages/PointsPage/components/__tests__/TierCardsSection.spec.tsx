@@ -337,6 +337,72 @@ describe("TierCardsSection", () => {
       // 7000 * 100 / 10000 = 70%
       expect(progressFill?.style.width).toBe("70%");
     });
+
+    it("renders volume progress bar inside a tooltip with 'get <NextTier> Status' content", () => {
+      // Tier1 (Ranked, $2K threshold) with $3K traded -> nextTier=Tier2 (Certified, $5K, +0.50x)
+      // Tooltip should be: "$3K/$5K get Certified Status +0.50x"
+      const currentEpochStats: EpochStats = {
+        account: "0x1234",
+        multiplier: 125,
+        epochTimestamp: 1700000000,
+        volumeTier: "Tier1",
+        stakingTier: null,
+        tradedVolume: 3000n * USD,
+        boostIds: [],
+      };
+
+      const { container } = renderWithI18n(
+        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />
+      );
+
+      // The volume progress bar lives inside a tooltip-handle wrapper; the mock renders
+      // both `tooltip-handle` and `tooltip-content` siblings. Find the tooltip whose
+      // handle contains the volume fill bar.
+      const tooltips = container.querySelectorAll('[data-testid="tooltip"]');
+      const volumeTooltip = Array.from(tooltips).find((t) =>
+        t.querySelector('[data-testid="tooltip-handle"] .bg-blue-300[style*="width"]')
+      );
+      expect(volumeTooltip).toBeTruthy();
+      const tooltipContent = volumeTooltip?.querySelector('[data-testid="tooltip-content"]');
+      const tooltipText = tooltipContent?.textContent || "";
+      expect(tooltipText).toMatch(/\$\s?3K\/\$\s?5K\s+get\s+Certified Status\s+\+0\.50x/);
+    });
+
+    it("renders preserve-mode tooltip ('to save <CurrentTier> Status') when projectedTierId is null", () => {
+      // User has Tier2 (Certified, +0.50x) but projection says they will lose it.
+      // Bar should target the current tier's threshold ($5K) instead of the next.
+      const currentEpochStats: EpochStats = {
+        account: "0x1234",
+        multiplier: 150,
+        epochTimestamp: 1700000000,
+        volumeTier: "Tier2",
+        stakingTier: null,
+        tradedVolume: 2000n * USD, // $2K out of $5K needed to keep
+        boostIds: [],
+      };
+
+      const { container } = renderWithI18n(
+        <TierCardsSection
+          config={mockConfig}
+          currentEpochStats={currentEpochStats}
+          projectedVolumeTier={null}
+        />
+      );
+
+      const tooltips = container.querySelectorAll('[data-testid="tooltip"]');
+      const volumeTooltip = Array.from(tooltips).find((t) =>
+        t.querySelector('[data-testid="tooltip-handle"] .bg-blue-300[style*="width"]')
+      );
+      expect(volumeTooltip).toBeTruthy();
+      const tooltipContent = volumeTooltip?.querySelector('[data-testid="tooltip-content"]');
+      const tooltipText = tooltipContent?.textContent || "";
+      // tradedVolume / currentThreshold = $2K/$5K, target to "save Certified"
+      expect(tooltipText).toMatch(/\$\s?2K\/\$\s?5K\s+to save\s+Certified Status\s+\+0\.50x/);
+
+      // CTA should also use "Trade $X more to keep ..." wording.
+      const allText = container.textContent || "";
+      expect(allText).toMatch(/Trade \$\s?3K more to keep\s+Certified status\s+\+0\.50x/);
+    });
   });
 
   describe("active staking card", () => {

@@ -250,15 +250,43 @@ function VolumeCard({
     </MultiplierChangeTooltip>
   ) : undefined;
 
+  // Preserve mode: user currently has a tier but is projected to lose it next epoch.
+  // The bar should target the current tier's threshold (what's needed to save it) instead
+  // of the next tier's threshold.
+  const isPreserveMode = active && Boolean(currentTierConfig) && projectedTierId === null && !isMaxTier;
   const nextThreshold = active ? nextTierConfig?.threshold : tierConfig?.[0]?.threshold;
-  const remainingToNext =
-    nextThreshold !== undefined && nextThreshold > tradedVolume ? nextThreshold - tradedVolume : 0n;
+  const targetTierConfig = isPreserveMode ? currentTierConfig : nextTierConfig;
+  const targetThreshold = isPreserveMode ? currentTierConfig?.threshold : nextThreshold;
+  const remainingToTarget =
+    targetThreshold !== undefined && targetThreshold > tradedVolume ? targetThreshold - tradedVolume : 0n;
   const progressPercent = isMaxTier
     ? 100
-    : nextThreshold !== undefined && nextThreshold > 0n
-      ? Number((tradedVolume * 100n) / nextThreshold)
+    : targetThreshold !== undefined && targetThreshold > 0n
+      ? Number((tradedVolume * 100n) / targetThreshold)
       : 0;
   const progressStyle = useMemo(() => ({ width: `${Math.min(progressPercent, 100)}%` }), [progressPercent]);
+
+  const progressTooltipContent =
+    active && targetTierConfig && targetThreshold !== undefined && targetThreshold > 0n ? (
+      <div className="text-13">
+        <span className="text-typography-primary">{formatCompactUsd(tradedVolume)}</span>
+        <span className="text-typography-secondary">{"/"}</span>
+        <span className="text-typography-primary">{formatCompactUsd(targetThreshold)}</span>{" "}
+        <span className="text-typography-secondary">
+          {isPreserveMode ? (
+            <Trans>
+              to save {VOLUME_TIER_BADGES[targetTierConfig.tier]()} Status{" "}
+              <span className="text-typography-primary">+{formatMultiplier(targetTierConfig.multiplier)}</span>
+            </Trans>
+          ) : (
+            <Trans>
+              get {VOLUME_TIER_BADGES[targetTierConfig.tier]()} Status{" "}
+              <span className="text-typography-primary">+{formatMultiplier(targetTierConfig.multiplier)}</span>
+            </Trans>
+          )}
+        </span>
+      </div>
+    ) : null;
 
   return (
     <div className={cx(tierCardBase, active ? tierCardActive : tierCardBanner)}>
@@ -308,20 +336,45 @@ function VolumeCard({
                 </Trans>
               </span>
             </div>
-            <div className="relative h-6 overflow-hidden rounded-8 bg-cold-blue-900">
-              <div
-                className="absolute left-0 top-0 h-full rounded-8 bg-blue-300 transition-[width] duration-300"
-                style={progressStyle}
+            {progressTooltipContent ? (
+              <TooltipWithPortal
+                as="div"
+                className="group/volume-bar flex items-center py-5"
+                handle={
+                  <div className="relative h-6 w-full overflow-hidden rounded-8 bg-cold-blue-900 transition-[background-color,transform] duration-150 ease-out group-hover/volume-bar:scale-y-150 group-hover/volume-bar:bg-cold-blue-700">
+                    <div
+                      className="absolute left-0 top-0 h-full rounded-8 bg-blue-300 transition-[background-color,width] duration-300 ease-out group-hover/volume-bar:bg-blue-100"
+                      style={progressStyle}
+                    />
+                  </div>
+                }
+                content={progressTooltipContent}
+                variant="none"
               />
-            </div>
-            {nextTierConfig && !isMaxTier && (
+            ) : (
+              <div className="relative h-6 overflow-hidden rounded-8 bg-cold-blue-900">
+                <div
+                  className="absolute left-0 top-0 h-full rounded-8 bg-blue-300 transition-[width] duration-300"
+                  style={progressStyle}
+                />
+              </div>
+            )}
+            {targetTierConfig && !isMaxTier && (
               <div className="flex items-center gap-4 py-2">
                 <span>
-                  <Trans>
-                    Trade {formatCompactUsd(remainingToNext)} more to unlock{" "}
-                    {VOLUME_TIER_BADGES[nextTierConfig.tier]()} status{" "}
-                    <span className="text-typography-primary">+{formatMultiplier(nextTierConfig.multiplier)}</span>
-                  </Trans>
+                  {isPreserveMode ? (
+                    <Trans>
+                      Trade {formatCompactUsd(remainingToTarget)} more to keep{" "}
+                      {VOLUME_TIER_BADGES[targetTierConfig.tier]()} status{" "}
+                      <span className="text-typography-primary">+{formatMultiplier(targetTierConfig.multiplier)}</span>
+                    </Trans>
+                  ) : (
+                    <Trans>
+                      Trade {formatCompactUsd(remainingToTarget)} more to unlock{" "}
+                      {VOLUME_TIER_BADGES[targetTierConfig.tier]()} status{" "}
+                      <span className="text-typography-primary">+{formatMultiplier(targetTierConfig.multiplier)}</span>
+                    </Trans>
+                  )}
                 </span>
               </div>
             )}
