@@ -1959,15 +1959,20 @@ export const selectTradeboxChooseSuitableMarket = createSelector((q) => {
 
     const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
 
+    // The caller (e.g. dropdown with its own swap/perp toggle) may want to commit a
+    // different trade type than the page is currently in — honor `currentTradeType`
+    // when provided; otherwise fall back to page state.
+    const effectiveTradeType = currentTradeType ?? tradeType;
+
     const suitableParams = chooseSuitableMarket({
       indexTokenAddress: tokenAddress,
       maxLongLiquidityPool,
       maxShortLiquidityPool,
-      isSwap: tradeType === TradeType.Swap,
+      isSwap: effectiveTradeType === TradeType.Swap,
       positionsInfo,
       ordersInfo,
-      preferredTradeType: preferredTradeType ?? tradeType,
-      currentTradeType,
+      preferredTradeType: preferredTradeType ?? effectiveTradeType,
+      currentTradeType: effectiveTradeType,
     });
 
     if (!suitableParams) return;

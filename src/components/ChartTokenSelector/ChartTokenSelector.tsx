@@ -324,9 +324,18 @@ function MarketsList() {
       setSearchKeyword("");
       close();
 
-      chooseSuitableMarket(tokenAddress, preferredTradeType, tradeType);
+      // Use the dropdown's local mode as the source of truth for the trade type committed
+      // to the page. Page state may differ (user toggled mode in the dropdown without
+      // selecting yet) — selecting a market is the moment we sync the page.
+      const effectiveTradeType: TradeType = isSwap
+        ? TradeType.Swap
+        : tradeType === TradeType.Swap
+          ? TradeType.Long
+          : tradeType;
+
+      chooseSuitableMarket(tokenAddress, preferredTradeType, effectiveTradeType);
     },
-    [chooseSuitableMarket, close, tradeType]
+    [chooseSuitableMarket, close, isSwap, tradeType]
   );
 
   const rowVerticalPadding = cx("px-12 py-10", {
