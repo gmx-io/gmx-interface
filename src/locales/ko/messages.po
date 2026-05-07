@@ -2043,8 +2043,8 @@ msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
-msgid "PnL after fees"
-msgstr "수수료 차감 후 PnL"
+#~ msgid "PnL after fees"
+#~ msgstr "수수료 차감 후 PnL"
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "{orderTypeLabel} {positionText}, -{0}"
@@ -5624,6 +5624,10 @@ msgstr "GLV"
 #~ msgid "Insufficient liquidity in GM pool"
 #~ msgstr "GM 풀의 유동성 부족"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "PnL after all fees"
+msgstr "모든 수수료 차감 후 PnL"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Additional reserve required:"
 msgstr "추가 예약 필요:"
@@ -6575,6 +6579,10 @@ msgstr "GLP 및 GMX 자동 복리 볼트"
 msgid "Position size exceeds pool value. Delta: {usdDeltaText}, pool: {poolUsdText}"
 msgstr "포지션 규모가 풀 가치를 초과합니다. 델타: {usdDeltaText}, 풀: {poolUsdText}"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Display net value and PnL after all fees"
+msgstr "모든 수수료 차감 후 순가치 및 PnL 표시"
+
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #~ msgid "Short liq."
 #~ msgstr "숏 유동성"
@@ -6653,6 +6661,10 @@ msgstr ""
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Access key"
 msgstr "액세스 키"
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Position value after PnL and all fees"
+msgstr "PnL 및 모든 수수료 차감 후 포지션 가치"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Real-time rants about GMX trades"
@@ -7699,8 +7711,8 @@ msgid "<0>To </0><1>{0}</1>"
 msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
-msgid "Display PnL after fees"
-msgstr "수수료 차감 후 PnL 표시"
+#~ msgid "Display PnL after fees"
+#~ msgstr "수수료 차감 후 PnL 표시"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Share position"
@@ -8339,6 +8351,7 @@ msgstr "개설 수수료의"
 msgid "Only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP, Multiplier Points and voting power to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 msgstr "전체 계정 전송에만 사용하십시오.<0/>이 작업은 모든 GMX, esGMX, GLP, Multiplier Points 및 투표권을 새 계정으로 전송합니다.<1/>수신 계정이 이전에 GMX 또는 GLP 토큰을 스테이킹한 적이 없는 경우에만 전송이 지원됩니다.<2/>전송은 단방향이며, 스테이킹된 토큰을 보낸 계정으로 다시 전송할 수 없습니다."
 
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8717,6 +8730,7 @@ msgstr "종료됨"
 msgid "GMX announcements"
 msgstr "GMX 공지사항"
 
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Close fee"
@@ -10149,6 +10163,10 @@ msgstr "증가"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap price impact"
 msgstr "스왑 가격 영향"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Include all fees, including close fees, in net value and PnL display."
+msgstr "청산 수수료를 포함한 모든 수수료를 순가치 및 PnL 표시에 반영합니다."
 
 #: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx

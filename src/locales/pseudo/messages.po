@@ -2043,8 +2043,8 @@ msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
-msgid "PnL after fees"
-msgstr ""
+#~ msgid "PnL after fees"
+#~ msgstr ""
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "{orderTypeLabel} {positionText}, -{0}"
@@ -5624,6 +5624,10 @@ msgstr ""
 #~ msgid "Insufficient liquidity in GM pool"
 #~ msgstr ""
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "PnL after all fees"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Additional reserve required:"
 msgstr ""
@@ -6575,6 +6579,10 @@ msgstr ""
 msgid "Position size exceeds pool value. Delta: {usdDeltaText}, pool: {poolUsdText}"
 msgstr ""
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Display net value and PnL after all fees"
+msgstr ""
+
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #~ msgid "Short liq."
 #~ msgstr ""
@@ -6652,6 +6660,10 @@ msgstr ""
 
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Access key"
+msgstr ""
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Position value after PnL and all fees"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -7699,8 +7711,8 @@ msgid "<0>To </0><1>{0}</1>"
 msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
-msgid "Display PnL after fees"
-msgstr ""
+#~ msgid "Display PnL after fees"
+#~ msgstr ""
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Share position"
@@ -8339,6 +8351,7 @@ msgstr ""
 msgid "Only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP, Multiplier Points and voting power to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 msgstr ""
 
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8717,6 +8730,7 @@ msgstr ""
 msgid "GMX announcements"
 msgstr ""
 
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Close fee"
@@ -10148,6 +10162,10 @@ msgstr ""
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap price impact"
+msgstr ""
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Include all fees, including close fees, in net value and PnL display."
 msgstr ""
 
 #: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx

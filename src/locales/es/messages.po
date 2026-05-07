@@ -2043,8 +2043,8 @@ msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
-msgid "PnL after fees"
-msgstr "PnL después de comisiones"
+#~ msgid "PnL after fees"
+#~ msgstr "PnL después de comisiones"
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "{orderTypeLabel} {positionText}, -{0}"
@@ -5624,6 +5624,10 @@ msgstr "GLV"
 #~ msgid "Insufficient liquidity in GM pool"
 #~ msgstr "Liquidez insuficiente en el pool GM"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "PnL after all fees"
+msgstr "PnL después de todas las tarifas"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Additional reserve required:"
 msgstr "Reserva adicional requerida:"
@@ -6575,6 +6579,10 @@ msgstr "Vaults de autocomposición de GLP y GMX"
 msgid "Position size exceeds pool value. Delta: {usdDeltaText}, pool: {poolUsdText}"
 msgstr "El tamaño de la posición excede el valor del pool. Delta: {usdDeltaText}, pool: {poolUsdText}"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Display net value and PnL after all fees"
+msgstr "Mostrar valor neto y PnL después de todas las tarifas"
+
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #~ msgid "Short liq."
 #~ msgstr "Liq. corto"
@@ -6653,6 +6661,10 @@ msgstr ""
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Access key"
 msgstr "Clave de acceso"
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Position value after PnL and all fees"
+msgstr "Valor de la posición después de PnL y todas las tarifas"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Real-time rants about GMX trades"
@@ -7699,8 +7711,8 @@ msgid "<0>To </0><1>{0}</1>"
 msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
-msgid "Display PnL after fees"
-msgstr "Mostrar PnL después de comisiones"
+#~ msgid "Display PnL after fees"
+#~ msgstr "Mostrar PnL después de comisiones"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Share position"
@@ -8339,6 +8351,7 @@ msgstr "de comisión de apertura"
 msgid "Only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP, Multiplier Points and voting power to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 msgstr "Utilice esta opción únicamente para transferencias completas de cuenta.<0/>Se transferirán todos sus GMX, esGMX, GLP, Multiplier Points y poder de voto a su nueva cuenta.<1/>Las transferencias solo son posibles si la cuenta receptora no ha tenido GMX o GLP en staking anteriormente.<2/>Las transferencias son unidireccionales; no podrá devolver los tokens en staking a la cuenta de origen."
 
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8717,6 +8730,7 @@ msgstr "Concluido"
 msgid "GMX announcements"
 msgstr "GMX announcements"
 
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Close fee"
@@ -10149,6 +10163,10 @@ msgstr "Incrementar"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap price impact"
 msgstr "Impacto en el precio del intercambio"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Include all fees, including close fees, in net value and PnL display."
+msgstr "Incluir todas las tarifas, incluidas las tarifas de cierre, en la visualización del valor neto y PnL."
 
 #: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx

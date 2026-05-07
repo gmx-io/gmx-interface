@@ -2043,8 +2043,8 @@ msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
-msgid "PnL after fees"
-msgstr "扣费后 PnL"
+#~ msgid "PnL after fees"
+#~ msgstr "扣费后 PnL"
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "{orderTypeLabel} {positionText}, -{0}"
@@ -5624,6 +5624,10 @@ msgstr "GLV"
 #~ msgid "Insufficient liquidity in GM pool"
 #~ msgstr "GM 池流动性不足"
 
+#: src/components/PositionItem/PositionItem.tsx
+msgid "PnL after all fees"
+msgstr "扣除所有费用后的盈亏"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Additional reserve required:"
 msgstr "需要额外保留："
@@ -6575,6 +6579,10 @@ msgstr "GLP 和 GMX 自动复合金库"
 msgid "Position size exceeds pool value. Delta: {usdDeltaText}, pool: {poolUsdText}"
 msgstr "仓位规模超过池价值。Delta：{usdDeltaText}，池：{poolUsdText}"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Display net value and PnL after all fees"
+msgstr "显示扣除所有费用后的净值和盈亏"
+
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #~ msgid "Short liq."
 #~ msgstr "做空流动性"
@@ -6653,6 +6661,10 @@ msgstr ""
 #: src/components/TenderlySettings/TenderlySettings.tsx
 msgid "Access key"
 msgstr "访问密钥"
+
+#: src/components/PositionItem/PositionItem.tsx
+msgid "Position value after PnL and all fees"
+msgstr "扣除盈亏和所有费用后的仓位价值"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Real-time rants about GMX trades"
@@ -7699,8 +7711,8 @@ msgid "<0>To </0><1>{0}</1>"
 msgstr ""
 
 #: src/components/SettingsModal/DisplaySettings.tsx
-msgid "Display PnL after fees"
-msgstr "显示扣除费用后的 PnL"
+#~ msgid "Display PnL after fees"
+#~ msgstr "显示扣除费用后的 PnL"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Share position"
@@ -8339,6 +8351,7 @@ msgstr "开仓费用"
 msgid "Only use this for full account transfers.<0/>This will transfer all your GMX, esGMX, GLP, Multiplier Points and voting power to your new account.<1/>Transfers are only supported if the receiving account has not staked GMX or GLP tokens before.<2/>Transfers are one-way, you will not be able to transfer staked tokens back to the sending account."
 msgstr "仅在完整账户转移时使用此功能。<0/>这将把您所有的 GMX、esGMX、GLP、乘数积分和投票权转移到您的新账户。<1/>仅当接收账户之前未质押过 GMX 或 GLP 代币时才支持转移。<2/>转移是单向的，您将无法将已质押的代币转回发送账户。"
 
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionSeller/rows/PositionSellerPriceImpactFeesRow.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8717,6 +8730,7 @@ msgstr "已结束"
 msgid "GMX announcements"
 msgstr "GMX announcements"
 
+#: src/components/PositionItem/PositionItem.tsx
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Close fee"
@@ -10149,6 +10163,10 @@ msgstr "增加"
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 msgid "Swap price impact"
 msgstr "兑换价格影响"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Include all fees, including close fees, in net value and PnL display."
+msgstr "在净值和盈亏显示中包含所有费用，包括平仓费用。"
 
 #: src/components/Claims/ClaimHistoryRow/ClaimCollateralHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
