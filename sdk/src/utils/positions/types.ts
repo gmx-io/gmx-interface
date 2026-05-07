@@ -48,6 +48,9 @@ export type PositionInfo = Position & {
   pnlPercentage: bigint;
   pnlAfterFees: bigint;
   pnlAfterFeesPercentage: bigint;
+  netValueAfterAllFees: bigint;
+  pnlAfterAllFees: bigint;
+  pnlAfterAllFeesPercentage: bigint;
   netPriceImapctDeltaUsd: bigint;
   priceImpactDiffUsd: bigint;
   pendingImpactUsd: bigint;
