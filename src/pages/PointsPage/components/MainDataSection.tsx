@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo } from "react";
 
-import { formatMultiplier } from "domain/synthetics/incentives/constants";
+import { MAX_MULTIPLIER, formatMultiplier } from "domain/synthetics/incentives/constants";
 import type { EpochStats, IncentivesConfig, StakingTierId, VolumeTierId } from "domain/synthetics/incentives/types";
 import { formatAmount } from "lib/numbers";
 
@@ -56,8 +56,10 @@ export function MainDataSection({
     const projectedStakingMult =
       projectedStakingTier !== undefined ? findStakingMult(projectedStakingTier) : currentStakingMult;
 
-    const projected =
+    const rawProjected =
       Number(multiplier) + (projectedVolumeMult - currentVolumeMult) + (projectedStakingMult - currentStakingMult);
+    const cap = config.maxMultiplier ?? MAX_MULTIPLIER;
+    const projected = Math.min(rawProjected, cap);
 
     if (formatMultiplier(projected) === formatMultiplier(multiplier)) return undefined;
 
