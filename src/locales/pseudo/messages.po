@@ -1379,10 +1379,6 @@ msgstr ""
 msgid "May take a few minutes to reflect. Check back later"
 msgstr ""
 
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Net total of action-level fees, discounts, and price impact. Hover the value to see the breakdown."
-msgstr ""
-
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Go to affiliate dashboard"
 msgstr ""
@@ -10908,6 +10904,10 @@ msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "OK"
+msgstr ""
+
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Net total of action-level fees, and price impact. Hover the value to see the breakdown."
 msgstr ""
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx

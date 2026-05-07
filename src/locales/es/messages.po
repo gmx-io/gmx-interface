@@ -1379,10 +1379,6 @@ msgstr "Comprar GM: {0}"
 msgid "May take a few minutes to reflect. Check back later"
 msgstr "Puede tardar unos minutos en reflejarse. Vuelva a comprobarlo más tarde"
 
-#: src/components/TradeHistory/TradeHistory.tsx
-msgid "Net total of action-level fees, discounts, and price impact. Hover the value to see the breakdown."
-msgstr "Total neto de comisiones, descuentos e impacto en el precio a nivel de acción. Pasa el cursor sobre el valor para ver el desglose."
-
 #: src/components/Referrals/affiliates/createCode/CreateAffiliateWizard.tsx
 msgid "Go to affiliate dashboard"
 msgstr ""
@@ -10909,6 +10905,10 @@ msgstr "Ingresa una relación"
 #: src/pages/RpcDebug/parts.tsx
 msgid "OK"
 msgstr "OK"
+
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Net total of action-level fees, and price impact. Hover the value to see the breakdown."
+msgstr ""
 
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx

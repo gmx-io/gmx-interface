@@ -197,7 +197,7 @@ export function TradeHistory(p: Props) {
                   variant="iconStroke"
                   content={
                     <Trans>
-                      Net total of action-level fees, discounts, and price impact. Hover the value to see the breakdown.
+                      Net total of action-level fees, and price impact. Hover the value to see the breakdown.
                     </Trans>
                   }
                 >
