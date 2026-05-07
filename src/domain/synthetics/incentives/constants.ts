@@ -54,10 +54,8 @@ export function getEpochDuration(config?: { epochDuration: number }): number {
 }
 
 export function formatMultiplier(rawMultiplier: number | undefined): string {
-  if (rawMultiplier === undefined || rawMultiplier === 0) return "0x";
-
-  const value = rawMultiplier / MULTIPLIER_DECIMALS;
-  return `${Number(value.toFixed(2))}x`;
+  const value = (rawMultiplier ?? 0) / MULTIPLIER_DECIMALS;
+  return `${value.toFixed(2)}x`;
 }
 
 export function getVolumeTierBadge(tier: string): string {

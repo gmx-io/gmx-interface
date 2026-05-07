@@ -36,7 +36,7 @@ describe("incentivesText", () => {
   });
 
   it("uses config values for multiplier and epoch windows", () => {
-    expect(getMaxMultiplierLabel(mockConfig)).toBe("5.5x");
+    expect(getMaxMultiplierLabel(mockConfig)).toBe("5.50x");
     expect(getPointsExpirationEpochs(mockConfig)).toBe(9);
     expect(getVolumeTierPersistenceEpochs(mockConfig)).toBe(6);
   });

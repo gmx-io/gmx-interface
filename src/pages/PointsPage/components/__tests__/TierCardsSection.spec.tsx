@@ -334,7 +334,7 @@ describe("TierCardsSection", () => {
       renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />);
 
       const allText = document.body.textContent || "";
-      expect(allText).toContain("Stake 75 GMX more to get Advocate status +0.5x");
+      expect(allText).toContain("Stake 75 GMX more to get Advocate status +0.50x");
       expect(screen.getByText("Buy GMX")).toBeDefined();
     });
 
@@ -357,7 +357,7 @@ describe("TierCardsSection", () => {
       renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />);
 
       const allText = document.body.textContent || "";
-      expect(allText).toContain("Stake 75 GMX more to get Advocate status +0.5x");
+      expect(allText).toContain("Stake 75 GMX more to get Advocate status +0.50x");
       expect(screen.getByText("Stake 75 GMX")).toBeDefined();
     });
 
