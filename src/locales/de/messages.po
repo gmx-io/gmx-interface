@@ -361,10 +361,6 @@ msgstr "VOLLSTÄNDIGER MARKT"
 msgid "To"
 msgstr "An"
 
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "Can I sell my GLV, and where?"
-msgstr "Kann ich mein GLV verkaufen, und wo?"
-
 #: landing/src/pages/Home/FaqSection/FaqSection.tsx
 #: src/components/Earn/Discovery/EarnFaq.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
@@ -474,10 +470,6 @@ msgstr "verringern"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Insufficient liquidity in any BTC/USD pool"
 msgstr "Unzureichende Liquidität in allen BTC/USD Pools"
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "Yes, GLV is fully liquid and permissionless. Sell via the GMX interface to redeem for underlying assets with low fees."
-msgstr "Ja, GLV ist vollständig liquide und genehmigungsfrei. Verkaufen Sie über die GMX-Oberfläche, um die zugrunde liegenden Vermögenswerte mit niedrigen Gebühren einzulösen."
 
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Unrealized base PnL"
@@ -2929,10 +2921,6 @@ msgstr "TOKEN"
 msgid "No eligible tokens available for deposit"
 msgstr "Keine berechtigten Tokens für Einzahlung verfügbar"
 
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "What is the bonus incentive for holding your GLV?"
-msgstr "Was ist der Bonus-Anreiz für das Halten Ihres GLV?"
-
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Day(s)"
 msgstr "Tag(e)"
@@ -5034,10 +5022,6 @@ msgstr "Neuen Code erstellen"
 msgid "Fees exceed pay amount"
 msgstr "Gebühren übersteigen den Zahlungsbetrag"
 
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "Why do I receive two different GLV tokens?"
-msgstr "Warum erhalte ich zwei verschiedene GLV-Tokens?"
-
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Set TP/SL"
 msgstr "TP/SL setzen"
@@ -5133,10 +5117,6 @@ msgstr "Preis eingeben"
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 msgid "Updating..."
 msgstr "Wird aktualisiert…"
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "GLV earns from trading fees (open, close, borrow, liquidations, swaps) and trader losses across GM pools. Yields auto-compound for seamless growth (20-30% historical APY). View earnings and portfolio value on the <0>Pools page</0>."
-msgstr "GLV verdient durch Handelsgebühren (Eröffnung, Schließung, Kreditaufnahme, Liquidierungen, Swaps) und Verluste von Händlern über GM Pools hinweg. Erträge werden automatisch reinvestiert für nahtloses Wachstum (20–30% historischer APY). Sehen Sie Erträge und Portfoliowert auf der <0>Pools-Seite</0> ein."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Market Increase"
@@ -5334,10 +5314,6 @@ msgstr "<0>Benachrichtigungen werden von Notifi bereitgestellt und sind nicht mi
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "{typeString} Long Limit: {0} a long position when the price is below the trigger price."
 msgstr "{typeString} Long Limit: {0} einer Long Position, wenn der Preis unter dem Auslösepreis liegt."
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "<0>GLV (GMX Liquidity Vaults) is GMX V2's improved version of GLP. It's a yield-optimizing crypto-index token that:</0><1><2>Earns fees from liquidity provision across GMX V2 markets</2><3>Dynamically allocates liquidity to highest-utilized markets, maximizing capital efficiency and yield</3><4>Auto-compounds yield (no manual claiming needed, unlike GLP)</4></1>"
-msgstr "<0>GLV (GMX Liquidity Vaults) ist die verbesserte Version von GLP in GMX V2. Es ist ein renditeoptimierendes Kryptoindextoken, das:</0><1><2>Gebühren aus der Liquiditätsbereitstellung auf GMX V2-Märkten erzielt</2><3>Liquidität dynamisch den am stärksten genutzten Märkten zuweist und so die Kapitaleffizienz und Rendite maximiert</3><4>Die Rendite automatisch reinvestiert (kein manuelles Einfordern erforderlich, im Gegensatz zu GLP)</4></1>"
 
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
@@ -5841,10 +5817,6 @@ msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 msgid "Allowed actions"
 msgstr "Erlaubte Aktionen"
 
-#: src/components/GmList/GmList.tsx
-msgid "Pools that provide liquidity to specific GMX markets. Supports single-asset and native asset options."
-msgstr "Pools, die Liquidität für bestimmte GMX-Märkte bereitstellen. Unterstützt Einzeltoken- und native Tokenoptionen."
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor"
 msgstr "Maximaler Finanzierungsfaktor"
@@ -6210,6 +6182,10 @@ msgstr "Empfehlungscode anwenden"
 msgid "Impact exponent (positive)"
 msgstr "Auswirkungsexponent (positiv)"
 
+#: src/components/GmList/GmList.tsx
+msgid "Liquidity pools for specific GMX markets with single-asset and native asset options"
+msgstr "Liquiditätspools für bestimmte GMX-Märkte mit Einzeltoken- und nativen Tokenoptionen"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "If you continue, you will lose {0} in rewards"
 msgstr "Wenn Sie fortfahren, verlieren Sie {0} an Belohnungen"
@@ -6443,10 +6419,6 @@ msgstr "Analytics"
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
 msgstr "wstETH APR"
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "About the GLP incident"
-msgstr "Über den GLP Vorfall"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 #: src/pages/BuyGMX/BuyGMX.tsx
@@ -8244,10 +8216,6 @@ msgstr "Entstaken fehlgeschlagen"
 msgid "[{0}]"
 msgstr "[{0}]"
 
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "Two GLV variants mirror GLP's multi-asset exposure: one optimized for ETH markets (50% ETH / 50% USDC), the other for BTC markets (50% BTC / 50% USDC). This reflects the recovered funds composition and enables dynamic liquidity allocation across top GMX markets for enhanced yield."
-msgstr "Zwei GLV-Varianten spiegeln die Multi-Asset-Exposition von GLP wider: eine optimiert für ETH-Märkte (50% ETH / 50% USDC), die andere für BTC-Märkte (50% BTC / 50% USDC). Dies entspricht der Zusammensetzung der wiederhergestellten Mittel und ermöglicht eine dynamische Liquiditätsallokation über die führenden GMX-Märkte für eine verbesserte Rendite."
-
 #: src/components/TVChart/ChartHeader.tsx
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Net rate / 1h"
@@ -8791,10 +8759,6 @@ msgstr "Großes Konto"
 msgid "Shift fee"
 msgstr "Shift-Gebühr"
 
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "What is GLV exactly?"
-msgstr "Was ist GLV genau?"
-
 #: src/pages/RpcDebug/parts.tsx
 msgid "Up"
 msgstr "Aktiv"
@@ -9062,10 +9026,6 @@ msgstr "Liquidationsrisikowarnungen"
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Order key:"
 msgstr "Order-Schlüssel:"
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "Why is the claim in GLV tokens?"
-msgstr "Warum erfolgt der Anspruch in GLV-Tokens?"
 
 #: src/components/TVChartContainer/StaticLine.tsx
 #: src/components/TVChartContainer/StaticLine.tsx
@@ -9462,10 +9422,6 @@ msgstr "TWAP-Teil ausführen"
 #: src/components/TradeHistory/keys.ts
 msgid "Create Limit Swap"
 msgstr "Limit-Tausch erstellen"
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "A $500,000 GLV pool (DAO-funded) rewards long-term holders. Keep your GLV for at least 3 months without selling or transferring to receive a pro rata share."
-msgstr "Ein GLV Pool in Höhe von 500.000 $ (DAO-finanziert) belohnt Langzeitinhaber. Halten Sie Ihre GLV mindestens 3 Monate, ohne sie zu verkaufen oder zu übertragen, um einen anteiligen Anteil zu erhalten."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "esGMX OTC market"
@@ -10498,10 +10454,6 @@ msgstr "Anonymer Chat mit GMX-Team"
 msgid "Continue"
 msgstr "Weiter"
 
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "GLV tokens mirror GLP's composition and integrate seamlessly into GMX V2's liquidity ecosystem. You can sell or hold to earn yield. A $500,000 GLV incentive pool rewards holders who keep their allocation for at least 3 months."
-msgstr "GLV Token spiegeln die Zusammensetzung von GLP wider und integrieren sich nahtlos in das Liquiditätsökosystem von GMX V2. Sie können verkaufen oder halten, um Rendite zu erzielen. Ein $500.000 GLV Anreizpool belohnt Inhaber, die ihre Zuteilung mindestens 3 Monate halten."
-
 #: landing/src/pages/Home/LiqiuditySection/LiqiuditySection.tsx
 msgid "Start earning"
 msgstr "Jetzt verdienen"
@@ -10900,10 +10852,6 @@ msgstr "Express Trading aktiviert. Deaktivieren Sie es in den <0>Einstellungen</
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Set trigger price above mark price"
 msgstr "Auslösepreis über dem Markpreis festlegen"
-
-#: src/components/UserIncentiveDistribution/AboutGlpIncident.tsx
-msgid "How does GLV earn yield, and where do I see my earnings?"
-msgstr "Wie verdient GLV Rendite, und wo sehe ich meine Einnahmen?"
 
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No opportunities on this chain yet"
