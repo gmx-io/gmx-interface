@@ -407,7 +407,7 @@ function BoostsTable({
               <TableTd padding="compact" className="text-typography-secondary">
                 <>
                   {description}{" "}
-                  {isFeaturedMarkets ? (
+                  {isFeaturedMarkets && (
                     <TooltipWithPortal
                       variant="iconStroke"
                       handle={<Trans>Featured markets.</Trans>}
@@ -415,8 +415,6 @@ function BoostsTable({
                         <FeaturedMarketsTooltipContent chainId={chainId} featuredMarketTokens={featuredMarketTokens} />
                       }
                     />
-                  ) : (
-                    description
                   )}
                 </>
               </TableTd>
