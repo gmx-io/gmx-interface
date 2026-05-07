@@ -32,23 +32,30 @@ export type AuditSummary = {
   totalRewards: bigint;
 };
 
+export type IncentiveAuditOrderBy =
+  | "fees_ASC"
+  | "fees_DESC"
+  | "points_ASC"
+  | "points_DESC"
+  | "rewards_ASC"
+  | "rewards_DESC"
+  | "volume_ASC"
+  | "volume_DESC"
+  | "epochTimestamp_ASC"
+  | "epochTimestamp_DESC"
+  | "effectivePointsRatio_ASC"
+  | "effectivePointsRatio_DESC"
+  | "effectiveRewardsRatio_ASC"
+  | "effectiveRewardsRatio_DESC";
+
 const AUDIT_QUERY = gql`
   query IncentiveAccountEpochAudit(
-    $epochTimestamp: Int
-    $account: String
-    $orderBy: String
-    $orderDirection: String
+    $where: IncentiveAccountEpochAuditWhereInput
+    $orderBy: IncentiveAccountEpochAuditOrderByInput
     $limit: Int
     $offset: Int
   ) {
-    incentiveAccountEpochAudit(
-      epochTimestamp: $epochTimestamp
-      account: $account
-      orderBy: $orderBy
-      orderDirection: $orderDirection
-      limit: $limit
-      offset: $offset
-    ) {
+    incentiveAccountEpochAudit(where: $where, orderBy: $orderBy, limit: $limit, offset: $offset) {
       totalCount
       items {
         id
@@ -94,6 +101,11 @@ type AuditResult = {
   totalCount: number;
 };
 
+export type IncentiveAuditWhere = {
+  epochTimestamp?: number;
+  account?: string;
+};
+
 function parseAuditEntry(e: RawAuditEntry): AuditEntry {
   return {
     id: e.id,
@@ -117,16 +129,21 @@ function parseAuditEntry(e: RawAuditEntry): AuditEntry {
 export function useIncentiveAccountEpochAudit(
   chainId: number,
   params: {
-    epochTimestamp?: number;
-    account?: string;
-    orderBy?: string;
-    orderDirection?: string;
+    where?: IncentiveAuditWhere;
+    orderBy?: IncentiveAuditOrderBy;
     limit?: number;
     offset?: number;
     enabled?: boolean;
   }
 ) {
-  const { epochTimestamp, account, orderBy, orderDirection, limit = 20, offset = 0, enabled = true } = params;
+  const { where, orderBy, limit = 20, offset = 0, enabled = true } = params;
+
+  // Lowercase the account up front so the cache key and the GraphQL `where`
+  // variable both use a deterministic representation. The backend resolver
+  // normalizes via viem's `getAddress`, but lowercasing here keeps SWR cache
+  // keys stable regardless of input casing.
+  const normalizedAccount = where?.account?.toLowerCase();
+  const epochTimestamp = where?.epochTimestamp;
 
   const { data, error, isLoading } = useSWR<AuditResult | undefined>(
     enabled
@@ -134,9 +151,8 @@ export function useIncentiveAccountEpochAudit(
           "useIncentiveAccountEpochAudit",
           chainId,
           epochTimestamp ?? "all",
-          account ?? "all",
-          orderBy,
-          orderDirection,
+          normalizedAccount ?? "all",
+          orderBy ?? "default",
           limit,
           offset,
         ]
@@ -146,9 +162,13 @@ export function useIncentiveAccountEpochAudit(
         const client = getSubsquidGraphClient(chainId);
         if (!client) return undefined;
 
-        const variables: Record<string, unknown> = { orderBy, orderDirection, limit, offset };
-        if (epochTimestamp !== undefined) variables.epochTimestamp = epochTimestamp;
-        if (account !== undefined) variables.account = account.toLowerCase();
+        const whereVar: Record<string, unknown> = {};
+        if (epochTimestamp !== undefined) whereVar.epochTimestamp = epochTimestamp;
+        if (normalizedAccount !== undefined) whereVar.account = normalizedAccount;
+
+        const variables: Record<string, unknown> = { limit, offset };
+        if (Object.keys(whereVar).length > 0) variables.where = whereVar;
+        if (orderBy !== undefined) variables.orderBy = orderBy;
 
         const res = await client.query({
           query: AUDIT_QUERY,

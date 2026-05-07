@@ -51,12 +51,15 @@ export function IncentivesAuditDetail({
     copyToClipboard(account);
   }, [copyToClipboard, account]);
 
+  // The Detail page loads up to 1000 rows for one account and sorts client-side, so
+  // we don't pass a server `orderBy` here. The default (`fees_DESC`) is fine — the
+  // useMemo below resorts on every direction change.
   const {
     data: auditData,
     error: auditError,
     loading: auditLoading,
   } = useIncentiveAccountEpochAudit(chainId, {
-    account,
+    where: { account },
     limit: 1000,
   });
 
