@@ -1292,7 +1292,14 @@ export const DepositView = () => {
             validationBannerErrorName={buttonState.bannerErrorName}
             chainId={settlementChainId}
             srcChainId={depositViewChain as SourceChainId | undefined}
+            onBeforeNavigation={() => setIsVisibleOrView(false)}
           />
+        </AlertInfoCard>
+      )}
+
+      {depositMaxDetails.gasPaymentTokenWarningContent && (
+        <AlertInfoCard type="warning" className="mb-16" hideClose>
+          {depositMaxDetails.gasPaymentTokenWarningContent}
         </AlertInfoCard>
       )}
 
