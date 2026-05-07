@@ -173,7 +173,7 @@ export function PositionList(p: Props) {
       {positionToShare && (
         <PositionShare
           key={positionToShare.key}
-          pnlAfterFeesUsd={showPnlAfterFees ? positionToShare.pnlAfterAllFees : positionToShare.pnlAfterFees}
+          pnlAfterFeesUsd={showPnlAfterFees ? positionToShare.pnlAfterAllFees : positionToShare.pnl}
           setIsPositionShareModalOpen={setIsPositionShareModalOpen}
           isPositionShareModalOpen={isPositionShareModalOpen}
           entryPrice={positionToShare.entryPrice}
@@ -184,7 +184,7 @@ export function PositionList(p: Props) {
           markPrice={positionToShare.markPrice}
           account={positionToShare.account}
           pnlAfterFeesPercentage={
-            showPnlAfterFees ? positionToShare.pnlAfterAllFeesPercentage : positionToShare.pnlAfterFeesPercentage
+            showPnlAfterFees ? positionToShare.pnlAfterAllFeesPercentage : positionToShare.pnlPercentage
           }
           chainId={chainId}
           shareSource="positions-list"
