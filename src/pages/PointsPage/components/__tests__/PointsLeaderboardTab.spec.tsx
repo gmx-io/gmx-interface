@@ -5,7 +5,6 @@ import { MemoryRouter } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import type { LeaderboardEntry } from "domain/synthetics/incentives/types";
-import type { AccountLeaderboardEntry } from "domain/synthetics/incentives/useIncentivesAccountLeaderboardEntry";
 
 vi.mock("img/ic_share_arrow_filled.svg?react", () => ({
   default: (props: any) => <svg data-testid="share-icon" {...props} />,
@@ -38,33 +37,37 @@ vi.mock("domain/synthetics/incentives/useIncentivesConfig", () => ({
   useIncentivesConfig: () => ({ data: incentivesConfigMock.data }),
 }));
 
+// The component uses `useIncentivesLeaderboard` for both the page query and
+// the where-filtered pinned-row query. The mock dispatches by params.where:
+// when params.where.account is set, it returns the pinned entry; otherwise it
+// returns the page data.
 const leaderboardMock = vi.hoisted(() => ({
   data: [] as LeaderboardEntry[] | undefined,
   totalCount: 0 as number | undefined,
   loading: false,
+  pinnedEntry: undefined as LeaderboardEntry | undefined,
 }));
 
 vi.mock("domain/synthetics/incentives/useIncentivesLeaderboard", () => ({
-  useIncentivesLeaderboard: () => ({
-    data: leaderboardMock.data,
-    totalCount: leaderboardMock.totalCount,
-    hasNextPage: false,
-    error: undefined,
-    loading: leaderboardMock.loading,
-  }),
-}));
-
-const accountEntryMock = vi.hoisted(() => ({
-  data: undefined as AccountLeaderboardEntry | undefined,
-  loading: false,
-}));
-
-vi.mock("domain/synthetics/incentives/useIncentivesAccountLeaderboardEntry", () => ({
-  useIncentivesAccountLeaderboardEntry: () => ({
-    data: accountEntryMock.data,
-    error: undefined,
-    loading: accountEntryMock.loading,
-  }),
+  useIncentivesLeaderboard: (_chainId: number, params: { where?: { account?: string } }) => {
+    if (params.where?.account) {
+      const entries = leaderboardMock.pinnedEntry ? [leaderboardMock.pinnedEntry] : [];
+      return {
+        data: entries,
+        totalCount: entries.length,
+        hasNextPage: false,
+        error: undefined,
+        loading: false,
+      };
+    }
+    return {
+      data: leaderboardMock.data,
+      totalCount: leaderboardMock.totalCount,
+      hasNextPage: false,
+      error: undefined,
+      loading: leaderboardMock.loading,
+    };
+  },
 }));
 
 vi.mock("lib/wallets/useWallet", () => ({
@@ -133,8 +136,7 @@ afterEach(() => {
   leaderboardMock.data = [];
   leaderboardMock.totalCount = 0;
   leaderboardMock.loading = false;
-  accountEntryMock.data = undefined;
-  accountEntryMock.loading = false;
+  leaderboardMock.pinnedEntry = undefined;
   cleanup();
 });
 
@@ -144,9 +146,9 @@ describe("PointsLeaderboardTab", () => {
       // 32 total entries (2 pages of 16) — none of them is the connected user
       leaderboardMock.data = buildPageEntries(0, PER_PAGE);
       leaderboardMock.totalCount = 2 * PER_PAGE;
-      // The connected user is rank 50 (way below the visible pages)
-      accountEntryMock.data = {
-        rank: 50,
+      // The connected user is below the visible pages; backend returns the
+      // entry but no rank.
+      leaderboardMock.pinnedEntry = {
         address: ACCOUNT,
         volume: 5_000n * 10n ** 30n,
         pointsEarned: 42n * ONE_POINT,
@@ -160,7 +162,6 @@ describe("PointsLeaderboardTab", () => {
 
       const pinned = getPinnedRow(container);
       expect(pinned).not.toBeNull();
-      expect(within(pinned!).getByText("50")).toBeTruthy();
       expect(within(pinned!).getByText(ACCOUNT)).toBeTruthy();
     });
 
@@ -176,8 +177,45 @@ describe("PointsLeaderboardTab", () => {
 
       const pinnedAfter = getPinnedRow(container);
       expect(pinnedAfter).not.toBeNull();
-      expect(within(pinnedAfter!).getByText("50")).toBeTruthy();
       expect(within(pinnedAfter!).getByText(ACCOUNT)).toBeTruthy();
+    });
+
+    it("renders an em dash placeholder for rank when the user is not in the visible page", () => {
+      const { container } = renderTab();
+
+      const pinned = getPinnedRow(container);
+      expect(pinned).not.toBeNull();
+      // No rank can be derived because the user isn't in the visible page
+      expect(within(pinned!).getByText("—")).toBeTruthy();
+    });
+
+    it("derives rank from the visible page when the user appears there", () => {
+      // Place the connected user inside the visible page at rank 3
+      const userInline: LeaderboardEntry = {
+        address: ACCOUNT,
+        volume: 5_000n * 10n ** 30n,
+        pointsEarned: 100n * ONE_POINT,
+        rewardsEarned: 0n,
+        multiplier: 100,
+      };
+      const baseList = buildPageEntries(0, PER_PAGE - 1);
+      baseList.splice(2, 0, userInline);
+      leaderboardMock.data = baseList;
+      leaderboardMock.totalCount = PER_PAGE;
+      leaderboardMock.pinnedEntry = {
+        address: ACCOUNT,
+        volume: 5_000n * 10n ** 30n,
+        pointsEarned: 100n * ONE_POINT,
+        rewardsEarned: 0n,
+        multiplier: 100,
+      };
+
+      const { container } = renderTab();
+
+      const pinned = getPinnedRow(container);
+      expect(pinned).not.toBeNull();
+      // Rank is computed from the user's index on the current page (3rd entry => rank 3)
+      expect(within(pinned!).getByText("3")).toBeTruthy();
     });
 
     it("does not duplicate the user's row when they appear in the visible page data", () => {
@@ -193,8 +231,7 @@ describe("PointsLeaderboardTab", () => {
       baseList.splice(2, 0, userInline);
       leaderboardMock.data = baseList;
       leaderboardMock.totalCount = PER_PAGE;
-      accountEntryMock.data = {
-        rank: 3,
+      leaderboardMock.pinnedEntry = {
         address: ACCOUNT,
         volume: 5_000n * 10n ** 30n,
         pointsEarned: 100n * ONE_POINT,
@@ -210,9 +247,9 @@ describe("PointsLeaderboardTab", () => {
       expect(userRows).toHaveLength(1);
     });
 
-    it("falls back to per-page detection when the account-leaderboard hook returns no data", () => {
-      // Simulate the indexer not yet exposing the dedicated query
-      accountEntryMock.data = undefined;
+    it("falls back to per-page detection when the where-filtered query returns no data", () => {
+      // Simulate the indexer not yet seeing the user (no pinned entry)
+      leaderboardMock.pinnedEntry = undefined;
 
       // Place the user inline in the page data so the existing fallback can find them
       const userInline: LeaderboardEntry = {
@@ -236,7 +273,7 @@ describe("PointsLeaderboardTab", () => {
     });
 
     it("does not render the pinned row when the user is unranked and absent from the visible page", () => {
-      accountEntryMock.data = undefined;
+      leaderboardMock.pinnedEntry = undefined;
       // No user in the page data either
       leaderboardMock.data = buildPageEntries(0, PER_PAGE);
       leaderboardMock.totalCount = PER_PAGE;

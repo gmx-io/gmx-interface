@@ -11,7 +11,6 @@ import type { ContractsChainId } from "config/chains";
 import { useGmxPrice } from "domain/legacy";
 import { formatMultiplier } from "domain/synthetics/incentives/constants";
 import type { LeaderboardEntry } from "domain/synthetics/incentives/types";
-import { useIncentivesAccountLeaderboardEntry } from "domain/synthetics/incentives/useIncentivesAccountLeaderboardEntry";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
 import { useIncentivesLeaderboard } from "domain/synthetics/incentives/useIncentivesLeaderboard";
 import { formatAmount, formatUsd } from "lib/numbers";
@@ -105,11 +104,18 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
     offset: (page - 1) * PER_PAGE,
     enabled: leaderboardEnabled,
   });
-  const { data: accountLeaderboardEntry } = useIncentivesAccountLeaderboardEntry(chainId, {
-    account,
+  // Pin the connected user's row across pages by issuing a second query that
+  // filters on `where.account`. The backend returns at most one matching entry
+  // but does NOT include a global rank; we recover rank below from the visible
+  // page when possible, otherwise the row renders without a rank number.
+  const { data: pinnedEntries } = useIncentivesLeaderboard(chainId, {
     epoch,
-    enabled: leaderboardEnabled,
+    where: { account },
+    limit: 1,
+    offset: 0,
+    enabled: leaderboardEnabled && !!account,
   });
+  const pinnedEntry = pinnedEntries?.[0];
   const showMultiplier = timeFilter !== "all";
 
   const timeFilterOptions = useMemo(
@@ -151,22 +157,29 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
   }>(() => {
     if (!account) return { userRank: null, userEntry: null };
 
-    // Prefer the dedicated account-leaderboard hook so the row is available
-    // independently of the current page. Fall back to scanning the current
-    // page's data when the indexer hasn't populated the dedicated query yet.
-    if (accountLeaderboardEntry) {
-      const { rank, ...entry } = accountLeaderboardEntry;
-      return { userRank: rank, userEntry: entry };
+    const lowerAccount = account.toLowerCase();
+
+    // The current visible page may already contain the user's row — derive
+    // their global rank from the page index when so. This is the only way to
+    // surface a rank number, since the where-filtered query returns the entry
+    // but no rank.
+    const pageIdx = pageData.findIndex((e) => e.address.toLowerCase() === lowerAccount);
+    const pageRank = pageIdx >= 0 ? indexFrom + pageIdx + 1 : null;
+
+    // Prefer the dedicated where-filtered entry so the pinned row stays
+    // visible across pages. If it's missing (indexer hasn't seen the user
+    // yet, or the call was disabled), fall back to whatever the visible page
+    // has.
+    if (pinnedEntry) {
+      return { userRank: pageRank, userEntry: pinnedEntry };
     }
 
-    if (!pageData.length) return { userRank: null, userEntry: null };
-    const lowerAccount = account.toLowerCase();
-    const idx = pageData.findIndex((e) => e.address.toLowerCase() === lowerAccount);
-    return {
-      userRank: idx >= 0 ? indexFrom + idx + 1 : null,
-      userEntry: idx >= 0 ? pageData[idx] : null,
-    };
-  }, [account, accountLeaderboardEntry, pageData, indexFrom]);
+    if (pageRank !== null) {
+      return { userRank: pageRank, userEntry: pageData[pageIdx] };
+    }
+
+    return { userRank: null, userEntry: null };
+  }, [account, pinnedEntry, pageData, indexFrom]);
 
   const tdClassName = "!py-10";
 
@@ -221,10 +234,14 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                   <TableListSkeleton count={PER_PAGE} Structure={PointsLeaderboardSkeletonRow} />
                 ) : (
                   <>
-                    {userEntry && userRank && (
+                    {userEntry && (
                       <TableTr className="border-b-1/2 border-blue-500/30 !bg-blue-500/10">
                         <TableTd className={cx(tdClassName, "relative")}>
-                          <span className={cx("numbers", getRankClassName(userRank))}>{userRank}</span>
+                          {userRank !== null ? (
+                            <span className={cx("numbers", getRankClassName(userRank))}>{userRank}</span>
+                          ) : (
+                            <span className="numbers text-typography-secondary">—</span>
+                          )}
                         </TableTd>
                         <TableTd>
                           <AddressView size={20} address={userEntry.address} breakpoint="XL" />
@@ -242,14 +259,16 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                           {showMultiplier && userEntry.multiplier ? formatMultiplier(userEntry.multiplier) : ""}
                         </TableTd>
                         <TableTd className={tdClassName}>
-                          <button
-                            type="button"
-                            onClick={() => setIsShareOpen(true)}
-                            className="inline-flex items-center gap-4 whitespace-nowrap text-13 font-medium text-blue-100"
-                          >
-                            <ShareIcon />
-                            <Trans>Share</Trans>
-                          </button>
+                          {userRank !== null && (
+                            <button
+                              type="button"
+                              onClick={() => setIsShareOpen(true)}
+                              className="inline-flex items-center gap-4 whitespace-nowrap text-13 font-medium text-blue-100"
+                            >
+                              <ShareIcon />
+                              <Trans>Share</Trans>
+                            </button>
+                          )}
                         </TableTd>
                       </TableTr>
                     )}
