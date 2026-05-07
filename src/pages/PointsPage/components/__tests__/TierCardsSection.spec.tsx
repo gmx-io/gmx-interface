@@ -270,7 +270,7 @@ describe("TierCardsSection", () => {
   });
 
   describe("active volume card", () => {
-    it("shows correct progress bar and 'Trade $X to unlock...' text", () => {
+    it("shows correct progress bar and 'Trade $X more to unlock...' text", () => {
       const currentEpochStats: EpochStats = {
         account: "0x1234",
         multiplier: 125,
@@ -281,14 +281,61 @@ describe("TierCardsSection", () => {
         boostIds: [],
       };
 
-      renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />);
+      const { container } = renderWithI18n(
+        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />
+      );
 
       // Should show "Volume this epoch:" with current volume
       expect(screen.getByText(/Volume this epoch/)).toBeDefined();
 
-      // Next tier (Tier2) threshold = $5000 => compact display renders "$5K"
-      expect(screen.getByText(/5K/)).toBeDefined();
-      expect(screen.getByText(/Certified/)).toBeDefined();
+      // Tier1 -> Tier2 with tradedVolume = $3K, nextThreshold = $5K
+      // delta = $5K - $3K = $2K, formatted as "$2K"
+      const allText = container.textContent || "";
+      expect(allText).toMatch(/Trade \$\s?2K more to unlock\s+Certified status\s+\+0\.50x/);
+    });
+
+    it("shows the remaining volume to the next tier (Certified -> Veteran with $7K traded shows $3K more)", () => {
+      // User is currently Certified (Tier2 = $5K) with $7K traded.
+      // Next tier (Veteran, Tier3) requires $10K -> remaining = $3K.
+      const currentEpochStats: EpochStats = {
+        account: "0x1234",
+        multiplier: 150,
+        epochTimestamp: 1700000000,
+        volumeTier: "Tier2",
+        stakingTier: null,
+        tradedVolume: 7000n * USD,
+        boostIds: [],
+      };
+
+      const { container } = renderWithI18n(
+        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />
+      );
+
+      const allText = container.textContent || "";
+      expect(allText).toMatch(/Trade \$\s?3K more to unlock\s+Veteran status\s+\+1\.00x/);
+    });
+
+    it("renders progress bar capped to 100% width when traded volume exceeds the next threshold", () => {
+      // Cert tier ($5K) with $7K traded — progress = 7K/10K = 70% (not 140%).
+      const currentEpochStats: EpochStats = {
+        account: "0x1234",
+        multiplier: 150,
+        epochTimestamp: 1700000000,
+        volumeTier: "Tier2",
+        stakingTier: null,
+        tradedVolume: 7000n * USD,
+        boostIds: [],
+      };
+
+      const { container } = renderWithI18n(
+        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />
+      );
+
+      // Find the volume progress bar fill (has bg-blue-300 inline width style)
+      const progressFill = container.querySelector(".bg-blue-300[style*='width']") as HTMLElement | null;
+      expect(progressFill).toBeTruthy();
+      // 7000 * 100 / 10000 = 70%
+      expect(progressFill?.style.width).toBe("70%");
     });
   });
 

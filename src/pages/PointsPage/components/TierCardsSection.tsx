@@ -250,10 +250,14 @@ function VolumeCard({
     </MultiplierChangeTooltip>
   ) : undefined;
 
-  const currentThreshold = active && currentTierConfig ? currentTierConfig.threshold : 0n;
   const nextThreshold = active ? nextTierConfig?.threshold : tierConfig?.[0]?.threshold;
-  const range = nextThreshold !== undefined && nextThreshold > currentThreshold ? nextThreshold - currentThreshold : 0n;
-  const progressPercent = isMaxTier ? 100 : range > 0n ? Number((tradedVolume * 100n) / range) : 0;
+  const remainingToNext =
+    nextThreshold !== undefined && nextThreshold > tradedVolume ? nextThreshold - tradedVolume : 0n;
+  const progressPercent = isMaxTier
+    ? 100
+    : nextThreshold !== undefined && nextThreshold > 0n
+      ? Number((tradedVolume * 100n) / nextThreshold)
+      : 0;
   const progressStyle = useMemo(() => ({ width: `${Math.min(progressPercent, 100)}%` }), [progressPercent]);
 
   return (
@@ -314,7 +318,7 @@ function VolumeCard({
               <div className="flex items-center gap-4 py-2">
                 <span>
                   <Trans>
-                    Trade {formatCompactUsd(nextTierConfig.threshold)} to unlock{" "}
+                    Trade {formatCompactUsd(remainingToNext)} more to unlock{" "}
                     {VOLUME_TIER_BADGES[nextTierConfig.tier]()} status{" "}
                     <span className="text-typography-primary">+{formatMultiplier(nextTierConfig.multiplier)}</span>
                   </Trans>
