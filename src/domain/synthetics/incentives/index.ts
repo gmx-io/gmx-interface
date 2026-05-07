@@ -5,6 +5,7 @@ export { useAccountNetPositionFeesLast4Months } from "./useAccountNetPositionFee
 export { useAccountFirstTradeTimestamp } from "./useAccountFirstTradeTimestamp";
 export { useAccountManualRewardsAllocation, useAccountRewardsHistory } from "./useAccountRewardsHistory";
 export { useIncentivesLeaderboard } from "./useIncentivesLeaderboard";
+export { useIncentivesAccountLeaderboardEntry } from "./useIncentivesAccountLeaderboardEntry";
 export { usePersonalizedBannerData } from "./usePersonalizedBannerData";
 export * from "./types";
 export * from "./constants";

@@ -10,6 +10,8 @@ import { ARBITRUM } from "config/chains";
 import type { ContractsChainId } from "config/chains";
 import { useGmxPrice } from "domain/legacy";
 import { formatMultiplier } from "domain/synthetics/incentives/constants";
+import type { LeaderboardEntry } from "domain/synthetics/incentives/types";
+import { useIncentivesAccountLeaderboardEntry } from "domain/synthetics/incentives/useIncentivesAccountLeaderboardEntry";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
 import { useIncentivesLeaderboard } from "domain/synthetics/incentives/useIncentivesLeaderboard";
 import { formatAmount, formatUsd } from "lib/numbers";
@@ -103,6 +105,11 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
     offset: (page - 1) * PER_PAGE,
     enabled: leaderboardEnabled,
   });
+  const { data: accountLeaderboardEntry } = useIncentivesAccountLeaderboardEntry(chainId, {
+    account,
+    epoch,
+    enabled: leaderboardEnabled,
+  });
   const showMultiplier = timeFilter !== "all";
 
   const timeFilterOptions = useMemo(
@@ -138,15 +145,28 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
     [gmxPrice]
   );
 
-  const { userRank, userEntry } = useMemo(() => {
-    if (!account || !pageData.length) return { userRank: null, userEntry: null };
+  const { userRank, userEntry } = useMemo<{
+    userRank: number | null;
+    userEntry: LeaderboardEntry | null;
+  }>(() => {
+    if (!account) return { userRank: null, userEntry: null };
+
+    // Prefer the dedicated account-leaderboard hook so the row is available
+    // independently of the current page. Fall back to scanning the current
+    // page's data when the indexer hasn't populated the dedicated query yet.
+    if (accountLeaderboardEntry) {
+      const { rank, ...entry } = accountLeaderboardEntry;
+      return { userRank: rank, userEntry: entry };
+    }
+
+    if (!pageData.length) return { userRank: null, userEntry: null };
     const lowerAccount = account.toLowerCase();
     const idx = pageData.findIndex((e) => e.address.toLowerCase() === lowerAccount);
     return {
       userRank: idx >= 0 ? indexFrom + idx + 1 : null,
       userEntry: idx >= 0 ? pageData[idx] : null,
     };
-  }, [account, pageData, indexFrom]);
+  }, [account, accountLeaderboardEntry, pageData, indexFrom]);
 
   const tdClassName = "!py-10";
 
