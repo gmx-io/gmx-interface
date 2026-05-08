@@ -137,7 +137,7 @@ function renderTab() {
 }
 
 function getPinnedRow(container: HTMLElement): HTMLElement | null {
-  return container.querySelector("tr.\\!bg-blue-500\\/10") as HTMLElement | null;
+  return container.querySelector('[data-testid="leaderboard-pinned-row"]') as HTMLElement | null;
 }
 
 afterEach(() => {
@@ -199,8 +199,8 @@ describe("PointsLeaderboardTab", () => {
       expect(within(pinned!).getByText("99")).toBeTruthy();
     });
 
-    it("does not render the pinned row when the user is already visible on page 1", () => {
-      // Connected user has rank 3 — they appear inline on page 1, so no pin
+    it("highlights the user's inline row and shows a share button when user is on page 1", () => {
+      // Connected user has rank 3 — they appear inline on page 1, no separate pin
       const userInline: LeaderboardEntry = {
         rank: 3,
         address: ACCOUNT,
@@ -225,12 +225,17 @@ describe("PointsLeaderboardTab", () => {
 
       const { container } = renderTab();
 
-      // No pinned row because user is on page 1 (rank ≤ PER_PAGE)
+      // No separate pinned row because user is on page 1 (rank ≤ PER_PAGE)
       expect(getPinnedRow(container)).toBeNull();
-      // User still appears once inline
+
+      // User appears exactly once inline, and that row has the highlight bg + share button
       const matchingRows = container.querySelectorAll(`[data-testid="address-view"]`);
-      const userRows = Array.from(matchingRows).filter((el) => el.textContent === ACCOUNT);
-      expect(userRows).toHaveLength(1);
+      const userAddressEls = Array.from(matchingRows).filter((el) => el.textContent === ACCOUNT);
+      expect(userAddressEls).toHaveLength(1);
+
+      const userRow = userAddressEls[0].closest("tr") as HTMLElement;
+      expect(userRow.className).toContain("!bg-blue-500/10");
+      expect(within(userRow).getByText("Share")).toBeTruthy();
     });
 
     it("does not render the pinned row when the user has no leaderboard entry", () => {

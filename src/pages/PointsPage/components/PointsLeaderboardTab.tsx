@@ -264,7 +264,10 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                 ) : (
                   <>
                     {showPinnedRow && userEntry && userRank !== null && (
-                      <TableTr className="border-b-1/2 border-blue-500/30 !bg-blue-500/10">
+                      <TableTr
+                        data-testid="leaderboard-pinned-row"
+                        className="border-b-1/2 border-blue-500/30 !bg-blue-500/10"
+                      >
                         <TableTd className={cx(tdClassName, "relative")}>
                           <span className={cx("numbers", getRankClassName(userRank))}>{userRank}</span>
                         </TableTd>
@@ -297,8 +300,13 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                     )}
                     {pageData.map((entry) => {
                       const rank = entry.rank;
+                      const isUserRow = !!account && entry.address.toLowerCase() === account.toLowerCase();
                       return (
-                        <TableTr key={entry.address} hoverable>
+                        <TableTr
+                          key={entry.address}
+                          hoverable={!isUserRow}
+                          className={isUserRow ? "border-b-1/2 border-blue-500/30 !bg-blue-500/10" : undefined}
+                        >
                           <TableTd className={cx(tdClassName, "relative")}>
                             <span
                               className={cx("font-medium numbers after:!top-7", getRankClassName(rank), {
@@ -321,7 +329,18 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                           <TableTd className={cx(tdClassName, "numbers")}>
                             {showMultiplier && entry.multiplier ? formatMultiplier(entry.multiplier) : ""}
                           </TableTd>
-                          <TableTd className={cx(tdClassName, "numbers")} />
+                          <TableTd className={tdClassName}>
+                            {isUserRow && (
+                              <button
+                                type="button"
+                                onClick={() => setIsShareOpen(true)}
+                                className="inline-flex items-center gap-4 whitespace-nowrap text-13 font-medium text-blue-100"
+                              >
+                                <ShareIcon />
+                                <Trans>Share</Trans>
+                              </button>
+                            )}
+                          </TableTd>
                         </TableTr>
                       );
                     })}

@@ -6888,6 +6888,7 @@ msgstr "Торговать"
 #: src/components/Referrals/shared/cards/ShareReferralCardModal.tsx
 #: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
 #: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
 msgid "Share"
 msgstr "Поделиться"
 
