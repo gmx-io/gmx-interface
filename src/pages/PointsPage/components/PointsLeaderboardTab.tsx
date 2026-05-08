@@ -148,7 +148,7 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
   // to page 1 when their rank is below the visible page. Uses the same
   // `orderBy` as the main list so the server-computed rank stays consistent
   // with the visible ordering.
-  const { data: pinnedEntries } = useIncentivesLeaderboard(chainId, {
+  const { data: pinnedEntries, loading: pinnedLoading } = useIncentivesLeaderboard(chainId, {
     epoch,
     where: { account },
     orderBy,
@@ -196,8 +196,25 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
     [gmxPrice]
   );
 
-  const userEntry: LeaderboardEntry | null = account && pinnedEntry ? pinnedEntry : null;
-  const userRank = userEntry?.rank ?? null;
+  // When the user has no leaderboard entry, synthesize a zero-valued row so
+  // the pinned slot still surfaces their account at rank "N/A". Wait for the
+  // pinned query to settle before synthesizing — otherwise we'd flash a fake
+  // zero row during the initial load.
+  const userEntry: LeaderboardEntry | null = useMemo(() => {
+    if (!account) return null;
+    if (pinnedEntry) return pinnedEntry;
+    if (pinnedLoading) return null;
+    return {
+      rank: 0,
+      address: account,
+      volume: 0n,
+      pointsEarned: 0n,
+      rewardsEarned: 0n,
+      multiplier: 0,
+    };
+  }, [account, pinnedEntry, pinnedLoading]);
+  const isSyntheticUserEntry = userEntry !== null && pinnedEntry === undefined;
+  const userRank = isSyntheticUserEntry ? null : userEntry?.rank ?? null;
   // Show the pinned row only on page 1, and only when the user's row isn't
   // already in the visible page data. Checking the actual page data (rather
   // than rank math) is robust to sort/order mismatches between the two
@@ -207,7 +224,7 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
     const lower = account.toLowerCase();
     return pageData.some((e) => e.address.toLowerCase() === lower);
   }, [account, pageData]);
-  const showPinnedRow = page === 1 && userEntry !== null && userRank !== null && !isUserOnVisiblePage;
+  const showPinnedRow = page === 1 && userEntry !== null && !isUserOnVisiblePage;
 
   const tdClassName = "!py-10";
 
@@ -270,13 +287,15 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                   <TableListSkeleton count={PER_PAGE} Structure={PointsLeaderboardSkeletonRow} />
                 ) : (
                   <>
-                    {showPinnedRow && userEntry && userRank !== null && (
+                    {showPinnedRow && userEntry && (
                       <TableTr
                         data-testid="leaderboard-pinned-row"
                         className="border-b-1/2 border-blue-500/30 !bg-blue-500/10"
                       >
                         <TableTd className={cx(tdClassName, "relative")}>
-                          <span className={cx("numbers", getRankClassName(userRank))}>{userRank}</span>
+                          <span className={cx("numbers", getRankClassName(userRank))}>
+                            {userRank !== null ? userRank : t`N/A`}
+                          </span>
                         </TableTd>
                         <TableTd>
                           <AddressView size={20} address={userEntry.address} breakpoint="XL" />
@@ -291,17 +310,19 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                           {formatRewards(userEntry.rewardsEarned)}
                         </TableTd>
                         <TableTd className={cx(tdClassName, "numbers")}>
-                          {showMultiplier && userEntry.multiplier ? formatMultiplier(userEntry.multiplier) : ""}
+                          {showMultiplier ? formatMultiplier(userEntry.multiplier) : ""}
                         </TableTd>
                         <TableTd className={tdClassName}>
-                          <button
-                            type="button"
-                            onClick={() => setIsShareOpen(true)}
-                            className="inline-flex items-center gap-4 whitespace-nowrap text-13 font-medium text-blue-100"
-                          >
-                            <ShareIcon />
-                            <Trans>Share</Trans>
-                          </button>
+                          {userRank !== null && (
+                            <button
+                              type="button"
+                              onClick={() => setIsShareOpen(true)}
+                              className="inline-flex items-center gap-4 whitespace-nowrap text-13 font-medium text-blue-100"
+                            >
+                              <ShareIcon />
+                              <Trans>Share</Trans>
+                            </button>
+                          )}
                         </TableTd>
                       </TableTr>
                     )}

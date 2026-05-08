@@ -238,12 +238,35 @@ describe("PointsLeaderboardTab", () => {
       expect(within(userRow).getByText("Share")).toBeTruthy();
     });
 
-    it("does not render the pinned row when the user has no leaderboard entry", () => {
+    it("renders a synthetic N/A pinned row with zeros when the user has no leaderboard entry", () => {
       leaderboardMock.pinnedEntry = undefined;
       leaderboardMock.data = buildPageEntries(0, PER_PAGE);
       leaderboardMock.totalCount = PER_PAGE;
 
       const { container } = renderTab();
+
+      const pinned = getPinnedRow(container);
+      expect(pinned).not.toBeNull();
+      const text = pinned!.textContent ?? "";
+      expect(text).toContain("N/A");
+      expect(text).toContain(ACCOUNT);
+      // Volume "$0", earned points "0.00", rewards "0.00 GMX (...)", multiplier "0.00x"
+      expect(text).toContain("0.00 GMX");
+      expect(text).toContain("0.00x");
+      // No share button when there is no real rank
+      expect(within(pinned!).queryByText("Share")).toBeNull();
+    });
+
+    it("does not render the synthetic pinned row on page 2", () => {
+      leaderboardMock.pinnedEntry = undefined;
+      leaderboardMock.data = buildPageEntries(0, PER_PAGE);
+      leaderboardMock.totalCount = 2 * PER_PAGE;
+
+      const { container } = renderTab();
+      expect(getPinnedRow(container)).not.toBeNull();
+
+      const page2Button = screen.getByRole("button", { name: "2" });
+      fireEvent.click(page2Button);
 
       expect(getPinnedRow(container)).toBeNull();
     });
