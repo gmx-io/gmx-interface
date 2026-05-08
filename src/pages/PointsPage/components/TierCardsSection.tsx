@@ -344,7 +344,7 @@ function VolumeCard({
                 handle={
                   <div className="relative h-6 w-full overflow-hidden rounded-8 bg-cold-blue-900 transition-[background-color,transform] duration-150 ease-out group-hover/volume-bar:scale-y-150 group-hover/volume-bar:bg-cold-blue-700">
                     <div
-                      className="absolute left-0 top-0 h-full rounded-8 bg-blue-300 transition-[background-color,width] duration-300 ease-out group-hover/volume-bar:bg-blue-100"
+                      className="absolute left-0 top-0 h-full rounded-8 bg-blue-300 transition-[background-color,width] duration-300 ease-out"
                       style={progressStyle}
                     />
                   </div>
@@ -357,7 +357,7 @@ function VolumeCard({
                 <div
                   className={cx(
                     "absolute left-0 top-0 h-full rounded-8 transition-[width] duration-300",
-                    showMaxTierState ? "bg-green-300" : "bg-blue-300"
+                    showMaxTierState ? "bg-green-500" : "bg-blue-300"
                   )}
                   style={progressStyle}
                 />
@@ -365,7 +365,7 @@ function VolumeCard({
             )}
             {showMaxTierState ? (
               <div className="flex items-center gap-4 py-2">
-                <span>
+                <span className="text-green-500">
                   <Trans>Max tier reached ✓</Trans>
                 </span>
               </div>
@@ -563,7 +563,7 @@ function StakingCard({
             )}
             {isMaxTier ? (
               <div className="flex items-center gap-4 py-2">
-                <span>
+                <span className="text-green-500">
                   <Trans>Max tier reached ✓</Trans>
                 </span>
               </div>
@@ -687,7 +687,7 @@ function StakingProgressBar({
               handle={
                 <div className="relative h-6 w-full overflow-hidden rounded-8 bg-cold-blue-900 transition-[background-color,transform] duration-150 ease-out group-hover/segment:scale-y-150 group-hover/segment:bg-cold-blue-700">
                   <div
-                    className="absolute left-0 top-0 h-full rounded-8 bg-blue-300 transition-[background-color] duration-150 ease-out group-hover/segment:bg-blue-100"
+                    className="absolute left-0 top-0 h-full rounded-8 bg-blue-300 transition-[background-color] duration-150 ease-out"
                     style={nextTierProgressStyle}
                   />
                 </div>
@@ -699,8 +699,8 @@ function StakingProgressBar({
         }
 
         const completedFillClasses = isMaxTier
-          ? "bg-green-300 group-hover/segment:bg-green-100"
-          : "bg-blue-300 group-hover/segment:bg-blue-100";
+          ? "bg-green-500"
+          : "bg-blue-300";
 
         return (
           <TooltipWithPortal
