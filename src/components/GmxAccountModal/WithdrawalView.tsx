@@ -1027,8 +1027,7 @@ export const WithdrawalView = () => {
     isGmxAccount: true,
   });
 
-  const showMaxButton =
-    withdrawalMaxDetails.showClickMax && !(showWntWarning && !isSameChain && !selectedToken?.isWrapped);
+  const showMaxButton = withdrawalMaxDetails.showClickMax;
 
   const handlePickToken = useCallback(
     (tokenAddress: string) => {
@@ -1520,7 +1519,7 @@ export const WithdrawalView = () => {
       {!isInsufficientBalance && (
         <>
           {buttonState.bannerErrorName && (
-            <AlertInfoCard type="error" className="mt-8" hideClose>
+            <AlertInfoCard type="error" className="mb-16" hideClose>
               <ValidationBannerErrorContent
                 validationBannerErrorName={buttonState.bannerErrorName}
                 chainId={chainId}
@@ -1531,7 +1530,7 @@ export const WithdrawalView = () => {
           )}
 
           {withdrawalMaxDetails.gasPaymentTokenWarningContent && (
-            <AlertInfoCard type="warning" className="mt-8" hideClose>
+            <AlertInfoCard type="warning" className="mb-16" hideClose>
               {withdrawalMaxDetails.gasPaymentTokenWarningContent}
             </AlertInfoCard>
           )}
