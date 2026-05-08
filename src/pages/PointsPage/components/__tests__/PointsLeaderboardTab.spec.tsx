@@ -178,19 +178,17 @@ describe("PointsLeaderboardTab", () => {
       expect(within(pinned!).getByText(ACCOUNT)).toBeTruthy();
     });
 
-    it("keeps the pinned row visible when paginating to a page that does not contain the user", () => {
+    it("does not render the pinned row on pages other than page 1", () => {
       const { container } = renderTab();
 
-      // Confirm pinned row exists on page 1
+      // Pinned row exists on page 1
       expect(getPinnedRow(container)).not.toBeNull();
 
-      // Switch to page 2 and confirm the pinned row is still rendered
+      // Switch to page 2 — pinned row should disappear
       const page2Button = screen.getByRole("button", { name: "2" });
       fireEvent.click(page2Button);
 
-      const pinnedAfter = getPinnedRow(container);
-      expect(pinnedAfter).not.toBeNull();
-      expect(within(pinnedAfter!).getByText(ACCOUNT)).toBeTruthy();
+      expect(getPinnedRow(container)).toBeNull();
     });
 
     it("renders the server-provided rank on the pinned row", () => {
@@ -201,8 +199,8 @@ describe("PointsLeaderboardTab", () => {
       expect(within(pinned!).getByText("99")).toBeTruthy();
     });
 
-    it("does not duplicate the user's row when they appear in the visible page data", () => {
-      // Place the connected user inside the visible page at rank 3
+    it("does not render the pinned row when the user is already visible on page 1", () => {
+      // Connected user has rank 3 — they appear inline on page 1, so no pin
       const userInline: LeaderboardEntry = {
         rank: 3,
         address: ACCOUNT,
@@ -213,7 +211,6 @@ describe("PointsLeaderboardTab", () => {
       };
       const baseList = buildPageEntries(0, PER_PAGE - 1);
       baseList.splice(2, 0, userInline);
-      // Re-rank so the page list stays sequential after the splice
       baseList.forEach((e, i) => (e.rank = i + 1));
       leaderboardMock.data = baseList;
       leaderboardMock.totalCount = PER_PAGE;
@@ -228,7 +225,9 @@ describe("PointsLeaderboardTab", () => {
 
       const { container } = renderTab();
 
-      // Should only have a single rendered row for the connected user (the pinned one)
+      // No pinned row because user is on page 1 (rank ≤ PER_PAGE)
+      expect(getPinnedRow(container)).toBeNull();
+      // User still appears once inline
       const matchingRows = container.querySelectorAll(`[data-testid="address-view"]`);
       const userRows = Array.from(matchingRows).filter((el) => el.textContent === ACCOUNT);
       expect(userRows).toHaveLength(1);

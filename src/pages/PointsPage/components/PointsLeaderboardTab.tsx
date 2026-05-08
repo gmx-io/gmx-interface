@@ -144,11 +144,14 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
     offset: (page - 1) * PER_PAGE,
     enabled: leaderboardEnabled,
   });
-  // Pin the connected user's row across pages by issuing a second query that
-  // filters on `where.account`. The entry includes a server-computed rank.
+  // Fetch the connected user's leaderboard entry separately so we can pin it
+  // to page 1 when their rank is below the visible page. Uses the same
+  // `orderBy` as the main list so the server-computed rank stays consistent
+  // with the visible ordering.
   const { data: pinnedEntries } = useIncentivesLeaderboard(chainId, {
     epoch,
     where: { account },
+    orderBy,
     limit: 1,
     offset: 0,
     enabled: leaderboardEnabled && !!account,
@@ -195,6 +198,9 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
 
   const userEntry: LeaderboardEntry | null = account && pinnedEntry ? pinnedEntry : null;
   const userRank = userEntry?.rank ?? null;
+  // Show the pinned row only on page 1, and only when the user isn't already
+  // visible in the page rows (i.e. their rank is past the first page).
+  const showPinnedRow = page === 1 && userEntry !== null && userRank !== null && userRank > PER_PAGE;
 
   const tdClassName = "!py-10";
 
@@ -257,7 +263,7 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                   <TableListSkeleton count={PER_PAGE} Structure={PointsLeaderboardSkeletonRow} />
                 ) : (
                   <>
-                    {userEntry && userRank !== null && (
+                    {showPinnedRow && userEntry && userRank !== null && (
                       <TableTr className="border-b-1/2 border-blue-500/30 !bg-blue-500/10">
                         <TableTd className={cx(tdClassName, "relative")}>
                           <span className={cx("numbers", getRankClassName(userRank))}>{userRank}</span>
@@ -290,7 +296,6 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                       </TableTr>
                     )}
                     {pageData.map((entry) => {
-                      if (userEntry && entry.address.toLowerCase() === userEntry.address.toLowerCase()) return null;
                       const rank = entry.rank;
                       return (
                         <TableTr key={entry.address} hoverable>
