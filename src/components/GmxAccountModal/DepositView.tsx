@@ -145,7 +145,8 @@ export const DepositView = () => {
     isPriceDataLoading,
     isBalanceDataLoading,
   } = useMultichainTradeTokensRequest(settlementChainId, account);
-  const { tokensData: settlementChainTokensData } = useTokensDataRequest(settlementChainId, depositViewChain);
+  const { tokensData: settlementChainTokensData, isBalancesLoaded: isSettlementChainBalancesLoaded } =
+    useTokensDataRequest(settlementChainId, depositViewChain);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [shouldSendCrossChainDepositWhenLoaded, setShouldSendCrossChainDepositWhenLoaded] = useState(false);
 
@@ -938,7 +939,15 @@ export const DepositView = () => {
     ]
   );
 
-  const tokenSelectorDisabled = !isBalanceDataLoading && multichainTokens.length === 0;
+  const hasSettlementChainBalance = Object.values(settlementChainTokensData || {}).some(
+    (token) => token.walletBalance !== undefined && token.walletBalance > 0n
+  );
+
+  const tokenSelectorDisabled =
+    !isBalanceDataLoading &&
+    isSettlementChainBalancesLoaded &&
+    multichainTokens.length === 0 &&
+    !hasSettlementChainBalance;
 
   const isAvalancheSettlement = settlementChainId === AVALANCHE;
 
