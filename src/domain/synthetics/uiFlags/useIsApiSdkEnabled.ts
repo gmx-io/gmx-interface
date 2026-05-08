@@ -1,8 +1,8 @@
 import { getIsFlagEnabled } from "config/ab";
+import { isDevelopment } from "config/env";
 
 import { getApiRolloutBucket } from "./apiRolloutBucket";
 import { useUiFlagsRequest, type UiFlags } from "./useUiFlagsRequest";
-import { isDevelopment } from "config/env";
 
 export const API_UI_FLAGS = {
   markets: "apiMarkets",
