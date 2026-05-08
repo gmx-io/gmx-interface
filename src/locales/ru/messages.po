@@ -4246,7 +4246,11 @@ msgstr "<0>Недействительная подпись разрешения.
 msgid "Positive factor"
 msgstr "Положительный фактор"
 
+#: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
+#: src/components/PositionItem/PositionItemOrders.tsx
+#: src/components/StatusNotification/OrderStatusNotification.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Full position close"
 msgstr "Полное закрытие позиции"
 
@@ -5818,10 +5822,6 @@ msgstr "Годовая Процентная Ставка GMX"
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Enter hex error data above to decode it"
 msgstr "Введите hex-данные ошибки выше для декодирования"
-
-#: src/components/StatusNotification/OrderStatusNotification.tsx
-msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
-msgstr "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sign}{1}"
 
 #: src/components/OneClickAdvancedSettings/OneClickAdvancedSettings.tsx
 msgid "Allowed actions"
@@ -8800,6 +8800,10 @@ msgstr "Слой 1"
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
 msgstr "<0>С большинством голосов 75.5% GMX выбрал LayerZero как партнера по messaging для мультичейн-расширения! Интеграция приносит GMX:</0><1><2>Возможность расширения на 125+ цепей</2><3>Полное владение всеми контрактами и безопасностью</3><4>Быстрые переводы без slippage</4><5>Боевые рельсы, уже доверенные миллиардам долларов в активах и сотням приложений... <6>см. больше</6></5></1>"
 
+#: src/components/OrderEditor/OrderEditor.tsx
+msgid "Loading position..."
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 msgid "Staking..."
 msgstr "Стейкинг..."
@@ -9330,6 +9334,10 @@ msgstr "Адрес получателя"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Allow all tokens to transfer to the new account"
+msgstr ""
+
+#: src/components/StatusNotification/OrderStatusNotification.tsx
+msgid "{orderTypeText} {visualMultiplierPrefix}{0} {longShortText}: {sizeText}"
 msgstr ""
 
 #: src/components/Claims/SettleAccruedCard.tsx

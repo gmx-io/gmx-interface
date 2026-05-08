@@ -13,7 +13,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { usePrevious } from "lib/usePrevious";
 import { bigMath } from "sdk/utils/bigmath";
 
-import { EntryField, GroupPrefix, SidecarOrderEntryBase, SidecarOrderEntryGroupBase } from "./types";
+import { EntryField, GroupPrefix, InitialEntry, SidecarOrderEntryBase, SidecarOrderEntryGroupBase } from "./types";
 import { MAX_PERCENTAGE, PERCENTAGE_DECIMALS, getDefaultEntry, getDefaultEntryField } from "./utils";
 
 export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
@@ -25,7 +25,7 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
 }: {
   prefix: GroupPrefix;
   errorHandler: (entry: T) => T;
-  initialEntries?: (Partial<T> & { price: EntryField; sizeUsd: EntryField })[];
+  initialEntries?: InitialEntry[];
   canAddEntry?: boolean;
   enablePercentage?: boolean;
 }): SidecarOrderEntryGroupBase<T> {
@@ -100,8 +100,9 @@ export function useSidecarOrdersGroup<T extends SidecarOrderEntryBase>({
   const initialState = useMemo(() => {
     if (initialEntries?.length) {
       return initialEntries.map((entry) => {
-        const initialEntry = getDefaultEntry(prefix, { ...entry, mode: "keepSize" });
-        const calculatedEntry = recalculateEntryByField(initialEntry, "sizeUsd");
+        const mode = entry.mode ?? "keepSize";
+        const initialEntry = getDefaultEntry(prefix, { ...entry, mode });
+        const calculatedEntry = recalculateEntryByField(initialEntry, mode === "keepSize" ? "sizeUsd" : "percentage");
         return errorHandler(calculatedEntry);
       });
     }

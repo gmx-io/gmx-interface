@@ -1,6 +1,10 @@
 import { i18n } from "@lingui/core";
 import { describe, expect, it } from "vitest";
 
+import { OrderType } from "domain/synthetics/orders";
+import { TradeActionType } from "domain/synthetics/tradeHistory";
+import { MaxUint256 } from "lib/numbers";
+
 import {
   cancelOrderIncreaseLong,
   createOrderDecreaseLong,
@@ -693,5 +697,34 @@ describe("TradeHistoryRow helpers", () => {
         "timestampUTC": "UTC: 2024-02-14 09:33:19",
       }
     `);
+  });
+
+  it("formatPositionMessage renders 'Full position close' for full-close TP/SL actions", () => {
+    const fullCloseCreate = {
+      ...createOrderDecreaseLong,
+      sizeDeltaUsd: MaxUint256,
+    };
+    expect(formatPositionMessage(fullCloseCreate, minCollateralUsd).size).toBe("Full position close");
+
+    const fullCloseUpdate = {
+      ...createOrderDecreaseLong,
+      eventName: TradeActionType.OrderUpdated,
+      sizeDeltaUsd: MaxUint256,
+    };
+    expect(formatPositionMessage(fullCloseUpdate, minCollateralUsd).size).toBe("Full position close");
+
+    const fullCloseCancel = {
+      ...createOrderDecreaseLong,
+      eventName: TradeActionType.OrderCancelled,
+      sizeDeltaUsd: MaxUint256,
+    };
+    expect(formatPositionMessage(fullCloseCancel, minCollateralUsd).size).toBe("Full position close");
+
+    const fullCloseStopLoss = {
+      ...createOrderDecreaseLong,
+      orderType: OrderType.StopLossDecrease,
+      sizeDeltaUsd: MaxUint256,
+    };
+    expect(formatPositionMessage(fullCloseStopLoss, minCollateralUsd).size).toBe("Full position close");
   });
 });

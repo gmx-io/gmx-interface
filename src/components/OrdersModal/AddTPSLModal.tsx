@@ -19,6 +19,7 @@ import {
   selectMarketsInfoData,
   selectSrcChainId,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectOrdersByPositionKey } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import {
   selectBreakdownNetPriceImpactEnabled,
   selectIsPnlInLeverage,
@@ -28,7 +29,12 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import { estimateExecuteDecreaseOrderGasLimit, estimateOrderOraclePriceCount } from "domain/synthetics/fees";
-import { DecreasePositionSwapType } from "domain/synthetics/orders";
+import {
+  DecreasePositionSwapType,
+  isLimitDecreaseOrderType,
+  isStopLossOrderType,
+  isTwapOrder,
+} from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import {
@@ -52,7 +58,8 @@ import {
 } from "domain/synthetics/trade";
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
-import { buildTpSlCreatePayloads, buildTpSlInputPositionData, getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
+import { buildTpSlBatchPayloads, buildTpSlInputPositionData, getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
+import { FULL_POSITION_CLOSE_SIZE_DELTA_USD, isFullClosePositionOrder } from "domain/tpsl/utils";
 import { DUST_USD } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
@@ -70,11 +77,7 @@ import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { getCappedPriceImpactPercentageFromFees } from "sdk/utils/fees";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
-import {
-  CreateOrderTxnParams,
-  DecreasePositionOrderParams,
-  getBatchTotalExecutionFee,
-} from "sdk/utils/orderTransactions";
+import { getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
 import { SidecarSlTpOrderEntry } from "sdk/utils/sidecarOrders/types";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";
 
@@ -605,25 +608,49 @@ export function AddTPSLModal({
     );
   }, [markPrice, slPriceEntry, sizeUsdEntry, percentageEntry, position.liquidationPrice, position.entryPrice, isLong]);
 
-  const orderPayloads = useMemo((): CreateOrderTxnParams<DecreasePositionOrderParams>[] => {
+  const positionOrders = useSelector(makeSelectOrdersByPositionKey(position.key));
+
+  const existingFullCloseTp = useMemo(() => {
+    return positionOrders.find(
+      (order) =>
+        !isTwapOrder(order) &&
+        isLimitDecreaseOrderType(order.orderType) &&
+        isFullClosePositionOrder(order, position.sizeInUsd)
+    );
+  }, [positionOrders, position.sizeInUsd]);
+
+  const existingFullCloseSl = useMemo(() => {
+    return positionOrders.find(
+      (order) =>
+        !isTwapOrder(order) &&
+        isStopLossOrderType(order.orderType) &&
+        isFullClosePositionOrder(order, position.sizeInUsd)
+    );
+  }, [positionOrders, position.sizeInUsd]);
+
+  const orderPayloads = useMemo(() => {
+    const empty = { createOrderParams: [], updateOrderParams: [] };
+
     if (!account || !marketInfo || !collateralToken) {
-      return [];
+      return empty;
     }
 
     const tpCreateAmounts = tpPriceError ? undefined : tpDecreaseAmounts;
     const slCreateAmounts = slPriceError ? undefined : slDecreaseAmounts;
 
     if (!tpCreateAmounts && !slCreateAmounts) {
-      return [];
+      return empty;
     }
 
     if ((tpCreateAmounts && !tpExecutionFee) || (slCreateAmounts && !slExecutionFee)) {
-      return [];
+      return empty;
     }
 
     const autoCancelOrdersLimitForModal = autoCancelOrdersLimit > 0 ? 2 : 0;
+    const tpSizeDeltaUsd = tpCreateAmounts?.isFullClose ? FULL_POSITION_CLOSE_SIZE_DELTA_USD : undefined;
+    const slSizeDeltaUsd = slCreateAmounts?.isFullClose ? FULL_POSITION_CLOSE_SIZE_DELTA_USD : undefined;
 
-    return buildTpSlCreatePayloads({
+    return buildTpSlBatchPayloads({
       autoCancelOrdersLimit: autoCancelOrdersLimitForModal,
       chainId,
       account,
@@ -636,11 +663,15 @@ export function AddTPSLModal({
           amounts: tpCreateAmounts,
           executionFeeAmount: tpExecutionFee?.feeTokenAmount,
           executionGasLimit: tpExecutionFee?.gasLimit,
+          sizeDeltaUsd: tpSizeDeltaUsd,
+          existingFullCloseOrder: existingFullCloseTp,
         },
         {
           amounts: slCreateAmounts,
           executionFeeAmount: slExecutionFee?.feeTokenAmount,
           executionGasLimit: slExecutionFee?.gasLimit,
+          sizeDeltaUsd: slSizeDeltaUsd,
+          existingFullCloseOrder: existingFullCloseSl,
         },
       ],
       userReferralCode: userReferralInfo?.referralCodeForTxn,
@@ -659,13 +690,15 @@ export function AddTPSLModal({
     slPriceError,
     tpExecutionFee,
     slExecutionFee,
+    existingFullCloseTp,
+    existingFullCloseSl,
   ]);
 
   const batchParams = useMemo(() => {
-    if (orderPayloads.length === 0) return undefined;
+    if (orderPayloads.createOrderParams.length === 0 && orderPayloads.updateOrderParams.length === 0) return undefined;
     return {
-      createOrderParams: orderPayloads,
-      updateOrderParams: [],
+      createOrderParams: orderPayloads.createOrderParams,
+      updateOrderParams: orderPayloads.updateOrderParams,
       cancelOrderParams: [],
     };
   }, [orderPayloads]);
@@ -700,7 +733,7 @@ export function AddTPSLModal({
     if (slPriceError && slPriceInput) {
       return slPriceError;
     }
-    if (orderPayloads.length === 0) {
+    if (orderPayloads.createOrderParams.length === 0 && orderPayloads.updateOrderParams.length === 0) {
       return t`Unable to calculate order`;
     }
     return undefined;
@@ -709,7 +742,8 @@ export function AddTPSLModal({
     slPriceInput,
     tpPriceError,
     slPriceError,
-    orderPayloads.length,
+    orderPayloads.createOrderParams.length,
+    orderPayloads.updateOrderParams.length,
     editTPSLSize,
     closeSizeInput,
     closeSize.showSizeInTokens,

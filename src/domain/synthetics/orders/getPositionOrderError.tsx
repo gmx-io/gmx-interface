@@ -10,6 +10,7 @@ import {
 } from "domain/synthetics/orders";
 import { PositionInfoLoaded } from "domain/synthetics/positions";
 import { NextPositionValues } from "domain/synthetics/trade";
+import { getPositionCloseSizeDeltaUsdForDisplay } from "domain/tpsl/utils";
 
 export function getPositionOrderError({
   positionOrder,
@@ -73,8 +74,13 @@ export function getPositionOrderError({
       return t`Loading...`;
     }
 
+    const orderSizeDeltaUsdForCompare = getPositionCloseSizeDeltaUsdForDisplay(
+      positionOrder.sizeDeltaUsd ?? 0n,
+      existingPosition?.sizeInUsd
+    );
+
     if (
-      sizeDeltaUsd === (positionOrder.sizeDeltaUsd ?? 0n) &&
+      sizeDeltaUsd === orderSizeDeltaUsdForCompare &&
       triggerPrice === (positionOrder.triggerPrice ?? 0n) &&
       acceptablePrice === positionOrder.acceptablePrice
     ) {

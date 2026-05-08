@@ -1,4 +1,5 @@
 import { getIsFlagEnabled } from "config/ab";
+import { isDevelopment } from "config/env";
 
 import { getApiRolloutBucket } from "./apiRolloutBucket";
 import { useUiFlagsRequest, type UiFlags } from "./useUiFlagsRequest";
@@ -34,10 +35,14 @@ function isInRolloutBucket(percent: number): boolean {
 export function useIsApiSdkEnabled(uiFlagName: ApiUiFlagName): boolean {
   const { uiFlags } = useUiFlagsRequest();
 
-  if (getIsFlagEnabled("apiSdk2")) return true;
+  if (isDevelopment()) {
+    return getIsFlagEnabled("apiSdk2");
+  }
 
-  if (uiFlags?.[uiFlagName] === true) return true;
+  if (uiFlags?.[uiFlagName] === true) {
+    const rolloutPercent = getMaxActiveRolloutPercent(uiFlags);
+    return isInRolloutBucket(rolloutPercent);
+  }
 
-  const rolloutPercent = getMaxActiveRolloutPercent(uiFlags);
-  return isInRolloutBucket(rolloutPercent);
+  return false;
 }
