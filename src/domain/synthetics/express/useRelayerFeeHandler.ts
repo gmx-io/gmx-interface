@@ -213,6 +213,7 @@ export function useExpressOrdersParams({
 
   useSwitchGasPaymentTokenIfRequiredFromExpressParams({
     expressParams: result.expressParams,
+    orderParams,
     isGmxAccount,
   });
 

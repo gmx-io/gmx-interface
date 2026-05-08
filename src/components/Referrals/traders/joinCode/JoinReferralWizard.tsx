@@ -101,7 +101,7 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
                   <Trans>Connect wallet</Trans>
                 </Button>
                 <ExternalLink href={REFERRALS_DOCS_URL} variant="icon" className="text-blue-300">
-                  <Trans>Learn more</Trans>
+                  <Trans>Read more</Trans>
                 </ExternalLink>
               </div>
             </>
@@ -121,11 +121,11 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
                 />
                 <p className="text-body-small text-typography-secondary">
                   <Trans>
-                    You can find referral code in{" "}
+                    You can find a referral code in{" "}
                     <ExternalLink href="https://x.com/search?q=$GMX" className="text-blue-300">
                       X
                     </ExternalLink>{" "}
-                    or on other social media platforms.
+                    or on other social media platforms
                   </Trans>
                 </p>
               </div>
@@ -168,7 +168,7 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
                   className="text-body-small font-medium text-blue-300"
                   onClick={onGoToTraderDashboard}
                 >
-                  <Trans>Go to Trader Dashboard</Trans>
+                  <Trans>Go to trader dashboard</Trans>
                 </button>
               </div>
             </>

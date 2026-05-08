@@ -85,7 +85,7 @@ export function RebateDistributionRowDetail({ rebate, chainId, amountsByTokens }
         return (
           <Fragment key={tokenAddress}>
             <div className="py-8 pl-adaptive text-typography-secondary">
-              <Trans>{token.symbol} Amount</Trans>
+              <Trans>{token.symbol} amount</Trans>
             </div>
             <div className="col-span-4 py-8 pr-adaptive">
               <Amount

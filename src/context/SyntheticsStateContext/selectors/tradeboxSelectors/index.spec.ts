@@ -21,4 +21,15 @@ describe("tradeboxSelectors", () => {
 
     expect(getTradeboxLeverageSliderMarks(150 * BASIS_POINTS_DIVISOR)).toEqual([0.1, 1, 2, 5, 10, 50, 100, 150]);
   });
+
+  // Off-grid 5x values that the FEDEV-3759 formula can produce (e.g. ZEC 85x). The slider's
+  // last mark is its max, so any branch that hard-codes a round value (80/100/110/120) caps
+  // input below the contract limit. Keep these explicit so a future regression is caught.
+  it("selectTradeboxLeverageSliderMarks — off-grid 5x values", () => {
+    expect(getTradeboxLeverageSliderMarks(65 * BASIS_POINTS_DIVISOR)).toEqual([0.1, 1, 2, 5, 10, 25, 50, 65]);
+    expect(getTradeboxLeverageSliderMarks(85 * BASIS_POINTS_DIVISOR)).toEqual([0.1, 1, 2, 5, 10, 50, 85]);
+    expect(getTradeboxLeverageSliderMarks(95 * BASIS_POINTS_DIVISOR)).toEqual([0.1, 1, 2, 5, 10, 50, 95]);
+    expect(getTradeboxLeverageSliderMarks(105 * BASIS_POINTS_DIVISOR)).toEqual([0.1, 1, 2, 5, 10, 25, 50, 105]);
+    expect(getTradeboxLeverageSliderMarks(115 * BASIS_POINTS_DIVISOR)).toEqual([0.1, 1, 2, 5, 10, 25, 50, 100, 115]);
+  });
 });

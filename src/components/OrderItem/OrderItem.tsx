@@ -10,6 +10,7 @@ import {
   selectChainId,
   selectMarketsInfoData,
   selectOracleSettings,
+  selectPositionsInfoData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectTradeboxSelectedOrderKey } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -31,11 +32,13 @@ import {
   isTwapOrder,
 } from "domain/synthetics/orders";
 import { useDisabledCancelMarketOrderMessage } from "domain/synthetics/orders/useDisabledCancelMarketOrderMessage";
-import { PositionsInfoData, getNameByOrderType } from "domain/synthetics/positions";
+import { PositionsInfoData, getNameByOrderType, getPositionKey } from "domain/synthetics/positions";
 import { convertToTokenAmount, convertToUsd, getTokensRatioByPrice } from "domain/synthetics/tokens";
 import { getMarkPrice } from "domain/synthetics/trade";
 import { TokensRatioAndSlippage } from "domain/tokens";
+import { isFullClosePositionOrder } from "domain/tpsl/utils";
 import { calculateDisplayDecimals, formatAmount, formatBalanceAmount, formatUsd } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import { useIsTruncated } from "lib/useIsTruncated";
 import { getWrappedToken } from "sdk/configs/tokens";
 
@@ -125,6 +128,7 @@ function OrderSize({
   className?: string;
 }) {
   const chainId = useSelector(selectChainId);
+  const positionsInfoData = useSelector(selectPositionsInfoData);
 
   if (isSwapOrderType(order.orderType)) {
     if (showDebugValues) {
@@ -161,6 +165,17 @@ function OrderSize({
 
   const wrappedToken = getWrappedToken(chainId);
 
+  const position = getByKey(
+    positionsInfoData,
+    getPositionKey(
+      positionOrder.account,
+      positionOrder.marketAddress,
+      positionOrder.targetCollateralToken.address,
+      positionOrder.isLong
+    )
+  );
+  const isFullClose = isFullClosePositionOrder(order, position?.sizeInUsd);
+
   function getCollateralLabel() {
     if (isDecreaseOrderType(positionOrder.orderType)) {
       return t`Margin delta`;
@@ -169,11 +184,11 @@ function OrderSize({
   }
 
   function getCollateralText() {
-    const collateralUsd = convertToUsd(
-      positionOrder.initialCollateralDeltaAmount,
-      positionOrder.initialCollateralToken.decimals,
-      positionOrder.initialCollateralToken.prices.minPrice
-    )!;
+    const useLivePositionMargin = isFullClose && position;
+    const sourceAmount = useLivePositionMargin ? position.collateralAmount : positionOrder.initialCollateralDeltaAmount;
+    const sourceToken = useLivePositionMargin ? position.collateralToken : positionOrder.initialCollateralToken;
+
+    const collateralUsd = convertToUsd(sourceAmount, sourceToken.decimals, sourceToken.prices.minPrice)!;
 
     const targetCollateralAmount = convertToTokenAmount(
       collateralUsd,
@@ -197,7 +212,7 @@ function OrderSize({
 
   return (
     <TooltipWithPortal
-      handle={<SizeWithIcon order={order} className={className} />}
+      handle={<SizeWithIcon order={order} className={className} positionSizeUsd={position?.sizeInUsd} />}
       position="bottom-start"
       tooltipClassName={isTwapOrder(order) ? "!p-0" : undefined}
       maxAllowedWidth={400}
@@ -250,7 +265,15 @@ export function TwapOrderProgress({ order, className }: { order: TwapOrderInfo; 
   return <span className={className}>{content}</span>;
 }
 
-function SizeWithIcon({ order, className }: { order: OrderInfo; className?: string }) {
+function SizeWithIcon({
+  order,
+  className,
+  positionSizeUsd,
+}: {
+  order: OrderInfo;
+  className?: string;
+  positionSizeUsd?: bigint;
+}) {
   if (isSwapOrderType(order.orderType)) {
     const { initialCollateralToken, targetCollateralToken, minOutputAmount, initialCollateralDeltaAmount } = order;
 
@@ -303,6 +326,14 @@ function SizeWithIcon({ order, className }: { order: OrderInfo; className?: stri
   }
 
   const { sizeDeltaUsd } = order;
+  if (isFullClosePositionOrder(order, positionSizeUsd)) {
+    return (
+      <span className={className}>
+        <Trans>Full position close</Trans>
+      </span>
+    );
+  }
+
   const sizeText = formatUsd(sizeDeltaUsd * (isIncreaseOrderType(order.orderType) ? 1n : -1n), {
     displayPlus: true,
   });

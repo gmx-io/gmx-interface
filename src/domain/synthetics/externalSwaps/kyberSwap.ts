@@ -3,7 +3,7 @@ import { getKyberSwapUrl, KYBER_SWAP_CLIENT_ID, EXCLUDED_KYBER_SWAP_SOURCES } fr
 import { USD_DECIMALS } from "config/factors";
 import { buildUrl } from "lib/buildUrl";
 import { metrics } from "lib/metrics";
-import { formatTokenAmount, numberToBigint } from "lib/numbers";
+import { expandDecimals, numberToBigint } from "lib/numbers";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 
@@ -67,6 +67,7 @@ export type KyberSwapQuote = {
   gasPrice: bigint;
   amountIn: bigint;
   outputAmount: bigint;
+  slippage: number;
 };
 
 const KYBER_SWAP_SLIPPAGE_ERROR_CODE = 4222;
@@ -190,6 +191,7 @@ export async function getKyberSwapTxnData({
       gasPrice,
       amountIn: amountInBigint,
       outputAmount: amountOutBigint,
+      slippage,
     };
   } catch (e) {
     if (e instanceof KyberSwapSlippageError) {
@@ -201,10 +203,155 @@ export async function getKyberSwapTxnData({
   }
 }
 
-function calcTokenPrice(amount: bigint, usdValue: string, decimals: number): bigint {
+export type KyberSwapRouteResult = {
+  routeSummary: KyberSwapRouteSummary;
+  routerAddress: string;
+  outputAmount: bigint;
+  amountIn: bigint;
+};
+
+export async function getKyberSwapRoute({
+  chainId,
+  tokenInAddress,
+  tokenOutAddress,
+  amountIn,
+  gasPrice,
+}: {
+  chainId: ContractsChainId;
+  tokenInAddress: string;
+  tokenOutAddress: string;
+  amountIn: bigint;
+  gasPrice: bigint;
+}): Promise<KyberSwapRouteResult | undefined> {
+  const baseUrl = getKyberSwapUrl(chainId);
+
+  const wrappedTokenIn = convertTokenAddress(chainId, tokenInAddress, "wrapped");
+  const wrappedTokenOut = convertTokenAddress(chainId, tokenOutAddress, "wrapped");
+
+  const excludedSources = EXCLUDED_KYBER_SWAP_SOURCES[chainId]?.join(",");
+
+  const routeUrl = buildUrl(baseUrl, "/api/v1/routes", {
+    tokenIn: wrappedTokenIn,
+    tokenOut: wrappedTokenOut,
+    amountIn: amountIn.toString(),
+    gasPrice: gasPrice.toString(),
+    excludedSources,
+  });
+
+  try {
+    const routeRes = await fetch(routeUrl, {
+      headers: { "x-client-id": KYBER_SWAP_CLIENT_ID },
+    });
+
+    if (routeRes.status === 403) {
+      throw new Error(`IP is banned ${await routeRes.text()}`);
+    }
+
+    const routeData = (await routeRes.json()) as KyberSwapRoutesResponse;
+
+    if (!routeData.data?.routeSummary || routeData.code !== 0) {
+      return undefined;
+    }
+
+    const { routeSummary, routerAddress } = routeData.data;
+
+    if (routerAddress !== getContract(chainId, "KyberSwapRouter")) {
+      return undefined;
+    }
+
+    return {
+      routeSummary,
+      routerAddress,
+      outputAmount: BigInt(routeSummary.amountOut),
+      amountIn: BigInt(routeSummary.amountIn),
+    };
+  } catch (e) {
+    metrics.pushError(e, "externalSwap.getKyberSwapRoute");
+    return undefined;
+  }
+}
+
+export async function getKyberSwapBuildFromRoute({
+  chainId,
+  routeSummary,
+  senderAddress,
+  receiverAddress,
+  slippage,
+  tokenInAddress,
+  tokenOutAddress,
+  gasPrice,
+}: {
+  chainId: ContractsChainId;
+  routeSummary: KyberSwapRouteSummary;
+  senderAddress: string;
+  receiverAddress: string;
+  slippage: number;
+  tokenInAddress: string;
+  tokenOutAddress: string;
+  gasPrice: bigint;
+}): Promise<KyberSwapQuote | undefined> {
+  const baseUrl = getKyberSwapUrl(chainId);
+  const tokenIn = getToken(chainId, tokenInAddress);
+  const tokenOut = getToken(chainId, tokenOutAddress);
+
+  try {
+    const buildUrl_ = buildUrl(baseUrl, "/api/v1/route/build");
+
+    const buildRes = await fetch(buildUrl_, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "x-client-id": KYBER_SWAP_CLIENT_ID,
+      },
+      body: JSON.stringify({
+        routeSummary,
+        sender: senderAddress,
+        recipient: receiverAddress,
+        slippageTolerance: slippage,
+      }),
+    });
+
+    const buildData = (await buildRes.json()) as KyberSwapBuildResponse;
+
+    if (!buildData.data || buildData.code !== 0) {
+      return undefined;
+    }
+
+    if (buildData.data.routerAddress !== getContract(chainId, "KyberSwapRouter")) {
+      return undefined;
+    }
+
+    const amountInBigint = BigInt(routeSummary.amountIn);
+    const amountOutBigint = BigInt(buildData.data.amountOut);
+    const usdIn = numberToBigint(parseFloat(buildData.data.amountInUsd), USD_DECIMALS);
+    const usdOut = numberToBigint(parseFloat(buildData.data.amountOutUsd), USD_DECIMALS);
+
+    const priceIn = calcTokenPrice(amountInBigint, buildData.data.amountInUsd, tokenIn.decimals);
+    const priceOut = calcTokenPrice(amountOutBigint, buildData.data.amountOutUsd, tokenOut.decimals);
+
+    return {
+      to: buildData.data.routerAddress,
+      data: buildData.data.data,
+      value: 0n,
+      estimatedGas: BigInt(buildData.data.gas),
+      usdIn,
+      usdOut,
+      priceIn,
+      priceOut,
+      gasPrice,
+      amountIn: amountInBigint,
+      outputAmount: amountOutBigint,
+      slippage,
+    };
+  } catch (e) {
+    metrics.pushError(e, "externalSwap.getKyberSwapBuildFromRoute");
+    return undefined;
+  }
+}
+
+export function calcTokenPrice(amount: bigint, usdValue: string, decimals: number): bigint {
   if (amount <= 0n) return 0n;
 
-  const formattedAmount = formatTokenAmount(amount, decimals, undefined, { showAllSignificant: true }) ?? "0";
-
-  return numberToBigint(parseFloat(usdValue) / parseFloat(formattedAmount), USD_DECIMALS);
+  const usdBigint = numberToBigint(parseFloat(usdValue), USD_DECIMALS);
+  return (usdBigint * expandDecimals(1n, decimals)) / amount;
 }

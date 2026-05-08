@@ -15,7 +15,7 @@ const abFlagsConfig = {
   testMultichain: 1,
   testSponsoredCall: 1,
   testExampleAb: 0,
-  apiSdk2: 0.5,
+  apiSdk2: 0,
   testRewardsSuspended: 0,
   testStakingPowerLoyalty: 0,
 };
@@ -54,6 +54,9 @@ function loadAbStorage(): void {
           abStorage[flag] = {
             enabled: Math.random() < abFlagsConfig[flag],
           };
+          changed = true;
+        } else if (abFlagsConfig[flag] === 1 && !abStorage[flag].enabled) {
+          abStorage[flag] = { enabled: true };
           changed = true;
         }
       }

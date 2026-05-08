@@ -46,7 +46,7 @@ export function useExternalSwapOutputRequest({
     amountIn > 0n &&
     slippage !== undefined &&
     gasPrice !== undefined
-      ? `useExternalSwapsQuote:${chainId}:${tokenInAddress}:${tokenOutAddress}:${amountIn}:${slippage}:${gasPrice}:${receiverAddress}`
+      ? `useExternalSwapsQuote:${chainId}:${tokenInAddress}:${tokenOutAddress}:${amountIn}:${slippage}:${receiverAddress}`
       : null;
 
   const debouncedKey = useDebounce(swapKey, 300);
@@ -55,7 +55,7 @@ export function useExternalSwapOutputRequest({
   const prevAmountIn = usePrevious(amountIn);
   const botanixAssetsPerShare = useSelector(selectBotanixStakingAssetsPerShare);
 
-  const { data } = useSWR<KyberSwapQuote | undefined>(debouncedKey, {
+  const { data, error } = useSWR<KyberSwapQuote | undefined>(debouncedKey, {
     keepPreviousData: enabled && prevTokensKey === tokensKey && prevAmountIn === amountIn,
     fetcher: async () => {
       try {
@@ -104,15 +104,15 @@ export function useExternalSwapOutputRequest({
   });
 
   const { tokensAllowanceData } = useTokensAllowanceData(chainId, {
-    spenderAddress: data?.to,
-    tokenAddresses: tokenInAddress ? [convertTokenAddress(chainId, tokenInAddress, "wrapped")] : [],
+    spenderAddress: enabled ? data?.to : undefined,
+    tokenAddresses: enabled && tokenInAddress ? [convertTokenAddress(chainId, tokenInAddress, "wrapped")] : [],
   });
 
   const tokensData = useTokensData();
 
   return useMemo(() => {
     if (amountIn === undefined || !tokenInAddress || !tokenOutAddress || gasPrice === undefined || !receiverAddress) {
-      return {};
+      return { error };
     }
 
     const botanixStakingQuote =
@@ -129,13 +129,11 @@ export function useExternalSwapOutputRequest({
         : undefined;
 
     if (botanixStakingQuote) {
-      return {
-        quote: botanixStakingQuote,
-      };
+      return { quote: botanixStakingQuote, error };
     }
 
     if (!data) {
-      return {};
+      return { error };
     }
 
     const needSpenderApproval = getNeedTokenApprove(
@@ -157,6 +155,7 @@ export function useExternalSwapOutputRequest({
       priceIn: data.priceIn,
       priceOut: data.priceOut,
       feesUsd: data.usdIn - data.usdOut,
+      slippage: data.slippage,
       needSpenderApproval,
       txnData: {
         to: data.to,
@@ -167,9 +166,7 @@ export function useExternalSwapOutputRequest({
       },
     };
 
-    return {
-      quote,
-    };
+    return { quote, error };
   }, [
     amountIn,
     tokenInAddress,
@@ -180,6 +177,7 @@ export function useExternalSwapOutputRequest({
     botanixAssetsPerShare,
     chainId,
     data,
+    error,
     tokensAllowanceData,
   ]);
 }

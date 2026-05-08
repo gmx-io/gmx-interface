@@ -6,7 +6,8 @@ export type PositionSortField = "symbol" | "size" | "netValue" | "collateral" | 
 export function sortPositionsByField(
   positions: PositionInfo[],
   orderBy: PositionSortField | "unspecified",
-  direction: SortDirection
+  direction: SortDirection,
+  showPnlAfterFees: boolean
 ): PositionInfo[] {
   if (orderBy === "unspecified" || direction === "unspecified") {
     return positions;
@@ -26,7 +27,9 @@ export function sortPositionsByField(
         return compareBigInt(a.sizeInUsd, b.sizeInUsd, directionMultiplier);
       }
       case "netValue": {
-        return compareBigInt(a.netValue, b.netValue, directionMultiplier);
+        const aValue = showPnlAfterFees ? a.netValueAfterAllFees : a.netValue;
+        const bValue = showPnlAfterFees ? b.netValueAfterAllFees : b.netValue;
+        return compareBigInt(aValue, bValue, directionMultiplier);
       }
       case "collateral": {
         return compareBigInt(a.remainingCollateralUsd, b.remainingCollateralUsd, directionMultiplier);

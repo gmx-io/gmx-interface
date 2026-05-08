@@ -1,5 +1,5 @@
 import { useEffect, useMemo } from "react";
-import { Address, ContractFunctionReturnType, isAddressEqual } from "viem";
+import { Address, ContractFunctionReturnType, getAddress, isAddressEqual } from "viem";
 
 import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
@@ -9,6 +9,7 @@ import { OrderTypeFilterValue, convertOrderTypeFilterValues } from "domain/synth
 import { DecreasePositionSwapType, Order, OrderType, OrdersData } from "domain/synthetics/orders/types";
 import { useApiOrdersRequest } from "domain/synthetics/orders/useApiOrdersRequest";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
+import { API_UI_FLAGS, useIsApiSdkEnabled } from "domain/synthetics/uiFlags/useIsApiSdkEnabled";
 import { FreshnessMetricId } from "lib/metrics";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
 import { CacheKey, MulticallRequestConfig, MulticallResult, useMulticall } from "lib/multicall";
@@ -97,7 +98,7 @@ export function useOrders(
     [account, marketsDirectionsFilter, orderTypesFilter]
   );
 
-  const apiEnabled = false;
+  const apiEnabled = useIsApiSdkEnabled(API_UI_FLAGS.orders);
   const {
     ordersData: apiOrdersData,
     isStale: isApiStale,
@@ -214,6 +215,9 @@ function convertApiOrderToOrder({
     decreasePositionSwapType: rest.decreasePositionSwapType as DecreasePositionSwapType,
     contractTriggerPrice: triggerPrice,
     contractAcceptablePrice: acceptablePrice,
+    marketAddress: getAddress(rest.marketAddress),
+    initialCollateralTokenAddress: getAddress(rest.initialCollateralTokenAddress),
+    swapPath: rest.swapPath.map((addr) => getAddress(addr)),
     data: [],
   };
 }

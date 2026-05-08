@@ -69,7 +69,7 @@ function ChartTooltip({ active, payload, gmxPrice }: TooltipProps<number, string
     <div className="text-body-small z-50 flex flex-col rounded-4 bg-slate-800 px-12 pt-8 shadow-lg backdrop-blur-sm">
       <StatsTooltipRow label={t`Week`} value={weekRange} showDollar={false} />
       <StatsTooltipRow
-        label={t`Weekly Bought`}
+        label={t`Weekly bought`}
         value={`${numberWithCommas(Math.round(point.weeklyAccrued))} GMX (${weeklyUsd})`}
         showDollar={false}
       />
@@ -111,7 +111,7 @@ export function BuybackChart({
     <div className="flex flex-col">
       <div className="flex flex-wrap gap-24 pl-20 text-typography-secondary">
         <div className="flex items-center gap-8 text-13 font-medium">
-          <div className="inline-block size-6 rounded-full bg-blue-300" /> <Trans>Weekly Bought</Trans>
+          <div className="inline-block size-6 rounded-full bg-blue-300" /> <Trans>Weekly bought</Trans>
         </div>
         <div className="flex items-center gap-8 text-13 font-medium">
           <div className="inline-block size-6 rounded-full bg-slate-100" /> <Trans>Cumulative</Trans>

@@ -168,7 +168,7 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
                   <SyntheticsInfoRow
                     label={
                       <TooltipWithPortal
-                        handle={t`Allowed Slippage`}
+                        handle={t`Allowed slippage`}
                         position="top-start"
                         variant="iconStroke"
                         content={
@@ -191,7 +191,7 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
                     />
                   </SyntheticsInfoRow>
                   <SyntheticsInfoRow
-                    label={<Trans>You'll receive</Trans>}
+                    label={<Trans>Receive</Trans>}
                     value={
                       !state.swapTargetToken || state.toReceiveAmount === 0n || state.hasSwapRouteErrorForSubmit ? (
                         "-"
@@ -234,7 +234,7 @@ export function ClaimAffiliatesModal({ onClose }: Props) {
         />
 
         {state.hasSwapRouteErrorForSubmit && (
-          <AlertInfoCard type="warning" hideClose>
+          <AlertInfoCard type="error" hideClose>
             {state.failedSwapTokenSymbols ? (
               <Trans>Swap route unavailable for: {state.failedSwapTokenSymbols}</Trans>
             ) : (

@@ -132,7 +132,7 @@ export function PoolsDetailsHeader({ glvOrMarketInfo, marketToken }: Props) {
             {(isOpen || !isMobile) && (
               <div className="flex gap-14 max-md:flex-col">
                 <PoolsDetailsMarketAmount
-                  label={<Trans>TVL (Supply)</Trans>}
+                  label={<Trans>TVL (supply)</Trans>}
                   value={formatAmountHuman(marketTotalSupplyUsd, USD_DECIMALS, true, 2)}
                   secondaryValue={
                     typeof marketTotalSupply === "bigint" && typeof marketToken?.decimals === "number"

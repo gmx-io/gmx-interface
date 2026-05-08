@@ -319,7 +319,7 @@ export function ParseTransactionPage() {
                       )
                     ) : (
                       <div className="text-body-medium text-typography-secondary">
-                        <Trans>No executed or cancelled transaction found yet</Trans>
+                        <Trans>No executed or cancelled transaction yet</Trans>
                       </div>
                     )}
                   </div>
@@ -594,7 +594,7 @@ function LogEntryComponent(props: LogEntryComponentProps) {
   }
 
   if (typeof props.value === "boolean") {
-    value = props.value ? t`true` : t`false`;
+    value = props.value ? t`True` : t`False`;
   }
 
   if (props.type === "bytes32") {
