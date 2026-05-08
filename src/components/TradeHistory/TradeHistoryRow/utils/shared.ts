@@ -98,6 +98,9 @@ export type RowDetails = {
   priceComment: TooltipContent | null;
   pnl?: string;
   pnlState?: TooltipState;
+  pnlTooltip?: string;
+  fees?: string;
+  feesTooltip?: TooltipContent;
   isLong?: boolean;
   indexTokenSymbol?: string;
   swapFromTokenSymbol?: string;

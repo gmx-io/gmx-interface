@@ -3,6 +3,7 @@ import Skeleton from "react-loading-skeleton";
 
 import { PLATFORM_TOKEN_DECIMALS } from "context/PoolsDetailsContext/selectors";
 import { MultichainMarketTokenBalances } from "domain/multichain/types";
+import { useMegaethPointsActive } from "domain/synthetics/common/useMegaethPointsActive";
 import {
   GlvOrMarketInfo,
   getGlvDisplayName,
@@ -20,7 +21,10 @@ import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
-import { MultichainBalanceTooltip } from "components/MultichainBalanceTooltip/MultichainBalanceTooltip";
+import {
+  MultichainBalanceTooltip,
+  useHasMultichainBreakdown,
+} from "components/MultichainBalanceTooltip/MultichainBalanceTooltip";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
@@ -28,6 +32,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import MinusCircleIcon from "img/ic_minus_circle.svg?react";
 import NewLinkIcon from "img/ic_new_link.svg?react";
 import PlusCircleIcon from "img/ic_plus_circle.svg?react";
+import sparkleIcon from "img/sparkle.svg";
 
 import { BaseAssetCard } from "./BaseAssetCard";
 
@@ -49,6 +54,7 @@ export function GmGlvAssetCard({
   multichainMarketTokenBalances,
 }: Props) {
   const marketAddress = getGlvOrMarketAddress(marketInfo);
+  const isMegaethPointsActive = useMegaethPointsActive();
 
   const isGlv = isGlvInfo(marketInfo);
   const indexToken = isGlv ? marketInfo.glvToken : marketInfo.indexToken;
@@ -58,18 +64,20 @@ export function GmGlvAssetCard({
   const balance = multichainMarketTokenBalances?.totalBalance ?? 0n;
   const balanceUsd = multichainMarketTokenBalances?.totalBalanceUsd ?? 0n;
   const symbol = isGlv ? "GLV" : "GM";
+  const hasMultichainBreakdown = useHasMultichainBreakdown(multichainMarketTokenBalances);
 
-  const tooltipContent = (
+  const tooltipContent = hasMultichainBreakdown ? (
     <MultichainBalanceTooltip
       multichainBalances={multichainMarketTokenBalances}
       symbol={symbol}
       decimals={PLATFORM_TOKEN_DECIMALS}
     />
-  );
+  ) : null;
 
   const title = isGlv
     ? getGlvDisplayName(marketInfo)
     : `GM: ${getMarketIndexName({ indexToken, isSpotOnly: marketInfo.isSpotOnly })}`;
+  const showMegaethPointsBadge = isGlv && isMegaethPointsActive;
   const subtitle = `[${getMarketPoolName({ longToken, shortToken })}]`;
 
   const iconTokenSymbol = isGlv
@@ -119,6 +127,24 @@ export function GmGlvAssetCard({
       }
     >
       <div className="flex flex-col gap-12">
+        {showMegaethPointsBadge && (
+          <TooltipWithPortal
+            variant="none"
+            maxAllowedWidth={350}
+            handle={
+              <span className="inline-flex w-fit items-center gap-3 rounded-4 bg-blue-300/20 px-6 py-2 text-12 font-medium text-blue-300">
+                <img className="h-10" src={sparkleIcon} alt="" />
+                <Trans>Earns MegaETH points</Trans>
+              </span>
+            }
+            content={
+              <Trans>
+                Points are based on the time-weighted average value of your share of the GLV [USDM-USDM] vault over the
+                epoch
+              </Trans>
+            }
+          />
+        )}
         <SyntheticsInfoRow
           label={<Trans>Wallet</Trans>}
           value={

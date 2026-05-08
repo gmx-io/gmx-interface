@@ -35,7 +35,7 @@ import { convertToUsd, getMidPrice, getTokenData } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { getWrappedToken } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
 import { formatBalanceAmount, formatUsd, parseValue } from "sdk/utils/numbers";
@@ -296,7 +296,7 @@ export function BridgeOutModal({
   } => {
     if (hasOutdatedUi) {
       return {
-        text: t`Page outdated. Refresh`,
+        text: getPageOutdatedError(),
         disabled: true,
       };
     }
@@ -443,7 +443,7 @@ export function BridgeOutModal({
                   <img src={getChainIcon(bridgeOutChain)} alt={getChainName(bridgeOutChain)} className="size-20" />
                   <div>
                     <Trans comment="to network">
-                      <span className="text-typography-secondary">to </span>
+                      <span className="text-typography-secondary">To </span>
                       <span>{getChainName(bridgeOutChain)}</span>
                     </Trans>
                   </div>

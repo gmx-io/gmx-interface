@@ -65,7 +65,7 @@ import {
 import { USD_DECIMALS, adjustForDecimals, bigintToNumber, expandDecimals, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useThrottledAsync } from "lib/useThrottledAsync";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
@@ -884,7 +884,7 @@ export const DepositView = () => {
         const preferredToken = multichainTokens.find(
           (sourceChainToken) =>
             sourceChainToken.sourceChainId === depositViewChain &&
-            sourceChainToken.address === CHAIN_ID_PREFERRED_DEPOSIT_TOKEN[settlementChainId]
+            sourceChainToken.address === CHAIN_ID_PREFERRED_DEPOSIT_TOKEN[settlementChainId as SettlementChainId]
         );
 
         if (
@@ -975,7 +975,7 @@ export const DepositView = () => {
     };
   } else if (hasOutdatedUi) {
     buttonState = {
-      text: t`Page outdated. Refresh`,
+      text: getPageOutdatedError(),
       disabled: true,
     };
   } else if (isApproving) {
@@ -1031,7 +1031,7 @@ export const DepositView = () => {
     buttonState = {
       text: (
         <>
-          <Trans>Loading network fees…</Trans>
+          <Trans>Loading network fees...</Trans>
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
@@ -1237,50 +1237,29 @@ export const DepositView = () => {
             </div>
           </div>
           <div className="text-body-medium text-typography-secondary numbers">{formatUsd(inputAmountUsd ?? 0n)}</div>
+          {isAboveLimit && (
+            <AlertInfoCard type="warning" className="mt-8" hideClose>
+              <div>
+                <Trans>
+                  Amount exceeds the deposit limit. Try an amount smaller than{" "}
+                  <span className="numbers">{upperLimitFormatted}</span>.
+                </Trans>
+              </div>
+            </AlertInfoCard>
+          )}
+          {isBelowLimit && (
+            <AlertInfoCard type="warning" className="mt-8" hideClose>
+              <div>
+                <Trans>
+                  Amount is below the deposit limit. Try an amount larger than{" "}
+                  <span className="numbers">{lowerLimitFormatted}</span>.
+                </Trans>
+              </div>
+            </AlertInfoCard>
+          )}
         </div>
       </div>
 
-      {isAvalancheSettlement && (
-        <AlertInfoCard type="error" className="mt-8" hideClose>
-          <div>
-            <Trans>Deposits are not supported on Avalanche.</Trans>
-          </div>
-        </AlertInfoCard>
-      )}
-      {isAboveLimit && (
-        <AlertInfoCard type="warning" className="mt-8" hideClose>
-          <div>
-            <Trans>
-              Amount exceeds the deposit limit. Try an amount smaller than{" "}
-              <span className="numbers">{upperLimitFormatted}</span>.
-            </Trans>
-          </div>
-        </AlertInfoCard>
-      )}
-      {isBelowLimit && (
-        <AlertInfoCard type="warning" className="mt-8" hideClose>
-          <div>
-            <Trans>
-              Amount is below the deposit limit. Try an amount larger than{" "}
-              <span className="numbers">{lowerLimitFormatted}</span>.
-            </Trans>
-          </div>
-        </AlertInfoCard>
-      )}
-      {buttonState.bannerErrorName && (
-        <AlertInfoCard type="error" className="mt-8" hideClose>
-          <ValidationBannerErrorContent
-            validationBannerErrorName={buttonState.bannerErrorName}
-            chainId={settlementChainId}
-            srcChainId={depositViewChain}
-          />
-        </AlertInfoCard>
-      )}
-      {depositMaxDetails.gasPaymentTokenWarningContent && (
-        <AlertInfoCard type="warning" className="mt-8" hideClose>
-          {depositMaxDetails.gasPaymentTokenWarningContent}
-        </AlertInfoCard>
-      )}
       <div className="h-32 shrink-0 grow" />
 
       {depositViewTokenAddress && (
@@ -1305,6 +1284,16 @@ export const DepositView = () => {
             }
           />
         </div>
+      )}
+
+      {buttonState.bannerErrorName && (
+        <AlertInfoCard type="error" className="mb-16" hideClose>
+          <ValidationBannerErrorContent
+            validationBannerErrorName={buttonState.bannerErrorName}
+            chainId={settlementChainId}
+            srcChainId={depositViewChain as SourceChainId | undefined}
+          />
+        </AlertInfoCard>
       )}
 
       <Button variant="primary-action" className="w-full shrink-0" type="submit" disabled={buttonState.disabled}>

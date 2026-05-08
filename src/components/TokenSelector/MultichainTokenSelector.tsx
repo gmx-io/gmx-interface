@@ -214,7 +214,7 @@ export function MultichainTokenSelector({
               />
               {isAvalancheSettlement ? null : isGmxAccountEmpty && srcChainId !== undefined ? (
                 <div className="text-body-medium text-typography-secondary">
-                  <Trans>To begin trading on GMX, deposit assets into your GMX Account</Trans>
+                  <Trans>To trade on GMX, deposit assets into your GMX Account</Trans>
                 </div>
               ) : (
                 <Tabs type="inline" options={tabsOptions} selectedValue={activeFilter} onChange={setActiveFilter} />
@@ -386,6 +386,7 @@ function useAvailableToTradeTokenList({
             return stripBlacklistedWords(name);
           },
           "symbol",
+          (item) => (item.searchAliases ?? []).join(" "),
         ],
         searchKeyword
       );
@@ -554,6 +555,7 @@ function useMultichainTokensList({
           return stripBlacklistedWords(name);
         },
         "symbol",
+        (item) => (item.searchAliases ?? []).join(" "),
       ],
       searchKeyword
     );

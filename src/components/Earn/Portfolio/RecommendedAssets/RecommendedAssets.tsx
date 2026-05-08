@@ -3,7 +3,9 @@ import cx from "classnames";
 import { ReactNode, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
+import { isDepositDisabledMarket } from "config/static/markets";
 import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
+import { useMegaethPointsActive } from "domain/synthetics/common/useMegaethPointsActive";
 import {
   getGlvOrMarketAddress,
   getMarketIndexName,
@@ -20,7 +22,7 @@ import { expandDecimals, formatPercentage, USD_DECIMALS } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { sendEarnRecommendationClickedEvent } from "lib/userAnalytics/earnEvents";
 import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
-import { AnyChainId, BOTANIX, MEGAETH } from "sdk/configs/chains";
+import { AnyChainId, BOTANIX, ContractsChainId, MEGAETH } from "sdk/configs/chains";
 import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 import { MarketInfo } from "sdk/utils/markets/types";
 import { getByKey } from "sdk/utils/objects";
@@ -28,21 +30,26 @@ import { getByKey } from "sdk/utils/objects";
 import APRLabel from "components/APRLabel/APRLabel";
 import Button from "components/Button/Button";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import BoltGradientIcon from "img/ic_bolt_gradient.svg?react";
 import NewLinkThinIcon from "img/ic_new_link_thin.svg?react";
+import sparkleIcon from "img/sparkle.svg";
 import GmxIcon from "img/tokens/ic_gmx.svg?react";
 
 const getRecommendedGlvs = ({
   hasGmxAssets,
   marketsInfoData,
   performance,
+  chainId,
 }: {
   hasGmxAssets: boolean;
   marketsInfoData: { [marketAddress: string]: GlvOrMarketInfo };
   performance: PerformanceData;
+  chainId: number;
 }) => {
   const maxCount = !hasGmxAssets ? 1 : 2;
+  const skipPerfFilter = chainId === MEGAETH;
 
   const glvs = Object.values(marketsInfoData)
     .filter((info): info is GlvInfo => {
@@ -52,6 +59,10 @@ const getRecommendedGlvs = ({
 
       if (typeof info.glvToken.balance !== "undefined" && info.glvToken.balance > 0n) {
         return false;
+      }
+
+      if (skipPerfFilter) {
+        return true;
       }
 
       const glvPerformance = getByKey(performance, info.glvTokenAddress);
@@ -77,12 +88,14 @@ const getRecommendedGms = ({
   glvsToShow,
   marketTokensData,
   performance,
+  chainId,
 }: {
   hasGmxAssets: boolean;
   marketsInfoData: { [marketAddress: string]: GlvOrMarketInfo };
   glvsToShow: GlvInfo[];
   marketTokensData: TokensData;
   performance: PerformanceData;
+  chainId: number;
 }) => {
   let count = 4;
 
@@ -114,6 +127,7 @@ const getRecommendedGms = ({
 
       return (
         !info.isDisabled &&
+        !isDepositDisabledMarket(chainId, info.marketTokenAddress) &&
         totalPoolUsd >= MIN_LIQUIDITY_USD &&
         typeof poolPerformance !== "undefined" &&
         poolPerformance > 0n
@@ -139,13 +153,15 @@ export function RecommendedAssets({
   performance: PerformanceData;
 }) {
   const { chainId } = useChainId();
+  const isMegaethPointsActive = useMegaethPointsActive();
   const glvsToShow = useMemo(() => {
     return getRecommendedGlvs({
       hasGmxAssets,
       marketsInfoData: marketsInfoData,
       performance,
+      chainId,
     });
-  }, [hasGmxAssets, marketsInfoData, performance]);
+  }, [hasGmxAssets, marketsInfoData, performance, chainId]);
 
   const gmsToShow = useMemo(() => {
     return getRecommendedGms({
@@ -154,8 +170,9 @@ export function RecommendedAssets({
       glvsToShow,
       marketTokensData,
       performance,
+      chainId,
     });
-  }, [hasGmxAssets, marketsInfoData, glvsToShow, marketTokensData, performance]);
+  }, [hasGmxAssets, marketsInfoData, glvsToShow, marketTokensData, performance, chainId]);
 
   const [isBuyGmxModalVisible, setIsBuyGmxModalVisible] = useState(false);
 
@@ -192,7 +209,31 @@ export function RecommendedAssets({
           </RecommendedAssetSection>
         )}
         {glvsToShow.length > 0 && (
-          <RecommendedAssetSection title={<Trans>GLV vaults</Trans>}>
+          <RecommendedAssetSection
+            title={
+              <span className="flex items-center gap-6">
+                <Trans>GLV vaults</Trans>
+                {isMegaethPointsActive && (
+                  <TooltipWithPortal
+                    variant="none"
+                    maxAllowedWidth={350}
+                    handle={
+                      <span className="inline-flex items-center gap-3 rounded-4 bg-blue-300/20 px-6 py-2 text-12 font-medium text-blue-300">
+                        <img className="h-10" src={sparkleIcon} alt="" />
+                        <Trans>Earns MegaETH points</Trans>
+                      </span>
+                    }
+                    content={
+                      <Trans>
+                        Points are based on the time-weighted average value of your share of the GLV [USDM-USDM] vault
+                        over the epoch
+                      </Trans>
+                    }
+                  />
+                )}
+              </span>
+            }
+          >
             {glvsToShow.map((glv) => (
               <GlvGmxRecommendedAssetItem
                 key={glv.glvTokenAddress}
@@ -276,7 +317,7 @@ function GmxRecommendedAssetItem({ chainId, openBuyGmxModal }: { chainId: AnyCha
     <BaseRecommendedAssetItem
       icon={<GmxIcon className="size-32" />}
       title={<Trans>GMX</Trans>}
-      metricValue={<APRLabel chainId={chainId} label={GMX_APR_TOTAL_LABEL} />}
+      metricValue={<APRLabel chainId={chainId as ContractsChainId} label={GMX_APR_TOTAL_LABEL} />}
       metricLabel={isGmxSuspended ? undefined : <Trans>APR</Trans>}
       button={
         <Button variant="primary" onClick={handleClick}>
@@ -363,7 +404,7 @@ function BaseRecommendedAssetItem({
           </div>
         </div>
         <div className="border-r-1/2 border-slate-600" />
-        <div className="flex flex-col gap-2">
+        <div className="flex min-h-32 flex-col justify-center gap-2">
           <span className="text-body-medium font-medium text-typography-primary">{metricValue}</span>
           <span className="text-body-small text-typography-secondary">{metricLabel}</span>
         </div>

@@ -191,7 +191,7 @@ export function LeaderboardAccountsTable({
                     capital required for rankings.
                     <br />
                     <br />
-                    Capital = max(sum of collateral of open positions - realized PnL + starting pending PnL).
+                    Capital = max(sum of margin of open positions - realized PnL + starting pending PnL).
                   </Trans>
                 }
                 tooltipPosition="bottom-start"
@@ -267,7 +267,7 @@ const TableHeaderCell = memo(
           }
         : undefined;
 
-    const stopPropagation = useCallback((e) => e.stopPropagation(), []);
+    const stopPropagation = useCallback((e: React.MouseEvent) => e.stopPropagation(), []);
 
     const isSortable = !!onChange;
 
@@ -434,7 +434,7 @@ const RankInfo = memo(({ rank, hasSomeCapital }: { rank: number | null; hasSomeC
   const message = useMemo(() => {
     if (rank !== null) return null;
 
-    let msg = t`No trades during selected period`;
+    let msg = t`No trades during the selected period`;
     if (hasSomeCapital)
       msg = t`Minimum ${formatUsd(MIN_COLLATERAL_USD_IN_LEADERBOARD, {
         displayDecimals: 0,

@@ -23,7 +23,7 @@ import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableConten
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import Loader from "components/Loader/Loader";
 import Pagination from "components/Pagination/Pagination";
-import usePagination, { DEFAULT_PAGE_SIZE } from "components/Referrals/usePagination";
+import usePagination, { DEFAULT_PAGE_SIZE } from "components/Pagination/usePagination";
 import SearchInput from "components/SearchInput/SearchInput";
 import { GMListSkeleton } from "components/Skeleton/Skeleton";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
@@ -129,9 +129,7 @@ export function GmList({
       className="grow"
       description={
         <div className="flex flex-col gap-16">
-          <Trans>
-            Pools that provide liquidity to specific GMX markets. Supports single-asset and native asset options.
-          </Trans>
+          <Trans>Liquidity pools for specific GMX markets with single-asset and native asset options</Trans>
           <div className="flex flex-wrap items-center justify-between gap-12 py-8">
             <SearchInput
               className="w-full *:!text-body-medium md:max-w-[260px]"

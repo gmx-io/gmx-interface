@@ -156,8 +156,8 @@ export class RpcTracker {
     const markets = getMarketsByChainId(chainId);
     const probeMarket = Object.values(markets)[0];
     const probeMarketAddress = probeMarket?.marketTokenAddress;
-    const probeFieldKey =
-      probeMarketAddress && HASHED_MARKET_CONFIG_KEYS[chainId]?.[probeMarketAddress]?.["minCollateralFactor"];
+    const marketHashes = HASHED_MARKET_CONFIG_KEYS[chainId] as Record<string, Record<string, string>> | undefined;
+    const probeFieldKey = probeMarketAddress && marketHashes?.[probeMarketAddress]?.["minCollateralFactor"];
 
     if (!probeMarketAddress || !probeFieldKey) {
       throw new Error("Failed to get params for RPC check");
@@ -233,7 +233,7 @@ export class RpcTracker {
     };
   };
 
-  selectNextPrimary = ({ endpointsStats }): string | undefined => {
+  selectNextPrimary = ({ endpointsStats }: { endpointsStats: RpcStats[] }): string | undefined => {
     const validStats = this.getValidStats(endpointsStats);
 
     const filtered = validStats.filter((result) => {

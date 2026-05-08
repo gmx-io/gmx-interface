@@ -1,3 +1,4 @@
+import { tz } from "@date-fns/tz";
 import { Trans, t } from "@lingui/macro";
 import { format } from "date-fns";
 import { useMemo } from "react";
@@ -49,31 +50,26 @@ function formatCompactNumber(value: number): string {
   return String(Math.round(value));
 }
 
-function ChartTooltip({
-  active,
-  payload,
-  gmxPrice,
-}: TooltipProps<number, string> & { gmxPrice: number | undefined }) {
+function ChartTooltip({ active, payload, gmxPrice }: TooltipProps<number, string> & { gmxPrice: number | undefined }) {
   if (!active || !payload || !payload.length) {
     return null;
   }
 
   const point = payload[0]!.payload as BuybackChartPoint;
-  const weekRange = `${format(point.weekStart * 1000, "MMM d")} - ${format(point.weekEnd * 1000, "MMM d")}`;
+  const utc = { in: tz("UTC") };
+  const weekRange = `${format(point.weekStart * 1000, "MMM d", utc)} - ${format((point.weekEnd - 1) * 1000, "MMM d", utc)}`;
   const weeklyUsd =
-    gmxPrice !== undefined
-      ? numberWithCommas(Math.round(point.weeklyAccrued * gmxPrice), { showDollar: true })
-      : "—";
+    gmxPrice !== undefined ? numberWithCommas(Math.round(point.weeklyAccrued * gmxPrice), { showDollar: true }) : "—";
   const cumulativeUsd =
     gmxPrice !== undefined
       ? numberWithCommas(Math.round(point.cumulativeAccrued * gmxPrice), { showDollar: true })
       : "—";
 
   return (
-    <div className="z-50 flex flex-col rounded-4 bg-slate-800 px-12 pt-8 text-body-small shadow-lg backdrop-blur-sm">
+    <div className="text-body-small z-50 flex flex-col rounded-4 bg-slate-800 px-12 pt-8 shadow-lg backdrop-blur-sm">
       <StatsTooltipRow label={t`Week`} value={weekRange} showDollar={false} />
       <StatsTooltipRow
-        label={t`Weekly Bought`}
+        label={t`Weekly bought`}
         value={`${numberWithCommas(Math.round(point.weeklyAccrued))} GMX (${weeklyUsd})`}
         showDollar={false}
       />
@@ -115,7 +111,7 @@ export function BuybackChart({
     <div className="flex flex-col">
       <div className="flex flex-wrap gap-24 pl-20 text-typography-secondary">
         <div className="flex items-center gap-8 text-13 font-medium">
-          <div className="inline-block size-6 rounded-full bg-blue-300" /> <Trans>Weekly Bought</Trans>
+          <div className="inline-block size-6 rounded-full bg-blue-300" /> <Trans>Weekly bought</Trans>
         </div>
         <div className="flex items-center gap-8 text-13 font-medium">
           <div className="inline-block size-6 rounded-full bg-slate-100" /> <Trans>Cumulative</Trans>
@@ -125,25 +121,13 @@ export function BuybackChart({
       <div className="relative min-h-[250px] grow">
         <div className="absolute size-full">
           <ResponsiveContainer debounce={500}>
-            <ComposedChart
-              width={500}
-              height={250}
-              data={chartData}
-              barCategoryGap="25%"
-              margin={CHART_MARGIN}
-            >
+            <ComposedChart width={500} height={250} data={chartData} barCategoryGap="25%" margin={CHART_MARGIN}>
               <RechartsTooltip
                 cursor={CHART_CURSOR_PROPS}
                 content={tooltipContent}
                 wrapperStyle={CHART_TOOLTIP_WRAPPER_STYLE}
               />
-              <Bar
-                yAxisId="left"
-                dataKey="weeklyAccrued"
-                fill="var(--color-blue-300)"
-                radius={2}
-                minPointSize={1}
-              />
+              <Bar yAxisId="left" dataKey="weeklyAccrued" fill="var(--color-blue-300)" radius={2} minPointSize={1} />
               <Line
                 yAxisId="right"
                 type="monotone"

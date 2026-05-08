@@ -1,19 +1,15 @@
 import { TransactionRevertedError, TransactionRejectedError, SimulationFailedRpcError } from "@gelatocloud/gasless";
-import { Address, encodePacked, type Hex } from "viem";
+import { encodePacked } from "viem";
 
 import { ContractsChainId } from "config/chains";
 import { GelatoPollingTiming, metrics } from "lib/metrics";
 import { GELATO_API_KEYS } from "sdk/configs/express";
+import type { ExpressTxnData } from "sdk/utils/express";
 import { StatusCode, getGelatoRelayerClient } from "sdk/utils/gelatoRelay";
 
 import type { TransactionWaiterResult } from "./types";
 
-export type ExpressTxnData = {
-  callData: string;
-  to: string;
-  feeToken: string;
-  feeAmount: bigint;
-};
+export type { ExpressTxnData } from "sdk/utils/express";
 
 export type ExpressTxnResult = {
   taskId: string;
@@ -26,7 +22,7 @@ export async function sendExpressTransaction(p: {
 }): Promise<ExpressTxnResult> {
   const data = encodePacked(
     ["bytes", "address", "address", "uint256"],
-    [p.txnData.callData as Address, p.txnData.to as Address, p.txnData.feeToken as Address, p.txnData.feeAmount]
+    [p.txnData.callData, p.txnData.to, p.txnData.feeToken, p.txnData.feeAmount]
   );
 
   const apiKey = GELATO_API_KEYS[p.chainId];
@@ -42,8 +38,8 @@ export async function sendExpressTransaction(p: {
   try {
     taskId = await relayer.sendTransaction({
       chainId: p.chainId,
-      to: p.txnData.to as Address,
-      data: data as Hex,
+      to: p.txnData.to,
+      data,
     });
   } catch (error) {
     if (error instanceof SimulationFailedRpcError) {

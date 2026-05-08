@@ -26,15 +26,19 @@ function useSourceNativeTokenPriceInfo({
   let sourceNativeTokenAddress = zeroAddress;
   let hasSourceNativeTokenPrice = false;
   if (sourceChainId !== undefined && targetChainId !== undefined && sourceChainId !== chainId) {
+    // @ts-expect-error
     if (NATIVE_TOKEN_PRICE_MAP[sourceChainId]?.[targetChainId]?.[targetChainId]) {
       sourceNativeTokenPriceChain = chainId;
+      // @ts-expect-error
       sourceNativeTokenAddress = NATIVE_TOKEN_PRICE_MAP[sourceChainId]?.[targetChainId]?.[targetChainId];
       hasSourceNativeTokenPrice = true;
     } else {
+      // @ts-expect-error
       const someChain = Object.keys(NATIVE_TOKEN_PRICE_MAP[sourceChainId]?.[targetChainId] ?? {})[0];
       if (someChain) {
         sourceNativeTokenPriceChain = parseInt(someChain) as SettlementChainId;
         sourceNativeTokenAddress =
+          // @ts-expect-error
           NATIVE_TOKEN_PRICE_MAP[sourceChainId]?.[targetChainId]?.[sourceNativeTokenPriceChain];
         hasSourceNativeTokenPrice = true;
       }

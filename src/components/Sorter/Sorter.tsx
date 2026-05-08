@@ -8,7 +8,7 @@ import IcSortable from "img/ic_sortable.svg?react";
 import IcSortedAsc from "img/ic_sorted_asc.svg?react";
 import IcSortedDesc from "img/ic_sorted_desc.svg?react";
 
-const directionIconMap: Record<SortDirection, React.ComponentType<{ className?: string }>> = {
+export const directionIconMap: Record<SortDirection, React.ComponentType<{ className?: string }>> = {
   asc: IcSortedAsc,
   desc: IcSortedDesc,
   unspecified: IcSortable,
@@ -16,7 +16,11 @@ const directionIconMap: Record<SortDirection, React.ComponentType<{ className?: 
 const directionSequence: SortDirection[] = ["desc", "asc", "unspecified"];
 
 export function Sorter(
-  props: PropsWithChildren<{ direction: SortDirection; onChange: (direction: SortDirection) => void }>
+  props: PropsWithChildren<{
+    direction: SortDirection;
+    onChange: (direction: SortDirection) => void;
+    showOnHover?: boolean;
+  }>
 ) {
   const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
     if (e.currentTarget.contains(e.target as Node)) {
@@ -28,16 +32,22 @@ export function Sorter(
   };
 
   const Icon = directionIconMap[props.direction];
+  const isActive = props.direction !== "unspecified";
+  const hideIcon = props.showOnHover && !isActive;
 
   return (
     <button
-      className={cx("inline-flex items-center [text-align:inherit] [text-transform:inherit]", {
-        "text-blue-300": props.direction !== "unspecified",
+      className={cx("group/sorter inline-flex items-center [text-align:inherit] [text-transform:inherit]", {
+        "text-blue-300": isActive,
       })}
       onClickCapture={handleClick}
     >
       {props.children}
-      <Icon className="h-16 w-12" />
+      <Icon
+        className={cx("h-16 w-12", {
+          "opacity-0 transition-opacity group-hover/sorter:opacity-100": hideIcon,
+        })}
+      />
     </button>
   );
 }

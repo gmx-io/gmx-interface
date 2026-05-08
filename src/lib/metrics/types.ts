@@ -166,6 +166,7 @@ export enum FreshnessMetricId {
   ApiMarketsInfo = "apiMarketsInfo",
   ApiPositionsInfo = "apiPositionsInfo",
   ApiOrders = "apiOrders",
+  ApiStakingPower = "apiStakingPower",
   Positions = "positions",
   Orders = "orders",
   Balances = "balances",
@@ -604,8 +605,8 @@ export type MulticallBatchedErrorCounter = {
   };
 };
 
-export type OpenOceanQuoteTiming = {
-  event: "openOcean.quote.timing";
+export type KyberSwapQuoteTiming = {
+  event: "kyberSwap.quote.timing";
 };
 
 export type MulticallRequestCounter = {
@@ -621,6 +622,12 @@ export type MulticallRequestCounter = {
 
 export type GetFeeDataBlockError = {
   event: "error.getFeeData.value.hash";
+};
+
+export type ImageExportError = {
+  event: "error.imageExport";
+  isError: true;
+  data: { errorMessage: string };
 };
 
 export type SetAutoCloseOrdersAction = {

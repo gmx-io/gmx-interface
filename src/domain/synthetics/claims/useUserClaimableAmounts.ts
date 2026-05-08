@@ -248,10 +248,13 @@ export default function useUserClaimableAmounts(chainId: ContractsChainId, accou
       result[distributionId].amounts.push({
         amount: BigInt(amount),
         token: tokensData[token] ?? marketTokensData[token],
-        usd,
-        title,
+        // @ts-expect-error potential bug: usd may be undefined if none of the glv/market/tokenData conditions match
+        usd: usd,
+        // @ts-expect-error potential bug: title may be undefined if none of the glv/market/tokenData conditions match
+        title: title,
       });
 
+      // @ts-expect-error potential bug: usd may be undefined if none of the glv/market/tokenData conditions match
       result[distributionId].totalUsd += usd;
     });
     return result;

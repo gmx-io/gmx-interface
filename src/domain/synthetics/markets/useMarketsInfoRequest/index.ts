@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { API_UI_FLAGS, useIsApiSdkEnabled } from "domain/synthetics/uiFlags/useIsApiSdkEnabled";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { composeFullMarketsInfoData, composeRawMarketsInfoData } from "sdk/utils/markets";
 import type { MarketsInfoData, RawMarketsInfoData } from "sdk/utils/markets/types";
@@ -21,7 +22,7 @@ export function useMarketsInfoRequest(
 ): MarketsInfoResult {
   const { claimableFundingData } = useClaimableFundingDataRequest(chainId);
 
-  const isApiSdkEnabled = false;
+  const isApiSdkEnabled = useIsApiSdkEnabled(API_UI_FLAGS.markets);
 
   const {
     marketsInfoData: apiMarketsInfoData,

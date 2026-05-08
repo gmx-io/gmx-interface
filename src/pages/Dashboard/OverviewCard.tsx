@@ -7,7 +7,7 @@ import { ARBITRUM, AVALANCHE, BOTANIX, MEGAETH } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { useGmxPrice, useTotalGmxStaked } from "domain/legacy";
 import { useV1FeesInfo, useVolumeInfo } from "domain/stats";
-import { usePositionsTotalCollateral } from "domain/synthetics/positions/usePositionsTotalCollateral";
+import { usePositionsTotalMargin } from "domain/synthetics/positions/usePositionsTotalMargin";
 import useV2Stats from "domain/synthetics/stats/useV2Stats";
 import { useChainId } from "lib/chains";
 import { arrayURLFetcher } from "lib/fetcher";
@@ -67,10 +67,10 @@ export function OverviewCard({
 
   let { [AVALANCHE]: stakedGmxAvalanche, [ARBITRUM]: stakedGmxArbitrum } = useTotalGmxStaked();
 
-  const arbitrumPositionsCollateralUsd = usePositionsTotalCollateral(ARBITRUM);
-  const avalanchePositionsCollateralUsd = usePositionsTotalCollateral(AVALANCHE);
-  const botanixPositionsCollateralUsd = usePositionsTotalCollateral(BOTANIX);
-  const megaethPositionsCollateralUsd = usePositionsTotalCollateral(MEGAETH);
+  const arbitrumPositionsMarginUsd = usePositionsTotalMargin(ARBITRUM);
+  const avalanchePositionsMarginUsd = usePositionsTotalMargin(AVALANCHE);
+  const botanixPositionsMarginUsd = usePositionsTotalMargin(BOTANIX);
+  const megaethPositionsMarginUsd = usePositionsTotalMargin(MEGAETH);
 
   // #region TVL and GLP Pool
   const glpTvlArbitrum = statsArbitrum?.glp.aum;
@@ -99,9 +99,6 @@ export function OverviewCard({
       ? bigMath.mulDiv(glpPriceAvalanche, glpSupplyAvalanche, expandDecimals(1, GLP_DECIMALS))
       : undefined;
 
-  const totalGlpTvl =
-    glpTvlArbitrum !== undefined && glpTvlAvalanche !== undefined ? glpTvlArbitrum + glpTvlAvalanche : undefined;
-
   const gmTvlArbitrum = v2ArbitrumOverview.totalGMLiquidity;
   const gmTvlAvalanche = v2AvalancheOverview.totalGMLiquidity;
   const gmTvlBotanix = v2BotanixOverview.totalGMLiquidity;
@@ -120,20 +117,19 @@ export function OverviewCard({
     stakedGmxAvalanche !== undefined &&
     glpMarketCapArbitrum !== undefined &&
     glpMarketCapAvalanche !== undefined &&
-    arbitrumPositionsCollateralUsd !== undefined &&
-    avalanchePositionsCollateralUsd !== undefined &&
-    botanixPositionsCollateralUsd !== undefined &&
-    megaethPositionsCollateralUsd !== undefined
+    arbitrumPositionsMarginUsd !== undefined &&
+    avalanchePositionsMarginUsd !== undefined &&
+    botanixPositionsMarginUsd !== undefined &&
+    megaethPositionsMarginUsd !== undefined
   ) {
     const stakedGmxUsdArbitrum = bigMath.mulDiv(gmxPrice, stakedGmxArbitrum, expandDecimals(1, GMX_DECIMALS));
     const stakedGmxUsdAvalanche = bigMath.mulDiv(gmxPrice, stakedGmxAvalanche, expandDecimals(1, GMX_DECIMALS));
 
     // GMX Staked + GLP Pools + GM Pools
-    displayTvlArbitrum = stakedGmxUsdArbitrum + glpMarketCapArbitrum + gmTvlArbitrum + arbitrumPositionsCollateralUsd;
-    displayTvlAvalanche =
-      stakedGmxUsdAvalanche + glpMarketCapAvalanche + gmTvlAvalanche + avalanchePositionsCollateralUsd;
-    displayTvlBotanix = gmTvlBotanix + botanixPositionsCollateralUsd;
-    displayTvlMegaeth = gmTvlMegaeth + megaethPositionsCollateralUsd;
+    displayTvlArbitrum = stakedGmxUsdArbitrum + glpMarketCapArbitrum + gmTvlArbitrum + arbitrumPositionsMarginUsd;
+    displayTvlAvalanche = stakedGmxUsdAvalanche + glpMarketCapAvalanche + gmTvlAvalanche + avalanchePositionsMarginUsd;
+    displayTvlBotanix = gmTvlBotanix + botanixPositionsMarginUsd;
+    displayTvlMegaeth = gmTvlMegaeth + megaethPositionsMarginUsd;
     displayTvl = displayTvlArbitrum + displayTvlAvalanche + displayTvlBotanix + displayTvlMegaeth;
   }
 
@@ -380,7 +376,7 @@ export function OverviewCard({
         </p>
         <p className="Tooltip-row">
           <span className="label">
-            <Trans>Annualized buy pressure (BB&D):</Trans>
+            <Trans>Annualized buy pressure:</Trans>
           </span>
           <span className="numbers">{formatAmountHuman(annualizedTotalBuyingPressure, USD_DECIMALS, true, 2)}</span>
         </p>
@@ -434,7 +430,7 @@ export function OverviewCard({
                   position="bottom-end"
                   content={
                     <>
-                      <Trans>TVL includes GMX staked, GLP pool, GM pools, and position collateral</Trans>
+                      <Trans>TVL includes GMX staked, GM pools, and position collateral</Trans>
                       <br />
                       <br />
                       <StatsTooltipRow
@@ -463,43 +459,6 @@ export function OverviewCard({
                         showDollar={false}
                         value={formatAmountHuman(displayTvl, USD_DECIMALS, true, 2)}
                       />
-                    </>
-                  }
-                />
-              </div>
-            </div>
-            <div className="App-card-row">
-              <div className="label">
-                <Trans>GLP pool</Trans>
-              </div>
-              <div>
-                <TooltipComponent
-                  handle={formatAmountHuman(totalGlpTvl, USD_DECIMALS, true, 2)}
-                  handleClassName="numbers"
-                  position="bottom-end"
-                  content={
-                    <>
-                      <Trans>Total value of tokens in the GLP pool</Trans>
-                      <br />
-                      <br />
-                      <StatsTooltipRow
-                        label={t`Arbitrum`}
-                        showDollar={false}
-                        value={formatAmountHuman(glpTvlArbitrum, USD_DECIMALS, true, 2)}
-                      />
-                      <StatsTooltipRow
-                        label={t`Avalanche`}
-                        showDollar={false}
-                        value={formatAmountHuman(glpTvlAvalanche, USD_DECIMALS, true, 2)}
-                      />
-                      <div className="my-8 h-1 bg-gray-800" />
-                      <StatsTooltipRow
-                        label={t`Total`}
-                        showDollar={false}
-                        value={formatAmountHuman(totalGlpTvl, USD_DECIMALS, true, 2)}
-                      />
-                      <br />
-                      <Trans>May be higher on other sites that include position collateral</Trans>
                     </>
                   }
                 />

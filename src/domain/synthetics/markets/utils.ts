@@ -17,11 +17,11 @@ import {
 } from "sdk/utils/markets";
 
 import { getCappedPositionImpactUsd } from "../fees";
+import { JitLiquidityInfo, getJitMaxReservedUsd } from "../jit/utils";
 import { PositionInfo } from "../positions";
 import { convertToTokenAmount, convertToUsd, getMidPrice } from "../tokens";
 import { isGlvAddress, isGlvInfo } from "./glv";
 import { GlvInfo, GlvOrMarketInfo, MarketInfo } from "./types";
-import { JitLiquidityInfo, getJitMaxReservedUsd } from "../jit/utils";
 import { TokenData, TokensData } from "../tokens/types";
 
 export * from "sdk/utils/markets";
@@ -112,7 +112,11 @@ export function getAvailableUsdLiquidityForPosition(
     return 0n;
   }
 
-  const maxReservedUsd = maxReservedUsdWithJit ?? getMaxReservedUsd(marketInfo, isLong);
+  const nativeMaxReservedUsd = getMaxReservedUsd(marketInfo, isLong);
+  const maxReservedUsd =
+    maxReservedUsdWithJit !== undefined
+      ? bigMath.max(maxReservedUsdWithJit, nativeMaxReservedUsd)
+      : nativeMaxReservedUsd;
   const reservedUsd = getReservedUsd(marketInfo, isLong);
 
   const maxOpenInterest = getMaxOpenInterestUsd(marketInfo, isLong);
@@ -435,33 +439,29 @@ export function getTotalGlvInfo({
   return getTotalTokensBalance(tokensData, ["GLV"], multichainMarketTokensBalances);
 }
 
-export function getTradeboxLeverageSliderMarks(maxLeverage: number) {
-  const allowedLeverage = Math.round(maxLeverage / 2 / BASIS_POINTS_DIVISOR);
+export function getTradeboxLeverageSliderMarks(maxAllowedLeverage: number) {
+  const allowedLeverage = Math.round(maxAllowedLeverage / BASIS_POINTS_DIVISOR);
 
   if (allowedLeverage >= 125) {
     return [0.1, 1, 2, 5, 10, 50, 100, allowedLeverage];
   } else if (allowedLeverage >= 120) {
-    return [0.1, 1, 2, 5, 10, 30, 60, 120];
+    return [0.1, 1, 2, 5, 10, 30, 60, allowedLeverage];
   } else if (allowedLeverage >= 110) {
-    return [0.1, 1, 2, 5, 10, 25, 50, 100, 110];
+    return [0.1, 1, 2, 5, 10, 25, 50, 100, allowedLeverage];
   } else if (allowedLeverage >= 100) {
-    return [0.1, 1, 2, 5, 10, 25, 50, 100];
-  } else if (allowedLeverage >= 90) {
-    return [0.1, 1, 2, 5, 10, 50, 90];
+    return [0.1, 1, 2, 5, 10, 25, 50, allowedLeverage];
   } else if (allowedLeverage >= 80) {
-    return [0.1, 1, 2, 5, 10, 50, 80];
-  } else if (allowedLeverage >= 75) {
-    return [0.1, 1, 2, 5, 10, 30, 50, 75];
+    return [0.1, 1, 2, 5, 10, 50, allowedLeverage];
   } else if (allowedLeverage >= 70) {
-    return [0.1, 1, 2, 5, 10, 30, 50, 70];
+    return [0.1, 1, 2, 5, 10, 30, 50, allowedLeverage];
   } else if (allowedLeverage >= 60) {
-    return [0.1, 1, 2, 5, 10, 25, 50, 60];
+    return [0.1, 1, 2, 5, 10, 25, 50, allowedLeverage];
   } else if (allowedLeverage >= 50) {
-    return [0.1, 1, 2, 5, 10, 25, 50];
+    return [0.1, 1, 2, 5, 10, 25, allowedLeverage];
   } else if (allowedLeverage >= 30) {
-    return [0.1, 1, 2, 5, 10, 30];
+    return [0.1, 1, 2, 5, 10, allowedLeverage];
   } else if (allowedLeverage >= 25) {
-    return [0.1, 1, 2, 5, 10, 25];
+    return [0.1, 1, 2, 5, 10, allowedLeverage];
   } else if (allowedLeverage >= 10) {
     return [0.1, 1, 2, 5, allowedLeverage];
   } else {

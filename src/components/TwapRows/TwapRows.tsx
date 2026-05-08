@@ -6,6 +6,7 @@ import { useLocalStorage } from "react-use";
 
 import { TWAP_INFO_CARD_CLOSED_KEY } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import type { Locale } from "lib/i18n";
 import { formatUsd } from "lib/numbers";
 import { MarketInfo } from "sdk/utils/markets/types";
 import { changeTwapNumberOfPartsValue } from "sdk/utils/twap";
@@ -61,7 +62,7 @@ const TwapRows = ({
   isLong,
 }: Props) => {
   const { _, i18n } = useLingui();
-  const localeStr = i18n.locale;
+  const localeStr = i18n.locale as Locale;
   const locale: DateLocale = LOCALE_DATE_LOCALE_MAP[localeStr] ?? LOCALE_DATE_LOCALE_MAP.en;
 
   const { savedTwapNumberOfParts } = useSettings();
@@ -117,7 +118,8 @@ const TwapRows = ({
 };
 
 const FrequencyField = ({ duration, numberOfParts }: { duration: TwapDuration; numberOfParts: number }) => {
-  const seconds = numberOfParts ? Math.round(((duration.hours * 60 + duration.minutes) * 60) / numberOfParts) : 0;
+  const seconds =
+    numberOfParts > 1 ? Math.round(((duration.hours * 60 + duration.minutes) * 60) / (numberOfParts - 1)) : 0;
   const minutes = Math.floor(seconds / 60);
   const hours = Math.floor(seconds / 3600);
 
@@ -125,7 +127,7 @@ const FrequencyField = ({ duration, numberOfParts }: { duration: TwapDuration; n
     const remainMinutes = Math.floor((seconds % 3600) / 60);
     return (
       <Trans>
-        <span className="text-typography-secondary">every</span> {hours} hours
+        <span className="text-typography-secondary">Every</span> {hours} hours
         {remainMinutes > 0 ? <> and {remainMinutes} minutes</> : undefined}
       </Trans>
     );
@@ -135,7 +137,7 @@ const FrequencyField = ({ duration, numberOfParts }: { duration: TwapDuration; n
     const remainSeconds = Math.floor(seconds % 60);
     return (
       <Trans>
-        <span className="text-typography-secondary">every</span> {minutes} minutes
+        <span className="text-typography-secondary">Every</span> {minutes} minutes
         {remainSeconds > 0 ? <> and {remainSeconds} seconds</> : undefined}
       </Trans>
     );
@@ -143,7 +145,7 @@ const FrequencyField = ({ duration, numberOfParts }: { duration: TwapDuration; n
 
   return (
     <Trans>
-      <span className="text-typography-secondary">every</span> {seconds} seconds
+      <span className="text-typography-secondary">Every</span> {seconds} seconds
     </Trans>
   );
 };

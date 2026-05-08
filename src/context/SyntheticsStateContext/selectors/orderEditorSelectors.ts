@@ -6,7 +6,7 @@ import {
   estimateOrderOraclePriceCount,
   getFeeItem,
 } from "domain/synthetics/fees";
-import { getMaxAllowedLeverageByMinCollateralFactor } from "domain/synthetics/markets";
+import { getMaxAllowedLeverage } from "domain/synthetics/markets";
 import {
   isDecreaseOrderType,
   isIncreaseOrderType,
@@ -687,19 +687,25 @@ export const selectOrderEditorFindSwapPath = createSelector((q) => {
 
 export const selectOrderEditorMaxAllowedLeverage = createSelector((q) => {
   const order = q(selectOrderEditorOrder);
-  if (!order) return getMaxAllowedLeverageByMinCollateralFactor(undefined);
+  const marketInfo = q((s) => (order ? selectMarketsInfoData(s)?.[order.marketAddress] : undefined));
 
-  const minCollateralFactor = q((s) => selectMarketsInfoData(s)?.[order.marketAddress]?.minCollateralFactor);
-  return getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor);
+  return getMaxAllowedLeverage({
+    minCollateralFactor: marketInfo?.minCollateralFactor,
+    minCollateralFactorForLiquidation: marketInfo?.minCollateralFactorForLiquidation,
+    positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,
+  });
 });
 
 const makeSelectOrderEditorMaxAllowedLeverage = createSelectorFactory((orderKey: string) =>
   createSelector((q) => {
     const order = q((state) => getByKey(selectOrdersInfoData(state), orderKey));
-    if (!order) return getMaxAllowedLeverageByMinCollateralFactor(undefined);
+    const marketInfo = q((s) => (order ? selectMarketsInfoData(s)?.[order.marketAddress] : undefined));
 
-    const minCollateralFactor = q((s) => selectMarketsInfoData(s)?.[order.marketAddress]?.minCollateralFactor);
-    return getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor);
+    return getMaxAllowedLeverage({
+      minCollateralFactor: marketInfo?.minCollateralFactor,
+      minCollateralFactorForLiquidation: marketInfo?.minCollateralFactorForLiquidation,
+      positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,
+    });
   })
 );
 
@@ -755,11 +761,19 @@ export const makeSelectOrderEditorPositionOrderError = createSelectorFactory(
       const indexToken = q((state) => getByKey(selectMarketsInfoData(state), order.marketAddress)?.indexToken);
       const markPrice = positionOrder.isLong ? indexToken?.prices?.minPrice : indexToken?.prices?.maxPrice;
 
-      const sizeDeltaUsd = order.sizeDeltaUsd;
+      const existingPosition = q(selectExistingPosition);
+
+      // Clamp sizeDeltaUsd to the current position size.
+      // When a position is partially closed, existing decrease orders may still
+      // reference the old (larger) size. Chart-drag updates only change the
+      // trigger price, so we should not block them with "Max close amount exceeded".
+      const sizeDeltaUsd =
+        existingPosition && order.sizeDeltaUsd > existingPosition.sizeInUsd
+          ? existingPosition.sizeInUsd
+          : order.sizeDeltaUsd;
 
       const acceptablePrice = undefined;
 
-      const existingPosition = q(selectExistingPosition);
       const nextPositionValuesForIncrease = q(selectNextPositionValuesForIncrease);
       const maxAllowedLeverage = q(selectMaxAllowedLeverage);
 

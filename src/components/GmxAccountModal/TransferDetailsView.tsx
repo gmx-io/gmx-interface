@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { useEffect, useState } from "react";
 
-import { getChainName, isTestnetChain, SourceChainId } from "config/chains";
+import { AnyChainId, getChainName, isTestnetChain, SourceChainId } from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import {
   useGmxAccountDepositViewChain,
@@ -111,7 +111,7 @@ export const TransferDetailsView = () => {
   const networkLabel = selectedTransfer && sourceChainId && (
     <span>
       <img
-        src={CHAIN_ID_TO_NETWORK_ICON[sourceChainId]}
+        src={CHAIN_ID_TO_NETWORK_ICON[sourceChainId as SourceChainId]}
         width={20}
         height={20}
         className="-my-5 inline-block size-20 rounded-full align-baseline"
@@ -124,11 +124,6 @@ export const TransferDetailsView = () => {
 
   return (
     <div className="text-body-medium flex grow flex-col gap-8 p-adaptive">
-      {selectedTransfer?.isExecutionError ? (
-        <AlertInfoCard type="error" hideClose>
-          <Trans>Deposit from {sourceChainName} failed</Trans>
-        </AlertInfoCard>
-      ) : null}
       <SyntheticsInfoRow
         label={<Trans>Date</Trans>}
         value={selectedTransfer ? formatTradeActionTimestamp(selectedTransfer.sentTimestamp) : undefined}
@@ -143,11 +138,11 @@ export const TransferDetailsView = () => {
       />
       {selectedTransfer?.sentTxn && initialChainId && (
         <SyntheticsInfoRow
-          label={CHAIN_ID_TO_EXPLORER_NAME[initialChainId]}
+          label={CHAIN_ID_TO_EXPLORER_NAME[initialChainId as AnyChainId]}
           value={
             <ExternalLink
               className="!no-underline"
-              href={CHAIN_ID_TO_TX_URL_BUILDER[initialChainId](selectedTransfer.sentTxn)}
+              href={CHAIN_ID_TO_TX_URL_BUILDER[initialChainId as AnyChainId](selectedTransfer.sentTxn)}
             >
               <div className="flex items-center gap-4">
                 {shortenAddressOrEns(selectedTransfer.sentTxn, 13)}
@@ -211,6 +206,11 @@ export const TransferDetailsView = () => {
       )}
 
       <div className="grow" />
+      {selectedTransfer?.isExecutionError ? (
+        <AlertInfoCard type="error" hideClose>
+          <Trans>Deposit from {sourceChainName} failed</Trans>
+        </AlertInfoCard>
+      ) : null}
       <Button variant="secondary" onClick={handleRepeatTransaction}>
         <Trans>Repeat transaction</Trans>
       </Button>

@@ -149,6 +149,10 @@ export function mockMarketsInfoData(
 
       maxPnlFactorForTradersLong: expandDecimals(1, 30),
       maxPnlFactorForTradersShort: expandDecimals(1, 30),
+      maxPnlFactorForDepositsLong: expandDecimals(1, 30),
+      maxPnlFactorForDepositsShort: expandDecimals(1, 30),
+      maxPnlFactorForWithdrawalsLong: expandDecimals(1, 30),
+      maxPnlFactorForWithdrawalsShort: expandDecimals(1, 30),
 
       data: "",
 

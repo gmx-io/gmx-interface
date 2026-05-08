@@ -21,7 +21,7 @@ export function useUtmParams() {
   const query = useRouteQuery();
 
   useEffect(() => {
-    const utmParams = ["source", "medium", "campaign", "term", "content"].reduce((acc, param) => {
+    const utmParams = (["source", "medium", "campaign", "term", "content"] as const).reduce((acc, param) => {
       const value = query.get(`utm_${param}`);
       if (value && value.length < 50) {
         acc[param] = value;

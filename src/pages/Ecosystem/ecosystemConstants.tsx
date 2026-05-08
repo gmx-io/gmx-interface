@@ -284,15 +284,15 @@ export const integrations: EcosystemGmxPage[] = [
     chainIds: [ARBITRUM, AVALANCHE],
   },
   {
-    title: msg`Open Ocean`,
-    link: "https://openocean.finance/",
-    linkLabel: "openocean.finance",
+    title: msg`KyberSwap`,
+    link: "https://kyberswap.com/",
+    linkLabel: "kyberswap.com",
     about: msg`DEX aggregator`,
 
     chainIds: [ARBITRUM, AVALANCHE],
   },
   {
-    title: msg`Paraswap`,
+    title: msg`ParaSwap`,
     link: "https://www.paraswap.io/",
     linkLabel: "paraswap.io",
     about: msg`DEX aggregator`,

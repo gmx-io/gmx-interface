@@ -1,8 +1,8 @@
 import { useMemo } from "react";
 
 import { useUserReferralInfoRequest } from "domain/referrals";
+import { API_UI_FLAGS, useIsApiSdkEnabled } from "domain/synthetics/uiFlags/useIsApiSdkEnabled";
 import { getByKey } from "lib/objects";
-import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 import { ApiPositionInfo, getPositionInfo, PositionInfo } from "sdk/utils/positions";
 
@@ -46,7 +46,7 @@ export type PositionsInfoResult = {
 export function usePositionsInfoRequest(
   chainId: ContractsChainId,
   p: {
-    account: string | null | undefined;
+    account: string | undefined;
     marketsInfoData?: MarketsInfoData;
     tokensData?: TokensData;
     positionsData?: PositionsData;
@@ -65,7 +65,7 @@ export function usePositionsInfoRequest(
     positionsError,
   } = p;
 
-  const isApiSdkEnabled = false;
+  const isApiSdkEnabled = useIsApiSdkEnabled(API_UI_FLAGS.positions);
 
   const {
     positionsInfoData: apiPositionsInfoData,
@@ -75,11 +75,10 @@ export function usePositionsInfoRequest(
 
   const shouldFallbackToRpc = !isApiSdkEnabled || apiError || isApiStale;
 
-  const { signer } = useWallet();
   const { positionsConstants, error: positionsConstantsError } = usePositionsConstantsRequest(chainId);
   const { minCollateralUsd } = positionsConstants || {};
   const { uiFeeFactor, error: uiFeeFactorError } = useUiFeeFactorRequest(chainId);
-  const userReferralInfo = useUserReferralInfoRequest(signer, chainId, account, skipLocalReferralCode);
+  const userReferralInfo = useUserReferralInfoRequest(chainId, account, skipLocalReferralCode);
 
   const rpcError = positionsError || positionsConstantsError || uiFeeFactorError || userReferralInfo?.error;
 

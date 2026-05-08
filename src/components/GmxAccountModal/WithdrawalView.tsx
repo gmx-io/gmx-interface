@@ -7,7 +7,14 @@ import Skeleton from "react-loading-skeleton";
 import { Address, encodeAbiParameters, encodeEventTopics, toHex, zeroAddress, type Hex } from "viem";
 import { useAccount } from "wagmi";
 
-import { ContractsChainId, getChainName, isTestnetChain, SettlementChainId, SourceChainId } from "config/chains";
+import {
+  AnyChainId,
+  ContractsChainId,
+  getChainName,
+  isTestnetChain,
+  SettlementChainId,
+  SourceChainId,
+} from "config/chains";
 import { CHAIN_ID_TO_NETWORK_ICON } from "config/icons";
 import {
   CHAIN_ID_PREFERRED_DEPOSIT_TOKEN,
@@ -73,7 +80,7 @@ import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { TxnEventName } from "lib/transactions";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExpressTransaction";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
 import { WalletSigner } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
@@ -201,7 +208,7 @@ function getSameChainWithdrawalTokens({
         token.address !== zeroAddress &&
         token.gmxAccountBalance !== undefined &&
         token.gmxAccountBalance > 0n &&
-        !MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId]?.includes(token.address)
+        !MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId as SettlementChainId]?.includes(token.address)
       );
     })
     .sort(sortTokenDataByBalance);
@@ -1024,7 +1031,9 @@ export const WithdrawalView = () => {
         const unwrappedTokenAddress = convertTokenAddress(chainId, tokenAddress, "native");
         const tokenId = getMappedTokenId(chainId as SettlementChainId, unwrappedTokenAddress, withdrawalViewChain);
         if (tokenId === undefined) {
-          const sourceChainIds = Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId]).map(Number) as SourceChainId[];
+          const sourceChainIds = Object.keys(MULTI_CHAIN_TOKEN_MAPPING[chainId as SettlementChainId]).map(
+            Number
+          ) as SourceChainId[];
           for (const someSourceChainId of sourceChainIds) {
             if (someSourceChainId === withdrawalViewChain) {
               continue;
@@ -1089,7 +1098,7 @@ export const WithdrawalView = () => {
 
   if (hasOutdatedUi) {
     buttonState = {
-      text: t`Page outdated. Refresh`,
+      text: getPageOutdatedError(),
       disabled: true,
     };
   } else if (isSubmitting) {
@@ -1161,7 +1170,8 @@ export const WithdrawalView = () => {
       const isValidSameChainToken = isSameChain && isValidTokenSafe(chainId, selectedTokenAddress);
 
       const isValidMultichainToken =
-        !isSameChain && MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId]?.includes(selectedTokenAddress);
+        !isSameChain &&
+        MULTI_CHAIN_WITHDRAWAL_TRADE_TOKENS[chainId as SettlementChainId]?.includes(selectedTokenAddress);
 
       if (isValidSameChainToken || isValidMultichainToken) {
         return;
@@ -1456,23 +1466,6 @@ export const WithdrawalView = () => {
               </div>
             </AlertInfoCard>
           )}
-
-          {buttonState.bannerErrorName && (
-            <AlertInfoCard type="error" className="mt-8" hideClose>
-              <ValidationBannerErrorContent
-                validationBannerErrorName={buttonState.bannerErrorName}
-                chainId={chainId}
-                srcChainId={withdrawalViewChain}
-                gasPaymentTokenAddress={gasPaymentToken?.address}
-              />
-            </AlertInfoCard>
-          )}
-
-          {withdrawalMaxDetails.gasPaymentTokenWarningContent && (
-            <AlertInfoCard type="warning" className="mt-8" hideClose>
-              {withdrawalMaxDetails.gasPaymentTokenWarningContent}
-            </AlertInfoCard>
-          )}
         </>
       )}
 
@@ -1506,6 +1499,27 @@ export const WithdrawalView = () => {
         </div>
       )}
 
+      {!isInsufficientBalance && (
+        <>
+          {buttonState.bannerErrorName && (
+            <AlertInfoCard type="error" className="mt-8" hideClose>
+              <ValidationBannerErrorContent
+                validationBannerErrorName={buttonState.bannerErrorName}
+                chainId={chainId}
+                srcChainId={withdrawalViewChain}
+                gasPaymentTokenAddress={gasPaymentToken?.address}
+              />
+            </AlertInfoCard>
+          )}
+
+          {withdrawalMaxDetails.gasPaymentTokenWarningContent && (
+            <AlertInfoCard type="warning" className="mt-8" hideClose>
+              {withdrawalMaxDetails.gasPaymentTokenWarningContent}
+            </AlertInfoCard>
+          )}
+        </>
+      )}
+
       <Button
         variant="primary-action"
         className="w-full shrink-0"
@@ -1530,7 +1544,7 @@ function NetworkItem({ option }: { option: { id: number; name: string; disabled?
   return (
     <div className="flex items-center justify-between">
       <div className="flex items-center gap-8">
-        <img src={CHAIN_ID_TO_NETWORK_ICON[option.id]} alt={option.name} className="size-20" />
+        <img src={CHAIN_ID_TO_NETWORK_ICON[option.id as AnyChainId]} alt={option.name} className="size-20" />
         <span className="text-body-large">{option.name}</span>
       </div>
     </div>

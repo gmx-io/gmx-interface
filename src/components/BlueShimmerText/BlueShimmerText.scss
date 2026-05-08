@@ -1,0 +1,32 @@
+@property --blue-shimmer-offset {
+  syntax: "<length-percentage>";
+  inherits: false;
+  initial-value: 0px;
+}
+
+$secondary: var(--color-typography-secondary);
+
+.blue-shimmer-text {
+  --blue-shimmer-offset: -200px;
+  background: linear-gradient(
+      to right,
+      $secondary calc(var(--blue-shimmer-offset)),
+      #7886ffb3 calc(var(--blue-shimmer-offset)),
+      #2d42fcb3 calc(var(--blue-shimmer-offset) + 100px),
+      #a4c3f9b3 calc(var(--blue-shimmer-offset) + 200px),
+      $secondary calc(var(--blue-shimmer-offset) + 200px)
+    ),
+    linear-gradient(to right, $secondary, $secondary);
+  background-clip: text;
+  color: transparent;
+  animation: blue-shimmer-scroll 4s linear infinite alternate;
+}
+
+@keyframes blue-shimmer-scroll {
+  from {
+    --blue-shimmer-offset: -200px;
+  }
+  to {
+    --blue-shimmer-offset: 100%;
+  }
+}

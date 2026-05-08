@@ -75,7 +75,7 @@ function usePromiseState<ErrorType = unknown>(
   return { state, error };
 }
 
-export function useMultichainTransferProgressView(task: MultichainTransferProgress | undefined) {
+export function useMultichainTransferProgressView(task: MultichainTransferProgress<string> | undefined) {
   const { chainId } = useChainId();
 
   const { state: finishedState, error: finishedError } = usePromiseState<MultichainTransferProgress.errors>(
@@ -121,7 +121,7 @@ export function useMultichainTransferProgressView(task: MultichainTransferProgre
 
 type Props = {
   chainId: number;
-  task: MultichainTransferProgress;
+  task: MultichainTransferProgress<string>;
   finishedState: PromiseState;
   finishedError: MultichainTransferProgress.errors | undefined;
   closeToast?: () => void;
@@ -214,7 +214,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
           />
 
           <div>
-            {task.operation === Operation.Deposit ? <Trans>Buying...</Trans> : <Trans>Selling...</Trans>}{" "}
+            {task.operation === Operation.Deposit ? <Trans>Buying</Trans> : <Trans>Selling</Trans>}{" "}
             {formatTokenAmount(task.amount, task.token.decimals)}{" "}
             {isMarketTokenAddress(chainId, task.token.address) ? (
               <>
@@ -275,7 +275,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
               </div>
             }
             valueClassName="text-typography-secondary group-gmx-hover:text-blue-300"
-            value={isOpen ? null : task.finishTimestamp ? elapsedTime : <Trans>Est. time: ~5 min</Trans>}
+            value={isOpen ? null : task.finishTimestamp ? elapsedTime : <Trans>Estimated time: ~5 min</Trans>}
           />
           <AnimatePresence>
             {isOpen && (

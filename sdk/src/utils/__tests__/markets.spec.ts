@@ -11,7 +11,7 @@ import {
   getPoolUsdWithoutPnl,
   getCappedPoolPnl,
   getMaxLeverageByMinCollateralFactor,
-  getMaxAllowedLeverageByMinCollateralFactor,
+  getMaxAllowedLeverage,
   getOppositeCollateral,
   getAvailableUsdLiquidityForCollateral,
   getReservedUsd,
@@ -22,7 +22,7 @@ import {
   getPriceForPnl,
 } from "utils/markets";
 import { MarketInfo } from "utils/markets/types";
-import { expandDecimals } from "utils/numbers";
+import { BASIS_POINTS_DIVISOR, expandDecimals } from "utils/numbers";
 import { Token, TokensData } from "utils/tokens/types";
 
 function getToken(symbol: string) {
@@ -185,9 +185,124 @@ describe("getMaxLeverageByMinCollateralFactor", () => {
   });
 });
 
-describe("getMaxAllowedLeverageByMinCollateralFactor", () => {
-  it("returns half of max leverage", () => {
-    expect(getMaxAllowedLeverageByMinCollateralFactor(1000000000000000000n)).toBe(5000000000000000);
+describe("getMaxAllowedLeverage", () => {
+  // Factors are expressed in PRECISION units (1e30 == 100%).
+  const pct = (percent: number) => expandDecimals(percent * 100, 26); // 0.5% → 5e27
+  const bps = (lev: number) => lev * BASIS_POINTS_DIVISOR;
+
+  it("returns default 100x when any factor is undefined or zero", () => {
+    expect(
+      getMaxAllowedLeverage({
+        minCollateralFactor: undefined,
+        minCollateralFactorForLiquidation: undefined,
+        positionFeeFactorForBalanceWasNotImproved: undefined,
+      })
+    ).toBe(bps(100));
+
+    expect(
+      getMaxAllowedLeverage({
+        minCollateralFactor: 0n,
+        minCollateralFactorForLiquidation: pct(0.5),
+        positionFeeFactorForBalanceWasNotImproved: pct(0.05),
+      })
+    ).toBe(bps(100));
+
+    expect(
+      getMaxAllowedLeverage({
+        minCollateralFactor: pct(0.5),
+        minCollateralFactorForLiquidation: 0n,
+        positionFeeFactorForBalanceWasNotImproved: pct(0.05),
+      })
+    ).toBe(bps(100));
+
+    expect(
+      getMaxAllowedLeverage({
+        minCollateralFactor: pct(0.5),
+        minCollateralFactorForLiquidation: pct(0.5),
+        positionFeeFactorForBalanceWasNotImproved: undefined,
+      })
+    ).toBe(bps(100));
+  });
+
+  it("returns 100x for BTC/ETH (equal MCF and liqMCF, liquidation bound dominates)", () => {
+    // MCF = liqMCF = 0.5%, fee = 0.05%
+    // opening = 1 / (0.005 + 0.001) ≈ 166.67x
+    // liquidation = 1 / (2 × 0.005) = 100x
+    // min floored to 5x = 100x
+    expect(
+      getMaxAllowedLeverage({
+        minCollateralFactor: pct(0.5),
+        minCollateralFactorForLiquidation: pct(0.5),
+        positionFeeFactorForBalanceWasNotImproved: pct(0.05),
+      })
+    ).toBe(bps(100));
+  });
+
+  it("returns 85x for ZEC (opening bound dominates, floors to 5x)", () => {
+    // MCF = 1%, liqMCF = 0.5%, fee = 0.06%
+    // opening = 1 / (0.01 + 0.0012) ≈ 89.29x
+    // liquidation = 1 / (2 × 0.005) = 100x
+    // min floored to 5x = 85x
+    expect(
+      getMaxAllowedLeverage({
+        minCollateralFactor: pct(1),
+        minCollateralFactorForLiquidation: pct(0.5),
+        positionFeeFactorForBalanceWasNotImproved: pct(0.06),
+      })
+    ).toBe(bps(85));
+  });
+
+  it("returns 100x for GOLD on-hours (split factors)", () => {
+    // MCF = 0.9%, liqMCF = 0.5%, fee = 0.05%
+    // opening = 1 / (0.009 + 0.001) = 100x
+    // liquidation = 1 / (2 × 0.005) = 100x
+    expect(
+      getMaxAllowedLeverage({
+        minCollateralFactor: 9n * 10n ** 27n,
+        minCollateralFactorForLiquidation: pct(0.5),
+        positionFeeFactorForBalanceWasNotImproved: pct(0.05),
+      })
+    ).toBe(bps(100));
+  });
+
+  it("returns 25x for GOLD off-hours (split factors, opening bound dominates)", () => {
+    // MCF = 3.5%, liqMCF = 1%, fee = 0.05%
+    // opening = 1 / (0.035 + 0.001) ≈ 27.78x
+    // liquidation = 1 / (2 × 0.01) = 50x
+    // min floored to 5x = 25x
+    expect(
+      getMaxAllowedLeverage({
+        minCollateralFactor: 35n * 10n ** 27n,
+        minCollateralFactorForLiquidation: pct(1),
+        positionFeeFactorForBalanceWasNotImproved: pct(0.05),
+      })
+    ).toBe(bps(25));
+  });
+
+  it("floors to the nearest 5x", () => {
+    // Choose factors so opening = 47.17x exactly, should floor to 45x
+    // 1 / (MCF + 2×fee) = 47.17 → MCF + 2×fee ≈ 0.0212
+    // MCF = 2%, fee = 0.06% → 0.02 + 0.0012 = 0.0212 → 1/0.0212 ≈ 47.17
+    expect(
+      getMaxAllowedLeverage({
+        minCollateralFactor: pct(2),
+        minCollateralFactorForLiquidation: pct(0.5),
+        positionFeeFactorForBalanceWasNotImproved: pct(0.06),
+      })
+    ).toBe(bps(45));
+  });
+
+  it("liquidation bound dominates when MCF-for-liquidation is relatively high", () => {
+    // MCF = 0.5%, liqMCF = 2%, fee = 0.05%
+    // opening = 1 / (0.005 + 0.001) ≈ 166.67x
+    // liquidation = 1 / (2 × 0.02) = 25x → min 25x
+    expect(
+      getMaxAllowedLeverage({
+        minCollateralFactor: pct(0.5),
+        minCollateralFactorForLiquidation: pct(2),
+        positionFeeFactorForBalanceWasNotImproved: pct(0.05),
+      })
+    ).toBe(bps(25));
   });
 });
 

@@ -7,7 +7,6 @@ import { useAccount } from "wagmi";
 
 import type { SettlementChainId, SourceChainId } from "config/chains";
 import { ContractsChainId, getChainName } from "config/chains";
-import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -24,6 +23,8 @@ import {
 import { useMultichainStargateApproval } from "domain/multichain/useMultichainStargateApproval";
 import { useSourceChainNativeFeeError } from "domain/multichain/useSourceChainNetworkFeeError";
 import { registerReferralCode } from "domain/referrals";
+import { REFERRAL_CODE_REGEX } from "domain/referrals/utils/referralCode";
+import { getCodeError, getReferralCodeTakenStatus } from "domain/referrals/utils/referralsHelper";
 import { signRegisterCode } from "domain/synthetics/express/expressOrderUtils";
 import { ValidationBannerErrorName } from "domain/synthetics/trade/utils/validation";
 import { useChainId } from "lib/chains";
@@ -32,7 +33,7 @@ import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useGmxConnectModal } from "lib/wallets/useGmxConnectModal";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
@@ -42,10 +43,9 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { getCodeError, getReferralCodeTakenStatus, REFERRAL_CODE_REGEX } from "components/Referrals/referralsHelper";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import ReferralsIcon from "img/referrals.svg?react";
+import ReferralsIcon from "img/ic_referrals.svg?react";
 
 type Props = {
   onSuccess: (code: string) => void;
@@ -69,7 +69,6 @@ export function CreateReferralCode({ onSuccess }: Props) {
 
 function CreateReferralCodeSettlement({ onSuccess }: Props) {
   const { signer } = useWallet();
-  const { pendingTxns } = usePendingTxns();
   const { openConnectModal } = useGmxConnectModal();
   const { address: account, isConnected } = useAccount();
   const { chainId } = useChainId();
@@ -91,10 +90,9 @@ function CreateReferralCodeSettlement({ onSuccess }: Props) {
       return registerReferralCode(chainId, referralCode, signer, {
         sentMsg: t`Referral code submitted`,
         failMsg: t`Referral code creation failed`,
-        pendingTxns,
       });
     },
-    [chainId, pendingTxns, signer]
+    [chainId, signer]
   );
 
   useEffect(() => {
@@ -375,7 +373,7 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
       };
     }
     if (hasOutdatedUi) {
-      return { text: t`Page outdated. Refresh`, disabled: true };
+      return { text: getPageOutdatedError(), disabled: true };
     }
     if (isApproving) {
       return { text: t`Approving...`, disabled: true };
@@ -557,38 +555,25 @@ function CreateReferralCodeLayout({
         }}
         className="flex flex-col gap-8"
       >
-        <div className="flex gap-8">
-          <label
-            className={cx(
-              "flex grow cursor-pointer items-center gap-8 rounded-8 border-1/2 bg-slate-800 p-8",
-              error || referralCodeCheckStatus === "taken" ? "border-red-500" : "border-slate-800"
-            )}
-          >
-            <ReferralsIcon className="size-16 text-typography-secondary" />
-            <input
-              ref={inputRef}
-              value={referralCode}
-              disabled={isProcessing || !isConnected}
-              placeholder={t`Enter referral code`}
-              className="grow p-0 py-2 text-13 leading-[13px] placeholder:text-typography-secondary"
-              onChange={(event) => {
-                const { value } = event.target;
-                setReferralCode(value);
-              }}
-            />
-          </label>
-
-          <div className="flex justify-end">
-            <Button
-              type="submit"
-              variant="primary"
-              disabled={buttonState.disabled}
-              className="min-w-[140px] justify-center"
-            >
-              {error ? <TooltipWithPortal handle={buttonState.text} content={error} /> : buttonState.text}
-            </Button>
-          </div>
-        </div>
+        <label
+          className={cx(
+            "flex cursor-pointer items-center gap-8 rounded-8 border-1/2 bg-slate-800 p-8",
+            error || referralCodeCheckStatus === "taken" ? "border-red-500" : "border-slate-800"
+          )}
+        >
+          <ReferralsIcon className="size-16 text-typography-secondary" />
+          <input
+            ref={inputRef}
+            value={referralCode}
+            disabled={isProcessing || !isConnected}
+            placeholder={t`Enter referral code`}
+            className="grow p-0 py-2 text-13 leading-[13px] placeholder:text-typography-secondary"
+            onChange={(event) => {
+              const { value } = event.target;
+              setReferralCode(value);
+            }}
+          />
+        </label>
         {networkFeeUsd !== undefined && (
           <div className="flex justify-between text-12 text-typography-secondary">
             <span>
@@ -629,6 +614,9 @@ function CreateReferralCodeLayout({
             />
           </AlertInfoCard>
         )}
+        <Button type="submit" variant="primary" disabled={buttonState.disabled} className="w-full justify-center">
+          {error ? <TooltipWithPortal handle={buttonState.text} content={error} /> : buttonState.text}
+        </Button>
       </form>
     </div>
   );

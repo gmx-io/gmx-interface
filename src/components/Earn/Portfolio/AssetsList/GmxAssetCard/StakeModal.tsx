@@ -7,7 +7,7 @@ import { zeroAddress } from "viem";
 
 import { getIsFlagEnabled } from "config/ab";
 import { ARBITRUM, ContractsChainId } from "config/chains";
-import { getIcons } from "config/icons";
+import { type ChainIcons, getIcons } from "config/icons";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
 import { SetPendingTransactions } from "context/PendingTxnsContext/PendingTxnsContext";
 import { calculateStakeBonusPercentage } from "domain/stake/calculateStakeBonusPercentage";
@@ -27,13 +27,12 @@ import { helperToast } from "lib/helperToast";
 import { StakingProcessedData } from "lib/legacy";
 import { formatAmount, formatAmountFree, formatUsd, limitDecimals, numberWithCommas, parseValue } from "lib/numbers";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useIsMetamaskMobile from "lib/wallets/useIsMetamaskMobile";
 import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import type { StakingPowerResponse } from "sdk/utils/staking/types";
 
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -281,12 +280,10 @@ export function StakeModal(props: {
     helperToast.info(
       <div>
         <span className="font-bold" style={RESET_TOAST_HEADER_STYLE}>
-          <Trans>Rewards reset.</Trans>
+          <Trans>Rewards reset</Trans>
         </span>
         <br />
-        <Trans>
-          The 20% unstaking limit was exceeded, and your rewards have been reset. You may now continue unstaking freely.
-        </Trans>
+        <Trans>The 20% unstaking limit was exceeded, and your rewards have been reset</Trans>
       </div>,
       { autoClose: false }
     );
@@ -341,7 +338,7 @@ export function StakeModal(props: {
 
   const primaryText = useMemo(() => {
     if (hasOutdatedUi) {
-      return t`Page outdated. Refresh`;
+      return getPageOutdatedError();
     }
 
     if (activeTab === "stake") {
@@ -444,7 +441,7 @@ export function StakeModal(props: {
         <div className="flex flex-col gap-12">
           <BuyInputSection
             topLeftLabel={activeTab === "stake" ? t`Stake` : t`Unstake`}
-            topRightLabel={t`Avail.`}
+            topRightLabel={t`Available`}
             topRightValue={formatAmount(activeMaxAmount, 18, 2, true)}
             onClickMax={canClickMax ? onClickMax : undefined}
             inputValue={activeValue}
@@ -457,7 +454,7 @@ export function StakeModal(props: {
               <img
                 className="icon h-24"
                 height="24"
-                src={icons?.[activeTokenSymbol.toLowerCase()]}
+                src={icons?.[activeTokenSymbol.toLowerCase() as keyof ChainIcons]}
                 alt={activeTokenSymbol}
               />
               {activeTokenSymbol}
@@ -505,9 +502,9 @@ export function StakeModal(props: {
           )}
 
           {showStakeBonus && (
-            <AlertInfo type="info" noMargin>
+            <AlertInfoCard type="info">
               <Trans>Earn {formatAmount(stakeBonusPercentage, 2, 2)}% more rewards with this action</Trans>
-            </AlertInfo>
+            </AlertInfoCard>
           )}
 
           {activeTab === "stake" && isUndelegatedGovToken ? (
@@ -516,20 +513,20 @@ export function StakeModal(props: {
                 <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
                   Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
                 </ExternalLink>{" "}
-                voting power before staking.
+                voting power before staking
               </Trans>
             </AlertInfoCard>
           ) : null}
 
           {activeTab === "unstake" && reservedAmount !== undefined && reservedAmount > 0 && (
-            <AlertInfo type="info" noMargin>
+            <AlertInfoCard type="info">
               <Trans>{formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting</Trans>
-            </AlertInfo>
+            </AlertInfoCard>
           )}
 
           {isApproachingLimit && !wouldResetPower && showSafeUnstakeBar && (
             <ColorfulBanner color="yellow" icon={WarnIcon}>
-              <Trans>Unstaking this amount will bring you close to the 20% reset threshold.</Trans>
+              <Trans>Unstaking this amount will bring you close to the 20% reset threshold</Trans>
             </ColorfulBanner>
           )}
 
@@ -538,11 +535,11 @@ export function StakeModal(props: {
               <ColorfulBanner color="red" icon={WarnIcon}>
                 <div>
                   <Trans>
-                    Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards.
+                    Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards
                   </Trans>
                   {rewardsLossUsd !== null && (
                     <div className="mt-4 font-medium text-red-500">
-                      <Trans>If you continue, you will lose {formatUsd(rewardsLossUsd)} in rewards.</Trans>
+                      <Trans>If you continue, you will lose {formatUsd(rewardsLossUsd)} in rewards</Trans>
                     </div>
                   )}
                 </div>
@@ -554,7 +551,7 @@ export function StakeModal(props: {
                     <span className="font-bold text-typography-primary">
                       {rewardsLossUsd !== null ? formatUsd(rewardsLossUsd) : "all accrued"} in rewards
                     </span>{" "}
-                    if I proceed.
+                    if I proceed
                   </Trans>
                 </span>
               </Checkbox>

@@ -23,10 +23,10 @@ export function BuybackMetricsHeader({
   const isUnavailable = !isLoading && (!!error || metrics === undefined);
 
   return (
-    <div className="flex gap-28 max-md:grid max-md:grid-cols-2 max-md:gap-12">
+    <div className="flex gap-28 max-md:flex-col max-md:gap-12">
       <MetricItem
-        label={<Trans>Total Bought GMX</Trans>}
-        tooltip={<Trans>Total amount of GMX bought back since tracking began.</Trans>}
+        label={<Trans>Total bought GMX</Trans>}
+        tooltip={<Trans>Total amount of GMX bought back since tracking began</Trans>}
         value={metrics ? `${numberWithCommas(Math.round(metrics.totalBoughtGmx))} GMX` : "N/A"}
         subtitle={
           metrics ? `(${numberWithCommas(Math.round(metrics.totalBoughtUsd), { showDollar: true })})` : undefined
@@ -35,8 +35,13 @@ export function BuybackMetricsHeader({
         isUnavailable={isUnavailable}
       />
       <MetricItem
-        label={<Trans>Annualized Rate</Trans>}
-        tooltip={<Trans>Average weekly rate extrapolated to a full year (weekly rate × 52).</Trans>}
+        label={<Trans>Annualized rate</Trans>}
+        tooltip={
+          <Trans>
+            Protocol-wide annualized GMX buyback rate, based on the average of the last 4 completed weeks relative to
+            total staked GMX and esGMX. Your actual rewards depend on staking power and may differ.
+          </Trans>
+        }
         value={metrics ? (metrics.annualizedRate !== undefined ? formatPercent(metrics.annualizedRate) : "N/A") : "N/A"}
         isLoading={isLoading}
         isUnavailable={isUnavailable}
@@ -61,7 +66,7 @@ function MetricItem({
   isUnavailable: boolean;
 }) {
   return (
-    <div className="flex flex-col gap-4">
+    <div className="flex min-w-0 flex-col gap-4">
       <TooltipWithPortal
         variant="none"
         handle={
@@ -72,7 +77,7 @@ function MetricItem({
         }
         content={tooltip}
       />
-      <div className="flex items-baseline gap-8">
+      <div className="flex flex-wrap items-baseline gap-x-8">
         <span className="text-h2 numbers">{isLoading ? "..." : isUnavailable ? "N/A" : value}</span>
         {subtitle && !isLoading && !isUnavailable && (
           <span className="text-14 font-medium text-typography-secondary numbers">{subtitle}</span>

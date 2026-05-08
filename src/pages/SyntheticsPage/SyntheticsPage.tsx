@@ -31,12 +31,19 @@ import {
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
 import { estimateBatchExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExternalSwapHandler } from "domain/synthetics/externalSwaps/useExternalSwapHandler";
-import { isTriggerDecreaseOrderType } from "domain/synthetics/orders";
+import {
+  isLimitDecreaseOrderType,
+  isLimitIncreaseOrderType,
+  isStopIncreaseOrderType,
+  isStopLossOrderType,
+  isTwapOrder,
+} from "domain/synthetics/orders";
 import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
-import type { OrderInfo } from "domain/synthetics/orders/types";
+import type { OrderInfo, PositionOrderInfo } from "domain/synthetics/orders/types";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { useSetOrdersAutoCancelByQueryParams } from "domain/synthetics/orders/useSetOrdersAutoCancelByQueryParams";
+import { getPositionKey } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { useTradeParamsProcessor } from "domain/synthetics/trade/useTradeParamsProcessor";
@@ -52,12 +59,12 @@ import { formatUsdPrice } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { useBreakpoints } from "lib/useBreakpoints";
-import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
 import useWallet from "lib/wallets/useWallet";
 import { ContractsChainId } from "sdk/configs/chains";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
-import { getOrderKeys } from "sdk/utils/orders";
+import { getOrderKeys, isOrderForPosition } from "sdk/utils/orders";
 
 import { AppHeader } from "components/AppHeader/AppHeader";
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
@@ -65,16 +72,15 @@ import Badge, { BadgeIndicator } from "components/Badge/Badge";
 import Checkbox from "components/Checkbox/Checkbox";
 import { Claims } from "components/Claims/Claims";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
-import { NpsModal } from "components/NpsModal/NpsModal";
 import { OneClickPromoBanner } from "components/OneClickPromoBanner/OneClickPromoBanner";
 import { OrderList } from "components/OrderList/OrderList";
+import { OrdersModal, type TpSlTabType } from "components/OrdersModal/OrdersModal";
 import { PositionEditor } from "components/PositionEditor/PositionEditor";
 import { PositionList } from "components/PositionList/PositionList";
 import { PositionSeller } from "components/PositionSeller/PositionSeller";
 import { SwapCard } from "components/SwapCard/SwapCard";
 import type { MarketFilterLongShortItemData } from "components/TableMarketFilter/MarketFilterLongShort";
 import Tabs from "components/Tabs/Tabs";
-import { TPSLModal } from "components/TPSLModal/TPSLModal";
 import { useIsCurtainOpen } from "components/TradeBox/Curtain";
 import { TradeBoxResponsiveContainer } from "components/TradeBox/TradeBoxResponsiveContainer";
 import { TradeHistory } from "components/TradeHistory/TradeHistory";
@@ -97,11 +103,15 @@ enum ListSection {
   Claims = "Claims",
 }
 
-type ChartTPSLModalState = {
+type OrdersModalState = {
   isVisible: boolean;
   positionKey?: string;
+  isLong?: boolean;
+  indexToken?: PositionOrderInfo["indexToken"];
   initialTpPriceInput?: string;
   initialSlPriceInput?: string;
+  initialView?: "list" | "add";
+  initialTab?: TpSlTabType;
 };
 
 export function SyntheticsPage(p: Props) {
@@ -171,11 +181,11 @@ export function SyntheticsPage(p: Props) {
   const toToken = getByKey(tokensData, toTokenAddress);
 
   const [selectedPositionOrderKey, setSelectedPositionOrderKey] = useState<string>();
-  const [chartTPSLModalState, setChartTPSLModalState] = useState<ChartTPSLModalState>({
+  const [ordersModalState, setOrdersModalState] = useState<OrdersModalState>({
     isVisible: false,
   });
 
-  const chartTPSLPosition = useSelector((s) => getByKey(selectPositionsInfoData(s), chartTPSLModalState.positionKey));
+  const ordersModalPosition = useSelector((s) => getByKey(selectPositionsInfoData(s), ordersModalState.positionKey));
 
   const handlePositionListOrdersClick = useCallback(
     (positionKey: string, orderKey: string | undefined) => {
@@ -237,17 +247,65 @@ export function SyntheticsPage(p: Props) {
 
       if (!order) return;
 
-      if (isTriggerDecreaseOrderType(order.orderType)) {
+      if (isTwapOrder(order)) return;
+
+      const initialTab: TpSlTabType | undefined = isLimitDecreaseOrderType(order.orderType)
+        ? "takeProfit"
+        : isStopLossOrderType(order.orderType)
+          ? "stopLoss"
+          : isLimitIncreaseOrderType(order.orderType) || isStopIncreaseOrderType(order.orderType)
+            ? "all"
+            : undefined;
+
+      if (initialTab === undefined) {
+        setActiveOrder(order);
         return;
       }
 
-      setActiveOrder(order);
+      const positionsInfoData = calcSelector(selectPositionsInfoData);
+      const matchingPositionKey = Object.keys(positionsInfoData ?? {}).find((positionKey) =>
+        isOrderForPosition(order, positionKey)
+      );
+
+      if (matchingPositionKey) {
+        setOrdersModalState({
+          isVisible: true,
+          positionKey: matchingPositionKey,
+          initialView: "list",
+          initialTab,
+        });
+      } else {
+        const positionOrder = order as PositionOrderInfo;
+
+        const isTriggerDecrease =
+          isLimitDecreaseOrderType(positionOrder.orderType) || isStopLossOrderType(positionOrder.orderType);
+        const collateralAddress = isTriggerDecrease
+          ? positionOrder.initialCollateralTokenAddress
+          : positionOrder.targetCollateralToken.isNative
+            ? positionOrder.targetCollateralToken.wrappedAddress ?? positionOrder.targetCollateralToken.address
+            : positionOrder.targetCollateralToken.address;
+
+        const derivedPositionKey = getPositionKey(
+          positionOrder.account,
+          positionOrder.marketAddress,
+          collateralAddress,
+          positionOrder.isLong
+        );
+        setOrdersModalState({
+          isVisible: true,
+          positionKey: derivedPositionKey,
+          isLong: positionOrder.isLong,
+          indexToken: positionOrder.indexToken,
+          initialView: "list",
+          initialTab,
+        });
+      }
     },
     [calcSelector, setActiveOrder]
   );
 
   const onOpenChartTPSLModal = useCallback((params: OpenChartTPSLModalParams) => {
-    setChartTPSLModalState({
+    setOrdersModalState({
       isVisible: true,
       positionKey: params.positionKey,
       initialTpPriceInput: params.action === "takeProfit" ? params.triggerPrice : undefined,
@@ -255,8 +313,8 @@ export function SyntheticsPage(p: Props) {
     });
   }, []);
 
-  const handleChartTPSLModalVisibility = useCallback((visible: boolean) => {
-    setChartTPSLModalState(
+  const handleOrdersModalVisibility = useCallback((visible: boolean) => {
+    setOrdersModalState(
       visible
         ? (prev) => ({
             ...prev,
@@ -479,7 +537,7 @@ export function SyntheticsPage(p: Props) {
 
         {isTablet && (
           <div
-            className="flex w-full flex-col overflow-hidden rounded-8"
+            className="flex w-full flex-col overflow-clip rounded-8"
             data-qa="trade-table-small"
             ref={tabsContentTabletRef}
           >
@@ -546,14 +604,18 @@ export function SyntheticsPage(p: Props) {
           </div>
         )}
       </div>
-      {chartTPSLPosition && (
-        <TPSLModal
-          isVisible={chartTPSLModalState.isVisible}
-          setIsVisible={handleChartTPSLModalVisibility}
-          position={chartTPSLPosition}
-          initialView="add"
-          initialTpPriceInput={chartTPSLModalState.initialTpPriceInput}
-          initialSlPriceInput={chartTPSLModalState.initialSlPriceInput}
+      {ordersModalState.isVisible && (
+        <OrdersModal
+          isVisible={ordersModalState.isVisible}
+          setIsVisible={handleOrdersModalVisibility}
+          position={ordersModalPosition}
+          positionKey={ordersModalState.positionKey}
+          isLong={ordersModalState.isLong}
+          indexToken={ordersModalState.indexToken}
+          initialView={ordersModalState.initialView ?? "add"}
+          initialTpPriceInput={ordersModalState.initialTpPriceInput}
+          initialSlPriceInput={ordersModalState.initialSlPriceInput}
+          initialTab={ordersModalState.initialTab}
         />
       )}
       <PositionSeller />
@@ -569,7 +631,6 @@ export function SyntheticsPage(p: Props) {
           shareSource="auto-prompt"
         />
       ) : null}
-      <NpsModal />
     </AppPageLayout>
   );
 }
@@ -596,7 +657,7 @@ function useOrdersControl() {
   const onCancelSelectedOrders = useCallback(
     async function cancelSelectedOrders() {
       if (hasOutdatedUi) {
-        helperToast.error(t`Page outdated. Refresh`);
+        helperToast.error(getPageOutdatedError());
         return;
       }
       if (!signer || !provider) return;
@@ -660,7 +721,7 @@ function useOrdersControl() {
   const onCancelOrder = useCallback(
     async function cancelOrder(key: string) {
       if (hasOutdatedUi) {
-        helperToast.error(t`Page outdated. Refresh`);
+        helperToast.error(getPageOutdatedError());
         return;
       }
       if (!signer || !provider) return;

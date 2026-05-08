@@ -8,9 +8,11 @@ import {
   createOrderStopMarketLong,
   deposit1Usd,
   executeOrderIncreaseLong,
+  executeOrderMarketIncreaseLongWithFee,
   executeOrderStopMarketLong,
   executeOrderSwap,
   executeSwap,
+  executeTwapIncreaseWithFee,
   failedSwap,
   frozenOrderIncreaseShort,
   increaseLongETH,
@@ -37,12 +39,16 @@ describe("TradeHistoryRow helpers", () => {
         "acceptablePrice": ">  $ 35.0578",
         "action": "Request Market Increase",
         "executionPrice": undefined,
+        "fees": undefined,
+        "feesTooltip": undefined,
         "fullMarket": "AVAX/USD [WAVAX-USDC]",
         "indexName": "AVAX/USD",
         "indexTokenSymbol": "AVAX",
         "isLong": false,
         "market": "Short AVAX/USD",
         "marketPrice": undefined,
+        "pnl": undefined,
+        "pnlState": undefined,
         "poolName": "WAVAX-USDC",
         "price": ">  $ 35.0578",
         "priceComment": [
@@ -60,12 +66,16 @@ describe("TradeHistoryRow helpers", () => {
         "acceptablePrice": "<  $ 43.2376",
         "action": "Request withdraw",
         "executionPrice": undefined,
+        "fees": undefined,
+        "feesTooltip": undefined,
         "fullMarket": "AVAX/USD [WAVAX-USDC]",
         "indexName": "AVAX/USD",
         "indexTokenSymbol": "AVAX",
         "isLong": false,
         "market": "Short AVAX/USD",
         "marketPrice": undefined,
+        "pnl": undefined,
+        "pnlState": undefined,
         "poolName": "WAVAX-USDC",
         "price": "<  $ 43.2376",
         "priceComment": [
@@ -83,12 +93,16 @@ describe("TradeHistoryRow helpers", () => {
         "acceptablePrice": "<  $ 0.085152",
         "action": "Request deposit",
         "executionPrice": undefined,
+        "fees": undefined,
+        "feesTooltip": undefined,
         "fullMarket": "DOGE/USD [ETH-DAI]",
         "indexName": "DOGE/USD",
         "indexTokenSymbol": "DOGE",
         "isLong": true,
         "market": "Long DOGE/USD",
         "marketPrice": undefined,
+        "pnl": undefined,
+        "pnlState": undefined,
         "poolName": "ETH-DAI",
         "price": "<  $ 0.085152",
         "priceComment": [
@@ -106,12 +120,16 @@ describe("TradeHistoryRow helpers", () => {
         "acceptablePrice": ">  $ 29,700.00",
         "action": "Create Take-Profit",
         "executionPrice": undefined,
+        "fees": undefined,
+        "feesTooltip": undefined,
         "fullMarket": "BTC/USD [BTC-USDC]",
         "indexName": "BTC/USD",
         "indexTokenSymbol": "BTC",
         "isLong": true,
         "market": "Long BTC/USD",
         "marketPrice": undefined,
+        "pnl": undefined,
+        "pnlState": undefined,
         "poolName": "BTC-USDC",
         "price": ">  $ 30,000.00",
         "priceComment": [
@@ -130,12 +148,16 @@ describe("TradeHistoryRow helpers", () => {
         "acceptablePrice": "<  $ 1,645.69",
         "action": "Cancel Limit",
         "executionPrice": undefined,
+        "fees": undefined,
+        "feesTooltip": undefined,
         "fullMarket": "ETH/USD [WETH-USDC]",
         "indexName": "ETH/USD",
         "indexTokenSymbol": "ETH",
         "isLong": true,
         "market": "Long ETH/USD",
         "marketPrice": undefined,
+        "pnl": undefined,
+        "pnlState": undefined,
         "poolName": "WETH-USDC",
         "price": "<  $ 1,629.40",
         "priceComment": [
@@ -154,12 +176,16 @@ describe("TradeHistoryRow helpers", () => {
         "acceptablePrice": "<  $ 1.01",
         "action": "Create Limit",
         "executionPrice": undefined,
+        "fees": undefined,
+        "feesTooltip": undefined,
         "fullMarket": "BTC/USD [BTC-USDC]",
         "indexName": "BTC/USD",
         "indexTokenSymbol": "BTC",
         "isLong": true,
         "market": "Long BTC/USD",
         "marketPrice": undefined,
+        "pnl": undefined,
+        "pnlState": undefined,
         "poolName": "BTC-USDC",
         "price": "<  $ 1.00",
         "priceComment": [
@@ -178,12 +204,21 @@ describe("TradeHistoryRow helpers", () => {
         "acceptablePrice": ">  $ 0.82764",
         "action": "Execute Limit",
         "executionPrice": "$ 0.83711",
+        "fees": "-$ 16.82",
+        "feesTooltip": [
+          {
+            "key": "Price impact",
+            "value": "-$ 16.82",
+          },
+        ],
         "fullMarket": "ARB/USD [ARB-USDC]",
         "indexName": "ARB/USD",
         "indexTokenSymbol": "ARB",
         "isLong": false,
         "market": "Short ARB/USD",
         "marketPrice": "< $ 0.00001",
+        "pnl": undefined,
+        "pnlState": undefined,
         "poolName": "ARB-USDC",
         "price": "< $ 0.00001",
         "priceComment": [
@@ -208,12 +243,63 @@ describe("TradeHistoryRow helpers", () => {
       }
     `);
 
+    expect(formatPositionMessage(executeOrderMarketIncreaseLongWithFee, minCollateralUsd)).toMatchInlineSnapshot(`
+      {
+        "acceptablePrice": ">  $ 0.82764",
+        "action": "Market Increase",
+        "executionPrice": "$ 0.83711",
+        "fees": "-$ 16.82",
+        "feesTooltip": [
+          {
+            "key": "Price impact",
+            "value": "-$ 16.82",
+          },
+        ],
+        "fullMarket": "ARB/USD [ARB-USDC]",
+        "indexName": "ARB/USD",
+        "indexTokenSymbol": "ARB",
+        "isLong": false,
+        "market": "Short ARB/USD",
+        "marketPrice": "< $ 0.00001",
+        "pnl": undefined,
+        "pnlState": undefined,
+        "poolName": "ARB-USDC",
+        "price": "< $ 0.00001",
+        "priceComment": [
+          "Mark price for the order",
+          "",
+          {
+            "key": "Price impact",
+            "value": {
+              "state": "error",
+              "text": "-$ 16.82",
+            },
+          },
+        ],
+        "priceImpact": "-$ 16.82",
+        "size": "+$ 2,070.19",
+        "timestamp": "18 Sep 2023, 16:43",
+        "timestampUTC": "UTC: 2023-09-18 12:43:18",
+      }
+    `);
+
+    // Opening fees no longer appear in RPNL \u2014 they belong in the Fees column.
+    expect(formatPositionMessage(executeTwapIncreaseWithFee, minCollateralUsd).pnl).toBeUndefined();
+    expect(formatPositionMessage(executeTwapIncreaseWithFee, minCollateralUsd).pnlTooltip).toBeUndefined();
+    expect(formatPositionMessage(executeTwapIncreaseWithFee, minCollateralUsd).fees).toBe("-$\u200a16.82");
+
+    expect(formatPositionMessage(createOrderIncreaseLong, minCollateralUsd).pnl).toBeUndefined();
+    expect(formatPositionMessage(createOrderIncreaseLong, minCollateralUsd).pnlTooltip).toBeUndefined();
+    expect(formatPositionMessage(createOrderIncreaseLong, minCollateralUsd).fees).toBeUndefined();
+
     expect(formatPositionMessage(frozenOrderIncreaseShort, minCollateralUsd)).toMatchInlineSnapshot(`
       {
         "acceptablePrice": ">  $ 26,937.90",
         "action": "Failed Limit",
         "actionComment": undefined,
         "executionPrice": undefined,
+        "fees": undefined,
+        "feesTooltip": undefined,
         "fullMarket": "BTC/USD [BTC-USDC]",
         "indexName": "BTC/USD",
         "indexTokenSymbol": "BTC",
@@ -221,6 +307,8 @@ describe("TradeHistoryRow helpers", () => {
         "isLong": false,
         "market": "Short BTC/USD",
         "marketPrice": undefined,
+        "pnl": undefined,
+        "pnlState": undefined,
         "poolName": "BTC-USDC",
         "price": "",
         "priceComment": [
@@ -247,16 +335,21 @@ describe("TradeHistoryRow helpers", () => {
       {
         "action": "Create Trigger",
         "executionPrice": undefined,
+        "fees": undefined,
+        "feesTooltip": undefined,
         "fullMarket": "XRP/USD [WETH-USDC]",
         "indexName": "XRP/USD",
         "indexTokenSymbol": "XRP",
         "isLong": true,
         "market": "Long XRP/USD",
         "marketPrice": undefined,
+        "pnl": undefined,
+        "pnlState": undefined,
         "poolName": "WETH-USDC",
         "price": "",
+        "priceComment": null,
         "priceImpact": undefined,
-        "size": "-$\u200a4,954.24",
+        "size": "-$ 4,954.24",
         "timestamp": "18 Sep 2023, 11:52",
         "timestampUTC": "UTC: 2023-09-18 07:52:39",
       }
@@ -266,6 +359,21 @@ describe("TradeHistoryRow helpers", () => {
       {
         "action": "Liquidated",
         "executionPrice": "$ 6.1063",
+        "fees": "-$ 22.38",
+        "feesTooltip": [
+          {
+            "key": "Close fee",
+            "value": "-$ 4.51",
+          },
+          {
+            "key": "Liquidation fee",
+            "value": "-$ 1.05",
+          },
+          {
+            "key": "Price impact",
+            "value": "-$ 16.82",
+          },
+        ],
         "fullMarket": "LINK/USD [LINK-USDC]",
         "indexName": "LINK/USD",
         "indexTokenSymbol": "LINK",
@@ -283,7 +391,7 @@ describe("TradeHistoryRow helpers", () => {
           "Liquidated as max leverage of 0.0x was exceeded when accounting for fees.",
           "",
           {
-            "key": "Initial collateral",
+            "key": "Initial margin",
             "value": "214.78 USDC ($ 214.78)",
           },
           {
@@ -316,11 +424,11 @@ describe("TradeHistoryRow helpers", () => {
           },
           "",
           {
-            "key": "Min. required collateral",
+            "key": "Minimum required margin",
             "value": "< $ 0.01",
           },
           {
-            "key": "Collateral at liquidation",
+            "key": "Margin at liquidation",
             "value": "$ 83.95",
           },
           "",
@@ -340,7 +448,7 @@ describe("TradeHistoryRow helpers", () => {
           },
           "",
           {
-            "key": "Returned collateral",
+            "key": "Returned margin",
             "value": "$ 66.08",
           },
         ],
@@ -356,12 +464,21 @@ describe("TradeHistoryRow helpers", () => {
         "acceptablePrice": "<  $ 1,589.47",
         "action": "Market Increase",
         "executionPrice": "$ 1,584.74",
+        "fees": "-$ 0.09",
+        "feesTooltip": [
+          {
+            "key": "Price impact",
+            "value": "-$ 0.09",
+          },
+        ],
         "fullMarket": "ETH/USD [WETH-USDC]",
         "indexName": "ETH/USD",
         "indexTokenSymbol": "ETH",
         "isLong": true,
         "market": "Long ETH/USD",
         "marketPrice": "$ 4.47",
+        "pnl": undefined,
+        "pnlState": undefined,
         "poolName": "WETH-USDC",
         "price": "$ 4.47",
         "priceComment": [
@@ -387,12 +504,16 @@ describe("TradeHistoryRow helpers", () => {
         "acceptablePrice": undefined,
         "action": "Create Stop Market",
         "executionPrice": undefined,
+        "fees": undefined,
+        "feesTooltip": undefined,
         "fullMarket": "BTC/USD [BTC-USDC]",
         "indexName": "BTC/USD",
         "indexTokenSymbol": "BTC",
         "isLong": true,
         "market": "Long BTC/USD",
         "marketPrice": undefined,
+        "pnl": undefined,
+        "pnlState": undefined,
         "poolName": "BTC-USDC",
         "price": ">  $ 95,600.00",
         "priceComment": [
@@ -411,12 +532,33 @@ describe("TradeHistoryRow helpers", () => {
         "acceptablePrice": undefined,
         "action": "Execute Stop Market",
         "executionPrice": "$ 95,754.58",
+        "fees": "< -$ 0.01",
+        "feesTooltip": [
+          {
+            "key": "Open fee",
+            "value": "< -$ 0.01",
+          },
+          {
+            "key": "Borrow fee",
+            "value": "< -$ 0.01",
+          },
+          {
+            "key": "Funding fee",
+            "value": "< -$ 0.01",
+          },
+          {
+            "key": "Price impact",
+            "value": "< +$ 0.01",
+          },
+        ],
         "fullMarket": "BTC/USD [BTC-USDC]",
         "indexName": "BTC/USD",
         "indexTokenSymbol": "BTC",
         "isLong": true,
         "market": "Long BTC/USD",
         "marketPrice": "$ 95,754.20",
+        "pnl": undefined,
+        "pnlState": undefined,
         "poolName": "BTC-USDC",
         "price": "$ 95,754.20",
         "priceComment": [

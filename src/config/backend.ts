@@ -2,7 +2,7 @@ import { ARBITRUM, AVALANCHE } from "./chains";
 
 export const GMX_STATS_API_URL = "https://stats.gmx.io/api";
 
-const BACKEND_URLS = {
+const BACKEND_URLS: { default: string } & Partial<Record<number, string>> = {
   default: "https://gmx-server-mainnet.uw.r.appspot.com",
 
   [ARBITRUM]: "https://gmx-server-mainnet.uw.r.appspot.com",

@@ -65,6 +65,8 @@ type IncreasePositionParams = {
   chainId: number;
   externalSwapQuoteParams: ExternalSwapQuoteParams | undefined;
   isSetAcceptablePriceImpactEnabled: boolean;
+  disabledMarkets?: string[];
+  manualPath?: string[];
 };
 
 export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreasePositionAmounts {
@@ -91,6 +93,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
     chainId,
     externalSwapQuoteParams,
     isSetAcceptablePriceImpactEnabled,
+    disabledMarkets,
+    manualPath,
   } = p;
 
   const swapStrategy: NoSwapStrategy = {
@@ -207,6 +211,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         chainId,
         externalSwapQuoteParams,
         allowSameTokenSwap: false,
+        disabledMarkets,
+        manualPath,
       });
 
       values.swapStrategy = swapAmounts.swapStrategy;
@@ -302,6 +308,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         chainId,
         externalSwapQuoteParams,
         allowSameTokenSwap: false,
+        disabledMarkets,
+        manualPath,
       });
       values.swapStrategy = swapAmounts.swapStrategy;
     }
@@ -357,6 +365,8 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
           chainId,
           externalSwapQuoteParams,
           allowSameTokenSwap: false,
+          disabledMarkets,
+          manualPath,
         });
         values.swapStrategy = swapAmounts.swapStrategy;
       }
@@ -422,7 +432,7 @@ export function getIncreasePositionAmounts(p: IncreasePositionParams): IncreaseP
         indexPrice: values.indexPrice,
         sizeDeltaUsd: values.sizeDeltaUsd,
         priceImpactDeltaUsd: values.positionPriceImpactDeltaUsd,
-        acceptablePriceImapctBuffer: acceptablePriceImpactBuffer || DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER,
+        acceptablePriceImpactBuffer: acceptablePriceImpactBuffer || DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER,
       });
 
       if (maxNegativePriceImpactBps === undefined) {

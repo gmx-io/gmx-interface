@@ -138,7 +138,7 @@ export function LeaderboardPositionsTable({
                     <br />
                     <br />
                     The capital used is calculated as the highest value of [
-                    <i>sum of collateral of open positions - realized PnL + period start pending PnL</i>].
+                    <i>sum of margin of open positions - realized PnL + period start pending PnL</i>].
                   </Trans>
                 }
                 tooltipPosition="bottom-start"
@@ -148,7 +148,7 @@ export function LeaderboardPositionsTable({
                 {...getSorterProps("qualifyingPnl")}
                 title={t`PNL ($)`}
                 width={12}
-                tooltip={t`Total realized and unrealized PnL for the period. Includes price impact and fees. Excludes swap fees.`}
+                tooltip={t`Total realized and unrealized PnL for the period. Includes price impact and fees.`}
                 tooltipPosition="bottom-end"
               />
               <TableHeaderCell title={t`POSITION`} width={12} tooltipPosition="bottom-end" />
@@ -191,7 +191,7 @@ const TableHeaderCell = memo(
           }
         : undefined;
 
-    const stopPropagation = useCallback((e) => e.stopPropagation(), []);
+    const stopPropagation = useCallback((e: React.MouseEvent) => e.stopPropagation(), []);
 
     const isSortable = onChange !== undefined;
 
@@ -293,7 +293,7 @@ const TableRow = memo(
       return (
         <>
           <StatsTooltipRow
-            label={t`Collateral`}
+            label={t`Margin`}
             showDollar={false}
             value={
               <AmountWithUsdBalance
@@ -309,7 +309,7 @@ const TableRow = memo(
       );
     }, [collateralToken, position.collateralAmount, position.collateralUsd]);
 
-    const renderNaLiquidationTooltip = useCallback(() => t`No liquidation price. Collateral covers any losses.`, []);
+    const renderNaLiquidationTooltip = useCallback(() => t`No liquidation price. Margin covers any losses.`, []);
 
     const renderLiquidationTooltip = useCallback(() => {
       const markPrice = indexToken?.prices.maxPrice;

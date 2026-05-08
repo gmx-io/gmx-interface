@@ -9,7 +9,7 @@ import { selectAccount } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { MarketsInfoData } from "domain/synthetics/markets";
 import { getSubsquidGraphClient } from "lib/indexers";
-import { BN_ZERO, bigNumberify } from "lib/numbers";
+import { BN_ZERO, toBigInt } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { getToken } from "sdk/configs/tokens";
 import { buildFiltersBody } from "sdk/utils/indexers";
@@ -197,15 +197,15 @@ function createClaimCollateralAction(
     timestamp: rawAction.timestamp,
     transactionHash: rawAction.transactionHash,
     tokens,
-    amounts: rawAction.amounts.map((amount) => bigNumberify(amount)!),
-    tokenPrices: rawAction.tokenPrices.map((price) => bigNumberify(price)!),
+    amounts: rawAction.amounts.map((amount) => toBigInt(amount)!),
+    tokenPrices: rawAction.tokenPrices.map((price) => toBigInt(price)!),
   };
 
   for (let i = 0; i < rawAction.marketAddresses.length; i++) {
     const marketAddress = rawAction.marketAddresses[i];
     const tokenAddress = rawAction.tokenAddresses[i];
-    const amount = bigNumberify(rawAction.amounts[i])!;
-    const price = bigNumberify(rawAction.tokenPrices[i])!;
+    const amount = toBigInt(rawAction.amounts[i])!;
+    const price = toBigInt(rawAction.tokenPrices[i])!;
     const marketInfo = getByKey(marketsInfoData, marketAddress);
 
     if (amount === 0n) {
@@ -264,8 +264,8 @@ function createSettleFundingFeeAction(
       const marketAddress = rawAction.marketAddresses[i];
       const tokenAddress = rawAction.tokenAddresses[i];
 
-      const amount = bigNumberify(rawAction.amounts[i])!;
-      const price = bigNumberify(rawAction.tokenPrices[i])!;
+      const amount = toBigInt(rawAction.amounts[i])!;
+      const price = toBigInt(rawAction.tokenPrices[i])!;
 
       const marketInfo = getByKey(marketsInfoData, marketAddress);
 
@@ -299,8 +299,8 @@ function createSettleFundingFeeAction(
     id: rawAction.id,
     type: "fundingFee",
     account: rawAction.account,
-    amounts: rawAction.amounts.map((amount) => bigNumberify(amount)!),
-    tokenPrices: rawAction.tokenPrices.map((price) => bigNumberify(price)!),
+    amounts: rawAction.amounts.map((amount) => toBigInt(amount)!),
+    tokenPrices: rawAction.tokenPrices.map((price) => toBigInt(price)!),
     markets,
     tokens,
     isLongOrders: rawAction.isLongOrders ?? [],

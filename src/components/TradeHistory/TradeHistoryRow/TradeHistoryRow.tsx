@@ -174,6 +174,11 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
     [msg.actionComment]
   );
 
+  const renderFeesTooltipContent = useCallback(
+    () => <TooltipContentComponent content={msg.feesTooltip ?? EMPTY_ARRAY} />,
+    [msg.feesTooltip]
+  );
+
   const marketTooltipHandle = useMemo(
     () =>
       msg.swapFromTokenSymbol ? (
@@ -307,6 +312,20 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
         <TableTd>
           {!msg.pnl ? (
             <span className="text-typography-secondary">-</span>
+          ) : msg.pnlTooltip ? (
+            <TooltipWithPortal
+              handle={
+                <span
+                  className={cx("numbers", {
+                    "text-red-500": msg.pnlState === "error",
+                    "text-green-500": msg.pnlState === "success",
+                  })}
+                >
+                  {msg.pnl}
+                </span>
+              }
+              content={msg.pnlTooltip}
+            />
           ) : (
             <span
               className={cx("numbers", {
@@ -316,6 +335,18 @@ export function TradeHistoryRow({ minCollateralUsd, tradeAction, shouldDisplayAc
             >
               {msg.pnl}
             </span>
+          )}
+        </TableTd>
+        <TableTd>
+          {!msg.fees ? (
+            <span className="text-typography-secondary">-</span>
+          ) : msg.feesTooltip && msg.feesTooltip.length > 0 ? (
+            <TooltipWithPortal
+              handle={<span className="numbers">{msg.fees}</span>}
+              renderContent={renderFeesTooltipContent}
+            />
+          ) : (
+            <span className="numbers">{msg.fees}</span>
           )}
         </TableTd>
         <TableTd>

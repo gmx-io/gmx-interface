@@ -17,7 +17,7 @@ import { useCallback, useMemo } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
-import { locales } from "lib/i18n";
+import { type Locale } from "lib/i18n";
 
 import Button from "components/Button/Button";
 
@@ -27,7 +27,7 @@ import ChevronLeftIcon from "img/ic_chevron_left.svg?react";
 
 import "./DateRangeSelect.scss";
 
-export const LOCALE_DATE_LOCALE_MAP: Record<keyof typeof locales, DateLocale> = {
+export const LOCALE_DATE_LOCALE_MAP: Record<Locale, DateLocale> = {
   en: dateEn,
   es: dateEs,
   zh: dateZh,
@@ -53,7 +53,7 @@ type Props = {
 const MIN_DATE = new Date(2021, 8, 6);
 const MAX_DATE = addYears(new Date(), 1);
 
-const PRESETS = {
+const PRESETS: Record<string, Duration | undefined> = {
   days30: {
     days: 30,
   } satisfies Duration,
@@ -106,7 +106,7 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName 
   );
 
   const { _, i18n } = useLingui();
-  const localeStr = i18n.locale;
+  const localeStr = i18n.locale as Locale;
 
   const locale: DateLocale = LOCALE_DATE_LOCALE_MAP[localeStr] ?? LOCALE_DATE_LOCALE_MAP.en;
 
@@ -126,7 +126,7 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName 
   const handlePresetSelect = useCallback(
     (event: React.MouseEvent) => {
       const button = event.target as HTMLButtonElement;
-      const preset = button.dataset.preset as keyof typeof PRESETS;
+      const preset = button.dataset.preset;
 
       if (!preset) {
         return;
@@ -220,7 +220,7 @@ export function DateSelect({
   );
 
   const { i18n, _ } = useLingui();
-  const localeStr = i18n.locale;
+  const localeStr = i18n.locale as Locale;
 
   const locale: DateLocale = LOCALE_DATE_LOCALE_MAP[localeStr] ?? LOCALE_DATE_LOCALE_MAP.en;
 
@@ -243,7 +243,7 @@ export function DateSelect({
   const handlePresetSelect = useCallback(
     (event: React.MouseEvent) => {
       const button = event.target as HTMLButtonElement;
-      const preset = button.dataset.preset as keyof typeof PRESETS;
+      const preset = button.dataset.preset;
 
       if (!preset) {
         return;

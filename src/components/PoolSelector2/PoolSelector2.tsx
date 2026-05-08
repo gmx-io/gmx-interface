@@ -149,7 +149,7 @@ function PoolListItemDesktop({
           "text-green-500": netRateState === "success",
         })}
       >
-        <Trans>{formattedNetRate} / 1H</Trans>
+        <Trans>{formattedNetRate} / 1h</Trans>
       </TableTd>
     </SelectorBaseDesktopRow>
   );
@@ -217,7 +217,7 @@ function PoolListItemMobile({
         <div className="PoolSelector2-mobile-pool-name">{poolName}</div>
       </div>
       <dl className="PoolSelector2-mobile-info">
-        <dt>{isLong ? <Trans>Long liq.</Trans> : <Trans>Short liq.</Trans>}</dt>
+        <dt>{isLong ? <Trans>Long liquidity</Trans> : <Trans>Short liquidity</Trans>}</dt>
         <dd
           className={cx({
             "text-red-500": !isEnoughLiquidity,

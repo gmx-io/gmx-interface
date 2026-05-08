@@ -27,6 +27,8 @@ export type Token = {
   reservesUrl?: string;
   imageUrl?: string;
   categories?: TokenCategory[];
+  /** Extra search terms (e.g. Chainlink ticker aliases) not shown in `name` / `symbol`. */
+  searchAliases?: string[];
   isPermitSupported?: boolean;
   isPermitDisabled?: boolean;
   contractVersion?: string;

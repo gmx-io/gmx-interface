@@ -15,5 +15,5 @@ export function getLowGasPaymentTokenBalanceWarning({
     return undefined;
   }
 
-  return t`Low ${symbol} balance. This amount leaves little for future fees on ${getChainName(chainId)}`;
+  return t`Low ${symbol} balance. This amount leaves little for future fees on ${getChainName(chainId)}.`;
 }

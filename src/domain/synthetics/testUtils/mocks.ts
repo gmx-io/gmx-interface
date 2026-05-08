@@ -92,6 +92,9 @@ export function mockPositionInfo(
     pnlAfterFees: 0n,
     pnlAfterFeesPercentage: 0n,
     netPriceImapctDeltaUsd: 0n,
+    netValueAfterAllFees: 0n,
+    pnlAfterAllFees: 0n,
+    pnlAfterAllFeesPercentage: 0n,
     priceImpactDiffUsd: 0n,
     netValue: 0n,
     closingFeeUsd: 0n,
@@ -116,7 +119,7 @@ const MOCK_TXN_DATA = {
 
 export function mockExternalSwapQuote(overrides: Partial<ExternalSwapQuote> = {}): ExternalSwapQuote {
   return {
-    aggregator: ExternalSwapAggregator.OpenOcean,
+    aggregator: ExternalSwapAggregator.KyberSwap,
     inTokenAddress: getTokenBySymbol(AVALANCHE, "BTC").address,
     outTokenAddress: getTokenBySymbol(AVALANCHE, "USDC").address,
     receiver: "0x1234567890123456789012345678901234567890",
@@ -127,6 +130,7 @@ export function mockExternalSwapQuote(overrides: Partial<ExternalSwapQuote> = {}
     priceIn: 1000000n,
     priceOut: 900000n,
     feesUsd: 100000n,
+    slippage: 0,
     needSpenderApproval: false,
     txnData: {
       ...MOCK_TXN_DATA,

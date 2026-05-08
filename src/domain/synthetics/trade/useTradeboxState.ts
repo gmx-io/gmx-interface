@@ -636,7 +636,10 @@ export function useTradeboxState(
       }
 
       if (tradeType && tradeMode && !availableTradeModes.flat().some((mode) => mode === tradeMode)) {
-        setTradeMode(availableTradeModes[0]);
+        const firstMode = availableTradeModes[0];
+        if (firstMode !== undefined) {
+          setTradeMode(Array.isArray(firstMode) ? firstMode[0] : firstMode);
+        }
       }
     },
     [tradeType, tradeMode, availableTradeModes, setTradeMode, enabled]

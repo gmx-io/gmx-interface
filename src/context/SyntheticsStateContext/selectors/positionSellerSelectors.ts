@@ -10,10 +10,10 @@ import {
   findAllReachableTokens,
   getMarkPrice,
   getNextPositionValuesForDecreaseTrade,
-  getOptimalDecreaseAndSwapAmounts,
   getTradeFees,
   getTriggerDecreaseOrderType,
 } from "domain/synthetics/trade";
+import { getOptimalDecreaseAndSwapAmounts } from "domain/synthetics/trade";
 import { OrderOption } from "domain/synthetics/trade/usePositionSellerState";
 import { parseValue } from "lib/numbers";
 import { EMPTY_ARRAY, getByKey } from "lib/objects";
@@ -293,7 +293,6 @@ export const selectPositionSellerShouldSwap = createSelector((q) => {
     return false;
   }
 
-  // No external swap needed when receive=pnl and contract produces output via internal swap
   if (decreaseAmounts?.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken) {
     const pnlToken = q(selectPositionSellerPnlToken);
     if (pnlToken && getIsEquivalentTokens(receiveToken, pnlToken) && decreaseAmounts.primaryOutput.amount > 0n) {
@@ -313,7 +312,6 @@ export const selectPositionSellerMaxLiquidityPath = createSelector((q) => {
   const swapAmounts = q(selectPositionSellerSwapAmounts);
   const receiveToken = q(selectPositionSellerReceiveToken);
   const pnlToken = q(selectPositionSellerPnlToken);
-  // Path B: external swap starts from pnl token instead of collateral
   const isPathBWithSwap =
     shouldSwap &&
     decreaseAmounts?.decreaseSwapType === DecreasePositionSwapType.SwapCollateralTokenToPnlToken &&

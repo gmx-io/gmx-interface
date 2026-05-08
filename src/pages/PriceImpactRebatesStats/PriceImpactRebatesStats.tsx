@@ -36,7 +36,7 @@ export const PriceImpactRebatesStatsPage = memo(() => {
       <div className="default-container page-layout">
         <div className="flex">
           <Checkbox isChecked={reviewed} setIsChecked={setReviewed}>
-            <Trans>Incl. reviewed</Trans>
+            <Trans>Include reviewed</Trans>
           </Checkbox>
           <div className="PriceImpactRebatesStats-loading">{loading && <SpinningLoader />}</div>
         </div>
@@ -48,7 +48,7 @@ export const PriceImpactRebatesStatsPage = memo(() => {
               className="App-button-option App-card-option"
               onClick={() => setPageIndex((page) => Math.max(0, page - 1))}
             >
-              <Trans>Prev</Trans>
+              <Trans>Previous</Trans>
             </button>
           )}
           {hasMore && (
@@ -99,13 +99,14 @@ const RebateGroupRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) => {
   const [, copyToClipboard] = useCopyToClipboard();
   const { chainId } = useChainId();
   const handleCopyCommandClick = useCallback(
-    (e) => {
+    (e: React.MouseEvent) => {
       e.stopPropagation();
-      const networkStr = {
+      const chainIdToNetwork: Record<number, string> = {
         [ARBITRUM]: "arbitrum",
         [AVALANCHE]: "avalanche",
         [AVALANCHE_FUJI]: "avalancheFuji",
-      }[chainId];
+      };
+      const networkStr = chainIdToNetwork[chainId];
       copyToClipboard(
         `MARKET=${rebateGroup.marketInfo?.marketTokenAddress} TOKEN=${rebateGroup.tokenData?.address} TIME_KEY=${
           rebateGroup.timeKey
@@ -122,7 +123,7 @@ const RebateGroupRow = memo(({ rebateGroup }: { rebateGroup: RebateGroup }) => {
     ]
   );
   const handleCopyAccountsClick = useCallback(
-    (e) => {
+    (e: React.MouseEvent) => {
       e.stopPropagation();
 
       copyToClipboard(rebateGroup.userRebates.map((rebateItem) => rebateItem.account).join(","));

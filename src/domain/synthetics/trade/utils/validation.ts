@@ -11,6 +11,7 @@ import {
 } from "config/chains";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from "config/factors";
 import { getMappedTokenId } from "config/multichain";
+import { isDepositDisabledMarket, isShiftIntoDisabledMarket } from "config/static/markets";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
 import {
   GlvInfo,
@@ -18,7 +19,7 @@ import {
   getGlvDisplayName,
   getMarketIndexName,
   getMarketPoolName,
-  getMaxAllowedLeverageByMinCollateralFactor,
+  getMaxAllowedLeverage,
   getMaxLeverageByMinCollateralFactor,
   getMintableMarketTokens,
   getOpenInterestUsd,
@@ -30,6 +31,7 @@ import { TokenData, TokensData, TokensRatio, getIsEquivalentTokens } from "domai
 import { DUST_USD, isAddressZero } from "lib/legacy";
 import { PRECISION, adjustForDecimals, expandDecimals, formatAmount, formatUsd, roundWithDecimals } from "lib/numbers";
 import { getByKey } from "lib/objects";
+import { getPageOutdatedError } from "lib/useHasOutdatedUi";
 import { MAX_TWAP_NUMBER_OF_PARTS, MIN_TWAP_NUMBER_OF_PARTS } from "sdk/configs/twap";
 import { bigMath } from "sdk/utils/bigmath";
 import {
@@ -84,7 +86,7 @@ export function getCommonError(p: { chainId: number; isConnected: boolean; hasOu
   }
 
   if (hasOutdatedUi) {
-    return { buttonErrorMessage: t`Page outdated. Refresh` };
+    return { buttonErrorMessage: getPageOutdatedError() };
   }
 
   if (!isConnected) {
@@ -147,6 +149,7 @@ export function getSwapError(p: {
   fees: TradeFees | undefined;
   swapPathStats: SwapPathStats | undefined;
   externalSwapQuote: ExternalSwapQuote | undefined;
+  isExternalSwapLoading: boolean;
   isWrapOrUnwrap: boolean;
   isStakeOrUnstake: boolean;
   swapLiquidity: bigint | undefined;
@@ -168,6 +171,7 @@ export function getSwapError(p: {
     swapLiquidity,
     swapPathStats,
     externalSwapQuote,
+    isExternalSwapLoading,
     isTwap,
     numberOfParts,
   } = p;
@@ -184,7 +188,12 @@ export function getSwapError(p: {
     return { buttonErrorMessage: t`Enter a price` };
   }
 
-  if ((!isLimit || isTwap) && (toUsd === undefined || swapLiquidity === undefined || swapLiquidity < toUsd)) {
+  if (
+    (!isLimit || isTwap) &&
+    !externalSwapQuote &&
+    !isExternalSwapLoading &&
+    (toUsd === undefined || swapLiquidity === undefined || swapLiquidity < toUsd)
+  ) {
     return { buttonErrorMessage: t`Insufficient liquidity` };
   }
 
@@ -227,7 +236,7 @@ export function getSwapError(p: {
       !isRatioInverted &&
       (markRatio?.ratio === undefined ? undefined : markRatio.ratio < triggerRatio.ratio)
     ) {
-      return { buttonErrorMessage: t`Limit price above mark price` };
+      return { buttonErrorMessage: t`Set limit price below mark price` };
     }
 
     if (
@@ -235,16 +244,16 @@ export function getSwapError(p: {
       isRatioInverted &&
       (markRatio?.ratio === undefined ? undefined : markRatio.ratio > triggerRatio.ratio)
     ) {
-      return { buttonErrorMessage: t`Limit price below mark price` };
+      return { buttonErrorMessage: t`Set limit price above mark price` };
     }
   }
 
   if (isTwap && numberOfParts < MIN_TWAP_NUMBER_OF_PARTS) {
-    return { buttonErrorMessage: t`Min parts: ${MIN_TWAP_NUMBER_OF_PARTS}` };
+    return { buttonErrorMessage: t`Min TWAP parts: ${MIN_TWAP_NUMBER_OF_PARTS}` };
   }
 
   if (isTwap && numberOfParts > MAX_TWAP_NUMBER_OF_PARTS) {
-    return { buttonErrorMessage: t`Max number of parts: ${MAX_TWAP_NUMBER_OF_PARTS}` };
+    return { buttonErrorMessage: t`Max TWAP parts: ${MAX_TWAP_NUMBER_OF_PARTS}` };
   }
 
   return {};
@@ -265,6 +274,7 @@ export function getIncreaseError(p: {
   markPrice: bigint | undefined;
   triggerPrice: bigint | undefined;
   externalSwapQuote: ExternalSwapQuote | undefined;
+  isExternalSwapLoading: boolean;
   swapPathStats: SwapPathStats | undefined;
   collateralLiquidity: bigint | undefined;
   longLiquidity: bigint | undefined;
@@ -292,6 +302,7 @@ export function getIncreaseError(p: {
     fees,
     swapPathStats,
     externalSwapQuote,
+    isExternalSwapLoading,
     collateralLiquidity,
     longLiquidity,
     shortLiquidity,
@@ -339,12 +350,16 @@ export function getIncreaseError(p: {
   const noExternalSwap = !externalSwapQuote;
 
   if (isNeedSwap) {
-    if (noInternalSwap && noExternalSwap) {
+    if (noInternalSwap && noExternalSwap && !isExternalSwapLoading) {
       return { buttonErrorMessage: t`No swap path found`, buttonTooltipName: ValidationButtonTooltipName.noSwapPath };
     }
 
     if (!isLimit) {
-      if (noExternalSwap && (collateralLiquidity === undefined || collateralLiquidity < (initialCollateralUsd ?? 0n))) {
+      if (
+        noExternalSwap &&
+        !isExternalSwapLoading &&
+        (collateralLiquidity === undefined || collateralLiquidity < (initialCollateralUsd ?? 0n))
+      ) {
         return { buttonErrorMessage: t`Insufficient liquidity to swap collateral` };
       }
     }
@@ -369,7 +384,10 @@ export function getIncreaseError(p: {
     numberOfParts > 0 &&
     (collateralUsd === undefined ? undefined : collateralUsd / BigInt(numberOfParts) < minTwapPartSize)
   ) {
-    return { buttonErrorMessage: t`Min margin per part: ${formatUsd(minTwapPartSize)}` };
+    const actualMarginPerPart = collateralUsd! / BigInt(numberOfParts);
+    return {
+      buttonErrorMessage: t`Margin per part: ${formatUsd(actualMarginPerPart, { roundMode: "floor" })} (min ${formatUsd(minTwapPartSize)})`,
+    };
   }
 
   if (
@@ -387,7 +405,7 @@ export function getIncreaseError(p: {
       : nextPositionValues?.nextCollateralUsd;
 
   if (roundedNextCollateralUsd === undefined ? undefined : roundedNextCollateralUsd < _minCollateralUsd) {
-    return { buttonErrorMessage: t`Min collateral: ${formatUsd(_minCollateralUsd)}` };
+    return { buttonErrorMessage: t`Min margin: ${formatUsd(_minCollateralUsd)}` };
   }
 
   if (sizeDeltaUsd <= 0) {
@@ -414,23 +432,27 @@ export function getIncreaseError(p: {
     }
 
     if (isLong && thresholdType === TriggerThresholdType.Below && markPrice < triggerPrice) {
-      return { buttonErrorMessage: t`Limit price above mark price` };
+      return { buttonErrorMessage: t`Set limit price below mark price` };
     }
 
     if (!isLong && thresholdType === TriggerThresholdType.Above && markPrice > triggerPrice) {
-      return { buttonErrorMessage: t`Limit price below mark price` };
+      return { buttonErrorMessage: t`Set limit price above mark price` };
     }
 
     if (isLong && thresholdType === TriggerThresholdType.Above && triggerPrice < markPrice) {
-      return { buttonErrorMessage: t`Stop Market price below mark price` };
+      return { buttonErrorMessage: t`Set stop price above mark price` };
     }
 
     if (!isLong && thresholdType === TriggerThresholdType.Below && triggerPrice > markPrice) {
-      return { buttonErrorMessage: t`Stop Market price above mark price` };
+      return { buttonErrorMessage: t`Set stop price below mark price` };
     }
   }
 
-  const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(marketInfo?.minCollateralFactor);
+  const maxAllowedLeverage = getMaxAllowedLeverage({
+    minCollateralFactor: marketInfo?.minCollateralFactor,
+    minCollateralFactorForLiquidation: marketInfo?.minCollateralFactorForLiquidation,
+    positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,
+  });
 
   if (nextLeverageWithoutPnl !== undefined && nextLeverageWithoutPnl > maxAllowedLeverage) {
     return { buttonErrorMessage: t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x` };
@@ -472,11 +494,11 @@ export function getIncreaseError(p: {
   }
 
   if (isTwap && numberOfParts < MIN_TWAP_NUMBER_OF_PARTS) {
-    return { buttonErrorMessage: t`Min parts: ${MIN_TWAP_NUMBER_OF_PARTS}` };
+    return { buttonErrorMessage: t`Min TWAP parts: ${MIN_TWAP_NUMBER_OF_PARTS}` };
   }
 
   if (isTwap && numberOfParts > MAX_TWAP_NUMBER_OF_PARTS) {
-    return { buttonErrorMessage: t`Max number of parts: ${MAX_TWAP_NUMBER_OF_PARTS}` };
+    return { buttonErrorMessage: t`Max TWAP parts: ${MAX_TWAP_NUMBER_OF_PARTS}` };
   }
 
   return {};
@@ -567,24 +589,28 @@ export function getDecreaseError(p: {
 
     if (existingPosition?.liquidationPrice && existingPosition.liquidationPrice !== maxUint256) {
       if (isLong && triggerPrice <= existingPosition.liquidationPrice) {
-        return { buttonErrorMessage: t`Trigger price below liquidation price` };
+        return { buttonErrorMessage: t`Set trigger price above liquidation price` };
       }
 
       if (!isLong && triggerPrice >= existingPosition.liquidationPrice) {
-        return { buttonErrorMessage: t`Trigger price above liquidation price` };
+        return { buttonErrorMessage: t`Set trigger price below liquidation price` };
       }
     }
 
     if (triggerThresholdType === TriggerThresholdType.Above && triggerPrice < (markPrice ?? 0n)) {
-      return { buttonErrorMessage: t`Trigger price below mark price` };
+      return { buttonErrorMessage: t`Set trigger price above mark price` };
     }
 
     if (triggerThresholdType === TriggerThresholdType.Below && triggerPrice > (markPrice ?? 0n)) {
-      return { buttonErrorMessage: t`Trigger price above mark price` };
+      return { buttonErrorMessage: t`Set trigger price below mark price` };
     }
   }
 
-  const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(marketInfo?.minCollateralFactor);
+  const maxAllowedLeverage = getMaxAllowedLeverage({
+    minCollateralFactor: marketInfo?.minCollateralFactor,
+    minCollateralFactorForLiquidation: marketInfo?.minCollateralFactorForLiquidation,
+    positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,
+  });
 
   if (nextPositionValues?.nextLeverage !== undefined && nextPositionValues?.nextLeverage > maxAllowedLeverage) {
     return { buttonErrorMessage: t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x` };
@@ -602,7 +628,7 @@ export function getDecreaseError(p: {
         : nextPositionValues.nextCollateralUsd < (minCollateralUsd ?? 0n))
     ) {
       return {
-        buttonErrorMessage: t`Leftover collateral below ${formatAmount(minCollateralUsd, USD_DECIMALS, 2)} USD`,
+        buttonErrorMessage: t`Leftover margin below ${formatAmount(minCollateralUsd, USD_DECIMALS, 2)} USD`,
       };
     }
   }
@@ -612,11 +638,11 @@ export function getDecreaseError(p: {
   }
 
   if (isTwap && numberOfParts < MIN_TWAP_NUMBER_OF_PARTS) {
-    return { buttonErrorMessage: t`Min parts: ${MIN_TWAP_NUMBER_OF_PARTS}` };
+    return { buttonErrorMessage: t`Min TWAP parts: ${MIN_TWAP_NUMBER_OF_PARTS}` };
   }
 
   if (isTwap && numberOfParts > MAX_TWAP_NUMBER_OF_PARTS) {
-    return { buttonErrorMessage: t`Max number of parts: ${MAX_TWAP_NUMBER_OF_PARTS}` };
+    return { buttonErrorMessage: t`Max TWAP parts: ${MAX_TWAP_NUMBER_OF_PARTS}` };
   }
 
   return {};
@@ -631,7 +657,7 @@ export function getEditCollateralError(p: {
   isDeposit: boolean;
   depositToken: TokenData | undefined;
   depositAmount: bigint | undefined;
-  minCollateralFactor: bigint | undefined;
+  marketInfo: MarketInfo | undefined;
 }): ValidationResult {
   const {
     collateralDeltaAmount,
@@ -642,8 +668,10 @@ export function getEditCollateralError(p: {
     isDeposit,
     depositToken,
     depositAmount,
-    minCollateralFactor,
+    marketInfo,
   } = p;
+
+  const minCollateralFactor = marketInfo?.minCollateralFactor;
 
   if (
     collateralDeltaAmount === undefined ||
@@ -670,7 +698,11 @@ export function getEditCollateralError(p: {
 
   const maxAllowedLeverage = isDeposit
     ? getMaxLeverageByMinCollateralFactor(minCollateralFactor)
-    : getMaxAllowedLeverageByMinCollateralFactor(minCollateralFactor);
+    : getMaxAllowedLeverage({
+        minCollateralFactor: marketInfo?.minCollateralFactor,
+        minCollateralFactorForLiquidation: marketInfo?.minCollateralFactorForLiquidation,
+        positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,
+      });
 
   if (nextLeverage !== undefined && nextLeverage > maxAllowedLeverage) {
     return { buttonErrorMessage: t`Max leverage: ${(maxAllowedLeverage / BASIS_POINTS_DIVISOR).toFixed(1)}x` };
@@ -787,6 +819,10 @@ export function getGmSwapError(p: {
 
   if (!marketInfo || !marketToken) {
     return { buttonErrorMessage: t`Loading...` };
+  }
+
+  if (isDeposit && isDepositDisabledMarket(chainId, marketInfo.marketTokenAddress)) {
+    return { buttonErrorMessage: t`Buying GM unavailable` };
   }
 
   const glvTooltipMessage = glvInfo
@@ -935,7 +971,7 @@ export function getGmSwapError(p: {
       if ((glvTokenAmount ?? 0n) > (sellableGlvInMarket.sellableAmount ?? 0n)) {
         return {
           buttonErrorMessage: t`Insufficient GLV liquidity`,
-          buttonTooltipMessage: t`Insufficient GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] liquidity in GLV. Choose a different pool, reduce the sell size, or split your withdrawal from multiple pools.`,
+          buttonTooltipMessage: t`Insufficient GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] liquidity in GLV. Choose a different pool, reduce the sell size, or split the withdrawal across pools.`,
         };
       }
 
@@ -943,8 +979,8 @@ export function getGmSwapError(p: {
 
       if ((marketTokenUsd ?? 0n) > (sellableWithinMarket.totalUsd ?? 0n)) {
         return {
-          buttonErrorMessage: t`Insufficient liquidity in GM pool`,
-          buttonTooltipMessage: t`Sellable cap for pool GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] reached, as tokens are reserved by traders. Choose a different pool, reduce the sell size, or split your withdrawal from multiple pools.`,
+          buttonErrorMessage: t`Insufficient GM pool liquidity`,
+          buttonTooltipMessage: t`Sellable cap for pool GM: ${getMarketIndexName(marketInfo)} [${getMarketPoolName(marketInfo)}] reached, as tokens are reserved by traders. Choose a different pool, reduce the sell size, or split the withdrawal across pools.`,
         };
       }
     }
@@ -962,6 +998,7 @@ export function getGmSwapError(p: {
 }
 
 export function getGmShiftError({
+  chainId,
   fromMarketInfo,
   fromToken,
   fromTokenAmount,
@@ -974,6 +1011,7 @@ export function getGmShiftError({
   fees,
   priceImpactUsd,
 }: {
+  chainId: number;
   fromMarketInfo: MarketInfo | undefined;
   fromToken: TokenData | undefined;
   fromTokenAmount: bigint | undefined;
@@ -990,6 +1028,10 @@ export function getGmShiftError({
 
   if (!fromMarketInfo || !fromToken || !toMarketInfo || !toToken) {
     return { buttonErrorMessage: t`Loading...` };
+  }
+
+  if (!isGlv && isShiftIntoDisabledMarket(chainId, toMarketInfo.marketTokenAddress)) {
+    return { buttonErrorMessage: t`Shifting into this market unavailable` };
   }
 
   if (priceImpactUsd !== undefined && priceImpactUsd > 0) {

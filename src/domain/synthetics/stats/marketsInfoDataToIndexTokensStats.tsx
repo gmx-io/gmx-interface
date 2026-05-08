@@ -5,7 +5,7 @@ import { getBorrowingFactorPerPeriod, getFundingFactorPerPeriod } from "domain/s
 import {
   MarketInfo,
   MarketsInfoData,
-  getMaxLeverageByMinCollateralFactor,
+  getMaxAllowedLeverage,
   getOpenInterestForBalance,
   getUsedLiquidity,
 } from "domain/synthetics/markets";
@@ -123,7 +123,11 @@ export function marketsInfoData2IndexTokenStatsMap(marketsInfoData: MarketsInfoD
     indexTokenStats.totalOpenInterestShort += getOpenInterestForBalance(marketInfo, false);
     indexTokenStats.maxUiAllowedLeverage = Math.max(
       indexTokenStats.maxUiAllowedLeverage,
-      getMaxLeverageByMinCollateralFactor(marketInfo.minCollateralFactor) / 2 / BASIS_POINTS_DIVISOR
+      getMaxAllowedLeverage({
+        minCollateralFactor: marketInfo.minCollateralFactor,
+        minCollateralFactorForLiquidation: marketInfo.minCollateralFactorForLiquidation,
+        positionFeeFactorForBalanceWasNotImproved: marketInfo.positionFeeFactorForBalanceWasNotImproved,
+      }) / BASIS_POINTS_DIVISOR
     );
     if (netFeeLong > indexTokenStats.bestNetFeeLong) {
       indexTokenStats.bestNetFeeLong = netFeeLong;

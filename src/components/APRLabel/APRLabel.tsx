@@ -9,6 +9,7 @@ import useVestingData from "domain/vesting/useVestingData";
 import { contractFetcher } from "lib/contracts";
 import {
   PLACEHOLDER_ACCOUNT,
+  StakingProcessedData,
   getBalanceAndSupplyData,
   getDepositBalanceData,
   getStakingProcessedData,
@@ -16,10 +17,11 @@ import {
 } from "lib/legacy";
 import { formatKeyAmount } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
+import { ContractsChainId } from "sdk/configs/chains";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-export default function APRLabel({ chainId, label }) {
+export default function APRLabel({ chainId, label }: { chainId: ContractsChainId; label: keyof StakingProcessedData }) {
   const { active, account } = useWallet();
   const vestingData = useVestingData(account, chainId);
   const rewardReaderAddress = getContract(chainId, "RewardReader");
@@ -138,7 +140,7 @@ export default function APRLabel({ chainId, label }) {
   if (processedData?.isRewardsSuspended) {
     return (
       <TooltipWithPortal
-        handle={<Trans>Accumulating</Trans>}
+        handle={<Trans>Accumulating...</Trans>}
         content={
           <Trans>
             27% of protocol fees are accumulating in the Treasury and will be distributed when GMX reaches $90. Your

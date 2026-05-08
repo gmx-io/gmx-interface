@@ -4,7 +4,14 @@ import { zeroAddress } from "viem";
 import { ARBITRUM, ARBITRUM_SEPOLIA, AVALANCHE, AVALANCHE_FUJI, BOTANIX, MEGAETH } from "config/chains";
 import { getSortedMarketsAddressesKey } from "config/localStorage";
 import { SORTED_MARKETS } from "config/static/sortedMarkets";
-import { GlvAndGmMarketsInfoData, Market, MarketInfo, MarketsData, isMarketInfo } from "domain/synthetics/markets";
+import {
+  GlvAndGmMarketsInfoData,
+  Market,
+  MarketInfo,
+  MarketsData,
+  getIsMarketDeprecated,
+  isMarketInfo,
+} from "domain/synthetics/markets";
 import { InfoTokens, Token, getMidPrice } from "domain/tokens";
 import { getByKey } from "lib/objects";
 import type { ContractsChainId, SourceChainId } from "sdk/configs/chains";
@@ -31,7 +38,7 @@ function getCachedSortedMarketAddresses(chainId: number): string[] {
     return JSON.parse(cached);
   }
 
-  return SORTED_MARKETS[chainId];
+  return SORTED_MARKETS[chainId as ContractsChainId] ?? [];
 }
 
 function saveCachedSortedMarketAddresses(chainId: number, sortedMarketsInfo: MarketInfo[]) {
@@ -178,7 +185,7 @@ export function useAvailableTokenOptions(
       shortTokensWithPoolValue[shortToken.address] =
         (shortTokensWithPoolValue[shortToken.address] ?? 0n) + shortPoolAmountUsd;
 
-      if (!marketInfo.isSpotOnly) {
+      if (!marketInfo.isSpotOnly && !getIsMarketDeprecated(marketInfo)) {
         indexTokens.add(indexToken);
         allMarkets.add(marketInfo);
         indexTokensWithPoolValue[indexToken.address] =
@@ -215,7 +222,7 @@ export function useAvailableTokenOptions(
 
     const collateralAddresses = new Set(Array.from(collaterals).map((c) => c.address));
 
-    FORCE_ALLOWED_COLLATERAL_TOKENS[chainId].forEach((tokenAddress) => {
+    FORCE_ALLOWED_COLLATERAL_TOKENS[chainId as ContractsChainId].forEach((tokenAddress) => {
       if (!collateralAddresses.has(tokenAddress)) {
         collateralAddresses.add(tokenAddress);
         const tokenData = tokensData?.[tokenAddress];
@@ -225,6 +232,16 @@ export function useAvailableTokenOptions(
         }
       }
     });
+
+    // Add all deployment tokens to swap list so they can be swapped via external aggregator
+    // even if they have no internal GM pool route
+    if (tokensData) {
+      for (const tokenData of Object.values(tokensData)) {
+        if (!collateralAddresses.has(tokenData.address) && !tokenData.isSynthetic && !tokenData.isWrapped) {
+          collaterals.add(tokenData);
+        }
+      }
+    }
 
     return {
       tokensMap,
