@@ -2,6 +2,7 @@ import { AbstractSigner, Provider, Signer, Wallet } from "ethers";
 import {
   Address,
   encodeFunctionData,
+  Hex,
   PublicClient,
   recoverTypedDataAddress,
   size,
@@ -392,7 +393,7 @@ export async function estimateExpressParams({
               .estimateGas({
                 account: GMX_SIMULATION_ORIGIN,
                 to: baseTxn.txnData.to,
-                data: baseTxn.txnData.callData,
+                data: baseTxn.txnData.callData as Hex,
                 value: 0n,
                 stateOverride: [
                   {

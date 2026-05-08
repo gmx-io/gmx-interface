@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ReactNode, useCallback, useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
@@ -65,6 +64,7 @@ import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
 import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
+import { useGmxConnectModal } from "lib/wallets/useGmxConnectModal";
 import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
 import {
@@ -102,7 +102,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
   const tokensData = useTokensData();
   const { account, signer } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
-  const { openConnectModal } = useConnectModal();
+  const { openConnectModal } = useGmxConnectModal();
   const routerAddress = getContract(chainId, "SyntheticsRouter");
   const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();

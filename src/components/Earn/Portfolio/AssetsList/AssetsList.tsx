@@ -1,5 +1,4 @@
 import { Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { useMemo } from "react";
 import { useMedia } from "react-use";
@@ -11,6 +10,7 @@ import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnuali
 import { StakingProcessedData } from "lib/legacy";
 import { getByKey } from "lib/objects";
 import { useBreakpoints } from "lib/useBreakpoints";
+import { useGmxConnectModal } from "lib/wallets/useGmxConnectModal";
 import useWallet from "lib/wallets/useWallet";
 
 import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletButton";
@@ -95,7 +95,7 @@ function AssetsList({
   const shouldUseFlex = (cardsCount < 3 && isEnoughSpaceFor2Columns) || (cardsCount < 4 && isEnoughSpaceFor3Columns);
 
   const { account } = useWallet();
-  const { openConnectModal } = useConnectModal();
+  const { openConnectModal } = useGmxConnectModal();
 
   const sortedAssets = useMemo(() => {
     return getSortedAssets({

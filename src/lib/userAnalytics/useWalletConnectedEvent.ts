@@ -1,9 +1,9 @@
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { useAccountStats } from "domain/synthetics/accountStats/useAccountStats";
 import { useChainId } from "lib/chains";
+import { useGmxConnectModal } from "lib/wallets/useGmxConnectModal";
 import useWallet from "lib/wallets/useWallet";
 
 import { userAnalytics } from ".";
@@ -13,7 +13,7 @@ export function useWalletConnectedUserAnalyticsEvent() {
   const [wasConnected, setWasConnected] = useState(false);
   const [wasSent, setWasSent] = useState(false);
   const { chainId } = useChainId();
-  const { connectModalOpen } = useConnectModal();
+  const { connectModalOpen } = useGmxConnectModal();
   const { account } = useWallet();
   const { connector } = useAccount();
 

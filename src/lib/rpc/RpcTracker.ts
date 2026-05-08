@@ -1,6 +1,6 @@
 import orderBy from "lodash/orderBy";
 import uniqBy from "lodash/uniqBy";
-import { decodeFunctionResult, encodeFunctionData } from "viem";
+import { decodeFunctionResult, encodeFunctionData, type Hex } from "viem";
 
 import { ContractsChainId, isContractsChain } from "config/chains";
 import { isDevelopment } from "config/env";
@@ -197,7 +197,7 @@ export class RpcTracker {
     const sampleFieldValue = decodeFunctionResult({
       abi: abis.DataStore,
       functionName: "getUint",
-      data: multicallResult[0].returnData,
+      data: multicallResult[0].returnData as Hex,
     });
 
     const blockNumber = Number(_blockNumber);

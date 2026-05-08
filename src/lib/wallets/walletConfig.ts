@@ -1,19 +1,15 @@
-import { Chain, getDefaultConfig, WalletList } from "@rainbow-me/rainbowkit";
-import {
-  baseAccount,
-  binanceWallet,
-  coreWallet,
-  geminiWallet,
-  injectedWallet,
-  metaMaskWallet,
-  okxWallet,
-  rabbyWallet,
-  safeWallet,
-  trustWallet,
-  walletConnectWallet,
-} from "@rainbow-me/rainbowkit/wallets";
+import { createConfig } from "@privy-io/wagmi";
 import once from "lodash/once";
-import { createPublicClient, fallback, http, PublicClient, Transport, webSocket, WebSocketTransport } from "viem";
+import {
+  Chain,
+  createPublicClient,
+  fallback,
+  http,
+  PublicClient,
+  Transport,
+  webSocket,
+  WebSocketTransport,
+} from "viem";
 
 import { getViemChain, isTestnetChain } from "config/chains";
 import { isDevelopment } from "config/env";
@@ -24,56 +20,62 @@ import { getWsUrl } from "lib/rpc";
 import { AnyChainId, VIEM_CHAIN_BY_CHAIN_ID } from "sdk/configs/chains";
 import { LRUCache } from "sdk/utils/LruCache";
 
-const WALLET_CONNECT_PROJECT_ID = "de24cddbaf2a68f027eae30d9bb5df58";
-const APP_NAME = "GMX";
+export const PRIVY_APP_ID = import.meta.env.VITE_PRIVY_APP_ID || "PRIVY_APP_ID_PLACEHOLDER";
 
-const popularWalletList: WalletList = [
-  {
-    // Group name with standard name is localized by rainbow kit
-    groupName: "Popular",
-    wallets: [
-      rabbyWallet,
-      metaMaskWallet,
-      walletConnectWallet,
-      // This wallet will automatically hide itself from the list when the fallback is not necessary or if there is no injected wallet available.
-      injectedWallet,
-      // The Safe option will only appear in the Safe Wallet browser environment.
-      safeWallet,
-      geminiWallet,
-    ],
-  },
-];
+/**
+ * Privy wallet list for the connect modal.
+ *
+ * Mapping from previous RainbowKit wallets:
+ *   rabbyWallet       -> detected_ethereum_wallets (detected as browser extension)
+ *   metaMaskWallet     -> "metamask"
+ *   walletConnectWallet-> "wallet_connect"
+ *   injectedWallet     -> detected_ethereum_wallets
+ *   safeWallet         -> "safe"
+ *   geminiWallet       -> detected_ethereum_wallets (detected as browser extension)
+ *   binanceWallet      -> "binance"
+ *   baseAccount        -> "base_account"
+ *   trustWallet        -> wallet_connect fallback (no first-class Privy entry)
+ *   coreWallet         -> wallet_connect fallback (no first-class Privy entry)
+ *   okxWallet          -> "okx_wallet"
+ */
+export const PRIVY_WALLET_LIST = [
+  "metamask",
+  "safe",
+  "binance",
+  "base_account",
+  "okx_wallet",
+  "detected_ethereum_wallets",
+  "wallet_connect",
+] as const;
 
-const othersWalletList: WalletList = [
-  {
-    groupName: "Others",
-    wallets: [binanceWallet, baseAccount, trustWallet, coreWallet, okxWallet],
-  },
-];
+export function getSupportedChains(): [Chain, ...Chain[]] {
+  return Object.values(VIEM_CHAIN_BY_CHAIN_ID).filter((chain) => isDevelopment() || !isTestnetChain(chain.id)) as [
+    Chain,
+    ...Chain[],
+  ];
+}
 
-export const getRainbowKitConfig = once(() => {
-  const chains = Object.values(VIEM_CHAIN_BY_CHAIN_ID).filter(
-    (chain) => isDevelopment() || !isTestnetChain(chain.id)
-  ) as [Chain, ...Chain[]];
+export const getWagmiConfig = once(() => {
+  const chains = getSupportedChains();
 
   const transports = chains.reduce(
     (acc, chain) => {
       const rpcProviders = getRpcProviders(chain.id, "default");
-
       acc[chain.id] = fallback([...rpcProviders.map((provider) => http(provider.url))]);
       return acc;
     },
     {} as Record<number, Transport>
   );
 
-  return getDefaultConfig({
-    appName: APP_NAME,
-    projectId: WALLET_CONNECT_PROJECT_ID,
-    chains: chains,
-    transports: transports,
-    wallets: [...popularWalletList, ...othersWalletList],
+  return createConfig({
+    chains,
+    transports,
   });
 });
+
+// ---------------------------------------------------------------------------
+// RPC transport utilities (unchanged from previous implementation)
+// ---------------------------------------------------------------------------
 
 const TRANSPORTS_CACHE = new LRUCache<Transport>(100);
 const PUBLIC_CLIENTS_CACHE = new LRUCache<PublicClient>(100);

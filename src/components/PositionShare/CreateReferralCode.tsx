@@ -1,5 +1,4 @@
 import { t, Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { type TransactionResponse } from "ethers";
 import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -34,6 +33,7 @@ import { metrics } from "lib/metrics";
 import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { useGmxConnectModal } from "lib/wallets/useGmxConnectModal";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 import { encodeReferralCode } from "sdk/utils/referrals";
@@ -70,7 +70,7 @@ export function CreateReferralCode({ onSuccess }: Props) {
 function CreateReferralCodeSettlement({ onSuccess }: Props) {
   const { signer } = useWallet();
   const { pendingTxns } = usePendingTxns();
-  const { openConnectModal } = useConnectModal();
+  const { openConnectModal } = useGmxConnectModal();
   const { address: account, isConnected } = useAccount();
   const { chainId } = useChainId();
 
@@ -211,7 +211,7 @@ function CreateReferralCodeSettlement({ onSuccess }: Props) {
 function CreateReferralCodeMultichain({ onSuccess }: Props) {
   const { chainId, srcChainId } = useChainId();
   const { account, signer } = useWallet();
-  const { openConnectModal } = useConnectModal();
+  const { openConnectModal } = useGmxConnectModal();
   const { isConnected } = useAccount();
   const [referralCode, setReferralCode] = useState("");
   const [error, setError] = useState<string | undefined>();

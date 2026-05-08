@@ -8,8 +8,10 @@ import {
 } from "ethers";
 import {
   Account,
+  Address,
   Chain,
   Client,
+  Hex,
   PrivateKeyAccount,
   PublicActions,
   StateOverride,
@@ -145,7 +147,7 @@ export class ISigner implements ISignerInterface {
         signer
           .sendTransaction({
             to: await toAddress(params.to),
-            data: (params.data ?? undefined) as string | undefined,
+            data: (params.data ?? undefined) as Hex | undefined,
             value: toBigInt(params.value),
             gas: toBigInt(params.gasLimit),
             gasPrice: toBigInt(params.gasPrice),
@@ -193,7 +195,7 @@ export class ISigner implements ISignerInterface {
       viem: async (signer: ViemSigner) =>
         signer.estimateGas({
           to: await toAddress(params.to),
-          data: (params.data ?? undefined) as string | undefined,
+          data: (params.data ?? undefined) as Hex | undefined,
           value: toBigInt(params.value),
           account: await toAddress(params.from),
           gas: toBigInt(params.gasLimit),
@@ -227,7 +229,7 @@ export class ISigner implements ISignerInterface {
         await signer
           .call({
             to: await toAddress(params.to),
-            data: (params.data ?? undefined) as string | undefined,
+            data: (params.data ?? undefined) as Hex | undefined,
             value: toBigInt(params.value),
             account: await toAddress(params.from),
             gas: toBigInt(params.gasLimit),
@@ -282,7 +284,7 @@ export class ISigner implements ISignerInterface {
       viem: async (signer: ViemSigner) =>
         signer
           .getTransaction({
-            hash,
+            hash: hash as Hex,
           })
           .then((tx): ISignerSendTransactionParams | undefined => ({
             to: tx.to,
@@ -346,21 +348,21 @@ export class ISigner implements ISignerInterface {
   }
 }
 
-export async function toAddress(address: AddressLike | undefined | null): Promise<string | undefined> {
+export async function toAddress(address: AddressLike | undefined | null): Promise<Address | undefined> {
   if (address === undefined) {
     return undefined;
   }
   if (typeof address === "string") {
-    return address;
+    return address as Address;
   }
   const awaitedAddress = await address;
   if (!awaitedAddress) {
     return undefined;
   }
   if (typeof awaitedAddress === "string") {
-    return awaitedAddress;
+    return awaitedAddress as Address;
   }
-  return await awaitedAddress.getAddress();
+  return (await awaitedAddress.getAddress()) as Address;
 }
 
 function toBigInt(value: BigNumberish | undefined | null): bigint | undefined {

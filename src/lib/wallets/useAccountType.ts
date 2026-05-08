@@ -7,7 +7,7 @@ import { AnyChainId, CONTRACTS_CHAIN_IDS, isTestnetChain, SOURCE_CHAIN_IDS } fro
 import { useChainId } from "lib/chains";
 import { getIsNonEoaAccountError, nonEoaAccountError } from "lib/errors/customErrors";
 
-import { getPublicClientWithRpc } from "./rainbowKitConfig";
+import { getPublicClientWithRpc } from "./walletConfig";
 
 enum AccountType {
   Safe,

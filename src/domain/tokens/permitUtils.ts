@@ -4,6 +4,7 @@ import {
   decodeFunctionResult,
   encodeFunctionData,
   EncodeFunctionDataParameters,
+  type Hex,
   recoverTypedDataAddress,
 } from "viem";
 
@@ -154,7 +155,7 @@ export async function getTokenPermitParams(
   const nonce = decodeFunctionResult({
     abi: ERC20PermitInterfaceAbi,
     functionName: "nonces",
-    data: decodedMulticallResults[1],
+    data: decodedMulticallResults[1] as Hex,
   }) as bigint;
 
   const version =

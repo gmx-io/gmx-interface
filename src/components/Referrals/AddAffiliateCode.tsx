@@ -1,5 +1,4 @@
 import { t, Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { type TransactionResponse } from "ethers";
 import { useEffect, useRef, useState } from "react";
@@ -32,6 +31,7 @@ import { helperToast } from "lib/helperToast";
 import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { useGmxConnectModal } from "lib/wallets/useGmxConnectModal";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 import { encodeReferralCode } from "sdk/utils/referrals";
@@ -63,7 +63,7 @@ function AddAffiliateCode({
   recentlyAddedCodes,
   initialReferralCode,
 }: AddAffiliateCodeProps) {
-  const { openConnectModal } = useConnectModal();
+  const { openConnectModal } = useGmxConnectModal();
 
   return (
     <div className="referral-card section-center">

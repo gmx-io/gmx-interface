@@ -1,9 +1,9 @@
 import { Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 
 import { NETWORK_OPTIONS } from "config/networkOptions";
 import { useChainId } from "lib/chains";
 import { sendUserAnalyticsConnectWalletClickEvent } from "lib/userAnalytics";
+import { useGmxConnectModal } from "lib/wallets/useGmxConnectModal";
 import useWallet from "lib/wallets/useWallet";
 
 import { OneClickButton } from "components/OneClickButton/OneClickButton";
@@ -20,7 +20,7 @@ type Props = {
 export function AppHeaderUser({ openSettings, menuToggle }: Props) {
   const { chainId: settlementChainId, srcChainId } = useChainId();
   const { active, account } = useWallet();
-  const { openConnectModal } = useConnectModal();
+  const { openConnectModal } = useGmxConnectModal();
 
   const visualChainId = srcChainId ?? settlementChainId;
 

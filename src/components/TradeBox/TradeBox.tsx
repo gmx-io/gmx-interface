@@ -1,5 +1,4 @@
 import { t, Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { ChangeEvent, useCallback, useEffect, useMemo, useRef } from "react";
 import { useKey, useLatest, usePrevious } from "react-use";
@@ -83,6 +82,7 @@ import { useCursorInside } from "lib/useCursorInside";
 import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
+import { useGmxConnectModal } from "lib/wallets/useGmxConnectModal";
 import useWallet from "lib/wallets/useWallet";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -155,7 +155,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const srcChainId = useSelector(selectSrcChainId);
   const { account, active } = useWallet();
-  const { openConnectModal } = useConnectModal();
+  const { openConnectModal } = useGmxConnectModal();
 
   const walletIconUrls = useWalletIconUrls();
 

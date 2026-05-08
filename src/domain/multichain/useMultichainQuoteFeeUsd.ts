@@ -7,7 +7,7 @@ import { useGasPrice } from "domain/synthetics/fees/useGasPrice";
 import { getMidPrice, useTokenRecentPricesRequest } from "domain/synthetics/tokens";
 import { convertToUsd } from "domain/tokens";
 import { useChainId } from "lib/chains";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { convertToTokenAmount } from "sdk/utils/tokens";
 
 import { NATIVE_TOKEN_PRICE_MAP } from "./nativeTokenPriceMap";

@@ -1,5 +1,4 @@
 import { t, Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ReactNode, useCallback, useMemo } from "react";
 import { zeroAddress } from "viem";
 
@@ -76,6 +75,7 @@ import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { sendUserAnalyticsConnectWalletClickEvent, userAnalytics } from "lib/userAnalytics";
 import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import { useEthersSigner } from "lib/wallets/useEthersSigner";
+import { useGmxConnectModal } from "lib/wallets/useGmxConnectModal";
 import { getContract } from "sdk/configs/contracts";
 import { getToken, getTokenBySymbol } from "sdk/configs/tokens";
 import { ExecutionFee } from "sdk/utils/fees/types";
@@ -148,7 +148,7 @@ export function useTradeboxButtonState({
   const { tokenChainDataArray } = useMultichainTokens();
 
   const { setPendingTxns } = usePendingTxns();
-  const { openConnectModal } = useConnectModal();
+  const { openConnectModal } = useGmxConnectModal();
 
   const {
     onSubmitWrapOrUnwrap,

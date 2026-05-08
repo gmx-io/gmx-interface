@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ethers } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 
@@ -14,6 +13,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { mustNeverExist } from "lib/types";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { useGmxConnectModal } from "lib/wallets/useGmxConnectModal";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 import { bigMath } from "sdk/utils/bigmath";
@@ -52,7 +52,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
   const { chainId } = useChainId();
   const { signer, account, active } = useWallet();
   const { setPendingTxns } = usePendingTxns();
-  const { openConnectModal } = useConnectModal();
+  const { openConnectModal } = useGmxConnectModal();
   const vestingData = useVestingData(account);
 
   const [selectedVault, setSelectedVault] = useState<VestVault>("gmx");

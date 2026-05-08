@@ -1,6 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import { useMemo, useState } from "react";
-import { Abi, decodeErrorResult, getAbiItem } from "viem";
+import { Abi, decodeErrorResult, getAbiItem, type Hex } from "viem";
 
 import { StargateErrorsAbi } from "config/multichain";
 import { abis } from "sdk/abis";
@@ -24,7 +24,7 @@ function decodeError(hexData: string): DecodedError | null {
     const abi = abis.CustomErrors as Abi;
     const decoded = decodeErrorResult({
       abi,
-      data: hexData,
+      data: hexData as Hex,
     });
     return {
       errorName: decoded.errorName,
@@ -37,7 +37,7 @@ function decodeError(hexData: string): DecodedError | null {
       const abi = StargateErrorsAbi;
       const decoded = decodeErrorResult({
         abi,
-        data: hexData,
+        data: hexData as Hex,
       });
       return {
         errorName: decoded.errorName,

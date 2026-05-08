@@ -15,7 +15,7 @@ import { parseEventLogData } from "context/WebsocketContext/subscribeToEvents";
 import { getBlockNumberBeforeTimestamp } from "domain/multichain/progress/getBlockNumberByTimestamp";
 import { useChainId } from "lib/chains";
 import { CHAIN_ID_TO_TX_URL_BUILDER } from "lib/chains/blockExplorers";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 
 import AddressView from "components/AddressView/AddressView";

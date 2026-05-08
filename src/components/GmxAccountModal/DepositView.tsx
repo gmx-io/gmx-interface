@@ -67,9 +67,9 @@ import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useThrottledAsync } from "lib/useThrottledAsync";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { TokenBalanceType, TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "sdk/utils/tokens";
@@ -587,7 +587,7 @@ export const DepositView = () => {
 
           getPublicClientWithRpc(settlementChainId)
             .waitForTransactionReceipt({
-              hash: txnHash,
+              hash: txnHash as Hex,
             })
             .then((receipt) => {
               const bridgeInEvent = receipt.logs.find(

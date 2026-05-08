@@ -4,7 +4,7 @@ import cx from "classnames";
 import { type Provider } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { Address, encodeAbiParameters, encodeEventTopics, toHex, zeroAddress } from "viem";
+import { Address, encodeAbiParameters, encodeEventTopics, toHex, zeroAddress, type Hex } from "viem";
 import { useAccount } from "wagmi";
 
 import { ContractsChainId, getChainName, isTestnetChain, SettlementChainId, SourceChainId } from "config/chains";
@@ -76,7 +76,7 @@ import { ExpressTxnData, sendExpressTransaction } from "lib/transactions/sendExp
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
 import { WalletSigner } from "lib/wallets";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress, getToken, isValidTokenSafe } from "sdk/configs/tokens";
@@ -298,7 +298,7 @@ function useWithdrawViewTransactions({
 
                 getPublicClientWithRpc(chainId)
                   .waitForTransactionReceipt({
-                    hash: txnHash,
+                    hash: txnHash as Hex,
                   })
                   .then((receipt) => {
                     const bridgeOutEvent = receipt.logs.find(

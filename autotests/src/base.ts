@@ -21,7 +21,7 @@ export const test = baseTest.extend<{
 
     if (!process.env.USE_METAMASK) {
       /**
-       * @todo Fix this mock to work with rainbowkit
+       * @todo Fix this mock to work with privy
        */
       await mockWeb3(page, () => {
         Web3Mock.mock({

@@ -1,10 +1,10 @@
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useEffect, useState } from "react";
 
 import { MarketsInfoResult } from "domain/synthetics/markets";
 import { PositionsInfoData } from "domain/synthetics/positions";
 import { TokensDataResult } from "domain/synthetics/tokens";
 import { useMeasureLoadTime } from "lib/metrics";
+import { useGmxConnectModal } from "lib/wallets/useGmxConnectModal";
 import useWallet from "lib/wallets/useWallet";
 
 export function useCollectSyntheticsMetrics({
@@ -25,7 +25,7 @@ export function useCollectSyntheticsMetrics({
   pageType: string;
 }) {
   const { account } = useWallet();
-  const { connectModalOpen } = useConnectModal();
+  const { connectModalOpen } = useGmxConnectModal();
   const [shouldSkipAccountMetrics, setShouldSkipAccountMetrics] = useState(false);
 
   useMeasureLoadTime({

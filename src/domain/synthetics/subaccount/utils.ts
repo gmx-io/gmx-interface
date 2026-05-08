@@ -20,8 +20,8 @@ import type {
   SubaccountValidations,
 } from "domain/synthetics/subaccount/types";
 import { WalletSigner } from "lib/wallets";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { SignatureTypes, signTypedData } from "lib/wallets/signing";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { getContract } from "sdk/configs/contracts";
 import {

@@ -1822,10 +1822,6 @@ msgstr "Stop price"
 msgid "Leaving GMX.io for a third-party website"
 msgstr "Leaving GMX.io for a third-party website"
 
-#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
-#~ msgid "Weekly Rate"
-#~ msgstr "Weekly Rate"
-
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Price data too old. Oracle price is stale"
 msgstr "Price data too old. Oracle price is stale"
@@ -2138,10 +2134,6 @@ msgstr "GMX (Chinese)"
 msgid "Search"
 msgstr "Search"
 
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
-#~ msgid "Annualized rate of GMX buybacks based on weekly buyback volume relative to total staked GMX. 27% of protocol fees accumulate in the Treasury for buybacks."
-#~ msgstr "Annualized rate of GMX buybacks based on weekly buyback volume relative to total staked GMX. 27% of protocol fees accumulate in the Treasury for buybacks."
-
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position in WETH-USDC pool but lacks liquidity for this order"
 msgstr "Existing position in WETH-USDC pool but lacks liquidity for this order"
@@ -2414,10 +2406,6 @@ msgstr "How can we address your concerns?"
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No liquidity available for increasing longs at<0/>this size. Max long size: {0}<1/><2/>Execution prices for decreasing shorts."
 msgstr "No liquidity available for increasing longs at<0/>this size. Max long size: {0}<1/><2/>Execution prices for decreasing shorts."
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
-#~ msgid "Accumulated Rewards"
-#~ msgstr "Accumulated Rewards"
 
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Transfer completed"
@@ -3660,10 +3648,6 @@ msgstr "Trade"
 msgid "No deposits required"
 msgstr "No deposits required"
 
-#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
-#~ msgid "Weekly Bought GMX"
-#~ msgstr "Weekly Bought GMX"
-
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "Trading airdrop"
 msgstr "Trading airdrop"
@@ -4167,10 +4151,6 @@ msgstr "No liquidation price. Collateral covers any losses."
 #: src/pages/UiPage/UiPage.tsx
 msgid "Name:"
 msgstr "Name:"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-#~ msgid "{0}<0>You will earn {1}% less rewards.</0>"
-#~ msgstr "{0}<0>You will earn {1}% less rewards.</0>"
 
 #: src/components/TradeHistory/keys.ts
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
@@ -5784,10 +5764,6 @@ msgstr "Allowed actions"
 msgid "Pools that provide liquidity to specific GMX markets. Supports single-asset and native asset options."
 msgstr "Pools that provide liquidity to specific GMX markets. Supports single-asset and native asset options."
 
-#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
-#~ msgid "This week's buyback as a percentage of total staked GMX."
-#~ msgstr "This week's buyback as a percentage of total staked GMX."
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max funding factor"
 msgstr "Max funding factor"
@@ -5891,10 +5867,6 @@ msgstr "REBATE"
 #: src/domain/synthetics/express/useSwitchGasPaymentTokenIfRequired.ts
 msgid "Insufficient {fromSymbol} balance. Gas token switched to {toSymbol}"
 msgstr "Insufficient {fromSymbol} balance. Gas token switched to {toSymbol}"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
-#~ msgid "Buyback Rate"
-#~ msgstr "Buyback Rate"
 
 #: src/pages/Earn/EarnPageLayout.tsx
 msgid "Buyback Tracker"
@@ -6314,10 +6286,6 @@ msgstr "$ 0.00"
 #: src/components/GmList/GlvList.tsx
 msgid "Yield-optimized vaults supplying liquidity across multiple GMX markets"
 msgstr "Yield-optimized vaults supplying liquidity across multiple GMX markets"
-
-#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-#~ msgid "Safe unstake limit: {0} {tokenSymbol} / esGMX"
-#~ msgstr "Safe unstake limit: {0} {tokenSymbol} / esGMX"
 
 #: src/pages/Dashboard/DashboardV2.tsx
 msgid "Analytics"
@@ -7079,10 +7047,6 @@ msgstr "Clear debug overrides"
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop-Loss"
 msgstr "Cancel Stop-Loss"
-
-#: src/components/Earn/Portfolio/RewardsBar.tsx
-#~ msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
-#~ msgstr "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Stake {tokenSymbol} rewards"
@@ -8170,10 +8134,6 @@ msgstr "{typeString} Long Stop Market: {0} a long position when the price is bel
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing longs or decreasing shorts at<1/>this size."
 msgstr "No price impact. Single execution price for<0/>increasing longs or decreasing shorts at<1/>this size."
-
-#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
-#~ msgid "Weekly rate extrapolated to a full year (weekly rate × 52)."
-#~ msgstr "Weekly rate extrapolated to a full year (weekly rate × 52)."
 
 #: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
 msgid "Total amount of GMX bought back since tracking began."
@@ -9864,10 +9824,6 @@ msgstr "Insufficient liquidity in WETH-USDC pool. Select a different pool."
 msgid "Cancel order"
 msgstr "Cancel order"
 
-#: src/components/Earn/Portfolio/RewardsBar.tsx
-#~ msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked). All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
-#~ msgstr "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked). All projected rewards and estimated distributions are best-effort estimations only. Actual distribution is subject to DAO governance."
-
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Current impact: {0}. Use -0.30% or more for better order execution."
 msgstr "Current impact: {0}. Use -0.30% or more for better order execution."
@@ -10386,10 +10342,6 @@ msgstr "Max deposit limit reached: {maxPoolUsdText}"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield optimizations"
 msgstr "Yield optimizations"
-
-#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
-#~ msgid "Amount of GMX bought back this week from protocol fees."
-#~ msgstr "Amount of GMX bought back this week from protocol fees."
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/domain/synthetics/orders/utils.tsx

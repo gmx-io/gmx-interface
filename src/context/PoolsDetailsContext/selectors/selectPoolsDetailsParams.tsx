@@ -1,5 +1,5 @@
 import chunk from "lodash/chunk";
-import { bytesToHex, hexToBytes, numberToHex, zeroAddress } from "viem";
+import { bytesToHex, hexToBytes, numberToHex, zeroAddress, type Hex } from "viem";
 
 import { CROSS_CHAIN_SLIPPAGE_AMOUNT, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
 import {
@@ -148,7 +148,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
           secondaryMinAmountOut: 0n,
         },
       });
-      const bytes = hexToBytes(actionHash);
+      const bytes = hexToBytes(actionHash as Hex);
       const bytes32array = chunk(bytes, 32).map((b) => bytesToHex(Uint8Array.from(b)));
 
       dataList = [GMX_DATA_ACTION_HASH, ...bytes32array];
@@ -208,7 +208,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
           secondaryMinAmountOut: 0n,
         },
       });
-      const bytes = hexToBytes(actionHash);
+      const bytes = hexToBytes(actionHash as Hex);
 
       const bytes32array = chunk(bytes, 32).map((b) => bytesToHex(Uint8Array.from(b)));
 
@@ -315,7 +315,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
           secondaryMinAmountOut: 0n,
         },
       });
-      const bytes = hexToBytes(actionHash);
+      const bytes = hexToBytes(actionHash as Hex);
       const bytes32array = chunk(bytes, 32).map((b) => bytesToHex(Uint8Array.from(b)));
 
       dataList = [GMX_DATA_ACTION_HASH, ...bytes32array];
@@ -425,7 +425,7 @@ export const selectPoolsDetailsParams = createSelector((q): PoolsDetailsParams =
           secondaryMinAmountOut: 0n,
         },
       });
-      const bytes = hexToBytes(actionHash);
+      const bytes = hexToBytes(actionHash as Hex);
 
       const bytes32array = chunk(bytes, 32).map((b) => bytesToHex(Uint8Array.from(b)));
 

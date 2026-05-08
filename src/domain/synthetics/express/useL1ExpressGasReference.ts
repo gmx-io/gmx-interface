@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { decodeFunctionResult, encodeFunctionData, size } from "viem";
+import { decodeFunctionResult, encodeFunctionData, size, type Hex } from "viem";
 
 import { ARBITRUM, ARBITRUM_SEPOLIA } from "config/chains";
 import { useChainId } from "lib/chains";
@@ -38,7 +38,7 @@ export function useL1ExpressOrderGasReference() {
         const referenceDecoded = decodeFunctionResult({
           abi: abis.ArbitrumNodeInterface,
           functionName: "gasEstimateL1Component",
-          data: referenceResult,
+          data: referenceResult as Hex,
         });
 
         return {

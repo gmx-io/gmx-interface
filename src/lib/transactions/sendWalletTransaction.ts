@@ -1,3 +1,5 @@
+import type { Address, Hex } from "viem";
+
 import { extendError } from "lib/errors";
 import { additionalTxnErrorValidation } from "lib/errors/additionalValidation";
 import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
@@ -5,7 +7,7 @@ import { GasPriceData, getGasPrice } from "lib/gas/gasPrice";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateCallDataWithTenderly } from "lib/tenderly";
 import { WalletSigner } from "lib/wallets";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 
 import { ISigner, ISignerSendTransactionParams, ISignerSendTransactionResult } from "./iSigner";
 import { TransactionWaiterResult, TxnCallback, TxnEventBuilder } from "./types";
@@ -75,9 +77,9 @@ export async function sendWalletTransaction({
       ? Promise.resolve(gasLimit)
       : getPublicClientWithRpc(chainId)
           .estimateGas({
-            account: from,
-            to,
-            data: callData,
+            account: from as Address,
+            to: to as Address,
+            data: callData as Hex,
             value,
           })
           .then(applyGasLimitBuffer)

@@ -1,5 +1,4 @@
 import { t, Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { useCallback, useEffect, useId, useMemo, useRef, useState } from "react";
 import { useKey, useLatest } from "react-use";
@@ -68,6 +67,7 @@ import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
 import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
+import { useGmxConnectModal } from "lib/wallets/useGmxConnectModal";
 import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
@@ -125,7 +125,7 @@ export function PositionSeller() {
   const { chainId, srcChainId } = useChainId();
   const { signer, account } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
-  const { openConnectModal } = useConnectModal();
+  const { openConnectModal } = useGmxConnectModal();
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
   const hasOutdatedUi = useHasOutdatedUi();

@@ -1,6 +1,5 @@
 import { t, Trans } from "@lingui/macro";
 import { useLingui } from "@lingui/react";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
@@ -20,6 +19,7 @@ import { GM_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { shortenAddressOrEns } from "lib/wallets";
+import { useGmxConnectModal } from "lib/wallets/useGmxConnectModal";
 import useWallet from "lib/wallets/useWallet";
 import { Distribution } from "sdk/codegen/subsquid";
 import { getTokens } from "sdk/configs/tokens";
@@ -95,7 +95,7 @@ function getNormalizedIncentive(
 
 export default function UserIncentiveDistribution() {
   const { account, active } = useWallet();
-  const { openConnectModal } = useConnectModal();
+  const { openConnectModal } = useGmxConnectModal();
   const { chainId, srcChainId } = useChainId();
   const tokens = getTokens(chainId);
   const gmMarkets = useSelector(selectGmMarkets);

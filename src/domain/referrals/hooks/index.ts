@@ -13,7 +13,7 @@ import { getReferralsGraphClient } from "lib/indexers";
 import { isAddressZero, isHashZero } from "lib/legacy";
 import { basisPointsToFloat } from "lib/numbers";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { ContractsChainId } from "sdk/configs/chains";
 import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";

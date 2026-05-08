@@ -6,6 +6,8 @@ import {
   ContractFunctionParameters,
   encodeFunctionData,
   numberToHex,
+  type Address,
+  type Hex,
   type StateOverride,
 } from "viem";
 
@@ -17,7 +19,7 @@ import { applyGasLimitBuffer } from "./gas/estimateGasLimit";
 import { GasPriceData, getGasPrice } from "./gas/gasPrice";
 import { helperToast } from "./helperToast";
 import { getProvider } from "./rpc";
-import { getPublicClientWithRpc } from "./wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "./wallets/walletConfig";
 
 export type TenderlyConfig = {
   accountSlug: string;
@@ -70,9 +72,9 @@ export async function simulateCallDataWithTenderly({
   if (gasLimit === undefined) {
     gasLimit = await publicClient
       .estimateGas({
-        account: from,
-        to: to,
-        data: data,
+        account: from as Address,
+        to: to as Address,
+        data: data as Hex,
         value: value,
       })
       .then(applyGasLimitBuffer);

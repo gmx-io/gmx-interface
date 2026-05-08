@@ -5,7 +5,7 @@ import { OVERRIDE_ERC20_BYTECODE, RANDOM_SLOT, RANDOM_WALLET } from "config/mult
 import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
 import { SendParam } from "domain/multichain/types";
 import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { bigMath } from "sdk/utils/bigmath";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "sdk/utils/numbers";

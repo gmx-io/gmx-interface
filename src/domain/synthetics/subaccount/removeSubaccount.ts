@@ -10,8 +10,8 @@ import {
 import { callContract } from "lib/contracts";
 import { ExpressTxnData, sendExpressTransaction } from "lib/transactions";
 import type { WalletSigner } from "lib/wallets";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { signTypedData } from "lib/wallets/signing";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import SubaccountRouterAbi from "sdk/abis/SubaccountRouter";
 import { getContract } from "sdk/configs/contracts";

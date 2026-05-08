@@ -5,6 +5,7 @@ import {
   withRetry,
   type Abi,
   type ContractEventName,
+  type Hex,
   type Log,
 } from "viem";
 
@@ -17,7 +18,7 @@ import {
 } from "context/WebsocketContext/subscribeToEvents";
 import { createAnySignal, createTimeoutSignal } from "lib/abortSignalHelpers";
 import { sleep } from "lib/sleep";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { ContractsChainId } from "sdk/configs/chains";
 
@@ -75,7 +76,7 @@ export async function watchLzTxRpc({
   abortSignal?: AbortSignal;
 }): Promise<void> {
   debugLog("[watchLzTxRpc] fetching source chain logs", chainId, txHash);
-  const sourceTx = await getPublicClientWithRpc(chainId).waitForTransactionReceipt({ hash: txHash });
+  const sourceTx = await getPublicClientWithRpc(chainId).waitForTransactionReceipt({ hash: txHash as Hex });
   debugLog("[watchLzTxRpc] status", sourceTx.status);
 
   if (sourceTx.status === "reverted") {
@@ -423,7 +424,7 @@ export async function watchLzTxApi(
 
     await Promise.race([
       getPublicClientWithRpc(chainId).waitForTransactionReceipt({
-        hash: txHash,
+        hash: txHash as Hex,
       }),
       sleep(60000).then(() => Promise.reject(new Error("Transaction not found during await tx receipt"))),
       abortPromise,

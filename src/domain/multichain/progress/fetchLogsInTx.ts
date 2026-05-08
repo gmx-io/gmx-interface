@@ -1,8 +1,10 @@
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import type { Hex } from "viem";
+
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 
 export async function fetchLogsInTx(chainId: number, txHash: string) {
   const receipt = await getPublicClientWithRpc(chainId).waitForTransactionReceipt({
-    hash: txHash,
+    hash: txHash as Hex,
   });
 
   return receipt.logs;
