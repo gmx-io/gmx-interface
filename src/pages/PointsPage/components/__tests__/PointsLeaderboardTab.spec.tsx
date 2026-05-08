@@ -247,6 +247,33 @@ describe("PointsLeaderboardTab", () => {
 
       expect(getPinnedRow(container)).toBeNull();
     });
+
+    it("does not render the pinned row when the user is in page data but their rank > PER_PAGE", () => {
+      // Regression: when the active sort places the user on page 1 but their
+      // server-returned rank (from a different default ordering) is past
+      // PER_PAGE, the previous rank-based check would still pin them, causing
+      // a duplicate row.
+      const userInline: LeaderboardEntry = {
+        rank: 47,
+        address: ACCOUNT,
+        volume: 14n * 10n ** 30n,
+        pointsEarned: 0n,
+        rewardsEarned: 0n,
+        multiplier: 225,
+      };
+      const baseList = buildPageEntries(0, PER_PAGE - 1);
+      baseList.splice(0, 0, userInline);
+      leaderboardMock.data = baseList;
+      leaderboardMock.totalCount = 100;
+      leaderboardMock.pinnedEntry = userInline;
+
+      const { container } = renderTab();
+
+      expect(getPinnedRow(container)).toBeNull();
+      const userAddressEls = container.querySelectorAll(`[data-testid="address-view"]`);
+      const userRows = Array.from(userAddressEls).filter((el) => el.textContent === ACCOUNT);
+      expect(userRows).toHaveLength(1);
+    });
   });
 
   describe("sortable columns", () => {

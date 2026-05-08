@@ -198,9 +198,16 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
 
   const userEntry: LeaderboardEntry | null = account && pinnedEntry ? pinnedEntry : null;
   const userRank = userEntry?.rank ?? null;
-  // Show the pinned row only on page 1, and only when the user isn't already
-  // visible in the page rows (i.e. their rank is past the first page).
-  const showPinnedRow = page === 1 && userEntry !== null && userRank !== null && userRank > PER_PAGE;
+  // Show the pinned row only on page 1, and only when the user's row isn't
+  // already in the visible page data. Checking the actual page data (rather
+  // than rank math) is robust to sort/order mismatches between the two
+  // queries.
+  const isUserOnVisiblePage = useMemo(() => {
+    if (!account) return false;
+    const lower = account.toLowerCase();
+    return pageData.some((e) => e.address.toLowerCase() === lower);
+  }, [account, pageData]);
+  const showPinnedRow = page === 1 && userEntry !== null && userRank !== null && !isUserOnVisiblePage;
 
   const tdClassName = "!py-10";
 
