@@ -145,9 +145,7 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
     enabled: leaderboardEnabled,
   });
   // Pin the connected user's row across pages by issuing a second query that
-  // filters on `where.account`. The backend returns at most one matching entry
-  // but does NOT include a global rank; we recover rank below from the visible
-  // page when possible, otherwise the row renders without a rank number.
+  // filters on `where.account`. The entry includes a server-computed rank.
   const { data: pinnedEntries } = useIncentivesLeaderboard(chainId, {
     epoch,
     where: { account },
@@ -181,7 +179,6 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
   }, [orderBy]);
 
   const pageCount = totalCount === undefined ? page : Math.max(1, Math.ceil(totalCount / PER_PAGE));
-  const indexFrom = (page - 1) * PER_PAGE;
   const pageData = useMemo(() => leaderboard ?? [], [leaderboard]);
   const isInitialLoading = loading && !leaderboard;
   const formatRewards = useCallback(
@@ -196,35 +193,8 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
     [gmxPrice]
   );
 
-  const { userRank, userEntry } = useMemo<{
-    userRank: number | null;
-    userEntry: LeaderboardEntry | null;
-  }>(() => {
-    if (!account) return { userRank: null, userEntry: null };
-
-    const lowerAccount = account.toLowerCase();
-
-    // The current visible page may already contain the user's row — derive
-    // their global rank from the page index when so. This is the only way to
-    // surface a rank number, since the where-filtered query returns the entry
-    // but no rank.
-    const pageIdx = pageData.findIndex((e) => e.address.toLowerCase() === lowerAccount);
-    const pageRank = pageIdx >= 0 ? indexFrom + pageIdx + 1 : null;
-
-    // Prefer the dedicated where-filtered entry so the pinned row stays
-    // visible across pages. If it's missing (indexer hasn't seen the user
-    // yet, or the call was disabled), fall back to whatever the visible page
-    // has.
-    if (pinnedEntry) {
-      return { userRank: pageRank, userEntry: pinnedEntry };
-    }
-
-    if (pageRank !== null) {
-      return { userRank: pageRank, userEntry: pageData[pageIdx] };
-    }
-
-    return { userRank: null, userEntry: null };
-  }, [account, pinnedEntry, pageData, indexFrom]);
+  const userEntry: LeaderboardEntry | null = account && pinnedEntry ? pinnedEntry : null;
+  const userRank = userEntry?.rank ?? null;
 
   const tdClassName = "!py-10";
 
@@ -277,9 +247,7 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                     <Sorter {...getSorterProps("rewardsEarned")}>{t`Earned Rewards`}</Sorter>
                   </TableTh>
                   <TableTh>
-                    {showMultiplier ? (
-                      <Sorter {...getSorterProps("multiplier")}>{t`Multiplier`}</Sorter>
-                    ) : null}
+                    {showMultiplier ? <Sorter {...getSorterProps("multiplier")}>{t`Multiplier`}</Sorter> : null}
                   </TableTh>
                   <TableTh />
                 </TableTheadTr>
@@ -289,14 +257,10 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                   <TableListSkeleton count={PER_PAGE} Structure={PointsLeaderboardSkeletonRow} />
                 ) : (
                   <>
-                    {userEntry && (
+                    {userEntry && userRank !== null && (
                       <TableTr className="border-b-1/2 border-blue-500/30 !bg-blue-500/10">
                         <TableTd className={cx(tdClassName, "relative")}>
-                          {userRank !== null ? (
-                            <span className={cx("numbers", getRankClassName(userRank))}>{userRank}</span>
-                          ) : (
-                            <span className="numbers text-typography-secondary">—</span>
-                          )}
+                          <span className={cx("numbers", getRankClassName(userRank))}>{userRank}</span>
                         </TableTd>
                         <TableTd>
                           <AddressView size={20} address={userEntry.address} breakpoint="XL" />
@@ -314,22 +278,20 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                           {showMultiplier && userEntry.multiplier ? formatMultiplier(userEntry.multiplier) : ""}
                         </TableTd>
                         <TableTd className={tdClassName}>
-                          {userRank !== null && (
-                            <button
-                              type="button"
-                              onClick={() => setIsShareOpen(true)}
-                              className="inline-flex items-center gap-4 whitespace-nowrap text-13 font-medium text-blue-100"
-                            >
-                              <ShareIcon />
-                              <Trans>Share</Trans>
-                            </button>
-                          )}
+                          <button
+                            type="button"
+                            onClick={() => setIsShareOpen(true)}
+                            className="inline-flex items-center gap-4 whitespace-nowrap text-13 font-medium text-blue-100"
+                          >
+                            <ShareIcon />
+                            <Trans>Share</Trans>
+                          </button>
                         </TableTd>
                       </TableTr>
                     )}
-                    {pageData.map((entry, i) => {
+                    {pageData.map((entry) => {
                       if (userEntry && entry.address.toLowerCase() === userEntry.address.toLowerCase()) return null;
-                      const rank = indexFrom + i + 1;
+                      const rank = entry.rank;
                       return (
                         <TableTr key={entry.address} hoverable>
                           <TableTd className={cx(tdClassName, "relative")}>

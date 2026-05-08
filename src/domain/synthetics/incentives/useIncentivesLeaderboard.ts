@@ -27,6 +27,7 @@ const LEADERBOARD_QUERY = gql`
     incentivesLeaderboard(epoch: $epoch, where: $where, orderBy: $orderBy, limit: $limit, offset: $offset) {
       totalCount
       items {
+        rank
         address
         volume
         pointsEarned
@@ -38,6 +39,7 @@ const LEADERBOARD_QUERY = gql`
 `;
 
 type RawLeaderboardEntry = {
+  rank: number;
   address: string;
   volume: string;
   pointsEarned: string;
@@ -53,6 +55,7 @@ type IncentivesLeaderboardResult = {
 
 function parseLeaderboardEntry(e: RawLeaderboardEntry): LeaderboardEntry {
   return {
+    rank: e.rank,
     address: e.address,
     volume: BigInt(e.volume),
     pointsEarned: BigInt(e.pointsEarned),
@@ -80,7 +83,15 @@ export function useIncentivesLeaderboard(
 
   const { data, error, isLoading } = useSWR<IncentivesLeaderboardResult | undefined>(
     enabled
-      ? ["useIncentivesLeaderboard", chainId, epoch ?? "all", lowercasedAccount ?? "all", orderBy ?? "default", limit, offset]
+      ? [
+          "useIncentivesLeaderboard",
+          chainId,
+          epoch ?? "all",
+          lowercasedAccount ?? "all",
+          orderBy ?? "default",
+          limit,
+          offset,
+        ]
       : null,
     {
       fetcher: async () => {

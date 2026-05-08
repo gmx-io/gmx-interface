@@ -102,10 +102,11 @@ const ONE_POINT = 10n ** POINTS_DECIMALS;
 const ACCOUNT = "0x1111111111111111111111111111111111111111";
 const PER_PAGE = 16;
 
-function makeEntry(addressIdx: number, points: bigint): LeaderboardEntry {
+function makeEntry(addressIdx: number, points: bigint, rank: number): LeaderboardEntry {
   // Pad address with the index as the first hex chars so each entry has a unique address
   const padded = addressIdx.toString(16).padStart(40, "0");
   return {
+    rank,
     address: `0x${padded}`,
     volume: 1_000_000n * 10n ** 30n,
     pointsEarned: points,
@@ -114,11 +115,11 @@ function makeEntry(addressIdx: number, points: bigint): LeaderboardEntry {
   };
 }
 
-function buildPageEntries(startIdx: number, count: number): LeaderboardEntry[] {
+function buildPageEntries(startIdx: number, count: number, startRank = 1): LeaderboardEntry[] {
   const list: LeaderboardEntry[] = [];
   for (let i = 0; i < count; i++) {
     // Use a non-account address (indices 1000+) to avoid collisions with the connected account
-    list.push(makeEntry(1000 + startIdx + i, 10n ** 18n * BigInt(count - i)));
+    list.push(makeEntry(1000 + startIdx + i, 10n ** 18n * BigInt(count - i), startRank + i));
   }
   return list;
 }
@@ -158,8 +159,9 @@ describe("PointsLeaderboardTab", () => {
       leaderboardMock.data = buildPageEntries(0, PER_PAGE);
       leaderboardMock.totalCount = 2 * PER_PAGE;
       // The connected user is below the visible pages; backend returns the
-      // entry but no rank.
+      // entry with a server-computed rank.
       leaderboardMock.pinnedEntry = {
+        rank: 99,
         address: ACCOUNT,
         volume: 5_000n * 10n ** 30n,
         pointsEarned: 42n * ONE_POINT,
@@ -191,47 +193,18 @@ describe("PointsLeaderboardTab", () => {
       expect(within(pinnedAfter!).getByText(ACCOUNT)).toBeTruthy();
     });
 
-    it("renders an em dash placeholder for rank when the user is not in the visible page", () => {
+    it("renders the server-provided rank on the pinned row", () => {
       const { container } = renderTab();
 
       const pinned = getPinnedRow(container);
       expect(pinned).not.toBeNull();
-      // No rank can be derived because the user isn't in the visible page
-      expect(within(pinned!).getByText("—")).toBeTruthy();
-    });
-
-    it("derives rank from the visible page when the user appears there", () => {
-      // Place the connected user inside the visible page at rank 3
-      const userInline: LeaderboardEntry = {
-        address: ACCOUNT,
-        volume: 5_000n * 10n ** 30n,
-        pointsEarned: 100n * ONE_POINT,
-        rewardsEarned: 0n,
-        multiplier: 100,
-      };
-      const baseList = buildPageEntries(0, PER_PAGE - 1);
-      baseList.splice(2, 0, userInline);
-      leaderboardMock.data = baseList;
-      leaderboardMock.totalCount = PER_PAGE;
-      leaderboardMock.pinnedEntry = {
-        address: ACCOUNT,
-        volume: 5_000n * 10n ** 30n,
-        pointsEarned: 100n * ONE_POINT,
-        rewardsEarned: 0n,
-        multiplier: 100,
-      };
-
-      const { container } = renderTab();
-
-      const pinned = getPinnedRow(container);
-      expect(pinned).not.toBeNull();
-      // Rank is computed from the user's index on the current page (3rd entry => rank 3)
-      expect(within(pinned!).getByText("3")).toBeTruthy();
+      expect(within(pinned!).getByText("99")).toBeTruthy();
     });
 
     it("does not duplicate the user's row when they appear in the visible page data", () => {
       // Place the connected user inside the visible page at rank 3
       const userInline: LeaderboardEntry = {
+        rank: 3,
         address: ACCOUNT,
         volume: 5_000n * 10n ** 30n,
         pointsEarned: 100n * ONE_POINT,
@@ -240,9 +213,12 @@ describe("PointsLeaderboardTab", () => {
       };
       const baseList = buildPageEntries(0, PER_PAGE - 1);
       baseList.splice(2, 0, userInline);
+      // Re-rank so the page list stays sequential after the splice
+      baseList.forEach((e, i) => (e.rank = i + 1));
       leaderboardMock.data = baseList;
       leaderboardMock.totalCount = PER_PAGE;
       leaderboardMock.pinnedEntry = {
+        rank: 3,
         address: ACCOUNT,
         volume: 5_000n * 10n ** 30n,
         pointsEarned: 100n * ONE_POINT,
@@ -258,34 +234,8 @@ describe("PointsLeaderboardTab", () => {
       expect(userRows).toHaveLength(1);
     });
 
-    it("falls back to per-page detection when the where-filtered query returns no data", () => {
-      // Simulate the indexer not yet seeing the user (no pinned entry)
+    it("does not render the pinned row when the user has no leaderboard entry", () => {
       leaderboardMock.pinnedEntry = undefined;
-
-      // Place the user inline in the page data so the existing fallback can find them
-      const userInline: LeaderboardEntry = {
-        address: ACCOUNT,
-        volume: 5_000n * 10n ** 30n,
-        pointsEarned: 100n * ONE_POINT,
-        rewardsEarned: 0n,
-        multiplier: 100,
-      };
-      const baseList = buildPageEntries(0, PER_PAGE - 1);
-      baseList.splice(2, 0, userInline);
-      leaderboardMock.data = baseList;
-      leaderboardMock.totalCount = PER_PAGE;
-
-      const { container } = renderTab();
-
-      const pinned = getPinnedRow(container);
-      expect(pinned).not.toBeNull();
-      // Rank is computed from the user's index on the current page (3rd entry => rank 3)
-      expect(within(pinned!).getByText("3")).toBeTruthy();
-    });
-
-    it("does not render the pinned row when the user is unranked and absent from the visible page", () => {
-      leaderboardMock.pinnedEntry = undefined;
-      // No user in the page data either
       leaderboardMock.data = buildPageEntries(0, PER_PAGE);
       leaderboardMock.totalCount = PER_PAGE;
 

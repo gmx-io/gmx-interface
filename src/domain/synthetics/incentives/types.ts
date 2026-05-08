@@ -80,6 +80,7 @@ export type RewardsHistoryEntry = {
 };
 
 export type LeaderboardEntry = {
+  rank: number;
   address: string;
   volume: bigint;
   pointsEarned: bigint;
