@@ -482,6 +482,10 @@ msgstr "決済済みファンディング手数料"
 msgid "Rebates are paid in the collateral tokens used by your referrals. For example, if a referral trades with USDC collateral, your rebate portion will be in USDC."
 msgstr ""
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "{0, plural, one {# active boost} other {# active boosts}}"
+msgstr ""
+
 #: src/components/Errors/ErrorToastWithSupport.tsx
 msgid "Contact Support"
 msgstr ""
@@ -809,6 +813,10 @@ msgstr "プラスのファンディング手数料"
 #: src/components/SettingsModal/ThemeSelector.tsx
 msgid "Light"
 msgstr "ライト"
+
+#: src/pages/PointsPage/components/PointsDashboard.tsx
+msgid "Points dashboard data is temporarily unavailable. Please try again later."
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Longs / shorts"
@@ -1758,6 +1766,7 @@ msgid "Available liquidity {directionLabel}"
 msgstr "利用可能な流動性 {directionLabel}"
 
 #: src/components/MarketStats/components/CompositionTable.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Show less"
@@ -4059,6 +4068,10 @@ msgstr "有効期限:"
 msgid "Execution fee validation failed.<0/><1/>{suggestText}<2/><3/><4>View status</4>"
 msgstr "実行手数料の検証に失敗しました。<0/><1/>{suggestText}<2/><3/><4>ステータスを確認</4>"
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Rewards history is temporarily unavailable. Please try again later."
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -6116,6 +6129,10 @@ msgstr "タイタン"
 msgid "GLV bonus incentive"
 msgstr "GLVボーナスインセンティブ"
 
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+msgid "Your leaderboard rank is temporarily unavailable."
+msgstr ""
+
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Lifetime staking rewards"
 msgstr "累計ステーキング報酬"
@@ -7285,10 +7302,6 @@ msgstr "One-Click Tradingでより速く取引しませんか？"
 msgid "TP/SL"
 msgstr "TP/SL"
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "active boosts"
-msgstr "アクティブなブースト"
-
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Order error. Prices are volatile for this market, try again by <0>increasing the allowed slippage</0>"
 msgstr "注文エラー。この市場の価格は不安定です。<0>許容スリッページを引き上げて</0>再度お試しください"
@@ -8026,6 +8039,7 @@ msgid "Order uses {collateralSymbol}, but existing {longText} position uses {sym
 msgstr "注文は{collateralSymbol}を使用していますが、既存の{longText}ポジションは{symbol}を担保としています"
 
 #: src/components/MarketStats/components/CompositionTable.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Show more"
@@ -8866,6 +8880,10 @@ msgstr "見る"
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Stop Market"
 msgstr "ストップマーケットを執行"
+
+#: src/pages/PointsPage/components/PointsDashboard.tsx
+msgid "Your points dashboard data is temporarily unavailable. Please try again later."
+msgstr ""
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Volume traded by this account with an active referral code."
@@ -11223,6 +11241,10 @@ msgstr "私と一緒に取引を始めよう。"
 msgid "Unknown order"
 msgstr "不明な注文"
 
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+msgid "Leaderboard data could not be refreshed. Showing the latest loaded data."
+msgstr ""
+
 #: src/components/OrdersModal/OrdersModal.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionShare/PositionShareCard.tsx
@@ -11497,6 +11519,10 @@ msgstr "トランザクションがキャンセルされました"
 msgid "Request Market Decrease"
 msgstr "マーケット減少リクエスト"
 
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+msgid "Leaderboard data is temporarily unavailable. Please try again later."
+msgstr ""
+
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/PointsPage/components/TierCardsSection.tsx
 #: src/pages/PointsPage/components/TierCardsSection.tsx
@@ -11608,6 +11634,10 @@ msgstr "ブリッジ送金中..."
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormMultichain.tsx
 msgid "Network fee"
 msgstr "ネットワーク手数料"
+
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Rewards history could not be refreshed. Showing the latest loaded data."
+msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivated"

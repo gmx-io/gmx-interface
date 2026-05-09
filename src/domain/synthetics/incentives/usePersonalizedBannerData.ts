@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { ARBITRUM } from "config/chains";
 import { useGmxPrice } from "domain/legacy";
@@ -31,6 +31,25 @@ export type PersonalizedBannerData = {
   isLoading: boolean;
 };
 
+type ResolvedSessionData = {
+  sessionKey: string;
+  data: PersonalizedBannerData;
+};
+
+function getLoadingBannerData(
+  overrides: Partial<Pick<PersonalizedBannerData, "isManuallyRewarded" | "hasVolumeAfterFirstProgramEpoch">> = {}
+): PersonalizedBannerData {
+  return {
+    bannerVariant: undefined,
+    isManuallyRewarded: overrides.isManuallyRewarded ?? false,
+    hasVolumeAfterFirstProgramEpoch: overrides.hasVolumeAfterFirstProgramEpoch ?? false,
+    manualAllocatedPoints: undefined,
+    manualBonusUsd: undefined,
+    estimatedRewardsUsd: undefined,
+    isLoading: true,
+  };
+}
+
 function getHasVolumeAfterFirstProgramEpoch(
   dashboard: AccountIncentiveDashboard | undefined,
   config: IncentivesConfig | undefined
@@ -46,11 +65,14 @@ function getHasVolumeAfterFirstProgramEpoch(
 
 export function usePersonalizedBannerData(): PersonalizedBannerData {
   const { chainId } = useChainId();
-  const { active, signer, account } = useWallet();
+  const { active, signer, account, status } = useWallet();
 
-  const enabled = isIncentivesEnabled(chainId) && Boolean(account);
+  const incentivesEnabled = isIncentivesEnabled(chainId);
+  const enabled = incentivesEnabled && Boolean(account);
+  const isWalletAccountSettling =
+    incentivesEnabled && !account && (status === "connecting" || status === "reconnecting");
 
-  const { data: config } = useIncentivesConfig(chainId);
+  const { data: config, loading: configLoading } = useIncentivesConfig(chainId);
   const { data: dashboard, loading: dashboardLoading } = useAccountIncentiveDashboard(chainId, {
     account,
     enabled,
@@ -70,40 +92,32 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
       programStartTimestamp: config?.programStartTimestamp,
       enabled: enabled && hasProgramStartTimestamp,
     });
-  const manualAllocatedPoints = hasProgramStartTimestamp ? fetchedManualAllocatedPoints : 0n;
+  const manualAllocatedPoints = hasProgramStartTimestamp ? fetchedManualAllocatedPoints : undefined;
 
   const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
 
   const underlyingLoading =
+    configLoading ||
     dashboardLoading ||
     netPositionFeesLoading ||
     firstTradeLoading ||
-    (hasProgramStartTimestamp && manualAllocatedPointsLoading);
+    (hasProgramStartTimestamp && manualAllocatedPointsLoading) ||
+    (enabled && hasProgramStartTimestamp && fetchedManualAllocatedPoints === undefined) ||
+    (enabled && !hasProgramStartTimestamp);
 
   // SWR's `isLoading` flips back to `true` on every revalidation when the fetched value is
-  // undefined, which would make the banner blink in/out every refresh. Latch on first resolve,
-  // keyed by chainId+account so a freshly-connected wallet (or chain switch) waits for fresh
-  // data instead of rendering whatever variant the previous session had cached.
-  const sessionKey = enabled ? `${chainId}:${account}` : "disabled";
-  const [resolvedSession, setResolvedSession] = useState<string | null>(null);
-  const hasResolvedSession = resolvedSession === sessionKey;
-  if (!hasResolvedSession && !underlyingLoading) {
-    setResolvedSession(sessionKey);
-  }
+  // undefined, which would make the banner recompute from partial data every refresh. Keep the
+  // latest complete account snapshot for the current account only, and hide the banner for new
+  // account/chain sessions until their own data has resolved.
+  const sessionKey = enabled ? `${chainId}:${account?.toLowerCase()}` : "disabled";
+  const [resolvedSessionData, setResolvedSessionData] = useState<ResolvedSessionData | null>(null);
+  const hasResolvedSession = resolvedSessionData?.sessionKey === sessionKey;
 
-  return useMemo(() => {
+  const resolvedBannerData = useMemo((): PersonalizedBannerData | undefined => {
     const hasVolumeAfterFirstProgramEpoch = getHasVolumeAfterFirstProgramEpoch(dashboard, config);
 
-    if (enabled && underlyingLoading && !hasResolvedSession) {
-      return {
-        bannerVariant: undefined,
-        isManuallyRewarded: false,
-        hasVolumeAfterFirstProgramEpoch,
-        manualAllocatedPoints: undefined,
-        manualBonusUsd: undefined,
-        estimatedRewardsUsd: undefined,
-        isLoading: true,
-      };
+    if (isWalletAccountSettling) {
+      return undefined;
     }
 
     if (!enabled) {
@@ -118,20 +132,16 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
       };
     }
 
+    if (underlyingLoading) {
+      return undefined;
+    }
+
     const allocatedPoints = manualAllocatedPoints ?? 0n;
     const isManuallyRewarded = allocatedPoints > 0n;
 
     if (isManuallyRewarded) {
       if (gmxPrice === undefined || gmxPrice === 0n) {
-        return {
-          bannerVariant: undefined,
-          isManuallyRewarded: true,
-          hasVolumeAfterFirstProgramEpoch,
-          manualAllocatedPoints: allocatedPoints,
-          manualBonusUsd: undefined,
-          estimatedRewardsUsd: undefined,
-          isLoading: true,
-        };
+        return undefined;
       }
 
       return {
@@ -175,13 +185,57 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
     };
   }, [
     enabled,
+    isWalletAccountSettling,
     underlyingLoading,
-    hasResolvedSession,
     dashboard,
     netPositionFees,
     firstTradeTimestamp,
     manualAllocatedPoints,
     gmxPrice,
     config,
+  ]);
+
+  useEffect(() => {
+    if (enabled && resolvedBannerData && !resolvedBannerData.isLoading) {
+      setResolvedSessionData({ sessionKey, data: resolvedBannerData });
+    }
+  }, [enabled, resolvedBannerData, sessionKey]);
+
+  useEffect(() => {
+    if (!enabled) {
+      setResolvedSessionData(null);
+    }
+  }, [enabled]);
+
+  return useMemo(() => {
+    if (!enabled) {
+      return resolvedBannerData ?? getLoadingBannerData();
+    }
+
+    const hasVolumeAfterFirstProgramEpoch = getHasVolumeAfterFirstProgramEpoch(dashboard, config);
+    const allocatedPoints = manualAllocatedPoints ?? 0n;
+    const isManuallyRewarded = allocatedPoints > 0n;
+
+    if (resolvedBannerData) {
+      return resolvedBannerData;
+    }
+
+    if (hasResolvedSession && underlyingLoading && resolvedSessionData) {
+      return resolvedSessionData.data;
+    }
+
+    return getLoadingBannerData({
+      isManuallyRewarded,
+      hasVolumeAfterFirstProgramEpoch,
+    });
+  }, [
+    enabled,
+    resolvedBannerData,
+    dashboard,
+    config,
+    manualAllocatedPoints,
+    hasResolvedSession,
+    underlyingLoading,
+    resolvedSessionData,
   ]);
 }

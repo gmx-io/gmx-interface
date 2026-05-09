@@ -1,6 +1,7 @@
-import { Trans } from "@lingui/macro";
+import { Trans, plural } from "@lingui/macro";
 import cx from "classnames";
 import React, { useMemo } from "react";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { Link } from "react-router-dom";
 
 import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
@@ -39,6 +40,7 @@ import { getBoostDescription } from "./incentivesText";
 import { VolumeTierIcon, StakingTierIcon, BoostTierIcon } from "./tierIcons";
 
 type Props = {
+  isLoading?: boolean;
   config?: IncentivesConfig;
   currentEpochStats?: EpochStats;
   effectiveVolumeTier?: VolumeTierId | null;
@@ -49,6 +51,7 @@ type Props = {
 };
 
 export function TierCardsSection({
+  isLoading = false,
   config,
   currentEpochStats,
   effectiveVolumeTier,
@@ -72,6 +75,10 @@ export function TierCardsSection({
       .sort((a, b) => (a.active === b.active ? 0 : a.active ? -1 : 1))
       .map((i) => i.key);
   }, [volumeActive, stakingActive, boostsActive, hideInactive]);
+
+  if (isLoading || !config) {
+    return <TierCardsSkeleton />;
+  }
 
   if (sortedKeys.length === 0) {
     return null;
@@ -357,7 +364,7 @@ function VolumeCard({
                 <div
                   className={cx(
                     "absolute left-0 top-0 h-full rounded-8 transition-[width] duration-300",
-                    showMaxTierState ? "bg-green-500" : "bg-blue-300"
+                    showMaxTierState ? "bg-green-300" : "bg-blue-300"
                   )}
                   style={progressStyle}
                 />
@@ -407,12 +414,18 @@ function VolumeBanner({ config }: { config?: IncentivesConfig }) {
   const firstTier = config?.volumeTiers?.[0];
   const multiplierDecimals = config?.multiplierDecimals ?? MULTIPLIER_DECIMALS;
 
-  const volumeLabel = firstTier ? formatAmountHuman(firstTier.threshold, USD_DECIMALS, true, 0) : "...";
-  const tierName = firstTier ? VOLUME_TIER_BADGES[firstTier.tier]() : "...";
-  const multiplierLabel = firstTier ? formatMultiplier(firstTier.multiplier) : "...";
-  const rewardsEstimate = firstTier
-    ? estimateWeeklyRewards(bigintToNumber(firstTier.threshold, USD_DECIMALS), firstTier.multiplier, multiplierDecimals)
-    : 0;
+  if (!firstTier) {
+    return <TierCardCopySkeleton />;
+  }
+
+  const volumeLabel = formatAmountHuman(firstTier.threshold, USD_DECIMALS, true, 0);
+  const tierName = VOLUME_TIER_BADGES[firstTier.tier]();
+  const multiplierLabel = formatMultiplier(firstTier.multiplier);
+  const rewardsEstimate = estimateWeeklyRewards(
+    bigintToNumber(firstTier.threshold, USD_DECIMALS),
+    firstTier.multiplier,
+    multiplierDecimals
+  );
 
   return (
     <div className="flex flex-1 flex-col justify-end gap-8">
@@ -698,9 +711,7 @@ function StakingProgressBar({
           );
         }
 
-        const completedFillClasses = isMaxTier
-          ? "bg-green-500"
-          : "bg-blue-300";
+        const completedFillClasses = isMaxTier ? "bg-green-300" : "bg-blue-300";
 
         return (
           <TooltipWithPortal
@@ -781,7 +792,7 @@ function BoostsCard({
               <div className="flex size-48 shrink-0 items-center justify-center rounded-12 border-[0.8px] border-blue-300/60 drop-shadow-[0_4px_6px_rgba(120,133,255,0.9)]">
                 <BoostSvg className="size-24 text-blue-300" />
               </div>
-              {activeBoostIds.length} <Trans>active boosts</Trans>
+              {plural(activeBoostIds.length, { one: "# active boost", other: "# active boosts" })}
             </h3>
             <div className="flex flex-wrap gap-12">
               {allBoosts.map((boost) => {
@@ -842,5 +853,43 @@ function BoostsCard({
         </div>
       )}
     </div>
+  );
+}
+
+function TierCardCopySkeleton() {
+  return (
+    <SkeletonTheme baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A">
+      <div className="flex flex-1 flex-col justify-end gap-8">
+        <Skeleton width="70%" height={22} inline />
+        <Skeleton width="90%" height={14} inline />
+        <Skeleton width={96} height={14} inline />
+      </div>
+    </SkeletonTheme>
+  );
+}
+
+function TierCardsSkeleton() {
+  return (
+    <SkeletonTheme baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A">
+      <div className="grid grid-cols-3 gap-8 max-lg:grid-cols-1">
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div key={index} className={cx(tierCardBase, tierCardActive, "min-h-[172px]")}>
+            <div className="flex items-center justify-between">
+              <Skeleton width={96} height={14} inline />
+              <Skeleton width={54} height={20} borderRadius={999} inline />
+            </div>
+            <div className="mt-4 flex items-center gap-12">
+              <Skeleton width={52} height={52} borderRadius={12} inline />
+              <Skeleton width={132} height={28} inline />
+            </div>
+            <div className="flex flex-col gap-8">
+              <Skeleton width="60%" height={14} inline />
+              <Skeleton width="100%" height={6} borderRadius={8} inline />
+              <Skeleton width="80%" height={14} inline />
+            </div>
+          </div>
+        ))}
+      </div>
+    </SkeletonTheme>
   );
 }

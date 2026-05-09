@@ -1,3 +1,5 @@
+import { Trans } from "@lingui/macro";
+import type { ReactNode } from "react";
 import { useMemo } from "react";
 
 import { useAccountIncentiveDashboard } from "domain/synthetics/incentives/useAccountIncentiveDashboard";
@@ -14,18 +16,53 @@ type Props = {
 };
 
 export function PointsDashboard({ chainId, account }: Props) {
-  const { data: config } = useIncentivesConfig(chainId);
-  const { data: dashboard } = useAccountIncentiveDashboard(chainId, { account });
-  const { data: status } = useAccountIncentiveStatus(chainId, { account });
+  const { data: config, error: configError, loading: configLoading } = useIncentivesConfig(chainId);
+  const {
+    data: dashboard,
+    error: dashboardError,
+    loading: dashboardLoading,
+  } = useAccountIncentiveDashboard(chainId, { account });
+  const { data: status, error: statusError, loading: statusLoading } = useAccountIncentiveStatus(chainId, { account });
 
   const currentEpochStats = useMemo(() => {
     if (!dashboard?.recentStats?.length) return undefined;
     return dashboard.recentStats.reduce((latest, s) => (s.epochTimestamp > latest.epochTimestamp ? s : latest));
   }, [dashboard?.recentStats]);
 
+  const isLoading =
+    (configLoading && !config) || Boolean(account && ((dashboardLoading && !dashboard) || (statusLoading && !status)));
+  const hasConfigFailure = Boolean(configError && !config);
+  const hasAccountDataFailure = Boolean(account && ((dashboardError && !dashboard) || (statusError && !status)));
+
+  if (hasConfigFailure) {
+    return (
+      <>
+        <PointsDashboardUnavailableState>
+          <Trans>Points dashboard data is temporarily unavailable. Please try again later.</Trans>
+        </PointsDashboardUnavailableState>
+        <HowItWorksSection />
+      </>
+    );
+  }
+
+  if (hasAccountDataFailure) {
+    return (
+      <>
+        <PointsDashboardUnavailableState>
+          <Trans>Your points dashboard data is temporarily unavailable. Please try again later.</Trans>
+        </PointsDashboardUnavailableState>
+
+        <TierLevelsSection chainId={chainId} config={config} />
+
+        <HowItWorksSection />
+      </>
+    );
+  }
+
   return (
     <>
       <MainDataSection
+        isLoading={isLoading}
         multiplier={status?.multiplier}
         pointsBalance={dashboard?.pointsBalance ?? status?.pointsBalance}
         config={config}
@@ -38,6 +75,7 @@ export function PointsDashboard({ chainId, account }: Props) {
 
       <TierLevelsSection
         chainId={chainId}
+        isLoading={isLoading}
         config={config}
         currentEpochStats={currentEpochStats}
         effectiveVolumeTier={status?.volumeTier}
@@ -47,5 +85,13 @@ export function PointsDashboard({ chainId, account }: Props) {
 
       <HowItWorksSection />
     </>
+  );
+}
+
+function PointsDashboardUnavailableState({ children }: { children: ReactNode }) {
+  return (
+    <div className="flex min-h-[156px] items-center justify-center rounded-8 bg-slate-900 p-24 text-center text-typography-secondary">
+      {children}
+    </div>
   );
 }

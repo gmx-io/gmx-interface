@@ -259,13 +259,13 @@ describe("TierCardsSection", () => {
   });
 
   describe("when config is undefined/loading", () => {
-    it("shows ... placeholders", () => {
+    it("shows skeleton cards instead of placeholder copy", () => {
       const { container } = renderWithI18n(<TierCardsSection config={undefined} currentEpochStats={undefined} />);
 
-      // When config is undefined, the banners render "..." for threshold/tier/multiplier values.
-      // These "..." may be embedded inside Trans-rendered text, so check the full text content.
       const allText = container.textContent || "";
-      expect(allText).toContain("...");
+      expect(allText).not.toContain("...");
+      expect(allText).not.toContain("Reach");
+      expect(container.querySelectorAll(".react-loading-skeleton").length).toBeGreaterThan(0);
     });
   });
 
@@ -382,11 +382,7 @@ describe("TierCardsSection", () => {
       };
 
       const { container } = renderWithI18n(
-        <TierCardsSection
-          config={mockConfig}
-          currentEpochStats={currentEpochStats}
-          projectedVolumeTier={null}
-        />
+        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} projectedVolumeTier={null} />
       );
 
       const tooltips = container.querySelectorAll('[data-testid="tooltip"]');
@@ -542,11 +538,7 @@ describe("TierCardsSection", () => {
       };
 
       const { container } = renderWithI18n(
-        <TierCardsSection
-          config={mockConfig}
-          currentEpochStats={currentEpochStats}
-          projectedVolumeTier={null}
-        />
+        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} projectedVolumeTier={null} />
       );
 
       const allText = container.textContent || "";
@@ -638,7 +630,7 @@ describe("TierCardsSection", () => {
       expect(screen.getAllByText("Lifetime Volume").length).toBeGreaterThan(0);
     });
 
-    it("shows active boosts count when active", () => {
+    it("shows plural active boosts count when active", () => {
       const currentEpochStats: EpochStats = {
         account: "0x1234",
         multiplier: 150,
@@ -651,11 +643,26 @@ describe("TierCardsSection", () => {
 
       renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />);
 
-      // "2 active boosts" is rendered with "2" and "active boosts" as separate nodes
-      // Use getAllByText since "2" might match other elements
       const allText = document.body.textContent || "";
-      expect(allText).toContain("2");
-      expect(allText).toContain("active boosts");
+      expect(allText).toContain("2 active boosts");
+    });
+
+    it("shows singular active boost count when exactly one boost is active", () => {
+      const currentEpochStats: EpochStats = {
+        account: "0x1234",
+        multiplier: 150,
+        epochTimestamp: 1700000000,
+        volumeTier: null,
+        stakingTier: null,
+        tradedVolume: 0n,
+        boostIds: ["FeaturedMarkets"],
+      };
+
+      renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />);
+
+      const allText = document.body.textContent || "";
+      expect(allText).toContain("1 active boost");
+      expect(allText).not.toContain("1 active boosts");
     });
   });
 });

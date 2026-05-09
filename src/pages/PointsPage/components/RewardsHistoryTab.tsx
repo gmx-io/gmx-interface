@@ -90,6 +90,7 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
   const {
     data: history,
     totalCount,
+    error,
     loading,
   } = useAccountRewardsHistory(chainId, {
     account,
@@ -118,6 +119,8 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
   const pageCount = totalCount === undefined ? page : Math.max(1, Math.ceil(totalCount / PER_PAGE));
   const pageData = history ?? [];
   const isInitialLoading = loading && !history;
+  const hasHistoryFailure = Boolean(error) && (!history || history.length === 0);
+  const showHistoryDegradedNotice = Boolean(error) && Boolean(history?.length);
   const now = useCurrentUnixTimestamp();
 
   if (!account) {
@@ -128,10 +131,18 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
     );
   }
 
-  if (page === 1 && history && history.length === 0) {
+  if (!error && page === 1 && history && history.length === 0) {
     return (
       <div className="flex grow items-center justify-center rounded-8 bg-slate-900 p-24 text-center text-typography-secondary">
         <Trans>No rewards history yet. Start trading to earn points.</Trans>
+      </div>
+    );
+  }
+
+  if (hasHistoryFailure) {
+    return (
+      <div className="flex grow items-center justify-center rounded-8 bg-slate-900 p-24 text-center text-typography-secondary">
+        <Trans>Rewards history is temporarily unavailable. Please try again later.</Trans>
       </div>
     );
   }
@@ -144,6 +155,11 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
         <h3 className="mb-12 text-16 font-medium text-typography-primary">
           <Trans>Rewards History</Trans>
         </h3>
+        {showHistoryDegradedNotice && (
+          <div className="rounded-8 border-l-2 border-l-yellow-300 bg-yellow-300 bg-opacity-20 p-12 text-13 leading-[1.3] text-typography-primary">
+            <Trans>Rewards history could not be refreshed. Showing the latest loaded data.</Trans>
+          </div>
+        )}
       </div>
 
       <div className="flex grow flex-col rounded-8 bg-slate-900">

@@ -136,6 +136,7 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
   const {
     data: leaderboard,
     totalCount,
+    error,
     loading,
   } = useIncentivesLeaderboard(chainId, {
     epoch,
@@ -148,7 +149,11 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
   // to page 1 when their rank is below the visible page. Uses the same
   // `orderBy` as the main list so the server-computed rank stays consistent
   // with the visible ordering.
-  const { data: pinnedEntries, loading: pinnedLoading } = useIncentivesLeaderboard(chainId, {
+  const {
+    data: pinnedEntries,
+    error: pinnedError,
+    loading: pinnedLoading,
+  } = useIncentivesLeaderboard(chainId, {
     epoch,
     where: { account },
     orderBy,
@@ -184,6 +189,9 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
   const pageCount = totalCount === undefined ? page : Math.max(1, Math.ceil(totalCount / PER_PAGE));
   const pageData = useMemo(() => leaderboard ?? [], [leaderboard]);
   const isInitialLoading = loading && !leaderboard;
+  const hasLeaderboardFailure = Boolean(error) && (!leaderboard || leaderboard.length === 0);
+  const showLeaderboardDegradedNotice = Boolean(error) && Boolean(leaderboard?.length);
+  const showPinnedEntryDegradedNotice = Boolean(pinnedError) && Boolean(account) && !hasLeaderboardFailure;
   const formatRewards = useCallback(
     (rewardsEarned: bigint) => {
       const gmxLabel = `${formatAmount(rewardsEarned, GMX_DECIMALS, 2, true)} GMX`;
@@ -203,6 +211,7 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
   const userEntry: LeaderboardEntry | null = useMemo(() => {
     if (!account) return null;
     if (pinnedEntry) return pinnedEntry;
+    if (pinnedError) return null;
     if (pinnedLoading) return null;
     return {
       rank: 0,
@@ -212,7 +221,7 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
       rewardsEarned: 0n,
       multiplier: 0,
     };
-  }, [account, pinnedEntry, pinnedLoading]);
+  }, [account, pinnedEntry, pinnedError, pinnedLoading]);
   const isSyntheticUserEntry = userEntry !== null && pinnedEntry === undefined;
   const userRank = isSyntheticUserEntry ? null : userEntry?.rank ?? null;
   // Show the pinned row only on page 1, and only when the user's row isn't
@@ -246,12 +255,27 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
         </div>
       </div>
 
-      {page === 1 && leaderboard && leaderboard.length === 0 ? (
+      {hasLeaderboardFailure ? (
+        <div className="flex grow items-center justify-center rounded-8 bg-slate-900 p-24 text-center text-typography-secondary">
+          <Trans>Leaderboard data is temporarily unavailable. Please try again later.</Trans>
+        </div>
+      ) : page === 1 && leaderboard && leaderboard.length === 0 ? (
         <div className="flex grow items-center justify-center rounded-8 bg-slate-900 p-24 text-center text-typography-secondary">
           <Trans>Leaderboard data is not available yet.</Trans>
         </div>
       ) : (
         <div className="flex grow flex-col rounded-8 bg-slate-900">
+          {(showLeaderboardDegradedNotice || showPinnedEntryDegradedNotice) && (
+            <div className="px-20 pb-8 pt-12">
+              <div className="rounded-8 border-l-2 border-l-yellow-300 bg-yellow-300 bg-opacity-20 p-12 text-13 leading-[1.3] text-typography-primary">
+                {showLeaderboardDegradedNotice ? (
+                  <Trans>Leaderboard data could not be refreshed. Showing the latest loaded data.</Trans>
+                ) : (
+                  <Trans>Your leaderboard rank is temporarily unavailable.</Trans>
+                )}
+              </div>
+            </div>
+          )}
           <TableScrollFadeContainer className="grow">
             <table className="w-full min-w-[800px] table-fixed">
               <colgroup>

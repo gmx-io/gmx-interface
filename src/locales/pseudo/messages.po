@@ -482,6 +482,10 @@ msgstr ""
 msgid "Rebates are paid in the collateral tokens used by your referrals. For example, if a referral trades with USDC collateral, your rebate portion will be in USDC."
 msgstr ""
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "{0, plural, one {# active boost} other {# active boosts}}"
+msgstr ""
+
 #: src/components/Errors/ErrorToastWithSupport.tsx
 msgid "Contact Support"
 msgstr ""
@@ -808,6 +812,10 @@ msgstr ""
 
 #: src/components/SettingsModal/ThemeSelector.tsx
 msgid "Light"
+msgstr ""
+
+#: src/pages/PointsPage/components/PointsDashboard.tsx
+msgid "Points dashboard data is temporarily unavailable. Please try again later."
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -1758,6 +1766,7 @@ msgid "Available liquidity {directionLabel}"
 msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Show less"
@@ -4059,6 +4068,10 @@ msgstr ""
 msgid "Execution fee validation failed.<0/><1/>{suggestText}<2/><3/><4>View status</4>"
 msgstr ""
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Rewards history is temporarily unavailable. Please try again later."
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -6116,6 +6129,10 @@ msgstr ""
 msgid "GLV bonus incentive"
 msgstr ""
 
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+msgid "Your leaderboard rank is temporarily unavailable."
+msgstr ""
+
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Lifetime staking rewards"
 msgstr ""
@@ -7285,10 +7302,6 @@ msgstr ""
 msgid "TP/SL"
 msgstr ""
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "active boosts"
-msgstr ""
-
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Order error. Prices are volatile for this market, try again by <0>increasing the allowed slippage</0>"
 msgstr ""
@@ -8026,6 +8039,7 @@ msgid "Order uses {collateralSymbol}, but existing {longText} position uses {sym
 msgstr ""
 
 #: src/components/MarketStats/components/CompositionTable.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Show more"
@@ -8865,6 +8879,10 @@ msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Stop Market"
+msgstr ""
+
+#: src/pages/PointsPage/components/PointsDashboard.tsx
+msgid "Your points dashboard data is temporarily unavailable. Please try again later."
 msgstr ""
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
@@ -11223,6 +11241,10 @@ msgstr ""
 msgid "Unknown order"
 msgstr ""
 
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+msgid "Leaderboard data could not be refreshed. Showing the latest loaded data."
+msgstr ""
+
 #: src/components/OrdersModal/OrdersModal.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionShare/PositionShareCard.tsx
@@ -11497,6 +11519,10 @@ msgstr ""
 msgid "Request Market Decrease"
 msgstr ""
 
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+msgid "Leaderboard data is temporarily unavailable. Please try again later."
+msgstr ""
+
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/PointsPage/components/TierCardsSection.tsx
 #: src/pages/PointsPage/components/TierCardsSection.tsx
@@ -11607,6 +11633,10 @@ msgstr ""
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormMultichain.tsx
 msgid "Network fee"
+msgstr ""
+
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Rewards history could not be refreshed. Showing the latest loaded data."
 msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx

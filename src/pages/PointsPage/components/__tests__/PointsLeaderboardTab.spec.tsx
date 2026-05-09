@@ -46,7 +46,10 @@ const leaderboardMock = vi.hoisted(() => ({
   data: [] as LeaderboardEntry[] | undefined,
   totalCount: 0 as number | undefined,
   loading: false,
+  error: undefined as Error | undefined,
   pinnedEntry: undefined as LeaderboardEntry | undefined,
+  pinnedError: undefined as Error | undefined,
+  pinnedLoading: false,
   // Captures the most recent variables passed to the page query so tests can
   // assert that orderBy / offset / limit were forwarded correctly.
   lastPageParams: undefined as Record<string, unknown> | undefined,
@@ -60,8 +63,8 @@ vi.mock("domain/synthetics/incentives/useIncentivesLeaderboard", () => ({
         data: entries,
         totalCount: entries.length,
         hasNextPage: false,
-        error: undefined,
-        loading: false,
+        error: leaderboardMock.pinnedError,
+        loading: leaderboardMock.pinnedLoading,
       };
     }
     leaderboardMock.lastPageParams = params as unknown as Record<string, unknown>;
@@ -69,7 +72,7 @@ vi.mock("domain/synthetics/incentives/useIncentivesLeaderboard", () => ({
       data: leaderboardMock.data,
       totalCount: leaderboardMock.totalCount,
       hasNextPage: false,
-      error: undefined,
+      error: leaderboardMock.error,
       loading: leaderboardMock.loading,
     };
   },
@@ -144,7 +147,10 @@ afterEach(() => {
   leaderboardMock.data = [];
   leaderboardMock.totalCount = 0;
   leaderboardMock.loading = false;
+  leaderboardMock.error = undefined;
   leaderboardMock.pinnedEntry = undefined;
+  leaderboardMock.pinnedError = undefined;
+  leaderboardMock.pinnedLoading = false;
   leaderboardMock.lastPageParams = undefined;
   // Sorter state persists to localStorage; wipe it so tests don't leak sort
   // selections from one another.
@@ -385,6 +391,32 @@ describe("PointsLeaderboardTab", () => {
       // Change sort — page should reset
       fireEvent.click(getSortButton("Earned Points"));
       expect(leaderboardMock.lastPageParams?.offset).toBe(0);
+    });
+  });
+
+  describe("degraded states", () => {
+    it("renders a failed state when leaderboard data cannot be loaded", () => {
+      leaderboardMock.data = undefined;
+      leaderboardMock.totalCount = undefined;
+      leaderboardMock.error = new Error("blocked");
+
+      renderTab();
+
+      expect(screen.getByText("Leaderboard data is temporarily unavailable. Please try again later.")).toBeTruthy();
+      expect(screen.queryByText("Rank")).toBeNull();
+    });
+
+    it("does not synthesize a user row when the pinned account lookup fails", () => {
+      leaderboardMock.data = buildPageEntries(0, PER_PAGE);
+      leaderboardMock.totalCount = PER_PAGE;
+      leaderboardMock.pinnedEntry = undefined;
+      leaderboardMock.pinnedError = new Error("blocked");
+
+      const { container } = renderTab();
+
+      expect(screen.getByText("Your leaderboard rank is temporarily unavailable.")).toBeTruthy();
+      expect(getPinnedRow(container)).toBeNull();
+      expect(screen.queryByText("N/A")).toBeNull();
     });
   });
 });

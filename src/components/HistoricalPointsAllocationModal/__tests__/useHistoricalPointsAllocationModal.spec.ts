@@ -30,7 +30,7 @@ describe("getShouldShowHistoricalPointsAllocationModal", () => {
     ).toBe(false);
   });
 
-  it("ignores a legacy dismissal once post-first-epoch volume exists", () => {
+  it("keeps the modal hidden after a legacy dismissal once post-first-epoch volume exists", () => {
     expect(
       getShouldShowHistoricalPointsAllocationModal({
         dismissedState: true,
@@ -39,15 +39,15 @@ describe("getShouldShowHistoricalPointsAllocationModal", () => {
           hasVolumeAfterFirstProgramEpoch: true,
         },
       })
-    ).toBe(true);
+    ).toBe(false);
   });
 
-  it("keeps the modal hidden after dismissal with post-first-epoch volume", () => {
+  it("keeps the modal hidden after legacy object dismissal with post-first-epoch volume", () => {
     expect(
       getShouldShowHistoricalPointsAllocationModal({
         dismissedState: {
           dismissed: true,
-          dismissedAfterFirstProgramEpochVolume: true,
+          dismissedAfterFirstProgramEpochVolume: false,
         },
         bannerData: {
           ...baseBannerData,

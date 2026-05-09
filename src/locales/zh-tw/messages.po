@@ -482,6 +482,10 @@ msgstr "已結算資金費用"
 msgid "Rebates are paid in the collateral tokens used by your referrals. For example, if a referral trades with USDC collateral, your rebate portion will be in USDC."
 msgstr ""
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "{0, plural, one {# active boost} other {# active boosts}}"
+msgstr ""
+
 #: src/components/Errors/ErrorToastWithSupport.tsx
 msgid "Contact Support"
 msgstr ""
@@ -809,6 +813,10 @@ msgstr "正資金費率費用"
 #: src/components/SettingsModal/ThemeSelector.tsx
 msgid "Light"
 msgstr "淺色"
+
+#: src/pages/PointsPage/components/PointsDashboard.tsx
+msgid "Points dashboard data is temporarily unavailable. Please try again later."
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Longs / shorts"
@@ -1758,6 +1766,7 @@ msgid "Available liquidity {directionLabel}"
 msgstr "可用流動性 {directionLabel}"
 
 #: src/components/MarketStats/components/CompositionTable.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Show less"
@@ -4059,6 +4068,10 @@ msgstr "截止時間："
 msgid "Execution fee validation failed.<0/><1/>{suggestText}<2/><3/><4>View status</4>"
 msgstr "執行費用驗證失敗。<0/><1/>{suggestText}<2/><3/><4>查看狀態</4>"
 
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Rewards history is temporarily unavailable. Please try again later."
+msgstr ""
+
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -6116,6 +6129,10 @@ msgstr "泰坦"
 msgid "GLV bonus incentive"
 msgstr "GLV 額外激勵"
 
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+msgid "Your leaderboard rank is temporarily unavailable."
+msgstr ""
+
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Lifetime staking rewards"
 msgstr "終身質押獎勵"
@@ -7285,10 +7302,6 @@ msgstr "想透過 One-Click Trading 更快速交易嗎？"
 msgid "TP/SL"
 msgstr "止盈/止損"
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "active boosts"
-msgstr "啟用中的加成"
-
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Order error. Prices are volatile for this market, try again by <0>increasing the allowed slippage</0>"
 msgstr "訂單錯誤。此市場價格波動劇烈，請嘗試<0>提高允許的滑點</0>"
@@ -8026,6 +8039,7 @@ msgid "Order uses {collateralSymbol}, but existing {longText} position uses {sym
 msgstr "訂單使用 {collateralSymbol}，但現有的{longText}倉位使用 {symbol} 作為抵押品"
 
 #: src/components/MarketStats/components/CompositionTable.tsx
+#: src/pages/PointsPage/components/TierLevelsSection.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 #: src/pages/PointsPage/components/TierLevelsSection.tsx
 msgid "Show more"
@@ -8866,6 +8880,10 @@ msgstr "查看"
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Stop Market"
 msgstr "執行停損市價單"
+
+#: src/pages/PointsPage/components/PointsDashboard.tsx
+msgid "Your points dashboard data is temporarily unavailable. Please try again later."
+msgstr ""
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Volume traded by this account with an active referral code."
@@ -11223,6 +11241,10 @@ msgstr "與我一起開始交易。"
 msgid "Unknown order"
 msgstr "未知訂單"
 
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+msgid "Leaderboard data could not be refreshed. Showing the latest loaded data."
+msgstr ""
+
 #: src/components/OrdersModal/OrdersModal.tsx
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionShare/PositionShareCard.tsx
@@ -11497,6 +11519,10 @@ msgstr "交易已取消"
 msgid "Request Market Decrease"
 msgstr "申請 Market Decrease"
 
+#: src/pages/PointsPage/components/PointsLeaderboardTab.tsx
+msgid "Leaderboard data is temporarily unavailable. Please try again later."
+msgstr ""
+
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/PointsPage/components/TierCardsSection.tsx
 #: src/pages/PointsPage/components/TierCardsSection.tsx
@@ -11608,6 +11634,10 @@ msgstr "資金正在跨鏈至..."
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormMultichain.tsx
 msgid "Network fee"
 msgstr "網路費用"
+
+#: src/pages/PointsPage/components/RewardsHistoryTab.tsx
+msgid "Rewards history could not be refreshed. Showing the latest loaded data."
+msgstr ""
 
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivated"

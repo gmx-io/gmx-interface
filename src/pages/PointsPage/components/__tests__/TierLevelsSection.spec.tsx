@@ -1,7 +1,7 @@
 /* eslint-disable react-perf/jsx-no-new-object-as-prop */
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
-import { cleanup, fireEvent, render } from "@testing-library/react";
+import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { afterEach, describe, expect, it, vi } from "vitest";
 
@@ -74,6 +74,21 @@ function switchToBoostsTab(container: HTMLElement) {
 }
 
 describe("TierLevelsSection BoostsTable", () => {
+  it("renders table skeleton rows while tiers config is loading", () => {
+    const { container } = renderWithI18n(<TierLevelsSection chainId={42161} isLoading config={undefined} />);
+
+    const allText = container.textContent || "";
+    expect(allText).toContain("Volume Tiers");
+    expect(allText).not.toContain("Ranked");
+    expect(container.querySelectorAll(".react-loading-skeleton").length).toBeGreaterThan(0);
+  });
+
+  it("keeps the Show more toggle aligned to its content width", () => {
+    renderWithI18n(<TierLevelsSection chainId={42161} config={mockConfig} />);
+
+    expect(screen.getByRole("button", { name: "Show more" }).className).toContain("inline-flex");
+  });
+
   it("renders each non-featured boost description exactly once", () => {
     const { container } = renderWithI18n(<TierLevelsSection chainId={42161} config={mockConfig} />);
 
