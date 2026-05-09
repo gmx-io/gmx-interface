@@ -26,6 +26,7 @@ import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { getNameByOrderType } from "domain/synthetics/positions";
 import { TokensData } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
+import { isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
 import { useChainId } from "lib/chains";
 import { defined } from "lib/guards";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
@@ -212,10 +213,12 @@ function OrderStatusNotification({
             lower: true,
           })} order for`;
           const sign = isIncreaseOrderType(orderType) ? "+" : "-";
+          const sizeText =
+            isTriggerDecreaseOrderType(orderType) && isFullPositionCloseSizeDeltaUsd(sizeDeltaUsd)
+              ? t`Full position close`
+              : `${sign}${formatUsd(sizeDeltaUsd)}`;
 
-          return t`${orderTypeText} ${visualMultiplierPrefix}${marketInfo?.indexToken?.symbol} ${longShortText}: ${sign}${formatUsd(
-            sizeDeltaUsd
-          )}`;
+          return t`${orderTypeText} ${visualMultiplierPrefix}${marketInfo?.indexToken?.symbol} ${longShortText}: ${sizeText}`;
         }
       }
     }
