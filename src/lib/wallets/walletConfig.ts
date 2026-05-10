@@ -23,22 +23,6 @@ import { LRUCache } from "sdk/utils/LruCache";
 
 export { PRIVY_APP_ID };
 
-/**
- * Privy wallet list for the connect modal.
- *
- * Mapping from previous RainbowKit wallets:
- *   rabbyWallet       -> detected_ethereum_wallets (detected as browser extension)
- *   metaMaskWallet     -> "metamask"
- *   walletConnectWallet-> "wallet_connect"
- *   injectedWallet     -> detected_ethereum_wallets
- *   safeWallet         -> "safe"
- *   geminiWallet       -> detected_ethereum_wallets (detected as browser extension)
- *   binanceWallet      -> "binance"
- *   baseAccount        -> "base_account"
- *   trustWallet        -> wallet_connect fallback (no first-class Privy entry)
- *   coreWallet         -> wallet_connect fallback (no first-class Privy entry)
- *   okxWallet          -> "okx_wallet"
- */
 export const PRIVY_WALLET_LIST = [
   "metamask",
   "safe",
@@ -73,10 +57,6 @@ export const getWagmiConfig = once(() => {
     transports,
   });
 });
-
-// ---------------------------------------------------------------------------
-// RPC transport utilities (unchanged from previous implementation)
-// ---------------------------------------------------------------------------
 
 const TRANSPORTS_CACHE = new LRUCache<Transport>(100);
 const PUBLIC_CLIENTS_CACHE = new LRUCache<PublicClient>(100);
