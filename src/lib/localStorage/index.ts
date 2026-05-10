@@ -16,7 +16,9 @@ export function useLocalStorageByChainId<T>(
     (value) => {
       const internalValue = internalValueRef.current;
       const resolvedValue: T =
-        typeof value === "function" ? (value as (prev: T) => T)(internalValue?.[chainId] || defaultValue) : value;
+        typeof value === "function"
+          ? (value as (prev: T) => T)(internalValue?.[chainId] || defaultValue)
+          : value;
 
       const newInternalValue = {
         ...internalValue,

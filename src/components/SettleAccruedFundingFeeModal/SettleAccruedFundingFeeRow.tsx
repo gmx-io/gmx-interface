@@ -31,7 +31,9 @@ export const SettleAccruedFundingFeeRow = ({ position, isMarketDisabled, isSelec
     <TooltipWithPortal
       position="top-start"
       handle={labelContent}
-      content={<Trans>This market is disabled. Contact support to claim your remaining funding fees.</Trans>}
+      content={
+        <Trans>This market is disabled. Contact support to claim your remaining funding fees.</Trans>
+      }
     />
   ) : (
     labelContent
