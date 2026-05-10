@@ -5,7 +5,7 @@ import { isAddress, type Hash, zeroAddress, zeroHash } from "viem";
 
 import { getContract } from "config/contracts";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
-import { REGEX_VERIFY_BYTES32 } from "domain/referrals/utils/referralCode";
+import { isHash } from "domain/referrals/utils/referralCode";
 import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { getReferralsGraphClient } from "lib/indexers";
@@ -22,10 +22,6 @@ import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
 import { UserReferralInfo } from "../types";
 
 type CallContractOpts = Parameters<typeof callContract>[4];
-
-function isHash(value: string | null | undefined): value is Hash {
-  return typeof value === "string" && REGEX_VERIFY_BYTES32.test(value);
-}
 
 export * from "./useReferralsData";
 export * from "./useAffiliateReferralStats";
