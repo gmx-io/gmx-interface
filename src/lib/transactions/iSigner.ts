@@ -7,10 +7,8 @@ import {
 } from "ethers";
 import {
   Account,
-  Address,
   Chain,
   Client,
-  Hex,
   PrivateKeyAccount,
   PublicActions,
   StateOverride,
@@ -18,6 +16,10 @@ import {
   WalletActions,
   WalletRpcSchema,
   PublicClient as ViemPublicClient,
+  isAddress,
+  isHex,
+  type Address,
+  type Hex,
   zeroAddress,
 } from "viem";
 
@@ -53,6 +55,18 @@ type ViemSigner = Client<
   WalletRpcSchema,
   WalletActions<Chain, Account> & PublicActions<Transport, Chain, Account>
 >;
+
+function toHexData(data: ISignerSendTransactionParams["data"] | undefined): Hex | undefined {
+  if (data === undefined || data === null) {
+    return undefined;
+  }
+
+  if (!isHex(data)) {
+    throw new Error("Invalid transaction data");
+  }
+
+  return data;
+}
 
 /**
  * Abstraction above ethers and viem signers
@@ -147,7 +161,7 @@ export class ISigner implements ISignerInterface {
         signer
           .sendTransaction({
             to: await toAddress(params.to),
-            data: (params.data ?? undefined) as Hex | undefined,
+            data: toHexData(params.data),
             value: toBigInt(params.value),
             gas: toBigInt(params.gasLimit),
             gasPrice: toBigInt(params.gasPrice),
@@ -195,7 +209,7 @@ export class ISigner implements ISignerInterface {
       viem: async (signer: ViemSigner) =>
         signer.estimateGas({
           to: await toAddress(params.to),
-          data: (params.data ?? undefined) as Hex | undefined,
+          data: toHexData(params.data),
           value: toBigInt(params.value),
           account: await toAddress(params.from),
           gas: toBigInt(params.gasLimit),
@@ -229,7 +243,7 @@ export class ISigner implements ISignerInterface {
         await signer
           .call({
             to: await toAddress(params.to),
-            data: (params.data ?? undefined) as Hex | undefined,
+            data: toHexData(params.data),
             value: toBigInt(params.value),
             account: await toAddress(params.from),
             gas: toBigInt(params.gasLimit),
@@ -284,7 +298,7 @@ export class ISigner implements ISignerInterface {
       viem: async (signer: ViemSigner) =>
         signer
           .getTransaction({
-            hash: hash as Hex,
+            hash: toHexData(hash)!,
           })
           .then((tx): ISignerSendTransactionParams | undefined => ({
             to: tx.to,
@@ -353,14 +367,28 @@ export async function toAddress(address: AddressLike | undefined | null): Promis
     return undefined;
   }
   if (typeof address === "string") {
-    return address as Address;
+    if (!isAddress(address)) {
+      throw new Error("Invalid address");
+    }
+
+    return address;
   }
   const awaitedAddress = await address;
   if (!awaitedAddress) {
     return undefined;
   }
   if (typeof awaitedAddress === "string") {
-    return awaitedAddress as Address;
+    if (!isAddress(awaitedAddress)) {
+      throw new Error("Invalid address");
+    }
+
+    return awaitedAddress;
   }
-  return (await awaitedAddress.getAddress()) as Address;
+  const resolvedAddress = await awaitedAddress.getAddress();
+
+  if (!isAddress(resolvedAddress)) {
+    throw new Error("Invalid address");
+  }
+
+  return resolvedAddress;
 }

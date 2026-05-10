@@ -3,13 +3,16 @@ import { useLingui } from "@lingui/react";
 import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import type { Hash } from "viem";
 
 import { AVALANCHE_FUJI, ContractsChainId, getExplorerUrl } from "config/chains";
 import { getIsGlv } from "config/markets";
 import { selectGmMarkets } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { INCENTIVE_TOOLTIP_MAP, INCENTIVE_TYPE_MAP } from "domain/synthetics/common/incentivesAirdropMessages";
-import useUserIncentiveData from "domain/synthetics/common/useUserIncentiveData";
+import useUserIncentiveData, {
+  type UserIncentiveDistribution as UserIncentiveDistributionData,
+} from "domain/synthetics/common/useUserIncentiveData";
 import { MarketsData, useMarketTokensData } from "domain/synthetics/markets";
 import { TokensData } from "domain/synthetics/tokens";
 import { Token } from "domain/tokens";
@@ -22,7 +25,6 @@ import { shortenAddressOrEns } from "lib/wallets";
 import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
-import { Distribution } from "sdk/codegen/subsquid";
 import { getTokens } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -49,7 +51,7 @@ type NormalizedIncentiveData = ReturnType<typeof getNormalizedIncentive>;
 
 function getNormalizedIncentive(
   chainId: ContractsChainId,
-  incentive: Distribution,
+  incentive: UserIncentiveDistributionData,
   tokens: Token[],
   gmMarkets: MarketsData | undefined,
   marketTokensData: TokensData | undefined
@@ -198,9 +200,7 @@ export default function UserIncentiveDistribution() {
           />
         </div>
       </div>
-      <div className="min-w-400 flex flex-col gap-8">
-        {!isTablet && claimableBalance}
-      </div>
+      <div className="min-w-400 flex flex-col gap-8">{!isTablet && claimableBalance}</div>
     </div>
   );
 }
@@ -383,12 +383,12 @@ function IncentiveItem({ incentive }: { incentive: NormalizedIncentiveData }) {
   );
 }
 
-const TxnStatus = ({ chainId, hash }: { chainId: number; hash: string }) => {
+const TxnStatus = ({ chainId, hash }: { chainId: number; hash: Hash }) => {
   const [status, setStatus] = useState<"success" | "failed" | null>(null);
 
   useEffect(() => {
     getPublicClientWithRpc(chainId)
-      .getTransactionReceipt({ hash: hash as `0x${string}` })
+      .getTransactionReceipt({ hash })
       .then((receipt) => {
         setStatus(receipt?.status === "success" ? "success" : "failed");
       });

@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { getAddress } from "viem";
+import { getAddress, type Hash } from "viem";
 
 import { CONTRACTS_CHAIN_IDS } from "config/chains";
 import { getIndexerUrl } from "config/indexers";
@@ -30,11 +30,11 @@ type ReferralsGraphqlResponse = {
     amounts: string[];
     amountsInUsd: string[];
     timestamp: string;
-    transactionHash: string;
+    transactionHash: Hash;
     id: string;
   }[];
   affiliateStats: {
-    referralCode: string;
+    referralCode: Hash;
     trades: string;
     tradedReferralsCount: string;
     registeredReferralsCount: string;
@@ -44,7 +44,7 @@ type ReferralsGraphqlResponse = {
     v1Data: { volume: string; totalRebateUsd: string; discountUsd: string };
     v2Data: { volume: string; totalRebateUsd: string; discountUsd: string };
   }[];
-  referralCodes: { code: string }[];
+  referralCodes: { code: Hash }[];
   referralTotalStats: {
     volume: string;
     discountUsd: string;
@@ -135,7 +135,7 @@ function parseReferralCodeStats(
   allOwnersOnOtherChainsMap: { [code: string]: { [chainId: number]: CodeOwnershipInfo } }
 ): ReferralCodeStats {
   return {
-    referralCode: decodeReferralCode(affiliateStat.referralCode as `0x${string}`),
+    referralCode: decodeReferralCode(affiliateStat.referralCode),
     trades: parseInt(affiliateStat.trades),
     tradedReferralsCount: parseInt(affiliateStat.tradedReferralsCount),
     registeredReferralsCount: parseInt(affiliateStat.registeredReferralsCount),
@@ -304,7 +304,7 @@ async function fetchChainReferralData(chainId: number, account: string): Promise
       : undefined,
     affiliateTotalStats,
     traderReferralTotalStats,
-    codes: res.referralCodes.map((e) => decodeReferralCode(e.code as `0x${string}`)),
+    codes: res.referralCodes.map((e) => decodeReferralCode(e.code)),
   };
 }
 

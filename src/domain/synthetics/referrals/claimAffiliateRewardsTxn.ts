@@ -1,4 +1,4 @@
-import { encodeFunctionData, type Address } from "viem";
+import { encodeFunctionData, isHex, type Address, type Hex } from "viem";
 
 import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { ISigner } from "lib/transactions/iSigner";
@@ -22,6 +22,14 @@ type SwapExternalCalls = Pick<
   ExternalCallsPayload,
   "externalCallTargets" | "externalCallDataList" | "refundTokens" | "refundReceivers"
 >;
+
+function requireHexData(data: string): Hex {
+  if (!isHex(data)) {
+    throw new Error("Invalid claim affiliate rewards call data");
+  }
+
+  return data;
+}
 
 function getClaimAffiliateRewardsAndSwapCallData({
   chainId,
@@ -86,9 +94,9 @@ export async function estimateClaimAffiliateRewardsGas(
 
   return client
     .estimateGas({
-      account: account as Address,
+      account,
       to: exchangeRouterAddress,
-      data: callData as `0x${string}`,
+      data: requireHexData(callData),
     })
     .then(applyGasLimitBuffer);
 }
@@ -152,9 +160,9 @@ export async function simulateAndClaimAffiliateRewardsAndSwapTxn(
 
   const gasLimit = await client
     .estimateGas({
-      account: account as Address,
+      account,
       to: exchangeRouterAddress,
-      data: callData as `0x${string}`,
+      data: requireHexData(callData),
     })
     .then(applyGasLimitBuffer);
 

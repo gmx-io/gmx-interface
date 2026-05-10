@@ -46,7 +46,7 @@ export function RebateDistributionRowDetail({ rebate, chainId, amountsByTokens }
     ["tx-receipt", chainId, rebate.transactionHash],
     async () => {
       const receipt = await getPublicClientWithRpc(chainId).getTransactionReceipt({
-        hash: rebate.transactionHash as `0x${string}`,
+        hash: rebate.transactionHash,
       });
       return receipt?.status === "success" ? "success" : "failed";
     }

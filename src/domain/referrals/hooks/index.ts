@@ -1,7 +1,7 @@
 import { gql } from "@apollo/client";
 import { ethers } from "ethers";
 import { useEffect, useMemo, useState } from "react";
-import { Hash, isAddress, zeroAddress, zeroHash } from "viem";
+import { isAddress, type Hash, zeroAddress, zeroHash } from "viem";
 
 import { getContract } from "config/contracts";
 import { REFERRAL_CODE_KEY } from "config/localStorage";
@@ -22,6 +22,10 @@ import { decodeReferralCode, encodeReferralCode } from "sdk/utils/referrals";
 import { UserReferralInfo } from "../types";
 
 type CallContractOpts = Parameters<typeof callContract>[4];
+
+function isHash(value: string | null | undefined): value is Hash {
+  return typeof value === "string" && REGEX_VERIFY_BYTES32.test(value);
+}
 
 export * from "./useReferralsData";
 export * from "./useAffiliateReferralStats";
@@ -225,15 +229,14 @@ export function useUserReferralCode(
   const referralCodeResult = useMulticall(chainId, "user-referral-code", {
     key: account && referralStorageAddress !== zeroAddress ? [account, localStorageCode] : null,
     request: () => {
-      const localCodeCall =
-        localStorageCode && REGEX_VERIFY_BYTES32.test(localStorageCode)
-          ? {
-              codeOwners: {
-                methodName: "codeOwners",
-                params: [localStorageCode!],
-              },
-            }
-          : undefined;
+      const localCodeCall = isHash(localStorageCode)
+        ? {
+            codeOwners: {
+              methodName: "codeOwners",
+              params: [localStorageCode],
+            },
+          }
+        : undefined;
 
       return {
         referralStorage: {
@@ -251,7 +254,7 @@ export function useUserReferralCode(
     },
     parseResponse: (result) => {
       return {
-        onChainCode: result.data.referralStorage.traderReferralCodes.returnValues[0] as string,
+        onChainCode: result.data.referralStorage.traderReferralCodes.returnValues[0],
         localStorageCodeOwner: result.data.referralStorage.codeOwners?.returnValues[0] as string | undefined,
       };
     },
@@ -262,19 +265,19 @@ export function useUserReferralCode(
 
   const { attachedOnChain, userReferralCode, userReferralCodeString, referralCodeForTxn } = useMemo(() => {
     let attachedOnChain = false;
-    let userReferralCode: string | undefined = undefined;
+    let userReferralCode: Hash | undefined = undefined;
     let userReferralCodeString: string | undefined = undefined;
-    let referralCodeForTxn: string = zeroHash;
+    let referralCodeForTxn: Hash = zeroHash;
 
     if (skipLocalReferralCode || (onChainCode && !isHashZero(onChainCode))) {
       attachedOnChain = true;
       userReferralCode = onChainCode;
-      userReferralCodeString = decodeReferralCode(onChainCode as Hash);
-    } else if (localStorageCodeOwner && !isAddressZero(localStorageCodeOwner)) {
+      userReferralCodeString = decodeReferralCode(onChainCode);
+    } else if (localStorageCodeOwner && !isAddressZero(localStorageCodeOwner) && isHash(localStorageCode)) {
       attachedOnChain = false;
-      userReferralCode = localStorageCode!;
-      userReferralCodeString = decodeReferralCode(localStorageCode! as Hash);
-      referralCodeForTxn = localStorageCode!;
+      userReferralCode = localStorageCode;
+      userReferralCodeString = decodeReferralCode(localStorageCode);
+      referralCodeForTxn = localStorageCode;
     }
 
     return {

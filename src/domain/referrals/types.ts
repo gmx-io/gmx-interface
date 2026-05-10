@@ -1,3 +1,5 @@
+import type { Hash } from "viem";
+
 export type UserReferralInfo = {
   userReferralCode: string;
   userReferralCodeString: string;
@@ -29,7 +31,7 @@ export type RebateDistribution = {
   amounts: bigint[];
   amountsInUsd: bigint[];
   timestamp: number;
-  transactionHash: string;
+  transactionHash: Hash;
   id: string;
 };
 
