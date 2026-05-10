@@ -3,9 +3,9 @@ import {
   encodeEventTopics,
   parseEventLogs,
   withRetry,
+  isHex,
   type Abi,
   type ContractEventName,
-  type Hex,
   type Log,
 } from "viem";
 
@@ -77,8 +77,12 @@ export async function watchLzTxRpc({
   withLzCompose: boolean;
   abortSignal?: AbortSignal;
 }): Promise<void> {
+  if (!isHex(txHash)) {
+    throw new Error("Invalid transaction hash");
+  }
+
   debugLog("[watchLzTxRpc] fetching source chain logs", chainId, txHash);
-  const sourceTx = await getPublicClientWithRpc(chainId).waitForTransactionReceipt({ hash: txHash as Hex });
+  const sourceTx = await getPublicClientWithRpc(chainId).waitForTransactionReceipt({ hash: txHash });
   debugLog("[watchLzTxRpc] status", sourceTx.status);
 
   if (sourceTx.status === "reverted") {
@@ -380,6 +384,10 @@ export async function watchLzTxApi(
   onUpdate: (data: LzStatus[]) => void,
   abortSignal?: AbortSignal
 ): Promise<void> {
+  if (!isHex(txHash)) {
+    throw new Error("Invalid transaction hash");
+  }
+
   const fetchTx = () =>
     fetch(`${getLzBaseUrl(chainId)}/messages/tx/${txHash}`, {
       signal: abortSignal,
@@ -426,7 +434,7 @@ export async function watchLzTxApi(
 
     await Promise.race([
       getPublicClientWithRpc(chainId).waitForTransactionReceipt({
-        hash: txHash as Hex,
+        hash: txHash,
       }),
       sleep(60000).then(() => Promise.reject(new Error("Transaction not found during await tx receipt"))),
       abortPromise,

@@ -4,7 +4,7 @@ import cx from "classnames";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useLatest } from "react-use";
-import { Hex, decodeErrorResult, encodeEventTopics, toHex, zeroAddress } from "viem";
+import { decodeErrorResult, encodeEventTopics, isHex, toHex, zeroAddress } from "viem";
 import { useAccount, useChains } from "wagmi";
 
 import { AVALANCHE, AnyChainId, SettlementChainId, SourceChainId, getChainName, isTestnetChain } from "config/chains";
@@ -585,9 +585,13 @@ export const DepositView = () => {
             return;
           }
 
+          if (!isHex(txnHash)) {
+            return;
+          }
+
           getPublicClientWithRpc(settlementChainId)
             .waitForTransactionReceipt({
-              hash: txnHash as Hex,
+              hash: txnHash,
             })
             .then((receipt) => {
               const bridgeInEvent = receipt.logs.find(
@@ -659,9 +663,9 @@ export const DepositView = () => {
         if (txnEvent.event === TxnEventName.Error) {
           setIsSubmitting(false);
           let prettyError = txnEvent.data.error;
-          const data = txnEvent.data.error.info?.error?.data as Hex | undefined;
+          const data = txnEvent.data.error.info?.error?.data;
 
-          if (data) {
+          if (isHex(data)) {
             const error = decodeErrorResult({
               abi: StargateErrorsAbi,
               data,

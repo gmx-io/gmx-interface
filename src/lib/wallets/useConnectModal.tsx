@@ -1,17 +1,17 @@
 import { useConnectWallet } from "@privy-io/react-auth";
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
-type GmxConnectModalContextValue = {
+type ConnectModalContextValue = {
   openConnectModal: (() => void) | undefined;
   connectModalOpen: boolean;
 };
 
-const GmxConnectModalContext = createContext<GmxConnectModalContextValue>({
+const ConnectModalContext = createContext<ConnectModalContextValue>({
   openConnectModal: undefined,
   connectModalOpen: false,
 });
 
-export function GmxConnectModalProvider({ children }: { children: React.ReactNode }) {
+export function ConnectModalProvider({ children }: { children: React.ReactNode }) {
   const [connectModalOpen, setConnectModalOpen] = useState(false);
 
   const { connectWallet } = useConnectWallet({
@@ -26,7 +26,7 @@ export function GmxConnectModalProvider({ children }: { children: React.ReactNod
 
   const value = useMemo(() => ({ openConnectModal, connectModalOpen }), [openConnectModal, connectModalOpen]);
 
-  return <GmxConnectModalContext.Provider value={value}>{children}</GmxConnectModalContext.Provider>;
+  return <ConnectModalContext.Provider value={value}>{children}</ConnectModalContext.Provider>;
 }
 
 /**
@@ -34,5 +34,5 @@ export function GmxConnectModalProvider({ children }: { children: React.ReactNod
  * Returns { openConnectModal, connectModalOpen } with the same interface.
  */
 export function useConnectModal() {
-  return useContext(GmxConnectModalContext);
+  return useContext(ConnectModalContext);
 }

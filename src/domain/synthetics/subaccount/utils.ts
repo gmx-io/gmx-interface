@@ -1,6 +1,6 @@
 import cryptoJs from "crypto-js";
 import { ethers, Provider } from "ethers";
-import { decodeFunctionResult, encodeFunctionData, Hex, maxUint256, zeroAddress, zeroHash } from "viem";
+import { decodeFunctionResult, encodeFunctionData, isHex, maxUint256, type Hex, zeroAddress, zeroHash } from "viem";
 
 import type { AnyChainId, ContractsChainId } from "config/chains";
 import { isSourceChain } from "config/multichain";
@@ -595,11 +595,15 @@ async function getSubaccountOnchainData({
     to: getContract(chainId, "Multicall"),
   });
 
+  if (!isHex(result)) {
+    throw new Error("Invalid subaccount multicall result");
+  }
+
   const [_, decodedMulticallResults] = decodeFunctionResult({
     abi: abis.Multicall,
-    data: result as Hex,
+    data: result,
     functionName: "aggregate",
-  }) as [bigint, string[]];
+  }) as [bigint, Hex[]];
 
   const results: SubaccountOnchainData = Object.entries(calls).reduce((acc, [key, call], index) => {
     if (call === undefined) {
@@ -610,7 +614,7 @@ async function getSubaccountOnchainData({
     acc[key] = decodeFunctionResult({
       abi: call.abi,
       functionName: call.functionName,
-      data: decodedMulticallResults[index] as Hex,
+      data: decodedMulticallResults[index],
     });
 
     return acc;

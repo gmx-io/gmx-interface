@@ -4,7 +4,7 @@ import cx from "classnames";
 import { type Provider } from "ethers";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { Address, encodeAbiParameters, encodeEventTopics, toHex, zeroAddress, type Hex } from "viem";
+import { Address, encodeAbiParameters, encodeEventTopics, isHex, toHex, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import {
@@ -303,9 +303,13 @@ function useWithdrawViewTransactions({
                   return;
                 }
 
+                if (!isHex(txnHash)) {
+                  return;
+                }
+
                 getPublicClientWithRpc(chainId)
                   .waitForTransactionReceipt({
-                    hash: txnHash as Hex,
+                    hash: txnHash,
                   })
                   .then((receipt) => {
                     const bridgeOutEvent = receipt.logs.find(

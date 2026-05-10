@@ -5,9 +5,9 @@ import {
   ContractFunctionName,
   ContractFunctionParameters,
   encodeFunctionData,
+  isAddress,
+  isHex,
   numberToHex,
-  type Address,
-  type Hex,
   type StateOverride,
 } from "viem";
 
@@ -70,11 +70,15 @@ export async function simulateCallDataWithTenderly({
   }
 
   if (gasLimit === undefined) {
+    if (!isAddress(from) || !isAddress(to) || !isHex(data)) {
+      throw new Error("Invalid Tenderly simulation transaction data");
+    }
+
     gasLimit = await publicClient
       .estimateGas({
-        account: from as Address,
-        to: to as Address,
-        data: data as Hex,
+        account: from,
+        to,
+        data,
         value: value,
       })
       .then(applyGasLimitBuffer);

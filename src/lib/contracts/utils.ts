@@ -1,5 +1,5 @@
 import { BaseContract, Contract } from "ethers";
-import type { Address, Hex } from "viem";
+import { isAddress, isHex } from "viem";
 
 import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
@@ -25,10 +25,14 @@ export async function getGasLimit({
   const publicClient = getPublicClientWithRpc(chainId);
   const to = await contract.getAddress();
   const data = contract.interface.encodeFunctionData(method, params);
+  if (!from || !isAddress(from) || !isAddress(to) || !isHex(data)) {
+    throw new Error("Invalid gas estimation parameters");
+  }
+
   const gasLimit = await publicClient.estimateGas({
-    account: from! as Address,
-    to: to as Address,
-    data: data as Hex,
+    account: from,
+    to,
+    data,
     value: value !== undefined ? BigInt(value) : undefined,
   });
   return applyGasLimitBuffer(gasLimit);

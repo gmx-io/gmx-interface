@@ -1,4 +1,4 @@
-import type { Address, Hex } from "viem";
+import { isAddress, isHex } from "viem";
 
 import { extendError } from "lib/errors";
 import { additionalTxnErrorValidation } from "lib/errors/additionalValidation";
@@ -78,15 +78,17 @@ export async function sendWalletTransaction({
 
     const gasLimitPromise = gasLimit
       ? Promise.resolve(gasLimit)
-      : getPublicClientWithRpc(chainId)
-          .estimateGas({
-            account: from as Address,
-            to: to as Address,
-            data: callData as Hex,
-            value,
-          })
-          .then(applyGasLimitBuffer)
-          .catch(() => undefined);
+      : isAddress(from) && isAddress(to) && isHex(callData)
+        ? getPublicClientWithRpc(chainId)
+            .estimateGas({
+              account: from,
+              to,
+              data: callData,
+              value,
+            })
+            .then(applyGasLimitBuffer)
+            .catch(() => undefined)
+        : Promise.resolve(undefined);
 
     const provider = getProvider(undefined, chainId);
     const gasPriceDataPromise = gasPriceData

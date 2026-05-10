@@ -144,7 +144,7 @@ export async function getTokenPermitParams(
     abi: abis.Multicall,
     data: result as `0x${string}`,
     functionName: "aggregate",
-  }) as [bigint, string[]];
+  }) as [bigint, Hex[]];
 
   const name = decodeFunctionResult({
     abi: ERC20PermitInterfaceAbi,
@@ -155,7 +155,7 @@ export async function getTokenPermitParams(
   const nonce = decodeFunctionResult({
     abi: ERC20PermitInterfaceAbi,
     functionName: "nonces",
-    data: decodedMulticallResults[1] as Hex,
+    data: decodedMulticallResults[1],
   }) as bigint;
 
   const version =
