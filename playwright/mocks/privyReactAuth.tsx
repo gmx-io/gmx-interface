@@ -17,4 +17,3 @@ export function usePrivy() {
     logout: () => undefined,
   };
 }
-
