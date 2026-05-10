@@ -19,7 +19,7 @@ import { GM_DECIMALS } from "lib/legacy";
 import { expandDecimals, formatBalanceAmount, formatUsd } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { shortenAddressOrEns } from "lib/wallets";
-import { useGmxConnectModal } from "lib/wallets/useGmxConnectModal";
+import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { Distribution } from "sdk/codegen/subsquid";
@@ -95,7 +95,7 @@ function getNormalizedIncentive(
 
 export default function UserIncentiveDistribution() {
   const { account, active } = useWallet();
-  const { openConnectModal } = useGmxConnectModal();
+  const { openConnectModal } = useConnectModal();
   const { chainId, srcChainId } = useChainId();
   const tokens = getTokens(chainId);
   const gmMarkets = useSelector(selectGmMarkets);

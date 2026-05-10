@@ -13,7 +13,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatAmountFree, parseValue } from "lib/numbers";
 import { mustNeverExist } from "lib/types";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import { useGmxConnectModal } from "lib/wallets/useGmxConnectModal";
+import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 import { bigMath } from "sdk/utils/bigmath";
@@ -52,7 +52,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
   const { chainId } = useChainId();
   const { signer, account, active } = useWallet();
   const { setPendingTxns } = usePendingTxns();
-  const { openConnectModal } = useGmxConnectModal();
+  const { openConnectModal } = useConnectModal();
   const vestingData = useVestingData(account);
 
   const [selectedVault, setSelectedVault] = useState<VestVault>("gmx");

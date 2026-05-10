@@ -4,7 +4,7 @@ import { MarketsInfoResult } from "domain/synthetics/markets";
 import { PositionsInfoData } from "domain/synthetics/positions";
 import { TokensDataResult } from "domain/synthetics/tokens";
 import { useMeasureLoadTime } from "lib/metrics";
-import { useGmxConnectModal } from "lib/wallets/useGmxConnectModal";
+import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 
 export function useCollectSyntheticsMetrics({
@@ -25,7 +25,7 @@ export function useCollectSyntheticsMetrics({
   pageType: string;
 }) {
   const { account } = useWallet();
-  const { connectModalOpen } = useGmxConnectModal();
+  const { connectModalOpen } = useConnectModal();
   const [shouldSkipAccountMetrics, setShouldSkipAccountMetrics] = useState(false);
 
   useMeasureLoadTime({

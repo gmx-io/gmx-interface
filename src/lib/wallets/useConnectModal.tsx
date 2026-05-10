@@ -33,6 +33,6 @@ export function GmxConnectModalProvider({ children }: { children: React.ReactNod
  * Drop-in replacement for RainbowKit's useConnectModal.
  * Returns { openConnectModal, connectModalOpen } with the same interface.
  */
-export function useGmxConnectModal() {
+export function useConnectModal() {
   return useContext(GmxConnectModalContext);
 }

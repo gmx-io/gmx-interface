@@ -10,7 +10,7 @@ import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useChainId } from "lib/chains";
 import { contractFetcher } from "lib/contracts/contractFetcher";
 import { PLACEHOLDER_ACCOUNT, StakingProcessedData } from "lib/legacy";
-import { useGmxConnectModal } from "lib/wallets/useGmxConnectModal";
+import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 
 import Button from "components/Button/Button";
@@ -26,7 +26,7 @@ type ClaimRewardsButtonProps = {
 
 export function ClaimRewardsButton({ processedData, mutateProcessedData, className }: ClaimRewardsButtonProps) {
   const { active, account, signer } = useWallet();
-  const { openConnectModal } = useGmxConnectModal();
+  const { openConnectModal } = useConnectModal();
   const { chainId } = useChainId();
   const { setPendingTxns } = usePendingTxns();
 

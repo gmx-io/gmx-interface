@@ -80,7 +80,7 @@ import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
 import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
-import { useGmxConnectModal } from "lib/wallets/useGmxConnectModal";
+import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 import { getContract } from "sdk/configs/contracts";
 import { convertTokenAddress, getToken, getTokenVisualMultiplier } from "sdk/configs/tokens";
@@ -143,7 +143,7 @@ export function PositionSeller() {
   const { chainId, srcChainId } = useChainId();
   const { signer, account } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
-  const { openConnectModal } = useGmxConnectModal();
+  const { openConnectModal } = useConnectModal();
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
   const hasOutdatedUi = useHasOutdatedUi();

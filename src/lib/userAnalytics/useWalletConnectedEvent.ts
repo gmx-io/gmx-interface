@@ -3,7 +3,7 @@ import { useAccount } from "wagmi";
 
 import { useAccountStats } from "domain/synthetics/accountStats/useAccountStats";
 import { useChainId } from "lib/chains";
-import { useGmxConnectModal } from "lib/wallets/useGmxConnectModal";
+import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 
 import { userAnalytics } from ".";
@@ -13,7 +13,7 @@ export function useWalletConnectedUserAnalyticsEvent() {
   const [wasConnected, setWasConnected] = useState(false);
   const [wasSent, setWasSent] = useState(false);
   const { chainId } = useChainId();
-  const { connectModalOpen } = useGmxConnectModal();
+  const { connectModalOpen } = useConnectModal();
   const { account } = useWallet();
   const { connector } = useAccount();
 

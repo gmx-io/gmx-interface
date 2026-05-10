@@ -10,7 +10,7 @@ import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnuali
 import { StakingProcessedData } from "lib/legacy";
 import { getByKey } from "lib/objects";
 import { useBreakpoints } from "lib/useBreakpoints";
-import { useGmxConnectModal } from "lib/wallets/useGmxConnectModal";
+import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 
 import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletButton";
@@ -96,7 +96,7 @@ function AssetsList({
   const shouldUseFlex = (cardsCount < 3 && isEnoughSpaceFor2Columns) || (cardsCount < 4 && isEnoughSpaceFor3Columns);
 
   const { account } = useWallet();
-  const { openConnectModal } = useGmxConnectModal();
+  const { openConnectModal } = useConnectModal();
 
   const sortedAssets = useMemo(() => {
     return getSortedAssets({

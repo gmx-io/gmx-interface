@@ -2,7 +2,7 @@ import { Trans } from "@lingui/macro";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
-import { useGmxConnectModal } from "lib/wallets/useGmxConnectModal";
+import { useConnectModal } from "lib/wallets/useConnectModal";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -55,7 +55,7 @@ export function CreateAffiliateWizard({
   initialReferralCode: string | undefined;
   traderDiscountPercentage?: string | number;
 }) {
-  const { openConnectModal } = useGmxConnectModal();
+  const { openConnectModal } = useConnectModal();
   const { isConnected } = useAccount();
 
   const [wizardStep, setWizardStep] = useState(CreateAffiliateWizardStep.ConnectWallet);

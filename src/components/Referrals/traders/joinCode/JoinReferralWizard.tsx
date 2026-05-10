@@ -13,7 +13,7 @@ import {
 } from "domain/referrals";
 import { getSharePercentage } from "domain/referrals/utils/referralsHelper";
 import { useChainId } from "lib/chains";
-import { useGmxConnectModal } from "lib/wallets/useGmxConnectModal";
+import { useConnectModal } from "lib/wallets/useConnectModal";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -54,7 +54,7 @@ function DiscountPromos() {
 }
 
 export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDashboard: () => void }) {
-  const { openConnectModal } = useGmxConnectModal();
+  const { openConnectModal } = useConnectModal();
   const { isConnected, address } = useAccount();
   const { chainId } = useChainId();
   const history = useHistory();

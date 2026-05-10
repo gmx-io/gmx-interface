@@ -84,7 +84,7 @@ import { useCursorInside } from "lib/useCursorInside";
 import { sendTradeBoxInteractionStartedEvent } from "lib/userAnalytics";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
-import { useGmxConnectModal } from "lib/wallets/useGmxConnectModal";
+import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
@@ -159,7 +159,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const srcChainId = useSelector(selectSrcChainId);
   const { account, active } = useWallet();
-  const { openConnectModal } = useGmxConnectModal();
+  const { openConnectModal } = useConnectModal();
 
   const walletIconUrls = useWalletIconUrls();
 

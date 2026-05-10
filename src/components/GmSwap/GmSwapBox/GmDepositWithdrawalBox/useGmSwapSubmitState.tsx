@@ -47,7 +47,7 @@ import { isCustomError } from "lib/errors";
 import { adjustForDecimals, formatBalanceAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import { useGmxConnectModal } from "lib/wallets/useGmxConnectModal";
+import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 import { GmSwapFees } from "sdk/utils/trade/types";
@@ -118,7 +118,7 @@ export const useGmSwapSubmitState = ({
   const gasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
   const gasPaymentToken = useSelector(selectGasPaymentToken);
   const hasOutdatedUi = useHasOutdatedUi();
-  const { openConnectModal } = useGmxConnectModal();
+  const { openConnectModal } = useConnectModal();
   const { account } = useWallet();
 
   const {

@@ -12,7 +12,7 @@ import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
 import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
-import { useGmxConnectModal } from "lib/wallets/useGmxConnectModal";
+import { useConnectModal } from "lib/wallets/useConnectModal";
 import type { GmSwapFees } from "sdk/utils/trade/types";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -51,7 +51,7 @@ export function useShiftSubmitState({
   const account = useSelector(selectAccount);
   const hasOutdatedUi = useHasOutdatedUi();
 
-  const { openConnectModal } = useGmxConnectModal();
+  const { openConnectModal } = useConnectModal();
 
   const { isSubmitting, onSubmit } = useShiftTransactions({
     fromMarketToken: selectedToken,
