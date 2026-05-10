@@ -13,6 +13,7 @@ import {
 
 import { getViemChain, isTestnetChain } from "config/chains";
 import { isDevelopment } from "config/env";
+import { PRIVY_APP_ID } from "config/privy";
 import { getRpcProviders, RpcConfig } from "config/rpc";
 import { RpcPurpose } from "config/rpc";
 import { metrics, ViemWsClientConnected, ViemWsClientDisconnected, ViemWsClientError } from "lib/metrics";
@@ -20,7 +21,7 @@ import { getWsUrl } from "lib/rpc";
 import { AnyChainId, VIEM_CHAIN_BY_CHAIN_ID } from "sdk/configs/chains";
 import { LRUCache } from "sdk/utils/LruCache";
 
-export const PRIVY_APP_ID = import.meta.env.VITE_PRIVY_APP_ID || "PRIVY_APP_ID_PLACEHOLDER";
+export { PRIVY_APP_ID };
 
 /**
  * Privy wallet list for the connect modal.
