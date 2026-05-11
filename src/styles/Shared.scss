@@ -12,11 +12,6 @@ body,
   color: var(--color-typography-primary);
 }
 
-#root > div {
-  height: 100%;
-  width: 100%;
-}
-
 /**
  * @see https://aykevl.nl/2014/09/fix-jumping-scrollbar
  * Used body selector and !important to avoid collisions with [data-scroll-locked] attribute
