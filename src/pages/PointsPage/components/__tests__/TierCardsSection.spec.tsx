@@ -139,32 +139,34 @@ afterEach(() => {
 
 describe("TierCardsSection", () => {
   describe("VolumeBanner (inactive volume card)", () => {
-    it("shows first volume tier threshold from config", () => {
-      renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={undefined} />);
-
-      // First tier threshold is $2,000 => formatAmountHuman renders "$⁠2k" (with thin space)
-      expect(screen.getByText(/2k/i)).toBeDefined();
-    });
-
-    it("shows first tier name from config (Ranked for Tier1)", () => {
-      renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={undefined} />);
-
-      expect(screen.getByText(/Ranked/)).toBeDefined();
-    });
-
-    it("shows first tier multiplier from config", () => {
+    it("shows static FEDEV-3501 banner copy", () => {
       renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={undefined} />);
 
       const allText = document.body.textContent || "";
-      expect(allText).toContain("0.25x");
+      expect(screen.getByText("Trade More. Earn More.")).toBeDefined();
+      expect(
+        screen.getByText("Increase your trading volume to unlock a higher status and boost your rewards multiplier.")
+      ).toBeDefined();
+      expect(screen.getByText("Start trading")).toBeDefined();
+      expect(allText).not.toContain("Reach $");
+      expect(allText).not.toContain("additional trading rewards");
     });
 
-    it("shows calculated rewards estimate", () => {
-      renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={undefined} />);
+    it("does not use currentEpochStats.volumeTier to activate the volume card", () => {
+      const currentEpochStats: EpochStats = {
+        account: "0x1234",
+        multiplier: 125,
+        epochTimestamp: 1700000000,
+        volumeTier: "Tier1",
+        stakingTier: null,
+        tradedVolume: 3000n * USD,
+        boostIds: [],
+      };
 
-      // Both volume and staking banners contain "additional trading rewards"
-      const elements = screen.getAllByText(/additional trading rewards/);
-      expect(elements.length).toBeGreaterThanOrEqual(1);
+      renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />);
+
+      expect(screen.getByText("Trade More. Earn More.")).toBeDefined();
+      expect(screen.queryByText(/Volume this epoch/)).toBeNull();
     });
   });
 
@@ -282,7 +284,7 @@ describe("TierCardsSection", () => {
       };
 
       const { container } = renderWithI18n(
-        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />
+        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} effectiveVolumeTier="Tier1" />
       );
 
       // Should show "Volume this epoch:" with current volume
@@ -308,7 +310,7 @@ describe("TierCardsSection", () => {
       };
 
       const { container } = renderWithI18n(
-        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />
+        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} effectiveVolumeTier="Tier2" />
       );
 
       const allText = container.textContent || "";
@@ -328,7 +330,7 @@ describe("TierCardsSection", () => {
       };
 
       const { container } = renderWithI18n(
-        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />
+        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} effectiveVolumeTier="Tier2" />
       );
 
       // Find the volume progress bar fill (has bg-blue-300 inline width style)
@@ -352,7 +354,7 @@ describe("TierCardsSection", () => {
       };
 
       const { container } = renderWithI18n(
-        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />
+        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} effectiveVolumeTier="Tier1" />
       );
 
       // The volume progress bar lives inside a tooltip-handle wrapper; the mock renders
@@ -382,7 +384,12 @@ describe("TierCardsSection", () => {
       };
 
       const { container } = renderWithI18n(
-        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} projectedVolumeTier={null} />
+        <TierCardsSection
+          config={mockConfig}
+          currentEpochStats={currentEpochStats}
+          effectiveVolumeTier="Tier2"
+          projectedVolumeTier={null}
+        />
       );
 
       const tooltips = container.querySelectorAll('[data-testid="tooltip"]');
@@ -508,7 +515,7 @@ describe("TierCardsSection", () => {
       };
 
       const { container } = renderWithI18n(
-        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />
+        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} effectiveVolumeTier="Tier4" />
       );
 
       const allText = container.textContent || "";
@@ -538,7 +545,12 @@ describe("TierCardsSection", () => {
       };
 
       const { container } = renderWithI18n(
-        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} projectedVolumeTier={null} />
+        <TierCardsSection
+          config={mockConfig}
+          currentEpochStats={currentEpochStats}
+          effectiveVolumeTier="Tier4"
+          projectedVolumeTier={null}
+        />
       );
 
       const allText = container.textContent || "";

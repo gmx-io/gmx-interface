@@ -10,14 +10,10 @@ import {
   STAKING_TIER_BADGES,
   VOLUME_TIER_BADGES,
   formatMultiplier,
-  INCENTIVES_BASE_RATE,
-  INCENTIVES_FEE_RATE,
-  MULTIPLIER_DECIMALS,
-  MAX_FEE_DISCOUNT_PERCENT,
 } from "domain/synthetics/incentives/constants";
 import type { EpochStats, IncentivesConfig, StakingTierId, VolumeTierId } from "domain/synthetics/incentives/types";
 import { usePersonalizedBannerData } from "domain/synthetics/incentives/usePersonalizedBannerData";
-import { formatAmount, formatAmountHuman, bigintToNumber } from "lib/numbers";
+import { formatAmount, formatAmountHuman } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
 import {
@@ -60,7 +56,7 @@ export function TierCardsSection({
   projectedStakingTier,
   hideInactive = false,
 }: Props) {
-  const volumeActive = Boolean(effectiveVolumeTier ?? currentEpochStats?.volumeTier);
+  const volumeActive = Boolean(effectiveVolumeTier);
   const stakingActive = Boolean(effectiveStakingTier ?? currentEpochStats?.stakingTier ?? projectedStakingTier);
   const boostsActive = Boolean(currentEpochStats?.boostIds?.length);
 
@@ -120,18 +116,6 @@ const GMX_DECIMALS = 18;
 
 function formatCompactUsd(amount: bigint) {
   return formatAmountHuman(amount, USD_DECIMALS, true, 0).replace(/[kmb]$/i, (suffix) => suffix.toUpperCase());
-}
-
-/**
- * Estimate weekly rewards for a given volume and multiplier based on config values.
- * Returns a rounded USD number suitable for display (e.g. 300).
- */
-function estimateWeeklyRewards(volumeUsd: number, rawMultiplier: number, multiplierDecimals: number): number {
-  const mult = rawMultiplier / multiplierDecimals;
-  const fees = volumeUsd * INCENTIVES_FEE_RATE;
-  const maxDiscount = (MAX_FEE_DISCOUNT_PERCENT / 100) * fees;
-  const rewards = fees * INCENTIVES_BASE_RATE * (1.0 + mult);
-  return Math.round(Math.min(rewards, maxDiscount));
 }
 
 function MultiplierBadge({
@@ -404,38 +388,20 @@ function VolumeCard({
           </div>
         </>
       ) : (
-        <VolumeBanner config={config} />
+        <VolumeBanner />
       )}
     </div>
   );
 }
 
-function VolumeBanner({ config }: { config?: IncentivesConfig }) {
-  const firstTier = config?.volumeTiers?.[0];
-  const multiplierDecimals = config?.multiplierDecimals ?? MULTIPLIER_DECIMALS;
-
-  if (!firstTier) {
-    return <TierCardCopySkeleton />;
-  }
-
-  const volumeLabel = formatAmountHuman(firstTier.threshold, USD_DECIMALS, true, 0);
-  const tierName = VOLUME_TIER_BADGES[firstTier.tier]();
-  const multiplierLabel = formatMultiplier(firstTier.multiplier);
-  const rewardsEstimate = estimateWeeklyRewards(
-    bigintToNumber(firstTier.threshold, USD_DECIMALS),
-    firstTier.multiplier,
-    multiplierDecimals
-  );
-
+function VolumeBanner() {
   return (
     <div className="flex flex-1 flex-col justify-end gap-8">
       <h3 className="text-h3 font-medium text-typography-primary">
-        <Trans>Reach {volumeLabel} in trading volume</Trans>
+        <Trans>Trade More. Earn More.</Trans>
       </h3>
       <div className="flex items-start gap-4 text-13 font-medium text-typography-secondary">
-        <Trans>
-          Unlock {tierName} status (+{multiplierLabel}) and earn up to ${rewardsEstimate} in additional trading rewards.
-        </Trans>
+        <Trans>Increase your trading volume to unlock a higher status and boost your rewards multiplier.</Trans>
       </div>
       <Link to="/trade" className="flex items-center gap-4 text-13 font-medium text-blue-300">
         <Trans>Start trading</Trans> <ArrowRight />
@@ -853,18 +819,6 @@ function BoostsCard({
         </div>
       )}
     </div>
-  );
-}
-
-function TierCardCopySkeleton() {
-  return (
-    <SkeletonTheme baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A">
-      <div className="flex flex-1 flex-col justify-end gap-8">
-        <Skeleton width="70%" height={22} inline />
-        <Skeleton width="90%" height={14} inline />
-        <Skeleton width={96} height={14} inline />
-      </div>
-    </SkeletonTheme>
   );
 }
 
