@@ -10,7 +10,7 @@ import { abis } from "sdk/abis";
 import { bigMath } from "sdk/utils/bigmath";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "sdk/utils/numbers";
 
-const LZ_NATIVE_FEE_BUFFER_BPS = 1000n; // 10%
+const LZ_NATIVE_FEE_BUFFER_BPS = 3000n; // 30%
 
 function applyBufferBps(value: bigint, bufferBps: bigint): bigint {
   const buffer = bigMath.mulDiv(value, bufferBps, BASIS_POINTS_DIVISOR_BIGINT);
