@@ -229,10 +229,6 @@ msgstr ""
 msgid "Accumulated rewards"
 msgstr ""
 
-#: src/components/PositionShare/PositionShare.tsx
-msgid "Show rPnL amounts"
-msgstr ""
-
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Show other assets ({0})"
 msgstr ""
@@ -2583,6 +2579,10 @@ msgstr ""
 msgid "Checking code..."
 msgstr ""
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show PnL after fees"
+msgstr ""
+
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No eligible holdings detected"
 msgstr ""
@@ -2617,10 +2617,6 @@ msgstr ""
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buying {symbol}..."
-msgstr ""
-
-#: src/components/PositionShare/PositionShare.tsx
-msgid "Show PnL amounts"
 msgstr ""
 
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
@@ -4108,6 +4104,10 @@ msgstr ""
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Referral discounts apply to opening and closing fees for leverage trading. Swap fees are not included."
+msgstr ""
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show rPnL after fees"
 msgstr ""
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
