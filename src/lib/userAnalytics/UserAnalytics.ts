@@ -4,20 +4,24 @@ import { UserAnalyticsEventItem } from "lib/oracleKeeperFetcher";
 import { sleep } from "lib/sleep";
 
 import { getOrSetSessionId, SESSION_ID_KEY, setLastEventTime } from "./sessionId";
+import type { WalletAnalyticsProvenance } from "./walletProvenance";
 import { metrics } from "../metrics/Metrics";
 
-type CommonEventParams = {
-  platform?: string;
-  browserName?: string;
-  ordersCount?: number;
-  isWalletConnected?: boolean;
-  isTest: boolean;
-  isInited?: boolean;
-} & {
+type AbFlagEventParams = {
   [key in AbFlag]: boolean;
 };
 
-type ProfileProps = {
+type CommonEventParams = WalletAnalyticsProvenance &
+  AbFlagEventParams & {
+    platform?: string;
+    browserName?: string;
+    ordersCount?: number;
+    isWalletConnected?: boolean;
+    isTest: boolean;
+    isInited?: boolean;
+  };
+
+type ProfileProps = WalletAnalyticsProvenance & {
   last30DVolume?: number;
   totalVolume?: number;
   languageCode: string;

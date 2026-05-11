@@ -23,15 +23,9 @@ import { LRUCache } from "sdk/utils/LruCache";
 
 export { PRIVY_APP_ID };
 
-export const PRIVY_WALLET_LIST = [
-  "metamask",
-  "safe",
-  "binance",
-  "base_account",
-  "okx_wallet",
-  "detected_ethereum_wallets",
-  "wallet_connect",
-] as const;
+export const PRIVY_WALLET_LIST = ["metamask", "rabby_wallet", "phantom", "wallet_connect"] as const;
+
+export const PRIVY_LOGIN_METHODS = ["wallet", "email", "google", "twitter", "discord"] as const;
 
 export function getSupportedChains(): [Chain, ...Chain[]] {
   return Object.values(VIEM_CHAIN_BY_CHAIN_ID).filter((chain) => isDevelopment() || !isTestnetChain(chain.id)) as [
