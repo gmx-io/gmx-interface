@@ -18,6 +18,8 @@ const GMX_DECIMALS_FACTOR = 10n ** 18n;
 
 const RECENT_FEES_THRESHOLD_USD = 20;
 const NEW_USER_WINDOW_SECONDS = 14 * 24 * 60 * 60;
+const INITIAL_WALLET_RECONNECT_SETTLE_MS = 500;
+const WAGMI_RECENT_CONNECTOR_KEY = "wagmi.recentConnectorId";
 
 export type BannerVariant = "manual-reward" | "recent-activity" | "new-or-low-fees";
 
@@ -63,14 +65,55 @@ function getHasVolumeAfterFirstProgramEpoch(
   return dashboard.recentStats.some((stat) => stat.epochTimestamp >= secondEpochTimestamp && stat.tradedVolume > 0n);
 }
 
+function getHasRecentWagmiConnector(): boolean {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  try {
+    return Boolean(window.localStorage.getItem(WAGMI_RECENT_CONNECTOR_KEY));
+  } catch {
+    return false;
+  }
+}
+
 export function usePersonalizedBannerData(): PersonalizedBannerData {
   const { chainId } = useChainId();
   const { active, signer, account, status } = useWallet();
 
   const incentivesEnabled = isIncentivesEnabled(chainId);
   const enabled = incentivesEnabled && Boolean(account);
+  const [isInitialWalletReconnectSettling, setIsInitialWalletReconnectSettling] = useState(
+    () => incentivesEnabled && !account && status === "disconnected" && getHasRecentWagmiConnector()
+  );
   const isWalletAccountSettling =
-    incentivesEnabled && !account && (status === "connecting" || status === "reconnecting");
+    incentivesEnabled &&
+    (status === "connecting" || status === "reconnecting" || (!account && isInitialWalletReconnectSettling));
+
+  useEffect(() => {
+    if (!incentivesEnabled) {
+      setIsInitialWalletReconnectSettling(false);
+      return;
+    }
+
+    if (account || status === "connecting" || status === "reconnecting") {
+      setIsInitialWalletReconnectSettling(false);
+      return;
+    }
+
+    if (status !== "disconnected" || !getHasRecentWagmiConnector()) {
+      return;
+    }
+
+    setIsInitialWalletReconnectSettling(true);
+    const timeout = window.setTimeout(() => {
+      setIsInitialWalletReconnectSettling(false);
+    }, INITIAL_WALLET_RECONNECT_SETTLE_MS);
+
+    return () => {
+      window.clearTimeout(timeout);
+    };
+  }, [account, incentivesEnabled, status]);
 
   const { data: config, loading: configLoading } = useIncentivesConfig(chainId);
   const { data: dashboard, loading: dashboardLoading } = useAccountIncentiveDashboard(chainId, {
@@ -207,7 +250,7 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
     }
   }, [enabled]);
 
-  return useMemo(() => {
+  const personalizedBannerData = useMemo(() => {
     if (!enabled) {
       return resolvedBannerData ?? getLoadingBannerData();
     }
@@ -220,7 +263,7 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
       return resolvedBannerData;
     }
 
-    if (hasResolvedSession && underlyingLoading && resolvedSessionData) {
+    if (hasResolvedSession && resolvedSessionData && (underlyingLoading || !resolvedBannerData)) {
       return resolvedSessionData.data;
     }
 
@@ -238,4 +281,6 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
     underlyingLoading,
     resolvedSessionData,
   ]);
+
+  return personalizedBannerData;
 }

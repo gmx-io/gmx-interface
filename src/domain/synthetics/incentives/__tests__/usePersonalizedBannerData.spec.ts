@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { act, render } from "@testing-library/react";
 import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
@@ -177,13 +177,14 @@ function setupDefaults(overrides?: {
     loading: o.manualAllocatedPointsLoading ?? false,
   } as any);
   mockUseGmxPrice.mockReturnValue({
-    gmxPrice: o.gmxPrice ?? 20n * USD,
+    gmxPrice: "gmxPrice" in o ? o.gmxPrice : 20n * USD,
     mutate: vi.fn(),
   } as any);
 }
 
 beforeEach(() => {
   vi.clearAllMocks();
+  window.localStorage.clear();
   vi.useFakeTimers();
   vi.setSystemTime(new Date(NOW_SECONDS * 1000));
 });
@@ -415,6 +416,32 @@ describe("usePersonalizedBannerData", () => {
     expect(result.current.isLoading).toBe(true);
   });
 
+  it("does not show the account banner while wallet status is still connecting", () => {
+    setupDefaults({ account: "0x1234", walletStatus: "connecting", manualAllocatedPoints: 25n * GMX_DEC });
+
+    const result = renderHook(() => usePersonalizedBannerData());
+
+    expect(result.current.bannerVariant).toBeUndefined();
+    expect(result.current.isLoading).toBe(true);
+  });
+
+  it("briefly waits for a stored wallet connector before showing the disconnected fallback", () => {
+    window.localStorage.setItem("wagmi.recentConnectorId", "injected");
+    setupDefaults({ account: undefined, walletStatus: "disconnected" });
+
+    const result = renderHook(() => usePersonalizedBannerData());
+
+    expect(result.current.bannerVariant).toBeUndefined();
+    expect(result.current.isLoading).toBe(true);
+
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
+
+    expect(result.current.bannerVariant).toBe("new-or-low-fees");
+    expect(result.current.isLoading).toBe(false);
+  });
+
   it("keeps the resolved account banner during transient SWR loading gaps", () => {
     setupDefaults({ netPositionFees: 50n * USD, firstTradeTimestamp: OLD_FIRST_TRADE });
     const result = renderHook(() => usePersonalizedBannerData());
@@ -432,6 +459,21 @@ describe("usePersonalizedBannerData", () => {
 
     expect(result.current.bannerVariant).toBe("recent-activity");
     expect(result.current.estimatedRewardsUsd).toBe(25);
+    expect(result.current.isLoading).toBe(false);
+  });
+
+  it("keeps a resolved manual reward banner during transient GMX price gaps", () => {
+    setupDefaults({ manualAllocatedPoints: 25n * GMX_DEC, gmxPrice: 20n * USD });
+    const result = renderHook(() => usePersonalizedBannerData());
+
+    expect(result.current.bannerVariant).toBe("manual-reward");
+    expect(result.current.manualBonusUsd).toBe(25n * 20n * USD);
+
+    setupDefaults({ manualAllocatedPoints: 25n * GMX_DEC, gmxPrice: undefined });
+    result.rerender();
+
+    expect(result.current.bannerVariant).toBe("manual-reward");
+    expect(result.current.manualBonusUsd).toBe(25n * 20n * USD);
     expect(result.current.isLoading).toBe(false);
   });
 
