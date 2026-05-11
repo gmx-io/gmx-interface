@@ -17,10 +17,12 @@ const REGULAR_TAB_CLASS_NAME = "!px-0 !pb-11 !pt-13 text-13";
 export function FavoriteTabs({
   favoritesKey,
   className,
+  type = "block",
   recentlyListedCount = 0,
 }: {
   favoritesKey: TokenFavoriteKey;
   className?: string;
+  type?: "inline" | "block";
   recentlyListedCount?: number;
 }) {
   const { topLevelTab, setTopLevelTab } = useTokensFavorites(favoritesKey);
@@ -50,10 +52,10 @@ export function FavoriteTabs({
       options={options}
       selectedValue={topLevelTab}
       onChange={setTopLevelTab}
-      type="block"
+      type={type}
       className={className}
-      regularOptionClassname={REGULAR_TAB_CLASS_NAME}
-      tabsWrapperClassName="gap-16"
+      regularOptionClassname={type === "block" ? REGULAR_TAB_CLASS_NAME : undefined}
+      tabsWrapperClassName={type === "block" ? "gap-16" : undefined}
     />
   );
 }
