@@ -10,8 +10,7 @@ import {
   selectSrcChainId,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import type { SubCategoryTab } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
-import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
+import { SubCategoryTab, useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { MarketTokensAPRData, getTotalGmInfo } from "domain/synthetics/markets";
 import { useMarketsListingDates } from "domain/synthetics/markets/useMarketsListingDates";
 import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
@@ -110,7 +109,7 @@ export function GmList({
     if (!marketsInfo) return set;
     for (const cat of ["commodities", "stocks", "indices", "fx"] as const) {
       const found = Object.values(marketsInfo).some(
-        (m) => !m.isSpotOnly && !m.isDisabled && m.indexToken.categories?.includes(cat)
+        (m) => !m.isSpotOnly && !m.isDisabled && m.indexToken?.categories?.includes(cat)
       );
       if (found) set.add(cat);
     }
@@ -148,8 +147,6 @@ export function GmList({
   const rows =
     currentData.length > 0 &&
     currentData.map((token) => {
-      const market = marketsInfo?.[token.address];
-      const indexTokenAddr = market?.indexTokenAddress?.toLowerCase() ?? "";
       return (
         <GmListItem
           key={token.address}
@@ -165,7 +162,6 @@ export function GmList({
           performanceSnapshots={performanceSnapshots}
           isFavorite={favoriteTokens.includes(token.address)}
           onFavoriteClick={toggleFavoriteToken}
-          listingDate={indexTokenAddr ? listingDateByIndexToken[indexTokenAddr] : undefined}
         />
       );
     });
@@ -181,29 +177,42 @@ export function GmList({
           <Trans>
             Pools that provide liquidity to specific GMX markets. Supports single-asset and native asset options.
           </Trans>
-          <div className="flex flex-wrap items-center justify-between gap-12 py-8">
-            <SearchInput
-              className="w-full *:!text-body-medium md:max-w-[260px]"
-              value={searchText}
-              setValue={setSearchText}
-              placeholder={t`Search pools`}
-              autoFocus={false}
-            />
-            <div className="max-w-full">
-              <ButtonRowScrollFadeContainer>
-                <FavoriteTabs
-                  favoritesKey="gm-list"
-                  className="!text-typography-secondary hover:!text-typography-primary"
-                  activeClassName="!text-typography-primary"
-                  recentlyListedCount={recentlyListedCount}
-                />
-              </ButtonRowScrollFadeContainer>
+          <div className="flex flex-col gap-8 py-8">
+            <div className="flex flex-wrap items-center justify-between gap-12">
+              <div className="max-w-full">
+                <ButtonRowScrollFadeContainer>
+                  <FavoriteTabs favoritesKey="gm-list" recentlyListedCount={recentlyListedCount} />
+                </ButtonRowScrollFadeContainer>
+              </div>
+              <SearchInput
+                className="w-full *:!text-body-medium md:max-w-[260px]"
+                value={searchText}
+                setValue={setSearchText}
+                placeholder={t`Search pools`}
+                autoFocus={false}
+              />
             </div>
             {topLevelTab === "crypto" && populatedCryptoSubCats.size > 0 && (
-              <SubCategoryTabs favoritesKey="gm-list" parent="crypto" populatedSubCategories={populatedCryptoSubCats} />
+              <div className="flex max-w-full justify-start">
+                <ButtonRowScrollFadeContainer>
+                  <SubCategoryTabs
+                    favoritesKey="gm-list"
+                    parent="crypto"
+                    populatedSubCategories={populatedCryptoSubCats}
+                  />
+                </ButtonRowScrollFadeContainer>
+              </div>
             )}
             {topLevelTab === "tradfi" && populatedTradfiSubCats.size > 0 && (
-              <SubCategoryTabs favoritesKey="gm-list" parent="tradfi" populatedSubCategories={populatedTradfiSubCats} />
+              <div className="flex max-w-full justify-start">
+                <ButtonRowScrollFadeContainer>
+                  <SubCategoryTabs
+                    favoritesKey="gm-list"
+                    parent="tradfi"
+                    populatedSubCategories={populatedTradfiSubCats}
+                  />
+                </ButtonRowScrollFadeContainer>
+              </div>
             )}
           </div>
         </div>

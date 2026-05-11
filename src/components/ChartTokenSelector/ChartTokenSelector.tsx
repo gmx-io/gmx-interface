@@ -25,6 +25,9 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   SubCategoryTab,
   TopLevelTab,
+  cryptoSubCategoryOptions,
+  subCategoryTabLabels,
+  tradfiSubCategoryOptions,
   useTokensFavorites,
 } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { PreferredTradeTypePickStrategy } from "domain/synthetics/markets/chooseSuitableMarket";
@@ -38,6 +41,7 @@ import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
 import { stripBlacklistedWords, type Token } from "domain/tokens";
 import { getMidPrice } from "domain/tokens/utils";
+import { useLocalizedMap } from "lib/i18n";
 import { formatAmountHuman, formatUsdPrice } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { searchBy } from "lib/searchBy";
@@ -49,14 +53,16 @@ import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableConten
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import { RecentlyListedBadge } from "components/FavoriteTabs/RecentlyListedBadge";
-import { SubCategoryTabs } from "components/FavoriteTabs/SubCategoryTabs";
 import SearchInput from "components/SearchInput/SearchInput";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
+import Tabs from "components/Tabs/Tabs";
+import type { Option as TabOption } from "components/Tabs/types";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import LongIcon from "img/long.svg?react";
+import SearchIconComponent from "img/search.svg?react";
 import ShortIcon from "img/short.svg?react";
 
 import {
@@ -65,7 +71,7 @@ import {
   getRecentlyListedTokenAddresses,
   isMarketRecentlyListed,
 } from "./marketFilters";
-import { SelectorBase, SelectorBaseMobileHeaderContent, useSelectorClose } from "../SelectorBase/SelectorBase";
+import { SelectorBase, useSelectorClose } from "../SelectorBase/SelectorBase";
 
 type Props = {
   selectedToken: Token | undefined;
@@ -77,9 +83,11 @@ export default function ChartTokenSelector(props: Props) {
 
   const marketInfo = useSelector(selectTradeboxMarketInfo);
   const { isSwap } = useSelector(selectTradeboxTradeFlags);
+  const { mode } = useTokensFavorites("chart-token-selector");
   const poolName = marketInfo && !isSwap ? getMarketPoolName(marketInfo) : null;
 
   const { isMobile } = useBreakpoints();
+  const shouldUsePerpPanelWidth = !isSwap || mode === "perp";
 
   return (
     <SelectorBase
@@ -88,7 +96,10 @@ export default function ChartTokenSelector(props: Props) {
         "mr-24": oneRowLabels === false,
         "py-0 md:h-40": isSwap,
       })}
-      desktopPanelClassName={cx("max-w-[100vw] shadow-md", { "w-[520px]": isSwap, "w-[880px]": !isSwap })}
+      desktopPanelClassName={cx("max-w-[100vw] shadow-md", {
+        "w-[520px]": !shouldUsePerpPanelWidth,
+        "w-[880px]": shouldUsePerpPanelWidth,
+      })}
       chevronClassName="hidden"
       label={
         <Button variant="secondary">
@@ -169,32 +180,60 @@ function ModeTabs({ mode, setMode }: { mode: "perp" | "swap"; setMode: (mode: "p
   const swapRef = useRef<HTMLButtonElement>(null);
   const [thumb, setThumb] = useState<{ left: number; width: number } | null>(null);
 
-  useLayoutEffect(() => {
+  const updateThumb = useCallback(() => {
     const activeEl = mode === "perp" ? perpRef.current : swapRef.current;
     const container = containerRef.current;
     if (!activeEl || !container) return;
     const c = container.getBoundingClientRect();
     const r = activeEl.getBoundingClientRect();
+    if (!c.width || !r.width) return;
     setThumb({ left: r.left - c.left, width: r.width });
   }, [mode]);
 
+  const { isMobile } = useBreakpoints();
+
+  useLayoutEffect(() => {
+    updateThumb();
+
+    const frame = requestAnimationFrame(updateThumb);
+    let resizeObserver: ResizeObserver | undefined;
+
+    if (typeof ResizeObserver !== "undefined") {
+      resizeObserver = new ResizeObserver(updateThumb);
+
+      if (containerRef.current) {
+        resizeObserver.observe(containerRef.current);
+      }
+
+      const activeEl = mode === "perp" ? perpRef.current : swapRef.current;
+      if (activeEl) {
+        resizeObserver.observe(activeEl);
+      }
+    }
+
+    return () => {
+      cancelAnimationFrame(frame);
+      resizeObserver?.disconnect();
+    };
+  }, [isMobile, mode, updateThumb]);
+
   const thumbStyle = useMemo(
-    () => (thumb ? { left: `${thumb.left}px`, width: `${thumb.width}px` } : undefined),
-    [thumb]
+    () => (thumb ? { left: `${thumb.left}px`, width: isMobile ? "50%" : `${thumb.width}px` } : undefined),
+    [thumb, isMobile]
   );
 
   const itemClass =
-    "text-body-small relative z-10 flex h-full items-center justify-center rounded-6 px-10 py-4 font-medium transition-colors";
+    "text-body-small relative z-10 flex h-full items-center justify-center rounded-6 px-10 py-4 font-medium transition-colors max-md:w-[50%] max-md:px-0";
 
   return (
     <div
       ref={containerRef}
-      className="bg-fill-surfaceelevated relative flex h-32 shrink-0 items-center gap-2 rounded-8 p-2"
+      className="relative flex h-32 shrink-0 items-center gap-2 rounded-8 bg-slate-800 p-2 max-md:w-full"
     >
       {thumbStyle && (
         <div
           aria-hidden
-          className="absolute bottom-2 top-2 rounded-6 bg-button-secondary transition-all duration-200 ease-out"
+          className="absolute bottom-2 top-2 rounded-6 bg-slate-600 transition-all duration-200 ease-out"
           style={thumbStyle}
         />
       )}
@@ -234,8 +273,10 @@ function MarketsList() {
   const chooseSuitableMarket = useSelector(selectTradeboxChooseSuitableMarket);
   const tokensData = useSelector(selectTokensData);
 
-  const { topLevelTab, subCategoryTab, mode, setMode, favoriteTokens, toggleFavoriteToken } =
+  const { topLevelTab, subCategoryTab, mode, setMode, setSubCategoryTab, favoriteTokens, toggleFavoriteToken } =
     useTokensFavorites("chart-token-selector");
+
+  const localizedSubCategoryLabels = useLocalizedMap(subCategoryTabLabels);
 
   const { listingDateByIndexToken } = useMarketsListingDates(chainId);
 
@@ -291,6 +332,28 @@ function MarketsList() {
     }
     return set;
   }, [options]);
+
+  const cryptoSubCatTabs = useMemo<TabOption<SubCategoryTab>[]>(
+    () =>
+      cryptoSubCategoryOptions
+        .filter((opt) => opt === "all" || populatedCryptoSubCats.has(opt))
+        .map((opt) => ({
+          value: opt,
+          label: opt === "all" ? <Trans>All</Trans> : localizedSubCategoryLabels[opt],
+        })),
+    [populatedCryptoSubCats, localizedSubCategoryLabels]
+  );
+
+  const tradfiSubCatTabs = useMemo<TabOption<SubCategoryTab>[]>(
+    () =>
+      tradfiSubCategoryOptions
+        .filter((opt) => opt === "all" || populatedTradfiSubCats.has(opt))
+        .map((opt) => ({
+          value: opt,
+          label: opt === "all" ? <Trans>All</Trans> : localizedSubCategoryLabels[opt],
+        })),
+    [populatedTradfiSubCats, localizedSubCategoryLabels]
+  );
 
   const dayPriceDeltaMap = use24hPriceDeltaMap(chainId, availableChartTokenAddresses);
   const dayVolumesData = use24hVolumes();
@@ -377,7 +440,6 @@ function MarketsList() {
   const thClassName = cx(
     "sticky top-0 z-10 whitespace-nowrap bg-slate-900 text-left text-[11px] font-medium uppercase text-typography-secondary",
     "first-of-type:text-left",
-    "first-of-type:!pl-44",
     rowVerticalPadding,
     rowHorizontalPadding
   );
@@ -411,81 +473,52 @@ function MarketsList() {
 
   return (
     <>
-      <SelectorBaseMobileHeaderContent>
-        <div className="flex flex-col gap-4 pt-12">
-          <div className="flex items-center gap-12 px-12">
-            <ModeTabs mode={mode} setMode={setMode} />
-            <SearchInput
-              className="w-full *:!text-body-medium"
-              value={searchKeyword}
-              setValue={setSearchKeyword}
-              onKeyDown={handleKeyDown}
-              placeholder={placeholder}
-            />
-          </div>
-
-          <ButtonRowScrollFadeContainer>
-            <FavoriteTabs favoritesKey="chart-token-selector" recentlyListedCount={recentlyListedCount} />
-          </ButtonRowScrollFadeContainer>
-          {topLevelTab === "crypto" && populatedCryptoSubCats.size > 0 && (
-            <ButtonRowScrollFadeContainer>
-              <SubCategoryTabs
-                favoritesKey="chart-token-selector"
-                parent="crypto"
-                populatedSubCategories={populatedCryptoSubCats}
-              />
-            </ButtonRowScrollFadeContainer>
-          )}
-          {topLevelTab === "tradfi" && populatedTradfiSubCats.size > 0 && (
-            <ButtonRowScrollFadeContainer>
-              <SubCategoryTabs
-                favoritesKey="chart-token-selector"
-                parent="tradfi"
-                populatedSubCategories={populatedTradfiSubCats}
-              />
-            </ButtonRowScrollFadeContainer>
-          )}
+      <div className="flex flex-col">
+        <div className="mb-4 flex items-center gap-12 px-12 pt-12 max-md:flex-col max-md:gap-8">
+          <ModeTabs mode={mode} setMode={setMode} />
+          <SearchInput
+            className="w-full *:!text-body-medium"
+            value={searchKeyword}
+            setValue={setSearchKeyword}
+            onKeyDown={handleKeyDown}
+            placeholder={placeholder}
+          />
         </div>
-      </SelectorBaseMobileHeaderContent>
 
-      {!isMobile && (
-        <>
-          <div className="flex flex-col gap-4 border-b-1/2 border-slate-600 px-12 pt-12">
-            <div className="flex items-center gap-12">
-              <ModeTabs mode={mode} setMode={setMode} />
-              <SearchInput
-                className="w-full"
-                value={searchKeyword}
-                setValue={setSearchKeyword}
-                onKeyDown={handleKeyDown}
-                placeholder={placeholder}
-              />
-            </div>
-            <ButtonRowScrollFadeContainer>
-              <FavoriteTabs favoritesKey="chart-token-selector" recentlyListedCount={recentlyListedCount} />
-            </ButtonRowScrollFadeContainer>
-            {topLevelTab === "crypto" && populatedCryptoSubCats.size > 0 && (
-              <ButtonRowScrollFadeContainer>
-                <SubCategoryTabs
-                  favoritesKey="chart-token-selector"
-                  parent="crypto"
-                  populatedSubCategories={populatedCryptoSubCats}
-                />
-              </ButtonRowScrollFadeContainer>
-            )}
-            {topLevelTab === "tradfi" && populatedTradfiSubCats.size > 0 && (
-              <ButtonRowScrollFadeContainer>
-                <SubCategoryTabs
-                  favoritesKey="chart-token-selector"
-                  parent="tradfi"
-                  populatedSubCategories={populatedTradfiSubCats}
-                />
-              </ButtonRowScrollFadeContainer>
-            )}
-          </div>
-        </>
-      )}
-
+        <ButtonRowScrollFadeContainer>
+          <FavoriteTabs
+            favoritesKey="chart-token-selector"
+            recentlyListedCount={recentlyListedCount}
+            className="px-16"
+          />
+        </ButtonRowScrollFadeContainer>
+        {topLevelTab === "crypto" && populatedCryptoSubCats.size > 0 && (
+          <ButtonRowScrollFadeContainer>
+            <Tabs
+              options={cryptoSubCatTabs}
+              selectedValue={subCategoryTab}
+              onChange={setSubCategoryTab}
+              type="block"
+              className="bg-slate-800/50 px-16"
+              tabsWrapperClassName="gap-16"
+              regularOptionClassname="!px-0 !pb-9 !pt-11 text-13"
+            />
+          </ButtonRowScrollFadeContainer>
+        )}
+        {topLevelTab === "tradfi" && populatedTradfiSubCats.size > 0 && (
+          <ButtonRowScrollFadeContainer>
+            <Tabs
+              options={tradfiSubCatTabs}
+              selectedValue={subCategoryTab}
+              onChange={setSubCategoryTab}
+              type="block"
+              className="bg-slate-800/50 px-16"
+              tabsWrapperClassName="gap-16"
+              regularOptionClassname="!px-0 !pb-9 !pt-11 text-13"
+            />
+          </ButtonRowScrollFadeContainer>
+        )}
+      </div>
       <div
         className={cx({
           "max-h-[444px] overflow-x-auto": !isMobile,
@@ -580,17 +613,18 @@ function MarketsList() {
             isEmpty={true}
             emptyText={
               searchKeyword.trim() ? (
-                <div className="flex flex-col items-center gap-8">
-                  <span>
-                    <Trans>No matching markets</Trans>
+                <div className="flex flex-col items-center gap-12">
+                  <span className="text-12">
+                    <Trans>No markets matched.</Trans>
                   </span>
-                  <button
+                  <Button
                     type="button"
-                    className="cursor-pointer font-medium text-blue-300 underline"
+                    variant="secondary"
                     onClick={() => setMode(isSwap ? "perp" : "swap")}
                   >
                     {isSwap ? <Trans>Search in perpetuals markets</Trans> : <Trans>Search in swap markets</Trans>}
-                  </button>
+                    <SearchIconComponent className="size-16" />
+                  </Button>
                 </div>
               ) : (
                 <Trans>No matching markets</Trans>
