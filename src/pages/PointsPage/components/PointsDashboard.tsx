@@ -6,6 +6,7 @@ import { useAccountIncentiveDashboard } from "domain/synthetics/incentives/useAc
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
 
+import { getCurrentEpochStats } from "./currentEpochStats";
 import { HowItWorksSection } from "./HowItWorksSection";
 import { MainDataSection } from "./MainDataSection";
 import { TierLevelsSection } from "./TierLevelsSection";
@@ -24,10 +25,10 @@ export function PointsDashboard({ chainId, account }: Props) {
   } = useAccountIncentiveDashboard(chainId, { account });
   const { data: status, error: statusError, loading: statusLoading } = useAccountIncentiveStatus(chainId, { account });
 
-  const currentEpochStats = useMemo(() => {
-    if (!dashboard?.recentStats?.length) return undefined;
-    return dashboard.recentStats.reduce((latest, s) => (s.epochTimestamp > latest.epochTimestamp ? s : latest));
-  }, [dashboard?.recentStats]);
+  const currentEpochStats = useMemo(
+    () => getCurrentEpochStats({ dashboard, config, account }),
+    [account, config, dashboard]
+  );
 
   const isLoading =
     (configLoading && !config) || Boolean(account && ((dashboardLoading && !dashboard) || (statusLoading && !status)));

@@ -94,6 +94,7 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
     loading,
   } = useAccountRewardsHistory(chainId, {
     account,
+    currentEpoch: config?.epochTimestamp,
     limit: PER_PAGE,
     offset: (page - 1) * PER_PAGE,
   });
