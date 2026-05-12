@@ -42,9 +42,9 @@ const TAB_TYPE_MAP: Record<TokenFavoriteKey, TokenFavoritesType> = {
 
 // ---- Tab option arrays + labels ----
 
-export const topLevelTabOptions: TopLevelTab[] = ["favorites", "all", "crypto", "tradfi", "recently-listed"];
+export const topLevelTabOptions: TopLevelTab[] = ["all", "favorites", "crypto", "tradfi", "recently-listed"];
 
-export const cryptoSubCategoryOptions: CryptoSubCategory[] = ["all", "ai", "defi", "meme", "layer1", "layer2"];
+export const cryptoSubCategoryOptions: CryptoSubCategory[] = ["all", "ai", "layer1", "layer2", "defi", "meme"];
 
 export const tradfiSubCategoryOptions: TradfiSubCategory[] = ["all", "commodities", "stocks", "indices", "fx"];
 
