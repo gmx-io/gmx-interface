@@ -100,6 +100,7 @@ export function useMultichainFundingToast() {
     if (toast.isActive(TOAST_ID)) {
       toast.update(TOAST_ID, {
         render: content,
+        type: "info",
         onClose: () => {
           removeMultichainFundingPendingIds(Object.keys(multichainFundingPendingIds));
         },
@@ -107,6 +108,7 @@ export function useMultichainFundingToast() {
     } else {
       toast(content, {
         toastId: TOAST_ID,
+        type: "info",
         autoClose: false,
         onClose: () => {
           removeMultichainFundingPendingIds(Object.keys(multichainFundingPendingIds));

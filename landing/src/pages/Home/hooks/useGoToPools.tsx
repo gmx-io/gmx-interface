@@ -1,5 +1,7 @@
+import { getLandingReferralCode } from "landing/utils/referralCode";
 import { useCallback } from "react";
 
+import { REFERRAL_CODE_QUERY_PARAM } from "lib/legacy";
 import type { LandingPageProtocolTokenEvent } from "lib/userAnalytics/types";
 import { userAnalytics } from "lib/userAnalytics/UserAnalytics";
 
@@ -25,5 +27,7 @@ export function useGoToPools(pool: LandingPageProtocolTokenEvent["data"]["type"]
 }
 
 function makeLink(path: string) {
-  return `${import.meta.env.VITE_APP_BASE_URL}/${path}?${userAnalytics.getSessionForwardParams()}`;
+  const refCode = getLandingReferralCode();
+  const refParam = refCode ? `&${REFERRAL_CODE_QUERY_PARAM}=${encodeURIComponent(refCode)}` : "";
+  return `${import.meta.env.VITE_APP_BASE_URL}/${path}?${userAnalytics.getSessionForwardParams()}${refParam}`;
 }

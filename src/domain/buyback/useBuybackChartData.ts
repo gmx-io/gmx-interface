@@ -4,8 +4,11 @@ import { useMemo } from "react";
 
 import { GMX_DECIMALS } from "lib/legacy";
 import { bigintToNumber } from "lib/numbers";
+import { periodToSeconds } from "sdk/utils/time";
 
 import type { BuybackWeeklyStatsResponse } from "./useBuybackWeeklyStats";
+
+const SECONDS_PER_WEEK = periodToSeconds(7, "1d");
 
 export type BuybackChartPoint = {
   label: string;
@@ -50,9 +53,9 @@ export function useBuybackChartData(
   const metrics = useMemo<BuybackDerivedMetrics | undefined>(() => {
     if (!data?.summary || !data.weeks || gmxPrice === undefined || totalStakedGmx === undefined) return undefined;
 
-    const now = Math.floor(Date.now() / 1000);
-
-    const completedWeeks = data.weeks.filter((w) => w.weekEnd <= now);
+    // The API may append the current partial bucket (weekEnd = serverNow) as the last entry.
+    // Only count buckets aligned to a full week so the rate window is stable across refreshes.
+    const completedWeeks = data.weeks.filter((w) => w.weekEnd - w.weekStart >= SECONDS_PER_WEEK);
     const firstNonZero = completedWeeks.findIndex((w) => BigInt(w.weeklyAccrued) > 0n);
     const trackedWeeks = firstNonZero >= 0 ? completedWeeks.slice(firstNonZero) : [];
 

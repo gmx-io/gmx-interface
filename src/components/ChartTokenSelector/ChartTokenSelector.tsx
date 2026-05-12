@@ -469,7 +469,7 @@ function MarketsList() {
     return t`Search market`;
   }, [isSwap]);
 
-  const availableLiquidityLabel = isMobile ? (isSmallMobile ? t`LIQ.` : t`AVAIL. LIQ.`) : t`AVAILABLE LIQ.`;
+  const availableLiquidityLabel = isMobile ? (isSmallMobile ? t`LIQ.` : t`AVAIL. LIQ.`) : t`AVAILABLE LIQUIDITY`;
 
   return (
     <>
@@ -617,11 +617,7 @@ function MarketsList() {
                   <span className="text-12">
                     <Trans>No markets matched.</Trans>
                   </span>
-                  <Button
-                    type="button"
-                    variant="secondary"
-                    onClick={() => setMode(isSwap ? "perp" : "swap")}
-                  >
+                  <Button type="button" variant="secondary" onClick={() => setMode(isSwap ? "perp" : "swap")}>
                     {isSwap ? <Trans>Search in perpetuals markets</Trans> : <Trans>Search in swap markets</Trans>}
                     <SearchIconComponent className="size-16" />
                   </Button>

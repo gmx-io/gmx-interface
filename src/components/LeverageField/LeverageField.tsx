@@ -17,8 +17,8 @@ import { LeverageSlider } from "components/LeverageSlider/LeverageSlider";
 import SuggestionInput from "components/SuggestionInput/SuggestionInput";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
-import AlertIcon from "img/ic_alert.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
+import InfoIcon from "img/ic_info.svg?react";
 
 export const DEFAULT_LEVERAGE_MARKS = [0.1, 25, 50];
 export const DEFAULT_LEVERAGE = 20;
@@ -215,7 +215,7 @@ export function LeverageField({ value, onChange, marks, disabled, tooltipContent
                   className="!rounded-4 border border-slate-600 bg-slate-800 !py-6"
                 />
               </div>
-              <ColorfulBanner color="yellow" icon={AlertIcon}>
+              <ColorfulBanner color="blue" icon={InfoIcon}>
                 <Trans>High leverage increases liquidation risk</Trans>
               </ColorfulBanner>
             </div>

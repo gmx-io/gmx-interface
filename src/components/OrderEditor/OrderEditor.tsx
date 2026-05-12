@@ -78,6 +78,11 @@ import {
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { getExpressError, getIsMaxLeverageExceeded } from "domain/synthetics/trade/utils/validation";
 import { TokensRatioAndSlippage } from "domain/tokens";
+import {
+  FULL_POSITION_CLOSE_SIZE_DELTA_USD,
+  getPositionCloseSizeDeltaUsdForDisplay,
+  isFullPositionCloseSizeDeltaUsd,
+} from "domain/tpsl/utils";
 import { numericBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
@@ -371,6 +376,12 @@ export function OrderEditor(p: Props) {
       };
     } else {
       const positionOrder = p.order as PositionOrderInfo;
+      const nextSizeDeltaUsd = sizeDeltaUsd ?? positionOrder.sizeDeltaUsd;
+      const shouldPreserveFullCloseSize =
+        isTriggerDecrease &&
+        isFullPositionCloseSizeDeltaUsd(positionOrder.sizeDeltaUsd, existingPosition?.sizeInUsd) &&
+        existingPosition !== undefined &&
+        nextSizeDeltaUsd >= existingPosition.sizeInUsd;
 
       return {
         createOrderParams: [],
@@ -380,7 +391,7 @@ export function OrderEditor(p: Props) {
             indexTokenAddress: positionOrder.indexToken.address,
             orderKey: p.order.key,
             orderType: p.order.orderType,
-            sizeDeltaUsd: sizeDeltaUsd ?? positionOrder.sizeDeltaUsd,
+            sizeDeltaUsd: shouldPreserveFullCloseSize ? FULL_POSITION_CLOSE_SIZE_DELTA_USD : nextSizeDeltaUsd,
             triggerPrice: triggerPrice ?? positionOrder.triggerPrice,
             acceptablePrice: acceptablePrice ?? positionOrder.acceptablePrice,
             minOutputAmount: minOutputAmount ?? positionOrder.minOutputAmount,
@@ -397,6 +408,8 @@ export function OrderEditor(p: Props) {
     tokensData,
     marketsInfoData,
     p.order,
+    existingPosition,
+    isTriggerDecrease,
     triggerRatio?.ratio,
     triggerPrice,
     chainId,
@@ -451,11 +464,11 @@ export function OrderEditor(p: Props) {
       }
 
       if (triggerRatio && !isRatioInverted && markRatio && markRatio.ratio < triggerRatio.ratio) {
-        return t`Limit price above mark price`;
+        return t`Set limit price below mark price`;
       }
 
       if (triggerRatio && isRatioInverted && markRatio && markRatio.ratio > triggerRatio.ratio) {
-        return t`Limit price below mark price`;
+        return t`Set limit price above mark price`;
       }
 
       const expressError = getExpressError({
@@ -551,6 +564,17 @@ export function OrderEditor(p: Props) {
       };
     }
 
+    if (
+      isTriggerDecrease &&
+      isFullPositionCloseSizeDeltaUsd((p.order as PositionOrderInfo).sizeDeltaUsd) &&
+      !existingPosition
+    ) {
+      return {
+        text: t`Loading position...`,
+        disabled: true,
+      };
+    }
+
     if (isMaxLeverageError) {
       return {
         text: t`Max leverage exceeded`,
@@ -590,10 +614,11 @@ export function OrderEditor(p: Props) {
     error,
     hasOutdatedUi,
     isMaxLeverageError,
-    p.order.orderType,
-    p.order.isTwap,
+    p.order,
     onSubmit,
     detectAndSetAvailableMaxLeverage,
+    isTriggerDecrease,
+    existingPosition,
   ]);
 
   useKey(
@@ -629,10 +654,20 @@ export function OrderEditor(p: Props) {
         const positionOrder = p.order as PositionOrderInfo;
 
         if (isTriggerDecrease) {
+          const orderSizeDeltaUsd = positionOrder.sizeDeltaUsd ?? 0n;
+
+          if (isFullPositionCloseSizeDeltaUsd(orderSizeDeltaUsd) && !existingPosition) {
+            return;
+          }
+
+          const displaySizeDeltaUsd = getPositionCloseSizeDeltaUsdForDisplay(
+            orderSizeDeltaUsd,
+            existingPosition?.sizeInUsd
+          );
           const clampedSizeDeltaUsd =
-            existingPosition && (positionOrder.sizeDeltaUsd ?? 0n) > existingPosition.sizeInUsd
+            existingPosition && displaySizeDeltaUsd > existingPosition.sizeInUsd
               ? existingPosition.sizeInUsd
-              : positionOrder.sizeDeltaUsd ?? 0n;
+              : displaySizeDeltaUsd;
           closeSize.setFromUsdString(formatAmountFree(clampedSizeDeltaUsd, USD_DECIMALS));
         } else {
           setSizeInputValue(formatAmountFree(positionOrder.sizeDeltaUsd ?? 0n, USD_DECIMALS));
@@ -691,9 +726,9 @@ export function OrderEditor(p: Props) {
   );
 
   const priceLabel = isLimitDecreaseOrderType(p.order.orderType)
-    ? t`Take profit price`
+    ? t`Take-Profit price`
     : isStopLossOrderType(p.order.orderType)
-      ? t`Stop loss price`
+      ? t`Stop-Loss price`
       : isStopIncreaseOrderType(p.order.orderType)
         ? t`Stop price`
         : t`Limit price`;
@@ -723,16 +758,16 @@ export function OrderEditor(p: Props) {
     const suffix = `${tokenSymbol} ${longShortText}`;
 
     if (isLimitDecreaseOrderType(p.order.orderType)) {
-      return t`Edit TP: ${suffix}`;
+      return t`Edit Take-Profit: ${suffix}`;
     }
     if (isStopLossOrderType(p.order.orderType)) {
-      return t`Edit SL: ${suffix}`;
+      return t`Edit Stop-Loss: ${suffix}`;
     }
     if (isStopIncreaseOrderType(p.order.orderType)) {
       return t`Edit Stop Market: ${suffix}`;
     }
     if (isLimitIncreaseOrderType(p.order.orderType)) {
-      return t`Edit Limit: ${suffix}`;
+      return t`Edit Limit Increase: ${suffix}`;
     }
 
     return t`Edit ${p.order.title}`;
@@ -934,7 +969,7 @@ export function OrderEditor(p: Props) {
               />
               <div className="h-1 bg-slate-600" />
               <SyntheticsInfoRow
-                label={t`Min. receive`}
+                label={t`Min receive`}
                 value={formatBalanceAmount(
                   minOutputAmount,
                   p.order.targetCollateralToken.decimals,

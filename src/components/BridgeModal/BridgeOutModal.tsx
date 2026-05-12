@@ -443,7 +443,7 @@ export function BridgeOutModal({
                   <img src={getChainIcon(bridgeOutChain)} alt={getChainName(bridgeOutChain)} className="size-20" />
                   <div>
                     <Trans comment="to network">
-                      <span className="text-typography-secondary">to </span>
+                      <span className="text-typography-secondary">To </span>
                       <span>{getChainName(bridgeOutChain)}</span>
                     </Trans>
                   </div>

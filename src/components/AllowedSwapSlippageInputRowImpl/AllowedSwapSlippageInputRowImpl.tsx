@@ -73,7 +73,7 @@ function AllowedSwapSlippageInputRowImpl({
   const lowValueWarningText = (
     <p>
       <Trans>
-        Current swap impact: {formatPercentage(totalSwapImpactBps, { signed: true })}. Add 1% buffer for better
+        Current swap impact: {formatPercentage(totalSwapImpactBps, { signed: true })}. Add a 1% buffer for better
         execution.
       </Trans>
       <br />

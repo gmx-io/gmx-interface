@@ -214,7 +214,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
           />
 
           <div>
-            {task.operation === Operation.Deposit ? <Trans>Buying...</Trans> : <Trans>Selling...</Trans>}{" "}
+            {task.operation === Operation.Deposit ? <Trans>Buying</Trans> : <Trans>Selling</Trans>}{" "}
             {formatTokenAmount(task.amount, task.token.decimals)}{" "}
             {isMarketTokenAddress(chainId, task.token.address) ? (
               <>
@@ -275,7 +275,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
               </div>
             }
             valueClassName="text-typography-secondary group-gmx-hover:text-blue-300"
-            value={isOpen ? null : task.finishTimestamp ? elapsedTime : <Trans>Est. time: ~5 min</Trans>}
+            value={isOpen ? null : task.finishTimestamp ? elapsedTime : <Trans>Estimated time: ~5 min</Trans>}
           />
           <AnimatePresence>
             {isOpen && (
@@ -355,9 +355,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                         value={
                           finishedError.creationTx ? (
                             <ExternalLink
-                              href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](
-                                finishedError.creationTx
-                              )}
+                              href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](finishedError.creationTx)}
                             >
                               <ExternalLinkIcon className="size-16 text-typography-secondary" />
                             </ExternalLink>
@@ -374,9 +372,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                         value={
                           finishedError.executionTx ? (
                             <ExternalLink
-                              href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](
-                                finishedError.executionTx
-                              )}
+                              href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](finishedError.executionTx)}
                             >
                               <ExternalLinkIcon className="size-16 text-typography-secondary" />
                             </ExternalLink>
@@ -394,9 +390,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                           value={
                             finishedError.creationTx ? (
                               <ExternalLink
-                                href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](
-                                  finishedError.creationTx
-                                )}
+                                href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](finishedError.creationTx)}
                                 variant="icon"
                               >
                                 {shortenAddressOrEns(finishedError.creationTx, 11)}
@@ -412,9 +406,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                           value={
                             finishedError.executionTx ? (
                               <ExternalLink
-                                href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](
-                                  finishedError.executionTx
-                                )}
+                                href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](finishedError.executionTx)}
                                 variant="icon"
                               >
                                 {shortenAddressOrEns(finishedError.executionTx, 11)}

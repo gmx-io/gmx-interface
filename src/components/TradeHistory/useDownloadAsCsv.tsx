@@ -130,7 +130,7 @@ export function useDownloadAsCsv({
 
       const timezone = dateFnsFormat(new Date(), "z");
 
-      downloadAsCsv("trade-history", fullFormattedData, ["priceComment"], {
+      downloadAsCsv("trade-history", fullFormattedData, ["priceComment", "feesTooltip"], {
         timestamp: t`DATE` + ` (${timezone})`,
         action: t`ACTION`,
         size: t`SIZE`,
@@ -142,7 +142,8 @@ export function useDownloadAsCsv({
         triggerPrice: t`TRIGGER PRICE`,
         priceImpact: t`PRICE IMPACT`,
         explorerUrl: t`TRANSACTION ID`,
-        pnl: t`PNL ($)`,
+        pnl: t`RPNL ($)`,
+        fees: t`FEES ($)`,
       });
     } catch (error) {
       helperToast.error(
