@@ -6,13 +6,6 @@ import type { ContractsChainId } from "sdk/configs/chains";
 
 export type MarketsListingDates = Record<string, number>;
 
-/**
- * Returns a map of `indexTokenAddress` (lowercased) → `listingDate` (unix ms),
- * sourced from the `/markets` API endpoint. Markets without a listing date
- * are omitted from the map.
- *
- * The 30-day "recently listed" predicate consumes this map.
- */
 export function useMarketsListingDates(chainId: ContractsChainId): {
   listingDateByIndexToken: MarketsListingDates;
   isLoading: boolean;
@@ -28,14 +21,13 @@ export function useMarketsListingDates(chainId: ContractsChainId): {
         if (!m.listingDate || !m.indexToken) continue;
         const ts = Date.parse(m.listingDate);
         if (Number.isFinite(ts)) {
-          map[m.indexToken.toLowerCase()] = ts;
+          map[m.indexToken] = ts;
         }
       }
       return map;
     },
     {
       revalidateOnFocus: false,
-      dedupingInterval: 5 * 60 * 1000, // 5 minutes — listing dates rarely change
     }
   );
 

@@ -994,10 +994,6 @@ msgstr "1位"
 msgid "Force primary failure"
 msgstr "プライマリ障害を強制"
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "No matching markets"
-msgstr "一致するマーケットがありません"
-
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 msgid "Total {0}"
 msgstr "合計 {0}"
@@ -9649,6 +9645,7 @@ msgstr "GMXの上に構築したりDeFiアプリに統合できますか？"
 msgid "Avoid price wicks with transparent, sub-second Chainlink price feeds tailor-made for GMX"
 msgstr "GMX向けに設計された透明性の高いサブセカンドChainlink価格フィードで、プライスウィックを回避できます"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched."
 msgstr ""

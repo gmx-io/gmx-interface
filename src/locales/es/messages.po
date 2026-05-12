@@ -994,10 +994,6 @@ msgstr "1.er puesto"
 msgid "Force primary failure"
 msgstr "Forzar fallo del primario"
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "No matching markets"
-msgstr "No hay mercados coincidentes"
-
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 msgid "Total {0}"
 msgstr "Total {0}"
@@ -9649,6 +9645,7 @@ msgstr "¿Puedo construir sobre GMX o integrarlo en mi app DeFi?"
 msgid "Avoid price wicks with transparent, sub-second Chainlink price feeds tailor-made for GMX"
 msgstr "Evite mechas de precio con feeds de precios de Chainlink transparentes y en menos de un segundo, diseñados a medida para GMX"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched."
 msgstr ""

@@ -994,10 +994,6 @@ msgstr "第 1 名"
 msgid "Force primary failure"
 msgstr "強制主要端點故障"
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "No matching markets"
-msgstr "沒有符合的市場"
-
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 msgid "Total {0}"
 msgstr "總計 {0}"
@@ -9649,6 +9645,7 @@ msgstr "我可以在 GMX 上構建或將其整合到我的 DeFi 應用程式中�
 msgid "Avoid price wicks with transparent, sub-second Chainlink price feeds tailor-made for GMX"
 msgstr "透過 Chainlink 為 GMX 量身打造的透明、亞秒級價格饋送，避免價格插針"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched."
 msgstr ""

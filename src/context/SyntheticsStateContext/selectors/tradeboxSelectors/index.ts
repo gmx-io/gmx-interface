@@ -1967,9 +1967,6 @@ export const selectTradeboxChooseSuitableMarket = createSelector((q) => {
 
     const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
 
-    // The caller (e.g. dropdown with its own swap/perp toggle) may want to commit a
-    // different trade type than the page is currently in — honor `currentTradeType`
-    // when provided; otherwise fall back to page state.
     const effectiveTradeType = currentTradeType ?? tradeType;
 
     const suitableParams = chooseSuitableMarket({

@@ -623,7 +623,7 @@ function MarketsList() {
                   </Button>
                 </div>
               ) : (
-                <Trans>No matching markets</Trans>
+                <Trans>No markets matched.</Trans>
               )
             }
           />

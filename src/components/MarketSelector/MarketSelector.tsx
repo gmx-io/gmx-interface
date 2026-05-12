@@ -135,7 +135,7 @@ export function MarketSelector({
       case "tradfi":
         return textMatched?.filter((item) => Boolean(item.marketInfo.indexToken?.categories?.includes("tradfi")));
       case "recently-listed":
-        return textMatched?.filter(() => false); // Phase 4 wires per-selector recently-listed support
+        return textMatched?.filter(() => false);
     }
   }, [favoriteTokens, marketsOptions, searchKeyword, topLevelTab]);
 

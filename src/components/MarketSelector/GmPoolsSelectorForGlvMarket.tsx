@@ -179,7 +179,7 @@ export function GmPoolsSelectorForGlvMarket({
           return Boolean(item.glvOrMarketInfo.indexToken?.categories?.includes("tradfi"));
         });
       case "recently-listed":
-        return textMatched?.filter(() => false); // Phase 4 wires per-selector recently-listed support
+        return textMatched?.filter(() => false);
     }
   }, [favoriteTokens, marketsOptions, searchKeyword, topLevelTab]);
 

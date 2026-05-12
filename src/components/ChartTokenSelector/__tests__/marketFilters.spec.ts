@@ -1,7 +1,8 @@
 import { describe, it, expect } from "vitest";
 
+import { ONE_MONTH_SECONDS } from "lib/dates";
+
 import {
-  RECENTLY_LISTED_WINDOW_MS,
   applySubCategoryFilter,
   applyTopLevelFilter,
   getRecentlyListedTokenAddresses,
@@ -16,6 +17,8 @@ const tokens = [
   { address: "0xgold", categories: ["tradfi", "commodities"] },
   { address: "0xusdc", categories: undefined },
 ] as any[];
+
+const RECENTLY_LISTED_WINDOW_MS = ONE_MONTH_SECONDS;
 
 describe("applyTopLevelFilter", () => {
   it("returns all tokens for 'all'", () => {

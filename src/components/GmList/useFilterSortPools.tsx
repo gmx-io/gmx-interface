@@ -2,10 +2,7 @@ import values from "lodash/values";
 import { useMemo } from "react";
 
 import type { SortDirection } from "context/SorterContext/types";
-import type {
-  SubCategoryTab,
-  TopLevelTab,
-} from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
+import type { SubCategoryTab, TopLevelTab } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { MultichainMarketTokensBalances } from "domain/multichain/types";
 import { MarketTokensAPRData, MarketsInfoData, getMarketPoolName } from "domain/synthetics/markets";
 import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnualized";
@@ -123,7 +120,6 @@ export function useFilterSortPools({
       if (!market || market.isDisabled) return false;
       const marketTokenAddress = market.marketTokenAddress;
 
-      // Top-level filter
       let topLevelOk: boolean;
       switch (topLevelTab) {
         case "all":
@@ -151,7 +147,6 @@ export function useFilterSortPools({
       }
       if (!topLevelOk) return false;
 
-      // Sub-category filter (only meaningful for crypto/tradfi)
       if (subCategoryTab === "all") return true;
       if (topLevelTab !== "crypto" && topLevelTab !== "tradfi") return true;
       if (market.isSpotOnly) return false;

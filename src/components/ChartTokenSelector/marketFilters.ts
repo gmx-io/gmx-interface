@@ -1,4 +1,5 @@
 import type { SubCategoryTab, TopLevelTab } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
+import { ONE_MONTH_SECONDS } from "lib/dates";
 import type { Token } from "sdk/utils/tokens/types";
 import type { TokenCategory } from "sdk/utils/tokens/types";
 
@@ -42,25 +43,19 @@ export function applySubCategoryFilter(
   return tokens.filter((t) => t.categories?.includes(args.subCategoryTab as TokenCategory));
 }
 
-export const RECENTLY_LISTED_WINDOW_MS = 30 * 24 * 60 * 60 * 1000;
-
 export function isMarketRecentlyListed(
   listingDate: number | undefined,
   now: number,
-  windowMs: number = RECENTLY_LISTED_WINDOW_MS
+  windowMs: number = ONE_MONTH_SECONDS
 ): boolean {
   if (listingDate === undefined) return false;
   return now - listingDate < windowMs;
 }
 
-/**
- * @param listingDateByIndexToken Map indexed by indexTokenAddress (any case).
- *                                Output addresses are lowercased.
- */
 export function getRecentlyListedTokenAddresses(
   listingDateByIndexToken: Record<string, number>,
   now: number,
-  windowMs: number = RECENTLY_LISTED_WINDOW_MS
+  windowMs: number = ONE_MONTH_SECONDS
 ): string[] {
   const result: string[] = [];
   for (const [address, ts] of Object.entries(listingDateByIndexToken)) {
