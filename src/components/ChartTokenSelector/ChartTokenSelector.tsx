@@ -79,6 +79,8 @@ type Props = {
   oneRowLabels?: boolean;
 };
 
+const SWAP_EXCLUDED_TOP_LEVEL_TABS: TopLevelTab[] = ["tradfi"];
+
 export default function ChartTokenSelector(props: Props) {
   const { selectedToken, oneRowLabels } = props;
 
@@ -183,8 +185,15 @@ function MarketsList() {
   const chooseSuitableMarket = useSelector(selectTradeboxChooseSuitableMarket);
   const tokensData = useSelector(selectTokensData);
 
-  const { topLevelTab, subCategoryTab, mode, setMode, setSubCategoryTab, favoriteTokens, toggleFavoriteToken } =
-    useTokensFavorites("chart-token-selector");
+  const {
+    topLevelTab: storedTopLevelTab,
+    subCategoryTab: storedSubCategoryTab,
+    mode,
+    setMode,
+    setSubCategoryTab,
+    favoriteTokens,
+    toggleFavoriteToken,
+  } = useTokensFavorites("chart-token-selector");
 
   const localizedSubCategoryLabels = useLocalizedMap(subCategoryTabLabels);
 
@@ -197,17 +206,17 @@ function MarketsList() {
 
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
 
-  // Initialize local mode from page state once on first mount.
   const initialModeSyncRef = useRef(false);
   useEffect(() => {
     if (initialModeSyncRef.current) return;
     initialModeSyncRef.current = true;
     setMode(tradeFlags.isSwap ? "swap" : "perp");
-    // Only run on first render; we want a one-shot sync, not continuous.
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   const isSwap = mode === "swap";
+  const topLevelTab = isSwap && storedTopLevelTab === "tradfi" ? "all" : storedTopLevelTab;
+  const subCategoryTab = isSwap && storedTopLevelTab === "tradfi" ? "all" : storedSubCategoryTab;
   const availableTokens = isSwap ? swapTokens : perpTokens;
 
   const { availableChartTokens: options, availableChartTokenAddresses } = useMemo(() => {
@@ -329,9 +338,6 @@ function MarketsList() {
       setSearchKeyword("");
       close();
 
-      // Use the dropdown's local mode as the source of truth for the trade type committed
-      // to the page. Page state may differ (user toggled mode in the dropdown without
-      // selecting yet) — selecting a market is the moment we sync the page.
       const effectiveTradeType: TradeType = isSwap
         ? TradeType.Swap
         : tradeType === TradeType.Swap
@@ -400,6 +406,8 @@ function MarketsList() {
             favoritesKey="chart-token-selector"
             recentlyListedCount={recentlyListedCount}
             className="px-16"
+            excludedTabs={isSwap ? SWAP_EXCLUDED_TOP_LEVEL_TABS : undefined}
+            selectedValue={topLevelTab}
           />
         </ButtonRowScrollFadeContainer>
         {topLevelTab === "crypto" && populatedCryptoSubCats.size > 0 && (

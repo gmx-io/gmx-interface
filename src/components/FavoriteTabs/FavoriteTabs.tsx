@@ -19,17 +19,23 @@ export function FavoriteTabs({
   className,
   type = "block",
   recentlyListedCount = 0,
+  excludedTabs = [],
+  selectedValue,
 }: {
   favoritesKey: TokenFavoriteKey;
   className?: string;
   type?: "inline" | "block";
   recentlyListedCount?: number;
+  excludedTabs?: TopLevelTab[];
+  selectedValue?: TopLevelTab;
 }) {
   const { topLevelTab, setTopLevelTab } = useTokensFavorites(favoritesKey);
   const labels = useLocalizedMap(topLevelTabLabels);
+  const activeValue = selectedValue ?? topLevelTab;
 
   const options = useMemo<Option<TopLevelTab>[]>(() => {
     return topLevelTabOptions
+      .filter((opt) => !excludedTabs.includes(opt))
       .filter((opt) => (opt === "recently-listed" ? recentlyListedCount > 0 : true))
       .map((opt) => ({
         value: opt,
@@ -45,12 +51,12 @@ export function FavoriteTabs({
             labels[opt]
           ),
       }));
-  }, [recentlyListedCount, labels]);
+  }, [excludedTabs, recentlyListedCount, labels]);
 
   return (
     <Tabs
       options={options}
-      selectedValue={topLevelTab}
+      selectedValue={activeValue}
       onChange={setTopLevelTab}
       type={type}
       className={className}
