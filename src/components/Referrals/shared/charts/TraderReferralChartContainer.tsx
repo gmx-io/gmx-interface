@@ -48,7 +48,7 @@ export function TraderReferralChartContainer({
   if (isLoading) {
     return (
       <div className="text-body-small flex h-[256px] w-full items-center justify-center text-typography-secondary">
-        <Trans>Loading…</Trans>
+        <Trans>Loading...</Trans>
       </div>
     );
   }

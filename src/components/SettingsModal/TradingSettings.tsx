@@ -299,10 +299,10 @@ export function TradingSettings({
                     <br />• <span className="font-bold">Wallet</span> if you mostly trade from your personal wallet on
                     Arbitrum
                     <br />• <span className="font-bold">GMX Account</span> if you plan to keep trading or reusing margin
-                    on GMX.
+                    on GMX
                     <br />
                     <br />
-                    You can change this preference anytime in Settings or when closing a position.
+                    You can change this preference anytime in settings or when closing a position.
                   </Trans>
                 </div>
               }

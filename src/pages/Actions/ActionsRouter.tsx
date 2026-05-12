@@ -23,7 +23,7 @@ export function AccountsRouter() {
     const chainName = getChainName(chainId! as ContractsChainId);
 
     return (
-      <AppPageLayout title={t`GMX V1 Actions`}>
+      <AppPageLayout title={t`GMX V1 actions`}>
         <div className="default-container page-layout">
           <PageTitle
             isTop
@@ -40,7 +40,7 @@ export function AccountsRouter() {
 
   return (
     <SyntheticsStateContextProvider overrideChainId={chainId} pageType="accounts" skipLocalReferralCode>
-      <AppPageLayout title={t`GMX V2 Actions`}>
+      <AppPageLayout title={t`GMX V2 actions`}>
         <SyntheticsActions />
       </AppPageLayout>
     </SyntheticsStateContextProvider>

@@ -28,7 +28,11 @@ import {
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { selectSavedAcceptablePriceImpactBuffer } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import {
+  selectExternalSwapDesirability,
   selectExternalSwapQuote,
+  selectIsExternalSwapDisabledByExpressSchema,
+  selectIsOneClickActiveByUser,
+  selectIsWaitingForExternalSwapQuote,
   selectTradeboxFindSwapPath,
   selectTradeboxFromToken,
   selectTradeboxFromTokenAmount,
@@ -123,6 +127,7 @@ export function useTradeboxButtonState({
 
   const tradeFlags = useSelector(selectTradeboxTradeFlags);
   const { isSwap, isIncrease } = tradeFlags;
+  const isWaitingForExternalSwapQuote = useSelector(selectIsWaitingForExternalSwapQuote);
   const { stopLoss, takeProfit } = useSidecarOrders();
   const sidecarEntries = useSidecarEntries();
   const isTpSlEnabled = useSelector(selectTradeboxIsTPSLEnabled);
@@ -220,6 +225,19 @@ export function useTradeboxButtonState({
     totalExecutionFee?.feeTokenAmount,
   ]);
 
+  const externalSwapDesirability = useSelector(selectExternalSwapDesirability);
+  const isOneClickActiveByUser = useSelector(selectIsOneClickActiveByUser);
+  const isExternalSwapBlockedByGasConflict = useSelector(selectIsExternalSwapDisabledByExpressSchema);
+  const isSubmitBlockedByRequiredExternalSwap =
+    externalSwapDesirability === "required" && (isOneClickActiveByUser || isExternalSwapBlockedByGasConflict);
+
+  const externalSwapBlockedError = useMemo((): ValidationResult => {
+    if (isSubmitBlockedByRequiredExternalSwap) {
+      return { buttonErrorMessage: t`No swap route available` };
+    }
+    return {};
+  }, [isSubmitBlockedByRequiredExternalSwap]);
+
   const { buttonErrorText, tooltipContent, bannerErrorContent } = useMemo((): {
     buttonErrorText: string | undefined;
     tooltipContent: ReactNode | null;
@@ -236,7 +254,13 @@ export function useTradeboxButtonState({
       tokensData,
     });
 
-    const validationResult = takeValidationResult(commonError, tradeError, expressError, nativeGasError);
+    const validationResult = takeValidationResult(
+      commonError,
+      tradeError,
+      externalSwapBlockedError,
+      expressError,
+      nativeGasError
+    );
 
     let tooltipContent: ReactNode = null;
     if (validationResult.buttonTooltipName) {
@@ -302,6 +326,7 @@ export function useTradeboxButtonState({
     expressParams,
     tokensData,
     tradeError,
+    externalSwapBlockedError,
     nativeGasError,
     collateralToken,
     fromToken,
@@ -482,6 +507,19 @@ export function useTradeboxButtonState({
       };
     }
 
+    if (isWaitingForExternalSwapQuote) {
+      return {
+        ...commonState,
+        text: (
+          <>
+            <Trans>Loading swap path…</Trans>
+            <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
+
     if (buttonErrorText) {
       return {
         ...commonState,
@@ -598,6 +636,7 @@ export function useTradeboxButtonState({
     batchParams,
     totalExecutionFee,
     isExpressLoading,
+    isWaitingForExternalSwapQuote,
     account,
     buttonErrorText,
     shouldShowDepositButton,

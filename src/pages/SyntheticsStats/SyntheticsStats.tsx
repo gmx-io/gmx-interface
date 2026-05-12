@@ -149,7 +149,7 @@ export function SyntheticsStats() {
                         </p>
                         <p>
                           <Trans>
-                            Virtual Inventory tracks the imbalance of tokens across similar markets, e.g. ETH/USDC,
+                            Virtual inventory tracks the imbalance of tokens across similar markets, e.g. ETH/USDC,
                             ETH/USDT.
                           </Trans>
                         </p>
@@ -168,7 +168,7 @@ export function SyntheticsStats() {
                         </p>
                         <p>
                           <Trans>
-                            Virtual Inventory tracks the imbalance of tokens across similar markets, e.g. ETH/USDC,
+                            Virtual inventory tracks the imbalance of tokens across similar markets, e.g. ETH/USDC,
                             ETH/USDT.
                           </Trans>
                         </p>
@@ -1288,7 +1288,7 @@ export function SyntheticsStats() {
                               />
                               <StatsTooltipRow
                                 label={t`Use open interest in tokens for balance`}
-                                value={market.useOpenInterestInTokensForBalance ? t`true` : t`false`}
+                                value={market.useOpenInterestInTokensForBalance ? t`True` : t`False`}
                                 showDollar={false}
                               />
                             </div>

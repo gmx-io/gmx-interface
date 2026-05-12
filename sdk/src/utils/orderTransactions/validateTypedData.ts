@@ -35,15 +35,11 @@ function getKnownRelayRouterAddresses(chainId: ContractsChainId): Set<string> {
 
 function validateDomain(domain: TypedDataDomain, chainId: ContractsChainId): void {
   if (domain.name !== EXPECTED_DOMAIN_NAME) {
-    throw new Error(
-      `EIP-712 domain name mismatch: got "${domain.name}", expected "${EXPECTED_DOMAIN_NAME}"`
-    );
+    throw new Error(`EIP-712 domain name mismatch: got "${domain.name}", expected "${EXPECTED_DOMAIN_NAME}"`);
   }
 
   if (domain.version !== EXPECTED_DOMAIN_VERSION) {
-    throw new Error(
-      `EIP-712 domain version mismatch: got "${domain.version}", expected "${EXPECTED_DOMAIN_VERSION}"`
-    );
+    throw new Error(`EIP-712 domain version mismatch: got "${domain.version}", expected "${EXPECTED_DOMAIN_VERSION}"`);
   }
 
   if (Number(domain.chainId) !== chainId) {
@@ -97,6 +93,19 @@ export function validateOrderTypedData(
           );
         }
       }
+
+      const cancellationReceiver = order?.addresses?.cancellationReceiver;
+      if (cancellationReceiver) {
+        const checksummedCancellationReceiver = getAddress(cancellationReceiver);
+        if (
+          checksummedCancellationReceiver !== ZERO_ADDRESS &&
+          !allowedReceivers.has(checksummedCancellationReceiver)
+        ) {
+          throw new Error(
+            `Order cancellationReceiver "${cancellationReceiver}" does not match signer "${signerAddress}". Possible malicious typed data.`
+          );
+        }
+      }
     }
   }
 }
@@ -114,15 +123,10 @@ export function validateSubaccountApprovalTypedData(
   const checksummedSigner = getAddress(signerAddress);
 
   if (message.account && getAddress(message.account) !== checksummedSigner) {
-    throw new Error(
-      `Subaccount approval account "${message.account}" does not match signer "${signerAddress}"`
-    );
+    throw new Error(`Subaccount approval account "${message.account}" does not match signer "${signerAddress}"`);
   }
 
-  if (
-    message.subaccount &&
-    getAddress(message.subaccount) !== getAddress(expectedSubaccountAddress)
-  ) {
+  if (message.subaccount && getAddress(message.subaccount) !== getAddress(expectedSubaccountAddress)) {
     throw new Error(
       `Subaccount address "${message.subaccount}" does not match expected "${expectedSubaccountAddress}"`
     );

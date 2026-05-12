@@ -55,8 +55,8 @@ export function getContractErrorToastContent({
           : undefined;
 
       return amountText
-        ? t`Insufficient collateral. Need ${amountText} more collateral`
-        : t`Insufficient collateral. Need more collateral`;
+        ? t`Insufficient margin. Add ${amountText} more margin`
+        : t`Insufficient margin. Add more margin`;
     }
 
     case CustomErrorName.InsufficientCollateralUsd: {
@@ -65,8 +65,8 @@ export function getContractErrorToastContent({
       const missingCollateralUsdText = formatUsdValue(missingCollateralUsd);
 
       return missingCollateralUsdText
-        ? t`Insufficient collateral. Need ${missingCollateralUsdText} more`
-        : t`Insufficient collateral. Need more`;
+        ? t`Insufficient margin. Add ${missingCollateralUsdText} more margin`
+        : t`Insufficient margin. Add more margin`;
     }
 
     case CustomErrorName.LiquidatablePosition: {
@@ -118,7 +118,7 @@ export function getContractErrorToastContent({
     }
 
     case CustomErrorName.InsufficientReserve:
-      return t`Insufficient liquidity available in pool`;
+      return t`Insufficient pool liquidity`;
 
     case CustomErrorName.MaxPoolAmountExceeded: {
       const poolAmount = getBigIntContractErrorArg(args, 0, "poolAmount");
@@ -144,7 +144,7 @@ export function getContractErrorToastContent({
       const availableAmountText = formatInteger(availableAmount);
 
       return availableAmountText
-        ? t`Insufficient pool liquidity. Available amount: ${availableAmountText}`
+        ? t`Insufficient pool liquidity. Available: ${availableAmountText}`
         : t`Insufficient pool liquidity`;
     }
 
@@ -200,7 +200,7 @@ export function getContractErrorToastContent({
     case CustomErrorName.OrderNotUpdatable:
       return t`Order can't be updated. Type doesn't support modifications`;
     case CustomErrorName.OrderTypeCannotBeCreated:
-      return t`Order type not available for creation`;
+      return t`Order type unavailable for creation`;
 
     case CustomErrorName.InsufficientExecutionGas: {
       const startingGas = getBigIntContractErrorArg(args, 0, "startingGas");
@@ -228,7 +228,7 @@ export function getContractErrorToastContent({
       return t`Market not found. May have been removed`;
 
     case CustomErrorName.MaxPriceAgeExceeded:
-      return t`Price data too old. Oracle price is stale`;
+      return t`Oracle price is stale`;
 
     case CustomErrorName.InvalidOraclePrice: {
       const tokenAddress = getAddressContractErrorArg(args, 0, "token");
@@ -293,12 +293,12 @@ export function getContractErrorToastContent({
       const remainingCostUsdText = formatUsdValue(remainingCostUsd);
 
       return remainingCostUsdText
-        ? t`Insufficient funds to pay for order costs. Remaining: ${remainingCostUsdText}`
-        : t`Insufficient funds to pay for order costs`;
+        ? t`Insufficient funds for order costs. Remaining: ${remainingCostUsdText}`
+        : t`Insufficient funds for order costs`;
     }
 
     case CustomErrorName.NegativeExecutionPrice:
-      return t`Invalid execution price. Calculated price is negative`;
+      return t`Execution price is negative`;
 
     case CustomErrorName.UsdDeltaExceedsLongOpenInterest: {
       const usdDelta = getBigIntContractErrorArg(args, 0, "usdDelta");

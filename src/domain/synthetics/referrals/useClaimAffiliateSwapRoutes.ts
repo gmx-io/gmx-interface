@@ -183,6 +183,7 @@ async function fetchSwapRoutes(
         priceIn: quoteData.priceIn,
         priceOut: quoteData.priceOut,
         feesUsd: quoteData.usdIn - quoteData.usdOut,
+        slippage: quoteData.slippage,
         needSpenderApproval: needSpenderApprovalByToken.get(tokenToSwap.tokenAddress) ?? true,
         txnData: {
           to: quoteData.to,

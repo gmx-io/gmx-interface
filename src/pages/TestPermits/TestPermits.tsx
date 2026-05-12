@@ -194,9 +194,9 @@ export function TestPermits() {
                           <Trans>Permit supported:</Trans>
                         </span>{" "}
                         {token.isPermitSupported === true ? (
-                          <span className="text-green-500">{t`true`}</span>
+                          <span className="text-green-500">{t`True`}</span>
                         ) : (
-                          <span className="text-red-500">{t`false`}</span>
+                          <span className="text-red-500">{t`False`}</span>
                         )}
                       </div>
                       <div>
@@ -204,9 +204,9 @@ export function TestPermits() {
                           <Trans>Permit disabled:</Trans>
                         </span>{" "}
                         {token.isPermitDisabled === true ? (
-                          <span className="text-red-500">{t`true`}</span>
+                          <span className="text-red-500">{t`True`}</span>
                         ) : (
-                          <span className="text-green-500">{t`false`}</span>
+                          <span className="text-green-500">{t`False`}</span>
                         )}
                       </div>
                       <div>
@@ -258,9 +258,9 @@ export function TestPermits() {
                       <Trans>Permit supported:</Trans>
                     </span>{" "}
                     {selectedToken.isPermitSupported === true ? (
-                      <span className="text-green-500">{t`true`}</span>
+                      <span className="text-green-500">{t`True`}</span>
                     ) : (
-                      <span className="text-red-500">{t`false`}</span>
+                      <span className="text-red-500">{t`False`}</span>
                     )}
                   </div>
                   <div>
@@ -268,9 +268,9 @@ export function TestPermits() {
                       <Trans>Permit disabled:</Trans>
                     </span>{" "}
                     {selectedToken.isPermitDisabled === true ? (
-                      <span className="text-red-500">{t`true`}</span>
+                      <span className="text-red-500">{t`True`}</span>
                     ) : (
-                      <span className="text-green-500">{t`false`}</span>
+                      <span className="text-green-500">{t`False`}</span>
                     )}
                   </div>
                   <div>
@@ -325,7 +325,7 @@ export function TestPermits() {
                     <div className="rounded text-xs text-slate-300 space-y-1 overflow-x-auto p-3">
                       <div>
                         <span className="font-medium">
-                          <Trans>r:</Trans>
+                          <Trans>R:</Trans>
                         </span>{" "}
                         {permitData.r}
                       </div>

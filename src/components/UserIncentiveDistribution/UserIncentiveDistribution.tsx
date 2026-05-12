@@ -5,7 +5,7 @@ import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 
-import { ARBITRUM, AVALANCHE_FUJI, ContractsChainId, getExplorerUrl } from "config/chains";
+import { AVALANCHE_FUJI, ContractsChainId, getExplorerUrl } from "config/chains";
 import { getIsGlv } from "config/markets";
 import { selectGmMarkets } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -43,7 +43,6 @@ import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
 import WalletIcon from "img/ic_wallet.svg?react";
 
-import { AboutGlpIncident } from "./AboutGlpIncident";
 import ClaimableAmounts from "./ClaimableAmounts";
 
 type NormalizedIncentiveData = ReturnType<typeof getNormalizedIncentive>;
@@ -201,7 +200,6 @@ export default function UserIncentiveDistribution() {
       </div>
       <div className="min-w-400 flex flex-col gap-8">
         {!isTablet && claimableBalance}
-        {chainId === ARBITRUM ? <AboutGlpIncident /> : null}
       </div>
     </div>
   );

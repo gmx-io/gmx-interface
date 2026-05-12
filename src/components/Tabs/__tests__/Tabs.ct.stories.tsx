@@ -1,7 +1,7 @@
 import { useState } from "react";
 
-import Tabs from "./Tabs";
-import { Option } from "./types";
+import Tabs from "../Tabs";
+import { Option } from "../types";
 
 const SIMPLE_OPTIONS: Option<string>[] = [
   { value: "tab1", label: "First" },

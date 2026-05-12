@@ -200,7 +200,7 @@ export async function watchLzTxRpc({
       destinationChainId
     );
 
-    const publicClient = getPublicClientWithRpc(destinationChainId);
+    const publicClient = getPublicClientWithRpc(destinationChainId, { withExpress: true });
     const fromBlock = oftReceivedLogs[0].blockNumber!;
     // This request does not have good filtering, so we need to limit the range so the tests dont break
     // In runtime we only call it for the new tx so the fromBlock-now is small enough

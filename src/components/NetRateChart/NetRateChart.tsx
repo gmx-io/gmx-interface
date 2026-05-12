@@ -35,9 +35,9 @@ type RateProjection = "1h" | "8h" | "24h" | "1y";
 
 const RATE_TYPES: RateType[] = ["netRate", "borrowingRate", "fundingRate"];
 const RATE_TYPE_LABELS: Record<RateType, MessageDescriptor> = {
-  netRate: msg`Net Rate`,
-  borrowingRate: msg`Borrowing Rate`,
-  fundingRate: msg`Funding Rate`,
+  netRate: msg`Net rate`,
+  borrowingRate: msg`Borrowing rate`,
+  fundingRate: msg`Funding rate`,
 };
 
 const TIMEFRAMES: RateTimeframe[] = ["1d", "7d", "30d"];
@@ -52,7 +52,7 @@ const PROJECTION_LABELS: Record<RateProjection, MessageDescriptor> = {
   "1h": msg`1h`,
   "8h": msg`8h`,
   "24h": msg`24h`,
-  "1y": msg`1Y`,
+  "1y": msg`1y`,
 };
 
 const PROJECTION_MULTIPLIERS: Record<RateProjection, number> = {
@@ -122,20 +122,20 @@ function getRateDirectionLabel(rateType: RateType, direction: "long" | "short"):
   if (direction === "long") {
     switch (rateType) {
       case "netRate":
-        return t`Long Net Rate`;
+        return t`Long net rate`;
       case "borrowingRate":
-        return t`Long Borrowing Rate`;
+        return t`Long borrowing rate`;
       case "fundingRate":
-        return t`Long Funding Rate`;
+        return t`Long funding rate`;
     }
   }
   switch (rateType) {
     case "netRate":
-      return t`Short Net Rate`;
+      return t`Short net rate`;
     case "borrowingRate":
-      return t`Short Borrowing Rate`;
+      return t`Short borrowing rate`;
     case "fundingRate":
-      return t`Short Funding Rate`;
+      return t`Short funding rate`;
   }
 }
 
@@ -245,7 +245,7 @@ export function NetRateChart() {
       <div className="flex items-center gap-16 px-4 pb-8">
         <span className="text-body-small flex items-center gap-6 text-typography-secondary">
           <span className="inline-block size-8 rounded-full bg-green-500" />
-          <Trans>Long Positions</Trans>
+          <Trans>Long positions</Trans>
           {chartData.length > 0 && (
             <span className="text-typography-primary">
               {formatRate(chartData[chartData.length - 1].longRate, yAxisDecimals)}
@@ -254,7 +254,7 @@ export function NetRateChart() {
         </span>
         <span className="text-body-small flex items-center gap-6 text-typography-secondary">
           <span className="inline-block size-8 rounded-full bg-red-500" />
-          <Trans>Short Positions</Trans>
+          <Trans>Short positions</Trans>
           {chartData.length > 0 && (
             <span className="text-typography-primary">
               {formatRate(chartData[chartData.length - 1].shortRate, yAxisDecimals)}
@@ -272,21 +272,21 @@ export function NetRateChart() {
           <div className="flex h-full flex-col items-center justify-center gap-8 px-16 text-center">
             <MinusCircleIcon className="size-24 text-typography-secondary" />
             <p className="text-body-medium font-bold text-typography-primary">
-              <Trans>Unable to load rate history.</Trans>
+              <Trans>Unable to load rate history</Trans>
             </p>
             <p className="text-body-small text-typography-secondary">
-              <Trans>Please refer to Net Rate / 1H above the chart.</Trans>
+              <Trans>Refer to Net rate / 1h above the chart</Trans>
             </p>
           </div>
         ) : chartData.length === 0 ? (
           <div className="flex h-full flex-col items-center justify-center gap-8 px-16 text-center">
             <MinusCircleIcon className="size-24 text-typography-secondary" />
             <p className="text-body-medium font-bold text-typography-primary">
-              <Trans>No net rate history available for this market.</Trans>
+              <Trans>No net rate history for this market</Trans>
             </p>
             <p className="text-body-small text-typography-secondary">
               <Trans>
-                For newer markets the history might not yet be indexed, please refer to Net Rate / 1H above the chart.
+                For newer markets, the history may not yet be indexed. Refer to Net rate / 1h above the chart.
               </Trans>
             </p>
           </div>
@@ -355,7 +355,7 @@ function ProjectionDropdown({ value, onChange }: { value: RateProjection; onChan
         ref={refs.setReference}
         className="text-body-small flex items-center gap-4 rounded-4 px-8 py-4 text-typography-secondary hover:text-typography-primary"
       >
-        <Trans>Net Rate Projection:</Trans> <span className="text-typography-primary">{projectionLabels[value]}</span>
+        <Trans>Net rate projection:</Trans> <span className="text-typography-primary">{projectionLabels[value]}</span>
         <ChevronDownIcon className="size-16" />
       </Popover.Button>
       <Popover.Panel
@@ -439,7 +439,7 @@ function NetRateBreakdownTooltip({
       <div className="flex items-center justify-between gap-16">
         <span className="flex items-center gap-4 font-bold">
           <span className="inline-block size-6 rounded-full bg-green-500" />
-          <Trans>Long Net Rate</Trans>
+          <Trans>Long net rate</Trans>
         </span>
         <span className={cx("font-bold numbers", { positive: longNet >= 0, negative: longNet < 0 })}>
           {formatRate(longNet, decimals)}
@@ -458,7 +458,7 @@ function NetRateBreakdownTooltip({
       <div className="mt-4 flex items-center justify-between gap-16">
         <span className="flex items-center gap-4 font-bold">
           <span className="inline-block size-6 rounded-full bg-red-500" />
-          <Trans>Short Net Rate</Trans>
+          <Trans>Short net rate</Trans>
         </span>
         <span className={cx("font-bold numbers", { positive: shortNet >= 0, negative: shortNet < 0 })}>
           {formatRate(shortNet, decimals)}

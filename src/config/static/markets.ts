@@ -553,6 +553,10 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     "0x2Ce2bc8B0f9d000f359d756a5816C125474Bb39b": {
       enabled: true,
     },
+    // MEGA/USD [WETH-USDC]
+    "0xE26E7b91143f367445f1c0a5dCf4f4aC8EaDcDb1": {
+      enabled: true,
+    },
   },
   [AVALANCHE]: {
     // BTC/USD [BTC-USDC]
@@ -781,6 +785,10 @@ const MARKETS_UI_CONFIGS: Record<ContractsChainId, Record<string, MarketUiConfig
     },
     // SOL/USD [USDM-USDM]
     "0xe8E716F1cddfFD0698B86919D41A8228d701fEe9": {
+      enabled: true,
+    },
+    // MEGA/USD [USDM-USDM]
+    "0x1b997cb4841c4cb360E384192fFd7fb26eb10e5f": {
       enabled: true,
     },
     // SWAP-ONLY [ETH-USDM]

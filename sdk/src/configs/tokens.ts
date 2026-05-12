@@ -1238,6 +1238,16 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       imageUrl: "https://s2.coinmarketcap.com/static/img/coins/64x64/39464.png",
       explorerUrl: "https://arbiscan.io/token/0x620aC65BE29066Bb9D1E92C65b35B9fD321Fb963",
     },
+    {
+      name: "MegaETH",
+      symbol: "MEGA",
+      address: "0x13983f27Ce9365055a6a553233c49fE28e70103e",
+      isSynthetic: true,
+      decimals: 18,
+      categories: ["layer2", "defi"],
+      imageUrl: "https://assets.coingecko.com/coins/images/69995/standard/ICON.png?1760337992",
+      explorerUrl: "https://arbiscan.io/token/0x13983f27Ce9365055a6a553233c49fE28e70103e",
+    },
   ],
   [AVALANCHE]: [
     {
@@ -1985,6 +1995,14 @@ export const TOKENS: { [chainId: number]: Token[] } = {
       decimals: 18,
       isStable: true,
       imageUrl: "https://assets.coingecko.com/coins/images/69955/standard/USDm.png?1760170136",
+    },
+    {
+      name: "MegaETH",
+      symbol: "MEGA",
+      address: "0x28B7E77f82B25B95953825F1E3eA0E36c1c29861",
+      decimals: 18,
+      categories: ["layer2", "defi"],
+      imageUrl: "https://assets.coingecko.com/coins/images/69995/standard/ICON.png?1760337992",
     },
     {
       name: "GMX",

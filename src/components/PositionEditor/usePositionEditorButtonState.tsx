@@ -356,8 +356,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       position,
       depositToken: selectedCollateralToken,
       depositAmount: collateralDeltaAmount,
-      minCollateralFactor,
-      marketAddress: position?.marketAddress,
+      marketInfo: position?.marketInfo,
     });
 
     return takeValidationResult(commonError, editCollateralError, expressError);
@@ -374,7 +373,6 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     isDeposit,
     position,
     selectedCollateralToken,
-    minCollateralFactor,
   ]);
 
   const errorTooltipContent = useMemo(() => {
@@ -529,7 +527,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     return {
       text: (
         <>
-          <Trans>Creating order</Trans>
+          <Trans>Creating order...</Trans>
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),

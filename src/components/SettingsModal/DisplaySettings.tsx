@@ -34,9 +34,20 @@ export function DisplaySettings() {
           </ToggleSwitch>
         </div>
 
-        <ToggleSwitch isChecked={settings.showPnlAfterFees} setIsChecked={settings.setShowPnlAfterFees}>
-          <Trans>Display PnL after fees</Trans>
-        </ToggleSwitch>
+        <div className="flex items-center gap-8">
+          <ToggleSwitch isChecked={settings.showPnlAfterFees} setIsChecked={settings.setShowPnlAfterFees}>
+            <TooltipWithPortal
+              handle={<Trans>Display net value and PnL after all fees</Trans>}
+              position="top"
+              variant="icon"
+              content={
+                <div>
+                  <Trans>Include all fees, including close fees, in net value and PnL display.</Trans>
+                </div>
+              }
+            />
+          </ToggleSwitch>
+        </div>
 
         <ToggleSwitch isChecked={settings.isPnlInLeverage} setIsChecked={settings.setIsPnlInLeverage}>
           <Trans>Include PnL in leverage display</Trans>
