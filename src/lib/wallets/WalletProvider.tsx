@@ -1,4 +1,4 @@
-import { PrivyProvider } from "@privy-io/react-auth";
+import { PrivyProvider, type ConnectedWallet, type User } from "@privy-io/react-auth";
 import { WagmiProvider } from "@privy-io/wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useMemo } from "react";
@@ -21,6 +21,14 @@ const queryClient = new QueryClient();
 
 const supportedChains = getSupportedChains();
 const gmxLogoElement = <img src={gmxLogo} alt="GMX" width={100} />;
+
+function getActiveWalletForWagmi({ wallets, user }: { wallets: ConnectedWallet[]; user: User | null }) {
+  if (!user) {
+    return undefined;
+  }
+
+  return wallets.find((wallet) => wallet.linked) ?? wallets[0];
+}
 
 export default function WalletProvider({ children }: { children: React.ReactNode }) {
   const { theme } = useTheme();
@@ -50,7 +58,9 @@ export default function WalletProvider({ children }: { children: React.ReactNode
   return (
     <PrivyProvider appId={PRIVY_APP_ID} config={privyConfig}>
       <QueryClientProvider client={queryClient}>
-        <WagmiProvider config={getWagmiConfig()}>{children}</WagmiProvider>
+        <WagmiProvider config={getWagmiConfig()} setActiveWalletForWagmi={getActiveWalletForWagmi}>
+          {children}
+        </WagmiProvider>
       </QueryClientProvider>
     </PrivyProvider>
   );
