@@ -6,13 +6,17 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 const {
   mockSelectTradeboxFees,
+  mockSelectTradeboxIncreasePositionAmounts,
   mockSelectTradeboxMarketInfo,
   mockSelectTradeboxTradeFeesType,
+  mockSelectTradeboxTradeFlags,
   mockSelectUserReferralInfo,
 } = vi.hoisted(() => ({
   mockSelectTradeboxFees: Symbol("selectTradeboxFees"),
+  mockSelectTradeboxIncreasePositionAmounts: Symbol("selectTradeboxIncreasePositionAmounts"),
   mockSelectTradeboxMarketInfo: Symbol("selectTradeboxMarketInfo"),
   mockSelectTradeboxTradeFeesType: Symbol("selectTradeboxTradeFeesType"),
+  mockSelectTradeboxTradeFlags: Symbol("selectTradeboxTradeFlags"),
   mockSelectUserReferralInfo: Symbol("selectUserReferralInfo"),
 }));
 
@@ -26,8 +30,10 @@ vi.mock("lib/wallets/useWallet", () => ({
 
 vi.mock("context/SyntheticsStateContext/selectors/tradeboxSelectors", () => ({
   selectTradeboxFees: mockSelectTradeboxFees,
+  selectTradeboxIncreasePositionAmounts: mockSelectTradeboxIncreasePositionAmounts,
   selectTradeboxMarketInfo: mockSelectTradeboxMarketInfo,
   selectTradeboxTradeFeesType: mockSelectTradeboxTradeFeesType,
+  selectTradeboxTradeFlags: mockSelectTradeboxTradeFlags,
 }));
 
 vi.mock("context/SyntheticsStateContext/selectors/globalSelectors", () => ({
@@ -189,6 +195,10 @@ describe("PointsRow", () => {
     mockUseIncentivesConfig.mockReturnValue({
       data: {
         downgradingCoefficients: {},
+        boosts: [],
+        maxMultiplier: 400,
+        featuredMarketTokens: [],
+        balancingTradesThreshold: 0n,
       },
     } as any);
     mockUseSelector.mockImplementation((selector: unknown) => {
@@ -204,10 +214,25 @@ describe("PointsRow", () => {
         return "increase";
       }
 
+      if (selector === mockSelectTradeboxTradeFlags) {
+        return {
+          isLong: true,
+        };
+      }
+
+      if (selector === mockSelectTradeboxIncreasePositionAmounts) {
+        return {
+          sizeDeltaUsd: 100n * 10n ** USD_DECIMALS,
+        };
+      }
+
       if (selector === mockSelectTradeboxMarketInfo) {
         return {
           marketTokenAddress: "0xmarket",
           name: "ETH/USD [WETH-USDC]",
+          longInterestUsd: 100n * 10n ** USD_DECIMALS,
+          shortInterestUsd: 300n * 10n ** USD_DECIMALS,
+          useOpenInterestInTokensForBalance: false,
         };
       }
 
@@ -236,6 +261,10 @@ describe("PointsRow", () => {
         downgradingCoefficients: {
           "0xmarket": 50n,
         },
+        boosts: [],
+        maxMultiplier: 400,
+        featuredMarketTokens: [],
+        balancingTradesThreshold: 0n,
       },
     } as any);
 
@@ -243,5 +272,31 @@ describe("PointsRow", () => {
 
     expect(screen.getByText(/5\.63 GMX/)).toBeDefined();
     expect(screen.getByText((content) => content.includes("112.50"))).toBeDefined();
+  });
+
+  it("uses activity boosts in the displayed multiplier and reward estimate", () => {
+    mockUseAccountIncentiveStatus.mockReturnValue({
+      data: {
+        multiplier: 325,
+      },
+    } as any);
+    mockUseIncentivesConfig.mockReturnValue({
+      data: {
+        downgradingCoefficients: {},
+        boosts: [
+          { boost: "FeaturedMarkets", multiplier: 50 },
+          { boost: "BalancingTrades", multiplier: 50 },
+        ],
+        maxMultiplier: 400,
+        featuredMarketTokens: ["0xMARKET"],
+        balancingTradesThreshold: 50n * 10n ** USD_DECIMALS,
+      },
+    } as any);
+
+    renderPointsRow();
+
+    expect(screen.getByText("4.00x")).toBeDefined();
+    expect(screen.getByText(/18\.00 GMX/)).toBeDefined();
+    expect(screen.getByText((content) => content.includes("360.00"))).toBeDefined();
   });
 });

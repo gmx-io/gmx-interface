@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest";
 
 import {
   DEFAULT_DOWNGRADING_COEFFICIENT,
+  getEffectiveTradeMultiplier,
   getEstimatedTradeRewards,
+  getIsBalancingTrade,
   getMarketDowngradingCoefficient,
 } from "../pointsEstimate";
 
@@ -48,5 +50,81 @@ describe("getMarketDowngradingCoefficient", () => {
     expect(getMarketDowngradingCoefficient({ "0xabc": 50n }, "0xABC")).toBe(50n);
     expect(getMarketDowngradingCoefficient({ "0xABC": 50n }, "0xABC")).toBe(50n);
     expect(getMarketDowngradingCoefficient({ "0xABC": 50n }, "0xabc")).toBe(50n);
+  });
+});
+
+describe("getEffectiveTradeMultiplier", () => {
+  it("adds activity boosts and caps the multiplier", () => {
+    const marketInfo = {
+      marketTokenAddress: "0xmarket",
+      longInterestUsd: 100n * 10n ** USD_DECIMALS,
+      shortInterestUsd: 300n * 10n ** USD_DECIMALS,
+      useOpenInterestInTokensForBalance: false,
+    } as any;
+
+    expect(
+      getEffectiveTradeMultiplier({
+        multiplier: 325,
+        maxMultiplier: 400,
+        boosts: [
+          { boost: "FeaturedMarkets", multiplier: 50 },
+          { boost: "BalancingTrades", multiplier: 50 },
+        ],
+        featuredMarketTokens: ["0xMARKET"],
+        marketInfo,
+        isLong: true,
+        sizeDeltaUsd: 100n * 10n ** USD_DECIMALS,
+        balancingTradesThreshold: 50n * 10n ** USD_DECIMALS,
+      })
+    ).toBe(400);
+  });
+
+  it("normalizes indexer multiplier values before adding boosts", () => {
+    expect(
+      getEffectiveTradeMultiplier({
+        multiplier: "325" as any,
+        maxMultiplier: "400" as any,
+        boosts: [{ boost: "FeaturedMarkets", multiplier: "50" as any }],
+        featuredMarketTokens: ["0xmarket"],
+        marketInfo: {
+          marketTokenAddress: "0xmarket",
+        } as any,
+      })
+    ).toBe(375);
+  });
+});
+
+describe("getIsBalancingTrade", () => {
+  it("requires the trade to reduce open interest imbalance and meet the configured threshold", () => {
+    const marketInfo = {
+      longInterestUsd: 100n * 10n ** USD_DECIMALS,
+      shortInterestUsd: 300n * 10n ** USD_DECIMALS,
+      useOpenInterestInTokensForBalance: false,
+    } as any;
+
+    expect(
+      getIsBalancingTrade({
+        marketInfo,
+        isLong: true,
+        sizeDeltaUsd: 100n * 10n ** USD_DECIMALS,
+        balancingTradesThreshold: 50n * 10n ** USD_DECIMALS,
+      })
+    ).toBe(true);
+    expect(
+      getIsBalancingTrade({
+        marketInfo,
+        isLong: false,
+        sizeDeltaUsd: 100n * 10n ** USD_DECIMALS,
+        balancingTradesThreshold: 50n * 10n ** USD_DECIMALS,
+      })
+    ).toBe(false);
+    expect(
+      getIsBalancingTrade({
+        marketInfo,
+        isLong: true,
+        sizeDeltaUsd: 25n * 10n ** USD_DECIMALS,
+        balancingTradesThreshold: 50n * 10n ** USD_DECIMALS,
+      })
+    ).toBe(false);
   });
 });
