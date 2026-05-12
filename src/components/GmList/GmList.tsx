@@ -207,7 +207,13 @@ export function GmList({
       description={
         <div className="flex flex-col gap-16">
           <Trans>Liquidity pools for specific GMX markets with single-asset and native asset options</Trans>
-          <div className="flex flex-wrap items-center justify-between gap-12 py-8">
+          <div className="flex flex-wrap items-center justify-between gap-12 max-md:flex-wrap-reverse">
+            <div className="max-w-full">
+              <ButtonRowScrollFadeContainer>
+                <FavoriteTabs favoritesKey="gm-list" recentlyListedCount={recentlyListedCount} type="inline" />
+              </ButtonRowScrollFadeContainer>
+            </div>
+
             <SearchInput
               className="w-full *:!text-body-medium md:max-w-[260px]"
               value={searchText}
@@ -215,12 +221,41 @@ export function GmList({
               placeholder={t`Search pools`}
               autoFocus={false}
             />
-            <div className="max-w-full">
-              <ButtonRowScrollFadeContainer>
-                <FavoriteTabs favoritesKey="gm-list" recentlyListedCount={recentlyListedCount} type="inline" />
+          </div>
+        </div>
+      }
+      contentHeader={
+        <div>
+          {topLevelTab === "crypto" && populatedCryptoSubCats.size > 0 && (
+            <div className="flex w-full justify-start">
+              <ButtonRowScrollFadeContainer className="grow">
+                <Tabs
+                  options={cryptoSubCatTabs}
+                  selectedValue={subCategoryTab}
+                  onChange={setSubCategoryTab}
+                  type="block"
+                  className="bg-slate-800/50 px-20"
+                  tabsWrapperClassName="gap-16"
+                  regularOptionClassname="!px-0 !pb-9 !pt-11 text-13"
+                />
               </ButtonRowScrollFadeContainer>
             </div>
-          </div>
+          )}
+          {topLevelTab === "tradfi" && populatedTradfiSubCats.size > 0 && (
+            <div className="flex w-full justify-start">
+              <ButtonRowScrollFadeContainer className="grow">
+                <Tabs
+                  options={tradfiSubCatTabs}
+                  selectedValue={subCategoryTab}
+                  onChange={setSubCategoryTab}
+                  type="block"
+                  className="bg-slate-800/50 px-20"
+                  tabsWrapperClassName="gap-16"
+                  regularOptionClassname="!px-0 !pb-9 !pt-11 text-13"
+                />
+              </ButtonRowScrollFadeContainer>
+            </div>
+          )}
         </div>
       }
       bottom={
@@ -229,37 +264,6 @@ export function GmList({
         ) : undefined
       }
     >
-      {topLevelTab === "crypto" && populatedCryptoSubCats.size > 0 && (
-        <div className="flex w-full justify-start">
-          <ButtonRowScrollFadeContainer className="grow">
-            <Tabs
-              options={cryptoSubCatTabs}
-              selectedValue={subCategoryTab}
-              onChange={setSubCategoryTab}
-              type="block"
-              className="bg-slate-800/50 px-16"
-              tabsWrapperClassName="gap-16"
-              regularOptionClassname="!px-0 !pb-9 !pt-11 text-13"
-            />
-          </ButtonRowScrollFadeContainer>
-        </div>
-      )}
-      {topLevelTab === "tradfi" && populatedTradfiSubCats.size > 0 && (
-        <div className="flex w-full justify-start">
-          <ButtonRowScrollFadeContainer className="grow">
-            <Tabs
-              options={tradfiSubCatTabs}
-              selectedValue={subCategoryTab}
-              onChange={setSubCategoryTab}
-              type="block"
-              className="bg-slate-800/50 px-16"
-              tabsWrapperClassName="gap-16"
-              regularOptionClassname="!px-0 !pb-9 !pt-11 text-13"
-            />
-          </ButtonRowScrollFadeContainer>
-        </div>
-      )}
-
       <div className="flex grow flex-col">
         {isMobile ? (
           <div className="flex flex-col gap-4">
@@ -276,7 +280,7 @@ export function GmList({
               <table className="w-[max(100%,1000px)]">
                 <thead>
                   <TableTheadTr>
-                    <TableTh className="pl-16">
+                    <TableTh className="!pl-12">
                       <Trans>POOL</Trans>
                     </TableTh>
                     <TableTh>
