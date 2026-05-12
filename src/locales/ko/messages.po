@@ -455,7 +455,7 @@ msgstr "GMX Account 잔액"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Search in perpetuals markets"
-msgstr ""
+msgstr "무기한 시장 검색"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -507,7 +507,7 @@ msgstr "토큰 선택"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Crypto"
-msgstr ""
+msgstr "암호화폐"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Image generation failed. Refresh and try again."
@@ -1472,7 +1472,7 @@ msgstr "담보"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Stocks"
-msgstr ""
+msgstr "주식"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop Market"
@@ -3172,7 +3172,7 @@ msgstr "기본 실패"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Commodities"
-msgstr ""
+msgstr "원자재"
 
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
 msgid "How to start earning?"
@@ -4542,7 +4542,7 @@ msgstr "수령 처리 중..."
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Recently Listed"
-msgstr ""
+msgstr "최근 상장"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Failed to load order data:"
@@ -4588,7 +4588,7 @@ msgstr "PnL"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Favourites"
-msgstr ""
+msgstr "즐겨찾기"
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Position size too small. Min: {minPositionSizeUsdText}, current: {positionSizeInUsdText}"
@@ -5800,9 +5800,9 @@ msgstr "자금은 목적지 체인의 GMX 컨트랙트에 안전하게 보관되
 msgid "Mozaic Finance"
 msgstr "Mozaic Finance"
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ModeTabs.tsx
 msgid "Perpetuals"
-msgstr ""
+msgstr "무기한"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
@@ -6549,7 +6549,7 @@ msgstr "{balanceFormatted} 출금에 실패했습니다"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "TradFi"
-msgstr ""
+msgstr "전통 금융"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Gas"
@@ -7155,7 +7155,7 @@ msgstr ""
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "FX"
-msgstr ""
+msgstr "FX"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Share position"
@@ -8241,7 +8241,7 @@ msgstr ""
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "AI"
-msgstr ""
+msgstr "AI"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/ReferralsAffiliatesTab.tsx
@@ -9648,7 +9648,7 @@ msgstr "GMX 전용으로 설계된 투명하고 1초 미만의 Chainlink 가격 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched."
-msgstr ""
+msgstr "일치하는 시장이 없습니다."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Stake esGMX"
@@ -10168,7 +10168,7 @@ msgstr "일치하는 풀 없음"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Search in swap markets"
-msgstr ""
+msgstr "스왑 시장 검색"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation confirmations"
@@ -10242,7 +10242,7 @@ msgstr "높은 허용 가격 영향이 설정되었습니다. 현재 영향: {0}
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ModeTabs.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
@@ -10301,7 +10301,7 @@ msgstr "GMX V1 액션"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
-msgstr ""
+msgstr "지수"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GLV vaults:"

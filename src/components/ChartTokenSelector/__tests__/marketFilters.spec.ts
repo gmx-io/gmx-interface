@@ -1,6 +1,6 @@
 import { describe, it, expect } from "vitest";
 
-import { ONE_MONTH_SECONDS } from "lib/dates";
+import { SECONDS_IN_DAY } from "lib/dates";
 
 import {
   applySubCategoryFilter,
@@ -18,7 +18,7 @@ const tokens = [
   { address: "0xusdc", categories: undefined },
 ] as any[];
 
-const RECENTLY_LISTED_WINDOW_MS = ONE_MONTH_SECONDS;
+const RECENTLY_LISTED_WINDOW_MS = SECONDS_IN_DAY * 30 * 1000;
 
 describe("applyTopLevelFilter", () => {
   it("returns all tokens for 'all'", () => {
@@ -104,12 +104,6 @@ describe("isMarketRecentlyListed", () => {
 
   it("returns false when listingDate is undefined", () => {
     expect(isMarketRecentlyListed(undefined, now)).toBe(false);
-  });
-
-  it("respects a custom window", () => {
-    const customWindow = 7 * 24 * 60 * 60 * 1000; // 7 days
-    expect(isMarketRecentlyListed(now - 6 * 24 * 60 * 60 * 1000, now, customWindow)).toBe(true);
-    expect(isMarketRecentlyListed(now - 8 * 24 * 60 * 60 * 1000, now, customWindow)).toBe(false);
   });
 });
 

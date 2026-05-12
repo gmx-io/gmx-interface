@@ -74,12 +74,6 @@ type TokensFavoritesStore = {
   modes: { [key in TokenFavoriteKey]?: TradeMode };
   gmFavoriteTokens: string[];
   indexFavoriteTokens: string[];
-
-  /**
-   * Legacy field kept for one-shot migration. Older sessions wrote `tabs` with
-   * the flat tab model. We migrate then drop it on next save.
-   */
-  tabs?: { [key in TokenFavoriteKey]?: string };
 };
 
 const DEFAULT_TOKENS_FAVORITES_STORE: TokensFavoritesStore = {
@@ -122,40 +116,6 @@ const context = createContext<TokensFavoritesContextType>({
 
 const Provider = context.Provider;
 
-function migrateLegacyTabs(legacy: TokensFavoritesStore["tabs"]): {
-  topLevelTabs: TokensFavoritesStore["topLevelTabs"];
-  subCategoryTabs: TokensFavoritesStore["subCategoryTabs"];
-} {
-  const topLevelTabs: TokensFavoritesStore["topLevelTabs"] = {};
-  const subCategoryTabs: TokensFavoritesStore["subCategoryTabs"] = {};
-  if (!legacy) return { topLevelTabs, subCategoryTabs };
-
-  for (const [key, value] of Object.entries(legacy)) {
-    const k = key as TokenFavoriteKey;
-    switch (value) {
-      case "all":
-      case "favorites":
-        topLevelTabs[k] = value;
-        break;
-      case "rwa":
-      case "tradfi":
-        topLevelTabs[k] = "tradfi";
-        break;
-      case "defi":
-      case "meme":
-      case "layer1":
-      case "layer2":
-      case "ai":
-        topLevelTabs[k] = "crypto";
-        subCategoryTabs[k] = { crypto: value as CryptoSubCategory };
-        break;
-      default:
-        break;
-    }
-  }
-  return { topLevelTabs, subCategoryTabs };
-}
-
 export function TokensFavoritesContextProvider({ children }: PropsWithChildren) {
   const [settings, changeSettings] = useLocalStorageSerializeKey<TokensFavoritesStore>(
     TOKEN_FAVORITES_PREFERENCE_KEY,
@@ -169,23 +129,15 @@ export function TokensFavoritesContextProvider({ children }: PropsWithChildren) 
     [changeSettings, settings]
   );
 
-  // Normalize the persisted store on every render. Legacy localStorage from before
-  // the hierarchical-tab refactor may be missing some top-level fields entirely;
-  // missing fields would otherwise read as `undefined` and crash `useTokensFavorites`.
-  const migrated = useMemo(() => {
+  const normalized = useMemo(() => {
     const s = settings ?? DEFAULT_TOKENS_FAVORITES_STORE;
-    const legacyMigration =
-      s.tabs && (!s.topLevelTabs || Object.keys(s.topLevelTabs).length === 0)
-        ? migrateLegacyTabs(s.tabs)
-        : { topLevelTabs: {}, subCategoryTabs: {} };
 
     return {
-      topLevelTabs: { ...legacyMigration.topLevelTabs, ...(s.topLevelTabs ?? {}) },
-      subCategoryTabs: { ...legacyMigration.subCategoryTabs, ...(s.subCategoryTabs ?? {}) },
+      topLevelTabs: s.topLevelTabs ?? EMPTY_OBJECT,
+      subCategoryTabs: s.subCategoryTabs ?? EMPTY_OBJECT,
       modes: s.modes ?? EMPTY_OBJECT,
       gmFavoriteTokens: s.gmFavoriteTokens ?? EMPTY_ARRAY,
       indexFavoriteTokens: s.indexFavoriteTokens ?? EMPTY_ARRAY,
-      tabs: undefined,
     };
   }, [settings]);
 
@@ -240,17 +192,17 @@ export function TokensFavoritesContextProvider({ children }: PropsWithChildren) 
 
   const value = useMemo<TokensFavoritesContextType>(
     () => ({
-      topLevelTabs: migrated.topLevelTabs,
-      subCategoryTabs: migrated.subCategoryTabs,
-      modes: migrated.modes,
-      gmFavoriteTokens: migrated.gmFavoriteTokens,
-      indexFavoriteTokens: migrated.indexFavoriteTokens,
+      topLevelTabs: normalized.topLevelTabs,
+      subCategoryTabs: normalized.subCategoryTabs,
+      modes: normalized.modes,
+      gmFavoriteTokens: normalized.gmFavoriteTokens,
+      indexFavoriteTokens: normalized.indexFavoriteTokens,
       setTopLevelTab,
       setSubCategoryTab,
       setMode,
       toggleFavoriteToken,
     }),
-    [migrated, setTopLevelTab, setSubCategoryTab, setMode, toggleFavoriteToken]
+    [normalized, setTopLevelTab, setSubCategoryTab, setMode, toggleFavoriteToken]
   );
 
   return <Provider value={value}>{children}</Provider>;

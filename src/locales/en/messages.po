@@ -5800,7 +5800,7 @@ msgstr "Your funds are safe in GMX contracts on the destination chain. Retry the
 msgid "Mozaic Finance"
 msgstr "Mozaic Finance"
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ModeTabs.tsx
 msgid "Perpetuals"
 msgstr "Perpetuals"
 
@@ -10242,7 +10242,7 @@ msgstr "High acceptable price impact set. Current impact: {0}."
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ModeTabs.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx

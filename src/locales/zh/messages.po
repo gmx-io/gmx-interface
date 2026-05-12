@@ -455,7 +455,7 @@ msgstr "GMX Account 余额"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Search in perpetuals markets"
-msgstr ""
+msgstr "搜索永续合约市场"
 
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -507,7 +507,7 @@ msgstr "选择代币"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Crypto"
-msgstr ""
+msgstr "加密"
 
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Image generation failed. Refresh and try again."
@@ -1472,7 +1472,7 @@ msgstr "抵押品"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Stocks"
-msgstr ""
+msgstr "股票"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop Market"
@@ -3172,7 +3172,7 @@ msgstr "主节点失败"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Commodities"
-msgstr ""
+msgstr "大宗商品"
 
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
 msgid "How to start earning?"
@@ -4542,7 +4542,7 @@ msgstr "正在处理领取..."
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Recently Listed"
-msgstr ""
+msgstr "最近上线"
 
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Failed to load order data:"
@@ -4588,7 +4588,7 @@ msgstr "PnL"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Favourites"
-msgstr ""
+msgstr "收藏"
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Position size too small. Min: {minPositionSizeUsdText}, current: {positionSizeInUsdText}"
@@ -5800,9 +5800,9 @@ msgstr "您的资金安全存放在目标链上的 GMX 合约中。请在 LayerZ
 msgid "Mozaic Finance"
 msgstr "Mozaic Finance"
 
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ModeTabs.tsx
 msgid "Perpetuals"
-msgstr ""
+msgstr "永续合约"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
@@ -6549,7 +6549,7 @@ msgstr "{balanceFormatted} 提取失败"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "TradFi"
-msgstr ""
+msgstr "传统金融"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Gas"
@@ -7155,7 +7155,7 @@ msgstr ""
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "FX"
-msgstr ""
+msgstr "外汇"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Share position"
@@ -8241,7 +8241,7 @@ msgstr ""
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "AI"
-msgstr ""
+msgstr "AI"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/ReferralsAffiliatesTab.tsx
@@ -9648,7 +9648,7 @@ msgstr "利用 Chainlink 为 GMX 量身定制的透明、亚秒级价格馈送�
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "No markets matched."
-msgstr ""
+msgstr "没有匹配的市场。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Stake esGMX"
@@ -10168,7 +10168,7 @@ msgstr "没有匹配的资金池"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "Search in swap markets"
-msgstr ""
+msgstr "搜索兑换市场"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation confirmations"
@@ -10242,7 +10242,7 @@ msgstr "已设置较高的可接受价格影响。当前影响：{0}。"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ModeTabs.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
@@ -10301,7 +10301,7 @@ msgstr "GMX V1 操作"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Indices"
-msgstr ""
+msgstr "指数"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GLV vaults:"

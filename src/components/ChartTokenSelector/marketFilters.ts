@@ -1,9 +1,10 @@
 import type { SubCategoryTab, TopLevelTab } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
-import { ONE_MONTH_SECONDS } from "lib/dates";
+import { SECONDS_IN_DAY } from "lib/dates";
 import type { Token } from "sdk/utils/tokens/types";
 import type { TokenCategory } from "sdk/utils/tokens/types";
 
 const CRYPTO_CATEGORIES: TokenCategory[] = ["ai", "layer1", "layer2", "defi", "meme"];
+const RECENTLY_LISTED_WINDOW_MS = SECONDS_IN_DAY * 30 * 1000;
 
 function hasAnyCategory(token: Token, cats: TokenCategory[]): boolean {
   return Boolean(token.categories?.some((c) => cats.includes(c)));
@@ -43,23 +44,18 @@ export function applySubCategoryFilter(
   return tokens.filter((t) => t.categories?.includes(args.subCategoryTab as TokenCategory));
 }
 
-export function isMarketRecentlyListed(
-  listingDate: number | undefined,
-  now: number,
-  windowMs: number = ONE_MONTH_SECONDS
-): boolean {
+export function isMarketRecentlyListed(listingDate: number | undefined, now: number): boolean {
   if (listingDate === undefined) return false;
-  return now - listingDate < windowMs;
+  return now - listingDate < RECENTLY_LISTED_WINDOW_MS;
 }
 
 export function getRecentlyListedTokenAddresses(
   listingDateByIndexToken: Record<string, number>,
-  now: number,
-  windowMs: number = ONE_MONTH_SECONDS
+  now: number
 ): string[] {
   const result: string[] = [];
   for (const [address, ts] of Object.entries(listingDateByIndexToken)) {
-    if (now - ts < windowMs) result.push(address.toLowerCase());
+    if (now - ts < RECENTLY_LISTED_WINDOW_MS) result.push(address.toLowerCase());
   }
   return result;
 }
