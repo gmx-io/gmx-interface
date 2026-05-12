@@ -7,7 +7,7 @@ import { getTenderlyConfig, simulateCallDataWithTenderly } from "lib/tenderly";
 import { WalletSigner } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 
-import { ISigner, ISignerSendTransactionParams, ISignerSendTransactionResult } from "./iSigner";
+import { ISigner, ISignerSendTransactionParams } from "./iSigner";
 import { TransactionWaiterResult, TxnCallback, TxnEventBuilder } from "./types";
 
 export type WalletTxnCtx = {};
@@ -130,7 +130,7 @@ export async function sendWalletTransaction({
 
     return {
       transactionHash: res.hash,
-      wait: makeWalletTxnResultWaiter(res.hash, res),
+      wait: makeWalletTxnResultWaiter(chainId, res.hash),
     };
   } catch (error) {
     callback?.(eventBuilder.Error(error));
@@ -139,16 +139,14 @@ export async function sendWalletTransaction({
   }
 }
 
-function makeWalletTxnResultWaiter(
-  hash: string,
-  txn: ISignerSendTransactionResult
-): () => Promise<TransactionWaiterResult> {
+function makeWalletTxnResultWaiter(chainId: number, hash: string): () => Promise<TransactionWaiterResult> {
   return async () => {
-    const receipt = await txn.wait();
+    const publicClient = getPublicClientWithRpc(chainId);
+    const receipt = await publicClient.waitForTransactionReceipt({ hash });
     return {
       transactionHash: hash,
-      blockNumber: receipt?.blockNumber,
-      status: receipt?.status === 1 ? "success" : "failed",
+      blockNumber: receipt.blockNumber !== undefined ? Number(receipt.blockNumber) : undefined,
+      status: receipt.status === "success" ? "success" : "failed",
     };
   };
 }
