@@ -6,10 +6,10 @@ import { getIncentivesV2Url } from "config/links";
 import { useChainId } from "lib/chains";
 import { formatAmount, formatUsd } from "lib/numbers";
 import {
-  sendManualAllocationModalClosedEvent,
-  sendManualAllocationModalReferralClickedEvent,
-  sendManualAllocationModalShownEvent,
-  sendManualAllocationModalStartTradingClickedEvent,
+  sendManualDistributionDialogLearnMoreClickEvent,
+  sendManualDistributionDialogShareClickEvent,
+  sendManualDistributionDialogShownEvent,
+  sendManualDistributionDialogTradeClickEvent,
 } from "lib/userAnalytics/pointsEvents";
 
 import Button from "components/Button/Button";
@@ -46,22 +46,21 @@ export function HistoricalPointsAllocationModal({
 
   useEffect(() => {
     if (isVisible) {
-      sendManualAllocationModalShownEvent({ manualAllocatedPoints, manualBonusUsd });
+      sendManualDistributionDialogShownEvent({ manualAllocatedPoints, manualBonusUsd });
     }
   }, [isVisible, manualAllocatedPoints, manualBonusUsd]);
 
   const handleClose = () => {
-    sendManualAllocationModalClosedEvent();
     setIsVisible(false);
   };
 
   const handleStartTradingClick = () => {
-    sendManualAllocationModalStartTradingClickedEvent();
+    sendManualDistributionDialogTradeClickEvent();
     setIsVisible(false);
   };
 
   const handleReferralClick = () => {
-    sendManualAllocationModalReferralClickedEvent();
+    sendManualDistributionDialogShareClickEvent();
     setIsVisible(false);
   };
 
@@ -109,6 +108,7 @@ export function HistoricalPointsAllocationModal({
               href={getIncentivesV2Url(chainId)}
               variant="icon-arrow"
               className="text-14 font-medium text-blue-300"
+              onClick={sendManualDistributionDialogLearnMoreClickEvent}
             >
               <Trans>Learn more about the incentive program</Trans>
             </ExternalLink>

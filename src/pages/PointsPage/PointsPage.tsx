@@ -1,5 +1,5 @@
 import { t, Trans } from "@lingui/macro";
-import { useCallback, useMemo } from "react";
+import { useCallback, useEffect, useMemo } from "react";
 import { Redirect, useHistory, useLocation } from "react-router-dom";
 
 import { isIncentivesEnabled } from "domain/synthetics/incentives/constants";
@@ -8,6 +8,7 @@ import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccou
 import { useAccountRewardsHistory } from "domain/synthetics/incentives/useAccountRewardsHistory";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
 import { useChainId } from "lib/chains";
+import { sendPointsPageViewEvent } from "lib/userAnalytics/pointsEvents";
 import useWallet from "lib/wallets/useWallet";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
@@ -72,6 +73,10 @@ export function PointsPage() {
     if (pathname.startsWith("/points/leaderboard")) return PointsTab.Leaderboard;
     return PointsTab.Dashboard;
   }, [pathname]);
+
+  useEffect(() => {
+    sendPointsPageViewEvent(activeTab);
+  }, [activeTab]);
 
   const handleTabChange = useCallback(
     (value: PointsTab) => {

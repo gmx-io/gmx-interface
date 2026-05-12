@@ -24,9 +24,7 @@ vi.mock("lib/localStorage", () => ({
 }));
 
 vi.mock("lib/userAnalytics/pointsEvents", () => ({
-  sendPointsPromoBannerClickedEvent: vi.fn(),
-  sendPointsPromoBannerDismissedEvent: vi.fn(),
-  sendPointsPromoBannerShownEvent: vi.fn(),
+  sendPointsPageNavigationEvent: vi.fn(),
 }));
 
 // Import after mocks

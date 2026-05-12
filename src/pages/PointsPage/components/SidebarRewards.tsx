@@ -22,6 +22,11 @@ import { metrics } from "lib/metrics";
 import { formatAmount } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import {
+  sendClaimRewardsResultEvent,
+  sendStakeRewardsClickEvent,
+  sendStakeRewardsResultEvent,
+} from "lib/userAnalytics/pointsEvents";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 import { getTokenBySymbol } from "sdk/configs/tokens";
@@ -321,6 +326,7 @@ function ClaimModal({
       }
 
       await submitClaim();
+      sendClaimRewardsResultEvent(true);
       helperToast.success(t`Claim completed`);
       await mutateClaimableAmount(0n, false);
       setIsOpen(false);
@@ -328,6 +334,7 @@ function ClaimModal({
       // eslint-disable-next-line no-console
       console.error("Points rewards claim failed", err);
       metrics.pushError(err, "pointsSidebar.claim");
+      sendClaimRewardsResultEvent(false);
       helperToast.error(t`Claim failed`);
     } finally {
       setPendingAction(undefined);
@@ -340,7 +347,9 @@ function ClaimModal({
     }
 
     let stakeAmount = claimableAmount;
+    let didAttemptClaim = false;
     let didClaim = false;
+    sendStakeRewardsClickEvent();
 
     try {
       if (needsStakeApproval) {
@@ -359,8 +368,10 @@ function ClaimModal({
       }
       stakeAmount = latest;
 
+      didAttemptClaim = true;
       await submitClaim();
       didClaim = true;
+      sendClaimRewardsResultEvent(true);
       helperToast.success(t`Claim completed`);
       await mutateClaimableAmount(0n, false);
 
@@ -377,11 +388,16 @@ function ClaimModal({
       });
 
       await stakeTx.wait();
+      sendStakeRewardsResultEvent(true);
       setIsOpen(false);
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error("Points rewards claim+stake failed", err);
       metrics.pushError(err, didClaim ? "pointsSidebar.stakeAfterClaim" : "pointsSidebar.claimAndStake");
+      if (didAttemptClaim && !didClaim) {
+        sendClaimRewardsResultEvent(false);
+      }
+      sendStakeRewardsResultEvent(false);
       if (!didClaim) {
         helperToast.error(t`Claim failed`);
       } else {

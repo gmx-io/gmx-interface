@@ -69,7 +69,7 @@ vi.mock("img/ic_multiplier_solid.svg?react", () => ({
 }));
 
 vi.mock("lib/userAnalytics/pointsEvents", () => ({
-  sendTradeBoxPointsEstimateClickedEvent: vi.fn(),
+  sendPointsPageNavigationEvent: vi.fn(),
 }));
 
 import { useSelector } from "context/SyntheticsStateContext/utils";

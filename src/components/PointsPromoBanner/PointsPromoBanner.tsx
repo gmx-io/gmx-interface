@@ -7,11 +7,7 @@ import { isIncentivesEnabled } from "domain/synthetics/incentives/constants";
 import { usePersonalizedBannerData } from "domain/synthetics/incentives/usePersonalizedBannerData";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
-import {
-  sendPointsPromoBannerClickedEvent,
-  sendPointsPromoBannerDismissedEvent,
-  sendPointsPromoBannerShownEvent,
-} from "lib/userAnalytics/pointsEvents";
+import { sendPointsPageNavigationEvent } from "lib/userAnalytics/pointsEvents";
 
 import { EARN_PORTFOLIO_STAKE_GMX_LINK } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/constants";
 
@@ -67,12 +63,6 @@ export function PointsPromoBanner() {
   const shouldRender =
     isIncentivesEnabled(chainId) && !dismissed && !bannerData.isLoading && bannerData.bannerVariant !== undefined;
 
-  useEffect(() => {
-    if (shouldRender) {
-      sendPointsPromoBannerShownEvent({ variant: bannerData.bannerVariant! });
-    }
-  }, [bannerData.bannerVariant, shouldRender]);
-
   if (!shouldRender) {
     return null;
   }
@@ -80,17 +70,17 @@ export function PointsPromoBanner() {
   const { title, body } = getPersonalizedBannerCopy(bannerData);
   const isStakeCta = bannerData.bannerVariant === "recent-activity";
   const ctaTo = isStakeCta ? EARN_PORTFOLIO_STAKE_GMX_LINK : "/points";
-  const cta = isStakeCta ? "StakeGMX" : "LearnMore";
 
   const handleBannerClick = () => {
-    sendPointsPromoBannerClickedEvent({ variant: bannerData.bannerVariant!, cta });
+    if (ctaTo === "/points") {
+      sendPointsPageNavigationEvent({ source: "TradePageBanner" });
+    }
     handleDismiss();
   };
 
   const handleDismissClick = (event: MouseEvent<HTMLButtonElement>) => {
     event.preventDefault();
     event.stopPropagation();
-    sendPointsPromoBannerDismissedEvent({ variant: bannerData.bannerVariant! });
     handleDismiss();
   };
 

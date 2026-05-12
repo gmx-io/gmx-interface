@@ -10,6 +10,7 @@ import { useMegaethPointsActive } from "domain/synthetics/common/useMegaethPoint
 import { isIncentivesEnabled } from "domain/synthetics/incentives/constants";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { sendPointsPageNavigationEvent } from "lib/userAnalytics/pointsEvents";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
@@ -272,8 +273,12 @@ export function MenuSection({
 
   const handleItemClick = useCallback(
     (key: string) => {
-      if (key === "points" && !pointsClicked) {
-        setPointsClicked(true);
+      if (key === "points") {
+        sendPointsPageNavigationEvent({ source: "Menu" });
+
+        if (!pointsClicked) {
+          setPointsClicked(true);
+        }
       }
       onMenuItemClick?.();
     },

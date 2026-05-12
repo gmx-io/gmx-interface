@@ -3,44 +3,48 @@ import { bigintToNumber } from "lib/numbers";
 
 import { userAnalytics } from "./UserAnalytics";
 
-type PointsPromoBannerVariant = "new-or-low-fees" | "manual-reward" | "recent-activity";
-type PointsPromoBannerCta = "LearnMore" | "StakeGMX";
+type PointsPageTab = "dashboard" | "history" | "leaderboard";
+type PointsPageNavigationSource = "TradePageBanner" | "Menu" | "GMXAccountModal" | "FeeBlock";
+
+type PointsPageViewEvent = {
+  event: "PointsPageViews";
+  data: {
+    tab: PointsPageTab;
+  };
+};
+
+type PointsPageActionEvent = {
+  event: "PointsPageAction";
+  data: {
+    action:
+      | "StakeRewardsClick"
+      | "ClaimRewardsSuccess"
+      | "ClaimRewardsFail"
+      | "StakeRewardsSuccess"
+      | "StakeRewardsFail";
+  };
+};
 
 type PointsActionEvent = {
   event: "PointsAction";
   data:
     | {
-        action: "PromoBannerShown";
-        variant: PointsPromoBannerVariant;
-      }
-    | {
-        action: "PromoBannerClicked";
-        variant: PointsPromoBannerVariant;
-        cta: PointsPromoBannerCta;
-      }
-    | {
-        action: "PromoBannerDismissed";
-        variant: PointsPromoBannerVariant;
-      }
-    | {
-        action: "ManualAllocationModalShown";
+        action: "ManualDistributionDialogShown";
         manualAllocatedPoints?: number;
         manualBonusUsd?: number;
       }
     | {
-        action: "ManualAllocationModalClosed";
+        action:
+          | "ManualDistributionDialogShareClick"
+          | "ManualDistributionDialogTradeClick"
+          | "ManualDistributionDialogLearnMoreClick";
       }
     | {
-        action: "ManualAllocationModalStartTradingClicked";
-      }
-    | {
-        action: "ManualAllocationModalReferralClicked";
-      }
-    | {
-        action: "TradeBoxPointsEstimateClicked";
+        action: "PointsPageNavigation";
+        source: PointsPageNavigationSource;
         marketAddress?: string;
         marketName?: string;
-        hasEstimatedRewards: boolean;
+        hasEstimatedRewards?: boolean;
         rewardsUsd?: number;
         downgradingCoefficient?: number;
       };
@@ -58,47 +62,37 @@ function coefficientToNumber(value: bigint | undefined) {
   return value === undefined ? undefined : Number(value) / 100;
 }
 
-export function sendPointsPromoBannerShownEvent({ variant }: { variant: PointsPromoBannerVariant }) {
-  userAnalytics.pushEvent<PointsActionEvent>(
-    {
-      event: "PointsAction",
-      data: {
-        action: "PromoBannerShown",
-        variant,
-      },
-    },
-    { dedupKey: `points-promo-banner-shown-${variant}` }
-  );
-}
-
-export function sendPointsPromoBannerClickedEvent({
-  variant,
-  cta,
-}: {
-  variant: PointsPromoBannerVariant;
-  cta: PointsPromoBannerCta;
-}) {
-  userAnalytics.pushEvent<PointsActionEvent>({
-    event: "PointsAction",
+export function sendPointsPageViewEvent(tab: PointsPageTab) {
+  userAnalytics.pushEvent<PointsPageViewEvent>({
+    event: "PointsPageViews",
     data: {
-      action: "PromoBannerClicked",
-      variant,
-      cta,
+      tab,
     },
   });
 }
 
-export function sendPointsPromoBannerDismissedEvent({ variant }: { variant: PointsPromoBannerVariant }) {
-  userAnalytics.pushEvent<PointsActionEvent>({
-    event: "PointsAction",
+function sendPointsPageActionEvent(action: PointsPageActionEvent["data"]["action"]) {
+  userAnalytics.pushEvent<PointsPageActionEvent>({
+    event: "PointsPageAction",
     data: {
-      action: "PromoBannerDismissed",
-      variant,
+      action,
     },
   });
 }
 
-export function sendManualAllocationModalShownEvent({
+export function sendStakeRewardsClickEvent() {
+  sendPointsPageActionEvent("StakeRewardsClick");
+}
+
+export function sendClaimRewardsResultEvent(success: boolean) {
+  sendPointsPageActionEvent(success ? "ClaimRewardsSuccess" : "ClaimRewardsFail");
+}
+
+export function sendStakeRewardsResultEvent(success: boolean) {
+  sendPointsPageActionEvent(success ? "StakeRewardsSuccess" : "StakeRewardsFail");
+}
+
+export function sendManualDistributionDialogShownEvent({
   manualAllocatedPoints,
   manualBonusUsd,
 }: {
@@ -109,64 +103,69 @@ export function sendManualAllocationModalShownEvent({
     {
       event: "PointsAction",
       data: {
-        action: "ManualAllocationModalShown",
+        action: "ManualDistributionDialogShown",
         manualAllocatedPoints: pointsToNumber(manualAllocatedPoints),
         manualBonusUsd: usdToNumber(manualBonusUsd),
       },
     },
-    { dedupKey: "manual-allocation-modal-shown" }
+    { dedupKey: "manual-distribution-dialog-shown" }
   );
 }
 
-export function sendManualAllocationModalClosedEvent() {
+export function sendManualDistributionDialogShareClickEvent() {
   userAnalytics.pushEvent<PointsActionEvent>({
     event: "PointsAction",
     data: {
-      action: "ManualAllocationModalClosed",
+      action: "ManualDistributionDialogShareClick",
     },
   });
 }
 
-export function sendManualAllocationModalStartTradingClickedEvent() {
+export function sendManualDistributionDialogTradeClickEvent() {
   userAnalytics.pushEvent<PointsActionEvent>({
     event: "PointsAction",
     data: {
-      action: "ManualAllocationModalStartTradingClicked",
+      action: "ManualDistributionDialogTradeClick",
     },
   });
 }
 
-export function sendManualAllocationModalReferralClickedEvent() {
+export function sendManualDistributionDialogLearnMoreClickEvent() {
   userAnalytics.pushEvent<PointsActionEvent>({
     event: "PointsAction",
     data: {
-      action: "ManualAllocationModalReferralClicked",
+      action: "ManualDistributionDialogLearnMoreClick",
     },
   });
 }
 
-export function sendTradeBoxPointsEstimateClickedEvent({
+export function sendPointsPageNavigationEvent({
+  source,
   marketAddress,
   marketName,
   hasEstimatedRewards,
   rewardsUsd,
   downgradingCoefficient,
 }: {
-  marketAddress: string | undefined;
-  marketName: string | undefined;
-  hasEstimatedRewards: boolean;
-  rewardsUsd: bigint | undefined;
-  downgradingCoefficient: bigint | undefined;
+  source: PointsPageNavigationSource;
+  marketAddress?: string;
+  marketName?: string;
+  hasEstimatedRewards?: boolean;
+  rewardsUsd?: bigint;
+  downgradingCoefficient?: bigint;
 }) {
   userAnalytics.pushEvent<PointsActionEvent>({
     event: "PointsAction",
     data: {
-      action: "TradeBoxPointsEstimateClicked",
-      marketAddress,
-      marketName,
-      hasEstimatedRewards,
-      rewardsUsd: usdToNumber(rewardsUsd),
-      downgradingCoefficient: coefficientToNumber(downgradingCoefficient),
+      action: "PointsPageNavigation",
+      source,
+      ...(marketAddress !== undefined ? { marketAddress } : {}),
+      ...(marketName !== undefined ? { marketName } : {}),
+      ...(hasEstimatedRewards !== undefined ? { hasEstimatedRewards } : {}),
+      ...(rewardsUsd !== undefined ? { rewardsUsd: usdToNumber(rewardsUsd) } : {}),
+      ...(downgradingCoefficient !== undefined
+        ? { downgradingCoefficient: coefficientToNumber(downgradingCoefficient) }
+        : {}),
     },
   });
 }

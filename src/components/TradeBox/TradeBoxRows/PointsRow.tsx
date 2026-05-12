@@ -22,7 +22,7 @@ import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccou
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
 import { useChainId } from "lib/chains";
 import { formatAmount, formatUsd } from "lib/numbers";
-import { sendTradeBoxPointsEstimateClickedEvent } from "lib/userAnalytics/pointsEvents";
+import { sendPointsPageNavigationEvent } from "lib/userAnalytics/pointsEvents";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -85,7 +85,8 @@ export function PointsRow() {
     <Link
       to="/points"
       onClick={() =>
-        sendTradeBoxPointsEstimateClickedEvent({
+        sendPointsPageNavigationEvent({
+          source: "FeeBlock",
           marketAddress: marketInfo?.marketTokenAddress,
           marketName: marketInfo?.name,
           hasEstimatedRewards,
