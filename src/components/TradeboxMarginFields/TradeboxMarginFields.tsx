@@ -65,7 +65,6 @@ export function TradeboxMarginFields({
   const { toTokenAddress, marketAddress } = useSelector(selectTradeboxState);
 
   const prevSizeSyncContextRef = useRef<string>();
-  // null sentinel = "uninitialized"; bigint | undefined = previously seen value (undefined means no triggerPrice)
   const prevTriggerPriceRef = useRef<bigint | undefined | null>(null);
   const shouldForceSizeUsdSyncRef = useRef(false);
 
@@ -110,9 +109,7 @@ export function TradeboxMarginFields({
 
   // Sync size input value to USD when market/token context changes
   // USD value calculated separately from increase/decrease amounts
-  // so we need to force a sync when the context changes.
-  // useLayoutEffect so the flag is set before the consumer effect below
-  // runs, keeping the sync within a single paint cycle.
+  // so we need to force a sync when the context changes
   useLayoutEffect(() => {
     const nextContext = `${marketAddress ?? ""}:${toTokenAddress ?? ""}`;
 
@@ -127,14 +124,7 @@ export function TradeboxMarginFields({
     }
   }, [marketAddress, toTokenAddress]);
 
-  // For limit orders in USD mode, the user-typed USD is the anchor: when the
-  // trigger price changes, re-derive toTokenInputValue from sizeInputValue so
-  // sizeDeltaUsd (which uses triggerPrice) stays consistent with the typed USD.
-  // Without this, leverage = sizeDeltaUsd / collateralUsd would diverge from
-  // the displayed Size USD whenever triggerPrice differs from the price used
-  // when the user originally typed the size.
-  // useLayoutEffect so the re-derive happens before paint, otherwise the user
-  // briefly sees leverage computed with the stale toTokenInputValue.
+  // Keep USD size anchored when the limit trigger price changes.
   useLayoutEffect(() => {
     if (!isLimit) {
       prevTriggerPriceRef.current = triggerPrice;
