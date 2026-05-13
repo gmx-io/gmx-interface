@@ -229,10 +229,6 @@ msgstr "(리베이트 적용)"
 msgid "Accumulated rewards"
 msgstr ""
 
-#: src/components/PositionShare/PositionShare.tsx
-msgid "Show rPnL amounts"
-msgstr "실현 PnL 금액 표시"
-
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Show other assets ({0})"
 msgstr ""
@@ -2583,6 +2579,10 @@ msgstr "GMX 기술 공지사항"
 msgid "Checking code..."
 msgstr "코드 확인 중…"
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show PnL after fees"
+msgstr "수수료 차감 후 PnL 표시"
+
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No eligible holdings detected"
 msgstr "적격 보유 자산이 감지되지 않았습니다"
@@ -2618,10 +2618,6 @@ msgstr "인센티브 제외"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buying {symbol}..."
 msgstr "{symbol} 구매 중..."
-
-#: src/components/PositionShare/PositionShare.tsx
-msgid "Show PnL amounts"
-msgstr "PnL 금액 표시"
 
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 msgid "Transaction hash"
@@ -4109,6 +4105,10 @@ msgstr "소스 체인은 단일 토큰만 지원합니다"
 #: src/components/Referrals/traders/faq.tsx
 msgid "Referral discounts apply to opening and closing fees for leverage trading. Swap fees are not included."
 msgstr ""
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show rPnL after fees"
+msgstr "수수료 차감 후 실현 PnL 표시"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/TVChart/ChartHeader.tsx

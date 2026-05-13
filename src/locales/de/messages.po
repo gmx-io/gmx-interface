@@ -229,10 +229,6 @@ msgstr "(rückerstattet)"
 msgid "Accumulated rewards"
 msgstr ""
 
-#: src/components/PositionShare/PositionShare.tsx
-msgid "Show rPnL amounts"
-msgstr "rPnL-Beträge anzeigen"
-
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Show other assets ({0})"
 msgstr ""
@@ -2583,6 +2579,10 @@ msgstr "GMX technische Ankündigungen"
 msgid "Checking code..."
 msgstr "Code wird überprüft…"
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show PnL after fees"
+msgstr "PnL nach Gebühren anzeigen"
+
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No eligible holdings detected"
 msgstr "Keine berechtigten Bestände erkannt"
@@ -2618,10 +2618,6 @@ msgstr "Ohne Anreize"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buying {symbol}..."
 msgstr "Kaufe {symbol}..."
-
-#: src/components/PositionShare/PositionShare.tsx
-msgid "Show PnL amounts"
-msgstr "PnL-Beträge anzeigen"
 
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 msgid "Transaction hash"
@@ -4109,6 +4105,10 @@ msgstr "Quellchain unterstützt nur einzelne Token"
 #: src/components/Referrals/traders/faq.tsx
 msgid "Referral discounts apply to opening and closing fees for leverage trading. Swap fees are not included."
 msgstr ""
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show rPnL after fees"
+msgstr "rPnL nach Gebühren anzeigen"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/TVChart/ChartHeader.tsx

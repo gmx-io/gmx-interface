@@ -229,10 +229,6 @@ msgstr "(reembolsado)"
 msgid "Accumulated rewards"
 msgstr ""
 
-#: src/components/PositionShare/PositionShare.tsx
-msgid "Show rPnL amounts"
-msgstr "Mostrar importes de rPnL"
-
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Show other assets ({0})"
 msgstr ""
@@ -2583,6 +2579,10 @@ msgstr "Anuncios técnicos de GMX"
 msgid "Checking code..."
 msgstr "Verificando código…"
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show PnL after fees"
+msgstr "Mostrar PnL después de comisiones"
+
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No eligible holdings detected"
 msgstr "No se detectaron tenencias elegibles"
@@ -2618,10 +2618,6 @@ msgstr "Excluye incentivos"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buying {symbol}..."
 msgstr "Comprando {symbol}..."
-
-#: src/components/PositionShare/PositionShare.tsx
-msgid "Show PnL amounts"
-msgstr "Mostrar importes de PnL"
 
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 msgid "Transaction hash"
@@ -4109,6 +4105,10 @@ msgstr "La cadena de origen solo admite un único token"
 #: src/components/Referrals/traders/faq.tsx
 msgid "Referral discounts apply to opening and closing fees for leverage trading. Swap fees are not included."
 msgstr ""
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show rPnL after fees"
+msgstr "Mostrar rPnL después de comisiones"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/TVChart/ChartHeader.tsx
