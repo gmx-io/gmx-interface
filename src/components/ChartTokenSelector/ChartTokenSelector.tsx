@@ -79,7 +79,7 @@ type Props = {
   oneRowLabels?: boolean;
 };
 
-const SWAP_EXCLUDED_TOP_LEVEL_TABS: TopLevelTab[] = ["tradfi"];
+const SWAP_EXCLUDED_TOP_LEVEL_TABS: TopLevelTab[] = ["tradfi", "recently-listed"];
 
 export default function ChartTokenSelector(props: Props) {
   const { selectedToken, oneRowLabels } = props;
@@ -215,8 +215,9 @@ function MarketsList() {
   }, []);
 
   const isSwap = mode === "swap";
-  const topLevelTab = isSwap && storedTopLevelTab === "tradfi" ? "all" : storedTopLevelTab;
-  const subCategoryTab = isSwap && storedTopLevelTab === "tradfi" ? "all" : storedSubCategoryTab;
+  const shouldFallbackToAll = isSwap && SWAP_EXCLUDED_TOP_LEVEL_TABS.includes(storedTopLevelTab);
+  const topLevelTab = shouldFallbackToAll ? "all" : storedTopLevelTab;
+  const subCategoryTab = shouldFallbackToAll ? "all" : storedSubCategoryTab;
   const availableTokens = isSwap ? swapTokens : perpTokens;
 
   const { availableChartTokens: options, availableChartTokenAddresses } = useMemo(() => {
@@ -753,6 +754,7 @@ function MarketListItem({
             <TokenIcon className="ChartToken-list-icon -my-5 mr-6" symbol={token.symbol} displaySize={16} />
             <span>{token.name}</span>
             <span className="font-medium text-typography-secondary">{token.symbol}</span>
+            {isMarketRecentlyListed(listingDate, Date.now()) && <RecentlyListedBadge />}
           </span>
         </td>
         <td className={tdClassName}>

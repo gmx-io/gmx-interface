@@ -21,7 +21,7 @@ export function useMarketsListingDates(chainId: ContractsChainId): {
         if (!m.listingDate || !m.indexToken) continue;
         const ts = Date.parse(m.listingDate);
         if (Number.isFinite(ts)) {
-          map[m.indexToken] = ts;
+          map[m.indexToken.toLowerCase()] = ts;
         }
       }
       return map;
