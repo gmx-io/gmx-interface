@@ -600,7 +600,7 @@ function CreateReferralCodeLayout({
         {hasNoTokensOnSourceChain && srcChainId && (
           <AlertInfoCard type="error" className="text-left" hideClose>
             <Trans>
-              You need USDC or ETH on {getChainName(srcChainId)} to create a referral code via GMX Account. Deposit
+              You need USDC and ETH on {getChainName(srcChainId)} to create a referral code via GMX Account. Deposit
               funds or switch to a different network.
             </Trans>
           </AlertInfoCard>
