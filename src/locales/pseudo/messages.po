@@ -554,10 +554,6 @@ msgstr ""
 msgid "Image generation failed. Refresh and try again."
 msgstr ""
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Unlock {tierName} status (+{multiplierLabel}) and earn up to ${rewardsEstimate} in additional trading rewards."
-msgstr ""
-
 #: src/pages/PointsPage/components/FeaturedMarketsTooltipContent.tsx
 msgid "Featured markets"
 msgstr ""
@@ -2902,6 +2898,10 @@ msgid "Start trading to activate it and get your rewards."
 msgstr ""
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Trade More. Earn More."
+msgstr ""
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Staked: <0>{0}</0><1> / </1><2>{1} GMX</2>"
 msgstr ""
 
@@ -4488,10 +4488,6 @@ msgstr ""
 msgid "Pools stats"
 msgstr ""
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Reach {volumeLabel} in trading volume"
-msgstr ""
-
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4895,6 +4891,7 @@ msgid "Per 1h"
 msgstr ""
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "Total Rewards Earned"
 msgstr ""
 
@@ -5148,6 +5145,10 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GM pools:"
+msgstr ""
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Increase your trading volume to unlock a higher status and boost your rewards multiplier."
 msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
@@ -6652,10 +6653,6 @@ msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP and GMX autocompounding vaults"
-msgstr ""
-
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "Rewards Balance"
 msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx

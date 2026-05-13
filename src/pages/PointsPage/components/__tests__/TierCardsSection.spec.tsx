@@ -47,7 +47,6 @@ const personalizedBannerDataMock = vi.hoisted(() => ({
   data: {
     bannerVariant: "new-or-low-fees" as "manual-reward" | "recent-activity" | "new-or-low-fees" | undefined,
     isManuallyRewarded: false,
-    hasVolumeAfterFirstProgramEpoch: false,
     manualAllocatedPoints: undefined as bigint | undefined,
     manualBonusUsd: undefined as bigint | undefined,
     estimatedRewardsUsd: undefined as number | undefined,
@@ -128,7 +127,6 @@ afterEach(() => {
   personalizedBannerDataMock.data = {
     bannerVariant: "new-or-low-fees",
     isManuallyRewarded: false,
-    hasVolumeAfterFirstProgramEpoch: false,
     manualAllocatedPoints: undefined,
     manualBonusUsd: undefined,
     estimatedRewardsUsd: undefined,

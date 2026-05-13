@@ -554,10 +554,6 @@ msgstr "토큰 선택"
 msgid "Image generation failed. Refresh and try again."
 msgstr "이미지 생성에 실패했습니다. 새로고침 후 다시 시도하십시오."
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Unlock {tierName} status (+{multiplierLabel}) and earn up to ${rewardsEstimate} in additional trading rewards."
-msgstr "{tierName} 등급 (+{multiplierLabel})을 잠금 해제하고 최대 ${rewardsEstimate}의 추가 거래 보상을 획득하세요."
-
 #: src/pages/PointsPage/components/FeaturedMarketsTooltipContent.tsx
 msgid "Featured markets"
 msgstr "추천 마켓"
@@ -2902,6 +2898,10 @@ msgid "Start trading to activate it and get your rewards."
 msgstr "거래를 시작하여 활성화하고 보상을 받으세요."
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Trade More. Earn More."
+msgstr ""
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Staked: <0>{0}</0><1> / </1><2>{1} GMX</2>"
 msgstr "스테이킹됨: <0>{0}</0><1> / </1><2>{1} GMX</2>"
 
@@ -4488,10 +4488,6 @@ msgstr "제출 중..."
 msgid "Pools stats"
 msgstr "풀 통계"
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Reach {volumeLabel} in trading volume"
-msgstr "거래량 {volumeLabel} 달성"
-
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4895,6 +4891,7 @@ msgid "Per 1h"
 msgstr "1시간당"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "Total Rewards Earned"
 msgstr "획득한 총 보상"
 
@@ -5149,6 +5146,10 @@ msgstr "대체 링크는 <0>문서</0>에서 확인할 수 있습니다.<1/><2/>
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GM pools:"
 msgstr "GM 풀:"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Increase your trading volume to unlock a higher status and boost your rewards multiplier."
+msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
@@ -6653,10 +6654,6 @@ msgstr "청산"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP and GMX autocompounding vaults"
 msgstr "GLP 및 GMX 자동 복리 볼트"
-
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "Rewards Balance"
-msgstr "보상 잔액"
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Position size exceeds pool value. Delta: {usdDeltaText}, pool: {poolUsdText}"

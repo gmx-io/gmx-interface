@@ -3,7 +3,6 @@ import { useCallback, useEffect, useMemo } from "react";
 import { Redirect, useHistory, useLocation } from "react-router-dom";
 
 import { isIncentivesEnabled } from "domain/synthetics/incentives/constants";
-import { useAccountIncentiveDashboard } from "domain/synthetics/incentives/useAccountIncentiveDashboard";
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
 import { useAccountRewardsHistory } from "domain/synthetics/incentives/useAccountRewardsHistory";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
@@ -16,6 +15,7 @@ import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHe
 import PageTitle from "components/PageTitle/PageTitle";
 import Tabs from "components/Tabs/Tabs";
 
+import { getCurrentEpochStats } from "./components/currentEpochStats";
 import { FaqSection } from "./components/FaqSection";
 import { PointsBanner } from "./components/PointsBanner";
 import { PointsDashboard } from "./components/PointsDashboard";
@@ -36,14 +36,10 @@ export function PointsPage() {
   const { account } = useWallet();
 
   const { data: config } = useIncentivesConfig(chainId);
-  const { data: dashboard } = useAccountIncentiveDashboard(chainId, { account });
   const { data: status } = useAccountIncentiveStatus(chainId, { account });
   const { data: rewardsHistory } = useAccountRewardsHistory(chainId, { account, limit: 1, offset: 0 });
 
-  const currentEpochStats = useMemo(() => {
-    if (!dashboard?.recentStats?.length) return undefined;
-    return dashboard.recentStats.reduce((latest, s) => (s.epochTimestamp > latest.epochTimestamp ? s : latest));
-  }, [dashboard?.recentStats]);
+  const currentEpochStats = useMemo(() => getCurrentEpochStats({ status, config, account }), [account, config, status]);
 
   const currentEpochHistory = useMemo(() => {
     if (!rewardsHistory?.length || config?.epochTimestamp === undefined) return undefined;
@@ -51,10 +47,10 @@ export function PointsPage() {
   }, [rewardsHistory, config?.epochTimestamp]);
 
   const isActiveUser = Boolean(
-    dashboard &&
-      (status?.volumeTier ||
+    status &&
+      (status.volumeTier ||
         currentEpochStats?.volumeTier ||
-        status?.stakingTier ||
+        status.stakingTier ||
         currentEpochStats?.stakingTier ||
         currentEpochStats?.boostIds?.length)
   );

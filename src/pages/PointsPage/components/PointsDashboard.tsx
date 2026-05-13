@@ -2,7 +2,6 @@ import { Trans } from "@lingui/macro";
 import type { ReactNode } from "react";
 import { useMemo } from "react";
 
-import { useAccountIncentiveDashboard } from "domain/synthetics/incentives/useAccountIncentiveDashboard";
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
 
@@ -18,22 +17,13 @@ type Props = {
 
 export function PointsDashboard({ chainId, account }: Props) {
   const { data: config, error: configError, loading: configLoading } = useIncentivesConfig(chainId);
-  const {
-    data: dashboard,
-    error: dashboardError,
-    loading: dashboardLoading,
-  } = useAccountIncentiveDashboard(chainId, { account });
   const { data: status, error: statusError, loading: statusLoading } = useAccountIncentiveStatus(chainId, { account });
 
-  const currentEpochStats = useMemo(
-    () => getCurrentEpochStats({ dashboard, config, account }),
-    [account, config, dashboard]
-  );
+  const currentEpochStats = useMemo(() => getCurrentEpochStats({ status, config, account }), [account, config, status]);
 
-  const isLoading =
-    (configLoading && !config) || Boolean(account && ((dashboardLoading && !dashboard) || (statusLoading && !status)));
+  const isLoading = (configLoading && !config) || Boolean(account && statusLoading && !status);
   const hasConfigFailure = Boolean(configError && !config);
-  const hasAccountDataFailure = Boolean(account && ((dashboardError && !dashboard) || (statusError && !status)));
+  const hasAccountDataFailure = Boolean(account && statusError && !status);
 
   if (hasConfigFailure) {
     return (
@@ -65,7 +55,7 @@ export function PointsDashboard({ chainId, account }: Props) {
       <MainDataSection
         isLoading={isLoading}
         multiplier={status?.multiplier}
-        pointsBalance={dashboard?.pointsBalance ?? status?.pointsBalance}
+        pointsBalance={status?.pointsBalance}
         config={config}
         currentEpochStats={currentEpochStats}
         effectiveVolumeTier={status?.volumeTier}

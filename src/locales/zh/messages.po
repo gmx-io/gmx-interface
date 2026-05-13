@@ -554,10 +554,6 @@ msgstr "选择代币"
 msgid "Image generation failed. Refresh and try again."
 msgstr "图片生成失败。请刷新后重试。"
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Unlock {tierName} status (+{multiplierLabel}) and earn up to ${rewardsEstimate} in additional trading rewards."
-msgstr "解锁 {tierName} 等级（+{multiplierLabel}），最多可获得 ${rewardsEstimate} 的额外交易奖励。"
-
 #: src/pages/PointsPage/components/FeaturedMarketsTooltipContent.tsx
 msgid "Featured markets"
 msgstr "精选市场"
@@ -2902,6 +2898,10 @@ msgid "Start trading to activate it and get your rewards."
 msgstr "开始交易以激活并获取您的奖励。"
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Trade More. Earn More."
+msgstr ""
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Staked: <0>{0}</0><1> / </1><2>{1} GMX</2>"
 msgstr "已质押：<0>{0}</0><1> / </1><2>{1} GMX</2>"
 
@@ -4488,10 +4488,6 @@ msgstr "提交中..."
 msgid "Pools stats"
 msgstr "池统计数据"
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Reach {volumeLabel} in trading volume"
-msgstr "达到 {volumeLabel} 的交易量"
-
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4895,6 +4891,7 @@ msgid "Per 1h"
 msgstr "每 1 小时"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "Total Rewards Earned"
 msgstr "累计获得奖励"
 
@@ -5149,6 +5146,10 @@ msgstr "替代链接在<0>文档</0>中。<1/><2/>点击同意即表示您接受
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GM pools:"
 msgstr "GM 池："
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Increase your trading volume to unlock a higher status and boost your rewards multiplier."
+msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
@@ -6653,10 +6654,6 @@ msgstr "清算"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP and GMX autocompounding vaults"
 msgstr "GLP 和 GMX 自动复合金库"
-
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "Rewards Balance"
-msgstr "奖励余额"
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Position size exceeds pool value. Delta: {usdDeltaText}, pool: {poolUsdText}"

@@ -49,7 +49,6 @@ const ARBITRUM = 42161;
 const defaultBannerData: PersonalizedBannerData = {
   bannerVariant: "new-or-low-fees",
   isManuallyRewarded: false,
-  hasVolumeAfterFirstProgramEpoch: false,
   manualAllocatedPoints: undefined,
   manualBonusUsd: undefined,
   estimatedRewardsUsd: undefined,
@@ -109,13 +108,12 @@ describe("PointsPromoBanner", () => {
     expect(container.innerHTML).toBe("");
   });
 
-  it("keeps manual reward text hidden when legacy dismissed state exists and user has post-first-epoch volume", () => {
+  it("keeps manual reward text hidden when legacy dismissed state exists", () => {
     mockUseLocalStorage.mockImplementation(() => [true, mockSetDismissed] as any);
     mockUsePersonalizedBannerData.mockReturnValue({
       ...defaultBannerData,
       bannerVariant: "manual-reward",
       isManuallyRewarded: true,
-      hasVolumeAfterFirstProgramEpoch: true,
       manualBonusUsd: 500n * 10n ** 30n,
     });
 
@@ -132,7 +130,6 @@ describe("PointsPromoBanner", () => {
       ...defaultBannerData,
       bannerVariant: "manual-reward",
       isManuallyRewarded: true,
-      hasVolumeAfterFirstProgramEpoch: true,
       manualBonusUsd: 500n * 10n ** 30n,
     });
 
@@ -233,12 +230,11 @@ describe("PointsPromoBanner", () => {
     expect(container.innerHTML).toBe("");
   });
 
-  it("records one-time dismissal after post-first-epoch volume for manual reward text", () => {
+  it("records dismissal for manual reward text", () => {
     mockUsePersonalizedBannerData.mockReturnValue({
       ...defaultBannerData,
       bannerVariant: "manual-reward",
       isManuallyRewarded: true,
-      hasVolumeAfterFirstProgramEpoch: true,
       manualBonusUsd: 500n * 10n ** 30n,
     });
 

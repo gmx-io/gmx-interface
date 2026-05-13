@@ -10,9 +10,9 @@ import {
   getStakingTierBadge,
   getVolumeTierBadge,
 } from "domain/synthetics/incentives/constants";
-import { useAccountIncentiveDashboard } from "domain/synthetics/incentives/useAccountIncentiveDashboard";
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
 import { useAccountNetPositionFeesLast4Months } from "domain/synthetics/incentives/useAccountNetPositionFeesLast4Months";
+import { useAccountTotalEarnedRewards } from "domain/synthetics/incentives/useAccountTotalEarnedRewards";
 import { AuditEntry, useIncentiveAccountEpochAudit } from "domain/synthetics/incentives/useIncentiveAccountEpochAudit";
 import { formatAmount, formatUsd } from "lib/numbers";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
@@ -64,7 +64,9 @@ export function IncentivesAuditDetail({
   });
 
   const { data: status, loading: statusLoading } = useAccountIncentiveStatus(chainId, { account });
-  const { data: dashboard } = useAccountIncentiveDashboard(chainId, { account });
+  const { data: totalEarnedRewards, loading: totalEarnedRewardsLoading } = useAccountTotalEarnedRewards(chainId, {
+    account,
+  });
   const { data: netPositionFeesLast4Months, loading: netPositionFeesLoading } = useAccountNetPositionFeesLast4Months(
     chainId,
     { account }
@@ -215,8 +217,14 @@ export function IncentivesAuditDetail({
             />
             <KV label={<Trans>Points Balance</Trans>} value={formatAmount(status.pointsBalance, 18, 4, true)} />
             <KV
-              label={<Trans>Rewards Balance</Trans>}
-              value={dashboard ? `${formatAmount(dashboard.rewardsBalance, 18, 4, true)} GMX` : "..."}
+              label={<Trans>Total Rewards Earned</Trans>}
+              value={
+                totalEarnedRewards !== undefined
+                  ? `${formatAmount(totalEarnedRewards, 18, 4, true)} GMX`
+                  : totalEarnedRewardsLoading
+                    ? "..."
+                    : "-"
+              }
             />
             <KV
               label={<Trans>Net Position Fees (4mo)</Trans>}

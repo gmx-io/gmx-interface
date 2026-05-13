@@ -7,9 +7,7 @@ import { bigintToNumber, USD_DECIMALS } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
 import { isIncentivesEnabled, MAX_FEE_DISCOUNT_PERCENT } from "./constants";
-import type { AccountIncentiveDashboard, IncentivesConfig } from "./types";
 import { useAccountFirstTradeTimestamp } from "./useAccountFirstTradeTimestamp";
-import { useAccountIncentiveDashboard } from "./useAccountIncentiveDashboard";
 import { useAccountNetPositionFeesLast4Months } from "./useAccountNetPositionFeesLast4Months";
 import { useAccountManualRewardsAllocation } from "./useAccountRewardsHistory";
 import { useIncentivesConfig } from "./useIncentivesConfig";
@@ -26,7 +24,6 @@ export type BannerVariant = "manual-reward" | "recent-activity" | "new-or-low-fe
 export type PersonalizedBannerData = {
   bannerVariant: BannerVariant | undefined;
   isManuallyRewarded: boolean;
-  hasVolumeAfterFirstProgramEpoch: boolean;
   manualAllocatedPoints: bigint | undefined;
   manualBonusUsd: bigint | undefined;
   estimatedRewardsUsd: number | undefined;
@@ -38,31 +35,15 @@ type ResolvedSessionData = {
   data: PersonalizedBannerData;
 };
 
-function getLoadingBannerData(
-  overrides: Partial<Pick<PersonalizedBannerData, "isManuallyRewarded" | "hasVolumeAfterFirstProgramEpoch">> = {}
-): PersonalizedBannerData {
+function getLoadingBannerData(overrides: Partial<Pick<PersonalizedBannerData, "isManuallyRewarded">> = {}) {
   return {
     bannerVariant: undefined,
     isManuallyRewarded: overrides.isManuallyRewarded ?? false,
-    hasVolumeAfterFirstProgramEpoch: overrides.hasVolumeAfterFirstProgramEpoch ?? false,
     manualAllocatedPoints: undefined,
     manualBonusUsd: undefined,
     estimatedRewardsUsd: undefined,
     isLoading: true,
   };
-}
-
-function getHasVolumeAfterFirstProgramEpoch(
-  dashboard: AccountIncentiveDashboard | undefined,
-  config: IncentivesConfig | undefined
-): boolean {
-  if (!dashboard || !config) {
-    return false;
-  }
-
-  const secondEpochTimestamp = config.programStartTimestamp + config.epochDuration;
-
-  return dashboard.recentStats.some((stat) => stat.epochTimestamp >= secondEpochTimestamp && stat.tradedVolume > 0n);
 }
 
 function getHasRecentWagmiConnector(): boolean {
@@ -116,10 +97,6 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
   }, [account, incentivesEnabled, status]);
 
   const { data: config, loading: configLoading } = useIncentivesConfig(chainId);
-  const { data: dashboard, loading: dashboardLoading } = useAccountIncentiveDashboard(chainId, {
-    account,
-    enabled,
-  });
   const { data: netPositionFees, loading: netPositionFeesLoading } = useAccountNetPositionFeesLast4Months(chainId, {
     account,
     enabled,
@@ -141,7 +118,6 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
 
   const underlyingLoading =
     configLoading ||
-    dashboardLoading ||
     netPositionFeesLoading ||
     firstTradeLoading ||
     (hasProgramStartTimestamp && manualAllocatedPointsLoading) ||
@@ -157,8 +133,6 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
   const hasResolvedSession = resolvedSessionData?.sessionKey === sessionKey;
 
   const resolvedBannerData = useMemo((): PersonalizedBannerData | undefined => {
-    const hasVolumeAfterFirstProgramEpoch = getHasVolumeAfterFirstProgramEpoch(dashboard, config);
-
     if (isWalletAccountSettling) {
       return undefined;
     }
@@ -167,7 +141,6 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
       return {
         bannerVariant: "new-or-low-fees",
         isManuallyRewarded: false,
-        hasVolumeAfterFirstProgramEpoch: false,
         manualAllocatedPoints: undefined,
         manualBonusUsd: undefined,
         estimatedRewardsUsd: undefined,
@@ -190,7 +163,6 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
       return {
         bannerVariant: "manual-reward",
         isManuallyRewarded: true,
-        hasVolumeAfterFirstProgramEpoch,
         manualAllocatedPoints: allocatedPoints,
         manualBonusUsd: (allocatedPoints * gmxPrice) / GMX_DECIMALS_FACTOR,
         estimatedRewardsUsd: undefined,
@@ -209,7 +181,6 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
       return {
         bannerVariant: "recent-activity",
         isManuallyRewarded: false,
-        hasVolumeAfterFirstProgramEpoch,
         manualAllocatedPoints: undefined,
         manualBonusUsd: undefined,
         estimatedRewardsUsd: Math.round(estimatedRewardsUsd * 100) / 100,
@@ -220,7 +191,6 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
     return {
       bannerVariant: "new-or-low-fees",
       isManuallyRewarded: false,
-      hasVolumeAfterFirstProgramEpoch,
       manualAllocatedPoints: undefined,
       manualBonusUsd: undefined,
       estimatedRewardsUsd: undefined,
@@ -230,12 +200,10 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
     enabled,
     isWalletAccountSettling,
     underlyingLoading,
-    dashboard,
     netPositionFees,
     firstTradeTimestamp,
     manualAllocatedPoints,
     gmxPrice,
-    config,
   ]);
 
   useEffect(() => {
@@ -255,7 +223,6 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
       return resolvedBannerData ?? getLoadingBannerData();
     }
 
-    const hasVolumeAfterFirstProgramEpoch = getHasVolumeAfterFirstProgramEpoch(dashboard, config);
     const allocatedPoints = manualAllocatedPoints ?? 0n;
     const isManuallyRewarded = allocatedPoints > 0n;
 
@@ -269,18 +236,8 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
 
     return getLoadingBannerData({
       isManuallyRewarded,
-      hasVolumeAfterFirstProgramEpoch,
     });
-  }, [
-    enabled,
-    resolvedBannerData,
-    dashboard,
-    config,
-    manualAllocatedPoints,
-    hasResolvedSession,
-    underlyingLoading,
-    resolvedSessionData,
-  ]);
+  }, [enabled, resolvedBannerData, manualAllocatedPoints, hasResolvedSession, underlyingLoading, resolvedSessionData]);
 
   return personalizedBannerData;
 }

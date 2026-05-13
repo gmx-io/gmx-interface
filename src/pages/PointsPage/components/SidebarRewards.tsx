@@ -11,7 +11,8 @@ import { claimsDisabledKey, claimTermsKey } from "config/dataStore";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { POINTS_REWARDS_DISTRIBUTION_ID } from "domain/synthetics/claims/constants";
 import { encodeAcceptTermsAndClaim } from "domain/synthetics/claims/createClaimTransaction";
-import { useAccountIncentiveDashboard } from "domain/synthetics/incentives/useAccountIncentiveDashboard";
+import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
+import { useAccountTotalEarnedRewards } from "domain/synthetics/incentives/useAccountTotalEarnedRewards";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
@@ -47,7 +48,8 @@ type Props = {
 
 export function SidebarRewards({ chainId, account }: Props) {
   const { data: config } = useIncentivesConfig(chainId);
-  const { data: dashboard } = useAccountIncentiveDashboard(chainId, { account });
+  const { data: status } = useAccountIncentiveStatus(chainId, { account });
+  const { data: totalEarnedRewards } = useAccountTotalEarnedRewards(chainId, { account });
   const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
   const { openConnectModal } = useConnectModal();
 
@@ -74,14 +76,13 @@ export function SidebarRewards({ chainId, account }: Props) {
   const displayClaimableRewards = formatAmount(claimableAmount, 18, 2, true);
   const hasRewards = claimableAmount > 0n;
 
-  const totalEarnedRewards = dashboard?.rewardsBalance ?? 0n;
   const displayTotalEarnedRewards = totalEarnedRewards ? formatAmount(totalEarnedRewards, 18, 2, true) : "0.00";
 
   const now = useCurrentUnixTimestamp();
   const epochEndTime = getCurrentEpochEndTime(config, now);
   const timeLeft = epochEndTime > now ? formatTimeLeft(epochEndTime - now) : "";
 
-  const pointsBalance = dashboard?.pointsBalance;
+  const pointsBalance = status?.pointsBalance;
   const displayPoints = pointsBalance ? formatAmount(pointsBalance, 18, 2, true) : "0.00";
 
   if (!account) {

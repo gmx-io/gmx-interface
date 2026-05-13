@@ -554,10 +554,6 @@ msgstr "Token auswählen"
 msgid "Image generation failed. Refresh and try again."
 msgstr "Bilderzeugung fehlgeschlagen. Aktualisieren Sie die Seite und versuchen Sie es erneut."
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Unlock {tierName} status (+{multiplierLabel}) and earn up to ${rewardsEstimate} in additional trading rewards."
-msgstr "Schalten Sie den Status {tierName} (+{multiplierLabel}) frei und verdienen Sie bis zu ${rewardsEstimate} an zusätzlichen Handelsbelohnungen."
-
 #: src/pages/PointsPage/components/FeaturedMarketsTooltipContent.tsx
 msgid "Featured markets"
 msgstr "Hervorgehobene Märkte"
@@ -2902,6 +2898,10 @@ msgid "Start trading to activate it and get your rewards."
 msgstr "Beginnen Sie zu handeln, um es zu aktivieren und Ihre Belohnungen zu erhalten."
 
 #: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Trade More. Earn More."
+msgstr ""
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
 msgid "Staked: <0>{0}</0><1> / </1><2>{1} GMX</2>"
 msgstr "Gestakt: <0>{0}</0><1> / </1><2>{1} GMX</2>"
 
@@ -4488,10 +4488,6 @@ msgstr "Einreichen..."
 msgid "Pools stats"
 msgstr "Poolstatistiken"
 
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "Reach {volumeLabel} in trading volume"
-msgstr "Erreichen Sie {volumeLabel} an Handelsvolumen"
-
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4895,6 +4891,7 @@ msgid "Per 1h"
 msgstr "Pro 1h"
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
+#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 msgid "Total Rewards Earned"
 msgstr "Insgesamt verdiente Belohnungen"
 
@@ -5149,6 +5146,10 @@ msgstr "Alternative Links finden Sie in den <0>Docs</0>.<1/><2/>Durch Klicken au
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GM pools:"
 msgstr "GM Pools:"
+
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "Increase your trading volume to unlock a higher status and boost your rewards multiplier."
+msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
@@ -6653,10 +6654,6 @@ msgstr "LIQ."
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GLP and GMX autocompounding vaults"
 msgstr "GLP und GMX autocompounding Vaults"
-
-#: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
-msgid "Rewards Balance"
-msgstr "Belohnungsguthaben"
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Position size exceeds pool value. Delta: {usdDeltaText}, pool: {poolUsdText}"

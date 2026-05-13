@@ -1,36 +1,32 @@
-import type { AccountIncentiveDashboard, EpochStats, IncentivesConfig } from "domain/synthetics/incentives/types";
+import type { AccountIncentiveStatus, EpochStats, IncentivesConfig } from "domain/synthetics/incentives/types";
 
 type CurrentEpochConfig = Pick<IncentivesConfig, "epochTimestamp">;
 
 type GetCurrentEpochStatsParams = {
-  dashboard?: AccountIncentiveDashboard;
+  status?: AccountIncentiveStatus;
   config?: CurrentEpochConfig;
   account?: string;
 };
 
-export function getCurrentEpochStats({ dashboard, config, account }: GetCurrentEpochStatsParams): EpochStats | undefined {
-  if (!config) {
-    if (!dashboard?.recentStats?.length) return undefined;
-
-    return dashboard.recentStats.reduce((latest, stat) =>
-      stat.epochTimestamp > latest.epochTimestamp ? stat : latest
-    );
+export function getCurrentEpochStats({ status, config, account }: GetCurrentEpochStatsParams): EpochStats | undefined {
+  if (status) {
+    return {
+      account: status.account,
+      multiplier: status.multiplier,
+      epochTimestamp: status.epochTimestamp,
+      volumeTier: status.volumeTier,
+      stakingTier: status.stakingTier,
+      tradedVolume: status.tradedVolume,
+      boostIds: status.boostIds,
+    };
   }
 
-  const currentEpochStats = dashboard?.recentStats.find((stat) => stat.epochTimestamp === config.epochTimestamp);
-
-  if (currentEpochStats) {
-    return currentEpochStats;
-  }
-
-  const statsAccount = dashboard?.account ?? account;
-
-  if (!statsAccount) {
+  if (!config || !account) {
     return undefined;
   }
 
   return {
-    account: statsAccount,
+    account,
     multiplier: 0,
     epochTimestamp: config.epochTimestamp,
     volumeTier: null,

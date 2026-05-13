@@ -4,7 +4,7 @@ import useSWR from "swr";
 
 import { getSubsquidGraphClient } from "lib/indexers";
 
-import type { AccountIncentiveStatus, StakingTierId, VolumeTierId } from "./types";
+import type { AccountIncentiveStatus, BoostId, StakingTierId, VolumeTierId } from "./types";
 
 const STATUS_QUERY = gql`
   query AccountIncentiveStatus($account: String!) {
@@ -18,6 +18,7 @@ const STATUS_QUERY = gql`
       projectedStakingTier
       epochTimestamp
       tradedVolume
+      boostIds
     }
   }
 `;
@@ -51,6 +52,7 @@ export function useAccountIncentiveStatus(chainId: number, params: { account?: s
           projectedStakingTier: (status.projectedStakingTier as StakingTierId) ?? null,
           epochTimestamp: status.epochTimestamp,
           tradedVolume: BigInt(status.tradedVolume),
+          boostIds: (status.boostIds as BoostId[]) ?? [],
         };
       },
       refreshInterval: 5_000,

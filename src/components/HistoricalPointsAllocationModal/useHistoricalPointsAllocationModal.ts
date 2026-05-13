@@ -23,10 +23,7 @@ export function getShouldShowHistoricalPointsAllocationModal({
   bannerData,
 }: {
   dismissedState: HistoricalPointsAllocationModalDismissedState | undefined;
-  bannerData: Pick<
-    PersonalizedBannerData,
-    "hasVolumeAfterFirstProgramEpoch" | "isLoading" | "isManuallyRewarded" | "manualAllocatedPoints"
-  >;
+  bannerData: Pick<PersonalizedBannerData, "isLoading" | "isManuallyRewarded" | "manualAllocatedPoints">;
 }) {
   return (
     !getIsDismissedForCurrentState(dismissedState) &&

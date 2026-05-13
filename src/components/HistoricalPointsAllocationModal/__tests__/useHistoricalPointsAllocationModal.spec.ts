@@ -5,7 +5,6 @@ import { getShouldShowHistoricalPointsAllocationModal } from "../useHistoricalPo
 const GMX_DEC = 10n ** 18n;
 
 const baseBannerData = {
-  hasVolumeAfterFirstProgramEpoch: false,
   isLoading: false,
   isManuallyRewarded: true,
   manualAllocatedPoints: 100n * GMX_DEC,
@@ -21,7 +20,7 @@ describe("getShouldShowHistoricalPointsAllocationModal", () => {
     ).toBe(true);
   });
 
-  it("keeps the modal hidden after dismissal before post-first-epoch volume exists", () => {
+  it("keeps the modal hidden after dismissal", () => {
     expect(
       getShouldShowHistoricalPointsAllocationModal({
         dismissedState: true,
@@ -30,29 +29,23 @@ describe("getShouldShowHistoricalPointsAllocationModal", () => {
     ).toBe(false);
   });
 
-  it("keeps the modal hidden after a legacy dismissal once post-first-epoch volume exists", () => {
+  it("keeps the modal hidden after a legacy dismissal", () => {
     expect(
       getShouldShowHistoricalPointsAllocationModal({
         dismissedState: true,
-        bannerData: {
-          ...baseBannerData,
-          hasVolumeAfterFirstProgramEpoch: true,
-        },
+        bannerData: baseBannerData,
       })
     ).toBe(false);
   });
 
-  it("keeps the modal hidden after legacy object dismissal with post-first-epoch volume", () => {
+  it("keeps the modal hidden after legacy object dismissal", () => {
     expect(
       getShouldShowHistoricalPointsAllocationModal({
         dismissedState: {
           dismissed: true,
           dismissedAfterFirstProgramEpochVolume: false,
         },
-        bannerData: {
-          ...baseBannerData,
-          hasVolumeAfterFirstProgramEpoch: true,
-        },
+        bannerData: baseBannerData,
       })
     ).toBe(false);
   });

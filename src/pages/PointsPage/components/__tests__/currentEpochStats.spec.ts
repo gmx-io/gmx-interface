@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import type { AccountIncentiveDashboard, EpochStats } from "domain/synthetics/incentives/types";
+import type { AccountIncentiveStatus, EpochStats } from "domain/synthetics/incentives/types";
 
 import { getCurrentEpochStats } from "../currentEpochStats";
 
@@ -17,32 +17,39 @@ function makeStats(overrides: Partial<EpochStats>): EpochStats {
   };
 }
 
-function makeDashboard(recentStats: EpochStats[]): AccountIncentiveDashboard {
+function makeStatus(overrides: Partial<AccountIncentiveStatus>): AccountIncentiveStatus {
   return {
     account: "0xabc",
     pointsBalance: 0n,
-    rewardsBalance: 0n,
-    recentStats,
+    multiplier: 100,
+    epochTimestamp: 1_000,
+    volumeTier: "Tier1",
+    stakingTier: "Tier1",
+    projectedVolumeTier: null,
+    projectedStakingTier: null,
+    tradedVolume: 1_000n,
+    boostIds: ["FeaturedMarkets"],
+    ...overrides,
   };
 }
 
 describe("getCurrentEpochStats", () => {
-  it("returns the stats row matching the configured current epoch", () => {
-    const previousStats = makeStats({ epochTimestamp: 1_000, tradedVolume: 10n });
-    const currentStats = makeStats({ epochTimestamp: 2_000, tradedVolume: 20n });
+  it("maps account incentive status into current epoch stats", () => {
+    const status = makeStatus({ epochTimestamp: 2_000, tradedVolume: 20n });
 
-    expect(
-      getCurrentEpochStats({
-        dashboard: makeDashboard([previousStats, currentStats]),
-        config: { epochTimestamp: 2_000 },
-        account: "0xabc",
-      })
-    ).toBe(currentStats);
+    expect(getCurrentEpochStats({ status, config: { epochTimestamp: 2_000 }, account: "0xabc" })).toEqual({
+      account: "0xabc",
+      multiplier: 100,
+      epochTimestamp: 2_000,
+      volumeTier: "Tier1",
+      stakingTier: "Tier1",
+      tradedVolume: 20n,
+      boostIds: ["FeaturedMarkets"],
+    });
   });
 
-  it("synthesizes a zero-valued current epoch when the dashboard omits it", () => {
+  it("synthesizes a zero-valued current epoch when status is unavailable", () => {
     const stats = getCurrentEpochStats({
-      dashboard: makeDashboard([makeStats({ epochTimestamp: 1_000, tradedVolume: 10n })]),
       config: { epochTimestamp: 2_000 },
       account: "0xabc",
     });
@@ -75,10 +82,13 @@ describe("getCurrentEpochStats", () => {
     });
   });
 
-  it("falls back to the latest returned row until config is available", () => {
-    const olderStats = makeStats({ epochTimestamp: 1_000 });
-    const newerStats = makeStats({ epochTimestamp: 2_000 });
+  it("returns undefined until either status or config with account is available", () => {
+    expect(getCurrentEpochStats({ account: "0xabc" })).toBeUndefined();
+  });
 
-    expect(getCurrentEpochStats({ dashboard: makeDashboard([olderStats, newerStats]) })).toBe(newerStats);
+  it("returns status while config is unavailable", () => {
+    const status = makeStatus({ epochTimestamp: 2_000 });
+
+    expect(getCurrentEpochStats({ status })).toEqual(makeStats({ epochTimestamp: 2_000 }));
   });
 });

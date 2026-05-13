@@ -49,6 +49,7 @@ export type AccountIncentiveStatus = {
   projectedStakingTier: StakingTierId | null;
   epochTimestamp: number;
   tradedVolume: bigint;
+  boostIds: BoostId[];
 };
 
 export type EpochStats = {
@@ -59,13 +60,6 @@ export type EpochStats = {
   stakingTier: StakingTierId | null;
   tradedVolume: bigint;
   boostIds: BoostId[];
-};
-
-export type AccountIncentiveDashboard = {
-  account: string;
-  pointsBalance: bigint;
-  rewardsBalance: bigint;
-  recentStats: EpochStats[];
 };
 
 export type RewardsHistoryEntry = {
