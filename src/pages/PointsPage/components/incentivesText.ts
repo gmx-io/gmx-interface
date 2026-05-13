@@ -7,14 +7,18 @@ import {
   formatMultiplier,
 } from "domain/synthetics/incentives/constants";
 import type { BoostId, IncentivesConfig } from "domain/synthetics/incentives/types";
-import { formatAmount } from "lib/numbers";
+import { formatAmountHuman } from "lib/numbers";
 
 const USD_DECIMALS = 30;
+
+function formatCompactUsdThreshold(threshold: bigint): string {
+  return `$${formatAmountHuman(threshold, USD_DECIMALS, false, 0)}+`;
+}
 
 export function getBoostDescription(boostId: BoostId, config?: IncentivesConfig): string {
   if (boostId === "BalancingTrades") {
     const thresholdLabel = config?.balancingTradesThreshold
-      ? `$${formatAmount(config.balancingTradesThreshold, USD_DECIMALS, 0, true)}+`
+      ? formatCompactUsdThreshold(config.balancingTradesThreshold)
       : undefined;
 
     return thresholdLabel
@@ -24,7 +28,7 @@ export function getBoostDescription(boostId: BoostId, config?: IncentivesConfig)
 
   if (boostId === "LifetimeTrading") {
     const thresholdLabel = config?.lifetimeVolumeThreshold
-      ? `$${formatAmount(config.lifetimeVolumeThreshold, USD_DECIMALS, 0, true)}+`
+      ? formatCompactUsdThreshold(config.lifetimeVolumeThreshold)
       : undefined;
 
     return thresholdLabel

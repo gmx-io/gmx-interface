@@ -99,16 +99,31 @@ describe("TierLevelsSection BoostsTable", () => {
     const allText = container.textContent || "";
 
     const balancingMatches = allText.match(
-      /Place balancing trades \(\$1,000,000\+\) on underutilized sides to earn an additional multiplier on those trades\./g
+      /Place balancing trades \(\$1m\+\) on underutilized sides to earn an additional multiplier on those trades\./g
     );
     expect(balancingMatches).not.toBeNull();
     expect(balancingMatches!.length).toBe(1);
 
     const lifetimeMatches = allText.match(
-      /Reach \$200,000,000\+ in lifetime trading volume to unlock a permanent 1× multiplier\./g
+      /Reach \$200m\+ in lifetime trading volume to unlock a permanent 1× multiplier\./g
     );
     expect(lifetimeMatches).not.toBeNull();
     expect(lifetimeMatches!.length).toBe(1);
+  });
+
+  it("formats boost thresholds with compact suffixes in the About column", () => {
+    const config: IncentivesConfig = {
+      ...mockConfig,
+      balancingTradesThreshold: 100_000n * USD,
+      lifetimeVolumeThreshold: 1_000_000_000n * USD,
+    };
+    const { container } = renderWithI18n(<TierLevelsSection chainId={42161} config={config} />);
+
+    switchToBoostsTab(container);
+
+    const allText = container.textContent || "";
+    expect(allText).toContain("Place balancing trades ($100k+)");
+    expect(allText).toContain("Reach $1b+ in lifetime trading volume");
   });
 
   it("renders the FeaturedMarkets description once and shows the 'Featured markets' tooltip handle when feature tokens exist", () => {
