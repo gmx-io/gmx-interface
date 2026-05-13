@@ -78,7 +78,7 @@ import {
   selectMarketsInfoData,
   selectOrdersInfoData,
   selectPositionsInfoData,
-  selectRawSubaccount,
+  selectSubaccountForChainAction,
   selectTokensData,
   selectUiFeeFactor,
   selectUserReferralInfo,
@@ -268,7 +268,7 @@ const selectDebugForceExternalSwaps = createSelector((q) => {
 });
 
 export const selectIsOneClickActiveByUser = createSelector((q) => {
-  return q(selectIsExpressTransactionAvailable) && Boolean(q(selectRawSubaccount));
+  return q(selectIsExpressTransactionAvailable) && Boolean(q(selectSubaccountForChainAction));
 });
 
 export const selectIsExternalSwapDisabledByExpressSchema = createSelector((q) => {
