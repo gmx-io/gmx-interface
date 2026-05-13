@@ -12,15 +12,10 @@ type HistoricalPointsAllocationModalDismissedState =
       dismissedAfterFirstProgramEpochVolume?: boolean;
     };
 
-function getIsDismissedForCurrentState(
-  dismissedState: HistoricalPointsAllocationModalDismissedState | undefined,
-  hasVolumeAfterFirstProgramEpoch: boolean
-) {
-  if (hasVolumeAfterFirstProgramEpoch) {
-    return typeof dismissedState === "object" && dismissedState.dismissedAfterFirstProgramEpochVolume === true;
-  }
-
-  return typeof dismissedState === "object" ? dismissedState.dismissed : dismissedState === true;
+function getIsDismissedForCurrentState(dismissedState: HistoricalPointsAllocationModalDismissedState | undefined) {
+  return typeof dismissedState === "object"
+    ? dismissedState.dismissed || dismissedState.dismissedAfterFirstProgramEpochVolume === true
+    : dismissedState === true;
 }
 
 export function getShouldShowHistoricalPointsAllocationModal({
@@ -28,13 +23,10 @@ export function getShouldShowHistoricalPointsAllocationModal({
   bannerData,
 }: {
   dismissedState: HistoricalPointsAllocationModalDismissedState | undefined;
-  bannerData: Pick<
-    PersonalizedBannerData,
-    "hasVolumeAfterFirstProgramEpoch" | "isLoading" | "isManuallyRewarded" | "manualAllocatedPoints"
-  >;
+  bannerData: Pick<PersonalizedBannerData, "isLoading" | "isManuallyRewarded" | "manualAllocatedPoints">;
 }) {
   return (
-    !getIsDismissedForCurrentState(dismissedState, bannerData.hasVolumeAfterFirstProgramEpoch) &&
+    !getIsDismissedForCurrentState(dismissedState) &&
     !bannerData.isLoading &&
     bannerData.isManuallyRewarded &&
     bannerData.manualAllocatedPoints !== undefined &&
@@ -64,13 +56,8 @@ export function useHistoricalPointsAllocationModal() {
 
   const handleClose = useCallback(() => {
     setIsVisible(false);
-    setDismissedState((previousState) => ({
-      dismissed: true,
-      dismissedAfterFirstProgramEpochVolume:
-        bannerData.hasVolumeAfterFirstProgramEpoch ||
-        (typeof previousState === "object" && previousState.dismissedAfterFirstProgramEpochVolume === true),
-    }));
-  }, [bannerData.hasVolumeAfterFirstProgramEpoch, setDismissedState]);
+    setDismissedState(true);
+  }, [setDismissedState]);
 
   return {
     isVisible,

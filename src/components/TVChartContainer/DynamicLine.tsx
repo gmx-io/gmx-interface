@@ -63,7 +63,7 @@ export function DynamicLine({
   const title = useMemo(() => {
     const directionText = isLong ? t`Long` : t`Short`;
     const orderTypeTitle = orderTypeToTitle[orderType];
-    const orderTitleText = orderTypeTitle ? _(orderTypeTitle) : t`Unknown Order`;
+    const orderTitleText = orderTypeTitle ? _(orderTypeTitle) : t`Unknown order`;
     return `${directionText} ${marketName} · ${orderTitleText}`;
   }, [_, isLong, marketName, orderType]);
 

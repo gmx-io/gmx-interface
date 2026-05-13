@@ -1,8 +1,9 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo } from "react";
+import Skeleton from "react-loading-skeleton";
 
-import { formatMultiplier } from "domain/synthetics/incentives/constants";
+import { MAX_MULTIPLIER, formatMultiplier } from "domain/synthetics/incentives/constants";
 import type { EpochStats, IncentivesConfig, StakingTierId, VolumeTierId } from "domain/synthetics/incentives/types";
 import { formatAmount } from "lib/numbers";
 
@@ -14,6 +15,7 @@ import { getMaxMultiplierLabel, getPointsExpirationEpochs } from "./incentivesTe
 import { TierCardsSection } from "./TierCardsSection";
 
 type Props = {
+  isLoading?: boolean;
   multiplier?: number;
   pointsBalance?: bigint;
   config?: IncentivesConfig;
@@ -25,6 +27,7 @@ type Props = {
 };
 
 export function MainDataSection({
+  isLoading = false,
   multiplier,
   pointsBalance,
   config,
@@ -56,8 +59,10 @@ export function MainDataSection({
     const projectedStakingMult =
       projectedStakingTier !== undefined ? findStakingMult(projectedStakingTier) : currentStakingMult;
 
-    const projected =
+    const rawProjected =
       Number(multiplier) + (projectedVolumeMult - currentVolumeMult) + (projectedStakingMult - currentStakingMult);
+    const cap = config.maxMultiplier ?? MAX_MULTIPLIER;
+    const projected = Math.min(rawProjected, cap);
 
     if (formatMultiplier(projected) === formatMultiplier(multiplier)) return undefined;
 
@@ -68,7 +73,9 @@ export function MainDataSection({
     <div className="flex flex-col gap-8 rounded-8 bg-slate-900 p-12">
       <div className="flex gap-20 p-8">
         <div className="flex flex-col gap-2">
-          {projectedMultiplierInfo ? (
+          {isLoading ? (
+            <Skeleton width={88} height={26} inline />
+          ) : projectedMultiplierInfo ? (
             <TooltipWithPortal
               handle={
                 <span className="flex items-center gap-8 text-24 font-medium numbers">
@@ -113,7 +120,11 @@ export function MainDataSection({
         </div>
 
         <div className="flex flex-col gap-2">
-          <span className="text-24 font-medium leading-[1.1] numbers">{displayPoints}</span>
+          {isLoading ? (
+            <Skeleton width={104} height={26} inline />
+          ) : (
+            <span className="text-24 font-medium leading-[1.1] numbers">{displayPoints}</span>
+          )}
           <div className="flex items-center gap-8">
             <TooltipWithPortal
               variant="iconStroke"
@@ -126,6 +137,7 @@ export function MainDataSection({
       </div>
 
       <TierCardsSection
+        isLoading={isLoading}
         config={config}
         currentEpochStats={currentEpochStats}
         effectiveVolumeTier={effectiveVolumeTier}

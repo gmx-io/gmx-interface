@@ -227,10 +227,6 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
       <div className="App-card-divider ClaimModal-divider FeeModal-divider ClaimSettleModal-divider" />
       <div className="ClaimModal-content ClaimSettleModal-modal-content">
         <div className="App-card-content">
-          <AlertInfo type="info" compact>
-            <Trans>Select positions where accrued funding fee exceeds the {formatUsd(feeUsd)} gas cost to settle</Trans>
-          </AlertInfo>
-
           <div className="App-card-divider" />
           <div className="ClaimSettleModal-header">
             <div className="ClaimSettleModal-header-left">
@@ -256,6 +252,9 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
           ))}
         </div>
       </div>
+      <AlertInfo type="info" compact>
+        <Trans>Select positions where accrued funding fee exceeds the {formatUsd(feeUsd)} gas cost to settle</Trans>
+      </AlertInfo>
       <Button className="w-full" variant="primary-action" disabled={buttonDisabled} onClick={onSubmit}>
         {buttonText}
       </Button>

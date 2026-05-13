@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import { ARBITRUM } from "config/chains";
 import { useGmxPrice } from "domain/legacy";
@@ -7,9 +7,7 @@ import { bigintToNumber, USD_DECIMALS } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
 import { isIncentivesEnabled, MAX_FEE_DISCOUNT_PERCENT } from "./constants";
-import type { AccountIncentiveDashboard, IncentivesConfig } from "./types";
 import { useAccountFirstTradeTimestamp } from "./useAccountFirstTradeTimestamp";
-import { useAccountIncentiveDashboard } from "./useAccountIncentiveDashboard";
 import { useAccountNetPositionFeesLast4Months } from "./useAccountNetPositionFeesLast4Months";
 import { useAccountManualRewardsAllocation } from "./useAccountRewardsHistory";
 import { useIncentivesConfig } from "./useIncentivesConfig";
@@ -18,43 +16,87 @@ const GMX_DECIMALS_FACTOR = 10n ** 18n;
 
 const RECENT_FEES_THRESHOLD_USD = 20;
 const NEW_USER_WINDOW_SECONDS = 14 * 24 * 60 * 60;
+const INITIAL_WALLET_RECONNECT_SETTLE_MS = 500;
+const WAGMI_RECENT_CONNECTOR_KEY = "wagmi.recentConnectorId";
 
 export type BannerVariant = "manual-reward" | "recent-activity" | "new-or-low-fees";
 
 export type PersonalizedBannerData = {
   bannerVariant: BannerVariant | undefined;
   isManuallyRewarded: boolean;
-  hasVolumeAfterFirstProgramEpoch: boolean;
   manualAllocatedPoints: bigint | undefined;
   manualBonusUsd: bigint | undefined;
   estimatedRewardsUsd: number | undefined;
   isLoading: boolean;
 };
 
-function getHasVolumeAfterFirstProgramEpoch(
-  dashboard: AccountIncentiveDashboard | undefined,
-  config: IncentivesConfig | undefined
-): boolean {
-  if (!dashboard || !config) {
+type ResolvedSessionData = {
+  sessionKey: string;
+  data: PersonalizedBannerData;
+};
+
+function getLoadingBannerData(overrides: Partial<Pick<PersonalizedBannerData, "isManuallyRewarded">> = {}) {
+  return {
+    bannerVariant: undefined,
+    isManuallyRewarded: overrides.isManuallyRewarded ?? false,
+    manualAllocatedPoints: undefined,
+    manualBonusUsd: undefined,
+    estimatedRewardsUsd: undefined,
+    isLoading: true,
+  };
+}
+
+function getHasRecentWagmiConnector(): boolean {
+  if (typeof window === "undefined") {
     return false;
   }
 
-  const secondEpochTimestamp = config.programStartTimestamp + config.epochDuration;
-
-  return dashboard.recentStats.some((stat) => stat.epochTimestamp >= secondEpochTimestamp && stat.tradedVolume > 0n);
+  try {
+    return Boolean(window.localStorage.getItem(WAGMI_RECENT_CONNECTOR_KEY));
+  } catch {
+    return false;
+  }
 }
 
 export function usePersonalizedBannerData(): PersonalizedBannerData {
   const { chainId } = useChainId();
-  const { active, signer, account } = useWallet();
+  const { active, signer, account, status } = useWallet();
 
-  const enabled = isIncentivesEnabled(chainId) && Boolean(account);
+  const incentivesEnabled = isIncentivesEnabled(chainId);
+  const enabled = incentivesEnabled && Boolean(account);
+  const [isInitialWalletReconnectSettling, setIsInitialWalletReconnectSettling] = useState(
+    () => incentivesEnabled && !account && status === "disconnected" && getHasRecentWagmiConnector()
+  );
+  const isWalletAccountSettling =
+    incentivesEnabled &&
+    (status === "connecting" || status === "reconnecting" || (!account && isInitialWalletReconnectSettling));
 
-  const { data: config } = useIncentivesConfig(chainId);
-  const { data: dashboard, loading: dashboardLoading } = useAccountIncentiveDashboard(chainId, {
-    account,
-    enabled,
-  });
+  useEffect(() => {
+    if (!incentivesEnabled) {
+      setIsInitialWalletReconnectSettling(false);
+      return;
+    }
+
+    if (account || status === "connecting" || status === "reconnecting") {
+      setIsInitialWalletReconnectSettling(false);
+      return;
+    }
+
+    if (status !== "disconnected" || !getHasRecentWagmiConnector()) {
+      return;
+    }
+
+    setIsInitialWalletReconnectSettling(true);
+    const timeout = window.setTimeout(() => {
+      setIsInitialWalletReconnectSettling(false);
+    }, INITIAL_WALLET_RECONNECT_SETTLE_MS);
+
+    return () => {
+      window.clearTimeout(timeout);
+    };
+  }, [account, incentivesEnabled, status]);
+
+  const { data: config, loading: configLoading } = useIncentivesConfig(chainId);
   const { data: netPositionFees, loading: netPositionFeesLoading } = useAccountNetPositionFeesLast4Months(chainId, {
     account,
     enabled,
@@ -70,47 +112,35 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
       programStartTimestamp: config?.programStartTimestamp,
       enabled: enabled && hasProgramStartTimestamp,
     });
-  const manualAllocatedPoints = hasProgramStartTimestamp ? fetchedManualAllocatedPoints : 0n;
+  const manualAllocatedPoints = hasProgramStartTimestamp ? fetchedManualAllocatedPoints : undefined;
 
   const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
 
   const underlyingLoading =
-    dashboardLoading ||
+    configLoading ||
     netPositionFeesLoading ||
     firstTradeLoading ||
-    (hasProgramStartTimestamp && manualAllocatedPointsLoading);
+    (hasProgramStartTimestamp && manualAllocatedPointsLoading) ||
+    (enabled && hasProgramStartTimestamp && fetchedManualAllocatedPoints === undefined) ||
+    (enabled && !hasProgramStartTimestamp);
 
   // SWR's `isLoading` flips back to `true` on every revalidation when the fetched value is
-  // undefined, which would make the banner blink in/out every refresh. Latch on first resolve,
-  // keyed by chainId+account so a freshly-connected wallet (or chain switch) waits for fresh
-  // data instead of rendering whatever variant the previous session had cached.
-  const sessionKey = enabled ? `${chainId}:${account}` : "disabled";
-  const [resolvedSession, setResolvedSession] = useState<string | null>(null);
-  const hasResolvedSession = resolvedSession === sessionKey;
-  if (!hasResolvedSession && !underlyingLoading) {
-    setResolvedSession(sessionKey);
-  }
+  // undefined, which would make the banner recompute from partial data every refresh. Keep the
+  // latest complete account snapshot for the current account only, and hide the banner for new
+  // account/chain sessions until their own data has resolved.
+  const sessionKey = enabled ? `${chainId}:${account?.toLowerCase()}` : "disabled";
+  const [resolvedSessionData, setResolvedSessionData] = useState<ResolvedSessionData | null>(null);
+  const hasResolvedSession = resolvedSessionData?.sessionKey === sessionKey;
 
-  return useMemo(() => {
-    const hasVolumeAfterFirstProgramEpoch = getHasVolumeAfterFirstProgramEpoch(dashboard, config);
-
-    if (enabled && underlyingLoading && !hasResolvedSession) {
-      return {
-        bannerVariant: undefined,
-        isManuallyRewarded: false,
-        hasVolumeAfterFirstProgramEpoch,
-        manualAllocatedPoints: undefined,
-        manualBonusUsd: undefined,
-        estimatedRewardsUsd: undefined,
-        isLoading: true,
-      };
+  const resolvedBannerData = useMemo((): PersonalizedBannerData | undefined => {
+    if (isWalletAccountSettling) {
+      return undefined;
     }
 
     if (!enabled) {
       return {
         bannerVariant: "new-or-low-fees",
         isManuallyRewarded: false,
-        hasVolumeAfterFirstProgramEpoch: false,
         manualAllocatedPoints: undefined,
         manualBonusUsd: undefined,
         estimatedRewardsUsd: undefined,
@@ -118,26 +148,21 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
       };
     }
 
+    if (underlyingLoading) {
+      return undefined;
+    }
+
     const allocatedPoints = manualAllocatedPoints ?? 0n;
     const isManuallyRewarded = allocatedPoints > 0n;
 
     if (isManuallyRewarded) {
       if (gmxPrice === undefined || gmxPrice === 0n) {
-        return {
-          bannerVariant: undefined,
-          isManuallyRewarded: true,
-          hasVolumeAfterFirstProgramEpoch,
-          manualAllocatedPoints: allocatedPoints,
-          manualBonusUsd: undefined,
-          estimatedRewardsUsd: undefined,
-          isLoading: true,
-        };
+        return undefined;
       }
 
       return {
         bannerVariant: "manual-reward",
         isManuallyRewarded: true,
-        hasVolumeAfterFirstProgramEpoch,
         manualAllocatedPoints: allocatedPoints,
         manualBonusUsd: (allocatedPoints * gmxPrice) / GMX_DECIMALS_FACTOR,
         estimatedRewardsUsd: undefined,
@@ -156,7 +181,6 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
       return {
         bannerVariant: "recent-activity",
         isManuallyRewarded: false,
-        hasVolumeAfterFirstProgramEpoch,
         manualAllocatedPoints: undefined,
         manualBonusUsd: undefined,
         estimatedRewardsUsd: Math.round(estimatedRewardsUsd * 100) / 100,
@@ -167,7 +191,6 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
     return {
       bannerVariant: "new-or-low-fees",
       isManuallyRewarded: false,
-      hasVolumeAfterFirstProgramEpoch,
       manualAllocatedPoints: undefined,
       manualBonusUsd: undefined,
       estimatedRewardsUsd: undefined,
@@ -175,13 +198,46 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
     };
   }, [
     enabled,
+    isWalletAccountSettling,
     underlyingLoading,
-    hasResolvedSession,
-    dashboard,
     netPositionFees,
     firstTradeTimestamp,
     manualAllocatedPoints,
     gmxPrice,
-    config,
   ]);
+
+  useEffect(() => {
+    if (enabled && resolvedBannerData && !resolvedBannerData.isLoading) {
+      setResolvedSessionData({ sessionKey, data: resolvedBannerData });
+    }
+  }, [enabled, resolvedBannerData, sessionKey]);
+
+  useEffect(() => {
+    if (!enabled) {
+      setResolvedSessionData(null);
+    }
+  }, [enabled]);
+
+  const personalizedBannerData = useMemo(() => {
+    if (!enabled) {
+      return resolvedBannerData ?? getLoadingBannerData();
+    }
+
+    const allocatedPoints = manualAllocatedPoints ?? 0n;
+    const isManuallyRewarded = allocatedPoints > 0n;
+
+    if (resolvedBannerData) {
+      return resolvedBannerData;
+    }
+
+    if (hasResolvedSession && resolvedSessionData && (underlyingLoading || !resolvedBannerData)) {
+      return resolvedSessionData.data;
+    }
+
+    return getLoadingBannerData({
+      isManuallyRewarded,
+    });
+  }, [enabled, resolvedBannerData, manualAllocatedPoints, hasResolvedSession, underlyingLoading, resolvedSessionData]);
+
+  return personalizedBannerData;
 }

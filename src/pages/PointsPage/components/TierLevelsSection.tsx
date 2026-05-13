@@ -1,6 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { type HTMLProps, useCallback, useMemo, useState } from "react";
+import Skeleton from "react-loading-skeleton";
 
 import {
   STAKING_TIER_BADGES,
@@ -14,6 +15,7 @@ import { getMarketIndexName } from "domain/synthetics/markets/utils";
 import { formatAmount, formatAmountHuman } from "lib/numbers";
 import { convertTokenAddress, getNormalizedTokenSymbol, getToken } from "sdk/configs/tokens";
 
+import { TableListSkeleton } from "components/Skeleton/Skeleton";
 import { TableTd, TableTh, TableTheadTr } from "components/Table/Table";
 import Tabs from "components/Tabs/Tabs";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -30,6 +32,7 @@ type TierTab = "volume" | "staking" | "boosts";
 
 type Props = {
   chainId: number;
+  isLoading?: boolean;
   config?: IncentivesConfig;
   currentEpochStats?: EpochStats;
   effectiveVolumeTier?: VolumeTierId | null;
@@ -54,6 +57,7 @@ function formatVolumeTierThreshold(threshold: bigint) {
 
 export function TierLevelsSection({
   chainId,
+  isLoading = false,
   config,
   currentEpochStats,
   effectiveVolumeTier,
@@ -67,6 +71,7 @@ export function TierLevelsSection({
     config?.downgradingCoefficients && Object.keys(config.downgradingCoefficients).length > 0;
 
   const handleToggleMore = useCallback(() => setShowMore((v) => !v), []);
+  const showTableLoading = isLoading || !config;
 
   const tabOptions = useMemo(
     () => [
@@ -114,7 +119,7 @@ export function TierLevelsSection({
       />
 
       <div>
-        <div className="max-w-[600px] p-20 pb-12 text-14 text-typography-secondary">
+        <div className="max-w-[600px] p-20 pb-8 text-14 text-typography-secondary">
           <p className="font-medium text-typography-primary">{descriptions[activeTab].short}</p>
           <div
             className={cx(
@@ -133,15 +138,18 @@ export function TierLevelsSection({
             </div>
           </div>
           <button
-            className="gmx-hover:text-blue-200 mt-2 flex items-center gap-4 text-14 font-medium text-blue-300 transition-colors duration-200"
+            className="gmx-hover:text-blue-200 mt-4 inline-flex items-center gap-4 text-14 font-medium text-blue-300 transition-colors duration-200"
             onClick={handleToggleMore}
             aria-expanded={showMore}
             aria-label={showMore ? t`Show less` : t`Show more`}
           >
-            <span aria-hidden="true" className="grid overflow-hidden">
+            <span aria-hidden="true" className="relative inline-grid w-max justify-items-start">
+              <span className="invisible col-start-1 row-start-1 whitespace-nowrap">
+                {showMore ? <Trans>Show less</Trans> : <Trans>Show more</Trans>}
+              </span>
               <span
                 className={cx(
-                  "col-start-1 row-start-1 transition-all duration-200",
+                  "absolute left-0 top-0 whitespace-nowrap transition-all duration-200",
                   showMore ? "-translate-y-1 opacity-0" : "translate-y-0 opacity-100"
                 )}
               >
@@ -149,7 +157,7 @@ export function TierLevelsSection({
               </span>
               <span
                 className={cx(
-                  "col-start-1 row-start-1 transition-all duration-200",
+                  "absolute left-0 top-0 whitespace-nowrap transition-all duration-200",
                   showMore ? "translate-y-0 opacity-100" : "translate-y-1 opacity-0"
                 )}
               >
@@ -166,15 +174,25 @@ export function TierLevelsSection({
           {activeTab === "volume" && (
             <VolumeTiersTable
               config={config}
+              isLoading={showTableLoading}
               currentTier={effectiveVolumeTier ?? currentEpochStats?.volumeTier}
               projectedTier={projectedVolumeTier}
             />
           )}
           {activeTab === "staking" && (
-            <StakingTiersTable config={config} currentTier={effectiveStakingTier ?? currentEpochStats?.stakingTier} />
+            <StakingTiersTable
+              config={config}
+              isLoading={showTableLoading}
+              currentTier={effectiveStakingTier ?? currentEpochStats?.stakingTier}
+            />
           )}
           {activeTab === "boosts" && (
-            <BoostsTable chainId={chainId} config={config} activeBoosts={currentEpochStats?.boostIds} />
+            <BoostsTable
+              chainId={chainId}
+              config={config}
+              isLoading={showTableLoading}
+              activeBoosts={currentEpochStats?.boostIds}
+            />
           )}
         </div>
       </div>
@@ -184,10 +202,12 @@ export function TierLevelsSection({
 
 function VolumeTiersTable({
   config,
+  isLoading,
   currentTier,
   projectedTier,
 }: {
   config?: IncentivesConfig;
+  isLoading?: boolean;
   currentTier?: string | null;
   projectedTier?: VolumeTierId | null;
 }) {
@@ -220,36 +240,40 @@ function VolumeTiersTable({
         </TableTheadTr>
       </thead>
       <tbody>
-        {config?.volumeTiers.map((tier) => {
-          const isActive = currentTier === tier.tier;
-          return (
-            <TierLevelTableTr key={tier.tier}>
-              <TableTd padding="compact">
-                <span className="flex items-center gap-8 font-medium">
-                  <div className="p-1">
-                    <VolumeTierIcon tierId={tier.tier} active={isActive} />
-                  </div>
+        {isLoading ? (
+          <TableListSkeleton count={5} Structure={TierLevelsSkeletonRow} />
+        ) : (
+          config?.volumeTiers.map((tier) => {
+            const isActive = currentTier === tier.tier;
+            return (
+              <TierLevelTableTr key={tier.tier}>
+                <TableTd padding="compact">
+                  <span className="flex items-center gap-8 font-medium">
+                    <div className="p-1">
+                      <VolumeTierIcon tierId={tier.tier} active={isActive} />
+                    </div>
 
-                  <span className="text-typography-primary">{VOLUME_TIER_BADGES[tier.tier]()}</span>
-                  {isActive && (
-                    <span className="font-medium text-green-500">
-                      <Trans>Active</Trans> ✓
-                    </span>
-                  )}
-                </span>
-              </TableTd>
-              <TableTd padding="compact" className="text-typography-primary">
-                {formatVolumeTierThreshold(tier.threshold)}
-              </TableTd>
-              <TableTd padding="compact" className="text-typography-primary">
-                {formatMultiplier(tier.multiplier)}
-              </TableTd>
-              <TableTd padding="compact">
-                {isActive && isDowngrading && daysRemaining > 0 && <ExpiresInLabel daysRemaining={daysRemaining} />}
-              </TableTd>
-            </TierLevelTableTr>
-          );
-        })}
+                    <span className="text-typography-primary">{VOLUME_TIER_BADGES[tier.tier]()}</span>
+                    {isActive && (
+                      <span className="font-medium text-green-500">
+                        <Trans>Active</Trans> ✓
+                      </span>
+                    )}
+                  </span>
+                </TableTd>
+                <TableTd padding="compact" className="text-typography-primary">
+                  {formatVolumeTierThreshold(tier.threshold)}
+                </TableTd>
+                <TableTd padding="compact" className="text-typography-primary">
+                  {formatMultiplier(tier.multiplier)}
+                </TableTd>
+                <TableTd padding="compact">
+                  {isActive && isDowngrading && daysRemaining > 0 && <ExpiresInLabel daysRemaining={daysRemaining} />}
+                </TableTd>
+              </TierLevelTableTr>
+            );
+          })
+        )}
       </tbody>
     </table>
   );
@@ -294,7 +318,7 @@ function DowngradingCoefficientsTooltip({
             {items.map(({ marketAddress, symbol, name, coefficient }) => (
               <div
                 key={marketAddress}
-                className="flex items-center justify-between gap-16 text-12 text-14 text-typography-primary"
+                className="flex items-center justify-between gap-16 text-12 text-typography-primary"
               >
                 <span className="flex items-center gap-4 font-medium">
                   {symbol && <TokenIcon symbol={symbol} displaySize={16} />}
@@ -310,7 +334,15 @@ function DowngradingCoefficientsTooltip({
   );
 }
 
-function StakingTiersTable({ config, currentTier }: { config?: IncentivesConfig; currentTier?: string | null }) {
+function StakingTiersTable({
+  config,
+  isLoading,
+  currentTier,
+}: {
+  config?: IncentivesConfig;
+  isLoading?: boolean;
+  currentTier?: string | null;
+}) {
   return (
     <table className={tierLevelTableClassName}>
       <thead>
@@ -328,33 +360,37 @@ function StakingTiersTable({ config, currentTier }: { config?: IncentivesConfig;
         </TableTheadTr>
       </thead>
       <tbody>
-        {config?.stakingTiers.map((tier) => {
-          const isActive = currentTier === tier.tier;
-          return (
-            <TierLevelTableTr key={tier.tier}>
-              <TableTd padding="compact">
-                <span className="flex items-center gap-8">
-                  <div className="p-1">
-                    <StakingTierIcon tierId={tier.tier} active={isActive} />
-                  </div>
-                  <span className="font-medium text-typography-primary">{STAKING_TIER_BADGES[tier.tier]()}</span>
-                  {isActive && (
-                    <span className="font-medium text-green-500">
-                      <Trans>Active</Trans> ✓
-                    </span>
-                  )}
-                </span>
-              </TableTd>
-              <TableTd padding="compact" className="text-typography-primary">
-                {formatAmount(tier.threshold, 18, 0, true)} GMX
-              </TableTd>
-              <TableTd padding="compact" className="text-typography-primary">
-                {formatMultiplier(tier.multiplier)}
-              </TableTd>
-              <TableTd padding="compact" />
-            </TierLevelTableTr>
-          );
-        })}
+        {isLoading ? (
+          <TableListSkeleton count={5} Structure={TierLevelsSkeletonRow} />
+        ) : (
+          config?.stakingTiers.map((tier) => {
+            const isActive = currentTier === tier.tier;
+            return (
+              <TierLevelTableTr key={tier.tier}>
+                <TableTd padding="compact">
+                  <span className="flex items-center gap-8">
+                    <div className="p-1">
+                      <StakingTierIcon tierId={tier.tier} active={isActive} />
+                    </div>
+                    <span className="font-medium text-typography-primary">{STAKING_TIER_BADGES[tier.tier]()}</span>
+                    {isActive && (
+                      <span className="font-medium text-green-500">
+                        <Trans>Active</Trans> ✓
+                      </span>
+                    )}
+                  </span>
+                </TableTd>
+                <TableTd padding="compact" className="text-typography-primary">
+                  {formatAmount(tier.threshold, 18, 0, true)} GMX
+                </TableTd>
+                <TableTd padding="compact" className="text-typography-primary">
+                  {formatMultiplier(tier.multiplier)}
+                </TableTd>
+                <TableTd padding="compact" />
+              </TierLevelTableTr>
+            );
+          })
+        )}
       </tbody>
     </table>
   );
@@ -363,10 +399,12 @@ function StakingTiersTable({ config, currentTier }: { config?: IncentivesConfig;
 function BoostsTable({
   chainId,
   config,
+  isLoading,
   activeBoosts,
 }: {
   chainId: number;
   config?: IncentivesConfig;
+  isLoading?: boolean;
   activeBoosts?: string[];
 }) {
   const featuredMarketTokens = config?.featuredMarketTokens ?? [];
@@ -390,49 +428,76 @@ function BoostsTable({
         </TableTheadTr>
       </thead>
       <tbody>
-        {config?.boosts.map((boost) => {
-          const isActive = activeBoosts?.includes(boost.boost);
-          const description = getBoostDescription(boost.boost, config);
-          const isFeaturedMarkets = boost.boost === "FeaturedMarkets" && featuredMarketTokens.length > 0;
-          return (
-            <TierLevelTableTr key={boost.boost}>
-              <TableTd padding="compact" className="text-typography-primary">
-                <span className="flex items-center gap-8 font-medium">
-                  <div className="p-1">
-                    <BoostTierIcon boostId={boost.boost} active={!!isActive} />
-                  </div>
-                  {BOOST_LABELS[boost.boost]()}
-                </span>
-              </TableTd>
-              <TableTd padding="compact" className="text-typography-secondary">
-                <>
-                  {description}{" "}
-                  {isFeaturedMarkets ? (
-                    <TooltipWithPortal
-                      variant="iconStroke"
-                      handle={<Trans>Featured markets.</Trans>}
-                      content={
-                        <FeaturedMarketsTooltipContent chainId={chainId} featuredMarketTokens={featuredMarketTokens} />
-                      }
-                    />
-                  ) : (
-                    description
-                  )}
-                </>
-              </TableTd>
-              <TableTd padding="compact" className="text-primary">
-                +{formatMultiplier(boost.multiplier)}
-              </TableTd>
-              <TableTd padding="compact">
-                <span className={isActive ? "text-green-500" : "text-typography-secondary"}>
-                  {isActive ? <Trans>Active</Trans> : <Trans>Inactive</Trans>}
-                </span>
-              </TableTd>
-            </TierLevelTableTr>
-          );
-        })}
+        {isLoading ? (
+          <TableListSkeleton count={3} Structure={TierLevelsSkeletonRow} />
+        ) : (
+          config?.boosts.map((boost) => {
+            const isActive = activeBoosts?.includes(boost.boost);
+            const description = getBoostDescription(boost.boost, config);
+            const isFeaturedMarkets = boost.boost === "FeaturedMarkets" && featuredMarketTokens.length > 0;
+            return (
+              <TierLevelTableTr key={boost.boost}>
+                <TableTd padding="compact" className="text-typography-primary">
+                  <span className="flex items-center gap-8 font-medium">
+                    <div className="p-1">
+                      <BoostTierIcon boostId={boost.boost} active={!!isActive} />
+                    </div>
+                    {BOOST_LABELS[boost.boost]()}
+                  </span>
+                </TableTd>
+                <TableTd padding="compact" className="text-typography-secondary">
+                  <>
+                    {description}{" "}
+                    {isFeaturedMarkets && (
+                      <TooltipWithPortal
+                        variant="iconStroke"
+                        handle={<Trans>Featured markets.</Trans>}
+                        content={
+                          <FeaturedMarketsTooltipContent
+                            chainId={chainId}
+                            featuredMarketTokens={featuredMarketTokens}
+                          />
+                        }
+                      />
+                    )}
+                  </>
+                </TableTd>
+                <TableTd padding="compact" className="text-primary">
+                  +{formatMultiplier(boost.multiplier)}
+                </TableTd>
+                <TableTd padding="compact">
+                  <span className={isActive ? "text-green-500" : "text-typography-secondary"}>
+                    {isActive ? <Trans>Active</Trans> : <Trans>Inactive</Trans>}
+                  </span>
+                </TableTd>
+              </TierLevelTableTr>
+            );
+          })
+        )}
       </tbody>
     </table>
+  );
+}
+
+function TierLevelsSkeletonRow({ invisible }: { invisible?: boolean }) {
+  return (
+    <TierLevelTableTr className={invisible ? "[&>td]:!bg-transparent" : undefined}>
+      <TableTd padding="compact">
+        <div className="flex items-center gap-8">
+          <Skeleton width={20} height={20} borderRadius={6} inline />
+          <Skeleton width={120} inline />
+        </div>
+      </TableTd>
+      <TableTd padding="compact">
+        <Skeleton width={90} inline />
+      </TableTd>
+      <TableTd padding="compact">
+        <Skeleton width={58} inline />
+      </TableTd>
+      <TableTd padding="compact">
+        <Skeleton width={82} inline />
+      </TableTd>
+    </TierLevelTableTr>
   );
 }
 

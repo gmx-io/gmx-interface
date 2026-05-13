@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/macro";
+import { type MouseEvent, useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 
 import { POINTS_TRADE_BANNER_DISMISSED_KEY } from "config/localStorage";
@@ -6,6 +7,7 @@ import { isIncentivesEnabled } from "domain/synthetics/incentives/constants";
 import { usePersonalizedBannerData } from "domain/synthetics/incentives/usePersonalizedBannerData";
 import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
+import { sendPointsPageNavigationEvent } from "lib/userAnalytics/pointsEvents";
 
 import { EARN_PORTFOLIO_STAKE_GMX_LINK } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/constants";
 
@@ -31,15 +33,10 @@ type PointsTradeBannerDismissedState =
       dismissedAfterFirstProgramEpochVolume?: boolean;
     };
 
-function getIsDismissedForCurrentState(
-  dismissedState: PointsTradeBannerDismissedState | undefined,
-  bannerData: ReturnType<typeof usePersonalizedBannerData>
-) {
-  if (bannerData.isManuallyRewarded && bannerData.hasVolumeAfterFirstProgramEpoch) {
-    return typeof dismissedState === "object" && dismissedState.dismissedAfterFirstProgramEpochVolume === true;
-  }
-
-  return typeof dismissedState === "object" ? dismissedState.dismissed : dismissedState === true;
+function getIsDismissedForCurrentState(dismissedState: PointsTradeBannerDismissedState | undefined) {
+  return typeof dismissedState === "object"
+    ? dismissedState.dismissed || dismissedState.dismissedAfterFirstProgramEpochVolume === true
+    : dismissedState === true;
 }
 
 export function PointsPromoBanner() {
@@ -48,19 +45,25 @@ export function PointsPromoBanner() {
     POINTS_TRADE_BANNER_DISMISSED_KEY,
     false
   );
+  const [dismissedLatch, setDismissedLatch] = useState(() => getIsDismissedForCurrentState(dismissedState));
   const bannerData = usePersonalizedBannerData();
-  const dismissed = getIsDismissedForCurrentState(dismissedState, bannerData);
+  const dismissed = dismissedLatch || getIsDismissedForCurrentState(dismissedState);
 
   const handleDismiss = () => {
-    setDismissedState((previousState) => ({
-      dismissed: true,
-      dismissedAfterFirstProgramEpochVolume:
-        (bannerData.isManuallyRewarded && bannerData.hasVolumeAfterFirstProgramEpoch) ||
-        (typeof previousState === "object" && previousState.dismissedAfterFirstProgramEpochVolume === true),
-    }));
+    setDismissedLatch(true);
+    setDismissedState(true);
   };
 
-  if (!isIncentivesEnabled(chainId) || dismissed || bannerData.isLoading || bannerData.bannerVariant === undefined) {
+  useEffect(() => {
+    if (getIsDismissedForCurrentState(dismissedState)) {
+      setDismissedLatch(true);
+    }
+  }, [dismissedState]);
+
+  const shouldRender =
+    isIncentivesEnabled(chainId) && !dismissed && !bannerData.isLoading && bannerData.bannerVariant !== undefined;
+
+  if (!shouldRender) {
     return null;
   }
 
@@ -68,12 +71,25 @@ export function PointsPromoBanner() {
   const isStakeCta = bannerData.bannerVariant === "recent-activity";
   const ctaTo = isStakeCta ? EARN_PORTFOLIO_STAKE_GMX_LINK : "/points";
 
+  const handleBannerClick = () => {
+    if (ctaTo === "/points") {
+      sendPointsPageNavigationEvent({ source: "TradePageBanner" });
+    }
+    handleDismiss();
+  };
+
+  const handleDismissClick = (event: MouseEvent<HTMLButtonElement>) => {
+    event.preventDefault();
+    event.stopPropagation();
+    handleDismiss();
+  };
+
   return (
     <div className="flex justify-center">
       <Link
         className="relative grid w-full grid-cols-[minmax(0,1fr)_80px] overflow-hidden rounded-8 border-1/2 border-stroke-primary bg-slate-900/50 p-16"
         style={BANNER_STYLES}
-        onClick={handleDismiss}
+        onClick={handleBannerClick}
         to={ctaTo}
       >
         <div className="relative z-10 flex min-w-0 flex-col gap-4">
@@ -106,7 +122,7 @@ export function PointsPromoBanner() {
 
         <button
           className="absolute right-12 top-12 z-20 text-typography-secondary opacity-50 hover:opacity-80"
-          onClick={handleDismiss}
+          onClick={handleDismissClick}
         >
           <CrossIcon className="size-11" />
         </button>

@@ -1,7 +1,7 @@
 import { t, Trans } from "@lingui/macro";
 import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
-import { ChangeEvent, useCallback, useEffect, useMemo, useRef } from "react";
+import { ChangeEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useKey, useLatest, usePrevious } from "react-use";
 import { zeroAddress } from "viem";
 
@@ -15,6 +15,8 @@ import { selectChartHeaderInfo } from "context/SyntheticsStateContext/selectors/
 import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
+  selectGasLimits,
+  selectGasPrice,
   selectMarketsInfoData,
   selectSrcChainId,
   selectSubaccountState,
@@ -88,6 +90,8 @@ import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import useWallet from "lib/wallets/useWallet";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
+import { estimateOrderOraclePriceCount } from "sdk/utils/fees/estimateOraclePriceCount";
+import { estimateExecuteSwapOrderGasLimit, getExecutionFee } from "sdk/utils/fees/executionFee";
 import { getMaxNegativeImpactBps } from "sdk/utils/fees/priceImpact";
 import { TradeMode } from "sdk/utils/trade/types";
 
@@ -156,6 +160,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
 
   const chainId = useSelector(selectChainId);
+  const gasLimits = useSelector(selectGasLimits);
+  const gasPrice = useSelector(selectGasPrice);
 
   const srcChainId = useSelector(selectSrcChainId);
   const { account, active } = useWallet();
@@ -356,9 +362,18 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     ? expressGasPaymentTokenAmount
     : submitButtonState.totalExecutionFee?.feeTokenAmount;
 
-  const isMaxAmountLoading = expressOrdersEnabledForMax
-    ? submitButtonState.isExpressLoading || expressGasPaymentTokenAmount === undefined
-    : submitButtonState.totalExecutionFee?.feeTokenAmount === undefined;
+  const fallbackSwapExecutionFeeAmount = useMemo(() => {
+    if (!isSwap || !gasLimits || gasPrice === undefined || !tokensData) return undefined;
+    const estimatedGasLimit = estimateExecuteSwapOrderGasLimit(gasLimits, {
+      swapsCount: 0,
+      callbackGasLimit: 0n,
+    });
+    const oraclePriceCount = estimateOrderOraclePriceCount(0);
+    return getExecutionFee(chainId, gasLimits, tokensData, estimatedGasLimit, gasPrice, oraclePriceCount)
+      ?.feeTokenAmount;
+  }, [isSwap, gasLimits, gasPrice, tokensData, chainId]);
+
+  const isMaxAmountLoading = expressOrdersEnabledForMax && submitButtonState.isExpressLoading;
 
   const fromTokenBalance = getBalanceByBalanceType(
     fromToken,
@@ -379,7 +394,9 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
       gasPaymentToken: gasPaymentTokenForMax,
       gasPaymentTokenBalance: gasPaymentTokenBalanceForMax,
       gasPaymentTokenAmount: gasPaymentTokenAmountForMax,
+      fallbackGasPaymentTokenAmount: fallbackSwapExecutionFeeAmount,
       useMinimalBuffer: treatMinimalBufferAsEnough,
+      isGmxAccount: isFromTokenGmxAccount,
     });
 
   const onMaxClick = useCallback(() => {
@@ -1038,6 +1055,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
 
   const collateralWarnings = useCollateralWarnings();
 
+  const [twapRecommendationDismissed, setTwapRecommendationDismissed] = useState(false);
+
   return (
     <form className="flex flex-col gap-8" onSubmit={handleFormSubmit} ref={formRef}>
       <div className="flex flex-col gap-12 rounded-b-8 bg-slate-900 pb-16">
@@ -1076,8 +1095,6 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
               {isSwap && isLimit && renderTriggerRatioInput()}
               {isTrigger && renderTriggerPriceInput()}
             </div>
-
-            {maxAutoCancelOrdersWarning}
 
             {isTrigger && (
               <SyntheticsInfoRow
@@ -1133,6 +1150,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           )}
 
           {!isTrigger && !isSwap && !isTwap && <TPSLGroup />}
+          {maxAutoCancelOrdersWarning}
 
           {priceImpactWarningState.shouldShowWarning && (
             <HighPriceImpactOrFeesWarningCard
@@ -1152,8 +1170,8 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             disabled={shouldShowDepositButton}
             isGmxAccount={isFromTokenGmxAccount}
           />
-          {twapRecommendation && (
-            <AlertInfoCard>
+          {twapRecommendation && !twapRecommendationDismissed && (
+            <AlertInfoCard onClose={() => setTwapRecommendationDismissed(true)}>
               <span>
                 <span
                   className="cursor-pointer font-medium text-blue-300"

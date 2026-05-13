@@ -1,6 +1,7 @@
-import { Trans } from "@lingui/macro";
+import { Trans, plural } from "@lingui/macro";
 import cx from "classnames";
 import React, { useMemo } from "react";
+import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 import { Link } from "react-router-dom";
 
 import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
@@ -9,15 +10,10 @@ import {
   STAKING_TIER_BADGES,
   VOLUME_TIER_BADGES,
   formatMultiplier,
-  INCENTIVES_BASE_RATE,
-  INCENTIVES_FEE_RATE,
-  MULTIPLIER_DECIMALS,
-  MAX_FEE_DISCOUNT_PERCENT,
 } from "domain/synthetics/incentives/constants";
 import type { EpochStats, IncentivesConfig, StakingTierId, VolumeTierId } from "domain/synthetics/incentives/types";
 import { usePersonalizedBannerData } from "domain/synthetics/incentives/usePersonalizedBannerData";
-import { useChainId } from "lib/chains";
-import { formatAmount, formatAmountHuman, bigintToNumber } from "lib/numbers";
+import { formatAmount, formatAmountHuman } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
 import {
@@ -36,11 +32,11 @@ import GmxIcon from "img/ic_gmx_glyph.svg?react";
 import PlusIcon from "img/ic_plus.svg?react";
 import StatsSvg from "img/ic_stats.svg?react";
 
-import { FeaturedMarketsTooltipContent } from "./FeaturedMarketsTooltipContent";
 import { getBoostDescription } from "./incentivesText";
 import { VolumeTierIcon, StakingTierIcon, BoostTierIcon } from "./tierIcons";
 
 type Props = {
+  isLoading?: boolean;
   config?: IncentivesConfig;
   currentEpochStats?: EpochStats;
   effectiveVolumeTier?: VolumeTierId | null;
@@ -51,6 +47,7 @@ type Props = {
 };
 
 export function TierCardsSection({
+  isLoading = false,
   config,
   currentEpochStats,
   effectiveVolumeTier,
@@ -59,7 +56,7 @@ export function TierCardsSection({
   projectedStakingTier,
   hideInactive = false,
 }: Props) {
-  const volumeActive = Boolean(effectiveVolumeTier ?? currentEpochStats?.volumeTier);
+  const volumeActive = Boolean(effectiveVolumeTier);
   const stakingActive = Boolean(effectiveStakingTier ?? currentEpochStats?.stakingTier ?? projectedStakingTier);
   const boostsActive = Boolean(currentEpochStats?.boostIds?.length);
 
@@ -74,6 +71,10 @@ export function TierCardsSection({
       .sort((a, b) => (a.active === b.active ? 0 : a.active ? -1 : 1))
       .map((i) => i.key);
   }, [volumeActive, stakingActive, boostsActive, hideInactive]);
+
+  if (isLoading || !config) {
+    return <TierCardsSkeleton />;
+  }
 
   if (sortedKeys.length === 0) {
     return null;
@@ -115,18 +116,6 @@ const GMX_DECIMALS = 18;
 
 function formatCompactUsd(amount: bigint) {
   return formatAmountHuman(amount, USD_DECIMALS, true, 0).replace(/[kmb]$/i, (suffix) => suffix.toUpperCase());
-}
-
-/**
- * Estimate weekly rewards for a given volume and multiplier based on config values.
- * Returns a rounded USD number suitable for display (e.g. 300).
- */
-function estimateWeeklyRewards(volumeUsd: number, rawMultiplier: number, multiplierDecimals: number): number {
-  const mult = rawMultiplier / multiplierDecimals;
-  const fees = volumeUsd * INCENTIVES_FEE_RATE;
-  const maxDiscount = (MAX_FEE_DISCOUNT_PERCENT / 100) * fees;
-  const rewards = fees * INCENTIVES_BASE_RATE * (1.0 + mult);
-  return Math.round(Math.min(rewards, maxDiscount));
 }
 
 function MultiplierBadge({
@@ -250,11 +239,46 @@ function VolumeCard({
     </MultiplierChangeTooltip>
   ) : undefined;
 
-  const currentThreshold = active && currentTierConfig ? currentTierConfig.threshold : 0n;
+  // Preserve mode: user currently has a tier but is projected to lose it next epoch.
+  // The bar should target the current tier's threshold (what's needed to save it) instead
+  // of the next tier's threshold. For volume tiers this also overrides max-tier display when
+  // the user is about to lose their max tier (FEDEV-3824).
+  const isPreserveMode = active && Boolean(currentTierConfig) && projectedTierId === null;
+  // Show the "max tier reached" celebratory state only when the user is not about to lose it.
+  const showMaxTierState = isMaxTier && !isPreserveMode;
   const nextThreshold = active ? nextTierConfig?.threshold : tierConfig?.[0]?.threshold;
-  const range = nextThreshold !== undefined && nextThreshold > currentThreshold ? nextThreshold - currentThreshold : 0n;
-  const progressPercent = isMaxTier ? 100 : range > 0n ? Number((tradedVolume * 100n) / range) : 0;
+  const targetTierConfig = isPreserveMode ? currentTierConfig : nextTierConfig;
+  const targetThreshold = isPreserveMode ? currentTierConfig?.threshold : nextThreshold;
+  const remainingToTarget =
+    targetThreshold !== undefined && targetThreshold > tradedVolume ? targetThreshold - tradedVolume : 0n;
+  const progressPercent = showMaxTierState
+    ? 100
+    : targetThreshold !== undefined && targetThreshold > 0n
+      ? Number((tradedVolume * 100n) / targetThreshold)
+      : 0;
   const progressStyle = useMemo(() => ({ width: `${Math.min(progressPercent, 100)}%` }), [progressPercent]);
+
+  const progressTooltipContent =
+    active && targetTierConfig && targetThreshold !== undefined && targetThreshold > 0n ? (
+      <div className="text-13">
+        <span className="text-typography-primary">{formatCompactUsd(tradedVolume)}</span>
+        <span className="text-typography-secondary">{"/"}</span>
+        <span className="text-typography-primary">{formatCompactUsd(targetThreshold)}</span>{" "}
+        <span className="text-typography-secondary">
+          {isPreserveMode ? (
+            <Trans>
+              to save {VOLUME_TIER_BADGES[targetTierConfig.tier]()} Status{" "}
+              <span className="text-typography-primary">+{formatMultiplier(targetTierConfig.multiplier)}</span>
+            </Trans>
+          ) : (
+            <Trans>
+              get {VOLUME_TIER_BADGES[targetTierConfig.tier]()} Status{" "}
+              <span className="text-typography-primary">+{formatMultiplier(targetTierConfig.multiplier)}</span>
+            </Trans>
+          )}
+        </span>
+      </div>
+    ) : null;
 
   return (
     <div className={cx(tierCardBase, active ? tierCardActive : tierCardBanner)}>
@@ -304,52 +328,80 @@ function VolumeCard({
                 </Trans>
               </span>
             </div>
-            <div className="relative h-6 overflow-hidden rounded-8 bg-cold-blue-900">
-              <div
-                className="absolute left-0 top-0 h-full rounded-8 bg-blue-300 transition-[width] duration-300"
-                style={progressStyle}
+            {progressTooltipContent ? (
+              <TooltipWithPortal
+                as="div"
+                className="group/volume-bar flex items-center py-5"
+                handle={
+                  <div className="relative h-6 w-full overflow-hidden rounded-8 bg-cold-blue-900 transition-[background-color,transform] duration-150 ease-out group-hover/volume-bar:scale-y-150 group-hover/volume-bar:bg-cold-blue-700">
+                    <div
+                      className="absolute left-0 top-0 h-full rounded-8 bg-blue-300 transition-[background-color,width] duration-300 ease-out"
+                      style={progressStyle}
+                    />
+                  </div>
+                }
+                content={progressTooltipContent}
+                variant="none"
               />
-            </div>
-            {nextTierConfig && !isMaxTier && (
+            ) : (
+              <div className="relative h-6 overflow-hidden rounded-8 bg-cold-blue-900">
+                <div
+                  className={cx(
+                    "absolute left-0 top-0 h-full rounded-8 transition-[width] duration-300",
+                    showMaxTierState ? "bg-green-300" : "bg-blue-300"
+                  )}
+                  style={progressStyle}
+                />
+              </div>
+            )}
+            {showMaxTierState ? (
               <div className="flex items-center gap-4 py-2">
-                <span>
-                  <Trans>
-                    Trade {formatCompactUsd(nextTierConfig.threshold)} to unlock{" "}
-                    {VOLUME_TIER_BADGES[nextTierConfig.tier]()} status{" "}
-                    <span className="text-typography-primary">+{formatMultiplier(nextTierConfig.multiplier)}</span>
-                  </Trans>
+                <span className="text-green-500">
+                  <Trans>Max tier reached ✓</Trans>
                 </span>
               </div>
+            ) : (
+              targetTierConfig && (
+                <div className="flex items-center gap-4 py-2">
+                  <span>
+                    {isPreserveMode ? (
+                      <Trans>
+                        Trade {formatCompactUsd(remainingToTarget)} more to keep{" "}
+                        {VOLUME_TIER_BADGES[targetTierConfig.tier]()} status{" "}
+                        <span className="text-typography-primary">
+                          +{formatMultiplier(targetTierConfig.multiplier)}
+                        </span>
+                      </Trans>
+                    ) : (
+                      <Trans>
+                        Trade {formatCompactUsd(remainingToTarget)} more to unlock{" "}
+                        {VOLUME_TIER_BADGES[targetTierConfig.tier]()} status{" "}
+                        <span className="text-typography-primary">
+                          +{formatMultiplier(targetTierConfig.multiplier)}
+                        </span>
+                      </Trans>
+                    )}
+                  </span>
+                </div>
+              )
             )}
           </div>
         </>
       ) : (
-        <VolumeBanner config={config} />
+        <VolumeBanner />
       )}
     </div>
   );
 }
 
-function VolumeBanner({ config }: { config?: IncentivesConfig }) {
-  const firstTier = config?.volumeTiers?.[0];
-  const multiplierDecimals = config?.multiplierDecimals ?? MULTIPLIER_DECIMALS;
-
-  const volumeLabel = firstTier ? formatAmountHuman(firstTier.threshold, USD_DECIMALS, true, 0) : "...";
-  const tierName = firstTier ? VOLUME_TIER_BADGES[firstTier.tier]() : "...";
-  const multiplierLabel = firstTier ? formatMultiplier(firstTier.multiplier) : "...";
-  const rewardsEstimate = firstTier
-    ? estimateWeeklyRewards(bigintToNumber(firstTier.threshold, USD_DECIMALS), firstTier.multiplier, multiplierDecimals)
-    : 0;
-
+function VolumeBanner() {
   return (
     <div className="flex flex-1 flex-col justify-end gap-8">
       <h3 className="text-h3 font-medium text-typography-primary">
-        <Trans>Reach {volumeLabel} in trading volume</Trans>
+        <Trans>Trade More. Earn More.</Trans>
       </h3>
       <div className="flex items-start gap-4 text-13 font-medium text-typography-secondary">
-        <Trans>
-          Unlock {tierName} status (+{multiplierLabel}) and earn up to ${rewardsEstimate} in additional trading rewards.
-        </Trans>
+        <Trans>Increase your trading volume to unlock a higher status and boost your rewards multiplier.</Trans>
       </div>
       <Link to="/trade" className="flex items-center gap-4 text-13 font-medium text-blue-300">
         <Trans>Start trading</Trans> <ArrowRight />
@@ -383,6 +435,7 @@ function StakingCard({
   const currentTierIndex = tierConfig?.findIndex((t) => t.tier === displayTier) ?? -1;
   const currentTierConfig = currentTierIndex >= 0 ? tierConfig?.[currentTierIndex] : undefined;
   const nextTierConfig = tierConfig?.[currentTierIndex + 1];
+  const isMaxTier = active && currentTierIndex >= 0 && !nextTierConfig;
   const requiredToNextTier =
     nextTierConfig && gmxStaked !== undefined
       ? gmxStaked < nextTierConfig.threshold
@@ -479,17 +532,32 @@ function StakingCard({
                 </Link>
               )}
             </div>
-            {tierConfig && <StakingProgressBar tiers={tierConfig} currentTier={displayTier} gmxStaked={gmxStaked} />}
-            {hasNextTierTarget && (
+            {tierConfig && (
+              <StakingProgressBar
+                tiers={tierConfig}
+                currentTier={displayTier}
+                gmxStaked={gmxStaked}
+                isMaxTier={isMaxTier}
+              />
+            )}
+            {isMaxTier ? (
               <div className="flex items-center gap-4 py-2">
-                <span>
-                  <Trans>
-                    Stake {formatAmount(requiredToNextTier, GMX_DECIMALS, 2, true, undefined, undefined, true)} GMX more
-                    to get {STAKING_TIER_BADGES[nextTierConfig.tier]()} status{" "}
-                    <span className="text-typography-primary">+{formatMultiplier(nextTierConfig.multiplier)}</span>
-                  </Trans>
+                <span className="text-green-500">
+                  <Trans>Max tier reached ✓</Trans>
                 </span>
               </div>
+            ) : (
+              hasNextTierTarget && (
+                <div className="flex items-center gap-4 py-2">
+                  <span>
+                    <Trans>
+                      Stake {formatAmount(requiredToNextTier, GMX_DECIMALS, 2, true, undefined, undefined, true)} GMX
+                      more to get {STAKING_TIER_BADGES[nextTierConfig.tier]()} status{" "}
+                      <span className="text-typography-primary">+{formatMultiplier(nextTierConfig.multiplier)}</span>
+                    </Trans>
+                  </span>
+                </div>
+              )
             )}
           </div>
         </>
@@ -545,10 +613,12 @@ function StakingProgressBar({
   tiers,
   currentTier,
   gmxStaked,
+  isMaxTier = false,
 }: {
   tiers: IncentivesConfig["stakingTiers"];
   currentTier: StakingTierId | null | undefined;
   gmxStaked: bigint | undefined;
+  isMaxTier?: boolean;
 }) {
   const currentIdx = tiers.findIndex((t) => t.tier === currentTier);
   const nextIdx = currentIdx + 1;
@@ -596,7 +666,7 @@ function StakingProgressBar({
               handle={
                 <div className="relative h-6 w-full overflow-hidden rounded-8 bg-cold-blue-900 transition-[background-color,transform] duration-150 ease-out group-hover/segment:scale-y-150 group-hover/segment:bg-cold-blue-700">
                   <div
-                    className="absolute left-0 top-0 h-full rounded-8 bg-blue-300 transition-[background-color] duration-150 ease-out group-hover/segment:bg-blue-100"
+                    className="absolute left-0 top-0 h-full rounded-8 bg-blue-300 transition-[background-color] duration-150 ease-out"
                     style={nextTierProgressStyle}
                   />
                 </div>
@@ -607,6 +677,8 @@ function StakingProgressBar({
           );
         }
 
+        const completedFillClasses = isMaxTier ? "bg-green-300" : "bg-blue-300";
+
         return (
           <TooltipWithPortal
             key={tier.tier}
@@ -616,7 +688,7 @@ function StakingProgressBar({
               <div
                 className={cx(
                   "h-6 w-full rounded-8 transition-[background-color,transform] duration-150 ease-out group-hover/segment:scale-x-105 group-hover/segment:scale-y-150",
-                  isCompleted ? "bg-blue-300" : "bg-cold-blue-900"
+                  isCompleted ? completedFillClasses : "bg-cold-blue-900 group-hover/segment:bg-cold-blue-700"
                 )}
               />
             }
@@ -638,10 +710,8 @@ function BoostsCard({
   currentEpochStats?: EpochStats;
   active: boolean;
 }) {
-  const { chainId } = useChainId();
   const activeBoostIds = currentEpochStats?.boostIds ?? [];
   const allBoosts = config?.boosts ?? [];
-  const featuredMarketTokens = config?.featuredMarketTokens ?? [];
 
   const isLifetimeVolumeBoostActive = activeBoostIds.includes("LifetimeTrading");
   const lifetimeVolumeBoost = useMemo(
@@ -688,12 +758,11 @@ function BoostsCard({
               <div className="flex size-48 shrink-0 items-center justify-center rounded-12 border-[0.8px] border-blue-300/60 drop-shadow-[0_4px_6px_rgba(120,133,255,0.9)]">
                 <BoostSvg className="size-24 text-blue-300" />
               </div>
-              {activeBoostIds.length} <Trans>active boosts</Trans>
+              {plural(activeBoostIds.length, { one: "# active boost", other: "# active boosts" })}
             </h3>
             <div className="flex flex-wrap gap-12">
               {allBoosts.map((boost) => {
                 const isActive = activeBoostIds.includes(boost.boost);
-                const isFeaturedMarkets = boost.boost === "FeaturedMarkets" && featuredMarketTokens.length > 0;
                 return (
                   <TooltipWithPortal
                     key={boost.boost}
@@ -708,17 +777,13 @@ function BoostsCard({
                       </div>
                     }
                     content={
-                      isFeaturedMarkets ? (
-                        <FeaturedMarketsTooltipContent chainId={chainId} featuredMarketTokens={featuredMarketTokens} />
-                      ) : (
-                        <div>
-                          <div className="font-medium">{BOOST_LABELS[boost.boost]()}</div>
-                          <div className="mt-4 text-13">+{formatMultiplier(boost.multiplier)}</div>
-                          <div className="mt-4 text-13 text-typography-secondary">
-                            {getBoostDescription(boost.boost, config)}
-                          </div>
+                      <div>
+                        <div className="font-medium">{BOOST_LABELS[boost.boost]()}</div>
+                        <div className="mt-4 text-13">+{formatMultiplier(boost.multiplier)}</div>
+                        <div className="mt-4 text-13 text-typography-secondary">
+                          {getBoostDescription(boost.boost, config)}
                         </div>
-                      )
+                      </div>
                     }
                     variant="none"
                   />
@@ -754,5 +819,31 @@ function BoostsCard({
         </div>
       )}
     </div>
+  );
+}
+
+function TierCardsSkeleton() {
+  return (
+    <SkeletonTheme baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A">
+      <div className="grid grid-cols-3 gap-8 max-lg:grid-cols-1">
+        {Array.from({ length: 3 }).map((_, index) => (
+          <div key={index} className={cx(tierCardBase, tierCardActive, "min-h-[172px]")}>
+            <div className="flex items-center justify-between">
+              <Skeleton width={96} height={14} inline />
+              <Skeleton width={54} height={20} borderRadius={999} inline />
+            </div>
+            <div className="mt-4 flex items-center gap-12">
+              <Skeleton width={52} height={52} borderRadius={12} inline />
+              <Skeleton width={132} height={28} inline />
+            </div>
+            <div className="flex flex-col gap-8">
+              <Skeleton width="60%" height={14} inline />
+              <Skeleton width="100%" height={6} borderRadius={8} inline />
+              <Skeleton width="80%" height={14} inline />
+            </div>
+          </div>
+        ))}
+      </div>
+    </SkeletonTheme>
   );
 }

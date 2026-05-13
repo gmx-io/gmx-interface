@@ -5,15 +5,24 @@ import { ARBITRUM } from "config/chains";
 import { selectUserReferralInfo } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
   selectTradeboxFees,
+  selectTradeboxIncreasePositionAmounts,
+  selectTradeboxMarketInfo,
   selectTradeboxTradeFeesType,
+  selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useGmxPrice } from "domain/legacy";
 import { isIncentivesEnabled, MULTIPLIER_DECIMALS } from "domain/synthetics/incentives/constants";
-import { getEstimatedTradeRewards } from "domain/synthetics/incentives/pointsEstimate";
+import {
+  getEffectiveTradeMultiplier,
+  getEstimatedTradeRewards,
+  getMarketDowngradingCoefficient,
+} from "domain/synthetics/incentives/pointsEstimate";
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
+import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
 import { useChainId } from "lib/chains";
 import { formatAmount, formatUsd } from "lib/numbers";
+import { sendPointsPageNavigationEvent } from "lib/userAnalytics/pointsEvents";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 
@@ -24,9 +33,13 @@ export function PointsRow() {
   const { account, active, signer } = useWallet();
   const fees = useSelector(selectTradeboxFees);
   const feesType = useSelector(selectTradeboxTradeFeesType);
+  const tradeFlags = useSelector(selectTradeboxTradeFlags);
+  const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
+  const marketInfo = useSelector(selectTradeboxMarketInfo);
   const userReferralInfo = useSelector(selectUserReferralInfo);
 
   const enabled = isIncentivesEnabled(chainId);
+  const { data: incentivesConfig } = useIncentivesConfig(chainId);
   const { data: status } = useAccountIncentiveStatus(chainId, {
     account,
     enabled: enabled && Boolean(account),
@@ -34,19 +47,34 @@ export function PointsRow() {
   const { gmxPrice } = useGmxPrice(chainId, { arbitrum: chainId === ARBITRUM ? signer : undefined }, active);
 
   const multiplier = status?.multiplier;
-  const hasMultiplier = multiplier !== undefined && multiplier > 0;
+  const effectiveMultiplier = getEffectiveTradeMultiplier({
+    multiplier,
+    maxMultiplier: incentivesConfig?.maxMultiplier,
+    boosts: incentivesConfig?.boosts,
+    featuredMarketTokens: incentivesConfig?.featuredMarketTokens,
+    marketInfo,
+    isLong: tradeFlags.isLong,
+    sizeDeltaUsd: increaseAmounts?.sizeDeltaUsd,
+    balancingTradesThreshold: incentivesConfig?.balancingTradesThreshold,
+  });
+  const hasMultiplier = effectiveMultiplier !== undefined && effectiveMultiplier > 0;
   const positionFeeUsd =
     feesType !== "swap" && fees?.positionFee?.deltaUsd !== undefined
       ? bigMath.abs(fees.positionFee.deltaUsd)
       : undefined;
+  const downgradingCoefficient = getMarketDowngradingCoefficient(
+    incentivesConfig?.downgradingCoefficients,
+    marketInfo?.marketTokenAddress
+  );
 
   const estimatedRewards = getEstimatedTradeRewards({
     feeUsd: positionFeeUsd,
-    multiplier,
+    multiplier: effectiveMultiplier,
     multiplierDecimals: MULTIPLIER_DECIMALS,
     totalRebate: userReferralInfo?.totalRebate,
     discountShare: userReferralInfo?.discountShare,
     gmxPrice,
+    downgradingCoefficient,
   });
 
   const hasEstimatedRewards = estimatedRewards?.rewardsUsd !== undefined && estimatedRewards.rewardsUsd > 0n;
@@ -56,10 +84,20 @@ export function PointsRow() {
   return (
     <Link
       to="/points"
+      onClick={() =>
+        sendPointsPageNavigationEvent({
+          source: "FeeBlock",
+          marketAddress: marketInfo?.marketTokenAddress,
+          marketName: marketInfo?.name,
+          hasEstimatedRewards,
+          rewardsUsd: estimatedRewards?.rewardsUsd,
+          downgradingCoefficient,
+        })
+      }
       className="flex items-center justify-between gap-8 rounded-8 p-8 text-12 text-typography-secondary transition-colors"
     >
       <span className="flex min-w-0 items-center gap-8">
-        <MultiplierBadge multiplier={multiplier} />
+        <MultiplierBadge multiplier={effectiveMultiplier} />
         {hasMultiplier && hasEstimatedRewards ? (
           <span className="truncate">
             <Trans>Estimated rewards</Trans>

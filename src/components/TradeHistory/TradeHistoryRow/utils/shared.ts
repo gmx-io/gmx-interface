@@ -99,6 +99,8 @@ export type RowDetails = {
   pnl?: string;
   pnlState?: TooltipState;
   pnlTooltip?: string;
+  fees?: string;
+  feesTooltip?: TooltipContent;
   isLong?: boolean;
   indexTokenSymbol?: string;
   swapFromTokenSymbol?: string;

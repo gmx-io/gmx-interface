@@ -145,7 +145,8 @@ export const DepositView = () => {
     isPriceDataLoading,
     isBalanceDataLoading,
   } = useMultichainTradeTokensRequest(settlementChainId, account);
-  const { tokensData: settlementChainTokensData } = useTokensDataRequest(settlementChainId, depositViewChain);
+  const { tokensData: settlementChainTokensData, isBalancesLoaded: isSettlementChainBalancesLoaded } =
+    useTokensDataRequest(settlementChainId, depositViewChain);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [shouldSendCrossChainDepositWhenLoaded, setShouldSendCrossChainDepositWhenLoaded] = useState(false);
 
@@ -475,9 +476,7 @@ export const DepositView = () => {
       : quoteSendNativeFee ?? baseQuoteSendNativeFee;
 
   const isLoadingDepositMax =
-    depositViewChain === settlementChainId
-      ? sameChainNetworkFeeDetails === undefined
-      : isComposeGasLoading || isBaseQuoteSendNativeFeeLoading;
+    depositViewChain === settlementChainId ? false : isComposeGasLoading || isBaseQuoteSendNativeFeeLoading;
 
   const paymentToken = useMemo((): TokenData | undefined => {
     if (selectedTokenData === undefined) {
@@ -938,7 +937,15 @@ export const DepositView = () => {
     ]
   );
 
-  const tokenSelectorDisabled = !isBalanceDataLoading && multichainTokens.length === 0;
+  const hasSettlementChainBalance = Object.values(settlementChainTokensData || {}).some(
+    (token) => token.walletBalance !== undefined && token.walletBalance > 0n
+  );
+
+  const tokenSelectorDisabled =
+    !isBalanceDataLoading &&
+    isSettlementChainBalancesLoaded &&
+    multichainTokens.length === 0 &&
+    !hasSettlementChainBalance;
 
   const isAvalancheSettlement = settlementChainId === AVALANCHE;
 
@@ -1031,7 +1038,7 @@ export const DepositView = () => {
     buttonState = {
       text: (
         <>
-          <Trans>Loading network fees…</Trans>
+          <Trans>Loading network fees...</Trans>
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),
@@ -1237,51 +1244,29 @@ export const DepositView = () => {
             </div>
           </div>
           <div className="text-body-medium text-typography-secondary numbers">{formatUsd(inputAmountUsd ?? 0n)}</div>
+          {isAboveLimit && (
+            <AlertInfoCard type="warning" className="mt-8" hideClose>
+              <div>
+                <Trans>
+                  Amount exceeds the deposit limit. Try an amount smaller than{" "}
+                  <span className="numbers">{upperLimitFormatted}</span>.
+                </Trans>
+              </div>
+            </AlertInfoCard>
+          )}
+          {isBelowLimit && (
+            <AlertInfoCard type="warning" className="mt-8" hideClose>
+              <div>
+                <Trans>
+                  Amount is below the deposit limit. Try an amount larger than{" "}
+                  <span className="numbers">{lowerLimitFormatted}</span>.
+                </Trans>
+              </div>
+            </AlertInfoCard>
+          )}
         </div>
       </div>
 
-      {isAvalancheSettlement && (
-        <AlertInfoCard type="error" className="mt-8" hideClose>
-          <div>
-            <Trans>Deposits are not supported on Avalanche.</Trans>
-          </div>
-        </AlertInfoCard>
-      )}
-      {isAboveLimit && (
-        <AlertInfoCard type="warning" className="mt-8" hideClose>
-          <div>
-            <Trans>
-              Amount exceeds the deposit limit. Try an amount smaller than{" "}
-              <span className="numbers">{upperLimitFormatted}</span>.
-            </Trans>
-          </div>
-        </AlertInfoCard>
-      )}
-      {isBelowLimit && (
-        <AlertInfoCard type="warning" className="mt-8" hideClose>
-          <div>
-            <Trans>
-              Amount is below the deposit limit. Try an amount larger than{" "}
-              <span className="numbers">{lowerLimitFormatted}</span>.
-            </Trans>
-          </div>
-        </AlertInfoCard>
-      )}
-      {buttonState.bannerErrorName && (
-        <AlertInfoCard type="error" className="mt-8" hideClose>
-          <ValidationBannerErrorContent
-            validationBannerErrorName={buttonState.bannerErrorName}
-            chainId={settlementChainId}
-            srcChainId={depositViewChain}
-            onBeforeNavigation={() => setIsVisibleOrView(false)}
-          />
-        </AlertInfoCard>
-      )}
-      {depositMaxDetails.gasPaymentTokenWarningContent && (
-        <AlertInfoCard type="warning" className="mt-8" hideClose>
-          {depositMaxDetails.gasPaymentTokenWarningContent}
-        </AlertInfoCard>
-      )}
       <div className="h-32 shrink-0 grow" />
 
       {depositViewTokenAddress && (
@@ -1306,6 +1291,16 @@ export const DepositView = () => {
             }
           />
         </div>
+      )}
+
+      {buttonState.bannerErrorName && (
+        <AlertInfoCard type="error" className="mb-16" hideClose>
+          <ValidationBannerErrorContent
+            validationBannerErrorName={buttonState.bannerErrorName}
+            chainId={settlementChainId}
+            srcChainId={depositViewChain as SourceChainId | undefined}
+          />
+        </AlertInfoCard>
       )}
 
       <Button variant="primary-action" className="w-full shrink-0" type="submit" disabled={buttonState.disabled}>

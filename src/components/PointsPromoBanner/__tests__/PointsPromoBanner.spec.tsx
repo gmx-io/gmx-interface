@@ -23,6 +23,10 @@ vi.mock("lib/localStorage", () => ({
   useLocalStorageSerializeKey: vi.fn(() => [mockDismissed, mockSetDismissed]),
 }));
 
+vi.mock("lib/userAnalytics/pointsEvents", () => ({
+  sendPointsPageNavigationEvent: vi.fn(),
+}));
+
 // Import after mocks
 import { isIncentivesEnabled } from "domain/synthetics/incentives/constants";
 import type { PersonalizedBannerData } from "domain/synthetics/incentives/usePersonalizedBannerData";
@@ -45,7 +49,6 @@ const ARBITRUM = 42161;
 const defaultBannerData: PersonalizedBannerData = {
   bannerVariant: "new-or-low-fees",
   isManuallyRewarded: false,
-  hasVolumeAfterFirstProgramEpoch: false,
   manualAllocatedPoints: undefined,
   manualBonusUsd: undefined,
   estimatedRewardsUsd: undefined,
@@ -105,19 +108,34 @@ describe("PointsPromoBanner", () => {
     expect(container.innerHTML).toBe("");
   });
 
-  it("shows manual reward text when legacy dismissed state exists but user has post-first-epoch volume", () => {
+  it("keeps manual reward text hidden when legacy dismissed state exists", () => {
     mockUseLocalStorage.mockImplementation(() => [true, mockSetDismissed] as any);
     mockUsePersonalizedBannerData.mockReturnValue({
       ...defaultBannerData,
       bannerVariant: "manual-reward",
       isManuallyRewarded: true,
-      hasVolumeAfterFirstProgramEpoch: true,
       manualBonusUsd: 500n * 10n ** 30n,
     });
 
-    renderBanner();
+    const { container } = renderBanner();
 
-    expect(screen.getByText(/You've received bonus of/)).toBeDefined();
+    expect(container.innerHTML).toBe("");
+  });
+
+  it("keeps manual reward text hidden when legacy object dismissed state exists", () => {
+    mockUseLocalStorage.mockImplementation(
+      () => [{ dismissed: true, dismissedAfterFirstProgramEpochVolume: false }, mockSetDismissed] as any
+    );
+    mockUsePersonalizedBannerData.mockReturnValue({
+      ...defaultBannerData,
+      bannerVariant: "manual-reward",
+      isManuallyRewarded: true,
+      manualBonusUsd: 500n * 10n ** 30n,
+    });
+
+    const { container } = renderBanner();
+
+    expect(container.innerHTML).toBe("");
   });
 
   it("shows new-or-low-fees text by default", () => {
@@ -193,38 +211,30 @@ describe("PointsPromoBanner", () => {
     expect(screen.getByRole("link").getAttribute("href")).toBe("/points");
   });
 
-  it("clicking the banner link calls setDismissed with true", () => {
+  it("clicking the banner link records one-time dismissal", () => {
     renderBanner();
 
     const link = screen.getByRole("link");
     fireEvent.click(link);
 
-    expect(mockSetDismissed).toHaveBeenCalledWith(expect.any(Function));
-    expect(mockSetDismissed.mock.calls[0][0](false)).toEqual({
-      dismissed: true,
-      dismissedAfterFirstProgramEpochVolume: false,
-    });
+    expect(mockSetDismissed).toHaveBeenCalledWith(true);
   });
 
-  it("dismiss button calls setDismissed with true", () => {
-    renderBanner();
+  it("dismiss button records one-time dismissal and hides immediately", () => {
+    const { container } = renderBanner();
 
     const dismissButton = screen.getByRole("button");
     fireEvent.click(dismissButton);
 
-    expect(mockSetDismissed).toHaveBeenCalledWith(expect.any(Function));
-    expect(mockSetDismissed.mock.calls[0][0](false)).toEqual({
-      dismissed: true,
-      dismissedAfterFirstProgramEpochVolume: false,
-    });
+    expect(mockSetDismissed).toHaveBeenCalledWith(true);
+    expect(container.innerHTML).toBe("");
   });
 
-  it("records dismissal after post-first-epoch volume for manual reward text", () => {
+  it("records dismissal for manual reward text", () => {
     mockUsePersonalizedBannerData.mockReturnValue({
       ...defaultBannerData,
       bannerVariant: "manual-reward",
       isManuallyRewarded: true,
-      hasVolumeAfterFirstProgramEpoch: true,
       manualBonusUsd: 500n * 10n ** 30n,
     });
 
@@ -232,9 +242,6 @@ describe("PointsPromoBanner", () => {
 
     fireEvent.click(screen.getByRole("button"));
 
-    expect(mockSetDismissed.mock.calls[0][0](true)).toEqual({
-      dismissed: true,
-      dismissedAfterFirstProgramEpochVolume: true,
-    });
+    expect(mockSetDismissed).toHaveBeenCalledWith(true);
   });
 });

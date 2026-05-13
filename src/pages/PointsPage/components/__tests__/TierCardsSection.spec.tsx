@@ -47,7 +47,6 @@ const personalizedBannerDataMock = vi.hoisted(() => ({
   data: {
     bannerVariant: "new-or-low-fees" as "manual-reward" | "recent-activity" | "new-or-low-fees" | undefined,
     isManuallyRewarded: false,
-    hasVolumeAfterFirstProgramEpoch: false,
     manualAllocatedPoints: undefined as bigint | undefined,
     manualBonusUsd: undefined as bigint | undefined,
     estimatedRewardsUsd: undefined as number | undefined,
@@ -128,7 +127,6 @@ afterEach(() => {
   personalizedBannerDataMock.data = {
     bannerVariant: "new-or-low-fees",
     isManuallyRewarded: false,
-    hasVolumeAfterFirstProgramEpoch: false,
     manualAllocatedPoints: undefined,
     manualBonusUsd: undefined,
     estimatedRewardsUsd: undefined,
@@ -139,32 +137,34 @@ afterEach(() => {
 
 describe("TierCardsSection", () => {
   describe("VolumeBanner (inactive volume card)", () => {
-    it("shows first volume tier threshold from config", () => {
-      renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={undefined} />);
-
-      // First tier threshold is $2,000 => formatAmountHuman renders "$⁠2k" (with thin space)
-      expect(screen.getByText(/2k/i)).toBeDefined();
-    });
-
-    it("shows first tier name from config (Ranked for Tier1)", () => {
-      renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={undefined} />);
-
-      expect(screen.getByText(/Ranked/)).toBeDefined();
-    });
-
-    it("shows first tier multiplier from config", () => {
+    it("shows static FEDEV-3501 banner copy", () => {
       renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={undefined} />);
 
       const allText = document.body.textContent || "";
-      expect(allText).toContain("0.25x");
+      expect(screen.getByText("Trade More. Earn More.")).toBeDefined();
+      expect(
+        screen.getByText("Increase your trading volume to unlock a higher status and boost your rewards multiplier.")
+      ).toBeDefined();
+      expect(screen.getByText("Start trading")).toBeDefined();
+      expect(allText).not.toContain("Reach $");
+      expect(allText).not.toContain("additional trading rewards");
     });
 
-    it("shows calculated rewards estimate", () => {
-      renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={undefined} />);
+    it("does not use currentEpochStats.volumeTier to activate the volume card", () => {
+      const currentEpochStats: EpochStats = {
+        account: "0x1234",
+        multiplier: 125,
+        epochTimestamp: 1700000000,
+        volumeTier: "Tier1",
+        stakingTier: null,
+        tradedVolume: 3000n * USD,
+        boostIds: [],
+      };
 
-      // Both volume and staking banners contain "additional trading rewards"
-      const elements = screen.getAllByText(/additional trading rewards/);
-      expect(elements.length).toBeGreaterThanOrEqual(1);
+      renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />);
+
+      expect(screen.getByText("Trade More. Earn More.")).toBeDefined();
+      expect(screen.queryByText(/Volume this epoch/)).toBeNull();
     });
   });
 
@@ -259,18 +259,18 @@ describe("TierCardsSection", () => {
   });
 
   describe("when config is undefined/loading", () => {
-    it("shows ... placeholders", () => {
+    it("shows skeleton cards instead of placeholder copy", () => {
       const { container } = renderWithI18n(<TierCardsSection config={undefined} currentEpochStats={undefined} />);
 
-      // When config is undefined, the banners render "..." for threshold/tier/multiplier values.
-      // These "..." may be embedded inside Trans-rendered text, so check the full text content.
       const allText = container.textContent || "";
-      expect(allText).toContain("...");
+      expect(allText).not.toContain("...");
+      expect(allText).not.toContain("Reach");
+      expect(container.querySelectorAll(".react-loading-skeleton").length).toBeGreaterThan(0);
     });
   });
 
   describe("active volume card", () => {
-    it("shows correct progress bar and 'Trade $X to unlock...' text", () => {
+    it("shows correct progress bar and 'Trade $X more to unlock...' text", () => {
       const currentEpochStats: EpochStats = {
         account: "0x1234",
         multiplier: 125,
@@ -281,14 +281,128 @@ describe("TierCardsSection", () => {
         boostIds: [],
       };
 
-      renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />);
+      const { container } = renderWithI18n(
+        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} effectiveVolumeTier="Tier1" />
+      );
 
       // Should show "Volume this epoch:" with current volume
       expect(screen.getByText(/Volume this epoch/)).toBeDefined();
 
-      // Next tier (Tier2) threshold = $5000 => compact display renders "$5K"
-      expect(screen.getByText(/5K/)).toBeDefined();
-      expect(screen.getByText(/Certified/)).toBeDefined();
+      // Tier1 -> Tier2 with tradedVolume = $3K, nextThreshold = $5K
+      // delta = $5K - $3K = $2K, formatted as "$2K"
+      const allText = container.textContent || "";
+      expect(allText).toMatch(/Trade \$\s?2K more to unlock\s+Certified status\s+\+0\.50x/);
+    });
+
+    it("shows the remaining volume to the next tier (Certified -> Veteran with $7K traded shows $3K more)", () => {
+      // User is currently Certified (Tier2 = $5K) with $7K traded.
+      // Next tier (Veteran, Tier3) requires $10K -> remaining = $3K.
+      const currentEpochStats: EpochStats = {
+        account: "0x1234",
+        multiplier: 150,
+        epochTimestamp: 1700000000,
+        volumeTier: "Tier2",
+        stakingTier: null,
+        tradedVolume: 7000n * USD,
+        boostIds: [],
+      };
+
+      const { container } = renderWithI18n(
+        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} effectiveVolumeTier="Tier2" />
+      );
+
+      const allText = container.textContent || "";
+      expect(allText).toMatch(/Trade \$\s?3K more to unlock\s+Veteran status\s+\+1\.00x/);
+    });
+
+    it("renders progress bar capped to 100% width when traded volume exceeds the next threshold", () => {
+      // Cert tier ($5K) with $7K traded — progress = 7K/10K = 70% (not 140%).
+      const currentEpochStats: EpochStats = {
+        account: "0x1234",
+        multiplier: 150,
+        epochTimestamp: 1700000000,
+        volumeTier: "Tier2",
+        stakingTier: null,
+        tradedVolume: 7000n * USD,
+        boostIds: [],
+      };
+
+      const { container } = renderWithI18n(
+        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} effectiveVolumeTier="Tier2" />
+      );
+
+      // Find the volume progress bar fill (has bg-blue-300 inline width style)
+      const progressFill = container.querySelector(".bg-blue-300[style*='width']") as HTMLElement | null;
+      expect(progressFill).toBeTruthy();
+      // 7000 * 100 / 10000 = 70%
+      expect(progressFill?.style.width).toBe("70%");
+    });
+
+    it("renders volume progress bar inside a tooltip with 'get <NextTier> Status' content", () => {
+      // Tier1 (Ranked, $2K threshold) with $3K traded -> nextTier=Tier2 (Certified, $5K, +0.50x)
+      // Tooltip should be: "$3K/$5K get Certified Status +0.50x"
+      const currentEpochStats: EpochStats = {
+        account: "0x1234",
+        multiplier: 125,
+        epochTimestamp: 1700000000,
+        volumeTier: "Tier1",
+        stakingTier: null,
+        tradedVolume: 3000n * USD,
+        boostIds: [],
+      };
+
+      const { container } = renderWithI18n(
+        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} effectiveVolumeTier="Tier1" />
+      );
+
+      // The volume progress bar lives inside a tooltip-handle wrapper; the mock renders
+      // both `tooltip-handle` and `tooltip-content` siblings. Find the tooltip whose
+      // handle contains the volume fill bar.
+      const tooltips = container.querySelectorAll('[data-testid="tooltip"]');
+      const volumeTooltip = Array.from(tooltips).find((t) =>
+        t.querySelector('[data-testid="tooltip-handle"] .bg-blue-300[style*="width"]')
+      );
+      expect(volumeTooltip).toBeTruthy();
+      const tooltipContent = volumeTooltip?.querySelector('[data-testid="tooltip-content"]');
+      const tooltipText = tooltipContent?.textContent || "";
+      expect(tooltipText).toMatch(/\$\s?3K\/\$\s?5K\s+get\s+Certified Status\s+\+0\.50x/);
+    });
+
+    it("renders preserve-mode tooltip ('to save <CurrentTier> Status') when projectedTierId is null", () => {
+      // User has Tier2 (Certified, +0.50x) but projection says they will lose it.
+      // Bar should target the current tier's threshold ($5K) instead of the next.
+      const currentEpochStats: EpochStats = {
+        account: "0x1234",
+        multiplier: 150,
+        epochTimestamp: 1700000000,
+        volumeTier: "Tier2",
+        stakingTier: null,
+        tradedVolume: 2000n * USD, // $2K out of $5K needed to keep
+        boostIds: [],
+      };
+
+      const { container } = renderWithI18n(
+        <TierCardsSection
+          config={mockConfig}
+          currentEpochStats={currentEpochStats}
+          effectiveVolumeTier="Tier2"
+          projectedVolumeTier={null}
+        />
+      );
+
+      const tooltips = container.querySelectorAll('[data-testid="tooltip"]');
+      const volumeTooltip = Array.from(tooltips).find((t) =>
+        t.querySelector('[data-testid="tooltip-handle"] .bg-blue-300[style*="width"]')
+      );
+      expect(volumeTooltip).toBeTruthy();
+      const tooltipContent = volumeTooltip?.querySelector('[data-testid="tooltip-content"]');
+      const tooltipText = tooltipContent?.textContent || "";
+      // tradedVolume / currentThreshold = $2K/$5K, target to "save Certified"
+      expect(tooltipText).toMatch(/\$\s?2K\/\$\s?5K\s+to save\s+Certified Status\s+\+0\.50x/);
+
+      // CTA should also use "Trade $X more to keep ..." wording.
+      const allText = container.textContent || "";
+      expect(allText).toMatch(/Trade \$\s?3K more to keep\s+Certified status\s+\+0\.50x/);
     });
   });
 
@@ -334,7 +448,7 @@ describe("TierCardsSection", () => {
       renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />);
 
       const allText = document.body.textContent || "";
-      expect(allText).toContain("Stake 75 GMX more to get Advocate status +0.5x");
+      expect(allText).toContain("Stake 75 GMX more to get Advocate status +0.50x");
       expect(screen.getByText("Buy GMX")).toBeDefined();
     });
 
@@ -357,7 +471,7 @@ describe("TierCardsSection", () => {
       renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />);
 
       const allText = document.body.textContent || "";
-      expect(allText).toContain("Stake 75 GMX more to get Advocate status +0.5x");
+      expect(allText).toContain("Stake 75 GMX more to get Advocate status +0.50x");
       expect(screen.getByText("Stake 75 GMX")).toBeDefined();
     });
 
@@ -382,6 +496,106 @@ describe("TierCardsSection", () => {
       const allText = document.body.textContent || "";
       expect(allText).not.toContain("GMX more to get");
       expect(allText).not.toContain("Stake 0 GMX");
+    });
+  });
+
+  describe("max tier display (FEDEV-3824)", () => {
+    it("shows 'Max tier reached' copy and green progress fill when at the top volume tier", () => {
+      // Tier4 (Legendary) is the last tier in mockConfig.volumeTiers.
+      const currentEpochStats: EpochStats = {
+        account: "0x1234",
+        multiplier: 250,
+        epochTimestamp: 1700000000,
+        volumeTier: "Tier4",
+        stakingTier: null,
+        tradedVolume: 25_000n * USD,
+        boostIds: [],
+      };
+
+      const { container } = renderWithI18n(
+        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} effectiveVolumeTier="Tier4" />
+      );
+
+      const allText = container.textContent || "";
+      expect(allText).toMatch(/Max tier reached/);
+
+      // The fill bar should now be green-300 instead of blue-300.
+      const greenFill = container.querySelector(".bg-green-300[style*='width']") as HTMLElement | null;
+      expect(greenFill).toBeTruthy();
+      expect(greenFill?.style.width).toBe("100%");
+      // No blue fill on the volume card.
+      const blueVolumeFill = container.querySelector(".bg-blue-300[style*='width']");
+      expect(blueVolumeFill).toBeNull();
+    });
+
+    it("falls back to the preserve-mode bar at max volume tier when projectedTierId is null", () => {
+      // User is at the last tier but projection is to lose it next epoch — the bar should show
+      // progress towards keeping the current tier, NOT show the "Max tier reached" celebratory
+      // copy.
+      const currentEpochStats: EpochStats = {
+        account: "0x1234",
+        multiplier: 250,
+        epochTimestamp: 1700000000,
+        volumeTier: "Tier4",
+        stakingTier: null,
+        tradedVolume: 5_000n * USD, // far below Tier4's $20K threshold
+        boostIds: [],
+      };
+
+      const { container } = renderWithI18n(
+        <TierCardsSection
+          config={mockConfig}
+          currentEpochStats={currentEpochStats}
+          effectiveVolumeTier="Tier4"
+          projectedVolumeTier={null}
+        />
+      );
+
+      const allText = container.textContent || "";
+      // Should NOT show the "Max tier reached" celebratory copy in this case.
+      expect(allText).not.toMatch(/Max tier reached/);
+      // Should show the keep/save preserve copy targeting Legendary (current top tier).
+      expect(allText).toMatch(/Trade \$\s?15K more to keep\s+Legendary status\s+\+1\.50x/);
+
+      // Bar fill should be the normal blue (not green).
+      const tooltips = container.querySelectorAll('[data-testid="tooltip"]');
+      const volumeTooltip = Array.from(tooltips).find((t) =>
+        t.querySelector('[data-testid="tooltip-handle"] .bg-blue-300[style*="width"]')
+      );
+      expect(volumeTooltip).toBeTruthy();
+      const tooltipContent = volumeTooltip?.querySelector('[data-testid="tooltip-content"]');
+      const tooltipText = tooltipContent?.textContent || "";
+      expect(tooltipText).toMatch(/\$\s?5K\/\$\s?20K\s+to save\s+Legendary Status\s+\+1\.50x/);
+    });
+
+    it("shows 'Max tier reached' copy and green segmented bar at the top staking tier", () => {
+      stakingDataMock.data = {
+        gmxInStakedGmx: 1500n * GMX_DEC,
+        gmxBalance: 0n,
+      };
+
+      const currentEpochStats: EpochStats = {
+        account: "0x1234",
+        multiplier: 200,
+        epochTimestamp: 1700000000,
+        volumeTier: null,
+        stakingTier: "Tier3", // last staking tier in mockConfig
+        tradedVolume: 0n,
+        boostIds: [],
+      };
+
+      const { container } = renderWithI18n(
+        <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />
+      );
+
+      const allText = container.textContent || "";
+      expect(allText).toMatch(/Max tier reached/);
+
+      // All staking segments should now use green-300 instead of blue-300.
+      const greenSegments = container.querySelectorAll(".bg-green-300");
+      expect(greenSegments.length).toBeGreaterThanOrEqual(3);
+      const blueStakingSegments = container.querySelectorAll(".bg-blue-300:not([style*='width'])");
+      expect(blueStakingSegments.length).toBe(0);
     });
   });
 
@@ -426,7 +640,7 @@ describe("TierCardsSection", () => {
       expect(screen.getAllByText("Lifetime Volume").length).toBeGreaterThan(0);
     });
 
-    it("shows active boosts count when active", () => {
+    it("shows plural active boosts count when active", () => {
       const currentEpochStats: EpochStats = {
         account: "0x1234",
         multiplier: 150,
@@ -439,11 +653,26 @@ describe("TierCardsSection", () => {
 
       renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />);
 
-      // "2 active boosts" is rendered with "2" and "active boosts" as separate nodes
-      // Use getAllByText since "2" might match other elements
       const allText = document.body.textContent || "";
-      expect(allText).toContain("2");
-      expect(allText).toContain("active boosts");
+      expect(allText).toContain("2 active boosts");
+    });
+
+    it("shows singular active boost count when exactly one boost is active", () => {
+      const currentEpochStats: EpochStats = {
+        account: "0x1234",
+        multiplier: 150,
+        epochTimestamp: 1700000000,
+        volumeTier: null,
+        stakingTier: null,
+        tradedVolume: 0n,
+        boostIds: ["FeaturedMarkets"],
+      };
+
+      renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />);
+
+      const allText = document.body.textContent || "";
+      expect(allText).toContain("1 active boost");
+      expect(allText).not.toContain("1 active boosts");
     });
   });
 });

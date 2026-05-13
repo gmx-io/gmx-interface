@@ -47,7 +47,7 @@ export function PriceImpactFeesRow() {
           <Trans>Earns MegaETH points</Trans>
         </span>
       }
-      content={<Trans>Points are allocated based on your cumulative trading volume on GMX MegaETH.</Trans>}
+      content={<Trans>Points are allocated based on your cumulative trading volume on GMX MegaETH</Trans>}
     />
   ) : null;
 

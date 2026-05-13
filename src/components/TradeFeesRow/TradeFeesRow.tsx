@@ -529,7 +529,7 @@ export function TradeFeesRow(p: Props) {
       return null;
     }
 
-    return <Trans>Swap routed through multiple GM pools for lowest fees and price impact.</Trans>;
+    return <Trans>Swap routed through multiple GM pools for lowest fees and price impact</Trans>;
   }, [p.swapFees, p.externalSwapFee]);
 
   let value: ReactNode = useMemo(() => {

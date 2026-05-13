@@ -25,6 +25,7 @@ import { useLocalizedMap } from "lib/i18n";
 import { useENS } from "lib/legacy";
 import { formatAmountHuman, formatUsd } from "lib/numbers";
 import { useNotifyModalState } from "lib/useNotifyModalState";
+import { sendPointsPageNavigationEvent } from "lib/userAnalytics/pointsEvents";
 import { shortenAddressOrEns } from "lib/wallets";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 import { getToken } from "sdk/configs/tokens";
@@ -547,6 +548,7 @@ const PointsSection = () => {
   if (!enabled) return null;
 
   const handleClick = () => {
+    sendPointsPageNavigationEvent({ source: "GMXAccountModal" });
     setOpen(false);
   };
 

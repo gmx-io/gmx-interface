@@ -11,7 +11,8 @@ import { claimsDisabledKey, claimTermsKey } from "config/dataStore";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { POINTS_REWARDS_DISTRIBUTION_ID } from "domain/synthetics/claims/constants";
 import { encodeAcceptTermsAndClaim } from "domain/synthetics/claims/createClaimTransaction";
-import { useAccountIncentiveDashboard } from "domain/synthetics/incentives/useAccountIncentiveDashboard";
+import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
+import { useAccountTotalEarnedRewards } from "domain/synthetics/incentives/useAccountTotalEarnedRewards";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
@@ -22,6 +23,11 @@ import { metrics } from "lib/metrics";
 import { formatAmount } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import {
+  sendClaimRewardsResultEvent,
+  sendStakeRewardsClickEvent,
+  sendStakeRewardsResultEvent,
+} from "lib/userAnalytics/pointsEvents";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 import { getTokenBySymbol } from "sdk/configs/tokens";
@@ -42,7 +48,8 @@ type Props = {
 
 export function SidebarRewards({ chainId, account }: Props) {
   const { data: config } = useIncentivesConfig(chainId);
-  const { data: dashboard } = useAccountIncentiveDashboard(chainId, { account });
+  const { data: status } = useAccountIncentiveStatus(chainId, { account });
+  const { data: totalEarnedRewards } = useAccountTotalEarnedRewards(chainId, { account });
   const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
   const { openConnectModal } = useConnectModal();
 
@@ -69,14 +76,13 @@ export function SidebarRewards({ chainId, account }: Props) {
   const displayClaimableRewards = formatAmount(claimableAmount, 18, 2, true);
   const hasRewards = claimableAmount > 0n;
 
-  const totalEarnedRewards = dashboard?.rewardsBalance ?? 0n;
   const displayTotalEarnedRewards = totalEarnedRewards ? formatAmount(totalEarnedRewards, 18, 2, true) : "0.00";
 
   const now = useCurrentUnixTimestamp();
   const epochEndTime = getCurrentEpochEndTime(config, now);
   const timeLeft = epochEndTime > now ? formatTimeLeft(epochEndTime - now) : "";
 
-  const pointsBalance = dashboard?.pointsBalance;
+  const pointsBalance = status?.pointsBalance;
   const displayPoints = pointsBalance ? formatAmount(pointsBalance, 18, 2, true) : "0.00";
 
   if (!account) {
@@ -321,6 +327,7 @@ function ClaimModal({
       }
 
       await submitClaim();
+      sendClaimRewardsResultEvent(true);
       helperToast.success(t`Claim completed`);
       await mutateClaimableAmount(0n, false);
       setIsOpen(false);
@@ -328,6 +335,7 @@ function ClaimModal({
       // eslint-disable-next-line no-console
       console.error("Points rewards claim failed", err);
       metrics.pushError(err, "pointsSidebar.claim");
+      sendClaimRewardsResultEvent(false);
       helperToast.error(t`Claim failed`);
     } finally {
       setPendingAction(undefined);
@@ -340,7 +348,9 @@ function ClaimModal({
     }
 
     let stakeAmount = claimableAmount;
+    let didAttemptClaim = false;
     let didClaim = false;
+    sendStakeRewardsClickEvent();
 
     try {
       if (needsStakeApproval) {
@@ -359,8 +369,10 @@ function ClaimModal({
       }
       stakeAmount = latest;
 
+      didAttemptClaim = true;
       await submitClaim();
       didClaim = true;
+      sendClaimRewardsResultEvent(true);
       helperToast.success(t`Claim completed`);
       await mutateClaimableAmount(0n, false);
 
@@ -377,11 +389,16 @@ function ClaimModal({
       });
 
       await stakeTx.wait();
+      sendStakeRewardsResultEvent(true);
       setIsOpen(false);
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error("Points rewards claim+stake failed", err);
       metrics.pushError(err, didClaim ? "pointsSidebar.stakeAfterClaim" : "pointsSidebar.claimAndStake");
+      if (didAttemptClaim && !didClaim) {
+        sendClaimRewardsResultEvent(false);
+      }
+      sendStakeRewardsResultEvent(false);
       if (!didClaim) {
         helperToast.error(t`Claim failed`);
       } else {

@@ -1,6 +1,6 @@
 export { useIncentivesConfig } from "./useIncentivesConfig";
 export { useAccountIncentiveStatus } from "./useAccountIncentiveStatus";
-export { useAccountIncentiveDashboard } from "./useAccountIncentiveDashboard";
+export { useAccountTotalEarnedRewards } from "./useAccountTotalEarnedRewards";
 export { useAccountNetPositionFeesLast4Months } from "./useAccountNetPositionFeesLast4Months";
 export { useAccountFirstTradeTimestamp } from "./useAccountFirstTradeTimestamp";
 export { useAccountManualRewardsAllocation, useAccountRewardsHistory } from "./useAccountRewardsHistory";

@@ -8,7 +8,10 @@ import {
   getStakingTierBadge,
   getVolumeTierBadge,
 } from "domain/synthetics/incentives/constants";
-import { useIncentiveAccountEpochAudit } from "domain/synthetics/incentives/useIncentiveAccountEpochAudit";
+import {
+  IncentiveAuditOrderBy,
+  useIncentiveAccountEpochAudit,
+} from "domain/synthetics/incentives/useIncentiveAccountEpochAudit";
 import { formatAmount, formatUsd } from "lib/numbers";
 
 import AddressView from "components/AddressView/AddressView";
@@ -66,13 +69,14 @@ function IncentivesAuditSkeletonRow({ invisible }: { invisible?: boolean }) {
   );
 }
 
+// Sort fields are constrained to those exposed by the backend `IncentiveAccountEpochAuditOrderByInput`
+// enum (each becomes `${field}_ASC` / `${field}_DESC`). `avgMultiplier`/`maxMultiplier` are not
+// orderable server-side, so their columns no longer render a Sorter.
 type AuditSortField =
   | "points"
   | "rewards"
   | "fees"
   | "volume"
-  | "avgMultiplier"
-  | "maxMultiplier"
   | "effectivePointsRatio"
   | "effectiveRewardsRatio";
 
@@ -98,17 +102,21 @@ export function IncentivesAuditList({
     direction: "desc",
   });
 
-  const sortField = direction === "unspecified" ? "effectiveRewardsRatio" : orderBy;
-  const sortDirection = direction === "unspecified" ? "desc" : direction;
+  // The FE sort field names line up 1:1 with the backend enum prefixes; we just
+  // append `_ASC` / `_DESC`. When the user clears the sort, fall back to the
+  // backend default of `effectiveRewardsRatio_DESC`.
+  const apiOrderBy: IncentiveAuditOrderBy =
+    direction === "unspecified" || orderBy === "unspecified"
+      ? "effectiveRewardsRatio_DESC"
+      : (`${orderBy}_${direction === "asc" ? "ASC" : "DESC"}` as IncentiveAuditOrderBy);
 
   // Gate the query: before the incentives config resolves, selectedEpoch is
   // undefined. Without this, the hook would fire a full-range (no-epoch)
   // query that's immediately discarded once the epoch becomes known.
   // "all" is a user-picked sentinel that omits epochTimestamp for an all-time view.
   const { data, totalCount, summary, error, loading } = useIncentiveAccountEpochAudit(chainId, {
-    epochTimestamp: selectedEpoch === "all" ? undefined : selectedEpoch,
-    orderBy: sortField,
-    orderDirection: sortDirection,
+    where: selectedEpoch === "all" || selectedEpoch === undefined ? undefined : { epochTimestamp: selectedEpoch },
+    orderBy: apiOrderBy,
     limit: PAGE_SIZE,
     offset: (page - 1) * PAGE_SIZE,
     enabled: selectedEpoch !== undefined,
@@ -220,14 +228,10 @@ export function IncentivesAuditList({
                       </Sorter>
                     </TableTh>
                     <TableTh padding="compact">
-                      <Sorter {...getSorterProps("avgMultiplier")}>
-                        <Trans>Avg Mult.</Trans>
-                      </Sorter>
+                      <Trans>Avg Mult.</Trans>
                     </TableTh>
                     <TableTh padding="compact">
-                      <Sorter {...getSorterProps("maxMultiplier")}>
-                        <Trans>Max Mult.</Trans>
-                      </Sorter>
+                      <Trans>Max Mult.</Trans>
                     </TableTh>
                     <TableTh padding="compact">
                       <Trans>Vol. Tier</Trans>

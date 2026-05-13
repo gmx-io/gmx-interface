@@ -35,6 +35,7 @@ i18n.activate("en");
 
 const STORAGE_KEY = JSON.stringify(POINTS_PAGE_BANNERS_DISMISSED_KEY);
 const GMX_DECIMALS = 10n ** 18n;
+const USD_FACTOR = 10n ** 30n;
 
 const currentEpochStats: EpochStats = {
   account: "0xAccount",
@@ -42,7 +43,7 @@ const currentEpochStats: EpochStats = {
   epochTimestamp: 0,
   volumeTier: "Tier1",
   stakingTier: "Tier1",
-  tradedVolume: 800n,
+  tradedVolume: 800n * USD_FACTOR,
   boostIds: [],
 };
 
@@ -70,7 +71,7 @@ const config: IncentivesConfig = {
   pointsToGmxFactor: GMX_DECIMALS,
   volumeTiers: [
     { tier: "Tier1", threshold: 0n, multiplier: 100 },
-    { tier: "Tier2", threshold: 1000n, multiplier: 125 },
+    { tier: "Tier2", threshold: 1000n * USD_FACTOR, multiplier: 125 },
   ],
   stakingTiers: [],
   boosts: [],
@@ -80,7 +81,7 @@ const config: IncentivesConfig = {
   featuredMarketTokens: [],
 };
 
-function renderBanner() {
+function renderBanner(overrides?: { currentEpochHistory?: RewardsHistoryEntry }) {
   return render(
     <I18nProvider i18n={i18n}>
       <MemoryRouter>
@@ -89,7 +90,9 @@ function renderBanner() {
           account="0xAccount"
           config={config}
           currentEpochStats={currentEpochStats}
-          currentEpochHistory={currentEpochHistory}
+          currentEpochHistory={
+            overrides && "currentEpochHistory" in overrides ? overrides.currentEpochHistory : currentEpochHistory
+          }
         />
       </MemoryRouter>
     </I18nProvider>
@@ -171,6 +174,34 @@ describe("PointsBanner", () => {
     expect(screen.getByText("Use your rewards before they expire and make the most of your activity.")).toBeTruthy();
   });
 
+  it("hides the expiring rewards banner when currentEpochHistory is undefined", () => {
+    renderBanner({ currentEpochHistory: undefined });
+
+    expect(screen.queryByText("Don't Let Rewards Expire")).toBeNull();
+  });
+
+  it("hides the expiring rewards banner when pointsExpired is zero", () => {
+    renderBanner({
+      currentEpochHistory: {
+        ...currentEpochHistory,
+        pointsExpired: 0n,
+      },
+    });
+
+    expect(screen.queryByText("Don't Let Rewards Expire")).toBeNull();
+  });
+
+  it("personalizes the next-volume-tier banner with remaining volume, tier name, and multiplier", () => {
+    const { container } = renderBanner();
+    const dots = container.querySelectorAll(".rounded-full");
+
+    fireEvent.click(dots[1]);
+
+    expect(screen.getByText("Almost at the next tier")).toBeTruthy();
+    // remaining = $200 USD; tier label = "Certified" (Tier2); multiplier = 1.25x → "+1.25x"
+    expect(screen.getByText(/Trade \$\s*200 more to unlock Certified status and a \+1\.25x multiplier/)).toBeTruthy();
+  });
+
   it("shows the unstaked GMX banner when wallet GMX is available", () => {
     stakingDataMock.gmxBalance = 5n * GMX_DECIMALS;
 
@@ -233,7 +264,7 @@ describe("PointsBanner", () => {
     fireEvent.pointerDown(banner!, { pointerId: 1, pointerType: "touch", clientX: 200, clientY: 20 });
     fireEvent.pointerUp(banner!, { pointerId: 1, pointerType: "touch", clientX: 120, clientY: 25 });
 
-    expect(screen.getByText("So Close to the Next Tier")).toBeTruthy();
+    expect(screen.getByText("Almost at the next tier")).toBeTruthy();
     expect(container.querySelector(".animate-points-banner-slide-in-right")).not.toBeNull();
   });
 
@@ -256,7 +287,7 @@ describe("PointsBanner", () => {
     fireEvent.click(screen.getByRole("button", { name: "Close" }));
 
     expect(screen.queryByText("Don't Let Rewards Expire")).toBeNull();
-    expect(screen.getByText("So Close to the Next Tier")).toBeTruthy();
+    expect(screen.getByText("Almost at the next tier")).toBeTruthy();
     expect(localStorage.getItem(STORAGE_KEY)).toBe(JSON.stringify({ "points-expiring": true }));
   });
 
@@ -266,7 +297,7 @@ describe("PointsBanner", () => {
     renderBanner();
 
     expect(screen.queryByText("Don't Let Rewards Expire")).toBeNull();
-    expect(screen.getByText("So Close to the Next Tier")).toBeTruthy();
+    expect(screen.getByText("Almost at the next tier")).toBeTruthy();
   });
 
   it("syncs dismissed banner types across mounted banner instances", () => {
@@ -277,6 +308,6 @@ describe("PointsBanner", () => {
     fireEvent.click(screen.getAllByRole("button", { name: "Close" })[0]);
 
     expect(screen.queryByText("Don't Let Rewards Expire")).toBeNull();
-    expect(screen.getAllByText("So Close to the Next Tier")).toHaveLength(2);
+    expect(screen.getAllByText("Almost at the next tier")).toHaveLength(2);
   });
 });

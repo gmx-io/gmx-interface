@@ -1,9 +1,16 @@
 import { Trans, t } from "@lingui/macro";
+import { useEffect } from "react";
 import { Link } from "react-router-dom";
 
 import { getIncentivesV2Url } from "config/links";
 import { useChainId } from "lib/chains";
 import { formatAmount, formatUsd } from "lib/numbers";
+import {
+  sendManualDistributionDialogLearnMoreClickEvent,
+  sendManualDistributionDialogShareClickEvent,
+  sendManualDistributionDialogShownEvent,
+  sendManualDistributionDialogTradeClickEvent,
+} from "lib/userAnalytics/pointsEvents";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
@@ -37,10 +44,34 @@ export function HistoricalPointsAllocationModal({
   const pointsDisplay = manualAllocatedPoints !== undefined ? formatAmount(manualAllocatedPoints, 18, 0, true) : "";
   const usdDisplay = manualBonusUsd !== undefined ? formatUsd(manualBonusUsd) : undefined;
 
+  useEffect(() => {
+    if (isVisible) {
+      sendManualDistributionDialogShownEvent({ manualAllocatedPoints, manualBonusUsd });
+    }
+  }, [isVisible, manualAllocatedPoints, manualBonusUsd]);
+
+  const handleClose = () => {
+    setIsVisible(false);
+  };
+
+  const handleStartTradingClick = () => {
+    sendManualDistributionDialogTradeClickEvent();
+    setIsVisible(false);
+  };
+
+  const handleReferralClick = () => {
+    sendManualDistributionDialogShareClickEvent();
+    setIsVisible(false);
+  };
+
   return (
     <ModalWithPortal
       isVisible={isVisible}
-      setIsVisible={setIsVisible}
+      setIsVisible={(nextIsVisible) => {
+        if (!nextIsVisible) {
+          handleClose();
+        }
+      }}
       label={t`You've received points!`}
       contentClassName="w-[420px]"
       contentPadding={false}
@@ -77,18 +108,13 @@ export function HistoricalPointsAllocationModal({
               href={getIncentivesV2Url(chainId)}
               variant="icon-arrow"
               className="text-14 font-medium text-blue-300"
+              onClick={sendManualDistributionDialogLearnMoreClickEvent}
             >
               <Trans>Learn more about the incentive program</Trans>
             </ExternalLink>
           </div>
 
-          <Button
-            variant="primary"
-            className="mt-8 w-full"
-            to="/trade"
-            size="medium"
-            onClick={() => setIsVisible(false)}
-          >
+          <Button variant="primary" className="mt-8 w-full" to="/trade" size="medium" onClick={handleStartTradingClick}>
             <Trans>Start trading</Trans>
           </Button>
         </div>
@@ -98,7 +124,7 @@ export function HistoricalPointsAllocationModal({
         <div className="px-adaptive pb-adaptive">
           <Link
             to="/referrals"
-            onClick={() => setIsVisible(false)}
+            onClick={handleReferralClick}
             className="relative flex overflow-hidden rounded-8 border-1/2 border-stroke-primary bg-slate-900/50 p-12"
             style={BANNER_STYLES}
           >

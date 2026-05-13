@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { act, render } from "@testing-library/react";
 import React from "react";
 import { describe, it, expect, vi, beforeEach } from "vitest";
 
@@ -12,10 +12,6 @@ vi.mock("lib/wallets/useWallet", () => ({
 
 vi.mock("../useIncentivesConfig", () => ({
   useIncentivesConfig: vi.fn(),
-}));
-
-vi.mock("../useAccountIncentiveDashboard", () => ({
-  useAccountIncentiveDashboard: vi.fn(),
 }));
 
 vi.mock("../useAccountNetPositionFeesLast4Months", () => ({
@@ -39,9 +35,8 @@ import { useGmxPrice } from "domain/legacy";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 
-import type { AccountIncentiveDashboard, IncentivesConfig } from "../types";
+import type { IncentivesConfig } from "../types";
 import { useAccountFirstTradeTimestamp } from "../useAccountFirstTradeTimestamp";
-import { useAccountIncentiveDashboard } from "../useAccountIncentiveDashboard";
 import { useAccountNetPositionFeesLast4Months } from "../useAccountNetPositionFeesLast4Months";
 import { useAccountManualRewardsAllocation } from "../useAccountRewardsHistory";
 import { useIncentivesConfig } from "../useIncentivesConfig";
@@ -50,14 +45,13 @@ import { usePersonalizedBannerData } from "../usePersonalizedBannerData";
 const mockUseChainId = vi.mocked(useChainId);
 const mockUseWallet = vi.mocked(useWallet);
 const mockUseIncentivesConfig = vi.mocked(useIncentivesConfig);
-const mockUseAccountDashboard = vi.mocked(useAccountIncentiveDashboard);
 const mockUseAccountNetPositionFees = vi.mocked(useAccountNetPositionFeesLast4Months);
 const mockUseAccountFirstTradeTimestamp = vi.mocked(useAccountFirstTradeTimestamp);
 const mockUseAccountManualRewardsAllocation = vi.mocked(useAccountManualRewardsAllocation);
 const mockUseGmxPrice = vi.mocked(useGmxPrice);
 
 // renderHook helper (v11 of @testing-library/react does not export renderHook)
-function renderHook<T>(hookFn: () => T): { current: T } {
+function renderHook<T>(hookFn: () => T): { current: T; rerender: () => void } {
   const ref: { current: T } = {} as any;
 
   function TestComponent() {
@@ -65,8 +59,13 @@ function renderHook<T>(hookFn: () => T): { current: T } {
     return null;
   }
 
-  render(React.createElement(TestComponent));
-  return ref;
+  const utils = render(React.createElement(TestComponent));
+  return {
+    get current() {
+      return ref.current;
+    },
+    rerender: () => utils.rerender(React.createElement(TestComponent)),
+  };
 }
 
 const ARBITRUM = 42161;
@@ -112,47 +111,29 @@ const mockConfig: IncentivesConfig = {
   featuredMarketTokens: [],
 };
 
-const baseDashboard: AccountIncentiveDashboard = {
-  account: "0x1234",
-  pointsBalance: 100n * GMX_DEC,
-  rewardsBalance: 0n,
-  recentStats: [
-    {
-      account: "0x1234",
-      multiplier: 150,
-      epochTimestamp: 1700000000,
-      volumeTier: "Tier1",
-      stakingTier: null,
-      tradedVolume: 5000n * USD,
-      boostIds: [],
-    },
-  ],
-};
-
 function setupDefaults(overrides?: {
   chainId?: number;
   account?: string | undefined;
   config?: IncentivesConfig | undefined;
-  dashboard?: AccountIncentiveDashboard | undefined;
+  configLoading?: boolean;
   netPositionFees?: bigint | undefined;
   netPositionFeesLoading?: boolean;
   firstTradeTimestamp?: number | undefined;
   firstTradeLoading?: boolean;
   manualAllocatedPoints?: bigint | undefined;
-  dashboardLoading?: boolean;
   manualAllocatedPointsLoading?: boolean;
   gmxPrice?: bigint | undefined;
+  walletStatus?: string;
 }) {
   const o = overrides ?? {};
   const chainId = o.chainId ?? ARBITRUM;
   const account = "account" in o ? o.account : "0x1234";
 
   mockUseChainId.mockReturnValue({ chainId, srcChainId: chainId } as any);
-  mockUseWallet.mockReturnValue({ active: true, signer: {}, account } as any);
-  mockUseIncentivesConfig.mockReturnValue({ data: "config" in o ? o.config : mockConfig } as any);
-  mockUseAccountDashboard.mockReturnValue({
-    data: "dashboard" in o ? o.dashboard : baseDashboard,
-    loading: o.dashboardLoading ?? false,
+  mockUseWallet.mockReturnValue({ active: true, signer: {}, account, status: o.walletStatus } as any);
+  mockUseIncentivesConfig.mockReturnValue({
+    data: "config" in o ? o.config : mockConfig,
+    loading: o.configLoading ?? false,
   } as any);
   mockUseAccountNetPositionFees.mockReturnValue({
     data: "netPositionFees" in o ? o.netPositionFees : 100n * USD,
@@ -163,17 +144,18 @@ function setupDefaults(overrides?: {
     loading: o.firstTradeLoading ?? false,
   } as any);
   mockUseAccountManualRewardsAllocation.mockReturnValue({
-    data: o.manualAllocatedPoints ?? 0n,
+    data: "manualAllocatedPoints" in o ? o.manualAllocatedPoints : 0n,
     loading: o.manualAllocatedPointsLoading ?? false,
   } as any);
   mockUseGmxPrice.mockReturnValue({
-    gmxPrice: o.gmxPrice ?? 20n * USD,
+    gmxPrice: "gmxPrice" in o ? o.gmxPrice : 20n * USD,
     mutate: vi.fn(),
   } as any);
 }
 
 beforeEach(() => {
   vi.clearAllMocks();
+  window.localStorage.clear();
   vi.useFakeTimers();
   vi.setSystemTime(new Date(NOW_SECONDS * 1000));
 });
@@ -199,13 +181,7 @@ describe("usePersonalizedBannerData", () => {
   });
 
   it('returns "manual-reward" variant when there are pre-program manual allocation entries', () => {
-    const dashboard: AccountIncentiveDashboard = {
-      account: "0x1234",
-      pointsBalance: 100n * GMX_DEC,
-      rewardsBalance: 0n,
-      recentStats: [],
-    };
-    setupDefaults({ dashboard, manualAllocatedPoints: 25n * GMX_DEC });
+    setupDefaults({ manualAllocatedPoints: 25n * GMX_DEC });
 
     const result = renderHook(() => usePersonalizedBannerData());
 
@@ -216,78 +192,12 @@ describe("usePersonalizedBannerData", () => {
 
   it("returns correct manualBonusUsd for manually rewarded users", () => {
     const allocatedPoints = 1234n * GMX_DEC;
-    const dashboard: AccountIncentiveDashboard = {
-      account: "0x1234",
-      pointsBalance: 10n * GMX_DEC,
-      rewardsBalance: 0n,
-      recentStats: [
-        {
-          account: "0x1234",
-          multiplier: 100,
-          epochTimestamp: 1700000000,
-          volumeTier: null,
-          stakingTier: null,
-          tradedVolume: 0n,
-          boostIds: [],
-        },
-      ],
-    };
-    setupDefaults({ dashboard, manualAllocatedPoints: allocatedPoints });
+    setupDefaults({ manualAllocatedPoints: allocatedPoints });
 
     const result = renderHook(() => usePersonalizedBannerData());
 
     expect(result.current.bannerVariant).toBe("manual-reward");
     expect(result.current.manualBonusUsd).toBe((allocatedPoints * 20n * USD) / GMX_DEC);
-  });
-
-  it("does not count first program epoch volume as post-first-epoch volume", () => {
-    const dashboard: AccountIncentiveDashboard = {
-      account: "0x1234",
-      pointsBalance: 10n * GMX_DEC,
-      rewardsBalance: 0n,
-      recentStats: [
-        {
-          account: "0x1234",
-          multiplier: 100,
-          epochTimestamp: mockConfig.programStartTimestamp,
-          volumeTier: null,
-          stakingTier: null,
-          tradedVolume: 1000n * USD,
-          boostIds: [],
-        },
-      ],
-    };
-
-    setupDefaults({ dashboard, manualAllocatedPoints: 25n * GMX_DEC });
-
-    const result = renderHook(() => usePersonalizedBannerData());
-
-    expect(result.current.hasVolumeAfterFirstProgramEpoch).toBe(false);
-  });
-
-  it("counts second and later program epoch volume", () => {
-    const dashboard: AccountIncentiveDashboard = {
-      account: "0x1234",
-      pointsBalance: 10n * GMX_DEC,
-      rewardsBalance: 0n,
-      recentStats: [
-        {
-          account: "0x1234",
-          multiplier: 100,
-          epochTimestamp: mockConfig.programStartTimestamp + mockConfig.epochDuration,
-          volumeTier: null,
-          stakingTier: null,
-          tradedVolume: 1000n * USD,
-          boostIds: [],
-        },
-      ],
-    };
-
-    setupDefaults({ dashboard, manualAllocatedPoints: 25n * GMX_DEC });
-
-    const result = renderHook(() => usePersonalizedBannerData());
-
-    expect(result.current.hasVolumeAfterFirstProgramEpoch).toBe(true);
   });
 
   it('returns "recent-activity" variant when fees >= $20 and first trade is older than 2 weeks', () => {
@@ -378,14 +288,113 @@ describe("usePersonalizedBannerData", () => {
     expect(result2.current.estimatedRewardsUsd).toBe(125);
   });
 
-  it("falls back to recent-activity when netPositionFees is sufficient even if config is undefined", () => {
+  it("waits for incentives config before selecting a banner for connected wallets", () => {
     setupDefaults({ netPositionFees: 500n * USD, config: undefined });
 
     const result = renderHook(() => usePersonalizedBannerData());
 
+    expect(result.current.bannerVariant).toBeUndefined();
+    expect(result.current.isLoading).toBe(true);
+  });
+
+  it("waits for manual allocation lookup before falling back to a generic banner", () => {
+    setupDefaults({ netPositionFees: 500n * USD, manualAllocatedPoints: undefined });
+
+    const result = renderHook(() => usePersonalizedBannerData());
+
+    expect(result.current.bannerVariant).toBeUndefined();
+    expect(result.current.isLoading).toBe(true);
+  });
+
+  it("does not show the disconnected fallback while wallet account is reconnecting", () => {
+    setupDefaults({ account: undefined, walletStatus: "reconnecting" });
+
+    const result = renderHook(() => usePersonalizedBannerData());
+
+    expect(result.current.bannerVariant).toBeUndefined();
+    expect(result.current.isLoading).toBe(true);
+  });
+
+  it("does not show the account banner while wallet status is still connecting", () => {
+    setupDefaults({ account: "0x1234", walletStatus: "connecting", manualAllocatedPoints: 25n * GMX_DEC });
+
+    const result = renderHook(() => usePersonalizedBannerData());
+
+    expect(result.current.bannerVariant).toBeUndefined();
+    expect(result.current.isLoading).toBe(true);
+  });
+
+  it("briefly waits for a stored wallet connector before showing the disconnected fallback", () => {
+    window.localStorage.setItem("wagmi.recentConnectorId", "injected");
+    setupDefaults({ account: undefined, walletStatus: "disconnected" });
+
+    const result = renderHook(() => usePersonalizedBannerData());
+
+    expect(result.current.bannerVariant).toBeUndefined();
+    expect(result.current.isLoading).toBe(true);
+
+    act(() => {
+      vi.advanceTimersByTime(500);
+    });
+
+    expect(result.current.bannerVariant).toBe("new-or-low-fees");
+    expect(result.current.isLoading).toBe(false);
+  });
+
+  it("keeps the resolved account banner during transient SWR loading gaps", () => {
+    setupDefaults({ netPositionFees: 50n * USD, firstTradeTimestamp: OLD_FIRST_TRADE });
+    const result = renderHook(() => usePersonalizedBannerData());
+
     expect(result.current.bannerVariant).toBe("recent-activity");
-    expect(result.current.estimatedRewardsUsd).toBeDefined();
-    expect(result.current.estimatedRewardsUsd!).toBeGreaterThan(0);
+    expect(result.current.estimatedRewardsUsd).toBe(25);
+
+    setupDefaults({
+      netPositionFees: undefined,
+      netPositionFeesLoading: true,
+      firstTradeTimestamp: undefined,
+      firstTradeLoading: true,
+    });
+    result.rerender();
+
+    expect(result.current.bannerVariant).toBe("recent-activity");
+    expect(result.current.estimatedRewardsUsd).toBe(25);
+    expect(result.current.isLoading).toBe(false);
+  });
+
+  it("keeps a resolved manual reward banner during transient GMX price gaps", () => {
+    setupDefaults({ manualAllocatedPoints: 25n * GMX_DEC, gmxPrice: 20n * USD });
+    const result = renderHook(() => usePersonalizedBannerData());
+
+    expect(result.current.bannerVariant).toBe("manual-reward");
+    expect(result.current.manualBonusUsd).toBe(25n * 20n * USD);
+
+    setupDefaults({ manualAllocatedPoints: 25n * GMX_DEC, gmxPrice: undefined });
+    result.rerender();
+
+    expect(result.current.bannerVariant).toBe("manual-reward");
+    expect(result.current.manualBonusUsd).toBe(25n * 20n * USD);
+    expect(result.current.isLoading).toBe(false);
+  });
+
+  it("does not leak a resolved banner into a new account while that account is loading", () => {
+    setupDefaults({ account: "0x1234", netPositionFees: 50n * USD, firstTradeTimestamp: OLD_FIRST_TRADE });
+    const result = renderHook(() => usePersonalizedBannerData());
+
+    expect(result.current.bannerVariant).toBe("recent-activity");
+
+    setupDefaults({
+      account: "0xabcd",
+      netPositionFees: undefined,
+      netPositionFeesLoading: true,
+      firstTradeTimestamp: undefined,
+      firstTradeLoading: true,
+      manualAllocatedPoints: undefined,
+      manualAllocatedPointsLoading: true,
+    });
+    result.rerender();
+
+    expect(result.current.bannerVariant).toBeUndefined();
+    expect(result.current.isLoading).toBe(true);
   });
 
   it("requires GMX price for manual allocation USD value (stays loading)", () => {
@@ -396,23 +405,6 @@ describe("usePersonalizedBannerData", () => {
     expect(result.current.bannerVariant).toBeUndefined();
     expect(result.current.isLoading).toBe(true);
     expect(result.current.isManuallyRewarded).toBe(true);
-  });
-
-  it("derives hasVolumeAfterFirstProgramEpoch as false when dashboard is undefined", () => {
-    setupDefaults({ dashboard: undefined });
-
-    const result = renderHook(() => usePersonalizedBannerData());
-
-    expect(result.current.hasVolumeAfterFirstProgramEpoch).toBe(false);
-  });
-
-  it("returns isLoading: true when dashboard is loading", () => {
-    setupDefaults({ dashboard: undefined, dashboardLoading: true });
-
-    const result = renderHook(() => usePersonalizedBannerData());
-
-    expect(result.current.isLoading).toBe(true);
-    expect(result.current.bannerVariant).toBeUndefined();
   });
 
   it("returns isLoading: true when first trade timestamp is loading", () => {

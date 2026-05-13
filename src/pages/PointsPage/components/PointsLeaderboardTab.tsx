@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import type React from "react";
-import { useCallback, useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 
 import "./PointsLeaderboardTab.scss";
@@ -10,8 +10,12 @@ import { ARBITRUM } from "config/chains";
 import type { ContractsChainId } from "config/chains";
 import { useGmxPrice } from "domain/legacy";
 import { formatMultiplier } from "domain/synthetics/incentives/constants";
+import type { LeaderboardEntry } from "domain/synthetics/incentives/types";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
-import { useIncentivesLeaderboard } from "domain/synthetics/incentives/useIncentivesLeaderboard";
+import {
+  type IncentivesLeaderboardOrderBy,
+  useIncentivesLeaderboard,
+} from "domain/synthetics/incentives/useIncentivesLeaderboard";
 import { formatAmount, formatUsd } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
@@ -19,6 +23,7 @@ import AddressView from "components/AddressView/AddressView";
 import { BottomTablePagination } from "components/Pagination/BottomTablePagination";
 import { PointsShare } from "components/PointsShare/PointsShare";
 import { TableListSkeleton } from "components/Skeleton/Skeleton";
+import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import { TableScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
 import Tabs from "components/Tabs/Tabs";
@@ -72,6 +77,16 @@ const PER_PAGE = 16;
 
 type TimeFilter = "current" | "last" | "all";
 
+type LeaderboardSortField = "volume" | "pointsEarned" | "rewardsEarned" | "multiplier";
+
+function toLeaderboardOrderBy(
+  field: LeaderboardSortField | "unspecified",
+  direction: "asc" | "desc" | "unspecified"
+): IncentivesLeaderboardOrderBy {
+  if (direction === "unspecified" || field === "unspecified") return "volume_DESC";
+  return `${field}_${direction === "asc" ? "ASC" : "DESC"}` as IncentivesLeaderboardOrderBy;
+}
+
 type Props = {
   chainId: ContractsChainId;
   account?: string;
@@ -92,18 +107,61 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
     return undefined; // all-time
   }, [config, timeFilter]);
 
+  const showMultiplier = timeFilter !== "all";
+  const {
+    orderBy: sortField,
+    direction: sortDirection,
+    getSorterProps,
+    setOrderBy,
+    setDirection,
+  } = useSorterHandlers<LeaderboardSortField>("points-leaderboard", {
+    orderBy: "volume",
+    direction: "desc",
+  });
+
+  // Backend silently falls back to volume_DESC for multiplier ordering when
+  // epoch is undefined (all-time). To keep the visible sort consistent with
+  // the data, snap the sort back to volume_DESC if the user switches to
+  // all-time while sorting by multiplier.
+  useEffect(() => {
+    if (!showMultiplier && sortField === "multiplier") {
+      setOrderBy("volume");
+      setDirection("desc");
+    }
+  }, [showMultiplier, sortField, setOrderBy, setDirection]);
+
+  const orderBy = toLeaderboardOrderBy(sortField, sortDirection);
+
   const leaderboardEnabled = timeFilter === "all" || epoch !== undefined;
   const {
     data: leaderboard,
     totalCount,
+    error,
     loading,
   } = useIncentivesLeaderboard(chainId, {
     epoch,
+    orderBy,
     limit: PER_PAGE,
     offset: (page - 1) * PER_PAGE,
     enabled: leaderboardEnabled,
   });
-  const showMultiplier = timeFilter !== "all";
+  // Fetch the connected user's leaderboard entry separately so we can pin it
+  // to page 1 when their rank is below the visible page. Uses the same
+  // `orderBy` as the main list so the server-computed rank stays consistent
+  // with the visible ordering.
+  const {
+    data: pinnedEntries,
+    error: pinnedError,
+    loading: pinnedLoading,
+  } = useIncentivesLeaderboard(chainId, {
+    epoch,
+    where: { account },
+    orderBy,
+    limit: 1,
+    offset: 0,
+    enabled: leaderboardEnabled && !!account,
+  });
+  const pinnedEntry = pinnedEntries?.[0];
 
   const timeFilterOptions = useMemo(
     () => [
@@ -122,10 +180,18 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
     [setTimeFilter, setPage]
   );
 
+  // Reset to page 1 whenever the sort changes — otherwise the user can land
+  // mid-list with no rows above the visible offset.
+  useEffect(() => {
+    setPage(1);
+  }, [orderBy]);
+
   const pageCount = totalCount === undefined ? page : Math.max(1, Math.ceil(totalCount / PER_PAGE));
-  const indexFrom = (page - 1) * PER_PAGE;
   const pageData = useMemo(() => leaderboard ?? [], [leaderboard]);
   const isInitialLoading = loading && !leaderboard;
+  const hasLeaderboardFailure = Boolean(error) && (!leaderboard || leaderboard.length === 0);
+  const showLeaderboardDegradedNotice = Boolean(error) && Boolean(leaderboard?.length);
+  const showPinnedEntryDegradedNotice = Boolean(pinnedError) && Boolean(account) && !hasLeaderboardFailure;
   const formatRewards = useCallback(
     (rewardsEarned: bigint) => {
       const gmxLabel = `${formatAmount(rewardsEarned, GMX_DECIMALS, 2, true)} GMX`;
@@ -138,15 +204,36 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
     [gmxPrice]
   );
 
-  const { userRank, userEntry } = useMemo(() => {
-    if (!account || !pageData.length) return { userRank: null, userEntry: null };
-    const lowerAccount = account.toLowerCase();
-    const idx = pageData.findIndex((e) => e.address.toLowerCase() === lowerAccount);
+  // When the user has no leaderboard entry, synthesize a zero-valued row so
+  // the pinned slot still surfaces their account at rank "N/A". Wait for the
+  // pinned query to settle before synthesizing — otherwise we'd flash a fake
+  // zero row during the initial load.
+  const userEntry: LeaderboardEntry | null = useMemo(() => {
+    if (!account) return null;
+    if (pinnedEntry) return pinnedEntry;
+    if (pinnedError) return null;
+    if (pinnedLoading) return null;
     return {
-      userRank: idx >= 0 ? indexFrom + idx + 1 : null,
-      userEntry: idx >= 0 ? pageData[idx] : null,
+      rank: 0,
+      address: account,
+      volume: 0n,
+      pointsEarned: 0n,
+      rewardsEarned: 0n,
+      multiplier: 0,
     };
-  }, [account, pageData, indexFrom]);
+  }, [account, pinnedEntry, pinnedError, pinnedLoading]);
+  const isSyntheticUserEntry = userEntry !== null && pinnedEntry === undefined;
+  const userRank = isSyntheticUserEntry ? null : userEntry?.rank ?? null;
+  // Show the pinned row only on page 1, and only when the user's row isn't
+  // already in the visible page data. Checking the actual page data (rather
+  // than rank math) is robust to sort/order mismatches between the two
+  // queries.
+  const isUserOnVisiblePage = useMemo(() => {
+    if (!account) return false;
+    const lower = account.toLowerCase();
+    return pageData.some((e) => e.address.toLowerCase() === lower);
+  }, [account, pageData]);
+  const showPinnedRow = page === 1 && userEntry !== null && !isUserOnVisiblePage;
 
   const tdClassName = "!py-10";
 
@@ -168,12 +255,27 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
         </div>
       </div>
 
-      {page === 1 && leaderboard && leaderboard.length === 0 ? (
+      {hasLeaderboardFailure ? (
+        <div className="flex grow items-center justify-center rounded-8 bg-slate-900 p-24 text-center text-typography-secondary">
+          <Trans>Leaderboard data is temporarily unavailable. Please try again later.</Trans>
+        </div>
+      ) : page === 1 && leaderboard && leaderboard.length === 0 ? (
         <div className="flex grow items-center justify-center rounded-8 bg-slate-900 p-24 text-center text-typography-secondary">
           <Trans>Leaderboard data is not available yet.</Trans>
         </div>
       ) : (
         <div className="flex grow flex-col rounded-8 bg-slate-900">
+          {(showLeaderboardDegradedNotice || showPinnedEntryDegradedNotice) && (
+            <div className="px-20 pb-8 pt-12">
+              <div className="rounded-8 border-l-2 border-l-yellow-300 bg-yellow-300 bg-opacity-20 p-12 text-13 leading-[1.3] text-typography-primary">
+                {showLeaderboardDegradedNotice ? (
+                  <Trans>Leaderboard data could not be refreshed. Showing the latest loaded data.</Trans>
+                ) : (
+                  <Trans>Your leaderboard rank is temporarily unavailable.</Trans>
+                )}
+              </div>
+            </div>
+          )}
           <TableScrollFadeContainer className="grow">
             <table className="w-full min-w-[800px] table-fixed">
               <colgroup>
@@ -189,10 +291,18 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                 <TableTheadTr>
                   <TableTh>{t`Rank`}</TableTh>
                   <TableTh>{t`Address`}</TableTh>
-                  <TableTh>{t`Volume`}</TableTh>
-                  <TableTh>{t`Earned Points`}</TableTh>
-                  <TableTh>{t`Earned Rewards`}</TableTh>
-                  <TableTh>{showMultiplier && t`Multiplier`}</TableTh>
+                  <TableTh>
+                    <Sorter {...getSorterProps("volume")}>{t`Volume`}</Sorter>
+                  </TableTh>
+                  <TableTh>
+                    <Sorter {...getSorterProps("pointsEarned")}>{t`Earned Points`}</Sorter>
+                  </TableTh>
+                  <TableTh>
+                    <Sorter {...getSorterProps("rewardsEarned")}>{t`Earned Rewards`}</Sorter>
+                  </TableTh>
+                  <TableTh>
+                    {showMultiplier ? <Sorter {...getSorterProps("multiplier")}>{t`Multiplier`}</Sorter> : null}
+                  </TableTh>
                   <TableTh />
                 </TableTheadTr>
               </thead>
@@ -201,10 +311,15 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                   <TableListSkeleton count={PER_PAGE} Structure={PointsLeaderboardSkeletonRow} />
                 ) : (
                   <>
-                    {userEntry && userRank && (
-                      <TableTr className="border-b-1/2 border-blue-500/30 !bg-blue-500/10">
+                    {showPinnedRow && userEntry && (
+                      <TableTr
+                        data-testid="leaderboard-pinned-row"
+                        className="border-b-1/2 border-blue-500/30 !bg-blue-500/10"
+                      >
                         <TableTd className={cx(tdClassName, "relative")}>
-                          <span className={cx("numbers", getRankClassName(userRank))}>{userRank}</span>
+                          <span className={cx("numbers", getRankClassName(userRank))}>
+                            {userRank !== null ? userRank : t`N/A`}
+                          </span>
                         </TableTd>
                         <TableTd>
                           <AddressView size={20} address={userEntry.address} breakpoint="XL" />
@@ -219,25 +334,31 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                           {formatRewards(userEntry.rewardsEarned)}
                         </TableTd>
                         <TableTd className={cx(tdClassName, "numbers")}>
-                          {showMultiplier && userEntry.multiplier ? formatMultiplier(userEntry.multiplier) : ""}
+                          {showMultiplier ? formatMultiplier(userEntry.multiplier) : ""}
                         </TableTd>
                         <TableTd className={tdClassName}>
-                          <button
-                            type="button"
-                            onClick={() => setIsShareOpen(true)}
-                            className="inline-flex items-center gap-4 whitespace-nowrap text-13 font-medium text-blue-100"
-                          >
-                            <ShareIcon />
-                            <Trans>Share</Trans>
-                          </button>
+                          {userRank !== null && (
+                            <button
+                              type="button"
+                              onClick={() => setIsShareOpen(true)}
+                              className="inline-flex items-center gap-4 whitespace-nowrap text-13 font-medium text-blue-100"
+                            >
+                              <ShareIcon />
+                              <Trans>Share</Trans>
+                            </button>
+                          )}
                         </TableTd>
                       </TableTr>
                     )}
-                    {pageData.map((entry, i) => {
-                      if (userEntry && entry.address.toLowerCase() === userEntry.address.toLowerCase()) return null;
-                      const rank = indexFrom + i + 1;
+                    {pageData.map((entry) => {
+                      const rank = entry.rank;
+                      const isUserRow = !!account && entry.address.toLowerCase() === account.toLowerCase();
                       return (
-                        <TableTr key={entry.address} hoverable>
+                        <TableTr
+                          key={entry.address}
+                          hoverable={!isUserRow}
+                          className={isUserRow ? "border-b-1/2 border-blue-500/30 !bg-blue-500/10" : undefined}
+                        >
                           <TableTd className={cx(tdClassName, "relative")}>
                             <span
                               className={cx("font-medium numbers after:!top-7", getRankClassName(rank), {
@@ -260,7 +381,18 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                           <TableTd className={cx(tdClassName, "numbers")}>
                             {showMultiplier && entry.multiplier ? formatMultiplier(entry.multiplier) : ""}
                           </TableTd>
-                          <TableTd className={cx(tdClassName, "numbers")} />
+                          <TableTd className={tdClassName}>
+                            {isUserRow && (
+                              <button
+                                type="button"
+                                onClick={() => setIsShareOpen(true)}
+                                className="inline-flex items-center gap-4 whitespace-nowrap text-13 font-medium text-blue-100"
+                              >
+                                <ShareIcon />
+                                <Trans>Share</Trans>
+                              </button>
+                            )}
+                          </TableTd>
                         </TableTr>
                       );
                     })}

@@ -94,7 +94,7 @@ export function GlvList({
         content={
           <Trans>
             Points are based on the time-weighted average value of your share of the GLV [USDM-USDM] vault over the
-            epoch.
+            epoch
           </Trans>
         }
       />
@@ -141,7 +141,7 @@ export function GlvList({
                       handle={t`SNAPSHOT`}
                       className="normal-case"
                       position="bottom-end"
-                      content={<Trans>Performance vs benchmark over selected period</Trans>}
+                      content={<Trans>Performance vs benchmark over the selected period</Trans>}
                       variant="iconStroke"
                     />
                   </TableTh>

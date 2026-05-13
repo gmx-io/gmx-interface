@@ -29,7 +29,7 @@ export function BannerTest() {
         </div>
 
         <Section title="Inline span + text">
-          <AlertInfoCard>
+          <AlertInfoCard onClose={noop}>
             <Trans>
               <span className="cursor-pointer font-medium text-blue-300 underline">Switch to TBTC-TBTC pool</span> for
               potentially lower price impact
@@ -39,7 +39,7 @@ export function BannerTest() {
 
         <Section title="Text + ColorfulButtonLink">
           <ColorfulBanner color="blue" icon={InfoIcon} onClose={noop}>
-            <Trans>0.0045 WETH remaining in old 1CT subaccount</Trans>
+            <Trans>0.0045 WETH remaining in the old 1CT subaccount</Trans>
             <ColorfulButtonLink color="blue" onClick={noop}>
               <Trans>Withdraw</Trans>
             </ColorfulButtonLink>
@@ -47,7 +47,7 @@ export function BannerTest() {
 
           <ColorfulBanner color="yellow" icon={WarnIcon} className="text-body-small">
             <Trans>Settlement network changed to Arbitrum, but $12.50 remains in your Base GMX Account</Trans>
-            <ColorfulButtonLink color="yellow" onClick={noop}>
+            <ColorfulButtonLink color="blue" onClick={noop}>
               <Trans>Change to Base</Trans>
             </ColorfulButtonLink>
           </ColorfulBanner>
@@ -60,7 +60,7 @@ export function BannerTest() {
           </ColorfulBanner>
 
           <AlertInfoCard type="error" hideClose>
-            <Trans>Insufficient liquidity in WETH-USDC pool. Select a different pool.</Trans>
+            <Trans>Insufficient liquidity in the WETH-USDC pool. Select a different pool.</Trans>
             <ColorfulButtonLink color="blue" onClick={noop}>
               <Trans>Switch to WBTC-USDC pool</Trans>
             </ColorfulButtonLink>
@@ -88,25 +88,27 @@ export function BannerTest() {
         </Section>
 
         <Section title="Text + inline ColorfulButtonLink">
-          <AlertInfoCard type="warning" hideClose>
+          <AlertInfoCard onClose={noop}>
             <Trans>
-              Existing position in WETH-USDC pool.
+              Existing position is in WETH-USDC pool. Using the selected pool will create a separate position.{" "}
               <ColorfulButtonLink color="blue" onClick={noop}>
                 Switch to WETH-USDC pool
               </ColorfulButtonLink>
             </Trans>
           </AlertInfoCard>
 
-          <AlertInfoCard type="warning" hideClose>
+          <AlertInfoCard onClose={noop}>
             <Trans>
               Existing limit order in WETH-USDC pool.
-              <ColorfulButtonLink onClick={noop}>Switch to WETH-USDC pool</ColorfulButtonLink>
+              <ColorfulButtonLink color="blue" onClick={noop}>
+                Switch to WETH-USDC pool
+              </ColorfulButtonLink>
             </Trans>
           </AlertInfoCard>
 
-          <AlertInfoCard>
+          <AlertInfoCard onClose={noop}>
             <Trans>
-              Existing position uses USDC collateral. This action won't affect it.{" "}
+              Existing position uses USDC collateral. Using the selected collateral will create a separate position.{" "}
               <ColorfulButtonLink color="blue" onClick={noop}>
                 Switch to USDC collateral
               </ColorfulButtonLink>
@@ -115,16 +117,16 @@ export function BannerTest() {
         </Section>
 
         <Section title="Plain text">
-          <ColorfulBanner color="yellow" icon={AlertIcon}>
+          <ColorfulBanner color="blue" icon={InfoIcon}>
             <Trans>High leverage increases liquidation risk</Trans>
           </ColorfulBanner>
 
-          <ColorfulBanner color="blue" icon={ExpressIcon}>
+          <ColorfulBanner color="blue" icon={ExpressIcon} onClose={noop}>
             <Trans>Express Trading is unavailable for wrapping or unwrapping native token ETH</Trans>
           </ColorfulBanner>
 
-          <AlertInfoCard type="warning" hideClose>
-            <Trans>Existing position in WETH-USDC pool but lacks liquidity for this order</Trans>
+          <AlertInfoCard type="error" hideClose>
+            <Trans>Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order</Trans>
           </AlertInfoCard>
 
           <AlertInfoCard type="error" hideClose>
@@ -142,7 +144,7 @@ export function BannerTest() {
             </Trans>
           </AlertInfoCard>
 
-          <AlertInfoCard type="warning" hideClose>
+          <AlertInfoCard type="error" hideClose>
             <Trans>Existing limit order in WETH-USDC pool but lacks liquidity for this order</Trans>
           </AlertInfoCard>
         </Section>
@@ -152,7 +154,7 @@ export function BannerTest() {
             <div>
               <Trans>Insufficient gas balance. Deposit more ETH.</Trans>
               <br />
-              <ColorfulButtonLink color="red" onClick={noop}>
+              <ColorfulButtonLink color="blue" onClick={noop}>
                 <Trans>Deposit ETH</Trans>
               </ColorfulButtonLink>
             </div>
@@ -161,7 +163,7 @@ export function BannerTest() {
           <AlertInfoCard type="info" onClose={noop}>
             <div>
               <Trans>Convert esGMX to GMX tokens. Read the vesting details before using the vaults.</Trans>
-              <ColorfulButtonLink to="https://docs.gmx.io/" newTab>
+              <ColorfulButtonLink color="blue" to="https://docs.gmx.io/" newTab>
                 <Trans>Read details</Trans>
               </ColorfulButtonLink>
             </div>

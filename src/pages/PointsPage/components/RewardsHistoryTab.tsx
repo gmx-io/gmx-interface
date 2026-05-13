@@ -12,7 +12,7 @@ import { getEpochDuration } from "domain/synthetics/incentives/constants";
 import { RewardsHistoryEntry } from "domain/synthetics/incentives/types";
 import { useAccountRewardsHistory } from "domain/synthetics/incentives/useAccountRewardsHistory";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
-import { formatAmount, formatAmountHuman, formatUsd } from "lib/numbers";
+import { formatAmount, formatAmountHuman, formatPointsAmount, formatUsd } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import useWallet from "lib/wallets/useWallet";
 
@@ -90,9 +90,11 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
   const {
     data: history,
     totalCount,
+    error,
     loading,
   } = useAccountRewardsHistory(chainId, {
     account,
+    currentEpoch: config?.epochTimestamp,
     limit: PER_PAGE,
     offset: (page - 1) * PER_PAGE,
   });
@@ -118,6 +120,8 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
   const pageCount = totalCount === undefined ? page : Math.max(1, Math.ceil(totalCount / PER_PAGE));
   const pageData = history ?? [];
   const isInitialLoading = loading && !history;
+  const hasHistoryFailure = Boolean(error) && (!history || history.length === 0);
+  const showHistoryDegradedNotice = Boolean(error) && Boolean(history?.length);
   const now = useCurrentUnixTimestamp();
 
   if (!account) {
@@ -128,10 +132,18 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
     );
   }
 
-  if (page === 1 && history && history.length === 0) {
+  if (!error && page === 1 && history && history.length === 0) {
     return (
       <div className="flex grow items-center justify-center rounded-8 bg-slate-900 p-24 text-center text-typography-secondary">
         <Trans>No rewards history yet. Start trading to earn points.</Trans>
+      </div>
+    );
+  }
+
+  if (hasHistoryFailure) {
+    return (
+      <div className="flex grow items-center justify-center rounded-8 bg-slate-900 p-24 text-center text-typography-secondary">
+        <Trans>Rewards history is temporarily unavailable. Please try again later.</Trans>
       </div>
     );
   }
@@ -144,6 +156,11 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
         <h3 className="mb-12 text-16 font-medium text-typography-primary">
           <Trans>Rewards History</Trans>
         </h3>
+        {showHistoryDegradedNotice && (
+          <div className="rounded-8 border-l-2 border-l-yellow-300 bg-yellow-300 bg-opacity-20 p-12 text-13 leading-[1.3] text-typography-primary">
+            <Trans>Rewards history could not be refreshed. Showing the latest loaded data.</Trans>
+          </div>
+        )}
       </div>
 
       <div className="flex grow flex-col rounded-8 bg-slate-900">
@@ -213,16 +230,16 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
                           {formatAmountHuman(entry.volume, USD_DECIMALS, true, 0)}
                         </TableTd>
                         <TableTd className={cx(tdClassName, "numbers")}>
-                          {formatAmount(entry.pointsEarned, GMX_DECIMALS, 2, true)}
+                          {formatPointsAmount(entry.pointsEarned, GMX_DECIMALS)}
                         </TableTd>
                         <TableTd className={cx(tdClassName, "numbers")}>
-                          {formatAmount(entry.pointsSpent, GMX_DECIMALS, 2, true)}
+                          {formatPointsAmount(entry.pointsSpent, GMX_DECIMALS)}
                         </TableTd>
                         <TableTd className={cx(tdClassName, "numbers")}>
-                          {formatAmount(entry.pointsExpired, GMX_DECIMALS, 2, true)}
+                          {formatPointsAmount(entry.pointsExpired, GMX_DECIMALS)}
                         </TableTd>
                         <TableTd className={cx(tdClassName, "numbers")}>
-                          {formatAmount(entry.pointsBalance, GMX_DECIMALS, 2, true)}
+                          {formatPointsAmount(entry.pointsBalance, GMX_DECIMALS)}
                         </TableTd>
                         <TableTd className={cx(tdClassName, "numbers")}>{formatRewards(entry.rewardsEarned)}</TableTd>
                         <TableTd className={tdClassName}>
@@ -299,7 +316,7 @@ function MobileRewardsHistoryRow({
       <TableTrActionable onClick={onClick}>
         <TableTdActionable>{formatEpochLabel(entry.epoch, epochDuration, locale)}</TableTdActionable>
         <TableTdActionable className="text-right numbers">
-          {formatAmount(entry.pointsEarned, 18, 2, true)}
+          {formatPointsAmount(entry.pointsEarned, GMX_DECIMALS)}
         </TableTdActionable>
         <TableTdActionable className="w-24">
           <ChevronDownIcon className={cx("size-16 text-typography-secondary", { "rotate-180": isExpanded })} />
@@ -318,19 +335,19 @@ function MobileRewardsHistoryRow({
               <div className="flex justify-between text-13 font-medium text-typography-secondary">
                 <Trans>Spent points</Trans>
                 <span className="text-14 text-typography-primary numbers">
-                  {formatAmount(entry.pointsSpent, 18, 2, true)}
+                  {formatPointsAmount(entry.pointsSpent, GMX_DECIMALS)}
                 </span>
               </div>
               <div className="flex justify-between text-13 font-medium text-typography-secondary">
                 <Trans>Expired points</Trans>
                 <span className="text-14 text-typography-primary numbers">
-                  {formatAmount(entry.pointsExpired, 18, 2, true)}
+                  {formatPointsAmount(entry.pointsExpired, GMX_DECIMALS)}
                 </span>
               </div>
               <div className="flex justify-between text-13 font-medium text-typography-secondary">
                 <Trans>Points balance</Trans>
                 <span className="text-14 text-typography-primary numbers">
-                  {formatAmount(entry.pointsBalance, 18, 2, true)}
+                  {formatPointsAmount(entry.pointsBalance, GMX_DECIMALS)}
                 </span>
               </div>
               <div className="flex justify-between text-13 font-medium text-typography-secondary">

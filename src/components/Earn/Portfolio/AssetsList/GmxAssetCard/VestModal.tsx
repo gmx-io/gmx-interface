@@ -450,18 +450,6 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
         />
 
         <div className="flex flex-col gap-8 px-20 pb-20">
-          {!isReadVestingDetailsBannerClosed && (
-            <AlertInfoCard type="info" onClose={() => setIsReadVestingDetailsBannerClosed(true)}>
-              <div>
-                <Trans>Convert esGMX to GMX tokens. Read the vesting details before using the vaults.</Trans>
-
-                <ColorfulButtonLink to="https://docs.gmx.io/docs/tokenomics/rewards/#vesting" newTab>
-                  <Trans>Read details</Trans>
-                </ColorfulButtonLink>
-              </div>
-            </AlertInfoCard>
-          )}
-
           <Tabs
             options={actionTabs}
             selectedValue={activeAction}
@@ -488,6 +476,17 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                 </div>
               </BuyInputSection>
               <SwitchToSettlementChainWarning topic="vesting" />
+              {!isReadVestingDetailsBannerClosed && (
+                <AlertInfoCard type="info" onClose={() => setIsReadVestingDetailsBannerClosed(true)}>
+                  <div>
+                    <Trans>Convert esGMX to GMX tokens. Read the vesting details before using the vaults.</Trans>
+
+                    <ColorfulButtonLink color="blue" to="https://docs.gmx.io/docs/tokenomics/rewards/#vesting" newTab>
+                      <Trans>Read details</Trans>
+                    </ColorfulButtonLink>
+                  </div>
+                </AlertInfoCard>
+              )}
               <div className="Exchange-swap-button-container">
                 <SwitchToSettlementChainButtons>{primaryButton}</SwitchToSettlementChainButtons>
               </div>
@@ -508,6 +507,17 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                 </div>
               </BuyInputSection>
               <SwitchToSettlementChainWarning topic="vesting" />
+              {!isReadVestingDetailsBannerClosed && (
+                <AlertInfoCard type="info" onClose={() => setIsReadVestingDetailsBannerClosed(true)}>
+                  <div>
+                    <Trans>Convert esGMX to GMX tokens. Read the vesting details before using the vaults.</Trans>
+
+                    <ColorfulButtonLink color="blue" to="https://docs.gmx.io/docs/tokenomics/rewards/#vesting" newTab>
+                      <Trans>Read details</Trans>
+                    </ColorfulButtonLink>
+                  </div>
+                </AlertInfoCard>
+              )}
               <div className="Exchange-swap-button-container">
                 <SwitchToSettlementChainButtons>{primaryButton}</SwitchToSettlementChainButtons>
               </div>
@@ -528,6 +538,17 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                 </div>
               </BuyInputSection>
               <SwitchToSettlementChainWarning topic="staking" />
+              {!isReadVestingDetailsBannerClosed && (
+                <AlertInfoCard type="info" onClose={() => setIsReadVestingDetailsBannerClosed(true)}>
+                  <div>
+                    <Trans>Convert esGMX to GMX tokens. Read the vesting details before using the vaults.</Trans>
+
+                    <ColorfulButtonLink color="blue" to="https://docs.gmx.io/docs/tokenomics/rewards/#vesting" newTab>
+                      <Trans>Read details</Trans>
+                    </ColorfulButtonLink>
+                  </div>
+                </AlertInfoCard>
+              )}
               <div className="Exchange-swap-button-container">
                 <SwitchToSettlementChainButtons>{primaryButton}</SwitchToSettlementChainButtons>
               </div>
@@ -552,7 +573,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
                     <span>
                       <Trans>
                         {formatGmxAmount(claimSum)} tokens converted to GMX from the {formatGmxAmount(vestedAmount)}{" "}
-                        esGMX deposited for vesting.
+                        esGMX deposited for vesting
                       </Trans>
                     </span>
                   }

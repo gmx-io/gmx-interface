@@ -18,8 +18,8 @@ export function getBoostDescription(boostId: BoostId, config?: IncentivesConfig)
       : undefined;
 
     return thresholdLabel
-      ? t`Place balancing trades (${thresholdLabel}) on under-utilized sides`
-      : t`Place balancing trades on under-utilized sides`;
+      ? t`Place balancing trades (${thresholdLabel}) on underutilized sides to earn an additional multiplier on those trades.`
+      : t`Place balancing trades on underutilized sides to earn an additional multiplier on those trades.`;
   }
 
   if (boostId === "LifetimeTrading") {
@@ -28,11 +28,11 @@ export function getBoostDescription(boostId: BoostId, config?: IncentivesConfig)
       : undefined;
 
     return thresholdLabel
-      ? t`Achieve ${thresholdLabel} lifetime trading volume`
-      : t`Achieve a lifetime trading volume milestone`;
+      ? t`Reach ${thresholdLabel} in lifetime trading volume to unlock a permanent 1× multiplier.`
+      : t`Reach a lifetime trading volume milestone to unlock a permanent 1× multiplier.`;
   }
 
-  return t`Trade featured or new markets to earn this boost.`;
+  return t`Trade featured markets to activate this boost and earn a higher multiplier for those trades.`;
 }
 
 export function getMaxMultiplierLabel(config?: IncentivesConfig): string {
