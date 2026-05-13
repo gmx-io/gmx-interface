@@ -520,7 +520,7 @@ msgstr "Red de origen"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Re-sign to continue using One-Click Trading."
-msgstr ""
+msgstr "La aprobación de One-Click Trading no es válida. Esto puede ocurrir al cambiar de cadena o de token de pago. Vuelva a firmar para seguir usando One-Click Trading."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral factor for liquidation"
@@ -3455,7 +3455,7 @@ msgstr "Comprar GMX utilizando agregadores de intercambios descentralizados"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing, which isn't available with One-Click Trading. Disable One-Click to use Express Trading."
-msgstr ""
+msgstr "Este swap requiere enrutamiento externo, que no está disponible con One-Click Trading. Desactive One-Click para usar Express Trading."
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -3999,7 +3999,7 @@ msgstr "Volumen total"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading action limit reached. You're now using Express Trading."
-msgstr ""
+msgstr "Se alcanzó el límite de acciones de One-Click Trading. Ahora está usando Express Trading."
 
 #: src/components/PositionList/PositionList.tsx
 msgid "MARGIN"
@@ -8051,7 +8051,7 @@ msgstr "El importe excede el límite de retirada. Pruebe con un importe inferior
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
-msgstr ""
+msgstr "El nonce de aprobación de One-Click Trading ha expirado. Vuelva a firmar para seguir usando One-Click Trading."
 
 #: src/components/SideNav/SupportChatNavItem.tsx
 msgid "New"
@@ -9730,7 +9730,7 @@ msgstr "En curso..."
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading time limit expired. You're now using Express Trading."
-msgstr ""
+msgstr "El límite de tiempo de One-Click Trading ha expirado. Ahora está usando Express Trading."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Affiliate vault"

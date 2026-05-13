@@ -520,7 +520,7 @@ msgstr "來源網路"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Re-sign to continue using One-Click Trading."
-msgstr ""
+msgstr "One-Click Trading 授權無效。這可能在切換鏈或更改支付代幣時發生。請重新簽署以繼續使用 One-Click Trading。"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral factor for liquidation"
@@ -3455,7 +3455,7 @@ msgstr "透過去中心化交易所聚合器買入 GMX"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing, which isn't available with One-Click Trading. Disable One-Click to use Express Trading."
-msgstr ""
+msgstr "此兌換需要外部路由，而 One-Click Trading 不支援外部路由。請停用 One-Click 以使用 Express Trading。"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -3999,7 +3999,7 @@ msgstr "總交易量"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading action limit reached. You're now using Express Trading."
-msgstr ""
+msgstr "已達到 One-Click Trading 操作限制。您現在正在使用 Express Trading。"
 
 #: src/components/PositionList/PositionList.tsx
 msgid "MARGIN"
@@ -8051,7 +8051,7 @@ msgstr "金額超過提取上限。請嘗試小於 <0>{upperLimitFormatted}</0> 
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
-msgstr ""
+msgstr "One-Click Trading 授權 nonce 已過期。請重新簽署以繼續使用 One-Click Trading。"
 
 #: src/components/SideNav/SupportChatNavItem.tsx
 msgid "New"
@@ -9730,7 +9730,7 @@ msgstr "進行中..."
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "One-Click Trading time limit expired. You're now using Express Trading."
-msgstr ""
+msgstr "One-Click Trading 時間限制已到期。您現在正在使用 Express Trading。"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Affiliate vault"
