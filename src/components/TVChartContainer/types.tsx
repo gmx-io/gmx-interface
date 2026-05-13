@@ -29,4 +29,9 @@ export type DynamicChartLine = {
   isLong: boolean;
   marketName: string;
   updatedAtTime: bigint;
+  positionEntryPrice?: bigint;
+  positionSizeInUsd?: bigint;
+  sizeDeltaUsd?: bigint;
+  indexTokenVisualMultiplier: number;
+  isPartial: boolean;
 };
