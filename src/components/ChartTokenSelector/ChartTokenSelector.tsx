@@ -520,7 +520,7 @@ function MarketsList() {
                   rowHorizontalPadding={rowHorizontalPadding}
                   tdClassName={tdClassName}
                   onMarketSelect={handleMarketSelect}
-                  listingDate={listingDateByIndexToken[token.address.toLowerCase()]}
+                  listingDate={listingDateByIndexToken[token.address]}
                 />
               )
             )}
