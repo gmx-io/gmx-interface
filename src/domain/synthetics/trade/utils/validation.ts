@@ -658,6 +658,7 @@ export function getEditCollateralError(p: {
   depositToken: TokenData | undefined;
   depositAmount: bigint | undefined;
   marketInfo: MarketInfo | undefined;
+  maxWithdrawAmount: bigint | undefined;
 }): ValidationResult {
   const {
     collateralDeltaAmount,
@@ -669,9 +670,14 @@ export function getEditCollateralError(p: {
     depositToken,
     depositAmount,
     marketInfo,
+    maxWithdrawAmount,
   } = p;
 
   const minCollateralFactor = marketInfo?.minCollateralFactor;
+
+  if (!isDeposit && maxWithdrawAmount === 0n) {
+    return { buttonErrorMessage: t`Withdrawal not available` };
+  }
 
   if (
     collateralDeltaAmount === undefined ||

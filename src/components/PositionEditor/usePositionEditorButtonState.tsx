@@ -39,8 +39,7 @@ import {
   substractMaxLeverageSlippage,
   willPositionCollateralBeSufficientForPosition,
 } from "domain/synthetics/positions";
-import { convertToTokenAmount } from "domain/synthetics/tokens";
-import { getMarkPrice, getMinCollateralUsdForLeverage } from "domain/synthetics/trade";
+import { getMarkPrice, getMaxWithdrawAmount } from "domain/synthetics/trade";
 import {
   getCommonError,
   getEditCollateralError,
@@ -295,25 +294,14 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
   const maxWithdrawAmount = useMemo(() => {
     if (!getIsPositionInfoLoaded(position)) return 0n;
 
-    const minCollateralUsdForLeverage = getMinCollateralUsdForLeverage(position, 0n);
-    let _minCollateralUsd = minCollateralUsdForLeverage;
-
-    if (minCollateralUsd !== undefined && minCollateralUsd > _minCollateralUsd) {
-      _minCollateralUsd = minCollateralUsd;
-    }
-
-    _minCollateralUsd =
-      _minCollateralUsd + (position?.pendingBorrowingFeesUsd ?? 0n) + (position?.pendingFundingFeesUsd ?? 0n);
-
-    if (position.collateralUsd < _minCollateralUsd) {
-      return 0n;
-    }
-
-    const maxWithdrawUsd = position.collateralUsd - _minCollateralUsd;
-    const maxWithdrawAmount = convertToTokenAmount(maxWithdrawUsd, selectedCollateralToken?.decimals, collateralPrice);
-
-    return maxWithdrawAmount;
-  }, [collateralPrice, selectedCollateralToken?.decimals, minCollateralUsd, position]);
+    return getMaxWithdrawAmount({
+      position,
+      minCollateralUsd,
+      collateralPrice,
+      collateralDecimals: selectedCollateralToken?.decimals,
+      userReferralInfo,
+    });
+  }, [collateralPrice, selectedCollateralToken?.decimals, minCollateralUsd, position, userReferralInfo]);
 
   const detectAndSetMaxSize = useCallback(() => {
     if (maxWithdrawAmount === undefined) return;
@@ -357,6 +345,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       depositToken: selectedCollateralToken,
       depositAmount: collateralDeltaAmount,
       marketInfo: position?.marketInfo,
+      maxWithdrawAmount,
     });
 
     return takeValidationResult(commonError, editCollateralError, expressError);
@@ -373,6 +362,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     isDeposit,
     position,
     selectedCollateralToken,
+    maxWithdrawAmount,
   ]);
 
   const errorTooltipContent = useMemo(() => {
