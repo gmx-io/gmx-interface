@@ -1645,11 +1645,6 @@ msgstr "少なく表示"
 msgid "Vest"
 msgstr "べスト"
 
-#: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
-msgid "You need USDC and ETH on {0} to create a referral code via GMX Account. Deposit funds or switch to a different network."
-msgstr ""
-
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set TP price below limit price"
 msgstr ""
@@ -4583,6 +4578,11 @@ msgstr "蓄積された価格への影響"
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Arguments"
 msgstr "引数"
+
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+msgid "You need USDC and {0} on {1} to create a referral code via GMX Account. Deposit funds or switch to a different network."
+msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "LayerZero scan"

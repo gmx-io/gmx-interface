@@ -7,7 +7,7 @@ import { encodeFunctionData, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import type { SettlementChainId, SourceChainId } from "config/chains";
-import { ContractsChainId, getChainName } from "config/chains";
+import { ContractsChainId, getChainName, getViemChain } from "config/chains";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -600,8 +600,8 @@ function CreateReferralCodeLayout({
         {hasNoTokensOnSourceChain && srcChainId && (
           <AlertInfoCard type="error" className="text-left" hideClose>
             <Trans>
-              You need USDC and ETH on {getChainName(srcChainId)} to create a referral code via GMX Account. Deposit
-              funds or switch to a different network.
+              You need USDC and {getViemChain(srcChainId).nativeCurrency.symbol} on {getChainName(srcChainId)} to create
+              a referral code via GMX Account. Deposit funds or switch to a different network.
             </Trans>
           </AlertInfoCard>
         )}

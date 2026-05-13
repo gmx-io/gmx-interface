@@ -1645,11 +1645,6 @@ msgstr "Show less"
 msgid "Vest"
 msgstr "Vest"
 
-#: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
-msgid "You need USDC and ETH on {0} to create a referral code via GMX Account. Deposit funds or switch to a different network."
-msgstr "You need USDC and ETH on {0} to create a referral code via GMX Account. Deposit funds or switch to a different network."
-
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set TP price below limit price"
 msgstr "Set TP price below limit price"
@@ -4583,6 +4578,11 @@ msgstr "Stored price impact"
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Arguments"
 msgstr "Arguments"
+
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+msgid "You need USDC and {0} on {1} to create a referral code via GMX Account. Deposit funds or switch to a different network."
+msgstr "You need USDC and {0} on {1} to create a referral code via GMX Account. Deposit funds or switch to a different network."
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "LayerZero scan"
