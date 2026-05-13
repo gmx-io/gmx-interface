@@ -6488,6 +6488,10 @@ msgstr "Min funding factor"
 msgid "Governance alerts"
 msgstr "Governance alerts"
 
+#: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
+msgid "Low {symbol} balance. This amount leaves little for future fees on your GMX Account."
+msgstr "Low {symbol} balance. This amount leaves little for future fees on your GMX Account."
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts

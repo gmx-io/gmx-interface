@@ -476,9 +476,7 @@ export const DepositView = () => {
       : quoteSendNativeFee ?? baseQuoteSendNativeFee;
 
   const isLoadingDepositMax =
-    depositViewChain === settlementChainId
-      ? sameChainNetworkFeeDetails === undefined
-      : isComposeGasLoading || isBaseQuoteSendNativeFeeLoading;
+    depositViewChain === settlementChainId ? false : isComposeGasLoading || isBaseQuoteSendNativeFeeLoading;
 
   const paymentToken = useMemo((): TokenData | undefined => {
     if (selectedTokenData === undefined) {

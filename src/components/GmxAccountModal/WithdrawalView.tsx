@@ -34,11 +34,16 @@ import {
   useGmxAccountWithdrawalViewTokenAddress,
   useGmxAccountWithdrawalViewTokenInputValue,
 } from "context/GmxAccountContext/hooks";
+import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
   selectExpressGlobalParams,
   selectGasPaymentToken,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
+  selectExpressOrdersEnabled,
+  selectSetExpressOrdersEnabled,
+} from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useArbitraryError, useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
 import { fallbackCustomError } from "domain/multichain/fallbackCustomError";
@@ -49,6 +54,7 @@ import {
   sendSameChainWithdrawalTxn,
 } from "domain/multichain/sendSameChainWithdrawalTxn";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
+import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { BridgeOutParams, SendParam } from "domain/multichain/types";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
 import { useMultichainQuoteFeeUsd } from "domain/multichain/useMultichainQuoteFeeUsd";
@@ -1007,7 +1013,7 @@ export const WithdrawalView = () => {
     };
   }, [gasPaymentToken, isSameChain, networkFeeInGasPaymentToken, selectedToken, someGasPaymentTokenAmount, wntFee]);
 
-  const isLoadingWithdrawalMax = isSameChain ? false : gasPaymentTokenAmountForMax === undefined;
+  const isLoadingWithdrawalMax = isSameChain ? false : expressTxnParamsAsyncResult.isLoading;
 
   const withdrawalMaxDetails = useMaxAvailableAmount({
     fromToken: selectedToken,
@@ -1018,10 +1024,10 @@ export const WithdrawalView = () => {
     gasPaymentToken: gasPaymentTokenForMax,
     gasPaymentTokenBalance: gasPaymentTokenBalanceForMax,
     gasPaymentTokenAmount: gasPaymentTokenAmountForMax,
+    isGmxAccount: true,
   });
 
-  const showMaxButton =
-    withdrawalMaxDetails.showClickMax && !(showWntWarning && !isSameChain && !selectedToken?.isWrapped);
+  const showMaxButton = withdrawalMaxDetails.showClickMax;
 
   const handlePickToken = useCallback(
     (tokenAddress: string) => {
@@ -1084,7 +1090,18 @@ export const WithdrawalView = () => {
     shouldShowInfoRowPlaceholder &&
     (isSameChain
       ? sameChainNetworkFeeAsyncResult.isLoading
-      : areMultichainFeesLoading || !expressTxnParamsAsyncResult.data);
+      : areMultichainFeesLoading || (!expressTxnParamsAsyncResult.data && !expressTxnParamsAsyncResult.error));
+
+  const expressOrdersEnabled = useSelector(selectExpressOrdersEnabled);
+  const setExpressOrdersEnabled = useSelector(selectSetExpressOrdersEnabled);
+  const { setIsSettingsVisible } = useSettings();
+
+  useEffect(() => {
+    if (withdrawalViewChain !== undefined && !isSameChain && !expressOrdersEnabled) {
+      setExpressOrdersEnabled(true);
+      toastEnableExpress(() => setIsSettingsVisible(true));
+    }
+  }, [withdrawalViewChain, isSameChain, expressOrdersEnabled, setExpressOrdersEnabled, setIsSettingsVisible]);
 
   let buttonState: {
     text: React.ReactNode;
@@ -1502,7 +1519,7 @@ export const WithdrawalView = () => {
       {!isInsufficientBalance && (
         <>
           {buttonState.bannerErrorName && (
-            <AlertInfoCard type="error" className="mt-8" hideClose>
+            <AlertInfoCard type="error" className="mb-16" hideClose>
               <ValidationBannerErrorContent
                 validationBannerErrorName={buttonState.bannerErrorName}
                 chainId={chainId}
@@ -1513,7 +1530,7 @@ export const WithdrawalView = () => {
           )}
 
           {withdrawalMaxDetails.gasPaymentTokenWarningContent && (
-            <AlertInfoCard type="warning" className="mt-8" hideClose>
+            <AlertInfoCard type="warning" className="mb-16" hideClose>
               {withdrawalMaxDetails.gasPaymentTokenWarningContent}
             </AlertInfoCard>
           )}
