@@ -198,9 +198,7 @@ export default function UserIncentiveDistribution() {
           />
         </div>
       </div>
-      <div className="min-w-400 flex flex-col gap-8">
-        {!isTablet && claimableBalance}
-      </div>
+      <div className="min-w-400 flex flex-col gap-8">{!isTablet && claimableBalance}</div>
     </div>
   );
 }

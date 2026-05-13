@@ -7052,6 +7052,10 @@ msgstr "거버넌스"
 msgid "Cancel"
 msgstr "취소"
 
+#: src/components/NetRateChart/NetRateChart.tsx
+msgid "Live"
+msgstr "실시간"
+
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx

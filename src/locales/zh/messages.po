@@ -7052,6 +7052,10 @@ msgstr "治理"
 msgid "Cancel"
 msgstr "取消"
 
+#: src/components/NetRateChart/NetRateChart.tsx
+msgid "Live"
+msgstr "实时"
+
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx

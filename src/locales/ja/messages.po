@@ -7052,6 +7052,10 @@ msgstr "ガバナンス"
 msgid "Cancel"
 msgstr "キャンセル"
 
+#: src/components/NetRateChart/NetRateChart.tsx
+msgid "Live"
+msgstr "ライブ"
+
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx

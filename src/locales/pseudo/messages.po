@@ -7052,6 +7052,10 @@ msgstr ""
 msgid "Cancel"
 msgstr ""
 
+#: src/components/NetRateChart/NetRateChart.tsx
+msgid "Live"
+msgstr ""
+
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
