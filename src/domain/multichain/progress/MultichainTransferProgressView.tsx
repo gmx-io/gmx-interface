@@ -214,7 +214,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
           />
 
           <div>
-            {task.operation === Operation.Deposit ? <Trans>Buying...</Trans> : <Trans>Selling...</Trans>}{" "}
+            {task.operation === Operation.Deposit ? <Trans>Buying</Trans> : <Trans>Selling</Trans>}{" "}
             {formatTokenAmount(task.amount, task.token.decimals)}{" "}
             {isMarketTokenAddress(chainId, task.token.address) ? (
               <>
@@ -275,7 +275,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
               </div>
             }
             valueClassName="text-typography-secondary group-gmx-hover:text-blue-300"
-            value={isOpen ? null : task.finishTimestamp ? elapsedTime : <Trans>Est. time: ~5 min</Trans>}
+            value={isOpen ? null : task.finishTimestamp ? elapsedTime : <Trans>Estimated time: ~5 min</Trans>}
           />
           <AnimatePresence>
             {isOpen && (

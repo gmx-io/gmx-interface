@@ -2,6 +2,7 @@ import { PositionOrderInfo, OrderTxnType } from "domain/synthetics/orders";
 import { DecreasePositionAmounts, IncreasePositionAmounts } from "domain/synthetics/trade";
 
 export type GroupPrefix = "sl" | "tp" | "limit";
+export type SidecarOrderEntryMode = "keepSize" | "keepPercentage" | "fitPercentage";
 
 export type EntryField = {
   input: string;
@@ -13,6 +14,8 @@ export type InitialEntry = {
   order: PositionOrderInfo | null;
   sizeUsd: EntryField;
   price: EntryField;
+  percentage?: EntryField;
+  mode?: SidecarOrderEntryMode;
 };
 
 export type SidecarOrderEntryBase = {
@@ -21,7 +24,7 @@ export type SidecarOrderEntryBase = {
   sizeUsd: EntryField;
   percentage: EntryField;
   txnType: OrderTxnType | null;
-  mode: "keepSize" | "keepPercentage" | "fitPercentage";
+  mode: SidecarOrderEntryMode;
   order: null | PositionOrderInfo;
 };
 

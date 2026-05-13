@@ -46,7 +46,7 @@ export function ReferralsDistributionsTab({ isLoading, account, referralsData }:
   if (!account) {
     return (
       <EmptyMessage
-        tooltipText={t`Connect your wallet to view your rebates distribution history.`}
+        tooltipText={t`Connect your wallet to view your rebates distribution history`}
         message={t`Connect wallet to view distributions`}
       />
     );

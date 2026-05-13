@@ -30,13 +30,13 @@ export function AvailableLiquidityRow() {
 
   if (isSwap && swapAmounts) {
     tooltipContent = isLiquidityRisk
-      ? t`Warning: May not execute due to low liquidity at your min. receive price`
+      ? t`Warning: may not execute due to low liquidity at your min. receive price`
       : t`Executes when liquidity and price conditions are met`;
   }
 
   if (isIncrease && increaseAmounts) {
     tooltipContent = isLiquidityRisk
-      ? t`Warning: May not execute due to low liquidity at your trigger price`
+      ? t`Warning: may not execute due to low liquidity at your trigger price`
       : t`Executes when price and liquidity conditions are met`;
   }
 

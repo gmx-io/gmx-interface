@@ -36,7 +36,7 @@ export const PriceImpactRebatesStatsPage = memo(() => {
       <div className="default-container page-layout">
         <div className="flex">
           <Checkbox isChecked={reviewed} setIsChecked={setReviewed}>
-            <Trans>Incl. reviewed</Trans>
+            <Trans>Include reviewed</Trans>
           </Checkbox>
           <div className="PriceImpactRebatesStats-loading">{loading && <SpinningLoader />}</div>
         </div>
@@ -48,7 +48,7 @@ export const PriceImpactRebatesStatsPage = memo(() => {
               className="App-button-option App-card-option"
               onClick={() => setPageIndex((page) => Math.max(0, page - 1))}
             >
-              <Trans>Prev</Trans>
+              <Trans>Previous</Trans>
             </button>
           )}
           {hasMore && (

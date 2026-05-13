@@ -13,7 +13,7 @@ export function PerformanceLabel({
   short?: boolean;
   variant?: ComponentProps<typeof TooltipWithPortal>["variant"];
 }) {
-  const label = short ? t`Ann. performance` : t`Annualized performance`;
+  const label = short ? t`Annualized performance` : t`Annualized performance`;
   return (
     <TooltipWithPortal
       handle={upperCase ? label.toUpperCase() : label}
@@ -25,7 +25,7 @@ export function PerformanceLabel({
           Projected yearly return vs. a Uniswap V2-style benchmark.
           <br />
           <br />
-          Note: Short timeframes may not reflect long-term performance.
+          Short timeframes may not reflect long-term performance.
           <br />
           <br />
           <ExternalLink href="https://dune.com/gmx-io/v2-lp-dashboard">View detailed stats on Dune</ExternalLink>.

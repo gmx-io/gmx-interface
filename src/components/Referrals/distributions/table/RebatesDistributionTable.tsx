@@ -36,16 +36,16 @@ export function RebatesDistributionTable({
         <div role="table" className="grid min-w-max grid-cols-[1fr_1fr_1fr_1fr_auto] gap-y-4">
           <GridRow>
             <GridHeaderCell>
-              <Trans>Date</Trans>
+              <Trans>DATE</Trans>
             </GridHeaderCell>
             <GridHeaderCell>
-              <Trans>Type</Trans>
+              <Trans>TYPE</Trans>
             </GridHeaderCell>
             <GridHeaderCell>
-              <Trans>Amount</Trans>
+              <Trans>AMOUNT</Trans>
             </GridHeaderCell>
             <GridHeaderCell className="text-right">
-              <Trans>Transaction</Trans>
+              <Trans>TRANSACTION</Trans>
             </GridHeaderCell>
             <GridHeaderCell />
           </GridRow>

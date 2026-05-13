@@ -1,6 +1,7 @@
 import { useMemo } from "react";
 
 import { useUserReferralInfoRequest } from "domain/referrals";
+import { API_UI_FLAGS, useIsApiSdkEnabled } from "domain/synthetics/uiFlags/useIsApiSdkEnabled";
 import { getByKey } from "lib/objects";
 import { ContractsChainId } from "sdk/configs/chains";
 import { ApiPositionInfo, getPositionInfo, PositionInfo } from "sdk/utils/positions";
@@ -64,7 +65,7 @@ export function usePositionsInfoRequest(
     positionsError,
   } = p;
 
-  const isApiSdkEnabled = false;
+  const isApiSdkEnabled = useIsApiSdkEnabled(API_UI_FLAGS.positions);
 
   const {
     positionsInfoData: apiPositionsInfoData,

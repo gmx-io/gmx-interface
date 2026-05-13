@@ -27,7 +27,7 @@ import {
 import { getJitLiquidityInfo } from "domain/synthetics/jit/utils";
 import {
   getAvailableUsdLiquidityForPosition,
-  getMaxAllowedLeverageByMinCollateralFactor,
+  getMaxAllowedLeverage,
   getMaxLeverageByMinCollateralFactor,
   getTradeboxLeverageSliderMarks,
 } from "domain/synthetics/markets";
@@ -1379,8 +1379,8 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
         priceImpactDiffUsd: increaseAmounts.potentialPriceImpactDiffUsd,
         totalPendingImpactDeltaUsd: 0n,
         proportionalPendingImpactDeltaUsd: 0n,
-        borrowingFeeUsd: selectedPosition?.pendingBorrowingFeesUsd || 0n,
-        fundingFeeUsd: selectedPosition?.pendingFundingFeesUsd || 0n,
+        borrowingFeeUsd: 0n,
+        fundingFeeUsd: 0n,
         feeDiscountUsd: increaseAmounts.feeDiscountUsd,
         swapProfitFeeUsd: 0n,
         swapProfitUsdIn: 0n,
@@ -1618,6 +1618,10 @@ export const selectTradeboxSelectedPosition = createSelector((q) => {
   return getByKey(positionsInfoData, selectedPositionKey);
 });
 
+export const selectTradeboxSelectedPositionSizeInUsd = createSelector((q) => {
+  return q(selectTradeboxSelectedPosition)?.sizeInUsd;
+});
+
 const selectTradeboxExistingOrders = createSelector((q) => {
   const ordersInfoData = q(selectOrdersInfoData);
 
@@ -1795,7 +1799,11 @@ export const selectTradeboxMaxLeverage = createSelector((q) => {
 
 export const selectTradeboxMaxAllowedLeverage = createSelector((q) => {
   const marketInfo = q((s) => s.tradebox.marketInfo);
-  return getMaxAllowedLeverageByMinCollateralFactor(marketInfo?.minCollateralFactor, marketInfo?.marketTokenAddress);
+  return getMaxAllowedLeverage({
+    minCollateralFactor: marketInfo?.minCollateralFactor,
+    minCollateralFactorForLiquidation: marketInfo?.minCollateralFactorForLiquidation,
+    positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,
+  });
 });
 
 export const selectTradeboxLeverageSliderMarks = createSelector((q) => {

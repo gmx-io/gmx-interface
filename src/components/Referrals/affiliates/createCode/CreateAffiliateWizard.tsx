@@ -30,13 +30,13 @@ function AffiliatePromos() {
       <h2 className="text-[40px] font-medium max-md:text-[32px]">
         <Trans>
           Earn up to 15% in
-          <br className="max-md:hidden" /> rebates as an Affiliate
+          <br className="max-md:hidden" /> rebates as an affiliate
         </Trans>
       </h2>
       <p className="text-body-medium text-typography-secondary">
         <Trans>
           Share your referral code with friends or your community —<br /> every trade made with your code earns you
-          $-rewards.
+          $-rewards
         </Trans>
       </p>
     </>
@@ -95,7 +95,7 @@ export function CreateAffiliateWizard({
                   <Trans>Connect wallet</Trans>
                 </Button>
                 <ExternalLink href="https://docs.gmx.io/docs/referrals" variant="icon" className="text-blue-300">
-                  <Trans>Learn more</Trans>
+                  <Trans>Read more</Trans>
                 </ExternalLink>
               </div>
             </>
@@ -120,7 +120,7 @@ export function CreateAffiliateWizard({
                   href="https://docs.gmx.io/docs/referrals"
                   className="text-body-small self-center text-blue-300"
                 >
-                  <Trans>Learn more</Trans>
+                  <Trans>Read more</Trans>
                 </ExternalLink>
               </div>
             </>
@@ -155,7 +155,7 @@ export function CreateAffiliateWizard({
                   className="text-body-small font-medium text-blue-300 transition-colors hover:text-typography-primary"
                   onClick={onGoToAffiliateDashboard}
                 >
-                  <Trans>Go to Affiliate Dashboard</Trans>
+                  <Trans>Go to affiliate dashboard</Trans>
                 </button>
               </div>
             </>

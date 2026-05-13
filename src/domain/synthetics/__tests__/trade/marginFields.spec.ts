@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { getMaxAllowedLeverageByMinCollateralFactor } from "domain/synthetics/markets";
+import { getMaxAllowedLeverage } from "domain/synthetics/markets";
 import { expandDecimals, USD_DECIMALS } from "lib/numbers";
 import { mockMarketsInfoData, mockTokensData } from "sdk/test/mock";
 import { bigMath } from "sdk/utils/bigmath";
@@ -18,7 +18,8 @@ import {
 
 const tokensData = mockTokensData();
 
-// minCollateralFactor = 5e27 → maxAllowedLeverage = 100x (1_000_000 in basis points)
+// minCollateralFactor = 5e27 (0.5%) with equal liqMCF → maxAllowedLeverage = 100x
+// (the liquidation bound 1/(2*0.005) = 100 dominates the opening bound).
 const MCF_100X = expandDecimals(5, 27);
 
 // Fee factor 0.05% = 5e26
@@ -30,6 +31,7 @@ function makeMarketInfo(overrides: Record<string, unknown> = {}) {
   const marketsInfoData = mockMarketsInfoData(tokensData, ["ETH-ETH-USDC"], {
     "ETH-ETH-USDC": {
       minCollateralFactor: MCF_100X,
+      minCollateralFactorForLiquidation: MCF_100X,
       positionFeeFactorForBalanceWasImproved: FEE_FACTOR_005,
       positionFeeFactorForBalanceWasNotImproved: FEE_FACTOR_007,
       ...overrides,
@@ -115,7 +117,11 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
     });
 
     const collateralUsd = expandDecimals(1000, USD_DECIMALS);
-    const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(MCF_100X, undefined);
+    const maxAllowedLeverage = getMaxAllowedLeverage({
+      minCollateralFactor: MCF_100X,
+      minCollateralFactorForLiquidation: MCF_100X,
+      positionFeeFactorForBalanceWasNotImproved: feeFactor,
+    });
 
     const result = calcMaxSizeDeltaInUsdByLeverage({
       marketInfo,
@@ -158,7 +164,11 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
     });
 
     const collateralUsd = expandDecimals(500, USD_DECIMALS);
-    const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(MCF_100X, undefined);
+    const maxAllowedLeverage = getMaxAllowedLeverage({
+      minCollateralFactor: MCF_100X,
+      minCollateralFactorForLiquidation: MCF_100X,
+      positionFeeFactorForBalanceWasNotImproved: feeFactor,
+    });
 
     const existingPosition = {
       sizeInUsd: expandDecimals(50000, USD_DECIMALS),
@@ -427,7 +437,7 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
     expect(sizeUsd).toBeGreaterThan(expandDecimals(90000, USD_DECIMALS));
   });
 
-  it("handles zero minCollateralFactor (default 50x max)", () => {
+  it("handles zero minCollateralFactor (default 100x max)", () => {
     const marketInfo = makeMarketInfo({ minCollateralFactor: 0n });
     const collateralUsd = expandDecimals(1000, USD_DECIMALS);
 
@@ -442,11 +452,11 @@ describe("calcMaxSizeDeltaInUsdByLeverage", () => {
     });
 
     expect(result).toBeDefined();
-    // Default is 50x. Without fees: 1000 * 50 = 50000 USD → ~41.67 ETH
+    // Default is 100x. Without fees: 1000 * 100 = 100000 USD.
     // With fees it's slightly less. Just verify it's reasonable.
     const sizeDeltaUsd = tokenAmountToUsd(result!, 18, ETH_PRICE);
-    expect(sizeDeltaUsd).toBeLessThan(expandDecimals(50000, USD_DECIMALS));
-    expect(sizeDeltaUsd).toBeGreaterThan(expandDecimals(45000, USD_DECIMALS));
+    expect(sizeDeltaUsd).toBeLessThan(expandDecimals(100000, USD_DECIMALS));
+    expect(sizeDeltaUsd).toBeGreaterThan(expandDecimals(90000, USD_DECIMALS));
   });
 });
 

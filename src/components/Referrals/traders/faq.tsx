@@ -78,11 +78,11 @@ export const POST_WIZARD_FAQS: FaqItem[] = [
     ),
   },
   {
-    title: <Trans>Where can I learn more?</Trans>,
+    title: <Trans>Where can I read more?</Trans>,
     content: (
       <Trans>
         Visit the <ExternalLink href={REFERRALS_DOCS_URL}>Referrals Documentation</ExternalLink> or ask in the{" "}
-        <ExternalLink href={GMX_PARTNER_TELEGRAM_URL}>GMX Telegram</ExternalLink>.
+        <ExternalLink href={GMX_PARTNER_TELEGRAM_URL}>GMX Telegram</ExternalLink>
       </Trans>
     ),
   },
