@@ -4995,10 +4995,6 @@ msgstr "透過此操作可多賺取 {0}% 的獎勵"
 msgid "Insufficient {nativeTokenSymbol} for gas on {0}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
 msgstr "在 {0} 上的 {nativeTokenSymbol} Gas 費用不足。請<0>兌換</0>或<1>跨鏈橋</1>轉入 {nativeTokenSymbol}。"
 
-#: src/components/Seo/SEO.tsx
-msgid "Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks"
-msgstr "在 Arbitrum、Ethereum 及其他網路上，直接從您的錢包進行最高 100 倍槓桿的永續合約交易及現貨交易"
-
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Sell fee"
 msgstr "賣出手續費"
@@ -5151,6 +5147,10 @@ msgstr "連結"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact factor for withdrawals"
 msgstr "提取最大可借出影響因子"
+
+#: src/components/Seo/SEO.tsx
+msgid "GMX | Decentralized Perpetual Exchange"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Claim completed"
@@ -7973,6 +7973,10 @@ msgstr "您必須在此頁面才能接受轉帳。<0>複製連結</0>."
 msgid "for {comment}"
 msgstr "用於 {comment}"
 
+#: src/components/Seo/SEO.tsx
+msgid "Trade BTC, ETH, SOL, GOLD, SILVER, WTI Oil and other crypto and RWA perpetual markets with up to 100x leverage, plus spot swaps from your wallet."
+msgstr ""
+
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Performance APY"
 msgstr "績效 APY"
@@ -9890,10 +9894,6 @@ msgstr "已累計"
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Cancellable in ..."
 msgstr "可取消倒數 ..."
-
-#: src/components/Seo/SEO.tsx
-msgid "GMX | decentralized perpetual exchange"
-msgstr "GMX | 去中心化永續交易所"
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx

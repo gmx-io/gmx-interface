@@ -4995,10 +4995,6 @@ msgstr "このアクションで報酬が {0}% 増加します"
 msgid "Insufficient {nativeTokenSymbol} for gas on {0}. <0>Swap</0> or <1>bridge</1> {nativeTokenSymbol}."
 msgstr "{0}でのGas用{nativeTokenSymbol}が不足しています。{nativeTokenSymbol}を<0>スワップ</0>または<1>ブリッジ</1>してください。"
 
-#: src/components/Seo/SEO.tsx
-msgid "Trade perpetuals with up to 100x leverage, plus spot trading, directly from your wallet on Arbitrum, Ethereum, and other networks"
-msgstr "Arbitrum、Ethereum、その他のネットワーク上で、ウォレットから直接、最大100倍レバレッジのパーペチュアル取引やスポット取引を行えます"
-
 #: src/components/GmSwap/GmFees/GmFees.tsx
 msgid "Sell fee"
 msgstr "売却手数料"
@@ -5151,6 +5147,10 @@ msgstr "リンク"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact factor for withdrawals"
 msgstr "出金の最大貸出可能インパクトファクター"
+
+#: src/components/Seo/SEO.tsx
+msgid "GMX | Decentralized Perpetual Exchange"
+msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Claim completed"
@@ -7973,6 +7973,10 @@ msgstr "送金を受け入れるには、このページにいる必要があり
 msgid "for {comment}"
 msgstr "{comment}"
 
+#: src/components/Seo/SEO.tsx
+msgid "Trade BTC, ETH, SOL, GOLD, SILVER, WTI Oil and other crypto and RWA perpetual markets with up to 100x leverage, plus spot swaps from your wallet."
+msgstr ""
+
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Performance APY"
 msgstr "パフォーマンス APY"
@@ -9890,10 +9894,6 @@ msgstr "蓄積済"
 #: src/domain/synthetics/orders/useDisabledCancelMarketOrderMessage.ts
 msgid "Cancellable in ..."
 msgstr "キャンセル可能まで ..."
-
-#: src/components/Seo/SEO.tsx
-msgid "GMX | decentralized perpetual exchange"
-msgstr "GMX | 分散型パーペチュアル取引所"
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
