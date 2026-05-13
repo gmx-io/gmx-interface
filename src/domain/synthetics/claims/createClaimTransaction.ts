@@ -8,6 +8,21 @@ import type { ContractsChainId } from "sdk/configs/chains";
 
 import { ClaimableAmountsDataByDistributionId, ClaimsConfigurationData } from "./useUserClaimableAmounts";
 
+export type AcceptTermsAndClaimParam = {
+  token: string;
+  distributionId: bigint;
+  termsSignature: string;
+  acceptedTerms: string;
+};
+
+export function encodeAcceptTermsAndClaim(params: AcceptTermsAndClaimParam[], account: string) {
+  return encodeFunctionData({
+    abi: ClaimHandlerAbi,
+    functionName: "acceptTermsAndClaim",
+    args: [params, account],
+  });
+}
+
 export function getClaimTransactionCallData({
   selectedDistributionIds,
   claimableAmountsDataByDistributionId,
@@ -32,11 +47,7 @@ export function getClaimTransactionCallData({
     }));
   });
 
-  return encodeFunctionData({
-    abi: ClaimHandlerAbi,
-    functionName: "acceptTermsAndClaim",
-    args: [params, account],
-  });
+  return encodeAcceptTermsAndClaim(params, account);
 }
 
 export function createClaimAmountsTransaction(data: {

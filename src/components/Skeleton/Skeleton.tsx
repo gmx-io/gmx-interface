@@ -15,24 +15,18 @@ import "./Skeleton.scss";
 type Props = {
   count?: number;
   invisible?: boolean;
-  Structure: ComponentType;
+  Structure: ComponentType<any>;
 };
 
-function TableListSkeleton({ count = 10, Structure, invisible = false, ...restProps }: Props) {
-  if (invisible) {
-    return (
-      <SkeletonTheme baseColor="transparent" highlightColor="transparent" enableAnimation={false}>
-        {Array.from({ length: count }).map((_, index) => (
-          <Structure {...restProps} key={index} />
-        ))}
-      </SkeletonTheme>
-    );
-  }
-
+export function TableListSkeleton({ count = 10, Structure, invisible = false, ...restProps }: Props) {
   return (
-    <SkeletonTheme baseColor="#B4BBFF1A" highlightColor="#B4BBFF1A">
+    <SkeletonTheme
+      baseColor={invisible ? "transparent" : "#B4BBFF1A"}
+      highlightColor={invisible ? "transparent" : "#B4BBFF1A"}
+      enableAnimation={!invisible}
+    >
       {Array.from({ length: count }).map((_, index) => (
-        <Structure {...restProps} key={index} />
+        <Structure {...restProps} invisible={invisible} key={index} />
       ))}
     </SkeletonTheme>
   );

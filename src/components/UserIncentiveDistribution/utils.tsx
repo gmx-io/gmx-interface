@@ -5,10 +5,13 @@ import {
   GLV_BONUS_INCENTIVE_DISTRIBUTION_TEST_ID,
   GLV_BONUS_INCENTIVE_DISTRIBUTION_ID,
   GLP_DISTRIBUTION_TEST_ID,
+  POINTS_REWARDS_DISTRIBUTION_ID,
 } from "domain/synthetics/claims/constants";
 
 export const getDistributionTitle = (distributionId: string) => {
   switch (distributionId) {
+    case POINTS_REWARDS_DISTRIBUTION_ID.toString():
+      return t`Points trading rewards`;
     case GLP_DISTRIBUTION_TEST_ID.toString():
       return t`GLP reimbursement (test)`;
     case GLP_DISTRIBUTION_ID.toString():

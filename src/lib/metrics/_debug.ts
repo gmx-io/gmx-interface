@@ -8,6 +8,7 @@ export enum MetricsDebugFlags {
   LogFreshnessMetrics = "LogFreshnessMetrics",
   LogTimings = "LogTimings",
   LogEvents = "LogEvents",
+  LogUserAnalyticsEvents = "LogUserAnalyticsEvents",
   LogBatchItems = "LogBatchItems",
   LogQueueState = "LogQueueState",
   LogCounters = "LogCounters",
@@ -18,6 +19,7 @@ type MetricsDebugState = {
   [MetricsDebugFlags.LogFreshnessMetrics]: boolean;
   [MetricsDebugFlags.LogTimings]: boolean;
   [MetricsDebugFlags.LogEvents]: boolean;
+  [MetricsDebugFlags.LogUserAnalyticsEvents]: boolean;
   [MetricsDebugFlags.LogBatchItems]: boolean;
   [MetricsDebugFlags.LogQueueState]: boolean;
   [MetricsDebugFlags.LogCounters]: boolean;
@@ -53,18 +55,36 @@ class MetricsDebug {
     if (this.getFlag(MetricsDebugFlags.LogBatchItems)) {
       this.log("Push Batch Items", payload);
     }
+
+    this.logUserAnalyticsEvents("Push", payload);
   }
 
   logSendBatchItems(payload: BatchReportItem[]): void {
     if (this.getFlag(MetricsDebugFlags.LogBatchItems)) {
       this.log("Send Batch Items:", payload);
     }
+
+    this.logUserAnalyticsEvents("Send", payload);
   }
 
   logBatchItemsSent(payload: BatchReportItem[]): void {
     if (this.getFlag(MetricsDebugFlags.LogBatchItems)) {
       this.log("Batch Items Sent:", payload.length);
     }
+  }
+
+  logUserAnalyticsEvents(action: string, payload: BatchReportItem[]): void {
+    if (!this.getFlag(MetricsDebugFlags.LogUserAnalyticsEvents)) {
+      return;
+    }
+
+    const userAnalyticsEvents = payload.filter((item) => item.type === "userAnalyticsEvent");
+
+    if (userAnalyticsEvents.length === 0) {
+      return;
+    }
+
+    this.log(`${action} User Analytics Events`, userAnalyticsEvents);
   }
 
   logEvent(payload: EventPayload): void {

@@ -23,6 +23,7 @@ const LEVERAGE_OPTION_KEY = "leverage-option";
 const LEVERAGE_ENABLED_KEY = "leverage-enabled";
 const KEEP_LEVERAGE_FOR_DECREASE_KEY = "Exchange-keep-leverage";
 export const SHOW_DEBUG_VALUES_KEY = "show-debug-values";
+export const SHOW_ALL_POINTS_PAGE_BANNERS_KEY = "show-all-points-page-banners";
 export const DEBUG_METRICS_KEY = "debug_metrics";
 export const RPC_DEBUG_STATE_KEY = "rpc_debug_state";
 export const DEBUG_RPC_ENDPOINTS_KEY = "debug_rpc_endpoints";
@@ -68,6 +69,11 @@ export const SUPPORT_CHAT_LAST_CONNECTED_STATE_KEY = "support-chat-last-connecte
 
 export const METRICS_PENDING_EVENTS_KEY = "metrics-pending-events";
 export const METRICS_TIMERS_KEY = "metrics-timers-key";
+
+export const POINTS_NAV_NEW_BADGE_CLICKED_KEY = "points-nav-new-badge-clicked";
+export const POINTS_TRADE_BANNER_DISMISSED_KEY = "points-trade-banner-dismissed";
+export const POINTS_PAGE_BANNERS_DISMISSED_KEY = "points-page-banners-dismissed";
+export const HISTORICAL_POINTS_ALLOCATION_MODAL_DISMISSED_KEY = "historical-points-allocation-modal-dismissed";
 
 export const UI_FLAG_EVENTS_DISMISSED_KEY_PREFIX = "ui-flag-event-dismissed";
 

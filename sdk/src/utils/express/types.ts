@@ -2,7 +2,13 @@ import type { ExternalCallsPayload } from "utils/orderTransactions";
 import type { Subaccount, SubaccountValidations } from "utils/subaccount";
 import type { SignedTokenPermit, TokenData } from "utils/tokens/types";
 
-export type { Subaccount, SubaccountOnchainData, SubaccountSerializedConfig, SignedSubaccountApproval, SubaccountValidations } from "utils/subaccount";
+export type {
+  Subaccount,
+  SubaccountOnchainData,
+  SubaccountSerializedConfig,
+  SignedSubaccountApproval,
+  SubaccountValidations,
+} from "utils/subaccount";
 
 export type OracleParamsPayload = {
   tokens: string[];

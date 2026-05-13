@@ -72,9 +72,14 @@ import Badge, { BadgeIndicator } from "components/Badge/Badge";
 import Checkbox from "components/Checkbox/Checkbox";
 import { Claims } from "components/Claims/Claims";
 import ErrorBoundary from "components/Errors/ErrorBoundary";
+import {
+  HistoricalPointsAllocationModal,
+  useHistoricalPointsAllocationModal,
+} from "components/HistoricalPointsAllocationModal";
 import { OneClickPromoBanner } from "components/OneClickPromoBanner/OneClickPromoBanner";
 import { OrderList } from "components/OrderList/OrderList";
 import { OrdersModal, type TpSlTabType } from "components/OrdersModal/OrdersModal";
+import { PointsPromoBanner } from "components/PointsPromoBanner/PointsPromoBanner";
 import { PositionEditor } from "components/PositionEditor/PositionEditor";
 import { PositionList } from "components/PositionList/PositionList";
 import { PositionSeller } from "components/PositionSeller/PositionSeller";
@@ -129,6 +134,8 @@ export function SyntheticsPage(p: Props) {
     onDoNotShowAgainChange: handleShareSuccessDoNotShowAgainChange,
     onShareAction: handleShareSuccessShareAction,
   } = useShareSuccessClosedPosition({ chainId, account });
+
+  const historicalPointsAllocationModal = useHistoricalPointsAllocationModal();
 
   useExternalSwapHandler();
 
@@ -524,14 +531,14 @@ export function SyntheticsPage(p: Props) {
             )}
           </>
         ) : (
-          <div className="w-[40rem] shrink-0">
+          <div className="flex w-[40rem] shrink-0 flex-col gap-8">
             <TradeBoxResponsiveContainer />
 
             {isSwap && !isTwap && (
-              <div className="mt-8 flex flex-col gap-12">
-                <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />
-              </div>
+              <SwapCard maxLiquidityUsd={swapOutLiquidity} fromToken={fromToken} toToken={toToken} />
             )}
+
+            <PointsPromoBanner />
           </div>
         )}
 
@@ -631,6 +638,12 @@ export function SyntheticsPage(p: Props) {
           shareSource="auto-prompt"
         />
       ) : null}
+      <HistoricalPointsAllocationModal
+        isVisible={historicalPointsAllocationModal.isVisible}
+        setIsVisible={historicalPointsAllocationModal.setIsVisible}
+        manualAllocatedPoints={historicalPointsAllocationModal.manualAllocatedPoints}
+        manualBonusUsd={historicalPointsAllocationModal.manualBonusUsd}
+      />
     </AppPageLayout>
   );
 }

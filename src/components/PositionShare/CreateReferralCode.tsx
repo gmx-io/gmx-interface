@@ -49,25 +49,26 @@ import ReferralsIcon from "img/ic_referrals.svg?react";
 
 type Props = {
   onSuccess: (code: string) => void;
+  description?: React.ReactNode;
 };
 
-const REFERRAL_DOCS_LINK = "https://docs.gmx.io/docs/referrals/";
+export const REFERRAL_DOCS_LINK = "https://docs.gmx.io/docs/referrals/";
 
-export function CreateReferralCode({ onSuccess }: Props) {
+export function CreateReferralCode({ onSuccess, description }: Props) {
   const { srcChainId } = useChainId();
 
   if (srcChainId !== undefined) {
     return (
       <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="referrals">
-        <CreateReferralCodeMultichain onSuccess={onSuccess} />
+        <CreateReferralCodeMultichain onSuccess={onSuccess} description={description} />
       </SyntheticsStateContextProvider>
     );
   }
 
-  return <CreateReferralCodeSettlement onSuccess={onSuccess} />;
+  return <CreateReferralCodeSettlement onSuccess={onSuccess} description={description} />;
 }
 
-function CreateReferralCodeSettlement({ onSuccess }: Props) {
+function CreateReferralCodeSettlement({ onSuccess, description }: Props) {
   const { signer } = useWallet();
   const { openConnectModal } = useConnectModal();
   const { address: account, isConnected } = useAccount();
@@ -202,11 +203,12 @@ function CreateReferralCodeSettlement({ onSuccess }: Props) {
       isConnected={isConnected}
       buttonState={buttonState}
       inputRef={inputRef}
+      description={description}
     />
   );
 }
 
-function CreateReferralCodeMultichain({ onSuccess }: Props) {
+function CreateReferralCodeMultichain({ onSuccess, description }: Props) {
   const { chainId, srcChainId } = useChainId();
   const { account, signer } = useWallet();
   const { openConnectModal } = useConnectModal();
@@ -494,6 +496,7 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
       buttonState={buttonState}
       inputRef={inputRef}
       networkFeeUsd={quoteResult.networkFeeUsd}
+      description={description}
     />
   );
 }
@@ -512,6 +515,7 @@ function CreateReferralCodeLayout({
   buttonState,
   inputRef,
   networkFeeUsd,
+  description,
 }: {
   chainId: ContractsChainId;
   srcChainId?: SourceChainId;
@@ -531,6 +535,7 @@ function CreateReferralCodeLayout({
   };
   inputRef: React.RefObject<HTMLInputElement>;
   networkFeeUsd?: bigint;
+  description?: React.ReactNode;
 }) {
   return (
     <div className="flex flex-col gap-16 rounded-12 border border-slate-600/60 bg-slate-900/60 p-16">
@@ -539,13 +544,15 @@ function CreateReferralCodeLayout({
           <Trans>Earn rewards by sharing your code!</Trans>
         </p>
         <p className="text-13 text-typography-secondary">
-          <Trans>
-            Get 5% back and give your community 5% off every trade. Higher referral tiers unlock even more.{" "}
-            <ExternalLink className="font-medium text-blue-300 !no-underline" href={REFERRAL_DOCS_LINK} newTab>
-              <Trans>Read more</Trans>
-            </ExternalLink>
-            .
-          </Trans>
+          {description ?? (
+            <Trans>
+              Get 5% back and give your community 5% off every trade. Higher referral tiers unlock even more.{" "}
+              <ExternalLink className="font-medium text-blue-300 !no-underline" href={REFERRAL_DOCS_LINK} newTab>
+                <Trans>Read more</Trans>
+              </ExternalLink>
+              .
+            </Trans>
+          )}
         </p>
       </div>
       <form

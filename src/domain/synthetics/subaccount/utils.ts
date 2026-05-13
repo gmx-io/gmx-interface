@@ -1,13 +1,6 @@
 import cryptoJs from "crypto-js";
 import { ethers, Provider } from "ethers";
-import {
-  decodeFunctionResult,
-  encodeFunctionData,
-  Hex,
-  maxUint256,
-  zeroAddress,
-  zeroHash,
-} from "viem";
+import { decodeFunctionResult, encodeFunctionData, Hex, maxUint256, zeroAddress, zeroHash } from "viem";
 
 import type { AnyChainId, ContractsChainId } from "config/chains";
 import { isSourceChain } from "config/multichain";

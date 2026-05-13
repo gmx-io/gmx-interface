@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { useHistory } from "react-router-dom";
+import { Link, useHistory } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
 import { useAccount } from "wagmi";
 
@@ -14,13 +14,18 @@ import { isMultichainFundingItemLoading } from "domain/multichain/isMultichainFu
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { useDisconnectAndClose } from "domain/multichain/useDisconnectAndClose";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
+import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
+import { isIncentivesEnabled, formatMultiplier } from "domain/synthetics/incentives/constants";
+import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
+import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
 import { useChainId } from "lib/chains";
 import { formatRelativeDateWithComma } from "lib/dates";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useENS } from "lib/legacy";
-import { formatUsd } from "lib/numbers";
+import { formatAmountHuman, formatUsd } from "lib/numbers";
 import { useNotifyModalState } from "lib/useNotifyModalState";
+import { sendPointsPageNavigationEvent } from "lib/userAnalytics/pointsEvents";
 import { shortenAddressOrEns } from "lib/wallets";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 import { getToken } from "sdk/configs/tokens";
@@ -30,6 +35,7 @@ import { Amount } from "components/Amount/Amount";
 import { Avatar } from "components/Avatar/Avatar";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
+import { MultiplierBadge } from "components/MultiplierBadge/MultiplierBadge";
 import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -38,12 +44,15 @@ import { UsdValueWithSkeleton } from "components/UsdValueWithSkeleton/UsdValueWi
 
 import BellIcon from "img/ic_bell.svg?react";
 import ChevronLeftIcon from "img/ic_chevron_left.svg?react";
+import ChevronRight from "img/ic_chevron_right.svg?react";
 import CopyIcon from "img/ic_copy.svg?react";
+import DepositIcon from "img/ic_deposit.svg?react";
 import ExplorerIcon from "img/ic_explorer.svg?react";
 import PnlAnalysisIcon from "img/ic_pnl_analysis.svg?react";
 import SettingsIcon from "img/ic_settings.svg?react";
 import DisconnectIcon from "img/ic_sign_out_20.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
+import WithdrawIcon from "img/ic_withdraw.svg?react";
 
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
 import {
@@ -224,30 +233,35 @@ function SettlementChainBalance() {
   const availableToTradeAssetSymbols = useAvailableToTradeAssetSymbolsSettlementChain();
 
   return (
-    <div className="flex flex-col gap-12 rounded-8 bg-fill-surfaceElevated50 p-12">
-      <div className="flex flex-col gap-8">
-        <div className="text-body-small text-typography-secondary">
-          <Trans>Available to trade</Trans>
+    <div className="rounded-8 bg-slate-700/50">
+      <div className="flex flex-col gap-12 rounded-8 border-1/2 border-slate-600 bg-slate-950/75 p-12">
+        <div className="flex flex-col gap-8">
+          <div className="text-body-small text-typography-secondary">
+            <Trans>Available to trade</Trans>
+          </div>
+          <Balance usd={totalUsd} availableToTradeAssetSymbols={availableToTradeAssetSymbols} />
         </div>
-        <Balance usd={totalUsd} availableToTradeAssetSymbols={availableToTradeAssetSymbols} />
+        <div className="h-[0.5px] bg-slate-600" />
+        <div>
+          <SyntheticsInfoRow
+            label={<Trans>Wallet</Trans>}
+            className="py-4"
+            value={<UsdValueWithSkeleton usd={walletUsd} />}
+          />
+          <SyntheticsInfoRow
+            label={
+              <TooltipWithPortal content={<GmxAccountBalanceTooltipContent />} variant="iconStroke">
+                <Trans>GMX Account balance</Trans>
+              </TooltipWithPortal>
+            }
+            className="py-4"
+            value={<UsdValueWithSkeleton usd={gmxAccountUsd} />}
+          />
+        </div>
+
+        <ActionButtons />
       </div>
-      <div className="h-[0.5px] bg-slate-600" />
-      <div>
-        <SyntheticsInfoRow
-          label={<Trans>Wallet</Trans>}
-          className="py-4"
-          value={<UsdValueWithSkeleton usd={walletUsd} />}
-        />
-        <SyntheticsInfoRow
-          label={
-            <TooltipWithPortal content={<GmxAccountBalanceTooltipContent />} variant="iconStroke">
-              <Trans>GMX Account balance</Trans>
-            </TooltipWithPortal>
-          }
-          className="py-4"
-          value={<UsdValueWithSkeleton usd={gmxAccountUsd} />}
-        />
-      </div>
+      <PointsSection />
     </div>
   );
 }
@@ -257,16 +271,21 @@ function MultichainBalance() {
   const availableToTradeAssetSymbols = useAvailableToTradeAssetSymbolsMultichain();
 
   return (
-    <div className="flex flex-col gap-8 rounded-8 bg-fill-surfaceElevated50 p-12">
-      <TooltipWithPortal
-        handleClassName="text-body-small text-typography-secondary"
-        content={<GmxAccountBalanceTooltipContent />}
-        variant="iconStroke"
-      >
-        <Trans>Balance</Trans>
-      </TooltipWithPortal>
+    <div className="rounded-8 bg-slate-700/50">
+      <div className="flex flex-col gap-8 rounded-8 border-1/2 border-slate-600 bg-slate-950/75 p-12">
+        <TooltipWithPortal
+          handleClassName="text-body-small text-typography-secondary"
+          content={<GmxAccountBalanceTooltipContent />}
+          variant="iconStroke"
+        >
+          <Trans>Balance</Trans>
+        </TooltipWithPortal>
 
-      <Balance usd={gmxAccountUsd} availableToTradeAssetSymbols={availableToTradeAssetSymbols} />
+        <Balance usd={gmxAccountUsd} availableToTradeAssetSymbols={availableToTradeAssetSymbols} />
+
+        <ActionButtons />
+      </div>
+      <PointsSection />
     </div>
   );
 }
@@ -300,7 +319,7 @@ function Balance({
       )}
       {usd !== undefined && usd !== 0n && (
         <button
-          className="flex min-h-32 items-center gap-4 rounded-full bg-slate-600 py-6 pl-12 pr-12 text-[13px] font-medium gmx-hover:bg-slate-600/90"
+          className="flex min-h-32 items-center gap-4 rounded-full border-1/2 border-slate-600 py-6 pl-12 pr-12 text-[13px] font-medium gmx-hover:bg-slate-800/50"
           onClick={handleAvailableToTradeClick}
         >
           <Trans>All assets</Trans>
@@ -345,13 +364,14 @@ const ActionButtons = () => {
     <Button
       variant="secondary"
       size="medium"
-      className={cx("flex-grow basis-1/2", {
+      className={cx("flex-grow basis-1/2 !gap-4", {
         "!text-typography-primary": !isAvalancheSettlement,
         "w-full": isAvalancheSettlement,
       })}
       onClick={handleDepositClick}
       disabled={isAvalancheSettlement}
     >
+      <DepositIcon className="size-24 shrink-0 text-blue-100" />
       <Trans>Deposit</Trans>
     </Button>
   );
@@ -374,9 +394,10 @@ const ActionButtons = () => {
       <Button
         variant="secondary"
         size="medium"
-        className="flex-grow basis-1/2 !text-typography-primary"
+        className="flex-grow basis-1/2 !gap-4 !text-typography-primary"
         onClick={handleWithdrawClick}
       >
+        <WithdrawIcon className="size-24 shrink-0 text-blue-100" />
         <Trans>Withdraw</Trans>
       </Button>
     </div>
@@ -419,7 +440,7 @@ const FundingHistorySection = () => {
   };
 
   return (
-    <div className="flex grow flex-col gap-12 overflow-y-hidden">
+    <div className="flex grow flex-col gap-8 overflow-y-hidden">
       <div className="flex items-center justify-between px-adaptive">
         <div className="text-body-large font-medium">
           <Trans>Funding activity</Trans>
@@ -485,13 +506,93 @@ const FundingHistorySection = () => {
   );
 };
 
+const PointsSection = () => {
+  const { chainId } = useChainId();
+  const { address: account } = useAccount();
+  const [, setOpen] = useGmxAccountModalOpen();
+
+  const enabled = isIncentivesEnabled(chainId);
+  const { data: config } = useIncentivesConfig(chainId);
+  const { data: status } = useAccountIncentiveStatus(chainId, {
+    account,
+    enabled,
+  });
+  const { data: stakingData } = useStakingProcessedData();
+
+  const multiplier = status?.multiplier;
+  const hasMultiplier = multiplier !== undefined && multiplier > 0;
+  const gmxStaked = stakingData?.gmxInStakedGmx;
+
+  const { gmxToNextTierLabel, additionalMultiplierLabel } = useMemo(() => {
+    if (!config?.stakingTiers?.length || gmxStaked === undefined) {
+      return { gmxToNextTierLabel: undefined, additionalMultiplierLabel: undefined };
+    }
+
+    const currentTierMultiplier =
+      config.stakingTiers.find((tier) => tier.tier === status?.stakingTier)?.multiplier ?? 0;
+    const nextTier = config.stakingTiers.find((tier) => gmxStaked < tier.threshold);
+
+    if (!nextTier) {
+      return { gmxToNextTierLabel: undefined, additionalMultiplierLabel: undefined };
+    }
+
+    const gmxToNextTier = nextTier.threshold - gmxStaked;
+    const additionalMultiplier = nextTier.multiplier - currentTierMultiplier;
+
+    return {
+      gmxToNextTierLabel: formatAmountHuman(gmxToNextTier, 18, false, 2),
+      additionalMultiplierLabel: additionalMultiplier > 0 ? formatMultiplier(additionalMultiplier) : undefined,
+    };
+  }, [config, gmxStaked, status?.stakingTier]);
+
+  if (!enabled) return null;
+
+  const handleClick = () => {
+    sendPointsPageNavigationEvent({ source: "GMXAccountModal" });
+    setOpen(false);
+  };
+
+  return (
+    <Link
+      to="/points"
+      onClick={handleClick}
+      className="flex items-center justify-between p-12 no-underline -outline-offset-4"
+    >
+      <div className="flex flex-col items-start gap-2">
+        <span className="text-13 font-medium text-typography-primary">
+          {hasMultiplier ? <Trans>Your multiplier</Trans> : <Trans>GMX Points</Trans>}{" "}
+          <MultiplierBadge multiplier={multiplier} />
+        </span>
+        <span className="text-12 text-typography-secondary">
+          {hasMultiplier ? (
+            gmxToNextTierLabel && additionalMultiplierLabel ? (
+              <Trans>
+                Stake {gmxToNextTierLabel} GMX more to get {additionalMultiplierLabel} additionally
+              </Trans>
+            ) : (
+              <Trans>You are already at the highest staking tier</Trans>
+            )
+          ) : (
+            <Trans>Start earning points and unlock rewards</Trans>
+          )}
+        </span>
+      </div>
+      <span
+        aria-hidden="true"
+        className="inline-flex h-32 w-32 shrink-0 items-center justify-center rounded-8 bg-[var(--color-button-secondary)] text-typography-secondary"
+      >
+        <ChevronRight className="size-20 h-20 shrink-0 pl-2" />
+      </span>
+    </Link>
+  );
+};
+
 export const MainView = ({ account }: { account: string }) => {
   return (
-    <div className="text-body-medium flex grow flex-col gap-[--padding-adaptive] overflow-y-hidden">
-      <div className="flex flex-col gap-12 px-adaptive pb-12 pt-8">
+    <div className="text-body-medium flex grow flex-col gap-24 overflow-y-hidden">
+      <div className="flex flex-col gap-12 px-adaptive pt-8">
         <Toolbar account={account} />
         <BalanceSection />
-        <ActionButtons />
       </div>
       <FundingHistorySection />
     </div>

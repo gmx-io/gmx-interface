@@ -8,6 +8,7 @@ export const colors = {
     500: { light: "#3d51ff", dark: "#3d51ff" },
     600: { light: "#2d42fc", dark: "#2d42fc" },
     700: { light: "#2e3dcd", dark: "#2e3dcd" },
+    900: { light: "#E2E5FD", dark: "#1E223C" },
   },
   "cold-blue": {
     500: { light: "#3a3f79", dark: "#3a3f79" },
@@ -80,6 +81,7 @@ export const colors = {
     primary: { light: "#000000", dark: "#ffffff" },
     secondary: { light: "#696D96", dark: "#a0a3c4" },
     inactive: { light: "#C4C4D5", dark: "#3E4361" },
+    disabled: { light: "#646A8F", dark: "#646A8F" },
   },
   stroke: {
     primary: { light: "#D4D4E2", dark: "#363a59" },

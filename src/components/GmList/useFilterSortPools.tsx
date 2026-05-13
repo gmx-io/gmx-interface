@@ -130,6 +130,8 @@ export function useFilterSortPools({
         return true;
       } else if (tab === "favorites") {
         return favoriteTokens?.includes(marketTokenAddress);
+      } else if (tab === "incentivized") {
+        return false;
       } else {
         const categoryTokenAddresses = getCategoryTokenAddresses(chainId, tab);
 

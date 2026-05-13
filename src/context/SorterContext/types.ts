@@ -6,7 +6,10 @@ export type SorterKey =
   | "gm-token-selector"
   | "leaderboard-accounts-table"
   | "leaderboard-positions-table"
-  | "position-list";
+  | "points-leaderboard"
+  | "position-list"
+  | "incentives-audit-list"
+  | "incentives-audit-detail";
 
 export type SorterConfig<SortField extends string | "unspecified" = "unspecified"> = {
   orderBy: SortField;

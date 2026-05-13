@@ -157,6 +157,8 @@ export function PoolSelector({
       return textMatched;
     } else if (tab === "favorites") {
       return textMatched?.filter((item) => favoriteTokens?.includes(getGlvOrMarketAddress(item.glvOrMarketInfo)));
+    } else if (tab === "incentivized") {
+      return textMatched;
     } else {
       const categoryTokenAddresses = getCategoryTokenAddresses(chainId, tab);
       return textMatched?.filter((item) => {

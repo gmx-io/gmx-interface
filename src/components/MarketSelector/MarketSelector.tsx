@@ -130,6 +130,10 @@ export function MarketSelector({
       return textMatched?.filter((item) => favoriteTokens?.includes(item.marketInfo.indexToken.address));
     }
 
+    if (tab === "incentivized") {
+      return textMatched;
+    }
+
     const categoryTokenAddresses = getCategoryTokenAddresses(chainId, tab);
     const tabMatched = textMatched?.filter((item) =>
       categoryTokenAddresses.includes(item.marketInfo.indexToken.address)
