@@ -31,8 +31,8 @@ const mockConfig: IncentivesConfig = {
 
 describe("incentivesText", () => {
   it("formats boost descriptions from config thresholds", () => {
-    expect(getBoostDescription("BalancingTrades", mockConfig)).toContain("$250,000+");
-    expect(getBoostDescription("LifetimeTrading", mockConfig)).toContain("$42,000,000+");
+    expect(getBoostDescription("BalancingTrades", mockConfig)).toContain("$250k+");
+    expect(getBoostDescription("LifetimeTrading", mockConfig)).toContain("$42m+");
   });
 
   it("returns the FeaturedMarkets boost description", () => {
@@ -43,13 +43,13 @@ describe("incentivesText", () => {
 
   it("returns the full BalancingTrades boost description with threshold", () => {
     expect(getBoostDescription("BalancingTrades", mockConfig)).toBe(
-      "Place balancing trades ($250,000+) on underutilized sides to earn an additional multiplier on those trades."
+      "Place balancing trades ($250k+) on underutilized sides to earn an additional multiplier on those trades."
     );
   });
 
   it("returns the full LifetimeTrading boost description with threshold", () => {
     expect(getBoostDescription("LifetimeTrading", mockConfig)).toBe(
-      "Reach $42,000,000+ in lifetime trading volume to unlock a permanent 1× multiplier."
+      "Reach $42m+ in lifetime trading volume to unlock a permanent 1× multiplier."
     );
   });
 
