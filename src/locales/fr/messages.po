@@ -522,6 +522,10 @@ msgstr "Retrait du staking..."
 msgid "From network"
 msgstr "Réseau source"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Re-sign to continue using One-Click Trading."
+msgstr "L'approbation One-Click Trading n'est plus valide. Cela peut se produire lors d'un changement de chaîne ou de jeton de paiement. Signez à nouveau pour continuer à utiliser One-Click Trading."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral factor for liquidation"
 msgstr "Facteur de garantie minimum pour la liquidation"
@@ -1529,10 +1533,6 @@ msgstr ""
 msgid "CSV"
 msgstr "CSV"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading is disabled. Time limit expired."
-msgstr "Trading en un clic désactivé. Limite de temps expirée."
-
 #: src/components/Referrals/traders/faq.tsx
 msgid "How is my fee discount applied?"
 msgstr ""
@@ -1960,7 +1960,6 @@ msgstr "Garder l'effet de levier à {0}"
 msgid "AVAIL. LIQ."
 msgstr "LIQ. DISPO."
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "One-Click Trading is disabled. Action limit exceeded."
 msgstr "Trading en un clic désactivé. Limite d'action dépassée."
@@ -3462,6 +3461,10 @@ msgstr "PNL (%)"
 msgid "Buy GMX using decentralized exchange aggregators"
 msgstr "Acheter des GMX en utilisant des agrégateurs d'échanges décentralisés"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "This swap requires external routing, which isn't available with One-Click Trading. Disable One-Click to use Express Trading."
+msgstr "Ce swap nécessite un routage externe, qui n'est pas disponible avec One-Click Trading. Désactivez One-Click pour utiliser Express Trading."
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4001,6 +4004,10 @@ msgstr "Remises accumulées sur l'impact sur le prix"
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "Total volume"
 msgstr "Volume total"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading action limit reached. You're now using Express Trading."
+msgstr "Limite d'actions One-Click Trading atteinte. Vous utilisez maintenant Express Trading."
 
 #: src/components/PositionList/PositionList.tsx
 msgid "MARGIN"
@@ -6866,10 +6873,6 @@ msgstr "Vendre GLV"
 msgid "from {BLOCKCHAIN_COUNT} blockchains"
 msgstr "depuis {BLOCKCHAIN_COUNT} blockchains"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading approval nonce expired. Re-sign to continue."
-msgstr "Le nonce d'approbation One-Click Trading a expiré. Signez à nouveau pour continuer."
-
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "30d"
@@ -7813,10 +7816,6 @@ msgstr ""
 msgid "Claimed"
 msgstr "Récupéré"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "This swap requires external routing, which isn't available with One-Click Trading"
-msgstr ""
-
 #: src/components/TwapRows/TwapRows.tsx
 msgid "less than a minute"
 msgstr "moins d'une minute"
@@ -8081,6 +8080,10 @@ msgstr "Meilleures adresses"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Amount exceeds the withdrawal limit. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "Le montant dépasse la limite de retrait. Essayez un montant inférieur à <0>{upperLimitFormatted}</0>."
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
+msgstr "Le nonce d'approbation One-Click Trading a expiré. Signez à nouveau pour continuer à utiliser One-Click Trading."
 
 #: src/components/FavoriteTabs/RecentlyListedBadge.tsx
 #: src/components/SideNav/SupportChatNavItem.tsx
@@ -9767,6 +9770,10 @@ msgstr "Projets de l'écosystème"
 msgid "In progress..."
 msgstr "En cours..."
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading time limit expired. You're now using Express Trading."
+msgstr "La limite de temps One-Click Trading a expiré. Vous utilisez maintenant Express Trading."
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Affiliate vault"
 msgstr "Vault Affiliate"
@@ -10138,10 +10145,6 @@ msgstr "PRIX DE RÉFÉRENCE"
 #: src/components/Errors/errorToasts.tsx
 msgid "Increase the max network fee buffer to {0} in {settingsLink}"
 msgstr "Augmentez le tampon maximal des frais de réseau à {0} dans {settingsLink}"
-
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Re-sign to continue."
-msgstr "L'approbation One-Click Trading n'est plus valide. Cela peut se produire lors d'un changement de chaîne ou de jeton de paiement. Signez à nouveau pour continuer."
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM airdrop"

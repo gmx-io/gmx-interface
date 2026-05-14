@@ -6,8 +6,8 @@ import {
   selectIsExpressTransactionAvailable,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
-  selectSubaccountForMultichainAction,
-  selectSubaccountForSettlementChainAction,
+  selectRawSubaccountForMultichainAction,
+  selectRawSubaccountForSettlementChainAction,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useChainId } from "lib/chains";
@@ -56,7 +56,7 @@ export function useExpressOrdersParams({
   const showDebugValues = useShowDebugValues();
   const globalExpressParams = useSelector(selectExpressGlobalParams);
   const subaccount = useSelector(
-    isGmxAccount ? selectSubaccountForMultichainAction : selectSubaccountForSettlementChainAction
+    isGmxAccount ? selectRawSubaccountForMultichainAction : selectRawSubaccountForSettlementChainAction
   );
   const isExpressAvailable = useSelector(selectIsExpressTransactionAvailable);
 

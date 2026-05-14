@@ -522,6 +522,10 @@ msgstr "解除質押中..."
 msgid "From network"
 msgstr "來源網路"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Re-sign to continue using One-Click Trading."
+msgstr "One-Click Trading 授權無效。這可能在切換鏈或更改支付代幣時發生。請重新簽署以繼續使用 One-Click Trading。"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral factor for liquidation"
 msgstr "清算最低抵押品因子"
@@ -1529,10 +1533,6 @@ msgstr ""
 msgid "CSV"
 msgstr "CSV"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading is disabled. Time limit expired."
-msgstr "One-Click Trading 已停用。時間限制已到期。"
-
 #: src/components/Referrals/traders/faq.tsx
 msgid "How is my fee discount applied?"
 msgstr ""
@@ -1960,7 +1960,6 @@ msgstr "保持槓桿在 {0}"
 msgid "AVAIL. LIQ."
 msgstr "可用流動性"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "One-Click Trading is disabled. Action limit exceeded."
 msgstr "One-Click Trading 已停用。操作次數已超出限制。"
@@ -3462,6 +3461,10 @@ msgstr "PNL (%)"
 msgid "Buy GMX using decentralized exchange aggregators"
 msgstr "透過去中心化交易所聚合器買入 GMX"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "This swap requires external routing, which isn't available with One-Click Trading. Disable One-Click to use Express Trading."
+msgstr "此兌換需要外部路由，而 One-Click Trading 不支援外部路由。請停用 One-Click 以使用 Express Trading。"
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -4001,6 +4004,10 @@ msgstr "累計價格影響返還"
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "Total volume"
 msgstr "總交易量"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading action limit reached. You're now using Express Trading."
+msgstr "已達到 One-Click Trading 操作限制。您現在正在使用 Express Trading。"
 
 #: src/components/PositionList/PositionList.tsx
 msgid "MARGIN"
@@ -6866,10 +6873,6 @@ msgstr "賣出 GLV"
 msgid "from {BLOCKCHAIN_COUNT} blockchains"
 msgstr "來自 {BLOCKCHAIN_COUNT} 條區塊鏈"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading approval nonce expired. Re-sign to continue."
-msgstr "One-Click Trading 授權 nonce 已過期。請重新簽署以繼續。"
-
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "30d"
@@ -7813,10 +7816,6 @@ msgstr ""
 msgid "Claimed"
 msgstr "已領取"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "This swap requires external routing, which isn't available with One-Click Trading"
-msgstr ""
-
 #: src/components/TwapRows/TwapRows.tsx
 msgid "less than a minute"
 msgstr "不到一分鐘"
@@ -8081,6 +8080,10 @@ msgstr "熱門地址"
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Amount exceeds the withdrawal limit. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "金額超過提取上限。請嘗試小於 <0>{upperLimitFormatted}</0> 的金額。"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
+msgstr "One-Click Trading 授權 nonce 已過期。請重新簽署以繼續使用 One-Click Trading。"
 
 #: src/components/FavoriteTabs/RecentlyListedBadge.tsx
 #: src/components/SideNav/SupportChatNavItem.tsx
@@ -9767,6 +9770,10 @@ msgstr "生態系統專案"
 msgid "In progress..."
 msgstr "進行中..."
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading time limit expired. You're now using Express Trading."
+msgstr "One-Click Trading 時間限制已到期。您現在正在使用 Express Trading。"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Affiliate vault"
 msgstr "推廣者金庫"
@@ -10138,10 +10145,6 @@ msgstr "標記價格"
 #: src/components/Errors/errorToasts.tsx
 msgid "Increase the max network fee buffer to {0} in {settingsLink}"
 msgstr "在 {settingsLink} 中將最大網路費用緩衝增加至 {0}"
-
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Re-sign to continue."
-msgstr "One-Click Trading 授權無效。這可能在切換鏈或更改支付代幣時發生。請重新簽署以繼續。"
 
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM airdrop"
