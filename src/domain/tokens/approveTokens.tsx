@@ -13,9 +13,8 @@ import { metrics } from "lib/metrics";
 import { getProvider } from "lib/rpc";
 import TokenAbi from "sdk/abis/Token";
 import { getNativeToken, getToken } from "sdk/configs/tokens";
-import { InfoTokens, TokenInfo } from "sdk/utils/tokens/types";
+import { InfoTokens, Token, TokenInfo } from "sdk/utils/tokens/types";
 
-import { getInvalidPermitSignatureToastContent } from "components/Errors/errorToasts";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
 
@@ -42,6 +41,8 @@ type Params = {
   approveAmount: bigint | undefined;
 };
 
+type PermitFallbackReason = "unsupported" | "disabled" | "permitsDisabled" | "failed" | "invalidSignature";
+
 export async function approveTokens({
   setIsApproving,
   signer,
@@ -64,17 +65,33 @@ export async function approveTokens({
     approveAmount = maxUint256;
   }
 
-  let shouldUsePermit = false;
+  let token: Token | undefined;
+  let permitFallbackReason: PermitFallbackReason | undefined;
+
   try {
-    const token = getToken(chainId, tokenAddress);
-    shouldUsePermit = Boolean(token?.isPermitSupported && !token.isPermitDisabled);
+    token = getToken(chainId, tokenAddress);
+
+    if (!token.isPermitSupported) {
+      permitFallbackReason = "unsupported";
+    } else if (token.isPermitDisabled) {
+      permitFallbackReason = "disabled";
+    }
   } catch (e) {
     // ...ignore in case of glv / gm approval
   }
 
-  if (permitParams?.addTokenPermit && shouldUsePermit && !permitParams.isPermitsDisabled) {
+  if (permitParams?.isPermitsDisabled && token?.isPermitSupported && !permitFallbackReason) {
+    permitFallbackReason = "permitsDisabled";
+  }
+
+  const addTokenPermit = permitParams?.addTokenPermit;
+  const shouldUsePermit = Boolean(
+    addTokenPermit && token?.isPermitSupported && !token.isPermitDisabled && !permitParams?.isPermitsDisabled
+  );
+
+  if (shouldUsePermit && addTokenPermit && permitParams) {
     try {
-      await permitParams.addTokenPermit(tokenAddress, spender, approveAmount);
+      await addTokenPermit(tokenAddress, spender, approveAmount);
       onApproveSubmitted?.({ isPermit: true });
       helperToast.success(
         <div>
@@ -85,28 +102,31 @@ export async function approveTokens({
       setIsApproving(false);
       return;
     } catch (e) {
-      const isUserRejection = e.message?.includes("user rejected");
+      const error = e as Error;
+      const lowerMessage = error.message?.toLowerCase();
+      const isUserRejection = lowerMessage?.includes("user rejected") || lowerMessage?.includes("user denied");
 
       if (isUserRejection) {
-        onApproveFail?.(e, { isPermit: true });
+        onApproveFail?.(error, { isPermit: true });
         helperToast.error(t`Permit signing cancelled`);
         setIsApproving(false);
         return;
       }
 
-      if (e.message?.includes(INVALID_PERMIT_SIGNATURE_ERROR)) {
-        onApproveFail?.(e, { isPermit: true });
+      if (error.message?.includes(INVALID_PERMIT_SIGNATURE_ERROR)) {
         permitParams.setIsPermitsDisabled(true);
-        metrics.pushError(e, "approveTokens.permitError");
-        helperToast.error(getInvalidPermitSignatureToastContent());
-        setIsApproving(false);
-        return;
+        metrics.pushError(error, "approveTokens.permitError");
+        permitFallbackReason = "invalidSignature";
+      } else {
+        permitParams.setIsPermitsDisabled(true);
+        metrics.pushError(error, "approveTokens.permitError");
+        permitFallbackReason = "failed";
       }
-
-      // Smart wallets (Safe, etc.) don't support eth_signTypedData_v4 — fall back to approve()
-      permitParams.setIsPermitsDisabled(true);
-      metrics.pushError(e, "approveTokens.permitError");
     }
+  }
+
+  if (permitParams && permitFallbackReason) {
+    helperToast.info(getPermitFallbackToastContent(permitFallbackReason));
   }
 
   const contract = new ethers.Contract(tokenAddress, TokenAbi, signer);
@@ -187,4 +207,35 @@ export async function approveTokens({
   } finally {
     setIsApproving(false);
   }
+}
+
+function getPermitFallbackToastContent(reason: PermitFallbackReason) {
+  let reasonText: string;
+
+  switch (reason) {
+    case "unsupported":
+      reasonText = t`This token does not support permit approvals.`;
+      break;
+    case "disabled":
+      reasonText = t`Permit approvals are disabled for this token.`;
+      break;
+    case "permitsDisabled":
+      reasonText = t`Permit approvals are unavailable after a previous permit error.`;
+      break;
+    case "invalidSignature":
+      reasonText = t`The permit signature could not be validated.`;
+      break;
+    case "failed":
+      reasonText = t`Permit approval could not be completed.`;
+      break;
+  }
+
+  return (
+    <div>
+      {reasonText}
+      <br />
+      <br />
+      <Trans>A standard approval transaction is required to continue.</Trans>
+    </div>
+  );
 }

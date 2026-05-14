@@ -4256,10 +4256,6 @@ msgstr "Blueberry Pulse"
 msgid "Approval cancelled"
 msgstr "Aprobación cancelada"
 
-#: src/components/Errors/errorToasts.tsx
-msgid "<0>Invalid permit signature. Try again</0>"
-msgstr "<0>Firma de permiso no válida. Inténtelo de nuevo</0>"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive factor"
@@ -4644,6 +4640,10 @@ msgstr "Aumento de Mercado"
 msgid "No funding activity"
 msgstr "No hay actividad de funding"
 
+#: src/domain/tokens/approveTokens.tsx
+msgid "This token does not support permit approvals."
+msgstr ""
+
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
 msgid "Include PnL in leverage display"
@@ -4981,6 +4981,10 @@ msgstr "Transferir cuenta"
 #: src/components/MarketsList/NetFeeTooltip.tsx
 msgid "LONGS NET RATE / 1H"
 msgstr "TASA NETA LARGOS / 1H"
+
+#: src/domain/tokens/approveTokens.tsx
+msgid "The permit signature could not be validated."
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -5348,6 +5352,10 @@ msgstr "Orden de venta GM desconocida"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "GM: {0} buyable cap reached in {1} [{2}]. Choose a different pool, reduce size, or pick a different token composition."
 msgstr "GM: límite de compra de {0} alcanzado en {1} [{2}]. Elija un pool diferente, reduzca el tamaño o seleccione una composición de tokens diferente."
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Permit approval failed. A standard approval transaction is required. Approve the token and try again</0>"
+msgstr ""
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No options to transfer {nativeTokenSymbol} to {chainName}"
@@ -6267,6 +6275,10 @@ msgstr "No hay liquidez disponible para aumentar largos a<0/>este tamaño. Tama�
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
 msgstr "Referidos"
+
+#: src/domain/tokens/approveTokens.tsx
+msgid "Permit approvals are unavailable after a previous permit error."
+msgstr ""
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Volume traded by this account with an active referral code"
@@ -7733,6 +7745,10 @@ msgstr "Las órdenes TP/SL se cancelan automáticamente al cerrar la posición. 
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "fees"
 msgstr "comisiones"
+
+#: src/domain/tokens/approveTokens.tsx
+msgid "Permit approval could not be completed."
+msgstr ""
 
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Referral code update failed"
@@ -10097,6 +10113,10 @@ msgstr "30s"
 msgid "Annualized performance"
 msgstr "Rendimiento anualizado"
 
+#: src/domain/tokens/approveTokens.tsx
+msgid "Permit approvals are disabled for this token."
+msgstr ""
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "LAST PRICE"
@@ -10515,6 +10535,10 @@ msgstr "Traders referidos"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Max deposit limit reached: {maxPoolUsdText}"
 msgstr "Límite máximo de depósito alcanzado: {maxPoolUsdText}"
+
+#: src/domain/tokens/approveTokens.tsx
+msgid "A standard approval transaction is required to continue."
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield optimizations"
