@@ -31,7 +31,7 @@ export const PRIVY_WALLET_LIST = [
   "wallet_connect",
 ] as const;
 
-export const PRIVY_LOGIN_METHODS = ["wallet", "email", "google", "twitter", "discord", "passkey"] as const;
+export const PRIVY_LOGIN_METHODS = ["wallet", "email", "google", "twitter", "discord"] as const;
 
 export function getSupportedChains(): [Chain, ...Chain[]] {
   return Object.values(VIEM_CHAIN_BY_CHAIN_ID).filter((chain) => isDevelopment() || !isTestnetChain(chain.id)) as [

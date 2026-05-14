@@ -44,6 +44,7 @@ export default function WalletProvider({ children }: { children: React.ReactNode
         showWalletLoginFirst: true,
       },
       loginMethods: [...PRIVY_LOGIN_METHODS],
+      globalDisablePasskeys: true,
       defaultChain: arbitrum,
       supportedChains: [...supportedChains],
       embeddedWallets: {
