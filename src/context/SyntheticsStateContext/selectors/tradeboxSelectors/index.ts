@@ -1967,15 +1967,17 @@ export const selectTradeboxChooseSuitableMarket = createSelector((q) => {
 
     const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
 
+    const effectiveTradeType = currentTradeType ?? tradeType;
+
     const suitableParams = chooseSuitableMarket({
       indexTokenAddress: tokenAddress,
       maxLongLiquidityPool,
       maxShortLiquidityPool,
-      isSwap: tradeType === TradeType.Swap,
+      isSwap: effectiveTradeType === TradeType.Swap,
       positionsInfo,
       ordersInfo,
-      preferredTradeType: preferredTradeType ?? tradeType,
-      currentTradeType,
+      preferredTradeType: preferredTradeType ?? effectiveTradeType,
+      currentTradeType: effectiveTradeType,
     });
 
     if (!suitableParams) return;
