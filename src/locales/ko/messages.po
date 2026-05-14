@@ -4582,7 +4582,7 @@ msgstr "인수"
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "You need USDC and {0} on {1} to create a referral code via GMX Account. Deposit funds or switch to a different network."
-msgstr ""
+msgstr "GMX 계정을 통해 추천 코드를 생성하려면 {1}에서 USDC와 {0}이(가) 필요합니다. 자금을 입금하거나 다른 네트워크로 전환하세요."
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "LayerZero scan"

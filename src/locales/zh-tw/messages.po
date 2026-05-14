@@ -4582,7 +4582,7 @@ msgstr "參數"
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "You need USDC and {0} on {1} to create a referral code via GMX Account. Deposit funds or switch to a different network."
-msgstr ""
+msgstr "透過 GMX Account 建立推薦碼需要在 {1} 上擁有 USDC 和 {0}。請存入資金或切換至其他網路。"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "LayerZero scan"
