@@ -6,7 +6,7 @@ import useSWR from "swr";
 
 import { RebateDistribution } from "domain/referrals";
 import { helperToast } from "lib/helperToast";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { getToken } from "sdk/configs/tokens";
 
 import { Amount } from "components/Amount/Amount";

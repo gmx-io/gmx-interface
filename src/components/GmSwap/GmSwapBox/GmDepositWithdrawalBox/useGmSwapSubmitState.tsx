@@ -1,5 +1,4 @@
 import { t, Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useCallback, useMemo } from "react";
 import { zeroAddress } from "viem";
 
@@ -48,6 +47,7 @@ import { isCustomError } from "lib/errors";
 import { adjustForDecimals, formatBalanceAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 import { bigMath } from "sdk/utils/bigmath";
 import { GmSwapFees } from "sdk/utils/trade/types";

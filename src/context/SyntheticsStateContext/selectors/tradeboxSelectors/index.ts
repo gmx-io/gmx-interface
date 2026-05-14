@@ -78,7 +78,7 @@ import {
   selectMarketsInfoData,
   selectOrdersInfoData,
   selectPositionsInfoData,
-  selectRawSubaccount,
+  selectSubaccountForChainAction,
   selectTokensData,
   selectUiFeeFactor,
   selectUserReferralInfo,
@@ -268,7 +268,7 @@ const selectDebugForceExternalSwaps = createSelector((q) => {
 });
 
 export const selectIsOneClickActiveByUser = createSelector((q) => {
-  return q(selectIsExpressTransactionAvailable) && Boolean(q(selectRawSubaccount));
+  return q(selectIsExpressTransactionAvailable) && Boolean(q(selectSubaccountForChainAction));
 });
 
 export const selectIsExternalSwapDisabledByExpressSchema = createSelector((q) => {
@@ -1379,8 +1379,8 @@ export const selectTradeboxFees = createSelector(function selectTradeboxFees(q) 
         priceImpactDiffUsd: increaseAmounts.potentialPriceImpactDiffUsd,
         totalPendingImpactDeltaUsd: 0n,
         proportionalPendingImpactDeltaUsd: 0n,
-        borrowingFeeUsd: selectedPosition?.pendingBorrowingFeesUsd || 0n,
-        fundingFeeUsd: selectedPosition?.pendingFundingFeesUsd || 0n,
+        borrowingFeeUsd: 0n,
+        fundingFeeUsd: 0n,
         feeDiscountUsd: increaseAmounts.feeDiscountUsd,
         swapProfitFeeUsd: 0n,
         swapProfitUsdIn: 0n,
@@ -1967,15 +1967,17 @@ export const selectTradeboxChooseSuitableMarket = createSelector((q) => {
 
     const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
 
+    const effectiveTradeType = currentTradeType ?? tradeType;
+
     const suitableParams = chooseSuitableMarket({
       indexTokenAddress: tokenAddress,
       maxLongLiquidityPool,
       maxShortLiquidityPool,
-      isSwap: tradeType === TradeType.Swap,
+      isSwap: effectiveTradeType === TradeType.Swap,
       positionsInfo,
       ordersInfo,
-      preferredTradeType: preferredTradeType ?? tradeType,
-      currentTradeType,
+      preferredTradeType: preferredTradeType ?? effectiveTradeType,
+      currentTradeType: effectiveTradeType,
     });
 
     if (!suitableParams) return;

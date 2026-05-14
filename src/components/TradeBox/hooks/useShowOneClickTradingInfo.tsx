@@ -51,6 +51,7 @@ export function useExpressTradingWarnings({
   const isExternalSwapBlockedByGasConflict = useSelector(selectIsExternalSwapDisabledByExpressSchema);
 
   const isNativePayment = payTokenAddress === NATIVE_TOKEN_ADDRESS;
+  const subaccountValidations = expressParams?.subaccountValidations;
 
   const wrappedToken = getByKey(tokensData, getWrappedToken(chainId).address);
   const wrappedTokenBalance = isGmxAccount ? wrappedToken?.gmxAccountBalance : wrappedToken?.walletBalance;
@@ -67,11 +68,17 @@ export function useExpressTradingWarnings({
     shouldShowNativeTokenWarning:
       !tradeFlags?.isTrigger && isExpressTransactionAvailable && isNativePayment && !nativeTokenWarningHidden,
     shouldShowExpiredSubaccountWarning:
-      isExpressTransactionAvailable && rawSubaccount && getIsSubaccountExpired(rawSubaccount),
+      isExpressTransactionAvailable &&
+      rawSubaccount &&
+      (subaccountValidations?.isExpired ?? getIsSubaccountExpired(rawSubaccount)),
     shouldShowNonceExpiredWarning:
-      isExpressTransactionAvailable && rawSubaccount && getIsSubaccountNonceExpired(rawSubaccount),
+      isExpressTransactionAvailable &&
+      rawSubaccount &&
+      (subaccountValidations?.isNonceExpired ?? getIsSubaccountNonceExpired(rawSubaccount)),
     shouldShowAllowedActionsWarning:
-      isExpressTransactionAvailable && rawSubaccount && getIsSubaccountActionsExceeded(rawSubaccount, 1),
+      isExpressTransactionAvailable &&
+      rawSubaccount &&
+      (subaccountValidations?.isActionsExceeded ?? getIsSubaccountActionsExceeded(rawSubaccount, 1)),
     shouldShowOutOfGasPaymentBalanceWarning:
       expressParams?.gasPaymentValidations.isOutGasTokenBalance &&
       !isGmxAccount &&
@@ -80,13 +87,14 @@ export function useExpressTradingWarnings({
     shouldShowSubaccountApprovalInvalidWarning:
       isExpressTransactionAvailable &&
       rawSubaccount &&
-      getIsSubaccountApprovalInvalid({
-        chainId,
-        signedApproval: rawSubaccount.signedApproval,
-        subaccountRouterAddress: getOrderRelayRouterAddress(chainId, true, isGmxAccount),
-        onchainData: rawSubaccount.onchainData,
-        signerChainId: srcChainId ?? chainId,
-      }),
+      (subaccountValidations?.isApprovalInvalid ??
+        getIsSubaccountApprovalInvalid({
+          chainId,
+          signedApproval: rawSubaccount.signedApproval,
+          subaccountRouterAddress: getOrderRelayRouterAddress(chainId, true, isGmxAccount),
+          onchainData: rawSubaccount.onchainData,
+          signerChainId: srcChainId ?? chainId,
+        })),
     shouldShowExternalSwapSubaccountBlockedWarning: externalSwapDesirability === "required" && isOneClickActiveByUser,
     shouldShowExternalSwapGasConflictRequiredWarning:
       externalSwapDesirability === "required" && !isOneClickActiveByUser && isExternalSwapBlockedByGasConflict,

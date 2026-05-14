@@ -15,7 +15,8 @@ import { convertToUsd } from "domain/synthetics/tokens";
 import { stripBlacklistedWords } from "domain/tokens/utils";
 import { getByKey } from "lib/objects";
 import { searchBy } from "lib/searchBy";
-import { getCategoryTokenAddresses, getNormalizedTokenSymbol } from "sdk/configs/tokens";
+import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
+import type { TokenCategory } from "sdk/utils/tokens/types";
 
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import { SlideModal } from "components/Modal/SlideModal";
@@ -30,6 +31,8 @@ import { PoolListItem } from "./PoolListItem";
 import { CommonPoolSelectorProps, MarketOption } from "./types";
 
 import "./MarketSelector.scss";
+
+const CRYPTO_CATEGORIES: TokenCategory[] = ["ai", "layer1", "layer2", "defi", "meme"];
 
 function PoolLabel({
   marketInfo,
@@ -67,7 +70,6 @@ function PoolLabel({
 }
 
 export function PoolSelector({
-  chainId,
   selectedMarketAddress,
   className,
   selectedIndexName,
@@ -85,9 +87,9 @@ export function PoolSelector({
 }: CommonPoolSelectorProps) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
-  const { tab: filterTab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites(favoriteKey);
+  const { topLevelTab: filterTopLevelTab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites(favoriteKey);
 
-  const tab = withFilters ? filterTab : "all";
+  const topLevelTab = withFilters ? filterTopLevelTab : "all";
 
   const marketsOptions: MarketOption[] = useMemo(() => {
     const allMarkets = markets
@@ -153,25 +155,27 @@ export function PoolSelector({
         )
       : marketsOptions;
 
-    if (tab === "all") {
-      return textMatched;
-    } else if (tab === "favorites") {
-      return textMatched?.filter((item) => favoriteTokens?.includes(getGlvOrMarketAddress(item.glvOrMarketInfo)));
-    } else {
-      const categoryTokenAddresses = getCategoryTokenAddresses(chainId, tab);
-      return textMatched?.filter((item) => {
-        if (isGlvInfo(item.glvOrMarketInfo)) {
-          return false;
-        }
-
-        if (item.glvOrMarketInfo.isSpotOnly) {
-          return false;
-        }
-
-        return categoryTokenAddresses.includes(item.glvOrMarketInfo.indexTokenAddress);
-      });
+    switch (topLevelTab) {
+      case "all":
+        return textMatched;
+      case "favorites":
+        return textMatched?.filter((item) => favoriteTokens?.includes(getGlvOrMarketAddress(item.glvOrMarketInfo)));
+      case "crypto":
+        return textMatched?.filter((item) => {
+          if (isGlvInfo(item.glvOrMarketInfo)) return false;
+          if (item.glvOrMarketInfo.isSpotOnly) return false;
+          return Boolean(item.glvOrMarketInfo.indexToken?.categories?.some((c) => CRYPTO_CATEGORIES.includes(c)));
+        });
+      case "tradfi":
+        return textMatched?.filter((item) => {
+          if (isGlvInfo(item.glvOrMarketInfo)) return false;
+          if (item.glvOrMarketInfo.isSpotOnly) return false;
+          return Boolean(item.glvOrMarketInfo.indexToken?.categories?.includes("tradfi"));
+        });
+      case "recently-listed":
+        return textMatched?.filter(() => false);
     }
-  }, [chainId, favoriteTokens, marketsOptions, searchKeyword, tab]);
+  }, [favoriteTokens, marketsOptions, searchKeyword, topLevelTab]);
 
   function onSelectOption(option: MarketOption) {
     onSelectMarket(option.glvOrMarketInfo);

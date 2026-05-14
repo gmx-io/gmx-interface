@@ -229,10 +229,6 @@ msgstr "(rebated)"
 msgid "Accumulated rewards"
 msgstr "Accumulated rewards"
 
-#: src/components/PositionShare/PositionShare.tsx
-msgid "Show rPnL amounts"
-msgstr "Show rPnL amounts"
-
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Show other assets ({0})"
 msgstr "Show other assets ({0})"
@@ -453,6 +449,10 @@ msgstr "Double {indexSymbol} exposure from position and collateral. Higher liqui
 msgid "GMX Account balance"
 msgstr "GMX Account balance"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Search in perpetuals markets"
+msgstr "Search in perpetuals markets"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -501,6 +501,10 @@ msgstr "<0>No KYC, no lengthy onboarding, and no deposit required. All you need 
 msgid "Select token"
 msgstr "Select token"
 
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Crypto"
+msgstr "Crypto"
+
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Image generation failed. Refresh and try again."
 msgstr "Image generation failed. Refresh and try again."
@@ -517,6 +521,10 @@ msgstr "Unstaking..."
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "From network"
 msgstr "From network"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Re-sign to continue using One-Click Trading."
+msgstr "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Re-sign to continue using One-Click Trading."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Min collateral factor for liquidation"
@@ -985,10 +993,6 @@ msgstr "1st place"
 #: src/pages/RpcDebug/parts.tsx
 msgid "Force primary failure"
 msgstr "Force primary failure"
-
-#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
-msgid "No matching markets"
-msgstr "No matching markets"
 
 #: src/components/AccruedPositionPriceImpactRebateModal/AccruedPositionPriceImpactRebateModal.tsx
 msgid "Total {0}"
@@ -1466,6 +1470,10 @@ msgstr "Fetching swap route..."
 msgid "Collateral"
 msgstr "Collateral"
 
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Stocks"
+msgstr "Stocks"
+
 #: src/components/TradeHistory/keys.ts
 msgid "Cancel Stop Market"
 msgstr "Cancel Stop Market"
@@ -1524,10 +1532,6 @@ msgstr "Your discount is applied automatically when you execute a trade. You'll 
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "CSV"
 msgstr "CSV"
-
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading is disabled. Time limit expired."
-msgstr "One-Click Trading is disabled. Time limit expired."
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "How is my fee discount applied?"
@@ -1956,7 +1960,6 @@ msgstr "Keep leverage at {0}"
 msgid "AVAIL. LIQ."
 msgstr "AVAIL. LIQ."
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "One-Click Trading is disabled. Action limit exceeded."
 msgstr "One-Click Trading is disabled. Action limit exceeded."
@@ -2583,6 +2586,10 @@ msgstr "GMX technical announcements"
 msgid "Checking code..."
 msgstr "Checking code..."
 
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show PnL after fees"
+msgstr "Show PnL after fees"
+
 #: src/pages/Earn/EarnAdditionalOpportunitiesPage.tsx
 msgid "No eligible holdings detected"
 msgstr "No eligible holdings detected"
@@ -2618,10 +2625,6 @@ msgstr "Excludes incentives"
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Buying {symbol}..."
 msgstr "Buying {symbol}..."
-
-#: src/components/PositionShare/PositionShare.tsx
-msgid "Show PnL amounts"
-msgstr "Show PnL amounts"
 
 #: src/components/Referrals/distributions/table/RebateDistributionRowDetail.tsx
 msgid "Transaction hash"
@@ -3162,6 +3165,10 @@ msgstr "Buy GMX from centralized services"
 msgid "Primary failed"
 msgstr "Primary failed"
 
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Commodities"
+msgstr "Commodities"
+
 #: src/components/Referrals/affiliates/HowToStartEarning.tsx
 msgid "How to start earning?"
 msgstr "How to start earning?"
@@ -3453,6 +3460,10 @@ msgstr "PNL (%)"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy GMX using decentralized exchange aggregators"
 msgstr "Buy GMX using decentralized exchange aggregators"
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "This swap requires external routing, which isn't available with One-Click Trading. Disable One-Click to use Express Trading."
+msgstr "This swap requires external routing, which isn't available with One-Click Trading. Disable One-Click to use Express Trading."
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
@@ -3994,6 +4005,10 @@ msgstr "Accrued price impact rebates"
 msgid "Total volume"
 msgstr "Total volume"
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading action limit reached. You're now using Express Trading."
+msgstr "One-Click Trading action limit reached. You're now using Express Trading."
+
 #: src/components/PositionList/PositionList.tsx
 msgid "MARGIN"
 msgstr "MARGIN"
@@ -4109,6 +4124,10 @@ msgstr "Source chain supports single token only"
 #: src/components/Referrals/traders/faq.tsx
 msgid "Referral discounts apply to opening and closing fees for leverage trading. Swap fees are not included."
 msgstr "Referral discounts apply to opening and closing fees for leverage trading. Swap fees are not included."
+
+#: src/components/PositionShare/PositionShare.tsx
+msgid "Show rPnL after fees"
+msgstr "Show rPnL after fees"
 
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 #: src/components/TVChart/ChartHeader.tsx
@@ -4348,10 +4367,15 @@ msgstr "Claiming..."
 msgid "<0><1>@GMX_IO</1> enters into a Data Partnership with Token Terminal. GMX is a leading permissionless perpetual exchange built on <2>@Arbitrum</2> and <3>@Avax</3>.</0><4>The protocol serves as a foundational liquidity baselayer for multichain DeFi.</4><5>With ~$280 billion in notional trading volume and counting, GMX recognized the need for reliable and data-driven stakeholder reporting.</5>"
 msgstr "<0><1>@GMX_IO</1> enters into a Data Partnership with Token Terminal. GMX is a leading permissionless perpetual exchange built on <2>@Arbitrum</2> and <3>@Avax</3>.</0><4>The protocol serves as a foundational liquidity baselayer for multichain DeFi.</4><5>With ~$280 billion in notional trading volume and counting, GMX recognized the need for reliable and data-driven stakeholder reporting.</5>"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
+#: src/components/GmList/GmList.tsx
+#: src/components/GmList/GmList.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "All"
 msgstr "All"
 
@@ -4523,6 +4547,10 @@ msgstr "Signature:"
 msgid "Processing claim..."
 msgstr "Processing claim..."
 
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Recently Listed"
+msgstr "Recently Listed"
+
 #: src/pages/ParseTransaction/ParseTransaction.tsx
 msgid "Failed to load order data:"
 msgstr "Failed to load order data:"
@@ -4564,6 +4592,10 @@ msgstr "GM pools"
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "PnL"
 msgstr "PnL"
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Favourites"
+msgstr "Favourites"
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Position size too small. Min: {minPositionSizeUsdText}, current: {positionSizeInUsdText}"
@@ -5775,6 +5807,10 @@ msgstr "Your funds are safe in GMX contracts on the destination chain. Retry the
 msgid "Mozaic Finance"
 msgstr "Mozaic Finance"
 
+#: src/components/ChartTokenSelector/ModeTabs.tsx
+msgid "Perpetuals"
+msgstr "Perpetuals"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Impact exponent (negative)"
 msgstr "Impact exponent (negative)"
@@ -5990,10 +6026,6 @@ msgstr "Claim & swap"
 #: src/components/MarketStats/components/CompositionTable.tsx
 msgid "COMPOSITION"
 msgstr "COMPOSITION"
-
-#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
-msgid "Favorites"
-msgstr "Favorites"
 
 #: src/components/Earn/AdditionalOpportunities/useOpportunities.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -6488,6 +6520,10 @@ msgstr "Min funding factor"
 msgid "Governance alerts"
 msgstr "Governance alerts"
 
+#: src/components/Errors/LowGasPaymentTokenBalanceWarning.tsx
+msgid "Low {symbol} balance. This amount leaves little for future fees on your GMX Account."
+msgstr "Low {symbol} balance. This amount leaves little for future fees on your GMX Account."
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -6521,6 +6557,10 @@ msgstr "Reliable GMX-powered transactions"
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawal of {balanceFormatted} failed"
 msgstr "Withdrawal of {balanceFormatted} failed"
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "TradFi"
+msgstr "TradFi"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Gas"
@@ -6833,10 +6873,6 @@ msgstr "Sell GLV"
 msgid "from {BLOCKCHAIN_COUNT} blockchains"
 msgstr "from {BLOCKCHAIN_COUNT} blockchains"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading approval nonce expired. Re-sign to continue."
-msgstr "One-Click Trading approval nonce expired. Re-sign to continue."
-
 #: src/components/DateRangeSelect/DateRangeSelect.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "30d"
@@ -7052,6 +7088,10 @@ msgstr "Governance"
 msgid "Cancel"
 msgstr "Cancel"
 
+#: src/components/NetRateChart/NetRateChart.tsx
+msgid "Live"
+msgstr "Live"
+
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
@@ -7088,11 +7128,6 @@ msgstr "STATUS"
 msgid "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
 msgstr "You have activated the referral code {userReferralCodeString}. Every position you open or close will automatically apply your reduced rate — no extra steps needed."
 
-#. Filter option for tokens favorites
-#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
-msgid "All markets"
-msgstr "All markets"
-
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Hide assets with small value"
 msgstr "Hide assets with small value"
@@ -7128,6 +7163,10 @@ msgstr "Set stop price above mark price"
 #: src/components/BridgeModal/BridgeOutModal.tsx
 msgid "<0>To </0><1>{0}</1>"
 msgstr "<0>To </0><1>{0}</1>"
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "FX"
+msgstr "FX"
 
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Share position"
@@ -7777,10 +7816,6 @@ msgstr "Connect your wallet to view your rebates distribution history"
 msgid "Claimed"
 msgstr "Claimed"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "This swap requires external routing, which isn't available with One-Click Trading"
-msgstr "This swap requires external routing, which isn't available with One-Click Trading"
-
 #: src/components/TwapRows/TwapRows.tsx
 msgid "less than a minute"
 msgstr "less than a minute"
@@ -8006,10 +8041,6 @@ msgstr "Annualized:"
 msgid "Trigger tickers failure"
 msgstr "Trigger tickers failure"
 
-#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
-msgid "RWA"
-msgstr "RWA"
-
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Fulfilling buy request..."
 msgstr "Fulfilling buy request..."
@@ -8050,6 +8081,11 @@ msgstr "Top addresses"
 msgid "Amount exceeds the withdrawal limit. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 msgstr "Amount exceeds the withdrawal limit. Try an amount smaller than <0>{upperLimitFormatted}</0>."
 
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
+msgstr "One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading."
+
+#: src/components/FavoriteTabs/RecentlyListedBadge.tsx
 #: src/components/SideNav/SupportChatNavItem.tsx
 msgid "New"
 msgstr "New"
@@ -8213,6 +8249,10 @@ msgstr "Execute Stop Market"
 #: src/components/Referrals/traders/joinCode/JoinReferralWizard.tsx
 msgid "Go to trader dashboard"
 msgstr "Go to trader dashboard"
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "AI"
+msgstr "AI"
 
 #: src/components/PositionShare/CreateReferralCode.tsx
 #: src/components/Referrals/affiliates/ReferralsAffiliatesTab.tsx
@@ -9616,6 +9656,11 @@ msgstr "Can I build on top of GMX or integrate it into my DeFi app?"
 msgid "Avoid price wicks with transparent, sub-second Chainlink price feeds tailor-made for GMX"
 msgstr "Avoid price wicks with transparent, sub-second Chainlink price feeds tailor-made for GMX"
 
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "No markets matched."
+msgstr "No markets matched."
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Stake esGMX"
 msgstr "Stake esGMX"
@@ -9724,6 +9769,10 @@ msgstr "Ecosystem projects"
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "In progress..."
 msgstr "In progress..."
+
+#: src/components/TradeBox/ExpressTradingWarningCard.tsx
+msgid "One-Click Trading time limit expired. You're now using Express Trading."
+msgstr "One-Click Trading time limit expired. You're now using Express Trading."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 msgid "Affiliate vault"
@@ -10097,10 +10146,6 @@ msgstr "MARK PRICE"
 msgid "Increase the max network fee buffer to {0} in {settingsLink}"
 msgstr "Increase the max network fee buffer to {0} in {settingsLink}"
 
-#: src/components/TradeBox/ExpressTradingWarningCard.tsx
-msgid "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Re-sign to continue."
-msgstr "One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Re-sign to continue."
-
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "GLP to GM airdrop"
 msgstr "GLP to GM airdrop"
@@ -10131,6 +10176,10 @@ msgstr "Decreasing {indexTokenText} Long: -{sizeDeltaUsdText}"
 #: src/components/MarketSelector/GmPoolsSelectorForGlvMarket.tsx
 msgid "No pools matched"
 msgstr "No pools matched"
+
+#: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+msgid "Search in swap markets"
+msgstr "Search in swap markets"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation confirmations"
@@ -10204,6 +10253,7 @@ msgstr "High acceptable price impact set. Current impact: {0}."
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
+#: src/components/ChartTokenSelector/ModeTabs.tsx
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/SwapCard/SwapCard.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
@@ -10259,6 +10309,10 @@ msgstr "{idleSeconds}s"
 #: src/pages/Actions/ActionsRouter.tsx
 msgid "GMX V1 actions"
 msgstr "GMX V1 actions"
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Indices"
+msgstr "Indices"
 
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "GLV vaults:"

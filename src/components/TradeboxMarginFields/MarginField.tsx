@@ -1,5 +1,4 @@
 import { t } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ChangeEvent, useCallback, useRef } from "react";
 
 import { GMX_ACCOUNT_PSEUDO_CHAIN_ID, SourceChainId } from "config/chains";
@@ -17,6 +16,7 @@ import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { formatBalanceAmount, formatUsd, parseValue } from "lib/numbers";
 import { useWalletIconUrls } from "lib/wallets/getWalletIconUrls";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
+import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 
 import { useMultichainTradeTokensRequest } from "components/GmxAccountModal/hooks";

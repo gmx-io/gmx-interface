@@ -1,6 +1,6 @@
 import { t, Trans } from "@lingui/macro";
 import { useMemo, useState } from "react";
-import { Abi, decodeErrorResult, getAbiItem } from "viem";
+import { Abi, decodeErrorResult, getAbiItem, isHex } from "viem";
 
 import { StargateErrorsAbi } from "config/multichain";
 import { abis } from "sdk/abis";
@@ -16,7 +16,7 @@ type DecodedError = {
 };
 
 function decodeError(hexData: string): DecodedError | null {
-  if (!hexData.startsWith("0x")) {
+  if (!isHex(hexData)) {
     return null;
   }
 

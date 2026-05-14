@@ -317,11 +317,11 @@ export function BodyScrollFadeContainer({ children, className }: PropsWithChildr
   );
 }
 
-export function ButtonRowScrollFadeContainer({ children }: PropsWithChildren<{}>) {
+export function ButtonRowScrollFadeContainer({ children, className }: PropsWithChildren<{}> & { className?: string }) {
   const scrollFade = useButtonRowScrollFade();
 
   return (
-    <div className="relative">
+    <div className={cx("relative", className)}>
       <ScrollFadeControls {...scrollFade} />
       <div className="overflow-x-auto scrollbar-hide" ref={scrollFade.setScrollableRef}>
         {children}

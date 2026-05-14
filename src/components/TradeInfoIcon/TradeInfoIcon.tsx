@@ -54,7 +54,8 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
             </Trans>{" "}
             <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#limit-orders">
               <Trans>Read more</Trans>
-            </ExternalLink>.
+            </ExternalLink>
+            .
           </li>
         ) : null}
         {isTradeBox ? (
@@ -65,7 +66,8 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
             </Trans>{" "}
             <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#stop-market-orders">
               <Trans>Read more</Trans>
-            </ExternalLink>.
+            </ExternalLink>
+            .
           </li>
         ) : null}
         <li className={LI_CLASS_NAME}>
@@ -75,7 +77,8 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
           </Trans>{" "}
           <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#twap-orders">
             <Trans>Read more</Trans>
-          </ExternalLink>.
+          </ExternalLink>
+          .
         </li>
       </ul>
     ),
@@ -95,7 +98,8 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
             </Trans>{" "}
             <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#limit-orders">
               <Trans>Read more</Trans>
-            </ExternalLink>.
+            </ExternalLink>
+            .
           </li>
         ) : null}
         {isTradeBox ? (
@@ -106,7 +110,8 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
             </Trans>{" "}
             <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#stop-market-orders">
               <Trans>Read more</Trans>
-            </ExternalLink>.
+            </ExternalLink>
+            .
           </li>
         ) : null}
         <li className={LI_CLASS_NAME}>
@@ -116,7 +121,8 @@ export default function TradeBoxLongShortInfoIcon({ tradePlace, tradeType, isMob
           </Trans>{" "}
           <ExternalLink href="https://docs.gmx.io/docs/trading/order-types/#twap-orders">
             <Trans>Read more</Trans>
-          </ExternalLink>.
+          </ExternalLink>
+          .
         </li>
       </ul>
     ),
