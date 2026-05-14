@@ -182,6 +182,7 @@ describe("PointsLeaderboardTab", () => {
       const pinned = getPinnedRow(container);
       expect(pinned).not.toBeNull();
       expect(within(pinned!).getByText(ACCOUNT)).toBeTruthy();
+      expect(pinned!.className).toContain("text-blue-100");
     });
 
     it("does not render the pinned row on pages other than page 1", () => {
@@ -241,6 +242,7 @@ describe("PointsLeaderboardTab", () => {
 
       const userRow = userAddressEls[0].closest("tr") as HTMLElement;
       expect(userRow.className).toContain("!bg-blue-500/10");
+      expect(userRow.className).toContain("text-blue-100");
       expect(within(userRow).getByText("Share")).toBeTruthy();
     });
 
@@ -417,6 +419,22 @@ describe("PointsLeaderboardTab", () => {
       expect(screen.getByText("Your leaderboard rank is temporarily unavailable.")).toBeTruthy();
       expect(getPinnedRow(container)).toBeNull();
       expect(screen.queryByText("N/A")).toBeNull();
+    });
+  });
+
+  describe("skeleton rows", () => {
+    it("keeps placeholder rows at the same fixed leaderboard row height", () => {
+      leaderboardMock.data = undefined;
+      leaderboardMock.totalCount = undefined;
+      leaderboardMock.loading = true;
+
+      const { container } = renderTab();
+
+      const rows = container.querySelectorAll("tbody tr");
+      expect(rows).toHaveLength(PER_PAGE);
+      rows.forEach((row) => {
+        expect(row.className).toContain("h-[43px]");
+      });
     });
   });
 });
