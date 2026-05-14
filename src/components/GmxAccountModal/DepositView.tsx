@@ -4,7 +4,7 @@ import cx from "classnames";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { useLatest } from "react-use";
-import { Hex, decodeErrorResult, encodeEventTopics, toHex, zeroAddress } from "viem";
+import { decodeErrorResult, encodeEventTopics, isHex, toHex, zeroAddress } from "viem";
 import { useAccount, useChains } from "wagmi";
 
 import { AVALANCHE, AnyChainId, SettlementChainId, SourceChainId, getChainName, isTestnetChain } from "config/chains";
@@ -67,9 +67,9 @@ import { EMPTY_ARRAY, EMPTY_OBJECT, getByKey } from "lib/objects";
 import { TxnCallback, TxnEventName, WalletTxnCtx } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useThrottledAsync } from "lib/useThrottledAsync";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { convertTokenAddress, getToken } from "sdk/configs/tokens";
 import { TokenBalanceType, TokenData, convertToTokenAmount, convertToUsd, getMidPrice } from "sdk/utils/tokens";
@@ -476,9 +476,7 @@ export const DepositView = () => {
       : quoteSendNativeFee ?? baseQuoteSendNativeFee;
 
   const isLoadingDepositMax =
-    depositViewChain === settlementChainId
-      ? sameChainNetworkFeeDetails === undefined
-      : isComposeGasLoading || isBaseQuoteSendNativeFeeLoading;
+    depositViewChain === settlementChainId ? false : isComposeGasLoading || isBaseQuoteSendNativeFeeLoading;
 
   const paymentToken = useMemo((): TokenData | undefined => {
     if (selectedTokenData === undefined) {
@@ -586,6 +584,10 @@ export const DepositView = () => {
             return;
           }
 
+          if (!isHex(txnHash)) {
+            return;
+          }
+
           getPublicClientWithRpc(settlementChainId)
             .waitForTransactionReceipt({
               hash: txnHash,
@@ -660,9 +662,9 @@ export const DepositView = () => {
         if (txnEvent.event === TxnEventName.Error) {
           setIsSubmitting(false);
           let prettyError = txnEvent.data.error;
-          const data = txnEvent.data.error.info?.error?.data as Hex | undefined;
+          const data = txnEvent.data.error.info?.error?.data;
 
-          if (data) {
+          if (isHex(data)) {
             const error = decodeErrorResult({
               abi: StargateErrorsAbi,
               data,

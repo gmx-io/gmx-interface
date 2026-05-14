@@ -28,6 +28,7 @@ import { TOKEN_INPUT_DISPLAY_DECIMALS } from "./useSizeConversion";
 type Params = {
   sizeDisplayMode: SizeDisplayMode;
   canConvert: boolean;
+  maxAvailableAmount: bigint;
   tokensToUsd: (tokensValue: string) => string;
   setSizeInputValue: (value: string) => void;
   setToTokenInputValue: (value: string, resetPriceImpact: boolean) => void;
@@ -36,6 +37,7 @@ type Params = {
 export function useTradeboxManualLeverageSizeSlider({
   sizeDisplayMode,
   canConvert,
+  maxAvailableAmount,
   tokensToUsd,
   setSizeInputValue,
   setToTokenInputValue,
@@ -148,7 +150,7 @@ export function useTradeboxManualLeverageSizeSlider({
     applySizeByIndexTokenAmount(indexTokenAmount);
   }, [isLeverageSliderEnabled, maxSizeByMarginInTokens, applySizeByIndexTokenAmount]);
 
-  const isSizeSliderDisabled = !isLeverageSliderEnabled && tradeFlags.isIncrease && fromTokenAmount <= 0n;
+  const isSizeSliderDisabled = tradeFlags.isIncrease && maxAvailableAmount <= 0n;
 
   return {
     isLeverageSliderEnabled,

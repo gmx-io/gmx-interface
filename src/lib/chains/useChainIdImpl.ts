@@ -14,7 +14,7 @@ import { isDevelopment } from "config/env";
 import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
 import { isSettlementChain, isSourceChain } from "config/multichain";
 import { areChainsRelated } from "domain/multichain/areChainsRelated";
-import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
+import { getWagmiConfig } from "lib/wallets/walletConfig";
 
 const IS_DEVELOPMENT = isDevelopment();
 
@@ -142,7 +142,7 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
   ]);
 
   useEffect(() => {
-    const unsubscribe = watchAccount(getRainbowKitConfig(), {
+    const unsubscribe = watchAccount(getWagmiConfig(), {
       onChange: (account) => {
         if (!account.chainId) {
           return;

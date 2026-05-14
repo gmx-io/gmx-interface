@@ -3,6 +3,7 @@ import {
   encodeEventTopics,
   parseEventLogs,
   withRetry,
+  isHex,
   type Abi,
   type ContractEventName,
   type Log,
@@ -19,7 +20,7 @@ import {
 import { LayerZeroEndpointId } from "domain/multichain/types";
 import { createAnySignal, createTimeoutSignal } from "lib/abortSignalHelpers";
 import { sleep } from "lib/sleep";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { ContractsChainId } from "sdk/configs/chains";
 
@@ -76,6 +77,10 @@ export async function watchLzTxRpc({
   withLzCompose: boolean;
   abortSignal?: AbortSignal;
 }): Promise<void> {
+  if (!isHex(txHash)) {
+    throw new Error("Invalid transaction hash");
+  }
+
   debugLog("[watchLzTxRpc] fetching source chain logs", chainId, txHash);
   const sourceTx = await getPublicClientWithRpc(chainId).waitForTransactionReceipt({ hash: txHash });
   debugLog("[watchLzTxRpc] status", sourceTx.status);
@@ -379,6 +384,10 @@ export async function watchLzTxApi(
   onUpdate: (data: LzStatus[]) => void,
   abortSignal?: AbortSignal
 ): Promise<void> {
+  if (!isHex(txHash)) {
+    throw new Error("Invalid transaction hash");
+  }
+
   const fetchTx = () =>
     fetch(`${getLzBaseUrl(chainId)}/messages/tx/${txHash}`, {
       signal: abortSignal,

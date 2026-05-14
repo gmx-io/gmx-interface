@@ -230,36 +230,30 @@ export function GmSwapBoxDepositWithdrawal() {
   const gasPaymentTokenBalanceForMax = getBalanceByBalanceType(gasPaymentTokenForMax, balanceType);
   const marketOrGlvTokenBalance = getBalanceByBalanceType(marketOrGlvTokenData, balanceType);
 
-  const isLoadingFirstTokenMaxAvailableAmount =
-    firstToken?.address === gasPaymentTokenForMax?.address && logicalFees?.logicalNetworkFee?.deltaUsd === undefined;
-
   const firstTokenMaxDetails = useMaxAvailableAmount({
     fromToken: firstToken,
     fromTokenBalance: getBalanceByBalanceType(firstToken, balanceType),
     fromTokenAmount: firstTokenAmount,
     fromTokenInputValue: firstTokenInputValue,
-    isLoading: isLoadingFirstTokenMaxAvailableAmount,
     srcChainId: paySource === "sourceChain" ? srcChainId : undefined,
     gasPaymentToken: isDeposit ? gasPaymentTokenForMax : undefined,
     gasPaymentTokenBalance: isDeposit ? gasPaymentTokenBalanceForMax : undefined,
     gasPaymentTokenAmount: isDeposit ? gasPaymentTokenAmountForMax : undefined,
+    isGmxAccount: paySource === "gmxAccount",
   });
 
   const firstTokenShowMaxButton = isDeposit && firstTokenMaxDetails.showClickMax;
-
-  const isLoadingSecondTokenMaxAvailableAmount =
-    secondToken?.address === gasPaymentTokenForMax?.address && logicalFees?.logicalNetworkFee?.deltaUsd === undefined;
 
   const secondTokenMaxDetails = useMaxAvailableAmount({
     fromToken: secondToken,
     fromTokenBalance: getBalanceByBalanceType(secondToken, balanceType),
     fromTokenAmount: secondTokenAmount,
     fromTokenInputValue: secondTokenInputValue,
-    isLoading: isLoadingSecondTokenMaxAvailableAmount,
     srcChainId: paySource === "sourceChain" ? srcChainId : undefined,
     gasPaymentToken: isDeposit ? gasPaymentTokenForMax : undefined,
     gasPaymentTokenBalance: isDeposit ? gasPaymentTokenBalanceForMax : undefined,
     gasPaymentTokenAmount: isDeposit ? gasPaymentTokenAmountForMax : undefined,
+    isGmxAccount: paySource === "gmxAccount",
   });
 
   const secondTokenShowMaxButton = isDeposit && secondTokenMaxDetails.showClickMax;

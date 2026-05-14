@@ -1,5 +1,5 @@
 import useSWR from "swr";
-import { getAddress } from "viem";
+import { getAddress, type Hash } from "viem";
 
 import { CONTRACTS_CHAIN_IDS } from "config/chains";
 import { getIndexerUrl } from "config/indexers";
@@ -30,11 +30,11 @@ type ReferralsGraphqlResponse = {
     amounts: string[];
     amountsInUsd: string[];
     timestamp: string;
-    transactionHash: string;
+    transactionHash: Hash;
     id: string;
   }[];
   affiliateStats: {
-    referralCode: string;
+    referralCode: Hash;
     trades: string;
     tradedReferralsCount: string;
     registeredReferralsCount: string;
@@ -44,7 +44,7 @@ type ReferralsGraphqlResponse = {
     v1Data: { volume: string; totalRebateUsd: string; discountUsd: string };
     v2Data: { volume: string; totalRebateUsd: string; discountUsd: string };
   }[];
-  referralCodes: { code: string }[];
+  referralCodes: { code: Hash }[];
   referralTotalStats: {
     volume: string;
     discountUsd: string;
