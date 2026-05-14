@@ -1,7 +1,5 @@
-import { useLogin } from "@privy-io/react-auth";
+import { useConnectOrCreateWallet } from "@privy-io/react-auth";
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
-
-import { PRIVY_LOGIN_METHODS } from "./walletConfig";
 
 type ConnectModalContextValue = {
   openConnectModal: (() => void) | undefined;
@@ -16,15 +14,15 @@ const ConnectModalContext = createContext<ConnectModalContextValue>({
 export function ConnectModalProvider({ children }: { children: React.ReactNode }) {
   const [connectModalOpen, setConnectModalOpen] = useState(false);
 
-  const { login } = useLogin({
-    onComplete: () => setConnectModalOpen(false),
+  const { connectOrCreateWallet } = useConnectOrCreateWallet({
+    onSuccess: () => setConnectModalOpen(false),
     onError: () => setConnectModalOpen(false),
   });
 
   const openConnectModal = useCallback(() => {
     setConnectModalOpen(true);
-    login({ loginMethods: [...PRIVY_LOGIN_METHODS] });
-  }, [login]);
+    connectOrCreateWallet();
+  }, [connectOrCreateWallet]);
 
   const value = useMemo(() => ({ openConnectModal, connectModalOpen }), [openConnectModal, connectModalOpen]);
 

@@ -1,4 +1,4 @@
-import type { User } from "@privy-io/react-auth";
+import type { ConnectedWallet, User } from "@privy-io/react-auth";
 
 export type WalletProvenance = "external" | "embedded";
 export type EmbeddedWalletLoginMethod =
@@ -27,17 +27,26 @@ export type WalletAnalyticsProvenance = {
 };
 
 type LinkedAccount = User["linkedAccounts"][number];
+type WalletLinkedAccount = Extract<LinkedAccount, { type: "wallet" }>;
+type WalletAccount = {
+  address?: string;
+  walletClientType?: string | null;
+  connectorType?: string | null;
+};
 
 function isSameAddress(left: string | undefined, right: string | undefined) {
   return left !== undefined && right !== undefined && left.toLowerCase() === right.toLowerCase();
 }
 
-function isEmbeddedWallet(account: LinkedAccount) {
+function isWalletLinkedAccount(account: LinkedAccount): account is WalletLinkedAccount {
+  return account.type === "wallet";
+}
+
+function isEmbeddedWallet(account: WalletAccount) {
   return (
-    account.type === "wallet" &&
-    (account.walletClientType === "privy" ||
-      account.walletClientType === "privy-v2" ||
-      account.connectorType === "embedded")
+    account.walletClientType === "privy" ||
+    account.walletClientType === "privy-v2" ||
+    account.connectorType === "embedded"
   );
 }
 
@@ -99,17 +108,19 @@ export function getEmbeddedWalletLoginMethod(user: User): EmbeddedWalletLoginMet
 
 export function getWalletAnalyticsProvenance({
   account,
+  connectedWallets,
   user,
 }: {
   account: string | undefined;
+  connectedWallets?: ConnectedWallet[];
   user: User | null | undefined;
 }): WalletAnalyticsProvenance {
   if (!account) {
     return {};
   }
 
-  const linkedWallet = user?.linkedAccounts.find((linkedAccount) => {
-    return linkedAccount.type === "wallet" && isSameAddress(linkedAccount.address, account);
+  const linkedWallet = user?.linkedAccounts.find((linkedAccount): linkedAccount is WalletLinkedAccount => {
+    return isWalletLinkedAccount(linkedAccount) && isSameAddress(linkedAccount.address, account);
   });
 
   if (linkedWallet && isEmbeddedWallet(linkedWallet)) {
@@ -117,6 +128,21 @@ export function getWalletAnalyticsProvenance({
       walletProvenance: "embedded",
       embeddedWalletLoginMethod: user ? getEmbeddedWalletLoginMethod(user) : "unknown",
     };
+  }
+
+  if (!user) {
+    const connectedWallet = connectedWallets?.find((wallet) => isSameAddress(wallet.address, account));
+
+    if (!connectedWallet) {
+      return {};
+    }
+
+    if (isEmbeddedWallet(connectedWallet)) {
+      return {
+        walletProvenance: "embedded",
+        embeddedWalletLoginMethod: "unknown",
+      };
+    }
   }
 
   return {

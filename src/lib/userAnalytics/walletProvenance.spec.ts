@@ -1,4 +1,4 @@
-import type { User } from "@privy-io/react-auth";
+import type { ConnectedWallet, User } from "@privy-io/react-auth";
 import { describe, expect, it } from "vitest";
 
 import { getWalletAnalyticsProvenance } from "./walletProvenance";
@@ -12,6 +12,10 @@ function createUser(linkedAccounts: User["linkedAccounts"]): User {
     hasAcceptedTerms: false,
     isGuest: false,
   };
+}
+
+function createConnectedWallet(wallet: Pick<ConnectedWallet, "address" | "connectorType" | "walletClientType">) {
+  return wallet as ConnectedWallet;
 }
 
 describe("getWalletAnalyticsProvenance", () => {
@@ -81,5 +85,40 @@ describe("getWalletAnalyticsProvenance", () => {
       walletProvenance: "external",
       embeddedWalletLoginMethod: undefined,
     });
+  });
+
+  it("returns external provenance for an unauthenticated connected external wallet", () => {
+    expect(
+      getWalletAnalyticsProvenance({
+        account: "0x0000000000000000000000000000000000000003",
+        connectedWallets: [
+          createConnectedWallet({
+            address: "0x0000000000000000000000000000000000000003",
+            connectorType: "injected",
+            walletClientType: "metamask",
+          }),
+        ],
+        user: null,
+      })
+    ).toEqual({
+      walletProvenance: "external",
+      embeddedWalletLoginMethod: undefined,
+    });
+  });
+
+  it("returns no provenance for an unauthenticated account without a connected wallet match", () => {
+    expect(
+      getWalletAnalyticsProvenance({
+        account: "0x0000000000000000000000000000000000000004",
+        connectedWallets: [
+          createConnectedWallet({
+            address: "0x0000000000000000000000000000000000000005",
+            connectorType: "injected",
+            walletClientType: "metamask",
+          }),
+        ],
+        user: null,
+      })
+    ).toEqual({});
   });
 });

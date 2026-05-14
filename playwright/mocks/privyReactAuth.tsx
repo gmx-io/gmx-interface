@@ -12,6 +12,14 @@ export function useConnectWallet({ onSuccess }: { onSuccess?: () => void; onErro
   };
 }
 
+export function useConnectOrCreateWallet({ onSuccess }: { onSuccess?: () => void; onError?: () => void } = {}) {
+  return {
+    connectOrCreateWallet: () => {
+      onSuccess?.();
+    },
+  };
+}
+
 export function useLogin({ onComplete }: { onComplete?: () => void; onError?: () => void } = {}) {
   return {
     login: () => {
@@ -24,5 +32,12 @@ export function usePrivy() {
   return {
     user: null,
     logout: () => undefined,
+  };
+}
+
+export function useWallets() {
+  return {
+    wallets: [],
+    ready: true,
   };
 }

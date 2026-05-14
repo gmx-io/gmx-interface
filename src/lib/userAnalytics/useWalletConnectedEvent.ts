@@ -1,4 +1,4 @@
-import { usePrivy } from "@privy-io/react-auth";
+import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
@@ -19,6 +19,7 @@ export function useWalletConnectedUserAnalyticsEvent() {
   const { account } = useWallet();
   const { connector } = useAccount();
   const { user } = usePrivy();
+  const { wallets } = useWallets();
 
   const { data: accountStats } = useAccountStats(chainId, {
     account,
@@ -45,7 +46,7 @@ export function useWalletConnectedUserAnalyticsEvent() {
             action: "ConnectedSuccessfully",
             provider: connector.name,
             ordersCount,
-            ...getWalletAnalyticsProvenance({ account, user }),
+            ...getWalletAnalyticsProvenance({ account, connectedWallets: wallets, user }),
           },
         });
       };
@@ -60,5 +61,5 @@ export function useWalletConnectedUserAnalyticsEvent() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [account, connector, connectModalOpen, ordersCount, user, wasConnected, wasSent]);
+  }, [account, connector, connectModalOpen, ordersCount, user, wallets, wasConnected, wasSent]);
 }
