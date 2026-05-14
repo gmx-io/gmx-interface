@@ -1,5 +1,5 @@
 import { useLingui } from "@lingui/react";
-import { usePrivy } from "@privy-io/react-auth";
+import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -34,6 +34,7 @@ export function useConfigureUserAnalyticsProfile() {
   const { chainId } = useChainId();
   const { account, active } = useWallet();
   const { user } = usePrivy();
+  const { wallets } = useWallets();
   const { data: bowser } = useBowser();
   const { subaccount } = useSubaccountContext();
   const {
@@ -63,7 +64,10 @@ export function useConfigureUserAnalyticsProfile() {
   const last30DVolume = lastMonthAccountStats?.volume;
   const totalVolume = accountStats?.volume;
   const ordersCount = accountStats?.closedCount;
-  const walletAnalyticsProvenance = useMemo(() => getWalletAnalyticsProvenance({ account, user }), [account, user]);
+  const walletAnalyticsProvenance = useMemo(
+    () => getWalletAnalyticsProvenance({ account, connectedWallets: wallets, user }),
+    [account, user, wallets]
+  );
 
   useEffect(
     function handleUrlParamsEff() {
