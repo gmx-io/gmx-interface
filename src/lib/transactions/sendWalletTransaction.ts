@@ -1,10 +1,12 @@
+import { isAddress, isHex } from "viem";
+
 import { extendError } from "lib/errors";
 import { additionalTxnErrorValidation } from "lib/errors/additionalValidation";
 import { GasPriceData, getGasPrice } from "lib/gas/gasPrice";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateCallDataWithTenderly } from "lib/tenderly";
 import { WalletSigner } from "lib/wallets";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
 
 import { ISigner, ISignerSendTransactionParams, ISignerSendTransactionResult } from "./iSigner";
@@ -76,15 +78,17 @@ export async function sendWalletTransaction({
 
     const gasLimitPromise = gasLimit
       ? Promise.resolve(gasLimit)
-      : getPublicClientWithRpc(chainId)
-          .estimateGas({
-            account: from,
-            to,
-            data: callData,
-            value,
-          })
-          .then(applyGasLimitBuffer)
-          .catch(() => undefined);
+      : isAddress(from) && isAddress(to) && isHex(callData)
+        ? getPublicClientWithRpc(chainId)
+            .estimateGas({
+              account: from,
+              to,
+              data: callData,
+              value,
+            })
+            .then(applyGasLimitBuffer)
+            .catch(() => undefined)
+        : Promise.resolve(undefined);
 
     const provider = getProvider(undefined, chainId);
     const gasPriceDataPromise = gasPriceData

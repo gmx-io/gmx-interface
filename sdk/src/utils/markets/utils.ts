@@ -340,7 +340,10 @@ export function getIsMarketAvailableForExpressSwaps(marketInfo: MarketInfo) {
 }
 
 export function getIsMarketDeprecated(marketInfo: MarketInfo) {
-  return marketInfo.maxOpenInterestLong <= expandDecimals(1n, 30) && marketInfo.maxOpenInterestShort <= expandDecimals(1n, 30);
+  return (
+    marketInfo.maxOpenInterestLong <= expandDecimals(1n, 30) &&
+    marketInfo.maxOpenInterestShort <= expandDecimals(1n, 30)
+  );
 }
 
 export function getMarket24Stats(dayPriceCandle: DayPriceCandle) {

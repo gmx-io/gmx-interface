@@ -55,6 +55,7 @@ function Inner({
   actionsRef.current = useTradeboxManualLeverageSizeSlider({
     sizeDisplayMode: "usd",
     canConvert: true,
+    maxAvailableAmount: 1n,
     tokensToUsd: (v) => v,
     setSizeInputValue: setSize,
     setToTokenInputValue: setTo,

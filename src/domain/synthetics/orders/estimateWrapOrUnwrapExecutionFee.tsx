@@ -13,7 +13,7 @@ import { useChainId } from "lib/chains";
 import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import { useThrottledAsync } from "lib/useThrottledAsync";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { getIsExecutionFeeHigh, getIsExecutionFeeVeryHigh } from "sdk/utils/fees/executionFee";
 import { ExecutionFee } from "sdk/utils/fees/types";

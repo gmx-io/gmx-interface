@@ -16,7 +16,7 @@ export default defineConfig(({ mode }) => {
       format: "es",
     },
     optimizeDeps: {
-      include: ["@vanilla-extract/sprinkles", "@rainbow-me/rainbowkit"],
+      include: ["@vanilla-extract/sprinkles"],
       esbuildOptions: {
         target: "es2020",
       },
@@ -70,9 +70,12 @@ export default defineConfig(({ mode }) => {
       outDir: "build",
       sourcemap: true,
       rollupOptions: {
+        // Privy includes Solana modules as optional peer deps. Since we use ethereum-only,
+        // stub them out so rollup doesn't fail on the missing imports.
+        external: ["@solana-program/system"],
         output: {
           manualChunks: {
-            web3: ["ethers", "viem", "date-fns", "@rainbow-me/rainbowkit", "lodash", "@gelatocloud/gasless"],
+            web3: ["ethers", "viem", "date-fns", "@privy-io/react-auth", "lodash", "@gelatocloud/gasless"],
             charts: ["recharts"],
             ui: ["@headlessui/react", "framer-motion", "react-select"],
           },
@@ -86,7 +89,7 @@ export default defineConfig(({ mode }) => {
       setupFiles: ["./src/lib/polyfills.ts", "@vitest/web-worker"],
       server: {
         deps: {
-          inline: ["@vanilla-extract/sprinkles", "@rainbow-me/rainbowkit"],
+          inline: ["@vanilla-extract/sprinkles"],
         },
       },
     },

@@ -3,6 +3,7 @@ import {
   encodeAbiParameters,
   encodePacked,
   EstimateGasParameters,
+  Hex,
   keccak256,
   PublicClient,
   toHex,
@@ -48,7 +49,7 @@ import { applyFactor, BASIS_POINTS_DIVISOR_BIGINT, expandDecimals, USD_DECIMALS 
 import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import { AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { bigMath } from "sdk/utils/bigmath";
 import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
 import { OVERRIDE_ERC20_BYTECODE, RANDOM_SLOT } from "sdk/utils/multichain/stateOverrides";
@@ -123,7 +124,7 @@ export function getRawBaseRelayerParams({
   return { rawBaseRelayParamsPayload, baseRelayFeeSwapParams };
 }
 
-export function calculateMappingSlot(key: string, mappingSlotIndex: number): string {
+export function calculateMappingSlot(key: string, mappingSlotIndex: number): Hex {
   const encodedKeyAndSlot = encodeAbiParameters(
     [{ type: "bytes32" }, { type: "uint256" }],
     [key, BigInt(mappingSlotIndex)]

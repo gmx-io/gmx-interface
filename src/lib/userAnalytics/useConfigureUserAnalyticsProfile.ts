@@ -1,4 +1,5 @@
 import { useLingui } from "@lingui/react";
+import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -21,6 +22,7 @@ import useWallet from "lib/wallets/useWallet";
 
 import { SESSION_ID_KEY, setSessionId } from "./sessionId";
 import { userAnalytics } from "./UserAnalytics";
+import { getWalletAnalyticsProvenance } from "./walletProvenance";
 
 export function useConfigureUserAnalyticsProfile() {
   const history = useHistory();
@@ -31,6 +33,8 @@ export function useConfigureUserAnalyticsProfile() {
   const [showDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
   const { chainId } = useChainId();
   const { account, active } = useWallet();
+  const { user } = usePrivy();
+  const { wallets } = useWallets();
   const { data: bowser } = useBowser();
   const { subaccount } = useSubaccountContext();
   const {
@@ -60,6 +64,10 @@ export function useConfigureUserAnalyticsProfile() {
   const last30DVolume = lastMonthAccountStats?.volume;
   const totalVolume = accountStats?.volume;
   const ordersCount = accountStats?.closedCount;
+  const walletAnalyticsProvenance = useMemo(
+    () => getWalletAnalyticsProvenance({ account, connectedWallets: wallets, user }),
+    [account, user, wallets]
+  );
 
   useEffect(
     function handleUrlParamsEff() {
@@ -101,12 +109,14 @@ export function useConfigureUserAnalyticsProfile() {
       isWalletConnected: active,
       isTest: isDevelopment(),
       isInited: Boolean(bowser),
+      ...walletAnalyticsProvenance,
       ...getAbFlags(),
     });
-  }, [active, ordersCount, bowser]);
+  }, [active, ordersCount, bowser, walletAnalyticsProvenance]);
 
   useEffect(() => {
     userAnalytics.pushProfileProps({
+      ...walletAnalyticsProvenance,
       last30DVolume: formatAmountForMetrics(last30DVolume, USD_DECIMALS, "toSecondOrderInt"),
       totalVolume: formatAmountForMetrics(totalVolume, USD_DECIMALS, "toSecondOrderInt"),
       languageCode: currentLanguage,
@@ -141,6 +151,7 @@ export function useConfigureUserAnalyticsProfile() {
     utmParams?.campaign,
     utmParams?.term,
     utmParams?.content,
+    walletAnalyticsProvenance,
   ]);
 
   useEffect(() => {

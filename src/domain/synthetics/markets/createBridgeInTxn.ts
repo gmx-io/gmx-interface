@@ -9,7 +9,7 @@ import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStarg
 import { SendParam } from "domain/multichain/types";
 import { sendWalletTransaction } from "lib/transactions";
 import { WalletSigner } from "lib/wallets";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { quoteFromNativeFee } from "sdk/utils/multichain/sendParams";
 

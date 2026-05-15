@@ -3,7 +3,7 @@ import { maxUint256, StateOverride, zeroAddress, zeroHash } from "viem";
 import type { AnyChainId, SettlementChainId, SourceChainId } from "config/chains";
 import { RANDOM_WALLET } from "config/multichain";
 import { SendParam } from "domain/multichain/types";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { bigMath } from "sdk/utils/bigmath";
 import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";

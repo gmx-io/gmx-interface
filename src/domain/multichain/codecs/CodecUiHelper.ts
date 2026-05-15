@@ -132,15 +132,15 @@ export const GMX_DATA_ACTION_HASH = hashString("GMX_DATA_ACTION");
 // TODO MLTCH also implement     bytes32 public constant MAX_DATA_LENGTH = keccak256(abi.encode("MAX_DATA_LENGTH"));
 
 export class CodecUiHelper {
-  public static encodeDepositMessage(account: string, data?: string): string {
+  public static encodeDepositMessage(account: string, data?: string): Hex {
     return encodeDepositMessage(account, data);
   }
 
-  public static encodeComposeMsg(composeFromAddress: string, msg: string) {
+  public static encodeComposeMsg(composeFromAddress: string, msg: string): Hex {
     return encodeComposeMsg(composeFromAddress, msg);
   }
 
-  public static composeDepositMessage(dstChainId: SettlementChainId, account: string, data?: string) {
+  public static composeDepositMessage(dstChainId: SettlementChainId, account: string, data?: string): Hex {
     return composeDepositMessage(dstChainId, account, data);
   }
 
@@ -148,7 +148,7 @@ export class CodecUiHelper {
     return getLzEndpoint(chainId);
   }
 
-  public static encodeMultichainComposeActionData(action: MultichainAction): string {
+  public static encodeMultichainComposeActionData(action: MultichainAction): Hex {
     let actionData: Hex | undefined;
     if (action.actionType === MultichainActionType.SetTraderReferralCode) {
       actionData = encodeAbiParameters(
@@ -216,7 +216,7 @@ export class CodecUiHelper {
     return data;
   }
 
-  public static encodeMultichainBridgeOutActionData(action: BridgeOutAction): string {
+  public static encodeMultichainBridgeOutActionData(action: BridgeOutAction): Hex {
     let actionData: Hex;
 
     if (action.actionData.secondaryProvider === zeroAddress || action.actionData.secondaryProviderData === "0x") {

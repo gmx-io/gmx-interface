@@ -3,7 +3,7 @@ import useSWR from "swr";
 
 import { getContract } from "config/contracts";
 import type { WalletSigner } from "lib/wallets";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
 

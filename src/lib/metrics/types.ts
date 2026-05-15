@@ -536,6 +536,7 @@ export type MissedCoinEvent = {
     monthVolume: number | undefined;
     place: MissedCoinsPlace;
     account?: string;
+    mode?: "perp" | "swap";
   };
 };
 

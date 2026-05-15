@@ -3,6 +3,7 @@ import {
   encodeEventTopics,
   parseEventLogs,
   withRetry,
+  isHex,
   type Abi,
   type ContractEventName,
   type Log,
@@ -18,7 +19,7 @@ import {
 } from "context/WebsocketContext/subscribeToEvents";
 import { createAnySignal, createTimeoutSignal } from "lib/abortSignalHelpers";
 import { sleep } from "lib/sleep";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { ContractsChainId } from "sdk/configs/chains";
 import { LayerZeroEndpointId } from "sdk/configs/multichain";
@@ -76,6 +77,10 @@ export async function watchLzTxRpc({
   withLzCompose: boolean;
   abortSignal?: AbortSignal;
 }): Promise<void> {
+  if (!isHex(txHash)) {
+    throw new Error("Invalid transaction hash");
+  }
+
   debugLog("[watchLzTxRpc] fetching source chain logs", chainId, txHash);
   const sourceTx = await getPublicClientWithRpc(chainId).waitForTransactionReceipt({ hash: txHash });
   debugLog("[watchLzTxRpc] status", sourceTx.status);
@@ -200,7 +205,7 @@ export async function watchLzTxRpc({
       destinationChainId
     );
 
-    const publicClient = getPublicClientWithRpc(destinationChainId);
+    const publicClient = getPublicClientWithRpc(destinationChainId, { withExpress: true });
     const fromBlock = oftReceivedLogs[0].blockNumber!;
     // This request does not have good filtering, so we need to limit the range so the tests dont break
     // In runtime we only call it for the new tx so the fromBlock-now is small enough
@@ -379,6 +384,10 @@ export async function watchLzTxApi(
   onUpdate: (data: LzStatus[]) => void,
   abortSignal?: AbortSignal
 ): Promise<void> {
+  if (!isHex(txHash)) {
+    throw new Error("Invalid transaction hash");
+  }
+
   const fetchTx = () =>
     fetch(`${getLzBaseUrl(chainId)}/messages/tx/${txHash}`, {
       signal: abortSignal,
