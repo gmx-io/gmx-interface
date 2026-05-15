@@ -79,7 +79,7 @@ export function getEstimateMultichainDepositNetworkComposeGasParameters({
     stateOverride.push({
       address: unwrappedTokenAddress as Address,
       code: OVERRIDE_ERC20_BYTECODE,
-      state: [{ slot: RANDOM_SLOT, value: zeroHash }],
+      stateDiff: [{ slot: RANDOM_SLOT, value: zeroHash }],
     });
   } else {
     stateOverride.push({ address, balance: fakeAmount * 2n });

@@ -33,4 +33,3 @@ export async function quoteStargateSend(
     lzTokenFee: decoded.lzTokenFee,
   };
 }
-
