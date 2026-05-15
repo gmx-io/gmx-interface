@@ -1,7 +1,7 @@
 import { BaseContract, Contract } from "ethers";
 
-import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
 
 /**
  * @deprecated use estimateGasLimit instead

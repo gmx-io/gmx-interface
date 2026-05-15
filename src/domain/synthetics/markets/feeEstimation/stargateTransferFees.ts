@@ -1,13 +1,14 @@
 import { maxUint256, StateOverride, zeroAddress, zeroHash } from "viem";
 
 import type { AnyChainId, SettlementChainId, SourceChainId } from "config/chains";
-import { OVERRIDE_ERC20_BYTECODE, RANDOM_SLOT, RANDOM_WALLET } from "config/multichain";
-import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
+import { RANDOM_WALLET } from "config/multichain";
 import { SendParam } from "domain/multichain/types";
-import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
 import { bigMath } from "sdk/utils/bigmath";
+import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
+import { quoteFromNativeFee } from "sdk/utils/multichain/sendParams";
+import { OVERRIDE_ERC20_BYTECODE, RANDOM_SLOT } from "sdk/utils/multichain/stateOverrides";
 import { BASIS_POINTS_DIVISOR_BIGINT } from "sdk/utils/numbers";
 
 const LZ_NATIVE_FEE_BUFFER_BPS = 1000n; // 10%
@@ -99,7 +100,7 @@ export async function stargateTransferFees({
       abi: abis.IStargate,
       functionName: isPlatformToken ? "send" : "sendToken",
       account: account,
-      args: [sendParams, sendQuoteFromNative(nativeFee), account],
+      args: [sendParams, quoteFromNativeFee(nativeFee), account],
       value,
       stateOverride:
         isPlatformToken && !forceFullOverride

@@ -2,10 +2,10 @@ import { useMemo } from "react";
 import useSWR from "swr";
 
 import { getContract } from "config/contracts";
-import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import type { WalletSigner } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import type { ContractsChainId } from "sdk/configs/chains";
+import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
 
 import { useGasPrice } from "../fees";
 import { getClaimTransactionCallData } from "./createClaimTransaction";

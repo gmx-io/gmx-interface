@@ -1,6 +1,5 @@
 import { encodeFunctionData, type Address } from "viem";
 
-import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { ISigner } from "lib/transactions/iSigner";
 import { sendWalletTransaction } from "lib/transactions/sendWalletTransaction";
 import { WalletSigner } from "lib/wallets";
@@ -8,6 +7,7 @@ import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { getContract } from "sdk/configs/contracts";
+import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
 import { encodeExchangeRouterMulticall, type ExternalCallsPayload } from "sdk/utils/orderTransactions";
 
 type Params = {

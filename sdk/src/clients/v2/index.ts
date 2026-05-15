@@ -1,12 +1,16 @@
 import { getApiUrl, getApiFallbackUrls } from "configs/api";
 import { ContractsChainId } from "configs/chains";
+import type { SettlementChainId } from "configs/chains";
 import { DEFAULT_SUBACCOUNT_EXPIRY_DURATION, DEFAULT_SUBACCOUNT_MAX_ALLOWED_COUNT } from "configs/express";
+import { isSettlementChain } from "configs/multichain";
 import { fetchApiApy } from "utils/apy/api";
 import { ApyParams, ApyResponse } from "utils/apy/types";
 import {
   fetchWalletBalances as fetchWalletBalancesRaw,
   fetchAllowances as fetchAllowancesRaw,
   buildApproveTransaction,
+  buildErc20ApproveTxn,
+  executeErc20Approve,
 } from "utils/balances/api";
 import type {
   WalletBalance,
@@ -14,6 +18,7 @@ import type {
   SpenderType,
   ApproveTokenParams,
   ApproveTokenResult,
+  Erc20ApproveParams,
 } from "utils/balances/api";
 import { fetchApiBuybackWeeklyStats } from "utils/buyback/api";
 import { BuybackWeeklyStatsResponse } from "utils/buyback/types";
@@ -22,6 +27,38 @@ import { HttpClientWithFallback } from "utils/http/httpFallback";
 import { IHttp } from "utils/http/types";
 import { fetchApiMarkets, fetchApiMarketsInfo, fetchApiMarketsTickers, fetchApiTokensData } from "utils/markets/api";
 import { MarketTicker, MarketWithTiers } from "utils/markets/types";
+import {
+  buildCrossChainDepositTxn,
+  buildCrossChainWithdrawBridgeOutParams,
+  buildSameChainDepositTxn,
+  buildSameChainWithdrawBridgeOutParams,
+  buildSameChainWithdrawTxn,
+  executeCrossChainDeposit,
+  executeSameChainDeposit,
+  executeSameChainWithdraw,
+  type BridgeOutParams,
+  type BuildTxnResult,
+  type CrossChainDepositRequest,
+  type CrossChainDepositResult,
+  type ExecuteCrossChainDepositResult,
+  type SameChainDepositRequest,
+  type SameChainWithdrawRequest,
+} from "utils/multichain";
+import {
+  executeCrossChainWithdraw as executeApiCrossChainWithdraw,
+  getCrossChainWithdrawStatus as getApiCrossChainWithdrawStatus,
+  prepareCrossChainDeposit as prepareApiCrossChainDeposit,
+  prepareCrossChainWithdraw as prepareApiCrossChainWithdraw,
+  signCrossChainWithdrawPrepared,
+  submitCrossChainWithdraw as submitApiCrossChainWithdraw,
+  type CrossChainDepositPrepareRequest as ApiCrossChainDepositPrepareRequest,
+  type CrossChainDepositPrepareResponse as ApiCrossChainDepositPrepareResponse,
+  type CrossChainWithdrawPrepareRequest as ApiCrossChainWithdrawPrepareRequest,
+  type CrossChainWithdrawPrepareResponse as ApiCrossChainWithdrawPrepareResponse,
+  type CrossChainWithdrawStatusResponse as ApiCrossChainWithdrawStatusResponse,
+  type CrossChainWithdrawSubmitRequest as ApiCrossChainWithdrawSubmitRequest,
+  type CrossChainWithdrawSubmitResponse as ApiCrossChainWithdrawSubmitResponse,
+} from "utils/multichainTransferApi";
 import { fetchApiOrders } from "utils/orders/api";
 import {
   prepareOrder,
@@ -52,6 +89,7 @@ import { fetchApiOhlcv } from "utils/prices/api";
 import type { OhlcvParams } from "utils/prices/types";
 import { fetchApiRates } from "utils/rates/api";
 import { MarketRates, RatesParams } from "utils/rates/types";
+import type { IRpc } from "utils/rpc";
 import type { IAbstractSigner } from "utils/signer";
 import { PrivateKeySigner } from "utils/signer";
 import { fetchApiStakingPower } from "utils/staking/api";
@@ -66,6 +104,8 @@ import type {
 import { generateSubaccount } from "utils/subaccount/generateSubaccount";
 import { nowInSeconds } from "utils/time";
 import { fetchApiTokens } from "utils/tokens/api";
+import { fetchApiTrades, searchApiTrades } from "utils/trades/api";
+import type { FetchTradesParams, SearchTradesParams, TradesListResponse } from "utils/trades/types";
 
 export type { ApyEntry, ApyParams, ApyResponse } from "utils/apy/types";
 export type { MarketTicker, MarketWithTiers } from "utils/markets/types";
@@ -80,6 +120,16 @@ export type { OhlcvCandle, OhlcvParams } from "utils/prices/types";
 export type { ApiParameterPeriod, MarketRates, RatesParams, RatesSnapshot } from "utils/rates/types";
 export type { BuybackWeekData, BuybackSummary, BuybackWeeklyStatsResponse } from "utils/buyback/types";
 export type { StakingPowerResponse } from "utils/staking/types";
+export type {
+  ApiTradeAction,
+  FetchTradesParams,
+  MarketDirectionFilter,
+  OrderEventCombination,
+  SearchTradesParams,
+  TradeDirection,
+  TradeEventName,
+  TradesListResponse,
+} from "utils/trades/types";
 export type {
   PrepareOrderRequest,
   PrepareOrderResponse,
@@ -98,6 +148,24 @@ export type {
   ApproveTokenParams,
   ApproveTokenResult,
 } from "utils/balances/api";
+export type {
+  BridgeOutParams,
+  BuildTxnResult,
+  CrossChainDepositRequest,
+  CrossChainDepositResult,
+  ExecuteCrossChainDepositResult,
+  SameChainDepositRequest,
+  SameChainWithdrawRequest,
+} from "utils/multichain";
+export type {
+  CrossChainDepositPrepareRequest,
+  CrossChainDepositPrepareResponse,
+  CrossChainWithdrawPrepareRequest,
+  CrossChainWithdrawPrepareResponse,
+  CrossChainWithdrawStatusResponse,
+  CrossChainWithdrawSubmitRequest,
+  CrossChainWithdrawSubmitResponse,
+} from "utils/multichainTransferApi";
 export type { IAbstractSigner } from "utils/signer";
 export { PrivateKeySigner } from "utils/signer";
 export { HttpError } from "utils/http/http";
@@ -186,6 +254,14 @@ export class GmxApiSdk {
     return fetchApiOrders(this.ctx, params);
   }
 
+  fetchTrades(params: FetchTradesParams): Promise<TradesListResponse> {
+    return fetchApiTrades(this.ctx, params);
+  }
+
+  searchTrades(params: SearchTradesParams): Promise<TradesListResponse> {
+    return searchApiTrades(this.ctx, params);
+  }
+
   fetchOhlcv(params: OhlcvParams) {
     return fetchApiOhlcv(this.ctx, params);
   }
@@ -230,9 +306,101 @@ export class GmxApiSdk {
     return buildApproveTransaction(this.ctx, params);
   }
 
-  // ---------------------------------------------------------------------------
-  // Order transactions: prepare → sign → submit
-  // ---------------------------------------------------------------------------
+  /** Encode `ERC20.approve(spender, amount)` for any chain — caller supplies the spender. */
+  buildErc20ApproveTxn(params: Erc20ApproveParams): ApproveTokenResult {
+    return buildErc20ApproveTxn(params);
+  }
+
+  /** Sign and submit `ERC20.approve` via the provided signer. Returns the tx hash. */
+  executeErc20Approve(signer: IAbstractSigner, params: Erc20ApproveParams): Promise<string> {
+    return executeErc20Approve(signer, params);
+  }
+
+  private requireSettlementChainId(): SettlementChainId {
+    if (!isSettlementChain(this.ctx.chainId)) {
+      throw new Error(`chainId ${this.ctx.chainId} is not a settlement chain; multichain ops are unsupported`);
+    }
+    return this.ctx.chainId;
+  }
+
+  buildSameChainDepositTxn(params: Omit<SameChainDepositRequest, "chainId">): BuildTxnResult {
+    return buildSameChainDepositTxn({ ...params, chainId: this.requireSettlementChainId() });
+  }
+
+  buildSameChainWithdrawTxn(params: Omit<SameChainWithdrawRequest, "chainId">): BuildTxnResult {
+    return buildSameChainWithdrawTxn({ ...params, chainId: this.requireSettlementChainId() });
+  }
+
+  buildSameChainWithdrawBridgeOutParams(params: { tokenAddress: string; amount: bigint }): BridgeOutParams {
+    return buildSameChainWithdrawBridgeOutParams(params);
+  }
+
+  buildCrossChainDepositTxn(
+    params: Omit<CrossChainDepositRequest, "chainId">,
+    rpcs?: { sourceRpc?: IRpc; destinationRpc?: IRpc }
+  ): Promise<CrossChainDepositResult> {
+    return buildCrossChainDepositTxn({ ...params, chainId: this.requireSettlementChainId() }, rpcs);
+  }
+
+  buildCrossChainWithdrawBridgeOutParams(
+    params: Parameters<typeof buildCrossChainWithdrawBridgeOutParams>[0]
+  ): BridgeOutParams {
+    return buildCrossChainWithdrawBridgeOutParams(params);
+  }
+
+  executeSameChainDeposit(signer: IAbstractSigner, params: Omit<SameChainDepositRequest, "chainId">): Promise<string> {
+    return executeSameChainDeposit(signer, { ...params, chainId: this.requireSettlementChainId() });
+  }
+
+  executeSameChainWithdraw(
+    signer: IAbstractSigner,
+    params: Omit<SameChainWithdrawRequest, "chainId">
+  ): Promise<string> {
+    return executeSameChainWithdraw(signer, { ...params, chainId: this.requireSettlementChainId() });
+  }
+
+  executeCrossChainDeposit(
+    signer: IAbstractSigner,
+    params: Omit<CrossChainDepositRequest, "chainId">,
+    rpcs?: { sourceRpc?: IRpc; destinationRpc?: IRpc }
+  ): Promise<ExecuteCrossChainDepositResult> {
+    return executeCrossChainDeposit(signer, { ...params, chainId: this.requireSettlementChainId() }, rpcs);
+  }
+
+  prepareApiCrossChainDeposit(
+    request: ApiCrossChainDepositPrepareRequest
+  ): Promise<ApiCrossChainDepositPrepareResponse> {
+    return prepareApiCrossChainDeposit(this.ctx, request);
+  }
+
+  prepareApiCrossChainWithdraw(
+    request: ApiCrossChainWithdrawPrepareRequest
+  ): Promise<ApiCrossChainWithdrawPrepareResponse> {
+    return prepareApiCrossChainWithdraw(this.ctx, request);
+  }
+
+  signApiCrossChainWithdraw(prepared: ApiCrossChainWithdrawPrepareResponse, signer: IAbstractSigner): Promise<string> {
+    return signCrossChainWithdrawPrepared(prepared, signer);
+  }
+
+  submitApiCrossChainWithdraw(
+    request: ApiCrossChainWithdrawSubmitRequest
+  ): Promise<ApiCrossChainWithdrawSubmitResponse> {
+    return submitApiCrossChainWithdraw(this.ctx, request);
+  }
+
+  /** prepare → sign → submit in one call. Returns the Gelato taskId on success. */
+  executeApiCrossChainWithdraw(
+    request: ApiCrossChainWithdrawPrepareRequest,
+    signer: IAbstractSigner
+  ): Promise<ApiCrossChainWithdrawSubmitResponse> {
+    return executeApiCrossChainWithdraw(this.ctx, request, signer);
+  }
+
+  /** Poll Gelato relay status for a previously prepared/submitted cross-chain withdraw. */
+  getApiCrossChainWithdrawStatus(requestId: string): Promise<ApiCrossChainWithdrawStatusResponse> {
+    return getApiCrossChainWithdrawStatus(this.ctx, requestId);
+  }
 
   prepareOrder(request: PrepareOrderRequest): Promise<PrepareOrderResponse> {
     return prepareOrder(this.ctx, request);

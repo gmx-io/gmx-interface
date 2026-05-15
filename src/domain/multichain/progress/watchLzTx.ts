@@ -16,12 +16,12 @@ import {
   LZ_COMPOSE_ALERT_ABI,
   OFT_RECEIVED_ABI,
 } from "context/WebsocketContext/subscribeToEvents";
-import { LayerZeroEndpointId } from "domain/multichain/types";
 import { createAnySignal, createTimeoutSignal } from "lib/abortSignalHelpers";
 import { sleep } from "lib/sleep";
 import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
 import { ContractsChainId } from "sdk/configs/chains";
+import { LayerZeroEndpointId } from "sdk/configs/multichain";
 
 import { getBlockNumberBeforeTimestamp } from "./getBlockNumberByTimestamp";
 import { getLzBaseUrl } from "./getLzBaseUrl";

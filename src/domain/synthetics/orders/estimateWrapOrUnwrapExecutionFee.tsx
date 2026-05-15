@@ -1,6 +1,6 @@
 import { zeroAddress, zeroHash } from "viem";
 
-import { OVERRIDE_ERC20_BYTECODE, RANDOM_ACCOUNT, RANDOM_SLOT, SIMULATED_MULTICHAIN_BALANCE } from "config/multichain";
+import { RANDOM_ACCOUNT, SIMULATED_MULTICHAIN_BALANCE } from "config/multichain";
 import { useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { selectGasPrice } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
@@ -10,7 +10,6 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { convertToTokenAmount, convertToUsd, TokensData } from "domain/tokens";
 import { useChainId } from "lib/chains";
-import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { getByKey } from "lib/objects";
 import { usePrevious } from "lib/usePrevious";
 import { useThrottledAsync } from "lib/useThrottledAsync";
@@ -18,6 +17,8 @@ import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import { abis } from "sdk/abis";
 import { getIsExecutionFeeHigh, getIsExecutionFeeVeryHigh } from "sdk/utils/fees/executionFee";
 import { ExecutionFee } from "sdk/utils/fees/types";
+import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
+import { OVERRIDE_ERC20_BYTECODE, RANDOM_SLOT } from "sdk/utils/multichain/stateOverrides";
 import { expandDecimals, USD_DECIMALS } from "sdk/utils/numbers/utils";
 
 async function estimateWrapExecutionFee({

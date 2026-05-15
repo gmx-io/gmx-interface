@@ -1,5 +1,4 @@
-import { addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
-import { Address, concatHex, encodeAbiParameters, Hex, isHex, toHex, zeroAddress } from "viem";
+import { Address, encodeAbiParameters, Hex, zeroAddress } from "viem";
 
 import { TransferRequests } from "domain/multichain/types";
 import type { RelayParamsPayload } from "domain/synthetics/express";
@@ -10,8 +9,13 @@ import {
   CreateWithdrawalParams,
 } from "domain/synthetics/markets/types";
 import type { ContractsChainId, SettlementChainId } from "sdk/configs/chains";
-import { getContract } from "sdk/configs/contracts";
 import { hashString } from "sdk/utils/hash";
+import {
+  composeDepositMessage,
+  encodeComposeMsg,
+  encodeDepositMessage,
+  getLzEndpoint,
+} from "sdk/utils/multichain/codecs";
 
 import {
   BRIDGE_OUT_PARAMS,
@@ -129,30 +133,19 @@ export const GMX_DATA_ACTION_HASH = hashString("GMX_DATA_ACTION");
 
 export class CodecUiHelper {
   public static encodeDepositMessage(account: string, data?: string): string {
-    return encodeAbiParameters([{ type: "address" }, { type: "bytes" }], [account, data ?? "0x"]);
+    return encodeDepositMessage(account, data);
   }
 
   public static encodeComposeMsg(composeFromAddress: string, msg: string) {
-    if (!isHex(msg)) {
-      throw new Error("msg must start with 0x");
-    }
-
-    const composeFrom = toHex(addressToBytes32(composeFromAddress));
-
-    const composeFromWithMsg = concatHex([composeFrom, msg]);
-
-    return composeFromWithMsg;
+    return encodeComposeMsg(composeFromAddress, msg);
   }
 
   public static composeDepositMessage(dstChainId: SettlementChainId, account: string, data?: string) {
-    const msg = CodecUiHelper.encodeDepositMessage(account, data);
-    return CodecUiHelper.encodeComposeMsg(CodecUiHelper.getLzEndpoint(dstChainId), msg);
+    return composeDepositMessage(dstChainId, account, data);
   }
 
   public static getLzEndpoint(chainId: ContractsChainId): Address {
-    const layerZeroEndpoint = getContract(chainId, "LayerZeroEndpoint");
-
-    return layerZeroEndpoint;
+    return getLzEndpoint(chainId);
   }
 
   public static encodeMultichainComposeActionData(action: MultichainAction): string {
