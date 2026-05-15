@@ -5341,6 +5341,10 @@ msgstr "AUSFÜHRUNGSPREIS"
 msgid "spinner"
 msgstr "Ladeanimation"
 
+#: src/domain/tokens/approveTokens.tsx
+msgid "Permit approvals are currently unavailable."
+msgstr ""
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes! You can switch to a different code at any time from the Traders tab. Your new discount will apply to all future trades."
 msgstr ""
@@ -6275,10 +6279,6 @@ msgstr "Keine Liquidität verfügbar für die Erhöhung von Longs bei<0/>dieser 
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
 msgstr "Referrals"
-
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit approvals are unavailable after a previous permit error."
-msgstr ""
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Volume traded by this account with an active referral code"

@@ -5341,6 +5341,10 @@ msgstr ""
 msgid "spinner"
 msgstr ""
 
+#: src/domain/tokens/approveTokens.tsx
+msgid "Permit approvals are currently unavailable."
+msgstr ""
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes! You can switch to a different code at any time from the Traders tab. Your new discount will apply to all future trades."
 msgstr ""
@@ -6274,10 +6278,6 @@ msgstr ""
 #: src/pages/Referrals/Referrals.tsx
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
-msgstr ""
-
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit approvals are unavailable after a previous permit error."
 msgstr ""
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx

@@ -5341,6 +5341,10 @@ msgstr "成交價格"
 msgid "spinner"
 msgstr "載入中"
 
+#: src/domain/tokens/approveTokens.tsx
+msgid "Permit approvals are currently unavailable."
+msgstr ""
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes! You can switch to a different code at any time from the Traders tab. Your new discount will apply to all future trades."
 msgstr ""
@@ -6275,10 +6279,6 @@ msgstr "此規模無可用流動性來加倉做多。<0/>最大做多規模：{0
 #: src/pages/Referrals/Referrals.tsx
 msgid "Referrals"
 msgstr "推薦計畫"
-
-#: src/domain/tokens/approveTokens.tsx
-msgid "Permit approvals are unavailable after a previous permit error."
-msgstr ""
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Volume traded by this account with an active referral code"

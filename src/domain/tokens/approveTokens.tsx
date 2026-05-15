@@ -220,7 +220,7 @@ function getPermitFallbackToastContent(reason: PermitFallbackReason) {
       reasonText = t`Permit approvals are disabled for this token.`;
       break;
     case "permitsDisabled":
-      reasonText = t`Permit approvals are unavailable after a previous permit error.`;
+      reasonText = t`Permit approvals are currently unavailable.`;
       break;
     case "invalidSignature":
       reasonText = t`The permit signature could not be validated.`;
