@@ -49,7 +49,11 @@ export function getJitGlvShiftParams(
   return isLong ? info.glvShiftParamsLong : info.glvShiftParamsShort;
 }
 
-export function safeParseBigInt(value: string): bigint {
+export function safeParseBigInt(value: unknown): bigint {
+  if (typeof value !== "string") {
+    return 0n;
+  }
+
   const parsed = BigInt(value);
   return parsed < 0n ? 0n : parsed;
 }
@@ -87,8 +91,8 @@ function parseV1JitLiquidityInfo(rawInfo: Record<string, unknown>): JitLiquidity
   const glvShiftParams = parseGlvShiftParams(rawInfo.glvShiftParams);
 
   return {
-    maxReservedUsdWithJitLong: parseBigIntField(rawInfo.maxReservedUsdWithJitLong),
-    maxReservedUsdWithJitShort: parseBigIntField(rawInfo.maxReservedUsdWithJitShort),
+    maxReservedUsdWithJitLong: safeParseBigInt(rawInfo.maxReservedUsdWithJitLong),
+    maxReservedUsdWithJitShort: safeParseBigInt(rawInfo.maxReservedUsdWithJitShort),
     glvShiftParamsLong: glvShiftParams,
     glvShiftParamsShort: glvShiftParams,
     glvShiftParams,
@@ -108,8 +112,8 @@ function parseV2JitLiquidityInfo(rawInfo: Record<string, unknown>): JitLiquidity
   const glvShiftParamsShort = parseGlvShiftParams(shortInfo?.glvShiftParams ?? rawInfo.glvShiftParams);
 
   return {
-    maxReservedUsdWithJitLong: parseBigIntField(longInfo?.maxReservedUsd ?? rawInfo.maxReservedUsdWithJitLong),
-    maxReservedUsdWithJitShort: parseBigIntField(shortInfo?.maxReservedUsd ?? rawInfo.maxReservedUsdWithJitShort),
+    maxReservedUsdWithJitLong: safeParseBigInt(longInfo?.maxReservedUsd ?? rawInfo.maxReservedUsdWithJitLong),
+    maxReservedUsdWithJitShort: safeParseBigInt(shortInfo?.maxReservedUsd ?? rawInfo.maxReservedUsdWithJitShort),
     glvShiftParamsLong,
     glvShiftParamsShort,
     glvShiftParams: [...glvShiftParamsLong, ...glvShiftParamsShort],
@@ -150,13 +154,9 @@ function parseGlvShiftParam(value: unknown): GlvShiftParam | undefined {
     glv,
     fromMarket,
     toMarket,
-    marketTokenAmount: parseBigIntField(value.marketTokenAmount),
-    minMarketTokens: parseBigIntField(value.minMarketTokens),
+    marketTokenAmount: safeParseBigInt(value.marketTokenAmount),
+    minMarketTokens: safeParseBigInt(value.minMarketTokens),
   };
-}
-
-function parseBigIntField(value: unknown): bigint {
-  return typeof value === "string" ? safeParseBigInt(value) : 0n;
 }
 
 function getRecord(value: unknown): Record<string, unknown> | undefined {
