@@ -1071,6 +1071,10 @@ button.App-button {
   max-height: 50vh;
 }
 
+#privy-dialog-backdrop {
+  transition: none !important;
+}
+
 * {
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
