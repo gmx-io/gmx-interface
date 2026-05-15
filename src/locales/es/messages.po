@@ -4642,7 +4642,7 @@ msgstr "No hay actividad de funding"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "This token does not support permit approvals."
-msgstr ""
+msgstr "Este token no admite aprobaciones con permiso."
 
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
@@ -4984,7 +4984,7 @@ msgstr "TASA NETA LARGOS / 1H"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "The permit signature could not be validated."
-msgstr ""
+msgstr "No se pudo validar la firma del permiso."
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -5343,7 +5343,7 @@ msgstr "indicador de carga"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit approvals are currently unavailable."
-msgstr ""
+msgstr "Las aprobaciones con permiso no están disponibles actualmente."
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes! You can switch to a different code at any time from the Traders tab. Your new discount will apply to all future trades."
@@ -5359,7 +5359,7 @@ msgstr "GM: límite de compra de {0} alcanzado en {1} [{2}]. Elija un pool difer
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Permit approval failed. A standard approval transaction is required. Approve the token and try again</0>"
-msgstr ""
+msgstr "<0>Error en la aprobación con permiso. Se requiere una transacción de aprobación estándar. Apruebe el token e inténtelo de nuevo</0>"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No options to transfer {nativeTokenSymbol} to {chainName}"
@@ -7748,7 +7748,7 @@ msgstr "comisiones"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit approval could not be completed."
-msgstr ""
+msgstr "No se pudo completar la aprobación con permiso."
 
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Referral code update failed"
@@ -10115,7 +10115,7 @@ msgstr "Rendimiento anualizado"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit approvals are disabled for this token."
-msgstr ""
+msgstr "Las aprobaciones con permiso están desactivadas para este token."
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
@@ -10538,7 +10538,7 @@ msgstr "Límite máximo de depósito alcanzado: {maxPoolUsdText}"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "A standard approval transaction is required to continue."
-msgstr ""
+msgstr "Se requiere una transacción de aprobación estándar para continuar."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield optimizations"

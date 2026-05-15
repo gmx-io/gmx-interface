@@ -4642,7 +4642,7 @@ msgstr "无资金活动"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "This token does not support permit approvals."
-msgstr ""
+msgstr "此代币不支持 Permit 授权。"
 
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
@@ -4984,7 +4984,7 @@ msgstr "做多净费率 / 1H"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "The permit signature could not be validated."
-msgstr ""
+msgstr "无法验证 Permit 签名。"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -5343,7 +5343,7 @@ msgstr "加载中"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit approvals are currently unavailable."
-msgstr ""
+msgstr "Permit 授权当前不可用。"
 
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes! You can switch to a different code at any time from the Traders tab. Your new discount will apply to all future trades."
@@ -5359,7 +5359,7 @@ msgstr "GM：{0} 在 {1} [{2}] 中已达到可买入上限。请选择其他池�
 
 #: src/components/Errors/errorToasts.tsx
 msgid "<0>Permit approval failed. A standard approval transaction is required. Approve the token and try again</0>"
-msgstr ""
+msgstr "<0>Permit 授权失败。需要标准授权交易。请授权该代币后重试</0>"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No options to transfer {nativeTokenSymbol} to {chainName}"
@@ -7748,7 +7748,7 @@ msgstr "费用"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit approval could not be completed."
-msgstr ""
+msgstr "无法完成 Permit 授权。"
 
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Referral code update failed"
@@ -10115,7 +10115,7 @@ msgstr "年化表现"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit approvals are disabled for this token."
-msgstr ""
+msgstr "此代币已禁用 Permit 授权。"
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
@@ -10538,7 +10538,7 @@ msgstr "已达最大存入限额：{maxPoolUsdText}"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "A standard approval transaction is required to continue."
-msgstr ""
+msgstr "需要标准授权交易才能继续。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield optimizations"
