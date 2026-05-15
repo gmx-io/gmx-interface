@@ -6,6 +6,12 @@ import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
 export type UiFlags = Record<string, boolean>;
 
+export const IS_V2_JIT_LIQUIDITY_INFO_ENABLED_UI_FLAG = "isV2JitLiquidityInfoEnabled";
+
+export function getIsV2JitLiquidityInfoEnabled(uiFlags: UiFlags | undefined): boolean {
+  return uiFlags?.[IS_V2_JIT_LIQUIDITY_INFO_ENABLED_UI_FLAG] === true;
+}
+
 export function useUiFlagsRequest() {
   const { chainId } = useChainId();
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
