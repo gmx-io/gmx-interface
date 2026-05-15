@@ -1,17 +1,25 @@
 import useSWR from "swr";
 
+import type { ContractsChainId } from "config/chains";
 import { useChainId } from "lib/chains";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
 import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
 export type UiFlags = Record<string, boolean>;
 
-export function useUiFlagsRequest() {
+export const IS_V2_JIT_LIQUIDITY_INFO_ENABLED_UI_FLAG = "isV2JitLiquidityInfoEnabled";
+
+export function getIsV2JitLiquidityInfoEnabled(uiFlags: UiFlags | undefined): boolean {
+  return uiFlags?.[IS_V2_JIT_LIQUIDITY_INFO_ENABLED_UI_FLAG] === true;
+}
+
+export function useUiFlagsRequest(chainIdOverride?: ContractsChainId) {
   const { chainId } = useChainId();
-  const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
+  const requestChainId = chainIdOverride ?? chainId;
+  const oracleKeeperFetcher = useOracleKeeperFetcher(requestChainId);
 
   const { data: uiFlags } = useSWR<UiFlags>(
-    ["uiFlags", chainId],
+    ["uiFlags", requestChainId],
     async () => {
       return oracleKeeperFetcher.fetchUiFlags();
     },
