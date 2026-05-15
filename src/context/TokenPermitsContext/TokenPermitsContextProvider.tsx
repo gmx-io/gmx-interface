@@ -10,6 +10,8 @@ import { nowInSeconds } from "sdk/utils/time";
 import { SignedTokenPermit } from "sdk/utils/tokens/types";
 
 const PERMIT_EXPIRY_BUFFER_MS = 500;
+const TOKEN_PERMITS_DISABLED = true;
+const EMPTY_TOKEN_PERMITS: SignedTokenPermit[] = [];
 
 export type TokenPermitsState = {
   tokenPermits: SignedTokenPermit[];
@@ -35,7 +37,7 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
   const { chainId } = useChainId();
   const { signer } = useWallet();
 
-  const [isPermitsDisabled, setIsPermitsDisabled] = useLocalStorageSerializeKey<boolean>(PERMITS_DISABLED_KEY, false);
+  const [, setIsPermitsDisabled] = useLocalStorageSerializeKey<boolean>(PERMITS_DISABLED_KEY, true);
 
   const [tokenPermits, setTokenPermits] = useLocalStorageSerializeKey<SignedTokenPermit[]>(
     getTokenPermitsKey(chainId, signer?.address),
@@ -70,6 +72,10 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
 
   const addTokenPermit = useCallback(
     async (tokenAddress: string, spenderAddress: string, value: bigint) => {
+      if (TOKEN_PERMITS_DISABLED) {
+        return;
+      }
+
       if (!signer?.provider) {
         return;
       }
@@ -136,20 +142,15 @@ export function TokenPermitsContextProvider({ children }: { children: React.Reac
     [tokenPermits, setTokenPermits]
   );
 
-  const activeTokenPermits = useMemo(
-    () => (tokenPermits ?? []).filter((permit) => !getIsPermitExpired(permit)),
-    [tokenPermits]
-  );
-
   const state = useMemo(
     () => ({
-      isPermitsDisabled: Boolean(isPermitsDisabled),
+      isPermitsDisabled: TOKEN_PERMITS_DISABLED,
       setIsPermitsDisabled,
-      tokenPermits: activeTokenPermits,
+      tokenPermits: EMPTY_TOKEN_PERMITS,
       addTokenPermit,
       resetTokenPermits,
     }),
-    [isPermitsDisabled, setIsPermitsDisabled, activeTokenPermits, addTokenPermit, resetTokenPermits]
+    [setIsPermitsDisabled, addTokenPermit, resetTokenPermits]
   );
 
   return <TokenPermitsContext.Provider value={state}>{children}</TokenPermitsContext.Provider>;
