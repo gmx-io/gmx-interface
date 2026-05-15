@@ -31,7 +31,7 @@ import {
   getSyntheticsAcceptablePriceImpactBufferKey,
 } from "config/localStorage";
 import { useChainId } from "lib/chains";
-import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
+import { hasStoredLocalStorageValue, useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { tenderlyLsKeys } from "lib/tenderly";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
@@ -456,12 +456,4 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;
-}
-
-function hasStoredLocalStorageValue(key: unknown) {
-  try {
-    return window.localStorage.getItem(JSON.stringify(key)) !== null;
-  } catch (e) {
-    return false;
-  }
 }
