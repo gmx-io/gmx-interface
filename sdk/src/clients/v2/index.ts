@@ -45,19 +45,19 @@ import {
   type SameChainWithdrawRequest,
 } from "utils/multichain";
 import {
-  executeCrossChainWithdraw as executeApiCrossChainWithdraw,
-  getCrossChainWithdrawStatus as getApiCrossChainWithdrawStatus,
-  prepareCrossChainDeposit as prepareApiCrossChainDeposit,
-  prepareCrossChainWithdraw as prepareApiCrossChainWithdraw,
+  executeCrossChainWithdraw,
+  getCrossChainWithdrawStatus,
+  prepareCrossChainDeposit,
+  prepareCrossChainWithdraw,
   signCrossChainWithdrawPrepared,
-  submitCrossChainWithdraw as submitApiCrossChainWithdraw,
-  type CrossChainDepositPrepareRequest as ApiCrossChainDepositPrepareRequest,
-  type CrossChainDepositPrepareResponse as ApiCrossChainDepositPrepareResponse,
-  type CrossChainWithdrawPrepareRequest as ApiCrossChainWithdrawPrepareRequest,
-  type CrossChainWithdrawPrepareResponse as ApiCrossChainWithdrawPrepareResponse,
-  type CrossChainWithdrawStatusResponse as ApiCrossChainWithdrawStatusResponse,
-  type CrossChainWithdrawSubmitRequest as ApiCrossChainWithdrawSubmitRequest,
-  type CrossChainWithdrawSubmitResponse as ApiCrossChainWithdrawSubmitResponse,
+  submitCrossChainWithdraw,
+  type CrossChainDepositPrepareRequest,
+  type CrossChainDepositPrepareResponse,
+  type CrossChainWithdrawPrepareRequest,
+  type CrossChainWithdrawPrepareResponse,
+  type CrossChainWithdrawStatusResponse,
+  type CrossChainWithdrawSubmitRequest,
+  type CrossChainWithdrawSubmitResponse,
 } from "utils/multichainTransferApi";
 import { fetchApiOrders } from "utils/orders/api";
 import {
@@ -367,39 +367,33 @@ export class GmxApiSdk {
     return executeCrossChainDeposit(signer, { ...params, chainId: this.requireSettlementChainId() }, rpcs);
   }
 
-  prepareApiCrossChainDeposit(
-    request: ApiCrossChainDepositPrepareRequest
-  ): Promise<ApiCrossChainDepositPrepareResponse> {
-    return prepareApiCrossChainDeposit(this.ctx, request);
+  prepareCrossChainDeposit(request: CrossChainDepositPrepareRequest): Promise<CrossChainDepositPrepareResponse> {
+    return prepareCrossChainDeposit(this.ctx, request);
   }
 
-  prepareApiCrossChainWithdraw(
-    request: ApiCrossChainWithdrawPrepareRequest
-  ): Promise<ApiCrossChainWithdrawPrepareResponse> {
-    return prepareApiCrossChainWithdraw(this.ctx, request);
+  prepareCrossChainWithdraw(request: CrossChainWithdrawPrepareRequest): Promise<CrossChainWithdrawPrepareResponse> {
+    return prepareCrossChainWithdraw(this.ctx, request);
   }
 
-  signApiCrossChainWithdraw(prepared: ApiCrossChainWithdrawPrepareResponse, signer: IAbstractSigner): Promise<string> {
+  signCrossChainWithdraw(prepared: CrossChainWithdrawPrepareResponse, signer: IAbstractSigner): Promise<string> {
     return signCrossChainWithdrawPrepared(prepared, signer);
   }
 
-  submitApiCrossChainWithdraw(
-    request: ApiCrossChainWithdrawSubmitRequest
-  ): Promise<ApiCrossChainWithdrawSubmitResponse> {
-    return submitApiCrossChainWithdraw(this.ctx, request);
+  submitCrossChainWithdraw(request: CrossChainWithdrawSubmitRequest): Promise<CrossChainWithdrawSubmitResponse> {
+    return submitCrossChainWithdraw(this.ctx, request);
   }
 
   /** prepare → sign → submit in one call. Returns the Gelato taskId on success. */
-  executeApiCrossChainWithdraw(
-    request: ApiCrossChainWithdrawPrepareRequest,
+  executeCrossChainWithdraw(
+    request: CrossChainWithdrawPrepareRequest,
     signer: IAbstractSigner
-  ): Promise<ApiCrossChainWithdrawSubmitResponse> {
-    return executeApiCrossChainWithdraw(this.ctx, request, signer);
+  ): Promise<CrossChainWithdrawSubmitResponse> {
+    return executeCrossChainWithdraw(this.ctx, request, signer);
   }
 
   /** Poll Gelato relay status for a previously prepared/submitted cross-chain withdraw. */
-  getApiCrossChainWithdrawStatus(requestId: string): Promise<ApiCrossChainWithdrawStatusResponse> {
-    return getApiCrossChainWithdrawStatus(this.ctx, requestId);
+  getCrossChainWithdrawStatus(requestId: string): Promise<CrossChainWithdrawStatusResponse> {
+    return getCrossChainWithdrawStatus(this.ctx, requestId);
   }
 
   prepareOrder(request: PrepareOrderRequest): Promise<PrepareOrderResponse> {

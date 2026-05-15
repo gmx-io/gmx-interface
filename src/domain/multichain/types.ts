@@ -1,6 +1,9 @@
 import type { AnyChainId, GmxAccountPseudoChainId, SourceChainId } from "config/chains";
 import type { Token, TokenPrices } from "domain/tokens";
 
+export type { BridgeOutParams } from "sdk/utils/multichain/api";
+export type { SendParam, MessagingFee } from "sdk/utils/multichain/sendParams";
+
 export type TokenChainData = Token & {
   sourceChainId: SourceChainId;
   sourceChainDecimals: number;
@@ -30,14 +33,6 @@ export type MultichainFundingHistoryItem = {
   source?: "optimistic" | "ws";
 };
 
-export type BridgeOutParams = {
-  token: string;
-  amount: bigint;
-  minAmountOut: bigint;
-  provider: string;
-  data: string;
-};
-
 export type OFTLimit = {
   minAmountLD: bigint;
   maxAmountLD: bigint;
@@ -63,21 +58,6 @@ export type TransferRequests = {
   tokens: string[];
   receivers: string[];
   amounts: bigint[];
-};
-
-export type SendParam = {
-  dstEid: number;
-  to: string;
-  amountLD: bigint;
-  minAmountLD: bigint;
-  extraOptions: string;
-  composeMsg: string;
-  oftCmd: string;
-};
-
-export type MessagingFee = {
-  nativeFee: bigint;
-  lzTokenFee: bigint;
 };
 
 export type MultichainMarketTokenBalances = {

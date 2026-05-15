@@ -28,20 +28,21 @@ import {
   USDC_BASE,
   waitForWithdrawStatus,
 } from "./multichainTestUtil";
-import { getTestSdk, requireSigner } from "./testUtil";
+import { getTestSdk, getTestSigner } from "./testUtil";
 
 beforeAll(() => {
   expectArbitrumSettlement();
 });
 
 const sdk = getTestSdk();
-const signer = requireSigner();
-const account = signer.address;
+const signer = getTestSigner();
+const account = signer?.address ?? "";
+const hasSigner = signer !== undefined;
 
 const DEPOSIT_AMOUNT = 1_000_000n; // 1 USDC
 const WITHDRAW_AMOUNT = 500_000n; // 0.5 USDC
 
-describe("multichain bridge: same-chain deposit (build only)", () => {
+describe.skipIf(!hasSigner)("multichain bridge: same-chain deposit (build only)", () => {
   it("buildSameChainDepositTxn encodes multicall(sendTokens + bridgeIn)", () => {
     const built = sdk.buildSameChainDepositTxn({
       tokenAddress: USDC_ARBITRUM,
@@ -55,7 +56,7 @@ describe("multichain bridge: same-chain deposit (build only)", () => {
   });
 });
 
-describe("multichain bridge: same-chain withdraw (build only)", () => {
+describe.skipIf(!hasSigner)("multichain bridge: same-chain withdraw (build only)", () => {
   it("buildSameChainWithdrawTxn encodes transferOut(BridgeOutParams)", () => {
     const params = sdk.buildSameChainWithdrawBridgeOutParams({
       tokenAddress: USDC_ARBITRUM,
@@ -72,10 +73,10 @@ describe("multichain bridge: same-chain withdraw (build only)", () => {
   });
 });
 
-describe("multichain bridge: cross-chain deposit (Base → Arbitrum)", () => {
+describe.skipIf(!hasSigner)("multichain bridge: cross-chain deposit (Base → Arbitrum)", () => {
   describe("API: prepareCrossChainDeposit", () => {
     it("returns a transaction payload with composeGas+nativeFee echoed", async () => {
-      const prepared = await sdk.prepareApiCrossChainDeposit({
+      const prepared = await sdk.prepareCrossChainDeposit({
         srcChainId: TEST_SOURCE_CHAIN_ID,
         account,
         tokenAddress: USDC_ARBITRUM,
@@ -181,7 +182,7 @@ describe("multichain bridge: cross-chain deposit (Base → Arbitrum)", () => {
   });
 });
 
-describe("multichain bridge: cross-chain withdraw (Arbitrum → Base, express via Gelato)", () => {
+describe.skipIf(!hasSigner)("multichain bridge: cross-chain withdraw (Arbitrum → Base, express via Gelato)", () => {
   describe("prepare", () => {
     it("returns typed-data, requestId and gasPaymentParams", async () => {
       const bridgeOutParams = sdk.buildCrossChainWithdrawBridgeOutParams({
@@ -191,7 +192,7 @@ describe("multichain bridge: cross-chain withdraw (Arbitrum → Base, express vi
         stargateAddress: STARGATE_USDC_BASE,
       });
 
-      const prepared = await sdk.prepareApiCrossChainWithdraw({
+      const prepared = await sdk.prepareCrossChainWithdraw({
         srcChainId: TEST_SOURCE_CHAIN_ID,
         account,
         bridgeOutParams,
@@ -215,7 +216,7 @@ describe("multichain bridge: cross-chain withdraw (Arbitrum → Base, express vi
         stargateAddress: STARGATE_USDC_BASE,
       });
 
-      const prepared = await sdk.prepareApiCrossChainWithdraw({
+      const prepared = await sdk.prepareCrossChainWithdraw({
         srcChainId: TEST_SOURCE_CHAIN_ID,
         account,
         bridgeOutParams,
@@ -235,18 +236,18 @@ describe("multichain bridge: cross-chain withdraw (Arbitrum → Base, express vi
         stargateAddress: STARGATE_USDC_BASE,
       });
 
-      const prepared = await sdk.prepareApiCrossChainWithdraw({
+      const prepared = await sdk.prepareCrossChainWithdraw({
         srcChainId: TEST_SOURCE_CHAIN_ID,
         account,
         bridgeOutParams,
       });
 
-      const signature = await sdk.signApiCrossChainWithdraw(prepared, signer);
+      const signature = await sdk.signCrossChainWithdraw(prepared, signer!);
       expect(signature.startsWith("0x")).toBe(true);
 
-      let submitted: Awaited<ReturnType<typeof sdk.submitApiCrossChainWithdraw>> | undefined;
+      let submitted: Awaited<ReturnType<typeof sdk.submitCrossChainWithdraw>> | undefined;
       try {
-        submitted = await sdk.submitApiCrossChainWithdraw({
+        submitted = await sdk.submitCrossChainWithdraw({
           srcChainId: TEST_SOURCE_CHAIN_ID,
           account,
           signature,
@@ -261,7 +262,7 @@ describe("multichain bridge: cross-chain withdraw (Arbitrum → Base, express vi
         // The API persists relay_failed; we still verify status is queryable.
         // eslint-disable-next-line no-console
         console.warn(`[multichain.withdraw.submit] failed: ${err?.message ?? err}`);
-        const status = await sdk.getApiCrossChainWithdrawStatus(prepared.requestId);
+        const status = await sdk.getCrossChainWithdrawStatus(prepared.requestId);
         expect(status.requestId).toBe(prepared.requestId);
         expect(["relay_failed", "prepared"]).toContain(status.status);
         return;
@@ -271,7 +272,7 @@ describe("multichain bridge: cross-chain withdraw (Arbitrum → Base, express vi
       expect(submitted!.status).toBe("relay_accepted");
       expect(typeof submitted!.taskId).toBe("string");
 
-      const status = await sdk.getApiCrossChainWithdrawStatus(prepared.requestId);
+      const status = await sdk.getCrossChainWithdrawStatus(prepared.requestId);
       expect(status.requestId).toBe(prepared.requestId);
       expect(status.taskId).toBe(submitted!.taskId);
     });
@@ -284,15 +285,15 @@ describe("multichain bridge: cross-chain withdraw (Arbitrum → Base, express vi
         stargateAddress: STARGATE_USDC_BASE,
       });
 
-      let submitted: Awaited<ReturnType<typeof sdk.executeApiCrossChainWithdraw>> | undefined;
+      let submitted: Awaited<ReturnType<typeof sdk.executeCrossChainWithdraw>> | undefined;
       try {
-        submitted = await sdk.executeApiCrossChainWithdraw(
+        submitted = await sdk.executeCrossChainWithdraw(
           {
             srcChainId: TEST_SOURCE_CHAIN_ID,
             account,
             bridgeOutParams,
           },
-          signer
+          signer!
         );
       } catch (err: any) {
         // Gelato may reject the relay (insufficient GMX-account balance / fee shortfall).
@@ -316,7 +317,7 @@ describe("multichain bridge: cross-chain withdraw (Arbitrum → Base, express vi
 
   describe("status", () => {
     it("returns a 4xx-equivalent error on unknown requestId", async () => {
-      await expect(sdk.getApiCrossChainWithdrawStatus("0".repeat(32))).rejects.toThrow();
+      await expect(sdk.getCrossChainWithdrawStatus("0".repeat(32))).rejects.toThrow();
     });
   });
 });

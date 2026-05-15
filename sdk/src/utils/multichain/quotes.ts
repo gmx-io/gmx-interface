@@ -34,31 +34,3 @@ export async function quoteStargateSend(
   };
 }
 
-export type QuoteOftResult = {
-  amountSentLD: bigint;
-  amountReceivedLD: bigint;
-};
-
-export async function quoteStargateOft(
-  rpc: IRpc,
-  params: { stargateAddress: string; sendParams: SendParam }
-): Promise<QuoteOftResult> {
-  const data = encodeFunctionData({
-    abi: abis.IStargate,
-    functionName: "quoteOFT",
-    args: [params.sendParams],
-  });
-
-  const result = await rpc.call({ to: params.stargateAddress, data });
-
-  const decoded = decodeFunctionResult({
-    abi: abis.IStargate,
-    functionName: "quoteOFT",
-    data: result as `0x${string}`,
-  });
-
-  return {
-    amountSentLD: decoded[2].amountSentLD,
-    amountReceivedLD: decoded[2].amountReceivedLD,
-  };
-}

@@ -68,7 +68,7 @@ export function getEstimateMultichainDepositNetworkComposeGasParameters({
     throw new Error(`Stargate pool not found for token: ${unwrappedTokenAddress} on chain: ${chainId}`);
   }
 
-  const address = tryGetContract(chainId, "LayerZeroProvider")!;
+  const address = tryGetContract(chainId, "LayerZeroProvider");
   if (!address) {
     throw new Error("LayerZero provider not found");
   }

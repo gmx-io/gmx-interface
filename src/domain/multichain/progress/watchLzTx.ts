@@ -130,13 +130,13 @@ export async function watchLzTxRpc({
     })
   );
 
-  // TODO MLTCH wait for all OFTSent events to be confirmed
+  // TODO MLTCH wait for all OFTSent events to be confirmed.
+  // Almost always there is only one OFTSent event per tx; multi-event flows are not yet handled.
   const oftSentEvent = oftSentEvents.at(0);
   if (!oftSentEvent) {
     debugLog("[watchLzTxRpc] no OFTSent event found");
     throw new Error("No OFTSent event found");
   }
-  //   It is most certanly only one OFTSent event for a given tx    const destinationChainIds = oftSentEvents
   debugLog("[watchLzTxRpc] got OFTSent event");
   const guid = oftSentEvent.args.guid;
   debugLog("[watchLzTxRpc] got guid", guid);

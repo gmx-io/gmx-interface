@@ -114,13 +114,13 @@ export async function ensureSourceErc20Allowance(params: {
 const TERMINAL_WITHDRAW_STATUSES = new Set(["created", "executed", "cancelled", "relay_failed", "relay_reverted"]);
 
 export async function waitForWithdrawStatus(
-  sdk: Pick<GmxApiSdk, "getApiCrossChainWithdrawStatus">,
+  sdk: Pick<GmxApiSdk, "getCrossChainWithdrawStatus">,
   requestId: string,
   timeoutMs = 90_000
 ) {
   const start = Date.now();
   while (Date.now() - start < timeoutMs) {
-    const status = await sdk.getApiCrossChainWithdrawStatus(requestId);
+    const status = await sdk.getCrossChainWithdrawStatus(requestId);
     if (TERMINAL_WITHDRAW_STATUSES.has(status.status)) {
       if (status.error) {
         // eslint-disable-next-line no-console
@@ -130,7 +130,7 @@ export async function waitForWithdrawStatus(
     }
     await sleep(2000);
   }
-  return sdk.getApiCrossChainWithdrawStatus(requestId);
+  return sdk.getCrossChainWithdrawStatus(requestId);
 }
 
 export function expectArbitrumSettlement(): void {

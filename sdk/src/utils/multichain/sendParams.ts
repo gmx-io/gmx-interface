@@ -71,8 +71,12 @@ export function getMultichainTransferSendParams({
     throw new Error(`No layer zero endpoint for chain: ${dstChainId}`);
   }
 
-  if (isToGmx && (!isSettlementChain(dstChainId) || composeGas === undefined)) {
+  if (isToGmx && !isSettlementChain(dstChainId)) {
     throw new Error(`LayerZero provider is not supported on this chain: ${dstChainId}`);
+  }
+
+  if (isToGmx && composeGas === undefined) {
+    throw new Error("composeGas is required when isToGmx=true");
   }
 
   let to: string;
