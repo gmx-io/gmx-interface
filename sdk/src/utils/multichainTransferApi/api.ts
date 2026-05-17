@@ -199,8 +199,8 @@ export async function signCrossChainWithdrawPrepared(
 
 export async function executeCrossChainWithdraw(
   ctx: { api: IHttp },
-  request: CrossChainWithdrawPrepareRequest,
-  signer: IAbstractSigner
+  signer: IAbstractSigner,
+  request: CrossChainWithdrawPrepareRequest
 ): Promise<CrossChainWithdrawSubmitResponse> {
   const prepared = await prepareCrossChainWithdraw(ctx, request);
   const signature = await signCrossChainWithdrawPrepared(prepared, signer);

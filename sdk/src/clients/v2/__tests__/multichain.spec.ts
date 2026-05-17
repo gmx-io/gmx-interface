@@ -144,8 +144,8 @@ describe.skipIf(!hasSigner)("multichain cross-chain withdraw (Arbitrum → Base,
     });
 
     const submitted = await sdk.executeCrossChainWithdraw(
-      { srcChainId: TEST_SOURCE_CHAIN_ID, account, bridgeOutParams },
-      signer!
+      signer!,
+      { srcChainId: TEST_SOURCE_CHAIN_ID, account, bridgeOutParams }
     );
     expect(submitted.requestId).toBeDefined();
 

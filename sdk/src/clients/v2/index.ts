@@ -369,10 +369,11 @@ export class GmxApiSdk {
   }
 
   executeCrossChainWithdraw(
-    request: CrossChainWithdrawPrepareRequest,
-    signer: IAbstractSigner
+    signer: IAbstractSigner,
+    request: CrossChainWithdrawPrepareRequest
   ): Promise<CrossChainWithdrawSubmitResponse> {
-    return executeCrossChainWithdraw(this.ctx, request, signer);
+    this.requireSettlementChainId();
+    return executeCrossChainWithdraw(this.ctx, signer, request);
   }
 
   getCrossChainWithdrawStatus(requestId: string): Promise<CrossChainWithdrawStatusResponse> {
