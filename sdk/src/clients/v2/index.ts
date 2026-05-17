@@ -300,12 +300,10 @@ export class GmxApiSdk {
     return buildApproveTransaction(this.ctx, params);
   }
 
-  /** Encode `ERC20.approve(spender, amount)` for any chain — caller supplies the spender. */
   buildErc20ApproveTxn(params: Erc20ApproveParams): ApproveTokenResult {
     return buildErc20ApproveTxn(params);
   }
 
-  /** Sign and submit `ERC20.approve` via the provided signer. Returns the tx hash. */
   executeErc20Approve(signer: IAbstractSigner, params: Erc20ApproveParams): Promise<string> {
     return executeErc20Approve(signer, params);
   }
@@ -370,7 +368,6 @@ export class GmxApiSdk {
     return submitCrossChainWithdraw(this.ctx, request);
   }
 
-  /** prepare → sign → submit in one call. Returns the Gelato taskId on success. */
   executeCrossChainWithdraw(
     request: CrossChainWithdrawPrepareRequest,
     signer: IAbstractSigner
@@ -378,7 +375,6 @@ export class GmxApiSdk {
     return executeCrossChainWithdraw(this.ctx, request, signer);
   }
 
-  /** Poll Gelato relay status for a previously prepared/submitted cross-chain withdraw. */
   getCrossChainWithdrawStatus(requestId: string): Promise<CrossChainWithdrawStatusResponse> {
     return getCrossChainWithdrawStatus(this.ctx, requestId);
   }
