@@ -155,6 +155,9 @@
       ],
       "utils/multichain": [
         "./build/types/src/utils/multichain/index.d.ts"
+      ],
+      "utils/gas/*": [
+        "./build/types/src/utils/gas/*.d.ts"
       ]
     }
   },
@@ -488,6 +491,12 @@
       "import": "./build/esm/src/utils/metrics/index.js",
       "require": "./build/cjs/src/utils/metrics/index.js",
       "default": "./build/cjs/src/utils/metrics/index.js"
+    },
+    "./utils/gas/*": {
+      "types": "./build/types/src/utils/gas/*.d.ts",
+      "import": "./build/esm/src/utils/gas/*.js",
+      "require": "./build/cjs/src/utils/gas/*.js",
+      "default": "./build/cjs/src/utils/gas/*.js"
     }
   },
   "scripts": {

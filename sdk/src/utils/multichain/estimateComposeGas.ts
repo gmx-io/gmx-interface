@@ -5,7 +5,7 @@ import type { ContractsChainId, SettlementChainId, SourceChainId } from "configs
 import { getContract } from "configs/contracts";
 import { getLayerZeroEndpointId } from "configs/multichain";
 import { convertTokenAddress, getToken, isValidTokenSafe } from "configs/tokens";
-import { applyGasBuffer } from "utils/fees/executionFee";
+import { applyGasLimitBuffer } from "utils/gas/applyBuffer";
 import { expandDecimals } from "utils/numbers";
 import type { IRpc, StateOverrideEntry } from "utils/rpc";
 
@@ -87,5 +87,5 @@ export async function estimateMultichainDepositComposeGas(
     stateOverride,
   });
 
-  return applyGasBuffer(gas);
+  return applyGasLimitBuffer(gas);
 }

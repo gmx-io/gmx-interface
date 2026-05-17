@@ -67,17 +67,20 @@ export const MULTI_CHAIN_PLATFORM_TOKENS_MAP = {} as Record<SettlementChainId, s
 export const CHAIN_ID_TO_TOKEN_ID_MAP = {} as Partial<Record<AnyChainId, Record<string, MultichainTokenId>>>;
 export const MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING = {} as Record<SourceChainId, SettlementChainId[]>;
 
-const pushUnique = <K extends string | number, V>(map: Partial<Record<K, V[]>>, key: K, value: V) => {
-  const list = (map[key] ??= []);
+function pushUnique<K extends string | number, V>(map: Record<K, V[]>, key: K, value: V): void {
+  const list = map[key] || (map[key] = []);
   if (!list.includes(value)) list.push(value);
-};
+}
 
 for (const byChain of Object.values(TOKEN_GROUPS)) {
   if (!byChain) continue;
 
   for (const token of Object.values(byChain)) {
     if (!token) continue;
-    (CHAIN_ID_TO_TOKEN_ID_MAP[token.chainId as AnyChainId] ??= {})[token.address] = token;
+    const tokenChainId = token.chainId as AnyChainId;
+    const chainTokens =
+      CHAIN_ID_TO_TOKEN_ID_MAP[tokenChainId] || (CHAIN_ID_TO_TOKEN_ID_MAP[tokenChainId] = {});
+    chainTokens[token.address] = token;
 
     if (!isSettlementChain(token.chainId)) continue;
     const settlementChainId = token.chainId as SettlementChainId;
@@ -102,7 +105,10 @@ for (const byChain of Object.values(TOKEN_GROUPS)) {
 
       pushUnique(MULTICHAIN_SOURCE_TO_SETTLEMENTS_MAPPING, sourceChainId, settlementChainId);
 
-      const bySource = ((MULTI_CHAIN_TOKEN_MAPPING[settlementChainId] ??= {} as any)[sourceChainId] ??= {} as any);
+      const bySettlement =
+        MULTI_CHAIN_TOKEN_MAPPING[settlementChainId] ||
+        (MULTI_CHAIN_TOKEN_MAPPING[settlementChainId] = {} as MultichainTokenMapping[SettlementChainId]);
+      const bySource = bySettlement[sourceChainId] || (bySettlement[sourceChainId] = {});
       bySource[sourceToken.address] = {
         settlementChainTokenAddress: token.address,
         sourceChainTokenAddress: sourceToken.address,

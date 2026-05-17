@@ -1,6 +1,5 @@
 import { zeroAddress } from "viem";
 
-import platformTokensData from "../codegen/platformTokens.json";
 import {
   ARBITRUM,
   ARBITRUM_SEPOLIA,
@@ -12,6 +11,7 @@ import {
   SOURCE_SEPOLIA,
 } from "./chainIds";
 import { SettlementChainId, SourceChainId } from "./chains";
+import platformTokensData from "../codegen/platformTokens.json";
 
 export type MultichainTokenId = {
   chainId: SettlementChainId | SourceChainId;
