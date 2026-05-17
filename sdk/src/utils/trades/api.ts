@@ -4,14 +4,10 @@ import { deserializeBigIntsInObject } from "utils/numbers";
 import { ApiTradeAction, FetchTradesParams, SearchTradesParams, TradesListResponse } from "./types";
 
 function parseTradesResponse(raw: any): TradesListResponse {
-  const trades = Array.isArray(raw?.trades)
-    ? raw.trades.map((t: any) => deserializeBigIntsInObject(t, { handleInts: true }) as ApiTradeAction)
-    : [];
-
   return {
-    trades,
-    nextCursor: raw?.nextCursor ?? null,
-    hasMore: Boolean(raw?.hasMore),
+    trades: raw.trades.map((t: any) => deserializeBigIntsInObject(t, { handleInts: true }) as ApiTradeAction),
+    nextCursor: raw.nextCursor,
+    hasMore: raw.hasMore,
   };
 }
 

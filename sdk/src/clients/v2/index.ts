@@ -28,23 +28,19 @@ import { IHttp } from "utils/http/types";
 import { fetchApiMarkets, fetchApiMarketsInfo, fetchApiMarketsTickers, fetchApiTokensData } from "utils/markets/api";
 import { MarketTicker, MarketWithTiers } from "utils/markets/types";
 import {
-  buildCrossChainDepositTxn,
   buildCrossChainWithdrawBridgeOutParams,
   buildSameChainDepositTxn,
   buildSameChainWithdrawBridgeOutParams,
   buildSameChainWithdrawTxn,
-  executeCrossChainDeposit,
   executeSameChainDeposit,
   executeSameChainWithdraw,
   type BridgeOutParams,
   type BuildTxnResult,
-  type CrossChainDepositRequest,
-  type CrossChainDepositResult,
-  type ExecuteCrossChainDepositResult,
   type SameChainDepositRequest,
   type SameChainWithdrawRequest,
 } from "utils/multichain";
 import {
+  executeCrossChainDeposit,
   executeCrossChainWithdraw,
   getCrossChainWithdrawStatus,
   prepareCrossChainDeposit,
@@ -58,6 +54,7 @@ import {
   type CrossChainWithdrawStatusResponse,
   type CrossChainWithdrawSubmitRequest,
   type CrossChainWithdrawSubmitResponse,
+  type ExecuteCrossChainDepositResult,
 } from "utils/multichainTransferApi";
 import { fetchApiOrders } from "utils/orders/api";
 import {
@@ -89,7 +86,6 @@ import { fetchApiOhlcv } from "utils/prices/api";
 import type { OhlcvParams } from "utils/prices/types";
 import { fetchApiRates } from "utils/rates/api";
 import { MarketRates, RatesParams } from "utils/rates/types";
-import type { IRpc } from "utils/rpc";
 import type { IAbstractSigner } from "utils/signer";
 import { PrivateKeySigner } from "utils/signer";
 import { fetchApiStakingPower } from "utils/staking/api";
@@ -151,9 +147,6 @@ export type {
 export type {
   BridgeOutParams,
   BuildTxnResult,
-  CrossChainDepositRequest,
-  CrossChainDepositResult,
-  ExecuteCrossChainDepositResult,
   SameChainDepositRequest,
   SameChainWithdrawRequest,
 } from "utils/multichain";
@@ -165,6 +158,7 @@ export type {
   CrossChainWithdrawStatusResponse,
   CrossChainWithdrawSubmitRequest,
   CrossChainWithdrawSubmitResponse,
+  ExecuteCrossChainDepositResult,
 } from "utils/multichainTransferApi";
 export type { IAbstractSigner } from "utils/signer";
 export { PrivateKeySigner } from "utils/signer";
@@ -335,13 +329,6 @@ export class GmxApiSdk {
     return buildSameChainWithdrawBridgeOutParams(params);
   }
 
-  buildCrossChainDepositTxn(
-    params: Omit<CrossChainDepositRequest, "chainId">,
-    rpcs?: { sourceRpc?: IRpc; destinationRpc?: IRpc }
-  ): Promise<CrossChainDepositResult> {
-    return buildCrossChainDepositTxn({ ...params, chainId: this.requireSettlementChainId() }, rpcs);
-  }
-
   buildCrossChainWithdrawBridgeOutParams(
     params: Parameters<typeof buildCrossChainWithdrawBridgeOutParams>[0]
   ): BridgeOutParams {
@@ -361,10 +348,10 @@ export class GmxApiSdk {
 
   executeCrossChainDeposit(
     signer: IAbstractSigner,
-    params: Omit<CrossChainDepositRequest, "chainId">,
-    rpcs?: { sourceRpc?: IRpc; destinationRpc?: IRpc }
+    request: CrossChainDepositPrepareRequest
   ): Promise<ExecuteCrossChainDepositResult> {
-    return executeCrossChainDeposit(signer, { ...params, chainId: this.requireSettlementChainId() }, rpcs);
+    this.requireSettlementChainId();
+    return executeCrossChainDeposit(this.ctx, signer, request);
   }
 
   prepareCrossChainDeposit(request: CrossChainDepositPrepareRequest): Promise<CrossChainDepositPrepareResponse> {

@@ -13,16 +13,10 @@ export { TEST_CHAIN_ID };
 
 export const TEST_SOURCE_CHAIN_ID: SourceChainId = SOURCE_BASE_MAINNET;
 
-// Addresses pinned to Arbitrum settlement / Base source.
-// USDC on Arbitrum (settlement chain destination token):
+// Pinned to Arbitrum settlement / Base source.
 export const USDC_ARBITRUM = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
-// Native USDC on Base (source chain) — what the wallet actually approves & spends in the bridge.
 export const USDC_BASE = "0x833589fCD6eDb6E08f4c7C32D4f71b54bdA02913";
-// Stargate v2 USDC pool on Base (source chain) — used as `to:` of source-chain bridge tx.
 export const STARGATE_USDC_BASE = "0x27a16dc786820B16E5c9028b75B99F6f604b5d26";
-// Stargate v2 USDC pool on Arbitrum (settlement chain) — used as `lzCompose` `from` arg
-// during destination-chain compose-gas estimation.
-export const STARGATE_USDC_ARBITRUM = "0x70d95587d40A2caf56bd97485aB3Eec10Bee6336";
 
 const VIEM_CHAIN_BY_SOURCE: Partial<Record<SourceChainId, Chain>> = {
   [SOURCE_BASE_MAINNET]: base,
@@ -69,12 +63,6 @@ export function getSourceSigner(): PrivateKeySigner | undefined {
   });
 }
 
-/**
- * Reads ERC20 allowance via the source-chain RPC and tops it up with `executeErc20Approve`
- * if it's below `minAmount`. Returns the on-chain allowance after the (optional) approve.
- *
- * Used by the bridge-in tests so the suite is self-sufficient on a freshly-funded wallet.
- */
 export async function ensureSourceErc20Allowance(params: {
   sdk: Pick<GmxApiSdk, "executeErc20Approve">;
   signer: PrivateKeySigner;
@@ -122,10 +110,6 @@ export async function waitForWithdrawStatus(
   while (Date.now() - start < timeoutMs) {
     const status = await sdk.getCrossChainWithdrawStatus(requestId);
     if (TERMINAL_WITHDRAW_STATUSES.has(status.status)) {
-      if (status.error) {
-        // eslint-disable-next-line no-console
-        console.warn(`[withdraw:${status.status}] id=${requestId} error=${status.error.code}: ${status.error.message}`);
-      }
       return status;
     }
     await sleep(2000);

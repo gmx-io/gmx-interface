@@ -6,19 +6,15 @@ import type { IAbstractSigner, TypedDataDomain, TypedDataTypes } from "utils/sig
 export type CrossChainDepositPrepareRequest = {
   srcChainId: SourceChainId;
   account: string;
-  tokenAddress: string;
-  sourceStargatePoolAddress: string;
-  /**
-   * Destination-chain Stargate pool address (settlement-side OApp delivering `lzCompose`).
-   * Required for compose-gas estimation when the API has no built-in registry for this token.
-   */
-  destinationStargatePoolAddress?: string;
-  isNativeOnSource: boolean;
   amount: bigint;
-  /**
-   * Caller-provided LayerZero native fee hint. Optional — when omitted, the API quotes it
-   * server-side. Currently the API does NOT yet quote it, so passing a hint is the safe path.
-   */
+  /** Pass either `tokenSymbol` ("USDC" | "USDT" | "ETH") or settlement-chain `tokenAddress`. */
+  tokenSymbol?: string;
+  tokenAddress?: string;
+  /** Optional overrides; server resolves them from the registry by default. */
+  sourceStargatePoolAddress?: string;
+  destinationStargatePoolAddress?: string;
+  isNativeOnSource?: boolean;
+  /** Optional; when omitted, the API quotes Stargate `nativeFee` on the source chain. */
   nativeFee?: bigint;
   tokenKind?: "trade" | "platform";
   composeGas?: bigint;
@@ -102,31 +98,31 @@ function parseDepositPrepareResponse(raw: any): CrossChainDepositPrepareResponse
     payload: {
       to: raw.payload.to,
       data: raw.payload.data,
-      value: BigInt(raw.payload.value ?? "0"),
+      value: BigInt(raw.payload.value),
     },
-    composeGas: BigInt(raw.composeGas ?? "0"),
-    nativeFee: BigInt(raw.nativeFee ?? "0"),
-    expiresAt: Number(raw.expiresAt ?? 0),
+    composeGas: BigInt(raw.composeGas),
+    nativeFee: BigInt(raw.nativeFee),
+    expiresAt: Number(raw.expiresAt),
   };
 }
 
 function parseWithdrawPrepareResponse(raw: any): CrossChainWithdrawPrepareResponse {
-  const gp = raw.payload.gasPaymentParams ?? {};
+  const gp = raw.payload.gasPaymentParams;
   return {
     payloadType: "typed-data",
-    requestId: String(raw.requestId ?? ""),
+    requestId: raw.requestId,
     payload: {
       typedData: raw.payload.typedData,
       relayParams: raw.payload.relayParams,
       relayRouterAddress: raw.payload.relayRouterAddress,
       gasPaymentParams: {
         relayerFeeTokenAddress: gp.relayerFeeTokenAddress,
-        relayerFeeAmount: BigInt(gp.relayerFeeAmount ?? "0"),
+        relayerFeeAmount: BigInt(gp.relayerFeeAmount),
         gasPaymentTokenAddress: gp.gasPaymentTokenAddress,
-        gasPaymentTokenAmount: BigInt(gp.gasPaymentTokenAmount ?? "0"),
+        gasPaymentTokenAmount: BigInt(gp.gasPaymentTokenAmount),
       },
     },
-    expiresAt: Number(raw.expiresAt ?? 0),
+    expiresAt: Number(raw.expiresAt),
   };
 }
 
@@ -139,6 +135,33 @@ export async function prepareCrossChainDeposit(
     request,
     { transform: parseDepositPrepareResponse }
   );
+}
+
+export type ExecuteCrossChainDepositResult = {
+  txnHash: string;
+  composeGas: bigint;
+  nativeFee: bigint;
+};
+
+export async function executeCrossChainDeposit(
+  ctx: { api: IHttp },
+  signer: IAbstractSigner,
+  request: CrossChainDepositPrepareRequest
+): Promise<ExecuteCrossChainDepositResult> {
+  if (!signer.sendTransaction) {
+    throw new Error("Signer does not support sendTransaction; use prepareCrossChainDeposit and submit via your wallet.");
+  }
+  const prepared = await prepareCrossChainDeposit(ctx, request);
+  const sent = await signer.sendTransaction({
+    to: prepared.payload.to,
+    data: prepared.payload.data,
+    value: prepared.payload.value,
+  });
+  return {
+    txnHash: typeof sent === "string" ? sent : sent.hash,
+    composeGas: prepared.composeGas,
+    nativeFee: prepared.nativeFee,
+  };
 }
 
 export async function prepareCrossChainWithdraw(

@@ -1,18 +1,16 @@
-import { decodeAbiParameters, decodeFunctionData, encodeAbiParameters, getAddress, zeroAddress } from "viem";
-import { describe, expect, it, vi } from "vitest";
+import { decodeAbiParameters, decodeFunctionData, getAddress, zeroAddress } from "viem";
+import { describe, expect, it } from "vitest";
 
 import { abis } from "abis";
 import { ARBITRUM, SOURCE_BASE_MAINNET } from "configs/chains";
 import { getContract } from "configs/contracts";
 import { CHAIN_ID_TO_ENDPOINT_ID } from "configs/multichain";
 import {
-  buildCrossChainDepositTxn,
   buildCrossChainWithdrawBridgeOutParams,
   buildSameChainDepositTxn,
   buildSameChainWithdrawBridgeOutParams,
   buildSameChainWithdrawTxn,
 } from "utils/multichain/api";
-import type { IRpc } from "utils/rpc";
 
 const ACCOUNT = "0x1111111111111111111111111111111111111111";
 const USDC_ARBITRUM = "0xaf88d065e77c8cC2239327C5EDb3A432268e5831";
@@ -160,129 +158,3 @@ describe("multichain api: buildCrossChainWithdrawBridgeOutParams", () => {
   });
 });
 
-describe("multichain api: buildCrossChainDepositTxn", () => {
-  function makeRpc({ nativeFee }: { nativeFee: bigint }): IRpc {
-    const encodedQuoteSendResult = encodeAbiParameters(
-      [
-        {
-          type: "tuple",
-          components: [
-            { type: "uint256", name: "nativeFee" },
-            { type: "uint256", name: "lzTokenFee" },
-          ],
-        },
-      ],
-      [{ nativeFee, lzTokenFee: 0n }]
-    );
-
-    return {
-      estimateGas: vi.fn().mockResolvedValue(200_000n),
-      call: vi.fn().mockResolvedValue(encodedQuoteSendResult),
-    } as unknown as IRpc;
-  }
-
-  it("returns Stargate sendToken txn with composeGas + nativeFee for ERC20 deposit", async () => {
-    const stubRpc = makeRpc({ nativeFee: 12_345n });
-
-    const result = await buildCrossChainDepositTxn(
-      {
-        chainId: ARBITRUM,
-        srcChainId: SOURCE_BASE_MAINNET,
-        account: ACCOUNT,
-        tokenAddress: USDC_ARBITRUM,
-        sourceStargatePoolAddress: STARGATE_USDC_BASE,
-        isNativeOnSource: false,
-        amount: 1_000_000n,
-        composeGas: 500_000n,
-      },
-      { sourceRpc: stubRpc }
-    );
-
-    expect(result.composeGas).toBe(500_000n);
-    expect(result.nativeFee).toBe(12_345n);
-    expect(result.value).toBe(12_345n);
-    expect(getAddress(result.to)).toBe(getAddress(STARGATE_USDC_BASE));
-
-    const decoded = decodeFunctionData({ abi: abis.IStargate, data: result.data as `0x${string}` });
-    expect(decoded.functionName).toBe("sendToken");
-
-    expect(result.sendParams.dstEid).toBe(CHAIN_ID_TO_ENDPOINT_ID[ARBITRUM]);
-    expect(result.sendParams.amountLD).toBe(1_000_000n);
-    expect(result.sendParams.extraOptions).not.toBe("0x");
-
-    // composeMsg = abi.encode(address account, bytes data) — no composeFrom prefix
-    const [decodedAccount, decodedInner] = decodeAbiParameters(
-      [{ type: "address" }, { type: "bytes" }],
-      result.sendParams.composeMsg as `0x${string}`
-    );
-    expect(getAddress(decodedAccount)).toBe(getAddress(ACCOUNT));
-    expect(decodedInner).toBe("0x");
-  });
-
-  it("forwards innerData into composeMsg", async () => {
-    const stubRpc = makeRpc({ nativeFee: 1_000n });
-    const innerData = "0xdeadbeef";
-
-    const result = await buildCrossChainDepositTxn(
-      {
-        chainId: ARBITRUM,
-        srcChainId: SOURCE_BASE_MAINNET,
-        account: ACCOUNT,
-        tokenAddress: USDC_ARBITRUM,
-        sourceStargatePoolAddress: STARGATE_USDC_BASE,
-        isNativeOnSource: false,
-        amount: 1_000_000n,
-        composeGas: 500_000n,
-        innerData,
-      },
-      { sourceRpc: stubRpc }
-    );
-
-    const [, decodedInner] = decodeAbiParameters(
-      [{ type: "address" }, { type: "bytes" }],
-      result.sendParams.composeMsg as `0x${string}`
-    );
-    expect(decodedInner).toBe(innerData);
-  });
-
-  it("works without rpcs when both composeGas and nativeFee are precomputed (server-side prep)", async () => {
-    const result = await buildCrossChainDepositTxn(
-      {
-        chainId: ARBITRUM,
-        srcChainId: SOURCE_BASE_MAINNET,
-        account: ACCOUNT,
-        tokenAddress: USDC_ARBITRUM,
-        sourceStargatePoolAddress: STARGATE_USDC_BASE,
-        isNativeOnSource: false,
-        amount: 1_000_000n,
-        composeGas: 500_000n,
-        nativeFee: 7_777n,
-      },
-      {}
-    );
-
-    expect(result.composeGas).toBe(500_000n);
-    expect(result.nativeFee).toBe(7_777n);
-    expect(result.value).toBe(7_777n);
-  });
-
-  it("adds amount to value when source token is native", async () => {
-    const stubRpc = makeRpc({ nativeFee: 5_000n });
-
-    const result = await buildCrossChainDepositTxn(
-      {
-        chainId: ARBITRUM,
-        srcChainId: SOURCE_BASE_MAINNET,
-        account: ACCOUNT,
-        tokenAddress: WETH_ARBITRUM,
-        sourceStargatePoolAddress: STARGATE_USDC_BASE,
-        isNativeOnSource: true,
-        amount: 10n ** 17n,
-        composeGas: 500_000n,
-      },
-      { sourceRpc: stubRpc }
-    );
-
-    expect(result.value).toBe(5_000n + 10n ** 17n);
-  });
-});
