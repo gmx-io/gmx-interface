@@ -131,13 +131,14 @@ describe.skipIf(!hasSigner)("multichain cross-chain withdraw (Arbitrum → Base,
       stargateAddress: STARGATE_USDC_BASE,
     });
 
-    const submitted = await sdk.executeCrossChainWithdraw(
-      signer!,
-      { srcChainId: TEST_SOURCE_CHAIN_ID, account, bridgeOutParams }
-    );
+    const submitted = await sdk.executeCrossChainWithdraw(signer!, {
+      srcChainId: TEST_SOURCE_CHAIN_ID,
+      account,
+      bridgeOutParams,
+    });
     expect(submitted.requestId).toBeDefined();
 
     const final = await waitForWithdrawStatus(sdk, submitted.requestId, 120_000);
-    expect(["created", "executed", "relay_failed", "relay_reverted"]).toContain(final.status);
+    expect(["executed", "cancelled", "relay_failed", "relay_reverted"]).toContain(final.status);
   });
 });

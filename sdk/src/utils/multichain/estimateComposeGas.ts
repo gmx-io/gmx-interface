@@ -55,7 +55,7 @@ export async function estimateMultichainDepositComposeGas(
   const fakeAmount =
     fakeAmountOverride ??
     (isValidTokenSafe(chainId, unwrappedTokenAddress)
-      ? expandDecimals(1n, getToken(chainId, unwrappedTokenAddress).decimals)
+      ? expandDecimals(10n, getToken(chainId, unwrappedTokenAddress).decimals)
       : DEFAULT_FAKE_AMOUNT);
 
   const message = encodeOftComposeMsg(0n, sourceChainEndpointId, fakeAmount, composeFromWithMsg);

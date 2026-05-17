@@ -99,7 +99,7 @@ export async function ensureSourceErc20Allowance(params: {
   })) as bigint;
 }
 
-const TERMINAL_WITHDRAW_STATUSES = new Set(["created", "executed", "cancelled", "relay_failed", "relay_reverted"]);
+const TERMINAL_WITHDRAW_STATUSES = new Set(["executed", "cancelled", "relay_failed", "relay_reverted"]);
 
 export async function waitForWithdrawStatus(
   sdk: Pick<GmxApiSdk, "getCrossChainWithdrawStatus">,
