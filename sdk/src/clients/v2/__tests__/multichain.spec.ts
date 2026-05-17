@@ -1,15 +1,3 @@
-/**
- * E2E suite for multichain bridge in / bridge out (Arbitrum settlement, Base source).
- *
- * Required env:
- *   GMX_TEST_PRIVATE_KEY     — wallet pk owning the GMX account (0x-prefixed 32 bytes)
- *   GMX_TEST_API_URL         — gmx-api instance (e.g. http://localhost:3004/v1)
- *   GMX_TEST_RPC_URL         — Arbitrum settlement-chain RPC
- *   GMX_TEST_SOURCE_RPC_URL  — Base source-chain RPC (use Alchemy/Infura — public is flaky)
- *
- * Optional:
- *   GMX_TEST_SEND=1          — actually broadcast the bridge tx (otherwise execute* tests are skipped)
- */
 import { isAddress } from "viem";
 import { beforeAll, describe, expect, it } from "vitest";
 
