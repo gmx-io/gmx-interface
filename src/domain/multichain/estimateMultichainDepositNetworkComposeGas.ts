@@ -10,7 +10,7 @@ import { convertTokenAddress, getToken, isValidTokenSafe } from "sdk/configs/tok
 import { estimateMultichainDepositComposeGas as estimateSdk } from "sdk/utils/multichain/estimateComposeGas";
 import { createViemRpc } from "sdk/utils/rpc/createViemRpc";
 
-import { CodecUiHelper, MultichainAction } from "./codecs/CodecUiHelper";
+import { encodeMultichainComposeActionData, MultichainAction } from "./codecs/CodecUiHelper";
 
 function resolveFakeAmount(chainId: ContractsChainId, unwrappedTokenAddress: string): bigint {
   if (isValidTokenSafe(chainId, unwrappedTokenAddress)) {
@@ -44,7 +44,7 @@ export async function estimateMultichainDepositNetworkComposeGas({
     throw new Error(`Stargate pool not found for token: ${unwrappedTokenAddress} on chain: ${chainId}`);
   }
 
-  const innerData = action ? CodecUiHelper.encodeMultichainComposeActionData(action) : undefined;
+  const innerData = action ? encodeMultichainComposeActionData(action) : undefined;
   const fakeAmount = resolveFakeAmount(chainId, unwrappedTokenAddress);
 
   return estimateSdk(createViemRpc(settlementChainPublicClient), {

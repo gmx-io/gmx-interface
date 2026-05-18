@@ -7,7 +7,6 @@ import type { SendParam } from "./sendParams";
 
 export type QuoteSendResult = {
   nativeFee: bigint;
-  lzTokenFee: bigint;
 };
 
 export async function quoteStargateSend(
@@ -25,11 +24,10 @@ export async function quoteStargateSend(
   const decoded = decodeFunctionResult({
     abi: abis.IStargate,
     functionName: "quoteSend",
-    data: result as `0x${string}`,
+    data: result,
   });
 
   return {
     nativeFee: decoded.nativeFee,
-    lzTokenFee: decoded.lzTokenFee,
   };
 }

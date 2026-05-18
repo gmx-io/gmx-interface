@@ -1,3 +1,5 @@
+import type { Hex } from "viem";
+
 export { createViemRpc } from "./createViemRpc";
 
 export type StateOverrideEntry = {
@@ -23,5 +25,5 @@ export type RpcEstimateGasParams = RpcCallParams & {
 
 export interface IRpc {
   estimateGas(params: RpcEstimateGasParams): Promise<bigint>;
-  call(params: RpcCallParams): Promise<string>;
+  call(params: RpcCallParams): Promise<Hex>;
 }

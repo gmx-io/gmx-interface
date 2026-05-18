@@ -1,4 +1,4 @@
-import { encodeAbiParameters, encodeFunctionData, zeroAddress } from "viem";
+import { encodeAbiParameters, encodeFunctionData, type Hex, zeroAddress } from "viem";
 
 import { abis } from "abis";
 import type { AnyChainId, SettlementChainId } from "configs/chains";
@@ -16,8 +16,8 @@ export type BridgeOutParams = {
 };
 
 export type BuildTxnResult = {
-  to: string;
-  data: string;
+  to: Hex;
+  data: Hex;
   value: bigint;
 };
 

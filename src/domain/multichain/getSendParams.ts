@@ -2,7 +2,7 @@ import type { AnyChainId } from "config/chains";
 import { SendParam } from "domain/multichain/types";
 import { getMultichainTransferSendParams as getMultichainTransferSendParamsSdk } from "sdk/utils/multichain/sendParams";
 
-import { CodecUiHelper, MultichainAction } from "./codecs/CodecUiHelper";
+import { encodeMultichainComposeActionData, MultichainAction } from "./codecs/CodecUiHelper";
 
 /**
  * Slippage is set to 0, meaning infinite slippage
@@ -28,7 +28,7 @@ export function getMultichainTransferSendParams({
   action?: MultichainAction;
   nativeDropAmount?: bigint;
 }): SendParam {
-  const innerData = action ? CodecUiHelper.encodeMultichainComposeActionData(action) : undefined;
+  const innerData = action ? encodeMultichainComposeActionData(action) : undefined;
 
   return getMultichainTransferSendParamsSdk({
     dstChainId,

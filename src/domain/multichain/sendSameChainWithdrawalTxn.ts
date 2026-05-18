@@ -46,8 +46,8 @@ export async function estimateSameChainWithdrawalGas({
 
   const gas = await client.estimateGas({
     account,
-    to: txn.to as `0x${string}`,
-    data: txn.data as `0x${string}`,
+    to: txn.to,
+    data: txn.data,
   });
 
   return applyGasLimitBuffer(gas);

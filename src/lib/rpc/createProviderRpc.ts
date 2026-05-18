@@ -1,4 +1,5 @@
 import type { Provider } from "ethers";
+import type { Hex } from "viem";
 
 import { extendError } from "lib/errors";
 import type { IRpc } from "sdk/utils/rpc";
@@ -19,7 +20,7 @@ export function createProviderRpc(provider: Provider): IRpc {
     },
     call: async ({ from, to, data, value }) => {
       const result = await provider.call({ from, to, data, value: value ?? 0n });
-      return result ?? "";
+      return (result ?? "0x") as Hex;
     },
   };
 }
