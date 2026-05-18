@@ -16,8 +16,6 @@ import { isSettlementChain, isSourceChain } from "config/multichain";
 import { areChainsRelated } from "domain/multichain/areChainsRelated";
 import { getWagmiConfig } from "lib/wallets/walletConfig";
 
-import { useWindowEthereumChainId } from "./useWindowEthereumChainId";
-
 const IS_DEVELOPMENT = isDevelopment();
 
 let INITIAL_CHAIN_ID: ContractsChainId;
@@ -38,11 +36,10 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
    */
   srcChainId?: SourceChainId;
 } {
-  const { chainId: connectedChainId } = useAccount();
+  const { chainId: connectedChainId, isConnected } = useAccount();
 
   const rawChainIdFromLocalStorage = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
   const chainIdFromLocalStorage = rawChainIdFromLocalStorage ? parseInt(rawChainIdFromLocalStorage) : undefined;
-  const windowChainId = useWindowEthereumChainId();
 
   const possibleSrcChainId = connectedChainId ?? chainIdFromLocalStorage;
   let srcChainId: SourceChainId | undefined = undefined;
@@ -143,7 +140,7 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
   if (isCurrentChainSupported) {
     return {
       chainId: connectedChainId as ContractsChainId,
-      isConnectedToChainId: windowChainId !== undefined ? connectedChainId === windowChainId : true,
+      isConnectedToChainId: isConnected,
       srcChainId,
     };
   }
@@ -151,7 +148,7 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
   if (isCurrentChainSource) {
     return {
       chainId: settlementChainId as SettlementChainId,
-      isConnectedToChainId: windowChainId !== undefined ? connectedChainId === windowChainId : true,
+      isConnectedToChainId: true,
       srcChainId,
     };
   }
