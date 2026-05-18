@@ -1,6 +1,5 @@
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
-import { RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { ChangeEvent, ReactNode, useCallback, useMemo, useState } from "react";
 import { MemoryRouter } from "react-router-dom";
@@ -24,11 +23,9 @@ function TestProviders({ state, children }: { state: SyntheticsState; children: 
     <MemoryRouter>
       <QueryClientProvider client={queryClient}>
         <WagmiProvider config={wagmiConfig}>
-          <RainbowKitProvider>
-            <I18nProvider i18n={i18n}>
-              <StateCtx.Provider value={state}>{children}</StateCtx.Provider>
-            </I18nProvider>
-          </RainbowKitProvider>
+          <I18nProvider i18n={i18n}>
+            <StateCtx.Provider value={state}>{children}</StateCtx.Provider>
+          </I18nProvider>
         </WagmiProvider>
       </QueryClientProvider>
     </MemoryRouter>

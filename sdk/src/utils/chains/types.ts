@@ -46,6 +46,8 @@ export type ContractsChainConfig = {
   gasPriceBuffer: bigint | undefined;
   excessiveExecutionFee: number;
   minExecutionFee: bigint | undefined;
+  /** USD bounds for the residual gas buffer kept on balance after `Max`. Defaults to `DEFAULT_MIN/MAX_RESIDUAL_GAS_USD`. */
+  residualGasUsd: { min: number; max: number } | undefined;
   isDisabled?: boolean;
   explorerUrl: string;
 };

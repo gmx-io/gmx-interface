@@ -1,6 +1,6 @@
 import orderBy from "lodash/orderBy";
 import uniqBy from "lodash/uniqBy";
-import { decodeFunctionResult, encodeFunctionData } from "viem";
+import { decodeFunctionResult, encodeFunctionData, isHex } from "viem";
 
 import { ContractsChainId, isContractsChain } from "config/chains";
 import { isDevelopment } from "config/env";
@@ -194,10 +194,15 @@ export class RpcTracker {
       data: response.result,
     });
 
+    const sampleReturnData = multicallResult[0].returnData;
+    if (!isHex(sampleReturnData)) {
+      throw new Error("Invalid RPC tracker multicall return data");
+    }
+
     const sampleFieldValue = decodeFunctionResult({
       abi: abis.DataStore,
       functionName: "getUint",
-      data: multicallResult[0].returnData,
+      data: sampleReturnData,
     });
 
     const blockNumber = Number(_blockNumber);

@@ -13,7 +13,7 @@ import { type SelectedClaimTokenAmount } from "domain/synthetics/referrals/claim
 import { convertToUsd } from "domain/synthetics/tokens";
 import { metrics } from "lib/metrics";
 import { getByKey } from "lib/objects";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { convertTokenAddress, getToken, getTokenBySymbol } from "sdk/configs/tokens";

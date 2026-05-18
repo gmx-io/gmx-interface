@@ -16,6 +16,7 @@ type Props = {
   handle?: RcSliderProps["handle"];
   onChange: (value: number) => void;
   className?: string;
+  disabled?: boolean;
   qa?: string;
 };
 
@@ -23,12 +24,12 @@ type Props = {
  * Fullscreen overlay during drag prevents cross-origin iframes from
  * swallowing mouseup and leaving rc-slider stuck in drag mode.
  */
-function useSliderDragOverlay(containerRef: React.RefObject<HTMLDivElement | null>) {
+function useSliderDragOverlay(containerRef: React.RefObject<HTMLDivElement | null>, disabled?: boolean) {
   const activeCleanupRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     const el = containerRef.current;
-    if (!el) return;
+    if (!el || disabled) return;
 
     const onPointerDown = (e: PointerEvent) => {
       if (e.button !== 0) return;
@@ -61,16 +62,40 @@ function useSliderDragOverlay(containerRef: React.RefObject<HTMLDivElement | nul
       el.removeEventListener("pointerdown", onPointerDown);
       activeCleanupRef.current?.();
     };
-  }, [containerRef]);
+  }, [containerRef, disabled]);
 }
 
-export function Slider({ min, max, value, step = 1, marks, handle, onChange, className, qa }: Props): ReactElement {
+export function Slider({
+  min,
+  max,
+  value,
+  step = 1,
+  marks,
+  handle,
+  onChange,
+  className,
+  disabled,
+  qa,
+}: Props): ReactElement {
   const containerRef = useRef<HTMLDivElement>(null);
-  useSliderDragOverlay(containerRef);
+  useSliderDragOverlay(containerRef, disabled);
 
   return (
-    <div className={cx("Slider cursor-pointer", className)} data-qa={qa} ref={containerRef}>
-      <RcSlider min={min} max={max} step={step} value={value} marks={marks} handle={handle} onChange={onChange} />
+    <div
+      className={cx("Slider", disabled ? "cursor-default" : "cursor-pointer", className)}
+      data-qa={qa}
+      ref={containerRef}
+    >
+      <RcSlider
+        min={min}
+        max={max}
+        step={step}
+        value={value}
+        marks={marks}
+        handle={handle}
+        onChange={onChange}
+        disabled={disabled}
+      />
     </div>
   );
 }
