@@ -215,9 +215,6 @@ function MarketsList() {
   }, []);
 
   const isSwap = mode === "swap";
-  const shouldFallbackToAll = isSwap && SWAP_EXCLUDED_TOP_LEVEL_TABS.includes(storedTopLevelTab);
-  const topLevelTab = shouldFallbackToAll ? "all" : storedTopLevelTab;
-  const subCategoryTab = shouldFallbackToAll ? "all" : storedSubCategoryTab;
   const availableTokens = isSwap ? swapTokens : perpTokens;
 
   const { availableChartTokens: options, availableChartTokenAddresses } = useMemo(() => {
@@ -234,6 +231,17 @@ function MarketsList() {
     if (!options || recentlyListedAddressesSet.size === 0) return 0;
     return options.filter((t) => recentlyListedAddressesSet.has(t.address.toLowerCase())).length;
   }, [options, recentlyListedAddressesSet]);
+
+  const hasAvailableFavorites = useMemo(() => {
+    if (!options || favoriteTokens.length === 0) return false;
+    return options.some((t) => favoriteTokens.includes(t.address));
+  }, [options, favoriteTokens]);
+
+  const shouldFallbackToAll =
+    (isSwap && SWAP_EXCLUDED_TOP_LEVEL_TABS.includes(storedTopLevelTab)) ||
+    (storedTopLevelTab === "favorites" && !hasAvailableFavorites);
+  const topLevelTab = shouldFallbackToAll ? "all" : storedTopLevelTab;
+  const subCategoryTab = shouldFallbackToAll ? "all" : storedSubCategoryTab;
 
   const populatedCryptoSubCats = useMemo(() => {
     const set = new Set<SubCategoryTab>();
@@ -406,6 +414,7 @@ function MarketsList() {
           <FavoriteTabs
             favoritesKey="chart-token-selector"
             recentlyListedCount={recentlyListedCount}
+            hasAvailableFavorites={hasAvailableFavorites}
             className="px-16"
             excludedTabs={isSwap ? SWAP_EXCLUDED_TOP_LEVEL_TABS : undefined}
             selectedValue={topLevelTab}
@@ -419,8 +428,8 @@ function MarketsList() {
               onChange={setSubCategoryTab}
               type="block"
               className="bg-slate-800/50 px-16"
-              tabsWrapperClassName="gap-16"
-              regularOptionClassname="!px-0 !pb-9 !pt-11 text-13"
+              tabsWrapperClassName="!w-fit"
+              regularOptionClassname="!px-8 !pb-9 !pt-11 text-13"
             />
           </ButtonRowScrollFadeContainer>
         )}
@@ -432,8 +441,8 @@ function MarketsList() {
               onChange={setSubCategoryTab}
               type="block"
               className="bg-slate-800/50 px-16"
-              tabsWrapperClassName="gap-16"
-              regularOptionClassname="!px-0 !pb-9 !pt-11 text-13"
+              tabsWrapperClassName="!w-fit"
+              regularOptionClassname="!px-8 !pb-9 !pt-11 text-13"
             />
           </ButtonRowScrollFadeContainer>
         )}
