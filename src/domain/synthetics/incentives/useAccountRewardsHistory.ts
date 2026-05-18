@@ -45,7 +45,7 @@ type AccountRewardsHistoryResult = {
   hasNextPage: boolean;
 };
 
-export function createEmptyCurrentEpochRewardsHistoryEntry(epoch: number): RewardsHistoryEntry {
+export function createEmptyRewardsHistoryEntry(epoch: number): RewardsHistoryEntry {
   return {
     epoch,
     volume: 0n,
@@ -55,6 +55,62 @@ export function createEmptyCurrentEpochRewardsHistoryEntry(epoch: number): Rewar
     pointsBalance: 0n,
     rewardsEarned: 0n,
     rewardsClaimed: 0n,
+  };
+}
+
+export function createEmptyCurrentEpochRewardsHistoryEntry(epoch: number): RewardsHistoryEntry {
+  return createEmptyRewardsHistoryEntry(epoch);
+}
+
+export function getRewardsHistoryEpochs({
+  programStartTimestamp,
+  currentEpoch,
+  epochDuration,
+}: {
+  programStartTimestamp: number | undefined;
+  currentEpoch: number | undefined;
+  epochDuration: number | undefined;
+}) {
+  if (programStartTimestamp === undefined || currentEpoch === undefined || epochDuration === undefined) {
+    return [];
+  }
+
+  if (epochDuration <= 0 || currentEpoch < programStartTimestamp) {
+    return [];
+  }
+
+  const epochs: number[] = [];
+  for (let epoch = currentEpoch; epoch >= programStartTimestamp; epoch -= epochDuration) {
+    epochs.push(epoch);
+  }
+
+  return epochs;
+}
+
+export function fillRewardsHistoryPage({
+  entries,
+  programStartTimestamp,
+  currentEpoch,
+  epochDuration,
+  limit,
+  offset,
+}: {
+  entries: RewardsHistoryEntry[];
+  programStartTimestamp: number;
+  currentEpoch: number;
+  epochDuration: number;
+  limit: number;
+  offset: number;
+}): AccountRewardsHistoryResult {
+  const epochs = getRewardsHistoryEpochs({ programStartTimestamp, currentEpoch, epochDuration });
+  const entriesByEpoch = new Map(entries.map((entry) => [entry.epoch, entry]));
+  const pageEpochs = epochs.slice(offset, offset + limit);
+  const pageEntries = pageEpochs.map((epoch) => entriesByEpoch.get(epoch) ?? createEmptyRewardsHistoryEntry(epoch));
+
+  return {
+    entries: pageEntries,
+    totalCount: epochs.length,
+    hasNextPage: offset + pageEntries.length < epochs.length,
   };
 }
 
@@ -161,6 +217,38 @@ async function fetchAccountRewardsHistoryPage({
   };
 }
 
+async function fetchAllAccountRewardsHistoryEntries({
+  client,
+  account,
+}: {
+  client: AccountRewardsHistoryClient;
+  account: string;
+}) {
+  const entries: RewardsHistoryEntry[] = [];
+  let offset = 0;
+  let hasMore = true;
+
+  while (hasMore) {
+    const page = await fetchAccountRewardsHistoryPage({
+      client,
+      account,
+      limit: REWARDS_HISTORY_PAGE_SIZE,
+      offset,
+    });
+
+    if (!page) return undefined;
+
+    entries.push(...page.entries);
+    hasMore = page.entries.length > 0 && offset + page.entries.length < page.totalCount;
+
+    if (hasMore) {
+      offset += page.entries.length;
+    }
+  }
+
+  return entries;
+}
+
 async function fetchManualAllocatedPoints({
   client,
   account,
@@ -199,18 +287,60 @@ async function fetchManualAllocatedPoints({
 
 export function useAccountRewardsHistory(
   chainId: number,
-  params: { account?: string; currentEpoch?: number; enabled?: boolean; limit: number; offset: number }
+  params: {
+    account?: string;
+    currentEpoch?: number;
+    programStartTimestamp?: number;
+    epochDuration?: number;
+    enabled?: boolean;
+    limit: number;
+    offset: number;
+  }
 ) {
-  const { account, currentEpoch, enabled = true, limit, offset } = params;
+  const { account, currentEpoch, programStartTimestamp, epochDuration, enabled = true, limit, offset } = params;
 
   const { data, error, isLoading } = useSWR<AccountRewardsHistoryResult | undefined>(
-    enabled && account ? ["useAccountRewardsHistory", chainId, account, currentEpoch, limit, offset] : null,
+    enabled && account
+      ? [
+          "useAccountRewardsHistory",
+          chainId,
+          account,
+          currentEpoch,
+          programStartTimestamp,
+          epochDuration,
+          limit,
+          offset,
+        ]
+      : null,
     {
       fetcher: async () => {
         const client = getSubsquidGraphClient(chainId);
         if (!client || !account) return undefined;
 
         const normalizedAccount = account.toLowerCase();
+
+        if (
+          currentEpoch !== undefined &&
+          programStartTimestamp !== undefined &&
+          epochDuration !== undefined &&
+          epochDuration > 0
+        ) {
+          const entries = await fetchAllAccountRewardsHistoryEntries({
+            client,
+            account: normalizedAccount,
+          });
+          if (!entries) return undefined;
+
+          return fillRewardsHistoryPage({
+            entries,
+            currentEpoch,
+            programStartTimestamp,
+            epochDuration,
+            limit,
+            offset,
+          });
+        }
+
         const firstPage =
           currentEpoch === undefined
             ? undefined

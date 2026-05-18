@@ -95,6 +95,9 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
   } = useAccountRewardsHistory(chainId, {
     account,
     currentEpoch: config?.epochTimestamp,
+    programStartTimestamp: config?.programStartTimestamp,
+    epochDuration: config?.epochDuration,
+    enabled: config !== undefined,
     limit: PER_PAGE,
     offset: (page - 1) * PER_PAGE,
   });
@@ -119,7 +122,7 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
 
   const pageCount = totalCount === undefined ? page : Math.max(1, Math.ceil(totalCount / PER_PAGE));
   const pageData = history ?? [];
-  const isInitialLoading = loading && !history;
+  const isInitialLoading = (!config || loading) && !history;
   const hasHistoryFailure = Boolean(error) && (!history || history.length === 0);
   const showHistoryDegradedNotice = Boolean(error) && Boolean(history?.length);
   const now = useCurrentUnixTimestamp();

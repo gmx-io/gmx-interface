@@ -3,7 +3,10 @@ import { describe, expect, it } from "vitest";
 import type { RewardsHistoryEntry } from "../types";
 import {
   createEmptyCurrentEpochRewardsHistoryEntry,
+  createEmptyRewardsHistoryEntry,
+  fillRewardsHistoryPage,
   getManualAllocatedPointsFromRewardsHistoryEntries,
+  getRewardsHistoryEpochs,
   getRewardsHistoryBackendPageParams,
   mergeCurrentEpochRewardsHistoryEntry,
   shouldInsertCurrentEpochRewardsHistoryEntry,
@@ -74,6 +77,68 @@ describe("useAccountRewardsHistory current epoch helpers", () => {
       totalCount: 2,
       hasNextPage: false,
     });
+  });
+});
+
+describe("useAccountRewardsHistory empty epoch helpers", () => {
+  it("builds dense epoch timestamps from current epoch back to program start", () => {
+    expect(
+      getRewardsHistoryEpochs({
+        programStartTimestamp: 1_000,
+        currentEpoch: 1_300,
+        epochDuration: 100,
+      })
+    ).toEqual([1_300, 1_200, 1_100, 1_000]);
+  });
+
+  it("fills missing epochs with zero-valued rows and paginates the dense range", () => {
+    expect(
+      fillRewardsHistoryPage({
+        entries: [makeEntry(1_300), makeEntry(1_100)],
+        programStartTimestamp: 1_000,
+        currentEpoch: 1_300,
+        epochDuration: 100,
+        limit: 3,
+        offset: 0,
+      })
+    ).toEqual({
+      entries: [makeEntry(1_300), createEmptyRewardsHistoryEntry(1_200), makeEntry(1_100)],
+      totalCount: 4,
+      hasNextPage: true,
+    });
+
+    expect(
+      fillRewardsHistoryPage({
+        entries: [makeEntry(1_300), makeEntry(1_100)],
+        programStartTimestamp: 1_000,
+        currentEpoch: 1_300,
+        epochDuration: 100,
+        limit: 3,
+        offset: 3,
+      })
+    ).toEqual({
+      entries: [createEmptyRewardsHistoryEntry(1_000)],
+      totalCount: 4,
+      hasNextPage: false,
+    });
+  });
+
+  it("ignores sparse squid rows outside the program epoch range", () => {
+    expect(
+      fillRewardsHistoryPage({
+        entries: [makeEntry(1_400), makeEntry(1_300), makeEntry(900)],
+        programStartTimestamp: 1_000,
+        currentEpoch: 1_300,
+        epochDuration: 100,
+        limit: 10,
+        offset: 0,
+      }).entries
+    ).toEqual([
+      makeEntry(1_300),
+      createEmptyRewardsHistoryEntry(1_200),
+      createEmptyRewardsHistoryEntry(1_100),
+      createEmptyRewardsHistoryEntry(1_000),
+    ]);
   });
 });
 
