@@ -39,29 +39,33 @@ const COL_MULTIPLIER: React.CSSProperties = { width: "10%" };
 const COL_SHARE: React.CSSProperties = { width: "8%" };
 const GMX_DECIMALS = 18;
 const GMX_DECIMALS_FACTOR = 10n ** 18n;
+const LEADERBOARD_ROW_CLASS_NAME = "h-[43px]";
+const LEADERBOARD_TD_CLASS_NAME = "!py-10";
+const CURRENT_ACCOUNT_ROW_CLASS_NAME =
+  "border-b-1/2 border-blue-500/30 !bg-blue-500/10 text-blue-100 [&_.AddressView-trader-id]:!text-typography-primary [&_.AddressView-trader-id_.text-typography-secondary]:!text-blue-100";
 
 function PointsLeaderboardSkeletonRow({ invisible }: { invisible?: boolean }) {
   return (
-    <tr className={invisible ? undefined : "odd:bg-fill-surfaceElevated50"}>
-      <TableTd className="!py-10">
+    <tr className={cx(LEADERBOARD_ROW_CLASS_NAME, !invisible && "odd:bg-fill-surfaceElevated50")}>
+      <TableTd className={LEADERBOARD_TD_CLASS_NAME}>
         <Skeleton width={40} inline />
       </TableTd>
-      <TableTd className="!py-10">
+      <TableTd className={LEADERBOARD_TD_CLASS_NAME}>
         <Skeleton width={140} inline />
       </TableTd>
-      <TableTd className="!py-10">
+      <TableTd className={LEADERBOARD_TD_CLASS_NAME}>
         <Skeleton width={90} inline />
       </TableTd>
-      <TableTd className="!py-10">
+      <TableTd className={LEADERBOARD_TD_CLASS_NAME}>
         <Skeleton width={90} inline />
       </TableTd>
-      <TableTd className="!py-10">
+      <TableTd className={LEADERBOARD_TD_CLASS_NAME}>
         <Skeleton width={150} inline />
       </TableTd>
-      <TableTd className="!py-10">
+      <TableTd className={LEADERBOARD_TD_CLASS_NAME}>
         <Skeleton width={70} inline />
       </TableTd>
-      <TableTd className="!py-10">
+      <TableTd className={LEADERBOARD_TD_CLASS_NAME}>
         <Skeleton width={56} inline />
       </TableTd>
     </tr>
@@ -235,7 +239,7 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
   }, [account, pageData]);
   const showPinnedRow = page === 1 && userEntry !== null && !isUserOnVisiblePage;
 
-  const tdClassName = "!py-10";
+  const tdClassName = LEADERBOARD_TD_CLASS_NAME;
 
   return (
     <div className="flex h-full flex-col rounded-8 bg-slate-900">
@@ -314,7 +318,7 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                     {showPinnedRow && userEntry && (
                       <TableTr
                         data-testid="leaderboard-pinned-row"
-                        className="border-b-1/2 border-blue-500/30 !bg-blue-500/10"
+                        className={cx(LEADERBOARD_ROW_CLASS_NAME, CURRENT_ACCOUNT_ROW_CLASS_NAME)}
                       >
                         <TableTd className={cx(tdClassName, "relative")}>
                           <span className={cx("numbers", getRankClassName(userRank))}>
@@ -357,12 +361,12 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
                         <TableTr
                           key={entry.address}
                           hoverable={!isUserRow}
-                          className={isUserRow ? "border-b-1/2 border-blue-500/30 !bg-blue-500/10" : undefined}
+                          className={cx(LEADERBOARD_ROW_CLASS_NAME, isUserRow && CURRENT_ACCOUNT_ROW_CLASS_NAME)}
                         >
                           <TableTd className={cx(tdClassName, "relative")}>
                             <span
                               className={cx("font-medium numbers after:!top-7", getRankClassName(rank), {
-                                "text-yellow-300": rank <= 3,
+                                "text-yellow-300": rank <= 3 && !isUserRow,
                               })}
                             >
                               {rank}

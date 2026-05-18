@@ -267,3 +267,17 @@ describe("MainDataSection projected multiplier", () => {
     expect(within(container).getByText(formatMultiplier(300))).toBeDefined();
   });
 });
+
+describe("MainDataSection loading state", () => {
+  it("uses dark placeholder colors for the summary skeletons", () => {
+    const { container } = renderWithI18n(<MainDataSection isLoading config={mockConfig} />);
+
+    const skeletons = container.querySelectorAll(".react-loading-skeleton");
+    expect(skeletons).toHaveLength(2);
+    skeletons.forEach((skeleton) => {
+      const style = (skeleton as HTMLElement).style;
+      expect(style.getPropertyValue("--base-color")).toBe("#B4BBFF1A");
+      expect(style.getPropertyValue("--highlight-color")).toBe("#B4BBFF1A");
+    });
+  });
+});
