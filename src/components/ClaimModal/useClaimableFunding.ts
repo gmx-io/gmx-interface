@@ -71,20 +71,25 @@ export function useClaimableFunding(markets: MarketInfo[]) {
 function getEligibleEntries(market: MarketInfo): ClaimFundingEntry[] {
   if (market.isDisabled) return [];
   const entries: ClaimFundingEntry[] = [];
-  if (
+
+  const longEligible =
     market.claimableFundingAmountLong !== undefined &&
     market.claimableFundingAmountLong !== 0n &&
-    !getIsFundingClaimInsufficientBalance(market, true)
-  ) {
-    entries.push({ marketAddress: market.marketTokenAddress, tokenAddress: market.longTokenAddress });
-  }
-  if (
+    !getIsFundingClaimInsufficientBalance(market, true);
+
+  const shortEligible =
     market.claimableFundingAmountShort !== undefined &&
     market.claimableFundingAmountShort !== 0n &&
-    !getIsFundingClaimInsufficientBalance(market, false)
-  ) {
+    !getIsFundingClaimInsufficientBalance(market, false);
+
+  if (longEligible) {
+    entries.push({ marketAddress: market.marketTokenAddress, tokenAddress: market.longTokenAddress });
+  }
+
+  if (shortEligible && (!longEligible || market.shortTokenAddress !== market.longTokenAddress)) {
     entries.push({ marketAddress: market.marketTokenAddress, tokenAddress: market.shortTokenAddress });
   }
+
   return entries;
 }
 

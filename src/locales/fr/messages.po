@@ -8659,6 +8659,7 @@ msgstr "Taille par partie"
 msgid "Add endpoint"
 msgstr "Ajouter un point de terminaison"
 
+#: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/domain/synthetics/trade/utils/validation.ts

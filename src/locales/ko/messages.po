@@ -8659,6 +8659,7 @@ msgstr "부분당 크기"
 msgid "Add endpoint"
 msgstr "엔드포인트 추가"
 
+#: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/domain/synthetics/trade/utils/validation.ts

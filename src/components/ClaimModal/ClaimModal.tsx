@@ -3,8 +3,12 @@ import { useCallback, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
-import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
+import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import {
+  ArbitraryExpressError,
+  useArbitraryError,
+  useArbitraryRelayParamsAndPayload,
+} from "domain/multichain/arbitraryRelayParams";
 import { ExpressTransactionBuilder, RawRelayParamsPayload } from "domain/synthetics/express";
 import {
   MarketInfo,
@@ -13,11 +17,12 @@ import {
   getMarketPoolName,
 } from "domain/synthetics/markets";
 import { buildAndSignClaimFundingFeesTxn, claimFundingFeesTxn } from "domain/synthetics/markets/claimFundingFeesTxn";
-import { convertToUsd } from "domain/synthetics/tokens";
+import { TokenData, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { formatDeltaUsd, formatTokenAmount } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendExpressTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -30,6 +35,7 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import Checkbox from "components/Checkbox/Checkbox";
 import Modal from "components/Modal/Modal";
+import { OutOfTokenErrorAlert } from "components/Referrals/shared/modals/OutOfTokenErrorAlert";
 import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -114,6 +120,7 @@ function ClaimModalMultichain(p: Props) {
   const { account, signer } = useWallet();
   const { chainId, srcChainId } = useChainId();
   const { provider } = useJsonRpcProvider(chainId);
+  const tokensData = useTokensData();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const hasOutdatedUi = useHasOutdatedUi();
   const selection = useClaimableFundingSelection(isVisible);
@@ -150,6 +157,14 @@ function ClaimModalMultichain(p: Props) {
     expressTransactionBuilder,
     isGmxAccount: srcChainId !== undefined,
   });
+
+  const errors = useArbitraryError(expressTxnParamsAsyncResult.error);
+  const outOfTokenErrorToken = useMemo(() => {
+    if (errors?.isOutOfTokenError?.tokenAddress) {
+      return getByKey(tokensData, errors.isOutOfTokenError.tokenAddress);
+    }
+    return undefined;
+  }, [errors, tokensData]);
 
   const onSubmit = useCallback(() => {
     const onMissingParams = () => {
@@ -238,6 +253,13 @@ function ClaimModalMultichain(p: Props) {
       };
     }
 
+    if (errors?.isOutOfTokenError) {
+      return {
+        text: t`Insufficient ${outOfTokenErrorToken?.symbol ?? ""} balance`,
+        disabled: true,
+      };
+    }
+
     if (!expressTxnParamsAsyncResult.data) {
       return {
         text: (
@@ -254,10 +276,17 @@ function ClaimModalMultichain(p: Props) {
       text: t`Claim`,
       onClick: onSubmit,
     };
-  }, [hasOutdatedUi, expressTxnParamsAsyncResult.data, isSubmitting, onSubmit]);
+  }, [hasOutdatedUi, isSubmitting, errors, outOfTokenErrorToken, expressTxnParamsAsyncResult.data, onSubmit]);
 
   return (
-    <ClaimModalComponent isVisible={isVisible} onClose={onClose} buttonState={buttonState} selection={selection} />
+    <ClaimModalComponent
+      isVisible={isVisible}
+      onClose={onClose}
+      buttonState={buttonState}
+      selection={selection}
+      errors={errors}
+      outOfTokenErrorToken={outOfTokenErrorToken}
+    />
   );
 }
 
@@ -266,8 +295,10 @@ function ClaimModalComponent(p: {
   onClose: () => void;
   buttonState: { text: React.ReactNode; onClick?: () => void; disabled?: boolean };
   selection: ClaimFundingSelection;
+  errors?: ArbitraryExpressError;
+  outOfTokenErrorToken?: TokenData;
 }) {
-  const { isVisible, onClose, buttonState, selection } = p;
+  const { isVisible, onClose, buttonState, selection, errors, outOfTokenErrorToken } = p;
 
   const marketsInfoData = useMarketsInfoData();
 
@@ -457,6 +488,11 @@ function ClaimModalComponent(p: {
             claim.
           </Trans>
         </AlertInfo>
+      )}
+      {errors?.isOutOfTokenError && outOfTokenErrorToken && (
+        <div className="mb-15">
+          <OutOfTokenErrorAlert errors={errors} token={outOfTokenErrorToken} onClose={onClose} />
+        </div>
       )}
       <Button
         className="w-full"
