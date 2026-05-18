@@ -20,8 +20,6 @@ describe("getMaxWithdrawAmount", () => {
     const marketKey = "ETH-ETH-USDC";
     const marketsInfoData = mockMarketsInfoData(tokensData, [marketKey], {
       [marketKey]: {
-        // Deep balanced OI suppresses getPriceImpactForPosition so pendingImpactAmount
-        // dominates — the shape that actually reproduces the bug.
         longInterestUsd: expandDecimals(100_000_000, USD_DECIMALS),
         shortInterestUsd: expandDecimals(100_000_000, USD_DECIMALS),
         longInterestInTokens: usdToToken(100_000_000, tokensData.ETH),

@@ -295,8 +295,6 @@ export function getLiquidationPrice(p: {
   return liquidationPrice;
 }
 
-// Solves `nextLiqPrice = markPrice` against the formula in getLiquidationPrice above; body
-// mirrors that arithmetic to stay in sync.
 export function getMinCollateralUsdForLiquidationPrice(p: {
   sizeInUsd: bigint;
   sizeInTokens: bigint;
