@@ -94,9 +94,13 @@ export function getRpcTransport(chainId: AnyChainId, purpose: RpcPurpose): Trans
   if (TRANSPORTS_CACHE.has(key)) {
     return TRANSPORTS_CACHE.get(key)!;
   }
-  const transport = fallback(
-    getRpcProviders(chainId, purpose).map((provider: RpcConfig) => http(provider.url, HTTP_TRANSPORT_OPTIONS))
-  );
+
+  const providers =
+    purpose === "express"
+      ? [...getRpcProviders(chainId, "express"), ...getRpcProviders(chainId, "default")]
+      : getRpcProviders(chainId, purpose);
+
+  const transport = fallback(providers.map((provider: RpcConfig) => http(provider.url, HTTP_TRANSPORT_OPTIONS)));
   TRANSPORTS_CACHE.set(key, transport);
   return transport;
 }
