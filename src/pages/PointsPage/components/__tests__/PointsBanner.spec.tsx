@@ -72,7 +72,7 @@ const config: IncentivesConfig = {
   featuredMarketTokens: [],
 };
 
-function renderBanner(overrides?: { pointsExpiringThisEpoch?: bigint }) {
+function renderBanner(overrides?: { pointsExpiringThisEpoch?: bigint; onStakeGmxClick?: () => void }) {
   return render(
     <I18nProvider i18n={i18n}>
       <MemoryRouter>
@@ -86,6 +86,7 @@ function renderBanner(overrides?: { pointsExpiringThisEpoch?: bigint }) {
               ? overrides.pointsExpiringThisEpoch
               : pointsExpiringThisEpoch
           }
+          onStakeGmxClick={overrides?.onStakeGmxClick}
         />
       </MemoryRouter>
     </I18nProvider>
@@ -201,6 +202,20 @@ describe("PointsBanner", () => {
     expect(screen.getByText("You have GMX ready to stake")).toBeTruthy();
     expect(screen.getByText("You have 5.00 GMX unstaked - stake now to earn more points and rewards.")).toBeTruthy();
     expect(screen.getByText("Stake GMX")).toBeTruthy();
+  });
+
+  it("opens the local stake modal from the unstaked GMX banner when a handler is provided", () => {
+    const onStakeGmxClick = vi.fn();
+    stakingDataMock.gmxBalance = 5n * GMX_DECIMALS;
+
+    const { container } = renderBanner({ onStakeGmxClick });
+    const dots = container.querySelectorAll(".rounded-full");
+
+    fireEvent.click(dots[1]);
+    fireEvent.click(screen.getByRole("button", { name: /Stake GMX/ }));
+
+    expect(onStakeGmxClick).toHaveBeenCalledOnce();
+    expect(screen.queryByRole("link", { name: /Stake GMX/ })).toBeNull();
   });
 
   it("chooses animation direction when clicking banner dots", () => {

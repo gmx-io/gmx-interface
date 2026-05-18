@@ -13,8 +13,6 @@ import { usePersonalizedBannerData } from "domain/synthetics/incentives/usePerso
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatAmountHuman, formatUsd } from "lib/numbers";
 
-import { EARN_PORTFOLIO_STAKE_GMX_LINK } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/constants";
-
 import bgPointsBanner from "img/bg_points_banner.png";
 import CloseIcon from "img/ic_close.svg?react";
 import EarnIcon from "img/ic_earn.svg?react";
@@ -32,12 +30,14 @@ type Props = {
   config?: IncentivesConfig;
   currentEpochStats?: EpochStats;
   pointsExpiringThisEpoch?: bigint;
+  onStakeGmxClick?: () => void;
 };
 
 type BannerAction = {
   label: ReactNode;
   type: "trade" | "stake";
-  to: string;
+  to?: string;
+  onClick?: () => void;
 };
 
 type BannerType =
@@ -86,7 +86,14 @@ const BANNER_COINS: Record<BannerType, string> = {
 
 type BannerAnimationDirection = "left" | "right";
 
-export function PointsBanner({ isActiveUser, account, config, currentEpochStats, pointsExpiringThisEpoch }: Props) {
+export function PointsBanner({
+  isActiveUser,
+  account,
+  config,
+  currentEpochStats,
+  pointsExpiringThisEpoch,
+  onStakeGmxClick,
+}: Props) {
   const { showAllPointsPageBanners } = useSettings();
   const { data: stakingData } = useStakingProcessedData();
   const personalizedBannerData = usePersonalizedBannerData();
@@ -108,6 +115,7 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
         isManuallyRewarded: personalizedBannerData.isManuallyRewarded,
         manualBonusUsd: personalizedBannerData.manualBonusUsd,
         showAllBanners: showAllPointsPageBanners,
+        onStakeGmxClick,
       }),
     [
       isActiveUser,
@@ -119,6 +127,7 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
       personalizedBannerData.isManuallyRewarded,
       personalizedBannerData.manualBonusUsd,
       showAllPointsPageBanners,
+      onStakeGmxClick,
     ]
   );
   const banners = useMemo(
@@ -267,10 +276,7 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
             <h3 className="text-16 font-medium text-typography-primary">{current.title}</h3>
             <p className="text-13 text-typography-secondary">{current.description}</p>
           </div>
-          <Link to={current.action.to} className="flex items-center gap-4">
-            <span className="text-14 font-medium text-blue-300">{current.action.label}</span>
-            {ACTION_ICONS[current.action.type]}
-          </Link>
+          <BannerActionLink action={current.action} />
         </div>
 
         <img
@@ -301,6 +307,33 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
         </div>
       )}
     </div>
+  );
+}
+
+function BannerActionLink({ action }: { action: BannerAction }) {
+  const content = (
+    <>
+      <span className="text-14 font-medium text-blue-300">{action.label}</span>
+      {ACTION_ICONS[action.type]}
+    </>
+  );
+
+  if (action.onClick) {
+    return (
+      <button
+        type="button"
+        className="bg-transparent flex appearance-none items-center gap-4 border-0 p-0 text-left"
+        onClick={action.onClick}
+      >
+        {content}
+      </button>
+    );
+  }
+
+  return (
+    <Link to={action.to ?? "/points"} className="flex items-center gap-4">
+      {content}
+    </Link>
   );
 }
 
@@ -338,9 +371,10 @@ function getBannerContent({
   isManuallyRewarded,
   manualBonusUsd,
   showAllBanners,
+  onStakeGmxClick,
 }: BannerContext): BannerContent[] {
   if (showAllBanners) {
-    return getAllBannerContent();
+    return getAllBannerContent(onStakeGmxClick);
   }
 
   if (!account || !isActiveUser) {
@@ -374,7 +408,8 @@ function getBannerContent({
       action: {
         label: <Trans>Stake GMX</Trans>,
         type: "stake",
-        to: EARN_PORTFOLIO_STAKE_GMX_LINK,
+        to: "/points",
+        onClick: onStakeGmxClick,
       },
     });
   }
@@ -425,14 +460,15 @@ function getBannerContent({
     action: {
       label: <Trans>Stake rewards</Trans>,
       type: "stake",
-      to: EARN_PORTFOLIO_STAKE_GMX_LINK,
+      to: "/points",
+      onClick: onStakeGmxClick,
     },
   });
 
   return items;
 }
 
-function getAllBannerContent(): BannerContent[] {
+function getAllBannerContent(onStakeGmxClick?: () => void): BannerContent[] {
   return [
     getManualRewardBanner(200n * 10n ** 30n),
     {
@@ -452,7 +488,8 @@ function getAllBannerContent(): BannerContent[] {
       action: {
         label: <Trans>Stake GMX</Trans>,
         type: "stake",
-        to: EARN_PORTFOLIO_STAKE_GMX_LINK,
+        to: "/points",
+        onClick: onStakeGmxClick,
       },
     },
     {
@@ -482,7 +519,8 @@ function getAllBannerContent(): BannerContent[] {
       action: {
         label: <Trans>Stake rewards</Trans>,
         type: "stake",
-        to: EARN_PORTFOLIO_STAKE_GMX_LINK,
+        to: "/points",
+        onClick: onStakeGmxClick,
       },
     },
   ];

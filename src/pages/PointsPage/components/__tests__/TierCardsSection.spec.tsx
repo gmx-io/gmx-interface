@@ -1,7 +1,7 @@
 /* eslint-disable react-perf/jsx-no-new-object-as-prop */
 import { i18n } from "@lingui/core";
 import { I18nProvider } from "@lingui/react";
-import { render, screen, cleanup } from "@testing-library/react";
+import { fireEvent, render, screen, cleanup } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, it, expect, vi, afterEach } from "vitest";
 
@@ -255,6 +255,49 @@ describe("TierCardsSection", () => {
       renderWithI18n(<TierCardsSection config={mockConfig} currentEpochStats={undefined} />);
 
       expect(screen.getByText("Stake GMX")).toBeDefined();
+    });
+
+    it("uses local modal handlers for inactive staking card GMX actions", () => {
+      const onBuyGmxClick = vi.fn();
+      const onStakeGmxClick = vi.fn();
+
+      stakingDataMock.data = {
+        gmxInStakedGmx: 0n,
+        gmxBalance: 0n,
+      };
+
+      const { rerender } = renderWithI18n(
+        <TierCardsSection
+          config={mockConfig}
+          currentEpochStats={undefined}
+          onBuyGmxClick={onBuyGmxClick}
+          onStakeGmxClick={onStakeGmxClick}
+        />
+      );
+
+      fireEvent.click(screen.getByRole("button", { name: /Buy GMX/ }));
+      expect(onBuyGmxClick).toHaveBeenCalledOnce();
+
+      stakingDataMock.data = {
+        gmxInStakedGmx: 0n,
+        gmxBalance: 10n * GMX_DEC,
+      };
+
+      rerender(
+        <I18nProvider i18n={i18n}>
+          <MemoryRouter>
+            <TierCardsSection
+              config={mockConfig}
+              currentEpochStats={undefined}
+              onBuyGmxClick={onBuyGmxClick}
+              onStakeGmxClick={onStakeGmxClick}
+            />
+          </MemoryRouter>
+        </I18nProvider>
+      );
+
+      fireEvent.click(screen.getByRole("button", { name: /Stake GMX/ }));
+      expect(onStakeGmxClick).toHaveBeenCalledOnce();
     });
   });
 

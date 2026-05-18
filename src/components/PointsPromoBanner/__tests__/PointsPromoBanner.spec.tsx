@@ -176,7 +176,7 @@ describe("PointsPromoBanner", () => {
     expect(screen.getByText(/\$200 in rewards/)).toBeDefined();
   });
 
-  it('renders "Stake GMX" CTA and links to /earn/portfolio with stake-gmx operation for recent-activity variant', () => {
+  it('renders "Stake GMX" CTA and links to /points for recent-activity variant', () => {
     mockUsePersonalizedBannerData.mockReturnValue({
       ...defaultBannerData,
       bannerVariant: "recent-activity",
@@ -187,7 +187,7 @@ describe("PointsPromoBanner", () => {
 
     expect(screen.getByText("Stake GMX")).toBeDefined();
     expect(screen.queryByText(/Learn more/)).toBeNull();
-    expect(screen.getByRole("link").getAttribute("href")).toBe("/earn/portfolio?operation=stake-gmx");
+    expect(screen.getByRole("link").getAttribute("href")).toBe("/points");
   });
 
   it("renders Learn more CTA for new-or-low-fees variant and links to /points", () => {

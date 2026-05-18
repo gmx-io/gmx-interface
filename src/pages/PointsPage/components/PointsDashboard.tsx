@@ -13,9 +13,11 @@ import { TierLevelsSection } from "./TierLevelsSection";
 type Props = {
   chainId: number;
   account?: string;
+  onStakeGmxClick?: () => void;
+  onBuyGmxClick?: () => void;
 };
 
-export function PointsDashboard({ chainId, account }: Props) {
+export function PointsDashboard({ chainId, account, onStakeGmxClick, onBuyGmxClick }: Props) {
   const { data: config, error: configError, loading: configLoading } = useIncentivesConfig(chainId);
   const { data: status, error: statusError, loading: statusLoading } = useAccountIncentiveStatus(chainId, { account });
 
@@ -62,6 +64,8 @@ export function PointsDashboard({ chainId, account }: Props) {
         effectiveStakingTier={status?.stakingTier}
         projectedVolumeTier={status?.projectedVolumeTier}
         projectedStakingTier={status?.projectedStakingTier}
+        onStakeGmxClick={onStakeGmxClick}
+        onBuyGmxClick={onBuyGmxClick}
       />
 
       <TierLevelsSection

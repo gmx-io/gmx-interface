@@ -24,6 +24,8 @@ type Props = {
   effectiveStakingTier?: StakingTierId | null;
   projectedVolumeTier?: VolumeTierId | null;
   projectedStakingTier?: StakingTierId | null;
+  onStakeGmxClick?: () => void;
+  onBuyGmxClick?: () => void;
 };
 
 export function MainDataSection({
@@ -36,6 +38,8 @@ export function MainDataSection({
   effectiveStakingTier,
   projectedVolumeTier,
   projectedStakingTier,
+  onStakeGmxClick,
+  onBuyGmxClick,
 }: Props) {
   const hasMultiplier = multiplier !== undefined && multiplier > 0;
   const displayMultiplier = formatMultiplier(multiplier);
@@ -146,6 +150,8 @@ export function MainDataSection({
         effectiveStakingTier={effectiveStakingTier}
         projectedVolumeTier={projectedVolumeTier}
         projectedStakingTier={projectedStakingTier}
+        onStakeGmxClick={onStakeGmxClick}
+        onBuyGmxClick={onBuyGmxClick}
       />
     </div>
   );

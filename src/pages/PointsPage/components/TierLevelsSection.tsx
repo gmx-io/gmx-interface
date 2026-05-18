@@ -131,10 +131,10 @@ export function TierLevelsSection({
             <div className="min-h-0 overflow-hidden">
               <p className="mt-8">{descriptions[activeTab].long}</p>
               {activeTab === "volume" && hasDowngradingCoefficients && (
-                <p className="mt-8 inline-flex items-center gap-4">
+                <div className="mt-8 inline-flex items-center gap-4">
                   <Trans>Trading volume on RWA pairs is counted with a reduced coefficient</Trans>
                   <DowngradingCoefficientsTooltip chainId={chainId} coefficients={config!.downgradingCoefficients} />
-                </p>
+                </div>
               )}
             </div>
           </div>
@@ -315,14 +315,14 @@ function DowngradingCoefficientsTooltip({
       position="bottom-start"
       content={
         <div>
-          <p className="mb-8 text-12 text-typography-secondary font-normal">
+          <p className="mb-8 text-12 font-normal text-typography-secondary">
             <Trans>Volume on the following pairs is weighted with a reduced coefficient:</Trans>
           </p>
           <div className="flex flex-col gap-8">
             {items.map(({ marketAddress, symbol, name, coefficient }) => (
               <div
                 key={marketAddress}
-                className="flex items-center justify-between gap-16 text-12 text-typography-primary font-medium"
+                className="flex items-center justify-between gap-16 text-12 font-medium text-typography-primary"
               >
                 <span className="flex items-center gap-4">
                   {symbol && <TokenIcon symbol={symbol} displaySize={16} />}

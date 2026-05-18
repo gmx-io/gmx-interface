@@ -9,8 +9,6 @@ import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { sendPointsPageNavigationEvent } from "lib/userAnalytics/pointsEvents";
 
-import { EARN_PORTFOLIO_STAKE_GMX_LINK } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/constants";
-
 import bgPointsBanner from "img/bg_points_banner.png";
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 import CrossIcon from "img/ic_cross.svg?react";
@@ -69,10 +67,10 @@ export function PointsPromoBanner() {
 
   const { title, body } = getPersonalizedBannerCopy(bannerData);
   const isStakeCta = bannerData.bannerVariant === "recent-activity";
-  const ctaTo = isStakeCta ? EARN_PORTFOLIO_STAKE_GMX_LINK : "/points";
+  const ctaTo = "/points";
 
   const handleBannerClick = () => {
-    if (ctaTo === "/points") {
+    if (ctaTo.startsWith("/points")) {
       sendPointsPageNavigationEvent({ source: "TradePageBanner" });
     }
     handleDismiss();

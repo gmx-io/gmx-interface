@@ -1,16 +1,19 @@
 import { t, Trans } from "@lingui/macro";
-import { useCallback, useEffect, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { Redirect, useHistory, useLocation } from "react-router-dom";
 
+import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { isIncentivesEnabled } from "domain/synthetics/incentives/constants";
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
 import { useChainId } from "lib/chains";
 import { sendPointsPageViewEvent } from "lib/userAnalytics/pointsEvents";
 import useWallet from "lib/wallets/useWallet";
+import { BuyGmxModal } from "pages/BuyGMX/BuyGmxModal";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
+import { GmxStakeModal } from "components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxStakeModal";
 import PageTitle from "components/PageTitle/PageTitle";
 import Tabs from "components/Tabs/Tabs";
 
@@ -33,6 +36,8 @@ export function PointsPage() {
   const history = useHistory();
   const { chainId } = useChainId();
   const { account } = useWallet();
+  const [isGmxStakeModalVisible, setIsGmxStakeModalVisible] = useState(false);
+  const [isBuyGmxModalVisible, setIsBuyGmxModalVisible] = useState(false);
 
   const { data: config } = useIncentivesConfig(chainId);
   const { data: status } = useAccountIncentiveStatus(chainId, { account });
@@ -74,12 +79,29 @@ export function PointsPage() {
     [history]
   );
 
+  const handleOpenGmxStakeModal = useCallback(() => {
+    setIsGmxStakeModalVisible(true);
+  }, []);
+
+  const handleOpenBuyGmxModal = useCallback(() => {
+    setIsBuyGmxModalVisible(true);
+  }, []);
+
   if (!isIncentivesEnabled(chainId)) {
     return <Redirect to="/trade" />;
   }
 
   return (
     <AppPageLayout title={t`Points`} header={<ChainContentHeader />}>
+      {isGmxStakeModalVisible && (
+        <GmxStakeModal isVisible={isGmxStakeModalVisible} setIsVisible={setIsGmxStakeModalVisible} chainId={chainId} />
+      )}
+      {isBuyGmxModalVisible && (
+        <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="buy">
+          <BuyGmxModal isVisible={isBuyGmxModalVisible} setIsVisible={setIsBuyGmxModalVisible} />
+        </SyntheticsStateContextProvider>
+      )}
+
       <PageTitle title={t`Points`} subtitle={t`Earn points and save on fees when trading on GMX`} isTop />
 
       <div className="mt-12 flex grow flex-col gap-8">
@@ -100,6 +122,7 @@ export function PointsPage() {
               config={config}
               currentEpochStats={currentEpochStats}
               pointsExpiringThisEpoch={status?.pointsExpiringThisEpoch}
+              onStakeGmxClick={handleOpenGmxStakeModal}
             />
             <SidebarRewards chainId={chainId} account={account} />
           </div>
@@ -107,7 +130,14 @@ export function PointsPage() {
 
         <div className="grid grid-cols-[1fr_40rem] items-start gap-8 max-[1480px]:grid-cols-[1fr_30rem] max-xl:grid-cols-1">
           <div className="flex h-full min-w-0 flex-col gap-8">
-            {activeTab === PointsTab.Dashboard && <PointsDashboard chainId={chainId} account={account} />}
+            {activeTab === PointsTab.Dashboard && (
+              <PointsDashboard
+                chainId={chainId}
+                account={account}
+                onStakeGmxClick={handleOpenGmxStakeModal}
+                onBuyGmxClick={handleOpenBuyGmxModal}
+              />
+            )}
             {activeTab === PointsTab.History && <RewardsHistoryTab chainId={chainId} account={account} />}
             {activeTab === PointsTab.Leaderboard && <PointsLeaderboardTab chainId={chainId} account={account} />}
           </div>
@@ -124,6 +154,7 @@ export function PointsPage() {
                 config={config}
                 currentEpochStats={currentEpochStats}
                 pointsExpiringThisEpoch={status?.pointsExpiringThisEpoch}
+                onStakeGmxClick={handleOpenGmxStakeModal}
               />
             </div>
           </div>

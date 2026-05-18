@@ -16,10 +16,6 @@ import { usePersonalizedBannerData } from "domain/synthetics/incentives/usePerso
 import { formatAmount, formatAmountHuman } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
-import {
-  EARN_PORTFOLIO_BUY_GMX_LINK,
-  EARN_PORTFOLIO_STAKE_GMX_LINK,
-} from "components/Earn/Portfolio/AssetsList/GmxAssetCard/constants";
 import { getPersonalizedBannerCopy } from "components/PointsPromoBanner/personalizedBannerCopy";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
@@ -44,6 +40,8 @@ type Props = {
   projectedVolumeTier?: VolumeTierId | null;
   projectedStakingTier?: StakingTierId | null;
   hideInactive?: boolean;
+  onStakeGmxClick?: () => void;
+  onBuyGmxClick?: () => void;
 };
 
 export function TierCardsSection({
@@ -55,6 +53,8 @@ export function TierCardsSection({
   projectedVolumeTier,
   projectedStakingTier,
   hideInactive = false,
+  onStakeGmxClick,
+  onBuyGmxClick,
 }: Props) {
   const volumeActive = Boolean(effectiveVolumeTier);
   const stakingActive = Boolean(effectiveStakingTier ?? currentEpochStats?.stakingTier ?? projectedStakingTier);
@@ -97,6 +97,8 @@ export function TierCardsSection({
         active={stakingActive}
         effectiveTierId={effectiveStakingTier}
         projectedTierId={projectedStakingTier}
+        onStakeGmxClick={onStakeGmxClick}
+        onBuyGmxClick={onBuyGmxClick}
       />
     ),
     boosts: <BoostsCard config={config} currentEpochStats={currentEpochStats} active={boostsActive} />,
@@ -411,12 +413,16 @@ function StakingCard({
   active,
   effectiveTierId,
   projectedTierId,
+  onStakeGmxClick,
+  onBuyGmxClick,
 }: {
   config?: IncentivesConfig;
   currentEpochStats?: EpochStats;
   active: boolean;
   effectiveTierId?: StakingTierId | null;
   projectedTierId?: StakingTierId | null;
+  onStakeGmxClick?: () => void;
+  onBuyGmxClick?: () => void;
 }) {
   const stakingTier = effectiveTierId ?? currentEpochStats?.stakingTier;
   const tierConfig = config?.stakingTiers;
@@ -512,8 +518,9 @@ function StakingCard({
                 </Trans>
               </p>
               {hasNextTierTarget && (
-                <Link
-                  to={canStakeToNextTier ? EARN_PORTFOLIO_STAKE_GMX_LINK : EARN_PORTFOLIO_BUY_GMX_LINK}
+                <GmxActionLink
+                  to="/points"
+                  onClick={canStakeToNextTier ? onStakeGmxClick : onBuyGmxClick}
                   className="inline-flex items-center gap-2 text-13 font-medium text-blue-300"
                 >
                   {canStakeToNextTier ? (
@@ -524,7 +531,7 @@ function StakingCard({
                     <Trans>Buy GMX</Trans>
                   )}
                   {canStakeToNextTier ? <DatabaseIcon className="size-12" /> : <ArrowRight className="size-12" />}
-                </Link>
+                </GmxActionLink>
               )}
             </div>
             {tierConfig && (
@@ -557,13 +564,21 @@ function StakingCard({
           </div>
         </>
       ) : (
-        <StakingBanner walletGmx={walletGmx} />
+        <StakingBanner walletGmx={walletGmx} onStakeGmxClick={onStakeGmxClick} onBuyGmxClick={onBuyGmxClick} />
       )}
     </div>
   );
 }
 
-function StakingBanner({ walletGmx }: { walletGmx?: bigint }) {
+function StakingBanner({
+  walletGmx,
+  onStakeGmxClick,
+  onBuyGmxClick,
+}: {
+  walletGmx?: bigint;
+  onStakeGmxClick?: () => void;
+  onBuyGmxClick?: () => void;
+}) {
   const { account } = useWallet();
   const bannerData = usePersonalizedBannerData();
   const hasWalletGmx = (walletGmx ?? 0n) > 0n;
@@ -593,14 +608,45 @@ function StakingBanner({ walletGmx }: { walletGmx?: bigint }) {
     <div className="flex flex-1 flex-col justify-end gap-8">
       <h3 className="text-h3 font-medium text-typography-primary">{title}</h3>
       <div className="text-13 font-medium text-typography-secondary">{body}</div>
-      <Link
-        to={hasWalletGmx ? EARN_PORTFOLIO_STAKE_GMX_LINK : EARN_PORTFOLIO_BUY_GMX_LINK}
+      <GmxActionLink
+        to="/points"
+        onClick={hasWalletGmx ? onStakeGmxClick : onBuyGmxClick}
         className="flex items-center gap-4 text-13 font-medium text-blue-300"
       >
         {hasWalletGmx ? <Trans>Stake GMX</Trans> : <Trans>Buy GMX</Trans>}
         {hasWalletGmx ? <GmxIcon className="size-16" /> : <PlusIcon className="size-16" />}
-      </Link>
+      </GmxActionLink>
     </div>
+  );
+}
+
+function GmxActionLink({
+  to,
+  onClick,
+  className,
+  children,
+}: {
+  to: string;
+  onClick?: () => void;
+  className: string;
+  children: React.ReactNode;
+}) {
+  if (onClick) {
+    return (
+      <button
+        type="button"
+        className={cx("bg-transparent appearance-none border-0 p-0 text-left", className)}
+        onClick={onClick}
+      >
+        {children}
+      </button>
+    );
+  }
+
+  return (
+    <Link to={to} className={className}>
+      {children}
+    </Link>
   );
 }
 
