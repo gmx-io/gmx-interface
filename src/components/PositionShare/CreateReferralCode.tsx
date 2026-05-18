@@ -1,6 +1,5 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { encodeFunctionData, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
@@ -36,6 +35,7 @@ import { sendWalletTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { encodeReferralCode } from "sdk/utils/referrals";
 

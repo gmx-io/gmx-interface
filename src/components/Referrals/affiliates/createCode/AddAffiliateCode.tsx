@@ -33,8 +33,8 @@ import { metrics } from "lib/metrics";
 import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import useWallet from "lib/wallets/useWallet";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { encodeReferralCode } from "sdk/utils/referrals";
 
