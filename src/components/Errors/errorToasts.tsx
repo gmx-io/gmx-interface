@@ -309,7 +309,10 @@ export function getMultipleWalletsConnectedToastContent(
         </div>
       ))}
       <br />
-      <Trans>Before confirming a transaction, make sure the wallet prompt is using {desiredChainName}.</Trans>
+      <Trans>
+        Before confirming a transaction, make sure the wallet prompt is using {desiredChainName}. To avoid this warning,
+        disable other wallet extensions in your browser settings.
+      </Trans>
     </div>
   );
 }

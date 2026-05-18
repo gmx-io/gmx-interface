@@ -38,7 +38,7 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
    */
   srcChainId?: SourceChainId;
 } {
-  let { chainId: connectedChainId } = useAccount();
+  const { chainId: connectedChainId } = useAccount();
 
   const rawChainIdFromLocalStorage = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
   const chainIdFromLocalStorage = rawChainIdFromLocalStorage ? parseInt(rawChainIdFromLocalStorage) : undefined;

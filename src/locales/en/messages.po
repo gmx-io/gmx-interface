@@ -202,6 +202,10 @@ msgstr "Existing limit order in {0} pool but lacks liquidity for this order"
 msgid "Price impact from closing. Positive values benefit you. <0>Read more</0>."
 msgstr "Price impact from closing. Positive values benefit you. <0>Read more</0>."
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Before confirming a transaction, make sure the wallet prompt is using {desiredChainName}. To avoid this warning, disable other wallet extensions in your browser settings."
+msgstr "Before confirming a transaction, make sure the wallet prompt is using {desiredChainName}. To avoid this warning, disable other wallet extensions in your browser settings."
+
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -7173,10 +7177,6 @@ msgstr "You have activated the referral code {userReferralCodeString}. Every pos
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Hide assets with small value"
 msgstr "Hide assets with small value"
-
-#: src/components/Errors/errorToasts.tsx
-msgid "Before confirming a transaction, make sure the wallet prompt is using {desiredChainName}."
-msgstr "Before confirming a transaction, make sure the wallet prompt is using {desiredChainName}."
 
 #: src/components/GmList/GmListItem.tsx
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx

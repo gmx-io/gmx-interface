@@ -1,6 +1,7 @@
 import { useWallets } from "@privy-io/react-auth";
 import { useEffect, useMemo, useRef, useSyncExternalStore } from "react";
 import { toast } from "react-toastify";
+import { isAddressEqual } from "viem";
 
 import { useChainId as useDisplayedChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
@@ -25,7 +26,7 @@ const toastSubscribe = (onStoreChange: () => void): (() => void) => {
 const toastGetSnapshot = () => toast.isActive(INVALID_NETWORK_TOAST_ID);
 
 export function useRealChainIdWarning() {
-  const { active: isConnected } = useWallet();
+  const { active: isConnected, account } = useWallet();
   const { chainId: settlementChainId, isConnectedToChainId, srcChainId } = useDisplayedChainId();
 
   const { ready, wallets } = useWallets();
@@ -38,10 +39,23 @@ export function useRealChainIdWarning() {
     if (!ready) {
       return [];
     }
-    return wallets.filter((wallet) => {
-      return wallet.type === "ethereum" && Number(wallet.chainId.split(":")[1]) !== (srcChainId ?? settlementChainId);
+
+    const chainIds = new Set<number>();
+    const suitableWallets = wallets.filter((wallet) => {
+      return wallet.type === "ethereum" && account && isAddressEqual(wallet.address, account);
     });
-  }, [ready, wallets, srcChainId, settlementChainId]);
+
+    for (const wallet of suitableWallets) {
+      const chainId = Number(wallet.chainId.split(":")[1]);
+      chainIds.add(chainId);
+    }
+
+    if (chainIds.size > 1) {
+      return suitableWallets;
+    }
+
+    return [];
+  }, [account, ready, wallets]);
 
   useEffect(() => {
     if (suspiciousWallets.length > 0) {

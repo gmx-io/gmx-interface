@@ -202,6 +202,10 @@ msgstr "Bestehende Limitorder im {0} Pool, aber unzureichende Liquidität für d
 msgid "Price impact from closing. Positive values benefit you. <0>Read more</0>."
 msgstr "Preiseinfluss beim Schließen. Positive Werte kommen Ihnen zugute. <0>Mehr erfahren</0>."
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Before confirming a transaction, make sure the wallet prompt is using {desiredChainName}. To avoid this warning, disable other wallet extensions in your browser settings."
+msgstr ""
+
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -7172,10 +7176,6 @@ msgstr ""
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Hide assets with small value"
-msgstr ""
-
-#: src/components/Errors/errorToasts.tsx
-msgid "Before confirming a transaction, make sure the wallet prompt is using {desiredChainName}."
 msgstr ""
 
 #: src/components/GmList/GmListItem.tsx
