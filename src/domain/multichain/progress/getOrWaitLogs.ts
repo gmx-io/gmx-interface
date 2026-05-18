@@ -4,7 +4,7 @@ import { MaybeExtractEventArgsFromAbi, GetLogsReturnType } from "viem";
 import { getRpcProviders } from "config/rpc";
 import { createAnySignal, createTimeoutSignal } from "lib/abortSignalHelpers";
 import { sleep } from "lib/sleep";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 
 const POLLING_INTERVAL = 2_000; // 2 seconds
 const DEFAULT_TIMEOUT = 5 * 60 * 1000; // 5 minutes

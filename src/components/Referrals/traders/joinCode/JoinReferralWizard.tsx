@@ -1,5 +1,4 @@
 import { Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useEffect, useState } from "react";
 import { useHistory } from "react-router-dom";
 import { useAccount } from "wagmi";
@@ -14,6 +13,7 @@ import {
 } from "domain/referrals";
 import { getSharePercentage } from "domain/referrals/utils/referralsHelper";
 import { useChainId } from "lib/chains";
+import { useConnectModal } from "lib/wallets/useConnectModal";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";

@@ -5,6 +5,13 @@ import { useCallback, useEffect, useMemo, useState } from "react";
 import { isDevelopment } from "config/env";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
+import { getOrderRelayRouterAddress } from "domain/synthetics/express/expressOrderUtils";
+import {
+  getIsSubaccountActionsExceeded,
+  getIsSubaccountApprovalInvalid,
+  getIsSubaccountExpired,
+  getIsSubaccountNonceExpired,
+} from "domain/synthetics/subaccount";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
@@ -42,7 +49,7 @@ export function SettingsModal({
   isSettingsVisible: boolean;
   setIsSettingsVisible: (value: boolean) => void;
 }) {
-  const { srcChainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
 
   const settings = useSettings();
   const subaccountState = useSubaccountContext();
@@ -211,7 +218,27 @@ export function SettingsModal({
       let nextTradingMode = tradingMode;
 
       if (subaccountState.subaccount) {
-        nextTradingMode = TradingMode.Express1CT;
+        const subaccountRouterAddress = getOrderRelayRouterAddress(chainId, true, Boolean(srcChainId));
+        const isOneClickExpired = getIsSubaccountExpired(subaccountState.subaccount);
+        const isOneClickActionsExceeded = getIsSubaccountActionsExceeded(subaccountState.subaccount, 1);
+        const isOneClickStructurallyInvalid =
+          getIsSubaccountNonceExpired(subaccountState.subaccount) ||
+          getIsSubaccountApprovalInvalid({
+            chainId,
+            signerChainId: srcChainId ?? chainId,
+            onchainData: subaccountState.subaccount.onchainData,
+            signedApproval: subaccountState.subaccount.signedApproval,
+            subaccountRouterAddress,
+          });
+
+        const shouldFallbackFromOneClickToExpress =
+          !isOneClickStructurallyInvalid && (isOneClickExpired || isOneClickActionsExceeded);
+
+        if (shouldFallbackFromOneClickToExpress) {
+          nextTradingMode = settings.expressOrdersEnabled ? TradingMode.Express : TradingMode.Classic;
+        } else {
+          nextTradingMode = TradingMode.Express1CT;
+        }
       } else if (settings.expressOrdersEnabled) {
         nextTradingMode = TradingMode.Express;
       } else {
@@ -222,7 +249,7 @@ export function SettingsModal({
         setTradingMode(nextTradingMode);
       }
     },
-    [isTradingModeChanging, settings.expressOrdersEnabled, subaccountState.subaccount, tradingMode]
+    [chainId, isTradingModeChanging, settings.expressOrdersEnabled, srcChainId, subaccountState.subaccount, tradingMode]
   );
 
   const tabLabels = useLocalizedMap(TAB_LABELS);

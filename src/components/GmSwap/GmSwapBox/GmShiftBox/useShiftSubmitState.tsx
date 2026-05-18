@@ -1,5 +1,4 @@
 import { t } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { useMemo } from "react";
 
 import { selectAccount, selectChainId } from "context/SyntheticsStateContext/selectors/globalSelectors";
@@ -13,6 +12,7 @@ import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
 import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
+import { useConnectModal } from "lib/wallets/useConnectModal";
 import type { GmSwapFees } from "sdk/utils/trade/types";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";

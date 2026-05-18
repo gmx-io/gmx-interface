@@ -323,7 +323,7 @@ function PositionShare({
       <div className="flex flex-col gap-12 p-20 pb-0">
         <ToggleSwitch isChecked={showPnlAmounts} setIsChecked={setShowPnlAmounts}>
           <span className="text-14 font-medium text-typography-secondary">
-            {isRpnl ? <Trans>Show rPnL amounts</Trans> : <Trans>Show PnL amounts</Trans>}
+            {isRpnl ? <Trans>Show rPnL after fees</Trans> : <Trans>Show PnL after fees</Trans>}
           </span>
         </ToggleSwitch>
 
