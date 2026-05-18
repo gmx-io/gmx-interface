@@ -340,7 +340,7 @@ describe("TierCardsSection", () => {
 
     it("renders volume progress bar inside a tooltip with 'get <NextTier> Status' content", () => {
       // Tier1 (Ranked, $2K threshold) with $3K traded -> nextTier=Tier2 (Certified, $5K, +0.50x)
-      // Tooltip should be: "$3K/$5K get Certified Status +0.50x"
+      // Tooltip should be: "$3K/$5K to get Certified Status +0.50x"
       const currentEpochStats: EpochStats = {
         account: "0x1234",
         multiplier: 125,
@@ -365,7 +365,7 @@ describe("TierCardsSection", () => {
       expect(volumeTooltip).toBeTruthy();
       const tooltipContent = volumeTooltip?.querySelector('[data-testid="tooltip-content"]');
       const tooltipText = tooltipContent?.textContent || "";
-      expect(tooltipText).toMatch(/\$\s?3K\/\$\s?5K\s+get\s+Certified Status\s+\+0\.50x/);
+      expect(tooltipText).toMatch(/\$\s?3K\/\$\s?5K\s+to get\s+Certified Status\s+\+0\.50x/);
     });
 
     it("renders preserve-mode tooltip ('to save <CurrentTier> Status') when projectedTierId is null", () => {
