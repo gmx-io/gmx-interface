@@ -18,6 +18,7 @@ const STATUS_QUERY = gql`
       projectedStakingTier
       epochTimestamp
       tradedVolume
+      pointsExpiringThisEpoch
       boostIds
     }
   }
@@ -52,6 +53,7 @@ export function useAccountIncentiveStatus(chainId: number, params: { account?: s
           projectedStakingTier: (status.projectedStakingTier as StakingTierId) ?? null,
           epochTimestamp: status.epochTimestamp,
           tradedVolume: BigInt(status.tradedVolume),
+          pointsExpiringThisEpoch: BigInt(status.pointsExpiringThisEpoch ?? 0),
           boostIds: (status.boostIds as BoostId[]) ?? [],
         };
       },

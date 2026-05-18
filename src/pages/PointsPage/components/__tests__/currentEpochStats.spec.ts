@@ -28,6 +28,7 @@ function makeStatus(overrides: Partial<AccountIncentiveStatus>): AccountIncentiv
     projectedVolumeTier: null,
     projectedStakingTier: null,
     tradedVolume: 1_000n,
+    pointsExpiringThisEpoch: 0n,
     boostIds: ["FeaturedMarkets"],
     ...overrides,
   };

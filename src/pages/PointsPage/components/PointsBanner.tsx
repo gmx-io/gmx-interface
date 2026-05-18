@@ -8,7 +8,7 @@ import { POINTS_PAGE_BANNERS_DISMISSED_KEY } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
 import { formatMultiplier, VOLUME_TIER_BADGES } from "domain/synthetics/incentives/constants";
-import type { EpochStats, IncentivesConfig, RewardsHistoryEntry } from "domain/synthetics/incentives/types";
+import type { EpochStats, IncentivesConfig } from "domain/synthetics/incentives/types";
 import { usePersonalizedBannerData } from "domain/synthetics/incentives/usePersonalizedBannerData";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatAmountHuman, formatUsd } from "lib/numbers";
@@ -31,7 +31,7 @@ type Props = {
   account?: string;
   config?: IncentivesConfig;
   currentEpochStats?: EpochStats;
-  currentEpochHistory?: RewardsHistoryEntry;
+  pointsExpiringThisEpoch?: bigint;
 };
 
 type BannerAction = {
@@ -86,7 +86,7 @@ const BANNER_COINS: Record<BannerType, string> = {
 
 type BannerAnimationDirection = "left" | "right";
 
-export function PointsBanner({ isActiveUser, account, config, currentEpochStats, currentEpochHistory }: Props) {
+export function PointsBanner({ isActiveUser, account, config, currentEpochStats, pointsExpiringThisEpoch }: Props) {
   const { showAllPointsPageBanners } = useSettings();
   const { data: stakingData } = useStakingProcessedData();
   const personalizedBannerData = usePersonalizedBannerData();
@@ -103,7 +103,7 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
         account,
         config,
         currentEpochStats,
-        currentEpochHistory,
+        pointsExpiringThisEpoch,
         walletGmx: stakingData?.gmxBalance,
         isManuallyRewarded: personalizedBannerData.isManuallyRewarded,
         manualBonusUsd: personalizedBannerData.manualBonusUsd,
@@ -114,7 +114,7 @@ export function PointsBanner({ isActiveUser, account, config, currentEpochStats,
       account,
       config,
       currentEpochStats,
-      currentEpochHistory,
+      pointsExpiringThisEpoch,
       stakingData?.gmxBalance,
       personalizedBannerData.isManuallyRewarded,
       personalizedBannerData.manualBonusUsd,
@@ -333,7 +333,7 @@ function getBannerContent({
   account,
   config,
   currentEpochStats,
-  currentEpochHistory,
+  pointsExpiringThisEpoch,
   walletGmx,
   isManuallyRewarded,
   manualBonusUsd,
@@ -353,7 +353,7 @@ function getBannerContent({
 
   const items: BannerContent[] = [];
 
-  if (currentEpochHistory?.pointsExpired && currentEpochHistory.pointsExpired > 0n) {
+  if (pointsExpiringThisEpoch !== undefined && pointsExpiringThisEpoch > 0n) {
     items.push({
       type: "points-expiring",
       title: t`Don't Let Rewards Expire`,

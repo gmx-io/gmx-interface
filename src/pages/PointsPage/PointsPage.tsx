@@ -4,7 +4,6 @@ import { Redirect, useHistory, useLocation } from "react-router-dom";
 
 import { isIncentivesEnabled } from "domain/synthetics/incentives/constants";
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
-import { useAccountRewardsHistory } from "domain/synthetics/incentives/useAccountRewardsHistory";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
 import { useChainId } from "lib/chains";
 import { sendPointsPageViewEvent } from "lib/userAnalytics/pointsEvents";
@@ -37,14 +36,8 @@ export function PointsPage() {
 
   const { data: config } = useIncentivesConfig(chainId);
   const { data: status } = useAccountIncentiveStatus(chainId, { account });
-  const { data: rewardsHistory } = useAccountRewardsHistory(chainId, { account, limit: 1, offset: 0 });
 
   const currentEpochStats = useMemo(() => getCurrentEpochStats({ status, config, account }), [account, config, status]);
-
-  const currentEpochHistory = useMemo(() => {
-    if (!rewardsHistory?.length || config?.epochTimestamp === undefined) return undefined;
-    return rewardsHistory.find((entry) => entry.epoch === config.epochTimestamp);
-  }, [rewardsHistory, config?.epochTimestamp]);
 
   const isActiveUser = Boolean(
     status &&
@@ -106,7 +99,7 @@ export function PointsPage() {
               account={account}
               config={config}
               currentEpochStats={currentEpochStats}
-              currentEpochHistory={currentEpochHistory}
+              pointsExpiringThisEpoch={status?.pointsExpiringThisEpoch}
             />
             <SidebarRewards chainId={chainId} account={account} />
           </div>
@@ -130,7 +123,7 @@ export function PointsPage() {
                 account={account}
                 config={config}
                 currentEpochStats={currentEpochStats}
-                currentEpochHistory={currentEpochHistory}
+                pointsExpiringThisEpoch={status?.pointsExpiringThisEpoch}
               />
             </div>
           </div>

@@ -5,7 +5,7 @@ import { MemoryRouter } from "react-router-dom";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { POINTS_PAGE_BANNERS_DISMISSED_KEY } from "config/localStorage";
-import type { EpochStats, IncentivesConfig, RewardsHistoryEntry } from "domain/synthetics/incentives/types";
+import type { EpochStats, IncentivesConfig } from "domain/synthetics/incentives/types";
 
 import { PointsBanner } from "../PointsBanner";
 
@@ -47,16 +47,7 @@ const currentEpochStats: EpochStats = {
   boostIds: [],
 };
 
-const currentEpochHistory: RewardsHistoryEntry = {
-  epoch: 1,
-  volume: 0n,
-  pointsEarned: 0n,
-  pointsSpent: 0n,
-  pointsExpired: 10n * GMX_DECIMALS,
-  pointsBalance: 0n,
-  rewardsEarned: 0n,
-  rewardsClaimed: 0n,
-};
+const pointsExpiringThisEpoch = 10n * GMX_DECIMALS;
 
 const config: IncentivesConfig = {
   programStartTimestamp: 0,
@@ -81,7 +72,7 @@ const config: IncentivesConfig = {
   featuredMarketTokens: [],
 };
 
-function renderBanner(overrides?: { currentEpochHistory?: RewardsHistoryEntry }) {
+function renderBanner(overrides?: { pointsExpiringThisEpoch?: bigint }) {
   return render(
     <I18nProvider i18n={i18n}>
       <MemoryRouter>
@@ -90,8 +81,10 @@ function renderBanner(overrides?: { currentEpochHistory?: RewardsHistoryEntry })
           account="0xAccount"
           config={config}
           currentEpochStats={currentEpochStats}
-          currentEpochHistory={
-            overrides && "currentEpochHistory" in overrides ? overrides.currentEpochHistory : currentEpochHistory
+          pointsExpiringThisEpoch={
+            overrides && "pointsExpiringThisEpoch" in overrides
+              ? overrides.pointsExpiringThisEpoch
+              : pointsExpiringThisEpoch
           }
         />
       </MemoryRouter>
@@ -118,14 +111,14 @@ function renderTwoBanners() {
           account="0xAccount"
           config={config}
           currentEpochStats={currentEpochStats}
-          currentEpochHistory={currentEpochHistory}
+          pointsExpiringThisEpoch={pointsExpiringThisEpoch}
         />
         <PointsBanner
           isActiveUser
           account="0xAccount"
           config={config}
           currentEpochStats={currentEpochStats}
-          currentEpochHistory={currentEpochHistory}
+          pointsExpiringThisEpoch={pointsExpiringThisEpoch}
         />
       </MemoryRouter>
     </I18nProvider>
@@ -174,19 +167,14 @@ describe("PointsBanner", () => {
     expect(screen.getByText("Use your rewards before they expire and make the most of your activity.")).toBeTruthy();
   });
 
-  it("hides the expiring rewards banner when currentEpochHistory is undefined", () => {
-    renderBanner({ currentEpochHistory: undefined });
+  it("hides the expiring rewards banner when pointsExpiringThisEpoch is undefined", () => {
+    renderBanner({ pointsExpiringThisEpoch: undefined });
 
     expect(screen.queryByText("Don't Let Rewards Expire")).toBeNull();
   });
 
-  it("hides the expiring rewards banner when pointsExpired is zero", () => {
-    renderBanner({
-      currentEpochHistory: {
-        ...currentEpochHistory,
-        pointsExpired: 0n,
-      },
-    });
+  it("hides the expiring rewards banner when pointsExpiringThisEpoch is zero", () => {
+    renderBanner({ pointsExpiringThisEpoch: 0n });
 
     expect(screen.queryByText("Don't Let Rewards Expire")).toBeNull();
   });
