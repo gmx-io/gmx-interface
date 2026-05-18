@@ -42,7 +42,7 @@ const GMX_DECIMALS_FACTOR = 10n ** 18n;
 const LEADERBOARD_ROW_CLASS_NAME = "h-[43px]";
 const LEADERBOARD_TD_CLASS_NAME = "!py-10";
 const CURRENT_ACCOUNT_ROW_CLASS_NAME =
-  "border-b-1/2 border-blue-500/30 !bg-blue-500/10 text-blue-100 [&_.AddressView-trader-id]:!text-typography-primary [&_.AddressView-trader-id_.text-typography-secondary]:!text-blue-100";
+  "border-b-1/2 border-blue-500/30 !bg-blue-500/10 text-blue-100 [&_.AddressView-trader-id]:!text-typography-primary [&_.AddressView-trader-id_.text-typography-secondary]:!text-blue-100 [&_td]:!pb-7 [&_td]:!pt-9";
 
 function PointsLeaderboardSkeletonRow({ invisible }: { invisible?: boolean }) {
   return (
