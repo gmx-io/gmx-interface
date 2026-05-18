@@ -158,7 +158,7 @@ msgstr "<0>Multichain</0><1>MegaETH support</1><2>Just-in-time liquidity</2>"
 msgid "Create TWAP Swap"
 msgstr "Create TWAP Swap"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "GMX approval failed"
 msgstr "GMX approval failed"
 
@@ -315,6 +315,10 @@ msgstr "Open app"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Try Express Trading"
 msgstr "Try Express Trading"
+
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+msgid "In progress"
+msgstr "In progress"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
@@ -697,6 +701,10 @@ msgstr "Expand"
 msgid "Edit Stop Market: {suffix}"
 msgstr "Edit Stop Market: {suffix}"
 
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+msgid "Rewards staked"
+msgstr "Rewards staked"
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -940,6 +948,10 @@ msgstr "in liquidity"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Minimum required margin"
 msgstr "Minimum required margin"
+
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+msgid "Claim your rewards now. You can also stake them instantly to earn more points and rewards."
+msgstr "Claim your rewards now. You can also stake them instantly to earn more points and rewards."
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
@@ -1806,6 +1818,7 @@ msgstr "Set TP price below limit price"
 
 #: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "Stake rewards"
 msgstr "Stake rewards"
 
@@ -1866,7 +1879,7 @@ msgstr "Decrease size to match the max allowed leverage."
 msgid "Claims history"
 msgstr "Claims history"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "GMX was claimed to your wallet. If staking did not complete, you can stake it from the Earn page."
 msgstr "GMX was claimed to your wallet. If staking did not complete, you can stake it from the Earn page."
 
@@ -2141,7 +2154,7 @@ msgstr "Keep leverage at {0}"
 msgid "Stake {gmxToNextTierLabel} GMX more to get {additionalMultiplierLabel} additionally"
 msgstr "Stake {gmxToNextTierLabel} GMX more to get {additionalMultiplierLabel} additionally"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsConnectedSidebarRewards.tsx
 msgid "Total earned rewards"
 msgstr "Total earned rewards"
 
@@ -2294,8 +2307,8 @@ msgstr "Shift error"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
-#: src/pages/PointsPage/components/SidebarRewards.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "Claim failed"
 msgstr "Claim failed"
 
@@ -2751,7 +2764,7 @@ msgstr "Shifting only available on {chainNames}. Switch networks to continue."
 msgid "Cumulative PnL"
 msgstr "Cumulative PnL"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "GMX approved"
 msgstr "GMX approved"
 
@@ -2879,7 +2892,7 @@ msgstr "Swap failed"
 msgid "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop</0>"
 msgstr "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop</0>"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "GMX approval submitted"
 msgstr "GMX approval submitted"
 
@@ -3238,7 +3251,7 @@ msgid "Allow {0} to be spent"
 msgstr "Allow {0} to be spent"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "Stake submitted"
 msgstr "Stake submitted"
 
@@ -3717,9 +3730,9 @@ msgstr "Collapse"
 msgid "Banners"
 msgstr "Banners"
 
+#: src/pages/PointsPage/components/PointsConnectedSidebarRewards.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Epoch ends in"
 msgstr "Epoch ends in"
 
@@ -4117,8 +4130,9 @@ msgstr "Update TWAP part"
 #: src/components/Earn/Portfolio/ClaimRewardsButton.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+#: src/pages/PointsPage/components/PointsConnectedSidebarRewards.tsx
 msgid "Claim rewards"
 msgstr "Claim rewards"
 
@@ -4553,7 +4567,7 @@ msgstr "Realized swap impact"
 msgid "Veteran"
 msgstr "Veteran"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsSidebarRewards.tsx
 msgid "Claim your GMX rewards"
 msgstr "Claim your GMX rewards"
 
@@ -4729,7 +4743,6 @@ msgstr "Current margin excludes pending borrow and funding fees. Post-close marg
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Claiming..."
 msgstr "Claiming..."
 
@@ -5644,8 +5657,8 @@ msgid "Reach {thresholdLabel} in lifetime trading volume to unlock a permanent 1
 msgstr "Reach {thresholdLabel} in lifetime trading volume to unlock a permanent 1× multiplier."
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "Claim completed"
 msgstr "Claim completed"
 
@@ -5792,7 +5805,7 @@ msgstr "Affiliate rewards claimed"
 msgid "transaction:"
 msgstr "transaction:"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsConnectedSidebarRewards.tsx
 msgid "GMX rewards available to claim or stake. Rewards are generated when your points are spent to discount trading fees."
 msgstr "GMX rewards available to claim or stake. Rewards are generated when your points are spent to discount trading fees."
 
@@ -5996,6 +6009,10 @@ msgstr "Existing limit order in WETH-USDC pool but lacks liquidity for this orde
 msgid "({0} of swap amount)"
 msgstr "({0} of swap amount)"
 
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+msgid "Your rewards have been staked. You are now earning more points and rewards."
+msgstr "Your rewards have been staked. You are now earning more points and rewards."
+
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "How do I upgrade to a higher tier?"
 msgstr "How do I upgrade to a higher tier?"
@@ -6127,6 +6144,10 @@ msgstr "Your leaderboard rank is temporarily unavailable."
 msgid "Lifetime staking rewards"
 msgstr "Lifetime staking rewards"
 
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+msgid "Stake to boost your multiplier"
+msgstr "Stake to boost your multiplier"
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe in LayerZero on the destination chain. Retry the receive transaction in LayerZero Scan or contact support."
 msgstr "Your funds are safe in LayerZero on the destination chain. Retry the receive transaction in LayerZero Scan or contact support."
@@ -6151,12 +6172,16 @@ msgstr "RPC error.<0/><1/>Enable <2>Express Trading</2> in settings for better r
 msgid "UniDex Leverage"
 msgstr "UniDex Leverage"
 
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+msgid "Claim only"
+msgstr "Claim only"
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "High execution reliability using premium RPCs"
 msgstr "High execution reliability using premium RPCs"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "Stake failed"
 msgstr "Stake failed"
 
@@ -6271,7 +6296,7 @@ msgstr "Select positions"
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsSidebarRewards.tsx
 msgid "Connect wallet"
 msgstr "Connect wallet"
 
@@ -6795,9 +6820,13 @@ msgstr "Can't withdraw collateral. Remaining collateral would be below minimum"
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "Approving..."
 msgstr "Approving..."
+
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+msgid "Stake and earn more rewards"
+msgstr "Stake and earn more rewards"
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"
@@ -6919,6 +6948,11 @@ msgstr "Loading..."
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "Trade now"
 msgstr "Trade now"
+
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+msgid "Waiting for confirmation..."
+msgstr "Waiting for confirmation..."
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the GMX vesting vault"
@@ -7150,7 +7184,7 @@ msgstr "{orderText} updated"
 msgid "Withdrawal sent"
 msgstr "Withdrawal sent"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "Claims are currently unavailable for this distribution."
 msgstr "Claims are currently unavailable for this distribution."
 
@@ -7342,7 +7376,7 @@ msgstr "Trade with confidence"
 msgid "Receiver has staked GMX/GLP"
 msgstr "Receiver has staked GMX/GLP"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "GMX staked"
 msgstr "GMX staked"
 
@@ -7752,7 +7786,7 @@ msgstr "ENTRY PRICE"
 msgid "Set stop price above mark price"
 msgstr "Set stop price above mark price"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsConnectedSidebarRewards.tsx
 msgid "Total non-expired points available. Points automatically discount up to 50% of your trading fees."
 msgstr "Total non-expired points available. Points automatically discount up to 50% of your trading fees."
 
@@ -7977,6 +8011,10 @@ msgstr "GM bought successfully, but bridge to Base failed. Your funds are safe i
 msgid "Disable One-Click Trading"
 msgstr "Disable One-Click Trading"
 
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+msgid "Your rewards have been claimed to your wallet. You can now stake them."
+msgstr "Your rewards have been claimed to your wallet. You can now stake them."
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
 msgstr "Limit Increase"
@@ -7985,8 +8023,8 @@ msgstr "Limit Increase"
 msgid "Transferring..."
 msgstr "Transferring..."
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "No rewards available to claim"
 msgstr "No rewards available to claim"
 
@@ -8263,6 +8301,10 @@ msgstr "Set trigger price below liquidation price"
 msgid "Trade errors"
 msgstr "Trade errors"
 
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+msgid "Will close automatically in {autoCloseSeconds}..."
+msgstr "Will close automatically in {autoCloseSeconds}..."
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to and withdrawing from GMX Account..."
 msgstr "Depositing to and withdrawing from GMX Account..."
@@ -8314,8 +8356,8 @@ msgid "Trade from wallet or GMX Account"
 msgstr "Trade from wallet or GMX Account"
 
 #: src/pages/PointsPage/components/MainDataSection.tsx
+#: src/pages/PointsPage/components/PointsConnectedSidebarRewards.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Points balance"
 msgstr "Points balance"
 
@@ -8426,7 +8468,7 @@ msgstr "{fromText} to {toExecutionText}"
 msgid "Total rebates"
 msgstr "Total rebates"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "Available to Claim"
 msgstr "Available to Claim"
 
@@ -8459,6 +8501,7 @@ msgid "Connect your wallet to view your rebates distribution history"
 msgstr "Connect your wallet to view your rebates distribution history"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "Claimed"
 msgstr "Claimed"
 
@@ -8556,7 +8599,6 @@ msgstr "{increaseOrDecreaseText}: {0} {longShortText}"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
-#: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Claim"
 msgstr "Claim"
 
@@ -9101,10 +9143,6 @@ msgstr "Withdrawal error"
 msgid "Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021"
 msgstr "Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
-msgid "Claim + stake"
-msgstr "Claim + stake"
-
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "TOTAL VOLUME"
@@ -9192,7 +9230,7 @@ msgstr "Points Balance"
 msgid "Order filled"
 msgstr "Order filled"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsSidebarRewards.tsx
 msgid "Connect your wallet to view your points balance and claim earned rewards."
 msgstr "Connect your wallet to view your points balance and claim earned rewards."
 
@@ -10221,6 +10259,7 @@ msgid "Failed to export image"
 msgstr "Failed to export image"
 
 #: src/pages/Dashboard/GmxCard.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "Staked"
 msgstr "Staked"
 
@@ -10567,6 +10606,10 @@ msgstr "Max rate short"
 msgid "Staking Power Share"
 msgstr "Staking Power Share"
 
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+msgid "Rewards claimed"
+msgstr "Rewards claimed"
+
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Alerts"
 msgstr "Alerts"
@@ -10693,7 +10736,7 @@ msgstr "Auto-cancel TP/SL"
 msgid "LIQUIDITY LONG"
 msgstr "LIQUIDITY LONG"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsConnectedSidebarRewards.tsx
 msgid "Total rewards earned since the start of the program."
 msgstr "Total rewards earned since the start of the program."
 
@@ -10909,10 +10952,6 @@ msgstr "Status"
 msgid "30s"
 msgstr "30s"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
-msgid "Claim your rewards now. You can also stake them instantly to get 5% yield on it and earn even more points."
-msgstr "Claim your rewards now. You can also stake them instantly to get 5% yield on it and earn even more points."
-
 #: src/components/GmList/PerformanceLabel.tsx
 #: src/components/GmList/PerformanceLabel.tsx
 msgid "Annualized performance"
@@ -11048,6 +11087,10 @@ msgstr "Unstaking more than 20% of your max historical staked GMX will reset you
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Read details"
 msgstr "Read details"
+
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+msgid "Waiting for confirmation"
+msgstr "Waiting for confirmation"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading chat"
@@ -11296,10 +11339,6 @@ msgstr "Insufficient funds for order costs"
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "EIP-4844, 20-27 Mar"
 msgstr "EIP-4844, 20-27 Mar"
-
-#: src/pages/PointsPage/components/SidebarRewards.tsx
-msgid "Claiming + staking..."
-msgstr "Claiming + staking..."
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Save on costs"
@@ -11626,7 +11665,7 @@ msgstr "Join an anonymous one-on-one chat to share your experience"
 msgid "GMX staked rewards:"
 msgstr "GMX staked rewards:"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsConnectedSidebarRewards.tsx
 msgid "Claimable rewards"
 msgstr "Claimable rewards"
 

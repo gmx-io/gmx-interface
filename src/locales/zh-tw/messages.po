@@ -158,7 +158,7 @@ msgstr "<0>多鏈</0><1>MegaETH 支援</1><2>即時流動性</2>"
 msgid "Create TWAP Swap"
 msgstr "建立 TWAP 兌換"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "GMX approval failed"
 msgstr ""
 
@@ -315,6 +315,10 @@ msgstr "開啟應用"
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Try Express Trading"
 msgstr "試用 Express Trading"
+
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+msgid "In progress"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual inventory for positions"
@@ -697,6 +701,10 @@ msgstr "展開"
 msgid "Edit Stop Market: {suffix}"
 msgstr ""
 
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+msgid "Rewards staked"
+msgstr ""
+
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -939,6 +947,10 @@ msgstr "流動性"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Minimum required margin"
+msgstr ""
+
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+msgid "Claim your rewards now. You can also stake them instantly to earn more points and rewards."
 msgstr ""
 
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
@@ -1806,6 +1818,7 @@ msgstr ""
 
 #: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "Stake rewards"
 msgstr ""
 
@@ -1866,7 +1879,7 @@ msgstr "減少規模以符合最大允許槓桿。"
 msgid "Claims history"
 msgstr "領取歷史"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "GMX was claimed to your wallet. If staking did not complete, you can stake it from the Earn page."
 msgstr ""
 
@@ -2141,7 +2154,7 @@ msgstr "保持槓桿在 {0}"
 msgid "Stake {gmxToNextTierLabel} GMX more to get {additionalMultiplierLabel} additionally"
 msgstr ""
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsConnectedSidebarRewards.tsx
 msgid "Total earned rewards"
 msgstr ""
 
@@ -2294,8 +2307,8 @@ msgstr "轉移錯誤"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/domain/synthetics/markets/claimFundingFeesTxn.ts
-#: src/pages/PointsPage/components/SidebarRewards.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "Claim failed"
 msgstr "領取失敗"
 
@@ -2751,7 +2764,7 @@ msgstr "Shifting 僅在 {chainNames} 上可用。請切換網路以繼續。"
 msgid "Cumulative PnL"
 msgstr "累計 PnL"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "GMX approved"
 msgstr ""
 
@@ -2879,7 +2892,7 @@ msgstr "兌換失敗"
 msgid "<0>Have to keep an eye on <1>@GMX_IO</1> here. While all of DeFi is in shambles, GMX continues to show impressive sustained performance in users, AUM, volume/fees, open interest, and utilization of capital. Best place to swap between major assets on Arbitrum and exposure to the Arb airdrop</0>"
 msgstr "<0>必須關注 <1>@GMX_IO</1>。當整個 DeFi 市場一片混亂時，GMX 在用戶數、AUM、交易量/手續費、未平倉量和資金利用率方面持續展現令人印象深刻的表現。在 Arbitrum 上兌換主要資產的最佳平台，還能獲得 Arb 空投的機會</0>"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "GMX approval submitted"
 msgstr ""
 
@@ -3238,7 +3251,7 @@ msgid "Allow {0} to be spent"
 msgstr "授權使用 {0}"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "Stake submitted"
 msgstr "質押已提交"
 
@@ -3717,9 +3730,9 @@ msgstr "收合"
 msgid "Banners"
 msgstr "橫幅"
 
+#: src/pages/PointsPage/components/PointsConnectedSidebarRewards.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Epoch ends in"
 msgstr ""
 
@@ -4117,8 +4130,9 @@ msgstr "更新 TWAP 部分"
 #: src/components/Earn/Portfolio/ClaimRewardsButton.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+#: src/pages/PointsPage/components/PointsConnectedSidebarRewards.tsx
 msgid "Claim rewards"
 msgstr "領取獎勵"
 
@@ -4553,7 +4567,7 @@ msgstr "已實現兌換影響"
 msgid "Veteran"
 msgstr ""
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsSidebarRewards.tsx
 msgid "Claim your GMX rewards"
 msgstr ""
 
@@ -4729,7 +4743,6 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Claiming..."
 msgstr "領取中..."
 
@@ -5644,8 +5657,8 @@ msgid "Reach {thresholdLabel} in lifetime trading volume to unlock a permanent 1
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "Claim completed"
 msgstr "領取完成"
 
@@ -5792,7 +5805,7 @@ msgstr "聯盟獎勵已領取"
 msgid "transaction:"
 msgstr "交易："
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsConnectedSidebarRewards.tsx
 msgid "GMX rewards available to claim or stake. Rewards are generated when your points are spent to discount trading fees."
 msgstr ""
 
@@ -5996,6 +6009,10 @@ msgstr "WETH-USDC 池中有現有限價單，但此訂單的流動性不足"
 msgid "({0} of swap amount)"
 msgstr "（{0}，佔兌換金額）"
 
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+msgid "Your rewards have been staked. You are now earning more points and rewards."
+msgstr ""
+
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "How do I upgrade to a higher tier?"
 msgstr ""
@@ -6127,6 +6144,10 @@ msgstr ""
 msgid "Lifetime staking rewards"
 msgstr "終身質押獎勵"
 
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+msgid "Stake to boost your multiplier"
+msgstr ""
+
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Your funds are safe in LayerZero on the destination chain. Retry the receive transaction in LayerZero Scan or contact support."
 msgstr "您的資金安全存放在目標鏈上的 LayerZero 中。請在 LayerZero Scan 重試接收交易或聯繫客服。"
@@ -6151,12 +6172,16 @@ msgstr "RPC 錯誤。<0/><1/>在設定中啟用 <2>Express Trading</2> 以獲得
 msgid "UniDex Leverage"
 msgstr "UniDex Leverage"
 
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+msgid "Claim only"
+msgstr ""
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "High execution reliability using premium RPCs"
 msgstr "使用優質 RPC 實現高執行可靠性"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "Stake failed"
 msgstr "質押失敗"
 
@@ -6271,7 +6296,7 @@ msgstr "選擇倉位"
 #: src/components/TokenSelector/ConnectWalletModalContent.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsSidebarRewards.tsx
 msgid "Connect wallet"
 msgstr "連接錢包"
 
@@ -6795,9 +6820,13 @@ msgstr "無法提取抵押品。剩餘抵押品將低於最低要求"
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "Approving..."
 msgstr "授權中..."
+
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+msgid "Stake and earn more rewards"
+msgstr ""
 
 #: src/components/MarketsList/MarketsList.tsx
 msgid "UTILIZATION"
@@ -6919,6 +6948,11 @@ msgstr "載入中..."
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "Trade now"
 msgstr "立即交易"
+
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+msgid "Waiting for confirmation..."
+msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the GMX vesting vault"
@@ -7150,7 +7184,7 @@ msgstr "{orderText} 已更新"
 msgid "Withdrawal sent"
 msgstr "提取已發送"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "Claims are currently unavailable for this distribution."
 msgstr ""
 
@@ -7342,7 +7376,7 @@ msgstr "安心交易"
 msgid "Receiver has staked GMX/GLP"
 msgstr "接收者已質押 GMX/GLP"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "GMX staked"
 msgstr ""
 
@@ -7752,7 +7786,7 @@ msgstr "入場價格"
 msgid "Set stop price above mark price"
 msgstr ""
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsConnectedSidebarRewards.tsx
 msgid "Total non-expired points available. Points automatically discount up to 50% of your trading fees."
 msgstr ""
 
@@ -7977,6 +8011,10 @@ msgstr "GM 購買成功，但跨鏈橋至 Base 失敗。您的資金安全存放
 msgid "Disable One-Click Trading"
 msgstr ""
 
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+msgid "Your rewards have been claimed to your wallet. You can now stake them."
+msgstr ""
+
 #: src/domain/synthetics/orders/utils.tsx
 msgid "Limit Increase"
 msgstr "Limit Increase"
@@ -7985,8 +8023,8 @@ msgstr "Limit Increase"
 msgid "Transferring..."
 msgstr "轉帳中..."
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "No rewards available to claim"
 msgstr ""
 
@@ -8263,6 +8301,10 @@ msgstr ""
 msgid "Trade errors"
 msgstr "交易錯誤"
 
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+msgid "Will close automatically in {autoCloseSeconds}..."
+msgstr ""
+
 #: src/domain/multichain/useMultichainFundingToast.tsx
 msgid "Depositing to and withdrawing from GMX Account..."
 msgstr "正在存入和提取 GMX Account..."
@@ -8314,8 +8356,8 @@ msgid "Trade from wallet or GMX Account"
 msgstr "從錢包或 GMX Account 交易"
 
 #: src/pages/PointsPage/components/MainDataSection.tsx
+#: src/pages/PointsPage/components/PointsConnectedSidebarRewards.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
-#: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Points balance"
 msgstr ""
 
@@ -8426,7 +8468,7 @@ msgstr "{fromText} 至 {toExecutionText}"
 msgid "Total rebates"
 msgstr ""
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "Available to Claim"
 msgstr ""
 
@@ -8459,6 +8501,7 @@ msgid "Connect your wallet to view your rebates distribution history"
 msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "Claimed"
 msgstr "已領取"
 
@@ -8556,7 +8599,6 @@ msgstr "{increaseOrDecreaseText}：{0} {longShortText}"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/VestModal.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
-#: src/pages/PointsPage/components/SidebarRewards.tsx
 msgid "Claim"
 msgstr "領取"
 
@@ -9101,10 +9143,6 @@ msgstr "提取錯誤"
 msgid "Decentralised permissionless on-chain exchange with deep liquidity and low costs, live since 2021"
 msgstr "自 2021 年上線的去中心化無許可鏈上交易所，具有深度流動性與低成本"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
-msgid "Claim + stake"
-msgstr ""
-
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "TOTAL VOLUME"
@@ -9192,7 +9230,7 @@ msgstr ""
 msgid "Order filled"
 msgstr "訂單已成交"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsSidebarRewards.tsx
 msgid "Connect your wallet to view your points balance and claim earned rewards."
 msgstr ""
 
@@ -10221,6 +10259,7 @@ msgid "Failed to export image"
 msgstr ""
 
 #: src/pages/Dashboard/GmxCard.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "Staked"
 msgstr "已質押"
 
@@ -10567,6 +10606,10 @@ msgstr "最大做空費率"
 msgid "Staking Power Share"
 msgstr ""
 
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+msgid "Rewards claimed"
+msgstr ""
+
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 msgid "Alerts"
 msgstr "提醒"
@@ -10693,7 +10736,7 @@ msgstr "自動取消 TP/SL"
 msgid "LIQUIDITY LONG"
 msgstr "做多流動性"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsConnectedSidebarRewards.tsx
 msgid "Total rewards earned since the start of the program."
 msgstr ""
 
@@ -10909,10 +10952,6 @@ msgstr "狀態"
 msgid "30s"
 msgstr "30 秒"
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
-msgid "Claim your rewards now. You can also stake them instantly to get 5% yield on it and earn even more points."
-msgstr ""
-
 #: src/components/GmList/PerformanceLabel.tsx
 #: src/components/GmList/PerformanceLabel.tsx
 msgid "Annualized performance"
@@ -11048,6 +11087,10 @@ msgstr ""
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Read details"
 msgstr "閱讀詳情"
+
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
+msgid "Waiting for confirmation"
+msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "GMX trading chat"
@@ -11296,10 +11339,6 @@ msgstr ""
 #: src/domain/synthetics/common/incentivesAirdropMessages.ts
 msgid "EIP-4844, 20-27 Mar"
 msgstr "EIP-4844, 20-27 Mar"
-
-#: src/pages/PointsPage/components/SidebarRewards.tsx
-msgid "Claiming + staking..."
-msgstr ""
 
 #: landing/src/pages/Home/HeroSection/Features.tsx
 msgid "Save on costs"
@@ -11626,7 +11665,7 @@ msgstr "加入匿名一對一對話，分享您的使用體驗"
 msgid "GMX staked rewards:"
 msgstr "GMX 質押獎勵："
 
-#: src/pages/PointsPage/components/SidebarRewards.tsx
+#: src/pages/PointsPage/components/PointsConnectedSidebarRewards.tsx
 msgid "Claimable rewards"
 msgstr ""
 

@@ -1,7 +1,7 @@
 import { Trans, t } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import cx from "classnames";
 import { ethers } from "ethers";
-import { useCallback, useMemo, useState } from "react";
+import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import useSWR, { type KeyedMutator } from "swr";
 import { maxUint256, zeroAddress } from "viem";
 
@@ -11,9 +11,6 @@ import { claimsDisabledKey, claimTermsKey } from "config/dataStore";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { POINTS_REWARDS_DISTRIBUTION_ID } from "domain/synthetics/claims/constants";
 import { encodeAcceptTermsAndClaim } from "domain/synthetics/claims/createClaimTransaction";
-import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
-import { useAccountTotalEarnedRewards } from "domain/synthetics/incentives/useAccountTotalEarnedRewards";
-import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { callContract } from "lib/contracts";
@@ -33,153 +30,18 @@ import { abis } from "sdk/abis";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
-import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletButton";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
-import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import CheckCircleIcon from "img/ic_check_circle.svg?react";
 import EarnIcon from "img/ic_earn.svg?react";
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
-import { formatTimeLeft, getCurrentEpochEndTime, useCurrentUnixTimestamp } from "./epochTiming";
+const CLAIM_MODAL_AUTO_CLOSE_SECONDS = 5;
 
-type Props = {
-  chainId: number;
-  account?: string;
-};
+type PointsRewardsClaimFlowMode = "claimOnly" | "claimAndStake";
+type PointsRewardsClaimFlowStep = "idle" | "claimPending" | "claimSucceeded" | "stakePending" | "stakeSucceeded";
 
-export function SidebarRewards({ chainId, account }: Props) {
-  const { data: config } = useIncentivesConfig(chainId);
-  const { data: status } = useAccountIncentiveStatus(chainId, { account });
-  const { data: totalEarnedRewards } = useAccountTotalEarnedRewards(chainId, { account });
-  const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
-  const { openConnectModal } = useConnectModal();
-
-  const contractsChainId = chainId as ContractsChainId;
-  const claimHandlerAddress = getContract(contractsChainId, "ClaimHandler");
-  const gmxTokenAddress = getTokenBySymbol(contractsChainId, "GMX").address;
-
-  const { data: rawClaimableAmount, mutate: mutateClaimableAmount } = useSWR(
-    account
-      ? [
-          `PointsRewardsClaimableAmount:${chainId}:${account}`,
-          chainId,
-          claimHandlerAddress,
-          "getClaimableAmount",
-          account,
-          gmxTokenAddress,
-          [POINTS_REWARDS_DISTRIBUTION_ID],
-        ]
-      : null,
-    { fetcher: contractFetcher(undefined, "ClaimHandler") }
-  );
-
-  const claimableAmount = rawClaimableAmount !== undefined ? BigInt(rawClaimableAmount) : 0n;
-  const displayClaimableRewards = formatAmount(claimableAmount, 18, 2, true);
-  const hasRewards = claimableAmount > 0n;
-
-  const displayTotalEarnedRewards = totalEarnedRewards ? formatAmount(totalEarnedRewards, 18, 2, true) : "0.00";
-
-  const now = useCurrentUnixTimestamp();
-  const epochEndTime = getCurrentEpochEndTime(config, now);
-  const timeLeft = epochEndTime > now ? formatTimeLeft(epochEndTime - now) : "";
-
-  const pointsBalance = status?.pointsBalance;
-  const displayPoints = pointsBalance ? formatAmount(pointsBalance, 18, 2, true) : "0.00";
-
-  if (!account) {
-    return (
-      <div className="flex flex-col gap-12 rounded-8 bg-slate-900 p-20">
-        <div className="flex flex-col gap-4">
-          <span className="text-16 font-medium text-typography-primary">
-            <Trans>Claim your GMX rewards</Trans>
-          </span>
-          <span className="text-12 text-typography-secondary">
-            <Trans>Connect your wallet to view your points balance and claim earned rewards.</Trans>
-          </span>
-        </div>
-        <ConnectWalletButton onClick={openConnectModal}>
-          <Trans>Connect wallet</Trans>
-        </ConnectWalletButton>
-      </div>
-    );
-  }
-
-  return (
-    <>
-      <div className="rounded-8 bg-slate-900 p-20">
-        <div className="flex flex-col gap-12">
-          <div className="flex flex-col gap-4">
-            <div className="flex items-center gap-8">
-              <span className="text-24 font-medium text-typography-primary">{displayClaimableRewards} GMX</span>
-            </div>
-            <div className="flex items-center gap-2 text-12 font-medium leading-1 text-typography-secondary">
-              <TooltipWithPortal
-                handle={<Trans>Claimable rewards</Trans>}
-                content={t`GMX rewards available to claim or stake. Rewards are generated when your points are spent to discount trading fees.`}
-                variant="iconStroke"
-              />
-            </div>
-          </div>
-
-          <Button
-            variant="primary"
-            className="shrink-0 max-lg:w-full"
-            disabled={!hasRewards}
-            onClick={() => setIsClaimModalOpen(true)}
-            size="medium"
-          >
-            <EarnIcon className="size-16" />
-            <Trans>Claim rewards</Trans>
-          </Button>
-        </div>
-
-        <div className="mt-16 flex flex-col border-t-1/2 border-slate-600 pt-16">
-          <div className="flex h-24 items-center justify-between text-13 font-medium text-typography-secondary">
-            <Trans>Epoch ends in</Trans>
-            <span className="text-typography-primary">{timeLeft || "—"}</span>
-          </div>
-          <div className="flex h-24 items-center justify-between text-13 font-medium text-typography-secondary">
-            <TooltipWithPortal
-              handle={<Trans>Points balance</Trans>}
-              content={t`Total non-expired points available. Points automatically discount up to 50% of your trading fees.`}
-              variant="iconStroke"
-            />
-
-            <span className="text-typography-primary">{displayPoints}</span>
-          </div>
-          <div className="flex h-24 items-center justify-between text-13  font-medium text-typography-secondary">
-            <TooltipWithPortal
-              handle={<Trans>Total earned rewards</Trans>}
-              content={t`Total rewards earned since the start of the program.`}
-              variant="iconStroke"
-            />
-
-            <span className="text-typography-primary">{displayTotalEarnedRewards} GMX</span>
-          </div>
-        </div>
-      </div>
-
-      <ClaimModal
-        isOpen={isClaimModalOpen}
-        setIsOpen={setIsClaimModalOpen}
-        displayRewards={displayClaimableRewards}
-        chainId={chainId}
-        account={account}
-        claimableAmount={claimableAmount}
-        mutateClaimableAmount={mutateClaimableAmount}
-      />
-    </>
-  );
-}
-
-function ClaimModal({
-  isOpen,
-  setIsOpen,
-  displayRewards,
-  chainId,
-  account,
-  claimableAmount,
-  mutateClaimableAmount,
-}: {
+type PointsClaimRewardsModalProps = {
   isOpen: boolean;
   setIsOpen: (val: boolean) => void;
   displayRewards: string;
@@ -187,12 +49,26 @@ function ClaimModal({
   account?: string;
   claimableAmount: bigint;
   mutateClaimableAmount: KeyedMutator<any>;
-}) {
+};
+
+export function PointsClaimRewardsModal({
+  isOpen,
+  setIsOpen,
+  displayRewards,
+  chainId,
+  account,
+  claimableAmount,
+  mutateClaimableAmount,
+}: PointsClaimRewardsModalProps) {
   const { signer } = useWallet();
   const { srcChainId } = useChainId();
   const { setPendingTxns } = usePendingTxns();
   const hasOutdatedUi = useHasOutdatedUi();
   const [pendingAction, setPendingAction] = useState<"claim" | "claimAndStake" | "approve" | undefined>();
+  const [claimFlowMode, setClaimFlowMode] = useState<PointsRewardsClaimFlowMode | undefined>();
+  const [claimFlowStep, setClaimFlowStep] = useState<PointsRewardsClaimFlowStep>("idle");
+  const [submittedClaimAmount, setSubmittedClaimAmount] = useState<bigint | undefined>();
+  const [autoCloseSeconds, setAutoCloseSeconds] = useState(CLAIM_MODAL_AUTO_CLOSE_SECONDS);
   const contractsChainId = chainId as ContractsChainId;
   const allowanceChainId = chainId as AnyChainId;
   // Off-settlement GMX-Account users need multichain relay wiring; disable claim to avoid wallet-chain mismatch until that lands.
@@ -230,7 +106,10 @@ function ClaimModal({
   );
 
   const claimsDisabled = Boolean(rawClaimsDisabled);
-  const displayClaimableRewards = claimableAmount > 0n ? formatAmount(claimableAmount, 18, 2, true) : displayRewards;
+  const displayedRewardAmount =
+    submittedClaimAmount !== undefined && submittedClaimAmount > 0n ? submittedClaimAmount : claimableAmount;
+  const displayClaimableRewards =
+    displayedRewardAmount > 0n ? formatAmount(displayedRewardAmount, 18, 2, true) : displayRewards;
 
   const claimParams = useMemo(
     () => [
@@ -261,6 +140,41 @@ function ClaimModal({
   const isClaiming = pendingAction === "claim";
   const isClaimAndStaking = pendingAction === "claimAndStake";
   const isApproving = pendingAction === "approve";
+  const isClaimFlowPending = isClaiming || isClaimAndStaking || isApproving;
+  const isClaimFlowCompleted =
+    (claimFlowMode === "claimOnly" && claimFlowStep === "claimSucceeded") || claimFlowStep === "stakeSucceeded";
+
+  useEffect(() => {
+    if (isOpen) {
+      return;
+    }
+
+    setPendingAction(undefined);
+    setClaimFlowMode(undefined);
+    setClaimFlowStep("idle");
+    setSubmittedClaimAmount(undefined);
+    setAutoCloseSeconds(CLAIM_MODAL_AUTO_CLOSE_SECONDS);
+  }, [isOpen]);
+
+  useEffect(() => {
+    if (!isOpen || !isClaimFlowCompleted) {
+      return;
+    }
+
+    setAutoCloseSeconds(CLAIM_MODAL_AUTO_CLOSE_SECONDS);
+
+    const countdownInterval = setInterval(() => {
+      setAutoCloseSeconds((prev) => Math.max(prev - 1, 0));
+    }, 1000);
+    const closeTimer = setTimeout(() => {
+      setIsOpen(false);
+    }, CLAIM_MODAL_AUTO_CLOSE_SECONDS * 1000);
+
+    return () => {
+      clearInterval(countdownInterval);
+      clearTimeout(closeTimer);
+    };
+  }, [isClaimFlowCompleted, isOpen, setIsOpen]);
 
   // Intentionally uses `callContract` + `tx.wait()` (not the shared `approveTokens` helper)
   // because the follow-up `stakeGmx` call requires the approval to be mined first —
@@ -315,6 +229,9 @@ function ClaimModal({
     }
 
     setPendingAction("claim");
+    setClaimFlowMode("claimOnly");
+    setClaimFlowStep("claimPending");
+    setSubmittedClaimAmount(claimableAmount);
 
     try {
       // Revalidate the on-chain claimable amount before submitting so we don't send a tx
@@ -322,25 +239,32 @@ function ClaimModal({
       const latestRaw = await mutateClaimableAmount();
       const latest = latestRaw !== undefined ? BigInt(latestRaw) : 0n;
       if (latest <= 0n) {
+        setClaimFlowMode(undefined);
+        setClaimFlowStep("idle");
+        setSubmittedClaimAmount(undefined);
         helperToast.error(t`No rewards available to claim`);
         return;
       }
+      setSubmittedClaimAmount(latest);
 
       await submitClaim();
       sendClaimRewardsResultEvent(true);
       helperToast.success(t`Claim completed`);
       await mutateClaimableAmount(0n, false);
-      setIsOpen(false);
+      setClaimFlowStep("claimSucceeded");
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error("Points rewards claim failed", err);
       metrics.pushError(err, "pointsSidebar.claim");
       sendClaimRewardsResultEvent(false);
       helperToast.error(t`Claim failed`);
+      setClaimFlowMode(undefined);
+      setClaimFlowStep("idle");
+      setSubmittedClaimAmount(undefined);
     } finally {
       setPendingAction(undefined);
     }
-  }, [canClaim, mutateClaimableAmount, setIsOpen, submitClaim]);
+  }, [canClaim, claimableAmount, mutateClaimableAmount, submitClaim]);
 
   const claimAndStakeRewards = useCallback(async () => {
     if (!account || !signer || !canClaim || !isStakeSupported) {
@@ -351,6 +275,8 @@ function ClaimModal({
     let didAttemptClaim = false;
     let didClaim = false;
     sendStakeRewardsClickEvent();
+    setClaimFlowMode("claimAndStake");
+    setSubmittedClaimAmount(claimableAmount);
 
     try {
       if (needsStakeApproval) {
@@ -358,20 +284,26 @@ function ClaimModal({
       }
 
       setPendingAction("claimAndStake");
+      setClaimFlowStep("claimPending");
 
       // Revalidate the on-chain claimable amount before submitting so we stake the
       // actual amount that will be claimed, not a stale cached value.
       const latestRaw = await mutateClaimableAmount();
       const latest = latestRaw !== undefined ? BigInt(latestRaw) : 0n;
       if (latest <= 0n) {
+        setClaimFlowMode(undefined);
+        setClaimFlowStep("idle");
+        setSubmittedClaimAmount(undefined);
         helperToast.error(t`No rewards available to claim`);
         return;
       }
       stakeAmount = latest;
+      setSubmittedClaimAmount(latest);
 
       didAttemptClaim = true;
       await submitClaim();
       didClaim = true;
+      setClaimFlowStep("claimSucceeded");
       sendClaimRewardsResultEvent(true);
       helperToast.success(t`Claim completed`);
       await mutateClaimableAmount(0n, false);
@@ -381,6 +313,7 @@ function ClaimModal({
       }
 
       const rewardRouterContract = new ethers.Contract(rewardRouterAddress, abis.RewardRouter, signer);
+      setClaimFlowStep("stakePending");
       const stakeTx = await callContract(chainId, rewardRouterContract, "stakeGmx", [stakeAmount], {
         sentMsg: t`Stake submitted`,
         failMsg: t`Stake failed`,
@@ -390,7 +323,7 @@ function ClaimModal({
 
       await stakeTx.wait();
       sendStakeRewardsResultEvent(true);
-      setIsOpen(false);
+      setClaimFlowStep("stakeSucceeded");
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error("Points rewards claim+stake failed", err);
@@ -401,6 +334,9 @@ function ClaimModal({
       sendStakeRewardsResultEvent(false);
       if (!didClaim) {
         helperToast.error(t`Claim failed`);
+        setClaimFlowMode(undefined);
+        setClaimFlowStep("idle");
+        setSubmittedClaimAmount(undefined);
       } else {
         setIsOpen(false);
         helperToast.info(
@@ -426,14 +362,11 @@ function ClaimModal({
     submitClaim,
   ]);
 
-  const claimButtonText = isClaiming ? t`Claiming...` : hasOutdatedUi ? getPageOutdatedError() : t`Claim`;
-  const claimAndStakeButtonText = isApproving
-    ? t`Approving...`
-    : isClaimAndStaking
-      ? t`Claiming + staking...`
-      : hasOutdatedUi
-        ? getPageOutdatedError()
-        : t`Claim + stake`;
+  const claimButtonText = hasOutdatedUi ? getPageOutdatedError() : t`Claim only`;
+  const pendingButtonText = isApproving ? t`Approving...` : t`Waiting for confirmation`;
+  const claimAndStakeButtonText = hasOutdatedUi ? getPageOutdatedError() : t`Stake and earn more rewards`;
+  const isRewardAmountConfirmed =
+    claimFlowStep === "claimSucceeded" || claimFlowStep === "stakePending" || claimFlowStep === "stakeSucceeded";
 
   return (
     <ModalWithPortal
@@ -446,13 +379,30 @@ function ClaimModal({
       <div className="flex flex-col gap-16 p-16">
         <div>
           <span className="text-12 text-typography-secondary">
-            <Trans>Available to Claim</Trans>
+            {claimFlowStep === "stakeSucceeded" ? (
+              <Trans>Staked</Trans>
+            ) : isRewardAmountConfirmed ? (
+              <Trans>Claimed</Trans>
+            ) : (
+              <Trans>Available to Claim</Trans>
+            )}
           </span>
-          <div className="text-h2 mt-4 font-medium text-typography-primary">{displayClaimableRewards} GMX</div>
+          <div
+            className={cx(
+              "text-h2 mt-4 font-medium",
+              isRewardAmountConfirmed ? "text-green-500" : "text-typography-primary"
+            )}
+          >
+            {displayClaimableRewards} GMX
+          </div>
           <p className="mt-8 text-12 text-typography-secondary">
-            <Trans>
-              Claim your rewards now. You can also stake them instantly to get 5% yield on it and earn even more points.
-            </Trans>
+            {claimFlowStep === "stakeSucceeded" ? (
+              <Trans>Your rewards have been staked. You are now earning more points and rewards.</Trans>
+            ) : isRewardAmountConfirmed ? (
+              <Trans>Your rewards have been claimed to your wallet. You can now stake them.</Trans>
+            ) : (
+              <Trans>Claim your rewards now. You can also stake them instantly to earn more points and rewards.</Trans>
+            )}
           </p>
           {claimsDisabled ? (
             <p className="mt-8 text-12 text-typography-secondary">
@@ -462,30 +412,122 @@ function ClaimModal({
         </div>
 
         <div className="flex flex-col gap-8">
-          <Button
-            variant="primary-action"
-            className="w-full"
-            disabled={
-              !canClaim ||
-              !isStakeSupported ||
-              !isStakeAllowanceLoaded ||
-              isClaiming ||
-              isClaimAndStaking ||
-              isApproving
-            }
-            onClick={claimAndStakeRewards}
-          >
-            {claimAndStakeButtonText}
-          </Button>
-          <button
-            className="w-full py-8 text-center text-14 text-typography-secondary hover:text-typography-primary disabled:cursor-not-allowed disabled:text-typography-secondary/60"
-            disabled={!canClaim || isClaiming || isClaimAndStaking || isApproving}
-            onClick={claimRewards}
-          >
-            {claimButtonText}
-          </button>
+          {isClaimFlowCompleted ? null : isClaimFlowPending ? (
+            <Button variant="secondary" className="w-full" disabled size="medium">
+              <SpinnerIcon className="size-16 animate-spin" />
+              {pendingButtonText}
+            </Button>
+          ) : (
+            <>
+              <Button
+                variant="primary-action"
+                className="w-full"
+                disabled={!canClaim || !isStakeSupported || !isStakeAllowanceLoaded}
+                onClick={claimAndStakeRewards}
+              >
+                {claimAndStakeButtonText}
+                <EarnIcon className="size-16" />
+              </Button>
+              <button
+                className="w-full py-8 text-center text-14 text-typography-secondary hover:text-typography-primary disabled:cursor-not-allowed disabled:text-typography-secondary/60"
+                disabled={!canClaim}
+                onClick={claimRewards}
+              >
+                {claimButtonText}
+              </button>
+            </>
+          )}
         </div>
+
+        {claimFlowMode === "claimAndStake" && claimFlowStep !== "idle" ? (
+          <PointsRewardsClaimSteps step={claimFlowStep} />
+        ) : null}
+
+        {isClaimFlowCompleted ? (
+          <div className="text-12 text-typography-secondary">
+            <Trans>Will close automatically in {autoCloseSeconds}...</Trans>
+          </div>
+        ) : null}
       </div>
     </ModalWithPortal>
+  );
+}
+
+function PointsRewardsClaimSteps({ step }: { step: PointsRewardsClaimFlowStep }) {
+  const isClaimComplete = step === "claimSucceeded" || step === "stakePending" || step === "stakeSucceeded";
+  const isStakeComplete = step === "stakeSucceeded";
+
+  return (
+    <div className="flex flex-col gap-12 rounded-8 border-1/2 border-slate-600 bg-slate-950/50 p-12">
+      <PointsRewardsClaimStep
+        index={1}
+        status={isClaimComplete ? "completed" : "active"}
+        label={isClaimComplete ? <Trans>Rewards claimed</Trans> : <Trans>Claim rewards</Trans>}
+        description={isClaimComplete ? undefined : <Trans>Waiting for confirmation...</Trans>}
+      />
+      <PointsRewardsClaimStep
+        index={2}
+        status={isStakeComplete ? "completed" : step === "stakePending" ? "active" : "pending"}
+        label={isStakeComplete ? <Trans>Rewards staked</Trans> : <Trans>Stake rewards</Trans>}
+        description={
+          isStakeComplete ? undefined : step === "stakePending" ? (
+            <Trans>Waiting for confirmation...</Trans>
+          ) : (
+            <Trans>Stake to boost your multiplier</Trans>
+          )
+        }
+      />
+    </div>
+  );
+}
+
+function PointsRewardsClaimStep({
+  index,
+  status,
+  label,
+  description,
+}: {
+  index: number;
+  status: "completed" | "active" | "pending";
+  label: ReactNode;
+  description?: ReactNode;
+}) {
+  return (
+    <div className="flex items-start gap-8">
+      <div className="mt-1 flex size-16 shrink-0 items-center justify-center">
+        {status === "completed" ? (
+          <CheckCircleIcon className="size-16 text-blue-300" />
+        ) : (
+          <span
+            className={cx(
+              "flex size-16 items-center justify-center rounded-full border text-11 font-medium",
+              status === "active"
+                ? "border-blue-300 bg-blue-300 text-slate-950"
+                : "border-slate-600 text-typography-secondary"
+            )}
+          >
+            {index}
+          </span>
+        )}
+      </div>
+      <div className="min-w-0 flex-1">
+        <div className="flex min-h-16 items-center justify-between gap-8">
+          <span
+            className={cx(
+              "text-13 font-medium",
+              status === "pending" ? "text-typography-secondary" : "text-typography-primary"
+            )}
+          >
+            {label}
+          </span>
+          {status === "active" ? (
+            <span className="shrink-0 rounded-full bg-blue-300/10 px-6 py-2 text-11 font-medium text-blue-300">
+              <Trans>In progress</Trans>
+            </span>
+          ) : null}
+        </div>
+        {description ? <div className="mt-2 text-12 text-typography-secondary">{description}</div> : null}
+      </div>
+    </div>
   );
 }

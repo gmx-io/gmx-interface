@@ -22,8 +22,8 @@ import { FaqSection } from "./components/FaqSection";
 import { PointsBanner } from "./components/PointsBanner";
 import { PointsDashboard } from "./components/PointsDashboard";
 import { PointsLeaderboardTab } from "./components/PointsLeaderboardTab";
+import { PointsSidebarRewards } from "./components/PointsSidebarRewards";
 import { RewardsHistoryTab } from "./components/RewardsHistoryTab";
-import { SidebarRewards } from "./components/SidebarRewards";
 
 export enum PointsTab {
   Dashboard = "dashboard",
@@ -124,7 +124,7 @@ export function PointsPage() {
               pointsExpiringThisEpoch={status?.pointsExpiringThisEpoch}
               onStakeGmxClick={handleOpenGmxStakeModal}
             />
-            <SidebarRewards chainId={chainId} account={account} />
+            <PointsSidebarRewards chainId={chainId} account={account} />
           </div>
         )}
 
@@ -144,7 +144,7 @@ export function PointsPage() {
 
           <div className="sticky top-8 flex flex-col gap-8 max-xl:static">
             <div className="max-xl:hidden">
-              <SidebarRewards chainId={chainId} account={account} />
+              <PointsSidebarRewards chainId={chainId} account={account} />
             </div>
             <FaqSection config={config} />
             <div className="max-xl:hidden">
