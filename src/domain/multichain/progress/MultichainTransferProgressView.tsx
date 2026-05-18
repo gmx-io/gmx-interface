@@ -13,7 +13,7 @@ import { Token } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { CHAIN_ID_TO_TX_URL_BUILDER } from "lib/chains/blockExplorers";
 import { shortenAddressOrEns } from "lib/wallets";
-import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
+import { getWagmiConfig } from "lib/wallets/walletConfig";
 import {
   getIsSpotOnlyMarket,
   getMarketIndexToken,
@@ -142,7 +142,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
           tokenAddress: task.token.address,
           initialTx: task.initialTxHash,
           error: finishedError,
-          account: getAccount(getRainbowKitConfig()).address,
+          account: getAccount(getWagmiConfig()).address,
         },
         null,
         2
@@ -355,9 +355,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                         value={
                           finishedError.creationTx ? (
                             <ExternalLink
-                              href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](
-                                finishedError.creationTx
-                              )}
+                              href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](finishedError.creationTx)}
                             >
                               <ExternalLinkIcon className="size-16 text-typography-secondary" />
                             </ExternalLink>
@@ -374,9 +372,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                         value={
                           finishedError.executionTx ? (
                             <ExternalLink
-                              href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](
-                                finishedError.executionTx
-                              )}
+                              href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](finishedError.executionTx)}
                             >
                               <ExternalLinkIcon className="size-16 text-typography-secondary" />
                             </ExternalLink>
@@ -394,9 +390,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                           value={
                             finishedError.creationTx ? (
                               <ExternalLink
-                                href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](
-                                  finishedError.creationTx
-                                )}
+                                href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](finishedError.creationTx)}
                                 variant="icon"
                               >
                                 {shortenAddressOrEns(finishedError.creationTx, 11)}
@@ -412,9 +406,7 @@ function ToastContent({ chainId, task, finishedState, finishedError, closeToast 
                           value={
                             finishedError.executionTx ? (
                               <ExternalLink
-                                href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](
-                                  finishedError.executionTx
-                                )}
+                                href={CHAIN_ID_TO_TX_URL_BUILDER[finishedError.chainId](finishedError.executionTx)}
                                 variant="icon"
                               >
                                 {shortenAddressOrEns(finishedError.executionTx, 11)}

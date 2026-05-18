@@ -33,7 +33,7 @@ import { metrics } from "lib/metrics";
 import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 import { encodeReferralCode } from "sdk/utils/referrals";
@@ -456,7 +456,7 @@ function AffiliateCodeForm({
       }
 
       const publicClient = getPublicClientWithRpc(chainId);
-      const receipt = await publicClient.waitForTransactionReceipt({ hash: tx.hash });
+      const receipt = await publicClient.waitForTransactionReceipt({ hash: tx.hash as `0x${string}` });
 
       if (receipt?.status === "success") {
         addRecentCode(trimmedCode);

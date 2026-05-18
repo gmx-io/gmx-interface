@@ -1,13 +1,13 @@
 import uniq from "lodash/uniq";
 import useSWR from "swr";
-import { Hex, PublicClient } from "viem";
+import { PublicClient, type Hex } from "viem";
 import { useAccount } from "wagmi";
 
 import { AnyChainId, CONTRACTS_CHAIN_IDS, isTestnetChain, SOURCE_CHAIN_IDS } from "config/chains";
 import { useChainId } from "lib/chains";
 import { getIsNonEoaAccountError, nonEoaAccountError } from "lib/errors/customErrors";
 
-import { getPublicClientWithRpc } from "./rainbowKitConfig";
+import { getPublicClientWithRpc } from "./walletConfig";
 
 enum AccountType {
   Safe,
@@ -28,7 +28,7 @@ const KNOWN_SAFE_SINGLETONS = new Set(
     "0x69f4d1788e39c87893c980c06edf4b7f686e2938", // v1.3.0
     "0x41675c099f32341bf84bfc5382af534df5c7461a", // v1.4.1
     "0x29fcb43b46531bca003ddc8fcb67ffe91900c762", // v1.4.1 L2
-  ].map((a) => a.toLowerCase() as Hex)
+  ].map((a) => a.toLowerCase())
 );
 
 async function isSafeAccount(
@@ -46,7 +46,7 @@ async function isSafeAccount(
     return false;
   }
 
-  const masterCopy = `0x${storage.slice(-40)}`.toLowerCase() as Hex;
+  const masterCopy = `0x${storage.slice(-40)}`.toLowerCase();
 
   return KNOWN_SAFE_SINGLETONS.has(masterCopy) || safeSingletonAddresses.has(masterCopy);
 }

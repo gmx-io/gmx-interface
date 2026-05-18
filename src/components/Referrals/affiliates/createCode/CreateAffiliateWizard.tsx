@@ -1,8 +1,9 @@
 import { Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import type { TransactionResponse } from "ethers";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
+
+import { useConnectModal } from "lib/wallets/useConnectModal";
 
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";

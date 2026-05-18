@@ -15,6 +15,7 @@ import { buildUrl } from "sdk/utils/buildUrl";
 import { _debugOracleKeeper, OracleKeeperDebugFlags } from "./_debug";
 import { OracleKeeperFallbackTracker } from "./OracleFallbackTracker";
 import {
+  ApiMarket,
   ApyInfo,
   ApyPeriod,
   BatchReportBody,
@@ -230,5 +231,14 @@ export class OracleKeeperFetcher implements OracleFetcher {
 
   fetchUiFlags(): Promise<Record<string, boolean>> {
     return this.request("/ui-flags", {});
+  }
+
+  fetchMarkets(): Promise<ApiMarket[]> {
+    return this.request("/markets", {
+      validate: (res) => {
+        if (!res || !Array.isArray(res.markets)) return new Error("Invalid /markets response");
+        return undefined;
+      },
+    }).then((res) => res.markets as ApiMarket[]);
   }
 }

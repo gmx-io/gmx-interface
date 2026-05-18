@@ -156,7 +156,7 @@ export function GmListItem({
               />
             </div>
             <div className="flex flex-col">
-              <div className="text-body-medium flex">
+              <div className="text-body-medium flex items-center">
                 <span className="font-medium">
                   {isGlv
                     ? getGlvDisplayName(marketOrGlv)

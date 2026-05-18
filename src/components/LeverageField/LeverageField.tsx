@@ -22,6 +22,7 @@ import InfoIcon from "img/ic_info.svg?react";
 
 export const DEFAULT_LEVERAGE_MARKS = [0.1, 25, 50];
 export const DEFAULT_LEVERAGE = 20;
+const EMPTY_LEVERAGE_DISPLAY = "-";
 
 type Props = {
   value: number | null;
@@ -142,7 +143,7 @@ export function LeverageField({ value, onChange, marks, disabled, tooltipContent
 
   const displayValue = useMemo(() => {
     if (value === null) {
-      return disabled ? `> ${formatLeverage(maxMark, { integer: true })}` : formatLeverage(minMark);
+      return disabled ? EMPTY_LEVERAGE_DISPLAY : formatLeverage(minMark);
     }
 
     if (disabled && value > maxMark) {
@@ -152,6 +153,7 @@ export function LeverageField({ value, onChange, marks, disabled, tooltipContent
     const clampedValue = disabled ? value : clampLeverage(value, minMark, maxMark);
     return formatLeverage(clampedValue);
   }, [value, disabled, minMark, maxMark]);
+  const shouldShowMultiplier = displayValue !== EMPTY_LEVERAGE_DISPLAY;
 
   return (
     <>
@@ -176,13 +178,15 @@ export function LeverageField({ value, onChange, marks, disabled, tooltipContent
             })}
           >
             {displayValue}
-            <span
-              className={cx("ml-4", isOpen ? "text-blue-300" : "text-typography-secondary", {
-                "group-hover:text-blue-300": !disabled && !isOpen,
-              })}
-            >
-              x
-            </span>
+            {shouldShowMultiplier ? (
+              <span
+                className={cx("ml-4", isOpen ? "text-blue-300" : "text-typography-secondary", {
+                  "group-hover:text-blue-300": !disabled && !isOpen,
+                })}
+              >
+                x
+              </span>
+            ) : null}
           </span>
         </TooltipWithPortal>
       </div>

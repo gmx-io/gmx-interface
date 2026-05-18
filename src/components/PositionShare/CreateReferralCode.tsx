@@ -1,6 +1,6 @@
 import { t, Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { encodeFunctionData, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
@@ -34,7 +34,7 @@ import { metrics } from "lib/metrics";
 import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 import { abis } from "sdk/abis";
 import { encodeReferralCode } from "sdk/utils/referrals";
@@ -140,7 +140,7 @@ function CreateReferralCodeSettlement({ onSuccess }: Props) {
         }
 
         const publicClient = getPublicClientWithRpc(chainId);
-        const receipt = await publicClient.waitForTransactionReceipt({ hash: tx.hash });
+        const receipt = await publicClient.waitForTransactionReceipt({ hash: tx.hash as `0x${string}` });
 
         if (receipt?.status === "success") {
           helperToast.success(t`Referral code created`);

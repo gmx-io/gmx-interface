@@ -413,9 +413,7 @@ function ClaimModalComponent(p: {
                     </>
                   }
                   content={
-                    <Trans>
-                      This market has been disabled. Contact support to claim your remaining funding fees.
-                    </Trans>
+                    <Trans>This market has been disabled. Contact support to claim your remaining funding fees.</Trans>
                   }
                 />
               ) : (

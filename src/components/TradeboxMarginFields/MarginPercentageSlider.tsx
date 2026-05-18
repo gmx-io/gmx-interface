@@ -50,7 +50,15 @@ export function MarginPercentageSlider({ value, onChange, className, disabled }:
   return (
     <div className={cx("flex items-center gap-16", className)} aria-disabled={disabled || undefined}>
       <div className={cx("h-32 flex-1 px-4", disabled && "pointer-events-none opacity-50")}>
-        <Slider min={0} max={100} step={1} onChange={handleChange} value={disabled ? 0 : sliderValue} marks={marks} />
+        <Slider
+          min={0}
+          max={100}
+          step={1}
+          onChange={handleChange}
+          value={disabled ? 0 : sliderValue}
+          marks={marks}
+          disabled={disabled}
+        />
       </div>
     </div>
   );

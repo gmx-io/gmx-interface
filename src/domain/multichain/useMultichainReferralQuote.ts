@@ -9,9 +9,9 @@ import { signRegisterCode, signSetTraderReferralCode } from "domain/synthetics/e
 import { stargateTransferFees } from "domain/synthetics/markets/feeEstimation/stargateTransferFees";
 import { useChainId } from "lib/chains";
 import { numberToBigint } from "lib/numbers";
-import { useThrottledAsync, type AsyncResult } from "lib/useThrottledAsync";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { type AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
 import useWallet from "lib/wallets/useWallet";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
