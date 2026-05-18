@@ -1030,6 +1030,10 @@ msgstr ""
 msgid "No options to buy {nativeTokenSymbol} on {chainName}"
 msgstr "{chainName}에서 {nativeTokenSymbol}을(를) 구매할 수 있는 옵션이 없습니다"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "to get {0} Status <0>+{1}</0>"
+msgstr ""
+
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values calculated when earned. Excludes incentives."
 msgstr "수수료 값은 수익 발생 시점에 계산됩니다. 인센티브는 제외됩니다."
@@ -5484,10 +5488,6 @@ msgstr "판매 수수료"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Invalid oracle price"
 msgstr "유효하지 않은 Oracle 가격"
-
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "get {0} Status <0>+{1}</0>"
-msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit validation error: {0}"

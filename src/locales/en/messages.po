@@ -1030,6 +1030,10 @@ msgstr "Don't ask again"
 msgid "No options to buy {nativeTokenSymbol} on {chainName}"
 msgstr "No options to buy {nativeTokenSymbol} on {chainName}"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "to get {0} Status <0>+{1}</0>"
+msgstr "to get {0} Status <0>+{1}</0>"
+
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values calculated when earned. Excludes incentives."
 msgstr "Fee values calculated when earned. Excludes incentives."
@@ -5484,10 +5488,6 @@ msgstr "Sell fee"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Invalid oracle price"
 msgstr "Invalid oracle price"
-
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "get {0} Status <0>+{1}</0>"
-msgstr "get {0} Status <0>+{1}</0>"
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit validation error: {0}"

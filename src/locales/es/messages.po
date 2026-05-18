@@ -1030,6 +1030,10 @@ msgstr ""
 msgid "No options to buy {nativeTokenSymbol} on {chainName}"
 msgstr "No hay opciones para comprar {nativeTokenSymbol} en {chainName}"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "to get {0} Status <0>+{1}</0>"
+msgstr ""
+
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values calculated when earned. Excludes incentives."
 msgstr "Valores de comisiones calculados en el momento en que se obtienen. No incluye incentivos."
@@ -5484,10 +5488,6 @@ msgstr "Comisión de venta"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Invalid oracle price"
 msgstr "Precio de Oracle no válido"
-
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "get {0} Status <0>+{1}</0>"
-msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit validation error: {0}"

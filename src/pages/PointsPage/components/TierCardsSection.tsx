@@ -239,12 +239,7 @@ function VolumeCard({
     </MultiplierChangeTooltip>
   ) : undefined;
 
-  // Preserve mode: user currently has a tier but is projected to lose it next epoch.
-  // The bar should target the current tier's threshold (what's needed to save it) instead
-  // of the next tier's threshold. For volume tiers this also overrides max-tier display when
-  // the user is about to lose their max tier (FEDEV-3824).
   const isPreserveMode = active && Boolean(currentTierConfig) && projectedTierId === null;
-  // Show the "max tier reached" celebratory state only when the user is not about to lose it.
   const showMaxTierState = isMaxTier && !isPreserveMode;
   const nextThreshold = active ? nextTierConfig?.threshold : tierConfig?.[0]?.threshold;
   const targetTierConfig = isPreserveMode ? currentTierConfig : nextTierConfig;
@@ -272,7 +267,7 @@ function VolumeCard({
             </Trans>
           ) : (
             <Trans>
-              get {VOLUME_TIER_BADGES[targetTierConfig.tier]()} Status{" "}
+              to get {VOLUME_TIER_BADGES[targetTierConfig.tier]()} Status{" "}
               <span className="text-typography-primary">+{formatMultiplier(targetTierConfig.multiplier)}</span>
             </Trans>
           )}

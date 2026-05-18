@@ -1030,6 +1030,10 @@ msgstr ""
 msgid "No options to buy {nativeTokenSymbol} on {chainName}"
 msgstr "在 {chainName} 上没有购买 {nativeTokenSymbol} 的选项"
 
+#: src/pages/PointsPage/components/TierCardsSection.tsx
+msgid "to get {0} Status <0>+{1}</0>"
+msgstr ""
+
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 msgid "Fee values calculated when earned. Excludes incentives."
 msgstr "费用值在获得时计算。不包含激励。"
@@ -5484,10 +5488,6 @@ msgstr "卖出费用"
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Invalid oracle price"
 msgstr "Oracle 价格无效"
-
-#: src/pages/PointsPage/components/TierCardsSection.tsx
-msgid "get {0} Status <0>+{1}</0>"
-msgstr ""
 
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Permit validation error: {0}"
