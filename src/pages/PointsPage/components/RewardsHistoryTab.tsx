@@ -80,12 +80,13 @@ function RewardsHistoryDesktopSkeletonRow({ invisible }: { invisible?: boolean }
 type Props = {
   chainId: ContractsChainId;
   account?: string;
+  currentPointsBalance?: bigint;
 };
 
-export function RewardsHistoryTab({ chainId, account }: Props) {
+export function RewardsHistoryTab({ chainId, account, currentPointsBalance }: Props) {
   const { i18n } = useLingui();
   const { active, signer } = useWallet();
-  const { data: config } = useIncentivesConfig(chainId);
+  const { data: config, error: configError, loading: configLoading } = useIncentivesConfig(chainId);
   const [page, setPage] = useState(1);
   const {
     data: history,
@@ -95,6 +96,7 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
   } = useAccountRewardsHistory(chainId, {
     account,
     currentEpoch: config?.epochTimestamp,
+    currentPointsBalance,
     programStartTimestamp: config?.programStartTimestamp,
     epochDuration: config?.epochDuration,
     enabled: config !== undefined,
@@ -122,8 +124,9 @@ export function RewardsHistoryTab({ chainId, account }: Props) {
 
   const pageCount = totalCount === undefined ? page : Math.max(1, Math.ceil(totalCount / PER_PAGE));
   const pageData = history ?? [];
-  const isInitialLoading = (!config || loading) && !history;
-  const hasHistoryFailure = Boolean(error) && (!history || history.length === 0);
+  const isInitialLoading = ((configLoading && !config) || loading) && !history;
+  const hasConfigFailure = Boolean(configError && !config);
+  const hasHistoryFailure = (hasConfigFailure || Boolean(error)) && (!history || history.length === 0);
   const showHistoryDegradedNotice = Boolean(error) && Boolean(history?.length);
   const now = useCurrentUnixTimestamp();
 

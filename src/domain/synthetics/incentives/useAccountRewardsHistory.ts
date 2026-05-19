@@ -45,21 +45,21 @@ type AccountRewardsHistoryResult = {
   hasNextPage: boolean;
 };
 
-export function createEmptyRewardsHistoryEntry(epoch: number): RewardsHistoryEntry {
+export function createEmptyRewardsHistoryEntry(epoch: number, pointsBalance = 0n): RewardsHistoryEntry {
   return {
     epoch,
     volume: 0n,
     pointsEarned: 0n,
     pointsSpent: 0n,
     pointsExpired: 0n,
-    pointsBalance: 0n,
+    pointsBalance,
     rewardsEarned: 0n,
     rewardsClaimed: 0n,
   };
 }
 
-export function createEmptyCurrentEpochRewardsHistoryEntry(epoch: number): RewardsHistoryEntry {
-  return createEmptyRewardsHistoryEntry(epoch);
+export function createEmptyCurrentEpochRewardsHistoryEntry(epoch: number, pointsBalance = 0n): RewardsHistoryEntry {
+  return createEmptyRewardsHistoryEntry(epoch, pointsBalance);
 }
 
 export function getRewardsHistoryEpochs({
@@ -87,6 +87,94 @@ export function getRewardsHistoryEpochs({
   return epochs;
 }
 
+function isZeroValueRewardsHistoryEntry(entry: RewardsHistoryEntry) {
+  return (
+    entry.volume === 0n &&
+    entry.pointsEarned === 0n &&
+    entry.pointsSpent === 0n &&
+    entry.pointsExpired === 0n &&
+    entry.rewardsEarned === 0n &&
+    entry.rewardsClaimed === 0n
+  );
+}
+
+function fillRewardsHistoryEntries({
+  entries,
+  epochs,
+}: {
+  entries: RewardsHistoryEntry[];
+  epochs: number[];
+}): RewardsHistoryEntry[] {
+  const entriesByEpoch = new Map(entries.map((entry) => [entry.epoch, entry]));
+  const entriesByTimeAscending = [...entries].sort((a, b) => a.epoch - b.epoch);
+  const epochsAscending = [...epochs].reverse();
+  const filledEntriesAscending: RewardsHistoryEntry[] = [];
+  let lastExistingPointsBalance = 0n;
+  let nextEntryIndex = 0;
+
+  for (const epoch of epochsAscending) {
+    while (nextEntryIndex < entriesByTimeAscending.length && entriesByTimeAscending[nextEntryIndex].epoch < epoch) {
+      if (!isZeroValueRewardsHistoryEntry(entriesByTimeAscending[nextEntryIndex])) {
+        lastExistingPointsBalance = entriesByTimeAscending[nextEntryIndex].pointsBalance;
+      }
+
+      nextEntryIndex += 1;
+    }
+
+    const entry = entriesByEpoch.get(epoch);
+
+    if (entry && !isZeroValueRewardsHistoryEntry(entry)) {
+      filledEntriesAscending.push(entry);
+      lastExistingPointsBalance = entry.pointsBalance;
+
+      while (nextEntryIndex < entriesByTimeAscending.length && entriesByTimeAscending[nextEntryIndex].epoch <= epoch) {
+        nextEntryIndex += 1;
+      }
+    } else {
+      filledEntriesAscending.push({
+        ...(entry ?? createEmptyRewardsHistoryEntry(epoch)),
+        pointsBalance: lastExistingPointsBalance,
+      });
+
+      if (entry) {
+        while (
+          nextEntryIndex < entriesByTimeAscending.length &&
+          entriesByTimeAscending[nextEntryIndex].epoch <= epoch
+        ) {
+          nextEntryIndex += 1;
+        }
+      }
+    }
+  }
+
+  return filledEntriesAscending.reverse();
+}
+
+export function fillCurrentEpochRewardsHistoryEntryBalance({
+  entries,
+  currentEpoch,
+  currentPointsBalance,
+}: {
+  entries: RewardsHistoryEntry[] | undefined;
+  currentEpoch: number | undefined;
+  currentPointsBalance: bigint | undefined;
+}) {
+  if (!entries || currentEpoch === undefined || currentPointsBalance === undefined) {
+    return entries;
+  }
+
+  return entries.map((entry) => {
+    if (entry.epoch !== currentEpoch || !isZeroValueRewardsHistoryEntry(entry)) {
+      return entry;
+    }
+
+    return {
+      ...entry,
+      pointsBalance: currentPointsBalance,
+    };
+  });
+}
+
 export function fillRewardsHistoryPage({
   entries,
   programStartTimestamp,
@@ -103,9 +191,8 @@ export function fillRewardsHistoryPage({
   offset: number;
 }): AccountRewardsHistoryResult {
   const epochs = getRewardsHistoryEpochs({ programStartTimestamp, currentEpoch, epochDuration });
-  const entriesByEpoch = new Map(entries.map((entry) => [entry.epoch, entry]));
-  const pageEpochs = epochs.slice(offset, offset + limit);
-  const pageEntries = pageEpochs.map((epoch) => entriesByEpoch.get(epoch) ?? createEmptyRewardsHistoryEntry(epoch));
+  const filledEntries = fillRewardsHistoryEntries({ entries, epochs });
+  const pageEntries = filledEntries.slice(offset, offset + limit);
 
   return {
     entries: pageEntries,
@@ -290,6 +377,7 @@ export function useAccountRewardsHistory(
   params: {
     account?: string;
     currentEpoch?: number;
+    currentPointsBalance?: bigint;
     programStartTimestamp?: number;
     epochDuration?: number;
     enabled?: boolean;
@@ -297,7 +385,16 @@ export function useAccountRewardsHistory(
     offset: number;
   }
 ) {
-  const { account, currentEpoch, programStartTimestamp, epochDuration, enabled = true, limit, offset } = params;
+  const {
+    account,
+    currentEpoch,
+    currentPointsBalance,
+    programStartTimestamp,
+    epochDuration,
+    enabled = true,
+    limit,
+    offset,
+  } = params;
 
   const { data, error, isLoading } = useSWR<AccountRewardsHistoryResult | undefined>(
     enabled && account
@@ -381,15 +478,25 @@ export function useAccountRewardsHistory(
     }
   );
 
+  const entries = useMemo(
+    () =>
+      fillCurrentEpochRewardsHistoryEntryBalance({
+        entries: data?.entries,
+        currentEpoch,
+        currentPointsBalance,
+      }),
+    [currentEpoch, currentPointsBalance, data?.entries]
+  );
+
   return useMemo(
     () => ({
-      data: data?.entries,
+      data: entries,
       totalCount: data?.totalCount,
       hasNextPage: data?.hasNextPage ?? false,
       error,
       loading: isLoading,
     }),
-    [data, error, isLoading]
+    [data, entries, error, isLoading]
   );
 }
 

@@ -97,7 +97,7 @@ type Props = {
 };
 
 export function PointsLeaderboardTab({ chainId, account }: Props) {
-  const { data: config } = useIncentivesConfig(chainId);
+  const { data: config, error: configError, loading: configLoading } = useIncentivesConfig(chainId);
   const { active, signer } = useWallet();
   const [timeFilter, setTimeFilter] = useState<TimeFilter>("current");
   const [isShareOpen, setIsShareOpen] = useState(false);
@@ -111,7 +111,8 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
     return undefined; // all-time
   }, [config, timeFilter]);
 
-  const showMultiplier = timeFilter !== "all";
+  const needsEpoch = timeFilter !== "all";
+  const showMultiplier = needsEpoch;
   const {
     orderBy: sortField,
     direction: sortDirection,
@@ -136,7 +137,7 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
 
   const orderBy = toLeaderboardOrderBy(sortField, sortDirection);
 
-  const leaderboardEnabled = timeFilter === "all" || epoch !== undefined;
+  const leaderboardEnabled = !needsEpoch || epoch !== undefined;
   const {
     data: leaderboard,
     totalCount,
@@ -192,8 +193,10 @@ export function PointsLeaderboardTab({ chainId, account }: Props) {
 
   const pageCount = totalCount === undefined ? page : Math.max(1, Math.ceil(totalCount / PER_PAGE));
   const pageData = useMemo(() => leaderboard ?? [], [leaderboard]);
-  const isInitialLoading = loading && !leaderboard;
-  const hasLeaderboardFailure = Boolean(error) && (!leaderboard || leaderboard.length === 0);
+  const isConfigLoading = needsEpoch && configLoading && !config;
+  const hasConfigFailure = needsEpoch && Boolean(configError && !config);
+  const isInitialLoading = (isConfigLoading || loading) && !leaderboard;
+  const hasLeaderboardFailure = (hasConfigFailure || Boolean(error)) && (!leaderboard || leaderboard.length === 0);
   const showLeaderboardDegradedNotice = Boolean(error) && Boolean(leaderboard?.length);
   const showPinnedEntryDegradedNotice = Boolean(pinnedError) && Boolean(account) && !hasLeaderboardFailure;
   const formatRewards = useCallback(

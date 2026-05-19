@@ -85,7 +85,7 @@ export function PointsDashboard({ chainId, account, onStakeGmxClick, onBuyGmxCli
 
 function PointsDashboardUnavailableState({ children }: { children: ReactNode }) {
   return (
-    <div className="flex min-h-[156px] items-center justify-center rounded-8 bg-slate-900 p-24 text-center text-typography-secondary">
+    <div className="flex min-h-[156px] grow items-center justify-center rounded-8 bg-slate-900 p-24 text-center text-typography-secondary">
       {children}
     </div>
   );

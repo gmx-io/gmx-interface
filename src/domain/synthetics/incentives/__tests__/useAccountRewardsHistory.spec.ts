@@ -4,6 +4,7 @@ import type { RewardsHistoryEntry } from "../types";
 import {
   createEmptyCurrentEpochRewardsHistoryEntry,
   createEmptyRewardsHistoryEntry,
+  fillCurrentEpochRewardsHistoryEntryBalance,
   fillRewardsHistoryPage,
   getManualAllocatedPointsFromRewardsHistoryEntries,
   getRewardsHistoryEpochs,
@@ -38,6 +39,41 @@ describe("useAccountRewardsHistory current epoch helpers", () => {
       rewardsEarned: 0n,
       rewardsClaimed: 0n,
     });
+  });
+
+  it("builds a zero-valued current epoch entry with a points balance", () => {
+    expect(createEmptyCurrentEpochRewardsHistoryEntry(2_000, 42n)).toEqual({
+      epoch: 2_000,
+      volume: 0n,
+      pointsEarned: 0n,
+      pointsSpent: 0n,
+      pointsExpired: 0n,
+      pointsBalance: 42n,
+      rewardsEarned: 0n,
+      rewardsClaimed: 0n,
+    });
+  });
+
+  it("fills a zero-valued current epoch entry with the status points balance", () => {
+    expect(
+      fillCurrentEpochRewardsHistoryEntryBalance({
+        entries: [createEmptyCurrentEpochRewardsHistoryEntry(2_000), makeEntry(1_000)],
+        currentEpoch: 2_000,
+        currentPointsBalance: 42n,
+      })
+    ).toEqual([createEmptyCurrentEpochRewardsHistoryEntry(2_000, 42n), makeEntry(1_000)]);
+  });
+
+  it("keeps an existing current epoch event balance", () => {
+    const currentEpochEntry = makeEntry(2_000, { pointsBalance: 5n });
+
+    expect(
+      fillCurrentEpochRewardsHistoryEntryBalance({
+        entries: [currentEpochEntry],
+        currentEpoch: 2_000,
+        currentPointsBalance: 42n,
+      })
+    ).toEqual([currentEpochEntry]);
   });
 
   it("detects a missing current epoch from the first backend row", () => {
@@ -91,10 +127,14 @@ describe("useAccountRewardsHistory empty epoch helpers", () => {
     ).toEqual([1_300, 1_200, 1_100, 1_000]);
   });
 
-  it("fills missing epochs with zero-valued rows and paginates the dense range", () => {
+  it("fills missing epochs with zero-valued rows carrying the previous existing balance", () => {
     expect(
       fillRewardsHistoryPage({
-        entries: [makeEntry(1_300), makeEntry(1_100)],
+        entries: [
+          makeEntry(1_300, { pointsBalance: 30n }),
+          createEmptyRewardsHistoryEntry(1_200),
+          makeEntry(1_100, { pointsBalance: 10n }),
+        ],
         programStartTimestamp: 1_000,
         currentEpoch: 1_300,
         epochDuration: 100,
@@ -102,14 +142,18 @@ describe("useAccountRewardsHistory empty epoch helpers", () => {
         offset: 0,
       })
     ).toEqual({
-      entries: [makeEntry(1_300), createEmptyRewardsHistoryEntry(1_200), makeEntry(1_100)],
+      entries: [
+        makeEntry(1_300, { pointsBalance: 30n }),
+        createEmptyRewardsHistoryEntry(1_200, 10n),
+        makeEntry(1_100, { pointsBalance: 10n }),
+      ],
       totalCount: 4,
       hasNextPage: true,
     });
 
     expect(
       fillRewardsHistoryPage({
-        entries: [makeEntry(1_300), makeEntry(1_100)],
+        entries: [makeEntry(1_300, { pointsBalance: 30n }), makeEntry(1_100, { pointsBalance: 10n })],
         programStartTimestamp: 1_000,
         currentEpoch: 1_300,
         epochDuration: 100,
@@ -123,10 +167,14 @@ describe("useAccountRewardsHistory empty epoch helpers", () => {
     });
   });
 
-  it("ignores sparse squid rows outside the program epoch range", () => {
+  it("does not render rows outside the program epoch range but can use older balances as the seed", () => {
     expect(
       fillRewardsHistoryPage({
-        entries: [makeEntry(1_400), makeEntry(1_300), makeEntry(900)],
+        entries: [
+          makeEntry(1_400, { pointsBalance: 40n }),
+          makeEntry(1_300, { pointsBalance: 30n }),
+          makeEntry(900, { pointsBalance: 9n }),
+        ],
         programStartTimestamp: 1_000,
         currentEpoch: 1_300,
         epochDuration: 100,
@@ -134,10 +182,10 @@ describe("useAccountRewardsHistory empty epoch helpers", () => {
         offset: 0,
       }).entries
     ).toEqual([
-      makeEntry(1_300),
-      createEmptyRewardsHistoryEntry(1_200),
-      createEmptyRewardsHistoryEntry(1_100),
-      createEmptyRewardsHistoryEntry(1_000),
+      makeEntry(1_300, { pointsBalance: 30n }),
+      createEmptyRewardsHistoryEntry(1_200, 9n),
+      createEmptyRewardsHistoryEntry(1_100, 9n),
+      createEmptyRewardsHistoryEntry(1_000, 9n),
     ]);
   });
 });

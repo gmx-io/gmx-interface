@@ -32,10 +32,16 @@ const incentivesConfigMock = vi.hoisted(() => ({
     epochTimestamp: 1700000000,
     epochDuration: 604800,
   } as { epochTimestamp: number; epochDuration: number } | undefined,
+  loading: false,
+  error: undefined as Error | undefined,
 }));
 
 vi.mock("domain/synthetics/incentives/useIncentivesConfig", () => ({
-  useIncentivesConfig: () => ({ data: incentivesConfigMock.data }),
+  useIncentivesConfig: () => ({
+    data: incentivesConfigMock.data,
+    loading: incentivesConfigMock.loading,
+    error: incentivesConfigMock.error,
+  }),
 }));
 
 // The component uses `useIncentivesLeaderboard` for both the page query and
@@ -144,6 +150,12 @@ function getPinnedRow(container: HTMLElement): HTMLElement | null {
 }
 
 afterEach(() => {
+  incentivesConfigMock.data = {
+    epochTimestamp: 1700000000,
+    epochDuration: 604800,
+  };
+  incentivesConfigMock.loading = false;
+  incentivesConfigMock.error = undefined;
   leaderboardMock.data = [];
   leaderboardMock.totalCount = 0;
   leaderboardMock.loading = false;
@@ -397,6 +409,30 @@ describe("PointsLeaderboardTab", () => {
   });
 
   describe("degraded states", () => {
+    it("renders a failed state when incentives config cannot be loaded for an epoch leaderboard", () => {
+      incentivesConfigMock.data = undefined;
+      incentivesConfigMock.error = new Error("blocked");
+
+      renderTab();
+
+      expect(screen.getByText("Leaderboard data is temporarily unavailable. Please try again later.")).toBeTruthy();
+      expect(screen.queryByText("Rank")).toBeNull();
+    });
+
+    it("still renders all-time leaderboard when incentives config cannot be loaded", () => {
+      incentivesConfigMock.data = undefined;
+      incentivesConfigMock.error = new Error("blocked");
+      leaderboardMock.data = buildPageEntries(0, 1);
+      leaderboardMock.totalCount = 1;
+
+      renderTab();
+      fireEvent.click(screen.getByText("All-time"));
+
+      expect(screen.queryByText("Leaderboard data is temporarily unavailable. Please try again later.")).toBeNull();
+      expect(screen.getByText("Rank")).toBeTruthy();
+      expect(screen.getAllByTestId("address-view").length).toBeGreaterThan(0);
+    });
+
     it("renders a failed state when leaderboard data cannot be loaded", () => {
       leaderboardMock.data = undefined;
       leaderboardMock.totalCount = undefined;

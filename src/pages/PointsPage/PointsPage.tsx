@@ -140,7 +140,9 @@ export function PointsPage() {
                 onBuyGmxClick={handleOpenBuyGmxModal}
               />
             )}
-            {activeTab === PointsTab.History && <RewardsHistoryTab chainId={chainId} account={account} />}
+            {activeTab === PointsTab.History && (
+              <RewardsHistoryTab chainId={chainId} account={account} currentPointsBalance={status?.pointsBalance} />
+            )}
             {activeTab === PointsTab.Leaderboard && <PointsLeaderboardTab chainId={chainId} account={account} />}
           </div>
 
