@@ -6,6 +6,7 @@ import {
   expectArbitrumSettlement,
   getSourceSigner,
   shouldSendOnChain,
+  STARGATE_USDC_ARBITRUM,
   STARGATE_USDC_BASE,
   TEST_SOURCE_CHAIN_ID,
   USDC_ARBITRUM,
@@ -109,7 +110,7 @@ describe.skipIf(!hasSigner)("multichain cross-chain withdraw (Arbitrum → Base,
       tokenAddress: USDC_ARBITRUM,
       amount: WITHDRAW_AMOUNT,
       dstChainId: TEST_SOURCE_CHAIN_ID,
-      stargateAddress: STARGATE_USDC_BASE,
+      stargateAddress: STARGATE_USDC_ARBITRUM,
     });
 
     const prepared = await sdk.prepareCrossChainWithdraw({
@@ -128,7 +129,7 @@ describe.skipIf(!hasSigner)("multichain cross-chain withdraw (Arbitrum → Base,
       tokenAddress: USDC_ARBITRUM,
       amount: WITHDRAW_AMOUNT,
       dstChainId: TEST_SOURCE_CHAIN_ID,
-      stargateAddress: STARGATE_USDC_BASE,
+      stargateAddress: STARGATE_USDC_ARBITRUM,
     });
 
     const submitted = await sdk.executeCrossChainWithdraw(signer!, {
