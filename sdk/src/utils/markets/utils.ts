@@ -90,16 +90,25 @@ export function getTokenPoolType(
   tokenAddress: string
 ): "long" | "short" | undefined {
   const { longToken, shortToken } = marketInfo;
+  const normalizedTokenAddress = tokenAddress.toLowerCase();
+  const longTokenAddress = longToken.address.toLowerCase();
+  const shortTokenAddress = shortToken.address.toLowerCase();
 
-  if (longToken.address === shortToken.address && tokenAddress === longToken.address) {
+  if (longTokenAddress === shortTokenAddress && normalizedTokenAddress === longTokenAddress) {
     return "long";
   }
 
-  if (tokenAddress === longToken.address || (tokenAddress === NATIVE_TOKEN_ADDRESS && longToken.isWrapped)) {
+  if (
+    normalizedTokenAddress === longTokenAddress ||
+    (normalizedTokenAddress === NATIVE_TOKEN_ADDRESS && longToken.isWrapped)
+  ) {
     return "long";
   }
 
-  if (tokenAddress === shortToken.address || (tokenAddress === NATIVE_TOKEN_ADDRESS && shortToken.isWrapped)) {
+  if (
+    normalizedTokenAddress === shortTokenAddress ||
+    (normalizedTokenAddress === NATIVE_TOKEN_ADDRESS && shortToken.isWrapped)
+  ) {
     return "short";
   }
 
