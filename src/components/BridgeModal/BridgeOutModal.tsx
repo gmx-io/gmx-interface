@@ -34,6 +34,7 @@ import { getDefaultInsufficientGasMessage, ValidationBannerErrorName } from "dom
 import { convertToUsd, getMidPrice, getTokenData } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
+import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { helperToast } from "lib/helperToast";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { getWrappedToken } from "sdk/configs/tokens";
@@ -52,6 +53,7 @@ import { wrapChainAction } from "components/GmxAccountModal/wrapChainAction";
 import { SlideModal } from "components/Modal/SlideModal";
 import { SyntheticsInfoRow } from "components/SyntheticsInfoRow";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -69,6 +71,7 @@ export function BridgeOutModal({
   const hasOutdatedUi = useHasOutdatedUi();
   const [, setSettlementChainId] = useGmxAccountSettlementChainId();
   const [bridgeOutChain, setBridgeOutChain] = useState<SourceChainId | undefined>(srcChainId);
+  const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const [bridgeOutInputValue, setBridgeOutInputValue] = useState("");
   const [isCreatingTxn, setIsCreatingTxn] = useState(false);
 
@@ -293,10 +296,19 @@ export function BridgeOutModal({
     text: ReactNode;
     disabled?: boolean;
     bannerErrorName?: ValidationBannerErrorName;
+    errorDescription?: ReactNode;
   } => {
     if (hasOutdatedUi) {
       return {
         text: getPageOutdatedError(),
+        disabled: true,
+      };
+    }
+
+    if (multipleWalletExtensionsChainError.buttonErrorMessage) {
+      return {
+        text: multipleWalletExtensionsChainError.buttonErrorMessage,
+        errorDescription: multipleWalletExtensionsChainError.buttonTooltipMessage,
         disabled: true,
       };
     }
@@ -380,6 +392,7 @@ export function BridgeOutModal({
     };
   }, [
     hasOutdatedUi,
+    multipleWalletExtensionsChainError,
     isCreatingTxn,
     bridgeOutInputValue,
     bridgeOutChain,
@@ -473,9 +486,11 @@ export function BridgeOutModal({
           </AlertInfoCard>
         )}
 
-        <Button className="w-full" type="submit" variant="primary-action" disabled={buttonState.disabled}>
-          {buttonState.text}
-        </Button>
+        <ButtonTooltipWrapper content={buttonState.errorDescription}>
+          <Button className="w-full" type="submit" variant="primary-action" disabled={buttonState.disabled}>
+            {buttonState.text}
+          </Button>
+        </ButtonTooltipWrapper>
 
         <SyntheticsInfoRow label={t`Network fee`} value={formatUsd(networkFeeUsd)} />
 

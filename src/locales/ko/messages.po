@@ -993,6 +993,10 @@ msgstr "차입"
 msgid "1st place"
 msgstr "1위"
 
+#: src/lib/chains/getMultipleWalletExtensionsChainError.tsx
+msgid "Transaction blocked"
+msgstr "거래가 차단되었습니다"
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Force primary failure"
@@ -6565,6 +6569,10 @@ msgstr "신뢰할 수 있는 GMX 기반 트랜잭션"
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawal of {balanceFormatted} failed"
 msgstr "{balanceFormatted} 출금에 실패했습니다"
+
+#: src/lib/chains/getMultipleWalletExtensionsChainError.tsx
+msgid "Multiple wallet extensions for this account are on different networks. GMX cannot reliably tell which extension will show the signing prompt.<0/><1/>To avoid signing on the wrong network and risking funds, switch all connected wallet extensions to {requiredChainName}, or disconnect the extra extension."
+msgstr "이 계정에 연결된 여러 지갑 확장 프로그램이 서로 다른 네트워크에 있습니다. GMX는 어떤 확장 프로그램이 서명 프롬프트를 표시할지 확실하게 알 수 없습니다.<0/><1/>잘못된 네트워크에서 서명하여 자금을 위험에 빠뜨리지 않으려면, 연결된 모든 지갑 확장 프로그램을 {requiredChainName}(으)로 전환하거나 추가 확장 프로그램의 연결을 해제하세요."
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "TradFi"

@@ -1,4 +1,5 @@
 import { t } from "@lingui/macro";
+import type { ReactNode } from "react";
 import { maxUint256, zeroAddress } from "viem";
 
 import {
@@ -74,7 +75,7 @@ export type ValidationResult =
   | {
       buttonErrorMessage: string;
       buttonTooltipName?: ValidationButtonTooltipName | undefined;
-      buttonTooltipMessage?: string | undefined;
+      buttonTooltipMessage?: string | ReactNode | undefined;
       bannerErrorName?: ValidationBannerErrorName | undefined;
     };
 

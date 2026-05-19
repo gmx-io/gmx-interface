@@ -993,6 +993,10 @@ msgstr "借贷"
 msgid "1st place"
 msgstr "第1名"
 
+#: src/lib/chains/getMultipleWalletExtensionsChainError.tsx
+msgid "Transaction blocked"
+msgstr "交易已阻止"
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Force primary failure"
@@ -6565,6 +6569,10 @@ msgstr "可靠的 GMX 驱动交易"
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawal of {balanceFormatted} failed"
 msgstr "{balanceFormatted} 提取失败"
+
+#: src/lib/chains/getMultipleWalletExtensionsChainError.tsx
+msgid "Multiple wallet extensions for this account are on different networks. GMX cannot reliably tell which extension will show the signing prompt.<0/><1/>To avoid signing on the wrong network and risking funds, switch all connected wallet extensions to {requiredChainName}, or disconnect the extra extension."
+msgstr "此账户的多个钱包扩展处于不同网络。GMX无法可靠判断哪个扩展会显示签名提示。<0/><1/>为避免在错误的网络上签名并危及资金，请将所有已连接的钱包扩展切换到 {requiredChainName}，或断开多余扩展。"
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "TradFi"

@@ -85,6 +85,7 @@ import {
 } from "domain/tpsl/utils";
 import { numericBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
+import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { helperToast } from "lib/helperToast";
 import {
   calculateDisplayDecimals,
@@ -134,6 +135,7 @@ export function OrderEditor(p: Props) {
   const { provider } = useJsonRpcProvider(chainId);
   const tokensData = useSelector(selectTokensData);
   const hasOutdatedUi = useHasOutdatedUi();
+  const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const { makeOrderTxnCallback } = useOrderTxnCallbacks();
   const [isSubmitting, setIsSubmitting] = useOrderEditorIsSubmittingState();
@@ -564,6 +566,14 @@ export function OrderEditor(p: Props) {
       };
     }
 
+    if (multipleWalletExtensionsChainError.buttonErrorMessage) {
+      return {
+        text: multipleWalletExtensionsChainError.buttonErrorMessage,
+        tooltip: multipleWalletExtensionsChainError.buttonTooltipMessage,
+        disabled: true,
+      };
+    }
+
     if (
       isTriggerDecrease &&
       isFullPositionCloseSizeDeltaUsd((p.order as PositionOrderInfo).sizeDeltaUsd) &&
@@ -612,6 +622,7 @@ export function OrderEditor(p: Props) {
     };
   }, [
     error,
+    multipleWalletExtensionsChainError,
     hasOutdatedUi,
     isMaxLeverageError,
     p.order,
@@ -719,7 +730,7 @@ export function OrderEditor(p: Props) {
       tooltipClassName="PositionEditor-tooltip"
       handle={buttonContent}
       isHandlerDisabled
-      renderContent={() => submitButtonState.tooltip}
+      content={submitButtonState.tooltip}
     />
   ) : (
     buttonContent

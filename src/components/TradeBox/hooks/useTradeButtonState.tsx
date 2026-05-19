@@ -71,6 +71,7 @@ import {
 } from "domain/synthetics/trade/utils/validation";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { numericBinarySearch } from "lib/binarySearch";
+import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { adjustForDecimals, formatAmountFree } from "lib/numbers";
@@ -132,6 +133,7 @@ export function useTradeboxButtonState({
   const sidecarEntries = useSidecarEntries();
   const isTpSlEnabled = useSelector(selectTradeboxIsTPSLEnabled);
   const hasOutdatedUi = useHasOutdatedUi();
+  const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
   const tradeMode = useSelector(selectTradeboxTradeMode);
@@ -261,6 +263,7 @@ export function useTradeboxButtonState({
 
     const validationResult = takeValidationResult(
       commonError,
+      multipleWalletExtensionsChainError,
       tradeError,
       externalSwapBlockedError,
       expressError,
@@ -268,7 +271,9 @@ export function useTradeboxButtonState({
     );
 
     let tooltipContent: ReactNode = null;
-    if (validationResult.buttonTooltipName) {
+    if (validationResult.buttonTooltipMessage) {
+      tooltipContent = validationResult.buttonTooltipMessage;
+    } else if (validationResult.buttonTooltipName) {
       switch (validationResult.buttonTooltipName) {
         case ValidationButtonTooltipName.maxLeverage: {
           tooltipContent = (
@@ -330,6 +335,7 @@ export function useTradeboxButtonState({
     hasOutdatedUi,
     expressParams,
     tokensData,
+    multipleWalletExtensionsChainError,
     tradeError,
     externalSwapBlockedError,
     nativeGasError,

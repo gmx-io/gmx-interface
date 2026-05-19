@@ -52,6 +52,7 @@ import {
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { bigNumberBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
+import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import {
@@ -107,6 +108,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
   const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
   const hasOutdatedUi = useHasOutdatedUi();
+  const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const position = usePositionEditorPosition();
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
   const blockTimestampData = useSelector(selectBlockTimestampData);
@@ -359,11 +361,12 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       marketInfo: position?.marketInfo,
     });
 
-    return takeValidationResult(commonError, editCollateralError, expressError);
+    return takeValidationResult(commonError, multipleWalletExtensionsChainError, editCollateralError, expressError);
   }, [
     chainId,
     account,
     hasOutdatedUi,
+    multipleWalletExtensionsChainError,
     expressParams,
     tokensData,
     collateralDeltaAmount,
@@ -376,6 +379,10 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
   ]);
 
   const errorTooltipContent = useMemo(() => {
+    if (validationResult.buttonTooltipMessage) {
+      return validationResult.buttonTooltipMessage;
+    }
+
     if (validationResult.buttonTooltipName !== ValidationButtonTooltipName.maxLeverage) {
       return null;
     }
@@ -391,7 +398,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
         </span>
       </Trans>
     );
-  }, [detectAndSetMaxSize, validationResult.buttonTooltipName]);
+  }, [detectAndSetMaxSize, validationResult.buttonTooltipMessage, validationResult.buttonTooltipName]);
 
   async function onSubmit() {
     if (!account || !signer) {
@@ -496,6 +503,14 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     tooltipContent: errorTooltipContent,
     bannerErrorName: validationResult.bannerErrorName,
   };
+
+  if (multipleWalletExtensionsChainError.buttonErrorMessage) {
+    return {
+      text: multipleWalletExtensionsChainError.buttonErrorMessage,
+      disabled: true,
+      ...commonParams,
+    };
+  }
 
   if (isApproving && tokensToApprove.length) {
     const tokenToApprove = tokensToApprove[0];

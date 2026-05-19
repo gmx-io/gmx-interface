@@ -993,6 +993,10 @@ msgstr "Préstamo"
 msgid "1st place"
 msgstr "1.er puesto"
 
+#: src/lib/chains/getMultipleWalletExtensionsChainError.tsx
+msgid "Transaction blocked"
+msgstr "Transacción bloqueada"
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Force primary failure"
@@ -6565,6 +6569,10 @@ msgstr "Transacciones fiables impulsadas por GMX"
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawal of {balanceFormatted} failed"
 msgstr "La retirada de {balanceFormatted} ha fallado"
+
+#: src/lib/chains/getMultipleWalletExtensionsChainError.tsx
+msgid "Multiple wallet extensions for this account are on different networks. GMX cannot reliably tell which extension will show the signing prompt.<0/><1/>To avoid signing on the wrong network and risking funds, switch all connected wallet extensions to {requiredChainName}, or disconnect the extra extension."
+msgstr "Varias extensiones de monedero para esta cuenta están en redes diferentes. GMX no puede determinar con fiabilidad qué extensión mostrará el mensaje de firma.<0/><1/>Para evitar firmar en la red incorrecta y arriesgar fondos, cambie todas las extensiones de monedero conectadas a {requiredChainName} o desconecte la extensión adicional."
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "TradFi"
