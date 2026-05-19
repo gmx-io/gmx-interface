@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
-import { useState } from "react";
-import useSWR from "swr";
+import { useCallback, useEffect, useState } from "react";
+import useSWR, { type KeyedMutator } from "swr";
 
 import type { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
@@ -19,46 +19,86 @@ import EarnIcon from "img/ic_earn.svg?react";
 
 import { formatTimeLeft, getCurrentEpochEndTime, useCurrentUnixTimestamp } from "./epochTiming";
 import { PointsClaimRewardsModal } from "./PointsClaimRewardsModal";
+import { POINTS_REWARDS_MOCK_DATA } from "./pointsRewardsMock";
 
 type PointsConnectedSidebarRewardsProps = {
   chainId: number;
   account: string;
+  isMockMode?: boolean;
 };
 
-export function PointsConnectedSidebarRewards({ chainId, account }: PointsConnectedSidebarRewardsProps) {
+export function PointsConnectedSidebarRewards({
+  chainId,
+  account,
+  isMockMode = false,
+}: PointsConnectedSidebarRewardsProps) {
   const { data: config } = useIncentivesConfig(chainId);
-  const { data: status } = useAccountIncentiveStatus(chainId, { account });
-  const { data: totalEarnedRewards } = useAccountTotalEarnedRewards(chainId, { account });
+  const { data: status } = useAccountIncentiveStatus(chainId, { account, enabled: !isMockMode });
+  const { data: totalEarnedRewards } = useAccountTotalEarnedRewards(chainId, { account, enabled: !isMockMode });
   const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
+  const [mockClaimableAmount, setMockClaimableAmount] = useState(POINTS_REWARDS_MOCK_DATA.claimableAmount);
 
   const contractsChainId = chainId as ContractsChainId;
   const claimHandlerAddress = getContract(contractsChainId, "ClaimHandler");
   const gmxTokenAddress = getTokenBySymbol(contractsChainId, "GMX").address;
 
-  const { data: rawClaimableAmount, mutate: mutateClaimableAmount } = useSWR(
-    [
-      `PointsRewardsClaimableAmount:${chainId}:${account}`,
-      chainId,
-      claimHandlerAddress,
-      "getClaimableAmount",
-      account,
-      gmxTokenAddress,
-      [POINTS_REWARDS_DISTRIBUTION_ID],
-    ],
+  const { data: rawClaimableAmount, mutate: mutateRealClaimableAmount } = useSWR(
+    isMockMode
+      ? null
+      : [
+          `PointsRewardsClaimableAmount:${chainId}:${account}`,
+          chainId,
+          claimHandlerAddress,
+          "getClaimableAmount",
+          account,
+          gmxTokenAddress,
+          [POINTS_REWARDS_DISTRIBUTION_ID],
+        ],
     { fetcher: contractFetcher(undefined, "ClaimHandler") }
   );
 
-  const claimableAmount = rawClaimableAmount !== undefined ? BigInt(rawClaimableAmount) : 0n;
+  const mutateMockClaimableAmount = useCallback<KeyedMutator<any>>(
+    async (data?: any) => {
+      if (typeof data === "bigint") {
+        setMockClaimableAmount(data);
+        return data;
+      }
+
+      return mockClaimableAmount;
+    },
+    [mockClaimableAmount]
+  );
+
+  useEffect(() => {
+    if (isMockMode && !isClaimModalOpen) {
+      setMockClaimableAmount(POINTS_REWARDS_MOCK_DATA.claimableAmount);
+    }
+  }, [isClaimModalOpen, isMockMode]);
+
+  const claimableAmount = isMockMode
+    ? mockClaimableAmount
+    : rawClaimableAmount !== undefined
+      ? BigInt(rawClaimableAmount)
+      : 0n;
+  const mutateClaimableAmount = isMockMode ? mutateMockClaimableAmount : mutateRealClaimableAmount;
   const displayClaimableRewards = formatAmount(claimableAmount, 18, 2, true);
   const hasRewards = claimableAmount > 0n;
 
-  const displayTotalEarnedRewards = totalEarnedRewards ? formatAmount(totalEarnedRewards, 18, 2, true) : "0.00";
+  const displayTotalEarnedRewards = isMockMode
+    ? formatAmount(POINTS_REWARDS_MOCK_DATA.totalEarnedRewards, 18, 2, true)
+    : totalEarnedRewards
+      ? formatAmount(totalEarnedRewards, 18, 2, true)
+      : "0.00";
 
   const now = useCurrentUnixTimestamp();
   const epochEndTime = getCurrentEpochEndTime(config, now);
-  const timeLeft = epochEndTime > now ? formatTimeLeft(epochEndTime - now) : "";
+  const timeLeft = isMockMode
+    ? POINTS_REWARDS_MOCK_DATA.timeLeft
+    : epochEndTime > now
+      ? formatTimeLeft(epochEndTime - now)
+      : "";
 
-  const pointsBalance = status?.pointsBalance;
+  const pointsBalance = isMockMode ? POINTS_REWARDS_MOCK_DATA.pointsBalance : status?.pointsBalance;
   const displayPoints = pointsBalance ? formatAmount(pointsBalance, 18, 2, true) : "0.00";
 
   return (
@@ -124,6 +164,7 @@ export function PointsConnectedSidebarRewards({ chainId, account }: PointsConnec
         account={account}
         claimableAmount={claimableAmount}
         mutateClaimableAmount={mutateClaimableAmount}
+        isMockMode={isMockMode}
       />
     </>
   );

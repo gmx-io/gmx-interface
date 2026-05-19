@@ -22,6 +22,7 @@ import { FaqSection } from "./components/FaqSection";
 import { PointsBanner } from "./components/PointsBanner";
 import { PointsDashboard } from "./components/PointsDashboard";
 import { PointsLeaderboardTab } from "./components/PointsLeaderboardTab";
+import { isPointsRewardsMockEnabled } from "./components/pointsRewardsMock";
 import { PointsSidebarRewards } from "./components/PointsSidebarRewards";
 import { RewardsHistoryTab } from "./components/RewardsHistoryTab";
 
@@ -36,6 +37,7 @@ export function PointsPage() {
   const history = useHistory();
   const { chainId } = useChainId();
   const { account } = useWallet();
+  const isRewardsMockEnabled = isPointsRewardsMockEnabled();
   const [isGmxStakeModalVisible, setIsGmxStakeModalVisible] = useState(false);
   const [isBuyGmxModalVisible, setIsBuyGmxModalVisible] = useState(false);
 
@@ -87,7 +89,7 @@ export function PointsPage() {
     setIsBuyGmxModalVisible(true);
   }, []);
 
-  if (!isIncentivesEnabled(chainId)) {
+  if (!isIncentivesEnabled(chainId) && !isRewardsMockEnabled) {
     return <Redirect to="/trade" />;
   }
 
