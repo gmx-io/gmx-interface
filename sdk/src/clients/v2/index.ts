@@ -55,7 +55,7 @@ import {
   type CrossChainWithdrawSubmitRequest,
   type CrossChainWithdrawSubmitResponse,
   type ExecuteCrossChainDepositResult,
-} from "utils/multichainTransferApi";
+} from "utils/gmxAccountApi";
 import { fetchApiOrders } from "utils/orders/api";
 import {
   prepareOrder,
@@ -159,7 +159,7 @@ export type {
   CrossChainWithdrawSubmitRequest,
   CrossChainWithdrawSubmitResponse,
   ExecuteCrossChainDepositResult,
-} from "utils/multichainTransferApi";
+} from "utils/gmxAccountApi";
 export type { IAbstractSigner } from "utils/signer";
 export { PrivateKeySigner } from "utils/signer";
 export { HttpError } from "utils/http/http";
