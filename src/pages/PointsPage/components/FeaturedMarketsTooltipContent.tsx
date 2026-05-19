@@ -4,7 +4,7 @@ import { Link } from "react-router-dom";
 
 import { useMarkets } from "domain/synthetics/markets";
 import { getMarketBaseName } from "domain/synthetics/markets/utils";
-import { convertTokenAddress, getNormalizedTokenSymbol, getToken } from "sdk/configs/tokens";
+import { convertTokenAddress, getNormalizedTokenSymbol, getToken, isValidTokenSafe } from "sdk/configs/tokens";
 
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
@@ -23,17 +23,19 @@ export function FeaturedMarketsTooltipContent({ chainId, featuredMarketTokens }:
       .map((marketAddress) => {
         const market = marketsData?.[marketAddress];
         if (!market || market.isSpotOnly) return null;
-        try {
-          const indexToken = getToken(chainId, convertTokenAddress(chainId, market.indexTokenAddress, "native"));
-          return {
-            marketAddress,
-            indexTokenSymbol: indexToken.symbol,
-            symbol: getNormalizedTokenSymbol(indexToken.symbol),
-            baseName: getMarketBaseName({ indexToken, isSpotOnly: market.isSpotOnly }),
-          };
-        } catch {
+
+        const indexTokenAddress = convertTokenAddress(chainId, market.indexTokenAddress, "native");
+        if (!isValidTokenSafe(chainId, indexTokenAddress)) {
           return null;
         }
+
+        const indexToken = getToken(chainId, indexTokenAddress);
+        return {
+          marketAddress,
+          indexTokenSymbol: indexToken.symbol,
+          symbol: getNormalizedTokenSymbol(indexToken.symbol),
+          baseName: getMarketBaseName({ indexToken, isSpotOnly: market.isSpotOnly }),
+        };
       })
       .filter((item): item is NonNullable<typeof item> => item !== null);
   }, [chainId, featuredMarketTokens, marketsData]);

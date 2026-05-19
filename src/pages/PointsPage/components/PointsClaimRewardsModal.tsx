@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ethers } from "ethers";
 import { type ReactNode, useCallback, useEffect, useMemo, useState } from "react";
-import useSWR, { type KeyedMutator } from "swr";
+import type { KeyedMutator } from "swr";
 import { maxUint256, zeroAddress } from "viem";
 
 import type { AnyChainId, ContractsChainId } from "config/chains";
@@ -14,9 +14,9 @@ import { encodeAcceptTermsAndClaim } from "domain/synthetics/claims/createClaimT
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { callContract } from "lib/contracts";
-import { contractFetcher } from "lib/contracts/contractFetcher";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
+import { useMulticall } from "lib/multicall";
 import { formatAmount } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -46,6 +46,34 @@ const POINTS_REWARDS_STEP_CONNECTOR_STYLE = {
 
 type PointsRewardsClaimFlowMode = "claimOnly" | "claimAndStake";
 type PointsRewardsClaimFlowStep = "idle" | "claimPending" | "claimSucceeded" | "stakePending" | "stakeSucceeded";
+
+type PointsRewardsClaimConfig = {
+  claimTerms: string;
+  claimsDisabled: boolean;
+};
+
+type PointsRewardsClaimConfigRequestConfig = {
+  claimTerms: {
+    contractAddress: string;
+    abiId: "DataStore";
+    calls: {
+      getString: {
+        methodName: "getString";
+        params: [string];
+      };
+    };
+  };
+  claimsDisabled: {
+    contractAddress: string;
+    abiId: "DataStore";
+    calls: {
+      getBool: {
+        methodName: "getBool";
+        params: [string];
+      };
+    };
+  };
+};
 
 type PointsClaimRewardsModalProps = {
   isOpen: boolean;
@@ -89,35 +117,41 @@ export function PointsClaimRewardsModal({
   const gmxToken = getTokenBySymbol(contractsChainId, "GMX");
 
   const shouldLoadClaimConfig = isOpen && !isMockMode;
-  const { data: claimTerms, isLoading: claimTermsLoading } = useSWR(
-    shouldLoadClaimConfig
-      ? [
-          `PointsRewardsClaimTerms:${chainId}:${POINTS_REWARDS_DISTRIBUTION_ID.toString()}`,
-          chainId,
-          dataStoreAddress,
-          "getString",
-          claimTermsKey(POINTS_REWARDS_DISTRIBUTION_ID),
-        ]
-      : null,
-    { fetcher: contractFetcher(undefined, "DataStore") }
-  );
-  const { data: rawClaimsDisabled, isLoading: claimsDisabledLoading } = useSWR(
-    shouldLoadClaimConfig
-      ? [
-          `PointsRewardsClaimsDisabled:${chainId}:${POINTS_REWARDS_DISTRIBUTION_ID.toString()}`,
-          chainId,
-          dataStoreAddress,
-          "getBool",
-          claimsDisabledKey(POINTS_REWARDS_DISTRIBUTION_ID),
-        ]
-      : null,
-    { fetcher: contractFetcher(undefined, "DataStore") }
-  );
-
-  const isClaimConfigLoaded =
-    isMockMode ||
-    (claimTerms !== undefined && rawClaimsDisabled !== undefined && !claimTermsLoading && !claimsDisabledLoading);
-  const claimsDisabled = isMockMode ? false : Boolean(rawClaimsDisabled);
+  const { data: claimConfig, isLoading: claimConfigLoading } = useMulticall<
+    PointsRewardsClaimConfigRequestConfig,
+    PointsRewardsClaimConfig | undefined
+  >(contractsChainId, "PointsRewardsClaimConfig", {
+    key: shouldLoadClaimConfig ? [dataStoreAddress, POINTS_REWARDS_DISTRIBUTION_ID.toString()] : null,
+    request: {
+      claimTerms: {
+        contractAddress: dataStoreAddress,
+        abiId: "DataStore",
+        calls: {
+          getString: {
+            methodName: "getString",
+            params: [claimTermsKey(POINTS_REWARDS_DISTRIBUTION_ID)],
+          },
+        },
+      },
+      claimsDisabled: {
+        contractAddress: dataStoreAddress,
+        abiId: "DataStore",
+        calls: {
+          getBool: {
+            methodName: "getBool",
+            params: [claimsDisabledKey(POINTS_REWARDS_DISTRIBUTION_ID)],
+          },
+        },
+      },
+    },
+    parseResponse: (result) => ({
+      claimTerms: result.data.claimTerms.getString.returnValues[0],
+      claimsDisabled: Boolean(result.data.claimsDisabled.getBool.returnValues[0]),
+    }),
+  });
+  const claimTerms = claimConfig?.claimTerms;
+  const isClaimConfigLoaded = isMockMode || (claimConfig !== undefined && !claimConfigLoading);
+  const claimsDisabled = isMockMode ? false : Boolean(claimConfig?.claimsDisabled);
   const displayedRewardAmount =
     submittedClaimAmount !== undefined && submittedClaimAmount > 0n ? submittedClaimAmount : claimableAmount;
   const displayClaimableRewards =

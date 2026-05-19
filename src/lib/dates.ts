@@ -47,6 +47,15 @@ export function getDaysAgo(timestamp: number) {
   return Math.floor(diff / 86400);
 }
 
+export function formatTimeLeft(seconds: number, options: { alwaysShowDays?: boolean } = {}): string {
+  if (seconds <= 0) return "";
+  const days = Math.floor(seconds / 86400);
+  const hours = Math.floor((seconds % 86400) / 3600);
+  if (days > 0 || options.alwaysShowDays) return `${days}d ${hours}h`;
+  const minutes = Math.floor((seconds % 3600) / 60);
+  return `${hours}h ${minutes}m`;
+}
+
 function toSeconds(date: Date) {
   return Math.round(date.getTime() / 1000);
 }

@@ -1,10 +1,10 @@
-import { gql } from "@apollo/client";
 import { useMemo } from "react";
 import useSWR from "swr";
 
-import { getSubsquidGraphClient } from "lib/indexers";
+import { getIndexerUrl } from "config/indexers";
+import graphqlFetcher from "sdk/utils/graphqlFetcher";
 
-const FIRST_TRADE_QUERY = gql`
+const FIRST_TRADE_QUERY = /* gql */ `
   query AccountFirstTradeTimestamp($account: String!) {
     tradeActions(limit: 1, where: { account_eq: $account }, orderBy: timestamp_ASC) {
       timestamp
@@ -19,16 +19,14 @@ export function useAccountFirstTradeTimestamp(chainId: number, params: { account
     enabled && account ? ["useAccountFirstTradeTimestamp", chainId, account] : null,
     {
       fetcher: async () => {
-        const client = getSubsquidGraphClient(chainId);
-        if (!client || !account) return undefined;
+        const subsquidUrl = getIndexerUrl(chainId, "subsquid");
+        if (!subsquidUrl || !account) return undefined;
 
-        const res = await client.query<{ tradeActions: { timestamp: number }[] }>({
-          query: FIRST_TRADE_QUERY,
-          variables: { account: account.toLowerCase() },
-          fetchPolicy: "no-cache",
+        const res = await graphqlFetcher<{ tradeActions: { timestamp: number }[] }>(subsquidUrl, FIRST_TRADE_QUERY, {
+          account: account.toLowerCase(),
         });
 
-        const first = res?.data?.tradeActions?.[0];
+        const first = res?.tradeActions?.[0];
         if (!first) return undefined;
 
         return first.timestamp;

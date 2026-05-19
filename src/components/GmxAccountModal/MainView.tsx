@@ -2,7 +2,7 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
-import { Link, useHistory } from "react-router-dom";
+import { useHistory } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
 import { useAccount } from "wagmi";
 
@@ -14,18 +14,13 @@ import { isMultichainFundingItemLoading } from "domain/multichain/isMultichainFu
 import type { MultichainFundingHistoryItem } from "domain/multichain/types";
 import { useDisconnectAndClose } from "domain/multichain/useDisconnectAndClose";
 import { useGmxAccountFundingHistory } from "domain/multichain/useGmxAccountFundingHistory";
-import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
-import { isIncentivesEnabled, formatMultiplier } from "domain/synthetics/incentives/constants";
-import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
-import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
 import { useChainId } from "lib/chains";
 import { formatRelativeDateWithComma } from "lib/dates";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import { useENS } from "lib/legacy";
-import { formatAmountHuman, formatUsd } from "lib/numbers";
+import { formatUsd } from "lib/numbers";
 import { useNotifyModalState } from "lib/useNotifyModalState";
-import { sendPointsPageNavigationEvent } from "lib/userAnalytics/pointsEvents";
 import { shortenAddressOrEns } from "lib/wallets";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 import { getToken } from "sdk/configs/tokens";
@@ -35,7 +30,6 @@ import { Amount } from "components/Amount/Amount";
 import { Avatar } from "components/Avatar/Avatar";
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
-import { MultiplierBadge } from "components/MultiplierBadge/MultiplierBadge";
 import SearchInput from "components/SearchInput/SearchInput";
 import { VerticalScrollFadeContainer } from "components/TableScrollFade/VerticalScrollFade";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -44,7 +38,6 @@ import { UsdValueWithSkeleton } from "components/UsdValueWithSkeleton/UsdValueWi
 
 import BellIcon from "img/ic_bell.svg?react";
 import ChevronLeftIcon from "img/ic_chevron_left.svg?react";
-import ChevronRight from "img/ic_chevron_right.svg?react";
 import CopyIcon from "img/ic_copy.svg?react";
 import DepositIcon from "img/ic_deposit.svg?react";
 import ExplorerIcon from "img/ic_explorer.svg?react";
@@ -62,6 +55,7 @@ import {
   useAvailableToTradeAssetSymbolsSettlementChain,
 } from "./hooks";
 import { FUNDING_OPERATIONS_LABELS } from "./keys";
+import { PointsSection } from "./PointsSection";
 
 const TokenIcons = ({ tokens }: { tokens: string[] }) => {
   const displayTokens = tokens.slice(0, 3);
@@ -371,7 +365,7 @@ const ActionButtons = () => {
       onClick={handleDepositClick}
       disabled={isAvalancheSettlement}
     >
-      <DepositIcon className="size-24 shrink-0 text-blue-100" />
+      <DepositIcon className="size-24 shrink-0 text-blue-400 dark:text-blue-100" />
       <Trans>Deposit</Trans>
     </Button>
   );
@@ -397,7 +391,7 @@ const ActionButtons = () => {
         className="flex-grow basis-1/2 !gap-4 !text-typography-primary"
         onClick={handleWithdrawClick}
       >
-        <WithdrawIcon className="size-24 shrink-0 text-blue-100" />
+        <WithdrawIcon className="size-24 shrink-0 text-blue-400 dark:text-blue-100" />
         <Trans>Withdraw</Trans>
       </Button>
     </div>
@@ -503,87 +497,6 @@ const FundingHistorySection = () => {
         )}
       </VerticalScrollFadeContainer>
     </div>
-  );
-};
-
-const PointsSection = () => {
-  const { chainId } = useChainId();
-  const { address: account } = useAccount();
-  const [, setOpen] = useGmxAccountModalOpen();
-
-  const enabled = isIncentivesEnabled(chainId);
-  const { data: config } = useIncentivesConfig(chainId);
-  const { data: status } = useAccountIncentiveStatus(chainId, {
-    account,
-    enabled,
-  });
-  const { data: stakingData } = useStakingProcessedData();
-
-  const multiplier = status?.multiplier;
-  const hasMultiplier = multiplier !== undefined && multiplier > 0;
-  const gmxStaked = stakingData?.gmxInStakedGmx;
-
-  const { gmxToNextTierLabel, additionalMultiplierLabel } = useMemo(() => {
-    if (!config?.stakingTiers?.length || gmxStaked === undefined) {
-      return { gmxToNextTierLabel: undefined, additionalMultiplierLabel: undefined };
-    }
-
-    const currentTierMultiplier =
-      config.stakingTiers.find((tier) => tier.tier === status?.stakingTier)?.multiplier ?? 0;
-    const nextTier = config.stakingTiers.find((tier) => gmxStaked < tier.threshold);
-
-    if (!nextTier) {
-      return { gmxToNextTierLabel: undefined, additionalMultiplierLabel: undefined };
-    }
-
-    const gmxToNextTier = nextTier.threshold - gmxStaked;
-    const additionalMultiplier = nextTier.multiplier - currentTierMultiplier;
-
-    return {
-      gmxToNextTierLabel: formatAmountHuman(gmxToNextTier, 18, false, 2),
-      additionalMultiplierLabel: additionalMultiplier > 0 ? formatMultiplier(additionalMultiplier) : undefined,
-    };
-  }, [config, gmxStaked, status?.stakingTier]);
-
-  if (!enabled) return null;
-
-  const handleClick = () => {
-    sendPointsPageNavigationEvent({ source: "GMXAccountModal" });
-    setOpen(false);
-  };
-
-  return (
-    <Link
-      to="/points"
-      onClick={handleClick}
-      className="flex items-center justify-between p-12 no-underline -outline-offset-4"
-    >
-      <div className="flex flex-col items-start gap-2">
-        <span className="text-13 font-medium text-typography-primary">
-          {hasMultiplier ? <Trans>Your multiplier</Trans> : <Trans>GMX Points</Trans>}{" "}
-          <MultiplierBadge multiplier={multiplier} />
-        </span>
-        <span className="text-12 text-typography-secondary">
-          {hasMultiplier ? (
-            gmxToNextTierLabel && additionalMultiplierLabel ? (
-              <Trans>
-                Stake {gmxToNextTierLabel} GMX more to get {additionalMultiplierLabel} additionally
-              </Trans>
-            ) : (
-              <Trans>You are already at the highest staking tier</Trans>
-            )
-          ) : (
-            <Trans>Start earning points and unlock rewards</Trans>
-          )}
-        </span>
-      </div>
-      <span
-        aria-hidden="true"
-        className="inline-flex h-32 w-32 shrink-0 items-center justify-center rounded-8 bg-[var(--color-button-secondary)] text-typography-secondary"
-      >
-        <ChevronRight className="size-20 h-20 shrink-0 pl-2" />
-      </span>
-    </Link>
   );
 };
 

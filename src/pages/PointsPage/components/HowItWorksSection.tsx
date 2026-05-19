@@ -1,9 +1,9 @@
 import { Trans } from "@lingui/macro";
 import { useState } from "react";
 
+import TradeIcon from "img/ic_candles_filled.svg?react";
 import DiscountsSvg from "img/ic_discounts.svg?react";
 import EarnIcon from "img/ic_earn.svg?react";
-import TradeIcon from "img/ic_trade_solid.svg?react";
 
 import { HowItWorksBlock } from "./HowItWorksBlock";
 

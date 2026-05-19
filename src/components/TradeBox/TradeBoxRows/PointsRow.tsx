@@ -9,10 +9,12 @@ import {
   selectTradeboxTradeFlags,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { formatAmount, formatUsd } from "lib/numbers";
+import { GMX_DECIMALS } from "domain/synthetics/incentives/constants";
+import { formatUsd } from "lib/numbers";
 import { sendPointsPageNavigationEvent } from "lib/userAnalytics/pointsEvents";
 import type { MarketInfo } from "sdk/utils/markets/types";
 
+import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import { MultiplierBadge } from "components/MultiplierBadge/MultiplierBadge";
 
 import { useTradePointsEstimate } from "./useTradePointsEstimate";
@@ -83,16 +85,16 @@ export function TradePointsRow({
       </span>
 
       {hasEstimatedRewards && estimatedRewards && (
-        <span className="shrink-0 text-right text-typography-primary numbers">
+        <span className="shrink-0 text-right text-typography-primary">
           {estimatedRewards.rewardsGmx !== undefined ? (
-            <>
-              {formatAmount(estimatedRewards.rewardsGmx, 18, 2, true)} <Trans>pts</Trans>{" "}
-              <span className="text-typography-secondary">
-                ({formatUsd(estimatedRewards.rewardsUsd, { displayDecimals: 2 })})
-              </span>
-            </>
+            <AmountWithUsdHuman
+              amount={estimatedRewards.rewardsGmx}
+              decimals={GMX_DECIMALS}
+              usd={estimatedRewards.rewardsUsd}
+              symbol="pts"
+            />
           ) : (
-            formatUsd(estimatedRewards.rewardsUsd, { displayDecimals: 2 })
+            <span className="numbers">{formatUsd(estimatedRewards.rewardsUsd, { displayDecimals: 2 })}</span>
           )}
         </span>
       )}

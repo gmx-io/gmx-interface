@@ -3,8 +3,9 @@ import cx from "classnames";
 import { useMemo } from "react";
 import Skeleton, { SkeletonTheme } from "react-loading-skeleton";
 
-import { MAX_MULTIPLIER, formatMultiplier } from "domain/synthetics/incentives/constants";
+import { MAX_MULTIPLIER } from "domain/synthetics/incentives/constants";
 import type { EpochStats, IncentivesConfig, StakingTierId, VolumeTierId } from "domain/synthetics/incentives/types";
+import { formatMultiplier } from "domain/synthetics/incentives/utils";
 import { formatAmount } from "lib/numbers";
 
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";

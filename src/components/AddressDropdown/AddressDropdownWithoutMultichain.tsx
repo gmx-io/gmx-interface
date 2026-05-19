@@ -7,8 +7,9 @@ import { Address } from "viem";
 
 import { BOTANIX } from "config/chains";
 import { useDisconnectAndClose } from "domain/multichain/useDisconnectAndClose";
-import { isIncentivesEnabled, formatMultiplier } from "domain/synthetics/incentives/constants";
+import { isIncentivesEnabled } from "domain/synthetics/incentives/constants";
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
+import { formatMultiplier } from "domain/synthetics/incentives/utils";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { getAccountUrl, useENS } from "lib/legacy";

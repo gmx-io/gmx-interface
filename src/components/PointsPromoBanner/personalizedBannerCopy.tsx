@@ -2,11 +2,7 @@ import { Trans } from "@lingui/macro";
 import type { ReactNode } from "react";
 
 import type { PersonalizedBannerData } from "domain/synthetics/incentives/usePersonalizedBannerData";
-import { formatUsd } from "lib/numbers";
-
-function formatRewardsUsd(value: number): string {
-  return `$${Math.round(value).toLocaleString("en-US")}`;
-}
+import { formatUsd, numberWithCommas } from "lib/numbers";
 
 export type PersonalizedBannerCopy = {
   title: ReactNode;
@@ -27,7 +23,7 @@ export function getPersonalizedBannerCopy(bannerData: PersonalizedBannerData): P
   }
 
   if (bannerData.bannerVariant === "recent-activity" && bannerData.estimatedRewardsUsd !== undefined) {
-    const rewardsFormatted = formatRewardsUsd(bannerData.estimatedRewardsUsd);
+    const rewardsFormatted = `$${numberWithCommas(Math.round(bannerData.estimatedRewardsUsd))}`;
     return {
       title: <Trans>Earn rewards</Trans>,
       body: (

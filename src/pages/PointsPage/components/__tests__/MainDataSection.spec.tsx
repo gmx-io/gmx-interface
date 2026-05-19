@@ -5,8 +5,8 @@ import { render, screen, cleanup, within } from "@testing-library/react";
 import { MemoryRouter } from "react-router-dom";
 import { describe, it, expect, vi, afterEach } from "vitest";
 
-import { formatMultiplier } from "domain/synthetics/incentives/constants";
 import type { IncentivesConfig } from "domain/synthetics/incentives/types";
+import { formatMultiplier } from "domain/synthetics/incentives/utils";
 
 // SVG imports need to be mocked for happy-dom
 

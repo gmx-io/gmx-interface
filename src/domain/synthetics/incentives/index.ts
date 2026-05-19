@@ -8,3 +8,4 @@ export { useIncentivesLeaderboard } from "./useIncentivesLeaderboard";
 export { usePersonalizedBannerData } from "./usePersonalizedBannerData";
 export * from "./types";
 export * from "./constants";
+export * from "./utils";

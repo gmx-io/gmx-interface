@@ -2,16 +2,12 @@ import { Trans } from "@lingui/macro";
 import { useCallback, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 
-import {
-  formatMultiplier,
-  getBoostLabel,
-  getStakingTierBadge,
-  getVolumeTierBadge,
-} from "domain/synthetics/incentives/constants";
+import { getBoostLabel, getStakingTierBadge, getVolumeTierBadge } from "domain/synthetics/incentives/constants";
 import {
   IncentiveAuditOrderBy,
   useIncentiveAccountEpochAudit,
 } from "domain/synthetics/incentives/useIncentiveAccountEpochAudit";
+import { formatMultiplier } from "domain/synthetics/incentives/utils";
 import { formatAmount, formatUsd } from "lib/numbers";
 
 import AddressView from "components/AddressView/AddressView";
@@ -72,13 +68,7 @@ function IncentivesAuditSkeletonRow({ invisible }: { invisible?: boolean }) {
 // Sort fields are constrained to those exposed by the backend `IncentiveAccountEpochAuditOrderByInput`
 // enum (each becomes `${field}_ASC` / `${field}_DESC`). `avgMultiplier`/`maxMultiplier` are not
 // orderable server-side, so their columns no longer render a Sorter.
-type AuditSortField =
-  | "points"
-  | "rewards"
-  | "fees"
-  | "volume"
-  | "effectivePointsRatio"
-  | "effectiveRewardsRatio";
+type AuditSortField = "points" | "rewards" | "fees" | "volume" | "effectivePointsRatio" | "effectiveRewardsRatio";
 
 type EpochOption = { timestamp: number; label: string };
 

@@ -43,6 +43,8 @@ export const MAX_MULTIPLIER = 400;
 export const MAX_FEE_DISCOUNT_PERCENT = 50;
 export const POINTS_EXPIRATION_EPOCHS = 13;
 export const VOLUME_TIER_PERSISTENCE_EPOCHS = 4;
+export const GMX_DECIMALS = 18;
+export const GMX_DECIMALS_FACTOR = 10n ** BigInt(GMX_DECIMALS);
 
 /** Incentives reward modelling constants — shared across banners / tier cards. */
 export const INCENTIVES_FEE_RATE = 0.0005; // open + close fee share of volume
@@ -51,11 +53,6 @@ const DEFAULT_EPOCH_DURATION = 7 * 24 * 60 * 60; // 1 week fallback
 
 export function getEpochDuration(config?: { epochDuration: number }): number {
   return config?.epochDuration ?? DEFAULT_EPOCH_DURATION;
-}
-
-export function formatMultiplier(rawMultiplier: number | undefined): string {
-  const value = (rawMultiplier ?? 0) / MULTIPLIER_DECIMALS;
-  return `${value.toFixed(2)}x`;
 }
 
 export function getVolumeTierBadge(tier: string): string {

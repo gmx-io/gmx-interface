@@ -7,16 +7,17 @@ import { USD_DECIMALS } from "config/factors";
 import { POINTS_PAGE_BANNERS_DISMISSED_KEY } from "config/localStorage";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
-import { formatMultiplier, VOLUME_TIER_BADGES } from "domain/synthetics/incentives/constants";
+import { VOLUME_TIER_BADGES } from "domain/synthetics/incentives/constants";
 import type { EpochStats, IncentivesConfig } from "domain/synthetics/incentives/types";
 import { usePersonalizedBannerData } from "domain/synthetics/incentives/usePersonalizedBannerData";
+import { formatMultiplier } from "domain/synthetics/incentives/utils";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatAmountHuman, formatUsd } from "lib/numbers";
 
 import bgPointsBanner from "img/bg_points_banner.png";
+import TradeIcon from "img/ic_candles_filled.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
 import EarnIcon from "img/ic_earn.svg?react";
-import TradeIcon from "img/ic_trade_solid.svg?react";
 import pointsBannerCoinEarn from "img/points_banner_coin_earn.png";
 import pointsBannerCoinGmx from "img/points_banner_coin_gmx.png";
 import pointsBannerCoinMultiplier from "img/points_banner_coin_multiplier.png";
@@ -85,6 +86,10 @@ const BANNER_COINS: Record<BannerType, string> = {
 };
 
 type BannerAnimationDirection = "left" | "right";
+
+function isInsideButtonOrLink(target: EventTarget | null) {
+  return target instanceof HTMLElement && Boolean(target.closest("a, button"));
+}
 
 export function PointsBanner({
   isActiveUser,
@@ -203,8 +208,7 @@ export function PointsBanner({
     (event: PointerEvent<HTMLDivElement>) => {
       if (banners.length <= 1 || event.pointerType === "mouse") return;
 
-      const target = event.target;
-      if (target instanceof HTMLElement && target.closest("a, button")) return;
+      if (isInsideButtonOrLink(event.target)) return;
 
       swipeStartRef.current = {
         x: event.clientX,
@@ -388,16 +392,7 @@ function getBannerContent({
   const items: BannerContent[] = [];
 
   if (pointsExpiringThisEpoch !== undefined && pointsExpiringThisEpoch > 0n) {
-    items.push({
-      type: "points-expiring",
-      title: t`Don't Let Rewards Expire`,
-      description: t`Use your rewards before they expire and make the most of your activity.`,
-      action: {
-        label: <Trans>Claim rewards</Trans>,
-        type: "stake",
-        to: "/points",
-      },
-    });
+    items.push(getPointsExpiringBanner());
   }
 
   if (walletGmx !== undefined && walletGmx > 0n) {
@@ -471,16 +466,7 @@ function getBannerContent({
 function getAllBannerContent(onStakeGmxClick?: () => void): BannerContent[] {
   return [
     getManualRewardBanner(200n * 10n ** 30n),
-    {
-      type: "points-expiring",
-      title: t`Don't Let Rewards Expire`,
-      description: t`Use your rewards before they expire and make the most of your activity.`,
-      action: {
-        label: <Trans>Claim rewards</Trans>,
-        type: "stake",
-        to: "/points",
-      },
-    },
+    getPointsExpiringBanner(),
     {
       type: "gmx-ready-to-stake",
       title: t`You have GMX ready to stake`,
@@ -524,6 +510,19 @@ function getAllBannerContent(onStakeGmxClick?: () => void): BannerContent[] {
       },
     },
   ];
+}
+
+function getPointsExpiringBanner(): BannerContent {
+  return {
+    type: "points-expiring",
+    title: t`Don't Let Rewards Expire`,
+    description: t`Use your rewards before they expire and make the most of your activity.`,
+    action: {
+      label: <Trans>Claim rewards</Trans>,
+      type: "stake",
+      to: "/points",
+    },
+  };
 }
 
 function getManualRewardBanner(manualBonusUsd: bigint): BannerContent {

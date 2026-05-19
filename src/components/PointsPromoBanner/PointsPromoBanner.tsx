@@ -28,13 +28,10 @@ type PointsTradeBannerDismissedState =
   | boolean
   | {
       dismissed: boolean;
-      dismissedAfterFirstProgramEpochVolume?: boolean;
     };
 
 function getIsDismissedForCurrentState(dismissedState: PointsTradeBannerDismissedState | undefined) {
-  return typeof dismissedState === "object"
-    ? dismissedState.dismissed || dismissedState.dismissedAfterFirstProgramEpochVolume === true
-    : dismissedState === true;
+  return typeof dismissedState === "object" ? dismissedState.dismissed : dismissedState === true;
 }
 
 export function PointsPromoBanner() {
@@ -85,7 +82,7 @@ export function PointsPromoBanner() {
   return (
     <div className="flex justify-center">
       <Link
-        className="relative grid w-full grid-cols-[minmax(0,1fr)_80px] overflow-hidden rounded-8 border-1/2 border-stroke-primary bg-slate-900/50 p-16"
+        className="relative grid w-full grid-cols-[minmax(0,1fr)_80px] overflow-hidden rounded-8 border-1/2 border-stroke-primary p-16"
         style={BANNER_STYLES}
         onClick={handleBannerClick}
         to={ctaTo}

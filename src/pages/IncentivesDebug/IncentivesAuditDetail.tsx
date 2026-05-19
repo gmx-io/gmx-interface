@@ -4,16 +4,12 @@ import { ReactNode, useCallback, useMemo } from "react";
 import { Link } from "react-router-dom";
 import { useCopyToClipboard } from "react-use";
 
-import {
-  formatMultiplier,
-  getBoostLabel,
-  getStakingTierBadge,
-  getVolumeTierBadge,
-} from "domain/synthetics/incentives/constants";
+import { getBoostLabel, getStakingTierBadge, getVolumeTierBadge } from "domain/synthetics/incentives/constants";
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
 import { useAccountNetPositionFeesLast4Months } from "domain/synthetics/incentives/useAccountNetPositionFeesLast4Months";
 import { useAccountTotalEarnedRewards } from "domain/synthetics/incentives/useAccountTotalEarnedRewards";
 import { AuditEntry, useIncentiveAccountEpochAudit } from "domain/synthetics/incentives/useIncentiveAccountEpochAudit";
+import { formatMultiplier } from "domain/synthetics/incentives/utils";
 import { formatAmount, formatUsd } from "lib/numbers";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 

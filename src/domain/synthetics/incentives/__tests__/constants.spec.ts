@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
 
-import { formatMultiplier } from "../constants";
+import { formatMultiplier } from "../utils";
 
 describe("formatMultiplier", () => {
   it("formats positive multipliers with 2 decimals", () => {

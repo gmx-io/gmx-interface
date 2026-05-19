@@ -1,6 +1,6 @@
 import { Trans, t } from "@lingui/macro";
 import { useCallback, useEffect, useState } from "react";
-import useSWR, { type KeyedMutator } from "swr";
+import type { KeyedMutator } from "swr";
 
 import type { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
@@ -8,7 +8,8 @@ import { POINTS_REWARDS_DISTRIBUTION_ID } from "domain/synthetics/claims/constan
 import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
 import { useAccountTotalEarnedRewards } from "domain/synthetics/incentives/useAccountTotalEarnedRewards";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
-import { contractFetcher } from "lib/contracts/contractFetcher";
+import { formatTimeLeft } from "lib/dates";
+import { useMulticall } from "lib/multicall";
 import { formatAmount } from "lib/numbers";
 import { getTokenBySymbol } from "sdk/configs/tokens";
 
@@ -17,7 +18,7 @@ import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import EarnIcon from "img/ic_earn.svg?react";
 
-import { formatTimeLeft, getCurrentEpochEndTime, useCurrentUnixTimestamp } from "./epochTiming";
+import { getCurrentEpochEndTime, useCurrentUnixTimestamp } from "./epochTiming";
 import { PointsClaimRewardsModal } from "./PointsClaimRewardsModal";
 import { POINTS_REWARDS_MOCK_DATA } from "./pointsRewardsMock";
 
@@ -25,6 +26,19 @@ type PointsConnectedSidebarRewardsProps = {
   chainId: number;
   account: string;
   isMockMode?: boolean;
+};
+
+type PointsRewardsClaimableAmountRequestConfig = {
+  claimHandler: {
+    contractAddress: string;
+    abiId: "ClaimHandler";
+    calls: {
+      getClaimableAmount: {
+        methodName: "getClaimableAmount";
+        params: [account: string, token: string, distributionIds: bigint[]];
+      };
+    };
+  };
 };
 
 export function PointsConnectedSidebarRewards({
@@ -46,20 +60,25 @@ export function PointsConnectedSidebarRewards({
   const claimHandlerAddress = getContract(contractsChainId, "ClaimHandler");
   const gmxTokenAddress = getTokenBySymbol(contractsChainId, "GMX").address;
 
-  const { data: rawClaimableAmount, mutate: mutateRealClaimableAmount } = useSWR(
-    isMockMode
-      ? null
-      : [
-          `PointsRewardsClaimableAmount:${chainId}:${account}`,
-          chainId,
-          claimHandlerAddress,
-          "getClaimableAmount",
-          account,
-          gmxTokenAddress,
-          [POINTS_REWARDS_DISTRIBUTION_ID],
-        ],
-    { fetcher: contractFetcher(undefined, "ClaimHandler") }
-  );
+  const { data: realClaimableAmount, mutate: mutateRealClaimableAmount } = useMulticall<
+    PointsRewardsClaimableAmountRequestConfig,
+    bigint | undefined
+  >(contractsChainId, "PointsRewardsClaimableAmount", {
+    key: isMockMode ? null : [account, gmxTokenAddress, POINTS_REWARDS_DISTRIBUTION_ID.toString()],
+    request: {
+      claimHandler: {
+        contractAddress: claimHandlerAddress,
+        abiId: "ClaimHandler",
+        calls: {
+          getClaimableAmount: {
+            methodName: "getClaimableAmount",
+            params: [account, gmxTokenAddress, [POINTS_REWARDS_DISTRIBUTION_ID]],
+          },
+        },
+      },
+    },
+    parseResponse: (result) => BigInt(result.data.claimHandler.getClaimableAmount.returnValues[0] ?? 0),
+  });
 
   const mutateMockClaimableAmount = useCallback<KeyedMutator<any>>(
     async (data?: any) => {
@@ -81,8 +100,7 @@ export function PointsConnectedSidebarRewards({
     setMockClaimableAmount(POINTS_REWARDS_MOCK_DATA.claimableAmount);
   }, [isClaimModalOpen, isMockMode]);
 
-  const realClaimableAmount = rawClaimableAmount !== undefined ? BigInt(rawClaimableAmount) : 0n;
-  const claimableAmount = isMockMode ? mockClaimableAmount : realClaimableAmount;
+  const claimableAmount = isMockMode ? mockClaimableAmount : realClaimableAmount ?? 0n;
   const mutateClaimableAmount = isMockMode ? mutateMockClaimableAmount : mutateRealClaimableAmount;
   const displayClaimableRewards = formatAmount(claimableAmount, 18, 2, true);
   const hasRewards = claimableAmount > 0n;

@@ -2155,7 +2155,7 @@ msgstr "EIP-4844"
 msgid "Keep leverage at {0}"
 msgstr "保持槓桿在 {0}"
 
-#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/PointsSection.tsx
 msgid "Stake {gmxToNextTierLabel} GMX more to get {additionalMultiplierLabel} additionally"
 msgstr ""
 
@@ -2876,7 +2876,6 @@ msgid "Excludes incentives"
 msgstr "不含激勵獎勵"
 
 #: src/pages/PointsPage/components/PointsBanner.tsx
-#: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Use your rewards before they expire and make the most of your activity."
 msgstr ""
 
@@ -3326,7 +3325,7 @@ msgstr "訂單類型"
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr ""
 
-#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/PointsSection.tsx
 #: src/pages/PointsPage/components/MainDataSection.tsx
 msgid "Your multiplier"
 msgstr ""
@@ -4137,7 +4136,6 @@ msgstr "更新 TWAP 部分"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/ClaimRewardsButton.tsx
-#: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 #: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
@@ -5206,7 +5204,7 @@ msgstr ""
 msgid "Update {orderTypeName}"
 msgstr "更新{orderTypeName}"
 
-#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/PointsSection.tsx
 msgid "You are already at the highest staking tier"
 msgstr ""
 
@@ -6980,7 +6978,7 @@ msgstr "分享"
 msgid "Use your preferred token to pay and collateralize positions"
 msgstr "使用您偏好的代幣支付並為倉位提供抵押品"
 
-#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/PointsSection.tsx
 msgid "Start earning points and unlock rewards"
 msgstr ""
 
@@ -8063,10 +8061,6 @@ msgstr "透過 GMX Account 使用 Arbitrum 流動性進行交易。也可在 Arb
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set SL price below limit price"
-msgstr ""
-
-#: src/components/TradeBox/TradeBoxRows/PointsRow.tsx
-msgid "pts"
 msgstr ""
 
 #: src/components/HistoricalPointsAllocationModal/HistoricalPointsAllocationModal.tsx
@@ -10787,7 +10781,6 @@ msgid "Sign transactions off-chain. Premium RPCs ensure reliability during netwo
 msgstr "鏈下簽署交易。優質 RPC 確保在網路擁塞時的可靠性。<0/><1/>以 {gasPaymentTokensText} 支付 Gas 費用。"
 
 #: src/pages/PointsPage/components/PointsBanner.tsx
-#: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Don't Let Rewards Expire"
 msgstr ""
 
@@ -11130,7 +11123,7 @@ msgstr "查看詳細統計"
 msgid "Simulate transactions"
 msgstr "模擬交易"
 
-#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/PointsSection.tsx
 msgid "GMX Points"
 msgstr ""
 

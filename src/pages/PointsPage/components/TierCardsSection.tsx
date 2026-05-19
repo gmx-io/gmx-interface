@@ -7,12 +7,13 @@ import { Link } from "react-router-dom";
 import { useStakingProcessedData } from "domain/stake/useStakingProcessedData";
 import {
   BOOST_LABELS,
+  GMX_DECIMALS,
   STAKING_TIER_BADGES,
   VOLUME_TIER_BADGES,
-  formatMultiplier,
 } from "domain/synthetics/incentives/constants";
 import type { EpochStats, IncentivesConfig, StakingTierId, VolumeTierId } from "domain/synthetics/incentives/types";
 import { usePersonalizedBannerData } from "domain/synthetics/incentives/usePersonalizedBannerData";
+import { formatMultiplier } from "domain/synthetics/incentives/utils";
 import { formatAmount, formatAmountHuman } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
@@ -114,8 +115,6 @@ export function TierCardsSection({
 }
 
 const USD_DECIMALS = 30;
-const GMX_DECIMALS = 18;
-
 function formatCompactUsd(amount: bigint) {
   return formatAmountHuman(amount, USD_DECIMALS, true, 0).replace(/[kmb]$/i, (suffix) => suffix.toUpperCase());
 }

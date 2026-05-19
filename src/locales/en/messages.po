@@ -2155,7 +2155,7 @@ msgstr "EIP-4844"
 msgid "Keep leverage at {0}"
 msgstr "Keep leverage at {0}"
 
-#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/PointsSection.tsx
 msgid "Stake {gmxToNextTierLabel} GMX more to get {additionalMultiplierLabel} additionally"
 msgstr "Stake {gmxToNextTierLabel} GMX more to get {additionalMultiplierLabel} additionally"
 
@@ -2876,7 +2876,6 @@ msgid "Excludes incentives"
 msgstr "Excludes incentives"
 
 #: src/pages/PointsPage/components/PointsBanner.tsx
-#: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Use your rewards before they expire and make the most of your activity."
 msgstr "Use your rewards before they expire and make the most of your activity."
 
@@ -3326,7 +3325,7 @@ msgstr "Order type"
 msgid "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 msgstr "Double exposure: long {indexSymbol} from position + long {collateralSymbol} from collateral. Liquidation price varies with {collateralSymbol} price."
 
-#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/PointsSection.tsx
 #: src/pages/PointsPage/components/MainDataSection.tsx
 msgid "Your multiplier"
 msgstr "Your multiplier"
@@ -4137,7 +4136,6 @@ msgstr "Update TWAP part"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 #: src/components/Earn/Portfolio/ClaimRewardsButton.tsx
-#: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsBanner.tsx
 #: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 #: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
@@ -5206,7 +5204,7 @@ msgstr "Number of trades from referrals"
 msgid "Update {orderTypeName}"
 msgstr "Update {orderTypeName}"
 
-#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/PointsSection.tsx
 msgid "You are already at the highest staking tier"
 msgstr "You are already at the highest staking tier"
 
@@ -6980,7 +6978,7 @@ msgstr "Share"
 msgid "Use your preferred token to pay and collateralize positions"
 msgstr "Use your preferred token to pay and collateralize positions"
 
-#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/PointsSection.tsx
 msgid "Start earning points and unlock rewards"
 msgstr "Start earning points and unlock rewards"
 
@@ -8064,10 +8062,6 @@ msgstr "Trade via GMX Account using Arbitrum liquidity. Wallet trading also avai
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set SL price below limit price"
 msgstr "Set SL price below limit price"
-
-#: src/components/TradeBox/TradeBoxRows/PointsRow.tsx
-msgid "pts"
-msgstr "pts"
 
 #: src/components/HistoricalPointsAllocationModal/HistoricalPointsAllocationModal.tsx
 msgid "Points allocated"
@@ -10787,7 +10781,6 @@ msgid "Sign transactions off-chain. Premium RPCs ensure reliability during netwo
 msgstr "Sign transactions off-chain. Premium RPCs ensure reliability during network congestion.<0/><1/>Gas payments in {gasPaymentTokensText}."
 
 #: src/pages/PointsPage/components/PointsBanner.tsx
-#: src/pages/PointsPage/components/PointsBanner.tsx
 msgid "Don't Let Rewards Expire"
 msgstr "Don't Let Rewards Expire"
 
@@ -11130,7 +11123,7 @@ msgstr "For detailed stats"
 msgid "Simulate transactions"
 msgstr "Simulate transactions"
 
-#: src/components/GmxAccountModal/MainView.tsx
+#: src/components/GmxAccountModal/PointsSection.tsx
 msgid "GMX Points"
 msgstr "GMX Points"
 

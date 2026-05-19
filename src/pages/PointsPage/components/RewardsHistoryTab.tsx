@@ -8,10 +8,11 @@ import { ARBITRUM } from "config/chains";
 import type { ContractsChainId } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { useGmxPrice } from "domain/legacy";
-import { getEpochDuration } from "domain/synthetics/incentives/constants";
+import { GMX_DECIMALS, GMX_DECIMALS_FACTOR, getEpochDuration } from "domain/synthetics/incentives/constants";
 import { RewardsHistoryEntry } from "domain/synthetics/incentives/types";
 import { useAccountRewardsHistory } from "domain/synthetics/incentives/useAccountRewardsHistory";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
+import { formatTimeLeft } from "lib/dates";
 import { formatAmount, formatAmountHuman, formatPointsAmount, formatUsd } from "lib/numbers";
 import { useBreakpoints } from "lib/useBreakpoints";
 import useWallet from "lib/wallets/useWallet";
@@ -23,12 +24,10 @@ import { TableScrollFadeContainer } from "components/TableScrollFade/TableScroll
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
-import { formatTimeLeft, useCurrentUnixTimestamp } from "./epochTiming";
+import { useCurrentUnixTimestamp } from "./epochTiming";
 import { formatEpochLabel } from "./RewardsHistoryTab.utils";
 
 const PER_PAGE = 16;
-const GMX_DECIMALS = 18;
-const GMX_DECIMALS_FACTOR = 10n ** 18n;
 
 function RewardsHistoryMobileSkeletonRow({ invisible }: { invisible?: boolean }) {
   return (

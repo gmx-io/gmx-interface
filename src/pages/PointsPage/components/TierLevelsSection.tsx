@@ -3,13 +3,10 @@ import cx from "classnames";
 import { type HTMLProps, useCallback, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 
-import {
-  STAKING_TIER_BADGES,
-  VOLUME_TIER_BADGES,
-  BOOST_LABELS,
-  formatMultiplier,
-} from "domain/synthetics/incentives/constants";
+import { USD_DECIMALS } from "config/factors";
+import { STAKING_TIER_BADGES, VOLUME_TIER_BADGES, BOOST_LABELS } from "domain/synthetics/incentives/constants";
 import type { EpochStats, IncentivesConfig, StakingTierId, VolumeTierId } from "domain/synthetics/incentives/types";
+import { formatMultiplier } from "domain/synthetics/incentives/utils";
 import { useMarkets } from "domain/synthetics/markets";
 import { getMarketIndexName } from "domain/synthetics/markets/utils";
 import { formatAmount, formatAmountHuman } from "lib/numbers";
@@ -22,6 +19,7 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
+import ExpiresInIcon from "img/ic_clock_dashed.svg?react";
 
 import { useCurrentUnixTimestamp, getCurrentEpochEndTime } from "./epochTiming";
 import { FeaturedMarketsTooltipContent } from "./FeaturedMarketsTooltipContent";
@@ -39,8 +37,6 @@ type Props = {
   effectiveStakingTier?: StakingTierId | null;
   projectedVolumeTier?: VolumeTierId | null;
 };
-
-const USD_DECIMALS = 30;
 
 const tierLevelTableClassName =
   "w-full table-fixed border-separate border-spacing-x-0 border-spacing-y-4 [&_td:first-child]:!pl-8 [&_th:first-child]:!pl-8";
@@ -328,7 +324,7 @@ function DowngradingCoefficientsTooltip({
                   {symbol && <TokenIcon symbol={symbol} displaySize={16} />}
                   {name}
                 </span>
-                <span>{Number(formatAmount(coefficient, 2, 2))}x</span>
+                <span>{formatAmount(coefficient, 2, 2, false, { trimTrailingZeros: true })}x</span>
               </div>
             ))}
           </div>
@@ -508,16 +504,7 @@ function TierLevelsSkeletonRow({ invisible }: { invisible?: boolean }) {
 function ExpiresInLabel({ daysRemaining }: { daysRemaining: number }) {
   return (
     <span className="inline-flex items-center gap-4 whitespace-nowrap rounded-full bg-yellow-500/15 px-8 py-2 text-12 font-medium text-yellow-500">
-      <svg className="size-14" viewBox="0 0 16 16" fill="none">
-        <circle cx="8" cy="8" r="6.5" stroke="currentColor" strokeWidth="1.2" strokeDasharray="2.5 1.5" />
-        <path
-          d="M8 4.5V8L10.5 9.5"
-          stroke="currentColor"
-          strokeWidth="1.2"
-          strokeLinecap="round"
-          strokeLinejoin="round"
-        />
-      </svg>
+      <ExpiresInIcon className="size-14" />
       <Trans>
         Expires in {daysRemaining} {daysRemaining === 1 ? "day" : "days"}
       </Trans>

@@ -4,9 +4,9 @@ import {
   MAX_MULTIPLIER,
   POINTS_EXPIRATION_EPOCHS,
   VOLUME_TIER_PERSISTENCE_EPOCHS,
-  formatMultiplier,
 } from "domain/synthetics/incentives/constants";
 import type { BoostId, IncentivesConfig } from "domain/synthetics/incentives/types";
+import { formatMultiplier } from "domain/synthetics/incentives/utils";
 import { formatAmountHuman } from "lib/numbers";
 
 const USD_DECIMALS = 30;

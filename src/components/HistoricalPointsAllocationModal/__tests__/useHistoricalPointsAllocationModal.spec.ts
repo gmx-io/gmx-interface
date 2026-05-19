@@ -2,12 +2,12 @@ import { describe, expect, it } from "vitest";
 
 import { getShouldShowHistoricalPointsAllocationModal } from "../useHistoricalPointsAllocationModal";
 
-const GMX_DEC = 10n ** 18n;
+const GMX_PRECISION = 10n ** 18n;
 
 const baseBannerData = {
   isLoading: false,
   isManuallyRewarded: true,
-  manualAllocatedPoints: 100n * GMX_DEC,
+  manualAllocatedPoints: 100n * GMX_PRECISION,
 };
 
 describe("getShouldShowHistoricalPointsAllocationModal", () => {

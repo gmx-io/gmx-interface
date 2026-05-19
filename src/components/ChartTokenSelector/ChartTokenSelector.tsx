@@ -72,6 +72,26 @@ type Props = {
   oneRowLabels?: boolean;
 };
 
+const EMPTY_FEATURED_MARKET_INDEX_TOKEN_ADDRESSES: string[] = EMPTY_ARRAY;
+
+function getFeaturedMarketIndexTokenAddresses({
+  incentivesEnabled,
+  featuredMarketTokens,
+  marketsInfoData,
+}: {
+  incentivesEnabled: boolean;
+  featuredMarketTokens: string[] | undefined;
+  marketsInfoData: ReturnType<typeof selectMarketsInfoData>;
+}): string[] {
+  if (!incentivesEnabled || !featuredMarketTokens?.length || !marketsInfoData) {
+    return EMPTY_FEATURED_MARKET_INDEX_TOKEN_ADDRESSES;
+  }
+
+  return featuredMarketTokens
+    .map((marketAddress) => marketsInfoData[marketAddress]?.indexTokenAddress)
+    .filter((address): address is string => Boolean(address));
+}
+
 export default function ChartTokenSelector(props: Props) {
   const { selectedToken, oneRowLabels } = props;
 
@@ -85,18 +105,18 @@ export default function ChartTokenSelector(props: Props) {
 
   const incentivesEnabled = isIncentivesEnabled(chainId);
   const { data: incentivesConfig } = useIncentivesConfig(chainId);
-  const isSelectedTokenFeatured = useMemo(() => {
-    if (!incentivesEnabled || !incentivesConfig?.featuredMarketTokens?.length || !marketsInfoData || !selectedToken) {
-      return false;
-    }
-    for (const marketAddress of incentivesConfig.featuredMarketTokens) {
-      const mi = marketsInfoData[marketAddress];
-      if (mi?.indexTokenAddress?.toLowerCase() === selectedToken.address.toLowerCase()) {
-        return true;
-      }
-    }
-    return false;
-  }, [incentivesEnabled, incentivesConfig, marketsInfoData, selectedToken]);
+  const featuredMarketIndexTokenAddresses = useMemo(
+    () =>
+      getFeaturedMarketIndexTokenAddresses({
+        incentivesEnabled,
+        featuredMarketTokens: incentivesConfig?.featuredMarketTokens,
+        marketsInfoData,
+      }),
+    [incentivesEnabled, incentivesConfig?.featuredMarketTokens, marketsInfoData]
+  );
+  const isSelectedTokenFeatured = selectedToken
+    ? featuredMarketIndexTokenAddresses.includes(selectedToken.address)
+    : false;
 
   return (
     <SelectorBase
@@ -195,21 +215,17 @@ function MarketsList() {
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const incentivesEnabled = isIncentivesEnabled(chainId);
   const { data: incentivesConfig } = useIncentivesConfig(chainId);
-  const featuredMarketTokens = useMemo(() => {
-    if (!incentivesEnabled || !incentivesConfig?.featuredMarketTokens?.length || !marketsInfoData) {
-      return new Set<string>();
-    }
-    const indexTokenAddresses = new Set<string>();
-    for (const marketAddress of incentivesConfig.featuredMarketTokens) {
-      const marketInfo = marketsInfoData[marketAddress];
-      if (marketInfo?.indexTokenAddress) {
-        indexTokenAddresses.add(marketInfo.indexTokenAddress.toLowerCase());
-      }
-    }
-    return indexTokenAddresses;
-  }, [incentivesEnabled, incentivesConfig, marketsInfoData]);
+  const featuredMarketIndexTokenAddresses = useMemo(
+    () =>
+      getFeaturedMarketIndexTokenAddresses({
+        incentivesEnabled,
+        featuredMarketTokens: incentivesConfig?.featuredMarketTokens,
+        marketsInfoData,
+      }),
+    [incentivesEnabled, incentivesConfig?.featuredMarketTokens, marketsInfoData]
+  );
 
-  const hasFeaturedMarkets = featuredMarketTokens.size > 0;
+  const hasFeaturedMarkets = featuredMarketIndexTokenAddresses.length > 0;
   const chartTabOptions = useMemo<TokenFavoritesTabOption[]>(() => {
     if (!hasFeaturedMarkets) return tokensFavoritesTabOptions;
     return [...tokensFavoritesTabOptions, "incentivized" as const];
@@ -249,7 +265,7 @@ function MarketsList() {
     searchKeyword,
     tab,
     favoriteTokens,
-    featuredMarketTokens,
+    featuredMarketIndexTokenAddresses,
     direction,
     orderBy,
     tokensData,
@@ -274,10 +290,18 @@ function MarketsList() {
         openInterestLong: indexTokenStatsMap?.[wrappedAddress]?.totalOpenInterestLong,
         openInterestShort: indexTokenStatsMap?.[wrappedAddress]?.totalOpenInterestShort,
         maxLeverage: indexTokenStatsMap?.[wrappedAddress]?.maxUiAllowedLeverage,
-        isFeatured: featuredMarketTokens.has(token.address.toLowerCase()),
+        isFeatured: featuredMarketIndexTokenAddresses.includes(token.address),
       };
     });
-  }, [sortedTokens, chainId, tokensData, dayPriceDeltaMap, dayVolumes, indexTokenStatsMap, featuredMarketTokens]);
+  }, [
+    sortedTokens,
+    chainId,
+    tokensData,
+    dayPriceDeltaMap,
+    dayVolumes,
+    indexTokenStatsMap,
+    featuredMarketIndexTokenAddresses,
+  ]);
 
   useMissedCoinsSearch({
     searchText: searchKeyword,
@@ -481,7 +505,7 @@ function useFilterSortTokens({
   searchKeyword,
   tab,
   favoriteTokens,
-  featuredMarketTokens,
+  featuredMarketIndexTokenAddresses,
   direction,
   orderBy,
   tokensData,
@@ -495,7 +519,7 @@ function useFilterSortTokens({
   searchKeyword: string;
   tab: TokenFavoritesTabOption;
   favoriteTokens: string[];
-  featuredMarketTokens: Set<string>;
+  featuredMarketIndexTokenAddresses: string[];
   direction: SortDirection;
   orderBy: SortField;
   tokensData: TokensData | undefined;
@@ -527,14 +551,14 @@ function useFilterSortTokens({
     }
 
     if (tab === "incentivized") {
-      return textMatched?.filter((item) => featuredMarketTokens.has(item.address.toLowerCase()));
+      return textMatched?.filter((item) => featuredMarketIndexTokenAddresses.includes(item.address));
     }
 
     const categoryTokenAddresses = getCategoryTokenAddresses(chainId, tab);
     const tabMatched = textMatched?.filter((item) => categoryTokenAddresses.includes(item.address));
 
     return tabMatched;
-  }, [chainId, favoriteTokens, featuredMarketTokens, isSwap, options, searchKeyword, tab]);
+  }, [chainId, favoriteTokens, featuredMarketIndexTokenAddresses, isSwap, options, searchKeyword, tab]);
 
   const getMaxLongShortLiquidityPool = useSelector(selectTradeboxGetMaxLongShortLiquidityPool);
 

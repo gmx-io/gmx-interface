@@ -1,13 +1,13 @@
 import { BASIS_POINTS_DIVISOR_BIGINT } from "config/factors";
-import { MAX_FEE_DISCOUNT_PERCENT, MULTIPLIER_DECIMALS } from "domain/synthetics/incentives/constants";
+import { GMX_DECIMALS, MAX_FEE_DISCOUNT_PERCENT, MULTIPLIER_DECIMALS } from "domain/synthetics/incentives/constants";
 import { bigMath } from "sdk/utils/bigmath";
 import { getOpenInterestForBalance } from "sdk/utils/markets";
 import type { MarketInfo } from "sdk/utils/markets/types";
+import { convertToTokenAmount, convertToUsd } from "sdk/utils/tokens";
 
 import type { BoostConfig, BoostId } from "./types";
 
 const BASE_POINTS_RATE_BPS = 1000n;
-const GMX_DECIMALS_FACTOR = 10n ** 18n;
 export const DOWNGRADING_COEFFICIENT_DECIMALS = 2;
 export const DEFAULT_DOWNGRADING_COEFFICIENT = 10n ** BigInt(DOWNGRADING_COEFFICIENT_DECIMALS);
 
@@ -92,8 +92,7 @@ export function getEstimatedTradeRewards({
 
   return {
     rewardsUsd,
-    rewardsGmx:
-      gmxPrice !== undefined && gmxPrice > 0n ? bigMath.mulDiv(rewardsUsd, GMX_DECIMALS_FACTOR, gmxPrice) : undefined,
+    rewardsGmx: convertToTokenAmount(rewardsUsd, GMX_DECIMALS, gmxPrice),
   };
 }
 
@@ -131,7 +130,7 @@ export function getEstimatedFeeRewards({
   }
 
   const maxRewardsUsd = bigMath.mulDiv(eligibleFeeUsd, BigInt(MAX_FEE_DISCOUNT_PERCENT), 100n);
-  const pointsBalanceUsd = bigMath.mulDiv(pointsBalance, gmxPrice, GMX_DECIMALS_FACTOR);
+  const pointsBalanceUsd = convertToUsd(pointsBalance, GMX_DECIMALS, gmxPrice) ?? 0n;
   const rewardsUsd = maxRewardsUsd > pointsBalanceUsd ? pointsBalanceUsd : maxRewardsUsd;
 
   if (rewardsUsd <= 0n) {

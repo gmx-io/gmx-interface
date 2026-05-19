@@ -31,10 +31,12 @@ vi.mock("domain/legacy", () => ({
 }));
 
 // Import after mocks are registered
+import { ARBITRUM, AVALANCHE } from "config/chains";
 import { useGmxPrice } from "domain/legacy";
 import { useChainId } from "lib/chains";
 import useWallet from "lib/wallets/useWallet";
 
+import { GMX_DECIMALS_FACTOR } from "../constants";
 import type { IncentivesConfig } from "../types";
 import { useAccountFirstTradeTimestamp } from "../useAccountFirstTradeTimestamp";
 import { useAccountNetPositionFeesLast4Months } from "../useAccountNetPositionFeesLast4Months";
@@ -68,10 +70,8 @@ function renderHook<T>(hookFn: () => T): { current: T; rerender: () => void } {
   };
 }
 
-const ARBITRUM = 42161;
-const AVALANCHE = 43114;
 const USD = 10n ** 30n;
-const GMX_DEC = 10n ** 18n;
+const GMX_PRECISION = GMX_DECIMALS_FACTOR;
 const TWO_WEEKS_SECONDS = 14 * 24 * 60 * 60;
 
 const NOW_SECONDS = 1_800_000_000;
@@ -96,9 +96,9 @@ const mockConfig: IncentivesConfig = {
     { tier: "Tier4", threshold: 20000n * USD, multiplier: 150 },
   ],
   stakingTiers: [
-    { tier: "Tier1", threshold: 10n * GMX_DEC, multiplier: 25 },
-    { tier: "Tier2", threshold: 100n * GMX_DEC, multiplier: 50 },
-    { tier: "Tier3", threshold: 1000n * GMX_DEC, multiplier: 100 },
+    { tier: "Tier1", threshold: 10n * GMX_PRECISION, multiplier: 25 },
+    { tier: "Tier2", threshold: 100n * GMX_PRECISION, multiplier: 50 },
+    { tier: "Tier3", threshold: 1000n * GMX_PRECISION, multiplier: 100 },
   ],
   boosts: [
     { boost: "FeaturedMarkets", multiplier: 50 },
@@ -181,7 +181,7 @@ describe("usePersonalizedBannerData", () => {
   });
 
   it('returns "manual-reward" variant when there are pre-program manual allocation entries', () => {
-    setupDefaults({ manualAllocatedPoints: 25n * GMX_DEC });
+    setupDefaults({ manualAllocatedPoints: 25n * GMX_PRECISION });
 
     const result = renderHook(() => usePersonalizedBannerData());
 
@@ -191,13 +191,13 @@ describe("usePersonalizedBannerData", () => {
   });
 
   it("returns correct manualBonusUsd for manually rewarded users", () => {
-    const allocatedPoints = 1234n * GMX_DEC;
+    const allocatedPoints = 1234n * GMX_PRECISION;
     setupDefaults({ manualAllocatedPoints: allocatedPoints });
 
     const result = renderHook(() => usePersonalizedBannerData());
 
     expect(result.current.bannerVariant).toBe("manual-reward");
-    expect(result.current.manualBonusUsd).toBe((allocatedPoints * 20n * USD) / GMX_DEC);
+    expect(result.current.manualBonusUsd).toBe((allocatedPoints * 20n * USD) / GMX_PRECISION);
   });
 
   it('returns "recent-activity" variant when fees >= $20 and first trade is older than 2 weeks', () => {
@@ -316,7 +316,7 @@ describe("usePersonalizedBannerData", () => {
   });
 
   it("does not show the account banner while wallet status is still connecting", () => {
-    setupDefaults({ account: "0x1234", walletStatus: "connecting", manualAllocatedPoints: 25n * GMX_DEC });
+    setupDefaults({ account: "0x1234", walletStatus: "connecting", manualAllocatedPoints: 25n * GMX_PRECISION });
 
     const result = renderHook(() => usePersonalizedBannerData());
 
@@ -362,13 +362,13 @@ describe("usePersonalizedBannerData", () => {
   });
 
   it("keeps a resolved manual reward banner during transient GMX price gaps", () => {
-    setupDefaults({ manualAllocatedPoints: 25n * GMX_DEC, gmxPrice: 20n * USD });
+    setupDefaults({ manualAllocatedPoints: 25n * GMX_PRECISION, gmxPrice: 20n * USD });
     const result = renderHook(() => usePersonalizedBannerData());
 
     expect(result.current.bannerVariant).toBe("manual-reward");
     expect(result.current.manualBonusUsd).toBe(25n * 20n * USD);
 
-    setupDefaults({ manualAllocatedPoints: 25n * GMX_DEC, gmxPrice: undefined });
+    setupDefaults({ manualAllocatedPoints: 25n * GMX_PRECISION, gmxPrice: undefined });
     result.rerender();
 
     expect(result.current.bannerVariant).toBe("manual-reward");
@@ -398,7 +398,7 @@ describe("usePersonalizedBannerData", () => {
   });
 
   it("requires GMX price for manual allocation USD value (stays loading)", () => {
-    setupDefaults({ manualAllocatedPoints: 25n * GMX_DEC, gmxPrice: 0n });
+    setupDefaults({ manualAllocatedPoints: 25n * GMX_PRECISION, gmxPrice: 0n });
 
     const result = renderHook(() => usePersonalizedBannerData());
 

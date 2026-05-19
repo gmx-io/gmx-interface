@@ -1,6 +1,6 @@
 import cx from "classnames";
 
-import { formatMultiplier } from "domain/synthetics/incentives/constants";
+import { formatMultiplier } from "domain/synthetics/incentives/utils";
 
 import MultiplierSolidIcon from "img/ic_multiplier_solid.svg?react";
 

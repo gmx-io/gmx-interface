@@ -9,13 +9,14 @@ import "./PointsLeaderboardTab.scss";
 import { ARBITRUM } from "config/chains";
 import type { ContractsChainId } from "config/chains";
 import { useGmxPrice } from "domain/legacy";
-import { formatMultiplier } from "domain/synthetics/incentives/constants";
+import { GMX_DECIMALS, GMX_DECIMALS_FACTOR } from "domain/synthetics/incentives/constants";
 import type { LeaderboardEntry } from "domain/synthetics/incentives/types";
 import { useIncentivesConfig } from "domain/synthetics/incentives/useIncentivesConfig";
 import {
   type IncentivesLeaderboardOrderBy,
   useIncentivesLeaderboard,
 } from "domain/synthetics/incentives/useIncentivesLeaderboard";
+import { formatMultiplier } from "domain/synthetics/incentives/utils";
 import { formatAmount, formatUsd } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
 
@@ -37,8 +38,6 @@ const COL_POINTS: React.CSSProperties = { width: "16%" };
 const COL_REWARDS: React.CSSProperties = { width: "20%" };
 const COL_MULTIPLIER: React.CSSProperties = { width: "10%" };
 const COL_SHARE: React.CSSProperties = { width: "8%" };
-const GMX_DECIMALS = 18;
-const GMX_DECIMALS_FACTOR = 10n ** 18n;
 const LEADERBOARD_ROW_CLASS_NAME = "h-[43px]";
 const LEADERBOARD_TD_CLASS_NAME = "!py-10";
 const CURRENT_ACCOUNT_ROW_CLASS_NAME =

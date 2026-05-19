@@ -5,14 +5,13 @@ import { useGmxPrice } from "domain/legacy";
 import { useChainId } from "lib/chains";
 import { bigintToNumber, USD_DECIMALS } from "lib/numbers";
 import useWallet from "lib/wallets/useWallet";
+import { convertToUsd } from "sdk/utils/tokens";
 
-import { isIncentivesEnabled, MAX_FEE_DISCOUNT_PERCENT } from "./constants";
+import { GMX_DECIMALS, isIncentivesEnabled, MAX_FEE_DISCOUNT_PERCENT } from "./constants";
 import { useAccountFirstTradeTimestamp } from "./useAccountFirstTradeTimestamp";
 import { useAccountNetPositionFeesLast4Months } from "./useAccountNetPositionFeesLast4Months";
 import { useAccountManualRewardsAllocation } from "./useAccountRewardsHistory";
 import { useIncentivesConfig } from "./useIncentivesConfig";
-
-const GMX_DECIMALS_FACTOR = 10n ** 18n;
 
 const RECENT_FEES_THRESHOLD_USD = 20;
 const NEW_USER_WINDOW_SECONDS = 14 * 24 * 60 * 60;
@@ -164,7 +163,7 @@ export function usePersonalizedBannerData(): PersonalizedBannerData {
         bannerVariant: "manual-reward",
         isManuallyRewarded: true,
         manualAllocatedPoints: allocatedPoints,
-        manualBonusUsd: (allocatedPoints * gmxPrice) / GMX_DECIMALS_FACTOR,
+        manualBonusUsd: convertToUsd(allocatedPoints, GMX_DECIMALS, gmxPrice),
         estimatedRewardsUsd: undefined,
         isLoading: false,
       };
