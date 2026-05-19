@@ -136,6 +136,10 @@ export function buildCrossChainWithdrawBridgeOutParams(params: {
 }): BridgeOutParams {
   const { tokenAddress, amount, dstChainId, stargateAddress, slippageBps = 0 } = params;
 
+  if (!Number.isInteger(slippageBps) || slippageBps < 0 || slippageBps >= 10_000) {
+    throw new Error(`slippageBps must be an integer in range [0, 10000), got ${slippageBps}`);
+  }
+
   const dstEid = getLayerZeroEndpointId(dstChainId);
   if (dstEid === undefined) {
     throw new Error(`No LayerZero endpoint id for destination chain ${dstChainId}`);
