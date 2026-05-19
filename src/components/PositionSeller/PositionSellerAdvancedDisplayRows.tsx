@@ -23,12 +23,14 @@ import Tooltip from "components/Tooltip/Tooltip";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import { AcceptablePriceImpactInputRow } from "../AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow";
+import { ExitPriceRow } from "../ExitPriceRow/ExitPriceRow";
 import { ExpandableRow } from "../ExpandableRow";
 import { NetworkFeeRow } from "../NetworkFeeRow/NetworkFeeRow";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
-import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 import { AllowedSlippageRow } from "./rows/AllowedSlippageRow";
-import { ExitPriceRow } from "../ExitPriceRow/ExitPriceRow";
+import { TradePointsRow } from "../TradeBox/TradeBoxRows/PointsRow";
+import { useTradePointsEstimate } from "../TradeBox/TradeBoxRows/useTradePointsEstimate";
+import { TradeFeesRow } from "../TradeFeesRow/TradeFeesRow";
 
 export type Props = {
   triggerPriceInputValue: string;
@@ -57,6 +59,14 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
   const nextPositionValues = useSelector(selectPositionSellerNextPositionValuesForDecrease);
 
   const { fees, executionFee } = useSelector(selectPositionSellerFees);
+  const pointsEstimate = useTradePointsEstimate({
+    fees,
+    feesType: "decrease",
+    marketInfo: position?.marketInfo,
+    isLong: position?.isLong,
+    sizeDeltaUsd: decreaseAmounts?.sizeDeltaUsd,
+    includeBalancingBoost: false,
+  });
 
   const isStopLoss = decreaseAmounts?.triggerOrderType === OrderType.StopLossDecrease;
 
@@ -98,7 +108,7 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
     return null;
   }
 
-  return (
+  const executionDetails = (
     <ExpandableRow
       title={t`Execution details`}
       open={open}
@@ -107,7 +117,12 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
       contentClassName="flex flex-col gap-14"
     >
       <ExitPriceRow isSwap={false} fees={fees} price={position.markPrice} isLong={position.isLong} />
-      <TradeFeesRow {...fees} feesType="decrease" />
+      <TradeFeesRow
+        {...fees}
+        feesType="decrease"
+        estimatedFeeRewardsUsd={pointsEstimate.estimatedFeeRewards?.rewardsUsd}
+        estimatedFeeRewardsBasisUsd={pointsEstimate.estimatedFeeRewards?.rewardsBasisUsd}
+      />
       <NetworkFeeRow executionFee={executionFee} gasPaymentParams={gasPaymentParams} />
 
       {isTwap ? (
@@ -167,5 +182,16 @@ export function PositionSellerAdvancedRows({ triggerPriceInputValue, slippageInp
         </>
       )}
     </ExpandableRow>
+  );
+
+  if (!pointsEstimate.enabled) {
+    return executionDetails;
+  }
+
+  return (
+    <div className="rounded-8 bg-slate-700/50">
+      {executionDetails}
+      <TradePointsRow {...pointsEstimate} marketInfo={position.marketInfo} />
+    </div>
   );
 }

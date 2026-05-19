@@ -1359,6 +1359,7 @@ msgid "Unrealized PnL"
 msgstr "PnL non réalisé"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Rewards"
@@ -1485,6 +1486,10 @@ msgstr "Approbation du transfert en attente..."
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero impact. Net price impact applies only on closes (capped, usually at 0.5%). <0>Read more</0>."
 msgstr "Vue simulée du carnet d'ordres de la liquidité GMX. Les ouvertures s'exécutent au prix de référence sans impact. L'impact net sur le prix s'applique uniquement aux fermetures (plafonné, généralement à 0,5 %). <0>En savoir plus</0>."
+
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "rewards"
+msgstr ""
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Disable share modal PnL check"
@@ -3730,6 +3735,10 @@ msgstr "Réduire"
 msgid "Banners"
 msgstr "Bannières"
 
+#: src/components/TradeBox/TradeBoxRows/PointsRow.tsx
+msgid "Estimated points"
+msgstr ""
+
 #: src/pages/PointsPage/components/PointsConnectedSidebarRewards.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
@@ -5939,10 +5948,6 @@ msgstr "Frais de retrait"
 msgid "Expired Points"
 msgstr ""
 
-#: src/components/TradeBox/TradeBoxRows/PointsRow.tsx
-msgid "Estimated rewards"
-msgstr ""
-
 #: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
@@ -7501,6 +7506,10 @@ msgstr "Le nonce d'approbation One-Click Trading a expiré. Signez à nouveau po
 msgid "30d"
 msgstr "30j"
 
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "{0} of fees"
+msgstr ""
+
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Exit price"
 msgstr "Prix de sortie"
@@ -8054,6 +8063,10 @@ msgstr "Négociez via GMX Account en utilisant la liquidité d'Arbitrum. Le trad
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set SL price below limit price"
+msgstr ""
+
+#: src/components/TradeBox/TradeBoxRows/PointsRow.tsx
+msgid "pts"
 msgstr ""
 
 #: src/components/HistoricalPointsAllocationModal/HistoricalPointsAllocationModal.tsx

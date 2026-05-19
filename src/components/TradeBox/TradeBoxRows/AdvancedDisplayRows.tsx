@@ -11,6 +11,7 @@ import {
   selectTradeboxDefaultTriggerAcceptablePriceImpactBps,
   selectTradeboxFees,
   selectTradeboxIncreasePositionAmounts,
+  selectTradeboxMarketInfo,
   selectTradeboxMarkPrice,
   selectTradeboxNextPositionValues,
   selectTradeboxSelectedPosition,
@@ -47,6 +48,7 @@ import { NextStoredImpactRows } from "./NextStoredImpactRows";
 import { PointsRow } from "./PointsRow";
 import { SwapDebugRow } from "./SwapDebugRow";
 import { SwapSpreadRow } from "./SwapSpreadRow";
+import { useTradePointsEstimate } from "./useTradePointsEstimate";
 import { useTradeboxAllowedSwapSlippageValues } from "../hooks/useTradeboxAllowedSwapSlippageValues";
 
 function LeverageInfoRows() {
@@ -153,7 +155,16 @@ export function TradeBoxAdvancedGroups({
   const feesType = useSelector(selectTradeboxTradeFeesType);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
+  const marketInfo = useSelector(selectTradeboxMarketInfo);
   const limitPrice = useSelector(selectTradeboxTriggerPrice);
+  const pointsEstimate = useTradePointsEstimate({
+    fees,
+    feesType,
+    marketInfo,
+    isLong,
+    sizeDeltaUsd: increaseAmounts?.sizeDeltaUsd,
+    includeBalancingBoost: feesType === "increase",
+  });
 
   const setSelectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSetSelectedAcceptablePriceImpactBps);
   const selectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
@@ -227,7 +238,12 @@ export function TradeBoxAdvancedGroups({
           </>
         )}
 
-        <TradeFeesRow {...fees} feesType={feesType} />
+        <TradeFeesRow
+          {...fees}
+          feesType={feesType}
+          estimatedFeeRewardsUsd={pointsEstimate.estimatedFeeRewards?.rewardsUsd}
+          estimatedFeeRewardsBasisUsd={pointsEstimate.estimatedFeeRewards?.rewardsBasisUsd}
+        />
         {showDebugValues && <SwapDebugRow />}
         <NetworkFeeRow executionFee={totalExecutionFee} gasPaymentParams={gasPaymentParams} />
 

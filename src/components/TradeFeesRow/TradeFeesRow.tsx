@@ -29,6 +29,8 @@ import "./TradeFeesRow.scss";
 type Props = TradeFees & {
   shouldShowRebate?: boolean;
   feesType: TradeFeesType | null;
+  estimatedFeeRewardsUsd?: bigint;
+  estimatedFeeRewardsBasisUsd?: bigint;
 };
 
 type FeeRow = {
@@ -47,6 +49,8 @@ export function TradeFeesRow(p: Props) {
   const { breakdownNetPriceImpactEnabled } = useSettings();
 
   const estimatedRebatesPercentage = tradingIncentives?.estimatedRebatePercent ?? 0n;
+  const estimatedFeeRewardsUsd =
+    p.estimatedFeeRewardsUsd !== undefined && p.estimatedFeeRewardsUsd > 0n ? p.estimatedFeeRewardsUsd : undefined;
   const shouldShowWarning = getIsHighSwapImpact(p.swapPriceImpact);
 
   const rebateIsApplicable =
@@ -399,6 +403,42 @@ export function TradeFeesRow(p: Props) {
           }
         : undefined;
 
+    const rewardsShareBps =
+      estimatedFeeRewardsUsd !== undefined &&
+      p.estimatedFeeRewardsBasisUsd !== undefined &&
+      p.estimatedFeeRewardsBasisUsd > 0n
+        ? bigMath.mulDiv(estimatedFeeRewardsUsd, BASIS_POINTS_DIVISOR_BIGINT, p.estimatedFeeRewardsBasisUsd)
+        : undefined;
+    const rewardsRow =
+      estimatedFeeRewardsUsd !== undefined
+        ? {
+            label: (
+              <div className="text-typography-primary">
+                <Trans>Rewards</Trans>:
+              </div>
+            ),
+            value: (
+              <>
+                <span className="text-green-500">{formatDeltaUsd(estimatedFeeRewardsUsd)}</span>
+                {rewardsShareBps !== undefined && (
+                  <span className="text-typography-secondary">
+                    {" "}
+                    (
+                    <Trans>
+                      {formatPercentage(rewardsShareBps, {
+                        displayDecimals: 0,
+                      })}{" "}
+                      of fees
+                    </Trans>
+                    )
+                  </span>
+                )}
+              </>
+            ),
+            id: "rewards",
+          }
+        : undefined;
+
     if (p.feesType === "swap") {
       return [swapPriceImpactRow, externalSwapFeeRow, ...swapFeeRows, uiSwapFeeRow].filter(Boolean) as FeeRow[];
     }
@@ -415,6 +455,7 @@ export function TradeFeesRow(p: Props) {
         uiSwapFeeRow,
         borrowFeeRow,
         fundingFeeRow,
+        rewardsRow,
       ].filter(Boolean) as FeeRow[];
     }
 
@@ -434,6 +475,7 @@ export function TradeFeesRow(p: Props) {
         swapProfitFeeRow,
         swapPriceImpactRow,
         ...swapFeeRows,
+        rewardsRow,
       ].filter(Boolean) as FeeRow[];
     }
 
@@ -450,18 +492,20 @@ export function TradeFeesRow(p: Props) {
     estimatedRebatesPercentage,
     showDebugValues,
     breakdownNetPriceImpactEnabled,
+    estimatedFeeRewardsUsd,
   ]);
 
   const totalFeeUsd = useMemo(() => {
     const totalBeforeRebate = p.totalFees?.deltaUsd;
+    let totalAfterRebate = totalBeforeRebate;
 
-    if (!rebateIsApplicable || !p.positionFee || !tradingIncentives) {
-      return totalBeforeRebate;
+    if (rebateIsApplicable && p.positionFee && tradingIncentives) {
+      const rebate =
+        bigMath.mulDiv(p.positionFee.deltaUsd, estimatedRebatesPercentage, BASIS_POINTS_DIVISOR_BIGINT) * -1n;
+      totalAfterRebate = totalBeforeRebate === undefined ? undefined : totalBeforeRebate + rebate;
     }
-    const rebate =
-      bigMath.mulDiv(p.positionFee.deltaUsd, estimatedRebatesPercentage, BASIS_POINTS_DIVISOR_BIGINT) * -1n;
 
-    return totalBeforeRebate === undefined ? undefined : totalBeforeRebate + rebate;
+    return totalAfterRebate;
   }, [p.positionFee, p.totalFees?.deltaUsd, rebateIsApplicable, tradingIncentives, estimatedRebatesPercentage]);
 
   const title = useMemo(() => {
@@ -533,6 +577,13 @@ export function TradeFeesRow(p: Props) {
   }, [p.swapFees, p.externalSwapFee]);
 
   let value: ReactNode = useMemo(() => {
+    const rewardsValue =
+      estimatedFeeRewardsUsd !== undefined ? (
+        <span className="ml-4 text-green-500">
+          ({formatDeltaUsd(estimatedFeeRewardsUsd)} <Trans>rewards</Trans>)
+        </span>
+      ) : null;
+
     if (totalFeeUsd === undefined || totalFeeUsd == 0n) {
       return "-";
     } else if (!feeRows.length && !incentivesBottomText) {
@@ -544,6 +595,7 @@ export function TradeFeesRow(p: Props) {
           })}
         >
           {formatDeltaUsd(totalFeeUsd)}
+          {rewardsValue}
         </span>
       );
     } else {
@@ -554,7 +606,12 @@ export function TradeFeesRow(p: Props) {
             "text-green-500": totalFeeUsd > 0 && !shouldShowWarning,
             "text-yellow-300 !decoration-yellow-300/50": shouldShowWarning,
           })}
-          handle={formatDeltaUsd(totalFeeUsd)}
+          handle={
+            <>
+              {formatDeltaUsd(totalFeeUsd)}
+              {rewardsValue}
+            </>
+          }
           position="left-start"
           content={
             <div>
@@ -590,7 +647,15 @@ export function TradeFeesRow(p: Props) {
         />
       );
     }
-  }, [totalFeeUsd, feeRows, incentivesBottomText, shouldShowWarning, priceImpactRebatesInfo, swapRouteMsg]);
+  }, [
+    estimatedFeeRewardsUsd,
+    totalFeeUsd,
+    feeRows,
+    incentivesBottomText,
+    shouldShowWarning,
+    priceImpactRebatesInfo,
+    swapRouteMsg,
+  ]);
 
   return <SyntheticsInfoRow label={title} value={value} />;
 }

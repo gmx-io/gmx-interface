@@ -21,6 +21,14 @@ export type EstimatedRewardsParams = {
   downgradingCoefficient?: bigint;
 };
 
+export type EstimatedFeeRewardsParams = {
+  feeUsd?: bigint;
+  totalRebate?: bigint;
+  discountShare?: bigint;
+  pointsBalance?: bigint;
+  gmxPrice?: bigint;
+};
+
 export type EffectiveTradeMultiplierParams = {
   multiplier?: number;
   maxMultiplier?: number;
@@ -86,6 +94,53 @@ export function getEstimatedTradeRewards({
     rewardsUsd,
     rewardsGmx:
       gmxPrice !== undefined && gmxPrice > 0n ? bigMath.mulDiv(rewardsUsd, GMX_DECIMALS_FACTOR, gmxPrice) : undefined,
+  };
+}
+
+export function getEstimatedFeeRewards({
+  feeUsd,
+  totalRebate,
+  discountShare,
+  pointsBalance,
+  gmxPrice,
+}: EstimatedFeeRewardsParams) {
+  if (feeUsd === undefined || feeUsd <= 0n || pointsBalance === undefined || pointsBalance <= 0n) {
+    return undefined;
+  }
+
+  if (gmxPrice === undefined || gmxPrice <= 0n) {
+    return undefined;
+  }
+
+  const totalRebateUsd =
+    totalRebate !== undefined && totalRebate > 0n
+      ? bigMath.mulDiv(feeUsd, totalRebate, BASIS_POINTS_DIVISOR_BIGINT)
+      : 0n;
+  const affiliateShare =
+    discountShare !== undefined && discountShare < BASIS_POINTS_DIVISOR_BIGINT
+      ? BASIS_POINTS_DIVISOR_BIGINT - discountShare
+      : 0n;
+  const affiliateRebateUsd =
+    totalRebateUsd > 0n && affiliateShare > 0n
+      ? bigMath.mulDiv(totalRebateUsd, affiliateShare, BASIS_POINTS_DIVISOR_BIGINT)
+      : 0n;
+  const eligibleFeeUsd = feeUsd > affiliateRebateUsd ? feeUsd - affiliateRebateUsd : 0n;
+
+  if (eligibleFeeUsd <= 0n) {
+    return undefined;
+  }
+
+  const maxRewardsUsd = bigMath.mulDiv(eligibleFeeUsd, BigInt(MAX_FEE_DISCOUNT_PERCENT), 100n);
+  const pointsBalanceUsd = bigMath.mulDiv(pointsBalance, gmxPrice, GMX_DECIMALS_FACTOR);
+  const rewardsUsd = maxRewardsUsd > pointsBalanceUsd ? pointsBalanceUsd : maxRewardsUsd;
+
+  if (rewardsUsd <= 0n) {
+    return undefined;
+  }
+
+  return {
+    rewardsUsd,
+    rewardsBasisUsd: eligibleFeeUsd,
   };
 }
 

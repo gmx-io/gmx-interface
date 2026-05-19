@@ -1359,6 +1359,7 @@ msgid "Unrealized PnL"
 msgstr "Nicht realisierter Gewinn/Verlust"
 
 #: landing/src/pages/Home/LiqiuditySection/PoolCard.tsx
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditDetail.tsx
 #: src/pages/IncentivesDebug/IncentivesAuditList.tsx
 msgid "Rewards"
@@ -1485,6 +1486,10 @@ msgstr "Warten auf Übertragungs­genehmigung..."
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Simulated orderbook view of GMX liquidity. Opens execute at mark price with zero impact. Net price impact applies only on closes (capped, usually at 0.5%). <0>Read more</0>."
 msgstr "Simulierte Orderbuchansicht der GMX-Liquidität. Eröffnungen werden zum Markpreis ohne Preiseinfluss ausgeführt. Der Nettopreiseinfluss gilt nur bei Schließungen (begrenzt, in der Regel bei 0,5 %). <0>Mehr erfahren</0>."
+
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "rewards"
+msgstr ""
 
 #: src/components/SettingsModal/DebugSettings.tsx
 msgid "Disable share modal PnL check"
@@ -3730,6 +3735,10 @@ msgstr "Einklappen"
 msgid "Banners"
 msgstr "Banner"
 
+#: src/components/TradeBox/TradeBoxRows/PointsRow.tsx
+msgid "Estimated points"
+msgstr ""
+
 #: src/pages/PointsPage/components/PointsConnectedSidebarRewards.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
 #: src/pages/PointsPage/components/RewardsHistoryTab.tsx
@@ -5939,10 +5948,6 @@ msgstr "Abhebungsgebühr"
 msgid "Expired Points"
 msgstr ""
 
-#: src/components/TradeBox/TradeBoxRows/PointsRow.tsx
-msgid "Estimated rewards"
-msgstr ""
-
 #: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "TP"
@@ -7501,6 +7506,10 @@ msgstr "One-Click Trading Genehmigungsnonce abgelaufen. Erneut signieren, um for
 msgid "30d"
 msgstr "30T"
 
+#: src/components/TradeFeesRow/TradeFeesRow.tsx
+msgid "{0} of fees"
+msgstr ""
+
 #: src/components/ExitPriceRow/ExitPriceRow.tsx
 msgid "Exit price"
 msgstr "Ausstiegspreis"
@@ -8054,6 +8063,10 @@ msgstr "Handeln Sie über GMX Account mit Arbitrum-Liquidität. Wallet-Handel is
 
 #: src/domain/synthetics/sidecarOrders/utils.ts
 msgid "Set SL price below limit price"
+msgstr ""
+
+#: src/components/TradeBox/TradeBoxRows/PointsRow.tsx
+msgid "pts"
 msgstr ""
 
 #: src/components/HistoricalPointsAllocationModal/HistoricalPointsAllocationModal.tsx

@@ -247,11 +247,11 @@ describe("PointsRow", () => {
     });
   });
 
-  it("renders the estimated GMX and USD rewards", () => {
+  it("renders the estimated points and USD rewards", () => {
     renderPointsRow();
 
-    expect(screen.getByText("Estimated rewards")).toBeDefined();
-    expect(screen.getByText(/11\.25 GMX/)).toBeDefined();
+    expect(screen.getByText("Estimated points")).toBeDefined();
+    expect(screen.getByText(/11\.25 pts/)).toBeDefined();
     expect(screen.getByText((content) => content.includes("225.00"))).toBeDefined();
   });
 
@@ -270,7 +270,7 @@ describe("PointsRow", () => {
 
     renderPointsRow();
 
-    expect(screen.getByText(/5\.63 GMX/)).toBeDefined();
+    expect(screen.getByText(/5\.63 pts/)).toBeDefined();
     expect(screen.getByText((content) => content.includes("112.50"))).toBeDefined();
   });
 
@@ -296,7 +296,7 @@ describe("PointsRow", () => {
     renderPointsRow();
 
     expect(screen.getByText("4.00x")).toBeDefined();
-    expect(screen.getByText(/18\.00 GMX/)).toBeDefined();
+    expect(screen.getByText(/18\.00 pts/)).toBeDefined();
     expect(screen.getByText((content) => content.includes("360.00"))).toBeDefined();
   });
 });

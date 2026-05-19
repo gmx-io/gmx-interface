@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest";
 import {
   DEFAULT_DOWNGRADING_COEFFICIENT,
   getEffectiveTradeMultiplier,
+  getEstimatedFeeRewards,
   getEstimatedTradeRewards,
   getIsBalancingTrade,
   getMarketDowngradingCoefficient,
@@ -50,6 +51,42 @@ describe("getMarketDowngradingCoefficient", () => {
     expect(getMarketDowngradingCoefficient({ "0xabc": 50n }, "0xABC")).toBe(50n);
     expect(getMarketDowngradingCoefficient({ "0xABC": 50n }, "0xABC")).toBe(50n);
     expect(getMarketDowngradingCoefficient({ "0xABC": 50n }, "0xabc")).toBe(50n);
+  });
+});
+
+describe("getEstimatedFeeRewards", () => {
+  it("returns 50% of fees after affiliate rebate when points balance is sufficient", () => {
+    const feeUsd = 100n * 10n ** USD_DECIMALS;
+    const gmxPrice = 20n * 10n ** USD_DECIMALS;
+    const pointsBalance = 10n * 10n ** 18n;
+
+    const result = getEstimatedFeeRewards({
+      feeUsd,
+      totalRebate: 1000n,
+      discountShare: 5000n,
+      pointsBalance,
+      gmxPrice,
+    });
+
+    expect(result?.rewardsBasisUsd).toBe(95n * 10n ** USD_DECIMALS);
+    expect(result?.rewardsUsd).toBe(475n * 10n ** 29n);
+  });
+
+  it("caps rewards by current points balance value", () => {
+    const feeUsd = 100n * 10n ** USD_DECIMALS;
+    const gmxPrice = 20n * 10n ** USD_DECIMALS;
+    const pointsBalance = 1n * 10n ** 18n;
+
+    const result = getEstimatedFeeRewards({
+      feeUsd,
+      totalRebate: 0n,
+      discountShare: 0n,
+      pointsBalance,
+      gmxPrice,
+    });
+
+    expect(result?.rewardsBasisUsd).toBe(100n * 10n ** USD_DECIMALS);
+    expect(result?.rewardsUsd).toBe(20n * 10n ** USD_DECIMALS);
   });
 });
 
