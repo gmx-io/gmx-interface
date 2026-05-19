@@ -1,3 +1,4 @@
+import { useMemo } from "react";
 import useSWR from "swr";
 
 import { API_UI_FLAGS_CACHE_KEY } from "config/localStorage";
@@ -9,46 +10,51 @@ export type UiFlags = Record<string, boolean>;
 
 const PERSISTED_API_FLAG_KEYS = ["apiMarkets", "apiPositions", "apiOrders", "api30", "api50", "api100"];
 
-function readCachedApiFlags(): UiFlags | undefined {
+function getCacheKey(chainId: number): string {
+  return `${API_UI_FLAGS_CACHE_KEY}-${chainId}`;
+}
+
+function readCachedApiFlags(chainId: number): UiFlags | undefined {
   try {
-    const raw = localStorage.getItem(API_UI_FLAGS_CACHE_KEY);
+    const raw = localStorage.getItem(getCacheKey(chainId));
     return raw ? JSON.parse(raw) : undefined;
   } catch {
     return undefined;
   }
 }
 
-function persistApiFlags(flags: UiFlags) {
+function persistApiFlags(chainId: number, flags: UiFlags) {
   const subset: UiFlags = {};
   for (const key of PERSISTED_API_FLAG_KEYS) {
     if (key in flags) subset[key] = flags[key];
   }
   try {
     const next = JSON.stringify(subset);
-    if (localStorage.getItem(API_UI_FLAGS_CACHE_KEY) !== next) {
-      localStorage.setItem(API_UI_FLAGS_CACHE_KEY, next);
+    const cacheKey = getCacheKey(chainId);
+    if (localStorage.getItem(cacheKey) !== next) {
+      localStorage.setItem(cacheKey, next);
     }
   } catch {
     // ignore
   }
 }
 
-const initialCachedFlags = readCachedApiFlags();
-
 export function useUiFlagsRequest() {
   const { chainId } = useChainId();
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
+
+  const fallbackData = useMemo(() => readCachedApiFlags(chainId), [chainId]);
 
   const { data: uiFlags } = useSWR<UiFlags>(
     ["uiFlags", chainId],
     async () => {
       const result = await oracleKeeperFetcher.fetchUiFlags();
-      persistApiFlags(result);
+      persistApiFlags(chainId, result);
       return result;
     },
     {
       refreshInterval: CONFIG_UPDATE_INTERVAL,
-      fallbackData: initialCachedFlags,
+      fallbackData,
     }
   );
 
