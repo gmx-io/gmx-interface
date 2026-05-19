@@ -33,8 +33,12 @@ export function PointsConnectedSidebarRewards({
   isMockMode = false,
 }: PointsConnectedSidebarRewardsProps) {
   const { data: config } = useIncentivesConfig(chainId);
-  const { data: status } = useAccountIncentiveStatus(chainId, { account, enabled: !isMockMode });
-  const { data: totalEarnedRewards } = useAccountTotalEarnedRewards(chainId, { account, enabled: !isMockMode });
+  const shouldFetchRewards = !isMockMode;
+  const { data: status } = useAccountIncentiveStatus(chainId, { account, enabled: shouldFetchRewards });
+  const { data: totalEarnedRewards } = useAccountTotalEarnedRewards(chainId, {
+    account,
+    enabled: shouldFetchRewards,
+  });
   const [isClaimModalOpen, setIsClaimModalOpen] = useState(false);
   const [mockClaimableAmount, setMockClaimableAmount] = useState(POINTS_REWARDS_MOCK_DATA.claimableAmount);
 
@@ -70,33 +74,28 @@ export function PointsConnectedSidebarRewards({
   );
 
   useEffect(() => {
-    if (isMockMode && !isClaimModalOpen) {
-      setMockClaimableAmount(POINTS_REWARDS_MOCK_DATA.claimableAmount);
+    if (!isMockMode || isClaimModalOpen) {
+      return;
     }
+
+    setMockClaimableAmount(POINTS_REWARDS_MOCK_DATA.claimableAmount);
   }, [isClaimModalOpen, isMockMode]);
 
-  const claimableAmount = isMockMode
-    ? mockClaimableAmount
-    : rawClaimableAmount !== undefined
-      ? BigInt(rawClaimableAmount)
-      : 0n;
+  const realClaimableAmount = rawClaimableAmount !== undefined ? BigInt(rawClaimableAmount) : 0n;
+  const claimableAmount = isMockMode ? mockClaimableAmount : realClaimableAmount;
   const mutateClaimableAmount = isMockMode ? mutateMockClaimableAmount : mutateRealClaimableAmount;
   const displayClaimableRewards = formatAmount(claimableAmount, 18, 2, true);
   const hasRewards = claimableAmount > 0n;
 
-  const displayTotalEarnedRewards = isMockMode
-    ? formatAmount(POINTS_REWARDS_MOCK_DATA.totalEarnedRewards, 18, 2, true)
-    : totalEarnedRewards
-      ? formatAmount(totalEarnedRewards, 18, 2, true)
-      : "0.00";
+  const totalEarnedRewardsAmount = isMockMode ? POINTS_REWARDS_MOCK_DATA.totalEarnedRewards : totalEarnedRewards;
+  const displayTotalEarnedRewards = totalEarnedRewardsAmount
+    ? formatAmount(totalEarnedRewardsAmount, 18, 2, true)
+    : "0.00";
 
   const now = useCurrentUnixTimestamp();
   const epochEndTime = getCurrentEpochEndTime(config, now);
-  const timeLeft = isMockMode
-    ? POINTS_REWARDS_MOCK_DATA.timeLeft
-    : epochEndTime > now
-      ? formatTimeLeft(epochEndTime - now)
-      : "";
+  const realTimeLeft = epochEndTime > now ? formatTimeLeft(epochEndTime - now) : "";
+  const timeLeft = isMockMode ? POINTS_REWARDS_MOCK_DATA.timeLeft : realTimeLeft;
 
   const pointsBalance = isMockMode ? POINTS_REWARDS_MOCK_DATA.pointsBalance : status?.pointsBalance;
   const displayPoints = pointsBalance ? formatAmount(pointsBalance, 18, 2, true) : "0.00";

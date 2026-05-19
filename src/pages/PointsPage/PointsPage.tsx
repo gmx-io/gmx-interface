@@ -126,7 +126,7 @@ export function PointsPage() {
               pointsExpiringThisEpoch={status?.pointsExpiringThisEpoch}
               onStakeGmxClick={handleOpenGmxStakeModal}
             />
-            <PointsSidebarRewards chainId={chainId} account={account} />
+            <PointsSidebarRewards chainId={chainId} account={account} isMockMode={isRewardsMockEnabled} />
           </div>
         )}
 
@@ -146,7 +146,7 @@ export function PointsPage() {
 
           <div className="sticky top-8 flex flex-col gap-8 max-xl:static">
             <div className="max-xl:hidden">
-              <PointsSidebarRewards chainId={chainId} account={account} />
+              <PointsSidebarRewards chainId={chainId} account={account} isMockMode={isRewardsMockEnabled} />
             </div>
             <FaqSection config={config} />
             <div className="max-xl:hidden">

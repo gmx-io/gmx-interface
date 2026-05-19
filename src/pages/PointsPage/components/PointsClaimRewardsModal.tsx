@@ -37,7 +37,7 @@ import DiscountsIcon from "img/ic_discounts.svg?react";
 import EarnIcon from "img/ic_earn.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
-import { waitForPointsRewardsMock } from "./pointsRewardsMock";
+import { simulatePointsRewardsMockClaim, simulatePointsRewardsMockClaimAndStake } from "./pointsRewardsMock";
 
 const CLAIM_MODAL_AUTO_CLOSE_SECONDS = 5;
 const POINTS_REWARDS_STEP_CONNECTOR_STYLE = {
@@ -88,8 +88,9 @@ export function PointsClaimRewardsModal({
   const stakedGmxTrackerAddress = getContract(contractsChainId, "StakedGmxTracker");
   const gmxToken = getTokenBySymbol(contractsChainId, "GMX");
 
-  const { data: claimTerms } = useSWR(
-    isOpen && !isMockMode
+  const shouldLoadClaimConfig = isOpen && !isMockMode;
+  const { data: claimTerms, isLoading: claimTermsLoading } = useSWR(
+    shouldLoadClaimConfig
       ? [
           `PointsRewardsClaimTerms:${chainId}:${POINTS_REWARDS_DISTRIBUTION_ID.toString()}`,
           chainId,
@@ -100,8 +101,8 @@ export function PointsClaimRewardsModal({
       : null,
     { fetcher: contractFetcher(undefined, "DataStore") }
   );
-  const { data: rawClaimsDisabled } = useSWR(
-    isOpen && !isMockMode
+  const { data: rawClaimsDisabled, isLoading: claimsDisabledLoading } = useSWR(
+    shouldLoadClaimConfig
       ? [
           `PointsRewardsClaimsDisabled:${chainId}:${POINTS_REWARDS_DISTRIBUTION_ID.toString()}`,
           chainId,
@@ -113,6 +114,9 @@ export function PointsClaimRewardsModal({
     { fetcher: contractFetcher(undefined, "DataStore") }
   );
 
+  const isClaimConfigLoaded =
+    isMockMode ||
+    (claimTerms !== undefined && rawClaimsDisabled !== undefined && !claimTermsLoading && !claimsDisabledLoading);
   const claimsDisabled = isMockMode ? false : Boolean(rawClaimsDisabled);
   const displayedRewardAmount =
     submittedClaimAmount !== undefined && submittedClaimAmount > 0n ? submittedClaimAmount : claimableAmount;
@@ -141,16 +145,23 @@ export function PointsClaimRewardsModal({
   const isStakeAllowanceReady = isMockMode || isStakeAllowanceLoaded;
 
   const gmxAllowance = tokensAllowanceData?.[gmxToken.address];
-  const needsStakeApproval =
-    !isMockMode &&
-    isStakeSupported &&
-    claimableAmount > 0n &&
-    gmxAllowance !== undefined &&
-    claimableAmount > BigInt(gmxAllowance);
+  const needsStakeApprovalForAmount = useCallback(
+    (amount: bigint) =>
+      !isMockMode && isStakeSupported && amount > 0n && gmxAllowance !== undefined && amount > BigInt(gmxAllowance),
+    [gmxAllowance, isMockMode, isStakeSupported]
+  );
 
   const canClaim = isMockMode
     ? claimableAmount > 0n
-    : Boolean(account && signer && claimableAmount > 0n && !claimsDisabled && !hasOutdatedUi && isOnSettlementChain);
+    : Boolean(
+        account &&
+          signer &&
+          claimableAmount > 0n &&
+          isClaimConfigLoaded &&
+          !claimsDisabled &&
+          !hasOutdatedUi &&
+          isOnSettlementChain
+      );
   const isClaiming = pendingAction === "claim";
   const isClaimAndStaking = pendingAction === "claimAndStake";
   const isApproving = pendingAction === "approve";
@@ -248,9 +259,10 @@ export function PointsClaimRewardsModal({
     setSubmittedClaimAmount(claimableAmount);
 
     try {
-      await waitForPointsRewardsMock(900);
-      await mutateClaimableAmount(0n, false);
-      setClaimFlowStep("claimSucceeded");
+      await simulatePointsRewardsMockClaim(async () => {
+        await mutateClaimableAmount(0n, false);
+        setClaimFlowStep("claimSucceeded");
+      });
     } finally {
       setPendingAction(undefined);
     }
@@ -267,13 +279,14 @@ export function PointsClaimRewardsModal({
     setSubmittedClaimAmount(claimableAmount);
 
     try {
-      await waitForPointsRewardsMock(1000);
-      setClaimFlowStep("claimSucceeded");
-      await waitForPointsRewardsMock(500);
-      setClaimFlowStep("stakePending");
-      await waitForPointsRewardsMock(10900);
-      await mutateClaimableAmount(0n, false);
-      setClaimFlowStep("stakeSucceeded");
+      await simulatePointsRewardsMockClaimAndStake({
+        onClaimSucceeded: () => setClaimFlowStep("claimSucceeded"),
+        onStakePending: () => setClaimFlowStep("stakePending"),
+        onStakeSucceeded: async () => {
+          await mutateClaimableAmount(0n, false);
+          setClaimFlowStep("stakeSucceeded");
+        },
+      });
     } finally {
       setPendingAction(undefined);
     }
@@ -340,21 +353,17 @@ export function PointsClaimRewardsModal({
       return;
     }
 
-    let stakeAmount = claimableAmount;
+    let stakeAmount = 0n;
+    let didAttemptApproval = false;
     let didAttemptClaim = false;
     let didClaim = false;
     sendStakeRewardsClickEvent();
     setClaimFlowMode("claimAndStake");
     setSubmittedClaimAmount(claimableAmount);
+    setPendingAction("claimAndStake");
+    setClaimFlowStep("claimPending");
 
     try {
-      if (needsStakeApproval) {
-        await approveGmxForStaking();
-      }
-
-      setPendingAction("claimAndStake");
-      setClaimFlowStep("claimPending");
-
       // Revalidate the on-chain claimable amount before submitting so we stake the
       // actual amount that will be claimed, not a stale cached value.
       const latestRaw = await mutateClaimableAmount();
@@ -368,6 +377,12 @@ export function PointsClaimRewardsModal({
       }
       stakeAmount = latest;
       setSubmittedClaimAmount(latest);
+
+      if (needsStakeApprovalForAmount(stakeAmount)) {
+        didAttemptApproval = true;
+        await approveGmxForStaking();
+        setPendingAction("claimAndStake");
+      }
 
       didAttemptClaim = true;
       await submitClaim();
@@ -396,13 +411,16 @@ export function PointsClaimRewardsModal({
     } catch (err) {
       // eslint-disable-next-line no-console
       console.error("Points rewards claim+stake failed", err);
-      metrics.pushError(err, didClaim ? "pointsSidebar.stakeAfterClaim" : "pointsSidebar.claimAndStake");
-      if (didAttemptClaim && !didClaim) {
+      const didFailApproval = didAttemptApproval && !didAttemptClaim;
+      if (!didFailApproval) {
+        metrics.pushError(err, didClaim ? "pointsSidebar.stakeAfterClaim" : "pointsSidebar.claimAndStake");
+      }
+      if (!didFailApproval && didAttemptClaim && !didClaim) {
         sendClaimRewardsResultEvent(false);
       }
       sendStakeRewardsResultEvent(false);
       if (!didClaim) {
-        helperToast.error(t`Claim failed`);
+        helperToast.error(didFailApproval ? t`Approval failed` : t`Claim failed`);
         setClaimFlowMode(undefined);
         setClaimFlowStep("idle");
         setSubmittedClaimAmount(undefined);
@@ -425,7 +443,7 @@ export function PointsClaimRewardsModal({
     isStakeSupported,
     isMockMode,
     mutateClaimableAmount,
-    needsStakeApproval,
+    needsStakeApprovalForAmount,
     rewardRouterAddress,
     setIsOpen,
     setPendingTxns,

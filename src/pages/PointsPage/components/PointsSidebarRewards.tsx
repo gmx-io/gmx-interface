@@ -4,25 +4,20 @@ import { useConnectModal } from "@rainbow-me/rainbowkit";
 import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletButton";
 
 import { PointsConnectedSidebarRewards } from "./PointsConnectedSidebarRewards";
-import { isPointsRewardsMockEnabled, POINTS_REWARDS_MOCK_ACCOUNT } from "./pointsRewardsMock";
+import { POINTS_REWARDS_MOCK_ACCOUNT } from "./pointsRewardsMock";
 
 type PointsSidebarRewardsProps = {
   chainId: number;
   account?: string;
+  isMockMode?: boolean;
 };
 
-export function PointsSidebarRewards({ chainId, account }: PointsSidebarRewardsProps) {
+export function PointsSidebarRewards({ chainId, account, isMockMode = false }: PointsSidebarRewardsProps) {
   const { openConnectModal } = useConnectModal();
-  const isMockMode = isPointsRewardsMockEnabled();
+  const connectedAccount = account ?? (isMockMode ? POINTS_REWARDS_MOCK_ACCOUNT : undefined);
 
-  if (account || isMockMode) {
-    return (
-      <PointsConnectedSidebarRewards
-        chainId={chainId}
-        account={account ?? POINTS_REWARDS_MOCK_ACCOUNT}
-        isMockMode={isMockMode}
-      />
-    );
+  if (connectedAccount) {
+    return <PointsConnectedSidebarRewards chainId={chainId} account={connectedAccount} isMockMode={isMockMode} />;
   }
 
   return (

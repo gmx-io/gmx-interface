@@ -5238,6 +5238,7 @@ msgstr "Open interest {directionLabel}"
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/domain/tokens/approveTokens.tsx
+#: src/pages/PointsPage/components/PointsClaimRewardsModal.tsx
 msgid "Approval failed"
 msgstr "Approval failed"
 
