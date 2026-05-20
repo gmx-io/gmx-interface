@@ -274,6 +274,7 @@ export function SyntheticsStateContextProvider({
     isLoading,
     positionsInfoData,
     error: positionsInfoError,
+    dataSource: positionsInfoDataSource,
   } = usePositionsInfoRequest(chainId, {
     account,
     showPnlInLeverage: settings.isPnlInLeverage,
@@ -355,6 +356,7 @@ export function SyntheticsStateContextProvider({
     marketsInfo,
     isPositionsInfoLoading: isLoading,
     positionsInfoData,
+    positionsInfoDataSource,
     positionsInfoError,
     isCandlesLoaded,
     pageType,

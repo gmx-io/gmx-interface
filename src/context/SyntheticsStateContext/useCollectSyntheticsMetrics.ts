@@ -4,6 +4,7 @@ import { MarketsInfoResult } from "domain/synthetics/markets";
 import { PositionsInfoData } from "domain/synthetics/positions";
 import { TokensDataResult } from "domain/synthetics/tokens";
 import { useMeasureLoadTime } from "lib/metrics";
+import { ApiDataSource } from "lib/metrics/types";
 import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 
@@ -12,6 +13,7 @@ export function useCollectSyntheticsMetrics({
   marketsInfo,
   isCandlesLoaded,
   positionsInfoData,
+  positionsInfoDataSource,
   positionsInfoError,
   isPositionsInfoLoading,
   pageType,
@@ -19,6 +21,7 @@ export function useCollectSyntheticsMetrics({
   tokensDataResult: TokensDataResult;
   marketsInfo: MarketsInfoResult;
   positionsInfoData: PositionsInfoData | undefined;
+  positionsInfoDataSource: ApiDataSource | undefined;
   isPositionsInfoLoading: boolean;
   isCandlesLoaded: boolean;
   positionsInfoError: Error | undefined;
@@ -40,6 +43,7 @@ export function useCollectSyntheticsMetrics({
     error: marketsInfo.error,
     skip: shouldSkipAccountMetrics || pageType !== "trade",
     metricType: "marketsInfoLoad",
+    data: { dataSource: marketsInfo.dataSource },
   });
 
   useMeasureLoadTime({
@@ -61,6 +65,7 @@ export function useCollectSyntheticsMetrics({
     error: positionsInfoError || marketsInfo.error,
     skip: shouldSkipAccountMetrics || pageType !== "trade",
     metricType: "positionsListLoad",
+    data: { dataSource: positionsInfoDataSource },
   });
 
   useEffect(

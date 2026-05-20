@@ -1,6 +1,8 @@
 import { useMemo } from "react";
 
 import { API_UI_FLAGS, useIsApiSdkEnabled } from "domain/synthetics/uiFlags/useIsApiSdkEnabled";
+import { ApiDataSource } from "lib/metrics/types";
+import { useApiDataFallbackCounter } from "lib/metrics/useApiDataFallbackCounter";
 import type { ContractsChainId } from "sdk/configs/chains";
 import { composeFullMarketsInfoData, composeRawMarketsInfoData } from "sdk/utils/markets";
 import type { MarketsInfoData, RawMarketsInfoData } from "sdk/utils/markets/types";
@@ -14,6 +16,7 @@ export type MarketsInfoResult = {
   marketsInfoData?: MarketsInfoData;
   error?: Error;
   isLoading: boolean;
+  dataSource?: ApiDataSource;
 };
 
 export function useMarketsInfoRequest(
@@ -86,9 +89,21 @@ export function useMarketsInfoRequest(
     });
   }, [marketsAddresses, tokensData, rawMarketsInfoData, chainId, claimableFundingData]);
 
+  const dataSource: ApiDataSource | undefined = mergedData ? (apiMarketsInfoData ? "api" : "rpc") : undefined;
+
+  useApiDataFallbackCounter({
+    domain: "markets",
+    chainId,
+    apiEnabled: isApiSdkEnabled,
+    apiData: apiMarketsInfoData,
+    isApiStale,
+    apiError,
+  });
+
   return {
     marketsInfoData: mergedData,
     error: apiError,
     isLoading: shouldFallbackToRpc && !rpcMarketsInfoDataReady,
+    dataSource,
   };
 }
