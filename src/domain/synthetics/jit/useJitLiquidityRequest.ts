@@ -18,14 +18,14 @@ export function useJitLiquidityRequest(chainId: ContractsChainId, options?: { en
     enabled ? ["jitLiquidity", chainId, isV2JitLiquidityInfoEnabled ? "v2" : "v1"] : null,
     async () => {
       try {
-        const apiUrl = getApiUrl(chainId);
+        const apiVersion = isV2JitLiquidityInfoEnabled ? "v2" : "v1";
+        const apiUrl = getApiUrl(chainId, apiVersion);
 
         if (!apiUrl) {
           return undefined;
         }
 
-        const jitApiUrl = getJitApiUrl(apiUrl, isV2JitLiquidityInfoEnabled);
-        const res = await fetch(`${jitApiUrl}/jit/liquidity_info`);
+        const res = await fetch(`${apiUrl}/jit/liquidity_info`);
         const response = await res.json();
 
         return parseJitLiquidityResponse(response, isV2JitLiquidityInfoEnabled);
@@ -46,12 +46,4 @@ export function useJitLiquidityRequest(chainId: ContractsChainId, options?: { en
     }),
     [data]
   );
-}
-
-function getJitApiUrl(apiUrl: string, isV2JitLiquidityInfoEnabled: boolean): string {
-  if (!isV2JitLiquidityInfoEnabled) {
-    return apiUrl;
-  }
-
-  return apiUrl.replace(/\/v1\/?$/, "/v2");
 }

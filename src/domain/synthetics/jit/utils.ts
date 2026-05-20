@@ -23,7 +23,7 @@ export function getJitLiquidityInfo(
   jitLiquidityMap: Record<string, JitLiquidityInfo> | undefined,
   marketTokenAddress: string
 ): JitLiquidityInfo | undefined {
-  return jitLiquidityMap?.[marketTokenAddress.toLowerCase()];
+  return jitLiquidityMap?.[marketTokenAddress];
 }
 
 export function getJitMaxReservedUsd(
@@ -76,12 +76,7 @@ export function parseJitLiquidityResponse(
       continue;
     }
 
-    if (isV2JitLiquidityInfoEnabled) {
-      result[market.toLowerCase()] = parseV2JitLiquidityInfo(rawInfo);
-      continue;
-    }
-
-    result[market.toLowerCase()] = parseV1JitLiquidityInfo(rawInfo);
+    result[market] = isV2JitLiquidityInfoEnabled ? parseV2JitLiquidityInfo(rawInfo) : parseV1JitLiquidityInfo(rawInfo);
   }
 
   return result;
