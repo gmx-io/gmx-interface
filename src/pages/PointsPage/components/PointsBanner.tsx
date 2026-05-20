@@ -14,7 +14,8 @@ import { formatMultiplier } from "domain/synthetics/incentives/utils";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmount, formatAmountHuman, formatUsd } from "lib/numbers";
 
-import bgPointsBanner from "img/bg_points_banner.png";
+import { usePointsBannerStyles } from "components/PointsPromoBanner/usePointsBannerStyles";
+
 import TradeIcon from "img/ic_candles_filled.svg?react";
 import CloseIcon from "img/ic_close.svg?react";
 import EarnIcon from "img/ic_earn.svg?react";
@@ -58,13 +59,6 @@ type BannerContent = {
 
 type DismissedBannerState = Partial<Record<BannerType, boolean>>;
 
-const BANNER_STYLES = {
-  backgroundImage: `url(${bgPointsBanner})`,
-  backgroundSize: "cover",
-  backgroundPosition: "center",
-  backgroundColor: "var(--color-slate-950)",
-};
-
 const AUTO_ROTATE_MS = 6000;
 const SWIPE_THRESHOLD_PX = 40;
 const SWIPE_DIRECTION_LOCK_RATIO = 1.25;
@@ -102,6 +96,7 @@ export function PointsBanner({
   const { showAllPointsPageBanners } = useSettings();
   const { data: stakingData } = useStakingProcessedData();
   const personalizedBannerData = usePersonalizedBannerData();
+  const bannerStyles = usePointsBannerStyles();
   const [dismissedBannerTypes, setDismissedBannerTypes] = useLocalStorageSerializeKey<DismissedBannerState>(
     POINTS_PAGE_BANNERS_DISMISSED_KEY,
     {}
@@ -270,7 +265,7 @@ export function PointsBanner({
           "relative grid min-h-[110px] w-full grid-cols-[minmax(0,1fr)_80px] overflow-hidden rounded-8 border-1/2 border-stroke-primary bg-slate-900/50 p-16 [touch-action:pan-y] max-sm:grid-cols-[minmax(0,1fr)_80px]",
           bannerAnimationClass
         )}
-        style={BANNER_STYLES}
+        style={bannerStyles}
         onPointerDown={handlePointerDown}
         onPointerUp={handlePointerUp}
         onPointerCancel={handlePointerCancel}

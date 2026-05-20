@@ -27,6 +27,10 @@ vi.mock("lib/userAnalytics/pointsEvents", () => ({
   sendPointsPageNavigationEvent: vi.fn(),
 }));
 
+vi.mock("context/ThemeContext/ThemeContext", () => ({
+  useTheme: () => ({ theme: "dark" }),
+}));
+
 // Import after mocks
 import { isIncentivesEnabled } from "domain/synthetics/incentives/constants";
 import type { PersonalizedBannerData } from "domain/synthetics/incentives/usePersonalizedBannerData";

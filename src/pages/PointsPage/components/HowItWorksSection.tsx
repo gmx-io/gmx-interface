@@ -17,7 +17,7 @@ export function HowItWorksSection() {
       </h3>
       <div className="grid grid-cols-3 gap-8 max-md:grid-cols-1">
         <HowItWorksBlock
-          icon={<TradeIcon className="size-20 text-blue-300" />}
+          icon={<TradeIcon className="size-20 text-blue-400 dark:text-blue-300" />}
           title={<Trans>Trade and Stake</Trans>}
           isExpanded={isExpanded}
           onToggle={setIsExpanded}
@@ -31,7 +31,7 @@ export function HowItWorksSection() {
         </HowItWorksBlock>
 
         <HowItWorksBlock
-          icon={<EarnIcon className="size-20 text-blue-300" />}
+          icon={<EarnIcon className="size-20 text-blue-400 dark:text-blue-300" />}
           title={<Trans>Earn Points</Trans>}
           isExpanded={isExpanded}
           onToggle={setIsExpanded}
@@ -46,7 +46,7 @@ export function HowItWorksSection() {
         </HowItWorksBlock>
 
         <HowItWorksBlock
-          icon={<DiscountsSvg className="size-20 text-blue-300" />}
+          icon={<DiscountsSvg className="size-20 text-blue-400 dark:text-blue-300" />}
           title={<Trans>Claim Rewards</Trans>}
           isExpanded={isExpanded}
           onToggle={setIsExpanded}

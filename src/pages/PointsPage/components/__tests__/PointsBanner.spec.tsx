@@ -30,6 +30,10 @@ vi.mock("domain/synthetics/incentives/usePersonalizedBannerData", () => ({
   usePersonalizedBannerData: () => personalizedBannerDataMock,
 }));
 
+vi.mock("context/ThemeContext/ThemeContext", () => ({
+  useTheme: () => ({ theme: "dark" }),
+}));
+
 i18n.load({ en: {} });
 i18n.activate("en");
 

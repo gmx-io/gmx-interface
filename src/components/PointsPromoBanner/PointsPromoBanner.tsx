@@ -9,20 +9,13 @@ import { useChainId } from "lib/chains";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { sendPointsPageNavigationEvent } from "lib/userAnalytics/pointsEvents";
 
-import bgPointsBanner from "img/bg_points_banner.png";
 import ArrowRightIcon from "img/ic_arrow_right.svg?react";
 import CrossIcon from "img/ic_cross.svg?react";
 import GmxIcon from "img/ic_gmx_glyph.svg?react";
 import pointsBannerCoinGmx from "img/points_banner_coin_gmx.png";
 
 import { getPersonalizedBannerCopy } from "./personalizedBannerCopy";
-
-const BANNER_STYLES = {
-  backgroundImage: `url(${bgPointsBanner})`,
-  backgroundSize: "cover",
-  backgroundPosition: "center",
-  backgroundColor: "var(--color-slate-950)",
-};
+import { usePointsBannerStyles } from "./usePointsBannerStyles";
 
 type PointsTradeBannerDismissedState =
   | boolean
@@ -42,6 +35,7 @@ export function PointsPromoBanner() {
   );
   const [dismissedLatch, setDismissedLatch] = useState(() => getIsDismissedForCurrentState(dismissedState));
   const bannerData = usePersonalizedBannerData();
+  const bannerStyles = usePointsBannerStyles();
   const dismissed = dismissedLatch || getIsDismissedForCurrentState(dismissedState);
 
   const handleDismiss = () => {
@@ -83,7 +77,7 @@ export function PointsPromoBanner() {
     <div className="flex justify-center">
       <Link
         className="relative grid w-full grid-cols-[minmax(0,1fr)_80px] overflow-hidden rounded-8 border-1/2 border-stroke-primary p-16"
-        style={BANNER_STYLES}
+        style={bannerStyles}
         onClick={handleBannerClick}
         to={ctaTo}
       >

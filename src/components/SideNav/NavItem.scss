@@ -17,6 +17,13 @@
   stroke-width: 0%;
 }
 
+:root:not(.dark) .nav-new-badge {
+  background-image: linear-gradient(90deg, var(--color-blue-300) 0%, var(--color-blue-400) 100%);
+  background-size: 100% 100%;
+  background-position: 0 0;
+  animation: none;
+}
+
 .nav-icon-gradient-defs {
   position: absolute;
   width: 0;

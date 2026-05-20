@@ -849,7 +849,7 @@ function BoostsCard({
             {[...allBoosts, ...allBoosts].map((boost, i) => (
               <span
                 key={`${boost.boost}-${i}`}
-                className="flex shrink-0 items-center gap-2 rounded-8 bg-slate-700 py-2 pl-4 pr-12 text-13 font-medium text-typography-secondary"
+                className="flex shrink-0 items-center gap-2 rounded-8 bg-white py-2 pl-4 pr-12 text-13 font-medium text-typography-secondary dark:bg-slate-700"
               >
                 <BoostTierIcon boostId={boost.boost} active={false} className="size-26 shrink-0" />
                 {BOOST_LABELS[boost.boost]()}

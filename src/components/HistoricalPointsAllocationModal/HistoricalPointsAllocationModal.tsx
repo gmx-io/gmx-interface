@@ -15,22 +15,17 @@ import {
 import Button from "components/Button/Button";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
+import { usePointsBannerStyles } from "components/PointsPromoBanner/usePointsBannerStyles";
 
-import bgPointsPromoBanner from "img/bg_points_promo_banner.png";
 import MultiplierSolidIcon from "img/ic_multiplier_solid.svg?react";
 import ShareIcon from "img/ic_share_arrow_filled.svg?react";
+import pointsBannerCoinGmx from "img/points_banner_coin_gmx.png";
 
 type Props = {
   isVisible: boolean;
   setIsVisible: (isVisible: boolean) => void;
   manualAllocatedPoints: bigint | undefined;
   manualBonusUsd: bigint | undefined;
-};
-
-const BANNER_STYLES = {
-  backgroundImage: `url(${bgPointsPromoBanner})`,
-  backgroundSize: "cover",
-  backgroundPosition: "center",
 };
 
 export function HistoricalPointsAllocationModal({
@@ -40,6 +35,7 @@ export function HistoricalPointsAllocationModal({
   manualBonusUsd,
 }: Props) {
   const { chainId } = useChainId();
+  const bannerStyles = usePointsBannerStyles();
 
   const pointsDisplay = manualAllocatedPoints !== undefined ? formatAmount(manualAllocatedPoints, 18, 0, true) : "";
   const usdDisplay = manualBonusUsd !== undefined ? formatUsd(manualBonusUsd) : undefined;
@@ -125,10 +121,10 @@ export function HistoricalPointsAllocationModal({
           <Link
             to="/referrals"
             onClick={handleReferralClick}
-            className="relative flex overflow-hidden rounded-8 border-1/2 border-stroke-primary bg-slate-900/50 p-12"
-            style={BANNER_STYLES}
+            className="relative grid grid-cols-[minmax(0,1fr)_72px] overflow-hidden rounded-8 border-1/2 border-stroke-primary bg-slate-900/50 p-12"
+            style={bannerStyles}
           >
-            <div className="flex flex-col gap-2">
+            <div className="relative z-10 flex min-w-0 flex-col gap-2">
               <h6 className="text-14 font-medium text-typography-primary">
                 <Trans>Know someone who traded on GMX?</Trans>
               </h6>
@@ -140,6 +136,12 @@ export function HistoricalPointsAllocationModal({
                 <ShareIcon className="size-12" />
               </span>
             </div>
+            <img
+              src={pointsBannerCoinGmx}
+              alt=""
+              aria-hidden="true"
+              className="pointer-events-none absolute bottom-[-24px] right-[-10px] size-[122px] select-none"
+            />
           </Link>
         </div>
       </div>
