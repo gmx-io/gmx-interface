@@ -119,6 +119,8 @@ export type ViemWsClientError = {
   };
 };
 
+export type ApiDataSource = "api" | "rpc";
+
 // Loading measurements
 export type LoadingStartEvent = {
   event: `${MeasureMetricType}.${LoadingStage.Started}`;
@@ -127,6 +129,7 @@ export type LoadingStartEvent = {
   data: {
     requestId: string;
     isFirstTimeLoad?: boolean;
+    dataSource?: ApiDataSource;
   };
 };
 
@@ -137,6 +140,7 @@ export type LoadingSuccessEvent = {
   data: {
     requestId: string;
     isFirstTimeLoad?: boolean;
+    dataSource?: ApiDataSource;
   };
 };
 
@@ -147,6 +151,7 @@ export type LoadingTimeoutEvent = {
   data: {
     requestId: string;
     isFirstTimeLoad?: boolean;
+    dataSource?: ApiDataSource;
   };
 };
 
@@ -157,7 +162,17 @@ export type LoadingFailedEvent = {
   data: {
     requestId: string;
     isFirstTimeLoad?: boolean;
+    dataSource?: ApiDataSource;
   } & ErrorData;
+};
+
+export type ApiDataFallbackCounter = {
+  event: "apiData.fallback";
+  data: {
+    domain: "markets" | "positions" | "orders";
+    reason: "stale" | "error";
+    chainId: number;
+  };
 };
 
 export enum FreshnessMetricId {
