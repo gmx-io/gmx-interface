@@ -11,6 +11,9 @@ export type GlobalMetricData = {
   isAuthorised: boolean;
   isLargeAccount: boolean;
   abFlags: Record<string, boolean>;
+  apiSdkMarkets?: boolean;
+  apiSdkPositions?: boolean;
+  apiSdkOrders?: boolean;
   isMobile: boolean;
   isHomeSite: boolean;
   browserName?: string;
