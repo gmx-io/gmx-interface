@@ -8,7 +8,21 @@ import { CONFIG_UPDATE_INTERVAL } from "lib/timeConstants";
 
 export type UiFlags = Record<string, boolean>;
 
-const PERSISTED_API_FLAG_KEYS = ["apiMarkets", "apiPositions", "apiOrders", "api30", "api50", "api100"];
+export const IS_V2_JIT_LIQUIDITY_INFO_ENABLED_UI_FLAG = "isV2JitLiquidityInfoEnabled";
+
+export function getIsV2JitLiquidityInfoEnabled(uiFlags: UiFlags | undefined): boolean {
+  return uiFlags?.[IS_V2_JIT_LIQUIDITY_INFO_ENABLED_UI_FLAG] !== false;
+}
+
+const PERSISTED_API_FLAG_KEYS = [
+  "apiMarkets",
+  "apiPositions",
+  "apiOrders",
+  "api30",
+  "api50",
+  "api100",
+  IS_V2_JIT_LIQUIDITY_INFO_ENABLED_UI_FLAG,
+];
 
 function getCacheKey(chainId: number): string {
   return `${API_UI_FLAGS_CACHE_KEY}-${chainId}`;
