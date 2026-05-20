@@ -2970,6 +2970,10 @@ msgstr "Stake enviado"
 msgid "Net"
 msgstr ""
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "None"
+msgstr "Ninguno"
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr "Saldo de {symbol} insuficiente: {availableFormatted} disponible, {requiredFormatted} requerido"
@@ -3522,6 +3526,10 @@ msgstr "Análisis de datos de GMX V2 en Telegram"
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Runs entirely on public chains"
 msgstr "Se ejecuta completamente en cadenas públicas"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Current"
+msgstr "Actual"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "May lack liquidity for parts of this order when triggered"
@@ -4351,6 +4359,7 @@ msgstr "<0><1>@GMX_IO</1> establece una asociación de datos con Token Terminal.
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
+#: src/components/SettingsModal/DisplaySettings.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "All"
 msgstr "Todos"
@@ -5749,6 +5758,11 @@ msgstr ""
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Swap token unavailable"
 msgstr ""
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Show buy/sell icons on chart"
+msgstr "Mostrar iconos de compra/venta en el gráfico"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."

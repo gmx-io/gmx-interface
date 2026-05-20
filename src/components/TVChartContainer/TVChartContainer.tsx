@@ -10,10 +10,15 @@ import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents/SyntheticsEventsProvider";
 import { selectChartToken } from "context/SyntheticsStateContext/selectors/chartSelectors";
 import { selectChartDynamicLines } from "context/SyntheticsStateContext/selectors/chartSelectors/selectChartDynamicLines";
-import { selectMarketsInfoData, selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import {
+  selectMarketsInfoData,
+  selectPositionsInfoData,
+  selectTokensData,
+} from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { OrderType, isDecreaseOrderType, isIncreaseOrderType } from "domain/synthetics/orders";
+import { getPositionKey } from "domain/synthetics/positions";
 import { parseContractPrice } from "domain/synthetics/tokens";
 import { processRawTradeActions } from "domain/synthetics/tradeHistory/processTradeActions";
 import { fetchRawTradeActions } from "domain/synthetics/tradeHistory/useTradeHistory";
@@ -56,6 +61,10 @@ const MARKS_PAGE_SIZE = 100;
 /** How long fetched marks data stays valid in cache */
 const MARKS_CACHE_TTL_MS = 60_000;
 
+function getNormalizedPositionKey(account: string, market: string, collateral: string, isLong: boolean) {
+  return getPositionKey(account.toLowerCase(), market.toLowerCase(), collateral.toLowerCase(), isLong);
+}
+
 type Props = {
   chainId: number;
   chartLines: StaticChartLine[];
@@ -83,7 +92,7 @@ export default function TVChartContainer({
   setIsCandlesLoaded,
   onOpenTPSLModal,
 }: Props) {
-  const { shouldShowPositionLines } = useSettings();
+  const { shouldShowPositionLines, buySellIconsMode } = useSettings();
   const chartContainerRef = useRef<HTMLDivElement | null>(null);
   const tvWidgetRef = useRef<IChartingLibraryWidget | null>(null);
   const [chartReady, setChartReady] = useState(false);
@@ -100,19 +109,34 @@ export default function TVChartContainer({
   const { positionIncreaseEvents, positionDecreaseEvents } = useSyntheticsEvents();
   const marketsInfoData = useSelector(selectMarketsInfoData);
   const tokensData = useSelector(selectTokensData);
+  const positionsInfoData = useSelector(selectPositionsInfoData);
   const { chartToken: selectedChartToken } = useSelector(selectChartToken);
   const dynamicChartLines = useSelector(selectChartDynamicLines);
   const { account } = useWallet();
+
+  const openPositionKeySet = useMemo(() => {
+    const set = new Set<string>();
+    if (!positionsInfoData) return set;
+    for (const pos of Object.values(positionsInfoData)) {
+      if (!pos || pos.sizeInUsd === 0n) continue;
+      set.add(getNormalizedPositionKey(pos.account, pos.marketAddress, pos.collateralTokenAddress, pos.isLong));
+    }
+    return set;
+  }, [positionsInfoData]);
+
+  const openPositionsKey = useMemo(() => Array.from(openPositionKeySet).sort().join(","), [openPositionKeySet]);
+
   const marksStateRef = useLatest({
     positionIncreaseEvents,
     positionDecreaseEvents,
     marketsInfoData,
     tokensData,
+    openPositionKeySet,
     selectedChartToken,
     visualMultiplier,
     chainId,
     account,
-    shouldShowPositionLines,
+    buySellIconsMode,
   });
   const marksHistoryCacheRef = useRef<{
     key?: string;
@@ -143,18 +167,29 @@ export default function TVChartContainer({
         positionDecreaseEvents: dec,
         marketsInfoData: markets,
         tokensData,
+        openPositionKeySet,
         selectedChartToken: selToken,
         visualMultiplier: vm,
         chainId: cid,
         account: acc,
-        shouldShowPositionLines: showLines,
+        buySellIconsMode: mode,
       } = marksStateRef.current;
-      if (!showLines) {
+      if (mode === "off") {
         return [];
       }
       if (!selToken?.address) {
         return [];
       }
+
+      const isOpenPositionMark = (
+        account: string,
+        marketAddress: string,
+        collateralTokenAddress: string,
+        isLong: boolean
+      ): boolean => {
+        if (mode === "all") return true;
+        return openPositionKeySet.has(getNormalizedPositionKey(account, marketAddress, collateralTokenAddress, isLong));
+      };
       const periodSeconds = RESOLUTION_TO_SECONDS[String(resolution)];
       if (!periodSeconds) {
         return [];
@@ -317,6 +352,10 @@ export default function TVChartContainer({
           const isIncrease = isIncreaseOrderType(ot);
           const isDecrease = isDecreaseOrderType(ot) || ot === OrderType.Liquidation;
           if (!isIncrease && !isDecrease) return;
+          const collateralTokenAddress = isIncrease
+            ? pa.targetCollateralToken.address
+            : pa.initialCollateralTokenAddress;
+          if (!isOpenPositionMark(pa.account, pa.marketAddress, collateralTokenAddress, pa.isLong)) return;
           addMark(
             makeMark({
               id: String(pa.orderKey || pa.id),
@@ -333,6 +372,7 @@ export default function TVChartContainer({
       (inc || []).forEach((e) => {
         if (e.sizeDeltaUsd === 0n) return;
         if (acc && e.account && !isAddressEqual(e.account as Address, acc as Address)) return;
+        if (!isOpenPositionMark(e.account, e.marketAddress, e.collateralTokenAddress, e.isLong)) return;
         const marketForEvent = markets?.[e.marketAddress];
         const tokenDecimals: number | undefined = marketForEvent?.indexToken?.decimals;
         const execPrice =
@@ -355,6 +395,7 @@ export default function TVChartContainer({
       (dec || []).forEach((e) => {
         if (e.sizeDeltaUsd === 0n) return;
         if (acc && e.account && !isAddressEqual(e.account as Address, acc as Address)) return;
+        if (!isOpenPositionMark(e.account, e.marketAddress, e.collateralTokenAddress, e.isLong)) return;
         const marketForEvent = markets?.[e.marketAddress];
         const tokenDecimals: number | undefined = marketForEvent?.indexToken?.decimals;
         const execPrice =
@@ -622,7 +663,8 @@ export default function TVChartContainer({
     hasMarketsInfo,
     hasTokensData,
     visualMultiplier,
-    shouldShowPositionLines,
+    buySellIconsMode,
+    openPositionsKey,
   ]);
 
   useEffect(() => {

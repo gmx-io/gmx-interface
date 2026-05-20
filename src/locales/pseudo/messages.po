@@ -2970,6 +2970,10 @@ msgstr ""
 msgid "Net"
 msgstr ""
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "None"
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr ""
@@ -3521,6 +3525,10 @@ msgstr ""
 
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Runs entirely on public chains"
+msgstr ""
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Current"
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
@@ -4351,6 +4359,7 @@ msgstr ""
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
+#: src/components/SettingsModal/DisplaySettings.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "All"
 msgstr ""
@@ -5748,6 +5757,11 @@ msgstr ""
 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Swap token unavailable"
+msgstr ""
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Show buy/sell icons on chart"
 msgstr ""
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx

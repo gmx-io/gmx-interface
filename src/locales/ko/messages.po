@@ -2970,6 +2970,10 @@ msgstr "스테이킹이 제출되었습니다"
 msgid "Net"
 msgstr ""
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "None"
+msgstr "없음"
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr "{symbol} 잔액 부족: {availableFormatted} 사용 가능, {requiredFormatted} 필요"
@@ -3522,6 +3526,10 @@ msgstr "Telegram 내 GMX V2 데이터 분석"
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Runs entirely on public chains"
 msgstr "전체적으로 공개 체인에서 실행"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Current"
+msgstr "현재"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "May lack liquidity for parts of this order when triggered"
@@ -4351,6 +4359,7 @@ msgstr "<0><1>@GMX_IO</1>가 Token Terminal과 데이터 파트너십을 체결�
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
+#: src/components/SettingsModal/DisplaySettings.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "All"
 msgstr "모두"
@@ -5749,6 +5758,11 @@ msgstr ""
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Swap token unavailable"
 msgstr ""
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Show buy/sell icons on chart"
+msgstr "차트에 매수/매도 아이콘 표시"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."

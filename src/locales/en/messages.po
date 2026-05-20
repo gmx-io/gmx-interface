@@ -2970,6 +2970,10 @@ msgstr "Stake submitted"
 msgid "Net"
 msgstr "Net"
 
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "None"
+msgstr "None"
+
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
 msgstr "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
@@ -3522,6 +3526,10 @@ msgstr "GMX V2 data analytics within Telegram"
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Runs entirely on public chains"
 msgstr "Runs entirely on public chains"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Current"
+msgstr "Current"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "May lack liquidity for parts of this order when triggered"
@@ -4351,6 +4359,7 @@ msgstr "<0><1>@GMX_IO</1> enters into a Data Partnership with Token Terminal. GM
 #: src/components/Earn/AdditionalOpportunities/OpportunityFilters.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
+#: src/components/SettingsModal/DisplaySettings.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "All"
 msgstr "All"
@@ -5749,6 +5758,11 @@ msgstr "Your rebates depend on your tier level, which you can view <0>here</0>. 
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 msgid "Swap token unavailable"
 msgstr "Swap token unavailable"
+
+#: src/components/SettingsModal/DisplaySettings.tsx
+#: src/components/SettingsModal/DisplaySettings.tsx
+msgid "Show buy/sell icons on chart"
+msgstr "Show buy/sell icons on chart"
 
 #: src/components/TradeBox/ExpressTradingWarningCard.tsx
 msgid "This swap requires external routing. Pay gas in {0} to enable it."
