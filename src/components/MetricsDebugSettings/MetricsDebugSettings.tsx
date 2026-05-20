@@ -10,6 +10,7 @@ const FLAG_LABELS: Record<MetricsDebugFlags, string> = {
   [MetricsDebugFlags.LogFreshnessMetrics]: "Log Freshness Metrics",
   [MetricsDebugFlags.LogTimings]: "Log Timings",
   [MetricsDebugFlags.LogEvents]: "Log Events",
+  [MetricsDebugFlags.LogUserAnalyticsEvents]: "Log User Analytics Events",
   [MetricsDebugFlags.LogBatchItems]: "Log Batch Items",
   [MetricsDebugFlags.LogQueueState]: "Log Queue State",
   [MetricsDebugFlags.LogCounters]: "Log Counters",

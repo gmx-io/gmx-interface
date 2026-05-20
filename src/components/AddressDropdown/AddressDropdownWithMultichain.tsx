@@ -5,6 +5,8 @@ import Skeleton from "react-loading-skeleton";
 
 import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { useGmxAccountShowDepositButton } from "domain/multichain/useGmxAccountShowDepositButton";
+import { isIncentivesEnabled } from "domain/synthetics/incentives/constants";
+import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
 import { useChainId } from "lib/chains";
 import { useENS } from "lib/legacy";
 import { formatUsd } from "lib/numbers";
@@ -14,6 +16,7 @@ import { shortenAddressOrEns } from "lib/wallets";
 import { Avatar } from "components/Avatar/Avatar";
 import Button from "components/Button/Button";
 import { useAvailableToTradeAssetSettlementChain } from "components/GmxAccountModal/hooks";
+import { MultiplierBadge } from "components/MultiplierBadge/MultiplierBadge";
 
 const BACKDROP_ANIMATION_DURATION = 300;
 
@@ -22,11 +25,19 @@ type Props = {
 };
 
 export function AddressDropdownWithMultichain({ account }: Props) {
-  const { srcChainId } = useChainId();
+  const { chainId, srcChainId } = useChainId();
   const { ensName } = useENS(account);
   const [, setGmxAccountModalOpen] = useGmxAccountModalOpen();
   const { totalUsd, gmxAccountUsd, isGmxAccountLoading } = useAvailableToTradeAssetSettlementChain();
   const { shouldShowDepositButton } = useGmxAccountShowDepositButton();
+
+  const incentivesEnabled = isIncentivesEnabled(chainId);
+  const { data: incentiveStatus } = useAccountIncentiveStatus(chainId, {
+    account,
+    enabled: incentivesEnabled,
+  });
+  const multiplier = incentiveStatus?.multiplier;
+  const showMultiplier = incentivesEnabled && multiplier !== undefined && multiplier > 0;
 
   const { isMobile, isSmallMobile } = useBreakpoints();
   const displayAddressLength = isMobile ? 9 : 13;
@@ -78,7 +89,7 @@ export function AddressDropdownWithMultichain({ account }: Props) {
         <div
           className={cx(
             "text-body-medium flex items-center font-medium text-typography-primary",
-            !isMobile && (!shouldShowDepositButton ? "gap-16" : "gap-20"),
+            !isMobile && (!shouldShowDepositButton ? "gap-12" : "gap-20"),
             isMobile && "gap-8"
           )}
         >
@@ -86,6 +97,8 @@ export function AddressDropdownWithMultichain({ account }: Props) {
             <Avatar size={isMobile ? 16 : 24} ensName={ensName} address={account} />
 
             {!isSmallMobile && <>{shortenAddressOrEns(ensName || account, displayAddressLength)}</>}
+
+            {showMultiplier && <MultiplierBadge multiplier={multiplier} />}
           </div>
 
           {showSideButton && !shouldShowDepositButton && (

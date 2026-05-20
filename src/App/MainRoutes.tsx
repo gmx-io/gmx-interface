@@ -22,6 +22,7 @@ import Jobs from "pages/Jobs/Jobs";
 import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import { ParseTransactionPage } from "pages/ParseTransaction/ParseTransaction";
+import { PointsPage } from "pages/PointsPage/PointsPage";
 import Pools from "pages/Pools/Pools";
 import { PoolsDetails } from "pages/PoolsDetails/PoolsDetails";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
@@ -78,6 +79,15 @@ const LazyDecodeError = lazy(() =>
 const DecodeErrorPage = () => (
   <Suspense fallback={<Trans>Loading...</Trans>}>
     <LazyDecodeError />
+  </Suspense>
+);
+
+const LazyIncentivesAudit = lazy(() =>
+  import("pages/IncentivesDebug/IncentivesAuditPage").then((module) => ({ default: module.IncentivesAuditPage }))
+);
+const IncentivesAuditPage = () => (
+  <Suspense fallback={<Trans>Loading...</Trans>}>
+    <LazyIncentivesAudit />
   </Suspense>
 );
 
@@ -168,6 +178,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       <Route exact path="/ecosystem">
         <Ecosystem />
       </Route>
+      <Route path="/points/:tab?">
+        <PointsPage />
+      </Route>
       <Route path="/leaderboard/">
         <SyntheticsStateContextProvider skipLocalReferralCode pageType="leaderboard">
           <LeaderboardPage />
@@ -234,6 +247,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         </Route>,
         <Route exact path="/decode-error" key="decode-error">
           <DecodeErrorPage />
+        </Route>,
+        <Route path="/incentives-audit/:account?" key="incentives-audit">
+          <IncentivesAuditPage />
         </Route>,
       ]}
       <Route path="*">

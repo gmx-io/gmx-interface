@@ -11,6 +11,7 @@ import {
   selectTradeboxDefaultTriggerAcceptablePriceImpactBps,
   selectTradeboxFees,
   selectTradeboxIncreasePositionAmounts,
+  selectTradeboxMarketInfo,
   selectTradeboxMarkPrice,
   selectTradeboxNextPositionValues,
   selectTradeboxSelectedPosition,
@@ -44,8 +45,10 @@ import { AvailableLiquidityRow } from "./AvailableLiquidityRow";
 import { CollateralSpreadRow } from "./CollateralSpreadRow";
 import { EntryPriceRow } from "./EntryPriceRow";
 import { NextStoredImpactRows } from "./NextStoredImpactRows";
+import { PointsRow } from "./PointsRow";
 import { SwapDebugRow } from "./SwapDebugRow";
 import { SwapSpreadRow } from "./SwapSpreadRow";
+import { useTradePointsEstimate } from "./useTradePointsEstimate";
 import { useTradeboxAllowedSwapSlippageValues } from "../hooks/useTradeboxAllowedSwapSlippageValues";
 
 function LeverageInfoRows() {
@@ -152,7 +155,16 @@ export function TradeBoxAdvancedGroups({
   const feesType = useSelector(selectTradeboxTradeFeesType);
   const increaseAmounts = useSelector(selectTradeboxIncreasePositionAmounts);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
+  const marketInfo = useSelector(selectTradeboxMarketInfo);
   const limitPrice = useSelector(selectTradeboxTriggerPrice);
+  const pointsEstimate = useTradePointsEstimate({
+    fees,
+    feesType,
+    marketInfo,
+    isLong,
+    sizeDeltaUsd: increaseAmounts?.sizeDeltaUsd,
+    includeBalancingBoost: feesType === "increase",
+  });
 
   const setSelectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSetSelectedAcceptablePriceImpactBps);
   const selectedTriggerAcceptablePriceImpactBps = useSelector(selectTradeboxSelectedTriggerAcceptablePriceImpactBps);
@@ -194,59 +206,67 @@ export function TradeBoxAdvancedGroups({
   const markPrice = useSelector(selectTradeboxMarkPrice);
 
   return (
-    <ExpandableRow
-      open={isVisible}
-      title={t`Execution details`}
-      onToggle={toggleAdvancedDisplay}
-      disableCollapseOnError={false}
-      hasError={hasError}
-      contentClassName="flex flex-col gap-14"
-      scrollIntoViewOnMobile
-      wrapped
-    >
-      {isTrigger ? (
-        <ExitPriceRow isSwap={isSwap} fees={fees} price={isTrigger ? limitPrice : markPrice} isLong={isLong} />
-      ) : null}
-      {(isLimit || isTrigger || isTwap) && !isSwap && isSetAcceptablePriceImpactEnabled && (
-        <>
-          <AcceptablePriceImpactInputRow
-            notAvailable={
-              isPriceImpactInputDisabled ||
-              defaultTriggerAcceptablePriceImpactBps === undefined ||
-              selectedTriggerAcceptablePriceImpactBps === undefined
-            }
-            acceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps}
-            recommendedAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
-            priceImpactFeeBps={
-              isTrigger ? fees?.decreasePositionPriceImpact?.bps : fees?.increasePositionPriceImpact?.bps
-            }
-            setAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
-          />
-        </>
-      )}
+    <div className="rounded-8 bg-slate-700/50">
+      <ExpandableRow
+        open={isVisible}
+        title={t`Execution details`}
+        onToggle={toggleAdvancedDisplay}
+        disableCollapseOnError={false}
+        hasError={hasError}
+        contentClassName="flex flex-col gap-14"
+        scrollIntoViewOnMobile
+        wrapped
+      >
+        {isTrigger ? (
+          <ExitPriceRow isSwap={isSwap} fees={fees} price={isTrigger ? limitPrice : markPrice} isLong={isLong} />
+        ) : null}
+        {(isLimit || isTrigger || isTwap) && !isSwap && isSetAcceptablePriceImpactEnabled && (
+          <>
+            <AcceptablePriceImpactInputRow
+              notAvailable={
+                isPriceImpactInputDisabled ||
+                defaultTriggerAcceptablePriceImpactBps === undefined ||
+                selectedTriggerAcceptablePriceImpactBps === undefined
+              }
+              acceptablePriceImpactBps={selectedTriggerAcceptablePriceImpactBps}
+              recommendedAcceptablePriceImpactBps={defaultTriggerAcceptablePriceImpactBps}
+              priceImpactFeeBps={
+                isTrigger ? fees?.decreasePositionPriceImpact?.bps : fees?.increasePositionPriceImpact?.bps
+              }
+              setAcceptablePriceImpactBps={setSelectedTriggerAcceptablePriceImpactBps}
+            />
+          </>
+        )}
 
-      <TradeFeesRow {...fees} feesType={feesType} />
-      {showDebugValues && <SwapDebugRow />}
-      <NetworkFeeRow executionFee={totalExecutionFee} gasPaymentParams={gasPaymentParams} />
+        <TradeFeesRow
+          {...fees}
+          feesType={feesType}
+          estimatedFeeRewardsUsd={pointsEstimate.estimatedFeeRewards?.rewardsUsd}
+          estimatedFeeRewardsBasisUsd={pointsEstimate.estimatedFeeRewards?.rewardsBasisUsd}
+        />
+        {showDebugValues && <SwapDebugRow />}
+        <NetworkFeeRow executionFee={totalExecutionFee} gasPaymentParams={gasPaymentParams} />
 
-      {isTwap && isSwap ? (
-        <SyntheticsInfoRow label={<Trans>Acceptable swap impact</Trans>} value={<Trans>N/A</Trans>} />
-      ) : null}
+        {isTwap && isSwap ? (
+          <SyntheticsInfoRow label={<Trans>Acceptable swap impact</Trans>} value={<Trans>N/A</Trans>} />
+        ) : null}
 
-      {/* only when isSwap */}
-      {isSwap && <SwapSpreadRow />}
-      {(isLimit || isTwap) && <AvailableLiquidityRow />}
-      {/* only when isMarket and not a swap */}
-      {!isTwap && (
-        <>
-          {isMarket && !isSwap && <CollateralSpreadRow />}
-          {isMarket && !isSwap && <AllowedSlippageRow slippageInputId={slippageInputId} />}
-          {!isSwap && <NextStoredImpactRows />}
-          <LeverageInfoRows />
-          <EntryPriceRow />
-          <ExistingPositionInfoRows />
-        </>
-      )}
-    </ExpandableRow>
+        {/* only when isSwap */}
+        {isSwap && <SwapSpreadRow />}
+        {(isLimit || isTwap) && <AvailableLiquidityRow />}
+        {/* only when isMarket and not a swap */}
+        {!isTwap && (
+          <>
+            {isMarket && !isSwap && <CollateralSpreadRow />}
+            {isMarket && !isSwap && <AllowedSlippageRow slippageInputId={slippageInputId} />}
+            {!isSwap && <NextStoredImpactRows />}
+            <LeverageInfoRows />
+            <EntryPriceRow />
+            <ExistingPositionInfoRows />
+          </>
+        )}
+      </ExpandableRow>
+      <PointsRow />
+    </div>
   );
 }

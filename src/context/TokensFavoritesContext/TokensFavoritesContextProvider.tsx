@@ -9,7 +9,7 @@ import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 
 // ---- Types ----
 
-export type TopLevelTab = "all" | "favorites" | "crypto" | "tradfi" | "recently-listed";
+export type TopLevelTab = "all" | "favorites" | "crypto" | "tradfi" | "recently-listed" | "incentivized";
 
 export type CryptoSubCategory = "all" | "ai" | "layer1" | "layer2" | "defi" | "meme";
 export type TradfiSubCategory = "all" | "commodities" | "stocks" | "indices" | "fx";
@@ -52,6 +52,7 @@ export const topLevelTabLabels: Record<TopLevelTab, MessageDescriptor> = {
   crypto: msg`Crypto`,
   tradfi: msg`TradFi`,
   "recently-listed": msg`Recently Listed`,
+  incentivized: msg`Incentivized Markets`,
 };
 
 export const subCategoryTabLabels: Record<Exclude<SubCategoryTab, "all">, MessageDescriptor> = {

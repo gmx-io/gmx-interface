@@ -351,6 +351,27 @@ export function formatTokenAmountWithUsd(
 }
 
 /**
+ * Formats a points value (no currency suffix) at `displayDecimals` precision.
+ *
+ * Mirrors the convention used by `formatUsd`: when the underlying value is
+ * non-zero but smaller than the minimum representable amount at the requested
+ * precision (`1 / 10^displayDecimals`), returns `<<minThreshold>` (e.g.
+ * `<0.01` for `displayDecimals=2`) so a sub-precision balance is visible
+ * instead of collapsing to a flat `0.00`.
+ */
+export function formatPointsAmount(value: bigint, decimals: number, displayDecimals = 2): string {
+  const minThreshold = displayDecimals > 0 ? "0." + "0".repeat(Math.max(displayDecimals - 1, 0)) + "1" : "1";
+
+  const limited = getLimitedDisplay(value, decimals, { maxThreshold: null, minThreshold });
+
+  if (limited.symbol === TRIGGER_PREFIX_BELOW) {
+    return `${TRIGGER_PREFIX_BELOW}${minThreshold}`;
+  }
+
+  return formatAmount(limited.value, decimals, displayDecimals, true);
+}
+
+/**
  *
  * @param opts.signed - Default `true`. whether to display a `+` or `-` sign for all non-zero values.
  */
@@ -517,14 +538,31 @@ export function numberWithCommas(x: BigNumberish, { showDollar = false }: { show
   return `${showDollar ? "$\u200a" : ""}${parts.join(".")}`;
 }
 
+type FormatAmountOptions = {
+  defaultValue?: string;
+  visualMultiplier?: number;
+  trimTrailingZeros?: boolean;
+};
+
+function trimTrailingZeroDecimals(amount: string) {
+  return amount.replace(/\.0+$/, "").replace(/(\.\d*?)0+$/, "$1");
+}
+
 export const formatAmount = (
   amount: BigNumberish | undefined,
   tokenDecimals: number,
   displayDecimals?: number,
   useCommas?: boolean,
-  defaultValue?: string,
-  visualMultiplier?: number
+  defaultValueOrOptions?: string | FormatAmountOptions,
+  visualMultiplier?: number,
+  trimTrailingZeros?: boolean
 ) => {
+  const options = typeof defaultValueOrOptions === "object" ? defaultValueOrOptions : undefined;
+  let defaultValue =
+    options?.defaultValue ?? (typeof defaultValueOrOptions === "string" ? defaultValueOrOptions : undefined);
+  const resolvedVisualMultiplier = options?.visualMultiplier ?? visualMultiplier;
+  const shouldTrimTrailingZeros = options?.trimTrailingZeros ?? trimTrailingZeros;
+
   if (defaultValue === undefined || defaultValue === null) {
     defaultValue = "...";
   }
@@ -534,7 +572,7 @@ export const formatAmount = (
   if (displayDecimals === undefined) {
     displayDecimals = 4;
   }
-  const amountBigInt = roundWithDecimals(BigInt(amount) * BigInt(visualMultiplier ?? 1), {
+  const amountBigInt = roundWithDecimals(BigInt(amount) * BigInt(resolvedVisualMultiplier ?? 1), {
     displayDecimals,
     decimals: tokenDecimals,
   });
@@ -542,6 +580,9 @@ export const formatAmount = (
   amountStr = limitDecimals(amountStr, displayDecimals);
   if (displayDecimals !== 0) {
     amountStr = padDecimals(amountStr, displayDecimals);
+  }
+  if (shouldTrimTrailingZeros) {
+    amountStr = trimTrailingZeroDecimals(amountStr);
   }
   if (useCommas) {
     return numberWithCommas(amountStr);

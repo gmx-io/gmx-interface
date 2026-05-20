@@ -180,6 +180,8 @@ export function GmPoolsSelectorForGlvMarket({
         });
       case "recently-listed":
         return textMatched?.filter(() => false);
+      case "incentivized":
+        return textMatched;
     }
   }, [favoriteTokens, marketsOptions, searchKeyword, topLevelTab]);
 

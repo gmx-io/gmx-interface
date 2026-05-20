@@ -14,6 +14,7 @@ import {
   formatBalanceAmount,
   formatFactor,
   formatPercentage,
+  formatPointsAmount,
   formatTokenAmount,
   formatUsdPrice,
   getBasisPoints,
@@ -317,6 +318,14 @@ describe("formatUsdPrice", () => {
   });
 });
 
+describe("formatAmount", () => {
+  it("can trim trailing zero decimals", () => {
+    expect(formatAmount(toBigNumberWithDecimals("75", 18), 18, 2, true, { trimTrailingZeros: true })).toBe("75");
+    expect(formatAmount(toBigNumberWithDecimals("1.5", 18), 18, 2, true, { trimTrailingZeros: true })).toBe("1.5");
+    expect(formatAmount(toBigNumberWithDecimals("1000", 18), 18, 2, true, { trimTrailingZeros: true })).toBe("1,000");
+  });
+});
+
 describe("formatAmountHuman", () => {
   it("positive", () => {
     expect(formatAmountHuman(ONE_USD, USD_DECIMALS)).toBe("1.0");
@@ -542,5 +551,40 @@ describe("formatTokenAmount", () => {
       minThreshold: "0.00000001",
     });
     expect(result).toContain("<");
+  });
+});
+
+describe("formatPointsAmount", () => {
+  const POINTS_DECIMALS = 18;
+  const ONE_POINT = expandDecimals(1, POINTS_DECIMALS);
+
+  it("returns 0.00 for zero", () => {
+    expect(formatPointsAmount(0n, POINTS_DECIMALS)).toBe("0.00");
+  });
+
+  it("returns <0.01 for non-zero values smaller than the display threshold", () => {
+    // 0.001 points — rounds to 0.00 at 2 decimals
+    expect(formatPointsAmount(ONE_POINT / 1000n, POINTS_DECIMALS)).toBe("<0.01");
+    // 1 wei of points — sub-min positive
+    expect(formatPointsAmount(1n, POINTS_DECIMALS)).toBe("<0.01");
+  });
+
+  it("formats values at or above the display threshold with 2 decimals", () => {
+    // exactly 0.01
+    expect(formatPointsAmount(ONE_POINT / 100n, POINTS_DECIMALS)).toBe("0.01");
+    // 3.45 points
+    expect(formatPointsAmount((ONE_POINT * 345n) / 100n, POINTS_DECIMALS)).toBe("3.45");
+  });
+
+  it("formats large values with thousands separators", () => {
+    // 123,456.78 points
+    const value = (ONE_POINT * 12345678n) / 100n;
+    expect(formatPointsAmount(value, POINTS_DECIMALS)).toBe("123,456.78");
+  });
+
+  it("respects custom displayDecimals", () => {
+    // displayDecimals=3 → threshold 0.001
+    expect(formatPointsAmount(ONE_POINT / 10000n, POINTS_DECIMALS, 3)).toBe("<0.001");
+    expect(formatPointsAmount(ONE_POINT / 1000n, POINTS_DECIMALS, 3)).toBe("0.001");
   });
 });

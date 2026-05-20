@@ -1,6 +1,7 @@
 import { useBreakpoints } from "lib/useBreakpoints";
 
 import ErrorBoundary from "components/Errors/ErrorBoundary";
+import { PointsPromoBanner } from "components/PointsPromoBanner/PointsPromoBanner";
 
 import { Curtain } from "./Curtain";
 import { TradeBox } from "./TradeBox";
@@ -25,6 +26,9 @@ export function TradeBoxResponsiveContainer() {
       <ErrorBoundary id="TradeBox" variant="block">
         <TradeBox isMobile={isTablet} />
       </ErrorBoundary>
+      <div className="mt-auto p-8">
+        <PointsPromoBanner />
+      </div>
     </Curtain>
   );
 }

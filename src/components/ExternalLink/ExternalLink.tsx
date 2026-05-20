@@ -11,10 +11,11 @@ type Props = {
   children: React.ReactNode;
   className?: string;
   newTab?: boolean;
+  onClick?: React.MouseEventHandler<HTMLAnchorElement>;
   variant?: "underline" | "icon" | "icon-arrow";
 };
 
-function ExternalLink({ href, children, className, newTab = true, variant = "underline" }: Props) {
+function ExternalLink({ href, children, className, newTab = true, onClick, variant = "underline" }: Props) {
   const classNames = cx("link-underline hover:text-blue-300", className, {
     "!no-underline": variant !== "underline",
     "inline-flex": variant === "icon",
@@ -23,6 +24,7 @@ function ExternalLink({ href, children, className, newTab = true, variant = "und
   const props = {
     href,
     className: classNames,
+    onClick,
     ...(newTab
       ? {
           target: "_blank",

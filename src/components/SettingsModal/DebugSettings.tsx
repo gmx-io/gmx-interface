@@ -26,6 +26,10 @@ export function DebugSettings({ isSettingsVisible }: DebugSettingsProps) {
           <Trans>Show debug values</Trans>
         </ToggleSwitch>
 
+        <ToggleSwitch isChecked={settings.showAllPointsPageBanners} setIsChecked={settings.setShowAllPointsPageBanners}>
+          <Trans>Show all points page banners</Trans>
+        </ToggleSwitch>
+
         <ToggleSwitch
           isChecked={settings.isErrorBoundaryDebugEnabled}
           setIsChecked={settings.setIsErrorBoundaryDebugEnabled}

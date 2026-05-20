@@ -4,7 +4,7 @@
   initial-value: 160.6deg;
 }
 
-.support-chat-new-badge {
+.nav-new-badge {
   --gradient-angle: 160.6deg;
   background: linear-gradient(var(--gradient-angle), var(--color-blue-100) 0%, var(--color-blue-400) 100%);
   background-size: 100% 86px;
@@ -17,7 +17,14 @@
   stroke-width: 0%;
 }
 
-.support-chat-icon-gradient-defs {
+:root:not(.dark) .nav-new-badge {
+  background-image: linear-gradient(90deg, var(--color-blue-300) 0%, var(--color-blue-400) 100%);
+  background-size: 100% 100%;
+  background-position: 0 0;
+  animation: none;
+}
+
+.nav-icon-gradient-defs {
   position: absolute;
   width: 0;
   height: 0;
@@ -25,8 +32,8 @@
   pointer-events: none;
 }
 
-.support-chat-icon-collapsed path {
-  fill: url(#support-chat-icon-collapsed-gradient);
+.nav-icon-gradient-collapsed path {
+  fill: url(#nav-icon-collapsed-gradient);
 }
 
 @keyframes gradient-rotate {

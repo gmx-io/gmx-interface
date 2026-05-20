@@ -1,0 +1,30 @@
+.PointsLeaderboardRank-1,
+.PointsLeaderboardRank-2,
+.PointsLeaderboardRank-3 {
+  display: inline-flex;
+  align-items: center;
+}
+
+.PointsLeaderboardRank-1::after,
+.PointsLeaderboardRank-2::after,
+.PointsLeaderboardRank-3::after {
+  content: "";
+  width: 2.5rem;
+  height: 2.5rem;
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  margin-left: 0.5rem;
+}
+
+.PointsLeaderboardRank-1::after {
+  background-image: url(../../../img/rank1.svg);
+}
+
+.PointsLeaderboardRank-2::after {
+  background-image: url(../../../img/rank2.svg);
+}
+
+.PointsLeaderboardRank-3::after {
+  background-image: url(../../../img/rank3.svg);
+}

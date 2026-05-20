@@ -13,13 +13,15 @@ import Tabs from "components/Tabs/Tabs";
 import type { Option } from "components/Tabs/types";
 
 const REGULAR_TAB_CLASS_NAME = "!px-0 !pb-11 !pt-13 text-13";
+const EMPTY_TOP_LEVEL_TABS: TopLevelTab[] = [];
 
 export function FavoriteTabs({
   favoritesKey,
   className,
   type = "block",
   recentlyListedCount = 0,
-  excludedTabs = [],
+  excludedTabs = EMPTY_TOP_LEVEL_TABS,
+  extraTabs = EMPTY_TOP_LEVEL_TABS,
   selectedValue,
 }: {
   favoritesKey: TokenFavoriteKey;
@@ -27,6 +29,7 @@ export function FavoriteTabs({
   type?: "inline" | "block";
   recentlyListedCount?: number;
   excludedTabs?: TopLevelTab[];
+  extraTabs?: TopLevelTab[];
   selectedValue?: TopLevelTab;
 }) {
   const { topLevelTab, setTopLevelTab } = useTokensFavorites(favoritesKey);
@@ -34,7 +37,9 @@ export function FavoriteTabs({
   const activeValue = selectedValue ?? topLevelTab;
 
   const options = useMemo<Option<TopLevelTab>[]>(() => {
-    return topLevelTabOptions
+    const tabs = extraTabs.length > 0 ? [...topLevelTabOptions, ...extraTabs] : topLevelTabOptions;
+
+    return tabs
       .filter((opt) => !excludedTabs.includes(opt))
       .filter((opt) => (opt === "recently-listed" ? recentlyListedCount > 0 : true))
       .map((opt) => ({
@@ -51,7 +56,7 @@ export function FavoriteTabs({
             labels[opt]
           ),
       }));
-  }, [excludedTabs, recentlyListedCount, labels]);
+  }, [excludedTabs, extraTabs, recentlyListedCount, labels]);
 
   return (
     <Tabs

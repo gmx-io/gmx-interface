@@ -61,6 +61,15 @@ describe("applyTopLevelFilter", () => {
     });
     expect(result.map((t) => t.address)).toEqual(["0xeth", "0xgold"]);
   });
+
+  it("returns incentivized tokens only", () => {
+    const result = applyTopLevelFilter(tokens, {
+      topLevelTab: "incentivized",
+      favoriteAddresses: [],
+      incentivizedAddresses: ["0xarb", "0xgold"],
+    });
+    expect(result.map((t) => t.address)).toEqual(["0xarb", "0xgold"]);
+  });
 });
 
 describe("applySubCategoryFilter", () => {

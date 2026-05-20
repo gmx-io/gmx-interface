@@ -16,7 +16,10 @@ const DEFAULT_SORTER_STATE: SorterState = {
   "gm-token-selector": { orderBy: "unspecified", direction: "unspecified", isDefault: true },
   "leaderboard-accounts-table": { orderBy: "unspecified", direction: "unspecified", isDefault: true },
   "leaderboard-positions-table": { orderBy: "unspecified", direction: "unspecified", isDefault: true },
+  "points-leaderboard": { orderBy: "unspecified", direction: "unspecified", isDefault: true },
   "position-list": { orderBy: "unspecified", direction: "unspecified", isDefault: true },
+  "incentives-audit-list": { orderBy: "unspecified", direction: "unspecified", isDefault: true },
+  "incentives-audit-detail": { orderBy: "unspecified", direction: "unspecified", isDefault: true },
 };
 
 type SorterContextType = {

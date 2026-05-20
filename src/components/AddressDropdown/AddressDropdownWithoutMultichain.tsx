@@ -7,6 +7,9 @@ import { Address } from "viem";
 
 import { BOTANIX } from "config/chains";
 import { useDisconnectAndClose } from "domain/multichain/useDisconnectAndClose";
+import { isIncentivesEnabled } from "domain/synthetics/incentives/constants";
+import { useAccountIncentiveStatus } from "domain/synthetics/incentives/useAccountIncentiveStatus";
+import { formatMultiplier } from "domain/synthetics/incentives/utils";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { getAccountUrl, useENS } from "lib/legacy";
@@ -25,6 +28,7 @@ import CopyIcon from "img/ic_copy.svg?react";
 import ExplorerIcon from "img/ic_explorer.svg?react";
 import PnlAnalysisIcon from "img/ic_pnl_analysis.svg?react";
 import DisconnectIcon from "img/ic_sign_out_20.svg?react";
+import { IcMultiplier as MultiplierIcon } from "img/IcMultiplier";
 
 import "./AddressDropdownWithoutMultichain.scss";
 
@@ -37,6 +41,13 @@ export function AddressDropdownWithoutMultichain({ account }: { account: string 
 
   const { chainId } = useChainId();
   const isBotanix = chainId === BOTANIX;
+  const incentivesEnabled = isIncentivesEnabled(chainId);
+  const { data: incentiveStatus } = useAccountIncentiveStatus(chainId, {
+    account,
+    enabled: incentivesEnabled,
+  });
+  const multiplier = incentiveStatus?.multiplier;
+  const showMultiplier = incentivesEnabled && multiplier !== undefined && multiplier > 0;
 
   const accountUrl = getAccountUrl(chainId, account);
   const handleDisconnect = useDisconnectAndClose();
@@ -52,6 +63,12 @@ export function AddressDropdownWithoutMultichain({ account }: { account: string 
               <span className="text-body-medium font-medium text-typography-primary">
                 {shortenAddressOrEns(ensName || account, displayAddressLength)}
               </span>
+
+              {showMultiplier && (
+                <span className="text-caption flex items-center gap-2 rounded-4 bg-green-500/15 px-6 py-2 font-semibold text-green-500">
+                  <MultiplierIcon className="size-12" /> {formatMultiplier(multiplier)}
+                </span>
+              )}
 
               <ChevronDownIcon className={cx("block size-20", { "rotate-180": open })} />
             </Button>

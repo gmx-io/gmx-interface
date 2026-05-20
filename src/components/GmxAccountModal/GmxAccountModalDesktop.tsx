@@ -90,6 +90,7 @@ export function GmxAccountModalDesktop({ account }: { account: string }) {
         disableOverflowHandling={true}
         className="text-body-medium"
         contentPadding={false}
+        headerWrapperClassName="border-none !pb-0"
       >
         {(view === "main" || showMainViewInBackground) && <MainView account={account} />}
 

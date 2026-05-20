@@ -16,7 +16,6 @@ export const TEST_SYMBOL = "ETH/USD [WETH-USDC]";
 export const TEST_SIZE_USD = 10n * 10n ** 30n; // $10
 export const TEST_COLLATERAL = { amount: 1000000n, token: "USDC" }; // 1 USDC
 
-
 const TERMINAL_STATUSES = new Set(["executed", "cancelled", "relay_failed", "relay_reverted"]);
 
 export function getTestSdk() {
@@ -31,10 +30,7 @@ export function getTestSigner(): PrivateKeySigner | undefined {
   if (!pk) return undefined;
   // eslint-disable-next-line no-restricted-globals
   const rpcUrl = process.env.GMX_TEST_RPC_URL;
-  return new PrivateKeySigner(
-    pk as `0x${string}`,
-    rpcUrl ? { rpcUrl, chain: getViemChain(TEST_CHAIN_ID) } : undefined
-  );
+  return new PrivateKeySigner(pk as `0x${string}`, rpcUrl ? { rpcUrl, chain: getViemChain(TEST_CHAIN_ID) } : undefined);
 }
 
 export function requireSigner(): PrivateKeySigner {
@@ -74,10 +70,7 @@ export async function waitForOrderStatus(
 }
 
 function logOrderFailure(status: OrderStatusResponse): void {
-  const parts = [
-    `[order:${status.status}]`,
-    `id=${status.requestId}`,
-  ];
+  const parts = [`[order:${status.status}]`, `id=${status.requestId}`];
 
   if (status.error) {
     parts.push(`error=${status.error.code}: ${status.error.message}`);
