@@ -23,6 +23,10 @@ export function useApiDataFallbackCounter({
   const wasInFallbackRef = useRef(false);
 
   useEffect(() => {
+    wasInFallbackRef.current = false;
+  }, [chainId]);
+
+  useEffect(() => {
     const inFallback = apiEnabled && Boolean(apiError || (apiData && isApiStale));
 
     if (inFallback && !wasInFallbackRef.current) {
