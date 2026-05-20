@@ -171,15 +171,15 @@ function MultiplierChangeTooltip({ isDecrease, children }: { isDecrease: boolean
   );
 }
 
-const BANNER_GLOW_STYLES = { backgroundImage: `url(${bannerGlowImg})`, backgroundSize: "300% 300%" };
+const BANNER_GLOW_STYLES = { backgroundImage: `url(${bannerGlowImg})`, backgroundSize: "250% 250%" };
 
 type BannerGlowType = "top-right" | "bottom-right" | "bottom";
 
 function BannerGlow({ type }: { type: BannerGlowType }) {
   const classNamesByType: Record<BannerGlowType, string> = {
-    "top-right": "[background-position:65%_80%] group-hover:[background-position:80%_80%]",
-    "bottom-right": "[background-position:65%_20%] group-hover:[background-position:90%_20%]",
-    bottom: "[background-position:40%_20%] group-hover:[background-position:60%_20%]",
+    "top-right": "[background-position:65%_90%] group-hover:[background-position:85%_95%]",
+    "bottom-right": "[background-position:45%_13%] group-hover:[background-position:65%_13%]",
+    bottom: "[background-position:40%_10%] group-hover:[background-position:60%_20%]",
   };
 
   return (
