@@ -12,12 +12,7 @@ type AbStorage = {
 };
 
 const abFlagsConfig = {
-  testMultichain: 1,
-  testSponsoredCall: 1,
-  testExampleAb: 0,
   apiSdk2: 0,
-  testRewardsSuspended: 0,
-  testStakingPowerLoyalty: 0,
 };
 
 export type AbFlag = keyof typeof abFlagsConfig;
@@ -57,6 +52,9 @@ function loadAbStorage(): void {
           changed = true;
         } else if (abFlagsConfig[flag] === 1 && !abStorage[flag].enabled) {
           abStorage[flag] = { enabled: true };
+          changed = true;
+        } else if (abFlagsConfig[flag] === 0 && abStorage[flag].enabled) {
+          abStorage[flag] = { enabled: false };
           changed = true;
         }
       }

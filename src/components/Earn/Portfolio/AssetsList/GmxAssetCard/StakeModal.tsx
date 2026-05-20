@@ -5,7 +5,6 @@ import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { zeroAddress } from "viem";
 
-import { getIsFlagEnabled } from "config/ab";
 import { ARBITRUM, ContractsChainId } from "config/chains";
 import { type ChainIcons, getIcons } from "config/icons";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
@@ -187,13 +186,11 @@ export function StakeModal(props: {
     return undefined;
   }, [unstakeAmount, unstakeMaxAmount]);
 
-  const isTestLoyalty = getIsFlagEnabled("testStakingPowerLoyalty");
-  const effectiveHistoricalMax = getEffectiveHistoricalMax(stakingPowerData, isTestLoyalty);
+  const effectiveHistoricalMax = getEffectiveHistoricalMax(stakingPowerData, false);
 
   const isLoyaltyActive =
-    isTestLoyalty ||
-    (stakingPowerData?.loyaltyTrackingStart !== undefined &&
-      isLoyaltyTrackingActive(stakingPowerData.loyaltyTrackingStart));
+    stakingPowerData?.loyaltyTrackingStart !== undefined &&
+    isLoyaltyTrackingActive(stakingPowerData.loyaltyTrackingStart);
 
   const wouldResetPower =
     isLoyaltyActive &&
@@ -209,14 +206,8 @@ export function StakeModal(props: {
 
   const rewardsLossUsd = useMemo(() => {
     if (!wouldResetPower) return null;
-    if (stakingPowerProjectedRewardsUsd !== undefined) {
-      return stakingPowerProjectedRewardsUsd;
-    }
-    if (isTestLoyalty) {
-      return processedData?.cumulativeGmxRewardsUsd ?? null;
-    }
-    return null;
-  }, [wouldResetPower, stakingPowerProjectedRewardsUsd, isTestLoyalty, processedData?.cumulativeGmxRewardsUsd]);
+    return stakingPowerProjectedRewardsUsd ?? null;
+  }, [wouldResetPower, stakingPowerProjectedRewardsUsd]);
 
   const unstakeLimitPercent = getUnstakeLimitPercent(safeUnstakeLimit, unstakeAmount);
 
