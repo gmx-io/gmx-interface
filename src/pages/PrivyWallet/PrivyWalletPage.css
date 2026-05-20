@@ -1,0 +1,60 @@
+.PrivyWalletPage {
+  min-height: 100vh;
+  padding: 48px 24px;
+}
+
+.PrivyWalletPage-panel {
+  width: min(100%, 560px);
+  margin: 0 auto;
+  border: 0.5px solid var(--color-slate-600);
+  border-radius: 8px;
+  background: var(--color-slate-900);
+}
+
+.PrivyWalletPage-row {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.PrivyWalletPage-label {
+  color: var(--color-typography-secondary);
+  font-size: 13px;
+}
+
+.PrivyWalletPage-value {
+  min-height: 40px;
+  overflow-wrap: anywhere;
+  border: 0.5px solid var(--color-slate-600);
+  border-radius: 8px;
+  background: var(--color-slate-800);
+  padding: 10px 12px;
+  color: var(--color-typography-primary);
+  font-family: monospace;
+  font-size: 13px;
+  line-height: 20px;
+}
+
+.PrivyWalletPage-input {
+  height: 40px;
+}
+
+.PrivyWalletPage-status {
+  overflow-wrap: anywhere;
+  font-size: 13px;
+  line-height: 18px;
+}
+
+.PrivyWalletPage-status-error {
+  color: var(--color-red-300);
+}
+
+.PrivyWalletPage-status-success {
+  color: var(--color-green-300);
+}
+
+@media (max-width: 640px) {
+  .PrivyWalletPage {
+    padding: 24px 12px;
+  }
+}

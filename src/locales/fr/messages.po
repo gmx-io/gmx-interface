@@ -75,6 +75,7 @@ msgstr "Compose automatiquement vos récompenses GMX sans récupération manuell
 
 #: src/components/AddressDropdown/AddressDropdownWithoutMultichain.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/pages/PrivyWallet/PrivyWalletPage.tsx
 msgid "Disconnect"
 msgstr "Déconnecter"
 
@@ -2013,6 +2014,10 @@ msgstr "Gain"
 msgid "Swapped {0} for {1}"
 msgstr "{0} échangé contre {1}"
 
+#: src/pages/PrivyWallet/PrivyWalletPage.tsx
+msgid "Privy Wallet"
+msgstr ""
+
 #: src/components/CollateralSelector/PositionEditorCollateralSelector.tsx
 #: src/components/GmxAccountModal/DepositView.tsx
 msgid "GMX balance"
@@ -2669,6 +2674,10 @@ msgstr "GMTrade (anciennement GMX Solana) est hébergé sur un autre site web et
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "You have not traded during the selected period"
 msgstr "Vous n'avez pas effectué de transactions durant la période sélectionnée"
+
+#: src/pages/PrivyWallet/PrivyWalletPage.tsx
+msgid "Connect Wallet"
+msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Default parts for TWAP orders"
@@ -3610,6 +3619,10 @@ msgstr "Impact net sur le prix / frais"
 msgid "Order canceled"
 msgstr "Ordre annulé"
 
+#: src/pages/PrivyWallet/PrivyWalletPage.tsx
+msgid "Private key export and withdraw require the active Privy embedded wallet."
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Insufficient GM pool liquidity"
 msgstr ""
@@ -3709,6 +3722,10 @@ msgstr "{0}"
 msgid "Cumulative"
 msgstr ""
 
+#: src/pages/PrivyWallet/PrivyWalletPage.tsx
+msgid "Connecting..."
+msgstr ""
+
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
 msgid "Incorrect account"
 msgstr "Compte incorrect"
@@ -3776,6 +3793,10 @@ msgstr "Mise à jour de la partie TWAP"
 #: src/components/Earn/Portfolio/ClaimRewardsButton.tsx
 msgid "Claim rewards"
 msgstr "Réclamer les récompenses"
+
+#: src/pages/PrivyWallet/PrivyWalletPage.tsx
+msgid "Current account"
+msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Multicall idle"
@@ -4156,6 +4177,7 @@ msgid "No funds to withdraw"
 msgstr "Aucun fonds à retirer"
 
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
+#: src/pages/PrivyWallet/PrivyWalletPage.tsx
 msgid "Submitting..."
 msgstr "Soumission..."
 
@@ -4668,6 +4690,8 @@ msgstr "Forcer l'échec des swaps externes"
 #: src/components/PositionEditor/types.ts
 #: src/components/TradeHistory/keys.ts
 #: src/domain/multichain/useMultichainFundingToast.tsx
+#: src/pages/PrivyWallet/PrivyWalletPage.tsx
+#: src/pages/PrivyWallet/PrivyWalletPage.tsx
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Withdraw"
 msgstr "Retirer"
@@ -4723,6 +4747,10 @@ msgstr ""
 msgid "Shift request sent"
 msgstr "Demande de transfert envoyée"
 
+#: src/pages/PrivyWallet/PrivyWalletPage.tsx
+msgid "Disconnecting..."
+msgstr ""
+
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 msgid "Current impact: {0}. Add 0.30% buffer for better order execution."
 msgstr "Impact actuel : {0}. Ajoutez un tampon de 0,30 % pour une meilleure exécution des ordres."
@@ -4775,6 +4803,7 @@ msgstr "Mettre à jour {orderTypeName}"
 
 #: src/components/PositionItem/PositionItem.tsx
 #: src/components/PositionItem/PositionItem.tsx
+#: src/pages/PrivyWallet/PrivyWalletPage.tsx
 msgid "Opening..."
 msgstr "Ouverture..."
 
@@ -5222,6 +5251,10 @@ msgstr "Test des permis"
 msgid "Invalid transaction"
 msgstr "Transaction invalide"
 
+#: src/pages/PrivyWallet/PrivyWalletPage.tsx
+msgid "Recipient wallet address"
+msgstr ""
+
 #: src/components/TradeboxPoolWarnings/TradeboxPoolWarnings.tsx
 msgid "Insufficient liquidity in {0} pool. Select a different pool."
 msgstr "Liquidité insuffisante dans le pool {0}. Sélectionnez un pool différent."
@@ -5233,6 +5266,10 @@ msgstr "Liquidité insuffisante dans le pool {0}. Sélectionnez un pool différe
 #: src/pages/PoolsDetails/PoolsDetailsHeader.tsx
 msgid "GLV"
 msgstr "GLV"
+
+#: src/pages/PrivyWallet/PrivyWalletPage.tsx
+msgid "Not connected"
+msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "PnL after all fees"
@@ -8762,6 +8799,10 @@ msgstr "Date"
 msgid "Executes when liquidity and price conditions are met"
 msgstr "S'exécute lorsque les conditions de liquidité et de prix sont remplies"
 
+#: src/pages/PrivyWallet/PrivyWalletPage.tsx
+msgid "Native amount"
+msgstr ""
+
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx
 msgid "Failed settlement of funding fees"
@@ -9400,6 +9441,10 @@ msgstr ""
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Position impact amount"
 msgstr "Montant d'impact sur la position"
+
+#: src/pages/PrivyWallet/PrivyWalletPage.tsx
+msgid "Wallet type"
+msgstr ""
 
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "PRICE IMPACT"
@@ -10821,6 +10866,10 @@ msgstr "limite"
 msgid "Execute TWAP Swap part"
 msgstr "Exécuter une partie du TWAP Swap"
 
+#: src/pages/PrivyWallet/PrivyWalletPage.tsx
+msgid "Private Key"
+msgstr ""
+
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Reload the page or report the issue if the <0/> problem persists"
 msgstr "Rechargez la page ou signalez le problème si le <0/> problème persiste"
@@ -10939,6 +10988,10 @@ msgstr "Chargement des paramètres Express Trading..."
 msgid "POOL CAP LONG"
 msgstr "POOL CAP LONG"
 
+#: src/pages/PrivyWallet/PrivyWalletPage.tsx
+msgid "Transfer"
+msgstr ""
+
 #: src/domain/multichain/toastEnableExpress.tsx
 msgid "Express Trading enabled. Disable in <0>settings</0>"
 msgstr "Express Trading activé. Désactiver dans les <0>paramètres</0>"
@@ -10998,6 +11051,10 @@ msgstr "DeBank"
 #: src/components/UserIncentiveDistribution/utils.tsx
 msgid "GLV bonus incentive (test)"
 msgstr "Incitation bonus GLV (test)"
+
+#: src/pages/PrivyWallet/PrivyWalletPage.tsx
+msgid "External wallet"
+msgstr ""
 
 #: src/components/BridgeModal/BridgeInModal.tsx
 #: src/components/BridgeModal/BridgeOutModal.tsx
