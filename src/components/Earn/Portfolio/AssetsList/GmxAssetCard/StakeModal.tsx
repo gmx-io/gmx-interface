@@ -186,7 +186,7 @@ export function StakeModal(props: {
     return undefined;
   }, [unstakeAmount, unstakeMaxAmount]);
 
-  const effectiveHistoricalMax = getEffectiveHistoricalMax(stakingPowerData, false);
+  const effectiveHistoricalMax = getEffectiveHistoricalMax(stakingPowerData);
 
   const isLoyaltyActive =
     stakingPowerData?.loyaltyTrackingStart !== undefined &&
