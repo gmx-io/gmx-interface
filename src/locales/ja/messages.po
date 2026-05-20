@@ -1248,6 +1248,7 @@ msgstr ""
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeboxMarginFields/MarginField.tsx
 #: src/components/TradeboxMarginFields/MarginField.tsx
+#: src/pages/PrivyWallet/PrivyWalletPage.tsx
 msgid "Pay"
 msgstr "支払い"
 
@@ -7917,6 +7918,7 @@ msgstr ""
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/OrderItem/OrderItem.tsx
+#: src/pages/PrivyWallet/PrivyWalletPage.tsx
 msgid "Amount"
 msgstr "金額"
 
@@ -8798,10 +8800,6 @@ msgstr "日付"
 #: src/components/TradeBox/TradeBoxRows/AvailableLiquidityRow.tsx
 msgid "Executes when liquidity and price conditions are met"
 msgstr "流動性および価格の条件が満たされた時に執行されます"
-
-#: src/pages/PrivyWallet/PrivyWalletPage.tsx
-msgid "Native amount"
-msgstr ""
 
 #: src/components/Claims/ClaimHistoryRow/ClaimFundingFeesHistoryRow.tsx
 #: src/components/Claims/filters/ActionFilter.tsx

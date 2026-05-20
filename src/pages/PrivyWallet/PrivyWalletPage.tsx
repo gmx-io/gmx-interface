@@ -1,21 +1,50 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import { useExportWallet, useSendTransaction, useWallets } from "@privy-io/react-auth";
 import { ChangeEvent, FormEvent, useCallback, useMemo, useState } from "react";
-import { isAddress, parseEther } from "viem";
-import { useAccount } from "wagmi";
+import { encodeFunctionData, isAddress, parseUnits, type Address } from "viem";
+import { arbitrum } from "viem/chains";
+import { useAccount, useBalance } from "wagmi";
 
 import { useDisconnectAndClose } from "domain/multichain/useDisconnectAndClose";
+import type { Token } from "domain/tokens";
+import { formatBalanceAmount } from "lib/numbers";
 import { useConnectModal } from "lib/wallets/useConnectModal";
+import { getTokens, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 
 import Button from "components/Button/Button";
 import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletButton";
 import Modal from "components/Modal/Modal";
 import NumberInput from "components/NumberInput/NumberInput";
+import TokenSelector from "components/TokenSelector/TokenSelector";
+import { TradeInputBox } from "components/TradeboxMarginFields/TradeInputBox";
+
+import WalletIcon from "img/ic_wallet.svg?react";
 
 import "./PrivyWalletPage.css";
 
+const ERC20_TRANSFER_ABI = [
+  {
+    type: "function",
+    name: "transfer",
+    stateMutability: "nonpayable",
+    inputs: [
+      { name: "to", type: "address" },
+      { name: "value", type: "uint256" },
+    ],
+    outputs: [{ name: "", type: "bool" }],
+  },
+] as const;
+
 function isPrivyEmbeddedWallet(walletClientType: string) {
   return walletClientType === "privy" || walletClientType === "privy-v2";
+}
+
+function getTransferableTokens(chainId: number) {
+  try {
+    return getTokens(chainId).filter((token) => !token.isSynthetic && !token.isTempHidden);
+  } catch {
+    return [];
+  }
 }
 
 export function PrivyWalletPage() {
@@ -29,11 +58,34 @@ export function PrivyWalletPage() {
   const [isWithdrawModalVisible, setIsWithdrawModalVisible] = useState(false);
   const [withdrawAddress, setWithdrawAddress] = useState("");
   const [withdrawAmount, setWithdrawAmount] = useState("");
+  const [withdrawTokenAddress, setWithdrawTokenAddress] = useState<string>(NATIVE_TOKEN_ADDRESS);
   const [withdrawStatus, setWithdrawStatus] = useState<"idle" | "pending" | "success" | "error">("idle");
   const [withdrawMessage, setWithdrawMessage] = useState("");
   const [exportStatus, setExportStatus] = useState<"idle" | "pending" | "error">("idle");
   const [exportMessage, setExportMessage] = useState("");
   const [isDisconnecting, setIsDisconnecting] = useState(false);
+
+  const transferChainId = chainId ?? arbitrum.id;
+  const transferableTokens = useMemo(() => getTransferableTokens(transferChainId), [transferChainId]);
+  const selectedWithdrawToken = useMemo(
+    () =>
+      transferableTokens.find((token) => token.address === withdrawTokenAddress) ??
+      transferableTokens.find((token) => token.address === NATIVE_TOKEN_ADDRESS) ??
+      transferableTokens[0],
+    [transferableTokens, withdrawTokenAddress]
+  );
+
+  const { data: selectedTokenBalance } = useBalance({
+    address: account,
+    chainId: transferChainId,
+    token:
+      selectedWithdrawToken && selectedWithdrawToken.address !== NATIVE_TOKEN_ADDRESS
+        ? (selectedWithdrawToken.address as Address)
+        : undefined,
+    query: {
+      enabled: Boolean(account && selectedWithdrawToken),
+    },
+  });
 
   const currentPrivyWallet = useMemo(() => {
     if (!account) {
@@ -87,6 +139,12 @@ export function PrivyWalletPage() {
         return;
       }
 
+      if (!selectedWithdrawToken) {
+        setWithdrawStatus("error");
+        setWithdrawMessage("Select a token to withdraw.");
+        return;
+      }
+
       const recipient = withdrawAddress.trim();
 
       if (!isAddress(recipient, { strict: false })) {
@@ -97,10 +155,10 @@ export function PrivyWalletPage() {
 
       let value: bigint;
       try {
-        value = parseEther(withdrawAmount);
+        value = parseUnits(withdrawAmount, selectedWithdrawToken.decimals);
       } catch {
         setWithdrawStatus("error");
-        setWithdrawMessage("Enter a valid native token amount.");
+        setWithdrawMessage("Enter a valid token amount.");
         return;
       }
 
@@ -113,12 +171,23 @@ export function PrivyWalletPage() {
       try {
         setWithdrawStatus("pending");
         setWithdrawMessage("");
+        const isNativeTransfer = selectedWithdrawToken.address === NATIVE_TOKEN_ADDRESS;
         const { hash } = await sendTransaction(
-          {
-            to: recipient,
-            value,
-            chainId,
-          },
+          isNativeTransfer
+            ? {
+                to: recipient,
+                value,
+                chainId: transferChainId,
+              }
+            : {
+                to: selectedWithdrawToken.address,
+                data: encodeFunctionData({
+                  abi: ERC20_TRANSFER_ABI,
+                  functionName: "transfer",
+                  args: [recipient, value],
+                }),
+                chainId: transferChainId,
+              },
           { address: currentPrivyWallet.address }
         );
 
@@ -131,8 +200,16 @@ export function PrivyWalletPage() {
         setWithdrawMessage(error instanceof Error ? error.message : "Failed to submit transfer.");
       }
     },
-    [chainId, currentPrivyWallet, sendTransaction, withdrawAddress, withdrawAmount]
+    [currentPrivyWallet, selectedWithdrawToken, sendTransaction, transferChainId, withdrawAddress, withdrawAmount]
   );
+
+  const handleMaxWithdrawClick = useCallback(() => {
+    if (!selectedTokenBalance || !selectedWithdrawToken) {
+      return;
+    }
+
+    setWithdrawAmount(selectedTokenBalance.formatted);
+  }, [selectedTokenBalance, selectedWithdrawToken]);
 
   return (
     <div className="PrivyWalletPage">
@@ -201,6 +278,7 @@ export function PrivyWalletPage() {
         isVisible={isWithdrawModalVisible}
         setIsVisible={setIsWithdrawModalVisible}
         label={<Trans>Withdraw</Trans>}
+        contentClassName="md:min-w-[360px]"
       >
         <form className="flex flex-col gap-16" onSubmit={handleWithdraw}>
           <label className="PrivyWalletPage-row">
@@ -215,17 +293,18 @@ export function PrivyWalletPage() {
             />
           </label>
 
-          <label className="PrivyWalletPage-row">
-            <span className="PrivyWalletPage-label">
-              <Trans>Native amount</Trans>
-            </span>
-            <NumberInput
-              className="PrivyWalletPage-input text-input"
-              value={withdrawAmount}
-              onValueChange={(event) => setWithdrawAmount(event.target.value)}
-              placeholder="0.0"
+          {selectedWithdrawToken && (
+            <WithdrawAmountField
+              chainId={transferChainId}
+              inputValue={withdrawAmount}
+              onInputValueChange={(event) => setWithdrawAmount(event.target.value)}
+              onMaxClick={handleMaxWithdrawClick}
+              onSelectToken={setWithdrawTokenAddress}
+              selectedToken={selectedWithdrawToken}
+              selectedTokenBalance={selectedTokenBalance?.value}
+              tokens={transferableTokens}
             />
-          </label>
+          )}
 
           {withdrawMessage && (
             <div
@@ -245,5 +324,80 @@ export function PrivyWalletPage() {
         </form>
       </Modal>
     </div>
+  );
+}
+
+function WithdrawAmountField({
+  chainId,
+  inputValue,
+  onInputValueChange,
+  onMaxClick,
+  onSelectToken,
+  selectedToken,
+  selectedTokenBalance,
+  tokens,
+}: {
+  chainId: number;
+  inputValue: string;
+  onInputValueChange: (e: ChangeEvent<HTMLInputElement>) => void;
+  onMaxClick: () => void;
+  onSelectToken: (tokenAddress: string) => void;
+  selectedToken: Token;
+  selectedTokenBalance?: bigint;
+  tokens: Token[];
+}) {
+  const formattedBalance =
+    selectedTokenBalance !== undefined
+      ? formatBalanceAmount(selectedTokenBalance, selectedToken.decimals, "", { isStable: selectedToken.isStable })
+      : undefined;
+
+  const handleBalanceClick = useCallback(
+    (event: React.MouseEvent) => {
+      event.stopPropagation();
+      onMaxClick();
+    },
+    [onMaxClick]
+  );
+
+  return (
+    <TradeInputBox
+      leftHeadline={<Trans>Amount</Trans>}
+      leftContent={
+        <NumberInput
+          value={inputValue}
+          className="text-body-large h-24 w-full min-w-0 p-0 outline-none"
+          onValueChange={onInputValueChange}
+          placeholder="0.00"
+          maxDecimals={selectedToken.decimals}
+        />
+      }
+      rightHeadline={
+        formattedBalance !== undefined ? (
+          <button
+            type="button"
+            onClick={handleBalanceClick}
+            className="flex items-center gap-4 text-12 text-typography-secondary hover:text-typography-primary"
+          >
+            <WalletIcon className="size-14" />
+            <span className="numbers">{formattedBalance}</span>
+          </button>
+        ) : undefined
+      }
+      rightContent={
+        <div data-token-selector>
+          <TokenSelector
+            label={t`Pay`}
+            chainId={chainId}
+            tokenAddress={selectedToken.address}
+            onSelectToken={(token) => onSelectToken(token.address)}
+            tokens={tokens}
+            showSymbolImage={true}
+            showTokenImgInDropdown={true}
+            showBalances={false}
+            qa="privy-withdraw-token-selector"
+          />
+        </div>
+      }
+    />
   );
 }
