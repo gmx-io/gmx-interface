@@ -1,5 +1,6 @@
 import { Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+
+import { useConnectModal } from "lib/wallets/useConnectModal";
 
 import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletButton";
 

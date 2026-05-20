@@ -4,15 +4,15 @@ import type { AnyChainId, SettlementChainId } from "config/chains";
 import { SELECTED_SETTLEMENT_CHAIN_ID_KEY } from "config/localStorage";
 import { isSettlementChain } from "config/multichain";
 import { switchNetwork, WalletSigner } from "lib/wallets";
-import { getRainbowKitConfig } from "lib/wallets/rainbowKitConfig";
 import { clientToSigner } from "lib/wallets/useEthersSigner";
+import { getWagmiConfig } from "lib/wallets/walletConfig";
 
 export async function wrapChainAction(
   chainId: AnyChainId,
   setSettlementChainId: (chainId: SettlementChainId) => void,
   action: (signer: WalletSigner) => Promise<void>
 ): Promise<void> {
-  const config = getRainbowKitConfig();
+  const config = getWagmiConfig();
 
   const currentChainId = getChainId(config);
   const rawLocalStorageSettlementChainId = localStorage.getItem(SELECTED_SETTLEMENT_CHAIN_ID_KEY);

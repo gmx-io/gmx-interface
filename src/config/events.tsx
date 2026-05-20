@@ -124,7 +124,7 @@ export const appEventsData: EventData[] = [
       <>
         <Link to="/trade">Trade</Link> GOLD and SILVER perpetuals 24/7 with up to 100x leverage, or{" "}
         <Link to="/pools">provide liquidity</Link> via GLV <span className="text-slate-100">[WETH-USDC]</span>. Find
-        them under the RWA category in the market dropdown.
+        them under the TradFi category in the market dropdown.
       </>
     ),
   },

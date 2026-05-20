@@ -4,6 +4,7 @@ import {
   decodeFunctionResult,
   encodeFunctionData,
   EncodeFunctionDataParameters,
+  type Hex,
   recoverTypedDataAddress,
 } from "viem";
 
@@ -143,7 +144,7 @@ export async function getTokenPermitParams(
     abi: abis.Multicall,
     data: result as `0x${string}`,
     functionName: "aggregate",
-  }) as [bigint, string[]];
+  }) as [bigint, Hex[]];
 
   const name = decodeFunctionResult({
     abi: ERC20PermitInterfaceAbi,

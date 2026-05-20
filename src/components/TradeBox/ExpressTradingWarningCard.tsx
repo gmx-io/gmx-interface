@@ -172,19 +172,19 @@ export function ExpressTradingWarningCard({
     onClick = handleUpdateSubaccountSettings;
     icon = OneClickIcon;
     color = "yellow";
-    content = <Trans>One-Click Trading is disabled. Action limit exceeded.</Trans>;
+    content = <Trans>One-Click Trading action limit reached. You're now using Express Trading.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowNonceExpiredWarning) {
     onClick = handleUpdateSubaccountSettings;
     icon = OneClickIcon;
     color = "yellow";
-    content = <Trans>One-Click Trading approval nonce expired. Re-sign to continue.</Trans>;
+    content = <Trans>One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading.</Trans>;
     buttonText = <Trans>Re-sign</Trans>;
   } else if (shouldShowExpiredSubaccountWarning) {
     onClick = handleUpdateSubaccountSettings;
     icon = OneClickIcon;
     color = "yellow";
-    content = <Trans>One-Click Trading is disabled. Time limit expired.</Trans>;
+    content = <Trans>One-Click Trading time limit expired. You're now using Express Trading.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowOutOfGasPaymentBalanceWarning) {
     icon = ExpressIcon;
@@ -201,7 +201,7 @@ export function ExpressTradingWarningCard({
     content = (
       <Trans>
         One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Re-sign
-        to continue.
+        to continue using One-Click Trading.
       </Trans>
     );
     buttonText = <Trans>Re-sign</Trans>;
@@ -209,7 +209,12 @@ export function ExpressTradingWarningCard({
   } else if (shouldShowExternalSwapSubaccountBlockedWarning) {
     icon = OneClickIcon;
     color = "red";
-    content = <Trans>This swap requires external routing, which isn't available with One-Click Trading</Trans>;
+    content = (
+      <Trans>
+        This swap requires external routing, which isn't available with One-Click Trading. Disable One-Click to use
+        Express Trading.
+      </Trans>
+    );
     buttonText = <Trans>Disable One-Click Trading</Trans>;
     onClick = handleDisableSubaccount;
   } else if (shouldShowExternalSwapGasConflictRequiredWarning) {

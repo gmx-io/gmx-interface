@@ -12,7 +12,7 @@ import { importImage } from "lib/legacy";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { searchBy } from "lib/searchBy";
-import { getCategoryTokenAddresses } from "sdk/configs/tokens";
+import type { TokenCategory } from "sdk/utils/tokens/types";
 
 import Button from "components/Button/Button";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
@@ -26,6 +26,8 @@ import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 
 import "./MarketSelector.scss";
+
+const CRYPTO_CATEGORIES: TokenCategory[] = ["ai", "layer1", "layer2", "defi", "meme"];
 
 type Props = {
   chainId: number;
@@ -57,7 +59,6 @@ type MarketOption = {
 };
 
 export function MarketSelector({
-  chainId,
   selectedIndexName,
   className,
   selectedMarketLabel,
@@ -73,7 +74,7 @@ export function MarketSelector({
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
-  const { tab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites("market-selector");
+  const { topLevelTab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites("market-selector");
 
   const marketsOptions: MarketOption[] = useMemo(() => {
     const optionsByIndexName: { [indexName: string]: MarketOption } = {};
@@ -122,29 +123,27 @@ export function MarketSelector({
         )
       : marketsOptions;
 
-    if (tab === "all") {
-      return textMatched;
+    switch (topLevelTab) {
+      case "all":
+        return textMatched;
+      case "favorites":
+        return textMatched?.filter((item) => favoriteTokens?.includes(item.marketInfo.indexToken.address));
+      case "crypto":
+        return textMatched?.filter((item) =>
+          Boolean(item.marketInfo.indexToken?.categories?.some((c) => CRYPTO_CATEGORIES.includes(c)))
+        );
+      case "tradfi":
+        return textMatched?.filter((item) => Boolean(item.marketInfo.indexToken?.categories?.includes("tradfi")));
+      case "recently-listed":
+        return textMatched?.filter(() => false);
+      case "incentivized":
+        return textMatched;
     }
-
-    if (tab === "favorites") {
-      return textMatched?.filter((item) => favoriteTokens?.includes(item.marketInfo.indexToken.address));
-    }
-
-    if (tab === "incentivized") {
-      return textMatched;
-    }
-
-    const categoryTokenAddresses = getCategoryTokenAddresses(chainId, tab);
-    const tabMatched = textMatched?.filter((item) =>
-      categoryTokenAddresses.includes(item.marketInfo.indexToken.address)
-    );
-
-    return tabMatched;
-  }, [chainId, favoriteTokens, marketsOptions, searchKeyword, tab]);
+  }, [favoriteTokens, marketsOptions, searchKeyword, topLevelTab]);
 
   useMissedCoinsSearch({
     searchText: searchKeyword,
-    isEmpty: !filteredOptions.length && tab === "all",
+    isEmpty: !filteredOptions.length && topLevelTab === "all",
     isLoaded: marketsOptions.length > 0,
     place: missedCoinsPlace,
     skip: !missedCoinsPlace,

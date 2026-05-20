@@ -465,10 +465,10 @@ describe("TierCardsSection", () => {
         <TierCardsSection config={mockConfig} currentEpochStats={currentEpochStats} />
       );
 
-      // Staking progress bar has multiple segments (one per tier)
-      // There should be 3 segments for 3 staking tiers
-      // Each segment is a div with relative flex-1 and bg-slate-700 class
-      const segments = container.querySelectorAll(".bg-slate-700");
+      // Staking progress bar has one tooltip-backed segment per tier.
+      const segments = Array.from(container.querySelectorAll('[data-testid="tooltip"]')).filter((tooltip) =>
+        tooltip.textContent?.includes("Staked:")
+      );
       expect(segments.length).toBeGreaterThanOrEqual(3);
     });
 

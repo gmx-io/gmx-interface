@@ -3,7 +3,7 @@ import { switchChain } from "@wagmi/core";
 import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
 import { UncheckedJsonRpcSigner } from "lib/rpc/UncheckedJsonRpcSigner";
 
-import { getRainbowKitConfig } from "./rainbowKitConfig";
+import { getWagmiConfig } from "./walletConfig";
 
 export type WalletSigner = UncheckedJsonRpcSigner & {
   address: string;
@@ -11,7 +11,7 @@ export type WalletSigner = UncheckedJsonRpcSigner & {
 
 export async function switchNetwork(chainId: number, active: boolean): Promise<void> {
   if (active) {
-    await switchChain(getRainbowKitConfig(), {
+    await switchChain(getWagmiConfig(), {
       chainId,
     });
     localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, String(chainId));
