@@ -22,23 +22,6 @@ import type {
 } from "utils/balances/api";
 import { fetchApiBuybackWeeklyStats } from "utils/buyback/api";
 import { BuybackWeeklyStatsResponse } from "utils/buyback/types";
-import { HttpClient } from "utils/http/http";
-import { HttpClientWithFallback } from "utils/http/httpFallback";
-import { IHttp } from "utils/http/types";
-import { fetchApiMarkets, fetchApiMarketsInfo, fetchApiMarketsTickers, fetchApiTokensData } from "utils/markets/api";
-import { MarketTicker, MarketWithTiers } from "utils/markets/types";
-import {
-  buildCrossChainWithdrawBridgeOutParams,
-  buildSameChainDepositTxn,
-  buildSameChainWithdrawBridgeOutParams,
-  buildSameChainWithdrawTxn,
-  executeSameChainDeposit,
-  executeSameChainWithdraw,
-  type BridgeOutParams,
-  type BuildTxnResult,
-  type SameChainDepositRequest,
-  type SameChainWithdrawRequest,
-} from "utils/multichain";
 import {
   executeCrossChainDeposit,
   executeCrossChainWithdraw,
@@ -56,6 +39,23 @@ import {
   type CrossChainWithdrawSubmitResponse,
   type ExecuteCrossChainDepositResult,
 } from "utils/gmxAccountApi";
+import { HttpClient } from "utils/http/http";
+import { HttpClientWithFallback } from "utils/http/httpFallback";
+import { IHttp } from "utils/http/types";
+import { fetchApiMarkets, fetchApiMarketsInfo, fetchApiMarketsTickers, fetchApiTokensData } from "utils/markets/api";
+import { MarketTicker, MarketWithTiers } from "utils/markets/types";
+import {
+  buildCrossChainWithdrawBridgeOutParams,
+  buildSameChainDepositTxn,
+  buildSameChainWithdrawBridgeOutParams,
+  buildSameChainWithdrawTxn,
+  executeSameChainDeposit,
+  executeSameChainWithdraw,
+  type BridgeOutParams,
+  type BuildTxnResult,
+  type SameChainDepositRequest,
+  type SameChainWithdrawRequest,
+} from "utils/multichain";
 import { fetchApiOrders } from "utils/orders/api";
 import {
   prepareOrder,
