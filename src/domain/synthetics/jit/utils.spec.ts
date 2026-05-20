@@ -27,7 +27,7 @@ describe("parseJitLiquidityResponse", () => {
       false
     );
 
-    expect(result["0xmarket"]).toEqual({
+    expect(result["0xMarket"]).toEqual({
       glv: "0xGlv",
       maxReservedUsdWithJitLong: 100n,
       maxReservedUsdWithJitShort: 200n,
@@ -94,8 +94,8 @@ describe("parseJitLiquidityResponse", () => {
       true
     );
 
-    expect(result["0xmarket"].maxReservedUsdWithJitLong).toBe(300n);
-    expect(result["0xmarket"].maxReservedUsdWithJitShort).toBe(400n);
+    expect(result["0xMarket"].maxReservedUsdWithJitLong).toBe(300n);
+    expect(result["0xMarket"].maxReservedUsdWithJitShort).toBe(400n);
     expect(getJitGlvShiftParams(result, "0xMarket", true)).toEqual([
       {
         glv: "0xGlv",
