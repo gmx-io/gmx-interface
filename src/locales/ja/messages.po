@@ -4603,6 +4603,11 @@ msgstr "蓄積された価格への影響"
 msgid "Arguments"
 msgstr "引数"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+msgid "You need USDC and {0} on {1} to create a referral code via GMX Account. Deposit funds or switch to a different network."
+msgstr "GMX Accountを介して紹介コードを作成するには、{1}にUSDCと{0}が必要です。資金を入金するか、別のネットワークに切り替えてください。"
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "LayerZero scan"
 msgstr "LayerZero scan"
@@ -4742,11 +4747,6 @@ msgstr "GM プール:"
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "価格への影響はありません。このサイズでの<0/>ショートの増加またはロングの減少に対して<1/>単一の約定価格が適用されます。"
-
-#: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
-msgid "You need USDC or ETH on {0} to create a referral code via GMX Account. Deposit funds or switch to a different network."
-msgstr "GMX Accountでリファラルコードを作成するには、{0}上のUSDCまたはETHが必要です。資金を入金するか、別のネットワークに切り替えてください。"
 
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "Current tier:"

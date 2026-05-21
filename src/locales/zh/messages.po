@@ -4603,6 +4603,11 @@ msgstr "存储的价格影响"
 msgid "Arguments"
 msgstr "参数"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+msgid "You need USDC and {0} on {1} to create a referral code via GMX Account. Deposit funds or switch to a different network."
+msgstr "通过 GMX 账户创建推荐码需要在 {1} 上拥有 USDC 和 {0}。请存入资金或切换到其他网络。"
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "LayerZero scan"
 msgstr "LayerZero scan"
@@ -4742,11 +4747,6 @@ msgstr "GM 池："
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "无价格影响。在此规模下<0/>增加做空或减少做多仓位的<1/>单一成交价格。"
-
-#: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
-msgid "You need USDC or ETH on {0} to create a referral code via GMX Account. Deposit funds or switch to a different network."
-msgstr "您需要 {0} 上的 USDC 或 ETH 才能通过 GMX Account 创建推荐码。请存入资金或切换到其他网络。"
 
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "Current tier:"

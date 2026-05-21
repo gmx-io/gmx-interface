@@ -4603,6 +4603,11 @@ msgstr "저장된 가격 영향"
 msgid "Arguments"
 msgstr "인수"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+msgid "You need USDC and {0} on {1} to create a referral code via GMX Account. Deposit funds or switch to a different network."
+msgstr "GMX 계정을 통해 추천 코드를 생성하려면 {1}에서 USDC와 {0}이(가) 필요합니다. 자금을 입금하거나 다른 네트워크로 전환하세요."
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "LayerZero scan"
 msgstr "LayerZero scan"
@@ -4742,11 +4747,6 @@ msgstr "GM 풀:"
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "가격 영향 없음. 이 규모에서<0/>숏 증가 또는 롱 감소 시<1/>단일 체결가가 적용됩니다."
-
-#: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
-msgid "You need USDC or ETH on {0} to create a referral code via GMX Account. Deposit funds or switch to a different network."
-msgstr "GMX Account를 통해 추천 코드를 생성하려면 {0}에 USDC 또는 ETH가 필요합니다. 자금을 입금하거나 다른 네트워크로 전환하십시오."
 
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "Current tier:"

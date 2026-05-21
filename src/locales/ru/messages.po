@@ -4603,6 +4603,11 @@ msgstr "Сохранённое влияние на цену"
 msgid "Arguments"
 msgstr "Аргументы"
 
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+msgid "You need USDC and {0} on {1} to create a referral code via GMX Account. Deposit funds or switch to a different network."
+msgstr "Для создания реферального кода через GMX Account вам нужны USDC и {0} в сети {1}. Внесите средства или переключитесь на другую сеть."
+
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "LayerZero scan"
 msgstr "LayerZero scan"
@@ -4742,11 +4747,6 @@ msgstr "GM пулы:"
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "Нет влияния на цену. Единая цена исполнения для<0/>увеличения шортов или уменьшения лонгов при<1/>данном размере."
-
-#: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
-msgid "You need USDC or ETH on {0} to create a referral code via GMX Account. Deposit funds or switch to a different network."
-msgstr "Для создания реферального кода через GMX Account вам необходимы USDC или ETH в сети {0}. Пополните баланс или переключитесь на другую сеть."
 
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "Current tier:"
