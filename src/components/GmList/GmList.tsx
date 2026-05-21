@@ -23,6 +23,7 @@ import { PerformanceData } from "domain/synthetics/markets/usePerformanceAnnuali
 import { PerformanceSnapshotsData } from "domain/synthetics/markets/usePerformanceSnapshots";
 import { useUserEarnings } from "domain/synthetics/markets/useUserEarnings";
 import { useLocalizedMap } from "lib/i18n";
+import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import PoolsCard from "pages/Pools/PoolsCard";
 import { usePoolsIsMobilePage } from "pages/Pools/usePoolsIsMobilePage";
@@ -179,6 +180,14 @@ export function GmList({
   const rows =
     currentData.length > 0 &&
     currentData.map((token) => {
+      const market = getByKey(marketsInfo, token.address);
+      const isRecentlyListed = Boolean(
+        market &&
+          !market.isSpotOnly &&
+          !market.isDisabled &&
+          recentlyListedAddressesSet.has(market.indexTokenAddress.toLowerCase())
+      );
+
       return (
         <GmListItem
           key={token.address}
@@ -192,6 +201,7 @@ export function GmList({
           performance={performance}
           performanceLoading={performanceLoading}
           performanceSnapshots={performanceSnapshots}
+          isRecentlyListed={isRecentlyListed}
           isFavorite={favoriteTokens.includes(token.address)}
           onFavoriteClick={toggleFavoriteToken}
         />

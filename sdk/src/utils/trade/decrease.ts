@@ -16,6 +16,7 @@ import {
   getLeverage,
   getLiquidationPrice,
   getMinCollateralFactorForPosition,
+  getMinCollateralUsdForLiquidationPrice,
   getNetPriceImpactDeltaUsdForDecrease,
   getPositionPnlUsd,
 } from "utils/positions";
@@ -472,6 +473,49 @@ export function getIsFullClose(p: {
 export function getMinCollateralUsdForLeverage(position: PositionInfoLoaded, openInterestDelta: bigint) {
   const minCollateralFactor = getMinCollateralFactorForPosition(position, openInterestDelta);
   return applyFactor(position.sizeInUsd, minCollateralFactor);
+}
+
+export function getMaxWithdrawAmount(p: {
+  position: PositionInfoLoaded;
+  minCollateralUsd: bigint | undefined;
+  collateralPrice: bigint | undefined;
+  collateralDecimals: number | undefined;
+  userReferralInfo: UserReferralInfo | undefined;
+}): bigint {
+  const { position, minCollateralUsd, collateralPrice, collateralDecimals, userReferralInfo } = p;
+
+  const minCollateralUsdForLeverage = getMinCollateralUsdForLeverage(position, 0n);
+  let minRequiredNextCollateralUsd = minCollateralUsdForLeverage;
+
+  if (minCollateralUsd !== undefined && minCollateralUsd > minRequiredNextCollateralUsd) {
+    minRequiredNextCollateralUsd = minCollateralUsd;
+  }
+
+  const minCollateralUsdForLiquidationPrice = getMinCollateralUsdForLiquidationPrice({
+    sizeInUsd: position.sizeInUsd,
+    sizeInTokens: position.sizeInTokens,
+    marketInfo: position.marketInfo,
+    pendingImpactAmount: position.pendingImpactAmount,
+    minCollateralUsd: minCollateralUsd ?? 0n,
+    pnl: position.pnl,
+    isLong: position.isLong,
+    userReferralInfo,
+  });
+
+  if (minCollateralUsdForLiquidationPrice > minRequiredNextCollateralUsd) {
+    minRequiredNextCollateralUsd = minCollateralUsdForLiquidationPrice;
+  }
+
+  const minRequiredCollateralUsd =
+    minRequiredNextCollateralUsd + (position.pendingBorrowingFeesUsd ?? 0n) + (position.pendingFundingFeesUsd ?? 0n);
+
+  if (position.collateralUsd < minRequiredCollateralUsd) {
+    return 0n;
+  }
+
+  const maxWithdrawUsd = position.collateralUsd - minRequiredCollateralUsd;
+
+  return convertToTokenAmount(maxWithdrawUsd, collateralDecimals, collateralPrice) ?? 0n;
 }
 
 export function payForCollateralCost(p: {

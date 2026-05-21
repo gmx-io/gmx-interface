@@ -2,7 +2,7 @@ import { addressToBytes32 } from "@layerzerolabs/lz-v2-utilities";
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { type Provider } from "ethers";
-import { useCallback, useEffect, useMemo, useState } from "react";
+import { ReactNode, useCallback, useEffect, useMemo, useState } from "react";
 import Skeleton from "react-loading-skeleton";
 import { Address, encodeAbiParameters, encodeEventTopics, isHex, toHex, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
@@ -70,6 +70,7 @@ import { getDefaultInsufficientGasMessage, ValidationBannerErrorName } from "dom
 import { convertToUsd, sortTokenDataByBalance, TokenBalanceType, TokenData } from "domain/tokens";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
+import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { useLeadingDebounce } from "lib/debounce/useLeadingDebounde";
 import { helperToast } from "lib/helperToast";
 import {
@@ -105,6 +106,7 @@ import { calculateNetworkFeeDetails } from "components/GmxAccountModal/calculate
 import { useAvailableToTradeAssetMultichain, useGmxAccountWithdrawNetworks } from "components/GmxAccountModal/hooks";
 import NumberInput from "components/NumberInput/NumberInput";
 import TokenIcon from "components/TokenIcon/TokenIcon";
+import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
 
 import SpinnerIcon from "img/ic_spinner.svg?react";
@@ -506,6 +508,7 @@ export const WithdrawalView = () => {
   const [selectedTokenAddress, setSelectedTokenAddress] = useGmxAccountWithdrawalViewTokenAddress();
 
   const hasOutdatedUi = useHasOutdatedUi();
+  const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
 
   const { tokensData } = useTokensDataRequest(chainId, withdrawalViewChain);
   const networks = useGmxAccountWithdrawNetworks();
@@ -1112,6 +1115,7 @@ export const WithdrawalView = () => {
     bannerErrorName?: ValidationBannerErrorName;
     disabled?: boolean;
     onClick?: () => void;
+    errorDescription?: ReactNode;
   } = {
     text: t`Withdraw`,
     onClick: handleWithdraw,
@@ -1120,6 +1124,12 @@ export const WithdrawalView = () => {
   if (hasOutdatedUi) {
     buttonState = {
       text: getPageOutdatedError(),
+      disabled: true,
+    };
+  } else if (multipleWalletExtensionsChainError.buttonErrorMessage) {
+    buttonState = {
+      text: multipleWalletExtensionsChainError.buttonErrorMessage,
+      errorDescription: multipleWalletExtensionsChainError.buttonTooltipMessage,
       disabled: true,
     };
   } else if (isSubmitting) {
@@ -1541,14 +1551,16 @@ export const WithdrawalView = () => {
         </>
       )}
 
-      <Button
-        variant="primary-action"
-        className="w-full shrink-0"
-        onClick={buttonState.onClick}
-        disabled={buttonState.disabled}
-      >
-        {buttonState.text}
-      </Button>
+      <ButtonTooltipWrapper content={buttonState.errorDescription}>
+        <Button
+          variant="primary-action"
+          className="w-full shrink-0"
+          onClick={buttonState.onClick}
+          disabled={buttonState.disabled}
+        >
+          {buttonState.text}
+        </Button>
+      </ButtonTooltipWrapper>
     </div>
   );
 };

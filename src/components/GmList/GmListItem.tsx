@@ -38,6 +38,8 @@ import { AmountWithUsdHuman } from "components/AmountWithUsd/AmountWithUsd";
 import { AprInfo } from "components/AprInfo/AprInfo";
 import Button from "components/Button/Button";
 import FavoriteStar from "components/FavoriteStar/FavoriteStar";
+import { RecentlyListedBadge } from "components/FavoriteTabs/RecentlyListedBadge";
+import { RecentlyListedFavoriteSlot } from "components/FavoriteTabs/RecentlyListedFavoriteSlot";
 import { TableTdActionable, TableTrActionable } from "components/Table/Table";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 
@@ -61,6 +63,7 @@ export function GmListItem({
   apyLoading,
   isFavorite,
   onFavoriteClick,
+  isRecentlyListed,
   performance,
   performanceLoading,
   performanceSnapshots,
@@ -74,6 +77,7 @@ export function GmListItem({
   apyLoading: boolean;
   isFavorite: boolean | undefined;
   onFavoriteClick: ((address: string) => void) | undefined;
+  isRecentlyListed?: boolean;
   performanceLoading: boolean;
   performance: PerformanceData | undefined;
   performanceSnapshots: PerformanceSnapshotsData | undefined;
@@ -131,6 +135,9 @@ export function GmListItem({
     : getNormalizedTokenSymbol(indexToken.symbol);
 
   const tokenIconBadge = getMarketBadge(chainId, marketOrGlv);
+  const showRecentlyListedBadge = Boolean(
+    isRecentlyListed && !isGlv && !marketOrGlv.isSpotOnly && !marketOrGlv.isDisabled
+  );
 
   const handleFavoriteClick = (event: React.MouseEvent) => {
     event.stopPropagation();
@@ -156,12 +163,13 @@ export function GmListItem({
               />
             </div>
             <div className="flex flex-col">
-              <div className="text-body-medium flex items-center">
+              <div className="text-body-medium flex flex-wrap items-center gap-x-6">
                 <span className="font-medium">
                   {isGlv
                     ? getGlvDisplayName(marketOrGlv)
                     : getMarketIndexName({ indexToken, isSpotOnly: marketOrGlv.isSpotOnly })}
                 </span>
+                {showRecentlyListedBadge && <RecentlyListedBadge />}
 
                 <div className="inline-block">
                   <GmAssetDropdown token={token} marketsInfoData={marketsInfoData} tokensData={tokensData} />
@@ -253,8 +261,8 @@ export function GmListItem({
       <TableTdActionable className="w-[220px] pl-16">
         <div className="flex items-center gap-8">
           {onFavoriteClick && (
-            <Button variant="ghost" className="!p-8" onClick={handleFavoriteClick}>
-              <FavoriteStar isFavorite={isFavorite} />
+            <Button variant="ghost" className="!h-32 !min-h-32 !w-40 !p-0" onClick={handleFavoriteClick}>
+              <RecentlyListedFavoriteSlot isRecentlyListed={showRecentlyListedBadge} isFavorite={isFavorite} />
             </Button>
           )}
 

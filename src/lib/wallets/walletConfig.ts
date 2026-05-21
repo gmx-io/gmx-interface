@@ -50,8 +50,8 @@ export const getWagmiConfig = once(() => {
 
   const transports = chains.reduce(
     (acc, chain) => {
-      const rpcProviders = getRpcProviders(chain.id, "default");
-      acc[chain.id] = fallback([...rpcProviders.map((provider) => http(provider.url))]);
+      const transport = getRpcTransport(chain.id as AnyChainId, "default");
+      acc[chain.id] = transport;
       return acc;
     },
     {} as Record<number, Transport>

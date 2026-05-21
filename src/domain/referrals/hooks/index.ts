@@ -1,5 +1,5 @@
 import { gql } from "@apollo/client";
-import { ethers } from "ethers";
+import { ethers, TransactionResponse } from "ethers";
 import { useEffect, useMemo, useState } from "react";
 import { isAddress, type Hash, zeroAddress, zeroHash } from "viem";
 
@@ -173,7 +173,7 @@ export async function registerReferralCode(
   referralCode: string,
   signer: WalletSigner | undefined,
   opts: CallContractOpts
-) {
+): Promise<TransactionResponse> {
   const referralStorageAddress = getContract(chainId, "ReferralStorage");
   const referralCodeHex = encodeReferralCode(referralCode);
   const contract = new ethers.Contract(referralStorageAddress, abis.ReferralStorage, signer);
