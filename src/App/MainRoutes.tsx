@@ -25,6 +25,7 @@ import { ParseTransactionPage } from "pages/ParseTransaction/ParseTransaction";
 import Pools from "pages/Pools/Pools";
 import { PoolsDetails } from "pages/PoolsDetails/PoolsDetails";
 import { PriceImpactRebatesStatsPage } from "pages/PriceImpactRebatesStats/PriceImpactRebatesStats";
+import { PrivyWalletPage } from "pages/PrivyWallet/PrivyWalletPage";
 import { ReferralsRouter } from "pages/Referrals/ReferralsRouter";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
@@ -164,6 +165,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       </Route>
       <Route exact path="/buy_gmx">
         <BuyGMX />
+      </Route>
+      <Route exact path="/privy-wallet">
+        <PrivyWalletPage />
       </Route>
       <Route exact path="/ecosystem">
         <Ecosystem />
