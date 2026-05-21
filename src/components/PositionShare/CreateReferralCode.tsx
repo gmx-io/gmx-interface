@@ -1,6 +1,5 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
-import { type TransactionResponse } from "ethers";
 import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { encodeFunctionData, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
@@ -36,6 +35,7 @@ import { sendWalletTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { encodeReferralCode } from "sdk/utils/referrals";
 
@@ -134,17 +134,24 @@ function CreateReferralCodeSettlement({ onSuccess }: Props) {
           return;
         }
 
-        const tx = (await createReferralCode(referralCode)) as TransactionResponse;
-        const receipt = await tx.wait();
+        const tx = await createReferralCode(referralCode);
+        if (!tx?.hash) {
+          throw new Error("Referral code transaction was not submitted");
+        }
 
-        if (receipt?.status === 1) {
+        const publicClient = getPublicClientWithRpc(chainId);
+        const receipt = await publicClient.waitForTransactionReceipt({ hash: tx.hash as `0x${string}` });
+
+        if (receipt?.status === "success") {
           helperToast.success(t`Referral code created`);
           onSuccess(referralCode);
           setReferralCode("");
+        } else {
+          throw new Error(`Transaction failed with status ${receipt?.status}`);
         }
       } catch (err) {
-        setError(t`Referral code creation failed`);
         metrics.pushError(err, "createReferralCode");
+        setError(t`Referral code creation failed`);
       } finally {
         setIsProcessing(false);
       }
@@ -334,10 +341,12 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
               <Trans>May take a few minutes to appear. Check back later</Trans>
             </>
           );
+        } else {
+          throw new Error(`Transaction failed with status ${receipt.status}`);
         }
       } catch (err) {
-        toastCustomOrStargateError(chainId, err);
         metrics.pushError(err, "createReferralCodeMultichain");
+        toastCustomOrStargateError(chainId, err);
       } finally {
         setIsSubmitting(false);
         setIsValidating(false);

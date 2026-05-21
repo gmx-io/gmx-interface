@@ -29,10 +29,12 @@ import { ValidationBannerErrorName } from "domain/synthetics/trade/utils/validat
 import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
+import { metrics } from "lib/metrics";
 import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { encodeReferralCode } from "sdk/utils/referrals";
 
@@ -180,9 +182,12 @@ function AffiliateCodeFormMultichain({
             <Trans>May take a few minutes to reflect. Check back later</Trans>
           </>
         );
+      } else {
+        throw new Error(`Transaction failed with status ${receipt.status}`);
       }
     } catch (err) {
-      toastCustomOrStargateError(chainId, err);
+      metrics.pushError(err, "referralCreateCodeMultichain");
+      toastCustomOrStargateError(chainId, err, { actionName: "Create Referral Code" });
     } finally {
       setIsSubmitting(false);
       setIsValidating(false);
@@ -378,7 +383,7 @@ function AffiliateCodeForm({
   callAfterSuccess,
   initialReferralCode = "",
 }: {
-  handleCreateReferralCode: (code: string) => Promise<unknown>;
+  handleCreateReferralCode: (code: string) => Promise<TransactionResponse>;
   callAfterSuccess?: (code: string) => void;
   initialReferralCode?: string;
 }) {
@@ -435,32 +440,39 @@ function AffiliateCodeForm({
     event.preventDefault();
     setIsProcessing(true);
 
-    const trimmedCode = referralCode.trim();
-    const { takenStatus, failedChains } = await getReferralCodeTakenStatus(account, trimmedCode, chainId);
-    setRpcFailedChains(failedChains);
-
-    if (["all", "current"].includes(takenStatus)) {
-      setIsProcessing(false);
-      return;
-    }
-
     try {
-      const tx = (await handleCreateReferralCode(trimmedCode)) as TransactionResponse;
+      const trimmedCode = referralCode.trim();
+      const { takenStatus, failedChains } = await getReferralCodeTakenStatus(account, trimmedCode, chainId);
+      setRpcFailedChains(failedChains);
 
-      if (callAfterSuccess) {
-        callAfterSuccess(trimmedCode);
+      if (["all", "current"].includes(takenStatus)) {
+        setIsProcessing(false);
+        return;
       }
 
-      const receipt = await tx.wait();
+      const tx = await handleCreateReferralCode(trimmedCode);
+      if (!tx?.hash) {
+        throw new Error("Referral code transaction was not submitted");
+      }
 
-      if (receipt?.status === 1) {
+      const publicClient = getPublicClientWithRpc(chainId);
+      const receipt = await publicClient.waitForTransactionReceipt({ hash: tx.hash as `0x${string}` });
+
+      if (receipt?.status === "success") {
         addRecentCode(trimmedCode);
-        helperToast.success(t`Referral code created`);
         setReferralCode("");
+
+        if (callAfterSuccess) {
+          callAfterSuccess(trimmedCode);
+        }
+
+        helperToast.success(t`Referral code created`);
+      } else {
+        throw new Error(`Transaction failed with status ${receipt?.status}`);
       }
     } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error(err);
+      metrics.pushError(err, "referralCreateCode");
+      toastCustomOrStargateError(chainId, err, { actionName: "Create Referral Code" });
     } finally {
       setIsProcessing(false);
     }
@@ -557,7 +569,7 @@ export function AffiliateCodeFormContainer({
   callAfterSuccess,
   initialReferralCode = "",
 }: {
-  handleCreateReferralCode: (code: string) => Promise<unknown>;
+  handleCreateReferralCode: (code: string) => Promise<TransactionResponse>;
   callAfterSuccess?: (code: string) => void;
   initialReferralCode?: string;
 }) {

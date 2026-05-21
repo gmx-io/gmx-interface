@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/macro";
+import type { TransactionResponse } from "ethers";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
@@ -51,7 +52,7 @@ export function CreateAffiliateWizard({
   traderDiscountPercentage,
 }: {
   onGoToAffiliateDashboard: () => void;
-  handleCreateReferralCode: (code: string) => Promise<unknown>;
+  handleCreateReferralCode: (code: string) => Promise<TransactionResponse>;
   initialReferralCode: string | undefined;
   traderDiscountPercentage?: string | number;
 }) {

@@ -1,13 +1,14 @@
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { lightFormat } from "date-fns";
+import type { TransactionResponse } from "ethers";
 import { AnimatePresence, motion } from "framer-motion";
 import { Fragment, useCallback, useState } from "react";
 import { useCopyToClipboard } from "react-use";
 
 import { TotalReferralsStats, useTiers } from "domain/referrals";
 import { useAffiliateReferralStats } from "domain/referrals/hooks/useAffiliateReferralStats";
-import { type ReferralCodeStats } from "domain/referrals/types";
+import type { ReferralCodeStats } from "domain/referrals/types";
 import { getReferralCodeTradeUrl, getSharePercentage, getTierIdDisplay } from "domain/referrals/utils/referralsHelper";
 import { useTimeRange } from "domain/synthetics/markets/useTimeRange";
 import { useChainId } from "lib/chains";
@@ -51,7 +52,7 @@ import { ReferralCodeWarnings } from "./ReferralCodeWarnings";
 type Props = {
   account?: string;
   referralsData?: TotalReferralsStats;
-  handleCreateReferralCode: (code: string) => Promise<unknown>;
+  handleCreateReferralCode: (code: string) => Promise<TransactionResponse>;
 };
 
 export function AffiliatesStats({ account, referralsData, handleCreateReferralCode }: Props) {
