@@ -1866,6 +1866,10 @@ msgstr "Schlüssel"
 msgid "Distributions"
 msgstr "Verteilungen"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Withdrawal not available"
+msgstr "Abhebung nicht verfügbar"
+
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Your code is immediately active! Share it with traders and you'll earn rebates when they execute trades."
 msgstr ""
