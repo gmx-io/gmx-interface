@@ -446,8 +446,8 @@ function MarketsList() {
         <table className="text-body-small w-full border-separate border-spacing-0">
           <thead>
             <tr>
-              <th></th>
-              <th className={cx(thClassName, "pl-4", isMobile ? "min-w-[18ch]" : "min-w-[28ch]")} colSpan={2}>
+              <th colSpan={1}></th>
+              <th className={cx(thClassName, "pl-4", isMobile ? "min-w-[18ch]" : "min-w-[28ch]")} colSpan={1}>
                 <Trans>MARKET</Trans>
               </th>
               {isSwap ? (
