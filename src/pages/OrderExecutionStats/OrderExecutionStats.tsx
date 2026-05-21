@@ -196,7 +196,7 @@ type OrderExecutionStatsQueryParams = {
 export function OrderExecutionStats() {
   const { chainId, srcChainId } = useChainId();
   const [dateRange, setDateRange] = useState<[Date | undefined, Date | undefined]>(() => [
-    new Date(Date.now() - 90 * SECONDS_IN_DAY * 1000),
+    new Date(Date.now() - 7 * SECONDS_IN_DAY * 1000),
     new Date(),
   ]);
   const [bucketSize, setBucketSize] = useState<BucketSizeKey>("auto");
