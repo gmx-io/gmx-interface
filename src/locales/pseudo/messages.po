@@ -2521,10 +2521,6 @@ msgstr ""
 msgid "Buy {0}"
 msgstr ""
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX Blueberry Club"
-msgstr ""
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
 msgstr ""
@@ -3011,10 +3007,6 @@ msgstr ""
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "The GMX token serves as the governance token of the GMX protocol. 27% of platform revenue accumulates in the Treasury for GMX buybacks. Stakers earn rewards based on staking power (duration × amount), distributed when GMX reaches $90."
-msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "AI agent for GMX Blueberry Club"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -4252,10 +4244,6 @@ msgstr ""
 msgid "Liquidated"
 msgstr ""
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Blueberry Pulse"
-msgstr ""
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval cancelled"
 msgstr ""
@@ -5316,10 +5304,6 @@ msgstr ""
 msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
 msgstr ""
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX community with NFTs, trading, and education initiatives"
-msgstr ""
-
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Longs"
@@ -6199,10 +6183,6 @@ msgstr ""
 
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position value after PnL and all fees"
-msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Real-time rants about GMX trades"
 msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
@@ -7142,10 +7122,6 @@ msgid "TVL (supply)"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "SNTL esGMX market"
-msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
 msgstr ""
 
@@ -7394,10 +7370,6 @@ msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed."
-msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX weekly updates"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -9484,10 +9456,6 @@ msgstr ""
 msgid "Traders"
 msgstr ""
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Kudai AI agent"
-msgstr ""
-
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Open GMTrade"
@@ -9499,10 +9467,6 @@ msgstr ""
 
 #: src/components/TradeHistory/keys.ts
 msgid "Create Limit Swap"
-msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "esGMX OTC market"
 msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -10564,10 +10528,6 @@ msgstr ""
 
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Sell"
-msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Generative Market eXplore - AIGMX agent"
 msgstr ""
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx

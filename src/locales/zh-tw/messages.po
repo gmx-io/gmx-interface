@@ -2521,10 +2521,6 @@ msgstr "由社群驅動"
 msgid "Buy {0}"
 msgstr "買入 {0}"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX Blueberry Club"
-msgstr "GMX Blueberry Club"
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
 msgstr "Shifting 僅在 {chainNames} 上可用。請切換網路以繼續。"
@@ -3012,10 +3008,6 @@ msgstr "影響池數量"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "The GMX token serves as the governance token of the GMX protocol. 27% of platform revenue accumulates in the Treasury for GMX buybacks. Stakers earn rewards based on staking power (duration × amount), distributed when GMX reaches $90."
 msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "AI agent for GMX Blueberry Club"
-msgstr "GMX Blueberry Club 的 AI 代理"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact USD"
@@ -4252,10 +4244,6 @@ msgstr ""
 msgid "Liquidated"
 msgstr "已清算"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Blueberry Pulse"
-msgstr "Blueberry Pulse"
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval cancelled"
 msgstr "授權已取消"
@@ -5316,10 +5304,6 @@ msgstr ""
 msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
 msgstr "無可用兌換路徑。<0>將 {0} 兌換為 {swapToTokenSymbol}</0>，再兌換為 {1}。"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX community with NFTs, trading, and education initiatives"
-msgstr "GMX 社群，涵蓋 NFT、交易與教育計畫"
-
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Longs"
@@ -6200,10 +6184,6 @@ msgstr "存取金鑰"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position value after PnL and all fees"
 msgstr "計入 PnL 及所有費用後的倉位價值"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Real-time rants about GMX trades"
-msgstr "關於 GMX 交易的即時評論"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Number of trades done by your referred traders"
@@ -7142,10 +7122,6 @@ msgid "TVL (supply)"
 msgstr "TVL（供給量）"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "SNTL esGMX market"
-msgstr "SNTL esGMX 市場"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
 msgstr "TokenTerminal"
 
@@ -7395,10 +7371,6 @@ msgstr "轉帳中..."
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed."
 msgstr "賣出 {gmOrGlvLabel} 失敗。"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX weekly updates"
-msgstr "GMX 每週更新"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -9484,10 +9456,6 @@ msgstr "已質押"
 msgid "Traders"
 msgstr "交易者"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Kudai AI agent"
-msgstr "Kudai AI agent"
-
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Open GMTrade"
@@ -9500,10 +9468,6 @@ msgstr "執行 TWAP 部分"
 #: src/components/TradeHistory/keys.ts
 msgid "Create Limit Swap"
 msgstr "建立 Limit Swap"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "esGMX OTC market"
-msgstr "esGMX 場外交易市場"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group (Portuguese)"
@@ -10565,10 +10529,6 @@ msgstr "{orderText} 取消失敗"
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Sell"
 msgstr "賣出"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Generative Market eXplore - AIGMX agent"
-msgstr "Generative Market eXplore - AIGMX agent"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Smart wallets not supported on this network"

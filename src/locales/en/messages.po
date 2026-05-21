@@ -2521,10 +2521,6 @@ msgstr "Driven by our community"
 msgid "Buy {0}"
 msgstr "Buy {0}"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX Blueberry Club"
-msgstr "GMX Blueberry Club"
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
 msgstr "Shifting only available on {chainNames}. Switch networks to continue."
@@ -3012,10 +3008,6 @@ msgstr "Impact pool amount"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "The GMX token serves as the governance token of the GMX protocol. 27% of platform revenue accumulates in the Treasury for GMX buybacks. Stakers earn rewards based on staking power (duration × amount), distributed when GMX reaches $90."
 msgstr "The GMX token serves as the governance token of the GMX protocol. 27% of platform revenue accumulates in the Treasury for GMX buybacks. Stakers earn rewards based on staking power (duration × amount), distributed when GMX reaches $90."
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "AI agent for GMX Blueberry Club"
-msgstr "AI agent for GMX Blueberry Club"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact USD"
@@ -4252,10 +4244,6 @@ msgstr "No net rate history for this market"
 msgid "Liquidated"
 msgstr "Liquidated"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Blueberry Pulse"
-msgstr "Blueberry Pulse"
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval cancelled"
 msgstr "Approval cancelled"
@@ -5316,10 +5304,6 @@ msgstr "Transferring a referral code"
 msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
 msgstr "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX community with NFTs, trading, and education initiatives"
-msgstr "GMX community with NFTs, trading, and education initiatives"
-
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Longs"
@@ -6200,10 +6184,6 @@ msgstr "Access key"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position value after PnL and all fees"
 msgstr "Position value after PnL and all fees"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Real-time rants about GMX trades"
-msgstr "Real-time rants about GMX trades"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Number of trades done by your referred traders"
@@ -7142,10 +7122,6 @@ msgid "TVL (supply)"
 msgstr "TVL (supply)"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "SNTL esGMX market"
-msgstr "SNTL esGMX market"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
 msgstr "TokenTerminal"
 
@@ -7395,10 +7371,6 @@ msgstr "Transferring..."
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed."
 msgstr "Sell {gmOrGlvLabel} failed."
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX weekly updates"
-msgstr "GMX weekly updates"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -9484,10 +9456,6 @@ msgstr "Staked"
 msgid "Traders"
 msgstr "Traders"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Kudai AI agent"
-msgstr "Kudai AI agent"
-
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Open GMTrade"
@@ -9500,10 +9468,6 @@ msgstr "Execute TWAP part"
 #: src/components/TradeHistory/keys.ts
 msgid "Create Limit Swap"
 msgstr "Create Limit Swap"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "esGMX OTC market"
-msgstr "esGMX OTC market"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group (Portuguese)"
@@ -10565,10 +10529,6 @@ msgstr "{orderText} cancellation failed"
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Sell"
 msgstr "Sell"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Generative Market eXplore - AIGMX agent"
-msgstr "Generative Market eXplore - AIGMX agent"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Smart wallets not supported on this network"

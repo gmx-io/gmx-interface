@@ -2521,10 +2521,6 @@ msgstr "Angetrieben durch unsere Community"
 msgid "Buy {0}"
 msgstr "Kaufe {0}"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX Blueberry Club"
-msgstr "GMX Blueberry Club"
-
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
 msgstr "Shifting nur verfügbar auf {chainNames}. Wechseln Sie das Netzwerk, um fortzufahren."
@@ -3012,10 +3008,6 @@ msgstr "Impact-Pool-Betrag"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "The GMX token serves as the governance token of the GMX protocol. 27% of platform revenue accumulates in the Treasury for GMX buybacks. Stakers earn rewards based on staking power (duration × amount), distributed when GMX reaches $90."
 msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "AI agent for GMX Blueberry Club"
-msgstr "KI-Agent für GMX Blueberry Club"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact USD"
@@ -4252,10 +4244,6 @@ msgstr ""
 msgid "Liquidated"
 msgstr "Liquidiert"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Blueberry Pulse"
-msgstr "Blueberry Pulse"
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval cancelled"
 msgstr "Genehmigung abgebrochen"
@@ -5316,10 +5304,6 @@ msgstr ""
 msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
 msgstr "Kein Tauschpfad verfügbar. <0>Tausche {0} zu {swapToTokenSymbol}</0>, dann zu {1}."
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX community with NFTs, trading, and education initiatives"
-msgstr "GMX-Community mit NFT-, Handels- und Bildungsinitiativen"
-
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Longs"
@@ -6200,10 +6184,6 @@ msgstr "Zugriffsschlüssel"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position value after PnL and all fees"
 msgstr "Positionswert nach PnL und allen Gebühren"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Real-time rants about GMX trades"
-msgstr "Echtzeit-Kommentare über GMX Trades"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Number of trades done by your referred traders"
@@ -7142,10 +7122,6 @@ msgid "TVL (supply)"
 msgstr "TVL (Angebot)"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "SNTL esGMX market"
-msgstr "SNTL esGMX market"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
 msgstr "TokenTerminal"
 
@@ -7395,10 +7371,6 @@ msgstr "Übertragung läuft..."
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed."
 msgstr "Verkaufen von {gmOrGlvLabel} fehlgeschlagen."
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX weekly updates"
-msgstr "Wöchentliche GMX-Updates"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -9484,10 +9456,6 @@ msgstr "Gestaket"
 msgid "Traders"
 msgstr "Trader"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Kudai AI agent"
-msgstr "Kudai AI agent"
-
 #: landing/src/pages/Home/SolanaRedirectModal/SolanaRedirectModal.tsx
 #: src/components/NetworkDropdown/SolanaNetworkItem.tsx
 msgid "Open GMTrade"
@@ -9500,10 +9468,6 @@ msgstr "TWAP-Teil ausführen"
 #: src/components/TradeHistory/keys.ts
 msgid "Create Limit Swap"
 msgstr "Limit-Tausch erstellen"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "esGMX OTC market"
-msgstr "esGMX-OTC-Markt"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group (Portuguese)"
@@ -10565,10 +10529,6 @@ msgstr "{orderText} Stornierung fehlgeschlagen"
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Sell"
 msgstr "Verkaufen"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Generative Market eXplore - AIGMX agent"
-msgstr "Generative Market eXplore - AIGMX Agent"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Smart wallets not supported on this network"
