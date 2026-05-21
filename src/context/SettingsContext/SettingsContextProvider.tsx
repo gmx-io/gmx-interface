@@ -4,6 +4,7 @@ import { ReactNode, createContext, useContext, useEffect, useMemo, useState } fr
 import { ARBITRUM, BOTANIX, getExecutionFeeConfig } from "config/chains";
 import { isDevelopment } from "config/env";
 import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from "config/factors";
+import { getIsExpressSupported } from "config/features";
 import {
   BREAKDOWN_NET_PRICE_IMPACT_ENABLED_KEY,
   CLOSE_SIZE_DENOMINATION_KEY,
@@ -30,7 +31,7 @@ import {
   getSyntheticsAcceptablePriceImpactBufferKey,
 } from "config/localStorage";
 import { useChainId } from "lib/chains";
-import { useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
+import { hasStoredLocalStorageValue, useLocalStorageByChainId, useLocalStorageSerializeKey } from "lib/localStorage";
 import { tenderlyLsKeys } from "lib/tenderly";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
@@ -197,10 +198,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     undefined | { disabledSwapMarkets?: string[]; manualPath?: string[] }
   >([chainId, DEBUG_SWAP_MARKETS_CONFIG_KEY], undefined);
 
-  const [expressOrdersEnabled, setExpressOrdersEnabled] = useLocalStorageSerializeKey(
-    getExpressOrdersEnabledKey(chainId, account),
-    false
-  );
+  const expressOrdersEnabledKey = getExpressOrdersEnabledKey(chainId, account);
+  const [expressOrdersEnabled, setExpressOrdersEnabled] = useLocalStorageSerializeKey(expressOrdersEnabledKey, false);
 
   const [receiveToGmxAccount, setReceiveToGmxAccount] = useLocalStorageSerializeKey<boolean | null>(
     getCollateralCloseDestinationKey(chainId, account),
@@ -283,6 +282,32 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setExecutionFeeBufferBps,
     setHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
   ]);
+
+  useEffect(
+    function defaultExpressForSupportedWallets() {
+      if (
+        !account ||
+        expressOrdersEnabled ||
+        isExpressUnsupportedWallet ||
+        isNonEoaLoading ||
+        !getIsExpressSupported(chainId) ||
+        hasStoredLocalStorageValue(expressOrdersEnabledKey)
+      ) {
+        return;
+      }
+
+      setExpressOrdersEnabled(true);
+    },
+    [
+      chainId,
+      account,
+      expressOrdersEnabled,
+      expressOrdersEnabledKey,
+      isExpressUnsupportedWallet,
+      isNonEoaLoading,
+      setExpressOrdersEnabled,
+    ]
+  );
 
   useEffect(
     function fallbackMultichain() {

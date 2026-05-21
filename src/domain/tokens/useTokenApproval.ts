@@ -78,7 +78,7 @@ export function useTokenApproval({
   const isAllowanceLoading = nothingToCheck ? false : isAllowanceLoadingRaw;
   const isAllowanceLoaded = nothingToCheck ? true : isAllowanceLoadedRaw;
 
-  const permitsOrEmpty = allowPermit && tokenPermits ? tokenPermits : EMPTY_ARRAY;
+  const permitsOrEmpty = allowPermit && !isPermitsDisabled && tokenPermits ? tokenPermits : EMPTY_ARRAY;
 
   const tokensToApprove = useMemo(
     () =>

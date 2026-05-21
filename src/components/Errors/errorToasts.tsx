@@ -424,7 +424,7 @@ export const signerAddressError = "Signer address does not match account address
 export function getInvalidPermitSignatureToastContent() {
   return (
     <Trans>
-      <div>Invalid permit signature. Try again</div>
+      <div>Permit approval failed. A standard approval transaction is required. Approve the token and try again</div>
     </Trans>
   );
 }
