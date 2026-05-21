@@ -1,5 +1,5 @@
 import { watchAccount } from "@wagmi/core";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useAccount } from "wagmi";
 
 import {
@@ -36,9 +36,8 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
    */
   srcChainId?: SourceChainId;
 } {
-  let { chainId: connectedChainId } = useAccount();
+  const { chainId: connectedChainId, isConnected } = useAccount();
 
-  const [displayedChainId, setDisplayedChainId] = useState(connectedChainId ?? INITIAL_CHAIN_ID);
   const rawChainIdFromLocalStorage = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
   const chainIdFromLocalStorage = rawChainIdFromLocalStorage ? parseInt(rawChainIdFromLocalStorage) : undefined;
 
@@ -74,7 +73,6 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
     const connectHandler = (connectInfo: { chainId: string }) => {
       const rawChainId = parseInt(connectInfo.chainId);
       if (isContractsChain(rawChainId, IS_DEVELOPMENT) || isSourceChain(rawChainId, settlementChainId)) {
-        setDisplayedChainId(rawChainId);
         localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, rawChainId.toString());
       }
     };
@@ -86,52 +84,17 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
   }, [chainIdFromLocalStorage, settlementChainId]);
 
   useEffect(() => {
-    if (isCurrentChainSupported) {
-      setDisplayedChainId(connectedChainId);
-      return;
-    }
-
-    if (isCurrentChainSource) {
-      setDisplayedChainId(settlementChainId);
-      return;
-    }
-
-    if (isLocalStorageChainSupported) {
-      setDisplayedChainId(chainIdFromLocalStorage);
-      return;
-    }
-
-    if (isLocalStorageChainSource) {
-      setDisplayedChainId(settlementChainId);
-      return;
-    }
-
-    setDisplayedChainId(INITIAL_CHAIN_ID);
-  }, [
-    chainIdFromLocalStorage,
-    isCurrentChainSource,
-    isCurrentChainSupported,
-    isLocalStorageChainSource,
-    isLocalStorageChainSupported,
-    settlementChainId,
-    connectedChainId,
-  ]);
-
-  useEffect(() => {
     if (!mustChangeChainId) {
       return;
     }
     if (isLocalStorageChainSupported) {
-      setDisplayedChainId(chainIdFromLocalStorage);
       return;
     }
 
     if (isLocalStorageChainSource) {
-      setDisplayedChainId(settlementChainId);
       return;
     }
 
-    setDisplayedChainId(INITIAL_CHAIN_ID);
     localStorage.removeItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
   }, [
     chainIdFromLocalStorage,
@@ -155,30 +118,12 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
           return;
         }
 
-        setDisplayedChainId(account.chainId);
         localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, account.chainId.toString());
       },
     });
 
     return unsubscribe;
   }, [settlementChainId]);
-
-  useEffect(() => {
-    if (connectedChainId) {
-      return;
-    }
-
-    const switchNetworkHandler = (switchNetworkInfo: CustomEvent<{ chainId: number }>) => {
-      const newChainId = switchNetworkInfo.detail.chainId;
-      if (isContractsChain(newChainId, IS_DEVELOPMENT) || isSourceChain(newChainId, settlementChainId)) {
-        setDisplayedChainId(newChainId);
-      }
-    };
-    document.addEventListener("networkChange", switchNetworkHandler);
-    return () => {
-      document.removeEventListener("networkChange", switchNetworkHandler);
-    };
-  }, [connectedChainId, settlementChainId]);
 
   if (mustChangeChainId) {
     if (isLocalStorageChainSupported) {
@@ -195,7 +140,7 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
   if (isCurrentChainSupported) {
     return {
       chainId: connectedChainId as ContractsChainId,
-      isConnectedToChainId: displayedChainId === connectedChainId,
+      isConnectedToChainId: isConnected,
       srcChainId,
     };
   }

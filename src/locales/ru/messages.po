@@ -198,6 +198,10 @@ msgstr "Существующий лимитный ордер в пуле {0}, н
 msgid "Price impact from closing. Positive values benefit you. <0>Read more</0>."
 msgstr "Влияние на цену при закрытии. Положительные значения выгодны для вас. <0>Подробнее</0>."
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Before confirming a transaction, make sure the wallet prompt is using {desiredChainName}. To avoid this warning, disable other wallet extensions in your browser settings."
+msgstr "Перед подтверждением транзакции убедитесь, что запрос кошелька использует {desiredChainName}. Чтобы избежать этого предупреждения, отключите другие расширения кошельков в настройках браузера."
+
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -988,6 +992,10 @@ msgstr "Заимствование"
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "1st place"
 msgstr "1-е место"
+
+#: src/lib/chains/getMultipleWalletExtensionsChainError.tsx
+msgid "Transaction blocked"
+msgstr "Транзакция заблокирована"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -4069,6 +4077,10 @@ msgstr ""
 msgid "Market"
 msgstr "Рынок"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Multiple wallets are connected on different networks. GMX expects {desiredChainName}."
+msgstr "Несколько кошельков подключены к разным сетям. GMX ожидает {desiredChainName}."
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Executes when oracle price is {0} {1}"
 msgstr "Исполняется, когда цена оракула {0} {1}"
@@ -6541,6 +6553,10 @@ msgstr "Надёжные транзакции на базе GMX"
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawal of {balanceFormatted} failed"
 msgstr "Вывод {balanceFormatted} не удался"
+
+#: src/lib/chains/getMultipleWalletExtensionsChainError.tsx
+msgid "Multiple wallet extensions for this account are on different networks. GMX cannot reliably tell which extension will show the signing prompt.<0/><1/>To avoid signing on the wrong network and risking funds, switch all connected wallet extensions to {requiredChainName}, or disconnect the extra extension."
+msgstr "Несколько расширений кошелька для этого аккаунта находятся в разных сетях. GMX не может надёжно определить, какое расширение покажет запрос на подпись.<0/><1/>Чтобы не подписать транзакцию в неверной сети и не рисковать средствами, переключите все подключённые расширения кошелька на {requiredChainName} или отключите лишнее расширение."
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "TradFi"

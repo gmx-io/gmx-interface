@@ -43,6 +43,7 @@ import {
   ValidationBannerErrorName,
   ValidationResult,
 } from "domain/synthetics/trade/utils/validation";
+import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { isCustomError } from "lib/errors";
 import { adjustForDecimals, formatBalanceAmount } from "lib/numbers";
 import { getByKey } from "lib/objects";
@@ -83,7 +84,7 @@ type SubmitButtonState = {
   tokensToApprove?: string[];
   isAllowanceLoaded?: boolean;
   isAllowanceLoading?: boolean;
-  errorDescription?: string;
+  errorDescription?: React.ReactNode;
   bannerErrorContent?: React.ReactNode;
 };
 
@@ -118,6 +119,7 @@ export const useGmSwapSubmitState = ({
   const gasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
   const gasPaymentToken = useSelector(selectGasPaymentToken);
   const hasOutdatedUi = useHasOutdatedUi();
+  const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const { openConnectModal } = useConnectModal();
   const { account } = useWallet();
 
@@ -365,6 +367,7 @@ export const useGmSwapSubmitState = ({
 
   const error = takeValidationResult(
     commonError,
+    multipleWalletExtensionsChainError,
     swapError,
     expressError,
     nativeGasError,
@@ -390,6 +393,15 @@ export const useGmSwapSubmitState = ({
         text: t`Not supported`,
         disabled: true,
         onSubmit,
+      };
+    }
+
+    if (multipleWalletExtensionsChainError.buttonErrorMessage) {
+      return {
+        text: multipleWalletExtensionsChainError.buttonErrorMessage,
+        disabled: true,
+        onSubmit,
+        errorDescription: multipleWalletExtensionsChainError.buttonTooltipMessage,
       };
     }
 
@@ -494,6 +506,7 @@ export const useGmSwapSubmitState = ({
   }, [
     account,
     isAvalancheGmxAccountWarning,
+    multipleWalletExtensionsChainError,
     isAllowanceLoading,
     technicalFees,
     technicalFeesError,

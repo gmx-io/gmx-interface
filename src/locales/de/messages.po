@@ -198,6 +198,10 @@ msgstr "Bestehende Limitorder im {0} Pool, aber unzureichende Liquidität für d
 msgid "Price impact from closing. Positive values benefit you. <0>Read more</0>."
 msgstr "Preiseinfluss beim Schließen. Positive Werte kommen Ihnen zugute. <0>Mehr erfahren</0>."
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Before confirming a transaction, make sure the wallet prompt is using {desiredChainName}. To avoid this warning, disable other wallet extensions in your browser settings."
+msgstr "Stellen Sie vor der Bestätigung einer Transaktion sicher, dass die Wallet-Aufforderung {desiredChainName} verwendet. Um diese Warnung zu vermeiden, deaktivieren Sie andere Wallet-Erweiterungen in Ihren Browser-Einstellungen."
+
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -988,6 +992,10 @@ msgstr "Leihen"
 #: src/pages/LeaderboardPage/components/CompetitionPrizes.tsx
 msgid "1st place"
 msgstr "1. Platz"
+
+#: src/lib/chains/getMultipleWalletExtensionsChainError.tsx
+msgid "Transaction blocked"
+msgstr "Transaktion blockiert"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -4069,6 +4077,10 @@ msgstr ""
 msgid "Market"
 msgstr "Markt"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Multiple wallets are connected on different networks. GMX expects {desiredChainName}."
+msgstr "Mehrere Wallets sind mit verschiedenen Netzwerken verbunden. GMX erwartet {desiredChainName}."
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Executes when oracle price is {0} {1}"
 msgstr "Wird ausgeführt, wenn der Oracle-Preis {0} {1} ist"
@@ -6541,6 +6553,10 @@ msgstr "Zuverlässige GMX-betriebene Transaktionen"
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawal of {balanceFormatted} failed"
 msgstr "Abhebung von {balanceFormatted} fehlgeschlagen"
+
+#: src/lib/chains/getMultipleWalletExtensionsChainError.tsx
+msgid "Multiple wallet extensions for this account are on different networks. GMX cannot reliably tell which extension will show the signing prompt.<0/><1/>To avoid signing on the wrong network and risking funds, switch all connected wallet extensions to {requiredChainName}, or disconnect the extra extension."
+msgstr "Mehrere Wallet-Erweiterungen für dieses Konto sind in verschiedenen Netzwerken. GMX kann nicht zuverlässig erkennen, welche Erweiterung die Signaturaufforderung anzeigt.<0/><1/>Um eine Signatur im falschen Netzwerk und das Risiko von Geldverlust zu vermeiden, stellen Sie alle verbundenen Wallet-Erweiterungen auf {requiredChainName} um oder trennen Sie die überzählige Erweiterung."
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "TradFi"

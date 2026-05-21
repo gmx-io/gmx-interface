@@ -292,6 +292,31 @@ export function getInvalidNetworkToastContent(chainId: number) {
   );
 }
 
+export function getMultipleWalletsConnectedToastContent(
+  detectedWallets: { chainId: number; walletName: string }[],
+  desiredChainId: number
+) {
+  const desiredChainName = getChainName(desiredChainId);
+
+  return (
+    <div>
+      <Trans>Multiple wallets are connected on different networks. GMX expects {desiredChainName}.</Trans>
+      <br />
+      <br />
+      {detectedWallets.map((wallet, index) => (
+        <div key={`${wallet.walletName}-${wallet.chainId}-${index}`}>
+          {wallet.walletName}: {getChainName(wallet.chainId)}
+        </div>
+      ))}
+      <br />
+      <Trans>
+        Before confirming a transaction, make sure the wallet prompt is using {desiredChainName}. To avoid this warning,
+        disable other wallet extensions in your browser settings.
+      </Trans>
+    </div>
+  );
+}
+
 export function getNonEoaAccountChainWarningToastContent(chainId: number) {
   return (
     <Trans>
