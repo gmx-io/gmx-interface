@@ -32,9 +32,7 @@ export function getUnstakeLimitPercent(safeUnstakeLimit: bigint | null, unstakeA
 }
 
 export function getEffectiveHistoricalMax(
-  stakingPowerData: { historicalMaxStaked: bigint | null; currentStaked: bigint } | undefined,
-  isTestMode: boolean
+  stakingPowerData: { historicalMaxStaked: bigint | null } | undefined
 ): bigint | null {
-  if (!stakingPowerData) return null;
-  return stakingPowerData.historicalMaxStaked ?? (isTestMode ? stakingPowerData.currentStaked : null);
+  return stakingPowerData?.historicalMaxStaked ?? null;
 }

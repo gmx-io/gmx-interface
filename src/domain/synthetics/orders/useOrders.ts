@@ -12,6 +12,7 @@ import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import { API_UI_FLAGS, useIsApiSdkEnabled } from "domain/synthetics/uiFlags/useIsApiSdkEnabled";
 import { FreshnessMetricId } from "lib/metrics";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
+import { useApiDataFallbackCounter } from "lib/metrics/useApiDataFallbackCounter";
 import { CacheKey, MulticallRequestConfig, MulticallResult, useMulticall } from "lib/multicall";
 import { EMPTY_ARRAY } from "lib/objects";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
@@ -121,6 +122,15 @@ export function useOrders(
       freshnessMetrics.clear(chainId, FreshnessMetricId.Orders);
     }
   }, [key, chainId]);
+
+  useApiDataFallbackCounter({
+    domain: "orders",
+    chainId,
+    apiEnabled,
+    apiData: apiOrdersData,
+    isApiStale,
+    apiError,
+  });
 
   const ordersData: OrdersData | undefined = useMemo(() => {
     let orders: Order[] | undefined;
