@@ -11,7 +11,6 @@ import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/S
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { type MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
-import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { SendParam } from "domain/multichain/types";
 import { useMultichainReferralDepositToken } from "domain/multichain/useMultichainReferralDepositToken";
@@ -37,6 +36,7 @@ import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
+import { quoteFromNativeFee } from "sdk/utils/multichain/sendParams";
 import { encodeReferralCode } from "sdk/utils/referrals";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
@@ -322,7 +322,7 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
           callData: encodeFunctionData({
             abi: abis.IStargate,
             functionName: "sendToken",
-            args: [sendParams, sendQuoteFromNative(quoteResult.data.nativeFee), account],
+            args: [sendParams, quoteFromNativeFee(quoteResult.data.nativeFee), account],
           }),
           value,
           msg: t`Creating referral code...`,

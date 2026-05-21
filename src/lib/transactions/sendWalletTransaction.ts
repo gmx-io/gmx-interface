@@ -2,12 +2,12 @@ import { isAddress, isHex } from "viem";
 
 import { extendError } from "lib/errors";
 import { additionalTxnErrorValidation } from "lib/errors/additionalValidation";
-import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { GasPriceData, getGasPrice } from "lib/gas/gasPrice";
 import { getProvider } from "lib/rpc";
 import { getTenderlyConfig, simulateCallDataWithTenderly } from "lib/tenderly";
 import { WalletSigner } from "lib/wallets";
 import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
+import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
 
 import { ISigner, ISignerSendTransactionParams } from "./iSigner";
 import { TransactionWaiterResult, TxnCallback, TxnEventBuilder } from "./types";
