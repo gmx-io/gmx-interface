@@ -20,6 +20,7 @@ import EarnPortfolioPage from "pages/Earn/EarnPortfolioPage";
 import Ecosystem from "pages/Ecosystem/Ecosystem";
 import Jobs from "pages/Jobs/Jobs";
 import { CompetitionRedirect, LeaderboardPage } from "pages/LeaderboardPage/LeaderboardPage";
+import { OrderExecutionStats } from "pages/OrderExecutionStats/OrderExecutionStats";
 import PageNotFound from "pages/PageNotFound/PageNotFound";
 import { ParseTransactionPage } from "pages/ParseTransaction/ParseTransaction";
 import Pools from "pages/Pools/Pools";
@@ -118,6 +119,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       </Route>
       <Route exact path="/monitor">
         <SyntheticsStats />
+      </Route>
+      <Route exact path="/order_execution_stats">
+        <OrderExecutionStats />
       </Route>
       <Route exact path="/earn/discover">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">

@@ -205,6 +205,14 @@ export function MenuSection({
 
   const { pathname } = useLocation();
 
+  const isNavItemActive = (item: (typeof mainNavItems)[number]) => {
+    if (item.key === "stats" && pathname === "/order_execution_stats") {
+      return true;
+    }
+
+    return pathname === item.to || pathname.startsWith(`${item.to}/`);
+  };
+
   return (
     <ul className="flex list-none flex-col px-0">
       {mainNavItems.map((item) => (
@@ -212,7 +220,7 @@ export function MenuSection({
           key={item.key}
           icon={item.icon}
           label={item.label}
-          isActive={pathname === item.to || pathname.startsWith(`${item.to}/`)}
+          isActive={isNavItemActive(item)}
           isCollapsed={isCollapsed}
           to={item.to}
           onClick={onMenuItemClick}
