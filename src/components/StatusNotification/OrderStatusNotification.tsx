@@ -229,6 +229,10 @@ function OrderStatusNotification({
       return null;
     }
 
+    if (isSwapOrderType(orderData.orderType)) {
+      return null;
+    }
+
     let status: TransactionStatusType = "loading";
     let text = t`Swap ${formatTokenAmount(
       orderData.externalSwapQuote.amountIn,
