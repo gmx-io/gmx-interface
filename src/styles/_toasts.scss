@@ -71,6 +71,13 @@
   }
 }
 
+.Toastify__toast {
+  .StatusNotification a,
+  .StatusNotification-actions a {
+    color: var(--color-typography-primary) !important;
+  }
+}
+
 .Toastify__toast--success {
   color: var(--color-green-100);
   background: var(--color-green-900);
