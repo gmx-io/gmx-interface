@@ -2,7 +2,8 @@ import { gql } from "@apollo/client";
 import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { format } from "date-fns";
-import { type ChangeEvent, useCallback, useEffect, useMemo, useState } from "react";
+import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
+import { Link } from "react-router-dom";
 import {
   Bar,
   CartesianGrid,
@@ -17,28 +18,36 @@ import {
 import useSWR from "swr";
 import { decodeAbiParameters } from "viem";
 
-import { useMarketsInfoRequest } from "domain/synthetics/markets";
+import { type MarketsInfoData, useMarketsInfoRequest } from "domain/synthetics/markets";
 import { OrderType, getOrderTypeLabel } from "domain/synthetics/orders";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { TradeActionType } from "domain/synthetics/tradeHistory";
 import { useChainId } from "lib/chains";
 import { formatDateTime, normalizeDateRange } from "lib/dates";
+import { useDebounce } from "lib/debounce/useDebounce";
 import { tryDecodeCustomError } from "lib/errors";
 import { getSubsquidGraphClient } from "lib/indexers";
-import { formatAmount, numberWithCommas } from "lib/numbers";
+import { shortenAddress } from "lib/legacy";
+import { formatAmount, formatUsd, numberWithCommas } from "lib/numbers";
+import { getChainSlug } from "sdk/configs/chains";
 import { GraphQlFilters, buildFiltersBody } from "sdk/utils/indexers";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
+import Button from "components/Button/Button";
 import { ChainContentHeader } from "components/ChainContentHeader/ChainContentHeader";
 import Checkbox from "components/Checkbox/Checkbox";
 import { DateRangeSelect } from "components/DateRangeSelect/DateRangeSelect";
 import Loader from "components/Loader/Loader";
 import PageTitle from "components/PageTitle/PageTitle";
+import SearchInput from "components/SearchInput/SearchInput";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTh, TableTheadTr } from "components/Table/Table";
+import { TableFilterBase } from "components/TableFilterBase/TableFilterBase";
 import { TableOptionsFilter } from "components/TableOptionsFilter/TableOptionsFilter";
 import type { Item } from "components/TableOptionsFilter/types";
 import { getErrorTooltipTitle } from "components/TradeHistory/TradeHistoryRow/utils/shared";
+
+import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
 import "./OrderExecutionStats.scss";
 
@@ -89,6 +98,8 @@ const MAX_BUCKETS = 180;
 const CHART_BUCKETS_QUERY_BATCH_SIZE = 40;
 const FAILURE_REASONS_PAGE_SIZE = 1000;
 const MAX_FAILURE_REASON_EVENTS = 10000;
+const FAILURE_REASON_EVENTS_PAGE_SIZE = 50;
+const FAILURE_REASON_EVENTS_MAX_LIMIT = 250;
 const SECONDS_IN_HOUR = 60 * 60;
 const SECONDS_IN_DAY = 24 * SECONDS_IN_HOUR;
 const SECONDS_IN_WEEK = 7 * SECONDS_IN_DAY;
@@ -96,6 +107,7 @@ const SECONDS_IN_MONTH = 30 * SECONDS_IN_DAY;
 const ORDER_STATS_MIN_TIMESTAMP = Math.floor(new Date(2021, 8, 6).getTime() / 1000);
 
 type BucketSizeKey = "auto" | "1h" | "6h" | "1d" | "1w" | "1mo";
+type OrderTypeFilterKey = OrderType | "TWAP";
 
 const BUCKET_SIZE_SECONDS: Record<Exclude<BucketSizeKey, "auto">, number> = {
   "1h": SECONDS_IN_HOUR,
@@ -119,6 +131,7 @@ const ORDER_TYPES = [
 ];
 
 const MARKET_ORDER_TYPES = [OrderType.MarketSwap, OrderType.MarketIncrease, OrderType.MarketDecrease];
+const TWAP_ORDER_TYPES = [OrderType.LimitSwap, OrderType.LimitIncrease, OrderType.LimitDecrease];
 
 const STANDARD_ERROR_SELECTOR = "0x08c379a0";
 const PANIC_ERROR_SELECTOR = "0x4e487b71";
@@ -163,6 +176,7 @@ type OrderFailureReasonRow = {
   key: string;
   reason: string;
   reasonDetails: string | undefined;
+  matchFilter: GraphQlFilters;
   exclusionFilter: GraphQlFilters;
   count: number;
   percentage: number | null;
@@ -173,6 +187,31 @@ type OrderFailureReasonsResponse = {
   totalCount: number;
   fetchedCount: number;
   isTruncated: boolean;
+};
+
+type OrderFailureReasonEvent = {
+  id: string;
+  timestamp: number;
+  eventName: TradeActionType;
+  transactionHash: string;
+  account: string | null;
+  orderKey: string | null;
+  orderType: OrderType | null;
+  marketAddress: string | null;
+  initialCollateralTokenAddress: string | null;
+  isLong: boolean | null;
+  sizeDeltaUsd: string | null;
+  triggerPrice: string | null;
+  acceptablePrice: string | null;
+  executionPrice: string | null;
+  twapGroupId: string | null;
+  reason: string | null;
+  reasonBytes: string | null;
+};
+
+type OrderFailureReasonEventsResponse = {
+  events: OrderFailureReasonEvent[];
+  totalCount: number;
 };
 
 type Bucket = {
@@ -188,8 +227,9 @@ type TimeRange = {
 type OrderExecutionStatsQueryParams = {
   chainId: number;
   buckets: Bucket[];
-  orderTypes: OrderType[];
+  orderTypeFilters: OrderTypeFilterKey[];
   marketAddresses: string[];
+  account: string | undefined;
   disabledFailureReasons: OrderFailureReasonRow[];
 };
 
@@ -200,9 +240,12 @@ export function OrderExecutionStats() {
     new Date(),
   ]);
   const [bucketSize, setBucketSize] = useState<BucketSizeKey>("auto");
-  const [orderTypes, setOrderTypes] = useState<OrderType[]>([]);
+  const [orderTypeFilters, setOrderTypeFilters] = useState<OrderTypeFilterKey[]>([]);
   const [marketAddresses, setMarketAddresses] = useState<string[]>([]);
+  const [walletAddressInput, setWalletAddressInput] = useState("");
   const [disabledFailureReasonKeys, setDisabledFailureReasonKeys] = useState<string[]>([]);
+  const debouncedWalletAddressInput = useDebounce(walletAddressInput, 300);
+  const account = debouncedWalletAddressInput.trim() || undefined;
   const [startDate, endDate] = dateRange;
 
   const { tokensData } = useTokensDataRequest(chainId, srcChainId);
@@ -218,12 +261,17 @@ export function OrderExecutionStats() {
       }));
   }, [marketsInfoData]);
 
-  const orderTypeOptions: Item<OrderType>[] = useMemo(
-    () =>
-      ORDER_TYPES.map((orderType) => ({
+  const orderTypeOptions: Item<OrderTypeFilterKey>[] = useMemo(
+    () => [
+      ...ORDER_TYPES.map((orderType) => ({
         data: orderType,
         text: getOrderTypeLabel(orderType) ?? t`Stop Increase`,
       })),
+      {
+        data: "TWAP" as const,
+        text: t`TWAP`,
+      },
+    ],
     []
   );
 
@@ -243,10 +291,9 @@ export function OrderExecutionStats() {
 
   const bucketSizeOptions = useMemo(
     () =>
-      BUCKET_SIZE_KEYS.map((key) => ({
-        key,
-        label: getBucketSizeLabel(key),
-        disabled: !isBucketSizeValid(key, rangeSeconds),
+      BUCKET_SIZE_KEYS.filter((key) => isBucketSizeValid(key, rangeSeconds)).map((key) => ({
+        data: key,
+        text: getBucketSizeLabel(key),
       })),
     [rangeSeconds]
   );
@@ -258,8 +305,9 @@ export function OrderExecutionStats() {
   } = useOrderFailureReasons({
     chainId,
     range,
-    orderTypes,
+    orderTypeFilters,
     marketAddresses,
+    account,
   });
 
   const disabledFailureReasonKeySet = useMemo(() => new Set(disabledFailureReasonKeys), [disabledFailureReasonKeys]);
@@ -272,8 +320,9 @@ export function OrderExecutionStats() {
   const { data, error } = useOrderExecutionStats({
     chainId,
     buckets,
-    orderTypes,
+    orderTypeFilters,
     marketAddresses,
+    account,
     disabledFailureReasons,
   });
 
@@ -282,11 +331,11 @@ export function OrderExecutionStats() {
   const chartData = data?.chartData || [];
   const hasData = chartData.some((point) => point.totalCount > 0);
 
-  const handleBucketSizeChange = useCallback((event: ChangeEvent<HTMLSelectElement>) => {
-    setBucketSize(event.target.value as BucketSizeKey);
+  const handleBucketSizeChange = useCallback((value: BucketSizeKey | undefined) => {
+    setBucketSize(value ?? "auto");
   }, []);
 
-  const handleOrderTypesChange = useCallback((value: OrderType[]) => setOrderTypes(value), []);
+  const handleOrderTypeFiltersChange = useCallback((value: OrderTypeFilterKey[]) => setOrderTypeFilters(value), []);
   const handleMarketAddressesChange = useCallback((value: string[]) => setMarketAddresses(value), []);
   const handleFailureReasonEnabledChange = useCallback((key: string, isEnabled: boolean) => {
     setDisabledFailureReasonKeys((prevKeys) => {
@@ -316,8 +365,11 @@ export function OrderExecutionStats() {
     });
   }, []);
 
-  const orderTypeFilterLabel = orderTypes.length ? t`Order type: ${orderTypes.length}` : t`Order type`;
+  const orderTypeFilterLabel = orderTypeFilters.length ? t`Order type: ${orderTypeFilters.length}` : t`Order type`;
   const marketFilterLabel = marketAddresses.length ? t`Market: ${marketAddresses.length}` : t`Market`;
+  const bucketFilterLabel = bucketSize === "auto" ? t`Bucket` : t`Bucket: ${getBucketSizeLabel(bucketSize)}`;
+  const walletAddress = walletAddressInput.trim();
+  const walletFilterLabel = walletAddress ? t`Wallet: ${shortenAddress(walletAddress, 13)}` : t`Wallet`;
 
   return (
     <AppPageLayout title={t`Order execution stats`} header={<ChainContentHeader />}>
@@ -329,26 +381,22 @@ export function OrderExecutionStats() {
         />
 
         <div className="OrderExecutionStats-controls">
-          <label className="OrderExecutionStats-field">
-            <span>
-              <Trans>Bucket size</Trans>
-            </span>
-            <select className="OrderExecutionStats-select" value={bucketSize} onChange={handleBucketSizeChange}>
-              {bucketSizeOptions.map((option) => (
-                <option key={option.key} value={option.key} disabled={option.disabled}>
-                  {option.label}
-                </option>
-              ))}
-            </select>
-          </label>
+          <TableOptionsFilter<BucketSizeKey>
+            asButton
+            label={bucketFilterLabel}
+            options={bucketSizeOptions}
+            value={bucketSize === "auto" ? undefined : bucketSize}
+            onChange={handleBucketSizeChange}
+            placeholder={t`Search buckets`}
+          />
 
-          <TableOptionsFilter<OrderType>
+          <TableOptionsFilter<OrderTypeFilterKey>
             multiple
             asButton
             label={orderTypeFilterLabel}
             options={orderTypeOptions}
-            value={orderTypes}
-            onChange={handleOrderTypesChange}
+            value={orderTypeFilters}
+            onChange={handleOrderTypeFiltersChange}
             placeholder={t`Search order types`}
           />
 
@@ -369,6 +417,8 @@ export function OrderExecutionStats() {
             buttonVariant="secondary"
             popupPlacement="bottom-end"
           />
+
+          <WalletFilter label={walletFilterLabel} value={walletAddressInput} setValue={setWalletAddressInput} />
         </div>
 
         <div className="OrderExecutionStats-summary">
@@ -487,6 +537,12 @@ export function OrderExecutionStats() {
         </div>
 
         <FailureReasonsTable
+          chainId={chainId}
+          range={range}
+          orderTypeFilters={orderTypeFilters}
+          marketAddresses={marketAddresses}
+          account={account}
+          marketsInfoData={marketsInfoData}
           data={failureReasonsData}
           error={failureReasonsError}
           isLoading={isFailureReasonsLoading}
@@ -507,15 +563,23 @@ function useOrderExecutionStats(params: OrderExecutionStatsQueryParams) {
             "orderExecutionStats",
             params.chainId,
             params.buckets.map((bucket) => `${bucket.fromTimestamp}-${bucket.toTimestamp}`).join(","),
-            params.orderTypes.join(","),
+            params.orderTypeFilters.join(","),
             params.marketAddresses.join(","),
+            params.account ?? "",
             params.disabledFailureReasons
               .map((row) => row.key)
               .sort()
               .join(","),
           ]
         : null,
-    [params.buckets, params.chainId, params.disabledFailureReasons, params.marketAddresses, params.orderTypes]
+    [
+      params.account,
+      params.buckets,
+      params.chainId,
+      params.disabledFailureReasons,
+      params.marketAddresses,
+      params.orderTypeFilters,
+    ]
   );
 
   return useSWR<OrderExecutionStatsResponse>(key, () => fetchOrderExecutionStats(params), {
@@ -526,13 +590,15 @@ function useOrderExecutionStats(params: OrderExecutionStatsQueryParams) {
 function useOrderFailureReasons({
   chainId,
   range,
-  orderTypes,
+  orderTypeFilters,
   marketAddresses,
+  account,
 }: {
   chainId: number;
   range: TimeRange;
-  orderTypes: OrderType[];
+  orderTypeFilters: OrderTypeFilterKey[];
   marketAddresses: string[];
+  account: string | undefined;
 }) {
   const key = useMemo(
     () => [
@@ -540,10 +606,11 @@ function useOrderFailureReasons({
       chainId,
       range.fromTimestamp,
       range.toTimestamp,
-      orderTypes.join(","),
+      orderTypeFilters.join(","),
       marketAddresses.join(","),
+      account ?? "",
     ],
-    [chainId, marketAddresses, orderTypes, range.fromTimestamp, range.toTimestamp]
+    [account, chainId, marketAddresses, orderTypeFilters, range.fromTimestamp, range.toTimestamp]
   );
 
   return useSWR<OrderFailureReasonsResponse>(
@@ -552,8 +619,59 @@ function useOrderFailureReasons({
       fetchOrderFailureReasons({
         chainId,
         range,
-        orderTypes,
+        orderTypeFilters,
         marketAddresses,
+        account,
+      }),
+    {
+      refreshInterval: 60 * 1000,
+    }
+  );
+}
+
+function useFailureReasonEvents({
+  chainId,
+  range,
+  orderTypeFilters,
+  marketAddresses,
+  account,
+  reason,
+  limit,
+}: {
+  chainId: number;
+  range: TimeRange;
+  orderTypeFilters: OrderTypeFilterKey[];
+  marketAddresses: string[];
+  account: string | undefined;
+  reason: OrderFailureReasonRow;
+  limit: number;
+}) {
+  const key = useMemo(
+    () => [
+      "orderFailureReasonEvents",
+      chainId,
+      range.fromTimestamp,
+      range.toTimestamp,
+      orderTypeFilters.join(","),
+      marketAddresses.join(","),
+      account ?? "",
+      reason.key,
+      limit,
+    ],
+    [account, chainId, limit, marketAddresses, orderTypeFilters, range.fromTimestamp, range.toTimestamp, reason.key]
+  );
+
+  return useSWR<OrderFailureReasonEventsResponse>(
+    key,
+    () =>
+      fetchFailureReasonEvents({
+        chainId,
+        range,
+        orderTypeFilters,
+        marketAddresses,
+        account,
+        reason,
+        limit,
       }),
     {
       refreshInterval: 60 * 1000,
@@ -564,8 +682,9 @@ function useOrderFailureReasons({
 async function fetchOrderExecutionStats({
   chainId,
   buckets,
-  orderTypes,
+  orderTypeFilters,
   marketAddresses,
+  account,
   disabledFailureReasons,
 }: OrderExecutionStatsQueryParams): Promise<OrderExecutionStatsResponse> {
   const client = getSubsquidGraphClient(chainId);
@@ -591,14 +710,16 @@ async function fetchOrderExecutionStats({
         const executedWhere = buildOrderExecutionFilters({
           range: bucket,
           eventNames: [TradeActionType.OrderExecuted],
-          orderTypes,
+          orderTypeFilters,
           marketAddresses,
+          account,
         });
         const unsuccessfulWhere = buildOrderExecutionFilters({
           range: bucket,
           eventNames: UNSUCCESSFUL_ORDER_EVENTS,
-          orderTypes,
+          orderTypeFilters,
           marketAddresses,
+          account,
           disabledFailureReasons,
         });
 
@@ -671,13 +792,15 @@ async function fetchOrderExecutionStats({
 async function fetchOrderFailureReasons({
   chainId,
   range,
-  orderTypes,
+  orderTypeFilters,
   marketAddresses,
+  account,
 }: {
   chainId: number;
   range: TimeRange;
-  orderTypes: OrderType[];
+  orderTypeFilters: OrderTypeFilterKey[];
   marketAddresses: string[];
+  account: string | undefined;
 }): Promise<OrderFailureReasonsResponse> {
   const client = getSubsquidGraphClient(chainId);
 
@@ -693,8 +816,9 @@ async function fetchOrderFailureReasons({
   const where = buildOrderExecutionFilters({
     range,
     eventNames: UNSUCCESSFUL_ORDER_EVENTS,
-    orderTypes,
+    orderTypeFilters,
     marketAddresses,
+    account,
   });
 
   const countResult = await client.query({
@@ -775,28 +899,113 @@ async function fetchOrderFailureReasons({
   };
 }
 
+async function fetchFailureReasonEvents({
+  chainId,
+  range,
+  orderTypeFilters,
+  marketAddresses,
+  account,
+  reason,
+  limit,
+}: {
+  chainId: number;
+  range: TimeRange;
+  orderTypeFilters: OrderTypeFilterKey[];
+  marketAddresses: string[];
+  account: string | undefined;
+  reason: OrderFailureReasonRow;
+  limit: number;
+}): Promise<OrderFailureReasonEventsResponse> {
+  const client = getSubsquidGraphClient(chainId);
+
+  if (!client) {
+    return {
+      events: [],
+      totalCount: 0,
+    };
+  }
+
+  const where = buildOrderExecutionFilters({
+    range,
+    eventNames: UNSUCCESSFUL_ORDER_EVENTS,
+    orderTypeFilters,
+    marketAddresses,
+    account,
+    additionalFilters: [reason.matchFilter],
+  });
+
+  const result = await client.query({
+    query: gql(`
+      query FailureReasonEvents {
+        failureReasonEvents: tradeActions(
+          limit: ${limit}
+          orderBy: timestamp_DESC
+          where: ${where}
+        ) {
+          id
+          timestamp
+          eventName
+          transactionHash
+          account
+          orderKey
+          orderType
+          marketAddress
+          initialCollateralTokenAddress
+          isLong
+          sizeDeltaUsd
+          triggerPrice
+          acceptablePrice
+          executionPrice
+          twapGroupId
+          reason
+          reasonBytes
+        }
+        failureReasonEventsConnection: tradeActionsConnection(orderBy: id_ASC, where: ${where}) {
+          totalCount
+        }
+      }
+    `),
+    fetchPolicy: "no-cache",
+  });
+
+  return {
+    events: (result.data?.failureReasonEvents || []) as OrderFailureReasonEvent[],
+    totalCount: result.data?.failureReasonEventsConnection?.totalCount ?? 0,
+  };
+}
+
 function buildOrderExecutionFilters({
   range,
   eventNames,
-  orderTypes,
+  orderTypeFilters,
   marketAddresses,
+  account,
   disabledFailureReasons,
+  additionalFilters,
 }: {
   range: TimeRange;
   eventNames: TradeActionType[];
-  orderTypes: OrderType[];
+  orderTypeFilters: OrderTypeFilterKey[];
   marketAddresses: string[];
+  account?: string;
   disabledFailureReasons?: OrderFailureReasonRow[];
+  additionalFilters?: GraphQlFilters[];
 }) {
   const filters: GraphQlFilters[] = [
     {
       timestamp_gte: range.fromTimestamp,
       timestamp_lt: range.toTimestamp,
       eventName_in: eventNames,
-      orderType_in: orderTypes.length ? orderTypes : undefined,
       orderType_not_eq: OrderType.Liquidation,
+      account_eq: account,
     },
   ];
+
+  const orderTypeFilter = buildOrderTypeFilter(orderTypeFilters);
+
+  if (orderTypeFilter) {
+    filters.push(orderTypeFilter);
+  }
 
   if (marketAddresses.length) {
     filters.push({
@@ -815,7 +1024,46 @@ function buildOrderExecutionFilters({
     filters.push(...disabledFailureReasons.map((row) => row.exclusionFilter));
   }
 
+  if (additionalFilters?.length) {
+    filters.push(...additionalFilters);
+  }
+
   return buildFiltersBody({ AND: filters });
+}
+
+function buildOrderTypeFilter(orderTypeFilters: OrderTypeFilterKey[]): GraphQlFilters | undefined {
+  if (!orderTypeFilters.length) {
+    return undefined;
+  }
+
+  const normalOrderTypes = orderTypeFilters.filter(isOrderType);
+  const filters: GraphQlFilters[] = [];
+
+  if (normalOrderTypes.length) {
+    filters.push({
+      orderType_in: normalOrderTypes,
+      twapGroupId_isNull: true,
+    });
+  }
+
+  if (orderTypeFilters.includes("TWAP")) {
+    filters.push({
+      orderType_in: TWAP_ORDER_TYPES,
+      twapGroupId_isNull: false,
+    });
+  }
+
+  if (filters.length === 1) {
+    return filters[0];
+  }
+
+  return {
+    OR: filters,
+  };
+}
+
+function isOrderType(value: OrderTypeFilterKey): value is OrderType {
+  return value !== "TWAP";
 }
 
 function emptyResponse(buckets: Bucket[]): OrderExecutionStatsResponse {
@@ -989,6 +1237,71 @@ function formatCount(value: number | undefined) {
   return numberWithCommas(value);
 }
 
+function formatShortValue(value: string | null | undefined, length: number) {
+  if (!value) {
+    return "-";
+  }
+
+  return shortenAddress(value, length);
+}
+
+function formatUsdValue(value: string | null | undefined) {
+  if (!value) {
+    return "-";
+  }
+
+  try {
+    return formatUsd(BigInt(value), { displayDecimals: 2 }) ?? "-";
+  } catch {
+    return "-";
+  }
+}
+
+function formatEventName(eventName: TradeActionType | string | null | undefined) {
+  switch (eventName) {
+    case TradeActionType.OrderCancelled:
+      return t`Cancelled`;
+    case TradeActionType.OrderFrozen:
+      return t`Frozen`;
+    default:
+      return eventName || "-";
+  }
+}
+
+function formatOrderType(orderType: OrderType | null | undefined, twapGroupId?: string | null) {
+  if (orderType === null || orderType === undefined) {
+    return "-";
+  }
+
+  if (twapGroupId) {
+    return orderType === OrderType.LimitSwap ? t`TWAP Swap` : t`TWAP`;
+  }
+
+  return getOrderTypeLabel(orderType) ?? String(orderType);
+}
+
+function formatSide(isLong: boolean | null | undefined) {
+  if (isLong === null || isLong === undefined) {
+    return "-";
+  }
+
+  return isLong ? t`Long` : t`Short`;
+}
+
+function getEventMarketName(event: OrderFailureReasonEvent, marketsInfoData: MarketsInfoData | undefined) {
+  if (!event.marketAddress) {
+    return "-";
+  }
+
+  const marketInfo = marketsInfoData?.[event.marketAddress] ?? marketsInfoData?.[event.marketAddress.toLowerCase()];
+
+  return marketInfo?.name ?? shortenAddress(event.marketAddress, 13);
+}
+
+function getFailureReasonEventsId(key: string) {
+  return `failure-reason-events-${key.replace(/[^a-zA-Z0-9_-]/g, "-")}`;
+}
+
 function getFailureReason(
   reason: string | null | undefined,
   reasonBytes: string | null | undefined,
@@ -1010,6 +1323,9 @@ function getFailureReason(
       key: `reason-${trimmedReason}`,
       reason: trimmedReason,
       reasonDetails: undefined,
+      matchFilter: {
+        reason_eq: trimmedReason,
+      },
       exclusionFilter: {
         reason_not_eq: trimmedReason,
       },
@@ -1021,6 +1337,9 @@ function getFailureReason(
       key: `bytes-${trimmedReasonBytes}`,
       reason: t`Unknown reason ${getReasonBytesSelector(trimmedReasonBytes)}`,
       reasonDetails: trimmedReasonBytes,
+      matchFilter: {
+        reasonBytes_eq: trimmedReasonBytes,
+      },
       exclusionFilter: {
         reasonBytes_not_eq: trimmedReasonBytes,
       },
@@ -1031,6 +1350,30 @@ function getFailureReason(
     key: "unknown",
     reason: t`Unknown`,
     reasonDetails: undefined,
+    matchFilter: {
+      AND: [
+        {
+          OR: [
+            {
+              reason_eq: "",
+            },
+            {
+              reason_isNull: true,
+            },
+          ],
+        },
+        {
+          OR: [
+            {
+              reasonBytes_eq: "",
+            },
+            {
+              reasonBytes_isNull: true,
+            },
+          ],
+        },
+      ],
+    },
     exclusionFilter: {
       OR: [
         {
@@ -1074,6 +1417,20 @@ function tryDecodeFailureReasonBytes(reasonBytes: `0x${string}`, isMarketOrder: 
       key: `custom-${customError.name}-${isMarketOrder ? "market" : "trigger"}`,
       reason: getErrorTooltipTitle(customError.name, isMarketOrder),
       reasonDetails: customError.name,
+      matchFilter: {
+        AND: [
+          {
+            reasonBytes_startsWith: selector,
+          },
+          isMarketOrder
+            ? {
+                orderType_in: MARKET_ORDER_TYPES,
+              }
+            : {
+                orderType_not_in: MARKET_ORDER_TYPES,
+              },
+        ],
+      },
       exclusionFilter: {
         OR: [
           {
@@ -1108,6 +1465,9 @@ function tryDecodeStandardError(reasonBytes: `0x${string}`) {
         key: `error-${reason}`,
         reason,
         reasonDetails: "Error(string)",
+        matchFilter: {
+          reasonBytes_eq: reasonBytes,
+        },
         exclusionFilter: {
           reasonBytes_not_eq: reasonBytes,
         },
@@ -1123,6 +1483,9 @@ function tryDecodeStandardError(reasonBytes: `0x${string}`) {
         key: `panic-${panicCodeHex}`,
         reason: `Panic: ${reason}`,
         reasonDetails: `Panic(${panicCodeHex})`,
+        matchFilter: {
+          reasonBytes_eq: reasonBytes,
+        },
         exclusionFilter: {
           reasonBytes_not_eq: reasonBytes,
         },
@@ -1131,6 +1494,22 @@ function tryDecodeStandardError(reasonBytes: `0x${string}`) {
   } catch {
     return undefined;
   }
+}
+
+function WalletFilter({ label, value, setValue }: { label: string; value: string; setValue: (value: string) => void }) {
+  return (
+    <TableFilterBase label={label} isActive={Boolean(value.trim())} popupPlacement="bottom-end" asButton>
+      <div className="OrderExecutionStats-wallet-filter-popover">
+        <SearchInput
+          value={value}
+          setValue={setValue}
+          placeholder="0x..."
+          qa="order-execution-stats-wallet-filter"
+          autoFocus
+        />
+      </div>
+    </TableFilterBase>
+  );
 }
 
 function SummaryCard({ label, value, primary }: { label: string; value: string; primary?: boolean }) {
@@ -1143,6 +1522,12 @@ function SummaryCard({ label, value, primary }: { label: string; value: string; 
 }
 
 function FailureReasonsTable({
+  chainId,
+  range,
+  orderTypeFilters,
+  marketAddresses,
+  account,
+  marketsInfoData,
   data,
   error,
   isLoading,
@@ -1150,6 +1535,12 @@ function FailureReasonsTable({
   onReasonEnabledChange,
   onReasonsEnabledChange,
 }: {
+  chainId: number;
+  range: TimeRange;
+  orderTypeFilters: OrderTypeFilterKey[];
+  marketAddresses: string[];
+  account: string | undefined;
+  marketsInfoData: MarketsInfoData | undefined;
   data: OrderFailureReasonsResponse | undefined;
   error: Error | undefined;
   isLoading: boolean;
@@ -1157,6 +1548,7 @@ function FailureReasonsTable({
   onReasonEnabledChange: (key: string, isEnabled: boolean) => void;
   onReasonsEnabledChange: (keys: string[], isEnabled: boolean) => void;
 }) {
+  const [expandedReasonKey, setExpandedReasonKey] = useState<string | null>(null);
   const rows = useMemo(() => data?.rows || [], [data?.rows]);
   const rowKeys = useMemo(() => rows.map((row) => row.key), [rows]);
   const [areOnlySomeReasonsEnabled, areAllReasonsEnabled] = useMemo(() => {
@@ -1168,6 +1560,10 @@ function FailureReasonsTable({
   const handleAllReasonsEnabledChange = useCallback(() => {
     onReasonsEnabledChange(rowKeys, !areAllReasonsEnabled);
   }, [areAllReasonsEnabled, onReasonsEnabledChange, rowKeys]);
+
+  const handleReasonExpandToggle = useCallback((key: string) => {
+    setExpandedReasonKey((prevKey) => (prevKey === key ? null : key));
+  }, []);
 
   return (
     <div className="OrderExecutionStats-table-card">
@@ -1221,29 +1617,60 @@ function FailureReasonsTable({
           <tbody>
             {rows.map((row) => {
               const isEnabled = !disabledReasonKeys.has(row.key);
+              const isExpanded = expandedReasonKey === row.key;
+              const eventsId = getFailureReasonEventsId(row.key);
 
               return (
-                <tr key={row.key} className={cx({ disabled: !isEnabled })}>
-                  <td>
-                    <Checkbox
-                      isChecked={isEnabled}
-                      setIsChecked={(nextIsEnabled) => onReasonEnabledChange(row.key, nextIsEnabled)}
-                      className="OrderExecutionStats-row-checkbox"
-                    />
-                  </td>
-                  <td>
-                    <div className="OrderExecutionStats-reason-cell">
-                      <span title={row.reason}>{row.reason}</span>
-                      {row.reasonDetails && row.reasonDetails !== row.reason && (
-                        <span className="OrderExecutionStats-reason-details" title={row.reasonDetails}>
-                          {row.reasonDetails}
-                        </span>
-                      )}
-                    </div>
-                  </td>
-                  <td className="numbers">{formatCount(row.count)}</td>
-                  <td className="numbers">{formatSuccessRate(row.percentage)}</td>
-                </tr>
+                <Fragment key={row.key}>
+                  <tr className={cx({ disabled: !isEnabled, expanded: isExpanded })}>
+                    <td>
+                      <Checkbox
+                        isChecked={isEnabled}
+                        setIsChecked={(nextIsEnabled) => onReasonEnabledChange(row.key, nextIsEnabled)}
+                        className="OrderExecutionStats-row-checkbox"
+                      />
+                    </td>
+                    <td>
+                      <div className="OrderExecutionStats-reason-cell">
+                        <button
+                          type="button"
+                          className="OrderExecutionStats-reason-toggle"
+                          onClick={() => handleReasonExpandToggle(row.key)}
+                          aria-expanded={isExpanded}
+                          aria-controls={eventsId}
+                        >
+                          <ChevronDownIcon
+                            className={cx("OrderExecutionStats-reason-toggle-icon", { expanded: isExpanded })}
+                          />
+                          <span title={row.reason}>{row.reason}</span>
+                        </button>
+                        {row.reasonDetails && row.reasonDetails !== row.reason && (
+                          <span className="OrderExecutionStats-reason-details" title={row.reasonDetails}>
+                            {row.reasonDetails}
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="numbers">{formatCount(row.count)}</td>
+                    <td className="numbers">{formatSuccessRate(row.percentage)}</td>
+                  </tr>
+                  {isExpanded && (
+                    <tr className="OrderExecutionStats-events-row">
+                      <td colSpan={4}>
+                        <FailureReasonEventsTable
+                          id={eventsId}
+                          chainId={chainId}
+                          range={range}
+                          orderTypeFilters={orderTypeFilters}
+                          marketAddresses={marketAddresses}
+                          account={account}
+                          marketsInfoData={marketsInfoData}
+                          reason={row}
+                        />
+                      </td>
+                    </tr>
+                  )}
+                </Fragment>
               );
             })}
           </tbody>
@@ -1265,6 +1692,168 @@ function FailureReasonsTable({
           </div>
         )}
       </div>
+    </div>
+  );
+}
+
+function FailureReasonEventsTable({
+  id,
+  chainId,
+  range,
+  orderTypeFilters,
+  marketAddresses,
+  account,
+  marketsInfoData,
+  reason,
+}: {
+  id: string;
+  chainId: number;
+  range: TimeRange;
+  orderTypeFilters: OrderTypeFilterKey[];
+  marketAddresses: string[];
+  account: string | undefined;
+  marketsInfoData: MarketsInfoData | undefined;
+  reason: OrderFailureReasonRow;
+}) {
+  const [limit, setLimit] = useState(FAILURE_REASON_EVENTS_PAGE_SIZE);
+  const chainSlug = getChainSlug(chainId);
+  const { data, error, isLoading } = useFailureReasonEvents({
+    chainId,
+    range,
+    orderTypeFilters,
+    marketAddresses,
+    account,
+    reason,
+    limit,
+  });
+  const events = data?.events || [];
+  const totalCount = data?.totalCount ?? 0;
+  const canLoadMore = events.length < totalCount && limit < FAILURE_REASON_EVENTS_MAX_LIMIT;
+
+  const handleLoadMore = useCallback(() => {
+    setLimit((prevLimit) =>
+      Math.min(prevLimit + FAILURE_REASON_EVENTS_PAGE_SIZE, FAILURE_REASON_EVENTS_MAX_LIMIT, totalCount)
+    );
+  }, [totalCount]);
+
+  return (
+    <div id={id} className="OrderExecutionStats-events">
+      <div className="OrderExecutionStats-events-header">
+        <div>
+          <div className="OrderExecutionStats-events-title">
+            <Trans>Events</Trans>
+          </div>
+          <div className="OrderExecutionStats-events-subtitle">
+            {data ? (
+              <Trans>
+                Showing latest {formatCount(events.length)} of {formatCount(totalCount)}
+              </Trans>
+            ) : (
+              <Trans>Loading events</Trans>
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className="OrderExecutionStats-events-table-wrap">
+        <table className="OrderExecutionStats-events-table">
+          <colgroup>
+            <col className="OrderExecutionStats-events-date-column" />
+            <col className="OrderExecutionStats-events-event-column" />
+            <col className="OrderExecutionStats-events-account-column" />
+            <col className="OrderExecutionStats-events-market-column" />
+            <col className="OrderExecutionStats-events-type-column" />
+            <col className="OrderExecutionStats-events-side-column" />
+            <col className="OrderExecutionStats-events-size-column" />
+            <col className="OrderExecutionStats-events-prices-column" />
+            <col className="OrderExecutionStats-events-order-key-column" />
+            <col className="OrderExecutionStats-events-txn-column" />
+          </colgroup>
+          <thead>
+            <tr>
+              <th>
+                <Trans>DATE</Trans>
+              </th>
+              <th>
+                <Trans>EVENT</Trans>
+              </th>
+              <th>
+                <Trans>ACCOUNT</Trans>
+              </th>
+              <th>
+                <Trans>MARKET</Trans>
+              </th>
+              <th>
+                <Trans>TYPE</Trans>
+              </th>
+              <th>
+                <Trans>SIDE</Trans>
+              </th>
+              <th>
+                <Trans>SIZE</Trans>
+              </th>
+              <th>
+                <Trans>TRIGGER / ACCEPTABLE</Trans>
+              </th>
+              <th>
+                <Trans>ORDER KEY</Trans>
+              </th>
+              <th>
+                <Trans>TXN</Trans>
+              </th>
+            </tr>
+          </thead>
+          <tbody>
+            {events.map((event) => (
+              <tr key={event.id}>
+                <td className="numbers">{formatDateTime(event.timestamp)}</td>
+                <td>{formatEventName(event.eventName)}</td>
+                <td title={event.account ?? undefined}>{formatShortValue(event.account, 13)}</td>
+                <td title={event.marketAddress ?? undefined}>{getEventMarketName(event, marketsInfoData)}</td>
+                <td>{formatOrderType(event.orderType, event.twapGroupId)}</td>
+                <td>{formatSide(event.isLong)}</td>
+                <td className="numbers">{formatUsdValue(event.sizeDeltaUsd)}</td>
+                <td className="numbers">
+                  <div className="OrderExecutionStats-price-stack">
+                    <span>{formatUsdValue(event.triggerPrice)}</span>
+                    <span>{formatUsdValue(event.acceptablePrice)}</span>
+                  </div>
+                </td>
+                <td title={event.orderKey ?? undefined}>{formatShortValue(event.orderKey, 13)}</td>
+                <td title={event.transactionHash}>
+                  <Link className="link-underline" to={`/parsetx/${chainSlug}/${event.transactionHash}`}>
+                    <Trans>Parse txn</Trans>
+                  </Link>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+
+        {isLoading && (
+          <div className="OrderExecutionStats-events-overlay">
+            <Loader />
+          </div>
+        )}
+        {error && (
+          <div className="OrderExecutionStats-events-overlay text-red-500">
+            <Trans>Failed to load events</Trans>
+          </div>
+        )}
+        {!isLoading && !error && events.length === 0 && (
+          <div className="OrderExecutionStats-events-empty text-typography-secondary">
+            <Trans>No events for this reason</Trans>
+          </div>
+        )}
+      </div>
+
+      {canLoadMore && (
+        <div className="OrderExecutionStats-events-footer">
+          <Button variant="secondary" onClick={handleLoadMore}>
+            <Trans>Load more</Trans>
+          </Button>
+        </div>
+      )}
     </div>
   );
 }
