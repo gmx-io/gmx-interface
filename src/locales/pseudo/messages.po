@@ -8052,6 +8052,7 @@ msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "Copy"
 msgstr ""
 

@@ -394,6 +394,41 @@
   white-space: nowrap;
 }
 
+.OrderExecutionStats-copyable-cell {
+  display: inline-flex;
+  max-width: 100%;
+  align-items: center;
+  gap: 0.4rem;
+  vertical-align: top;
+}
+
+.OrderExecutionStats-copyable-value {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.OrderExecutionStats-copy-button {
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  border: 0;
+  background: transparent;
+  color: var(--color-typography-secondary);
+  cursor: pointer;
+  line-height: 0;
+  opacity: 0.75;
+  padding: 0;
+}
+
+.OrderExecutionStats-copy-button:hover,
+.OrderExecutionStats-copy-button.copied {
+  color: var(--color-typography-primary);
+  opacity: 1;
+}
+
 .OrderExecutionStats-price-stack {
   display: flex;
   flex-direction: column;

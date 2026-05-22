@@ -4,6 +4,7 @@ import cx from "classnames";
 import { format } from "date-fns";
 import { Fragment, useCallback, useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
+import { useCopyToClipboard } from "react-use";
 import {
   Bar,
   CartesianGrid,
@@ -48,6 +49,7 @@ import type { Item } from "components/TableOptionsFilter/types";
 import { getErrorTooltipTitle } from "components/TradeHistory/TradeHistoryRow/utils/shared";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
+import CopyIcon from "img/ic_copy.svg?react";
 
 import "./OrderExecutionStats.scss";
 
@@ -526,7 +528,7 @@ export function OrderExecutionStats() {
                   strokeWidth={2}
                   dot={SUCCESS_RATE_DOT_PROPS}
                   activeDot={ACTIVE_DOT_PROPS}
-                  connectNulls={false}
+                  connectNulls
                 />
               </ComposedChart>
             </ResponsiveContainer>
@@ -1265,6 +1267,39 @@ function formatShortValue(value: string | null | undefined, length: number) {
   return shortenAddress(value, length);
 }
 
+function CopyableShortValue({ value, length }: { value: string | null | undefined; length: number }) {
+  const [isCopied, setIsCopied] = useState(false);
+  const [, copyToClipboard] = useCopyToClipboard();
+
+  const handleCopy = useCallback(() => {
+    if (!value) {
+      return;
+    }
+
+    copyToClipboard(value);
+    setIsCopied(true);
+    window.setTimeout(() => setIsCopied(false), 700);
+  }, [copyToClipboard, value]);
+
+  if (!value) {
+    return <span>-</span>;
+  }
+
+  return (
+    <span className="OrderExecutionStats-copyable-cell" title={value}>
+      <span className="OrderExecutionStats-copyable-value">{formatShortValue(value, length)}</span>
+      <button
+        type="button"
+        className={cx("OrderExecutionStats-copy-button", { copied: isCopied })}
+        onClick={handleCopy}
+        aria-label={t`Copy`}
+      >
+        <CopyIcon className="size-14" />
+      </button>
+    </span>
+  );
+}
+
 function formatUsdValue(value: string | null | undefined) {
   if (!value) {
     return "-";
@@ -1837,7 +1872,9 @@ function FailureReasonEventsTable({
               <tr key={event.id}>
                 <td className="numbers">{formatDateTime(event.timestamp)}</td>
                 <td>{formatEventName(event.eventName)}</td>
-                <td title={event.account ?? undefined}>{formatShortValue(event.account, 13)}</td>
+                <td>
+                  <CopyableShortValue value={event.account} length={13} />
+                </td>
                 <td title={event.marketAddress ?? undefined}>{getEventMarketName(event, marketsInfoData)}</td>
                 <td>{formatOrderType(event.orderType, event.twapGroupId)}</td>
                 <td>{formatSide(event.isLong)}</td>
@@ -1848,7 +1885,9 @@ function FailureReasonEventsTable({
                     <span>{formatUsdValue(event.acceptablePrice)}</span>
                   </div>
                 </td>
-                <td title={event.orderKey ?? undefined}>{formatShortValue(event.orderKey, 13)}</td>
+                <td>
+                  <CopyableShortValue value={event.orderKey} length={13} />
+                </td>
                 <td title={event.transactionHash}>
                   <Link className="link-underline" to={`/parsetx/${chainSlug}/${event.transactionHash}`}>
                     <Trans>Parse txn</Trans>
