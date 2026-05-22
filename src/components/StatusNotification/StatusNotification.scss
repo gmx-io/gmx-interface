@@ -3,7 +3,9 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 0.8rem 0.8rem 0.8rem;
+    margin-top: 1.2rem;
+    padding: 1.2rem 0.8rem 0.8rem 0.8rem;
+    border-top: 1px solid var(--color-slate-600);
 
     .StatusNotification-cancel-all {
       background: transparent;
@@ -16,6 +18,14 @@
         color: var(--color-typography-primary);
       }
     }
+  }
+}
+
+.StatusNotification-list {
+  .StatusNotification + .StatusNotification {
+    margin-top: 1.2rem;
+    padding-top: 1.2rem;
+    border-top: 1px solid var(--color-slate-600);
   }
 }
 
