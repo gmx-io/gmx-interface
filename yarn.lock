@@ -4833,12 +4833,12 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@privy-io/are-addresses-equal@npm:0.0.4":
-  version: 0.0.4
-  resolution: "@privy-io/are-addresses-equal@npm:0.0.4"
+"@privy-io/are-addresses-equal@npm:0.0.5":
+  version: 0.0.5
+  resolution: "@privy-io/are-addresses-equal@npm:0.0.5"
   dependencies:
-    viem: "npm:2.47.12"
-  checksum: 10/6dcc821df47c2fbba2ef7dcf273d354aac85c09c738f953dd3865c9bb008bf157deb12e44f7556625bedeb0d29fd3d6f7087f8c1f89e7bf7ab6d5898f9e43488
+    viem: "npm:2.48.11"
+  checksum: 10/e00932fef627d0404498deb97254813fe0852b050b80bda0f7ecf63bf43c2af33df615077474f7696bba846ff582333dd016295be5a7c1661c884b0bf7b36d3a
   languageName: node
   linkType: hard
 
@@ -4858,25 +4858,25 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@privy-io/ethereum@npm:0.1.0":
-  version: 0.1.0
-  resolution: "@privy-io/ethereum@npm:0.1.0"
+"@privy-io/ethereum@npm:0.1.1":
+  version: 0.1.1
+  resolution: "@privy-io/ethereum@npm:0.1.1"
   peerDependencies:
-    viem: 2.47.12
-  checksum: 10/a61d2d6b684841a8666aaad53a35b4be2778175e0129d7709387cd74c807f398a77d5dc6b761adf7a6d468507b3d23972ebe54cd93ab7d0741eceae2b1c655ad
+    viem: 2.48.11
+  checksum: 10/403f8176072ee677aba8709216024c6a553e7d155ed7efeed5d7708563e341621f1315f5c1f6518e99db898561e78613fa33ea81e0bfd39f3c7d4ac004fe1267
   languageName: node
   linkType: hard
 
-"@privy-io/js-sdk-core@npm:0.62.0":
-  version: 0.62.0
-  resolution: "@privy-io/js-sdk-core@npm:0.62.0"
+"@privy-io/js-sdk-core@npm:0.65.1":
+  version: 0.65.1
+  resolution: "@privy-io/js-sdk-core@npm:0.65.1"
   dependencies:
     "@privy-io/api-base": "npm:1.9.0"
     "@privy-io/api-types": "npm:0.12.0"
     "@privy-io/chains": "npm:0.3.0"
     "@privy-io/encoding": "npm:0.1.3"
-    "@privy-io/ethereum": "npm:0.1.0"
-    "@privy-io/routes": "npm:0.1.0"
+    "@privy-io/ethereum": "npm:0.1.1"
+    "@privy-io/routes": "npm:0.2.1"
     canonicalize: "npm:^2.0.0"
     eventemitter3: "npm:^5.0.1"
     fetch-retry: "npm:^6.0.0"
@@ -4886,13 +4886,13 @@ __metadata:
     set-cookie-parser: "npm:^2.6.0"
   peerDependencies:
     permissionless: ^0.2.47
-    viem: 2.47.12
+    viem: 2.48.11
   peerDependenciesMeta:
     permissionless:
       optional: true
     viem:
       optional: true
-  checksum: 10/f2df8da8a4907a92323d8f52e2d76c54e1d39efc3cb68294d4b0feb6907e3c737df6eb2e66e57157746e4b9061ef39df64a4c21524e25506f390191a6223a45e
+  checksum: 10/8a242e6cbdaa1a93908c408234861d88c51e1a87318c7b19c5afde17794792927278c89f42f5e5f8d32c70b5f2af7d520a986e19c9a725ba0204f0ef5a3ad257
   languageName: node
   linkType: hard
 
@@ -4903,9 +4903,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@privy-io/react-auth@npm:^3.25.0":
-  version: 3.25.0
-  resolution: "@privy-io/react-auth@npm:3.25.0"
+"@privy-io/react-auth@npm:^3.27.1":
+  version: 3.27.1
+  resolution: "@privy-io/react-auth@npm:3.27.1"
   dependencies:
     "@base-org/account": "npm:^1.1.0"
     "@coinbase/wallet-sdk": "npm:4.3.2"
@@ -4916,13 +4916,13 @@ __metadata:
     "@marsidev/react-turnstile": "npm:^1.3.1"
     "@privy-io/api-base": "npm:1.9.0"
     "@privy-io/api-types": "npm:0.12.0"
-    "@privy-io/are-addresses-equal": "npm:0.0.4"
+    "@privy-io/are-addresses-equal": "npm:0.0.5"
     "@privy-io/chains": "npm:0.3.0"
     "@privy-io/encoding": "npm:0.1.3"
-    "@privy-io/ethereum": "npm:0.1.0"
-    "@privy-io/js-sdk-core": "npm:0.62.0"
+    "@privy-io/ethereum": "npm:0.1.1"
+    "@privy-io/js-sdk-core": "npm:0.65.1"
     "@privy-io/popup": "npm:0.0.4"
-    "@privy-io/routes": "npm:0.1.0"
+    "@privy-io/routes": "npm:0.2.1"
     "@privy-io/urls": "npm:0.0.4"
     "@scure/base": "npm:^1.2.5"
     "@simplewebauthn/browser": "npm:^13.2.2"
@@ -4944,7 +4944,7 @@ __metadata:
     styled-components: "npm:^6.1.13"
     stylis: "npm:^4.3.4"
     tinycolor2: "npm:^1.6.0"
-    viem: "npm:2.47.12"
+    viem: "npm:2.48.11"
     x402: "npm:^0.7.1"
     zustand: "npm:^5.0.0"
   peerDependencies:
@@ -4972,16 +4972,16 @@ __metadata:
       optional: true
     permissionless:
       optional: true
-  checksum: 10/9940af284e48b176bec8c5828ebc5139a28a636d2146ed1ae31970dd9e50f4ea79497215389e3f2ab525fde713a036a21ce73affe0d0dee7f9c59a1c9b6133dc
+  checksum: 10/1e7232025944373fa6f3f906c3a3c9125fa18f20444469bb04b27d9ee96dc03b1879e57289ad77c1e49b25fa3df5db283da4648c07e0df742da7629e40a51a0b
   languageName: node
   linkType: hard
 
-"@privy-io/routes@npm:0.1.0":
-  version: 0.1.0
-  resolution: "@privy-io/routes@npm:0.1.0"
+"@privy-io/routes@npm:0.2.1":
+  version: 0.2.1
+  resolution: "@privy-io/routes@npm:0.2.1"
   dependencies:
     "@privy-io/api-types": "npm:0.12.0"
-  checksum: 10/079ba0da4654ec810224d480737d3309b902dcf0b1f1e9497031585bb910b83dfca141bca51235ee230befd1867d6121d46bab8a7a1f349a11af7c8647f83ff5
+  checksum: 10/b96a2a0ce4dd74fa94c6dac643919c373f880553cb47778c6a7f8ec87b519c12552c40c123c09daa290665c2dd65e35df5a09ac34e4bc2a96367783eeb7efe9c
   languageName: node
   linkType: hard
 
@@ -4992,15 +4992,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@privy-io/wagmi@npm:^4.0.7":
-  version: 4.0.7
-  resolution: "@privy-io/wagmi@npm:4.0.7"
+"@privy-io/wagmi@npm:^4.0.8":
+  version: 4.0.8
+  resolution: "@privy-io/wagmi@npm:4.0.8"
   peerDependencies:
     "@privy-io/react-auth": ^3
     react: ">=18"
-    viem: 2.47.12
+    viem: 2.48.11
     wagmi: ">=2"
-  checksum: 10/e4a8a005a63479379477e531beb3e32f938dc5b232cbd1d5165c2822757101961ae0c1e0f5ab90f7abf06c403a499368fff577091b5a1013cb7278ecd2c99e36
+  checksum: 10/a87a229687518d7e3f049fd3c9fc4c22d88d556813546af4a7a72a0d9d29d2610416cb49fd7ca433ee82da9fe8812af5e16bc208c16aa20be2ebfb124e5f2b5a
   languageName: node
   linkType: hard
 
@@ -13851,8 +13851,8 @@ __metadata:
     "@lingui/react": "npm:4.10.0"
     "@lingui/vite-plugin": "npm:4.11.3"
     "@playwright/experimental-ct-react": "npm:^1.58.2"
-    "@privy-io/react-auth": "npm:^3.25.0"
-    "@privy-io/wagmi": "npm:^4.0.7"
+    "@privy-io/react-auth": "npm:^3.27.1"
+    "@privy-io/wagmi": "npm:^4.0.8"
     "@stargatefinance/stg-evm-sdk-v2": "npm:1.1.12"
     "@tanstack/react-query": "npm:5.25.0"
     "@taskworld.com/rereselect": "npm:0.3.0"
@@ -16536,27 +16536,6 @@ __metadata:
     object-keys: "npm:^1.1.1"
     safe-push-apply: "npm:^1.0.0"
   checksum: 10/ab4bb3b8636908554fc19bf899e225444195092864cb61503a0d048fdaf662b04be2605b636a4ffeaf6e8811f6fcfa8cbb210ec964c0eb1a41eb853e1d5d2f41
-  languageName: node
-  linkType: hard
-
-"ox@npm:0.14.13":
-  version: 0.14.13
-  resolution: "ox@npm:0.14.13"
-  dependencies:
-    "@adraffy/ens-normalize": "npm:^1.11.0"
-    "@noble/ciphers": "npm:^1.3.0"
-    "@noble/curves": "npm:1.9.1"
-    "@noble/hashes": "npm:^1.8.0"
-    "@scure/bip32": "npm:^1.7.0"
-    "@scure/bip39": "npm:^1.6.0"
-    abitype: "npm:^1.2.3"
-    eventemitter3: "npm:5.0.1"
-  peerDependencies:
-    typescript: ">=5.4.0"
-  peerDependenciesMeta:
-    typescript:
-      optional: true
-  checksum: 10/7b831000eb8353a4e8682116ad5f6b32222f5aa6eb773366cea104f8910d32428bed60e6a250254b8e5c7ba2e17f64f650b2338e0541d9a46af0a208cd4090bb
   languageName: node
   linkType: hard
 
@@ -20852,28 +20831,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"viem@npm:2.47.12":
-  version: 2.47.12
-  resolution: "viem@npm:2.47.12"
-  dependencies:
-    "@noble/curves": "npm:1.9.1"
-    "@noble/hashes": "npm:1.8.0"
-    "@scure/bip32": "npm:1.7.0"
-    "@scure/bip39": "npm:1.6.0"
-    abitype: "npm:1.2.3"
-    isows: "npm:1.0.7"
-    ox: "npm:0.14.13"
-    ws: "npm:8.18.3"
-  peerDependencies:
-    typescript: ">=5.0.4"
-  peerDependenciesMeta:
-    typescript:
-      optional: true
-  checksum: 10/d227f98836fd2c20591ed4bdb92afdc4a042d9d89a25b53d3803d236ef66baf3c79e8af5ac9a0aa9c507dd7c92820e3a35019d92f857f721eb1c06591c800572
-  languageName: node
-  linkType: hard
-
-"viem@npm:>=2.37.9":
+"viem@npm:2.48.11, viem@npm:>=2.37.9":
   version: 2.48.11
   resolution: "viem@npm:2.48.11"
   dependencies:

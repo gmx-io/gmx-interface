@@ -1,28 +1,54 @@
 import { watchAccount } from "@wagmi/core";
-import { useEffect, useRef } from "react";
+import { useEffect, useReducer, useRef } from "react";
 import { useAccount } from "wagmi";
 
 import {
   type ContractsChainId,
   type SettlementChainId,
   type SourceChainId,
-  ARBITRUM,
-  ARBITRUM_SEPOLIA,
+  DEFAULT_SETTLEMENT_CHAIN_ID,
   isContractsChain,
 } from "config/chains";
 import { isDevelopment } from "config/env";
-import { SELECTED_NETWORK_LOCAL_STORAGE_KEY } from "config/localStorage";
+import {
+  SELECTED_NETWORK_LOCAL_STORAGE_KEY,
+  SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY,
+} from "config/localStorage";
 import { isSettlementChain, isSourceChain } from "config/multichain";
 import { areChainsRelated } from "domain/multichain/areChainsRelated";
 import { getWagmiConfig } from "lib/wallets/walletConfig";
 
 const IS_DEVELOPMENT = isDevelopment();
 
-let INITIAL_CHAIN_ID: ContractsChainId;
-if (IS_DEVELOPMENT) {
-  INITIAL_CHAIN_ID = ARBITRUM_SEPOLIA;
-} else {
-  INITIAL_CHAIN_ID = ARBITRUM;
+const INITIAL_CHAIN_ID: ContractsChainId = DEFAULT_SETTLEMENT_CHAIN_ID;
+
+export function getSelectedSourceChainId({
+  chainIdFromLocalStorage,
+  selectedNetworkWasAppSelected,
+  settlementChainId,
+}: {
+  chainIdFromLocalStorage: number | undefined;
+  selectedNetworkWasAppSelected: boolean;
+  settlementChainId: SettlementChainId;
+}): SourceChainId | undefined {
+  if (!selectedNetworkWasAppSelected) {
+    return undefined;
+  }
+
+  if (
+    chainIdFromLocalStorage &&
+    isSourceChain(chainIdFromLocalStorage, settlementChainId) &&
+    !isSettlementChain(chainIdFromLocalStorage) &&
+    areChainsRelated(settlementChainId, chainIdFromLocalStorage)
+  ) {
+    return chainIdFromLocalStorage;
+  }
+
+  return undefined;
+}
+
+export function canWalletChainUpdateSelectedNetwork(chainId: number) {
+  return isContractsChain(chainId, IS_DEVELOPMENT) || isSettlementChain(chainId);
 }
 
 /**
@@ -37,30 +63,38 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
   srcChainId?: SourceChainId;
 } {
   const { chainId: connectedChainId, isConnected } = useAccount();
+  const [, rerenderOnNetworkChange] = useReducer((value: number) => value + 1, 0);
 
   const rawChainIdFromLocalStorage = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
   const chainIdFromLocalStorage = rawChainIdFromLocalStorage ? parseInt(rawChainIdFromLocalStorage) : undefined;
+  const selectedNetworkWasAppSelected =
+    localStorage.getItem(SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY) === "true";
 
-  const possibleSrcChainId = connectedChainId ?? chainIdFromLocalStorage;
-  let srcChainId: SourceChainId | undefined = undefined;
-  if (
-    possibleSrcChainId &&
-    isSourceChain(possibleSrcChainId, settlementChainId) &&
-    !isSettlementChain(possibleSrcChainId) &&
-    areChainsRelated(settlementChainId, possibleSrcChainId)
-  ) {
-    srcChainId = possibleSrcChainId;
-  }
+  const srcChainId = getSelectedSourceChainId({
+    chainIdFromLocalStorage,
+    selectedNetworkWasAppSelected,
+    settlementChainId,
+  });
 
   const isCurrentChainSupported = connectedChainId && isContractsChain(connectedChainId, IS_DEVELOPMENT);
-  const isCurrentChainSource = connectedChainId && isSourceChain(connectedChainId, settlementChainId);
+  const isCurrentChainSource = connectedChainId && srcChainId === connectedChainId;
 
   const isLocalStorageChainSupported =
     chainIdFromLocalStorage && isContractsChain(chainIdFromLocalStorage, IS_DEVELOPMENT);
-  const isLocalStorageChainSource =
-    chainIdFromLocalStorage && isSourceChain(chainIdFromLocalStorage, settlementChainId);
+  const isLocalStorageChainSource = chainIdFromLocalStorage && srcChainId === chainIdFromLocalStorage;
 
   const mustChangeChainId = !connectedChainId || (!isCurrentChainSource && !isCurrentChainSupported);
+
+  useEffect(() => {
+    const networkChangeHandler = () => {
+      rerenderOnNetworkChange();
+    };
+
+    document.addEventListener("networkChange", networkChangeHandler);
+    return () => {
+      document.removeEventListener("networkChange", networkChangeHandler);
+    };
+  }, []);
 
   const connectedRef = useRef(false);
   useEffect(() => {
@@ -72,8 +106,9 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
 
     const connectHandler = (connectInfo: { chainId: string }) => {
       const rawChainId = parseInt(connectInfo.chainId);
-      if (isContractsChain(rawChainId, IS_DEVELOPMENT) || isSourceChain(rawChainId, settlementChainId)) {
+      if (canWalletChainUpdateSelectedNetwork(rawChainId)) {
         localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, rawChainId.toString());
+        localStorage.removeItem(SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY);
       }
     };
 
@@ -96,6 +131,7 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
     }
 
     localStorage.removeItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
+    localStorage.removeItem(SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY);
   }, [
     chainIdFromLocalStorage,
     settlementChainId,
@@ -110,15 +146,12 @@ export function useChainIdImpl(settlementChainId: SettlementChainId): {
         if (!account.chainId) {
           return;
         }
-        if (
-          !isSourceChain(account.chainId, settlementChainId) &&
-          !isContractsChain(account.chainId, IS_DEVELOPMENT) &&
-          !isSettlementChain(account.chainId)
-        ) {
+        if (!canWalletChainUpdateSelectedNetwork(account.chainId)) {
           return;
         }
 
         localStorage.setItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY, account.chainId.toString());
+        localStorage.removeItem(SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY);
       },
     });
 
