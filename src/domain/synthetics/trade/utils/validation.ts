@@ -1,4 +1,5 @@
 import { t } from "@lingui/macro";
+import type { ReactNode } from "react";
 import { maxUint256, zeroAddress } from "viem";
 
 import {
@@ -74,7 +75,7 @@ export type ValidationResult =
   | {
       buttonErrorMessage: string;
       buttonTooltipName?: ValidationButtonTooltipName | undefined;
-      buttonTooltipMessage?: string | undefined;
+      buttonTooltipMessage?: string | ReactNode | undefined;
       bannerErrorName?: ValidationBannerErrorName | undefined;
     };
 
@@ -658,6 +659,7 @@ export function getEditCollateralError(p: {
   depositToken: TokenData | undefined;
   depositAmount: bigint | undefined;
   marketInfo: MarketInfo | undefined;
+  maxWithdrawAmount: bigint | undefined;
 }): ValidationResult {
   const {
     collateralDeltaAmount,
@@ -669,9 +671,14 @@ export function getEditCollateralError(p: {
     depositToken,
     depositAmount,
     marketInfo,
+    maxWithdrawAmount,
   } = p;
 
   const minCollateralFactor = marketInfo?.minCollateralFactor;
+
+  if (!isDeposit && maxWithdrawAmount === 0n) {
+    return { buttonErrorMessage: t`Withdrawal not available` };
+  }
 
   if (
     collateralDeltaAmount === undefined ||

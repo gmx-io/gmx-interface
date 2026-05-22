@@ -12,10 +12,10 @@ import {
 } from "viem";
 
 import { isDevelopment } from "config/env";
+import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 
-import { applyGasLimitBuffer } from "./gas/estimateGasLimit";
 import { GasPriceData, getGasPrice } from "./gas/gasPrice";
 import { helperToast } from "./helperToast";
 import { getProvider } from "./rpc";

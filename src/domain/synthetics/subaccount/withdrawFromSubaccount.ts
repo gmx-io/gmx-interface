@@ -1,8 +1,8 @@
 import { Provider } from "ethers";
 import useSWR from "swr";
 
-import { applyGasLimitBuffer } from "lib/gas/estimateGasLimit";
 import { useJsonRpcProvider } from "lib/rpc";
+import { applyGasLimitBuffer } from "sdk/utils/gas/applyBuffer";
 
 import { SubaccountSerializedConfig } from ".";
 import { getSubaccountSigner } from "./utils";

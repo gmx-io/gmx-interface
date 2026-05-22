@@ -6,13 +6,12 @@ import { encodeFunctionData, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import type { SettlementChainId } from "config/chains";
-import { ContractsChainId, getChainName } from "config/chains";
+import { ContractsChainId, getChainName, getViemChain } from "config/chains";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { type MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
-import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { SendParam } from "domain/multichain/types";
 import { useMultichainReferralDepositToken } from "domain/multichain/useMultichainReferralDepositToken";
@@ -29,11 +28,14 @@ import { ValidationBannerErrorName } from "domain/synthetics/trade/utils/validat
 import { useChainId } from "lib/chains";
 import { useDebounce } from "lib/debounce/useDebounce";
 import { helperToast } from "lib/helperToast";
+import { metrics } from "lib/metrics";
 import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import useWallet from "lib/wallets/useWallet";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
+import { quoteFromNativeFee } from "sdk/utils/multichain/sendParams";
 import { encodeReferralCode } from "sdk/utils/referrals";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
@@ -156,7 +158,7 @@ function AffiliateCodeFormMultichain({
         callData: encodeFunctionData({
           abi: abis.IStargate,
           functionName: "sendToken",
-          args: [sendParams, sendQuoteFromNative(quoteResult.data.nativeFee), account],
+          args: [sendParams, quoteFromNativeFee(quoteResult.data.nativeFee), account],
         }),
         value,
         msg: t`Creating referral code...`,
@@ -180,9 +182,12 @@ function AffiliateCodeFormMultichain({
             <Trans>May take a few minutes to reflect. Check back later</Trans>
           </>
         );
+      } else {
+        throw new Error(`Transaction failed with status ${receipt.status}`);
       }
     } catch (err) {
-      toastCustomOrStargateError(chainId, err);
+      metrics.pushError(err, "referralCreateCodeMultichain");
+      toastCustomOrStargateError(chainId, err, { actionName: "Create Referral Code" });
     } finally {
       setIsSubmitting(false);
       setIsValidating(false);
@@ -351,8 +356,8 @@ function AffiliateCodeFormMultichain({
       {hasNoTokensOnSourceChain && srcChainId && (
         <AlertInfoCard type="error" className="text-left" hideClose>
           <Trans>
-            You need USDC or ETH on {getChainName(srcChainId)} to create a referral code via GMX Account. Deposit funds
-            or switch to a different network.
+            You need USDC and {getViemChain(srcChainId).nativeCurrency.symbol} on {getChainName(srcChainId)} to create a
+            referral code via GMX Account. Deposit funds or switch to a different network.
           </Trans>
         </AlertInfoCard>
       )}
@@ -378,7 +383,7 @@ function AffiliateCodeForm({
   callAfterSuccess,
   initialReferralCode = "",
 }: {
-  handleCreateReferralCode: (code: string) => Promise<unknown>;
+  handleCreateReferralCode: (code: string) => Promise<TransactionResponse>;
   callAfterSuccess?: (code: string) => void;
   initialReferralCode?: string;
 }) {
@@ -435,32 +440,39 @@ function AffiliateCodeForm({
     event.preventDefault();
     setIsProcessing(true);
 
-    const trimmedCode = referralCode.trim();
-    const { takenStatus, failedChains } = await getReferralCodeTakenStatus(account, trimmedCode, chainId);
-    setRpcFailedChains(failedChains);
-
-    if (["all", "current"].includes(takenStatus)) {
-      setIsProcessing(false);
-      return;
-    }
-
     try {
-      const tx = (await handleCreateReferralCode(trimmedCode)) as TransactionResponse;
+      const trimmedCode = referralCode.trim();
+      const { takenStatus, failedChains } = await getReferralCodeTakenStatus(account, trimmedCode, chainId);
+      setRpcFailedChains(failedChains);
 
-      if (callAfterSuccess) {
-        callAfterSuccess(trimmedCode);
+      if (["all", "current"].includes(takenStatus)) {
+        setIsProcessing(false);
+        return;
       }
 
-      const receipt = await tx.wait();
+      const tx = await handleCreateReferralCode(trimmedCode);
+      if (!tx?.hash) {
+        throw new Error("Referral code transaction was not submitted");
+      }
 
-      if (receipt?.status === 1) {
+      const publicClient = getPublicClientWithRpc(chainId);
+      const receipt = await publicClient.waitForTransactionReceipt({ hash: tx.hash as `0x${string}` });
+
+      if (receipt?.status === "success") {
         addRecentCode(trimmedCode);
-        helperToast.success(t`Referral code created`);
         setReferralCode("");
+
+        if (callAfterSuccess) {
+          callAfterSuccess(trimmedCode);
+        }
+
+        helperToast.success(t`Referral code created`);
+      } else {
+        throw new Error(`Transaction failed with status ${receipt?.status}`);
       }
     } catch (err) {
-      // eslint-disable-next-line no-console
-      console.error(err);
+      metrics.pushError(err, "referralCreateCode");
+      toastCustomOrStargateError(chainId, err, { actionName: "Create Referral Code" });
     } finally {
       setIsProcessing(false);
     }
@@ -557,7 +569,7 @@ export function AffiliateCodeFormContainer({
   callAfterSuccess,
   initialReferralCode = "",
 }: {
-  handleCreateReferralCode: (code: string) => Promise<unknown>;
+  handleCreateReferralCode: (code: string) => Promise<TransactionResponse>;
   callAfterSuccess?: (code: string) => void;
   initialReferralCode?: string;
 }) {

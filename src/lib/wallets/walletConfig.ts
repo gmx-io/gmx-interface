@@ -11,7 +11,7 @@ import {
   WebSocketTransport,
 } from "viem";
 
-import { getViemChain, isTestnetChain } from "config/chains";
+import { DEFAULT_SETTLEMENT_CHAIN_ID, getViemChain, isTestnetChain } from "config/chains";
 import { isDevelopment } from "config/env";
 import { PRIVY_APP_ID } from "config/privy";
 import { getRpcProviders, RpcConfig } from "config/rpc";
@@ -39,10 +39,10 @@ export const PRIVY_WALLET_LIST = [
 export const PRIVY_LOGIN_METHODS = ["wallet", "email", "google", "twitter", "discord"] as const;
 
 export function getSupportedChains(): [Chain, ...Chain[]] {
-  return Object.values(VIEM_CHAIN_BY_CHAIN_ID).filter((chain) => isDevelopment() || !isTestnetChain(chain.id)) as [
-    Chain,
-    ...Chain[],
-  ];
+  const defaultChain = getViemChain(DEFAULT_SETTLEMENT_CHAIN_ID);
+  const chains = Object.values(VIEM_CHAIN_BY_CHAIN_ID).filter((chain) => isDevelopment() || !isTestnetChain(chain.id));
+
+  return [defaultChain, ...chains.filter((chain) => chain.id !== defaultChain.id)] as [Chain, ...Chain[]];
 }
 
 export const getWagmiConfig = once(() => {
@@ -50,8 +50,8 @@ export const getWagmiConfig = once(() => {
 
   const transports = chains.reduce(
     (acc, chain) => {
-      const rpcProviders = getRpcProviders(chain.id, "default");
-      acc[chain.id] = fallback([...rpcProviders.map((provider) => http(provider.url))]);
+      const transport = getRpcTransport(chain.id as AnyChainId, "default");
+      acc[chain.id] = transport;
       return acc;
     },
     {} as Record<number, Transport>

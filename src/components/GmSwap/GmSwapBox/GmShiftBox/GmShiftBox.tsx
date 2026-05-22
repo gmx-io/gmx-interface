@@ -31,6 +31,7 @@ import { MarketState } from "components/MarketSelector/types";
 import { NetworkFeeRow } from "components/NetworkFeeRow/NetworkFeeRow";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
+import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
 
 import { GmFees } from "../../GmFees/GmFees";
 import { GmSwapWarningsRow } from "../GmSwapWarningsRow";
@@ -316,9 +317,11 @@ export function GmShiftBox({
           <div className="rounded-b-8 border-t border-slate-600 bg-slate-900 p-12">
             <SwitchToSettlementChainWarning topic="shift" />
             <SwitchToSettlementChainButtons>
-              <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
-                {submitState.text}
-              </Button>
+              <ButtonTooltipWrapper content={submitState.errorDescription}>
+                <Button className="w-full" variant="primary-action" type="submit" disabled={submitState.disabled}>
+                  {submitState.text}
+                </Button>
+              </ButtonTooltipWrapper>
             </SwitchToSettlementChainButtons>
           </div>
         </div>

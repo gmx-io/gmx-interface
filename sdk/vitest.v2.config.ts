@@ -12,7 +12,7 @@ export default defineConfig({
     include: ["src/clients/v2/__tests__/**/*.spec.ts"],
     exclude: ["**/build/**", "**/node_modules/**"],
     // eslint-disable-next-line no-restricted-globals
-    env: loadEnv("", process.cwd(), ""),
+    env: loadEnv("test", process.cwd(), ""),
   },
   resolve: {
     alias: {
