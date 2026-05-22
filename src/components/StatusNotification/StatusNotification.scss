@@ -46,3 +46,7 @@
     color: var(--color-green-500);
   }
 }
+
+.StatusNotification-list:has(> .StatusNotification + .StatusNotification) .StatusNotification-title {
+  color: var(--color-typography-primary);
+}
