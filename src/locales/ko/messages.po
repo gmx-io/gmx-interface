@@ -1854,6 +1854,7 @@ msgstr "해당 주문의 허용 가격"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "TWAP Swap"
 msgstr "TWAP 스왑"
 
@@ -4512,7 +4513,6 @@ msgstr "연간 매수 압력:"
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/domain/synthetics/positions/utils.ts
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
-#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "TWAP"
 msgstr "TWAP"
 
@@ -6613,6 +6613,11 @@ msgstr "여러 GMX 마켓에 유동성을 공급하는 수익률 최적화 볼�
 msgid "Analytics"
 msgstr "Analytics"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "TWAP Decrease"
+msgstr ""
+
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
 msgstr "wstETH APR"
@@ -8127,6 +8132,11 @@ msgstr "{0}에 입금 가능한 토큰이 없습니다"
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Total to claim"
 msgstr "총 수령 금액"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "TWAP Increase"
+msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Insufficient gas for execution. Estimated: {estimatedGasLimitText}, starting: {startingGasText}"

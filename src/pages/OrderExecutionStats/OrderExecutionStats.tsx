@@ -107,7 +107,8 @@ const SECONDS_IN_MONTH = 30 * SECONDS_IN_DAY;
 const ORDER_STATS_MIN_TIMESTAMP = Math.floor(new Date(2021, 8, 6).getTime() / 1000);
 
 type BucketSizeKey = "auto" | "1h" | "6h" | "1d" | "1w" | "1mo";
-type OrderTypeFilterKey = OrderType | "TWAP";
+type TwapOrderTypeFilterKey = "TWAP_SWAP" | "TWAP_INCREASE" | "TWAP_DECREASE";
+type OrderTypeFilterKey = OrderType | TwapOrderTypeFilterKey;
 
 const BUCKET_SIZE_SECONDS: Record<Exclude<BucketSizeKey, "auto">, number> = {
   "1h": SECONDS_IN_HOUR,
@@ -131,7 +132,11 @@ const ORDER_TYPES = [
 ];
 
 const MARKET_ORDER_TYPES = [OrderType.MarketSwap, OrderType.MarketIncrease, OrderType.MarketDecrease];
-const TWAP_ORDER_TYPES = [OrderType.LimitSwap, OrderType.LimitIncrease, OrderType.LimitDecrease];
+const TWAP_ORDER_TYPE_BY_FILTER_KEY: Record<TwapOrderTypeFilterKey, OrderType> = {
+  TWAP_SWAP: OrderType.LimitSwap,
+  TWAP_INCREASE: OrderType.LimitIncrease,
+  TWAP_DECREASE: OrderType.LimitDecrease,
+};
 
 const STANDARD_ERROR_SELECTOR = "0x08c379a0";
 const PANIC_ERROR_SELECTOR = "0x4e487b71";
@@ -268,8 +273,16 @@ export function OrderExecutionStats() {
         text: getOrderTypeLabel(orderType) ?? t`Stop Increase`,
       })),
       {
-        data: "TWAP" as const,
-        text: t`TWAP`,
+        data: "TWAP_SWAP",
+        text: t`TWAP Swap`,
+      },
+      {
+        data: "TWAP_INCREASE",
+        text: t`TWAP Increase`,
+      },
+      {
+        data: "TWAP_DECREASE",
+        text: t`TWAP Decrease`,
       },
     ],
     []
@@ -1037,6 +1050,9 @@ function buildOrderTypeFilter(orderTypeFilters: OrderTypeFilterKey[]): GraphQlFi
   }
 
   const normalOrderTypes = orderTypeFilters.filter(isOrderType);
+  const twapOrderTypes = orderTypeFilters
+    .filter(isTwapOrderTypeFilterKey)
+    .map((key) => TWAP_ORDER_TYPE_BY_FILTER_KEY[key]);
   const filters: GraphQlFilters[] = [];
 
   if (normalOrderTypes.length) {
@@ -1046,9 +1062,9 @@ function buildOrderTypeFilter(orderTypeFilters: OrderTypeFilterKey[]): GraphQlFi
     });
   }
 
-  if (orderTypeFilters.includes("TWAP")) {
+  if (twapOrderTypes.length) {
     filters.push({
-      orderType_in: TWAP_ORDER_TYPES,
+      orderType_in: twapOrderTypes,
       twapGroupId_isNull: false,
     });
   }
@@ -1063,7 +1079,11 @@ function buildOrderTypeFilter(orderTypeFilters: OrderTypeFilterKey[]): GraphQlFi
 }
 
 function isOrderType(value: OrderTypeFilterKey): value is OrderType {
-  return value !== "TWAP";
+  return typeof value === "number";
+}
+
+function isTwapOrderTypeFilterKey(value: OrderTypeFilterKey): value is TwapOrderTypeFilterKey {
+  return typeof value === "string";
 }
 
 function emptyResponse(buckets: Bucket[]): OrderExecutionStatsResponse {
@@ -1274,7 +1294,16 @@ function formatOrderType(orderType: OrderType | null | undefined, twapGroupId?: 
   }
 
   if (twapGroupId) {
-    return orderType === OrderType.LimitSwap ? t`TWAP Swap` : t`TWAP`;
+    switch (orderType) {
+      case OrderType.LimitSwap:
+        return t`TWAP Swap`;
+      case OrderType.LimitIncrease:
+        return t`TWAP Increase`;
+      case OrderType.LimitDecrease:
+        return t`TWAP Decrease`;
+      default:
+        return t`TWAP`;
+    }
   }
 
   return getOrderTypeLabel(orderType) ?? String(orderType);

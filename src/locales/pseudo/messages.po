@@ -1854,6 +1854,7 @@ msgstr ""
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "TWAP Swap"
 msgstr ""
 
@@ -4512,7 +4513,6 @@ msgstr ""
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/domain/synthetics/positions/utils.ts
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
-#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "TWAP"
 msgstr ""
 
@@ -6613,6 +6613,11 @@ msgstr ""
 msgid "Analytics"
 msgstr ""
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "TWAP Decrease"
+msgstr ""
+
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
 msgstr ""
@@ -8126,6 +8131,11 @@ msgstr ""
 
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Total to claim"
+msgstr ""
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "TWAP Increase"
 msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx

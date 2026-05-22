@@ -1854,6 +1854,7 @@ msgstr "この注文の許容価格"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "TWAP Swap"
 msgstr "TWAPスワップ"
 
@@ -4512,7 +4513,6 @@ msgstr "年間購入圧力："
 #: src/components/TradeBox/tradeboxConstants.tsx
 #: src/domain/synthetics/positions/utils.ts
 #: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
-#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
 msgid "TWAP"
 msgstr "TWAP"
 
@@ -6613,6 +6613,11 @@ msgstr "複数のGMXマーケットに流動性を提供する利回り最適化
 msgid "Analytics"
 msgstr "アナリティクス"
 
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "TWAP Decrease"
+msgstr ""
+
 #: src/components/AprInfo/AprInfo.tsx
 msgid "wstETH APR"
 msgstr "wstETH APR"
@@ -8127,6 +8132,11 @@ msgstr "{0}に入金可能なトークンがありません"
 #: src/components/UserIncentiveDistribution/ClaimableAmounts.tsx
 msgid "Total to claim"
 msgstr "受け取り合計"
+
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+#: src/pages/OrderExecutionStats/OrderExecutionStats.tsx
+msgid "TWAP Increase"
+msgstr ""
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Insufficient gas for execution. Estimated: {estimatedGasLimitText}, starting: {startingGasText}"
