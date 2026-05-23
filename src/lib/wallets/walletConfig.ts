@@ -39,7 +39,7 @@ export const PRIVY_WALLET_LIST = [
 
 export const PRIVY_LOGIN_METHODS = ["wallet", "email", "google", "twitter", "discord"] as const;
 
-const PRIVY_WALLET_REQUEST_TIMEOUT_MS = SECONDS_IN_DAY;
+const PRIVY_WALLET_REQUEST_TIMEOUT_MS = SECONDS_IN_DAY * 1000;
 
 // Privy looks this up by walletClientType and has no wildcard/default timeout setting.
 export const PRIVY_SIGNATURE_REQUEST_TIMEOUTS = new Proxy({} as Record<string, number>, {
