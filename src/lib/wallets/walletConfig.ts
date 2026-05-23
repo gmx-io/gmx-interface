@@ -38,6 +38,14 @@ export const PRIVY_WALLET_LIST = [
 
 export const PRIVY_LOGIN_METHODS = ["wallet", "email", "google", "twitter", "discord"] as const;
 
+const PRIVY_WALLET_REQUEST_TIMEOUT_MS = Number.MAX_SAFE_INTEGER;
+
+// Privy looks this up by walletClientType and has no wildcard/default timeout setting.
+export const PRIVY_SIGNATURE_REQUEST_TIMEOUTS = new Proxy({} as Record<string, number>, {
+  get: (_target, walletClientType) =>
+    typeof walletClientType === "string" ? PRIVY_WALLET_REQUEST_TIMEOUT_MS : undefined,
+});
+
 export function getSupportedChains(): [Chain, ...Chain[]] {
   return Object.values(VIEM_CHAIN_BY_CHAIN_ID).filter((chain) => isDevelopment() || !isTestnetChain(chain.id)) as [
     Chain,
