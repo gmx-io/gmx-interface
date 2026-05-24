@@ -4,6 +4,7 @@ export type SorterKey =
   | "gm-list"
   | "dashboard-markets-list"
   | "gm-token-selector"
+  | "gmx-execution-costs"
   | "leaderboard-accounts-table"
   | "leaderboard-positions-table"
   | "position-list";

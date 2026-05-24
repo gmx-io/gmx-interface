@@ -14,6 +14,7 @@ const DEFAULT_SORTER_STATE: SorterState = {
   "gm-list": { orderBy: "unspecified", direction: "unspecified", isDefault: true },
   "dashboard-markets-list": { orderBy: "unspecified", direction: "unspecified", isDefault: true },
   "gm-token-selector": { orderBy: "unspecified", direction: "unspecified", isDefault: true },
+  "gmx-execution-costs": { orderBy: "unspecified", direction: "unspecified", isDefault: true },
   "leaderboard-accounts-table": { orderBy: "unspecified", direction: "unspecified", isDefault: true },
   "leaderboard-positions-table": { orderBy: "unspecified", direction: "unspecified", isDefault: true },
   "position-list": { orderBy: "unspecified", direction: "unspecified", isDefault: true },
