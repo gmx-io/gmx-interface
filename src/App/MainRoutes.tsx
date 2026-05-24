@@ -81,7 +81,7 @@ const DecodeErrorPage = () => (
   </Suspense>
 );
 
-const LazyGmxExecutionCosts = import.meta.env.DEV
+const LazyGmxExecutionCosts = isDevelopment()
   ? lazy(() =>
       import("pages/GmxExecutionCosts/GmxExecutionCosts").then((module) => ({ default: module.GmxExecutionCostsPage }))
     )
@@ -244,11 +244,9 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         <Route exact path="/decode-error" key="decode-error">
           <DecodeErrorPage />
         </Route>,
-        import.meta.env.DEV ? (
-          <Route exact path="/gmx-execution-costs" key="gmx-execution-costs">
-            <GmxExecutionCostsPage />
-          </Route>
-        ) : null,
+        <Route exact path="/gmx-execution-costs" key="gmx-execution-costs">
+          <GmxExecutionCostsPage />
+        </Route>,
       ]}
       <Route path="*">
         <PageNotFound />
