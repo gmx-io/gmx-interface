@@ -43,6 +43,19 @@ type Params = {
 
 type PermitFallbackReason = "unsupported" | "disabled" | "permitsDisabled" | "failed" | "invalidSignature";
 
+export function getApproveSubmittedToastContent({ txUrl }: { txUrl: string }) {
+  return (
+    <div>
+      <Trans>
+        Approval submitted
+        <br />
+        <br />
+        <ExternalLink href={txUrl}>View</ExternalLink>
+      </Trans>
+    </div>
+  );
+}
+
 export async function approveTokens({
   setIsApproving,
   signer,
@@ -146,16 +159,7 @@ export async function approveTokens({
     const res = await contract.approve(spender, finalApproveAmount, { gasLimit });
 
     const txUrl = getExplorerUrl(chainId) + "tx/" + res.hash;
-    helperToast.success(
-      <div>
-        <Trans>
-          Approval submitted
-          <br />
-          <br />
-          <ExternalLink href={txUrl}>View status</ExternalLink>
-        </Trans>
-      </div>
-    );
+    helperToast.success(getApproveSubmittedToastContent({ txUrl }));
 
     if (onApproveSubmitted) {
       onApproveSubmitted({ isPermit: false });

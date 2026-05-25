@@ -45,6 +45,45 @@ export function usePendingTxns() {
   return useContext(PendingTxnsContext);
 }
 
+export function getPendingTxnFailureToastContent({ txUrl }: { txUrl: string }) {
+  return (
+    <div>
+      <Trans>
+        Transaction failed.
+        <br />
+        <br />
+        <ExternalLink href={txUrl}>View</ExternalLink>
+      </Trans>
+    </div>
+  );
+}
+
+export function getPendingTxnSuccessToastContent({
+  message,
+  messageDetails,
+  txUrl,
+}: {
+  message: ReactNode;
+  messageDetails?: ReactNode;
+  txUrl: string;
+}) {
+  return (
+    <div className="StatusNotification">
+      <div className="StatusNotification-title">{message}</div>
+      <br />
+      <ExternalLink href={txUrl}>
+        <Trans>View</Trans>
+      </ExternalLink>
+      {messageDetails && (
+        <>
+          <hr className="my-8 -ml-12 -mr-32 h-[1.5px] border-none bg-[#0f463d]" />
+          <div>{messageDetails}</div>
+        </>
+      )}
+    </div>
+  );
+}
+
 export function PendingTxnsContextProvider({ children }: { children: ReactNode }) {
   const { chainId } = useChainId();
   const { provider } = useJsonRpcProvider(chainId);
@@ -90,16 +129,7 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
                 estimatedExecutionGasLimit: pendingTxn.data?.estimatedExecutionGasLimit ?? 1n,
               });
             } else {
-              toastMsg = (
-                <div>
-                  <Trans>
-                    Transaction failed.
-                    <br />
-                    <br />
-                    <ExternalLink href={txUrl}>View status</ExternalLink>
-                  </Trans>
-                </div>
-              );
+              toastMsg = getPendingTxnFailureToastContent({ txUrl });
             }
 
             helperToast.error(toastMsg, {
@@ -122,19 +152,11 @@ export function PendingTxnsContextProvider({ children }: { children: ReactNode }
           if (receipt.status === 1 && pendingTxn.message) {
             const txUrl = getExplorerUrl(chainId) + "tx/" + pendingTxn.hash;
             helperToast.success(
-              <div className="StatusNotification">
-                <div className="StatusNotification-title">{pendingTxn.message}</div>
-                <br />
-                <ExternalLink href={txUrl}>
-                  <Trans>View status</Trans>
-                </ExternalLink>
-                {pendingTxn.messageDetails && (
-                  <>
-                    <hr className="my-8 -ml-12 -mr-32 h-[1.5px] border-none bg-[#0f463d]" />
-                    <div>{pendingTxn.messageDetails}</div>
-                  </>
-                )}
-              </div>
+              getPendingTxnSuccessToastContent({
+                message: pendingTxn.message,
+                messageDetails: pendingTxn.messageDetails,
+                txUrl,
+              })
             );
           }
           continue;

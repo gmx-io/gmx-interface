@@ -12,12 +12,62 @@ import { getToken } from "sdk/configs/tokens";
 
 import { FUNDING_OPERATIONS_LABELS } from "components/GmxAccountModal/keys";
 
+import CheckCircleIcon from "img/ic_check_circle.svg?react";
+import CloseIcon from "img/ic_close.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { isMultichainFundingItemLoading } from "./isMultichainFundingItemLoading";
 import { useGmxAccountFundingHistory } from "./useGmxAccountFundingHistory";
 
-const TOAST_ID = "multichain-funding-toast";
+export const MULTICHAIN_FUNDING_TOAST_ID = "multichain-funding-toast";
+
+export function getMultichainFundingToastContent({
+  chainId,
+  pendingItems,
+  multichainFundingPendingIds,
+}: {
+  chainId: number;
+  pendingItems: Partial<Record<string, MultichainFundingHistoryItem>>;
+  multichainFundingPendingIds: Record<string, string>;
+}) {
+  const hasDeposits = Object.values(pendingItems).some((item) => item?.operation === "deposit");
+  const hasWithdrawals = Object.values(pendingItems).some((item) => item?.operation === "withdrawal");
+
+  return (
+    <div className="flex flex-col gap-8">
+      {hasDeposits && !hasWithdrawals && <Trans>Depositing to GMX Account...</Trans>}
+      {hasWithdrawals && !hasDeposits && <Trans>Withdrawing from GMX Account...</Trans>}
+      {hasDeposits && hasWithdrawals && <Trans>Depositing to and withdrawing from GMX Account...</Trans>}
+      {Object.keys(multichainFundingPendingIds).map((staticId, index, array) => {
+        const guid = multichainFundingPendingIds[staticId];
+        const item = pendingItems[guid];
+        if (!item) {
+          return null;
+        }
+
+        const token = getToken(chainId, item.token);
+
+        const formattedAmount = formatBalanceAmount(item.sentAmount, token.decimals, token.symbol);
+
+        const isLoading = isMultichainFundingItemLoading(item);
+        const isError = !isLoading && Boolean(item.isExecutionError);
+        const isSuccess = !isLoading && !isError;
+
+        return (
+          <div key={staticId} className="flex items-center justify-between gap-6">
+            <div className="text-typography-secondary">
+              {item.operation === "deposit" ? <Trans>Deposit</Trans> : <Trans>Withdraw</Trans>}
+              {array.length > 1 && <> {formattedAmount}</>}
+            </div>
+            {isLoading && <SpinnerIcon className="spin size-15 shrink-0 text-typography-primary" />}
+            {isSuccess && <CheckCircleIcon className="size-15 shrink-0 text-green-500" />}
+            {isError && <CloseIcon className="size-15 shrink-0 text-red-500" />}
+          </div>
+        );
+      })}
+    </div>
+  );
+}
 
 function useGmxAccountPendingFundingHistoryItems(
   guids: string[] | undefined
@@ -54,51 +104,23 @@ export function useMultichainFundingToast() {
 
   useEffect(() => {
     if (!pendingItems || Object.keys(pendingItems).length === 0) {
-      if (toast.isActive(TOAST_ID)) {
-        toast.dismiss(TOAST_ID);
+      if (toast.isActive(MULTICHAIN_FUNDING_TOAST_ID)) {
+        toast.dismiss(MULTICHAIN_FUNDING_TOAST_ID);
       }
       return;
     }
 
-    const hasDeposits = Object.values(pendingItems).some((item) => item?.operation === "deposit");
-    const hasWithdrawals = Object.values(pendingItems).some((item) => item?.operation === "withdrawal");
-
     window.clearTimeout(clearTimeout.current);
     clearTimeout.current = undefined;
 
-    let content: ToastContent = (
-      <div className="flex flex-col gap-8">
-        {hasDeposits && !hasWithdrawals && <Trans>Depositing to GMX Account...</Trans>}
-        {hasWithdrawals && !hasDeposits && <Trans>Withdrawing from GMX Account...</Trans>}
-        {hasDeposits && hasWithdrawals && <Trans>Depositing to and withdrawing from GMX Account...</Trans>}
-        {Object.keys(multichainFundingPendingIds).map((staticId, index, array) => {
-          const guid = multichainFundingPendingIds[staticId];
-          const item = pendingItems[guid];
-          if (!item) {
-            return null;
-          }
+    const content: ToastContent = getMultichainFundingToastContent({
+      chainId,
+      pendingItems,
+      multichainFundingPendingIds,
+    });
 
-          const token = getToken(chainId, item.token);
-
-          const formattedAmount = formatBalanceAmount(item.sentAmount, token.decimals, token.symbol);
-
-          const isLoading = isMultichainFundingItemLoading(item);
-
-          return (
-            <div key={staticId} className="flex items-center justify-between">
-              <div className="text-typography-secondary">
-                {item.operation === "deposit" ? <Trans>Deposit</Trans> : <Trans>Withdraw</Trans>}
-                {array.length > 1 && <> {formattedAmount}</>}
-              </div>
-              {isLoading && <SpinnerIcon className="spin size-15 text-white" />}
-            </div>
-          );
-        })}
-      </div>
-    );
-
-    if (toast.isActive(TOAST_ID)) {
-      toast.update(TOAST_ID, {
+    if (toast.isActive(MULTICHAIN_FUNDING_TOAST_ID)) {
+      toast.update(MULTICHAIN_FUNDING_TOAST_ID, {
         render: content,
         type: "default",
         onClose: () => {
@@ -107,7 +129,7 @@ export function useMultichainFundingToast() {
       });
     } else {
       toast(content, {
-        toastId: TOAST_ID,
+        toastId: MULTICHAIN_FUNDING_TOAST_ID,
         type: "default",
         autoClose: false,
         onClose: () => {

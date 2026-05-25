@@ -64,18 +64,13 @@
   background: var(--color-red-900) !important;
   border-bottom: 2px solid var(--color-red-500);
 
-  .link-underline {
-    color: var(--color-white) !important;
-  }
-
   .close-toast-button > svg {
     color: var(--color-red-500) !important;
   }
 }
 
 .Toastify__toast {
-  .StatusNotification a,
-  .StatusNotification-actions a {
+  .link-underline {
     color: var(--color-typography-primary) !important;
   }
 }
