@@ -10,7 +10,7 @@ import {
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getGmxTradingCostBreakdown } from "domain/tradingCosts/gmx/gmxCost";
 
-import { buildTradingCostRows } from "./buildTradingCostRows";
+import { buildTradingCostRows, getMatchedVenueSymbols } from "./buildTradingCostRows";
 import { filterTradingCostRows } from "./costs";
 import { buildHyperliquidBreakdown, getHyperliquidVenueMarkets } from "./hyperliquid/buildHyperliquidBreakdown";
 import { useHyperliquidL2Books, useHyperliquidMarkets } from "./hyperliquid/useHyperliquidData";
@@ -29,7 +29,7 @@ export function useTradingCosts({ scenario, search }: { scenario: TradingCostSce
     () => getHyperliquidVenueMarkets(hyperliquidMarkets.markets ?? []),
     [hyperliquidMarkets.markets]
   );
-  const coins = useMemo(() => venueMarkets.map((market) => market.symbol), [venueMarkets]);
+  const coins = useMemo(() => getMatchedVenueSymbols({ gmxMarkets, venueMarkets }), [gmxMarkets, venueMarkets]);
   const hyperliquidBooks = useHyperliquidL2Books(coins);
 
   const rows = useMemo(() => {

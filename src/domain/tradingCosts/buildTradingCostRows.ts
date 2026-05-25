@@ -43,3 +43,14 @@ export function buildTradingCostRows({
 
   return sortTradingCostRowsByVenueVolume(rows);
 }
+
+export function getMatchedVenueSymbols({
+  gmxMarkets,
+  venueMarkets,
+}: {
+  gmxMarkets: MarketInfo[];
+  venueMarkets: ComparisonVenueMarket[];
+}): string[] {
+  const { matched } = matchGmxMarketsToVenueMarkets(gmxMarkets, venueMarkets);
+  return [...new Set(matched.map((match) => match.venueMarket.symbol))];
+}
