@@ -28,13 +28,13 @@ export const PRIVY_WALLET_LIST = [
   "detected_ethereum_wallets",
   "metamask",
   "rabby_wallet",
+  "wallet_connect_qr",
   "coinbase_wallet",
   "safe",
   "binance",
   "base_account",
   "okx_wallet",
   "phantom",
-  "wallet_connect_qr",
   "wallet_connect",
 ] as const;
 
