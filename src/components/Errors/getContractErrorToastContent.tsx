@@ -1,7 +1,7 @@
 import { Trans } from "@lingui/macro";
 import { ReactNode } from "react";
 
-import { ErrorData, tryDecodeCustomError } from "lib/errors";
+import { ErrorData, getStringContractErrorArg, tryDecodeCustomError } from "lib/errors";
 import { CustomErrorName } from "sdk/utils/errors/transactionsErrors";
 
 import { getContractErrorMessage } from "./getContractErrorMessage";
@@ -70,29 +70,4 @@ export function getContractErrorToastContent({
     default:
       return getContractErrorMessage({ chainId, errorData, decodeDepth });
   }
-}
-
-function getContractErrorArg(contractErrorArgs: ErrorData["contractErrorArgs"], index: number, key?: string) {
-  if (!contractErrorArgs) {
-    return undefined;
-  }
-
-  if (Array.isArray(contractErrorArgs)) {
-    return contractErrorArgs[index];
-  }
-
-  if (typeof contractErrorArgs === "object") {
-    if (key && key in contractErrorArgs) {
-      return contractErrorArgs[key];
-    }
-
-    return Object.values(contractErrorArgs)[index];
-  }
-
-  return undefined;
-}
-
-function getStringContractErrorArg(contractErrorArgs: ErrorData["contractErrorArgs"], index: number, key?: string) {
-  const value = getContractErrorArg(contractErrorArgs, index, key);
-  return typeof value === "string" ? value : undefined;
 }

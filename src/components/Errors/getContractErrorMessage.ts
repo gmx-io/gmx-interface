@@ -1,8 +1,9 @@
 import { t } from "@lingui/macro";
 
-import { ErrorData, tryDecodeCustomError } from "lib/errors";
-import { formatPercentage, formatUsd } from "lib/numbers";
-import { getToken } from "sdk/configs/tokens";
+import { ErrorData, getBigIntContractErrorArg, getStringContractErrorArg, tryDecodeCustomError } from "lib/errors";
+import { formatAmount, formatPercentage, formatUsd } from "lib/numbers";
+import { TOKENS_MAP } from "sdk/configs/tokens";
+import { bigMath } from "sdk/utils/bigmath";
 import { CustomErrorName } from "sdk/utils/errors/transactionsErrors";
 
 export function getContractErrorMessage({
@@ -26,11 +27,11 @@ export function getContractErrorMessage({
       const collateralDeltaAmount = getBigIntContractErrorArg(args, 1, "collateralDeltaAmount");
       const missingCollateralAmount =
         collateralAmount !== undefined && collateralDeltaAmount !== undefined && collateralDeltaAmount < 0n
-          ? absBigint(collateralDeltaAmount) - collateralAmount
+          ? bigMath.abs(collateralDeltaAmount) - collateralAmount
           : undefined;
       const amountText =
         missingCollateralAmount !== undefined && missingCollateralAmount > 0n
-          ? formatInteger(missingCollateralAmount)
+          ? formatAmount(missingCollateralAmount, 0, 0, true)
           : undefined;
 
       return amountText
@@ -40,8 +41,9 @@ export function getContractErrorMessage({
 
     case CustomErrorName.InsufficientCollateralUsd: {
       const remainingCollateralUsd = getBigIntContractErrorArg(args, 0, "remainingCollateralUsd");
-      const missingCollateralUsd = remainingCollateralUsd !== undefined ? absBigint(remainingCollateralUsd) : undefined;
-      const missingCollateralUsdText = formatUsdValue(missingCollateralUsd);
+      const missingCollateralUsd =
+        remainingCollateralUsd !== undefined ? bigMath.abs(remainingCollateralUsd) : undefined;
+      const missingCollateralUsdText = formatUsd(missingCollateralUsd);
 
       return missingCollateralUsdText
         ? t`Insufficient margin. Add ${missingCollateralUsdText} more margin`
@@ -52,8 +54,8 @@ export function getContractErrorMessage({
       const remainingCollateralUsd = getBigIntContractErrorArg(args, 1, "remainingCollateralUsd");
       const minCollateralUsd = getBigIntContractErrorArg(args, 2, "minCollateralUsd");
 
-      const remainingCollateralUsdText = formatUsdValue(remainingCollateralUsd);
-      const minCollateralUsdText = formatUsdValue(minCollateralUsd);
+      const remainingCollateralUsdText = formatUsd(remainingCollateralUsd);
+      const minCollateralUsdText = formatUsd(minCollateralUsd);
 
       return remainingCollateralUsdText && minCollateralUsdText
         ? t`Position would be liquidatable. Current: ${remainingCollateralUsdText}, required: ${minCollateralUsdText}`
@@ -62,7 +64,7 @@ export function getContractErrorMessage({
 
     case CustomErrorName.UnableToWithdrawCollateral: {
       const estimatedRemainingCollateralUsd = getBigIntContractErrorArg(args, 0, "estimatedRemainingCollateralUsd");
-      const estimatedRemainingCollateralUsdText = formatUsdValue(estimatedRemainingCollateralUsd);
+      const estimatedRemainingCollateralUsdText = formatUsd(estimatedRemainingCollateralUsd);
 
       return estimatedRemainingCollateralUsdText
         ? t`Can't withdraw collateral. Remaining would be ${estimatedRemainingCollateralUsdText}, below minimum`
@@ -73,8 +75,8 @@ export function getContractErrorMessage({
       const openInterest = getBigIntContractErrorArg(args, 0, "openInterest");
       const maxOpenInterest = getBigIntContractErrorArg(args, 1, "maxOpenInterest");
 
-      const openInterestText = formatUsdValue(openInterest);
-      const maxOpenInterestText = formatUsdValue(maxOpenInterest);
+      const openInterestText = formatUsd(openInterest);
+      const maxOpenInterestText = formatUsd(maxOpenInterest);
 
       return openInterestText && maxOpenInterestText
         ? t`Max open interest exceeded. Current: ${openInterestText}, max: ${maxOpenInterestText}`
@@ -87,9 +89,7 @@ export function getContractErrorMessage({
       const availableLiquidity =
         reservedUsd !== undefined && maxReservedUsd !== undefined ? maxReservedUsd - reservedUsd : undefined;
       const availableLiquidityText =
-        availableLiquidity !== undefined
-          ? formatUsdValue(availableLiquidity > 0n ? availableLiquidity : 0n)
-          : undefined;
+        availableLiquidity !== undefined ? formatUsd(availableLiquidity > 0n ? availableLiquidity : 0n) : undefined;
 
       return availableLiquidityText
         ? t`Insufficient liquidity. Available: ${availableLiquidityText}`
@@ -103,8 +103,8 @@ export function getContractErrorMessage({
       const poolAmount = getBigIntContractErrorArg(args, 0, "poolAmount");
       const maxPoolAmount = getBigIntContractErrorArg(args, 1, "maxPoolAmount");
 
-      const poolAmountText = formatInteger(poolAmount);
-      const maxPoolAmountText = formatInteger(maxPoolAmount);
+      const poolAmountText = poolAmount !== undefined ? formatAmount(poolAmount, 0, 0, true) : undefined;
+      const maxPoolAmountText = maxPoolAmount !== undefined ? formatAmount(maxPoolAmount, 0, 0, true) : undefined;
 
       return poolAmountText && maxPoolAmountText
         ? t`Max pool capacity reached. Current: ${poolAmountText}, max: ${maxPoolAmountText}`
@@ -113,14 +113,14 @@ export function getContractErrorMessage({
 
     case CustomErrorName.MaxPoolUsdForDepositExceeded: {
       const maxPoolUsd = getBigIntContractErrorArg(args, 1, "maxPoolUsdForDeposit");
-      const maxPoolUsdText = formatUsdValue(maxPoolUsd);
+      const maxPoolUsdText = formatUsd(maxPoolUsd);
 
       return maxPoolUsdText ? t`Max deposit limit reached: ${maxPoolUsdText}` : t`Max deposit limit reached`;
     }
 
     case CustomErrorName.InsufficientPoolAmount: {
       const availableAmount = getBigIntContractErrorArg(args, 0, "poolAmount");
-      const availableAmountText = formatInteger(availableAmount);
+      const availableAmountText = availableAmount !== undefined ? formatAmount(availableAmount, 0, 0, true) : undefined;
 
       return availableAmountText
         ? t`Insufficient pool liquidity. Available: ${availableAmountText}`
@@ -131,8 +131,8 @@ export function getContractErrorMessage({
       const positionSizeInUsd = getBigIntContractErrorArg(args, 0, "positionSizeInUsd");
       const minPositionSizeUsd = getBigIntContractErrorArg(args, 1, "minPositionSizeUsd");
 
-      const minPositionSizeUsdText = formatUsdValue(minPositionSizeUsd);
-      const positionSizeInUsdText = formatUsdValue(positionSizeInUsd);
+      const minPositionSizeUsdText = formatUsd(minPositionSizeUsd);
+      const positionSizeInUsdText = formatUsd(positionSizeInUsd);
 
       return minPositionSizeUsdText && positionSizeInUsdText
         ? t`Position size too small. Min: ${minPositionSizeUsdText}, current: ${positionSizeInUsdText}`
@@ -142,8 +142,8 @@ export function getContractErrorMessage({
     case CustomErrorName.InvalidDecreaseOrderSize: {
       const sizeDeltaUsd = getBigIntContractErrorArg(args, 0, "sizeDeltaUsd");
       const positionSizeInUsd = getBigIntContractErrorArg(args, 1, "positionSizeInUsd");
-      const sizeDeltaUsdText = formatUsdValue(sizeDeltaUsd);
-      const positionSizeInUsdText = formatUsdValue(positionSizeInUsd);
+      const sizeDeltaUsdText = formatUsd(sizeDeltaUsd);
+      const positionSizeInUsdText = formatUsd(positionSizeInUsd);
 
       return sizeDeltaUsdText && positionSizeInUsdText
         ? t`Invalid decrease size. Size delta (${sizeDeltaUsdText}) exceeds position size (${positionSizeInUsdText})`
@@ -155,8 +155,8 @@ export function getContractErrorMessage({
       const pnlToPoolFactor = getBigIntContractErrorArg(args, 0, "pnlToPoolFactor");
       const maxPnlFactor = getBigIntContractErrorArg(args, 1, "maxPnlFactor");
 
-      const pnlToPoolFactorText = formatPnlFactorPercent(pnlToPoolFactor);
-      const maxPnlFactorText = formatPnlFactorPercent(maxPnlFactor);
+      const pnlToPoolFactorText = formatPercentage(pnlToPoolFactor, { bps: false });
+      const maxPnlFactorText = formatPercentage(maxPnlFactor, { bps: false });
 
       return pnlToPoolFactorText && maxPnlFactorText
         ? t`Max profit limit reached. Current: ${pnlToPoolFactorText}, max: ${maxPnlFactorText}`
@@ -166,8 +166,8 @@ export function getContractErrorMessage({
     case CustomErrorName.InsufficientOutputAmount: {
       const outputAmount = getBigIntContractErrorArg(args, 0, "outputAmount");
       const minOutputAmount = getBigIntContractErrorArg(args, 1, "minOutputAmount");
-      const minOutputAmountText = formatInteger(minOutputAmount);
-      const outputAmountText = formatInteger(outputAmount);
+      const minOutputAmountText = minOutputAmount !== undefined ? formatAmount(minOutputAmount, 0, 0, true) : undefined;
+      const outputAmountText = outputAmount !== undefined ? formatAmount(outputAmount, 0, 0, true) : undefined;
 
       return minOutputAmountText && outputAmountText
         ? t`Slippage exceeded. Expected min: ${minOutputAmountText}, actual: ${outputAmountText}`
@@ -184,8 +184,9 @@ export function getContractErrorMessage({
     case CustomErrorName.InsufficientExecutionGas: {
       const startingGas = getBigIntContractErrorArg(args, 0, "startingGas");
       const estimatedGasLimit = getBigIntContractErrorArg(args, 1, "estimatedGasLimit");
-      const estimatedGasLimitText = formatInteger(estimatedGasLimit);
-      const startingGasText = formatInteger(startingGas);
+      const estimatedGasLimitText =
+        estimatedGasLimit !== undefined ? formatAmount(estimatedGasLimit, 0, 0, true) : undefined;
+      const startingGasText = startingGas !== undefined ? formatAmount(startingGas, 0, 0, true) : undefined;
 
       return estimatedGasLimitText && startingGasText
         ? t`Insufficient gas for execution. Estimated: ${estimatedGasLimitText}, starting: ${startingGasText}`
@@ -197,7 +198,8 @@ export function getContractErrorMessage({
 
     case CustomErrorName.InvalidCollateralTokenForMarket: {
       const tokenAddress = getStringContractErrorArg(args, 1, "token");
-      const tokenSymbol = chainId !== undefined ? getTokenSymbol(tokenAddress, chainId) : undefined;
+      const tokenSymbol =
+        chainId !== undefined && tokenAddress ? TOKENS_MAP[chainId]?.[tokenAddress]?.symbol : undefined;
       return tokenSymbol
         ? t`Invalid collateral token. ${tokenSymbol} isn't supported as collateral`
         : t`Invalid collateral token for this market`;
@@ -211,7 +213,8 @@ export function getContractErrorMessage({
 
     case CustomErrorName.InvalidOraclePrice: {
       const tokenAddress = getStringContractErrorArg(args, 0, "token");
-      const tokenSymbol = chainId !== undefined ? getTokenSymbol(tokenAddress, chainId) : undefined;
+      const tokenSymbol =
+        chainId !== undefined && tokenAddress ? TOKENS_MAP[chainId]?.[tokenAddress]?.symbol : undefined;
       return tokenSymbol ? t`Invalid oracle price for ${tokenSymbol}` : t`Invalid oracle price`;
     }
 
@@ -221,8 +224,10 @@ export function getContractErrorMessage({
     case CustomErrorName.SwapPriceImpactExceedsAmountIn: {
       const amountAfterFees = getBigIntContractErrorArg(args, 0, "amountAfterFees");
       const negativeImpactAmount = getBigIntContractErrorArg(args, 1, "negativeImpactAmount");
-      const negativeImpactAmountText = formatUsdValue(absBigintOrUndefined(negativeImpactAmount));
-      const amountAfterFeesText = formatUsdValue(amountAfterFees);
+      const negativeImpactAmountText = formatUsd(
+        negativeImpactAmount !== undefined ? bigMath.abs(negativeImpactAmount) : undefined
+      );
+      const amountAfterFeesText = formatUsd(amountAfterFees);
 
       return negativeImpactAmountText && amountAfterFeesText
         ? t`Price impact too high. Impact: ${negativeImpactAmountText}, input: ${amountAfterFeesText}`
@@ -232,8 +237,8 @@ export function getContractErrorMessage({
     case CustomErrorName.PriceImpactLargerThanOrderSize: {
       const priceImpactUsd = getBigIntContractErrorArg(args, 0, "priceImpactUsd");
       const sizeDeltaUsd = getBigIntContractErrorArg(args, 1, "sizeDeltaUsd");
-      const priceImpactUsdText = formatUsdValue(absBigintOrUndefined(priceImpactUsd));
-      const sizeDeltaUsdText = formatUsdValue(sizeDeltaUsd);
+      const priceImpactUsdText = formatUsd(priceImpactUsd !== undefined ? bigMath.abs(priceImpactUsd) : undefined);
+      const sizeDeltaUsdText = formatUsd(sizeDeltaUsd);
 
       return priceImpactUsdText && sizeDeltaUsdText
         ? t`Price impact exceeds order size. Impact: ${priceImpactUsdText}, order: ${sizeDeltaUsdText}`
@@ -268,7 +273,7 @@ export function getContractErrorMessage({
 
     case CustomErrorName.InsufficientFundsToPayForCosts: {
       const remainingCostUsd = getBigIntContractErrorArg(args, 0, "remainingCostUsd");
-      const remainingCostUsdText = formatUsdValue(remainingCostUsd);
+      const remainingCostUsdText = formatUsd(remainingCostUsd);
 
       return remainingCostUsdText
         ? t`Insufficient funds for order costs. Remaining: ${remainingCostUsdText}`
@@ -281,8 +286,8 @@ export function getContractErrorMessage({
     case CustomErrorName.UsdDeltaExceedsLongOpenInterest: {
       const usdDelta = getBigIntContractErrorArg(args, 0, "usdDelta");
       const openInterest = getBigIntContractErrorArg(args, 1, "longOpenInterest");
-      const usdDeltaText = formatUsdValue(absBigintOrUndefined(usdDelta));
-      const openInterestText = formatUsdValue(openInterest);
+      const usdDeltaText = formatUsd(usdDelta !== undefined ? bigMath.abs(usdDelta) : undefined);
+      const openInterestText = formatUsd(openInterest);
 
       return usdDeltaText && openInterestText
         ? t`Position size exceeds available open interest. Delta: ${usdDeltaText}, max OI: ${openInterestText}`
@@ -292,8 +297,8 @@ export function getContractErrorMessage({
     case CustomErrorName.UsdDeltaExceedsShortOpenInterest: {
       const usdDelta = getBigIntContractErrorArg(args, 0, "usdDelta");
       const openInterest = getBigIntContractErrorArg(args, 1, "shortOpenInterest");
-      const usdDeltaText = formatUsdValue(absBigintOrUndefined(usdDelta));
-      const openInterestText = formatUsdValue(openInterest);
+      const usdDeltaText = formatUsd(usdDelta !== undefined ? bigMath.abs(usdDelta) : undefined);
+      const openInterestText = formatUsd(openInterest);
 
       return usdDeltaText && openInterestText
         ? t`Position size exceeds available open interest. Delta: ${usdDeltaText}, max OI: ${openInterestText}`
@@ -303,8 +308,8 @@ export function getContractErrorMessage({
     case CustomErrorName.UsdDeltaExceedsPoolValue: {
       const usdDelta = getBigIntContractErrorArg(args, 0, "usdDelta");
       const poolUsd = getBigIntContractErrorArg(args, 1, "poolUsd");
-      const usdDeltaText = formatUsdValue(absBigintOrUndefined(usdDelta));
-      const poolUsdText = formatUsdValue(poolUsd);
+      const usdDeltaText = formatUsd(usdDelta !== undefined ? bigMath.abs(usdDelta) : undefined);
+      const poolUsdText = formatUsd(poolUsd);
 
       return usdDeltaText && poolUsdText
         ? t`Position size exceeds pool value. Delta: ${usdDeltaText}, pool: ${poolUsdText}`
@@ -313,83 +318,5 @@ export function getContractErrorMessage({
 
     default:
       return undefined;
-  }
-}
-
-function getContractErrorArg(contractErrorArgs: ErrorData["contractErrorArgs"], index: number, key?: string) {
-  if (!contractErrorArgs) {
-    return undefined;
-  }
-
-  if (Array.isArray(contractErrorArgs)) {
-    return contractErrorArgs[index];
-  }
-
-  if (typeof contractErrorArgs === "object") {
-    if (key && key in contractErrorArgs) {
-      return contractErrorArgs[key];
-    }
-
-    return Object.values(contractErrorArgs)[index];
-  }
-
-  return undefined;
-}
-
-function getBigIntContractErrorArg(contractErrorArgs: ErrorData["contractErrorArgs"], index: number, key?: string) {
-  const value = getContractErrorArg(contractErrorArgs, index, key);
-  return typeof value === "bigint" ? value : undefined;
-}
-
-function getStringContractErrorArg(contractErrorArgs: ErrorData["contractErrorArgs"], index: number, key?: string) {
-  const value = getContractErrorArg(contractErrorArgs, index, key);
-  return typeof value === "string" ? value : undefined;
-}
-
-function formatUsdValue(value: bigint | undefined) {
-  if (value === undefined) {
-    return undefined;
-  }
-
-  return formatUsd(value);
-}
-
-function formatPnlFactorPercent(value: bigint | undefined) {
-  if (value === undefined) {
-    return undefined;
-  }
-
-  return formatPercentage(value, { bps: false });
-}
-
-function formatInteger(value: bigint | undefined) {
-  if (value === undefined) {
-    return undefined;
-  }
-
-  return value.toLocaleString("en-US");
-}
-
-function absBigint(value: bigint) {
-  return value < 0n ? -value : value;
-}
-
-function absBigintOrUndefined(value: bigint | undefined) {
-  if (value === undefined) {
-    return undefined;
-  }
-
-  return absBigint(value);
-}
-
-function getTokenSymbol(tokenAddress: string | undefined, chainId: number) {
-  if (!tokenAddress) {
-    return undefined;
-  }
-
-  try {
-    return getToken(chainId, tokenAddress).symbol;
-  } catch {
-    return undefined;
   }
 }
