@@ -36,7 +36,7 @@ export function useIsApiSdkEnabled(uiFlagName: ApiUiFlagName): boolean {
   const { uiFlags } = useUiFlagsRequest();
 
   if (isDevelopment()) {
-    return getIsFlagEnabled("apiSdk2");
+    return getIsFlagEnabled("abSdk3");
   }
 
   if (uiFlags?.[uiFlagName] === true) {

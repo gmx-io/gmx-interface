@@ -160,10 +160,6 @@ msgstr "Crear Intercambio TWAP"
 msgid "Estimated time"
 msgstr "Tiempo estimado"
 
-#: src/pages/UiPage/DevSignTypedDataStub.tsx
-msgid "Min signing (domain + digest → Minified EIP-712)"
-msgstr ""
-
 #: src/components/PositionShare/PositionShare.tsx
 msgid "Include rPnL in leverage display"
 msgstr "Incluir rPnL en la visualización de apalancamiento"
@@ -1425,11 +1421,6 @@ msgstr "Fundamentales de GMX"
 msgid "EVENT DATA"
 msgstr "DATOS DEL EVENTO"
 
-#: src/pages/UiPage/DevSignTypedDataStub.tsx
-#: src/pages/UiPage/DevSignTypedDataStub.tsx
-msgid "Sign failed"
-msgstr ""
-
 #: landing/src/pages/Home/SocialSection/SocialSection.tsx
 #: src/components/Footer/constants.tsx
 msgid "Charts by TradingView"
@@ -1634,10 +1625,6 @@ msgstr "0x"
 #: src/components/TradeHistory/TradeHistory.tsx
 msgid "RPNL"
 msgstr "RPNL"
-
-#: src/pages/UiPage/DevSignTypedDataStub.tsx
-msgid "Signed (minified payload)"
-msgstr ""
 
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
@@ -2064,10 +2051,6 @@ msgstr ""
 msgid "Claiming price impact rebates..."
 msgstr "Reclamando reembolsos de impacto en el precio…"
 
-#: src/pages/UiPage/DevSignTypedDataStub.tsx
-msgid "Sign full"
-msgstr ""
-
 #: src/components/Earn/AdditionalOpportunities/OpportunityCard.tsx
 msgid "Explore"
 msgstr "Explorar"
@@ -2171,10 +2154,6 @@ msgstr "Activos disponibles para operar"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
-msgstr ""
-
-#: src/pages/UiPage/DevSignTypedDataStub.tsx
-msgid "Reset both inputs to defaults"
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
@@ -2326,10 +2305,6 @@ msgstr ""
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Switching to external swap route. Try again"
-msgstr ""
-
-#: src/pages/UiPage/DevSignTypedDataStub.tsx
-msgid "Min = same domain + digest as the failed Exodus session (L1 router). Full = empty express batch + relay params (Arbitrum settlement, Ethereum signing chain), probe account"
 msgstr ""
 
 #: src/components/NetRateChart/NetRateChart.tsx
@@ -3180,10 +3155,6 @@ msgstr "Aumentar tamaño (Market)"
 #: src/domain/synthetics/markets/createBridgeInTxn.ts
 msgid "Bridge transfer sent"
 msgstr "Transferencia de puente enviada"
-
-#: src/pages/UiPage/DevSignTypedDataStub.tsx
-msgid "Signed (full Batch)"
-msgstr ""
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 #: src/components/GmList/GlvList.tsx
@@ -4533,11 +4504,6 @@ msgstr "Swap Market: Intercambiar tokens al precio de mercado actual"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Per 1h"
 msgstr "Por 1h"
-
-#: src/pages/UiPage/DevSignTypedDataStub.tsx
-#: src/pages/UiPage/DevSignTypedDataStub.tsx
-msgid "Connect a wallet first"
-msgstr ""
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Perpetuals aggregator"
@@ -6418,10 +6384,6 @@ msgstr "Cargando..."
 #: landing/src/pages/Home/HeroSection/HeroSection.tsx
 msgid "Trade now"
 msgstr "Operar ahora"
-
-#: src/pages/UiPage/DevSignTypedDataStub.tsx
-msgid "Full signing (Batch EIP-712 JSON)"
-msgstr ""
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Sender has withdrawn all tokens from the GMX vesting vault"
@@ -9163,11 +9125,6 @@ msgstr ""
 msgid "/USD"
 msgstr "/USD"
 
-#: src/pages/UiPage/DevSignTypedDataStub.tsx
-#: src/pages/UiPage/DevSignTypedDataStub.tsx
-msgid "Signing…"
-msgstr ""
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express + One-Click"
 msgstr "Express + Un Clic"
@@ -9944,10 +9901,6 @@ msgstr ""
 msgid "Stabilize Protocol"
 msgstr "Protocolo Stabilize"
 
-#: src/pages/UiPage/DevSignTypedDataStub.tsx
-msgid "Sign typed data (dev stub)"
-msgstr ""
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Auto-cancel TP/SL"
 msgstr "Cancelar TP/SL automáticamente"
@@ -10086,10 +10039,6 @@ msgstr "Precio de liquidación no válido"
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Available to trade"
 msgstr "Disponible para negociar"
-
-#: src/pages/UiPage/DevSignTypedDataStub.tsx
-msgid "Sign min"
-msgstr ""
 
 #: src/pages/RpcDebug/parts.tsx
 msgid "Multicall simulation"
