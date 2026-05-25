@@ -7,6 +7,7 @@ import {
   type GasLimitsConfig,
 } from "domain/synthetics/fees";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
+import { convertToTokenAmount, getMidPrice } from "domain/synthetics/tokens";
 import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateExecuteIncreaseOrderGasLimit,
@@ -49,6 +50,34 @@ function estimateGmxNetworkFeeUsd({
   return increaseFee + decreaseFee;
 }
 
+function getMarketInfoAfterOpen({
+  marketInfo,
+  sizeUsd,
+  isLong,
+}: {
+  marketInfo: MarketInfo;
+  sizeUsd: bigint;
+  isLong: boolean;
+}): MarketInfo {
+  const indexTokenAmount =
+    convertToTokenAmount(sizeUsd, marketInfo.indexToken.decimals, getMidPrice(marketInfo.indexToken.prices)) ?? 0n;
+
+  return {
+    ...marketInfo,
+    longInterestUsd: isLong ? marketInfo.longInterestUsd + sizeUsd : marketInfo.longInterestUsd,
+    shortInterestUsd: isLong ? marketInfo.shortInterestUsd : marketInfo.shortInterestUsd + sizeUsd,
+    longInterestInTokens: isLong
+      ? marketInfo.longInterestInTokens + indexTokenAmount
+      : marketInfo.longInterestInTokens,
+    shortInterestInTokens: isLong
+      ? marketInfo.shortInterestInTokens
+      : marketInfo.shortInterestInTokens + indexTokenAmount,
+    virtualInventoryForPositions: isLong
+      ? marketInfo.virtualInventoryForPositions - sizeUsd
+      : marketInfo.virtualInventoryForPositions + sizeUsd,
+  };
+}
+
 export function getGmxTradingCostBreakdown({
   marketInfo,
   sizeUsd,
@@ -75,7 +104,8 @@ export function getGmxTradingCostBreakdown({
     fallbackToZero: true,
     shouldCapNegativeImpact: true,
   });
-  const closeImpact = getCappedPositionImpactUsd(marketInfo, sizeUsd, isLong, false, {
+  const marketInfoAfterOpen = getMarketInfoAfterOpen({ marketInfo, sizeUsd, isLong });
+  const closeImpact = getCappedPositionImpactUsd(marketInfoAfterOpen, sizeUsd, isLong, false, {
     fallbackToZero: true,
     shouldCapNegativeImpact: true,
   });

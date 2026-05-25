@@ -72,8 +72,8 @@ export function buildHyperliquidBreakdown({
   const closeBookSide = getBookSideForLeg({ tradingSide: scenario.side, isOpen: false });
   const openLevels = openBookSide === "bid" ? book.levels[0] : book.levels[1];
   const closeLevels = closeBookSide === "bid" ? book.levels[0] : book.levels[1];
-  const openFill = simulateL2BookFill({ levels: openLevels, sizeUsd: scenario.sizeUsd });
-  const closeFill = simulateL2BookFill({ levels: closeLevels, sizeUsd: scenario.sizeUsd });
+  const openFill = simulateL2BookFill({ levels: openLevels, sizeUsd: scenario.sizeUsd, referencePrice });
+  const closeFill = simulateL2BookFill({ levels: closeLevels, sizeUsd: scenario.sizeUsd, referencePrice });
 
   if (
     openFill.status === "insufficientDepth" ||

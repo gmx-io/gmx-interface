@@ -52,7 +52,11 @@ test("renders generic venue labels and selected market details", async ({ mount 
 
   await expect(component.getByText("Trading Costs")).toBeVisible();
   await expect(component.getByText("Venue total")).toBeVisible();
+  await expect(component.getByText("GMX price impact")).toBeVisible();
   await expect(component.getByText("Venue assumptions")).toBeVisible();
   await expect(component.getByText("ETH/USD [WETH-USDC]")).toBeVisible();
   await expect(component.getByText("Selected market")).toBeVisible();
+  await expect(component.getByText("Scenario")).toBeVisible();
+  await expect(component.getByText("Data timestamps")).toBeVisible();
+  await expect(component.getByText("Status details")).toBeVisible();
 });

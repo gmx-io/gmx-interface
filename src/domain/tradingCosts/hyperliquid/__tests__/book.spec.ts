@@ -15,20 +15,20 @@ const bids: HyperliquidBookLevel[] = [
 ];
 
 describe("Hyperliquid L2 book math", () => {
-  it("fills a USD notional across multiple levels", () => {
-    const fill = simulateL2BookFill({ levels: asks, sizeUsd: numberToUsd(210) });
-    const bidFill = simulateL2BookFill({ levels: bids, sizeUsd: numberToUsd(197) });
+  it("fills the base quantity implied by reference-price USD notional across multiple levels", () => {
+    const fill = simulateL2BookFill({ levels: asks, sizeUsd: numberToUsd(210), referencePrice: 100 });
+    const bidFill = simulateL2BookFill({ levels: bids, sizeUsd: numberToUsd(197), referencePrice: 100 });
 
     expect(fill.status).toBe("filled");
-    expect(fill.averagePrice).toBeCloseTo(105, 6);
-    expect(usdToNumber(fill.filledUsd)).toBeCloseTo(210, 6);
+    expect(fill.averagePrice).toBeCloseTo(105.238095, 6);
+    expect(usdToNumber(fill.filledUsd)).toBeCloseTo(221, 6);
     expect(bidFill.status).toBe("filled");
-    expect(bidFill.averagePrice).toBeCloseTo(98.5, 6);
-    expect(usdToNumber(bidFill.filledUsd)).toBeCloseTo(197, 6);
+    expect(bidFill.averagePrice).toBeCloseTo(98.507614, 6);
+    expect(usdToNumber(bidFill.filledUsd)).toBeCloseTo(194.06, 6);
   });
 
   it("marks insufficient depth when returned levels cannot fill requested notional", () => {
-    const fill = simulateL2BookFill({ levels: asks.slice(0, 1), sizeUsd: numberToUsd(250) });
+    const fill = simulateL2BookFill({ levels: asks.slice(0, 1), sizeUsd: numberToUsd(250), referencePrice: 100 });
 
     expect(fill.status).toBe("insufficientDepth");
     expect(usdToNumber(fill.filledUsd)).toBeCloseTo(100, 6);

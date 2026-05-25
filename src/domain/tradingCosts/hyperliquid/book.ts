@@ -11,31 +11,33 @@ export type BookFillResult = {
 export function simulateL2BookFill({
   levels,
   sizeUsd,
+  referencePrice,
 }: {
   levels: HyperliquidBookLevel[];
   sizeUsd: bigint;
+  referencePrice: number;
 }): BookFillResult {
   const targetUsd = usdToNumber(sizeUsd) ?? 0;
-  let remainingUsd = targetUsd;
+  const targetBase = referencePrice > 0 ? targetUsd / referencePrice : 0;
+  let remainingBase = targetBase;
   let filledUsd = 0;
   let filledBase = 0;
 
   for (const level of levels) {
-    if (remainingUsd <= 0) break;
+    if (remainingBase <= 0) break;
 
     const price = Number(level.px);
     const size = Number(level.sz);
-    const levelUsd = price * size;
-    const takeUsd = Math.min(levelUsd, remainingUsd);
-    const takeBase = takeUsd / price;
+    const takeBase = Math.min(size, remainingBase);
+    const takeUsd = takeBase * price;
 
     filledUsd += takeUsd;
     filledBase += takeBase;
-    remainingUsd -= takeUsd;
+    remainingBase -= takeBase;
   }
 
   return {
-    status: remainingUsd > 0.000001 ? "insufficientDepth" : "filled",
+    status: remainingBase > 0.000001 ? "insufficientDepth" : "filled",
     averagePrice: filledBase > 0 ? filledUsd / filledBase : undefined,
     filledUsd: numberToUsd(filledUsd),
   };

@@ -120,6 +120,35 @@ describe("GMX trading cost adapter", () => {
     expect(breakdown.components.find((item) => item.key === "openPriceImpact")!.usd).toBeLessThanOrEqual(0n);
   });
 
+  it("calculates close price impact after the simulated open leg", () => {
+    const marketInfo = {
+      ...createMockMarketInfo(),
+      longInterestUsd: 0n,
+      shortInterestUsd: 0n,
+      longInterestInTokens: 0n,
+      shortInterestInTokens: 0n,
+      useOpenInterestInTokensForBalance: false,
+      positionFeeFactorForBalanceWasImproved: 0n,
+      positionFeeFactorForBalanceWasNotImproved: 0n,
+      borrowingFactorPerSecondForLongs: 0n,
+      borrowingFactorPerSecondForShorts: 0n,
+      fundingFactorPerSecond: 0n,
+    };
+
+    const breakdown = getGmxTradingCostBreakdown({
+      marketInfo,
+      sizeUsd: expandDecimals(10_000, 30),
+      side: "long",
+      holdingPeriodHours: 1,
+      gasLimits: undefined,
+      gasPrice: undefined,
+      tokensData: undefined,
+      timestamp: 1000,
+    });
+
+    expect(breakdown.components.find((item) => item.key === "closePriceImpact")!.usd).toBeLessThan(0n);
+  });
+
   it("uses the order oracle price count for both network fee legs", () => {
     const gasLimits = {
       ...zeroGasLimits,
