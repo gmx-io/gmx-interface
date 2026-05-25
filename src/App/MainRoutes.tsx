@@ -3,6 +3,7 @@ import { Suspense, lazy, useEffect } from "react";
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 import type { Address } from "viem";
 
+import { ARBITRUM } from "config/chains";
 import { isDevelopment } from "config/env";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useChainId } from "lib/chains";
@@ -121,7 +122,7 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
         <SyntheticsStats />
       </Route>
       <Route exact path="/costs">
-        <SyntheticsStateContextProvider skipLocalReferralCode pageType="tradingCosts">
+        <SyntheticsStateContextProvider skipLocalReferralCode pageType="tradingCosts" overrideChainId={ARBITRUM}>
           <TradingCostsPage />
         </SyntheticsStateContextProvider>
       </Route>
