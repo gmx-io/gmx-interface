@@ -5,7 +5,6 @@ import type { Locale as DateLocale } from "date-fns";
 import { format } from "date-fns/format";
 import { formatRelative } from "date-fns/formatRelative";
 import { enUS as dateEn } from "date-fns/locale/en-US";
-import words from "lodash/words";
 
 import { TradeActionType } from "sdk/utils/tradeHistory/types";
 
@@ -185,6 +184,12 @@ export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean, 
     return t`Insufficient liquidity`;
   }
 
+  const tradeHistoryErrorMessage = getTradeHistoryErrorMessage(errorName);
+
+  if (tradeHistoryErrorMessage) {
+    return tradeHistoryErrorMessage;
+  }
+
   const contractErrorMessage = getContractErrorMessage({
     errorData: {
       contractError: errorName,
@@ -196,7 +201,48 @@ export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean, 
     return contractErrorMessage;
   }
 
-  return t`Reason: ${words(errorName).join(" ").toLowerCase()}`;
+  return t`Order failed due to a protocol validation error: ${errorName}`;
+}
+
+function getTradeHistoryErrorMessage(errorName: string) {
+  switch (errorName) {
+    case CustomErrorName.DisabledFeature:
+      return t`This action is currently disabled`;
+    case CustomErrorName.InsufficientExecutionFee:
+      return t`Execution fee is too low for current network costs`;
+    case CustomErrorName.InsufficientMarketTokens:
+      return t`Insufficient GM tokens for withdrawal`;
+    case CustomErrorName.InsufficientWntAmount:
+    case CustomErrorName.InsufficientWntAmountForExecutionFee:
+      return t`Not enough native token was provided for the execution fee`;
+    case CustomErrorName.InvalidKeeperForFrozenOrder:
+      return t`Frozen order can only be executed by an authorized keeper`;
+    case CustomErrorName.InvalidOrderPrices:
+      return t`Trigger price condition has not been met`;
+    case CustomErrorName.InvalidSignature:
+      return t`Invalid signature. Try signing the request again`;
+    case CustomErrorName.MaxPoolAmountForDepositExceeded:
+    case "MaxPoolUsdForDepositExceeded":
+      return t`Max deposit capacity reached for this pool`;
+    case CustomErrorName.OrderAlreadyFrozen:
+      return t`Order is already frozen`;
+    case CustomErrorName.PositionNotFound:
+      return t`Position not found. It may have been closed`;
+    case CustomErrorName.RequestNotYetCancellable:
+      return t`Request cannot be canceled yet. Try again after the cancellation delay`;
+    case CustomErrorName.UnsupportedOrderType:
+      return t`This order type is not supported`;
+    case CustomErrorName.DepositNotFound:
+      return t`Deposit not found. It may have been executed or canceled`;
+    case CustomErrorName.WithdrawalNotFound:
+      return t`Withdrawal not found. It may have been executed or canceled`;
+    case CustomErrorName.InsufficientFundsToPayForCosts:
+      return t`Insufficient collateral to cover order costs`;
+    case CustomErrorName.LiquidatablePosition:
+      return t`Position would be liquidatable at current prices`;
+    default:
+      return undefined;
+  }
 }
 
 const DOUBLE_NON_BREAKING_SPACE = String.fromCharCode(160) + String.fromCharCode(160);
