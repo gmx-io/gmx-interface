@@ -255,7 +255,7 @@ msgstr "RabbitHole"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient GM tokens for withdrawal"
-msgstr ""
+msgstr "출금에 필요한 GM 토큰이 부족합니다"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "On-chain signing for every transaction"
@@ -1131,7 +1131,7 @@ msgstr "Gas 잔액이 부족합니다. ETH를 추가로 입금하십시오."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution fee is too low for current network costs"
-msgstr ""
+msgstr "실행 수수료가 현재 네트워크 비용에 비해 너무 낮습니다"
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Tiers"
@@ -1397,7 +1397,7 @@ msgstr "GM 구매: {0}"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Trigger price condition has not been met"
-msgstr ""
+msgstr "트리거 가격 조건이 충족되지 않았습니다"
 
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "May take a few minutes to reflect. Check back later"
@@ -1952,7 +1952,7 @@ msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Order is already frozen"
-msgstr ""
+msgstr "주문이 이미 동결되었습니다"
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "{orderTypeLabel} {positionText}, -{0}"
@@ -2849,7 +2849,7 @@ msgstr "가스 잔액이 부족합니다. Express Trading 및 One-Click Trading�
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Invalid signature. Try signing the request again"
-msgstr ""
+msgstr "서명이 유효하지 않습니다. 요청에 다시 서명해 주세요"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search address"
@@ -4799,7 +4799,7 @@ msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Request cannot be canceled yet. Try again after the cancellation delay"
-msgstr ""
+msgstr "아직 요청을 취소할 수 없습니다. 취소 지연 시간이 지난 후 다시 시도하세요"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Update {orderTypeName}"
@@ -5264,7 +5264,7 @@ msgstr "{0} 풀의 유동성이 부족합니다. 다른 풀을 선택하십시�
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Frozen order can only be executed by an authorized keeper"
-msgstr ""
+msgstr "동결된 주문은 승인된 keeper만 실행할 수 있습니다"
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -5375,7 +5375,7 @@ msgstr "로딩 중"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "This action is currently disabled"
-msgstr ""
+msgstr "이 작업은 현재 비활성화되어 있습니다"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit approvals are currently unavailable."
@@ -5743,7 +5743,7 @@ msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Order failed due to a protocol validation error: {errorName}"
-msgstr ""
+msgstr "프로토콜 검증 오류로 주문이 실패했습니다: {errorName}"
 
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -6235,7 +6235,7 @@ msgstr "TWAP 분할 수"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Not enough native token was provided for the execution fee"
-msgstr ""
+msgstr "실행 수수료에 필요한 네이티브 토큰이 충분히 제공되지 않았습니다"
 
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Not enough data yet"
@@ -6444,7 +6444,7 @@ msgstr "Multicall 이벤트"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Position not found. It may have been closed"
-msgstr ""
+msgstr "포지션을 찾을 수 없습니다. 이미 종료되었을 수 있습니다"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execute"
@@ -6798,7 +6798,7 @@ msgstr "TP/SL"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "This order type is not supported"
-msgstr ""
+msgstr "이 주문 유형은 지원되지 않습니다"
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Order error. Prices are volatile for this market, try again by <0>increasing the allowed slippage</0>"
@@ -7230,7 +7230,7 @@ msgstr "포지션 공유"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Max deposit capacity reached for this pool"
-msgstr ""
+msgstr "이 풀의 최대 입금 용량에 도달했습니다"
 
 #: src/components/BotanixBanner/BotanixBanner.tsx
 msgid "Switch to <0><1/><2>Arbitrum</2></0> or <3><4/><5>Avalanche</5></3> for those features"
@@ -8111,7 +8111,7 @@ msgstr "GM 구매 실패"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient collateral to cover order costs"
-msgstr ""
+msgstr "주문 비용을 충당할 담보가 부족합니다"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
@@ -8462,7 +8462,7 @@ msgstr "탈중앙화 옵션 전략"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Deposit not found. It may have been executed or canceled"
-msgstr ""
+msgstr "입금을 찾을 수 없습니다. 이미 실행되었거나 취소되었을 수 있습니다"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Select rewards to claim"
@@ -8470,7 +8470,7 @@ msgstr "청구할 보상 선택"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Withdrawal not found. It may have been executed or canceled"
-msgstr ""
+msgstr "출금을 찾을 수 없습니다. 이미 실행되었거나 취소되었을 수 있습니다"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8911,7 +8911,7 @@ msgstr "레이어 1"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Position would be liquidatable at current prices"
-msgstr ""
+msgstr "현재 가격에서 포지션이 청산될 수 있습니다"
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"

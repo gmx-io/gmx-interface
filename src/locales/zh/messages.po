@@ -255,7 +255,7 @@ msgstr "RabbitHole"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient GM tokens for withdrawal"
-msgstr ""
+msgstr "提取时 GM 代币不足"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "On-chain signing for every transaction"
@@ -1131,7 +1131,7 @@ msgstr "Gas 余额不足。请存入更多 ETH。"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution fee is too low for current network costs"
-msgstr ""
+msgstr "执行费用低于当前网络成本"
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Tiers"
@@ -1397,7 +1397,7 @@ msgstr "购买 GM: {0}"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Trigger price condition has not been met"
-msgstr ""
+msgstr "未满足触发价格条件"
 
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "May take a few minutes to reflect. Check back later"
@@ -1952,7 +1952,7 @@ msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Order is already frozen"
-msgstr ""
+msgstr "订单已被冻结"
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "{orderTypeLabel} {positionText}, -{0}"
@@ -2849,7 +2849,7 @@ msgstr "Gas 余额不足。Express Trading 和 One-Click Trading 不可用。"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Invalid signature. Try signing the request again"
-msgstr ""
+msgstr "签名无效。请重新签署请求"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search address"
@@ -4799,7 +4799,7 @@ msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Request cannot be canceled yet. Try again after the cancellation delay"
-msgstr ""
+msgstr "请求暂时无法取消。请在取消延迟结束后重试"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Update {orderTypeName}"
@@ -5264,7 +5264,7 @@ msgstr "{0} 池流动性不足。请选择其他池。"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Frozen order can only be executed by an authorized keeper"
-msgstr ""
+msgstr "冻结订单只能由授权 keeper 执行"
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -5375,7 +5375,7 @@ msgstr "加载中"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "This action is currently disabled"
-msgstr ""
+msgstr "此操作当前已禁用"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit approvals are currently unavailable."
@@ -5743,7 +5743,7 @@ msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Order failed due to a protocol validation error: {errorName}"
-msgstr ""
+msgstr "订单因协议验证错误而失败：{errorName}"
 
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -6235,7 +6235,7 @@ msgstr "TWAP 分段数量"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Not enough native token was provided for the execution fee"
-msgstr ""
+msgstr "提供的原生代币不足以支付执行费用"
 
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Not enough data yet"
@@ -6444,7 +6444,7 @@ msgstr "Multicall 事件"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Position not found. It may have been closed"
-msgstr ""
+msgstr "未找到仓位。它可能已被关闭"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execute"
@@ -6798,7 +6798,7 @@ msgstr "TP/SL"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "This order type is not supported"
-msgstr ""
+msgstr "不支持此订单类型"
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Order error. Prices are volatile for this market, try again by <0>increasing the allowed slippage</0>"
@@ -7230,7 +7230,7 @@ msgstr "分享仓位"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Max deposit capacity reached for this pool"
-msgstr ""
+msgstr "此池已达到最大存款容量"
 
 #: src/components/BotanixBanner/BotanixBanner.tsx
 msgid "Switch to <0><1/><2>Arbitrum</2></0> or <3><4/><5>Avalanche</5></3> for those features"
@@ -8111,7 +8111,7 @@ msgstr "买入 GM 失败"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient collateral to cover order costs"
-msgstr ""
+msgstr "抵押品不足以支付订单成本"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
@@ -8462,7 +8462,7 @@ msgstr "去中心化期权策略"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Deposit not found. It may have been executed or canceled"
-msgstr ""
+msgstr "未找到存款。它可能已被执行或取消"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Select rewards to claim"
@@ -8470,7 +8470,7 @@ msgstr "选择要领取的奖励"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Withdrawal not found. It may have been executed or canceled"
-msgstr ""
+msgstr "未找到提款。它可能已被执行或取消"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8911,7 +8911,7 @@ msgstr "Layer 1"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Position would be liquidatable at current prices"
-msgstr ""
+msgstr "按当前价格，仓位将可被清算"
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"

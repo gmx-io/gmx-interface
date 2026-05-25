@@ -255,7 +255,7 @@ msgstr "RabbitHole"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient GM tokens for withdrawal"
-msgstr ""
+msgstr "Jetons GM insuffisants pour le retrait"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "On-chain signing for every transaction"
@@ -1131,7 +1131,7 @@ msgstr "Solde de Gas insuffisant. Déposez davantage d'ETH."
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execution fee is too low for current network costs"
-msgstr ""
+msgstr "Les frais d'exécution sont trop faibles pour les coûts réseau actuels"
 
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Tiers"
@@ -1397,7 +1397,7 @@ msgstr "Acheter GM : {0}"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Trigger price condition has not been met"
-msgstr ""
+msgstr "La condition du prix de déclenchement n'a pas été remplie"
 
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "May take a few minutes to reflect. Check back later"
@@ -1952,7 +1952,7 @@ msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Order is already frozen"
-msgstr ""
+msgstr "L'ordre est déjà gelé"
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "{orderTypeLabel} {positionText}, -{0}"
@@ -2849,7 +2849,7 @@ msgstr "Solde de gas insuffisant. Express Trading et One-Click Trading indisponi
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Invalid signature. Try signing the request again"
-msgstr ""
+msgstr "Signature non valide. Essayez de signer à nouveau la requête"
 
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search address"
@@ -4799,7 +4799,7 @@ msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Request cannot be canceled yet. Try again after the cancellation delay"
-msgstr ""
+msgstr "La requête ne peut pas encore être annulée. Réessayez après le délai d'annulation"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Update {orderTypeName}"
@@ -5264,7 +5264,7 @@ msgstr "Liquidité insuffisante dans le pool {0}. Sélectionnez un pool différe
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Frozen order can only be executed by an authorized keeper"
-msgstr ""
+msgstr "Un ordre gelé ne peut être exécuté que par un keeper autorisé"
 
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
@@ -5375,7 +5375,7 @@ msgstr "indicateur de chargement"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "This action is currently disabled"
-msgstr ""
+msgstr "Cette action est actuellement désactivée"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit approvals are currently unavailable."
@@ -5743,7 +5743,7 @@ msgstr ""
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Order failed due to a protocol validation error: {errorName}"
-msgstr ""
+msgstr "L'ordre a échoué en raison d'une erreur de validation du protocole : {errorName}"
 
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -6235,7 +6235,7 @@ msgstr "Nombre de parties TWAP"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Not enough native token was provided for the execution fee"
-msgstr ""
+msgstr "Le token natif fourni est insuffisant pour les frais d'exécution"
 
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Not enough data yet"
@@ -6444,7 +6444,7 @@ msgstr "Événements Multicall"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Position not found. It may have been closed"
-msgstr ""
+msgstr "Position introuvable. Elle a peut-être été clôturée"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execute"
@@ -6798,7 +6798,7 @@ msgstr "TP/SL"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "This order type is not supported"
-msgstr ""
+msgstr "Ce type d'ordre n'est pas pris en charge"
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Order error. Prices are volatile for this market, try again by <0>increasing the allowed slippage</0>"
@@ -7230,7 +7230,7 @@ msgstr "Partager la position"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Max deposit capacity reached for this pool"
-msgstr ""
+msgstr "Capacité maximale de dépôt atteinte pour ce pool"
 
 #: src/components/BotanixBanner/BotanixBanner.tsx
 msgid "Switch to <0><1/><2>Arbitrum</2></0> or <3><4/><5>Avalanche</5></3> for those features"
@@ -8111,7 +8111,7 @@ msgstr "Échec de l'achat de GM"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Insufficient collateral to cover order costs"
-msgstr ""
+msgstr "Collatéral insuffisant pour couvrir les coûts de l'ordre"
 
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
@@ -8462,7 +8462,7 @@ msgstr "Stratégies d'options décentralisées"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Deposit not found. It may have been executed or canceled"
-msgstr ""
+msgstr "Dépôt introuvable. Il a peut-être été exécuté ou annulé"
 
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Select rewards to claim"
@@ -8470,7 +8470,7 @@ msgstr "Sélectionner les récompenses à réclamer"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Withdrawal not found. It may have been executed or canceled"
-msgstr ""
+msgstr "Retrait introuvable. Il a peut-être été exécuté ou annulé"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8911,7 +8911,7 @@ msgstr "Couche 1"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Position would be liquidatable at current prices"
-msgstr ""
+msgstr "La position serait liquidable aux prix actuels"
 
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
