@@ -12,7 +12,7 @@ type AbStorage = {
 };
 
 const abFlagsConfig = {
-  apiSdk2: 0,
+  abSdk3: 0,
 };
 
 export type AbFlag = keyof typeof abFlagsConfig;
@@ -52,9 +52,6 @@ function loadAbStorage(): void {
           changed = true;
         } else if (abFlagsConfig[flag] === 1 && !abStorage[flag].enabled) {
           abStorage[flag] = { enabled: true };
-          changed = true;
-        } else if (abFlagsConfig[flag] === 0 && abStorage[flag].enabled) {
-          abStorage[flag] = { enabled: false };
           changed = true;
         }
       }

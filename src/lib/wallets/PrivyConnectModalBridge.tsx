@@ -7,17 +7,17 @@ import { useConnectModalController } from "./useConnectModal";
 export function PrivyConnectModalBridge() {
   const handledRequestId = useRef(0);
   const { ready } = usePrivyWalletState();
-  const { connectRequestId, setConnectModalOpen, setConnectRequestPending } = useConnectModalController();
+  const {
+    connectRequestId,
+    onConnectModalError,
+    onConnectModalSuccess,
+    setConnectModalOpen,
+    setConnectRequestPending,
+  } = useConnectModalController();
 
   const { connectOrCreateWallet } = useConnectOrCreateWallet({
-    onSuccess: () => {
-      setConnectModalOpen(false);
-      setConnectRequestPending(false);
-    },
-    onError: () => {
-      setConnectModalOpen(false);
-      setConnectRequestPending(false);
-    },
+    onSuccess: onConnectModalSuccess,
+    onError: onConnectModalError,
   });
 
   useEffect(
