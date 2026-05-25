@@ -34,6 +34,7 @@ export const PRIVY_WALLET_LIST = [
   "base_account",
   "okx_wallet",
   "phantom",
+  "wallet_connect_qr",
   "wallet_connect",
 ] as const;
 
