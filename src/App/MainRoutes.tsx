@@ -29,6 +29,7 @@ import { ReferralsRouter } from "pages/Referrals/ReferralsRouter";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
+import { TradingCostsPage } from "pages/TradingCosts/TradingCosts";
 
 import { EarnRedirect } from "components/Earn/EarnRedirect";
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
@@ -118,6 +119,11 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       </Route>
       <Route exact path="/monitor">
         <SyntheticsStats />
+      </Route>
+      <Route exact path="/costs">
+        <SyntheticsStateContextProvider skipLocalReferralCode pageType="tradingCosts">
+          <TradingCostsPage />
+        </SyntheticsStateContextProvider>
       </Route>
       <Route exact path="/earn/discover">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">

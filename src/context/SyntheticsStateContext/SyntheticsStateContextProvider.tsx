@@ -87,6 +87,7 @@ export type SyntheticsPageType =
   | "leaderboard"
   | "competitions"
   | "stats"
+  | "tradingCosts"
   | "earn"
   | "buy"
   | "home"
