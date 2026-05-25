@@ -52,9 +52,9 @@
     font-size: 1.2rem;
   }
 
-  .Select {
+  .TradingCosts-holdingPeriodDropdown {
     flex: 0 0 10rem;
-    height: 3.2rem;
+    min-width: 0;
   }
 }
 
@@ -211,7 +211,7 @@
   .TradingCosts-provider,
   .TradingCosts-search,
   .TradingCosts-controls label,
-  .TradingCosts-controls .Select,
+  .TradingCosts-holdingPeriodDropdown,
   .TradingCosts-sideTabs {
     flex-basis: 100%;
     max-width: none;

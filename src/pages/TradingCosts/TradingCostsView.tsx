@@ -3,9 +3,9 @@ import { useMemo, useState } from "react";
 import type { TradingCostRow, TradingCostSide } from "domain/tradingCosts/types";
 import { formatUsd } from "lib/numbers";
 
+import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import NumberInput from "components/NumberInput/NumberInput";
 import SearchInput from "components/SearchInput/SearchInput";
-import Select from "components/Select/Select";
 import { Table, TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
 import Tabs from "components/Tabs/Tabs";
 
@@ -16,12 +16,13 @@ const SIDE_OPTIONS: { value: TradingCostSide; label: string }[] = [
   { value: "short", label: "Short" },
 ];
 
-const HOLDING_PERIOD_OPTIONS: { value: HoldingPeriodPreset; label: string }[] = [
-  { value: "1", label: "1h" },
-  { value: "8", label: "8h" },
-  { value: "24", label: "24h" },
-  { value: "custom", label: "Custom" },
-];
+const HOLDING_PERIOD_OPTIONS: HoldingPeriodPreset[] = ["1", "8", "24", "custom"];
+const HOLDING_PERIOD_LABELS: Record<HoldingPeriodPreset, string> = {
+  "1": "1h",
+  "8": "8h",
+  "24": "24h",
+  custom: "Custom",
+};
 
 function getGmxPriceImpactTotal(row: TradingCostRow) {
   return row.gmx.components
@@ -103,11 +104,16 @@ export function TradingCostsView({
           options={SIDE_OPTIONS}
           className="TradingCosts-sideTabs"
         />
-        <Select
-          value={holdingPeriodPreset}
-          onChange={(event) => setHoldingPeriodPreset(event.target.value as HoldingPeriodPreset)}
-          options={HOLDING_PERIOD_OPTIONS}
-        />
+        <div className="TradingCosts-holdingPeriodDropdown">
+          <DropdownSelector
+            slim
+            value={holdingPeriodPreset}
+            onChange={setHoldingPeriodPreset}
+            options={HOLDING_PERIOD_OPTIONS}
+            item={({ option }) => <span className="text-typography-primary">{HOLDING_PERIOD_LABELS[option]}</span>}
+            button={<span className="text-typography-primary">{HOLDING_PERIOD_LABELS[holdingPeriodPreset]}</span>}
+          />
+        </div>
         {holdingPeriodPreset === "custom" && (
           <label>
             <span>Custom hours</span>
