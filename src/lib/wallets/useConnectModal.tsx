@@ -1,4 +1,4 @@
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import type { SettlementChainId } from "config/chains";
 import {
@@ -24,6 +24,7 @@ type ConnectModalControllerContextValue = {
   setConnectRequestPending: (value: boolean) => void;
   onConnectModalSuccess: () => void;
   onConnectModalError: () => void;
+  setConnectModalSuccessHandler: (handler: (() => void) | undefined) => void;
 };
 
 const ConnectModalContext = createContext<ConnectModalContextValue>({
@@ -38,6 +39,7 @@ const ConnectModalControllerContext = createContext<ConnectModalControllerContex
   setConnectRequestPending: () => undefined,
   onConnectModalSuccess: () => undefined,
   onConnectModalError: () => undefined,
+  setConnectModalSuccessHandler: () => undefined,
 });
 
 function shouldKeepAppSelectedSourceChain(settlementChainId: SettlementChainId) {
@@ -50,24 +52,21 @@ function shouldKeepAppSelectedSourceChain(settlementChainId: SettlementChainId) 
 }
 
 export function ConnectModalProvider({ children }: { children: React.ReactNode }) {
-  const [settlementChainId] = useGmxAccountSettlementChainId();
+  const connectModalSuccessHandlerRef = useRef<(() => void) | undefined>(undefined);
   const [connectModalOpen, setConnectModalOpen] = useState(false);
   const [isConnectRequestPending, setIsConnectRequestPending] = useState(false);
   const [connectRequestId, setConnectRequestId] = useState(0);
-  const { loadPrivyWalletProvider, isPrivyWalletInitializing, isPrivyWalletReady } = usePrivyWalletLoader();
+  const { isPrivyWalletInitializing, isPrivyWalletReady, loadPrivyWalletProvider } = usePrivyWalletLoader();
+
+  const setConnectModalSuccessHandler = useCallback((handler: (() => void) | undefined) => {
+    connectModalSuccessHandlerRef.current = handler;
+  }, []);
 
   const handleConnectModalSuccess = useCallback(() => {
     setConnectModalOpen(false);
     setIsConnectRequestPending(false);
-
-    if (shouldKeepAppSelectedSourceChain(settlementChainId)) {
-      return;
-    }
-
-    void switchNetwork(settlementChainId, true).catch((error) => {
-      metrics.pushError(error, "connectModal.switchNetwork");
-    });
-  }, [settlementChainId]);
+    connectModalSuccessHandlerRef.current?.();
+  }, []);
 
   const handleConnectModalError = useCallback(() => {
     setConnectModalOpen(false);
@@ -95,8 +94,9 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
       setConnectRequestPending: setIsConnectRequestPending,
       onConnectModalSuccess: handleConnectModalSuccess,
       onConnectModalError: handleConnectModalError,
+      setConnectModalSuccessHandler,
     }),
-    [connectRequestId, handleConnectModalError, handleConnectModalSuccess]
+    [connectRequestId, handleConnectModalError, handleConnectModalSuccess, setConnectModalSuccessHandler]
   );
 
   return (
@@ -106,6 +106,27 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
       </ConnectModalControllerContext.Provider>
     </ConnectModalContext.Provider>
   );
+}
+
+export function ConnectModalSettlementChainBridge() {
+  const [settlementChainId] = useGmxAccountSettlementChainId();
+  const { setConnectModalSuccessHandler } = useConnectModalController();
+
+  useEffect(() => {
+    setConnectModalSuccessHandler(() => {
+      if (shouldKeepAppSelectedSourceChain(settlementChainId)) {
+        return;
+      }
+
+      void switchNetwork(settlementChainId, true).catch((error) => {
+        metrics.pushError(error, "connectModal.switchNetwork");
+      });
+    });
+
+    return () => setConnectModalSuccessHandler(undefined);
+  }, [setConnectModalSuccessHandler, settlementChainId]);
+
+  return null;
 }
 
 /**
