@@ -10,6 +10,7 @@ import words from "lodash/words";
 import { TradeActionType } from "sdk/utils/tradeHistory/types";
 
 import { LOCALE_DATE_LOCALE_MAP } from "components/DateRangeSelect/DateRangeSelect";
+import { getContractErrorMessage } from "components/Errors/getContractErrorMessage";
 
 import { CustomErrorName } from "./CustomErrorName";
 
@@ -169,7 +170,7 @@ export function formatTradeActionTimestampUTC(timestamp: number) {
 
 export type MakeOptional<T, K extends keyof T> = Omit<T, K> & Partial<Pick<T, K>>;
 
-export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean) {
+export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean, errorArgs?: unknown) {
   if (errorName === CustomErrorName.OrderNotFulfillableAtAcceptablePrice && !isMarketOrder) {
     return t`Execution price didn't meet acceptable price. Order will fill when the condition is met.`;
   } else if (errorName === CustomErrorName.OrderNotFulfillableAtAcceptablePrice && isMarketOrder) {
@@ -182,6 +183,17 @@ export function getErrorTooltipTitle(errorName: string, isMarketOrder: boolean) 
     return t`Insufficient liquidity`;
   } else if (errorName === CustomErrorName.InsufficientSwapOutputAmount && isMarketOrder) {
     return t`Insufficient liquidity`;
+  }
+
+  const contractErrorMessage = getContractErrorMessage({
+    errorData: {
+      contractError: errorName,
+      contractErrorArgs: errorArgs,
+    },
+  });
+
+  if (contractErrorMessage) {
+    return contractErrorMessage;
   }
 
   return t`Reason: ${words(errorName).join(" ").toLowerCase()}`;

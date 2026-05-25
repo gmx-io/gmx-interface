@@ -27,6 +27,7 @@ import {
   withdraw1Usd,
 } from "./mocks";
 import { formatPositionMessage } from "./utils/position";
+import { getErrorTooltipTitle } from "./utils/shared";
 import { formatSwapMessage } from "./utils/swap";
 
 i18n.load({ en: {} });
@@ -35,6 +36,10 @@ i18n.activate("en");
 const minCollateralUsd = BigInt(100);
 
 describe("TradeHistoryRow helpers", () => {
+  it("maps known contract error names for action tooltips", () => {
+    expect(getErrorTooltipTitle("InvalidDecreaseOrderSize", false)).toBe("Invalid decrease size");
+  });
+
   it("formatPositionMessage", () => {
     expect(Intl.DateTimeFormat().resolvedOptions().timeZone).toBe("Asia/Dubai");
 
