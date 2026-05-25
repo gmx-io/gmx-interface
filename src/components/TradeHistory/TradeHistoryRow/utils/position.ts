@@ -741,6 +741,11 @@ function getFeesBreakdown(tradeAction: PositionTradeAction): { totalUsd: bigint;
     });
   }
 
+  const traderDiscountUsd = convertToUsd(tradeAction.traderDiscountAmount, collateralDecimals, collateralPrice);
+  if (traderDiscountUsd !== undefined && traderDiscountUsd !== 0n) {
+    items.push({ label: t`Referral discount`, amountUsd: traderDiscountUsd });
+  }
+
   const borrowFeeUsd = convertToUsd(tradeAction.borrowingFeeAmount, collateralDecimals, collateralPrice);
   if (borrowFeeUsd !== undefined && borrowFeeUsd !== 0n) {
     items.push({ label: t`Borrow fee`, amountUsd: -borrowFeeUsd });

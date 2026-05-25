@@ -10676,6 +10676,7 @@ export interface TradeAction {
   swapPath: Array<Scalars["String"]["output"]>;
   timestamp: Scalars["Int"]["output"];
   totalImpactUsd?: Maybe<Scalars["BigInt"]["output"]>;
+  traderDiscountAmount?: Maybe<Scalars["BigInt"]["output"]>;
   transactionHash: Scalars["String"]["output"];
   triggerPrice?: Maybe<Scalars["BigInt"]["output"]>;
   twapGroupId?: Maybe<Scalars["String"]["output"]>;
@@ -10935,6 +10936,12 @@ export enum TradeActionOrderByInput {
   totalImpactUsd_DESC = "totalImpactUsd_DESC",
   totalImpactUsd_DESC_NULLS_FIRST = "totalImpactUsd_DESC_NULLS_FIRST",
   totalImpactUsd_DESC_NULLS_LAST = "totalImpactUsd_DESC_NULLS_LAST",
+  traderDiscountAmount_ASC = "traderDiscountAmount_ASC",
+  traderDiscountAmount_ASC_NULLS_FIRST = "traderDiscountAmount_ASC_NULLS_FIRST",
+  traderDiscountAmount_ASC_NULLS_LAST = "traderDiscountAmount_ASC_NULLS_LAST",
+  traderDiscountAmount_DESC = "traderDiscountAmount_DESC",
+  traderDiscountAmount_DESC_NULLS_FIRST = "traderDiscountAmount_DESC_NULLS_FIRST",
+  traderDiscountAmount_DESC_NULLS_LAST = "traderDiscountAmount_DESC_NULLS_LAST",
   transactionHash_ASC = "transactionHash_ASC",
   transactionHash_ASC_NULLS_FIRST = "transactionHash_ASC_NULLS_FIRST",
   transactionHash_ASC_NULLS_LAST = "transactionHash_ASC_NULLS_LAST",
@@ -11389,6 +11396,15 @@ export interface TradeActionWhereInput {
   totalImpactUsd_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
   totalImpactUsd_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
   totalImpactUsd_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  traderDiscountAmount_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  traderDiscountAmount_gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  traderDiscountAmount_gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  traderDiscountAmount_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  traderDiscountAmount_isNull?: InputMaybe<Scalars["Boolean"]["input"]>;
+  traderDiscountAmount_lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  traderDiscountAmount_lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  traderDiscountAmount_not_eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  traderDiscountAmount_not_in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   transactionHash_contains?: InputMaybe<Scalars["String"]["input"]>;
   transactionHash_containsInsensitive?: InputMaybe<Scalars["String"]["input"]>;
   transactionHash_endsWith?: InputMaybe<Scalars["String"]["input"]>;

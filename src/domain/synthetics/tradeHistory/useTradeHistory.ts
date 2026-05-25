@@ -341,6 +341,7 @@ export async function fetchRawTradeActions({
             priceImpactUsd
             priceImpactDiffUsd
             positionFeeAmount
+            traderDiscountAmount
             borrowingFeeAmount
             fundingFeeAmount
             swapFeeUsd
