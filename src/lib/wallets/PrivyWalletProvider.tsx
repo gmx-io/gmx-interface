@@ -32,10 +32,10 @@ function PrivyWalletStateBridge({ children, onReady }: { children: React.ReactNo
   const ready = privyReady && walletsReady;
 
   useEffect(() => {
-    if (ready) {
+    if (privyReady) {
       onReady();
     }
-  }, [onReady, ready]);
+  }, [onReady, privyReady]);
 
   const value = useMemo(
     () => ({

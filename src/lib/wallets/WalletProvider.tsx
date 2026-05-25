@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { lazy, Suspense, useCallback, useMemo, useState } from "react";
+import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { WagmiProvider } from "wagmi";
 
 import { PrivyWalletLoaderContext, PrivyWalletLoadStatus } from "./privyWalletLoader";
@@ -55,6 +55,21 @@ export default function WalletProvider({ children }: { children: React.ReactNode
   const markPrivyWalletReady = useCallback(() => {
     setIsPrivyWalletReady(true);
   }, []);
+
+  useEffect(
+    function preloadPrivyWalletProviderAfterFirstRender() {
+      if (loadStatus !== "idle") {
+        return undefined;
+      }
+
+      const timeoutId = window.setTimeout(loadPrivyWalletProvider, 0);
+
+      return () => {
+        window.clearTimeout(timeoutId);
+      };
+    },
+    [loadPrivyWalletProvider, loadStatus]
+  );
 
   const loaderValue = useMemo(
     () => ({

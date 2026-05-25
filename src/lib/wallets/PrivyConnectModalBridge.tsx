@@ -1,12 +1,13 @@
-import { useConnectOrCreateWallet } from "@privy-io/react-auth";
+import { useConnectOrCreateWallet, usePrivy } from "@privy-io/react-auth";
 import { useEffect, useRef } from "react";
 
-import { usePrivyWalletState } from "./privyWalletState";
+import { metrics } from "lib/metrics";
+
 import { useConnectModalController } from "./useConnectModal";
 
 export function PrivyConnectModalBridge() {
   const handledRequestId = useRef(0);
-  const { ready } = usePrivyWalletState();
+  const { ready } = usePrivy();
   const {
     connectRequestId,
     onConnectModalError,
@@ -33,9 +34,15 @@ export function PrivyConnectModalBridge() {
       handledRequestId.current = connectRequestId;
       setConnectRequestPending(false);
       setConnectModalOpen(true);
-      connectOrCreateWallet();
+
+      try {
+        connectOrCreateWallet();
+      } catch (error) {
+        onConnectModalError();
+        metrics.pushError(error, "connectModal.connectOrCreateWallet");
+      }
     },
-    [connectOrCreateWallet, connectRequestId, ready, setConnectModalOpen, setConnectRequestPending]
+    [connectOrCreateWallet, connectRequestId, onConnectModalError, ready, setConnectModalOpen, setConnectRequestPending]
   );
 
   return null;
