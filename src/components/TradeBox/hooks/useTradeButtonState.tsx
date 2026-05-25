@@ -157,7 +157,7 @@ export function useTradeboxButtonState({
   const { tokenChainDataArray } = useMultichainTokens();
 
   const { setPendingTxns } = usePendingTxns();
-  const { openConnectModal } = useConnectModal();
+  const { isConnectModalLoading, openConnectModal } = useConnectModal();
 
   const {
     onSubmitWrapOrUnwrap,
@@ -492,6 +492,19 @@ export function useTradeboxButtonState({
       isExpressLoading,
     };
 
+    if (!account && isConnectModalLoading) {
+      return {
+        ...commonState,
+        text: (
+          <>
+            <Trans>Loading...</Trans>
+            <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
+
     if (!account && buttonErrorText) {
       return {
         ...commonState,
@@ -649,6 +662,7 @@ export function useTradeboxButtonState({
     isExpressLoading,
     isWaitingForExternalSwapQuote,
     account,
+    isConnectModalLoading,
     buttonErrorText,
     shouldShowDepositButton,
     stopLoss.error?.percentage,

@@ -1,5 +1,5 @@
 import { t, Trans } from "@lingui/macro";
-import { ConnectedWallet, useWallets } from "@privy-io/react-auth";
+import type { ConnectedWallet } from "@privy-io/react-auth";
 import { useMemo } from "react";
 import { isAddressEqual } from "viem";
 import { useAccount } from "wagmi";
@@ -7,6 +7,7 @@ import { useAccount } from "wagmi";
 import { getChainName } from "config/chains";
 import { ValidationResult } from "domain/synthetics/trade/utils/validation";
 import { useChainId as useDisplayedChainId } from "lib/chains";
+import { usePrivyWalletState } from "lib/wallets/privyWalletState";
 import useWallet from "lib/wallets/useWallet";
 
 export function getChainIdFromPrivyWallet(wallet: ConnectedWallet): number {
@@ -22,7 +23,7 @@ export function useSuspiciousWallets(): {
   isSuspicious: boolean;
 } {
   const { account } = useWallet();
-  const { ready, wallets } = useWallets();
+  const { ready, wallets } = usePrivyWalletState();
 
   const suspiciousWallets = useMemo(() => {
     if (!ready) {

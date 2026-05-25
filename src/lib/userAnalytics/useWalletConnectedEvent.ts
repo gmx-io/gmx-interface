@@ -1,9 +1,9 @@
-import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { useAccountStats } from "domain/synthetics/accountStats/useAccountStats";
 import { useChainId } from "lib/chains";
+import { usePrivyWalletState } from "lib/wallets/privyWalletState";
 import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 
@@ -18,8 +18,7 @@ export function useWalletConnectedUserAnalyticsEvent() {
   const { connectModalOpen } = useConnectModal();
   const { account } = useWallet();
   const { connector } = useAccount();
-  const { user } = usePrivy();
-  const { wallets } = useWallets();
+  const { user, wallets } = usePrivyWalletState();
 
   const { data: accountStats } = useAccountStats(chainId, {
     account,

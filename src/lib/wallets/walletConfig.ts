@@ -1,4 +1,3 @@
-import { createConfig } from "@privy-io/wagmi";
 import once from "lodash/once";
 import {
   Chain,
@@ -10,6 +9,7 @@ import {
   webSocket,
   WebSocketTransport,
 } from "viem";
+import { createConfig } from "wagmi";
 
 import { getViemChain, isTestnetChain } from "config/chains";
 import { isDevelopment } from "config/env";
@@ -58,8 +58,10 @@ export const getWagmiConfig = once(() => {
   );
 
   return createConfig({
+    ssr: true,
     chains,
     transports,
+    multiInjectedProviderDiscovery: false,
   });
 });
 

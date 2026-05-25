@@ -1,64 +1,90 @@
-import { PrivyProvider, type ConnectedWallet, type User } from "@privy-io/react-auth";
-import { WagmiProvider } from "@privy-io/wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useMemo } from "react";
-import { arbitrum } from "viem/chains";
+import { lazy, Suspense, useCallback, useMemo, useState } from "react";
+import { WagmiProvider } from "wagmi";
 
-import { colors } from "config/colors";
-import { useTheme } from "context/ThemeContext/ThemeContext";
-
-import gmxLogo from "img/logo-icon.svg";
-
-import {
-  getWagmiConfig,
-  getSupportedChains,
-  PRIVY_APP_ID,
-  PRIVY_LOGIN_METHODS,
-  PRIVY_WALLET_LIST,
-} from "./walletConfig";
+import { PrivyWalletLoaderContext, PrivyWalletLoadStatus } from "./privyWalletLoader";
+import { ConnectModalProvider } from "./useConnectModal";
+import { getWagmiConfig } from "./walletConfig";
 
 const queryClient = new QueryClient();
 
-const supportedChains = getSupportedChains();
-const gmxLogoElement = <img src={gmxLogo} alt="GMX" width={100} />;
+const LazyPrivyWalletProvider = lazy(() => import("./PrivyWalletProvider"));
 
-function getActiveWalletForWagmi({ wallets, user }: { wallets: ConnectedWallet[]; user: User | null }) {
-  return user ? wallets.find((wallet) => wallet.linked) ?? wallets[0] : wallets[0];
+function hasStoredPrivySession() {
+  if (typeof window === "undefined") {
+    return false;
+  }
+
+  const hasPrivyStorageKey = (storage: Storage) => {
+    for (let index = 0; index < storage.length; index++) {
+      const key = storage.key(index);
+
+      if (key?.toLowerCase().includes("privy")) {
+        return true;
+      }
+    }
+
+    return false;
+  };
+
+  try {
+    return hasPrivyStorageKey(window.localStorage) || hasPrivyStorageKey(window.sessionStorage);
+  } catch {
+    return false;
+  }
+}
+
+function BaseWagmiProvider({ children }: { children: React.ReactNode }) {
+  return <WagmiProvider config={getWagmiConfig()}>{children}</WagmiProvider>;
 }
 
 export default function WalletProvider({ children }: { children: React.ReactNode }) {
-  const { theme } = useTheme();
+  const [loadStatus, setLoadStatus] = useState<PrivyWalletLoadStatus>(() =>
+    hasStoredPrivySession() ? "loading" : "idle"
+  );
+  const [isPrivyWalletReady, setIsPrivyWalletReady] = useState(false);
 
-  const privyConfig = useMemo(
+  const loadPrivyWalletProvider = useCallback(() => {
+    setLoadStatus((currentStatus) => (currentStatus === "idle" ? "loading" : currentStatus));
+  }, []);
+
+  const markPrivyWalletProviderLoaded = useCallback(() => {
+    setLoadStatus("loaded");
+  }, []);
+
+  const markPrivyWalletReady = useCallback(() => {
+    setIsPrivyWalletReady(true);
+  }, []);
+
+  const loaderValue = useMemo(
     () => ({
-      appearance: {
-        theme,
-        accentColor: colors.blue[600][theme] as `#${string}`,
-        logo: gmxLogoElement,
-        walletChainType: "ethereum-only" as const,
-        walletList: [...PRIVY_WALLET_LIST],
-        showWalletLoginFirst: true,
-      },
-      loginMethods: [...PRIVY_LOGIN_METHODS],
-      globalDisablePasskeys: true,
-      defaultChain: arbitrum,
-      supportedChains: [...supportedChains],
-      embeddedWallets: {
-        ethereum: {
-          createOnLogin: "users-without-wallets" as const,
-        },
-      },
+      loadPrivyWalletProvider,
+      privyWalletLoadStatus: loadStatus,
+      isPrivyWalletProviderLoading: loadStatus === "loading",
+      isPrivyWalletProviderLoaded: loadStatus === "loaded",
+      isPrivyWalletReady,
+      isPrivyWalletInitializing: loadStatus === "loading" || (loadStatus === "loaded" && !isPrivyWalletReady),
     }),
-    [theme]
+    [isPrivyWalletReady, loadPrivyWalletProvider, loadStatus]
   );
 
+  const baseWalletTree = <BaseWagmiProvider>{children}</BaseWagmiProvider>;
+
   return (
-    <PrivyProvider appId={PRIVY_APP_ID} config={privyConfig}>
-      <QueryClientProvider client={queryClient}>
-        <WagmiProvider config={getWagmiConfig()} setActiveWalletForWagmi={getActiveWalletForWagmi}>
-          {children}
-        </WagmiProvider>
-      </QueryClientProvider>
-    </PrivyProvider>
+    <PrivyWalletLoaderContext.Provider value={loaderValue}>
+      <ConnectModalProvider>
+        <QueryClientProvider client={queryClient}>
+          {loadStatus === "idle" ? (
+            baseWalletTree
+          ) : (
+            <Suspense fallback={baseWalletTree}>
+              <LazyPrivyWalletProvider onLoaded={markPrivyWalletProviderLoaded} onReady={markPrivyWalletReady}>
+                {children}
+              </LazyPrivyWalletProvider>
+            </Suspense>
+          )}
+        </QueryClientProvider>
+      </ConnectModalProvider>
+    </PrivyWalletLoaderContext.Provider>
   );
 }

@@ -1,6 +1,8 @@
 import { t, Trans } from "@lingui/macro";
 import { memo } from "react";
 
+import { useConnectModal } from "lib/wallets/useConnectModal";
+
 import ConnectWalletButton from "components/ConnectWalletButton/ConnectWalletButton";
 
 export const ConnectWalletModalContent = memo(function ConnectWalletModalContent({
@@ -10,6 +12,8 @@ export const ConnectWalletModalContent = memo(function ConnectWalletModalContent
   openConnectModal: (() => void) | undefined;
   walletIconUrls: string[] | undefined;
 }) {
+  const { isConnectModalLoading } = useConnectModal();
+
   return (
     <div className="flex grow flex-col items-center justify-center gap-20 p-adaptive">
       {walletIconUrls?.length && (
@@ -36,8 +40,8 @@ export const ConnectWalletModalContent = memo(function ConnectWalletModalContent
           payment options
         </Trans>
       </div>
-      <ConnectWalletButton onClick={openConnectModal}>
-        <Trans>Connect wallet</Trans>
+      <ConnectWalletButton disabled={isConnectModalLoading} onClick={openConnectModal}>
+        {isConnectModalLoading ? <Trans>Loading...</Trans> : <Trans>Connect wallet</Trans>}
       </ConnectWalletButton>
     </div>
   );

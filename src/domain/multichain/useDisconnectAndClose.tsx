@@ -1,4 +1,3 @@
-import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useCallback } from "react";
 import { useDisconnect } from "wagmi";
 
@@ -7,12 +6,12 @@ import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { userAnalytics } from "lib/userAnalytics";
 import { DisconnectWalletEvent } from "lib/userAnalytics/types";
+import { usePrivyWalletState } from "lib/wallets/privyWalletState";
 
 export function useDisconnectAndClose() {
   const { setIsSettingsVisible } = useSettings();
   const [, setIsVisible] = useGmxAccountModalOpen();
-  const { logout } = usePrivy();
-  const { wallets } = useWallets();
+  const { logout, wallets } = usePrivyWalletState();
   const { disconnectAsync } = useDisconnect();
 
   const handleDisconnect = useCallback(async () => {
@@ -31,7 +30,7 @@ export function useDisconnectAndClose() {
         disconnectAsync(),
         ...wallets.map((wallet) => Promise.resolve().then(() => wallet.disconnect())),
       ]);
-      await Promise.allSettled([logout()]);
+      await Promise.allSettled([logout?.()]);
     } finally {
       setIsVisible(false);
       setIsSettingsVisible(false);

@@ -1,5 +1,4 @@
 import { useLingui } from "@lingui/react";
-import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useEffect, useMemo } from "react";
 import { useHistory } from "react-router-dom";
 
@@ -18,6 +17,7 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmountForMetrics } from "lib/metrics";
 import { useBowser } from "lib/useBowser";
 import useRouteQuery from "lib/useRouteQuery";
+import { usePrivyWalletState } from "lib/wallets/privyWalletState";
 import useWallet from "lib/wallets/useWallet";
 
 import { SESSION_ID_KEY, setSessionId } from "./sessionId";
@@ -33,8 +33,7 @@ export function useConfigureUserAnalyticsProfile() {
   const [showDebugValues] = useLocalStorageSerializeKey(SHOW_DEBUG_VALUES_KEY, false);
   const { chainId } = useChainId();
   const { account, active } = useWallet();
-  const { user } = usePrivy();
-  const { wallets } = useWallets();
+  const { user, wallets } = usePrivyWalletState();
   const { data: bowser } = useBowser();
   const { subaccount } = useSubaccountContext();
   const {
