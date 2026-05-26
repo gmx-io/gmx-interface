@@ -68,9 +68,11 @@ export const getWagmiConfig = once(() => {
   );
 
   return createConfig({
+    // Avoid eager persisted-state hydration before the wallet layer is ready.
     ssr: true,
     chains,
     transports,
+    // Privy handles injected wallet discovery; avoid duplicate wagmi connectors.
     multiInjectedProviderDiscovery: false,
   });
 });
