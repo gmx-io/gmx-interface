@@ -2,7 +2,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { WagmiProvider } from "wagmi";
 
-import { PrivyWalletLoaderContext, PrivyWalletLoadStatus } from "./privyWalletLoader";
+import { PrivyWalletLoaderContext } from "./privyWalletLoader";
 import { ConnectModalProvider } from "./useConnectModal";
 import { getWagmiConfig } from "./walletConfig";
 
@@ -38,18 +38,33 @@ function BaseWagmiProvider({ children }: { children: React.ReactNode }) {
   return <WagmiProvider config={getWagmiConfig()}>{children}</WagmiProvider>;
 }
 
+function schedulePrivyPreload(loadPrivyWalletProvider: () => void) {
+  let idleCallbackId: number | undefined;
+  let timeoutId: number | undefined;
+
+  if (typeof window.requestIdleCallback === "function") {
+    idleCallbackId = window.requestIdleCallback(loadPrivyWalletProvider, { timeout: 3000 });
+  } else {
+    timeoutId = window.setTimeout(loadPrivyWalletProvider, 1000);
+  }
+
+  return () => {
+    if (idleCallbackId !== undefined) {
+      window.cancelIdleCallback(idleCallbackId);
+    }
+
+    if (timeoutId !== undefined) {
+      window.clearTimeout(timeoutId);
+    }
+  };
+}
+
 export default function WalletProvider({ children }: { children: React.ReactNode }) {
-  const [loadStatus, setLoadStatus] = useState<PrivyWalletLoadStatus>(() =>
-    hasStoredPrivySession() ? "loading" : "idle"
-  );
+  const [shouldLoadPrivyWalletProvider, setShouldLoadPrivyWalletProvider] = useState(hasStoredPrivySession);
   const [isPrivyWalletReady, setIsPrivyWalletReady] = useState(false);
 
   const loadPrivyWalletProvider = useCallback(() => {
-    setLoadStatus((currentStatus) => (currentStatus === "idle" ? "loading" : currentStatus));
-  }, []);
-
-  const markPrivyWalletProviderLoaded = useCallback(() => {
-    setLoadStatus("loaded");
+    setShouldLoadPrivyWalletProvider(true);
   }, []);
 
   const markPrivyWalletReady = useCallback(() => {
@@ -57,30 +72,38 @@ export default function WalletProvider({ children }: { children: React.ReactNode
   }, []);
 
   useEffect(
-    function preloadPrivyWalletProviderAfterFirstRender() {
-      if (loadStatus !== "idle") {
+    function preloadPrivyWalletProviderAfterPageLoad() {
+      if (shouldLoadPrivyWalletProvider) {
         return undefined;
       }
 
-      const timeoutId = window.setTimeout(loadPrivyWalletProvider, 0);
+      let cancelPrivyPreload: (() => void) | undefined;
+
+      const preloadPrivyWalletProvider = () => {
+        cancelPrivyPreload = schedulePrivyPreload(loadPrivyWalletProvider);
+      };
+
+      if (document.readyState === "complete") {
+        preloadPrivyWalletProvider();
+      } else {
+        window.addEventListener("load", preloadPrivyWalletProvider, { once: true });
+      }
 
       return () => {
-        window.clearTimeout(timeoutId);
+        window.removeEventListener("load", preloadPrivyWalletProvider);
+        cancelPrivyPreload?.();
       };
     },
-    [loadPrivyWalletProvider, loadStatus]
+    [loadPrivyWalletProvider, shouldLoadPrivyWalletProvider]
   );
 
   const loaderValue = useMemo(
     () => ({
       loadPrivyWalletProvider,
-      privyWalletLoadStatus: loadStatus,
-      isPrivyWalletProviderLoading: loadStatus === "loading",
-      isPrivyWalletProviderLoaded: loadStatus === "loaded",
       isPrivyWalletReady,
-      isPrivyWalletInitializing: loadStatus === "loading" || (loadStatus === "loaded" && !isPrivyWalletReady),
+      isPrivyWalletInitializing: shouldLoadPrivyWalletProvider && !isPrivyWalletReady,
     }),
-    [isPrivyWalletReady, loadPrivyWalletProvider, loadStatus]
+    [isPrivyWalletReady, loadPrivyWalletProvider, shouldLoadPrivyWalletProvider]
   );
 
   const baseWalletTree = <BaseWagmiProvider>{children}</BaseWagmiProvider>;
@@ -89,14 +112,12 @@ export default function WalletProvider({ children }: { children: React.ReactNode
     <PrivyWalletLoaderContext.Provider value={loaderValue}>
       <ConnectModalProvider>
         <QueryClientProvider client={queryClient}>
-          {loadStatus === "idle" ? (
-            baseWalletTree
-          ) : (
+          {shouldLoadPrivyWalletProvider ? (
             <Suspense fallback={baseWalletTree}>
-              <LazyPrivyWalletProvider onLoaded={markPrivyWalletProviderLoaded} onReady={markPrivyWalletReady}>
-                {children}
-              </LazyPrivyWalletProvider>
+              <LazyPrivyWalletProvider onReady={markPrivyWalletReady}>{children}</LazyPrivyWalletProvider>
             </Suspense>
+          ) : (
+            baseWalletTree
           )}
         </QueryClientProvider>
       </ConnectModalProvider>

@@ -50,20 +50,8 @@ function PrivyWalletStateBridge({ children, onReady }: { children: React.ReactNo
   return <PrivyWalletStateContext.Provider value={value}>{children}</PrivyWalletStateContext.Provider>;
 }
 
-export default function PrivyWalletProvider({
-  children,
-  onLoaded,
-  onReady,
-}: {
-  children: React.ReactNode;
-  onLoaded: () => void;
-  onReady: () => void;
-}) {
+export default function PrivyWalletProvider({ children, onReady }: { children: React.ReactNode; onReady: () => void }) {
   const { theme } = useTheme();
-
-  useEffect(() => {
-    onLoaded();
-  }, [onLoaded]);
 
   const privyConfig = useMemo(
     () => ({

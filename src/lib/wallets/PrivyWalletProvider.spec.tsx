@@ -61,11 +61,10 @@ describe("PrivyWalletProvider", () => {
     mocks.privyReady = true;
     mocks.walletsReady = false;
 
-    const onLoaded = vi.fn();
     const onReady = vi.fn();
 
     render(
-      <PrivyWalletProvider onLoaded={onLoaded} onReady={onReady}>
+      <PrivyWalletProvider onReady={onReady}>
         <div />
       </PrivyWalletProvider>
     );
