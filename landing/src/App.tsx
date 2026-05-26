@@ -8,7 +8,7 @@ import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import { ThemeProvider } from "context/ThemeContext/ThemeContext";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
 import { useOracleKeeperFetcher } from "lib/oracleKeeperFetcher";
-import WalletProvider from "lib/wallets/WalletProvider";
+import { BaseWalletProvider } from "lib/wallets/BaseWalletProvider";
 import { ARBITRUM } from "sdk/configs/chainIds";
 
 import SEO from "components/Seo/SEO";
@@ -34,13 +34,13 @@ export default function App() {
       <SWRConfig>
         <I18nProvider i18n={i18n as any}>
           <ThemeProvider>
-            <WalletProvider>
+            <BaseWalletProvider>
               <SEO>
                 <div className="overflow-hidden proportional-nums text-white">
                   <LandingRoutes />
                 </div>
               </SEO>
-            </WalletProvider>
+            </BaseWalletProvider>
           </ThemeProvider>
         </I18nProvider>
       </SWRConfig>
