@@ -2710,7 +2710,7 @@ msgstr "コードを共有して報酬を獲得！"
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "to avoid internal conversion costs"
-msgstr ""
+msgstr "内部変換コストを避けるため"
 
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM markets"
@@ -9303,7 +9303,7 @@ msgstr "最速"
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Receive tokens separately"
-msgstr ""
+msgstr "トークンを別々に受け取る"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL BALANCE"

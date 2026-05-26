@@ -2710,7 +2710,7 @@ msgstr "코드를 공유하여 보상을 받으세요!"
 
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "to avoid internal conversion costs"
-msgstr ""
+msgstr "내부 전환 비용을 피하려면"
 
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM markets"
@@ -9303,7 +9303,7 @@ msgstr "가장 빠름"
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 msgid "Receive tokens separately"
-msgstr ""
+msgstr "토큰을 별도로 받기"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL BALANCE"
