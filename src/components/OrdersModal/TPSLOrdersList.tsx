@@ -20,13 +20,14 @@ import {
   PositionOrderInfo,
 } from "domain/synthetics/orders";
 import { PositionInfo, getIsPositionInfoLoaded } from "domain/synthetics/positions";
-import { getDecreasePositionAmounts } from "domain/synthetics/trade";
+import { getDecreasePositionAmounts, getDecreaseReceiveOutputs } from "domain/synthetics/trade";
 import { getPositionCloseSizeDeltaUsdForDisplay, isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
-import { formatDeltaUsd, formatUsd, formatBalanceAmount, formatPercentage } from "lib/numbers";
+import { formatDeltaUsd, formatUsd, formatPercentage } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { bigMath } from "sdk/utils/bigmath";
 
 import Button from "components/Button/Button";
+import { DecreaseReceiveOutputDisplay } from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
 import { Table, TableTh, TableTheadTr } from "components/Table/Table";
 import { TableTd, TableTr } from "components/Table/Table";
 
@@ -245,6 +246,7 @@ function useTPSLOrderViewModel({
       uiFeeFactor,
       triggerOrderType: order.orderType as OrderType.LimitDecrease | OrderType.StopLossDecrease,
       isSetAcceptablePriceImpactEnabled,
+      forceDecreaseSwapType: order.decreasePositionSwapType,
     });
   }, [
     isIncrease,
@@ -261,27 +263,24 @@ function useTPSLOrderViewModel({
     userReferralInfo,
     uiFeeFactor,
     isSetAcceptablePriceImpactEnabled,
+    order.decreasePositionSwapType,
   ]);
 
   const receiveDisplay = useMemo(() => {
     if (!decreaseAmounts) return "—";
 
-    const receiveUsd = decreaseAmounts.receiveUsd;
-    const receiveToken = order.targetCollateralToken;
+    const tokensData =
+      position && order.targetCollateralToken
+        ? {
+            [position.pnlToken.address]: position.pnlToken,
+            [position.collateralToken.address]: position.collateralToken,
+            [order.targetCollateralToken.address]: order.targetCollateralToken,
+          }
+        : undefined;
+    const outputs = getDecreaseReceiveOutputs({ decreaseAmounts, tokensData });
 
-    if (!receiveToken) return "—";
-
-    const receiveAmount = decreaseAmounts.receiveTokenAmount ?? 0n;
-
-    return (
-      <span>
-        {formatBalanceAmount(receiveAmount, receiveToken.decimals, receiveToken.symbol, {
-          isStable: receiveToken.isStable,
-        })}
-        <span className="ml-4 text-typography-secondary">({formatUsd(receiveUsd)})</span>
-      </span>
-    );
-  }, [decreaseAmounts, order.targetCollateralToken]);
+    return <DecreaseReceiveOutputDisplay outputs={outputs} />;
+  }, [decreaseAmounts, order.targetCollateralToken, position]);
 
   const handleEdit = useCallback(() => {
     onEdit?.(order.key);

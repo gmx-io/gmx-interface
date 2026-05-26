@@ -2708,6 +2708,10 @@ msgstr "Earn rewards by sharing your referral code"
 msgid "Earn rewards by sharing your code!"
 msgstr "Earn rewards by sharing your code!"
 
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "to avoid internal conversion costs"
+msgstr "to avoid internal conversion costs"
+
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM markets"
 msgstr "GM markets"
@@ -9294,6 +9298,12 @@ msgstr "Referral link copied to your clipboard"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Fastest"
 msgstr "Fastest"
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "Receive tokens separately"
+msgstr "Receive tokens separately"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL BALANCE"

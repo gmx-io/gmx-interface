@@ -51,6 +51,8 @@ import {
 } from "domain/synthetics/sidecarOrders/utils";
 import {
   DecreasePositionAmounts,
+  getCanSplitReceive,
+  getDecreaseReceiveOutputs,
   getMarkPrice,
   getNextPositionValuesForDecreaseTrade,
   getTradeFees,
@@ -64,7 +66,6 @@ import { DUST_USD } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
   calculateDisplayDecimals,
-  formatBalanceAmount,
   formatDeltaUsd,
   formatPercentage,
   formatTokenAmount,
@@ -82,6 +83,7 @@ import { SidecarSlTpOrderEntry } from "sdk/utils/sidecarOrders/types";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";
 
 import Button from "components/Button/Button";
+import { DecreaseReceiveOutputDisplay } from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
 import { ExitPriceRow } from "components/ExitPriceRow/ExitPriceRow";
 import { ExpandableRow } from "components/ExpandableRow";
 import Modal from "components/Modal/Modal";
@@ -121,6 +123,7 @@ export function AddTPSLModal({
   const [keepLeverage, setKeepLeverage] = useState(true);
   const [editTPSLSize, setEditTPSLSize] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isReceiveSeparated, setIsReceiveSeparated] = useState(false);
   const [executionDetailsOpen, setExecutionDetailsOpen] = useLocalStorageSerializeKey(
     "add-tpsl-execution-details-open",
     false
@@ -151,6 +154,7 @@ export function AddTPSLModal({
   const collateralToken = position.collateralToken;
   const indexToken = position.indexToken;
   const isLong = position.isLong;
+  const canSplitReceive = getCanSplitReceive(position);
   const isCollateralTokenEquivalentToIndex = useMemo(
     () => getIsEquivalentTokens(position.collateralToken, position.indexToken),
     [position.collateralToken, position.indexToken]
@@ -162,6 +166,12 @@ export function AddTPSLModal({
   const markPrice = useMemo(() => {
     return getMarkPrice({ prices: position.indexToken.prices, isLong: position.isLong, isIncrease: false });
   }, [position.indexToken.prices, position.isLong]);
+
+  useEffect(() => {
+    if (!canSplitReceive && isReceiveSeparated) {
+      setIsReceiveSeparated(false);
+    }
+  }, [canSplitReceive, isReceiveSeparated]);
 
   const positionData = useMemo(
     () =>
@@ -264,6 +274,7 @@ export function AddTPSLModal({
       uiFeeFactor,
       userReferralInfo,
       isSetAcceptablePriceImpactEnabled,
+      forceDecreaseSwapType: isReceiveSeparated ? DecreasePositionSwapType.NoSwap : undefined,
     });
   }, [
     tpTriggerPrice,
@@ -276,6 +287,7 @@ export function AddTPSLModal({
     userReferralInfo,
     tpTriggerOrderType,
     isSetAcceptablePriceImpactEnabled,
+    isReceiveSeparated,
   ]);
 
   const slDecreaseAmounts: DecreasePositionAmounts | undefined = useMemo(() => {
@@ -296,6 +308,7 @@ export function AddTPSLModal({
       uiFeeFactor,
       userReferralInfo,
       isSetAcceptablePriceImpactEnabled,
+      forceDecreaseSwapType: isReceiveSeparated ? DecreasePositionSwapType.NoSwap : undefined,
     });
   }, [
     slTriggerPrice,
@@ -308,6 +321,7 @@ export function AddTPSLModal({
     userReferralInfo,
     slTriggerOrderType,
     isSetAcceptablePriceImpactEnabled,
+    isReceiveSeparated,
   ]);
 
   const tpPositionData = useMemo(
@@ -463,35 +477,24 @@ export function AddTPSLModal({
     [getEstimatedPnlFromAmounts, slDecreaseAmounts]
   );
 
-  const getReceiveDisplay = useCallback(
-    (amounts: DecreasePositionAmounts | undefined) => {
-      if (!amounts) return undefined;
-
-      const receiveUsd = amounts.receiveUsd ?? 0n;
-      const receiveAmount = amounts.receiveTokenAmount ?? 0n;
-
-      return {
-        text: formatBalanceAmount(receiveAmount, collateralToken.decimals, collateralToken.symbol, {
-          isStable: collateralToken.isStable,
-        }),
-        usd: formatUsd(receiveUsd),
-      };
-    },
-    [collateralToken]
+  const tpReceiveOutputs = useMemo(
+    () => getDecreaseReceiveOutputs({ decreaseAmounts: tpDecreaseAmounts, tokensData }),
+    [tokensData, tpDecreaseAmounts]
   );
-
-  const tpReceiveDisplay = useMemo(() => getReceiveDisplay(tpDecreaseAmounts), [getReceiveDisplay, tpDecreaseAmounts]);
-  const slReceiveDisplay = useMemo(() => getReceiveDisplay(slDecreaseAmounts), [getReceiveDisplay, slDecreaseAmounts]);
+  const slReceiveOutputs = useMemo(
+    () => getDecreaseReceiveOutputs({ decreaseAmounts: slDecreaseAmounts, tokensData }),
+    [tokensData, slDecreaseAmounts]
+  );
 
   const tpPreview = useMemo(
     () => ({
       decreaseAmounts: tpDecreaseAmounts,
       nextPositionValues: tpNextPositionValues,
       fees: tpFees,
-      receiveDisplay: tpReceiveDisplay,
+      receiveOutputs: tpReceiveOutputs,
       triggerPrice: tpTriggerPrice,
     }),
-    [tpDecreaseAmounts, tpNextPositionValues, tpFees, tpReceiveDisplay, tpTriggerPrice]
+    [tpDecreaseAmounts, tpNextPositionValues, tpFees, tpReceiveOutputs, tpTriggerPrice]
   );
 
   const slPreview = useMemo(
@@ -499,17 +502,17 @@ export function AddTPSLModal({
       decreaseAmounts: slDecreaseAmounts,
       nextPositionValues: slNextPositionValues,
       fees: slFees,
-      receiveDisplay: slReceiveDisplay,
+      receiveOutputs: slReceiveOutputs,
       triggerPrice: slTriggerPrice,
     }),
-    [slDecreaseAmounts, slNextPositionValues, slFees, slReceiveDisplay, slTriggerPrice]
+    [slDecreaseAmounts, slNextPositionValues, slFees, slReceiveOutputs, slTriggerPrice]
   );
 
   const activePreview = previewTab === "tp" ? tpPreview : slPreview;
   const activeDecreaseAmounts = activePreview.decreaseAmounts;
   const activeNextPositionValues = activePreview.nextPositionValues;
   const activeFees = activePreview.fees;
-  const activeReceiveDisplay = activePreview.receiveDisplay;
+  const activeReceiveOutputs = activePreview.receiveOutputs;
   const activeTriggerPrice = activeDecreaseAmounts?.triggerPrice ?? activePreview.triggerPrice;
   const hasPreviewData = Boolean(tpDecreaseAmounts || slDecreaseAmounts);
 
@@ -812,6 +815,7 @@ export function AddTPSLModal({
       setTpPriceInput("");
       setSlPriceInput("");
       setEditTPSLSize(false);
+      setIsReceiveSeparated(false);
       closeSizeReset();
       setPreviewTab("tp");
     }
@@ -941,6 +945,11 @@ export function AddTPSLModal({
           <ToggleSwitch isChecked={editTPSLSize} setIsChecked={handleEditTPSLSizeToggle}>
             <Trans>Edit TP/SL size</Trans>
           </ToggleSwitch>
+          {canSplitReceive && (
+            <ToggleSwitch isChecked={isReceiveSeparated} setIsChecked={setIsReceiveSeparated}>
+              <Trans>Receive tokens separately</Trans>
+            </ToggleSwitch>
+          )}
         </div>
 
         {editTPSLSize && (
@@ -1003,16 +1012,7 @@ export function AddTPSLModal({
               <div className="flex flex-col gap-10">
                 <SyntheticsInfoRow
                   label={<Trans>Receive</Trans>}
-                  value={
-                    activeReceiveDisplay ? (
-                      <span className="numbers">
-                        {activeReceiveDisplay.text}{" "}
-                        <span className="text-typography-secondary">({activeReceiveDisplay.usd})</span>
-                      </span>
-                    ) : (
-                      "-"
-                    )
-                  }
+                  value={<DecreaseReceiveOutputDisplay outputs={activeReceiveOutputs} />}
                 />
                 <SyntheticsInfoRow
                   label={<Trans>Liquidation price</Trans>}

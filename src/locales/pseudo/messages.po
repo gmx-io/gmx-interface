@@ -2708,6 +2708,10 @@ msgstr ""
 msgid "Earn rewards by sharing your code!"
 msgstr ""
 
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "to avoid internal conversion costs"
+msgstr ""
+
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM markets"
 msgstr ""
@@ -9293,6 +9297,12 @@ msgstr ""
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Fastest"
+msgstr ""
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "Receive tokens separately"
 msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx

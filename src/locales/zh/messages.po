@@ -2708,6 +2708,10 @@ msgstr "分享推荐码赚取奖励"
 msgid "Earn rewards by sharing your code!"
 msgstr "分享您的推荐码赚取奖励！"
 
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "to avoid internal conversion costs"
+msgstr ""
+
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM markets"
 msgstr "GM 市场"
@@ -9294,6 +9298,12 @@ msgstr ""
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Fastest"
 msgstr "最快"
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "Receive tokens separately"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL BALANCE"

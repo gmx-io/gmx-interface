@@ -2708,6 +2708,10 @@ msgstr "추천 코드를 공유하여 보상을 받으십시오"
 msgid "Earn rewards by sharing your code!"
 msgstr "코드를 공유하여 보상을 받으세요!"
 
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "to avoid internal conversion costs"
+msgstr ""
+
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM markets"
 msgstr "GM 마켓"
@@ -9294,6 +9298,12 @@ msgstr ""
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Fastest"
 msgstr "가장 빠름"
+
+#: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "Receive tokens separately"
+msgstr ""
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL BALANCE"
