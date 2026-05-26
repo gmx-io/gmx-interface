@@ -279,7 +279,7 @@ function useTPSLOrderViewModel({
         : undefined;
     const outputs = getDecreaseReceiveOutputs({ decreaseAmounts, tokensData });
 
-    return <DecreaseReceiveOutputDisplay outputs={outputs} />;
+    return <DecreaseReceiveOutputDisplay outputs={outputs} layout="stacked" />;
   }, [decreaseAmounts, order.targetCollateralToken, position]);
 
   const handleEdit = useCallback(() => {

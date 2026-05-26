@@ -1176,9 +1176,9 @@ export function PositionSeller() {
                     {liqPriceRow}
                     {pnlRow}
                   </>
-                ) : isReceiveSeparated ? (
+                ) : (
                   receiveTokenRow
-                ) : null}
+                )}
 
                 <PositionSellerPriceImpactFeesRow />
 

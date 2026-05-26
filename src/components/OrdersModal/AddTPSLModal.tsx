@@ -1012,7 +1012,7 @@ export function AddTPSLModal({
               <div className="flex flex-col gap-10">
                 <SyntheticsInfoRow
                   label={<Trans>Receive</Trans>}
-                  value={<DecreaseReceiveOutputDisplay outputs={activeReceiveOutputs} />}
+                  value={<DecreaseReceiveOutputDisplay outputs={activeReceiveOutputs} layout="stacked" />}
                 />
                 <SyntheticsInfoRow
                   label={<Trans>Liquidation price</Trans>}
