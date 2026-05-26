@@ -27,6 +27,19 @@ export function AppHeaderUser({ openSettings, menuToggle }: Props) {
 
   const visualChainId = srcChainId ?? settlementChainId;
 
+  if (active && account) {
+    return (
+      <div className="flex items-center gap-8">
+        <div data-qa="user-address">
+          <AddressDropdown account={account} />
+        </div>
+        <OneClickButton openSettings={openSettings} />
+        <NetworkDropdown chainId={visualChainId} networkOptions={NETWORK_OPTIONS} />
+        {menuToggle ? menuToggle : null}
+      </div>
+    );
+  }
+
   if (isConnectModalLoading) {
     return (
       <div className="flex items-center gap-8">
@@ -51,37 +64,24 @@ export function AppHeaderUser({ openSettings, menuToggle }: Props) {
     );
   }
 
-  if (!active || !account) {
-    return (
-      <div className="flex items-center gap-8">
-        {openConnectModal ? (
-          <>
-            <ConnectWalletButton
-              disabled={isConnectModalLoading}
-              onClick={() => {
-                sendUserAnalyticsConnectWalletClickEvent("Header");
-                openConnectModal();
-              }}
-            >
-              {isConnectModalLoading ? <Trans>Loading...</Trans> : <Trans>Connect wallet</Trans>}
-            </ConnectWalletButton>
-            <OneClickButton openSettings={openSettings} />
-            <NetworkDropdown chainId={visualChainId} networkOptions={NETWORK_OPTIONS} />
-            {menuToggle ? menuToggle : null}
-          </>
-        ) : null}
-      </div>
-    );
-  }
-
   return (
     <div className="flex items-center gap-8">
-      <div data-qa="user-address">
-        <AddressDropdown account={account} />
-      </div>
-      <OneClickButton openSettings={openSettings} />
-      <NetworkDropdown chainId={visualChainId} networkOptions={NETWORK_OPTIONS} />
-      {menuToggle ? menuToggle : null}
+      {openConnectModal ? (
+        <>
+          <ConnectWalletButton
+            disabled={isConnectModalLoading}
+            onClick={() => {
+              sendUserAnalyticsConnectWalletClickEvent("Header");
+              openConnectModal();
+            }}
+          >
+            {isConnectModalLoading ? <Trans>Loading...</Trans> : <Trans>Connect wallet</Trans>}
+          </ConnectWalletButton>
+          <OneClickButton openSettings={openSettings} />
+          <NetworkDropdown chainId={visualChainId} networkOptions={NETWORK_OPTIONS} />
+          {menuToggle ? menuToggle : null}
+        </>
+      ) : null}
     </div>
   );
 }
