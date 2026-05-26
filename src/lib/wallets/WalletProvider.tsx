@@ -1,9 +1,12 @@
-import { QueryClientProvider } from "@tanstack/react-query";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import { WagmiProvider } from "wagmi";
 
-import { BaseWagmiProvider, walletQueryClient } from "./BaseWalletProvider";
 import { PrivyWalletLoaderContext } from "./privyWalletLoader";
 import { ConnectModalProvider } from "./useConnectModal";
+import { getWagmiConfig } from "./walletConfig";
+
+const queryClient = new QueryClient();
 
 const LazyPrivyWalletProvider = lazy(() => import("./PrivyWalletProvider"));
 
@@ -50,6 +53,10 @@ function schedulePrivyPreload(loadPrivyWalletProvider: () => void) {
       window.clearTimeout(timeoutId);
     }
   };
+}
+
+function BaseWagmiProvider({ children }: { children: React.ReactNode }) {
+  return <WagmiProvider config={getWagmiConfig()}>{children}</WagmiProvider>;
 }
 
 type WalletProviderProps = {
@@ -105,7 +112,7 @@ export default function WalletProvider({ children }: WalletProviderProps) {
 
   const baseWalletTree = <BaseWagmiProvider>{children}</BaseWagmiProvider>;
   const walletTree = (
-    <QueryClientProvider client={walletQueryClient}>
+    <QueryClientProvider client={queryClient}>
       {shouldLoadPrivyWalletProvider ? (
         <Suspense fallback={baseWalletTree}>
           <LazyPrivyWalletProvider onReady={markPrivyWalletReady}>{children}</LazyPrivyWalletProvider>
