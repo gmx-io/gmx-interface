@@ -34,10 +34,12 @@ export function getMultichainFundingToastContent({
   const hasWithdrawals = Object.values(pendingItems).some((item) => item?.operation === "withdrawal");
 
   return (
-    <div className="flex flex-col gap-8">
-      {hasDeposits && !hasWithdrawals && <Trans>Depositing to GMX Account...</Trans>}
-      {hasWithdrawals && !hasDeposits && <Trans>Withdrawing from GMX Account...</Trans>}
-      {hasDeposits && hasWithdrawals && <Trans>Depositing to and withdrawing from GMX Account...</Trans>}
+    <div className="StatusNotification flex flex-col gap-8">
+      <div className="StatusNotification-title">
+        {hasDeposits && !hasWithdrawals && <Trans>Depositing to GMX Account...</Trans>}
+        {hasWithdrawals && !hasDeposits && <Trans>Withdrawing from GMX Account...</Trans>}
+        {hasDeposits && hasWithdrawals && <Trans>Depositing to and withdrawing from GMX Account...</Trans>}
+      </div>
       {Object.keys(multichainFundingPendingIds).map((staticId, index, array) => {
         const guid = multichainFundingPendingIds[staticId];
         const item = pendingItems[guid];
