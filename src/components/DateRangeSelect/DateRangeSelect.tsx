@@ -279,13 +279,6 @@ export function DateSelect({
       </Popover.Button>
       <Portal>
         <Popover.Panel className="DateRangeSelect-popover" ref={refs.setFloating} style={floatingStyles}>
-          <div className="flex gap-4 border-t border-slate-600 p-12">
-            {DATE_SELECT_PRESETS.map((preset) => (
-              <Button key={preset} variant="secondary" size="small" data-preset={preset} onClick={handlePresetSelect}>
-                {_(PRESET_LABELS[preset])}
-              </Button>
-            ))}
-          </div>
           <Calendar
             onChange={onDateChange}
             value={date}
@@ -300,6 +293,13 @@ export function DateSelect({
             minDetail="decade"
             formatMonthYear={(_, date) => format(date, "MMMM, yyyy")}
           />
+          <div className="flex gap-4 border-t border-slate-600 p-12">
+            {DATE_SELECT_PRESETS.map((preset) => (
+              <Button key={preset} variant="secondary" size="small" data-preset={preset} onClick={handlePresetSelect}>
+                {_(PRESET_LABELS[preset])}
+              </Button>
+            ))}
+          </div>
         </Popover.Panel>
       </Portal>
     </Popover>

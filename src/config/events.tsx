@@ -10,18 +10,25 @@ import TokenIcon from "components/TokenIcon/TokenIcon";
 
 import sparkleIcon from "img/sparkle.svg";
 
+export type AnnouncementType = "listing" | "delisting" | "update" | "maintenance";
+export type AnnouncementVariant = "info" | "warning" | "error" | "success";
+
 export type EventData = {
   id: string;
+  type: AnnouncementType;
   title: ReactNode;
+  description: ReactNode;
+
   isActive?: boolean;
   /**
    * KLI UI flag ID. When present, overrides `isActive` — visibility is controlled by KLI.
    */
   flagId?: string;
+
   startDate?: string;
   endDate: string;
-  bodyText: ReactNode;
-  variant?: "info" | "warning";
+
+  variant?: AnnouncementVariant;
   chains?: number[];
   link?: {
     text: string;
@@ -31,22 +38,21 @@ export type EventData = {
      */
     newTab?: boolean;
   };
+
+  requiresOpenPosition?: string;
 };
 
 export const homeEventsData: EventData[] = [];
 
-export const AL16Z_DELISTING_EVENT_ID = "al16z-delisting";
-export const OM_MANTRA_MIGRATION_EVENT_ID = "om-mantra-migration";
-export const WELL_DELISTING_EVENT_ID = "well-delisting";
-
 export const appEventsData: EventData[] = [
   {
     id: "mega-arbitrum-megaeth-listing",
+    type: "listing",
     flagId: "showMegaListingArbitrumMegaeth",
     endDate: "07 May 2026, 12:00",
     chains: [ARBITRUM, MEGAETH],
     title: "MEGA market added on Arbitrum and MegaETH",
-    bodyText: (
+    description: (
       <>
         <Link to="/trade">Trade</Link> MEGA, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
         <span className="text-slate-100">[WETH-USDC]</span> on Arbitrum, or GLV{" "}
@@ -56,11 +62,12 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "megaeth-points-program",
+    type: "update",
     flagId: "showMegaethPoints",
     endDate: "31 Dec 2026, 0:00",
     chains: [MEGAETH],
     title: "Earn points on GMX MegaETH",
-    bodyText: (
+    description: (
       <span className="block">
         <span className="mb-12 block text-slate-100">Earn points each epoch across four activities:</span>
         <span className="grid grid-cols-[auto_1fr] items-start gap-x-8 gap-y-12">
@@ -91,11 +98,13 @@ export const appEventsData: EventData[] = [
     ),
   },
   {
-    id: WELL_DELISTING_EVENT_ID,
+    id: "well-delisting",
+    type: "delisting",
     isActive: true,
     endDate: "20 Apr 2026, 0:00",
     title: "WELL/USD delisting",
-    bodyText: (
+    requiresOpenPosition: "0x2347EbB8645Cc2EA0Ba92D1EC59704031F2fCCf4",
+    description: (
       <>
         Position openings for WELL/USD are no longer available. Please close your existing positions before April 19.
         Remaining positions may be auto-closed.
@@ -104,10 +113,11 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "gold-silver-fee-reduction",
+    type: "update",
     flagId: "showGoldSilverFeeReduction",
     endDate: "21 Apr 2026, 12:00",
     title: "GOLD and SILVER trading fees heavily reduced",
-    bodyText: (
+    description: (
       <>
         Position fees for GOLD/USD and SILVER/USD have been lowered to 1/2 bps from 4/6 bps during on-hours.{" "}
         <ExternalLink href="https://docs.gmx.io/docs/trading/overview/#fees">Read more</ExternalLink>.
@@ -116,11 +126,12 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "gold-silver-arbitrum-listing",
+    type: "listing",
     isActive: true,
     startDate: "10 Apr 2026, 12:00",
     endDate: "17 Apr 2026, 12:00",
     title: "GOLD and SILVER commodity markets added on Arbitrum",
-    bodyText: (
+    description: (
       <>
         <Link to="/trade">Trade</Link> GOLD and SILVER perpetuals 24/7 with up to 100x leverage, or{" "}
         <Link to="/pools">provide liquidity</Link> via GLV <span className="text-slate-100">[WETH-USDC]</span>. Find
@@ -130,10 +141,11 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "energy-markets-arbitrum-listing",
+    type: "listing",
     flagId: "showEnergyMarketsArbitrumListing",
     endDate: "30 Apr 2026, 12:00",
     title: "WTI Crude Oil, Brent Crude Oil and Natural Gas energy commodity markets added on Arbitrum",
-    bodyText: (
+    description: (
       <>
         Trade WTIOIL, BRENTOIL (up to 100x leverage) and NATGAS (up to 40x leverage) perpetuals 24/7, or{" "}
         <Link to="/pools">provide liquidity</Link> via GLV <span className="text-slate-100">[WETH-USDC]</span>.{" "}
@@ -146,11 +158,12 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "megaeth-launch",
+    type: "update",
     isActive: true,
     startDate: "03 Apr 2026, 0:00",
     endDate: "10 Apr 2026, 16:00",
     title: "GMX is now live on MegaETH",
-    bodyText: (
+    description: (
       <>
         Trade perpetuals, create and share your referral code, and provide liquidity on MegaETH using its native
         stablecoin: USDm.{" "}
@@ -159,13 +172,15 @@ export const appEventsData: EventData[] = [
     ),
   },
   {
-    id: OM_MANTRA_MIGRATION_EVENT_ID,
+    id: "om-mantra-migration",
+    type: "delisting",
     isActive: true,
     startDate: "20 Feb 2026, 0:00",
     endDate: "27 Feb 2026, 0:00",
     title: "OM to MANTRA migration",
     variant: "warning",
-    bodyText: (
+    requiresOpenPosition: "0x89EB78679921499632fF16B1be3ee48295cfCD91",
+    description: (
       <>
         ⚠️ OM (Mantra) is migrating to the MANTRA token. Please close your position on the OM/USD market by [08:00 UTC]
         21 February to avoid auto-closure or forced liquidation.
@@ -174,11 +189,12 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "cc-met-arbitrum-listing",
+    type: "listing",
     isActive: true,
     startDate: "13 Feb 2026, 14:00",
     endDate: "20 Feb 2026, 14:00",
     title: "CC (Canton) and MET (Meteora) markets added on Arbitrum",
-    bodyText: (
+    description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
         <span className="text-slate-100">[WBTC-USDC]</span>.
@@ -187,11 +203,12 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "xaut-lit-ip-arbitrum-listing",
+    type: "listing",
     isActive: true,
     startDate: "23 Jan 2026, 11:00",
     endDate: "30 Jan 2026, 10:00",
     title: "XAUT (Tether Gold), LIT and IP markets added on Arbitrum",
-    bodyText: (
+    description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
         <span className="text-slate-100">[WBTC-USDC]</span>, or GLV <span className="text-slate-100">[WETH-USDC]</span>
@@ -200,11 +217,12 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "listing-01-09-26",
+    type: "listing",
     isActive: true,
     startDate: "09 Jan 2026, 10:00",
     endDate: "16 Jan 2026, 12:00",
     title: "AR, DASH, JTO, SYRUP and CHZ markets added on Arbitrum",
-    bodyText: (
+    description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
         <span className="text-slate-100">[WBTC-USDC]</span>, or GLV <span className="text-slate-100">[WETH-USDC]</span>
@@ -213,11 +231,12 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "mon-sky-zec-listing",
+    type: "listing",
     isActive: true,
     startDate: "22 Dec 2025, 16:10",
     endDate: "29 Dec 2025, 16:10",
     title: "MON (Monad), SKY and ZEC (Zcash) markets added on Arbitrum",
-    bodyText: (
+    description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
         <span className="text-slate-100">[WBTC-USDC]</span>, or GLV <span className="text-slate-100">[WETH-USDC]</span>
@@ -226,11 +245,12 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "open-interest-calculation-update",
+    type: "update",
     isActive: true,
     startDate: "19 Dec 2025, 08:00",
     endDate: "26 Dec 2025, 08:00",
     title: "Open Interest Calculation Update",
-    bodyText: (
+    description: (
       <>
         From 22nd December, open interest will be tracked in token amounts instead of USD values for improved balance
         accuracy. <ExternalLink href="https://t.me/GMX_Announcements/1175">Read more</ExternalLink>.
@@ -238,12 +258,14 @@ export const appEventsData: EventData[] = [
     ),
   },
   {
-    id: AL16Z_DELISTING_EVENT_ID,
+    id: "al16z-delisting",
+    type: "delisting",
     isActive: true,
     startDate: "06 Nov 2025, 08:00",
     endDate: "06 Dec 2025, 08:00",
     title: "AI16Z/USD delisting",
-    bodyText: (
+    requiresOpenPosition: "0xD60f1BA6a76979eFfE706BF090372Ebc0A5bF169",
+    description: (
       <>
         Position openings for AI16Z/USD are no longer available. Existing positions remain open, but closing them is
         recommended.
@@ -255,11 +277,12 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "xaut0-avalanche-listing",
+    type: "listing",
     isActive: true,
     startDate: "17 Oct 2025, 10:00",
     endDate: "24 Oct 2025, 10:00",
     title: "XAUt0 markets added on Avalanche",
-    bodyText: (
+    description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM{" "}
         <span className="text-slate-100">[XAUt0-XAUt0]</span> or GM <span className="text-slate-100">[XAUt0-USDT]</span>
@@ -268,11 +291,12 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "morpho-glv-lending",
+    type: "update",
     isActive: true,
     startDate: "14 Oct 2025, 6:00",
     endDate: "21 Oct 2025, 6:00",
     title: "Morpho now supports GLV",
-    bodyText: (
+    description: (
       <>
         Lending and borrowing are now available for GLV assets:{" "}
         <TokenIcon symbol="GLV" displaySize={16} className="mb-4" /> <span className="text-slate-100">[BTC-USDC]</span>{" "}
@@ -284,11 +308,12 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "aster-0g-avnt-linea-listing",
+    type: "listing",
     isActive: true,
     startDate: "09 Oct 2025, 14:30",
     endDate: "16 Oct 2025, 12:00",
     title: "0G, ASTER, AVNT and LINEA markets added on Arbitrum",
-    bodyText: (
+    description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM, GLV{" "}
         <span className="text-slate-100">[WETH-USDC]</span>, or GLV <span className="text-slate-100">[WBTC-USDC]</span>
@@ -297,11 +322,12 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "xpl-bnb-sol-listing",
+    type: "listing",
     isActive: true,
     startDate: "25 Sep 2025, 16:50",
     endDate: "02 Oct 2025, 18:00",
     title: "XPL (Plasma), BNB and SOL markets added on Arbitrum",
-    bodyText: (
+    description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
         <span className="text-slate-100">[WBTC-USDC]</span>
@@ -310,11 +336,12 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "zora-kta-listing",
+    type: "listing",
     isActive: true,
     startDate: "18 Sep 2025, 14:00",
     endDate: "25 Sep 2025, 12:00",
     title: "ZORA and KTA markets added on Arbitrum",
-    bodyText: (
+    description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
         <span className="text-slate-100">[WETH-USDC]</span>
@@ -323,11 +350,12 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "new-interface-and-price-impact-improvements",
+    type: "update",
     isActive: true,
     startDate: "08 Sep 2025, 12:00",
     endDate: "22 Sep 2025, 12:00",
     title: "New interface and price impact improvements",
-    bodyText: (
+    description: (
       <>
         The app has a revamped interface, including a new light theme. Price impact is now capped and charged only on
         position close. <ExternalLink href="https://x.com/GMX_IO/status/1965077965236056467">Read more</ExternalLink>.
@@ -336,11 +364,12 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "listing-09-04",
+    type: "listing",
     isActive: true,
     startDate: "04 Sep 2025, 10:00",
     endDate: "11 Sep 2025, 12:00",
     title: "LINK, MORPHO, VVV and WELL markets added on Arbitrum",
-    bodyText: (
+    description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
         <span className="text-slate-100">[WETH-USDC]</span>
@@ -349,11 +378,12 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "wlfi-listing",
+    type: "listing",
     isActive: true,
     startDate: "01 Sep 2025, 12:00",
     endDate: "07 Sep 2025, 12:00",
     title: "WLFI market added on Avalanche and Arbitrum",
-    bodyText: (
+    description: (
       <>
         <Link to="/trade">Trade</Link> this market, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
         <span className="text-slate-100">[WAVAX-USDC]</span> for WLFI on Avalanche, and GM or GLV{" "}
@@ -363,11 +393,12 @@ export const appEventsData: EventData[] = [
   },
   {
     id: "aero-brett-pbtc-listing",
+    type: "listing",
     isActive: true,
     startDate: "28 Aug 2025, 10:00",
     endDate: "04 Sep 2025, 12:00",
     title: "AERO and BRETT markets added on Arbitrum, BTC market added on Botanix",
-    bodyText: (
+    description: (
       <>
         <Link to="/trade">Trade</Link> these markets, or <Link to="/pools">provide liquidity</Link> using GM or GLV{" "}
         <span className="text-slate-100">[WETH-USDC]</span> for AERO and BRETT, or GM{" "}
