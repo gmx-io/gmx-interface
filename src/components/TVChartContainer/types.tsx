@@ -12,6 +12,7 @@ export type StaticChartLine = {
   title: string;
   lineType?: "liquidation";
   positionData?: {
+    positionKey: string;
     pnl: bigint;
     sizeInUsd: bigint;
     sizeInTokens: bigint;

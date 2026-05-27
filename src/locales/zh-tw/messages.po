@@ -8365,6 +8365,10 @@ msgstr ""
 msgid "You"
 msgstr "您"
 
+#: src/components/TVChartContainer/StaticLine.tsx
+msgid "Close position"
+msgstr "平倉"
+
 #: landing/src/pages/Home/HeroSection/AnimatedTitle.tsx
 msgid "with 100x leverage"
 msgstr "以 100 倍槓桿"
