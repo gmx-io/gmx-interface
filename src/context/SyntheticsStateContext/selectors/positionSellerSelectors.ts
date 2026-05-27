@@ -147,6 +147,24 @@ const selectPositionSellerDecreaseAmountsWithKeepLeverage = createSelector((q) =
   return q(selector);
 });
 
+export const selectPositionSellerSplitReceiveDecreaseAmounts = createSelector((q) => {
+  const decreaseAmountArgs = q(selectPositionSellerDecreaseAmountArgs);
+
+  if (!decreaseAmountArgs) return undefined;
+
+  const keepLeverageRaw = q(selectPositionSellerKeepLeverageRaw);
+  const keepLeverageDisabledByCollateral = q(selectPositionSellerLeverageDisabledByCollateral);
+  const keepLeverage = keepLeverageDisabledByCollateral ? false : keepLeverageRaw;
+
+  const selector = makeSelectDecreasePositionAmounts({
+    ...decreaseAmountArgs,
+    keepLeverage,
+    forceDecreaseSwapType: DecreasePositionSwapType.NoSwap,
+  });
+
+  return q(selector);
+});
+
 export const selectPositionSellerKeepLeverage = createSelector((q) => {
   const position = q(selectPositionSellerPosition);
 

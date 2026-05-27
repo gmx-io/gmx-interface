@@ -3,7 +3,12 @@ import { describe, expect, it } from "vitest";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
 import { getDecreasePositionAmounts } from "domain/synthetics/trade";
 
-import { getCanSplitReceive, getDecreaseReceiveOutputs, getHasSplitReceiveOutputs } from "../decreaseOutputs";
+import {
+  getCanSplitReceive,
+  getDecreaseReceiveOutputs,
+  getHasSplitReceiveOutputs,
+  getIsSplitReceiveAvailable,
+} from "../decreaseOutputs";
 import {
   ETH_TOKEN_FIXTURE,
   MARKET_INFO_FIXTURE,
@@ -72,5 +77,19 @@ describe("decrease receive outputs", () => {
 
   it("allows split receive when pnl and collateral tokens differ", () => {
     expect(getCanSplitReceive(POSITION_FIXTURE)).toEqual(true);
+  });
+
+  it("does not make split receive available unless separate outputs exist", () => {
+    const outputs = [
+      {
+        type: "primary" as const,
+        token: WETH_TOKEN_FIXTURE,
+        amount: 1000000000000000000n,
+        usd: 100000n,
+      },
+    ];
+
+    expect(getCanSplitReceive(POSITION_FIXTURE)).toEqual(true);
+    expect(getIsSplitReceiveAvailable(POSITION_FIXTURE, outputs)).toEqual(false);
   });
 });

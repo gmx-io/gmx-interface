@@ -34,6 +34,7 @@ import {
   selectPositionSellerReceiveToken,
   selectPositionSellerSetDefaultReceiveToken,
   selectPositionSellerShouldSwap,
+  selectPositionSellerSplitReceiveDecreaseAmounts,
   selectPositionSellerSwapAmounts,
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import { selectExecutionFeeBufferBps } from "context/SyntheticsStateContext/selectors/settingsSelectors";
@@ -47,7 +48,11 @@ import { OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
-import { getCanSplitReceive, getDecreaseReceiveOutputs, getPositionSellerTradeFlags } from "domain/synthetics/trade";
+import {
+  getDecreaseReceiveOutputs,
+  getIsSplitReceiveAvailable,
+  getPositionSellerTradeFlags,
+} from "domain/synthetics/trade";
 import { getTwapRecommendation } from "domain/synthetics/trade/twapRecommendation";
 import { TradeType } from "domain/synthetics/trade/types";
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
@@ -290,7 +295,12 @@ export function PositionSeller() {
     () => getDecreaseReceiveOutputs({ decreaseAmounts, tokensData }),
     [decreaseAmounts, tokensData]
   );
-  const canSplitReceive = getCanSplitReceive(position);
+  const splitReceiveDecreaseAmounts = useSelector(selectPositionSellerSplitReceiveDecreaseAmounts);
+  const splitReceiveOutputs = useMemo(
+    () => getDecreaseReceiveOutputs({ decreaseAmounts: splitReceiveDecreaseAmounts, tokensData }),
+    [splitReceiveDecreaseAmounts, tokensData]
+  );
+  const isSplitReceiveAvailable = getIsSplitReceiveAvailable(position, splitReceiveOutputs);
 
   const receiveTokenAmount = useMemo(() => {
     if (swapAmounts?.amountOut !== undefined) return swapAmounts.amountOut;
@@ -337,7 +347,7 @@ export function PositionSeller() {
   const swapProfitFeeUsd =
     fees?.swapProfitFee?.deltaUsd === undefined ? undefined : formatUsd(bigMath.abs(fees.swapProfitFee.deltaUsd));
   const splitReceiveSwapProfitFeeWarning =
-    canSplitReceive &&
+    isSplitReceiveAvailable &&
     !isReceiveSeparated &&
     receiveTokenSymbol &&
     profitTokenSymbol &&
@@ -353,10 +363,10 @@ export function PositionSeller() {
     ) : undefined;
 
   useEffect(() => {
-    if (!canSplitReceive && isReceiveSeparated) {
+    if (!isSplitReceiveAvailable && isReceiveSeparated) {
       setIsReceiveSeparated(false);
     }
-  }, [canSplitReceive, isReceiveSeparated, setIsReceiveSeparated]);
+  }, [isSplitReceiveAvailable, isReceiveSeparated, setIsReceiveSeparated]);
 
   useEffect(() => {
     if (isVisible) {
@@ -1121,7 +1131,7 @@ export function PositionSeller() {
                   </ToggleSwitch>
                 )}
 
-                {canSplitReceive && (
+                {isSplitReceiveAvailable && (
                   <ToggleSwitch
                     textClassName="text-typography-secondary"
                     isChecked={isReceiveSeparated}

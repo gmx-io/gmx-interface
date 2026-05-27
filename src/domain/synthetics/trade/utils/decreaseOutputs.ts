@@ -60,3 +60,10 @@ export function getHasSplitReceiveOutputs(outputs: DecreaseReceiveOutput[]): boo
 
   return outputs.some((output) => !getIsEquivalentTokens(output.token, outputs[0].token));
 }
+
+export function getIsSplitReceiveAvailable(
+  position: PositionInfo | undefined,
+  outputs: DecreaseReceiveOutput[]
+): boolean {
+  return getCanSplitReceive(position) && getHasSplitReceiveOutputs(outputs);
+}
