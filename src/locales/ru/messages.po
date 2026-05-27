@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Slippage exceeded"
 msgstr "Проскальзывание превышено"
 
@@ -44,7 +44,7 @@ msgstr "Или обновите RPC вашего кошелька через <0>
 msgid "REFERRAL CODE"
 msgstr "РЕФЕРАЛЬНЫЙ КОД"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient funds for order costs. Remaining: {remainingCostUsdText}"
 msgstr ""
 
@@ -79,7 +79,7 @@ msgid "Disconnect"
 msgstr "Разъединить"
 
 #: src/components/Errors/errorToasts.tsx
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Order simulation failed"
@@ -118,7 +118,7 @@ msgstr "См. <0>документацию Tenderly</0>"
 msgid "Show debug values"
 msgstr "Показать отладочные значения"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Execution price is negative"
 msgstr ""
 
@@ -252,6 +252,10 @@ msgstr "События Oracle keeper"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "RabbitHole"
 msgstr "RabbitHole"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Insufficient GM tokens for withdrawal"
+msgstr "Недостаточно токенов GM для вывода"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "On-chain signing for every transaction"
@@ -493,7 +497,7 @@ msgstr "Экспонента фандинга"
 msgid "Mixed exposure: short {indexSymbol} + long {collateralSymbol} collateral. Useful for delta-neutral strategies to earn funding."
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid oracle price for {tokenSymbol}"
 msgstr "Недопустимая цена оракула для {tokenSymbol}"
 
@@ -542,7 +546,7 @@ msgstr "Максимальное {0} превышение шорта"
 msgid "Insufficient GM balance"
 msgstr "Недостаточный баланс GM"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Slippage exceeded. Expected min: {minOutputAmountText}, actual: {outputAmountText}"
 msgstr "Проскальзывание превышено. Ожидаемый минимум: {minOutputAmountText}, фактически: {outputAmountText}"
 
@@ -716,7 +720,7 @@ msgstr "Ордера"
 msgid "GMTrade (previously GMX Solana) is hosted on a separate website and run by a different team, so the experience may vary. Opens in a new tab."
 msgstr "GMTrade (ранее GMX Solana) размещён на отдельном сайте и управляется другой командой, поэтому возможны различия в интерфейсе. Открывается в новой вкладке."
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid decrease size. Size delta ({sizeDeltaUsdText}) exceeds position size ({positionSizeInUsdText})"
 msgstr "Некорректный размер уменьшения. Изменение размера ({sizeDeltaUsdText}) превышает размер позиции ({positionSizeInUsdText})"
 
@@ -832,7 +836,7 @@ msgstr "Глобальный"
 msgid "{actionsCount, plural, one {Order} other {# Orders}}"
 msgstr "{actionsCount, plural, one {Ордер} other {# Ордеров}}"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid collateral token. {tokenSymbol} isn't supported as collateral"
 msgstr "Некорректный токен обеспечения. {tokenSymbol} не поддерживается в качестве обеспечения"
 
@@ -1125,6 +1129,10 @@ msgstr "Партнёрства и интеграции"
 msgid "Insufficient gas balance. Deposit more ETH."
 msgstr "Недостаточный баланс Gas. Пополните ETH."
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Execution fee is too low for current network costs"
+msgstr "Комиссия за исполнение слишком низкая для текущих сетевых расходов"
+
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Tiers"
 msgstr ""
@@ -1187,7 +1195,7 @@ msgstr "Вывести из стейкинга {tokenSymbol}"
 msgid "Invalid slippage value"
 msgstr "Недопустимое значение скольжения"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid collateral token for this market"
 msgstr "Недопустимый токен обеспечения для этого рынка"
 
@@ -1386,6 +1394,10 @@ msgstr "Купить {operationTokenSymbol}"
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Buy GM: {0}"
 msgstr "Купить GM: {0}"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Trigger price condition has not been met"
+msgstr "Условие триггерной цены не выполнено"
 
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "May take a few minutes to reflect. Check back later"
@@ -1748,7 +1760,7 @@ msgstr "Лимитный обмен не удался"
 msgid "Failed"
 msgstr "Ошибка"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient margin. Add {amountText} more margin"
 msgstr ""
 
@@ -1886,7 +1898,7 @@ msgstr "Вывод недоступен"
 msgid "Your code is immediately active! Share it with traders and you'll earn rebates when they execute trades."
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Max profit limit reached. Current: {pnlToPoolFactorText}, max: {maxPnlFactorText}"
 msgstr "Достигнут лимит максимальной прибыли. Текущий: {pnlToPoolFactorText}, макс.: {maxPnlFactorText}"
 
@@ -1937,6 +1949,10 @@ msgstr "Symbiosis"
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "How it works"
 msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Order is already frozen"
+msgstr "Ордер уже заморожен"
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "{orderTypeLabel} {positionText}, -{0}"
@@ -1999,7 +2015,7 @@ msgstr "Время"
 msgid "KyberSwap"
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient gas for execution"
 msgstr "Недостаточно Gas для исполнения"
 
@@ -2096,7 +2112,7 @@ msgstr "Требуется процент размера"
 msgid "Execution price for the order"
 msgstr "Цена исполнения ордера"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Market temporarily disabled"
 msgstr "Рынок временно отключён"
 
@@ -2365,7 +2381,7 @@ msgstr "Блеск"
 msgid "Reserve factor shorts"
 msgstr "Резервный фактор для шортов"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Max deposit limit reached"
 msgstr "Достигнут максимальный лимит депозита"
 
@@ -2716,8 +2732,8 @@ msgstr "GM рынки"
 msgid "Tickers simulation"
 msgstr "Симуляция тикеров"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size exceeds available open interest"
 msgstr "Размер позиции превышает доступный открытый интерес"
 
@@ -2831,6 +2847,10 @@ msgstr ""
 msgid "Insufficient gas balance. Express Trading and One-Click Trading unavailable."
 msgstr "Недостаточный баланс для газа. Express Trading и One-Click Trading недоступны."
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Invalid signature. Try signing the request again"
+msgstr "Недействительная подпись. Попробуйте подписать запрос еще раз"
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search address"
 msgstr "Поиск адреса"
@@ -2887,7 +2907,7 @@ msgstr "График цены маркет-токена GMX"
 msgid "Lifetime LP rewards"
 msgstr "Совокупные вознаграждения LP"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid decrease size"
 msgstr "Недопустимый размер уменьшения"
 
@@ -3371,7 +3391,7 @@ msgstr "<0><1>$GMX</1> по праву заработал титул гиган�
 msgid "Network status"
 msgstr "Статус сети"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact too high. Impact: {negativeImpactAmountText}, input: {amountAfterFeesText}"
 msgstr "Слишком высокое влияние на цену. Влияние: {negativeImpactAmountText}, сумма: {amountAfterFeesText}"
 
@@ -3398,7 +3418,7 @@ msgstr ""
 msgid "Uploading..."
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Can't withdraw collateral. Remaining would be {estimatedRemainingCollateralUsdText}, below minimum"
 msgstr "Невозможно вывести обеспечение. Остаток составит {estimatedRemainingCollateralUsdText}, что ниже минимума"
 
@@ -4151,7 +4171,7 @@ msgstr "Открытый интерес"
 msgid "More details"
 msgstr "Подробнее"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Max profit limit reached"
 msgstr "Достигнут лимит максимальной прибыли"
 
@@ -4424,7 +4444,7 @@ msgstr "Мин. сумма пула влияния"
 msgid "Generating..."
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact too high"
 msgstr "Влияние на цену слишком велико"
 
@@ -4485,7 +4505,7 @@ msgstr "Код не найден"
 msgid "Inactive"
 msgstr "Неактивен"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Max open interest exceeded. Current: {openInterestText}, max: {maxOpenInterestText}"
 msgstr "Превышен максимальный открытый интерес. Текущий: {openInterestText}, макс.: {maxOpenInterestText}"
 
@@ -4601,7 +4621,7 @@ msgstr "PnL"
 msgid "Favourites"
 msgstr "Избранное"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size too small. Min: {minPositionSizeUsdText}, current: {positionSizeInUsdText}"
 msgstr "Размер позиции слишком мал. Мин.: {minPositionSizeUsdText}, текущий: {positionSizeInUsdText}"
 
@@ -4713,7 +4733,7 @@ msgstr "Укажите сеть: arbitrum, avalanche, fuji, botanix, arbitrum-se
 msgid "Buy {nativeTokenSymbol}"
 msgstr "Купить {nativeTokenSymbol}"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size too small"
 msgstr "Размер позиции слишком мал"
 
@@ -4776,6 +4796,10 @@ msgstr "Предоставляйте GLV или GM токены в кредит 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Number of trades from referrals"
 msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Request cannot be canceled yet. Try again after the cancellation delay"
+msgstr "Запрос пока нельзя отменить. Попробуйте снова после задержки отмены"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Update {orderTypeName}"
@@ -5061,7 +5085,7 @@ msgstr "Торгуйте бессрочными контрактами с кре
 msgid "Sell fee"
 msgstr "Комиссия продажи"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid oracle price"
 msgstr "Недействительная цена Oracle"
 
@@ -5238,6 +5262,10 @@ msgstr "Недействительная транзакция"
 msgid "Insufficient liquidity in {0} pool. Select a different pool."
 msgstr "Недостаточная ликвидность в пуле {0}. Выберите другой пул."
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Frozen order can only be executed by an authorized keeper"
+msgstr "Замороженный ордер может быть исполнен только авторизованным keeper"
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
@@ -5345,6 +5373,10 @@ msgstr "ЦЕНА ИСПОЛНЕНИЯ"
 msgid "spinner"
 msgstr "загрузка"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "This action is currently disabled"
+msgstr "Это действие сейчас отключено"
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit approvals are currently unavailable."
 msgstr "Одобрения через permit сейчас недоступны."
@@ -5431,8 +5463,8 @@ msgstr "Оптимальный"
 msgid "{updateOrdersCount} TP/SL orders updated"
 msgstr "{updateOrdersCount} TP/SL ордеров обновлено"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient margin. Add more margin"
 msgstr ""
 
@@ -5697,7 +5729,7 @@ msgstr ""
 msgid "No open orders"
 msgstr "Нет открытых ордеров"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient liquidity. Available: {availableLiquidityText}"
 msgstr "Недостаточная ликвидность. Доступно: {availableLiquidityText}"
 
@@ -5708,6 +5740,10 @@ msgstr "Вывод из стейкинга отправлен"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Stop-Loss: {suffix}"
 msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Order failed due to a protocol validation error: {errorName}"
+msgstr "Ордер не выполнен из-за ошибки проверки протокола: {errorName}"
 
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -5936,7 +5972,7 @@ msgstr "Рекомендуемые"
 msgid "Start trading"
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Oracle price is stale"
 msgstr ""
 
@@ -6056,15 +6092,11 @@ msgstr "Страница управления GMX"
 msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there"
 msgstr "Купите {nativeTokenSymbol} напрямую на {chainName} или переведите его туда"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
-msgid "Reason: {0}"
-msgstr "Причина: {0}"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded."
 msgstr "Макс. комиссия сети включает запас на случай скачков Gas. Неиспользованные комиссии возвращаются."
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Order execution failed"
 msgstr "Ошибка исполнения ордера"
 
@@ -6095,7 +6127,7 @@ msgstr ""
 msgid "Same as active code"
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Order not found. May have been canceled or already executed"
 msgstr "Ордер не найден. Возможно, он был отменён или уже исполнен"
 
@@ -6140,7 +6172,7 @@ msgstr "ЛИКВ."
 msgid "GLP and GMX autocompounding vaults"
 msgstr "Хранилища с автокомпаундингом GLP и GMX"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size exceeds pool value. Delta: {usdDeltaText}, pool: {poolUsdText}"
 msgstr "Размер позиции превышает стоимость пула. Delta: {usdDeltaText}, пул: {poolUsdText}"
 
@@ -6201,6 +6233,10 @@ msgstr ""
 msgid "TWAP number of parts"
 msgstr "Количество частей TWAP"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Not enough native token was provided for the execution fee"
+msgstr "Предоставлено недостаточно нативного токена для комиссии за исполнение"
+
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Not enough data yet"
 msgstr ""
@@ -6233,7 +6269,7 @@ msgstr "TVL/КАП"
 msgid "Connect wallet to see your assets"
 msgstr "Подключите кошелёк, чтобы увидеть ваши активы"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size exceeds pool value"
 msgstr "Размер позиции превышает стоимость пула"
 
@@ -6253,7 +6289,7 @@ msgstr ""
 msgid "If you continue, you will lose {0} in rewards"
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Can't withdraw collateral. Remaining collateral would be below minimum"
 msgstr "Невозможно вывести обеспечение. Оставшееся обеспечение будет ниже минимума"
 
@@ -6407,6 +6443,10 @@ msgid "Multicall events"
 msgstr "События Multicall"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Position not found. It may have been closed"
+msgstr "Позиция не найдена. Возможно, она была закрыта"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execute"
 msgstr "Выполнить"
 
@@ -6454,7 +6494,7 @@ msgstr ""
 msgid "Set long Limit @ {0}"
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable"
 msgstr "Позиция будет подлежать ликвидации"
 
@@ -6742,7 +6782,7 @@ msgstr "Отключить валидацию для тестирования"
 msgid "GMX icon"
 msgstr "Иконка GMX"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact exceeds order size"
 msgstr "Влияние на цену превышает размер ордера"
 
@@ -6755,6 +6795,10 @@ msgstr "Хотите торговать быстрее с One-Click Trading?"
 #: src/components/TradeBox/tradeboxConstants.tsx
 msgid "TP/SL"
 msgstr "TP/SL"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "This order type is not supported"
+msgstr "Этот тип ордера не поддерживается"
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Order error. Prices are volatile for this market, try again by <0>increasing the allowed slippage</0>"
@@ -6786,7 +6830,7 @@ msgstr "Торгуйте с уверенностью"
 msgid "Receiver has staked GMX/GLP"
 msgstr "Получатель имеет застейканные GMX/GLP"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Order type unavailable for creation"
 msgstr ""
 
@@ -7038,7 +7082,7 @@ msgstr "Запрос на получение отправлен"
 msgid "Created"
 msgstr "Создано"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Market not found. May have been removed"
 msgstr "Рынок не найден. Возможно, он был удалён"
 
@@ -7122,7 +7166,7 @@ msgstr "Группа в Telegram"
 msgid "Tradao"
 msgstr "Tradao"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
@@ -7183,6 +7227,10 @@ msgstr "FX"
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Share position"
 msgstr "Поделиться позицией"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Max deposit capacity reached for this pool"
+msgstr "Достигнута максимальная емкость депозита для этого пула"
 
 #: src/components/BotanixBanner/BotanixBanner.tsx
 msgid "Switch to <0><1/><2>Arbitrum</2></0> or <3><4/><5>Avalanche</5></3> for those features"
@@ -7246,7 +7294,7 @@ msgstr "Проект"
 msgid "24h low"
 msgstr "Мин. за 24ч"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient margin. Add {missingCollateralUsdText} more margin"
 msgstr ""
 
@@ -7720,8 +7768,8 @@ msgstr ""
 msgid "Open interest reserve factor shorts"
 msgstr "Резервный фактор открытого интереса для шортов"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient pool liquidity"
 msgstr "Недостаточная ликвидность пула"
 
@@ -7968,7 +8016,7 @@ msgstr "Нет токенов на {0} для депозита"
 msgid "Total to claim"
 msgstr "Итого к получению"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient gas for execution. Estimated: {estimatedGasLimitText}, starting: {startingGasText}"
 msgstr "Недостаточно Gas для исполнения. Расчётный лимит: {estimatedGasLimitText}, начальный: {startingGasText}"
 
@@ -8061,6 +8109,10 @@ msgstr "Выполнение запроса на покупку…"
 msgid "Buy GM failed"
 msgstr "Покупка GM не удалась"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Insufficient collateral to cover order costs"
+msgstr "Недостаточно обеспечения для покрытия затрат ордера"
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
 msgstr "Неизвестный ордер сдвига GM"
@@ -8148,7 +8200,7 @@ msgstr ""
 msgid "{0} GMX"
 msgstr "{0} GMX"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact exceeds order size. Impact: {priceImpactUsdText}, order: {sizeDeltaUsdText}"
 msgstr "Влияние на цену превышает размер ордера. Влияние: {priceImpactUsdText}, ордер: {sizeDeltaUsdText}"
 
@@ -8236,7 +8288,7 @@ msgstr "Новый уровень:"
 msgid "Last updated:"
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Max pool capacity reached"
 msgstr "Достигнут максимальный объём пула"
 
@@ -8408,9 +8460,17 @@ msgstr "Бонусная скидка"
 msgid "Decentralized options strategies"
 msgstr "Децентрализованные опционные стратегии"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Deposit not found. It may have been executed or canceled"
+msgstr "Депозит не найден. Возможно, он был исполнен или отменен"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Select rewards to claim"
 msgstr "Выберите награды для получения"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Withdrawal not found. It may have been executed or canceled"
+msgstr "Вывод не найден. Возможно, он был исполнен или отменен"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8451,8 +8511,8 @@ msgstr "Сбой исполнения конвертации"
 msgid "Create Take-Profit"
 msgstr "Создание тейк-профит"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size exceeds available open interest. Delta: {usdDeltaText}, max OI: {openInterestText}"
 msgstr "Размер позиции превышает доступный открытый интерес. Дельта: {usdDeltaText}, макс. OI: {openInterestText}"
 
@@ -8849,6 +8909,10 @@ msgstr "Глубина"
 msgid "Layer 1"
 msgstr "Слой 1"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Position would be liquidatable at current prices"
+msgstr "Позиция может быть ликвидирована при текущих ценах"
+
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
 msgstr "<0>С большинством голосов 75.5% GMX выбрал LayerZero как партнера по messaging для мультичейн-расширения! Интеграция приносит GMX:</0><1><2>Возможность расширения на 125+ цепей</2><3>Полное владение всеми контрактами и безопасностью</3><4>Быстрые переводы без slippage</4><5>Боевые рельсы, уже доверенные миллиардам долларов в активах и сотням приложений... <6>см. больше</6></5></1>"
@@ -9153,7 +9217,7 @@ msgstr "Обсуждение сообщества GMX"
 msgid "Sell GM"
 msgstr "Продать GM"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Order can't be updated. Type doesn't support modifications"
 msgstr "Ордер не может быть обновлён. Данный тип не поддерживает изменения"
 
@@ -9327,7 +9391,7 @@ msgstr "Застейкать {tokenSymbol}"
 msgid "Link copied to clipboard"
 msgstr "Ссылка скопирована в буфер обмена"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Max pool capacity reached. Current: {poolAmountText}, max: {maxPoolAmountText}"
 msgstr "Достигнута максимальная ёмкость пула. Текущее: {poolAmountText}, макс.: {maxPoolAmountText}"
 
@@ -9703,7 +9767,7 @@ msgstr "ОТВЕТ"
 msgid "High TWAP network fee"
 msgstr "Высокая сетевая комиссия TWAP"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable. Current: {remainingCollateralUsdText}, required: {minCollateralUsdText}"
 msgstr "Позиция будет подвержена ликвидации. Текущее: {remainingCollateralUsdText}, требуется: {minCollateralUsdText}"
 
@@ -9872,7 +9936,7 @@ msgstr "Общая статистика"
 msgid "Vested GLP not withdrawn"
 msgstr "Вестинговый GLP не выведен"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient pool liquidity. Available: {availableAmountText}"
 msgstr ""
 
@@ -10449,7 +10513,7 @@ msgstr "Rage Trade"
 msgid "1h"
 msgstr "1ч"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient funds for order costs"
 msgstr ""
 
@@ -10486,7 +10550,7 @@ msgstr "Доходность на задействованный капитал 
 msgid "Update default destination"
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Max open interest exceeded"
 msgstr "Превышен максимальный открытый интерес"
 
@@ -10521,7 +10585,7 @@ msgstr "Переключиться на пул WBTC-USDC"
 msgid "Traders referred"
 msgstr "Привлечённые трейдеры"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Max deposit limit reached: {maxPoolUsdText}"
 msgstr "Достигнут максимальный лимит депозита: {maxPoolUsdText}"
 

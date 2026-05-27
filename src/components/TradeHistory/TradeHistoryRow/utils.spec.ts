@@ -27,6 +27,7 @@ import {
   withdraw1Usd,
 } from "./mocks";
 import { formatPositionMessage } from "./utils/position";
+import { getErrorTooltipTitle } from "./utils/shared";
 import { formatSwapMessage } from "./utils/swap";
 
 i18n.load({ en: {} });
@@ -35,6 +36,27 @@ i18n.activate("en");
 const minCollateralUsd = BigInt(100);
 
 describe("TradeHistoryRow helpers", () => {
+  it("maps known contract error names for action tooltips", () => {
+    expect(getErrorTooltipTitle("InvalidDecreaseOrderSize", false)).toBe("Invalid decrease size");
+  });
+
+  it("maps user-facing trade history errors and preserves raw names in the fallback", () => {
+    expect(getErrorTooltipTitle("DisabledFeature", false)).toBe("This action is currently disabled");
+    expect(getErrorTooltipTitle("InsufficientFundsToPayForCosts", false)).toBe(
+      "Insufficient collateral to cover order costs"
+    );
+    expect(getErrorTooltipTitle("LiquidatablePosition", false)).toBe(
+      "Position would be liquidatable at current prices"
+    );
+    expect(getErrorTooltipTitle("MaxPoolAmountForDepositExceeded", false)).toBe(
+      "Max deposit capacity reached for this pool"
+    );
+    expect(getErrorTooltipTitle("EmptyPosition", false)).toBe("Position not found. It may have been closed");
+    expect(getErrorTooltipTitle("UnexpectedBorrowingFactor", false)).toBe(
+      "Order failed due to a protocol validation error: UnexpectedBorrowingFactor"
+    );
+  });
+
   it("formatPositionMessage", () => {
     expect(Intl.DateTimeFormat().resolvedOptions().timeZone).toBe("Asia/Dubai");
 
