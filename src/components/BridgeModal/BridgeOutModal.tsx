@@ -19,7 +19,7 @@ import {
   selectDepositMarketTokensData,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import { selectGmxAccountGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useArbitraryError, useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
@@ -80,7 +80,7 @@ export function BridgeOutModal({
   const glvOrMarketAddress = glvOrMarketInfo ? getGlvOrMarketAddress(glvOrMarketInfo) : undefined;
   const marketToken = getTokenData(depositMarketTokensData, glvOrMarketAddress);
   const isGlv = isGlvInfo(glvOrMarketInfo);
-  const gasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
+  const gasPaymentTokenAddress = useSelector(selectGmxAccountGasPaymentTokenAddress);
   const gasPaymentToken = getTokenData(tokensData, gasPaymentTokenAddress);
 
   const marketTokenDecimals = isGlv ? glvOrMarketInfo?.glvToken.decimals : marketToken?.decimals;

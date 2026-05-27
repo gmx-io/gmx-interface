@@ -2,8 +2,9 @@ import { useMemo } from "react";
 
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import {
-  selectExpressGlobalParams,
+  selectGmxAccountExpressGlobalParams,
   selectIsExpressTransactionAvailable,
+  selectSettlementChainExpressGlobalParams,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectRawSubaccountForMultichainAction,
@@ -54,7 +55,9 @@ export function useExpressOrdersParams({
   const { chainId } = useChainId();
 
   const showDebugValues = useShowDebugValues();
-  const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const settlementChainGlobalExpressParams = useSelector(selectSettlementChainExpressGlobalParams);
+  const gmxAccountGlobalExpressParams = useSelector(selectGmxAccountExpressGlobalParams);
+  const globalExpressParams = isGmxAccount ? gmxAccountGlobalExpressParams : settlementChainGlobalExpressParams;
   const subaccount = useSelector(
     isGmxAccount ? selectRawSubaccountForMultichainAction : selectRawSubaccountForSettlementChainAction
   );

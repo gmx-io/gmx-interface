@@ -2,7 +2,10 @@ import { t } from "@lingui/macro";
 import { useEffect, useMemo } from "react";
 
 import { selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectSetGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
+import {
+  selectSetGasPaymentTokenAddress,
+  selectSetGmxAccountGasPaymentTokenAddress,
+} from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { convertToTokenAmount, convertToUsd, TokenData, TokensData } from "domain/tokens";
 import { applyMinimalBuffer } from "domain/tokens/useMaxAvailableAmount";
@@ -88,6 +91,7 @@ function useSwitchGasPaymentTokenIfRequired({
 }) {
   const { chainId } = useChainId();
   const setGasPaymentTokenAddress = useSelector(selectSetGasPaymentTokenAddress);
+  const setGmxAccountGasPaymentTokenAddress = useSelector(selectSetGmxAccountGasPaymentTokenAddress);
   const tokensData = useSelector(selectTokensData);
 
   useEffect(
@@ -105,7 +109,11 @@ function useSwitchGasPaymentTokenIfRequired({
 
       if (anotherGasToken && anotherGasToken !== gasPaymentToken.address) {
         const newTokenData = getByKey(tokensData, anotherGasToken);
-        setGasPaymentTokenAddress(anotherGasToken);
+        if (isGmxAccount) {
+          setGmxAccountGasPaymentTokenAddress(anotherGasToken);
+        } else {
+          setGasPaymentTokenAddress(anotherGasToken);
+        }
         if (newTokenData) {
           notifyGasPaymentTokenSwitched({ fromSymbol: gasPaymentToken.symbol, toSymbol: newTokenData.symbol });
         }
@@ -117,6 +125,7 @@ function useSwitchGasPaymentTokenIfRequired({
       gasPaymentTokenAmount,
       isGmxAccount,
       isOutGasTokenBalance,
+      setGmxAccountGasPaymentTokenAddress,
       payAmounts,
       setGasPaymentTokenAddress,
       tokensData,

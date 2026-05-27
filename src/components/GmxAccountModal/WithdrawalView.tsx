@@ -37,8 +37,8 @@ import {
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
-  selectExpressGlobalParams,
-  selectGasPaymentToken,
+  selectGmxAccountExpressGlobalParams,
+  selectGmxAccountGasPaymentToken,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectExpressOrdersEnabled,
@@ -512,9 +512,9 @@ export const WithdrawalView = () => {
 
   const { tokensData } = useTokensDataRequest(chainId, withdrawalViewChain);
   const networks = useGmxAccountWithdrawNetworks();
-  const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const globalExpressParams = useSelector(selectGmxAccountExpressGlobalParams);
   const relayerFeeToken = getByKey(tokensData, globalExpressParams?.relayerFeeTokenAddress);
-  const gasPaymentToken = useSelector(selectGasPaymentToken);
+  const gasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
 
   const selectedToken = useMemo(() => {
     return getByKey(tokensData, selectedTokenAddress);
