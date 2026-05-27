@@ -3,12 +3,8 @@ import { WagmiProvider } from "@privy-io/wagmi";
 import { useEffect, useMemo } from "react";
 
 import { colors } from "config/colors";
-import { PrivyWalletStateContext } from "context/PrivyWalletContext/PrivyWalletStateContext";
 import { useTheme } from "context/ThemeContext/ThemeContext";
-
-import gmxLogo from "img/logo-icon.svg";
-
-import { PrivyConnectModalBridge } from "./PrivyConnectModalBridge";
+import { PrivyConnectModalBridge } from "lib/wallets/PrivyConnectModalBridge";
 import {
   getSupportedChains,
   getWagmiConfig,
@@ -16,7 +12,11 @@ import {
   PRIVY_LOGIN_METHODS,
   PRIVY_SIGNATURE_REQUEST_TIMEOUTS,
   PRIVY_WALLET_LIST,
-} from "./walletConfig";
+} from "lib/wallets/walletConfig";
+
+import gmxLogo from "img/logo-icon.svg";
+
+import { PrivyWalletStateContext } from "./PrivyWalletStateContext";
 
 const supportedChains = getSupportedChains();
 const defaultChain = supportedChains[0];

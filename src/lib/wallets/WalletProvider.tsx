@@ -9,7 +9,7 @@ import { getWagmiConfig } from "./walletConfig";
 
 const queryClient = new QueryClient();
 
-const LazyPrivyWalletProvider = lazy(() => import("./PrivyWalletProvider"));
+const LazyPrivyWalletProvider = lazy(() => import("context/PrivyWalletContext/PrivyWalletProvider"));
 
 function hasStoredPrivySession() {
   if (typeof window === "undefined") {

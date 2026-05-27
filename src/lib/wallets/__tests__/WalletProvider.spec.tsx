@@ -18,7 +18,7 @@ vi.mock("../walletConfig", () => ({
   getWagmiConfig: () => ({}),
 }));
 
-vi.mock("../PrivyWalletProvider", () => ({
+vi.mock("context/PrivyWalletContext/PrivyWalletProvider", () => ({
   default: ({ children }: { children: ReactNode }) => {
     mocks.privyProviderRendered();
 
