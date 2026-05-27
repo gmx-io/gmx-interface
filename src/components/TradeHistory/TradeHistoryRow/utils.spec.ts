@@ -51,6 +51,7 @@ describe("TradeHistoryRow helpers", () => {
     expect(getErrorTooltipTitle("MaxPoolAmountForDepositExceeded", false)).toBe(
       "Max deposit capacity reached for this pool"
     );
+    expect(getErrorTooltipTitle("EmptyPosition", false)).toBe("Position not found. It may have been closed");
     expect(getErrorTooltipTitle("UnexpectedBorrowingFactor", false)).toBe(
       "Order failed due to a protocol validation error: UnexpectedBorrowingFactor"
     );

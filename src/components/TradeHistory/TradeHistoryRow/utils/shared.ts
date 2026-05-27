@@ -226,6 +226,7 @@ function getTradeHistoryErrorMessage(errorName: string) {
       return t`Max deposit capacity reached for this pool`;
     case CustomErrorName.OrderAlreadyFrozen:
       return t`Order is already frozen`;
+    case CustomErrorName.EmptyPosition:
     case CustomErrorName.PositionNotFound:
       return t`Position not found. It may have been closed`;
     case CustomErrorName.RequestNotYetCancellable:
