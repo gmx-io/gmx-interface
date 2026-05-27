@@ -13,7 +13,7 @@ import { getToken } from "sdk/configs/tokens";
 import { FUNDING_OPERATIONS_LABELS } from "components/GmxAccountModal/keys";
 
 import CheckCircleIcon from "img/ic_check_circle.svg?react";
-import CloseIcon from "img/ic_close.svg?react";
+import CloseCircleIcon from "img/ic_close_circle.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { isMultichainFundingItemLoading } from "./isMultichainFundingItemLoading";
@@ -63,7 +63,7 @@ export function getMultichainFundingToastContent({
             </div>
             {isLoading && <SpinnerIcon className="spin size-15 shrink-0 text-typography-primary" />}
             {isSuccess && <CheckCircleIcon className="size-15 shrink-0 text-green-500" />}
-            {isError && <CloseIcon className="size-15 shrink-0 text-red-500" />}
+            {isError && <CloseCircleIcon className="size-15 shrink-0 text-red-500" />}
           </div>
         );
       })}

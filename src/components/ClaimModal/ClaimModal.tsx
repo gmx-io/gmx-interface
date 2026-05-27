@@ -40,7 +40,7 @@ import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import CheckCircleIcon from "img/ic_check_circle.svg?react";
-import CloseIcon from "img/ic_close.svg?react";
+import CloseCircleIcon from "img/ic_close_circle.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { ClaimFundingSelection, useClaimableFunding, useClaimableFundingSelection } from "./useClaimableFunding";
@@ -77,7 +77,7 @@ export function getClaimFundingFailureToastContent() {
   return (
     <div className="flex items-center justify-between gap-6">
       <div>{t`Claiming funding fees failed`}</div>
-      <CloseIcon className="size-15 shrink-0 text-red-500" />
+      <CloseCircleIcon className="size-15 shrink-0 text-red-500" />
     </div>
   );
 }
