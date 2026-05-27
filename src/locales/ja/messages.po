@@ -6308,7 +6308,7 @@ msgstr ""
 msgid "Sell order executed"
 msgstr "売却注文が約定しました"
 
-#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionSeller/SplitReceiveSwapProfitFeeWarning.tsx
 msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>"
 msgstr "{receiveTokenSymbol} で受け取ると利益がスワップされ、{swapProfitFeePercentage}（<0>{swapProfitFeeUsd}</0>）のコストがかかります。スワップを避けるには {profitTokenSymbol} と {collateralTokenSymbol} を別々に受け取ってください。<1>詳細はこちら</1>"
 

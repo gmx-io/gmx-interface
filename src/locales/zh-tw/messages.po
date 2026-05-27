@@ -6308,7 +6308,7 @@ msgstr ""
 msgid "Sell order executed"
 msgstr "賣出訂單已成交"
 
-#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionSeller/SplitReceiveSwapProfitFeeWarning.tsx
 msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>"
 msgstr "以 {receiveTokenSymbol} 接收會交換您的利潤並產生 {swapProfitFeePercentage}（<0>{swapProfitFeeUsd}</0>）的成本。分開接收 {profitTokenSymbol} 和 {collateralTokenSymbol} 可跳過交換。<1>了解更多</1>"
 

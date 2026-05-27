@@ -6308,7 +6308,7 @@ msgstr ""
 msgid "Sell order executed"
 msgstr "Ordre de vente exécuté"
 
-#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionSeller/SplitReceiveSwapProfitFeeWarning.tsx
 msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>"
 msgstr "Recevoir en {receiveTokenSymbol} échangera votre profit et coûtera {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Recevez {profitTokenSymbol} et {collateralTokenSymbol} séparément pour éviter le swap. <1>En savoir plus</1>"
 

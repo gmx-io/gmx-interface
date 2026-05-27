@@ -6308,7 +6308,7 @@ msgstr ""
 msgid "Sell order executed"
 msgstr "판매 주문이 체결되었습니다"
 
-#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/PositionSeller/SplitReceiveSwapProfitFeeWarning.tsx
 msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>"
 msgstr "{receiveTokenSymbol}(으)로 받으면 수익이 스왑되고 {swapProfitFeePercentage}(<0>{swapProfitFeeUsd}</0>)의 비용이 발생합니다. 스왑을 건너뛰려면 {profitTokenSymbol} 및 {collateralTokenSymbol}을 별도로 받으세요. <1>자세히 보기</1>"
 

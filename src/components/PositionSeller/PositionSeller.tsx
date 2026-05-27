@@ -109,7 +109,6 @@ import Button from "components/Button/Button";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import {
   DecreaseReceiveOutputDisplay,
-  getTokenDisplaySymbol,
   SplitReceiveTokensLabel,
 } from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
@@ -133,6 +132,7 @@ import { MarginDestinationDialog } from "./MarginDestinationDialog";
 import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import { getSplitReceiveSwapProfitFeeWarning } from "./SplitReceiveSwapProfitFeeWarning";
 import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
 import { tradeModeLabels, tradeTypeLabels } from "../TradeBox/tradeboxConstants";
 import TwapRows from "../TwapRows/TwapRows";
@@ -142,7 +142,6 @@ import "./PositionSeller.scss";
 
 const PNL_TOOLTIP_THRESHOLD = expandDecimals(10000, USD_DECIMALS);
 const ORDER_OPTIONS = [{ value: OrderOption.Market }, { value: OrderOption.Twap }];
-const RECEIVE_TOKEN_DOCS_URL = "https://docs.gmx.io/docs/trading/order-types/#receive-token";
 
 export function PositionSeller() {
   const [, setClosingPositionKey] = useClosingPositionKeyState();
@@ -337,31 +336,13 @@ export function PositionSeller() {
   const slippageInputId = useId();
 
   const isTwap = orderOption === OrderOption.Twap;
-  const receiveTokenSymbol = getTokenDisplaySymbol(receiveToken);
-  const profitTokenSymbol = getTokenDisplaySymbol(position?.pnlToken);
-  const collateralTokenSymbol = getTokenDisplaySymbol(position?.collateralToken);
-  const swapProfitFeePercentage =
-    fees?.swapProfitFee?.precisePercentage === undefined
-      ? undefined
-      : formatPercentage(bigMath.abs(fees.swapProfitFee.precisePercentage), { displayDecimals: 2, bps: false });
-  const swapProfitFeeUsd =
-    fees?.swapProfitFee?.deltaUsd === undefined ? undefined : formatUsd(bigMath.abs(fees.swapProfitFee.deltaUsd));
-  const splitReceiveSwapProfitFeeWarning =
-    !isTwap &&
-    isSplitReceiveAvailable &&
-    !isReceiveSeparated &&
-    receiveTokenSymbol &&
-    profitTokenSymbol &&
-    collateralTokenSymbol &&
-    swapProfitFeePercentage &&
-    swapProfitFeeUsd ? (
-      <Trans>
-        Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (
-        <span className="font-medium text-yellow-300">{swapProfitFeeUsd}</span>). Receive {profitTokenSymbol} and{" "}
-        {collateralTokenSymbol} separately to skip the swap.{" "}
-        <ExternalLink href={RECEIVE_TOKEN_DOCS_URL}>Read more</ExternalLink>
-      </Trans>
-    ) : undefined;
+  const splitReceiveSwapProfitFeeWarning = getSplitReceiveSwapProfitFeeWarning({
+    shouldShow: !isTwap && isSplitReceiveAvailable && !isReceiveSeparated,
+    receiveToken,
+    profitToken: position?.pnlToken,
+    collateralToken: position?.collateralToken,
+    swapProfitFee: fees?.swapProfitFee,
+  });
 
   useEffect(() => {
     if ((isTwap || !isSplitReceiveAvailable) && isReceiveSeparated) {
