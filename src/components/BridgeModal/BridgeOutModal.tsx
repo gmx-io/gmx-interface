@@ -165,7 +165,7 @@ export function BridgeOutModal({
     overrideWnt: true,
   });
 
-  const errors = useArbitraryError(expressTxnParamsAsyncResult.error);
+  const errors = useArbitraryError(expressTxnParamsAsyncResult.error, { isGmxAccount: true });
 
   const sendParams = useMemo(() => {
     if (!bridgeOutChain || !account || bridgeOutAmount === undefined || bridgeOutAmount <= 0n) {

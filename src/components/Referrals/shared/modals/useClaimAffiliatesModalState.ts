@@ -379,7 +379,7 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
     transactionExternalCalls: multichainSwapExternalCalls,
   });
 
-  const errors = useArbitraryError(expressTxnParamsAsyncResult.error);
+  const errors = useArbitraryError(expressTxnParamsAsyncResult.error, { isGmxAccount: true });
   const fallbackGasPaymentTokenAmount = useMemo(() => {
     if (srcChainId === undefined || !gasPaymentToken || swapEstimatedNetworkFeeAmount <= 0n) {
       return undefined;

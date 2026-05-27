@@ -153,12 +153,13 @@ function ClaimModalMultichain(p: Props) {
     };
   }, [account, chainId, isSubmitting, provider, selection.selectedEntries, signer]);
 
+  const isGmxAccountClaim = srcChainId !== undefined;
   const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload({
     expressTransactionBuilder,
-    isGmxAccount: srcChainId !== undefined,
+    isGmxAccount: isGmxAccountClaim,
   });
 
-  const errors = useArbitraryError(expressTxnParamsAsyncResult.error);
+  const errors = useArbitraryError(expressTxnParamsAsyncResult.error, { isGmxAccount: isGmxAccountClaim });
   const outOfTokenErrorToken = useMemo(() => {
     if (errors?.isOutOfTokenError?.tokenAddress) {
       return getByKey(tokensData, errors.isOutOfTokenError.tokenAddress);

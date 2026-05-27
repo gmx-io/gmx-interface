@@ -534,10 +534,19 @@ export type ArbitraryExpressError = {
 };
 
 export function useArbitraryError(
-  error: ExpressEstimationInsufficientGasPaymentTokenBalanceError | CustomError | Error | undefined
+  error: ExpressEstimationInsufficientGasPaymentTokenBalanceError | CustomError | Error | undefined,
+  opts: { isGmxAccount?: boolean; gasPaymentTokenAddress?: string } = EMPTY_OBJECT
 ): ArbitraryExpressError | undefined {
+  const settlementChainGlobalExpressParams = useSelector(selectSettlementChainExpressGlobalParams);
+  const gmxAccountGlobalExpressParams = useSelector(selectGmxAccountExpressGlobalParams);
   const globalExpressParams = useSelector(selectExpressGlobalParams);
-  const gasPaymentTokenAddress = globalExpressParams?.gasPaymentTokenAddress;
+  const gasPaymentTokenAddress =
+    opts.gasPaymentTokenAddress ??
+    (opts.isGmxAccount === undefined
+      ? globalExpressParams?.gasPaymentTokenAddress
+      : opts.isGmxAccount
+        ? gmxAccountGlobalExpressParams?.gasPaymentTokenAddress
+        : settlementChainGlobalExpressParams?.gasPaymentTokenAddress);
 
   return useMemo(() => {
     if (error instanceof ExpressEstimationInsufficientGasPaymentTokenBalanceError && gasPaymentTokenAddress) {
