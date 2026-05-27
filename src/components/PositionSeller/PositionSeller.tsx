@@ -102,7 +102,11 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
-import { DecreaseReceiveOutputDisplay } from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
+import {
+  DecreaseReceiveOutputDisplay,
+  getTokenDisplaySymbol,
+  SplitReceiveTokensLabel,
+} from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarginDestinationSelector } from "components/MarginDestinationSelector/MarginDestinationSelector";
@@ -133,6 +137,7 @@ import "./PositionSeller.scss";
 
 const PNL_TOOLTIP_THRESHOLD = expandDecimals(10000, USD_DECIMALS);
 const ORDER_OPTIONS = [{ value: OrderOption.Market }, { value: OrderOption.Twap }];
+const RECEIVE_TOKEN_DOCS_URL = "https://docs.gmx.io/docs/trading/order-types/#receive-token";
 
 export function PositionSeller() {
   const [, setClosingPositionKey] = useClosingPositionKeyState();
@@ -322,10 +327,30 @@ export function PositionSeller() {
   const slippageInputId = useId();
 
   const isTwap = orderOption === OrderOption.Twap;
-  const shouldShowSplitReceiveRecommendation =
+  const receiveTokenSymbol = getTokenDisplaySymbol(receiveToken);
+  const profitTokenSymbol = getTokenDisplaySymbol(position?.pnlToken);
+  const collateralTokenSymbol = getTokenDisplaySymbol(position?.collateralToken);
+  const swapProfitFeePercentage =
+    fees?.swapProfitFee?.precisePercentage === undefined
+      ? undefined
+      : formatPercentage(bigMath.abs(fees.swapProfitFee.precisePercentage), { displayDecimals: 2, bps: false });
+  const swapProfitFeeUsd =
+    fees?.swapProfitFee?.deltaUsd === undefined ? undefined : formatUsd(bigMath.abs(fees.swapProfitFee.deltaUsd));
+  const splitReceiveSwapProfitFeeWarning =
     canSplitReceive &&
     !isReceiveSeparated &&
-    (priceImpactWarningState.shouldShowWarningForSwap || priceImpactWarningState.shouldShowWarningForSwapProfitFee);
+    receiveTokenSymbol &&
+    profitTokenSymbol &&
+    collateralTokenSymbol &&
+    swapProfitFeePercentage &&
+    swapProfitFeeUsd ? (
+      <Trans>
+        Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (
+        <span className="font-medium text-yellow-300">{swapProfitFeeUsd}</span>). Receive {profitTokenSymbol} and{" "}
+        {collateralTokenSymbol} separately to skip the swap.{" "}
+        <ExternalLink href={RECEIVE_TOKEN_DOCS_URL}>Read more</ExternalLink>
+      </Trans>
+    ) : undefined;
 
   useEffect(() => {
     if (!canSplitReceive && isReceiveSeparated) {
@@ -1082,21 +1107,8 @@ export function PositionSeller() {
                   swapProfitFee={fees?.swapProfitFee}
                   executionFeeUsd={executionFee?.feeUsd}
                   maxNegativeImpactBps={position.marketInfo ? getMaxNegativeImpactBps(position.marketInfo) : undefined}
+                  swapProfitFeeWarning={splitReceiveSwapProfitFeeWarning}
                 />
-
-                {shouldShowSplitReceiveRecommendation && (
-                  <ColorfulBanner color="blue" icon={InfoCircleIcon}>
-                    <span>
-                      <span
-                        className="cursor-pointer font-medium text-blue-300"
-                        onClick={() => setIsReceiveSeparated(true)}
-                      >
-                        <Trans>Receive tokens separately</Trans>
-                      </span>{" "}
-                      <Trans>to avoid internal conversion costs</Trans>
-                    </span>
-                  </ColorfulBanner>
-                )}
 
                 {!isTwap && (
                   <ToggleSwitch
@@ -1115,7 +1127,10 @@ export function PositionSeller() {
                     isChecked={isReceiveSeparated}
                     setIsChecked={setIsReceiveSeparated}
                   >
-                    <Trans>Receive tokens separately</Trans>
+                    <SplitReceiveTokensLabel
+                      profitToken={position?.pnlToken}
+                      collateralToken={position?.collateralToken}
+                    />
                   </ToggleSwitch>
                 )}
 

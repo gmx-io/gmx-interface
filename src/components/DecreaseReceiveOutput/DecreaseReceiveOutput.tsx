@@ -1,9 +1,50 @@
+import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { Fragment, type ReactNode } from "react";
 
 import type { DecreaseReceiveOutput } from "domain/synthetics/trade";
+import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
+
+type TokenWithSymbol = {
+  symbol: string;
+};
+
+const WRAPPED_TOKEN_DISPLAY_SYMBOLS: Record<string, string> = {
+  WBTC: "BTC",
+  WETH: "ETH",
+  WAVAX: "AVAX",
+};
+
+export function getTokenDisplaySymbol(token: TokenWithSymbol | undefined) {
+  if (!token) {
+    return undefined;
+  }
+
+  const normalizedSymbol = getNormalizedTokenSymbol(token.symbol);
+
+  return WRAPPED_TOKEN_DISPLAY_SYMBOLS[normalizedSymbol] ?? normalizedSymbol;
+}
+
+export function SplitReceiveTokensLabel({
+  profitToken,
+  collateralToken,
+}: {
+  profitToken: TokenWithSymbol | undefined;
+  collateralToken: TokenWithSymbol | undefined;
+}) {
+  const profitTokenSymbol = getTokenDisplaySymbol(profitToken);
+  const collateralTokenSymbol = getTokenDisplaySymbol(collateralToken);
+
+  return profitTokenSymbol && collateralTokenSymbol ? (
+    <Trans>
+      Receive {profitTokenSymbol} and {collateralTokenSymbol} separately
+    </Trans>
+  ) : (
+    <Trans>Receive tokens separately</Trans>
+  );
+}
 
 export function DecreaseReceiveOutputDisplay({
   outputs,

@@ -2708,10 +2708,6 @@ msgstr "紹介コードを共有して報酬を獲得しましょう"
 msgid "Earn rewards by sharing your code!"
 msgstr "コードを共有して報酬を獲得！"
 
-#: src/components/PositionSeller/PositionSeller.tsx
-msgid "to avoid internal conversion costs"
-msgstr "内部変換コストを避けるため"
-
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM markets"
 msgstr "GMマーケット"
@@ -6312,6 +6308,10 @@ msgstr ""
 msgid "Sell order executed"
 msgstr "売却注文が約定しました"
 
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>"
+msgstr "{receiveTokenSymbol} で受け取ると利益がスワップされ、{swapProfitFeePercentage}（<0>{swapProfitFeeUsd}</0>）のコストがかかります。スワップを避けるには {profitTokenSymbol} と {collateralTokenSymbol} を別々に受け取ってください。<1>詳細はこちら</1>"
+
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Failed to claim price impact rebates"
@@ -7556,6 +7556,10 @@ msgstr "透明性、分散性、および自由なアクセスを確保するた
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Low margin after fees. Deposit more to reduce liquidation risk."
 msgstr ""
+
+#: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
+msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
+msgstr "{profitTokenSymbol} と {collateralTokenSymbol} を別々に受け取る"
 
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
@@ -9299,9 +9303,7 @@ msgstr ""
 msgid "Fastest"
 msgstr "最速"
 
-#: src/components/OrdersModal/AddTPSLModal.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
 msgid "Receive tokens separately"
 msgstr "トークンを別々に受け取る"
 

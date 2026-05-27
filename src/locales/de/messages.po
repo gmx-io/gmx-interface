@@ -2708,10 +2708,6 @@ msgstr "Verdienen Sie Belohnungen, indem Sie Ihren Empfehlungscode teilen"
 msgid "Earn rewards by sharing your code!"
 msgstr "Verdiene Belohnungen, indem du deinen Code teilst!"
 
-#: src/components/PositionSeller/PositionSeller.tsx
-msgid "to avoid internal conversion costs"
-msgstr "um interne Umwandlungskosten zu vermeiden"
-
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM markets"
 msgstr "GM-Märkte"
@@ -6312,6 +6308,10 @@ msgstr ""
 msgid "Sell order executed"
 msgstr "Verkaufsorder ausgeführt"
 
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>"
+msgstr "Beim Empfang als {receiveTokenSymbol} wird Ihr Gewinn getauscht und es entstehen Kosten von {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Empfangen Sie {profitTokenSymbol} und {collateralTokenSymbol} separat, um den Swap zu überspringen. <1>Mehr erfahren</1>"
+
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Failed to claim price impact rebates"
@@ -7556,6 +7556,10 @@ msgstr "Arbeitet auf offenen, genehmigungsfreien Netzwerken, um Transparenz, Dez
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Low margin after fees. Deposit more to reduce liquidation risk."
 msgstr ""
+
+#: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
+msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
+msgstr "{profitTokenSymbol} und {collateralTokenSymbol} separat erhalten"
 
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
@@ -9299,9 +9303,7 @@ msgstr ""
 msgid "Fastest"
 msgstr "Schnellste"
 
-#: src/components/OrdersModal/AddTPSLModal.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
 msgid "Receive tokens separately"
 msgstr "Token separat erhalten"
 

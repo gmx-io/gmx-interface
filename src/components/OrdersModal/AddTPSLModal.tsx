@@ -83,7 +83,10 @@ import { SidecarSlTpOrderEntry } from "sdk/utils/sidecarOrders/types";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";
 
 import Button from "components/Button/Button";
-import { DecreaseReceiveOutputDisplay } from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
+import {
+  DecreaseReceiveOutputDisplay,
+  SplitReceiveTokensLabel,
+} from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
 import { ExitPriceRow } from "components/ExitPriceRow/ExitPriceRow";
 import { ExpandableRow } from "components/ExpandableRow";
 import Modal from "components/Modal/Modal";
@@ -947,7 +950,7 @@ export function AddTPSLModal({
           </ToggleSwitch>
           {canSplitReceive && (
             <ToggleSwitch isChecked={isReceiveSeparated} setIsChecked={setIsReceiveSeparated}>
-              <Trans>Receive tokens separately</Trans>
+              <SplitReceiveTokensLabel profitToken={position.pnlToken} collateralToken={position.collateralToken} />
             </ToggleSwitch>
           )}
         </div>

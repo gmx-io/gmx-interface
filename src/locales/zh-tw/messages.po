@@ -2708,10 +2708,6 @@ msgstr "分享您的推薦碼即可賺取獎勵"
 msgid "Earn rewards by sharing your code!"
 msgstr "分享您的推薦碼即可賺取獎勵！"
 
-#: src/components/PositionSeller/PositionSeller.tsx
-msgid "to avoid internal conversion costs"
-msgstr "以避免內部轉換成本"
-
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM markets"
 msgstr "GM 市場"
@@ -6312,6 +6308,10 @@ msgstr ""
 msgid "Sell order executed"
 msgstr "賣出訂單已成交"
 
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>"
+msgstr "以 {receiveTokenSymbol} 接收會交換您的利潤並產生 {swapProfitFeePercentage}（<0>{swapProfitFeeUsd}</0>）的成本。分開接收 {profitTokenSymbol} 和 {collateralTokenSymbol} 可跳過交換。<1>了解更多</1>"
+
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Failed to claim price impact rebates"
@@ -7556,6 +7556,10 @@ msgstr "在開放、無需許可的網路上運行，確保透明度、去中心
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Low margin after fees. Deposit more to reduce liquidation risk."
 msgstr ""
+
+#: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
+msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
+msgstr "分開接收 {profitTokenSymbol} 和 {collateralTokenSymbol}"
 
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
@@ -9299,9 +9303,7 @@ msgstr ""
 msgid "Fastest"
 msgstr "最快"
 
-#: src/components/OrdersModal/AddTPSLModal.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
 msgid "Receive tokens separately"
 msgstr "分開接收代幣"
 

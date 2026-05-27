@@ -2708,10 +2708,6 @@ msgstr "Получайте вознаграждения, делясь своим
 msgid "Earn rewards by sharing your code!"
 msgstr "Зарабатывайте награды, делясь своим кодом!"
 
-#: src/components/PositionSeller/PositionSeller.tsx
-msgid "to avoid internal conversion costs"
-msgstr "чтобы избежать внутренних затрат на конвертацию"
-
 #: src/pages/Dashboard/GmCard.tsx
 msgid "GM markets"
 msgstr "GM рынки"
@@ -6312,6 +6308,10 @@ msgstr ""
 msgid "Sell order executed"
 msgstr "Ордер на продажу исполнен"
 
+#: src/components/PositionSeller/PositionSeller.tsx
+msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>"
+msgstr "При получении в {receiveTokenSymbol} ваша прибыль будет обменена, а стоимость составит {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Получайте {profitTokenSymbol} и {collateralTokenSymbol} отдельно, чтобы пропустить обмен. <1>Подробнее</1>"
+
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
 msgid "Failed to claim price impact rebates"
@@ -7556,6 +7556,10 @@ msgstr "Работает на открытых, не требующих разр
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Low margin after fees. Deposit more to reduce liquidation risk."
 msgstr ""
+
+#: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
+msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
+msgstr "Получать {profitTokenSymbol} и {collateralTokenSymbol} отдельно"
 
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
@@ -9299,9 +9303,7 @@ msgstr ""
 msgid "Fastest"
 msgstr "Самый быстрый"
 
-#: src/components/OrdersModal/AddTPSLModal.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
-#: src/components/PositionSeller/PositionSeller.tsx
+#: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
 msgid "Receive tokens separately"
 msgstr "Получать токены отдельно"
 
