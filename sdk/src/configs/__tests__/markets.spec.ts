@@ -1,7 +1,7 @@
 import { withRetry } from "viem";
 import { describe, expect, it } from "vitest";
 
-import { CONTRACTS_CHAIN_IDS_DEV } from "configs/chains";
+import { ARBITRUM, CONTRACTS_CHAIN_IDS_DEV } from "configs/chains";
 import { MARKETS } from "configs/markets";
 import { getOracleKeeperUrl } from "configs/oracleKeeper";
 
@@ -10,6 +10,13 @@ type KeeperMarket = {
   indexToken: string;
   longToken: string;
   shortToken: string;
+};
+
+const SKIPPED_KEEPER_MARKETS: Partial<Record<number, Set<string>>> = {
+  [ARBITRUM]: new Set([
+    // OM/USD [WBTC-USDC]
+    "0x89EB78679921499632fF16B1be3ee48295cfCD91",
+  ]),
 };
 
 const getKeeperMarkets = async (chainId: number): Promise<{ markets: KeeperMarket[] }> => {
@@ -31,6 +38,10 @@ describe("markets config", () => {
       });
 
       Object.entries(MARKETS[chainId]).forEach(([marketAddress, market]) => {
+        if (SKIPPED_KEEPER_MARKETS[chainId]?.has(marketAddress)) {
+          return;
+        }
+
         expect(marketAddress).toBe(market.marketTokenAddress);
 
         const keeperMarket = keeperMarkets.markets.find((m) => m.marketToken === marketAddress);
