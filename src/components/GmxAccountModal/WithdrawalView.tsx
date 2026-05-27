@@ -792,6 +792,20 @@ export const WithdrawalView = () => {
     [sameChainNetworkFeeAsyncResult.data, gasPrice, tokensData]
   );
 
+  const isSelectedGasPaymentToken = useMemo(() => {
+    if (selectedToken === undefined || gasPaymentToken === undefined) {
+      return false;
+    }
+
+    return isStringEqualInsensitive(
+      convertTokenAddress(chainId, selectedToken.address, "wrapped"),
+      convertTokenAddress(chainId, gasPaymentToken.address, "wrapped")
+    );
+  }, [chainId, gasPaymentToken, selectedToken]);
+
+  const gasPaymentTokenAsCollateralAmount = isSelectedGasPaymentToken ? inputAmount : undefined;
+  const baseGasPaymentTokenAsCollateralAmount = isSelectedGasPaymentToken ? baseBridgeOutParams?.amount : undefined;
+
   const baseExpressTransactionBuilder: ExpressTransactionBuilder | undefined = useMemo(() => {
     if (
       account === undefined ||
@@ -824,6 +838,7 @@ export const WithdrawalView = () => {
     isGmxAccount: true,
     requireValidations: false,
     overrideWnt: !isSameChain,
+    gasPaymentTokenAsCollateralAmount: baseGasPaymentTokenAsCollateralAmount,
     enabled: !isSameChain,
   });
 
@@ -854,6 +869,7 @@ export const WithdrawalView = () => {
     isGmxAccount: true,
     requireValidations: false,
     overrideWnt: !isSameChain,
+    gasPaymentTokenAsCollateralAmount,
     enabled: !isSameChain,
   });
 
