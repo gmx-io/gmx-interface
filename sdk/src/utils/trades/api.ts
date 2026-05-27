@@ -12,7 +12,7 @@ function parseTradesResponse(raw: any): TradesListResponse {
 }
 
 export async function fetchApiTrades(ctx: { api: IHttp }, params: FetchTradesParams): Promise<TradesListResponse> {
-  return ctx.api.fetchJson<TradesListResponse>("/trades", {
+  return ctx.api.fetchJson<TradesListResponse>("/v1/trades", {
     query: {
       address: params.address,
       symbol: params.symbol,
@@ -28,7 +28,7 @@ export async function fetchApiTrades(ctx: { api: IHttp }, params: FetchTradesPar
 }
 
 export async function searchApiTrades(ctx: { api: IHttp }, params: SearchTradesParams): Promise<TradesListResponse> {
-  return ctx.api.postJson<TradesListResponse>("/trades/search", params, {
+  return ctx.api.postJson<TradesListResponse>("/v1/trades/search", params, {
     transform: parseTradesResponse,
   });
 }

@@ -25,6 +25,7 @@ import {
   roundWithDecimals,
   roundUpMagnitudeDivision,
   toBigNumberWithDecimals,
+  toNonNegativeBigInt,
 } from "utils/numbers";
 
 const ONE_USD = 1000000000000000000000000000000n;
@@ -47,6 +48,26 @@ describe("numbers utils", () => {
     });
     it("handles zero gracefully", () => {
       expect(expandDecimals(0, 5)).toBe(0n);
+    });
+  });
+
+  describe("toNonNegativeBigInt", () => {
+    it("parses non-negative integer values", () => {
+      expect(toNonNegativeBigInt("10")).toBe(10n);
+      expect(toNonNegativeBigInt(10)).toBe(10n);
+      expect(toNonNegativeBigInt(10n)).toBe(10n);
+    });
+
+    it("clamps negative integer values to zero", () => {
+      expect(toNonNegativeBigInt("-10")).toBe(0n);
+      expect(toNonNegativeBigInt(-10)).toBe(0n);
+      expect(toNonNegativeBigInt(-10n)).toBe(0n);
+    });
+
+    it("ignores invalid values", () => {
+      expect(toNonNegativeBigInt("1.5")).toBeUndefined();
+      expect(toNonNegativeBigInt(1.5)).toBeUndefined();
+      expect(toNonNegativeBigInt({ value: "10" })).toBeUndefined();
     });
   });
 

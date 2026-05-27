@@ -61,7 +61,7 @@ function parseAllowances(raw: any[]): TokenAllowance[] {
 }
 
 export async function fetchWalletBalances(ctx: { api: IHttp }, params: { address: string }): Promise<WalletBalance[]> {
-  return ctx.api.fetchJson<WalletBalance[]>("/balances/wallet", {
+  return ctx.api.fetchJson<WalletBalance[]>("/v1/balances/wallet", {
     query: { address: params.address },
     transform: parseWalletBalances,
   });
@@ -71,7 +71,7 @@ export async function fetchAllowances(
   ctx: { api: IHttp },
   params: { address: string; spender: SpenderType }
 ): Promise<TokenAllowance[]> {
-  return ctx.api.fetchJson<TokenAllowance[]>("/allowances", {
+  return ctx.api.fetchJson<TokenAllowance[]>("/v1/allowances", {
     query: { address: params.address, spender: params.spender },
     transform: parseAllowances,
   });

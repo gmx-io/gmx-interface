@@ -13,6 +13,7 @@ type AbStorage = {
 
 const abFlagsConfig = {
   abSdk3: 0,
+  useTestApi: 0,
 };
 
 export type AbFlag = keyof typeof abFlagsConfig;

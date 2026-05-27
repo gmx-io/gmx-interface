@@ -42,6 +42,8 @@ import {
 import { HttpClient } from "utils/http/http";
 import { HttpClientWithFallback } from "utils/http/httpFallback";
 import { IHttp } from "utils/http/types";
+import { fetchApiJitLiquidityInfo } from "utils/jitLiquidity/api";
+import { FetchJitLiquidityInfoParams, JitLiquidityMap } from "utils/jitLiquidity/types";
 import { fetchApiMarkets, fetchApiMarketsInfo, fetchApiMarketsTickers, fetchApiTokensData } from "utils/markets/api";
 import { MarketTicker, MarketWithTiers } from "utils/markets/types";
 import {
@@ -115,6 +117,14 @@ export type {
 export type { OhlcvCandle, OhlcvParams } from "utils/prices/types";
 export type { ApiParameterPeriod, MarketRates, RatesParams, RatesSnapshot } from "utils/rates/types";
 export type { BuybackWeekData, BuybackSummary, BuybackWeeklyStatsResponse } from "utils/buyback/types";
+export type {
+  FetchJitLiquidityInfoParams,
+  GlvShiftParam,
+  JitLiquidityApiVersion,
+  JitLiquidityData,
+  JitLiquidityInfo,
+  JitLiquidityMap,
+} from "utils/jitLiquidity/types";
 export type { StakingPowerResponse } from "utils/staking/types";
 export type {
   ApiTradeAction,
@@ -282,6 +292,10 @@ export class GmxApiSdk {
 
   fetchBuybackWeeklyStats(): Promise<BuybackWeeklyStatsResponse> {
     return fetchApiBuybackWeeklyStats(this.ctx);
+  }
+
+  fetchJitLiquidityInfo(params?: FetchJitLiquidityInfoParams): Promise<JitLiquidityMap> {
+    return fetchApiJitLiquidityInfo(this.ctx, params);
   }
 
   fetchStakingPower(params: { address: string }): Promise<StakingPowerResponse> {

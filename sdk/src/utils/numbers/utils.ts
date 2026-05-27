@@ -28,6 +28,7 @@ export const PERCENT_PRECISION_DECIMALS = PRECISION_DECIMALS - 2;
 
 const MAX_EXCEEDING_THRESHOLD = "1000000000";
 const MIN_EXCEEDING_THRESHOLD = "0.01";
+const NUMERIC_STRING_REGEX = /^-?\d+$/;
 
 export const TRIGGER_PREFIX_ABOVE = ">";
 export const TRIGGER_PREFIX_BELOW = "<";
@@ -61,6 +62,28 @@ export function toBigInt(value: BigNumberish | undefined | null): bigint | undef
     console.error("toBigInt error", e);
     return undefined;
   }
+}
+
+export function toNonNegativeBigInt(value: unknown): bigint | undefined {
+  if (typeof value === "string" && !NUMERIC_STRING_REGEX.test(value)) {
+    return undefined;
+  }
+
+  if (typeof value === "number" && !Number.isInteger(value)) {
+    return undefined;
+  }
+
+  if (typeof value !== "string" && typeof value !== "number" && typeof value !== "bigint") {
+    return undefined;
+  }
+
+  const parsed = toBigInt(value);
+
+  if (parsed === undefined) {
+    return undefined;
+  }
+
+  return parsed < 0n ? 0n : parsed;
 }
 
 export function basisPointsToFloat(basisPoints: bigint) {
@@ -818,8 +841,6 @@ export function serializeBigIntsInObject<T extends object>(obj: T): SerializedBi
   }
   return result;
 }
-
-const NUMERIC_STRING_REGEX = /^-?\d+$/;
 
 export function deserializeBigIntsInObject<T extends object>(
   obj: T,
