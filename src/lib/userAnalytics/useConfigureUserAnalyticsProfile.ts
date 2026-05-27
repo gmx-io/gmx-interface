@@ -6,6 +6,7 @@ import { AbFlag, getAbFlags, setAbFlagEnabled } from "config/ab";
 import { isDevelopment } from "config/env";
 import { USD_DECIMALS } from "config/factors";
 import { SHOW_DEBUG_VALUES_KEY } from "config/localStorage";
+import { usePrivyWalletState } from "context/PrivyWalletContext/PrivyWalletStateContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSubaccountContext } from "context/SubaccountContext/SubaccountContextProvider";
 import { useLocalReferralCode } from "domain/referrals";
@@ -17,7 +18,6 @@ import { useLocalStorageSerializeKey } from "lib/localStorage";
 import { formatAmountForMetrics } from "lib/metrics";
 import { useBowser } from "lib/useBowser";
 import useRouteQuery from "lib/useRouteQuery";
-import { usePrivyWalletState } from "lib/wallets/privyWalletState";
 import useWallet from "lib/wallets/useWallet";
 
 import { SESSION_ID_KEY, setSessionId } from "./sessionId";

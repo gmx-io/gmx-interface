@@ -13,11 +13,11 @@ vi.mock("@wagmi/core", () => ({
   switchChain: switchChainMock,
 }));
 
-vi.mock("./walletConfig", () => ({
+vi.mock("../walletConfig", () => ({
   getWagmiConfig: () => ({}),
 }));
 
-import { switchNetwork } from "./index";
+import { switchNetwork } from "../index";
 
 describe("switchNetwork", () => {
   beforeEach(() => {

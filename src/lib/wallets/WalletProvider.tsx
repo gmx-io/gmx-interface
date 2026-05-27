@@ -2,7 +2,8 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react";
 import { WagmiProvider } from "wagmi";
 
-import { PrivyWalletLoaderContext } from "./privyWalletLoader";
+import { PrivyWalletLoaderContext } from "context/PrivyWalletContext/PrivyWalletLoaderContext";
+
 import { ConnectModalProvider } from "./useConnectModal";
 import { getWagmiConfig } from "./walletConfig";
 

@@ -3,10 +3,10 @@ import { useDisconnect } from "wagmi";
 
 import { SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY, CURRENT_PROVIDER_LOCALSTORAGE_KEY } from "config/localStorage";
 import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
+import { usePrivyWalletState } from "context/PrivyWalletContext/PrivyWalletStateContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { userAnalytics } from "lib/userAnalytics";
 import { DisconnectWalletEvent } from "lib/userAnalytics/types";
-import { usePrivyWalletState } from "lib/wallets/privyWalletState";
 
 export function useDisconnectAndClose() {
   const { setIsSettingsVisible } = useSettings();

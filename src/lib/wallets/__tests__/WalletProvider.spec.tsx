@@ -2,8 +2,9 @@ import { act, cleanup, render, screen } from "@testing-library/react";
 import type { ReactNode } from "react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { usePrivyWalletLoader } from "./privyWalletLoader";
-import WalletProvider from "./WalletProvider";
+import { usePrivyWalletLoader } from "context/PrivyWalletContext/PrivyWalletLoaderContext";
+
+import WalletProvider from "../WalletProvider";
 
 const mocks = vi.hoisted(() => ({
   privyProviderRendered: vi.fn(),
@@ -13,11 +14,11 @@ vi.mock("wagmi", () => ({
   WagmiProvider: ({ children }: { children: ReactNode }) => children,
 }));
 
-vi.mock("./walletConfig", () => ({
+vi.mock("../walletConfig", () => ({
   getWagmiConfig: () => ({}),
 }));
 
-vi.mock("./PrivyWalletProvider", () => ({
+vi.mock("../PrivyWalletProvider", () => ({
   default: ({ children }: { children: ReactNode }) => {
     mocks.privyProviderRendered();
 

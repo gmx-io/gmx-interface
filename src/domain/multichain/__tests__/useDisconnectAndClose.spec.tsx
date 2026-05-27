@@ -14,7 +14,7 @@ const mocks = vi.hoisted(() => ({
   wallets: [] as { disconnect: ReturnType<typeof vi.fn> }[],
 }));
 
-vi.mock("lib/wallets/privyWalletState", () => ({
+vi.mock("context/PrivyWalletContext/PrivyWalletStateContext", () => ({
   usePrivyWalletState: () => ({
     logout: mocks.logout,
     wallets: mocks.wallets,

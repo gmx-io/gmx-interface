@@ -5,9 +5,9 @@ import { isAddressEqual } from "viem";
 import { useAccount } from "wagmi";
 
 import { getChainName } from "config/chains";
+import { usePrivyWalletState } from "context/PrivyWalletContext/PrivyWalletStateContext";
 import { ValidationResult } from "domain/synthetics/trade/utils/validation";
 import { useChainId as useDisplayedChainId } from "lib/chains";
-import { usePrivyWalletState } from "lib/wallets/privyWalletState";
 import useWallet from "lib/wallets/useWallet";
 
 export function getChainIdFromPrivyWallet(wallet: ConnectedWallet): number {

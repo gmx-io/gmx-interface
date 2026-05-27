@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { ARBITRUM, DEFAULT_SETTLEMENT_CHAIN_ID } from "config/chains";
 
-import { getSupportedChains } from "./walletConfig";
+import { getSupportedChains } from "../walletConfig";
 
 describe("getSupportedChains", () => {
   it("uses Arbitrum as the default settlement chain", () => {

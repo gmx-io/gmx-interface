@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
+import { usePrivyWalletState } from "context/PrivyWalletContext/PrivyWalletStateContext";
 import { useAccountStats } from "domain/synthetics/accountStats/useAccountStats";
 import { useChainId } from "lib/chains";
-import { usePrivyWalletState } from "lib/wallets/privyWalletState";
 import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 

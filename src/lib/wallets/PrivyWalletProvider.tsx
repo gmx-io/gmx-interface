@@ -3,12 +3,12 @@ import { WagmiProvider } from "@privy-io/wagmi";
 import { useEffect, useMemo } from "react";
 
 import { colors } from "config/colors";
+import { PrivyWalletStateContext } from "context/PrivyWalletContext/PrivyWalletStateContext";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 
 import gmxLogo from "img/logo-icon.svg";
 
 import { PrivyConnectModalBridge } from "./PrivyConnectModalBridge";
-import { PrivyWalletStateContext } from "./privyWalletState";
 import {
   getSupportedChains,
   getWagmiConfig,

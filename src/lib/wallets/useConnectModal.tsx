@@ -7,10 +7,9 @@ import {
 } from "config/localStorage";
 import { isSourceChain } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
+import { usePrivyWalletLoader } from "context/PrivyWalletContext/PrivyWalletLoaderContext";
 import { metrics } from "lib/metrics";
 import { switchNetwork } from "lib/wallets";
-
-import { usePrivyWalletLoader } from "./privyWalletLoader";
 
 type ConnectModalContextValue = {
   openConnectModal: (() => void) | undefined;
