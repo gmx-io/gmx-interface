@@ -347,6 +347,7 @@ export function PositionSeller() {
   const swapProfitFeeUsd =
     fees?.swapProfitFee?.deltaUsd === undefined ? undefined : formatUsd(bigMath.abs(fees.swapProfitFee.deltaUsd));
   const splitReceiveSwapProfitFeeWarning =
+    !isTwap &&
     isSplitReceiveAvailable &&
     !isReceiveSeparated &&
     receiveTokenSymbol &&
@@ -363,10 +364,10 @@ export function PositionSeller() {
     ) : undefined;
 
   useEffect(() => {
-    if (!isSplitReceiveAvailable && isReceiveSeparated) {
+    if ((isTwap || !isSplitReceiveAvailable) && isReceiveSeparated) {
       setIsReceiveSeparated(false);
     }
-  }, [isSplitReceiveAvailable, isReceiveSeparated, setIsReceiveSeparated]);
+  }, [isTwap, isSplitReceiveAvailable, isReceiveSeparated, setIsReceiveSeparated]);
 
   useEffect(() => {
     if (isVisible) {
@@ -1131,7 +1132,7 @@ export function PositionSeller() {
                   </ToggleSwitch>
                 )}
 
-                {isSplitReceiveAvailable && (
+                {!isTwap && isSplitReceiveAvailable && (
                   <ToggleSwitch
                     textClassName="text-typography-secondary"
                     isChecked={isReceiveSeparated}
@@ -1195,14 +1196,12 @@ export function PositionSeller() {
                   </Button>
                 </ButtonTooltipWrapper>
 
-                {!isTwap ? (
+                {!isTwap && (
                   <>
                     {receiveTokenRow}
                     {liqPriceRow}
                     {pnlRow}
                   </>
-                ) : (
-                  receiveTokenRow
                 )}
 
                 <PositionSellerPriceImpactFeesRow />
