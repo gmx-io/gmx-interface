@@ -749,4 +749,42 @@ describe("TradeHistoryRow helpers", () => {
     };
     expect(formatPositionMessage(fullCloseStopLoss, minCollateralUsd).size).toBe("Full position close");
   });
+
+  it("formatPositionMessage includes indexed trader discounts in the fee breakdown", () => {
+    const actionWithFee = {
+      ...executeOrderIncreaseLong,
+      collateralTokenPriceMin: executeOrderIncreaseLong.initialCollateralToken.prices.minPrice,
+      priceImpactUsd: undefined,
+      positionFeeAmount: 10_000_000n,
+      borrowingFeeAmount: undefined,
+      fundingFeeAmount: undefined,
+      swapFeeUsd: undefined,
+      liquidationFeeAmount: undefined,
+      totalImpactUsd: undefined,
+    };
+
+    expect(formatPositionMessage(actionWithFee, minCollateralUsd).fees).toBe("-$ 10.00");
+    expect(formatPositionMessage(actionWithFee, minCollateralUsd).feesTooltip).toEqual([
+      {
+        key: "Open fee",
+        value: "-$ 10.00",
+      },
+    ]);
+
+    expect(formatPositionMessage({ ...actionWithFee, traderDiscountAmount: 500_000n }, minCollateralUsd)).toMatchObject(
+      {
+        fees: "-$ 9.50",
+        feesTooltip: [
+          {
+            key: "Open fee",
+            value: "-$ 10.00",
+          },
+          {
+            key: "Referral discount",
+            value: "+$ 0.50",
+          },
+        ],
+      }
+    );
+  });
 });
