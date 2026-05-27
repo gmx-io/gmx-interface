@@ -753,7 +753,7 @@ function MarketListItem({
   if (isSwap) {
     return (
       <tr key={token.symbol} className="group/row cursor-pointer hover:bg-fill-surfaceHover">
-        <td className={cx("pl-14 pr-0 text-center text-typography-secondary", rowVerticalPadding)}>
+        <td className={cx("pl-12 pr-0 text-center text-typography-secondary", rowVerticalPadding)}>
           <Button variant="ghost" className="!h-20 !min-h-32 !w-32 !p-0" onClick={handleFavoriteClick}>
             <RecentlyListedFavoriteSlot isRecentlyListed={isRecentlyListed} isFavorite={isFavorite} />
           </Button>
