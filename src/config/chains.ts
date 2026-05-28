@@ -25,7 +25,7 @@ export const CONTRACTS_CHAIN_IDS: readonly ContractsChainId[] = isDevelopment()
   ? SDK_CONTRACTS_CHAIN_IDS_DEV
   : SDK_CONTRACTS_CHAIN_IDS;
 
-export const DEFAULT_SETTLEMENT_CHAIN_ID: SettlementChainId = isDevelopment() ? ARBITRUM_SEPOLIA : ARBITRUM;
+export const DEFAULT_SETTLEMENT_CHAIN_ID: SettlementChainId = ARBITRUM;
 
 export const DEFAULT_SETTLEMENT_CHAIN_ID_MAP: Record<AnyChainId, SettlementChainId> = {
   [ARBITRUM_SEPOLIA]: ARBITRUM_SEPOLIA,

@@ -11,11 +11,12 @@ import {
   WebSocketTransport,
 } from "viem";
 
-import { getViemChain, isTestnetChain } from "config/chains";
+import { DEFAULT_SETTLEMENT_CHAIN_ID, getViemChain, isTestnetChain } from "config/chains";
 import { isDevelopment } from "config/env";
 import { PRIVY_APP_ID } from "config/privy";
 import { getRpcProviders, RpcConfig } from "config/rpc";
 import { RpcPurpose } from "config/rpc";
+import { SECONDS_IN_DAY } from "lib/dates";
 import { metrics, ViemWsClientConnected, ViemWsClientDisconnected, ViemWsClientError } from "lib/metrics";
 import { getWsUrl } from "lib/rpc";
 import { AnyChainId, VIEM_CHAIN_BY_CHAIN_ID } from "sdk/configs/chains";
@@ -27,6 +28,7 @@ export const PRIVY_WALLET_LIST = [
   "detected_ethereum_wallets",
   "metamask",
   "rabby_wallet",
+  "wallet_connect_qr",
   "coinbase_wallet",
   "safe",
   "binance",
@@ -38,11 +40,19 @@ export const PRIVY_WALLET_LIST = [
 
 export const PRIVY_LOGIN_METHODS = ["wallet", "email", "google", "twitter", "discord"] as const;
 
+const PRIVY_WALLET_REQUEST_TIMEOUT_MS = SECONDS_IN_DAY * 1000;
+
+// Privy looks this up by walletClientType and has no wildcard/default timeout setting.
+export const PRIVY_SIGNATURE_REQUEST_TIMEOUTS = new Proxy({} as Record<string, number>, {
+  get: (_target, walletClientType) =>
+    typeof walletClientType === "string" ? PRIVY_WALLET_REQUEST_TIMEOUT_MS : undefined,
+});
+
 export function getSupportedChains(): [Chain, ...Chain[]] {
-  return Object.values(VIEM_CHAIN_BY_CHAIN_ID).filter((chain) => isDevelopment() || !isTestnetChain(chain.id)) as [
-    Chain,
-    ...Chain[],
-  ];
+  const defaultChain = getViemChain(DEFAULT_SETTLEMENT_CHAIN_ID);
+  const chains = Object.values(VIEM_CHAIN_BY_CHAIN_ID).filter((chain) => isDevelopment() || !isTestnetChain(chain.id));
+
+  return [defaultChain, ...chains.filter((chain) => chain.id !== defaultChain.id)] as [Chain, ...Chain[]];
 }
 
 export const getWagmiConfig = once(() => {
@@ -50,8 +60,8 @@ export const getWagmiConfig = once(() => {
 
   const transports = chains.reduce(
     (acc, chain) => {
-      const rpcProviders = getRpcProviders(chain.id, "default");
-      acc[chain.id] = fallback([...rpcProviders.map((provider) => http(provider.url))]);
+      const transport = getRpcTransport(chain.id as AnyChainId, "default");
+      acc[chain.id] = transport;
       return acc;
     },
     {} as Record<number, Transport>
@@ -82,9 +92,13 @@ export function getRpcTransport(chainId: AnyChainId, purpose: RpcPurpose): Trans
   if (TRANSPORTS_CACHE.has(key)) {
     return TRANSPORTS_CACHE.get(key)!;
   }
-  const transport = fallback(
-    getRpcProviders(chainId, purpose).map((provider: RpcConfig) => http(provider.url, HTTP_TRANSPORT_OPTIONS))
-  );
+
+  const providers =
+    purpose === "express"
+      ? [...getRpcProviders(chainId, "express"), ...getRpcProviders(chainId, "default")]
+      : getRpcProviders(chainId, purpose);
+
+  const transport = fallback(providers.map((provider: RpcConfig) => http(provider.url, HTTP_TRANSPORT_OPTIONS)));
   TRANSPORTS_CACHE.set(key, transport);
   return transport;
 }

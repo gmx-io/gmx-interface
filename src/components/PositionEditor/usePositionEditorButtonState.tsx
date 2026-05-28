@@ -38,8 +38,7 @@ import {
   substractMaxLeverageSlippage,
   willPositionCollateralBeSufficientForPosition,
 } from "domain/synthetics/positions";
-import { convertToTokenAmount } from "domain/synthetics/tokens";
-import { getMarkPrice, getMinCollateralUsdForLeverage } from "domain/synthetics/trade";
+import { getMarkPrice, getMaxWithdrawAmount } from "domain/synthetics/trade";
 import {
   getCommonError,
   getEditCollateralError,
@@ -52,6 +51,7 @@ import {
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { bigNumberBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
+import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import {
@@ -107,6 +107,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
   const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
   const hasOutdatedUi = useHasOutdatedUi();
+  const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const position = usePositionEditorPosition();
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
   const blockTimestampData = useSelector(selectBlockTimestampData);
@@ -295,25 +296,14 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
   const maxWithdrawAmount = useMemo(() => {
     if (!getIsPositionInfoLoaded(position)) return 0n;
 
-    const minCollateralUsdForLeverage = getMinCollateralUsdForLeverage(position, 0n);
-    let _minCollateralUsd = minCollateralUsdForLeverage;
-
-    if (minCollateralUsd !== undefined && minCollateralUsd > _minCollateralUsd) {
-      _minCollateralUsd = minCollateralUsd;
-    }
-
-    _minCollateralUsd =
-      _minCollateralUsd + (position?.pendingBorrowingFeesUsd ?? 0n) + (position?.pendingFundingFeesUsd ?? 0n);
-
-    if (position.collateralUsd < _minCollateralUsd) {
-      return 0n;
-    }
-
-    const maxWithdrawUsd = position.collateralUsd - _minCollateralUsd;
-    const maxWithdrawAmount = convertToTokenAmount(maxWithdrawUsd, selectedCollateralToken?.decimals, collateralPrice);
-
-    return maxWithdrawAmount;
-  }, [collateralPrice, selectedCollateralToken?.decimals, minCollateralUsd, position]);
+    return getMaxWithdrawAmount({
+      position,
+      minCollateralUsd,
+      collateralPrice,
+      collateralDecimals: selectedCollateralToken?.decimals,
+      userReferralInfo,
+    });
+  }, [collateralPrice, selectedCollateralToken?.decimals, minCollateralUsd, position, userReferralInfo]);
 
   const detectAndSetMaxSize = useCallback(() => {
     if (maxWithdrawAmount === undefined) return;
@@ -357,13 +347,15 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       depositToken: selectedCollateralToken,
       depositAmount: collateralDeltaAmount,
       marketInfo: position?.marketInfo,
+      maxWithdrawAmount,
     });
 
-    return takeValidationResult(commonError, editCollateralError, expressError);
+    return takeValidationResult(commonError, multipleWalletExtensionsChainError, editCollateralError, expressError);
   }, [
     chainId,
     account,
     hasOutdatedUi,
+    multipleWalletExtensionsChainError,
     expressParams,
     tokensData,
     collateralDeltaAmount,
@@ -373,9 +365,14 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     isDeposit,
     position,
     selectedCollateralToken,
+    maxWithdrawAmount,
   ]);
 
   const errorTooltipContent = useMemo(() => {
+    if (validationResult.buttonTooltipMessage) {
+      return validationResult.buttonTooltipMessage;
+    }
+
     if (validationResult.buttonTooltipName !== ValidationButtonTooltipName.maxLeverage) {
       return null;
     }
@@ -391,7 +388,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
         </span>
       </Trans>
     );
-  }, [detectAndSetMaxSize, validationResult.buttonTooltipName]);
+  }, [detectAndSetMaxSize, validationResult.buttonTooltipMessage, validationResult.buttonTooltipName]);
 
   async function onSubmit() {
     if (!account || !signer) {
@@ -496,6 +493,14 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     tooltipContent: errorTooltipContent,
     bannerErrorName: validationResult.bannerErrorName,
   };
+
+  if (multipleWalletExtensionsChainError.buttonErrorMessage) {
+    return {
+      text: multipleWalletExtensionsChainError.buttonErrorMessage,
+      disabled: true,
+      ...commonParams,
+    };
+  }
 
   if (isApproving && tokensToApprove.length) {
     const tokenToApprove = tokensToApprove[0];

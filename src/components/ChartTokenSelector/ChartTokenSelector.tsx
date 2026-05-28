@@ -50,9 +50,8 @@ import { convertTokenAddress, getTokenVisualMultiplier, isChartAvailableForToken
 
 import Button from "components/Button/Button";
 import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
-import FavoriteStar from "components/FavoriteStar/FavoriteStar";
 import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
-import { RecentlyListedBadge } from "components/FavoriteTabs/RecentlyListedBadge";
+import { RecentlyListedFavoriteSlot } from "components/FavoriteTabs/RecentlyListedFavoriteSlot";
 import SearchInput from "components/SearchInput/SearchInput";
 import { Sorter, useSorterHandlers } from "components/Sorter/Sorter";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
@@ -215,9 +214,6 @@ function MarketsList() {
   }, []);
 
   const isSwap = mode === "swap";
-  const shouldFallbackToAll = isSwap && SWAP_EXCLUDED_TOP_LEVEL_TABS.includes(storedTopLevelTab);
-  const topLevelTab = shouldFallbackToAll ? "all" : storedTopLevelTab;
-  const subCategoryTab = shouldFallbackToAll ? "all" : storedSubCategoryTab;
   const availableTokens = isSwap ? swapTokens : perpTokens;
 
   const { availableChartTokens: options, availableChartTokenAddresses } = useMemo(() => {
@@ -234,6 +230,17 @@ function MarketsList() {
     if (!options || recentlyListedAddressesSet.size === 0) return 0;
     return options.filter((t) => recentlyListedAddressesSet.has(t.address.toLowerCase())).length;
   }, [options, recentlyListedAddressesSet]);
+
+  const hasAvailableFavorites = useMemo(() => {
+    if (!options || favoriteTokens.length === 0) return false;
+    return options.some((t) => favoriteTokens.includes(t.address));
+  }, [options, favoriteTokens]);
+
+  const shouldFallbackToAll =
+    (isSwap && SWAP_EXCLUDED_TOP_LEVEL_TABS.includes(storedTopLevelTab)) ||
+    (storedTopLevelTab === "favorites" && !hasAvailableFavorites);
+  const topLevelTab = shouldFallbackToAll ? "all" : storedTopLevelTab;
+  const subCategoryTab = shouldFallbackToAll ? "all" : storedSubCategoryTab;
 
   const populatedCryptoSubCats = useMemo(() => {
     const set = new Set<SubCategoryTab>();
@@ -350,7 +357,7 @@ function MarketsList() {
     [chooseSuitableMarket, close, isSwap, tradeType]
   );
 
-  const rowVerticalPadding = cx("px-12 py-10", {
+  const rowVerticalPadding = cx("px-12 py-4", {
     "group-last-of-type/row:pb-8": !isMobile,
   });
   const rowHorizontalPadding = cx("pr-8");
@@ -358,8 +365,11 @@ function MarketsList() {
     "sticky top-0 z-10 whitespace-nowrap bg-slate-900 text-left text-[11px] font-medium uppercase text-typography-secondary",
     "first-of-type:text-left",
     rowVerticalPadding,
-    rowHorizontalPadding
+    rowHorizontalPadding,
+    "!py-10"
   );
+  const favoriteThClassName = cx(thClassName, "w-0 !pr-0 text-center");
+  const marketThClassName = cx(thClassName, "pl-12");
 
   const tdClassName = cx(
     "text-body-small",
@@ -406,6 +416,7 @@ function MarketsList() {
           <FavoriteTabs
             favoritesKey="chart-token-selector"
             recentlyListedCount={recentlyListedCount}
+            hasAvailableFavorites={hasAvailableFavorites}
             className="px-16"
             excludedTabs={isSwap ? SWAP_EXCLUDED_TOP_LEVEL_TABS : undefined}
             selectedValue={topLevelTab}
@@ -419,8 +430,8 @@ function MarketsList() {
               onChange={setSubCategoryTab}
               type="block"
               className="bg-slate-800/50 px-16"
-              tabsWrapperClassName="gap-16"
-              regularOptionClassname="!px-0 !pb-9 !pt-11 text-13"
+              tabsWrapperClassName="!w-fit"
+              regularOptionClassname="!px-8 !pb-9 !pt-11 text-13"
             />
           </ButtonRowScrollFadeContainer>
         )}
@@ -432,8 +443,8 @@ function MarketsList() {
               onChange={setSubCategoryTab}
               type="block"
               className="bg-slate-800/50 px-16"
-              tabsWrapperClassName="gap-16"
-              regularOptionClassname="!px-0 !pb-9 !pt-11 text-13"
+              tabsWrapperClassName="!w-fit"
+              regularOptionClassname="!px-8 !pb-9 !pt-11 text-13"
             />
           </ButtonRowScrollFadeContainer>
         )}
@@ -446,7 +457,8 @@ function MarketsList() {
         <table className="text-body-small w-full border-separate border-spacing-0">
           <thead>
             <tr>
-              <th className={cx(thClassName, isMobile ? "min-w-[18ch]" : "min-w-[28ch]")} colSpan={2}>
+              <th className={favoriteThClassName} colSpan={1}></th>
+              <th className={cx(marketThClassName, isMobile ? "min-w-[18ch]" : "min-w-[28ch]")} colSpan={1}>
                 <Trans>MARKET</Trans>
               </th>
               {isSwap ? (
@@ -693,7 +705,7 @@ function MarketListItem({
   const { maxLongLiquidityPool, maxShortLiquidityPool } = getMaxLongShortLiquidityPool(token);
 
   const handleFavoriteClick = useCallback(
-    (e: React.MouseEvent<HTMLTableCellElement>) => {
+    (e: React.MouseEvent) => {
       e.stopPropagation();
       onFavorite(token.address);
     },
@@ -736,15 +748,15 @@ function MarketListItem({
       </div>
     );
   }, [dayPriceDelta]);
+  const isRecentlyListed = isMarketRecentlyListed(listingDate, Date.now());
 
   if (isSwap) {
     return (
       <tr key={token.symbol} className="group/row cursor-pointer hover:bg-fill-surfaceHover">
-        <td
-          className={cx("pl-14 pr-6 text-center text-typography-secondary", rowVerticalPadding)}
-          onClick={handleFavoriteClick}
-        >
-          <FavoriteStar isFavorite={isFavorite} className="!size-12" />
+        <td className={cx("pl-12 pr-0 text-center text-typography-secondary", rowVerticalPadding)}>
+          <Button variant="ghost" className="!h-20 !min-h-32 !w-32 !p-0" onClick={handleFavoriteClick}>
+            <RecentlyListedFavoriteSlot isRecentlyListed={isRecentlyListed} isFavorite={isFavorite} />
+          </Button>
         </td>
         <td
           className={cx("text-body-medium w-full", rowVerticalPadding, rowHorizontalPadding)}
@@ -754,7 +766,6 @@ function MarketListItem({
             <TokenIcon className="ChartToken-list-icon -my-5 mr-6" symbol={token.symbol} displaySize={16} />
             <span>{token.name}</span>
             <span className="font-medium text-typography-secondary">{token.symbol}</span>
-            {isMarketRecentlyListed(listingDate, Date.now()) && <RecentlyListedBadge />}
           </span>
         </td>
         <td className={tdClassName}>
@@ -778,13 +789,12 @@ function MarketListItem({
       className="group/row cursor-pointer hover:bg-fill-surfaceHover"
       onClick={handleSelectLargePosition}
     >
-      <td
-        className={cx("w-0 px-12 text-center text-typography-secondary", rowVerticalPadding)}
-        onClick={handleFavoriteClick}
-      >
-        <FavoriteStar isFavorite={isFavorite} className="!size-12" />
+      <td className={cx("w-0 px-12 pr-0 text-center text-typography-secondary", rowVerticalPadding)}>
+        <Button variant="ghost" className="!h-32 !min-h-32 !w-32 !p-0" onClick={handleFavoriteClick}>
+          <RecentlyListedFavoriteSlot isRecentlyListed={isRecentlyListed} isFavorite={isFavorite} />
+        </Button>
       </td>
-      <td className={cx("pl-4 text-[13px]", rowVerticalPadding, isMobile ? "pr-2" : "pr-8")}>
+      <td className={cx("pl-12 text-[13px]", rowVerticalPadding, isMobile ? "pr-2" : rowHorizontalPadding)}>
         <div className={cx("flex", isMobile ? "items-start" : "items-center")}>
           <TokenIcon className="ChartToken-list-icon mr-6" symbol={token.symbol} displaySize={16} />
           <span className={cx("flex flex-wrap items-center gap-6")}>
@@ -794,7 +804,6 @@ function MarketListItem({
             <span className="rounded-full bg-slate-700 px-6 py-[1.5px] text-12 font-medium leading-[1.25] text-typography-secondary numbers">
               {maxLeverage ? `${maxLeverage}x` : "-"}
             </span>
-            {isMarketRecentlyListed(listingDate, Date.now()) && <RecentlyListedBadge />}
           </span>
         </div>
       </td>

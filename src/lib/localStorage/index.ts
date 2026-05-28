@@ -16,9 +16,7 @@ export function useLocalStorageByChainId<T>(
     (value) => {
       const internalValue = internalValueRef.current;
       const resolvedValue: T =
-        typeof value === "function"
-          ? (value as (prev: T) => T)(internalValue?.[chainId] || defaultValue)
-          : value;
+        typeof value === "function" ? (value as (prev: T) => T)(internalValue?.[chainId] || defaultValue) : value;
 
       const newInternalValue = {
         ...internalValue,
@@ -57,6 +55,14 @@ export function useLocalStorageSerializeKey<T>(
   key = JSON.stringify(key);
 
   return useLocalStorage<T>(key, initialValue, opts);
+}
+
+export function hasStoredLocalStorageValue(key: LocalStorageKey | LocalStorageKey[]) {
+  try {
+    return window.localStorage.getItem(JSON.stringify(key)) !== null;
+  } catch (e) {
+    return false;
+  }
 }
 
 function tryGetLocalStorageItem<T>(key: string): T | undefined {

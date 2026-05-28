@@ -20,7 +20,7 @@ const toastGetSnapshot = () => toast.isActive(INVALID_NETWORK_TOAST_ID);
 
 export function useRealChainIdWarning() {
   const { active: isConnected } = useWallet();
-  const { chainId: displayedChainId, isConnectedToChainId } = useDisplayedChainId();
+  const { chainId: settlementChainId, isConnectedToChainId, srcChainId } = useDisplayedChainId();
 
   const isActive = useSyncExternalStore(toastSubscribe, toastGetSnapshot);
 
@@ -30,7 +30,7 @@ export function useRealChainIdWarning() {
     if (!isConnectedToChainId && !isActive && isConnected) {
       const timeout = setTimeout(
         () =>
-          toast.error(getInvalidNetworkToastContent(displayedChainId), {
+          toast.error(getInvalidNetworkToastContent(srcChainId ?? settlementChainId), {
             toastId: INVALID_NETWORK_TOAST_ID,
             autoClose: false,
             closeButton: false,
@@ -44,7 +44,7 @@ export function useRealChainIdWarning() {
       }
       toast.dismiss(INVALID_NETWORK_TOAST_ID);
     }
-  }, [displayedChainId, isActive, isConnected, isConnectedToChainId]);
+  }, [settlementChainId, isActive, isConnected, isConnectedToChainId, srcChainId]);
 
   useEffect(() => {
     return () => {

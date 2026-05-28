@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 
 import { DATA_LOAD_TIMEOUT_FOR_METRICS } from "config/ui";
 import { parseError } from "lib/errors";
@@ -30,6 +30,7 @@ export function useMeasureLoadTime({
   timeout = DATA_LOAD_TIMEOUT_FOR_METRICS,
   skipAfterTimeout,
   skip,
+  data,
 }: {
   isLoaded: boolean;
   error: Error | undefined;
@@ -37,9 +38,13 @@ export function useMeasureLoadTime({
   timeout?: number;
   skipAfterTimeout?: boolean;
   skip?: boolean;
+  data?: Record<string, any>;
 }) {
   measurementByMetricType[metricType] = measurementByMetricType[metricType] || {};
   const measure = measurementByMetricType[metricType];
+
+  const dataRef = useRef(data);
+  dataRef.current = data;
 
   useEffect(
     function onLocationChangeEff() {
@@ -77,6 +82,7 @@ export function useMeasureLoadTime({
         isError: false,
         data: {
           requestId: measure.requestId,
+          ...dataRef.current,
         },
       });
 
@@ -87,6 +93,7 @@ export function useMeasureLoadTime({
           time: metrics.getTime(metricType, false, fromLocalStorage),
           data: {
             requestId: measure.requestId,
+            ...dataRef.current,
           },
         });
 
@@ -112,6 +119,7 @@ export function useMeasureLoadTime({
           data: {
             ...errorData,
             requestId: measure.requestId,
+            ...dataRef.current,
           },
         });
         measure.done = true;
@@ -131,6 +139,7 @@ export function useMeasureLoadTime({
           time: metrics.getTime(metricType, true, fromLocalStorage),
           data: {
             requestId: measure.requestId,
+            ...dataRef.current,
           },
         });
         measure.done = true;

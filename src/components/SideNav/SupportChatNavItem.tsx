@@ -8,6 +8,8 @@ import { useShowSupportChat } from "domain/supportChat/useShowSupportChat";
 import { useSupportChatUnreadCount } from "domain/supportChat/useSupportChatUnreadCount";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 
+import { AnimatedGradientText } from "components/AnimatedGradientText/AnimatedGradientText";
+
 import SupportChatIcon from "img/ic_support_chat.svg?react";
 
 import { NavItem } from "./SideNav";
@@ -75,9 +77,9 @@ export function SupportChatNavItem({ isCollapsed, onClick }: SupportChatNavItemP
           <Trans>Support</Trans>{" "}
           {!supportChatWasEverClicked && (
             <span className="text-body-small rounded-full bg-blue-300/20 px-6 py-1">
-              <span className="support-chat-new-badge inline-block font-medium">
+              <AnimatedGradientText className="inline-block font-medium">
                 <Trans>New</Trans>
-              </span>
+              </AnimatedGradientText>
             </span>
           )}
         </>

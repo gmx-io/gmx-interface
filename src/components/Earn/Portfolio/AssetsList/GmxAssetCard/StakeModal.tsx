@@ -5,7 +5,6 @@ import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { zeroAddress } from "viem";
 
-import { getIsFlagEnabled } from "config/ab";
 import { ARBITRUM, ContractsChainId } from "config/chains";
 import { type ChainIcons, getIcons } from "config/icons";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
@@ -22,6 +21,7 @@ import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmoun
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
+import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { StakingProcessedData } from "lib/legacy";
@@ -43,6 +43,7 @@ import Modal from "components/Modal/Modal";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 import Tabs from "components/Tabs/Tabs";
+import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
 
 import WarnIcon from "img/ic_warn.svg?react";
 
@@ -127,6 +128,7 @@ export function StakeModal(props: {
   const isMetamaskMobile = useIsMetamaskMobile();
   const icons = getIcons(chainId);
   const hasOutdatedUi = useHasOutdatedUi();
+  const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
 
   const stakeAmount = useMemo(() => parseValue(stakeValue, 18), [stakeValue]);
   const unstakeAmount = useMemo(() => parseValue(unstakeValue, 18), [unstakeValue]);
@@ -187,13 +189,11 @@ export function StakeModal(props: {
     return undefined;
   }, [unstakeAmount, unstakeMaxAmount]);
 
-  const isTestLoyalty = getIsFlagEnabled("testStakingPowerLoyalty");
-  const effectiveHistoricalMax = getEffectiveHistoricalMax(stakingPowerData, isTestLoyalty);
+  const effectiveHistoricalMax = getEffectiveHistoricalMax(stakingPowerData);
 
   const isLoyaltyActive =
-    isTestLoyalty ||
-    (stakingPowerData?.loyaltyTrackingStart !== undefined &&
-      isLoyaltyTrackingActive(stakingPowerData.loyaltyTrackingStart));
+    stakingPowerData?.loyaltyTrackingStart !== undefined &&
+    isLoyaltyTrackingActive(stakingPowerData.loyaltyTrackingStart);
 
   const wouldResetPower =
     isLoyaltyActive &&
@@ -209,21 +209,25 @@ export function StakeModal(props: {
 
   const rewardsLossUsd = useMemo(() => {
     if (!wouldResetPower) return null;
-    if (stakingPowerProjectedRewardsUsd !== undefined) {
-      return stakingPowerProjectedRewardsUsd;
-    }
-    if (isTestLoyalty) {
-      return processedData?.cumulativeGmxRewardsUsd ?? null;
-    }
-    return null;
-  }, [wouldResetPower, stakingPowerProjectedRewardsUsd, isTestLoyalty, processedData?.cumulativeGmxRewardsUsd]);
+    return stakingPowerProjectedRewardsUsd ?? null;
+  }, [wouldResetPower, stakingPowerProjectedRewardsUsd]);
 
   const unstakeLimitPercent = getUnstakeLimitPercent(safeUnstakeLimit, unstakeAmount);
 
-  const isStakePrimaryEnabled = !stakeError && !isApproving && !isStaking && !isUndelegatedGovToken && !hasOutdatedUi;
+  const isStakePrimaryEnabled =
+    !stakeError &&
+    !isApproving &&
+    !isStaking &&
+    !isUndelegatedGovToken &&
+    !hasOutdatedUi &&
+    !multipleWalletExtensionsChainError.buttonErrorMessage;
 
   const isUnstakePrimaryEnabled =
-    !unstakeError && !isUnstaking && !hasOutdatedUi && (!wouldResetPower || isResetAcknowledged);
+    !unstakeError &&
+    !isUnstaking &&
+    !hasOutdatedUi &&
+    !multipleWalletExtensionsChainError.buttonErrorMessage &&
+    (!wouldResetPower || isResetAcknowledged);
 
   useEffect(() => {
     if (!needApproval && isApproving) {
@@ -341,6 +345,10 @@ export function StakeModal(props: {
       return getPageOutdatedError();
     }
 
+    if (multipleWalletExtensionsChainError.buttonErrorMessage) {
+      return multipleWalletExtensionsChainError.buttonErrorMessage;
+    }
+
     if (activeTab === "stake") {
       if (stakeError) {
         return stakeError;
@@ -368,6 +376,7 @@ export function StakeModal(props: {
   }, [
     activeTab,
     hasOutdatedUi,
+    multipleWalletExtensionsChainError,
     isApproving,
     isStaking,
     isUnstaking,
@@ -560,9 +569,11 @@ export function StakeModal(props: {
 
           <SwitchToSettlementChainWarning topic="staking" />
           <SwitchToSettlementChainButtons>
-            <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled}>
-              {primaryText}
-            </Button>
+            <ButtonTooltipWrapper content={multipleWalletExtensionsChainError.buttonTooltipMessage}>
+              <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled}>
+                {primaryText}
+              </Button>
+            </ButtonTooltipWrapper>
           </SwitchToSettlementChainButtons>
         </div>
       </Modal>

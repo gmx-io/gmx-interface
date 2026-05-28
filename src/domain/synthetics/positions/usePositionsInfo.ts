@@ -2,6 +2,8 @@ import { useMemo } from "react";
 
 import { useUserReferralInfoRequest } from "domain/referrals";
 import { API_UI_FLAGS, useIsApiSdkEnabled } from "domain/synthetics/uiFlags/useIsApiSdkEnabled";
+import { ApiDataSource } from "lib/metrics/types";
+import { useApiDataFallbackCounter } from "lib/metrics/useApiDataFallbackCounter";
 import { getByKey } from "lib/objects";
 import { ContractsChainId } from "sdk/configs/chains";
 import { ApiPositionInfo, getPositionInfo, PositionInfo } from "sdk/utils/positions";
@@ -41,6 +43,7 @@ export type PositionsInfoResult = {
   positionsInfoData?: PositionsInfoData;
   isLoading: boolean;
   error?: Error;
+  dataSource?: ApiDataSource;
 };
 
 export function usePositionsInfoRequest(
@@ -206,9 +209,25 @@ export function usePositionsInfoRequest(
   const isLoading =
     !positionsInfoData && (shouldFallbackToRpc ? !rpcPositionsInfoData : !recomputedApiPositionsInfoData);
 
+  const dataSource: ApiDataSource | undefined = positionsInfoData
+    ? recomputedApiPositionsInfoData && !isApiStale && !apiError
+      ? "api"
+      : "rpc"
+    : undefined;
+
+  useApiDataFallbackCounter({
+    domain: "positions",
+    chainId,
+    apiEnabled: isApiSdkEnabled,
+    apiData: apiPositionsInfoData,
+    isApiStale,
+    apiError,
+  });
+
   return {
     positionsInfoData,
     isLoading,
     error: shouldFallbackToRpc ? rpcError : apiError,
+    dataSource,
   };
 }

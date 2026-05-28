@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Slippage exceeded"
 msgstr "Deslizamiento excedido"
 
@@ -44,7 +44,7 @@ msgstr "O actualice el RPC de su monedero a través de <0>chainlist.org</0>"
 msgid "REFERRAL CODE"
 msgstr "CÓDIGO DE REFERIDO"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient funds for order costs. Remaining: {remainingCostUsdText}"
 msgstr ""
 
@@ -79,7 +79,7 @@ msgid "Disconnect"
 msgstr "Desconectar"
 
 #: src/components/Errors/errorToasts.tsx
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Order simulation failed"
@@ -118,7 +118,7 @@ msgstr "Consulte la <0>documentación de Tenderly</0>"
 msgid "Show debug values"
 msgstr "Mostrar valores de depuración"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Execution price is negative"
 msgstr ""
 
@@ -198,6 +198,10 @@ msgstr "Orden limitada existente en el pool {0}, pero carece de liquidez para es
 msgid "Price impact from closing. Positive values benefit you. <0>Read more</0>."
 msgstr "Impacto en el precio al cerrar. Los valores positivos le benefician. <0>Más información</0>."
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Before confirming a transaction, make sure the wallet prompt is using {desiredChainName}. To avoid this warning, disable other wallet extensions in your browser settings."
+msgstr "Antes de confirmar una transacción, asegúrese de que el mensaje del monedero esté usando {desiredChainName}. Para evitar esta advertencia, desactive otras extensiones de monedero en la configuración de su navegador."
+
 #: src/components/OrderList/filters/OrderTypeFilter.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
@@ -248,6 +252,10 @@ msgstr "Eventos del Oracle keeper"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "RabbitHole"
 msgstr "RabbitHole"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Insufficient GM tokens for withdrawal"
+msgstr "Tokens GM insuficientes para retirar"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "On-chain signing for every transaction"
@@ -489,7 +497,7 @@ msgstr "Exponente de financiación"
 msgid "Mixed exposure: short {indexSymbol} + long {collateralSymbol} collateral. Useful for delta-neutral strategies to earn funding."
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid oracle price for {tokenSymbol}"
 msgstr "Precio del Oracle no válido para {tokenSymbol}"
 
@@ -538,7 +546,7 @@ msgstr "Superados cortos Máx. de {0}"
 msgid "Insufficient GM balance"
 msgstr "Saldo GM insuficiente"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Slippage exceeded. Expected min: {minOutputAmountText}, actual: {outputAmountText}"
 msgstr "Deslizamiento excedido. Mínimo esperado: {minOutputAmountText}, real: {outputAmountText}"
 
@@ -716,7 +724,7 @@ msgstr "Órdenes"
 msgid "GMTrade (previously GMX Solana) is hosted on a separate website and run by a different team, so the experience may vary. Opens in a new tab."
 msgstr "GMTrade (anteriormente GMX Solana) está alojado en un sitio web independiente y es gestionado por un equipo diferente, por lo que la experiencia puede variar. Se abre en una pestaña nueva."
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid decrease size. Size delta ({sizeDeltaUsdText}) exceeds position size ({positionSizeInUsdText})"
 msgstr "Tamaño de reducción no válido. El delta de tamaño ({sizeDeltaUsdText}) excede el tamaño de la posición ({positionSizeInUsdText})"
 
@@ -832,7 +840,7 @@ msgstr "Global"
 msgid "{actionsCount, plural, one {Order} other {# Orders}}"
 msgstr "{actionsCount, plural, one {Orden} other {# Órdenes}}"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid collateral token. {tokenSymbol} isn't supported as collateral"
 msgstr "Token de garantía no válido. {tokenSymbol} no es compatible como garantía"
 
@@ -993,6 +1001,10 @@ msgstr "Préstamo"
 msgid "1st place"
 msgstr "1.er puesto"
 
+#: src/lib/chains/getMultipleWalletExtensionsChainError.tsx
+msgid "Transaction blocked"
+msgstr "Transacción bloqueada"
+
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Force primary failure"
@@ -1125,6 +1137,10 @@ msgstr "Asociaciones e integraciones"
 msgid "Insufficient gas balance. Deposit more ETH."
 msgstr "Saldo de Gas insuficiente. Deposite más ETH."
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Execution fee is too low for current network costs"
+msgstr "La comisión de ejecución es demasiado baja para los costos actuales de la red"
+
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Tiers"
 msgstr ""
@@ -1187,7 +1203,7 @@ msgstr "Retirar staking de {tokenSymbol}"
 msgid "Invalid slippage value"
 msgstr "Valor de deslizamiento no válido"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid collateral token for this market"
 msgstr "Token de garantía no válido para este mercado"
 
@@ -1387,6 +1403,10 @@ msgstr "Comprar {operationTokenSymbol}"
 msgid "Buy GM: {0}"
 msgstr "Comprar GM: {0}"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Trigger price condition has not been met"
+msgstr "No se ha cumplido la condición del precio de activación"
+
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "May take a few minutes to reflect. Check back later"
 msgstr "Puede tardar unos minutos en reflejarse. Vuelva a comprobarlo más tarde"
@@ -1442,6 +1462,10 @@ msgstr "Beefy"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staking power accrues over time based on your staked GMX balance and determines your share of buyback rewards"
 msgstr ""
+
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Select at least one market"
+msgstr "Selecciona al menos un mercado"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Virtual long token ID"
@@ -1748,7 +1772,7 @@ msgstr "Intercambio Límite Fallido"
 msgid "Failed"
 msgstr "Fallida"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient margin. Add {amountText} more margin"
 msgstr ""
 
@@ -1878,11 +1902,15 @@ msgstr "Clave"
 msgid "Distributions"
 msgstr "Distribuciones"
 
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Withdrawal not available"
+msgstr "Retiro no disponible"
+
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Your code is immediately active! Share it with traders and you'll earn rebates when they execute trades."
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Max profit limit reached. Current: {pnlToPoolFactorText}, max: {maxPnlFactorText}"
 msgstr "Límite máximo de beneficio alcanzado. Actual: {pnlToPoolFactorText}, máx.: {maxPnlFactorText}"
 
@@ -1933,6 +1961,10 @@ msgstr "Symbiosis"
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "How it works"
 msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Order is already frozen"
+msgstr "La orden ya está congelada"
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "{orderTypeLabel} {positionText}, -{0}"
@@ -1995,7 +2027,7 @@ msgstr "Marca temporal"
 msgid "KyberSwap"
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient gas for execution"
 msgstr "Gas insuficiente para la ejecución"
 
@@ -2092,7 +2124,7 @@ msgstr "Se requiere porcentaje del tamaño"
 msgid "Execution price for the order"
 msgstr "Precio de ejecución de la orden"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Market temporarily disabled"
 msgstr "Mercado temporalmente deshabilitado"
 
@@ -2366,7 +2398,7 @@ msgstr "Mantenimientos"
 msgid "Reserve factor shorts"
 msgstr "Factor de reserva cortos"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Max deposit limit reached"
 msgstr "Límite máximo de depósito alcanzado"
 
@@ -2533,10 +2565,6 @@ msgstr "Impulsado por nuestra comunidad"
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Buy {0}"
 msgstr "Comprar {0}"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX Blueberry Club"
-msgstr "Club Blueberry GMX"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
@@ -2725,8 +2753,8 @@ msgstr "Mercados GM"
 msgid "Tickers simulation"
 msgstr "Simulación de tickers"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size exceeds available open interest"
 msgstr "El tamaño de la posición excede el interés abierto disponible"
 
@@ -2844,6 +2872,10 @@ msgstr ""
 msgid "Insufficient gas balance. Express Trading and One-Click Trading unavailable."
 msgstr "Saldo de gas insuficiente. Express Trading y One-Click Trading no disponibles."
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Invalid signature. Try signing the request again"
+msgstr "Firma no válida. Intente firmar la solicitud de nuevo"
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search address"
 msgstr "Buscar dirección"
@@ -2906,7 +2938,7 @@ msgstr "Gráfico de precios de tokens de mercado de GMX"
 msgid "Lifetime LP rewards"
 msgstr "Recompensas LP acumuladas"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid decrease size"
 msgstr "Tamaño de reducción no válido"
 
@@ -3040,10 +3072,6 @@ msgstr "Cantidad del pool de impacto"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "The GMX token serves as the governance token of the GMX protocol. 27% of platform revenue accumulates in the Treasury for GMX buybacks. Stakers earn rewards based on staking power (duration × amount), distributed when GMX reaches $90."
 msgstr ""
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "AI agent for GMX Blueberry Club"
-msgstr "Agente de IA para GMX Blueberry Club"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Max lendable impact USD"
@@ -3395,7 +3423,7 @@ msgstr "<0><1>$GMX</1> ha ganado justamente su título como el gigante del tradi
 msgid "Network status"
 msgstr "Estado de la red"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact too high. Impact: {negativeImpactAmountText}, input: {amountAfterFeesText}"
 msgstr "Impacto en el precio demasiado alto. Impacto: {negativeImpactAmountText}, entrada: {amountAfterFeesText}"
 
@@ -3422,7 +3450,7 @@ msgstr ""
 msgid "Uploading..."
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Can't withdraw collateral. Remaining would be {estimatedRemainingCollateralUsdText}, below minimum"
 msgstr "No se puede retirar la garantía. El remanente sería {estimatedRemainingCollateralUsdText}, por debajo del mínimo"
 
@@ -4113,6 +4141,10 @@ msgstr ""
 msgid "Market"
 msgstr "Mercado"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Multiple wallets are connected on different networks. GMX expects {desiredChainName}."
+msgstr "Varias carteras están conectadas en diferentes redes. GMX espera {desiredChainName}."
+
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Executes when oracle price is {0} {1}"
 msgstr "Se ejecuta cuando el precio del oráculo es {0} {1}"
@@ -4179,7 +4211,7 @@ msgstr "Interés abierto"
 msgid "More details"
 msgstr "Más detalles"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Max profit limit reached"
 msgstr "Límite máximo de beneficio alcanzado"
 
@@ -4288,17 +4320,9 @@ msgstr ""
 msgid "Liquidated"
 msgstr "Liquidado"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Blueberry Pulse"
-msgstr "Blueberry Pulse"
-
 #: src/domain/tokens/approveTokens.tsx
 msgid "Approval cancelled"
 msgstr "Aprobación cancelada"
-
-#: src/components/Errors/errorToasts.tsx
-msgid "<0>Invalid permit signature. Try again</0>"
-msgstr "<0>Firma de permiso no válida. Inténtelo de nuevo</0>"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
@@ -4460,7 +4484,7 @@ msgstr "Cantidad mínima del pool de impacto"
 msgid "Generating..."
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact too high"
 msgstr "Impacto en el precio demasiado alto"
 
@@ -4521,7 +4545,7 @@ msgstr "Código no encontrado"
 msgid "Inactive"
 msgstr "Inactivo"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Max open interest exceeded. Current: {openInterestText}, max: {maxOpenInterestText}"
 msgstr "Interés abierto máximo superado. Actual: {openInterestText}, máx.: {maxOpenInterestText}"
 
@@ -4637,7 +4661,7 @@ msgstr "GyP"
 msgid "Favourites"
 msgstr "Favoritos"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size too small. Min: {minPositionSizeUsdText}, current: {positionSizeInUsdText}"
 msgstr "Tamaño de posición demasiado pequeño. Mín.: {minPositionSizeUsdText}, actual: {positionSizeInUsdText}"
 
@@ -4650,6 +4674,11 @@ msgstr "Impacto en el precio almacenado"
 #: src/pages/DecodeError/DecodeError.tsx
 msgid "Arguments"
 msgstr "Argumentos"
+
+#: src/components/PositionShare/CreateReferralCode.tsx
+#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
+msgid "You need USDC and {0} on {1} to create a referral code via GMX Account. Deposit funds or switch to a different network."
+msgstr "Necesitas USDC y {0} en {1} para crear un código de referido a través de la Cuenta GMX. Deposita fondos o cambia a una red diferente."
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "LayerZero scan"
@@ -4683,6 +4712,10 @@ msgstr "Aumento de Mercado"
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "No funding activity"
 msgstr "No hay actividad de funding"
+
+#: src/domain/tokens/approveTokens.tsx
+msgid "This token does not support permit approvals."
+msgstr "Este token no admite aprobaciones con permiso."
 
 #: src/components/PositionShare/PositionShare.tsx
 #: src/components/SettingsModal/DisplaySettings.tsx
@@ -4740,7 +4773,7 @@ msgstr "Especifique la red: arbitrum, avalanche, fuji, botanix, arbitrum-sepolia
 msgid "Buy {nativeTokenSymbol}"
 msgstr "Comprar {nativeTokenSymbol}"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size too small"
 msgstr "Tamaño de posición demasiado pequeño"
 
@@ -4791,11 +4824,6 @@ msgstr "GM pools:"
 msgid "No price impact. Single execution price for<0/>increasing shorts or decreasing longs at<1/>this size."
 msgstr "Sin impacto en el precio. Precio de ejecución único para<0/>aumentar posiciones cortas o reducir posiciones largas a<1/>este tamaño."
 
-#: src/components/PositionShare/CreateReferralCode.tsx
-#: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
-msgid "You need USDC or ETH on {0} to create a referral code via GMX Account. Deposit funds or switch to a different network."
-msgstr "Necesita USDC o ETH en {0} para crear un código de referido a través de GMX Account. Deposite fondos o cambie a una red diferente."
-
 #: src/pages/ReferralsTier/ReferralsTier.tsx
 msgid "Current tier:"
 msgstr "Nivel actual:"
@@ -4808,6 +4836,10 @@ msgstr "Preste tokens GLV o GM y solicite préstamos con ellos como garantía"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Number of trades from referrals"
 msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Request cannot be canceled yet. Try again after the cancellation delay"
+msgstr "La solicitud aún no se puede cancelar. Inténtelo de nuevo después del retraso de cancelación"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Update {orderTypeName}"
@@ -5022,6 +5054,10 @@ msgstr "Transferir cuenta"
 msgid "LONGS NET RATE / 1H"
 msgstr "TASA NETA LARGOS / 1H"
 
+#: src/domain/tokens/approveTokens.tsx
+msgid "The permit signature could not be validated."
+msgstr "No se pudo validar la firma del permiso."
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Pool USD long"
@@ -5089,7 +5125,7 @@ msgstr "Opere perpetuos con hasta 100x de apalancamiento, además de trading al 
 msgid "Sell fee"
 msgstr "Comisión de venta"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid oracle price"
 msgstr "Precio de Oracle no válido"
 
@@ -5266,6 +5302,10 @@ msgstr "Transacción no válida"
 msgid "Insufficient liquidity in {0} pool. Select a different pool."
 msgstr "Liquidez insuficiente en el pool {0}. Seleccione un pool diferente."
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Frozen order can only be executed by an authorized keeper"
+msgstr "La orden congelada solo puede ser ejecutada por un keeper autorizado"
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
@@ -5352,10 +5392,6 @@ msgstr ""
 msgid "No swap path available. <0>Swap {0} to {swapToTokenSymbol}</0>, then to {1}."
 msgstr "No hay ruta de intercambio disponible. <0>Intercambiar {0} a {swapToTokenSymbol}</0>, luego a {1}."
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX community with NFTs, trading, and education initiatives"
-msgstr "Comunidad de GMX con NFT, trading e iniciativas educativas"
-
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 #: src/components/TableMarketFilter/MarketFilterLongShort.tsx
 msgid "Longs"
@@ -5377,6 +5413,14 @@ msgstr "PRECIO DE EJECUCIÓN"
 msgid "spinner"
 msgstr "indicador de carga"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "This action is currently disabled"
+msgstr "Esta acción está deshabilitada actualmente"
+
+#: src/domain/tokens/approveTokens.tsx
+msgid "Permit approvals are currently unavailable."
+msgstr "Las aprobaciones con permiso no están disponibles actualmente."
+
 #: src/components/Referrals/traders/faq.tsx
 msgid "Yes! You can switch to a different code at any time from the Traders tab. Your new discount will apply to all future trades."
 msgstr ""
@@ -5388,6 +5432,10 @@ msgstr "Orden de venta GM desconocida"
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "GM: {0} buyable cap reached in {1} [{2}]. Choose a different pool, reduce size, or pick a different token composition."
 msgstr "GM: límite de compra de {0} alcanzado en {1} [{2}]. Elija un pool diferente, reduzca el tamaño o seleccione una composición de tokens diferente."
+
+#: src/components/Errors/errorToasts.tsx
+msgid "<0>Permit approval failed. A standard approval transaction is required. Approve the token and try again</0>"
+msgstr "<0>Error en la aprobación con permiso. Se requiere una transacción de aprobación estándar. Apruebe el token e inténtelo de nuevo</0>"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "No options to transfer {nativeTokenSymbol} to {chainName}"
@@ -5455,8 +5503,8 @@ msgstr "Óptimo"
 msgid "{updateOrdersCount} TP/SL orders updated"
 msgstr "{updateOrdersCount} órdenes TP/SL actualizadas"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient margin. Add more margin"
 msgstr ""
 
@@ -5721,7 +5769,7 @@ msgstr ""
 msgid "No open orders"
 msgstr "No hay órdenes abiertas."
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient liquidity. Available: {availableLiquidityText}"
 msgstr "Liquidez insuficiente. Disponible: {availableLiquidityText}"
 
@@ -5732,6 +5780,10 @@ msgstr "Unstakear enviado"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Stop-Loss: {suffix}"
 msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Order failed due to a protocol validation error: {errorName}"
+msgstr "La orden falló debido a un error de validación del protocolo: {errorName}"
 
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -5964,7 +6016,7 @@ msgstr "Recomendado"
 msgid "Start trading"
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Oracle price is stale"
 msgstr ""
 
@@ -6084,15 +6136,11 @@ msgstr "Página de gobernanza de GMX"
 msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there"
 msgstr "Compre {nativeTokenSymbol} directamente en {chainName} o transfiera allí"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
-msgid "Reason: {0}"
-msgstr "Razón: {0}"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded."
 msgstr "La comisión de red máxima incluye un margen para picos de Gas. Las comisiones no utilizadas se reembolsan."
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Order execution failed"
 msgstr "Error en la ejecución de la orden"
 
@@ -6123,7 +6171,7 @@ msgstr ""
 msgid "Same as active code"
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Order not found. May have been canceled or already executed"
 msgstr "Orden no encontrada. Puede haber sido cancelada o ya ejecutada"
 
@@ -6168,7 +6216,7 @@ msgstr "LIQ."
 msgid "GLP and GMX autocompounding vaults"
 msgstr "Vaults de autocomposición de GLP y GMX"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size exceeds pool value. Delta: {usdDeltaText}, pool: {poolUsdText}"
 msgstr "El tamaño de la posición excede el valor del pool. Delta: {usdDeltaText}, pool: {poolUsdText}"
 
@@ -6229,6 +6277,10 @@ msgstr ""
 msgid "TWAP number of parts"
 msgstr "Número de partes TWAP"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Not enough native token was provided for the execution fee"
+msgstr "No se proporcionó suficiente token nativo para la comisión de ejecución"
+
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Not enough data yet"
 msgstr ""
@@ -6240,10 +6292,6 @@ msgstr "Clave de acceso"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Position value after PnL and all fees"
 msgstr "Valor de la posición después de PnL y todas las tarifas"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Real-time rants about GMX trades"
-msgstr "Comentarios en tiempo real sobre operaciones en GMX"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Number of trades done by your referred traders"
@@ -6265,7 +6313,7 @@ msgstr "TVL/CAP"
 msgid "Connect wallet to see your assets"
 msgstr "Conecte su monedero para ver sus activos"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size exceeds pool value"
 msgstr "El tamaño de la posición supera el valor del pool"
 
@@ -6285,7 +6333,7 @@ msgstr ""
 msgid "If you continue, you will lose {0} in rewards"
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Can't withdraw collateral. Remaining collateral would be below minimum"
 msgstr "No se puede retirar la garantía. La garantía restante quedaría por debajo del mínimo"
 
@@ -6443,6 +6491,10 @@ msgid "Multicall events"
 msgstr "Eventos Multicall"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Position not found. It may have been closed"
+msgstr "Posición no encontrada. Puede haberse cerrado"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execute"
 msgstr "Ejecutar"
 
@@ -6490,7 +6542,7 @@ msgstr ""
 msgid "Set long Limit @ {0}"
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable"
 msgstr "La posición sería liquidable"
 
@@ -6605,6 +6657,10 @@ msgstr "Transacciones fiables impulsadas por GMX"
 #: src/components/OldSubaccountWithdraw/OldSubaccountWithdraw.tsx
 msgid "Withdrawal of {balanceFormatted} failed"
 msgstr "La retirada de {balanceFormatted} ha fallado"
+
+#: src/lib/chains/getMultipleWalletExtensionsChainError.tsx
+msgid "Multiple wallet extensions for this account are on different networks. GMX cannot reliably tell which extension will show the signing prompt.<0/><1/>To avoid signing on the wrong network and risking funds, switch all connected wallet extensions to {requiredChainName}, or disconnect the extra extension."
+msgstr "Varias extensiones de monedero para esta cuenta están en redes diferentes. GMX no puede determinar con fiabilidad qué extensión mostrará el mensaje de firma.<0/><1/>Para evitar firmar en la red incorrecta y arriesgar fondos, cambie todas las extensiones de monedero conectadas a {requiredChainName} o desconecte la extensión adicional."
 
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "TradFi"
@@ -6774,7 +6830,7 @@ msgstr "Desactivar la validación para pruebas"
 msgid "GMX icon"
 msgstr "Icono de GMX"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact exceeds order size"
 msgstr "El impacto en el precio supera el tamaño de la orden"
 
@@ -6787,6 +6843,10 @@ msgstr "¿Desea operar más rápido con One-Click Trading?"
 #: src/components/TradeBox/tradeboxConstants.tsx
 msgid "TP/SL"
 msgstr "TP/SL"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "This order type is not supported"
+msgstr "Este tipo de orden no es compatible"
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Order error. Prices are volatile for this market, try again by <0>increasing the allowed slippage</0>"
@@ -6818,7 +6878,7 @@ msgstr "Opera con confianza"
 msgid "Receiver has staked GMX/GLP"
 msgstr "El receptor tiene GMX/GLP en staking"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Order type unavailable for creation"
 msgstr ""
 
@@ -7070,7 +7130,7 @@ msgstr "Reclamación enviada"
 msgid "Created"
 msgstr "Creado"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Market not found. May have been removed"
 msgstr "Mercado no encontrado. Es posible que haya sido eliminado"
 
@@ -7154,7 +7214,7 @@ msgstr "Grupo de Telegram"
 msgid "Tradao"
 msgstr "Tradao"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
@@ -7186,10 +7246,6 @@ msgid "TVL (supply)"
 msgstr "TVL (oferta)"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "SNTL esGMX market"
-msgstr "SNTL esGMX market"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "TokenTerminal"
 msgstr "TokenTerminal"
 
@@ -7219,6 +7275,10 @@ msgstr "Divisas"
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Share position"
 msgstr "Compartir posición"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Max deposit capacity reached for this pool"
+msgstr "Se alcanzó la capacidad máxima de depósito para este pool"
 
 #: src/components/BotanixBanner/BotanixBanner.tsx
 msgid "Switch to <0><1/><2>Arbitrum</2></0> or <3><4/><5>Avalanche</5></3> for those features"
@@ -7282,7 +7342,7 @@ msgstr "Proyecto"
 msgid "24h low"
 msgstr "Mínimo 24h"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient margin. Add {missingCollateralUsdText} more margin"
 msgstr ""
 
@@ -7440,10 +7500,6 @@ msgstr "Transfiriendo..."
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Sell {gmOrGlvLabel} failed."
 msgstr "Error al vender {gmOrGlvLabel}."
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "GMX weekly updates"
-msgstr "Actualizaciones semanales de GMX"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 #: src/pages/Ecosystem/ecosystemConstants.tsx
@@ -7757,8 +7813,8 @@ msgstr ""
 msgid "Open interest reserve factor shorts"
 msgstr "Factor de reserva de interés abierto para cortos"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient pool liquidity"
 msgstr "Liquidez de pool insuficiente"
 
@@ -7778,6 +7834,10 @@ msgstr "Las órdenes TP/SL se cancelan automáticamente al cerrar la posición. 
 #: src/components/TradeBox/TradeBoxRows/PriceImpactFeesRow.tsx
 msgid "fees"
 msgstr "comisiones"
+
+#: src/domain/tokens/approveTokens.tsx
+msgid "Permit approval could not be completed."
+msgstr "No se pudo completar la aprobación con permiso."
 
 #: src/components/Referrals/traders/joinCode/ReferralCodeFormSettlementChain.tsx
 msgid "Referral code update failed"
@@ -8005,7 +8065,7 @@ msgstr "No hay tokens en {0} para depositar"
 msgid "Total to claim"
 msgstr "Total a reclamar"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient gas for execution. Estimated: {estimatedGasLimitText}, starting: {startingGasText}"
 msgstr "Gas insuficiente para la ejecución. Estimado: {estimatedGasLimitText}, inicial: {startingGasText}"
 
@@ -8098,6 +8158,10 @@ msgstr "Ejecutando solicitud de compra…"
 msgid "Buy GM failed"
 msgstr "La compra de GM ha fallado"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Insufficient collateral to cover order costs"
+msgstr "Colateral insuficiente para cubrir los costos de la orden"
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
 msgstr "Orden de cambio GM desconocida"
@@ -8185,7 +8249,7 @@ msgstr ""
 msgid "{0} GMX"
 msgstr "{0} GMX"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact exceeds order size. Impact: {priceImpactUsdText}, order: {sizeDeltaUsdText}"
 msgstr "El impacto en el precio excede el tamaño de la orden. Impacto: {priceImpactUsdText}, orden: {sizeDeltaUsdText}"
 
@@ -8273,7 +8337,7 @@ msgstr "Nuevo nivel:"
 msgid "Last updated:"
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Max pool capacity reached"
 msgstr "Capacidad máxima del pool alcanzada"
 
@@ -8445,9 +8509,17 @@ msgstr "Reembolso de bonificación"
 msgid "Decentralized options strategies"
 msgstr "Estrategias de opciones descentralizadas"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Deposit not found. It may have been executed or canceled"
+msgstr "Depósito no encontrado. Puede haberse ejecutado o cancelado"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Select rewards to claim"
 msgstr "Seleccionar recompensas a reclamar"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Withdrawal not found. It may have been executed or canceled"
+msgstr "Retiro no encontrado. Puede haberse ejecutado o cancelado"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8488,8 +8560,8 @@ msgstr "Error en la ejecución de conversión"
 msgid "Create Take-Profit"
 msgstr "Crear Take-Profit"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size exceeds available open interest. Delta: {usdDeltaText}, max OI: {openInterestText}"
 msgstr "El tamaño de la posición excede el interés abierto disponible. Delta: {usdDeltaText}, OI máx.: {openInterestText}"
 
@@ -8704,6 +8776,7 @@ msgstr "Tamaño por parte"
 msgid "Add endpoint"
 msgstr "Añadir endpoint"
 
+#: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -8885,6 +8958,10 @@ msgstr "Profundidad"
 msgid "Layer 1"
 msgstr "Capa 1"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Position would be liquidatable at current prices"
+msgstr "La posición sería liquidable a los precios actuales"
+
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
 msgstr "<0>Con un voto mayoritario del 75.5%, GMX ha seleccionado a LayerZero como su socio de mensajería para expansión multicadena! La integración trae a GMX:</0><1><2>La capacidad de expandir a más de 125 cadenas</2><3>Propiedad completa de todos los contratos y seguridad</3><4>Transferencias rápidas, sin slippage</4><5>Rails probados en batalla ya confiados por miles de millones de dólares en activos y cientos de aplicaciones... <6>ver más</6></5></1>"
@@ -8964,6 +9041,7 @@ msgid "Approval submitted<0/><1/><2>View status</2>"
 msgstr "Aprobación enviada<0/><1/><2>Ver estado</2>"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Referral discount"
 msgstr "Descuento por referencia"
 
@@ -9189,7 +9267,7 @@ msgstr "Discusión comunitaria de GMX"
 msgid "Sell GM"
 msgstr "Vender GM"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Order can't be updated. Type doesn't support modifications"
 msgstr "La orden no puede actualizarse. El tipo no admite modificaciones"
 
@@ -9363,7 +9441,7 @@ msgstr "Hacer staking de {tokenSymbol}"
 msgid "Link copied to clipboard"
 msgstr "Enlace copiado al portapapeles"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Max pool capacity reached. Current: {poolAmountText}, max: {maxPoolAmountText}"
 msgstr "Capacidad máxima del pool alcanzada. Actual: {poolAmountText}, máx.: {maxPoolAmountText}"
 
@@ -9534,10 +9612,6 @@ msgstr "Stakeado"
 msgid "Traders"
 msgstr "Traders"
 
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Kudai AI agent"
-msgstr "Kudai AI agent"
-
 #: src/pages/Announcements/Announcements.tsx
 msgid "Updates"
 msgstr "Actualizaciones"
@@ -9554,10 +9628,6 @@ msgstr "Ejecutar parte de TWAP"
 #: src/components/TradeHistory/keys.ts
 msgid "Create Limit Swap"
 msgstr "Crear Intercambio Límite"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "esGMX OTC market"
-msgstr "Mercado OTC de esGMX"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Telegram group (Portuguese)"
@@ -9756,7 +9826,7 @@ msgstr "RESPUESTA"
 msgid "High TWAP network fee"
 msgstr "Alta tarifa de red TWAP"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable. Current: {remainingCollateralUsdText}, required: {minCollateralUsdText}"
 msgstr "La posición sería liquidable. Actual: {remainingCollateralUsdText}, requerido: {minCollateralUsdText}"
 
@@ -9929,7 +9999,7 @@ msgstr "Estadísticas totales"
 msgid "Vested GLP not withdrawn"
 msgstr "GLP en vesting no retirado"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient pool liquidity. Available: {availableAmountText}"
 msgstr ""
 
@@ -10158,6 +10228,10 @@ msgstr "30s"
 #: src/components/GmList/PerformanceLabel.tsx
 msgid "Annualized performance"
 msgstr "Rendimiento anualizado"
+
+#: src/domain/tokens/approveTokens.tsx
+msgid "Permit approvals are disabled for this token."
+msgstr "Las aprobaciones con permiso están desactivadas para este token."
 
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
@@ -10502,7 +10576,7 @@ msgstr "Rage Trade"
 msgid "1h"
 msgstr "1h"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient funds for order costs"
 msgstr ""
 
@@ -10539,7 +10613,7 @@ msgstr "Rentabilidad sobre el capital empleado (PnL / capital).<0/><1/>Capital e
 msgid "Update default destination"
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Max open interest exceeded"
 msgstr "Interés abierto máximo excedido"
 
@@ -10574,9 +10648,13 @@ msgstr "Cambiar al pool WBTC-USDC"
 msgid "Traders referred"
 msgstr "Traders referidos"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Max deposit limit reached: {maxPoolUsdText}"
 msgstr "Límite máximo de depósito alcanzado: {maxPoolUsdText}"
+
+#: src/domain/tokens/approveTokens.tsx
+msgid "A standard approval transaction is required to continue."
+msgstr "Se requiere una transacción de aprobación estándar para continuar."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Yield optimizations"
@@ -10623,10 +10701,6 @@ msgstr "Error en la cancelación de {orderText}"
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 msgid "Sell"
 msgstr "Vender"
-
-#: src/pages/Ecosystem/ecosystemConstants.tsx
-msgid "Generative Market eXplore - AIGMX agent"
-msgstr "Generative Market eXplore - AIGMX agent"
 
 #: src/components/NetworkDropdown/NetworkDropdown.tsx
 msgid "Smart wallets not supported on this network"
@@ -11077,6 +11151,10 @@ msgstr ""
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Increase size (Stop Market)"
 msgstr "Aumentar tamaño (Stop Market)"
+
+#: src/components/ClaimModal/ClaimModal.tsx
+msgid "Maximum claim entries selected. Claim this batch first, then claim the remaining fees in another transaction to avoid oversized wallet confirmations."
+msgstr "Número máximo de entradas de reclamación seleccionadas. Reclama este lote primero y luego reclama las comisiones restantes en otra transacción para evitar confirmaciones excesivamente grandes en la cartera."
 
 #: src/components/TradeBox/TradeBox.tsx
 msgid "Execution price may differ from limit price due to fees and price impact. You'll receive at least the minimum amount shown. <0>Read more</0>."

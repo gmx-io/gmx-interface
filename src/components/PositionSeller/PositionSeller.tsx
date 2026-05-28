@@ -63,6 +63,7 @@ import {
 import { Token } from "domain/tokens";
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useChainId } from "lib/chains";
+import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { useDebouncedInputValue } from "lib/debounce/useDebouncedInputValue";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
@@ -109,6 +110,7 @@ import Tabs from "components/Tabs/Tabs";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 import TokenIcon from "components/TokenIcon/TokenIcon";
 import TokenSelector from "components/TokenSelector/TokenSelector";
+import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { TradeInputField, DisplayMode } from "components/TradeboxMarginFields/TradeInputField";
@@ -147,6 +149,7 @@ export function PositionSeller() {
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
   const hasOutdatedUi = useHasOutdatedUi();
+  const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const position = useSelector(selectPositionSellerPosition);
   const toToken = position?.indexToken;
   const submitButtonRef = useRef<HTMLButtonElement>(null);
@@ -441,7 +444,7 @@ export function PositionSeller() {
 
   const isAllowanceLoaded = Boolean(batchParams) && isAllowanceLoadedRaw;
 
-  const { error, bannerErrorName } = useMemo(() => {
+  const { error, bannerErrorName, errorDescription } = useMemo(() => {
     if (!position) {
       return {};
     }
@@ -477,12 +480,18 @@ export function PositionSeller() {
       numberOfParts,
     });
 
-    const validationResult = takeValidationResult(commonError, decreaseError, expressError);
+    const validationResult = takeValidationResult(
+      commonError,
+      multipleWalletExtensionsChainError,
+      decreaseError,
+      expressError
+    );
 
     if (validationResult.buttonErrorMessage) {
       return {
         error: validationResult.buttonErrorMessage,
         bannerErrorName: validationResult.bannerErrorName,
+        errorDescription: validationResult.buttonTooltipMessage,
       };
     }
 
@@ -509,6 +518,7 @@ export function PositionSeller() {
     minPositionSizeUsd,
     isTwap,
     numberOfParts,
+    multipleWalletExtensionsChainError,
   ]);
 
   async function onSubmit() {
@@ -879,6 +889,14 @@ export function PositionSeller() {
       };
     }
 
+    if (multipleWalletExtensionsChainError.buttonErrorMessage) {
+      return {
+        text: multipleWalletExtensionsChainError.buttonErrorMessage,
+        errorDescription: multipleWalletExtensionsChainError.buttonTooltipMessage,
+        disabled: true,
+      };
+    }
+
     if (isApproving && tokensToApprove.length) {
       const tokenToApprove = tokensToApprove[0];
       return {
@@ -921,17 +939,20 @@ export function PositionSeller() {
 
     return {
       text: submitButtonText,
+      errorDescription,
       disabled: Boolean(error) && !shouldDisableValidationForTesting,
     };
   }, [
     chainId,
     decreaseAmounts?.isFullClose,
     error,
+    errorDescription,
     isAllowanceLoaded,
     isApproving,
     isExpressLoading,
     localizedTradeModeLabels,
     localizedTradeTypeLabels,
+    multipleWalletExtensionsChainError,
     shouldDisableValidationForTesting,
     tradeMode,
     tradeType,
@@ -1086,16 +1107,18 @@ export function PositionSeller() {
                   </ColorfulBanner>
                 )}
 
-                <Button
-                  className="w-full"
-                  variant="primary-action"
-                  disabled={buttonState.disabled}
-                  onClick={onSubmit}
-                  buttonRef={submitButtonRef}
-                  qa="confirm-button"
-                >
-                  {buttonState.text}
-                </Button>
+                <ButtonTooltipWrapper content={buttonState.errorDescription}>
+                  <Button
+                    className="w-full"
+                    variant="primary-action"
+                    disabled={buttonState.disabled}
+                    onClick={onSubmit}
+                    buttonRef={submitButtonRef}
+                    qa="confirm-button"
+                  >
+                    {buttonState.text}
+                  </Button>
+                </ButtonTooltipWrapper>
 
                 {!isTwap && (
                   <>

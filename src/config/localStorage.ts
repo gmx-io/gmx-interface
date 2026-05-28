@@ -1,4 +1,5 @@
 export const SELECTED_NETWORK_LOCAL_STORAGE_KEY = "SELECTED_NETWORK";
+export const SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY = "SELECTED_NETWORK_WAS_APP_SELECTED";
 export const SELECTED_SETTLEMENT_CHAIN_ID_KEY = "SELECTED_SETTLEMENT_CHAIN_ID";
 export const SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY = "eagerconnect";
 export const CURRENT_PROVIDER_LOCALSTORAGE_KEY = "currentprovider";
@@ -77,6 +78,8 @@ export const PERMITS_DISABLED_KEY = "permits-disabled";
 export const AB_FLAG_STORAGE_KEY = "ab-flags";
 
 export const API_ROLLOUT_BUCKET_KEY = "api-rollout-bucket";
+
+export const API_UI_FLAGS_CACHE_KEY = "api-ui-flags-cache";
 
 export const IS_LARGE_ACCOUNT_KEY = "is-large-account-2";
 
