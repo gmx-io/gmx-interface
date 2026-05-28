@@ -27,14 +27,9 @@ vi.mock("context/PrivyWalletContext/PrivyWalletProvider", () => ({
 }));
 
 function LoaderStatus() {
-  const { isPrivyWalletInitializing, loadPrivyWalletProvider } = usePrivyWalletLoader();
+  const { isPrivyWalletInitializing } = usePrivyWalletLoader();
 
-  return (
-    <>
-      <div data-testid="privy-wallet-initializing">{String(isPrivyWalletInitializing)}</div>
-      <button onClick={loadPrivyWalletProvider}>Load Privy</button>
-    </>
-  );
+  return <div data-testid="privy-wallet-initializing">{String(isPrivyWalletInitializing)}</div>;
 }
 
 describe("WalletProvider", () => {
@@ -75,7 +70,7 @@ describe("WalletProvider", () => {
     sessionStorage.clear();
   });
 
-  it("does not preload the Privy wallet provider after page load and idle time", async () => {
+  it("starts loading the Privy wallet provider after page load and idle time", async () => {
     render(
       <WalletProvider>
         <LoaderStatus />
@@ -95,29 +90,11 @@ describe("WalletProvider", () => {
       window.dispatchEvent(new Event("load"));
     });
 
-    expect(window.requestIdleCallback).not.toHaveBeenCalled();
+    expect(window.requestIdleCallback).toHaveBeenCalled();
     expect(screen.getByTestId("privy-wallet-initializing").textContent).toBe("false");
 
     act(() => {
       idleCallback?.({ didTimeout: false, timeRemaining: () => 10 });
-    });
-
-    expect(screen.getByTestId("privy-wallet-initializing").textContent).toBe("false");
-    expect(screen.queryByTestId("privy-wallet-provider")).toBeNull();
-  });
-
-  it("loads the Privy wallet provider when requested", async () => {
-    render(
-      <WalletProvider>
-        <LoaderStatus />
-      </WalletProvider>
-    );
-
-    expect(screen.getByTestId("privy-wallet-initializing").textContent).toBe("false");
-    expect(screen.queryByTestId("privy-wallet-provider")).toBeNull();
-
-    act(() => {
-      screen.getByRole("button", { name: "Load Privy" }).click();
     });
 
     expect(screen.getByTestId("privy-wallet-initializing").textContent).toBe("true");
