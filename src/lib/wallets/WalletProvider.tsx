@@ -1,14 +1,19 @@
-import { PrivyProvider, type ConnectedWallet, type User } from "@privy-io/react-auth";
+import { PrivyProvider, useWallets, type ConnectedWallet, type User } from "@privy-io/react-auth";
 import { WagmiProvider } from "@privy-io/wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { useEffect, useMemo } from "react";
+import { useAccount } from "wagmi";
 
 import { colors } from "config/colors";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 
 import gmxLogo from "img/logo-icon.svg";
 
-import { findStoredActivePrivyWallet } from "./activeWalletStorage";
+import {
+  findActivePrivyWalletByWagmiAccount,
+  findStoredActivePrivyWallet,
+  writeActivePrivyWalletToStorage,
+} from "./activeWalletStorage";
 import {
   getWagmiConfig,
   getSupportedChains,
@@ -30,6 +35,28 @@ export function getActiveWalletForWagmi({ wallets, user }: { wallets: ConnectedW
   }
 
   return findStoredActivePrivyWallet(wallets) ?? wallets.find((wallet) => wallet.linked) ?? wallets[0];
+}
+
+function ActivePrivyWalletStorageSync() {
+  const { address, connector, isConnected } = useAccount();
+  const { wallets } = useWallets();
+
+  useEffect(() => {
+    if (!isConnected) {
+      return;
+    }
+
+    const activeWallet = findActivePrivyWalletByWagmiAccount(wallets, {
+      address,
+      connectorId: connector?.id,
+    });
+
+    if (activeWallet) {
+      writeActivePrivyWalletToStorage(activeWallet);
+    }
+  }, [address, connector?.id, isConnected, wallets]);
+
+  return null;
 }
 
 export default function WalletProvider({ children }: { children: React.ReactNode }) {
@@ -65,6 +92,7 @@ export default function WalletProvider({ children }: { children: React.ReactNode
     <PrivyProvider appId={PRIVY_APP_ID} config={privyConfig}>
       <QueryClientProvider client={queryClient}>
         <WagmiProvider config={getWagmiConfig()} setActiveWalletForWagmi={getActiveWalletForWagmi}>
+          <ActivePrivyWalletStorageSync />
           {children}
         </WagmiProvider>
       </QueryClientProvider>

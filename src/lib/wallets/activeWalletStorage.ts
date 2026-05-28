@@ -11,6 +11,11 @@ type WalletAccount = {
   walletClientType?: string | null;
 };
 
+type WagmiAccount = {
+  address?: string;
+  connectorId?: string;
+};
+
 export type ActivePrivyWalletStorageValue = {
   address?: string;
   connectorType?: string;
@@ -80,6 +85,24 @@ export function findStoredActivePrivyWallet(wallets: ConnectedWallet[]) {
   }
 
   return wallets.find((wallet) => wallet.linked && matchesStoredWallet(wallet, storedWallet));
+}
+
+function getPrivyWagmiConnectorId(wallet: ConnectedWallet) {
+  return wallet.walletClientType === "privy" ? `${wallet.meta.id}.${wallet.address}` : wallet.meta.id;
+}
+
+export function findActivePrivyWalletByWagmiAccount(wallets: ConnectedWallet[], account: WagmiAccount) {
+  if (!account.address) {
+    return undefined;
+  }
+
+  const addressMatch = wallets.filter((wallet) => wallet.address === account.address);
+
+  if (!account.connectorId) {
+    return addressMatch[0];
+  }
+
+  return addressMatch.find((wallet) => getPrivyWagmiConnectorId(wallet) === account.connectorId) ?? addressMatch[0];
 }
 
 export function getEthereumWalletStorageValue(account: WalletAccount | null | undefined) {
