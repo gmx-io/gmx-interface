@@ -10,22 +10,32 @@ import svgr from "vite-plugin-svgr";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { BREAKPOINTS } from "./src/lib/breakpoints";
 
-function getNodeModulePackageName(id: string, match: "first" | "last" = "last") {
-  const nodeModulesPath = "node_modules/";
-  const nodeModulesIndex = match === "first" ? id.indexOf(nodeModulesPath) : id.lastIndexOf(nodeModulesPath);
+function getPackageNameFromModulePath(modulePath: string | undefined) {
+  const parts = modulePath?.split("/");
+  const packageName = parts?.[0];
 
-  if (nodeModulesIndex === -1) {
+  if (!packageName) {
     return undefined;
   }
 
-  const modulePath = id.slice(nodeModulesIndex + nodeModulesPath.length);
-  const parts = modulePath.split("/");
-
-  if (parts[0]?.startsWith("@")) {
-    return `${parts[0]}/${parts[1]}`;
+  if (packageName.startsWith("@")) {
+    return parts?.[1] ? `${packageName}/${parts[1]}` : undefined;
   }
 
-  return parts[0];
+  return packageName;
+}
+
+function getNodeModulePackageNames(id: string) {
+  const modulePaths = id.split("node_modules/").slice(1);
+
+  if (modulePaths.length === 0) {
+    return undefined;
+  }
+
+  return {
+    ownerPackageName: getPackageNameFromModulePath(modulePaths[0]),
+    packageName: getPackageNameFromModulePath(modulePaths[modulePaths.length - 1]),
+  };
 }
 
 function getManualChunk(id: string) {
@@ -37,14 +47,15 @@ function getManualChunk(id: string) {
     return "commonjs";
   }
 
-  const packageName = getNodeModulePackageName(id);
-  // Keep nested dependencies with their owning lazy-loaded wallet package.
-  const ownerPackageName = getNodeModulePackageName(id, "first");
+  const packageNames = getNodeModulePackageNames(id);
 
-  if (!packageName) {
+  if (!packageNames?.packageName) {
     return undefined;
   }
 
+  const { ownerPackageName, packageName } = packageNames;
+
+  // Keep nested dependencies with their owning lazy-loaded wallet package.
   if (ownerPackageName?.startsWith("@privy-io/") || ownerPackageName === "x402") {
     return "privy";
   }
