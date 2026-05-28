@@ -12,7 +12,7 @@ import { useLocalizedMap } from "lib/i18n";
 import Tabs from "components/Tabs/Tabs";
 import type { Option } from "components/Tabs/types";
 
-const REGULAR_TAB_CLASS_NAME = "!px-8 !pb-11 !pt-13 text-13";
+const REGULAR_TAB_CLASS_NAME = "!px-8 !pb-11 !pt-13 text-13 leading-[18px]";
 
 export function FavoriteTabs({
   favoritesKey,
