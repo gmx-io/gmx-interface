@@ -17,7 +17,7 @@ function getRejectedReason(results: PromiseSettledResult<unknown>[]) {
 export function useDisconnectAndClose() {
   const { setIsSettingsVisible } = useSettings();
   const [, setIsVisible] = useGmxAccountModalOpen();
-  const { logout, user } = usePrivy();
+  const { logout } = usePrivy();
   const { wallets } = useWallets();
   const { disconnectAsync } = useDisconnect();
 
@@ -31,7 +31,7 @@ export function useDisconnectAndClose() {
 
     localStorage.removeItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY);
     localStorage.removeItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY);
-    removeActivePrivyWalletFromStorage(user?.id);
+    removeActivePrivyWalletFromStorage();
 
     const disconnectResults = await Promise.allSettled([
       disconnectAsync(),
@@ -46,7 +46,7 @@ export function useDisconnectAndClose() {
 
     setIsVisible(false);
     setIsSettingsVisible(false);
-  }, [disconnectAsync, logout, setIsVisible, setIsSettingsVisible, user?.id, wallets]);
+  }, [disconnectAsync, logout, setIsVisible, setIsSettingsVisible, wallets]);
 
   return handleDisconnect;
 }

@@ -21,12 +21,12 @@ type ActivePrivyWalletStorageState = ActivePrivyWalletStorageValue & Record<stri
 
 const ACTIVE_PRIVY_WALLET_STORAGE_KEYS = ["address", "connectorType", "walletClientType"] as const;
 
-export function getActivePrivyWalletStorageKey(userId: string) {
-  return `${ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY}:${userId}`;
+export function getActivePrivyWalletStorageKey() {
+  return ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY;
 }
 
-function getActivePrivyWalletStorage(userId: string) {
-  return new Storage<ActivePrivyWalletStorageState>(getActivePrivyWalletStorageKey(userId));
+function getActivePrivyWalletStorage() {
+  return new Storage<ActivePrivyWalletStorageState>(getActivePrivyWalletStorageKey());
 }
 
 function isActivePrivyWalletStorageValue(value: unknown): value is ActivePrivyWalletStorageValue {
@@ -42,27 +42,23 @@ function isActivePrivyWalletStorageValue(value: unknown): value is ActivePrivyWa
   );
 }
 
-export function readActivePrivyWalletFromStorage(userId: string) {
-  const value = getActivePrivyWalletStorage(userId).getState();
+export function readActivePrivyWalletFromStorage() {
+  const value = getActivePrivyWalletStorage().getState();
   return isActivePrivyWalletStorageValue(value) ? value : undefined;
 }
 
-export function writeActivePrivyWalletToStorage(userId: string | undefined, wallet: ActivePrivyWalletStorageValue) {
-  if (!userId || !isActivePrivyWalletStorageValue(wallet)) {
+export function writeActivePrivyWalletToStorage(wallet: ActivePrivyWalletStorageValue) {
+  if (!isActivePrivyWalletStorageValue(wallet)) {
     return;
   }
 
-  const storage = getActivePrivyWalletStorage(userId);
+  const storage = getActivePrivyWalletStorage();
 
   ACTIVE_PRIVY_WALLET_STORAGE_KEYS.forEach((key) => storage.set(key, wallet[key]));
 }
 
-export function removeActivePrivyWalletFromStorage(userId: string | undefined) {
-  if (!userId) {
-    return;
-  }
-
-  getActivePrivyWalletStorage(userId).clear();
+export function removeActivePrivyWalletFromStorage() {
+  getActivePrivyWalletStorage().clear();
 }
 
 function matchesStoredWallet(wallet: ConnectedWallet, storedWallet: ActivePrivyWalletStorageValue) {
@@ -81,8 +77,8 @@ function matchesStoredWallet(wallet: ConnectedWallet, storedWallet: ActivePrivyW
   return true;
 }
 
-export function findStoredActivePrivyWallet({ wallets, userId }: { wallets: ConnectedWallet[]; userId: string }) {
-  const storedWallet = readActivePrivyWalletFromStorage(userId);
+export function findStoredActivePrivyWallet(wallets: ConnectedWallet[]) {
+  const storedWallet = readActivePrivyWalletFromStorage();
 
   if (!storedWallet) {
     return undefined;

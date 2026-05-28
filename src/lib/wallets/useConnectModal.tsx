@@ -2,7 +2,6 @@ import {
   useConnectOrCreateWallet,
   useCreateWallet,
   useLogin,
-  usePrivy,
   type ConnectedWallet,
   type PrivyEvents,
 } from "@privy-io/react-auth";
@@ -90,7 +89,6 @@ function shouldKeepAppSelectedSourceChain(settlementChainId: SettlementChainId) 
 export function ConnectModalProvider({ children }: { children: React.ReactNode }) {
   const [settlementChainId] = useGmxAccountSettlementChainId();
   const [connectModalOpen, setConnectModalOpen] = useState(false);
-  const { user } = usePrivy();
   const { createWallet } = useCreateWallet();
   const { setActiveWallet } = useSetActiveWallet();
 
@@ -108,7 +106,7 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
 
   const handleConnectOrCreateWalletSuccess = useCallback(
     async (params: ConnectOrCreateWalletSuccessParams) => {
-      writeActivePrivyWalletToStorage(user?.id, params.wallet);
+      writeActivePrivyWalletToStorage(params.wallet);
 
       try {
         if (params.wallet.type === "ethereum") {
@@ -122,7 +120,7 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
 
       handleSuccess();
     },
-    [handleSuccess, setActiveWallet, user?.id]
+    [handleSuccess, setActiveWallet]
   );
 
   const { connectOrCreateWallet } = useConnectOrCreateWallet({
@@ -139,7 +137,7 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
       const activeWalletStorageValue = getActiveWalletStorageValueAfterLogin(params);
 
       if (activeWalletStorageValue) {
-        writeActivePrivyWalletToStorage(params.user.id, activeWalletStorageValue);
+        writeActivePrivyWalletToStorage(activeWalletStorageValue);
         handleSuccess();
         return;
       }
@@ -147,7 +145,7 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
       if (!isWalletLoginMethod(params.loginMethod)) {
         void createWallet()
           .then((wallet) => {
-            writeActivePrivyWalletToStorage(params.user.id, wallet);
+            writeActivePrivyWalletToStorage(wallet);
             handleSuccess();
           })
           .catch((error) => {

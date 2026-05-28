@@ -12,14 +12,12 @@ const mocks = vi.hoisted(() => ({
   pushEvent: vi.fn(),
   setIsSettingsVisible: vi.fn(),
   setIsVisible: vi.fn(),
-  user: { id: "did:privy:user-id" },
   wallets: [] as { disconnect: ReturnType<typeof vi.fn> }[],
 }));
 
 vi.mock("@privy-io/react-auth", () => ({
   usePrivy: () => ({
     logout: mocks.logout,
-    user: mocks.user,
   }),
   useWallets: () => ({
     wallets: mocks.wallets,
@@ -70,7 +68,7 @@ describe("useDisconnectAndClose", () => {
     localStorage.setItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY, "true");
     localStorage.setItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY, "metamask");
     localStorage.setItem(
-      getActivePrivyWalletStorageKey(mocks.user.id),
+      getActivePrivyWalletStorageKey(),
       JSON.stringify({
         address: "0x0000000000000000000000000000000000000001",
         connectorType: "embedded",
@@ -105,7 +103,7 @@ describe("useDisconnectAndClose", () => {
 
     expect(localStorage.getItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY)).toBeNull();
     expect(localStorage.getItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY)).toBeNull();
-    expect(localStorage.getItem(getActivePrivyWalletStorageKey(mocks.user.id))).toBeNull();
+    expect(localStorage.getItem(getActivePrivyWalletStorageKey())).toBeNull();
     expect(mocks.setIsVisible).toHaveBeenCalledWith(false);
     expect(mocks.setIsSettingsVisible).toHaveBeenCalledWith(false);
   });

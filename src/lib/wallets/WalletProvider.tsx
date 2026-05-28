@@ -29,9 +29,7 @@ export function getActiveWalletForWagmi({ wallets, user }: { wallets: ConnectedW
     return wallets.find((wallet) => wallet.linked === false);
   }
 
-  return (
-    findStoredActivePrivyWallet({ wallets, userId: user.id }) ?? wallets.find((wallet) => wallet.linked) ?? wallets[0]
-  );
+  return findStoredActivePrivyWallet(wallets) ?? wallets.find((wallet) => wallet.linked) ?? wallets[0];
 }
 
 export default function WalletProvider({ children }: { children: React.ReactNode }) {
