@@ -653,9 +653,9 @@ export function PositionSeller() {
       simulationParams: shouldDisableValidationForTesting
         ? undefined
         : {
-            tokensData,
-            blockTimestampData,
-          },
+          tokensData,
+          blockTimestampData,
+        },
       callback: makeOrderTxnCallback({
         metricId: metricData.metricId,
         requestId: metricData.requestId,
@@ -753,9 +753,9 @@ export function PositionSeller() {
               ? "-"
               : decreaseAmounts?.sizeDeltaUsd
                 ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                    displayDecimals: marketDecimals,
-                    visualMultiplier: toToken?.visualMultiplier,
-                  })
+                  displayDecimals: marketDecimals,
+                  visualMultiplier: toToken?.visualMultiplier,
+                })
                 : undefined
           }
         />
@@ -1093,15 +1093,6 @@ export function PositionSeller() {
               )}
 
               <div className="flex w-full flex-col gap-14 px-20 pb-14">
-                <HighPriceImpactOrFeesWarningCard
-                  priceImpactWarningState={priceImpactWarningState}
-                  swapPriceImpact={fees?.swapPriceImpact}
-                  swapProfitFee={fees?.swapProfitFee}
-                  executionFeeUsd={executionFee?.feeUsd}
-                  maxNegativeImpactBps={position.marketInfo ? getMaxNegativeImpactBps(position.marketInfo) : undefined}
-                  swapProfitFeeWarning={splitReceiveSwapProfitFeeWarning}
-                />
-
                 {!isTwap && (
                   <ToggleSwitch
                     textClassName="text-typography-secondary"
@@ -1144,6 +1135,15 @@ export function PositionSeller() {
                   isWrapOrUnwrap={false}
                   isGmxAccount={srcChainId !== undefined || effectiveIsReceiveToGmxAccount}
                   onAfterAction={onClose}
+                />
+
+                <HighPriceImpactOrFeesWarningCard
+                  priceImpactWarningState={priceImpactWarningState}
+                  swapPriceImpact={fees?.swapPriceImpact}
+                  swapProfitFee={fees?.swapProfitFee}
+                  executionFeeUsd={executionFee?.feeUsd}
+                  maxNegativeImpactBps={position.marketInfo ? getMaxNegativeImpactBps(position.marketInfo) : undefined}
+                  swapProfitFeeWarning={splitReceiveSwapProfitFeeWarning}
                 />
 
                 {twapRecommendation && !isTwapBannerDismissed && (
