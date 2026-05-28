@@ -461,6 +461,10 @@ msgstr "GMX Account Guthaben"
 msgid "Search in perpetuals markets"
 msgstr "In Perpetual-Märkten suchen"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Sell {gmOrGlvLabel} failed"
+msgstr "Verkauf von {gmOrGlvLabel} fehlgeschlagen"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -686,13 +690,6 @@ msgstr "Treasury"
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Your share of the total network staking power. Treasury rewards will be distributed proportionally to staking power when GMX reaches $90. All projected rewards are best-effort estimations. Actual distribution is subject to DAO governance."
 msgstr ""
-
-#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-#: src/lib/contracts/callContract.tsx
-#: src/lib/contracts/notifications.tsx
-#: src/lib/contracts/notifications.tsx
-msgid "View status"
-msgstr "Status anzeigen"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "No"
@@ -2420,6 +2417,10 @@ msgstr "Keine Vermögenswerte zum Einzahlen verfügbar"
 msgid "Only positions with over {0} in capital used are ranked.<0/><1/>The capital used is calculated as the highest value of [<2>sum of margin of open positions - realized PnL + period start pending PnL</2>]."
 msgstr ""
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "{gmOrGlvLabel} sold successfully, but bridge to {0} failed. Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to withdraw your tokens."
+msgstr "{gmOrGlvLabel} erfolgreich verkauft, aber die Bridge zu {0} ist fehlgeschlagen. Ihre Gelder sind sicher in Ihrem GMX-Konto. Wiederholen Sie die Bridge oder öffnen Sie das GMX-Konto, um Ihre Token abzuheben."
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Discounts earned by this account as a trader"
 msgstr ""
@@ -3008,6 +3009,10 @@ msgstr "Staken gesendet"
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Net"
 msgstr ""
+
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+msgid "Transaction failed.<0/><1/><2>View</2>"
+msgstr "Transaktion fehlgeschlagen.<0/><1/><2>Ansicht</2>"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
@@ -3771,10 +3776,6 @@ msgstr "{gmOrGlvLabel} wird überbrückt nach..."
 msgid "Deadline:"
 msgstr "Frist:"
 
-#: src/components/Errors/errorToasts.tsx
-msgid "Execution fee validation failed.<0/><1/>{suggestText}<2/><3/><4>View status</4>"
-msgstr "Validierung der Ausführungsgebühr fehlgeschlagen.<0/><1/>{suggestText}<2/><3/><4>Status anzeigen</4>"
-
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -4288,6 +4289,10 @@ msgstr "Genehmigung abgebrochen"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive factor"
 msgstr "Positiver Faktor"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "{gmOrGlvLabel} bought successfully, but bridge to {0} failed. Your funds are safe in your GMX Account. Retry the bridge or go to the {indexName} pool to withdraw your {gmOrGlvLabel} tokens."
+msgstr "{gmOrGlvLabel} erfolgreich gekauft, aber die Bridge zu {0} ist fehlgeschlagen. Ihre Gelder sind sicher in Ihrem GMX-Konto. Wiederholen Sie die Bridge oder gehen Sie zum {indexName}-Pool, um Ihre {gmOrGlvLabel}-Token abzuheben."
 
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -5412,10 +5417,6 @@ msgstr ""
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
 msgstr "Beanspruchungen auf Avalanche Fuji nicht verfügbar"
-
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "Buy failed"
-msgstr "Kauf fehlgeschlagen"
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Users"
@@ -8302,6 +8303,10 @@ msgstr "(<0>{0}</0> des {operationText}-Betrags)"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/StatusNotification/StakeNotification.tsx
 #: src/components/TransactionStatus/TransactionStatus.tsx
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/notifications.tsx
+#: src/lib/contracts/notifications.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "View"
 msgstr "Ansicht"
@@ -8606,10 +8611,6 @@ msgstr "LIQUIDITÄT SHORT"
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Meme"
 msgstr "Meme"
-
-#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-msgid "Transaction failed.<0/><1/><2>View status</2>"
-msgstr "Transaktion fehlgeschlagen.<0/><1/><2>Status anzeigen</2>"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Accumulate GMX rewards by staking"
@@ -8987,11 +8988,8 @@ msgstr "Gewinne und Verluste für geschlossene Positionen"
 msgid "Short liquidity"
 msgstr ""
 
-#: src/domain/tokens/approveTokens.tsx
-msgid "Approval submitted<0/><1/><2>View status</2>"
-msgstr "Genehmigung eingereicht<0/><1/><2>Status anzeigen</2>"
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Referral discount"
 msgstr "Empfehlungsrabatt"
 
@@ -9217,13 +9215,13 @@ msgstr "GMX-Community-Diskussion"
 msgid "Sell GM"
 msgstr "GM verkaufen"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Execution fee validation failed.<0/><1/>{suggestText}<2/><3/><4>View</4>"
+msgstr "Validierung der Ausführungsgebühr fehlgeschlagen.<0/><1/>{suggestText}<2/><3/><4>Ansicht</4>"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Order can't be updated. Type doesn't support modifications"
 msgstr "Order kann nicht aktualisiert werden. Dieser Typ unterstützt keine Änderungen"
-
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "{gmOrGlvLabel} sold successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to withdraw your tokens."
-msgstr "{gmOrGlvLabel} erfolgreich verkauft, aber die Bridge zu Base ist fehlgeschlagen. Ihre Mittel sind sicher in Ihrem GMX Account. Versuchen Sie die Bridge erneut oder öffnen Sie das GMX Account, um Ihre Token abzuheben."
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Unable to fetch swap route. Please try again."
@@ -9814,10 +9812,6 @@ msgstr "Siehe den empfohlenen Abschnitt oben, um zu beginnen"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "Erhalten Sie Benachrichtigungen und Ankündigungen von GMX, um über Ihre Trades, Liquidationsrisiken und mehr auf dem Laufenden zu bleiben"
-
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "{gmOrGlvLabel} bought successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or go to the {indexName} pool to withdraw your GM tokens."
-msgstr "{gmOrGlvLabel} erfolgreich gekauft, aber die Bridge zu Base ist fehlgeschlagen. Ihre Mittel sind sicher in Ihrem GMX Account. Versuchen Sie die Bridge erneut oder gehen Sie zum {indexName}-Pool, um Ihre GM-Token abzuheben."
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Repeat transaction"
@@ -10894,6 +10888,10 @@ msgstr "Limit"
 msgid "Execute TWAP Swap part"
 msgstr "TWAP-Tausch-Teil ausführen"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Buy {gmOrGlvLabel} failed"
+msgstr "Kauf von {gmOrGlvLabel} fehlgeschlagen"
+
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Reload the page or report the issue if the <0/> problem persists"
 msgstr "Laden Sie die Seite neu oder melden Sie das Problem, wenn das <0/> Problem weiterhin besteht"
@@ -11007,6 +11005,10 @@ msgstr ""
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Loading Express Trading params..."
 msgstr "Express Trading-Parameter werden geladen..."
+
+#: src/domain/tokens/approveTokens.tsx
+msgid "Approval submitted<0/><1/><2>View</2>"
+msgstr "Genehmigung übermittelt<0/><1/><2>Ansicht</2>"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL CAP LONG"

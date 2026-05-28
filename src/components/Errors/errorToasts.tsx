@@ -410,7 +410,7 @@ export function getInsufficientExecutionFeeToastContent({
         {suggestText}
         <br />
         <br />
-        <ExternalLink href={txUrl}>View status</ExternalLink>
+        <ExternalLink href={txUrl}>View</ExternalLink>
       </Trans>
       <br />
       <br />

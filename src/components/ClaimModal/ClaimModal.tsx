@@ -39,6 +39,8 @@ import { OutOfTokenErrorAlert } from "components/Referrals/shared/modals/OutOfTo
 import Tooltip from "components/Tooltip/Tooltip";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import CheckCircleIcon from "img/ic_check_circle.svg?react";
+import CloseCircleIcon from "img/ic_close_circle.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { ClaimFundingSelection, useClaimableFunding, useClaimableFundingSelection } from "./useClaimableFunding";
@@ -50,6 +52,35 @@ type Props = {
   onClose: () => void;
   setPendingTxns: (txns: any) => void;
 };
+
+export function getClaimingFundingToastContent() {
+  return (
+    <div className="flex items-center justify-between gap-6">
+      <div className="text-typography-secondary">
+        <Trans>Claiming...</Trans>
+      </div>
+      <SpinnerIcon className="spin size-15 shrink-0 text-typography-primary" />
+    </div>
+  );
+}
+
+export function getClaimFundingSuccessToastContent() {
+  return (
+    <div className="flex items-center justify-between gap-6">
+      <div>{t`Funding fees claimed`}</div>
+      <CheckCircleIcon className="size-15 shrink-0 text-green-500" />
+    </div>
+  );
+}
+
+export function getClaimFundingFailureToastContent() {
+  return (
+    <div className="flex items-center justify-between gap-6">
+      <div>{t`Claiming funding fees failed`}</div>
+      <CloseCircleIcon className="size-15 shrink-0 text-red-500" />
+    </div>
+  );
+}
 
 export function ClaimModal(p: Props) {
   const { isVisible, onClose, setPendingTxns } = p;
@@ -206,25 +237,20 @@ function ClaimModalMultichain(p: Props) {
           txnData,
         });
 
-        helperToast.info(
-          <div className="flex items-center justify-between">
-            <div className="text-white/50">
-              <Trans>Claiming...</Trans>
-            </div>
-            <SpinnerIcon className="spin size-15 text-white" />
-          </div>,
-          { autoClose: false, toastId: "funding-claimed" }
-        );
+        helperToast.info(getClaimingFundingToastContent(), {
+          autoClose: false,
+          toastId: "funding-claimed",
+        });
         request.wait().then((res) => {
           if (res.status === "success") {
             toast.update("funding-claimed", {
-              render: t`Funding fees claimed`,
+              render: getClaimFundingSuccessToastContent(),
               type: "success",
               autoClose: TOAST_AUTO_CLOSE_TIME,
             });
           } else if (res.status === "failed") {
             toast.update("funding-claimed", {
-              render: t`Claiming funding fees failed`,
+              render: getClaimFundingFailureToastContent(),
               type: "error",
               autoClose: TOAST_AUTO_CLOSE_TIME,
             });

@@ -461,6 +461,10 @@ msgstr "GMX Account 餘額"
 msgid "Search in perpetuals markets"
 msgstr "搜尋永續合約市場"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Sell {gmOrGlvLabel} failed"
+msgstr "出售 {gmOrGlvLabel} 失敗"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -686,13 +690,6 @@ msgstr "國庫"
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Your share of the total network staking power. Treasury rewards will be distributed proportionally to staking power when GMX reaches $90. All projected rewards are best-effort estimations. Actual distribution is subject to DAO governance."
 msgstr ""
-
-#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-#: src/lib/contracts/callContract.tsx
-#: src/lib/contracts/notifications.tsx
-#: src/lib/contracts/notifications.tsx
-msgid "View status"
-msgstr "查看狀態"
 
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "No"
@@ -2420,6 +2417,10 @@ msgstr "無可存入的資產"
 msgid "Only positions with over {0} in capital used are ranked.<0/><1/>The capital used is calculated as the highest value of [<2>sum of margin of open positions - realized PnL + period start pending PnL</2>]."
 msgstr ""
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "{gmOrGlvLabel} sold successfully, but bridge to {0} failed. Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to withdraw your tokens."
+msgstr "{gmOrGlvLabel} 出售成功，但跨鏈至 {0} 失敗。您的資金安全地保存在您的 GMX Account 中。請重試跨鏈，或開啟 GMX Account 提取您的代幣。"
+
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Discounts earned by this account as a trader"
 msgstr ""
@@ -3008,6 +3009,10 @@ msgstr "質押已提交"
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Net"
 msgstr ""
+
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+msgid "Transaction failed.<0/><1/><2>View</2>"
+msgstr "交易失敗。<0/><1/><2>查看</2>"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
@@ -3771,10 +3776,6 @@ msgstr "{gmOrGlvLabel} 跨鏈至..."
 msgid "Deadline:"
 msgstr "截止時間："
 
-#: src/components/Errors/errorToasts.tsx
-msgid "Execution fee validation failed.<0/><1/>{suggestText}<2/><3/><4>View status</4>"
-msgstr "執行費用驗證失敗。<0/><1/>{suggestText}<2/><3/><4>查看狀態</4>"
-
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -4288,6 +4289,10 @@ msgstr "授權已取消"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive factor"
 msgstr "正向因子"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "{gmOrGlvLabel} bought successfully, but bridge to {0} failed. Your funds are safe in your GMX Account. Retry the bridge or go to the {indexName} pool to withdraw your {gmOrGlvLabel} tokens."
+msgstr "{gmOrGlvLabel} 購買成功，但跨鏈至 {0} 失敗。您的資金安全地保存在您的 GMX Account 中。請重試跨鏈，或前往 {indexName} 資金池提取您的 {gmOrGlvLabel} 代幣。"
 
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -5412,10 +5417,6 @@ msgstr ""
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
 msgstr "Avalanche Fuji 上無法領取"
-
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "Buy failed"
-msgstr "買入失敗"
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Users"
@@ -8302,6 +8303,10 @@ msgstr "（<0>{0}</0>，佔{operationText}金額）"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/StatusNotification/StakeNotification.tsx
 #: src/components/TransactionStatus/TransactionStatus.tsx
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/notifications.tsx
+#: src/lib/contracts/notifications.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "View"
 msgstr "查看"
@@ -8606,10 +8611,6 @@ msgstr "做空流動性"
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Meme"
 msgstr "Meme"
-
-#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-msgid "Transaction failed.<0/><1/><2>View status</2>"
-msgstr "交易失敗。<0/><1/><2>查看狀態</2>"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Accumulate GMX rewards by staking"
@@ -8987,11 +8988,8 @@ msgstr "已平倉倉位的盈虧"
 msgid "Short liquidity"
 msgstr ""
 
-#: src/domain/tokens/approveTokens.tsx
-msgid "Approval submitted<0/><1/><2>View status</2>"
-msgstr "授權已提交<0/><1/><2>查看狀態</2>"
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Referral discount"
 msgstr "推薦折扣"
 
@@ -9217,13 +9215,13 @@ msgstr "GMX 社群討論"
 msgid "Sell GM"
 msgstr "賣出 GM"
 
+#: src/components/Errors/errorToasts.tsx
+msgid "Execution fee validation failed.<0/><1/>{suggestText}<2/><3/><4>View</4>"
+msgstr "執行費用驗證失敗。<0/><1/>{suggestText}<2/><3/><4>查看</4>"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Order can't be updated. Type doesn't support modifications"
 msgstr "無法更新訂單，此類型不支援修改"
-
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "{gmOrGlvLabel} sold successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to withdraw your tokens."
-msgstr "{gmOrGlvLabel} 賣出成功，但跨鏈橋接至 Base 失敗。您的資金安全存放在您的 GMX Account 中。請重試橋接或打開 GMX Account 提取您的代幣。"
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Unable to fetch swap route. Please try again."
@@ -9814,10 +9812,6 @@ msgstr "請參閱上方推薦區域以開始"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "獲取 GMX 的提醒和公告，隨時掌握您的交易、清算風險等資訊"
-
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "{gmOrGlvLabel} bought successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or go to the {indexName} pool to withdraw your GM tokens."
-msgstr "{gmOrGlvLabel} 買入成功，但橋接至 Base 失敗。您的資金安全存放在您的 GMX Account 中。請重試橋接，或前往 {indexName} 池提取您的 GM 代幣。"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Repeat transaction"
@@ -10894,6 +10888,10 @@ msgstr "限價"
 msgid "Execute TWAP Swap part"
 msgstr "執行 TWAP Swap 部分"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Buy {gmOrGlvLabel} failed"
+msgstr "購買 {gmOrGlvLabel} 失敗"
+
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Reload the page or report the issue if the <0/> problem persists"
 msgstr "若 <0/> 問題持續發生，請重新載入頁面或回報問題"
@@ -11007,6 +11005,10 @@ msgstr ""
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Loading Express Trading params..."
 msgstr "正在載入 Express Trading 參數..."
+
+#: src/domain/tokens/approveTokens.tsx
+msgid "Approval submitted<0/><1/><2>View</2>"
+msgstr "已提交批准<0/><1/><2>查看</2>"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL CAP LONG"
