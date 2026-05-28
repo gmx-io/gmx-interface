@@ -2,40 +2,40 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { Fragment, type ReactNode } from "react";
 
-import type { DecreaseReceiveOutput } from "domain/synthetics/trade";
-import { getNormalizedTokenSymbol } from "sdk/configs/tokens";
+import { convertTokenAddress, getNormalizedTokenSymbol, getToken } from "sdk/configs/tokens";
+import type { DecreaseReceiveOutput } from "sdk/utils/trade/decreaseOutputs";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 
-type TokenWithSymbol = {
+type TokenWithAddressAndSymbol = {
+  address: string;
   symbol: string;
 };
 
-const WRAPPED_TOKEN_DISPLAY_SYMBOLS: Record<string, string> = {
-  WBTC: "BTC",
-  WETH: "ETH",
-  WAVAX: "AVAX",
-};
-
-export function getTokenDisplaySymbol(token: TokenWithSymbol | undefined) {
+export function getTokenDisplaySymbol(chainId: number, token: TokenWithAddressAndSymbol | undefined) {
   if (!token) {
     return undefined;
   }
 
-  const normalizedSymbol = getNormalizedTokenSymbol(token.symbol);
+  const nativeTokenAddress = convertTokenAddress(chainId, token.address, "native");
+  if (nativeTokenAddress !== token.address) {
+    return getToken(chainId, nativeTokenAddress).symbol;
+  }
 
-  return WRAPPED_TOKEN_DISPLAY_SYMBOLS[normalizedSymbol] ?? normalizedSymbol;
+  return getNormalizedTokenSymbol(getNormalizedTokenSymbol(token.symbol));
 }
 
 export function SplitReceiveTokensLabel({
+  chainId,
   profitToken,
   collateralToken,
 }: {
-  profitToken: TokenWithSymbol | undefined;
-  collateralToken: TokenWithSymbol | undefined;
+  chainId: number;
+  profitToken: TokenWithAddressAndSymbol | undefined;
+  collateralToken: TokenWithAddressAndSymbol | undefined;
 }) {
-  const profitTokenSymbol = getTokenDisplaySymbol(profitToken);
-  const collateralTokenSymbol = getTokenDisplaySymbol(collateralToken);
+  const profitTokenSymbol = getTokenDisplaySymbol(chainId, profitToken);
+  const collateralTokenSymbol = getTokenDisplaySymbol(chainId, collateralToken);
 
   return profitTokenSymbol && collateralTokenSymbol ? (
     <Trans>

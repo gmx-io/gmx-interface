@@ -2,13 +2,13 @@ import { describe, expect, it } from "vitest";
 
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
 import { getDecreasePositionAmounts } from "domain/synthetics/trade";
-
 import {
   getCanSplitReceive,
   getDecreaseReceiveOutputs,
   getHasSplitReceiveOutputs,
   getIsSplitReceiveAvailable,
-} from "../decreaseOutputs";
+} from "sdk/utils/trade/decreaseOutputs";
+
 import {
   ETH_TOKEN_FIXTURE,
   MARKET_INFO_FIXTURE,

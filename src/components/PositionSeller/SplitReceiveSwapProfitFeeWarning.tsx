@@ -11,10 +11,12 @@ import ExternalLink from "components/ExternalLink/ExternalLink";
 const RECEIVE_TOKEN_DOCS_URL = "https://docs.gmx.io/docs/trading/order-types/#receive-token";
 
 type TokenWithSymbol = {
+  address: string;
   symbol: string;
 };
 
 type SplitReceiveSwapProfitFeeWarningProps = {
+  chainId: number;
   shouldShow: boolean;
   receiveToken: TokenWithSymbol | undefined;
   profitToken: TokenWithSymbol | undefined;
@@ -31,6 +33,7 @@ type SplitReceiveSwapProfitFeeWarningContentProps = {
 };
 
 export function getSplitReceiveSwapProfitFeeWarning({
+  chainId,
   shouldShow,
   receiveToken,
   profitToken,
@@ -41,9 +44,9 @@ export function getSplitReceiveSwapProfitFeeWarning({
     return undefined;
   }
 
-  const receiveTokenSymbol = getTokenDisplaySymbol(receiveToken);
-  const profitTokenSymbol = getTokenDisplaySymbol(profitToken);
-  const collateralTokenSymbol = getTokenDisplaySymbol(collateralToken);
+  const receiveTokenSymbol = getTokenDisplaySymbol(chainId, receiveToken);
+  const profitTokenSymbol = getTokenDisplaySymbol(chainId, profitToken);
+  const collateralTokenSymbol = getTokenDisplaySymbol(chainId, collateralToken);
 
   if (!receiveTokenSymbol || !profitTokenSymbol || !collateralTokenSymbol) {
     return undefined;

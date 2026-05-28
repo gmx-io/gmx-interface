@@ -337,6 +337,7 @@ export function PositionSeller() {
 
   const isTwap = orderOption === OrderOption.Twap;
   const splitReceiveSwapProfitFeeWarning = getSplitReceiveSwapProfitFeeWarning({
+    chainId,
     shouldShow: !isTwap && isSplitReceiveAvailable && !isReceiveSeparated,
     receiveToken,
     profitToken: position?.pnlToken,
@@ -653,9 +654,9 @@ export function PositionSeller() {
       simulationParams: shouldDisableValidationForTesting
         ? undefined
         : {
-          tokensData,
-          blockTimestampData,
-        },
+            tokensData,
+            blockTimestampData,
+          },
       callback: makeOrderTxnCallback({
         metricId: metricData.metricId,
         requestId: metricData.requestId,
@@ -753,9 +754,9 @@ export function PositionSeller() {
               ? "-"
               : decreaseAmounts?.sizeDeltaUsd
                 ? formatLiquidationPrice(nextPositionValues?.nextLiqPrice, {
-                  displayDecimals: marketDecimals,
-                  visualMultiplier: toToken?.visualMultiplier,
-                })
+                    displayDecimals: marketDecimals,
+                    visualMultiplier: toToken?.visualMultiplier,
+                  })
                 : undefined
           }
         />
@@ -1111,6 +1112,7 @@ export function PositionSeller() {
                     setIsChecked={setIsReceiveSeparated}
                   >
                     <SplitReceiveTokensLabel
+                      chainId={chainId}
                       profitToken={position?.pnlToken}
                       collateralToken={position?.collateralToken}
                     />

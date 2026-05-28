@@ -1,7 +1,8 @@
-import type { PositionInfo } from "domain/synthetics/positions";
-import type { TokenData, TokensData } from "domain/synthetics/tokens";
-import { getIsEquivalentTokens } from "sdk/utils/tokens";
-import type { DecreasePositionAmounts } from "sdk/utils/trade/types";
+import type { PositionInfo } from "utils/positions/types";
+import { getIsEquivalentTokens } from "utils/tokens";
+import type { TokenData, TokensData } from "utils/tokens/types";
+
+import type { DecreasePositionAmounts } from "./types";
 
 export type DecreaseReceiveOutput = {
   type: "primary" | "secondary";
