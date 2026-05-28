@@ -34,6 +34,7 @@ import {
   selectPositionSellerReceiveToken,
   selectPositionSellerSetDefaultReceiveToken,
   selectPositionSellerShouldSwap,
+  selectPositionSellerSplitReceiveDecreaseAmounts,
   selectPositionSellerSwapAmounts,
 } from "context/SyntheticsStateContext/selectors/positionSellerSelectors";
 import { selectExecutionFeeBufferBps } from "context/SyntheticsStateContext/selectors/settingsSelectors";
@@ -47,7 +48,11 @@ import { OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import { formatLeverage, formatLiquidationPrice } from "domain/synthetics/positions";
-import { getPositionSellerTradeFlags } from "domain/synthetics/trade";
+import {
+  getDecreaseReceiveOutputs,
+  getIsSplitReceiveAvailable,
+  getPositionSellerTradeFlags,
+} from "domain/synthetics/trade";
 import { getTwapRecommendation } from "domain/synthetics/trade/twapRecommendation";
 import { TradeType } from "domain/synthetics/trade/types";
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
@@ -102,6 +107,10 @@ import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 import Button from "components/Button/Button";
 import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
+import {
+  DecreaseReceiveOutputDisplay,
+  SplitReceiveTokensLabel,
+} from "components/DecreaseReceiveOutput/DecreaseReceiveOutput";
 import { ValidationBannerErrorContent } from "components/Errors/gasErrors";
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { MarginDestinationSelector } from "components/MarginDestinationSelector/MarginDestinationSelector";
@@ -123,6 +132,7 @@ import { MarginDestinationDialog } from "./MarginDestinationDialog";
 import { PositionSellerAdvancedRows } from "./PositionSellerAdvancedDisplayRows";
 import { HighPriceImpactOrFeesWarningCard } from "../HighPriceImpactOrFeesWarningCard/HighPriceImpactOrFeesWarningCard";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
+import { getSplitReceiveSwapProfitFeeWarning } from "./SplitReceiveSwapProfitFeeWarning";
 import { ExpressTradingWarningCard } from "../TradeBox/ExpressTradingWarningCard";
 import { tradeModeLabels, tradeTypeLabels } from "../TradeBox/tradeboxConstants";
 import TwapRows from "../TwapRows/TwapRows";
@@ -203,6 +213,8 @@ export function PositionSeller() {
     triggerPriceInputValue,
     resetPositionSeller,
     setIsReceiveTokenChanged,
+    isReceiveSeparated,
+    setIsReceiveSeparated,
     setKeepLeverage,
     duration,
     numberOfParts,
@@ -278,6 +290,16 @@ export function PositionSeller() {
   const swapAmounts = useSelector(selectPositionSellerSwapAmounts);
 
   const receiveUsd = swapAmounts?.usdOut || decreaseAmounts?.receiveUsd;
+  const receiveOutputs = useMemo(
+    () => getDecreaseReceiveOutputs({ decreaseAmounts, tokensData }),
+    [decreaseAmounts, tokensData]
+  );
+  const splitReceiveDecreaseAmounts = useSelector(selectPositionSellerSplitReceiveDecreaseAmounts);
+  const splitReceiveOutputs = useMemo(
+    () => getDecreaseReceiveOutputs({ decreaseAmounts: splitReceiveDecreaseAmounts, tokensData }),
+    [splitReceiveDecreaseAmounts, tokensData]
+  );
+  const isSplitReceiveAvailable = getIsSplitReceiveAvailable(position, splitReceiveOutputs);
 
   const receiveTokenAmount = useMemo(() => {
     if (swapAmounts?.amountOut !== undefined) return swapAmounts.amountOut;
@@ -314,6 +336,19 @@ export function PositionSeller() {
   const slippageInputId = useId();
 
   const isTwap = orderOption === OrderOption.Twap;
+  const splitReceiveSwapProfitFeeWarning = getSplitReceiveSwapProfitFeeWarning({
+    shouldShow: !isTwap && isSplitReceiveAvailable && !isReceiveSeparated,
+    receiveToken,
+    profitToken: position?.pnlToken,
+    collateralToken: position?.collateralToken,
+    swapProfitFee: fees?.swapProfitFee,
+  });
+
+  useEffect(() => {
+    if ((isTwap || !isSplitReceiveAvailable) && isReceiveSeparated) {
+      setIsReceiveSeparated(false);
+    }
+  }, [isTwap, isSplitReceiveAvailable, isReceiveSeparated, setIsReceiveSeparated]);
 
   useEffect(() => {
     if (isVisible) {
@@ -732,59 +767,67 @@ export function PositionSeller() {
     <SyntheticsInfoRow
       label={t`Receive`}
       value={
-        receiveToken && (
-          <TokenSelector
-            label={t`Receive`}
-            className={cx({
-              "*:!text-yellow-300 hover:!text-yellow-300": isNotEnoughReceiveTokenLiquidity,
-            })}
-            chainId={chainId}
-            showBalances={false}
-            infoTokens={availableTokensOptions?.infoTokens}
-            tokenAddress={receiveToken.address}
-            onSelectToken={setReceiveTokenManually}
-            tokens={availableReceiveTokens}
-            showTokenImgInDropdown={true}
-            selectedTokenLabel={
-              <span className="PositionSelector-selected-receive-token inline-flex items-center">
-                {chainId === ARBITRUM && srcChainId === undefined && expressOrdersEnabled && (
-                  <TokenIcon
-                    className="mr-4"
-                    symbol={receiveToken.symbol}
-                    displaySize={20}
-                    chainIdBadge={effectiveIsReceiveToGmxAccount ? GMX_ACCOUNT_PSEUDO_CHAIN_ID : ARBITRUM}
-                  />
-                )}
-                <AmountWithUsdBalance
-                  className={cx({
-                    "*:!text-yellow-300 hover:!text-yellow-300": isNotEnoughReceiveTokenLiquidity,
-                  })}
-                  amount={receiveTokenAmount}
-                  decimals={receiveToken.decimals}
-                  symbol={receiveToken.symbol}
-                  usd={receiveUsd}
-                  isStable={receiveToken.isStable}
-                  secondaryValueClassName="!text-14"
-                />
-              </span>
-            }
-            extendedSortSequence={availableTokensOptions?.sortedLongAndShortTokens}
-            topContent={
-              chainId === ARBITRUM && srcChainId === undefined && expressOrdersEnabled ? (
-                <div className="mb-16">
-                  <div className="flex items-center justify-between gap-8">
-                    <span className="text-14 text-typography-secondary">
-                      <Trans>Send remaining margin to</Trans>
-                    </span>
-                    <MarginDestinationSelector
-                      isReceiveToGmxAccount={isReceiveToGmxAccount}
-                      onChangeDestination={handleSetIsReceiveToGmxAccount}
-                    />
-                  </div>
-                </div>
-              ) : undefined
-            }
+        isReceiveSeparated ? (
+          <DecreaseReceiveOutputDisplay
+            outputs={receiveOutputs}
+            className="max-w-full"
+            secondaryValueClassName="!text-14"
           />
+        ) : (
+          receiveToken && (
+            <TokenSelector
+              label={t`Receive`}
+              className={cx({
+                "*:!text-yellow-300 hover:!text-yellow-300": isNotEnoughReceiveTokenLiquidity,
+              })}
+              chainId={chainId}
+              showBalances={false}
+              infoTokens={availableTokensOptions?.infoTokens}
+              tokenAddress={receiveToken.address}
+              onSelectToken={setReceiveTokenManually}
+              tokens={availableReceiveTokens}
+              showTokenImgInDropdown={true}
+              selectedTokenLabel={
+                <span className="PositionSelector-selected-receive-token inline-flex items-center">
+                  {chainId === ARBITRUM && srcChainId === undefined && expressOrdersEnabled && (
+                    <TokenIcon
+                      className="mr-4"
+                      symbol={receiveToken.symbol}
+                      displaySize={20}
+                      chainIdBadge={effectiveIsReceiveToGmxAccount ? GMX_ACCOUNT_PSEUDO_CHAIN_ID : ARBITRUM}
+                    />
+                  )}
+                  <AmountWithUsdBalance
+                    className={cx({
+                      "*:!text-yellow-300 hover:!text-yellow-300": isNotEnoughReceiveTokenLiquidity,
+                    })}
+                    amount={receiveTokenAmount}
+                    decimals={receiveToken.decimals}
+                    symbol={receiveToken.symbol}
+                    usd={receiveUsd}
+                    isStable={receiveToken.isStable}
+                    secondaryValueClassName="!text-14"
+                  />
+                </span>
+              }
+              extendedSortSequence={availableTokensOptions?.sortedLongAndShortTokens}
+              topContent={
+                chainId === ARBITRUM && srcChainId === undefined && expressOrdersEnabled ? (
+                  <div className="mb-16">
+                    <div className="flex items-center justify-between gap-8">
+                      <span className="text-14 text-typography-secondary">
+                        <Trans>Send remaining margin to</Trans>
+                      </span>
+                      <MarginDestinationSelector
+                        isReceiveToGmxAccount={isReceiveToGmxAccount}
+                        onChangeDestination={handleSetIsReceiveToGmxAccount}
+                      />
+                    </div>
+                  </div>
+                ) : undefined
+              }
+            />
+          )
         )
       }
     />
@@ -1050,14 +1093,6 @@ export function PositionSeller() {
               )}
 
               <div className="flex w-full flex-col gap-14 px-20 pb-14">
-                <HighPriceImpactOrFeesWarningCard
-                  priceImpactWarningState={priceImpactWarningState}
-                  swapPriceImpact={fees?.swapPriceImpact}
-                  swapProfitFee={fees?.swapProfitFee}
-                  executionFeeUsd={executionFee?.feeUsd}
-                  maxNegativeImpactBps={position.marketInfo ? getMaxNegativeImpactBps(position.marketInfo) : undefined}
-                />
-
                 {!isTwap && (
                   <ToggleSwitch
                     textClassName="text-typography-secondary"
@@ -1066,6 +1101,19 @@ export function PositionSeller() {
                     disabled={leverageCheckboxDisabledByCollateral || decreaseAmounts?.isFullClose}
                   >
                     {keepLeverageTextElem}
+                  </ToggleSwitch>
+                )}
+
+                {!isTwap && isSplitReceiveAvailable && (
+                  <ToggleSwitch
+                    textClassName="text-typography-secondary"
+                    isChecked={isReceiveSeparated}
+                    setIsChecked={setIsReceiveSeparated}
+                  >
+                    <SplitReceiveTokensLabel
+                      profitToken={position?.pnlToken}
+                      collateralToken={position?.collateralToken}
+                    />
                   </ToggleSwitch>
                 )}
 
@@ -1087,6 +1135,15 @@ export function PositionSeller() {
                   isWrapOrUnwrap={false}
                   isGmxAccount={srcChainId !== undefined || effectiveIsReceiveToGmxAccount}
                   onAfterAction={onClose}
+                />
+
+                <HighPriceImpactOrFeesWarningCard
+                  priceImpactWarningState={priceImpactWarningState}
+                  swapPriceImpact={fees?.swapPriceImpact}
+                  swapProfitFee={fees?.swapProfitFee}
+                  executionFeeUsd={executionFee?.feeUsd}
+                  maxNegativeImpactBps={position.marketInfo ? getMaxNegativeImpactBps(position.marketInfo) : undefined}
+                  swapProfitFeeWarning={splitReceiveSwapProfitFeeWarning}
                 />
 
                 {twapRecommendation && !isTwapBannerDismissed && (
