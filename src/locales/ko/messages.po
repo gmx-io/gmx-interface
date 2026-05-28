@@ -13,7 +13,7 @@ msgstr ""
 "Language-Team: \n"
 "Plural-Forms: \n"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Slippage exceeded"
 msgstr "슬리피지 초과"
 
@@ -44,7 +44,7 @@ msgstr "또는 <0>chainlist.org</0>를 통해 지갑의 RPC를 업데이트하�
 msgid "REFERRAL CODE"
 msgstr "추천 코드"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient funds for order costs. Remaining: {remainingCostUsdText}"
 msgstr ""
 
@@ -79,7 +79,7 @@ msgid "Disconnect"
 msgstr "연결 끊기"
 
 #: src/components/Errors/errorToasts.tsx
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 #: src/domain/synthetics/orders/simulateExecuteTxn.tsx
 msgid "Order simulation failed"
@@ -118,7 +118,7 @@ msgstr "<0>Tenderly 문서</0>를 참조하십시오"
 msgid "Show debug values"
 msgstr "디버그 값 표시"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Execution price is negative"
 msgstr ""
 
@@ -252,6 +252,10 @@ msgstr "Oracle keeper 이벤트"
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "RabbitHole"
 msgstr "RabbitHole"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Insufficient GM tokens for withdrawal"
+msgstr "출금에 필요한 GM 토큰이 부족합니다"
 
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "On-chain signing for every transaction"
@@ -457,6 +461,10 @@ msgstr "GMX Account 잔액"
 msgid "Search in perpetuals markets"
 msgstr "무기한 시장 검색"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Sell {gmOrGlvLabel} failed"
+msgstr "{gmOrGlvLabel} 판매 실패"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -493,7 +501,7 @@ msgstr "펀딩 지수"
 msgid "Mixed exposure: short {indexSymbol} + long {collateralSymbol} collateral. Useful for delta-neutral strategies to earn funding."
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid oracle price for {tokenSymbol}"
 msgstr "{tokenSymbol}의 Oracle 가격이 유효하지 않습니다"
 
@@ -542,7 +550,7 @@ msgstr "{0} 숏 최대치를 초과했습니다."
 msgid "Insufficient GM balance"
 msgstr "GM 잔고 부족"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Slippage exceeded. Expected min: {minOutputAmountText}, actual: {outputAmountText}"
 msgstr "슬리피지 초과. 예상 최소: {minOutputAmountText}, 실제: {outputAmountText}"
 
@@ -683,13 +691,6 @@ msgstr "트레저리"
 msgid "Your share of the total network staking power. Treasury rewards will be distributed proportionally to staking power when GMX reaches $90. All projected rewards are best-effort estimations. Actual distribution is subject to DAO governance."
 msgstr ""
 
-#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-#: src/lib/contracts/callContract.tsx
-#: src/lib/contracts/notifications.tsx
-#: src/lib/contracts/notifications.tsx
-msgid "View status"
-msgstr "상태 보기"
-
 #: src/components/SettingsModal/RpcDebugSettings.tsx
 msgid "No"
 msgstr "아니오"
@@ -716,7 +717,7 @@ msgstr "주문"
 msgid "GMTrade (previously GMX Solana) is hosted on a separate website and run by a different team, so the experience may vary. Opens in a new tab."
 msgstr "GMTrade(이전 GMX Solana)는 별도의 웹사이트에서 호스팅되며 다른 팀이 운영하므로 이용 경험이 다를 수 있습니다. 새 탭에서 열립니다."
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid decrease size. Size delta ({sizeDeltaUsdText}) exceeds position size ({positionSizeInUsdText})"
 msgstr "감소 크기가 유효하지 않습니다. 크기 변동분({sizeDeltaUsdText})이 포지션 크기({positionSizeInUsdText})를 초과합니다"
 
@@ -832,7 +833,7 @@ msgstr "글로벌"
 msgid "{actionsCount, plural, one {Order} other {# Orders}}"
 msgstr "{actionsCount, plural, one {주문} other {# 주문}}"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid collateral token. {tokenSymbol} isn't supported as collateral"
 msgstr "유효하지 않은 담보 토큰입니다. {tokenSymbol}은(는) 담보로 지원되지 않습니다"
 
@@ -1125,6 +1126,10 @@ msgstr "파트너십 및 통합"
 msgid "Insufficient gas balance. Deposit more ETH."
 msgstr "Gas 잔액이 부족합니다. ETH를 추가로 입금하십시오."
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Execution fee is too low for current network costs"
+msgstr "실행 수수료가 현재 네트워크 비용에 비해 너무 낮습니다"
+
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "Tiers"
 msgstr ""
@@ -1187,7 +1192,7 @@ msgstr "{tokenSymbol} 언스테이킹"
 msgid "Invalid slippage value"
 msgstr "유효하지 않은 슬리피지 값"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid collateral token for this market"
 msgstr "이 마켓에 유효하지 않은 담보 토큰입니다"
 
@@ -1386,6 +1391,10 @@ msgstr "{operationTokenSymbol} 구매"
 #: src/pages/Dashboard/AssetDropdown.tsx
 msgid "Buy GM: {0}"
 msgstr "GM 구매: {0}"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Trigger price condition has not been met"
+msgstr "트리거 가격 조건이 충족되지 않았습니다"
 
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "May take a few minutes to reflect. Check back later"
@@ -1748,7 +1757,7 @@ msgstr "지정가 스왑 실패"
 msgid "Failed"
 msgstr "실패"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient margin. Add {amountText} more margin"
 msgstr ""
 
@@ -1886,7 +1895,7 @@ msgstr "출금 불가"
 msgid "Your code is immediately active! Share it with traders and you'll earn rebates when they execute trades."
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Max profit limit reached. Current: {pnlToPoolFactorText}, max: {maxPnlFactorText}"
 msgstr "최대 수익 한도에 도달했습니다. 현재: {pnlToPoolFactorText}, 최대: {maxPnlFactorText}"
 
@@ -1937,6 +1946,10 @@ msgstr "Symbiosis"
 #: src/components/Referrals/shared/cards/ReferralsDocsCard.tsx
 msgid "How it works"
 msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Order is already frozen"
+msgstr "주문이 이미 동결되었습니다"
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "{orderTypeLabel} {positionText}, -{0}"
@@ -1999,7 +2012,7 @@ msgstr "타임스탬프"
 msgid "KyberSwap"
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient gas for execution"
 msgstr "실행을 위한 Gas가 부족합니다"
 
@@ -2096,7 +2109,7 @@ msgstr "규모 비율을 입력해야 합니다"
 msgid "Execution price for the order"
 msgstr "주문 체결가"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Market temporarily disabled"
 msgstr "마켓이 일시적으로 비활성화되었습니다"
 
@@ -2365,7 +2378,7 @@ msgstr "Sparkle"
 msgid "Reserve factor shorts"
 msgstr "숏 준비금 비율"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Max deposit limit reached"
 msgstr "최대 입금 한도에 도달했습니다"
 
@@ -2403,6 +2416,10 @@ msgstr "입금 가능한 자산이 없습니다"
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Only positions with over {0} in capital used are ranked.<0/><1/>The capital used is calculated as the highest value of [<2>sum of margin of open positions - realized PnL + period start pending PnL</2>]."
 msgstr ""
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "{gmOrGlvLabel} sold successfully, but bridge to {0} failed. Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to withdraw your tokens."
+msgstr "{gmOrGlvLabel} 판매에 성공했지만 {0}(으)로의 브리지에 실패했습니다. 자금은 GMX 계정에 안전하게 보관되어 있습니다. 브리지를 다시 시도하거나 GMX 계정을 열어 토큰을 출금하세요."
 
 #: src/components/Referrals/traders/dashboard/ReferralsTradersContent.tsx
 msgid "Discounts earned by this account as a trader"
@@ -2716,8 +2733,8 @@ msgstr "GM 마켓"
 msgid "Tickers simulation"
 msgstr "티커 시뮬레이션"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size exceeds available open interest"
 msgstr "포지션 크기가 이용 가능한 미결제약정을 초과합니다"
 
@@ -2831,6 +2848,10 @@ msgstr ""
 msgid "Insufficient gas balance. Express Trading and One-Click Trading unavailable."
 msgstr "가스 잔액이 부족합니다. Express Trading 및 One-Click Trading을 이용할 수 없습니다."
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Invalid signature. Try signing the request again"
+msgstr "서명이 유효하지 않습니다. 요청에 다시 서명해 주세요"
+
 #: src/pages/LeaderboardPage/components/LeaderboardContainer.tsx
 msgid "Search address"
 msgstr "주소 검색"
@@ -2887,7 +2908,7 @@ msgstr "GMX 마켓 토큰 가격 차트"
 msgid "Lifetime LP rewards"
 msgstr "누적 LP 보상"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid decrease size"
 msgstr "유효하지 않은 감소 규모"
 
@@ -2988,6 +3009,10 @@ msgstr "스테이킹이 제출되었습니다"
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
 msgid "Net"
 msgstr ""
+
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+msgid "Transaction failed.<0/><1/><2>View</2>"
+msgstr "거래에 실패했습니다.<0/><1/><2>보기</2>"
 
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
 msgid "Insufficient {symbol} balance: {availableFormatted} available, {requiredFormatted} required"
@@ -3371,7 +3396,7 @@ msgstr "<0><1>$GMX</1>는 영구 거래 거물로서의 타이틀을 정당하�
 msgid "Network status"
 msgstr "네트워크 상태"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact too high. Impact: {negativeImpactAmountText}, input: {amountAfterFeesText}"
 msgstr "가격 영향이 너무 높습니다. 영향: {negativeImpactAmountText}, 입력: {amountAfterFeesText}"
 
@@ -3398,7 +3423,7 @@ msgstr ""
 msgid "Uploading..."
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Can't withdraw collateral. Remaining would be {estimatedRemainingCollateralUsdText}, below minimum"
 msgstr "담보를 출금할 수 없습니다. 잔여 담보가 {estimatedRemainingCollateralUsdText}로 최소 기준 미달입니다"
 
@@ -3750,10 +3775,6 @@ msgstr "{gmOrGlvLabel} 브리징 대상..."
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "Deadline:"
 msgstr "마감 기한:"
-
-#: src/components/Errors/errorToasts.tsx
-msgid "Execution fee validation failed.<0/><1/>{suggestText}<2/><3/><4>View status</4>"
-msgstr "실행 수수료 검증에 실패했습니다.<0/><1/>{suggestText}<2/><3/><4>상태 보기</4>"
 
 #: src/components/Earn/Discovery/EarnYieldOverview.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -4151,7 +4172,7 @@ msgstr "미결제약정"
 msgid "More details"
 msgstr "상세 정보"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Max profit limit reached"
 msgstr "최대 수익 한도에 도달했습니다"
 
@@ -4268,6 +4289,10 @@ msgstr "승인 취소됨"
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Positive factor"
 msgstr "양수 팩터"
+
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "{gmOrGlvLabel} bought successfully, but bridge to {0} failed. Your funds are safe in your GMX Account. Retry the bridge or go to the {indexName} pool to withdraw your {gmOrGlvLabel} tokens."
+msgstr "{gmOrGlvLabel} 구매에 성공했지만 {0}(으)로의 브리지에 실패했습니다. 자금은 GMX 계정에 안전하게 보관되어 있습니다. 브리지를 다시 시도하거나 {indexName} 풀로 이동하여 {gmOrGlvLabel} 토큰을 출금하세요."
 
 #: src/components/OrderItem/OrderItem.tsx
 #: src/components/OrdersModal/TPSLOrdersList.tsx
@@ -4424,7 +4449,7 @@ msgstr "최소 영향 풀 수량"
 msgid "Generating..."
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact too high"
 msgstr "가격 영향이 너무 큽니다"
 
@@ -4485,7 +4510,7 @@ msgstr "코드를 찾을 수 없습니다"
 msgid "Inactive"
 msgstr "비활성"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Max open interest exceeded. Current: {openInterestText}, max: {maxOpenInterestText}"
 msgstr "최대 미결제약정 초과. 현재: {openInterestText}, 최대: {maxOpenInterestText}"
 
@@ -4601,7 +4626,7 @@ msgstr "PnL"
 msgid "Favourites"
 msgstr "즐겨찾기"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size too small. Min: {minPositionSizeUsdText}, current: {positionSizeInUsdText}"
 msgstr "포지션 크기가 너무 작습니다. 최소: {minPositionSizeUsdText}, 현재: {positionSizeInUsdText}"
 
@@ -4713,7 +4738,7 @@ msgstr "네트워크를 지정하십시오: arbitrum, avalanche, fuji, botanix, 
 msgid "Buy {nativeTokenSymbol}"
 msgstr "{nativeTokenSymbol} 구매"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size too small"
 msgstr "포지션 크기가 너무 작습니다"
 
@@ -4776,6 +4801,10 @@ msgstr "GLV 또는 GM 토큰을 대출하고 담보로 차입합니다"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 msgid "Number of trades from referrals"
 msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Request cannot be canceled yet. Try again after the cancellation delay"
+msgstr "아직 요청을 취소할 수 없습니다. 취소 지연 시간이 지난 후 다시 시도하세요"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Update {orderTypeName}"
@@ -5061,7 +5090,7 @@ msgstr "Arbitrum, Ethereum 및 기타 네트워크에서 지갑으로 직접 최
 msgid "Sell fee"
 msgstr "판매 수수료"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Invalid oracle price"
 msgstr "유효하지 않은 Oracle 가격"
 
@@ -5238,6 +5267,10 @@ msgstr "유효하지 않은 트랜잭션"
 msgid "Insufficient liquidity in {0} pool. Select a different pool."
 msgstr "{0} 풀의 유동성이 부족합니다. 다른 풀을 선택하십시오."
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Frozen order can only be executed by an authorized keeper"
+msgstr "동결된 주문은 승인된 keeper만 실행할 수 있습니다"
+
 #: src/components/Earn/AdditionalOpportunities/OpportunityAssets.tsx
 #: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/GmDepositWithdrawalBox.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
@@ -5345,6 +5378,10 @@ msgstr "체결가"
 msgid "spinner"
 msgstr "로딩 중"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "This action is currently disabled"
+msgstr "이 작업은 현재 비활성화되어 있습니다"
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit approvals are currently unavailable."
 msgstr "현재 퍼밋 승인을 사용할 수 없습니다."
@@ -5380,10 +5417,6 @@ msgstr ""
 #: src/components/UserIncentiveDistribution/UserIncentiveDistribution.tsx
 msgid "Claims unavailable on Avalanche Fuji"
 msgstr "Avalanche Fuji에서는 수령이 불가합니다"
-
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "Buy failed"
-msgstr "구매 실패"
 
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Users"
@@ -5431,8 +5464,8 @@ msgstr "최적"
 msgid "{updateOrdersCount} TP/SL orders updated"
 msgstr "{updateOrdersCount}개의 TP/SL 주문이 업데이트되었습니다"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient margin. Add more margin"
 msgstr ""
 
@@ -5697,7 +5730,7 @@ msgstr ""
 msgid "No open orders"
 msgstr "열려있는 주문이 없습니다"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient liquidity. Available: {availableLiquidityText}"
 msgstr "유동성 부족. 가용: {availableLiquidityText}"
 
@@ -5708,6 +5741,10 @@ msgstr "언스테이킹 제출됨"
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Edit Stop-Loss: {suffix}"
 msgstr ""
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Order failed due to a protocol validation error: {errorName}"
+msgstr "프로토콜 검증 오류로 주문이 실패했습니다: {errorName}"
 
 #: src/pages/Dashboard/OverviewCard.tsx
 #: src/pages/Dashboard/OverviewCard.tsx
@@ -5936,7 +5973,7 @@ msgstr "추천"
 msgid "Start trading"
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Oracle price is stale"
 msgstr ""
 
@@ -6056,15 +6093,11 @@ msgstr "GMX 거버넌스 페이지"
 msgid "Buy {nativeTokenSymbol} directly on {chainName} or transfer it there"
 msgstr "{chainName}에서 직접 {nativeTokenSymbol}을(를) 구매하거나 전송하십시오"
 
-#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
-msgid "Reason: {0}"
-msgstr "이유: {0}"
-
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Max network fee includes a buffer for gas spikes. Unused fees refunded."
 msgstr "최대 네트워크 수수료에는 Gas 급등에 대비한 버퍼가 포함됩니다. 미사용 수수료는 환불됩니다."
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Order execution failed"
 msgstr "주문 체결 실패"
 
@@ -6095,7 +6128,7 @@ msgstr ""
 msgid "Same as active code"
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Order not found. May have been canceled or already executed"
 msgstr "주문을 찾을 수 없습니다. 취소되었거나 이미 체결되었을 수 있습니다"
 
@@ -6140,7 +6173,7 @@ msgstr "청산"
 msgid "GLP and GMX autocompounding vaults"
 msgstr "GLP 및 GMX 자동 복리 볼트"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size exceeds pool value. Delta: {usdDeltaText}, pool: {poolUsdText}"
 msgstr "포지션 규모가 풀 가치를 초과합니다. 델타: {usdDeltaText}, 풀: {poolUsdText}"
 
@@ -6201,6 +6234,10 @@ msgstr ""
 msgid "TWAP number of parts"
 msgstr "TWAP 분할 수"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Not enough native token was provided for the execution fee"
+msgstr "실행 수수료에 필요한 네이티브 토큰이 충분히 제공되지 않았습니다"
+
 #: src/components/MarketStats/MarketGraphs.tsx
 msgid "Not enough data yet"
 msgstr ""
@@ -6233,7 +6270,7 @@ msgstr "TVL/수용량"
 msgid "Connect wallet to see your assets"
 msgstr "자산을 확인하려면 지갑을 연결하십시오"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size exceeds pool value"
 msgstr "포지션 규모가 풀 가치를 초과합니다"
 
@@ -6253,7 +6290,7 @@ msgstr ""
 msgid "If you continue, you will lose {0} in rewards"
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Can't withdraw collateral. Remaining collateral would be below minimum"
 msgstr "담보를 출금할 수 없습니다. 잔여 담보가 최소 기준 미만이 됩니다"
 
@@ -6307,6 +6344,10 @@ msgstr ""
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
 msgstr "판매 주문이 체결되었습니다"
+
+#: src/components/PositionSeller/SplitReceiveSwapProfitFeeWarning.tsx
+msgid "Receiving as {receiveTokenSymbol} will swap your profit and cost {swapProfitFeePercentage} (<0>{swapProfitFeeUsd}</0>). Receive {profitTokenSymbol} and {collateralTokenSymbol} separately to skip the swap. <1>Read more</1>"
+msgstr "{receiveTokenSymbol}(으)로 받으면 수익이 스왑되고 {swapProfitFeePercentage}(<0>{swapProfitFeeUsd}</0>)의 비용이 발생합니다. 스왑을 건너뛰려면 {profitTokenSymbol} 및 {collateralTokenSymbol}을 별도로 받으세요. <1>자세히 보기</1>"
 
 #: src/components/ClaimablePositionPriceImpactRebateModal/ClaimablePositionPriceImpactRebateModal.tsx
 #: src/domain/synthetics/claimHistory/claimPriceImpactRebate.ts
@@ -6407,6 +6448,10 @@ msgid "Multicall events"
 msgstr "Multicall 이벤트"
 
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Position not found. It may have been closed"
+msgstr "포지션을 찾을 수 없습니다. 이미 종료되었을 수 있습니다"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 msgid "Execute"
 msgstr "실행"
 
@@ -6454,7 +6499,7 @@ msgstr ""
 msgid "Set long Limit @ {0}"
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable"
 msgstr "포지션이 청산 대상이 됩니다"
 
@@ -6742,7 +6787,7 @@ msgstr "테스트를 위한 유효성 검사 비활성화"
 msgid "GMX icon"
 msgstr "GMX 아이콘"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact exceeds order size"
 msgstr "가격 영향이 주문 크기를 초과합니다"
 
@@ -6755,6 +6800,10 @@ msgstr "One-Click Trading으로 더 빠르게 거래하시겠습니까?"
 #: src/components/TradeBox/tradeboxConstants.tsx
 msgid "TP/SL"
 msgstr "TP/SL"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "This order type is not supported"
+msgstr "이 주문 유형은 지원되지 않습니다"
 
 #: src/components/Errors/getContractErrorToastContent.tsx
 msgid "Order error. Prices are volatile for this market, try again by <0>increasing the allowed slippage</0>"
@@ -6786,7 +6835,7 @@ msgstr "자신 있게 거래"
 msgid "Receiver has staked GMX/GLP"
 msgstr "수신자가 GMX/GLP를 스테이킹하고 있습니다"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Order type unavailable for creation"
 msgstr ""
 
@@ -7038,7 +7087,7 @@ msgstr "수령 제출됨"
 msgid "Created"
 msgstr "생성됨"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Market not found. May have been removed"
 msgstr "마켓을 찾을 수 없습니다. 삭제되었을 수 있습니다"
 
@@ -7122,7 +7171,7 @@ msgstr "Telegram 그룹"
 msgid "Tradao"
 msgstr "Tradao"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
@@ -7183,6 +7232,10 @@ msgstr "FX"
 #: src/components/PositionDropdown/PositionDropdown.tsx
 msgid "Share position"
 msgstr "포지션 공유"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Max deposit capacity reached for this pool"
+msgstr "이 풀의 최대 입금 용량에 도달했습니다"
 
 #: src/components/BotanixBanner/BotanixBanner.tsx
 msgid "Switch to <0><1/><2>Arbitrum</2></0> or <3><4/><5>Avalanche</5></3> for those features"
@@ -7246,7 +7299,7 @@ msgstr "프로젝트"
 msgid "24h low"
 msgstr "24시간 최저"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient margin. Add {missingCollateralUsdText} more margin"
 msgstr ""
 
@@ -7553,6 +7606,10 @@ msgstr "투명성, 탈중앙화, 무제한 접근을 보장하기 위해 개방�
 msgid "Low margin after fees. Deposit more to reduce liquidation risk."
 msgstr ""
 
+#: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
+msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
+msgstr "{profitTokenSymbol} 및 {collateralTokenSymbol}을 별도로 받기"
+
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
 msgid "{formattedNetRate} / 1h"
@@ -7720,8 +7777,8 @@ msgstr ""
 msgid "Open interest reserve factor shorts"
 msgstr "숏 미결제약정 준비금 비율"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient pool liquidity"
 msgstr "풀 유동성 부족"
 
@@ -7968,7 +8025,7 @@ msgstr "{0}에 입금 가능한 토큰이 없습니다"
 msgid "Total to claim"
 msgstr "총 수령 금액"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient gas for execution. Estimated: {estimatedGasLimitText}, starting: {startingGasText}"
 msgstr "실행에 필요한 Gas가 부족합니다. 예상치: {estimatedGasLimitText}, 시작 시점: {startingGasText}"
 
@@ -8061,6 +8118,10 @@ msgstr "매수 요청을 실행하는 중…"
 msgid "Buy GM failed"
 msgstr "GM 구매 실패"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Insufficient collateral to cover order costs"
+msgstr "주문 비용을 충당할 담보가 부족합니다"
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Unknown shift GM order"
 msgstr "알 수 없는 GM 이전 주문"
@@ -8148,7 +8209,7 @@ msgstr ""
 msgid "{0} GMX"
 msgstr "{0} GMX"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact exceeds order size. Impact: {priceImpactUsdText}, order: {sizeDeltaUsdText}"
 msgstr "가격 영향이 주문 규모를 초과합니다. 영향: {priceImpactUsdText}, 주문: {sizeDeltaUsdText}"
 
@@ -8236,7 +8297,7 @@ msgstr "신규 등급:"
 msgid "Last updated:"
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Max pool capacity reached"
 msgstr "최대 풀 용량에 도달했습니다"
 
@@ -8250,6 +8311,10 @@ msgstr "({operationText} 금액의 <0>{0}</0>)"
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/StatusNotification/StakeNotification.tsx
 #: src/components/TransactionStatus/TransactionStatus.tsx
+#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
+#: src/lib/contracts/callContract.tsx
+#: src/lib/contracts/notifications.tsx
+#: src/lib/contracts/notifications.tsx
 #: src/pages/TestPermits/TestPermits.tsx
 msgid "View"
 msgstr "보기"
@@ -8408,9 +8473,17 @@ msgstr "보너스 리베이트"
 msgid "Decentralized options strategies"
 msgstr "탈중앙화 옵션 전략"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Deposit not found. It may have been executed or canceled"
+msgstr "입금을 찾을 수 없습니다. 이미 실행되었거나 취소되었을 수 있습니다"
+
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/ClaimModal.tsx
 msgid "Select rewards to claim"
 msgstr "청구할 보상 선택"
+
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Withdrawal not found. It may have been executed or canceled"
+msgstr "출금을 찾을 수 없습니다. 이미 실행되었거나 취소되었을 수 있습니다"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -8451,8 +8524,8 @@ msgstr "전환 실행에 실패했습니다"
 msgid "Create Take-Profit"
 msgstr "익절매 생성"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Position size exceeds available open interest. Delta: {usdDeltaText}, max OI: {openInterestText}"
 msgstr "포지션 규모가 가용 미결제약정을 초과합니다. 델타: {usdDeltaText}, 최대 OI: {openInterestText}"
 
@@ -8546,10 +8619,6 @@ msgstr "유동성 숏"
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "Meme"
 msgstr "Meme"
-
-#: src/context/PendingTxnsContext/PendingTxnsContext.tsx
-msgid "Transaction failed.<0/><1/><2>View status</2>"
-msgstr "거래 실패.<0/><1/><2>상태 보기</2>"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "Accumulate GMX rewards by staking"
@@ -8849,6 +8918,10 @@ msgstr "깊이"
 msgid "Layer 1"
 msgstr "레이어 1"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/shared.ts
+msgid "Position would be liquidatable at current prices"
+msgstr "현재 가격에서 포지션이 청산될 수 있습니다"
+
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
 msgstr "<0>75.5% 다수 투표로 GMX는 멀티체인 확장을 위한 메시징 파트너로 LayerZero를 선택했습니다! 이 통합은 GMX에:</0><1><2>125+ 체인으로 확장 능력</2><3>모든 계약 및 보안의 완전 소유권</3><4>빠르고 제로 슬리피지 전송</4><5>수십억 달러 자산과 수백 개 애플리케이션에서 이미 신뢰받는 전투 테스트된 레일... <6>더 보기</6></5></1>"
@@ -8923,11 +8996,8 @@ msgstr "종료된 포지션의 승패"
 msgid "Short liquidity"
 msgstr ""
 
-#: src/domain/tokens/approveTokens.tsx
-msgid "Approval submitted<0/><1/><2>View status</2>"
-msgstr "승인 제출됨<0/><1/><2>상태 보기</2>"
-
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Referral discount"
 msgstr "추천 할인"
 
@@ -9153,13 +9223,13 @@ msgstr "GMX 커뮤니티 토론"
 msgid "Sell GM"
 msgstr "GM 판매"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/errorToasts.tsx
+msgid "Execution fee validation failed.<0/><1/>{suggestText}<2/><3/><4>View</4>"
+msgstr "실행 수수료 검증에 실패했습니다.<0/><1/>{suggestText}<2/><3/><4>보기</4>"
+
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Order can't be updated. Type doesn't support modifications"
 msgstr "주문을 수정할 수 없습니다. 해당 유형은 수정을 지원하지 않습니다"
-
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "{gmOrGlvLabel} sold successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or open GMX Account to withdraw your tokens."
-msgstr "{gmOrGlvLabel} 매도가 완료되었으나 Base로의 브릿지가 실패했습니다. 자금은 GMX Account에 안전하게 보관되어 있습니다. 브릿지를 재시도하거나 GMX Account를 열어 토큰을 출금하십시오."
 
 #: src/components/Referrals/shared/modals/ClaimAffiliatesModal.tsx
 msgid "Unable to fetch swap route. Please try again."
@@ -9295,6 +9365,10 @@ msgstr ""
 msgid "Fastest"
 msgstr "가장 빠름"
 
+#: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
+msgid "Receive tokens separately"
+msgstr "토큰을 별도로 받기"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL BALANCE"
 msgstr "풀 잔액"
@@ -9327,7 +9401,7 @@ msgstr "{tokenSymbol} 스테이킹"
 msgid "Link copied to clipboard"
 msgstr "링크가 클립보드에 복사되었습니다"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Max pool capacity reached. Current: {poolAmountText}, max: {maxPoolAmountText}"
 msgstr "최대 풀 용량에 도달했습니다. 현재: {poolAmountText}, 최대: {maxPoolAmountText}"
 
@@ -9703,7 +9777,7 @@ msgstr "RESPONSE"
 msgid "High TWAP network fee"
 msgstr "높은 TWAP 네트워크 수수료"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Position would be liquidatable. Current: {remainingCollateralUsdText}, required: {minCollateralUsdText}"
 msgstr "포지션이 청산 대상이 됩니다. 현재: {remainingCollateralUsdText}, 필요: {minCollateralUsdText}"
 
@@ -9750,10 +9824,6 @@ msgstr "시작하려면 위의 추천 섹션을 참조하십시오"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Get alerts and announcements from GMX to stay on top of your trades, liquidation risk, and more"
 msgstr "GMX에서 알림 및 공지를 받아 거래, 청산 위험 등을 관리하십시오"
-
-#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
-msgid "{gmOrGlvLabel} bought successfully, but bridge to Base failed. Your funds are safe in your GMX Account. Retry the bridge or go to the {indexName} pool to withdraw your GM tokens."
-msgstr "{gmOrGlvLabel} 구매에 성공했으나 Base로의 브릿지가 실패했습니다. 자금은 GMX Account에 안전하게 보관되어 있습니다. 브릿지를 재시도하거나 {indexName} 풀로 이동하여 GM 토큰을 출금하십시오."
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 msgid "Repeat transaction"
@@ -9872,7 +9942,7 @@ msgstr "종합 통계"
 msgid "Vested GLP not withdrawn"
 msgstr "베스팅된 GLP가 출금되지 않음"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient pool liquidity. Available: {availableAmountText}"
 msgstr ""
 
@@ -10449,7 +10519,7 @@ msgstr "레이지 트레이드"
 msgid "1h"
 msgstr "1시간"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient funds for order costs"
 msgstr ""
 
@@ -10486,7 +10556,7 @@ msgstr "사용 자본 대비 수익률 (PnL / 자본).<0/><1/>사용 자본 = ma
 msgid "Update default destination"
 msgstr ""
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Max open interest exceeded"
 msgstr "최대 미결제약정을 초과했습니다"
 
@@ -10521,7 +10591,7 @@ msgstr "WBTC-USDC 풀로 전환"
 msgid "Traders referred"
 msgstr "추천된 트레이더"
 
-#: src/components/Errors/getContractErrorToastContent.tsx
+#: src/components/Errors/getContractErrorMessage.ts
 msgid "Max deposit limit reached: {maxPoolUsdText}"
 msgstr "최대 입금 한도에 도달했습니다: {maxPoolUsdText}"
 
@@ -10830,6 +10900,10 @@ msgstr "지정가"
 msgid "Execute TWAP Swap part"
 msgstr "TWAP 스왑 부분 체결"
 
+#: src/domain/multichain/progress/MultichainTransferProgressView.tsx
+msgid "Buy {gmOrGlvLabel} failed"
+msgstr "{gmOrGlvLabel} 구매 실패"
+
 #: src/components/Errors/ErrorBoundary.tsx
 msgid "Reload the page or report the issue if the <0/> problem persists"
 msgstr "문제가 지속되면 페이지를 새로고침하거나 <0/> 문제를 보고해 주십시오"
@@ -10943,6 +11017,10 @@ msgstr ""
 #: src/components/PositionEditor/usePositionEditorButtonState.tsx
 msgid "Loading Express Trading params..."
 msgstr "Express Trading 매개변수 로딩 중..."
+
+#: src/domain/tokens/approveTokens.tsx
+msgid "Approval submitted<0/><1/><2>View</2>"
+msgstr "승인이 제출되었습니다<0/><1/><2>보기</2>"
 
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL CAP LONG"

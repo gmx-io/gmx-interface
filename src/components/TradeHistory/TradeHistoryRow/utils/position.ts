@@ -246,7 +246,7 @@ export const formatPositionMessage = (
       actionComment:
         error &&
         lines({
-          text: getErrorTooltipTitle(error.name, true),
+          text: getErrorTooltipTitle(error.name, true, error.args),
           state: "error",
         }),
       size: customSize,
@@ -272,7 +272,7 @@ export const formatPositionMessage = (
       const error = tradeAction.reasonBytes ? tryDecodeCustomError(tradeAction.reasonBytes) ?? undefined : undefined;
       const errorComment = error
         ? lines({
-            text: getErrorTooltipTitle(error.name, false),
+            text: getErrorTooltipTitle(error.name, false, error.args),
             state: "error",
           })
         : undefined;
@@ -334,7 +334,7 @@ export const formatPositionMessage = (
       actionComment:
         error &&
         lines({
-          text: getErrorTooltipTitle(error.name, false),
+          text: getErrorTooltipTitle(error.name, false, error.args),
           state: "error",
         }),
       priceComment: lines(
@@ -396,7 +396,7 @@ export const formatPositionMessage = (
       actionComment:
         error &&
         lines({
-          text: getErrorTooltipTitle(error.name, true),
+          text: getErrorTooltipTitle(error.name, true, error.args),
           state: "error",
         }),
       size: customSize,
@@ -455,7 +455,7 @@ export const formatPositionMessage = (
       actionComment:
         error &&
         lines({
-          text: getErrorTooltipTitle(error.name, false),
+          text: getErrorTooltipTitle(error.name, false, error.args),
           state: "error",
         }),
       priceComment: lines(
@@ -512,7 +512,7 @@ export const formatPositionMessage = (
       actionComment:
         error &&
         lines({
-          text: getErrorTooltipTitle(error.name, false),
+          text: getErrorTooltipTitle(error.name, false, error.args),
           state: "error",
         }),
       priceComment: lines(
@@ -739,6 +739,11 @@ function getFeesBreakdown(tradeAction: PositionTradeAction): { totalUsd: bigint;
       label: isIncrease ? t`Open fee` : t`Close fee`,
       amountUsd: -positionFeeUsd,
     });
+  }
+
+  const traderDiscountUsd = convertToUsd(tradeAction.traderDiscountAmount, collateralDecimals, collateralPrice);
+  if (traderDiscountUsd !== undefined && traderDiscountUsd !== 0n) {
+    items.push({ label: t`Referral discount`, amountUsd: traderDiscountUsd });
   }
 
   const borrowFeeUsd = convertToUsd(tradeAction.borrowingFeeAmount, collateralDecimals, collateralPrice);

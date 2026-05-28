@@ -368,6 +368,8 @@ function MarketsList() {
     rowHorizontalPadding,
     "!py-10"
   );
+  const favoriteThClassName = cx(thClassName, "w-0 !pr-0 text-center");
+  const marketThClassName = cx(thClassName, "pl-12");
 
   const tdClassName = cx(
     "text-body-small",
@@ -455,8 +457,8 @@ function MarketsList() {
         <table className="text-body-small w-full border-separate border-spacing-0">
           <thead>
             <tr>
-              <th colSpan={1}></th>
-              <th className={cx(thClassName, "pl-4", isMobile ? "min-w-[18ch]" : "min-w-[28ch]")} colSpan={1}>
+              <th className={favoriteThClassName} colSpan={1}></th>
+              <th className={cx(marketThClassName, isMobile ? "min-w-[18ch]" : "min-w-[28ch]")} colSpan={1}>
                 <Trans>MARKET</Trans>
               </th>
               {isSwap ? (
@@ -751,7 +753,7 @@ function MarketListItem({
   if (isSwap) {
     return (
       <tr key={token.symbol} className="group/row cursor-pointer hover:bg-fill-surfaceHover">
-        <td className={cx("pl-14 pr-0 text-center text-typography-secondary", rowVerticalPadding)}>
+        <td className={cx("pl-12 pr-0 text-center text-typography-secondary", rowVerticalPadding)}>
           <Button variant="ghost" className="!h-20 !min-h-32 !w-32 !p-0" onClick={handleFavoriteClick}>
             <RecentlyListedFavoriteSlot isRecentlyListed={isRecentlyListed} isFavorite={isFavorite} />
           </Button>
@@ -792,7 +794,7 @@ function MarketListItem({
           <RecentlyListedFavoriteSlot isRecentlyListed={isRecentlyListed} isFavorite={isFavorite} />
         </Button>
       </td>
-      <td className={cx("pl-4 text-[13px]", rowVerticalPadding, isMobile ? "pr-2" : "pr-8")}>
+      <td className={cx("pl-12 text-[13px]", rowVerticalPadding, isMobile ? "pr-2" : rowHorizontalPadding)}>
         <div className={cx("flex", isMobile ? "items-start" : "items-center")}>
           <TokenIcon className="ChartToken-list-icon mr-6" symbol={token.symbol} displaySize={16} />
           <span className={cx("flex flex-wrap items-center gap-6")}>

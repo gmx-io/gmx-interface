@@ -74,6 +74,7 @@ export type ApiTradeAction = {
   priceImpactUsd?: bigint;
   priceImpactDiffUsd?: bigint;
   positionFeeAmount?: bigint;
+  traderDiscountAmount?: bigint;
   borrowingFeeAmount?: bigint;
   fundingFeeAmount?: bigint;
   swapFeeUsd?: bigint;

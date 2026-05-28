@@ -141,7 +141,7 @@ export const formatSwapMessage = (
       const error = tradeAction.reasonBytes ? tryDecodeCustomError(tradeAction.reasonBytes) ?? undefined : undefined;
       const errorComment = error
         ? lines({
-            text: getErrorTooltipTitle(error.name, false),
+            text: getErrorTooltipTitle(error.name, false, error.args),
             state: "error",
           })
         : undefined;
@@ -217,7 +217,7 @@ export const formatSwapMessage = (
       actionComment:
         error &&
         lines({
-          text: getErrorTooltipTitle(error.name, false),
+          text: getErrorTooltipTitle(error.name, false, error.args),
           state: "error",
         }),
       price: rate,
@@ -285,7 +285,7 @@ export const formatSwapMessage = (
       actionComment:
         error &&
         lines({
-          text: getErrorTooltipTitle(error.name, true),
+          text: getErrorTooltipTitle(error.name, true, error.args),
           state: "error",
         }),
       price: rate,

@@ -41,14 +41,14 @@ export async function fetchSubaccountStatus(
   ctx: { api: IHttp },
   request: SubaccountStatusRequest
 ): Promise<SubaccountStatusResponse> {
-  return ctx.api.postJson<SubaccountStatusResponse>("/subaccounts/status", request);
+  return ctx.api.postJson<SubaccountStatusResponse>("/v1/subaccounts/status", request);
 }
 
 export async function prepareSubaccountApproval(
   ctx: { api: IHttp },
   request: SubaccountApprovalPrepareRequest
 ): Promise<SubaccountApprovalPrepareResponse> {
-  return ctx.api.postJson<SubaccountApprovalPrepareResponse>("/subaccounts/approval/prepare", request);
+  return ctx.api.postJson<SubaccountApprovalPrepareResponse>("/v1/subaccounts/approval/prepare", request);
 }
 
 export async function signSubaccountApproval(
