@@ -170,20 +170,20 @@ function parsePrepareResponse(raw: any): PrepareOrderResponse {
 }
 
 export async function prepareOrder(ctx: { api: IHttp }, request: PrepareOrderRequest): Promise<PrepareOrderResponse> {
-  return ctx.api.postJson<PrepareOrderResponse>("/orders/txns/prepare", request, {
+  return ctx.api.postJson<PrepareOrderResponse>("/v1/orders/txns/prepare", request, {
     transform: parsePrepareResponse,
   });
 }
 
 export async function submitOrder(ctx: { api: IHttp }, request: SubmitOrderRequest): Promise<SubmitOrderResponse> {
-  return ctx.api.postJson<SubmitOrderResponse>("/orders/txns/submit", request);
+  return ctx.api.postJson<SubmitOrderResponse>("/v1/orders/txns/submit", request);
 }
 
 export async function prepareEditOrder(
   ctx: { api: IHttp },
   request: PrepareEditOrderRequest
 ): Promise<PrepareOrderResponse> {
-  return ctx.api.postJson<PrepareOrderResponse>("/orders/txns/edit/prepare", request, {
+  return ctx.api.postJson<PrepareOrderResponse>("/v1/orders/txns/edit/prepare", request, {
     transform: parsePrepareResponse,
   });
 }
@@ -192,7 +192,7 @@ export async function prepareCancelOrder(
   ctx: { api: IHttp },
   request: PrepareCancelOrderRequest
 ): Promise<PrepareOrderResponse> {
-  return ctx.api.postJson<PrepareOrderResponse>("/orders/txns/cancel/prepare", request, {
+  return ctx.api.postJson<PrepareOrderResponse>("/v1/orders/txns/cancel/prepare", request, {
     transform: parsePrepareResponse,
   });
 }
@@ -201,13 +201,13 @@ export async function prepareCollateral(
   ctx: { api: IHttp },
   request: PrepareCollateralRequest
 ): Promise<PrepareOrderResponse> {
-  return ctx.api.postJson<PrepareOrderResponse>("/orders/txns/collateral/prepare", request, {
+  return ctx.api.postJson<PrepareOrderResponse>("/v1/orders/txns/collateral/prepare", request, {
     transform: parsePrepareResponse,
   });
 }
 
 export async function fetchOrderStatus(ctx: { api: IHttp }, request: OrderStatusRequest): Promise<OrderStatusResponse> {
-  return ctx.api.postJson<OrderStatusResponse>("/orders/txns/status", request);
+  return ctx.api.postJson<OrderStatusResponse>("/v1/orders/txns/status", request);
 }
 
 export async function signPreparedOrder(

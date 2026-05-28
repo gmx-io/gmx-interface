@@ -28,7 +28,6 @@ export const PERCENT_PRECISION_DECIMALS = PRECISION_DECIMALS - 2;
 
 const MAX_EXCEEDING_THRESHOLD = "1000000000";
 const MIN_EXCEEDING_THRESHOLD = "0.01";
-
 export const TRIGGER_PREFIX_ABOVE = ">";
 export const TRIGGER_PREFIX_BELOW = "<";
 
@@ -804,6 +803,8 @@ type DeserializeBigIntInObject<T> = {
       : T[P];
 };
 
+const NUMERIC_STRING_REGEX = /^-?\d+$/;
+
 export function serializeBigIntsInObject<T extends object>(obj: T): SerializedBigIntsInObject<T> {
   const result: any = Array.isArray(obj) ? [] : {};
   for (const key in obj) {
@@ -818,8 +819,6 @@ export function serializeBigIntsInObject<T extends object>(obj: T): SerializedBi
   }
   return result;
 }
-
-const NUMERIC_STRING_REGEX = /^-?\d+$/;
 
 export function deserializeBigIntsInObject<T extends object>(
   obj: T,
