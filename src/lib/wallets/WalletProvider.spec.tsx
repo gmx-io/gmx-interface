@@ -17,8 +17,13 @@ type CapturedPrivyProviderProps = {
   };
 };
 
+type CapturedWagmiProviderProps = {
+  setActiveWalletForWagmi?: typeof getActiveWalletForWagmi;
+};
+
 const mocks = vi.hoisted(() => ({
   privyProviderProps: [] as CapturedPrivyProviderProps[],
+  wagmiProviderProps: [] as CapturedWagmiProviderProps[],
 }));
 
 vi.mock("@privy-io/react-auth", () => ({
@@ -30,7 +35,10 @@ vi.mock("@privy-io/react-auth", () => ({
 
 vi.mock("@privy-io/wagmi", () => ({
   createConfig: () => ({}),
-  WagmiProvider: ({ children }: { children: ReactNode }) => <>{children}</>,
+  WagmiProvider: ({ children, ...props }: CapturedWagmiProviderProps & { children: ReactNode }) => {
+    mocks.wagmiProviderProps.push(props);
+    return <>{children}</>;
+  },
 }));
 
 vi.mock("context/ThemeContext/ThemeContext", () => ({
@@ -53,6 +61,7 @@ describe("WalletProvider", () => {
   beforeEach(() => {
     localStorage.clear();
     mocks.privyProviderProps.length = 0;
+    mocks.wagmiProviderProps.length = 0;
   });
 
   it("does not ask Privy to auto-create embedded wallets for wallet logins", () => {
@@ -60,6 +69,13 @@ describe("WalletProvider", () => {
 
     expect(mocks.privyProviderProps).toHaveLength(1);
     expect(mocks.privyProviderProps[0].config.embeddedWallets.ethereum.createOnLogin).toBe("users-without-wallets");
+  });
+
+  it("wires stored active wallet selection into the Privy wagmi provider", () => {
+    render(<WalletProvider>content</WalletProvider>);
+
+    expect(mocks.wagmiProviderProps).toHaveLength(1);
+    expect(mocks.wagmiProviderProps[0].setActiveWalletForWagmi).toBe(getActiveWalletForWagmi);
   });
 
   it("selects the stored linked wallet instead of the first linked wallet", () => {

@@ -3,6 +3,13 @@ import type { ConnectedWallet, User, Wallet } from "@privy-io/react-auth";
 import { ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY } from "config/localStorage";
 
 type ActivePrivyWallet = Pick<Wallet, "address" | "connectorType" | "walletClientType">;
+type WalletAccount = {
+  address?: string;
+  chainType?: string;
+  connectorType?: string | null;
+  type?: string;
+  walletClientType?: string | null;
+};
 
 export type ActivePrivyWalletStorageValue = {
   address?: string;
@@ -71,6 +78,18 @@ export function writeActivePrivyWalletToStorage(userId: string | undefined, wall
   }
 }
 
+export function removeActivePrivyWalletFromStorage(userId: string | undefined) {
+  if (!userId) {
+    return;
+  }
+
+  try {
+    getStorage()?.removeItem(getActivePrivyWalletStorageKey(userId));
+  } catch {
+    // localStorage can be unavailable in privacy modes.
+  }
+}
+
 function matchesStoredWallet(wallet: ConnectedWallet, storedWallet: ActivePrivyWalletStorageValue) {
   if (storedWallet.address && normalizeAddress(wallet.address) !== normalizeAddress(storedWallet.address)) {
     return false;
@@ -97,10 +116,18 @@ export function findStoredActivePrivyWallet({ wallets, userId }: { wallets: Conn
   return wallets.find((wallet) => wallet.linked && matchesStoredWallet(wallet, storedWallet));
 }
 
+export function isEmbeddedEthereumWallet(account: WalletAccount) {
+  return (
+    account.type === "wallet" &&
+    account.chainType === "ethereum" &&
+    (account.walletClientType === "privy" ||
+      account.walletClientType === "privy-v2" ||
+      account.connectorType === "embedded")
+  );
+}
+
 export function getEmbeddedEthereumWallet(user: User) {
-  const embeddedWallet = user.linkedAccounts.find(
-    (account) => account.type === "wallet" && account.chainType === "ethereum" && account.walletClientType === "privy"
-  ) as ActivePrivyWallet | undefined;
+  const embeddedWallet = user.linkedAccounts.find(isEmbeddedEthereumWallet) as ActivePrivyWallet | undefined;
 
   if (!embeddedWallet) {
     return undefined;

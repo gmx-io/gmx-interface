@@ -2,7 +2,10 @@ import { describe, expect, it } from "vitest";
 
 import { getActiveWalletStorageValueAfterLogin } from "./useConnectModal";
 
-function createUserWithWallet(walletClientType: string) {
+function createUserWithWallet(
+  walletClientType: string,
+  connectorType = walletClientType === "privy" ? "embedded" : "injected"
+) {
   return {
     id: "did:privy:user-id",
     linkedAccounts: [
@@ -11,7 +14,7 @@ function createUserWithWallet(walletClientType: string) {
         type: "wallet",
         chainType: "ethereum",
         walletClientType,
-        connectorType: walletClientType === "privy" ? "embedded" : "injected",
+        connectorType,
       },
     ],
   } as any;
@@ -51,6 +54,22 @@ describe("getActiveWalletStorageValueAfterLogin", () => {
       address: user.linkedAccounts[0].address,
       connectorType: "embedded",
       walletClientType: "privy",
+    });
+  });
+
+  it("stores a Privy v2 embedded wallet for email login", () => {
+    const user = createUserWithWallet("privy-v2", "embedded");
+
+    expect(
+      getActiveWalletStorageValueAfterLogin({
+        loginMethod: "email",
+        wasAlreadyAuthenticated: false,
+        user,
+      })
+    ).toEqual({
+      address: user.linkedAccounts[0].address,
+      connectorType: "embedded",
+      walletClientType: "privy-v2",
     });
   });
 

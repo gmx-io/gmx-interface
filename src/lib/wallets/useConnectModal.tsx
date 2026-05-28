@@ -1,4 +1,12 @@
-import { useConnectOrCreateWallet, useLogin, usePrivy, type PrivyEvents } from "@privy-io/react-auth";
+import {
+  useConnectOrCreateWallet,
+  useCreateWallet,
+  useLogin,
+  usePrivy,
+  type ConnectedWallet,
+  type PrivyEvents,
+} from "@privy-io/react-auth";
+import { useSetActiveWallet } from "@privy-io/wagmi";
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
 import type { SettlementChainId } from "config/chains";
@@ -83,6 +91,8 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
   const [settlementChainId] = useGmxAccountSettlementChainId();
   const [connectModalOpen, setConnectModalOpen] = useState(false);
   const { user } = usePrivy();
+  const { createWallet } = useCreateWallet();
+  const { setActiveWallet } = useSetActiveWallet();
 
   const handleSuccess = useCallback(() => {
     setConnectModalOpen(false);
@@ -97,11 +107,22 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
   }, [settlementChainId]);
 
   const handleConnectOrCreateWalletSuccess = useCallback(
-    (params: ConnectOrCreateWalletSuccessParams) => {
+    async (params: ConnectOrCreateWalletSuccessParams) => {
       writeActivePrivyWalletToStorage(user?.id, params.wallet);
+
+      try {
+        if (params.wallet.type === "ethereum") {
+          await setActiveWallet(params.wallet as ConnectedWallet);
+        }
+      } catch (error) {
+        metrics.pushError(error, "connectModal.setActiveWallet");
+        setConnectModalOpen(false);
+        return;
+      }
+
       handleSuccess();
     },
-    [handleSuccess, user?.id]
+    [handleSuccess, setActiveWallet, user?.id]
   );
 
   const { connectOrCreateWallet } = useConnectOrCreateWallet({
@@ -119,11 +140,27 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
 
       if (activeWalletStorageValue) {
         writeActivePrivyWalletToStorage(params.user.id, activeWalletStorageValue);
+        handleSuccess();
+        return;
+      }
+
+      if (!isWalletLoginMethod(params.loginMethod)) {
+        void createWallet()
+          .then((wallet) => {
+            writeActivePrivyWalletToStorage(params.user.id, wallet);
+            handleSuccess();
+          })
+          .catch((error) => {
+            metrics.pushError(error, "connectModal.createWallet");
+            setConnectModalOpen(false);
+          });
+
+        return;
       }
 
       handleSuccess();
     },
-    [handleSuccess]
+    [createWallet, handleSuccess]
   );
 
   useLogin({

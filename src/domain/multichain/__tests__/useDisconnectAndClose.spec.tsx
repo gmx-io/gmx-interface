@@ -2,6 +2,7 @@ import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { CURRENT_PROVIDER_LOCALSTORAGE_KEY, SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY } from "config/localStorage";
+import { getActivePrivyWalletStorageKey } from "lib/wallets/activeWalletStorage";
 
 import { useDisconnectAndClose } from "../useDisconnectAndClose";
 
@@ -11,12 +12,14 @@ const mocks = vi.hoisted(() => ({
   pushEvent: vi.fn(),
   setIsSettingsVisible: vi.fn(),
   setIsVisible: vi.fn(),
+  user: { id: "did:privy:user-id" },
   wallets: [] as { disconnect: ReturnType<typeof vi.fn> }[],
 }));
 
 vi.mock("@privy-io/react-auth", () => ({
   usePrivy: () => ({
     logout: mocks.logout,
+    user: mocks.user,
   }),
   useWallets: () => ({
     wallets: mocks.wallets,
@@ -66,6 +69,14 @@ describe("useDisconnectAndClose", () => {
 
     localStorage.setItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY, "true");
     localStorage.setItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY, "metamask");
+    localStorage.setItem(
+      getActivePrivyWalletStorageKey(mocks.user.id),
+      JSON.stringify({
+        address: "0x0000000000000000000000000000000000000001",
+        connectorType: "embedded",
+        walletClientType: "privy",
+      })
+    );
   });
 
   afterEach(() => {
@@ -94,11 +105,12 @@ describe("useDisconnectAndClose", () => {
 
     expect(localStorage.getItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY)).toBeNull();
     expect(localStorage.getItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY)).toBeNull();
+    expect(localStorage.getItem(getActivePrivyWalletStorageKey(mocks.user.id))).toBeNull();
     expect(mocks.setIsVisible).toHaveBeenCalledWith(false);
     expect(mocks.setIsSettingsVisible).toHaveBeenCalledWith(false);
   });
 
-  it("still closes account UI when provider disconnects fail", async () => {
+  it("rejects and keeps account UI open when provider disconnects fail", async () => {
     mocks.disconnectAsync.mockRejectedValue(new Error("wagmi disconnect failed"));
     mocks.wallets = [
       {
@@ -112,10 +124,10 @@ describe("useDisconnectAndClose", () => {
     const handleDisconnect = setup();
 
     await act(async () => {
-      await expect(handleDisconnect()).resolves.toBeUndefined();
+      await expect(handleDisconnect()).rejects.toThrow("wagmi disconnect failed");
     });
 
-    expect(mocks.setIsVisible).toHaveBeenCalledWith(false);
-    expect(mocks.setIsSettingsVisible).toHaveBeenCalledWith(false);
+    expect(mocks.setIsVisible).not.toHaveBeenCalled();
+    expect(mocks.setIsSettingsVisible).not.toHaveBeenCalled();
   });
 });
