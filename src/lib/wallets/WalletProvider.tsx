@@ -26,7 +26,7 @@ const gmxLogoElement = <img src={gmxLogo} alt="GMX" width={100} />;
 
 export function getActiveWalletForWagmi({ wallets, user }: { wallets: ConnectedWallet[]; user: User | null }) {
   return (
-    findStoredActivePrivyWallet(wallets) ?? (user ? wallets.find((wallet) => wallet.linked) : undefined) ?? wallets[0]
+    findStoredActivePrivyWallet(wallets) ?? (user ? wallets.find((wallet) => wallet.linked) : undefined)
   );
 }
 
