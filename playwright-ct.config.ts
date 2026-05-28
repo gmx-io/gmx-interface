@@ -16,7 +16,6 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 function ctModuleMocks(): Plugin {
   const mockPath = path.resolve(__dirname, "playwright/mocks/rpcDebug.ts");
   const privyReactAuthMockPath = path.resolve(__dirname, "playwright/mocks/privyReactAuth.tsx");
-  const privyWagmiMockPath = path.resolve(__dirname, "playwright/mocks/privyWagmi.tsx");
 
   return {
     name: "ct-module-mocks",
@@ -24,9 +23,6 @@ function ctModuleMocks(): Plugin {
     resolveId(source, importer) {
       if (source === "@privy-io/react-auth") {
         return privyReactAuthMockPath;
-      }
-      if (source === "@privy-io/wagmi") {
-        return privyWagmiMockPath;
       }
       if (source === "lib/rpc/_debug") {
         return mockPath;
