@@ -1,9 +1,8 @@
-import type { ConnectedWallet, User, Wallet } from "@privy-io/react-auth";
+import type { ConnectedWallet, User } from "@privy-io/react-auth";
 
 import { ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY } from "config/localStorage";
 import { Storage } from "lib/storage/Storage";
 
-type ActivePrivyWallet = Pick<Wallet, "address" | "connectorType" | "walletClientType">;
 type WalletAccount = {
   address?: string;
   chainType?: string;
@@ -83,10 +82,21 @@ export function findStoredActivePrivyWallet(wallets: ConnectedWallet[]) {
   return wallets.find((wallet) => wallet.linked && matchesStoredWallet(wallet, storedWallet));
 }
 
+export function getEthereumWalletStorageValue(account: WalletAccount | null | undefined) {
+  if (!account || account.type !== "wallet" || account.chainType !== "ethereum") {
+    return undefined;
+  }
+
+  return {
+    address: account.address,
+    connectorType: account.connectorType ?? undefined,
+    walletClientType: account.walletClientType ?? undefined,
+  };
+}
+
 export function isEmbeddedEthereumWallet(account: WalletAccount) {
   return (
-    account.type === "wallet" &&
-    account.chainType === "ethereum" &&
+    Boolean(getEthereumWalletStorageValue(account)) &&
     (account.walletClientType === "privy" ||
       account.walletClientType === "privy-v2" ||
       account.connectorType === "embedded")
@@ -94,15 +104,5 @@ export function isEmbeddedEthereumWallet(account: WalletAccount) {
 }
 
 export function getEmbeddedEthereumWallet(user: User) {
-  const embeddedWallet = user.linkedAccounts.find(isEmbeddedEthereumWallet) as ActivePrivyWallet | undefined;
-
-  if (!embeddedWallet) {
-    return undefined;
-  }
-
-  return {
-    address: embeddedWallet.address,
-    connectorType: embeddedWallet.connectorType,
-    walletClientType: embeddedWallet.walletClientType,
-  };
+  return getEthereumWalletStorageValue(user.linkedAccounts.find(isEmbeddedEthereumWallet));
 }

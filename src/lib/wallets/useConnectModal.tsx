@@ -20,6 +20,7 @@ import { switchNetwork } from "lib/wallets";
 
 import {
   getEmbeddedEthereumWallet,
+  getEthereumWalletStorageValue,
   writeActivePrivyWalletToStorage,
   type ActivePrivyWalletStorageValue,
 } from "./activeWalletStorage";
@@ -41,18 +42,6 @@ function isWalletLoginMethod(loginMethod: LoginCompleteParams["loginMethod"]) {
   return loginMethod === "siwe" || loginMethod === "siws";
 }
 
-function getEthereumWalletLoginAccount(loginAccount: LoginCompleteParams["loginAccount"]) {
-  if (!loginAccount || loginAccount.type !== "wallet" || loginAccount.chainType !== "ethereum") {
-    return undefined;
-  }
-
-  return {
-    address: loginAccount.address,
-    connectorType: loginAccount.connectorType,
-    walletClientType: loginAccount.walletClientType,
-  };
-}
-
 export function getActiveWalletStorageValueAfterLogin({
   loginAccount,
   loginMethod,
@@ -65,7 +54,7 @@ export function getActiveWalletStorageValueAfterLogin({
   }
 
   if (isWalletLoginMethod(loginMethod)) {
-    return getEthereumWalletLoginAccount(loginAccount ?? null);
+    return getEthereumWalletStorageValue(loginAccount);
   }
 
   const embeddedWallet = getEmbeddedEthereumWallet(user);
