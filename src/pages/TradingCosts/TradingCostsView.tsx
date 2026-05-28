@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 
 import type { TradingCostRow, TradingCostSide } from "domain/tradingCosts/types";
-import { formatUsd } from "lib/numbers";
+import { formatDeltaUsd, formatUsd } from "lib/numbers";
 
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
 import NumberInput from "components/NumberInput/NumberInput";
@@ -28,6 +28,19 @@ function getGmxPriceImpactTotal(row: TradingCostRow) {
   return row.gmx.components
     .filter((component) => component.key === "openPriceImpact" || component.key === "closePriceImpact")
     .reduce((total, component) => total + component.usd, 0n);
+}
+
+function getDeltaPercentage(row: TradingCostRow) {
+  const deltaUsd = row.deltaUsd;
+  const venueTotalUsd = row.venue.totalUsd;
+
+  if (deltaUsd === undefined || venueTotalUsd === undefined || venueTotalUsd === 0n) {
+    return undefined;
+  }
+
+  const denominator = venueTotalUsd < 0n ? -venueTotalUsd : venueTotalUsd;
+
+  return (deltaUsd * 10000n) / denominator;
 }
 
 function formatTimestamp(timestamp: number | undefined) {
@@ -155,7 +168,9 @@ export function TradingCostsView({
                   <TableTd>{formatUsd(row.venueVolume24hUsd) ?? "-"}</TableTd>
                   <TableTd>{formatUsd(row.gmx.totalUsd) ?? "-"}</TableTd>
                   <TableTd>{formatUsd(row.venue.totalUsd) ?? "-"}</TableTd>
-                  <TableTd>{formatUsd(row.deltaUsd, { displayPlus: true }) ?? "-"}</TableTd>
+                  <TableTd>
+                    {formatDeltaUsd(row.deltaUsd, getDeltaPercentage(row), { showPlusForZero: true }) ?? "-"}
+                  </TableTd>
                   <TableTd>{formatUsd(getGmxPriceImpactTotal(row), { displayPlus: true }) ?? "-"}</TableTd>
                   <TableTd>{row.status}</TableTd>
                 </TableTr>

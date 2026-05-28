@@ -61,6 +61,29 @@ test("renders generic venue labels and selected market details", async ({ mount 
   await expect(component.getByText("Status details")).toBeVisible();
 });
 
+test("renders delta percentage relative to venue total", async ({ mount }) => {
+  const component = await mount(
+    <TradingCostsView
+      rows={rows}
+      isLoading={false}
+      search=""
+      setSearch={() => undefined}
+      sizeUsdInput="10000"
+      setSizeUsdInput={() => undefined}
+      side="long"
+      setSide={() => undefined}
+      holdingPeriodPreset="8"
+      setHoldingPeriodPreset={() => undefined}
+      customHoldingHoursInput=""
+      setCustomHoldingHoursInput={() => undefined}
+      takerFeeInput="0.045"
+      setTakerFeeInput={() => undefined}
+    />
+  );
+
+  await expect(component.getByText("(+33.33%)")).toBeVisible();
+});
+
 test("uses the app dropdown for holding period presets", async ({ mount, page }) => {
   const component = await mount(
     <TradingCostsView
