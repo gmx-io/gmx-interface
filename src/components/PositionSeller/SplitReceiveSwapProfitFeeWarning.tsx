@@ -44,9 +44,9 @@ export function getSplitReceiveSwapProfitFeeWarning({
     return undefined;
   }
 
-  const receiveTokenSymbol = getTokenDisplaySymbol(chainId, receiveToken);
-  const profitTokenSymbol = getTokenDisplaySymbol(chainId, profitToken);
-  const collateralTokenSymbol = getTokenDisplaySymbol(chainId, collateralToken);
+  const receiveTokenSymbol = getTokenDisplaySymbol(receiveToken);
+  const profitTokenSymbol = getTokenDisplaySymbol(profitToken);
+  const collateralTokenSymbol = getTokenDisplaySymbol(collateralToken);
 
   if (!receiveTokenSymbol || !profitTokenSymbol || !collateralTokenSymbol) {
     return undefined;
