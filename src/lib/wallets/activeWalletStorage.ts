@@ -1,6 +1,7 @@
 import type { ConnectedWallet, User, Wallet } from "@privy-io/react-auth";
 
 import { ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY } from "config/localStorage";
+import { Storage } from "lib/storage/Storage";
 
 type ActivePrivyWallet = Pick<Wallet, "address" | "connectorType" | "walletClientType">;
 type WalletAccount = {
@@ -16,17 +17,16 @@ export type ActivePrivyWalletStorageValue = {
   connectorType?: string;
   walletClientType?: string;
 };
+type ActivePrivyWalletStorageState = ActivePrivyWalletStorageValue & Record<string, string | undefined>;
+
+const ACTIVE_PRIVY_WALLET_STORAGE_KEYS = ["address", "connectorType", "walletClientType"] as const;
 
 export function getActivePrivyWalletStorageKey(userId: string) {
   return `${ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY}:${userId}`;
 }
 
-function getStorage() {
-  return typeof window === "undefined" ? undefined : window.localStorage;
-}
-
-function normalizeAddress(address: string | undefined) {
-  return address?.toLowerCase();
+function getActivePrivyWalletStorage(userId: string) {
+  return new Storage<ActivePrivyWalletStorageState>(getActivePrivyWalletStorageKey(userId));
 }
 
 function isActivePrivyWalletStorageValue(value: unknown): value is ActivePrivyWalletStorageValue {
@@ -37,27 +37,14 @@ function isActivePrivyWalletStorageValue(value: unknown): value is ActivePrivyWa
   const wallet = value as ActivePrivyWalletStorageValue;
 
   return (
-    (wallet.address === undefined || typeof wallet.address === "string") &&
-    (wallet.connectorType === undefined || typeof wallet.connectorType === "string") &&
-    (wallet.walletClientType === undefined || typeof wallet.walletClientType === "string") &&
-    Boolean(wallet.address || wallet.connectorType || wallet.walletClientType)
+    ACTIVE_PRIVY_WALLET_STORAGE_KEYS.every((key) => wallet[key] === undefined || typeof wallet[key] === "string") &&
+    ACTIVE_PRIVY_WALLET_STORAGE_KEYS.some((key) => wallet[key])
   );
 }
 
 export function readActivePrivyWalletFromStorage(userId: string) {
-  try {
-    const rawValue = getStorage()?.getItem(getActivePrivyWalletStorageKey(userId));
-
-    if (!rawValue) {
-      return undefined;
-    }
-
-    const value = JSON.parse(rawValue);
-
-    return isActivePrivyWalletStorageValue(value) ? value : undefined;
-  } catch {
-    return undefined;
-  }
+  const value = getActivePrivyWalletStorage(userId).getState();
+  return isActivePrivyWalletStorageValue(value) ? value : undefined;
 }
 
 export function writeActivePrivyWalletToStorage(userId: string | undefined, wallet: ActivePrivyWalletStorageValue) {
@@ -65,17 +52,9 @@ export function writeActivePrivyWalletToStorage(userId: string | undefined, wall
     return;
   }
 
-  const value: ActivePrivyWalletStorageValue = {
-    address: normalizeAddress(wallet.address),
-    connectorType: wallet.connectorType,
-    walletClientType: wallet.walletClientType,
-  };
+  const storage = getActivePrivyWalletStorage(userId);
 
-  try {
-    getStorage()?.setItem(getActivePrivyWalletStorageKey(userId), JSON.stringify(value));
-  } catch {
-    // localStorage can be unavailable in privacy modes; wallet selection still has a fallback.
-  }
+  ACTIVE_PRIVY_WALLET_STORAGE_KEYS.forEach((key) => storage.set(key, wallet[key]));
 }
 
 export function removeActivePrivyWalletFromStorage(userId: string | undefined) {
@@ -83,15 +62,11 @@ export function removeActivePrivyWalletFromStorage(userId: string | undefined) {
     return;
   }
 
-  try {
-    getStorage()?.removeItem(getActivePrivyWalletStorageKey(userId));
-  } catch {
-    // localStorage can be unavailable in privacy modes.
-  }
+  getActivePrivyWalletStorage(userId).clear();
 }
 
 function matchesStoredWallet(wallet: ConnectedWallet, storedWallet: ActivePrivyWalletStorageValue) {
-  if (storedWallet.address && normalizeAddress(wallet.address) !== normalizeAddress(storedWallet.address)) {
+  if (storedWallet.address && wallet.address !== storedWallet.address) {
     return false;
   }
 

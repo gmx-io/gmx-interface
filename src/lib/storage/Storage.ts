@@ -18,6 +18,16 @@ export class Storage<TState extends Record<string, any>> {
     return this.state;
   }
 
+  clear(): void {
+    this.state = {};
+
+    try {
+      localStorage.removeItem(this.storageKey);
+    } catch (error) {
+      //
+    }
+  }
+
   loadState(): Partial<TState> {
     try {
       const stored = localStorage.getItem(this.storageKey);

@@ -222,6 +222,18 @@ describe("Storage", () => {
     });
   });
 
+  describe("clear", () => {
+    it("should clear state and remove localStorage item", () => {
+      const storage = new Storage<TestState>(TEST_STORAGE_KEY);
+      storage.set("flag1", true);
+
+      storage.clear();
+
+      expect(storage.getState()).toEqual({});
+      expect(localStorage.getItem(TEST_STORAGE_KEY)).toBeNull();
+    });
+  });
+
   describe("integration", () => {
     it("should persist state across multiple Storage instances with same key", () => {
       const storage1 = new Storage<TestState>(TEST_STORAGE_KEY);
