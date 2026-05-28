@@ -29,6 +29,7 @@ export type ActivePrivyWalletStorageValue = {
 type ActivePrivyWalletStorageState = ActivePrivyWalletStorageValue & Record<string, string | undefined>;
 
 const ACTIVE_PRIVY_WALLET_STORAGE_KEYS = ["address", "connectorId", "connectorType", "walletClientType"] as const;
+const ACTIVE_PRIVY_WALLET_STORAGE_CHANGE_EVENT = "gmx:active-privy-wallet-storage-change";
 
 function areAddressesEqual(addressA: string | undefined, addressB: string | undefined) {
   return Boolean(
@@ -38,6 +39,14 @@ function areAddressesEqual(addressA: string | undefined, addressB: string | unde
 
 function getActivePrivyWalletStorage() {
   return new Storage<ActivePrivyWalletStorageState>(ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY);
+}
+
+function notifyActivePrivyWalletStorageChange() {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.dispatchEvent(new Event(ACTIVE_PRIVY_WALLET_STORAGE_CHANGE_EVENT));
 }
 
 function isActivePrivyWalletStorageValue(value: unknown): value is ActivePrivyWalletStorageValue {
@@ -67,10 +76,32 @@ export function writeActivePrivyWalletToStorage(wallet: ActivePrivyWalletStorage
   const storage = getActivePrivyWalletStorage();
 
   ACTIVE_PRIVY_WALLET_STORAGE_KEYS.forEach((key) => storage.set(key, wallet[key]));
+  notifyActivePrivyWalletStorageChange();
 }
 
 export function removeActivePrivyWalletFromStorage() {
   getActivePrivyWalletStorage().clear();
+  notifyActivePrivyWalletStorageChange();
+}
+
+export function subscribeActivePrivyWalletStorage(onChange: () => void) {
+  if (typeof window === "undefined") {
+    return () => undefined;
+  }
+
+  const handleStorageChange = (event: StorageEvent) => {
+    if (event.key === ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY) {
+      onChange();
+    }
+  };
+
+  window.addEventListener(ACTIVE_PRIVY_WALLET_STORAGE_CHANGE_EVENT, onChange);
+  window.addEventListener("storage", handleStorageChange);
+
+  return () => {
+    window.removeEventListener(ACTIVE_PRIVY_WALLET_STORAGE_CHANGE_EVENT, onChange);
+    window.removeEventListener("storage", handleStorageChange);
+  };
 }
 
 export function getPrivyWagmiConnectorId(wallet: Pick<ConnectedWallet, "address" | "meta" | "walletClientType">) {

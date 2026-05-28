@@ -1,5 +1,5 @@
 import type { ConnectedWallet } from "@privy-io/react-auth";
-import { beforeEach, describe, expect, it } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY } from "config/localStorage";
 
@@ -7,6 +7,9 @@ import {
   findActivePrivyWalletByWagmiAccount,
   findStoredActivePrivyWallet,
   getEthereumWalletStorageValue,
+  removeActivePrivyWalletFromStorage,
+  subscribeActivePrivyWalletStorage,
+  writeActivePrivyWalletToStorage,
 } from "./activeWalletStorage";
 
 function createConnectedWallet(
@@ -107,5 +110,29 @@ describe("active wallet storage", () => {
       connectorType: "embedded",
       walletClientType: "privy",
     });
+  });
+
+  it("notifies subscribers when active wallet storage changes in the current tab", () => {
+    const onChange = vi.fn();
+    const unsubscribe = subscribeActivePrivyWalletStorage(onChange);
+
+    writeActivePrivyWalletToStorage({
+      address: "0x00000000000000000000000000000000000000aa",
+      connectorId: "io.rabby",
+    });
+
+    expect(onChange).toHaveBeenCalledTimes(1);
+
+    removeActivePrivyWalletFromStorage();
+
+    expect(onChange).toHaveBeenCalledTimes(2);
+
+    unsubscribe();
+    writeActivePrivyWalletToStorage({
+      address: "0x00000000000000000000000000000000000000bb",
+      connectorId: "io.rabby",
+    });
+
+    expect(onChange).toHaveBeenCalledTimes(2);
   });
 });

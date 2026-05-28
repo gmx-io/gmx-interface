@@ -1,14 +1,19 @@
 import { PrivyProvider, type ConnectedWallet, type User } from "@privy-io/react-auth";
 import { WagmiProvider } from "@privy-io/wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { colors } from "config/colors";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 
 import gmxLogo from "img/logo-icon.svg";
 
-import { findStoredActivePrivyWallet } from "./activeWalletStorage";
+import {
+  findActivePrivyWalletByStorageValue,
+  readActivePrivyWalletFromStorage,
+  subscribeActivePrivyWalletStorage,
+  type ActivePrivyWalletStorageValue,
+} from "./activeWalletStorage";
 import {
   getWagmiConfig,
   getSupportedChains,
@@ -24,14 +29,38 @@ const supportedChains = getSupportedChains();
 const defaultChain = supportedChains[0];
 const gmxLogoElement = <img src={gmxLogo} alt="GMX" width={100} />;
 
-export function getActiveWalletForWagmi({ wallets, user }: { wallets: ConnectedWallet[]; user: User | null }) {
+export function getActiveWalletForWagmi({
+  wallets,
+  user,
+  activeWalletStorageValue = readActivePrivyWalletFromStorage(),
+}: {
+  wallets: ConnectedWallet[];
+  user: User | null;
+  activeWalletStorageValue?: ActivePrivyWalletStorageValue;
+}) {
   return (
-    findStoredActivePrivyWallet(wallets) ?? (user ? wallets.find((wallet) => wallet.linked) : undefined)
+    (activeWalletStorageValue ? findActivePrivyWalletByStorageValue(wallets, activeWalletStorageValue) : undefined) ??
+    (user ? wallets.find((wallet) => wallet.linked) : undefined)
   );
+}
+
+function useActivePrivyWalletStorageValue() {
+  const [activeWalletStorageValue, setActiveWalletStorageValue] = useState<ActivePrivyWalletStorageValue | undefined>(
+    () => readActivePrivyWalletFromStorage()
+  );
+
+  useEffect(() => {
+    return subscribeActivePrivyWalletStorage(() => {
+      setActiveWalletStorageValue(readActivePrivyWalletFromStorage());
+    });
+  }, []);
+
+  return activeWalletStorageValue;
 }
 
 export default function WalletProvider({ children }: { children: React.ReactNode }) {
   const { theme } = useTheme();
+  const activeWalletStorageValue = useActivePrivyWalletStorageValue();
 
   const privyConfig = useMemo(
     () => ({
@@ -59,10 +88,17 @@ export default function WalletProvider({ children }: { children: React.ReactNode
     [theme]
   );
 
+  const setActiveWalletForWagmi = useCallback(
+    ({ wallets, user }: { wallets: ConnectedWallet[]; user: User | null }) => {
+      return getActiveWalletForWagmi({ wallets, user, activeWalletStorageValue });
+    },
+    [activeWalletStorageValue]
+  );
+
   return (
     <PrivyProvider appId={PRIVY_APP_ID} config={privyConfig}>
       <QueryClientProvider client={queryClient}>
-        <WagmiProvider config={getWagmiConfig()} setActiveWalletForWagmi={getActiveWalletForWagmi}>
+        <WagmiProvider config={getWagmiConfig()} setActiveWalletForWagmi={setActiveWalletForWagmi}>
           {children}
         </WagmiProvider>
       </QueryClientProvider>

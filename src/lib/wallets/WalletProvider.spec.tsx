@@ -12,6 +12,9 @@ const mocks = vi.hoisted(() => ({
     isConnected: false,
   },
   wallets: [] as ConnectedWallet[],
+  setActiveWalletForWagmi: undefined as
+    | ((params: { wallets: ConnectedWallet[]; user: unknown }) => ConnectedWallet | undefined)
+    | undefined,
 }));
 
 vi.mock("@privy-io/react-auth", () => ({
@@ -22,7 +25,16 @@ vi.mock("@privy-io/react-auth", () => ({
 }));
 
 vi.mock("@privy-io/wagmi", () => ({
-  WagmiProvider: ({ children }: { children: ReactNode }) => children,
+  WagmiProvider: ({
+    children,
+    setActiveWalletForWagmi,
+  }: {
+    children: ReactNode;
+    setActiveWalletForWagmi: typeof mocks.setActiveWalletForWagmi;
+  }) => {
+    mocks.setActiveWalletForWagmi = setActiveWalletForWagmi;
+    return children;
+  },
 }));
 
 vi.mock("wagmi", () => ({
@@ -48,6 +60,7 @@ vi.mock("./walletConfig", () => ({
   PRIVY_WALLET_LIST: ["rabby_wallet"],
 }));
 
+import { getEthereumWalletStorageValue, writeActivePrivyWalletToStorage } from "./activeWalletStorage";
 import WalletProvider, { getActiveWalletForWagmi } from "./WalletProvider";
 
 function createConnectedWallet(
@@ -82,6 +95,7 @@ describe("WalletProvider", () => {
       isConnected: false,
     };
     mocks.wallets = [];
+    mocks.setActiveWalletForWagmi = undefined;
   });
 
   it("does not mirror transient Wagmi account state into active wallet storage", async () => {
@@ -140,7 +154,7 @@ describe("WalletProvider", () => {
     ).toBe(selectedExternalWallet);
   });
 
-  it("keeps a connected wallet while Privy user is still hydrating", () => {
+  it("does not use a connected wallet while Privy user is still hydrating without stored intent", () => {
     const wallet = createConnectedWallet({
       address: "0x1111111111111111111111111111111111111111",
       connectorType: "injected",
@@ -153,6 +167,30 @@ describe("WalletProvider", () => {
         wallets: [wallet],
         user: null,
       })
-    ).toBe(wallet);
+    ).toBeUndefined();
+  });
+
+  it("reacts to active wallet storage writes while Privy user is still hydrating", async () => {
+    const wallet = createConnectedWallet({
+      address: "0x1111111111111111111111111111111111111111",
+      connectorType: "injected",
+      metaId: "io.rabby",
+      walletClientType: "rabby_wallet",
+    });
+    mocks.wallets = [wallet];
+
+    render(<WalletProvider>content</WalletProvider>);
+
+    expect(mocks.setActiveWalletForWagmi?.({ wallets: mocks.wallets, user: null })).toBeUndefined();
+
+    const activeWalletStorageValue = getEthereumWalletStorageValue(wallet);
+
+    expect(activeWalletStorageValue).toBeDefined();
+
+    writeActivePrivyWalletToStorage(activeWalletStorageValue!);
+
+    await waitFor(() => {
+      expect(mocks.setActiveWalletForWagmi?.({ wallets: mocks.wallets, user: null })).toBe(wallet);
+    });
   });
 });
