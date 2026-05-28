@@ -78,6 +78,17 @@ describe("WalletProvider", () => {
     expect(mocks.wagmiProviderProps[0].setActiveWalletForWagmi).toBe(getActiveWalletForWagmi);
   });
 
+  it("does not select a wagmi wallet when the Privy user is logged out", () => {
+    const embeddedWallet = createConnectedWallet({
+      address: "0x0000000000000000000000000000000000000001",
+      connectorType: "embedded",
+      linked: true,
+      walletClientType: "privy",
+    });
+
+    expect(getActiveWalletForWagmi({ wallets: [embeddedWallet], user: null })).toBeUndefined();
+  });
+
   it("selects the stored linked wallet instead of the first linked wallet", () => {
     const embeddedWallet = createConnectedWallet({
       address: "0x0000000000000000000000000000000000000001",

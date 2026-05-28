@@ -26,7 +26,7 @@ const gmxLogoElement = <img src={gmxLogo} alt="GMX" width={100} />;
 
 export function getActiveWalletForWagmi({ wallets, user }: { wallets: ConnectedWallet[]; user: User | null }) {
   if (!user) {
-    return wallets[0];
+    return undefined;
   }
 
   return (
