@@ -1,4 +1,3 @@
-import { toNonNegativeBigInt } from "utils/numbers";
 import { getRecord, getString, isRecord } from "utils/objects";
 
 import { GlvShiftParam, JitLiquidityInfo, JitLiquidityMap } from "./types";
@@ -61,8 +60,8 @@ function parseV1JitLiquidityInfo(rawInfo: Record<string, unknown>): JitLiquidity
   const glvShiftParams = parseGlvShiftParams(rawInfo.glvShiftParams);
 
   return {
-    maxReservedUsdWithJitLong: toNonNegativeBigInt(rawInfo.maxReservedUsdWithJitLong) ?? 0n,
-    maxReservedUsdWithJitShort: toNonNegativeBigInt(rawInfo.maxReservedUsdWithJitShort) ?? 0n,
+    maxReservedUsdWithJitLong: parseJitAmount(rawInfo.maxReservedUsdWithJitLong),
+    maxReservedUsdWithJitShort: parseJitAmount(rawInfo.maxReservedUsdWithJitShort),
     glvShiftParamsLong: glvShiftParams,
     glvShiftParamsShort: glvShiftParams,
     glvShiftParams,
@@ -82,9 +81,8 @@ function parseV2JitLiquidityInfo(rawInfo: Record<string, unknown>): JitLiquidity
   const glvShiftParamsShort = parseGlvShiftParams(shortInfo?.glvShiftParams ?? rawInfo.glvShiftParams);
 
   return {
-    maxReservedUsdWithJitLong: toNonNegativeBigInt(longInfo?.maxReservedUsd ?? rawInfo.maxReservedUsdWithJitLong) ?? 0n,
-    maxReservedUsdWithJitShort:
-      toNonNegativeBigInt(shortInfo?.maxReservedUsd ?? rawInfo.maxReservedUsdWithJitShort) ?? 0n,
+    maxReservedUsdWithJitLong: parseJitAmount(longInfo?.maxReservedUsd ?? rawInfo.maxReservedUsdWithJitLong),
+    maxReservedUsdWithJitShort: parseJitAmount(shortInfo?.maxReservedUsd ?? rawInfo.maxReservedUsdWithJitShort),
     glvShiftParamsLong,
     glvShiftParamsShort,
     glvShiftParams: [...glvShiftParamsLong, ...glvShiftParamsShort],
@@ -125,7 +123,20 @@ function parseGlvShiftParam(value: unknown): GlvShiftParam | undefined {
     glv,
     fromMarket,
     toMarket,
-    marketTokenAmount: toNonNegativeBigInt(value.marketTokenAmount) ?? 0n,
-    minMarketTokens: toNonNegativeBigInt(value.minMarketTokens) ?? 0n,
+    marketTokenAmount: parseJitAmount(value.marketTokenAmount),
+    minMarketTokens: parseJitAmount(value.minMarketTokens),
   };
+}
+
+function parseJitAmount(value: unknown): bigint {
+  if (typeof value !== "string" && typeof value !== "number" && typeof value !== "bigint") {
+    return 0n;
+  }
+
+  try {
+    const amount = BigInt(value);
+    return amount < 0n ? 0n : amount;
+  } catch {
+    return 0n;
+  }
 }

@@ -112,4 +112,30 @@ describe("parseJitLiquidityResponse", () => {
       },
     ]);
   });
+
+  it("falls back to zero for invalid and negative amount values", () => {
+    const result = parseJitLiquidityResponse({
+      liquidityInfos: [
+        {
+          market: "0xMarket",
+          maxReservedUsdWithJitLong: "-100",
+          maxReservedUsdWithJitShort: "invalid",
+          glvShiftParams: [
+            {
+              glv: "0xGlv",
+              fromMarket: "0xFrom",
+              toMarket: "0xMarket",
+              marketTokenAmount: "1.5",
+              minMarketTokens: "-9",
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(result["0xMarket"].maxReservedUsdWithJitLong).toBe(0n);
+    expect(result["0xMarket"].maxReservedUsdWithJitShort).toBe(0n);
+    expect(result["0xMarket"].glvShiftParams[0].marketTokenAmount).toBe(0n);
+    expect(result["0xMarket"].glvShiftParams[0].minMarketTokens).toBe(0n);
+  });
 });
