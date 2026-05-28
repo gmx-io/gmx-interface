@@ -2,7 +2,6 @@ import { Trans } from "@lingui/macro";
 import cx from "classnames";
 import { Fragment, type ReactNode } from "react";
 
-import { convertTokenAddress, getNormalizedTokenSymbol, getToken } from "sdk/configs/tokens";
 import type { DecreaseReceiveOutput } from "sdk/utils/trade/decreaseOutputs";
 
 import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
@@ -10,34 +9,26 @@ import { AmountWithUsdBalance } from "components/AmountWithUsd/AmountWithUsd";
 type TokenWithAddressAndSymbol = {
   address: string;
   symbol: string;
+  baseSymbol?: string;
 };
 
-export function getTokenDisplaySymbol(chainId: number, token: TokenWithAddressAndSymbol | undefined) {
+export function getTokenDisplaySymbol(token: TokenWithAddressAndSymbol | undefined) {
   if (!token) {
     return undefined;
   }
 
-  const nativeTokenAddress = convertTokenAddress(chainId, token.address, "native");
-  if (nativeTokenAddress !== token.address) {
-    return getToken(chainId, nativeTokenAddress).symbol;
-  }
-
-  const baseSymbol = token.symbol.split(".")[0];
-
-  return getNormalizedTokenSymbol(baseSymbol);
+  return token.baseSymbol ?? token.symbol;
 }
 
 export function SplitReceiveTokensLabel({
-  chainId,
   profitToken,
   collateralToken,
 }: {
-  chainId: number;
   profitToken: TokenWithAddressAndSymbol | undefined;
   collateralToken: TokenWithAddressAndSymbol | undefined;
 }) {
-  const profitTokenSymbol = getTokenDisplaySymbol(chainId, profitToken);
-  const collateralTokenSymbol = getTokenDisplaySymbol(chainId, collateralToken);
+  const profitTokenSymbol = getTokenDisplaySymbol(profitToken);
+  const collateralTokenSymbol = getTokenDisplaySymbol(collateralToken);
 
   return profitTokenSymbol && collateralTokenSymbol ? (
     <Trans>

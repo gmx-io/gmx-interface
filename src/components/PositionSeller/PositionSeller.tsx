@@ -1112,7 +1112,6 @@ export function PositionSeller() {
                     setIsChecked={setIsReceiveSeparated}
                   >
                     <SplitReceiveTokensLabel
-                      chainId={chainId}
                       profitToken={position?.pnlToken}
                       collateralToken={position?.collateralToken}
                     />
