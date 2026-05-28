@@ -10,9 +10,9 @@ import svgr from "vite-plugin-svgr";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { BREAKPOINTS } from "./src/lib/breakpoints";
 
-function getNodeModulePackageName(id: string) {
+function getNodeModulePackageName(id: string, match: "first" | "last" = "last") {
   const nodeModulesPath = "node_modules/";
-  const nodeModulesIndex = id.lastIndexOf(nodeModulesPath);
+  const nodeModulesIndex = match === "first" ? id.indexOf(nodeModulesPath) : id.lastIndexOf(nodeModulesPath);
 
   if (nodeModulesIndex === -1) {
     return undefined;
@@ -38,9 +38,25 @@ function getManualChunk(id: string) {
   }
 
   const packageName = getNodeModulePackageName(id);
+  // Keep nested dependencies with their owning lazy-loaded wallet package.
+  const ownerPackageName = getNodeModulePackageName(id, "first");
 
   if (!packageName) {
     return undefined;
+  }
+
+  if (ownerPackageName?.startsWith("@privy-io/") || ownerPackageName === "x402") {
+    return "privy";
+  }
+
+  if (
+    ownerPackageName?.startsWith("@walletconnect/") ||
+    ownerPackageName?.startsWith("@reown/") ||
+    ownerPackageName === "@coinbase/wallet-sdk" ||
+    ownerPackageName === "@base-org/account" ||
+    ownerPackageName === "porto"
+  ) {
+    return "walletconnect";
   }
 
   if (packageName === "@babel/runtime") {
