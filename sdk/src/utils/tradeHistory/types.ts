@@ -39,6 +39,7 @@ export type PositionTradeAction = {
   swapImpactUsd?: bigint;
   swapFeeUsd?: bigint;
   positionFeeAmount?: bigint;
+  traderDiscountAmount?: bigint;
   borrowingFeeAmount?: bigint;
   fundingFeeAmount?: bigint;
   pnlUsd?: bigint;
