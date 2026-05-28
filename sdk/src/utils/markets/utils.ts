@@ -95,11 +95,17 @@ export function getTokenPoolType(
     return "long";
   }
 
-  if (tokenAddress === longToken.address || (tokenAddress === NATIVE_TOKEN_ADDRESS && longToken.isWrapped)) {
+  if (
+    tokenAddress === longToken.address ||
+    (tokenAddress === NATIVE_TOKEN_ADDRESS && longToken.isWrapped)
+  ) {
     return "long";
   }
 
-  if (tokenAddress === shortToken.address || (tokenAddress === NATIVE_TOKEN_ADDRESS && shortToken.isWrapped)) {
+  if (
+    tokenAddress === shortToken.address ||
+    (tokenAddress === NATIVE_TOKEN_ADDRESS && shortToken.isWrapped)
+  ) {
     return "short";
   }
 

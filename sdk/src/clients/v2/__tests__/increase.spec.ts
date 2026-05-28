@@ -35,16 +35,16 @@ async function cancelAllOrders() {
         relayParams: prepared.payload.relayParams,
       },
     });
-  } catch {
-    /* cleanup best-effort */
-  }
+  } catch { /* cleanup best-effort */ }
 }
 
 describe("increase orders", () => {
   describe("express market increase", () => {
     it("long: estimates → submit → verify position", async () => {
       const positionsBefore = await sdk.fetchPositionsInfo({ address: account });
-      const longBefore = positionsBefore.find((p: any) => p.isLong && p.indexName?.includes("ETH/USD"));
+      const longBefore = positionsBefore.find(
+        (p: any) => p.isLong && p.indexName?.includes("ETH/USD")
+      );
       const sizeBefore = longBefore ? BigInt(longBefore.sizeInUsd) : 0n;
 
       const { prepared, submitted } = await expressFlow(sdk, signer, {
@@ -75,16 +75,13 @@ describe("increase orders", () => {
       expect(status.status).toBe("executed");
 
       // Position may take time to appear in the API after on-chain execution
-      const positionsAfter = await waitForPositionUpdate(
-        sdk,
-        account,
-        (positions) => {
-          const p = positions.find((p: any) => p.isLong && p.indexName?.includes("ETH/USD"));
-          return p ? BigInt(p.sizeInUsd) > sizeBefore : false;
-        },
-        60000
+      const positionsAfter = await waitForPositionUpdate(sdk, account, (positions) => {
+        const p = positions.find((p: any) => p.isLong && p.indexName?.includes("ETH/USD"));
+        return p ? BigInt(p.sizeInUsd) > sizeBefore : false;
+      }, 60000);
+      const longAfter = positionsAfter.find(
+        (p: any) => p.isLong && p.indexName?.includes("ETH/USD")
       );
-      const longAfter = positionsAfter.find((p: any) => p.isLong && p.indexName?.includes("ETH/USD"));
       // With very small collateral ($1), position may be auto-liquidated before API reflects it
       if (longAfter) {
         expect(BigInt(longAfter.sizeInUsd)).toBeGreaterThan(sizeBefore);
@@ -165,10 +162,9 @@ describe("increase orders", () => {
       expect(prepared.estimates).toBeDefined();
       expect(prepared.estimates!.sizeDeltaUsd).toBe(TEST_SIZE_USD);
       // No swap needed — impact should be zero or minimal
-      const absImpact =
-        prepared.estimates!.swapPriceImpactDeltaUsd >= 0n
-          ? prepared.estimates!.swapPriceImpactDeltaUsd
-          : -prepared.estimates!.swapPriceImpactDeltaUsd;
+      const absImpact = prepared.estimates!.swapPriceImpactDeltaUsd >= 0n
+        ? prepared.estimates!.swapPriceImpactDeltaUsd
+        : -prepared.estimates!.swapPriceImpactDeltaUsd;
       expect(absImpact).toBeLessThanOrEqual(10n ** 28n); // < $0.01
     });
 
@@ -282,8 +278,8 @@ describe("increase orders", () => {
         mode: "express",
         from: account,
         tpsl: [
-          { type: "take-profit", triggerPrice: (markPrice * 105n) / 100n, size: TEST_SIZE_USD },
-          { type: "stop-loss", triggerPrice: (markPrice * 95n) / 100n, size: TEST_SIZE_USD },
+          { type: "take-profit", triggerPrice: markPrice * 105n / 100n, size: TEST_SIZE_USD },
+          { type: "stop-loss", triggerPrice: markPrice * 95n / 100n, size: TEST_SIZE_USD },
         ],
       });
 
@@ -311,13 +307,15 @@ describe("increase orders", () => {
         collateralToPay: TEST_COLLATERAL,
         mode: "express",
         from: account,
-        tpsl: [{ type: "take-profit", triggerPrice: (markPrice * 110n) / 100n }],
+        tpsl: [{ type: "take-profit", triggerPrice: markPrice * 110n / 100n }],
       });
 
       const status = await waitForOrderStatus(sdk, submitted.requestId);
       expect(status.status).toBe("executed");
 
-      const ordersAfter = await waitForOrdersUpdate(sdk, account, (o) => o.length > ordersBefore.length, 30000);
+      const ordersAfter = await waitForOrdersUpdate(
+        sdk, account, (o) => o.length > ordersBefore.length, 30000
+      );
       expect(ordersAfter.length).toBeGreaterThan(ordersBefore.length);
     });
 
@@ -334,13 +332,15 @@ describe("increase orders", () => {
         collateralToPay: TEST_COLLATERAL,
         mode: "express",
         from: account,
-        tpsl: [{ type: "stop-loss", triggerPrice: (markPrice * 90n) / 100n }],
+        tpsl: [{ type: "stop-loss", triggerPrice: markPrice * 90n / 100n }],
       });
 
       const status = await waitForOrderStatus(sdk, submitted.requestId);
       expect(status.status).toBe("executed");
 
-      const ordersAfter = await waitForOrdersUpdate(sdk, account, (o) => o.length > ordersBefore.length, 30000);
+      const ordersAfter = await waitForOrdersUpdate(
+        sdk, account, (o) => o.length > ordersBefore.length, 30000
+      );
       expect(ordersAfter.length).toBeGreaterThan(ordersBefore.length);
     });
 
@@ -358,13 +358,15 @@ describe("increase orders", () => {
         collateralToPay: TEST_COLLATERAL,
         mode: "express",
         from: account,
-        tpsl: [{ type: "take-profit", triggerPrice: (markPrice * 105n) / 100n, size: halfSize }],
+        tpsl: [{ type: "take-profit", triggerPrice: markPrice * 105n / 100n, size: halfSize }],
       });
 
       const status = await waitForOrderStatus(sdk, submitted.requestId);
       expect(status.status).toBe("executed");
 
-      const ordersAfter = await waitForOrdersUpdate(sdk, account, (o) => o.length > ordersBefore.length, 30000);
+      const ordersAfter = await waitForOrdersUpdate(
+        sdk, account, (o) => o.length > ordersBefore.length, 30000
+      );
       expect(ordersAfter.length).toBeGreaterThan(ordersBefore.length);
     });
   });
@@ -657,7 +659,9 @@ describe("increase orders", () => {
         sdk.prepareOrder({ ...baseRequest, executionFeeBufferBps: 5000 }),
       ]);
 
-      expect(prepared5000.estimates!.executionFeeAmount).toBeGreaterThan(prepared0.estimates!.executionFeeAmount);
+      expect(prepared5000.estimates!.executionFeeAmount).toBeGreaterThan(
+        prepared0.estimates!.executionFeeAmount
+      );
     });
 
     it("buffer does not affect other estimates", async () => {

@@ -29,7 +29,11 @@ import { numberToBigint } from "lib/numbers";
 import { ISigner } from "lib/transactions/iSigner";
 import { getContract } from "sdk/configs/contracts";
 import { CHAIN_ID_TO_ENDPOINT_ID, isSettlementChain, isSourceChain, LayerZeroEndpointId } from "sdk/configs/multichain";
-import { getMultichainTokenGroups, MultichainTokenGroups, MultichainTokenId } from "sdk/configs/multichainTokens";
+import {
+  getMultichainTokenGroups,
+  MultichainTokenGroups,
+  MultichainTokenId,
+} from "sdk/configs/multichainTokens";
 import { convertTokenAddress, getTokenBySymbol } from "sdk/configs/tokens";
 
 export * from "sdk/configs/multichain";
@@ -74,7 +78,8 @@ for (const byChain of Object.values(TOKEN_GROUPS)) {
   for (const token of Object.values(byChain)) {
     if (!token) continue;
     const tokenChainId = token.chainId as AnyChainId;
-    const chainTokens = CHAIN_ID_TO_TOKEN_ID_MAP[tokenChainId] || (CHAIN_ID_TO_TOKEN_ID_MAP[tokenChainId] = {});
+    const chainTokens =
+      CHAIN_ID_TO_TOKEN_ID_MAP[tokenChainId] || (CHAIN_ID_TO_TOKEN_ID_MAP[tokenChainId] = {});
     chainTokens[token.address] = token;
 
     if (!isSettlementChain(token.chainId)) continue;
@@ -182,3 +187,4 @@ export function getSourceChainDecimalsMapped(
   const tokenId = getMappedTokenId(chainId as SettlementChainId, tokenAddress, srcChainId);
   return tokenId?.decimals;
 }
+
