@@ -1,4 +1,4 @@
-import type { ConnectedWallet, PrivyEvents } from "@privy-io/react-auth";
+import type { ConnectedWallet, PrivyEvents, User } from "@privy-io/react-auth";
 import { act, render, waitFor } from "@testing-library/react";
 import { useEffect, type ReactNode } from "react";
 import { beforeEach, describe, expect, it, vi } from "vitest";
@@ -17,6 +17,11 @@ const mocks = vi.hoisted(() => ({
   createWallet: vi.fn(),
   loginCallbacks: undefined as PrivyEvents["login"] | undefined,
   openConnectModal: undefined as (() => void) | undefined,
+  privy: {
+    authenticated: false,
+    ready: true,
+    user: null as User | null,
+  },
   setActiveWallet: vi.fn(),
   switchNetwork: vi.fn(() => Promise.resolve()),
   wallets: [] as ConnectedWallet[],
@@ -43,6 +48,7 @@ vi.mock("@privy-io/react-auth", () => ({
   useWallets: () => ({
     wallets: mocks.wallets,
   }),
+  usePrivy: () => mocks.privy,
 }));
 
 vi.mock("@privy-io/wagmi", () => ({
@@ -80,28 +86,72 @@ vi.mock("./walletConfig", () => ({
 
 import { ConnectModalProvider, useConnectModal } from "./useConnectModal";
 
-function createConnectedWallet({ connectedAt = Date.now() }: { connectedAt?: number } = {}) {
+function createConnectedWallet({
+  address = "0x1111111111111111111111111111111111111111",
+  connectedAt = Date.now(),
+  connectorType = "injected",
+  meta = {
+    id: "io.rabby",
+    name: "Rabby",
+  },
+  walletClientType = "rabby_wallet",
+}: {
+  address?: string;
+  connectedAt?: number;
+  connectorType?: string;
+  meta?: { id: string; name: string };
+  walletClientType?: string;
+} = {}) {
   return {
-    address: "0x1111111111111111111111111111111111111111",
+    address,
     chainId: "eip155:42161",
     connectedAt,
-    connectorType: "injected",
+    connectorType,
     disconnect: vi.fn(),
     getEthereumProvider: vi.fn(),
     imported: false,
     isConnected: vi.fn(),
     linked: true,
     loginOrLink: vi.fn(),
-    meta: {
-      id: "io.rabby",
-      name: "Rabby",
-    },
+    meta,
     sign: vi.fn(),
     switchChain: vi.fn(),
     type: "ethereum",
     unlink: vi.fn(),
-    walletClientType: "rabby_wallet",
+    walletClientType,
   } as unknown as ConnectedWallet;
+}
+
+function createEmbeddedWallet({ connectedAt = Date.now() }: { connectedAt?: number } = {}) {
+  return createConnectedWallet({
+    address: "0x2222222222222222222222222222222222222222",
+    connectedAt,
+    connectorType: "embedded",
+    meta: {
+      id: "io.privy.wallet",
+      name: "Privy Wallet",
+    },
+    walletClientType: "privy",
+  });
+}
+
+function createUserWithEmbeddedWallet(wallet: ConnectedWallet) {
+  return {
+    linkedAccounts: [
+      {
+        address: wallet.address,
+        chainType: "ethereum",
+        connectorType: wallet.connectorType,
+        imported: false,
+        type: "wallet",
+        walletClientType: wallet.walletClientType,
+      },
+    ],
+  } as unknown as User;
+}
+
+function getPrivyConnectorId(wallet: ConnectedWallet) {
+  return `${wallet.meta.id}.${wallet.address}`;
 }
 
 function ConnectModalConsumer() {
@@ -130,9 +180,15 @@ describe("ConnectModalProvider", () => {
     mocks.createWallet.mockReset();
     mocks.loginCallbacks = undefined;
     mocks.openConnectModal = undefined;
+    mocks.privy = {
+      authenticated: false,
+      ready: true,
+      user: null,
+    };
     mocks.setActiveWallet.mockReset();
     mocks.switchNetwork.mockReset().mockResolvedValue(undefined);
     mocks.wallets = [];
+    sessionStorage.clear();
   });
 
   it("ignores a late Privy connect success after the connect modal is canceled", async () => {
@@ -207,5 +263,70 @@ describe("ConnectModalProvider", () => {
       connectorType: "injected",
       walletClientType: "rabby_wallet",
     });
+  });
+
+  it("activates a Google login embedded wallet after an OAuth redirect", async () => {
+    const { unmount } = renderProvider();
+
+    act(() => {
+      mocks.openConnectModal?.();
+    });
+
+    unmount();
+
+    const wallet = createEmbeddedWallet();
+    const user = createUserWithEmbeddedWallet(wallet);
+    mocks.account = {
+      address: wallet.address,
+      connector: { id: getPrivyConnectorId(wallet) },
+    };
+    mocks.wallets = [wallet];
+
+    renderProvider();
+
+    act(() => {
+      mocks.loginCallbacks?.onComplete?.({
+        isNewUser: false,
+        loginAccount: null,
+        loginMethod: "google",
+        user,
+        wasAlreadyAuthenticated: false,
+      });
+    });
+
+    await waitFor(() => {
+      expect(mocks.setActiveWallet).toHaveBeenCalledWith(wallet);
+    });
+    expect(JSON.parse(localStorage.getItem(ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY) ?? "{}")).toMatchObject({
+      address: wallet.address,
+      connectorType: "embedded",
+      walletClientType: "privy",
+    });
+  });
+
+  it("recovers an authenticated Google user with no active wallet when connect is clicked", async () => {
+    const wallet = createEmbeddedWallet();
+    const user = createUserWithEmbeddedWallet(wallet);
+    mocks.account = {
+      address: wallet.address,
+      connector: { id: getPrivyConnectorId(wallet) },
+    };
+    mocks.privy = {
+      authenticated: true,
+      ready: true,
+      user,
+    };
+    mocks.wallets = [wallet];
+
+    renderProvider();
+
+    act(() => {
+      mocks.openConnectModal?.();
+    });
+
+    await waitFor(() => {
+      expect(mocks.setActiveWallet).toHaveBeenCalledWith(wallet);
+    });
+    expect(mocks.connectOrCreateWallet).not.toHaveBeenCalled();
   });
 });

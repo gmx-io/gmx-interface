@@ -2,9 +2,11 @@ import {
   useConnectOrCreateWallet,
   useCreateWallet,
   useLogin,
+  usePrivy,
   useWallets,
   type ConnectedWallet,
   type PrivyEvents,
+  type User,
 } from "@privy-io/react-auth";
 import { useSetActiveWallet } from "@privy-io/wagmi";
 import { getAccount, watchAccount } from "@wagmi/core";
@@ -45,6 +47,8 @@ type LoginCompleteParams = Parameters<NonNullable<PrivyEvents["login"]["onComple
 type ConnectOrCreateWalletSuccessParams = Parameters<NonNullable<PrivyEvents["connectOrCreateWallet"]["onSuccess"]>>[0];
 
 const ACTIVE_WALLET_TIMEOUT_MS = 5000;
+const PENDING_CONNECT_ATTEMPT_SESSION_STORAGE_KEY = "gmx:pending-connect-attempt";
+const PENDING_CONNECT_ATTEMPT_TTL_MS = 15 * 60 * 1000;
 
 type ConnectAttempt = {
   id: number;
@@ -105,6 +109,38 @@ function getConnectedWalletsAtOpen(wallets: ConnectedWallet[]) {
       })
       .filter((entry): entry is readonly [string, number] => entry !== undefined)
   );
+}
+
+function readPendingConnectAttemptStartedAt() {
+  if (typeof window === "undefined") {
+    return undefined;
+  }
+
+  const value = window.sessionStorage.getItem(PENDING_CONNECT_ATTEMPT_SESSION_STORAGE_KEY);
+  const startedAt = value ? Number(value) : undefined;
+
+  if (!startedAt || Date.now() - startedAt > PENDING_CONNECT_ATTEMPT_TTL_MS) {
+    window.sessionStorage.removeItem(PENDING_CONNECT_ATTEMPT_SESSION_STORAGE_KEY);
+    return undefined;
+  }
+
+  return startedAt;
+}
+
+function writePendingConnectAttempt(startedAt: number) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.sessionStorage.setItem(PENDING_CONNECT_ATTEMPT_SESSION_STORAGE_KEY, String(startedAt));
+}
+
+function removePendingConnectAttempt() {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  window.sessionStorage.removeItem(PENDING_CONNECT_ATTEMPT_SESSION_STORAGE_KEY);
 }
 
 function wasWalletConnectedDuringAttempt(
@@ -200,6 +236,7 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
   const [settlementChainId] = useGmxAccountSettlementChainId();
   const [connectModalOpen, setConnectModalOpen] = useState(false);
   const { createWallet } = useCreateWallet();
+  const { authenticated, ready: privyReady, user } = usePrivy();
   const { setActiveWallet } = useSetActiveWallet();
   const { wallets } = useWallets();
   const walletsRef = useRef(wallets);
@@ -214,6 +251,29 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
     return connectAttemptId !== undefined && activeConnectAttemptRef.current?.id === connectAttemptId;
   }, []);
 
+  const startConnectAttempt = useCallback((startedAt = Date.now()) => {
+    const connectAttemptId = nextConnectAttemptIdRef.current + 1;
+    nextConnectAttemptIdRef.current = connectAttemptId;
+    activeConnectAttemptRef.current = {
+      id: connectAttemptId,
+      startedAt,
+      existingWalletConnectedAt: getConnectedWalletsAtOpen(walletsRef.current ?? []),
+    };
+    writePendingConnectAttempt(startedAt);
+
+    return activeConnectAttemptRef.current;
+  }, []);
+
+  const getActiveConnectAttempt = useCallback(() => {
+    if (activeConnectAttemptRef.current) {
+      return activeConnectAttemptRef.current;
+    }
+
+    const startedAt = readPendingConnectAttemptStartedAt();
+
+    return startedAt ? startConnectAttempt(startedAt) : undefined;
+  }, [startConnectAttempt]);
+
   const cancelActiveConnectAttempt = useCallback(
     (connectAttemptId?: number) => {
       if (connectAttemptId !== undefined && !isConnectAttemptActive(connectAttemptId)) {
@@ -225,6 +285,7 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
       }
 
       activeConnectAttemptRef.current = undefined;
+      removePendingConnectAttempt();
       removeActivePrivyWalletFromStorage();
       setConnectModalOpen(false);
     },
@@ -238,6 +299,7 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
       }
 
       activeConnectAttemptRef.current = undefined;
+      removePendingConnectAttempt();
       setConnectModalOpen(false);
 
       if (shouldKeepAppSelectedSourceChain(settlementChainId)) {
@@ -291,9 +353,37 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
     [cancelActiveConnectAttempt, handleSuccess, isConnectAttemptActive, setActiveWallet]
   );
 
+  const activateEmbeddedWalletOrCreateWallet = useCallback(
+    (user: User, connectAttemptId: number) => {
+      const activeWalletStorageValue = getEmbeddedEthereumWallet(user);
+
+      if (activeWalletStorageValue) {
+        void activateActiveWallet(activeWalletStorageValue, undefined, connectAttemptId);
+        return;
+      }
+
+      void createWallet()
+        .then((wallet) => {
+          const createdWalletStorageValue = getEthereumWalletStorageValue(wallet);
+
+          if (!createdWalletStorageValue) {
+            handleSuccess(connectAttemptId);
+            return;
+          }
+
+          return activateActiveWallet(createdWalletStorageValue, undefined, connectAttemptId);
+        })
+        .catch((error) => {
+          metrics.pushError(error, "connectModal.createAndActivateWallet");
+          cancelActiveConnectAttempt(connectAttemptId);
+        });
+    },
+    [activateActiveWallet, cancelActiveConnectAttempt, createWallet, handleSuccess]
+  );
+
   const handleConnectOrCreateWalletSuccess = useCallback(
     async (params: ConnectOrCreateWalletSuccessParams) => {
-      const connectAttempt = activeConnectAttemptRef.current;
+      const connectAttempt = getActiveConnectAttempt();
 
       if (!connectAttempt) {
         return;
@@ -320,7 +410,7 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
         connectAttempt.id
       );
     },
-    [activateActiveWallet, cancelActiveConnectAttempt, handleSuccess]
+    [activateActiveWallet, cancelActiveConnectAttempt, getActiveConnectAttempt, handleSuccess]
   );
 
   const { connectOrCreateWallet } = useConnectOrCreateWallet({
@@ -330,13 +420,20 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
 
   const handleLoginComplete = useCallback(
     (params: LoginCompleteParams) => {
-      const connectAttemptId = activeConnectAttemptRef.current?.id;
+      const connectAttempt = getActiveConnectAttempt();
+      const connectAttemptId = connectAttempt?.id;
 
       if (connectAttemptId === undefined) {
         return;
       }
 
       if (params.wasAlreadyAuthenticated) {
+        if (!isWalletLoginMethod(params.loginMethod)) {
+          activateEmbeddedWalletOrCreateWallet(params.user, connectAttemptId);
+          return;
+        }
+
+        handleSuccess(connectAttemptId);
         return;
       }
 
@@ -348,28 +445,13 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
       }
 
       if (!isWalletLoginMethod(params.loginMethod)) {
-        void createWallet()
-          .then((wallet) => {
-            const createdWalletStorageValue = getEthereumWalletStorageValue(wallet);
-
-            if (!createdWalletStorageValue) {
-              handleSuccess(connectAttemptId);
-              return;
-            }
-
-            return activateActiveWallet(createdWalletStorageValue, undefined, connectAttemptId);
-          })
-          .catch((error) => {
-            metrics.pushError(error, "connectModal.createAndActivateWallet");
-            cancelActiveConnectAttempt();
-          });
-
+        activateEmbeddedWalletOrCreateWallet(params.user, connectAttemptId);
         return;
       }
 
       handleSuccess(connectAttemptId);
     },
-    [activateActiveWallet, cancelActiveConnectAttempt, createWallet, handleSuccess]
+    [activateActiveWallet, activateEmbeddedWalletOrCreateWallet, getActiveConnectAttempt, handleSuccess]
   );
 
   useLogin({
@@ -378,16 +460,23 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
   });
 
   const openConnectModal = useCallback(() => {
-    const connectAttemptId = nextConnectAttemptIdRef.current + 1;
-    nextConnectAttemptIdRef.current = connectAttemptId;
-    activeConnectAttemptRef.current = {
-      id: connectAttemptId,
-      startedAt: Date.now(),
-      existingWalletConnectedAt: getConnectedWalletsAtOpen(walletsRef.current ?? []),
-    };
+    const connectAttempt = startConnectAttempt();
     setConnectModalOpen(true);
+
+    if (privyReady && authenticated && user) {
+      activateEmbeddedWalletOrCreateWallet(user, connectAttempt.id);
+      return;
+    }
+
     connectOrCreateWallet();
-  }, [connectOrCreateWallet]);
+  }, [
+    activateEmbeddedWalletOrCreateWallet,
+    authenticated,
+    connectOrCreateWallet,
+    privyReady,
+    startConnectAttempt,
+    user,
+  ]);
 
   const value = useMemo(() => ({ openConnectModal, connectModalOpen }), [openConnectModal, connectModalOpen]);
 
