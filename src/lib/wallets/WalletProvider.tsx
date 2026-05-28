@@ -1,5 +1,5 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { lazy, Suspense, useCallback, useEffect, useMemo, useState } from "react";
+import { lazy, Suspense, useCallback, useMemo, useState } from "react";
 import { WagmiProvider } from "wagmi";
 
 import { PrivyWalletLoaderContext } from "context/PrivyWalletContext/PrivyWalletLoaderContext";
@@ -35,27 +35,6 @@ function hasStoredPrivySession() {
   }
 }
 
-function schedulePrivyPreload(loadPrivyWalletProvider: () => void) {
-  let idleCallbackId: number | undefined;
-  let timeoutId: number | undefined;
-
-  if (typeof window.requestIdleCallback === "function") {
-    idleCallbackId = window.requestIdleCallback(loadPrivyWalletProvider, { timeout: 3000 });
-  } else {
-    timeoutId = window.setTimeout(loadPrivyWalletProvider, 1000);
-  }
-
-  return () => {
-    if (idleCallbackId !== undefined) {
-      window.cancelIdleCallback(idleCallbackId);
-    }
-
-    if (timeoutId !== undefined) {
-      window.clearTimeout(timeoutId);
-    }
-  };
-}
-
 function BaseWagmiProvider({ children }: { children: React.ReactNode }) {
   return <WagmiProvider config={getWagmiConfig()}>{children}</WagmiProvider>;
 }
@@ -75,32 +54,6 @@ export default function WalletProvider({ children }: WalletProviderProps) {
   const markPrivyWalletReady = useCallback(() => {
     setIsPrivyWalletReady(true);
   }, []);
-
-  useEffect(
-    function preloadPrivyWalletProviderAfterPageLoad() {
-      if (shouldLoadPrivyWalletProvider) {
-        return undefined;
-      }
-
-      let cancelPrivyPreload: (() => void) | undefined;
-
-      const preloadPrivyWalletProvider = () => {
-        cancelPrivyPreload = schedulePrivyPreload(loadPrivyWalletProvider);
-      };
-
-      if (document.readyState === "complete") {
-        preloadPrivyWalletProvider();
-      } else {
-        window.addEventListener("load", preloadPrivyWalletProvider, { once: true });
-      }
-
-      return () => {
-        window.removeEventListener("load", preloadPrivyWalletProvider);
-        cancelPrivyPreload?.();
-      };
-    },
-    [loadPrivyWalletProvider, shouldLoadPrivyWalletProvider]
-  );
 
   const loaderValue = useMemo(
     () => ({
