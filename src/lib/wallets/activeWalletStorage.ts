@@ -21,12 +21,8 @@ type ActivePrivyWalletStorageState = ActivePrivyWalletStorageValue & Record<stri
 
 const ACTIVE_PRIVY_WALLET_STORAGE_KEYS = ["address", "connectorType", "walletClientType"] as const;
 
-export function getActivePrivyWalletStorageKey() {
-  return ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY;
-}
-
 function getActivePrivyWalletStorage() {
-  return new Storage<ActivePrivyWalletStorageState>(getActivePrivyWalletStorageKey());
+  return new Storage<ActivePrivyWalletStorageState>(ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY);
 }
 
 function isActivePrivyWalletStorageValue(value: unknown): value is ActivePrivyWalletStorageValue {

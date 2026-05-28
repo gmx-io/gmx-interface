@@ -1,8 +1,11 @@
 import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
-import { CURRENT_PROVIDER_LOCALSTORAGE_KEY, SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY } from "config/localStorage";
-import { getActivePrivyWalletStorageKey } from "lib/wallets/activeWalletStorage";
+import {
+  ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY,
+  CURRENT_PROVIDER_LOCALSTORAGE_KEY,
+  SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
+} from "config/localStorage";
 
 import { useDisconnectAndClose } from "../useDisconnectAndClose";
 
@@ -68,7 +71,7 @@ describe("useDisconnectAndClose", () => {
     localStorage.setItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY, "true");
     localStorage.setItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY, "metamask");
     localStorage.setItem(
-      getActivePrivyWalletStorageKey(),
+      ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY,
       JSON.stringify({
         address: "0x0000000000000000000000000000000000000001",
         connectorType: "embedded",
@@ -103,7 +106,7 @@ describe("useDisconnectAndClose", () => {
 
     expect(localStorage.getItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY)).toBeNull();
     expect(localStorage.getItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY)).toBeNull();
-    expect(localStorage.getItem(getActivePrivyWalletStorageKey())).toBeNull();
+    expect(localStorage.getItem(ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY)).toBeNull();
     expect(mocks.setIsVisible).toHaveBeenCalledWith(false);
     expect(mocks.setIsSettingsVisible).toHaveBeenCalledWith(false);
   });
