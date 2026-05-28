@@ -31,17 +31,13 @@ const gmxLogoElement = <img src={gmxLogo} alt="GMX" width={100} />;
 
 export function getActiveWalletForWagmi({
   wallets,
-  user,
   activeWalletStorageValue = readActivePrivyWalletFromStorage(),
 }: {
   wallets: ConnectedWallet[];
   user: User | null;
   activeWalletStorageValue?: ActivePrivyWalletStorageValue;
 }) {
-  return (
-    (activeWalletStorageValue ? findActivePrivyWalletByStorageValue(wallets, activeWalletStorageValue) : undefined) ??
-    (user ? wallets.find((wallet) => wallet.linked) : undefined)
-  );
+  return activeWalletStorageValue ? findActivePrivyWalletByStorageValue(wallets, activeWalletStorageValue) : undefined;
 }
 
 function useActivePrivyWalletStorageValue() {
@@ -89,8 +85,8 @@ export default function WalletProvider({ children }: { children: React.ReactNode
   );
 
   const setActiveWalletForWagmi = useCallback(
-    ({ wallets, user }: { wallets: ConnectedWallet[]; user: User | null }) => {
-      return getActiveWalletForWagmi({ wallets, user, activeWalletStorageValue });
+    (params: { wallets: ConnectedWallet[]; user: User | null }) => {
+      return getActiveWalletForWagmi({ ...params, activeWalletStorageValue });
     },
     [activeWalletStorageValue]
   );

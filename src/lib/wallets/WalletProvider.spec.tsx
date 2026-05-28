@@ -170,6 +170,22 @@ describe("WalletProvider", () => {
     ).toBeUndefined();
   });
 
+  it("does not use a linked wallet from a restored Privy user without stored intent", () => {
+    const linkedWallet = createConnectedWallet({
+      address: "0x1111111111111111111111111111111111111111",
+      connectorType: "injected",
+      metaId: "io.rabby",
+      walletClientType: "rabby_wallet",
+    });
+
+    expect(
+      getActiveWalletForWagmi({
+        wallets: [linkedWallet],
+        user: {} as never,
+      })
+    ).toBeUndefined();
+  });
+
   it("reacts to active wallet storage writes while Privy user is still hydrating", async () => {
     const wallet = createConnectedWallet({
       address: "0x1111111111111111111111111111111111111111",
