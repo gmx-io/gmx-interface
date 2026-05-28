@@ -97,7 +97,7 @@ function getNormalizedIncentive(
 
 export default function UserIncentiveDistribution() {
   const { account, active } = useWallet();
-  const { openConnectModal } = useConnectModal();
+  const { isConnectModalLoading, openConnectModal } = useConnectModal();
   const { chainId, srcChainId } = useChainId();
   const tokens = getTokens(chainId);
   const gmMarkets = useSelector(selectGmMarkets);
@@ -151,9 +151,9 @@ export default function UserIncentiveDistribution() {
                   />
                   {!active ? (
                     <div className="mt-15">
-                      <Button variant="primary" onClick={openConnectModal}>
+                      <Button variant="primary" disabled={isConnectModalLoading} onClick={openConnectModal}>
                         <WalletIcon className="size-16" />
-                        <Trans>Connect wallet</Trans>
+                        {isConnectModalLoading ? <Trans>Loading...</Trans> : <Trans>Connect wallet</Trans>}
                       </Button>
                     </div>
                   ) : null}

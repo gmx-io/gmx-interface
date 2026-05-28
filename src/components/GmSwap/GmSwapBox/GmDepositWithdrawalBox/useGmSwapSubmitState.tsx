@@ -120,7 +120,7 @@ export const useGmSwapSubmitState = ({
   const gasPaymentToken = useSelector(selectGasPaymentToken);
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
-  const { openConnectModal } = useConnectModal();
+  const { isConnectModalLoading, openConnectModal } = useConnectModal();
   const { account } = useWallet();
 
   const {
@@ -381,6 +381,18 @@ export const useGmSwapSubmitState = ({
   const isAvalancheGmxAccountWarning = paySource === "gmxAccount" && chainId === AVALANCHE && isDeposit;
 
   return useMemo((): SubmitButtonState => {
+    if (!account && isConnectModalLoading) {
+      return {
+        text: (
+          <>
+            <Trans>Loading...</Trans>
+            <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
+
     if (!account) {
       return {
         text: t`Connect wallet`,
@@ -505,6 +517,7 @@ export const useGmSwapSubmitState = ({
     };
   }, [
     account,
+    isConnectModalLoading,
     isAvalancheGmxAccountWarning,
     multipleWalletExtensionsChainError,
     isAllowanceLoading,
