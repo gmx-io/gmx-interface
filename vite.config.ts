@@ -72,6 +72,10 @@ function getManualChunk(id: string) {
     return "query";
   }
 
+  if (packageName === "tabbable") {
+    return "ui";
+  }
+
   if (
     packageName === "wagmi" ||
     packageName.startsWith("@wagmi/") ||
