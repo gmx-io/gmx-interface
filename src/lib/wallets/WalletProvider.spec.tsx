@@ -48,22 +48,29 @@ vi.mock("./walletConfig", () => ({
   PRIVY_WALLET_LIST: ["rabby_wallet"],
 }));
 
-import WalletProvider from "./WalletProvider";
+import WalletProvider, { getActiveWalletForWagmi } from "./WalletProvider";
 
 function createConnectedWallet(
-  wallet: Pick<ConnectedWallet, "address" | "connectorType" | "walletClientType"> & { metaId: string }
+  wallet: Pick<ConnectedWallet, "address" | "connectorType" | "walletClientType"> & {
+    linked?: boolean;
+    metaId: string;
+  }
 ) {
-  const { metaId, ...walletFields } = wallet;
+  const { linked = true, metaId, ...walletFields } = wallet;
 
   return {
     ...walletFields,
     type: "ethereum",
-    linked: true,
+    linked,
     meta: {
       id: metaId,
       name: "Rabby",
     },
   } as ConnectedWallet;
+}
+
+function writeActiveWalletStorage(value: object) {
+  localStorage.setItem(ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY, JSON.stringify(value));
 }
 
 describe("WalletProvider", () => {
@@ -77,7 +84,7 @@ describe("WalletProvider", () => {
     mocks.wallets = [];
   });
 
-  it("persists the current Wagmi wallet so reload keeps the user-selected Rabby account", async () => {
+  it("does not mirror transient Wagmi account state into active wallet storage", async () => {
     mocks.account = {
       address: "0x2222222222222222222222222222222222222222",
       connector: { id: "io.rabby" },
@@ -101,11 +108,51 @@ describe("WalletProvider", () => {
     render(<WalletProvider>content</WalletProvider>);
 
     await waitFor(() => {
-      expect(JSON.parse(localStorage.getItem(ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY) ?? "{}")).toEqual({
-        address: "0x2222222222222222222222222222222222222222",
-        connectorType: "injected",
-        walletClientType: "rabby_wallet",
-      });
+      expect(localStorage.getItem(ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY)).toBeNull();
     });
+  });
+
+  it("uses stored wallet preference even when the selected wallet is not linked", () => {
+    writeActiveWalletStorage({
+      address: "0x2222222222222222222222222222222222222222",
+      connectorId: "io.rabby",
+    });
+
+    const linkedWallet = createConnectedWallet({
+      address: "0x1111111111111111111111111111111111111111",
+      connectorType: "embedded",
+      metaId: "io.privy.wallet",
+      walletClientType: "privy",
+    });
+    const selectedExternalWallet = createConnectedWallet({
+      address: "0x2222222222222222222222222222222222222222",
+      connectorType: "injected",
+      linked: false,
+      metaId: "io.rabby",
+      walletClientType: "rabby_wallet",
+    });
+
+    expect(
+      getActiveWalletForWagmi({
+        wallets: [linkedWallet, selectedExternalWallet],
+        user: {} as never,
+      })
+    ).toBe(selectedExternalWallet);
+  });
+
+  it("keeps a connected wallet while Privy user is still hydrating", () => {
+    const wallet = createConnectedWallet({
+      address: "0x1111111111111111111111111111111111111111",
+      connectorType: "injected",
+      metaId: "io.rabby",
+      walletClientType: "rabby_wallet",
+    });
+
+    expect(
+      getActiveWalletForWagmi({
+        wallets: [wallet],
+        user: null,
+      })
+    ).toBe(wallet);
   });
 });

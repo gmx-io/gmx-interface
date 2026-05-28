@@ -5,13 +5,17 @@ import { useDisconnect } from "wagmi";
 import { SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY, CURRENT_PROVIDER_LOCALSTORAGE_KEY } from "config/localStorage";
 import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
+import { metrics } from "lib/metrics";
 import { userAnalytics } from "lib/userAnalytics";
 import { DisconnectWalletEvent } from "lib/userAnalytics/types";
 import { removeActivePrivyWalletFromStorage } from "lib/wallets/activeWalletStorage";
 
-function getRejectedReason(results: PromiseSettledResult<unknown>[]) {
-  const rejectedResult = results.find((result): result is PromiseRejectedResult => result.status === "rejected");
-  return rejectedResult?.reason;
+function pushRejectedReasons(results: PromiseSettledResult<unknown>[], context: string) {
+  results.forEach((result) => {
+    if (result.status === "rejected") {
+      metrics.pushError(result.reason, context);
+    }
+  });
 }
 
 export function useDisconnectAndClose() {
@@ -38,11 +42,9 @@ export function useDisconnectAndClose() {
       ...wallets.map((wallet) => Promise.resolve().then(() => wallet.disconnect())),
     ]);
     const logoutResults = await Promise.allSettled([logout()]);
-    const rejectedReason = getRejectedReason([...disconnectResults, ...logoutResults]);
 
-    if (rejectedReason) {
-      throw rejectedReason;
-    }
+    pushRejectedReasons(disconnectResults, "disconnect.wallets");
+    pushRejectedReasons(logoutResults, "disconnect.logout");
 
     setIsVisible(false);
     setIsSettingsVisible(false);

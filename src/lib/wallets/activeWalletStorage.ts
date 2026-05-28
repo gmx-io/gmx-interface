@@ -1,4 +1,5 @@
 import type { ConnectedWallet, User } from "@privy-io/react-auth";
+import { isAddress, isAddressEqual } from "viem";
 
 import { ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY } from "config/localStorage";
 import { Storage } from "lib/storage/Storage";
@@ -7,6 +8,9 @@ type WalletAccount = {
   address?: string;
   chainType?: string;
   connectorType?: string | null;
+  meta?: {
+    id?: string;
+  };
   type?: string;
   walletClientType?: string | null;
 };
@@ -17,13 +21,20 @@ type WagmiAccount = {
 };
 
 export type ActivePrivyWalletStorageValue = {
-  address?: string;
+  address: string;
+  connectorId?: string;
   connectorType?: string;
   walletClientType?: string;
 };
 type ActivePrivyWalletStorageState = ActivePrivyWalletStorageValue & Record<string, string | undefined>;
 
-const ACTIVE_PRIVY_WALLET_STORAGE_KEYS = ["address", "connectorType", "walletClientType"] as const;
+const ACTIVE_PRIVY_WALLET_STORAGE_KEYS = ["address", "connectorId", "connectorType", "walletClientType"] as const;
+
+function areAddressesEqual(addressA: string | undefined, addressB: string | undefined) {
+  return Boolean(
+    addressA && addressB && isAddress(addressA) && isAddress(addressB) && isAddressEqual(addressA, addressB)
+  );
+}
 
 function getActivePrivyWalletStorage() {
   return new Storage<ActivePrivyWalletStorageState>(ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY);
@@ -37,8 +48,9 @@ function isActivePrivyWalletStorageValue(value: unknown): value is ActivePrivyWa
   const wallet = value as ActivePrivyWalletStorageValue;
 
   return (
+    typeof wallet.address === "string" &&
     ACTIVE_PRIVY_WALLET_STORAGE_KEYS.every((key) => wallet[key] === undefined || typeof wallet[key] === "string") &&
-    ACTIVE_PRIVY_WALLET_STORAGE_KEYS.some((key) => wallet[key])
+    Boolean(wallet.address)
   );
 }
 
@@ -61,16 +73,28 @@ export function removeActivePrivyWalletFromStorage() {
   getActivePrivyWalletStorage().clear();
 }
 
+export function getPrivyWagmiConnectorId(wallet: Pick<ConnectedWallet, "address" | "meta" | "walletClientType">) {
+  return wallet.walletClientType === "privy" ? `${wallet.meta.id}.${wallet.address}` : wallet.meta.id;
+}
+
 function matchesStoredWallet(wallet: ConnectedWallet, storedWallet: ActivePrivyWalletStorageValue) {
-  if (storedWallet.address && wallet.address !== storedWallet.address) {
+  if (!areAddressesEqual(wallet.address, storedWallet.address)) {
     return false;
   }
 
-  if (storedWallet.connectorType && wallet.connectorType !== storedWallet.connectorType) {
+  if (storedWallet.connectorId && getPrivyWagmiConnectorId(wallet) !== storedWallet.connectorId) {
     return false;
   }
 
-  if (storedWallet.walletClientType && wallet.walletClientType !== storedWallet.walletClientType) {
+  if (!storedWallet.connectorId && storedWallet.connectorType && wallet.connectorType !== storedWallet.connectorType) {
+    return false;
+  }
+
+  if (
+    !storedWallet.connectorId &&
+    storedWallet.walletClientType &&
+    wallet.walletClientType !== storedWallet.walletClientType
+  ) {
     return false;
   }
 
@@ -84,11 +108,14 @@ export function findStoredActivePrivyWallet(wallets: ConnectedWallet[]) {
     return undefined;
   }
 
-  return wallets.find((wallet) => wallet.linked && matchesStoredWallet(wallet, storedWallet));
+  return findActivePrivyWalletByStorageValue(wallets, storedWallet);
 }
 
-function getPrivyWagmiConnectorId(wallet: ConnectedWallet) {
-  return wallet.walletClientType === "privy" ? `${wallet.meta.id}.${wallet.address}` : wallet.meta.id;
+export function findActivePrivyWalletByStorageValue(
+  wallets: ConnectedWallet[],
+  storedWallet: ActivePrivyWalletStorageValue
+) {
+  return wallets.find((wallet) => matchesStoredWallet(wallet, storedWallet));
 }
 
 export function findActivePrivyWalletByWagmiAccount(wallets: ConnectedWallet[], account: WagmiAccount) {
@@ -96,7 +123,7 @@ export function findActivePrivyWalletByWagmiAccount(wallets: ConnectedWallet[], 
     return undefined;
   }
 
-  const addressMatch = wallets.filter((wallet) => wallet.address === account.address);
+  const addressMatch = wallets.filter((wallet) => areAddressesEqual(wallet.address, account.address));
 
   if (!account.connectorId) {
     return addressMatch[0];
@@ -106,15 +133,44 @@ export function findActivePrivyWalletByWagmiAccount(wallets: ConnectedWallet[], 
 }
 
 export function getEthereumWalletStorageValue(account: WalletAccount | null | undefined) {
-  if (!account || account.type !== "wallet" || account.chainType !== "ethereum") {
+  if (!account) {
+    return undefined;
+  }
+
+  const isConnectedEthereumWallet = account.type === "ethereum";
+  const isEthereumLinkedWallet = account.type === "wallet" && account.chainType === "ethereum";
+  const isEthereumWallet = !account.type && account.chainType === "ethereum";
+
+  if (!isConnectedEthereumWallet && !isEthereumLinkedWallet && !isEthereumWallet) {
+    return undefined;
+  }
+
+  if (!account.address) {
     return undefined;
   }
 
   return {
     address: account.address,
+    connectorId: account.meta?.id
+      ? account.walletClientType === "privy"
+        ? `${account.meta.id}.${account.address}`
+        : account.meta.id
+      : undefined,
     connectorType: account.connectorType ?? undefined,
     walletClientType: account.walletClientType ?? undefined,
   };
+}
+
+export function isWagmiAccountActivePrivyWallet(account: WagmiAccount, storedWallet: ActivePrivyWalletStorageValue) {
+  if (!account.address) {
+    return false;
+  }
+
+  if (!areAddressesEqual(account.address, storedWallet.address)) {
+    return false;
+  }
+
+  return !storedWallet.connectorId || account.connectorId === storedWallet.connectorId;
 }
 
 export function isEmbeddedEthereumWallet(account: WalletAccount) {

@@ -12,6 +12,7 @@ import { useDisconnectAndClose } from "../useDisconnectAndClose";
 const mocks = vi.hoisted(() => ({
   disconnectAsync: vi.fn(),
   logout: vi.fn(),
+  pushError: vi.fn(),
   pushEvent: vi.fn(),
   setIsSettingsVisible: vi.fn(),
   setIsVisible: vi.fn(),
@@ -41,6 +42,12 @@ vi.mock("context/SettingsContext/SettingsContextProvider", () => ({
   useSettings: () => ({
     setIsSettingsVisible: mocks.setIsSettingsVisible,
   }),
+}));
+
+vi.mock("lib/metrics", () => ({
+  metrics: {
+    pushError: mocks.pushError,
+  },
 }));
 
 vi.mock("lib/userAnalytics", () => ({
@@ -111,7 +118,7 @@ describe("useDisconnectAndClose", () => {
     expect(mocks.setIsSettingsVisible).toHaveBeenCalledWith(false);
   });
 
-  it("rejects and keeps account UI open when provider disconnects fail", async () => {
+  it("logs provider disconnect failures and still closes account UI", async () => {
     mocks.disconnectAsync.mockRejectedValue(new Error("wagmi disconnect failed"));
     mocks.wallets = [
       {
@@ -125,10 +132,12 @@ describe("useDisconnectAndClose", () => {
     const handleDisconnect = setup();
 
     await act(async () => {
-      await expect(handleDisconnect()).rejects.toThrow("wagmi disconnect failed");
+      await handleDisconnect();
     });
 
-    expect(mocks.setIsVisible).not.toHaveBeenCalled();
-    expect(mocks.setIsSettingsVisible).not.toHaveBeenCalled();
+    expect(mocks.pushError).toHaveBeenCalledWith(expect.any(Error), "disconnect.wallets");
+    expect(mocks.pushError).toHaveBeenCalledWith(expect.any(Error), "disconnect.logout");
+    expect(mocks.setIsVisible).toHaveBeenCalledWith(false);
+    expect(mocks.setIsSettingsVisible).toHaveBeenCalledWith(false);
   });
 });

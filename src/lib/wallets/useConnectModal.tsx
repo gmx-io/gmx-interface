@@ -2,11 +2,13 @@ import {
   useConnectOrCreateWallet,
   useCreateWallet,
   useLogin,
+  useWallets,
   type ConnectedWallet,
   type PrivyEvents,
 } from "@privy-io/react-auth";
 import { useSetActiveWallet } from "@privy-io/wagmi";
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { getAccount, watchAccount } from "@wagmi/core";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import type { SettlementChainId } from "config/chains";
 import {
@@ -21,9 +23,12 @@ import { switchNetwork } from "lib/wallets";
 import {
   getEmbeddedEthereumWallet,
   getEthereumWalletStorageValue,
+  findActivePrivyWalletByStorageValue,
+  isWagmiAccountActivePrivyWallet,
   writeActivePrivyWalletToStorage,
   type ActivePrivyWalletStorageValue,
 } from "./activeWalletStorage";
+import { getWagmiConfig } from "./walletConfig";
 
 type ConnectModalContextValue = {
   openConnectModal: (() => void) | undefined;
@@ -37,6 +42,8 @@ const ConnectModalContext = createContext<ConnectModalContextValue>({
 
 type LoginCompleteParams = Parameters<NonNullable<PrivyEvents["login"]["onComplete"]>>[0];
 type ConnectOrCreateWalletSuccessParams = Parameters<NonNullable<PrivyEvents["connectOrCreateWallet"]["onSuccess"]>>[0];
+
+const ACTIVE_WALLET_TIMEOUT_MS = 5000;
 
 function isWalletLoginMethod(loginMethod: LoginCompleteParams["loginMethod"]) {
   return loginMethod === "siwe" || loginMethod === "siws";
@@ -66,6 +73,79 @@ export function getActiveWalletStorageValueAfterLogin({
   return undefined;
 }
 
+function getCurrentWagmiAccount() {
+  const account = getAccount(getWagmiConfig());
+
+  return {
+    address: account.address,
+    connectorId: account.connector?.id,
+  };
+}
+
+function waitForActiveWagmiWallet(activeWallet: ActivePrivyWalletStorageValue) {
+  if (isWagmiAccountActivePrivyWallet(getCurrentWagmiAccount(), activeWallet)) {
+    return Promise.resolve();
+  }
+
+  return new Promise<void>((resolve, reject) => {
+    const config = getWagmiConfig();
+    let unsubscribe: (() => void) | undefined;
+
+    const timeout = window.setTimeout(() => {
+      unsubscribe?.();
+      reject(new Error(`Timed out waiting for active wallet ${activeWallet.address}`));
+    }, ACTIVE_WALLET_TIMEOUT_MS);
+
+    unsubscribe = watchAccount(config, {
+      onChange: (account) => {
+        if (
+          isWagmiAccountActivePrivyWallet(
+            {
+              address: account.address,
+              connectorId: account.connector?.id,
+            },
+            activeWallet
+          )
+        ) {
+          window.clearTimeout(timeout);
+          unsubscribe?.();
+          resolve();
+        }
+      },
+    });
+  });
+}
+
+function waitForPrivyWallet(
+  walletsRef: React.RefObject<ConnectedWallet[]>,
+  activeWallet: ActivePrivyWalletStorageValue
+) {
+  const wallet = findActivePrivyWalletByStorageValue(walletsRef.current ?? [], activeWallet);
+
+  if (wallet) {
+    return Promise.resolve(wallet);
+  }
+
+  return new Promise<ConnectedWallet | undefined>((resolve) => {
+    const timeoutStartedAt = Date.now();
+
+    const interval = window.setInterval(() => {
+      const wallet = findActivePrivyWalletByStorageValue(walletsRef.current ?? [], activeWallet);
+
+      if (wallet) {
+        window.clearInterval(interval);
+        resolve(wallet);
+        return;
+      }
+
+      if (Date.now() - timeoutStartedAt >= ACTIVE_WALLET_TIMEOUT_MS) {
+        window.clearInterval(interval);
+        resolve(undefined);
+      }
+    }, 50);
+  });
+}
+
 function shouldKeepAppSelectedSourceChain(settlementChainId: SettlementChainId) {
   const rawChainIdFromLocalStorage = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
   const chainIdFromLocalStorage = rawChainIdFromLocalStorage ? parseInt(rawChainIdFromLocalStorage) : undefined;
@@ -80,6 +160,12 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
   const [connectModalOpen, setConnectModalOpen] = useState(false);
   const { createWallet } = useCreateWallet();
   const { setActiveWallet } = useSetActiveWallet();
+  const { wallets } = useWallets();
+  const walletsRef = useRef(wallets);
+
+  useEffect(() => {
+    walletsRef.current = wallets;
+  }, [wallets]);
 
   const handleSuccess = useCallback(() => {
     setConnectModalOpen(false);
@@ -93,16 +179,24 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
     });
   }, [settlementChainId]);
 
-  const handleConnectOrCreateWalletSuccess = useCallback(
-    async (params: ConnectOrCreateWalletSuccessParams) => {
-      writeActivePrivyWalletToStorage(params.wallet);
+  const activateActiveWallet = useCallback(
+    async (activeWalletStorageValue: ActivePrivyWalletStorageValue, connectedWallet?: ConnectedWallet) => {
+      writeActivePrivyWalletToStorage(activeWalletStorageValue);
+
+      const wallet = connectedWallet ?? (await waitForPrivyWallet(walletsRef, activeWalletStorageValue));
+
+      if (wallet) {
+        try {
+          await setActiveWallet(wallet);
+        } catch (error) {
+          metrics.pushError(error, "connectModal.setActiveWallet");
+        }
+      }
 
       try {
-        if (params.wallet.type === "ethereum") {
-          await setActiveWallet(params.wallet as ConnectedWallet);
-        }
+        await waitForActiveWagmiWallet(activeWalletStorageValue);
       } catch (error) {
-        metrics.pushError(error, "connectModal.setActiveWallet");
+        metrics.pushError(error, "connectModal.waitForActiveWallet");
         setConnectModalOpen(false);
         return;
       }
@@ -110,6 +204,23 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
       handleSuccess();
     },
     [handleSuccess, setActiveWallet]
+  );
+
+  const handleConnectOrCreateWalletSuccess = useCallback(
+    async (params: ConnectOrCreateWalletSuccessParams) => {
+      const activeWalletStorageValue = getEthereumWalletStorageValue(params.wallet);
+
+      if (!activeWalletStorageValue) {
+        handleSuccess();
+        return;
+      }
+
+      await activateActiveWallet(
+        activeWalletStorageValue,
+        params.wallet.type === "ethereum" ? (params.wallet as ConnectedWallet) : undefined
+      );
+    },
+    [activateActiveWallet, handleSuccess]
   );
 
   const { connectOrCreateWallet } = useConnectOrCreateWallet({
@@ -126,19 +237,24 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
       const activeWalletStorageValue = getActiveWalletStorageValueAfterLogin(params);
 
       if (activeWalletStorageValue) {
-        writeActivePrivyWalletToStorage(activeWalletStorageValue);
-        handleSuccess();
+        void activateActiveWallet(activeWalletStorageValue);
         return;
       }
 
       if (!isWalletLoginMethod(params.loginMethod)) {
         void createWallet()
           .then((wallet) => {
-            writeActivePrivyWalletToStorage(wallet);
-            handleSuccess();
+            const createdWalletStorageValue = getEthereumWalletStorageValue(wallet);
+
+            if (!createdWalletStorageValue) {
+              handleSuccess();
+              return;
+            }
+
+            return activateActiveWallet(createdWalletStorageValue);
           })
           .catch((error) => {
-            metrics.pushError(error, "connectModal.createWallet");
+            metrics.pushError(error, "connectModal.createAndActivateWallet");
             setConnectModalOpen(false);
           });
 
@@ -147,7 +263,7 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
 
       handleSuccess();
     },
-    [createWallet, handleSuccess]
+    [activateActiveWallet, createWallet, handleSuccess]
   );
 
   useLogin({
