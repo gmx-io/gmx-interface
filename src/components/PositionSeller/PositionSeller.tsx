@@ -337,7 +337,6 @@ export function PositionSeller() {
 
   const isTwap = orderOption === OrderOption.Twap;
   const splitReceiveSwapProfitFeeWarning = getSplitReceiveSwapProfitFeeWarning({
-    chainId,
     shouldShow: !isTwap && isSplitReceiveAvailable && !isReceiveSeparated,
     receiveToken,
     profitToken: position?.pnlToken,

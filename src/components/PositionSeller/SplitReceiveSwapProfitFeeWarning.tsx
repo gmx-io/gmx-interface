@@ -16,7 +16,6 @@ type TokenWithSymbol = {
 };
 
 type SplitReceiveSwapProfitFeeWarningProps = {
-  chainId: number;
   shouldShow: boolean;
   receiveToken: TokenWithSymbol | undefined;
   profitToken: TokenWithSymbol | undefined;
@@ -33,7 +32,6 @@ type SplitReceiveSwapProfitFeeWarningContentProps = {
 };
 
 export function getSplitReceiveSwapProfitFeeWarning({
-  chainId,
   shouldShow,
   receiveToken,
   profitToken,
