@@ -22,7 +22,9 @@ export function getTokenDisplaySymbol(chainId: number, token: TokenWithAddressAn
     return getToken(chainId, nativeTokenAddress).symbol;
   }
 
-  return getNormalizedTokenSymbol(getNormalizedTokenSymbol(token.symbol));
+  const baseSymbol = token.symbol.split(".")[0];
+
+  return getNormalizedTokenSymbol(baseSymbol);
 }
 
 export function SplitReceiveTokensLabel({
