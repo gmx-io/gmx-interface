@@ -16,6 +16,7 @@ import { isDevelopment } from "config/env";
 import { PRIVY_APP_ID } from "config/privy";
 import { getRpcProviders, RpcConfig } from "config/rpc";
 import { RpcPurpose } from "config/rpc";
+import { SECONDS_IN_DAY } from "lib/dates";
 import { metrics, ViemWsClientConnected, ViemWsClientDisconnected, ViemWsClientError } from "lib/metrics";
 import { getWsUrl } from "lib/rpc";
 import { AnyChainId, VIEM_CHAIN_BY_CHAIN_ID } from "sdk/configs/chains";
@@ -38,6 +39,14 @@ export const PRIVY_WALLET_LIST = [
 ] as const;
 
 export const PRIVY_LOGIN_METHODS = ["wallet", "email", "google", "twitter", "discord"] as const;
+
+const PRIVY_WALLET_REQUEST_TIMEOUT_MS = SECONDS_IN_DAY * 1000;
+
+// Privy looks this up by walletClientType and has no wildcard/default timeout setting.
+export const PRIVY_SIGNATURE_REQUEST_TIMEOUTS = new Proxy({} as Record<string, number>, {
+  get: (_target, walletClientType) =>
+    typeof walletClientType === "string" ? PRIVY_WALLET_REQUEST_TIMEOUT_MS : undefined,
+});
 
 export function getSupportedChains(): [Chain, ...Chain[]] {
   const defaultChain = getViemChain(DEFAULT_SETTLEMENT_CHAIN_ID);

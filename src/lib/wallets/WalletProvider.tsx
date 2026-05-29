@@ -13,6 +13,7 @@ import {
   getSupportedChains,
   PRIVY_APP_ID,
   PRIVY_LOGIN_METHODS,
+  PRIVY_SIGNATURE_REQUEST_TIMEOUTS,
   PRIVY_WALLET_LIST,
 } from "./walletConfig";
 
@@ -39,6 +40,9 @@ export default function WalletProvider({ children }: { children: React.ReactNode
       globalDisablePasskeys: true,
       defaultChain,
       supportedChains: [...supportedChains],
+      externalWallets: {
+        signatureRequestTimeouts: PRIVY_SIGNATURE_REQUEST_TIMEOUTS,
+      },
       embeddedWallets: {
         ethereum: {
           createOnLogin: "users-without-wallets" as const,
