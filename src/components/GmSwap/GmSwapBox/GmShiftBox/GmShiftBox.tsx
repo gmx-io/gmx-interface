@@ -2,6 +2,7 @@ import { t } from "@lingui/macro";
 import { useCallback, useEffect, useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
+import { isShiftIntoDisabledMarket } from "config/static/markets";
 import { usePoolsDetailsFirstTokenAddress } from "context/PoolsDetailsContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useTokensData, useUiFeeFactor } from "context/SyntheticsStateContext/hooks/globalsHooks";
@@ -118,6 +119,8 @@ export function GmShiftBox({
 
   const { shouldShowWarning, shouldShowWarningForExecutionFee, shouldShowWarningForPosition } = useGmWarningState({
     logicalFees: fees,
+    isOperationDisabled:
+      toMarketInfo !== undefined && isShiftIntoDisabledMarket(chainId, toMarketInfo.marketTokenAddress),
   });
 
   const noAmountSet = amounts?.fromTokenAmount === undefined;

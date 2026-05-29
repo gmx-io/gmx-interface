@@ -59,6 +59,7 @@ export enum ValidationBannerErrorName {
   insufficientGmxAccountCurrentGasTokenBalance = "insufficientGmxAccountCurrentGasTokenBalance",
   insufficientGmxAccountWntBalance = "insufficientGmxAccountWntBalance",
   insufficientSourceChainNativeTokenBalance = "insufficientSourceChainNativeTokenBalance",
+  poolAtCapacity = "poolAtCapacity",
 }
 
 export function getDefaultInsufficientGasMessage() {
@@ -847,16 +848,18 @@ export function getGmSwapError(p: {
 
       if (!getIsValidPoolAmount(marketInfo, newPoolAmount)) {
         return {
-          buttonErrorMessage: t`Max pool amount exceeded`,
+          buttonErrorMessage: t`Maximum pool capacity reached`,
           buttonTooltipMessage: glvTooltipMessage,
+          bannerErrorName: ValidationBannerErrorName.poolAtCapacity,
         };
       }
     }
 
     if (!getIsValidPoolUsdForDeposit(marketInfo)) {
       return {
-        buttonErrorMessage: t`Max pool USD exceeded`,
+        buttonErrorMessage: t`Maximum pool capacity reached`,
         buttonTooltipMessage: glvTooltipMessage,
+        bannerErrorName: ValidationBannerErrorName.poolAtCapacity,
       };
     }
 
@@ -1046,12 +1049,12 @@ export function getGmShiftError({
     const newPoolAmount = applyDeltaToPoolAmount(toMarketInfo, impactAmount);
 
     if (!getIsValidPoolAmount(toMarketInfo, newPoolAmount)) {
-      return { buttonErrorMessage: t`Max pool amount exceeded` };
+      return { buttonErrorMessage: t`Maximum pool capacity reached` };
     }
   }
 
   if (!getIsValidPoolUsdForDeposit(toMarketInfo)) {
-    return { buttonErrorMessage: t`Max pool USD exceeded` };
+    return { buttonErrorMessage: t`Maximum pool capacity reached` };
   }
 
   const sellable = getSellableMarketToken(fromMarketInfo, fromToken);
