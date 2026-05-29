@@ -14,8 +14,9 @@ import {
 } from "./book";
 import type { BookSide, HyperliquidBookBundle, HyperliquidL2BookResponse, HyperliquidNormalizedMarket } from "./types";
 
-const AGGREGATED_BOOK_WARNING =
-  "Using aggregated Hyperliquid book depth because the default 20-level book cannot fill the requested round-trip size.";
+function getAggregatedBookWarning(label: string) {
+  return `Using aggregated Hyperliquid book depth (${label}) because more precise books cannot fill the requested round-trip size.`;
+}
 
 export function getHyperliquidVenueMarkets(markets: HyperliquidNormalizedMarket[]): ComparisonVenueMarket[] {
   return markets.map((market) => ({
@@ -60,14 +61,14 @@ export function buildHyperliquidBreakdown({
     };
   }
 
-  if (book.default instanceof Error && book.aggregated instanceof Error) {
+  if (book.every((entry) => entry.book instanceof Error)) {
     return {
       providerId: "hyperliquid",
       totalUsd: undefined,
       components: [],
       timestamp: market.timestamp,
       status: "providerError",
-      warnings: [book.default.message, book.aggregated.message],
+      warnings: book.map((entry) => (entry.book as Error).message),
     };
   }
 
@@ -87,17 +88,16 @@ export function buildHyperliquidBreakdown({
 
   const openBookSide = getBookSideForLeg({ tradingSide: scenario.side, isOpen: true });
   const closeBookSide = getBookSideForLeg({ tradingSide: scenario.side, isOpen: false });
-  const defaultBook = book.default instanceof Error ? undefined : book.default;
-  const aggregatedBook = book.aggregated instanceof Error ? undefined : book.aggregated;
-  const defaultEvaluation = defaultBook
-    ? evaluateBook({ book: defaultBook, scenario, referencePrice, openBookSide, closeBookSide })
-    : undefined;
-  const aggregatedEvaluation = aggregatedBook
-    ? evaluateBook({ book: aggregatedBook, scenario, referencePrice, openBookSide, closeBookSide })
-    : undefined;
-  const evaluation =
-    defaultEvaluation?.isFilled || !aggregatedEvaluation?.isFilled ? defaultEvaluation : aggregatedEvaluation;
-  const warnings = evaluation === aggregatedEvaluation ? [AGGREGATED_BOOK_WARNING] : [];
+  const bookEvaluations = book.flatMap((entry) => {
+    if (entry.book instanceof Error) {
+      return [];
+    }
+
+    return [evaluateBook({ entry, book: entry.book, scenario, referencePrice, openBookSide, closeBookSide })];
+  });
+  const evaluation = bookEvaluations.find((bookEvaluation) => bookEvaluation.isFilled);
+  const warnings =
+    evaluation && evaluation.entry.key !== "default" ? [getAggregatedBookWarning(evaluation.entry.label)] : [];
 
   if (
     !evaluation?.isFilled ||
@@ -108,7 +108,7 @@ export function buildHyperliquidBreakdown({
       providerId: "hyperliquid",
       totalUsd: undefined,
       components: [],
-      timestamp: defaultBook?.time ?? aggregatedBook?.time ?? market.timestamp,
+      timestamp: bookEvaluations[0]?.book.time ?? market.timestamp,
       status: "insufficientDepth",
       warnings: ["Hyperliquid L2 levels cannot fill the requested round-trip size."],
     };
@@ -155,12 +155,14 @@ export function buildHyperliquidBreakdown({
 
 function evaluateBook({
   book,
+  entry,
   scenario,
   referencePrice,
   openBookSide,
   closeBookSide,
 }: {
   book: HyperliquidL2BookResponse;
+  entry: HyperliquidBookBundle[number];
   scenario: TradingCostScenario;
   referencePrice: number;
   openBookSide: BookSide;
@@ -172,6 +174,7 @@ function evaluateBook({
   const closeFill = simulateL2BookFill({ levels: closeLevels, sizeUsd: scenario.sizeUsd, referencePrice });
 
   return {
+    entry,
     book,
     openFill,
     closeFill,

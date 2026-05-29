@@ -43,11 +43,29 @@ function book({
 }
 
 describe("buildHyperliquidBreakdown", () => {
-  it("uses aggregated book fallback when default levels cannot fill the requested round trip", () => {
-    const books: HyperliquidBookBundle = {
-      default: book({ bidSize: "1", askSize: "1", time: 10 }),
-      aggregated: book({ bidSize: "20", askSize: "20", time: 20 }),
-    };
+  it("uses the most precise aggregated book that can fill the requested round trip", () => {
+    const books: HyperliquidBookBundle = [
+      {
+        key: "default",
+        label: "default 20-level book",
+        book: book({ bidSize: "1", askSize: "1", time: 10 }),
+      },
+      {
+        key: "5SigFigsMantissa5",
+        label: "5 significant figures, mantissa 5",
+        book: book({ bidSize: "5", askSize: "5", time: 20 }),
+      },
+      {
+        key: "4SigFigs",
+        label: "4 significant figures",
+        book: book({ bidSize: "20", askSize: "20", time: 30 }),
+      },
+      {
+        key: "3SigFigs",
+        label: "3 significant figures",
+        book: book({ bidSize: "20", askSize: "20", time: 40 }),
+      },
+    ];
 
     const breakdown = buildHyperliquidBreakdown({
       scenario,
@@ -57,9 +75,9 @@ describe("buildHyperliquidBreakdown", () => {
     });
 
     expect(breakdown.status).toBe("ready");
-    expect(breakdown.timestamp).toBe(20);
+    expect(breakdown.timestamp).toBe(30);
     expect(breakdown.warnings).toEqual([
-      "Using aggregated Hyperliquid book depth because the default 20-level book cannot fill the requested round-trip size.",
+      "Using aggregated Hyperliquid book depth (4 significant figures) because more precise books cannot fill the requested round-trip size.",
     ]);
     expect(usdToNumber(breakdown.totalUsd)).toBeCloseTo(20.9, 6);
   });

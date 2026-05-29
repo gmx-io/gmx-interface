@@ -38,7 +38,7 @@ describe("Hyperliquid API normalization", () => {
     expect(usdToNumber(markets[0].volume24hUsd)).toBeCloseTo(12345.67, 6);
   });
 
-  it("fetches default and aggregated L2 books for each coin", async () => {
+  it("fetches default and aggregated L2 book precision ladder for each coin", async () => {
     const fetchMock = vi.fn(async (_url: string, init?: RequestInit) => {
       const body = JSON.parse(String(init?.body));
 
@@ -52,13 +52,23 @@ describe("Hyperliquid API normalization", () => {
 
     await fetchHyperliquidL2Books(["BTC"]);
 
-    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(fetchMock).toHaveBeenCalledTimes(4);
     expect(JSON.parse(String(fetchMock.mock.calls[0][1]?.body))).toEqual({ type: "l2Book", coin: "BTC" });
     expect(JSON.parse(String(fetchMock.mock.calls[1][1]?.body))).toEqual({
       type: "l2Book",
       coin: "BTC",
       nSigFigs: 5,
       mantissa: 5,
+    });
+    expect(JSON.parse(String(fetchMock.mock.calls[2][1]?.body))).toEqual({
+      type: "l2Book",
+      coin: "BTC",
+      nSigFigs: 4,
+    });
+    expect(JSON.parse(String(fetchMock.mock.calls[3][1]?.body))).toEqual({
+      type: "l2Book",
+      coin: "BTC",
+      nSigFigs: 3,
     });
   });
 });

@@ -31,10 +31,15 @@ export type HyperliquidL2BookResponse = {
   levels: [HyperliquidBookLevel[], HyperliquidBookLevel[]];
 };
 
-export type HyperliquidBookBundle = {
-  default: HyperliquidL2BookResponse | Error;
-  aggregated: HyperliquidL2BookResponse | Error;
+export type HyperliquidBookPrecisionKey = "default" | "5SigFigsMantissa5" | "4SigFigs" | "3SigFigs";
+
+export type HyperliquidBookEntry = {
+  key: HyperliquidBookPrecisionKey;
+  label: string;
+  book: HyperliquidL2BookResponse | Error;
 };
+
+export type HyperliquidBookBundle = HyperliquidBookEntry[];
 
 export type HyperliquidNormalizedMarket = {
   symbol: string;

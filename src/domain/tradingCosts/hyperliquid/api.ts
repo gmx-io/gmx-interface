@@ -1,13 +1,29 @@
 import { numberToUsd } from "../costs";
 import type {
   HyperliquidBookBundle,
+  HyperliquidBookPrecisionKey,
   HyperliquidL2BookResponse,
   HyperliquidMetaAndAssetCtxsResponse,
   HyperliquidNormalizedMarket,
 } from "./types";
 
 const HYPERLIQUID_INFO_URL = "https://api.hyperliquid.xyz/info";
-const HYPERLIQUID_AGGREGATED_BOOK_PARAMS = { nSigFigs: 5, mantissa: 5 } as const;
+
+type HyperliquidBookAggregation = {
+  nSigFigs?: 3 | 4 | 5;
+  mantissa?: 5;
+};
+
+const HYPERLIQUID_BOOK_PRECISION_LEVELS: {
+  key: HyperliquidBookPrecisionKey;
+  label: string;
+  aggregation?: HyperliquidBookAggregation;
+}[] = [
+  { key: "default", label: "default 20-level book" },
+  { key: "5SigFigsMantissa5", label: "5 significant figures, mantissa 5", aggregation: { nSigFigs: 5, mantissa: 5 } },
+  { key: "4SigFigs", label: "4 significant figures", aggregation: { nSigFigs: 4 } },
+  { key: "3SigFigs", label: "3 significant figures", aggregation: { nSigFigs: 3 } },
+];
 
 async function postHyperliquidInfo<T>(body: Record<string, string | number>): Promise<T> {
   const response = await fetch(HYPERLIQUID_INFO_URL, {
@@ -68,14 +84,14 @@ export async function fetchHyperliquidMetaAndAssetCtxs(): Promise<HyperliquidNor
 
 export async function fetchHyperliquidL2Book(
   coin: string,
-  aggregation?: typeof HYPERLIQUID_AGGREGATED_BOOK_PARAMS
+  aggregation?: HyperliquidBookAggregation
 ): Promise<HyperliquidL2BookResponse> {
   return postHyperliquidInfo<HyperliquidL2BookResponse>({ type: "l2Book", coin, ...aggregation });
 }
 
 async function fetchHyperliquidL2BookSafely(
   coin: string,
-  aggregation?: typeof HYPERLIQUID_AGGREGATED_BOOK_PARAMS
+  aggregation?: HyperliquidBookAggregation
 ): Promise<HyperliquidL2BookResponse | Error> {
   try {
     return await fetchHyperliquidL2Book(coin, aggregation);
@@ -87,12 +103,15 @@ async function fetchHyperliquidL2BookSafely(
 export async function fetchHyperliquidL2Books(coins: string[]): Promise<Record<string, HyperliquidBookBundle>> {
   const entries = await Promise.all(
     coins.map(async (coin) => {
-      const [defaultBook, aggregatedBook] = await Promise.all([
-        fetchHyperliquidL2BookSafely(coin),
-        fetchHyperliquidL2BookSafely(coin, HYPERLIQUID_AGGREGATED_BOOK_PARAMS),
-      ]);
+      const books = await Promise.all(
+        HYPERLIQUID_BOOK_PRECISION_LEVELS.map(async (precision) => ({
+          key: precision.key,
+          label: precision.label,
+          book: await fetchHyperliquidL2BookSafely(coin, precision.aggregation),
+        }))
+      );
 
-      return [coin, { default: defaultBook, aggregated: aggregatedBook }] as const;
+      return [coin, books] as const;
     })
   );
 
