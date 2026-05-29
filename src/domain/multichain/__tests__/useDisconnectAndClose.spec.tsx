@@ -1,12 +1,11 @@
 import { act, cleanup, render } from "@testing-library/react";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
+import { CURRENT_PROVIDER_LOCALSTORAGE_KEY, SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY } from "config/localStorage";
 import {
-  CURRENT_PROVIDER_LOCALSTORAGE_KEY,
-  PRIVY_ACTIVE_WALLET_ADDRESS_LOCAL_STORAGE_KEY,
-  SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY,
-} from "config/localStorage";
-import { isPrivyDisconnectInProgress, resetPrivyWalletSelection } from "lib/wallets/privyWalletSelection";
+  getPrivyActiveWalletConnectionStorageKey,
+  WAGMI_RECENT_CONNECTOR_ID_STORAGE_KEY,
+} from "lib/wallets/privyWagmi";
 
 import { useDisconnectAndClose } from "../useDisconnectAndClose";
 
@@ -16,6 +15,7 @@ const mocks = vi.hoisted(() => ({
   pushEvent: vi.fn(),
   setIsSettingsVisible: vi.fn(),
   setIsVisible: vi.fn(),
+  storageRemoveItem: vi.fn(),
   wallets: [] as { disconnect: ReturnType<typeof vi.fn> }[],
 }));
 
@@ -29,6 +29,11 @@ vi.mock("@privy-io/react-auth", () => ({
 }));
 
 vi.mock("wagmi", () => ({
+  useConfig: () => ({
+    storage: {
+      removeItem: mocks.storageRemoveItem,
+    },
+  }),
   useDisconnect: () => ({
     disconnectAsync: mocks.disconnectAsync,
   }),
@@ -71,13 +76,12 @@ describe("useDisconnectAndClose", () => {
 
     localStorage.setItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY, "true");
     localStorage.setItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY, "metamask");
-    localStorage.setItem(PRIVY_ACTIVE_WALLET_ADDRESS_LOCAL_STORAGE_KEY, "0x1");
+    localStorage.setItem(getPrivyActiveWalletConnectionStorageKey(), "metamask:0x1");
   });
 
   afterEach(() => {
     cleanup();
     localStorage.clear();
-    resetPrivyWalletSelection();
     vi.clearAllMocks();
   });
 
@@ -101,8 +105,8 @@ describe("useDisconnectAndClose", () => {
 
     expect(localStorage.getItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY)).toBeNull();
     expect(localStorage.getItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY)).toBeNull();
-    expect(localStorage.getItem(PRIVY_ACTIVE_WALLET_ADDRESS_LOCAL_STORAGE_KEY)).toBeNull();
-    expect(isPrivyDisconnectInProgress()).toBe(true);
+    expect(localStorage.getItem(getPrivyActiveWalletConnectionStorageKey())).toBeNull();
+    expect(mocks.storageRemoveItem).toHaveBeenCalledWith(WAGMI_RECENT_CONNECTOR_ID_STORAGE_KEY);
     expect(mocks.setIsVisible).toHaveBeenCalledWith(false);
     expect(mocks.setIsSettingsVisible).toHaveBeenCalledWith(false);
   });
