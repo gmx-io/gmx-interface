@@ -3445,7 +3445,7 @@ msgstr "標記價格已變動，請提高允許的滑點"
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Maximum pool capacity reached"
-msgstr ""
+msgstr "已達池最大容量"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit signed"
@@ -8741,7 +8741,7 @@ msgstr "新增端點"
 
 #: src/components/Errors/gasErrors.tsx
 msgid "This pool is at maximum capacity and not accepting deposits right now. Try a different pool."
-msgstr ""
+msgstr "此池已達最大容量，目前不接受存入。請選擇其他池。"
 
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx

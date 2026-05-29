@@ -3445,7 +3445,7 @@ msgstr "기준가가 변경되었습니다. 허용 슬리피지를 높여 주십
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Maximum pool capacity reached"
-msgstr ""
+msgstr "최대 풀 용량 도달"
 
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit signed"
@@ -8741,7 +8741,7 @@ msgstr "엔드포인트 추가"
 
 #: src/components/Errors/gasErrors.tsx
 msgid "This pool is at maximum capacity and not accepting deposits right now. Try a different pool."
-msgstr ""
+msgstr "이 풀은 최대 용량에 도달했으며 현재 입금을 받지 않고 있습니다. 다른 풀을 선택하십시오."
 
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx

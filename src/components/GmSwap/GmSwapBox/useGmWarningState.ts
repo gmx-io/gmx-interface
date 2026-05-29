@@ -23,8 +23,6 @@ export function useGmWarningState({
       fees?.logicalNetworkFee?.deltaUsd >= expandDecimals(getExcessiveExecutionFee(chainId), USD_DECIMALS)
   );
 
-  // When the operation is disabled (e.g. "Buying GM unavailable"), the user can't proceed,
-  // so soft warnings would only add noise.
   const shouldShowWarningForExecutionFee = !isOperationDisabled && isHighExecutionFee;
   const shouldShowWarningForPosition = !isOperationDisabled && isHighPriceImpact;
 
