@@ -12,7 +12,7 @@ import {
 
 declare global {
   interface Window {
-    __adrsbl: {
+    __adrsbl?: {
       queue: any[];
       run: (eventName: string, isConversion: boolean, properties?: any[]) => void;
     };
@@ -62,7 +62,7 @@ export function sendAddressablePixelEvent(event: AddressablePixelDepositSuccessE
   ];
 
   try {
-    window.__adrsbl.run(event.eventName, isConversion, properties);
+    window.__adrsbl?.run(event.eventName, isConversion, properties);
   } catch (error) {
     // eslint-disable-next-line no-console
     console.error("Error sending Addressable Pixel event", error);
