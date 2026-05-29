@@ -1,4 +1,10 @@
-import { useConnectOrCreateWallet, useLogin, usePrivy, type LinkedAccountWithMetadata } from "@privy-io/react-auth";
+import {
+  useConnectOrCreateWallet,
+  useLogin,
+  usePrivy,
+  type BaseConnectedWalletType,
+  type LinkedAccountWithMetadata,
+} from "@privy-io/react-auth";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 import type { SettlementChainId } from "config/chains";
@@ -53,6 +59,12 @@ function shouldPreferEmbeddedWalletForLogin({
   return loginAccount?.type !== "wallet";
 }
 
+function isPrivyEmbeddedWallet(wallet: BaseConnectedWalletType) {
+  return (
+    wallet.walletClientType === "privy" || wallet.walletClientType === "privy-v2" || wallet.connectorType === "embedded"
+  );
+}
+
 export function ConnectModalProvider({ children }: { children: React.ReactNode }) {
   const [settlementChainId] = useGmxAccountSettlementChainId();
   const [connectModalOpen, setConnectModalOpen] = useState(false);
@@ -96,10 +108,18 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
     onComplete: handleLoginComplete,
   });
 
-  const handleWalletConnectSuccess = useCallback(() => {
-    preferExternalWalletForCurrentPrivyConnect();
-    handleSuccess();
-  }, [handleSuccess]);
+  const handleWalletConnectSuccess = useCallback(
+    ({ wallet }: { wallet: BaseConnectedWalletType }) => {
+      if (isPrivyEmbeddedWallet(wallet)) {
+        preferEmbeddedWalletForCurrentPrivyConnect();
+      } else {
+        preferExternalWalletForCurrentPrivyConnect();
+      }
+
+      handleSuccess();
+    },
+    [handleSuccess]
+  );
 
   const { connectOrCreateWallet } = useConnectOrCreateWallet({
     onSuccess: handleWalletConnectSuccess,

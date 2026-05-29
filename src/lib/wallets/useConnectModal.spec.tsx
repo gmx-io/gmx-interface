@@ -27,6 +27,22 @@ type ConnectOrCreateWalletCallbacks = {
   onError?: (...args: unknown[]) => void;
 };
 
+function mockPrivySuccessWallet({
+  walletClientType,
+  connectorType,
+}: {
+  walletClientType: string;
+  connectorType: string;
+}) {
+  return {
+    wallet: {
+      address: "0x1",
+      walletClientType,
+      connectorType,
+    },
+  };
+}
+
 const mocks = vi.hoisted(() => {
   const state = {
     connectOrCreateWallet: vi.fn(),
@@ -182,11 +198,32 @@ describe("ConnectModalProvider", () => {
     });
 
     await act(async () => {
-      mocks.connectOrCreateWalletCallbacks?.onSuccess?.();
+      mocks.connectOrCreateWalletCallbacks?.onSuccess?.(
+        mockPrivySuccessWallet({ walletClientType: "metamask", connectorType: "injected" })
+      );
     });
 
     expect(screen.getByRole("button").textContent).toBe("closed");
     expect(shouldUseExternalWalletForCurrentPrivyConnect()).toBe(true);
+    expect(mocks.switchNetwork).toHaveBeenCalledWith(42161, true);
+  });
+
+  it("marks embedded wallet connect success from social login as an embedded-wallet selection", async () => {
+    setup();
+
+    await act(async () => {
+      screen.getByRole("button").click();
+    });
+
+    await act(async () => {
+      mocks.connectOrCreateWalletCallbacks?.onSuccess?.(
+        mockPrivySuccessWallet({ walletClientType: "privy", connectorType: "embedded" })
+      );
+    });
+
+    expect(screen.getByRole("button").textContent).toBe("closed");
+    expect(shouldUseEmbeddedWalletForCurrentPrivyConnect()).toBe(true);
+    expect(shouldUseExternalWalletForCurrentPrivyConnect()).toBe(false);
     expect(mocks.switchNetwork).toHaveBeenCalledWith(42161, true);
   });
 
