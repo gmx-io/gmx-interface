@@ -6,6 +6,7 @@ import {
   getPositionFee,
   type GasLimitsConfig,
 } from "domain/synthetics/fees";
+import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets";
 import { DecreasePositionSwapType } from "domain/synthetics/orders";
 import { convertToTokenAmount, getMidPrice } from "domain/synthetics/tokens";
 import {
@@ -87,6 +88,7 @@ export function getGmxTradingCostBreakdown({
   gasLimits,
   gasPrice,
   tokensData,
+  maxReservedUsdWithJit,
   timestamp,
 }: {
   marketInfo: MarketInfo;
@@ -97,9 +99,23 @@ export function getGmxTradingCostBreakdown({
   gasLimits: GasLimitsConfig | undefined;
   gasPrice: bigint | undefined;
   tokensData: TokensData | undefined;
+  maxReservedUsdWithJit?: bigint;
   timestamp: number;
 }): TradingCostBreakdown {
   const isLong = side === "long";
+  const availableLiquidityUsd = getAvailableUsdLiquidityForPosition(marketInfo, isLong, maxReservedUsdWithJit);
+
+  if (sizeUsd > availableLiquidityUsd) {
+    return {
+      providerId: "gmx",
+      totalUsd: undefined,
+      components: [],
+      timestamp,
+      status: "insufficientLiquidity",
+      warnings: ["GMX available liquidity is lower than the requested trade size."],
+    };
+  }
+
   const openImpact = getCappedPositionImpactUsd(marketInfo, sizeUsd, isLong, true, {
     fallbackToZero: true,
     shouldCapNegativeImpact: true,

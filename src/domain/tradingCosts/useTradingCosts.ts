@@ -4,10 +4,12 @@ import {
   selectChainId,
   selectGasLimits,
   selectGasPrice,
+  selectJitLiquidityMap,
   selectMarketsInfoData,
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
+import { getJitMaxReservedUsd } from "domain/synthetics/jit/utils";
 import { getGmxTradingCostBreakdown } from "domain/tradingCosts/gmx/gmxCost";
 
 import { buildTradingCostRows, getMatchedVenueSymbols } from "./buildTradingCostRows";
@@ -22,6 +24,7 @@ export function useTradingCosts({ scenario, search }: { scenario: TradingCostSce
   const gasLimits = useSelector(selectGasLimits);
   const gasPrice = useSelector(selectGasPrice);
   const tokensData = useSelector(selectTokensData);
+  const jitLiquidityMap = useSelector(selectJitLiquidityMap);
 
   const gmxMarkets = useMemo(() => Object.values(marketsInfoData ?? {}), [marketsInfoData]);
   const hyperliquidMarkets = useHyperliquidMarkets();
@@ -47,6 +50,11 @@ export function useTradingCosts({ scenario, search }: { scenario: TradingCostSce
           gasLimits,
           gasPrice,
           tokensData,
+          maxReservedUsdWithJit: getJitMaxReservedUsd(
+            jitLiquidityMap,
+            marketInfo.marketTokenAddress,
+            scenario.side === "long"
+          ),
           timestamp: Date.now(),
         }),
       buildVenueBreakdown: (match) =>
@@ -66,6 +74,7 @@ export function useTradingCosts({ scenario, search }: { scenario: TradingCostSce
     gmxMarkets,
     hyperliquidBooks.booksByCoin,
     hyperliquidMarkets.markets,
+    jitLiquidityMap,
     scenario,
     search,
     tokensData,

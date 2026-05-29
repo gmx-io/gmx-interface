@@ -25,9 +25,15 @@ const HOLDING_PERIOD_LABELS: Record<HoldingPeriodPreset, string> = {
 };
 
 function getGmxPriceImpactTotal(row: TradingCostRow) {
-  return row.gmx.components
-    .filter((component) => component.key === "openPriceImpact" || component.key === "closePriceImpact")
-    .reduce((total, component) => total + component.usd, 0n);
+  const priceImpactComponents = row.gmx.components.filter(
+    (component) => component.key === "openPriceImpact" || component.key === "closePriceImpact"
+  );
+
+  if (!priceImpactComponents.length) {
+    return undefined;
+  }
+
+  return priceImpactComponents.reduce((total, component) => total + component.usd, 0n);
 }
 
 function getDeltaPercentage(row: TradingCostRow) {

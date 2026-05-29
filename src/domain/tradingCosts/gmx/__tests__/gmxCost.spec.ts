@@ -186,4 +186,67 @@ describe("GMX trading cost adapter", () => {
 
     expect(breakdown.components.find((item) => item.key === "networkFee")?.usd).toBe(expandDecimals(60, 30));
   });
+
+  it("marks GMX as insufficient liquidity when the requested size exceeds available position liquidity", () => {
+    const breakdown = getGmxTradingCostBreakdown({
+      marketInfo: {
+        ...createMockMarketInfo(),
+        maxOpenInterestLong: expandDecimals(5_000, 30),
+        positionImpactFactorPositive: 0n,
+        positionImpactFactorNegative: 0n,
+        borrowingFactorPerSecondForLongs: 0n,
+        borrowingFactorPerSecondForShorts: 0n,
+        fundingFactorPerSecond: 0n,
+      },
+      sizeUsd: expandDecimals(10_000, 30),
+      side: "long",
+      holdingPeriodHours: 1,
+      gasLimits: undefined,
+      gasPrice: undefined,
+      tokensData: undefined,
+      timestamp: 1000,
+    });
+
+    expect(breakdown.status).toBe("insufficientLiquidity");
+    expect(breakdown.totalUsd).toBeUndefined();
+    expect(breakdown.components).toEqual([]);
+    expect(breakdown.warnings).toContain("GMX available liquidity is lower than the requested trade size.");
+  });
+
+  it("includes JIT max reserve liquidity when checking whether GMX can fill the requested size", () => {
+    const sizeUsd = expandDecimals(2_000_000, 30);
+    const marketInfo = {
+      ...createMockMarketInfo(),
+      positionImpactFactorPositive: 0n,
+      positionImpactFactorNegative: 0n,
+      borrowingFactorPerSecondForLongs: 0n,
+      borrowingFactorPerSecondForShorts: 0n,
+      fundingFactorPerSecond: 0n,
+    };
+
+    const withoutJit = getGmxTradingCostBreakdown({
+      marketInfo,
+      sizeUsd,
+      side: "long",
+      holdingPeriodHours: 1,
+      gasLimits: undefined,
+      gasPrice: undefined,
+      tokensData: undefined,
+      timestamp: 1000,
+    });
+    const withJit = getGmxTradingCostBreakdown({
+      marketInfo,
+      sizeUsd,
+      side: "long",
+      holdingPeriodHours: 1,
+      gasLimits: undefined,
+      gasPrice: undefined,
+      tokensData: undefined,
+      maxReservedUsdWithJit: expandDecimals(3_000_000, 30),
+      timestamp: 1000,
+    });
+
+    expect(withoutJit.status).toBe("insufficientLiquidity");
+    expect(withJit.status).toBe("ready");
+  });
 });

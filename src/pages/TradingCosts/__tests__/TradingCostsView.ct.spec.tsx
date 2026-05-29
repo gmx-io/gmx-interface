@@ -30,6 +30,25 @@ const rows: TradingCostRow[] = [
   },
 ];
 
+const unavailableRows: TradingCostRow[] = [
+  {
+    marketKey: "hyperliquid:ZEC:0x1",
+    displayName: "ZEC/USD [BTC-USDC]",
+    indexSymbol: "ZEC",
+    venueVolume24hUsd: numberToUsd(1_000_000),
+    gmx: {
+      ...baseBreakdown,
+      totalUsd: undefined,
+      components: [],
+      status: "insufficientLiquidity",
+      warnings: ["GMX available liquidity is lower than the requested trade size."],
+    },
+    venue: { ...baseBreakdown, providerId: "hyperliquid", totalUsd: undefined, status: "insufficientDepth" },
+    deltaUsd: undefined,
+    status: "insufficientLiquidity",
+  },
+];
+
 test("renders generic venue labels and selected market details", async ({ mount }) => {
   const component = await mount(
     <TradingCostsView
@@ -82,6 +101,31 @@ test("renders delta percentage relative to venue total", async ({ mount }) => {
   );
 
   await expect(component.getByText("(+33.33%)")).toBeVisible();
+});
+
+test("renders a dash for GMX price impact when GMX costs are unavailable", async ({ mount }) => {
+  const component = await mount(
+    <TradingCostsView
+      rows={unavailableRows}
+      isLoading={false}
+      search=""
+      setSearch={() => undefined}
+      sizeUsdInput="10000000"
+      setSizeUsdInput={() => undefined}
+      side="long"
+      setSide={() => undefined}
+      holdingPeriodPreset="8"
+      setHoldingPeriodPreset={() => undefined}
+      customHoldingHoursInput=""
+      setCustomHoldingHoursInput={() => undefined}
+      takerFeeInput="0.045"
+      setTakerFeeInput={() => undefined}
+    />
+  );
+
+  const marketRow = component.getByRole("row").filter({ hasText: "ZEC/USD [BTC-USDC]" });
+
+  await expect(marketRow.locator("td").nth(5)).toHaveText("-");
 });
 
 test("uses the app dropdown for holding period presets", async ({ mount, page }) => {

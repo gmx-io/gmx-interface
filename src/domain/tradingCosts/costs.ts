@@ -11,6 +11,7 @@ const STATUS_SEVERITY: Record<TradingCostStatus, number> = {
   stale: 2,
   unmatched: 3,
   insufficientDepth: 4,
+  insufficientLiquidity: 4,
   providerError: 5,
 };
 

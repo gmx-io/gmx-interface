@@ -33,7 +33,14 @@ export type TradingCostComponent = {
   usd: bigint;
 };
 
-export type TradingCostStatus = "ready" | "loading" | "unmatched" | "insufficientDepth" | "providerError" | "stale";
+export type TradingCostStatus =
+  | "ready"
+  | "loading"
+  | "unmatched"
+  | "insufficientDepth"
+  | "insufficientLiquidity"
+  | "providerError"
+  | "stale";
 
 export type TradingCostBreakdown = {
   providerId: TradingCostProviderId;
