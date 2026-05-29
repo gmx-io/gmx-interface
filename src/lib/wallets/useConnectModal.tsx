@@ -1,5 +1,4 @@
-import { useConnectOrCreateWallet, useModalStatus, type ConnectedWallet, type PrivyEvents } from "@privy-io/react-auth";
-import { useSetActiveWallet } from "@privy-io/wagmi";
+import { useConnectOrCreateWallet, useModalStatus } from "@privy-io/react-auth";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import type { SettlementChainId } from "config/chains";
@@ -11,8 +10,6 @@ import { isSourceChain } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { metrics } from "lib/metrics";
 import { switchNetwork } from "lib/wallets";
-
-type ConnectOrCreateWalletSuccessParams = Parameters<NonNullable<PrivyEvents["connectOrCreateWallet"]["onSuccess"]>>[0];
 
 type ConnectModalContextValue = {
   openConnectModal: (() => void) | undefined;
@@ -38,34 +35,21 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
   const [connectModalOpen, setConnectModalOpen] = useState(false);
   const connectRequestInFlightRef = useRef(false);
   const { isOpen: privyModalOpen } = useModalStatus();
-  const { setActiveWallet } = useSetActiveWallet();
 
-  const handleSuccess = useCallback(
-    async ({ wallet }: ConnectOrCreateWalletSuccessParams) => {
-      connectRequestInFlightRef.current = false;
-      setConnectModalOpen(false);
+  const handleSuccess = useCallback(() => {
+    connectRequestInFlightRef.current = false;
+    setConnectModalOpen(false);
 
-      if (wallet.type !== "ethereum") {
-        return;
-      }
+    // @privy-io/wagmi already handles this callback by setting recentConnectorId
+    // and reconnecting wagmi. Calling setActiveWallet here can re-enter wagmi connect.
+    if (shouldKeepAppSelectedSourceChain(settlementChainId)) {
+      return;
+    }
 
-      try {
-        await setActiveWallet(wallet as ConnectedWallet);
-      } catch (error) {
-        metrics.pushError(error, "connectModal.setActiveWallet");
-        return;
-      }
-
-      if (shouldKeepAppSelectedSourceChain(settlementChainId)) {
-        return;
-      }
-
-      void switchNetwork(settlementChainId, true).catch((error) => {
-        metrics.pushError(error, "connectModal.switchNetwork");
-      });
-    },
-    [setActiveWallet, settlementChainId]
-  );
+    void switchNetwork(settlementChainId, true).catch((error) => {
+      metrics.pushError(error, "connectModal.switchNetwork");
+    });
+  }, [settlementChainId]);
 
   const { connectOrCreateWallet } = useConnectOrCreateWallet({
     onSuccess: handleSuccess,
