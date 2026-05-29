@@ -1,3 +1,4 @@
+import { Trans } from "@lingui/macro";
 import { useMemo } from "react";
 
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
@@ -14,6 +15,7 @@ import { getByKey } from "lib/objects";
 import useWallet from "lib/wallets/useWallet";
 import EarnPageLayout from "pages/Earn/EarnPageLayout";
 
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import AssetsList from "components/Earn/Portfolio/AssetsList/AssetsList";
 import { RecommendedAssets } from "components/Earn/Portfolio/RecommendedAssets/RecommendedAssets";
 import RewardsBar from "components/Earn/Portfolio/RewardsBar";
@@ -79,6 +81,14 @@ export default function EarnPortfolioPage() {
 
   return (
     <EarnPageLayout>
+      {processedData?.isRewardsSuspended && !isWalletInitializing && (
+        <AlertInfoCard type="info">
+          <Trans>
+            27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to
+            stakers when GMX reaches $90, proportional to staking power (duration × amount staked).
+          </Trans>
+        </AlertInfoCard>
+      )}
       {processedData && !isWalletInitializing && (
         <RewardsBar processedData={processedData} mutateProcessedData={mutateProcessedData} />
       )}

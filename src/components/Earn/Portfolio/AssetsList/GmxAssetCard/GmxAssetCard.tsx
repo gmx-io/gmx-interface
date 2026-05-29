@@ -407,20 +407,37 @@ function StakingPowerAlerts({ stakingPowerData }: { stakingPowerData: StakingPow
         />
       )}
       {hasPower && (
-        <SyntheticsInfoRow
-          label={
-            <Tooltip
-              handle={<Trans>Staking power</Trans>}
-              content={
-                <Trans>
-                  Staking power accrues over time based on your staked GMX balance and determines your share of buyback
-                  rewards
-                </Trans>
-              }
-            />
-          }
-          value={<span className="numbers">{formatAmount(stakingPowerData.cumulativePower, 18, 0, true)}</span>}
-        />
+        <>
+          <SyntheticsInfoRow
+            label={
+              <Tooltip
+                handle={<Trans>Staking power</Trans>}
+                content={
+                  <Trans>
+                    Staking power accrues over time based on your staked GMX balance and determines your share of
+                    buyback rewards
+                  </Trans>
+                }
+              />
+            }
+            value={<span className="numbers">{formatAmount(stakingPowerData.cumulativePower, 18, 0, true)}</span>}
+          />
+          <SyntheticsInfoRow
+            label={
+              <Tooltip
+                handle={<Trans>Staking Power Share</Trans>}
+                content={
+                  <Trans>
+                    Your share of the total network staking power. Treasury rewards will be distributed proportionally
+                    to staking power when GMX reaches $90. All projected rewards are best-effort estimations. Actual
+                    distribution is subject to DAO governance.
+                  </Trans>
+                }
+              />
+            }
+            value={<span className="numbers">{stakingPowerData.userSharePercent.toFixed(2)}%</span>}
+          />
+        </>
       )}
     </div>
   );
