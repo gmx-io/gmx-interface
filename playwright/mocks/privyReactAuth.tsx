@@ -63,6 +63,12 @@ export function usePrivy() {
   };
 }
 
+export function useModalStatus() {
+  return {
+    isOpen: false,
+  };
+}
+
 export function useWallets() {
   return {
     wallets: [],

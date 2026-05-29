@@ -1,6 +1,6 @@
-import { useConnectOrCreateWallet, type ConnectedWallet, type PrivyEvents } from "@privy-io/react-auth";
+import { useConnectOrCreateWallet, useModalStatus, type ConnectedWallet, type PrivyEvents } from "@privy-io/react-auth";
 import { useSetActiveWallet } from "@privy-io/wagmi";
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import type { SettlementChainId } from "config/chains";
 import {
@@ -36,10 +36,13 @@ function shouldKeepAppSelectedSourceChain(settlementChainId: SettlementChainId) 
 export function ConnectModalProvider({ children }: { children: React.ReactNode }) {
   const [settlementChainId] = useGmxAccountSettlementChainId();
   const [connectModalOpen, setConnectModalOpen] = useState(false);
+  const connectRequestInFlightRef = useRef(false);
+  const { isOpen: privyModalOpen } = useModalStatus();
   const { setActiveWallet } = useSetActiveWallet();
 
   const handleSuccess = useCallback(
     async ({ wallet }: ConnectOrCreateWalletSuccessParams) => {
+      connectRequestInFlightRef.current = false;
       setConnectModalOpen(false);
 
       if (wallet.type !== "ethereum") {
@@ -66,12 +69,34 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
 
   const { connectOrCreateWallet } = useConnectOrCreateWallet({
     onSuccess: handleSuccess,
-    onError: () => setConnectModalOpen(false),
+    onError: () => {
+      connectRequestInFlightRef.current = false;
+      setConnectModalOpen(false);
+    },
   });
 
+  useEffect(() => {
+    if (!privyModalOpen) {
+      connectRequestInFlightRef.current = false;
+      setConnectModalOpen(false);
+    }
+  }, [privyModalOpen]);
+
   const openConnectModal = useCallback(() => {
+    // MetaMask rejects duplicate connection requests while the first one is pending.
+    if (connectRequestInFlightRef.current) {
+      return;
+    }
+
+    connectRequestInFlightRef.current = true;
     setConnectModalOpen(true);
-    connectOrCreateWallet();
+    try {
+      connectOrCreateWallet();
+    } catch (error) {
+      connectRequestInFlightRef.current = false;
+      setConnectModalOpen(false);
+      metrics.pushError(error, "connectModal.open");
+    }
   }, [connectOrCreateWallet]);
 
   const value = useMemo(() => ({ openConnectModal, connectModalOpen }), [openConnectModal, connectModalOpen]);

@@ -28,6 +28,8 @@ export function useDisconnectAndClose() {
     localStorage.removeItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY);
 
     try {
+      // Mark Privy-backed wagmi connectors disconnected before and after provider disconnects:
+      // injected wallets can mutate wagmi storage while their disconnect handlers run.
       await disconnectPrivyWalletsFromWagmi(wallets);
 
       await Promise.allSettled([
