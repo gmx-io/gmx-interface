@@ -62,6 +62,12 @@ function isWalletLoginMethod(loginMethod: LoginCompleteParams["loginMethod"]) {
   return loginMethod === "siwe" || loginMethod === "siws";
 }
 
+function isEmbeddedPrivyWallet(wallet: ConnectedWallet) {
+  return (
+    wallet.walletClientType === "privy" || wallet.walletClientType === "privy-v2" || wallet.connectorType === "embedded"
+  );
+}
+
 export function getLoginWalletStorageCandidate({
   loginAccount,
   loginMethod,
@@ -431,13 +437,32 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
         return;
       }
 
+      if (params.wallet.type === "ethereum" && !isEmbeddedPrivyWallet(params.wallet as ConnectedWallet)) {
+        const wallet = params.wallet as ConnectedWallet;
+
+        try {
+          await wallet.loginOrLink();
+        } catch (error) {
+          metrics.pushError(error, "connectModal.loginOrLink");
+          cancelActiveConnectAttempt(connectAttempt.id);
+          return;
+        }
+
+        if (!isConnectAttemptActive(connectAttempt.id)) {
+          return;
+        }
+
+        await activateActiveWallet(activeWalletStorageValue, wallet, connectAttempt.id);
+        return;
+      }
+
       await activateActiveWallet(
         activeWalletStorageValue,
         params.wallet.type === "ethereum" ? (params.wallet as ConnectedWallet) : undefined,
         connectAttempt.id
       );
     },
-    [activateActiveWallet, getActiveConnectAttempt, handleSuccess]
+    [activateActiveWallet, cancelActiveConnectAttempt, getActiveConnectAttempt, handleSuccess, isConnectAttemptActive]
   );
 
   const { connectOrCreateWallet } = useConnectOrCreateWallet({

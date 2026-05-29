@@ -90,6 +90,8 @@ function createConnectedWallet({
   address = "0x1111111111111111111111111111111111111111",
   connectedAt = Date.now(),
   connectorType = "injected",
+  linked = true,
+  loginOrLink = vi.fn(),
   meta = {
     id: "io.rabby",
     name: "Rabby",
@@ -99,6 +101,8 @@ function createConnectedWallet({
   address?: string;
   connectedAt?: number;
   connectorType?: string;
+  linked?: boolean;
+  loginOrLink?: ReturnType<typeof vi.fn>;
   meta?: { id: string; name: string };
   walletClientType?: string;
 } = {}) {
@@ -111,8 +115,8 @@ function createConnectedWallet({
     getEthereumProvider: vi.fn(),
     imported: false,
     isConnected: vi.fn(),
-    linked: true,
-    loginOrLink: vi.fn(),
+    linked,
+    loginOrLink,
     meta,
     sign: vi.fn(),
     switchChain: vi.fn(),
@@ -250,8 +254,15 @@ describe("ConnectModalProvider", () => {
     expect(mocks.setActiveWallet).not.toHaveBeenCalled();
   });
 
-  it("activates an already connected Privy wallet selected during an active connect attempt", async () => {
-    const wallet = createConnectedWallet({ connectedAt: Date.now() - 1000 });
+  it("runs external wallet login before activating an already connected wallet selected during an active attempt", async () => {
+    let resolveLogin!: () => void;
+    const loginOrLink = vi.fn(
+      () =>
+        new Promise<void>((resolve) => {
+          resolveLogin = resolve;
+        })
+    );
+    const wallet = createConnectedWallet({ connectedAt: Date.now() - 1000, loginOrLink });
     mocks.account = {
       address: wallet.address,
       connector: { id: "io.rabby" },
@@ -264,11 +275,23 @@ describe("ConnectModalProvider", () => {
       mocks.openConnectModal?.();
     });
 
-    await act(async () => {
-      await mocks.connectOrCreateWalletCallbacks?.onSuccess?.({ wallet });
+    act(() => {
+      void mocks.connectOrCreateWalletCallbacks?.onSuccess?.({ wallet });
     });
 
-    expect(mocks.setActiveWallet).toHaveBeenCalledWith(wallet);
+    await waitFor(() => {
+      expect(loginOrLink).toHaveBeenCalledTimes(1);
+    });
+    expect(mocks.setActiveWallet).not.toHaveBeenCalled();
+
+    await act(async () => {
+      resolveLogin();
+      await Promise.resolve();
+    });
+
+    await waitFor(() => {
+      expect(mocks.setActiveWallet).toHaveBeenCalledWith(wallet);
+    });
     expect(getStoredActiveWallet()).toMatchObject({
       address: wallet.address,
       connectorId: "io.rabby",
