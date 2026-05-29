@@ -8,7 +8,6 @@ import { useTheme } from "context/ThemeContext/ThemeContext";
 
 import gmxLogo from "img/logo-icon.svg";
 
-import { getActiveWalletForWagmi } from "./privyWagmi";
 import {
   getWagmiConfig,
   getSupportedChains,
@@ -56,9 +55,7 @@ export default function WalletProvider({ children }: { children: React.ReactNode
   return (
     <PrivyProvider appId={PRIVY_APP_ID} config={privyConfig}>
       <QueryClientProvider client={queryClient}>
-        <WagmiProvider config={getWagmiConfig()} setActiveWalletForWagmi={getActiveWalletForWagmi}>
-          {children}
-        </WagmiProvider>
+        <WagmiProvider config={getWagmiConfig()}>{children}</WagmiProvider>
       </QueryClientProvider>
     </PrivyProvider>
   );
