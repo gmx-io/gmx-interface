@@ -7,6 +7,7 @@ import {
   markPrivyDisconnectStarted,
   resetPrivyWalletSelection,
   shouldUseEmbeddedWalletForCurrentPrivyConnect,
+  shouldUseExternalWalletForCurrentPrivyConnect,
 } from "./privyWalletSelection";
 import { ConnectModalProvider, useConnectModal } from "./useConnectModal";
 
@@ -170,6 +171,23 @@ describe("ConnectModalProvider", () => {
     });
 
     expect(shouldUseEmbeddedWalletForCurrentPrivyConnect()).toBe(false);
+    expect(shouldUseExternalWalletForCurrentPrivyConnect()).toBe(true);
+  });
+
+  it("marks wallet connect success as an external-wallet selection", async () => {
+    setup();
+
+    await act(async () => {
+      screen.getByRole("button").click();
+    });
+
+    await act(async () => {
+      mocks.connectOrCreateWalletCallbacks?.onSuccess?.();
+    });
+
+    expect(screen.getByRole("button").textContent).toBe("closed");
+    expect(shouldUseExternalWalletForCurrentPrivyConnect()).toBe(true);
+    expect(mocks.switchNetwork).toHaveBeenCalledWith(42161, true);
   });
 
   it("waits for Privy readiness before opening the wallet modal", async () => {

@@ -8,6 +8,7 @@ import {
   markPrivyConnectStarted,
   markPrivyDisconnectStarted,
   preferEmbeddedWalletForCurrentPrivyConnect,
+  preferExternalWalletForCurrentPrivyConnect,
   resetPrivyWalletSelection,
 } from "./privyWalletSelection";
 import { getActiveWalletForWagmi, isPrivyWagmiStateReady } from "./WalletProvider";
@@ -75,8 +76,26 @@ describe("getActiveWalletForWagmi", () => {
     const latestWallet = mockWallet("0x2", 200, false);
 
     markPrivyConnectStarted();
+    preferExternalWalletForCurrentPrivyConnect();
 
     expect(getActiveWalletForWagmi({ wallets: [latestWallet], user: null })).toBe(latestWallet);
+  });
+
+  it("does not select stale wallets while the connect modal login method is unresolved", () => {
+    const staleExternalWallet = mockWallet("0x1", 200, false, { walletClientType: "rabby_wallet" });
+    const embeddedWallet = mockWallet("0x2", 100, true, {
+      walletClientType: "privy",
+      connectorType: "embedded",
+    });
+
+    markPrivyConnectStarted();
+
+    expect(
+      getActiveWalletForWagmi({
+        wallets: [staleExternalWallet, embeddedWallet],
+        user: mockUserWithEmbeddedWallet(),
+      })
+    ).toBeUndefined();
   });
 
   it("keeps a hydrated Privy wallet during refresh before Privy user state is ready", () => {
@@ -91,6 +110,7 @@ describe("getActiveWalletForWagmi", () => {
     const latestWallet = mockWallet("0x2", 200, false);
 
     markPrivyConnectStarted();
+    preferExternalWalletForCurrentPrivyConnect();
 
     expect(getActiveWalletForWagmi({ wallets: [latestWallet], user: {} as User })).toBe(latestWallet);
     expect(hasPrivyConnectIntent()).toBe(false);
@@ -115,6 +135,23 @@ describe("getActiveWalletForWagmi", () => {
     expect(localStorage.getItem(PRIVY_ACTIVE_WALLET_ADDRESS_LOCAL_STORAGE_KEY)).toBe(embeddedWallet.address);
   });
 
+  it("prefers the embedded wallet after social login before linked account metadata is hydrated", () => {
+    const staleExternalWallet = mockWallet("0x1", 200, false, { walletClientType: "rabby_wallet" });
+    const embeddedWallet = mockWallet("0x2", 100, true, {
+      walletClientType: "privy",
+      connectorType: "embedded",
+    });
+
+    preferEmbeddedWalletForCurrentPrivyConnect();
+
+    expect(
+      getActiveWalletForWagmi({
+        wallets: [staleExternalWallet, embeddedWallet],
+        user: {} as User,
+      })
+    ).toBe(embeddedWallet);
+  });
+
   it("waits for the embedded wallet after email or social login when Privy has not populated wallets yet", () => {
     preferEmbeddedWalletForCurrentPrivyConnect();
 
@@ -122,6 +159,17 @@ describe("getActiveWalletForWagmi", () => {
       getActiveWalletForWagmi({
         wallets: [mockWallet("0x1", 200, false, { walletClientType: "rabby_wallet" })],
         user: mockUserWithEmbeddedWallet(),
+      })
+    ).toBeUndefined();
+  });
+
+  it("does not fall back to a stale external wallet while waiting for social login embedded wallet metadata", () => {
+    preferEmbeddedWalletForCurrentPrivyConnect();
+
+    expect(
+      getActiveWalletForWagmi({
+        wallets: [mockWallet("0x1", 200, false, { walletClientType: "rabby_wallet" })],
+        user: {} as User,
       })
     ).toBeUndefined();
   });
@@ -152,6 +200,7 @@ describe("getActiveWalletForWagmi", () => {
 
     localStorage.setItem(PRIVY_ACTIVE_WALLET_ADDRESS_LOCAL_STORAGE_KEY, embeddedWallet.address);
     markPrivyConnectStarted();
+    preferExternalWalletForCurrentPrivyConnect();
 
     expect(
       getActiveWalletForWagmi({

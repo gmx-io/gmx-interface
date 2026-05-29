@@ -2,13 +2,13 @@ import type { ConnectedWallet } from "@privy-io/react-auth";
 
 import { PRIVY_ACTIVE_WALLET_ADDRESS_LOCAL_STORAGE_KEY } from "config/localStorage";
 
-type ConnectIntent = "external-wallet" | "embedded-wallet";
+type ConnectIntent = "pending" | "external-wallet" | "embedded-wallet";
 
 let connectIntent: ConnectIntent | null = null;
 let disconnectInProgress = false;
 
 export function markPrivyConnectStarted() {
-  connectIntent = "external-wallet";
+  connectIntent = "pending";
   disconnectInProgress = false;
 }
 
@@ -30,6 +30,14 @@ export function preferEmbeddedWalletForCurrentPrivyConnect() {
   connectIntent = "embedded-wallet";
 }
 
+export function preferExternalWalletForCurrentPrivyConnect() {
+  if (connectIntent === "embedded-wallet") {
+    return;
+  }
+
+  connectIntent = "external-wallet";
+}
+
 export function hasPrivyConnectIntent() {
   return connectIntent !== null;
 }
@@ -40,6 +48,14 @@ export function isPrivyDisconnectInProgress() {
 
 export function shouldUseEmbeddedWalletForCurrentPrivyConnect() {
   return connectIntent === "embedded-wallet";
+}
+
+export function shouldUseExternalWalletForCurrentPrivyConnect() {
+  return connectIntent === "external-wallet";
+}
+
+export function isPrivyConnectIntentPending() {
+  return connectIntent === "pending";
 }
 
 export function getStoredPrivyActiveWallet(wallets: ConnectedWallet[]) {

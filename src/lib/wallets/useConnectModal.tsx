@@ -15,6 +15,7 @@ import {
   markPrivyConnectFailed,
   markPrivyConnectStarted,
   preferEmbeddedWalletForCurrentPrivyConnect,
+  preferExternalWalletForCurrentPrivyConnect,
 } from "./privyWalletSelection";
 
 type ConnectModalContextValue = {
@@ -81,6 +82,8 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
       if (connectModalOpen) {
         if (shouldPreferEmbeddedWalletForLogin({ loginAccount, loginMethod })) {
           preferEmbeddedWalletForCurrentPrivyConnect();
+        } else {
+          preferExternalWalletForCurrentPrivyConnect();
         }
 
         handleSuccess();
@@ -93,8 +96,13 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
     onComplete: handleLoginComplete,
   });
 
+  const handleWalletConnectSuccess = useCallback(() => {
+    preferExternalWalletForCurrentPrivyConnect();
+    handleSuccess();
+  }, [handleSuccess]);
+
   const { connectOrCreateWallet } = useConnectOrCreateWallet({
-    onSuccess: handleSuccess,
+    onSuccess: handleWalletConnectSuccess,
     onError: handleError,
   });
 

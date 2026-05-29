@@ -18,8 +18,10 @@ import gmxLogo from "img/logo-icon.svg";
 import {
   getStoredPrivyActiveWallet,
   hasPrivyConnectIntent,
+  isPrivyConnectIntentPending,
   isPrivyDisconnectInProgress,
   markPrivyConnectCompleted,
+  shouldUseExternalWalletForCurrentPrivyConnect,
   shouldUseEmbeddedWalletForCurrentPrivyConnect,
   storePrivyActiveWallet,
 } from "./privyWalletSelection";
@@ -46,16 +48,6 @@ function isPrivyEmbeddedWallet(wallet: ConnectedWallet) {
   return isPrivyEmbeddedWalletClient(wallet.walletClientType) || wallet.connectorType === "embedded";
 }
 
-function userHasEmbeddedWallet(user: User) {
-  return user.linkedAccounts?.some((account) => {
-    if (account.type !== "wallet") {
-      return false;
-    }
-
-    return isPrivyEmbeddedWalletClient(account.walletClientType);
-  });
-}
-
 export function getActiveWalletForWagmi({
   isPrivyStateReady = true,
   wallets,
@@ -77,13 +69,21 @@ export function getActiveWalletForWagmi({
     return undefined;
   }
 
-  if (!user) {
+  if (!user && shouldUseExternalWalletForCurrentPrivyConnect()) {
     return wallets[0];
+  }
+
+  if (!user) {
+    return undefined;
+  }
+
+  if (isPrivyConnectIntentPending()) {
+    return undefined;
   }
 
   const isExplicitConnect = hasPrivyConnectIntent();
 
-  if (shouldUseEmbeddedWalletForCurrentPrivyConnect() && userHasEmbeddedWallet(user)) {
+  if (shouldUseEmbeddedWalletForCurrentPrivyConnect()) {
     const embeddedWallet = getEmbeddedConnectedWallet(wallets) ?? wallets.find(isPrivyEmbeddedWallet);
 
     if (!embeddedWallet) {
