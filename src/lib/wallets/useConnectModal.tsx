@@ -54,6 +54,7 @@ const PENDING_CONNECT_ATTEMPT_TTL_MS = 15 * 60 * 1000;
 type ConnectAttempt = {
   id: number;
   previousActiveWalletStorageValue: ActivePrivyWalletStorageValue | undefined;
+  restoredFromPendingAttempt: boolean;
   writtenActiveWalletStorageValue: ActivePrivyWalletStorageValue | undefined;
 };
 
@@ -248,12 +249,13 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
     return connectAttemptId !== undefined && activeConnectAttemptRef.current?.id === connectAttemptId;
   }, []);
 
-  const startConnectAttempt = useCallback((startedAt = Date.now()) => {
+  const startConnectAttempt = useCallback((startedAt = Date.now(), restoredFromPendingAttempt = false) => {
     const connectAttemptId = nextConnectAttemptIdRef.current + 1;
     nextConnectAttemptIdRef.current = connectAttemptId;
     activeConnectAttemptRef.current = {
       id: connectAttemptId,
       previousActiveWalletStorageValue: readActivePrivyWalletFromStorage(),
+      restoredFromPendingAttempt,
       writtenActiveWalletStorageValue: undefined,
     };
     writePendingConnectAttempt(startedAt);
@@ -268,7 +270,7 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
 
     const startedAt = readPendingConnectAttemptStartedAt();
 
-    return startedAt ? startConnectAttempt(startedAt) : undefined;
+    return startedAt ? startConnectAttempt(startedAt, true) : undefined;
   }, [startConnectAttempt]);
 
   const cancelActiveConnectAttempt = useCallback(
@@ -458,13 +460,18 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
   const handleLoginComplete = useCallback(
     (params: LoginCompleteParams) => {
       const connectAttempt = getActiveConnectAttempt();
-      const connectAttemptId = connectAttempt?.id;
 
-      if (connectAttemptId === undefined) {
+      if (!connectAttempt) {
         return;
       }
 
+      const connectAttemptId = connectAttempt.id;
+
       if (params.wasAlreadyAuthenticated) {
+        if (!connectAttempt.restoredFromPendingAttempt) {
+          return;
+        }
+
         if (!isWalletLoginMethod(params.loginMethod)) {
           connectAuthenticatedUser(params.user, connectAttemptId);
           return;

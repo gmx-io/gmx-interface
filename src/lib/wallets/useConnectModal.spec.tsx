@@ -452,7 +452,7 @@ describe("ConnectModalProvider", () => {
     expect(mocks.switchNetwork).not.toHaveBeenCalled();
   });
 
-  it("opens Privy connect UI for authenticated embedded-wallet users without activating immediately", () => {
+  it("ignores already-authenticated social login callbacks after a same-page modal open", () => {
     const wallet = createEmbeddedWallet();
     const user = createUserWithLinkedWallet(wallet);
     mocks.privy = {
@@ -468,13 +468,31 @@ describe("ConnectModalProvider", () => {
       mocks.openConnectModal?.();
     });
 
+    act(() => {
+      mocks.loginCallbacks?.onComplete?.({
+        isNewUser: false,
+        loginAccount: null,
+        loginMethod: "google",
+        user,
+        wasAlreadyAuthenticated: true,
+      });
+    });
+
     expect(mocks.connectOrCreateWallet).toHaveBeenCalledTimes(1);
     expect(mocks.createWallet).not.toHaveBeenCalled();
     expect(mocks.setActiveWallet).not.toHaveBeenCalled();
     expect(localStorage.getItem(ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY)).toBeNull();
   });
 
-  it("activates an authenticated embedded wallet after Privy confirms social login", async () => {
+  it("recovers an authenticated embedded wallet after an OAuth redirect", async () => {
+    const { unmount } = renderProvider();
+
+    act(() => {
+      mocks.openConnectModal?.();
+    });
+
+    unmount();
+
     const wallet = createEmbeddedWallet();
     const user = createUserWithLinkedWallet(wallet);
     mocks.account = {
@@ -489,10 +507,6 @@ describe("ConnectModalProvider", () => {
     mocks.wallets = [wallet];
 
     renderProvider();
-
-    act(() => {
-      mocks.openConnectModal?.();
-    });
 
     act(() => {
       mocks.loginCallbacks?.onComplete?.({
