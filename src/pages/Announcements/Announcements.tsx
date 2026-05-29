@@ -1,3 +1,5 @@
+import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
+import { Popover, Portal } from "@headlessui/react";
 import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -7,7 +9,6 @@ import { getChainName } from "config/chains";
 import { AnnouncementType, EventData, appEventsData } from "config/events";
 import { getChainIcon } from "config/icons";
 import { useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
-import { useOutsideClick } from "lib/useOutsideClick";
 import useSearchParams from "lib/useSearchParams";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
@@ -208,7 +209,7 @@ export default function AnnouncementsPage() {
 
             <div className="flex min-h-[70vh] flex-col gap-8">
               {list.length === 0 ? (
-                <div className="flex flex-1 items-center justify-center rounded-8 bg-fill-card p-32 text-center text-typography-secondary">
+                <div className="flex flex-1 items-center justify-center p-32 text-center text-typography-secondary">
                   <Trans>No announcements found</Trans>
                 </div>
               ) : (
@@ -282,71 +283,63 @@ function FiltersBar({
 }
 
 function ChainDropdown({ selected, onChange }: { selected: number | null; onChange: (v: number | null) => void }) {
-  const [isOpen, setIsOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  useOutsideClick(ref, () => setIsOpen(false));
+  const { refs, floatingStyles } = useFloating({
+    middleware: [offset(4), flip(), shift({ padding: 8 })],
+    placement: "bottom-end",
+    whileElementsMounted: autoUpdate,
+  });
 
   return (
-    <div ref={ref} className="relative">
-      <DropdownButton isOpen={isOpen} onClick={() => setIsOpen((v) => !v)}>
-        {selected !== null ? (
-          <img src={getChainIcon(selected)} alt="" className="size-16" />
-        ) : (
-          <ChainIcon className="size-16 text-typography-secondary" />
-        )}
-        {selected === null ? <Trans>All chains</Trans> : getChainName(selected)}
-      </DropdownButton>
-      {isOpen && (
-        <div className="absolute left-0 top-full z-50 mt-4 min-w-[200px] rounded-8 border border-stroke-primary bg-slate-800 p-4 shadow-lg lg:left-auto lg:right-0">
-          <DropdownItem
-            isActive={selected === null}
-            onClick={() => {
-              onChange(null);
-              setIsOpen(false);
-            }}
+    <Popover className="relative" ref={refs.setReference}>
+      {({ open, close }) => (
+        <>
+          <Popover.Button
+            className={cx(
+              "inline-flex h-32 items-center gap-4 rounded-8 px-12 text-13 font-medium outline-none transition-colors",
+              open ? "text-typography-primary" : "text-typography-secondary hover:text-typography-primary"
+            )}
           >
-            <Trans>All chains</Trans>
-          </DropdownItem>
-          {ANNOUNCEMENTS_CHAINS.map((chainId) => (
-            <DropdownItem
-              key={chainId}
-              isActive={selected === chainId}
-              onClick={() => {
-                onChange(chainId);
-                setIsOpen(false);
-              }}
+            {selected !== null ? (
+              <img src={getChainIcon(selected)} alt="" className="size-16" />
+            ) : (
+              <ChainIcon className="size-16 text-typography-secondary" />
+            )}
+            {selected === null ? <Trans>All chains</Trans> : getChainName(selected)}
+            <ChevronDownIcon className={cx("size-16 transition-transform", open && "rotate-180")} />
+          </Popover.Button>
+          <Portal>
+            <Popover.Panel
+              ref={refs.setFloating}
+              style={floatingStyles}
+              className="z-50 min-w-[200px] rounded-8 border border-stroke-primary bg-slate-800 p-4 shadow-lg outline-none"
             >
-              <img src={getChainIcon(chainId)} alt="" className="size-16" />
-              {getChainName(chainId)}
-            </DropdownItem>
-          ))}
-        </div>
+              <DropdownItem
+                isActive={selected === null}
+                onClick={() => {
+                  onChange(null);
+                  close();
+                }}
+              >
+                <Trans>All chains</Trans>
+              </DropdownItem>
+              {ANNOUNCEMENTS_CHAINS.map((chainId) => (
+                <DropdownItem
+                  key={chainId}
+                  isActive={selected === chainId}
+                  onClick={() => {
+                    onChange(chainId);
+                    close();
+                  }}
+                >
+                  <img src={getChainIcon(chainId)} alt="" className="size-16" />
+                  {getChainName(chainId)}
+                </DropdownItem>
+              ))}
+            </Popover.Panel>
+          </Portal>
+        </>
       )}
-    </div>
-  );
-}
-
-function DropdownButton({
-  isOpen,
-  onClick,
-  children,
-}: {
-  isOpen: boolean;
-  onClick: () => void;
-  children: React.ReactNode;
-}) {
-  return (
-    <button
-      type="button"
-      onClick={onClick}
-      className={cx(
-        "inline-flex h-32 items-center gap-4 rounded-8 px-12 text-13 font-medium transition-colors",
-        isOpen ? "text-typography-primary" : "text-typography-secondary hover:text-typography-primary"
-      )}
-    >
-      {children}
-      <ChevronDownIcon className={cx("size-16 transition-transform", isOpen && "rotate-180")} />
-    </button>
+    </Popover>
   );
 }
 
