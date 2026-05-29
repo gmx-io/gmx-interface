@@ -1,4 +1,4 @@
-import { useConnectOrCreateWallet } from "@privy-io/react-auth";
+import { useConnectOrCreateWallet, useLogin, type LinkedAccountWithMetadata } from "@privy-io/react-auth";
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
 import type { SettlementChainId } from "config/chains";
@@ -10,6 +10,12 @@ import { isSourceChain } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { metrics } from "lib/metrics";
 import { switchNetwork } from "lib/wallets";
+
+import {
+  markPrivyConnectFailed,
+  markPrivyConnectStarted,
+  preferEmbeddedWalletForCurrentPrivyConnect,
+} from "./privyWalletSelection";
 
 type ConnectModalContextValue = {
   openConnectModal: (() => void) | undefined;
@@ -30,6 +36,20 @@ function shouldKeepAppSelectedSourceChain(settlementChainId: SettlementChainId) 
   return selectedNetworkWasAppSelected && isSourceChain(chainIdFromLocalStorage, settlementChainId);
 }
 
+function shouldPreferEmbeddedWalletForLogin({
+  loginAccount,
+  loginMethod,
+}: {
+  loginAccount: LinkedAccountWithMetadata | null;
+  loginMethod: string | null;
+}) {
+  if (!loginMethod || loginMethod === "siwe" || loginMethod === "siws") {
+    return false;
+  }
+
+  return loginAccount?.type !== "wallet";
+}
+
 export function ConnectModalProvider({ children }: { children: React.ReactNode }) {
   const [settlementChainId] = useGmxAccountSettlementChainId();
   const [connectModalOpen, setConnectModalOpen] = useState(false);
@@ -46,12 +66,34 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
     });
   }, [settlementChainId]);
 
+  const handleError = useCallback(() => {
+    markPrivyConnectFailed();
+    setConnectModalOpen(false);
+  }, []);
+  const handleLoginComplete = useCallback(
+    ({ loginAccount, loginMethod }: { loginAccount: LinkedAccountWithMetadata | null; loginMethod: string | null }) => {
+      if (connectModalOpen) {
+        if (shouldPreferEmbeddedWalletForLogin({ loginAccount, loginMethod })) {
+          preferEmbeddedWalletForCurrentPrivyConnect();
+        }
+
+        handleSuccess();
+      }
+    },
+    [connectModalOpen, handleSuccess]
+  );
+
+  useLogin({
+    onComplete: handleLoginComplete,
+  });
+
   const { connectOrCreateWallet } = useConnectOrCreateWallet({
     onSuccess: handleSuccess,
-    onError: () => setConnectModalOpen(false),
+    onError: handleError,
   });
 
   const openConnectModal = useCallback(() => {
+    markPrivyConnectStarted();
     setConnectModalOpen(true);
     connectOrCreateWallet();
   }, [connectOrCreateWallet]);

@@ -1,13 +1,28 @@
-import { PrivyProvider, type ConnectedWallet, type User } from "@privy-io/react-auth";
+import {
+  getEmbeddedConnectedWallet,
+  PrivyProvider,
+  usePrivy,
+  useWallets,
+  type ConnectedWallet,
+  type User,
+} from "@privy-io/react-auth";
 import { WagmiProvider } from "@privy-io/wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { useMemo } from "react";
+import { useCallback, useMemo } from "react";
 
 import { colors } from "config/colors";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 
 import gmxLogo from "img/logo-icon.svg";
 
+import {
+  getStoredPrivyActiveWallet,
+  hasPrivyConnectIntent,
+  isPrivyDisconnectInProgress,
+  markPrivyConnectCompleted,
+  shouldUseEmbeddedWalletForCurrentPrivyConnect,
+  storePrivyActiveWallet,
+} from "./privyWalletSelection";
 import {
   getWagmiConfig,
   getSupportedChains,
@@ -23,8 +38,91 @@ const supportedChains = getSupportedChains();
 const defaultChain = supportedChains[0];
 const gmxLogoElement = <img src={gmxLogo} alt="GMX" width={100} />;
 
-function getActiveWalletForWagmi({ wallets, user }: { wallets: ConnectedWallet[]; user: User | null }) {
-  return user ? wallets.find((wallet) => wallet.linked) ?? wallets[0] : wallets[0];
+function isPrivyEmbeddedWalletClient(walletClientType: string | undefined) {
+  return walletClientType === "privy" || walletClientType === "privy-v2";
+}
+
+function isPrivyEmbeddedWallet(wallet: ConnectedWallet) {
+  return isPrivyEmbeddedWalletClient(wallet.walletClientType) || wallet.connectorType === "embedded";
+}
+
+function userHasEmbeddedWallet(user: User) {
+  return user.linkedAccounts?.some((account) => {
+    if (account.type !== "wallet") {
+      return false;
+    }
+
+    return isPrivyEmbeddedWalletClient(account.walletClientType);
+  });
+}
+
+export function getActiveWalletForWagmi({
+  isPrivyStateReady = true,
+  wallets,
+  user,
+}: {
+  isPrivyStateReady?: boolean;
+  wallets: ConnectedWallet[];
+  user: User | null;
+}) {
+  if (isPrivyDisconnectInProgress()) {
+    return undefined;
+  }
+
+  if (!isPrivyStateReady && !user) {
+    return wallets[0];
+  }
+
+  if (!user && !hasPrivyConnectIntent()) {
+    return undefined;
+  }
+
+  if (!user) {
+    return wallets[0];
+  }
+
+  const isExplicitConnect = hasPrivyConnectIntent();
+
+  if (shouldUseEmbeddedWalletForCurrentPrivyConnect() && userHasEmbeddedWallet(user)) {
+    const embeddedWallet = getEmbeddedConnectedWallet(wallets) ?? wallets.find(isPrivyEmbeddedWallet);
+
+    if (!embeddedWallet) {
+      return undefined;
+    }
+
+    markPrivyConnectCompleted();
+    storePrivyActiveWallet(embeddedWallet);
+    return embeddedWallet;
+  }
+
+  const activeWallet = (isExplicitConnect ? undefined : getStoredPrivyActiveWallet(wallets)) ?? wallets[0];
+
+  markPrivyConnectCompleted();
+  storePrivyActiveWallet(activeWallet);
+
+  return activeWallet;
+}
+
+export function isPrivyWagmiStateReady({ privyReady, walletsReady }: { privyReady: boolean; walletsReady: boolean }) {
+  return privyReady && walletsReady;
+}
+
+function PrivyWagmiProvider({ children }: { children: React.ReactNode }) {
+  const { ready: privyReady } = usePrivy();
+  const { ready: walletsReady } = useWallets();
+  const isPrivyStateReady = isPrivyWagmiStateReady({ privyReady, walletsReady });
+
+  const setActiveWalletForWagmi = useCallback(
+    ({ wallets, user }: { wallets: ConnectedWallet[]; user: User | null }) =>
+      getActiveWalletForWagmi({ isPrivyStateReady, wallets, user }),
+    [isPrivyStateReady]
+  );
+
+  return (
+    <WagmiProvider config={getWagmiConfig()} setActiveWalletForWagmi={setActiveWalletForWagmi}>
+      {children}
+    </WagmiProvider>
+  );
 }
 
 export default function WalletProvider({ children }: { children: React.ReactNode }) {
@@ -59,9 +157,7 @@ export default function WalletProvider({ children }: { children: React.ReactNode
   return (
     <PrivyProvider appId={PRIVY_APP_ID} config={privyConfig}>
       <QueryClientProvider client={queryClient}>
-        <WagmiProvider config={getWagmiConfig()} setActiveWalletForWagmi={getActiveWalletForWagmi}>
-          {children}
-        </WagmiProvider>
+        <PrivyWagmiProvider>{children}</PrivyWagmiProvider>
       </QueryClientProvider>
     </PrivyProvider>
   );

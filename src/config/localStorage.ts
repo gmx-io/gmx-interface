@@ -3,6 +3,7 @@ export const SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY = "SELECTED_NET
 export const SELECTED_SETTLEMENT_CHAIN_ID_KEY = "SELECTED_SETTLEMENT_CHAIN_ID";
 export const SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY = "eagerconnect";
 export const CURRENT_PROVIDER_LOCALSTORAGE_KEY = "currentprovider";
+export const PRIVY_ACTIVE_WALLET_ADDRESS_LOCAL_STORAGE_KEY = "privy-active-wallet-address";
 export const LANGUAGE_LOCALSTORAGE_KEY = "LANGUAGE_KEY";
 const SLIPPAGE_BPS_KEY = "Exchange-swap-slippage-basis-points-v4";
 const EXECUTION_FEE_BUFFER_BPS_KEY = "execution-fee-buffer-basis-points";
