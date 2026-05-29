@@ -23,8 +23,8 @@ const supportedChains = getSupportedChains();
 const defaultChain = supportedChains[0];
 const gmxLogoElement = <img src={gmxLogo} alt="GMX" width={100} />;
 
-function getActiveWalletForWagmi({ wallets, user }: { wallets: ConnectedWallet[]; user: User | null }) {
-  return user ? wallets.find((wallet) => wallet.linked) ?? wallets[0] : wallets[0];
+export function getActiveWalletForWagmi({ wallets }: { wallets: ConnectedWallet[]; user: User | null }) {
+  return wallets[0];
 }
 
 export default function WalletProvider({ children }: { children: React.ReactNode }) {

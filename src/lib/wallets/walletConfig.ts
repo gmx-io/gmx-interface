@@ -27,7 +27,6 @@ export { PRIVY_APP_ID };
 export const PRIVY_WALLET_LIST = [
   "detected_ethereum_wallets",
   "metamask",
-  "rabby_wallet",
   "wallet_connect_qr",
   "coinbase_wallet",
   "safe",

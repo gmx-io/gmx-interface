@@ -1,4 +1,4 @@
-import { useConnectOrCreateWallet } from "@privy-io/react-auth";
+import { useConnectOrCreateWallet, useLogin } from "@privy-io/react-auth";
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
 
 import type { SettlementChainId } from "config/chains";
@@ -46,9 +46,21 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
     });
   }, [settlementChainId]);
 
+  const handleError = useCallback(() => setConnectModalOpen(false), []);
+  const handleLoginComplete = useCallback(() => {
+    if (connectModalOpen) {
+      handleSuccess();
+    }
+  }, [connectModalOpen, handleSuccess]);
+
+  useLogin({
+    onComplete: handleLoginComplete,
+    onError: handleError,
+  });
+
   const { connectOrCreateWallet } = useConnectOrCreateWallet({
     onSuccess: handleSuccess,
-    onError: () => setConnectModalOpen(false),
+    onError: handleError,
   });
 
   const openConnectModal = useCallback(() => {

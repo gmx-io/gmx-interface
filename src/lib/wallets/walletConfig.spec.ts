@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import { ARBITRUM, DEFAULT_SETTLEMENT_CHAIN_ID } from "config/chains";
 
-import { getSupportedChains } from "./walletConfig";
+import { getSupportedChains, PRIVY_WALLET_LIST } from "./walletConfig";
 
 describe("getSupportedChains", () => {
   it("uses Arbitrum as the default settlement chain", () => {
@@ -19,5 +19,10 @@ describe("getSupportedChains", () => {
     const chainIds = getSupportedChains().map((chain) => chain.id);
 
     expect(new Set(chainIds).size).toBe(chainIds.length);
+  });
+
+  it("uses detected wallets for Rabby instead of the deprecated explicit entry", () => {
+    expect(PRIVY_WALLET_LIST).toContain("detected_ethereum_wallets");
+    expect(PRIVY_WALLET_LIST).not.toContain("rabby_wallet");
   });
 });
