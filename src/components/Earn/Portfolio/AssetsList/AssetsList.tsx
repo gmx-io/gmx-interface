@@ -96,7 +96,7 @@ function AssetsList({
   const shouldUseFlex = (cardsCount < 3 && isEnoughSpaceFor2Columns) || (cardsCount < 4 && isEnoughSpaceFor3Columns);
 
   const { account } = useWallet();
-  const { openConnectModal } = useConnectModal();
+  const { isConnectModalLoading, openConnectModal } = useConnectModal();
 
   const sortedAssets = useMemo(() => {
     return getSortedAssets({
@@ -165,8 +165,8 @@ function AssetsList({
             )}
           </span>
           {!account && openConnectModal && (
-            <ConnectWalletButton onClick={openConnectModal}>
-              <Trans>Connect wallet</Trans>
+            <ConnectWalletButton disabled={isConnectModalLoading} onClick={openConnectModal}>
+              {isConnectModalLoading ? <Trans>Loading...</Trans> : <Trans>Connect wallet</Trans>}
             </ConnectWalletButton>
           )}
         </div>

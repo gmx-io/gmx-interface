@@ -7,15 +7,17 @@ import WalletIcon from "img/ic_wallet.svg?react";
 type Props = {
   children: ReactNode;
   onClick?: () => void;
+  disabled?: boolean;
 };
 
-export default function ConnectWalletButton({ children, onClick }: Props) {
+export default function ConnectWalletButton({ children, disabled, onClick }: Props) {
   return (
     <Button
       variant="primary"
       size="controlled"
       data-qa="connect-wallet-button"
       className="flex h-40 items-center gap-6 max-md:h-32"
+      disabled={disabled}
       onClick={onClick}
     >
       <WalletIcon className="box-content size-20" />

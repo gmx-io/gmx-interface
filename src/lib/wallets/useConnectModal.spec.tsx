@@ -31,9 +31,11 @@ const mocks = vi.hoisted(() => {
     connectOrCreateWallet: vi.fn(),
     loginCallbacks: undefined as LoginCallbacks | undefined,
     connectOrCreateWalletCallbacks: undefined as ConnectOrCreateWalletCallbacks | undefined,
+    isPrivyReady: true,
     switchNetwork: vi.fn(),
     useConnectOrCreateWallet: vi.fn(),
     useLogin: vi.fn(),
+    usePrivy: vi.fn(),
   };
 
   state.useConnectOrCreateWallet.mockImplementation((callbacks: ConnectOrCreateWalletCallbacks | undefined) => {
@@ -50,12 +52,17 @@ const mocks = vi.hoisted(() => {
     };
   });
 
+  state.usePrivy.mockImplementation(() => ({
+    ready: state.isPrivyReady,
+  }));
+
   return state;
 });
 
 vi.mock("@privy-io/react-auth", () => ({
   useConnectOrCreateWallet: mocks.useConnectOrCreateWallet,
   useLogin: mocks.useLogin,
+  usePrivy: mocks.usePrivy,
 }));
 
 vi.mock("context/GmxAccountContext/hooks", () => ({
@@ -77,17 +84,17 @@ vi.mock("lib/wallets", () => ({
 }));
 
 function TestComponent() {
-  const { openConnectModal, connectModalOpen } = useConnectModal();
+  const { openConnectModal, connectModalOpen, isConnectModalLoading } = useConnectModal();
 
   return (
-    <button type="button" onClick={() => openConnectModal?.()}>
+    <button type="button" data-loading={isConnectModalLoading} onClick={() => openConnectModal?.()}>
       {connectModalOpen ? "open" : "closed"}
     </button>
   );
 }
 
 function setup() {
-  render(
+  return render(
     <ConnectModalProvider>
       <TestComponent />
     </ConnectModalProvider>
@@ -97,6 +104,7 @@ function setup() {
 describe("ConnectModalProvider", () => {
   beforeEach(() => {
     mocks.switchNetwork.mockResolvedValue(undefined);
+    mocks.isPrivyReady = true;
     mocks.loginCallbacks = undefined;
     mocks.connectOrCreateWalletCallbacks = undefined;
   });
@@ -162,5 +170,34 @@ describe("ConnectModalProvider", () => {
     });
 
     expect(shouldUseEmbeddedWalletForCurrentPrivyConnect()).toBe(false);
+  });
+
+  it("waits for Privy readiness before opening the wallet modal", async () => {
+    mocks.isPrivyReady = false;
+    const view = setup();
+
+    await act(async () => {
+      screen.getByRole("button").click();
+    });
+
+    expect(screen.getByRole("button").textContent).toBe("closed");
+    expect(screen.getByRole("button").getAttribute("data-loading")).toBe("true");
+    expect(mocks.connectOrCreateWallet).not.toHaveBeenCalled();
+    expect(hasPrivyConnectIntent()).toBe(false);
+
+    mocks.isPrivyReady = true;
+
+    await act(async () => {
+      view.rerender(
+        <ConnectModalProvider>
+          <TestComponent />
+        </ConnectModalProvider>
+      );
+    });
+
+    expect(screen.getByRole("button").textContent).toBe("open");
+    expect(screen.getByRole("button").getAttribute("data-loading")).toBe("false");
+    expect(mocks.connectOrCreateWallet).toHaveBeenCalledTimes(1);
+    expect(hasPrivyConnectIntent()).toBe(true);
   });
 });

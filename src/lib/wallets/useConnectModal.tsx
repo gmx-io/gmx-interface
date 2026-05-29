@@ -1,5 +1,5 @@
-import { useConnectOrCreateWallet, useLogin, type LinkedAccountWithMetadata } from "@privy-io/react-auth";
-import { createContext, useCallback, useContext, useMemo, useState } from "react";
+import { useConnectOrCreateWallet, useLogin, usePrivy, type LinkedAccountWithMetadata } from "@privy-io/react-auth";
+import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 import type { SettlementChainId } from "config/chains";
 import {
@@ -20,11 +20,13 @@ import {
 type ConnectModalContextValue = {
   openConnectModal: (() => void) | undefined;
   connectModalOpen: boolean;
+  isConnectModalLoading: boolean;
 };
 
 const ConnectModalContext = createContext<ConnectModalContextValue>({
   openConnectModal: undefined,
   connectModalOpen: false,
+  isConnectModalLoading: false,
 });
 
 function shouldKeepAppSelectedSourceChain(settlementChainId: SettlementChainId) {
@@ -53,9 +55,12 @@ function shouldPreferEmbeddedWalletForLogin({
 export function ConnectModalProvider({ children }: { children: React.ReactNode }) {
   const [settlementChainId] = useGmxAccountSettlementChainId();
   const [connectModalOpen, setConnectModalOpen] = useState(false);
+  const [isConnectRequestPending, setIsConnectRequestPending] = useState(false);
+  const { ready: isPrivyReady } = usePrivy();
 
   const handleSuccess = useCallback(() => {
     setConnectModalOpen(false);
+    setIsConnectRequestPending(false);
 
     if (shouldKeepAppSelectedSourceChain(settlementChainId)) {
       return;
@@ -69,6 +74,7 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
   const handleError = useCallback(() => {
     markPrivyConnectFailed();
     setConnectModalOpen(false);
+    setIsConnectRequestPending(false);
   }, []);
   const handleLoginComplete = useCallback(
     ({ loginAccount, loginMethod }: { loginAccount: LinkedAccountWithMetadata | null; loginMethod: string | null }) => {
@@ -92,13 +98,41 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
     onError: handleError,
   });
 
-  const openConnectModal = useCallback(() => {
+  const openPrivyConnectModal = useCallback(() => {
     markPrivyConnectStarted();
     setConnectModalOpen(true);
-    connectOrCreateWallet();
+    setIsConnectRequestPending(false);
+
+    try {
+      connectOrCreateWallet();
+    } catch (error) {
+      markPrivyConnectFailed();
+      setConnectModalOpen(false);
+      setIsConnectRequestPending(false);
+      throw error;
+    }
   }, [connectOrCreateWallet]);
 
-  const value = useMemo(() => ({ openConnectModal, connectModalOpen }), [openConnectModal, connectModalOpen]);
+  const openConnectModal = useCallback(() => {
+    if (!isPrivyReady) {
+      setConnectModalOpen(false);
+      setIsConnectRequestPending(true);
+      return;
+    }
+
+    openPrivyConnectModal();
+  }, [isPrivyReady, openPrivyConnectModal]);
+
+  useEffect(() => {
+    if (isPrivyReady && isConnectRequestPending) {
+      openPrivyConnectModal();
+    }
+  }, [isPrivyReady, isConnectRequestPending, openPrivyConnectModal]);
+
+  const value = useMemo(
+    () => ({ openConnectModal, connectModalOpen, isConnectModalLoading: isConnectRequestPending }),
+    [openConnectModal, connectModalOpen, isConnectRequestPending]
+  );
 
   return <ConnectModalContext.Provider value={value}>{children}</ConnectModalContext.Provider>;
 }
