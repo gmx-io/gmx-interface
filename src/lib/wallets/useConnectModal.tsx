@@ -28,6 +28,7 @@ import {
   findActivePrivyWalletByStorageValue,
   isWagmiAccountActivePrivyWallet,
   removeActivePrivyWalletFromStorage,
+  shouldUseEmbeddedWalletFlow,
   writeActivePrivyWalletToStorage,
   type ActivePrivyWalletStorageValue,
 } from "./activeWalletStorage";
@@ -52,15 +53,13 @@ const PENDING_CONNECT_ATTEMPT_TTL_MS = 15 * 60 * 1000;
 
 type ConnectAttempt = {
   id: number;
-  startedAt: number;
-  existingWalletConnectedAt: Map<string, number>;
 };
 
 function isWalletLoginMethod(loginMethod: LoginCompleteParams["loginMethod"]) {
   return loginMethod === "siwe" || loginMethod === "siws";
 }
 
-export function getActiveWalletStorageValueAfterLogin({
+export function getLoginWalletStorageCandidate({
   loginAccount,
   loginMethod,
   wasAlreadyAuthenticated,
@@ -93,24 +92,6 @@ function getCurrentWagmiAccount() {
   };
 }
 
-function getActiveWalletKey(wallet: ActivePrivyWalletStorageValue) {
-  return [wallet.address.toLowerCase(), wallet.connectorId, wallet.connectorType, wallet.walletClientType].join(":");
-}
-
-function getConnectedWalletsAtOpen(wallets: ConnectedWallet[]) {
-  return new Map(
-    wallets
-      .map((wallet) => {
-        const activeWalletStorageValue = getEthereumWalletStorageValue(wallet);
-
-        return activeWalletStorageValue
-          ? ([getActiveWalletKey(activeWalletStorageValue), wallet.connectedAt] as const)
-          : undefined;
-      })
-      .filter((entry): entry is readonly [string, number] => entry !== undefined)
-  );
-}
-
 function readPendingConnectAttemptStartedAt() {
   if (typeof window === "undefined") {
     return undefined;
@@ -141,22 +122,6 @@ function removePendingConnectAttempt() {
   }
 
   window.sessionStorage.removeItem(PENDING_CONNECT_ATTEMPT_SESSION_STORAGE_KEY);
-}
-
-function wasWalletConnectedDuringAttempt(
-  wallet: ConnectedWallet,
-  activeWalletStorageValue: ActivePrivyWalletStorageValue,
-  connectAttempt: ConnectAttempt
-) {
-  const connectedAtBeforeAttempt = connectAttempt.existingWalletConnectedAt.get(
-    getActiveWalletKey(activeWalletStorageValue)
-  );
-
-  if (connectedAtBeforeAttempt !== undefined && wallet.connectedAt === connectedAtBeforeAttempt) {
-    return false;
-  }
-
-  return wallet.connectedAt >= connectAttempt.startedAt;
 }
 
 function waitForActiveWagmiWallet(activeWallet: ActivePrivyWalletStorageValue) {
@@ -256,8 +221,6 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
     nextConnectAttemptIdRef.current = connectAttemptId;
     activeConnectAttemptRef.current = {
       id: connectAttemptId,
-      startedAt,
-      existingWalletConnectedAt: getConnectedWalletsAtOpen(walletsRef.current ?? []),
     };
     writePendingConnectAttempt(startedAt);
 
@@ -323,14 +286,27 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
         return;
       }
 
-      writeActivePrivyWalletToStorage(activeWalletStorageValue);
-
       const wallet = connectedWallet ?? (await waitForPrivyWallet(walletsRef, activeWalletStorageValue));
 
       if (!isConnectAttemptActive(connectAttemptId)) {
         removeActivePrivyWalletFromStorage();
         return;
       }
+
+      const activeWalletToStore = wallet
+        ? getEthereumWalletStorageValue(wallet) ?? activeWalletStorageValue
+        : activeWalletStorageValue;
+
+      if (!activeWalletToStore.connectorId && !wallet) {
+        metrics.pushError(
+          new Error(`Timed out waiting for Privy wallet ${activeWalletStorageValue.address}`),
+          "connectModal.waitForPrivyWallet"
+        );
+        cancelActiveConnectAttempt(connectAttemptId);
+        return;
+      }
+
+      writeActivePrivyWalletToStorage(activeWalletToStore);
 
       if (wallet) {
         try {
@@ -341,10 +317,10 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
       }
 
       try {
-        await waitForActiveWagmiWallet(activeWalletStorageValue);
+        await waitForActiveWagmiWallet(activeWalletToStore);
       } catch (error) {
         metrics.pushError(error, "connectModal.waitForActiveWallet");
-        cancelActiveConnectAttempt();
+        cancelActiveConnectAttempt(connectAttemptId);
         return;
       }
 
@@ -396,27 +372,31 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
         return;
       }
 
-      if (
-        params.wallet.type === "ethereum" &&
-        !wasWalletConnectedDuringAttempt(params.wallet as ConnectedWallet, activeWalletStorageValue, connectAttempt)
-      ) {
-        cancelActiveConnectAttempt(connectAttempt.id);
-        return;
-      }
-
       await activateActiveWallet(
         activeWalletStorageValue,
         params.wallet.type === "ethereum" ? (params.wallet as ConnectedWallet) : undefined,
         connectAttempt.id
       );
     },
-    [activateActiveWallet, cancelActiveConnectAttempt, getActiveConnectAttempt, handleSuccess]
+    [activateActiveWallet, getActiveConnectAttempt, handleSuccess]
   );
 
   const { connectOrCreateWallet } = useConnectOrCreateWallet({
     onSuccess: handleConnectOrCreateWalletSuccess,
     onError: () => cancelActiveConnectAttempt(),
   });
+
+  const connectAuthenticatedUser = useCallback(
+    (user: User, connectAttemptId: number) => {
+      if (shouldUseEmbeddedWalletFlow(user)) {
+        activateEmbeddedWalletOrCreateWallet(user, connectAttemptId);
+        return;
+      }
+
+      connectOrCreateWallet();
+    },
+    [activateEmbeddedWalletOrCreateWallet, connectOrCreateWallet]
+  );
 
   const handleLoginComplete = useCallback(
     (params: LoginCompleteParams) => {
@@ -429,7 +409,7 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
 
       if (params.wasAlreadyAuthenticated) {
         if (!isWalletLoginMethod(params.loginMethod)) {
-          activateEmbeddedWalletOrCreateWallet(params.user, connectAttemptId);
+          connectAuthenticatedUser(params.user, connectAttemptId);
           return;
         }
 
@@ -437,7 +417,7 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
         return;
       }
 
-      const activeWalletStorageValue = getActiveWalletStorageValueAfterLogin(params);
+      const activeWalletStorageValue = getLoginWalletStorageCandidate(params);
 
       if (activeWalletStorageValue) {
         void activateActiveWallet(activeWalletStorageValue, undefined, connectAttemptId);
@@ -451,7 +431,13 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
 
       handleSuccess(connectAttemptId);
     },
-    [activateActiveWallet, activateEmbeddedWalletOrCreateWallet, getActiveConnectAttempt, handleSuccess]
+    [
+      activateActiveWallet,
+      activateEmbeddedWalletOrCreateWallet,
+      connectAuthenticatedUser,
+      getActiveConnectAttempt,
+      handleSuccess,
+    ]
   );
 
   useLogin({
@@ -464,19 +450,12 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
     setConnectModalOpen(true);
 
     if (privyReady && authenticated && user) {
-      activateEmbeddedWalletOrCreateWallet(user, connectAttempt.id);
+      connectAuthenticatedUser(user, connectAttempt.id);
       return;
     }
 
     connectOrCreateWallet();
-  }, [
-    activateEmbeddedWalletOrCreateWallet,
-    authenticated,
-    connectOrCreateWallet,
-    privyReady,
-    startConnectAttempt,
-    user,
-  ]);
+  }, [authenticated, connectAuthenticatedUser, connectOrCreateWallet, privyReady, startConnectAttempt, user]);
 
   const value = useMemo(() => ({ openConnectModal, connectModalOpen }), [openConnectModal, connectModalOpen]);
 

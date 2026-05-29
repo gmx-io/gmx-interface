@@ -15,6 +15,8 @@ type WalletAccount = {
   walletClientType?: string | null;
 };
 
+type WalletConnectorAccount = Pick<WalletAccount, "address" | "meta" | "walletClientType">;
+
 type WagmiAccount = {
   address?: string;
   connectorId?: string;
@@ -68,14 +70,20 @@ export function readActivePrivyWalletFromStorage() {
   return isActivePrivyWalletStorageValue(value) ? value : undefined;
 }
 
+function saveActivePrivyWalletStorageValue(wallet: ActivePrivyWalletStorageValue) {
+  try {
+    localStorage.setItem(ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY, JSON.stringify(wallet));
+  } catch (error) {
+    //
+  }
+}
+
 export function writeActivePrivyWalletToStorage(wallet: ActivePrivyWalletStorageValue) {
   if (!isActivePrivyWalletStorageValue(wallet)) {
     return;
   }
 
-  const storage = getActivePrivyWalletStorage();
-
-  ACTIVE_PRIVY_WALLET_STORAGE_KEYS.forEach((key) => storage.set(key, wallet[key]));
+  saveActivePrivyWalletStorageValue(wallet);
   notifyActivePrivyWalletStorageChange();
 }
 
@@ -104,7 +112,11 @@ export function subscribeActivePrivyWalletStorage(onChange: () => void) {
   };
 }
 
-export function getPrivyWagmiConnectorId(wallet: Pick<ConnectedWallet, "address" | "meta" | "walletClientType">) {
+export function getPrivyWagmiConnectorId(wallet: WalletConnectorAccount) {
+  if (!wallet.meta?.id) {
+    return undefined;
+  }
+
   return wallet.walletClientType === "privy" ? `${wallet.meta.id}.${wallet.address}` : wallet.meta.id;
 }
 
@@ -182,11 +194,7 @@ export function getEthereumWalletStorageValue(account: WalletAccount | null | un
 
   return {
     address: account.address,
-    connectorId: account.meta?.id
-      ? account.walletClientType === "privy"
-        ? `${account.meta.id}.${account.address}`
-        : account.meta.id
-      : undefined,
+    connectorId: getPrivyWagmiConnectorId(account),
     connectorType: account.connectorType ?? undefined,
     walletClientType: account.walletClientType ?? undefined,
   };
@@ -204,7 +212,7 @@ export function isWagmiAccountActivePrivyWallet(account: WagmiAccount, storedWal
   return !storedWallet.connectorId || account.connectorId === storedWallet.connectorId;
 }
 
-export function isEmbeddedEthereumWallet(account: WalletAccount) {
+function isEmbeddedEthereumWallet(account: WalletAccount) {
   return (
     Boolean(getEthereumWalletStorageValue(account)) &&
     (account.walletClientType === "privy" ||
@@ -215,4 +223,14 @@ export function isEmbeddedEthereumWallet(account: WalletAccount) {
 
 export function getEmbeddedEthereumWallet(user: User) {
   return getEthereumWalletStorageValue(user.linkedAccounts.find(isEmbeddedEthereumWallet));
+}
+
+function hasExternalEthereumWallet(user: User) {
+  return user.linkedAccounts.some(
+    (account) => Boolean(getEthereumWalletStorageValue(account)) && !isEmbeddedEthereumWallet(account)
+  );
+}
+
+export function shouldUseEmbeddedWalletFlow(user: User) {
+  return Boolean(getEmbeddedEthereumWallet(user)) || !hasExternalEthereumWallet(user);
 }

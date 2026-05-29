@@ -135,7 +135,7 @@ function createEmbeddedWallet({ connectedAt = Date.now() }: { connectedAt?: numb
   });
 }
 
-function createUserWithEmbeddedWallet(wallet: ConnectedWallet) {
+function createUserWithLinkedWallet(wallet: ConnectedWallet) {
   return {
     linkedAccounts: [
       {
@@ -152,6 +152,16 @@ function createUserWithEmbeddedWallet(wallet: ConnectedWallet) {
 
 function getPrivyConnectorId(wallet: ConnectedWallet) {
   return `${wallet.meta.id}.${wallet.address}`;
+}
+
+function getStoredActiveWallet() {
+  return JSON.parse(localStorage.getItem(ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY) ?? "{}");
+}
+
+async function flushPromises() {
+  await act(async () => {
+    await Promise.resolve();
+  });
 }
 
 function ConnectModalConsumer() {
@@ -189,6 +199,7 @@ describe("ConnectModalProvider", () => {
     mocks.switchNetwork.mockReset().mockResolvedValue(undefined);
     mocks.wallets = [];
     sessionStorage.clear();
+    vi.useRealTimers();
   });
 
   it("ignores a late Privy connect success after the connect modal is canceled", async () => {
@@ -215,7 +226,7 @@ describe("ConnectModalProvider", () => {
     expect(localStorage.getItem(ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY)).toBeNull();
   });
 
-  it("ignores an already connected Privy wallet returned when the connect modal is closed", async () => {
+  it("activates an already connected Privy wallet selected during an active connect attempt", async () => {
     const wallet = createConnectedWallet({ connectedAt: Date.now() - 1000 });
     mocks.account = {
       address: wallet.address,
@@ -233,8 +244,11 @@ describe("ConnectModalProvider", () => {
       await mocks.connectOrCreateWalletCallbacks?.onSuccess?.({ wallet });
     });
 
-    expect(mocks.setActiveWallet).not.toHaveBeenCalled();
-    expect(localStorage.getItem(ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY)).toBeNull();
+    expect(mocks.setActiveWallet).toHaveBeenCalledWith(wallet);
+    expect(getStoredActiveWallet()).toMatchObject({
+      address: wallet.address,
+      connectorId: "io.rabby",
+    });
   });
 
   it("activates the selected wallet while the connect attempt is still active", async () => {
@@ -257,7 +271,7 @@ describe("ConnectModalProvider", () => {
     await waitFor(() => {
       expect(mocks.setActiveWallet).toHaveBeenCalledWith(wallet);
     });
-    expect(JSON.parse(localStorage.getItem(ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY) ?? "{}")).toMatchObject({
+    expect(getStoredActiveWallet()).toMatchObject({
       address: wallet.address,
       connectorId: "io.rabby",
       connectorType: "injected",
@@ -275,7 +289,7 @@ describe("ConnectModalProvider", () => {
     unmount();
 
     const wallet = createEmbeddedWallet();
-    const user = createUserWithEmbeddedWallet(wallet);
+    const user = createUserWithLinkedWallet(wallet);
     mocks.account = {
       address: wallet.address,
       connector: { id: getPrivyConnectorId(wallet) },
@@ -297,16 +311,126 @@ describe("ConnectModalProvider", () => {
     await waitFor(() => {
       expect(mocks.setActiveWallet).toHaveBeenCalledWith(wallet);
     });
-    expect(JSON.parse(localStorage.getItem(ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY) ?? "{}")).toMatchObject({
+    expect(getStoredActiveWallet()).toMatchObject({
       address: wallet.address,
       connectorType: "embedded",
       walletClientType: "privy",
     });
   });
 
+  it("stores the matching connected wallet connector after wallet login", async () => {
+    const address = "0x3333333333333333333333333333333333333333";
+    const metamaskWallet = createConnectedWallet({
+      address,
+      meta: {
+        id: "io.metamask",
+        name: "MetaMask",
+      },
+      walletClientType: "metamask",
+    });
+    const rabbyWallet = createConnectedWallet({
+      address,
+      meta: {
+        id: "io.rabby",
+        name: "Rabby",
+      },
+      walletClientType: "rabby_wallet",
+    });
+    mocks.account = {
+      address,
+      connector: { id: "io.rabby" },
+    };
+    mocks.wallets = [metamaskWallet, rabbyWallet];
+
+    renderProvider();
+
+    act(() => {
+      mocks.openConnectModal?.();
+    });
+
+    act(() => {
+      mocks.loginCallbacks?.onComplete?.({
+        isNewUser: false,
+        loginAccount: {
+          address,
+          chainType: "ethereum",
+          connectorType: "injected",
+          imported: false,
+          type: "wallet",
+          walletClientType: "rabby_wallet",
+        } as never,
+        loginMethod: "siwe",
+        user: { linkedAccounts: [] } as unknown as User,
+        wasAlreadyAuthenticated: false,
+      });
+    });
+
+    await waitFor(() => {
+      expect(mocks.setActiveWallet).toHaveBeenCalledWith(rabbyWallet);
+    });
+    expect(getStoredActiveWallet()).toMatchObject({
+      address,
+      connectorId: "io.rabby",
+      connectorType: "injected",
+      walletClientType: "rabby_wallet",
+    });
+  });
+
+  it("does not let a stale activation timeout cancel a newer connect attempt", async () => {
+    vi.useFakeTimers();
+
+    renderProvider();
+
+    act(() => {
+      mocks.openConnectModal?.();
+    });
+
+    const staleWallet = createConnectedWallet({
+      address: "0x4444444444444444444444444444444444444444",
+      meta: {
+        id: "io.metamask",
+        name: "MetaMask",
+      },
+      walletClientType: "metamask",
+    });
+
+    act(() => {
+      void mocks.connectOrCreateWalletCallbacks?.onSuccess?.({ wallet: staleWallet });
+    });
+
+    await flushPromises();
+
+    const activeWallet = createConnectedWallet({
+      address: "0x5555555555555555555555555555555555555555",
+    });
+
+    act(() => {
+      vi.advanceTimersByTime(1000);
+      mocks.openConnectModal?.();
+    });
+
+    act(() => {
+      void mocks.connectOrCreateWalletCallbacks?.onSuccess?.({ wallet: activeWallet });
+    });
+
+    await flushPromises();
+
+    await act(async () => {
+      vi.advanceTimersByTime(4000);
+      await Promise.resolve();
+    });
+
+    expect(getStoredActiveWallet()).toMatchObject({
+      address: activeWallet.address,
+      connectorId: "io.rabby",
+    });
+    expect(mocks.setActiveWallet).toHaveBeenCalledWith(activeWallet);
+    expect(mocks.switchNetwork).not.toHaveBeenCalled();
+  });
+
   it("recovers an authenticated Google user with no active wallet when connect is clicked", async () => {
     const wallet = createEmbeddedWallet();
-    const user = createUserWithEmbeddedWallet(wallet);
+    const user = createUserWithLinkedWallet(wallet);
     mocks.account = {
       address: wallet.address,
       connector: { id: getPrivyConnectorId(wallet) },
@@ -328,5 +452,25 @@ describe("ConnectModalProvider", () => {
       expect(mocks.setActiveWallet).toHaveBeenCalledWith(wallet);
     });
     expect(mocks.connectOrCreateWallet).not.toHaveBeenCalled();
+  });
+
+  it("opens wallet selection for authenticated external-wallet users", () => {
+    const wallet = createConnectedWallet();
+    mocks.privy = {
+      authenticated: true,
+      ready: true,
+      user: createUserWithLinkedWallet(wallet),
+    };
+    mocks.wallets = [wallet];
+
+    renderProvider();
+
+    act(() => {
+      mocks.openConnectModal?.();
+    });
+
+    expect(mocks.connectOrCreateWallet).toHaveBeenCalledTimes(1);
+    expect(mocks.createWallet).not.toHaveBeenCalled();
+    expect(mocks.setActiveWallet).not.toHaveBeenCalled();
   });
 });

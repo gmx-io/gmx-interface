@@ -135,4 +135,40 @@ describe("active wallet storage", () => {
 
     expect(onChange).toHaveBeenCalledTimes(2);
   });
+
+  it("writes the full active wallet intent atomically", () => {
+    const originalSetItem = localStorage.setItem.bind(localStorage);
+    const observedWrites: unknown[] = [];
+    const setItemSpy = vi.spyOn(localStorage, "setItem").mockImplementation((key, value) => {
+      if (key === ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY) {
+        observedWrites.push(JSON.parse(value));
+      }
+
+      originalSetItem(key, value);
+    });
+
+    writeActivePrivyWalletToStorage({
+      address: "0x00000000000000000000000000000000000000aa",
+      connectorId: "io.rabby",
+      connectorType: "injected",
+      walletClientType: "rabby_wallet",
+    });
+
+    expect(observedWrites).toEqual([
+      {
+        address: "0x00000000000000000000000000000000000000aa",
+        connectorId: "io.rabby",
+        connectorType: "injected",
+        walletClientType: "rabby_wallet",
+      },
+    ]);
+    expect(JSON.parse(localStorage.getItem(ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY) ?? "{}")).toEqual({
+      address: "0x00000000000000000000000000000000000000aa",
+      connectorId: "io.rabby",
+      connectorType: "injected",
+      walletClientType: "rabby_wallet",
+    });
+
+    setItemSpy.mockRestore();
+  });
 });
