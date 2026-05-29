@@ -25,16 +25,16 @@ import { LRUCache } from "sdk/utils/LruCache";
 export { PRIVY_APP_ID };
 
 export const PRIVY_WALLET_LIST = [
-  "detected_ethereum_wallets",
   "metamask",
+  "phantom",
   "rabby_wallet",
-  "wallet_connect_qr",
   "coinbase_wallet",
-  "safe",
-  "binance",
   "base_account",
   "okx_wallet",
-  "phantom",
+  "binance",
+  "safe",
+  "detected_ethereum_wallets",
+  "wallet_connect_qr",
   "wallet_connect",
 ] as const;
 

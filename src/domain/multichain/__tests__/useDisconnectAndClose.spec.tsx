@@ -12,6 +12,7 @@ const mocks = vi.hoisted(() => ({
   setIsSettingsVisible: vi.fn(),
   setIsVisible: vi.fn(),
   wallets: [] as { disconnect: ReturnType<typeof vi.fn> }[],
+  disconnectPrivyWalletsFromWagmi: vi.fn(),
 }));
 
 vi.mock("@privy-io/react-auth", () => ({
@@ -45,6 +46,10 @@ vi.mock("lib/userAnalytics", () => ({
   },
 }));
 
+vi.mock("lib/wallets/privyWagmi", () => ({
+  disconnectPrivyWalletsFromWagmi: mocks.disconnectPrivyWalletsFromWagmi,
+}));
+
 function setup() {
   let handleDisconnect!: ReturnType<typeof useDisconnectAndClose>;
 
@@ -62,6 +67,7 @@ describe("useDisconnectAndClose", () => {
   beforeEach(() => {
     mocks.disconnectAsync.mockResolvedValue(undefined);
     mocks.logout.mockResolvedValue(undefined);
+    mocks.disconnectPrivyWalletsFromWagmi.mockResolvedValue(undefined);
     mocks.wallets = [{ disconnect: vi.fn() }, { disconnect: vi.fn() }];
 
     localStorage.setItem(SHOULD_EAGER_CONNECT_LOCALSTORAGE_KEY, "true");
@@ -82,6 +88,8 @@ describe("useDisconnectAndClose", () => {
     });
 
     expect(mocks.disconnectAsync).toHaveBeenCalledTimes(1);
+    expect(mocks.disconnectPrivyWalletsFromWagmi).toHaveBeenCalledTimes(2);
+    expect(mocks.disconnectPrivyWalletsFromWagmi).toHaveBeenCalledWith(mocks.wallets);
     expect(mocks.wallets[0].disconnect).toHaveBeenCalledTimes(1);
     expect(mocks.wallets[1].disconnect).toHaveBeenCalledTimes(1);
     expect(mocks.logout).toHaveBeenCalledTimes(1);

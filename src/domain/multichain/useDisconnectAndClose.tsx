@@ -7,6 +7,7 @@ import { useGmxAccountModalOpen } from "context/GmxAccountContext/hooks";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { userAnalytics } from "lib/userAnalytics";
 import { DisconnectWalletEvent } from "lib/userAnalytics/types";
+import { disconnectPrivyWalletsFromWagmi } from "lib/wallets/privyWagmi";
 
 export function useDisconnectAndClose() {
   const { setIsSettingsVisible } = useSettings();
@@ -27,10 +28,13 @@ export function useDisconnectAndClose() {
     localStorage.removeItem(CURRENT_PROVIDER_LOCALSTORAGE_KEY);
 
     try {
+      await disconnectPrivyWalletsFromWagmi(wallets);
+
       await Promise.allSettled([
         disconnectAsync(),
         ...wallets.map((wallet) => Promise.resolve().then(() => wallet.disconnect())),
       ]);
+      await disconnectPrivyWalletsFromWagmi(wallets);
       await Promise.allSettled([logout()]);
     } finally {
       setIsVisible(false);
