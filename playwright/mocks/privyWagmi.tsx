@@ -10,11 +10,15 @@ export function WagmiProvider({
   children,
   config,
   initialState,
+  setActiveWalletForWagmi,
 }: {
   children: ReactNode;
   config: ReturnType<typeof createWagmiConfig>;
   initialState?: State;
+  setActiveWalletForWagmi?: unknown;
 }) {
+  void setActiveWalletForWagmi;
+
   return (
     <BaseWagmiProvider config={config} initialState={initialState}>
       {children}

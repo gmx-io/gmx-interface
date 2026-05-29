@@ -7,9 +7,12 @@ const mocks = vi.hoisted(() => ({
   authenticated: false,
   isPrivyModalOpen: false,
   connectOrCreateWallet: vi.fn(),
+  connectOrCreateWalletCallbacks: undefined as { onSuccess?: (params: { wallet: object }) => void } | undefined,
   connectWallet: vi.fn(),
+  connectWalletCallbacks: undefined as { onSuccess?: (params: { wallet: object }) => void } | undefined,
+  allowPrivyWalletForWagmi: vi.fn(),
   pushError: vi.fn(),
-  switchNetwork: vi.fn(),
+  switchNetwork: vi.fn(() => Promise.resolve()),
 }));
 
 vi.mock("@privy-io/react-auth", () => ({
@@ -19,12 +22,18 @@ vi.mock("@privy-io/react-auth", () => ({
   useModalStatus: () => ({
     isOpen: mocks.isPrivyModalOpen,
   }),
-  useConnectOrCreateWallet: () => ({
-    connectOrCreateWallet: mocks.connectOrCreateWallet,
-  }),
-  useConnectWallet: () => ({
-    connectWallet: mocks.connectWallet,
-  }),
+  useConnectOrCreateWallet: (callbacks: { onSuccess?: (params: { wallet: object }) => void }) => {
+    mocks.connectOrCreateWalletCallbacks = callbacks;
+    return {
+      connectOrCreateWallet: mocks.connectOrCreateWallet,
+    };
+  },
+  useConnectWallet: (callbacks: { onSuccess?: (params: { wallet: object }) => void }) => {
+    mocks.connectWalletCallbacks = callbacks;
+    return {
+      connectWallet: mocks.connectWallet,
+    };
+  },
 }));
 
 vi.mock("context/GmxAccountContext/hooks", () => ({
@@ -43,6 +52,10 @@ vi.mock("lib/metrics", () => ({
 
 vi.mock("lib/wallets", () => ({
   switchNetwork: mocks.switchNetwork,
+}));
+
+vi.mock("lib/wallets/privyWagmi", () => ({
+  allowPrivyWalletForWagmi: mocks.allowPrivyWalletForWagmi,
 }));
 
 function setup() {
@@ -66,6 +79,9 @@ describe("ConnectModalProvider", () => {
   beforeEach(() => {
     mocks.authenticated = false;
     mocks.isPrivyModalOpen = false;
+    mocks.connectOrCreateWalletCallbacks = undefined;
+    mocks.connectWalletCallbacks = undefined;
+    mocks.switchNetwork.mockResolvedValue(undefined);
   });
 
   afterEach(() => {
@@ -108,5 +124,17 @@ describe("ConnectModalProvider", () => {
     });
 
     expect(mocks.connectWallet).toHaveBeenCalledTimes(1);
+  });
+
+  it("allows the selected wallet for Privy wagmi sync on success", () => {
+    const wallet = { type: "ethereum", address: "0x1", meta: { id: "io.phantom" }, walletClientType: "phantom" };
+
+    setup();
+
+    act(() => {
+      mocks.connectWalletCallbacks?.onSuccess?.({ wallet });
+    });
+
+    expect(mocks.allowPrivyWalletForWagmi).toHaveBeenCalledWith(wallet);
   });
 });
