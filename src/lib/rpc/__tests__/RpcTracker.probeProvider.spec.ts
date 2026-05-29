@@ -164,9 +164,14 @@ describe("RpcTracker - checkRpc", () => {
       const privateProviders = rpcConfigModule.getRpcProviders(SOURCE_SEPOLIA, "fallback").filter((p) => !p?.isPublic);
       const privateProvider = privateProviders[0];
 
-      await expect(tracker.checkRpc(privateProvider!.url, new AbortController().signal)).rejects.toThrow(
-        "Skip private provider"
-      );
+      const result = await tracker.checkRpc(privateProvider!.url, new AbortController().signal);
+
+      expect(result).toEqual({
+        responseTime: 0,
+        blockNumber: 0,
+        skipped: true,
+      });
+      expect(fetchRpcModule.fetchBlockNumber).not.toHaveBeenCalled();
     });
 
     it("should allow private provider for large account on source chain", async () => {
@@ -319,9 +324,14 @@ describe("RpcTracker - checkRpc", () => {
 
       const tracker = new RpcTracker(params);
 
-      await expect(tracker.checkRpc(mockPrivateProvider.url, new AbortController().signal)).rejects.toThrow(
-        "Skip private provider"
-      );
+      const result = await tracker.checkRpc(mockPrivateProvider.url, new AbortController().signal);
+
+      expect(result).toEqual({
+        responseTime: 0,
+        blockNumber: 0,
+        skipped: true,
+      });
+      expect(fetchRpcModule.fetchEthCall).not.toHaveBeenCalled();
     });
 
     it("should allow private provider for large account", async () => {

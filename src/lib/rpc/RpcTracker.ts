@@ -35,6 +35,7 @@ export type RpcTrackerParams = RpcTrackerConfig & {
 export type RpcCheckResult = {
   responseTime: number;
   blockNumber: number;
+  skipped?: boolean;
 };
 
 export type RpcStats = EndpointStats<RpcCheckResult>;
@@ -104,12 +105,10 @@ export class RpcTracker {
     return this.providersMap[endpoint];
   }
 
-  private checkForSkip(endpoint: string): void {
+  private getShouldSkip(endpoint: string): boolean {
     const rpcConfig = this.getRpcConfig(endpoint);
 
-    if (!rpcConfig?.isPublic && (!this.getIsLargeAccount() || rpcConfig?.purpose !== "largeAccount")) {
-      throw new Error("Skip private provider");
-    }
+    return !rpcConfig?.isPublic && (!this.getIsLargeAccount() || rpcConfig?.purpose !== "largeAccount");
   }
 
   public pickCurrentRpcUrls() {
@@ -137,6 +136,14 @@ export class RpcTracker {
   }
 
   checkRpc = async (endpoint: string, signal: AbortSignal): Promise<RpcCheckResult> => {
+    if (this.getShouldSkip(endpoint)) {
+      return {
+        responseTime: 0,
+        blockNumber: 0,
+        skipped: true,
+      };
+    }
+
     const chainId = this.params.chainId;
     const isContractChain = isContractsChain(chainId, isDevelopment());
 
@@ -148,8 +155,6 @@ export class RpcTracker {
   };
 
   private checkRpcForContractChain = async (endpoint: string, signal: AbortSignal): Promise<RpcCheckResult> => {
-    this.checkForSkip(endpoint);
-
     const chainId = this.params.chainId as ContractsChainId;
     const startTime = Date.now();
 
@@ -220,8 +225,6 @@ export class RpcTracker {
   };
 
   private checkRpcForSourceChain = async (endpoint: string, signal: AbortSignal): Promise<RpcCheckResult> => {
-    this.checkForSkip(endpoint);
-
     const startTime = Date.now();
 
     const { blockNumber } = await fetchBlockNumber({
@@ -312,6 +315,7 @@ export class RpcTracker {
 
       const isSuccess = lastCheckResult?.success;
       const rpcBlockNumber = lastCheckResult?.stats?.blockNumber;
+      const isSkipped = lastCheckResult?.stats?.skipped;
 
       const isFromFuture =
         bestValidBlock && rpcBlockNumber && rpcBlockNumber - bestValidBlock > this.params.blockFromFutureThreshold;
@@ -319,7 +323,7 @@ export class RpcTracker {
       const isLagging =
         bestValidBlock && rpcBlockNumber && bestValidBlock - rpcBlockNumber > this.params.blockLaggingThreshold;
 
-      return isSuccess && !isFromFuture && !isLagging;
+      return isSuccess && !isSkipped && !isFromFuture && !isLagging;
     });
 
     if (validStats.length === 0) {
