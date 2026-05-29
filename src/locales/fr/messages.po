@@ -1023,6 +1023,7 @@ msgid "High swap price impact"
 msgstr "Impact de prix d'échange élevé"
 
 #: src/components/WhatsNewToast/WhatsNewToast.tsx
+#: src/components/WhatsNewToast/WhatsNewToast.tsx
 msgid "What's new"
 msgstr "Nouveautés"
 

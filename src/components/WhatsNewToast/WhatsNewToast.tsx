@@ -1,4 +1,4 @@
-import { Trans } from "@lingui/macro";
+import { t, Trans } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 
@@ -12,6 +12,7 @@ const AUTO_ROTATE_INTERVAL_MS = 5000;
 const SWIPE_THRESHOLD_PX = 40;
 const WHEEL_MIN_DELTA_PX = 4;
 const WHEEL_STEP_INTERVAL_MS = 350;
+const EMULATED_MOUSE_AFTER_TOUCH_MS = 500;
 const WHATS_NEW_LABEL = <Trans>What's new</Trans>;
 const SEE_MORE_LABEL = <Trans>See more</Trans>;
 
@@ -34,7 +35,13 @@ export function WhatsNewToast() {
     return () => window.clearTimeout(id);
   }, [cards.length, isPaused, activeIndex]);
 
-  const handleMouseEnter = useCallback(() => setIsPaused(true), []);
+  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+  const lastTouchEndRef = useRef(0);
+
+  const handleMouseEnter = useCallback(() => {
+    if (performance.now() - lastTouchEndRef.current < EMULATED_MOUSE_AFTER_TOUCH_MS) return;
+    setIsPaused(true);
+  }, []);
   const handleMouseLeave = useCallback(() => setIsPaused(false), []);
   const handleDotClick = useCallback((index: number) => setActiveIndex(index), []);
 
@@ -43,7 +50,24 @@ export function WhatsNewToast() {
     [cards.length]
   );
 
-  const touchStartRef = useRef<{ x: number; y: number } | null>(null);
+  const handleKeyDown = useCallback(
+    (e: React.KeyboardEvent) => {
+      if (e.key === "ArrowRight") {
+        e.preventDefault();
+        goRelative(1);
+      } else if (e.key === "ArrowLeft") {
+        e.preventDefault();
+        goRelative(-1);
+      }
+    },
+    [goRelative]
+  );
+
+  const handleFocus = useCallback(() => setIsPaused(true), []);
+  const handleBlur = useCallback((e: React.FocusEvent) => {
+    if (e.currentTarget.contains(e.relatedTarget as Node | null)) return;
+    setIsPaused(false);
+  }, []);
 
   const handleTouchStart = useCallback((e: React.TouchEvent) => {
     const touch = e.touches[0];
@@ -55,6 +79,7 @@ export function WhatsNewToast() {
     (e: React.TouchEvent) => {
       const start = touchStartRef.current;
       touchStartRef.current = null;
+      lastTouchEndRef.current = performance.now();
       setIsPaused(false);
       if (!start || cards.length <= 1) return;
 
@@ -134,9 +159,21 @@ export function WhatsNewToast() {
     <div
       ref={containerRef}
       className={cx(isCarousel && "touch-pan-y")}
+      role={isCarousel ? "region" : undefined}
+      aria-roledescription={isCarousel ? "carousel" : undefined}
+      aria-label={isCarousel ? t`What's new` : undefined}
+      tabIndex={isCarousel ? 0 : undefined}
+      onKeyDown={isCarousel ? handleKeyDown : undefined}
+      onFocus={isCarousel ? handleFocus : undefined}
+      onBlur={isCarousel ? handleBlur : undefined}
       onTouchStart={isCarousel ? handleTouchStart : undefined}
       onTouchEnd={isCarousel ? handleTouchEnd : undefined}
     >
+      {isCarousel && (
+        <span className="sr-only" aria-live="polite" aria-atomic>
+          {current.title}
+        </span>
+      )}
       <AnnouncementBanner
         variant={current.variant ?? "info"}
         headerLabel={WHATS_NEW_LABEL}
