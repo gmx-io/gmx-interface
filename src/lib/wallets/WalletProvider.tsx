@@ -1,4 +1,12 @@
-import { PrivyProvider, useLogin, type LinkedAccountWithMetadata, type User } from "@privy-io/react-auth";
+import {
+  PrivyProvider,
+  useConnectOrCreateWallet,
+  useConnectWallet,
+  useLogin,
+  type BaseConnectedWalletType,
+  type LinkedAccountWithMetadata,
+  type User,
+} from "@privy-io/react-auth";
 import { WagmiProvider } from "@privy-io/wagmi";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { useCallback, useMemo } from "react";
@@ -10,7 +18,14 @@ import { metrics } from "lib/metrics";
 
 import gmxLogo from "img/logo-icon.svg";
 
-import { setRecentPrivyEmbeddedWalletConnector } from "./privyWagmi";
+import {
+  getActiveWalletForPrivyWagmi,
+  getPrivyWagmiConnectorId,
+  markExplicitPrivyWagmiConnector,
+  preferEmbeddedWalletForNextPrivyUser,
+  setRecentPrivyEmbeddedWalletConnector,
+  setRecentPrivyWagmiConnector,
+} from "./privyWagmi";
 import {
   getWagmiConfig,
   getSupportedChains,
@@ -40,15 +55,34 @@ export function getPrivyEmbeddedWalletAddress(user: User) {
   return user.linkedAccounts.find(isPrivyEmbeddedLinkedWallet)?.address;
 }
 
-function PrivyEmbeddedWalletWagmiSync() {
+function PrivyWagmiConnectionSync() {
   const config = useConfig();
   const { reconnect } = useReconnect();
+
+  const handleWalletConnectSuccess = useCallback(
+    ({ wallet }: { wallet: BaseConnectedWalletType }) => {
+      const connectorId = getPrivyWagmiConnectorId(wallet);
+
+      markExplicitPrivyWagmiConnector(connectorId);
+
+      void setRecentPrivyWagmiConnector(config, connectorId)
+        .then(() => {
+          reconnect();
+        })
+        .catch((error) => {
+          metrics.pushError(error, "privyWagmiConnectionSync.walletConnect");
+        });
+    },
+    [config, reconnect]
+  );
 
   const handleLoginComplete = useCallback(
     ({ user, loginAccount }: { user: User; loginAccount: LinkedAccountWithMetadata | null }) => {
       if (!loginAccount || loginAccount.type === "wallet") {
         return;
       }
+
+      preferEmbeddedWalletForNextPrivyUser();
 
       const embeddedWalletAddress = getPrivyEmbeddedWalletAddress(user);
 
@@ -61,11 +95,19 @@ function PrivyEmbeddedWalletWagmiSync() {
           reconnect();
         })
         .catch((error) => {
-          metrics.pushError(error, "privyEmbeddedWalletWagmiSync");
+          metrics.pushError(error, "privyWagmiConnectionSync.embeddedLogin");
         });
     },
     [config, reconnect]
   );
+
+  useConnectWallet({
+    onSuccess: handleWalletConnectSuccess,
+  });
+
+  useConnectOrCreateWallet({
+    onSuccess: handleWalletConnectSuccess,
+  });
 
   useLogin({
     onComplete: handleLoginComplete,
@@ -106,8 +148,8 @@ export default function WalletProvider({ children }: { children: React.ReactNode
   return (
     <PrivyProvider appId={PRIVY_APP_ID} config={privyConfig}>
       <QueryClientProvider client={queryClient}>
-        <WagmiProvider config={getWagmiConfig()}>
-          <PrivyEmbeddedWalletWagmiSync />
+        <WagmiProvider config={getWagmiConfig()} setActiveWalletForWagmi={getActiveWalletForPrivyWagmi}>
+          <PrivyWagmiConnectionSync />
           {children}
         </WagmiProvider>
       </QueryClientProvider>
