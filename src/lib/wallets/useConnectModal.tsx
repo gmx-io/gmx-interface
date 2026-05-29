@@ -1,4 +1,4 @@
-import { useConnectOrCreateWallet, useConnectWallet, useModalStatus, usePrivy, useWallets } from "@privy-io/react-auth";
+import { useConnectOrCreateWallet, useConnectWallet, useModalStatus, usePrivy } from "@privy-io/react-auth";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import type { SettlementChainId } from "config/chains";
@@ -10,7 +10,6 @@ import { isSourceChain } from "config/multichain";
 import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { metrics } from "lib/metrics";
 import { switchNetwork } from "lib/wallets";
-import { disconnectPrivyWalletsFromWagmi } from "lib/wallets/privyWagmi";
 
 type ConnectModalContextValue = {
   openConnectModal: (() => void) | undefined;
@@ -37,7 +36,6 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
   const connectRequestInFlightRef = useRef(false);
   const { isOpen: privyModalOpen } = useModalStatus();
   const { authenticated } = usePrivy();
-  const { wallets } = useWallets();
 
   const handleSuccess = useCallback(() => {
     connectRequestInFlightRef.current = false;
@@ -84,26 +82,19 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
 
     connectRequestInFlightRef.current = true;
     setConnectModalOpen(true);
-
-    void (async () => {
-      try {
-        // Prevent stale Privy wallets from auto-reconnecting when the modal opens.
-        // Privy's wagmi adapter clears this marker only after a real wallet selection.
-        await disconnectPrivyWalletsFromWagmi(wallets);
-
-        // Privy rejects connectOrCreateWallet for already-authenticated sessions.
-        if (authenticated) {
-          connectWallet();
-        } else {
-          connectOrCreateWallet();
-        }
-      } catch (error) {
-        connectRequestInFlightRef.current = false;
-        setConnectModalOpen(false);
-        metrics.pushError(error, "connectModal.open");
+    try {
+      // Privy rejects connectOrCreateWallet for already-authenticated sessions.
+      if (authenticated) {
+        connectWallet();
+      } else {
+        connectOrCreateWallet();
       }
-    })();
-  }, [authenticated, connectOrCreateWallet, connectWallet, wallets]);
+    } catch (error) {
+      connectRequestInFlightRef.current = false;
+      setConnectModalOpen(false);
+      metrics.pushError(error, "connectModal.open");
+    }
+  }, [authenticated, connectOrCreateWallet, connectWallet]);
 
   const value = useMemo(() => ({ openConnectModal, connectModalOpen }), [openConnectModal, connectModalOpen]);
 
