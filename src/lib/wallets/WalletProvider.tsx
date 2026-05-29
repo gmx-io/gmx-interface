@@ -44,6 +44,8 @@ export default function WalletProvider({ children }: { children: React.ReactNode
       globalDisablePasskeys: true,
       defaultChain,
       supportedChains: [...supportedChains],
+      captchaEnabled: false,
+      headless: true,
       externalWallets: {
         signatureRequestTimeouts: PRIVY_SIGNATURE_REQUEST_TIMEOUTS,
       },
