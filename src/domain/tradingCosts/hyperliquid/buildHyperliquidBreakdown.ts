@@ -12,7 +12,10 @@ import {
   getHyperliquidFundingCostUsd,
   simulateL2BookFill,
 } from "./book";
-import type { HyperliquidL2BookResponse, HyperliquidNormalizedMarket } from "./types";
+import type { BookSide, HyperliquidBookBundle, HyperliquidL2BookResponse, HyperliquidNormalizedMarket } from "./types";
+
+const AGGREGATED_BOOK_WARNING =
+  "Using aggregated Hyperliquid book depth because the default 20-level book cannot fill the requested round-trip size.";
 
 export function getHyperliquidVenueMarkets(markets: HyperliquidNormalizedMarket[]): ComparisonVenueMarket[] {
   return markets.map((market) => ({
@@ -33,25 +36,39 @@ export function buildHyperliquidBreakdown({
   scenario: TradingCostScenario;
   match: MatchedTradingMarket;
   market: HyperliquidNormalizedMarket | undefined;
-  book: HyperliquidL2BookResponse | Error | undefined;
+  book: HyperliquidBookBundle | undefined;
 }): TradingCostBreakdown {
   if (!market) {
-    return { providerId: "hyperliquid", totalUsd: undefined, components: [], timestamp: undefined, status: "loading", warnings: [] };
+    return {
+      providerId: "hyperliquid",
+      totalUsd: undefined,
+      components: [],
+      timestamp: undefined,
+      status: "loading",
+      warnings: [],
+    };
   }
 
-  if (book instanceof Error) {
+  if (!book) {
+    return {
+      providerId: "hyperliquid",
+      totalUsd: undefined,
+      components: [],
+      timestamp: market.timestamp,
+      status: "loading",
+      warnings: [],
+    };
+  }
+
+  if (book.default instanceof Error && book.aggregated instanceof Error) {
     return {
       providerId: "hyperliquid",
       totalUsd: undefined,
       components: [],
       timestamp: market.timestamp,
       status: "providerError",
-      warnings: [book.message],
+      warnings: [book.default.message, book.aggregated.message],
     };
-  }
-
-  if (!book) {
-    return { providerId: "hyperliquid", totalUsd: undefined, components: [], timestamp: market.timestamp, status: "loading", warnings: [] };
   }
 
   const referencePrice = market.midPrice ?? market.markPrice;
@@ -70,22 +87,28 @@ export function buildHyperliquidBreakdown({
 
   const openBookSide = getBookSideForLeg({ tradingSide: scenario.side, isOpen: true });
   const closeBookSide = getBookSideForLeg({ tradingSide: scenario.side, isOpen: false });
-  const openLevels = openBookSide === "bid" ? book.levels[0] : book.levels[1];
-  const closeLevels = closeBookSide === "bid" ? book.levels[0] : book.levels[1];
-  const openFill = simulateL2BookFill({ levels: openLevels, sizeUsd: scenario.sizeUsd, referencePrice });
-  const closeFill = simulateL2BookFill({ levels: closeLevels, sizeUsd: scenario.sizeUsd, referencePrice });
+  const defaultBook = book.default instanceof Error ? undefined : book.default;
+  const aggregatedBook = book.aggregated instanceof Error ? undefined : book.aggregated;
+  const defaultEvaluation = defaultBook
+    ? evaluateBook({ book: defaultBook, scenario, referencePrice, openBookSide, closeBookSide })
+    : undefined;
+  const aggregatedEvaluation = aggregatedBook
+    ? evaluateBook({ book: aggregatedBook, scenario, referencePrice, openBookSide, closeBookSide })
+    : undefined;
+  const evaluation =
+    defaultEvaluation?.isFilled || !aggregatedEvaluation?.isFilled ? defaultEvaluation : aggregatedEvaluation;
+  const warnings = evaluation === aggregatedEvaluation ? [AGGREGATED_BOOK_WARNING] : [];
 
   if (
-    openFill.status === "insufficientDepth" ||
-    closeFill.status === "insufficientDepth" ||
-    openFill.averagePrice === undefined ||
-    closeFill.averagePrice === undefined
+    !evaluation?.isFilled ||
+    evaluation.openFill.averagePrice === undefined ||
+    evaluation.closeFill.averagePrice === undefined
   ) {
     return {
       providerId: "hyperliquid",
       totalUsd: undefined,
       components: [],
-      timestamp: book.time,
+      timestamp: defaultBook?.time ?? aggregatedBook?.time ?? market.timestamp,
       status: "insufficientDepth",
       warnings: ["Hyperliquid L2 levels cannot fill the requested round-trip size."],
     };
@@ -96,13 +119,13 @@ export function buildHyperliquidBreakdown({
   const openImpactUsd = getHyperliquidExecutionImpactUsd({
     sizeUsd: scenario.sizeUsd,
     referencePrice,
-    averagePrice: openFill.averagePrice,
+    averagePrice: evaluation.openFill.averagePrice,
     side: openBookSide,
   });
   const closeImpactUsd = getHyperliquidExecutionImpactUsd({
     sizeUsd: scenario.sizeUsd,
     referencePrice,
-    averagePrice: closeFill.averagePrice,
+    averagePrice: evaluation.closeFill.averagePrice,
     side: closeBookSide,
   });
   const fundingUsd = getHyperliquidFundingCostUsd({
@@ -124,8 +147,38 @@ export function buildHyperliquidBreakdown({
     providerId: "hyperliquid",
     totalUsd: sumTradingCostComponents(components),
     components,
-    timestamp: book.time,
+    timestamp: evaluation.book.time,
     status: "ready",
-    warnings: [],
+    warnings,
+  };
+}
+
+function evaluateBook({
+  book,
+  scenario,
+  referencePrice,
+  openBookSide,
+  closeBookSide,
+}: {
+  book: HyperliquidL2BookResponse;
+  scenario: TradingCostScenario;
+  referencePrice: number;
+  openBookSide: BookSide;
+  closeBookSide: BookSide;
+}) {
+  const openLevels = openBookSide === "bid" ? book.levels[0] : book.levels[1];
+  const closeLevels = closeBookSide === "bid" ? book.levels[0] : book.levels[1];
+  const openFill = simulateL2BookFill({ levels: openLevels, sizeUsd: scenario.sizeUsd, referencePrice });
+  const closeFill = simulateL2BookFill({ levels: closeLevels, sizeUsd: scenario.sizeUsd, referencePrice });
+
+  return {
+    book,
+    openFill,
+    closeFill,
+    isFilled:
+      openFill.status !== "insufficientDepth" &&
+      closeFill.status !== "insufficientDepth" &&
+      openFill.averagePrice !== undefined &&
+      closeFill.averagePrice !== undefined,
   };
 }

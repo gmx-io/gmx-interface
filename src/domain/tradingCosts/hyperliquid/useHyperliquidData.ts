@@ -4,7 +4,7 @@ import useSWR from "swr";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 
 import { fetchHyperliquidL2Books, fetchHyperliquidMetaAndAssetCtxs } from "./api";
-import type { HyperliquidL2BookResponse, HyperliquidNormalizedMarket } from "./types";
+import type { HyperliquidBookBundle, HyperliquidNormalizedMarket } from "./types";
 
 export type HyperliquidMarketsResult = {
   markets: HyperliquidNormalizedMarket[] | undefined;
@@ -13,7 +13,7 @@ export type HyperliquidMarketsResult = {
 };
 
 export type HyperliquidBooksResult = {
-  booksByCoin: Record<string, HyperliquidL2BookResponse | Error> | undefined;
+  booksByCoin: Record<string, HyperliquidBookBundle> | undefined;
   isLoading: boolean;
   error: Error | undefined;
 };

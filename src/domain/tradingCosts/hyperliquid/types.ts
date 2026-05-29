@@ -31,6 +31,11 @@ export type HyperliquidL2BookResponse = {
   levels: [HyperliquidBookLevel[], HyperliquidBookLevel[]];
 };
 
+export type HyperliquidBookBundle = {
+  default: HyperliquidL2BookResponse | Error;
+  aggregated: HyperliquidL2BookResponse | Error;
+};
+
 export type HyperliquidNormalizedMarket = {
   symbol: string;
   displayName: string;

@@ -1,8 +1,12 @@
-import { describe, expect, it } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 
 import { usdToNumber } from "../../costs";
-import { normalizeHyperliquidMarkets } from "../api";
+import { fetchHyperliquidL2Books, normalizeHyperliquidMarkets } from "../api";
 import type { HyperliquidMetaAndAssetCtxsResponse } from "../types";
+
+afterEach(() => {
+  vi.unstubAllGlobals();
+});
 
 describe("Hyperliquid API normalization", () => {
   it("combines meta and asset contexts and excludes delisted markets", () => {
@@ -32,5 +36,29 @@ describe("Hyperliquid API normalization", () => {
       timestamp: 123,
     });
     expect(usdToNumber(markets[0].volume24hUsd)).toBeCloseTo(12345.67, 6);
+  });
+
+  it("fetches default and aggregated L2 books for each coin", async () => {
+    const fetchMock = vi.fn(async (_url: string, init?: RequestInit) => {
+      const body = JSON.parse(String(init?.body));
+
+      return {
+        ok: true,
+        json: async () => ({ coin: body.coin, time: 1, levels: [[], []] }),
+      };
+    });
+
+    vi.stubGlobal("fetch", fetchMock);
+
+    await fetchHyperliquidL2Books(["BTC"]);
+
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+    expect(JSON.parse(String(fetchMock.mock.calls[0][1]?.body))).toEqual({ type: "l2Book", coin: "BTC" });
+    expect(JSON.parse(String(fetchMock.mock.calls[1][1]?.body))).toEqual({
+      type: "l2Book",
+      coin: "BTC",
+      nSigFigs: 5,
+      mantissa: 5,
+    });
   });
 });
