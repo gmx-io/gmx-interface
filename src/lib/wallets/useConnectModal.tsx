@@ -1,4 +1,4 @@
-import { useConnectOrCreateWallet, useModalStatus } from "@privy-io/react-auth";
+import { useConnectOrCreateWallet, useConnectWallet, useModalStatus, usePrivy } from "@privy-io/react-auth";
 import { createContext, useCallback, useContext, useEffect, useMemo, useRef, useState } from "react";
 
 import type { SettlementChainId } from "config/chains";
@@ -35,6 +35,7 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
   const [connectModalOpen, setConnectModalOpen] = useState(false);
   const connectRequestInFlightRef = useRef(false);
   const { isOpen: privyModalOpen } = useModalStatus();
+  const { authenticated } = usePrivy();
 
   const handleSuccess = useCallback(() => {
     connectRequestInFlightRef.current = false;
@@ -58,6 +59,13 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
       setConnectModalOpen(false);
     },
   });
+  const { connectWallet } = useConnectWallet({
+    onSuccess: handleSuccess,
+    onError: () => {
+      connectRequestInFlightRef.current = false;
+      setConnectModalOpen(false);
+    },
+  });
 
   useEffect(() => {
     if (!privyModalOpen) {
@@ -75,13 +83,18 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
     connectRequestInFlightRef.current = true;
     setConnectModalOpen(true);
     try {
-      connectOrCreateWallet();
+      // Privy rejects connectOrCreateWallet for already-authenticated sessions.
+      if (authenticated) {
+        connectWallet();
+      } else {
+        connectOrCreateWallet();
+      }
     } catch (error) {
       connectRequestInFlightRef.current = false;
       setConnectModalOpen(false);
       metrics.pushError(error, "connectModal.open");
     }
-  }, [connectOrCreateWallet]);
+  }, [authenticated, connectOrCreateWallet, connectWallet]);
 
   const value = useMemo(() => ({ openConnectModal, connectModalOpen }), [openConnectModal, connectModalOpen]);
 

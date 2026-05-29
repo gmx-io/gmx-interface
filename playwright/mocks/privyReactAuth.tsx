@@ -58,6 +58,7 @@ export function useLogin({ onComplete }: { onComplete?: () => void; onError?: ()
 
 export function usePrivy() {
   return {
+    authenticated: false,
     user: null,
     logout: () => undefined,
   };
