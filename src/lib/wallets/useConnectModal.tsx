@@ -2,7 +2,6 @@ import {
   useConnectOrCreateWallet,
   useCreateWallet,
   useLogin,
-  usePrivy,
   useWallets,
   type ConnectedWallet,
   type PrivyEvents,
@@ -27,6 +26,7 @@ import {
   getEthereumWalletStorageValue,
   findActivePrivyWalletByStorageValue,
   isWagmiAccountActivePrivyWallet,
+  readActivePrivyWalletFromStorage,
   removeActivePrivyWalletFromStorage,
   shouldUseEmbeddedWalletFlow,
   writeActivePrivyWalletToStorage,
@@ -53,6 +53,8 @@ const PENDING_CONNECT_ATTEMPT_TTL_MS = 15 * 60 * 1000;
 
 type ConnectAttempt = {
   id: number;
+  previousActiveWalletStorageValue: ActivePrivyWalletStorageValue | undefined;
+  writtenActiveWalletStorageValue: ActivePrivyWalletStorageValue | undefined;
 };
 
 function isWalletLoginMethod(loginMethod: LoginCompleteParams["loginMethod"]) {
@@ -122,6 +124,37 @@ function removePendingConnectAttempt() {
   }
 
   window.sessionStorage.removeItem(PENDING_CONNECT_ATTEMPT_SESSION_STORAGE_KEY);
+}
+
+function isSameActiveWalletStorageValue(
+  walletA: ActivePrivyWalletStorageValue | undefined,
+  walletB: ActivePrivyWalletStorageValue | undefined
+) {
+  return (
+    walletA?.address === walletB?.address &&
+    walletA?.connectorId === walletB?.connectorId &&
+    walletA?.connectorType === walletB?.connectorType &&
+    walletA?.walletClientType === walletB?.walletClientType
+  );
+}
+
+function restoreActiveWalletStorageAfterCanceledAttempt(connectAttempt: ConnectAttempt) {
+  if (!connectAttempt.writtenActiveWalletStorageValue) {
+    return;
+  }
+
+  if (
+    !isSameActiveWalletStorageValue(readActivePrivyWalletFromStorage(), connectAttempt.writtenActiveWalletStorageValue)
+  ) {
+    return;
+  }
+
+  if (connectAttempt.previousActiveWalletStorageValue) {
+    writeActivePrivyWalletToStorage(connectAttempt.previousActiveWalletStorageValue);
+    return;
+  }
+
+  removeActivePrivyWalletFromStorage();
 }
 
 function waitForActiveWagmiWallet(activeWallet: ActivePrivyWalletStorageValue) {
@@ -201,7 +234,6 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
   const [settlementChainId] = useGmxAccountSettlementChainId();
   const [connectModalOpen, setConnectModalOpen] = useState(false);
   const { createWallet } = useCreateWallet();
-  const { authenticated, ready: privyReady, user } = usePrivy();
   const { setActiveWallet } = useSetActiveWallet();
   const { wallets } = useWallets();
   const walletsRef = useRef(wallets);
@@ -221,6 +253,8 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
     nextConnectAttemptIdRef.current = connectAttemptId;
     activeConnectAttemptRef.current = {
       id: connectAttemptId,
+      previousActiveWalletStorageValue: readActivePrivyWalletFromStorage(),
+      writtenActiveWalletStorageValue: undefined,
     };
     writePendingConnectAttempt(startedAt);
 
@@ -247,9 +281,10 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
         return;
       }
 
+      const connectAttempt = activeConnectAttemptRef.current;
       activeConnectAttemptRef.current = undefined;
       removePendingConnectAttempt();
-      removeActivePrivyWalletFromStorage();
+      restoreActiveWalletStorageAfterCanceledAttempt(connectAttempt);
       setConnectModalOpen(false);
     },
     [isConnectAttemptActive]
@@ -286,10 +321,16 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
         return;
       }
 
+      const connectAttempt = activeConnectAttemptRef.current;
+
+      if (!connectAttempt || connectAttempt.id !== connectAttemptId) {
+        return;
+      }
+
       const wallet = connectedWallet ?? (await waitForPrivyWallet(walletsRef, activeWalletStorageValue));
 
       if (!isConnectAttemptActive(connectAttemptId)) {
-        removeActivePrivyWalletFromStorage();
+        restoreActiveWalletStorageAfterCanceledAttempt(connectAttempt);
         return;
       }
 
@@ -306,6 +347,7 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
         return;
       }
 
+      connectAttempt.writtenActiveWalletStorageValue = activeWalletToStore;
       writeActivePrivyWalletToStorage(activeWalletToStore);
 
       if (wallet) {
@@ -316,11 +358,26 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
         }
       }
 
+      if (!isConnectAttemptActive(connectAttemptId)) {
+        restoreActiveWalletStorageAfterCanceledAttempt(connectAttempt);
+        return;
+      }
+
       try {
         await waitForActiveWagmiWallet(activeWalletToStore);
       } catch (error) {
+        if (!isConnectAttemptActive(connectAttemptId)) {
+          restoreActiveWalletStorageAfterCanceledAttempt(connectAttempt);
+          return;
+        }
+
         metrics.pushError(error, "connectModal.waitForActiveWallet");
         cancelActiveConnectAttempt(connectAttemptId);
+        return;
+      }
+
+      if (!isConnectAttemptActive(connectAttemptId)) {
+        restoreActiveWalletStorageAfterCanceledAttempt(connectAttempt);
         return;
       }
 
@@ -446,16 +503,10 @@ export function ConnectModalProvider({ children }: { children: React.ReactNode }
   });
 
   const openConnectModal = useCallback(() => {
-    const connectAttempt = startConnectAttempt();
+    startConnectAttempt();
     setConnectModalOpen(true);
-
-    if (privyReady && authenticated && user) {
-      connectAuthenticatedUser(user, connectAttempt.id);
-      return;
-    }
-
     connectOrCreateWallet();
-  }, [authenticated, connectAuthenticatedUser, connectOrCreateWallet, privyReady, startConnectAttempt, user]);
+  }, [connectOrCreateWallet, startConnectAttempt]);
 
   const value = useMemo(() => ({ openConnectModal, connectModalOpen }), [openConnectModal, connectModalOpen]);
 

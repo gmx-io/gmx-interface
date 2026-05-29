@@ -226,6 +226,30 @@ describe("ConnectModalProvider", () => {
     expect(localStorage.getItem(ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY)).toBeNull();
   });
 
+  it("keeps the existing active wallet when the connect modal is canceled before wallet selection", () => {
+    const activeWallet = createConnectedWallet();
+    const existingActiveWallet = {
+      address: activeWallet.address,
+      connectorId: "io.rabby",
+      connectorType: "injected",
+      walletClientType: "rabby_wallet",
+    };
+    localStorage.setItem(ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY, JSON.stringify(existingActiveWallet));
+
+    renderProvider();
+
+    act(() => {
+      mocks.openConnectModal?.();
+    });
+
+    act(() => {
+      mocks.connectOrCreateWalletCallbacks?.onError?.("exited_auth_flow" as ConnectWalletError);
+    });
+
+    expect(getStoredActiveWallet()).toMatchObject(existingActiveWallet);
+    expect(mocks.setActiveWallet).not.toHaveBeenCalled();
+  });
+
   it("activates an already connected Privy wallet selected during an active connect attempt", async () => {
     const wallet = createConnectedWallet({ connectedAt: Date.now() - 1000 });
     mocks.account = {
@@ -428,7 +452,29 @@ describe("ConnectModalProvider", () => {
     expect(mocks.switchNetwork).not.toHaveBeenCalled();
   });
 
-  it("recovers an authenticated Google user with no active wallet when connect is clicked", async () => {
+  it("opens Privy connect UI for authenticated embedded-wallet users without activating immediately", () => {
+    const wallet = createEmbeddedWallet();
+    const user = createUserWithLinkedWallet(wallet);
+    mocks.privy = {
+      authenticated: true,
+      ready: true,
+      user,
+    };
+    mocks.wallets = [wallet];
+
+    renderProvider();
+
+    act(() => {
+      mocks.openConnectModal?.();
+    });
+
+    expect(mocks.connectOrCreateWallet).toHaveBeenCalledTimes(1);
+    expect(mocks.createWallet).not.toHaveBeenCalled();
+    expect(mocks.setActiveWallet).not.toHaveBeenCalled();
+    expect(localStorage.getItem(ACTIVE_PRIVY_WALLET_LOCAL_STORAGE_KEY)).toBeNull();
+  });
+
+  it("activates an authenticated embedded wallet after Privy confirms social login", async () => {
     const wallet = createEmbeddedWallet();
     const user = createUserWithLinkedWallet(wallet);
     mocks.account = {
@@ -448,10 +494,20 @@ describe("ConnectModalProvider", () => {
       mocks.openConnectModal?.();
     });
 
+    act(() => {
+      mocks.loginCallbacks?.onComplete?.({
+        isNewUser: false,
+        loginAccount: null,
+        loginMethod: "google",
+        user,
+        wasAlreadyAuthenticated: true,
+      });
+    });
+
     await waitFor(() => {
       expect(mocks.setActiveWallet).toHaveBeenCalledWith(wallet);
     });
-    expect(mocks.connectOrCreateWallet).not.toHaveBeenCalled();
+    expect(mocks.connectOrCreateWallet).toHaveBeenCalledTimes(1);
   });
 
   it("opens wallet selection for authenticated external-wallet users", () => {
