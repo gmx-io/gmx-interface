@@ -5,7 +5,13 @@ import { useChainId } from "lib/chains";
 import { expandDecimals } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 
-export function useGmWarningState({ logicalFees: fees }: { logicalFees: GmSwapFees | undefined }) {
+export function useGmWarningState({
+  logicalFees: fees,
+  isOperationDisabled,
+}: {
+  logicalFees: GmSwapFees | undefined;
+  isOperationDisabled?: boolean;
+}) {
   const { chainId } = useChainId();
 
   const isHighPriceImpact =
@@ -17,11 +23,14 @@ export function useGmWarningState({ logicalFees: fees }: { logicalFees: GmSwapFe
       fees?.logicalNetworkFee?.deltaUsd >= expandDecimals(getExcessiveExecutionFee(chainId), USD_DECIMALS)
   );
 
-  const shouldShowWarning = isHighExecutionFee || isHighPriceImpact;
+  // When the operation is disabled (e.g. "Buying GM unavailable"), the user can't proceed,
+  // so soft warnings would only add noise.
+  const shouldShowWarningForExecutionFee = !isOperationDisabled && isHighExecutionFee;
+  const shouldShowWarningForPosition = !isOperationDisabled && isHighPriceImpact;
 
   return {
-    shouldShowWarning,
-    shouldShowWarningForExecutionFee: isHighExecutionFee,
-    shouldShowWarningForPosition: isHighPriceImpact,
+    shouldShowWarning: shouldShowWarningForExecutionFee || shouldShowWarningForPosition,
+    shouldShowWarningForExecutionFee,
+    shouldShowWarningForPosition,
   };
 }

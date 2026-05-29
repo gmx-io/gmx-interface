@@ -485,7 +485,7 @@ export const useGmSwapSubmitState = ({
         if (errorName === "InsufficientMultichainBalance") {
           errorText = t`Insufficient balance`;
         } else if (errorName === "MaxPoolAmountExceeded" || errorName === "MaxPoolAmountForDepositExceeded") {
-          errorText = t`Max pool amount exceeded`;
+          errorText = t`Maximum pool capacity reached`;
         } else {
           errorText = isDeposit ? t`Error simulating deposit` : t`Error simulating withdrawal`;
         }
