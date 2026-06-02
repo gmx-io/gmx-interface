@@ -18,11 +18,16 @@ import { getTotalAccruedFundingUsd } from "domain/synthetics/markets";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
+import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useChainId } from "lib/chains";
 import { formatDeltaUsd, formatUsd } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { userAnalytics } from "lib/userAnalytics";
+import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
+import { getContract } from "sdk/configs/contracts";
+import { getToken } from "sdk/configs/tokens";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { buildDecreaseOrderPayload } from "sdk/utils/orderTransactions";
 
@@ -30,6 +35,8 @@ import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import Tooltip from "components/Tooltip/Tooltip";
+
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { SettleAccruedFundingFeeRow } from "./SettleAccruedFundingFeeRow";
 import { shouldPreSelectPosition } from "./utils";
@@ -146,6 +153,32 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     isGmxAccount: srcChainId !== undefined,
   });
 
+  const approvalTokens = useMemo(() => {
+    if (!expressParams?.gasPaymentParams) return [];
+
+    return [
+      {
+        tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
+        amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
+      },
+    ];
+  }, [expressParams?.gasPaymentParams]);
+
+  const {
+    tokensToApprove,
+    isAllowanceLoaded: isAllowanceLoadedRaw,
+    isApproving,
+    handleApprove,
+  } = useTokenApproval({
+    chainId,
+    spenderAddress: getContract(chainId, "SyntheticsRouter"),
+    tokens: approvalTokens,
+    allowPermit: Boolean(expressParams),
+    skip: Boolean(srcChainId),
+  });
+
+  const isAllowanceLoaded = Boolean(batchParams) && isAllowanceLoadedRaw;
+
   const handleOnClose = useCallback(() => {
     setPositionKeys([]);
     setIsUntouched(true);
@@ -161,8 +194,25 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     if (isMultichainSubmitDisabled) return [t`Loading network fees…`, true];
     if (isSubmitting) return [t`Settling...`, true];
     if (positionKeys.length === 0) return [t`Select positions`, true];
+
+    if (!isAllowanceLoaded) return [t`Loading...`, true];
+
+    if (tokensToApprove.length) {
+      const tokenSymbol = getToken(chainId, tokensToApprove[0]).symbol;
+      return [t`Approve ${tokenSymbol}`, isApproving];
+    }
+
     return [t`Settle`, false];
-  }, [hasOutdatedUi, isMultichainSubmitDisabled, isSubmitting, positionKeys.length]);
+  }, [
+    hasOutdatedUi,
+    isMultichainSubmitDisabled,
+    isSubmitting,
+    positionKeys.length,
+    isAllowanceLoaded,
+    tokensToApprove,
+    isApproving,
+    chainId,
+  ]);
 
   const handleRowCheckboxChange = useCallback(
     (value: boolean, positionKey: string) => {
@@ -178,6 +228,25 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
 
   const onSubmit = useCallback(() => {
     if (!account || !signer?.provider || !chainId || !batchParams || !provider) {
+      return;
+    }
+
+    if (isAllowanceLoaded && tokensToApprove.length) {
+      if (isApproving) return;
+
+      userAnalytics.pushEvent<TokenApproveClickEvent>({
+        event: "TokenApproveAction",
+        data: { action: "ApproveClick" },
+      });
+
+      handleApprove({
+        onApproveFail: () =>
+          userAnalytics.pushEvent<TokenApproveResultEvent>({
+            event: "TokenApproveAction",
+            data: { action: "ApproveFail" },
+          }),
+      });
+
       return;
     }
 
@@ -202,7 +271,21 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
       .finally(() => {
         setIsSubmitting(false);
       });
-  }, [account, batchParams, chainId, expressParams, handleOnClose, makeOrderTxnCallback, provider, signer, srcChainId]);
+  }, [
+    account,
+    batchParams,
+    chainId,
+    expressParams,
+    handleApprove,
+    handleOnClose,
+    isAllowanceLoaded,
+    isApproving,
+    makeOrderTxnCallback,
+    provider,
+    signer,
+    srcChainId,
+    tokensToApprove,
+  ]);
 
   const renderTooltipContent = useCallback(
     () => (
@@ -258,6 +341,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
       </AlertInfo>
       <Button className="w-full" variant="primary-action" disabled={buttonDisabled} onClick={onSubmit}>
         {buttonText}
+        {isApproving && tokensToApprove.length > 0 && <SpinnerIcon className="ml-4 animate-spin" />}
       </Button>
     </Modal>
   );

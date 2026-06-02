@@ -585,11 +585,6 @@ msgstr "Fehlgeschlagener Take-Profit"
 msgid "Settlement chain"
 msgstr "Abwicklungskette"
 
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Max pool USD exceeded"
-msgstr "Max. Pool-USD überschritten"
-
 #: src/pages/PageNotFound/PageNotFound.tsx
 msgid "<0>Return to </0><1>homepage</1> <2>or </2> <3>trade</3>"
 msgstr ""
@@ -3444,6 +3439,14 @@ msgstr "Trigger"
 msgid "Mark price changed. Increase allowed slippage"
 msgstr "Markpreis hat sich geändert. Erhöhen Sie die erlaubte Slippage"
 
+#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Maximum pool capacity reached"
+msgstr "Maximale Poolkapazität erreicht"
+
 #: src/domain/tokens/approveTokens.tsx
 msgid "Permit signed"
 msgstr "Genehmigung unterzeichnet"
@@ -6031,6 +6034,7 @@ msgstr "Genehmigungssignatur fehlgeschlagen"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Approve {tokenSymbol}"
 msgstr "{tokenSymbol} genehmigen"
 
@@ -6410,6 +6414,7 @@ msgstr ""
 #: src/components/Referrals/shared/charts/TradersVolumeChartContainer.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -8737,6 +8742,10 @@ msgstr "Größe pro Teil"
 msgid "Add endpoint"
 msgstr "Endpunkt hinzufügen"
 
+#: src/components/Errors/gasErrors.tsx
+msgid "This pool is at maximum capacity and not accepting deposits right now. Try a different pool."
+msgstr "Dieser Pool hat die maximale Kapazität erreicht und akzeptiert derzeit keine Einzahlungen. Wählen Sie einen anderen Pool."
+
 #: src/components/ClaimModal/ClaimModal.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
@@ -10420,12 +10429,6 @@ msgstr "Oracle Keeper Überwachung"
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 msgid "Enter a new size or price"
 msgstr "Neue Größe oder Preis eingeben"
-
-#: src/components/GmSwap/GmSwapBox/GmDepositWithdrawalBox/useGmSwapSubmitState.tsx
-#: src/domain/synthetics/trade/utils/validation.ts
-#: src/domain/synthetics/trade/utils/validation.ts
-msgid "Max pool amount exceeded"
-msgstr "Max. Pool-Betrag überschritten"
 
 #: src/components/StatusNotification/OrderStatusNotification.tsx
 #: src/components/TVChartContainer/DynamicLine.tsx
