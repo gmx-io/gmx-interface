@@ -140,7 +140,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     allowedSlippage,
   ]);
 
-  const { expressParams } = useExpressOrdersParams({
+  const { expressParams, isMultichainSubmitDisabled } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Settle Funding Fee",
     isGmxAccount: srcChainId !== undefined,
@@ -158,10 +158,11 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
 
   const [buttonText, buttonDisabled] = useMemo(() => {
     if (hasOutdatedUi) return [getPageOutdatedError(), true];
+    if (isMultichainSubmitDisabled) return [t`Loading network fees…`, true];
     if (isSubmitting) return [t`Settling...`, true];
     if (positionKeys.length === 0) return [t`Select positions`, true];
     return [t`Settle`, false];
-  }, [hasOutdatedUi, isSubmitting, positionKeys.length]);
+  }, [hasOutdatedUi, isMultichainSubmitDisabled, isSubmitting, positionKeys.length]);
 
   const handleRowCheckboxChange = useCallback(
     (value: boolean, positionKey: string) => {
