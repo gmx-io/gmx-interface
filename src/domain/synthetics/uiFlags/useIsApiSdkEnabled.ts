@@ -32,9 +32,7 @@ export type ApiUiFlagName = (typeof API_UI_FLAGS)[keyof typeof API_UI_FLAGS];
 //   return getApiRolloutBucket() < percent;
 // }
 
-export function useIsApiSdkEnabled(
-  // uiFlagName: ApiUiFlagName
-): boolean {
+export function useIsApiSdkEnabled(_uiFlagName: ApiUiFlagName): boolean {
   // API SDK data source is hard-disabled for all domains (markets / positions / orders):
   // the backend returns funding/borrow values that diverge from onchain — including
   // inverted longsPayShorts and borrow side on balanced markets. The rollout logic below
