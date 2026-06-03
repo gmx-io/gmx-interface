@@ -6034,6 +6034,7 @@ msgstr "승인 서명 실패"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/StakeModal.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 msgid "Approve {tokenSymbol}"
 msgstr "{tokenSymbol} 승인"
 
@@ -6413,6 +6414,7 @@ msgstr ""
 #: src/components/Referrals/shared/charts/TradersVolumeChartContainer.tsx
 #: src/components/Referrals/shared/modals/useClaimAffiliatesModalState.ts
 #: src/components/Referrals/traders/joinCode/getReferralCodeButtonState.tsx
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/orders/getPositionOrderError.tsx
 #: src/domain/synthetics/trade/utils/validation.ts
@@ -7024,6 +7026,7 @@ msgstr "전송 제출됨"
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftTransactions.tsx
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/hooks/useTradeboxTransactions.tsx
+#: src/domain/synthetics/express/validateMultichainExpressSubmit.ts
 msgid "Order submission failed"
 msgstr "주문 제출 실패"
 
@@ -9789,6 +9792,9 @@ msgid "Position would be liquidatable. Current: {remainingCollateralUsdText}, re
 msgstr "포지션이 청산 대상이 됩니다. 현재: {remainingCollateralUsdText}, 필요: {minCollateralUsdText}"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
+#: src/components/OrderEditor/OrderEditor.tsx
+#: src/components/OrdersModal/AddTPSLModal.tsx
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
 #: src/components/TradeBox/hooks/useTradeButtonState.tsx
 msgid "Loading network fees…"
 msgstr "네트워크 수수료 로딩 중…"

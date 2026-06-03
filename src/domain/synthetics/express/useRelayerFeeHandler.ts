@@ -39,6 +39,7 @@ export type ExpressOrdersParamsResult = {
   asyncExpressParams: ExpressTxnParams | undefined;
   expressParamsPromise: Promise<ExpressTxnParams | undefined> | undefined;
   isLoading: boolean;
+  isMultichainSubmitDisabled: boolean;
 };
 
 export function useExpressOrdersParams({
@@ -180,11 +181,15 @@ export function useExpressOrdersParams({
         fastExpressParams: undefined,
         asyncExpressParams: undefined,
         isLoading: false,
+        isMultichainSubmitDisabled: false,
         expressParamsPromise: undefined,
       };
     }
 
     const expressParams = isAsyncEnabled ? asyncExpressParams ?? fastExpressParams : fastExpressParams;
+    const hasOrderParams = !getIsEmptyBatch(orderParams);
+    const isLoading = hasOrderParams && !fastExpressParams && !fastExpressError;
+    const isMultichainSubmitDisabled = isGmxAccount && hasOrderParams && !expressParams;
 
     const expressParamsPromise = Promise.race([fastExpressPromise, asyncExpressPromise])
       .then((result) => {
@@ -197,7 +202,8 @@ export function useExpressOrdersParams({
       expressEstimateMethod: expressParams?.estimationMethod,
       fastExpressParams,
       asyncExpressParams,
-      isLoading: !getIsEmptyBatch(orderParams) && !fastExpressParams && !fastExpressError,
+      isLoading,
+      isMultichainSubmitDisabled,
       expressParamsPromise,
     };
   }, [
@@ -209,6 +215,7 @@ export function useExpressOrdersParams({
     asyncExpressPromise,
     orderParams,
     fastExpressError,
+    isGmxAccount,
   ]);
 
   useSwitchGasPaymentTokenIfRequiredFromExpressParams({

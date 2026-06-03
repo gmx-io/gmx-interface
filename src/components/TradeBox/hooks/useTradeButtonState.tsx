@@ -169,6 +169,7 @@ export function useTradeboxButtonState({
     expressParams,
     batchParams,
     isExpressLoading,
+    isMultichainSubmitDisabled,
     totalExecutionFee,
   } = useTradeboxTransactions({
     setPendingTxns,
@@ -547,7 +548,7 @@ export function useTradeboxButtonState({
       };
     }
 
-    if (isExpressLoading) {
+    if (isExpressLoading || isMultichainSubmitDisabled) {
       return {
         ...commonState,
         text: (
@@ -647,6 +648,7 @@ export function useTradeboxButtonState({
     batchParams,
     totalExecutionFee,
     isExpressLoading,
+    isMultichainSubmitDisabled,
     isWaitingForExternalSwapQuote,
     account,
     buttonErrorText,

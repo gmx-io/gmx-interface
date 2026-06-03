@@ -27,9 +27,12 @@ import {
   selectPositionEditorSetCollateralInputValue,
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
+import {
+  getExpressParamsForSubmit,
+  reportMultichainExpressSubmitError,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
@@ -243,6 +246,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
   const {
     expressParams,
     isLoading: isExpressLoading,
+    isMultichainSubmitDisabled,
     fastExpressParams,
     asyncExpressParams,
     expressParamsPromise,
@@ -447,15 +451,31 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       return;
     }
 
+    setIsSubmitting(true);
+
     const fulfilledExpressParams = await expressParamsPromise;
+
+    if (
+      reportMultichainExpressSubmitError({
+        isGmxAccount: isCollateralTokenFromGmxAccount,
+        expressParams: fulfilledExpressParams,
+        tokensData,
+        actionName: "Edit Collateral",
+        collateral: selectedCollateralToken?.symbol,
+        requestId: metricData.requestId,
+        metricId: metricData.metricId,
+      })
+    ) {
+      setIsSubmitting(false);
+      return;
+    }
 
     const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
       provider,
       batchParams,
-      expressParams:
-        fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
+      expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
       isGmxAccount: isCollateralTokenFromGmxAccount,
       simulationParams: shouldDisableValidationForTesting
         ? undefined
@@ -515,7 +535,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     };
   }
 
-  if (isExpressLoading) {
+  if (isExpressLoading || isMultichainSubmitDisabled) {
     return {
       text: (
         <>
