@@ -7,7 +7,9 @@ import { colors } from "config/colors";
 import { USD_DECIMALS } from "config/factors";
 import { OrderType } from "domain/synthetics/orders";
 import { formatTVDate, formatTVTime } from "lib/dates";
-import { calculateDisplayDecimals, numberToBigint } from "lib/numbers";
+import { calculateDisplayDecimals, formatTokenAmount, formatUsd, numberToBigint } from "lib/numbers";
+
+import type { ChartLineSizeData } from "./types";
 
 const createChartStyleOverrides = (upColor: string, downColor: string): Partial<WidgetOverrides> =>
   (["candleStyle", "hollowCandleStyle", "haStyle"] as const).reduce<Partial<WidgetOverrides>>((acc, cv) => {
@@ -152,6 +154,38 @@ export const orderTypeToTitle: Partial<Record<OrderType, MessageDescriptor>> = {
   [OrderType.LimitDecrease]: msg`TP`,
   [OrderType.StopLossDecrease]: msg`SL`,
 };
+
+export function getOrderLineLabel(
+  translate: (descriptor: MessageDescriptor) => string,
+  {
+    isLong,
+    marketName,
+    orderType,
+    sizeData,
+    showSizeInTokens,
+  }: {
+    isLong: boolean;
+    marketName: string;
+    orderType: OrderType;
+    sizeData?: ChartLineSizeData;
+    showSizeInTokens: boolean;
+  }
+) {
+  const directionText = translate(isLong ? msg`Long` : msg`Short`);
+  const orderTypeTitle = orderTypeToTitle[orderType];
+  const orderTitleText = orderTypeTitle ? translate(orderTypeTitle) : translate(msg`Unknown order`);
+  const baseTitle = `${directionText} ${marketName} · ${orderTitleText}`;
+
+  if (!sizeData) {
+    return baseTitle;
+  }
+
+  const sizeText = showSizeInTokens
+    ? `${formatTokenAmount(sizeData.sizeInTokens, sizeData.tokenDecimals) ?? "0"} ${sizeData.tokenSymbol}`
+    : formatUsd(sizeData.sizeInUsd) ?? "$0.00";
+
+  return `${baseTitle} · ${sizeText}`;
+}
 
 export const chartLabelColors = {
   green: {

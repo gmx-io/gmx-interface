@@ -488,9 +488,17 @@ export default function TVChartContainer({
     [chartLines, dynamicChartLines, isMobile, plotWidthPx, pricePerPixel, bodyFontSizePt]
   );
 
+  const hasSizableChartLines = useMemo(
+    () =>
+      dynamicChartLines.some((line) => line.sizeData !== undefined) ||
+      chartLines.some((line) => line.positionData !== undefined),
+    [dynamicChartLines, chartLines]
+  );
+
   const { menuState, closeMenu, handlePlusClick, getContextMenuItems } = useChartContextMenu(
     visualMultiplier,
     chartContainerRef,
+    hasSizableChartLines,
     { onOpenTPSLModal }
   );
 

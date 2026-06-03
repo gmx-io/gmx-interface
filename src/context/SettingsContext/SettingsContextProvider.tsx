@@ -7,6 +7,7 @@ import { DEFAULT_ACCEPTABLE_PRICE_IMPACT_BUFFER, DEFAULT_SLIPPAGE_AMOUNT } from 
 import { getIsExpressSupported } from "config/features";
 import {
   BREAKDOWN_NET_PRICE_IMPACT_ENABLED_KEY,
+  CHART_LINES_SIZE_DENOMINATION_KEY,
   CLOSE_SIZE_DENOMINATION_KEY,
   DEBUG_ERROR_BOUNDARY_KEY,
   DEBUG_SWAP_MARKETS_CONFIG_KEY,
@@ -113,6 +114,9 @@ export type SettingsContextType = {
 
   showCloseSizeInTokens: boolean;
   setShowCloseSizeInTokens: (val: boolean) => void;
+
+  chartLinesSizeInTokens: boolean;
+  setChartLinesSizeInTokens: (val: boolean) => void;
 };
 
 const SettingsContext = createContext({});
@@ -258,6 +262,11 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     false
   );
 
+  const [chartLinesSizeInTokens, setChartLinesSizeInTokens] = useLocalStorageSerializeKey(
+    CHART_LINES_SIZE_DENOMINATION_KEY,
+    false
+  );
+
   useEffect(() => {
     if (shouldUseExecutionFeeBuffer && executionFeeBufferBps === undefined) {
       setExecutionFeeBufferBps(defaultExecutionFeeBufferBps ?? 0);
@@ -396,6 +405,9 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
 
       showCloseSizeInTokens: showCloseSizeInTokens!,
       setShowCloseSizeInTokens,
+
+      chartLinesSizeInTokens: chartLinesSizeInTokens!,
+      setChartLinesSizeInTokens,
     };
   }, [
     showDebugValues,
@@ -453,6 +465,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setReceiveToGmxAccount,
     showCloseSizeInTokens,
     setShowCloseSizeInTokens,
+    chartLinesSizeInTokens,
+    setChartLinesSizeInTokens,
   ]);
 
   return <SettingsContext.Provider value={contextState}>{children}</SettingsContext.Provider>;

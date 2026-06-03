@@ -5,14 +5,14 @@ import {
   selectTokensData,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import { createSelector } from "context/SyntheticsStateContext/utils";
-import { PositionOrderInfo, isMarketOrderType, isSwapOrderType } from "domain/synthetics/orders";
-import { getTokenData } from "domain/synthetics/tokens";
+import { PositionOrderInfo, isIncreaseOrderType, isMarketOrderType, isSwapOrderType } from "domain/synthetics/orders";
+import { convertToTokenAmount, getTokenData } from "domain/synthetics/tokens";
 import { calculateDisplayDecimals, formatAmount } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { convertTokenAddress } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
 
-import { DynamicChartLine } from "components/TVChartContainer/types";
+import { ChartLineSizeData, DynamicChartLine } from "components/TVChartContainer/types";
 
 import { selectChartToken } from ".";
 
@@ -51,6 +51,20 @@ export const selectChartDynamicLines = createSelector<DynamicChartLine[]>((q) =>
 
       const priceDecimal = calculateDisplayDecimals(positionOrder.triggerPrice, USD_DECIMALS, tokenVisualMultiplier);
 
+      const sizeData: ChartLineSizeData | undefined = isIncreaseOrderType(positionOrder.orderType)
+        ? {
+            sizeInUsd: positionOrder.sizeDeltaUsd,
+            sizeInTokens:
+              convertToTokenAmount(
+                positionOrder.sizeDeltaUsd,
+                positionOrder.indexToken.decimals,
+                positionOrder.triggerPrice
+              ) ?? 0n,
+            tokenSymbol: positionOrder.indexToken.symbol,
+            tokenDecimals: positionOrder.indexToken.decimals,
+          }
+        : undefined;
+
       return {
         id: positionOrder.key,
         marketName: getMarketIndexName(positionOrder.marketInfo),
@@ -67,6 +81,7 @@ export const selectChartDynamicLines = createSelector<DynamicChartLine[]>((q) =>
           )
         ),
         updatedAtTime: order.updatedAtTime,
+        sizeData,
       };
     });
 

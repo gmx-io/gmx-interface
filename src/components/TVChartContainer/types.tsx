@@ -22,6 +22,13 @@ export type StaticChartLine = {
   };
 };
 
+export type ChartLineSizeData = {
+  sizeInUsd: bigint;
+  sizeInTokens: bigint;
+  tokenSymbol: string;
+  tokenDecimals: number;
+};
+
 export type DynamicChartLine = {
   id: string;
   price: number;
@@ -29,4 +36,5 @@ export type DynamicChartLine = {
   isLong: boolean;
   marketName: string;
   updatedAtTime: bigint;
+  sizeData?: ChartLineSizeData;
 };
