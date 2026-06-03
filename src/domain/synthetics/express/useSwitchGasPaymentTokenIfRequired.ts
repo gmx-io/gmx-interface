@@ -1,5 +1,6 @@
 import { t } from "@lingui/macro";
 import { useEffect, useMemo } from "react";
+import { toast } from "react-toastify";
 
 import { selectTokensData } from "context/SyntheticsStateContext/selectors/globalSelectors";
 import {
@@ -10,17 +11,22 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { convertToTokenAmount, convertToUsd, TokenData, TokensData } from "domain/tokens";
 import { applyMinimalBuffer } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
-import { helperToast } from "lib/helperToast";
 import { getByKey } from "lib/objects";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { BatchOrderTxnParams, getBatchTotalPayCollateralAmount } from "sdk/utils/orderTransactions";
 
 import { ExpressTxnParams } from "./types";
 
+const GAS_PAYMENT_TOKEN_SWITCHED_TOAST_ID = "gas-payment-token-switched";
+
 const notifyGasPaymentTokenSwitched = ({ fromSymbol, toSymbol }: { fromSymbol: string; toSymbol: string }) => {
-  helperToast.info(t`Insufficient ${fromSymbol} balance. Gas token switched to ${toSymbol}`, {
-    toastId: "gas-payment-token-switched",
-  });
+  const content = t`Insufficient ${fromSymbol} balance. Gas token switched to ${toSymbol}`;
+
+  if (toast.isActive(GAS_PAYMENT_TOKEN_SWITCHED_TOAST_ID)) {
+    toast.update(GAS_PAYMENT_TOKEN_SWITCHED_TOAST_ID, { render: content });
+  } else {
+    toast(content, { toastId: GAS_PAYMENT_TOKEN_SWITCHED_TOAST_ID });
+  }
 };
 
 export function findNextGasPaymentToken({
