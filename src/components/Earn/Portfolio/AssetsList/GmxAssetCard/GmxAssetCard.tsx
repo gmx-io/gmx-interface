@@ -238,6 +238,8 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
 
         <StakingPowerAlerts stakingPowerData={stakingPowerData} />
 
+        <div className="mt-12 border-t-1/2 border-slate-600" />
+
         <div className="mt-12 flex grow flex-col gap-8">
           <SyntheticsInfoRow
             label={<Trans>Staked GMX</Trans>}
