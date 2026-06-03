@@ -10,6 +10,7 @@ import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from 
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import {
+  externalSwapRequestKeysMatch,
   getExternalSwapInputsByFromValue,
   getExternalSwapInputsByLeverageSize,
   getExternalSwapInputsByToValue,
@@ -176,7 +177,7 @@ export const selectExternalSwapIsLoading = createSelector((q) => {
   const currentKey = q(selectCurrentExternalSwapRequestKey);
   if (!currentKey) return false;
 
-  return q(selectExternalSwapRequestResult)?.key !== currentKey;
+  return !externalSwapRequestKeysMatch(currentKey, q(selectExternalSwapRequestResult)?.key);
 });
 
 export const selectShouldFallbackToInternalSwap = (s: SyntheticsState) => s.externalSwap.shouldFallbackToInternalSwap;
@@ -210,7 +211,12 @@ export const selectExternalSwapQuote = createSelector((q) => {
   if (q(selectIsOneClickActiveByUser)) return undefined;
 
   if (!inputs || !tokenIn || !tokenOut) return undefined;
-  if (result?.status !== "success" || result.key !== currentKey || result.quote.amountIn === 0n) return undefined;
+  if (
+    result?.status !== "success" ||
+    !externalSwapRequestKeysMatch(result.key, currentKey) ||
+    result.quote.amountIn === 0n
+  )
+    return undefined;
 
   if (shouldFallbackToInternalSwap && !shouldForceExternalSwap) return undefined;
 
@@ -953,8 +959,8 @@ export const selectSwapDebugComparison = createSelector((q) => {
 
   const result = q(selectExternalSwapRequestResult);
   const currentKey = q(selectCurrentExternalSwapRequestKey);
-  const isCurrentResult = !!result && result.key === currentKey;
-  const baseOutput = isCurrentResult && result.status === "success" ? result.quote : undefined;
+  const isCurrentResult = externalSwapRequestKeysMatch(result?.key, currentKey);
+  const baseOutput = isCurrentResult && result?.status === "success" ? result.quote : undefined;
   const filteredQuote = !isExternalSwapWaiting ? q(selectExternalSwapQuote) : undefined;
 
   const staleGuardReason = getStaleGuardReason({
@@ -1050,7 +1056,8 @@ export const selectIncreaseSwapDebugComparison = createSelector((q) => {
 
   const result = q(selectExternalSwapRequestResult);
   const currentKey = q(selectCurrentExternalSwapRequestKey);
-  const baseOutput = result?.status === "success" && result.key === currentKey ? result.quote : undefined;
+  const baseOutput =
+    result?.status === "success" && externalSwapRequestKeysMatch(result.key, currentKey) ? result.quote : undefined;
 
   let oracleUsdIn: bigint | undefined;
   let oracleUsdOut: bigint | undefined;

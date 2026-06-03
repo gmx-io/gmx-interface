@@ -22,6 +22,7 @@ import {
   getSwapAmountsByToValue,
   leverageBySizeValues,
 } from "../trade";
+import { ExternalSwapRequestKey } from "./types";
 
 export function getExternalSwapInputsByFromValue({
   tokenIn,
@@ -262,12 +263,33 @@ export function getExternalSwapRequestKey(params: {
   amountIn: bigint | undefined;
   desiredAmountOut: bigint | undefined;
   slippage: number | undefined;
-}): string | undefined {
+}): ExternalSwapRequestKey | undefined {
   const { fromTokenAddress, toTokenAddress, strategy, amountIn, desiredAmountOut, slippage } = params;
   if (!fromTokenAddress || !toTokenAddress || !strategy || slippage === undefined) return undefined;
   const amount = strategy === "byToValue" ? desiredAmountOut : amountIn;
   if (amount === undefined || amount <= 0n) return undefined;
-  return `${fromTokenAddress}:${toTokenAddress}:${strategy}:${amount}:${slippage}`;
+  return {
+    structuralKey: `${fromTokenAddress}:${toTokenAddress}:${strategy}:${slippage}`,
+    amount,
+  };
+}
+
+export const EXTERNAL_SWAP_KEY_AMOUNT_TOLERANCE_BPS = 30n;
+
+export function isAmountWithinKeyTolerance(a: bigint, b: bigint): boolean {
+  if (a <= 0n || b <= 0n) return false;
+  if (a === b) return true;
+  const diff = a > b ? a - b : b - a;
+  const reference = a > b ? a : b;
+  return diff * BASIS_POINTS_DIVISOR_BIGINT <= reference * EXTERNAL_SWAP_KEY_AMOUNT_TOLERANCE_BPS;
+}
+
+export function externalSwapRequestKeysMatch(
+  a: ExternalSwapRequestKey | undefined,
+  b: ExternalSwapRequestKey | undefined
+): boolean {
+  if (!a || !b) return false;
+  return a.structuralKey === b.structuralKey && isAmountWithinKeyTolerance(a.amount, b.amount);
 }
 
 export function getBestSwapStrategy({

@@ -186,6 +186,24 @@ export function ExpressTradingWarningCard({
     color = "yellow";
     content = <Trans>One-Click Trading time limit expired. You're now using Express Trading.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
+  } else if (shouldShowExternalSwapSubaccountBlockedWarning) {
+    icon = OneClickIcon;
+    color = "red";
+    content = (
+      <Trans>
+        This swap requires external routing, which isn't available with One-Click Trading. Disable One-Click to use
+        Express Trading.
+      </Trans>
+    );
+    buttonText = <Trans>Disable One-Click Trading</Trans>;
+    onClick = handleDisableSubaccount;
+  } else if (shouldShowExternalSwapGasConflictRequiredWarning) {
+    const wrappedToken = getWrappedToken(chainId);
+    icon = ExpressIcon;
+    color = "red";
+    content = <Trans>This swap requires external routing. Pay gas in {wrappedToken.symbol} to enable it.</Trans>;
+    buttonText = <Trans>Use {wrappedToken.symbol} for gas</Trans>;
+    onClick = handleUseWntAsGasToken;
   } else if (shouldShowOutOfGasPaymentBalanceWarning) {
     icon = ExpressIcon;
     color = "yellow";
@@ -206,24 +224,6 @@ export function ExpressTradingWarningCard({
     );
     buttonText = <Trans>Re-sign</Trans>;
     onClick = handleUpdateSubaccountSettings;
-  } else if (shouldShowExternalSwapSubaccountBlockedWarning) {
-    icon = OneClickIcon;
-    color = "red";
-    content = (
-      <Trans>
-        This swap requires external routing, which isn't available with One-Click Trading. Disable One-Click to use
-        Express Trading.
-      </Trans>
-    );
-    buttonText = <Trans>Disable One-Click Trading</Trans>;
-    onClick = handleDisableSubaccount;
-  } else if (shouldShowExternalSwapGasConflictRequiredWarning) {
-    const wrappedToken = getWrappedToken(chainId);
-    icon = ExpressIcon;
-    color = "red";
-    content = <Trans>This swap requires external routing. Pay gas in {wrappedToken.symbol} to enable it.</Trans>;
-    buttonText = <Trans>Use {wrappedToken.symbol} for gas</Trans>;
-    onClick = handleUseWntAsGasToken;
   } else if (shouldShowExternalSwapGasConflictOptionalWarning) {
     const wrappedToken = getWrappedToken(chainId);
     icon = ExpressIcon;
