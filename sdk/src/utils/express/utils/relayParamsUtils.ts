@@ -228,7 +228,6 @@ export function getRawRelayerParams({
 }): RawRelayParamsPayload {
   const oracleParams = getOracleParamsForRelayParams({
     chainId,
-    externalCalls,
     feeSwapPath: feeParams.feeSwapPath,
     gasPaymentTokenAddress,
     relayerFeeTokenAddress,
