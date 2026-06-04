@@ -11,6 +11,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { convertToTokenAmount, convertToUsd, TokenData, TokensData } from "domain/tokens";
 import { applyMinimalBuffer } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
+import { helperToast } from "lib/helperToast";
 import { getByKey } from "lib/objects";
 import { getGasPaymentTokens } from "sdk/configs/express";
 import { BatchOrderTxnParams, getBatchTotalPayCollateralAmount } from "sdk/utils/orderTransactions";
@@ -25,7 +26,7 @@ const notifyGasPaymentTokenSwitched = ({ fromSymbol, toSymbol }: { fromSymbol: s
   if (toast.isActive(GAS_PAYMENT_TOKEN_SWITCHED_TOAST_ID)) {
     toast.update(GAS_PAYMENT_TOKEN_SWITCHED_TOAST_ID, { render: content });
   } else {
-    toast(content, { toastId: GAS_PAYMENT_TOKEN_SWITCHED_TOAST_ID });
+    helperToast.info(content, { toastId: GAS_PAYMENT_TOKEN_SWITCHED_TOAST_ID });
   }
 };
 
