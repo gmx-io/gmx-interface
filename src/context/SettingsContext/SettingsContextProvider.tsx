@@ -26,6 +26,7 @@ import {
   getExecutionFeeBufferBpsKey,
   getExpressOrdersEnabledKey,
   getGasPaymentTokenAddressKey,
+  getGmxAccountGasPaymentTokenAddressKey,
   getHasOverriddenDefaultArb30ExecutionFeeBufferBpsKey,
   getLeverageEnabledKey as getLeverageSliderEnabledKey,
   getSyntheticsAcceptablePriceImpactBufferKey,
@@ -87,6 +88,8 @@ export type SettingsContextType = {
 
   gasPaymentTokenAddress: string;
   setGasPaymentTokenAddress: (val: string) => void;
+  gmxAccountGasPaymentTokenAddress: string;
+  setGmxAccountGasPaymentTokenAddress: (val: string) => void;
 
   externalSwapsEnabled: boolean;
   setExternalSwapsEnabled: (val: boolean) => void;
@@ -223,6 +226,15 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
   // Reason: useLocalStorageSerializeKey leaks previous value to the next render even if key is changed
   if (gasPaymentTokenAddress && !isValidTokenSafe(chainId, gasPaymentTokenAddress)) {
     gasPaymentTokenAddress = getDefaultGasPaymentToken(chainId);
+  }
+
+  let [gmxAccountGasPaymentTokenAddress, setGmxAccountGasPaymentTokenAddress] = useLocalStorageSerializeKey(
+    getGmxAccountGasPaymentTokenAddressKey(chainId, account),
+    getDefaultGasPaymentToken(chainId)
+  );
+  // Reason: useLocalStorageSerializeKey leaks previous value to the next render even if key is changed
+  if (gmxAccountGasPaymentTokenAddress && !isValidTokenSafe(chainId, gmxAccountGasPaymentTokenAddress)) {
+    gmxAccountGasPaymentTokenAddress = getDefaultGasPaymentToken(chainId);
   }
 
   let [savedShouldDisableValidationForTesting, setSavedShouldDisableValidationForTesting] = useLocalStorageSerializeKey(
@@ -377,6 +389,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
       setExpressOrdersEnabled,
       gasPaymentTokenAddress: gasPaymentTokenAddress!,
       setGasPaymentTokenAddress,
+      gmxAccountGasPaymentTokenAddress: gmxAccountGasPaymentTokenAddress!,
+      setGmxAccountGasPaymentTokenAddress,
 
       // External swaps are enabled by default on Botanix
       externalSwapsEnabled: chainId === BOTANIX || externalSwapsEnabled!,
@@ -440,6 +454,8 @@ export function SettingsContextProvider({ children }: { children: ReactNode }) {
     setExpressOrdersEnabled,
     gasPaymentTokenAddress,
     setGasPaymentTokenAddress,
+    gmxAccountGasPaymentTokenAddress,
+    setGmxAccountGasPaymentTokenAddress,
     chainId,
     externalSwapsEnabled,
     setExternalSwapsEnabled,

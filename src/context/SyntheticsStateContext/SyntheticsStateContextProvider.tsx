@@ -366,9 +366,20 @@ export function SyntheticsStateContextProvider({
   const tokenPermitsState = useTokenPermitsContext();
   const sponsoredCallBalanceData = useIsSponsoredCallBalanceAvailable(chainId);
 
+  const gasPaymentTokenAllowanceAddresses = useMemo(
+    () =>
+      Array.from(
+        new Set([
+          convertTokenAddress(chainId, settings.gasPaymentTokenAddress, "wrapped"),
+          convertTokenAddress(chainId, settings.gmxAccountGasPaymentTokenAddress, "wrapped"),
+        ])
+      ),
+    [chainId, settings.gasPaymentTokenAddress, settings.gmxAccountGasPaymentTokenAddress]
+  );
+
   const gasPaymentTokenAllowance = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
-    tokenAddresses: [convertTokenAddress(chainId, settings.gasPaymentTokenAddress, "wrapped")],
+    tokenAddresses: gasPaymentTokenAllowanceAddresses,
   });
 
   const botanixStakingAssetsPerShare = useBotanixStakingAssetsPerShare({ chainId });
