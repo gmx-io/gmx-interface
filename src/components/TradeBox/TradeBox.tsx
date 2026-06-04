@@ -33,6 +33,7 @@ import {
   selectTradeboxDecreasePositionAmounts,
   selectTradeboxExecutionFee,
   selectTradeboxFees,
+  selectTradeboxFormState,
   selectTradeboxFromToken,
   selectTradeboxIncreasePositionAmounts,
   selectTradeboxIsWrapOrUnwrap,
@@ -46,7 +47,6 @@ import {
   selectTradeboxSetDefaultAllowedSwapSlippageBps,
   selectTradeboxSetKeepLeverage,
   selectTradeboxSetSelectedAllowedSwapSlippageBps,
-  selectTradeboxState,
   selectTradeboxSwapAmounts,
   selectTradeboxSwapTokens,
   selectTradeboxTradeFlags,
@@ -210,7 +210,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
     setDuration,
     limitPriceWarningHidden,
     setLimitPriceWarningHidden,
-  } = useSelector(selectTradeboxState);
+  } = useSelector(selectTradeboxFormState);
 
   const isTwapModeAvailable = useMemo(
     () =>

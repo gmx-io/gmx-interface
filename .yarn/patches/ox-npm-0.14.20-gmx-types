@@ -1,0 +1,56 @@
+diff --git a/_types/core/Hex.d.ts b/_types/core/Hex.d.ts
+--- a/_types/core/Hex.d.ts
++++ b/_types/core/Hex.d.ts
+@@ -2,7 +2,7 @@ import * as Bytes from './Bytes.js';
+ import * as Errors from './Errors.js';
+ import * as internal_bytes from './internal/bytes.js';
+ import * as internal from './internal/hex.js';
+ /** Root type for a Hex string. */
+-export type Hex = `0x${string}`;
++export type Hex = string;
+ /**
+  * Asserts if the given value is {@link ox#Hex.Hex}.
+diff --git a/core/Hex.ts b/core/Hex.ts
+--- a/core/Hex.ts
++++ b/core/Hex.ts
+@@ -12,6 +12,6 @@ const hexes = /*#__PURE__*/ Array.from({ length: 256 }, (_v, i) =>
+ )
+ 
+ /** Root type for a Hex string. */
+-export type Hex = `0x${string}`
++export type Hex = string
+ 
+ /**
+diff --git a/core/Secp256k1.ts b/core/Secp256k1.ts
+--- a/core/Secp256k1.ts
++++ b/core/Secp256k1.ts
+@@ -392,5 +392,5 @@ export function verify(options: verify.Options): boolean {
+     signature,
+     Bytes.from(payload),
+-    PublicKey.toBytes(publicKey),
++    PublicKey.toBytes(publicKey!),
+     ...(hash ? [{ prehash: true, lowS: true }] : []),
+   )
+diff --git a/core/Signature.ts b/core/Signature.ts
+--- a/core/Signature.ts
++++ b/core/Signature.ts
+@@ -284,16 +284,16 @@ export function from<
+   const signature_ = (() => {
+     if (typeof signature === 'string') return fromHex(signature)
+     if (signature instanceof Uint8Array) return fromBytes(signature)
+-    if (typeof signature.r === 'string') return fromRpc(signature)
+-    if (signature.v) return fromLegacy(signature)
++    if (typeof signature.r === 'string') return fromRpc(signature as Rpc)
++    if (signature.v) return fromLegacy(signature as Legacy)
+     return {
+       r: signature.r,
+       s: signature.s,
+       ...(typeof signature.yParity !== 'undefined'
+         ? { yParity: signature.yParity }
+         : {}),
+     }
+   })()
+-  assert(signature_)
++  assert(signature_ as Signature)
+   return signature_ as never
+ }

@@ -28,7 +28,7 @@ import { TokensBalancesContextProvider } from "context/TokensBalancesContext/Tok
 import { TokensFavoritesContextProvider } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { useChainId } from "lib/chains";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
-import { ConnectModalProvider } from "lib/wallets/useConnectModal";
+import { ConnectModalProvider } from "lib/wallets/ConnectModalProvider";
 
 import ErrorBoundary from "components/Errors/ErrorBoundary";
 import SEO from "components/Seo/SEO";

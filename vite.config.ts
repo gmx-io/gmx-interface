@@ -10,6 +10,213 @@ import svgr from "vite-plugin-svgr";
 import tsconfigPaths from "vite-tsconfig-paths";
 import { BREAKPOINTS } from "./src/lib/breakpoints";
 
+const REACT_VENDOR_PACKAGES = new Set([
+  "react",
+  "react-dom",
+  "react-router",
+  "react-router-dom",
+  "scheduler",
+  "use-sync-external-store",
+]);
+
+const WEB3_PACKAGES = new Set([
+  "abitype",
+  "ethers",
+  "isows",
+  "ox",
+  "viem",
+  "@gelatocloud/gasless",
+  "@layerzerolabs/lz-v2-utilities",
+  "@stargatefinance/stg-evm-sdk-v2",
+  "@uniswap/sdk-core",
+  "@uniswap/v3-sdk",
+]);
+
+const WALLET_AUTH_PACKAGES = new Set([
+  "cbw-sdk",
+  "mipd",
+  "porto",
+  "wagmi",
+  "x402",
+  "zustand",
+  "@gemini-wallet/core",
+  "@privy-io/react-auth",
+  "@privy-io/wagmi",
+  "@wagmi/connectors",
+  "@wagmi/core",
+]);
+
+const WALLET_AUTH_SCOPES = new Set([
+  "@base-org",
+  "@coinbase",
+  "@metamask",
+  "@privy-io",
+  "@reown",
+  "@safe-global",
+  "@wallet-standard",
+  "@walletconnect",
+]);
+
+const UI_PACKAGES = new Set([
+  "@floating-ui/dom",
+  "@floating-ui/react",
+  "@floating-ui/utils",
+  "@headlessui/react",
+  "framer-motion",
+  "react-select",
+]);
+
+const UTILITY_VENDOR_PACKAGES = new Set(["@date-fns/tz", "date-fns", "lodash"]);
+const WEB3_SHARED_SCOPES = new Set(["@noble", "@scure"]);
+const UI_SHARED_SCOPES = new Set(["@floating-ui"]);
+
+const APP_SRC_DIR = path.resolve(__dirname, "src");
+const SDK_SRC_DIR = path.resolve(__dirname, "sdk/src");
+const SOLANA_SYSTEM_MODULE_ID = "@solana-program/system";
+const SOLANA_SYSTEM_STUB_ID = "\0gmx:solana-system-stub";
+
+function normalizePath(id: string) {
+  return id.replace(/\\/g, "/");
+}
+
+function getPackageNameFromPath(pathAfterNodeModules: string) {
+  const [firstPart, secondPart] = pathAfterNodeModules.split("/");
+
+  if (!firstPart) {
+    return undefined;
+  }
+
+  return firstPart.startsWith("@") ? `${firstPart}/${secondPart}` : firstPart;
+}
+
+function getPackageNames(normalizedId: string) {
+  return normalizedId
+    .split("/node_modules/")
+    .slice(1)
+    .map(getPackageNameFromPath)
+    .filter((packageName): packageName is string => Boolean(packageName));
+}
+
+function getPackageScope(packageName: string) {
+  return packageName.startsWith("@") ? packageName.split("/")[0] : undefined;
+}
+
+function isWalletAuthPackage(packageName: string) {
+  const packageScope = getPackageScope(packageName);
+  return WALLET_AUTH_PACKAGES.has(packageName) || Boolean(packageScope && WALLET_AUTH_SCOPES.has(packageScope));
+}
+
+function isSharedWeb3Package(packageName: string) {
+  const packageScope = getPackageScope(packageName);
+  return Boolean(packageScope && WEB3_SHARED_SCOPES.has(packageScope));
+}
+
+function isUiPackage(packageName: string) {
+  const packageScope = getPackageScope(packageName);
+  return UI_PACKAGES.has(packageName) || Boolean(packageScope && UI_SHARED_SCOPES.has(packageScope));
+}
+
+function manualChunks(id: string) {
+  const normalizedId = normalizePath(id);
+  const packageNames = getPackageNames(normalizedId);
+  const packageName = packageNames.at(-1);
+
+  if (!packageName) {
+    return undefined;
+  }
+
+  const ownerPackageNames = packageNames.slice(0, -1);
+
+  if (isSharedWeb3Package(packageName)) {
+    return "web3";
+  }
+
+  if (isUiPackage(packageName)) {
+    return "ui";
+  }
+
+  if (ownerPackageNames.some(isWalletAuthPackage)) {
+    return "wallet-auth";
+  }
+
+  if (REACT_VENDOR_PACKAGES.has(packageName)) {
+    return "react-vendor";
+  }
+
+  if (isWalletAuthPackage(packageName)) {
+    return "wallet-auth";
+  }
+
+  if (WEB3_PACKAGES.has(packageName)) {
+    return "web3";
+  }
+
+  if (UTILITY_VENDOR_PACKAGES.has(packageName)) {
+    return "utility-vendor";
+  }
+
+  if (packageName === "recharts") {
+    return "charts";
+  }
+
+  if (isUiPackage(packageName)) {
+    return "ui";
+  }
+
+  return undefined;
+}
+
+function sdkViemDedupe(): PluginOption {
+  const normalizedSdkSrcDir = normalizePath(SDK_SRC_DIR);
+  const appResolverImporter = path.join(APP_SRC_DIR, "__sdk-viem-dedupe.ts");
+
+  return {
+    name: "gmx-sdk-viem-dedupe",
+    enforce: "pre",
+    async resolveId(source, importer, options) {
+      if (!importer || (source !== "viem" && !source.startsWith("viem/"))) {
+        return null;
+      }
+
+      const normalizedImporter = normalizePath(importer);
+
+      if (!normalizedImporter.includes(`${normalizedSdkSrcDir}/`)) {
+        return null;
+      }
+
+      return this.resolve(source, appResolverImporter, {
+        ...options,
+        skipSelf: true,
+      });
+    },
+  };
+}
+
+function optionalSolanaSystemStub(): PluginOption {
+  return {
+    name: "gmx-optional-solana-system-stub",
+    enforce: "pre",
+    resolveId(source) {
+      if (source === SOLANA_SYSTEM_MODULE_ID) {
+        return SOLANA_SYSTEM_STUB_ID;
+      }
+
+      return null;
+    },
+    load(id) {
+      if (id !== SOLANA_SYSTEM_STUB_ID) {
+        return null;
+      }
+
+      return `
+        export function getTransferSolInstruction() {
+          throw new Error("${SOLANA_SYSTEM_MODULE_ID} is not bundled in the GMX ethereum-only build.");
+        }
+      `;
+    },
+  };
+}
+
 export default defineConfig(({ mode }) => {
   return {
     worker: {
@@ -37,6 +244,8 @@ export default defineConfig(({ mode }) => {
       svgr({
         include: "**/*.svg?react",
       }),
+      optionalSolanaSystemStub(),
+      sdkViemDedupe(),
       tsconfigPaths(),
       react({
         babel: {
@@ -70,15 +279,8 @@ export default defineConfig(({ mode }) => {
       outDir: "build",
       sourcemap: true,
       rollupOptions: {
-        // Privy includes Solana modules as optional peer deps. Since we use ethereum-only,
-        // stub them out so rollup doesn't fail on the missing imports.
-        external: ["@solana-program/system"],
         output: {
-          manualChunks: {
-            web3: ["ethers", "viem", "date-fns", "@privy-io/react-auth", "lodash", "@gelatocloud/gasless"],
-            charts: ["recharts"],
-            ui: ["@headlessui/react", "framer-motion", "react-select"],
-          },
+          manualChunks,
         },
       },
     },
