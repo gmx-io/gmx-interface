@@ -12,6 +12,10 @@ export const selectExpressOrdersEnabled = (s: SyntheticsState) => s.settings.exp
 export const selectSetExpressOrdersEnabled = (s: SyntheticsState) => s.settings.setExpressOrdersEnabled;
 export const selectGasPaymentTokenAddress = (s: SyntheticsState) => s.settings.gasPaymentTokenAddress;
 export const selectSetGasPaymentTokenAddress = (s: SyntheticsState) => s.settings.setGasPaymentTokenAddress;
+export const selectGmxAccountGasPaymentTokenAddress = (s: SyntheticsState) =>
+  s.settings.gmxAccountGasPaymentTokenAddress;
+export const selectSetGmxAccountGasPaymentTokenAddress = (s: SyntheticsState) =>
+  s.settings.setGmxAccountGasPaymentTokenAddress;
 export const selectDebugSwapMarketsConfig = (s: SyntheticsState) => s.settings.debugSwapMarketsConfig;
 export const selectSetDebugSwapMarketsConfig = (s: SyntheticsState) => s.settings.setDebugSwapMarketsConfig;
 export const selectSettingsWarningDotVisible = (s: SyntheticsState) => s.settings.settingsWarningDotVisible;
