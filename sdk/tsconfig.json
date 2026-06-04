@@ -30,7 +30,18 @@
       "abis": ["abis/index"],
       "codegen/*": ["codegen/*"],
       "clients/*": ["clients/*"],
-      "test/*": ["test/*"]
+      "test/*": ["test/*"],
+      "ox": ["../node_modules/ox/_types/index.d.ts"],
+      "ox/erc4337": ["../node_modules/ox/_types/erc4337/index.d.ts"],
+      "ox/erc6492": ["../node_modules/ox/_types/erc6492/index.d.ts"],
+      "ox/erc7821": ["../node_modules/ox/_types/erc7821/index.d.ts"],
+      "ox/erc8010": ["../node_modules/ox/_types/erc8010/index.d.ts"],
+      "ox/erc8021": ["../node_modules/ox/_types/erc8021/index.d.ts"],
+      "ox/tempo": ["../node_modules/ox/_types/tempo/index.d.ts"],
+      "ox/trusted-setups": ["../node_modules/ox/_types/trusted-setups/index.d.ts"],
+      "ox/webauthn": ["../node_modules/ox/_types/webauthn/index.d.ts"],
+      "ox/window": ["../node_modules/ox/_types/window/index.d.ts"],
+      "ox/*": ["../node_modules/ox/_types/core/*.d.ts", "../node_modules/ox/_types/*.d.ts"]
     },
     "plugins": [
       { "transform": "typescript-transform-paths" },

@@ -561,8 +561,7 @@
   ],
   "packageManager": "yarn@4.12.0",
   "resolutions": {
-    "ox@0.14.20": "patch:ox@npm:0.14.20#../.yarn/patches/ox-npm-0.14.20-gmx-types",
-    "viem@2.48.11": "patch:viem@npm:2.48.11#../.yarn/patches/viem-npm-2.48.11-gmx-hex-types",
+    "ox@0.14.20": "0.14.29",
     "lodash": "4.18.1"
   }
 }

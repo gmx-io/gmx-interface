@@ -76,7 +76,7 @@ export function buildSameChainDepositTxn(request: SameChainDepositRequest): Buil
   });
 
   return {
-    to: router,
+    to: router as Hex,
     data,
     value: isNative ? amount : 0n,
   };
@@ -113,7 +113,7 @@ export function buildSameChainWithdrawTxn(request: SameChainWithdrawRequest): Bu
     args: [bridgeOutParams],
   });
 
-  return { to: router, data, value: 0n };
+  return { to: router as Hex, data, value: 0n };
 }
 
 /**

@@ -5,6 +5,7 @@ import {
   ContractErrorName,
   decodeErrorResult,
   ExtractAbiItem,
+  type Hex,
   BaseError as ViemBaseError,
 } from "viem";
 
@@ -197,7 +198,7 @@ export function parseError(error: ErrorLike | string | undefined, errorDepth = 0
         try {
           const parsedError = decodeErrorResult({
             abi: abis.CustomErrors as Abi,
-            data: errorData,
+            data: errorData as Hex,
           });
 
           if (parsedError) {
@@ -312,7 +313,7 @@ export function tryDecodeCustomError(reasonBytes: string): ParsedCustomError | u
   try {
     const decoded = decodeErrorResult({
       abi: abis.CustomErrors,
-      data: reasonBytes,
+      data: reasonBytes as Hex,
     });
 
     // Convert args array to key-value dictionary for backward compatibility
