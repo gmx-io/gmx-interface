@@ -1,54 +1,99 @@
-import { useConnectOrCreateWallet } from "@privy-io/react-auth";
-import { useCallback, useMemo, useState, type ReactNode } from "react";
+import { useCallback, useEffect, useMemo, useState, type ComponentType, type ReactNode } from "react";
 
-import type { SettlementChainId } from "config/chains";
-import {
-  SELECTED_NETWORK_LOCAL_STORAGE_KEY,
-  SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY,
-} from "config/localStorage";
-import { isSourceChain } from "config/multichain";
-import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks";
 import { metrics } from "lib/metrics";
-import { switchNetwork } from "lib/wallets";
 
+import type { ConnectModalControllerProps } from "./ConnectModalController";
 import { ConnectModalContext } from "./useConnectModal";
 
-function shouldKeepAppSelectedSourceChain(settlementChainId: SettlementChainId) {
-  const rawChainIdFromLocalStorage = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
-  const chainIdFromLocalStorage = rawChainIdFromLocalStorage ? parseInt(rawChainIdFromLocalStorage) : undefined;
-  const selectedNetworkWasAppSelected =
-    localStorage.getItem(SELECTED_NETWORK_WAS_APP_SELECTED_LOCAL_STORAGE_KEY) === "true";
+type ConnectModalControllerModule = {
+  ConnectModalController: ComponentType<ConnectModalControllerProps>;
+};
 
-  return selectedNetworkWasAppSelected && isSourceChain(chainIdFromLocalStorage, settlementChainId);
+let connectModalControllerPromise: Promise<ConnectModalControllerModule> | undefined;
+
+function loadConnectModalController() {
+  if (!connectModalControllerPromise) {
+    connectModalControllerPromise = import("./ConnectModalController").catch((error) => {
+      connectModalControllerPromise = undefined;
+      throw error;
+    });
+  }
+
+  return connectModalControllerPromise;
+}
+
+function runAfterFirstPaint(callback: () => void) {
+  if (typeof window === "undefined") {
+    return;
+  }
+
+  const scheduleFrame =
+    window.requestAnimationFrame?.bind(window) ??
+    ((frameCallback: FrameRequestCallback) => window.setTimeout(frameCallback, 0));
+
+  scheduleFrame(() => {
+    window.setTimeout(callback, 0);
+  });
 }
 
 export function ConnectModalProvider({ children }: { children: ReactNode }) {
-  const [settlementChainId] = useGmxAccountSettlementChainId();
+  const [connectModalController, setConnectModalController] = useState<ComponentType<ConnectModalControllerProps>>();
   const [connectModalOpen, setConnectModalOpen] = useState(false);
+  const [connectRequestId, setConnectRequestId] = useState(0);
+  const [isConnectModalLoading, setIsConnectModalLoading] = useState(false);
 
-  const handleSuccess = useCallback(() => {
-    setConnectModalOpen(false);
+  const ensureConnectModalController = useCallback(async () => {
+    const module = await loadConnectModalController();
+    setConnectModalController(() => module.ConnectModalController);
+    return module.ConnectModalController;
+  }, []);
 
-    if (shouldKeepAppSelectedSourceChain(settlementChainId)) {
-      return;
-    }
+  useEffect(() => {
+    let cancelled = false;
 
-    void switchNetwork(settlementChainId, true).catch((error) => {
-      metrics.pushError(error, "connectModal.switchNetwork");
+    runAfterFirstPaint(() => {
+      void loadConnectModalController()
+        .then((module) => {
+          if (!cancelled) {
+            setConnectModalController(() => module.ConnectModalController);
+          }
+        })
+        .catch((error) => {
+          metrics.pushError(error, "connectModal.preload");
+        });
     });
-  }, [settlementChainId]);
 
-  const { connectOrCreateWallet } = useConnectOrCreateWallet({
-    onSuccess: handleSuccess,
-    onError: () => setConnectModalOpen(false),
-  });
+    return () => {
+      cancelled = true;
+    };
+  }, []);
 
   const openConnectModal = useCallback(() => {
-    setConnectModalOpen(true);
-    connectOrCreateWallet();
-  }, [connectOrCreateWallet]);
+    setIsConnectModalLoading(true);
+    setConnectRequestId((currentRequestId) => currentRequestId + 1);
 
-  const value = useMemo(() => ({ openConnectModal, connectModalOpen }), [openConnectModal, connectModalOpen]);
+    void ensureConnectModalController().catch((error) => {
+      setIsConnectModalLoading(false);
+      metrics.pushError(error, "connectModal.load");
+    });
+  }, [ensureConnectModalController]);
 
-  return <ConnectModalContext.Provider value={value}>{children}</ConnectModalContext.Provider>;
+  const value = useMemo(
+    () => ({ openConnectModal, connectModalOpen, isConnectModalLoading }),
+    [openConnectModal, connectModalOpen, isConnectModalLoading]
+  );
+  const LoadedConnectModalController = connectModalController;
+
+  return (
+    <ConnectModalContext.Provider value={value}>
+      {children}
+      {LoadedConnectModalController ? (
+        <LoadedConnectModalController
+          requestId={connectRequestId}
+          setConnectModalOpen={setConnectModalOpen}
+          setIsConnectModalLoading={setIsConnectModalLoading}
+        />
+      ) : null}
+    </ConnectModalContext.Provider>
+  );
 }

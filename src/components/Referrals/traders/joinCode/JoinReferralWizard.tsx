@@ -54,7 +54,7 @@ function DiscountPromos() {
 }
 
 export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDashboard: () => void }) {
-  const { openConnectModal } = useConnectModal();
+  const { isConnectModalLoading, openConnectModal } = useConnectModal();
   const { isConnected, address } = useAccount();
   const { chainId } = useChainId();
   const history = useHistory();
@@ -97,8 +97,14 @@ export function JoinReferralWizard({ onGoToTraderDashboard }: { onGoToTraderDash
                 <DiscountPromos />
               </div>
               <div className="flex flex-col items-center gap-16">
-                <Button variant="primary-action" className="w-full" type="submit" onClick={openConnectModal}>
-                  <Trans>Connect wallet</Trans>
+                <Button
+                  variant="primary-action"
+                  className="w-full"
+                  type="submit"
+                  disabled={isConnectModalLoading}
+                  onClick={openConnectModal}
+                >
+                  {isConnectModalLoading ? <Trans>Loading...</Trans> : <Trans>Connect wallet</Trans>}
                 </Button>
                 <ExternalLink href={REFERRALS_DOCS_URL} variant="icon" className="text-blue-300">
                   <Trans>Read more</Trans>

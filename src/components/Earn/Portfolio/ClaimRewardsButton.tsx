@@ -26,7 +26,7 @@ type ClaimRewardsButtonProps = {
 
 export function ClaimRewardsButton({ processedData, mutateProcessedData, className }: ClaimRewardsButtonProps) {
   const { active, account, signer } = useWallet();
-  const { openConnectModal } = useConnectModal();
+  const { isConnectModalLoading, openConnectModal } = useConnectModal();
   const { chainId } = useChainId();
   const { setPendingTxns } = usePendingTxns();
 
@@ -81,10 +81,10 @@ export function ClaimRewardsButton({ processedData, mutateProcessedData, classNa
         variant="secondary"
         onClick={handleClick}
         className="max-lg:w-full"
-        disabled={!hasGmxRewards && !hasEsGmxRewards && !hasNativeRewards}
+        disabled={isConnectModalLoading || (!hasGmxRewards && !hasEsGmxRewards && !hasNativeRewards)}
       >
         <EarnIcon className="size-16" />
-        <Trans>Claim rewards</Trans>
+        {!active && isConnectModalLoading ? <Trans>Loading...</Trans> : <Trans>Claim rewards</Trans>}
       </Button>
 
       <ClaimModal

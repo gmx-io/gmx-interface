@@ -32,31 +32,6 @@ const WEB3_PACKAGES = new Set([
   "@uniswap/v3-sdk",
 ]);
 
-const WALLET_AUTH_PACKAGES = new Set([
-  "cbw-sdk",
-  "mipd",
-  "porto",
-  "wagmi",
-  "x402",
-  "zustand",
-  "@gemini-wallet/core",
-  "@privy-io/react-auth",
-  "@privy-io/wagmi",
-  "@wagmi/connectors",
-  "@wagmi/core",
-]);
-
-const WALLET_AUTH_SCOPES = new Set([
-  "@base-org",
-  "@coinbase",
-  "@metamask",
-  "@privy-io",
-  "@reown",
-  "@safe-global",
-  "@wallet-standard",
-  "@walletconnect",
-]);
-
 const UI_PACKAGES = new Set([
   "@floating-ui/dom",
   "@floating-ui/react",
@@ -101,11 +76,6 @@ function getPackageScope(packageName: string) {
   return packageName.startsWith("@") ? packageName.split("/")[0] : undefined;
 }
 
-function isWalletAuthPackage(packageName: string) {
-  const packageScope = getPackageScope(packageName);
-  return WALLET_AUTH_PACKAGES.has(packageName) || Boolean(packageScope && WALLET_AUTH_SCOPES.has(packageScope));
-}
-
 function isSharedWeb3Package(packageName: string) {
   const packageScope = getPackageScope(packageName);
   return Boolean(packageScope && WEB3_SHARED_SCOPES.has(packageScope));
@@ -125,8 +95,6 @@ function manualChunks(id: string) {
     return undefined;
   }
 
-  const ownerPackageNames = packageNames.slice(0, -1);
-
   if (isSharedWeb3Package(packageName)) {
     return "web3";
   }
@@ -135,16 +103,8 @@ function manualChunks(id: string) {
     return "ui";
   }
 
-  if (ownerPackageNames.some(isWalletAuthPackage)) {
-    return "wallet-auth";
-  }
-
   if (REACT_VENDOR_PACKAGES.has(packageName)) {
     return "react-vendor";
-  }
-
-  if (isWalletAuthPackage(packageName)) {
-    return "wallet-auth";
   }
 
   if (WEB3_PACKAGES.has(packageName)) {

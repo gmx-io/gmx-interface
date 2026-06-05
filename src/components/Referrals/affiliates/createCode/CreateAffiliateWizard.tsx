@@ -56,7 +56,7 @@ export function CreateAffiliateWizard({
   initialReferralCode: string | undefined;
   traderDiscountPercentage?: string | number;
 }) {
-  const { openConnectModal } = useConnectModal();
+  const { isConnectModalLoading, openConnectModal } = useConnectModal();
   const { isConnected } = useAccount();
 
   const [wizardStep, setWizardStep] = useState(CreateAffiliateWizardStep.ConnectWallet);
@@ -93,8 +93,14 @@ export function CreateAffiliateWizard({
                 <AffiliatePromos />
               </div>
               <div className="flex flex-col items-center gap-16">
-                <Button variant="primary-action" className="w-full" type="submit" onClick={openConnectModal}>
-                  <Trans>Connect wallet</Trans>
+                <Button
+                  variant="primary-action"
+                  className="w-full"
+                  type="submit"
+                  disabled={isConnectModalLoading}
+                  onClick={openConnectModal}
+                >
+                  {isConnectModalLoading ? <Trans>Loading...</Trans> : <Trans>Connect wallet</Trans>}
                 </Button>
                 <ExternalLink href="https://docs.gmx.io/docs/referrals" variant="icon" className="text-blue-300">
                   <Trans>Read more</Trans>
