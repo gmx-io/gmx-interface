@@ -107,7 +107,7 @@ export function useMarketsInfoRequest(
   const dataSource: ApiDataSource | undefined = mergedData ? (shouldUseApiMarketsInfoData ? "api" : "rpc") : undefined;
   const isLoading =
     isWaitingForInitialApiData || (shouldFallbackToRpc && !fallbackMarketsInfoData && !shouldUseApiMarketsInfoData);
-  const error = shouldFallbackToRpc ? undefined : apiError;
+  const error = shouldFallbackToRpc ? (fallbackMarketsInfoData ? undefined : apiError) : apiError;
 
   useApiDataFallbackCounter({
     domain: "markets",
