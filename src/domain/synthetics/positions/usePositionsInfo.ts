@@ -77,11 +77,7 @@ export function usePositionsInfoRequest(
     error: apiError,
   } = useApiPositionsInfoRequest(chainId, { account, enabled: isApiSdkEnabled });
 
-  const {
-    shouldFallbackToRpc,
-    isWaitingForInitialApiData,
-    isInitialFallback,
-  } = useApiDataFallbackState({
+  const { shouldFallbackToRpc, isWaitingForInitialApiData, isInitialFallback } = useApiDataFallbackState({
     chainId,
     apiEnabled: isApiSdkEnabled,
     apiData: apiPositionsInfoData,
@@ -221,9 +217,7 @@ export function usePositionsInfoRequest(
 
   const fallbackPositionsInfoData = rpcPositionsInfoData;
   const shouldUseApiPositionsInfoData =
-    isApiSdkEnabled &&
-    Boolean(recomputedApiPositionsInfoData) &&
-    (!shouldFallbackToRpc || !fallbackPositionsInfoData);
+    isApiSdkEnabled && Boolean(recomputedApiPositionsInfoData) && (!shouldFallbackToRpc || !fallbackPositionsInfoData);
 
   const positionsInfoData = useMemo(() => {
     if (shouldUseApiPositionsInfoData) {
@@ -237,7 +231,9 @@ export function usePositionsInfoRequest(
     !positionsInfoData &&
     (isWaitingForInitialApiData
       ? true
-      : shouldFallbackToRpc && !fallbackPositionsInfoData && !shouldUseApiPositionsInfoData);
+      : shouldFallbackToRpc
+        ? !fallbackPositionsInfoData && !shouldUseApiPositionsInfoData
+        : isApiSdkEnabled);
 
   const dataSource: ApiDataSource | undefined = positionsInfoData
     ? shouldUseApiPositionsInfoData
