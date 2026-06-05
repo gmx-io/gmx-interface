@@ -90,7 +90,7 @@ export function useApiDataFallbackState({
   ]);
 
   const shouldFallbackToRpc =
-    isEnabled && (!apiEnabled || Boolean(apiError) || !hasApiData || isApiStale);
+    isEnabled && (!apiEnabled || Boolean(apiError) || isApiStale || (!hasApiData && isInitialFallbackAllowed));
 
   return {
     hasApiData,
