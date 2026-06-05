@@ -1,5 +1,6 @@
 import { useMemo } from "react";
 
+import { useApiDataFallbackState } from "domain/api/useApiDataFallbackState";
 import { API_UI_FLAGS, useIsApiSdkEnabled } from "domain/synthetics/uiFlags/useIsApiSdkEnabled";
 import { ApiDataSource } from "lib/metrics/types";
 import { useApiDataFallbackCounter } from "lib/metrics/useApiDataFallbackCounter";
@@ -33,7 +34,18 @@ export function useMarketsInfoRequest(
     error: apiError,
   } = useApiMarketsInfoRequest(chainId, { enabled: isApiSdkEnabled });
 
-  const shouldFallbackToRpc = !isApiSdkEnabled || apiError || isApiStale;
+  const {
+    hasApiData: hasApiMarketsInfoData,
+    shouldFallbackToRpc,
+    isWaitingForInitialApiData,
+    isInitialFallback,
+  } = useApiDataFallbackState({
+    chainId,
+    apiEnabled: isApiSdkEnabled,
+    apiData: apiMarketsInfoData,
+    isApiStale,
+    apiError,
+  });
 
   const { marketsAddresses, fastMarketInfoData, marketsData, marketsValuesData, marketsConfigsData, marketsConstants } =
     useRpcMarketsInfoRequest({
@@ -44,29 +56,20 @@ export function useMarketsInfoRequest(
 
   const rpcMarketsInfoDataReady = marketsData && marketsValuesData && marketsConfigsData && marketsConstants;
 
-  const rawMarketsInfoData = useMemo((): RawMarketsInfoData | undefined => {
-    if (apiMarketsInfoData) {
-      return apiMarketsInfoData as RawMarketsInfoData;
+  const fullRpcMarketsInfoData = useMemo((): RawMarketsInfoData | undefined => {
+    if (!shouldFallbackToRpc || !marketsAddresses || !rpcMarketsInfoDataReady) {
+      return undefined;
     }
 
-    if (marketsAddresses && rpcMarketsInfoDataReady) {
-      return composeRawMarketsInfoData({
-        marketsAddresses,
-        marketsData,
-        marketsValuesData,
-        marketsConfigsData,
-        marketsConstants,
-      });
-    }
-
-    if (fastMarketInfoData) {
-      return fastMarketInfoData;
-    }
-
-    return undefined;
+    return composeRawMarketsInfoData({
+      marketsAddresses,
+      marketsData,
+      marketsValuesData,
+      marketsConfigsData,
+      marketsConstants,
+    });
   }, [
-    apiMarketsInfoData,
-    fastMarketInfoData,
+    shouldFallbackToRpc,
     marketsAddresses,
     rpcMarketsInfoDataReady,
     marketsData,
@@ -74,6 +77,18 @@ export function useMarketsInfoRequest(
     marketsConfigsData,
     marketsConstants,
   ]);
+
+  const fallbackMarketsInfoData = fullRpcMarketsInfoData || (!hasApiMarketsInfoData ? fastMarketInfoData : undefined);
+  const shouldUseApiMarketsInfoData =
+    isApiSdkEnabled && Boolean(apiMarketsInfoData) && (!shouldFallbackToRpc || !fallbackMarketsInfoData);
+
+  const rawMarketsInfoData = useMemo((): RawMarketsInfoData | undefined => {
+    if (shouldUseApiMarketsInfoData) {
+      return apiMarketsInfoData as RawMarketsInfoData;
+    }
+
+    return fallbackMarketsInfoData;
+  }, [apiMarketsInfoData, fallbackMarketsInfoData, shouldUseApiMarketsInfoData]);
 
   const mergedData = useMemo(() => {
     if (!marketsAddresses || !tokensData || !rawMarketsInfoData) {
@@ -89,7 +104,10 @@ export function useMarketsInfoRequest(
     });
   }, [marketsAddresses, tokensData, rawMarketsInfoData, chainId, claimableFundingData]);
 
-  const dataSource: ApiDataSource | undefined = mergedData ? (apiMarketsInfoData ? "api" : "rpc") : undefined;
+  const dataSource: ApiDataSource | undefined = mergedData ? (shouldUseApiMarketsInfoData ? "api" : "rpc") : undefined;
+  const isLoading =
+    isWaitingForInitialApiData || (shouldFallbackToRpc && !fallbackMarketsInfoData && !shouldUseApiMarketsInfoData);
+  const error = shouldFallbackToRpc ? undefined : apiError;
 
   useApiDataFallbackCounter({
     domain: "markets",
@@ -98,12 +116,13 @@ export function useMarketsInfoRequest(
     apiData: apiMarketsInfoData,
     isApiStale,
     apiError,
+    isInitialFallback,
   });
 
   return {
     marketsInfoData: mergedData,
-    error: apiError,
-    isLoading: shouldFallbackToRpc && !rpcMarketsInfoDataReady,
+    error,
+    isLoading,
     dataSource,
   };
 }
