@@ -43,8 +43,11 @@ import {
   selectOrderEditorTriggerRatio,
 } from "context/SyntheticsStateContext/selectors/orderEditorSelectors";
 import { useCalcSelector, useSelector } from "context/SyntheticsStateContext/utils";
-import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
+import {
+  getExpressParamsForSubmit,
+  reportMultichainExpressSubmitError,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
 import useUiFeeFactorRequest from "domain/synthetics/fees/utils/useUiFeeFactor";
 import {
   EditingOrderSource,
@@ -115,6 +118,8 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPercentageSlider";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
+
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { AllowedSwapSlippageInputRow } from "../AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl";
 import { SyntheticsInfoRow } from "../SyntheticsInfoRow";
@@ -421,7 +426,7 @@ export function OrderEditor(p: Props) {
     additionalExecutionFee?.feeTokenAmount,
   ]);
 
-  const { expressParams, expressParamsPromise } = useExpressOrdersParams({
+  const { expressParams, expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Order Editor",
     isGmxAccount: srcChainId !== undefined,
@@ -508,12 +513,26 @@ export function OrderEditor(p: Props) {
 
     const fulfilledExpressParams = await expressParamsPromise;
 
+    const isGmxAccount = srcChainId !== undefined;
+
+    if (
+      reportMultichainExpressSubmitError({
+        isGmxAccount,
+        expressParams: fulfilledExpressParams,
+        tokensData,
+        actionName: "Update Order",
+        collateral: p.order.initialCollateralToken.symbol,
+      })
+    ) {
+      setIsSubmitting(false);
+      return;
+    }
+
     const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
       batchParams,
-      expressParams:
-        fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
+      expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
       simulationParams: undefined,
       callback: makeOrderTxnCallback({
         actionName: "Update Order",
@@ -606,6 +625,18 @@ export function OrderEditor(p: Props) {
       };
     }
 
+    if (isMultichainSubmitDisabled) {
+      return {
+        text: (
+          <>
+            {t`Loading network fees…`}
+            <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
+
     if (error) {
       return {
         text: error,
@@ -630,6 +661,7 @@ export function OrderEditor(p: Props) {
     detectAndSetAvailableMaxLeverage,
     isTriggerDecrease,
     existingPosition,
+    isMultichainSubmitDisabled,
   ]);
 
   useKey(

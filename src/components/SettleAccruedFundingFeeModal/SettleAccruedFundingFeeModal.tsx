@@ -9,6 +9,10 @@ import {
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
+  getExpressParamsForSubmit,
+  reportMultichainExpressSubmitError,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
+import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateOrderOraclePriceCount,
   useGasLimits,
@@ -147,7 +151,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     allowedSlippage,
   ]);
 
-  const { expressParams } = useExpressOrdersParams({
+  const { expressParams, expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Settle Funding Fee",
     isGmxAccount: srcChainId !== undefined,
@@ -191,6 +195,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
 
   const [buttonText, buttonDisabled] = useMemo(() => {
     if (hasOutdatedUi) return [getPageOutdatedError(), true];
+    if (isMultichainSubmitDisabled) return [t`Loading network fees…`, true];
     if (isSubmitting) return [t`Settling...`, true];
     if (positionKeys.length === 0) return [t`Select positions`, true];
 
@@ -202,7 +207,16 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     }
 
     return [t`Settle`, false];
-  }, [hasOutdatedUi, isSubmitting, positionKeys.length, isAllowanceLoaded, tokensToApprove, isApproving, chainId]);
+  }, [
+    hasOutdatedUi,
+    isMultichainSubmitDisabled,
+    isSubmitting,
+    positionKeys.length,
+    isAllowanceLoaded,
+    tokensToApprove,
+    isApproving,
+    chainId,
+  ]);
 
   const handleRowCheckboxChange = useCallback(
     (value: boolean, positionKey: string) => {
@@ -216,8 +230,8 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     [positionKeys, setPositionKeys]
   );
 
-  const onSubmit = useCallback(() => {
-    if (!account || !signer?.provider || !chainId || !batchParams || !provider) {
+  const onSubmit = useCallback(async () => {
+    if (!account || !signer?.provider || !chainId || !batchParams || !provider || !tokensData) {
       return;
     }
 
@@ -242,30 +256,46 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
 
     setIsSubmitting(true);
 
-    sendBatchOrderTxn({
-      chainId,
-      signer,
-      batchParams,
-      expressParams,
-      simulationParams: undefined,
-      callback: makeOrderTxnCallback({
-        metricId: undefined,
-        slippageInputId: undefined,
-        isFundingFeeSettlement: true,
-        actionName: "Settle Funding Fee",
-      }),
-      provider,
-      isGmxAccount: srcChainId !== undefined,
-    })
-      .then(handleOnClose)
-      .finally(() => {
-        setIsSubmitting(false);
+    try {
+      const fulfilledExpressParams = await expressParamsPromise;
+      const isGmxAccount = srcChainId !== undefined;
+
+      if (
+        reportMultichainExpressSubmitError({
+          isGmxAccount,
+          expressParams: fulfilledExpressParams,
+          tokensData,
+          actionName: "Settle Funding Fee",
+        })
+      ) {
+        return;
+      }
+
+      await sendBatchOrderTxn({
+        chainId,
+        signer,
+        batchParams,
+        expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
+        simulationParams: undefined,
+        callback: makeOrderTxnCallback({
+          metricId: undefined,
+          slippageInputId: undefined,
+          isFundingFeeSettlement: true,
+          actionName: "Settle Funding Fee",
+        }),
+        provider,
+        isGmxAccount,
       });
+
+      handleOnClose();
+    } finally {
+      setIsSubmitting(false);
+    }
   }, [
     account,
     batchParams,
     chainId,
-    expressParams,
+    expressParamsPromise,
     handleApprove,
     handleOnClose,
     isAllowanceLoaded,
@@ -274,6 +304,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     provider,
     signer,
     srcChainId,
+    tokensData,
     tokensToApprove,
   ]);
 

@@ -41,9 +41,12 @@ import { selectExecutionFeeBufferBps } from "context/SyntheticsStateContext/sele
 import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/selectors/statsSelectors";
 import { selectTradeboxAvailableTokensOptions } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useInitCollateralCloseDestination } from "domain/synthetics/express/useInitCollateralCloseDestination";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
+import {
+  getExpressParamsForSubmit,
+  reportMultichainExpressSubmitError,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
@@ -445,6 +448,7 @@ export function PositionSeller() {
   const {
     expressParams,
     isLoading: isExpressLoading,
+    isMultichainSubmitDisabled,
     expressParamsPromise,
     fastExpressParams,
     asyncExpressParams,
@@ -642,14 +646,30 @@ export function PositionSeller() {
 
     const fulfilledExpressParams = await expressParamsPromise;
 
+    const isGmxAccount = srcChainId !== undefined || effectiveIsReceiveToGmxAccount;
+
+    if (
+      reportMultichainExpressSubmitError({
+        isGmxAccount,
+        expressParams: fulfilledExpressParams,
+        tokensData,
+        actionName: "Close Position",
+        collateral: position?.collateralToken?.symbol,
+        requestId: metricData.requestId,
+        metricId: metricData.metricId,
+      })
+    ) {
+      setIsSubmitting(false);
+      return;
+    }
+
     const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
       provider,
       batchParams,
-      isGmxAccount: srcChainId !== undefined || effectiveIsReceiveToGmxAccount,
-      expressParams:
-        fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
+      isGmxAccount,
+      expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
       simulationParams: shouldDisableValidationForTesting
         ? undefined
         : {
@@ -920,7 +940,7 @@ export function PositionSeller() {
       };
     }
 
-    if (isExpressLoading) {
+    if (isExpressLoading || isMultichainSubmitDisabled) {
       return {
         text: (
           <>
@@ -993,6 +1013,7 @@ export function PositionSeller() {
     isAllowanceLoaded,
     isApproving,
     isExpressLoading,
+    isMultichainSubmitDisabled,
     localizedTradeModeLabels,
     localizedTradeTypeLabels,
     multipleWalletExtensionsChainError,
