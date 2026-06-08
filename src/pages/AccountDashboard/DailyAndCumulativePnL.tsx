@@ -16,7 +16,6 @@ import {
 } from "recharts";
 import type { Address } from "viem";
 
-import { ARBITRUM } from "config/chains";
 import { USD_DECIMALS } from "config/factors";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import type { FromOldToNewArray } from "domain/tradingview/types";
@@ -61,7 +60,6 @@ import {
 } from "./DailyAndCumulativePnL.utils";
 import {
   DEBUG_FIELDS,
-  DEV_QUERY,
   DEV_QUERY_WITH_TO,
   DebugLegend,
   DebugLines,
@@ -725,19 +723,9 @@ type ChartPnlHistoryPoint = AccountPnlHistoryPoint & {
 
 type PnlHistoricalData = FromOldToNewArray<AccountPnlHistoryPoint>;
 
-const PROD_QUERY_WITH_TO = gql`
+const PROD_QUERY = gql`
   query AccountHistoricalPnlResolver($account: String!, $from: Int, $to: Int) {
     accountPnlHistoryStats(account: $account, from: $from, to: $to) {
-      cumulativePnl
-      pnl
-      timestamp
-    }
-  }
-`;
-
-const PROD_QUERY = gql`
-  query AccountHistoricalPnlResolver($account: String!, $from: Int) {
-    accountPnlHistoryStats(account: $account, from: $from) {
       cumulativePnl
       pnl
       timestamp
@@ -754,19 +742,10 @@ function usePnlHistoricalData(
   toTimestamp: number | undefined
 ) {
   const showDebugValues = useShowDebugValues();
-  const supportsToArg = chainId === ARBITRUM;
-  const query = showDebugValues
-    ? supportsToArg
-      ? DEV_QUERY_WITH_TO
-      : DEV_QUERY
-    : supportsToArg
-      ? PROD_QUERY_WITH_TO
-      : PROD_QUERY;
+  const query = showDebugValues ? DEV_QUERY_WITH_TO : PROD_QUERY;
   const res = useGqlQuery(query, {
     client: getSubsquidGraphClient(chainId)!,
-    variables: supportsToArg
-      ? { account: account, from: fromTimestamp, to: toTimestamp }
-      : { account: account, from: fromTimestamp },
+    variables: { account: account, from: fromTimestamp, to: toTimestamp },
   });
 
   const transformedData: PnlHistoricalData = useMemo(() => {
