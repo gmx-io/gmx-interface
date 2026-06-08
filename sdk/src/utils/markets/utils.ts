@@ -1,4 +1,3 @@
-import { zeroAddress } from "viem";
 
 import type { ContractsChainId } from "configs/chains";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
@@ -12,6 +11,7 @@ import { getByKey } from "utils/objects";
 import { periodToSeconds } from "utils/time";
 import { convertToContractTokenPrices, convertToUsd, getMidPrice } from "utils/tokens";
 import type { Token, TokenPrices, TokensData } from "utils/tokens/types";
+import { zeroAddress } from "viem";
 
 import type {
   ClaimableFundingData,
@@ -147,7 +147,7 @@ export function getCappedPoolPnl(p: { marketInfo: MarketInfo; poolUsd: bigint; p
  */
 const ROUNDING_VALUE = 10000;
 function capByUiMaxLeverageOverride(value: number, marketAddress?: string) {
-  const uiMaxLeverageOverride = marketAddress ? UI_MAX_LEVERAGE_BY_MARKET[marketAddress.toLowerCase()] : undefined;
+  const uiMaxLeverageOverride = marketAddress ? UI_MAX_LEVERAGE_BY_MARKET[marketAddress] : undefined;
 
   return uiMaxLeverageOverride === undefined ? value : Math.min(value, uiMaxLeverageOverride * BASIS_POINTS_DIVISOR);
 }
