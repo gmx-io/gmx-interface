@@ -76,7 +76,6 @@ export const GmTokensBalanceInfo = ({
   const shouldShowFeesLoading = !isGlv && isUserEarningsLoading && balance !== 0n;
   const shouldShowFeesUnavailable = !isGlv && isUserEarningsUnavailable && balance !== 0n;
   const shouldShowFeeRows = hasFees || shouldShowFeesLoading || shouldShowFeesUnavailable;
-  const shouldShowFallbackFeeRows = shouldShowFeesLoading || shouldShowFeesUnavailable;
 
   const tooltipContent = useMemo(() => {
     if (!shouldShowFeeRows && !hasChainBalances) {
@@ -86,7 +85,7 @@ export const GmTokensBalanceInfo = ({
     return (
       <>
         {multichainBalanceTooltip}
-        {(earnedTotal !== undefined || shouldShowFallbackFeeRows) && (
+        {shouldShowFeeRows && (
           <StatsTooltipRow
             showDollar={false}
             label={t`Total earned fees`}
@@ -103,7 +102,7 @@ export const GmTokensBalanceInfo = ({
             valueClassName="numbers"
           />
         )}
-        {(earnedRecently !== undefined || shouldShowFallbackFeeRows) && (
+        {shouldShowFeeRows && (
           <StatsTooltipRow
             showDollar={false}
             textClassName={earnedRecently !== undefined ? getPositiveOrNegativeClass(earnedRecently) : undefined}
@@ -143,7 +142,6 @@ export const GmTokensBalanceInfo = ({
     hasChainBalances,
     hasFees,
     multichainBalanceTooltip,
-    shouldShowFallbackFeeRows,
     shouldShowFeeRows,
     shouldShowFeesLoading,
     shouldShowFeesUnavailable,
