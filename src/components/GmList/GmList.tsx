@@ -80,7 +80,13 @@ export function GmList({
   const multichainMarketTokensBalances = useSelector(selectMultichainMarketTokenBalances);
 
   const { active } = useWallet();
-  const { userEarnings } = useUserEarnings(chainId, srcChainId);
+  const {
+    userEarnings,
+    isLoading: isUserEarningsLoading,
+    isUnavailable: isUserEarningsUnavailable,
+    isExpected365dLoading,
+    isExpected365dUnavailable,
+  } = useUserEarnings(chainId, srcChainId);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("gm-list");
   const [searchText, setSearchText] = useState("");
   const { topLevelTab, subCategoryTab, setSubCategoryTab, favoriteTokens, toggleFavoriteToken } =
@@ -204,6 +210,9 @@ export function GmList({
           isRecentlyListed={isRecentlyListed}
           isFavorite={favoriteTokens.includes(token.address)}
           onFavoriteClick={toggleFavoriteToken}
+          userEarnings={userEarnings}
+          isUserEarningsLoading={isUserEarningsLoading}
+          isUserEarningsUnavailable={isUserEarningsUnavailable}
         />
       );
     });
@@ -304,6 +313,10 @@ export function GmList({
                           balance={userTotalGmInfo?.balance}
                           balanceUsd={userTotalGmInfo?.balanceUsd}
                           userEarnings={userEarnings}
+                          isUserEarningsLoading={isUserEarningsLoading}
+                          isUserEarningsUnavailable={isUserEarningsUnavailable}
+                          isExpected365dLoading={isExpected365dLoading}
+                          isExpected365dUnavailable={isExpected365dUnavailable}
                           label={t`BALANCE`}
                         />
                       </Sorter>

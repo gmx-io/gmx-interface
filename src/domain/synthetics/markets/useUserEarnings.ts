@@ -105,14 +105,16 @@ export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceCha
 
   const daysConsidered = useDaysConsideredInMarketsApr();
   const { account } = useWallet();
-  const marketsTokensAPRData = useGmMarketsApy(chainId, srcChainId, { period: "7d" }).marketsTokensApyData;
+  const { marketsTokensApyData, isLoading: isMarketsTokensApyLoading } = useGmMarketsApy(chainId, srcChainId, {
+    period: "7d",
+  });
 
   const key =
     marketAddresses.length && marketTokensData && subgraphUrl && account
-      ? marketAddresses.concat("userEarnings", account).join(",")
+      ? marketAddresses.concat("userEarnings", account, String(daysConsidered)).join(",")
       : null;
 
-  const { data, isLoading } = useSWR<UserEarningsData | null>(key, {
+  const { data, error, isLoading } = useSWR<UserEarningsData | null>(key, {
     fetcher: async (): Promise<UserEarningsData | null> => {
       if (!account) {
         return null;
@@ -144,29 +146,20 @@ export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceCha
         requests.push(request);
       }
 
-      let responseOrUndefined: Record<string, [RawCollectedMarketFeesInfo] | RawBalanceChange[]> | undefined =
-        undefined;
-
-      try {
-        const chunkResponses = await Promise.all(requests);
-        responseOrUndefined = chunkResponses.reduce((acc, chunkResponse) => {
-          if (!chunkResponse) return acc;
+      const chunkResponses = await Promise.all(requests);
+      const response = chunkResponses.reduce<Record<string, [RawCollectedMarketFeesInfo] | RawBalanceChange[]>>(
+        (acc, chunkResponse) => {
+          if (!chunkResponse) {
+            throw new Error("User earnings response is empty");
+          }
 
           return {
             ...acc,
             ...chunkResponse,
           };
-        }, {});
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error(err);
-      }
-
-      if (!responseOrUndefined) {
-        return null;
-      }
-
-      const response = responseOrUndefined;
+        },
+        {}
+      );
 
       const result: UserEarningsData = {
         byMarketAddress: {},
@@ -220,19 +213,6 @@ export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceCha
 
         result.allMarkets.total = result.allMarkets.total + totalIncome;
         result.allMarkets.recent = result.allMarkets.recent + recentIncome;
-
-        if (marketsTokensAPRData && marketTokensData) {
-          const apy = marketsTokensAPRData[marketAddress];
-          const token = marketTokensData[marketAddress];
-          const balance = token.balance;
-
-          if (balance === undefined || balance == 0n) return;
-
-          const price = token.prices.maxPrice;
-
-          const expected365d = bigMath.mulDiv(apy * balance, price, expandDecimals(1, GMX_DECIMALS + USD_DECIMALS));
-          result.allMarkets.expected365d = result.allMarkets.expected365d + expected365d;
-        }
       });
 
       return result;
@@ -241,10 +221,47 @@ export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceCha
 
   const areDependenciesLoading = !marketTokensData || !marketsInfoData;
   const isDataLoading = isLoading || areDependenciesLoading;
+  const userEarnings = useMemo(() => {
+    if (!data) {
+      return null;
+    }
+
+    if (!marketsTokensApyData || !marketTokensData) {
+      return data;
+    }
+
+    let expected365d = 0n;
+
+    marketAddresses.forEach((marketAddress) => {
+      const apy = marketsTokensApyData[marketAddress];
+      const token = marketTokensData[marketAddress];
+      const balance = token?.balance;
+
+      if (apy === undefined || balance === undefined || balance === 0n) return;
+
+      const price = token.prices.maxPrice;
+      expected365d =
+        expected365d + bigMath.mulDiv(apy * balance, price, expandDecimals(1, GMX_DECIMALS + USD_DECIMALS));
+    });
+
+    return {
+      ...data,
+      allMarkets: {
+        ...data.allMarkets,
+        expected365d,
+      },
+    };
+  }, [data, marketAddresses, marketsTokensApyData, marketTokensData]);
+  const isUnavailable = Boolean(key && !isDataLoading && (error || data === null));
+  const isExpected365dLoading = Boolean(userEarnings && !marketsTokensApyData && isMarketsTokensApyLoading);
+  const isExpected365dUnavailable = Boolean(userEarnings && !marketsTokensApyData && !isMarketsTokensApyLoading);
 
   return {
-    userEarnings: data ?? null,
+    userEarnings,
     isLoading: isDataLoading,
+    isUnavailable,
+    isExpected365dLoading,
+    isExpected365dUnavailable,
   };
 };
 
