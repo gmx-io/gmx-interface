@@ -20,44 +20,7 @@
     "baseUrl": "./src",
     "paths": {
       "sdk": ["../sdk/src/index.ts"],
-      "sdk/*": ["../sdk/src/*"],
-      "ox": ["../sdk/node_modules/ox/_types/index.d.ts", "../node_modules/ox/_types/index.d.ts"],
-      "ox/erc4337": [
-        "../sdk/node_modules/ox/_types/erc4337/index.d.ts",
-        "../node_modules/ox/_types/erc4337/index.d.ts"
-      ],
-      "ox/erc6492": [
-        "../sdk/node_modules/ox/_types/erc6492/index.d.ts",
-        "../node_modules/ox/_types/erc6492/index.d.ts"
-      ],
-      "ox/erc7821": [
-        "../sdk/node_modules/ox/_types/erc7821/index.d.ts",
-        "../node_modules/ox/_types/erc7821/index.d.ts"
-      ],
-      "ox/erc8010": [
-        "../sdk/node_modules/ox/_types/erc8010/index.d.ts",
-        "../node_modules/ox/_types/erc8010/index.d.ts"
-      ],
-      "ox/erc8021": [
-        "../sdk/node_modules/ox/_types/erc8021/index.d.ts",
-        "../node_modules/ox/_types/erc8021/index.d.ts"
-      ],
-      "ox/tempo": ["../sdk/node_modules/ox/_types/tempo/index.d.ts", "../node_modules/ox/_types/tempo/index.d.ts"],
-      "ox/trusted-setups": [
-        "../sdk/node_modules/ox/_types/trusted-setups/index.d.ts",
-        "../node_modules/ox/_types/trusted-setups/index.d.ts"
-      ],
-      "ox/webauthn": [
-        "../sdk/node_modules/ox/_types/webauthn/index.d.ts",
-        "../node_modules/ox/_types/webauthn/index.d.ts"
-      ],
-      "ox/window": ["../sdk/node_modules/ox/_types/window/index.d.ts", "../node_modules/ox/_types/window/index.d.ts"],
-      "ox/*": [
-        "../sdk/node_modules/ox/_types/core/*.d.ts",
-        "../sdk/node_modules/ox/_types/*.d.ts",
-        "../node_modules/ox/_types/core/*.d.ts",
-        "../node_modules/ox/_types/*.d.ts"
-      ]
+      "sdk/*": ["../sdk/src/*"]
     }
   },
   "references": [{ "path": "./sdk" }],

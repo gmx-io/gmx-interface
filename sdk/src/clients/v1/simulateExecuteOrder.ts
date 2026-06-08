@@ -1,4 +1,4 @@
-import { Abi, Address, decodeErrorResult, encodeFunctionData, type Hex, withRetry } from "viem";
+import { Abi, Address, decodeErrorResult, encodeFunctionData, withRetry } from "viem";
 
 import { abis } from "abis";
 import { getContract } from "configs/contracts";
@@ -114,7 +114,7 @@ export async function simulateExecuteOrder(sdk: GmxSdk, p: SimulateExecuteParams
 
       const decodedError = decodeErrorResult<typeof abis.CustomErrors>({
         abi: abis.CustomErrors,
-        data: errorData as Hex,
+        data: errorData as Address,
       });
 
       const isSimulationPassed = decodedError.errorName === "EndOfOracleSimulation";
