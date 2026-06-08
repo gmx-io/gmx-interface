@@ -42,7 +42,7 @@ msgstr "O actualice el RPC de su monedero a través de <0>chainlist.org</0>"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Monthly"
-msgstr ""
+msgstr "Mensual"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "REFERRAL CODE"
@@ -1237,7 +1237,7 @@ msgstr "{0} se intercambia por {1} cuando se ejecuta"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Weekly"
-msgstr ""
+msgstr "Semanal"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
@@ -1469,7 +1469,7 @@ msgstr "Desactivando..."
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Period loss"
-msgstr ""
+msgstr "Pérdida del período"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames} or {lastChainName}. Switch networks to continue."
@@ -2325,7 +2325,7 @@ msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Grouping"
-msgstr ""
+msgstr "Agrupación"
 
 #: src/components/Errors/errorToasts.tsx
 msgid "Switching to external swap route. Try again"
@@ -4539,7 +4539,7 @@ msgstr "Introduzca la dirección del destinatario"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Period"
-msgstr ""
+msgstr "Período"
 
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap Market: Swap tokens at the current market price"
@@ -5567,7 +5567,7 @@ msgstr "Ajustes"
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Daily"
-msgstr ""
+msgstr "Diario"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing limit order in WETH-USDC pool but lacks liquidity for this order"
@@ -10861,7 +10861,7 @@ msgstr ""
 
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "Period profit"
-msgstr ""
+msgstr "Beneficio del período"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Debug settings"
