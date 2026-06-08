@@ -91,7 +91,6 @@ export function usePositionsInfoRequest(
     account,
     marketsData: p.marketsData,
     tokensData,
-    enabled: shouldFallbackToRpc,
   });
 
   const { positionsConstants, error: positionsConstantsError } = usePositionsConstantsRequest(chainId);
