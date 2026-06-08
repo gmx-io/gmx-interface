@@ -139,6 +139,8 @@ import { TPSLGroup } from "./TradeBoxRows/TPSLRows";
 
 import "./TradeBox.scss";
 
+const TRADEBOX_INPUT_PLACEHOLDER = "0.00";
+
 export function TradeBox({ isMobile }: { isMobile: boolean }) {
   const localizedTradeModeLabels = useLocalizedMap(tradeModeLabels);
   const localizedTradeTypeLabels = useLocalizedMap(tradeTypeLabels);
@@ -747,6 +749,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
           onClickMax={showClickMax ? onMaxClick : undefined}
           qa="pay"
           maxDecimals={fromToken?.decimals}
+          placeholder={TRADEBOX_INPUT_PLACEHOLDER}
         >
           {fromTokenAddress &&
             (!isSettlementChain(chainId) || isNonEoaAccountOnAnyChain ? (
@@ -835,6 +838,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
                 qa="swap-receive"
                 isDisabled={isTwap}
                 maxDecimals={toToken?.decimals}
+                placeholder={TRADEBOX_INPUT_PLACEHOLDER}
               >
                 {toTokenAddress && (
                   <TokenSelector
@@ -873,6 +877,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
             onInputValueChange={handleToInputTokenChange}
             qa="buy"
             maxDecimals={toToken?.decimals}
+            placeholder={TRADEBOX_INPUT_PLACEHOLDER}
           >
             {toTokenAddress && (
               <MarketSelector
@@ -969,6 +974,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         onInputValueChange={handleTriggerPriceInputChange}
         qa="trigger-price"
         maxDecimals={USD_DECIMALS}
+        placeholder={TRADEBOX_INPUT_PLACEHOLDER}
       >
         {t`USD`}
       </BuyInputSection>
@@ -986,6 +992,7 @@ export function TradeBox({ isMobile }: { isMobile: boolean }) {
         onInputValueChange={handleTriggerRatioInputChange}
         qa="trigger-price"
         maxDecimals={USD_DECIMALS}
+        placeholder={TRADEBOX_INPUT_PLACEHOLDER}
       >
         {markRatio && (
           <>
