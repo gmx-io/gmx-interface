@@ -40,7 +40,7 @@ msgstr "価格への影響リベートを受け取りました"
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "または<0>chainlist.org</0>からウォレットのRPCを更新してください"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Monthly"
 msgstr "月次"
 
@@ -1235,7 +1235,7 @@ msgstr "そのコードは既に使用されています"
 msgid "{0} swapped to {1} when executed"
 msgstr "約定時に {0} が {1} にスワップされます"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Weekly"
 msgstr "週次"
 
@@ -2323,7 +2323,7 @@ msgstr "ストップロスを更新"
 msgid "How do I choose?"
 msgstr ""
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Grouping"
 msgstr "グループ化"
 
@@ -2565,7 +2565,7 @@ msgstr "{0}を購入"
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
 msgstr "シフトは{chainNames}でのみ利用可能です。続行するにはネットワークを切り替えてください。"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Cumulative PnL"
 msgstr "累積PnL"
 
@@ -4537,7 +4537,7 @@ msgstr "ストップロス"
 msgid "Enter receiver address"
 msgstr "受取アドレスを入力"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Period"
 msgstr "期間"
 
@@ -4637,7 +4637,7 @@ msgstr "GM プール"
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "PnL"
 msgstr "損益"
 
@@ -5565,7 +5565,7 @@ msgstr "ストップマーケット失敗"
 msgid "Settings"
 msgstr "設定"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Daily"
 msgstr "日次"
 
@@ -8865,7 +8865,7 @@ msgid "Claims"
 msgstr "請求"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Date"
 msgstr "日付"
 
@@ -10094,7 +10094,7 @@ msgid "GMX | decentralized perpetual exchange"
 msgstr ""
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "No data available"
 msgstr "データなし"
 
@@ -10728,7 +10728,7 @@ msgstr "デルタニュートラルボールト"
 msgid "Sending shift request..."
 msgstr "シフトリクエストを送信中…"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "PNG"
 msgstr "PNG"
 

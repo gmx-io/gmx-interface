@@ -40,7 +40,7 @@ msgstr "已領取價格影響返還"
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "或透過 <0>chainlist.org</0> 更新您錢包的 RPC"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Monthly"
 msgstr "每月"
 
@@ -1235,7 +1235,7 @@ msgstr "代碼已被使用"
 msgid "{0} swapped to {1} when executed"
 msgstr "執行時 {0} 將兌換為 {1}"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Weekly"
 msgstr "每週"
 
@@ -2323,7 +2323,7 @@ msgstr "更新止損"
 msgid "How do I choose?"
 msgstr ""
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Grouping"
 msgstr "分組"
 
@@ -2565,7 +2565,7 @@ msgstr "買入 {0}"
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
 msgstr "Shifting 僅在 {chainNames} 上可用。請切換網路以繼續。"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Cumulative PnL"
 msgstr "累計 PnL"
 
@@ -4537,7 +4537,7 @@ msgstr "止損"
 msgid "Enter receiver address"
 msgstr "請輸入接收地址"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Period"
 msgstr "期間"
 
@@ -4637,7 +4637,7 @@ msgstr "GM 池"
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "PnL"
 msgstr "PnL"
 
@@ -5565,7 +5565,7 @@ msgstr "止損市價單失敗"
 msgid "Settings"
 msgstr "設定"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Daily"
 msgstr "每日"
 
@@ -8865,7 +8865,7 @@ msgid "Claims"
 msgstr "領取"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Date"
 msgstr "日期"
 
@@ -10094,7 +10094,7 @@ msgid "GMX | decentralized perpetual exchange"
 msgstr ""
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "No data available"
 msgstr "無可用資料"
 
@@ -10728,7 +10728,7 @@ msgstr "Delta 中性金庫"
 msgid "Sending shift request..."
 msgstr "正在發送轉移請求..."
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "PNG"
 msgstr "PNG"
 

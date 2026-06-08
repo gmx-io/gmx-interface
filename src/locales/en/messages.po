@@ -40,7 +40,7 @@ msgstr "Price impact rebates claimed"
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "Or update your wallet's RPC via <0>chainlist.org</0>"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Monthly"
 msgstr "Monthly"
 
@@ -1235,7 +1235,7 @@ msgstr "Code already taken"
 msgid "{0} swapped to {1} when executed"
 msgstr "{0} swapped to {1} when executed"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Weekly"
 msgstr "Weekly"
 
@@ -2323,7 +2323,7 @@ msgstr "Update Stop-Loss"
 msgid "How do I choose?"
 msgstr "How do I choose?"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Grouping"
 msgstr "Grouping"
 
@@ -2565,7 +2565,7 @@ msgstr "Buy {0}"
 msgid "Shifting only available on {chainNames}. Switch networks to continue."
 msgstr "Shifting only available on {chainNames}. Switch networks to continue."
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Cumulative PnL"
 msgstr "Cumulative PnL"
 
@@ -4537,7 +4537,7 @@ msgstr "stop-loss"
 msgid "Enter receiver address"
 msgstr "Enter receiver address"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Period"
 msgstr "Period"
 
@@ -4637,7 +4637,7 @@ msgstr "GM pools"
 #: src/components/PositionSeller/PositionSeller.tsx
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "PnL"
 msgstr "PnL"
 
@@ -5565,7 +5565,7 @@ msgstr "Failed Stop Market"
 msgid "Settings"
 msgstr "Settings"
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "Daily"
 msgstr "Daily"
 
@@ -8865,7 +8865,7 @@ msgid "Claims"
 msgstr "Claims"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "Date"
 msgstr "Date"
 
@@ -10094,7 +10094,7 @@ msgid "GMX | decentralized perpetual exchange"
 msgstr "GMX | decentralized perpetual exchange"
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLChart.tsx
 msgid "No data available"
 msgstr "No data available"
 
@@ -10728,7 +10728,7 @@ msgstr "Delta neutral vaults"
 msgid "Sending shift request..."
 msgstr "Sending shift request..."
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/DailyAndCumulativePnLControls.tsx
 msgid "PNG"
 msgstr "PNG"
 

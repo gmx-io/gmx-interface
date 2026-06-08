@@ -1,0 +1,563 @@
+import { Trans, t } from "@lingui/macro";
+import cx from "classnames";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import {
+  Area,
+  Bar,
+  CartesianGrid,
+  Cell,
+  ComposedChart,
+  ResponsiveContainer,
+  Tooltip as RechartsTooltip,
+  TooltipProps,
+  XAxis,
+  YAxis,
+} from "recharts";
+
+import { clamp, formatUsd } from "lib/numbers";
+import { EMPTY_ARRAY } from "lib/objects";
+import { getPositiveOrNegativeClass } from "lib/utils";
+
+import Loader from "components/Loader/Loader";
+import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
+
+import type { AccountPnlHistoryPoint } from "./DailyAndCumulativePnL";
+import {
+  formatPnlChartYAxisTick,
+  getPnlChartWheelZoomSlowdown,
+  getPnlChartYAxisTicks,
+  getZoomedPnlHistoryData,
+  normalizeZoomWindow,
+  panPnlWindowByDelta,
+  PNL_CHART_WHEEL_ZOOM_FACTOR,
+  type PnlChartGrouping,
+  type PnlZoomWindow,
+  zoomPnlWindowAtRatio,
+} from "./DailyAndCumulativePnL.utils";
+import { DebugLines, DebugTooltip } from "./dailyAndCumulativePnLDebug";
+
+const CHART_TOOLTIP_WRAPPER_STYLE: React.CSSProperties = { zIndex: 10000 };
+
+const CHART_TICK_PROPS: React.SVGProps<SVGTextElement> = {
+  fill: "var(--color-slate-100)",
+  fontSize: 11,
+  fontWeight: 500,
+};
+
+const CUMULATIVE_CHART_TICK_PROPS: React.SVGProps<SVGTextElement> = {
+  ...CHART_TICK_PROPS,
+  fill: "var(--color-blue-300)",
+};
+
+const X_AXIS_LINE_PROPS: React.SVGProps<SVGLineElement> = {
+  stroke: "var(--color-slate-600)",
+  strokeWidth: 0.5,
+};
+
+const CHART_CURSOR_PROPS = {
+  stroke: "var(--color-slate-500)",
+  strokeWidth: 1,
+  strokeDasharray: "2 2",
+};
+
+const ACTIVE_DOT_PROPS = {
+  r: 4,
+  strokeWidth: 2,
+  stroke: "var(--color-blue-300)",
+  fill: "var(--color-slate-900)",
+};
+
+const CHART_MARGIN = { top: 16, right: 16, bottom: 16, left: 0 };
+
+type ChartPnlHistoryPoint = AccountPnlHistoryPoint & {
+  chartIndex: number;
+};
+
+export function DailyAndCumulativePnLChart({
+  groupedPnlData,
+  grouping,
+  isMobile,
+  loading,
+  error,
+  resetKey,
+}: {
+  groupedPnlData: AccountPnlHistoryPoint[];
+  grouping: PnlChartGrouping;
+  isMobile: boolean;
+  loading: boolean;
+  error?: Error;
+  resetKey: string;
+}) {
+  const [zoomWindow, setZoomWindow] = useState<PnlZoomWindow | undefined>();
+  const chartInteractionRef = useRef<HTMLDivElement>(null);
+  const lastTouchTapRef = useRef(0);
+  const wheelZoomAccumulatorRef = useRef<{ direction?: "in" | "out"; value: number }>({ value: 0 });
+
+  const normalizedZoomWindow = useMemo(
+    () => normalizeZoomWindow(zoomWindow, groupedPnlData.length),
+    [groupedPnlData.length, zoomWindow]
+  );
+  const chartPnlData = useMemo<ChartPnlHistoryPoint[]>(
+    () =>
+      groupedPnlData.map((point, chartIndex) => ({
+        ...point,
+        chartIndex,
+      })),
+    [groupedPnlData]
+  );
+  const visibleChartPnlData = useMemo(
+    () => getZoomedPnlHistoryData(chartPnlData, normalizedZoomWindow),
+    [chartPnlData, normalizedZoomWindow]
+  );
+  const visibleStartIndex = normalizedZoomWindow?.startIndex ?? 0;
+  const visibleEndIndex = normalizedZoomWindow?.endIndex ?? Math.max(chartPnlData.length - 1, 0);
+  const rechartsPnlData = useMemo(() => {
+    // Recharts refreshes Bar's previous geometry only when chart data changes.
+    if (visibleStartIndex > visibleEndIndex) {
+      return EMPTY_ARRAY as ChartPnlHistoryPoint[];
+    }
+
+    return chartPnlData.slice();
+  }, [chartPnlData, visibleEndIndex, visibleStartIndex]);
+  const barXAxisDomain = useMemo<[number, number]>(
+    () => [visibleStartIndex - 0.5, visibleEndIndex + 0.5],
+    [visibleEndIndex, visibleStartIndex]
+  );
+  const areaXAxisDomain = useMemo<[number, number]>(
+    () => [visibleStartIndex, visibleStartIndex === visibleEndIndex ? visibleEndIndex + 1 : visibleEndIndex],
+    [visibleEndIndex, visibleStartIndex]
+  );
+  const xAxisTicks = useMemo(() => visibleChartPnlData.map((point) => point.chartIndex), [visibleChartPnlData]);
+  const periodPnlYAxisTicks = useMemo(
+    () => getPnlChartYAxisTicks(visibleChartPnlData, "pnlFloat", true),
+    [visibleChartPnlData]
+  );
+  const cumulativePnlYAxisTicks = useMemo(
+    () => getPnlChartYAxisTicks(visibleChartPnlData, "cumulativePnlFloat", false),
+    [visibleChartPnlData]
+  );
+  const periodPnlYAxisDomain = useMemo(() => getYAxisDomainFromTicks(periodPnlYAxisTicks), [periodPnlYAxisTicks]);
+  const cumulativePnlYAxisDomain = useMemo(
+    () => getYAxisDomainFromTicks(cumulativePnlYAxisTicks),
+    [cumulativePnlYAxisTicks]
+  );
+  const formatXAxisTick = useCallback(
+    (value: number | string) => chartPnlData[Number(value)]?.dateCompact ?? "",
+    [chartPnlData]
+  );
+  const chartMargin = useMemo(() => {
+    return {
+      ...CHART_MARGIN,
+      left: getYAxisMargin(visibleChartPnlData, "pnlFloat"),
+      right: getYAxisMargin(visibleChartPnlData, "cumulativePnlFloat"),
+    };
+  }, [visibleChartPnlData]);
+
+  const isZoomed = Boolean(normalizedZoomWindow);
+  const canZoom = groupedPnlData.length > 2;
+
+  useEffect(() => {
+    setZoomWindow(undefined);
+    wheelZoomAccumulatorRef.current = { value: 0 };
+  }, [resetKey]);
+
+  const getChartInteractionRatio = useCallback((clientX: number) => {
+    const element = chartInteractionRef.current;
+
+    if (!element) {
+      return 0.5;
+    }
+
+    const rect = element.getBoundingClientRect();
+
+    if (rect.width <= 0) {
+      return 0.5;
+    }
+
+    return clamp((clientX - rect.left) / rect.width, 0, 1);
+  }, []);
+
+  useEffect(() => {
+    const element = chartInteractionRef.current;
+
+    if (!element || !canZoom) {
+      return undefined;
+    }
+
+    const handleWheel = (event: WheelEvent) => {
+      if (Math.abs(event.deltaY) < 1) {
+        return;
+      }
+
+      event.preventDefault();
+
+      const direction = event.deltaY < 0 ? "in" : "out";
+      const anchorRatio = getChartInteractionRatio(event.clientX);
+      const wheelUnits = clamp(Math.abs(event.deltaY) / 100, 0.05, 1);
+
+      setZoomWindow((window) => {
+        const normalizedWindow = normalizeZoomWindow(window, groupedPnlData.length) ?? {
+          startIndex: 0,
+          endIndex: groupedPnlData.length - 1,
+        };
+        const visibleLength = normalizedWindow.endIndex - normalizedWindow.startIndex + 1;
+        const slowdown = getPnlChartWheelZoomSlowdown(visibleLength, groupedPnlData.length);
+        const accumulator = wheelZoomAccumulatorRef.current;
+
+        if (accumulator.direction !== direction) {
+          accumulator.direction = direction;
+          accumulator.value = 0;
+        }
+
+        accumulator.value += wheelUnits / slowdown;
+
+        if (accumulator.value < 1) {
+          return window;
+        }
+
+        const steps = Math.floor(accumulator.value);
+        accumulator.value -= steps;
+
+        let nextWindow = window;
+        for (let i = 0; i < steps; i++) {
+          nextWindow = zoomPnlWindowAtRatio(
+            nextWindow,
+            groupedPnlData.length,
+            direction,
+            anchorRatio,
+            PNL_CHART_WHEEL_ZOOM_FACTOR
+          );
+        }
+
+        return nextWindow;
+      });
+    };
+
+    element.addEventListener("wheel", handleWheel, { passive: false });
+
+    return () => {
+      element.removeEventListener("wheel", handleWheel);
+    };
+  }, [canZoom, getChartInteractionRatio, groupedPnlData.length]);
+
+  const handleChartDoubleClick = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      if (!canZoom) {
+        return;
+      }
+
+      const anchorRatio = getChartInteractionRatio(event.clientX);
+      setZoomWindow((window) => zoomPnlWindowAtRatio(window, groupedPnlData.length, "in", anchorRatio));
+    },
+    [canZoom, getChartInteractionRatio, groupedPnlData.length]
+  );
+
+  const handleChartMouseDown = useCallback(
+    (event: React.MouseEvent<HTMLDivElement>) => {
+      if (!normalizedZoomWindow) {
+        return;
+      }
+
+      const element = chartInteractionRef.current;
+      if (!element) {
+        return;
+      }
+
+      event.preventDefault();
+
+      const startClientX = event.clientX;
+      const startWindow = normalizedZoomWindow;
+      const chartWidth = Math.max(element.getBoundingClientRect().width, 1);
+      const visibleLength = startWindow.endIndex - startWindow.startIndex + 1;
+      let lastDeltaPoints = 0;
+
+      const handleMouseMove = (moveEvent: MouseEvent) => {
+        moveEvent.preventDefault();
+
+        const deltaPoints = Math.round(((startClientX - moveEvent.clientX) / chartWidth) * visibleLength);
+
+        if (deltaPoints === lastDeltaPoints) {
+          return;
+        }
+
+        lastDeltaPoints = deltaPoints;
+        setZoomWindow(panPnlWindowByDelta(startWindow, groupedPnlData.length, deltaPoints));
+      };
+
+      const cleanup = () => {
+        window.removeEventListener("mousemove", handleMouseMove);
+      };
+
+      window.addEventListener("mousemove", handleMouseMove);
+      window.addEventListener("mouseup", cleanup, { once: true });
+    },
+    [groupedPnlData.length, normalizedZoomWindow]
+  );
+
+  const handleChartTouchStart = useCallback(
+    (event: React.TouchEvent<HTMLDivElement>) => {
+      if (!canZoom || event.touches.length !== 1) {
+        return;
+      }
+
+      const element = chartInteractionRef.current;
+      if (!element) {
+        return;
+      }
+
+      const startTouch = event.touches[0];
+      const startClientX = startTouch.clientX;
+      const startClientY = startTouch.clientY;
+      const startWindow = normalizedZoomWindow;
+      const chartWidth = Math.max(element.getBoundingClientRect().width, 1);
+      const visibleLength = startWindow ? startWindow.endIndex - startWindow.startIndex + 1 : 0;
+      let lastDeltaPoints = 0;
+      let gesture: "idle" | "horizontal" | "vertical" = "idle";
+      let maxDistance = 0;
+
+      const handleTouchMove = (moveEvent: TouchEvent) => {
+        if (moveEvent.touches.length !== 1) {
+          return;
+        }
+
+        const touch = moveEvent.touches[0];
+        const deltaX = touch.clientX - startClientX;
+        const deltaY = touch.clientY - startClientY;
+        maxDistance = Math.max(maxDistance, Math.sqrt(deltaX * deltaX + deltaY * deltaY));
+
+        if (gesture === "idle" && maxDistance > 10) {
+          gesture = Math.abs(deltaX) > Math.abs(deltaY) ? "horizontal" : "vertical";
+        }
+
+        if (gesture !== "horizontal" || !startWindow) {
+          return;
+        }
+
+        moveEvent.preventDefault();
+
+        const deltaPoints = Math.round((-deltaX / chartWidth) * visibleLength);
+
+        if (deltaPoints === lastDeltaPoints) {
+          return;
+        }
+
+        lastDeltaPoints = deltaPoints;
+        setZoomWindow(panPnlWindowByDelta(startWindow, groupedPnlData.length, deltaPoints));
+      };
+
+      const cleanup = () => {
+        window.removeEventListener("touchmove", handleTouchMove);
+      };
+
+      const handleTouchEnd = () => {
+        cleanup();
+
+        if (maxDistance > 10) {
+          return;
+        }
+
+        const now = Date.now();
+        const anchorRatio = getChartInteractionRatio(startClientX);
+
+        if (now - lastTouchTapRef.current < 350) {
+          lastTouchTapRef.current = 0;
+          setZoomWindow((window) => zoomPnlWindowAtRatio(window, groupedPnlData.length, "in", anchorRatio));
+        } else {
+          lastTouchTapRef.current = now;
+        }
+      };
+
+      window.addEventListener("touchmove", handleTouchMove, { passive: false });
+      window.addEventListener("touchend", handleTouchEnd, { once: true });
+      window.addEventListener("touchcancel", cleanup, { once: true });
+    },
+    [canZoom, getChartInteractionRatio, groupedPnlData.length, normalizedZoomWindow]
+  );
+
+  return (
+    <div className="relative min-h-[250px] grow">
+      <div
+        ref={chartInteractionRef}
+        className={cx(
+          "DailyAndCumulativePnL-chartInteraction DailyAndCumulativePnL-hide-last-tick absolute size-full",
+          {
+            "DailyAndCumulativePnL-chartInteraction--zoomed": isZoomed,
+          }
+        )}
+        onDoubleClick={handleChartDoubleClick}
+        onMouseDown={handleChartMouseDown}
+        onTouchStart={handleChartTouchStart}
+      >
+        <ResponsiveContainer debounce={500}>
+          <ComposedChart
+            width={500}
+            height={300}
+            data={rechartsPnlData}
+            barCategoryGap="25%"
+            margin={chartMargin}
+            // @ts-expect-error
+            overflow="visible"
+          >
+            <RechartsTooltip
+              cursor={CHART_CURSOR_PROPS}
+              content={(props) => <ChartTooltip {...props} grouping={grouping} />}
+              wrapperStyle={CHART_TOOLTIP_WRAPPER_STYLE}
+            />
+            <CartesianGrid vertical={false} strokeDasharray="5 3" strokeWidth={0.5} stroke="var(--color-slate-600)" />
+            <Bar dataKey="pnlFloat" yAxisId="periodPnl" minPointSize={1} radius={2} isAnimationActive={true}>
+              {chartPnlData.map(renderPnlBar)}
+            </Bar>
+
+            <defs>
+              <linearGradient id="cumulative-pnl-gradient" x1="0" y1="0" x2="0" y2="1">
+                <stop offset="-45%" stopColor="var(--color-blue-300)" stopOpacity={0.5} />
+                <stop offset="100%" stopColor="var(--color-blue-300)" stopOpacity={0} />
+              </linearGradient>
+            </defs>
+            <Area
+              xAxisId="cumulativePnlArea"
+              type="monotone"
+              dataKey="cumulativePnlFloat"
+              yAxisId="cumulativePnl"
+              stroke="var(--color-blue-300)"
+              fill="url(#cumulative-pnl-gradient)"
+              strokeWidth={2}
+              dot={false}
+              baseValue="dataMin"
+              activeDot={ACTIVE_DOT_PROPS}
+              isAnimationActive={true}
+            />
+            <XAxis
+              xAxisId="cumulativePnlArea"
+              dataKey="chartIndex"
+              type="number"
+              allowDataOverflow
+              domain={areaXAxisDomain}
+              hide
+            />
+            <XAxis
+              dataKey="chartIndex"
+              type="number"
+              allowDataOverflow
+              domain={barXAxisDomain}
+              ticks={xAxisTicks}
+              tickLine={false}
+              axisLine={X_AXIS_LINE_PROPS}
+              minTickGap={isMobile ? 20 : 32}
+              tickFormatter={formatXAxisTick}
+              tick={CHART_TICK_PROPS}
+              tickMargin={10}
+            />
+            <YAxis
+              yAxisId="periodPnl"
+              type="number"
+              allowDecimals={false}
+              allowDataOverflow
+              domain={periodPnlYAxisDomain}
+              ticks={periodPnlYAxisTicks}
+              markerWidth={0}
+              axisLine={false}
+              tickLine={false}
+              tickMargin={10}
+              tickFormatter={formatPnlChartYAxisTick}
+              tick={CHART_TICK_PROPS}
+            />
+            <YAxis
+              yAxisId="cumulativePnl"
+              orientation="right"
+              type="number"
+              allowDecimals={false}
+              allowDataOverflow
+              domain={cumulativePnlYAxisDomain}
+              ticks={cumulativePnlYAxisTicks}
+              markerWidth={0}
+              axisLine={false}
+              tickLine={false}
+              tickMargin={10}
+              tickFormatter={formatPnlChartYAxisTick}
+              tick={CUMULATIVE_CHART_TICK_PROPS}
+            />
+            <DebugLines />
+          </ComposedChart>
+        </ResponsiveContainer>
+      </div>
+      {error && (
+        <div className="absolute grid size-full max-h-full place-items-center overflow-auto">
+          <div className="whitespace-pre-wrap font-mono text-red-500">{JSON.stringify(error, null, 2)}</div>
+        </div>
+      )}
+      {loading && (
+        <div className="absolute grid size-full place-items-center">
+          <Loader />
+        </div>
+      )}
+      {!loading && !error && visibleChartPnlData.length === 0 && (
+        <div className="absolute grid size-full place-items-center text-typography-secondary">
+          <Trans>No data available</Trans>
+        </div>
+      )}
+    </div>
+  );
+}
+
+function renderPnlBar(entry: AccountPnlHistoryPoint) {
+  let fill: string;
+  if (entry.pnl !== undefined && entry.pnl > 0n) {
+    fill = "var(--color-green-500)";
+  } else if (entry.pnl !== undefined && entry.pnl < 0n) {
+    fill = "var(--color-red-500)";
+  } else {
+    fill = "var(--color-gray-900)";
+  }
+  return <Cell key={entry.date} fill={fill} />;
+}
+
+function ChartTooltip({ active, payload, grouping }: TooltipProps<any, any> & { grouping: PnlChartGrouping }) {
+  if (!active || !payload || !payload.length) {
+    return null;
+  }
+
+  const stats = payload[0].payload as AccountPnlHistoryPoint;
+
+  return (
+    <div
+      className={`backdrop-blur-100 text-body-small z-50 flex flex-col rounded-4 bg-[rgba(160,163,196,0.1)]
+      bg-slate-800 px-12 pt-8 bg-blend-overlay mix-blend-overlay shadow-lg`}
+    >
+      <StatsTooltipRow label={grouping === "daily" ? t`Date` : t`Period`} value={stats.date} showDollar={false} />
+      <StatsTooltipRow
+        label={t`PnL`}
+        value={formatUsd(stats.pnl)}
+        showDollar={false}
+        textClassName={getPositiveOrNegativeClass(stats.pnl)}
+      />
+      <StatsTooltipRow
+        label={t`Cumulative PnL`}
+        value={formatUsd(stats.cumulativePnl)}
+        showDollar={false}
+        textClassName={getPositiveOrNegativeClass(stats.cumulativePnl)}
+      />
+      <DebugTooltip stats={stats} />
+    </div>
+  );
+}
+
+function getYAxisMargin(data: AccountPnlHistoryPoint[], key: "pnlFloat" | "cumulativePnlFloat") {
+  const maxValue = data.reduce((max, point) => Math.max(max, Math.abs(point[key] ?? 0)), 0);
+
+  if (maxValue === 0) {
+    return 0;
+  }
+
+  const labelLength = Math.max(formatPnlChartYAxisTick(maxValue).length, formatPnlChartYAxisTick(-maxValue).length);
+
+  return clamp(labelLength * 3, 0, 72);
+}
+
+function getYAxisDomainFromTicks(ticks: number[]): [number, number] {
+  if (ticks.length < 2) {
+    return [0, 1];
+  }
+
+  return [ticks[0], ticks[ticks.length - 1]];
+}
