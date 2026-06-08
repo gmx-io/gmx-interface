@@ -12,7 +12,7 @@ import { convertTokenAddress, getToken, getTokenBySymbol } from "./tokens";
 export const SWAP_GRAPH_MAX_MARKETS_PER_TOKEN = 5;
 
 export const UI_MAX_LEVERAGE_BY_MARKET: Record<string, number> = {
-  "0x470128853d74dab7423904a20ea5aa230e9e561b": 10,
+  "0x470128853D74dab7423904a20eA5AA230e9e561B": 10,
 };
 
 export type MarketConfig = {
