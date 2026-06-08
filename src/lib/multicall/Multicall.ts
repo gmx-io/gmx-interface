@@ -76,6 +76,9 @@ export class Multicall {
 
     const encodedPayload: { address: string; abi: any; functionName: string; args: any }[] = [];
 
+    const batchedIndexes: number[] = [];
+    const standaloneIndexes: number[] = [];
+
     const contractKeys = Object.keys(request);
 
     contractKeys.forEach((contractKey) => {
@@ -106,6 +109,8 @@ export class Multicall {
           contractKey,
           callKey,
         });
+
+        (call.standalone ? standaloneIndexes : batchedIndexes).push(encodedPayload.length);
 
         encodedPayload.push({
           address: contractCallConfig.contractAddress,
@@ -233,6 +238,42 @@ export class Multicall {
 
         const timeoutController = new AbortController();
 
+        const batchSize =
+          typeof BATCH_CONFIGS[this.chainId]?.client?.multicall === "object"
+            ? (BATCH_CONFIGS[this.chainId].client!.multicall as { batchSize?: number }).batchSize
+            : undefined;
+
+        const executeCalls = async () => {
+          const response: MulticallResponseItem[] = new Array(encodedPayload.length);
+
+          await Promise.all([
+            batchedIndexes.length
+              ? client
+                  .multicall({
+                    contracts: batchedIndexes.map((index) => encodedPayload[index]) as any,
+                    batchSize,
+                  })
+                  .then((results) => {
+                    results.forEach((item, i) => {
+                      response[batchedIndexes[i]] = item as MulticallResponseItem;
+                    });
+                  })
+              : undefined,
+            ...standaloneIndexes.map((index) =>
+              client
+                .multicall({
+                  contracts: [encodedPayload[index]] as any,
+                  batchSize,
+                })
+                .then(([item]) => {
+                  response[index] = item as MulticallResponseItem;
+                })
+            ),
+          ]);
+
+          return response;
+        };
+
         return await Promise.race([
           sleepWithSignal(debugShouldTimeout ? 100 : MAX_PRIMARY_TIMEOUT, timeoutController.signal).then(() => {
             sendDebugEvent("primary-timeout", { providerUrl });
@@ -261,13 +302,7 @@ export class Multicall {
 
             return Promise.reject(new Error("multicall timeout"));
           }),
-          client.multicall({
-            contracts: encodedPayload as any,
-            batchSize:
-              typeof BATCH_CONFIGS[this.chainId]?.client?.multicall === "object"
-                ? (BATCH_CONFIGS[this.chainId].client!.multicall as { batchSize?: number }).batchSize
-                : undefined,
-          }),
+          executeCalls(),
         ])
           .then((response) => {
             timeoutController.abort();

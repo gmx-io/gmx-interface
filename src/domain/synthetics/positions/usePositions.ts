@@ -6,7 +6,11 @@ import { getContract } from "config/contracts";
 import { hashedPositionKey } from "config/dataStore";
 import { FreshnessMetricId, metrics, MissedMarketPricesCounter } from "lib/metrics";
 import { freshnessMetrics } from "lib/metrics/reportFreshnessMetric";
-import { useMulticall } from "lib/multicall";
+import { executeMulticall, useMulticall } from "lib/multicall";
+import type { ContractCallConfig, MulticallRequestConfig } from "lib/multicall";
+import { serializeMulticallErrors } from "lib/multicall/utils";
+import { getByKey } from "lib/objects";
+import { sleep } from "lib/sleep";
 import { FREQUENT_MULTICALL_REFRESH_INTERVAL } from "lib/timeConstants";
 import { abis } from "sdk/abis";
 import { getContractMarketPrices } from "sdk/utils/markets";
@@ -19,10 +23,19 @@ import { useOptimisticPositions } from "./useOptimisticPositions";
 
 export { getPendingMockPosition } from "./useOptimisticPositions";
 
+const MAX_POSITIONS_COUNT = 1000n;
+const RAW_POSITIONS_TIMEOUT = 60_000;
+const POSITIONS_INFO_CHUNK_SIZE = 40;
+
 type PositionsResult = {
   positionsData?: PositionsData;
   allPossiblePositionsKeys?: string[];
   error?: Error;
+};
+
+type RawPositionResult = {
+  addresses: { account: string; market: string; collateralToken: string };
+  flags: { isLong: boolean };
 };
 
 type PositionInfoResult = {
@@ -51,6 +64,12 @@ type PositionInfoResult = {
   };
   basePnlUsd: bigint;
 };
+
+type PositionsInfoRequestConfig = MulticallRequestConfig<{
+  reader: {
+    calls: Record<string, ContractCallConfig>;
+  };
+}>;
 
 export function usePositions(
   chainId: ContractsChainId,
@@ -86,36 +105,99 @@ export function usePositions(
     keepPreviousData: true,
     disableBatching,
 
-    request: (requestChainId) => {
+    request: async (requestChainId): Promise<PositionsInfoRequestConfig> => {
+      const rawPositionsResult = await Promise.race([
+        sleep(RAW_POSITIONS_TIMEOUT).then(() => Promise.reject(new Error("getAccountPositions timeout"))),
+        executeMulticall(
+          requestChainId,
+          {
+            reader: {
+              contractAddress: getContract(requestChainId, "SyntheticsReader"),
+              abiId: "SyntheticsReader",
+              calls: {
+                positions: {
+                  methodName: "getAccountPositions",
+                  params: [
+                    getContract(requestChainId, "DataStore"),
+                    account!,
+                    0n,
+                    MAX_POSITIONS_COUNT,
+                  ] satisfies ContractFunctionParameters<
+                    typeof abis.SyntheticsReader,
+                    "view",
+                    "getAccountPositions"
+                  >["args"],
+                },
+              },
+            },
+          },
+          "urgent",
+          "usePositionsRaw"
+        ),
+      ]);
+
+      const rawPositions = rawPositionsResult.data.reader?.positions?.returnValues as RawPositionResult[] | undefined;
+
+      if (!rawPositionsResult.success || !rawPositions) {
+        throw new Error(`getAccountPositions request failed: ${serializeMulticallErrors(rawPositionsResult.errors)}`);
+      }
+
+      const positionsKeys: `0x${string}`[] = [];
+      const positionsPrices: ContractMarketPrices[] = [];
+
+      for (const rawPosition of rawPositions) {
+        const { account: positionAccount, market: marketAddress, collateralToken } = rawPosition.addresses;
+
+        const market = getByKey(marketsData, marketAddress);
+        const marketPrices = market && tokensData ? getContractMarketPrices(tokensData, market) : undefined;
+
+        if (!marketPrices) {
+          metrics.pushCounter<MissedMarketPricesCounter>("missedMarketPrices", {
+            marketName: market?.name ?? marketAddress,
+            source: "usePositions",
+          });
+          continue;
+        }
+
+        positionsKeys.push(
+          hashedPositionKey(positionAccount, marketAddress, collateralToken, rawPosition.flags.isLong) as `0x${string}`
+        );
+        positionsPrices.push(marketPrices);
+      }
+
+      const chunksCount = Math.max(1, Math.ceil(positionsKeys.length / POSITIONS_INFO_CHUNK_SIZE));
+      const standalone = chunksCount > 1;
+
+      const calls: Record<string, ContractCallConfig> = {};
+
+      for (let i = 0; i < chunksCount; i++) {
+        const from = i * POSITIONS_INFO_CHUNK_SIZE;
+        const to = from + POSITIONS_INFO_CHUNK_SIZE;
+
+        calls[`positions_${i}`] = {
+          methodName: "getPositionInfoList",
+          params: [
+            getContract(requestChainId, "DataStore"),
+            getContract(requestChainId, "ReferralStorage"),
+            positionsKeys.slice(from, to),
+            positionsPrices.slice(from, to),
+            // uiFeeReceiver
+            zeroAddress,
+          ] satisfies ContractFunctionParameters<typeof abis.SyntheticsReader, "view", "getPositionInfoList">["args"],
+          standalone,
+        };
+      }
+
       return {
         reader: {
           contractAddress: getContract(requestChainId, "SyntheticsReader"),
           abiId: "SyntheticsReader",
-          calls: {
-            positions: {
-              methodName: "getAccountPositionInfoList",
-              params: [
-                getContract(requestChainId, "DataStore"),
-                getContract(requestChainId, "ReferralStorage"),
-                account!,
-                keysAndPrices.marketsKeys,
-                keysAndPrices.marketsPrices,
-                // uiFeeReceiver
-                zeroAddress,
-                0n,
-                1000n,
-              ] satisfies ContractFunctionParameters<
-                typeof abis.SyntheticsReader,
-                "view",
-                "getAccountPositionInfoList"
-              >["args"],
-            },
-          },
+          calls,
         },
       };
     },
     parseResponse: (res, chainId) => {
-      const positions = res.data.reader.positions.returnValues;
+      const positions = Object.values(res.data.reader).flatMap((call) => call.returnValues as PositionInfoResult[]);
 
       freshnessMetrics.reportThrottled(chainId, FreshnessMetricId.Positions);
 
@@ -195,7 +277,6 @@ function useKeysAndPricesParams(p: {
   return useMemo(() => {
     const values = {
       allPositionsKeys: [] as string[],
-      marketsPrices: [] as ContractMarketPrices[],
       marketsKeys: [] as string[],
     };
 
@@ -221,7 +302,6 @@ function useKeysAndPricesParams(p: {
       }
 
       values.marketsKeys.push(market.marketTokenAddress);
-      values.marketsPrices.push(marketPrices);
 
       const collaterals = market.isSameCollaterals
         ? [market.longTokenAddress]

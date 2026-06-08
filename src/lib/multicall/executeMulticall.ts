@@ -35,6 +35,7 @@ type MulticallFetcherConfig = {
         abiId: AbiId;
         methodName: string;
         params: any[];
+        standalone?: boolean;
       };
       handlers: {
         [requestId: string]: {
@@ -265,6 +266,7 @@ export async function executeMulticall<TConfig extends MulticallRequestConfig<an
             abiId: callGroup.abiId,
             methodName: call.methodName,
             params: call.params,
+            standalone: call.standalone,
           },
           handlers: {},
         };
@@ -368,6 +370,7 @@ function getRequest(callEntries: [string, { callData: MulticallFetcherConfig[num
     requests[contractAbiKey].calls[callId] = {
       methodName: callData.methodName,
       params: callData.params,
+      standalone: callData.standalone,
     };
   }
 
