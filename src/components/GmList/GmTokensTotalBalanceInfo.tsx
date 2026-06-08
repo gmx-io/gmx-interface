@@ -169,8 +169,8 @@ export const GmTokensTotalBalanceInfo = ({
   userEarnings,
   isUserEarningsLoading = false,
   isUserEarningsUnavailable = false,
-  isExpected365dLoading = false,
-  isExpected365dUnavailable = false,
+  isEstimated365dFeesLoading = false,
+  isEstimated365dFeesUnavailable = false,
   tooltipPosition,
   label,
 }: {
@@ -179,8 +179,8 @@ export const GmTokensTotalBalanceInfo = ({
   userEarnings: UserEarningsData | null;
   isUserEarningsLoading?: boolean;
   isUserEarningsUnavailable?: boolean;
-  isExpected365dLoading?: boolean;
-  isExpected365dUnavailable?: boolean;
+  isEstimated365dFeesLoading?: boolean;
+  isEstimated365dFeesUnavailable?: boolean;
   tooltipPosition?: TooltipPosition;
   label: string;
 }) => {
@@ -191,12 +191,12 @@ export const GmTokensTotalBalanceInfo = ({
   const isEarningsLoading = !userEarnings && isUserEarningsLoading;
   const areEarningsAvailable = Boolean(userEarnings) || !isUserEarningsUnavailable;
   const hasGmBalance = balance !== undefined && balance > 0n;
-  const shouldShowExpected365d =
+  const shouldShowEstimated365dFees =
     (userEarnings !== null && userEarnings.allMarkets.expected365d > 0n) ||
     shouldShowEarningsFallback ||
-    (hasGmBalance && (isExpected365dLoading || isExpected365dUnavailable));
-  const isExpected365dValueLoading = isEarningsLoading || isExpected365dLoading;
-  const isExpected365dAvailable = areEarningsAvailable && !isExpected365dUnavailable;
+    (hasGmBalance && (isEstimated365dFeesLoading || isEstimated365dFeesUnavailable));
+  const isEstimated365dFeesValueLoading = isEarningsLoading || isEstimated365dFeesLoading;
+  const areEstimated365dFeesAvailable = areEarningsAvailable && !isEstimated365dFeesUnavailable;
 
   const renderTooltipContent = useCallback(() => {
     return (
@@ -242,7 +242,7 @@ export const GmTokensTotalBalanceInfo = ({
               valueClassName="numbers"
               showDollar={false}
             />
-            {shouldShowExpected365d && (
+            {shouldShowEstimated365dFees && (
               <>
                 <StatsTooltipRow
                   label={t`365d estimated fees`}
@@ -252,8 +252,8 @@ export const GmTokensTotalBalanceInfo = ({
                   value={
                     <EarningValue
                       value={userEarnings?.allMarkets.expected365d}
-                      isLoading={isExpected365dValueLoading}
-                      isAvailable={isExpected365dAvailable}
+                      isLoading={isEstimated365dFeesValueLoading}
+                      isAvailable={areEstimated365dFeesAvailable}
                     >
                       {(value) => formatDeltaUsd(value, undefined, { showPlusForZero: true })}
                     </EarningValue>
@@ -261,22 +261,24 @@ export const GmTokensTotalBalanceInfo = ({
                   valueClassName="numbers"
                   showDollar={false}
                 />
-                {userEarnings !== null && userEarnings.allMarkets.expected365d > 0n && isExpected365dAvailable && (
-                  <>
-                    <br />
-                    <div className="text-typography-primary">
-                      <Trans>Projected from last {daysConsidered} days' APY</Trans>
-                    </div>
-                    {shouldShowIncentivesNote && (
-                      <>
-                        <br />
-                        <div className="text-typography-primary">
-                          <Trans>Excludes incentives</Trans>
-                        </div>
-                      </>
-                    )}
-                  </>
-                )}
+                {userEarnings !== null &&
+                  userEarnings.allMarkets.expected365d > 0n &&
+                  areEstimated365dFeesAvailable && (
+                    <>
+                      <br />
+                      <div className="text-typography-primary">
+                        <Trans>Projected from last {daysConsidered} days' APY</Trans>
+                      </div>
+                      {shouldShowIncentivesNote && (
+                        <>
+                          <br />
+                          <div className="text-typography-primary">
+                            <Trans>Excludes incentives</Trans>
+                          </div>
+                        </>
+                      )}
+                    </>
+                  )}
               </>
             )}
             {isUserEarningsUnavailable && (
@@ -293,13 +295,13 @@ export const GmTokensTotalBalanceInfo = ({
     balance,
     balanceUsd,
     areEarningsAvailable,
+    areEstimated365dFeesAvailable,
     daysConsidered,
     isEarningsLoading,
-    isExpected365dAvailable,
-    isExpected365dValueLoading,
+    isEstimated365dFeesValueLoading,
     isUserEarningsUnavailable,
     shouldShowEarningsRows,
-    shouldShowExpected365d,
+    shouldShowEstimated365dFees,
     shouldShowIncentivesNote,
     userEarnings,
   ]);

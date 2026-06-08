@@ -253,15 +253,15 @@ export const useUserEarnings = (chainId: ContractsChainId, srcChainId: SourceCha
     };
   }, [data, marketAddresses, marketsTokensApyData, marketTokensData]);
   const isUnavailable = Boolean(key && !isDataLoading && (error || data === null));
-  const isExpected365dLoading = Boolean(userEarnings && !marketsTokensApyData && isMarketsTokensApyLoading);
-  const isExpected365dUnavailable = Boolean(userEarnings && !marketsTokensApyData && !isMarketsTokensApyLoading);
+  const isEstimated365dFeesLoading = Boolean(userEarnings && !marketsTokensApyData && isMarketsTokensApyLoading);
+  const isEstimated365dFeesUnavailable = Boolean(userEarnings && !marketsTokensApyData && !isMarketsTokensApyLoading);
 
   return {
     userEarnings,
     isLoading: isDataLoading,
     isUnavailable,
-    isExpected365dLoading,
-    isExpected365dUnavailable,
+    isEstimated365dFeesLoading,
+    isEstimated365dFeesUnavailable,
   };
 };
 

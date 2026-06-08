@@ -84,8 +84,8 @@ export function GmList({
     userEarnings,
     isLoading: isUserEarningsLoading,
     isUnavailable: isUserEarningsUnavailable,
-    isExpected365dLoading,
-    isExpected365dUnavailable,
+    isEstimated365dFeesLoading,
+    isEstimated365dFeesUnavailable,
   } = useUserEarnings(chainId, srcChainId);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("gm-list");
   const [searchText, setSearchText] = useState("");
@@ -315,8 +315,8 @@ export function GmList({
                           userEarnings={userEarnings}
                           isUserEarningsLoading={isUserEarningsLoading}
                           isUserEarningsUnavailable={isUserEarningsUnavailable}
-                          isExpected365dLoading={isExpected365dLoading}
-                          isExpected365dUnavailable={isExpected365dUnavailable}
+                          isEstimated365dFeesLoading={isEstimated365dFeesLoading}
+                          isEstimated365dFeesUnavailable={isEstimated365dFeesUnavailable}
                           label={t`BALANCE`}
                         />
                       </Sorter>
