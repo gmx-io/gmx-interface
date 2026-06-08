@@ -191,7 +191,7 @@ describe("getMaxLeverageByMinCollateralFactor", () => {
   });
 
   it("caps SPCX min-collateral-factor leverage with lowercase market address", () => {
-    expect(getMaxLeverageByMinCollateralFactor(undefined, "0x470128853d74dab7423904a20ea5aa230e9e561b")).toBe(100000);
+    expect(getMaxLeverageByMinCollateralFactor(undefined, "0x470128853D74dab7423904a20eA5AA230e9e561B")).toBe(100000);
   });
 });
 
@@ -329,7 +329,7 @@ describe("getMaxAllowedLeverage", () => {
   it("caps SPCX UI max leverage with lowercase market address", () => {
     expect(
       getMaxAllowedLeverage({
-        marketAddress: "0x470128853d74dab7423904a20ea5aa230e9e561b",
+        marketAddress: "0x470128853D74dab7423904a20eA5AA230e9e561B",
         minCollateralFactor: pct(0.5),
         minCollateralFactorForLiquidation: pct(0.5),
         positionFeeFactorForBalanceWasNotImproved: pct(0.05),
