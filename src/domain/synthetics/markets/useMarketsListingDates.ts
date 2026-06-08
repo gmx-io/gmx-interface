@@ -6,17 +6,14 @@ import type { ContractsChainId } from "sdk/configs/chains";
 
 export type MarketsListingDates = Record<string, number>;
 
-export function useMarketsListingDates(
-  chainId: ContractsChainId,
-  skip = false
-): {
+export function useMarketsListingDates(chainId: ContractsChainId): {
   listingDateByIndexToken: MarketsListingDates;
   isLoading: boolean;
 } {
   const oracleKeeperFetcher = useOracleKeeperFetcher(chainId);
 
   const { data, isLoading } = useSWR(
-    skip ? null : ["markets-listing-dates", chainId],
+    ["markets-listing-dates", chainId],
     async () => {
       const markets = await oracleKeeperFetcher.fetchMarkets();
       const map: MarketsListingDates = {};
@@ -24,7 +21,7 @@ export function useMarketsListingDates(
         if (!m.listingDate || !m.indexToken) continue;
         const ts = Date.parse(m.listingDate);
         if (Number.isFinite(ts)) {
-          map[m.indexToken.toLowerCase()] = ts;
+          map[m.indexToken] = ts;
         }
       }
       return map;

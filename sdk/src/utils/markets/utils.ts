@@ -2,7 +2,7 @@ import { zeroAddress } from "viem";
 
 import type { ContractsChainId } from "configs/chains";
 import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT } from "configs/factors";
-import type { MarketConfig as ConfigMarketConfig } from "configs/markets";
+import { UI_MAX_LEVERAGE_BY_MARKET, type MarketConfig as ConfigMarketConfig } from "configs/markets";
 import { convertTokenAddress, getTokenVisualMultiplier, NATIVE_TOKEN_ADDRESS } from "configs/tokens";
 import type { DayPriceCandle } from "utils/24h/types";
 import { bigMath } from "utils/bigmath";
@@ -28,10 +28,6 @@ import type {
   RawMarketInfo,
   RawMarketsInfoData,
 } from "./types";
-
-const UI_MAX_LEVERAGE_BY_MARKET: Record<string, number> = {
-  "0x470128853d74dab7423904a20ea5aa230e9e561b": 10,
-};
 
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
   const { indexToken, longToken, shortToken, isSpotOnly } = p;
