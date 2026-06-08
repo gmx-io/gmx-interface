@@ -5836,7 +5836,7 @@ msgstr "{gasPaymentTokensText}を入金"
 
 #: src/components/EarningValue/EarningValue.tsx
 msgid "Fee data is temporarily unavailable."
-msgstr ""
+msgstr "手数料データは一時的に利用できません。"
 
 #: src/components/Referrals/affiliates/faq.tsx
 msgid "Your rebates depend on your tier level, which you can view <0>here</0>. Getting a higher tier results in more rewards to you and a bigger discount for your traders."
