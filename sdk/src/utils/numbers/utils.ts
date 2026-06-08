@@ -240,13 +240,27 @@ export function formatDeltaUsd(
 
 export function formatPercentage(
   percentage?: bigint,
-  opts: { fallbackToZero?: boolean; signed?: boolean; displayDecimals?: number; bps?: boolean; showPlus?: boolean } = {}
+  opts: {
+    fallbackToZero?: boolean;
+    signed?: boolean;
+    displayDecimals?: number;
+    bps?: boolean;
+    showPlus?: boolean;
+    useCommas?: boolean;
+  } = {}
 ) {
-  const { fallbackToZero = false, signed = false, displayDecimals = 2, bps = true, showPlus = true } = opts;
+  const {
+    fallbackToZero = false,
+    signed = false,
+    displayDecimals = 2,
+    bps = true,
+    showPlus = true,
+    useCommas = false,
+  } = opts;
 
   if (percentage === undefined) {
     if (fallbackToZero) {
-      return `${formatAmount(0n, PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
+      return `${formatAmount(0n, PERCENT_PRECISION_DECIMALS, displayDecimals, useCommas)}%`;
     }
 
     return undefined;
@@ -255,7 +269,7 @@ export function formatPercentage(
   const sign = signed ? `${getPlusOrMinusSymbol(percentage)}` : "";
   const displaySign = !showPlus && sign === "+" ? "" : `${sign}`;
 
-  return `${displaySign}${displaySign ? "\u200a" : ""}${formatAmount(bigMath.abs(percentage), bps ? 2 : PERCENT_PRECISION_DECIMALS, displayDecimals)}%`;
+  return `${displaySign}${displaySign ? "\u200a" : ""}${formatAmount(bigMath.abs(percentage), bps ? 2 : PERCENT_PRECISION_DECIMALS, displayDecimals, useCommas)}%`;
 }
 
 export function formatTokenAmount(

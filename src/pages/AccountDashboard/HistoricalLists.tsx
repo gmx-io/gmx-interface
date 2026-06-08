@@ -10,6 +10,7 @@ import { selectPositionsInfoData } from "context/SyntheticsStateContext/selector
 import { selectOrdersCount } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderTypeFilterValue } from "domain/synthetics/orders/ordersFilters";
+import type { DateRange, SetDateRange } from "lib/dates";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import type { ContractsChainId } from "sdk/configs/chains";
 
@@ -31,6 +32,8 @@ enum TabKey {
 type Props = {
   chainId: ContractsChainId;
   account: Address;
+  dateRange: DateRange;
+  setDateRange: SetDateRange;
 };
 
 function OrdersTabTitle({
@@ -93,7 +96,7 @@ function useTabLabels(): Record<TabKey, React.ReactNode> {
   return tabLabels;
 }
 
-export function HistoricalLists({ chainId, account }: Props) {
+export function HistoricalLists({ chainId, account, dateRange, setDateRange }: Props) {
   const [tabKey, setTabKey] = useLocalStorageSerializeKey(getAccountDashboardTabKey(chainId), TabKey.Positions);
 
   const tabLabels = useTabLabels();
@@ -159,7 +162,7 @@ export function HistoricalLists({ chainId, account }: Props) {
           onSelectOrderClick={undefined}
         />
       )}
-      {tabKey === TabKey.Trades && <TradeHistory account={account} />}
+      {tabKey === TabKey.Trades && <TradeHistory account={account} dateRange={dateRange} setDateRange={setDateRange} />}
       {tabKey === TabKey.Claims && <ClaimsHistory />}
     </div>
   );

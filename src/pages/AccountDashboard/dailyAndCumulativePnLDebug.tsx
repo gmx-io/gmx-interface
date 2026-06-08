@@ -157,6 +157,28 @@ export function DebugLegend({ lastPoint }: { lastPoint?: AccountPnlHistoryPoint 
   ));
 }
 
+export const DEV_QUERY_WITH_TO = gql`
+  query AccountHistoricalPnlResolver($account: String!, $from: Int, $to: Int) {
+    accountPnlHistoryStats(account: $account, from: $from, to: $to) {
+      cumulativePnl
+      cumulativeRealizedFees
+      cumulativeRealizedPnl
+      cumulativeRealizedPriceImpact
+      cumulativeRealizedSwapImpact
+      pnl
+      realizedFees
+      realizedPnl
+      realizedPriceImpact
+      realizedSwapImpact
+      timestamp
+      unrealizedFees
+      unrealizedPnl
+      startUnrealizedPnl
+      startUnrealizedFees
+    }
+  }
+`;
+
 export const DEV_QUERY = gql`
   query AccountHistoricalPnlResolver($account: String!, $from: Int) {
     accountPnlHistoryStats(account: $account, from: $from) {
@@ -192,7 +214,7 @@ export const DEBUG_FIELDS = [
   "cumulativeRealizedPriceImpact",
   "startUnrealizedPnl",
   "startUnrealizedFees",
-];
+] as const;
 
 export type AccountPnlHistoryPointDebugFields = {
   // #region Debug fields
@@ -233,18 +255,41 @@ export function DebugLines() {
 
   return (
     <>
-      <Bar isAnimationActive={false} dataKey="realizedPnlFloat" stackId="dev" minPointSize={1} fill="#00ff00" />
       <Bar
         isAnimationActive={false}
+        yAxisId="periodPnl"
+        dataKey="realizedPnlFloat"
+        stackId="dev"
+        minPointSize={1}
+        fill="#00ff00"
+      />
+      <Bar
+        isAnimationActive={false}
+        yAxisId="periodPnl"
         dataKey={(entry) => -entry.realizedFeesFloat}
         stackId="dev"
         minPointSize={1}
         fill="#ff0000"
       />
-      <Bar isAnimationActive={false} dataKey="realizedPriceImpactFloat" stackId="dev" minPointSize={1} fill="#ff00ff" />
-      <Bar isAnimationActive={false} dataKey="unrealizedPnlFloat" stackId="dev" minPointSize={1} fill="#00ffff" />
       <Bar
         isAnimationActive={false}
+        yAxisId="periodPnl"
+        dataKey="realizedPriceImpactFloat"
+        stackId="dev"
+        minPointSize={1}
+        fill="#ff00ff"
+      />
+      <Bar
+        isAnimationActive={false}
+        yAxisId="periodPnl"
+        dataKey="unrealizedPnlFloat"
+        stackId="dev"
+        minPointSize={1}
+        fill="#00ffff"
+      />
+      <Bar
+        isAnimationActive={false}
+        yAxisId="periodPnl"
         dataKey={(entry) => -entry.unrealizedFeesFloat}
         stackId="dev"
         minPointSize={1}
@@ -253,6 +298,7 @@ export function DebugLines() {
 
       <Area
         isAnimationActive={false}
+        yAxisId="cumulativePnl"
         type="monotone"
         dataKey="cumulativeUnrealizedPnlFloat"
         stackId="dev_cumulative"
@@ -262,6 +308,7 @@ export function DebugLines() {
       />
       <Area
         isAnimationActive={false}
+        yAxisId="cumulativePnl"
         type="monotone"
         dataKey={(entry) => -entry.cumulativeUnrealizedFeesFloat}
         stackId="dev_cumulative"
@@ -271,6 +318,7 @@ export function DebugLines() {
       />
       <Area
         isAnimationActive={false}
+        yAxisId="cumulativePnl"
         type="monotone"
         dataKey="cumulativeRealizedPnlFloat"
         stackId="dev_cumulative"
@@ -280,6 +328,7 @@ export function DebugLines() {
       />
       <Area
         isAnimationActive={false}
+        yAxisId="cumulativePnl"
         type="monotone"
         dataKey={(entry) => -entry.cumulativeRealizedFeesFloat}
         stackId="dev_cumulative"
@@ -289,6 +338,7 @@ export function DebugLines() {
       />
       <Area
         isAnimationActive={false}
+        yAxisId="cumulativePnl"
         type="monotone"
         dataKey="cumulativeRealizedPriceImpactFloat"
         stackId="dev_cumulative"

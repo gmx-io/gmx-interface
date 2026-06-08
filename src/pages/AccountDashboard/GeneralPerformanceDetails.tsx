@@ -167,7 +167,7 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
               valueClassName="numbers"
             />
           }
-          handle={formatPercentage(row.pnlBps, { signed: true })}
+          handle={formatPercentage(row.pnlBps, { signed: true, useCommas: true })}
           handleClassName="numbers"
         ></TooltipWithPortal>
       </TableTd>

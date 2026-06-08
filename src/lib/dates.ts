@@ -2,6 +2,9 @@ import { t } from "@lingui/macro";
 import { format as formatDateFn, isToday, isYesterday, set as setTime } from "date-fns";
 import { useMemo, useState } from "react";
 
+export type DateRange = [startDate: Date | undefined, endDate: Date | undefined];
+export type SetDateRange = (dateRange: DateRange) => void;
+
 export function formatDateTime(time: number) {
   return formatDateFn(time * 1000, "dd MMM yyyy, h:mm a");
 }
@@ -57,6 +60,10 @@ export function toUtcDayStart(date: Date) {
   return Math.trunc(dateUtcSeconds / 86400) * 86400;
 }
 
+export function toUtcDayStartByCalendarDate(date: Date) {
+  return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 1000;
+}
+
 const START_OF_DAY_DURATION = {
   hours: 0,
   minutes: 0,
@@ -96,10 +103,7 @@ export function useNormalizeDateRange(
  * By default, the date range is undefined
  */
 export function useDateRange() {
-  const [dateRange, setDateRange] = useState<[startDate: Date | undefined, endDate: Date | undefined]>([
-    undefined,
-    undefined,
-  ]);
+  const [dateRange, setDateRange] = useState<DateRange>([undefined, undefined]);
 
   const startDate = dateRange[0];
   const endDate = dateRange[1];

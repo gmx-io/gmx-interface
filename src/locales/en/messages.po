@@ -40,6 +40,10 @@ msgstr "Price impact rebates claimed"
 msgid "Or update your wallet's RPC via <0>chainlist.org</0>"
 msgstr "Or update your wallet's RPC via <0>chainlist.org</0>"
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "Monthly"
+msgstr "Monthly"
+
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "REFERRAL CODE"
 msgstr "REFERRAL CODE"
@@ -1231,6 +1235,10 @@ msgstr "Code already taken"
 msgid "{0} swapped to {1} when executed"
 msgstr "{0} swapped to {1} when executed"
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "Weekly"
+msgstr "Weekly"
+
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
@@ -1458,6 +1466,10 @@ msgstr "Virtual long token ID"
 #: src/context/SubaccountContext/SubaccountContextProvider.tsx
 msgid "Deactivating..."
 msgstr "Deactivating..."
+
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "Period loss"
+msgstr "Period loss"
 
 #: src/components/SwitchToSettlementChain/SwitchToSettlementChainWarning.tsx
 msgid "Vesting only available on {chainNames} or {lastChainName}. Switch networks to continue."
@@ -2311,6 +2323,10 @@ msgstr "Update Stop-Loss"
 msgid "How do I choose?"
 msgstr "How do I choose?"
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "Grouping"
+msgstr "Grouping"
+
 #: src/components/Errors/errorToasts.tsx
 msgid "Switching to external swap route. Try again"
 msgstr "Switching to external swap route. Try again"
@@ -2782,10 +2798,6 @@ msgstr "Strictest deposit USD capacity"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Liquidated as max leverage of {formattedMaxLeverage} was exceeded when accounting for fees."
 msgstr "Liquidated as max leverage of {formattedMaxLeverage} was exceeded when accounting for fees."
-
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-msgid "Daily profit"
-msgstr "Daily profit"
 
 #: src/context/SyntheticsEvents/SyntheticsEventsProvider.tsx
 msgid "Deposited {0} into {positionText}"
@@ -4525,6 +4537,10 @@ msgstr "stop-loss"
 msgid "Enter receiver address"
 msgstr "Enter receiver address"
 
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "Period"
+msgstr "Period"
+
 #: src/components/TradeInfoIcon/TradeInfoIcon.tsx
 msgid "Swap Market: Swap tokens at the current market price"
 msgstr "Swap Market: Swap tokens at the current market price"
@@ -5548,6 +5564,10 @@ msgstr "Failed Stop Market"
 #: src/components/SideNav/SettingsNavItem.tsx
 msgid "Settings"
 msgstr "Settings"
+
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "Daily"
+msgstr "Daily"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing limit order in WETH-USDC pool but lacks liquidity for this order"
@@ -7430,7 +7450,6 @@ msgstr "SIZE"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "From"
 msgstr "From"
 
@@ -10627,10 +10646,6 @@ msgstr "How to start saving?"
 msgid "24H VOL."
 msgstr "24H VOL."
 
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-msgid "Daily loss"
-msgstr "Daily loss"
-
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX team"
 msgstr "Anonymous chat with GMX team"
@@ -10843,6 +10858,10 @@ msgstr "Deposit {glvOrGm}"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Wallet GMX"
 msgstr "Wallet GMX"
+
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+msgid "Period profit"
+msgstr "Period profit"
 
 #: src/components/SettingsModal/SettingsModal.tsx
 msgid "Debug settings"

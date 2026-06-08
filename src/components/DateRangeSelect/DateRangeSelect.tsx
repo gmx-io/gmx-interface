@@ -17,6 +17,7 @@ import { useCallback, useMemo } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 
+import type { DateRange } from "lib/dates";
 import { type Locale } from "lib/i18n";
 
 import Button from "components/Button/Button";
@@ -43,8 +44,9 @@ export const LOCALE_DATE_LOCALE_MAP: Record<Locale, DateLocale> = {
 type Props = {
   startDate?: Date;
   endDate?: Date;
-  onChange: (date: [Date | undefined, Date | undefined]) => void;
+  onChange: (date: DateRange) => void;
   handleClassName?: string;
+  buttonTextClassName?: string;
 };
 
 /**
@@ -81,7 +83,7 @@ const PRESET_LABELS: Record<PresetPeriod, MessageDescriptor> = {
 
 const DATE_RANGE_SELECT_PRESETS: PresetPeriod[] = ["days7", "days30", "days90", "days365", "allTime"];
 
-export function DateRangeSelect({ startDate, endDate, onChange, handleClassName }: Props) {
+export function DateRangeSelect({ startDate, endDate, onChange, handleClassName, buttonTextClassName }: Props) {
   const { refs, floatingStyles } = useFloating({
     middleware: [offset(10), flip(), shift()],
     placement: "top-start",
@@ -156,7 +158,7 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName 
         <Button variant="ghost" className="flex items-center gap-4">
           <CalendarIcon className="size-16" />
 
-          <span className="text-body-small whitespace-nowrap font-medium">{buttonText}</span>
+          <span className={buttonTextClassName ?? "text-body-small whitespace-nowrap font-medium"}>{buttonText}</span>
         </Button>
       </Popover.Button>
       <Portal>
