@@ -84,8 +84,8 @@ export function GmList({
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("gm-list");
   const [searchText, setSearchText] = useState("");
   const {
-    topLevelTab: storedTopLevelTab,
-    subCategoryTab: storedSubCategoryTab,
+    topLevelTab,
+    subCategoryTab,
     setSubCategoryTab,
     favoriteTokens,
     toggleFavoriteToken,
@@ -105,8 +105,6 @@ export function GmList({
       (m) => !m.isSpotOnly && !m.isDisabled && recentlyListedAddressesSet.has(m.indexTokenAddress.toLowerCase())
     ).length;
   }, [marketsInfo, recentlyListedAddressesSet]);
-
-  const topLevelTab = storedTopLevelTab === "recently-listed" && recentlyListedCount === 0 ? "all" : storedTopLevelTab;
 
   const isLoading = !marketsInfo || !progressiveMarketTokensData;
 
@@ -133,13 +131,6 @@ export function GmList({
     }
     return set;
   }, [marketsInfo]);
-
-  const subCategoryTab =
-    storedSubCategoryTab === "all" ||
-    (topLevelTab === "crypto" && populatedCryptoSubCats.has(storedSubCategoryTab)) ||
-    (topLevelTab === "tradfi" && populatedTradfiSubCats.has(storedSubCategoryTab))
-      ? storedSubCategoryTab
-      : "all";
 
   const cryptoSubCatTabs = useMemo<TabOption<SubCategoryTab>[]>(
     () =>

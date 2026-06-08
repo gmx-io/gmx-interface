@@ -65,6 +65,7 @@ const disabledFeatures: ChartingLibraryFeatureset[] = [
   "symbol_search_hot_key",
   "allow_arbitrary_symbol_search_input",
   "header_quick_search",
+  "display_market_status",
   "show_interval_dialog_on_key_press",
   "header_symbol_search",
   "popup_hints",

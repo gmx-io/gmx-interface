@@ -241,6 +241,7 @@ function MarketsList() {
     (storedTopLevelTab === "favorites" && !hasAvailableFavorites) ||
     (storedTopLevelTab === "recently-listed" && recentlyListedCount === 0);
   const topLevelTab = shouldFallbackToAll ? "all" : storedTopLevelTab;
+  const subCategoryTab = shouldFallbackToAll ? "all" : storedSubCategoryTab;
 
   const populatedCryptoSubCats = useMemo(() => {
     const set = new Set<SubCategoryTab>();
@@ -259,13 +260,6 @@ function MarketsList() {
     }
     return set;
   }, [options]);
-
-  const subCategoryTab =
-    shouldFallbackToAll ||
-    (topLevelTab === "crypto" && storedSubCategoryTab !== "all" && !populatedCryptoSubCats.has(storedSubCategoryTab)) ||
-    (topLevelTab === "tradfi" && storedSubCategoryTab !== "all" && !populatedTradfiSubCats.has(storedSubCategoryTab))
-      ? "all"
-      : storedSubCategoryTab;
 
   const cryptoSubCatTabs = useMemo<TabOption<SubCategoryTab>[]>(
     () =>
@@ -539,7 +533,7 @@ function MarketsList() {
                   rowHorizontalPadding={rowHorizontalPadding}
                   tdClassName={tdClassName}
                   onMarketSelect={handleMarketSelect}
-                  listingDate={listingDateByIndexToken[token.address.toLowerCase()]}
+                  listingDate={listingDateByIndexToken[token.address]}
                 />
               )
             )}
