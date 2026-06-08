@@ -105,7 +105,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
   const tokensData = useTokensData();
   const { account, signer } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
-  const { isConnectModalLoading, openConnectModal } = useConnectModal();
+  const { openConnectModal } = useConnectModal();
   const routerAddress = getContract(chainId, "SyntheticsRouter");
   const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
@@ -513,19 +513,6 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     tooltipContent: errorTooltipContent,
     bannerErrorName: validationResult.bannerErrorName,
   };
-
-  if (!account && isConnectModalLoading) {
-    return {
-      text: (
-        <>
-          <Trans>Loading...</Trans>
-          <SpinnerIcon className="ml-4 animate-spin" />
-        </>
-      ),
-      disabled: true,
-      ...commonParams,
-    };
-  }
 
   if (multipleWalletExtensionsChainError.buttonErrorMessage) {
     return {

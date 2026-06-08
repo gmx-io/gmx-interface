@@ -69,7 +69,7 @@ export function CreateReferralCode({ onSuccess }: Props) {
 
 function CreateReferralCodeSettlement({ onSuccess }: Props) {
   const { signer } = useWallet();
-  const { isConnectModalLoading, openConnectModal } = useConnectModal();
+  const { openConnectModal } = useConnectModal();
   const { address: account, isConnected } = useAccount();
   const { chainId } = useChainId();
 
@@ -169,13 +169,6 @@ function CreateReferralCodeSettlement({ onSuccess }: Props) {
     onSubmit?: (event: FormEvent<HTMLFormElement>) => void;
   } => {
     if (!isConnected) {
-      if (isConnectModalLoading) {
-        return {
-          text: t`Loading...`,
-          disabled: true,
-        };
-      }
-
       return {
         text: t`Connect wallet`,
         disabled: false,
@@ -202,16 +195,7 @@ function CreateReferralCodeSettlement({ onSuccess }: Props) {
       disabled: Boolean(error),
       onSubmit: handleSubmit,
     };
-  }, [
-    isConnected,
-    isConnectModalLoading,
-    openConnectModal,
-    isProcessing,
-    referralCode,
-    referralCodeCheckStatus,
-    error,
-    handleSubmit,
-  ]);
+  }, [isConnected, openConnectModal, isProcessing, referralCode, referralCodeCheckStatus, error, handleSubmit]);
 
   return (
     <CreateReferralCodeLayout
@@ -232,7 +216,7 @@ function CreateReferralCodeSettlement({ onSuccess }: Props) {
 function CreateReferralCodeMultichain({ onSuccess }: Props) {
   const { chainId, srcChainId } = useChainId();
   const { account, signer } = useWallet();
-  const { isConnectModalLoading, openConnectModal } = useConnectModal();
+  const { openConnectModal } = useConnectModal();
   const { isConnected } = useAccount();
   const [referralCode, setReferralCode] = useState("");
   const [error, setError] = useState<string | undefined>();
@@ -388,13 +372,6 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
     onSubmit?: (event: FormEvent<HTMLFormElement>) => void;
   } => {
     if (!isConnected) {
-      if (isConnectModalLoading) {
-        return {
-          text: t`Loading...`,
-          disabled: true,
-        };
-      }
-
       return {
         text: t`Connect wallet`,
         disabled: false,
@@ -458,7 +435,6 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
     };
   }, [
     isConnected,
-    isConnectModalLoading,
     openConnectModal,
     hasOutdatedUi,
     isApproving,

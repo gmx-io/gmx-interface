@@ -52,7 +52,7 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
   const { chainId } = useChainId();
   const { signer, account, active } = useWallet();
   const { setPendingTxns } = usePendingTxns();
-  const { isConnectModalLoading, openConnectModal } = useConnectModal();
+  const { openConnectModal } = useConnectModal();
   const vestingData = useVestingData(account);
 
   const [selectedVault, setSelectedVault] = useState<VestVault>("gmx");
@@ -420,9 +420,9 @@ export function VestModal({ isVisible, setIsVisible, processedData, reservedAmou
       variant="primary-action"
       className="w-full"
       onClick={() => openConnectModal?.()}
-      disabled={!openConnectModal || isConnectModalLoading}
+      disabled={!openConnectModal}
     >
-      {isConnectModalLoading ? <Trans>Loading...</Trans> : <Trans>Connect wallet</Trans>}
+      <Trans>Connect wallet</Trans>
     </Button>
   );
 

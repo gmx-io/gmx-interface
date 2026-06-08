@@ -3,13 +3,11 @@ import { createContext, useContext } from "react";
 type ConnectModalContextValue = {
   openConnectModal: (() => void) | undefined;
   connectModalOpen: boolean;
-  isConnectModalLoading: boolean;
 };
 
 export const ConnectModalContext = createContext<ConnectModalContextValue>({
   openConnectModal: undefined,
   connectModalOpen: false,
-  isConnectModalLoading: false,
 });
 
 /**

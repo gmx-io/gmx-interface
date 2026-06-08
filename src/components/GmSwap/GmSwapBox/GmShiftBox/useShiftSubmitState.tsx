@@ -53,7 +53,7 @@ export function useShiftSubmitState({
   const hasOutdatedUi = useHasOutdatedUi();
   const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
 
-  const { isConnectModalLoading, openConnectModal } = useConnectModal();
+  const { openConnectModal } = useConnectModal();
 
   const { isSubmitting, onSubmit } = useShiftTransactions({
     fromMarketToken: selectedToken,
@@ -97,13 +97,6 @@ export function useShiftSubmitState({
     }
 
     if (isAllowanceLoading) {
-      return {
-        text: t`Loading...`,
-        disabled: true,
-      };
-    }
-
-    if (!account && isConnectModalLoading) {
       return {
         text: t`Loading...`,
         disabled: true,
@@ -208,7 +201,6 @@ export function useShiftSubmitState({
     toMarketInfo,
     toToken,
     fees,
-    isConnectModalLoading,
     multipleWalletExtensionsChainError,
     isApproving,
     tokensToApprove,

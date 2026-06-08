@@ -158,7 +158,7 @@ export function PositionSeller() {
   const { chainId, srcChainId } = useChainId();
   const { signer, account } = useWallet();
   const { provider } = useJsonRpcProvider(chainId);
-  const { isConnectModalLoading, openConnectModal } = useConnectModal();
+  const { openConnectModal } = useConnectModal();
   const { minCollateralUsd, minPositionSizeUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
   const hasOutdatedUi = useHasOutdatedUi();
@@ -933,18 +933,6 @@ export function PositionSeller() {
   );
 
   const buttonState = useMemo(() => {
-    if (!account && isConnectModalLoading) {
-      return {
-        text: (
-          <>
-            <Trans>Loading...</Trans>
-            <SpinnerIcon className="ml-4 animate-spin" />
-          </>
-        ),
-        disabled: true,
-      };
-    }
-
     if (!isAllowanceLoaded) {
       return {
         text: t`Loading...`,
@@ -1018,14 +1006,12 @@ export function PositionSeller() {
       disabled: Boolean(error) && !shouldDisableValidationForTesting,
     };
   }, [
-    account,
     chainId,
     decreaseAmounts?.isFullClose,
     error,
     errorDescription,
     isAllowanceLoaded,
     isApproving,
-    isConnectModalLoading,
     isExpressLoading,
     isMultichainSubmitDisabled,
     localizedTradeModeLabels,
