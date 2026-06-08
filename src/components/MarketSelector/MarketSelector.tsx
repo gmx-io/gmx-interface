@@ -2,16 +2,25 @@ import { Trans, t } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode, useCallback, useMemo, useState } from "react";
 
-import { useTokensFavorites } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
+import {
+  SubCategoryTab,
+  cryptoSubCategoryOptions,
+  subCategoryTabLabels,
+  tradfiSubCategoryOptions,
+  useTokensFavorites,
+} from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { MarketInfo, getMarketIndexName } from "domain/synthetics/markets";
+import { useMarketsListingDates } from "domain/synthetics/markets/useMarketsListingDates";
 import { TokenData, TokensData, convertToUsd } from "domain/synthetics/tokens";
 import { MissedCoinsPlace } from "domain/synthetics/userFeedback";
 import { useMissedCoinsSearch } from "domain/synthetics/userFeedback/useMissedCoinsSearch";
 import { stripBlacklistedWords } from "domain/tokens/utils";
+import { useLocalizedMap } from "lib/i18n";
 import { importImage } from "lib/legacy";
 import { formatTokenAmount, formatUsd } from "lib/numbers";
 import { getByKey } from "lib/objects";
 import { searchBy } from "lib/searchBy";
+import type { ContractsChainId } from "sdk/configs/chains";
 import type { TokenCategory } from "sdk/utils/tokens/types";
 
 import Button from "components/Button/Button";
@@ -20,14 +29,18 @@ import { FavoriteTabs } from "components/FavoriteTabs/FavoriteTabs";
 import { SlideModal } from "components/Modal/SlideModal";
 import SearchInput from "components/SearchInput/SearchInput";
 import { ButtonRowScrollFadeContainer } from "components/TableScrollFade/TableScrollFade";
+import Tabs from "components/Tabs/Tabs";
+import type { Option as TabOption } from "components/Tabs/types";
 
 import ChevronDownIcon from "img/ic_chevron_down.svg?react";
 
+import { getRecentlyListedTokenAddresses } from "../ChartTokenSelector/marketFilters";
 import TooltipWithPortal from "../Tooltip/TooltipWithPortal";
 
 import "./MarketSelector.scss";
 
 const CRYPTO_CATEGORIES: TokenCategory[] = ["ai", "layer1", "layer2", "defi", "meme"];
+const TRADFI_SUB_CATEGORIES: TokenCategory[] = ["pre-ipo", "commodities", "stocks", "indices", "fx"];
 
 type Props = {
   chainId: number;
@@ -59,6 +72,7 @@ type MarketOption = {
 };
 
 export function MarketSelector({
+  chainId,
   selectedIndexName,
   className,
   selectedMarketLabel,
@@ -74,7 +88,20 @@ export function MarketSelector({
 }: Props) {
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchKeyword, setSearchKeyword] = useState("");
-  const { topLevelTab, favoriteTokens, toggleFavoriteToken } = useTokensFavorites("market-selector");
+  const {
+    topLevelTab: storedTopLevelTab,
+    subCategoryTab: storedSubCategoryTab,
+    setSubCategoryTab,
+    favoriteTokens,
+    toggleFavoriteToken,
+  } = useTokensFavorites("market-selector");
+  const localizedSubCategoryLabels = useLocalizedMap(subCategoryTabLabels);
+  const { listingDateByIndexToken } = useMarketsListingDates(chainId as ContractsChainId);
+
+  const recentlyListedAddressesSet = useMemo(
+    () => new Set(getRecentlyListedTokenAddresses(listingDateByIndexToken, Date.now())),
+    [listingDateByIndexToken]
+  );
 
   const marketsOptions: MarketOption[] = useMemo(() => {
     const optionsByIndexName: { [indexName: string]: MarketOption } = {};
@@ -110,6 +137,64 @@ export function MarketSelector({
 
   const marketInfo = marketsOptions.find((option) => option.indexName === selectedIndexName)?.marketInfo;
 
+  const recentlyListedCount = useMemo(() => {
+    if (recentlyListedAddressesSet.size === 0) return 0;
+    return marketsOptions.filter((option) =>
+      recentlyListedAddressesSet.has(option.marketInfo.indexTokenAddress.toLowerCase())
+    ).length;
+  }, [marketsOptions, recentlyListedAddressesSet]);
+
+  const topLevelTab = storedTopLevelTab === "recently-listed" && recentlyListedCount === 0 ? "all" : storedTopLevelTab;
+
+  const populatedCryptoSubCats = useMemo(() => {
+    const set = new Set<SubCategoryTab>();
+    for (const cat of CRYPTO_CATEGORIES) {
+      if (marketsOptions.some((option) => option.marketInfo.indexToken.categories?.includes(cat))) {
+        set.add(cat as SubCategoryTab);
+      }
+    }
+    return set;
+  }, [marketsOptions]);
+
+  const populatedTradfiSubCats = useMemo(() => {
+    const set = new Set<SubCategoryTab>();
+    for (const cat of TRADFI_SUB_CATEGORIES) {
+      if (marketsOptions.some((option) => option.marketInfo.indexToken.categories?.includes(cat))) {
+        set.add(cat as SubCategoryTab);
+      }
+    }
+    return set;
+  }, [marketsOptions]);
+
+  const subCategoryTab =
+    storedSubCategoryTab === "all" ||
+    (topLevelTab === "crypto" && populatedCryptoSubCats.has(storedSubCategoryTab)) ||
+    (topLevelTab === "tradfi" && populatedTradfiSubCats.has(storedSubCategoryTab))
+      ? storedSubCategoryTab
+      : "all";
+
+  const cryptoSubCatTabs = useMemo<TabOption<SubCategoryTab>[]>(
+    () =>
+      cryptoSubCategoryOptions
+        .filter((opt) => opt === "all" || populatedCryptoSubCats.has(opt))
+        .map((opt) => ({
+          value: opt,
+          label: opt === "all" ? <Trans>All</Trans> : localizedSubCategoryLabels[opt],
+        })),
+    [localizedSubCategoryLabels, populatedCryptoSubCats]
+  );
+
+  const tradfiSubCatTabs = useMemo<TabOption<SubCategoryTab>[]>(
+    () =>
+      tradfiSubCategoryOptions
+        .filter((opt) => opt === "all" || populatedTradfiSubCats.has(opt))
+        .map((opt) => ({
+          value: opt,
+          label: opt === "all" ? <Trans>All</Trans> : localizedSubCategoryLabels[opt],
+        })),
+    [localizedSubCategoryLabels, populatedTradfiSubCats]
+  );
+
   const filteredOptions = useMemo(() => {
     const textMatched = searchKeyword.trim()
       ? searchBy(
@@ -123,21 +208,33 @@ export function MarketSelector({
         )
       : marketsOptions;
 
-    switch (topLevelTab) {
-      case "all":
-        return textMatched;
-      case "favorites":
-        return textMatched?.filter((item) => favoriteTokens?.includes(item.marketInfo.indexToken.address));
-      case "crypto":
-        return textMatched?.filter((item) =>
-          Boolean(item.marketInfo.indexToken?.categories?.some((c) => CRYPTO_CATEGORIES.includes(c)))
-        );
-      case "tradfi":
-        return textMatched?.filter((item) => Boolean(item.marketInfo.indexToken?.categories?.includes("tradfi")));
-      case "recently-listed":
-        return textMatched?.filter(() => false);
+    const topLevelFiltered = (() => {
+      switch (topLevelTab) {
+        case "all":
+          return textMatched;
+        case "favorites":
+          return textMatched?.filter((item) => favoriteTokens?.includes(item.marketInfo.indexToken.address));
+        case "crypto":
+          return textMatched?.filter((item) =>
+            Boolean(item.marketInfo.indexToken?.categories?.some((c) => CRYPTO_CATEGORIES.includes(c)))
+          );
+        case "tradfi":
+          return textMatched?.filter((item) => Boolean(item.marketInfo.indexToken?.categories?.includes("tradfi")));
+        case "recently-listed":
+          return textMatched?.filter((item) =>
+            recentlyListedAddressesSet.has(item.marketInfo.indexTokenAddress.toLowerCase())
+          );
+      }
+    })();
+
+    if (subCategoryTab === "all" || (topLevelTab !== "crypto" && topLevelTab !== "tradfi")) {
+      return topLevelFiltered;
     }
-  }, [favoriteTokens, marketsOptions, searchKeyword, topLevelTab]);
+
+    return topLevelFiltered?.filter((item) =>
+      Boolean(item.marketInfo.indexToken?.categories?.includes(subCategoryTab as TokenCategory))
+    );
+  }, [favoriteTokens, marketsOptions, recentlyListedAddressesSet, searchKeyword, subCategoryTab, topLevelTab]);
 
   useMissedCoinsSearch({
     searchText: searchKeyword,
@@ -187,8 +284,38 @@ export function MarketSelector({
               onKeyDown={_handleKeyDown}
             />
             <ButtonRowScrollFadeContainer>
-              <FavoriteTabs favoritesKey="market-selector" />
+              <FavoriteTabs
+                favoritesKey="market-selector"
+                recentlyListedCount={recentlyListedCount}
+                selectedValue={topLevelTab}
+              />
             </ButtonRowScrollFadeContainer>
+            {topLevelTab === "crypto" && populatedCryptoSubCats.size > 0 && (
+              <ButtonRowScrollFadeContainer>
+                <Tabs
+                  options={cryptoSubCatTabs}
+                  selectedValue={subCategoryTab}
+                  onChange={setSubCategoryTab}
+                  type="block"
+                  className="bg-slate-800/50 px-16"
+                  tabsWrapperClassName="!w-fit"
+                  regularOptionClassname="!px-8 !pb-9 !pt-11 text-13"
+                />
+              </ButtonRowScrollFadeContainer>
+            )}
+            {topLevelTab === "tradfi" && populatedTradfiSubCats.size > 0 && (
+              <ButtonRowScrollFadeContainer>
+                <Tabs
+                  options={tradfiSubCatTabs}
+                  selectedValue={subCategoryTab}
+                  onChange={setSubCategoryTab}
+                  type="block"
+                  className="bg-slate-800/50 px-16"
+                  tabsWrapperClassName="!w-fit"
+                  regularOptionClassname="!px-8 !pb-9 !pt-11 text-13"
+                />
+              </ButtonRowScrollFadeContainer>
+            )}
           </div>
         }
       >

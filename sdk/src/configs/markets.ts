@@ -950,6 +950,13 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },
+    // SPCX/USD [WETH-USDC]
+    "0x470128853D74dab7423904a20eA5AA230e9e561B": {
+      marketTokenAddress: "0x470128853D74dab7423904a20eA5AA230e9e561B",
+      indexTokenAddress: "0x8CBd0d5d81e7957123E6D8fFaE657a40bDC5691b",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
     // MEGA/USD [WETH-USDC]
     "0xE26E7b91143f367445f1c0a5dCf4f4aC8EaDcDb1": {
       marketTokenAddress: "0xE26E7b91143f367445f1c0a5dCf4f4aC8EaDcDb1",

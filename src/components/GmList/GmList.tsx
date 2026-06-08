@@ -83,8 +83,13 @@ export function GmList({
   const { userEarnings } = useUserEarnings(chainId, srcChainId);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("gm-list");
   const [searchText, setSearchText] = useState("");
-  const { topLevelTab, subCategoryTab, setSubCategoryTab, favoriteTokens, toggleFavoriteToken } =
-    useTokensFavorites("gm-list");
+  const {
+    topLevelTab: storedTopLevelTab,
+    subCategoryTab: storedSubCategoryTab,
+    setSubCategoryTab,
+    favoriteTokens,
+    toggleFavoriteToken,
+  } = useTokensFavorites("gm-list");
   const localizedSubCategoryLabels = useLocalizedMap(subCategoryTabLabels);
 
   const { listingDateByIndexToken } = useMarketsListingDates(chainId);
@@ -100,6 +105,8 @@ export function GmList({
       (m) => !m.isSpotOnly && !m.isDisabled && recentlyListedAddressesSet.has(m.indexTokenAddress.toLowerCase())
     ).length;
   }, [marketsInfo, recentlyListedAddressesSet]);
+
+  const topLevelTab = storedTopLevelTab === "recently-listed" && recentlyListedCount === 0 ? "all" : storedTopLevelTab;
 
   const isLoading = !marketsInfo || !progressiveMarketTokensData;
 
@@ -118,7 +125,7 @@ export function GmList({
   const populatedTradfiSubCats = useMemo(() => {
     const set = new Set<SubCategoryTab>();
     if (!marketsInfo) return set;
-    for (const cat of ["commodities", "stocks", "indices", "fx"] as const) {
+    for (const cat of ["pre-ipo", "commodities", "stocks", "indices", "fx"] as const) {
       const found = Object.values(marketsInfo).some(
         (m) => !m.isSpotOnly && !m.isDisabled && m.indexToken?.categories?.includes(cat)
       );
@@ -126,6 +133,13 @@ export function GmList({
     }
     return set;
   }, [marketsInfo]);
+
+  const subCategoryTab =
+    storedSubCategoryTab === "all" ||
+    (topLevelTab === "crypto" && populatedCryptoSubCats.has(storedSubCategoryTab)) ||
+    (topLevelTab === "tradfi" && populatedTradfiSubCats.has(storedSubCategoryTab))
+      ? storedSubCategoryTab
+      : "all";
 
   const cryptoSubCatTabs = useMemo<TabOption<SubCategoryTab>[]>(
     () =>
@@ -220,7 +234,12 @@ export function GmList({
           <div className="flex flex-wrap items-center justify-between gap-12 max-md:flex-wrap-reverse">
             <div className="max-w-full">
               <ButtonRowScrollFadeContainer>
-                <FavoriteTabs favoritesKey="gm-list" recentlyListedCount={recentlyListedCount} type="inline" />
+                <FavoriteTabs
+                  favoritesKey="gm-list"
+                  recentlyListedCount={recentlyListedCount}
+                  selectedValue={topLevelTab}
+                  type="inline"
+                />
               </ButtonRowScrollFadeContainer>
             </div>
 

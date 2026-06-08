@@ -4409,6 +4409,10 @@ msgstr ""
 #: src/components/GmList/GmList.tsx
 #: src/components/GmList/GmList.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
+#: src/components/MarketSelector/MarketSelector.tsx
+#: src/components/MarketSelector/MarketSelector.tsx
+#: src/components/MarketSelector/PoolSelector.tsx
+#: src/components/MarketSelector/PoolSelector.tsx
 #: src/components/OrdersModal/OrdersModal.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
@@ -4601,6 +4605,10 @@ msgstr ""
 
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "FEES ($)"
+msgstr ""
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Pre-IPO"
 msgstr ""
 
 #: src/components/NetRateChart/NetRateChart.tsx

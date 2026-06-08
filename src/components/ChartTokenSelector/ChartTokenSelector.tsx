@@ -238,9 +238,9 @@ function MarketsList() {
 
   const shouldFallbackToAll =
     (isSwap && SWAP_EXCLUDED_TOP_LEVEL_TABS.includes(storedTopLevelTab)) ||
-    (storedTopLevelTab === "favorites" && !hasAvailableFavorites);
+    (storedTopLevelTab === "favorites" && !hasAvailableFavorites) ||
+    (storedTopLevelTab === "recently-listed" && recentlyListedCount === 0);
   const topLevelTab = shouldFallbackToAll ? "all" : storedTopLevelTab;
-  const subCategoryTab = shouldFallbackToAll ? "all" : storedSubCategoryTab;
 
   const populatedCryptoSubCats = useMemo(() => {
     const set = new Set<SubCategoryTab>();
@@ -254,11 +254,18 @@ function MarketsList() {
   const populatedTradfiSubCats = useMemo(() => {
     const set = new Set<SubCategoryTab>();
     if (!options) return set;
-    for (const cat of ["commodities", "stocks", "indices", "fx"] as const) {
+    for (const cat of ["pre-ipo", "commodities", "stocks", "indices", "fx"] as const) {
       if (options.some((o) => o.categories?.includes(cat))) set.add(cat);
     }
     return set;
   }, [options]);
+
+  const subCategoryTab =
+    shouldFallbackToAll ||
+    (topLevelTab === "crypto" && storedSubCategoryTab !== "all" && !populatedCryptoSubCats.has(storedSubCategoryTab)) ||
+    (topLevelTab === "tradfi" && storedSubCategoryTab !== "all" && !populatedTradfiSubCats.has(storedSubCategoryTab))
+      ? "all"
+      : storedSubCategoryTab;
 
   const cryptoSubCatTabs = useMemo<TabOption<SubCategoryTab>[]>(
     () =>
@@ -532,7 +539,7 @@ function MarketsList() {
                   rowHorizontalPadding={rowHorizontalPadding}
                   tdClassName={tdClassName}
                   onMarketSelect={handleMarketSelect}
-                  listingDate={listingDateByIndexToken[token.address]}
+                  listingDate={listingDateByIndexToken[token.address.toLowerCase()]}
                 />
               )
             )}
