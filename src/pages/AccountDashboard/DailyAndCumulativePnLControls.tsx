@@ -1,5 +1,8 @@
-import { Trans, t } from "@lingui/macro";
+import type { MessageDescriptor } from "@lingui/core";
+import { msg, Trans } from "@lingui/macro";
+import { useLingui } from "@lingui/react";
 import cx from "classnames";
+import { useMemo } from "react";
 
 import type { SetDateRange } from "lib/dates";
 
@@ -11,11 +14,13 @@ import DownloadIcon from "img/ic_download2.svg?react";
 
 import type { PnlChartGrouping } from "./DailyAndCumulativePnL.utils";
 
-const GROUPING_OPTIONS: { value: PnlChartGrouping; label: string }[] = [
-  { value: "daily", label: t`Daily` },
-  { value: "weekly", label: t`Weekly` },
-  { value: "monthly", label: t`Monthly` },
-];
+const GROUPING_LABELS: Record<PnlChartGrouping, MessageDescriptor> = {
+  daily: msg`Daily`,
+  weekly: msg`Weekly`,
+  monthly: msg`Monthly`,
+};
+
+const GROUPING_VALUES: PnlChartGrouping[] = ["daily", "weekly", "monthly"];
 
 export function DailyAndCumulativePnLControls({
   startDate,
@@ -68,11 +73,16 @@ function PnlChartGroupingSelect({
   onChange: (grouping: PnlChartGrouping) => void;
   buttonTextClassName?: string;
 }) {
-  const selectedOption = GROUPING_OPTIONS.find((option) => option.value === grouping) ?? GROUPING_OPTIONS[0];
+  const { _ } = useLingui();
+  const groupingOptions = useMemo(
+    () => GROUPING_VALUES.map((value) => ({ value, label: _(GROUPING_LABELS[value]) })),
+    [_]
+  );
+  const selectedOption = groupingOptions.find((option) => option.value === grouping) ?? groupingOptions[0];
 
   return (
     <SelectorBase
-      modalLabel={t`Grouping`}
+      modalLabel={_(msg`Grouping`)}
       popoverPlacement="bottom-end"
       desktopPanelClassName="mt-8 !border !border-slate-600 !bg-slate-900 !outline-none"
       handleClassName="button ghost center flex min-h-32 gap-4 px-12 py-6 text-[13px] max-md:px-10 max-md:py-6"
@@ -84,7 +94,7 @@ function PnlChartGroupingSelect({
       }
     >
       <div>
-        {GROUPING_OPTIONS.map((option) => (
+        {groupingOptions.map((option) => (
           <PnlChartGroupingOption
             key={option.value}
             option={option}
@@ -102,7 +112,7 @@ function PnlChartGroupingOption({
   isSelected,
   onSelect,
 }: {
-  option: (typeof GROUPING_OPTIONS)[number];
+  option: { value: PnlChartGrouping; label: string };
   isSelected: boolean;
   onSelect: (grouping: PnlChartGrouping) => void;
 }) {

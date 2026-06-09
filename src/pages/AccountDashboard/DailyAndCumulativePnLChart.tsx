@@ -128,7 +128,7 @@ export function DailyAndCumulativePnLChart({
     return chartPnlData.slice();
   }, [chartPnlData, visibleEndIndex, visibleStartIndex]);
   const barXAxisDomain = useMemo<[number, number]>(
-    () => [visibleStartIndex - 0.5, visibleEndIndex + 0.5],
+    () => [visibleStartIndex - 0.25, visibleEndIndex + 0.25],
     [visibleEndIndex, visibleStartIndex]
   );
   const areaXAxisDomain = useMemo<[number, number]>(
@@ -686,7 +686,7 @@ function getYAxisMargin(data: AccountPnlHistoryPoint[], key: "pnlFloat" | "cumul
 
   const labelLength = Math.max(formatPnlChartYAxisTick(maxValue).length, formatPnlChartYAxisTick(-maxValue).length);
 
-  return clamp(labelLength * 3, 0, 72);
+  return clamp(labelLength * 2, 0, 72);
 }
 
 function getYAxisDomainFromTicks(ticks: number[]): [number, number] {
