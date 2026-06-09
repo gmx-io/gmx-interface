@@ -15,6 +15,7 @@ import "./App.scss";
 
 import { LANGUAGE_LOCALSTORAGE_KEY } from "config/localStorage";
 import { ChainContextProvider } from "context/ChainContext/ChainContext";
+import { ConnectModalProvider } from "context/ConnectModalContext/ConnectModalContext";
 import { GlobalStateProvider } from "context/GlobalContext/GlobalContextProvider";
 import { GmxAccountContextProvider } from "context/GmxAccountContext/GmxAccountContext";
 import { GmxSdkProvider } from "context/GmxSdkContext/GmxSdkContext";
@@ -28,7 +29,6 @@ import { TokensBalancesContextProvider } from "context/TokensBalancesContext/Tok
 import { TokensFavoritesContextProvider } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { useChainId } from "lib/chains";
 import { defaultLocale, dynamicActivate } from "lib/i18n";
-import { ConnectModalProvider } from "lib/wallets/ConnectModalProvider";
 
 import ErrorBoundary from "components/Errors/ErrorBoundary";
 import SEO from "components/Seo/SEO";

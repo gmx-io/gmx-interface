@@ -1,5 +1,5 @@
 import { useConnectOrCreateWallet } from "@privy-io/react-auth";
-import { useCallback, useMemo, useState, type ReactNode } from "react";
+import { createContext, useCallback, useContext, useMemo, useState, type ReactNode } from "react";
 
 import type { SettlementChainId } from "config/chains";
 import {
@@ -11,7 +11,15 @@ import { useGmxAccountSettlementChainId } from "context/GmxAccountContext/hooks"
 import { metrics } from "lib/metrics";
 import { switchNetwork } from "lib/wallets";
 
-import { ConnectModalContext } from "./useConnectModal";
+export type ConnectModalContextValue = {
+  openConnectModal: (() => void) | undefined;
+  connectModalOpen: boolean;
+};
+
+export const ConnectModalContext = createContext<ConnectModalContextValue>({
+  openConnectModal: undefined,
+  connectModalOpen: false,
+});
 
 function shouldKeepAppSelectedSourceChain(settlementChainId: SettlementChainId) {
   const rawChainIdFromLocalStorage = localStorage.getItem(SELECTED_NETWORK_LOCAL_STORAGE_KEY);
@@ -51,4 +59,12 @@ export function ConnectModalProvider({ children }: { children: ReactNode }) {
   const value = useMemo(() => ({ openConnectModal, connectModalOpen }), [openConnectModal, connectModalOpen]);
 
   return <ConnectModalContext.Provider value={value}>{children}</ConnectModalContext.Provider>;
+}
+
+/**
+ * Drop-in replacement for RainbowKit's useConnectModal.
+ * Returns { openConnectModal, connectModalOpen } with the same interface.
+ */
+export function useConnectModal() {
+  return useContext(ConnectModalContext);
 }
