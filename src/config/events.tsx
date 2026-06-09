@@ -43,8 +43,9 @@ export const appEventsData: EventData[] = [
   {
     id: "spcx-pre-ipo-arbitrum-listing",
     isActive: true,
-    startDate: "08 Jun 2026, 1:00",
-    endDate: "15 Jun 2026, 1:00",
+    startDate: "08 Jun 2026, 12:00",
+    endDate: "09 Jun 2026, 12:00",
+    flagId: "showSpcxPreIpoArbitrumListing",
     chains: [ARBITRUM],
     title: "SPCX Pre-IPO market added on Arbitrum",
     bodyText: (
