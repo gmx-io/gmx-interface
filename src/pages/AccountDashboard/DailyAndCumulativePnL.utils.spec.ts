@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 
 import {
   formatPnlChartYAxisTick,
+  getPnlChartDragPanSpeed,
   getPnlChartWheelZoomSlowdown,
   getPnlChartYAxisTicks,
   groupPnlHistoryData,
@@ -133,6 +134,13 @@ describe("Pnl zoom helpers", () => {
     expect(getPnlChartWheelZoomSlowdown(100, 100)).toBe(1);
     expect(getPnlChartWheelZoomSlowdown(25, 100)).toBe(2);
     expect(getPnlChartWheelZoomSlowdown(4, 100)).toBe(5);
+  });
+
+  it("speeds drag panning as the visible window gets larger", () => {
+    expect(getPnlChartDragPanSpeed(4)).toBe(1);
+    expect(getPnlChartDragPanSpeed(48)).toBe(2);
+    expect(getPnlChartDragPanSpeed(108)).toBe(3);
+    expect(getPnlChartDragPanSpeed(500)).toBe(5);
   });
 
   it("pans a zoomed window within bounds", () => {

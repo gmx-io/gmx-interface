@@ -8,10 +8,21 @@
   touch-action: pan-y;
 }
 
+.DailyAndCumulativePnL-chartInteraction * {
+  cursor: inherit !important;
+}
+
 .DailyAndCumulativePnL-chartInteraction--zoomed {
   cursor: grab;
 }
 
-.DailyAndCumulativePnL-chartInteraction--zoomed:active {
+.DailyAndCumulativePnL-chartInteraction[data-dragging="true"] {
   cursor: grabbing;
+}
+
+.DailyAndCumulativePnL-chartInteraction[data-suppress-hover="true"] .recharts-tooltip-wrapper,
+.DailyAndCumulativePnL-chartInteraction[data-suppress-hover="true"] .recharts-tooltip-cursor,
+.DailyAndCumulativePnL-chartInteraction[data-suppress-hover="true"] .recharts-active-dot,
+.DailyAndCumulativePnL-chartInteraction[data-suppress-hover="true"] .recharts-active-shape {
+  display: none !important;
 }

@@ -326,6 +326,14 @@ export function getPnlChartWheelZoomSlowdown(visibleLength: number, dataLength: 
   return clamp(Math.sqrt(dataLength / visibleLength), 1, 20);
 }
 
+export function getPnlChartDragPanSpeed(visibleLength: number) {
+  if (visibleLength <= 0) {
+    return 1;
+  }
+
+  return clamp(Math.sqrt(visibleLength / 12), 1, 5);
+}
+
 export function zoomPnlWindow(
   currentWindow: PnlZoomWindow | undefined,
   dataLength: number,
