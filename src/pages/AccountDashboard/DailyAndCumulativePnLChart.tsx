@@ -68,6 +68,9 @@ const ACTIVE_DOT_PROPS = {
 };
 
 const CHART_MARGIN = { top: 16, right: 16, bottom: 16, left: 0 };
+const TOUCH_TAP_MAX_DISTANCE = 10;
+const TOUCH_DOUBLE_TAP_TIMEOUT = 350;
+const TOUCH_PINCH_STEP_RATIO = 1.08;
 
 type ChartPnlHistoryPoint = AccountPnlHistoryPoint & {
   chartIndex: number;
@@ -296,12 +299,71 @@ export function DailyAndCumulativePnLChart({
 
   const handleChartTouchStart = useCallback(
     (event: React.TouchEvent<HTMLDivElement>) => {
-      if (!canZoom || event.touches.length !== 1) {
+      if (!canZoom || (event.touches.length !== 1 && event.touches.length !== 2)) {
         return;
       }
 
       const element = chartInteractionRef.current;
       if (!element) {
+        return;
+      }
+
+      if (event.touches.length === 2) {
+        event.preventDefault();
+
+        let lastDistance = getTouchDistance(event.touches[0], event.touches[1]);
+        let lastWindow = normalizedZoomWindow;
+
+        const handleTouchMove = (moveEvent: TouchEvent) => {
+          if (moveEvent.touches.length !== 2) {
+            return;
+          }
+
+          moveEvent.preventDefault();
+
+          const currentDistance = getTouchDistance(moveEvent.touches[0], moveEvent.touches[1]);
+
+          if (lastDistance < 1 || currentDistance < 1) {
+            lastDistance = currentDistance;
+            return;
+          }
+
+          let distanceRatio = currentDistance / lastDistance;
+          if (distanceRatio < TOUCH_PINCH_STEP_RATIO && distanceRatio > 1 / TOUCH_PINCH_STEP_RATIO) {
+            return;
+          }
+
+          const direction = distanceRatio > 1 ? "in" : "out";
+          const stepRatio = direction === "in" ? TOUCH_PINCH_STEP_RATIO : 1 / TOUCH_PINCH_STEP_RATIO;
+          const anchorRatio = getChartInteractionRatio(
+            getTouchCenterClientX(moveEvent.touches[0], moveEvent.touches[1])
+          );
+          let nextWindow = lastWindow;
+
+          while (direction === "in" ? distanceRatio >= stepRatio : distanceRatio <= stepRatio) {
+            nextWindow = zoomPnlWindowAtRatio(
+              nextWindow,
+              groupedPnlData.length,
+              direction,
+              anchorRatio,
+              PNL_CHART_WHEEL_ZOOM_FACTOR
+            );
+            distanceRatio /= stepRatio;
+          }
+
+          lastDistance = currentDistance;
+          lastWindow = nextWindow;
+          setZoomWindow(nextWindow);
+        };
+
+        const cleanup = () => {
+          window.removeEventListener("touchmove", handleTouchMove);
+        };
+
+        window.addEventListener("touchmove", handleTouchMove, { passive: false });
+        window.addEventListener("touchend", cleanup, { once: true });
+        window.addEventListener("touchcancel", cleanup, { once: true });
+
         return;
       }
 
@@ -314,9 +376,11 @@ export function DailyAndCumulativePnLChart({
       let lastDeltaPoints = 0;
       let gesture: "idle" | "horizontal" | "vertical" = "idle";
       let maxDistance = 0;
+      let hadMultiTouch = false;
 
       const handleTouchMove = (moveEvent: TouchEvent) => {
         if (moveEvent.touches.length !== 1) {
+          hadMultiTouch = true;
           return;
         }
 
@@ -325,7 +389,7 @@ export function DailyAndCumulativePnLChart({
         const deltaY = touch.clientY - startClientY;
         maxDistance = Math.max(maxDistance, Math.sqrt(deltaX * deltaX + deltaY * deltaY));
 
-        if (gesture === "idle" && maxDistance > 10) {
+        if (gesture === "idle" && maxDistance > TOUCH_TAP_MAX_DISTANCE) {
           gesture = Math.abs(deltaX) > Math.abs(deltaY) ? "horizontal" : "vertical";
         }
 
@@ -352,14 +416,14 @@ export function DailyAndCumulativePnLChart({
       const handleTouchEnd = () => {
         cleanup();
 
-        if (maxDistance > 10) {
+        if (hadMultiTouch || maxDistance > TOUCH_TAP_MAX_DISTANCE) {
           return;
         }
 
         const now = Date.now();
         const anchorRatio = getChartInteractionRatio(startClientX);
 
-        if (now - lastTouchTapRef.current < 350) {
+        if (now - lastTouchTapRef.current < TOUCH_DOUBLE_TAP_TIMEOUT) {
           lastTouchTapRef.current = 0;
           setZoomWindow((window) => zoomPnlWindowAtRatio(window, groupedPnlData.length, "in", anchorRatio));
         } else {
@@ -560,4 +624,17 @@ function getYAxisDomainFromTicks(ticks: number[]): [number, number] {
   }
 
   return [ticks[0], ticks[ticks.length - 1]];
+}
+
+type TouchPosition = Pick<Touch, "clientX" | "clientY">;
+
+function getTouchDistance(firstTouch: TouchPosition, secondTouch: TouchPosition) {
+  const deltaX = firstTouch.clientX - secondTouch.clientX;
+  const deltaY = firstTouch.clientY - secondTouch.clientY;
+
+  return Math.sqrt(deltaX * deltaX + deltaY * deltaY);
+}
+
+function getTouchCenterClientX(firstTouch: TouchPosition, secondTouch: TouchPosition) {
+  return (firstTouch.clientX + secondTouch.clientX) / 2;
 }
