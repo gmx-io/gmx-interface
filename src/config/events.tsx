@@ -41,10 +41,10 @@ export const WELL_DELISTING_EVENT_ID = "well-delisting";
 
 export const appEventsData: EventData[] = [
   {
-    id: "spcx-pre-ipo-arbitrum-listing",
+    id: "spcx-pre-ipo-arbitrum-listing-updated",
     isActive: true,
-    startDate: "08 Jun 2026, 12:00",
-    endDate: "09 Jun 2026, 12:00",
+    startDate: "09 Jun 2026, 12:00",
+    endDate: "16 Jun 2026, 12:00",
     flagId: "showSpcxPreIpoArbitrumListingUpdated",
     chains: [ARBITRUM],
     title: "SPCX Pre-IPO market added on Arbitrum",
