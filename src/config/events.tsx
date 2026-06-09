@@ -41,6 +41,22 @@ export const WELL_DELISTING_EVENT_ID = "well-delisting";
 
 export const appEventsData: EventData[] = [
   {
+    id: "spcx-pre-ipo-arbitrum-listing",
+    isActive: true,
+    startDate: "08 Jun 2026, 12:00",
+    endDate: "09 Jun 2026, 12:00",
+    flagId: "showSpcxPreIpoArbitrumListing",
+    chains: [ARBITRUM],
+    title: "SPCX Pre-IPO market added on Arbitrum",
+    bodyText: (
+      <>
+        <Link to="/trade">Trade</Link> SpaceX (SPCX) Pre-IPO perpetuals 24/7 with up to 10x leverage, or{" "}
+        <Link to="/pools">provide liquidity</Link> via GLV <span className="text-slate-100">[WETH-USDC]</span>. Find it
+        under the TradFi Pre-IPO category in the market dropdown.
+      </>
+    ),
+  },
+  {
     id: "mega-arbitrum-megaeth-listing",
     flagId: "showMegaListingArbitrumMegaeth",
     endDate: "07 May 2026, 12:00",

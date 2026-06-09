@@ -15,6 +15,7 @@ const tokens = [
   { address: "0xfet", categories: ["ai"] },
   { address: "0xtao", categories: ["layer1", "ai"] },
   { address: "0xgold", categories: ["tradfi", "commodities"] },
+  { address: "0xspcx", categories: ["tradfi", "pre-ipo"] },
   { address: "0xusdc", categories: undefined },
 ] as any[];
 
@@ -38,7 +39,7 @@ describe("applyTopLevelFilter", () => {
       topLevelTab: "tradfi",
       favoriteAddresses: [],
     });
-    expect(result.map((t) => t.address)).toEqual(["0xgold"]);
+    expect(result.map((t) => t.address)).toEqual(["0xgold", "0xspcx"]);
   });
 
   it("returns favorites only", () => {
@@ -82,6 +83,14 @@ describe("applySubCategoryFilter", () => {
       subCategoryTab: "commodities",
     });
     expect(result.map((t) => t.address)).toEqual(["0xgold"]);
+  });
+
+  it("filters to pre-IPO within tradfi", () => {
+    const result = applySubCategoryFilter(tokens, {
+      topLevelTab: "tradfi",
+      subCategoryTab: "pre-ipo",
+    });
+    expect(result.map((t) => t.address)).toEqual(["0xspcx"]);
   });
 
   it("ignores sub-cat when parent is not crypto/tradfi", () => {

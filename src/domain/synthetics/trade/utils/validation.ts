@@ -451,6 +451,7 @@ export function getIncreaseError(p: {
   }
 
   const maxAllowedLeverage = getMaxAllowedLeverage({
+    marketAddress: marketInfo?.marketTokenAddress,
     minCollateralFactor: marketInfo?.minCollateralFactor,
     minCollateralFactorForLiquidation: marketInfo?.minCollateralFactorForLiquidation,
     positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,
@@ -609,6 +610,7 @@ export function getDecreaseError(p: {
   }
 
   const maxAllowedLeverage = getMaxAllowedLeverage({
+    marketAddress: marketInfo?.marketTokenAddress,
     minCollateralFactor: marketInfo?.minCollateralFactor,
     minCollateralFactorForLiquidation: marketInfo?.minCollateralFactorForLiquidation,
     positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,
@@ -705,8 +707,9 @@ export function getEditCollateralError(p: {
   }
 
   const maxAllowedLeverage = isDeposit
-    ? getMaxLeverageByMinCollateralFactor(minCollateralFactor)
+    ? getMaxLeverageByMinCollateralFactor(minCollateralFactor, marketInfo?.marketTokenAddress)
     : getMaxAllowedLeverage({
+        marketAddress: marketInfo?.marketTokenAddress,
         minCollateralFactor: marketInfo?.minCollateralFactor,
         minCollateralFactorForLiquidation: marketInfo?.minCollateralFactorForLiquidation,
         positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,
