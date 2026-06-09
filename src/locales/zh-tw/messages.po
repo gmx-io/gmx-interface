@@ -6194,10 +6194,6 @@ msgstr "顯示扣除所有費用後的淨值與盈虧"
 msgid "Liquidation fee"
 msgstr "清算費用"
 
-#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
-msgid "Protocol-wide annualized GMX buyback rate, based on the average of the last 4 completed weeks relative to total staked GMX and esGMX. Your actual rewards depend on staking power and may differ."
-msgstr ""
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact exponent"
 msgstr "兌換影響指數"
@@ -6237,6 +6233,10 @@ msgstr "最大槓桿"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAILABLE LIQUIDITY"
 msgstr ""
+
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "USD values are estimated using the average GMX price for each displayed week. Actual buyback execution amounts may differ due to execution timing, conversions, and price movements."
+msgstr "USD 數值是根據每個所示週的 GMX 平均價格估算的。由於執行時機、兌換和價格波動，實際回購執行金額可能有所不同。"
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Elfa AI"
@@ -9387,6 +9387,10 @@ msgstr "最快"
 msgid "Receive tokens separately"
 msgstr "分開接收代幣"
 
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "USD estimate"
+msgstr "USD 估算"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL BALANCE"
 msgstr "POOL BALANCE"
@@ -9830,6 +9834,10 @@ msgstr "觸發價格"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Accrues fees from leverage trading and swaps for the {marketName} market. Exposed to {exposedToLabel} as shown."
 msgstr "從 {marketName} 市場的槓桿交易和兌換中累積手續費。如圖所示，曝險於 {exposedToLabel}。"
+
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+msgid "Estimated yearly buyback rate. At the recent average pace, GMX buybacks would equal this percentage of total GMX supply over one year. This is a protocol-wide buyback metric, not a personal staking APR."
+msgstr "預計年度回購率。按近期平均速度，GMX 回購在一年內將相當於 GMX 總供應量的該百分比。這是協議層面的回購指標，而非個人質押 APR。"
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol} directly on <0>{chainName}</0>"

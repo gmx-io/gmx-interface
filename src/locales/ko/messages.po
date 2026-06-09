@@ -6194,10 +6194,6 @@ msgstr "모든 수수료 차감 후 순가치 및 PnL 표시"
 msgid "Liquidation fee"
 msgstr "청산 수수료"
 
-#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
-msgid "Protocol-wide annualized GMX buyback rate, based on the average of the last 4 completed weeks relative to total staked GMX and esGMX. Your actual rewards depend on staking power and may differ."
-msgstr ""
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Swap impact exponent"
 msgstr "스왑 영향 지수"
@@ -6237,6 +6233,10 @@ msgstr "최대 레버리지"
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "AVAILABLE LIQUIDITY"
 msgstr ""
+
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "USD values are estimated using the average GMX price for each displayed week. Actual buyback execution amounts may differ due to execution timing, conversions, and price movements."
+msgstr "USD 금액은 표시된 각 주의 평균 GMX 가격을 사용하여 추정됩니다. 실제 바이백 실행 금액은 실행 시점, 전환, 가격 변동으로 인해 다를 수 있습니다."
 
 #: src/pages/Ecosystem/ecosystemConstants.tsx
 msgid "Elfa AI"
@@ -9387,6 +9387,10 @@ msgstr "가장 빠름"
 msgid "Receive tokens separately"
 msgstr "토큰을 별도로 받기"
 
+#: src/components/Earn/BuybackTracker/BuybackChart.tsx
+msgid "USD estimate"
+msgstr "USD 추정치"
+
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "POOL BALANCE"
 msgstr "풀 잔액"
@@ -9830,6 +9834,10 @@ msgstr "조건가"
 #: src/pages/PoolsDetails/PoolsDetailsAbout.tsx
 msgid "Accrues fees from leverage trading and swaps for the {marketName} market. Exposed to {exposedToLabel} as shown."
 msgstr "{marketName} 시장의 레버리지 거래 및 스왑에서 수수료가 발생합니다. 표시된 바와 같이 {exposedToLabel}에 노출됩니다."
+
+#: src/components/Earn/BuybackTracker/BuybackMetricsHeader.tsx
+msgid "Estimated yearly buyback rate. At the recent average pace, GMX buybacks would equal this percentage of total GMX supply over one year. This is a protocol-wide buyback metric, not a personal staking APR."
+msgstr "추정 연간 바이백 비율. 최근 평균 속도라면 GMX 바이백은 1년 동안 전체 GMX 공급량의 이 비율에 해당합니다. 이는 프로토콜 전체의 바이백 지표이며, 개인 스테이킹 APR이 아닙니다."
 
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Buy {nativeTokenSymbol} directly on <0>{chainName}</0>"
