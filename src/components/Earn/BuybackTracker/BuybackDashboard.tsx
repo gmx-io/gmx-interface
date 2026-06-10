@@ -12,8 +12,11 @@ import { BuybackChart } from "./BuybackChart";
 import { BuybackMetricsHeader } from "./BuybackMetricsHeader";
 
 export function BuybackDashboard({ totalGmxSupply }: { totalGmxSupply: bigint | undefined }) {
-  const { data, isLoading, error } = useBuybackWeeklyStats();
-  const { candles } = useGmxDailyPrices(data?.weeks?.[0]?.weekStart);
+  const { data, isLoading: isStatsLoading, error: statsError } = useBuybackWeeklyStats();
+  const { candles, isLoading: isCandlesLoading, error: candlesError } = useGmxDailyPrices(data?.weeks?.[0]?.weekStart);
+
+  const isLoading = isStatsLoading || isCandlesLoading;
+  const error = statsError ?? candlesError;
 
   const totalGmxSupplyNumber =
     totalGmxSupply !== undefined && totalGmxSupply > 0n ? bigintToNumber(totalGmxSupply, GMX_DECIMALS) : undefined;
