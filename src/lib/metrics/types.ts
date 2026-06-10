@@ -170,7 +170,7 @@ export type ApiDataFallbackCounter = {
   event: "apiData.fallback";
   data: {
     domain: "markets" | "positions" | "orders";
-    reason: "stale" | "error";
+    reason: "stale" | "error" | "initial";
     chainId: number;
   };
 };

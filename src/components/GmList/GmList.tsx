@@ -83,8 +83,13 @@ export function GmList({
   const { userEarnings } = useUserEarnings(chainId, srcChainId);
   const { orderBy, direction, getSorterProps } = useSorterHandlers<SortField>("gm-list");
   const [searchText, setSearchText] = useState("");
-  const { topLevelTab, subCategoryTab, setSubCategoryTab, favoriteTokens, toggleFavoriteToken } =
-    useTokensFavorites("gm-list");
+  const {
+    topLevelTab,
+    subCategoryTab,
+    setSubCategoryTab,
+    favoriteTokens,
+    toggleFavoriteToken,
+  } = useTokensFavorites("gm-list");
   const localizedSubCategoryLabels = useLocalizedMap(subCategoryTabLabels);
 
   const { listingDateByIndexToken } = useMarketsListingDates(chainId);
@@ -118,7 +123,7 @@ export function GmList({
   const populatedTradfiSubCats = useMemo(() => {
     const set = new Set<SubCategoryTab>();
     if (!marketsInfo) return set;
-    for (const cat of ["commodities", "stocks", "indices", "fx"] as const) {
+    for (const cat of ["pre-ipo", "commodities", "stocks", "indices", "fx"] as const) {
       const found = Object.values(marketsInfo).some(
         (m) => !m.isSpotOnly && !m.isDisabled && m.indexToken?.categories?.includes(cat)
       );
@@ -220,7 +225,12 @@ export function GmList({
           <div className="flex flex-wrap items-center justify-between gap-12 max-md:flex-wrap-reverse">
             <div className="max-w-full">
               <ButtonRowScrollFadeContainer>
-                <FavoriteTabs favoritesKey="gm-list" recentlyListedCount={recentlyListedCount} type="inline" />
+                <FavoriteTabs
+                  favoritesKey="gm-list"
+                  recentlyListedCount={recentlyListedCount}
+                  selectedValue={topLevelTab}
+                  type="inline"
+                />
               </ButtonRowScrollFadeContainer>
             </div>
 

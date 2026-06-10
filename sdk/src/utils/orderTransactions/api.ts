@@ -26,6 +26,7 @@ export type PrepareOrderRequest = {
   twapConfig?: { duration: number; parts: number; frequency?: number };
   tpsl?: { type: "take-profit" | "stop-loss"; triggerPrice: bigint; size?: bigint }[];
   gasPaymentToken?: string;
+  referralCode?: string;
   uiFeeReceiver?: string;
   mode: TransactionMode;
   from: string;
