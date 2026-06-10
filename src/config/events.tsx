@@ -35,10 +35,6 @@ export type EventData = {
 
 export const homeEventsData: EventData[] = [];
 
-export const AL16Z_DELISTING_EVENT_ID = "al16z-delisting";
-export const OM_MANTRA_MIGRATION_EVENT_ID = "om-mantra-migration";
-export const WELL_DELISTING_EVENT_ID = "well-delisting";
-
 export const appEventsData: EventData[] = [
   {
     id: "spcx-pre-ipo-arbitrum-listing",
@@ -107,18 +103,6 @@ export const appEventsData: EventData[] = [
     ),
   },
   {
-    id: WELL_DELISTING_EVENT_ID,
-    isActive: true,
-    endDate: "20 Apr 2026, 0:00",
-    title: "WELL/USD delisting",
-    bodyText: (
-      <>
-        Position openings for WELL/USD are no longer available. Please close your existing positions before April 19.
-        Remaining positions may be auto-closed.
-      </>
-    ),
-  },
-  {
     id: "gold-silver-fee-reduction",
     flagId: "showGoldSilverFeeReduction",
     endDate: "21 Apr 2026, 12:00",
@@ -171,20 +155,6 @@ export const appEventsData: EventData[] = [
         Trade perpetuals, create and share your referral code, and provide liquidity on MegaETH using its native
         stablecoin: USDm.{" "}
         <ExternalLink href="https://gmxio.substack.com/p/gmx-is-now-live-on-megaeth-trade">Read more</ExternalLink>.
-      </>
-    ),
-  },
-  {
-    id: OM_MANTRA_MIGRATION_EVENT_ID,
-    isActive: true,
-    startDate: "20 Feb 2026, 0:00",
-    endDate: "27 Feb 2026, 0:00",
-    title: "OM to MANTRA migration",
-    variant: "warning",
-    bodyText: (
-      <>
-        ⚠️ OM (Mantra) is migrating to the MANTRA token. Please close your position on the OM/USD market by [08:00 UTC]
-        21 February to avoid auto-closure or forced liquidation.
       </>
     ),
   },
@@ -250,22 +220,6 @@ export const appEventsData: EventData[] = [
       <>
         From 22nd December, open interest will be tracked in token amounts instead of USD values for improved balance
         accuracy. <ExternalLink href="https://t.me/GMX_Announcements/1175">Read more</ExternalLink>.
-      </>
-    ),
-  },
-  {
-    id: AL16Z_DELISTING_EVENT_ID,
-    isActive: true,
-    startDate: "06 Nov 2025, 08:00",
-    endDate: "06 Dec 2025, 08:00",
-    title: "AI16Z/USD delisting",
-    bodyText: (
-      <>
-        Position openings for AI16Z/USD are no longer available. Existing positions remain open, but closing them is
-        recommended.
-        <br />
-        <br />
-        The listing committee will evaluate the listing of ELIZAOS/USD.
       </>
     ),
   },
