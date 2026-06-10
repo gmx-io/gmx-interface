@@ -383,11 +383,12 @@ export async function getSdkSubaccountApprovalForOrder(
     throwSubaccountAccountMismatch(subaccount, account);
   }
 
-  const pendingApproval = subaccount.approval;
-  const forceStatusRefresh = Boolean(options?.forceRefresh || pendingApproval?.submittedRequestId !== undefined);
+  const forceStatusRefresh = Boolean(options?.forceRefresh || subaccount.approval?.submittedRequestId !== undefined);
   let status = await getSdkSubaccountStatus(client, account, {
     force: forceStatusRefresh,
   });
+
+  const pendingApproval = subaccount.approval;
 
   if (pendingApproval) {
     if (pendingApproval.submittedRequestId) {
@@ -451,6 +452,14 @@ export async function prepareWithSubaccount<TRequest extends SubaccountPrepareRe
       });
     } else if (!subaccountApproval) {
       subaccountApproval = await getSdkSubaccountApprovalForOrder(client, request.from, mainSigner);
+    } else if (isEmptySubaccountApproval(subaccountApproval)) {
+      let status = await getSdkSubaccountStatus(client, request.from);
+      if (shouldRefreshLowActionSubaccountStatus(status, false)) {
+        status = await getSdkSubaccountStatus(client, request.from, { force: true });
+      }
+      if (!isSubaccountStatusUsable(status)) {
+        throw new Error("Subaccount is not active. Call activateSubaccount(mainSigner) before preparing express orders.");
+      }
     }
 
     if (subaccountApproval) {
