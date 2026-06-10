@@ -490,9 +490,10 @@ export default function TVChartContainer({
 
   const hasSizableChartLines = useMemo(
     () =>
-      dynamicChartLines.some((line) => line.sizeData !== undefined) ||
-      chartLines.some((line) => line.positionData !== undefined),
-    [dynamicChartLines, chartLines]
+      shouldShowPositionLines &&
+      (dynamicChartLines.some((line) => line.sizeData !== undefined) ||
+        chartLines.some((line) => line.positionData !== undefined)),
+    [shouldShowPositionLines, dynamicChartLines, chartLines]
   );
 
   const { menuState, closeMenu, handlePlusClick, getContextMenuItems } = useChartContextMenu(

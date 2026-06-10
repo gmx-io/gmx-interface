@@ -9,7 +9,7 @@ import { PositionOrderInfo, isIncreaseOrderType, isMarketOrderType, isSwapOrderT
 import { convertToTokenAmount, getTokenData } from "domain/synthetics/tokens";
 import { calculateDisplayDecimals, formatAmount } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
-import { convertTokenAddress } from "sdk/configs/tokens";
+import { convertTokenAddress, getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
 
 import { ChartLineSizeData, DynamicChartLine } from "components/TVChartContainer/types";
@@ -55,12 +55,12 @@ export const selectChartDynamicLines = createSelector<DynamicChartLine[]>((q) =>
         ? {
             sizeInUsd: positionOrder.sizeDeltaUsd,
             sizeInTokens:
-              convertToTokenAmount(
+              (convertToTokenAmount(
                 positionOrder.sizeDeltaUsd,
                 positionOrder.indexToken.decimals,
                 positionOrder.triggerPrice
-              ) ?? 0n,
-            tokenSymbol: positionOrder.indexToken.symbol,
+              ) ?? 0n) / BigInt(tokenVisualMultiplier ?? 1),
+            tokenSymbol: `${getTokenVisualMultiplier(positionOrder.indexToken)}${positionOrder.indexToken.symbol}`,
             tokenDecimals: positionOrder.indexToken.decimals,
           }
         : undefined;
