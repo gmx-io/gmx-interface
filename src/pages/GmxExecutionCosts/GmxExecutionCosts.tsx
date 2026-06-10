@@ -1063,10 +1063,10 @@ export function GmxExecutionCostsPage() {
         <div className="rounded-8 bg-slate-900 p-20">
           <div className="flex flex-wrap items-start justify-between gap-16">
             <div>
-              <h1 className="text-24 font-medium text-typography-primary">GMX BTC Execution Costs</h1>
+              <h1 className="text-24 font-medium text-typography-primary">GMX Execution Costs</h1>
               <p className="text-body-medium mt-6 max-w-[860px] text-typography-secondary">
-                Observed GMX v2 BTC fills from Subsquid. Protocol cost is oracle spread + position fee + net position
-                impact + swap cost. Holding fees and exact delay drift are excluded from protocol cost.
+                Observed GMX v2 fills from Subsquid. Protocol cost is oracle spread + position fee + net position impact
+                + swap cost. Holding fees and exact delay drift are excluded from protocol cost.
               </p>
             </div>
             <div className="text-body-small text-right text-typography-secondary numbers">

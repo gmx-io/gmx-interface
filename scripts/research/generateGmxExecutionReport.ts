@@ -9,6 +9,7 @@ type DatasetSummary = {
   to: number;
   fromIso: string;
   toIso: string;
+  indexSymbol: string;
   executions: number;
   minSizeUsd: number;
   summary: {
@@ -224,7 +225,7 @@ function formatCompactUsd(value: number) {
 function datasetLabel(summary: DatasetSummary) {
   const days = Math.round(((summary.to - summary.from) / 86_400) * 10) / 10;
   const size = summary.minSizeUsd ? formatCompactUsd(summary.minSizeUsd) : "all sizes";
-  return `${summary.chain} BTC ${days}d ${size} (${summary.executions} fills)`;
+  return `${summary.chain} ${summary.indexSymbol} ${days}d ${size} (${summary.executions} fills)`;
 }
 
 async function loadDatasets(inputDir: string) {
@@ -278,7 +279,7 @@ function buildHtml(datasets: ReportDataset[]) {
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>GMX BTC Execution Cost Report</title>
+  <title>GMX Execution Cost Report</title>
   <style>
     :root {
       color-scheme: light;
@@ -555,9 +556,9 @@ function buildHtml(datasets: ReportDataset[]) {
 </head>
 <body>
   <header>
-    <h1>GMX BTC Execution Cost Report</h1>
+    <h1>GMX Execution Cost Report</h1>
     <div class="subtitle">
-      Interactive view over observed GMX v2 BTC fills. Protocol cost is oracle spread + position fee + net position impact + swap cost. Holding fees and delay drift are shown separately where available.
+      Interactive view over observed GMX v2 fills. Protocol cost is oracle spread + position fee + net position impact + swap cost. Holding fees and delay drift are shown separately where available.
       Generated ${htmlEscape(generatedAt)}.
     </div>
   </header>

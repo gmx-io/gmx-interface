@@ -7270,6 +7270,10 @@ msgstr "流動性不足，無法兌換抵押品"
 msgid "Funding rate"
 msgstr ""
 
+#: src/components/SideNav/SideNav.tsx
+msgid "Order Stats"
+msgstr "Order Stats"
+
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Swap price impact for external swap threshold"
 msgstr "外部兌換閾值的兌換價格影響"
@@ -7450,6 +7454,10 @@ msgstr "新增 TP/SL"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GLP tokens before"
 msgstr "接收者先前未曾質押 GLP 代幣"
+
+#: src/components/SideNav/SideNav.tsx
+msgid "Costs comparison"
+msgstr "Costs comparison"
 
 #: src/components/Referrals/shared/cards/ClaimableRebatesCard.tsx
 msgid "Claim rebates"
@@ -9140,6 +9148,10 @@ msgstr "按目前價格，倉位將可被清算"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
 msgstr "<0>以 75.5% 的多數票，GMX 選擇了 LayerZero 作為其多鏈擴展的訊息傳遞夥伴！此整合為 GMX 帶來：</0><1><2>擴展至 125+ 條鏈的能力</2><3>所有合約和安全性的完全所有權</3><4>快速、零滑點的轉帳</4><5>經過實戰檢驗的基礎設施，已獲數十億美元資產和數百個應用程式的信賴⋯⋯<6>查看更多</6></5></1>"
+
+#: src/components/SideNav/SideNav.tsx
+msgid "Execution cost"
+msgstr "Execution cost"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Loading position..."
@@ -11128,10 +11140,6 @@ msgstr "提取已提交"
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Funding activity"
 msgstr "資金活動"
-
-#: src/components/SideNav/SideNav.tsx
-msgid "Costs"
-msgstr "Costs"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx

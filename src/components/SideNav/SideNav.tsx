@@ -4,6 +4,7 @@ import cx from "classnames";
 import { ReactNode, useCallback, useState } from "react";
 import { Link, useLocation } from "react-router-dom";
 
+import { isDevelopment } from "config/env";
 import { useTheme } from "context/ThemeContext/ThemeContext";
 import { useMegaethPointsActive } from "domain/synthetics/common/useMegaethPointsActive";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
@@ -193,7 +194,23 @@ export function MenuSection({
       to: "/pools",
     },
     { icon: <DashboardIcon className="size-20" />, label: t`Stats`, key: "stats", to: "/stats" },
-    { icon: <DashboardIcon className="size-20" />, label: t`Costs`, key: "costs", to: "/costs" },
+    { icon: <DashboardIcon className="size-20" />, label: t`Costs comparison`, key: "costs", to: "/costs" },
+    {
+      icon: <DashboardIcon className="size-20" />,
+      label: t`Order Stats`,
+      key: "orderStats",
+      to: "/order_execution_stats",
+    },
+    ...(isDevelopment()
+      ? [
+          {
+            icon: <DashboardIcon className="size-20" />,
+            label: t`Execution cost`,
+            key: "gmxExecutionCosts",
+            to: "/gmx-execution-costs",
+          },
+        ]
+      : []),
     {
       icon: <ReferralsIcon className="size-20" />,
       label: withMegaethSparkle(t`Referrals`),
@@ -207,10 +224,6 @@ export function MenuSection({
   const { pathname } = useLocation();
 
   const isNavItemActive = (item: (typeof mainNavItems)[number]) => {
-    if (item.key === "stats" && pathname === "/order_execution_stats") {
-      return true;
-    }
-
     return pathname === item.to || pathname.startsWith(`${item.to}/`);
   };
 

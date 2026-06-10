@@ -149,7 +149,7 @@ function formatCompactUsd(value: number) {
 function datasetLabel(summary: DatasetSummary) {
   const days = Math.round(((summary.to - summary.from) / 86_400) * 10) / 10;
   const size = summary.minSizeUsd ? formatCompactUsd(summary.minSizeUsd) : "all sizes";
-  return `${summary.chain} BTC ${days}d ${size} (${summary.executions} fills)`;
+  return `${summary.chain} ${summary.indexSymbol} ${days}d ${size} (${summary.executions} fills)`;
 }
 
 async function loadDatasets(inputDir: string) {
@@ -178,6 +178,7 @@ async function loadDatasets(inputDir: string) {
       to: rawSummary.to,
       fromIso: rawSummary.fromIso,
       toIso: rawSummary.toIso,
+      indexSymbol: rawSummary.indexSymbol,
       executions: rawSummary.executions,
       minSizeUsd: rawSummary.minSizeUsd,
       summary: rawSummary.summary,

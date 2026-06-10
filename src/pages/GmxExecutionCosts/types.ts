@@ -43,6 +43,7 @@ export type GmxExecutionCostDataset = {
     to: number;
     fromIso: string;
     toIso: string;
+    indexSymbol: string;
     executions: number;
     minSizeUsd: number;
     summary: GmxExecutionCostSummaryRow[];

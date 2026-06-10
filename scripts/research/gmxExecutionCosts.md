@@ -1,9 +1,10 @@
-# GMX BTC Execution Cost Research
+# GMX Execution Cost Research
 
-This script estimates GMX v2 BTC perpetual execution costs from public GMX data.
+This script estimates GMX v2 perpetual execution costs from public GMX data.
 
 ```bash
-yarn tsx scripts/research/gmxExecutionCosts.ts --days 30 --min-size-usd 1000000
+yarn tsx scripts/research/gmxExecutionCosts.ts --index-symbol BTC --days 30 --min-size-usd 1000000
+yarn tsx scripts/research/gmxExecutionCosts.ts --index-symbol ETH --days 30 --min-size-usd 1000000
 yarn tsx scripts/research/generateGmxExecutionAppData.ts
 ```
 
@@ -12,11 +13,19 @@ yarn tsx scripts/research/generateGmxExecutionAppData.ts
 - GMX Oracle API `/markets/info` and `/tokens` for current market metadata.
 - GMX Subsquid GraphQL `tradeActions` for `OrderCreated` and `OrderExecuted` events.
 
-By default the script reads Arbitrum BTC markets:
+By default the script reads Arbitrum BTC markets. Use `--index-symbol ETH` to generate ETH datasets.
+
+BTC markets:
 
 - `BTC/USD [WBTC.b-USDC]`
 - `BTC/USD [WBTC.b-WBTC.b]`
 - `BTC/USD [tBTC-tBTC]`
+
+ETH markets:
+
+- `ETH/USD [ETH-USDC]`
+- `ETH/USD [ETH-ETH]`
+- `ETH/USD [wstETH-USDe]`
 
 ## Metric
 
@@ -38,13 +47,13 @@ The script also reports `holdingFeeBps` from borrowing, funding, and liquidation
 
 ## Limitations
 
-- Exact delay drift is not included. Subsquid records order creation and execution timestamps, but not the oracle mid at creation time. Measuring delay drift needs an oracle archive or external second-level BTC mid-price dataset.
+- Exact delay drift is not included. Subsquid records order creation and execution timestamps, but not the oracle mid at creation time. Measuring delay drift needs an oracle archive or external second-level mid-price dataset.
 - Historical synthetic quote replay is not included. That requires historical `DataStore` state or archived Reader calls for the target blocks.
 - The script measures observed fills. It should be paired with synthetic notional replay before making venue-wide claims.
 
 ## Initial Finding
 
-Recent observed GMX BTC opens are usually near the 4-6 bps position-fee floor. Large closes can have a materially wider tail because net price impact is applied on decreases. In a 30-day Arbitrum sample ending 2026-05-24, `$1m+` BTC executions had:
+Recent observed GMX opens are usually near the 4-6 bps position-fee floor. Large closes can have a materially wider tail because net price impact is applied on decreases. In a 30-day Arbitrum BTC sample ending 2026-05-24, `$1m+` executions had:
 
 - All executions: median `6.00` bps, p90 `12.35` bps.
 - Increases: median `6.00` bps, p90 `6.00` bps.

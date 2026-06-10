@@ -91,6 +91,7 @@ type ResultRow = {
 
 type Args = {
   chain: ChainName;
+  indexSymbol: string;
   days: number;
   from?: number;
   to?: number;
@@ -127,6 +128,7 @@ const ORDER_TYPE_NAMES: Record<number, string> = {
 function parseArgs(argv: string[]): Args {
   const args: Args = {
     chain: "arbitrum",
+    indexSymbol: "BTC",
     days: 1,
     pageSize: 200,
     maxActions: 20000,
@@ -147,6 +149,8 @@ function parseArgs(argv: string[]): Args {
 
     if (arg === "--chain") {
       args.chain = readValue() as ChainName;
+    } else if (arg === "--index-symbol") {
+      args.indexSymbol = readValue().toUpperCase();
     } else if (arg === "--days") {
       args.days = Number(readValue());
     } else if (arg === "--from") {
@@ -184,10 +188,11 @@ function printHelp() {
 
 Options:
   --chain arbitrum|avalanche|botanix  Default: arbitrum
+  --index-symbol <symbol>              Index token symbol to include. Default: BTC
   --days <number>                     Lookback window if --from is omitted. Default: 1
   --from <unix|date>                  Start timestamp, e.g. 2026-05-23T00:00:00Z
   --to <unix|date>                    End timestamp. Default: now
-  --market <address-or-name-fragment> Filter BTC markets. Can be repeated
+  --market <address-or-name-fragment> Filter selected index markets. Can be repeated
   --min-size-usd <number>             Drop smaller executions from metrics
   --page-size <number>                GraphQL page size. Default: 200
   --max-actions <number>              Safety cap for raw actions. Default: 20000
@@ -256,6 +261,10 @@ function usd30(value: string | null | undefined) {
     return 0;
   }
   return Number(value) / 1e30;
+}
+
+function usdToRaw30(value: number) {
+  return (BigInt(Math.trunc(value)) * 10n ** 30n).toString();
 }
 
 function amountToUsd(amount: string | null | undefined, priceMin: string | null) {
@@ -608,9 +617,11 @@ function buildRows({
   return rows.sort((a, b) => a.timestamp - b.timestamp);
 }
 
-async function fetchBtcMarkets(chainConfig: ChainConfig, requestedMarkets: string[]) {
+async function fetchIndexMarkets(chainConfig: ChainConfig, indexSymbol: string, requestedMarkets: string[]) {
   const data = await fetchJson<{ markets: MarketInfo[] }>(`${chainConfig.oracleUrl}/markets/info`);
-  const markets = data.markets.filter((market) => market.name.startsWith("BTC/USD") && market.isListed !== false);
+  const markets = data.markets.filter(
+    (market) => market.name.startsWith(`${indexSymbol}/USD`) && market.isListed !== false
+  );
 
   if (!requestedMarkets.length) {
     return markets;
@@ -637,6 +648,7 @@ async function fetchTradeActions({
   to,
   pageSize,
   maxActions,
+  minSizeUsd,
 }: {
   chainConfig: ChainConfig;
   marketAddresses: string[];
@@ -644,8 +656,11 @@ async function fetchTradeActions({
   to: number;
   pageSize: number;
   maxActions: number;
+  minSizeUsd: number;
 }) {
   const actions: RawTradeAction[] = [];
+  const sizeDeltaUsdFilter =
+    minSizeUsd > 0 ? `sizeDeltaUsd_gte: "${usdToRaw30(minSizeUsd)}"` : 'sizeDeltaUsd_not_eq: "0"';
 
   for (let offset = 0; offset < maxActions; offset += pageSize) {
     const query = `{
@@ -659,7 +674,7 @@ async function fetchTradeActions({
           timestamp_lte: ${to}
           eventName_in: ["OrderCreated", "OrderExecuted"]
           orderType_in: [2, 4]
-          sizeDeltaUsd_not_eq: "0"
+          ${sizeDeltaUsdFilter}
         }
       ) {
         id
@@ -729,10 +744,13 @@ async function main() {
 
   await mkdir(args.outDir);
 
-  const [markets, tokens] = await Promise.all([fetchBtcMarkets(chainConfig, args.markets), fetchTokens(chainConfig)]);
+  const [markets, tokens] = await Promise.all([
+    fetchIndexMarkets(chainConfig, args.indexSymbol, args.markets),
+    fetchTokens(chainConfig),
+  ]);
 
   if (!markets.length) {
-    throw new Error("No BTC markets matched the requested filters");
+    throw new Error(`No ${args.indexSymbol} markets matched the requested filters`);
   }
 
   console.log(`Chain: ${args.chain} (${chainConfig.chainId})`);
@@ -750,6 +768,7 @@ async function main() {
     to,
     pageSize: args.pageSize,
     maxActions: args.maxActions,
+    minSizeUsd: args.minSizeUsd,
   });
 
   const rows = buildRows({
@@ -767,6 +786,7 @@ async function main() {
     to,
     fromIso: toIso(from),
     toIso: toIso(to),
+    indexSymbol: args.indexSymbol,
     markets,
     rawActions: actions.length,
     executions: rows.length,
@@ -781,7 +801,7 @@ async function main() {
     summary: summarizeRows(rows),
   };
 
-  const suffix = `${args.chain}-btc-${from}-${to}`;
+  const suffix = `${args.chain}-${args.indexSymbol.toLowerCase()}-${from}-${to}-${args.minSizeUsd || "all"}`;
   const csvPath = `${args.outDir}/${suffix}.csv`;
   const jsonPath = `${args.outDir}/${suffix}.summary.json`;
 

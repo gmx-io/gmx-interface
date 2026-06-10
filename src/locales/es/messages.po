@@ -7270,6 +7270,10 @@ msgstr "Liquidez insuficiente para intercambiar garantía"
 msgid "Funding rate"
 msgstr ""
 
+#: src/components/SideNav/SideNav.tsx
+msgid "Order Stats"
+msgstr "Order Stats"
+
 #: src/components/DebugSwapsSettings/DebugSwapsSettings.tsx
 msgid "Swap price impact for external swap threshold"
 msgstr "Umbral de impacto en el precio de intercambio para intercambios externos"
@@ -7450,6 +7454,10 @@ msgstr "Añadir TP/SL"
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 msgid "Receiver has not staked GLP tokens before"
 msgstr "El destinatario nunca ha hecho staking de tokens GLP"
+
+#: src/components/SideNav/SideNav.tsx
+msgid "Costs comparison"
+msgstr "Costs comparison"
 
 #: src/components/Referrals/shared/cards/ClaimableRebatesCard.tsx
 msgid "Claim rebates"
@@ -9140,6 +9148,10 @@ msgstr "La posición sería liquidable a los precios actuales"
 #: landing/src/pages/Home/SocialSection/SocialSlider.tsx
 msgid "<0>With a 75.5% majority vote, GMX has selected LayerZero as its messaging partner for multichain expansion! The integration brings GMX:</0><1><2>The ability to expand to 125+ chains</2><3>Full ownership of all contracts and security</3><4>Fast, zero-slippage transfers</4><5>Battle-tested rails already trusted by billions of dollars in assets and hundreds of applications... <6>see more</6></5></1>"
 msgstr "<0>Con un voto mayoritario del 75.5%, GMX ha seleccionado a LayerZero como su socio de mensajería para expansión multicadena! La integración trae a GMX:</0><1><2>La capacidad de expandir a más de 125 cadenas</2><3>Propiedad completa de todos los contratos y seguridad</3><4>Transferencias rápidas, sin slippage</4><5>Rails probados en batalla ya confiados por miles de millones de dólares en activos y cientos de aplicaciones... <6>ver más</6></5></1>"
+
+#: src/components/SideNav/SideNav.tsx
+msgid "Execution cost"
+msgstr "Execution cost"
 
 #: src/components/OrderEditor/OrderEditor.tsx
 msgid "Loading position..."
@@ -11128,10 +11140,6 @@ msgstr "Retiro enviado"
 #: src/components/GmxAccountModal/MainView.tsx
 msgid "Funding activity"
 msgstr "Actividad de financiación"
-
-#: src/components/SideNav/SideNav.tsx
-msgid "Costs"
-msgstr "Costs"
 
 #: src/components/GmxAccountModal/DepositView.tsx
 #: src/components/GmxAccountModal/WithdrawalView.tsx
