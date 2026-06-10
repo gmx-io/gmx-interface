@@ -445,7 +445,12 @@ export async function prepareWithSubaccount<TRequest extends SubaccountPrepareRe
     subaccountApproval = request.subaccountApproval as SdkSubaccountApproval | undefined;
     assertSdkSubaccountRequest(request, subaccount, subaccountApproval);
 
-    if (subaccountApproval && shouldRefreshSubaccountApprovalForPrepare(subaccountApproval, subaccount, request.from)) {
+    if (subaccountApproval && isEmptySubaccountApproval(subaccountApproval)) {
+      subaccountApproval = await getSdkSubaccountApprovalForOrder(client, request.from, mainSigner);
+    } else if (
+      subaccountApproval &&
+      shouldRefreshSubaccountApprovalForPrepare(subaccountApproval, subaccount, request.from)
+    ) {
       subaccountApproval = await getSdkSubaccountApprovalForOrder(client, request.from, mainSigner, {
         forceRefresh: true,
       });

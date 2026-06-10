@@ -104,17 +104,21 @@ describe("GmxApiSdk — subaccount (1CT)", () => {
   it.skipIf(!hasSigner)("keeps prepared subaccount approval after failed submit response", async () => {
     const signer = getTestSigner()!;
     const requestId = "retry-request";
-    const api = new ScriptedOrderApi(buildPreparedOrderResponse(requestId), [
-      {
-        requestId,
-        status: "relay_failed",
-        error: { code: "TEST_RELAY_FAILED", message: "relay failed" },
-      },
-      {
-        requestId,
-        status: "relay_accepted",
-      },
-    ]);
+    const api = new ScriptedOrderApi(
+      buildPreparedOrderResponse(requestId),
+      [
+        {
+          requestId,
+          status: "relay_failed",
+          error: { code: "TEST_RELAY_FAILED", message: "relay failed" },
+        },
+        {
+          requestId,
+          status: "relay_accepted",
+        },
+      ],
+      [buildSubaccountStatusResponse()]
+    );
     const sdk = new GmxApiSdk({ chainId: TEST_CHAIN_ID, api });
     const subaccountAddress = await sdk.generateSubaccount(signer);
     const subaccountApproval = getEmptySubaccountApproval(TEST_CHAIN_ID, subaccountAddress);
@@ -204,6 +208,33 @@ describe("GmxApiSdk — subaccount (1CT)", () => {
     await expect(sdk.prepareOrder(buildTestPrepareRequest(signer.address))).rejects.toThrow("Subaccount is not active");
 
     expect(api.subaccountStatusRequests).toHaveLength(2);
+    expect(api.prepareRequests).toHaveLength(0);
+  });
+
+  it.skipIf(!hasSigner)("validates caller-supplied noop approval against exhausted subaccount quota", async () => {
+    const signer = getTestSigner()!;
+    const api = new ScriptedOrderApi(
+      buildPreparedOrderResponse("request-1"),
+      [],
+      [
+        buildSubaccountStatusResponse({
+          currentActionsCount: "10",
+          remainingActions: "0",
+        }),
+      ]
+    );
+    const sdk = new GmxApiSdk({ chainId: TEST_CHAIN_ID, api });
+    const subaccountAddress = await sdk.generateSubaccount(signer);
+    await sdk.refreshSubaccountState(signer.address);
+
+    await expect(
+      sdk.prepareOrder({
+        ...buildTestPrepareRequest(signer.address),
+        subaccountAddress,
+        subaccountApproval: getEmptySubaccountApproval(TEST_CHAIN_ID, subaccountAddress),
+      })
+    ).rejects.toThrow("Subaccount is not active");
+
     expect(api.prepareRequests).toHaveLength(0);
   });
 
