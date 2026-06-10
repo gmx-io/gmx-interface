@@ -14,7 +14,7 @@ import {
 } from "config/events";
 import useIncentiveStats from "domain/synthetics/common/useIncentiveStats";
 import { useMarketsInfoRequest } from "domain/synthetics/markets";
-import { usePositions } from "domain/synthetics/positions";
+import { usePositionsInfoRequest } from "domain/synthetics/positions";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { useUiFlagsRequest } from "domain/synthetics/uiFlags/useUiFlagsRequest";
 import { useChainId } from "lib/chains";
@@ -49,29 +49,33 @@ function useEventToast() {
 
   const { account } = useWallet();
 
-  const positions = usePositions(chainId, {
+  const { positionsInfoData } = usePositionsInfoRequest(chainId, {
+    account,
     marketsData: marketsInfoData,
-    tokensData: tokensData,
-    account: account,
+    marketsInfoData,
+    tokensData,
+    showPnlInLeverage: false,
+    skipLocalReferralCode: true,
+    skipFallbackCounter: true,
   });
 
   const hasAl16ZPosition = useMemo(() => {
-    return Object.values(positions.positionsData ?? {}).some(
+    return Object.values(positionsInfoData ?? {}).some(
       (position) => position.marketAddress === AL16Z_MARKET_ADDRESS
     );
-  }, [positions.positionsData]);
+  }, [positionsInfoData]);
 
   const hasOmPosition = useMemo(() => {
-    return Object.values(positions.positionsData ?? {}).some(
+    return Object.values(positionsInfoData ?? {}).some(
       (position) => position.marketAddress === OM_MARKET_ADDRESS
     );
-  }, [positions.positionsData]);
+  }, [positionsInfoData]);
 
   const hasWellPosition = useMemo(() => {
-    return Object.values(positions.positionsData ?? {}).some(
+    return Object.values(positionsInfoData ?? {}).some(
       (position) => position.marketAddress === WELL_MARKET_ADDRESS
     );
-  }, [positions.positionsData]);
+  }, [positionsInfoData]);
 
   const { uiFlags } = useUiFlagsRequest();
 
