@@ -64,6 +64,7 @@ const SUBMITTED_ORDER_STATUSES = new Set<SubmitOrderResponse["status"]>([
   "created",
   "executed",
 ]);
+const FINAL_ORDER_STATUSES = new Set<SubmitOrderResponse["status"]>(["created", "executed"]);
 
 function hasSdkSubaccountSigner(owner: object): boolean {
   return sdkSubaccountSigners.has(owner);
@@ -383,19 +384,20 @@ export async function getSdkSubaccountApprovalForOrder(
     throwSubaccountAccountMismatch(subaccount, account);
   }
 
-  const pendingApproval = subaccount.approval;
-  const forceStatusRefresh = Boolean(options?.forceRefresh || pendingApproval?.submittedRequestId !== undefined);
+  const forceStatusRefresh = Boolean(options?.forceRefresh || subaccount.approval?.submittedRequestId !== undefined);
   let status = await getSdkSubaccountStatus(client, account, {
     force: forceStatusRefresh,
   });
 
+  // After forced refresh due to submittedRequestId, clear the flag if approval still exists (relay failed but approval is still valid)
+  if (subaccount.approval?.submittedRequestId !== undefined) {
+    subaccount.approval.submittedRequestId = undefined;
+  }
+
+  const pendingApproval = subaccount.approval;
+
   if (pendingApproval) {
     if (pendingApproval.submittedRequestId) {
-      const syncedApproval = getUsableSubaccountApproval(client);
-      if (syncedApproval) {
-        return syncedApproval;
-      }
-
       throw new Error(
         `Subaccount approval is pending in request ${pendingApproval.submittedRequestId}. ` +
           "Refresh subaccount state after it is submitted on-chain before preparing another subaccount order."
@@ -456,6 +458,14 @@ export async function prepareWithSubaccount<TRequest extends SubaccountPrepareRe
       });
     } else if (!subaccountApproval) {
       subaccountApproval = await getSdkSubaccountApprovalForOrder(client, request.from, mainSigner);
+    } else if (isEmptySubaccountApproval(subaccountApproval)) {
+      let status = await getSdkSubaccountStatus(client, request.from);
+      if (shouldRefreshLowActionSubaccountStatus(status, false)) {
+        status = await getSdkSubaccountStatus(client, request.from, { force: true });
+      }
+      if (!isSubaccountStatusUsable(status)) {
+        throw new Error("Subaccount is not active. Call activateSubaccount(mainSigner) before preparing express orders.");
+      }
     }
 
     if (subaccountApproval) {
@@ -516,7 +526,9 @@ export async function submitOrderWithSubaccount(
       subaccountApproval,
       request.requestId ?? response.requestId
     );
-    markSubaccountActionSubmitted(client.getSubaccount(), subaccountApproval);
+    if (FINAL_ORDER_STATUSES.has(response.status)) {
+      markSubaccountActionSubmitted(client.getSubaccount(), subaccountApproval);
+    }
     if (request.requestId) {
       client.preparedSubaccountApprovals.delete(request.requestId);
     }
