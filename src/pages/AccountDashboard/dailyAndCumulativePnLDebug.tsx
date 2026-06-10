@@ -10,6 +10,9 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 
 import type { AccountPnlHistoryPoint } from "./DailyAndCumulativePnL";
 
+const DEBUG_BAR_SIZE = 3;
+const DEBUG_AREA_STROKE_WIDTH = 1.5;
+
 export function DebugTooltip({ stats }: { stats: AccountPnlHistoryPoint }) {
   const showDebugValues = useShowDebugValues();
 
@@ -106,7 +109,7 @@ export function DebugLegend({ lastPoint }: { lastPoint?: AccountPnlHistoryPoint 
   }
 
   if (!lastPoint) {
-    return t`Debug values unavailable`;
+    return <div className="flex items-center gap-8 text-13 font-medium">{t`Debug values unavailable`}</div>;
   }
 
   return [
@@ -151,8 +154,11 @@ export function DebugLegend({ lastPoint }: { lastPoint?: AccountPnlHistoryPoint 
       value: -lastPoint!.startUnrealizedFees,
     },
   ].map(({ className, text, value }) => (
-    <div key={text}>
-      <div className={`inline-block size-10 rounded-full ${className}`} /> {text} {formatUsd(value)}
+    <div key={text} className="flex items-center gap-8 text-13 font-medium">
+      <div className={`inline-block size-4 shrink-0 rounded-full ${className}`} />
+      <span>
+        {text} <span className={getPositiveOrNegativeClass(value)}>{formatUsd(value)}</span>
+      </span>
     </div>
   ));
 }
@@ -224,13 +230,59 @@ export type AccountPnlHistoryPointDebugFields = {
   // #endregion
 };
 
-export function DebugLines() {
-  const showDebugValues = useShowDebugValues();
+function getDebugStackExtents(values: (number | undefined)[]) {
+  let positiveValue = 0;
+  let negativeValue = 0;
+  let hasValue = false;
 
-  if (!showDebugValues) {
-    return null;
+  for (const value of values) {
+    if (value === undefined || !Number.isFinite(value)) {
+      continue;
+    }
+
+    hasValue = true;
+
+    if (value >= 0) {
+      positiveValue += value;
+    } else {
+      negativeValue += value;
+    }
   }
 
+  return hasValue ? [positiveValue, negativeValue] : [];
+}
+
+function getNegativeDebugValue(value: number | undefined) {
+  return value === undefined || !Number.isFinite(value) ? undefined : -value;
+}
+
+export function getDebugPeriodPnlYAxisValues(point: AccountPnlHistoryPoint) {
+  return [
+    point.pnlFloat,
+    ...getDebugStackExtents([
+      point.realizedPnlFloat,
+      getNegativeDebugValue(point.realizedFeesFloat),
+      point.realizedPriceImpactFloat,
+      point.unrealizedPnlFloat,
+      getNegativeDebugValue(point.unrealizedFeesFloat),
+    ]),
+  ];
+}
+
+export function getDebugCumulativePnlYAxisValues(point: AccountPnlHistoryPoint) {
+  return [
+    point.cumulativePnlFloat,
+    ...getDebugStackExtents([
+      point.unrealizedPnlFloat,
+      getNegativeDebugValue(point.unrealizedFeesFloat),
+      point.cumulativeRealizedPnlFloat,
+      getNegativeDebugValue(point.cumulativeRealizedFeesFloat),
+      point.cumulativeRealizedPriceImpactFloat,
+    ]),
+  ];
+}
+
+export function renderDebugLines() {
   return (
     <>
       <Bar
@@ -238,14 +290,16 @@ export function DebugLines() {
         yAxisId="periodPnl"
         dataKey="realizedPnlFloat"
         stackId="dev"
+        barSize={DEBUG_BAR_SIZE}
         minPointSize={1}
         fill="#00ff00"
       />
       <Bar
         isAnimationActive={false}
         yAxisId="periodPnl"
-        dataKey={(entry) => -entry.realizedFeesFloat}
+        dataKey={(entry) => getNegativeDebugValue(entry.realizedFeesFloat)}
         stackId="dev"
+        barSize={DEBUG_BAR_SIZE}
         minPointSize={1}
         fill="#ff0000"
       />
@@ -254,6 +308,7 @@ export function DebugLines() {
         yAxisId="periodPnl"
         dataKey="realizedPriceImpactFloat"
         stackId="dev"
+        barSize={DEBUG_BAR_SIZE}
         minPointSize={1}
         fill="#ff00ff"
       />
@@ -262,65 +317,77 @@ export function DebugLines() {
         yAxisId="periodPnl"
         dataKey="unrealizedPnlFloat"
         stackId="dev"
+        barSize={DEBUG_BAR_SIZE}
         minPointSize={1}
         fill="#00ffff"
       />
       <Bar
         isAnimationActive={false}
         yAxisId="periodPnl"
-        dataKey={(entry) => -entry.unrealizedFeesFloat}
+        dataKey={(entry) => getNegativeDebugValue(entry.unrealizedFeesFloat)}
         stackId="dev"
+        barSize={DEBUG_BAR_SIZE}
         minPointSize={1}
         fill="#ff00ff"
       />
 
       <Area
         isAnimationActive={false}
+        xAxisId="cumulativePnlArea"
         yAxisId="cumulativePnl"
         type="monotone"
-        dataKey="cumulativeUnrealizedPnlFloat"
+        dataKey="unrealizedPnlFloat"
         stackId="dev_cumulative"
         stroke="#00ffff"
+        strokeWidth={DEBUG_AREA_STROKE_WIDTH}
         fill="transparent"
         strokeDasharray={"5 5"}
       />
       <Area
         isAnimationActive={false}
+        xAxisId="cumulativePnlArea"
         yAxisId="cumulativePnl"
         type="monotone"
-        dataKey={(entry) => -entry.cumulativeUnrealizedFeesFloat}
+        dataKey={(entry) => getNegativeDebugValue(entry.unrealizedFeesFloat)}
         stackId="dev_cumulative"
         stroke="#ff00ff"
+        strokeWidth={DEBUG_AREA_STROKE_WIDTH}
         fill="transparent"
         strokeDasharray={"5 5"}
       />
       <Area
         isAnimationActive={false}
+        xAxisId="cumulativePnlArea"
         yAxisId="cumulativePnl"
         type="monotone"
         dataKey="cumulativeRealizedPnlFloat"
         stackId="dev_cumulative"
         stroke="#00ff00"
+        strokeWidth={DEBUG_AREA_STROKE_WIDTH}
         fill="transparent"
         strokeDasharray={"5 5"}
       />
       <Area
         isAnimationActive={false}
+        xAxisId="cumulativePnlArea"
         yAxisId="cumulativePnl"
         type="monotone"
-        dataKey={(entry) => -entry.cumulativeRealizedFeesFloat}
+        dataKey={(entry) => getNegativeDebugValue(entry.cumulativeRealizedFeesFloat)}
         stackId="dev_cumulative"
         stroke="#ff0000"
+        strokeWidth={DEBUG_AREA_STROKE_WIDTH}
         fill="transparent"
         strokeDasharray={"5 5"}
       />
       <Area
         isAnimationActive={false}
+        xAxisId="cumulativePnlArea"
         yAxisId="cumulativePnl"
         type="monotone"
         dataKey="cumulativeRealizedPriceImpactFloat"
         stackId="dev_cumulative"
         stroke="#ff00ff"
+        strokeWidth={DEBUG_AREA_STROKE_WIDTH}
         fill="transparent"
         strokeDasharray={"5 5"}
       />

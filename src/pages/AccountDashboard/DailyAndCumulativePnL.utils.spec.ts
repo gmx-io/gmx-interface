@@ -5,6 +5,7 @@ import {
   getPnlChartDragPanSpeed,
   getPnlChartWheelZoomSlowdown,
   getPnlChartYAxisTicks,
+  getPnlChartYAxisTicksFromValues,
   groupPnlHistoryData,
   panPnlWindow,
   panPnlWindowByDelta,
@@ -62,6 +63,17 @@ describe("getPnlChartYAxisTicks", () => {
     ];
 
     expect(getPnlChartYAxisTicks(data, "cumulativePnlFloat", false)).toEqual([0, 100000, 200000, 300000]);
+  });
+
+  it("uses all provided series values for tick bounds", () => {
+    const data = [
+      { ...point(Date.UTC(2024, 0, 1) / 1000, 10n * USD, 10n * USD), extraFloat: 175 },
+      { ...point(Date.UTC(2024, 0, 2) / 1000, -20n * USD, -20n * USD), extraFloat: -425 },
+    ];
+
+    expect(getPnlChartYAxisTicksFromValues(data, (item) => [item.pnlFloat, item.extraFloat], true)).toEqual([
+      -600, -400, -200, 0, 200,
+    ]);
   });
 });
 

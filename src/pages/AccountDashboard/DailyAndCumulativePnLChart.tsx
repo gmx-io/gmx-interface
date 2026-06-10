@@ -14,6 +14,7 @@ import {
   YAxis,
 } from "recharts";
 
+import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
 import { clamp, formatUsd } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 import { getPositiveOrNegativeClass } from "lib/utils";
@@ -27,6 +28,7 @@ import {
   getPnlChartDragPanSpeed,
   getPnlChartWheelZoomSlowdown,
   getPnlChartYAxisTicks,
+  getPnlChartYAxisTicksFromValues,
   getZoomedPnlHistoryData,
   normalizeZoomWindow,
   panPnlWindowByDelta,
@@ -35,7 +37,12 @@ import {
   type PnlZoomWindow,
   zoomPnlWindowAtRatio,
 } from "./DailyAndCumulativePnL.utils";
-import { DebugLines, DebugTooltip } from "./dailyAndCumulativePnLDebug";
+import {
+  DebugTooltip,
+  getDebugCumulativePnlYAxisValues,
+  getDebugPeriodPnlYAxisValues,
+  renderDebugLines,
+} from "./dailyAndCumulativePnLDebug";
 
 const CHART_TOOLTIP_WRAPPER_STYLE: React.CSSProperties = { zIndex: 10000 };
 
@@ -69,6 +76,10 @@ const ACTIVE_DOT_PROPS = {
 };
 
 const CHART_MARGIN = { top: 16, right: 16, bottom: 16, left: 0 };
+const BAR_CATEGORY_GAP = "25%";
+const DEBUG_BAR_CATEGORY_GAP = "10%";
+const BAR_GAP = 4;
+const DEBUG_BAR_GAP = -2;
 const DRAGGING_DATA_ATTRIBUTE = "dragging";
 const SUPPRESS_HOVER_DATA_ATTRIBUTE = "suppressHover";
 const ZOOM_INTERACTION_RESET_DELAY = 250;
@@ -96,6 +107,7 @@ export function DailyAndCumulativePnLChart({
   resetKey: string;
 }) {
   const [zoomWindow, setZoomWindow] = useState<PnlZoomWindow | undefined>();
+  const showDebugValues = useShowDebugValues();
   const chartInteractionRef = useRef<HTMLDivElement>(null);
   const lastTouchTapRef = useRef(0);
   const wheelZoomAccumulatorRef = useRef<{ direction?: "in" | "out"; value: number }>({ value: 0 });
@@ -136,10 +148,19 @@ export function DailyAndCumulativePnLChart({
     [visibleEndIndex, visibleStartIndex]
   );
   const xAxisTicks = useMemo(() => visibleChartPnlData.map((point) => point.chartIndex), [visibleChartPnlData]);
-  const periodPnlYAxisTicks = useMemo(() => getPnlChartYAxisTicks(chartPnlData, "pnlFloat", true), [chartPnlData]);
+  const periodPnlYAxisTicks = useMemo(
+    () =>
+      showDebugValues
+        ? getPnlChartYAxisTicksFromValues(chartPnlData, getDebugPeriodPnlYAxisValues, true)
+        : getPnlChartYAxisTicks(chartPnlData, "pnlFloat", true),
+    [chartPnlData, showDebugValues]
+  );
   const cumulativePnlYAxisTicks = useMemo(
-    () => getPnlChartYAxisTicks(chartPnlData, "cumulativePnlFloat", false),
-    [chartPnlData]
+    () =>
+      showDebugValues
+        ? getPnlChartYAxisTicksFromValues(chartPnlData, getDebugCumulativePnlYAxisValues, false)
+        : getPnlChartYAxisTicks(chartPnlData, "cumulativePnlFloat", false),
+    [chartPnlData, showDebugValues]
   );
   const periodPnlYAxisDomain = useMemo(() => getYAxisDomainFromTicks(periodPnlYAxisTicks), [periodPnlYAxisTicks]);
   const cumulativePnlYAxisDomain = useMemo(
@@ -153,10 +174,13 @@ export function DailyAndCumulativePnLChart({
   const chartMargin = useMemo(() => {
     return {
       ...CHART_MARGIN,
-      left: getYAxisMargin(chartPnlData, "pnlFloat"),
-      right: getYAxisMargin(chartPnlData, "cumulativePnlFloat"),
+      left: getYAxisMargin(chartPnlData, showDebugValues ? getDebugPeriodPnlYAxisValues : getPeriodPnlYAxisValues),
+      right: getYAxisMargin(
+        chartPnlData,
+        showDebugValues ? getDebugCumulativePnlYAxisValues : getCumulativePnlYAxisValues
+      ),
     };
-  }, [chartPnlData]);
+  }, [chartPnlData, showDebugValues]);
 
   const isZoomed = Boolean(normalizedZoomWindow);
   const canZoom = groupedPnlData.length > 2;
@@ -522,7 +546,8 @@ export function DailyAndCumulativePnLChart({
             width={500}
             height={300}
             data={rechartsPnlData}
-            barCategoryGap="25%"
+            barCategoryGap={showDebugValues ? DEBUG_BAR_CATEGORY_GAP : BAR_CATEGORY_GAP}
+            barGap={showDebugValues ? DEBUG_BAR_GAP : BAR_GAP}
             margin={chartMargin}
             // @ts-expect-error
             overflow="visible"
@@ -612,7 +637,7 @@ export function DailyAndCumulativePnLChart({
               tickFormatter={formatPnlChartYAxisTick}
               tick={CUMULATIVE_CHART_TICK_PROPS}
             />
-            <DebugLines />
+            {showDebugValues ? renderDebugLines() : null}
           </ComposedChart>
         </ResponsiveContainer>
       </div>
@@ -677,8 +702,29 @@ function ChartTooltip({ active, payload, grouping }: TooltipProps<any, any> & { 
   );
 }
 
-function getYAxisMargin(data: AccountPnlHistoryPoint[], key: "pnlFloat" | "cumulativePnlFloat") {
-  const maxValue = data.reduce((max, point) => Math.max(max, Math.abs(point[key] ?? 0)), 0);
+function getPeriodPnlYAxisValues(point: AccountPnlHistoryPoint) {
+  return [point.pnlFloat];
+}
+
+function getCumulativePnlYAxisValues(point: AccountPnlHistoryPoint) {
+  return [point.cumulativePnlFloat];
+}
+
+function getYAxisMargin(
+  data: AccountPnlHistoryPoint[],
+  getValues: (point: AccountPnlHistoryPoint) => (number | undefined)[]
+) {
+  let maxValue = 0;
+
+  for (const point of data) {
+    for (const value of getValues(point)) {
+      if (value === undefined || !Number.isFinite(value)) {
+        continue;
+      }
+
+      maxValue = Math.max(maxValue, Math.abs(value));
+    }
+  }
 
   if (maxValue === 0) {
     return 0;

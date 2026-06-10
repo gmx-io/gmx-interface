@@ -57,18 +57,29 @@ export function getPnlChartYAxisTicks<T extends BasePnlHistoryPoint>(
   includeZero: boolean,
   targetTickCount = 5
 ) {
+  return getPnlChartYAxisTicksFromValues(data, (point) => [point[key]], includeZero, targetTickCount);
+}
+
+export function getPnlChartYAxisTicksFromValues<T extends BasePnlHistoryPoint>(
+  data: T[],
+  getValues: (point: T) => (number | undefined)[],
+  includeZero: boolean,
+  targetTickCount = 5
+) {
   let min = includeZero ? 0 : Infinity;
   let max = includeZero ? 0 : -Infinity;
 
   for (const point of data) {
-    const value = point[key];
+    const values = getValues(point);
 
-    if (value === undefined || !Number.isFinite(value)) {
-      continue;
+    for (const value of values) {
+      if (value === undefined || !Number.isFinite(value)) {
+        continue;
+      }
+
+      min = Math.min(min, value);
+      max = Math.max(max, value);
     }
-
-    min = Math.min(min, value);
-    max = Math.max(max, value);
   }
 
   if (min === Infinity || max === -Infinity) {
