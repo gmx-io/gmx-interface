@@ -18,6 +18,7 @@ function renderFallbackState(props: Props) {
 
   return {
     ...result,
+    rerenderState: (nextProps: Props) => result.rerender(<TestComponent {...nextProps} />),
     getState: () => latestState!,
   };
 }
@@ -70,6 +71,68 @@ describe("useApiDataFallbackState", () => {
 
     expect(rendered.getState().shouldFallbackToRpc).toBe(true);
     expect(rendered.getState().isInitialFallback).toBe(false);
+  });
+
+  it("does not fallback when API data arrives before the initial timeout", async () => {
+    const rendered = renderFallbackState({
+      chainId: 42161,
+      apiEnabled: true,
+      apiData: undefined,
+      isApiStale: true,
+      apiError: undefined,
+      initialFallbackTimeout: 1000,
+    });
+
+    await act(async () => {
+      vi.advanceTimersByTime(500);
+    });
+
+    rendered.rerenderState({
+      chainId: 42161,
+      apiEnabled: true,
+      apiData: { markets: [] },
+      isApiStale: false,
+      apiError: undefined,
+      initialFallbackTimeout: 1000,
+    });
+
+    await act(async () => {
+      vi.advanceTimersByTime(500);
+    });
+
+    expect(rendered.getState().shouldFallbackToRpc).toBe(false);
+    expect(rendered.getState().isWaitingForInitialApiData).toBe(false);
+  });
+
+  it("resets the initial fallback state when the reset key changes", async () => {
+    const rendered = renderFallbackState({
+      chainId: 42161,
+      resetKey: "account-a",
+      apiEnabled: true,
+      apiData: undefined,
+      isApiStale: true,
+      apiError: undefined,
+      initialFallbackTimeout: 1000,
+    });
+
+    await act(async () => {
+      vi.advanceTimersByTime(1000);
+    });
+
+    expect(rendered.getState().shouldFallbackToRpc).toBe(true);
+
+    rendered.rerenderState({
+      chainId: 42161,
+      resetKey: "account-b",
+      apiEnabled: true,
+      apiData: undefined,
+      isApiStale: true,
+      apiError: undefined,
+      initialFallbackTimeout: 1000,
+    });
+
+    expect(rendered.getState().shouldFallbackToRpc).toBe(false);
+    expect(rendered.getState().isWaitingForInitialApiData).toBe(true);
   });
 
   it("uses RPC immediately when API is disabled", () => {
