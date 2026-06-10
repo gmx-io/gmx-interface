@@ -143,9 +143,47 @@ describe("GmxApiSdk — subaccount (1CT)", () => {
     expect(api.submitRequests[1].eip712Data?.subaccountApproval?.signature).toBe("0x");
   });
 
-  it.skipIf(!hasSigner)("decrements cached subaccount actions after accepted noop approval submit", async () => {
+  it.skipIf(!hasSigner)("decrements cached subaccount actions only after final order status", async () => {
     const signer = getTestSigner()!;
     const requestId = "accepted-request";
+    const api = new ScriptedOrderApi(
+      buildPreparedOrderResponse(requestId),
+      [
+        {
+          requestId,
+          status: "executed",
+        },
+      ],
+      [
+        buildSubaccountStatusResponse({
+          currentActionsCount: "3",
+          remainingActions: "2",
+        }),
+      ]
+    );
+    const sdk = new GmxApiSdk({ chainId: TEST_CHAIN_ID, api });
+    await sdk.generateSubaccount(signer);
+    await sdk.refreshSubaccountState(signer.address);
+
+    await sdk.prepareOrder(buildTestPrepareRequest(signer.address));
+    await sdk.submitOrder({
+      mode: "express",
+      requestId,
+      signature: "0x",
+      from: signer.address,
+      eip712Data: {
+        batchParams: {},
+        relayParams: {},
+      },
+    });
+
+    expect(sdk.subaccountStatus?.currentActionsCount).toBe(4n);
+    expect(sdk.subaccountStatus?.remainingActions).toBe(1n);
+  });
+
+  it.skipIf(!hasSigner)("does not decrement cached subaccount actions for relay_accepted status", async () => {
+    const signer = getTestSigner()!;
+    const requestId = "relay-accepted-request";
     const api = new ScriptedOrderApi(
       buildPreparedOrderResponse(requestId),
       [
@@ -177,8 +215,8 @@ describe("GmxApiSdk — subaccount (1CT)", () => {
       },
     });
 
-    expect(sdk.subaccountStatus?.currentActionsCount).toBe(4n);
-    expect(sdk.subaccountStatus?.remainingActions).toBe(1n);
+    expect(sdk.subaccountStatus?.currentActionsCount).toBe(3n);
+    expect(sdk.subaccountStatus?.remainingActions).toBe(2n);
   });
 
   it.skipIf(!hasSigner)("refreshes subaccount state before noop approval when only one action remains", async () => {

@@ -64,6 +64,7 @@ const SUBMITTED_ORDER_STATUSES = new Set<SubmitOrderResponse["status"]>([
   "created",
   "executed",
 ]);
+const FINAL_ORDER_STATUSES = new Set<SubmitOrderResponse["status"]>(["created", "executed"]);
 
 function hasSdkSubaccountSigner(owner: object): boolean {
   return sdkSubaccountSigners.has(owner);
@@ -388,6 +389,11 @@ export async function getSdkSubaccountApprovalForOrder(
     force: forceStatusRefresh,
   });
 
+  // After forced refresh due to submittedRequestId, clear the flag if approval still exists (relay failed but approval is still valid)
+  if (subaccount.approval?.submittedRequestId !== undefined) {
+    subaccount.approval.submittedRequestId = undefined;
+  }
+
   const pendingApproval = subaccount.approval;
 
   if (pendingApproval) {
@@ -515,7 +521,9 @@ export async function submitOrderWithSubaccount(
       subaccountApproval,
       request.requestId ?? response.requestId
     );
-    markSubaccountActionSubmitted(client.getSubaccount(), subaccountApproval);
+    if (FINAL_ORDER_STATUSES.has(response.status)) {
+      markSubaccountActionSubmitted(client.getSubaccount(), subaccountApproval);
+    }
     if (request.requestId) {
       client.preparedSubaccountApprovals.delete(request.requestId);
     }
