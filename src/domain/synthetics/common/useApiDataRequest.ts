@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useReducer, useRef } from "react";
 import useSWR from "swr";
 import type { Key } from "swr";
 
@@ -51,7 +51,7 @@ export function useApiDataRequest<T>(
     }
   }, [chainId]);
 
-  const [, setStaleCheckTick] = useState(0);
+  const [, forceStaleCheck] = useReducer((tick: number) => tick + 1, 0);
 
   useEffect(() => {
     if (!response?.updatedAt) {
@@ -59,7 +59,7 @@ export function useApiDataRequest<T>(
     }
 
     const intervalId = setInterval(() => {
-      setStaleCheckTick((tick) => tick + 1);
+      forceStaleCheck();
     }, refreshInterval);
     return () => clearInterval(intervalId);
   }, [response?.updatedAt, refreshInterval, apiStaleMs]);

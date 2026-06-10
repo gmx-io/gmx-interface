@@ -1,4 +1,5 @@
 import { act, cleanup, render } from "@testing-library/react";
+import noop from "lodash/noop";
 import { SWRConfig, unstable_serialize } from "swr";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
@@ -22,6 +23,7 @@ function renderApiDataRequest(fetcher: () => Promise<{ ok: boolean }>, cache = n
   }
 
   render(
+    // eslint-disable-next-line react-perf/jsx-no-new-object-as-prop
     <SWRConfig value={{ provider: () => cache, dedupingInterval: 0 }}>
       <TestComponent />
     </SWRConfig>
@@ -46,7 +48,7 @@ describe("useApiDataRequest", () => {
     let requestsCount = 0;
     const fetcher = vi.fn(() => {
       requestsCount += 1;
-      return requestsCount === 1 ? Promise.resolve({ ok: true }) : new Promise<{ ok: boolean }>(() => {});
+      return requestsCount === 1 ? Promise.resolve({ ok: true }) : new Promise<{ ok: boolean }>(noop);
     });
 
     const rendered = renderApiDataRequest(fetcher);
@@ -87,7 +89,7 @@ describe("useApiDataRequest", () => {
       ],
     ]);
 
-    const rendered = renderApiDataRequest(() => new Promise<{ ok: boolean }>(() => {}), cache);
+    const rendered = renderApiDataRequest(() => new Promise<{ ok: boolean }>(noop), cache);
 
     expect(rendered.getState().data).toEqual({ ok: true });
     expect(rendered.getState().isStale).toBe(true);
