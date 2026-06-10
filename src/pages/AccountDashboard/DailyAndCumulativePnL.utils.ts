@@ -304,6 +304,27 @@ export function groupPnlHistoryData<T extends BasePnlHistoryPoint>(data: T[], gr
   });
 }
 
+const WEEKLY_GROUPING_THRESHOLD_SECONDS = 90 * SECONDS_IN_DAY;
+const MONTHLY_GROUPING_THRESHOLD_SECONDS = 365 * SECONDS_IN_DAY;
+
+export function getDefaultPnlChartGrouping<T extends BasePnlHistoryPoint>(data: T[]): PnlChartGrouping {
+  if (data.length < 2) {
+    return "daily";
+  }
+
+  const historySpanSeconds = data[data.length - 1].timestamp - data[0].timestamp;
+
+  if (historySpanSeconds > MONTHLY_GROUPING_THRESHOLD_SECONDS) {
+    return "monthly";
+  }
+
+  if (historySpanSeconds > WEEKLY_GROUPING_THRESHOLD_SECONDS) {
+    return "weekly";
+  }
+
+  return "daily";
+}
+
 export function normalizeZoomWindow(window: PnlZoomWindow | undefined, dataLength: number): PnlZoomWindow | undefined {
   if (!window || dataLength <= 0) {
     return undefined;
@@ -327,6 +348,34 @@ export function getZoomedPnlHistoryData<T>(data: T[], window: PnlZoomWindow | un
   }
 
   return data.slice(normalizedWindow.startIndex, normalizedWindow.endIndex + 1);
+}
+
+export function getPnlChartAreaXAxisDomain(startIndex: number, endIndex: number): [number, number] {
+  if (startIndex === endIndex) {
+    // A single point cannot span an axis; pad half a slot on each side so the point aligns with the bar's center.
+    return [startIndex - 0.5, endIndex + 0.5];
+  }
+
+  return [startIndex, endIndex];
+}
+
+const WHEEL_DELTA_LINE_HEIGHT = 40;
+const WHEEL_DELTA_PAGE_HEIGHT = 800;
+
+/**
+ * WheelEvent.deltaY units depend on deltaMode: pixels (0), lines (1, e.g. Firefox with a mouse wheel),
+ * or pages (2). Convert to pixels so zoom speed is consistent across browsers.
+ */
+export function getWheelDeltaPixels(deltaY: number, deltaMode: number) {
+  if (deltaMode === 1) {
+    return deltaY * WHEEL_DELTA_LINE_HEIGHT;
+  }
+
+  if (deltaMode === 2) {
+    return deltaY * WHEEL_DELTA_PAGE_HEIGHT;
+  }
+
+  return deltaY;
 }
 
 export function getPnlChartWheelZoomSlowdown(visibleLength: number, dataLength: number) {

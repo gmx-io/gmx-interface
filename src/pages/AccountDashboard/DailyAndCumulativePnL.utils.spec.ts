@@ -2,10 +2,13 @@ import { describe, expect, it } from "vitest";
 
 import {
   formatPnlChartYAxisTick,
+  getDefaultPnlChartGrouping,
+  getPnlChartAreaXAxisDomain,
   getPnlChartDragPanSpeed,
   getPnlChartWheelZoomSlowdown,
   getPnlChartYAxisTicks,
   getPnlChartYAxisTicksFromValues,
+  getWheelDeltaPixels,
   groupPnlHistoryData,
   panPnlWindow,
   panPnlWindowByDelta,
@@ -160,5 +163,63 @@ describe("Pnl zoom helpers", () => {
     expect(panPnlWindow({ startIndex: 2, endIndex: 5 }, 10, "right")).toEqual({ startIndex: 4, endIndex: 7 });
     expect(panPnlWindow({ startIndex: 6, endIndex: 9 }, 10, "right")).toEqual({ startIndex: 6, endIndex: 9 });
     expect(panPnlWindowByDelta({ startIndex: 2, endIndex: 5 }, 10, 3)).toEqual({ startIndex: 5, endIndex: 8 });
+  });
+});
+
+describe("getDefaultPnlChartGrouping", () => {
+  const DAY = 86400;
+  const START = Date.UTC(2023, 0, 1) / 1000;
+
+  function spanData(days: number): BasePnlHistoryPoint[] {
+    return [point(START, 1n * USD, 1n * USD), point(START + days * DAY, 1n * USD, 2n * USD)];
+  }
+
+  it("defaults to daily for empty or single-point history", () => {
+    expect(getDefaultPnlChartGrouping([])).toBe("daily");
+    expect(getDefaultPnlChartGrouping([point(START, 1n * USD, 1n * USD)])).toBe("daily");
+  });
+
+  it("defaults to daily for history up to 3 months", () => {
+    expect(getDefaultPnlChartGrouping(spanData(30))).toBe("daily");
+    expect(getDefaultPnlChartGrouping(spanData(90))).toBe("daily");
+  });
+
+  it("defaults to weekly for history over 3 months", () => {
+    expect(getDefaultPnlChartGrouping(spanData(91))).toBe("weekly");
+    expect(getDefaultPnlChartGrouping(spanData(365))).toBe("weekly");
+  });
+
+  it("defaults to monthly for history over 1 year", () => {
+    expect(getDefaultPnlChartGrouping(spanData(366))).toBe("monthly");
+    expect(getDefaultPnlChartGrouping(spanData(1000))).toBe("monthly");
+  });
+});
+
+describe("getWheelDeltaPixels", () => {
+  it("passes pixel-mode deltas through unchanged", () => {
+    expect(getWheelDeltaPixels(120, 0)).toBe(120);
+    expect(getWheelDeltaPixels(-53, 0)).toBe(-53);
+  });
+
+  it("converts line-mode deltas (Firefox mouse wheel) to pixels", () => {
+    expect(getWheelDeltaPixels(3, 1)).toBe(120);
+    expect(getWheelDeltaPixels(-3, 1)).toBe(-120);
+  });
+
+  it("converts page-mode deltas to pixels", () => {
+    expect(getWheelDeltaPixels(1, 2)).toBe(800);
+    expect(getWheelDeltaPixels(-1, 2)).toBe(-800);
+  });
+});
+
+describe("getPnlChartAreaXAxisDomain", () => {
+  it("spans the visible window for multiple points", () => {
+    expect(getPnlChartAreaXAxisDomain(2, 5)).toEqual([2, 5]);
+    expect(getPnlChartAreaXAxisDomain(0, 9)).toEqual([0, 9]);
+  });
+
+  it("centers a single visible point to match the bar position", () => {
+    expect(getPnlChartAreaXAxisDomain(0, 0)).toEqual([-0.5, 0.5]);
+    expect(getPnlChartAreaXAxisDomain(3, 3)).toEqual([2.5, 3.5]);
   });
 });

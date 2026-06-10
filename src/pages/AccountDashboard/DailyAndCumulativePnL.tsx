@@ -24,6 +24,7 @@ import { getPositiveOrNegativeClass } from "lib/utils";
 import {
   formatPnlChartCompactDate,
   formatPnlChartDate,
+  getDefaultPnlChartGrouping,
   groupPnlHistoryData,
   type BasePnlHistoryPoint,
   type PnlChartGrouping,
@@ -53,13 +54,14 @@ export function DailyAndCumulativePnL({
   const [fromDate, toDate] = dateRange;
   const fromTimestamp = useMemo(() => fromDate && toUtcDayStartByCalendarDate(fromDate), [fromDate]);
   const toTimestamp = useMemo(() => toDate && toUtcDayStartByCalendarDate(toDate), [toDate]);
-  const [grouping, setGrouping] = useState<PnlChartGrouping>("daily");
+  const [userGrouping, setUserGrouping] = useState<PnlChartGrouping | undefined>(undefined);
 
   const {
     data: historicalPnlData,
     error,
     loading,
   } = usePnlHistoricalData(chainId, account, fromTimestamp, toTimestamp);
+  const grouping = userGrouping ?? getDefaultPnlChartGrouping(historicalPnlData);
   const groupedPnlData = useMemo(() => groupPnlHistoryData(historicalPnlData, grouping), [grouping, historicalPnlData]);
   const chartResetKey = `${chainId}:${account}:${fromTimestamp ?? ""}:${toTimestamp ?? ""}:${grouping}`;
 
@@ -73,7 +75,7 @@ export function DailyAndCumulativePnL({
       grouping={grouping}
       isMobile={isMobile}
       onDateRangeChange={setDateRange}
-      onGroupingChange={setGrouping}
+      onGroupingChange={setUserGrouping}
       onImageDownload={handleImageDownload}
     />
   );

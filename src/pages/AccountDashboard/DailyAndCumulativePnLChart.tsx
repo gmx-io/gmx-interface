@@ -25,10 +25,12 @@ import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import type { AccountPnlHistoryPoint } from "./DailyAndCumulativePnL";
 import {
   formatPnlChartYAxisTick,
+  getPnlChartAreaXAxisDomain,
   getPnlChartDragPanSpeed,
   getPnlChartWheelZoomSlowdown,
   getPnlChartYAxisTicks,
   getPnlChartYAxisTicksFromValues,
+  getWheelDeltaPixels,
   getZoomedPnlHistoryData,
   normalizeZoomWindow,
   panPnlWindowByDelta,
@@ -86,6 +88,9 @@ const ZOOM_INTERACTION_RESET_DELAY = 250;
 const TOUCH_TAP_MAX_DISTANCE = 10;
 const TOUCH_DOUBLE_TAP_TIMEOUT = 350;
 const TOUCH_PINCH_STEP_RATIO = 1.08;
+// Browsers synthesize mouse events (including dblclick) shortly after taps when
+// touch-action disables native double-tap zoom; ignore those so a double-tap doesn't zoom twice.
+const TOUCH_SYNTHETIC_DOUBLE_CLICK_TIMEOUT = 700;
 
 type ChartPnlHistoryPoint = AccountPnlHistoryPoint & {
   chartIndex: number;
@@ -110,8 +115,17 @@ export function DailyAndCumulativePnLChart({
   const showDebugValues = useShowDebugValues();
   const chartInteractionRef = useRef<HTMLDivElement>(null);
   const lastTouchTapRef = useRef(0);
+  const lastTouchEndRef = useRef(0);
   const wheelZoomAccumulatorRef = useRef<{ direction?: "in" | "out"; value: number }>({ value: 0 });
   const zoomInteractionResetTimeoutRef = useRef<number | undefined>();
+
+  // Mirrors the latest zoom window so gesture handlers can read and update it
+  // synchronously between renders, keeping the setState updaters pure.
+  const zoomWindowRef = useRef<PnlZoomWindow | undefined>(undefined);
+  const applyZoomWindow = useCallback((nextWindow: PnlZoomWindow | undefined) => {
+    zoomWindowRef.current = nextWindow;
+    setZoomWindow(nextWindow);
+  }, []);
 
   const normalizedZoomWindow = useMemo(
     () => normalizeZoomWindow(zoomWindow, groupedPnlData.length),
@@ -144,7 +158,7 @@ export function DailyAndCumulativePnLChart({
     [visibleEndIndex, visibleStartIndex]
   );
   const areaXAxisDomain = useMemo<[number, number]>(
-    () => [visibleStartIndex, visibleStartIndex === visibleEndIndex ? visibleEndIndex + 1 : visibleEndIndex],
+    () => getPnlChartAreaXAxisDomain(visibleStartIndex, visibleEndIndex),
     [visibleEndIndex, visibleStartIndex]
   );
   const xAxisTicks = useMemo(() => visibleChartPnlData.map((point) => point.chartIndex), [visibleChartPnlData]);
@@ -187,9 +201,9 @@ export function DailyAndCumulativePnLChart({
   const isBarAnimationActive = !isZoomed;
 
   useEffect(() => {
-    setZoomWindow(undefined);
+    applyZoomWindow(undefined);
     wheelZoomAccumulatorRef.current = { value: 0 };
-  }, [resetKey]);
+  }, [applyZoomWindow, resetKey]);
 
   useEffect(() => {
     const element = chartInteractionRef.current;
@@ -254,7 +268,9 @@ export function DailyAndCumulativePnLChart({
     }
 
     const handleWheel = (event: WheelEvent) => {
-      if (Math.abs(event.deltaY) < 1) {
+      const deltaPixels = getWheelDeltaPixels(event.deltaY, event.deltaMode);
+
+      if (Math.abs(deltaPixels) < 1) {
         return;
       }
 
@@ -262,46 +278,39 @@ export function DailyAndCumulativePnLChart({
       startZoomInteraction();
       stopZoomInteraction(ZOOM_INTERACTION_RESET_DELAY);
 
-      const direction = event.deltaY < 0 ? "in" : "out";
+      const dataLength = groupedPnlData.length;
+      const direction = deltaPixels < 0 ? "in" : "out";
       const anchorRatio = getChartInteractionRatio(event.clientX);
-      const wheelUnits = clamp(Math.abs(event.deltaY) / 100, 0.05, 1);
+      const wheelUnits = clamp(Math.abs(deltaPixels) / 100, 0.05, 1);
 
-      setZoomWindow((window) => {
-        const normalizedWindow = normalizeZoomWindow(window, groupedPnlData.length) ?? {
-          startIndex: 0,
-          endIndex: groupedPnlData.length - 1,
-        };
-        const visibleLength = normalizedWindow.endIndex - normalizedWindow.startIndex + 1;
-        const slowdown = getPnlChartWheelZoomSlowdown(visibleLength, groupedPnlData.length);
-        const accumulator = wheelZoomAccumulatorRef.current;
+      const currentWindow = normalizeZoomWindow(zoomWindowRef.current, dataLength) ?? {
+        startIndex: 0,
+        endIndex: dataLength - 1,
+      };
+      const visibleLength = currentWindow.endIndex - currentWindow.startIndex + 1;
+      const slowdown = getPnlChartWheelZoomSlowdown(visibleLength, dataLength);
+      const accumulator = wheelZoomAccumulatorRef.current;
 
-        if (accumulator.direction !== direction) {
-          accumulator.direction = direction;
-          accumulator.value = 0;
-        }
+      if (accumulator.direction !== direction) {
+        accumulator.direction = direction;
+        accumulator.value = 0;
+      }
 
-        accumulator.value += wheelUnits / slowdown;
+      accumulator.value += wheelUnits / slowdown;
 
-        if (accumulator.value < 1) {
-          return window;
-        }
+      if (accumulator.value < 1) {
+        return;
+      }
 
-        const steps = Math.floor(accumulator.value);
-        accumulator.value -= steps;
+      const steps = Math.floor(accumulator.value);
+      accumulator.value -= steps;
 
-        let nextWindow = window;
-        for (let i = 0; i < steps; i++) {
-          nextWindow = zoomPnlWindowAtRatio(
-            nextWindow,
-            groupedPnlData.length,
-            direction,
-            anchorRatio,
-            PNL_CHART_WHEEL_ZOOM_FACTOR
-          );
-        }
+      let nextWindow = zoomWindowRef.current;
+      for (let i = 0; i < steps; i++) {
+        nextWindow = zoomPnlWindowAtRatio(nextWindow, dataLength, direction, anchorRatio, PNL_CHART_WHEEL_ZOOM_FACTOR);
+      }
 
-        return nextWindow;
-      });
+      applyZoomWindow(nextWindow);
     };
 
     element.addEventListener("wheel", handleWheel, { passive: false });
@@ -309,20 +318,34 @@ export function DailyAndCumulativePnLChart({
     return () => {
       element.removeEventListener("wheel", handleWheel);
     };
-  }, [canZoom, getChartInteractionRatio, groupedPnlData.length, startZoomInteraction, stopZoomInteraction]);
+  }, [
+    applyZoomWindow,
+    canZoom,
+    getChartInteractionRatio,
+    groupedPnlData.length,
+    startZoomInteraction,
+    stopZoomInteraction,
+  ]);
 
   const handleChartDoubleClick = useCallback(
     (event: React.MouseEvent<HTMLDivElement>) => {
-      if (!canZoom) {
+      if (!canZoom || Date.now() - lastTouchEndRef.current < TOUCH_SYNTHETIC_DOUBLE_CLICK_TIMEOUT) {
         return;
       }
 
       const anchorRatio = getChartInteractionRatio(event.clientX);
       startZoomInteraction();
-      setZoomWindow((window) => zoomPnlWindowAtRatio(window, groupedPnlData.length, "in", anchorRatio));
+      applyZoomWindow(zoomPnlWindowAtRatio(zoomWindowRef.current, groupedPnlData.length, "in", anchorRatio));
       stopZoomInteraction(ZOOM_INTERACTION_RESET_DELAY);
     },
-    [canZoom, getChartInteractionRatio, groupedPnlData.length, startZoomInteraction, stopZoomInteraction]
+    [
+      applyZoomWindow,
+      canZoom,
+      getChartInteractionRatio,
+      groupedPnlData.length,
+      startZoomInteraction,
+      stopZoomInteraction,
+    ]
   );
 
   const handleChartMouseDown = useCallback(
@@ -357,7 +380,7 @@ export function DailyAndCumulativePnLChart({
 
         startZoomInteraction();
         lastDeltaPoints = deltaPoints;
-        setZoomWindow(panPnlWindowByDelta(startWindow, groupedPnlData.length, deltaPoints));
+        applyZoomWindow(panPnlWindowByDelta(startWindow, groupedPnlData.length, deltaPoints));
       };
 
       const cleanup = () => {
@@ -369,7 +392,7 @@ export function DailyAndCumulativePnLChart({
       window.addEventListener("mousemove", handleMouseMove);
       window.addEventListener("mouseup", cleanup, { once: true });
     },
-    [groupedPnlData.length, normalizedZoomWindow, startZoomInteraction, stopZoomInteraction]
+    [applyZoomWindow, groupedPnlData.length, normalizedZoomWindow, startZoomInteraction, stopZoomInteraction]
   );
 
   const handleChartTouchStart = useCallback(
@@ -384,7 +407,6 @@ export function DailyAndCumulativePnLChart({
       }
 
       if (event.touches.length === 2) {
-        event.preventDefault();
         startZoomInteraction();
 
         let lastDistance = getTouchDistance(event.touches[0], event.touches[1]);
@@ -429,10 +451,11 @@ export function DailyAndCumulativePnLChart({
 
           lastDistance = currentDistance;
           lastWindow = nextWindow;
-          setZoomWindow(nextWindow);
+          applyZoomWindow(nextWindow);
         };
 
         const cleanup = () => {
+          lastTouchEndRef.current = Date.now();
           window.removeEventListener("touchmove", handleTouchMove);
           stopZoomInteraction();
         };
@@ -485,10 +508,11 @@ export function DailyAndCumulativePnLChart({
 
         startZoomInteraction();
         lastDeltaPoints = deltaPoints;
-        setZoomWindow(panPnlWindowByDelta(startWindow, groupedPnlData.length, deltaPoints));
+        applyZoomWindow(panPnlWindowByDelta(startWindow, groupedPnlData.length, deltaPoints));
       };
 
       const cleanup = () => {
+        lastTouchEndRef.current = Date.now();
         window.removeEventListener("touchmove", handleTouchMove);
         stopZoomInteraction();
       };
@@ -506,7 +530,7 @@ export function DailyAndCumulativePnLChart({
         if (now - lastTouchTapRef.current < TOUCH_DOUBLE_TAP_TIMEOUT) {
           lastTouchTapRef.current = 0;
           startZoomInteraction();
-          setZoomWindow((window) => zoomPnlWindowAtRatio(window, groupedPnlData.length, "in", anchorRatio));
+          applyZoomWindow(zoomPnlWindowAtRatio(zoomWindowRef.current, groupedPnlData.length, "in", anchorRatio));
           stopZoomInteraction(ZOOM_INTERACTION_RESET_DELAY);
         } else {
           lastTouchTapRef.current = now;
@@ -518,6 +542,7 @@ export function DailyAndCumulativePnLChart({
       window.addEventListener("touchcancel", cleanup, { once: true });
     },
     [
+      applyZoomWindow,
       canZoom,
       getChartInteractionRatio,
       groupedPnlData.length,
