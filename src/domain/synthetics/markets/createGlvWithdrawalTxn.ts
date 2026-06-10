@@ -89,6 +89,7 @@ export async function createGlvWithdrawalTxn({
     })
   );
 
+  // GLV tokens are not regular tokensData entries; include the selected GLV price for simulation.
   const simulationTokensData = { ...tokensData, [glvToken.address]: glvToken };
 
   const simulationPromise = !skipSimulation

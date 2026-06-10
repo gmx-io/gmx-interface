@@ -310,8 +310,9 @@ export const useWithdrawalTransactions = ({
         });
       } else if (paySource === "settlementChain") {
         const fees = technicalFees?.kind === "settlementChain" ? technicalFees.fees : undefined;
+        const glvToken = glvInfo?.glvToken;
 
-        if (!fees || !tokensData) {
+        if (!fees || !tokensData || !glvToken) {
           helperToast.error(t`Order submission failed`, {
             tradingErrorInfo: { actionName: "GM Withdrawal", requestId: metricData.requestId },
           });
@@ -325,7 +326,7 @@ export const useWithdrawalTransactions = ({
           params: params as CreateGlvWithdrawalParams,
           executionGasLimit: fees.gasLimit,
           tokensData,
-          glvToken: glvInfo!.glvToken,
+          glvToken,
           setPendingTxns,
           setPendingWithdrawal,
           blockTimestampData,

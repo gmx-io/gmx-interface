@@ -592,7 +592,9 @@ export const useDepositTransactions = ({
           }
         });
       } else if (paySource === "settlementChain") {
-        if (!tokensData) {
+        const glvToken = glvInfo?.glvToken;
+
+        if (!tokensData || !glvToken) {
           helperToast.error(t`Error submitting order`, {
             tradingErrorInfo: {
               actionName: "GM Deposit",
@@ -633,7 +635,7 @@ export const useDepositTransactions = ({
           executionGasLimit: fees.gasLimit,
           skipSimulation: shouldDisableValidation,
           tokensData,
-          glvToken: glvInfo!.glvToken,
+          glvToken,
           blockTimestampData,
           setPendingTxns,
           setPendingDeposit,
