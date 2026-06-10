@@ -1,4 +1,4 @@
-import { autoUpdate, flip, offset, shift, useFloating } from "@floating-ui/react";
+import { autoUpdate, flip, offset, shift, type Placement, useFloating } from "@floating-ui/react";
 import { Popover, Portal } from "@headlessui/react";
 import type { MessageDescriptor } from "@lingui/core";
 import { msg, t } from "@lingui/macro";
@@ -45,6 +45,8 @@ type Props = {
   endDate?: Date;
   onChange: (date: [Date | undefined, Date | undefined]) => void;
   handleClassName?: string;
+  buttonVariant?: "ghost" | "secondary";
+  popupPlacement?: Placement;
 };
 
 /**
@@ -81,10 +83,17 @@ const PRESET_LABELS: Record<PresetPeriod, MessageDescriptor> = {
 
 const DATE_RANGE_SELECT_PRESETS: PresetPeriod[] = ["days7", "days30", "days90", "days365", "allTime"];
 
-export function DateRangeSelect({ startDate, endDate, onChange, handleClassName }: Props) {
+export function DateRangeSelect({
+  startDate,
+  endDate,
+  onChange,
+  handleClassName,
+  buttonVariant = "ghost",
+  popupPlacement = "top-start",
+}: Props) {
   const { refs, floatingStyles } = useFloating({
     middleware: [offset(10), flip(), shift()],
-    placement: "top-start",
+    placement: popupPlacement,
     whileElementsMounted: autoUpdate,
   });
 
@@ -153,7 +162,7 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName 
   return (
     <Popover className="DateRangeSelect-anchor" ref={refs.setReference}>
       <Popover.Button className={handleClassName}>
-        <Button variant="ghost" className="flex items-center gap-4">
+        <Button variant={buttonVariant} className="flex items-center gap-4">
           <CalendarIcon className="size-16" />
 
           <span className="text-body-small whitespace-nowrap font-medium">{buttonText}</span>
@@ -196,11 +205,13 @@ export function DateSelect({
   onChange,
   handleClassName,
   buttonTextPrefix,
+  buttonVariant = "ghost",
 }: {
   date: Date | undefined;
   onChange: (date: Date | undefined) => void;
   handleClassName?: string;
   buttonTextPrefix?: string;
+  buttonVariant?: "ghost" | "secondary";
 }) {
   const { refs, floatingStyles } = useFloating({
     middleware: [offset(10), flip(), shift()],
@@ -270,7 +281,7 @@ export function DateSelect({
   return (
     <Popover className="DateRangeSelect-anchor" ref={refs.setReference}>
       <Popover.Button className={handleClassName}>
-        <Button variant="ghost" className="flex items-center gap-4">
+        <Button variant={buttonVariant} className="flex items-center gap-4">
           <div className="size-16">
             <CalendarIcon />
           </div>
