@@ -99,9 +99,7 @@ describe("uiFeeReceiver", () => {
     });
 
     it("should default source to UI", () => {
-      expect(decodeTwapUiFeeReceiver(createTwapUiFeeReceiver({ numberOfParts: 10 }))?.source).toEqual(
-        UI_FEE_SOURCE_UI
-      );
+      expect(decodeTwapUiFeeReceiver(createTwapUiFeeReceiver({ numberOfParts: 10 }))?.source).toEqual(UI_FEE_SOURCE_UI);
     });
 
     it("should correctly encode API source", () => {
@@ -113,6 +111,13 @@ describe("uiFeeReceiver", () => {
 });
 
 describe("setUiFeeReceiverIsExpress", () => {
+  it("should preserve regular uiFeeReceiver addresses", () => {
+    const uiFeeReceiver = "0x496Ca0b922fd18a2cB9DDEe44969CDdC8D87Bc7F";
+
+    expect(setUiFeeReceiverIsExpress(uiFeeReceiver, true)).toEqual(uiFeeReceiver);
+    expect(setUiFeeReceiverIsExpress(uiFeeReceiver, false)).toEqual(uiFeeReceiver);
+  });
+
   it("should correctly set isExpress for simple uiFeeReceiver", () => {
     expect(setUiFeeReceiverIsExpress("0xff00000000000000000000000000000000000001", true)).toEqual(
       "0xff00000000000000000000000000000100000001"

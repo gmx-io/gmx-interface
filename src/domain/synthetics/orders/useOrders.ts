@@ -4,6 +4,7 @@ import { Address, ContractFunctionReturnType, getAddress, isAddressEqual } from 
 import { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { accountOrderListKey } from "config/dataStore";
+import { useApiDataFallbackState } from "domain/api/useApiDataFallbackState";
 import type { MarketsInfoData } from "domain/synthetics/markets/types";
 import { OrderTypeFilterValue, convertOrderTypeFilterValues } from "domain/synthetics/orders/ordersFilters";
 import { DecreasePositionSwapType, Order, OrderType, OrdersData } from "domain/synthetics/orders/types";
@@ -106,7 +107,16 @@ export function useOrders(
     error: apiError,
   } = useApiOrdersRequest(chainId, { account, enabled: apiEnabled });
 
-  const rpcEnabled = !apiEnabled || isApiStale || Boolean(apiError);
+  const { shouldFallbackToRpc: rpcEnabled, isInitialFallback } = useApiDataFallbackState({
+    chainId,
+    apiEnabled,
+    apiData: apiOrdersData,
+    isApiStale,
+    apiError,
+    isEnabled: Boolean(account),
+    resetKey: account,
+  });
+
   const { data: rpcData } = useMulticall(chainId, `useOrdersData-${chainId}`, {
     refreshInterval: FREQUENT_UPDATE_INTERVAL,
     key: rpcEnabled ? key : null,
@@ -130,12 +140,16 @@ export function useOrders(
     apiData: apiOrdersData,
     isApiStale,
     apiError,
+    isInitialFallback,
+    resetKey: account,
   });
+
+  const shouldUseApiOrdersData = apiEnabled && Boolean(apiOrdersData) && (!rpcEnabled || !rpcData?.orders);
 
   const ordersData: OrdersData | undefined = useMemo(() => {
     let orders: Order[] | undefined;
 
-    if (apiEnabled && apiOrdersData && !isApiStale && !apiError) {
+    if (shouldUseApiOrdersData && apiOrdersData) {
       orders = Object.values(apiOrdersData).map(convertApiOrderToOrder);
     } else if (rpcData?.orders) {
       orders = rpcData.orders;
@@ -187,10 +201,8 @@ export function useOrders(
       return acc;
     }, {} as OrdersData);
   }, [
-    apiEnabled,
     apiOrdersData,
-    isApiStale,
-    apiError,
+    shouldUseApiOrdersData,
     rpcData?.orders,
     chainId,
     hasNonSwapRelevantDefinedMarkets,
@@ -203,8 +215,7 @@ export function useOrders(
     swapRelevantDefinedMarketsLowercased,
   ]);
 
-  const count =
-    apiEnabled && apiOrdersData && !isApiStale && !apiError ? Object.keys(apiOrdersData).length : rpcData?.count;
+  const count = shouldUseApiOrdersData && apiOrdersData ? Object.keys(apiOrdersData).length : rpcData?.count;
 
   return {
     ordersData: ordersData,

@@ -21,7 +21,7 @@ const INDEXER_URLS: Partial<Record<ContractsChainId, IndexerUrlMap>> = {
     referrals:
       "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/gmx-arbitrum-referrals/master-240506225935-51167d5/gn",
     syntheticsStats:
-      "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-arbitrum-stats/master-250410222518-4486206/gn",
+      "https://api.goldsky.com/api/public/project_cmgptuc4qhclc01rh9s4q554a/subgraphs/synthetics-arbitrum-stats/master-260605170830-1049f5c/gn",
     subsquid: "https://gmx-test.squids.live/gmx-synthetics-arbitrum@acntdb/api/graphql",
   },
 

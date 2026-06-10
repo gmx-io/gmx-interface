@@ -10,6 +10,7 @@ import { BASIS_POINTS_DIVISOR, BASIS_POINTS_DIVISOR_BIGINT, USD_DECIMALS } from 
 import { SyntheticsState } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { createSelector } from "context/SyntheticsStateContext/utils";
 import {
+  externalSwapRequestKeysMatch,
   getExternalSwapInputsByFromValue,
   getExternalSwapInputsByLeverageSize,
   getExternalSwapInputsByToValue,
@@ -68,7 +69,11 @@ import { convertToTokenAmount, getIsEquivalentTokens } from "sdk/utils/tokens";
 import { TokenBalanceType } from "sdk/utils/tokens/types";
 import { createTradeFlags } from "sdk/utils/trade";
 
-import { selectGasPaymentToken, selectIsExpressTransactionAvailable } from "../expressSelectors";
+import {
+  selectGmxAccountGasPaymentToken,
+  selectIsExpressTransactionAvailable,
+  selectSettlementChainGasPaymentToken,
+} from "../expressSelectors";
 import {
   selectAccount,
   selectChainId,
@@ -176,7 +181,7 @@ export const selectExternalSwapIsLoading = createSelector((q) => {
   const currentKey = q(selectCurrentExternalSwapRequestKey);
   if (!currentKey) return false;
 
-  return q(selectExternalSwapRequestResult)?.key !== currentKey;
+  return !externalSwapRequestKeysMatch(currentKey, q(selectExternalSwapRequestResult)?.key);
 });
 
 export const selectShouldFallbackToInternalSwap = (s: SyntheticsState) => s.externalSwap.shouldFallbackToInternalSwap;
@@ -210,7 +215,12 @@ export const selectExternalSwapQuote = createSelector((q) => {
   if (q(selectIsOneClickActiveByUser)) return undefined;
 
   if (!inputs || !tokenIn || !tokenOut) return undefined;
-  if (result?.status !== "success" || result.key !== currentKey || result.quote.amountIn === 0n) return undefined;
+  if (
+    result?.status !== "success" ||
+    !externalSwapRequestKeysMatch(result.key, currentKey) ||
+    result.quote.amountIn === 0n
+  )
+    return undefined;
 
   if (shouldFallbackToInternalSwap && !shouldForceExternalSwap) return undefined;
 
@@ -274,7 +284,10 @@ export const selectIsOneClickActiveByUser = createSelector((q) => {
 export const selectIsExternalSwapDisabledByExpressSchema = createSelector((q) => {
   if (!q(selectIsExpressTransactionAvailable)) return false;
 
-  const gasPaymentToken = q(selectGasPaymentToken);
+  const isFromTokenGmxAccount = q(selectTradeboxIsFromTokenGmxAccount);
+  const gasPaymentToken = q(
+    isFromTokenGmxAccount ? selectGmxAccountGasPaymentToken : selectSettlementChainGasPaymentToken
+  );
   if (!gasPaymentToken) return false;
 
   // When gasPaymentToken = WNT, relay fee goes directly to the relay router
@@ -953,8 +966,8 @@ export const selectSwapDebugComparison = createSelector((q) => {
 
   const result = q(selectExternalSwapRequestResult);
   const currentKey = q(selectCurrentExternalSwapRequestKey);
-  const isCurrentResult = !!result && result.key === currentKey;
-  const baseOutput = isCurrentResult && result.status === "success" ? result.quote : undefined;
+  const isCurrentResult = externalSwapRequestKeysMatch(result?.key, currentKey);
+  const baseOutput = isCurrentResult && result?.status === "success" ? result.quote : undefined;
   const filteredQuote = !isExternalSwapWaiting ? q(selectExternalSwapQuote) : undefined;
 
   const staleGuardReason = getStaleGuardReason({
@@ -1050,7 +1063,8 @@ export const selectIncreaseSwapDebugComparison = createSelector((q) => {
 
   const result = q(selectExternalSwapRequestResult);
   const currentKey = q(selectCurrentExternalSwapRequestKey);
-  const baseOutput = result?.status === "success" && result.key === currentKey ? result.quote : undefined;
+  const baseOutput =
+    result?.status === "success" && externalSwapRequestKeysMatch(result.key, currentKey) ? result.quote : undefined;
 
   let oracleUsdIn: bigint | undefined;
   let oracleUsdOut: bigint | undefined;
@@ -1793,13 +1807,14 @@ export const selectTradeboxSelectedCollateralTokenSymbol = createSelector((q) =>
 });
 
 export const selectTradeboxMaxLeverage = createSelector((q) => {
-  const minCollateralFactor = q((s) => s.tradebox.marketInfo?.minCollateralFactor);
-  return getMaxLeverageByMinCollateralFactor(minCollateralFactor);
+  const marketInfo = q(selectTradeboxMarketInfo);
+  return getMaxLeverageByMinCollateralFactor(marketInfo?.minCollateralFactor, marketInfo?.marketTokenAddress);
 });
 
 export const selectTradeboxMaxAllowedLeverage = createSelector((q) => {
-  const marketInfo = q((s) => s.tradebox.marketInfo);
+  const marketInfo = q(selectTradeboxMarketInfo);
   return getMaxAllowedLeverage({
+    marketAddress: marketInfo?.marketTokenAddress,
     minCollateralFactor: marketInfo?.minCollateralFactor,
     minCollateralFactorForLiquidation: marketInfo?.minCollateralFactorForLiquidation,
     positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,
