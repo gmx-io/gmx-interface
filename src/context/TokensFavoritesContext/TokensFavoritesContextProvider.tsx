@@ -12,7 +12,7 @@ import { EMPTY_ARRAY, EMPTY_OBJECT } from "lib/objects";
 export type TopLevelTab = "all" | "favorites" | "crypto" | "tradfi" | "recently-listed";
 
 export type CryptoSubCategory = "all" | "ai" | "layer1" | "layer2" | "defi" | "meme";
-export type TradfiSubCategory = "all" | "commodities" | "stocks" | "indices" | "fx";
+export type TradfiSubCategory = "all" | "pre-ipo" | "stocks" | "commodities" | "indices" | "fx";
 export type SubCategoryTab = CryptoSubCategory | TradfiSubCategory;
 
 export type TradeMode = "perp" | "swap";
@@ -44,7 +44,14 @@ export const topLevelTabOptions: TopLevelTab[] = ["all", "favorites", "crypto", 
 
 export const cryptoSubCategoryOptions: CryptoSubCategory[] = ["all", "ai", "layer1", "layer2", "defi", "meme"];
 
-export const tradfiSubCategoryOptions: TradfiSubCategory[] = ["all", "commodities", "stocks", "indices", "fx"];
+export const tradfiSubCategoryOptions: TradfiSubCategory[] = [
+  "all",
+  "pre-ipo",
+  "commodities",
+  "stocks",
+  "indices",
+  "fx",
+];
 
 export const topLevelTabLabels: Record<TopLevelTab, MessageDescriptor> = {
   all: msg`All`,
@@ -60,6 +67,7 @@ export const subCategoryTabLabels: Record<Exclude<SubCategoryTab, "all">, Messag
   layer2: msg`Layer 2`,
   defi: msg`DeFi`,
   meme: msg`Meme`,
+  "pre-ipo": msg`Pre-IPO`,
   commodities: msg`Commodities`,
   stocks: msg`Stocks`,
   indices: msg`Indices`,

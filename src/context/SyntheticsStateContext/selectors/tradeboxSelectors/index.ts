@@ -69,7 +69,11 @@ import { convertToTokenAmount, getIsEquivalentTokens } from "sdk/utils/tokens";
 import { TokenBalanceType } from "sdk/utils/tokens/types";
 import { createTradeFlags } from "sdk/utils/trade";
 
-import { selectGasPaymentToken, selectIsExpressTransactionAvailable } from "../expressSelectors";
+import {
+  selectGmxAccountGasPaymentToken,
+  selectIsExpressTransactionAvailable,
+  selectSettlementChainGasPaymentToken,
+} from "../expressSelectors";
 import {
   selectAccount,
   selectChainId,
@@ -280,7 +284,10 @@ export const selectIsOneClickActiveByUser = createSelector((q) => {
 export const selectIsExternalSwapDisabledByExpressSchema = createSelector((q) => {
   if (!q(selectIsExpressTransactionAvailable)) return false;
 
-  const gasPaymentToken = q(selectGasPaymentToken);
+  const isFromTokenGmxAccount = q(selectTradeboxIsFromTokenGmxAccount);
+  const gasPaymentToken = q(
+    isFromTokenGmxAccount ? selectGmxAccountGasPaymentToken : selectSettlementChainGasPaymentToken
+  );
   if (!gasPaymentToken) return false;
 
   // When gasPaymentToken = WNT, relay fee goes directly to the relay router
@@ -1800,13 +1807,14 @@ export const selectTradeboxSelectedCollateralTokenSymbol = createSelector((q) =>
 });
 
 export const selectTradeboxMaxLeverage = createSelector((q) => {
-  const minCollateralFactor = q((s) => s.tradebox.marketInfo?.minCollateralFactor);
-  return getMaxLeverageByMinCollateralFactor(minCollateralFactor);
+  const marketInfo = q(selectTradeboxMarketInfo);
+  return getMaxLeverageByMinCollateralFactor(marketInfo?.minCollateralFactor, marketInfo?.marketTokenAddress);
 });
 
 export const selectTradeboxMaxAllowedLeverage = createSelector((q) => {
-  const marketInfo = q((s) => s.tradebox.marketInfo);
+  const marketInfo = q(selectTradeboxMarketInfo);
   return getMaxAllowedLeverage({
+    marketAddress: marketInfo?.marketTokenAddress,
     minCollateralFactor: marketInfo?.minCollateralFactor,
     minCollateralFactorForLiquidation: marketInfo?.minCollateralFactorForLiquidation,
     positionFeeFactorForBalanceWasNotImproved: marketInfo?.positionFeeFactorForBalanceWasNotImproved,

@@ -18,7 +18,10 @@ import {
   useUiFeeFactor,
   useUserReferralInfo,
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
+  selectGmxAccountGasPaymentToken,
+  selectSettlementChainGasPaymentToken,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectChainId,
   selectMarketsInfoData,
@@ -146,12 +149,14 @@ export function useTradeboxButtonState({
 
   const fromToken = useSelector(selectTradeboxFromToken);
   const toToken = useSelector(selectTradeboxToToken);
-  const gasPaymentToken = useSelector(selectGasPaymentToken);
+  const settlementChainGasPaymentToken = useSelector(selectSettlementChainGasPaymentToken);
+  const gmxAccountGasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
   const tokensData = useSelector(selectTokensData);
   const isWrapOrUnwrap = useSelector(selectTradeboxIsWrapOrUnwrap);
   const isStakeOrUnstake = useSelector(selectTradeboxIsStakeOrUnstake);
   const payAmount = useSelector(selectTradeboxPayAmount);
   const isFromTokenGmxAccount = useSelector(selectTradeboxIsFromTokenGmxAccount);
+  const gasPaymentToken = isFromTokenGmxAccount ? gmxAccountGasPaymentToken : settlementChainGasPaymentToken;
   const hasExistingPosition = useSelector(selectTradeboxHasExistingPosition);
   const decreaseAmounts = useSelector(selectTradeboxDecreasePositionAmounts);
   const { tokenChainDataArray } = useMultichainTokens();
