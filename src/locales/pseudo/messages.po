@@ -2168,6 +2168,10 @@ msgstr ""
 msgid "Failed withdraw"
 msgstr ""
 
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "Warning icon"
+msgstr ""
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover margin below {0} USD"
 msgstr ""
@@ -6353,6 +6357,10 @@ msgstr ""
 msgid "Increasing {indexTokenText} Short: +{sizeDeltaUsdText}"
 msgstr ""
 
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough of the position for the realized profit to cover the shortfall."
+msgstr ""
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
 msgstr ""
@@ -9140,6 +9148,10 @@ msgstr ""
 #: src/components/TVChartContainer/constants.ts
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Market"
+msgstr ""
+
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "Some selected positions have a negative margin after pending borrow and funding fees, so their settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough of those positions for the realized profit to cover the shortfall."
 msgstr ""
 
 #: src/components/DepthChart/DepthChartTooltip.tsx

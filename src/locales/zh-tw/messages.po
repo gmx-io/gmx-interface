@@ -2168,6 +2168,10 @@ msgstr ""
 msgid "Failed withdraw"
 msgstr "提取失敗"
 
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "Warning icon"
+msgstr "警告圖示"
+
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Leftover margin below {0} USD"
 msgstr ""
@@ -6353,6 +6357,10 @@ msgstr "執行後至少收到 {toAmountText}。價格根據費用和價格影響
 msgid "Increasing {indexTokenText} Short: +{sizeDeltaUsdText}"
 msgstr ""
 
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeRow.tsx
+msgid "This position has a negative margin after pending borrow and funding fees, so settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough of the position for the realized profit to cover the shortfall."
+msgstr "該倉位在扣除待結借貸費用和資金費率費用後保證金為負，因此結算很可能失敗：正資金費率費用只有在結算成功後才可領取。請增加保證金，或充分減倉或平倉，使已實現利潤足以彌補缺口。"
+
 #: src/components/StatusNotification/GmStatusNotification.tsx
 msgid "Sell order executed"
 msgstr "賣出訂單已成交"
@@ -9141,6 +9149,10 @@ msgstr "最低保證金：{0}"
 #: src/domain/synthetics/positions/utils.ts
 msgid "Stop Market"
 msgstr "Stop Market"
+
+#: src/components/SettleAccruedFundingFeeModal/SettleAccruedFundingFeeModal.tsx
+msgid "Some selected positions have a negative margin after pending borrow and funding fees, so their settlement is likely to fail: positive funding only becomes claimable after a successful settlement. Add margin, or reduce or close enough of those positions for the realized profit to cover the shortfall."
+msgstr "部分所選倉位在扣除待結借貸費用和資金費率費用後保證金為負，因此其結算很可能失敗：正資金費率費用只有在結算成功後才可領取。請增加保證金，或充分減倉或平倉這些倉位，使已實現利潤足以彌補缺口。"
 
 #: src/components/DepthChart/DepthChartTooltip.tsx
 msgid "Execution prices for increasing longs<0/>and decreasing shorts"
