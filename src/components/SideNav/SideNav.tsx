@@ -193,6 +193,7 @@ export function MenuSection({
       to: "/pools",
     },
     { icon: <DashboardIcon className="size-20" />, label: t`Stats`, key: "stats", to: "/stats" },
+    { icon: <DashboardIcon className="size-20" />, label: t`Costs`, key: "costs", to: "/costs" },
     {
       icon: <ReferralsIcon className="size-20" />,
       label: withMegaethSparkle(t`Referrals`),

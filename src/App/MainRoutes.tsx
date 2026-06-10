@@ -3,6 +3,7 @@ import { Suspense, lazy, useEffect } from "react";
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 import type { Address } from "viem";
 
+import { ARBITRUM } from "config/chains";
 import { isDevelopment } from "config/env";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useChainId } from "lib/chains";
@@ -29,6 +30,7 @@ import { ReferralsRouter } from "pages/Referrals/ReferralsRouter";
 import ReferralsTier from "pages/ReferralsTier/ReferralsTier";
 import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
+import { TradingCostsPage } from "pages/TradingCosts/TradingCosts";
 
 import { EarnRedirect } from "components/Earn/EarnRedirect";
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
@@ -118,6 +120,11 @@ export function MainRoutes({ openSettings }: { openSettings: () => void }) {
       </Route>
       <Route exact path="/monitor">
         <SyntheticsStats />
+      </Route>
+      <Route exact path="/costs">
+        <SyntheticsStateContextProvider skipLocalReferralCode pageType="tradingCosts" overrideChainId={ARBITRUM}>
+          <TradingCostsPage />
+        </SyntheticsStateContextProvider>
       </Route>
       <Route exact path="/earn/discover">
         <SyntheticsStateContextProvider skipLocalReferralCode={false} pageType="earn">
