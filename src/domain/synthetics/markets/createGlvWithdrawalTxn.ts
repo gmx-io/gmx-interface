@@ -17,7 +17,7 @@ import { validateSignerAddress } from "components/Errors/errorToasts";
 import { SwapPricingType } from "../orders";
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
-import type { TokensData } from "../tokens";
+import type { TokenData, TokensData } from "../tokens";
 import type { CreateGlvWithdrawalParams } from "./types";
 
 export async function createGlvWithdrawalTxn({
@@ -26,6 +26,7 @@ export async function createGlvWithdrawalTxn({
   executionGasLimit,
   skipSimulation,
   tokensData,
+  glvToken,
   metricId,
   blockTimestampData,
   params,
@@ -38,6 +39,7 @@ export async function createGlvWithdrawalTxn({
   executionGasLimit: bigint;
   skipSimulation?: boolean;
   tokensData: TokensData;
+  glvToken: TokenData;
   metricId?: OrderMetricId;
   blockTimestampData: BlockTimestampData | undefined;
   params: CreateGlvWithdrawalParams;
@@ -87,11 +89,13 @@ export async function createGlvWithdrawalTxn({
     })
   );
 
+  const simulationTokensData = { ...tokensData, [glvToken.address]: glvToken };
+
   const simulationPromise = !skipSimulation
     ? simulateExecuteTxn(chainId, {
         account: params.addresses.receiver,
         primaryPriceOverrides: {},
-        tokensData: tokensData,
+        tokensData: simulationTokensData,
         createMulticallPayload: encodedPayload,
         method: "simulateExecuteLatestGlvWithdrawal",
         errorTitle: t`Withdrawal error`,

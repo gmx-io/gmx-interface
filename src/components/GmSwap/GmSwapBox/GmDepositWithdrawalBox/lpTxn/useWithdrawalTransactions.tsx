@@ -325,6 +325,7 @@ export const useWithdrawalTransactions = ({
           params: params as CreateGlvWithdrawalParams,
           executionGasLimit: fees.gasLimit,
           tokensData,
+          glvToken: glvInfo!.glvToken,
           setPendingTxns,
           setPendingWithdrawal,
           blockTimestampData,
@@ -342,6 +343,7 @@ export const useWithdrawalTransactions = ({
     [
       isWithdrawal,
       getWithdrawalMetricData,
+      glvInfo,
       amounts,
       transferRequests,
       tokensData,

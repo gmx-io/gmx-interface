@@ -15,7 +15,7 @@ import { validateSignerAddress } from "components/Errors/errorToasts";
 
 import { prepareOrderTxn } from "../orders/prepareOrderTxn";
 import { simulateExecuteTxn } from "../orders/simulateExecuteTxn";
-import type { TokensData } from "../tokens";
+import type { TokenData, TokensData } from "../tokens";
 import type { CreateGlvDepositParams } from "./types";
 
 export async function createGlvDepositTxn({
@@ -30,6 +30,7 @@ export async function createGlvDepositTxn({
   executionFee,
   executionGasLimit,
   tokensData,
+  glvToken,
   skipSimulation,
   metricId,
   blockTimestampData,
@@ -45,6 +46,7 @@ export async function createGlvDepositTxn({
   executionFee: bigint;
   executionGasLimit: bigint;
   tokensData: TokensData;
+  glvToken: TokenData;
   skipSimulation?: boolean;
   metricId?: OrderMetricId;
   blockTimestampData: BlockTimestampData | undefined;
@@ -111,11 +113,13 @@ export async function createGlvDepositTxn({
     })
   );
 
+  const simulationTokensData = { ...tokensData, [glvToken.address]: glvToken };
+
   const simulationPromise = !skipSimulation
     ? simulateExecuteTxn(chainId, {
         account: params.addresses.receiver,
         primaryPriceOverrides: {},
-        tokensData,
+        tokensData: simulationTokensData,
         createMulticallPayload: encodedPayload,
         method: "simulateExecuteLatestGlvDeposit",
         errorTitle: t`Deposit error`,

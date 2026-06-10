@@ -633,6 +633,7 @@ export const useDepositTransactions = ({
           executionGasLimit: fees.gasLimit,
           skipSimulation: shouldDisableValidation,
           tokensData,
+          glvToken: glvInfo!.glvToken,
           blockTimestampData,
           setPendingTxns,
           setPendingDeposit,
@@ -649,6 +650,7 @@ export const useDepositTransactions = ({
     [
       isDeposit,
       getDepositMetricData,
+      glvInfo,
       tokensData,
       signer,
       rawParams,
