@@ -392,11 +392,6 @@ export async function getSdkSubaccountApprovalForOrder(
 
   if (pendingApproval) {
     if (pendingApproval.submittedRequestId) {
-      const syncedApproval = getUsableSubaccountApproval(client);
-      if (syncedApproval) {
-        return syncedApproval;
-      }
-
       throw new Error(
         `Subaccount approval is pending in request ${pendingApproval.submittedRequestId}. ` +
           "Refresh subaccount state after it is submitted on-chain before preparing another subaccount order."
