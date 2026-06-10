@@ -207,6 +207,10 @@ export const DepositView = () => {
   );
 
   const nativeTokenSourceChainBalance = useNativeTokenBalance(depositViewChain, account);
+  const selectedTokenBalanceForDeposit =
+    depositViewChain !== settlementChainId && unwrappedSelectedTokenAddress === zeroAddress
+      ? nativeTokenSourceChainBalance
+      : selectedTokenSourceChainBalance;
 
   const realInputAmount = useGmxAccountSelector(selectGmxAccountDepositViewTokenInputAmount);
 
@@ -404,6 +408,7 @@ export const DepositView = () => {
     fromChainId: depositViewChain,
     toChainId: settlementChainId,
     fromTokenAddress: selectedTokenSourceChainTokenId?.address,
+    composeGas,
   });
 
   const quoteSendNativeFee = quoteSendData?.nativeFee;
@@ -472,23 +477,15 @@ export const DepositView = () => {
     [sameChainNetworkFeeAsyncResult.data, gasPrice, settlementChainTokensData]
   );
 
-  const gasPaymentTokenAmountForDepositView =
-    depositViewChain === settlementChainId
-      ? sameChainNetworkFeeDetails?.amount
-      : quoteSendNativeFee ?? baseQuoteSendNativeFee;
-
-  const isLoadingDepositMax =
-    depositViewChain === settlementChainId ? false : isComposeGasLoading || isBaseQuoteSendNativeFeeLoading;
-
   const paymentToken = useMemo((): TokenData | undefined => {
     if (selectedTokenData === undefined) {
       return undefined;
     }
     return {
       ...selectedTokenData,
-      sourceChainBalance: selectedTokenSourceChainBalance,
+      sourceChainBalance: selectedTokenBalanceForDeposit,
     };
-  }, [selectedTokenData, selectedTokenSourceChainBalance]);
+  }, [selectedTokenBalanceForDeposit, selectedTokenData]);
 
   const gasPaymentToken = useMemo(() => {
     const nativeTokenData = getByKey(settlementChainTokensData, zeroAddress);
@@ -522,6 +519,21 @@ export const DepositView = () => {
     depositViewChain !== settlementChainId &&
     !getMappedTokenId(settlementChainId as SettlementChainId, zeroAddress, depositViewChain as SourceChainId);
   const gasPaymentTokenBalanceForDeposit = getBalanceByBalanceType(gasPaymentToken, depositBalanceType);
+  const gasPaymentTokenAmountForDepositView =
+    depositViewChain === settlementChainId ? sameChainNetworkFeeDetails?.amount : networkFee;
+  const needsGasPaymentTokenBuffer =
+    !ignoreGasPaymentToken &&
+    paymentToken !== undefined &&
+    gasPaymentToken !== undefined &&
+    paymentToken.address === gasPaymentToken.address;
+
+  const isLoadingDepositMax =
+    depositViewChain === settlementChainId
+      ? false
+      : isComposeGasLoading ||
+        isBaseQuoteSendNativeFeeLoading ||
+        ((inputAmount ?? 0n) > 0n && isQuoteSendNativeFeeLoading) ||
+        (needsGasPaymentTokenBuffer && networkFee === undefined);
 
   const depositMaxDetails = useMaxAvailableAmount({
     fromToken: paymentToken,
@@ -898,6 +910,7 @@ export const DepositView = () => {
           preferredToken.sourceChainBalance !== undefined &&
           preferredToken.sourceChainBalance >= 0n
         ) {
+          setInputValue(undefined);
           setDepositViewTokenAddress(preferredToken.address);
           return;
         }
@@ -924,11 +937,13 @@ export const DepositView = () => {
         }
 
         if (maxBalanceTokenAddress !== undefined) {
+          setInputValue(undefined);
           setDepositViewTokenAddress(maxBalanceTokenAddress);
           return;
         }
 
         if (preferredToken) {
+          setInputValue(undefined);
           setDepositViewTokenAddress(preferredToken.address);
         }
       }
@@ -941,6 +956,7 @@ export const DepositView = () => {
       settlementChainId,
       depositViewChain,
       isVisibleOrView,
+      setInputValue,
     ]
   );
 
@@ -1037,7 +1053,7 @@ export const DepositView = () => {
       text: t`Enter deposit amount`,
       disabled: true,
     };
-  } else if (selectedTokenSourceChainBalance !== undefined && amountLD > selectedTokenSourceChainBalance) {
+  } else if (selectedTokenBalanceForDeposit !== undefined && amountLD > selectedTokenBalanceForDeposit) {
     buttonState = {
       text: t`Insufficient balance`,
       disabled: true,
@@ -1307,21 +1323,23 @@ export const DepositView = () => {
         </div>
       )}
 
-      {buttonState.bannerErrorName && (
-        <AlertInfoCard type="error" className="mb-16" hideClose>
-          <ValidationBannerErrorContent
-            validationBannerErrorName={buttonState.bannerErrorName}
-            chainId={settlementChainId}
-            srcChainId={depositViewChain as SourceChainId | undefined}
-          />
-        </AlertInfoCard>
-      )}
+      <div className="sticky bottom-0 z-10 flex shrink-0 flex-col gap-10 bg-slate-900 pt-8">
+        {buttonState.bannerErrorName && (
+          <AlertInfoCard type="error" hideClose>
+            <ValidationBannerErrorContent
+              validationBannerErrorName={buttonState.bannerErrorName}
+              chainId={settlementChainId}
+              srcChainId={depositViewChain as SourceChainId | undefined}
+            />
+          </AlertInfoCard>
+        )}
 
-      <ButtonTooltipWrapper content={buttonState.errorDescription}>
-        <Button variant="primary-action" className="w-full shrink-0" type="submit" disabled={buttonState.disabled}>
-          {buttonState.text}
-        </Button>
-      </ButtonTooltipWrapper>
+        <ButtonTooltipWrapper content={buttonState.errorDescription}>
+          <Button variant="primary-action" className="w-full shrink-0" type="submit" disabled={buttonState.disabled}>
+            {buttonState.text}
+          </Button>
+        </ButtonTooltipWrapper>
+      </div>
     </form>
   );
 };

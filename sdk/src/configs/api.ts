@@ -23,12 +23,12 @@ const API_URLS: Record<ApiEnvironment, Record<ContractsChainId, string | undefin
 
 const API_FALLBACK_URLS: Record<ApiEnvironment, Record<ContractsChainId, string[]>> = {
   production: {
-    [ARBITRUM]: ["https://arbitrum.gmxapi.ai"],
-    [AVALANCHE]: ["https://avalanche.gmxapi.ai"],
+    [ARBITRUM]: [],
+    [AVALANCHE]: [],
     [AVALANCHE_FUJI]: [],
-    [BOTANIX]: ["https://botanix.gmxapi.ai"],
+    [BOTANIX]: [],
     [ARBITRUM_SEPOLIA]: [],
-    [MEGAETH]: ["https://megaeth.gmxapi.ai"],
+    [MEGAETH]: [],
   },
   test: {
     [ARBITRUM]: [],

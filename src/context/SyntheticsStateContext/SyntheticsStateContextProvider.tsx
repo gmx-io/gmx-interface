@@ -42,7 +42,6 @@ import { AggregatedOrdersDataResult, useOrdersInfoRequest } from "domain/synthet
 import {
   PositionsConstantsResult,
   PositionsInfoResult,
-  usePositions,
   usePositionsConstantsRequest,
   usePositionsInfoRequest,
 } from "domain/synthetics/positions";
@@ -198,12 +197,6 @@ export function SyntheticsStateContextProvider({
   const markets = useMarkets(chainId);
   const tokensDataResult = useTokensDataRequest(chainId, srcChainId);
 
-  const positionsResult = usePositions(chainId, {
-    account,
-    marketsData: markets.marketsData,
-    tokensData: tokensDataResult.tokensData,
-  });
-
   const marketsInfo = useMarketsInfoRequest(chainId, { tokensData: tokensDataResult.tokensData });
 
   const { isFirstOrder } = useIsFirstOrder(chainId, { account });
@@ -278,9 +271,8 @@ export function SyntheticsStateContextProvider({
   } = usePositionsInfoRequest(chainId, {
     account,
     showPnlInLeverage: settings.isPnlInLeverage,
+    marketsData: markets.marketsData,
     marketsInfoData: marketsInfo.marketsInfoData,
-    positionsData: positionsResult.positionsData,
-    positionsError: positionsResult.error,
     skipLocalReferralCode,
     tokensData: tokensDataResult.tokensData,
   });
@@ -366,9 +358,20 @@ export function SyntheticsStateContextProvider({
   const tokenPermitsState = useTokenPermitsContext();
   const sponsoredCallBalanceData = useIsSponsoredCallBalanceAvailable(chainId);
 
+  const gasPaymentTokenAllowanceAddresses = useMemo(
+    () =>
+      Array.from(
+        new Set([
+          convertTokenAddress(chainId, settings.gasPaymentTokenAddress, "wrapped"),
+          convertTokenAddress(chainId, settings.gmxAccountGasPaymentTokenAddress, "wrapped"),
+        ])
+      ),
+    [chainId, settings.gasPaymentTokenAddress, settings.gmxAccountGasPaymentTokenAddress]
+  );
+
   const gasPaymentTokenAllowance = useTokensAllowanceData(chainId, {
     spenderAddress: getContract(chainId, "SyntheticsRouter"),
-    tokenAddresses: [convertTokenAddress(chainId, settings.gasPaymentTokenAddress, "wrapped")],
+    tokenAddresses: gasPaymentTokenAllowanceAddresses,
   });
 
   const botanixStakingAssetsPerShare = useBotanixStakingAssetsPerShare({ chainId });
