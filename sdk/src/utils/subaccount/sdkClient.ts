@@ -389,6 +389,10 @@ export async function getSdkSubaccountApprovalForOrder(
     force: forceStatusRefresh,
   });
 
+  if (subaccount.approval?.submittedRequestId !== undefined) {
+    subaccount.approval.submittedRequestId = undefined;
+  }
+
   const pendingApproval = subaccount.approval;
 
   if (pendingApproval) {
@@ -459,7 +463,9 @@ export async function prepareWithSubaccount<TRequest extends SubaccountPrepareRe
         status = await getSdkSubaccountStatus(client, request.from, { force: true });
       }
       if (!isSubaccountStatusUsable(status)) {
-        throw new Error("Subaccount is not active. Call activateSubaccount(mainSigner) before preparing express orders.");
+        throw new Error(
+          "Subaccount is not active. Call activateSubaccount(mainSigner) before preparing express orders."
+        );
       }
     }
 
