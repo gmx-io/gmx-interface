@@ -4485,6 +4485,10 @@ msgstr "最小インパクトプール量"
 msgid "Generating..."
 msgstr ""
 
+#: src/components/AnnouncementBanner/AnnouncementBanner.tsx
+msgid "Go to slide {0}"
+msgstr "スライド{0}に移動"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact too high"
 msgstr "価格への影響が大きすぎます"
@@ -7469,7 +7473,6 @@ msgstr "サイズ"
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-#: src/pages/Announcements/Announcements.tsx
 msgid "From"
 msgstr "から"
 
@@ -11008,6 +11011,7 @@ msgstr "約定価格が許容価格を満たしませんでした。条件が満
 msgid "multiple asset classes"
 msgstr "複数の資産クラス"
 
+#: src/components/AnnouncementBanner/AnnouncementBanner.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx

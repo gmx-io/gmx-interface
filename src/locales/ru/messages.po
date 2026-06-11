@@ -4485,6 +4485,10 @@ msgstr "Мин. сумма пула влияния"
 msgid "Generating..."
 msgstr ""
 
+#: src/components/AnnouncementBanner/AnnouncementBanner.tsx
+msgid "Go to slide {0}"
+msgstr "Перейти к слайду {0}"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact too high"
 msgstr "Влияние на цену слишком велико"
@@ -7469,7 +7473,6 @@ msgstr "РАЗМЕР"
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-#: src/pages/Announcements/Announcements.tsx
 msgid "From"
 msgstr "От"
 
@@ -11008,6 +11011,7 @@ msgstr "Цена исполнения не соответствовала доп
 msgid "multiple asset classes"
 msgstr "множество классов активов"
 
+#: src/components/AnnouncementBanner/AnnouncementBanner.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx

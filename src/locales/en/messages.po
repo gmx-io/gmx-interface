@@ -4485,6 +4485,10 @@ msgstr "Min impact pool amount"
 msgid "Generating..."
 msgstr "Generating..."
 
+#: src/components/AnnouncementBanner/AnnouncementBanner.tsx
+msgid "Go to slide {0}"
+msgstr "Go to slide {0}"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact too high"
 msgstr "Price impact too high"
@@ -7469,7 +7473,6 @@ msgstr "SIZE"
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-#: src/pages/Announcements/Announcements.tsx
 msgid "From"
 msgstr "From"
 
@@ -11008,6 +11011,7 @@ msgstr "Execution price didn't meet acceptable price. Order will fill when the c
 msgid "multiple asset classes"
 msgstr "multiple asset classes"
 
+#: src/components/AnnouncementBanner/AnnouncementBanner.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx

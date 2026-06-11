@@ -4485,6 +4485,10 @@ msgstr "Montant minimum du pool d'impact"
 msgid "Generating..."
 msgstr ""
 
+#: src/components/AnnouncementBanner/AnnouncementBanner.tsx
+msgid "Go to slide {0}"
+msgstr "Aller à la diapositive {0}"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact too high"
 msgstr "Impact sur le prix trop élevé"
@@ -7469,7 +7473,6 @@ msgstr "TAILLE"
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-#: src/pages/Announcements/Announcements.tsx
 msgid "From"
 msgstr "De"
 
@@ -11008,6 +11011,7 @@ msgstr "Le prix d'exécution n'a pas atteint le prix acceptable. L'ordre sera ex
 msgid "multiple asset classes"
 msgstr "plusieurs classes d'actifs"
 
+#: src/components/AnnouncementBanner/AnnouncementBanner.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx

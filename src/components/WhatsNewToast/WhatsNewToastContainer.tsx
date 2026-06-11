@@ -30,8 +30,14 @@ export function WhatsNewToastContainer() {
   useEffect(() => {
     const onScroll = (e: Event) => {
       const target = e.target;
-      const scrollTop = target instanceof HTMLElement ? target.scrollTop : window.scrollY;
-      setIsScrolled(scrollTop > 60);
+      if (target instanceof HTMLElement) {
+        // the capture-phase listener catches every scrollable element; only the AppPageLayout
+        // page wrapper (scrollbar-gutter-stable) should move the toast, not inner widgets
+        if (!target.classList.contains("scrollbar-gutter-stable")) return;
+        setIsScrolled(target.scrollTop > 60);
+      } else {
+        setIsScrolled(window.scrollY > 60);
+      }
     };
     window.addEventListener("scroll", onScroll, { capture: true, passive: true });
     return () => window.removeEventListener("scroll", onScroll, { capture: true });

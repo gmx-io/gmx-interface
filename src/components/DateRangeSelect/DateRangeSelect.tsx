@@ -45,6 +45,7 @@ type Props = {
   endDate?: Date;
   onChange: (date: [Date | undefined, Date | undefined]) => void;
   handleClassName?: string;
+  renderHandle?: (params: { buttonText: string; open: boolean }) => React.ReactNode;
 };
 
 /**
@@ -81,7 +82,7 @@ const PRESET_LABELS: Record<PresetPeriod, MessageDescriptor> = {
 
 const DATE_RANGE_SELECT_PRESETS: PresetPeriod[] = ["days7", "days30", "days90", "days365", "allTime"];
 
-export function DateRangeSelect({ startDate, endDate, onChange, handleClassName }: Props) {
+export function DateRangeSelect({ startDate, endDate, onChange, handleClassName, renderHandle }: Props) {
   const { refs, floatingStyles } = useFloating({
     middleware: [offset(10), flip(), shift()],
     placement: "top-start",
@@ -152,39 +153,53 @@ export function DateRangeSelect({ startDate, endDate, onChange, handleClassName 
 
   return (
     <Popover className="DateRangeSelect-anchor" ref={refs.setReference}>
-      <Popover.Button className={handleClassName}>
-        <Button variant="ghost" className="flex items-center gap-4">
-          <CalendarIcon className="size-16" />
+      {({ open }) => (
+        <>
+          <Popover.Button className={handleClassName}>
+            {renderHandle ? (
+              renderHandle({ buttonText, open })
+            ) : (
+              <Button variant="ghost" className="flex items-center gap-4">
+                <CalendarIcon className="size-16" />
 
-          <span className="text-body-small whitespace-nowrap font-medium">{buttonText}</span>
-        </Button>
-      </Popover.Button>
-      <Portal>
-        <Popover.Panel className="DateRangeSelect-popover" ref={refs.setFloating} style={floatingStyles}>
-          <Calendar
-            onChange={onDateRangeChange}
-            value={startDate && endDate ? ([startDate, endDate] as [Date, Date]) : null}
-            selectRange={true}
-            locale={localeStr}
-            minDate={MIN_DATE}
-            maxDate={MAX_DATE}
-            className="DateRangeSelect-reactCalendar"
-            minDetail="decade"
-            formatMonthYear={(_, date) => format(date, "MMMM, yyyy")}
-            prevLabel={<ChevronLeftIcon className="size-20" />}
-            nextLabel={<ChevronLeftIcon className="size-20 rotate-180" />}
-            prev2Label={<ChevronEdgeLeft className="size-20" />}
-            next2Label={<ChevronEdgeLeft className="size-20 rotate-180" />}
-          />
-          <div className="flex justify-between gap-4 border-t border-slate-600 p-12">
-            {DATE_RANGE_SELECT_PRESETS.map((preset) => (
-              <Button key={preset} variant="secondary" size="small" data-preset={preset} onClick={handlePresetSelect}>
-                {_(PRESET_LABELS[preset])}
+                <span className="text-body-small whitespace-nowrap font-medium">{buttonText}</span>
               </Button>
-            ))}
-          </div>
-        </Popover.Panel>
-      </Portal>
+            )}
+          </Popover.Button>
+          <Portal>
+            <Popover.Panel className="DateRangeSelect-popover" ref={refs.setFloating} style={floatingStyles}>
+              <Calendar
+                onChange={onDateRangeChange}
+                value={startDate && endDate ? ([startDate, endDate] as [Date, Date]) : null}
+                selectRange={true}
+                locale={localeStr}
+                minDate={MIN_DATE}
+                maxDate={MAX_DATE}
+                className="DateRangeSelect-reactCalendar"
+                minDetail="decade"
+                formatMonthYear={(_, date) => format(date, "MMMM, yyyy")}
+                prevLabel={<ChevronLeftIcon className="size-20" />}
+                nextLabel={<ChevronLeftIcon className="size-20 rotate-180" />}
+                prev2Label={<ChevronEdgeLeft className="size-20" />}
+                next2Label={<ChevronEdgeLeft className="size-20 rotate-180" />}
+              />
+              <div className="flex justify-between gap-4 border-t border-slate-600 p-12">
+                {DATE_RANGE_SELECT_PRESETS.map((preset) => (
+                  <Button
+                    key={preset}
+                    variant="secondary"
+                    size="small"
+                    data-preset={preset}
+                    onClick={handlePresetSelect}
+                  >
+                    {_(PRESET_LABELS[preset])}
+                  </Button>
+                ))}
+              </div>
+            </Popover.Panel>
+          </Portal>
+        </>
+      )}
     </Popover>
   );
 }

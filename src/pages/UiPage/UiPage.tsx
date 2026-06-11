@@ -13,7 +13,7 @@ import { getCategoryTokenAddresses, getToken } from "sdk/configs/tokens";
 import { TokenCategory } from "sdk/utils/tokens/types";
 
 import AppPageLayout from "components/AppPageLayout/AppPageLayout";
-import ExchangeInfoRow from "components/EventToast/ExchangeInfoRow";
+import ExchangeInfoRow from "components/ExchangeInfoRow/ExchangeInfoRow";
 import SearchInput from "components/SearchInput/SearchInput";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import Tooltip from "components/Tooltip/Tooltip";

@@ -176,6 +176,19 @@ function useButtonRowScrollFade() {
 
   const controls = useScrollFade(getSnapChildren);
 
+  // arrows page by the visible width so items the user hasn't seen yet are not skipped
+  const scrollByViewport = useCallback(
+    (dir: 1 | -1) => {
+      const container = controls.scrollableRef.current;
+      if (!container) return;
+      container.scrollBy({ left: dir * container.clientWidth, behavior: "smooth" });
+    },
+    [controls.scrollableRef]
+  );
+
+  const scrollToLeft = useCallback(() => scrollByViewport(-1), [scrollByViewport]);
+  const scrollToRight = useCallback(() => scrollByViewport(1), [scrollByViewport]);
+
   useEffect(() => {
     const container = controls.scrollableRef.current;
     if (!container) {
@@ -195,8 +208,16 @@ function useButtonRowScrollFade() {
     }
   }, [controls.scrollableRef, getSnapChildren]);
 
-  return controls;
+  return { ...controls, scrollToLeft, scrollToRight };
 }
+
+type ScrollFadeGradientColor = "slate-800" | "slate-900" | "slate-950";
+
+const GRADIENT_TO_CLASS: Record<ScrollFadeGradientColor, string> = {
+  "slate-800": "to-slate-800",
+  "slate-900": "to-slate-900",
+  "slate-950": "to-slate-950",
+};
 
 function ScrollFadeControls({
   scrollLeft,
@@ -214,11 +235,11 @@ function ScrollFadeControls({
   scrollToLeft: () => void;
   scrollToRight: () => void;
   /**
-   * @default "slate-800"
+   * @default "slate-900"
    */
-  gradientColor?: "slate-800" | "slate-900";
+  gradientColor?: ScrollFadeGradientColor;
 }) {
-  const toColor = gradientColor === "slate-800" ? "to-slate-800" : "to-slate-900";
+  const toColor = GRADIENT_TO_CLASS[gradientColor];
 
   const [absoluteRef, { height: absoluteHeight }] = useMeasure<HTMLDivElement>();
   const { height: windowHeight } = useWindowSize();
@@ -317,12 +338,16 @@ export function BodyScrollFadeContainer({ children, className }: PropsWithChildr
   );
 }
 
-export function ButtonRowScrollFadeContainer({ children, className }: PropsWithChildren<{}> & { className?: string }) {
+export function ButtonRowScrollFadeContainer({
+  children,
+  className,
+  gradientColor,
+}: PropsWithChildren<{}> & { className?: string; gradientColor?: ScrollFadeGradientColor }) {
   const scrollFade = useButtonRowScrollFade();
 
   return (
     <div className={cx("relative", className)}>
-      <ScrollFadeControls {...scrollFade} />
+      <ScrollFadeControls {...scrollFade} gradientColor={gradientColor} />
       <div className="overflow-x-auto scrollbar-hide" ref={scrollFade.setScrollableRef}>
         {children}
       </div>

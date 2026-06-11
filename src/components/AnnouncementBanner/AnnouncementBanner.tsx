@@ -1,3 +1,4 @@
+import { t } from "@lingui/macro";
 import cx from "classnames";
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
@@ -112,7 +113,7 @@ export function AnnouncementBanner({
             onClick={onClose}
             className="shrink-0 cursor-pointer text-typography-secondary hover:text-typography-primary"
             data-qa="announcement-banner-close"
-            aria-label="Close"
+            aria-label={t`Close`}
           >
             <CloseIcon className="size-20" />
           </button>
@@ -120,7 +121,9 @@ export function AnnouncementBanner({
       </div>
 
       <div className="flex flex-col gap-4 p-12">
-        <div className="text-body-medium text-typography-primary">{children}</div>
+        <div className="text-body-medium leading-[1.3] text-typography-primary [&_a:hover]:!underline [&_a]:!text-blue-300 [&_a]:!no-underline">
+          {children}
+        </div>
 
         {(footerLink || dots) && (
           <div className="flex items-center justify-between gap-12 pr-4">
@@ -207,7 +210,7 @@ function Dots({
               type="button"
               onClick={() => onDotClick(i)}
               className={cx("group flex p-3", isActive ? "cursor-default" : "cursor-pointer")}
-              aria-label={`Go to slide ${i + 1}`}
+              aria-label={t`Go to slide ${i + 1}`}
               aria-current={isActive}
             >
               <span className={dotClass} />

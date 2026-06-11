@@ -200,8 +200,10 @@ function CardContent({ event, variant }: { event: EventData; variant: NonNullabl
 
   return (
     <div>
-      <p className={cx("text-body-medium mb-4 font-medium", titleColor)}>{event.title}</p>
-      <div className="text-body-medium line-clamp-3 text-typography-primary">{event.description}</div>
+      <p className={cx("text-body-medium mb-4 font-medium leading-[1.3]", titleColor)}>{event.title}</p>
+      <div className="text-body-medium line-clamp-3 leading-[1.3] text-typography-primary">
+        {event.summary ?? event.description}
+      </div>
     </div>
   );
 }

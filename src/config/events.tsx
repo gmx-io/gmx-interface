@@ -3,7 +3,7 @@
 import { ReactNode } from "react";
 import { Link } from "react-router-dom";
 
-import { ARBITRUM, MEGAETH } from "config/chains";
+import { ARBITRUM, AVALANCHE, BOTANIX, MEGAETH } from "config/chains";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import TokenIcon from "components/TokenIcon/TokenIcon";
@@ -17,6 +17,11 @@ export type EventData = {
   id: string;
   type: AnnouncementType;
   title: ReactNode;
+  /**
+   * Short text shown in the What's New carousel and at the top of the /announcements page card.
+   * When absent, the carousel falls back to `description`.
+   */
+  summary?: ReactNode;
   description: ReactNode;
 
   isActive?: boolean;
@@ -30,6 +35,9 @@ export type EventData = {
 
   variant?: AnnouncementVariant;
   chains?: number[];
+  /**
+   * "Read more" link rendered on the /announcements page card only, never in the carousel.
+   */
   link?: {
     text: string;
     href: string;
@@ -46,9 +54,81 @@ export const homeEventsData: EventData[] = [];
 
 export const appEventsData: EventData[] = [
   {
+    id: "mock-foo-bar-listing",
+    type: "listing",
+    isActive: true,
+    startDate: "04 Jun 2026, 12:00",
+    endDate: "31 Dec 2026, 12:00",
+    chains: [ARBITRUM, AVALANCHE, BOTANIX, MEGAETH],
+    title: "[Mock] FOO and BAR markets added on Arbitrum",
+    summary: (
+      <>
+        <Link to="/trade">Trade</Link> FOO and BAR perpetuals with up to 100x leverage, or{" "}
+        <Link to="/pools">provide liquidity</Link> via GLV <span className="text-slate-100">[WETH-USDC]</span>.
+      </>
+    ),
+    description: (
+      <>
+        FOO and BAR perpetual markets are now live on Arbitrum. Trade with up to 100x leverage 24/7, or provide
+        liquidity using GM, GLV <span className="text-slate-100">[WETH-USDC]</span>, or GLV{" "}
+        <span className="text-slate-100">[WBTC-USDC]</span>. Find them under the New category in the market dropdown.
+      </>
+    ),
+    link: { text: "Read more", href: "https://gmxio.substack.com", newTab: true },
+  },
+  {
+    id: "mock-baz-migration",
+    type: "delisting",
+    isActive: true,
+    startDate: "03 Jun 2026, 12:00",
+    endDate: "31 Dec 2026, 12:00",
+    chains: [ARBITRUM],
+    variant: "warning",
+    title: "[Mock] BAZ to QUX migration",
+    description: (
+      <>
+        ⚠️ BAZ is migrating to the QUX token. Please close your position on the BAZ/USD market by [08:00 UTC] 30 June
+        to avoid auto-closure or forced liquidation.
+      </>
+    ),
+  },
+  {
+    id: "mock-scheduled-maintenance",
+    type: "maintenance",
+    isActive: true,
+    startDate: "02 Jun 2026, 12:00",
+    endDate: "31 Dec 2026, 12:00",
+    variant: "error",
+    title: "[Mock] Scheduled maintenance on 30 June",
+    description: (
+      <>
+        The interface will be unavailable for approximately 30 minutes starting at 02:00 UTC on 30 June. Open positions
+        and orders are not affected.
+      </>
+    ),
+  },
+  {
+    id: "mock-fee-reduction",
+    type: "update",
+    isActive: true,
+    startDate: "01 Jun 2026, 12:00",
+    endDate: "31 Dec 2026, 12:00",
+    variant: "success",
+    title: "[Mock] Trading fees reduced across all markets",
+    description: (
+      <>
+        Position fees have been lowered to 1/2 bps from 4/6 bps across all markets. Swap fees are reduced as well, and
+        liquidity providers keep the same share of fees as before. This longer description also verifies that the
+        carousel clips overflowing content with a line clamp while the announcements page shows the full text.{" "}
+        <ExternalLink href="https://docs.gmx.io/docs/trading/overview/#fees">Read more</ExternalLink>.
+      </>
+    ),
+  },
+  {
     id: "mega-arbitrum-megaeth-listing",
     type: "listing",
     flagId: "showMegaListingArbitrumMegaeth",
+    startDate: "01 May 2026, 12:00",
     endDate: "07 May 2026, 12:00",
     chains: [ARBITRUM, MEGAETH],
     title: "MEGA market added on Arbitrum and MegaETH",
@@ -64,6 +144,7 @@ export const appEventsData: EventData[] = [
     id: "megaeth-points-program",
     type: "update",
     flagId: "showMegaethPoints",
+    startDate: "30 Apr 2026, 0:00",
     endDate: "31 Dec 2026, 0:00",
     chains: [MEGAETH],
     title: "Earn points on GMX MegaETH",
@@ -102,6 +183,7 @@ export const appEventsData: EventData[] = [
     type: "delisting",
     isActive: true,
     endDate: "20 Apr 2026, 0:00",
+    chains: [ARBITRUM],
     title: "WELL/USD delisting",
     requiresOpenPosition: "0x2347EbB8645Cc2EA0Ba92D1EC59704031F2fCCf4",
     description: (
@@ -115,7 +197,9 @@ export const appEventsData: EventData[] = [
     id: "gold-silver-fee-reduction",
     type: "update",
     flagId: "showGoldSilverFeeReduction",
+    startDate: "16 Apr 2026, 12:00",
     endDate: "21 Apr 2026, 12:00",
+    chains: [ARBITRUM],
     title: "GOLD and SILVER trading fees heavily reduced",
     description: (
       <>
@@ -130,6 +214,7 @@ export const appEventsData: EventData[] = [
     isActive: true,
     startDate: "10 Apr 2026, 12:00",
     endDate: "17 Apr 2026, 12:00",
+    chains: [ARBITRUM],
     title: "GOLD and SILVER commodity markets added on Arbitrum",
     description: (
       <>
@@ -143,7 +228,9 @@ export const appEventsData: EventData[] = [
     id: "energy-markets-arbitrum-listing",
     type: "listing",
     flagId: "showEnergyMarketsArbitrumListing",
+    startDate: "23 Apr 2026, 12:00",
     endDate: "30 Apr 2026, 12:00",
+    chains: [ARBITRUM],
     title: "WTI Crude Oil, Brent Crude Oil and Natural Gas energy commodity markets added on Arbitrum",
     description: (
       <>
@@ -177,6 +264,7 @@ export const appEventsData: EventData[] = [
     isActive: true,
     startDate: "20 Feb 2026, 0:00",
     endDate: "27 Feb 2026, 0:00",
+    chains: [ARBITRUM],
     title: "OM to MANTRA migration",
     variant: "warning",
     requiresOpenPosition: "0x89EB78679921499632fF16B1be3ee48295cfCD91",
@@ -193,6 +281,7 @@ export const appEventsData: EventData[] = [
     isActive: true,
     startDate: "13 Feb 2026, 14:00",
     endDate: "20 Feb 2026, 14:00",
+    chains: [ARBITRUM],
     title: "CC (Canton) and MET (Meteora) markets added on Arbitrum",
     description: (
       <>
@@ -207,6 +296,7 @@ export const appEventsData: EventData[] = [
     isActive: true,
     startDate: "23 Jan 2026, 11:00",
     endDate: "30 Jan 2026, 10:00",
+    chains: [ARBITRUM],
     title: "XAUT (Tether Gold), LIT and IP markets added on Arbitrum",
     description: (
       <>
@@ -221,6 +311,7 @@ export const appEventsData: EventData[] = [
     isActive: true,
     startDate: "09 Jan 2026, 10:00",
     endDate: "16 Jan 2026, 12:00",
+    chains: [ARBITRUM],
     title: "AR, DASH, JTO, SYRUP and CHZ markets added on Arbitrum",
     description: (
       <>
@@ -235,6 +326,7 @@ export const appEventsData: EventData[] = [
     isActive: true,
     startDate: "22 Dec 2025, 16:10",
     endDate: "29 Dec 2025, 16:10",
+    chains: [ARBITRUM],
     title: "MON (Monad), SKY and ZEC (Zcash) markets added on Arbitrum",
     description: (
       <>
@@ -263,6 +355,7 @@ export const appEventsData: EventData[] = [
     isActive: true,
     startDate: "06 Nov 2025, 08:00",
     endDate: "06 Dec 2025, 08:00",
+    chains: [ARBITRUM],
     title: "AI16Z/USD delisting",
     requiresOpenPosition: "0xD60f1BA6a76979eFfE706BF090372Ebc0A5bF169",
     description: (
@@ -281,6 +374,7 @@ export const appEventsData: EventData[] = [
     isActive: true,
     startDate: "17 Oct 2025, 10:00",
     endDate: "24 Oct 2025, 10:00",
+    chains: [AVALANCHE],
     title: "XAUt0 markets added on Avalanche",
     description: (
       <>
@@ -295,6 +389,7 @@ export const appEventsData: EventData[] = [
     isActive: true,
     startDate: "14 Oct 2025, 6:00",
     endDate: "21 Oct 2025, 6:00",
+    chains: [ARBITRUM],
     title: "Morpho now supports GLV",
     description: (
       <>
@@ -312,6 +407,7 @@ export const appEventsData: EventData[] = [
     isActive: true,
     startDate: "09 Oct 2025, 14:30",
     endDate: "16 Oct 2025, 12:00",
+    chains: [ARBITRUM],
     title: "0G, ASTER, AVNT and LINEA markets added on Arbitrum",
     description: (
       <>
@@ -326,6 +422,7 @@ export const appEventsData: EventData[] = [
     isActive: true,
     startDate: "25 Sep 2025, 16:50",
     endDate: "02 Oct 2025, 18:00",
+    chains: [ARBITRUM],
     title: "XPL (Plasma), BNB and SOL markets added on Arbitrum",
     description: (
       <>
@@ -340,6 +437,7 @@ export const appEventsData: EventData[] = [
     isActive: true,
     startDate: "18 Sep 2025, 14:00",
     endDate: "25 Sep 2025, 12:00",
+    chains: [ARBITRUM],
     title: "ZORA and KTA markets added on Arbitrum",
     description: (
       <>
@@ -368,6 +466,7 @@ export const appEventsData: EventData[] = [
     isActive: true,
     startDate: "04 Sep 2025, 10:00",
     endDate: "11 Sep 2025, 12:00",
+    chains: [ARBITRUM],
     title: "LINK, MORPHO, VVV and WELL markets added on Arbitrum",
     description: (
       <>
@@ -382,6 +481,7 @@ export const appEventsData: EventData[] = [
     isActive: true,
     startDate: "01 Sep 2025, 12:00",
     endDate: "07 Sep 2025, 12:00",
+    chains: [AVALANCHE, ARBITRUM],
     title: "WLFI market added on Avalanche and Arbitrum",
     description: (
       <>
@@ -397,6 +497,7 @@ export const appEventsData: EventData[] = [
     isActive: true,
     startDate: "28 Aug 2025, 10:00",
     endDate: "04 Sep 2025, 12:00",
+    chains: [ARBITRUM, BOTANIX],
     title: "AERO and BRETT markets added on Arbitrum, BTC market added on Botanix",
     description: (
       <>

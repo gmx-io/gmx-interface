@@ -4485,6 +4485,10 @@ msgstr "최소 영향 풀 수량"
 msgid "Generating..."
 msgstr ""
 
+#: src/components/AnnouncementBanner/AnnouncementBanner.tsx
+msgid "Go to slide {0}"
+msgstr "슬라이드 {0}(으)로 이동"
+
 #: src/components/Errors/getContractErrorMessage.ts
 msgid "Price impact too high"
 msgstr "가격 영향이 너무 큽니다"
@@ -7469,7 +7473,6 @@ msgstr "규모"
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
-#: src/pages/Announcements/Announcements.tsx
 msgid "From"
 msgstr "부터"
 
@@ -11008,6 +11011,7 @@ msgstr "체결가가 허용 가격을 충족하지 못했습니다. 조건이 �
 msgid "multiple asset classes"
 msgstr "다중 자산 클래스"
 
+#: src/components/AnnouncementBanner/AnnouncementBanner.tsx
 #: src/components/OrderEditor/OrderEditor.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
 #: src/components/OrdersModal/AddTPSLModal.tsx
