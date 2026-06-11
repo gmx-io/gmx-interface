@@ -194,6 +194,17 @@ export function MenuSection({
       to: "/pools",
     },
     { icon: <DashboardIcon className="size-20" />, label: t`Stats`, key: "stats", to: "/stats" },
+    {
+      icon: <ReferralsIcon className="size-20" />,
+      label: withMegaethSparkle(t`Referrals`),
+      key: "referrals",
+      to: "/referrals",
+    },
+    { icon: <LeaderboardIcon className="size-20" />, label: t`Leaderboard`, key: "leaderboard", to: "/leaderboard" },
+    { icon: <EcosystemIcon className="size-20" />, label: t`Ecosystem`, key: "ecosystem", to: "/ecosystem" },
+  ];
+
+  const dashboardNavItems = [
     { icon: <DashboardIcon className="size-20" />, label: t`Costs comparison`, key: "costs", to: "/costs" },
     {
       icon: <DashboardIcon className="size-20" />,
@@ -211,36 +222,33 @@ export function MenuSection({
           },
         ]
       : []),
-    {
-      icon: <ReferralsIcon className="size-20" />,
-      label: withMegaethSparkle(t`Referrals`),
-      key: "referrals",
-      to: "/referrals",
-    },
-    { icon: <LeaderboardIcon className="size-20" />, label: t`Leaderboard`, key: "leaderboard", to: "/leaderboard" },
-    { icon: <EcosystemIcon className="size-20" />, label: t`Ecosystem`, key: "ecosystem", to: "/ecosystem" },
   ];
 
   const { pathname } = useLocation();
 
-  const isNavItemActive = (item: (typeof mainNavItems)[number]) => {
+  const isNavItemActive = (item: { to: string }) => {
     return pathname === item.to || pathname.startsWith(`${item.to}/`);
   };
 
+  const renderNavItem = (item: { icon: ReactNode; label: ReactNode; key: string; to: string }) => (
+    <NavItem
+      key={item.key}
+      icon={item.icon}
+      label={item.label}
+      isActive={isNavItemActive(item)}
+      isCollapsed={isCollapsed}
+      to={item.to}
+      onClick={onMenuItemClick}
+    />
+  );
+
   return (
-    <ul className="flex list-none flex-col px-0">
-      {mainNavItems.map((item) => (
-        <NavItem
-          key={item.key}
-          icon={item.icon}
-          label={item.label}
-          isActive={isNavItemActive(item)}
-          isCollapsed={isCollapsed}
-          to={item.to}
-          onClick={onMenuItemClick}
-        />
-      ))}
-    </ul>
+    <div className="flex flex-col">
+      <ul className="flex list-none flex-col px-0">{mainNavItems.map(renderNavItem)}</ul>
+      <ul className="mt-8 flex list-none flex-col border-t border-slate-800 px-0 pt-8">
+        {dashboardNavItems.map(renderNavItem)}
+      </ul>
+    </div>
   );
 }
 

@@ -1,4 +1,5 @@
 import { Trans } from "@lingui/macro";
+import cx from "classnames";
 import { Suspense, lazy, useEffect } from "react";
 import { Redirect, Route, Switch, useLocation } from "react-router-dom";
 import type { Address } from "viem";
@@ -33,6 +34,7 @@ import { SyntheticsPage } from "pages/SyntheticsPage/SyntheticsPage";
 import { SyntheticsStats } from "pages/SyntheticsStats/SyntheticsStats";
 import { TradingCostsPage } from "pages/TradingCosts/TradingCosts";
 
+import AppPageLayout from "components/AppPageLayout/AppPageLayout";
 import { EarnRedirect } from "components/Earn/EarnRedirect";
 import { RedirectWithQuery } from "components/RedirectWithQuery/RedirectWithQuery";
 
@@ -89,8 +91,86 @@ const LazyGmxExecutionCosts = isDevelopment()
       import("pages/GmxExecutionCosts/GmxExecutionCosts").then((module) => ({ default: module.GmxExecutionCostsPage }))
     )
   : undefined;
+
+const GMX_EXECUTION_COSTS_FILTER_PLACEHOLDER_CLASSES = [
+  "max-w-[260px]",
+  "max-w-[120px]",
+  "max-w-[120px]",
+  "max-w-[120px]",
+  "max-w-[150px]",
+];
+
+function LoadingBlock({ className }: { className?: string }) {
+  return <div className={cx("animate-pulse rounded-4 bg-slate-800", className)} />;
+}
+
+function GmxExecutionCostsLoadingPage() {
+  return (
+    <AppPageLayout title="GMX Execution Costs">
+      <div className="flex flex-col gap-16" aria-busy="true">
+        <div className="rounded-8 bg-slate-900 p-20">
+          <div className="flex flex-wrap items-start justify-between gap-16">
+            <div className="w-full max-w-[860px]">
+              <h1 className="text-24 font-medium text-typography-primary">GMX Execution Costs</h1>
+              <LoadingBlock className="mt-8 h-16 w-full max-w-[720px]" />
+              <LoadingBlock className="mt-6 h-16 w-full max-w-[520px]" />
+            </div>
+            <div className="flex min-w-[220px] flex-col items-end gap-6">
+              <LoadingBlock className="h-14 w-[180px]" />
+              <LoadingBlock className="h-14 w-[140px]" />
+            </div>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 gap-12 rounded-8 bg-slate-900 p-16 md:grid-cols-[minmax(260px,1.6fr)_repeat(3,minmax(120px,1fr))_minmax(150px,0.8fr)]">
+          {GMX_EXECUTION_COSTS_FILTER_PLACEHOLDER_CLASSES.map((maxWidthClass, index) => (
+            <div key={`${maxWidthClass}-${index}`} className="flex min-w-0 flex-col gap-6">
+              <LoadingBlock className="h-14 w-80" />
+              <LoadingBlock className={cx("h-42 w-full", maxWidthClass)} />
+            </div>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 gap-12 sm:grid-cols-2 md:grid-cols-[repeat(auto-fit,minmax(220px,1fr))]">
+          {Array.from({ length: 9 }).map((_, index) => (
+            <div key={index} className="rounded-8 bg-slate-900 p-16">
+              <LoadingBlock className="h-14 w-96" />
+              <LoadingBlock className="mt-10 h-28 w-[120px]" />
+              <LoadingBlock className="mt-8 h-14 w-[108px]" />
+            </div>
+          ))}
+        </div>
+
+        <div className="grid grid-cols-1 gap-16 xl:grid-cols-2">
+          {["distribution", "range", "scatter", "components"].map((key) => (
+            <div key={key} className="rounded-8 bg-slate-900 p-16">
+              <LoadingBlock className="h-18 w-[220px]" />
+              <LoadingBlock className="mt-12 h-[280px] w-full" />
+            </div>
+          ))}
+
+          <div className="rounded-8 bg-slate-900 p-16 xl:col-span-2">
+            <LoadingBlock className="h-18 w-[120px]" />
+            <LoadingBlock className="mt-12 h-[280px] w-full" />
+          </div>
+
+          <div className="rounded-8 bg-slate-900 p-16 xl:col-span-2">
+            <div className="flex flex-wrap items-center justify-between gap-12">
+              <LoadingBlock className="h-18 w-[180px]" />
+              <LoadingBlock className="h-32 w-[260px]" />
+            </div>
+            <LoadingBlock className="mt-16 h-[420px] w-full" />
+          </div>
+        </div>
+      </div>
+    </AppPageLayout>
+  );
+}
+
 const GmxExecutionCostsPage = () => (
-  <Suspense fallback={<Trans>Loading...</Trans>}>{LazyGmxExecutionCosts ? <LazyGmxExecutionCosts /> : null}</Suspense>
+  <Suspense fallback={<GmxExecutionCostsLoadingPage />}>
+    {LazyGmxExecutionCosts ? <LazyGmxExecutionCosts /> : null}
+  </Suspense>
 );
 
 export function MainRoutes({ openSettings }: { openSettings: () => void }) {
