@@ -25,8 +25,10 @@ import type {
   MarketTicker,
   MarketValues,
   MarketWithTiers,
+  RawMarketConfig,
   RawMarketInfo,
   RawMarketsInfoData,
+  RawMarketValues,
 } from "./types";
 
 export function getMarketFullName(p: { longToken: Token; shortToken: Token; indexToken: Token; isSpotOnly: boolean }) {
@@ -483,6 +485,25 @@ export function composeRawMarketsInfoData({
       marketConfig,
       marketsConstants,
     });
+  }
+
+  return data;
+}
+
+export function mergeMarketsConfigValues(
+  configs: RawMarketConfig[],
+  values: RawMarketValues[]
+): RawMarketsInfoData {
+  const valuesByAddress = new Map(values.map((value) => [value.marketTokenAddress, value]));
+  const data: RawMarketsInfoData = {};
+
+  for (const config of configs) {
+    const value = valuesByAddress.get(config.marketTokenAddress);
+    if (!value) {
+      continue;
+    }
+
+    data[config.marketTokenAddress] = { ...config, ...value } as RawMarketInfo;
   }
 
   return data;
