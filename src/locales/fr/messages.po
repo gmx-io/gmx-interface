@@ -658,7 +658,6 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order execution price"
 msgstr "Prix d'exécution de l'ordre"
 
@@ -1410,6 +1409,7 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the order"
 msgstr "Prix de référence de l'ordre"
 
@@ -1806,7 +1806,6 @@ msgstr "Non pris en charge"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Acceptable price for the order"
@@ -2159,6 +2158,10 @@ msgstr "Paramètres manquants. Actualisez et réessayez"
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Available to trade assets"
 msgstr "Actifs disponibles pour le trading"
+
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Position history"
+msgstr "Historique de position"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
@@ -3209,6 +3212,10 @@ msgstr ""
 msgid "Insufficient {tokensText} for gas in your GMX Account <0>Deposit {tokensText}</0>"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Failed to load trade history"
+msgstr "Échec du chargement de l'historique des trades"
+
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "<0>Set recommended impact: {0}</0>."
@@ -3634,6 +3641,7 @@ msgid "Failed to update orders"
 msgstr "Échec de la mise à jour des ordres"
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Margin delta"
 msgstr ""
 
@@ -5429,6 +5437,11 @@ msgstr ""
 msgid "Claims unavailable on Avalanche Fuji"
 msgstr "Récupérations indisponibles sur Avalanche Fuji"
 
+#: src/components/TradeHistory/TradeHistory.tsx
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Clear position history filter"
+msgstr "Effacer le filtre d'historique de position"
+
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Users"
 msgstr "Utilisateurs"
@@ -6489,6 +6502,7 @@ msgstr "Opérations"
 msgid "Trading may be temporarily unavailable. Our team is working to resolve the issue."
 msgstr "Le trading peut être temporairement indisponible. Notre équipe travaille à résoudre le problème."
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -9220,6 +9234,11 @@ msgstr "/USD"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express + One-Click"
 msgstr "Express + One-Click"
+
+#: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "View position history"
+msgstr "Voir l'historique de position"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "GM tokens represent shares in a liquidity pool for a single GMX market. Buy GM to provide liquidity and earn fees from leverage trading, swaps, and market-making activity on that specific market. All rewards are auto-compounded."

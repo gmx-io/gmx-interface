@@ -256,14 +256,27 @@ describe("TradeHistoryRow helpers", () => {
           },
           {
             "key": "Price impact",
-            "value": {
-              "state": "error",
-              "text": "-$ 16.82",
-            },
+            "value": [
+              {
+                "state": "error",
+                "text": "-$ 16.82",
+              },
+              " ",
+              {
+                "state": "error",
+                "text": "(-81 bps)",
+              },
+            ],
           },
         ],
         "priceImpact": "-$ 16.82",
         "size": "+$ 2,070.19",
+        "sizeComment": [
+          {
+            "key": "Margin delta",
+            "value": "+202.62 USDC",
+          },
+        ],
         "timestamp": "18 Sep 2023, 16:43",
         "timestampUTC": "UTC: 2023-09-18 12:43:18",
       }
@@ -296,14 +309,27 @@ describe("TradeHistoryRow helpers", () => {
           "",
           {
             "key": "Price impact",
-            "value": {
-              "state": "error",
-              "text": "-$ 16.82",
-            },
+            "value": [
+              {
+                "state": "error",
+                "text": "-$ 16.82",
+              },
+              " ",
+              {
+                "state": "error",
+                "text": "(-81 bps)",
+              },
+            ],
           },
         ],
         "priceImpact": "-$ 16.82",
         "size": "+$ 2,070.19",
+        "sizeComment": [
+          {
+            "key": "Margin delta",
+            "value": "+202.62 USDC",
+          },
+        ],
         "timestamp": "18 Sep 2023, 16:43",
         "timestampUTC": "UTC: 2023-09-18 12:43:18",
       }
@@ -460,10 +486,17 @@ describe("TradeHistoryRow helpers", () => {
           "",
           {
             "key": "Price impact",
-            "value": {
-              "state": "error",
-              "text": "-$ 16.82",
-            },
+            "value": [
+              {
+                "state": "error",
+                "text": "-$ 16.82",
+              },
+              " ",
+              {
+                "state": "error",
+                "text": "(-26 bps)",
+              },
+            ],
           },
           {
             "key": "Liquidation fee",
@@ -512,14 +545,27 @@ describe("TradeHistoryRow helpers", () => {
           "",
           {
             "key": "Price impact",
-            "value": {
-              "state": "error",
-              "text": "-$ 0.09",
-            },
+            "value": [
+              {
+                "state": "error",
+                "text": "-$ 0.09",
+              },
+              " ",
+              {
+                "state": "error",
+                "text": "(-17 bps)",
+              },
+            ],
           },
         ],
         "priceImpact": "-$ 0.09",
         "size": "+$ 49.83",
+        "sizeComment": [
+          {
+            "key": "Margin delta",
+            "value": "+5.69 USDC",
+          },
+        ],
         "timestamp": "21 Sep 2023, 19:32",
         "timestampUTC": "UTC: 2023-09-21 15:32:40",
       }
@@ -596,10 +642,17 @@ describe("TradeHistoryRow helpers", () => {
           },
           {
             "key": "Price impact",
-            "value": {
-              "state": "success",
-              "text": "< +$ 0.01",
-            },
+            "value": [
+              {
+                "state": "success",
+                "text": "< +$ 0.01",
+              },
+              " ",
+              {
+                "state": "success",
+                "text": "(0 bps)",
+              },
+            ],
           },
         ],
         "priceImpact": "< +$ 0.01",

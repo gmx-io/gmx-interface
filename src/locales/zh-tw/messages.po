@@ -658,7 +658,6 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Order execution price"
 msgstr "訂單成交價格"
 
@@ -1410,6 +1409,7 @@ msgstr ""
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Mark price for the order"
 msgstr "訂單的標記價格"
 
@@ -1806,7 +1806,6 @@ msgstr "不支援"
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
-#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/swap.ts
 msgid "Acceptable price for the order"
@@ -2159,6 +2158,10 @@ msgstr "缺少參數。請重新整理後再試"
 #: src/components/GmxAccountModal/GmxAccountModalShared.tsx
 msgid "Available to trade assets"
 msgstr "可交易資產"
+
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Position history"
+msgstr "倉位歷史"
 
 #: src/pages/UiPage/BannerTest.tsx
 msgid "Existing position is in WETH-USDC pool, but that pool lacks liquidity for this order"
@@ -3209,6 +3212,10 @@ msgstr ""
 msgid "Insufficient {tokensText} for gas in your GMX Account <0>Deposit {tokensText}</0>"
 msgstr ""
 
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Failed to load trade history"
+msgstr "載入交易歷史記錄失敗"
+
 #: src/components/AcceptablePriceImpactInputRow/AcceptablePriceImpactInputRow.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 msgid "<0>Set recommended impact: {0}</0>."
@@ -3634,6 +3641,7 @@ msgid "Failed to update orders"
 msgstr "更新訂單失敗"
 
 #: src/components/OrderItem/OrderItem.tsx
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 msgid "Margin delta"
 msgstr ""
 
@@ -5429,6 +5437,11 @@ msgstr ""
 msgid "Claims unavailable on Avalanche Fuji"
 msgstr "Avalanche Fuji 上無法領取"
 
+#: src/components/TradeHistory/TradeHistory.tsx
+#: src/components/TradeHistory/TradeHistory.tsx
+msgid "Clear position history filter"
+msgstr "清除倉位歷史篩選器"
+
 #: src/pages/Dashboard/StatsCard.tsx
 msgid "Users"
 msgstr "用戶"
@@ -6489,6 +6502,7 @@ msgstr "交易"
 msgid "Trading may be temporarily unavailable. Our team is working to resolve the issue."
 msgstr "交易可能暫時無法使用。我們的團隊正在解決此問題。"
 
+#: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
@@ -9220,6 +9234,11 @@ msgstr "/USD"
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "Express + One-Click"
 msgstr "Express + One-Click"
+
+#: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+#: src/components/TradeHistory/TradeHistoryRow/TradeHistoryRow.tsx
+msgid "View position history"
+msgstr "查看倉位歷史"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "GM tokens represent shares in a liquidity pool for a single GMX market. Buy GM to provide liquidity and earn fees from leverage trading, swaps, and market-making activity on that specific market. All rewards are auto-compounded."

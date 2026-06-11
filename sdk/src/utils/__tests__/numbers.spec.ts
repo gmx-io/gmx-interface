@@ -12,6 +12,7 @@ import {
   formatAmount,
   formatAmountHuman,
   formatBalanceAmount,
+  formatBasisPoints,
   formatFactor,
   formatPercentage,
   formatTokenAmount,
@@ -542,5 +543,30 @@ describe("formatTokenAmount", () => {
       minThreshold: "0.00000001",
     });
     expect(result).toContain("<");
+  });
+});
+
+describe("formatBasisPoints", () => {
+  it("formats negative deltas with sign", () => {
+    expect(formatBasisPoints(-1682n * 10n ** 28n, 207019n * 10n ** 28n)).toBe("-81 bps");
+  });
+
+  it("formats positive deltas with plus sign", () => {
+    expect(formatBasisPoints(50n, 10000n)).toBe("+50 bps");
+  });
+
+  it("formats zero without sign", () => {
+    expect(formatBasisPoints(0n, 10000n)).toBe("0 bps");
+  });
+
+  it("uses comma separators for large bps values", () => {
+    expect(formatBasisPoints(2n * 10n ** 30n, 10n ** 30n)).toBe("+20,000 bps");
+  });
+
+  it("returns undefined for missing or non-positive basis", () => {
+    expect(formatBasisPoints(undefined, 100n)).toBeUndefined();
+    expect(formatBasisPoints(100n, undefined)).toBeUndefined();
+    expect(formatBasisPoints(100n, 0n)).toBeUndefined();
+    expect(formatBasisPoints(100n, -1n)).toBeUndefined();
   });
 });

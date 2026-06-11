@@ -20,7 +20,7 @@ import {
 } from "domain/synthetics/positions";
 import { TradeMode } from "domain/synthetics/trade";
 import { CHART_PERIODS } from "lib/legacy";
-import { formatBalanceAmount, formatDeltaUsd, formatUsd } from "lib/numbers";
+import { formatBalanceAmount, formatBasisPoints, formatDeltaUsd, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { getMarketIndexName } from "sdk/utils/markets";
@@ -102,6 +102,8 @@ export function PositionItem(p: Props) {
   }, []);
 
   function renderNetValue() {
+    const netPriceImpactBps = formatBasisPoints(p.position.netPriceImapctDeltaUsd, p.position.sizeInUsd);
+
     return (
       <TooltipWithPortal
         handle={formatUsd(displayedNetValue)}
@@ -151,7 +153,12 @@ export function PositionItem(p: Props) {
               <>
                 <StatsTooltipRow
                   label={t`Net price impact`}
-                  value={formatDeltaUsd(p.position.netPriceImapctDeltaUsd) || "..."}
+                  value={
+                    <>
+                      {formatDeltaUsd(p.position.netPriceImapctDeltaUsd) || "..."}
+                      {netPriceImpactBps ? ` (${netPriceImpactBps})` : null}
+                    </>
+                  }
                   valueClassName="numbers"
                   showDollar={false}
                   textClassName={getPositiveOrNegativeClass(p.position.netPriceImapctDeltaUsd)}

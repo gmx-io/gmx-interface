@@ -22,6 +22,9 @@ import { processRawTradeActions } from "./processTradeActions";
 export type TradeHistoryResult = {
   tradeActions?: TradeAction[];
   isLoading: boolean;
+  error: Error | undefined;
+  hasMorePages: boolean;
+  isFetchingNextPage: boolean;
   pageIndex: number;
   setPageIndex: (...args: Parameters<SWRInfiniteResponse["setSize"]>) => void;
 };
@@ -36,6 +39,7 @@ export function useTradeHistory(
     toTxTimestamp?: number;
     marketsDirectionsFilter?: MarketFilterLongShortItemData[];
     refreshInterval?: number;
+    positionKey?: string;
     orderEventCombinations?: {
       eventName?: TradeActionType;
       orderType?: OrderType[];
@@ -53,6 +57,7 @@ export function useTradeHistory(
     marketsDirectionsFilter,
     orderEventCombinations,
     refreshInterval,
+    positionKey,
   } = p;
   const marketsInfoData = useMarketsInfoData();
   const tokensData = useTokensData();
@@ -70,6 +75,7 @@ export function useTradeHistory(
         fromTxTimestamp,
         toTxTimestamp,
         orderEventCombinations,
+        positionKey,
         marketsDirectionsFilter,
         index,
         pageSize,
@@ -103,6 +109,7 @@ export function useTradeHistory(
         fromTxTimestamp,
         toTxTimestamp,
         orderEventCombinations,
+        positionKey,
         showDebugValues,
       });
 
@@ -129,6 +136,11 @@ export function useTradeHistory(
   return {
     tradeActions,
     isLoading,
+    error,
+    hasMorePages: data?.at(-1)?.length === pageSize,
+    // setSize bumps pageIndex synchronously while data keeps the previous pages
+    // until the appended page resolves, so this is the "page in flight" window
+    isFetchingNextPage: !error && data !== undefined && data.length < pageIndex,
     pageIndex,
     setPageIndex,
   };
@@ -144,6 +156,7 @@ export async function fetchRawTradeActions({
   fromTxTimestamp,
   toTxTimestamp,
   orderEventCombinations,
+  positionKey,
   showDebugValues,
 }: {
   chainId: number;
@@ -162,6 +175,7 @@ export async function fetchRawTradeActions({
         isTwap?: boolean | undefined;
       }[]
     | undefined;
+  positionKey?: string;
   showDebugValues?: boolean;
 }): Promise<SubsquidTradeAction[] | undefined> {
   const client = getSubsquidGraphClient(chainId);
@@ -201,9 +215,10 @@ export async function fetchRawTradeActions({
   const filtersStr = buildFiltersBody({
     AND: [
       {
-        account_eq: forAllAccounts ? undefined : account,
+        account_eq: forAllAccounts || positionKey ? undefined : account,
         timestamp_gte: fromTxTimestamp,
         timestamp_lte: toTxTimestamp,
+        positionKey_eq: positionKey,
       },
       {
         OR: !hasPureDirectionFilters
@@ -315,7 +330,7 @@ export async function fetchRawTradeActions({
         tradeActions(
             offset: ${offset},
             limit: ${limit},
-            orderBy: timestamp_DESC,
+            orderBy: [timestamp_DESC, id_DESC],
             ${whereClause}
         ) {
             id
@@ -326,6 +341,9 @@ export async function fetchRawTradeActions({
             marketAddress
             swapPath
             initialCollateralTokenAddress
+            positionKey
+            positionSizeInUsd
+            positionSizeInTokens
 
             initialCollateralDeltaAmount
             sizeDeltaUsd

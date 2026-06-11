@@ -9,11 +9,18 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isSwapOrderType } from "domain/synthetics/orders";
 import { OrderType } from "domain/synthetics/orders/types";
-import { PositionTradeAction, SwapTradeAction, TradeActionType } from "domain/synthetics/tradeHistory";
+import {
+  filterTradeActionsByDisplayFilters,
+  getPositionLifecycleSlice,
+  PositionLifecycleFilter,
+  PositionTradeAction,
+  resolveTradeHistoryFetchParams,
+  SwapTradeAction,
+  TradeActionType,
+} from "domain/synthetics/tradeHistory";
 import { processRawTradeActions } from "domain/synthetics/tradeHistory/processTradeActions";
 import { fetchRawTradeActions } from "domain/synthetics/tradeHistory/useTradeHistory";
 import { downloadAsCsv } from "lib/csv";
-import { definedOrThrow } from "lib/guards";
 import { helperToast } from "lib/helperToast";
 
 import { ToastifyDebug } from "components/ToastifyDebug/ToastifyDebug";
@@ -33,6 +40,7 @@ export function useDownloadAsCsv({
   toTxTimestamp,
   orderEventCombinations,
   minCollateralUsd,
+  positionLifecycleFilter,
 }: {
   marketsDirectionsFilter: MarketFilterLongShortItemData[] | undefined;
   forAllAccounts: boolean | undefined;
@@ -49,6 +57,7 @@ export function useDownloadAsCsv({
     | undefined;
 
   minCollateralUsd?: bigint;
+  positionLifecycleFilter?: PositionLifecycleFilter;
 }): [boolean, () => Promise<void>] {
   const chainId = useSelector(selectChainId);
   const marketsInfoData = useMarketsInfoData();
@@ -69,6 +78,14 @@ export function useDownloadAsCsv({
       let currentPageIndex = 0;
       let hasMorePages = true;
 
+      const fetchParams = resolveTradeHistoryFetchParams({
+        positionLifecycleFilter,
+        fromTxTimestamp,
+        toTxTimestamp,
+        marketsDirectionsFilter,
+        orderEventCombinations,
+      });
+
       while (hasMorePages) {
         const rawPage = await withRetry(
           () =>
@@ -76,12 +93,9 @@ export function useDownloadAsCsv({
               chainId,
               pageIndex: currentPageIndex,
               pageSize: PAGE_SIZE,
-              marketsDirectionsFilter,
               forAllAccounts,
               account,
-              fromTxTimestamp,
-              toTxTimestamp,
-              orderEventCombinations,
+              ...fetchParams,
             }),
           {
             retryCount: 3,
@@ -89,27 +103,50 @@ export function useDownloadAsCsv({
           }
         );
 
+        // Pagination must be driven by the raw page length: processing can drop rows
+        hasMorePages = Boolean(rawPage && rawPage.length === PAGE_SIZE);
+
         const processedPage = processRawTradeActions({
           chainId,
           rawActions: rawPage,
           marketsInfoData,
           tokensData,
-          marketsDirectionsFilter,
+          marketsDirectionsFilter: fetchParams.marketsDirectionsFilter,
         }) as (PositionTradeAction | SwapTradeAction)[] | undefined;
-
-        if (!processedPage || processedPage.length === 0 || processedPage.length < PAGE_SIZE) {
-          hasMorePages = false;
-        }
 
         if (processedPage && processedPage.length) {
           aggregatedTradeActions.push(...processedPage);
         }
+
+        // The lifecycle slice only needs pages up to its older close boundary
+        if (
+          positionLifecycleFilter &&
+          !getPositionLifecycleSlice(aggregatedTradeActions, positionLifecycleFilter).needsMoreData
+        ) {
+          hasMorePages = false;
+        }
+
         currentPageIndex += 1;
       }
 
-      definedOrThrow(aggregatedTradeActions);
+      let exportedTradeActions: (PositionTradeAction | SwapTradeAction)[] = aggregatedTradeActions;
 
-      const fullFormattedData = aggregatedTradeActions
+      if (positionLifecycleFilter) {
+        const lifecycleSlice = getPositionLifecycleSlice(aggregatedTradeActions, positionLifecycleFilter);
+        exportedTradeActions = (filterTradeActionsByDisplayFilters({
+          tradeActions: lifecycleSlice.tradeActions,
+          fromTxTimestamp,
+          toTxTimestamp,
+          marketsDirectionsFilter,
+          orderEventCombinations,
+        }) ?? []) as (PositionTradeAction | SwapTradeAction)[];
+
+        if (exportedTradeActions.length === 0) {
+          throw new Error("Position history could not be loaded for the CSV export");
+        }
+      }
+
+      const fullFormattedData = exportedTradeActions
         .map((tradeAction) => {
           const explorerUrl = getExplorerUrl(chainId) + `tx/${tradeAction.transactionHash}`;
 
@@ -166,6 +203,7 @@ export function useDownloadAsCsv({
     marketsInfoData,
     minCollateralUsd,
     orderEventCombinations,
+    positionLifecycleFilter,
     toTxTimestamp,
     tokensData,
   ]);

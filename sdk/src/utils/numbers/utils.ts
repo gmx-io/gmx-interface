@@ -79,6 +79,17 @@ export function getBasisPoints(numerator: bigint, denominator: bigint, shouldRou
   return result;
 }
 
+export function formatBasisPoints(deltaUsd: bigint | undefined, basisUsd: bigint | undefined): string | undefined {
+  if (deltaUsd === undefined || basisUsd === undefined || basisUsd <= 0n) {
+    return undefined;
+  }
+
+  const bps = getBasisPoints(deltaUsd, basisUsd);
+  const sign = getPlusOrMinusSymbol(bps);
+
+  return `${sign}${formatAmount(bigMath.abs(bps), 0, 0, true)} bps`;
+}
+
 export function roundUpMagnitudeDivision(a: bigint, b: bigint) {
   if (a < 0n) {
     return (a - b + 1n) / b;

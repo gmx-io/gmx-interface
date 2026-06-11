@@ -1,5 +1,5 @@
-import { Trans } from "@lingui/macro";
-import { useEffect, useMemo, useState } from "react";
+import { t, Trans } from "@lingui/macro";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import type { Address } from "viem";
 
 import { TRADE_HISTORY_PER_PAGE } from "config/ui";
@@ -8,7 +8,15 @@ import { selectChainId } from "context/SyntheticsStateContext/selectors/globalSe
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions/usePositionsConstants";
-import { TradeActionType, useTradeHistory } from "domain/synthetics/tradeHistory";
+import {
+  filterTradeActionsByDisplayFilters,
+  getPositionLifecycleSlice,
+  PositionLifecycleFilter,
+  PositionTradeAction,
+  resolveTradeHistoryFetchParams,
+  TradeActionType,
+  useTradeHistory,
+} from "domain/synthetics/tradeHistory";
 import { useDateRange, useNormalizeDateRange } from "lib/dates";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
@@ -23,6 +31,7 @@ import { TableScrollFadeContainer } from "components/TableScrollFade/TableScroll
 import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
 import DownloadIcon from "img/ic_download2.svg?react";
+import FilterIcon from "img/ic_filter.svg?react";
 import PieChartIcon from "img/ic_pie_chart.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
@@ -35,6 +44,7 @@ import { useDownloadAsCsv } from "./useDownloadAsCsv";
 import "./TradeHistorySynthetics.scss";
 
 const TRADE_HISTORY_PREFETCH_SIZE = 100;
+const POSITION_LIFECYCLE_PREFETCH_SIZE = TRADE_HISTORY_PREFETCH_SIZE;
 const ENTITIES_PER_PAGE = TRADE_HISTORY_PER_PAGE;
 
 type ActionFilter = {
@@ -57,39 +67,128 @@ export function TradeHistory(p: Props) {
   const [startDate, endDate, setDateRange] = useDateRange();
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
   const [actionFilter, setActionFilter] = useState<ActionFilter[]>([]);
+  const [positionLifecycleFilter, setPositionLifecycleFilter] = useState<PositionLifecycleFilter | undefined>();
 
   const [fromTxTimestamp, toTxTimestamp] = useNormalizeDateRange(startDate, endDate);
 
   const { positionsConstants } = usePositionsConstantsRequest(chainId);
   const { minCollateralUsd } = positionsConstants || {};
 
+  const tradeHistoryFetchParams = useMemo(
+    () =>
+      resolveTradeHistoryFetchParams({
+        positionLifecycleFilter,
+        fromTxTimestamp,
+        toTxTimestamp,
+        marketsDirectionsFilter,
+        orderEventCombinations: actionFilter,
+      }),
+    [actionFilter, fromTxTimestamp, marketsDirectionsFilter, positionLifecycleFilter, toTxTimestamp]
+  );
+
   const {
     tradeActions,
     isLoading: isHistoryLoading,
+    error: historyError,
+    hasMorePages: hasMoreTradeActionPages,
+    isFetchingNextPage,
     pageIndex: tradeActionsPageIndex,
     setPageIndex: setTradeActionsPageIndex,
   } = useTradeHistory(chainId, {
     account,
     forAllAccounts,
-    pageSize: TRADE_HISTORY_PREFETCH_SIZE,
-    fromTxTimestamp,
-    toTxTimestamp,
-    marketsDirectionsFilter,
-    orderEventCombinations: actionFilter,
+    pageSize: positionLifecycleFilter ? POSITION_LIFECYCLE_PREFETCH_SIZE : TRADE_HISTORY_PREFETCH_SIZE,
+    ...tradeHistoryFetchParams,
   });
 
-  const isConnected = Boolean(account);
-  const isLoading = (forAllAccounts || isConnected) && (minCollateralUsd === undefined || isHistoryLoading);
+  const positionLifecycleSlice = useMemo(
+    () => getPositionLifecycleSlice(tradeActions, positionLifecycleFilter),
+    [positionLifecycleFilter, tradeActions]
+  );
+  const isLifecycleSliceIncomplete =
+    Boolean(positionLifecycleFilter) &&
+    positionLifecycleSlice.needsMoreData &&
+    hasMoreTradeActionPages &&
+    !historyError;
+  const shouldRequestMoreLifecycleRows = isLifecycleSliceIncomplete && !isHistoryLoading && !isFetchingNextPage;
+  const isLifecycleCrawling = Boolean(positionLifecycleFilter) && (isLifecycleSliceIncomplete || isFetchingNextPage);
 
-  const isEmpty = !isLoading && !tradeActions?.length;
+  const filteredTradeActions = useMemo(
+    () =>
+      positionLifecycleFilter
+        ? filterTradeActionsByDisplayFilters({
+            tradeActions: positionLifecycleSlice.tradeActions,
+            fromTxTimestamp,
+            toTxTimestamp,
+            marketsDirectionsFilter,
+            orderEventCombinations: actionFilter,
+          })
+        : tradeActions,
+    [
+      actionFilter,
+      fromTxTimestamp,
+      marketsDirectionsFilter,
+      positionLifecycleFilter,
+      positionLifecycleSlice.tradeActions,
+      toTxTimestamp,
+      tradeActions,
+    ]
+  );
+
+  const isConnected = Boolean(account);
+  const isLoading =
+    (forAllAccounts || isConnected) &&
+    (minCollateralUsd === undefined ||
+      isHistoryLoading ||
+      (isLifecycleSliceIncomplete && !filteredTradeActions?.length));
+
+  const isEmpty = !isLoading && !filteredTradeActions?.length;
+  const paginationKey = useMemo(
+    () =>
+      JSON.stringify([
+        account,
+        forAllAccounts,
+        fromTxTimestamp,
+        toTxTimestamp,
+        marketsDirectionsFilter,
+        actionFilter,
+        positionLifecycleFilter,
+      ]),
+    [
+      account,
+      actionFilter,
+      forAllAccounts,
+      fromTxTimestamp,
+      marketsDirectionsFilter,
+      positionLifecycleFilter,
+      toTxTimestamp,
+    ]
+  );
   const {
     currentPage,
     setCurrentPage,
     currentData: currentPageData,
     pageCount,
-  } = usePagination([account, forAllAccounts].toString(), tradeActions, ENTITIES_PER_PAGE);
+  } = usePagination(paginationKey, filteredTradeActions, ENTITIES_PER_PAGE);
 
-  const hasFilters = Boolean(startDate || endDate || marketsDirectionsFilter.length || actionFilter.length);
+  const hasFilters = Boolean(
+    startDate || endDate || marketsDirectionsFilter.length || actionFilter.length || positionLifecycleFilter
+  );
+
+  const handleSelectPositionLifecycle = useCallback((tradeAction: PositionTradeAction) => {
+    if (!tradeAction.positionKey) {
+      return;
+    }
+
+    setPositionLifecycleFilter({
+      positionKey: tradeAction.positionKey,
+      sourceActionId: tradeAction.id,
+    });
+  }, []);
+
+  const handleClearPositionLifecycleFilter = useCallback(() => {
+    setPositionLifecycleFilter(undefined);
+  }, []);
 
   const pnlAnalysisButton = useMemo(() => {
     if (!account || hideDashboardLink) {
@@ -108,6 +207,13 @@ export function TradeHistory(p: Props) {
   }, [account, chainId, hideDashboardLink]);
 
   useEffect(() => {
+    if (positionLifecycleFilter) {
+      if (shouldRequestMoreLifecycleRows) {
+        setTradeActionsPageIndex((prevIndex) => prevIndex + 1);
+      }
+      return;
+    }
+
     if (!pageCount || !currentPage) return;
     const totalPossiblePages = (TRADE_HISTORY_PREFETCH_SIZE * tradeActionsPageIndex) / TRADE_HISTORY_PER_PAGE;
     const doesMoreDataExist = pageCount >= totalPossiblePages;
@@ -116,7 +222,14 @@ export function TradeHistory(p: Props) {
     if (doesMoreDataExist && isCloseToEnd) {
       setTradeActionsPageIndex((prevIndex) => prevIndex + 1);
     }
-  }, [currentPage, pageCount, tradeActionsPageIndex, setTradeActionsPageIndex]);
+  }, [
+    currentPage,
+    pageCount,
+    positionLifecycleFilter,
+    shouldRequestMoreLifecycleRows,
+    tradeActionsPageIndex,
+    setTradeActionsPageIndex,
+  ]);
 
   const [isLoadingCsv, handleCsvDownload] = useDownloadAsCsv({
     account,
@@ -126,6 +239,7 @@ export function TradeHistory(p: Props) {
     marketsDirectionsFilter,
     orderEventCombinations: actionFilter,
     minCollateralUsd: minCollateralUsd,
+    positionLifecycleFilter,
   });
 
   const { isMobile } = useBreakpoints();
@@ -135,6 +249,19 @@ export function TradeHistory(p: Props) {
       {pnlAnalysisButton}
 
       <DateRangeSelect startDate={startDate} endDate={endDate} onChange={setDateRange} />
+
+      {positionLifecycleFilter ? (
+        <Button
+          variant="ghost"
+          onClick={handleClearPositionLifecycleFilter}
+          className="flex items-center gap-4"
+          aria-label={t`Clear position history filter`}
+          title={t`Clear position history filter`}
+        >
+          {isLifecycleCrawling ? <SpinnerIcon className="size-16 animate-spin" /> : <FilterIcon className="size-16" />}
+          <Trans>Position history</Trans>
+        </Button>
+      ) : null}
 
       <Button variant="ghost" onClick={handleCsvDownload} className="flex items-center gap-4">
         {isLoadingCsv ? <SpinnerIcon className="mr-4 animate-spin" /> : <DownloadIcon className="size-16" />}
@@ -165,6 +292,7 @@ export function TradeHistory(p: Props) {
             <col className="TradeHistorySynthetics-price-column" />
             <col className="TradeHistorySynthetics-pnl-column" />
             <col className="TradeHistorySynthetics-fees-column" />
+            <col className="TradeHistorySynthetics-actions-column" />
           </colgroup>
           <thead>
             <TableTheadTr>
@@ -178,13 +306,13 @@ export function TradeHistory(p: Props) {
                   onChange={setMarketsDirectionsFilter}
                 />
               </TableTh>
-              <TableTh className="w-[22%]">
+              <TableTh className="w-[20%]">
                 <Trans>SIZE</Trans>
               </TableTh>
-              <TableTh className="w-[18%]">
+              <TableTh className="w-[16%]">
                 <Trans>PRICE</Trans>
               </TableTh>
-              <TableTh className="w-[12%]">
+              <TableTh className="w-[10%]">
                 <TooltipWithPortal
                   variant="iconStroke"
                   content={<Trans>Realized PnL before fees, discounts and price impact.</Trans>}
@@ -192,7 +320,7 @@ export function TradeHistory(p: Props) {
                   <Trans>RPNL</Trans>
                 </TooltipWithPortal>
               </TableTh>
-              <TableTh className="w-[12%]">
+              <TableTh className="w-[10%]">
                 <TooltipWithPortal
                   variant="iconStroke"
                   content={
@@ -204,7 +332,7 @@ export function TradeHistory(p: Props) {
                   <Trans>FEES</Trans>
                 </TooltipWithPortal>
               </TableTh>
-              <TableTh className="w-[100px]" />
+              <TableTh className="w-[132px]" />
             </TableTheadTr>
           </thead>
           <tbody>
@@ -218,19 +346,27 @@ export function TradeHistory(p: Props) {
                   minCollateralUsd={minCollateralUsd!}
                   showDebugValues={showDebugValues}
                   shouldDisplayAccount={forAllAccounts}
+                  onSelectPositionLifecycle={handleSelectPositionLifecycle}
                 />
               ))
             )}
           </tbody>
         </table>
-        {isEmpty && hasFilters && (
+        {isEmpty && Boolean(historyError) && (
+          <EmptyTableContent
+            isLoading={false}
+            isEmpty={isEmpty}
+            emptyText={<Trans>Failed to load trade history</Trans>}
+          />
+        )}
+        {isEmpty && !historyError && hasFilters && (
           <EmptyTableContent
             isLoading={false}
             isEmpty={isEmpty}
             emptyText={<Trans>No trades match the selected filters</Trans>}
           />
         )}
-        {isEmpty && !hasFilters && !isLoading && (
+        {isEmpty && !historyError && !hasFilters && !isLoading && (
           <EmptyTableContent isLoading={false} isEmpty={isEmpty} emptyText={<Trans>No trades yet</Trans>} />
         )}
       </TableScrollFadeContainer>
