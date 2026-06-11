@@ -60,7 +60,7 @@ export function AccountDashboard() {
         {version === 2 && (
           <SyntheticsStateContextProvider overrideChainId={chainId} pageType="accounts" skipLocalReferralCode={false}>
             <div className="flex flex-col gap-8">
-              <div className="grid grid-cols-1 gap-8 lg:grid-cols-2">
+              <div className="flex flex-row flex-wrap gap-8">
                 <div className="max-w-full grow *:size-full">
                   <GeneralPerformanceDetails chainId={chainId} account={account} />
                 </div>

@@ -118,6 +118,7 @@ export function DailyAndCumulativePnLChart({
   const lastTouchEndRef = useRef(0);
   const wheelZoomAccumulatorRef = useRef<{ direction?: "in" | "out"; value: number }>({ value: 0 });
   const zoomInteractionResetTimeoutRef = useRef<number | undefined>();
+  const mobileTapTooltipTimeoutRef = useRef<number | undefined>();
 
   // Mirrors the latest zoom window so gesture handlers can read and update it
   // synchronously between renders, keeping the setState updaters pure.
@@ -210,11 +211,17 @@ export function DailyAndCumulativePnLChart({
 
     return () => {
       window.clearTimeout(zoomInteractionResetTimeoutRef.current);
+      window.clearTimeout(mobileTapTooltipTimeoutRef.current);
       if (element) {
         delete element.dataset[DRAGGING_DATA_ATTRIBUTE];
         delete element.dataset[SUPPRESS_HOVER_DATA_ATTRIBUTE];
       }
     };
+  }, []);
+
+  const cancelMobileTapTooltip = useCallback(() => {
+    window.clearTimeout(mobileTapTooltipTimeoutRef.current);
+    mobileTapTooltipTimeoutRef.current = undefined;
   }, []);
 
   const startZoomInteraction = useCallback(() => {
@@ -243,6 +250,14 @@ export function DailyAndCumulativePnLChart({
       delete element.dataset[SUPPRESS_HOVER_DATA_ATTRIBUTE];
     }
   }, []);
+
+  const showMobileTapTooltipAfterDoubleTapTimeout = useCallback(() => {
+    cancelMobileTapTooltip();
+    mobileTapTooltipTimeoutRef.current = window.setTimeout(() => {
+      mobileTapTooltipTimeoutRef.current = undefined;
+      stopZoomInteraction();
+    }, TOUCH_DOUBLE_TAP_TIMEOUT);
+  }, [cancelMobileTapTooltip, stopZoomInteraction]);
 
   const getChartInteractionRatio = useCallback((clientX: number) => {
     const element = chartInteractionRef.current;
@@ -406,6 +421,11 @@ export function DailyAndCumulativePnLChart({
         return;
       }
 
+      if (isMobile) {
+        cancelMobileTapTooltip();
+        startZoomInteraction();
+      }
+
       if (event.touches.length === 2) {
         startZoomInteraction();
 
@@ -456,8 +476,12 @@ export function DailyAndCumulativePnLChart({
 
         const cleanup = () => {
           lastTouchEndRef.current = Date.now();
+          lastTouchTapRef.current = 0;
+          cancelMobileTapTooltip();
           window.removeEventListener("touchmove", handleTouchMove);
-          stopZoomInteraction();
+          if (!isMobile) {
+            stopZoomInteraction();
+          }
         };
 
         window.addEventListener("touchmove", handleTouchMove, { passive: false });
@@ -511,16 +535,20 @@ export function DailyAndCumulativePnLChart({
         applyZoomWindow(panPnlWindowByDelta(startWindow, groupedPnlData.length, deltaPoints));
       };
 
-      const cleanup = () => {
+      const cleanupTouchListeners = () => {
         lastTouchEndRef.current = Date.now();
         window.removeEventListener("touchmove", handleTouchMove);
-        stopZoomInteraction();
       };
 
       const handleTouchEnd = () => {
-        cleanup();
+        cleanupTouchListeners();
 
         if (hadMultiTouch || maxDistance > TOUCH_TAP_MAX_DISTANCE) {
+          lastTouchTapRef.current = 0;
+          cancelMobileTapTooltip();
+          if (!isMobile) {
+            stopZoomInteraction();
+          }
           return;
         }
 
@@ -529,24 +557,44 @@ export function DailyAndCumulativePnLChart({
 
         if (now - lastTouchTapRef.current < TOUCH_DOUBLE_TAP_TIMEOUT) {
           lastTouchTapRef.current = 0;
+          cancelMobileTapTooltip();
           startZoomInteraction();
           applyZoomWindow(zoomPnlWindowAtRatio(zoomWindowRef.current, groupedPnlData.length, "in", anchorRatio));
-          stopZoomInteraction(ZOOM_INTERACTION_RESET_DELAY);
+          if (!isMobile) {
+            stopZoomInteraction(ZOOM_INTERACTION_RESET_DELAY);
+          }
         } else {
           lastTouchTapRef.current = now;
+          if (isMobile) {
+            showMobileTapTooltipAfterDoubleTapTimeout();
+          } else {
+            stopZoomInteraction();
+          }
+        }
+      };
+
+      const handleTouchCancel = () => {
+        cleanupTouchListeners();
+        lastTouchTapRef.current = 0;
+        cancelMobileTapTooltip();
+        if (!isMobile) {
+          stopZoomInteraction();
         }
       };
 
       window.addEventListener("touchmove", handleTouchMove, { passive: false });
       window.addEventListener("touchend", handleTouchEnd, { once: true });
-      window.addEventListener("touchcancel", cleanup, { once: true });
+      window.addEventListener("touchcancel", handleTouchCancel, { once: true });
     },
     [
       applyZoomWindow,
+      cancelMobileTapTooltip,
       canZoom,
       getChartInteractionRatio,
       groupedPnlData.length,
+      isMobile,
       normalizedZoomWindow,
+      showMobileTapTooltipAfterDoubleTapTimeout,
       startZoomInteraction,
       stopZoomInteraction,
     ]
@@ -578,6 +626,7 @@ export function DailyAndCumulativePnLChart({
             overflow="visible"
           >
             <RechartsTooltip
+              trigger={isMobile ? "click" : "hover"}
               cursor={CHART_CURSOR_PROPS}
               content={(props) => <ChartTooltip {...props} grouping={grouping} />}
               wrapperStyle={CHART_TOOLTIP_WRAPPER_STYLE}
