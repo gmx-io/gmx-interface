@@ -134,40 +134,36 @@ function GeneralPerformanceDetailsRow({
         </MetricWithRank>
       </TableTd>
       <TableTd>
-        <TooltipWithPortal
-          variant="none"
-          tooltipClassName="cursor-help *:cursor-auto"
-          className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
-            "text-green-500 decoration-green-500/50": row.pnlUsd > 0n,
-            "text-red-500 decoration-red-500/50": row.pnlUsd < 0n,
-            "decoration-gray-400": row.pnlUsd === 0n,
-          })}
-          content={
-            showDebugValues ? <GeneralPerformanceDetailsDebugTooltip row={row} /> : <PnlBreakdownTooltip row={row} />
-          }
-          handle={
-            <MetricWithRank rank={row.pnlUsdRank}>
-              <span className="numbers">{formatUsd(row.pnlUsd)}</span>
-            </MetricWithRank>
-          }
-        ></TooltipWithPortal>
+        <MetricWithRank rank={row.pnlUsdRank}>
+          <TooltipWithPortal
+            variant="none"
+            tooltipClassName="cursor-help *:cursor-auto"
+            className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
+              "text-green-500 decoration-green-500/50": row.pnlUsd > 0n,
+              "text-red-500 decoration-red-500/50": row.pnlUsd < 0n,
+              "decoration-gray-400": row.pnlUsd === 0n,
+            })}
+            content={
+              showDebugValues ? <GeneralPerformanceDetailsDebugTooltip row={row} /> : <PnlBreakdownTooltip row={row} />
+            }
+            handle={<span className="numbers">{formatUsd(row.pnlUsd)}</span>}
+          />
+        </MetricWithRank>
       </TableTd>
       <TableTd>
-        <TooltipWithPortal
-          variant="none"
-          tooltipClassName="cursor-help *:cursor-auto"
-          className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
-            "text-green-500 decoration-green-500/50": row.pnlBps > 0n,
-            "text-red-500 decoration-red-500/50": row.pnlBps < 0n,
-            "decoration-gray-400": row.pnlBps === 0n,
-          })}
-          content={<PnlPercentageTooltip row={row} />}
-          handle={
-            <MetricWithRank rank={row.pnlBpsRank}>
-              <span className="numbers">{formatPercentage(row.pnlBps, { signed: true })}</span>
-            </MetricWithRank>
-          }
-        ></TooltipWithPortal>
+        <MetricWithRank rank={row.pnlBpsRank}>
+          <TooltipWithPortal
+            variant="none"
+            tooltipClassName="cursor-help *:cursor-auto"
+            className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
+              "text-green-500 decoration-green-500/50": row.pnlBps > 0n,
+              "text-red-500 decoration-red-500/50": row.pnlBps < 0n,
+              "decoration-gray-400": row.pnlBps === 0n,
+            })}
+            content={<PnlPercentageTooltip row={row} />}
+            handle={<span className="numbers">{formatPercentage(row.pnlBps, { signed: true })}</span>}
+          />
+        </MetricWithRank>
       </TableTd>
       <TableTd>
         <TooltipWithPortal
@@ -199,14 +195,20 @@ function GeneralPerformanceDetailsRow({
 
 function MetricWithRank({ rank, children }: { rank: number | undefined; children: React.ReactNode }) {
   return (
-    <div className="leading-tight flex items-center gap-4">
-      <span>{children}</span>
+    <span className="leading-tight whitespace-nowrap">
+      {children}
       {rank !== undefined && (
-        <span className="text-11 text-typography-secondary">
-          <Trans>Rank</Trans> <span className="numbers">#{rank}</span>
-        </span>
+        <>
+          {" "}
+          <TooltipWithPortal
+            variant="none"
+            shouldStopPropagation
+            content={t`Rank among accounts for this metric and period.`}
+            handle={<span className="cursor-help text-12 text-typography-secondary numbers">(#{rank})</span>}
+          />
+        </>
       )}
-    </div>
+    </span>
   );
 }
 

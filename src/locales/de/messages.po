@@ -1000,10 +1000,6 @@ msgstr "1. Platz"
 msgid "Transaction blocked"
 msgstr "Transaktion blockiert"
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Rank"
-msgstr "Rang"
-
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Force primary failure"
@@ -4291,6 +4287,10 @@ msgstr "Die Differenz zwischen erwartetem und tatsächlichem Ausführungspreis a
 #: src/components/ChainDataImage.tsx
 msgid "{chainName} data"
 msgstr "{chainName}-Daten"
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Rank among accounts for this metric and period."
+msgstr "Rang unter Konten für diese Kennzahl und diesen Zeitraum."
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "No net rate history for this market"

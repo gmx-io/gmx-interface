@@ -1000,10 +1000,6 @@ msgstr "第 1 名"
 msgid "Transaction blocked"
 msgstr "交易已封鎖"
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Rank"
-msgstr "排名"
-
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Force primary failure"
@@ -4291,6 +4287,10 @@ msgstr "預期成交價格與實際成交價格之間因波動性產生的差異
 #: src/components/ChainDataImage.tsx
 msgid "{chainName} data"
 msgstr "{chainName} 資料"
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Rank among accounts for this metric and period."
+msgstr "此指標和週期內帳戶之間的排名。"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "No net rate history for this market"

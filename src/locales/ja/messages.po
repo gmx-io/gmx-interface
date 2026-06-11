@@ -1000,10 +1000,6 @@ msgstr "1位"
 msgid "Transaction blocked"
 msgstr "トランザクションがブロックされました"
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Rank"
-msgstr "ランク"
-
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
 msgid "Force primary failure"
@@ -4291,6 +4287,10 @@ msgstr "ボラティリティによる予想約定価格と実際の約定価格
 #: src/components/ChainDataImage.tsx
 msgid "{chainName} data"
 msgstr "{chainName} データ"
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Rank among accounts for this metric and period."
+msgstr "この指標と期間におけるアカウント間のランクです。"
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "No net rate history for this market"
