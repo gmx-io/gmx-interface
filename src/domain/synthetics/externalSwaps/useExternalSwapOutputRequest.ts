@@ -1,4 +1,4 @@
-import { useMemo } from "react";
+import { useMemo, useRef } from "react";
 import { usePrevious } from "react-use";
 import useSWR from "swr";
 
@@ -16,6 +16,24 @@ import { ExternalSwapAggregator, ExternalSwapQuote } from "sdk/utils/trade/types
 
 import { getNeedTokenApprove, useTokensAllowanceData } from "../tokens";
 import { getKyberSwapTxnData, KyberSwapQuote } from "./kyberSwap";
+import { isAmountWithinKeyTolerance } from "./utils";
+
+function useStableRequestAmountIn(amountIn: bigint | undefined, resetKey: string): bigint | undefined {
+  const ref = useRef<{ resetKey: string; value: bigint } | undefined>(undefined);
+
+  if (amountIn === undefined || amountIn <= 0n) {
+    ref.current = undefined;
+    return undefined;
+  }
+
+  const prev = ref.current;
+  if (!prev || prev.resetKey !== resetKey || !isAmountWithinKeyTolerance(amountIn, prev.value)) {
+    ref.current = { resetKey, value: amountIn };
+    return amountIn;
+  }
+
+  return prev.value;
+}
 
 export function useExternalSwapOutputRequest({
   chainId,
@@ -36,17 +54,19 @@ export function useExternalSwapOutputRequest({
   gasPrice: bigint | undefined;
   enabled?: boolean;
 }) {
+  const stableAmountIn = useStableRequestAmountIn(amountIn, `${tokenInAddress}:${tokenOutAddress}:${slippage}`);
+
   const swapKey =
     enabled &&
     tokenInAddress &&
     tokenOutAddress &&
     receiverAddress &&
     tokenOutAddress !== tokenInAddress &&
-    amountIn !== undefined &&
-    amountIn > 0n &&
+    stableAmountIn !== undefined &&
+    stableAmountIn > 0n &&
     slippage !== undefined &&
     gasPrice !== undefined
-      ? `useExternalSwapsQuote:${chainId}:${tokenInAddress}:${tokenOutAddress}:${amountIn}:${slippage}:${receiverAddress}`
+      ? `useExternalSwapsQuote:${chainId}:${tokenInAddress}:${tokenOutAddress}:${stableAmountIn}:${slippage}:${receiverAddress}`
       : null;
 
   const debouncedKey = useDebounce(swapKey, 300);
@@ -63,7 +83,7 @@ export function useExternalSwapOutputRequest({
           !tokenInAddress ||
           !tokenOutAddress ||
           !receiverAddress ||
-          amountIn === undefined ||
+          stableAmountIn === undefined ||
           slippage === undefined ||
           gasPrice === undefined
         ) {
@@ -82,7 +102,7 @@ export function useExternalSwapOutputRequest({
           receiverAddress,
           tokenInAddress,
           tokenOutAddress,
-          amountIn,
+          amountIn: stableAmountIn,
           gasPrice,
           slippage,
         });

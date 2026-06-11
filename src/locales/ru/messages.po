@@ -690,7 +690,7 @@ msgstr ""
 msgid "Treasury"
 msgstr "Казна"
 
-#: src/components/Earn/Portfolio/RewardsBar.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Your share of the total network staking power. Treasury rewards will be distributed proportionally to staking power when GMX reaches $90. All projected rewards are best-effort estimations. Actual distribution is subject to DAO governance."
 msgstr ""
 
@@ -3140,6 +3140,10 @@ msgstr "TVL"
 msgid "Your GMX Account balance, usable for trading from any supported chain. <0>Read more</0>."
 msgstr "Ваш баланс GMX Account, доступный для торговли из любой поддерживаемой сети. <0>Подробнее</0>."
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "AI trading assistant"
+msgstr "ИИ-ассистент для трейдинга"
+
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
@@ -4611,6 +4615,10 @@ msgstr "{secondLabel}"
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "FEES ($)"
 msgstr "КОМИССИИ ($)"
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Pre-IPO"
+msgstr ""
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Borrowing rate"
@@ -6257,6 +6265,10 @@ msgstr "Макс. кредитное плечо"
 msgid "AVAILABLE LIQUIDITY"
 msgstr ""
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Elfa AI"
+msgstr "Elfa AI"
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "TWAP number of parts"
 msgstr "Количество частей TWAP"
@@ -7363,7 +7375,7 @@ msgstr "Отмена стоп-лосса"
 msgid "Set limit price above mark price"
 msgstr ""
 
-#: src/components/Earn/Portfolio/RewardsBar.tsx
+#: src/pages/Earn/EarnPortfolioPage.tsx
 msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
 msgstr ""
 
@@ -9669,6 +9681,7 @@ msgstr "Общий процент PnL после комиссий и влиян�
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
@@ -9948,7 +9961,7 @@ msgstr "Зарезервированное положительное влиян
 msgid "Max rate short"
 msgstr "Макс. ставка для шортов"
 
-#: src/components/Earn/Portfolio/RewardsBar.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staking Power Share"
 msgstr ""
 
@@ -10008,6 +10021,7 @@ msgstr "Оптимальный коэффициент использования
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "Wallet"
 msgstr "Кошелек"
@@ -10041,7 +10055,7 @@ msgid "Limit Decrease"
 msgstr "Лимитное уменьшение"
 
 #: src/components/GasPaymentTokenSelector/GasPaymentTokenSelector.tsx
-#: src/components/GasPaymentTokenSelector/GasPaymentTokenSelector.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Gas payment token"
 msgstr "Токен оплаты Gas"
 

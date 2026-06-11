@@ -690,7 +690,7 @@ msgstr ""
 msgid "Treasury"
 msgstr "國庫"
 
-#: src/components/Earn/Portfolio/RewardsBar.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Your share of the total network staking power. Treasury rewards will be distributed proportionally to staking power when GMX reaches $90. All projected rewards are best-effort estimations. Actual distribution is subject to DAO governance."
 msgstr ""
 
@@ -3140,6 +3140,10 @@ msgstr "TVL"
 msgid "Your GMX Account balance, usable for trading from any supported chain. <0>Read more</0>."
 msgstr "您的 GMX Account 餘額，可從任何支援的鏈進行交易。<0>閱讀更多</0>。"
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "AI trading assistant"
+msgstr "AI 交易助手"
+
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/AllowedSwapSlippageInputRowImpl/AllowedSwapSlippageInputRowImpl.tsx
 #: src/components/PositionSeller/rows/AllowedSlippageRow.tsx
@@ -4611,6 +4615,10 @@ msgstr "{secondLabel}"
 #: src/components/TradeHistory/useDownloadAsCsv.tsx
 msgid "FEES ($)"
 msgstr "費用 ($)"
+
+#: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
+msgid "Pre-IPO"
+msgstr ""
 
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Borrowing rate"
@@ -6257,6 +6265,10 @@ msgstr "最大槓桿"
 msgid "AVAILABLE LIQUIDITY"
 msgstr ""
 
+#: src/pages/Ecosystem/ecosystemConstants.tsx
+msgid "Elfa AI"
+msgstr "Elfa AI"
+
 #: src/components/SettingsModal/TradingSettings.tsx
 msgid "TWAP number of parts"
 msgstr "TWAP 分割數量"
@@ -7363,7 +7375,7 @@ msgstr "取消止損"
 msgid "Set limit price above mark price"
 msgstr ""
 
-#: src/components/Earn/Portfolio/RewardsBar.tsx
+#: src/pages/Earn/EarnPortfolioPage.tsx
 msgid "27% of protocol fees are accumulating in the Treasury for GMX buybacks. Rewards will be distributed to stakers when GMX reaches $90, proportional to staking power (duration × amount staked)."
 msgstr ""
 
@@ -9669,6 +9681,7 @@ msgstr "扣除費用和價格影響後的總 PnL 百分比。將滑鼠懸停在�
 #: src/components/GmxAccountModal/GmxAccountModalMobile.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
 #: src/components/MarginDestinationSelector/MarginDestinationSelector.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
 #: src/pages/AccountDashboard/AccountDashboard.tsx
@@ -9948,7 +9961,7 @@ msgstr "保留的正向影響"
 msgid "Max rate short"
 msgstr "最大做空費率"
 
-#: src/components/Earn/Portfolio/RewardsBar.tsx
+#: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Staking Power Share"
 msgstr ""
 
@@ -10008,6 +10021,7 @@ msgstr "最佳做多使用率因子"
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/MainView.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 #: src/components/TokenSelector/MultichainMarketTokenSelector.tsx
 msgid "Wallet"
 msgstr "錢包"
@@ -10041,7 +10055,7 @@ msgid "Limit Decrease"
 msgstr "Limit Decrease"
 
 #: src/components/GasPaymentTokenSelector/GasPaymentTokenSelector.tsx
-#: src/components/GasPaymentTokenSelector/GasPaymentTokenSelector.tsx
+#: src/components/SettingsModal/TradingSettings.tsx
 msgid "Gas payment token"
 msgstr "Gas 支付代幣"
 

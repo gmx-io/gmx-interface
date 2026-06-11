@@ -238,6 +238,8 @@ export function GmxAssetCard({ processedData, hasEsGmx }: { processedData: Staki
 
         <StakingPowerAlerts stakingPowerData={stakingPowerData} />
 
+        <div className="mt-12 border-t-1/2 border-slate-600" />
+
         <div className="mt-12 flex grow flex-col gap-8">
           <SyntheticsInfoRow
             label={<Trans>Staked GMX</Trans>}
@@ -407,20 +409,37 @@ function StakingPowerAlerts({ stakingPowerData }: { stakingPowerData: StakingPow
         />
       )}
       {hasPower && (
-        <SyntheticsInfoRow
-          label={
-            <Tooltip
-              handle={<Trans>Staking power</Trans>}
-              content={
-                <Trans>
-                  Staking power accrues over time based on your staked GMX balance and determines your share of buyback
-                  rewards
-                </Trans>
-              }
-            />
-          }
-          value={<span className="numbers">{formatAmount(stakingPowerData.cumulativePower, 18, 0, true)}</span>}
-        />
+        <>
+          <SyntheticsInfoRow
+            label={
+              <Tooltip
+                handle={<Trans>Staking power</Trans>}
+                content={
+                  <Trans>
+                    Staking power accrues over time based on your staked GMX balance and determines your share of
+                    buyback rewards
+                  </Trans>
+                }
+              />
+            }
+            value={<span className="numbers">{formatAmount(stakingPowerData.cumulativePower, 18, 0, true)}</span>}
+          />
+          <SyntheticsInfoRow
+            label={
+              <Tooltip
+                handle={<Trans>Staking Power Share</Trans>}
+                content={
+                  <Trans>
+                    Your share of the total network staking power. Treasury rewards will be distributed proportionally
+                    to staking power when GMX reaches $90. All projected rewards are best-effort estimations. Actual
+                    distribution is subject to DAO governance.
+                  </Trans>
+                }
+              />
+            }
+            value={<span className="numbers">{stakingPowerData.userSharePercent.toFixed(2)}%</span>}
+          />
+        </>
       )}
     </div>
   );
