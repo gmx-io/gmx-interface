@@ -41,7 +41,7 @@ function applyEventChanges<T extends Position>(position: T, event: PositionIncre
   return nextPosition;
 }
 
-function applyOptimisticUpdates<T extends Position>({
+export function applyOptimisticUpdates<T extends Position>({
   positionsData,
   allPositionsKeys,
   positionIncreaseEvents,
@@ -62,10 +62,13 @@ function applyOptimisticUpdates<T extends Position>({
 
       const lastIncreaseEvent = positionIncreaseEvents?.filter((e) => e.positionKey === key).pop();
       const lastDecreaseEvent = positionDecreaseEvents?.filter((e) => e.positionKey === key).pop();
+      const rawPendingUpdate = pendingPositionsUpdates?.[key];
 
       const pendingUpdate =
-        pendingPositionsUpdates?.[key] && (pendingPositionsUpdates[key]?.updatedAt ?? 0) + MAX_PENDING_UPDATE_AGE > now
-          ? pendingPositionsUpdates[key]
+        rawPendingUpdate &&
+        rawPendingUpdate.updatedAt + MAX_PENDING_UPDATE_AGE > now &&
+        !getIsPendingUpdateCoveredByEvent(rawPendingUpdate, lastIncreaseEvent, lastDecreaseEvent)
+          ? rawPendingUpdate
           : undefined;
 
       let position: T;
@@ -110,6 +113,16 @@ function applyOptimisticUpdates<T extends Position>({
     },
     {} as Record<string, T>
   );
+}
+
+function getIsPendingUpdateCoveredByEvent(
+  pendingUpdate: PendingPositionUpdate,
+  increaseEvent: PositionIncreaseEvent | undefined,
+  decreaseEvent: PositionDecreaseEvent | undefined
+) {
+  const eventBlockNumber = pendingUpdate.isIncrease ? increaseEvent?.blockNumber : decreaseEvent?.blockNumber;
+
+  return eventBlockNumber !== undefined && BigInt(eventBlockNumber) >= pendingUpdate.updatedAtBlock;
 }
 
 export function getPendingMockPosition(pendingUpdate: PendingPositionUpdate): Position {

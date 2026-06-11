@@ -240,10 +240,11 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
       setOrderStatuses((old) =>
         setByKey(old, data.key, {
+          ...old[data.key],
           key: data.key,
           data,
           createdTxnHash: txnParams.transactionHash,
-          createdAt: Date.now(),
+          createdAt: old[data.key]?.createdAt ?? Date.now(),
         })
       );
 
@@ -304,7 +305,13 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       }
 
       setOrderStatuses((old) => {
-        if (!old[key]) return old;
+        if (!old[key]) {
+          return setByKey(old, key, {
+            key,
+            createdAt: Date.now(),
+            executedTxnHash: txnParams.transactionHash,
+          });
+        }
 
         return updateByKey(old, key, { executedTxnHash: txnParams.transactionHash });
       });
@@ -737,6 +744,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
     PositionIncrease: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const data: PositionIncreaseEvent = {
+        blockNumber: txnParams.blockNumber,
         positionKey: getPositionKey(
           eventData.addressItems.items.account,
           eventData.addressItems.items.market,
@@ -803,6 +811,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
     PositionDecrease: (eventData: EventLogData, txnParams: EventTxnParams) => {
       const data: PositionDecreaseEvent = {
+        blockNumber: txnParams.blockNumber,
         positionKey: getPositionKey(
           eventData.addressItems.items.account,
           eventData.addressItems.items.market,
@@ -1232,9 +1241,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   const [multichainTransferProgress, setMultichainTransferProgress] = useState<
     MultichainTransferProgress<string> | undefined
-  >(
-    undefined
-  );
+  >(undefined);
 
   useMultichainTransferProgressView(multichainTransferProgress);
 
