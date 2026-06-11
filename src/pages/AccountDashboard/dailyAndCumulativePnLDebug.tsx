@@ -158,6 +158,28 @@ export function DebugLegend({ lastPoint }: { lastPoint?: AccountPnlHistoryPoint 
 }
 
 export const DEV_QUERY = gql`
+  query AccountHistoricalPnlResolver($account: String!, $from: Int, $to: Int) {
+    accountPnlHistoryStats(account: $account, from: $from, to: $to) {
+      cumulativePnl
+      cumulativeRealizedFees
+      cumulativeRealizedPnl
+      cumulativeRealizedPriceImpact
+      cumulativeRealizedSwapImpact
+      pnl
+      realizedFees
+      realizedPnl
+      realizedPriceImpact
+      realizedSwapImpact
+      timestamp
+      unrealizedFees
+      unrealizedPnl
+      startUnrealizedPnl
+      startUnrealizedFees
+    }
+  }
+`;
+
+export const LEGACY_DEV_QUERY = gql`
   query AccountHistoricalPnlResolver($account: String!, $from: Int) {
     accountPnlHistoryStats(account: $account, from: $from) {
       cumulativePnl

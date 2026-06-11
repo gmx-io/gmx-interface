@@ -48,13 +48,25 @@ type Props = {
   account: Address | null | undefined;
   forAllAccounts?: boolean;
   hideDashboardLink?: boolean;
-};
+} & (
+  | {
+      dateRange: [Date | undefined, Date | undefined];
+      onDateRangeChange: (dateRange: [Date | undefined, Date | undefined]) => void;
+    }
+  | {
+      dateRange?: undefined;
+      onDateRangeChange?: undefined;
+    }
+);
 
 export function TradeHistory(p: Props) {
   const { forAllAccounts, account, hideDashboardLink = false } = p;
   const chainId = useSelector(selectChainId);
   const showDebugValues = useShowDebugValues();
-  const [startDate, endDate, setDateRange] = useDateRange();
+  const [localStartDate, localEndDate, setLocalDateRange] = useDateRange();
+  const isDateRangeControlled = p.dateRange !== undefined;
+  const [startDate, endDate] = isDateRangeControlled ? p.dateRange : [localStartDate, localEndDate];
+  const setDateRange = isDateRangeControlled ? p.onDateRangeChange : setLocalDateRange;
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
   const [actionFilter, setActionFilter] = useState<ActionFilter[]>([]);
 
@@ -82,12 +94,26 @@ export function TradeHistory(p: Props) {
   const isLoading = (forAllAccounts || isConnected) && (minCollateralUsd === undefined || isHistoryLoading);
 
   const isEmpty = !isLoading && !tradeActions?.length;
+  const paginationKey = useMemo(
+    () =>
+      JSON.stringify({
+        account,
+        actionFilter,
+        chainId,
+        forAllAccounts,
+        fromTxTimestamp,
+        marketsDirectionsFilter,
+        toTxTimestamp,
+      }),
+    [account, actionFilter, chainId, forAllAccounts, fromTxTimestamp, marketsDirectionsFilter, toTxTimestamp]
+  );
+
   const {
     currentPage,
     setCurrentPage,
     currentData: currentPageData,
     pageCount,
-  } = usePagination([account, forAllAccounts].toString(), tradeActions, ENTITIES_PER_PAGE);
+  } = usePagination(paginationKey, tradeActions, ENTITIES_PER_PAGE);
 
   const hasFilters = Boolean(startDate || endDate || marketsDirectionsFilter.length || actionFilter.length);
 

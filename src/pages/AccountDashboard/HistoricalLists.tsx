@@ -31,6 +31,8 @@ enum TabKey {
 type Props = {
   chainId: ContractsChainId;
   account: Address;
+  dateRange: [Date | undefined, Date | undefined];
+  onDateRangeChange: (dateRange: [Date | undefined, Date | undefined]) => void;
 };
 
 function OrdersTabTitle({
@@ -93,7 +95,7 @@ function useTabLabels(): Record<TabKey, React.ReactNode> {
   return tabLabels;
 }
 
-export function HistoricalLists({ chainId, account }: Props) {
+export function HistoricalLists({ chainId, account, dateRange, onDateRangeChange }: Props) {
   const [tabKey, setTabKey] = useLocalStorageSerializeKey(getAccountDashboardTabKey(chainId), TabKey.Positions);
 
   const tabLabels = useTabLabels();
@@ -159,7 +161,9 @@ export function HistoricalLists({ chainId, account }: Props) {
           onSelectOrderClick={undefined}
         />
       )}
-      {tabKey === TabKey.Trades && <TradeHistory account={account} />}
+      {tabKey === TabKey.Trades && (
+        <TradeHistory account={account} dateRange={dateRange} onDateRangeChange={onDateRangeChange} />
+      )}
       {tabKey === TabKey.Claims && <ClaimsHistory />}
     </div>
   );

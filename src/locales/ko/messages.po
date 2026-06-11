@@ -269,6 +269,10 @@ msgstr "지정가 실패"
 msgid "Performance"
 msgstr "성과"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Open fees"
+msgstr "개시 수수료"
+
 #: src/components/Earn/Portfolio/RewardsBar.tsx
 msgid "Total earned"
 msgstr "총 수익"
@@ -521,6 +525,10 @@ msgstr "암호화폐"
 msgid "Image generation failed. Refresh and try again."
 msgstr "이미지 생성에 실패했습니다. 새로고침 후 다시 시도하십시오."
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Unrealized fee contribution"
+msgstr "미실현 수수료 기여분"
+
 #: src/components/NetRateChart/NetRateChart.tsx
 #: src/components/NetRateChart/NetRateChart.tsx
 msgid "Funding"
@@ -755,7 +763,6 @@ msgid "Activate 1CT"
 msgstr "1CT 활성화"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized PnL"
@@ -847,10 +854,6 @@ msgstr "가용 유동성"
 msgid "The website is a community-deployed instance of the open source <0>GMX front end</0>, hosted on the distributed, peer-to-peer <1>IPFS network</1>"
 msgstr "이 웹사이트는 오픈소스 <0>GMX 프론트엔드</0>의 커뮤니티 배포 인스턴스로, 분산형 P2P <1>IPFS 네트워크</1>에서 호스팅됩니다"
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Total PnL (realized + unrealized) after fees and price impact"
-msgstr "수수료 및 가격 영향 차감 후 총 PnL(실현 + 미실현)"
-
 #: src/pages/SyntheticsStats/SyntheticsStats.tsx
 msgid "Funding decrease factor"
 msgstr "펀딩 감소 계수"
@@ -902,6 +905,10 @@ msgstr "전환 생성 실패"
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "27% of protocol fees fund Treasury buybacks — rewards distributed at $90"
 msgstr ""
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Swap fees"
+msgstr "스왑 수수료"
 
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "GMX alerts"
@@ -992,6 +999,10 @@ msgstr "1위"
 #: src/lib/chains/getMultipleWalletExtensionsChainError.tsx
 msgid "Transaction blocked"
 msgstr "거래가 차단되었습니다"
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Rank"
+msgstr "순위"
 
 #: src/pages/DebugOracleKeeper/parts.tsx
 #: src/pages/RpcDebug/parts.tsx
@@ -1232,7 +1243,6 @@ msgid "{0} swapped to {1} when executed"
 msgstr "체결 시 {0}이(가) {1}(으)로 스왑됩니다"
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Unrealized PnL"
@@ -2924,7 +2934,6 @@ msgid "Buyback dashboard"
 msgstr ""
 
 #: src/pages/AccountDashboard/dailyAndCumulativePnLDebug.tsx
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 #: src/pages/LeaderboardPage/components/LeaderboardAccountsTable.tsx
 msgid "Start unrealized PnL"
@@ -3297,7 +3306,7 @@ msgstr "선택한 필터에 일치하는 항목이 없습니다"
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Outstanding claimable amounts are not included"
-msgstr ""
+msgstr "미청구 가능 금액은 포함되지 않습니다"
 
 #: src/components/GmxAccountModal/InsufficientWntBanner.tsx
 msgid "Insufficient {wrappedNativeTokenSymbol} for gas in your GMX Account."
@@ -3596,6 +3605,10 @@ msgstr ""
 #: src/pages/LeaderboardPage/components/LeaderboardPositionsTable.tsx
 msgid "Realized price impact"
 msgstr "실현 가격 영향"
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Other realized fees"
+msgstr "기타 실현 수수료"
 
 #: src/config/bridging.tsx
 msgid "Mint tBTC using BTC with <0>Threshold</0>"
@@ -4622,6 +4635,7 @@ msgstr "GM 풀"
 #: src/components/TradeBox/TradeBox.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "PnL"
 msgstr "PnL"
 
@@ -4905,6 +4919,10 @@ msgstr "기존 실행 가능 트리거 주문"
 msgid "Terms and conditions"
 msgstr "이용약관"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Unrealized fee contribution is shown as an aggregate."
+msgstr "미실현 수수료 기여분은 합산 값으로 표시됩니다."
+
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GmList.tsx
 msgid "TVL (SUPPLY)"
@@ -4920,6 +4938,7 @@ msgid "Last 180d"
 msgstr "최근 180일"
 
 #: src/components/Claims/ClaimableCardUI.tsx
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Positive funding fees"
 msgstr "양의 펀딩 수수료"
 
@@ -5538,6 +5557,10 @@ msgstr "{0}은(는) 스마트 컨트랙트 주소로 전송할 수 없습니다.
 #: src/pages/Jobs/Jobs.tsx
 msgid "Jobs"
 msgstr "구인"
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Some realized fee components are grouped."
+msgstr "일부 실현 수수료 구성 요소는 그룹화되어 있습니다."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Market"
@@ -7030,6 +7053,10 @@ msgstr "전송 제출됨"
 msgid "Order submission failed"
 msgstr "주문 제출 실패"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Realized PnL before fees"
+msgstr "수수료 전 실현 PnL"
+
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 #: src/components/ChartTokenSelector/ChartTokenSelector.tsx
 msgid "24H%"
@@ -7134,6 +7161,10 @@ msgstr "나에게"
 #: src/pages/BuyGMX/BuyGMX.tsx
 msgid "Bond Protocol"
 msgstr "Bond Protocol"
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Fees and impacts"
+msgstr "수수료 및 영향"
 
 #: src/components/GmxAccountModal/WithdrawalView.tsx
 msgid "Withdrawing {0} to {1} is not supported"
@@ -7430,7 +7461,6 @@ msgstr "규모"
 
 #: src/components/GmxAccountModal/TransferDetailsView.tsx
 #: src/components/TokenSelector/MultichainTokenSelector.tsx
-#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
 msgid "From"
 msgstr "부터"
 
@@ -7835,6 +7865,7 @@ msgstr "전체 계정 전송에만 사용하십시오.<0/>이 작업은 모든 G
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Net price impact"
 msgstr "순 가격 영향"
 
@@ -7858,6 +7889,10 @@ msgstr "{fromText}에서 {toExecutionText}로"
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "Total rebates"
 msgstr ""
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Total PnL after fees and price impact. Hover the value to see the breakdown."
+msgstr "수수료와 가격 영향을 반영한 총 PnL입니다. 값을 가리키면 내역을 볼 수 있습니다."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Execute Limit Swap"
@@ -7957,6 +7992,11 @@ msgstr ""
 #: src/components/OrderItem/OrderItem.tsx
 msgid "Amount"
 msgstr "수량"
+
+#: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Data is currently unavailable"
+msgstr "현재 데이터를 사용할 수 없습니다"
 
 #: src/components/TVChart/ChartHeader.tsx
 msgid "Open interest (<0>{longOIPercentage}</0>/<1>{shortOIPercentage}</1>)"
@@ -8099,6 +8139,10 @@ msgstr ""
 #: src/lib/tenderly.tsx
 msgid "for {comment}"
 msgstr "{comment}에 대해"
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL)."
+msgstr "사용 자본 = max(열린 포지션 담보 합계 - 실현 PnL + 시작 보류 PnL)."
 
 #: src/components/Earn/Portfolio/RecommendedAssets/RecommendedAssets.tsx
 msgid "Performance APY"
@@ -8956,6 +9000,10 @@ msgstr "법정화폐 게이트웨이를 통해 GMX 구매"
 msgid "Max network fee"
 msgstr "최대 네트워크 수수료"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Return on capital used (PnL / capital)."
+msgstr "사용 자본 수익률(PnL / 자본)."
+
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} amount exceeded"
@@ -9431,6 +9479,10 @@ msgstr "옵션 기반 볼트"
 msgid "Time limit"
 msgstr "기간 제한"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Live unrealized PnL before fees"
+msgstr "수수료 전 현재 미실현 PnL"
+
 #: src/context/TokensFavoritesContext/TokensFavoritesContextProvider.tsx
 msgid "DeFi"
 msgstr "DeFi"
@@ -9532,6 +9584,7 @@ msgstr "증가"
 
 #: src/components/TradeFeesRow/TradeFeesRow.tsx
 #: src/components/TradeHistory/TradeHistoryRow/utils/position.ts
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Swap price impact"
 msgstr "스왑 가격 영향"
 
@@ -9606,6 +9659,10 @@ msgstr ""
 msgid "Vested claimable GMX:"
 msgstr "베스팅 완료 수령 가능 GMX:"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Total PnL percentage after fees and price impact. Hover the value to see the breakdown."
+msgstr "수수료와 가격 영향을 반영한 총 PnL 비율입니다. 값을 가리키면 내역을 볼 수 있습니다."
+
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/AvailableToTradeAssetsView.tsx
 #: src/components/GmxAccountModal/GmxAccountModalDesktop.tsx
@@ -9642,6 +9699,10 @@ msgstr "수령할 배분을 최소 한 개 이상 선택하십시오"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Buy"
 msgstr "구매"
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Start unrealized PnL contribution before fees"
+msgstr "수수료 전 시작 미실현 PnL 기여분"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Copy technical details"
@@ -9699,6 +9760,10 @@ msgstr "ETH 입금"
 #: src/components/Referrals/affiliates/createCode/AddAffiliateCode.tsx
 msgid "No tokens on source chain"
 msgstr "소스 체인에 토큰 없음"
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Liquidation fees"
+msgstr "청산 수수료"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 msgid "Projects integrated with GMX"
@@ -9807,6 +9872,10 @@ msgstr "모든 수익이 자동으로 재투자됩니다"
 #: src/components/PositionItem/PositionItem.tsx
 msgid "Use the TP/SL button to set TP/SL orders."
 msgstr "TP/SL 버튼을 사용하여 TP/SL 주문을 설정하십시오."
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Close fees"
+msgstr "종료 수수료"
 
 #: src/components/Earn/Discovery/EarnProductCard.tsx
 msgid "What is GM?"
@@ -10076,6 +10145,7 @@ msgstr ""
 
 #: src/components/Earn/BuybackTracker/BuybackChart.tsx
 #: src/pages/AccountDashboard/DailyAndCumulativePnL.tsx
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "No data available"
 msgstr "데이터 없음"
 
@@ -10276,6 +10346,10 @@ msgstr "스왑 시장 검색"
 #: src/components/NotifyModal/NotifyModal.tsx
 msgid "Liquidation confirmations"
 msgstr "청산 확인"
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Negative funding fees"
+msgstr "음의 펀딩 수수료"
 
 #: src/pages/Ecosystem/Ecosystem.tsx
 #: src/pages/Ecosystem/Ecosystem.tsx
@@ -10555,10 +10629,6 @@ msgstr "마켓을 찾을 수 없습니다"
 msgid "Do I need to enter a code on each network?"
 msgstr ""
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Return on capital used (PnL / capital).<0/><1/>Capital used = max(<2>sum of collateral of open positions - realized PnL + starting pending PnL</2>)."
-msgstr "사용 자본 대비 수익률 (PnL / 자본).<0/><1/>사용 자본 = max(<2>미결제 포지션 담보 합계 - 실현 손익 + 시작 대기 PnL</2>)."
-
 #: src/components/PositionSeller/MarginDestinationDialog.tsx
 msgid "Update default destination"
 msgstr ""
@@ -10634,6 +10704,10 @@ msgstr "일일 손실"
 #: src/components/InterviewModal/InterviewModal.tsx
 msgid "Anonymous chat with GMX team"
 msgstr "GMX 팀과 익명 채팅"
+
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Borrow fees"
+msgstr "차입 수수료"
 
 #: src/pages/AccountTransfer/BeginAccountTransfer/BeginAccountTransfer.tsx
 #: src/pages/AccountTransfer/CompleteAccountTransfer/CompleteAccountTransfer.tsx
@@ -10719,7 +10793,7 @@ msgstr "PNG"
 
 #: src/pages/AccountDashboard/generalPerformanceDetailsDebug.tsx
 msgid "Realized swap fees"
-msgstr ""
+msgstr "실현 스왑 수수료"
 
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx
 #: src/components/GmList/GmTokensTotalBalanceInfo.tsx

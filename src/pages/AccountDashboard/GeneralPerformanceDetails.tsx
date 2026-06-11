@@ -9,6 +9,7 @@ import { PnlSummaryPoint, usePnlSummaryData } from "domain/synthetics/accountSta
 import { formatPercentage, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
+import { EmptyTableContent } from "components/EmptyTableContent/EmptyTableContent";
 import { AccountPnlSummarySkeleton } from "components/Skeleton/Skeleton";
 import StatsTooltipRow from "components/StatsTooltip/StatsTooltipRow";
 import { TableTd, TableTh, TableTheadTr, TableTr } from "components/Table/Table";
@@ -28,7 +29,15 @@ const bucketLabelMap: Record<string, MessageDescriptor> = {
   all: msg`All time`,
 };
 
-export function GeneralPerformanceDetails({ chainId, account }: { chainId: number; account: Address }) {
+export function GeneralPerformanceDetails({
+  chainId,
+  account,
+  onBucketClick,
+}: {
+  chainId: number;
+  account: Address;
+  onBucketClick?: (bucketLabel: string) => void;
+}) {
   const { data, error, loading } = usePnlSummaryData(chainId, account);
 
   return (
@@ -53,7 +62,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
               <TableTh>
                 <TooltipWithPortal
                   tooltipClassName="cursor-help *:cursor-auto"
-                  content={t`Total PnL (realized + unrealized) after fees and price impact`}
+                  content={t`Total PnL after fees and price impact. Hover the value to see the breakdown.`}
                   variant="iconStroke"
                 >
                   <Trans>PNL ($)</Trans>
@@ -63,15 +72,7 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
                 <TooltipWithPortal
                   tooltipClassName="cursor-help *:cursor-auto"
                   variant="iconStroke"
-                  content={
-                    <Trans>
-                      Return on capital used (PnL / capital).
-                      <br />
-                      <br />
-                      Capital used = max(
-                      <i>sum of collateral of open positions - realized PnL + starting pending PnL</i>).
-                    </Trans>
-                  }
+                  content={t`Total PnL percentage after fees and price impact. Hover the value to see the breakdown.`}
                 >
                   <Trans>PNL (%)</Trans>
                 </TooltipWithPortal>
@@ -83,71 +84,72 @@ export function GeneralPerformanceDetails({ chainId, account }: { chainId: numbe
           </thead>
           <tbody>
             {loading && <AccountPnlSummarySkeleton count={6} />}
-            {!loading && data.map((row) => <GeneralPerformanceDetailsRow key={row.bucketLabel} row={row} />)}
+            {!loading &&
+              data.map((row) => (
+                <GeneralPerformanceDetailsRow key={row.bucketLabel} row={row} onBucketClick={onBucketClick} />
+              ))}
           </tbody>
         </table>
-        {error && (
-          <div className="max-h-[200px] overflow-auto p-20">
-            <div className="whitespace-pre-wrap font-mono text-red-500">{JSON.stringify(error, null, 2)}</div>
-          </div>
+        {!loading && (error || data.length === 0) && (
+          <EmptyTableContent
+            isLoading={false}
+            isEmpty
+            emptyText={error ? <Trans>Data is currently unavailable</Trans> : <Trans>No data available</Trans>}
+          />
         )}
       </TableScrollFadeContainer>
     </div>
   );
 }
 
-function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
+function GeneralPerformanceDetailsRow({
+  row,
+  onBucketClick,
+}: {
+  row: PnlSummaryPoint;
+  onBucketClick?: (bucketLabel: string) => void;
+}) {
   const { _ } = useLingui();
   const showDebugValues = useShowDebugValues();
+  const bucketLabel = _(bucketLabelMap[row.bucketLabel]);
 
   return (
     <TableTr key={row.bucketLabel}>
-      <TableTd>{_(bucketLabelMap[row.bucketLabel])}</TableTd>
-      <TableTd className="numbers">{formatUsd(row.volume, { maxThreshold: null })}</TableTd>
+      <TableTd>
+        {onBucketClick ? (
+          <button
+            type="button"
+            className="cursor-pointer text-left underline decoration-dashed decoration-1 underline-offset-2 hover:text-blue-300"
+            onClick={() => onBucketClick(row.bucketLabel)}
+          >
+            {bucketLabel}
+          </button>
+        ) : (
+          bucketLabel
+        )}
+      </TableTd>
+      <TableTd>
+        <MetricWithRank rank={row.volumeRank}>
+          <span className="numbers">{formatUsd(row.volume, { maxThreshold: null })}</span>
+        </MetricWithRank>
+      </TableTd>
       <TableTd>
         <TooltipWithPortal
           variant="none"
           tooltipClassName="cursor-help *:cursor-auto"
           className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
-            "text-green-500 decoration-green-500/50": row.pnlUsd > 0,
-            "text-red-500 decoration-red-500/50": row.pnlUsd < 0,
+            "text-green-500 decoration-green-500/50": row.pnlUsd > 0n,
+            "text-red-500 decoration-red-500/50": row.pnlUsd < 0n,
             "decoration-gray-400": row.pnlUsd === 0n,
           })}
           content={
-            showDebugValues ? (
-              <GeneralPerformanceDetailsDebugTooltip row={row} />
-            ) : (
-              <>
-                <StatsTooltipRow
-                  label={t`Realized PnL`}
-                  showDollar={false}
-                  textClassName={getPositiveOrNegativeClass(row.realizedPnlUsd)}
-                  value={formatUsd(row.realizedPnlUsd)}
-                  valueClassName="numbers"
-                />
-                <StatsTooltipRow
-                  label={t`Unrealized PnL`}
-                  showDollar={false}
-                  textClassName={getPositiveOrNegativeClass(row.unrealizedPnlUsd)}
-                  value={formatUsd(row.unrealizedPnlUsd)}
-                  valueClassName="numbers"
-                />
-                <StatsTooltipRow
-                  label={t`Start unrealized PnL`}
-                  showDollar={false}
-                  textClassName={getPositiveOrNegativeClass(row.startUnrealizedPnlUsd)}
-                  value={formatUsd(row.startUnrealizedPnlUsd)}
-                  valueClassName="numbers"
-                />
-                <br />
-                <div className="text-body-small text-typography-secondary">
-                  <Trans>Outstanding claimable amounts are not included</Trans>
-                </div>
-              </>
-            )
+            showDebugValues ? <GeneralPerformanceDetailsDebugTooltip row={row} /> : <PnlBreakdownTooltip row={row} />
           }
-          handle={formatUsd(row.pnlUsd)}
-          handleClassName="numbers"
+          handle={
+            <MetricWithRank rank={row.pnlUsdRank}>
+              <span className="numbers">{formatUsd(row.pnlUsd)}</span>
+            </MetricWithRank>
+          }
         ></TooltipWithPortal>
       </TableTd>
       <TableTd>
@@ -159,16 +161,12 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
             "text-red-500 decoration-red-500/50": row.pnlBps < 0n,
             "decoration-gray-400": row.pnlBps === 0n,
           })}
-          content={
-            <StatsTooltipRow
-              label={t`Capital used`}
-              showDollar={false}
-              value={formatUsd(row.usedCapitalUsd)}
-              valueClassName="numbers"
-            />
+          content={<PnlPercentageTooltip row={row} />}
+          handle={
+            <MetricWithRank rank={row.pnlBpsRank}>
+              <span className="numbers">{formatPercentage(row.pnlBps, { signed: true })}</span>
+            </MetricWithRank>
           }
-          handle={formatPercentage(row.pnlBps, { signed: true })}
-          handleClassName="numbers"
         ></TooltipWithPortal>
       </TableTd>
       <TableTd>
@@ -196,5 +194,126 @@ function GeneralPerformanceDetailsRow({ row }: { row: PnlSummaryPoint }) {
         />
       </TableTd>
     </TableTr>
+  );
+}
+
+function MetricWithRank({ rank, children }: { rank: number | undefined; children: React.ReactNode }) {
+  return (
+    <div className="leading-tight flex items-center gap-4">
+      <span>{children}</span>
+      {rank !== undefined && (
+        <span className="text-11 text-typography-secondary">
+          <Trans>Rank</Trans> <span className="numbers">#{rank}</span>
+        </span>
+      )}
+    </div>
+  );
+}
+
+type BreakdownRow = {
+  label: React.ReactNode;
+  value: bigint;
+};
+
+function PnlBreakdownTooltip({ row }: { row: PnlSummaryPoint }) {
+  const pnlRows: BreakdownRow[] = [
+    { label: t`Realized PnL before fees`, value: row.realizedBasePnlUsd },
+    { label: t`Live unrealized PnL before fees`, value: row.unrealizedBasePnlUsd },
+    { label: t`Start unrealized PnL contribution before fees`, value: row.startUnrealizedBasePnlContributionUsd },
+  ].filter((breakdownRow) => breakdownRow.value !== 0n);
+
+  const feeRows: BreakdownRow[] = [
+    { label: t`Open fees`, value: row.openFeesUsd },
+    { label: t`Close fees`, value: row.closeFeesUsd },
+    { label: t`Borrow fees`, value: row.borrowingFeesUsd },
+    { label: t`Positive funding fees`, value: row.positiveFundingFeesUsd },
+    { label: t`Negative funding fees`, value: row.negativeFundingFeesUsd },
+    { label: t`Liquidation fees`, value: row.liquidationFeesUsd },
+    { label: t`Other realized fees`, value: row.realizedFeesRemainderUsd },
+    { label: t`Unrealized fee contribution`, value: row.unrealizedFeesContributionUsd },
+    { label: t`Net price impact`, value: row.netPriceImpactUsd },
+    { label: t`Swap fees`, value: row.swapFeesUsd },
+    { label: t`Swap price impact`, value: row.swapPriceImpactUsd },
+  ].filter((breakdownRow) => breakdownRow.value !== 0n);
+
+  return (
+    <>
+      <StatsTooltipRow
+        label={t`PnL`}
+        showDollar={false}
+        textClassName={getPositiveOrNegativeClass(row.pnlUsd)}
+        value={formatUsd(row.pnlUsd)}
+        valueClassName="numbers"
+      />
+      {pnlRows.length > 0 && (
+        <>
+          <br />
+          {pnlRows.map((breakdownRow) => (
+            <BreakdownTooltipRow key={String(breakdownRow.label)} row={breakdownRow} />
+          ))}
+        </>
+      )}
+      {feeRows.length > 0 && (
+        <>
+          <br />
+          <div className="text-body-small mb-4 text-typography-secondary">
+            <Trans>Fees and impacts</Trans>
+          </div>
+          {feeRows.map((breakdownRow) => (
+            <BreakdownTooltipRow key={String(breakdownRow.label)} row={breakdownRow} />
+          ))}
+        </>
+      )}
+      {(!row.realizedFeesComponentsComplete || !row.unrealizedFeesComponentsComplete) && (
+        <>
+          <br />
+          <div className="text-body-small text-typography-secondary">
+            {!row.realizedFeesComponentsComplete && <Trans>Some realized fee components are grouped.</Trans>}
+            {!row.realizedFeesComponentsComplete && !row.unrealizedFeesComponentsComplete && <br />}
+            {!row.unrealizedFeesComponentsComplete && (
+              <Trans>Unrealized fee contribution is shown as an aggregate.</Trans>
+            )}
+          </div>
+        </>
+      )}
+      <br />
+      <div className="text-body-small text-typography-secondary">
+        <Trans>Outstanding claimable amounts are not included</Trans>
+      </div>
+    </>
+  );
+}
+
+function PnlPercentageTooltip({ row }: { row: PnlSummaryPoint }) {
+  return (
+    <>
+      <div className="text-body-small text-typography-secondary">
+        <Trans>Return on capital used (PnL / capital).</Trans>
+      </div>
+      <br />
+      <StatsTooltipRow
+        label={t`Capital used`}
+        showDollar={false}
+        value={formatUsd(row.usedCapitalUsd)}
+        valueClassName="numbers"
+      />
+      <div className="text-body-small text-typography-secondary">
+        <Trans>Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL).</Trans>
+      </div>
+      <br />
+      <PnlBreakdownTooltip row={row} />
+    </>
+  );
+}
+
+function BreakdownTooltipRow({ row }: { row: BreakdownRow }) {
+  return (
+    <StatsTooltipRow
+      label={row.label}
+      showDollar={false}
+      textClassName={getPositiveOrNegativeClass(row.value)}
+      value={formatUsd(row.value)}
+      valueClassName="numbers"
+    />
   );
 }
