@@ -389,11 +389,6 @@ export async function getSdkSubaccountApprovalForOrder(
     force: forceStatusRefresh,
   });
 
-  // After forced refresh due to submittedRequestId, clear the flag if approval still exists (relay failed but approval is still valid)
-  if (subaccount.approval?.submittedRequestId !== undefined) {
-    subaccount.approval.submittedRequestId = undefined;
-  }
-
   const pendingApproval = subaccount.approval;
 
   if (pendingApproval) {
