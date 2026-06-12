@@ -31,12 +31,13 @@ import { getPositionKey } from "domain/synthetics/positions";
 import { useTokensDataRequest } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
 import {
-  getIsPendingMarketOrderCreate,
+  getIsPendingOrderBackfillable,
   getOrderCreatedDataFromPendingOrder,
-  MARKET_ORDER_BACKFILL_MAX_AGE_MS,
-  MarketOrderBackfillMatch,
-} from "domain/synthetics/tradeHistory/marketOrderStatusesBackfill";
-import { useMarketOrderStatusesBackfill } from "domain/synthetics/tradeHistory/useMarketOrderStatusesBackfill";
+  ORDER_BACKFILL_MAX_AGE_MS,
+  ORDER_STATUS_TXN_HASH_FIELD_BY_EVENT,
+  OrderBackfillMatch,
+} from "domain/synthetics/tradeHistory/orderStatusesBackfill";
+import { useOrderStatusesBackfill } from "domain/synthetics/tradeHistory/useOrderStatusesBackfill";
 import { TokenBalanceType } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { pushErrorNotification, pushSuccessNotification } from "lib/contracts";
@@ -65,7 +66,6 @@ import { TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
 import { getToken, getWrappedToken, NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import { StatusCode } from "sdk/utils/gelatoRelay";
-import { TradeActionType } from "sdk/utils/tradeHistory/types";
 import { decodeTwapUiFeeReceiver } from "sdk/utils/twap/uiFeeReceiver";
 
 import { getInsufficientExecutionFeeToastContent, InvalidSignatureToastContent } from "components/Errors/errorToasts";
@@ -82,6 +82,7 @@ import {
   GelatoTaskStatus,
   GLVDepositCreatedEventData,
   OrderCreatedEventData,
+  OrderStatus,
   OrderStatuses,
   PendingDepositData,
   PendingExpressTxnParams,
@@ -153,7 +154,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
   const [pendingOrdersUpdates, setPendingOrdersUpdates] = useState<PendingOrdersUpdates>({});
   const [pendingPositionsUpdates, setPendingPositionsUpdates] = useState<PendingPositionsUpdates>({});
-  const [awaitingMarketOrderCreates, setAwaitingMarketOrderCreates] = useState<PendingOrderData[]>([]);
+  const [awaitingBackfillOrders, setAwaitingBackfillOrders] = useState<PendingOrderData[]>([]);
   const [positionIncreaseEvents, setPositionIncreaseEvents] = useState<PositionIncreaseEvent[]>([]);
   const [positionDecreaseEvents, setPositionDecreaseEvents] = useState<PositionDecreaseEvent[]>([]);
   const [gelatoTaskStatuses, setGelatoTaskStatuses] = useState<{ [taskId: string]: GelatoTaskStatus }>({});
@@ -268,23 +269,23 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
       setPendingOrdersUpdates((old) => deleteByKey(old, data.key));
 
-      if (isMarketOrderType(data.orderType)) {
-        setAwaitingMarketOrderCreates((old) => {
-          const index = old.findIndex((order) => getPendingOrderKey(order) === pendingOrderKey);
+      setAwaitingBackfillOrders((old) => {
+        const index = old.findIndex(
+          (order) => order.txnType === "create" && getPendingOrderKey(order) === pendingOrderKey
+        );
 
-          return index === -1 ? old : old.filter((_, i) => i !== index);
-        });
+        return index === -1 ? old : old.filter((_, i) => i !== index);
+      });
 
-        // Link the pending position update to the order, so position events
-        // can be matched to it exactly instead of by block number
-        if (marketsInfoData) {
-          const pendingPositionKey = getPendingPositionKeyFromOrder(chainId, marketsInfoData, data);
+      // Link the pending position update to the order, so position events
+      // can be matched to it exactly instead of by block number
+      if (isMarketOrderType(data.orderType) && marketsInfoData) {
+        const pendingPositionKey = getPendingPositionKeyFromOrder(chainId, marketsInfoData, data);
 
-          if (pendingPositionKey) {
-            setPendingPositionsUpdates((old) =>
-              old[pendingPositionKey] ? updateByKey(old, pendingPositionKey, { orderKey: data.key }) : old
-            );
-          }
+        if (pendingPositionKey) {
+          setPendingPositionsUpdates((old) =>
+            old[pendingPositionKey] ? updateByKey(old, pendingPositionKey, { orderKey: data.key }) : old
+          );
         }
       }
     },
@@ -313,6 +314,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       });
 
       setPendingOrdersUpdates((old) => deleteByKey(old, key));
+
+      setAwaitingBackfillOrders((old) =>
+        old.filter((order) => !(order.txnType === "update" && order.orderKey === key))
+      );
     },
 
     OrderExecuted: (eventData: EventLogData, txnParams: EventTxnParams) => {
@@ -335,9 +340,9 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
       setOrderStatuses((old) => {
         if (!old[key]) {
-          // Track unknown executions only while a local pending market create may be
+          // Track unknown executions only while a local pending order may be
           // waiting for them, to keep background executions out of the statuses
-          if (awaitingMarketOrderCreates.length === 0) {
+          if (awaitingBackfillOrders.length === 0) {
             return old;
           }
 
@@ -376,6 +381,8 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           });
         }
       });
+
+      setAwaitingBackfillOrders((old) => old.filter((awaitingOrder) => awaitingOrder.orderKey !== key));
 
       const order = orderStatuses[key]?.data;
 
@@ -1256,31 +1263,34 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
   useMultichainTransferProgressView(multichainTransferProgress);
 
   useEffect(() => {
-    setAwaitingMarketOrderCreates([]);
+    setAwaitingBackfillOrders([]);
   }, [chainId, currentAccount]);
 
-  const handleMarketOrderBackfillMatches = useCallback((matches: MarketOrderBackfillMatch[]) => {
+  const handleOrderBackfillMatches = useCallback((matches: OrderBackfillMatch[]) => {
     setOrderStatuses((old) => {
       let next = old;
 
       for (const match of matches) {
+        const txnHashField = ORDER_STATUS_TXN_HASH_FIELD_BY_EVENT[match.eventName];
         const existing = next[match.orderKey];
 
-        if (existing?.executedTxnHash ?? existing?.cancelledTxnHash) {
+        if (existing?.[txnHashField]) {
           continue;
         }
 
-        const txnHashPatch =
-          match.eventName === TradeActionType.OrderExecuted
-            ? { executedTxnHash: match.transactionHash }
-            : { cancelledTxnHash: match.transactionHash };
+        const txnHashPatch: Partial<OrderStatus> = {};
+        txnHashPatch[txnHashField] = match.transactionHash;
 
         next = existing
           ? updateByKey(next, match.orderKey, txnHashPatch)
           : setByKey(next, match.orderKey, {
               key: match.orderKey,
-              data: getOrderCreatedDataFromPendingOrder(match.pendingOrder, match.orderKey),
               createdAt: match.pendingOrder.createdAt,
+              // only creates may claim a status by pending order key, so the
+              // order data is attached just for them
+              ...(match.pendingOrder.txnType === "create"
+                ? { data: getOrderCreatedDataFromPendingOrder(match.pendingOrder, match.orderKey) }
+                : {}),
               ...txnHashPatch,
             });
       }
@@ -1288,16 +1298,14 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
       return next;
     });
 
-    setAwaitingMarketOrderCreates((old) => old.filter((order) => !matches.some((m) => m.pendingOrder === order)));
+    setAwaitingBackfillOrders((old) => old.filter((order) => !matches.some((m) => m.pendingOrder === order)));
   }, []);
 
-  useMarketOrderStatusesBackfill({
+  useOrderStatusesBackfill({
     chainId,
-    pendingOrders: awaitingMarketOrderCreates.filter(
-      (order) => order.createdAt + MARKET_ORDER_BACKFILL_MAX_AGE_MS > Date.now()
-    ),
+    pendingOrders: awaitingBackfillOrders.filter((order) => order.createdAt + ORDER_BACKFILL_MAX_AGE_MS > Date.now()),
     orderStatuses,
-    onMatches: handleMarketOrderBackfillMatches,
+    onMatches: handleOrderBackfillMatches,
   });
 
   const contextState: SyntheticsEventsContextType = useMemo(() => {
@@ -1356,10 +1364,10 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
         setPendingOrdersUpdates((old) => ({ ...old, ...objData }));
 
-        const marketOrderCreates = arrayData.filter(getIsPendingMarketOrderCreate);
+        const backfillableOrders = arrayData.filter(getIsPendingOrderBackfillable);
 
-        if (marketOrderCreates.length > 0) {
-          setAwaitingMarketOrderCreates((old) => [...old, ...marketOrderCreates]);
+        if (backfillableOrders.length > 0) {
+          setAwaitingBackfillOrders((old) => [...old, ...backfillableOrders]);
         }
       },
       setPendingOrderUpdate: (data: PendingOrderData, remove?: "remove") => {

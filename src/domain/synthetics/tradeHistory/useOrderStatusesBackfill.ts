@@ -5,16 +5,16 @@ import { OrderStatuses, PendingOrderData } from "context/SyntheticsEvents/types"
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
 
 import {
-  MARKET_ORDER_BACKFILL_PAGE_SIZE,
-  MarketOrderBackfillMatch,
-  getMarketOrderBackfillMatches,
-  getMarketOrderBackfillParams,
-} from "./marketOrderStatusesBackfill";
+  ORDER_BACKFILL_PAGE_SIZE,
+  OrderBackfillMatch,
+  getOrderBackfillMatches,
+  getOrderBackfillParams,
+} from "./orderStatusesBackfill";
 import { fetchRawTradeActions } from "./useTradeHistory";
 
-// Recovers order statuses from the trade history indexer for pending market
-// orders whose websocket events were missed, so their toasts can still resolve.
-export function useMarketOrderStatusesBackfill({
+// Recovers order statuses from the trade history indexer for pending orders
+// whose websocket events were missed, so their toasts can still resolve.
+export function useOrderStatusesBackfill({
   chainId,
   pendingOrders,
   orderStatuses,
@@ -23,9 +23,9 @@ export function useMarketOrderStatusesBackfill({
   chainId: number;
   pendingOrders: PendingOrderData[];
   orderStatuses: OrderStatuses;
-  onMatches: (matches: MarketOrderBackfillMatch[]) => void;
+  onMatches: (matches: OrderBackfillMatch[]) => void;
 }) {
-  const params = getMarketOrderBackfillParams(pendingOrders);
+  const params = getOrderBackfillParams(pendingOrders);
 
   const combinationsKey = params?.orderEventCombinations
     .map((combination) =>
@@ -34,13 +34,13 @@ export function useMarketOrderStatusesBackfill({
     .join(",");
 
   const { data: rawActions } = useSWR(
-    params ? ["marketOrderStatusesBackfill", chainId, params.account, params.fromTxTimestamp, combinationsKey] : null,
+    params ? ["orderStatusesBackfill", chainId, params.account, params.fromTxTimestamp, combinationsKey] : null,
     {
       fetcher: () =>
         fetchRawTradeActions({
           chainId,
           pageIndex: 0,
-          pageSize: MARKET_ORDER_BACKFILL_PAGE_SIZE,
+          pageSize: ORDER_BACKFILL_PAGE_SIZE,
           marketsDirectionsFilter: undefined,
           forAllAccounts: false,
           account: params!.account,
@@ -53,7 +53,7 @@ export function useMarketOrderStatusesBackfill({
   );
 
   useEffect(() => {
-    const matches = getMarketOrderBackfillMatches(pendingOrders, rawActions, orderStatuses);
+    const matches = getOrderBackfillMatches(pendingOrders, rawActions, orderStatuses);
 
     if (matches.length > 0) {
       onMatches(matches);
