@@ -1998,6 +1998,10 @@ msgstr ""
 msgid "GLP reimbursement"
 msgstr ""
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Start unrealized PnL before fees"
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
@@ -4927,10 +4931,6 @@ msgstr ""
 msgid "Terms and conditions"
 msgstr ""
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Unrealized fee contribution is shown as an aggregate."
-msgstr ""
-
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GmList.tsx
 msgid "TVL (SUPPLY)"
@@ -5564,10 +5564,6 @@ msgstr ""
 
 #: src/pages/Jobs/Jobs.tsx
 msgid "Jobs"
-msgstr ""
-
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Some realized fee components are grouped."
 msgstr ""
 
 #: src/components/TradeHistory/keys.ts
@@ -9012,10 +9008,6 @@ msgstr ""
 msgid "Max network fee"
 msgstr ""
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Return on capital used (PnL / capital)."
-msgstr ""
-
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} amount exceeded"
@@ -9711,10 +9703,6 @@ msgstr ""
 #: src/components/Earn/Portfolio/AssetsList/GmGlvAssetCard.tsx
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Buy"
-msgstr ""
-
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Start unrealized PnL contribution before fees"
 msgstr ""
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx

@@ -1998,6 +1998,10 @@ msgstr "Trading en Un Clic desactivado. Límite de acciones superado."
 msgid "GLP reimbursement"
 msgstr "Reembolso de GLP"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Start unrealized PnL before fees"
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
@@ -4927,10 +4931,6 @@ msgstr "Órdenes de trigger ejecutables existentes"
 msgid "Terms and conditions"
 msgstr "Términos y condiciones"
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Unrealized fee contribution is shown as an aggregate."
-msgstr "La contribución de comisiones no realizadas se muestra como un agregado."
-
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GmList.tsx
 msgid "TVL (SUPPLY)"
@@ -5565,10 +5565,6 @@ msgstr "{0} no se puede enviar a direcciones de contratos inteligentes. Seleccio
 #: src/pages/Jobs/Jobs.tsx
 msgid "Jobs"
 msgstr "Empleos"
-
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Some realized fee components are grouped."
-msgstr "Algunos componentes de comisiones realizadas están agrupados."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Market"
@@ -9012,10 +9008,6 @@ msgstr "Comprar GMX mediante pasarelas fiat"
 msgid "Max network fee"
 msgstr "Comisión de red máxima"
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Return on capital used (PnL / capital)."
-msgstr "Retorno sobre el capital usado (PnL / capital)."
-
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} amount exceeded"
@@ -9712,10 +9704,6 @@ msgstr "Seleccione al menos una distribución para reclamar"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Buy"
 msgstr "Comprar"
-
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Start unrealized PnL contribution before fees"
-msgstr "Contribución del PnL no realizado inicial antes de comisiones"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Copy technical details"

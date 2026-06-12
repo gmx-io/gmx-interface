@@ -1998,6 +1998,10 @@ msgstr "One-Click Trading 已停用。操作次數已超出限制。"
 msgid "GLP reimbursement"
 msgstr "GLP 補償"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Start unrealized PnL before fees"
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
@@ -4927,10 +4931,6 @@ msgstr "現有可執行的觸發訂單"
 msgid "Terms and conditions"
 msgstr "條款與條件"
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Unrealized fee contribution is shown as an aggregate."
-msgstr "未實現費用貢獻以彙總形式顯示。"
-
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GmList.tsx
 msgid "TVL (SUPPLY)"
@@ -5565,10 +5565,6 @@ msgstr "{0} 無法發送至智能合約地址。請選擇其他代幣"
 #: src/pages/Jobs/Jobs.tsx
 msgid "Jobs"
 msgstr "職缺"
-
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Some realized fee components are grouped."
-msgstr "部分已實現費用組成項已分組。"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Market"
@@ -9012,10 +9008,6 @@ msgstr "透過法幣入口買入 GMX"
 msgid "Max network fee"
 msgstr "最大網路費用"
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Return on capital used (PnL / capital)."
-msgstr "已用資本回報率（PnL / 資本）。"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} amount exceeded"
@@ -9712,10 +9704,6 @@ msgstr "請至少選擇一項分配進行領取"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Buy"
 msgstr "買入"
-
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Start unrealized PnL contribution before fees"
-msgstr "扣除費用前的初始未實現 PnL 貢獻"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Copy technical details"

@@ -1998,6 +1998,10 @@ msgstr "一键交易已禁用。操作限制已超过。"
 msgid "GLP reimbursement"
 msgstr "GLP 补偿"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Start unrealized PnL before fees"
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
@@ -4927,10 +4931,6 @@ msgstr "现有可执行触发订单"
 msgid "Terms and conditions"
 msgstr "条款与条件"
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Unrealized fee contribution is shown as an aggregate."
-msgstr "未实现费用贡献以汇总形式显示。"
-
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GmList.tsx
 msgid "TVL (SUPPLY)"
@@ -5565,10 +5565,6 @@ msgstr "{0} 无法发送至智能合约地址。请选择其他代币"
 #: src/pages/Jobs/Jobs.tsx
 msgid "Jobs"
 msgstr "职位"
-
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Some realized fee components are grouped."
-msgstr "部分已实现费用组成项已分组。"
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Market"
@@ -9012,10 +9008,6 @@ msgstr "通过法币通道购买 GMX"
 msgid "Max network fee"
 msgstr "最大网络费用"
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Return on capital used (PnL / capital)."
-msgstr "已用资本回报率（盈亏 / 资本）。"
-
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} amount exceeded"
@@ -9712,10 +9704,6 @@ msgstr "请至少选择一项分发以领取"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Buy"
 msgstr "购买"
-
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Start unrealized PnL contribution before fees"
-msgstr "扣除费用前的初始未实现盈亏贡献"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Copy technical details"

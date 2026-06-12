@@ -1998,6 +1998,10 @@ msgstr "One-Click Trading is disabled. Action limit exceeded."
 msgid "GLP reimbursement"
 msgstr "GLP reimbursement"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Start unrealized PnL before fees"
+msgstr "Start unrealized PnL before fees"
+
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
@@ -4927,10 +4931,6 @@ msgstr "Existing executable trigger orders"
 msgid "Terms and conditions"
 msgstr "Terms and conditions"
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Unrealized fee contribution is shown as an aggregate."
-msgstr "Unrealized fee contribution is shown as an aggregate."
-
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GmList.tsx
 msgid "TVL (SUPPLY)"
@@ -5565,10 +5565,6 @@ msgstr "{0} cannot be sent to smart contract addresses. Select another token"
 #: src/pages/Jobs/Jobs.tsx
 msgid "Jobs"
 msgstr "Jobs"
-
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Some realized fee components are grouped."
-msgstr "Some realized fee components are grouped."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Market"
@@ -9012,10 +9008,6 @@ msgstr "Buy GMX using fiat gateways"
 msgid "Max network fee"
 msgstr "Max network fee"
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Return on capital used (PnL / capital)."
-msgstr "Return on capital used (PnL / capital)."
-
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} amount exceeded"
@@ -9712,10 +9704,6 @@ msgstr "Select at least one distribution to claim"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Buy"
 msgstr "Buy"
-
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Start unrealized PnL contribution before fees"
-msgstr "Start unrealized PnL contribution before fees"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Copy technical details"

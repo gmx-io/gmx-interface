@@ -137,7 +137,10 @@ function GeneralPerformanceDetailsRow({
         <MetricWithRank rank={row.pnlUsdRank}>
           <TooltipWithPortal
             variant="none"
-            tooltipClassName="cursor-help *:cursor-auto"
+            tooltipClassName={cx("cursor-help *:cursor-auto", {
+              "!p-0": !showDebugValues,
+            })}
+            maxAllowedWidth={showDebugValues ? 350 : 420}
             className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
               "text-green-500 decoration-green-500/50": row.pnlUsd > 0n,
               "text-red-500 decoration-red-500/50": row.pnlUsd < 0n,
@@ -154,7 +157,8 @@ function GeneralPerformanceDetailsRow({
         <MetricWithRank rank={row.pnlBpsRank}>
           <TooltipWithPortal
             variant="none"
-            tooltipClassName="cursor-help *:cursor-auto"
+            tooltipClassName="cursor-help !p-0 *:cursor-auto"
+            maxAllowedWidth={420}
             className={cx("cursor-help underline decoration-dashed decoration-1 underline-offset-2", {
               "text-green-500 decoration-green-500/50": row.pnlBps > 0n,
               "text-red-500 decoration-red-500/50": row.pnlBps < 0n,
@@ -214,109 +218,113 @@ function MetricWithRank({ rank, children }: { rank: number | undefined; children
 }
 
 type BreakdownRow = {
+  key: string;
   label: React.ReactNode;
   value: bigint;
 };
 
 function PnlBreakdownTooltip({ row }: { row: PnlSummaryPoint }) {
+  return (
+    <div className="max-h-[min(70dvh,560px)] w-[400px] max-w-[calc(100vw-32px)] overflow-y-auto p-16 tracking-normal max-md:w-[calc(100vw-24px)] max-md:max-w-[calc(100vw-24px)] max-md:p-14">
+      <PnlBreakdownTooltipContent row={row} />
+    </div>
+  );
+}
+
+function PnlBreakdownTooltipContent({ row }: { row: PnlSummaryPoint }) {
   const pnlRows: BreakdownRow[] = [
-    { label: t`Realized PnL before fees`, value: row.realizedBasePnlUsd },
-    { label: t`Live unrealized PnL before fees`, value: row.unrealizedBasePnlUsd },
-    { label: t`Start unrealized PnL contribution before fees`, value: row.startUnrealizedBasePnlContributionUsd },
-  ].filter((breakdownRow) => breakdownRow.value !== 0n);
+    { key: "realizedBasePnlUsd", label: t`Realized PnL before fees`, value: row.realizedBasePnlUsd },
+    { key: "unrealizedBasePnlUsd", label: t`Live unrealized PnL before fees`, value: row.unrealizedBasePnlUsd },
+    {
+      key: "startUnrealizedBasePnlContributionUsd",
+      label: t`Start unrealized PnL before fees`,
+      value: row.startUnrealizedBasePnlContributionUsd,
+    },
+  ];
 
   const feeRows: BreakdownRow[] = [
-    { label: t`Open fees`, value: row.openFeesUsd },
-    { label: t`Close fees`, value: row.closeFeesUsd },
-    { label: t`Borrow fees`, value: row.borrowingFeesUsd },
-    { label: t`Positive funding fees`, value: row.positiveFundingFeesUsd },
-    { label: t`Negative funding fees`, value: row.negativeFundingFeesUsd },
-    { label: t`Liquidation fees`, value: row.liquidationFeesUsd },
-    { label: t`Other realized fees`, value: row.realizedFeesRemainderUsd },
-    { label: t`Unrealized fee contribution`, value: row.unrealizedFeesContributionUsd },
-    { label: t`Net price impact`, value: row.netPriceImpactUsd },
-    { label: t`Swap fees`, value: row.swapFeesUsd },
-    { label: t`Swap price impact`, value: row.swapPriceImpactUsd },
-  ].filter((breakdownRow) => breakdownRow.value !== 0n);
+    { key: "openFeesUsd", label: t`Open fees`, value: row.openFeesUsd },
+    { key: "closeFeesUsd", label: t`Close fees`, value: row.closeFeesUsd },
+    { key: "borrowingFeesUsd", label: t`Borrow fees`, value: row.borrowingFeesUsd },
+    ...(row.positiveFundingFeesUsd === 0n
+      ? []
+      : [{ key: "positiveFundingFeesUsd", label: t`Positive funding fees`, value: row.positiveFundingFeesUsd }]),
+    { key: "negativeFundingFeesUsd", label: t`Negative funding fees`, value: row.negativeFundingFeesUsd },
+    ...(row.liquidationFeesUsd === 0n
+      ? []
+      : [{ key: "liquidationFeesUsd", label: t`Liquidation fees`, value: row.liquidationFeesUsd }]),
+    { key: "realizedFeesRemainderUsd", label: t`Other realized fees`, value: row.realizedFeesRemainderUsd },
+    {
+      key: "unrealizedFeesContributionUsd",
+      label: t`Unrealized fee contribution`,
+      value: row.unrealizedFeesContributionUsd,
+    },
+    { key: "netPriceImpactUsd", label: t`Net price impact`, value: row.netPriceImpactUsd },
+    { key: "swapFeesUsd", label: t`Swap fees`, value: row.swapFeesUsd },
+    { key: "swapPriceImpactUsd", label: t`Swap price impact`, value: row.swapPriceImpactUsd },
+  ];
 
   return (
-    <>
-      <StatsTooltipRow
-        label={t`PnL`}
-        showDollar={false}
-        textClassName={getPositiveOrNegativeClass(row.pnlUsd)}
-        value={formatUsd(row.pnlUsd)}
-        valueClassName="numbers"
-      />
-      {pnlRows.length > 0 && (
-        <>
-          <br />
-          {pnlRows.map((breakdownRow) => (
-            <BreakdownTooltipRow key={String(breakdownRow.label)} row={breakdownRow} />
-          ))}
-        </>
-      )}
-      {feeRows.length > 0 && (
-        <>
-          <br />
-          <div className="text-body-small mb-4 text-typography-secondary">
-            <Trans>Fees and impacts</Trans>
-          </div>
-          {feeRows.map((breakdownRow) => (
-            <BreakdownTooltipRow key={String(breakdownRow.label)} row={breakdownRow} />
-          ))}
-        </>
-      )}
-      {(!row.realizedFeesComponentsComplete || !row.unrealizedFeesComponentsComplete) && (
-        <>
-          <br />
-          <div className="text-body-small text-typography-secondary">
-            {!row.realizedFeesComponentsComplete && <Trans>Some realized fee components are grouped.</Trans>}
-            {!row.realizedFeesComponentsComplete && !row.unrealizedFeesComponentsComplete && <br />}
-            {!row.unrealizedFeesComponentsComplete && (
-              <Trans>Unrealized fee contribution is shown as an aggregate.</Trans>
-            )}
-          </div>
-        </>
-      )}
-      <br />
-      <div className="text-body-small text-typography-secondary">
-        <Trans>Outstanding claimable amounts are not included</Trans>
+    <div className="text-body-medium leading-[1.35]">
+      <BreakdownTooltipRow label={t`PnL`} value={row.pnlUsd} labelClassName="!text-typography-primary" />
+
+      <div className="mt-8 flex flex-col gap-8">
+        {pnlRows.map((breakdownRow) => (
+          <BreakdownTooltipRow key={breakdownRow.key} label={breakdownRow.label} value={breakdownRow.value} />
+        ))}
       </div>
-    </>
+
+      <div className="my-12 h-[0.5px] bg-slate-600" />
+
+      <div className="mb-10 font-medium text-typography-primary">
+        <Trans>Fees and impacts</Trans>
+      </div>
+      <div className="flex flex-col gap-8">
+        {feeRows.map((breakdownRow) => (
+          <BreakdownTooltipRow key={breakdownRow.key} label={breakdownRow.label} value={breakdownRow.value} />
+        ))}
+      </div>
+      <div className="text-body-small mt-8 leading-[1.35] text-typography-secondary">
+        <Trans>Outstanding claimable amounts are not included</Trans>.
+      </div>
+    </div>
   );
 }
 
 function PnlPercentageTooltip({ row }: { row: PnlSummaryPoint }) {
   return (
-    <>
-      <div className="text-body-small text-typography-secondary">
-        <Trans>Return on capital used (PnL / capital).</Trans>
-      </div>
-      <br />
+    <div className="max-h-[min(70dvh,560px)] w-[400px] max-w-[calc(100vw-32px)] overflow-y-auto p-16 tracking-normal max-md:max-w-[calc(100vw-24px)] max-md:p-14">
       <StatsTooltipRow
         label={t`Capital used`}
         showDollar={false}
         value={formatUsd(row.usedCapitalUsd)}
         valueClassName="numbers"
+        labelClassName="text-typography-primary font-medium"
       />
       <div className="text-body-small text-typography-secondary">
         <Trans>Capital used = max(sum of collateral of open positions - realized PnL + starting pending PnL).</Trans>
       </div>
-      <br />
-      <PnlBreakdownTooltip row={row} />
-    </>
+      <div className="my-12 h-[0.5px] bg-slate-600" />
+      <PnlBreakdownTooltipContent row={row} />
+    </div>
   );
 }
 
-function BreakdownTooltipRow({ row }: { row: BreakdownRow }) {
+function BreakdownTooltipRow({
+  label,
+  value,
+  labelClassName,
+}: {
+  label: React.ReactNode;
+  value: bigint;
+  labelClassName?: string;
+}) {
   return (
-    <StatsTooltipRow
-      label={row.label}
-      showDollar={false}
-      textClassName={getPositiveOrNegativeClass(row.value)}
-      value={formatUsd(row.value)}
-      valueClassName="numbers"
-    />
+    <div className="grid grid-cols-[minmax(0,1fr)_auto] items-baseline gap-16">
+      <span className={cx("min-w-0 break-words font-medium text-typography-secondary", labelClassName)}>{label}</span>
+      <span className={cx("whitespace-nowrap text-right numbers", getPositiveOrNegativeClass(value))}>
+        {formatUsd(value)}
+      </span>
+    </div>
   );
 }

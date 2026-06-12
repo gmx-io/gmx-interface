@@ -1998,6 +1998,10 @@ msgstr "One-Click-Trading ist deaktiviert. Aktionslimit überschritten."
 msgid "GLP reimbursement"
 msgstr "GLP-Erstattung"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Start unrealized PnL before fees"
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
@@ -4927,10 +4931,6 @@ msgstr "Bestehende ausführbare Trigger-Orders"
 msgid "Terms and conditions"
 msgstr "Allgemeine Geschäftsbedingungen"
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Unrealized fee contribution is shown as an aggregate."
-msgstr "Der Beitrag nicht realisierter Gebühren wird aggregiert angezeigt."
-
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GmList.tsx
 msgid "TVL (SUPPLY)"
@@ -5565,10 +5565,6 @@ msgstr "{0} kann nicht an Smart-Contract-Adressen gesendet werden. Wählen Sie e
 #: src/pages/Jobs/Jobs.tsx
 msgid "Jobs"
 msgstr "Jobs"
-
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Some realized fee components are grouped."
-msgstr "Einige realisierte Gebührenkomponenten sind gruppiert."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Market"
@@ -9012,10 +9008,6 @@ msgstr "GMX über Fiat-Gateways kaufen"
 msgid "Max network fee"
 msgstr "Max. Netzwerkgebühr"
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Return on capital used (PnL / capital)."
-msgstr "Rendite auf eingesetztes Kapital (PnL / Kapital)."
-
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} amount exceeded"
@@ -9712,10 +9704,6 @@ msgstr "Wählen Sie mindestens eine Ausschüttung zum Beanspruchen aus"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Buy"
 msgstr "Kaufen"
-
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Start unrealized PnL contribution before fees"
-msgstr "Beitrag des anfänglichen nicht realisierten PnL vor Gebühren"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Copy technical details"

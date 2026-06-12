@@ -1998,6 +1998,10 @@ msgstr "원클릭 트레이딩 비활성화. 액션 제한 초과."
 msgid "GLP reimbursement"
 msgstr "GLP 보상"
 
+#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
+msgid "Start unrealized PnL before fees"
+msgstr ""
+
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
@@ -4927,10 +4931,6 @@ msgstr "기존 실행 가능 트리거 주문"
 msgid "Terms and conditions"
 msgstr "이용약관"
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Unrealized fee contribution is shown as an aggregate."
-msgstr "미실현 수수료 기여분은 합산 값으로 표시됩니다."
-
 #: src/components/GmList/GlvList.tsx
 #: src/components/GmList/GmList.tsx
 msgid "TVL (SUPPLY)"
@@ -5565,10 +5565,6 @@ msgstr "{0}은(는) 스마트 컨트랙트 주소로 전송할 수 없습니다.
 #: src/pages/Jobs/Jobs.tsx
 msgid "Jobs"
 msgstr "구인"
-
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Some realized fee components are grouped."
-msgstr "일부 실현 수수료 구성 요소는 그룹화되어 있습니다."
 
 #: src/components/TradeHistory/keys.ts
 msgid "Failed Stop Market"
@@ -9012,10 +9008,6 @@ msgstr "법정화폐 게이트웨이를 통해 GMX 구매"
 msgid "Max network fee"
 msgstr "최대 네트워크 수수료"
 
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Return on capital used (PnL / capital)."
-msgstr "사용 자본 수익률(PnL / 자본)."
-
 #: src/domain/synthetics/trade/utils/validation.ts
 #: src/domain/synthetics/trade/utils/validation.ts
 msgid "Max {0} amount exceeded"
@@ -9712,10 +9704,6 @@ msgstr "수령할 배분을 최소 한 개 이상 선택하십시오"
 #: src/components/Earn/Portfolio/AssetsList/GmxAssetCard/GmxAssetCard.tsx
 msgid "Buy"
 msgstr "구매"
-
-#: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
-msgid "Start unrealized PnL contribution before fees"
-msgstr "수수료 전 시작 미실현 PnL 기여분"
 
 #: src/domain/multichain/progress/MultichainTransferProgressView.tsx
 msgid "Copy technical details"
