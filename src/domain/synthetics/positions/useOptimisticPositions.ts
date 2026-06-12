@@ -60,14 +60,19 @@ export function applyOptimisticUpdates<T extends Position>({
     (acc, key) => {
       const now = Date.now();
 
-      const lastIncreaseEvent = positionIncreaseEvents?.filter((e) => e.positionKey === key).pop();
-      const lastDecreaseEvent = positionDecreaseEvents?.filter((e) => e.positionKey === key).pop();
+      const increaseEvents = positionIncreaseEvents?.filter((e) => e.positionKey === key);
+      const decreaseEvents = positionDecreaseEvents?.filter((e) => e.positionKey === key);
+      const lastIncreaseEvent = increaseEvents?.[increaseEvents.length - 1];
+      const lastDecreaseEvent = decreaseEvents?.[decreaseEvents.length - 1];
+
       const rawPendingUpdate = pendingPositionsUpdates?.[key];
+      const isPendingUpdateFresh =
+        rawPendingUpdate !== undefined && rawPendingUpdate.updatedAt + MAX_PENDING_UPDATE_AGE > now;
 
       const pendingUpdate =
         rawPendingUpdate &&
-        rawPendingUpdate.updatedAt + MAX_PENDING_UPDATE_AGE > now &&
-        !getIsPendingUpdateCoveredByEvent(rawPendingUpdate, lastIncreaseEvent, lastDecreaseEvent)
+        isPendingUpdateFresh &&
+        !getIsPendingUpdateCoveredByEvent(rawPendingUpdate, increaseEvents, decreaseEvents)
           ? rawPendingUpdate
           : undefined;
 
@@ -75,10 +80,18 @@ export function applyOptimisticUpdates<T extends Position>({
 
       if (getByKey(positionsData, key)) {
         position = { ...getByKey(positionsData, key)! };
-      } else if (pendingUpdate && pendingUpdate.isIncrease) {
-        const mock = createMockPosition(pendingUpdate);
+      } else if (
+        rawPendingUpdate &&
+        isPendingUpdateFresh &&
+        rawPendingUpdate.isIncrease &&
+        (pendingUpdate || lastIncreaseEvent)
+      ) {
+        // keep the mock as a base even when the update is covered, so the covering
+        // event below upgrades the row in place instead of dropping it until the
+        // next positions fetch
+        const mock = createMockPosition(rawPendingUpdate);
         if (!mock) return acc;
-        position = mock;
+        position = pendingUpdate ? mock : { ...mock, pendingUpdate: undefined };
       } else {
         return acc;
       }
@@ -97,12 +110,15 @@ export function applyOptimisticUpdates<T extends Position>({
         position = applyEventChanges(position, lastDecreaseEvent);
       }
 
-      if (
-        pendingUpdate &&
-        ((pendingUpdate.isIncrease && pendingUpdate.updatedAtBlock > position.increasedAtTime) ||
-          (!pendingUpdate.isIncrease && pendingUpdate.updatedAtBlock > position.decreasedAtTime))
-      ) {
-        position.pendingUpdate = pendingUpdate;
+      if (pendingUpdate) {
+        const pendingUpdateAt = BigInt(Math.floor(pendingUpdate.updatedAt / 1000));
+
+        if (
+          (pendingUpdate.isIncrease && pendingUpdateAt > position.increasedAtTime) ||
+          (!pendingUpdate.isIncrease && pendingUpdateAt > position.decreasedAtTime)
+        ) {
+          position.pendingUpdate = pendingUpdate;
+        }
       }
 
       if (position.sizeInUsd > 0) {
@@ -117,12 +133,24 @@ export function applyOptimisticUpdates<T extends Position>({
 
 function getIsPendingUpdateCoveredByEvent(
   pendingUpdate: PendingPositionUpdate,
-  increaseEvent: PositionIncreaseEvent | undefined,
-  decreaseEvent: PositionDecreaseEvent | undefined
+  increaseEvents: PositionIncreaseEvent[] | undefined,
+  decreaseEvents: PositionDecreaseEvent[] | undefined
 ) {
-  const eventBlockNumber = pendingUpdate.isIncrease ? increaseEvent?.blockNumber : decreaseEvent?.blockNumber;
+  const events = pendingUpdate.isIncrease ? increaseEvents : decreaseEvents;
 
-  return eventBlockNumber !== undefined && BigInt(eventBlockNumber) >= pendingUpdate.updatedAtBlock;
+  if (!events?.length) {
+    return false;
+  }
+
+  if (pendingUpdate.orderKey !== undefined) {
+    return events.some((event) => event.orderKey === pendingUpdate.orderKey);
+  }
+
+  // the block number captured at submission may be stale or unknown (0n),
+  // so an unrelated event covers the update only when the block is known
+  const lastEventBlockNumber = events[events.length - 1].blockNumber;
+
+  return pendingUpdate.updatedAtBlock > 0n && BigInt(lastEventBlockNumber) >= pendingUpdate.updatedAtBlock;
 }
 
 export function getPendingMockPosition(pendingUpdate: PendingPositionUpdate): Position {
@@ -138,7 +166,7 @@ export function getPendingMockPosition(pendingUpdate: PendingPositionUpdate): Po
     sizeInUsd: pendingUpdate.sizeDeltaUsd ?? 0n,
     collateralAmount: pendingUpdate.collateralDeltaAmount ?? 0n,
     sizeInTokens: pendingUpdate.sizeDeltaInTokens ?? 0n,
-    increasedAtTime: pendingUpdate.updatedAtBlock,
+    increasedAtTime: 0n,
     decreasedAtTime: 0n,
     pendingBorrowingFeesUsd: 0n,
     fundingFeeAmount: 0n,

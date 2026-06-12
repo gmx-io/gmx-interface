@@ -66,7 +66,7 @@ describe("applyOptimisticUpdates", () => {
     expect(positions[positionKey]?.pendingUpdate).toBe(pendingUpdate);
   });
 
-  it("does not keep an opening mock after a later position event covers the pending update", () => {
+  it("applies the covering event onto the opening mock instead of dropping the position", () => {
     const pendingUpdate = makePendingUpdate();
     const positions = applyOptimisticUpdates({
       positionsData: undefined,
@@ -77,6 +77,72 @@ describe("applyOptimisticUpdates", () => {
       createMockPosition: getPendingMockPosition,
     });
 
-    expect(positions[positionKey]).toBeUndefined();
+    expect(positions[positionKey]?.sizeInUsd).toBe(100n);
+    expect(positions[positionKey]?.increasedAtTime).toBe(1_700_000_000n);
+    expect(positions[positionKey]?.pendingUpdate).toBeUndefined();
+  });
+
+  it("keeps the pending state when block coverage is unknown", () => {
+    const pendingUpdate = makePendingUpdate({ updatedAtBlock: 0n });
+    const positions = applyOptimisticUpdates({
+      positionsData: undefined,
+      allPositionsKeys: [positionKey],
+      positionIncreaseEvents: [makeIncreaseEvent()],
+      positionDecreaseEvents: [],
+      pendingPositionsUpdates: { [positionKey]: pendingUpdate },
+      createMockPosition: getPendingMockPosition,
+    });
+
+    expect(positions[positionKey]?.pendingUpdate).toBe(pendingUpdate);
+  });
+
+  it("does not cover a pending update from another order's event", () => {
+    const pendingUpdate = makePendingUpdate({ orderKey: "0xanother-order" });
+    const positions = applyOptimisticUpdates({
+      positionsData: undefined,
+      allPositionsKeys: [positionKey],
+      positionIncreaseEvents: [makeIncreaseEvent()],
+      positionDecreaseEvents: [],
+      pendingPositionsUpdates: { [positionKey]: pendingUpdate },
+      createMockPosition: getPendingMockPosition,
+    });
+
+    expect(positions[positionKey]?.pendingUpdate).toBe(pendingUpdate);
+  });
+
+  it("covers a pending update by order key even when the block number is stale", () => {
+    const pendingUpdate = makePendingUpdate({ orderKey: "0xorder", updatedAtBlock: 200n });
+    const positions = applyOptimisticUpdates({
+      positionsData: undefined,
+      allPositionsKeys: [positionKey],
+      positionIncreaseEvents: [makeIncreaseEvent()],
+      positionDecreaseEvents: [],
+      pendingPositionsUpdates: { [positionKey]: pendingUpdate },
+      createMockPosition: getPendingMockPosition,
+    });
+
+    expect(positions[positionKey]?.pendingUpdate).toBeUndefined();
+  });
+
+  it("attaches the pending update to an existing position when newer than the last position change", () => {
+    const pendingUpdate = makePendingUpdate();
+    const existingPosition = {
+      ...getPendingMockPosition(makePendingUpdate()),
+      isOpening: false,
+      pendingUpdate: undefined,
+      sizeInUsd: 100n,
+      increasedAtTime: 1_700_000_000n,
+    };
+
+    const positions = applyOptimisticUpdates({
+      positionsData: { [positionKey]: existingPosition },
+      allPositionsKeys: [positionKey],
+      positionIncreaseEvents: [],
+      positionDecreaseEvents: [],
+      pendingPositionsUpdates: { [positionKey]: pendingUpdate },
+      createMockPosition: getPendingMockPosition,
+    });
+
+    expect(positions[positionKey]?.pendingUpdate).toBe(pendingUpdate);
   });
 });

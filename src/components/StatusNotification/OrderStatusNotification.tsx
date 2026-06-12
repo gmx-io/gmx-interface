@@ -2,13 +2,11 @@ import { t } from "@lingui/macro";
 import cx from "classnames";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { toast } from "react-toastify";
-import { Address, isAddressEqual, zeroAddress } from "viem";
 
 import { getExplorerUrl } from "config/chains";
 import { usePendingTxns } from "context/PendingTxnsContext/PendingTxnsContext";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import {
-  OrderCreatedEventData,
   OrderStatus,
   PendingOrderData,
   getGelatoTaskUrl,
@@ -28,7 +26,6 @@ import { cancelOrdersTxn } from "domain/synthetics/orders/cancelOrdersTxn";
 import { getNameByOrderType } from "domain/synthetics/positions";
 import { TokensData } from "domain/synthetics/tokens";
 import { getSwapPathOutputAddresses } from "domain/synthetics/trade";
-import { useTradeHistory } from "domain/synthetics/tradeHistory/useTradeHistory";
 import { isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
 import { useChainId } from "lib/chains";
 import { defined } from "lib/guards";
@@ -37,8 +34,6 @@ import { getByKey } from "lib/objects";
 import { mustNeverExist } from "lib/types";
 import useWallet from "lib/wallets/useWallet";
 import { getTokenVisualMultiplier, getWrappedToken } from "sdk/configs/tokens";
-import type { TradeAction } from "sdk/utils/tradeHistory/types";
-import { TradeActionType } from "sdk/utils/tradeHistory/types";
 
 import ExternalLink from "components/ExternalLink/ExternalLink";
 import { TransactionStatus, TransactionStatusType } from "components/TransactionStatus/TransactionStatus";
@@ -52,7 +47,6 @@ import "./StatusNotification.scss";
 type Props = {
   toastTimestamp: number;
   pendingOrderData: PendingOrderData;
-  fallbackOrderStatus?: OrderStatus;
   marketsInfoData?: MarketsInfoData;
   tokensData?: TokensData;
   hideTxLink?: "creation" | "execution" | "none";
@@ -60,7 +54,6 @@ type Props = {
 
 function OrderStatusNotification({
   pendingOrderData,
-  fallbackOrderStatus,
   marketsInfoData,
   tokensData,
   toastTimestamp,
@@ -77,7 +70,7 @@ function OrderStatusNotification({
 
   const contractOrderKey = pendingOrderData.orderKey;
   const pendingOrderKey = useMemo(() => getPendingOrderKey(pendingOrderData), [pendingOrderData]);
-  const orderStatus = getByKey(orderStatuses, orderStatusKey) ?? fallbackOrderStatus;
+  const orderStatus = getByKey(orderStatuses, orderStatusKey);
 
   const pendingExpressTxn = getByKey(pendingExpressTxns, pendingExpressTxnKey);
 
@@ -438,32 +431,10 @@ export function OrdersStatusNotificiation({
 
   const [matchedOrderStatusKeys, setMatchedOrderStatusKeys] = useState<string[]>([]);
 
-  const backfillParams = useMemo(() => getMarketOrderExecutionBackfillParams(pendingOrders), [pendingOrders]);
-  const { tradeActions: executionBackfillActions } = useTradeHistory(chainId, {
-    account: backfillParams?.account,
-    pageSize: MARKET_ORDER_EXECUTION_BACKFILL_PAGE_SIZE,
-    fromTxTimestamp: backfillParams?.fromTxTimestamp,
-    orderEventCombinations: backfillParams?.orderEventCombinations,
-    refreshInterval: backfillParams ? MARKET_ORDER_EXECUTION_BACKFILL_REFRESH_INTERVAL : undefined,
-  });
-
-  const backfilledOrderStatusesByPendingKey = useMemo(
-    () => getBackfilledOrderStatusesByPendingKey(pendingOrders, executionBackfillActions),
-    [executionBackfillActions, pendingOrders]
+  const matchedOrderStatuses = useMemo(
+    () => matchedOrderStatusKeys.map((key) => allOrderStatuses[key]).filter(defined),
+    [allOrderStatuses, matchedOrderStatusKeys]
   );
-
-  const matchedOrderStatuses = useMemo(() => {
-    const statuses = matchedOrderStatusKeys.map((key) => allOrderStatuses[key]).filter(defined);
-    const statusKeys = new Set(statuses.map((status) => status.key));
-
-    backfilledOrderStatusesByPendingKey.forEach((status) => {
-      if (!statusKeys.has(status.key)) {
-        statuses.push(status);
-      }
-    });
-
-    return statuses;
-  }, [allOrderStatuses, backfilledOrderStatusesByPendingKey, matchedOrderStatusKeys]);
 
   const [ordersByPendingKey, ordersByContractKey] = useMemo(() => {
     const ordersByPendingKey = new Map<string, PendingOrderData>();
@@ -588,7 +559,6 @@ export function OrdersStatusNotificiation({
             <OrderStatusNotification
               key={index}
               pendingOrderData={order}
-              fallbackOrderStatus={backfilledOrderStatusesByPendingKey.get(getPendingOrderKey(order))}
               marketsInfoData={marketsInfoData}
               tokensData={tokensData}
               toastTimestamp={toastTimestamp}
@@ -638,124 +608,4 @@ function findMatchedOrderStatus(orderList: OrderStatus[], orderData: PendingOrde
 
     return isPendingOrderMatch || isContractOrderMatch;
   });
-}
-
-const MARKET_ORDER_EXECUTION_BACKFILL_LOOKBACK_SECONDS = 60;
-const MARKET_ORDER_EXECUTION_BACKFILL_PAGE_SIZE = 30;
-const MARKET_ORDER_EXECUTION_BACKFILL_REFRESH_INTERVAL = 5000;
-
-export function getMarketOrderExecutionBackfillParams(pendingOrders: PendingOrderData[]) {
-  const pendingMarketCreateOrders = pendingOrders.filter(
-    (order) => order.txnType === "create" && isMarketOrderType(order.orderType)
-  );
-
-  if (pendingMarketCreateOrders.length === 0) {
-    return undefined;
-  }
-
-  const account = pendingMarketCreateOrders[0].account;
-  const createdAt = Math.min(...pendingMarketCreateOrders.map((order) => order.createdAt));
-  const orderTypes = Array.from(new Set(pendingMarketCreateOrders.map((order) => order.orderType)));
-
-  return {
-    account,
-    fromTxTimestamp: Math.max(0, Math.floor(createdAt / 1000) - MARKET_ORDER_EXECUTION_BACKFILL_LOOKBACK_SECONDS),
-    orderEventCombinations: [
-      {
-        eventName: TradeActionType.OrderExecuted,
-        orderType: orderTypes,
-      },
-    ],
-  };
-}
-
-export function getBackfilledOrderStatusesByPendingKey(
-  pendingOrders: PendingOrderData[],
-  tradeActions: TradeAction[] | undefined
-) {
-  const statuses = new Map<string, OrderStatus>();
-
-  if (!tradeActions) {
-    return statuses;
-  }
-
-  pendingOrders.forEach((pendingOrder) => {
-    if (pendingOrder.txnType !== "create" || !isMarketOrderType(pendingOrder.orderType)) {
-      return;
-    }
-
-    const matchingAction = tradeActions.find((tradeAction) =>
-      getIsTradeActionMatchingPendingOrder(tradeAction, pendingOrder)
-    );
-
-    if (!matchingAction) {
-      return;
-    }
-
-    statuses.set(getPendingOrderKey(pendingOrder), {
-      key: matchingAction.orderKey,
-      data: getOrderCreatedDataFromPendingOrder(pendingOrder, matchingAction.orderKey),
-      createdAt: pendingOrder.createdAt,
-      executedTxnHash: matchingAction.transactionHash,
-    });
-  });
-
-  return statuses;
-}
-
-function getIsTradeActionMatchingPendingOrder(tradeAction: TradeAction, pendingOrder: PendingOrderData) {
-  const tradeActionMarketAddress = "marketAddress" in tradeAction ? tradeAction.marketAddress : zeroAddress;
-  const tradeActionSizeDeltaUsd = "sizeDeltaUsd" in tradeAction ? tradeAction.sizeDeltaUsd : 0n;
-  const tradeActionIsLong = "isLong" in tradeAction ? tradeAction.isLong : pendingOrder.isLong;
-
-  return (
-    tradeAction.eventName === TradeActionType.OrderExecuted &&
-    tradeAction.orderType === pendingOrder.orderType &&
-    tradeActionIsLong === pendingOrder.isLong &&
-    tradeActionSizeDeltaUsd === pendingOrder.sizeDeltaUsd &&
-    tradeAction.shouldUnwrapNativeToken === pendingOrder.shouldUnwrapNativeToken &&
-    areAddressesEqual(tradeAction.account, pendingOrder.account) &&
-    areAddressesEqual(tradeActionMarketAddress, pendingOrder.marketAddress) &&
-    areAddressesEqual(tradeAction.initialCollateralTokenAddress, pendingOrder.initialCollateralTokenAddress) &&
-    areAddressArraysEqual(tradeAction.swapPath, pendingOrder.swapPath)
-  );
-}
-
-function getOrderCreatedDataFromPendingOrder(pendingOrder: PendingOrderData, orderKey: string): OrderCreatedEventData {
-  return {
-    key: orderKey,
-    account: pendingOrder.account,
-    receiver: pendingOrder.account,
-    callbackContract: zeroAddress,
-    marketAddress: pendingOrder.marketAddress,
-    initialCollateralTokenAddress: pendingOrder.initialCollateralTokenAddress,
-    swapPath: pendingOrder.swapPath,
-    sizeDeltaUsd: pendingOrder.sizeDeltaUsd,
-    initialCollateralDeltaAmount: pendingOrder.initialCollateralDeltaAmount,
-    contractTriggerPrice: pendingOrder.triggerPrice,
-    contractAcceptablePrice: pendingOrder.acceptablePrice,
-    executionFee: 0n,
-    callbackGasLimit: 0n,
-    minOutputAmount: pendingOrder.minOutputAmount,
-    updatedAtBlock: 0n,
-    orderType: pendingOrder.orderType,
-    isLong: pendingOrder.isLong,
-    shouldUnwrapNativeToken: pendingOrder.shouldUnwrapNativeToken,
-    isFrozen: false,
-    uiFeeReceiver: zeroAddress,
-    externalSwapQuote: undefined,
-    isTwap: pendingOrder.isTwap,
-  };
-}
-
-function areAddressArraysEqual(a: string[], b: string[]) {
-  if (a.length !== b.length) {
-    return false;
-  }
-
-  return a.every((address, index) => areAddressesEqual(address, b[index]));
-}
-
-function areAddressesEqual(a: string, b: string | undefined) {
-  return b !== undefined && isAddressEqual(a as Address, b as Address);
 }

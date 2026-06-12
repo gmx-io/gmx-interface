@@ -78,6 +78,7 @@ export type PendingPositionUpdate = {
   collateralDeltaAmount: bigint;
   updatedAt: number;
   updatedAtBlock: bigint;
+  orderKey?: string;
 };
 
 export type PendingExpressTxnParams = {
