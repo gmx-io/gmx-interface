@@ -55,51 +55,32 @@ export default function AnnouncementsPage() {
   const [startDate, endDate, setDateRange] = useDateRange();
   const [visibleCount, setVisibleCount] = useState(ANNOUNCEMENTS_PAGE_SIZE);
 
-  const clearDeepLink = useCallback(() => {
-    history.replace({ pathname: "/announcements", search: "" });
-  }, [history]);
-
-  const exitDeepLink = useCallback(() => {
-    if (deepLinkId) clearDeepLink();
-  }, [deepLinkId, clearDeepLink]);
-
   const handleSetTab = useCallback(
     (value: AnnouncementTab) => {
-      const isAllAlreadyActive = !deepLinkId && tab === "all";
-      if (value === "all" && isAllAlreadyActive) {
+      if (value === "all" && tab === "all") {
         setSearch("");
         setSelectedChainId(null);
         setDateRange([undefined, undefined]);
       }
       setTab(value);
       setVisibleCount(ANNOUNCEMENTS_PAGE_SIZE);
-      exitDeepLink();
     },
-    [deepLinkId, tab, setDateRange, exitDeepLink]
+    [tab, setDateRange]
   );
-  const handleSetSearch = useCallback(
-    (value: string) => {
-      setSearch(value);
-      setVisibleCount(ANNOUNCEMENTS_PAGE_SIZE);
-      exitDeepLink();
-    },
-    [exitDeepLink]
-  );
-  const handleSetChain = useCallback(
-    (value: number | null) => {
-      setSelectedChainId(value);
-      setVisibleCount(ANNOUNCEMENTS_PAGE_SIZE);
-      exitDeepLink();
-    },
-    [exitDeepLink]
-  );
+  const handleSetSearch = useCallback((value: string) => {
+    setSearch(value);
+    setVisibleCount(ANNOUNCEMENTS_PAGE_SIZE);
+  }, []);
+  const handleSetChain = useCallback((value: number | null) => {
+    setSelectedChainId(value);
+    setVisibleCount(ANNOUNCEMENTS_PAGE_SIZE);
+  }, []);
   const handleSetDateRange = useCallback(
     (value: [Date | undefined, Date | undefined]) => {
       setDateRange(value);
       setVisibleCount(ANNOUNCEMENTS_PAGE_SIZE);
-      exitDeepLink();
     },
-    [setDateRange, exitDeepLink]
+    [setDateRange]
   );
 
   const searchTokens = useMemo(() => tokenizeSearchQuery(search), [search]);
@@ -157,17 +138,38 @@ export default function AnnouncementsPage() {
     if (tab !== "all" && typeCounts[tab] === 0) setTab("all");
   }, [tab, typeCounts]);
 
-  const deepLinkTarget = useMemo(
-    () => (deepLinkId ? allEligible.find((event) => event.id === deepLinkId) : undefined),
-    [deepLinkId, allEligible]
-  );
+  const [highlightedId, setHighlightedId] = useState<string | null>(null);
 
-  const list = useMemo<EventData[]>(() => {
-    if (deepLinkId) return deepLinkTarget ? [deepLinkTarget] : [];
-    return filtered.slice(0, visibleCount);
-  }, [deepLinkId, deepLinkTarget, filtered, visibleCount]);
+  // deep link: clear filters, load up to the target card, then scroll to it and highlight it
+  useEffect(() => {
+    if (!deepLinkId) return;
+    const targetIndex = allEligible.findIndex((event) => event.id === deepLinkId);
+    if (targetIndex === -1) {
+      // KLI-gated entries may appear once flags load; drop the param only when flags are here
+      if (uiFlags) history.replace({ pathname: "/announcements", search: "" });
+      return;
+    }
+    setTab("all");
+    setSearch("");
+    setSelectedChainId(null);
+    setDateRange([undefined, undefined]);
+    setVisibleCount(Math.ceil((targetIndex + 1) / ANNOUNCEMENTS_PAGE_SIZE) * ANNOUNCEMENTS_PAGE_SIZE);
+    setHighlightedId(deepLinkId);
+    history.replace({ pathname: "/announcements", search: "" });
+  }, [deepLinkId, allEligible, uiFlags, history, setDateRange]);
 
-  const hasMore = !deepLinkId && list.length < filtered.length;
+  useEffect(() => {
+    if (!highlightedId) return;
+    document
+      .querySelector(`[data-announcement-id="${CSS.escape(highlightedId)}"]`)
+      ?.scrollIntoView({ behavior: "smooth", block: "center" });
+    const timeoutId = window.setTimeout(() => setHighlightedId(null), 2000);
+    return () => window.clearTimeout(timeoutId);
+  }, [highlightedId]);
+
+  const list = useMemo<EventData[]>(() => filtered.slice(0, visibleCount), [filtered, visibleCount]);
+
+  const hasMore = list.length < filtered.length;
 
   const sentinelRef = useRef<HTMLDivElement>(null);
   useEffect(() => {
@@ -214,7 +216,7 @@ export default function AnnouncementsPage() {
           <FiltersBar
             search={search}
             setSearch={handleSetSearch}
-            activeTab={deepLinkId ? null : tab}
+            activeTab={tab}
             setTab={handleSetTab}
             tabOptions={visibleTabs}
             selectedChainId={selectedChainId}
@@ -230,7 +232,14 @@ export default function AnnouncementsPage() {
                 <Trans>No announcements found</Trans>
               </div>
             ) : (
-              list.map((event) => <AnnouncementCard key={event.id} event={event} searchTokens={searchTokens} />)
+              list.map((event) => (
+                <AnnouncementCard
+                  key={event.id}
+                  event={event}
+                  searchTokens={searchTokens}
+                  isHighlighted={event.id === highlightedId}
+                />
+              ))
             )}
             {hasMore && <div ref={sentinelRef} className="h-1" />}
           </div>
@@ -243,7 +252,7 @@ export default function AnnouncementsPage() {
 type FiltersBarProps = {
   search: string;
   setSearch: (v: string) => void;
-  activeTab: AnnouncementTab | null;
+  activeTab: AnnouncementTab;
   setTab: (v: AnnouncementTab) => void;
   tabOptions: { value: AnnouncementTab; label: string }[];
   selectedChainId: number | null;
