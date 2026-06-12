@@ -115,11 +115,11 @@ function GeneralPerformanceDetailsRow({
 
   return (
     <TableTr key={row.bucketLabel}>
-      <TableTd>
+      <TableTd className="!py-16">
         {onBucketClick ? (
           <button
             type="button"
-            className="cursor-pointer text-left underline decoration-dashed decoration-1 underline-offset-2 hover:text-blue-300"
+            className="cursor-pointer text-left text-typography-secondary underline decoration-dashed decoration-[0.5px] underline-offset-2 hover:text-typography-primary"
             onClick={() => onBucketClick(row.bucketLabel)}
           >
             {bucketLabel}
@@ -195,18 +195,19 @@ function GeneralPerformanceDetailsRow({
 
 function MetricWithRank({ rank, children }: { rank: number | undefined; children: React.ReactNode }) {
   return (
-    <span className="leading-tight whitespace-nowrap">
+    <span className="flex items-center gap-8">
       {children}
       {rank !== undefined && (
-        <>
-          {" "}
-          <TooltipWithPortal
-            variant="none"
-            shouldStopPropagation
-            content={t`Rank among accounts for this metric and period.`}
-            handle={<span className="cursor-help text-12 text-typography-secondary numbers">(#{rank})</span>}
-          />
-        </>
+        <TooltipWithPortal
+          variant="none"
+          shouldStopPropagation
+          content={t`Rank among accounts for this metric and period.`}
+          handle={
+            <span className="cursor-help rounded-full border-1/2 border-stroke-primary px-6 py-1 text-12 font-medium text-typography-secondary numbers">
+              #{rank}
+            </span>
+          }
+        />
       )}
     </span>
   );
