@@ -477,11 +477,18 @@ export function PositionEditor() {
                   />
                 </AlertInfoCard>
               )}
-              {!submitButtonState.bannerErrorName && lowGasPaymentTokenWarningContent && (
-                <AlertInfoCard type="warning" hideClose>
-                  {lowGasPaymentTokenWarningContent}
+              {submitButtonState.errorBannerContent && (
+                <AlertInfoCard type="error" hideClose>
+                  {submitButtonState.errorBannerContent}
                 </AlertInfoCard>
               )}
+              {!submitButtonState.bannerErrorName &&
+                !submitButtonState.errorBannerContent &&
+                lowGasPaymentTokenWarningContent && (
+                  <AlertInfoCard type="warning" hideClose>
+                    {lowGasPaymentTokenWarningContent}
+                  </AlertInfoCard>
+                )}
 
               <ExpressTradingWarningCard
                 expressParams={submitButtonState.expressParams}

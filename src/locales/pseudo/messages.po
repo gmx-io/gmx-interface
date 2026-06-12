@@ -1752,10 +1752,6 @@ msgstr ""
 msgid "Failed"
 msgstr ""
 
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Insufficient margin. Add {amountText} more margin"
-msgstr ""
-
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "CODE"
 msgstr ""
@@ -3512,6 +3508,10 @@ msgstr ""
 msgid "Realized fees"
 msgstr ""
 
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+msgid "Accrued borrow and funding fees are deducted from the deposit before it improves the position's margin, so the deposit must also cover them."
+msgstr ""
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Solana support</0><1>Botanix support</1><2>GMX Express</2>"
 msgstr ""
@@ -3576,6 +3576,10 @@ msgstr ""
 
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Runs entirely on public chains"
+msgstr ""
+
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+msgid "Set min deposit"
 msgstr ""
 
 #: src/domain/synthetics/orders/utils.tsx
@@ -5472,7 +5476,6 @@ msgid "{updateOrdersCount} TP/SL orders updated"
 msgstr ""
 
 #: src/components/Errors/getContractErrorMessage.ts
-#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient margin. Add more margin"
 msgstr ""
 
@@ -6150,6 +6153,10 @@ msgstr ""
 
 #: src/components/SideNav/SupportChatNavItem.tsx
 msgid "Support"
+msgstr ""
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Insufficient margin. Fees are deducted from the deposited collateral before it improves the position's margin, deposit more to cover them"
 msgstr ""
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
@@ -7622,6 +7629,10 @@ msgstr ""
 
 #: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
+msgstr ""
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min deposit: {0}"
 msgstr ""
 
 #: src/components/PoolSelector2/PoolSelector2.tsx

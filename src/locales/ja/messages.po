@@ -1752,10 +1752,6 @@ msgstr "指値スワップ失敗"
 msgid "Failed"
 msgstr "失敗"
 
-#: src/components/Errors/getContractErrorMessage.ts
-msgid "Insufficient margin. Add {amountText} more margin"
-msgstr ""
-
 #: src/components/Referrals/affiliates/dashboard/AffiliatesStats.tsx
 msgid "CODE"
 msgstr ""
@@ -3512,6 +3508,10 @@ msgstr "このスワップには外部ルーティングが必要ですが、One
 msgid "Realized fees"
 msgstr "実現手数料"
 
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+msgid "Accrued borrow and funding fees are deducted from the deposit before it improves the position's margin, so the deposit must also cover them."
+msgstr "未払いの借入手数料とファンディング手数料は、入金がポジションの証拠金を改善する前に入金額から差し引かれるため、入金額はこれらの手数料も賄う必要があります。"
+
 #: landing/src/pages/Home/RoadmapSection/Quareters.tsx
 msgid "<0>Solana support</0><1>Botanix support</1><2>GMX Express</2>"
 msgstr "<0>Solana サポート</0><1>Botanix サポート</1><2>GMX Express</2>"
@@ -3577,6 +3577,10 @@ msgstr "Telegram 上の GMX V2 データ分析"
 #: landing/src/pages/Home/LaunchSection/LaunchSection.tsx
 msgid "Runs entirely on public chains"
 msgstr "完全にパブリックチェーンで実行"
+
+#: src/components/PositionEditor/usePositionEditorButtonState.tsx
+msgid "Set min deposit"
+msgstr "最小入金額を設定"
 
 #: src/domain/synthetics/orders/utils.tsx
 msgid "May lack liquidity for parts of this order when triggered"
@@ -5472,7 +5476,6 @@ msgid "{updateOrdersCount} TP/SL orders updated"
 msgstr "{updateOrdersCount} 件の TP/SL 注文が更新されました"
 
 #: src/components/Errors/getContractErrorMessage.ts
-#: src/components/Errors/getContractErrorMessage.ts
 msgid "Insufficient margin. Add more margin"
 msgstr ""
 
@@ -6151,6 +6154,10 @@ msgstr "購入注文がキャンセルされました"
 #: src/components/SideNav/SupportChatNavItem.tsx
 msgid "Support"
 msgstr "サポート"
+
+#: src/components/Errors/getContractErrorMessage.ts
+msgid "Insufficient margin. Fees are deducted from the deposited collateral before it improves the position's margin, deposit more to cover them"
+msgstr "証拠金が不足しています。手数料は、入金された担保がポジションの証拠金を改善する前に差し引かれるため、手数料を賄うにはより多く入金してください"
 
 #: src/components/Referrals/affiliates/dashboard/AffiliatesOverviewChartCards.tsx
 #: src/components/Referrals/shared/charts/GmxBarChart.tsx
@@ -7623,6 +7630,10 @@ msgstr ""
 #: src/components/DecreaseReceiveOutput/DecreaseReceiveOutput.tsx
 msgid "Receive {profitTokenSymbol} and {collateralTokenSymbol} separately"
 msgstr "{profitTokenSymbol} と {collateralTokenSymbol} を別々に受け取る"
+
+#: src/domain/synthetics/trade/utils/validation.ts
+msgid "Min deposit: {0}"
+msgstr "最小入金額: {0}"
 
 #: src/components/PoolSelector2/PoolSelector2.tsx
 #: src/components/PoolSelector2/PoolSelector2.tsx
