@@ -51,8 +51,21 @@ export default function ClaimableAmounts() {
     });
   }, []);
 
+  const claimableEntries = useMemo(
+    () =>
+      Object.entries(claimableAmountsDataByDistributionId ?? {}).filter(
+        ([distributionId]) => !claimsConfigByDistributionId?.[distributionId]?.claimsDisabled
+      ),
+    [claimableAmountsDataByDistributionId, claimsConfigByDistributionId]
+  );
+
+  const selectedClaimableDistributionIds = useMemo(
+    () => selectedDistributionIds.filter((distributionId) => claimableEntries.some(([id]) => id === distributionId)),
+    [selectedDistributionIds, claimableEntries]
+  );
+
   const { data: executionFee } = useClaimExecutionFee({
-    selectedDistributionIds,
+    selectedDistributionIds: selectedClaimableDistributionIds,
     claimableAmountsDataByDistributionId,
     claimsConfigByDistributionId,
     signatures: {},
@@ -62,12 +75,12 @@ export default function ClaimableAmounts() {
   });
 
   const onClaimSuccess = useCallback(() => {
-    onClaimed(selectedDistributionIds);
+    onClaimed(selectedClaimableDistributionIds);
     setSelectedDistributionIds([]);
-  }, [onClaimed, selectedDistributionIds]);
+  }, [onClaimed, selectedClaimableDistributionIds]);
 
   const claimFundsTransactionCallback = useClaimFundsTransactionCallback({
-    selectedDistributionIds,
+    selectedDistributionIds: selectedClaimableDistributionIds,
     onSuccess: onClaimSuccess,
   });
 
@@ -79,7 +92,7 @@ export default function ClaimableAmounts() {
     setIsClaiming(true);
     try {
       await createClaimAmountsTransaction({
-        selectedDistributionIds,
+        selectedDistributionIds: selectedClaimableDistributionIds,
         claimableAmountsDataByDistributionId,
         claimsConfigByDistributionId,
         signatures: {},
@@ -98,18 +111,18 @@ export default function ClaimableAmounts() {
     claimFundsTransactionCallback,
     claimableAmountsDataByDistributionId,
     claimsConfigByDistributionId,
-    selectedDistributionIds,
+    selectedClaimableDistributionIds,
   ]);
 
   const { balancesData } = useTokenBalances(chainId);
   const userNativeTokenBalance = getByKey(balancesData, NATIVE_TOKEN_ADDRESS);
 
   const totalFundsToClaimUsd = useMemo(() => {
-    return selectedDistributionIds.reduce((acc, curr) => {
+    return selectedClaimableDistributionIds.reduce((acc, curr) => {
       acc += claimableAmountsDataByDistributionId?.[curr]?.totalUsd ?? 0n;
       return acc;
     }, 0n);
-  }, [selectedDistributionIds, claimableAmountsDataByDistributionId]);
+  }, [selectedClaimableDistributionIds, claimableAmountsDataByDistributionId]);
 
   const renderTotalTooltipContent = useCallback(() => {
     if (!claimableAmountsDataByDistributionId) {
@@ -117,7 +130,7 @@ export default function ClaimableAmounts() {
     }
 
     const allAmounts: Array<{ symbol: string; amount: bigint; decimals: number }> = [];
-    selectedDistributionIds.forEach((distributionId) => {
+    selectedClaimableDistributionIds.forEach((distributionId) => {
       const data = claimableAmountsDataByDistributionId[distributionId];
       if (data) {
         data.amounts.forEach((amount) => {
@@ -148,11 +161,11 @@ export default function ClaimableAmounts() {
         valueClassName="numbers"
       />
     ));
-  }, [selectedDistributionIds, claimableAmountsDataByDistributionId]);
+  }, [selectedClaimableDistributionIds, claimableAmountsDataByDistributionId]);
 
   const hasGlpReimbursementSelected = useMemo(() => {
-    return selectedDistributionIds.includes(GLP_DISTRIBUTION_ID.toString());
-  }, [selectedDistributionIds]);
+    return selectedClaimableDistributionIds.includes(GLP_DISTRIBUTION_ID.toString());
+  }, [selectedClaimableDistributionIds]);
 
   const { isButtonDisabled, buttonText, buttonTooltipText, hasAvailableFundsToCoverExecutionFee } = useMemo(() => {
     let isButtonDisabled = false;
@@ -181,7 +194,7 @@ export default function ClaimableAmounts() {
 
     let buttonTooltipText: React.ReactNode | null = null;
 
-    if (selectedDistributionIds.length === 0) {
+    if (selectedClaimableDistributionIds.length === 0) {
       buttonTooltipText = <Trans>Select at least one distribution to claim</Trans>;
       isButtonDisabled = true;
     }
@@ -203,7 +216,7 @@ export default function ClaimableAmounts() {
     executionFee,
     hasOutdatedUi,
     isClaiming,
-    selectedDistributionIds,
+    selectedClaimableDistributionIds,
     totalFundsToClaimUsd,
   ]);
 
@@ -227,14 +240,6 @@ export default function ClaimableAmounts() {
     </TooltipWithPortal>
   ) : (
     buttonContent
-  );
-
-  const claimableEntries = useMemo(
-    () =>
-      Object.entries(claimableAmountsDataByDistributionId ?? {}).filter(
-        ([distributionId]) => !claimsConfigByDistributionId?.[distributionId]?.claimsDisabled
-      ),
-    [claimableAmountsDataByDistributionId, claimsConfigByDistributionId]
   );
 
   if (isLoading) {

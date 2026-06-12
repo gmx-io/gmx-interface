@@ -92,6 +92,10 @@ export function useRebatesInfoRequest(
       const timeKey = BigInt(rawRebateInfo.timeKey);
       const value = BigInt(rawRebateInfo.value);
 
+      if (reductionFactor >= PRECISION) {
+        return;
+      }
+
       let factor = BigInt(rawRebateInfo.factor);
 
       if (factorByTime > factor) {
