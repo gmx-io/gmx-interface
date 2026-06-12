@@ -19,12 +19,9 @@ export function AnnouncementCard({ event, searchTokens = EMPTY_TOKENS }: Announc
   const titleText = reactNodeToText(event.title);
 
   return (
-    <article
-      data-announcement-id={event.id}
-      className="flex flex-col gap-20 rounded-8 bg-fill-card p-20 max-lg:gap-16"
-    >
+    <article className="flex flex-col gap-20 rounded-8 bg-fill-card p-20 max-lg:gap-16">
       <div className="grid grid-cols-[1fr_auto] items-start gap-x-12 gap-y-8 max-lg:grid-cols-1">
-        <p className="text-body-small font-medium text-blue-100">{formatEventDate(date)}</p>
+        <p className="text-body-small font-medium text-blue-300">{formatEventDate(date)}</p>
         <div className="flex shrink-0 flex-wrap items-center justify-end gap-4 max-lg:order-last max-lg:mt-4 max-lg:justify-start">
           {event.chains?.map((chainId) => <ChainBadge key={chainId} chainId={chainId} />)}
           <TypeTag type={event.type} />

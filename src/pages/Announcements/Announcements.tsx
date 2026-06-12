@@ -337,7 +337,7 @@ function FiltersBar({
               className={cx(
                 "inline-flex h-32 shrink-0 scroll-mx-32 items-center whitespace-nowrap rounded-8 px-12 text-13 font-medium transition-colors",
                 activeTab === opt.value
-                  ? "bg-slate-800 text-typography-primary"
+                  ? "bg-button-secondary text-typography-primary"
                   : "text-typography-secondary hover:text-typography-primary"
               )}
               data-qa={`announcements-tab-${opt.value}`}
@@ -360,7 +360,7 @@ function FiltersBar({
               <span
                 className={cx(
                   "inline-flex h-32 items-center gap-4 rounded-8 px-12 text-13 font-medium transition-colors",
-                  "max-lg:w-32 max-lg:justify-center max-lg:bg-slate-800 max-lg:px-0",
+                  "max-lg:w-32 max-lg:justify-center max-lg:bg-button-secondary max-lg:px-0",
                   isCompact && "lg:w-32 lg:justify-center lg:px-0",
                   open ? "text-typography-primary" : "text-typography-secondary hover:text-typography-primary"
                 )}
@@ -385,7 +385,7 @@ function FiltersBar({
           value={search}
           setValue={setSearch}
           placeholder={t`Search`}
-          className="shrink-0 max-lg:order-first lg:!w-[260px] lg:!grow-0"
+          className="shrink-0 max-lg:order-first lg:!w-[260px] lg:!grow-0 [&_input:hover]:bg-button-secondaryHover [&_input:not(:focus)]:border-button-secondary [&_input]:bg-button-secondary"
         />
       </div>
     </div>
@@ -414,7 +414,7 @@ function ChainDropdown({
           <Popover.Button
             className={cx(
               "inline-flex h-32 items-center gap-4 rounded-8 px-12 text-13 font-medium outline-none transition-colors",
-              "max-lg:w-32 max-lg:justify-center max-lg:bg-slate-800 max-lg:px-0",
+              "max-lg:w-32 max-lg:justify-center max-lg:bg-button-secondary max-lg:px-0",
               isCompact && "lg:w-32 lg:justify-center lg:px-0",
               open ? "text-typography-primary" : "text-typography-secondary hover:text-typography-primary"
             )}
@@ -428,7 +428,11 @@ function ChainDropdown({
               {selected === null ? <Trans>All chains</Trans> : getChainName(selected)}
             </span>
             <ChevronDownIcon
-              className={cx("size-16 transition-transform max-lg:hidden", isCompact && "lg:hidden", open && "rotate-180")}
+              className={cx(
+                "size-16 transition-transform max-lg:hidden",
+                isCompact && "lg:hidden",
+                open && "rotate-180"
+              )}
             />
           </Popover.Button>
           <Portal>

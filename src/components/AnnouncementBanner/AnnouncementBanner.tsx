@@ -27,8 +27,8 @@ type AnnouncementBannerProps = {
     activeIndex: number;
     onDotClick?: (index: number) => void;
   };
-  onMouseEnter?: () => void;
-  onMouseLeave?: () => void;
+  onPointerEnter?: (event: React.PointerEvent) => void;
+  onPointerLeave?: (event: React.PointerEvent) => void;
   className?: string;
 };
 
@@ -82,8 +82,8 @@ export function AnnouncementBanner({
   children,
   footerLink,
   dots,
-  onMouseEnter,
-  onMouseLeave,
+  onPointerEnter,
+  onPointerLeave,
   className,
 }: AnnouncementBannerProps) {
   const accentText = variantAccentTextClass[variant];
@@ -96,8 +96,8 @@ export function AnnouncementBanner({
         variantContainerClass[variant],
         className
       )}
-      onMouseEnter={onMouseEnter}
-      onMouseLeave={onMouseLeave}
+      onPointerEnter={onPointerEnter}
+      onPointerLeave={onPointerLeave}
       data-qa="announcement-banner"
     >
       <div

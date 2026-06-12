@@ -176,19 +176,6 @@ function useButtonRowScrollFade() {
 
   const controls = useScrollFade(getSnapChildren);
 
-  // arrows page by the visible width so items the user hasn't seen yet are not skipped
-  const scrollByViewport = useCallback(
-    (dir: 1 | -1) => {
-      const container = controls.scrollableRef.current;
-      if (!container) return;
-      container.scrollBy({ left: dir * container.clientWidth, behavior: "smooth" });
-    },
-    [controls.scrollableRef]
-  );
-
-  const scrollToLeft = useCallback(() => scrollByViewport(-1), [scrollByViewport]);
-  const scrollToRight = useCallback(() => scrollByViewport(1), [scrollByViewport]);
-
   useEffect(() => {
     const container = controls.scrollableRef.current;
     if (!container) {
@@ -208,7 +195,7 @@ function useButtonRowScrollFade() {
     }
   }, [controls.scrollableRef, getSnapChildren]);
 
-  return { ...controls, scrollToLeft, scrollToRight };
+  return controls;
 }
 
 type ScrollFadeGradientColor = "slate-800" | "slate-900" | "slate-950";

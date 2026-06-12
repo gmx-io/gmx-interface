@@ -6,18 +6,14 @@ import { EventData } from "config/events";
 
 import { AnnouncementBanner } from "components/AnnouncementBanner/AnnouncementBanner";
 
-import { useWhatsNewAnnouncements } from "./useWhatsNewAnnouncements";
-
 const AUTO_ROTATE_INTERVAL_MS = 5000;
 const SWIPE_THRESHOLD_PX = 40;
 const WHEEL_MIN_DELTA_PX = 4;
 const WHEEL_STEP_INTERVAL_MS = 350;
-const EMULATED_MOUSE_AFTER_TOUCH_MS = 500;
 const WHATS_NEW_LABEL = <Trans>What's new</Trans>;
 const SEE_MORE_LABEL = <Trans>See more</Trans>;
 
-export function WhatsNewToast() {
-  const { cards, dismiss } = useWhatsNewAnnouncements();
+export function WhatsNewToast({ cards, dismiss }: { cards: EventData[]; dismiss: () => void }) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
 
@@ -36,13 +32,15 @@ export function WhatsNewToast() {
   }, [cards.length, isPaused, activeIndex]);
 
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
-  const lastTouchEndRef = useRef(0);
 
-  const handleMouseEnter = useCallback(() => {
-    if (performance.now() - lastTouchEndRef.current < EMULATED_MOUSE_AFTER_TOUCH_MS) return;
+  const handlePointerEnter = useCallback((e: React.PointerEvent) => {
+    if (e.pointerType !== "mouse") return;
     setIsPaused(true);
   }, []);
-  const handleMouseLeave = useCallback(() => setIsPaused(false), []);
+  const handlePointerLeave = useCallback((e: React.PointerEvent) => {
+    if (e.pointerType !== "mouse") return;
+    setIsPaused(false);
+  }, []);
   const handleDotClick = useCallback((index: number) => setActiveIndex(index), []);
 
   const goRelative = useCallback(
@@ -79,7 +77,6 @@ export function WhatsNewToast() {
     (e: React.TouchEvent) => {
       const start = touchStartRef.current;
       touchStartRef.current = null;
-      lastTouchEndRef.current = performance.now();
       setIsPaused(false);
       if (!start || cards.length <= 1) return;
 
@@ -151,14 +148,14 @@ export function WhatsNewToast() {
     [cards.length, safeIndex, handleDotClick]
   );
 
-  if (cards.length === 0 || !current) return null;
+  if (!current) return null;
 
   const isCarousel = cards.length > 1;
 
   return (
     <div
       ref={containerRef}
-      className={cx(isCarousel && "touch-pan-y")}
+      className={cx("pointer-events-auto", isCarousel && "touch-pan-y")}
       role={isCarousel ? "region" : undefined}
       aria-roledescription={isCarousel ? "carousel" : undefined}
       aria-label={isCarousel ? t`What's new` : undefined}
@@ -179,8 +176,8 @@ export function WhatsNewToast() {
         headerLabel={WHATS_NEW_LABEL}
         headerIcon="info"
         onClose={dismiss}
-        onMouseEnter={handleMouseEnter}
-        onMouseLeave={handleMouseLeave}
+        onPointerEnter={handlePointerEnter}
+        onPointerLeave={handlePointerLeave}
         footerLink={footerLink}
         dots={dots}
       >
