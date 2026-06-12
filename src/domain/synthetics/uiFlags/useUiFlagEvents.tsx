@@ -36,16 +36,19 @@ export function useUiFlagEvents(): ActiveUiFlagEvent[] {
   return useMemo<ActiveUiFlagEvent[]>(() => {
     if (!uiFlags) return [];
 
-    return uiFlagEventsData
-      .filter((event) => uiFlags[event.flagName] === true)
-      .filter((event) => !isDismissedByCooldown(event.id, getUiFlagEventDismissCooldown(event)))
-      .map((event) => ({
-        data: event,
-        dismiss: () => {
-          persistDismissal(event.id);
-          bumpVersion();
-        },
-      }));
+    return (
+      uiFlagEventsData
+        // [Mock] flag check disabled to force-show the banner — test branch only
+        .filter(() => true)
+        .filter((event) => !isDismissedByCooldown(event.id, getUiFlagEventDismissCooldown(event)))
+        .map((event) => ({
+          data: event,
+          dismiss: () => {
+            persistDismissal(event.id);
+            bumpVersion();
+          },
+        }))
+    );
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [uiFlags, dismissalVersion, bumpVersion]);
 }
