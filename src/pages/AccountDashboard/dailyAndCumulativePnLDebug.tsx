@@ -179,28 +179,6 @@ export const DEV_QUERY = gql`
   }
 `;
 
-export const LEGACY_DEV_QUERY = gql`
-  query AccountHistoricalPnlResolver($account: String!, $from: Int) {
-    accountPnlHistoryStats(account: $account, from: $from) {
-      cumulativePnl
-      cumulativeRealizedFees
-      cumulativeRealizedPnl
-      cumulativeRealizedPriceImpact
-      cumulativeRealizedSwapImpact
-      pnl
-      realizedFees
-      realizedPnl
-      realizedPriceImpact
-      realizedSwapImpact
-      timestamp
-      unrealizedFees
-      unrealizedPnl
-      startUnrealizedPnl
-      startUnrealizedFees
-    }
-  }
-`;
-
 export const DEBUG_FIELDS = [
   "realizedFees",
   "realizedPnl",

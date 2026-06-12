@@ -17,7 +17,6 @@ import type { Address } from "viem";
 
 import { USD_DECIMALS } from "config/factors";
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
-import { isAccountPnlExtendedSchemaSupported } from "domain/synthetics/accountStats";
 import type { FromOldToNewArray } from "domain/tradingview/types";
 import {
   SECONDS_IN_DAY,
@@ -47,7 +46,6 @@ import {
   DebugLegend,
   DebugLines,
   DebugTooltip,
-  LEGACY_DEV_QUERY,
   type AccountPnlHistoryPointDebugFields,
 } from "./dailyAndCumulativePnLDebug";
 
@@ -288,19 +286,9 @@ export type AccountPnlHistoryPoint = {
 
 type PnlHistoricalData = FromOldToNewArray<AccountPnlHistoryPoint>;
 
-const PROD_QUERY = gql`
+const QUERY = gql`
   query AccountHistoricalPnlResolver($account: String!, $from: Int, $to: Int) {
     accountPnlHistoryStats(account: $account, from: $from, to: $to) {
-      cumulativePnl
-      pnl
-      timestamp
-    }
-  }
-`;
-
-const LEGACY_PROD_QUERY = gql`
-  query AccountHistoricalPnlResolver($account: String!, $from: Int) {
-    accountPnlHistoryStats(account: $account, from: $from) {
       cumulativePnl
       pnl
       timestamp
@@ -317,55 +305,42 @@ function usePnlHistoricalData(
   toTimestamp: number | undefined
 ) {
   const showDebugValues = useShowDebugValues();
-  const hasExtendedSchema = isAccountPnlExtendedSchemaSupported(chainId);
-  const query = showDebugValues
-    ? hasExtendedSchema
-      ? DEV_QUERY
-      : LEGACY_DEV_QUERY
-    : hasExtendedSchema
-      ? PROD_QUERY
-      : LEGACY_PROD_QUERY;
+  const query = showDebugValues ? DEV_QUERY : QUERY;
   const res = useGqlQuery(query, {
     client: getSubsquidGraphClient(chainId)!,
-    variables: hasExtendedSchema
-      ? { account: account, from: fromTimestamp, to: toTimestamp }
-      : { account: account, from: fromTimestamp },
+    variables: { account: account, from: fromTimestamp, to: toTimestamp },
   });
 
   const transformedData: PnlHistoricalData = useMemo(() => {
     let dataPoints =
-      res.data?.accountPnlHistoryStats
-        ?.filter((row: any) => {
-          return hasExtendedSchema || toTimestamp === undefined || row.timestamp <= toTimestamp;
-        })
-        .map((row: any) => {
-          const parsedDebugFields = showDebugValues
-            ? DEBUG_FIELDS.reduce(
-                (acc, key) => {
-                  const raw = row[key];
+      res.data?.accountPnlHistoryStats.map((row: any) => {
+        const parsedDebugFields = showDebugValues
+          ? DEBUG_FIELDS.reduce(
+              (acc, key) => {
+                const raw = row[key];
 
-                  const bn = raw ? BigInt(raw) : 0n;
-                  acc[key] = bn;
-                  acc[`${key}Float`] = bigintToNumber(bn, USD_DECIMALS);
-                  return acc;
-                },
-                {} as Record<string, bigint | number>
-              )
-            : EMPTY_OBJECT;
+                const bn = raw ? BigInt(raw) : 0n;
+                acc[key] = bn;
+                acc[`${key}Float`] = bigintToNumber(bn, USD_DECIMALS);
+                return acc;
+              },
+              {} as Record<string, bigint | number>
+            )
+          : EMPTY_OBJECT;
 
-          return {
-            date: showDebugValues
-              ? formatDateTimeUTC(row.timestamp) + " - " + formatDateTimeUTC(row.timestamp + SECONDS_IN_DAY) + " UTC"
-              : formatDateUTC(row.timestamp),
-            dateCompact: formatDateCompactUTC(row.timestamp),
-            timestamp: row.timestamp,
-            pnl: BigInt(row.pnl),
-            pnlFloat: bigintToNumber(BigInt(row.pnl), USD_DECIMALS),
-            cumulativePnl: BigInt(row.cumulativePnl),
-            cumulativePnlFloat: bigintToNumber(BigInt(row.cumulativePnl), USD_DECIMALS),
-            ...parsedDebugFields,
-          };
-        }) || EMPTY_ARRAY;
+        return {
+          date: showDebugValues
+            ? formatDateTimeUTC(row.timestamp) + " - " + formatDateTimeUTC(row.timestamp + SECONDS_IN_DAY) + " UTC"
+            : formatDateUTC(row.timestamp),
+          dateCompact: formatDateCompactUTC(row.timestamp),
+          timestamp: row.timestamp,
+          pnl: BigInt(row.pnl),
+          pnlFloat: bigintToNumber(BigInt(row.pnl), USD_DECIMALS),
+          cumulativePnl: BigInt(row.cumulativePnl),
+          cumulativePnlFloat: bigintToNumber(BigInt(row.cumulativePnl), USD_DECIMALS),
+          ...parsedDebugFields,
+        };
+      }) || EMPTY_ARRAY;
 
     if (dataPoints.length === 0) {
       return EMPTY_ARRAY;
@@ -403,7 +378,7 @@ function usePnlHistoricalData(
     }
 
     return dataPoints;
-  }, [hasExtendedSchema, res.data?.accountPnlHistoryStats, showDebugValues, toTimestamp]);
+  }, [res.data?.accountPnlHistoryStats, showDebugValues]);
 
   return { data: transformedData, error: res.error, loading: res.loading };
 }
