@@ -12,8 +12,6 @@ import {
 } from "./orderStatusesBackfill";
 import { fetchRawTradeActions } from "./useTradeHistory";
 
-// Recovers order statuses from the trade history indexer for pending orders
-// whose websocket events were missed, so their toasts can still resolve.
 export function useOrderStatusesBackfill({
   chainId,
   pendingOrders,

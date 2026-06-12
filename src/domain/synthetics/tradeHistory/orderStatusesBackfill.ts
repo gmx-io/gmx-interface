@@ -1,7 +1,6 @@
 import { zeroAddress } from "viem";
 
 import { OrderCreatedEventData, OrderStatus, OrderStatuses, PendingOrderData } from "context/SyntheticsEvents/types";
-import { isSameAddress, isSameAddressArray } from "lib/addresses";
 import { TradeAction as RawTradeAction } from "sdk/codegen/subsquid";
 import { OrderType } from "sdk/utils/orders/types";
 import { isMarketOrderType, isSwapOrderType } from "sdk/utils/orders/utils";
@@ -49,8 +48,7 @@ function getExpectedEventNames(order: PendingOrderData): OrderBackfillEventName[
     return [TradeActionType.OrderCancelled];
   }
 
-  // The trade history is append-only, so for non-market creates the created
-  // action is queryable even after the order executes or is cancelled
+  // Non-market create actions stay queryable after execution or cancellation.
   return isMarketOrderType(order.orderType)
     ? [TradeActionType.OrderExecuted, TradeActionType.OrderCancelled]
     : [TradeActionType.OrderCreated];
@@ -69,8 +67,7 @@ export function getOrderBackfillParams(pendingOrders: PendingOrderData[]) {
   >();
 
   orders.forEach((order) => {
-    // sizeDeltaUsd == 0 on a position market order means a collateral deposit or
-    // withdrawal, which the trade history filters require to be requested explicitly
+    // Zero-size position market orders are collateral deposits or withdrawals.
     const isDepositOrWithdraw =
       isMarketOrderType(order.orderType) && !isSwapOrderType(order.orderType) && order.sizeDeltaUsd === 0n;
 
@@ -147,7 +144,6 @@ function getIsRawTradeActionMatchingPendingOrder(rawAction: RawTradeAction, pend
     return false;
   }
 
-  // Update and cancel transactions know the on-chain order key, so match exactly
   if (pendingOrder.txnType !== "create") {
     return pendingOrder.orderKey !== undefined && rawAction.orderKey === pendingOrder.orderKey;
   }
@@ -155,11 +151,13 @@ function getIsRawTradeActionMatchingPendingOrder(rawAction: RawTradeAction, pend
   const isAfterSubmission =
     rawAction.timestamp + ORDER_BACKFILL_LOOKBACK_SECONDS >= Math.floor(pendingOrder.createdAt / 1000);
 
+  const isInitialCollateralAmountMatch =
+    pendingOrder.externalSwapQuote !== undefined ||
+    BigInt(rawAction.initialCollateralDeltaAmount ?? 0) === pendingOrder.initialCollateralDeltaAmount;
+
   const isAmountsMatch =
     BigInt(rawAction.sizeDeltaUsd ?? 0) === pendingOrder.sizeDeltaUsd &&
-    // with an external swap the on-chain collateral amount differs from the requested one
-    (pendingOrder.externalSwapQuote !== undefined ||
-      BigInt(rawAction.initialCollateralDeltaAmount ?? 0) === pendingOrder.initialCollateralDeltaAmount) &&
+    isInitialCollateralAmountMatch &&
     (!isSwapOrderType(pendingOrder.orderType) ||
       BigInt(rawAction.minOutputAmount ?? 0) === pendingOrder.minOutputAmount) &&
     (isMarketOrderType(pendingOrder.orderType) || BigInt(rawAction.triggerPrice ?? 0) === pendingOrder.triggerPrice);
@@ -170,10 +168,11 @@ function getIsRawTradeActionMatchingPendingOrder(rawAction: RawTradeAction, pend
     rawAction.orderType === pendingOrder.orderType &&
     (rawAction.isLong ?? pendingOrder.isLong) === pendingOrder.isLong &&
     (rawAction.shouldUnwrapNativeToken ?? false) === pendingOrder.shouldUnwrapNativeToken &&
-    isSameAddress(rawAction.account, pendingOrder.account) &&
-    isSameAddress(rawAction.marketAddress ?? zeroAddress, pendingOrder.marketAddress) &&
-    isSameAddress(rawAction.initialCollateralTokenAddress, pendingOrder.initialCollateralTokenAddress) &&
-    isSameAddressArray(rawAction.swapPath, pendingOrder.swapPath)
+    rawAction.account === pendingOrder.account &&
+    (rawAction.marketAddress ?? zeroAddress) === pendingOrder.marketAddress &&
+    rawAction.initialCollateralTokenAddress === pendingOrder.initialCollateralTokenAddress &&
+    rawAction.swapPath.length === pendingOrder.swapPath.length &&
+    rawAction.swapPath.every((address, index) => address === pendingOrder.swapPath[index])
   );
 }
 

@@ -277,8 +277,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
         return index === -1 ? old : old.filter((_, i) => i !== index);
       });
 
-      // Link the pending position update to the order, so position events
-      // can be matched to it exactly instead of by block number
       if (isMarketOrderType(data.orderType) && marketsInfoData) {
         const pendingPositionKey = getPendingPositionKeyFromOrder(chainId, marketsInfoData, data);
 
@@ -340,8 +338,7 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
 
       setOrderStatuses((old) => {
         if (!old[key]) {
-          // Track unknown executions only while a local pending order may be
-          // waiting for them, to keep background executions out of the statuses
+          // Avoid tracking unrelated background executions.
           if (awaitingBackfillOrders.length === 0) {
             return old;
           }
@@ -1286,8 +1283,6 @@ export function SyntheticsEventsProvider({ children }: { children: ReactNode }) 
           : setByKey(next, match.orderKey, {
               key: match.orderKey,
               createdAt: match.pendingOrder.createdAt,
-              // only creates may claim a status by pending order key, so the
-              // order data is attached just for them
               ...(match.pendingOrder.txnType === "create"
                 ? { data: getOrderCreatedDataFromPendingOrder(match.pendingOrder, match.orderKey) }
                 : {}),
@@ -1499,7 +1494,6 @@ function getPendingPositionKeyFromOrder(
     | "orderType"
   >
 ): string | undefined {
-  // For increase orders, we need to check the target collateral token
   if (isIncreaseOrderType(order.orderType)) {
     const wrappedToken = getWrappedToken(chainId);
 

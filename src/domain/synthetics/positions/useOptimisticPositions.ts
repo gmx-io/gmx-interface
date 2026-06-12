@@ -86,9 +86,7 @@ export function applyOptimisticUpdates<T extends Position>({
         rawPendingUpdate.isIncrease &&
         (pendingUpdate || lastIncreaseEvent)
       ) {
-        // keep the mock as a base even when the update is covered, so the covering
-        // event below upgrades the row in place instead of dropping it until the
-        // next positions fetch
+        // Keep covered increase mocks until the next positions fetch.
         const mock = createMockPosition(rawPendingUpdate);
         if (!mock) return acc;
         position = pendingUpdate ? mock : { ...mock, pendingUpdate: undefined };
@@ -146,8 +144,7 @@ function getIsPendingUpdateCoveredByEvent(
     return events.some((event) => event.orderKey === pendingUpdate.orderKey);
   }
 
-  // the block number captured at submission may be stale or unknown (0n),
-  // so an unrelated event covers the update only when the block is known
+  // Submission block numbers can be stale or unknown.
   const lastEventBlockNumber = events[events.length - 1].blockNumber;
 
   return pendingUpdate.updatedAtBlock > 0n && BigInt(lastEventBlockNumber) >= pendingUpdate.updatedAtBlock;
