@@ -50,7 +50,7 @@ export function getReferralCodeButtonState({
     return { text: t`Approving...`, disabled: true };
   }
   if (isEdit && referralCode === userReferralCodeString) {
-    return { text: t`Same as current active code`, disabled: true };
+    return { text: t`Same as active code`, disabled: true };
   }
   if (isEdit && isSubmitting) {
     return { text: t`Updating...`, disabled: true };

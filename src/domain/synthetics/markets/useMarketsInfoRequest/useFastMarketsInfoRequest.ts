@@ -117,12 +117,12 @@ const MARKETS_INFO_QUERY = gql`
 
 const MARKETS_INFO_QUERY_LIMIT = 150;
 
-export function useFastMarketsInfoRequest(chainId: number) {
+export function useFastMarketsInfoRequest(chainId: number, { enabled = true }: { enabled?: boolean } = {}) {
   const {
     data: fastMarketInfoData,
     error,
     isLoading,
-  } = useSWR<RawMarketsInfoData | undefined>([chainId, "useFastMarketsInfoRequest"], {
+  } = useSWR<RawMarketsInfoData | undefined>(enabled ? [chainId, "useFastMarketsInfoRequest"] : null, {
     refreshInterval: undefined,
     fetcher: async () => {
       try {

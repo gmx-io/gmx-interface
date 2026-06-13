@@ -13,7 +13,7 @@ import {
   getMarketIndexName,
   getMarketPnl,
   getMarketPoolName,
-  getMaxAllowedLeverageByMinCollateralFactor,
+  getMaxAllowedLeverage,
   getOpenInterestUsd,
   getPoolUsdWithoutPnl,
 } from "utils/markets";
@@ -107,6 +107,20 @@ export function getPositionNetValue(p: {
   return collateralUsd - pendingFeesUsd + pnl;
 }
 
+export function getPositionNetValueAfterAllFees(p: {
+  collateralUsd: bigint;
+  pnl: bigint;
+  pendingBorrowingFeesUsd: bigint;
+  pendingFundingFeesUsd: bigint;
+  netPriceImpactDeltaUsd: bigint;
+  closingFeeUsd: bigint;
+}) {
+  const { collateralUsd, pnl, pendingBorrowingFeesUsd, pendingFundingFeesUsd, netPriceImpactDeltaUsd, closingFeeUsd } =
+    p;
+
+  return collateralUsd + pnl - pendingBorrowingFeesUsd - pendingFundingFeesUsd + netPriceImpactDeltaUsd - closingFeeUsd;
+}
+
 export function getPositionPnlAfterFees({
   pnl,
   pendingBorrowingFeesUsd,
@@ -119,6 +133,22 @@ export function getPositionPnlAfterFees({
   const pnlAfterFees = pnl - pendingBorrowingFeesUsd - pendingFundingFeesUsd;
 
   return pnlAfterFees;
+}
+
+export function getPositionPnlAfterAllFees({
+  pnl,
+  pendingBorrowingFeesUsd,
+  pendingFundingFeesUsd,
+  netPriceImpactDeltaUsd,
+  closingFeeUsd,
+}: {
+  pnl: bigint;
+  pendingBorrowingFeesUsd: bigint;
+  pendingFundingFeesUsd: bigint;
+  netPriceImpactDeltaUsd: bigint;
+  closingFeeUsd: bigint;
+}) {
+  return pnl - pendingBorrowingFeesUsd - pendingFundingFeesUsd + netPriceImpactDeltaUsd - closingFeeUsd;
 }
 
 export function getLeverage(p: {
@@ -266,6 +296,57 @@ export function getLiquidationPrice(p: {
   }
 
   return liquidationPrice;
+}
+
+export function getMinCollateralUsdForLiquidationPrice(p: {
+  sizeInUsd: bigint;
+  sizeInTokens: bigint;
+  marketInfo: MarketInfo;
+  pendingImpactAmount: bigint;
+  minCollateralUsd: bigint;
+  pnl: bigint;
+  isLong: boolean;
+  userReferralInfo: UserReferralInfo | undefined;
+}): bigint {
+  const { sizeInUsd, sizeInTokens, marketInfo, pendingImpactAmount, minCollateralUsd, pnl, isLong, userReferralInfo } =
+    p;
+
+  if (sizeInUsd <= 0 || sizeInTokens <= 0) {
+    return 0n;
+  }
+
+  const closingFeeUsd = getPositionFee(marketInfo, sizeInUsd, false, userReferralInfo).positionFeeUsd;
+
+  const maxNegativePriceImpactUsd = -1n * applyFactor(sizeInUsd, marketInfo.maxPositionImpactFactorForLiquidations);
+
+  let priceImpactDeltaUsd = getPriceImpactForPosition(marketInfo, -sizeInUsd, isLong, {
+    fallbackToZero: true,
+  }).priceImpactDeltaUsd;
+
+  if (priceImpactDeltaUsd > 0) {
+    priceImpactDeltaUsd = capPositionImpactUsdByMaxPriceImpactFactor(marketInfo, sizeInUsd, priceImpactDeltaUsd);
+  }
+
+  const pendingImpactUsd = convertToUsd(
+    pendingImpactAmount,
+    marketInfo.indexToken.decimals,
+    pendingImpactAmount > 0 ? marketInfo.indexToken.prices.minPrice : marketInfo.indexToken.prices.maxPrice
+  )!;
+
+  priceImpactDeltaUsd = priceImpactDeltaUsd + pendingImpactUsd;
+
+  if (priceImpactDeltaUsd > 0) {
+    priceImpactDeltaUsd = 0n;
+  } else if (priceImpactDeltaUsd < maxNegativePriceImpactUsd) {
+    priceImpactDeltaUsd = maxNegativePriceImpactUsd;
+  }
+
+  let liquidationCollateralUsd = applyFactor(sizeInUsd, marketInfo.minCollateralFactorForLiquidation);
+  if (liquidationCollateralUsd < minCollateralUsd) {
+    liquidationCollateralUsd = minCollateralUsd;
+  }
+
+  return liquidationCollateralUsd - pnl - priceImpactDeltaUsd + closingFeeUsd;
 }
 
 export function getNetPriceImpactDeltaUsdForDecrease({
@@ -574,6 +655,25 @@ export function getPositionInfo(p: {
 
   const pnlAfterFeesPercentage = collateralUsd !== 0n ? getBasisPoints(pnlAfterFees, collateralUsd) : 0n;
 
+  const netValueAfterAllFees = getPositionNetValueAfterAllFees({
+    collateralUsd,
+    pnl,
+    pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
+    pendingFundingFeesUsd,
+    netPriceImpactDeltaUsd: netPriceImpactValues.totalImpactDeltaUsd,
+    closingFeeUsd,
+  });
+
+  const pnlAfterAllFees = getPositionPnlAfterAllFees({
+    pnl,
+    pendingBorrowingFeesUsd: position.pendingBorrowingFeesUsd,
+    pendingFundingFeesUsd,
+    netPriceImpactDeltaUsd: netPriceImpactValues.totalImpactDeltaUsd,
+    closingFeeUsd,
+  });
+
+  const pnlAfterAllFeesPercentage = collateralUsd !== 0n ? getBasisPoints(pnlAfterAllFees, collateralUsd) : 0n;
+
   const leverage = getLeverage({
     sizeInUsd: position.sizeInUsd,
     collateralUsd,
@@ -598,10 +698,12 @@ export function getPositionInfo(p: {
     pnl: undefined,
   });
 
-  const maxAllowedLeverage = getMaxAllowedLeverageByMinCollateralFactor(
-    marketInfo.minCollateralFactor,
-    marketInfo.marketTokenAddress
-  );
+  const maxAllowedLeverage = getMaxAllowedLeverage({
+    marketAddress: marketInfo.marketTokenAddress,
+    minCollateralFactor: marketInfo.minCollateralFactor,
+    minCollateralFactorForLiquidation: marketInfo.minCollateralFactorForLiquidation,
+    positionFeeFactorForBalanceWasNotImproved: marketInfo.positionFeeFactorForBalanceWasNotImproved,
+  });
   const hasLowCollateral = (leverage !== undefined && leverage > maxAllowedLeverage) || false;
 
   const liquidationPrice = getLiquidationPrice({
@@ -658,6 +760,9 @@ export function getPositionInfo(p: {
     pnlPercentage,
     pnlAfterFees,
     pnlAfterFeesPercentage,
+    netValueAfterAllFees,
+    pnlAfterAllFees,
+    pnlAfterAllFeesPercentage,
     netValue,
     netPriceImapctDeltaUsd: netPriceImpactValues.totalImpactDeltaUsd,
     priceImpactDiffUsd: netPriceImpactValues.priceImpactDiffUsd,

@@ -118,7 +118,7 @@ export function matchByMarket({
     return nonSwapRelevantDefinedFiltersLowercased.some((filter) => {
       const marketMatch = filter.marketAddress === "any" || filter.marketAddress === order.marketAddress.toLowerCase();
       const directionMath = filter.direction === "any" || filter.direction === (order.isLong ? "long" : "short");
-      const initialCollateralAddress = order.initialCollateralTokenAddress.toLowerCase();
+      const initialCollateralAddress = order.initialCollateralTokenAddress;
 
       let collateralMatch = true;
       if (!filter.collateralAddress) {

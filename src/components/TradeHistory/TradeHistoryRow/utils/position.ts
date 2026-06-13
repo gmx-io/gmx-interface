@@ -3,9 +3,16 @@ import { t } from "@lingui/macro";
 
 import { isBoundaryAcceptablePrice } from "domain/prices";
 import { getMarketFullName, getMarketIndexName, getMarketPoolName } from "domain/synthetics/markets";
-import { OrderType, isDecreaseOrderType, isIncreaseOrderType, isLiquidationOrderType } from "domain/synthetics/orders";
+import {
+  OrderType,
+  isDecreaseOrderType,
+  isIncreaseOrderType,
+  isLiquidationOrderType,
+  isTriggerDecreaseOrderType,
+} from "domain/synthetics/orders";
 import { convertToUsd, parseContractPrice } from "domain/synthetics/tokens";
 import { getShouldUseMaxPrice } from "domain/synthetics/trade";
+import { isFullPositionCloseSizeDeltaUsd } from "domain/tpsl/utils";
 import { tryDecodeCustomError } from "lib/errors";
 import {
   BN_NEGATIVE_ONE,
@@ -106,9 +113,13 @@ export const formatPositionMessage = (
     triggerPriceInequality = INEQUALITY_GT;
   }
 
-  const sizeDeltaText = formatUsd(sizeDeltaUsd * (isIncrease ? BN_ONE : BN_NEGATIVE_ONE), {
-    displayPlus: true,
-  })!;
+  const isFullClose = isTriggerDecreaseOrderType(ot) && isFullPositionCloseSizeDeltaUsd(sizeDeltaUsd);
+
+  const sizeDeltaText = isFullClose
+    ? t`Full position close`
+    : formatUsd(sizeDeltaUsd * (isIncrease ? BN_ONE : BN_NEGATIVE_ONE), {
+        displayPlus: true,
+      })!;
 
   const indexName = getMarketIndexName({
     indexToken: tradeAction.indexToken,
@@ -182,7 +193,9 @@ export const formatPositionMessage = (
     displayedPriceImpact = formatDeltaUsd(tradeAction.totalImpactUsd);
   }
 
-  let result: MakeOptional<RowDetails, "action" | "market" | "timestamp" | "timestampUTC" | "price" | "size">;
+  let result: MakeOptional<RowDetails, "action" | "market" | "timestamp" | "timestampUTC" | "price" | "size"> = {
+    priceComment: null,
+  };
 
   //#region MarketIncrease
   if (ot === OrderType.MarketIncrease && ev === TradeActionType.OrderCreated) {
@@ -207,17 +220,11 @@ export const formatPositionMessage = (
         ? lines(t`Mark price for the order`, "", ...priceImpactLines)
         : lines(t`Mark price for the order`);
 
-    const showFeePnl = sizeDeltaUsd > 0n && tradeAction.pnlUsd !== undefined;
-    const formattedPnl = showFeePnl ? formatUsd(tradeAction.pnlUsd) : undefined;
-
     result = {
       action: customAction,
       size: customSize,
       priceComment: priceComment,
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
-      pnl: formattedPnl,
-      pnlState: showFeePnl ? numberToState(tradeAction.pnlUsd!) : undefined,
-      pnlTooltip: showFeePnl ? t`Opening fee paid at this action. Subtracted from your realized PnL.` : undefined,
     };
   } else if (ot === OrderType.MarketIncrease && ev === TradeActionType.OrderCancelled) {
     const isExpired = tradeAction.reason === USER_INITIATED_CANCEL;
@@ -252,7 +259,7 @@ export const formatPositionMessage = (
           })
         : error &&
           lines({
-            text: getErrorTooltipTitle(error.name, true),
+            text: getErrorTooltipTitle(error.name, true, error.args),
             state: "error",
           }),
       size: customSize,
@@ -265,9 +272,6 @@ export const formatPositionMessage = (
     //#region Twap
   } else if (tradeAction.twapParams) {
     if (ev === TradeActionType.OrderExecuted) {
-      const formattedPnl = sizeDeltaUsd > 0n ? formatUsd(tradeAction.pnlUsd) : undefined;
-      const isIncreaseTwap = isIncreaseOrderType(tradeAction.orderType);
-
       result = {
         priceComment: lines(
           t`Mark price for the order`,
@@ -276,18 +280,12 @@ export const formatPositionMessage = (
           ...priceImpactLines
         ),
         acceptablePrice: t`N/A`,
-        pnl: formattedPnl,
-        pnlState: numberToState(tradeAction.pnlUsd),
-        pnlTooltip:
-          isIncreaseTwap && tradeAction.pnlUsd !== undefined && sizeDeltaUsd > 0n
-            ? t`Opening fee paid at this action. Subtracted from your realized PnL.`
-            : undefined,
       };
     } else {
       const error = tradeAction.reasonBytes ? tryDecodeCustomError(tradeAction.reasonBytes) ?? undefined : undefined;
       const errorComment = error
         ? lines({
-            text: getErrorTooltipTitle(error.name, false),
+            text: getErrorTooltipTitle(error.name, false, error.args),
             state: "error",
           })
         : undefined;
@@ -328,7 +326,6 @@ export const formatPositionMessage = (
     (ot === OrderType.StopIncrease && ev === TradeActionType.OrderExecuted)
   ) {
     const isAcceptablePriceUseful = !isBoundaryAcceptablePrice(tradeAction.acceptablePrice);
-    const formattedPnl = tradeAction.pnlUsd !== undefined ? formatUsd(tradeAction.pnlUsd) : undefined;
 
     result = {
       priceComment: lines(
@@ -338,12 +335,6 @@ export const formatPositionMessage = (
         ...priceImpactLines
       ),
       acceptablePrice: isAcceptablePriceUseful ? acceptablePriceInequality + formattedAcceptablePrice : undefined,
-      pnl: formattedPnl,
-      pnlState: tradeAction.pnlUsd !== undefined ? numberToState(tradeAction.pnlUsd) : undefined,
-      pnlTooltip:
-        tradeAction.pnlUsd !== undefined
-          ? t`Opening fee paid at this action. Subtracted from your realized PnL.`
-          : undefined,
     };
   } else if (
     (ot === OrderType.LimitIncrease && ev === TradeActionType.OrderFrozen) ||
@@ -356,7 +347,7 @@ export const formatPositionMessage = (
       actionComment:
         error &&
         lines({
-          text: getErrorTooltipTitle(error.name, false),
+          text: getErrorTooltipTitle(error.name, false, error.args),
           state: "error",
         }),
       priceComment: lines(
@@ -426,7 +417,7 @@ export const formatPositionMessage = (
           })
         : error &&
           lines({
-            text: getErrorTooltipTitle(error.name, true),
+            text: getErrorTooltipTitle(error.name, true, error.args),
             state: "error",
           }),
       size: customSize,
@@ -439,8 +430,6 @@ export const formatPositionMessage = (
     const customAction = sizeDeltaUsd > 0 ? action : i18n._(actionTextMap["Withdraw-OrderExecuted"]!);
     const customSize = sizeDeltaUsd > 0 ? sizeDeltaText : formattedCollateralDelta;
 
-    const formattedPnl = sizeDeltaUsd > 0n ? formatUsd(tradeAction.pnlUsd) : undefined;
-
     result = {
       action: customAction,
       size: customSize,
@@ -449,8 +438,6 @@ export const formatPositionMessage = (
           ? lines(t`Mark price for the order`, "", ...priceImpactLines)
           : lines(t`Mark price for the order`),
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
-      pnl: formattedPnl,
-      pnlState: numberToState(tradeAction.pnlUsd),
     };
     //#endregion MarketDecrease
     //#region LimitDecrease
@@ -473,8 +460,6 @@ export const formatPositionMessage = (
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
     };
   } else if (ot === OrderType.LimitDecrease && ev === TradeActionType.OrderExecuted) {
-    const formattedPnl = formatUsd(tradeAction.pnlUsd);
-
     result = {
       priceComment: lines(
         t`Mark price for the order`,
@@ -483,8 +468,6 @@ export const formatPositionMessage = (
         ...priceImpactLines
       ),
       acceptablePrice: acceptablePriceInequality + formattedAcceptablePrice,
-      pnl: formattedPnl,
-      pnlState: numberToState(tradeAction.pnlUsd),
     };
   } else if (ot === OrderType.LimitDecrease && ev === TradeActionType.OrderFrozen) {
     let error = tradeAction.reasonBytes ? tryDecodeCustomError(tradeAction.reasonBytes) ?? undefined : undefined;
@@ -493,7 +476,7 @@ export const formatPositionMessage = (
       actionComment:
         error &&
         lines({
-          text: getErrorTooltipTitle(error.name, false),
+          text: getErrorTooltipTitle(error.name, false, error.args),
           state: "error",
         }),
       priceComment: lines(
@@ -534,8 +517,6 @@ export const formatPositionMessage = (
       triggerPrice: customPrice,
     };
   } else if (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderExecuted) {
-    const formattedPnl = formatUsd(tradeAction.pnlUsd);
-
     result = {
       priceComment: lines(
         t`Mark price for the order`,
@@ -543,8 +524,6 @@ export const formatPositionMessage = (
         infoRow(t`Order trigger price`, triggerPriceInequality + formattedTriggerPrice),
         ...priceImpactLines
       ),
-      pnl: formattedPnl,
-      pnlState: numberToState(tradeAction.pnlUsd),
     };
   } else if (ot === OrderType.StopLossDecrease && ev === TradeActionType.OrderFrozen) {
     let error = tradeAction.reasonBytes ? tryDecodeCustomError(tradeAction.reasonBytes) ?? undefined : undefined;
@@ -554,7 +533,7 @@ export const formatPositionMessage = (
       actionComment:
         error &&
         lines({
-          text: getErrorTooltipTitle(error.name, false),
+          text: getErrorTooltipTitle(error.name, false, error.args),
           state: "error",
         }),
       priceComment: lines(
@@ -608,7 +587,6 @@ export const formatPositionMessage = (
       }
     );
 
-    const formattedPnl = formatUsd(tradeAction.pnlUsd);
     const formattedBasePnl = formatUsd(tradeAction.basePnlUsd);
 
     const borrowingFeeUsd = convertToUsd(
@@ -706,7 +684,7 @@ export const formatPositionMessage = (
           state: "error",
         }),
         "",
-        infoRow(t`Min. required margin`, formattedMinCollateral),
+        infoRow(t`Minimum required margin`, formattedMinCollateral),
         infoRow(t`Margin at liquidation`, formattedLeftoverCollateral),
         "",
         ...priceImpactLines,
@@ -718,10 +696,28 @@ export const formatPositionMessage = (
         infoRow(t`Returned margin`, formattedReturnedCollateral)
       ),
       isActionError: true,
-      pnl: formattedPnl,
-      pnlState: numberToState(tradeAction.pnlUsd),
     };
     //#endregion Liquidation
+  }
+
+  const isExecuted = ev === TradeActionType.OrderExecuted;
+  const realizesPnl = isExecuted && (isDecreaseOrderType(ot) || isLiquidationOrderType(ot)) && sizeDeltaUsd > 0n;
+
+  let pnl: string | undefined;
+  let pnlState: ReturnType<typeof numberToState> | undefined;
+  if (realizesPnl && tradeAction.basePnlUsd !== undefined) {
+    pnl = formatUsd(tradeAction.basePnlUsd);
+    pnlState = numberToState(tradeAction.basePnlUsd);
+  }
+
+  let fees: string | undefined;
+  let feesTooltip: ReturnType<typeof getFeesBreakdown>["lines"] | undefined;
+  if (isExecuted) {
+    const breakdown = getFeesBreakdown(tradeAction);
+    if (breakdown.lines.length > 0) {
+      fees = formatDeltaUsd(breakdown.totalUsd);
+      feesTooltip = breakdown.lines;
+    }
   }
 
   return {
@@ -740,8 +736,80 @@ export const formatPositionMessage = (
     indexName,
     poolName,
     ...result!,
+    pnl: pnl ?? result?.pnl,
+    pnlState: pnlState ?? result?.pnlState,
+    fees: fees ?? result?.fees,
+    feesTooltip: feesTooltip ?? result?.feesTooltip,
   };
 };
+
+function getFeesBreakdown(tradeAction: PositionTradeAction): { totalUsd: bigint; lines: Line[] } {
+  const collateralPrice = tradeAction.collateralTokenPriceMin;
+  const collateralDecimals = tradeAction.initialCollateralToken?.decimals;
+  const orderType = tradeAction.orderType;
+  const isV22Action = tradeAction.srcChainId !== undefined;
+  const isLiquidation = isLiquidationOrderType(orderType);
+  const isIncrease = isIncreaseOrderType(orderType);
+  const isDecrease = isDecreaseOrderType(orderType);
+
+  const items: { label: string; amountUsd: bigint }[] = [];
+
+  const positionFeeUsd = convertToUsd(tradeAction.positionFeeAmount, collateralDecimals, collateralPrice);
+  if (positionFeeUsd !== undefined && positionFeeUsd !== 0n) {
+    items.push({
+      label: isIncrease ? t`Open fee` : t`Close fee`,
+      amountUsd: -positionFeeUsd,
+    });
+  }
+
+  const traderDiscountUsd = convertToUsd(tradeAction.traderDiscountAmount, collateralDecimals, collateralPrice);
+  if (traderDiscountUsd !== undefined && traderDiscountUsd !== 0n) {
+    items.push({ label: t`Referral discount`, amountUsd: traderDiscountUsd });
+  }
+
+  const borrowFeeUsd = convertToUsd(tradeAction.borrowingFeeAmount, collateralDecimals, collateralPrice);
+  if (borrowFeeUsd !== undefined && borrowFeeUsd !== 0n) {
+    items.push({ label: t`Borrow fee`, amountUsd: -borrowFeeUsd });
+  }
+
+  const fundingFeeUsd = convertToUsd(tradeAction.fundingFeeAmount, collateralDecimals, collateralPrice);
+  if (fundingFeeUsd !== undefined && fundingFeeUsd !== 0n) {
+    items.push({ label: t`Funding fee`, amountUsd: -fundingFeeUsd });
+  }
+
+  if (isLiquidation) {
+    const liqFeeUsd = convertToUsd(tradeAction.liquidationFeeAmount, collateralDecimals, collateralPrice);
+    if (liqFeeUsd !== undefined && liqFeeUsd !== 0n) {
+      items.push({ label: t`Liquidation fee`, amountUsd: -liqFeeUsd });
+    }
+  }
+
+  let positionImpactUsd: bigint | undefined;
+  let positionImpactLabel: string | undefined;
+  if (isV22Action && (isDecrease || isLiquidation) && tradeAction.totalImpactUsd !== undefined) {
+    positionImpactUsd = tradeAction.totalImpactUsd;
+    positionImpactLabel = t`Net price impact`;
+  } else if (!isV22Action && (isIncrease || isDecrease || isLiquidation)) {
+    positionImpactUsd = tradeAction.priceImpactUsd;
+    positionImpactLabel = t`Price impact`;
+  }
+  if (positionImpactUsd !== undefined && positionImpactUsd !== 0n && positionImpactLabel !== undefined) {
+    items.push({ label: positionImpactLabel, amountUsd: positionImpactUsd });
+  }
+
+  if (tradeAction.swapFeeUsd !== undefined && tradeAction.swapFeeUsd !== 0n) {
+    items.push({ label: t`Swap fee`, amountUsd: -tradeAction.swapFeeUsd });
+  }
+
+  if (tradeAction.swapImpactUsd !== undefined && tradeAction.swapImpactUsd !== 0n) {
+    items.push({ label: t`Swap price impact`, amountUsd: tradeAction.swapImpactUsd });
+  }
+
+  const totalUsd = items.reduce((acc, item) => acc + item.amountUsd, 0n);
+  const breakdownLines: Line[] = items.map((item) => infoRow(item.label, formatDeltaUsd(item.amountUsd)));
+
+  return { totalUsd, lines: breakdownLines };
+}
 
 function getPriceImpactLines(tradeAction: PositionTradeAction) {
   const isV22Action = tradeAction.srcChainId !== undefined;

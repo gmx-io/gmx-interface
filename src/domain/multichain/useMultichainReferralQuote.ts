@@ -1,5 +1,4 @@
 import { useMemo } from "react";
-import { zeroAddress } from "viem";
 
 import type { SettlementChainId, SourceChainId } from "config/chains";
 import { FAKE_INPUT_AMOUNT_MAP, getMappedTokenId, isSettlementChain, RANDOM_WALLET } from "config/multichain";
@@ -7,12 +6,12 @@ import { selectExpressGlobalParams } from "context/SyntheticsStateContext/select
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { getRawRelayerParams, type GlobalExpressParams, type RelayParamsPayload } from "domain/synthetics/express";
 import { signRegisterCode, signSetTraderReferralCode } from "domain/synthetics/express/expressOrderUtils";
-import { convertToUsd, getMidPrice } from "domain/tokens";
+import { stargateTransferFees } from "domain/synthetics/markets/feeEstimation/stargateTransferFees";
 import { useChainId } from "lib/chains";
 import { numberToBigint } from "lib/numbers";
 import { type AsyncResult, useThrottledAsync } from "lib/useThrottledAsync";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
 import useWallet from "lib/wallets/useWallet";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
 import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { getEmptyExternalCallsPayload } from "sdk/utils/orderTransactions";
@@ -23,11 +22,13 @@ import { MultichainActionType, type MultichainAction } from "./codecs/CodecUiHel
 import { estimateMultichainDepositNetworkComposeGas } from "./estimateMultichainDepositNetworkComposeGas";
 import { getMultichainTransferSendParams } from "./getSendParams";
 import type { SendParam } from "./types";
+import { useGasMultichainUsd, useNativeTokenMultichainUsd } from "./useMultichainQuoteFeeUsd";
 
-export type MultichainReferralQuoteResult = {
+type MultichainReferralQuoteResult = {
   nativeFee: bigint;
   amount: bigint;
   composeGas: bigint;
+  transferGasLimit: bigint;
 };
 
 export function useMultichainReferralQuote({
@@ -142,21 +143,18 @@ export function useMultichainReferralQuote({
         action: fullAction,
       });
 
-      const [limit, oftFeeDetails] = await sourceChainClient.readContract({
+      const [limit, _oftFeeDetails, receipt] = await sourceChainClient.readContract({
         address: sourceChainStargateAddress,
         abi: abis.IStargate,
         functionName: "quoteOFT",
         args: [sendParamsWithRoughAmount],
       });
 
-      let negativeFee = 0n;
-      for (const oftFeeDetail of oftFeeDetails) {
-        negativeFee += oftFeeDetail.feeAmountLD;
-      }
+      const protocolFee = receipt.amountSentLD - receipt.amountReceivedLD;
 
       const minAmount = limit.minAmountLD === 0n ? 1n : limit.minAmountLD;
 
-      let amountBeforeFee = minAmount - negativeFee;
+      let amountBeforeFee = minAmount + protocolFee;
       amountBeforeFee = amountBeforeFee * 15n;
 
       const sendParamsWithMinimumAmount: SendParam = {
@@ -165,17 +163,24 @@ export function useMultichainReferralQuote({
         minAmountLD: 0n,
       };
 
-      const quoteSend = await sourceChainClient.readContract({
-        address: sourceChainStargateAddress,
-        abi: abis.IStargate,
-        functionName: "quoteSend",
-        args: [sendParamsWithMinimumAmount, false],
+      const sourceChainTokenId = getMappedTokenId(p.chainId as SettlementChainId, p.depositTokenAddress, p.srcChainId);
+      if (!sourceChainTokenId) {
+        throw new Error("Source chain token ID not found");
+      }
+
+      const { nativeFee, transferGasLimit } = await stargateTransferFees({
+        chainId: p.srcChainId,
+        stargateAddress: sourceChainStargateAddress,
+        sendParams: sendParamsWithMinimumAmount,
+        tokenAddress: sourceChainTokenId.address,
+        account: p.simulationSigner.address,
       });
 
       return {
-        nativeFee: quoteSend.nativeFee,
+        nativeFee: nativeFee,
         amount: amountBeforeFee,
         composeGas,
+        transferGasLimit,
       };
     },
     {
@@ -205,17 +210,23 @@ export function useMultichainReferralQuote({
     }
   );
 
-  const networkFeeUsd = useMemo(() => {
-    if (result.data === undefined || globalExpressParams?.tokensData[zeroAddress]?.prices === undefined) {
-      return undefined;
-    }
+  const networkFeeUsd = useNativeTokenMultichainUsd({
+    sourceChainId: srcChainId,
+    sourceChainTokenAmount: result.data?.nativeFee,
+    targetChainId: chainId,
+  });
 
-    return convertToUsd(result.data.nativeFee, 18, getMidPrice(globalExpressParams.tokensData[zeroAddress].prices));
-  }, [globalExpressParams?.tokensData, result.data]);
+  const transferGasLimitUsd = useGasMultichainUsd({
+    sourceChainId: srcChainId,
+    sourceChainGas: result.data?.transferGasLimit,
+    targetChainId: chainId,
+  });
+
+  const totalNetworkFeeUsd = (networkFeeUsd ?? 0n) + (transferGasLimitUsd ?? 0n);
 
   return {
     ...result,
-    networkFeeUsd,
+    networkFeeUsd: totalNetworkFeeUsd,
   };
 }
 

@@ -3,8 +3,12 @@ import { useCallback, useMemo, useState } from "react";
 import { toast } from "react-toastify";
 
 import { TOAST_AUTO_CLOSE_TIME } from "config/ui";
-import { useMarketsInfoData } from "context/SyntheticsStateContext/hooks/globalsHooks";
-import { useArbitraryRelayParamsAndPayload } from "domain/multichain/arbitraryRelayParams";
+import { useMarketsInfoData, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import {
+  ArbitraryExpressError,
+  useArbitraryError,
+  useArbitraryRelayParamsAndPayload,
+} from "domain/multichain/arbitraryRelayParams";
 import { ExpressTransactionBuilder, RawRelayParamsPayload } from "domain/synthetics/express";
 import {
   MarketInfo,
@@ -13,11 +17,12 @@ import {
   getMarketPoolName,
 } from "domain/synthetics/markets";
 import { buildAndSignClaimFundingFeesTxn, claimFundingFeesTxn } from "domain/synthetics/markets/claimFundingFeesTxn";
-import { convertToUsd } from "domain/synthetics/tokens";
+import { TokenData, convertToUsd } from "domain/synthetics/tokens";
 import { useChainId } from "lib/chains";
 import { helperToast } from "lib/helperToast";
 import { metrics } from "lib/metrics";
 import { formatDeltaUsd, formatTokenAmount } from "lib/numbers";
+import { getByKey } from "lib/objects";
 import { useJsonRpcProvider } from "lib/rpc";
 import { sendExpressTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
@@ -26,13 +31,19 @@ import { DEFAULT_EXPRESS_ORDER_DEADLINE_DURATION } from "sdk/configs/express";
 import { nowInSeconds } from "sdk/utils/time";
 
 import { AlertInfo } from "components/AlertInfo/AlertInfo";
+import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
+import Checkbox from "components/Checkbox/Checkbox";
 import Modal from "components/Modal/Modal";
+import { OutOfTokenErrorAlert } from "components/Referrals/shared/modals/OutOfTokenErrorAlert";
 import Tooltip from "components/Tooltip/Tooltip";
+import TooltipWithPortal from "components/Tooltip/TooltipWithPortal";
 
+import CheckCircleIcon from "img/ic_check_circle.svg?react";
+import CloseCircleIcon from "img/ic_close_circle.svg?react";
 import SpinnerIcon from "img/ic_spinner.svg?react";
 
-import { useClaimableFunding } from "./useClaimableFunding";
+import { ClaimFundingSelection, useClaimableFunding, useClaimableFundingSelection } from "./useClaimableFunding";
 
 import "./ClaimModal.scss";
 
@@ -41,6 +52,35 @@ type Props = {
   onClose: () => void;
   setPendingTxns: (txns: any) => void;
 };
+
+export function getClaimingFundingToastContent() {
+  return (
+    <div className="flex items-center justify-between gap-6">
+      <div className="text-typography-secondary">
+        <Trans>Claiming...</Trans>
+      </div>
+      <SpinnerIcon className="spin size-15 shrink-0 text-typography-primary" />
+    </div>
+  );
+}
+
+export function getClaimFundingSuccessToastContent() {
+  return (
+    <div className="flex items-center justify-between gap-6">
+      <div>{t`Funding fees claimed`}</div>
+      <CheckCircleIcon className="size-15 shrink-0 text-green-500" />
+    </div>
+  );
+}
+
+export function getClaimFundingFailureToastContent() {
+  return (
+    <div className="flex items-center justify-between gap-6">
+      <div>{t`Claiming funding fees failed`}</div>
+      <CloseCircleIcon className="size-15 shrink-0 text-red-500" />
+    </div>
+  );
+}
 
 export function ClaimModal(p: Props) {
   const { isVisible, onClose, setPendingTxns } = p;
@@ -57,63 +97,28 @@ function ClaimModalSettlementChain(p: Props) {
   const { isVisible, onClose, setPendingTxns } = p;
   const { account, signer } = useWallet();
   const { chainId } = useChainId();
-  const marketsInfoData = useMarketsInfoData();
   const hasOutdatedUi = useHasOutdatedUi();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const selection = useClaimableFundingSelection(isVisible);
 
   const onSubmit = useCallback(() => {
     if (!account || !signer) return;
-
-    const fundingMarketAddresses: string[] = [];
-    const fundingTokenAddresses: string[] = [];
-
-    const pairs = new Set<string>();
-
-    function pushPair(marketAddress: string, tokenAddress: string) {
-      const key = `${marketAddress}-${tokenAddress}`;
-      if (pairs.has(key)) return;
-      pairs.add(key);
-      fundingMarketAddresses.push(marketAddress);
-      fundingTokenAddresses.push(tokenAddress);
-    }
-
-    const markets = isVisible ? Object.values(marketsInfoData || {}) : [];
-    for (const market of markets) {
-      if (
-        !market.isDisabled &&
-        market.claimableFundingAmountLong !== undefined &&
-        market.claimableFundingAmountLong !== 0n &&
-        !getIsFundingClaimInsufficientBalance(market, true)
-      ) {
-        pushPair(market.marketTokenAddress, market.longTokenAddress);
-      }
-
-      if (
-        !market.isDisabled &&
-        market.claimableFundingAmountShort !== undefined &&
-        market.claimableFundingAmountShort !== 0n &&
-        !getIsFundingClaimInsufficientBalance(market, false)
-      ) {
-        pushPair(market.marketTokenAddress, market.shortTokenAddress);
-      }
-    }
-
-    if (fundingMarketAddresses.length === 0) return;
+    if (selection.selectedEntries.length === 0) return;
 
     setIsSubmitting(true);
 
     claimFundingFeesTxn(chainId, signer, {
       account,
       fundingFees: {
-        marketAddresses: fundingMarketAddresses,
-        tokenAddresses: fundingTokenAddresses,
+        marketAddresses: selection.selectedEntries.map((entry) => entry.marketAddress),
+        tokenAddresses: selection.selectedEntries.map((entry) => entry.tokenAddress),
       },
       setPendingTxns,
     })
       .then(onClose)
       .finally(() => setIsSubmitting(false));
-  }, [account, chainId, isVisible, marketsInfoData, onClose, setPendingTxns, signer]);
+  }, [account, chainId, onClose, selection.selectedEntries, setPendingTxns, signer]);
 
   const buttonState = useMemo(() => {
     if (hasOutdatedUi) {
@@ -136,69 +141,31 @@ function ClaimModalSettlementChain(p: Props) {
     }
   }, [isSubmitting, onSubmit, hasOutdatedUi]);
 
-  return <ClaimModalComponent isVisible={isVisible} onClose={onClose} buttonState={buttonState} />;
+  return (
+    <ClaimModalComponent isVisible={isVisible} onClose={onClose} buttonState={buttonState} selection={selection} />
+  );
 }
 
 function ClaimModalMultichain(p: Props) {
   const { isVisible, onClose } = p;
   const { account, signer } = useWallet();
   const { chainId, srcChainId } = useChainId();
-  const marketsInfoData = useMarketsInfoData();
   const { provider } = useJsonRpcProvider(chainId);
+  const tokensData = useTokensData();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const hasOutdatedUi = useHasOutdatedUi();
-
-  const { fundingMarketAddresses, fundingTokenAddresses } = useMemo(() => {
-    const fundingMarketAddresses: string[] = [];
-    const fundingTokenAddresses: string[] = [];
-
-    const pairs = new Set<string>();
-
-    function pushPair(marketAddress: string, tokenAddress: string) {
-      const key = `${marketAddress}-${tokenAddress}`;
-      if (pairs.has(key)) return;
-      pairs.add(key);
-      fundingMarketAddresses.push(marketAddress);
-      fundingTokenAddresses.push(tokenAddress);
-    }
-
-    const markets = isVisible ? Object.values(marketsInfoData || {}) : [];
-    for (const market of markets) {
-      if (
-        !market.isDisabled &&
-        market.claimableFundingAmountLong !== undefined &&
-        market.claimableFundingAmountLong !== 0n &&
-        !getIsFundingClaimInsufficientBalance(market, true)
-      ) {
-        pushPair(market.marketTokenAddress, market.longTokenAddress);
-      }
-
-      if (
-        !market.isDisabled &&
-        market.claimableFundingAmountShort !== undefined &&
-        market.claimableFundingAmountShort !== 0n &&
-        !getIsFundingClaimInsufficientBalance(market, false)
-      ) {
-        pushPair(market.marketTokenAddress, market.shortTokenAddress);
-      }
-    }
-
-    return {
-      fundingMarketAddresses,
-      fundingTokenAddresses,
-    };
-  }, [isVisible, marketsInfoData]);
+  const selection = useClaimableFundingSelection(isVisible);
 
   const expressTransactionBuilder: ExpressTransactionBuilder | undefined = useMemo(() => {
-    if (!account || !signer || !provider || fundingMarketAddresses.length === 0 || isSubmitting) {
+    if (!account || !signer || !provider || selection.selectedEntries.length === 0 || isSubmitting) {
       return undefined;
     }
 
     return async (params) => {
       const txnData = await buildAndSignClaimFundingFeesTxn({
         chainId,
-        markets: fundingMarketAddresses,
-        tokens: fundingTokenAddresses,
+        markets: selection.selectedEntries.map((entry) => entry.marketAddress),
+        tokens: selection.selectedEntries.map((entry) => entry.tokenAddress),
         receiver: account,
         account,
         signer,
@@ -215,12 +182,21 @@ function ClaimModalMultichain(p: Props) {
         txnData,
       };
     };
-  }, [account, chainId, fundingMarketAddresses, fundingTokenAddresses, isSubmitting, provider, signer]);
+  }, [account, chainId, isSubmitting, provider, selection.selectedEntries, signer]);
 
+  const isGmxAccountClaim = srcChainId !== undefined;
   const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload({
     expressTransactionBuilder,
-    isGmxAccount: srcChainId !== undefined,
+    isGmxAccount: isGmxAccountClaim,
   });
+
+  const errors = useArbitraryError(expressTxnParamsAsyncResult.error, { isGmxAccount: isGmxAccountClaim });
+  const outOfTokenErrorToken = useMemo(() => {
+    if (errors?.isOutOfTokenError?.tokenAddress) {
+      return getByKey(tokensData, errors.isOutOfTokenError.tokenAddress);
+    }
+    return undefined;
+  }, [errors, tokensData]);
 
   const onSubmit = useCallback(() => {
     const onMissingParams = () => {
@@ -244,8 +220,8 @@ function ClaimModalMultichain(p: Props) {
 
         const txnData = await buildAndSignClaimFundingFeesTxn({
           chainId,
-          markets: fundingMarketAddresses,
-          tokens: fundingTokenAddresses,
+          markets: selection.selectedEntries.map((entry) => entry.marketAddress),
+          tokens: selection.selectedEntries.map((entry) => entry.tokenAddress),
           receiver: account,
           signer,
           account,
@@ -262,25 +238,20 @@ function ClaimModalMultichain(p: Props) {
           txnData,
         });
 
-        helperToast.info(
-          <div className="flex items-center justify-between">
-            <div className="text-white/50">
-              <Trans>Claiming...</Trans>
-            </div>
-            <SpinnerIcon className="spin size-15 text-white" />
-          </div>,
-          { autoClose: false, toastId: "funding-claimed" }
-        );
+        helperToast.info(getClaimingFundingToastContent(), {
+          autoClose: false,
+          toastId: "funding-claimed",
+        });
         request.wait().then((res) => {
           if (res.status === "success") {
             toast.update("funding-claimed", {
-              render: t`Funding fees claimed`,
+              render: getClaimFundingSuccessToastContent(),
               type: "success",
               autoClose: TOAST_AUTO_CLOSE_TIME,
             });
           } else if (res.status === "failed") {
             toast.update("funding-claimed", {
-              render: t`Claiming funding fees failed`,
+              render: getClaimFundingFailureToastContent(),
               type: "error",
               autoClose: TOAST_AUTO_CLOSE_TIME,
             });
@@ -292,16 +263,7 @@ function ClaimModalMultichain(p: Props) {
       .finally(() => {
         setIsSubmitting(false);
       });
-  }, [
-    account,
-    chainId,
-    expressTxnParamsAsyncResult.promise,
-    fundingMarketAddresses,
-    fundingTokenAddresses,
-    onClose,
-    provider,
-    signer,
-  ]);
+  }, [account, chainId, expressTxnParamsAsyncResult.promise, onClose, provider, selection.selectedEntries, signer]);
 
   const buttonState = useMemo(() => {
     if (hasOutdatedUi) {
@@ -314,6 +276,13 @@ function ClaimModalMultichain(p: Props) {
     if (isSubmitting) {
       return {
         text: t`Claiming...`,
+        disabled: true,
+      };
+    }
+
+    if (errors?.isOutOfTokenError) {
+      return {
+        text: t`Insufficient ${outOfTokenErrorToken?.symbol ?? ""} balance`,
         disabled: true,
       };
     }
@@ -334,26 +303,54 @@ function ClaimModalMultichain(p: Props) {
       text: t`Claim`,
       onClick: onSubmit,
     };
-  }, [hasOutdatedUi, expressTxnParamsAsyncResult.data, isSubmitting, onSubmit]);
+  }, [hasOutdatedUi, isSubmitting, errors, outOfTokenErrorToken, expressTxnParamsAsyncResult.data, onSubmit]);
 
-  return <ClaimModalComponent isVisible={isVisible} onClose={onClose} buttonState={buttonState} />;
+  return (
+    <ClaimModalComponent
+      isVisible={isVisible}
+      onClose={onClose}
+      buttonState={buttonState}
+      selection={selection}
+      errors={errors}
+      outOfTokenErrorToken={outOfTokenErrorToken}
+    />
+  );
 }
 
 function ClaimModalComponent(p: {
   isVisible: boolean;
   onClose: () => void;
   buttonState: { text: React.ReactNode; onClick?: () => void; disabled?: boolean };
+  selection: ClaimFundingSelection;
+  errors?: ArbitraryExpressError;
+  outOfTokenErrorToken?: TokenData;
 }) {
-  const { isVisible, onClose, buttonState } = p;
+  const { isVisible, onClose, buttonState, selection, errors, outOfTokenErrorToken } = p;
 
   const marketsInfoData = useMarketsInfoData();
 
   const markets = useMemo(() => (isVisible ? Object.values(marketsInfoData || {}) : []), [isVisible, marketsInfoData]);
 
-  const { totalClaimableFundingUsd, claimableFundingUsd, hasInsufficientBalance, allInsufficient } =
-    useClaimableFunding(markets);
+  const { totalClaimableFundingUsd, hasInsufficientBalance, allInsufficient } = useClaimableFunding(markets);
 
-  const effectiveButtonState = allInsufficient ? { text: t`Insufficient Pool Balance`, disabled: true } : buttonState;
+  const selectedFundingUsd = useMemo(() => {
+    let total = 0n;
+    for (const entry of selection.selectedEntries) {
+      const market = marketsInfoData?.[entry.marketAddress];
+      if (!market) continue;
+      const isLong = entry.tokenAddress === market.longTokenAddress;
+      const token = isLong ? market.longToken : market.shortToken;
+      const amount = isLong ? market.claimableFundingAmountLong : market.claimableFundingAmountShort;
+      total += convertToUsd(amount, token.decimals, token.prices.minPrice) ?? 0n;
+    }
+    return total;
+  }, [marketsInfoData, selection.selectedEntries]);
+
+  const effectiveButtonState = useMemo(() => {
+    if (allInsufficient) return { text: t`Insufficient pool balance`, disabled: true };
+    if (selection.selectedEntries.length === 0) return { text: t`Select at least one market`, disabled: true };
+    return buttonState;
+  }, [allInsufficient, buttonState, selection.selectedEntries.length]);
 
   function renderMarketSection(market: MarketInfo) {
     const indexName = getMarketIndexName(market);
@@ -395,38 +392,42 @@ function ClaimModalComponent(p: {
       );
     }
 
+    const labelContent = (
+      <div className="ClaimSettleModal-row-text flex items-start">
+        <span>{indexName}</span>
+        {poolName ? <span className="subtext">[{poolName}]</span> : null}
+      </div>
+    );
+
+    const rowLabel = isDisabledMarket ? (
+      <TooltipWithPortal
+        position="top-start"
+        handle={labelContent}
+        content={<Trans>This market has been disabled. Contact support to claim your remaining funding fees.</Trans>}
+      />
+    ) : (
+      labelContent
+    );
+
+    const isSelected = selection.isRowSelected(market.marketTokenAddress);
+    const isToggleable = selection.isRowToggleable(market.marketTokenAddress);
+    const eligibleEntriesCount =
+      selection.rows.find((row) => row.marketTokenAddress === market.marketTokenAddress)?.eligibleEntries.length ?? 0;
+    const checkboxDisabled = eligibleEntriesCount === 0 || !isToggleable;
+
     return (
       <div
         key={market.marketTokenAddress}
         className={`ClaimSettleModal-info-row ${isMarketInsufficient ? "opacity-50" : ""}`}
       >
-        <div className="flex">
-          <div className="Exchange-info-label ClaimSettleModal-checkbox-label">
-            <div className="ClaimSettleModal-row-text flex items-start">
-              {isDisabledMarket ? (
-                <Tooltip
-                  position="top-start"
-                  handle={
-                    <>
-                      <span>{indexName}</span>
-                      {poolName ? <span className="subtext">[{poolName}]</span> : null}
-                    </>
-                  }
-                  content={
-                    <Trans>
-                      This market has been disabled. Please contact support to claim your remaining funding fees.
-                    </Trans>
-                  }
-                />
-              ) : (
-                <>
-                  <span>{indexName}</span>
-                  {poolName ? <span className="subtext">[{poolName}]</span> : null}
-                </>
-              )}
-            </div>
-          </div>
-        </div>
+        <Checkbox
+          isChecked={isSelected}
+          setIsChecked={() => selection.toggleRow(market.marketTokenAddress)}
+          disabled={checkboxDisabled}
+          className="ClaimSettleModal-checkbox flex self-center"
+        >
+          <div className="Exchange-info-label ClaimSettleModal-checkbox-label">{rowLabel}</div>
+        </Checkbox>
         <div className="ClaimSettleModal-info-label-usd">
           <Tooltip
             className="ClaimSettleModal-tooltip"
@@ -443,7 +444,7 @@ function ClaimModalComponent(p: {
                 ))}
                 {isMarketInsufficient && (
                   <div className="mt-5 text-yellow-500">
-                    <Trans>Insufficient pool balance to claim this funding fee.</Trans>
+                    <Trans>Insufficient pool balance to claim this funding fee</Trans>
                   </div>
                 )}
               </>
@@ -454,6 +455,18 @@ function ClaimModalComponent(p: {
     );
   }
 
+  const claimAmountText =
+    selectedFundingUsd < totalClaimableFundingUsd ? (
+      <Trans>
+        Claim <span>{formatDeltaUsd(selectedFundingUsd)}</span> of{" "}
+        <span>{formatDeltaUsd(totalClaimableFundingUsd)}</span>
+      </Trans>
+    ) : (
+      <Trans>
+        Claim <span>{formatDeltaUsd(totalClaimableFundingUsd)}</span>
+      </Trans>
+    );
+
   return (
     <Modal
       className="Confirmation-box ClaimableModal"
@@ -462,22 +475,19 @@ function ClaimModalComponent(p: {
       label={t`Confirm claim`}
     >
       <div className="ConfirmationBox-main">
-        <div className="text-center">
-          {hasInsufficientBalance ? (
-            <Trans>
-              Claim <span>{formatDeltaUsd(claimableFundingUsd)}</span> of{" "}
-              <span>{formatDeltaUsd(totalClaimableFundingUsd)}</span>
-            </Trans>
-          ) : (
-            <Trans>
-              Claim <span>{formatDeltaUsd(totalClaimableFundingUsd)}</span>
-            </Trans>
-          )}
-        </div>
+        <div className="text-center">{claimAmountText}</div>
       </div>
       <div className="mb-20 mt-15 h-1 bg-slate-700" />
+      {selection.isLimitReached && (
+        <AlertInfoCard type="info" hideClose className="mb-15">
+          <Trans>
+            Maximum claim entries selected. Claim this batch first, then claim the remaining fees in another transaction
+            to avoid oversized wallet confirmations.
+          </Trans>
+        </AlertInfoCard>
+      )}
       <div className="ClaimSettleModal-info-row">
-        <div className="flex">
+        <div className="flex pl-22">
           <div className="Exchange-info-label ClaimSettleModal-checkbox-label">
             <div className="flex items-start">
               <Trans>MARKET</Trans>
@@ -488,7 +498,7 @@ function ClaimModalComponent(p: {
           <Tooltip
             className="ClaimSettleModal-tooltip-text-gray"
             position="top-end"
-            handle={t`Funding fee`}
+            handle={t`FUNDING FEE`}
             renderContent={() => (
               <Trans>
                 <span className="text-typography-primary">Positive funding fees accrued from your positions</span>
@@ -505,6 +515,11 @@ function ClaimModalComponent(p: {
             claim.
           </Trans>
         </AlertInfo>
+      )}
+      {errors?.isOutOfTokenError && outOfTokenErrorToken && (
+        <div className="mb-15">
+          <OutOfTokenErrorAlert errors={errors} token={outOfTokenErrorToken} onClose={onClose} />
+        </div>
       )}
       <Button
         className="w-full"

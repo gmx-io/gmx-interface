@@ -1,46 +1,70 @@
-import cx from "classnames";
+import { useMemo } from "react";
 
 import {
   TokenFavoriteKey,
-  tokensFavoritesTabOptionLabels,
-  tokensFavoritesTabOptions,
+  TopLevelTab,
+  topLevelTabLabels,
+  topLevelTabOptions,
   useTokensFavorites,
 } from "context/TokensFavoritesContext/TokensFavoritesContextProvider";
 import { useLocalizedMap } from "lib/i18n";
 
-import Button from "components/Button/Button";
+import Tabs from "components/Tabs/Tabs";
+import type { Option } from "components/Tabs/types";
+
+const REGULAR_TAB_CLASS_NAME = "!px-8 !pb-11 !pt-13 text-13 leading-[18px]";
 
 export function FavoriteTabs({
   favoritesKey,
   className,
-  activeClassName = "",
+  type = "block",
+  recentlyListedCount = 0,
+  hasAvailableFavorites,
+  excludedTabs = [],
+  selectedValue,
 }: {
   favoritesKey: TokenFavoriteKey;
   className?: string;
-  activeClassName?: string;
+  type?: "inline" | "block";
+  recentlyListedCount?: number;
+  hasAvailableFavorites?: boolean;
+  excludedTabs?: TopLevelTab[];
+  selectedValue?: TopLevelTab;
 }) {
-  const { tab, setTab } = useTokensFavorites(favoritesKey);
+  const { topLevelTab, setTopLevelTab } = useTokensFavorites(favoritesKey);
+  const labels = useLocalizedMap(topLevelTabLabels);
+  const activeValue = selectedValue ?? topLevelTab;
 
-  const localizedTabOptionLabels = useLocalizedMap(tokensFavoritesTabOptionLabels);
+  const options = useMemo<Option<TopLevelTab>[]>(() => {
+    return topLevelTabOptions
+      .filter((opt) => !excludedTabs.includes(opt))
+      .filter((opt) => (opt === "recently-listed" ? recentlyListedCount > 0 : true))
+      .filter((opt) => (opt === "favorites" && hasAvailableFavorites !== undefined ? hasAvailableFavorites : true))
+      .map((opt) => ({
+        value: opt,
+        label:
+          opt === "recently-listed" && recentlyListedCount > 0 ? (
+            <span className="flex flex-nowrap items-center gap-6 whitespace-nowrap">
+              {labels[opt]}
+              <span className="flex h-18 min-w-20 items-center justify-center rounded-full bg-button-secondary px-4 text-12 font-medium text-typography-secondary">
+                {recentlyListedCount}
+              </span>
+            </span>
+          ) : (
+            labels[opt]
+          ),
+      }));
+  }, [excludedTabs, recentlyListedCount, hasAvailableFavorites, labels]);
 
   return (
-    <div className="flex items-center gap-8 whitespace-nowrap">
-      {tokensFavoritesTabOptions.map((option) => (
-        <Button
-          key={option}
-          type="button"
-          variant={"ghost"}
-          size="small"
-          className={cx(className, {
-            "!bg-button-secondary !text-typography-primary": tab === option,
-            [activeClassName]: activeClassName && tab === option,
-          })}
-          onClick={() => setTab(option)}
-          data-selected={tab === option}
-        >
-          {localizedTabOptionLabels[option]}
-        </Button>
-      ))}
-    </div>
+    <Tabs
+      options={options}
+      selectedValue={activeValue}
+      onChange={setTopLevelTab}
+      type={type}
+      className={className}
+      regularOptionClassname={type === "block" ? REGULAR_TAB_CLASS_NAME : undefined}
+      tabsWrapperClassName={type === "block" ? "!w-fit" : undefined}
+    />
   );
 }

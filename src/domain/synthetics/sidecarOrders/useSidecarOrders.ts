@@ -15,6 +15,8 @@ import {
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors";
 import {
   selectTradeboxMockPosition,
+  selectTradeboxSidecarOrdersExistingSlEntries,
+  selectTradeboxSidecarOrdersExistingTpEntries,
   selectTradeboxSidecarEntriesSetIsUntouched,
 } from "context/SyntheticsStateContext/selectors/tradeboxSelectors/selectTradeboxSidecarOrders";
 import { useSelector } from "context/SyntheticsStateContext/utils";
@@ -42,6 +44,8 @@ export function useSidecarOrders() {
   const existingPosition = useSelector(selectTradeboxSelectedPosition);
   const nextPositionValues = useSelector(selectTradeboxNextPositionValues);
   const mockPositionInfo = useSelector(selectTradeboxMockPosition);
+  const existingSlEntries = useSelector(selectTradeboxSidecarOrdersExistingSlEntries);
+  const existingTpEntries = useSelector(selectTradeboxSidecarOrdersExistingTpEntries);
 
   const handleSLErrors = useCallback(
     (entry: SidecarSlTpOrderEntry) =>
@@ -74,6 +78,7 @@ export function useSidecarOrders() {
   const takeProfitEntriesInfo = useSidecarOrdersGroup<SidecarSlTpOrderEntry>({
     prefix: "tp",
     errorHandler: handleTPErrors,
+    initialEntries: existingTpEntries,
     canAddEntry: false,
     enablePercentage: true,
   });
@@ -81,6 +86,7 @@ export function useSidecarOrders() {
   const stopLossEntriesInfo = useSidecarOrdersGroup<SidecarSlTpOrderEntry>({
     prefix: "sl",
     errorHandler: handleSLErrors,
+    initialEntries: existingSlEntries,
     canAddEntry: false,
     enablePercentage: true,
   });

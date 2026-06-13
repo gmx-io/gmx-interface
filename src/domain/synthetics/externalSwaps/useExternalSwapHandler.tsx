@@ -25,7 +25,7 @@ import { getContract } from "sdk/configs/contracts";
 
 import { useExternalSwapInputRequest } from "./useExternalSwapInputRequest";
 import { useExternalSwapOutputRequest } from "./useExternalSwapOutputRequest";
-import { getExternalSwapRequestKey } from "./utils";
+import { externalSwapRequestKeysMatch, getExternalSwapRequestKey } from "./utils";
 
 export function useExternalSwapHandler() {
   const { chainId } = useChainId();
@@ -117,7 +117,7 @@ export function useExternalSwapHandler() {
       if (!key) return;
 
       if (requestError) {
-        if (storedResult?.status !== "failed" || storedResult.key !== key) {
+        if (storedResult?.status !== "failed" || !externalSwapRequestKeysMatch(storedResult.key, key)) {
           setRequestResult({ status: "failed", key });
         }
         return;

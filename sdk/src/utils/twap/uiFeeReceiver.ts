@@ -81,6 +81,10 @@ export function getUiFeeReceiverSource(uiFeeReceiver: string): string {
 }
 
 export function setUiFeeReceiverIsExpress(uiFeeReceiver: string, isExpress: boolean): string {
+  if (!isValidTwapUiFeeReceiver(uiFeeReceiver)) {
+    return uiFeeReceiver;
+  }
+
   return setUiFeeReceiverByte(uiFeeReceiver, EXPRESS_BYTE_START, EXPRESS_BYTE_END, isExpress);
 }
 

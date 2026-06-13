@@ -144,7 +144,7 @@ export function ExpressTradingWarningCard({
   let onCloseClick: undefined | (() => void) = undefined;
   let buttonText: ReactNode | undefined = undefined;
   let icon: React.FunctionComponent<React.SVGProps<SVGSVGElement>> | undefined = undefined;
-  let color: "blue" | "yellow" = "blue";
+  let color: "blue" | "yellow" | "red" = "blue";
 
   let onClick: undefined | (() => void) = undefined;
 
@@ -171,21 +171,39 @@ export function ExpressTradingWarningCard({
   } else if (shouldShowAllowedActionsWarning) {
     onClick = handleUpdateSubaccountSettings;
     icon = OneClickIcon;
-    onCloseClick = () => setIsVisible(false);
-    content = <Trans>One-Click Trading is disabled. Action limit exceeded.</Trans>;
+    color = "yellow";
+    content = <Trans>One-Click Trading action limit reached. You're now using Express Trading.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
   } else if (shouldShowNonceExpiredWarning) {
     onClick = handleUpdateSubaccountSettings;
     icon = OneClickIcon;
-    onCloseClick = () => setIsVisible(false);
-    content = <Trans>One-Click Trading approval nonce expired. Re-sign to continue.</Trans>;
+    color = "yellow";
+    content = <Trans>One-Click Trading approval nonce expired. Re-sign to continue using One-Click Trading.</Trans>;
     buttonText = <Trans>Re-sign</Trans>;
   } else if (shouldShowExpiredSubaccountWarning) {
     onClick = handleUpdateSubaccountSettings;
     icon = OneClickIcon;
-    onCloseClick = () => setIsVisible(false);
-    content = <Trans>One-Click Trading is disabled. Time limit expired.</Trans>;
+    color = "yellow";
+    content = <Trans>One-Click Trading time limit expired. You're now using Express Trading.</Trans>;
     buttonText = <Trans>Re-enable</Trans>;
+  } else if (shouldShowExternalSwapSubaccountBlockedWarning) {
+    icon = OneClickIcon;
+    color = "red";
+    content = (
+      <Trans>
+        This swap requires external routing, which isn't available with One-Click Trading. Disable One-Click to use
+        Express Trading.
+      </Trans>
+    );
+    buttonText = <Trans>Disable One-Click Trading</Trans>;
+    onClick = handleDisableSubaccount;
+  } else if (shouldShowExternalSwapGasConflictRequiredWarning) {
+    const wrappedToken = getWrappedToken(chainId);
+    icon = ExpressIcon;
+    color = "red";
+    content = <Trans>This swap requires external routing. Pay gas in {wrappedToken.symbol} to enable it.</Trans>;
+    buttonText = <Trans>Use {wrappedToken.symbol} for gas</Trans>;
+    onClick = handleUseWntAsGasToken;
   } else if (shouldShowOutOfGasPaymentBalanceWarning) {
     icon = ExpressIcon;
     color = "yellow";
@@ -197,32 +215,20 @@ export function ExpressTradingWarningCard({
     };
   } else if (shouldShowSubaccountApprovalInvalidWarning) {
     icon = OneClickIcon;
-    onCloseClick = () => setIsVisible(false);
+    color = "yellow";
     content = (
       <Trans>
         One-Click Trading approval is invalid. This may happen when switching chains or changing payment tokens. Re-sign
-        to continue.
+        to continue using One-Click Trading.
       </Trans>
     );
     buttonText = <Trans>Re-sign</Trans>;
     onClick = handleUpdateSubaccountSettings;
-  } else if (shouldShowExternalSwapSubaccountBlockedWarning) {
-    icon = OneClickIcon;
-    color = "yellow";
-    content = <Trans>This swap requires external routing, which isn't available with One-Click Trading.</Trans>;
-    buttonText = <Trans>Disable One-Click Trading</Trans>;
-    onClick = handleDisableSubaccount;
-  } else if (shouldShowExternalSwapGasConflictRequiredWarning) {
-    const wrappedToken = getWrappedToken(chainId);
-    icon = ExpressIcon;
-    color = "yellow";
-    content = <Trans>This swap requires external routing. Pay gas in {wrappedToken.symbol} to enable it.</Trans>;
-    buttonText = <Trans>Use {wrappedToken.symbol} for gas</Trans>;
-    onClick = handleUseWntAsGasToken;
   } else if (shouldShowExternalSwapGasConflictOptionalWarning) {
     const wrappedToken = getWrappedToken(chainId);
     icon = ExpressIcon;
-    content = <Trans>Paying gas in {wrappedToken.symbol} may give a better rate on this swap.</Trans>;
+    onCloseClick = () => setIsVisible(false);
+    content = <Trans>Paying gas in {wrappedToken.symbol} may give a better rate on this swap</Trans>;
     buttonText = <Trans>Use {wrappedToken.symbol} for gas</Trans>;
     onClick = handleUseWntAsGasToken;
   } else {
@@ -233,7 +239,7 @@ export function ExpressTradingWarningCard({
     <ColorfulBanner color={color} icon={icon} onClose={onCloseClick}>
       {content}
       {onClick && (
-        <ColorfulButtonLink color={color} onClick={onClick}>
+        <ColorfulButtonLink color="blue" onClick={onClick}>
           {buttonText}
         </ColorfulButtonLink>
       )}

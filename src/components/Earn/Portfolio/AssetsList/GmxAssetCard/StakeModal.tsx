@@ -5,7 +5,6 @@ import noop from "lodash/noop";
 import { useCallback, useEffect, useMemo, useState } from "react";
 import { zeroAddress } from "viem";
 
-import { getIsFlagEnabled } from "config/ab";
 import { ARBITRUM, ContractsChainId } from "config/chains";
 import { type ChainIcons, getIcons } from "config/icons";
 import { MAX_METAMASK_MOBILE_DECIMALS } from "config/ui";
@@ -22,6 +21,7 @@ import { useGovTokenAmount } from "domain/synthetics/governance/useGovTokenAmoun
 import { useGovTokenDelegates } from "domain/synthetics/governance/useGovTokenDelegates";
 import { useTokensAllowanceData } from "domain/synthetics/tokens";
 import { approveTokens } from "domain/tokens";
+import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { callContract } from "lib/contracts";
 import { helperToast } from "lib/helperToast";
 import { StakingProcessedData } from "lib/legacy";
@@ -33,7 +33,6 @@ import { abis } from "sdk/abis";
 import { NATIVE_TOKEN_ADDRESS } from "sdk/configs/tokens";
 import type { StakingPowerResponse } from "sdk/utils/staking/types";
 
-import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
 import Button from "components/Button/Button";
 import BuyInputSection from "components/BuyInputSection/BuyInputSection";
@@ -44,6 +43,7 @@ import Modal from "components/Modal/Modal";
 import { SwitchToSettlementChainButtons } from "components/SwitchToSettlementChain/SwitchToSettlementChainButtons";
 import { SwitchToSettlementChainWarning } from "components/SwitchToSettlementChain/SwitchToSettlementChainWarning";
 import Tabs from "components/Tabs/Tabs";
+import { ButtonTooltipWrapper } from "components/Tooltip/ButtonTooltipWrapper";
 
 import WarnIcon from "img/ic_warn.svg?react";
 
@@ -128,6 +128,7 @@ export function StakeModal(props: {
   const isMetamaskMobile = useIsMetamaskMobile();
   const icons = getIcons(chainId);
   const hasOutdatedUi = useHasOutdatedUi();
+  const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
 
   const stakeAmount = useMemo(() => parseValue(stakeValue, 18), [stakeValue]);
   const unstakeAmount = useMemo(() => parseValue(unstakeValue, 18), [unstakeValue]);
@@ -188,13 +189,11 @@ export function StakeModal(props: {
     return undefined;
   }, [unstakeAmount, unstakeMaxAmount]);
 
-  const isTestLoyalty = getIsFlagEnabled("testStakingPowerLoyalty");
-  const effectiveHistoricalMax = getEffectiveHistoricalMax(stakingPowerData, isTestLoyalty);
+  const effectiveHistoricalMax = getEffectiveHistoricalMax(stakingPowerData);
 
   const isLoyaltyActive =
-    isTestLoyalty ||
-    (stakingPowerData?.loyaltyTrackingStart !== undefined &&
-      isLoyaltyTrackingActive(stakingPowerData.loyaltyTrackingStart));
+    stakingPowerData?.loyaltyTrackingStart !== undefined &&
+    isLoyaltyTrackingActive(stakingPowerData.loyaltyTrackingStart);
 
   const wouldResetPower =
     isLoyaltyActive &&
@@ -210,21 +209,25 @@ export function StakeModal(props: {
 
   const rewardsLossUsd = useMemo(() => {
     if (!wouldResetPower) return null;
-    if (stakingPowerProjectedRewardsUsd !== undefined) {
-      return stakingPowerProjectedRewardsUsd;
-    }
-    if (isTestLoyalty) {
-      return processedData?.cumulativeGmxRewardsUsd ?? null;
-    }
-    return null;
-  }, [wouldResetPower, stakingPowerProjectedRewardsUsd, isTestLoyalty, processedData?.cumulativeGmxRewardsUsd]);
+    return stakingPowerProjectedRewardsUsd ?? null;
+  }, [wouldResetPower, stakingPowerProjectedRewardsUsd]);
 
   const unstakeLimitPercent = getUnstakeLimitPercent(safeUnstakeLimit, unstakeAmount);
 
-  const isStakePrimaryEnabled = !stakeError && !isApproving && !isStaking && !isUndelegatedGovToken && !hasOutdatedUi;
+  const isStakePrimaryEnabled =
+    !stakeError &&
+    !isApproving &&
+    !isStaking &&
+    !isUndelegatedGovToken &&
+    !hasOutdatedUi &&
+    !multipleWalletExtensionsChainError.buttonErrorMessage;
 
   const isUnstakePrimaryEnabled =
-    !unstakeError && !isUnstaking && !hasOutdatedUi && (!wouldResetPower || isResetAcknowledged);
+    !unstakeError &&
+    !isUnstaking &&
+    !hasOutdatedUi &&
+    !multipleWalletExtensionsChainError.buttonErrorMessage &&
+    (!wouldResetPower || isResetAcknowledged);
 
   useEffect(() => {
     if (!needApproval && isApproving) {
@@ -281,12 +284,10 @@ export function StakeModal(props: {
     helperToast.info(
       <div>
         <span className="font-bold" style={RESET_TOAST_HEADER_STYLE}>
-          <Trans>Rewards reset.</Trans>
+          <Trans>Rewards reset</Trans>
         </span>
         <br />
-        <Trans>
-          The 20% unstaking limit was exceeded, and your rewards have been reset. You may now continue unstaking freely.
-        </Trans>
+        <Trans>The 20% unstaking limit was exceeded, and your rewards have been reset</Trans>
       </div>,
       { autoClose: false }
     );
@@ -344,6 +345,10 @@ export function StakeModal(props: {
       return getPageOutdatedError();
     }
 
+    if (multipleWalletExtensionsChainError.buttonErrorMessage) {
+      return multipleWalletExtensionsChainError.buttonErrorMessage;
+    }
+
     if (activeTab === "stake") {
       if (stakeError) {
         return stakeError;
@@ -371,6 +376,7 @@ export function StakeModal(props: {
   }, [
     activeTab,
     hasOutdatedUi,
+    multipleWalletExtensionsChainError,
     isApproving,
     isStaking,
     isUnstaking,
@@ -444,7 +450,7 @@ export function StakeModal(props: {
         <div className="flex flex-col gap-12">
           <BuyInputSection
             topLeftLabel={activeTab === "stake" ? t`Stake` : t`Unstake`}
-            topRightLabel={t`Avail.`}
+            topRightLabel={t`Available`}
             topRightValue={formatAmount(activeMaxAmount, 18, 2, true)}
             onClickMax={canClickMax ? onClickMax : undefined}
             inputValue={activeValue}
@@ -505,9 +511,9 @@ export function StakeModal(props: {
           )}
 
           {showStakeBonus && (
-            <AlertInfo type="info" noMargin>
+            <AlertInfoCard type="info">
               <Trans>Earn {formatAmount(stakeBonusPercentage, 2, 2)}% more rewards with this action</Trans>
-            </AlertInfo>
+            </AlertInfoCard>
           )}
 
           {activeTab === "stake" && isUndelegatedGovToken ? (
@@ -516,20 +522,20 @@ export function StakeModal(props: {
                 <ExternalLink href={GMX_DAO_LINKS.VOTING_POWER} className="display-inline">
                   Delegate your undelegated {formatAmount(govTokenAmount, 18, 2, true)} GMX DAO
                 </ExternalLink>{" "}
-                voting power before staking.
+                voting power before staking
               </Trans>
             </AlertInfoCard>
           ) : null}
 
           {activeTab === "unstake" && reservedAmount !== undefined && reservedAmount > 0 && (
-            <AlertInfo type="info" noMargin>
+            <AlertInfoCard type="info">
               <Trans>{formatAmount(reservedAmount, 18, 2, true)} tokens reserved for vesting</Trans>
-            </AlertInfo>
+            </AlertInfoCard>
           )}
 
           {isApproachingLimit && !wouldResetPower && showSafeUnstakeBar && (
             <ColorfulBanner color="yellow" icon={WarnIcon}>
-              <Trans>Unstaking this amount will bring you close to the 20% reset threshold.</Trans>
+              <Trans>Unstaking this amount will bring you close to the 20% reset threshold</Trans>
             </ColorfulBanner>
           )}
 
@@ -538,11 +544,11 @@ export function StakeModal(props: {
               <ColorfulBanner color="red" icon={WarnIcon}>
                 <div>
                   <Trans>
-                    Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards.
+                    Unstaking more than 20% of your max historical staked GMX will reset your accrued rewards
                   </Trans>
                   {rewardsLossUsd !== null && (
                     <div className="mt-4 font-medium text-red-500">
-                      <Trans>If you continue, you will lose {formatUsd(rewardsLossUsd)} in rewards.</Trans>
+                      <Trans>If you continue, you will lose {formatUsd(rewardsLossUsd)} in rewards</Trans>
                     </div>
                   )}
                 </div>
@@ -554,7 +560,7 @@ export function StakeModal(props: {
                     <span className="font-bold text-typography-primary">
                       {rewardsLossUsd !== null ? formatUsd(rewardsLossUsd) : "all accrued"} in rewards
                     </span>{" "}
-                    if I proceed.
+                    if I proceed
                   </Trans>
                 </span>
               </Checkbox>
@@ -563,9 +569,11 @@ export function StakeModal(props: {
 
           <SwitchToSettlementChainWarning topic="staking" />
           <SwitchToSettlementChainButtons>
-            <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled}>
-              {primaryText}
-            </Button>
+            <ButtonTooltipWrapper content={multipleWalletExtensionsChainError.buttonTooltipMessage}>
+              <Button variant="primary-action" className="w-full" onClick={onClickPrimary} disabled={!isPrimaryEnabled}>
+                {primaryText}
+              </Button>
+            </ButtonTooltipWrapper>
           </SwitchToSettlementChainButtons>
         </div>
       </Modal>

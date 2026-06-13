@@ -1,5 +1,5 @@
 import { Trans } from "@lingui/macro";
-import { useCallback } from "react";
+import { useCallback, useMemo } from "react";
 import { useAccount } from "wagmi";
 
 import { ARBITRUM, AVALANCHE, BOTANIX, getChainName } from "config/chains";
@@ -15,11 +15,15 @@ import { SettlementChainWarningContainer } from "domain/multichain/SettlementCha
 import { useEmptyGmxAccounts } from "domain/multichain/useEmptyGmxAccounts";
 import { useIsOutOfGasPaymentBalance } from "domain/synthetics/express/useIsOutOfGasPaymentBalance";
 import { getIsSubaccountActive } from "domain/synthetics/subaccount";
+import { getBalanceByBalanceType } from "domain/synthetics/tokens";
+import { useTokensDataRequest } from "domain/synthetics/tokens/useTokensDataRequest";
+import { TokenBalanceType } from "domain/tokens";
 import { useChainId } from "lib/chains";
 import { useGasPaymentTokensText } from "lib/gas/useGasPaymentTokensText";
-import { EMPTY_ARRAY } from "lib/objects";
+import { EMPTY_ARRAY, getByKey } from "lib/objects";
 import { useIsNonEoaAccountOnAnyChain } from "lib/wallets/useAccountType";
 import { useIsGeminiWallet } from "lib/wallets/useIsGeminiWallet";
+import { getGasPaymentTokens } from "sdk/configs/express";
 import { getNativeToken } from "sdk/configs/tokens";
 
 import { DropdownSelector } from "components/DropdownSelector/DropdownSelector";
@@ -73,10 +77,38 @@ export function TradingSettings({
     (isOutOfGasPaymentBalance && srcChainId === undefined) || isNonEoaAccountOnAnyChain || isGeminiWallet;
   const nativeTokenSymbol = getNativeToken(chainId).symbol;
   const { gasPaymentTokensText } = useGasPaymentTokensText(chainId);
+  const { tokensData } = useTokensDataRequest(chainId, srcChainId);
+  const gasPaymentTokens = getGasPaymentTokens(chainId);
+
+  const hasWalletGasPaymentTokenBalance = useMemo(
+    () =>
+      gasPaymentTokens.some(
+        (tokenAddress) =>
+          (getBalanceByBalanceType(getByKey(tokensData, tokenAddress), TokenBalanceType.Wallet) ?? 0n) > 0n
+      ),
+    [gasPaymentTokens, tokensData]
+  );
+  const hasGmxAccountGasPaymentTokenBalance = useMemo(
+    () =>
+      gasPaymentTokens.some(
+        (tokenAddress) =>
+          (getBalanceByBalanceType(getByKey(tokensData, tokenAddress), TokenBalanceType.GmxAccount) ?? 0n) > 0n
+      ),
+    [gasPaymentTokens, tokensData]
+  );
+  const showWalletGasPaymentTokenSelector = srcChainId === undefined || hasWalletGasPaymentTokenBalance;
+  const showGmxAccountGasPaymentTokenSelector = srcChainId !== undefined || hasGmxAccountGasPaymentTokenBalance;
 
   const handleSelectGasPaymentToken = useCallback(
     (tokenAddress: string) => {
       settings.setGasPaymentTokenAddress(tokenAddress);
+      window.dispatchEvent(new CustomEvent("gasPaymentTokenChanged"));
+    },
+    [settings]
+  );
+  const handleSelectGmxAccountGasPaymentToken = useCallback(
+    (tokenAddress: string) => {
+      settings.setGmxAccountGasPaymentTokenAddress(tokenAddress);
       window.dispatchEvent(new CustomEvent("gasPaymentTokenChanged"));
     },
     [settings]
@@ -174,10 +206,27 @@ export function TradingSettings({
             )}
 
             {settings.expressOrdersEnabled && (
-              <GasPaymentTokenSelector
-                currentTokenAddress={settings.gasPaymentTokenAddress}
-                onSelectToken={handleSelectGasPaymentToken}
-              />
+              <div className="flex flex-col gap-8">
+                <div className="text-14 font-medium text-typography-secondary">
+                  <Trans>Gas payment token</Trans>
+                </div>
+                {showWalletGasPaymentTokenSelector && (
+                  <GasPaymentTokenSelector
+                    balanceType={TokenBalanceType.Wallet}
+                    currentTokenAddress={settings.gasPaymentTokenAddress}
+                    label={<Trans>Wallet</Trans>}
+                    onSelectToken={handleSelectGasPaymentToken}
+                  />
+                )}
+                {showGmxAccountGasPaymentTokenSelector && (
+                  <GasPaymentTokenSelector
+                    balanceType={TokenBalanceType.GmxAccount}
+                    currentTokenAddress={settings.gmxAccountGasPaymentTokenAddress}
+                    label={<Trans>GMX Account</Trans>}
+                    onSelectToken={handleSelectGmxAccountGasPaymentToken}
+                  />
+                )}
+              </div>
             )}
           </SettingsSection>
         </>
@@ -299,10 +348,10 @@ export function TradingSettings({
                     <br />• <span className="font-bold">Wallet</span> if you mostly trade from your personal wallet on
                     Arbitrum
                     <br />• <span className="font-bold">GMX Account</span> if you plan to keep trading or reusing margin
-                    on GMX.
+                    on GMX
                     <br />
                     <br />
-                    You can change this preference anytime in Settings or when closing a position.
+                    You can change this preference anytime in settings or when closing a position.
                   </Trans>
                 </div>
               }

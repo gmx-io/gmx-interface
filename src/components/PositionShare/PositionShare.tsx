@@ -22,8 +22,8 @@ import { ColorfulBanner } from "components/ColorfulBanner/ColorfulBanner";
 import ModalWithPortal from "components/Modal/ModalWithPortal";
 import ToggleSwitch from "components/ToggleSwitch/ToggleSwitch";
 
-import AlertIcon from "img/ic_alert.svg?react";
 import CopyStrokeIcon from "img/ic_copy_stroke.svg?react";
+import InfoIcon from "img/ic_info.svg?react";
 import ShareArrowOutlineIcon from "img/ic_share_arrow_outline.svg?react";
 import TwitterIcon from "img/ic_x.svg?react";
 import shareBgImg from "img/position-share-bg.jpg";
@@ -319,16 +319,11 @@ function PositionShare({
           )}
         </div>
         {shouldShowCreateReferralCard && <CreateReferralCode onSuccess={handleReferralCodeSuccess} />}
-        {uploadError && (
-          <AlertInfoCard type="error" hideClose>
-            {uploadError}
-          </AlertInfoCard>
-        )}
       </div>
       <div className="flex flex-col gap-12 p-20 pb-0">
         <ToggleSwitch isChecked={showPnlAmounts} setIsChecked={setShowPnlAmounts}>
           <span className="text-14 font-medium text-typography-secondary">
-            {isRpnl ? <Trans>Show rPnL amounts</Trans> : <Trans>Show PnL amounts</Trans>}
+            {isRpnl ? <Trans>Show rPnL after fees</Trans> : <Trans>Show PnL after fees</Trans>}
           </span>
         </ToggleSwitch>
 
@@ -339,7 +334,7 @@ function PositionShare({
         </ToggleSwitch>
 
         {promptedToCreateReferralCode && !isCreateReferralCodeInfoMessageClosed && (
-          <ColorfulBanner color="blue" icon={AlertIcon} onClose={() => setIsCreateReferralCodeInfoMessageClosed(true)}>
+          <ColorfulBanner color="blue" icon={InfoIcon} onClose={() => setIsCreateReferralCodeInfoMessageClosed(true)}>
             <div className="flex flex-col gap-4">
               <span className="font-medium text-blue-300">
                 <Trans>Skip creating a referral code?</Trans>
@@ -352,6 +347,11 @@ function PositionShare({
         )}
       </div>
       <div className="flex flex-col gap-16 p-20 pt-12">
+        {uploadError && (
+          <AlertInfoCard type="error" hideClose>
+            {uploadError}
+          </AlertInfoCard>
+        )}
         <div className="flex gap-12">
           <Button
             variant="secondary"

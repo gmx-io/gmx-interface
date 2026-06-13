@@ -1,13 +1,15 @@
-import { useConnectModal } from "@rainbow-me/rainbowkit";
+import { usePrivy, useWallets } from "@privy-io/react-auth";
 import { useEffect, useState } from "react";
 import { useAccount } from "wagmi";
 
 import { useAccountStats } from "domain/synthetics/accountStats/useAccountStats";
 import { useChainId } from "lib/chains";
+import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 
 import { userAnalytics } from ".";
 import { ConnectWalletResultEvent } from "./types";
+import { getWalletAnalyticsProvenance } from "./walletProvenance";
 
 export function useWalletConnectedUserAnalyticsEvent() {
   const [wasConnected, setWasConnected] = useState(false);
@@ -16,6 +18,8 @@ export function useWalletConnectedUserAnalyticsEvent() {
   const { connectModalOpen } = useConnectModal();
   const { account } = useWallet();
   const { connector } = useAccount();
+  const { user } = usePrivy();
+  const { wallets } = useWallets();
 
   const { data: accountStats } = useAccountStats(chainId, {
     account,
@@ -42,6 +46,7 @@ export function useWalletConnectedUserAnalyticsEvent() {
             action: "ConnectedSuccessfully",
             provider: connector.name,
             ordersCount,
+            ...getWalletAnalyticsProvenance({ account, connectedWallets: wallets, user }),
           },
         });
       };
@@ -56,5 +61,5 @@ export function useWalletConnectedUserAnalyticsEvent() {
     return () => {
       clearTimeout(timeoutId);
     };
-  }, [account, connector, connectModalOpen, ordersCount, wasConnected, wasSent]);
+  }, [account, connector, connectModalOpen, ordersCount, user, wallets, wasConnected, wasSent]);
 }

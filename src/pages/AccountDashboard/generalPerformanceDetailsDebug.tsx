@@ -67,7 +67,7 @@ export function GeneralPerformanceDetailsDebugTooltip({ row }: { row: PnlSummary
       />
       <br />
       <div className="text-body-small text-typography-secondary">
-        <Trans>Outstanding claimable amounts are not included.</Trans>
+        <Trans>Outstanding claimable amounts are not included</Trans>
       </div>
     </>
   );

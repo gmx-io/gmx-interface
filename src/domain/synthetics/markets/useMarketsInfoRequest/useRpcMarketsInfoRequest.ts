@@ -28,9 +28,9 @@ export function useRpcMarketsInfoRequest({
   tokensData: TokensData | undefined;
   enabled?: boolean;
 }) {
-  const { fastMarketInfoData } = useFastMarketsInfoRequest(chainId);
+  const { fastMarketInfoData } = useFastMarketsInfoRequest(chainId, { enabled });
   const { marketsData, marketsAddresses } = useMarkets(chainId);
-  const { data: marketsConstantsData } = useMarketsConstantsRequest(chainId);
+  const { data: marketsConstantsData } = useMarketsConstantsRequest(chainId, { enabled });
   const isDependenciesLoading = !marketsAddresses || !tokensData || !enabled;
 
   const { marketsValuesData } = useMarketsValuesRequest({

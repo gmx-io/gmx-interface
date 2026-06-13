@@ -135,7 +135,7 @@ function Referrals({ account, activeTab, hasAddressInUrl }: Props) {
             subtitle={
               !isBotanix ? (
                 <Trans>
-                  Get fee discounts and earn up to 15% commission through the GMX <br /> referral program.
+                  Get fee discounts and earn up to 15% commission through the GMX <br /> referral program
                 </Trans>
               ) : undefined
             }

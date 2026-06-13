@@ -1,7 +1,6 @@
 import { useMemo } from "react";
 import useSWR from "swr";
 
-import { getIsFlagEnabled } from "config/ab";
 import { ARBITRUM_SEPOLIA } from "config/chains";
 import { metrics } from "lib/metrics";
 import { FREQUENT_UPDATE_INTERVAL } from "lib/timeConstants";
@@ -23,10 +22,6 @@ export function useIsSponsoredCallBalanceAvailable(chainId: number): SponsoredCa
       }
 
       try {
-        if (!getIsFlagEnabled("testSponsoredCall")) {
-          return false;
-        }
-
         const gasTankBalance = await fetchGelatoGasTankBalance(chainId);
 
         if (!gasTankBalance) {

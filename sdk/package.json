@@ -1,6 +1,6 @@
 {
   "name": "@gmx-io/sdk",
-  "version": "1.5.0-alpha-13",
+  "version": "1.6.3",
   "type": "module",
   "repository": {
     "type": "git",
@@ -152,6 +152,12 @@
       ],
       "utils/types": [
         "./build/types/src/utils/types/index.d.ts"
+      ],
+      "utils/multichain": [
+        "./build/types/src/utils/multichain/index.d.ts"
+      ],
+      "utils/gas/*": [
+        "./build/types/src/utils/gas/*.d.ts"
       ]
     }
   },
@@ -450,6 +456,12 @@
       "require": "./build/cjs/src/utils/orderTransactions/index.js",
       "default": "./build/cjs/src/utils/orderTransactions/index.js"
     },
+    "./utils/multichain": {
+      "types": "./build/types/src/utils/multichain/index.d.ts",
+      "import": "./build/esm/src/utils/multichain/index.js",
+      "require": "./build/cjs/src/utils/multichain/index.js",
+      "default": "./build/cjs/src/utils/multichain/index.js"
+    },
     "./utils/express": {
       "types": "./build/types/src/utils/express/index.d.ts",
       "import": "./build/esm/src/utils/express/index.js",
@@ -479,6 +491,12 @@
       "import": "./build/esm/src/utils/metrics/index.js",
       "require": "./build/cjs/src/utils/metrics/index.js",
       "default": "./build/cjs/src/utils/metrics/index.js"
+    },
+    "./utils/gas/*": {
+      "types": "./build/types/src/utils/gas/*.d.ts",
+      "import": "./build/esm/src/utils/gas/*.js",
+      "require": "./build/cjs/src/utils/gas/*.js",
+      "default": "./build/cjs/src/utils/gas/*.js"
     }
   },
   "scripts": {
@@ -512,6 +530,7 @@
   },
   "dependencies": {
     "@gelatocloud/gasless": "0.0.10",
+    "@layerzerolabs/lz-v2-utilities": "3.0.85",
     "cross-fetch": "4.0.0",
     "crypto-js": "4.2.0",
     "graphql": "15.8.0",

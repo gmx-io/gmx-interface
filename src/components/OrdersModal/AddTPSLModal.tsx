@@ -19,16 +19,25 @@ import {
   selectMarketsInfoData,
   selectSrcChainId,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
+import { makeSelectOrdersByPositionKey } from "context/SyntheticsStateContext/selectors/orderSelectors";
 import {
   selectBreakdownNetPriceImpactEnabled,
   selectIsPnlInLeverage,
   selectIsSetAcceptablePriceImpactEnabled,
 } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
+import {
+  getExpressParamsForSubmit,
+  reportMultichainExpressSubmitError,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { estimateExecuteDecreaseOrderGasLimit, estimateOrderOraclePriceCount } from "domain/synthetics/fees";
-import { DecreasePositionSwapType } from "domain/synthetics/orders";
+import {
+  DecreasePositionSwapType,
+  isLimitDecreaseOrderType,
+  isStopLossOrderType,
+  isTwapOrder,
+} from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
 import {
@@ -52,7 +61,8 @@ import {
 } from "domain/synthetics/trade";
 import { useCloseSizeInput } from "domain/synthetics/trade/useCloseSizeInput";
 import { useMaxAutoCancelOrdersState } from "domain/synthetics/trade/useMaxAutoCancelOrdersState";
-import { buildTpSlCreatePayloads, buildTpSlInputPositionData, getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
+import { buildTpSlBatchPayloads, buildTpSlInputPositionData, getTpSlDecreaseAmounts } from "domain/tpsl/sidecar";
+import { FULL_POSITION_CLOSE_SIZE_DELTA_USD, isFullClosePositionOrder } from "domain/tpsl/utils";
 import { DUST_USD } from "lib/legacy";
 import { useLocalStorageSerializeKey } from "lib/localStorage";
 import {
@@ -70,11 +80,7 @@ import { getTokenVisualMultiplier } from "sdk/configs/tokens";
 import { bigMath } from "sdk/utils/bigmath";
 import { getCappedPriceImpactPercentageFromFees } from "sdk/utils/fees";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
-import {
-  CreateOrderTxnParams,
-  DecreasePositionOrderParams,
-  getBatchTotalExecutionFee,
-} from "sdk/utils/orderTransactions";
+import { getBatchTotalExecutionFee } from "sdk/utils/orderTransactions";
 import { SidecarSlTpOrderEntry } from "sdk/utils/sidecarOrders/types";
 import { getIsEquivalentTokens } from "sdk/utils/tokens";
 
@@ -91,6 +97,8 @@ import { MarginPercentageSlider } from "components/TradeboxMarginFields/MarginPe
 import { TradeInputField, DisplayMode } from "components/TradeboxMarginFields/TradeInputField";
 import { TradeFeesRow } from "components/TradeFeesRow/TradeFeesRow";
 import { ValueTransition } from "components/ValueTransition/ValueTransition";
+
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { TPSLInputRow } from "./TPSLInputRow";
 
@@ -605,25 +613,49 @@ export function AddTPSLModal({
     );
   }, [markPrice, slPriceEntry, sizeUsdEntry, percentageEntry, position.liquidationPrice, position.entryPrice, isLong]);
 
-  const orderPayloads = useMemo((): CreateOrderTxnParams<DecreasePositionOrderParams>[] => {
+  const positionOrders = useSelector(makeSelectOrdersByPositionKey(position.key));
+
+  const existingFullCloseTp = useMemo(() => {
+    return positionOrders.find(
+      (order) =>
+        !isTwapOrder(order) &&
+        isLimitDecreaseOrderType(order.orderType) &&
+        isFullClosePositionOrder(order, position.sizeInUsd)
+    );
+  }, [positionOrders, position.sizeInUsd]);
+
+  const existingFullCloseSl = useMemo(() => {
+    return positionOrders.find(
+      (order) =>
+        !isTwapOrder(order) &&
+        isStopLossOrderType(order.orderType) &&
+        isFullClosePositionOrder(order, position.sizeInUsd)
+    );
+  }, [positionOrders, position.sizeInUsd]);
+
+  const orderPayloads = useMemo(() => {
+    const empty = { createOrderParams: [], updateOrderParams: [] };
+
     if (!account || !marketInfo || !collateralToken) {
-      return [];
+      return empty;
     }
 
     const tpCreateAmounts = tpPriceError ? undefined : tpDecreaseAmounts;
     const slCreateAmounts = slPriceError ? undefined : slDecreaseAmounts;
 
     if (!tpCreateAmounts && !slCreateAmounts) {
-      return [];
+      return empty;
     }
 
     if ((tpCreateAmounts && !tpExecutionFee) || (slCreateAmounts && !slExecutionFee)) {
-      return [];
+      return empty;
     }
 
     const autoCancelOrdersLimitForModal = autoCancelOrdersLimit > 0 ? 2 : 0;
+    const tpSizeDeltaUsd = tpCreateAmounts?.isFullClose ? FULL_POSITION_CLOSE_SIZE_DELTA_USD : undefined;
+    const slSizeDeltaUsd = slCreateAmounts?.isFullClose ? FULL_POSITION_CLOSE_SIZE_DELTA_USD : undefined;
 
-    return buildTpSlCreatePayloads({
+    return buildTpSlBatchPayloads({
       autoCancelOrdersLimit: autoCancelOrdersLimitForModal,
       chainId,
       account,
@@ -636,11 +668,15 @@ export function AddTPSLModal({
           amounts: tpCreateAmounts,
           executionFeeAmount: tpExecutionFee?.feeTokenAmount,
           executionGasLimit: tpExecutionFee?.gasLimit,
+          sizeDeltaUsd: tpSizeDeltaUsd,
+          existingFullCloseOrder: existingFullCloseTp,
         },
         {
           amounts: slCreateAmounts,
           executionFeeAmount: slExecutionFee?.feeTokenAmount,
           executionGasLimit: slExecutionFee?.gasLimit,
+          sizeDeltaUsd: slSizeDeltaUsd,
+          existingFullCloseOrder: existingFullCloseSl,
         },
       ],
       userReferralCode: userReferralInfo?.referralCodeForTxn,
@@ -659,13 +695,15 @@ export function AddTPSLModal({
     slPriceError,
     tpExecutionFee,
     slExecutionFee,
+    existingFullCloseTp,
+    existingFullCloseSl,
   ]);
 
   const batchParams = useMemo(() => {
-    if (orderPayloads.length === 0) return undefined;
+    if (orderPayloads.createOrderParams.length === 0 && orderPayloads.updateOrderParams.length === 0) return undefined;
     return {
-      createOrderParams: orderPayloads,
-      updateOrderParams: [],
+      createOrderParams: orderPayloads.createOrderParams,
+      updateOrderParams: orderPayloads.updateOrderParams,
       cancelOrderParams: [],
     };
   }, [orderPayloads]);
@@ -676,7 +714,7 @@ export function AddTPSLModal({
     return getBatchTotalExecutionFee({ batchParams, chainId, tokensData });
   }, [batchParams, chainId, tokensData]);
 
-  const { expressParamsPromise } = useExpressOrdersParams({
+  const { expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Add TP/SL",
     isGmxAccount: srcChainId !== undefined,
@@ -700,7 +738,7 @@ export function AddTPSLModal({
     if (slPriceError && slPriceInput) {
       return slPriceError;
     }
-    if (orderPayloads.length === 0) {
+    if (orderPayloads.createOrderParams.length === 0 && orderPayloads.updateOrderParams.length === 0) {
       return t`Unable to calculate order`;
     }
     return undefined;
@@ -709,7 +747,8 @@ export function AddTPSLModal({
     slPriceInput,
     tpPriceError,
     slPriceError,
-    orderPayloads.length,
+    orderPayloads.createOrderParams.length,
+    orderPayloads.updateOrderParams.length,
     editTPSLSize,
     closeSizeInput,
     closeSize.showSizeInTokens,
@@ -725,14 +764,25 @@ export function AddTPSLModal({
     try {
       const fulfilledExpressParams = await expressParamsPromise;
 
+      const isGmxAccount = srcChainId !== undefined;
+
+      if (
+        reportMultichainExpressSubmitError({
+          isGmxAccount,
+          expressParams: fulfilledExpressParams,
+          tokensData,
+          actionName: "Add TP/SL",
+          collateral: position.collateralToken.symbol,
+        })
+      ) {
+        return;
+      }
+
       await sendBatchOrderTxn({
         chainId,
         signer,
         batchParams,
-        expressParams:
-          fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams)
-            ? fulfilledExpressParams
-            : undefined,
+        expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
         simulationParams: shouldDisableValidationForTesting
           ? undefined
           : {
@@ -798,6 +848,39 @@ export function AddTPSLModal({
   const hasTP = Boolean(tpPriceInput);
   const hasSL = Boolean(slPriceInput);
   const modePrefix = hasTP && hasSL ? "TP/SL" : hasTP ? "TP" : hasSL ? "SL" : "TP/SL";
+
+  const submitButtonState = useMemo(() => {
+    if (isMultichainSubmitDisabled) {
+      return {
+        text: (
+          <>
+            {t`Loading network fees…`}
+            <SpinnerIcon className="ml-4 animate-spin" />
+          </>
+        ),
+        disabled: true,
+      };
+    }
+
+    if (isSubmitting) {
+      return {
+        text: t`Creating...`,
+        disabled: true,
+      };
+    }
+
+    if (submitError) {
+      return {
+        text: submitError,
+        disabled: true,
+      };
+    }
+
+    return {
+      text: `${modePrefix}: ${actionLabel} ${marketPairLabel} ${directionLabel}`,
+      disabled: false,
+    };
+  }, [actionLabel, directionLabel, isMultichainSubmitDisabled, isSubmitting, marketPairLabel, modePrefix, submitError]);
 
   const currentLeverage = formatLeverage(position.leverage);
   const nextLeverage = activeNextPositionValues?.nextLeverage;
@@ -953,10 +1036,9 @@ export function AddTPSLModal({
           variant="primary-action"
           className="w-full"
           onClick={handleSubmit}
-          disabled={!!submitError || isSubmitting}
+          disabled={submitButtonState.disabled}
         >
-          {submitError ||
-            (isSubmitting ? t`Creating...` : `${modePrefix}: ${actionLabel} ${marketPairLabel} ${directionLabel}`)}
+          {submitButtonState.text}
         </Button>
 
         {hasPreviewData && (

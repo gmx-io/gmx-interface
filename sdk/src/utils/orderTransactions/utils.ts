@@ -1,5 +1,5 @@
 import uniq from "lodash/uniq";
-import { encodeFunctionData, zeroAddress, zeroHash } from "viem";
+import { encodeFunctionData, type Hex, zeroAddress, zeroHash } from "viem";
 
 import ExchangeRouterAbi from "abis/ExchangeRouter";
 import { abis } from "abis/index";
@@ -1119,7 +1119,10 @@ export function buildCancelOrderMulticall({ params }: { params: CancelOrderTxnPa
   };
 }
 
-export function encodeExchangeRouterMulticall(multicall: ExchangeRouterCall[]) {
+export function encodeExchangeRouterMulticall(multicall: ExchangeRouterCall[]): {
+  encodedMulticall: Hex[];
+  callData: Hex;
+} {
   const encodedMulticall = multicall.map((call) =>
     encodeFunctionData({
       abi: abis.ExchangeRouter,

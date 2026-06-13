@@ -371,15 +371,16 @@ export function useClaimAffiliatesModalState({ onClose }: { onClose: () => void 
     rewardsParams: rewardsTxParams,
   });
 
+  const isGmxAccountClaim = srcChainId !== undefined;
   const expressTxnParamsAsyncResult = useArbitraryRelayParamsAndPayload({
-    isGmxAccount: true,
-    enabled: srcChainId !== undefined,
+    isGmxAccount: isGmxAccountClaim,
+    enabled: isGmxAccountClaim,
     expressTransactionBuilder,
     withLoading: false,
     transactionExternalCalls: multichainSwapExternalCalls,
   });
 
-  const errors = useArbitraryError(expressTxnParamsAsyncResult.error);
+  const errors = useArbitraryError(expressTxnParamsAsyncResult.error, { isGmxAccount: isGmxAccountClaim });
   const fallbackGasPaymentTokenAmount = useMemo(() => {
     if (srcChainId === undefined || !gasPaymentToken || swapEstimatedNetworkFeeAmount <= 0n) {
       return undefined;

@@ -1,0 +1,32 @@
+@property --animated-gradient-text-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 160.6deg;
+}
+
+.animated-gradient-text {
+  --animated-gradient-text-angle: 160.6deg;
+  background: linear-gradient(
+    var(--animated-gradient-text-angle),
+    var(--color-blue-100) 0%,
+    var(--color-blue-400) 100%
+  );
+  background-size: 100% 86px;
+  background-position: 0 -15px;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  animation: animated-gradient-text-rotate 4s linear infinite;
+  -webkit-text-fill-color: transparent;
+  stroke-width: 0%;
+}
+
+@keyframes animated-gradient-text-rotate {
+  to {
+    --animated-gradient-text-angle: 520.6deg;
+  }
+}
+
+.image-capture-in-progress .animated-gradient-text {
+  animation: none !important;
+}

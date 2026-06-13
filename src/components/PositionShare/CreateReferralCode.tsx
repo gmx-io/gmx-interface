@@ -1,19 +1,16 @@
 import { t, Trans } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import cx from "classnames";
-import { type TransactionResponse } from "ethers";
 import { FormEvent, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { encodeFunctionData, zeroAddress } from "viem";
 import { useAccount } from "wagmi";
 
 import type { SettlementChainId, SourceChainId } from "config/chains";
-import { ContractsChainId, getChainName } from "config/chains";
+import { ContractsChainId, getChainName, getViemChain } from "config/chains";
 import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { type MultichainAction, MultichainActionType } from "domain/multichain/codecs/CodecUiHelper";
 import { getMultichainTransferSendParams } from "domain/multichain/getSendParams";
-import { sendQuoteFromNative } from "domain/multichain/sendQuoteFromNative";
 import { toastCustomOrStargateError } from "domain/multichain/toastCustomOrStargateError";
 import { SendParam } from "domain/multichain/types";
 import { useMultichainReferralDepositToken } from "domain/multichain/useMultichainReferralDepositToken";
@@ -35,8 +32,11 @@ import { metrics } from "lib/metrics";
 import { formatUsd } from "lib/numbers";
 import { sendWalletTransaction } from "lib/transactions";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 import { abis } from "sdk/abis";
+import { quoteFromNativeFee } from "sdk/utils/multichain/sendParams";
 import { encodeReferralCode } from "sdk/utils/referrals";
 
 import { AlertInfoCard } from "components/AlertInfo/AlertInfoCard";
@@ -134,17 +134,24 @@ function CreateReferralCodeSettlement({ onSuccess }: Props) {
           return;
         }
 
-        const tx = (await createReferralCode(referralCode)) as TransactionResponse;
-        const receipt = await tx.wait();
+        const tx = await createReferralCode(referralCode);
+        if (!tx?.hash) {
+          throw new Error("Referral code transaction was not submitted");
+        }
 
-        if (receipt?.status === 1) {
+        const publicClient = getPublicClientWithRpc(chainId);
+        const receipt = await publicClient.waitForTransactionReceipt({ hash: tx.hash as `0x${string}` });
+
+        if (receipt?.status === "success") {
           helperToast.success(t`Referral code created`);
           onSuccess(referralCode);
           setReferralCode("");
+        } else {
+          throw new Error(`Transaction failed with status ${receipt?.status}`);
         }
       } catch (err) {
-        setError(t`Referral code creation failed`);
         metrics.pushError(err, "createReferralCode");
+        setError(t`Referral code creation failed`);
       } finally {
         setIsProcessing(false);
       }
@@ -315,7 +322,7 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
           callData: encodeFunctionData({
             abi: abis.IStargate,
             functionName: "sendToken",
-            args: [sendParams, sendQuoteFromNative(quoteResult.data.nativeFee), account],
+            args: [sendParams, quoteFromNativeFee(quoteResult.data.nativeFee), account],
           }),
           value,
           msg: t`Creating referral code...`,
@@ -334,10 +341,12 @@ function CreateReferralCodeMultichain({ onSuccess }: Props) {
               <Trans>May take a few minutes to appear. Check back later</Trans>
             </>
           );
+        } else {
+          throw new Error(`Transaction failed with status ${receipt.status}`);
         }
       } catch (err) {
-        toastCustomOrStargateError(chainId, err);
         metrics.pushError(err, "createReferralCodeMultichain");
+        toastCustomOrStargateError(chainId, err);
       } finally {
         setIsSubmitting(false);
         setIsValidating(false);
@@ -555,38 +564,25 @@ function CreateReferralCodeLayout({
         }}
         className="flex flex-col gap-8"
       >
-        <div className="flex gap-8">
-          <label
-            className={cx(
-              "flex grow cursor-pointer items-center gap-8 rounded-8 border-1/2 bg-slate-800 p-8",
-              error || referralCodeCheckStatus === "taken" ? "border-red-500" : "border-slate-800"
-            )}
-          >
-            <ReferralsIcon className="size-16 text-typography-secondary" />
-            <input
-              ref={inputRef}
-              value={referralCode}
-              disabled={isProcessing || !isConnected}
-              placeholder={t`Enter referral code`}
-              className="grow p-0 py-2 text-13 leading-[13px] placeholder:text-typography-secondary"
-              onChange={(event) => {
-                const { value } = event.target;
-                setReferralCode(value);
-              }}
-            />
-          </label>
-
-          <div className="flex justify-end">
-            <Button
-              type="submit"
-              variant="primary"
-              disabled={buttonState.disabled}
-              className="min-w-[140px] justify-center"
-            >
-              {error ? <TooltipWithPortal handle={buttonState.text} content={error} /> : buttonState.text}
-            </Button>
-          </div>
-        </div>
+        <label
+          className={cx(
+            "flex cursor-pointer items-center gap-8 rounded-8 border-1/2 bg-slate-800 p-8",
+            error || referralCodeCheckStatus === "taken" ? "border-red-500" : "border-slate-800"
+          )}
+        >
+          <ReferralsIcon className="size-16 text-typography-secondary" />
+          <input
+            ref={inputRef}
+            value={referralCode}
+            disabled={isProcessing || !isConnected}
+            placeholder={t`Enter referral code`}
+            className="grow p-0 py-2 text-13 leading-[13px] placeholder:text-typography-secondary"
+            onChange={(event) => {
+              const { value } = event.target;
+              setReferralCode(value);
+            }}
+          />
+        </label>
         {networkFeeUsd !== undefined && (
           <div className="flex justify-between text-12 text-typography-secondary">
             <span>
@@ -613,8 +609,8 @@ function CreateReferralCodeLayout({
         {hasNoTokensOnSourceChain && srcChainId && (
           <AlertInfoCard type="error" className="text-left" hideClose>
             <Trans>
-              You need USDC or ETH on {getChainName(srcChainId)} to create a referral code via GMX Account. Deposit
-              funds or switch to a different network.
+              You need USDC and {getViemChain(srcChainId).nativeCurrency.symbol} on {getChainName(srcChainId)} to create
+              a referral code via GMX Account. Deposit funds or switch to a different network.
             </Trans>
           </AlertInfoCard>
         )}
@@ -627,6 +623,9 @@ function CreateReferralCodeLayout({
             />
           </AlertInfoCard>
         )}
+        <Button type="submit" variant="primary" disabled={buttonState.disabled} className="w-full justify-center">
+          {error ? <TooltipWithPortal handle={buttonState.text} content={error} /> : buttonState.text}
+        </Button>
       </form>
     </div>
   );

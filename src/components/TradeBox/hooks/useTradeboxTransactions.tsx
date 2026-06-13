@@ -43,9 +43,12 @@ import {
 } from "context/SyntheticsStateContext/selectors/transactionsSelectors/tradeBoxOrdersSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useUserReferralCode } from "domain/referrals";
-import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
-import { getJitLiquidityInfo } from "domain/synthetics/jit/utils";
+import {
+  getExpressParamsForSubmit,
+  reportMultichainExpressSubmitError,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
+import { getJitGlvShiftParams } from "domain/synthetics/jit/utils";
 import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets/utils";
 import { OrderType } from "domain/synthetics/orders";
 import { createStakeOrUnstakeTxn } from "domain/synthetics/orders/createStakeOrUnStakeTxn";
@@ -150,7 +153,9 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     if (isWrapOrUnwrap) {
       return wrapOrUnwrapExecutionFee;
     }
-    return tokensData ? getBatchTotalExecutionFee({ batchParams, chainId, tokensData }) : undefined;
+    return tokensData
+      ? getBatchTotalExecutionFee({ batchParams, chainId, tokensData, allowEmptyBatch: true })
+      : undefined;
   }, [batchParams, chainId, isWrapOrUnwrap, tokensData, wrapOrUnwrapExecutionFee]);
 
   const {
@@ -159,6 +164,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     asyncExpressParams,
     expressParamsPromise,
     isLoading: isExpressLoading,
+    isMultichainSubmitDisabled,
   } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "TradeBox",
@@ -331,10 +337,24 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       return Promise.reject();
     }
 
+    if (
+      reportMultichainExpressSubmitError({
+        isGmxAccount: isFromTokenGmxAccount,
+        expressParams: fulfilledExpressParams,
+        tokensData,
+        actionName,
+        collateral: collateralSymbol,
+        requestId: metricData.requestId,
+        metricId: metricData.metricId,
+      })
+    ) {
+      return Promise.reject();
+    }
+
     sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
 
-    const jitLiquidityInfo = marketInfo
-      ? getJitLiquidityInfo(jitLiquidityMap, marketInfo.marketTokenAddress)
+    const jitShiftParamsList = marketInfo
+      ? getJitGlvShiftParams(jitLiquidityMap, marketInfo.marketTokenAddress, isLong)
       : undefined;
     const nativeReserveLiquidity = marketInfo ? getAvailableUsdLiquidityForPosition(marketInfo, isLong) : undefined;
     return sendBatchOrderTxn({
@@ -343,14 +363,13 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       provider,
       batchParams,
       isGmxAccount: isFromTokenGmxAccount,
-      expressParams:
-        fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
+      expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
       simulationParams: shouldDisableValidationForTesting
         ? undefined
         : {
             tokensData,
             blockTimestampData,
-            jitShiftParamsList: jitLiquidityInfo?.glvShiftParams,
+            jitShiftParamsList,
             // Excludes JIT — determines whether JIT simulation is needed
             nativeReserveLiquidity,
           },
@@ -435,6 +454,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     expressParams,
     batchParams,
     isExpressLoading,
+    isMultichainSubmitDisabled,
     totalExecutionFee,
   };
 }

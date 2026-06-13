@@ -1,13 +1,19 @@
 import { AbiEvent } from "abitype";
 import { MaybeExtractEventArgsFromAbi, GetLogsReturnType } from "viem";
 
+import { getRpcProviders } from "config/rpc";
 import { createAnySignal, createTimeoutSignal } from "lib/abortSignalHelpers";
 import { sleep } from "lib/sleep";
-import { getPublicClientWithRpc } from "lib/wallets/rainbowKitConfig";
+import { getPublicClientWithRpc } from "lib/wallets/walletConfig";
 
 const POLLING_INTERVAL = 2_000; // 2 seconds
 const DEFAULT_TIMEOUT = 5 * 60 * 1000; // 5 minutes
 const DEFAULT_FINISH = () => true;
+
+function getLogsPublicClient(chainId: number) {
+  const hasExpressRpc = getRpcProviders(chainId, "express").length > 0;
+  return getPublicClientWithRpc(chainId, hasExpressRpc ? { withExpress: true } : undefined);
+}
 
 export async function getOrWaitLogs<T extends AbiEvent>({
   chainId,
@@ -38,7 +44,7 @@ export async function getOrWaitLogs<T extends AbiEvent>({
 
     while (!combinedSignal.aborted) {
       try {
-        const logs = await getPublicClientWithRpc(chainId).getLogs({
+        const logs = await getLogsPublicClient(chainId).getLogs({
           fromBlock,
           event,
           args,

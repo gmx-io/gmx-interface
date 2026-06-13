@@ -1,5 +1,4 @@
 import { Trans, t } from "@lingui/macro";
-import { useConnectModal } from "@rainbow-me/rainbowkit";
 import { ReactNode, useCallback, useMemo, useState } from "react";
 
 import { getContract } from "config/contracts";
@@ -28,9 +27,12 @@ import {
   selectPositionEditorSetCollateralInputValue,
 } from "context/SyntheticsStateContext/selectors/positionEditorSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
-import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { ExpressTxnParams } from "domain/synthetics/express/types";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
+import {
+  getExpressParamsForSubmit,
+  reportMultichainExpressSubmitError,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
@@ -39,8 +41,7 @@ import {
   substractMaxLeverageSlippage,
   willPositionCollateralBeSufficientForPosition,
 } from "domain/synthetics/positions";
-import { convertToTokenAmount } from "domain/synthetics/tokens";
-import { getMarkPrice, getMinCollateralUsdForLeverage } from "domain/synthetics/trade";
+import { getMarkPrice, getMaxWithdrawAmount } from "domain/synthetics/trade";
 import {
   getCommonError,
   getEditCollateralError,
@@ -53,6 +54,7 @@ import {
 import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { bigNumberBinarySearch } from "lib/binarySearch";
 import { useChainId } from "lib/chains";
+import { useMultipleWalletExtensionsChainError } from "lib/chains/getMultipleWalletExtensionsChainError";
 import { helperToast } from "lib/helperToast";
 import { useLocalizedMap } from "lib/i18n";
 import {
@@ -65,6 +67,7 @@ import { useJsonRpcProvider } from "lib/rpc";
 import { useHasOutdatedUi } from "lib/useHasOutdatedUi";
 import { userAnalytics } from "lib/userAnalytics";
 import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
+import { useConnectModal } from "lib/wallets/useConnectModal";
 import useWallet from "lib/wallets/useWallet";
 import { getToken } from "sdk/configs/tokens";
 import {
@@ -107,6 +110,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
   const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
   const hasOutdatedUi = useHasOutdatedUi();
+  const multipleWalletExtensionsChainError = useMultipleWalletExtensionsChainError();
   const position = usePositionEditorPosition();
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
   const blockTimestampData = useSelector(selectBlockTimestampData);
@@ -242,6 +246,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
   const {
     expressParams,
     isLoading: isExpressLoading,
+    isMultichainSubmitDisabled,
     fastExpressParams,
     asyncExpressParams,
     expressParamsPromise,
@@ -295,25 +300,14 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
   const maxWithdrawAmount = useMemo(() => {
     if (!getIsPositionInfoLoaded(position)) return 0n;
 
-    const minCollateralUsdForLeverage = getMinCollateralUsdForLeverage(position, 0n);
-    let _minCollateralUsd = minCollateralUsdForLeverage;
-
-    if (minCollateralUsd !== undefined && minCollateralUsd > _minCollateralUsd) {
-      _minCollateralUsd = minCollateralUsd;
-    }
-
-    _minCollateralUsd =
-      _minCollateralUsd + (position?.pendingBorrowingFeesUsd ?? 0n) + (position?.pendingFundingFeesUsd ?? 0n);
-
-    if (position.collateralUsd < _minCollateralUsd) {
-      return 0n;
-    }
-
-    const maxWithdrawUsd = position.collateralUsd - _minCollateralUsd;
-    const maxWithdrawAmount = convertToTokenAmount(maxWithdrawUsd, selectedCollateralToken?.decimals, collateralPrice);
-
-    return maxWithdrawAmount;
-  }, [collateralPrice, selectedCollateralToken?.decimals, minCollateralUsd, position]);
+    return getMaxWithdrawAmount({
+      position,
+      minCollateralUsd,
+      collateralPrice,
+      collateralDecimals: selectedCollateralToken?.decimals,
+      userReferralInfo,
+    });
+  }, [collateralPrice, selectedCollateralToken?.decimals, minCollateralUsd, position, userReferralInfo]);
 
   const detectAndSetMaxSize = useCallback(() => {
     if (maxWithdrawAmount === undefined) return;
@@ -356,15 +350,16 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       position,
       depositToken: selectedCollateralToken,
       depositAmount: collateralDeltaAmount,
-      minCollateralFactor,
-      marketAddress: position?.marketAddress,
+      marketInfo: position?.marketInfo,
+      maxWithdrawAmount,
     });
 
-    return takeValidationResult(commonError, editCollateralError, expressError);
+    return takeValidationResult(commonError, multipleWalletExtensionsChainError, editCollateralError, expressError);
   }, [
     chainId,
     account,
     hasOutdatedUi,
+    multipleWalletExtensionsChainError,
     expressParams,
     tokensData,
     collateralDeltaAmount,
@@ -374,10 +369,14 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     isDeposit,
     position,
     selectedCollateralToken,
-    minCollateralFactor,
+    maxWithdrawAmount,
   ]);
 
   const errorTooltipContent = useMemo(() => {
+    if (validationResult.buttonTooltipMessage) {
+      return validationResult.buttonTooltipMessage;
+    }
+
     if (validationResult.buttonTooltipName !== ValidationButtonTooltipName.maxLeverage) {
       return null;
     }
@@ -393,7 +392,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
         </span>
       </Trans>
     );
-  }, [detectAndSetMaxSize, validationResult.buttonTooltipName]);
+  }, [detectAndSetMaxSize, validationResult.buttonTooltipMessage, validationResult.buttonTooltipName]);
 
   async function onSubmit() {
     if (!account || !signer) {
@@ -452,15 +451,31 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
       return;
     }
 
+    setIsSubmitting(true);
+
     const fulfilledExpressParams = await expressParamsPromise;
+
+    if (
+      reportMultichainExpressSubmitError({
+        isGmxAccount: isCollateralTokenFromGmxAccount,
+        expressParams: fulfilledExpressParams,
+        tokensData,
+        actionName: "Edit Collateral",
+        collateral: selectedCollateralToken?.symbol,
+        requestId: metricData.requestId,
+        metricId: metricData.metricId,
+      })
+    ) {
+      setIsSubmitting(false);
+      return;
+    }
 
     const txnPromise = sendBatchOrderTxn({
       chainId,
       signer,
       provider,
       batchParams,
-      expressParams:
-        fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
+      expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
       isGmxAccount: isCollateralTokenFromGmxAccount,
       simulationParams: shouldDisableValidationForTesting
         ? undefined
@@ -499,6 +514,14 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     bannerErrorName: validationResult.bannerErrorName,
   };
 
+  if (multipleWalletExtensionsChainError.buttonErrorMessage) {
+    return {
+      text: multipleWalletExtensionsChainError.buttonErrorMessage,
+      disabled: true,
+      ...commonParams,
+    };
+  }
+
   if (isApproving && tokensToApprove.length) {
     const tokenToApprove = tokensToApprove[0];
     return {
@@ -512,7 +535,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     };
   }
 
-  if (isExpressLoading) {
+  if (isExpressLoading || isMultichainSubmitDisabled) {
     return {
       text: (
         <>
@@ -529,7 +552,7 @@ export function usePositionEditorButtonState(operation: Operation): PositionEdit
     return {
       text: (
         <>
-          <Trans>Creating order</Trans>
+          <Trans>Creating order...</Trans>
           <SpinnerIcon className="ml-4 animate-spin" />
         </>
       ),

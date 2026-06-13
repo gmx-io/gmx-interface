@@ -6,7 +6,11 @@ import { Address } from "viem";
 
 import { isSettlementChain } from "config/multichain";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { usePositionsConstants, useTokensData } from "context/SyntheticsStateContext/hooks/globalsHooks";
+import {
+  usePositionsConstants,
+  useTokensData,
+  useUserReferralInfo,
+} from "context/SyntheticsStateContext/hooks/globalsHooks";
 import {
   usePositionEditorCollateralInputValue,
   usePositionEditorIsCollateralTokenFromGmxAccount,
@@ -14,7 +18,6 @@ import {
   usePositionEditorPositionState,
   usePositionEditorSelectedCollateralAddress,
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
-import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectPositionEditorCollateralInputAmountAndUsd,
   selectPositionEditorSelectedCollateralToken,
@@ -23,8 +26,8 @@ import { makeSelectMarketPriceDecimals } from "context/SyntheticsStateContext/se
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { toastEnableExpress } from "domain/multichain/toastEnableExpress";
 import { formatLiquidationPrice, getIsPositionInfoLoaded } from "domain/synthetics/positions";
-import { convertToTokenAmount, getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
-import { getMinCollateralUsdForLeverage, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
+import { getBalanceByBalanceType, TokenBalanceType } from "domain/synthetics/tokens";
+import { getMaxWithdrawAmount, getTradeFlagsForCollateralEdit } from "domain/synthetics/trade";
 import { usePriceImpactWarningState } from "domain/synthetics/trade/usePriceImpactWarningState";
 import { useMaxAvailableAmount } from "domain/tokens/useMaxAvailableAmount";
 import { useChainId } from "lib/chains";
@@ -77,8 +80,8 @@ export function PositionEditor() {
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const tokensData = useTokensData();
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
-  const gasPaymentToken = useSelector(selectGasPaymentToken);
   const { minCollateralUsd } = usePositionsConstants();
+  const userReferralInfo = useUserReferralInfo();
   const position = usePositionEditorPosition();
   const localizedOperationLabels = useLocalizedMap(OPERATION_LABELS);
 
@@ -205,31 +208,21 @@ export function PositionEditor() {
   const maxWithdrawAmount = useMemo(() => {
     if (!getIsPositionInfoLoaded(position)) return 0n;
 
-    const minCollateralUsdForLeverage = getMinCollateralUsdForLeverage(position, 0n);
-    let _minCollateralUsd = minCollateralUsdForLeverage;
-
-    if (minCollateralUsd !== undefined && minCollateralUsd > _minCollateralUsd) {
-      _minCollateralUsd = minCollateralUsd;
-    }
-
-    _minCollateralUsd =
-      _minCollateralUsd + (position?.pendingBorrowingFeesUsd ?? 0n) + (position?.pendingFundingFeesUsd ?? 0n);
-
-    if (position.collateralUsd < _minCollateralUsd) {
-      return 0n;
-    }
-
-    const maxWithdrawUsd = position.collateralUsd - _minCollateralUsd;
-    const maxWithdrawAmount = convertToTokenAmount(maxWithdrawUsd, collateralToken?.decimals, collateralPrice);
-
-    return maxWithdrawAmount;
-  }, [collateralPrice, collateralToken?.decimals, minCollateralUsd, position]);
+    return getMaxWithdrawAmount({
+      position,
+      minCollateralUsd,
+      collateralPrice,
+      collateralDecimals: collateralToken?.decimals,
+      userReferralInfo,
+    });
+  }, [collateralPrice, collateralToken?.decimals, minCollateralUsd, position, userReferralInfo]);
 
   const { fees, executionFee } = usePositionEditorFees({
     operation,
   });
 
   const submitButtonState = usePositionEditorButtonState(operation);
+  const gasPaymentToken = submitButtonState.expressParams?.gasPaymentParams.gasPaymentToken;
 
   const gasPaymentTokenForMax =
     expressOrdersEnabled && !collateralToken?.isNative
@@ -241,9 +234,7 @@ export function PositionEditor() {
       : executionFee?.feeTokenAmount;
 
   const expressEnabledForMax = expressOrdersEnabled && !collateralToken?.isNative;
-  const isMaxAmountLoading = expressEnabledForMax
-    ? submitButtonState.isExpressLoading || gasPaymentTokenAmountForMax === undefined
-    : executionFee?.feeTokenAmount === undefined;
+  const isMaxAmountLoading = expressEnabledForMax && submitButtonState.isExpressLoading;
 
   const depositBalanceType = isCollateralTokenFromGmxAccount ? TokenBalanceType.GmxAccount : TokenBalanceType.Wallet;
   const collateralTokenBalance = getBalanceByBalanceType(collateralToken, depositBalanceType);
@@ -258,6 +249,7 @@ export function PositionEditor() {
     gasPaymentToken: isDeposit ? gasPaymentTokenForMax : undefined,
     gasPaymentTokenBalance: isDeposit ? gasPaymentTokenBalanceForMax : undefined,
     gasPaymentTokenAmount: isDeposit ? gasPaymentTokenAmountForMax : undefined,
+    isGmxAccount: isCollateralTokenFromGmxAccount,
   });
 
   const maxAvailableAmount = isDeposit ? depositMaxDetails.maxAvailableAmount : maxWithdrawAmount;
