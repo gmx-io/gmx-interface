@@ -62,37 +62,34 @@ describe("parseJitLiquidityResponse", () => {
   });
 
   it("parses v2 JIT liquidity info with direction-specific shift params", () => {
-    const result = parseJitLiquidityResponse(
-      {
-        liquidityInfos: [
-          {
-            glv: "0xGlv",
-            market: "0xMarket",
-            long: {
-              maxReservedUsd: "300",
-              glvShiftParams: {
-                glv: "0xGlv",
-                fromMarket: "0xLongFrom",
-                toMarket: "0xMarket",
-                marketTokenAmount: "30",
-                minMarketTokens: "29",
-              },
-            },
-            short: {
-              maxReservedUsd: "400",
-              glvShiftParams: {
-                glv: "0xGlv",
-                fromMarket: "0xShortFrom",
-                toMarket: "0xMarket",
-                marketTokenAmount: "40",
-                minMarketTokens: "39",
-              },
+    const result = parseJitLiquidityResponse({
+      liquidityInfos: [
+        {
+          glv: "0xGlv",
+          market: "0xMarket",
+          long: {
+            maxReservedUsd: "300",
+            glvShiftParams: {
+              glv: "0xGlv",
+              fromMarket: "0xLongFrom",
+              toMarket: "0xMarket",
+              marketTokenAmount: "30",
+              minMarketTokens: "29",
             },
           },
-        ],
-      },
-      true
-    );
+          short: {
+            maxReservedUsd: "400",
+            glvShiftParams: {
+              glv: "0xGlv",
+              fromMarket: "0xShortFrom",
+              toMarket: "0xMarket",
+              marketTokenAmount: "40",
+              minMarketTokens: "39",
+            },
+          },
+        },
+      ],
+    });
 
     expect(result["0xMarket"].maxReservedUsdWithJitLong).toBe(300n);
     expect(result["0xMarket"].maxReservedUsdWithJitShort).toBe(400n);
@@ -114,5 +111,31 @@ describe("parseJitLiquidityResponse", () => {
         minMarketTokens: 39n,
       },
     ]);
+  });
+
+  it("falls back to zero for invalid and negative amount values", () => {
+    const result = parseJitLiquidityResponse({
+      liquidityInfos: [
+        {
+          market: "0xMarket",
+          maxReservedUsdWithJitLong: "-100",
+          maxReservedUsdWithJitShort: "invalid",
+          glvShiftParams: [
+            {
+              glv: "0xGlv",
+              fromMarket: "0xFrom",
+              toMarket: "0xMarket",
+              marketTokenAmount: "1.5",
+              minMarketTokens: "-9",
+            },
+          ],
+        },
+      ],
+    });
+
+    expect(result["0xMarket"].maxReservedUsdWithJitLong).toBe(0n);
+    expect(result["0xMarket"].maxReservedUsdWithJitShort).toBe(0n);
+    expect(result["0xMarket"].glvShiftParams[0].marketTokenAmount).toBe(0n);
+    expect(result["0xMarket"].glvShiftParams[0].minMarketTokens).toBe(0n);
   });
 });

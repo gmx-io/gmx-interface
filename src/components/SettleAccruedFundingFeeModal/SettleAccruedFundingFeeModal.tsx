@@ -9,6 +9,10 @@ import {
 } from "context/SyntheticsStateContext/hooks/globalsHooks";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
 import {
+  getExpressParamsForSubmit,
+  reportMultichainExpressSubmitError,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
+import {
   estimateExecuteDecreaseOrderGasLimit,
   estimateOrderOraclePriceCount,
   useGasLimits,
@@ -18,11 +22,16 @@ import { getTotalAccruedFundingUsd } from "domain/synthetics/markets";
 import { DecreasePositionSwapType, OrderType } from "domain/synthetics/orders";
 import { sendBatchOrderTxn } from "domain/synthetics/orders/sendBatchOrderTxn";
 import { useOrderTxnCallbacks } from "domain/synthetics/orders/useOrderTxnCallbacks";
+import { useTokenApproval } from "domain/tokens/useTokenApproval";
 import { useChainId } from "lib/chains";
 import { formatDeltaUsd, formatUsd } from "lib/numbers";
 import { useJsonRpcProvider } from "lib/rpc";
 import { getPageOutdatedError, useHasOutdatedUi } from "lib/useHasOutdatedUi";
+import { userAnalytics } from "lib/userAnalytics";
+import type { TokenApproveClickEvent, TokenApproveResultEvent } from "lib/userAnalytics/types";
 import useWallet from "lib/wallets/useWallet";
+import { getContract } from "sdk/configs/contracts";
+import { getToken } from "sdk/configs/tokens";
 import { getExecutionFee } from "sdk/utils/fees/executionFee";
 import { buildDecreaseOrderPayload } from "sdk/utils/orderTransactions";
 
@@ -30,6 +39,8 @@ import { AlertInfo } from "components/AlertInfo/AlertInfo";
 import Button from "components/Button/Button";
 import Modal from "components/Modal/Modal";
 import Tooltip from "components/Tooltip/Tooltip";
+
+import SpinnerIcon from "img/ic_spinner.svg?react";
 
 import { SettleAccruedFundingFeeRow } from "./SettleAccruedFundingFeeRow";
 import { shouldPreSelectPosition } from "./utils";
@@ -140,11 +151,37 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     allowedSlippage,
   ]);
 
-  const { expressParams } = useExpressOrdersParams({
+  const { expressParams, expressParamsPromise, isMultichainSubmitDisabled } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "Settle Funding Fee",
     isGmxAccount: srcChainId !== undefined,
   });
+
+  const approvalTokens = useMemo(() => {
+    if (!expressParams?.gasPaymentParams) return [];
+
+    return [
+      {
+        tokenAddress: expressParams.gasPaymentParams.gasPaymentTokenAddress,
+        amount: expressParams.gasPaymentParams.gasPaymentTokenAmount,
+      },
+    ];
+  }, [expressParams?.gasPaymentParams]);
+
+  const {
+    tokensToApprove,
+    isAllowanceLoaded: isAllowanceLoadedRaw,
+    isApproving,
+    handleApprove,
+  } = useTokenApproval({
+    chainId,
+    spenderAddress: getContract(chainId, "SyntheticsRouter"),
+    tokens: approvalTokens,
+    allowPermit: Boolean(expressParams),
+    skip: Boolean(srcChainId),
+  });
+
+  const isAllowanceLoaded = Boolean(batchParams) && isAllowanceLoadedRaw;
 
   const handleOnClose = useCallback(() => {
     setPositionKeys([]);
@@ -158,10 +195,28 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
 
   const [buttonText, buttonDisabled] = useMemo(() => {
     if (hasOutdatedUi) return [getPageOutdatedError(), true];
+    if (isMultichainSubmitDisabled) return [t`Loading network fees…`, true];
     if (isSubmitting) return [t`Settling...`, true];
     if (positionKeys.length === 0) return [t`Select positions`, true];
+
+    if (!isAllowanceLoaded) return [t`Loading...`, true];
+
+    if (tokensToApprove.length) {
+      const tokenSymbol = getToken(chainId, tokensToApprove[0]).symbol;
+      return [t`Approve ${tokenSymbol}`, isApproving];
+    }
+
     return [t`Settle`, false];
-  }, [hasOutdatedUi, isSubmitting, positionKeys.length]);
+  }, [
+    hasOutdatedUi,
+    isMultichainSubmitDisabled,
+    isSubmitting,
+    positionKeys.length,
+    isAllowanceLoaded,
+    tokensToApprove,
+    isApproving,
+    chainId,
+  ]);
 
   const handleRowCheckboxChange = useCallback(
     (value: boolean, positionKey: string) => {
@@ -175,33 +230,83 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
     [positionKeys, setPositionKeys]
   );
 
-  const onSubmit = useCallback(() => {
-    if (!account || !signer?.provider || !chainId || !batchParams || !provider) {
+  const onSubmit = useCallback(async () => {
+    if (!account || !signer?.provider || !chainId || !batchParams || !provider || !tokensData) {
+      return;
+    }
+
+    if (isAllowanceLoaded && tokensToApprove.length) {
+      if (isApproving) return;
+
+      userAnalytics.pushEvent<TokenApproveClickEvent>({
+        event: "TokenApproveAction",
+        data: { action: "ApproveClick" },
+      });
+
+      handleApprove({
+        onApproveFail: () =>
+          userAnalytics.pushEvent<TokenApproveResultEvent>({
+            event: "TokenApproveAction",
+            data: { action: "ApproveFail" },
+          }),
+      });
+
       return;
     }
 
     setIsSubmitting(true);
 
-    sendBatchOrderTxn({
-      chainId,
-      signer,
-      batchParams,
-      expressParams,
-      simulationParams: undefined,
-      callback: makeOrderTxnCallback({
-        metricId: undefined,
-        slippageInputId: undefined,
-        isFundingFeeSettlement: true,
-        actionName: "Settle Funding Fee",
-      }),
-      provider,
-      isGmxAccount: srcChainId !== undefined,
-    })
-      .then(handleOnClose)
-      .finally(() => {
-        setIsSubmitting(false);
+    try {
+      const fulfilledExpressParams = await expressParamsPromise;
+      const isGmxAccount = srcChainId !== undefined;
+
+      if (
+        reportMultichainExpressSubmitError({
+          isGmxAccount,
+          expressParams: fulfilledExpressParams,
+          tokensData,
+          actionName: "Settle Funding Fee",
+        })
+      ) {
+        return;
+      }
+
+      await sendBatchOrderTxn({
+        chainId,
+        signer,
+        batchParams,
+        expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
+        simulationParams: undefined,
+        callback: makeOrderTxnCallback({
+          metricId: undefined,
+          slippageInputId: undefined,
+          isFundingFeeSettlement: true,
+          actionName: "Settle Funding Fee",
+        }),
+        provider,
+        isGmxAccount,
       });
-  }, [account, batchParams, chainId, expressParams, handleOnClose, makeOrderTxnCallback, provider, signer, srcChainId]);
+
+      handleOnClose();
+    } finally {
+      setIsSubmitting(false);
+    }
+  }, [
+    account,
+    batchParams,
+    chainId,
+    expressParamsPromise,
+    handleApprove,
+    handleOnClose,
+    isAllowanceLoaded,
+    isApproving,
+    makeOrderTxnCallback,
+    provider,
+    signer,
+    srcChainId,
+    tokensData,
+    tokensToApprove,
+  ]);
 
   const renderTooltipContent = useCallback(
     () => (
@@ -257,6 +362,7 @@ export function SettleAccruedFundingFeeModal({ allowedSlippage, isVisible, onClo
       </AlertInfo>
       <Button className="w-full" variant="primary-action" disabled={buttonDisabled} onClick={onSubmit}>
         {buttonText}
+        {isApproving && tokensToApprove.length > 0 && <SpinnerIcon className="ml-4 animate-spin" />}
       </Button>
     </Modal>
   );

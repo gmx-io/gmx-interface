@@ -11,6 +11,10 @@ import { convertTokenAddress, getToken, getTokenBySymbol } from "./tokens";
 
 export const SWAP_GRAPH_MAX_MARKETS_PER_TOKEN = 5;
 
+export const UI_MAX_LEVERAGE_BY_MARKET: Record<string, number> = {
+  "0x470128853D74dab7423904a20eA5AA230e9e561B": 10,
+};
+
 export type MarketConfig = {
   marketTokenAddress: string;
   indexTokenAddress: string;
@@ -947,6 +951,13 @@ export const MARKETS: Record<ContractsChainId, MarketsConfigMap> = {
     "0x2Ce2bc8B0f9d000f359d756a5816C125474Bb39b": {
       marketTokenAddress: "0x2Ce2bc8B0f9d000f359d756a5816C125474Bb39b",
       indexTokenAddress: "0x620aC65BE29066Bb9D1E92C65b35B9fD321Fb963",
+      longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
+      shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
+    },
+    // SPCX/USD [WETH-USDC]
+    "0x470128853D74dab7423904a20eA5AA230e9e561B": {
+      marketTokenAddress: "0x470128853D74dab7423904a20eA5AA230e9e561B",
+      indexTokenAddress: "0x8CBd0d5d81e7957123E6D8fFaE657a40bDC5691b",
       longTokenAddress: "0x82aF49447D8a07e3bd95BD0d56f35241523fBab1",
       shortTokenAddress: "0xaf88d065e77c8cC2239327C5EDb3A432268e5831",
     },

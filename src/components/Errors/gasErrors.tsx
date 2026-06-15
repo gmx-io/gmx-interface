@@ -180,6 +180,13 @@ export function ValidationBannerErrorContent({
         />
       );
     }
+    case ValidationBannerErrorName.poolAtCapacity: {
+      return (
+        <div>
+          <Trans>This pool is at maximum capacity and not accepting deposits right now. Try a different pool.</Trans>
+        </div>
+      );
+    }
     default: {
       const _never: never = validationBannerErrorName;
       return null;

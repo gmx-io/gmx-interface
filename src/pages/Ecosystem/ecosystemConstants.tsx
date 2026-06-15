@@ -457,6 +457,13 @@ export const integrations: EcosystemGmxPage[] = [
     about: msg`Leveraged tokens with protection`,
     chainIds: [ARBITRUM],
   },
+  {
+    title: msg`Elfa AI`,
+    link: "https://www.elfa.ai/",
+    linkLabel: "elfa.ai",
+    about: msg`AI trading assistant`,
+    chainIds: [ARBITRUM],
+  },
 ];
 
 type EcosystemTelegramGroup = {

@@ -1,8 +1,13 @@
 import { ExternalSwapQuote } from "sdk/utils/trade/types";
 
+export type ExternalSwapRequestKey = {
+  structuralKey: string;
+  amount: bigint;
+};
+
 export type ExternalSwapRequestResult =
-  | { status: "success"; key: string; quote: ExternalSwapQuote }
-  | { status: "failed"; key: string };
+  | { status: "success"; key: ExternalSwapRequestKey; quote: ExternalSwapQuote }
+  | { status: "failed"; key: ExternalSwapRequestKey };
 
 export type ExternalSwapState = {
   requestResult: ExternalSwapRequestResult | undefined;

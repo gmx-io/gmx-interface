@@ -40,8 +40,11 @@ import {
 import { selectTradeBoxCreateOrderParams } from "context/SyntheticsStateContext/selectors/transactionsSelectors/tradeBoxOrdersSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import { useUserReferralCode } from "domain/referrals";
-import { getIsValidExpressParams } from "domain/synthetics/express/expressOrderUtils";
 import { useExpressOrdersParams } from "domain/synthetics/express/useRelayerFeeHandler";
+import {
+  getExpressParamsForSubmit,
+  reportMultichainExpressSubmitError,
+} from "domain/synthetics/express/validateMultichainExpressSubmit";
 import { getJitGlvShiftParams } from "domain/synthetics/jit/utils";
 import { getAvailableUsdLiquidityForPosition } from "domain/synthetics/markets/utils";
 import { OrderType } from "domain/synthetics/orders";
@@ -156,6 +159,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     asyncExpressParams,
     expressParamsPromise,
     isLoading: isExpressLoading,
+    isMultichainSubmitDisabled,
   } = useExpressOrdersParams({
     orderParams: batchParams,
     label: "TradeBox",
@@ -321,6 +325,20 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       return Promise.reject();
     }
 
+    if (
+      reportMultichainExpressSubmitError({
+        isGmxAccount: isFromTokenGmxAccount,
+        expressParams: fulfilledExpressParams,
+        tokensData,
+        actionName,
+        collateral: collateralSymbol,
+        requestId: metricData.requestId,
+        metricId: metricData.metricId,
+      })
+    ) {
+      return Promise.reject();
+    }
+
     sendUserAnalyticsOrderConfirmClickEvent(chainId, metricData.metricId);
 
     const jitShiftParamsList = marketInfo
@@ -333,8 +351,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
       provider,
       batchParams,
       isGmxAccount: isFromTokenGmxAccount,
-      expressParams:
-        fulfilledExpressParams && getIsValidExpressParams(fulfilledExpressParams) ? fulfilledExpressParams : undefined,
+      expressParams: getExpressParamsForSubmit(fulfilledExpressParams),
       simulationParams: shouldDisableValidationForTesting
         ? undefined
         : {
@@ -424,6 +441,7 @@ export function useTradeboxTransactions({ setPendingTxns }: TradeboxTransactions
     expressParams,
     batchParams,
     isExpressLoading,
+    isMultichainSubmitDisabled,
     totalExecutionFee,
   };
 }

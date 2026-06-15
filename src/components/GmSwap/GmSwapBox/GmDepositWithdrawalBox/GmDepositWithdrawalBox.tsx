@@ -5,6 +5,7 @@ import { useCallback, useEffect, useMemo } from "react";
 
 import { AVALANCHE } from "config/chains";
 import { isSourceChain } from "config/multichain";
+import { isDepositDisabledMarket } from "config/static/markets";
 import {
   usePoolsDetailsFirstTokenAddress,
   usePoolsDetailsFirstTokenInputValue,
@@ -41,7 +42,10 @@ import { selectDepositWithdrawalAmounts } from "context/PoolsDetailsContext/sele
 import { selectMultichainMarketTokenBalances } from "context/PoolsDetailsContext/selectors/selectMultichainMarketTokenBalances";
 import { selectPoolsDetailsTokenOptions } from "context/PoolsDetailsContext/selectors/selectPoolsDetailsTokenOptions";
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
-import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
+  selectGmxAccountGasPaymentToken,
+  selectSettlementChainGasPaymentToken,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectAccount,
   selectGlvAndMarketsInfoData,
@@ -203,6 +207,8 @@ export function GmSwapBoxDepositWithdrawal() {
 
   const { shouldShowWarning, shouldShowWarningForExecutionFee, shouldShowWarningForPosition } = useGmWarningState({
     logicalFees,
+    isOperationDisabled:
+      isDeposit && marketInfo !== undefined && isDepositDisabledMarket(chainId, marketInfo.marketTokenAddress),
   });
 
   const shouldShowAvalancheGmxAccountWarning = paySource === "gmxAccount" && chainId === AVALANCHE && isDeposit;
@@ -218,7 +224,9 @@ export function GmSwapBoxDepositWithdrawal() {
     glvAndMarketsInfoData,
   });
 
-  const gasPaymentToken = useSelector(selectGasPaymentToken);
+  const settlementChainGasPaymentToken = useSelector(selectSettlementChainGasPaymentToken);
+  const gmxAccountGasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
+  const gasPaymentToken = paySource === "gmxAccount" ? gmxAccountGasPaymentToken : settlementChainGasPaymentToken;
   const gasPaymentTokenForMax = paySource === "gmxAccount" ? gasPaymentToken : nativeToken;
   const gasPaymentTokenAmountForMax = convertToTokenAmount(
     (logicalFees?.logicalNetworkFee?.deltaUsd ?? 0n) * -1n,

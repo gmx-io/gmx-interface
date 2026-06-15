@@ -229,6 +229,10 @@ function OrderStatusNotification({
       return null;
     }
 
+    if (isSwapOrderType(orderData.orderType)) {
+      return null;
+    }
+
     let status: TransactionStatusType = "loading";
     let text = t`Swap ${formatTokenAmount(
       orderData.externalSwapQuote.amountIn,
@@ -560,32 +564,34 @@ export function OrdersStatusNotificiation({
           );
         })}
       </div>
-      {pendingOrders.length > 1 && (
-        <div className="StatusNotification-actions">
-          <div>
-            {isMainOrderFailed && newlyCreatedTriggerOrders.length > 0 && (
-              <button
-                disabled={isCancelOrderProcessing}
-                onClick={onCancelOrdersClick}
-                className="StatusNotification-cancel-all"
-              >
-                {t`Cancel new orders`}
-              </button>
-            )}
+      {pendingOrders.length > 1 &&
+        ((isMainOrderFailed && newlyCreatedTriggerOrders.length > 0) ||
+          (createdTxnHashList && createdTxnHashList.length > 0)) && (
+          <div className="StatusNotification-actions">
+            <div>
+              {isMainOrderFailed && newlyCreatedTriggerOrders.length > 0 && (
+                <button
+                  disabled={isCancelOrderProcessing}
+                  onClick={onCancelOrdersClick}
+                  className="StatusNotification-cancel-all"
+                >
+                  {t`Cancel new orders`}
+                </button>
+              )}
+            </div>
+            <div className="inline-flex items-center">
+              {createdTxnHashList?.map((txnHash) => (
+                <ExternalLink
+                  key={txnHash}
+                  className="ml-10 !text-typography-primary"
+                  href={`${getExplorerUrl(chainId)}tx/${txnHash}`}
+                >
+                  {t`View`}
+                </ExternalLink>
+              ))}
+            </div>
           </div>
-          <div className="inline-flex items-center">
-            {createdTxnHashList?.map((txnHash) => (
-              <ExternalLink
-                key={txnHash}
-                className="ml-10 !text-typography-primary"
-                href={`${getExplorerUrl(chainId)}tx/${txnHash}`}
-              >
-                {t`View`}
-              </ExternalLink>
-            ))}
-          </div>
-        </div>
-      )}
+        )}
     </div>
   );
 }

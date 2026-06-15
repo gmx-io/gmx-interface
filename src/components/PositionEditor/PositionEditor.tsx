@@ -18,7 +18,6 @@ import {
   usePositionEditorPositionState,
   usePositionEditorSelectedCollateralAddress,
 } from "context/SyntheticsStateContext/hooks/positionEditorHooks";
-import { selectGasPaymentToken } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectPositionEditorCollateralInputAmountAndUsd,
   selectPositionEditorSelectedCollateralToken,
@@ -81,7 +80,6 @@ export function PositionEditor() {
   const [, setEditingPositionKey] = usePositionEditorPositionState();
   const tokensData = useTokensData();
   const nativeToken = getByKey(tokensData, NATIVE_TOKEN_ADDRESS);
-  const gasPaymentToken = useSelector(selectGasPaymentToken);
   const { minCollateralUsd } = usePositionsConstants();
   const userReferralInfo = useUserReferralInfo();
   const position = usePositionEditorPosition();
@@ -224,6 +222,7 @@ export function PositionEditor() {
   });
 
   const submitButtonState = usePositionEditorButtonState(operation);
+  const gasPaymentToken = submitButtonState.expressParams?.gasPaymentParams.gasPaymentToken;
 
   const gasPaymentTokenForMax =
     expressOrdersEnabled && !collateralToken?.isNative

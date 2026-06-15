@@ -95,6 +95,7 @@ const HAD_GMX_ACCOUNT_BALANCE_KEY = "had-gmx-account-balance";
 
 const EXPRESS_ORDERS_ENABLED_KEY = "express-orders-enabled";
 const GAS_PAYMENT_TOKEN_ADDRESS_KEY = "gas-payment-token-address";
+const GMX_ACCOUNT_GAS_PAYMENT_TOKEN_ADDRESS_KEY = "gmx-account-gas-payment-token-address";
 
 const SUBACCOUNT_APPROVAL_KEY = "subaccount-approval";
 const TOKEN_PERMITS_KEY = "token-permits";
@@ -210,6 +211,10 @@ export function getExpressOrdersEnabledKey(chainId: number, account: string | un
 
 export function getGasPaymentTokenAddressKey(chainId: number, account: string | undefined) {
   return [chainId, account, GAS_PAYMENT_TOKEN_ADDRESS_KEY];
+}
+
+export function getGmxAccountGasPaymentTokenAddressKey(chainId: number, account: string | undefined) {
+  return [chainId, account, GMX_ACCOUNT_GAS_PAYMENT_TOKEN_ADDRESS_KEY];
 }
 
 export function getOneClickTradingPromoHiddenKey(chainId: number) {

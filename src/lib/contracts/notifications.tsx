@@ -25,7 +25,7 @@ export function pushSuccessNotification(chainId: number, message: string, e: { t
       <br />
       <br />
       <ExternalLink href={txUrl}>
-        <Trans>View status</Trans>
+        <Trans>View</Trans>
       </ExternalLink>
     </div>
   );
@@ -47,7 +47,7 @@ export function pushErrorNotification(chainId: number, message: string, e: { tra
       <br />
       <br />
       <ExternalLink href={txUrl}>
-        <Trans>View status</Trans>
+        <Trans>View</Trans>
       </ExternalLink>
     </div>
   );

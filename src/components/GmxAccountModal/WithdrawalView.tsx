@@ -37,8 +37,8 @@ import {
 import { useSettings } from "context/SettingsContext/SettingsContextProvider";
 import { useSyntheticsEvents } from "context/SyntheticsEvents";
 import {
-  selectExpressGlobalParams,
-  selectGasPaymentToken,
+  selectGmxAccountExpressGlobalParams,
+  selectGmxAccountGasPaymentToken,
 } from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectExpressOrdersEnabled,
@@ -512,9 +512,9 @@ export const WithdrawalView = () => {
 
   const { tokensData } = useTokensDataRequest(chainId, withdrawalViewChain);
   const networks = useGmxAccountWithdrawNetworks();
-  const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const globalExpressParams = useSelector(selectGmxAccountExpressGlobalParams);
   const relayerFeeToken = getByKey(tokensData, globalExpressParams?.relayerFeeTokenAddress);
-  const gasPaymentToken = useSelector(selectGasPaymentToken);
+  const gasPaymentToken = useSelector(selectGmxAccountGasPaymentToken);
 
   const selectedToken = useMemo(() => {
     return getByKey(tokensData, selectedTokenAddress);
@@ -792,6 +792,20 @@ export const WithdrawalView = () => {
     [sameChainNetworkFeeAsyncResult.data, gasPrice, tokensData]
   );
 
+  const isSelectedGasPaymentToken = useMemo(() => {
+    if (selectedToken === undefined || gasPaymentToken === undefined) {
+      return false;
+    }
+
+    return isStringEqualInsensitive(
+      convertTokenAddress(chainId, selectedToken.address, "wrapped"),
+      convertTokenAddress(chainId, gasPaymentToken.address, "wrapped")
+    );
+  }, [chainId, gasPaymentToken, selectedToken]);
+
+  const gasPaymentTokenAsCollateralAmount = isSelectedGasPaymentToken ? inputAmount : undefined;
+  const baseGasPaymentTokenAsCollateralAmount = isSelectedGasPaymentToken ? baseBridgeOutParams?.amount : undefined;
+
   const baseExpressTransactionBuilder: ExpressTransactionBuilder | undefined = useMemo(() => {
     if (
       account === undefined ||
@@ -824,6 +838,7 @@ export const WithdrawalView = () => {
     isGmxAccount: true,
     requireValidations: false,
     overrideWnt: !isSameChain,
+    gasPaymentTokenAsCollateralAmount: baseGasPaymentTokenAsCollateralAmount,
     enabled: !isSameChain,
   });
 
@@ -854,10 +869,11 @@ export const WithdrawalView = () => {
     isGmxAccount: true,
     requireValidations: false,
     overrideWnt: !isSameChain,
+    gasPaymentTokenAsCollateralAmount,
     enabled: !isSameChain,
   });
 
-  const errors = useArbitraryError(expressTxnParamsAsyncResult.error);
+  const errors = useArbitraryError(expressTxnParamsAsyncResult.error, { isGmxAccount: true });
 
   const isOutOfTokenErrorToken = useMemo(() => {
     if (errors?.isOutOfTokenError?.tokenAddress) {

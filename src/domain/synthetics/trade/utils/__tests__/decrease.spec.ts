@@ -165,6 +165,35 @@ describe("getDecreasePositionAmounts primaryOutput/secondaryOutput", () => {
     expect(amounts.primaryOutput.usd + amounts.secondaryOutput.usd).toEqual(amounts.receiveUsd);
   });
 
+  it("keeps pnl and collateral outputs separate for forced NoSwap", () => {
+    const amounts = getDecreasePositionAmounts({
+      closeSizeUsd: POSITION_FIXTURE.sizeInUsd,
+      collateralToken: USDC_TOKEN_FIXTURE,
+      receiveToken: ETH_TOKEN_FIXTURE,
+      position: POSITION_FIXTURE,
+      keepLeverage,
+      isLong,
+      marketInfo: MARKET_INFO_FIXTURE,
+      minCollateralUsd,
+      minPositionSizeUsd,
+      uiFeeFactor,
+      acceptablePriceImpactBuffer: 30,
+      userReferralInfo: undefined,
+      isSetAcceptablePriceImpactEnabled: true,
+      forceDecreaseSwapType: DecreasePositionSwapType.NoSwap,
+    });
+
+    expect(amounts.decreaseSwapType).toEqual(DecreasePositionSwapType.NoSwap);
+    expect(amounts.primaryOutput.tokenAddress).toEqual(WETH_TOKEN_FIXTURE.address);
+    expect(amounts.primaryOutput.amount).toBeGreaterThan(0n);
+    expect(amounts.primaryOutput.usd).toBeGreaterThan(0n);
+    expect(amounts.secondaryOutput.tokenAddress).toEqual(USDC_TOKEN_FIXTURE.address);
+    expect(amounts.secondaryOutput.amount).toBeGreaterThan(0n);
+    expect(amounts.secondaryOutput.usd).toBeGreaterThan(0n);
+    expect(amounts.primaryOutput.usd + amounts.secondaryOutput.usd).toEqual(amounts.receiveUsd);
+    expect(amounts.swapProfitFeeUsd).toEqual(0n);
+  });
+
   it("has zero secondary output for partial close without collateral delta", () => {
     const amounts = getDecreasePositionAmounts({
       closeSizeUsd,

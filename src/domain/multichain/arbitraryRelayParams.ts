@@ -14,14 +14,17 @@ import type { ContractsChainId } from "config/chains";
 import { getContract } from "config/contracts";
 import { GMX_SIMULATION_ORIGIN, multichainBalanceKey } from "config/dataStore";
 import { SIMULATED_MULTICHAIN_BALANCE } from "config/multichain";
-import { selectExpressGlobalParams } from "context/SyntheticsStateContext/selectors/expressSelectors";
+import {
+  selectExpressGlobalParams,
+  selectGmxAccountExpressGlobalParams,
+  selectSettlementChainExpressGlobalParams,
+} from "context/SyntheticsStateContext/selectors/expressSelectors";
 import {
   selectAccount,
   selectChainId,
   selectSubaccountForMultichainAction,
   selectSubaccountForSettlementChainAction,
 } from "context/SyntheticsStateContext/selectors/globalSelectors";
-import { selectGasPaymentTokenAddress } from "context/SyntheticsStateContext/selectors/settingsSelectors";
 import { useSelector } from "context/SyntheticsStateContext/utils";
 import {
   ExpressTransactionBuilder,
@@ -400,7 +403,9 @@ export function useArbitraryRelayParamsAndPayload({
 }): AsyncResult<ExpressTxnParams> {
   const account = useSelector(selectAccount);
   const chainId = useSelector(selectChainId);
-  const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const settlementChainGlobalExpressParams = useSelector(selectSettlementChainExpressGlobalParams);
+  const gmxAccountGlobalExpressParams = useSelector(selectGmxAccountExpressGlobalParams);
+  const globalExpressParams = isGmxAccount ? gmxAccountGlobalExpressParams : settlementChainGlobalExpressParams;
   const subaccount = useSelector(
     isGmxAccount ? selectSubaccountForMultichainAction : selectSubaccountForSettlementChainAction
   );
@@ -529,12 +534,22 @@ export type ArbitraryExpressError = {
 };
 
 export function useArbitraryError(
-  error: ExpressEstimationInsufficientGasPaymentTokenBalanceError | CustomError | Error | undefined
+  error: ExpressEstimationInsufficientGasPaymentTokenBalanceError | CustomError | Error | undefined,
+  opts: { isGmxAccount?: boolean; gasPaymentTokenAddress?: string } = EMPTY_OBJECT
 ): ArbitraryExpressError | undefined {
-  const gasPaymentTokenAddress = useSelector(selectGasPaymentTokenAddress);
+  const settlementChainGlobalExpressParams = useSelector(selectSettlementChainExpressGlobalParams);
+  const gmxAccountGlobalExpressParams = useSelector(selectGmxAccountExpressGlobalParams);
+  const globalExpressParams = useSelector(selectExpressGlobalParams);
+  const gasPaymentTokenAddress =
+    opts.gasPaymentTokenAddress ??
+    (opts.isGmxAccount === undefined
+      ? globalExpressParams?.gasPaymentTokenAddress
+      : opts.isGmxAccount
+        ? gmxAccountGlobalExpressParams?.gasPaymentTokenAddress
+        : settlementChainGlobalExpressParams?.gasPaymentTokenAddress);
 
   return useMemo(() => {
-    if (error instanceof ExpressEstimationInsufficientGasPaymentTokenBalanceError) {
+    if (error instanceof ExpressEstimationInsufficientGasPaymentTokenBalanceError && gasPaymentTokenAddress) {
       return {
         isOutOfTokenError: {
           tokenAddress: gasPaymentTokenAddress,
@@ -555,7 +570,7 @@ export function useArbitraryError(
       return {
         isOutOfTokenError: {
           tokenAddress: error.args.token,
-          isGasPaymentToken: error.args.token === gasPaymentTokenAddress,
+          isGasPaymentToken: gasPaymentTokenAddress !== undefined && error.args.token === gasPaymentTokenAddress,
           balance: error.args.balance,
           requiredAmount: error.args.amount,
         },
