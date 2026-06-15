@@ -4,6 +4,7 @@ import { useMedia } from "react-use";
 import { isAddress } from "viem";
 
 import { SyntheticsStateContextProvider } from "context/SyntheticsStateContext/SyntheticsStateContextProvider";
+import type { PnlSummaryBucketLabel } from "domain/synthetics/accountStats/usePnlSummaryData";
 import { useChainId } from "lib/chains";
 
 import AddressView from "components/AddressView/AddressView";
@@ -19,7 +20,7 @@ import { VersionNetworkSwitcherRow } from "./VersionNetworkSwitcherRow";
 
 type DashboardDateRange = [Date | undefined, Date | undefined];
 
-function getBucketDateRange(bucketLabel: string): DashboardDateRange {
+function getBucketDateRange(bucketLabel: PnlSummaryBucketLabel): DashboardDateRange {
   const now = new Date();
   const today = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
 
@@ -53,7 +54,7 @@ export function AccountDashboard() {
   const isMobile = useMedia("(max-width: 600px)");
   const [dashboardDateRange, setDashboardDateRange] = useState<DashboardDateRange>([undefined, undefined]);
 
-  const handleSummaryBucketClick = useCallback((bucketLabel: string) => {
+  const handleSummaryBucketClick = useCallback((bucketLabel: PnlSummaryBucketLabel) => {
     setDashboardDateRange(getBucketDateRange(bucketLabel));
   }, []);
 

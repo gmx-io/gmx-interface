@@ -20,9 +20,9 @@ import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/setting
 import type { FromOldToNewArray } from "domain/tradingview/types";
 import {
   SECONDS_IN_DAY,
-  formatDateCompactUTC,
-  formatDateTimeUTC,
-  formatDateUTC,
+  formatDate,
+  formatDateCompact,
+  formatDateTime,
   normalizeDateRangeToUtcBucketDays,
 } from "lib/dates";
 import downloadImage from "lib/downloadImage";
@@ -331,9 +331,12 @@ function usePnlHistoricalData(
 
         return {
           date: showDebugValues
-            ? formatDateTimeUTC(row.timestamp) + " - " + formatDateTimeUTC(row.timestamp + SECONDS_IN_DAY) + " UTC"
-            : formatDateUTC(row.timestamp),
-          dateCompact: formatDateCompactUTC(row.timestamp),
+            ? formatDateTime(row.timestamp, { timezone: "utc" }) +
+              " - " +
+              formatDateTime(row.timestamp + SECONDS_IN_DAY, { timezone: "utc" }) +
+              " UTC"
+            : formatDate(row.timestamp, { timezone: "utc" }),
+          dateCompact: formatDateCompact(row.timestamp, { timezone: "utc" }),
           timestamp: row.timestamp,
           pnl: BigInt(row.pnl),
           pnlFloat: bigintToNumber(BigInt(row.pnl), USD_DECIMALS),
@@ -355,9 +358,12 @@ function usePnlHistoricalData(
         const newTimestamp = lastTimestamp - SECONDS_IN_DAY * (i - pointsLength + 1);
         const emptyPoint = {
           date: showDebugValues
-            ? formatDateTimeUTC(newTimestamp) + " - " + formatDateTimeUTC(newTimestamp + SECONDS_IN_DAY) + " UTC"
-            : formatDateUTC(newTimestamp),
-          dateCompact: formatDateCompactUTC(newTimestamp),
+            ? formatDateTime(newTimestamp, { timezone: "utc" }) +
+              " - " +
+              formatDateTime(newTimestamp + SECONDS_IN_DAY, { timezone: "utc" }) +
+              " UTC"
+            : formatDate(newTimestamp, { timezone: "utc" }),
+          dateCompact: formatDateCompact(newTimestamp, { timezone: "utc" }),
           pnl: undefined,
           pnlFloat: undefined,
           cumulativePnl: undefined,

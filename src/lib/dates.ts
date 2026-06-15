@@ -8,24 +8,24 @@ const UTC_DATE_FORMAT_OPTIONS = { in: tz("UTC") };
 export const SECONDS_IN_DAY = 86400;
 export const ONE_YEAR_SECONDS = SECONDS_IN_DAY * 365;
 
-export function formatDateTime(time: number) {
-  return formatDateFn(time * 1000, "dd MMM yyyy, h:mm a");
+type DateFormatOptions = {
+  timezone?: "utc" | "device";
+};
+
+function getDateFormatOptions(options?: DateFormatOptions) {
+  return options?.timezone === "utc" ? UTC_DATE_FORMAT_OPTIONS : undefined;
 }
 
-export function formatDate(time: number) {
-  return formatDateFn(time * 1000, "dd MMM yyyy");
+export function formatDateTime(time: number, options?: DateFormatOptions) {
+  return formatDateFn(time * 1000, "dd MMM yyyy, h:mm a", getDateFormatOptions(options));
 }
 
-export function formatDateTimeUTC(time: number) {
-  return formatDateFn(time * 1000, "dd MMM yyyy, h:mm a", UTC_DATE_FORMAT_OPTIONS);
+export function formatDate(time: number, options?: DateFormatOptions) {
+  return formatDateFn(time * 1000, "dd MMM yyyy", getDateFormatOptions(options));
 }
 
-export function formatDateUTC(time: number) {
-  return formatDateFn(time * 1000, "dd MMM yyyy", UTC_DATE_FORMAT_OPTIONS);
-}
-
-export function formatDateCompactUTC(time: number) {
-  return formatDateFn(time * 1000, "dd/MM", UTC_DATE_FORMAT_OPTIONS);
+export function formatDateCompact(time: number, options?: DateFormatOptions) {
+  return formatDateFn(time * 1000, "dd/MM", getDateFormatOptions(options));
 }
 
 function formatDateWithComma(time: number) {

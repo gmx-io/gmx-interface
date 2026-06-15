@@ -5,7 +5,8 @@ import cx from "classnames";
 import type { Address } from "viem";
 
 import { useShowDebugValues } from "context/SyntheticsStateContext/hooks/settingsHooks";
-import { PnlSummaryPoint, usePnlSummaryData } from "domain/synthetics/accountStats";
+import type { PnlSummaryBucketLabel, PnlSummaryPoint } from "domain/synthetics/accountStats/usePnlSummaryData";
+import { usePnlSummaryData } from "domain/synthetics/accountStats/usePnlSummaryData";
 import { formatPercentage, formatUsd } from "lib/numbers";
 import { getPositiveOrNegativeClass } from "lib/utils";
 
@@ -20,7 +21,7 @@ import InfoIconStroke from "img/ic_info_circle_stroke.svg?react";
 
 import { GeneralPerformanceDetailsDebugTooltip } from "./generalPerformanceDetailsDebug";
 
-const bucketLabelMap: Record<string, MessageDescriptor> = {
+const bucketLabelMap: Record<PnlSummaryBucketLabel, MessageDescriptor> = {
   today: msg`Today`,
   yesterday: msg`Yesterday`,
   week: msg`Last 7d`,
@@ -36,7 +37,7 @@ export function GeneralPerformanceDetails({
 }: {
   chainId: number;
   account: Address;
-  onBucketClick?: (bucketLabel: string) => void;
+  onBucketClick?: (bucketLabel: PnlSummaryBucketLabel) => void;
 }) {
   const { data, error, loading } = usePnlSummaryData(chainId, account);
 
@@ -107,7 +108,7 @@ function GeneralPerformanceDetailsRow({
   onBucketClick,
 }: {
   row: PnlSummaryPoint;
-  onBucketClick?: (bucketLabel: string) => void;
+  onBucketClick?: (bucketLabel: PnlSummaryBucketLabel) => void;
 }) {
   const { _ } = useLingui();
   const showDebugValues = useShowDebugValues();

@@ -4,10 +4,11 @@ import type { Address } from "viem";
 
 import { MIN_COLLATERAL_USD_IN_LEADERBOARD } from "domain/synthetics/leaderboard/constants";
 import { getSubsquidGraphClient } from "lib/indexers";
+import { toBigInt } from "lib/numbers";
 import { EMPTY_ARRAY } from "lib/objects";
 
 export type PnlSummaryPoint = {
-  bucketLabel: string;
+  bucketLabel: PnlSummaryBucketLabel;
   losses: number;
   pnlBps: bigint;
   pnlUsd: bigint;
@@ -17,6 +18,8 @@ export type PnlSummaryPoint = {
   winsLossesRatioBps: bigint | undefined;
   usedCapitalUsd: bigint;
 } & PnlSummaryPointBreakdownFields;
+
+export type PnlSummaryBucketLabel = "today" | "yesterday" | "week" | "month" | "year" | "all";
 
 type PnlSummaryPointBreakdownFields = {
   realizedBasePnlUsd: bigint;
@@ -88,14 +91,6 @@ const QUERY = gql`
   }
 `;
 
-function parseBigInt(value: string | number | bigint | null | undefined) {
-  return value !== null && value !== undefined ? BigInt(value) : 0n;
-}
-
-function parseRank(value: number | null | undefined) {
-  return value ?? undefined;
-}
-
 export function usePnlSummaryData(chainId: number, account: Address) {
   const res = useGqlQuery(QUERY, {
     client: getSubsquidGraphClient(chainId)!,
@@ -114,41 +109,38 @@ export function usePnlSummaryData(chainId: number, account: Address) {
       return {
         bucketLabel: row.bucketLabel,
         losses: row.losses,
-        pnlBps: parseBigInt(row.pnlBps),
-        pnlUsd: parseBigInt(row.pnlUsd),
-        pnlUsdRank: parseRank(row.pnlUsdRank),
-        pnlBpsRank: parseRank(row.pnlBpsRank),
-        volume: parseBigInt(row.volume),
-        volumeRank: parseRank(row.volumeRank),
+        pnlBps: toBigInt(row.pnlBps) ?? 0n,
+        pnlUsd: toBigInt(row.pnlUsd) ?? 0n,
+        pnlUsdRank: row.pnlUsdRank ?? undefined,
+        pnlBpsRank: row.pnlBpsRank ?? undefined,
+        volume: toBigInt(row.volume) ?? 0n,
+        volumeRank: row.volumeRank ?? undefined,
         wins: row.wins,
-        winsLossesRatioBps:
-          row.winsLossesRatioBps !== null && row.winsLossesRatioBps !== undefined
-            ? parseBigInt(row.winsLossesRatioBps)
-            : undefined,
-        usedCapitalUsd: parseBigInt(row.usedCapitalUsd),
+        winsLossesRatioBps: toBigInt(row.winsLossesRatioBps),
+        usedCapitalUsd: toBigInt(row.usedCapitalUsd) ?? 0n,
 
-        realizedSwapImpactUsd: parseBigInt(row.realizedSwapImpactUsd),
-        realizedBasePnlUsd: parseBigInt(row.realizedBasePnlUsd),
-        realizedFeesUsd: parseBigInt(row.realizedFeesUsd),
-        realizedSwapFeesUsd: parseBigInt(row.realizedSwapFeesUsd),
-        realizedPriceImpactUsd: parseBigInt(row.realizedPriceImpactUsd),
-        unrealizedBasePnlUsd: parseBigInt(row.unrealizedBasePnlUsd),
-        unrealizedFeesUsd: parseBigInt(row.unrealizedFeesUsd),
-        startUnrealizedBasePnlUsd: parseBigInt(row.startUnrealizedBasePnlUsd),
-        startUnrealizedFeesUsd: parseBigInt(row.startUnrealizedFeesUsd),
+        realizedSwapImpactUsd: toBigInt(row.realizedSwapImpactUsd) ?? 0n,
+        realizedBasePnlUsd: toBigInt(row.realizedBasePnlUsd) ?? 0n,
+        realizedFeesUsd: toBigInt(row.realizedFeesUsd) ?? 0n,
+        realizedSwapFeesUsd: toBigInt(row.realizedSwapFeesUsd) ?? 0n,
+        realizedPriceImpactUsd: toBigInt(row.realizedPriceImpactUsd) ?? 0n,
+        unrealizedBasePnlUsd: toBigInt(row.unrealizedBasePnlUsd) ?? 0n,
+        unrealizedFeesUsd: toBigInt(row.unrealizedFeesUsd) ?? 0n,
+        startUnrealizedBasePnlUsd: toBigInt(row.startUnrealizedBasePnlUsd) ?? 0n,
+        startUnrealizedFeesUsd: toBigInt(row.startUnrealizedFeesUsd) ?? 0n,
 
-        unrealizedFeesContributionUsd: parseBigInt(row.unrealizedFeesContributionUsd),
-        startUnrealizedBasePnlContributionUsd: parseBigInt(row.startUnrealizedBasePnlContributionUsd),
-        openFeesUsd: parseBigInt(row.openFeesUsd),
-        closeFeesUsd: parseBigInt(row.closeFeesUsd),
-        borrowingFeesUsd: parseBigInt(row.borrowingFeesUsd),
-        positiveFundingFeesUsd: parseBigInt(row.positiveFundingFeesUsd),
-        negativeFundingFeesUsd: parseBigInt(row.negativeFundingFeesUsd),
-        liquidationFeesUsd: parseBigInt(row.liquidationFeesUsd),
-        realizedFeesRemainderUsd: parseBigInt(row.realizedFeesRemainderUsd),
-        netPriceImpactUsd: parseBigInt(row.netPriceImpactUsd),
-        swapFeesUsd: parseBigInt(row.swapFeesUsd),
-        swapPriceImpactUsd: parseBigInt(row.swapPriceImpactUsd),
+        unrealizedFeesContributionUsd: toBigInt(row.unrealizedFeesContributionUsd) ?? 0n,
+        startUnrealizedBasePnlContributionUsd: toBigInt(row.startUnrealizedBasePnlContributionUsd) ?? 0n,
+        openFeesUsd: toBigInt(row.openFeesUsd) ?? 0n,
+        closeFeesUsd: toBigInt(row.closeFeesUsd) ?? 0n,
+        borrowingFeesUsd: toBigInt(row.borrowingFeesUsd) ?? 0n,
+        positiveFundingFeesUsd: toBigInt(row.positiveFundingFeesUsd) ?? 0n,
+        negativeFundingFeesUsd: toBigInt(row.negativeFundingFeesUsd) ?? 0n,
+        liquidationFeesUsd: toBigInt(row.liquidationFeesUsd) ?? 0n,
+        realizedFeesRemainderUsd: toBigInt(row.realizedFeesRemainderUsd) ?? 0n,
+        netPriceImpactUsd: toBigInt(row.netPriceImpactUsd) ?? 0n,
+        swapFeesUsd: toBigInt(row.swapFeesUsd) ?? 0n,
+        swapPriceImpactUsd: toBigInt(row.swapPriceImpactUsd) ?? 0n,
       };
     });
   }, [res.data?.accountPnlSummaryStats]);
