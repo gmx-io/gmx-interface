@@ -33,12 +33,12 @@ export function resolveTradeHistoryFetchParams({
     };
   }
 
-  // Lifecycle mode fetches the position's whole history server-side;
-  // the user's display filters are re-applied client-side afterwards.
+  // Lifecycle mode keeps market filters in GraphQL, but date/action filters can hide close boundaries.
+  // Those display filters are re-applied after the lifecycle segment is found.
   return {
     fromTxTimestamp: undefined,
     toTxTimestamp: undefined,
-    marketsDirectionsFilter: [],
+    marketsDirectionsFilter,
     orderEventCombinations: undefined,
     positionKey: positionLifecycleFilter.positionKey,
   };

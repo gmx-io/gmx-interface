@@ -18,6 +18,7 @@ import {
   formatTokenAmount,
   formatUsdPrice,
   getBasisPoints,
+  getBasisPointsValue,
   numberToBigint,
   PERCENT_PRECISION_DECIMALS,
   PRECISION,
@@ -546,27 +547,39 @@ describe("formatTokenAmount", () => {
   });
 });
 
-describe("formatBasisPoints", () => {
-  it("formats negative deltas with sign", () => {
-    expect(formatBasisPoints(-1682n * 10n ** 28n, 207019n * 10n ** 28n)).toBe("-81 bps");
-  });
-
-  it("formats positive deltas with plus sign", () => {
-    expect(formatBasisPoints(50n, 10000n)).toBe("+50 bps");
-  });
-
-  it("formats zero without sign", () => {
-    expect(formatBasisPoints(0n, 10000n)).toBe("0 bps");
-  });
-
-  it("uses comma separators for large bps values", () => {
-    expect(formatBasisPoints(2n * 10n ** 30n, 10n ** 30n)).toBe("+20,000 bps");
+describe("getBasisPointsValue", () => {
+  it("calculates basis points from signed delta and positive basis", () => {
+    expect(getBasisPointsValue(-1682n * 10n ** 28n, 207019n * 10n ** 28n)).toBe(-81n);
+    expect(getBasisPointsValue(50n, 10000n)).toBe(50n);
+    expect(getBasisPointsValue(0n, 10000n)).toBe(0n);
   });
 
   it("returns undefined for missing or non-positive basis", () => {
-    expect(formatBasisPoints(undefined, 100n)).toBeUndefined();
-    expect(formatBasisPoints(100n, undefined)).toBeUndefined();
-    expect(formatBasisPoints(100n, 0n)).toBeUndefined();
-    expect(formatBasisPoints(100n, -1n)).toBeUndefined();
+    expect(getBasisPointsValue(undefined, 100n)).toBeUndefined();
+    expect(getBasisPointsValue(100n, undefined)).toBeUndefined();
+    expect(getBasisPointsValue(100n, 0n)).toBeUndefined();
+    expect(getBasisPointsValue(100n, -1n)).toBeUndefined();
+  });
+});
+
+describe("formatBasisPoints", () => {
+  it("formats negative bps values with sign", () => {
+    expect(formatBasisPoints(-81n)).toBe("-81 bps");
+  });
+
+  it("formats positive bps values with plus sign", () => {
+    expect(formatBasisPoints(50n)).toBe("+50 bps");
+  });
+
+  it("formats zero without sign", () => {
+    expect(formatBasisPoints(0n)).toBe("0 bps");
+  });
+
+  it("uses comma separators for large bps values", () => {
+    expect(formatBasisPoints(20000n)).toBe("+20,000 bps");
+  });
+
+  it("returns undefined for missing bps value", () => {
+    expect(formatBasisPoints(undefined)).toBeUndefined();
   });
 });

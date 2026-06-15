@@ -25,6 +25,7 @@ import {
   formatTokenAmount,
   formatTokenAmountWithUsd,
   formatUsd,
+  getBasisPointsValue,
 } from "lib/numbers";
 import { bigMath } from "sdk/utils/bigmath";
 import { PositionTradeAction, TradeActionType } from "sdk/utils/tradeHistory/types";
@@ -807,7 +808,7 @@ function getPriceImpactLines(tradeAction: PositionTradeAction) {
 
 function getPriceImpactLine(label: string, priceImpactUsd: bigint | undefined, sizeDeltaUsd: bigint): Line {
   const state = numberToState(priceImpactUsd);
-  const bpsText = formatBasisPoints(priceImpactUsd, sizeDeltaUsd);
+  const bpsText = formatBasisPoints(getBasisPointsValue(priceImpactUsd, sizeDeltaUsd));
 
   return infoRow(
     label,

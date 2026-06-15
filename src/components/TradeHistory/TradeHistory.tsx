@@ -9,7 +9,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions/usePositionsConstants";
 import {
-  filterTradeActionsByDisplayFilters,
+  filterLifecycleTradeActionsByDisplayFilters,
   getPositionLifecycleSlice,
   PositionLifecycleFilter,
   PositionTradeAction,
@@ -88,6 +88,7 @@ export function TradeHistory(p: Props) {
 
   const {
     tradeActions,
+    totalCount,
     isLoading: isHistoryLoading,
     error: historyError,
     hasMorePages: hasMoreTradeActionPages,
@@ -116,18 +117,16 @@ export function TradeHistory(p: Props) {
   const filteredTradeActions = useMemo(
     () =>
       positionLifecycleFilter
-        ? filterTradeActionsByDisplayFilters({
+        ? filterLifecycleTradeActionsByDisplayFilters({
             tradeActions: positionLifecycleSlice.tradeActions,
             fromTxTimestamp,
             toTxTimestamp,
-            marketsDirectionsFilter,
             orderEventCombinations: actionFilter,
           })
         : tradeActions,
     [
       actionFilter,
       fromTxTimestamp,
-      marketsDirectionsFilter,
       positionLifecycleFilter,
       positionLifecycleSlice.tradeActions,
       toTxTimestamp,
@@ -135,14 +134,6 @@ export function TradeHistory(p: Props) {
     ]
   );
 
-  const isConnected = Boolean(account);
-  const isLoading =
-    (forAllAccounts || isConnected) &&
-    (minCollateralUsd === undefined ||
-      isHistoryLoading ||
-      (isLifecycleSliceIncomplete && !filteredTradeActions?.length));
-
-  const isEmpty = !isLoading && !filteredTradeActions?.length;
   const paginationKey = useMemo(
     () =>
       JSON.stringify([
@@ -169,7 +160,32 @@ export function TradeHistory(p: Props) {
     setCurrentPage,
     currentData: currentPageData,
     pageCount,
-  } = usePagination(paginationKey, filteredTradeActions, ENTITIES_PER_PAGE);
+  } = usePagination(
+    paginationKey,
+    filteredTradeActions,
+    ENTITIES_PER_PAGE,
+    positionLifecycleFilter ? undefined : totalCount
+  );
+
+  const currentPageStartIndex = (currentPage - 1) * ENTITIES_PER_PAGE;
+  const currentPageHasUnloadedData = Boolean(
+    !positionLifecycleFilter &&
+      totalCount !== undefined &&
+      filteredTradeActions &&
+      currentPageStartIndex < totalCount &&
+      filteredTradeActions.length <= currentPageStartIndex &&
+      hasMoreTradeActionPages
+  );
+
+  const isConnected = Boolean(account);
+  const isLoading =
+    (forAllAccounts || isConnected) &&
+    (minCollateralUsd === undefined ||
+      isHistoryLoading ||
+      currentPageHasUnloadedData ||
+      (isLifecycleSliceIncomplete && !filteredTradeActions?.length));
+
+  const isEmpty = !isLoading && !filteredTradeActions?.length;
 
   const hasFilters = Boolean(
     startDate || endDate || marketsDirectionsFilter.length || actionFilter.length || positionLifecycleFilter
@@ -214,19 +230,23 @@ export function TradeHistory(p: Props) {
       return;
     }
 
-    if (!pageCount || !currentPage) return;
-    const totalPossiblePages = (TRADE_HISTORY_PREFETCH_SIZE * tradeActionsPageIndex) / TRADE_HISTORY_PER_PAGE;
-    const doesMoreDataExist = pageCount >= totalPossiblePages;
-    const isCloseToEnd = pageCount && pageCount < currentPage + 2;
+    if (!pageCount || !currentPage || !hasMoreTradeActionPages) return;
 
-    if (doesMoreDataExist && isCloseToEnd) {
-      setTradeActionsPageIndex((prevIndex) => prevIndex + 1);
+    const pagesToLoadThrough = totalCount === undefined ? currentPage + 2 : Math.min(pageCount, currentPage + 2);
+    const tradeActionsPageIndexToLoad = Math.ceil(
+      (pagesToLoadThrough * ENTITIES_PER_PAGE) / TRADE_HISTORY_PREFETCH_SIZE
+    );
+
+    if (tradeActionsPageIndex < tradeActionsPageIndexToLoad) {
+      setTradeActionsPageIndex(tradeActionsPageIndexToLoad);
     }
   }, [
     currentPage,
+    hasMoreTradeActionPages,
     pageCount,
     positionLifecycleFilter,
     shouldRequestMoreLifecycleRows,
+    totalCount,
     tradeActionsPageIndex,
     setTradeActionsPageIndex,
   ]);

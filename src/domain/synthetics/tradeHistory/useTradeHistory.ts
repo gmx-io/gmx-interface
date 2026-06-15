@@ -21,12 +21,18 @@ import { processRawTradeActions } from "./processTradeActions";
 
 export type TradeHistoryResult = {
   tradeActions?: TradeAction[];
+  totalCount?: number;
   isLoading: boolean;
   error: Error | undefined;
   hasMorePages: boolean;
   isFetchingNextPage: boolean;
   pageIndex: number;
   setPageIndex: (...args: Parameters<SWRInfiniteResponse["setSize"]>) => void;
+};
+
+export type RawTradeActionsResult = {
+  tradeActions: SubsquidTradeAction[];
+  totalCount?: number;
 };
 
 export function useTradeHistory(
@@ -122,7 +128,7 @@ export function useTradeHistory(
   const isLoading = (!error && !hasPopulatedData) || !marketsInfoData || !tokensData;
 
   const tradeActions = useMemo(() => {
-    const allRawData = data?.flat().filter(Boolean) as SubsquidTradeAction[] | undefined;
+    const allRawData = data?.flatMap((page) => page?.tradeActions ?? []);
 
     return processRawTradeActions({
       chainId,
@@ -133,11 +139,17 @@ export function useTradeHistory(
     });
   }, [data, marketsInfoData, tokensData, marketsDirectionsFilter, chainId]);
 
+  const totalCount = data?.find((page) => page?.totalCount !== undefined)?.totalCount;
+  const loadedRawActionsCount = data?.reduce((count, page) => count + (page?.tradeActions.length ?? 0), 0) ?? 0;
+  const hasMorePages =
+    totalCount !== undefined ? loadedRawActionsCount < totalCount : data?.at(-1)?.tradeActions.length === pageSize;
+
   return {
     tradeActions,
+    totalCount,
     isLoading,
     error,
-    hasMorePages: data?.at(-1)?.length === pageSize,
+    hasMorePages,
     // setSize bumps pageIndex synchronously while data keeps the previous pages
     // until the appended page resolves, so this is the "page in flight" window
     isFetchingNextPage: !error && data !== undefined && data.length < pageIndex,
@@ -177,7 +189,7 @@ export async function fetchRawTradeActions({
     | undefined;
   positionKey?: string;
   showDebugValues?: boolean;
-}): Promise<SubsquidTradeAction[] | undefined> {
+}): Promise<RawTradeActionsResult | undefined> {
   const client = getSubsquidGraphClient(chainId);
   definedOrThrow(client);
 
@@ -327,6 +339,10 @@ export async function fetchRawTradeActions({
   const whereClause = `where: ${filtersStr}`;
 
   const query = gql(`{
+        tradeActionsConnection(${whereClause}) {
+          totalCount
+        }
+
         tradeActions(
             offset: ${offset},
             limit: ${limit},
@@ -393,6 +409,10 @@ export async function fetchRawTradeActions({
   const result = await client!.query({ query, fetchPolicy: "no-cache" });
 
   const rawTradeActions = (result.data?.tradeActions || []) as SubsquidTradeAction[];
+  const totalCount = result.data?.tradeActionsConnection?.totalCount;
 
-  return rawTradeActions;
+  return {
+    tradeActions: rawTradeActions,
+    totalCount,
+  };
 }

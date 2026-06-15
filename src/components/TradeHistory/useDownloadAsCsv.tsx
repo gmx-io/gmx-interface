@@ -10,7 +10,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { isSwapOrderType } from "domain/synthetics/orders";
 import { OrderType } from "domain/synthetics/orders/types";
 import {
-  filterTradeActionsByDisplayFilters,
+  filterLifecycleTradeActionsByDisplayFilters,
   getPositionLifecycleSlice,
   PositionLifecycleFilter,
   PositionTradeAction,
@@ -87,7 +87,7 @@ export function useDownloadAsCsv({
       });
 
       while (hasMorePages) {
-        const rawPage = await withRetry(
+        const rawPageResult = await withRetry(
           () =>
             fetchRawTradeActions({
               chainId,
@@ -102,9 +102,13 @@ export function useDownloadAsCsv({
             delay: 300,
           }
         );
+        const rawPage = rawPageResult?.tradeActions;
 
         // Pagination must be driven by the raw page length: processing can drop rows
-        hasMorePages = Boolean(rawPage && rawPage.length === PAGE_SIZE);
+        hasMorePages =
+          rawPageResult?.totalCount !== undefined
+            ? (currentPageIndex + 1) * PAGE_SIZE < rawPageResult.totalCount
+            : Boolean(rawPage && rawPage.length === PAGE_SIZE);
 
         const processedPage = processRawTradeActions({
           chainId,
@@ -133,11 +137,10 @@ export function useDownloadAsCsv({
 
       if (positionLifecycleFilter) {
         const lifecycleSlice = getPositionLifecycleSlice(aggregatedTradeActions, positionLifecycleFilter);
-        exportedTradeActions = (filterTradeActionsByDisplayFilters({
+        exportedTradeActions = (filterLifecycleTradeActionsByDisplayFilters({
           tradeActions: lifecycleSlice.tradeActions,
           fromTxTimestamp,
           toTxTimestamp,
-          marketsDirectionsFilter,
           orderEventCombinations,
         }) ?? []) as (PositionTradeAction | SwapTradeAction)[];
 

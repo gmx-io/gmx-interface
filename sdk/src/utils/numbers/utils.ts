@@ -79,15 +79,22 @@ export function getBasisPoints(numerator: bigint, denominator: bigint, shouldRou
   return result;
 }
 
-export function formatBasisPoints(deltaUsd: bigint | undefined, basisUsd: bigint | undefined): string | undefined {
+export function getBasisPointsValue(deltaUsd: bigint | undefined, basisUsd: bigint | undefined): bigint | undefined {
   if (deltaUsd === undefined || basisUsd === undefined || basisUsd <= 0n) {
     return undefined;
   }
 
-  const bps = getBasisPoints(deltaUsd, basisUsd);
-  const sign = getPlusOrMinusSymbol(bps);
+  return getBasisPoints(deltaUsd, basisUsd);
+}
 
-  return `${sign}${formatAmount(bigMath.abs(bps), 0, 0, true)} bps`;
+export function formatBasisPoints(bpsValue: bigint | undefined): string | undefined {
+  if (bpsValue === undefined) {
+    return undefined;
+  }
+
+  const sign = getPlusOrMinusSymbol(bpsValue);
+
+  return `${sign}${formatAmount(bigMath.abs(bpsValue), 0, 0, true)} bps`;
 }
 
 export function roundUpMagnitudeDivision(a: bigint, b: bigint) {

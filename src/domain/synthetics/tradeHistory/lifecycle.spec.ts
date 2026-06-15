@@ -139,7 +139,7 @@ describe("resolveTradeHistoryFetchParams", () => {
     });
   });
 
-  it("neutralizes server filters and sets positionKey in lifecycle mode", () => {
+  it("keeps market filters but neutralizes boundary-sensitive filters in lifecycle mode", () => {
     expect(
       resolveTradeHistoryFetchParams({
         ...userFilters,
@@ -148,7 +148,7 @@ describe("resolveTradeHistoryFetchParams", () => {
     ).toEqual({
       fromTxTimestamp: undefined,
       toTxTimestamp: undefined,
-      marketsDirectionsFilter: [],
+      marketsDirectionsFilter: userFilters.marketsDirectionsFilter,
       orderEventCombinations: undefined,
       positionKey: "key",
     });
