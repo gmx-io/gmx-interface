@@ -97,10 +97,18 @@ export function normalizeDateRangeToUtcBucketDays<S extends Date | undefined, E 
   start: S,
   end: E
 ): [S extends Date ? number : undefined, E extends Date ? number : undefined] {
-  const fromTxTimestamp = start ? floorTimestamp(toSeconds(setTime(start, START_OF_DAY_DURATION)), "day") : undefined;
-  const toTxTimestamp = end
-    ? floorTimestamp(toSeconds(setTime(end, INCLUDING_CURRENT_DAY_DURATION)), "day")
-    : undefined;
+  const fromTxTimestamp = start ? getUtcDayStartTimestamp(start) : undefined;
+  const toTxTimestamp = end ? getUtcDayStartTimestamp(end) : undefined;
+
+  return [fromTxTimestamp, toTxTimestamp] as [S extends Date ? number : undefined, E extends Date ? number : undefined];
+}
+
+export function normalizeDateRangeToUtcDays<S extends Date | undefined, E extends Date | undefined>(
+  start: S,
+  end: E
+): [S extends Date ? number : undefined, E extends Date ? number : undefined] {
+  const fromTxTimestamp = start ? getUtcDayStartTimestamp(start) : undefined;
+  const toTxTimestamp = end ? getUtcDayEndTimestamp(end) : undefined;
 
   return [fromTxTimestamp, toTxTimestamp] as [S extends Date ? number : undefined, E extends Date ? number : undefined];
 }
@@ -136,12 +144,20 @@ function floorTimestamp(timestamp: number, period: "day" | "hour") {
   return Math.floor(timestamp / delimiter) * delimiter;
 }
 
+function getUtcDayStartTimestamp(date: Date) {
+  return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate()) / 1000;
+}
+
+function getUtcDayEndTimestamp(date: Date) {
+  return Date.UTC(date.getFullYear(), date.getMonth(), date.getDate(), 23, 59, 59) / 1000;
+}
+
 function getTodayStart() {
   return floorTimestamp(Date.now() / 1000, "day");
 }
 
 function getYearStart() {
-  return floorTimestamp(new Date(new Date().getUTCFullYear(), 0, 1, 0, 0, 0, 0).getTime() / 1000, "day");
+  return Date.UTC(new Date().getUTCFullYear(), 0, 1) / 1000;
 }
 
 export function getTimePeriodsInSeconds() {

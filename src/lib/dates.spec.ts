@@ -1,13 +1,9 @@
 import { describe, expect, it } from "vitest";
 
-import { normalizeDateRange, normalizeDateRangeToUtcBucketDays, SECONDS_IN_DAY } from "./dates";
+import { normalizeDateRange, normalizeDateRangeToUtcBucketDays, normalizeDateRangeToUtcDays } from "./dates";
 
 function toSeconds(date: Date) {
   return Math.round(date.getTime() / 1000);
-}
-
-function floorToUtcDay(timestamp: number) {
-  return Math.floor(timestamp / SECONDS_IN_DAY) * SECONDS_IN_DAY;
 }
 
 describe("date range normalization", () => {
@@ -24,16 +20,32 @@ describe("date range normalization", () => {
     expect(normalizeDateRange(start, end)).toEqual([toSeconds(expectedStart), toSeconds(expectedEnd)]);
   });
 
-  it("converts device-local calendar filters to overlapping UTC history buckets", () => {
+  it("converts selected calendar dates to UTC history buckets", () => {
     const start = new Date(2026, 5, 11, 15, 30);
     const end = new Date(2026, 5, 12, 8, 10);
 
-    const [localFromTimestamp, localToTimestamp] = normalizeDateRange(start, end);
     const [fromBucketTimestamp, toBucketTimestamp] = normalizeDateRangeToUtcBucketDays(start, end);
 
-    expect(fromBucketTimestamp).toBe(floorToUtcDay(localFromTimestamp));
-    expect(toBucketTimestamp).toBe(floorToUtcDay(localToTimestamp));
-    expect(fromBucketTimestamp % SECONDS_IN_DAY).toBe(0);
-    expect(toBucketTimestamp % SECONDS_IN_DAY).toBe(0);
+    expect(fromBucketTimestamp).toBe(Date.UTC(2026, 5, 11) / 1000);
+    expect(toBucketTimestamp).toBe(Date.UTC(2026, 5, 12) / 1000);
+  });
+
+  it("keeps one selected calendar date to one UTC history bucket", () => {
+    const date = new Date(2026, 5, 12, 8, 10);
+
+    expect(normalizeDateRangeToUtcBucketDays(date, date)).toEqual([
+      Date.UTC(2026, 5, 12) / 1000,
+      Date.UTC(2026, 5, 12) / 1000,
+    ]);
+  });
+
+  it("converts selected calendar dates to UTC event timestamp bounds", () => {
+    const start = new Date(2026, 5, 11, 15, 30);
+    const end = new Date(2026, 5, 12, 8, 10);
+
+    expect(normalizeDateRangeToUtcDays(start, end)).toEqual([
+      Date.UTC(2026, 5, 11) / 1000,
+      Date.UTC(2026, 5, 12, 23, 59, 59) / 1000,
+    ]);
   });
 });

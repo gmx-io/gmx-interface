@@ -20,8 +20,8 @@ import { VersionNetworkSwitcherRow } from "./VersionNetworkSwitcherRow";
 type DashboardDateRange = [Date | undefined, Date | undefined];
 
 function getBucketDateRange(bucketLabel: string): DashboardDateRange {
-  const today = new Date();
-  today.setHours(0, 0, 0, 0);
+  const now = new Date();
+  const today = new Date(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate());
 
   const getPastDate = (days: number) => {
     const date = new Date(today);
@@ -41,7 +41,7 @@ function getBucketDateRange(bucketLabel: string): DashboardDateRange {
     case "month":
       return [getPastDate(30), today];
     case "year":
-      return [new Date(today.getFullYear(), 0, 1), today];
+      return [new Date(now.getUTCFullYear(), 0, 1), today];
     case "all":
     default:
       return [undefined, undefined];

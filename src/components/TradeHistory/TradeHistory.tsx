@@ -9,7 +9,7 @@ import { useSelector } from "context/SyntheticsStateContext/utils";
 import { OrderType } from "domain/synthetics/orders/types";
 import { usePositionsConstantsRequest } from "domain/synthetics/positions/usePositionsConstants";
 import { TradeActionType, useTradeHistory } from "domain/synthetics/tradeHistory";
-import { useDateRange, useNormalizeDateRange } from "lib/dates";
+import { normalizeDateRange, normalizeDateRangeToUtcDays, useDateRange } from "lib/dates";
 import { useBreakpoints } from "lib/useBreakpoints";
 import { buildAccountDashboardUrl } from "pages/AccountDashboard/buildAccountDashboardUrl";
 
@@ -64,13 +64,17 @@ export function TradeHistory(p: Props) {
   const chainId = useSelector(selectChainId);
   const showDebugValues = useShowDebugValues();
   const [localStartDate, localEndDate, setLocalDateRange] = useDateRange();
-  const isDateRangeControlled = p.dateRange !== undefined;
-  const [startDate, endDate] = isDateRangeControlled ? p.dateRange : [localStartDate, localEndDate];
-  const setDateRange = isDateRangeControlled ? p.onDateRangeChange : setLocalDateRange;
+  const hasExternalDateRange = p.dateRange !== undefined;
+  const [startDate, endDate] = hasExternalDateRange ? p.dateRange : [localStartDate, localEndDate];
+  const setDateRange = hasExternalDateRange ? p.onDateRangeChange : setLocalDateRange;
   const [marketsDirectionsFilter, setMarketsDirectionsFilter] = useState<MarketFilterLongShortItemData[]>([]);
   const [actionFilter, setActionFilter] = useState<ActionFilter[]>([]);
 
-  const [fromTxTimestamp, toTxTimestamp] = useNormalizeDateRange(startDate, endDate);
+  const [fromTxTimestamp, toTxTimestamp] = useMemo(
+    () =>
+      hasExternalDateRange ? normalizeDateRangeToUtcDays(startDate, endDate) : normalizeDateRange(startDate, endDate),
+    [endDate, hasExternalDateRange, startDate]
+  );
 
   const { positionsConstants } = usePositionsConstantsRequest(chainId);
   const { minCollateralUsd } = positionsConstants || {};

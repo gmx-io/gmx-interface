@@ -312,6 +312,7 @@ function usePnlHistoricalData(
   });
 
   const transformedData: PnlHistoricalData = useMemo(() => {
+    const hasExplicitDateRange = fromTimestamp !== undefined || toTimestamp !== undefined;
     let dataPoints =
       res.data?.accountPnlHistoryStats.map((row: any) => {
         const parsedDebugFields = showDebugValues
@@ -346,7 +347,7 @@ function usePnlHistoricalData(
       return EMPTY_ARRAY;
     }
 
-    if (dataPoints.length < MINIMUM_DATA_POINTS) {
+    if (!hasExplicitDateRange && dataPoints.length < MINIMUM_DATA_POINTS) {
       const lastTimestamp = dataPoints.length > 0 ? dataPoints[0].timestamp : Math.floor(Date.now() / 1000);
 
       const pointsLength = dataPoints.length;
@@ -378,7 +379,7 @@ function usePnlHistoricalData(
     }
 
     return dataPoints;
-  }, [res.data?.accountPnlHistoryStats, showDebugValues]);
+  }, [fromTimestamp, res.data?.accountPnlHistoryStats, showDebugValues, toTimestamp]);
 
   return { data: transformedData, error: res.error, loading: res.loading };
 }
