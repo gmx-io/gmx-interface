@@ -339,7 +339,7 @@ export async function fetchRawTradeActions({
   const whereClause = `where: ${filtersStr}`;
 
   const query = gql(`{
-        tradeActionsConnection(${whereClause}) {
+        tradeActionsConnection(orderBy: [timestamp_DESC, id_DESC], ${whereClause}) {
           totalCount
         }
 
