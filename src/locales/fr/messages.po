@@ -2000,7 +2000,7 @@ msgstr "Remboursement GLP"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Start unrealized PnL before fees"
-msgstr ""
+msgstr "PnL non réalisé de départ avant frais"
 
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx

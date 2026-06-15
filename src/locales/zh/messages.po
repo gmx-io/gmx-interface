@@ -2000,7 +2000,7 @@ msgstr "GLP 补偿"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Start unrealized PnL before fees"
-msgstr ""
+msgstr "扣除费用前的起始未实现盈亏"
 
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx

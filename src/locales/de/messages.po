@@ -2000,7 +2000,7 @@ msgstr "GLP-Erstattung"
 
 #: src/pages/AccountDashboard/GeneralPerformanceDetails.tsx
 msgid "Start unrealized PnL before fees"
-msgstr ""
+msgstr "Anfänglicher unrealisierter PnL vor Gebühren"
 
 #: src/components/GmSwap/GmSwapBox/GmShiftBox/useShiftSubmitState.tsx
 #: src/components/GmSwap/GmSwapBox/GmSwapBoxHeader.tsx
