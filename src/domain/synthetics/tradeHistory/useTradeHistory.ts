@@ -41,6 +41,7 @@ export function useTradeHistory(
     account: string | null | undefined;
     forAllAccounts?: boolean;
     pageSize: number;
+    pageOffset?: number;
     fromTxTimestamp?: number;
     toTxTimestamp?: number;
     marketsDirectionsFilter?: MarketFilterLongShortItemData[];
@@ -56,6 +57,7 @@ export function useTradeHistory(
 ): TradeHistoryResult {
   const {
     pageSize,
+    pageOffset,
     account,
     forAllAccounts,
     fromTxTimestamp,
@@ -83,6 +85,7 @@ export function useTradeHistory(
         orderEventCombinations,
         positionKey,
         marketsDirectionsFilter,
+        pageOffset,
         index,
         pageSize,
       ] as const;
@@ -109,6 +112,7 @@ export function useTradeHistory(
         chainId,
         pageIndex,
         pageSize,
+        pageOffset: pageOffset === undefined ? undefined : pageOffset + pageIndex * pageSize,
         marketsDirectionsFilter,
         forAllAccounts,
         account,
@@ -162,6 +166,7 @@ export async function fetchRawTradeActions({
   chainId,
   pageIndex,
   pageSize,
+  pageOffset,
   marketsDirectionsFilter = EMPTY_ARRAY,
   forAllAccounts,
   account,
@@ -174,6 +179,7 @@ export async function fetchRawTradeActions({
   chainId: number;
   pageIndex: number;
   pageSize: number;
+  pageOffset?: number;
   marketsDirectionsFilter: MarketFilterLongShortItemData[] | undefined;
   forAllAccounts: boolean | undefined;
   account: string | null | undefined;
@@ -193,7 +199,7 @@ export async function fetchRawTradeActions({
   const client = getSubsquidGraphClient(chainId);
   definedOrThrow(client);
 
-  const offset = pageIndex * pageSize;
+  const offset = pageOffset ?? pageIndex * pageSize;
   const limit = pageSize;
 
   const nonSwapRelevantDefinedFilters: MarketFilterLongShortItemData[] = marketsDirectionsFilter

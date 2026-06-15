@@ -93,7 +93,6 @@ export function TradeHistory(p: Props) {
     error: historyError,
     hasMorePages: hasMoreTradeActionPages,
     isFetchingNextPage,
-    pageIndex: tradeActionsPageIndex,
     setPageIndex: setTradeActionsPageIndex,
   } = useTradeHistory(chainId, {
     account,
@@ -158,7 +157,7 @@ export function TradeHistory(p: Props) {
   const {
     currentPage,
     setCurrentPage,
-    currentData: currentPageData,
+    currentData: loadedCurrentPageData,
     pageCount,
   } = usePagination(
     paginationKey,
@@ -168,24 +167,46 @@ export function TradeHistory(p: Props) {
   );
 
   const currentPageStartIndex = (currentPage - 1) * ENTITIES_PER_PAGE;
-  const currentPageHasUnloadedData = Boolean(
+  const directPageOffset =
+    Math.floor(currentPageStartIndex / TRADE_HISTORY_PREFETCH_SIZE) * TRADE_HISTORY_PREFETCH_SIZE;
+  const shouldFetchDirectPage = Boolean(
     !positionLifecycleFilter &&
       totalCount !== undefined &&
       filteredTradeActions &&
       currentPageStartIndex < totalCount &&
-      filteredTradeActions.length <= currentPageStartIndex &&
-      hasMoreTradeActionPages
+      filteredTradeActions.length <= currentPageStartIndex
   );
+
+  const {
+    tradeActions: directPageTradeActions,
+    isLoading: isDirectPageLoading,
+    error: directPageError,
+  } = useTradeHistory(chainId, {
+    account: shouldFetchDirectPage ? account : undefined,
+    forAllAccounts: shouldFetchDirectPage ? forAllAccounts : undefined,
+    pageSize: TRADE_HISTORY_PREFETCH_SIZE,
+    pageOffset: directPageOffset,
+    ...tradeHistoryFetchParams,
+  });
+
+  const directPageStartIndex = currentPageStartIndex - directPageOffset;
+  const directCurrentPageData = directPageTradeActions?.slice(
+    directPageStartIndex,
+    directPageStartIndex + ENTITIES_PER_PAGE
+  );
+  const currentPageData = (shouldFetchDirectPage ? directCurrentPageData : loadedCurrentPageData) ?? [];
+  const displayError = historyError || directPageError;
+  const isInitialHistoryLoading = isHistoryLoading && filteredTradeActions === undefined;
 
   const isConnected = Boolean(account);
   const isLoading =
     (forAllAccounts || isConnected) &&
     (minCollateralUsd === undefined ||
-      isHistoryLoading ||
-      currentPageHasUnloadedData ||
+      isInitialHistoryLoading ||
+      (shouldFetchDirectPage && isDirectPageLoading && directPageTradeActions === undefined) ||
       (isLifecycleSliceIncomplete && !filteredTradeActions?.length));
 
-  const isEmpty = !isLoading && !filteredTradeActions?.length;
+  const isEmpty = !isLoading && !currentPageData.length;
 
   const hasFilters = Boolean(
     startDate || endDate || marketsDirectionsFilter.length || actionFilter.length || positionLifecycleFilter
@@ -223,33 +244,10 @@ export function TradeHistory(p: Props) {
   }, [account, chainId, hideDashboardLink]);
 
   useEffect(() => {
-    if (positionLifecycleFilter) {
-      if (shouldRequestMoreLifecycleRows) {
-        setTradeActionsPageIndex((prevIndex) => prevIndex + 1);
-      }
-      return;
+    if (positionLifecycleFilter && shouldRequestMoreLifecycleRows) {
+      setTradeActionsPageIndex((prevIndex) => prevIndex + 1);
     }
-
-    if (!pageCount || !currentPage || !hasMoreTradeActionPages) return;
-
-    const pagesToLoadThrough = totalCount === undefined ? currentPage + 2 : Math.min(pageCount, currentPage + 2);
-    const tradeActionsPageIndexToLoad = Math.ceil(
-      (pagesToLoadThrough * ENTITIES_PER_PAGE) / TRADE_HISTORY_PREFETCH_SIZE
-    );
-
-    if (tradeActionsPageIndex < tradeActionsPageIndexToLoad) {
-      setTradeActionsPageIndex(tradeActionsPageIndexToLoad);
-    }
-  }, [
-    currentPage,
-    hasMoreTradeActionPages,
-    pageCount,
-    positionLifecycleFilter,
-    shouldRequestMoreLifecycleRows,
-    totalCount,
-    tradeActionsPageIndex,
-    setTradeActionsPageIndex,
-  ]);
+  }, [positionLifecycleFilter, shouldRequestMoreLifecycleRows, setTradeActionsPageIndex]);
 
   const [isLoadingCsv, handleCsvDownload] = useDownloadAsCsv({
     account,
@@ -372,21 +370,21 @@ export function TradeHistory(p: Props) {
             )}
           </tbody>
         </table>
-        {isEmpty && Boolean(historyError) && (
+        {isEmpty && Boolean(displayError) && (
           <EmptyTableContent
             isLoading={false}
             isEmpty={isEmpty}
             emptyText={<Trans>Failed to load trade history</Trans>}
           />
         )}
-        {isEmpty && !historyError && hasFilters && (
+        {isEmpty && !displayError && hasFilters && (
           <EmptyTableContent
             isLoading={false}
             isEmpty={isEmpty}
             emptyText={<Trans>No trades match the selected filters</Trans>}
           />
         )}
-        {isEmpty && !historyError && !hasFilters && !isLoading && (
+        {isEmpty && !displayError && !hasFilters && !isLoading && (
           <EmptyTableContent isLoading={false} isEmpty={isEmpty} emptyText={<Trans>No trades yet</Trans>} />
         )}
       </TableScrollFadeContainer>
