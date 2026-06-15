@@ -42,7 +42,7 @@ export const appEventsData: EventData[] = [
     startDate: "12 Jun 2026, 12:00",
     endDate: "19 Jun 2026, 12:00",
     chains: [ARBITRUM],
-    title: "SpaceX pre-IPO market is now a stock perp on Arbitrum",
+    title: "SpaceX pre-IPO market is now a 24/7 stock perp on Arbitrum",
     bodyText: (
       <>
         SpaceX pre-IPO market transitioned into a stock market. <Link to="/trade">Trade SPCX</Link> under TradFi &gt;
