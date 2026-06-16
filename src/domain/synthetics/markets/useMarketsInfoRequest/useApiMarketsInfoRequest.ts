@@ -18,18 +18,30 @@ function getApiMarketsConfigRequestKey(chainId: ContractsChainId) {
 }
 
 export function hasStaleMarketValues(
+  configData: RawMarketConfig[] | undefined,
   valuesData: RawMarketValues[] | undefined,
   disabledAddresses: Set<string>
 ): boolean {
-  if (!valuesData) {
+  if (!configData || !valuesData) {
     return false;
   }
+
   const now = Date.now();
-  return valuesData.some(
-    (value) =>
-      !disabledAddresses.has(value.marketTokenAddress) &&
-      (value.updatedAt == null || now - value.updatedAt > MARKETS_STALE_THRESHOLD_MS)
-  );
+  const valuesByAddress = new Map(valuesData.map((v) => [v.marketTokenAddress, v]));
+
+  for (const config of configData) {
+    if (disabledAddresses.has(config.marketTokenAddress)) {
+      continue;
+    }
+
+    const value = valuesByAddress.get(config.marketTokenAddress);
+
+    if (!value || value.updatedAt == null || now - value.updatedAt > MARKETS_STALE_THRESHOLD_MS) {
+      return true;
+    }
+  }
+
+  return false;
 }
 
 export function useApiMarketsInfoRequest(chainId: ContractsChainId, { enabled = true }: { enabled?: boolean } = {}) {
@@ -92,19 +104,12 @@ export function useApiMarketsInfoRequest(chainId: ContractsChainId, { enabled = 
     [configData]
   );
 
-  const isMarketsDataStale = useMemo(
-    () => (configData ? hasStaleMarketValues(valuesData, disabledMarketAddresses) : false),
-    [configData, valuesData, disabledMarketAddresses]
-  );
-
-  useEffect(() => {
-    if (!configData) {
-      return;
+  const isMarketsDataStale = useMemo(() => {
+    const stale = hasStaleMarketValues(configData, valuesData, disabledMarketAddresses);
+    if (configData) {
+      ApiHealthTracker.getInstance().reportMarketsFreshness(chainId, stale);
     }
-    ApiHealthTracker.getInstance().reportMarketsFreshness(
-      chainId,
-      hasStaleMarketValues(valuesData, disabledMarketAddresses)
-    );
+    return stale;
   }, [chainId, configData, valuesData, disabledMarketAddresses]);
 
   return {
